@@ -4,8 +4,13 @@
 */
 #pragma once
 #include "Database.h"
+#include "Album.h"
+#include "StringUtils.h"
 
 struct SScraperInfo;
+
+class CArtist;
+class CFileItem;
 
 #include <set>
 
@@ -45,6 +50,7 @@ typedef std::set<CStdString>::iterator ISETPATHES;
 typedef std::vector<long> VECLONGS;
 
 class CGUIDialogProgress;
+class CFileItemList;
 
 /*!
  \ingroup music
@@ -82,7 +88,7 @@ class CMusicDatabase : public CDatabase
     CStdString strGenre;
   };
 
-class CAlbumCache : public CAlbum
+  class CAlbumCache : public CAlbum
   {
   public:
     long idAlbum;

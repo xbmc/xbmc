@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "DVDAudioCodecLiba52.h"
-#include "../../DVDStreamInfo.h"
+#include "DVDStreamInfo.h"
 
 
 typedef __int16 int16_t;

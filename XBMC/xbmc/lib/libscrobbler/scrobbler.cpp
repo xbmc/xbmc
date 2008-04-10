@@ -20,12 +20,15 @@
 #include "stdafx.h"
 #include "scrobbler.h"
 #include "errors.h"
-#include "../../utils/md5.h"
-#include "../../utils/CharsetConverter.h"
-#include "../../utils/log.h"
-#include "../../utils/HTTP.h"
-#include "../../Util.h"
-#include "../../Application.h"
+#include "utils/md5.h"
+#include "utils/CharsetConverter.h"
+#include "utils/log.h"
+#include "utils/HTTP.h"
+#include "Util.h"
+#include "Settings.h"
+#include "Application.h"
+#include "MusicInfoTag.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace MUSIC_INFO;

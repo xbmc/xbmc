@@ -1,11 +1,12 @@
 #pragma once
 
-#include "PlayList.h"
 #include "IMsgTargetCallback.h"
 
 #define PLAYLIST_NONE    -1
 #define PLAYLIST_MUSIC   0
 #define PLAYLIST_VIDEO   1
+
+class CFileItemList;
 
 namespace PLAYLIST
 {
@@ -14,6 +15,9 @@ namespace PLAYLIST
  \brief Manages playlist playing.
  */
 enum REPEAT_STATE { REPEAT_NONE = 0, REPEAT_ONE, REPEAT_ALL };
+
+class CPlayList;
+class CPlayListItem;
 
 class CPlayListPlayer : public IMsgTargetCallback
 {
@@ -44,7 +48,7 @@ public:
   REPEAT_STATE GetRepeat(int iPlaylist);
 
   // add items via the playlist player
-  void Add(int iPlaylist, CPlayList::CPlayListItem& item);
+  void Add(int iPlaylist, CPlayListItem& item);
   void Add(int iPlaylist, CPlayList& playlist);
   void Add(int iPlaylist, CFileItem *pItem);
   void Add(int iPlaylist, CFileItemList& items);
@@ -58,9 +62,9 @@ protected:
   int m_iFailedSongs;
   int m_iCurrentSong;
   int m_iCurrentPlayList;
-  CPlayList m_PlaylistMusic;
-  CPlayList m_PlaylistVideo;
-  CPlayList m_PlaylistEmpty;
+  CPlayList* m_PlaylistMusic;
+  CPlayList* m_PlaylistVideo;
+  CPlayList* m_PlaylistEmpty;
   REPEAT_STATE m_repeatState[2];
 };
 

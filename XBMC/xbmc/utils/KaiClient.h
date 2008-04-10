@@ -3,8 +3,8 @@
 
 #ifdef HAS_KAI_VOICE
 #include "KaiVoice.h"
-#include "../Xbox/VoiceManager.h"
-#include "../Xbox/MediaPacketQueue.h"
+#include "Xbox/VoiceManager.h"
+#include "Xbox/MediaPacketQueue.h"
 #endif
 #include "Stopwatch.h"
 

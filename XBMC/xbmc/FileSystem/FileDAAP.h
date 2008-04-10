@@ -9,8 +9,9 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "../lib/libXDAAP/client.h"
+#include "lib/libXDAAP/client.h"
 #include "FileCurl.h"
+#include "URL.h"
 
 class CDaapClient : public CCriticalSection 
 {
@@ -40,7 +41,7 @@ extern CDaapClient g_DaapClient;
 
 
 #include "IFile.h"
-#include "../cores/paplayer/RingHoldBuffer.h"
+#include "cores/paplayer/RingHoldBuffer.h"
 
 namespace XFILE
 {

@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "MemUnitDirectory.h"
 #include "DirectoryCache.h"
-#include "../utils/MemoryUnitManager.h"
+#include "utils/MemoryUnitManager.h"
 #include "MemoryUnits/IFileSystem.h"
 #include "MemoryUnits/IDevice.h"
+#include "FileItem.h"
 
 using namespace DIRECTORY;
 

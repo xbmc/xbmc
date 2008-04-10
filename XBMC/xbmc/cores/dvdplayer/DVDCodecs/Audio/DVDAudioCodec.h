@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <vector>
+
 enum CodecID;
 struct AVStream;
 

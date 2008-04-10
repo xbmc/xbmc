@@ -4,6 +4,11 @@
 #include "CDDAReader.h"
 #include "Encoder.h"
 
+namespace MUSIC_INFO
+{
+  class CMusicInfoTag;
+}
+
 class CCDDARipper
 {
 public:

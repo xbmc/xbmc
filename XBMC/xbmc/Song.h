@@ -1,5 +1,5 @@
 /*!
- \file MusicDatabase.h
+ \file Song.h
 \brief
 */
 #pragma once
@@ -7,7 +7,10 @@
 #include <map>
 #include <vector>
 
-#include "musicInfoTag.h"
+namespace MUSIC_INFO
+{
+  class CMusicInfoTag;
+}
 
 /*!
  \ingroup music

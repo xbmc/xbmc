@@ -1,8 +1,8 @@
 #ifndef SCRAPER_PARSER_H
 #define SCRAPER_PARSER_H
 
-#include "../../guilib/tinyXML/tinyxml.h"
-#include "../../guilib/StdString.h"
+#include "tinyXML/tinyxml.h"
+#include "StdString.h"
 
 #include <vector>
 

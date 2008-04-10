@@ -1,7 +1,7 @@
 #include "include.h"
 #include "GUIInfoColor.h"
-#include "../xbmc/utils/CharsetConverter.h"
-#include "../xbmc/utils/GUIInfoManager.h"
+#include "utils/CharsetConverter.h"
+#include "utils/GUIInfoManager.h"
 #include "LocalizeStrings.h"
 #include "GUIColorManager.h"
 

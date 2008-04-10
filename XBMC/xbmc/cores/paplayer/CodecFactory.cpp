@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "../../XBAudioConfig.h"
+#include "XBAudioConfig.h"
 #include "CodecFactory.h"
 #include "MP3codec.h"
 #include "APEcodec.h"
@@ -27,6 +27,7 @@
 #include "AIFFcodec.h"
 #include "ADPCMCodec.h"
 #include "TimidityCodec.h"
+#include "URL.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {

@@ -2,10 +2,8 @@
 #include "XMLUtils.h"
 #include "LocalizeStrings.h"
 #include "Settings.h"
-#include "utils/HTTP.h"
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
-#include "Util.h"
 #include "Picture.h"
 
 #include <sstream>

@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "ThumbnailCache.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace XFILE;

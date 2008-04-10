@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "../DllLoader.h"
 #include "emu_socket.h"
-#include "..\dll_tracker_socket.h"
+#include "../dll_tracker_socket.h"
 
 Export export_wsock32[] =
 {

@@ -14,6 +14,9 @@
  \ingroup controls
  \brief 
  */
+
+class TiXmlNode;
+
 class CGUITextBox : public CGUIControl, public CGUITextLayout
 {
 public:

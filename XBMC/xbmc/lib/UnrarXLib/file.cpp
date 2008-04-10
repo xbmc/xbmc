@@ -2,8 +2,8 @@
 
 // BE WARNED THIS FILE IS HEAVILY MODIFIED TO BE USED WITH XBMC
 
-#include "../../FileSystem/Directory.h"
-#include "../../Util.h"
+#include "FileSystem/Directory.h"
+#include "Util.h"
 
 //static File *CreatedFiles[32];
 static int RemoveCreatedActive=0;

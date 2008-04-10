@@ -21,8 +21,6 @@
 
 #include "stdafx.h"
 #include "GUISettings.h"
-#include "Application.h"
-#include "Util.h"
 #include "GUIDialogFileBrowser.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/FanController.h"
@@ -516,7 +514,7 @@ CGUISettings::CGUISettings(void)
   AddBool(2, "upnp.renderer", 21881, false);
   AddSeparator(3,"upnp.sep1");
   AddBool(4, "upnp.server", 21360, false);  
-  AddString(5, "upnp.musicshares", 21361, "", BUTTON_CONTROL_STANDARD);
+  AddString(5, "upnp.musichares", 21361, "", BUTTON_CONTROL_STANDARD);
   AddString(6, "upnp.videoshares", 21362, "", BUTTON_CONTROL_STANDARD);
   AddString(7, "upnp.pictureshares", 21363, "", BUTTON_CONTROL_STANDARD);
 
@@ -801,7 +799,7 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
       CStdString strData = "";
       if (bPrompt)
       {
-        VECSHARES shares;
+        VECSOURCES shares;
         g_mediaManager.GetLocalDrives(shares);
         if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares,g_localizeStrings.Get(result->GetLabel()),strData,false))
         {
@@ -819,7 +817,7 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
       CStdString strData = "";
       if (bPrompt)
       {
-        VECSHARES shares;
+        VECSOURCES shares;
         g_mediaManager.GetLocalDrives(shares);
         if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares,g_localizeStrings.Get(result->GetLabel()),strData,true))
         {

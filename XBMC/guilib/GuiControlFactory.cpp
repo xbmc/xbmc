@@ -35,13 +35,14 @@
 #include "GUIPanelContainer.h"
 #include "GUILargeImage.h"
 #include "GUIMultiSelectText.h"
-#include "../xbmc/utils/GUIInfoManager.h"
-#include "../xbmc/utils/CharsetConverter.h"
-#include "../xbmc/Util.h"
-#include "../xbmc/ButtonTranslator.h"
+#include "utils/GUIInfoManager.h"
+#include "utils/CharsetConverter.h"
+#include "ButtonTranslator.h"
 #include "XMLUtils.h"
 #include "GUIFontManager.h"
 #include "GUIColorManager.h"
+#include "SkinInfo.h"
+#include "Settings.h"
 
 using namespace std;
 

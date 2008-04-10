@@ -34,6 +34,9 @@
 #include "GUIWindowSlideShow.h"
 #include "lib/libGoAhead/XBMChttp.h"
 #include "xbox/network.h"
+#include "GUIWindowManager.h"
+#include "Settings.h"
+#include "FileItem.h"
 
 using namespace std;
 
@@ -252,9 +255,9 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
           CFileItemList items;
           CStdString strPath;
           if (CUtil::IsZIP(pMsg->strParam))
-            CUtil::CreateZipPath(strPath, pMsg->strParam.c_str(), "", 2, "", "Z:\\");
+            CUtil::CreateArchivePath(strPath, "zip", pMsg->strParam.c_str(), "");
           else
-            CUtil::CreateRarPath(strPath, pMsg->strParam.c_str(), "", 2, "", "Z:\\");
+            CUtil::CreateArchivePath(strPath, "rar", pMsg->strParam.c_str(), "");
 
           CUtil::GetRecursiveListing(strPath, items, g_stSettings.m_pictureExtensions);
           if (items.Size() > 0)

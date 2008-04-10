@@ -39,6 +39,14 @@
 #include "MusicDatabase.h"
 #include "SortFileItem.h"
 #include "utils/TuxBoxUtil.h"
+#include "VideoInfoTag.h"
+#include "MusicInfoTag.h"
+#include "PictureInfoTag.h"
+#include "Artist.h"
+#include "Album.h"
+#include "Song.h"
+#include "URL.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace XFILE;
@@ -183,7 +191,7 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
     CUtil::AddSlashAtEnd(m_strPath);
 }
 
-CFileItem::CFileItem(const CShare& share)
+CFileItem::CFileItem(const CMediaSource& share)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
@@ -309,12 +317,12 @@ void CFileItem::Reset()
   m_bIsParentFolder=false;
   m_bIsShareOrDrive = false;
   m_dateTime.Reset();
-  m_iDriveType = SHARE_TYPE_UNKNOWN;
+  m_iDriveType = CMediaSource::SOURCE_TYPE_UNKNOWN;
   m_lStartOffset = 0;
   m_lEndOffset = 0;
   m_iprogramCount = 0;
   m_idepth = 1;
-  m_iLockMode = LOCK_MODE_EVERYONE;
+  m_iLockMode = CMediaSource::LOCK_MODE_EVERYONE;
   m_strLockCode = "";
   m_iBadPwdCount = 0;
   m_iHasLock = 0;
@@ -2621,5 +2629,29 @@ void CFileItemList::ClearSortState()
 {
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
+}
+
+CVideoInfoTag* CFileItem::GetVideoInfoTag()
+{
+  if (!m_videoInfoTag)
+    m_videoInfoTag = new CVideoInfoTag;
+
+  return m_videoInfoTag;
+}
+
+CPictureInfoTag* CFileItem::GetPictureInfoTag()
+{
+  if (!m_pictureInfoTag)
+    m_pictureInfoTag = new CPictureInfoTag;
+
+  return m_pictureInfoTag;
+}
+
+MUSIC_INFO::CMusicInfoTag* CFileItem::GetMusicInfoTag()
+{
+  if (!m_musicInfoTag)
+    m_musicInfoTag = new MUSIC_INFO::CMusicInfoTag;
+
+  return m_musicInfoTag;
 }
 

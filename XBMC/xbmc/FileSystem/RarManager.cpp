@@ -1,9 +1,13 @@
 #include "stdafx.h"
 #include "RarManager.h"
-#include "../lib/UnrarXLib/rar.hpp"
-#include "../Util.h"
-#include "../utils/SingleLock.h"
-#include "../FileItem.h"
+#include "lib/UnrarXLib/rar.hpp"
+#include "Util.h"
+#include "utils/SingleLock.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogYesNo.h"
+#include "FileSystem/Directory.h"
+#include "Settings.h"
+#include "FileItem.h"
 
 #include <set>
 

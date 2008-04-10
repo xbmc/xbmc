@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IFileSystem.h"
-#include "../FileHD.h"
+#include "FileSystem/FileHD.h"
 
 class CFatXFileSystem : public IFileSystem
 {

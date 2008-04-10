@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Song.h"
+#include "Artist.h"
+
 class TiXmlDocument;
 class CScraperUrl;
 struct SScraperInfo;

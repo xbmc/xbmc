@@ -3,7 +3,6 @@
 #include "Util.h"
 #include "Picture.h"
 #include "utils/IMDB.h"
-#include "utils/HTTP.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowVideoInfo.h"
 #include "PlayListFactory.h"
@@ -16,6 +15,11 @@
 #include "GUIDialogVideoScan.h"
 #include "FileSystem/MultiPathDirectory.h"
 #include "utils/RegExp.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
+#include "GUIDialogYesNo.h"
+#include "FileSystem/File.h"
+#include "PlayList.h"
 
 using namespace std;
 using namespace MEDIA_DETECT;
@@ -60,9 +64,9 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 
       // is this the first time accessing this window?
       // a quickpath overrides the a default parameter
-      if (m_vecItems.m_strPath == "?" && strDestination.IsEmpty())
+      if (m_vecItems->m_strPath == "?" && strDestination.IsEmpty())
       {
-        m_vecItems.m_strPath = strDestination = g_settings.m_defaultVideoSource;
+        m_vecItems->m_strPath = strDestination = g_settings.m_defaultVideoSource;
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
 
@@ -72,26 +76,26 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         // open root
         if (strDestination.Equals("$ROOT"))
         {
-          m_vecItems.m_strPath = "";
+          m_vecItems->m_strPath = "";
           CLog::Log(LOGINFO, "  Success! Opening root listing.");
         }
         // open playlists location
         else if (strDestination.Equals("$PLAYLISTS"))
         {
-          m_vecItems.m_strPath = "special://videoplaylists/";
-          CLog::Log(LOGINFO, "  Success! Opening destination path: %s", m_vecItems.m_strPath.c_str());
+          m_vecItems->m_strPath = "special://videoplaylists/";
+          CLog::Log(LOGINFO, "  Success! Opening destination path: %s", m_vecItems->m_strPath.c_str());
         }
         else
         {
           // default parameters if the jump fails
-          m_vecItems.m_strPath = "";
+          m_vecItems->m_strPath = "";
 
           bool bIsSourceName = false;
 
           SetupShares();
-          VECSHARES shares;
-          m_rootDir.GetShares(shares);
-          int iIndex = CUtil::GetMatchingShare(strDestination, shares, bIsSourceName);
+          VECSOURCES shares;
+          m_rootDir.GetSources(shares);
+          int iIndex = CUtil::GetMatchingSource(strDestination, shares, bIsSourceName);
           if (iIndex > -1)
           {
             bool bDoStuff = true;
@@ -100,7 +104,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
               CFileItem item(shares[iIndex]);
               if (!g_passwordManager.IsItemUnlocked(&item,"video"))
               {
-                m_vecItems.m_strPath = ""; // no u don't
+                m_vecItems->m_strPath = ""; // no u don't
                 bDoStuff = false;
                 CLog::Log(LOGINFO, "  Failure! Failed to unlock destination path: %s", strDestination.c_str());
               }
@@ -109,10 +113,10 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
             if (bDoStuff)
             {
               if (bIsSourceName)
-                m_vecItems.m_strPath=shares[iIndex].strPath;
+                m_vecItems->m_strPath=shares[iIndex].strPath;
               else
-                m_vecItems.m_strPath=strDestination;
-              CUtil::RemoveSlashAtEnd(m_vecItems.m_strPath);
+                m_vecItems->m_strPath=strDestination;
+              CUtil::RemoveSlashAtEnd(m_vecItems->m_strPath);
               CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
             }
           }
@@ -122,7 +126,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
           }
         }
 
-        SetHistoryForPath(m_vecItems.m_strPath);
+        SetHistoryForPath(m_vecItems->m_strPath);
       }
 
       return CGUIWindowVideoBase::OnMessage(message);
@@ -152,13 +156,13 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
           g_stSettings.m_bMyVideoCleanTitles = false;
         g_settings.Save();
         UpdateButtons();
-        Update( m_vecItems.m_strPath );
+        Update( m_vecItems->m_strPath );
       }
       else if (iControl == CONTROL_BTNPLAYLISTS)
       {
-        if (!m_vecItems.m_strPath.Equals("special://videoplaylists/"))
+        if (!m_vecItems->m_strPath.Equals("special://videoplaylists/"))
         {
-          CStdString strParent = m_vecItems.m_strPath;
+          CStdString strParent = m_vecItems->m_strPath;
           UpdateButtons();
           Update("special://videoplaylists/");
         }
@@ -169,7 +173,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         int iItem = m_viewControl.GetSelectedItem();
         int iAction = message.GetParam1();
 
-        const CFileItem* pItem = m_vecItems[iItem];
+        const CFileItem* pItem = m_vecItems->Get(iItem);
 
         // use play button to add folders of items to temp playlist
         if (iAction == ACTION_PLAYER_PLAY && pItem->m_bIsFolder && !pItem->IsParentFolder())
@@ -237,8 +241,8 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   SScraperInfo info2;
 
   g_stSettings.m_iMyVideoStack &= ~STACK_UNAVAILABLE;
-  if (!m_vecItems.GetContent().IsEmpty())
-    g_infoManager.m_content = m_vecItems.GetContent();
+  if (!m_vecItems->GetContent().IsEmpty())
+    g_infoManager.m_content = m_vecItems->GetContent();
   else
     g_infoManager.m_content = "files";
 
@@ -264,8 +268,8 @@ void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
 
 bool CGUIWindowVideoFiles::OnClick(int iItem)
 {
-  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return true;
-  CFileItem* pItem = m_vecItems[iItem];
+  if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return true;
+  CFileItem* pItem = m_vecItems->Get(iItem);
   CStdString strExtension;
   CUtil::GetExtension(pItem->m_strPath, strExtension);
 
@@ -275,7 +279,7 @@ bool CGUIWindowVideoFiles::OnClick(int iItem)
     info.strPath = "imdb.xml";
     info.strContent = "movies";
     info.strTitle = "IMDb";
-    OnInfo(m_vecItems[iItem],info);
+    OnInfo(m_vecItems->Get(iItem),info);
     return true;
   }
 
@@ -284,8 +288,8 @@ bool CGUIWindowVideoFiles::OnClick(int iItem)
 
 bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
 {
-  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return false;
-  CFileItem* pItem = m_vecItems[iItem];
+  if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
+  CFileItem* pItem = m_vecItems->Get(iItem);
 
   if (pItem->IsDVD())
     return CAutorun::PlayDisc();
@@ -409,7 +413,7 @@ void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
   if (pItem->m_bIsFolder)
     CVideoInfoScanner::ApplyIMDBThumbToFolder(pItem->m_strPath, item.GetThumbnailImage());
   if (!info.strContent.Equals("plugin"))
-    Update(m_vecItems.m_strPath);
+    Update(m_vecItems->m_strPath);
 }
 
 void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
@@ -441,7 +445,7 @@ void CGUIWindowVideoFiles::OnUnAssignContent(int iItem)
   bool bCanceled;
   if (CGUIDialogYesNo::ShowAndGetInput(20375,20340,20341,20022,bCanceled))
   {
-    m_database.RemoveContentForPath(m_vecItems[iItem]->m_strPath,m_dlgProgress);
+    m_database.RemoveContentForPath(m_vecItems->Get(iItem)->m_strPath,m_dlgProgress);
     CUtil::DeleteVideoDatabaseDirectoryCache();
   }
   else
@@ -450,7 +454,7 @@ void CGUIWindowVideoFiles::OnUnAssignContent(int iItem)
     {
       SScraperInfo info;
       SScanSettings settings;
-      m_database.SetScraperForPath(m_vecItems[iItem]->m_strPath,info,settings);
+      m_database.SetScraperForPath(m_vecItems->Get(iItem)->m_strPath,info,settings);
     }
   }
 }
@@ -463,7 +467,7 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& 
   bool bScan=false;
   if (iFound == 0)
   {
-    m_database.GetScraperForPath(m_vecItems[iItem]->m_strPath,info, settings,iFound);
+    m_database.GetScraperForPath(m_vecItems->Get(iItem)->m_strPath,info, settings,iFound);
   }
   SScraperInfo info2 = info;
   SScanSettings settings2 = settings;
@@ -477,13 +481,13 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& 
     }
 
     m_database.Open();
-    m_database.SetScraperForPath(m_vecItems[iItem]->m_strPath,info2,settings2);
+    m_database.SetScraperForPath(m_vecItems->Get(iItem)->m_strPath,info2,settings2);
     m_database.Close();
 
     if (bScan)
     {
-      GetScraperForItem(m_vecItems[iItem],info2,settings2);
-      OnScan(m_vecItems[iItem]->m_strPath,info2,settings2);
+      GetScraperForItem(m_vecItems->Get(iItem),info2,settings2);
+      OnScan(m_vecItems->Get(iItem)->m_strPath,info2,settings2);
     }
   }
 }
@@ -538,16 +542,16 @@ void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)
 
 void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : NULL;
 
   CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (item)
   {
     // are we in the playlists location?
-    if (m_vecItems.IsVirtualDirectoryRoot())
+    if (m_vecItems->IsVirtualDirectoryRoot())
     {
       // get the usual shares, and anything for all media windows
-      CShare *share = CGUIDialogContextMenu::GetShare("video", item);
+      CMediaSource *share = CGUIDialogContextMenu::GetShare("video", item);
       CGUIDialogContextMenu::GetContextButtons("video", share, buttons);
       CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
       // add scan button somewhere here
@@ -631,7 +635,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       }
       if (!item->IsParentFolder())
       {
-        if ((m_vecItems.m_strPath.Equals("special://videoplaylists/")) || g_guiSettings.GetBool("filelists.allowfiledeletion"))
+        if ((m_vecItems->m_strPath.Equals("special://videoplaylists/")) || g_guiSettings.GetBool("filelists.allowfiledeletion"))
         { // video playlists or file operations are allowed
           if (!item->IsReadOnly())
           {
@@ -640,7 +644,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           }
         }
       }
-      if (m_vecItems.IsPluginFolder() && item->HasVideoInfoTag())
+      if (m_vecItems->IsPluginFolder() && item->HasVideoInfoTag())
         buttons.Add(CONTEXT_BUTTON_INFO,13346); // only movie information for now
     }
   }
@@ -649,7 +653,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     if (pScanDlg && pScanDlg->IsScanning())
       buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
   }
-  if (!m_vecItems.IsVirtualDirectoryRoot())
+  if (!m_vecItems->IsVirtualDirectoryRoot())
     buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
 
   CGUIWindowVideoBase::GetNonContextButtons(itemNumber, buttons);
@@ -657,10 +661,10 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
 
 bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
-  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
-  if ( m_vecItems.IsVirtualDirectoryRoot() && item)
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : NULL;
+  if ( m_vecItems->IsVirtualDirectoryRoot() && item)
   {
-    CShare *share = CGUIDialogContextMenu::GetShare("video", item);
+    CMediaSource *share = CGUIDialogContextMenu::GetShare("video", item);
     if (CGUIDialogContextMenu::OnContextButton("video", share, button))
     {
       Update("");
@@ -671,7 +675,7 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
   switch (button)
   {
   case CONTEXT_BUTTON_SWITCH_MEDIA:
-    CGUIDialogContextMenu::SwitchMedia("video", m_vecItems.m_strPath);
+    CGUIDialogContextMenu::SwitchMedia("video", m_vecItems->m_strPath);
     return true;
 
   case CONTEXT_BUTTON_SET_CONTENT:

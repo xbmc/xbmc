@@ -1,6 +1,6 @@
 #pragma once
 #include "IFile.h"
-#include "../lib/libcdio/cdio.h"
+#include "lib/libcdio/cdio.h"
 
 namespace XFILE
 {

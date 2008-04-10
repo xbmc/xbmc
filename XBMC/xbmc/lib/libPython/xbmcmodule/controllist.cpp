@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "../python/Python.h"
+#include "lib/libPython/python/Python.h"
 #include "GUIListContainer.h"
 #include "GUIFontManager.h"
 #include "control.h"

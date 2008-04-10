@@ -5,6 +5,9 @@
 #include "GUIViewControl.h"
 #include "PictureThumbLoader.h"
 
+class CFileItem;
+class CFileItemList;
+
 class CGUIDialogFileBrowser : public CGUIDialog, public IBackgroundLoaderObserver
 {
 public:
@@ -18,14 +21,14 @@ public:
   bool IsConfirmed() { return m_bConfirmed; };
   void SetHeading(const CStdString &heading);
 
-  static bool ShowAndGetDirectory(const VECSHARES &shares, const CStdString &heading, CStdString &path, bool bWriteOnly=false);
-  static bool ShowAndGetFile(const VECSHARES &shares, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs = false, bool useFileDirectories = false);
+  static bool ShowAndGetDirectory(const VECSOURCES &shares, const CStdString &heading, CStdString &path, bool bWriteOnly=false);
+  static bool ShowAndGetFile(const VECSOURCES &shares, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs = false, bool useFileDirectories = false);
   static bool ShowAndGetFile(const CStdString &directory, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs = false, bool useFileDirectories = false);
-  static bool ShowAndGetShare(CStdString &path, bool allowNetworkShares, VECSHARES* additionalShare = NULL, const CStdString& strType="");
-  static bool ShowAndGetImage(const VECSHARES &shares, const CStdString &heading, CStdString &path);
-  static bool ShowAndGetImage(const CFileItemList &items, VECSHARES &shares, const CStdString &heading, CStdString &path);
+  static bool ShowAndGetSource(CStdString &path, bool allowNetworkShares, VECSOURCES* additionalShare = NULL, const CStdString& strType="");
+  static bool ShowAndGetImage(const VECSOURCES &shares, const CStdString &heading, CStdString &path);
+  static bool ShowAndGetImage(const CFileItemList &items, VECSOURCES &shares, const CStdString &heading, CStdString &path);
 
-  void SetShares(const VECSHARES &shares);
+  void SetSources(const VECSOURCES &shares);
 
   virtual void OnItemLoaded(CFileItem *item) {};
 
@@ -46,10 +49,10 @@ protected:
   void OnEditMediaSource(CFileItem* pItem);
   CGUIControl *GetFirstFocusableControl(int id);
 
-  VECSHARES m_shares;
+  VECSOURCES m_shares;
   DIRECTORY::CVirtualDirectory m_rootDir;
-  CFileItemList m_vecItems;
-  CFileItem m_Directory;
+  CFileItemList* m_vecItems;
+  CFileItem* m_Directory;
   CStdString m_strParentPath;
   CStdString m_selectedPath;
   CDirectoryHistory m_history;

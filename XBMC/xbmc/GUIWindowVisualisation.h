@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GUIWindow.h"
+#include "MusicInfoTag.h"
 
 class CGUIWindowVisualisation :
       public CGUIWindow

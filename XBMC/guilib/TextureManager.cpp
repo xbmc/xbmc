@@ -3,9 +3,9 @@
 #include "AnimatedGif.h"
 #include "PackedTexture.h"
 #include "GraphicContext.h"
-#include "../xbmc/utils/SingleLock.h"
-#include "../xbmc/StringUtils.h"
-#include "../xbmc/utils/CharsetConverter.h"
+#include "utils/SingleLock.h"
+#include "StringUtils.h"
+#include "utils/CharsetConverter.h"
 
 #ifdef HAS_XBOX_D3D
 #include <XGraphics.h>

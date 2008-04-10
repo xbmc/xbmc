@@ -1,11 +1,15 @@
 #include "stdafx.h"
 #include "dialog.h"
-#include "../python/Python.h"
+#include "lib/libPython/python/Python.h"
 #include "pyutil.h"
-#include "../../../Application.h"
-#include "../xbmc/GUIDialogFileBrowser.h"
-#include "../xbmc/GUIDialogNumeric.h"
-#include "../xbmc/GUIDialogGamepad.h"
+#include "GUIDialogFileBrowser.h"
+#include "GUIDialogNumeric.h"
+#include "GUIDialogGamepad.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
+#include "GUIDialogProgress.h"
+#include "GUIDialogYesNo.h"
+#include "GUIDialogSelect.h"
 
 using namespace std;
 
@@ -131,7 +135,7 @@ namespace PYXBMC
       if (unicodeLine[i] && !PyGetUnicodeString(utf8Line[i], unicodeLine[i], i+1))
         return NULL;
     }
-    VECSHARES *shares = g_settings.GetSharesFromType(utf8Line[1]);
+    VECSOURCES *shares = g_settings.GetSourcesFromType(utf8Line[1]);
     if (!shares) return NULL;
 
     if (useFileDirectories && !utf8Line[2].size() == 0) 

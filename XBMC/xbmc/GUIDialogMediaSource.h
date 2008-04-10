@@ -1,7 +1,9 @@
 #pragma once
 #include "GUIDialog.h"
-#include "utils/IMDB.h"
 #include "VideoInfoScanner.h"
+
+class CFileItemList;
+class CMediaSource;
 
 class CGUIDialogMediaSource :
       public CGUIDialog
@@ -13,12 +15,12 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void OnWindowLoaded();
   static bool ShowAndAddMediaSource(const CStdString &type);
-  static bool ShowAndEditMediaSource(const CStdString &type, const CShare &share);
+  static bool ShowAndEditMediaSource(const CStdString &type, const CMediaSource &share);
   static bool ShowAndEditMediaSource(const CStdString &type, const CStdString &share);
 
   bool IsConfirmed() const { return m_confirmed; };
 
-  void SetShare(const CShare &share);
+  void SetShare(const CMediaSource &share);
   void SetTypeOfMedia(const CStdString &type, bool editNotAdd = false);
 protected:
   void OnPathBrowse(int item);
@@ -36,7 +38,7 @@ protected:
 
   CStdString m_type;
   CStdString m_name;
-  CFileItemList m_paths;
+  CFileItemList* m_paths;
   bool m_confirmed;
   SScraperInfo m_info;
   bool m_bRunScan;

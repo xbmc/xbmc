@@ -27,12 +27,14 @@
 #ifdef HAS_UPNP
 #include "UPnPDirectory.h"
 #endif
-#include "../xbox/Network.h"
+#include "xbox/Network.h"
 #include "ZipDirectory.h"
 #include "RarDirectory.h"
 #include "DirectoryTuxBox.h"
 #include "HDHomeRun.h"
 #include "CMythDirectory.h"
+#include "FileItem.h"
+#include "URL.h"
 
 using namespace DIRECTORY;
 

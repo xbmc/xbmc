@@ -1,5 +1,5 @@
 #pragma once
-#include "../guilib/GUIDialog.h"
+#include "GUIDialog.h"
 
 class CGUIDialogBoxBase :
       public CGUIDialog

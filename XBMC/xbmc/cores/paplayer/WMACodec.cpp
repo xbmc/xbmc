@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #ifdef HAS_WMA_CODEC
 #include "WMACodec.h"
-#include "../../Util.h"
 
 WMACodec::WMACodec()
 {

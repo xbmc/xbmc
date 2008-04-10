@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "../AutoPtrHandle.h"
+#include "AutoPtrHandle.h"
 
 #include <map>
 

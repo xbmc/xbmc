@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "DirectoryHistory.h"
-#include "../Util.h"
+#include "Util.h"
 
 using namespace std;
 

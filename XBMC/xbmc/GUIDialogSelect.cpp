@@ -21,8 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIDialogSelect.h"
-#include "Application.h"
-#include "SortFileItem.h"
+#include "FileItem.h"
 
 #define CONTROL_HEADING       1
 #define CONTROL_LIST          3
@@ -33,11 +32,14 @@ CGUIDialogSelect::CGUIDialogSelect(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_SELECT, "DialogSelect.xml")
 {
   m_bButtonEnabled = false;
-  m_vecList = &m_vecListInternal;
+  m_vecListInternal = new CFileItemList;
+  m_vecList = m_vecListInternal;
 }
 
 CGUIDialogSelect::~CGUIDialogSelect(void)
-{}
+{
+  delete m_vecListInternal;
+}
 
 bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 {
@@ -91,7 +93,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
           m_iSelected = msg.GetParam1();
           if(m_iSelected >= 0 && m_iSelected < (int)m_vecList->Size())
           {
-            m_selectedItem = *((*m_vecList)[m_iSelected]);
+            *m_selectedItem = *((*m_vecList)[m_iSelected]);
             Close();
           }
           else
@@ -119,15 +121,15 @@ void CGUIDialogSelect::Close(bool forceClose)
 void CGUIDialogSelect::Reset()
 {
   m_bButtonEnabled = false;
-  m_vecListInternal.Clear();
-  m_vecList = &m_vecListInternal;
+  m_vecListInternal->Clear();
+  m_vecList = m_vecListInternal;
 }
 
 void CGUIDialogSelect::Add(const CStdString& strLabel)
 {
   //CGUIListItem* pItem = new CGUIListItem(strLabel);
   CFileItem* pItem = new CFileItem(strLabel);
-  m_vecListInternal.Add(pItem);
+  m_vecListInternal->Add(pItem);
 }
 
 void CGUIDialogSelect::Add(const CFileItemList& items)
@@ -138,7 +140,7 @@ void CGUIDialogSelect::Add(const CFileItemList& items)
 
 void CGUIDialogSelect::Add(const CFileItem* pItem)
 {
-  m_vecListInternal.Add(new CFileItem(*pItem));
+  m_vecListInternal->Add(new CFileItem(*pItem));
 }
 
 void CGUIDialogSelect::SetItems(CFileItemList* pList)
@@ -153,12 +155,12 @@ int CGUIDialogSelect::GetSelectedLabel() const
 
 const CFileItem& CGUIDialogSelect::GetSelectedItem()
 {
-  return m_selectedItem;
+  return *m_selectedItem;
 }
 
 const CStdString& CGUIDialogSelect::GetSelectedLabelText()
 {
-  return m_selectedItem.GetLabel();
+  return m_selectedItem->GetLabel();
 }
 
 void CGUIDialogSelect::EnableButton(bool bOnOff)

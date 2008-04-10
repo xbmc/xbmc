@@ -1,5 +1,5 @@
 #pragma once
-#include "../../DynamicDll.h"
+#include "DynamicDll.h"
 #include "dec_if.h"
 
 class DllMadCodecInterface
