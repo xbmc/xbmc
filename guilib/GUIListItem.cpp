@@ -2,7 +2,7 @@
 #include "GUIListItem.h"
 #include "guiImage.h"
 #include "GUIListItemLayout.h"
-#include "../xbmc/utils/Archive.h"
+#include "utils/Archive.h"
 
 CGUIListItem::CGUIListItem(const CGUIListItem& item)
 {

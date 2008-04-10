@@ -4,10 +4,7 @@
 
 namespace PLAYLIST
 {
-class CPlayList
-{
-public:
-class CPlayListItem : public CFileItem
+  class CPlayListItem : public CFileItem
   {
   public:
     CPlayListItem();
@@ -46,6 +43,9 @@ class CPlayListItem : public CFileItem
     bool m_bUnPlayable;
   };
 
+class CPlayList
+{
+public:
   CPlayList(void);
   virtual ~CPlayList(void);
   virtual bool Load(const CStdString& strFileName);
@@ -72,8 +72,8 @@ class CPlayListItem : public CFileItem
   int size() const;
   int RemoveDVDItems();
 
-  const CPlayList::CPlayListItem& operator[] (int iItem) const;
-  CPlayList::CPlayListItem& operator[] (int iItem);
+  const CPlayListItem& operator[] (int iItem) const;
+  CPlayListItem& operator[] (int iItem);
 
   // why are these virtual functions? there is no derived child class
   void Shuffle(int iPosition = 0);

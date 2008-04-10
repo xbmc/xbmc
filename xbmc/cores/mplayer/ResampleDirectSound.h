@@ -26,7 +26,7 @@
 
 #include "IDirectSoundRenderer.h"
 #include "IAudioCallback.h"
-#include "../ssrc.h"
+#include "cores/ssrc.h"
 
 class CResampleDirectSound : public IDirectSoundRenderer
 {

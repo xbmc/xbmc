@@ -20,5 +20,5 @@ protected:
 
   bool m_bViewOutput;
   int m_scriptSize;
-  VECSHARES m_shares;
+  VECSOURCES m_shares;
 };

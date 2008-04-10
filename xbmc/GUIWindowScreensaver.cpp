@@ -21,12 +21,13 @@
 
 #include "stdafx.h"
 #include "GUIWindowScreensaver.h"
-#include "Util.h"
 #ifdef HAS_SCREENSAVER
 #include "screensavers/ScreenSaverFactory.h"
 #endif
 #include "Application.h"
 #include "GUIPassword.h"
+#include "GUISettings.h"
+#include "GUIWindowManager.h"
 
 CGUIWindowScreensaver::CGUIWindowScreensaver(void)
     : CGUIWindow(WINDOW_SCREENSAVER, "")

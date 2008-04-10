@@ -1,8 +1,10 @@
 
 #include "stdafx.h"
 #include "CDDADirectory.h"
-#include "../DetectDVDType.h"
-#include "../MusicDatabase.h"
+#include "DetectDVDType.h"
+#include "MusicDatabase.h"
+#include "FileItem.h"
+#include "FileSystem/File.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

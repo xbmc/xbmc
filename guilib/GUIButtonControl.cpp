@@ -2,9 +2,8 @@
 #include "GUIButtonControl.h"
 #include "GUIWindowManager.h"
 #include "GUIDialog.h"
-#include "../xbmc/utils/CharsetConverter.h"
+#include "utils/CharsetConverter.h"
 #include "GUIFontManager.h"
-#include "../xbmc/utils/GUIInfoManager.h"
 
 using namespace std;
 

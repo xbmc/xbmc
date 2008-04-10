@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "FatXDevice.h"
-#include "../../xbox/Undocumented.h"
+#include "xbox/Undocumented.h"
 
 typedef STRING OBJECT_STRING;
 typedef PSTRING POBJECT_STRING;

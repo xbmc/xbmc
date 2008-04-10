@@ -3,7 +3,7 @@
 #include "GUIListItem.h"
 
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-#include "../xbmc/utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 //#endif
 
 CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime)

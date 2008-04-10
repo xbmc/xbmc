@@ -17,7 +17,7 @@
 #include "XHandle.h"
 #include "XFileUtils.h"
 #endif
-#include "../utils/CriticalSection.h"
+#include "utils/CriticalSection.h"
 
 #ifndef PRId64
 #ifdef _MSC_VER

@@ -1,7 +1,7 @@
 
-#include "../stdafx.h"
-#include "./IOSDOption.h"
-#include "./IExecutor.h"
+#include "stdafx.h"
+#include "IOSDOption.h"
+#include "IExecutor.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

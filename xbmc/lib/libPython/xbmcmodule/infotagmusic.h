@@ -1,4 +1,5 @@
-#include "../python/Python.h"
+#include "lib/libPython/python/Python.h"
+#include "MusicInfotag.h"
 
 #pragma once
 

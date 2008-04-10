@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "OSDOptionFloatRange.h"
 #include "GUIFontManager.h"
 

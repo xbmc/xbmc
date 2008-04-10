@@ -28,7 +28,11 @@
 #include "GUIDialogLockSettings.h"
 #include "GUIDialogProfileSettings.h"
 #include "Util.h"
+#include "URL.h"
 #include "Settings.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
+#include "FileItem.h"
 
 CGUIPassword g_passwordManager;
 
@@ -47,7 +51,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
   // \param pItem The share folder item to access
   // \param strType The type of share being accessed, e.g. "music", "video", etc. See CSettings::UpdateSources()
   // \return If access is granted, returns \e true
-  if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE)
+  if (g_settings.m_vecProfiles[0].getLockMode() == CMediaSource::LOCK_MODE_EVERYONE)
     return true;
 
   while (pItem->m_iHasLock > 1)
@@ -80,13 +84,13 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
 
       switch (iMode)
       {
-      case LOCK_MODE_NUMERIC:
+      case CMediaSource::LOCK_MODE_NUMERIC:
         iResult = CGUIDialogNumeric::ShowAndVerifyPassword(strLockCode, strHeading, iRetries);
         break;
-      case LOCK_MODE_GAMEPAD:
+      case CMediaSource::LOCK_MODE_GAMEPAD:
         iResult = CGUIDialogGamepad::ShowAndVerifyPassword(strLockCode, strHeading, iRetries);
         break;
-      case LOCK_MODE_QWERTY:
+      case CMediaSource::LOCK_MODE_QWERTY:
         iResult = CGUIDialogKeyboard::ShowAndVerifyPassword(strLockCode, strHeading, iRetries);
         break;
       default:
@@ -173,13 +177,13 @@ bool CGUIPassword::CheckStartUpLock()
   {
     switch (g_settings.m_vecProfiles[0].getLockMode())
     { // Prompt user for mastercode
-      case LOCK_MODE_NUMERIC:
+      case CMediaSource::LOCK_MODE_NUMERIC:
         iVerifyPasswordResult = CGUIDialogNumeric::ShowAndVerifyPassword(strPassword, strHeader, 0);
         break;
-      case LOCK_MODE_GAMEPAD:
+      case CMediaSource::LOCK_MODE_GAMEPAD:
         iVerifyPasswordResult = CGUIDialogGamepad::ShowAndVerifyPassword(strPassword, strHeader, 0);
         break;
-      case LOCK_MODE_QWERTY:
+      case CMediaSource::LOCK_MODE_QWERTY:
         iVerifyPasswordResult = CGUIDialogKeyboard::ShowAndVerifyPassword(strPassword, strHeader, 0);
         break;
     }
@@ -247,13 +251,13 @@ bool CGUIPassword::IsProfileLockUnlocked(int iProfile, bool& bCanceled)
     return IsMasterLockUnlocked(true,bCanceled);
   else
   {
-    if (g_settings.m_vecProfiles[iProfileToCheck].getDate().IsEmpty() && (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || g_settings.m_vecProfiles[iProfileToCheck].getLockMode() == LOCK_MODE_EVERYONE))
+    if (g_settings.m_vecProfiles[iProfileToCheck].getDate().IsEmpty() && (g_settings.m_vecProfiles[0].getLockMode() == CMediaSource::LOCK_MODE_EVERYONE || g_settings.m_vecProfiles[iProfileToCheck].getLockMode() == CMediaSource::LOCK_MODE_EVERYONE))
     {
       if (CGUIDialogProfileSettings::ShowForProfile(iProfileToCheck,false))
         return true;
     }
     else
-       if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+       if (g_settings.m_vecProfiles[0].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE)
         return CheckLock(g_settings.m_vecProfiles[iProfileToCheck].getLockMode(),g_settings.m_vecProfiles[iProfileToCheck].getLockCode(),20095,bCanceled);
   }
 
@@ -271,11 +275,11 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser, bool& bCanceled)
   bCanceled = false;
   if (iMasterLockRetriesLeft == -1)
     iMasterLockRetriesLeft = g_guiSettings.GetInt("masterlock.maxretries");
-  if ((LOCK_MODE_EVERYONE < g_settings.m_vecProfiles[0].getLockMode() && !bMasterUser) && !bPromptUser)
+  if ((CMediaSource::LOCK_MODE_EVERYONE < g_settings.m_vecProfiles[0].getLockMode() && !bMasterUser) && !bPromptUser)
     // not unlocked, but calling code doesn't want to prompt user
     return false;
 
-  if (g_passwordManager.bMasterUser || g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE)
+  if (g_passwordManager.bMasterUser || g_settings.m_vecProfiles[0].getLockMode() == CMediaSource::LOCK_MODE_EVERYONE)
     return true;
 
   if (iMasterLockRetriesLeft == 0)
@@ -290,13 +294,13 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser, bool& bCanceled)
   CStdString strPassword = g_settings.m_vecProfiles[0].getLockCode();
   switch (g_settings.m_vecProfiles[0].getLockMode())
   {
-  case LOCK_MODE_NUMERIC:
+  case CMediaSource::LOCK_MODE_NUMERIC:
     iVerifyPasswordResult = CGUIDialogNumeric::ShowAndVerifyPassword(strPassword, strHeading, 0);
     break;
-  case LOCK_MODE_GAMEPAD:
+  case CMediaSource::LOCK_MODE_GAMEPAD:
     iVerifyPasswordResult = CGUIDialogGamepad::ShowAndVerifyPassword(strPassword, strHeading, 0);
     break;
-  case LOCK_MODE_QWERTY:
+  case CMediaSource::LOCK_MODE_QWERTY:
     iVerifyPasswordResult = CGUIDialogKeyboard::ShowAndVerifyPassword(strPassword, strHeading, 0);
     break;
   default:   // must not be supported, treat as unlocked
@@ -314,7 +318,7 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser, bool& bCanceled)
 
   // user successfully entered mastercode
   UpdateMasterLockRetryCount(true);
-  if (g_guiSettings.GetBool("masterlock.automastermode") && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+  if (g_guiSettings.GetBool("masterlock.automastermode") && g_settings.m_vecProfiles[0].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE)
   {
       LockSources(false);
       bMasterUser = true;
@@ -380,20 +384,20 @@ bool CGUIPassword::CheckLock(int btnType, const CStdString& strPassword, int iHe
 bool CGUIPassword::CheckLock(int btnType, const CStdString& strPassword, int iHeading, bool& bCanceled)
 {
   bCanceled = false;
-  if (btnType == 0 || strPassword.Equals("-") || g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser)
+  if (btnType == 0 || strPassword.Equals("-") || g_settings.m_vecProfiles[0].getLockMode() == CMediaSource::LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser)
     return true;
 
   int iVerifyPasswordResult = -1;
   CStdString strHeading = g_localizeStrings.Get(iHeading);
   switch (btnType)
   {
-  case LOCK_MODE_NUMERIC:
+  case CMediaSource::LOCK_MODE_NUMERIC:
     iVerifyPasswordResult = CGUIDialogNumeric::ShowAndVerifyPassword(const_cast<CStdString&>(strPassword), strHeading, 0);
     break;
-  case LOCK_MODE_GAMEPAD:
+  case CMediaSource::LOCK_MODE_GAMEPAD:
     iVerifyPasswordResult = CGUIDialogGamepad::ShowAndVerifyPassword(const_cast<CStdString&>(strPassword), strHeading, 0);
     break;
-  case LOCK_MODE_QWERTY:
+  case CMediaSource::LOCK_MODE_QWERTY:
     iVerifyPasswordResult = CGUIDialogKeyboard::ShowAndVerifyPassword(const_cast<CStdString&>(strPassword), strHeading, 0);
     break;
   default:   // must not be supported, treat as unlocked
@@ -504,9 +508,9 @@ CStdString CGUIPassword::GetSMBAuthFilename(const CStdString& strAuth)
 
 bool CGUIPassword::LockSource(const CStdString& strType, const CStdString& strName, bool bState)
 {
-  VECSHARES* pShares = g_settings.GetSharesFromType(strType);
+  VECSOURCES* pShares = g_settings.GetSourcesFromType(strType);
   bool bResult = false;
-  for (IVECSHARES it=pShares->begin();it != pShares->end();++it)
+  for (IVECSOURCES it=pShares->begin();it != pShares->end();++it)
   {
     if (it->strName == strName)
     {
@@ -530,9 +534,9 @@ void CGUIPassword::LockSources(bool lock)
   const char* strType[5] = {"programs","music","video","pictures","files"};
   for (int i=0;i<5;++i)
   {
-    VECSHARES *shares = g_settings.GetSharesFromType(strType[i]);
-    for (IVECSHARES it=shares->begin();it != shares->end();++it)
-      if (it->m_iLockMode != LOCK_MODE_EVERYONE)
+    VECSOURCES *shares = g_settings.GetSourcesFromType(strType[i]);
+    for (IVECSOURCES it=shares->begin();it != shares->end();++it)
+      if (it->m_iLockMode != CMediaSource::LOCK_MODE_EVERYONE)
         it->m_iHasLock = lock ? 2 : 1;
   }
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
@@ -545,12 +549,12 @@ void CGUIPassword::RemoveSourceLocks()
   const char* strType[5] = {"programs","music","video","pictures","files"};
   for (int i=0;i<5;++i)
   {
-    VECSHARES *shares = g_settings.GetSharesFromType(strType[i]);
-    for (IVECSHARES it=shares->begin();it != shares->end();++it)
-      if (it->m_iLockMode != LOCK_MODE_EVERYONE) // remove old info
+    VECSOURCES *shares = g_settings.GetSourcesFromType(strType[i]);
+    for (IVECSOURCES it=shares->begin();it != shares->end();++it)
+      if (it->m_iLockMode != CMediaSource::LOCK_MODE_EVERYONE) // remove old info
       {
         it->m_iHasLock = 0;
-        it->m_iLockMode = LOCK_MODE_EVERYONE;
+        it->m_iLockMode = CMediaSource::LOCK_MODE_EVERYONE;
         g_settings.UpdateSource(strType[i],it->strName,"lockmode","0"); // removes locks from xml
       }
   }
@@ -559,17 +563,17 @@ void CGUIPassword::RemoveSourceLocks()
   m_gWindowManager.SendThreadMessage(msg);
 }
 
-bool CGUIPassword::IsDatabasePathUnlocked(CStdString& strPath, VECSHARES& vecShares)
+bool CGUIPassword::IsDatabasePathUnlocked(CStdString& strPath, VECSOURCES& VECSOURCES)
 {
-  if (g_passwordManager.bMasterUser || g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE)
+  if (g_passwordManager.bMasterUser || g_settings.m_vecProfiles[0].getLockMode() == CMediaSource::LOCK_MODE_EVERYONE)
     return true;
 
   // try to find the best matching source
   bool bName = false;
-  int iIndex = CUtil::GetMatchingShare(strPath, vecShares, bName);
+  int iIndex = CUtil::GetMatchingSource(strPath, VECSOURCES, bName);
 
   if (iIndex > -1)
-    if (vecShares[iIndex].m_iHasLock < 2)
+    if (VECSOURCES[iIndex].m_iHasLock < 2)
       return true;
 
   return false;

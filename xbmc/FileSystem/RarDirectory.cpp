@@ -1,8 +1,11 @@
 
 #include "stdafx.h"
 #include "RarDirectory.h"
-#include "../utils/log.h"
-#include "../Util.h"
+#include "RarManager.h"
+#include "utils/log.h"
+#include "Util.h"
+#include "URL.h"
+#include "FileItem.h"
 
 namespace DIRECTORY
 {
@@ -20,7 +23,7 @@ namespace DIRECTORY
 
     /* if this isn't a proper archive path, assume it's the path to a archive file */
     if( !strPathOrig.Left(6).Equals("rar://") )
-      CUtil::CreateRarPath(strPath, strPathOrig, "");
+      CUtil::CreateArchivePath(strPath, "rar", strPathOrig, "");
     else
       strPath = strPathOrig;
 

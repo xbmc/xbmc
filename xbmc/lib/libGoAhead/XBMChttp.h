@@ -1,6 +1,7 @@
-#include "../../utils/UdpClient.h"
-
 #pragma once
+
+#include "utils/UdpClient.h"
+#include "Key.h"
 
 /******************************** Description *********************************/
 
@@ -54,7 +55,7 @@ public:
   int xbmcGetCurrentlyPlaying(int numParas, CStdString paras[]); 
   int xbmcGetXBEID(int numParas, CStdString paras[]); 
   int xbmcGetXBETitle(int numParas, CStdString paras[]); 
-  int xbmcGetShares(int numParas, CStdString paras[]);
+  int xbmcGetSources(int numParas, CStdString paras[]);
   int xbmcGetMediaLocation(int numParas, CStdString paras[]);
   int xbmcGetDirectory(int numParas, CStdString paras[]);
   int xbmcGetTagFromFilename(int numParas, CStdString paras[]); 

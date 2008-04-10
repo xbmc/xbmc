@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "control.h"
 #include "pyutil.h"
-#include "../../../utils/GUIInfoManager.h"
-#include "../guilib/GuiControlFactory.h"
+#include "utils/GUIInfoManager.h"
+#include "GuiControlFactory.h"
+#include "tinyXML/tinyxml.h"
 
 using namespace std;
 

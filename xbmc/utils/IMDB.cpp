@@ -4,12 +4,15 @@
 
 #include "stdafx.h"
 #include "IMDB.h"
-#include "../Util.h"
+#include "Util.h"
 #include "HTMLUtil.h"
 #include "XMLUtils.h"
 #include "RegExp.h"
 #include "ScraperParser.h"
 #include "NfoFile.h"
+#include "GUIDialogProgress.h"
+#include "Settings.h"
+#include "FileSystem/Directory.h"
 
 using namespace HTML;
 

@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "DVDDemuxVobsub.h"
-#include "../DVDInputStreams/DVDFactoryInputStream.h"
-#include "../DVDInputStreams/DVDInputStream.h"
-#include "../DVDStreamInfo.h"
-#include "../DVDCodecs/DVDCodecs.h"
-#include "../DVDDemuxers/DVDDemuxFFmpeg.h"
-#include "../DVDDemuxers/DVDDemuxUtils.h"
-#include "../DVDClock.h"
-#include "../DVDSubtitles/DVDSubtitleStream.h"
+#include "DVDInputStreams/DVDFactoryInputStream.h"
+#include "DVDInputStreams/DVDInputStream.h"
+#include "DVDStreamInfo.h"
+#include "DVDCodecs/DVDCodecs.h"
+#include "DVDDemuxers/DVDDemuxFFmpeg.h"
+#include "DVDDemuxers/DVDDemuxUtils.h"
+#include "DVDClock.h"
+#include "DVDSubtitles/DVDSubtitleStream.h"
 
 using namespace std;
 

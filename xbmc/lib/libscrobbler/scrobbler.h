@@ -20,6 +20,11 @@
 #ifndef _SCROBBLER_H
 #define _SCROBBLER_H
 
+namespace MUSIC_INFO
+{
+  class CMusicInfoTag;
+}
+
 /**
   An enumeration of the status messages so that clients can
   do things with them, and not have to parse the text

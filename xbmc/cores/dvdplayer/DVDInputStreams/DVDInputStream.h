@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <string>
+
 enum DVDStreamType
 {
   DVDSTREAM_TYPE_NONE   = -1,

@@ -23,6 +23,8 @@
 #include "MusicInfoTagLoaderCDDA.h"
 #include "FileSystem/cddb.h"
 #include "DetectDVDType.h"
+#include "MusicInfoTag.h"
+#include "Settings.h"
 
 using namespace MEDIA_DETECT;
 using namespace MUSIC_INFO;

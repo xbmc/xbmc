@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "GYMCodec.h"
-#include "../DllLoader/DllLoader.h"
+#include "cores/DllLoader/DllLoader.h"
 
 GYMCodec::GYMCodec()
 {

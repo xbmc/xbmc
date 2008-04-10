@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "AdplugCodec.h"
-#include "../../Util.h"
 
 AdplugCodec::AdplugCodec()
 {

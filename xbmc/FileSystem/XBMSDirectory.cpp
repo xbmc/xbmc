@@ -1,17 +1,19 @@
 
 #include "stdafx.h"
 #include "XBMSDirectory.h"
-#include "../Util.h"
+#include "Util.h"
 #include "DirectoryCache.h"
+#include "URL.h"
+#include "FileItem.h"
 
 using namespace DIRECTORY;
 
 extern "C"
 {
-#include "../lib/libXBMS/ccincludes.h"
- #include "../lib/libXBMS/ccbuffer.h"
- #include "../lib/libXBMS/ccxclient.h"
- #include "../lib/libXBMS/ccxmltrans.h"
+#include "lib/libXBMS/ccincludes.h"
+ #include "lib/libXBMS/ccbuffer.h"
+ #include "lib/libXBMS/ccxclient.h"
+ #include "lib/libXBMS/ccxmltrans.h"
 }
 
 

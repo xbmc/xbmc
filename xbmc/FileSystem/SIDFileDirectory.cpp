@@ -1,9 +1,10 @@
 
-#include "stdafx.h"
-#include "../Util.h"
+#include "Util.h"
 #include "SIDFileDirectory.h"
-#include "../MusicInfoLoader.h"
+#include "MusicInfoLoader.h"
 #include "DirectoryCache.h"
+#include "URL.h"
+#include "FileItem.h"
 
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;

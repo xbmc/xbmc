@@ -1,7 +1,5 @@
 #include "include.h"
 #include "GUISpinControlEx.h"
-#include "../xbmc/Util.h"
-
 
 CGUISpinControlEx::CGUISpinControlEx(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float spinWidth, float spinHeight, const CLabelInfo& spinInfo, const CImage &textureFocus, const CImage &textureNoFocus, const CImage& textureUp, const CImage& textureDown, const CImage& textureUpFocus, const CImage& textureDownFocus, const CLabelInfo& labelInfo, int iType)
     : CGUISpinControl(dwParentID, dwControlId, posX, posY, spinWidth, spinHeight, textureUp, textureDown, textureUpFocus, textureDownFocus, spinInfo, iType)

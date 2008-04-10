@@ -22,8 +22,6 @@
 #include "stdafx.h"
 #include "GUIDialogVolumeBar.h"
 #include "GUISliderControl.h"
-#include "Application.h"
-#include "utils/GUIInfoManager.h"
 
 #define VOLUME_BAR_DISPLAY_TIME 1000L
 

@@ -1,6 +1,6 @@
 #pragma once
-#include "../../utils/thread.h"
-#include "../../utils/lcd.h"
+#include "utils/thread.h"
+#include "utils/lcd.h"
 #include "xenium.h"
 
 #define MAX_ROWS 20

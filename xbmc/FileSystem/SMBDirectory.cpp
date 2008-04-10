@@ -11,11 +11,15 @@
 
 #include "stdafx.h"
 #include "SMBDirectory.h"
-#include "../Util.h"
+#include "Util.h"
 #include "DirectoryCache.h"
 #include "LocalizeStrings.h"
-#include "../GUIPassword.h"
-#include "../lib/libsmb/xbLibSmb.h"
+#include "GUIPassword.h"
+#include "lib/libsmb/xbLibSmb.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
+#include "GUISettings.h"
+#include "FileItem.h"
 
 using namespace DIRECTORY;
 

@@ -3,7 +3,7 @@
 #include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
 #include "TextureManager.h"
-#include "../xbmc/Util.h"
+#include "Settings.h"
 #include "GuiControlFactory.h"
 #include "GUIControlGroup.h"
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
@@ -12,9 +12,9 @@
 #endif
 
 #include "SkinInfo.h"
-#include "../xbmc/utils/GUIInfoManager.h"
-#include "../xbmc/utils/SingleLock.h"
-#include "../xbmc/ButtonTranslator.h"
+#include "utils/GUIInfoManager.h"
+#include "utils/SingleLock.h"
+#include "ButtonTranslator.h"
 #include "XMLUtils.h"
 
 using namespace std;

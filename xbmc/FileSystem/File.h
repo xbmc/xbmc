@@ -10,6 +10,9 @@
 #endif // _MSC_VER > 1000
 
 #include "IFile.h"
+#include "StdString.h"
+
+class CURL;
 
 namespace XFILE
 {
@@ -102,7 +105,7 @@ public:
   CFileStream(int backsize = 0);
   ~CFileStream();
 
-  bool Open(const CStdString& filename)  { return Open(CURL(filename)); }
+  bool Open(const CStdString& filename);
   bool Open(const CURL& filename);
   void Close();
 

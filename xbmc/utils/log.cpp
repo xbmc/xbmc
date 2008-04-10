@@ -5,8 +5,8 @@
 #include "CriticalSection.h"
 #include "SingleLock.h"
 #include "StdString.h"
-#include "../Settings.h"
-#include "../Util.h"
+#include "Settings.h"
+#include "Util.h"
 
 FILE* CLog::fd = NULL;
 

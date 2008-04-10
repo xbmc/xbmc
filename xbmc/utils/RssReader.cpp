@@ -5,9 +5,11 @@
 #include "stdafx.h"
 #include "RssReader.h"
 #include "HTTP.h"
-#include "../utils/HTMLUtil.h"
-#include "../Util.h"
-#include "../xbox/network.h"
+#include "utils/HTMLUtil.h"
+#include "xbox/network.h"
+#include "GUISettings.h"
+#include "URL.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace XFILE;

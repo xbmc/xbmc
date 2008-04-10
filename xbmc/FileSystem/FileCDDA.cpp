@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "FileCDDA.h"
 #include <sys/stat.h>
-#include "../Util.h"
-#include "../lib/libcdio/Util.h"
-#include "../DetectDVDType.h"
-
+#include "Util.h"
+#include "lib/libcdio/Util.h"
+#include "DetectDVDType.h"
+#include "URL.h"
 
 using namespace MEDIA_DETECT;
 using namespace XFILE;

@@ -7,7 +7,7 @@
 #define GUILIB_KEY
 
 #pragma once
-#include "../xbmc/XBIRRemote.h"
+#include "XBIRRemote.h"
 
 // Analogue - don't change order
 #define KEY_BUTTON_A                        256

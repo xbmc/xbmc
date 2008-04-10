@@ -1,7 +1,7 @@
 #ifndef VOICECOMMUNICATOR_H
 #define VOICECOMMUNICATOR_H
 
-#include "../lib/libSpeex/Speex.h"
+#include "lib/libSpeex/Speex.h"
 
 class CVoiceManager;
 

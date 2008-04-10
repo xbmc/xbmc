@@ -21,7 +21,8 @@
 
 #include "stdafx.h"
 #include "DNSNameCache.h"
-
+#include "Settings.h"
+#include "GUISettings.h"
 
 CDNSNameCache g_DNSCache;
 

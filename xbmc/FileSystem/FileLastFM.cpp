@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "FileLastFM.h"
-#include "../Application.h"
 
 namespace XFILE
 {

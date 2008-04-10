@@ -31,5 +31,5 @@ protected:
   bool MoveCurrentPlayListItem(int iItem, int iAction, bool bUpdate = true);
 
   int m_movingFrom;
-  VECSHARES m_shares;
+  VECSOURCES m_shares;
 };

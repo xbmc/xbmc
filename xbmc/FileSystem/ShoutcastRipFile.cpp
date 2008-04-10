@@ -1,7 +1,7 @@
 
-#include "stdafx.h"
 #include "ShoutcastRipFile.h"
-#include "../Id3Tag.h"
+#include "Id3Tag.h"
+#include "GUISettings.h"
 
 using namespace MUSIC_INFO;
 
@@ -11,7 +11,7 @@ using namespace MUSIC_INFO;
 #define WIN32 1
 #endif
 
-#include "../lib/libshout/rip_manager.h"
+#include "lib/libshout/rip_manager.h"
 
 CShoutcastRipFile::CShoutcastRipFile()
 {
