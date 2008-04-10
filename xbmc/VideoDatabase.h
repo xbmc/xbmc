@@ -30,6 +30,7 @@ namespace VIDEO
 #define VIDEODB_TYPE_INT 2
 #define VIDEODB_TYPE_FLOAT 3
 #define VIDEODB_TYPE_BOOL 4
+#define VIDEODB_TYPE_COUNT 5
 
 typedef enum 
 {
@@ -51,7 +52,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_YEAR = 7,
   VIDEODB_ID_THUMBURL = 8,
   VIDEODB_ID_IDENT = 9,
-  VIDEODB_ID_WATCHED = 10,
+  VIDEODB_ID_PLAYCOUNT = 10,
   VIDEODB_ID_RUNTIME = 11,
   VIDEODB_ID_MPAA = 12,
   VIDEODB_ID_TOP250 = 13,
@@ -80,7 +81,7 @@ const struct SDbTableOffsets
   { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iYear) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strIMDBNumber) },
-  { VIDEODB_TYPE_BOOL, offsetof(CVideoInfoTag,m_bWatched) },
+  { VIDEODB_TYPE_COUNT, offsetof(CVideoInfoTag,m_playCount) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strRuntime) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strMPAARating) },
   { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iTop250) },
@@ -137,7 +138,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_EPISODE_AIRED = 5,
   VIDEODB_ID_EPISODE_THUMBURL = 6,
   VIDEODB_ID_EPISODE_THUMBURL_SPOOF = 7,
-  VIDEODB_ID_EPISODE_WATCHED = 8,
+  VIDEODB_ID_EPISODE_PLAYCOUNT = 8,
   VIDEODB_ID_EPISODE_RUNTIME = 9,
   VIDEODB_ID_EPISODE_DIRECTOR = 10,
   VIDEODB_ID_EPISODE_IDENT = 11,
@@ -160,7 +161,7 @@ const struct SDbTableOffsets DbEpisodeOffsets[] =
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strFirstAired) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
-  { VIDEODB_TYPE_BOOL, offsetof(CVideoInfoTag,m_bWatched) },
+  { VIDEODB_TYPE_COUNT, offsetof(CVideoInfoTag,m_playCount) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strRuntime) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strDirector) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strProductionCode) },
@@ -178,7 +179,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_MUSICVIDEO_TITLE = 0,
   VIDEODB_ID_MUSICVIDEO_THUMBURL = 1,
   VIDEODB_ID_MUSICVIDEO_THUMBURL_SPOOF = 2,
-  VIDEODB_ID_MUSICVIDEO_WATCHED = 3,
+  VIDEODB_ID_MUSICVIDEO_PLAYCOUNT = 3,
   VIDEODB_ID_MUSICVIDEO_RUNTIME = 4,
   VIDEODB_ID_MUSICVIDEO_DIRECTOR = 5,
   VIDEODB_ID_MUSICVIDEO_STUDIOS = 6,
@@ -193,7 +194,7 @@ const struct SDbTableOffsets DbMusicVideoOffsets[] =
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strTitle) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
-  { VIDEODB_TYPE_BOOL, offsetof(CVideoInfoTag,m_bWatched) },
+  { VIDEODB_TYPE_COUNT, offsetof(CVideoInfoTag,m_playCount) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strRuntime) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strDirector) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strStudio) },
@@ -235,7 +236,7 @@ public:
   public:
     CStdString name;
     CStdString thumb;
-    bool watched;
+    int playcount;
   };
       
   CVideoDatabase(void);
@@ -409,8 +410,11 @@ protected:
   CVideoInfoTag GetDetailsForTvShow(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);
   CVideoInfoTag GetDetailsForEpisode(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);
   CVideoInfoTag GetDetailsForMusicVideo(std::auto_ptr<dbiplus::Dataset> &pDS);
+  void GetDetailsFromDB(std::auto_ptr<dbiplus::Dataset> &pDS, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details);
 
   CStdString GetTVShowQuery(const CStdString &additionalJoins, const CStdString &where) const;
+  CStdString GetValueString(const CVideoInfoTag &details, int min, int max, const SDbTableOffsets *offsets) const;
+
 
 private:
   virtual bool CreateTables();

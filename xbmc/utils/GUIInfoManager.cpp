@@ -3266,7 +3266,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     if (item->HasVideoInfoTag())
     {
       if (!(!item->GetVideoInfoTag()->m_strShowTitle.IsEmpty() && item->GetVideoInfoTag()->m_iSeason == -1)) // dont apply to tvshows
-        if (!item->GetVideoInfoTag()->m_bWatched && g_guiSettings.GetBool("videolibrary.hideplots"))
+        if (item->GetVideoInfoTag()->m_playCount == 0 && g_guiSettings.GetBool("videolibrary.hideplots"))
           return g_localizeStrings.Get(20370);
 
       return item->GetVideoInfoTag()->m_strPlot;

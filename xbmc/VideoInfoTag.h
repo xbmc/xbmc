@@ -65,7 +65,7 @@ public:
   CStdString m_strShowTitle;
   CStdString m_strStudio;
   CStdString m_strAlbum;
-  bool m_bWatched;
+  int m_playCount;
   int m_iTop250;
   int m_iYear;
   int m_iSeason;

@@ -551,7 +551,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     }
     if (item->HasVideoInfoTag() && !item->m_bIsFolder)
     {
-      if (item->GetVideoInfoTag()->m_bWatched)
+      if (item->GetVideoInfoTag()->m_playCount > 0)
         buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
       else
         buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched

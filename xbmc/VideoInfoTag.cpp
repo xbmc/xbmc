@@ -46,7 +46,7 @@ void CVideoInfoTag::Reset()
   m_iBookmarkId = -1;
   m_fanart.m_xml = "";
 
-  m_bWatched = false;
+  m_playCount = 0;
 }
 
 bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo)
@@ -85,7 +85,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
     movie->InsertEndChild(*doc.RootElement());
   }
   XMLUtils::SetString(movie, "mpaa", m_strMPAARating);
-  XMLUtils::SetBoolean(movie, "watched", m_bWatched);
+  XMLUtils::SetInt(movie, "playcount", m_playCount);
   if (savePathInfo)
   {
     XMLUtils::SetString(movie, "file", m_strFile);
@@ -170,7 +170,7 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   XMLUtils::GetString(movie, "tagline", m_strTagLine);
   XMLUtils::GetString(movie, "runtime", m_strRuntime);
   XMLUtils::GetString(movie, "mpaa", m_strMPAARating);
-  XMLUtils::GetBoolean(movie, "watched", m_bWatched);
+  XMLUtils::GetInt(movie, "playcount", m_playCount);
   XMLUtils::GetString(movie, "file", m_strFile);
   XMLUtils::GetString(movie, "path", m_strPath);
   XMLUtils::GetString(movie, "id", m_strIMDBNumber);
@@ -366,7 +366,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_strFirstAired;
     ar << m_strShowTitle;
     ar << m_strAlbum;
-    ar << m_bWatched;
+    ar << m_playCount;
     ar << m_iTop250;
     ar << m_iYear;
     ar << m_iSeason;
@@ -429,7 +429,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_strFirstAired;
     ar >> m_strShowTitle;
     ar >> m_strAlbum;
-    ar >> m_bWatched;
+    ar >> m_playCount;
     ar >> m_iTop250;
     ar >> m_iYear;
     ar >> m_iSeason;

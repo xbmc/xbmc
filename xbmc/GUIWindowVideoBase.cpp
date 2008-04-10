@@ -1291,7 +1291,7 @@ void CGUIWindowVideoBase::MarkUnWatched(CFileItem* item)
   for (int i=0;i<items.Size();++i)
   {
     CFileItem* pItem=items[i];
-    if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_bWatched)
+    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount == 0)
       continue;
 
     int iType=0;
@@ -1324,7 +1324,7 @@ void CGUIWindowVideoBase::MarkWatched(CFileItem* item)
   for (int i=0;i<items.Size();++i)
   {
     CFileItem* pItem=items[i];
-    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_bWatched)
+    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount > 0)
       continue;
 
     int iType=0;

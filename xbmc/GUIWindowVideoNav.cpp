@@ -901,7 +901,7 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
   {
     CFileItem *item = m_unfilteredItems[i];
     if (item->m_bIsFolder || item->IsParentFolder() || CVideoDatabaseDirectory::IsAllItem(item->m_strPath) ||
-        (m_filter.IsEmpty() && (!filterWatched || item->GetVideoInfoTag()->m_bWatched == (g_stSettings.m_iMyVideoWatchMode==2))))
+        (m_filter.IsEmpty() && (!filterWatched || (item->GetVideoInfoTag()->m_playCount>0) == (g_stSettings.m_iMyVideoWatchMode==2))))
     {
       if ((params.GetContentType() != VIDEODB_CONTENT_MOVIES  && params.GetContentType() != VIDEODB_CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
         items.Add(item);
@@ -920,7 +920,7 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
     else*/
       match = item->GetLabel() + " " + item->GetLabel2();
     if (StringUtils::FindWords(match.c_str(), m_filter.c_str()) && 
-        (!filterWatched || item->GetVideoInfoTag()->m_bWatched == (g_stSettings.m_iMyVideoWatchMode==2)))
+        (!filterWatched || (item->GetVideoInfoTag()->m_playCount>0) == (g_stSettings.m_iMyVideoWatchMode==2)))
     {
       if ((params.GetContentType() != VIDEODB_CONTENT_MOVIES && params.GetContentType() != VIDEODB_CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
         items.Add(item);
@@ -994,9 +994,9 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         }
         if (node == NODE_TYPE_TITLE_TVSHOWS || node == NODE_TYPE_SEASONS || (item->IsVideoDb() && item->HasVideoInfoTag() && !item->m_bIsFolder))
         {
-          if (item->m_bIsFolder || item->GetVideoInfoTag()->m_bWatched)
+          if (item->m_bIsFolder || item->GetVideoInfoTag()->m_playCount > 0)
             buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
-          if (item->m_bIsFolder || !item->GetVideoInfoTag()->m_bWatched)
+          if (item->m_bIsFolder || item->GetVideoInfoTag()->m_playCount == 0)
             buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
           if (node != NODE_TYPE_SEASONS)
             buttons.Add(CONTEXT_BUTTON_EDIT, 16105); //Edit Title
