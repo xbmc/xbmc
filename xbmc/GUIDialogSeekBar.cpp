@@ -26,10 +26,10 @@
 #include "utils/GUIInfoManager.h"
 
 #define SEEK_BAR_DISPLAY_TIME 2000L
-#define SEEK_BAR_SEEK_TIME    500L
+#define SEEK_BAR_SEEK_TIME     500L
 
-#define POPUP_SEEK_SLIDER     401
-#define POPUP_SEEK_LABEL      402
+#define POPUP_SEEK_SLIDER       401
+#define POPUP_SEEK_LABEL        402
 
 CGUIDialogSeekBar::CGUIDialogSeekBar(void)
     : CGUIDialog(WINDOW_DIALOG_SEEK_BAR, "DialogSeekBar.xml")

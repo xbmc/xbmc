@@ -354,22 +354,22 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     g_infoManager.m_content = items.GetContent();
   else if (strDirectory.Left(10).Equals("videodb://"))
   {
-    DIRECTORY::CVideoDatabaseDirectory dir;
-    DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams params;
+    CVideoDatabaseDirectory dir;
+    VIDEODATABASEDIRECTORY::CQueryParams params;
     dir.GetQueryParams(strDirectory,params);
-    DIRECTORY::VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
-    if (node == DIRECTORY::VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_MUSICVIDEOS)
+    VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
+    if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_MUSICVIDEOS)
       g_infoManager.m_content = "musicvideos";
   }
   else
   {
-    DIRECTORY::CMusicDatabaseDirectory dir;
-    DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
-    if (node == DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM)
+    CMusicDatabaseDirectory dir;
+    NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
+    if (node == NODE_TYPE_ALBUM)
       g_infoManager.m_content = "albums";
-    else if (node == DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE_ARTIST)
+    else if (node == NODE_TYPE_ARTIST)
       g_infoManager.m_content = "artists";
-    else if (node == DIRECTORY::MUSICDATABASEDIRECTORY::NODE_TYPE_SONG)
+    else if (node == NODE_TYPE_SONG)
       g_infoManager.m_content = "songs";
   }
   return bResult;
@@ -468,34 +468,35 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
   if (item && (item->GetExtraInfo().Find("lastfm") < 0))
   {
     // are we in the playlists location?
-    bool inPlaylists = m_vecItems->m_strPath.Equals(CUtil::MusicPlaylistsLocation()) || m_vecItems->m_strPath.Equals("special://musicplaylists/");
+    bool inPlaylists = m_vecItems->m_strPath.Equals(CUtil::MusicPlaylistsLocation()) || 
+                       m_vecItems->m_strPath.Equals("special://musicplaylists/");
 
     CMusicDatabaseDirectory dir;
     SScraperInfo info;
     m_musicdatabase.GetScraperForPath(item->m_strPath,info);
     // enable music info button on an album or on a song.
-    if (item->IsAudio() && !item->IsPlayList() && !item->IsSmartPlayList() && !item->IsLastFM() && !item->IsShoutCast())
+    if (item->IsAudio() && !item->IsPlayList() && !item->IsSmartPlayList() && 
+       !item->IsLastFM() && !item->IsShoutCast())
+    {
       buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658);
+    }
     else if (item->IsVideoDb())
     {
       if (!item->m_bIsFolder) // music video
        buttons.Add(CONTEXT_BUTTON_INFO, 20393);
-      if (item->m_strPath.Left(14).Equals("videodb://3/4/") && item->m_strPath.size() > 14 && item->m_bIsFolder)
+      if (item->m_strPath.Left(14).Equals("videodb://3/4/") && 
+          item->m_strPath.size() > 14 && item->m_bIsFolder)
       {
         long idArtist = m_musicdatabase.GetArtistByName(m_vecItems->Get(itemNumber)->GetLabel());
         if (idArtist > - 1)
           buttons.Add(CONTEXT_BUTTON_INFO,21891);
       }
     }
-    else if (
-      !inPlaylists && 
-      (dir.HasAlbumInfo(item->m_strPath) || dir.IsArtistDir(item->m_strPath)) &&
-      !dir.IsAllItem(item->m_strPath) && 
-      !item->IsParentFolder() && 
-      !item->IsLastFM() && 
-      !item->IsShoutCast() && 
-      !item->m_strPath.Left(14).Equals("musicsearch://") 
-      )
+    else if (!inPlaylists && (dir.HasAlbumInfo(item->m_strPath)|| 
+                              dir.IsArtistDir(item->m_strPath)   )      &&
+             !dir.IsAllItem(item->m_strPath) && !item->IsParentFolder() && 
+             !item->IsLastFM() && !item->IsShoutCast()                  && 
+             !item->m_strPath.Left(14).Equals("musicsearch://"))
     {
       if (dir.IsArtistDir(item->m_strPath))
         buttons.Add(CONTEXT_BUTTON_INFO, 21891);
@@ -504,26 +505,28 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     }
 
     // enable query all albums button only in album view
-    if (
-      dir.HasAlbumInfo(item->m_strPath) && 
-      !dir.IsAllItem(item->m_strPath) && 
-      item->m_bIsFolder && !item->IsVideoDb() && 
-      !item->IsParentFolder() && 
-      !item->IsLastFM() && 
-      !item->IsShoutCast() &&
-      !item->m_strPath.Left(14).Equals("musicsearch://")
-      )
+    if (dir.HasAlbumInfo(item->m_strPath) && !dir.IsAllItem(item->m_strPath) && 
+        item->m_bIsFolder && !item->IsVideoDb() && !item->IsParentFolder()   && 
+       !item->IsLastFM() &&  !item->IsShoutCast()                            &&
+       !item->m_strPath.Left(14).Equals("musicsearch://"))
     {
       buttons.Add(CONTEXT_BUTTON_INFO_ALL, 20059);
     }
 
     // enable query all artist button only in album view
-    if (dir.IsArtistDir(item->m_strPath) && !dir.IsAllItem(item->m_strPath) && item->m_bIsFolder && !item->IsVideoDb() && !info.strContent.IsEmpty())
+    if (dir.IsArtistDir(item->m_strPath)        && !dir.IsAllItem(item->m_strPath) && 
+        item->m_bIsFolder && !item->IsVideoDb() && !info.strContent.IsEmpty())
+    {
       buttons.Add(CONTEXT_BUTTON_INFO_ALL, 21884);
+    }
 
-	// turn off set artist image if not at artist listing.
-    if (dir.IsArtistDir(item->m_strPath) && !dir.IsAllItem(item->m_strPath) || (item->m_strPath.Left(14).Equals("videodb://3/4/") && item->m_strPath.size() > 14 && item->m_bIsFolder))
+    // turn off set artist image if not at artist listing.
+    if (dir.IsArtistDir(item->m_strPath) && !dir.IsAllItem(item->m_strPath) || 
+       (item->m_strPath.Left(14).Equals("videodb://3/4/") && 
+        item->m_strPath.size() > 14 && item->m_bIsFolder))
+    {
       buttons.Add(CONTEXT_BUTTON_SET_ARTIST_THUMB, 13359);
+    }
 
     if (m_vecItems->m_strPath.Equals("plugin://music/"))
       buttons.Add(CONTEXT_BUTTON_SET_PLUGIN_THUMB, 1044);
@@ -531,7 +534,9 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     //Set default or clear default
     NODE_TYPE nodetype = dir.GetDirectoryType(item->m_strPath);
     if (!item->IsParentFolder() && !inPlaylists &&
-        (nodetype == NODE_TYPE_ROOT || nodetype == NODE_TYPE_OVERVIEW || nodetype == NODE_TYPE_TOP100))
+        (nodetype == NODE_TYPE_ROOT     || 
+         nodetype == NODE_TYPE_OVERVIEW || 
+         nodetype == NODE_TYPE_TOP100))
     {
       if (!item->m_strPath.Equals(g_settings.m_defaultMusicLibSource))
         buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // set default
@@ -539,7 +544,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
     }
     NODE_TYPE childtype = dir.GetDirectoryChildType(item->m_strPath);
-    if (childtype == NODE_TYPE_ALBUM || childtype == NODE_TYPE_ARTIST || nodetype == NODE_TYPE_GENRE  || nodetype == NODE_TYPE_ALBUM)
+    if (childtype == NODE_TYPE_ALBUM || childtype == NODE_TYPE_ARTIST || 
+        nodetype == NODE_TYPE_GENRE  || nodetype == NODE_TYPE_ALBUM)
     {
       // we allow the user to set content for
       // 1. general artist and album nodes
@@ -555,7 +561,9 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       if (database.GetMusicVideoArtistByName(item->GetMusicInfoTag()->GetArtist()) > -1)
         buttons.Add(CONTEXT_BUTTON_GO_TO_ARTIST, 20400);
     }
-    if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetArtist().size() > 0 && item->GetMusicInfoTag()->GetAlbum().size() > 0 && item->GetMusicInfoTag()->GetTitle().size() > 0)
+    if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetArtist().size() > 0 && 
+        item->GetMusicInfoTag()->GetAlbum().size() > 0 && 
+        item->GetMusicInfoTag()->GetTitle().size() > 0)
     {
       CVideoDatabase database;
       database.Open();
@@ -568,7 +576,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
       else
         buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
-      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
+      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases()
+       || g_passwordManager.bMasterUser)
       {
         buttons.Add(CONTEXT_BUTTON_RENAME, 16105);
         buttons.Add(CONTEXT_BUTTON_DELETE, 646);
@@ -599,7 +608,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         if (idArtist == -1)
           return false;
         m_vecItems->Get(itemNumber)->m_strPath.Format("musicdb://2/%ld/",
-                       m_musicdatabase.GetArtistByName(m_vecItems->Get(itemNumber)->GetLabel()));
+                        m_musicdatabase.GetArtistByName(m_vecItems->Get(itemNumber)->GetLabel()));
         CGUIWindowMusicBase::OnContextButton(itemNumber,button);
         Update(m_vecItems->m_strPath);
         m_viewControl.SetSelectedItem(itemNumber);
@@ -694,8 +703,11 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     
     int iLabel=132;
     // per genre or for all artists
-    if (m_vecItems->m_strPath.Equals("musicdb://1/") || m_vecItems->Get(itemNumber)->m_strPath.Equals("musicdb://2/"))
+    if (m_vecItems->m_strPath.Equals("musicdb://1/") || 
+        m_vecItems->Get(itemNumber)->m_strPath.Equals("musicdb://2/"))
+    {
       iLabel = 133;
+    }
     
     if (CGUIDialogContentSettings::Show(info, bScan,iLabel))
     {
@@ -820,7 +832,8 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
     nItem->SetThumbnailImage("DefaultFolderBig.png");
   items.Add(nItem);
 
-  if (CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_musicSources, g_localizeStrings.Get(20019), picturePath))
+  if (CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_musicSources, 
+                                             g_localizeStrings.Get(20019), picturePath))
   {
     CPicture picture;
     if (picturePath.Equals("thumb://Current"))
@@ -841,7 +854,8 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
     else if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
       XFILE::CFile::Cache(picturePath,cachedThumb);
 
-    if (picturePath.Equals("thumb://None") || picture.DoCreateThumbnail(items.Get(picturePath)->GetThumbnailImage(), cachedThumb))
+    if (picturePath.Equals("thumb://None") || 
+        picture.DoCreateThumbnail(items.Get(picturePath)->GetThumbnailImage(), cachedThumb))
     {
       CMusicDatabaseDirectory dir;
       dir.ClearDirectoryCache(m_vecItems->m_strPath);
@@ -888,7 +902,6 @@ bool CGUIWindowMusicNav::GetSongsFromPlayList(const CStdString& strPlayList, CFi
       CFileItem *item = new CFileItem(song);
       items.Add(item);
     }
-
   }
 
   return true;
@@ -945,7 +958,8 @@ void CGUIWindowMusicNav::FilterItems(CFileItemList &items)
   for (int i = 0; i < m_unfilteredItems->Size(); i++)
   {
     CFileItem *item = m_unfilteredItems->Get(i);
-    if (item->IsParentFolder() || m_filter.IsEmpty() || CMusicDatabaseDirectory::IsAllItem(item->m_strPath))
+    if (item->IsParentFolder() || m_filter.IsEmpty() || 
+        CMusicDatabaseDirectory::IsAllItem(item->m_strPath))
     {
       items.Add(item);
       continue;
