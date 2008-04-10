@@ -322,7 +322,7 @@ void CFileItem::Reset()
   m_lEndOffset = 0;
   m_iprogramCount = 0;
   m_idepth = 1;
-  m_iLockMode = CMediaSource::LOCK_MODE_EVERYONE;
+  m_iLockMode = LOCK_MODE_EVERYONE;
   m_strLockCode = "";
   m_iBadPwdCount = 0;
   m_iHasLock = 0;
@@ -405,7 +405,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_idepth;
     ar >> m_lStartOffset;
     ar >> m_lEndOffset;
-    ar >> m_iLockMode;
+    ar >> (int&)m_iLockMode;
     ar >> m_strLockCode;
     ar >> m_iBadPwdCount;
 

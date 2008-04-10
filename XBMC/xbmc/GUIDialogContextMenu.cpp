@@ -263,7 +263,7 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CMediaSour
 
     buttons.Add(CONTEXT_BUTTON_ADD_SOURCE, 1026); // Add Source
   }
-  if (share && CMediaSource::LOCK_MODE_EVERYONE != g_settings.m_vecProfiles[0].getLockMode())
+  if (share && LOCK_MODE_EVERYONE != g_settings.m_vecProfiles[0].getLockMode())
   {
     if (share->m_iHasLock == 0 && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser))
       buttons.Add(CONTEXT_BUTTON_ADD_LOCK, 12332);
