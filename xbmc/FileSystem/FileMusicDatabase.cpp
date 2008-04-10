@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "FileMusicDatabase.h"
-#include "../MusicDatabase.h"
-#include <sys/stat.h>
-#include "../Util.h"
+#include "MusicDatabase.h"
+#include "Util.h"
+#include "URL.h"
 
+#include <sys/stat.h>
 
 using namespace XFILE;
 

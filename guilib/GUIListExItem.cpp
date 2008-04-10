@@ -1,6 +1,6 @@
 #include "include.h"
 #include "GUIListExItem.h"
-#include "../xbmc/utils/CharsetConverter.h"
+#include "utils/CharsetConverter.h"
 
 
 CGUIListExItem::CGUIListExItem(CStdString& aItemName) : CGUIItem(aItemName)

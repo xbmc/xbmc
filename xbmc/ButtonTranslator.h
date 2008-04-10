@@ -7,6 +7,10 @@
 #include "utils/EventClient.h"
 #endif
 
+class CKey;
+struct CAction;
+class TiXmlNode;
+
 struct CButtonAction
 {
   WORD wID;

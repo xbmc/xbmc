@@ -1,10 +1,9 @@
 #include "include.h"
-#include "../xbmc/FileItem.h"
 #include "GUIMultiImage.h"
 #include "TextureManager.h"
-#include "../xbmc/FileSystem/HDDirectory.h"
-#include "../xbmc/utils/GUIInfoManager.h"
-#include "../xbmc/Util.h"
+#include "FileSystem/HDDirectory.h"
+#include "Util.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace DIRECTORY;

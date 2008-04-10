@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "MusicInfoTagLoaderGYM.h"
-#include "Util.h"
+#include "MusicInfoTag.h"
 
 #include <fstream>
 

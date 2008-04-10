@@ -19,6 +19,6 @@ protected:
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   //bool DownloadSaves(CFileItem item);
   bool m_bViewOutput;
-  VECSHARES m_shares;
+  VECSOURCES m_shares;
   CStdString m_strParentPath;
 };

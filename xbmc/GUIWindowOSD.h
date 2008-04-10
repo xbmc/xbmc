@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GUIWindow.h"
+#include "GUIDialog.h"
 
 class CGUIWindowOSD : public CGUIDialog
 {

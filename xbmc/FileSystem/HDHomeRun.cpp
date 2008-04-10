@@ -1,6 +1,7 @@
 #include "stdafx.h"
-#include "../Util.h"
-
+#include "Util.h"
+#include "URL.h"
+#include "FileItem.h"
 #include "HDHomeRun.h"
 
 using namespace XFILE;

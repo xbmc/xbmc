@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "LastFmManager.h"
+#include "Application.h"
 #include "ApplicationRenderer.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
@@ -31,6 +32,14 @@
 #include "FileSystem/File.h"
 #include "utils/GUIInfoManager.h"
 #include "MusicDatabase.h"
+#include "MusicInfoTag.h"
+#include "URL.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogProgress.h"
+#include "GUIDialogYesNo.h"
+#include "Settings.h"
+#include "PlayList.h"
+
 #include <sstream>
 
 using namespace std;
@@ -51,6 +60,7 @@ CLastFmManager* CLastFmManager::m_pInstance=NULL;
 CLastFmManager::CLastFmManager()
 {
   m_hWorkerEvent = CreateEvent(NULL, false, false, NULL);
+  m_RadioTrackQueue = new CPlayList;
 }
 
 CLastFmManager::~CLastFmManager()
@@ -59,6 +69,7 @@ CLastFmManager::~CLastFmManager()
   CloseHandle(m_hWorkerEvent);
   StopThread();
   CLog::Log(LOGINFO,"lastfm destroyed");
+  delete m_RadioTrackQueue;
 }
 
 void CLastFmManager::RemoveInstance()
@@ -311,7 +322,7 @@ bool CLastFmManager::RequestRadioTracks()
   {
     CMusicInfoTag tag;
 
-    CPlayList::CPlayListItem newItem("","");
+    CPlayListItem newItem("","");
 
     TiXmlElement* pElement = pTrackElement->FirstChildElement("location");
     if (pElement)
@@ -382,13 +393,13 @@ bool CLastFmManager::RequestRadioTracks()
 
     {
       CSingleLock lock(m_lockCache);
-      m_RadioTrackQueue.Add(newItem);
+      m_RadioTrackQueue->Add(newItem);
     }
     pTrackElement = pTrackElement->NextSiblingElement();
   }
   //end parse
   CSingleLock lock(m_lockCache);
-  int iNrCachedTracks = m_RadioTrackQueue.size();
+  int iNrCachedTracks = m_RadioTrackQueue->size();
   CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(timeGetTime() - start));
   return iNrCachedTracks > 0;
 }
@@ -397,12 +408,12 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
 {
   DWORD start = timeGetTime();
   CSingleLock lock(m_lockCache);
-  int iNrCachedTracks = m_RadioTrackQueue.size();
+  int iNrCachedTracks = m_RadioTrackQueue->size();
   CPicture pic;
   CHTTP http;
   for (int i = 0; i < nrInitialTracksToAdd && i < iNrCachedTracks; i++)
   {
-    CPlayList::CPlayListItem& item = m_RadioTrackQueue[i];
+    CPlayListItem& item = (*m_RadioTrackQueue)[i];
     if (!item.GetMusicInfoTag()->Loaded())
     {
       //cache albumthumb, GetThumbnailImage contains the url to cache
@@ -448,14 +459,14 @@ void CLastFmManager::AddToPlaylist(const int nrTracks)
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
   for (int i = 0; i < nrTracks; i++)
   {
-    int iNrCachedTracks = m_RadioTrackQueue.size();
+    int iNrCachedTracks = m_RadioTrackQueue->size();
     if (iNrCachedTracks > 0)
     {
-      CPlayList::CPlayListItem item = m_RadioTrackQueue[0];
+      CPlayListItem item = (*m_RadioTrackQueue)[0];
       if (item.GetMusicInfoTag()->Loaded())
       {
         CSingleLock lock(m_lockCache);
-        m_RadioTrackQueue.Remove(0);
+        m_RadioTrackQueue->Remove(0);
         CSingleLock lock2(m_lockPlaylist);
         playlist.Add(item);
       }
@@ -506,7 +517,7 @@ void CLastFmManager::Update()
     int iNrCachedTracks = 0;
     {
       CSingleLock lock(m_lockCache);
-      iNrCachedTracks = m_RadioTrackQueue.size();
+      iNrCachedTracks = m_RadioTrackQueue->size();
     }
     if (iNrCachedTracks == 0)
     {
@@ -582,13 +593,13 @@ void CLastFmManager::Process()
     WaitForSingleObject(m_hWorkerEvent, INFINITE);
     if (m_bStop)
       break;
-    int iNrCachedTracks = m_RadioTrackQueue.size();
+    int iNrCachedTracks = m_RadioTrackQueue->size();
     if (iNrCachedTracks == 0)
     {
       RequestRadioTracks();
     }
     CSingleLock lock(m_lockCache);
-    iNrCachedTracks = m_RadioTrackQueue.size();
+    iNrCachedTracks = m_RadioTrackQueue->size();
     CacheTrackThumb(iNrCachedTracks);
   }
   CLog::Log(LOGINFO,"LastFM thread terminated");
@@ -604,7 +615,7 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
     StopThread();
   }
   m_CurrentSong.CurrentSong = NULL;
-  m_RadioTrackQueue.Clear();
+  m_RadioTrackQueue->Clear();
   {
     CSingleLock lock(m_lockPlaylist);
     //all last.fm tracks are now invalid, remove them from the playlist

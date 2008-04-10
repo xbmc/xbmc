@@ -23,16 +23,22 @@
 #include "GUIDialogFavourites.h"
 #include "GUIDialogContextMenu.h"
 #include "Favourites.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogKeyboard.h"
+#include "FileItem.h"
 
 #define FAVOURITES_LIST 450
 
 CGUIDialogFavourites::CGUIDialogFavourites(void)
     : CGUIDialog(WINDOW_DIALOG_FAVOURITES, "DialogFavourites.xml")
 {
+  m_favourites = new CFileItemList;
 }
 
 CGUIDialogFavourites::~CGUIDialogFavourites(void)
-{}
+{
+  delete m_favourites;
+}
 
 bool CGUIDialogFavourites::OnMessage(CGUIMessage &message)
 {
@@ -63,7 +69,7 @@ bool CGUIDialogFavourites::OnMessage(CGUIMessage &message)
     // clear our favourites
     CGUIMessage message(GUI_MSG_LABEL_RESET, GetID(), FAVOURITES_LIST);
     OnMessage(message);
-    m_favourites.Clear();
+    m_favourites->Clear();
     return true;
   }
   return CGUIDialog::OnMessage(message);
@@ -71,7 +77,7 @@ bool CGUIDialogFavourites::OnMessage(CGUIMessage &message)
 
 void CGUIDialogFavourites::OnInitWindow()
 {
-  CFavourites::Load(m_favourites);
+  CFavourites::Load(*m_favourites);
   UpdateList();
   CGUIWindow::OnInitWindow();
 }
@@ -85,11 +91,11 @@ int CGUIDialogFavourites::GetSelectedItem()
 
 void CGUIDialogFavourites::OnClick(int item)
 {
-  if (item < 0 || item >= m_favourites.Size())
+  if (item < 0 || item >= m_favourites->Size())
     return;
 
   // grab our message, close the dialog, and send
-  CFileItem *pItem = m_favourites[item];
+  CFileItem *pItem = (*m_favourites)[item];
   CStdString execute(pItem->m_strPath);
 
   Close();
@@ -101,14 +107,14 @@ void CGUIDialogFavourites::OnClick(int item)
 
 void CGUIDialogFavourites::OnPopupMenu(int item)
 {
-  if (item < 0 || item >= m_favourites.Size())
+  if (item < 0 || item >= m_favourites->Size())
     return;
 
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (pMenu)
   {
     // highlight the item
-    m_favourites[item]->Select(true);
+    (*m_favourites)[item]->Select(true);
 
     // initialize the positioning
     float posX = 0;
@@ -121,8 +127,8 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
     }
     pMenu->Initialize();
 
-    int btn_MoveUp = m_favourites.Size() > 1 ? pMenu->AddButton(13332) : 0;
-    int btn_MoveDown = m_favourites.Size() > 1 ? pMenu->AddButton(13333) : 0;
+    int btn_MoveUp = m_favourites->Size() > 1 ? pMenu->AddButton(13332) : 0;
+    int btn_MoveDown = m_favourites->Size() > 1 ? pMenu->AddButton(13333) : 0;
     int btn_Remove = pMenu->AddButton(15015);
     int btn_Rename = pMenu->AddButton(118);
 
@@ -131,7 +137,7 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
     int button = pMenu->GetButton();
 
     // unhighlight the item
-    m_favourites[item]->Select(false);
+    (*m_favourites)[item]->Select(false);
 
     if (button == btn_MoveUp)
       OnMoveItem(item, -1);
@@ -146,13 +152,13 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
 
 void CGUIDialogFavourites::OnMoveItem(int item, int amount)
 {
-  if (item < 0 || item >= m_favourites.Size() || m_favourites.Size() <= 1 || 0 == amount) return;
+  if (item < 0 || item >= m_favourites->Size() || m_favourites->Size() <= 1 || 0 == amount) return;
 
-  int nextItem = (item + amount) % m_favourites.Size();
-  if (nextItem < 0) nextItem += m_favourites.Size();
+  int nextItem = (item + amount) % m_favourites->Size();
+  if (nextItem < 0) nextItem += m_favourites->Size();
 
-  m_favourites.Swap(item, nextItem);
-  CFavourites::Save(m_favourites);
+  m_favourites->Swap(item, nextItem);
+  CFavourites::Save(*m_favourites);
 
   CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), FAVOURITES_LIST, nextItem);
   OnMessage(message);
@@ -162,12 +168,12 @@ void CGUIDialogFavourites::OnMoveItem(int item, int amount)
 
 void CGUIDialogFavourites::OnDelete(int item)
 {
-  if (item < 0 || item >= m_favourites.Size())
+  if (item < 0 || item >= m_favourites->Size())
     return;
-  m_favourites.Remove(item);
-  CFavourites::Save(m_favourites);
+  m_favourites->Remove(item);
+  CFavourites::Save(*m_favourites);
 
-  CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), FAVOURITES_LIST, item < m_favourites.Size() ? item : item - 1);
+  CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), FAVOURITES_LIST, item < m_favourites->Size() ? item : item - 1);
   OnMessage(message);
 
   UpdateList();
@@ -175,14 +181,14 @@ void CGUIDialogFavourites::OnDelete(int item)
 
 void CGUIDialogFavourites::OnRename(int item)
 {
-  if (item < 0 || item >= m_favourites.Size())
+  if (item < 0 || item >= m_favourites->Size())
     return;
 
-  CStdString label(m_favourites[item]->GetLabel());
+  CStdString label((*m_favourites)[item]->GetLabel());
   if (CGUIDialogKeyboard::ShowAndGetInput(label, g_localizeStrings.Get(16008), false))
-    m_favourites[item]->SetLabel(label);
+    (*m_favourites)[item]->SetLabel(label);
 
-  CFavourites::Save(m_favourites);
+  CFavourites::Save(*m_favourites);
 
   UpdateList();
 }
@@ -197,10 +203,10 @@ void CGUIDialogFavourites::UpdateList()
 CFileItem *CGUIDialogFavourites::GetCurrentListItem(int offset)
 {
   int currentItem = GetSelectedItem();
-  if (currentItem < 0 || !m_favourites.Size()) return NULL;
+  if (currentItem < 0 || !m_favourites->Size()) return NULL;
 
-  int item = (currentItem + offset) % m_favourites.Size();
-  if (item < 0) item += m_favourites.Size();
-  return m_favourites[item];
+  int item = (currentItem + offset) % m_favourites->Size();
+  if (item < 0) item += m_favourites->Size();
+  return (*m_favourites)[item];
 }
 

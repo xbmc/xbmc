@@ -21,10 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIDialogBusy.h"
-#include "Application.h"
 #include "ApplicationRenderer.h"
-#include "utils/GUIInfoManager.h"
-
 
 CGUIDialogBusy::CGUIDialogBusy(void)
 : CGUIDialog(WINDOW_DIALOG_BUSY, "DialogBusy.xml")

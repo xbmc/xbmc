@@ -1,6 +1,6 @@
 #include "include.h"
 #include "GUIProgressControl.h"
-#include "../xbmc/utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 
 
 

@@ -13,16 +13,19 @@
 
 #include "stdafx.h"
 #include "XBMCweb.h"
-#include "../../Application.h"
+#include "Application.h"
 
-#include "../../Util.h"
-#include "../../PlayListPlayer.h"
-#include "../../FileSystem/CDDADirectory.h"
-#include "../../FileSystem/ZipManager.h"
-#include "../../PlayListFactory.h"
-#include "../../utils/GUIInfoManager.h"
-#include "../../musicInfoTagLoaderFactory.h"
-#include "../../MusicDatabase.h"
+#include "Util.h"
+#include "PlayListPlayer.h"
+#include "FileSystem/CDDADirectory.h"
+#include "FileSystem/ZipManager.h"
+#include "PlayListFactory.h"
+#include "utils/GUIInfoManager.h"
+#include "musicInfoTagLoaderFactory.h"
+#include "MusicDatabase.h"
+#include "MusicInfoTag.h"
+#include "FileItem.h"
+#include "PlayList.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -103,11 +106,15 @@ CXbmcWeb::CXbmcWeb()
 {
   navigatorState = 0;
   directory = NULL;
+  webDirItems = new CFileItemList;
+  currentMediaItem = new CFileItem;
 }
 
 CXbmcWeb::~CXbmcWeb()
 {
   if (directory) delete directory;
+  delete webDirItems;
+  delete currentMediaItem;
 }
 
 char* CXbmcWeb::GetCurrentDir()
@@ -149,7 +156,7 @@ void CXbmcWeb::AddItemToPlayList(const CFileItem* pItem)
   else if (pItem->IsZIP() && g_guiSettings.GetBool("VideoFiles.HandleArchives"))
   {
     CStdString strDirectory;
-    CUtil::CreateZipPath(strDirectory, pItem->m_strPath, "");
+    CUtil::CreateArchivePath(strDirectory, "zip", pItem->m_strPath, "");
     CFileItemList items;
     directory->GetDirectory(strDirectory, items);
 
@@ -162,7 +169,7 @@ void CXbmcWeb::AddItemToPlayList(const CFileItem* pItem)
   else if (pItem->IsRAR() && g_guiSettings.GetBool("VideoFiles.HandleArchives"))
   {
     CStdString strDirectory;
-    CUtil::CreateRarPath(strDirectory, pItem->m_strPath, "");
+    CUtil::CreateArchivePath(strDirectory, "rar", pItem->m_strPath, "");
     CFileItemList items;
     directory->GetDirectory(strDirectory, items);
 
@@ -175,7 +182,7 @@ void CXbmcWeb::AddItemToPlayList(const CFileItem* pItem)
   else
   {
     //selected item is a file, add it to playlist
-    PLAYLIST::CPlayList::CPlayListItem playlistItem;
+    PLAYLIST::CPlayListItem playlistItem;
     CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
 
     switch(GetNavigatorState())
@@ -283,7 +290,7 @@ int CXbmcWeb::xbmcNavigate( int eid, webs_t wp, char_t *parameter)
         delete directory;
         directory = NULL;
       }
-      webDirItems.Clear();
+      webDirItems->Clear();
 
       return 0;
     }
@@ -303,12 +310,12 @@ int CXbmcWeb::xbmcNavigate( int eid, webs_t wp, char_t *parameter)
           directory = NULL;
         }
 
-        webDirItems.Clear();
+        webDirItems->Clear();
 
         //make a new directory and set the nessecary shares
         directory = new CVirtualDirectory();
 
-        VECSHARES *shares = NULL;
+        VECSOURCES *shares = NULL;
         CStdString strDirectory;
 
         //get shares and extensions
@@ -345,11 +352,11 @@ int CXbmcWeb::xbmcNavigate( int eid, webs_t wp, char_t *parameter)
           directory->SetMask("*");
         }
 
-        directory->SetShares(*shares);
-        directory->GetDirectory("",webDirItems);
+        directory->SetSources(*shares);
+        directory->GetDirectory("",*webDirItems);
 
         //sort items
-        webDirItems.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+        webDirItems->Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 
         return 0;
       }
@@ -431,7 +438,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
       iItemCount = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size();
     else if (navigatorState == WEB_NAV_VIDEOPLAYLIST)
       iItemCount = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size();
-    else iItemCount = webDirItems.Size();
+    else iItemCount = webDirItems->Size();
 
     // have we requested a catalog item name?
     if( strstr( parameter, XBMC_CAT_NAME) != NULL)
@@ -459,7 +466,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
       {
         if( selectionNumber >= 0 && selectionNumber < iItemCount)
         {
-          CFileItem *itm = webDirItems[selectionNumber];
+          CFileItem *itm = webDirItems->Get(selectionNumber);
           strcpy(buffer, itm->m_strPath);
           output = buffer;
         }
@@ -487,7 +494,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
       else
       {
         if( selectionNumber >= 0 && selectionNumber < iItemCount) {
-          CFileItem *itm = webDirItems[selectionNumber];
+          CFileItem *itm = webDirItems->Get(selectionNumber);
           if (itm->m_bIsFolder || itm->IsRAR() || itm->IsZIP())
           {
             output = XBMC_CMD_DIRECTORY;
@@ -567,7 +574,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
       else
       {
         if(catalogItemCounter < iItemCount) {
-          name = webDirItems[catalogItemCounter]->GetLabel();
+          name = webDirItems->Get(catalogItemCounter)->GetLabel();
           if (name == "") name = "..";
         }
       }
@@ -621,7 +628,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
         if((catalogItemCounter + 1) < iItemCount) {
           ++catalogItemCounter;
 
-          name = webDirItems[catalogItemCounter]->GetLabel();
+          name = webDirItems->Get(catalogItemCounter)->GetLabel();
           if (name == "") name = "..";
           if( eid != NO_EID) {
             ejSetResult( eid, (char_t *)name.c_str());
@@ -652,7 +659,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
         if (strAction == XBMC_CAT_QUE)
         {
           // attempt to enque the selected directory or file
-          CFileItem *itm = webDirItems[selectionNumber];
+          CFileItem *itm = webDirItems->Get(selectionNumber);
           AddItemToPlayList(itm);
           g_playlistPlayer.HasChanged();
         }
@@ -671,35 +678,34 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
           CFileItem *itm;
           if (navigatorState == WEB_NAV_MUSICPLAYLIST)
           {
-            CPlayList::CPlayListItem plItem = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC)[selectionNumber];
+            CPlayListItem plItem = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC)[selectionNumber];
             itm = new CFileItem(plItem.GetDescription());
             itm->m_strPath = plItem.GetFileName();
             itm->m_bIsFolder = false;
           }
           else if (navigatorState == WEB_NAV_VIDEOPLAYLIST)
           {
-            CPlayList::CPlayListItem plItem = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO)[selectionNumber];
+            CPlayListItem plItem = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO)[selectionNumber];
             itm = new CFileItem(plItem.GetDescription());
             itm->m_strPath = plItem.GetFileName();
             itm->m_bIsFolder = false;
           }
-          else itm = webDirItems[selectionNumber];
+          else itm = webDirItems->Get(selectionNumber);
 
           if (!itm) return 0;
 
           if (itm->IsZIP()) // mount zip archive
           {
-            CShare shareZip;
-            CUtil::CreateZipPath(shareZip.strPath,itm->m_strPath,"",1);
+            CMediaSource shareZip;
+            CUtil::CreateArchivePath(shareZip.strPath,"zip",itm->m_strPath,"");
             itm->m_strPath = shareZip.strPath;
             itm->m_bIsFolder = true;
           }
           else if (itm->IsRAR()) // mount rar archive 
           {
-            CShare shareRar;
-            //shareRar.strPath.Format("rar://Z:\\,%i,,%s,\\",1, itm->m_strPath.c_str() );
+            CMediaSource shareRar;
             CStdString strRarPath;
-            CUtil::CreateRarPath(strRarPath,itm->m_strPath,"",1);
+            CUtil::CreateArchivePath(strRarPath,"rar",itm->m_strPath,"");
             shareRar.strPath = strRarPath;
 
             itm->m_strPath = shareRar.strPath;
@@ -721,7 +727,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
             }
             CStdString strDirectory = itm->m_strPath;
             CStdString strParentPath;
-            webDirItems.Clear();
+            webDirItems->Clear();
 
             //set new current directory for webserver
             SetCurrentDir(strDirectory.c_str());
@@ -729,7 +735,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
             bool bParentExists=CUtil::GetParentPath(strDirectory, strParentPath);
 
             // check if current directory is a root share
-            if ( !directory->IsShare(strDirectory) )
+            if ( !directory->IsSource(strDirectory) )
             {
               // no, do we got a parent dir?
               if ( bParentExists )
@@ -739,7 +745,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
                 pItem->m_strPath=strParentPath;
                 pItem->m_bIsFolder=true;
                 pItem->m_bIsShareOrDrive=false;
-                webDirItems.Add(pItem);
+                webDirItems->Add(pItem);
               }
             }
             else
@@ -750,10 +756,10 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
               pItem->m_strPath="";
               pItem->m_bIsShareOrDrive=false;
               pItem->m_bIsFolder=true;
-              webDirItems.Add(pItem);
+              webDirItems->Add(pItem);
             }
-            directory->GetDirectory(strDirectory, webDirItems);
-            webDirItems.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+            directory->GetDirectory(strDirectory, *webDirItems);
+            webDirItems->Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
           }
           else
           {
@@ -787,12 +793,12 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
                   // add each item of the playlist to the playlistplayer
                   for (int i=0; i < (int)pPlayList->size(); ++i)
                   {
-                    const CPlayList::CPlayListItem& playListItem =(*pPlayList)[i];
+                    const CPlayListItem& playListItem =(*pPlayList)[i];
                     CStdString strLabel=playListItem.GetDescription();
                     if (strLabel.size()==0) 
                       strLabel=CUtil::GetFileName(playListItem.GetFileName());
 
-                    CPlayList::CPlayListItem playlistItem;
+                    CPlayListItem playlistItem;
                     playlistItem.SetFileName(playListItem.GetFileName());
                     playlistItem.SetDescription(strLabel);
                     playlistItem.SetDuration(playListItem.GetDuration());
@@ -843,9 +849,9 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 /* Play */
 int CXbmcWeb::xbmcPlayerPlay( int eid, webs_t wp, char_t *parameter)
 {
-  if (currentMediaItem.m_strPath.size() > 0)
+  if (currentMediaItem->m_strPath.size() > 0)
   {
-    g_applicationMessenger.MediaPlay(currentMediaItem.m_strPath);
+    g_applicationMessenger.MediaPlay(currentMediaItem->m_strPath);
   }
   else
   {
@@ -964,7 +970,7 @@ void CXbmcWeb::xbmcForm(webs_t wp, char_t *path, char_t *query)
 
 void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
 {
-  currentMediaItem = newItem;
+  *currentMediaItem = newItem;
 
   //	No audio file, we are finished here
   if (!newItem.IsAudio() )

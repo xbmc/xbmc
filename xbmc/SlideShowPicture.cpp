@@ -23,6 +23,7 @@
 #include "SlideShowPicture.h"
 #include "cores/ssrc.h"         // for M_PI
 #include "utils/GUIInfoManager.h"
+#include "Settings.h"
 
 #define IMMEDIATE_TRANSISTION_TIME 20
 

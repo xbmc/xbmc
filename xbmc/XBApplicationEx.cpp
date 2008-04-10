@@ -13,7 +13,7 @@
 #include "stdafx.h"
 #include "XBApplicationEx.h"
 #include "XBVideoConfig.h"
-
+#include "Settings.h"
 
 //-----------------------------------------------------------------------------
 // Global access to common members

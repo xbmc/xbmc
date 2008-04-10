@@ -1,8 +1,8 @@
 
 #include "stdafx.h"
 #include "DVDAudioCodecPcm.h"
-#include "../../DVDStreamInfo.h"
-#include "../DVDCodecs.h"
+#include "DVDStreamInfo.h"
+#include "DVDCodecs/DVDCodecs.h"
 
 /* from g711.c by SUN microsystems (unrestricted use) */
 #define	SIGN_BIT	(0x80)		/* Sign bit for a A-law byte. */

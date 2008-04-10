@@ -1,4 +1,4 @@
-#include "../python/Python.h"
+#include "lib/libPython/python/Python.h"
 
 #pragma once
 

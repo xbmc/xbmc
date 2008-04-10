@@ -26,8 +26,9 @@
 #include "GUIDialogMusicOSD.h"
 #include "utils/GUIInfoManager.h"
 #include "ButtonTranslator.h"
-#include "Util.h"
 #include "GUIDialogVisualisationPresetList.h"
+#include "GUIWindowManager.h"
+#include "Settings.h"
 #ifdef HAS_KARAOKE
 #include "CdgParser.h"
 #endif

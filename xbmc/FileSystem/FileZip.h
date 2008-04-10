@@ -2,11 +2,12 @@
 #define FILE_ZIP_H_
 
 #include "IFile.h"
-#include "ZipManager.h"
-#include "../lib/zlib/zlib.h"
-#include "../utils/log.h"
-#include "../../guilib/GUIWindowManager.h"
-#include "../GUIDialogProgress.h"
+#include "lib/zlib/zlib.h"
+#include "utils/log.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogProgress.h"
+#include "FileSystem/File.h"
+#include "FileSystem/ZipManager.h"
 
 namespace XFILE
 {

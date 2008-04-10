@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "../lib/libiconv/iconv.h"
-#include "../lib/libfribidi/fribidi.h"
+#include "lib/libiconv/iconv.h"
+#include "lib/libfribidi/fribidi.h"
 
 #include <vector>
 

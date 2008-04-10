@@ -1,7 +1,7 @@
 #include "include.h"
 #include "GUIPanelContainer.h"
 #include "GUIListItem.h"
-#include "../xbmc/utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 
 using namespace std;
 

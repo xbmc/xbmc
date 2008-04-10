@@ -46,7 +46,7 @@
 #include "MusicInfoTagLoaderDatabase.h"
 
 #include "Util.h"
-
+#include "FileItem.h"
 
 using namespace MUSIC_INFO;
 

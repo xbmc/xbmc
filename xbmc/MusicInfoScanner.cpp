@@ -32,6 +32,14 @@
 #include "utils/md5.h"
 #include "xbox/XKGeneral.h"
 #include "NfoFile.h"
+#include "MusicInfoTag.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogProgress.h"
+#include "GUIDialogSelect.h"
+#include "GUIDialogKeyboard.h"
+#include "FileSystem/File.h"
+#include "Settings.h"
+#include "FileItem.h"
 
 #include <algorithm>
 

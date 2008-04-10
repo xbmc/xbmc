@@ -3,6 +3,8 @@
 #include "utils/Thread.h"
 #include "utils/CriticalSection.h"
 
+#include <assert.h>
+
 class CGUILargeTextureManager : public CThread
 {
 public:

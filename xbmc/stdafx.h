@@ -32,8 +32,6 @@
 #endif
 
 // guilib internal
-#include "tinyXML/tinyxml.h"
-#include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
 
 #include "utils/Thread.h"
@@ -46,21 +44,12 @@
 #include "utils/CharsetConverter.h"
 #include "LangInfo.h"
 
-#include "Settings.h"
-#include "URL.h"
-#include "FileSystem/Directory.h"
-#include "FileSystem/File.h"
 #include "SectionLoader.h"
 #include "ApplicationMessenger.h"
 #include "Crc32.h"
 #include "AutoPtrHandle.h"
 
 // Often used
-#include "GUIDialogOK.h"
-#include "GUIDialogProgress.h"
-#include "GUIDialogYesNo.h"
-#include "GUIDialogSelect.h"
-#include "GUIDialogKeyboard.h"
 #include "GUIUserMessages.h"
 
 #ifdef _XBOX

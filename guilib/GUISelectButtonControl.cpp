@@ -1,7 +1,7 @@
 #include "include.h"
 #include "GUISelectButtonControl.h"
 #include "GUIWindowManager.h"
-#include "../xbmc/utils/CharsetConverter.h"
+#include "utils/CharsetConverter.h"
 
 
 CGUISelectButtonControl::CGUISelectButtonControl(DWORD dwParentID, DWORD dwControlId,

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "AC3CDDACodec.h"
 #ifdef HAS_AC3_CDDA_CODEC
-#include "../../lib/libcdio/sector.h"
+#include "lib/libcdio/sector.h"
 
 AC3CDDACodec::AC3CDDACodec() : AC3Codec()
 {

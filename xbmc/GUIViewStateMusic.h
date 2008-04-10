@@ -57,7 +57,7 @@ public:
 
 protected:
   virtual void SaveViewState();
-  virtual VECSHARES& GetShares();
+  virtual VECSOURCES& GetSources();
 
 private:
   void AddOnlineShares();
@@ -70,7 +70,7 @@ public:
 
 protected:
   virtual void SaveViewState();
-  virtual VECSHARES& GetShares();
+  virtual VECSOURCES& GetSources();
 };
 
 class CGUIViewStateWindowMusicPlaylist : public CGUIViewStateWindowMusic
@@ -83,7 +83,7 @@ protected:
   virtual int GetPlaylist();
   virtual bool AutoPlayNextItem();
   virtual bool HideParentDirItems();
-  virtual VECSHARES& GetShares();
+  virtual VECSOURCES& GetSources();
 };
 
 class CGUIViewStateMusicShoutcast : public CGUIViewStateWindowMusic

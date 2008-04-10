@@ -1,7 +1,7 @@
 #include "include.h"
 #include "GUIFixedListContainer.h"
 #include "GUIListItem.h"
-#include "../xbmc/utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 
 CGUIFixedListContainer::CGUIFixedListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int fixedPosition)
     : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime)

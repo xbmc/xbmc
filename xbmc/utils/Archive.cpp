@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "Archive.h"
+#include "FileSystem/File.h"
 
 using namespace XFILE;
 

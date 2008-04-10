@@ -1,5 +1,9 @@
 #pragma once
 
+#include "StdString.h"
+
+#include <vector>
+
 class CProfile
 {
 public:
@@ -65,4 +69,7 @@ public:
   bool _bLockPictures;
   bool _bLockPrograms;
 };
+
+typedef std::vector<CProfile> VECPROFILES;
+typedef std::vector<CProfile>::iterator IVECPROFILES;
 

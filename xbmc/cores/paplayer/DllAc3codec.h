@@ -1,5 +1,5 @@
 #pragma once
-#include "../../DynamicDll.h"
+#include "DynamicDll.h"
 
 #ifdef HAS_AC3_CODEC
 typedef unsigned __int32 uint32_t;
@@ -7,7 +7,7 @@ typedef unsigned __int8 uint8_t;
 typedef __int16 int16_t;
 typedef __int32 int32_t;
 
-#include "../dvdplayer/DVDCodecs/Audio/liba52/a52.h"
+#include "cores/dvdplayer/DVDCodecs/Audio/liba52/a52.h"
 
 #ifdef LIBA52_DOUBLE
 typedef float convert_t;

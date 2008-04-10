@@ -33,6 +33,9 @@
 #include "GUIWindowOSD.h"
 #include "GUIFontManager.h"
 #include "GUITextLayout.h"
+#include "GUIWindowManager.h"
+#include "Settings.h"
+#include "FileItem.h"
 
 #include <stdio.h>
 

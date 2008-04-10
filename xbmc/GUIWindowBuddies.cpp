@@ -28,6 +28,14 @@
 #include "Util.h"
 #include "xbox/xbeheader.h"
 #include "ProgramDatabase.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
+#include "GUIDialogProgress.h"
+#include "GUIDialogYesNo.h"
+#include "GUIDialogKeyboard.h"
+#include "FileSystem/File.h"
+#include "Settings.h"
+#include "ViewState.h"
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
@@ -1655,7 +1663,7 @@ bool CGUIWindowBuddies::GetGamePathFromTitleId(DWORD aTitleId, CStdString& aGame
   CStdStringArray gamesDirs;
   for (unsigned int i = 0; i < g_settings.m_programSources.size(); i++)
   {
-    CShare &share = g_settings.m_programSources[i];
+    CMediaSource &share = g_settings.m_programSources[i];
     for (unsigned int j = 0; j < share.vecPaths.size(); j++)
       gamesDirs.push_back(share.vecPaths[j]);
   }

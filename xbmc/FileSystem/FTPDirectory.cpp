@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "FTPDirectory.h"
 #include "FTPParse.h"
-#include "../URL.h"
-#include "../Util.h"
+#include "URL.h"
+#include "Util.h"
 #include "DirectoryCache.h"
 #include "FileCurl.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

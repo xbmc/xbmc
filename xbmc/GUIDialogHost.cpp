@@ -20,11 +20,13 @@
  */
 
 #include "stdafx.h"
+#include "Settings.h"
 #include "GUIDialogHost.h"
 #include "GUISpinControl.h"
 #include "GUILabelControl.h"
 #include "GUIButtonControl.h"
 #include "GUIRadioButtonControl.h"
+#include "GUIDialogKeyboard.h"
 
 #define CTL_CHECKMARK_HOSTING_TYPE 3101
 #define CTL_LABEL_PLAYER_LIMIT  3102

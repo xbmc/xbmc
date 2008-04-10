@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "DVDInputStreamHttp.h"
+#include "URL.h"
 
 using namespace XFILE;
 

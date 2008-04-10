@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "../Settings.h"  // for VECSHARES
+#include "Settings.h"  // for VECSOURCES
 
 class IDevice;
 class IFileSystem;
@@ -22,7 +22,7 @@ public:
 
   bool IsDriveWriteable(const CStdString &path) const;
 
-  void GetMemoryUnitShares(VECSHARES &shares);
+  void GetMemoryUnitSources(VECSOURCES &shares);
 
 
 private:

@@ -6,7 +6,7 @@
 #include "dll_util.h"
 #include <limits>
 #ifdef _XBOX
-#include "../../xbox/undocumented.h"
+#include "xbox/undocumented.h"
 #include "XbDm.h"
 #else
 typedef struct _UNICODE_STRING {

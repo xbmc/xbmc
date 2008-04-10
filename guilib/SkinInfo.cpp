@@ -1,8 +1,8 @@
 #include "include.h"
 #include "SkinInfo.h"
-#include "../xbmc/Util.h"
-#include "../xbmc/Settings.h"
 #include "GUIWindowManager.h"
+#include "GUISettings.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace XFILE;

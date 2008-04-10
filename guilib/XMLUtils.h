@@ -1,6 +1,7 @@
 #pragma once
 
 // forward
+class TiXmlDocument;
 class TiXmlNode;
 
 class XMLUtils

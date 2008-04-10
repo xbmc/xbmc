@@ -1,6 +1,6 @@
 #include "include.h"
 #include "GUICheckMarkControl.h"
-#include "../xbmc/utils/CharsetConverter.h"
+#include "utils/CharsetConverter.h"
 #include "GUIFontManager.h"
 
 using namespace std;

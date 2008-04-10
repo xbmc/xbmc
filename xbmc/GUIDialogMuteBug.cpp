@@ -22,8 +22,6 @@
 #include "stdafx.h"
 #include "GUIDialogMuteBug.h"
 #include "GUIWindowManager.h"
-#include "Settings.h"
-#include "Application.h"
 #include "LocalizeStrings.h"
 
 

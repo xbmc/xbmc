@@ -1,9 +1,11 @@
 #pragma once
-#include "./HTTP.h"
+#include "Song.h"
+#include "Album.h"
 
 class TiXmlDocument;
 class CScraperUrl;
 struct SScraperInfo;
+class CHTTP;
 
 namespace MUSIC_GRABBER
 {

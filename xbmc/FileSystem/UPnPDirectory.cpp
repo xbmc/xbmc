@@ -22,11 +22,14 @@
 
 
 #include "stdafx.h"
-#include "../Util.h"
+#include "Util.h"
 #include "UPnPDirectory.h"
-#include "../UPnP.h"
+#include "UPnP.h"
 #include "Platinum.h"
 #include "PltSyncMediaBrowser.h"
+#include "VideoInfoTag.h"
+#include "MusicInfoTag.h"
+#include "FileItem.h"
 
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;

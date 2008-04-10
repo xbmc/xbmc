@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../DVDDemuxers/DVDDemux.h"
+#include "DVDDemux.h"
 
 class CDVDOverlayCodecFFmpeg;
 class CDVDInputStream;

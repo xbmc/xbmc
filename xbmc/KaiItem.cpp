@@ -22,9 +22,10 @@
 #include "stdafx.h"
 #include "KaiItem.h"
 #include "utils/KaiClient.h"
-#include "utils/HTTP.h"
 #include "Util.h"
 #include "Picture.h"
+#include "FileSystem/File.h"
+#include "Settings.h"
 
 using namespace XFILE;
 

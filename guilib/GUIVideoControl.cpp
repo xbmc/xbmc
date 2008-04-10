@@ -1,11 +1,11 @@
 #include "include.h"
 #include "GUIVideoControl.h"
 #include "GUIWindowManager.h"
-#include "../xbmc/Application.h"
+#include "Application.h"
 #ifdef HAS_VIDEO_PLAYBACK
-#include "../xbmc/cores/VideoRenderers/RenderManager.h"
+#include "cores/VideoRenderers/RenderManager.h"
 #else
-#include "../xbmc/cores/DummyVideoPlayer.h"
+#include "cores/DummyVideoPlayer.h"
 #endif
 
 CGUIVideoControl::CGUIVideoControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)

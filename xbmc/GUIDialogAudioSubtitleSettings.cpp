@@ -27,6 +27,11 @@
 #include "Application.h"
 #include "VideoDatabase.h"
 #include "XBAudioConfig.h"
+#include "GUIDialogYesNo.h"
+#include "FileSystem/Directory.h"
+#include "FileSystem/File.h"
+#include "URL.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace XFILE;
@@ -280,10 +285,10 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
     CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip";
     if (g_application.GetCurrentPlayer() == EPC_DVDPLAYER)
       strMask = ".srt|.rar|.zip|.ifo|.smi|.sub";
-    VECSHARES shares(g_settings.m_videoSources);
+    VECSOURCES shares(g_settings.m_videoSources);
     if (g_stSettings.iAdditionalSubtitleDirectoryChecked != -1 && !g_guiSettings.GetString("subtitles.custompath").IsEmpty())
     {
-      CShare share;
+      CMediaSource share;
       std::vector<CStdString> paths;
       CStdString strPath1;
       CUtil::GetDirectory(strPath,strPath1);
@@ -381,7 +386,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
   }
   else if (setting.id == AUDIO_SETTINGS_MAKE_DEFAULT)
   {
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].settingsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].settingsLocked() && g_settings.m_vecProfiles[0].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE)
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;
 
