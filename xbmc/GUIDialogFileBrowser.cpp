@@ -342,7 +342,9 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
 
   OnSort();
 
-  if (m_Directory->m_strPath.IsEmpty() && m_addNetworkShareEnabled && (g_settings.m_vecProfiles[0].getLockMode() == CMediaSource::LOCK_MODE_EVERYONE || (g_settings.m_iLastLoadedProfileIndex == 0) || g_passwordManager.bMasterUser))
+  if (m_Directory->m_strPath.IsEmpty() && m_addNetworkShareEnabled && 
+     (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || 
+     (g_settings.m_iLastLoadedProfileIndex == 0) || g_passwordManager.bMasterUser))
   { // we are in the virtual directory - add the "Add Network Location" item
     CFileItem *pItem = new CFileItem(g_localizeStrings.Get(1032));
     pItem->m_strPath = "net://";
