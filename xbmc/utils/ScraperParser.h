@@ -24,7 +24,6 @@ public:
   bool HasFunction(const CStdString& strTag);
 
   CStdString m_param[MAX_SCRAPER_BUFFERS];
-  static char* ConvertHTMLToAnsi(const char *szHTML);
   static void ClearCache();
 
 private:
