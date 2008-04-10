@@ -160,7 +160,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     }
 
     pItem->SetIconImage(strIcon);
-    if (share.m_iHasLock == 2 && g_settings.m_vecProfiles[0].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE)
+    if (share.m_iHasLock == 2 && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_LOCKED);
     else
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_NONE);

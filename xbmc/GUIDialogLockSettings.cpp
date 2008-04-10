@@ -99,9 +99,9 @@ void CGUIDialogLockSettings::CreateSettings()
     return;
   }
   AddButton(1,m_iButtonLabel);
-  if (m_iLock > CMediaSource::LOCK_MODE_QWERTY)
-    m_iLock = CMediaSource::LOCK_MODE_EVERYONE;
-  if (m_iLock != CMediaSource::LOCK_MODE_EVERYONE)
+  if (m_iLock > LOCK_MODE_QWERTY)
+    m_iLock = LOCK_MODE_EVERYONE;
+  if (m_iLock != LOCK_MODE_EVERYONE)
     m_settings[0].name.Format("%s (%s)",g_localizeStrings.Get(m_iButtonLabel).c_str(),g_localizeStrings.Get(12336+m_iLock).c_str());
   else
     m_settings[0].name.Format("%s (%s)",g_localizeStrings.Get(m_iButtonLabel).c_str(),g_localizeStrings.Get(1223).c_str());
@@ -115,7 +115,7 @@ void CGUIDialogLockSettings::CreateSettings()
     AddBool(6,20041,&m_bLockPrograms);
     AddBool(7,20042,&m_bLockFiles);
     AddBool(8,20043,&m_bLockSettings);
-    EnableDetails(m_iLock != CMediaSource::LOCK_MODE_EVERYONE);
+    EnableDetails(m_iLock != LOCK_MODE_EVERYONE);
   }
 }
 
@@ -153,24 +153,24 @@ void CGUIDialogLockSettings::OnSettingChanged(unsigned int num)
       menu->DoModal();
 
       CStdString newPassword;
-      int iLockMode = -1;
+      LockType iLockMode = LOCK_MODE_UNKNOWN;
       bool bResult = false;
       switch(menu->GetButton())
       {
       case 1:
-        iLockMode = CMediaSource::LOCK_MODE_EVERYONE; //Disabled! Need check routine!!!
+        iLockMode = LOCK_MODE_EVERYONE; //Disabled! Need check routine!!!
         bResult = true;
         break;
       case 2:
-        iLockMode = CMediaSource::LOCK_MODE_NUMERIC;
+        iLockMode = LOCK_MODE_NUMERIC;
         bResult = CGUIDialogNumeric::ShowAndVerifyNewPassword(newPassword);
         break;
       case 3:
-        iLockMode = CMediaSource::LOCK_MODE_GAMEPAD;
+        iLockMode = LOCK_MODE_GAMEPAD;
         bResult = CGUIDialogGamepad::ShowAndVerifyNewPassword(newPassword);
         break;
       case 4:
-        iLockMode = CMediaSource::LOCK_MODE_QWERTY;
+        iLockMode = LOCK_MODE_QWERTY;
         bResult = CGUIDialogKeyboard::ShowAndVerifyNewPassword(newPassword);
         break;
       default:
@@ -178,16 +178,16 @@ void CGUIDialogLockSettings::OnSettingChanged(unsigned int num)
       }
       if (bResult)
       {
-        if (iLockMode == CMediaSource::LOCK_MODE_EVERYONE)
+        if (iLockMode == LOCK_MODE_EVERYONE)
           newPassword = "-";
         m_strLock = newPassword;
         if (m_strLock == "-")
-          iLockMode = CMediaSource::LOCK_MODE_EVERYONE;
+          iLockMode = LOCK_MODE_EVERYONE;
         m_iLock = iLockMode;
         if (m_bDetails)
-          EnableDetails(m_iLock != CMediaSource::LOCK_MODE_EVERYONE);
+          EnableDetails(m_iLock != LOCK_MODE_EVERYONE);
         m_bChanged = true;
-        if (m_iLock != CMediaSource::LOCK_MODE_EVERYONE)
+        if (m_iLock != LOCK_MODE_EVERYONE)
           setting.name.Format("%s (%s)",g_localizeStrings.Get(m_iButtonLabel).c_str(),g_localizeStrings.Get(12336+m_iLock).c_str());
         else
           setting.name.Format("%s (%s)",g_localizeStrings.Get(m_iButtonLabel).c_str(),g_localizeStrings.Get(1223).c_str());
@@ -234,13 +234,13 @@ bool CGUIDialogLockSettings::ShowAndGetUserAndPassword(CStdString& strUser, CStd
   return false;
 }
 
-bool CGUIDialogLockSettings::ShowAndGetLock(int& iLockMode, CStdString& strPassword, int iHeader)
+bool CGUIDialogLockSettings::ShowAndGetLock(LockType& iLockMode, CStdString& strPassword, int iHeader)
 {
   bool f;
   return ShowAndGetLock(iLockMode,strPassword,f,f,f,f,f,f,iHeader,false,false);
 }
 
-bool CGUIDialogLockSettings::ShowAndGetLock(int& iLockMode, CStdString& strPassword, bool& bLockMusic, bool& bLockVideo, bool& bLockPictures, bool& bLockPrograms, bool& bLockFiles, bool& bLockSettings, int iButtonLabel, bool bConditional, bool bDetails)
+bool CGUIDialogLockSettings::ShowAndGetLock(LockType& iLockMode, CStdString& strPassword, bool& bLockMusic, bool& bLockVideo, bool& bLockPictures, bool& bLockPrograms, bool& bLockFiles, bool& bLockSettings, int iButtonLabel, bool bConditional, bool bDetails)
 {
   CGUIDialogLockSettings *dialog = (CGUIDialogLockSettings *)m_gWindowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
   if (!dialog) return false;
@@ -263,12 +263,12 @@ bool CGUIDialogLockSettings::ShowAndGetLock(int& iLockMode, CStdString& strPassw
   dialog->DoModal();
   if (dialog->m_bChanged)
   {
-    if (dialog->m_iLock != CMediaSource::LOCK_MODE_EVERYONE && dialog->m_strLock == "-" || dialog->m_strLock.IsEmpty())
-      iLockMode = CMediaSource::LOCK_MODE_EVERYONE;
+    if (dialog->m_iLock != LOCK_MODE_EVERYONE && dialog->m_strLock == "-" || dialog->m_strLock.IsEmpty())
+      iLockMode = LOCK_MODE_EVERYONE;
     else
       iLockMode = dialog->m_iLock;
 
-    if (dialog->m_strLock.IsEmpty() || iLockMode == CMediaSource::LOCK_MODE_EVERYONE)
+    if (dialog->m_strLock.IsEmpty() || iLockMode == LOCK_MODE_EVERYONE)
       strPassword = "-";
     else
       strPassword = dialog->m_strLock;

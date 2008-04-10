@@ -2,6 +2,7 @@
 
 #include "StdString.h"
 #include <vector>
+#include "GUIPassword.h"
 
 /*!
 \ingroup windows
@@ -20,17 +21,7 @@ public:
     SOURCE_TYPE_REMOTE       = 4,
     SOURCE_TYPE_VPATH        = 5
   };
-  enum LockType
-  {
-    LOCK_MODE_UNKNOWN            = -1,
-    LOCK_MODE_EVERYONE           =  0,
-    LOCK_MODE_NUMERIC            =  1,
-    LOCK_MODE_GAMEPAD            =  2,
-    LOCK_MODE_QWERTY             =  3,
-    LOCK_MODE_SAMBA              =  4,
-    LOCK_MODE_EEPROM_PARENTAL    =  5
-  };
-  CMediaSource() { m_iDriveType=SOURCE_TYPE_UNKNOWN; m_iLockMode=CMediaSource::LOCK_MODE_EVERYONE; m_iBadPwdCount=0; m_iHasLock=0; m_ignore=false; };
+  CMediaSource() { m_iDriveType=SOURCE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; m_iHasLock=0; m_ignore=false; };
   virtual ~CMediaSource() {};
 
   void FromNameAndPaths(const CStdString &category, const CStdString &name, const std::vector<CStdString> &paths);
@@ -75,7 +66,7 @@ public:
   - LOCK_MODE_UNKNOWN \n
   Value is unknown or unspecified.
   */
-  int m_iLockMode;
+  LockType m_iLockMode;
   CStdString m_strLockCode;  ///< Input code for Lock UI to verify, can be chosen freely.
   int m_iHasLock;
   int m_iBadPwdCount; ///< Number of wrong passwords user has entered since share was last unlocked

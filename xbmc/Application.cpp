@@ -770,7 +770,7 @@ HRESULT CApplication::Create(HWND hWnd)
     CProfile profile;
     profile.setDirectory("q:\\UserData");
     profile.setName("Master user");
-    profile.setLockMode(CMediaSource::LOCK_MODE_EVERYONE);
+    profile.setLockMode(LOCK_MODE_EVERYONE);
     profile.setLockCode("");
     profile.setDate("");
     g_settings.m_vecProfiles.push_back(profile);
@@ -1363,8 +1363,12 @@ HRESULT CApplication::Initialize()
 
   SAFE_DELETE(m_splash);
 
-  if (g_guiSettings.GetBool("masterlock.startuplock") && g_settings.m_vecProfiles[0].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE && !g_settings.m_vecProfiles[0].getLockCode().IsEmpty())
-    g_passwordManager.CheckStartUpLock();
+  if (g_guiSettings.GetBool("masterlock.startuplock") && 
+      g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && 
+     !g_settings.m_vecProfiles[0].getLockCode().IsEmpty())
+  {
+     g_passwordManager.CheckStartUpLock();
+  }
 
   // check if we should use the login screen
   if (g_settings.bUseLoginScreen)
@@ -4102,8 +4106,15 @@ bool CApplication::ResetScreenSaverWindow()
   // if Screen saver is active
   if (m_bScreenSave)
   {
+    int iProfile = g_settings.m_iLastLoadedProfileIndex;
     if (m_iScreenSaveLock == 0)
-      if (g_guiSettings.GetBool("screensaver.uselock") && g_settings.m_vecProfiles[0].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE && !(g_application.IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead")) && !g_guiSettings.GetString("screensaver.mode").Equals("Black"))
+      if (g_guiSettings.GetBool("screensaver.uselock")                           &&
+          g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE        &&
+          g_settings.m_vecProfiles[iProfile].getLockMode() != LOCK_MODE_EVERYONE &&
+         !g_guiSettings.GetString("screensaver.mode").Equals("Black")            &&
+        !(g_guiSettings.GetBool("screensaver.usemusicvisinstead")                && 
+         !g_guiSettings.GetString("screensaver.mode").Equals("Black")            &&
+          g_application.IsPlayingAudio())                                          )
       {
         m_iScreenSaveLock = 2;
         CGUIMessage msg(GUI_MSG_CHECK_LOCK,0,0);

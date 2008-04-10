@@ -1546,9 +1546,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     return result;
   }
   else if (condition == SYSTEM_HASLOCKS)  
-    bReturn = g_settings.m_vecProfiles[0].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE;
+    bReturn = g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE;
   else if (condition == SYSTEM_ISMASTER)
-    bReturn = g_settings.m_vecProfiles[0].getLockMode() != CMediaSource::LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
+    bReturn = g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
   else if (condition == SYSTEM_LOGGEDON)
     bReturn = !(m_gWindowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN);
   else if (condition == SYSTEM_HAS_LOGINSCREEN)
