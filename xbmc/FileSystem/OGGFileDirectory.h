@@ -1,16 +1,15 @@
 #pragma once
 
-#include "IFileDirectory.h"
+#include "MusicFileDirectory.h"
 
 namespace DIRECTORY
 {
-  class COGGFileDirectory : public IFileDirectory
+  class COGGFileDirectory : public CMusicFileDirectory
   {
-  public:
-    COGGFileDirectory(void);
-    virtual ~COGGFileDirectory(void);
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-    virtual bool Exists(const char* strPath);
-    virtual bool ContainsFiles(const CStdString& strPath);
+    public:
+      COGGFileDirectory(void);
+      virtual ~COGGFileDirectory(void);
+    protected:
+      virtual int GetTrackCount(const CStdString& strPath);
   };
 }
