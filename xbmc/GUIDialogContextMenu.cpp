@@ -41,10 +41,10 @@
 using namespace std;
 using namespace MEDIA_DETECT;
 
-#define BACKGROUND_IMAGE 999
-#define BACKGROUND_BOTTOM 998
-#define BUTTON_TEMPLATE 1000
-#define SPACE_BETWEEN_BUTTONS 2
+#define BACKGROUND_IMAGE       999
+#define BACKGROUND_BOTTOM      998
+#define BUTTON_TEMPLATE       1000
+#define SPACE_BETWEEN_BUTTONS    2
 
 void CContextButtons::Add(CONTEXT_BUTTON button, const CStdString &label)
 {

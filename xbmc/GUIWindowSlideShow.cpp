@@ -36,26 +36,26 @@
 
 using namespace DIRECTORY;
 
-#define MAX_RENDER_METHODS 9
-#define MAX_ZOOM_FACTOR    10
-#define MAX_PICTURE_WIDTH  4096
-#define MAX_PICTURE_HEIGHT 4096
-#define MAX_PICTURE_SIZE 2048*2048
+#define MAX_RENDER_METHODS                   9
+#define MAX_ZOOM_FACTOR                     10
+#define MAX_PICTURE_WIDTH                 4096
+#define MAX_PICTURE_HEIGHT                4096
+#define MAX_PICTURE_SIZE             2048*2048
 
-#define IMMEDIATE_TRANSISTION_TIME 20
+#define IMMEDIATE_TRANSISTION_TIME          20
 
-#define PICTURE_MOVE_AMOUNT     0.02f
-#define PICTURE_MOVE_AMOUNT_ANALOG 0.01f
-#define PICTURE_VIEW_BOX_COLOR   0xffffff00 // YELLOW
+#define PICTURE_MOVE_AMOUNT              0.02f
+#define PICTURE_MOVE_AMOUNT_ANALOG       0.01f
+#define PICTURE_VIEW_BOX_COLOR      0xffffff00 // YELLOW
 #define PICTURE_VIEW_BOX_BACKGROUND 0xff000000 // BLACK
 
-#define FPS        25
+#define FPS                                 25
 
-#define BAR_IMAGE     1
-#define LABEL_ROW1    10
-#define LABEL_ROW2    11
-#define LABEL_ROW2_EXTRA 12
-#define CONTROL_PAUSE   13
+#define BAR_IMAGE                            1
+#define LABEL_ROW1                          10
+#define LABEL_ROW2                          11
+#define LABEL_ROW2_EXTRA                    12
+#define CONTROL_PAUSE                       13
 
 static float zoomamount[10] = { 1.0f, 1.2f, 1.5f, 2.0f, 2.8f, 4.0f, 6.0f, 9.0f, 13.5f, 20.0f };
 
