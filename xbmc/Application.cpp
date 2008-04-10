@@ -538,6 +538,12 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
   // g_LoadErrorStr should contain the reason
   CLog::Log(LOGWARNING, "Emergency recovery console starting...");
 
+#ifndef _XBOX
+  fprintf(stderr, "Fatal error encountered, aborting\n");
+  fprintf(stderr, "Error log at %sxbmc.log\n", g_stSettings.m_logFolder.c_str());
+  abort();
+#endif
+
   bool HaveGamepad = true; // should always have the gamepad when we get here
   if (InitD3D)
     InitBasicD3D();
