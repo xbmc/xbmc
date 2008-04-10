@@ -1990,7 +1990,7 @@ void CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPat
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetFilePath(long lMovieId, CStdString &filePath, int iType)
+void CVideoDatabase::GetFilePath(long lMovieId, CStdString &filePath, VIDEODB_CONTENT_TYPE iType)
 {
   try
   {
@@ -2000,19 +2000,19 @@ void CVideoDatabase::GetFilePath(long lMovieId, CStdString &filePath, int iType)
     if (lMovieId < 0) return ;
     
     CStdString strSQL;
-    if (iType == 0)
+    if (iType == VIDEODB_CONTENT_MOVIES)
       strSQL=FormatSQL("select path.strPath,files.strFileName from path, files, movie where path.idPath=files.idPath and files.idFile=movie.idFile and movie.idMovie=%u order by strFilename", lMovieId );
-    if (iType == 1)
+    if (iType == VIDEODB_CONTENT_EPISODES)
       strSQL=FormatSQL("select path.strPath,files.strFileName from path, files, episode where path.idPath=files.idPath and files.idFile=episode.idFile and episode.idEpisode=%u order by strFilename", lMovieId );
-    if (iType == 2)
+    if (iType == VIDEODB_CONTENT_TVSHOWS)
       strSQL=FormatSQL("select path.strPath from path,tvshowlinkpath where path.idpath=tvshowlinkpath.idpath and tvshowlinkpath.idshow=%i", lMovieId );
-    if (iType ==3)
+    if (iType ==VIDEODB_CONTENT_MUSICVIDEOS)
       strSQL=FormatSQL("select path.strPath,files.strFileName from path, files, musicvideo where path.idPath=files.idPath and files.idFile=musicvideo.idFile and musicvideo.idmvideo=%u order by strFilename", lMovieId );
     
     m_pDS->query( strSQL.c_str() );
     if (!m_pDS->eof())
     {
-      if (iType != 2)
+      if (iType != VIDEODB_CONTENT_TVSHOWS)
       {
         CStdString fileName = m_pDS->fv("files.strFilename").get_asString();
         ConstructPath(filePath,m_pDS->fv("path.strPath").get_asString(),fileName);
@@ -2423,7 +2423,7 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
     m_pDS->exec(strSQL.c_str());
 
     CStdString path;
-    GetFilePath(idShow, path, 2);
+    GetFilePath(idShow, path, VIDEODB_CONTENT_TVSHOWS);
     InvalidatePathHash(path);
   }
   catch (...)
@@ -3208,10 +3208,10 @@ void CVideoDatabase::MarkAsWatched(const CFileItem &item)
   if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iEpisode == -1) // movie
     movieID = GetMovieInfo(item.m_strPath);
 
-  int iType=0;
+  VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
   if (movieID < 0)
   {
-    iType = 1;
+    iType = VIDEODB_CONTENT_EPISODES;
     movieID = GetEpisodeInfo(item.m_strPath);
   }
   if (movieID < 0)
@@ -3219,31 +3219,31 @@ void CVideoDatabase::MarkAsWatched(const CFileItem &item)
     movieID = GetMusicVideoInfo(item.m_strPath);
     if (movieID < 0)
       return;    
-    iType = 3;
+    iType = VIDEODB_CONTENT_MUSICVIDEOS;
   }
 
   // and mark as watched
   MarkAsWatched(movieID,iType);
 }
 
-void CVideoDatabase::MarkAsWatched(long lMovieId, int iType /* = 0 */)
+void CVideoDatabase::MarkAsWatched(long lMovieId, VIDEODB_CONTENT_TYPE iType /* = VIDEODB_CONTENT_MOVIES */)
 {
   try
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
     CStdString strSQL;
-    if (iType == 0)
+    if (iType == VIDEODB_CONTENT_MOVIES)
     {
       CLog::Log(LOGINFO, "Updating Movie:%ld as Watched", lMovieId);
       strSQL.Format("UPDATE movie set c%02d='true' WHERE idMovie=%u", VIDEODB_ID_WATCHED, lMovieId);
     }
-    else if (iType == 1)
+    else if (iType == VIDEODB_CONTENT_EPISODES)
     {
       CLog::Log(LOGINFO, "Updating Episode:%ld as Watched", lMovieId);
       strSQL.Format("UPDATE episode set c%02d='true' WHERE idEpisode=%u", VIDEODB_ID_EPISODE_WATCHED, lMovieId);
     }
-    else if (iType == 3)
+    else if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
     {
       CLog::Log(LOGINFO, "Updating MusicVideo:%ld as Watched", lMovieId);
       strSQL.Format("UPDATE musicvideo set c%02d='true' WHERE idMVideo=%u", VIDEODB_ID_MUSICVIDEO_WATCHED, lMovieId);
@@ -3257,25 +3257,25 @@ void CVideoDatabase::MarkAsWatched(long lMovieId, int iType /* = 0 */)
   }
 }
 
-void CVideoDatabase::MarkAsUnWatched(long lMovieId, int iType /* = 0 */)
+void CVideoDatabase::MarkAsUnWatched(long lMovieId, VIDEODB_CONTENT_TYPE iType /* = VIDEODB_CONTENT_MOVIES */)
 {
   try
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
     CStdString strSQL;
-    if (iType == 0)
+    if (iType == VIDEODB_CONTENT_MOVIES)
     {
       CLog::Log(LOGINFO, "Updating Movie:%ld as UnWatched", lMovieId);
       strSQL.Format("UPDATE movie set c%02d='false' WHERE idMovie=%u", VIDEODB_ID_WATCHED, lMovieId);
     }
 
-    else if (iType == 1)
+    else if (iType == VIDEODB_CONTENT_EPISODES)
     {
       CLog::Log(LOGINFO, "Updating Episode:%ld as UnWatched", lMovieId);
       strSQL.Format("UPDATE episode set c%02d='false' WHERE idEpisode=%u", VIDEODB_ID_EPISODE_WATCHED, lMovieId);
     }
-    else if (iType == 3)
+    else if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
     {
       CLog::Log(LOGINFO, "Updating MusicVideo:%ld as UnWatched", lMovieId);
       strSQL.Format("UPDATE musicvideo set c%02d='false' WHERE idMVideo=%u", VIDEODB_ID_MUSICVIDEO_WATCHED, lMovieId);
@@ -3288,29 +3288,29 @@ void CVideoDatabase::MarkAsUnWatched(long lMovieId, int iType /* = 0 */)
   }
 }
 
-void CVideoDatabase::UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle, int iType)
+void CVideoDatabase::UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType)
 {
   try
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
     CStdString strSQL;
-    if (iType == 0)    
+    if (iType == VIDEODB_CONTENT_MOVIES)    
     {
       CLog::Log(LOGINFO, "Changing Movie:id:%ld New Title:%s", lMovieId, strNewMovieTitle.c_str());
       strSQL = FormatSQL("UPDATE movie SET c%02d='%s' WHERE idMovie=%i", VIDEODB_ID_TITLE, strNewMovieTitle.c_str(), lMovieId );
     }
-    else if (iType == 1)
+    else if (iType == VIDEODB_CONTENT_EPISODES)
     {
       CLog::Log(LOGINFO, "Changing Episode:id:%ld New Title:%s", lMovieId, strNewMovieTitle.c_str());
       strSQL = FormatSQL("UPDATE episode SET c%02d='%s' WHERE idEpisode=%i", VIDEODB_ID_EPISODE_TITLE, strNewMovieTitle.c_str(), lMovieId );
     }
-    else if (iType == 2)
+    else if (iType == VIDEODB_CONTENT_TVSHOWS)
     {
       CLog::Log(LOGINFO, "Changing TvShow:id:%ld New Title:%s", lMovieId, strNewMovieTitle.c_str());
       strSQL = FormatSQL("UPDATE tvshow SET c%02d='%s' WHERE idShow=%i", VIDEODB_ID_TV_TITLE, strNewMovieTitle.c_str(), lMovieId );
     }
-    else if (iType == 3)
+    else if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
     {
       CLog::Log(LOGINFO, "Changing MusicVideo:id:%ld New Title:%s", lMovieId, strNewMovieTitle.c_str());
       strSQL = FormatSQL("UPDATE musicvideo SET c%02d='%s' WHERE idMVideo=%i", VIDEODB_ID_MUSICVIDEO_TITLE, strNewMovieTitle.c_str(), lMovieId );
