@@ -362,9 +362,9 @@ extern "C"
     // currently always overwrites
     bool bResult;
     if (bWrite)
-      bResult = pFile->OpenForWrite(str, bBinary, bOverwrite);
+      bResult = pFile->OpenForWrite(_P(str), bBinary, bOverwrite);
     else
-      bResult = pFile->Open(str, bBinary);
+      bResult = pFile->Open(_P(str), bBinary);
     if (bResult)
     {
       EmuFileObject* object = g_emuFileWrapper.RegisterFileObject(pFile);
@@ -390,7 +390,7 @@ extern "C"
     }
     else if (!IS_STD_STREAM(stream))
     {
-      return freopen(path, mode, stream);
+      return freopen(_P(path), mode, stream);
     }
     
     // error
