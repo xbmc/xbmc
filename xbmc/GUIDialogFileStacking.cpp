@@ -42,8 +42,8 @@ bool CGUIDialogFileStacking::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     CGUIDialog::OnMessage(message);
-	if (m_stackItems)
-		m_stackItems->Clear();
+    if (m_stackItems)
+      m_stackItems->Clear();
     return true;
   case GUI_MSG_WINDOW_INIT:
     {
