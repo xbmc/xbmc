@@ -1,19 +1,17 @@
 #pragma once
 
-#include "IFileDirectory.h"
+#include "MusicFileDirectory.h"
 #include "cores/paplayer/DllSidplay2.h"
 
 namespace DIRECTORY
 {
-  class CSIDFileDirectory : public IFileDirectory
+  class CSIDFileDirectory : public CMusicFileDirectory
   {
   public:
     CSIDFileDirectory(void);
     virtual ~CSIDFileDirectory(void);
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-    virtual bool Exists(const char* strPath);
-    virtual bool ContainsFiles(const CStdString& strPath);
   private:
     DllSidplay2 m_dll;
+    virtual int GetTrackCount(const CStdString& strPath); 
   };
 }
