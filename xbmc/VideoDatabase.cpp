@@ -3678,7 +3678,7 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
               mapActors.insert(pair<long, CActor>(lActorId, actor));
             else
             {
-              actor.playcount = false;
+              actor.playcount = 0;
               mapActors.insert(pair<long, CActor>(lActorId, actor));
             }
           }
@@ -3823,7 +3823,7 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
             if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
               mapYears.insert(pair<long, pair<CStdString,int> >(lYear, pair<CStdString,int>(year,m_pDS->fv(2).get_asInteger())));
             else
-              mapYears.insert(pair<long, pair<CStdString,int> >(lYear, pair<CStdString,int>(year,false)));
+              mapYears.insert(pair<long, pair<CStdString,int> >(lYear, pair<CStdString,int>(year,0)));
           }
         }
         m_pDS->next();
