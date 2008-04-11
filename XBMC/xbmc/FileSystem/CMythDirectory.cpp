@@ -132,7 +132,7 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, int ChanID, CFi
   if (count <= 0)
     return false;
 
-  for (unsigned int i = 0; i < count; i++)
+  for (int i = 0; i < count; i++)
   {
     if (prog[i].chanid == ChanID)
     {
