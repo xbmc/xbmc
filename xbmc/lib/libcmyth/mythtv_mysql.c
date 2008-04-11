@@ -1044,7 +1044,7 @@ cmyth_chanlist_t cmyth_mysql_get_chanlist(cmyth_database_t db)
 		channel->channum = safe_atoll(row[1]);
 		channel->name = ref_strdup(row[2]);
 		channel->icon = ref_strdup(row[3]);
-    channel->visible = safe_atoi(row[4]);
+		channel->visible = safe_atoi(row[4]);
 		chanlist->chanlist_list[rows] = channel;
 		i = 0;
 		rows++;
