@@ -958,6 +958,8 @@ extern char * cmyth_channel_name(cmyth_channel_t channel);
 
 extern char * cmyth_channel_icon(cmyth_channel_t channel);
 
+extern int cmyth_channel_visible(cmyth_channel_t channel);
+
 extern cmyth_channel_t cmyth_chanlist_get_item(cmyth_chanlist_t pl, int index);
 
 extern int cmyth_chanlist_get_count(cmyth_chanlist_t pl);
