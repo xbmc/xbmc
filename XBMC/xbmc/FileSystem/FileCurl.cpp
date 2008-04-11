@@ -17,9 +17,11 @@ using namespace XCURL;
 
 #define XMIN(a,b) ((a)<(b)?(a):(b))
 
-#ifdef __APPLE__
+#if defined(__APPLE__)
 extern "C" int __stdcall dllselect(int ntfs, fd_set *readfds, fd_set *writefds, fd_set *errorfds, const timeval *timeout);
 #define dllselect select
+#elif defined(_WIN32PC)
+extern "C" int __stdcall dllselect(int ntfs, fd_set *readfds, fd_set *writefds, fd_set *errorfds, const timeval *timeout);
 #else
 #define dllselect select
 #endif
