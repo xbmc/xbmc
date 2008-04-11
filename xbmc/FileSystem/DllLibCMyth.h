@@ -31,6 +31,7 @@ public:
   virtual int              channel_channum          (cmyth_channel_t chan)=0;
   virtual char*            channel_name             (cmyth_channel_t chan)=0;
   virtual char*            channel_icon             (cmyth_channel_t chan)=0;
+  virtual int              channel_visible          (cmyth_channel_t chan)=0;
 
   virtual cmyth_recorder_t recorder_is_recording    (cmyth_recorder_t conn)=0;
   virtual int              recorder_spawn_livetv    (cmyth_recorder_t rec)=0;
@@ -127,6 +128,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD1(int,                 channel_channum,          (cmyth_channel_t p1))
   DEFINE_METHOD1(char*,               channel_name,             (cmyth_channel_t p1))
   DEFINE_METHOD1(char*,               channel_icon,             (cmyth_channel_t p1))
+  DEFINE_METHOD1(int,                 channel_visible,          (cmyth_channel_t p1))
 
   DEFINE_METHOD1(cmyth_recorder_t,    recorder_is_recording,    (cmyth_recorder_t p1))
   DEFINE_METHOD1(int,                 recorder_spawn_livetv,    (cmyth_recorder_t p1))
@@ -210,6 +212,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_channel_channum, channel_channum)
     RESOLVE_METHOD_RENAME(cmyth_channel_name, channel_name)
     RESOLVE_METHOD_RENAME(cmyth_channel_icon, channel_icon)
+    RESOLVE_METHOD_RENAME(cmyth_channel_visible, channel_visible)
 
     RESOLVE_METHOD_RENAME(cmyth_recorder_is_recording, recorder_is_recording)
     RESOLVE_METHOD_RENAME(cmyth_recorder_spawn_livetv, recorder_spawn_livetv)
