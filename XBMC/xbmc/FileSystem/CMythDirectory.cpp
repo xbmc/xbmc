@@ -118,7 +118,10 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, int ChanID, CFi
 {
   cmyth_database_t db = m_session->GetDatabase();
   if(!db)
+  {
+    CLog::Log(LOGERROR, "%s - Could not get database", __FUNCTION__);
     return false;
+  }
 
   time_t now;
   time(&now);
@@ -128,7 +131,7 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, int ChanID, CFi
   cmyth_program_t *prog = NULL;
 
   int count = m_dll->mysql_get_guide(db, &prog, now, end);
-
+  CLog::Log(LOGDEBUG, "%s - %i entries of guide data", __FUNCTION__, count);
   if (count <= 0)
     return false;
 
