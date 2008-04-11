@@ -73,6 +73,11 @@ bool CCMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
       {
         CStdString name, path, icon;
 
+        if(!m_dll->channel_visible(channel))
+        {
+          m_dll->ref_release(channel);
+          continue;
+        }
         int num = m_dll->channel_channum(channel);
         char* str;
         if((str = m_dll->channel_name(channel)))
@@ -114,7 +119,7 @@ bool CCMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
   }
 }
 
-bool CCMythDirectory::GetGuideForChannel(const CStdString& base, int ChanID, CFileItemList &items)
+bool CCMythDirectory::GetGuideForChannel(const CStdString& base, int ChanNum, CFileItemList &items)
 {
   cmyth_database_t db = m_session->GetDatabase();
   if(!db)
@@ -137,7 +142,7 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, int ChanID, CFi
 
   for (int i = 0; i < count; i++)
   {
-    if (prog[i].channum == ChanID)
+    if (prog[i].channum == ChanNum)
     {
       CStdString path;
       path.Format("%s%s", base.c_str(), prog[i].title);
