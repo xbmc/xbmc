@@ -87,6 +87,7 @@ void CMouse::Update()
     if (m_mouseState.button[i])
     {
       bNothingDown = false;
+      m_mouseState.active = true; // wake up mouse on any click
       if (m_lastDown[i])
       { // start of hold
         bHold[i] = true;
@@ -98,8 +99,7 @@ void CMouse::Update()
           bDoubleClick[i] = true;
         }
         else
-        { // Mouse down (wake up mouse on button click)
-          m_mouseState.active = true;
+        { // Mouse down
         }
       }
     }
