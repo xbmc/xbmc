@@ -49,7 +49,7 @@ bool CCMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
   CStdString Delimiter = "/";
   CUtil::Tokenize(strPath, tokens, "/");
 
-  if (tokens.size() > 1)  
+  if (tokens.size() > 1)
     return GetGuideForChannel(base, atoi(tokens[1].c_str()), items);
   else
   {
@@ -137,7 +137,7 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, int ChanID, CFi
 
   for (int i = 0; i < count; i++)
   {
-    if (prog[i].chanid == ChanID)
+    if (prog[i].channum == ChanID)
     {
       CStdString path;
       path.Format("%s%s", base.c_str(), prog[i].title);
