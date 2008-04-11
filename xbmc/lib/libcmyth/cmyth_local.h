@@ -143,7 +143,7 @@ struct cmyth_channel {
 	char *callsign;
 	char *name;
 	char *icon;
-  int visible;
+	int visible;
 };
 
 struct cmyth_chanlist {
