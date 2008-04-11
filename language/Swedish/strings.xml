@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 04/05/2008-->
+<!--Date of translation: 04/12/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 12479-->
+<!--Based on english strings version 12592-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -257,7 +257,7 @@
   <string id="331">Komprimerar databas...</string>
   <string id="332">Fel vid komprimering av databas</string>
   <string id="333">Vill du rensa biblioteket?</string>
-  <string id="334">Rensa bibliotek...</string>
+  <string id="334">Rensa biblioteket...</string>
   <string id="335">Starta</string>
   <string id="336">Justera bildfrekvens</string>
   <string id="337">Ljudutgång</string>
@@ -271,7 +271,7 @@
   <string id="345">År</string>
   <string id="350">Program</string>
   <string id="351">Av</string>
-  <string id="352">Mörka</string>
+  <string id="352">Dimmra</string>
   <string id="353">Svart</string>
   <string id="354">Matrix-stil</string>
   <string id="355">Tid innan skärmsläckare startar</string>
@@ -385,7 +385,7 @@
   <string id="468">Flytta stapeln för att ändra OSD-position</string>
   <string id="469">OSD-position</string>
   <string id="470">Om XBMC</string>
-  <string id="471">Modchip</string>
+  <string id="471">Modchipp</string>
   <string id="474">Av</string>
   <string id="475">Bara Musik</string>
   <string id="476">Musik &amp; Video</string>
@@ -529,8 +529,8 @@
   <string id="644">Klipp bort svarta ramar</string>
   <string id="645">Måste packa upp en stor fil. Fortsätta?</string>
   <string id="646">Ta bort från bibliotek</string>
-  <string id="647">Exportera Filmbibliotek</string>
-  <string id="648">Importera Filmbibliotek</string>
+  <string id="647">Exportera filmbibliotek</string>
+  <string id="648">Importera filmbibliotek</string>
   <string id="649">Importerar</string>
   <string id="650">Exporterar</string>
   <string id="651">Bläddra efter bibliotek</string>
@@ -588,7 +588,7 @@
   <string id="743">Gul</string>
   <string id="744">Filer</string>
   <string id="745">Ingen skannad information för denna vy</string>
-  <string id="746">Byt till fil-vyn</string>
+  <string id="746">Byt tillbaka till fil-vyn</string>
   <string id="747">Fel vid laddning av bilden</string>
   <string id="748">Ändra sökväg</string>
   <string id="750">Är du säker?</string>
@@ -612,7 +612,7 @@
   <string id="771">- Automatisk FATX begränsare</string>
   <string id="772">Ljudhårdvara</string>
   <string id="773">Söker</string>
-  <string id="774">Mapp för bildspel-skärmsläckare</string>
+  <string id="774">Mapp för bildspels-skärmsläckare</string>
   <string id="790">Fjärrhändelser</string>
   <string id="791">Aktivera fjärrhändelser</string>
   <string id="792">Port för Fjärrhändelser</string>
@@ -725,7 +725,7 @@
   <string id="1412">blåsigt</string>
   <string id="1413">duggregn</string>
   <string id="1414">Åskstorm</string>
-  <string id="2050">Körtid:</string>
+  <string id="2050">Speltid:</string>
   <string id="4501">LCD typ</string>
   <string id="10000">Hem</string>
   <string id="10001">Program</string>
@@ -747,7 +747,7 @@
   <string id="10017">Inställningar-&gt;Filmer</string>
   <string id="10018">Inställningar-&gt;Nätverk</string>
   <string id="10019">Inställningar-&gt;Utseende</string>
-  <string id="10020">Inställningar-&gt;Skript</string>
+  <string id="10020">Skript</string>
   <string id="10028">Filmer/Spellista</string>
   <string id="10034">Inställningar-&gt;Profiler</string>
   <string id="10100">Ja/Nej-dialog</string>
@@ -839,7 +839,7 @@
   <string id="12373">Inställningar &amp; Filhanterare</string>
   <string id="12376">Använd som standard för alla Filmer</string>
   <string id="12377">Detta kommer att ta bort alla tidigare sparade värden</string>
-  <string id="12378">Visa varje bild för</string>
+  <string id="12378">Visa varje bild i</string>
   <string id="12379">Använd Pan och Zoom effekter</string>
   <string id="12380">Spela NTSC filmer i PAL</string>
   <string id="12381">Spela PAL filmer i NTSC</string>
@@ -857,7 +857,7 @@
   <string id="12900">Skärmsläckare</string>
   <string id="12901">Fullskärms OSD</string>
   <string id="13000">System</string>
-  <string id="13001">Omedelbar HD nervarvning</string>
+  <string id="13001">Omedelbar HD nedvarvning</string>
   <string id="13002">Bara Video</string>
   <string id="13003">- Fördröjning</string>
   <string id="13004">- Minimum speltid</string>
@@ -928,7 +928,7 @@
   <string id="13288">XBOX version:</string>
   <string id="13289">XBOX serienummer:</string>
   <string id="13290">XBOX tillverkare:</string>
-  <string id="13291">Modchip:</string>
+  <string id="13291">Modchipp:</string>
   <string id="13292">A/V kabel:</string>
   <string id="13293">Film &amp; XBE region:</string>
   <string id="13294">DVD-region:</string>
@@ -939,7 +939,7 @@
   <string id="13299">Måltemperatur</string>
   <string id="13300">Fläktfart</string>
   <string id="13301">Automatisk temp. kontroll</string>
-  <string id="13302">Styr fläktfart</string>
+  <string id="13302">Styr fläkthastighet</string>
   <string id="13303">Skaltypsnitt</string>
   <string id="13304">Vänd textriktning</string>
   <string id="13305">Aktivera RSS-nyheter</string>
@@ -1036,6 +1036,7 @@ den här visualiseringen</string>
   <string id="13408">(IMDb användarbetyg)</string>
   <string id="13409">Topp 250:</string>
   <string id="13410">Ställ in på lastfm</string>
+  <string id="13411">Minsta fläkthastighet</string>
   <string id="14000">Stapling: På</string>
   <string id="14001">Stapling: Av</string>
   <string id="14003">Laddar ner spellista...</string>
@@ -1054,9 +1055,9 @@ den här visualiseringen</string>
   <string id="14016">Minst en fil och en miniatyr</string>
   <string id="14017">Procent av miniatyrer</string>
   <string id="14018">Vyval</string>
-  <string id="14019">Ändra områdeskod 1</string>
-  <string id="14020">Ändra områdeskod 2</string>
-  <string id="14021">Ändra områdeskod 3</string>
+  <string id="14019">Områdeskod 1</string>
+  <string id="14020">Områdeskod 2</string>
+  <string id="14021">Områdeskod 3</string>
   <string id="14022">Bibliotek</string>
   <string id="14023">Ingen TV</string>
   <string id="14024">Skriv in din närmsta storstad</string>
@@ -1093,7 +1094,7 @@ den här visualiseringen</string>
   <string id="14057">Inte möjligt medan du skannar efter mediainfo</string>
   <string id="14058">Filmbruseffekt</string>
   <string id="14059">Leta miniatyrer på utdelningar</string>
-  <string id="14060">Okänd typ buffert- Internet</string>
+  <string id="14060">Okänd typ buffert - Internet</string>
   <string id="14061">Auto</string>
   <string id="14062">Ange användarnamn för</string>
   <string id="14063">Datum &amp; tid</string>
@@ -1307,7 +1308,7 @@ den här visualiseringen</string>
   <string id="16204">Misslyckades flytta minst en fil</string>
   <string id="16205">Radering misslyckades</string>
   <string id="16206">Misslyckades radera minst en fil</string>
-  <string id="20000">CDDA Rippmapp</string>
+  <string id="20000">Inspelningsmapp</string>
   <string id="20001">Använd extern DVD spelare</string>
   <string id="20002">Extern DVD spelare</string>
   <string id="20003">Mapp för hjälpprogram</string>
@@ -1376,11 +1377,11 @@ den här visualiseringen</string>
   <string id="20080">Inaktivera RSS under musik</string>
   <string id="20081">Aktivera genvägsknappar</string>
   <string id="20082">Visa XLink Kai info</string>
-  <string id="20083">Visa musikinfo</string>
-  <string id="20084">Visa väderinfo</string>
-  <string id="20085">Visa systeminfo</string>
-  <string id="20086">Visa ledigt diskutrymme C: E: F:</string>
-  <string id="20087">Visa ledigt diskutrymme E: F: G:</string>
+  <string id="20083">Visa musikinformation</string>
+  <string id="20084">Visa väderinformation</string>
+  <string id="20085">Visa systeminformation</string>
+  <string id="20086">Visa ledigt diskutrymme (C: E: F:)</string>
+  <string id="20087">Visa ledigt diskutrymme (E: F: G:)</string>
   <string id="20088">Väderinfo</string>
   <string id="20089">Ledigt diskutrymme</string>
   <string id="20090">Mata in namnet på en befintlig delning</string>
@@ -1498,9 +1499,9 @@ den här visualiseringen</string>
   <string id="20307">Sekundär DNS</string>
   <string id="20308">DHCP server:</string>
   <string id="20309">Skapa ny mapp</string>
-  <string id="20310">Mörka LCD vid uppspelning</string>
+  <string id="20310">Dimmra LCD vid uppspelning</string>
   <string id="20311">Okänd eller inbyggd (skyddad)</string>
-  <string id="20312">Mörka LCD vid paus</string>
+  <string id="20312">Dimmra LCD vid paus</string>
   <string id="20313">Slå på LED vid paus</string>
   <string id="20314">Filmer - Bibliotek</string>
   <string id="20315">Sparade spel</string>
@@ -1567,7 +1568,7 @@ den här visualiseringen</string>
   <string id="20377">Uppdatera TV serieinformation</string>
   <string id="20378">Uppdatera alla avsnitt?</string>
   <string id="20379">Mappen innehåller en TV-serie</string>
-  <string id="20380">ignorera mapp vid skanning</string>
+  <string id="20380">Ignorera mapp vid skanning</string>
   <string id="20381">Specialer</string>
   <string id="20382">Hämta säsongsminiatyrer automatiskt</string>
   <string id="20383">Mappen innehåller en enstaka film</string>
@@ -1601,6 +1602,7 @@ den här visualiseringen</string>
   <string id="20412">Lägg ihop TV-serie om endast ett avsnitt</string>
   <string id="20413">Hämta Fan-konst</string>
   <string id="20414">Visa Fan-konst i videobibliotek</string>
+  <string id="20415">Skannar efter nytt innehåll</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
@@ -1757,7 +1759,7 @@ den här visualiseringen</string>
   <string id="21898">Aktiva år:</string>
   <string id="21899">Etikett:</string>
   <string id="21900">Född/bildat</string>
-  <string id="22000">Uppdatera bibliotek vid uppstart</string>
+  <string id="22000">Uppdatera biblioteket vid uppstart</string>
   <string id="22001">Uppdatera alltid biblioteket i bakgrunden</string>
   <string id="22002">- DNS suffix</string>
   <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>
