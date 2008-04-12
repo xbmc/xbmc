@@ -99,7 +99,7 @@ EXPORTS
 	cmyth_channel_channum
 	cmyth_channel_name
 	cmyth_channel_icon
-  cmyth_channel_visible
+	cmyth_channel_visible
 	cmyth_channel_create
 	cmyth_mysql_get_chanlist
 	cmyth_posmap_create
