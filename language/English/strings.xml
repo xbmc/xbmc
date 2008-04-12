@@ -1579,14 +1579,6 @@
   <string id="20251">Mixing drinks (videos)</string>
   <string id="20252">Filling glasses (videos)</string>
 
-  <string id="20192"></string>
-  <string id="20193"></string>
-  <string id="20194"></string>
-  <string id="20195"></string>
-  <string id="20196"></string>
-  <string id="20197"></string>
-  <string id="20198"></string>
-  <string id="20199"></string>
   <string id="20300"></string>
   <string id="20301"></string>
   <string id="20302"></string>
@@ -1698,6 +1690,7 @@
   <string id="20407">Scraper Settings</string>
   <string id="20408">Downloading Music Video information</string>
   <string id="20409">Downloading TV Show information</string>
+  <string id="20410">Trailer</string>
   <string id="20411">Flatten</string>
   <string id="20412">Flatten TV Show if only a single season</string>
   <string id="20413">Get FanArt</string>
