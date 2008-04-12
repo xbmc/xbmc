@@ -220,7 +220,7 @@ class CGUIListItem;
 #define LASTFM_CANLOVE              306
 #define LASTFM_CANBAN               307
 
-
+#define CONTAINER_NUM_ITEMS         359
 #define CONTAINER_FOLDERTHUMB       360
 #define CONTAINER_FOLDERPATH        361
 #define CONTAINER_CONTENT           362
