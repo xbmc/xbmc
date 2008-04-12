@@ -288,7 +288,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     WaitForSingleObject(m_hReadyEvent, INFINITE);
 
     // Playback might have been stopped due to some error
-    if (m_bStop) return false;
+    if (m_bStop || m_bAbortRequest) return false;
 
     /* check if we got a full dvd state, then use that */
     if( options.state.size() > 0 && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
@@ -529,18 +529,19 @@ void CDVDPlayer::Process()
   if (!m_pInputStream || !m_pInputStream->Open(m_filename.c_str(), m_content))
   {
     CLog::Log(LOGERROR, "InputStream: Error opening, %s", m_filename.c_str());
-    // inputstream will be destroyed in OnExit()
+    m_bAbortRequest = true;
     return;
   }
 
   if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-  {
     CLog::Log(LOGNOTICE, "DVDPlayer: playing a dvd with menu's");
-  }
 
   CLog::Log(LOGNOTICE, "Creating Demuxer");
   if(!OpenDemuxStream())
+  {
+    m_bAbortRequest = true;
     return;
+  }
 
   // find any available external subtitles for non dvd files
   if( !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
