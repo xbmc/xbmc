@@ -208,22 +208,7 @@ Add -q to the commandline "./XboxMediaCenter -q" will remove the on screen
 Debug info when you have compiled with debug mode on (default)
 
 ----------------------------------------
-6.6 Basic MythTV support
-----------------------------------------
-
-  We have very basic MythTV support in xbmc. enable using --enable-gmyth on configure line. 
-  requires glib-2.0, gobject-2.0, gthread-2.0, curl, gmyth.
-
-  You have to manually add a share like "myth://user:pass@hostname/" since there is no support
-  for browsing for server at the moment.
-
-  Know Issues:
-    * Channel Switching in dvdplayer using Page Up/Down fails
-    * Seeking in live-recorded streams doesn't work properly
-    * Current playback position doesn't update properly when program changes
-
-----------------------------------------
-6.7 experimental - SMB mount shares 
+6.6 experimental - SMB mount shares 
 ----------------------------------------
 
 this is an experimental feature. it will mount all smb sources externally (on filesystem under /media/xbmc/smb)
