@@ -382,7 +382,10 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         CStdString fanart(showItem.GetCachedVideoFanart());
         if (CFile::Exists(fanart))
           items.SetProperty("fanart_image", fanart);
-        
+
+        // save the show description (showplot)
+        items.SetProperty("showplot", details.m_strPlot);
+
         // set the season thumb
         CStdString strLabel;
         if (params.GetSeason() == 0)

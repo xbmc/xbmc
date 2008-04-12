@@ -240,6 +240,7 @@ class CGUIListItem;
 #define CONTAINER_NUM_PAGES         376
 #define CONTAINER_CURRENT_PAGE      377
 #define CONTAINER_SEASONTHUMB       378
+#define CONTAINER_SHOWPLOT          379
 
 #define MUSICPM_ENABLED             380
 #define MUSICPM_SONGSPLAYED         381
