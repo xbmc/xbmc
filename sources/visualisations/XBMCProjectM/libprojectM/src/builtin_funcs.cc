@@ -36,8 +36,11 @@ float int_wrapper(float * arg_list) {
 
 
 float sqr_wrapper(float * arg_list) {
-	
+#ifdef _WIN32PC
+  return sqrt(arg_list[0]);
+#else
 	return pow(2, arg_list[0]);
+#endif
 }	
 	
 	

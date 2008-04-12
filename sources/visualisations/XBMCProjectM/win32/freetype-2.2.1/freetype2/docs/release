@@ -1,0 +1,69 @@
+How to prepare a new release
+----------------------------
+
+. include/freetype/freetype.h:  Update FREETYPE_MAJOR, FREETYPE_MINOR,
+  and FREETYPE_PATCH.
+
+.  builds/unix/configure.ac (version_info):  Update  according to  the
+  libtool  rules,  then  regenerate  the  configure  script  with  the
+  top-level  `autogen.sh'.   After  that,  update  `config.guess'  and
+  `config.sub'  to the  most recent  versions (from  the  `config' CVS
+  repository).
+
+  Assure that  the most  recent versions of  autoconf and  libtool are
+  used while calling `autogen.sh'.
+
+. builds/freetype.mk (refdoc): Update the `--title' option.
+
+. docs/CHANGES: Document differences to last release.
+
+. README: Update.
+
+. docs/VERSION.DLL: Document changed `version_info'.
+
+. ChangeLog: Announce new release (both freetype2 and ft2demos).
+
+. Call  `make   refdoc'  to  update   HTML  reference.   Copy   it  to
+  freetype.freedesktop.org:/srv/freetype.freedesktop.org/\
+  freetype2/docs/reference.
+
+  TODO: Create  FreeType  home  page  CVS on  savannah.nongnu.org  and
+        update it accordingly.
+
+        Write script to automatically do this.
+
+        Mirror FreeType's savannah home page everywhere.
+
+. Tag the CVS (freetype2, ft2demos).
+
+  TODO: Tag the home page CVS on savannah.nongnu.org.
+
+. Create packages for  freetype2, ft2demos, and documentation (in zip,
+  .tar.gz, and .tar.bz2 format).
+
+  Assure that the  .zip file uses CR/LF at line ends  -- but *not* for
+  images!
+
+  TODO: Write scripts and/or provide make targets to do that.
+
+. Create  signature files with `gpg  -b' and upload  files to savannah
+  and sourceforge.
+
+  TODO: Write script to do this.  Cf. automake's `gnupload' script.
+
+. Announce new release on freetype-announce@nongnu.org and to relevant
+  newsgroups.
+
+----------------------------------------------------------------------
+
+Copyright 2003, 2005, 2006 by
+David Turner, Robert Wilhelm, and Werner Lemberg.
+
+This  file is  part of  the FreeType  project, and  may only  be used,
+modified,  and distributed  under the  terms of  the  FreeType project
+license,  LICENSE.TXT.  By  continuing to  use, modify,  or distribute
+this file you  indicate that you have read  the license and understand
+and accept it fully.
+
+
+--- end of release ---

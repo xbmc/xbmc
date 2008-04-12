@@ -1,0 +1,36 @@
+This  file describes various  problems that  have been  encountered in
+compiling,  installing  and   running  FreeType  2.   Suggestions  for
+additions or other improvements to this file are welcome.
+
+----------------------------------------------------------------------
+
+
+Compilation Problems
+====================
+
+
+* I get an `internal compilation error' (ICE) while compiling FreeType
+  2.2.1 with Intel C++.
+
+This has been reported for the following compiler version:
+
+  Intel(R) C++ Compiler for 32-bit applications,
+    Version 9.0 Build 20050430Z Package ID: W_CC_P_9.0.019
+
+A solution to this problem is to apply the following patch.
+
+
+--- src/cache/ftcbasic.c	2006-03-20 14:34:23.000000000 +0100
++++ src/cache/ftcbasic.c.patched	2006-04-03 18:39:28.165346008 +0200
+@@ -266,7 +266,7 @@
+ 
+ 
+   FT_CALLBACK_TABLE_DEF
+-  const FTC_GCacheClassRec  ftc_basic_image_cache_class =
++  FTC_GCacheClassRec  ftc_basic_image_cache_class =
+   {
+     {
+       ftc_inode_new,
+
+
+----------------------------------------------------------------------

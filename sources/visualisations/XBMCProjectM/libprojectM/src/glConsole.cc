@@ -47,8 +47,13 @@
 
 #include "wipemalloc.h"
 
+#ifndef _WIN32PC
 #include <FTGL/FTGL.h>
 #include <FTGL/FTGLPixmapFont.h>
+#else
+#include <FTGL.h>
+#include <FTGLPixmapFont.h>
+#endif
 
 #define HEIGHT_SPACE 8 /* pixel space between lines */
 #define DEFAULT_CONSOLE_FOREGROUND_COLOR CONSOLE_WHITE
@@ -808,8 +813,12 @@ int glConsoleDraw( gl_console_t * console) {
 	for (y = 0; y < console->screen_height; y++) {
 
 	  glPushMatrix();
-          char buffer[console->screen_width+1];
-           memset( buffer, '\0',sizeof(char) * (console->screen_width+1));
+#ifdef _WIN32PC
+    char buffer[MAX_CONSOLE_WIDTH+1];
+#else
+    char buffer[console->screen_width+1];
+#endif
+    memset( buffer, '\0',sizeof(char) * (console->screen_width+1));
 
 	  
     	  

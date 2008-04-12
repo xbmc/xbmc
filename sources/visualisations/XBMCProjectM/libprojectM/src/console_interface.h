@@ -30,7 +30,7 @@
 
 void default_key_handler(projectM_t *PM, projectMEvent event, projectMKeycode keycode);
 void refreshConsole(void*);
-#ifdef __CPLUSPLUS
+#ifdef __cplusplus 
 extern "C" void key_handler(projectM_t *PM, projectMEvent event, projectMKeycode keycode, projectMModifier modifier );
 #else
 extern void key_handler(projectM_t *PM, projectMEvent event, projectMKeycode keycode, projectMModifier modifier );

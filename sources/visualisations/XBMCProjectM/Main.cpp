@@ -41,7 +41,12 @@ d4rk@xboxmediacenter.com
 #include "libprojectM/src/preset.h"
 #include "libprojectM/src/PCM.h"
 #include <string>
+#ifdef _WIN32PC
+#include "libprojectM/src/win32-dirent.h"
+extern int preset_index;
+#else
 #include <dirent.h>
+#endif
 
 #define CONFIG_FILE "/config"
 #define PRESETS_DIR "/visualisations/projectM"
@@ -72,12 +77,14 @@ int g_numPresets = 0;
 // Some helper Functions
 
 // case-insensitive alpha sort from projectM's win32-dirent.cc
+#ifndef _WIN32PC
 int alphasort(const void* lhs, const void* rhs) 
 {
   const struct dirent* lhs_ent = *(struct dirent**)lhs;
   const struct dirent* rhs_ent = *(struct dirent**)rhs;
   return strcasecmp(lhs_ent->d_name, rhs_ent->d_name);
 }
+#endif
 
 // check for a valid preset extension
 int check_valid_extension(const struct dirent* ent) 
@@ -99,7 +106,7 @@ int check_valid_extension(const struct dirent* ent)
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
-#ifndef _LINUX
+#ifdef HAS_XBOX_HARDWARE
 extern "C" void Create(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio)
 #else
 extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio)
@@ -261,6 +268,7 @@ extern "C" void GetInfo(VIS_INFO* pInfo)
 extern "C" bool OnAction(long flags, void *param)
 {
   bool ret = false;
+
   if (flags == VIS_ACTION_LOAD_PRESET && param)
   {
     int pindex = *(int*)param;

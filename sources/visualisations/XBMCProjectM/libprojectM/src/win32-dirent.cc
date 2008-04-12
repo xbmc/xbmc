@@ -166,7 +166,7 @@ int scandir(
 			struct dirent** new_entries;
 			
 			max_entries *= 2;
-			new_entries = realloc(*namelist, max_entries);
+			new_entries = (dirent**)realloc(*namelist, max_entries);
 			if (!new_entries) {
 				scandir_free_dir_entries(namelist, entries);
 				closedir(d);
@@ -178,7 +178,7 @@ int scandir(
 		}
 
 		// allocate new entry
-		(*namelist)[entries] = malloc(sizeof(struct dirent) + strlen(ent->d_name) + 1);
+		(*namelist)[entries] = (dirent*)malloc(sizeof(struct dirent) + strlen(ent->d_name) + 1);
 		if (!(*namelist)[entries]) {
 			scandir_free_dir_entries(namelist, entries);
 			closedir(d);

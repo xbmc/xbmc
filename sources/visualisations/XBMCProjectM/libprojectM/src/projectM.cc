@@ -21,11 +21,16 @@
 
 
 #include <math.h>
+#ifndef _WIN32PC
 #include <unistd.h>
-
 #include <FTGL/FTGL.h>
 #include <FTGL/FTGLPixmapFont.h>
 #include <FTGL/FTGLPolygonFont.h>
+#else
+#include <FTGL.h>
+#include <FTGLPixmapFont.h>
+#include <FTGLPolygonFont.h>
+#endif
 
 #include "wipemalloc.h"
 #include "fatal.h"
@@ -247,21 +252,33 @@ fflush( debugFile );
       /** Frame-rate limiter */
       /** Compute once per preset */
       if (pm->count%100==0) 
-      	{
-	  pm->realfps=100.0/((getTicks(&pm->startTime)-pm->fpsstart)/1000);
-	  pm->fpsstart=getTicks(&pm->startTime);      	          
-      	}
+      {
+#ifndef WIN32
+	      pm->realfps=100.0/((getTicks(&pm->startTime)-pm->fpsstart)/1000);
+	      pm->fpsstart=getTicks(&pm->startTime);      	 
+      }
 
       int timediff = getTicks(&pm->startTime)-pm->timestart;
+#else
+        pm->realfps=100.0/((getTicks(pm->startTime)-pm->fpsstart)/1000);
+	      pm->fpsstart=getTicks(pm->startTime); 
+      }
+
+      int timediff = getTicks(pm->startTime)-pm->timestart;
+#endif
 
       if ( timediff < pm->mspf) 
-	{	 
-	  // printf("%s:",pm->mspf-timediff);
-	  if (1 /* usleep( (unsigned int)( pm->mspf-timediff ) * 1000 ) != 0 */) 
-	    {	      
-	    }	  
-	}
-       pm->timestart=getTicks(&pm->startTime);
+	    {	 
+	      // printf("%s:",pm->mspf-timediff);
+	      if (1 /* usleep( (unsigned int)( pm->mspf-timediff ) * 1000 ) != 0 */) 
+	      {	      
+	      }	  
+	    }
+#ifndef WIN32
+      pm->timestart=getTicks(&pm->startTime);
+#else
+      pm->timestart=getTicks(pm->startTime);
+#endif
      
 }
 

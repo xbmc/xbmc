@@ -1,0 +1,79 @@
+This  document contains  instructions  on how  to  build the  FreeType
+library on Unix  systems.  This also works for  emulations like Cygwin
+or MSys on Win32:
+
+
+  1. Ensure that you are using GNU Make
+  -------------------------------------
+
+    The FreeType build system  _exclusively_ works with GNU Make.  You
+    will  not be  able to  compile the  library with  the instructions
+    below using any other alternative (including BSD Make).
+
+    [Well,  this  is not  really  correct.  A  few  years  ago a  perl
+    implementation of make called `makepp' has appeared which can also
+    build FreeType 2 successfully on Unix platforms.  See
+
+      http://makepp.sourceforge.net
+
+    for more  details; you  need version 1.19  or newer, and  you must
+    pass option `--norc-substitution'.]
+
+    Trying  to compile  the library  with a  different Make  tool will
+    print a message like:
+
+      Sorry, GNU make is required to build FreeType2.
+
+    and the build  process will be aborted.  If  this happens, install
+    GNU Make on your system,  and use the GNUMAKE environment variable
+    to name it, if necessary.
+
+
+  2. Build and install the library
+  --------------------------------
+
+    The following  should work  on all Unix  systems where  the `make'
+    command invokes GNU Make:
+
+      ./configure [options]
+      make
+      make install           (as root)
+
+    The default installation path  is `/usr/local'.  It can be changed
+    with the `--prefix=<path>' option.  Example:
+
+      ./configure --prefix=/usr
+
+    When using a different command to invoke GNU Make, use the GNUMAKE
+    variable.  For example,  if `gmake' is the command  to use on your
+    system, do something like:
+
+       GNUMAKE=gmake ./configure [options]
+       gmake
+       gmake install            (as root)
+
+    If  this still doesn't  work, there  must be  a problem  with your
+    system (e.g., you are using a very old version of GNU Make).
+
+    It  is possible  to  compile FreeType  in  a different  directory.
+    Assuming the FreeType source  files in directory `/src/freetype' a
+    compilation in directory `foo' works as follows:
+
+      cd foo
+      /src/freetype/configure [options]
+      make
+      make install
+
+----------------------------------------------------------------------
+
+Copyright 2003, 2004, 2005, 2006 by
+David Turner, Robert Wilhelm, and Werner Lemberg.
+
+This  file is  part of  the FreeType  project, and  may only  be used,
+modified,  and distributed  under the  terms of  the  FreeType project
+license,  LICENSE.TXT.  By  continuing to  use, modify,  or distribute
+this file you  indicate that you have read  the license and understand
+and accept it fully.
+
+
+--- end of INSTALL.UNX ---
