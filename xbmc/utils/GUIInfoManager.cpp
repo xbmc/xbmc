@@ -589,6 +589,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       int itemID = atoi(info.Mid(9, info.GetLength() - 10));
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_HAS_FOCUS : CONTAINER_HAS_FOCUS, id, itemID));
     }
+    else if (info.Equals("showplot")) ret = CONTAINER_SHOWPLOT;
     if (id && (ret == CONTAINER_ON_NEXT || ret == CONTAINER_ON_PREVIOUS))
       return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id));
   }
@@ -1050,6 +1051,13 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case CONTAINER_NUM_PAGES:
   case CONTAINER_CURRENT_PAGE:
     return GetMultiInfoLabel(GUIInfo(info), contextWindow);
+    break;
+  case CONTAINER_SHOWPLOT:
+    {
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("showplot");
+    }
     break;
   case SYSTEM_BUILD_VERSION:
     strLabel = GetVersion();
