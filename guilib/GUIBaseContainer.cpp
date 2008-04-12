@@ -734,19 +734,30 @@ bool CGUIBaseContainer::HasPreviousPage() const
   return false;
 }
 
-unsigned int CGUIBaseContainer::GetNumPages() const
+CStdString CGUIBaseContainer::GetLabel(int info) const
 {
-  return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
-}
-
-unsigned int CGUIBaseContainer::GetCurrentPage() const
-{
-  // TODO: Probably won't work for wraplist, but the concept of which page doesn't
-  //       make as much sense in that case anyway
-  unsigned int page = m_offset / m_itemsPerPage + 1;
-  if (m_offset + m_itemsPerPage >= (int)GetRows())
-    return GetNumPages();
-  return page;
+  CStdString label;
+  switch (info)
+  {
+  case CONTAINER_NUM_PAGES:
+    label.Format("%u", (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage);
+    break;
+  case CONTAINER_CURRENT_PAGE:
+    if (m_offset + m_itemsPerPage >= (int)GetRows())
+      label.Format("%u", (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage);
+    else
+      label.Format("%u", m_offset / m_itemsPerPage + 1);
+    break;
+  case CONTAINER_NUM_ITEMS:
+    if (m_items.size() && m_items[0]->IsFileItem() && ((CFileItem *)m_items[0])->IsParentFolder())
+      label.Format("%u", m_items.size()-1);
+    else
+      label.Format("%u", m_items.size());
+    break;
+  default:
+      break;
+  }
+  return label;
 }
 
 
