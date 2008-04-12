@@ -20,6 +20,8 @@ public:
 
 private:
   void Release();
+  bool GetGuide(const CStdString& base, CFileItemList &items);
+  bool GetGuideForChannel(const CStdString& base, int ChanNum, CFileItemList &items);
   bool GetRecordings(const CStdString& base, CFileItemList &items);
   bool GetChannels  (const CStdString& base, CFileItemList &items);
   bool GetChannelsDb(const CStdString& base, CFileItemList &items);
