@@ -574,6 +574,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SUBITEM : CONTAINER_SUBITEM, id, atoi(info.Mid(8, info.GetLength() - 9))));
     else if (info.Equals("hasthumb")) ret = CONTAINER_HAS_THUMB;
     else if (info.Equals("numpages")) ret = CONTAINER_NUM_PAGES;
+    else if (info.Equals("numitems")) ret = CONTAINER_NUM_ITEMS;
     else if (info.Equals("currentpage")) ret = CONTAINER_CURRENT_PAGE;
     else if (info.Equals("sortmethod")) ret = CONTAINER_SORT_METHOD;
     else if (info.Left(5).Equals("sort("))
@@ -1049,6 +1050,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     }
     break;
   case CONTAINER_NUM_PAGES:
+  case CONTAINER_NUM_ITEMS:
   case CONTAINER_CURRENT_PAGE:
     return GetMultiInfoLabel(GUIInfo(info), contextWindow);
     break;
@@ -2064,7 +2066,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
   {
     return GetTime((TIME_FORMAT)info.m_data1);
   }
-  else if (info.m_info == CONTAINER_NUM_PAGES || info.m_info == CONTAINER_CURRENT_PAGE)
+  else if (info.m_info == CONTAINER_NUM_PAGES || info.m_info == CONTAINER_CURRENT_PAGE || info.m_info == CONTAINER_NUM_ITEMS)
   {
     const CGUIControl *control = NULL;
     if (info.m_data1)
@@ -2080,14 +2082,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
         control = window->GetControl(window->GetViewContainerID());
     }
     if (control && control->IsContainer())
-    {
-      CStdString strNum;
-      if (info.m_info == CONTAINER_NUM_PAGES)
-        strNum.Format("%u", ((CGUIBaseContainer *)control)->GetNumPages());
-      else
-        strNum.Format("%u", ((CGUIBaseContainer *)control)->GetCurrentPage());
-      return strNum;
-    }
+      return ((CGUIBaseContainer *)control)->GetLabel(info.m_info);
   }
   return StringUtils::EmptyString;
 }
