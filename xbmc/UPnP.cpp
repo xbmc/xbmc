@@ -1402,7 +1402,11 @@ CUPnP::StartServer()
     if (!m_ServerHolder->m_Device.IsNull()) return;
 
 #ifdef HAS_LINUX_NETWORK
-    NPT_String ip = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
+    NPT_String ip;
+    if (g_application.getNetwork().GetFirstConnectedInterface())
+    {
+      ip = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
+    }
 #else
     NPT_String ip = g_network.m_networkinfo.ip;
 #endif
@@ -1485,7 +1489,11 @@ void CUPnP::StartRenderer()
     g_settings.LoadUPnPXml(filename);
 
 #ifdef _LINUX
-    NPT_String ip = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
+    NPT_String ip;
+    if (g_application.getNetwork().GetFirstConnectedInterface())
+    {
+      ip = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
+    }
 #else
     NPT_String ip = g_application.getNetwork().m_networkinfo.ip;
 #endif
