@@ -125,9 +125,6 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "hdhomerun") return new CDirectoryHomeRun();
     if (strProtocol == "myth") return new CCMythDirectory();
     if (strProtocol == "cmyth") return new CCMythDirectory();
-#ifdef HAS_GMYTH
-    if (strProtocol == "gmyth") return new CGMythDirectory();
-#endif
   }
 
  return NULL;
