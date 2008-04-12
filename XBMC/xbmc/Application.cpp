@@ -3860,10 +3860,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
        SwitchToFullScreen();
     }
 #endif
-  }
 
-  if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-    g_audioManager.Enable(false);
+    if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
+      g_audioManager.Enable(false);
+  }
 
   return bResult;
 }
