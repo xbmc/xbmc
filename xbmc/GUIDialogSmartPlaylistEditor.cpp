@@ -150,7 +150,10 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
     if (CGUIDialogKeyboard::ShowAndGetInput(filename, g_localizeStrings.Get(16013), false))
     {
       CStdString strTmp;
-      CUtil::AddFileToFolder(m_playlist.m_playlistType,filename,strTmp);
+      if (m_playlist.m_playlistType == "tvshows" || m_playlist.m_playlistType == "episodes")
+        CUtil::AddFileToFolder("tvshows",filename,strTmp);
+      else
+        CUtil::AddFileToFolder(m_playlist.m_playlistType,filename,strTmp);
       CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),strTmp,path);
     }
     else
@@ -215,6 +218,10 @@ void CGUIDialogSmartPlaylistEditor::OnType()
       m_playlist.SetType("video");
   if (msg.GetParam1() == 3)
     m_playlist.SetType("mixed");
+  if (msg.GetParam1() == 4)
+    m_playlist.SetType("tvshows");
+  if (msg.GetParam1() == 5)
+    m_playlist.SetType("episodes");
   UpdateButtons();
 }
 
@@ -325,23 +332,43 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
     OnMessage(msg);
   }
   // type
+  if (m_playlist.GetType().Equals("tvshows"))
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 4);
+    CStdString label = g_localizeStrings.Get(20343);    // tvshows
+    msg.SetLabel(label);
+    OnMessage(msg);
+    CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_TYPE, 4);
+    OnMessage(msg2);
+    return;
+  }
+  else if (m_playlist.GetType().Equals("episodes"))
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 5);
+    CStdString label = g_localizeStrings.Get(20360);    // episodes
+    msg.SetLabel(label);
+    OnMessage(msg);
+    CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_TYPE, 5);
+    OnMessage(msg2);
+    return;
+  }
   if (m_isPartyMode != 2)
   {
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 1);
-    CStdString label = g_localizeStrings.Get(2);
+    CStdString label = g_localizeStrings.Get(2);    // music
     msg.SetLabel(label);
     OnMessage(msg);
   }
   if (m_isPartyMode != 1)
   {
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 2);
-    CStdString label = g_localizeStrings.Get(3);
+    CStdString label = g_localizeStrings.Get(3);    // video (music video!)
     msg.SetLabel(label);
     OnMessage(msg);
   }
   {
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 3);
-    CStdString label= g_localizeStrings.Get(20395);
+    CStdString label= g_localizeStrings.Get(20395); // mixed
     msg.SetLabel(label);
     OnMessage(msg);
   }

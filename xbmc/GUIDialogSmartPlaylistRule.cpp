@@ -35,6 +35,7 @@
 #define CONTROL_CANCEL          19
 #define CONTROL_BROWSE          20
 
+using namespace std;
 using namespace PLAYLIST;
 
 CGUIDialogSmartPlaylistRule::CGUIDialogSmartPlaylistRule(void)
@@ -95,16 +96,25 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   videodatabase.Open();
 
   int iLabel;
-  if (m_rule.m_field == CSmartPlaylistRule::SONG_GENRE)
+  if (m_rule.m_field == CSmartPlaylistRule::FIELD_GENRE)
   {
     if (m_type.Equals("music") || m_type.Equals("mixed"))
       database.GetGenresNav("musicdb://4/",items);
     if (m_type.Equals("video") || m_type.Equals("mixed"))
     {
       CFileItemList items2;
-      videodatabase.GetGenresNav("videodb://3/1/",items2,3);
-      items.Append(items2);
+      videodatabase.GetGenresNav("videodb://3/1/",items2,VIDEODB_CONTENT_MUSICVIDEOS);
+      items.AppendPointer(items2);
+      items2.ClearKeepPointer();
     }
+    if (m_type.Equals("tvshows") || m_type.Equals("episodes"))
+    {
+      CFileItemList items2;
+      videodatabase.GetGenresNav("videodb://3/1/",items2,VIDEODB_CONTENT_TVSHOWS);
+      items.AppendPointer(items2);
+      items2.ClearKeepPointer();
+    }
+
     iLabel = 515;
   }
   if (m_rule.m_field == CSmartPlaylistRule::SONG_ARTIST || m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM_ARTIST)
@@ -130,6 +140,12 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
       items.Append(items2);
     }
     iLabel = 483;
+  }
+  // TODO: SMARTPLAYLISTS add support for different types of content + directors
+  if (m_rule.m_field == CSmartPlaylistRule::VIDEO_ACTOR)
+  { 
+    videodatabase.GetActorsNav("",items,VIDEODB_CONTENT_TVSHOWS);
+    iLabel = 20337;
   }
 
   CGUIDialogSelect* pDialog = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -291,7 +307,7 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
   CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_OPERATOR);
   OnMessage(selected);
   m_rule.m_operator = (CSmartPlaylistRule::SEARCH_OPERATOR)selected.GetParam1();
-  if ((m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM || m_rule.m_field == CSmartPlaylistRule::SONG_ARTIST || m_rule.m_field == CSmartPlaylistRule::SONG_GENRE || m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM_ARTIST) && (m_rule.m_operator == CSmartPlaylistRule::OPERATOR_EQUALS || m_rule.m_operator == CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL))
+  if ((m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM || m_rule.m_field == CSmartPlaylistRule::SONG_ARTIST || m_rule.m_field == CSmartPlaylistRule::FIELD_GENRE || m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM_ARTIST) && (m_rule.m_operator == CSmartPlaylistRule::OPERATOR_EQUALS || m_rule.m_operator == CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL))
   {
     CONTROL_ENABLE(CONTROL_BROWSE)
   }
@@ -314,17 +330,11 @@ void CGUIDialogSmartPlaylistRule::OnInitWindow()
 {
   CGUIDialog::OnInitWindow();
   // add the fields to the field spincontrol
-  for (int field = CSmartPlaylistRule::FIELD_NONE + 1; field < CSmartPlaylistRule::FIELD_RANDOM; field++)
+  vector<CSmartPlaylistRule::DATABASE_FIELD> fields = CSmartPlaylistRule::GetFields(m_type);
+  for (unsigned int i = 0; i < fields.size(); i++)
   {
-    if (field == CSmartPlaylistRule::SONG_DATEADDED)
-      continue;   // TODO: We don't have dateadded field in the database, so can't filter on this yet
-    if (m_type.Equals("video"))
-    {
-      if (field == CSmartPlaylistRule::SONG_COMMENT || field == CSmartPlaylistRule::SONG_TRACKNUMBER || field == CSmartPlaylistRule::SONG_ALBUM_ARTIST || field == CSmartPlaylistRule::SONG_PLAYCOUNT || field == CSmartPlaylistRule::SONG_LASTPLAYED || field == CSmartPlaylistRule::SONG_TIME || field == CSmartPlaylistRule::SONG_RATING)
-        continue;
-    }
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_FIELD, field);
-    msg.SetLabel(CSmartPlaylistRule::GetLocalizedField((CSmartPlaylistRule::DATABASE_FIELD)field));
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_FIELD, fields[i]);
+    msg.SetLabel(CSmartPlaylistRule::GetLocalizedField(fields[i]));
     OnMessage(msg);
   }
   UpdateButtons();
@@ -346,22 +356,22 @@ CGUIDialogSmartPlaylistRule::FIELD CGUIDialogSmartPlaylistRule::GetFieldType(CSm
 {
   switch (field)
   {
-  case CSmartPlaylistRule::SONG_GENRE:
+  case CSmartPlaylistRule::FIELD_GENRE:
   case CSmartPlaylistRule::SONG_ALBUM:
   case CSmartPlaylistRule::SONG_ARTIST:
   case CSmartPlaylistRule::SONG_ALBUM_ARTIST:
-  case CSmartPlaylistRule::SONG_TITLE:
+  case CSmartPlaylistRule::FIELD_TITLE:
   case CSmartPlaylistRule::SONG_FILENAME:
   case CSmartPlaylistRule::SONG_COMMENT:
     return TEXT_FIELD;
 
-  case CSmartPlaylistRule::SONG_YEAR:
+  case CSmartPlaylistRule::FIELD_YEAR:
   case CSmartPlaylistRule::SONG_TRACKNUMBER:
-  case CSmartPlaylistRule::SONG_PLAYCOUNT:
-  case CSmartPlaylistRule::SONG_RATING:
+  case CSmartPlaylistRule::FIELD_PLAYCOUNT:
+  case CSmartPlaylistRule::FIELD_RATING:
     return NUMERIC_FIELD;
 
-  case CSmartPlaylistRule::SONG_TIME:
+  case CSmartPlaylistRule::FIELD_TIME:
     return SECONDS_FIELD;
 
   case CSmartPlaylistRule::SONG_LASTPLAYED:

@@ -253,7 +253,9 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE UNIQUE INDEX ix_directorlinkmusicvideo_2 ON directorlinkmusicvideo ( idMVideo, idDirector )\n");
 
     CLog::Log(LOGINFO, "create tvshowview");
-    CStdString showview=FormatSQL("create view tvshowview as select tvshow.*,path.strPath,counts.totalcount,counts.watchedcount from tvshow "
+    CStdString showview=FormatSQL("create view tvshowview as select tvshow.*,path.strPath as strPath,"
+                                    "counts.totalcount as totalCount,counts.watchedcount as watchedCount,"
+                                    "case counts.totalcount=counts.watchedcount when 1 then '1' else '0' end as watched from tvshow "
                                     "join tvshowlinkpath on tvshow.idShow=tvshowlinkpath.idShow "
                                     "join path on path.idpath=tvshowlinkpath.idPath "
                                     "join ("
@@ -3124,7 +3126,9 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     if (iVersion < 18)
     {
       // add tvshowview to simplify code
-      CStdString showview=FormatSQL("create view tvshowview as select tvshow.*,path.strPath,counts.totalcount,counts.watchedcount from tvshow "
+      CStdString showview=FormatSQL("create view tvshowview as select tvshow.*,path.strPath as strPath,"
+                                    "counts.totalcount as totalCount,counts.watchedcount as watchedCount,"
+                                    "case counts.totalcount=counts.watchedcount when 1 then '1' else '0' end as watched from tvshow "
                                     "join tvshowlinkpath on tvshow.idShow=tvshowlinkpath.idShow "
                                     "join path on path.idpath=tvshowlinkpath.idPath "
                                     "join ("
@@ -4188,24 +4192,28 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
 
 bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idYear, long idActor, long idDirector)
 {
+  CStdString where;
+  if (idGenre != -1)
+    where = FormatSQL("join genrelinktvshow on genrelinktvshow.idshow=tvshowview.idshow where genrelinktvshow.idGenre=%u ", idGenre);
+  else if (idDirector != -1)
+    where = FormatSQL("join directorlinktvshow on directorlinktvshow.idshow=tvshowview.idshow where directorlinktvshow.idDirector=%u", idDirector);
+  else if (idYear != -1)
+    where = FormatSQL("where c%02d like '%%%u%%'", VIDEODB_ID_TV_PREMIERED,idYear);
+  else if (idActor != -1)
+    where = FormatSQL("join actorlinktvshow on actorlinktvshow.idshow=tvshowview.idshow join actors on actors.idActor=actorlinktvshow.idActor where actors.idActor=%u",idActor);
+
+  return GetTvShowsByWhere(strBaseDir, where, items);
+}
+
+bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items)
+{
   try
   {
     DWORD time = timeGetTime();
 	  movieTime = 0;
-	  castTime = 0;
 	
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-
-    CStdString where;
-    if (idGenre != -1)
-      where = FormatSQL("join genrelinktvshow on genrelinktvshow.idshow=tvshowview.idshow where genrelinktvshow.idGenre=%u ", idGenre);
-    else if (idDirector != -1)
-      where = FormatSQL("join directorlinktvshow on directorlinktvshow.idshow=tvshowview.idshow where directorlinktvshow.idDirector=%u", idDirector);
-    else if (idYear != -1)
-      where = FormatSQL("where c%02d like '%%%u%%'", VIDEODB_ID_TV_PREMIERED,idYear);
-    else if (idActor != -1)
-      where = FormatSQL("join actorlinktvshow on actorlinktvshow.idshow=tvshowview.idshow join actors on actors.idActor=actorlinktvshow.idActor where actors.idActor=%u",idActor);
 
     CStdString strSQL = "select * from tvshowview " + where;
     // run query
@@ -4238,6 +4246,8 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
         pItem->SetProperty("watchedepisodes", movie.m_playCount);
         pItem->SetProperty("unwatchedepisodes", movie.m_iEpisode - movie.m_playCount);
+        pItem->GetVideoInfoTag()->m_playCount = (movie.m_iEpisode == movie.m_playCount) ? 1 : 0;
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,pItem->GetVideoInfoTag()->m_playCount > 0);
         items.Add(pItem);
       }
       m_pDS->next();
@@ -4256,6 +4266,7 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
   return false;
 }
 
+
 bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idYear, long idActor, long idDirector, long idShow, long idSeason)
 {
   try
@@ -4267,28 +4278,29 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = FormatSQL("select * from episodeview where idShow=%u",idShow);
+    CStdString where = FormatSQL("where idShow=%u",idShow);
 
     if (idGenre != -1)
-      strSQL = FormatSQL("select * from episodeview join genrelinktvshow on genrelinktvshow.idShow=episodeview.idShow where episodeview.idShow=%u and genrelinktvshow.idgenre=%u",idShow,idGenre);
+      where = FormatSQL("join genrelinktvshow on genrelinktvshow.idShow=episodeview.idShow where episodeview.idShow=%u and genrelinktvshow.idgenre=%u",idShow,idGenre);
 
     if (idDirector != -1)
-      strSQL = FormatSQL("select * from episodeview join directorlinktvshow on directorlinktvshow.idshow=episodeview.idshow where episodeview.idShow=%u and directorlinktvshow.iddirector=%u",idShow,idDirector);
+      where = FormatSQL("join directorlinktvshow on directorlinktvshow.idshow=episodeview.idshow where episodeview.idShow=%u and directorlinktvshow.iddirector=%u",idShow,idDirector);
 
     if (idYear !=-1)
-      strSQL=FormatSQL("select * from episodeview where idShow=%u and premiered like '%%%u%%'",idShow,idYear);
+      where=FormatSQL("where idShow=%u and premiered like '%%%u%%'",idShow,idYear);
 
     if (idActor != -1)
-      strSQL = FormatSQL("select * from episodeview join actorlinktvshow on actorlinktvshow.idshow = episodeview.idshow where episodeview.idShow=%u and actorlinktvshow.idactor=%u",idShow,idActor);
+      where = FormatSQL("actorlinktvshow on actorlinktvshow.idshow = episodeview.idshow where episodeview.idShow=%u and actorlinktvshow.idactor=%u",idShow,idActor);
 
     if (idSeason != -1)
     {
       if (idSeason != 0)
-        strSQL += FormatSQL(" and (c%02d=%u or c%02d=0)",VIDEODB_ID_EPISODE_SEASON,idSeason,VIDEODB_ID_EPISODE_SEASON);
+        where += FormatSQL(" and (c%02d=%u or c%02d=0)",VIDEODB_ID_EPISODE_SEASON,idSeason,VIDEODB_ID_EPISODE_SEASON);
       else
-        strSQL += FormatSQL(" and c%02d=%u",VIDEODB_ID_EPISODE_SEASON,idSeason);
+        where += FormatSQL(" and c%02d=%u",VIDEODB_ID_EPISODE_SEASON,idSeason);
     }
 
+    CStdString strSQL = "select * from episodeview " + where;
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -4344,6 +4356,63 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
   }
   return false;
 }
+
+bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items)
+{
+  try
+  {
+    DWORD time = timeGetTime();
+	  movieTime = 0;
+	  castTime = 0;
+	
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL = "select * from episodeview " + where;
+
+    // run query
+    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return true;
+    }
+
+    CLog::Log(LOGDEBUG,"Time for actual SQL query = %ld", timeGetTime() - time); time = timeGetTime();
+
+    // get data from returned rows
+    items.Reserve(iRowsFound);
+    while (!m_pDS->eof())
+    {
+      long lEpisodeId = m_pDS->fv("idEpisode").get_asLong();
+
+      CVideoInfoTag movie = GetDetailsForEpisode(m_pDS);
+      CFileItem* pItem=new CFileItem(movie);
+      pItem->m_strPath.Format("%s%ld/%ld",strBaseDir.c_str(),movie.m_iSeason,lEpisodeId);
+      
+      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_playCount > 0);
+      pItem->m_dateTime.SetFromDateString(movie.m_strFirstAired);
+      pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
+      items.Add(pItem);
+
+      m_pDS->next();
+    }
+
+    CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %ld", timeGetTime() - time);
+
+    // cleanup
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
 
 bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idYear, long idArtist, long idDirector, long idStudio)
 {

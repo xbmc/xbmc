@@ -1703,6 +1703,8 @@
   <string id="20413">Get FanArt</string>
   <string id="20414">Show Fanart in Video Library</string>
   <string id="20415">Scanning for new content</string>
+  <string id="20416">First Aired</string>
+  <string id="20417">Writer</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -1793,6 +1795,8 @@
   <string id="21437">New Smart Playlist...</string>
   <string id="21438">%c Drive</string>
   <string id="21439">Edit Party Mode Rules</string>
+  <string id="21440">New TV Show Smart Folder...</string>
+  <string id="21441">New Episode Smart Folder...</string>
 
   <string id="21800">File Name</string>
   <string id="21801">File Path</string>

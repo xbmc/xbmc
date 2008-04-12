@@ -25,6 +25,26 @@ namespace DIRECTORY
     if (!playlist.Load(strPath))
       return false;
     bool success = false, success2 = false;
+    if (playlist.GetType().Equals("tvshows"))
+    {
+      CVideoDatabase db;
+      db.Open();
+      CStdString whereOrder = playlist.GetWhereClause() + " " + playlist.GetOrderClause();
+      success = db.GetTvShowsByWhere("videodb://2/2/", whereOrder, items);
+      items.SetContent("tvshows");
+      db.Close();
+      return success;
+    }
+    else if (playlist.GetType().Equals("episodes"))
+    {
+      CVideoDatabase db;
+      db.Open();
+      CStdString whereOrder = playlist.GetWhereClause() + " " + playlist.GetOrderClause();
+      success = db.GetEpisodesByWhere("videodb://2/2/", whereOrder, items);
+      items.SetContent("episodes");
+      db.Close();
+      return success;
+    }
     if (playlist.GetType().Equals("music") || playlist.GetType().Equals("mixed") || playlist.GetType().IsEmpty())
     {
       CMusicDatabase db;

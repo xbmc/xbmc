@@ -992,7 +992,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           else
             buttons.Add(CONTEXT_BUTTON_UPDATE_TVSHOW, 13349);
         }
-        if (node == NODE_TYPE_TITLE_TVSHOWS || node == NODE_TYPE_SEASONS || (item->IsVideoDb() && item->HasVideoInfoTag() && !item->m_bIsFolder))
+        if ((info.strContent.Equals("tvshows") && item->m_bIsFolder) || (item->IsVideoDb() && item->HasVideoInfoTag() && !item->m_bIsFolder))
         {
           if (item->m_bIsFolder || item->GetVideoInfoTag()->m_playCount > 0)
             buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched

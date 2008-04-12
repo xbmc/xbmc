@@ -1475,6 +1475,16 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
     newPlaylist->SetLabel(g_localizeStrings.Get(21437));
     newPlaylist->SetLabelPreformated(true);
     items.Add(newPlaylist);
+
+    newPlaylist = new CFileItem("newsmartplaylist://tvshows", false);
+    newPlaylist->SetLabel(g_localizeStrings.Get(21440));
+    newPlaylist->SetLabelPreformated(true);
+    items.Add(newPlaylist);
+
+    newPlaylist = new CFileItem("newsmartplaylist://episodes", false);
+    newPlaylist->SetLabel(g_localizeStrings.Get(21441));
+    newPlaylist->SetLabelPreformated(true);
+    items.Add(newPlaylist);
   }
 
   return bResult;

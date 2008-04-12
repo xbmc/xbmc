@@ -361,9 +361,6 @@ public:
   bool GetRecentlyAddedEpisodesNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetRecentlyAddedMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idArtist=-1, long idDirector=-1, long idStudio=-1);
-  bool GetMusicVideosByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items);
-  unsigned int GetMusicVideoIDs(const CStdString& strWhere, std::vector<std::pair<int,long> > &songIDs);
-  bool GetRandomMusicVideo(CFileItem* item, long& lSongId, const CStdString& strWhere);
   long GetMusicVideoArtistByName(const CStdString& strArtist);
   long GetMusicVideoByArtistAndAlbumAndTitle(const CStdString& strArtist, const CStdString& strAlbum, const CStdString& strTitle);
 
@@ -371,7 +368,6 @@ public:
   int GetMovieCount();
   int GetTvShowCount();
   int GetMusicVideoCount();
-  int GetMusicVideoCount(const CStdString& strWhere);
 
   bool GetGenreById(long lIdGenre, CStdString& strGenre);
 
@@ -385,6 +381,15 @@ public:
   long AddFile(const CStdString& strFileName);
   void ExportToXML(const CStdString &xmlFile, bool singleFiles = false);
   void ImportFromXML(const CStdString &xmlFile);
+
+  // smart playlist retrieval
+  bool GetTvShowsByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items);
+  bool GetEpisodesByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items);
+
+  int GetMusicVideoCount(const CStdString& strWhere);
+  bool GetMusicVideosByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items);
+  unsigned int GetMusicVideoIDs(const CStdString& strWhere, std::vector<std::pair<int,long> > &songIDs);
+  bool GetRandomMusicVideo(CFileItem* item, long& lSongId, const CStdString& strWhere);
 
 protected:
   long GetFile(const CStdString& strFilenameAndPath);

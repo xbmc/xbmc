@@ -4620,6 +4620,8 @@ CStdString CUtil::VideoPlaylistsLocation()
   vec.push_back(strReturn);
   CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "mixed", strReturn);
   vec.push_back(strReturn);
+  CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "tvshows", strReturn);
+  vec.push_back(strReturn);
   return DIRECTORY::CMultiPathDirectory::ConstructMultiPath(vec);;
 }
 
