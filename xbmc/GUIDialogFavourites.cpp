@@ -196,7 +196,7 @@ void CGUIDialogFavourites::OnRename(int item)
 void CGUIDialogFavourites::UpdateList()
 {
   int currentItem = GetSelectedItem();
-  CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), FAVOURITES_LIST, currentItem >= 0 ? currentItem : 0, 0, &m_favourites);
+  CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), FAVOURITES_LIST, currentItem >= 0 ? currentItem : 0, 0, m_favourites);
   OnMessage(message);
 }
 
