@@ -642,7 +642,7 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( CStdString& strPath, int iDriv
 
 void CGUIWindowFileManager::UpdateControl(int iList, int item)
 {
-  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), iList + CONTROL_LEFT_LIST, item, 0, &m_vecItems[iList]);
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), iList + CONTROL_LEFT_LIST, item, 0, m_vecItems[iList]);
   g_graphicsContext.SendMessage(msg);
 }
 
