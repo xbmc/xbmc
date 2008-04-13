@@ -33,12 +33,14 @@ CGUIDialogSelect::CGUIDialogSelect(void)
 {
   m_bButtonEnabled = false;
   m_vecListInternal = new CFileItemList;
+  m_selectedItem = new CFileItem;
   m_vecList = m_vecListInternal;
 }
 
 CGUIDialogSelect::~CGUIDialogSelect(void)
 {
   delete m_vecListInternal;
+  delete m_selectedItem;
 }
 
 bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
@@ -93,7 +95,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
           m_iSelected = msg.GetParam1();
           if(m_iSelected >= 0 && m_iSelected < (int)m_vecList->Size())
           {
-            *m_selectedItem = *((*m_vecList)[m_iSelected]);
+            *m_selectedItem = *m_vecList->Get(m_iSelected);
             Close();
           }
           else
