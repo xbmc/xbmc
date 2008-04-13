@@ -1,4 +1,4 @@
-/*
+  /*
  *      Copyright (C) 2005-2007 Team XboxMediaCenter
  *      http://www.xboxmediacenter.com
  *
@@ -561,9 +561,9 @@ bool CFileItem::IsFileFolder() const
     IsPlayList() ||
     IsZIP() ||
     IsRAR() ||
-    IsType("ogg") ||
-    IsType("nsf") ||
-    IsType("sid") ||
+    IsType(".ogg") ||
+    IsType(".nsf") ||
+    IsType(".sid") ||
     IsShoutCast()
     )
     );
