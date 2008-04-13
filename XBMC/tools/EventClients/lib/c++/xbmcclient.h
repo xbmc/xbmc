@@ -251,6 +251,7 @@ public:
     if (IconType == ICON_NONE || IconFile == NULL)
     {
       m_IconData = NULL;
+      m_IconSize = 0;
       return;
     }
 
