@@ -37,11 +37,13 @@ vector<CPluginDirectory *> CPluginDirectory::globalHandles;
 CPluginDirectory::CPluginDirectory(void)
 {
   m_directoryFetched = CreateEvent(NULL, false, false, NULL);
+  m_listItems = new CFileItemList;
 }
 
 CPluginDirectory::~CPluginDirectory(void)
 {
   CloseHandle(m_directoryFetched);
+  delete m_listItems;
 }
 
 int CPluginDirectory::getNewHandle(CPluginDirectory *cp)
