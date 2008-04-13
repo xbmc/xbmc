@@ -360,6 +360,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   {
     options |= SDL_FULLSCREEN;
   }
+  s_glVendor   = "Unkown";
+  s_glRenderer = "Unkown";
   m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 32, options);
   if (m_SDLSurface) 
   {

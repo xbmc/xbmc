@@ -62,9 +62,9 @@ public:
   bool MakePBuffer();
   bool MakePixmap();
 #endif
-#ifdef HAS_SDL_OPENGL
   std::string& GetGLVendor() { return s_glVendor; }
   std::string& GetGLRenderer() { return s_glRenderer; }
+#ifdef HAS_SDL_OPENGL
   void GetGLVersion(int& maj, int&min);
 #endif
 
