@@ -30,5 +30,6 @@ protected:
   virtual void SelectItem(int item);
   virtual bool HasNextPage() const;
   virtual bool HasPreviousPage() const;
+  virtual int GetCurrentPage() const;
 };
 
