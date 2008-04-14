@@ -150,10 +150,8 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
     if (CGUIDialogKeyboard::ShowAndGetInput(filename, g_localizeStrings.Get(16013), false))
     {
       CStdString strTmp;
-      if (m_playlist.m_playlistType == "tvshows" || m_playlist.m_playlistType == "episodes")
-        CUtil::AddFileToFolder("tvshows",filename,strTmp);
-      else
-        CUtil::AddFileToFolder(m_playlist.m_playlistType,filename,strTmp);
+      if (m_playlist.m_playlistType != "music")
+        CUtil::AddFileToFolder("video",filename,strTmp);
       CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),strTmp,path);
     }
     else
@@ -215,13 +213,15 @@ void CGUIDialogSmartPlaylistEditor::OnType()
   if (msg.GetParam1() == 1)
     m_playlist.SetType("music");
   if (msg.GetParam1() == 2)
-      m_playlist.SetType("video");
+      m_playlist.SetType("musicvideos");
   if (msg.GetParam1() == 3)
     m_playlist.SetType("mixed");
   if (msg.GetParam1() == 4)
     m_playlist.SetType("tvshows");
   if (msg.GetParam1() == 5)
     m_playlist.SetType("episodes");
+  if (msg.GetParam1() == 6)
+    m_playlist.SetType("movies");
   UpdateButtons();
 }
 
@@ -352,6 +352,16 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
     OnMessage(msg2);
     return;
   }
+  else if (m_playlist.GetType().Equals("movies"))
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 6);
+    CStdString label = g_localizeStrings.Get(342);    // movies
+    msg.SetLabel(label);
+    OnMessage(msg);
+    CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_TYPE, 6);
+    OnMessage(msg2);
+    return;
+  }
   if (m_isPartyMode != 2)
   {
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 1);
@@ -378,11 +388,11 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
     {
       if (m_isPartyMode == 2) // unallowed type - reset to video
       {
-        m_playlist.SetType("video");
+        m_playlist.SetType("musicvideos");
         iType = 2;
       }
     }
-    if (m_playlist.GetType().Equals("video"))
+    if (m_playlist.GetType().Equals("musicvideos"))
     {
       if (m_isPartyMode == 1) // unallowed type - reset to music
       {

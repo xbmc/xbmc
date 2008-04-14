@@ -45,6 +45,16 @@ namespace DIRECTORY
       db.Close();
       return success;
     }
+    else if (playlist.GetType().Equals("movies"))
+    {
+      CVideoDatabase db;
+      db.Open();
+      CStdString whereOrder = playlist.GetWhereClause() + " " + playlist.GetOrderClause();
+      success = db.GetEpisodesByWhere("videodb://2/2/", whereOrder, items);
+      items.SetContent("movies");
+      db.Close();
+      return success;
+    }
     if (playlist.GetType().Equals("music") || playlist.GetType().Equals("mixed") || playlist.GetType().IsEmpty())
     {
       CMusicDatabase db;
@@ -60,7 +70,7 @@ namespace DIRECTORY
       db.Close();
       playlist.SetType(type);
     }
-    if (playlist.GetType().Equals("video") || playlist.GetType().Equals("mixed"))
+    if (playlist.GetType().Equals("musicvideos") || playlist.GetType().Equals("mixed"))
     {
       CVideoDatabase db;
       db.Open();
@@ -76,7 +86,7 @@ namespace DIRECTORY
     }
     if (playlist.GetType().Equals("mixed"))
       return success || success2;
-    else if (playlist.GetType().Equals("video"))
+    else if (playlist.GetType().Equals("musicvideos"))
       return success2;
     else
       return success;

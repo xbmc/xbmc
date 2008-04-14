@@ -57,13 +57,18 @@ static const translateField fields[] = { { "none", CSmartPlaylistRule::FIELD_NON
                                          { "comment", CSmartPlaylistRule::SONG_COMMENT, 569 },
                                          { "dateadded", CSmartPlaylistRule::FIELD_DATEADDED, 570 },
                                          { "plot", CSmartPlaylistRule::VIDEO_PLOT, 207 },
+                                         { "plotouline", CSmartPlaylistRule::VIDEO_PLOTOUTLINE, 203 }, // contains :
+                                         { "tagline", CSmartPlaylistRule::VIDEO_TAGLINE, 202 },   // contains :
+                                         { "mpaarating", CSmartPlaylistRule::VIDEO_MPAA, 20074 }, // contains :
+                                         { "top250", CSmartPlaylistRule::VIDEO_TOP250, 13409 },   // contains :
                                          { "status", CSmartPlaylistRule::TVSHOW_STATUS, 126 },
                                          { "votes", CSmartPlaylistRule::VIDEO_VOTES, 20350 },
                                          { "director", CSmartPlaylistRule::VIDEO_DIRECTOR, 20339 },
                                          { "actor", CSmartPlaylistRule::VIDEO_ACTOR, 20337 },
+                                         { "studio", CSmartPlaylistRule::VIDEO_STUDIO, 572 },
                                          { "numepisodes", CSmartPlaylistRule::TVSHOW_NUMEPISODES, 20360 },
                                          { "numwatched", CSmartPlaylistRule::TVSHOW_NUMWATCHED, 16102 },
-                                         { "writers", CSmartPlaylistRule::EPISODE_WRITER, 20417 },
+                                         { "writers", CSmartPlaylistRule::VIDEO_WRITER, 20417 },
                                          { "airdate", CSmartPlaylistRule::EPISODE_AIRDATE, 20416 },
                                          { "episode", CSmartPlaylistRule::EPISODE_EPISODE, 20359 },
                                          { "season", CSmartPlaylistRule::EPISODE_SEASON, 20373 },
@@ -198,7 +203,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(VIDEO_VOTES);
     fields.push_back(FIELD_RATING);
     fields.push_back(FIELD_TIME);
-    fields.push_back(EPISODE_WRITER);
+    fields.push_back(VIDEO_WRITER);
     fields.push_back(EPISODE_AIRDATE);
     fields.push_back(FIELD_PLAYCOUNT);
     fields.push_back(FIELD_GENRE);
@@ -209,7 +214,27 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(EPISODE_SEASON);
 //    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
   }
-  else if (type == "video")   // currently musicvideos only
+  else if (type == "movies")
+  {
+    fields.push_back(FIELD_TITLE);
+    fields.push_back(VIDEO_PLOT);
+    fields.push_back(VIDEO_PLOTOUTLINE);
+    fields.push_back(VIDEO_TAGLINE);
+    fields.push_back(VIDEO_VOTES);
+    fields.push_back(FIELD_RATING);
+    fields.push_back(FIELD_TIME);
+    fields.push_back(VIDEO_WRITER);
+    fields.push_back(FIELD_PLAYCOUNT);
+    fields.push_back(FIELD_GENRE);
+    fields.push_back(FIELD_YEAR); // premiered
+    fields.push_back(VIDEO_DIRECTOR);
+    fields.push_back(VIDEO_ACTOR);
+    fields.push_back(VIDEO_MPAA);
+    fields.push_back(VIDEO_TOP250);
+    fields.push_back(VIDEO_STUDIO);
+//    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
+  }
+  else if (type == "musicvideo")
   {
     fields.push_back(FIELD_TITLE);
     fields.push_back(FIELD_GENRE);
@@ -217,6 +242,11 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_YEAR);
     fields.push_back(SONG_ARTIST);
     fields.push_back(SONG_FILENAME);
+    fields.push_back(FIELD_PLAYCOUNT);
+    fields.push_back(FIELD_TIME);
+    fields.push_back(VIDEO_DIRECTOR);
+    fields.push_back(VIDEO_STUDIO);
+    fields.push_back(VIDEO_PLOT);
 //    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
   }
   fields.push_back(FIELD_PLAYLIST);
@@ -295,7 +325,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
 
   // now the query parameter
   CStdString query;
-  if (strType == "music")
+  if (strType == "musics")
   {
     if (m_field == FIELD_GENRE)
       query = "(strGenre" + parameter + ") or (idsong IN (select idsong from genre,exgenresong where exgenresong.idgenre = genre.idgenre and genre.strGenre" + parameter + "))";
@@ -306,31 +336,48 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
     else if (m_field == SONG_LASTPLAYED && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
       query = "lastPlayed is NULL or lastPlayed" + parameter;
   }
-  if (strType == "video")
+  else if (strType == "movie")
+  {
+    if (m_field == FIELD_GENRE)
+      query = "idmovie in (select idmovie from genrelinkmovie join genre on genre.idgenre=genrelinkmovie.idgenre where genre.strGenre" + parameter + ")";
+    else if (m_field == VIDEO_DIRECTOR)
+      query = "idmovie in (select idmovie from directorlinkmovie join actors on actors.idactor=directorlinkmovie.iddirector where actors.strActor" + parameter + ")";
+    else if (m_field == VIDEO_ACTOR)
+      query = "idmovie in (select idmovie from actorlinkmovie join actors on actors.idactor=actorlinkmovie.idactor where actors.strActor" + parameter + ")";
+    else if (m_field == VIDEO_WRITER)
+      query = "idmovie in (select idmovie from writerlinkmovie join actors on actors.idactor=writerlinkmovie.idactor where actors.strActor" + parameter + ")";
+    else if (m_field == VIDEO_STUDIO)
+      query = "idmovie in (select idmovie from studiolinkmovie join studio on studio.idstudio=studiolinkmovie.idstudio where studio.strStudio" + parameter + ")";
+  }
+  else if (strType == "musicvideos")
   {
     if (m_field == FIELD_GENRE)
       query = "(strGenre" + parameter + ") or (idmvideo IN (select genrelinkmusicvideo.idmvideo from genre,genrelinkmusicvideo where genrelinkmusicvideo.idgenre = genre.idgenre and genre.strGenre" + parameter + "))";
     else if (m_field == SONG_ARTIST)
       query = "(strArtist" + parameter + ") or (idmvideo IN (select genrelinkmusicvideo.idmvideo from actors,artistlinkmusicvideo where artistlinkmusicvideo.idartist = actors.idActor and actors.strActor" + parameter + "))";
+    else if (m_field == VIDEO_STUDIO)
+      query = "idmvideo in (select idmvideo from studiolinkmusicvideo join studio on studio.idstudio=studiolinkmusicvideo.idstudio where studio.strStudio" + parameter + ")";
+    else if (m_field == VIDEO_DIRECTOR)
+      query = "idmvideo in (select idmvideo from directorlinkmusicvideo join actors on actors.idactor=directorlinkmusicvideo.iddirector where actors.strActor" + parameter + ")";
   }
-  if (strType == "tvshows")
+  else if (strType == "tvshows")
   {
-    if (m_field == FIELD_GENRE) // technically don't need the join for this one, but it's consistent with the others
+    if (m_field == FIELD_GENRE)
       query = "idshow in (select idshow from genrelinktvshow join genre on genre.idgenre=genrelinktvshow.idgenre where genre.strGenre" + parameter + ")";
     else if (m_field == VIDEO_DIRECTOR)
       query = "idshow in (select idshow from directorlinktvshow join actors on actors.idactor=directorlinktvshow.iddirector where actors.strActor" + parameter + ")";
     else if (m_field == VIDEO_ACTOR)
       query = "idshow in (select idshow from actorlinktvshow join actors on actors.idactor=actorlinktvshow.idactor where actors.strActor" + parameter + ")";
   }
-  if (strType == "episodes")
+  else if (strType == "episodes")
   {
-    if (m_field == FIELD_GENRE) // TODO: SMARTPLAYLIST this is using show lookup as episode lookups seems to
+    if (m_field == FIELD_GENRE)
       query = "idshow in (select idshow from genrelinktvshow join genre on genre.idgenre=genrelinktvshow.idgenre where genre.strGenre" + parameter + ")";
     else if (m_field == VIDEO_DIRECTOR)
       query = "idepisode in (select idepisode from directorlinkepisode join actors on actors.idactor=directorlinkepisode.iddirector where actors.strActor" + parameter + ")";
     else if (m_field == VIDEO_ACTOR)
       query = "idepisode in (select idepisode from actorlinkepisode join actors on actors.idactor=actorlinkepisode.idactor where actors.strActor" + parameter + ")";
-    else if (m_field == EPISODE_WRITER)
+    else if (m_field == VIDEO_WRITER)
       query = "idepisode in (select idepisode from writerlinkepisode join actors on actors.idactor=writerlinkepisode.idactor where actors.strActor" + parameter + ")";
   }
   if (m_field == FIELD_PLAYLIST)
@@ -371,7 +418,29 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_RANDOM) return "random()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) return "idsong";     // only used for order clauses
   }
-  if (type == "video")
+  else if (type == "movies")
+  {
+    CStdString result;
+    if (field == FIELD_TITLE) result.Format("c%02d", VIDEODB_ID_TITLE);
+    else if (field == VIDEO_PLOT) result.Format("c%02d", VIDEODB_ID_PLOT);
+    else if (field == VIDEO_PLOTOUTLINE) result.Format("c%02d", VIDEODB_ID_PLOTOUTLINE);
+    else if (field == VIDEO_TAGLINE) result.Format("c%02d", VIDEODB_ID_TAGLINE);
+    else if (field == VIDEO_VOTES) result.Format("c%02d", VIDEODB_ID_VOTES);
+    else if (field == FIELD_RATING) result.Format("c%02d", VIDEODB_ID_RATING);
+    else if (field == FIELD_TIME) result.Format("c%02d", VIDEODB_ID_RUNTIME);
+    else if (field == VIDEO_WRITER) result = "never_use_this";   // join required
+    else if (field == FIELD_PLAYCOUNT) result.Format("c%02d", VIDEODB_ID_PLAYCOUNT);
+    else if (field == FIELD_GENRE) result = "never_use_this";    // join required
+    else if (field == FIELD_YEAR) result.Format("c%02d", VIDEODB_ID_YEAR);
+    else if (field == VIDEO_DIRECTOR) result = "never_use_this"; // join required
+    else if (field == VIDEO_ACTOR) result = "never_use_this";    // join required
+    else if (field == VIDEO_MPAA) result.Format("c%02d", VIDEODB_ID_MPAA);
+    else if (field == VIDEO_TOP250) result.Format("c%02d", VIDEODB_ID_TOP250);
+    else if (field == VIDEO_STUDIO) result = "never_use_this";   // join required
+    else if (field == FIELD_RANDOM) result = "random()";      // only used for order clauses
+    else if (field == FIELD_DATEADDED) result = "idshow";       // only used for order clauses
+  }
+  else if (type == "musicvideos")
   {
     CStdString result;
     if (field == FIELD_TITLE) result.Format("musicvideo.c%02d",VIDEODB_ID_MUSICVIDEO_TITLE);
@@ -380,6 +449,11 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_YEAR) result.Format("musicvideo.c%02d",VIDEODB_ID_MUSICVIDEO_YEAR);
     else if (field == SONG_ARTIST) result.Format("actors.strActor");
     else if (field == SONG_FILENAME) result = "strFilename";
+    else if (field == FIELD_PLAYCOUNT) result.Format("musicvideo.c%02d", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT);
+    else if (field == FIELD_TIME) result.Format("musicvideo.c%02d", VIDEODB_ID_MUSICVIDEO_RUNTIME);
+    else if (field == VIDEO_DIRECTOR) result = "never_use_this";   // join required
+    else if (field == VIDEO_STUDIO) result = "never_use_this";     // join required
+    else if (field == VIDEO_PLOT) result.Format("musicvideo.c%02d", VIDEODB_ID_MUSICVIDEO_PLOT);
     else if (field == FIELD_RANDOM) result = "random()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) result = "idmvideo";        // only used for order clauses
     return result;
@@ -394,8 +468,8 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_RATING) result.Format("c%02d", VIDEODB_ID_TV_RATING);
     else if (field == FIELD_YEAR) result.Format("c%02d", VIDEODB_ID_TV_PREMIERED);
     else if (field == FIELD_GENRE) result.Format("c%02d", VIDEODB_ID_TV_GENRE);
-    else if (field == VIDEO_DIRECTOR) result = "actor.strActor"; // join required
-    else if (field == VIDEO_ACTOR) result = "actor.strActor";    // join required
+    else if (field == VIDEO_DIRECTOR) result = "never_use_this"; // join required
+    else if (field == VIDEO_ACTOR) result = "never_use_this";    // join required
     else if (field == TVSHOW_NUMEPISODES) result = "totalcount";
     else if (field == TVSHOW_NUMWATCHED) result = "watchedcount";
     else if (field == FIELD_PLAYCOUNT) result = "watched";
@@ -411,7 +485,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == VIDEO_VOTES) result.Format("c%02d", VIDEODB_ID_EPISODE_VOTES);
     else if (field == FIELD_RATING) result.Format("c%02d", VIDEODB_ID_EPISODE_RATING);
     else if (field == FIELD_TIME) result.Format("c%02d", VIDEODB_ID_EPISODE_RUNTIME);
-    else if (field == EPISODE_WRITER) result.Format("c%02d", VIDEODB_ID_EPISODE_CREDITS);  // TODO: SMARTPLAYLISTS - this may need some work (split in db etc.)
+    else if (field == VIDEO_WRITER) result = "never_use_this";   // join required
     else if (field == EPISODE_AIRDATE) result.Format("c%02d", VIDEODB_ID_EPISODE_AIRED);
     else if (field == FIELD_PLAYCOUNT) result.Format("c%02d", VIDEODB_ID_EPISODE_PLAYCOUNT);
     else if (field == FIELD_GENRE) result = "never_use_this";    // join required

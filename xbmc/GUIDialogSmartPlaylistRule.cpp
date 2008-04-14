@@ -100,7 +100,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   {
     if (m_type.Equals("music") || m_type.Equals("mixed"))
       database.GetGenresNav("musicdb://4/",items);
-    if (m_type.Equals("video") || m_type.Equals("mixed"))
+    if (m_type.Equals("musicvideos") || m_type.Equals("mixed"))
     {
       CFileItemList items2;
       videodatabase.GetGenresNav("videodb://3/1/",items2,VIDEODB_CONTENT_MUSICVIDEOS);
@@ -114,14 +114,20 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
       items.AppendPointer(items2);
       items2.ClearKeepPointer();
     }
-
+    if (m_type.Equals("movies"))
+    {
+      CFileItemList items2;
+      videodatabase.GetGenresNav("videodb://3/1/",items2,VIDEODB_CONTENT_MOVIES);
+      items.AppendPointer(items2);
+      items2.ClearKeepPointer();
+    }
     iLabel = 515;
   }
   if (m_rule.m_field == CSmartPlaylistRule::SONG_ARTIST || m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM_ARTIST)
   {
     if (m_type.Equals("music") || m_type.Equals("mixed"))
       database.GetArtistsNav("musicdb://5/",items,-1,m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM_ARTIST);
-    if (m_type.Equals("video") || m_type.Equals("mixed"))
+    if (m_type.Equals("musicvideos") || m_type.Equals("mixed"))
     {
       CFileItemList items2;
       videodatabase.GetMusicVideoArtistsByName("",items2);
@@ -133,7 +139,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   {
     if (m_type.Equals("music") || m_type.Equals("mixed"))
       database.GetAlbumsNav("musicdb://6/",items,-1,-1);
-    if (m_type.Equals("video") || m_type.Equals("mixed"))
+    if (m_type.Equals("musicvideos") || m_type.Equals("mixed"))
     {
       CFileItemList items2;
       videodatabase.GetMusicVideoAlbumsByName("",items2);
@@ -214,7 +220,7 @@ void CGUIDialogSmartPlaylistRule::OnValue()
     //       think there's any decent way to deal with this, as the infinite loop may be an arbitrary
     //       number of playlists deep, eg playlist1 -> playlist2 -> playlist3 ... -> playlistn -> playlist1
     CStdString path = "special://musicplaylists/";
-    if (m_type.Equals("video"))
+    if (m_type.Equals("musicvideos"))
       path = "special://videoplaylists/";
     if (CGUIDialogFileBrowser::ShowAndGetFile(path, ".xsp", g_localizeStrings.Get(656), path))
     {
