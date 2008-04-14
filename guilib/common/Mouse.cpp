@@ -86,8 +86,12 @@ void CMouse::Update()
     bHold[i] = false;
     if (m_mouseState.button[i])
     {
+      if (!m_mouseState.active) // wake up mouse on any click
+      {
+        m_mouseState.active = true;
+        m_lastActiveTime = timeGetTime();
+      }
       bNothingDown = false;
-      m_mouseState.active = true; // wake up mouse on any click
       if (m_lastDown[i])
       { // start of hold
         bHold[i] = true;
