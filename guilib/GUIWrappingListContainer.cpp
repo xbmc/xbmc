@@ -272,3 +272,11 @@ void CGUIWrappingListContainer::Reset()
   ResetExtraItems();
   CGUIBaseContainer::Reset();
 }
+
+int CGUIWrappingListContainer::GetCurrentPage() const
+{
+  int offset = CorrectOffset(m_offset, m_cursor);
+  if (offset + m_itemsPerPage - m_cursor >= (int)GetRows())  // last page
+    return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
+  return offset / m_itemsPerPage + 1;
+}
