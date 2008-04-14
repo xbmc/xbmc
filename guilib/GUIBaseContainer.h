@@ -87,6 +87,8 @@ protected:
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {};
   virtual void Reset();
+  virtual unsigned int GetNumItems() const { return m_items.size(); };
+  virtual int GetCurrentPage() const;
   bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point);
 
   inline float Size() const;
