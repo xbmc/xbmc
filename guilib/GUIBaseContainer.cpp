@@ -743,16 +743,16 @@ CStdString CGUIBaseContainer::GetLabel(int info) const
     label.Format("%u", (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage);
     break;
   case CONTAINER_CURRENT_PAGE:
-    if (m_offset + m_itemsPerPage >= (int)GetRows())
-      label.Format("%u", (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage);
-    else
-      label.Format("%u", m_offset / m_itemsPerPage + 1);
+    label.Format("%u", GetCurrentPage());
     break;
   case CONTAINER_NUM_ITEMS:
-    if (m_items.size() && m_items[0]->IsFileItem() && ((CFileItem *)m_items[0])->IsParentFolder())
-      label.Format("%u", m_items.size()-1);
-    else
-      label.Format("%u", m_items.size());
+    {
+      unsigned int numItems = GetNumItems();
+      if (numItems && m_items[0]->IsFileItem() && ((CFileItem *)m_items[0])->IsParentFolder())
+        label.Format("%u", numItems-1);
+      else
+        label.Format("%u", numItems);
+    }
     break;
   default:
       break;
@@ -760,4 +760,9 @@ CStdString CGUIBaseContainer::GetLabel(int info) const
   return label;
 }
 
-
+int CGUIBaseContainer::GetCurrentPage() const
+{
+  if (m_offset + m_itemsPerPage >= (int)GetRows())  // last page
+    return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
+  return m_offset / m_itemsPerPage + 1;
+}
