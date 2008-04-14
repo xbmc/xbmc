@@ -384,7 +384,7 @@ public:
 
   // smart playlist retrieval
   bool GetTvShowsByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items);
-  bool GetEpisodesByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items);
+  bool GetEpisodesByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items, bool appendFullShowPath = true);
 
   int GetMusicVideoCount(const CStdString& strWhere);
   bool GetMusicVideosByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items);
@@ -399,6 +399,9 @@ protected:
   long AddActor(const CStdString& strActor, const CStdString& strThumb);
   long AddStudio(const CStdString& strStudio1);
 
+  void AddLinkToActor(const char *table, long actorID, const char *secondField, long secondID, const CStdString &role);
+  void AddToLinkTable(const char *table, const char *firstField, long firstID, const char *secondField, long secondID);
+
   void AddActorToMovie(long lMovieId, long lActorId, const CStdString& strRole);
   void AddActorToTvShow(long lTvShowId, long lActorId, const CStdString& strRole);
   void AddActorToEpisode(long lEpisode, long lActorId, const CStdString& strRole);
@@ -408,10 +411,10 @@ protected:
   void AddDirectorToTvShow(long lTvShowId, long lDirectorId);
   void AddDirectorToEpisode(long lEpisodeId, long lDirectorId);
   void AddDirectorToMusicVideo(long lMVideo, long lDirectorId);
+  void AddWriterToEpisode(long lEpisodeId, long lWriterId);
 
   void AddGenreToMovie(long lMovieId, long lGenreId);
   void AddGenreToTvShow(long lTvShowId, long lGenreId);
-  void AddGenreToEpisode(long lEpisodeId, long lGenreId);
   void AddGenreToMusicVideo(long lMVideoId, long lGenreId);
 
   void AddStudioToMovie(long lMovieId, long lStudioId);

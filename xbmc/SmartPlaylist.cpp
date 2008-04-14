@@ -330,6 +330,8 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
       query = "idepisode in (select idepisode from directorlinkepisode join actors on actors.idactor=directorlinkepisode.iddirector where actors.strActor" + parameter + ")";
     else if (m_field == VIDEO_ACTOR)
       query = "idepisode in (select idepisode from actorlinkepisode join actors on actors.idactor=actorlinkepisode.idactor where actors.strActor" + parameter + ")";
+    else if (m_field == EPISODE_WRITER)
+      query = "idepisode in (select idepisode from writerlinkepisode join actors on actors.idactor=writerlinkepisode.idactor where actors.strActor" + parameter + ")";
   }
   if (m_field == FIELD_PLAYLIST)
   { // playlist field - grab our playlist and add to our where clause
