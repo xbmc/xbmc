@@ -186,6 +186,8 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_MUSICVIDEO_YEAR = 7,
   VIDEODB_ID_MUSICVIDEO_PLOT = 8,
   VIDEODB_ID_MUSICVIDEO_ALBUM = 9,
+  VIDEODB_ID_MUSICVIDEO_ARTIST = 10,
+  VIDEODB_ID_MUSICVIDEO_GENRE = 11,
   VIDEODB_ID_MUSICVIDEO_MAX
 } VIDEODB_MUSICVIDEO_IDS;
 
@@ -201,6 +203,8 @@ const struct SDbTableOffsets DbMusicVideoOffsets[] =
   { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iYear) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPlot) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strAlbum) },
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strArtist) },
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strGenre) }
 };
 
 class CBookmark
@@ -381,13 +385,16 @@ public:
   long AddFile(const CStdString& strFileName);
   void ExportToXML(const CStdString &xmlFile, bool singleFiles = false);
   void ImportFromXML(const CStdString &xmlFile);
+  void DumpToDummyFiles(const CStdString &path);
 
   // smart playlist retrieval
+  bool GetMoviesByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items);
   bool GetTvShowsByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items);
   bool GetEpisodesByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items, bool appendFullShowPath = true);
+  bool GetMusicVideosByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items, bool checkLocks = true);
 
+  // partymode
   int GetMusicVideoCount(const CStdString& strWhere);
-  bool GetMusicVideosByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items);
   unsigned int GetMusicVideoIDs(const CStdString& strWhere, std::vector<std::pair<int,long> > &songIDs);
   bool GetRandomMusicVideo(CFileItem* item, long& lSongId, const CStdString& strWhere);
 

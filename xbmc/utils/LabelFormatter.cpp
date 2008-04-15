@@ -155,8 +155,8 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
   case 'A':
     if (music && music->GetArtist().size())
       value = music->GetArtist();
-    if (movie && movie->m_artist.size() > 0)
-      value = movie->GetArtist();
+    if (movie && movie->m_strArtist.size())
+      value = movie->m_strArtist;
     break;
   case 'T':
     if (music && music->GetTitle().size())

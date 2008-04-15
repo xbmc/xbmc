@@ -352,9 +352,9 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
   else if (strType == "musicvideos")
   {
     if (m_field == FIELD_GENRE)
-      query = "(strGenre" + parameter + ") or (idmvideo IN (select genrelinkmusicvideo.idmvideo from genre,genrelinkmusicvideo where genrelinkmusicvideo.idgenre = genre.idgenre and genre.strGenre" + parameter + "))";
+      query = "idmvideo in (select idmvideo from genrelinkmusicvideo join genre on genre.idgenre=genrelinkmusicvideo.idgenre where genre.strGenre" + parameter + ")";
     else if (m_field == SONG_ARTIST)
-      query = "(strArtist" + parameter + ") or (idmvideo IN (select genrelinkmusicvideo.idmvideo from actors,artistlinkmusicvideo where artistlinkmusicvideo.idartist = actors.idActor and actors.strActor" + parameter + "))";
+      query = "idmvideo in (select idmvideo from artistlinkmusicvideo join actor on actor.idactor=artistlinkmusicvideo.idactor where actor.strActor" + parameter + ")";
     else if (m_field == VIDEO_STUDIO)
       query = "idmvideo in (select idmvideo from studiolinkmusicvideo join studio on studio.idstudio=studiolinkmusicvideo.idstudio where studio.strStudio" + parameter + ")";
     else if (m_field == VIDEO_DIRECTOR)
@@ -443,17 +443,17 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
   else if (type == "musicvideos")
   {
     CStdString result;
-    if (field == FIELD_TITLE) result.Format("musicvideo.c%02d",VIDEODB_ID_MUSICVIDEO_TITLE);
-    else if (field == FIELD_GENRE) result = "genre.strgenre";
-    else if (field == SONG_ALBUM) result.Format("musicvideo.c%02d",VIDEODB_ID_MUSICVIDEO_ALBUM);
-    else if (field == FIELD_YEAR) result.Format("musicvideo.c%02d",VIDEODB_ID_MUSICVIDEO_YEAR);
-    else if (field == SONG_ARTIST) result.Format("actors.strActor");
+    if (field == FIELD_TITLE) result.Format("c%02d",VIDEODB_ID_MUSICVIDEO_TITLE);
+    else if (field == FIELD_GENRE) result = "never_use_this";  // join required
+    else if (field == SONG_ALBUM) result.Format("c%02d",VIDEODB_ID_MUSICVIDEO_ALBUM);
+    else if (field == FIELD_YEAR) result.Format("c%02d",VIDEODB_ID_MUSICVIDEO_YEAR);
+    else if (field == SONG_ARTIST) result = "never_use_this";  // join required;
     else if (field == SONG_FILENAME) result = "strFilename";
-    else if (field == FIELD_PLAYCOUNT) result.Format("musicvideo.c%02d", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT);
-    else if (field == FIELD_TIME) result.Format("musicvideo.c%02d", VIDEODB_ID_MUSICVIDEO_RUNTIME);
+    else if (field == FIELD_PLAYCOUNT) result.Format("c%02d", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT);
+    else if (field == FIELD_TIME) result.Format("c%02d", VIDEODB_ID_MUSICVIDEO_RUNTIME);
     else if (field == VIDEO_DIRECTOR) result = "never_use_this";   // join required
     else if (field == VIDEO_STUDIO) result = "never_use_this";     // join required
-    else if (field == VIDEO_PLOT) result.Format("musicvideo.c%02d", VIDEODB_ID_MUSICVIDEO_PLOT);
+    else if (field == VIDEO_PLOT) result.Format("c%02d", VIDEODB_ID_MUSICVIDEO_PLOT);
     else if (field == FIELD_RANDOM) result = "random()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) result = "idmvideo";        // only used for order clauses
     return result;

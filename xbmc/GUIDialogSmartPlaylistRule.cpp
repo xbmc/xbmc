@@ -110,14 +110,14 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     if (m_type.Equals("tvshows") || m_type.Equals("episodes"))
     {
       CFileItemList items2;
-      videodatabase.GetGenresNav("videodb://3/1/",items2,VIDEODB_CONTENT_TVSHOWS);
+      videodatabase.GetGenresNav("videodb://2/1/",items2,VIDEODB_CONTENT_TVSHOWS);
       items.AppendPointer(items2);
       items2.ClearKeepPointer();
     }
     if (m_type.Equals("movies"))
     {
       CFileItemList items2;
-      videodatabase.GetGenresNav("videodb://3/1/",items2,VIDEODB_CONTENT_MOVIES);
+      videodatabase.GetGenresNav("videodb://1/1/",items2,VIDEODB_CONTENT_MOVIES);
       items.AppendPointer(items2);
       items2.ClearKeepPointer();
     }

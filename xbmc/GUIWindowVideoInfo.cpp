@@ -341,11 +341,13 @@ void CGUIWindowVideoInfo::Update()
     m_vecStrCast.push_back(make_pair<CStdString,CStdString>(character,it->strName));
   }
   AddItemsToList(m_vecStrCast);
-  if (m_movieItem.GetVideoInfoTag()->m_artist.size() > 0)
+  if (!m_movieItem.GetVideoInfoTag()->m_strArtist.IsEmpty())
   {
-      // setup artist list
+    // setup artist list
+    CStdStringArray artists;
+    StringUtils::SplitString(m_movieItem.GetVideoInfoTag()->m_strArtist, g_advancedSettings.m_videoItemSeparator, artists);
     m_vecStrCast.clear();
-    for (std::vector<CStdString>::const_iterator it = m_movieItem.GetVideoInfoTag()->m_artist.begin(); it != m_movieItem.GetVideoInfoTag()->m_artist.end(); ++it)
+    for (std::vector<CStdString>::const_iterator it = artists.begin(); it != artists.end(); ++it)
     {
       m_vecStrCast.push_back(make_pair<CStdString,CStdString>(*it,*it));
     }
@@ -354,7 +356,7 @@ void CGUIWindowVideoInfo::Update()
 
   if (m_bViewReview)
   {
-    if (m_movieItem.GetVideoInfoTag()->m_artist.size() > 0)
+    if (!m_movieItem.GetVideoInfoTag()->m_strArtist.IsEmpty())
     {
       SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 133);
     }
@@ -603,7 +605,7 @@ void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
     iType = 2;
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
     iType = 1;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0)
+  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
     iType = 3;
 
   CVideoInfoTag movieDetails;
@@ -637,7 +639,7 @@ void CGUIWindowVideoInfo::AddItemsToList(const vector<pair<CStdString,CStdString
       pItem->SetThumbnailImage(item.GetCachedArtistThumb());
     else
     {
-      if (m_movieItem.GetVideoInfoTag()->m_artist.size() == 0)
+      if (m_movieItem.GetVideoInfoTag()->m_strArtist.IsEmpty())
         pItem->SetThumbnailImage("DefaultActorBig.png");
     }
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIST, 0, 0, (void*)pItem);

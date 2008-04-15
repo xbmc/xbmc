@@ -1922,7 +1922,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           strContent = "files";
         if (m_currentFile.HasVideoInfoTag() && m_currentFile.GetVideoInfoTag()->m_iSeason > -1) // episode
           strContent = "episodes";
-        if (m_currentFile.HasVideoInfoTag() && m_currentFile.GetVideoInfoTag()->m_artist.size() > 0)
+        if (m_currentFile.HasVideoInfoTag() && !m_currentFile.GetVideoInfoTag()->m_strArtist.IsEmpty())
           strContent = "musicvideos";
         if (m_currentFile.HasVideoInfoTag() && m_currentFile.GetVideoInfoTag()->m_strStatus == "livetv")
           strContent = "livetv";
@@ -2590,8 +2590,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_CAST_AND_ROLE:
       return m_currentFile.GetVideoInfoTag()->GetCast(true);
     case VIDEOPLAYER_ARTIST:
-      if (m_currentFile.GetVideoInfoTag()->m_artist.size() > 0)
-        return m_currentFile.GetVideoInfoTag()->GetArtist();
+      return m_currentFile.GetVideoInfoTag()->m_strArtist;
       break;
     case VIDEOPLAYER_ALBUM:
       return m_currentFile.GetVideoInfoTag()->m_strAlbum;
@@ -3170,8 +3169,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     if (item->HasMusicInfoTag())
       return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetArtist());
     if (item->HasVideoInfoTag())
-      if (item->GetVideoInfoTag()->m_artist.size() > 0)
-        return item->GetVideoInfoTag()->GetArtist();
+      return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strArtist);
     break;
   case LISTITEM_DIRECTOR:
     if (item->HasVideoInfoTag())

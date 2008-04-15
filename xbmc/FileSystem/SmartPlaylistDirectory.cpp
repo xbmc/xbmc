@@ -50,7 +50,7 @@ namespace DIRECTORY
       CVideoDatabase db;
       db.Open();
       CStdString whereOrder = playlist.GetWhereClause() + " " + playlist.GetOrderClause();
-      success = db.GetEpisodesByWhere("videodb://2/2/", whereOrder, items);
+      success = db.GetMoviesByWhere("videodb://1/2/", whereOrder, items);
       items.SetContent("movies");
       db.Close();
       return success;
@@ -79,7 +79,7 @@ namespace DIRECTORY
         playlist.SetType("video");
       CStdString whereOrder = playlist.GetWhereClause() + " " + playlist.GetOrderClause();
       CFileItemList items2;
-      success2 = db.GetMusicVideosByWhere("videodb://3/2/", whereOrder, items2);
+      success2 = db.GetMusicVideosByWhere("videodb://3/2/", whereOrder, items2, false); // TODO: SMARTPLAYLISTS Don't check locks???
       db.Close();
       items.Append(items2);
       playlist.SetType(type);

@@ -578,7 +578,7 @@ bool CPartyModeManager::AddInitialSongs(vector<pair<int,long> > &songIDs)
     vector<pair<int,long> > chosenSongIDs;
     GetRandomSelection(songIDs, iMissingSongs, chosenSongIDs);
     CStdString sqlWhereMusic = "where songview.idsong in (";
-    CStdString sqlWhereVideo = "where musicvideo.idmvideo in (";
+    CStdString sqlWhereVideo = "where idmvideo in (";
 
     for (vector<pair<int,long> >::iterator it = chosenSongIDs.begin(); it != chosenSongIDs.end(); it++)
     {
@@ -599,7 +599,7 @@ bool CPartyModeManager::AddInitialSongs(vector<pair<int,long> > &songIDs)
       database.Open();
       database.GetSongsByWhere("", sqlWhereMusic, items);
     }
-    if (sqlWhereVideo.size() > 30)
+    if (sqlWhereVideo.size() > 17)
     {
       sqlWhereVideo[sqlWhereVideo.size() - 1] = ')'; // replace the last comma with closing bracket
       CVideoDatabase database;
@@ -630,9 +630,9 @@ pair<CStdString,CStdString> CPartyModeManager::GetWhereClauseWithHistory() const
     else
       historyWhereMusic = m_strCurrentFilterMusic + " and songview.idsong not in (";
     if (m_strCurrentFilterVideo.IsEmpty())
-      historyWhereVideo = "where musicvideo.idmvideo not in (";
+      historyWhereVideo = "where idmvideo not in (";
     else
-      historyWhereVideo = m_strCurrentFilterVideo + " and musicvideo.idmvideo not in (";
+      historyWhereVideo = m_strCurrentFilterVideo + " and idmvideo not in (";
 
     for (unsigned int i = 0; i < m_history.size(); i++)
     {
