@@ -587,7 +587,8 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
           pPacket->iSize = pkt.size;
 
           // maybe we can avoid a memcpy here by detecting where pkt.destruct is pointing too?
-          memcpy(pPacket->pData, pkt.data, pPacket->iSize);
+          if (pkt.data)
+            memcpy(pPacket->pData, pkt.data, pPacket->iSize);
 
           pPacket->pts = ConvertTimestamp(pkt.pts, stream->time_base.den, stream->time_base.num);
           pPacket->dts = ConvertTimestamp(pkt.dts, stream->time_base.den, stream->time_base.num);
