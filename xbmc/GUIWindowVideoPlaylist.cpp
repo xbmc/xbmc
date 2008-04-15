@@ -28,6 +28,8 @@
 #include "PlayListPlayer.h"
 #include "PartyModeManager.h"
 #include "GUIDialogSmartPlaylistEditor.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogKeyboard.h"
 
 using namespace PLAYLIST;
 
@@ -37,14 +39,14 @@ using namespace PLAYLIST;
 #define CONTROL_LIST              50
 #define CONTROL_LABELFILES        12
 
-#define CONTROL_BTNSHUFFLE    20
-#define CONTROL_BTNSAVE      21
-#define CONTROL_BTNCLEAR     22
+#define CONTROL_BTNSHUFFLE        20
+#define CONTROL_BTNSAVE           21
+#define CONTROL_BTNCLEAR          22
 
-#define CONTROL_BTNPLAY      23
-#define CONTROL_BTNNEXT      24
-#define CONTROL_BTNPREVIOUS    25
-#define CONTROL_BTNREPEAT     26
+#define CONTROL_BTNPLAY           23
+#define CONTROL_BTNNEXT           24
+#define CONTROL_BTNPREVIOUS       25
+#define CONTROL_BTNREPEAT         26
 
 CGUIWindowVideoPlaylist::CGUIWindowVideoPlaylist()
 : CGUIWindowVideoBase(WINDOW_VIDEO_PLAYLIST, "MyVideoPlaylist.xml")
@@ -71,9 +73,9 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
     {
       // global playlist changed outside playlist window
       UpdateButtons();
-      Update(m_vecItems.m_strPath);
+      Update(m_vecItems->m_strPath);
 
-      if (m_viewControl.HasControl(m_iLastControl) && m_vecItems.Size() <= 0)
+      if (m_viewControl.HasControl(m_iLastControl) && m_vecItems->Size() <= 0)
       {
         m_iLastControl = CONTROL_BTNVIEWASICONS;
         SET_CONTROL_FOCUS(m_iLastControl, 0);
@@ -90,12 +92,12 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      m_vecItems.m_strPath="playlistvideo://";
+      m_vecItems->m_strPath="playlistvideo://";
 
       if (!CGUIWindowVideoBase::OnMessage(message))
         return false;
 
-      if (m_vecItems.Size() <= 0)
+      if (m_vecItems->Size() <= 0)
       {
         m_iLastControl = CONTROL_BTNVIEWASICONS;
         SET_CONTROL_FOCUS(m_iLastControl, 0);
@@ -104,7 +106,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
       if (g_application.IsPlayingVideo() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
       {
         int iSong = g_playlistPlayer.GetCurrentSong();
-        if (iSong >= 0 && iSong <= (int)m_vecItems.Size())
+        if (iSong >= 0 && iSong <= (int)m_vecItems->Size())
           m_viewControl.SetSelectedItem(iSong);
       }
 
@@ -123,7 +125,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
           g_stSettings.m_bMyVideoPlaylistShuffle = g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO);
           g_settings.Save();
           UpdateButtons();
-          Update(m_vecItems.m_strPath);
+          Update(m_vecItems->m_strPath);
         }
       }
       else if (iControl == CONTROL_BTNSAVE)
@@ -238,7 +240,7 @@ bool CGUIWindowVideoPlaylist::MoveCurrentPlayListItem(int iItem, int iAction, bo
     }
 
     if (bUpdate)
-      Update(m_vecItems.m_strPath);
+      Update(m_vecItems->m_strPath);
     return true;
   }
 
@@ -255,7 +257,7 @@ void CGUIWindowVideoPlaylist::ClearPlayList()
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
   }
-  m_viewControl.SetItems(m_vecItems);
+  m_viewControl.SetItems(*m_vecItems);
   UpdateButtons();
   SET_CONTROL_FOCUS(CONTROL_BTNVIEWASICONS, 0);
 }
@@ -263,7 +265,7 @@ void CGUIWindowVideoPlaylist::ClearPlayList()
 void CGUIWindowVideoPlaylist::UpdateButtons()
 {
   // Update playlist buttons
-  if (m_vecItems.Size() )
+  if (m_vecItems->Size() )
   {
     CONTROL_ENABLE(CONTROL_BTNCLEAR);
     CONTROL_ENABLE(CONTROL_BTNSAVE);
@@ -309,12 +311,12 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
 
 bool CGUIWindowVideoPlaylist::OnPlayMedia(int iItem)
 {
-  if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return false;
+  if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
   if (g_partyModeManager.IsEnabled())
     g_partyModeManager.Play(iItem);
   else
   {
-    CFileItem* pItem = m_vecItems[iItem];
+    CFileItem* pItem = m_vecItems->Get(iItem);
     CStdString strPath = pItem->m_strPath;
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
     g_playlistPlayer.Play( iItem );
@@ -342,9 +344,9 @@ void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
     }
   }
 
-  Update(m_vecItems.m_strPath);
+  Update(m_vecItems->m_strPath);
 
-  if (m_vecItems.Size() <= 0)
+  if (m_vecItems->Size() <= 0)
   {
     SET_CONTROL_FOCUS(CONTROL_BTNVIEWASICONS, 0);
   }
@@ -370,10 +372,10 @@ void CGUIWindowVideoPlaylist::SavePlayList()
     CUtil::AddFileToFolder(strFolder, strNewFileName, strPath);
 
     CPlayListM3U playlist;
-    for (int i = 0; i < m_vecItems.Size(); ++i)
+    for (int i = 0; i < m_vecItems->Size(); ++i)
     {
-      CFileItem* pItem = m_vecItems[i];
-      CPlayList::CPlayListItem newItem;
+      CFileItem* pItem = m_vecItems->Get(i);
+      CPlayListItem newItem;
       newItem.SetFileName(pItem->m_strPath);
       newItem.SetDescription(pItem->GetLabel());
       if (pItem->HasVideoInfoTag())
@@ -401,7 +403,7 @@ void CGUIWindowVideoPlaylist::GetContextButtons(int itemNumber, CContextButtons 
   {
     if (itemNumber > (g_partyModeManager.IsEnabled() ? 1 : 0))
       buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_UP, 13332);
-    if (itemNumber + 1 < m_vecItems.Size())
+    if (itemNumber + 1 < m_vecItems->Size())
       buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_DOWN, 13333);
     if (!g_partyModeManager.IsEnabled() || itemNumber != itemPlaying)
       buttons.Add(CONTEXT_BUTTON_MOVE_ITEM, 13251);
@@ -468,14 +470,14 @@ bool CGUIWindowVideoPlaylist::OnContextButton(int itemNumber, CONTEXT_BUTTON but
 
 void CGUIWindowVideoPlaylist::OnMove(int iItem, int iAction)
 {
-  if (iItem < 0 || iItem >= m_vecItems.Size()) return;
+  if (iItem < 0 || iItem >= m_vecItems->Size()) return;
   MoveCurrentPlayListItem(iItem, iAction);
 }
 
 void CGUIWindowVideoPlaylist::MoveItem(int iStart, int iDest)
 {
-  if (iStart < 0 || iStart >= m_vecItems.Size()) return;
-  if (iDest < 0 || iDest >= m_vecItems.Size()) return;
+  if (iStart < 0 || iStart >= m_vecItems->Size()) return;
+  if (iDest < 0 || iDest >= m_vecItems->Size()) return;
 
   // default to move up
   int iAction = ACTION_MOVE_ITEM_UP;
@@ -499,21 +501,21 @@ void CGUIWindowVideoPlaylist::MoveItem(int iStart, int iDest)
     else
       break;
   }
-  Update(m_vecItems.m_strPath);
+  Update(m_vecItems->m_strPath);
 }
 
 void CGUIWindowVideoPlaylist::MarkPlaying()
 {
   /*  // clear markings
-  for (int i = 0; i < m_vecItems.Size(); i++)
-    m_vecItems[i]->Select(false);
+  for (int i = 0; i < m_vecItems->Size(); i++)
+    m_vecItems->Get(i)->Select(false);
 
   // mark the currently playing item
   if ((g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO) && (g_application.IsPlayingVideo()))
   {
     int iSong = g_playlistPlayer.GetCurrentSong();
-    if (iSong >= 0 && iSong <= m_vecItems.Size())
-      m_vecItems[iSong]->Select(true);
+    if (iSong >= 0 && iSong <= m_vecItems->Size())
+      m_vecItems->Get(iSong)->Select(true);
   }*/
 }
 

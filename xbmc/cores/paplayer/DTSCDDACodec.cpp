@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "DTSCDDACodec.h"
 #ifdef HAS_DTS_CODEC
-#include "../../lib/libcdio/sector.h"
+#include "lib/libcdio/sector.h"
 
 DTSCDDACodec::DTSCDDACodec() : DTSCodec()
 {

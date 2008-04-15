@@ -1,6 +1,11 @@
 #pragma once
 
+#include "utils/LabelFormatter.h"
+#include "SortFileItem.h"
+#include "MediaSource.h"
+
 class CViewState; // forward
+class CFileItemList;
 
 class CGUIViewState
 {
@@ -33,7 +38,7 @@ public:
   virtual bool AutoPlayNextItem();
   virtual CStdString GetLockType();
   virtual CStdString GetExtensions();
-  virtual VECSHARES& GetShares();
+  virtual VECSOURCES& GetSources();
 
 protected:
   CGUIViewState(const CFileItemList& items);  // no direct object creation, use GetViewState()
@@ -47,7 +52,7 @@ protected:
   void SetSortOrder(SORT_ORDER sortOrder) { m_sortOrder=sortOrder; }
   const CFileItemList& m_items;
 
-  static VECSHARES m_shares;
+  static VECSOURCES m_sources;
 
 private:
   int m_currentViewAsControl;

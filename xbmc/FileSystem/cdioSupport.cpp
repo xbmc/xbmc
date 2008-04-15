@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "cdioSupport.h"
-#include "../lib/libcdio/cdio.h"
-#include "../lib/libcdio/logging.h"
-#include "../lib/libcdio/Util.h"
+#include "lib/libcdio/cdio.h"
+#include "lib/libcdio/logging.h"
+#include "lib/libcdio/Util.h"
 
 
 using namespace MEDIA_DETECT;

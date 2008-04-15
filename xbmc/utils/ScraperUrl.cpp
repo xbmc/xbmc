@@ -1,21 +1,15 @@
 #include "ScraperUrl.h"
-
-#ifdef _LINUX
-#include "system.h"
-#endif
-
 #include "stdafx.h"
-
-#include <cstring>
+#include "Settings.h"
 #include "HTMLUtil.h"
 #include "CharsetConverter.h"
 #include "URL.h"
 #include "HTTP.h"
 #include "FileSystem/FileZip.h"
-
 #include "Picture.h"
 #include "Util.h"
 
+#include <cstring>
 #include <sstream>
 
 using namespace std;

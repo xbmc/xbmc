@@ -1,10 +1,11 @@
 #pragma once
 #include "XBApplicationEx.h"
 
-#include "musicInfoTag.h"
 #include "IMsgTargetCallback.h"
 #include "Key.h"
-#include "FileItem.h"
+
+class CFileItem;
+class CFileItemList;
 
 #include "GUIDialogSeekBar.h"
 #include "GUIDialogKaiToast.h"
@@ -20,7 +21,6 @@
 #include "DetectDVDType.h"
 #include "Autorun.h"
 #include "utils/Splash.h"
-#include "utils/IMDB.h"
 #include "utils/Stopwatch.h"
 
 class CWebServer;
@@ -183,8 +183,8 @@ protected:
   CStopWatch m_navigationTimer;
   CStopWatch m_slowTimer;
 
-  CFileItem m_itemCurrentFile;
-  CFileItemList m_currentStack;
+  CFileItem* m_itemCurrentFile;
+  CFileItemList* m_currentStack;
   CStdString m_prevMedia;
   CSplash* m_splash;
   DWORD m_threadID;       // application thread ID.  Used in applicationMessanger to know where we are firing a thread with delay from.

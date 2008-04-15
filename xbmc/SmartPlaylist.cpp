@@ -28,8 +28,8 @@
 #include "XMLUtils.h"
 #include "Database.h"
 #include "VideoDatabase.h"
-#include "LocalizeStrings.h"
 #include "Util.h"
+#include "DateTime.h"
 
 using namespace std;
 using namespace DIRECTORY;

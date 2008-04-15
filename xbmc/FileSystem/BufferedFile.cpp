@@ -1,7 +1,7 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "BufferedFile.h"
-#include "../StringUtils.h"
+#include "StringUtils.h"
 
 using namespace XFILE;
 

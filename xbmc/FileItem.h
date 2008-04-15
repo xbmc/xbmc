@@ -3,80 +3,33 @@
  \brief
  */
 #pragma once
-#include "../guilib/GUIListItem.h"
-#include "Song.h"
-#include "Artist.h"
-#include "Album.h"
+#include "GUIListItem.h"
 #include "utils/Archive.h"
 #include "DateTime.h"
-#include "VideoInfoTag.h"
-#include "PictureInfoTag.h"
+#include "SortFileItem.h"
+#include "utils/LabelFormatter.h"
+#include "GUIPassword.h"
 
-typedef enum {
-  SORT_METHOD_NONE=0,
-  SORT_METHOD_LABEL,
-  SORT_METHOD_LABEL_IGNORE_THE,
-  SORT_METHOD_DATE,
-  SORT_METHOD_SIZE,
-  SORT_METHOD_FILE,
-  SORT_METHOD_DRIVE_TYPE,
-  SORT_METHOD_TRACKNUM,
-  SORT_METHOD_DURATION,
-  SORT_METHOD_TITLE,
-  SORT_METHOD_TITLE_IGNORE_THE,
-  SORT_METHOD_ARTIST,
-  SORT_METHOD_ARTIST_IGNORE_THE,
-  SORT_METHOD_ALBUM,
-  SORT_METHOD_ALBUM_IGNORE_THE,
-  SORT_METHOD_GENRE,
-  SORT_METHOD_VIDEO_YEAR,
-  SORT_METHOD_VIDEO_RATING,
-  SORT_METHOD_PROGRAM_COUNT,
-  SORT_METHOD_PLAYLIST_ORDER,
-  SORT_METHOD_EPISODE,
-  SORT_METHOD_VIDEO_TITLE,
-  SORT_METHOD_PRODUCTIONCODE,
-  SORT_METHOD_SONG_RATING,
-  SORT_METHOD_MPAA_RATING,
-  SORT_METHOD_VIDEO_RUNTIME,
-  SORT_METHOD_STUDIO,
-  SORT_METHOD_STUDIO_IGNORE_THE,
-  SORT_METHOD_UNSORTED,
-  SORT_METHOD_MAX
-} SORT_METHOD;
+#include <vector>
 
-typedef enum {
-  SORT_ORDER_NONE=0,
-  SORT_ORDER_ASC,
-  SORT_ORDER_DESC
-} SORT_ORDER;
-
-typedef struct _LABEL_MASKS
+namespace MUSIC_INFO
 {
-  _LABEL_MASKS(const CStdString& strLabelFile="", const CStdString& strLabel2File="", const CStdString& strLabelFolder="", const CStdString& strLabel2Folder="")
-  {
-    m_strLabelFile=strLabelFile;
-    m_strLabel2File=strLabel2File;
-    m_strLabelFolder=strLabelFolder;
-    m_strLabel2Folder=strLabel2Folder;
-  }
-  CStdString m_strLabelFile;
-  CStdString m_strLabel2File;
-  CStdString m_strLabelFolder;
-  CStdString m_strLabel2Folder;
-} LABEL_MASKS;
+  class CMusicInfoTag;
+}
+class CVideoInfoTag;
+class CPictureInfoTag;
 
-typedef struct
-{
-  SORT_METHOD m_sortMethod;
-  int m_buttonLabel;
-  LABEL_MASKS m_labelMasks;
-} SORT_METHOD_DETAILS;
+class CAlbum;
+class CArtist;
+class CSong;
+class CGenre;
+
+class CURL;
 
 /* special startoffset used to indicate that we wish to resume */
 #define STARTOFFSET_RESUME (-1) 
 
-class CShare;
+class CMediaSource;
 
 /*!
   \brief Represents a file on a share
@@ -96,7 +49,7 @@ public:
   CFileItem(const CArtist& artist);
   CFileItem(const CGenre& genre);
   CFileItem(const CVideoInfoTag& movie);
-  CFileItem(const CShare& share);
+  CFileItem(const CMediaSource& share);
   virtual ~CFileItem(void);
 
   void Reset();
@@ -165,13 +118,7 @@ public:
     return m_musicInfoTag != NULL;
   }
 
-  inline MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag()
-  {
-    if (!m_musicInfoTag)
-      m_musicInfoTag = new MUSIC_INFO::CMusicInfoTag;
-
-    return m_musicInfoTag;
-  }
+  MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag();
 
   inline const MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag() const
   {
@@ -183,13 +130,7 @@ public:
     return m_videoInfoTag != NULL;
   }
   
-  inline CVideoInfoTag* GetVideoInfoTag()
-  {
-    if (!m_videoInfoTag)
-      m_videoInfoTag = new CVideoInfoTag;
-
-    return m_videoInfoTag;
-  }
+  CVideoInfoTag* GetVideoInfoTag();
   
   inline const CVideoInfoTag* GetVideoInfoTag() const
   {
@@ -201,18 +142,12 @@ public:
     return m_pictureInfoTag != NULL;
   }
 
-  inline CPictureInfoTag* GetPictureInfoTag()
-  {
-    if (!m_pictureInfoTag)
-      m_pictureInfoTag = new CPictureInfoTag;
-
-    return m_pictureInfoTag;
-  }
-
   inline const CPictureInfoTag* GetPictureInfoTag() const
   {
     return m_pictureInfoTag;
   }
+
+  CPictureInfoTag* GetPictureInfoTag();
 
   // Gets the cached thumb filename (no existence checks)
   CStdString GetCachedVideoThumb();
@@ -269,7 +204,7 @@ private:
 public:
   CStdString m_strPath;            ///< complete path to item
   bool m_bIsShareOrDrive;    ///< is this a root share/drive
-  int m_iDriveType;     ///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CShare::m_iDriveType
+  int m_iDriveType;     ///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CMediaSource::m_iDriveType
   CDateTime m_dateTime;             ///< file creation date & time
   __int64 m_dwSize;             ///< file size (0 for folders)
   CStdString m_strDVDLabel;
@@ -278,7 +213,7 @@ public:
   int m_idepth;
   long m_lStartOffset;
   long m_lEndOffset;
-  int m_iLockMode;
+  LockType m_iLockMode;
   CStdString m_strLockCode;
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
   int m_iBadPwdCount;

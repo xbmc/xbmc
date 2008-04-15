@@ -21,7 +21,7 @@
 #ifndef ISO9660_H
 #define ISO9660_H
 #pragma once
-#include "../xbox/IoSupport.h"
+#include "xbox/IoSupport.h"
 
 #pragma pack(1)
 struct iso9660_VolumeDescriptor

@@ -2,12 +2,13 @@
 #include "GUIPythonWindowXML.h"
 #include "GUIWindow.h"
 #include "pyutil.h"
-#include "../../../Application.h"
-#include "../../../GUIMediaWindow.h"
+#include "GUIMediaWindow.h"
 #include "window.h"
 #include "control.h"
 #include "action.h"
-#include "../../../Util.h"
+#include "Util.h"
+#include "GUIWindowManager.h"
+#include "FileItem.h"
 
 using namespace std;
 
@@ -29,18 +30,21 @@ CGUIPythonWindowXML::CGUIPythonWindowXML(DWORD dwId, CStdString strXML, CStdStri
   pCallbackWindow = NULL;
   m_actionEvent = CreateEvent(NULL, true, false, NULL);
   m_loadOnDemand = false;
-  m_guiState.reset(CGUIViewState::GetViewState(GetID(), m_vecItems));
+  m_vecItems = new CFileItemList;
+  m_guiState.reset(CGUIViewState::GetViewState(GetID(), *m_vecItems));
   m_coordsRes = PAL_4x3;
   m_fallbackPath = strFallBackPath;
 }
 
 CGUIPythonWindowXML::~CGUIPythonWindowXML(void)
 {
-    CloseHandle(m_actionEvent);
+  CloseHandle(m_actionEvent);
+  delete m_vecItems;
 }
 void CGUIPythonWindowXML::Update()
 {
 }
+
 bool CGUIPythonWindowXML::OnAction(const CAction &action)
 {
   // do the base class window first, and the call to python after this
@@ -197,32 +201,32 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
 
 void CGUIPythonWindowXML::AddItem(CFileItem * fileItem, int itemPosition)
 {
-  if (itemPosition == INT_MAX || itemPosition > m_vecItems.Size())
+  if (itemPosition == INT_MAX || itemPosition > m_vecItems->Size())
   {
-    m_vecItems.Add(fileItem);
+    m_vecItems->Add(fileItem);
   }
-  else if (itemPosition <  -1 &&  !(itemPosition*-1 < m_vecItems.Size()))
+  else if (itemPosition <  -1 &&  !(itemPosition*-1 < m_vecItems->Size()))
   {
-    m_vecItems.AddFront(fileItem,0);
+    m_vecItems->AddFront(fileItem,0);
   } 
   else
   {
-    m_vecItems.AddFront(fileItem,itemPosition);
+    m_vecItems->AddFront(fileItem,itemPosition);
   }
-  m_viewControl.SetItems(m_vecItems);
+  m_viewControl.SetItems(*m_vecItems);
   UpdateButtons();
 }
 
 void CGUIPythonWindowXML::RemoveItem(int itemPosition)
 {
-  m_vecItems.Remove(itemPosition);
-  m_viewControl.SetItems(m_vecItems);
+  m_vecItems->Remove(itemPosition);
+  m_viewControl.SetItems(*m_vecItems);
   UpdateButtons();
 }
 
 int CGUIPythonWindowXML::GetListSize()
 {
-  return m_vecItems.Size();
+  return m_vecItems->Size();
 }
 
 int CGUIPythonWindowXML::GetCurrentListPosition()
@@ -237,26 +241,26 @@ void CGUIPythonWindowXML::SetCurrentListPosition(int item)
 
 CFileItem * CGUIPythonWindowXML::GetListItem(int position)
 { 
-  if (position < 0 || position >= m_vecItems.Size()) return NULL;
-  return m_vecItems[position];
+  if (position < 0 || position >= m_vecItems->Size()) return NULL;
+  return m_vecItems->Get(position);
 }
 
 CFileItem *CGUIPythonWindowXML::GetCurrentListItem(int offset)
 {
   int item = m_viewControl.GetSelectedItem();
-  if (item < 0 || !m_vecItems.Size()) return NULL;
+  if (item < 0 || !m_vecItems->Size()) return NULL;
 
-  item = (item + offset) % m_vecItems.Size();
-  if (item < 0) item += m_vecItems.Size();
-  return m_vecItems[item];
+  item = (item + offset) % m_vecItems->Size();
+  if (item < 0) item += m_vecItems->Size();
+  return m_vecItems->Get(item);
 }
 
 
 void CGUIPythonWindowXML::ClearList()
 {
   m_viewControl.Clear();
-  m_vecItems.Clear();
-  m_viewControl.SetItems(m_vecItems);
+  m_vecItems->Clear();
+  m_viewControl.SetItems(*m_vecItems);
   UpdateButtons();
 }
 
@@ -335,7 +339,7 @@ int Py_XBMC_Event_OnInit(void* arg)
 void CGUIPythonWindowXML::OnSort()
 {
   FormatItemLabels();
-  SortItems(m_vecItems);
+  SortItems(*m_vecItems);
 }
 
 // \brief Formats item labels based on the formatting provided by guiViewState
@@ -367,13 +371,13 @@ void CGUIPythonWindowXML::SortItems(CFileItemList &items)
 void CGUIPythonWindowXML::UpdateFileList()
 {
   int nItem = m_viewControl.GetSelectedItem();
-  CFileItem* pItem = m_vecItems[nItem];
+  CFileItem* pItem = m_vecItems->Get(nItem);
   const CStdString& strSelected = pItem->m_strPath;
 
   OnSort();
   UpdateButtons();
 
-  m_viewControl.SetItems(m_vecItems);
+  m_viewControl.SetItems(*m_vecItems);
   m_viewControl.SetSelectedItem(strSelected);
 }
 
@@ -421,10 +425,10 @@ void CGUIPythonWindowXML::UpdateButtons()
     SET_CONTROL_LABEL(CONTROL_BTNSORTBY, sortLabel);
   }
 
-  int iItems = m_vecItems.Size();
+  int iItems = m_vecItems->Size();
   if (iItems)
   {
-    CFileItem* pItem = m_vecItems[0];
+    CFileItem* pItem = m_vecItems->Get(0);
     if (pItem->IsParentFolder()) iItems--;
   }
   CStdString items;

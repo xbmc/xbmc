@@ -27,15 +27,20 @@
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogGamepad.h"
 #include "GUIDialogLockSettings.h"
+#include "GUIWindowManager.h"
 #include "MediaManager.h"
 #include "Util.h"
 #include "GUIPassword.h"
 #include "Picture.h"
+#include "GUIDialogYesNo.h"
+#include "FileSystem/Directory.h"
+#include "FileSystem/File.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
 
-#define CONTROL_PROFILE_IMAGE      2
+#define CONTROL_PROFILE_IMAGE       2
 #define CONTROL_START              30
 
 CGUIDialogProfileSettings::CGUIDialogProfileSettings(void)
@@ -174,7 +179,7 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
   if (setting.id == 2)
   {
     CStdString strThumb;
-    VECSHARES shares;
+    VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(1030),strThumb))
     {
@@ -195,8 +200,8 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
   }
   if (setting.id == 3)
   {
-    VECSHARES shares;
-    CShare share;
+    VECSOURCES shares;
+    CMediaSource share;
     share.strName = "Profiles";
     share.strPath = g_settings.m_vecProfiles[0].getDirectory()+"\\profiles";
     shares.push_back(share);

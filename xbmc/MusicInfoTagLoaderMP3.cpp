@@ -21,10 +21,10 @@
 
 #include "stdafx.h"
 #include "MusicInfoTagLoaderMP3.h"
-#include "Util.h"
 #include "APEv2Tag.h"
 #include "Id3Tag.h"
-
+#include "Settings.h"
+#include "FileSystem/File.h"
 
 using namespace MUSIC_INFO;
 

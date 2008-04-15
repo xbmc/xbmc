@@ -10,6 +10,12 @@
 #endif // _MSC_VER > 1000
 
 #include "IFile.h"
+#include "StdString.h"
+
+namespace MUSIC_INFO
+{
+  class CMusicInfoTag;
+}
 
 namespace XFILE
 {

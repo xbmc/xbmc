@@ -6,6 +6,8 @@
 #include "PictureThumbLoader.h"
 #include "DllImageLib.h"
 
+class CGUIDialogProgress;
+
 class CGUIWindowPictures : public CGUIMediaWindow, public IBackgroundLoaderObserver
 {
 public:

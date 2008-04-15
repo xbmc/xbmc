@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GUIPythonWindowDialog.h"
+#include "GUIWindowManager.h"
 
 CGUIPythonWindowDialog::CGUIPythonWindowDialog(DWORD dwId)
 :CGUIPythonWindow(dwId)

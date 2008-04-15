@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Settings.h" // for VECSHARES
+#include "Settings.h" // for VECSOURCES
 
 class CNetworkLocation
 {
@@ -18,8 +18,8 @@ public:
   bool LoadSources();
   bool SaveSources();
 
-  void GetLocalDrives(VECSHARES &localDrives, bool includeQ = true);
-  void GetNetworkLocations(VECSHARES &locations);
+  void GetLocalDrives(VECSOURCES &localDrives, bool includeQ = true);
+  void GetNetworkLocations(VECSOURCES &locations);
 
   bool AddNetworkLocation(const CStdString &path);
   bool HasLocation(const CStdString& path);

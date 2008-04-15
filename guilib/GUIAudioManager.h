@@ -1,6 +1,6 @@
 #pragma once
 #include "IAudioDeviceChangedCallback.h"
-#include "../xbmc/utils/CriticalSection.h"
+#include "utils/CriticalSection.h"
 
 // forward definitions
 struct CAction;

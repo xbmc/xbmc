@@ -29,25 +29,31 @@
 #endif
 #include "Picture.h"
 #include "GUIDialogContextMenu.h"
+#include "GUIWindowManager.h"
+#include "ViewState.h"
+#include "Settings.h"
+#include "FileItem.h"
 
 using namespace std;
 
 #define BOOKMARK_THUMB_WIDTH g_advancedSettings.m_thumbSize
 
-#define CONTROL_ADD_BOOKMARK          2
-#define CONTROL_CLEAR_BOOKMARKS       3
-#define CONTROL_ADD_EPISODE_BOOKMARK  4
+#define CONTROL_ADD_BOOKMARK           2
+#define CONTROL_CLEAR_BOOKMARKS        3
+#define CONTROL_ADD_EPISODE_BOOKMARK   4
 
-#define CONTROL_LIST             10
-#define CONTROL_THUMBS           11
+#define CONTROL_LIST                  10
+#define CONTROL_THUMBS                11
 
 CGUIDialogVideoBookmarks::CGUIDialogVideoBookmarks()
     : CGUIDialog(WINDOW_DIALOG_VIDEO_BOOKMARKS, "VideoOSDBookmarks.xml")
 {
+  m_vecItems = new CFileItemList;
 }
 
 CGUIDialogVideoBookmarks::~CGUIDialogVideoBookmarks()
 {
+  delete m_vecItems;
 }
 
 bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
@@ -176,16 +182,16 @@ void CGUIDialogVideoBookmarks::Update()
 
     CFileItem *item = new CFileItem(bookmarkTime);
     item->SetThumbnailImage(m_bookmarks[i].thumbNailImage);
-    m_vecItems.Add(item);
+    m_vecItems->Add(item);
   }
-  m_viewControl.SetItems(m_vecItems);
+  m_viewControl.SetItems(*m_vecItems);
   g_graphicsContext.Unlock();
 }
 
 void CGUIDialogVideoBookmarks::Clear()
 {
   m_viewControl.Clear();
-  m_vecItems.Clear();
+  m_vecItems->Clear();
 }
 
 void CGUIDialogVideoBookmarks::GotoBookmark(int item)
@@ -249,7 +255,7 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
     // compute the thumb name + create the thumb image
     Crc32 crc;
     crc.ComputeFromLowerCase(g_application.CurrentFile());
-    bookmark.thumbNailImage.Format("%s\\%08x_%i.jpg", g_settings.GetBookmarksThumbFolder().c_str(), (unsigned __int32) crc, m_vecItems.Size() + 1);
+    bookmark.thumbNailImage.Format("%s\\%08x_%i.jpg", g_settings.GetBookmarksThumbFolder().c_str(), (unsigned __int32) crc, m_vecItems->Size() + 1);
     CPicture pic;
     if (!pic.CreateThumbnailFromSurface((BYTE *)lockedRect.pBits, width, height, lockedRect.Pitch, bookmark.thumbNailImage))
       bookmark.thumbNailImage.Empty();

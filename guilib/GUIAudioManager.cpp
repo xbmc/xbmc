@@ -3,9 +3,9 @@
 #include "Key.h"
 #include "AudioContext.h"
 #include "GUISound.h"
-#include "../xbmc/Settings.h"
-#include "../xbmc/ButtonTranslator.h"
-#include "../xbmc/utils/SingleLock.h"
+#include "GUISettings.h"
+#include "ButtonTranslator.h"
+#include "utils/SingleLock.h"
 
 using namespace std;
 

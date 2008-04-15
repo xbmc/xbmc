@@ -1,6 +1,6 @@
 #include "include.h"
 #include "GUIWrappingListContainer.h"
-#include "../xbmc/FileItem.h"
+#include "FileItem.h"
 
 CGUIWrappingListContainer::CGUIWrappingListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int fixedPosition)
     : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime)
@@ -271,4 +271,12 @@ void CGUIWrappingListContainer::Reset()
 {
   ResetExtraItems();
   CGUIBaseContainer::Reset();
+}
+
+int CGUIWrappingListContainer::GetCurrentPage() const
+{
+  int offset = CorrectOffset(m_offset, m_cursor);
+  if (offset + m_itemsPerPage - m_cursor >= (int)GetRows())  // last page
+    return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
+  return offset / m_itemsPerPage + 1;
 }

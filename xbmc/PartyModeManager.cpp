@@ -21,15 +21,16 @@
 
 #include "stdafx.h"
 #include "PartyModeManager.h"
-#include "Application.h"
 #include "PlayListPlayer.h"
 #include "MusicDatabase.h"
 #include "VideoDatabase.h"
 #include "Util.h"
-#include "FileItem.h"
 #include "GUIWindowMusicPlaylist.h"
 #include "SmartPlaylist.h"
 #include "GUIDialogProgress.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
+#include "PlayList.h"
 
 using namespace std;
 using namespace PLAYLIST;
@@ -415,7 +416,7 @@ void CPartyModeManager::Add(CFileItem *pItem)
   if (m_bIsVideo)
     iPlaylist = PLAYLIST_VIDEO;
 
-  CPlayList::CPlayListItem playlistItem;
+  CPlayListItem playlistItem;
   CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
   playlist.Add(playlistItem);

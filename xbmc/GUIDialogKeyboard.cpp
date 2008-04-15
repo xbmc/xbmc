@@ -20,11 +20,13 @@
  */
 
 #include "stdafx.h"
+#include "GUISettings.h"
 #include "GUIDialogKeyboard.h"
 #include "GUILabelControl.h"
 #include "GUIButtonControl.h"
-#include "Util.h"
 #include "GUIDialogNumeric.h"
+#include "GUIDialogOK.h"
+#include "GUIWindowManager.h"
 #include "utils/RegExp.h"
 #include "GUIPassword.h"
 #include "utils/md5.h"
@@ -33,25 +35,25 @@
 // Symbol mapping (based on MS virtual keyboard - may need improving)
 static char symbol_map[37] = ")!@#$%^&*([]{}-_=+;:\'\",.<>/?\\|`~    ";
 
-#define CTL_BUTTON_DONE  300
-#define CTL_BUTTON_CANCEL 301
-#define CTL_BUTTON_SHIFT 302
-#define CTL_BUTTON_CAPS  303
-#define CTL_BUTTON_SYMBOLS 304
-#define CTL_BUTTON_LEFT  305
-#define CTL_BUTTON_RIGHT 306
+#define CTL_BUTTON_DONE       300
+#define CTL_BUTTON_CANCEL     301
+#define CTL_BUTTON_SHIFT      302
+#define CTL_BUTTON_CAPS       303
+#define CTL_BUTTON_SYMBOLS    304
+#define CTL_BUTTON_LEFT       305
+#define CTL_BUTTON_RIGHT      306
 #define CTL_BUTTON_IP_ADDRESS 307
 
-#define CTL_LABEL_EDIT  310
-#define CTL_LABEL_HEADING 311
+#define CTL_LABEL_EDIT        310
+#define CTL_LABEL_HEADING     311
 
-#define CTL_BUTTON_BACKSPACE  8
+#define CTL_BUTTON_BACKSPACE    8
 
 static char symbolButtons[] = "._-@/\\";
 #define NUM_SYMBOLS sizeof(symbolButtons) - 1
 
-#define SEARCH_DELAY 1000
-#define REMOTE_SMS_DELAY 1000
+#define SEARCH_DELAY         1000
+#define REMOTE_SMS_DELAY     1000
 
 CGUIDialogKeyboard::CGUIDialogKeyboard(void)
 : CGUIDialog(WINDOW_DIALOG_KEYBOARD, "DialogKeyboard.xml")

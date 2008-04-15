@@ -1,6 +1,8 @@
 #ifndef CShoutcastRipFile_H
 #define CShoutcastRipFile_H
 
+#include "MusicInfoTag.h"
+
 typedef struct RecStateSt
 {
   bool bRecording;

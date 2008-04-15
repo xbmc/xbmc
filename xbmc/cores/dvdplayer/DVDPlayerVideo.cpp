@@ -1,5 +1,6 @@
 
 #include "stdafx.h"
+#include "Settings.h"
 #include "DVDPlayer.h"
 #include "DVDPlayerVideo.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
@@ -7,7 +8,6 @@
 #include "DVDCodecs/Video/DVDVideoPPFFmpeg.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
-#include "Util.h"
 #include "DVDOverlayRenderer.h"
 #include "DVDPerformanceCounter.h"
 #include "DVDCodecs/DVDCodecs.h"

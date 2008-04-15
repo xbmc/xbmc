@@ -1,7 +1,7 @@
 #pragma once
-#include "../iplayer.h"
+#include "cores/iplayer.h"
 #include "DllMPlayer.h"
-#include "../../Edl.h"
+#include "Edl.h"
 
 class CMPlayer : public IPlayer, public CThread
 {

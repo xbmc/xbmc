@@ -21,10 +21,12 @@
 
 #include "stdafx.h"
 #include "LabelFormatter.h"
-#include "../FileItem.h"
-#include "../GUISettings.h"
+#include "GUISettings.h"
 #include "RegExp.h"
-#include "../Util.h"
+#include "Util.h"
+#include "VideoInfoTag.h"
+#include "MusicInfoTag.h"
+#include "FileItem.h"
 
 using namespace MUSIC_INFO;
 

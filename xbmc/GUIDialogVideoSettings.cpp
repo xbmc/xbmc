@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIDialogVideoSettings.h"
+#include "GUIWindowManager.h"
 #include "GUIPassword.h"
 #include "Util.h"
 #include "Application.h"
@@ -28,6 +29,8 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
 #include "VideoDatabase.h"
+#include "GUIDialogYesNo.h"
+#include "Settings.h"
 
 CGUIDialogVideoSettings::CGUIDialogVideoSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_VIDEO_OSD_SETTINGS, "VideoOSDSettings.xml")

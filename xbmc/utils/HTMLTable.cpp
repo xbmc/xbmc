@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "./HTMLTable.h"
-#include "./HTMLUtil.h"
+#include "HTMLTable.h"
+#include "HTMLUtil.h"
 
 
 using namespace HTML;

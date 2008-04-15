@@ -1,6 +1,7 @@
 #pragma once
 #include "GUIDialog.h"
-#include "PictureInfoTag.h"
+
+class CFileItemList;
 
 class CGUIDialogPictureInfo :
       public CGUIDialog
@@ -17,6 +18,6 @@ protected:
   virtual bool OnAction(const CAction& action);
   void UpdatePictureInfo();
 
-  CFileItemList m_pictureInfo;
+  CFileItemList* m_pictureInfo;
   CStdString    m_currentPicture;
 };

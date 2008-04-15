@@ -4,29 +4,15 @@
 #define PRE_SKIN_VERSION_2_1_COMPATIBILITY 1
 // REMOVE ME WHEN WE SWITCH TO SKIN VERSION 2.1
 
-class CProfile;
 #include "settings/VideoSettings.h"
-#include "../xbmc/StringUtils.h"
+#include "StringUtils.h"
 #include "GUISettings.h"
-#include "FileItem.h"
+#include "Profile.h"
+#include "MediaSource.h"
+#include "ViewState.h"
 
 #include <vector>
 #include <map>
-
-#define SHARE_TYPE_UNKNOWN      0
-#define SHARE_TYPE_LOCAL        1
-#define SHARE_TYPE_DVD          2
-#define SHARE_TYPE_VIRTUAL_DVD  3
-#define SHARE_TYPE_REMOTE       4
-#define SHARE_TYPE_VPATH        5
-
-#define LOCK_MODE_UNKNOWN            -1
-#define LOCK_MODE_EVERYONE            0
-#define LOCK_MODE_NUMERIC             1
-#define LOCK_MODE_GAMEPAD             2
-#define LOCK_MODE_QWERTY              3
-#define LOCK_MODE_SAMBA               4
-#define LOCK_MODE_EEPROM_PARENTAL     5
 
 #define CACHE_AUDIO 0
 #define CACHE_VIDEO 1
@@ -54,97 +40,6 @@ class CProfile;
 #define VIDEO_SHOW_UNWATCHED 1
 #define VIDEO_SHOW_WATCHED 2
 
-#define DEFAULT_VIEW_AUTO (VIEW_TYPE_AUTO << 16)
-#define DEFAULT_VIEW_LIST (VIEW_TYPE_LIST << 16)
-#define DEFAULT_VIEW_ICONS (VIEW_TYPE_ICON << 16)
-#define DEFAULT_VIEW_BIG_ICONS (VIEW_TYPE_BIG_ICON << 16)
-#define DEFAULT_VIEW_MAX (((VIEW_TYPE_MAX - 1) << 16) | 60)
-
-class CViewState
-{
-public:
-  CViewState(int viewMode, SORT_METHOD sortMethod, SORT_ORDER sortOrder)
-  {
-    m_viewMode = viewMode;
-    m_sortMethod = sortMethod;
-    m_sortOrder = sortOrder;
-  };
-  CViewState()
-  {
-    m_viewMode = 0;
-    m_sortMethod = SORT_METHOD_LABEL;
-    m_sortOrder = SORT_ORDER_ASC;
-  };
-
-  int m_viewMode;
-  SORT_METHOD m_sortMethod;
-  SORT_ORDER m_sortOrder;
-};
-
-/*!
-\ingroup windows
-\brief Represents a share.
-\sa VECSHARES, IVECSHARES
-*/
-class CShare
-{
-public:
-  CShare() { m_iDriveType=SHARE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; m_iHasLock=0; m_ignore=false; };
-  virtual ~CShare() {};
-
-  void FromNameAndPaths(const CStdString &category, const CStdString &name, const std::vector<CStdString> &paths);
-  bool isWritable() const;
-  CStdString strName; ///< Name of the share, can be choosen freely.
-  CStdString strStatus; ///< Status of the share (eg has disk etc.)
-  CStdString strPath; ///< Path of the share, eg. iso9660:// or F:
-
-  /*!
-  \brief The type of the share.
-
-  Value can be:
-  - SHARE_TYPE_UNKNOWN \n
-  Unknown share, maybe a wrong path.
-  - SHARE_TYPE_LOCAL \n
-  Harddisk share.
-  - SHARE_TYPE_DVD \n
-  DVD-ROM share of the build in drive, strPath may vary.
-  - SHARE_TYPE_VIRTUAL_DVD \n
-  DVD-ROM share, strPath is fix.
-  - SHARE_TYPE_REMOTE \n
-  Network share.
-  */
-  int m_iDriveType;
-
-  /*!
-  \brief The type of Lock UI to show when accessing the share.
-
-  Value can be:
-  - LOCK_MODE_EVERYONE \n
-  Default value.  No lock UI is shown, user can freely access the share.
-  - LOCK_MODE_NUMERIC \n
-  Lock code is entered via OSD numpad or IrDA remote buttons.
-  - LOCK_MODE_GAMEPAD \n
-  Lock code is entered via XBOX gamepad buttons.
-  - LOCK_MODE_QWERTY \n
-  Lock code is entered via OSD keyboard or PC USB keyboard.
-  - LOCK_MODE_SAMBA \n
-  Lock code is entered via OSD keyboard or PC USB keyboard and passed directly to SMB for authentication.
-  - LOCK_MODE_EEPROM_PARENTAL \n
-  Lock code is retrieved from XBOX EEPROM and entered via XBOX gamepad or remote.
-  - LOCK_MODE_UNKNOWN \n
-  Value is unknown or unspecified.
-  */
-  int m_iLockMode;
-  CStdString m_strLockCode;  ///< Input code for Lock UI to verify, can be chosen freely.
-  int m_iHasLock;
-  int m_iBadPwdCount; ///< Number of wrong passwords user has entered since share was last unlocked
-
-  CStdString m_strThumbnailImage; ///< Path to a thumbnail image for the share, or blank for default
-
-  std::vector<CStdString> vecPaths;
-  bool m_ignore; /// <Do not store in xml
-};
-
 class CSkinString
 {
 public:
@@ -158,23 +53,6 @@ public:
   CStdString name;
   bool value;
 };
-
-/*!
-\ingroup windows
-\brief A vector to hold CShare objects.
-\sa CShare, IVECSHARES
-*/
-typedef std::vector<CShare> VECSHARES;
-
-/*!
-\ingroup windows
-\brief Iterator of VECSHARES.
-\sa CShare, VECSHARES
-*/
-typedef std::vector<CShare>::iterator IVECSHARES;
-
-typedef std::vector<CProfile> VECPROFILES;
-typedef std::vector<CProfile>::iterator IVECPROFILES;
 
 struct VOICE_MASK {
   float energy;
@@ -199,13 +77,13 @@ public:
   bool SaveSettingsToProfile(int index);
   bool DeleteProfile(int index);
 
-  VECSHARES *GetSharesFromType(const CStdString &type);
-  CStdString GetDefaultShareFromType(const CStdString &type);
+  VECSOURCES *GetSourcesFromType(const CStdString &type);
+  CStdString GetDefaultSourceFromType(const CStdString &type);
 
   bool UpdateSource(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateChild, const CStdString &strUpdateValue);
   bool DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath);
-  bool UpdateShare(const CStdString &type, const CStdString oldName, const CShare &share);
-  bool AddShare(const CStdString &type, const CShare &share);
+  bool UpdateShare(const CStdString &type, const CStdString oldName, const CMediaSource &share);
+  bool AddShare(const CStdString &type, const CMediaSource &share);
 
   int TranslateSkinString(const CStdString &setting);
   const CStdString &GetSkinString(int setting) const;
@@ -395,11 +273,11 @@ public:
   CStdString m_szMyVideoCleanSeparatorsString;
   CStdStringArray m_szMyVideoCleanTokensArray;
 
-  VECSHARES m_programSources;
-  VECSHARES m_pictureSources;
-  VECSHARES m_fileSources;
-  VECSHARES m_musicSources;
-  VECSHARES m_videoSources;
+  VECSOURCES m_programSources;
+  VECSOURCES m_pictureSources;
+  VECSOURCES m_fileSources;
+  VECSOURCES m_musicSources;
+  VECSOURCES m_videoSources;
 
   CStdString m_defaultProgramSource;
   CStdString m_defaultMusicSource;
@@ -409,9 +287,9 @@ public:
   CStdString m_defaultMusicLibSource;
   CStdString m_defaultVideoLibSource;
 
-  VECSHARES m_UPnPMusicSources;
-  VECSHARES m_UPnPVideoSources;
-  VECSHARES m_UPnPPictureSources;
+  VECSOURCES m_UPnPMusicSources;
+  VECSOURCES m_UPnPVideoSources;
+  VECSOURCES m_UPnPPictureSources;
 
   CStdString m_UPnPUUID;
   CStdString m_UPnPUUIDRenderer;
@@ -462,9 +340,9 @@ protected:
   bool GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
   bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue, const CStdString& strDefaultValue);
   bool GetString(const TiXmlElement* pRootElement, const char *strTagName, char *szValue, const CStdString& strDefaultValue);
-  bool GetShare(const CStdString &category, const TiXmlNode *source, CShare &share);
-  void GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault);
-  bool SetShares(TiXmlNode *root, const char *section, const VECSHARES &shares, const char *defaultPath);
+  bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);
+  void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault);
+  bool SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath);
   void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState);
 
   void ConvertHomeVar(CStdString& strText);

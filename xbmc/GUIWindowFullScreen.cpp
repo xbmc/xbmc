@@ -33,57 +33,60 @@
 #include "GUIWindowOSD.h"
 #include "GUIFontManager.h"
 #include "GUITextLayout.h"
+#include "GUIWindowManager.h"
+#include "Settings.h"
+#include "FileItem.h"
 
 #include <stdio.h>
 
 
-#define BLUE_BAR    0
-#define LABEL_ROW1 10
-#define LABEL_ROW2 11
-#define LABEL_ROW3 12
+#define BLUE_BAR                          0
+#define LABEL_ROW1                       10
+#define LABEL_ROW2                       11
+#define LABEL_ROW3                       12
 
-#define BTN_OSD_VIDEO 13
-#define BTN_OSD_AUDIO 14
-#define BTN_OSD_SUBTITLE 15
+#define BTN_OSD_VIDEO                    13
+#define BTN_OSD_AUDIO                    14
+#define BTN_OSD_SUBTITLE                 15
 
-#define MENU_ACTION_AVDELAY       1
-#define MENU_ACTION_SEEK          2
-#define MENU_ACTION_SUBTITLEDELAY 3
-#define MENU_ACTION_SUBTITLEONOFF 4
-#define MENU_ACTION_SUBTITLELANGUAGE 5
-#define MENU_ACTION_INTERLEAVED 6
-#define MENU_ACTION_FRAMERATECONVERSIONS 7
-#define MENU_ACTION_AUDIO_STREAM 8
+#define MENU_ACTION_AVDELAY               1
+#define MENU_ACTION_SEEK                  2
+#define MENU_ACTION_SUBTITLEDELAY         3
+#define MENU_ACTION_SUBTITLEONOFF         4
+#define MENU_ACTION_SUBTITLELANGUAGE      5
+#define MENU_ACTION_INTERLEAVED           6
+#define MENU_ACTION_FRAMERATECONVERSIONS  7
+#define MENU_ACTION_AUDIO_STREAM          8
 
-#define MENU_ACTION_NEW_BOOKMARK  9
-#define MENU_ACTION_NEXT_BOOKMARK  10
-#define MENU_ACTION_CLEAR_BOOKMARK  11
+#define MENU_ACTION_NEW_BOOKMARK          9
+#define MENU_ACTION_NEXT_BOOKMARK        10
+#define MENU_ACTION_CLEAR_BOOKMARK       11
 
-#define MENU_ACTION_NOCACHE 12
+#define MENU_ACTION_NOCACHE              12
 
-#define IMG_PAUSE     16
-#define IMG_2X        17
-#define IMG_4X        18
-#define IMG_8X      19
-#define IMG_16X       20
-#define IMG_32X       21
+#define IMG_PAUSE                        16
+#define IMG_2X                           17
+#define IMG_4X                           18
+#define IMG_8X                           19
+#define IMG_16X                          20
+#define IMG_32X                          21
 
-#define IMG_2Xr       117
-#define IMG_4Xr     118
-#define IMG_8Xr     119
-#define IMG_16Xr    120
-#define IMG_32Xr      121
+#define IMG_2Xr                         117
+#define IMG_4Xr                         118
+#define IMG_8Xr                         119
+#define IMG_16Xr                        120
+#define IMG_32Xr                        121
 
 //Displays current position, visible after seek or when forced
 //Alt, use conditional visibility Player.DisplayAfterSeek
-#define LABEL_CURRENT_TIME 22
+#define LABEL_CURRENT_TIME               22
 
 //Displays when video is rebuffering
 //Alt, use conditional visibility Player.IsCaching
-#define LABEL_BUFFERING 24
+#define LABEL_BUFFERING                  24
 
 //Progressbar used for buffering status and after seeking
-#define CONTROL_PROGRESS 23
+#define CONTROL_PROGRESS                 23
 
 
 static DWORD color[6] = { 0xFFFFFF00, 0xFFFFFFFF, 0xFF0099FF, 0xFF00FF00, 0xFFCCFF00, 0xFF00FFFF };

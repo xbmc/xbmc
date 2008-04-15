@@ -8,12 +8,14 @@
 // python.h should always be included first before any other includes
 #include "stdafx.h"
 #include "python/Python.h"
-#include "../../cores/DllLoader/DllLoaderContainer.h"
-#include "../../GUIPassword.h"
+#include "cores/DllLoader/DllLoaderContainer.h"
+#include "GUIPassword.h"
 
 #include "XBPython.h"
 #include "XBPythonDll.h"
 #include "ActionManager.h"
+#include "Settings.h"
+#include "Profile.h"
 
 XBPython g_pythonParser;
 

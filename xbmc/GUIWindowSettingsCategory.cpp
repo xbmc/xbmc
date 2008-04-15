@@ -58,6 +58,14 @@
 #include "lib/libGoAhead/WebServer.h"
 #include "GUIControlGroupList.h"
 #include "XBTimeZone.h"
+#include "VideoDatabase.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
+#include "GUIDialogYesNo.h"
+#include "GUIDialogKeyboard.h"
+#include "FileSystem/Directory.h"
+#include "utils/ScraperParser.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -805,7 +813,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("screensaver.uselock"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE && !g_guiSettings.GetString("screensaver.mode").Equals("Black"));
+      if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE                                    &&
+                                         g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE &&
+                                         !g_guiSettings.GetString("screensaver.mode").Equals("Black"));
     }
     else if (strSetting.Equals("upnp.musicshares") || strSetting.Equals("upnp.videoshares") || strSetting.Equals("upnp.pictureshares"))
     {
@@ -1236,7 +1246,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting.Equals("videolibrary.export"))
   {
     CStdString path(g_settings.GetDatabaseFolder());
-    VECSHARES shares;
+    VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
     {
@@ -1250,7 +1260,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting.Equals("musiclibrary.export"))
   {
     CStdString path(g_settings.GetDatabaseFolder());
-    VECSHARES shares;
+    VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
     {
@@ -1264,7 +1274,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting.Equals("videolibrary.import"))
   {
     CStdString path(g_settings.GetDatabaseFolder());
-    VECSHARES shares;
+    VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "videodb.xml", g_localizeStrings.Get(651) , path))
     {
@@ -1277,7 +1287,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting.Equals("musiclibrary.import"))
   {
     CStdString path(g_settings.GetDatabaseFolder());
-    VECSHARES shares;
+    VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "musicdb.xml", g_localizeStrings.Get(651) , path))
     {
@@ -1501,7 +1511,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = pSettingString->GetData();
-    VECSHARES shares;
+    VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     // TODO 2.0: Localize this
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", g_localizeStrings.Get(655), path))
@@ -1754,7 +1764,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = pSettingString->GetData();
-    VECSHARES shares;
+    VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
@@ -1763,7 +1773,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = g_guiSettings.GetString(strSetting,false);
-    VECSHARES shares;
+    VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     UpdateSettings();
     bool bWriteOnly = true;
@@ -1916,7 +1926,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
     CStdString strDummy;
     g_settings.LoadUPnPXml(filename);
-    if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_UPnPMusicSources,"upnpmusic"))
+    if (CGUIDialogFileBrowser::ShowAndGetSource(strDummy,false,&g_settings.m_UPnPMusicSources,"upnpmusic"))
       g_settings.SaveUPnPXml(filename);
     else
       g_settings.LoadUPnPXml(filename);
@@ -1927,7 +1937,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
     CStdString strDummy;
     g_settings.LoadUPnPXml(filename);
-    if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_UPnPVideoSources,"upnpvideo"))
+    if (CGUIDialogFileBrowser::ShowAndGetSource(strDummy,false,&g_settings.m_UPnPVideoSources,"upnpvideo"))
       g_settings.SaveUPnPXml(filename);
     else
       g_settings.LoadUPnPXml(filename);
@@ -1938,7 +1948,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
     CStdString strDummy;
     g_settings.LoadUPnPXml(filename);
-    if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_UPnPPictureSources,"upnppictures"))
+    if (CGUIDialogFileBrowser::ShowAndGetSource(strDummy,false,&g_settings.m_UPnPPictureSources,"upnppictures"))
       g_settings.SaveUPnPXml(filename);
     else
       g_settings.LoadUPnPXml(filename);

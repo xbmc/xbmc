@@ -1,18 +1,16 @@
 #pragma once
 #include "Database.h"
-#include "utils/IMDB.h"
-#include "settings/VideoSettings.h"
+#include "VideoInfoTag.h"
+
 #include <set>
 
-typedef std::vector<CStdString> VECMOVIEYEARS;
-typedef std::vector<CStdString> VECMOVIEACTORS;
-typedef std::vector<CStdString> VECMOVIEGENRES;
-typedef std::vector<CVideoInfoTag> VECMOVIES;
-typedef std::vector<CStdString> VECMOVIESFILES;
+struct SScraperInfo;
+class CFileItem;
+class CFileItemList;
+class CVideoSettings;
+class CGUIDialogProgress;
 
-#define VIDEO_SHOW_ALL 0
-#define VIDEO_SHOW_UNWATCHED 1
-#define VIDEO_SHOW_WATCHED 2
+typedef std::vector<CVideoInfoTag> VECMOVIES;
 
 namespace VIDEO
 {
@@ -36,8 +34,9 @@ typedef enum
 {
   VIDEODB_CONTENT_MOVIES = 1,
   VIDEODB_CONTENT_TVSHOWS = 2,
-  VIDEODB_CONTENT_MUSICVIDEOS = 3
-} VIDEODB_CONTENT_IDS;
+  VIDEODB_CONTENT_MUSICVIDEOS = 3,
+  VIDEODB_CONTENT_EPISODES    = 4
+} VIDEODB_CONTENT_TYPE;
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
 {
@@ -261,14 +260,14 @@ public:
   // editing functions
   void MarkAsWatched(const CFileItem &item);
   void MarkAsUnWatched(const CFileItem &item);
-  void UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle, int iType=0); // 0=movie,1=episode,2=tvshow,3=musicvideo
+  void UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
 
   bool HasMovieInfo(const CStdString& strFilenameAndPath);
   bool HasTvShowInfo(const CStdString& strFilenameAndPath);
   bool HasEpisodeInfo(const CStdString& strFilenameAndPath);
   bool HasMusicVideoInfo(const CStdString& strFilenameAndPath);
   
-  void GetFilePathById(long id, CStdString &filePath, int iType=0); // 0=movies, 1=episodes, 2=tvshows, 3=musicvideo
+  void GetFilePathById(long id, CStdString &filePath, VIDEODB_CONTENT_TYPE iType);
   bool GetGenreById(long id, CStdString& strGenre);
 
   void GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long lMovieId = -1);
@@ -379,7 +378,7 @@ public:
   bool GetRecentlyAddedMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items);
 
   bool HasContent();
-  bool HasContent(VIDEODB_CONTENT_IDS type);
+  bool HasContent(VIDEODB_CONTENT_TYPE type);
 
   void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL, const std::vector<long>* paths=NULL);
   

@@ -1,6 +1,10 @@
 #pragma once
 #include "GUIWindowVideoBase.h"
-#include "VideoInfoScanner.h"
+
+namespace VIDEO
+{
+  class CVideoInfoScanner;
+}
 
 class CGUIWindowVideoFiles : public CGUIWindowVideoBase
 {

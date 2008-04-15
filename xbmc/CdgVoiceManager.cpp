@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "CdgVoiceManager.h"
 #include "AudioContext.h"
+#include "Settings.h"
 
 //CdgChatter
 CCdgChatter::CCdgChatter()

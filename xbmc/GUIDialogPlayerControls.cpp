@@ -21,7 +21,6 @@
 
 #include "stdafx.h"
 #include "GUIDialogPlayerControls.h"
-#include "Application.h"
 
 
 CGUIDialogPlayerControls::CGUIDialogPlayerControls(void)

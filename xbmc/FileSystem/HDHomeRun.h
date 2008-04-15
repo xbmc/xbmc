@@ -1,8 +1,8 @@
 #pragma once
 #include "IDirectory.h"
-#include "../DynamicDll.h"
-#include "../lib/libhdhomerun/hdhomerun.h"
-
+#include "DynamicDll.h"
+#include "lib/libhdhomerun/hdhomerun.h"
+#include "FileSystem/IFile.h"
 
 class DllHdHomeRunInterface
 {

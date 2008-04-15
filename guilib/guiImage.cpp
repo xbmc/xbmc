@@ -1,8 +1,6 @@
 #include "include.h"
 #include "guiImage.h"
 #include "TextureManager.h"
-#include "../xbmc/Settings.h"
-#include "../xbmc/utils/GUIInfoManager.h"
 
 using namespace std;
 

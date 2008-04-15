@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIDialogFileStacking.h"
+#include "FileItem.h"
 
 #define STACK_LIST 450
 
@@ -29,6 +30,7 @@ CGUIDialogFileStacking::CGUIDialogFileStacking(void)
 {
   m_iSelectedFile = -1;
   m_iNumberOfFiles = 0;
+  m_stackItems = NULL;
 }
 
 CGUIDialogFileStacking::~CGUIDialogFileStacking(void)
@@ -40,7 +42,8 @@ bool CGUIDialogFileStacking::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     CGUIDialog::OnMessage(message);
-    m_stackItems.Clear();
+    if (m_stackItems)
+      m_stackItems->Clear();
     return true;
   case GUI_MSG_WINDOW_INIT:
     {
@@ -72,7 +75,7 @@ bool CGUIDialogFileStacking::OnMessage(CGUIMessage& message)
           CStdString label;
           label.Format("Part %i", i+1);
           CFileItem *item = new CFileItem(label);
-          m_stackItems.Add(item);
+          m_stackItems->Add(item);
           CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), STACK_LIST, 0, 0, item);
           OnMessage(msg);
         }

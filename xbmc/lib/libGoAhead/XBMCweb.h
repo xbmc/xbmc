@@ -10,8 +10,11 @@
 
 /********************************* Includes ***********************************/
 
-#include "../../FileSystem/VirtualDirectory.h"
+#include "FileSystem/VirtualDirectory.h"
 #include "includes.h"
+
+class CFileItem;
+class CFileItemList;
 
 class CXbmcWeb
 {
@@ -47,10 +50,10 @@ private:
 	char		currentDir[1024];
 	bool		wroteHeader;
 	bool		wroteFooter;
-	CFileItemList webDirItems;
+	CFileItemList* webDirItems;
 	int			catalogItemCounter;
 	DIRECTORY::CVirtualDirectory *directory;
-	CFileItem	currentMediaItem;
+	CFileItem*	currentMediaItem;
 };
 
 /*

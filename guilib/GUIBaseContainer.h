@@ -68,8 +68,7 @@ public:
   CGUIListItem *GetListItem(int offset) const;
 
   virtual bool GetCondition(int condition, int data) const;
-  unsigned int GetNumPages() const;
-  unsigned int GetCurrentPage() const;
+  CStdString GetLabel(int info) const;
 
 #ifdef _DEBUG
   virtual void DumpTextureUse();
@@ -88,6 +87,8 @@ protected:
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {};
   virtual void Reset();
+  virtual unsigned int GetNumItems() const { return m_items.size(); };
+  virtual int GetCurrentPage() const;
   bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point);
 
   inline float Size() const;

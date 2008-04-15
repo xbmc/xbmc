@@ -19,7 +19,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 #include "FileSndtrk.h"
-
+#include "URL.h"
 
 using namespace XFILE;
 //////////////////////////////////////////////////////////////////////

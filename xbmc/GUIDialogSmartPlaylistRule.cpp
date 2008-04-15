@@ -27,6 +27,9 @@
 #include "Util.h"
 #include "MusicDatabase.h"
 #include "VideoDatabase.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogSelect.h"
+#include "FileItem.h"
 
 #define CONTROL_FIELD           15
 #define CONTROL_OPERATOR        16

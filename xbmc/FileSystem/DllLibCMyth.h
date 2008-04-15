@@ -1,9 +1,9 @@
 #pragma once
-#include "../DynamicDll.h"
+#include "DynamicDll.h"
 
 extern "C" {
-#include "../lib/libcmyth/cmyth.h"
-#include "../lib/libcmyth/mvp_refmem.h"
+#include "lib/libcmyth/cmyth.h"
+#include "lib/libcmyth/mvp_refmem.h"
 }
 
 class DllLibCMythInterface
@@ -22,6 +22,7 @@ public:
   virtual int              event_select             (cmyth_conn_t conn, struct timeval *timeout)=0;
 
   virtual cmyth_proglist_t proglist_get_all_recorded(cmyth_conn_t control)=0;
+  virtual int              mysql_get_guide(cmyth_database_t db, cmyth_program_t **prog, time_t starttime, time_t endtime) = 0;
   virtual cmyth_proginfo_t proglist_get_item        (cmyth_proglist_t pl, int index)=0;
   virtual int              proglist_get_count       (cmyth_proglist_t pl)=0;
   virtual cmyth_channel_t  chanlist_get_item        (cmyth_chanlist_t pl, int index)=0;
@@ -30,6 +31,7 @@ public:
   virtual int              channel_channum          (cmyth_channel_t chan)=0;
   virtual char*            channel_name             (cmyth_channel_t chan)=0;
   virtual char*            channel_icon             (cmyth_channel_t chan)=0;
+  virtual int              channel_visible          (cmyth_channel_t chan)=0;
 
   virtual cmyth_recorder_t recorder_is_recording    (cmyth_recorder_t conn)=0;
   virtual int              recorder_spawn_livetv    (cmyth_recorder_t rec)=0;
@@ -112,6 +114,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD2(int,                 event_select,             (cmyth_conn_t p1, struct timeval *p2))
 
   DEFINE_METHOD1(cmyth_proglist_t,    proglist_get_all_recorded, (cmyth_conn_t p1))
+  DEFINE_METHOD4(int,                 mysql_get_guide,          (cmyth_database_t p1, cmyth_program_t **p2, time_t p3, time_t p4))
   DEFINE_METHOD2(cmyth_proginfo_t,    proglist_get_item,        (cmyth_proglist_t p1, int p2))
   DEFINE_METHOD1(int,                 proglist_get_count,       (cmyth_proglist_t p1))
   DEFINE_METHOD2(cmyth_channel_t,     chanlist_get_item,        (cmyth_chanlist_t p1, int p2))
@@ -119,6 +122,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD1(int,                 channel_channum,          (cmyth_channel_t p1))
   DEFINE_METHOD1(char*,               channel_name,             (cmyth_channel_t p1))
   DEFINE_METHOD1(char*,               channel_icon,             (cmyth_channel_t p1))
+  DEFINE_METHOD1(int,                 channel_visible,          (cmyth_channel_t p1))
 
   DEFINE_METHOD1(cmyth_recorder_t,    recorder_is_recording,    (cmyth_recorder_t p1))
   DEFINE_METHOD1(int,                 recorder_spawn_livetv,    (cmyth_recorder_t p1))
@@ -194,6 +198,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_event_get, event_get)
     RESOLVE_METHOD_RENAME(cmyth_event_select, event_select)
     RESOLVE_METHOD_RENAME(cmyth_proglist_get_all_recorded, proglist_get_all_recorded)
+    RESOLVE_METHOD_RENAME(cmyth_mysql_get_guide, mysql_get_guide)
     RESOLVE_METHOD_RENAME(cmyth_proglist_get_item, proglist_get_item)
     RESOLVE_METHOD_RENAME(cmyth_proglist_get_count, proglist_get_count)
     RESOLVE_METHOD_RENAME(cmyth_chanlist_get_item, chanlist_get_item)
@@ -201,6 +206,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_channel_channum, channel_channum)
     RESOLVE_METHOD_RENAME(cmyth_channel_name, channel_name)
     RESOLVE_METHOD_RENAME(cmyth_channel_icon, channel_icon)
+    RESOLVE_METHOD_RENAME(cmyth_channel_visible, channel_visible)
 
     RESOLVE_METHOD_RENAME(cmyth_recorder_is_recording, recorder_is_recording)
     RESOLVE_METHOD_RENAME(cmyth_recorder_spawn_livetv, recorder_spawn_livetv)

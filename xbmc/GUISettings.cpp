@@ -21,8 +21,6 @@
 
 #include "stdafx.h"
 #include "GUISettings.h"
-#include "Application.h"
-#include "Util.h"
 #include "GUIDialogFileBrowser.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/FanController.h"
@@ -801,7 +799,7 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
       CStdString strData = "";
       if (bPrompt)
       {
-        VECSHARES shares;
+        VECSOURCES shares;
         g_mediaManager.GetLocalDrives(shares);
         if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares,g_localizeStrings.Get(result->GetLabel()),strData,false))
         {
@@ -819,7 +817,7 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
       CStdString strData = "";
       if (bPrompt)
       {
-        VECSHARES shares;
+        VECSOURCES shares;
         g_mediaManager.GetLocalDrives(shares);
         if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares,g_localizeStrings.Get(result->GetLabel()),strData,true))
         {

@@ -4,9 +4,11 @@
 #ifdef HAS_XBOX_NETWORK
 #include "Undocumented.h"
 #endif
-#include "../Application.h"
-#include "../FileSystem/FileSmb.h"
-#include "../lib/libscrobbler/scrobbler.h"
+#include "Application.h"
+#include "FileSystem/FileSmb.h"
+#include "lib/libscrobbler/scrobbler.h"
+#include "Settings.h"
+#include "GUIWindowManager.h"
 
 // global network variable
 CNetwork g_network;

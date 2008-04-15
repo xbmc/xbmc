@@ -1,7 +1,7 @@
 #include "include.h"
 #include "GUIFont.h"
 #include "GraphicContext.h"
-#include "../xbmc/utils/SingleLock.h"
+#include "utils/SingleLock.h"
 
 using namespace std;
 namespace MathUtils {

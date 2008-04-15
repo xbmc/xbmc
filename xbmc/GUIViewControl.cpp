@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "GUIViewControl.h"
 #include "Util.h"
+#include "FileItem.h"
 
 CGUIViewControl::CGUIViewControl(void)
 {

@@ -3,15 +3,16 @@
 \brief 
 */
 
-#ifndef CGUIControlFactory_H
-#define CGUIControlFactory_H
+#ifndef GUI_CONTROL_FACTORY_H
+#define GIU_CONTROL_FACTORY_H
 
 #pragma once
 
 #include "GUIControl.h"
-#include "guiImage.h" // for aspect ratio
+#include "guiImage.h"
 
 class CImage; // forward
+class TiXmlNode;
 
 /*!
  \ingroup controls

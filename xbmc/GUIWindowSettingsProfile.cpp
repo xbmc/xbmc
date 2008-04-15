@@ -23,14 +23,15 @@
 #include "GUIWindowSettingsProfile.h"
 #include "GUIWindowFileManager.h"
 #include "Profile.h"
-#include "Util.h"
 #include "Application.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogProfileSettings.h"
 #include "xbox/network.h"
-#include "utils/GUIInfoManager.h"
 #include "utils/Weather.h"
 #include "GUIPassword.h"
+#include "GUIWindowManager.h"
+#include "FileSystem/Directory.h"
+#include "FileItem.h"
 
 using namespace DIRECTORY;
 

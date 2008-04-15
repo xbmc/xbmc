@@ -3,10 +3,14 @@
 #include "CMythSession.h"
 #include "Util.h"
 #include "DllLibCMyth.h"
+#include "VideoInfoTag.h"
+#include "URL.h"
+#include "GUISettings.h"
+#include "FileItem.h"
 
 extern "C" {
-#include "../lib/libcmyth/cmyth.h"
-#include "../lib/libcmyth/mvp_refmem.h"
+#include "lib/libcmyth/cmyth.h"
+#include "lib/libcmyth/mvp_refmem.h"
 }
 
 using namespace DIRECTORY;
@@ -39,6 +43,158 @@ void CCMythDirectory::Release()
     m_session = NULL;
   }
   m_dll = NULL;
+}
+
+bool CCMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
+{
+  CURL url(base);
+  CStdString strPath = url.GetFileName();
+  std::vector<CStdString> tokens;
+  CStdString Delimiter = "/";
+  CUtil::Tokenize(strPath, tokens, "/");
+
+  if (tokens.size() > 1)
+    return GetGuideForChannel(base, atoi(tokens[1].c_str()), items);
+  else
+  {
+    cmyth_database_t db = m_session->GetDatabase();
+    if(!db)
+      return false;
+
+    cmyth_chanlist_t list = m_dll->mysql_get_chanlist(db);
+    if(!list)
+    {
+      CLog::Log(LOGERROR, "%s - unable to get list of channels with url %s", __FUNCTION__, base.c_str());
+      return false;
+    }
+    CURL url(base);
+
+    int count = m_dll->chanlist_get_count(list);
+    for(int i = 0; i < count; i++)
+    {
+      cmyth_channel_t channel = m_dll->chanlist_get_item(list, i);
+      if(channel)
+      {
+        CStdString name, path, icon;
+
+        if(!m_dll->channel_visible(channel))
+        {
+          m_dll->ref_release(channel);
+          continue;
+        }
+        int num = m_dll->channel_channum(channel);
+        char* str;
+        if((str = m_dll->channel_name(channel)))
+        {
+          name.Format("%d - %s", num, str); 
+          m_dll->ref_release(str);
+        }
+        else
+          name.Format("%d");
+
+        icon = GetValue(m_dll->channel_icon(channel));
+
+        if(num <= 0)
+        {
+          CLog::Log(LOGDEBUG, "%s - Channel '%s' Icon '%s' - Skipped", __FUNCTION__, name.c_str(), icon.c_str());
+        }
+        else
+        {
+          CLog::Log(LOGDEBUG, "%s - Channel '%s' Icon '%s'", __FUNCTION__, name.c_str(), icon.c_str());
+          path.Format("guide/%d/", num);
+          url.SetFileName(path);
+          url.GetURL(path);
+          CFileItem *item = new CFileItem(path, true);
+          item->SetLabel(name);
+          item->SetLabelPreformated(true);
+          if(icon.length() > 0)
+          {
+            url.SetFileName("files/channels/" + CUtil::GetFileName(icon));
+            url.GetURL(icon);
+            item->SetThumbnailImage(icon);
+          }
+          items.Add(item);
+        }
+        m_dll->ref_release(channel);
+      }
+    }
+    m_dll->ref_release(list);
+    return true;
+  }
+}
+
+bool CCMythDirectory::GetGuideForChannel(const CStdString& base, int ChanNum, CFileItemList &items)
+{
+  cmyth_database_t db = m_session->GetDatabase();
+  if(!db)
+  {
+    CLog::Log(LOGERROR, "%s - Could not get database", __FUNCTION__);
+    return false;
+  }
+
+  time_t now;
+  time(&now);
+  // this sets how many seconds of EPG from now we should grabb
+  time_t end = now + (1 * 24 * 60 * 60);
+
+  cmyth_program_t *prog = NULL;
+
+  int count = m_dll->mysql_get_guide(db, &prog, now, end);
+  CLog::Log(LOGDEBUG, "%s - %i entries of guide data", __FUNCTION__, count);
+  if (count <= 0)
+    return false;
+
+  for (int i = 0; i < count; i++)
+  {
+    if (prog[i].channum == ChanNum)
+    {
+      CStdString path;
+      path.Format("%s%s", base.c_str(), prog[i].title);
+
+      CDateTime starttime(prog[i].starttime);
+      CDateTime endtime(prog[i].endtime);
+
+      CStdString title;
+      title.Format("%s - \"%s\"", starttime.GetAsLocalizedDateTime(), prog[i].title);
+
+      CFileItem *item = new CFileItem(title, false);
+      item->SetLabel(title);
+      item->m_dateTime = starttime;
+      item->SetLabelPreformated(true);
+
+      CVideoInfoTag* tag = item->GetVideoInfoTag();
+
+      tag->m_strAlbum       = GetValue(prog[i].callsign);
+      tag->m_strShowTitle   = GetValue(prog[i].title);
+      tag->m_strPlotOutline = GetValue(prog[i].subtitle);
+      tag->m_strPlot        = GetValue(prog[i].description);
+      tag->m_strGenre       = GetValue(prog[i].category);
+
+      if(tag->m_strPlot.Left(tag->m_strPlotOutline.length()) != tag->m_strPlotOutline && !tag->m_strPlotOutline.IsEmpty())
+          tag->m_strPlot = tag->m_strPlotOutline + '\n' + tag->m_strPlot;
+      tag->m_strOriginalTitle = tag->m_strShowTitle;
+
+      tag->m_strTitle = tag->m_strAlbum;
+      if(tag->m_strShowTitle.length() > 0)
+        tag->m_strTitle += " : " + tag->m_strShowTitle;
+
+      CDateTimeSpan span(endtime.GetDay() - starttime.GetDay(),
+                         endtime.GetHour() - starttime.GetHour(),
+                         endtime.GetMinute() - starttime.GetMinute(),
+                         endtime.GetSecond() - starttime.GetSecond());
+
+      StringUtils::SecondsToTimeString( span.GetSeconds()
+                                      + span.GetMinutes() * 60 
+                                      + span.GetHours() * 3600, tag->m_strRuntime, TIME_FORMAT_GUESS);
+
+      tag->m_iSeason  = 0; /* set this so xbmc knows it's a tv show */
+      tag->m_iEpisode = 0;
+      tag->m_strStatus = prog[i].rec_status;
+      items.Add(item);
+    }
+  }
+  m_dll->ref_release(prog);
+  return true;
 }
 
 bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items)
@@ -289,6 +445,11 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
     item->SetLabelPreformated(true);
     items.Add(item);
 
+    item = new CFileItem(base + "/guide/", true);
+    item->SetLabel("Guide");
+    item->SetLabelPreformated(true);
+    items.Add(item);
+
     return true;
   }
   else if(url.GetFileName() == "channels/")
@@ -300,5 +461,13 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
   else if(url.GetFileName() == "recordings/")
     return GetRecordings(base, items);
 
+  else if(url.GetFileName().Left(5) == "guide")
+    return GetGuide(base, items);
+
   return false;
+}
+
+CDateTime CCMythDirectory::GetValue(cmyth_timestamp_t t) 
+{ 
+  return m_session->GetValue(t); 
 }

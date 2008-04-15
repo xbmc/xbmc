@@ -1,10 +1,13 @@
 
 #include "stdafx.h"
 #include "HDDirectory.h"
-#include "../Util.h"
-#include "../xbox/IoSupport.h"
+#include "Util.h"
+#include "xbox/IoSupport.h"
 #include "DirectoryCache.h"
 #include "iso9660.h"
+#include "URL.h"
+#include "GUISettings.h"
+#include "FileItem.h"
 
 using namespace AUTOPTR;
 using namespace DIRECTORY;

@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "UdpClient.h"
+#include "GraphicContext.h"
 
 #define UDPCLIENT_DEBUG_LEVEL LOGDEBUG
 

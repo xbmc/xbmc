@@ -1,6 +1,6 @@
-#include "../python/Python.h"
+#include "lib/libPython/python/Python.h"
 #include "PythonPlayer.h"
-#include "../../../cores/PlayerCoreFactory.h"
+#include "cores/PlayerCoreFactory.h"
 #pragma once
 
 #ifdef __cplusplus
