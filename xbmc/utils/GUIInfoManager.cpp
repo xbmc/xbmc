@@ -1456,16 +1456,16 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     switch (condition)
     {
       case LIBRARY_HAS_VIDEO:
-        bReturn = (database.GetItemCount() > 0);
+        bReturn = database.HasContent();
         break;
       case LIBRARY_HAS_MOVIES:
-        bReturn = (database.GetMovieCount() > 0);
+        bReturn = database.HasContent(VIDEODB_CONTENT_MOVIES);
         break;
       case LIBRARY_HAS_TVSHOWS:
-        bReturn = (database.GetTvShowCount() > 0);
+        bReturn = database.HasContent(VIDEODB_CONTENT_TVSHOWS);
         break;
       case LIBRARY_HAS_MUSICVIDEOS:
-        bReturn = (database.GetMusicVideoCount() > 0);
+        bReturn = database.HasContent(VIDEODB_CONTENT_MUSICVIDEOS);
         break;
       default: // should never get here
         bReturn = false;

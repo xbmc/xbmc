@@ -1294,13 +1294,7 @@ void CGUIWindowVideoBase::MarkUnWatched(CFileItem* item)
     if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount == 0)
       continue;
 
-    int iType=0;
-    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
-      iType = 1;
-    if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
-      iType = 3;
-
-    database.MarkAsUnWatched(pItem->GetVideoInfoTag()->m_iDbId,iType);
+    database.MarkAsUnWatched(*pItem);
   }
 }
 
@@ -1327,13 +1321,7 @@ void CGUIWindowVideoBase::MarkWatched(CFileItem* item)
     if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount > 0)
       continue;
 
-    int iType=0;
-    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
-      iType = 1;
-    if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
-      iType = 3;
-
-    database.MarkAsWatched(pItem->GetVideoInfoTag()->m_iDbId,iType);
+    database.MarkAsWatched(*pItem);
   }
 }
 

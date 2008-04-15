@@ -4005,10 +4005,7 @@ void CApplication::StopPlaying()
         // mark as watched if we are passed the usual amount
         if (GetPercentage() >= g_advancedSettings.m_playCountMinimumPercent)
         {
-          if (m_itemCurrentFile.HasVideoInfoTag() && m_itemCurrentFile.GetVideoInfoTag()->m_iEpisode > -1)
-            dbs.MarkAsWatched(m_itemCurrentFile.GetVideoInfoTag()->m_iDbId,1);
-          else
-            dbs.MarkAsWatched(m_itemCurrentFile);
+          dbs.MarkAsWatched(m_itemCurrentFile);
           CUtil::DeleteVideoDatabaseDirectoryCache();
         }
 
@@ -4620,12 +4617,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       {
         CVideoDatabase dbs;
         dbs.Open();
-
-        if (m_itemCurrentFile.HasVideoInfoTag() && m_itemCurrentFile.GetVideoInfoTag()->m_iEpisode > -1)
-          dbs.MarkAsWatched(m_itemCurrentFile.GetVideoInfoTag()->m_iDbId,1);
-        else
-          dbs.MarkAsWatched(m_itemCurrentFile);
-
+        dbs.MarkAsWatched(m_itemCurrentFile);
         CUtil::DeleteVideoDatabaseDirectoryCache();
         dbs.ClearBookMarksOfFile(m_itemCurrentFile.m_strPath, CBookmark::RESUME);
         dbs.Close();

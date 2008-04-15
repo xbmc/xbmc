@@ -33,25 +33,25 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
 {
   CVideoDatabase database;
   database.Open();
-  int iMovies = database.GetMovieCount();
-  int iTvShows = database.GetTvShowCount();
-  int iMusicVideos = database.GetMusicVideoCount();
+  bool hasMovies = database.HasContent(VIDEODB_CONTENT_MOVIES);
+  bool hasTvShows = database.HasContent(VIDEODB_CONTENT_TVSHOWS);
+  bool hasMusicVideos = database.HasContent(VIDEODB_CONTENT_MUSICVIDEOS);
   vector<pair<const char*, int> > vec;
-  if (iMovies > 0)
+  if (hasMovies)
   {
     if (g_stSettings.m_bMyVideoNavFlatten)
       vec.push_back(make_pair("1/2", 342));
     else
       vec.push_back(make_pair("1", 342));   // Movies
   }
-  if (iTvShows > 0)
+  if (hasTvShows)
   {
     if (g_stSettings.m_bMyVideoNavFlatten)
       vec.push_back(make_pair("2/2", 20343));
     else
       vec.push_back(make_pair("2", 20343)); // TV Shows
   }
-  if (iMusicVideos > 0)
+  if (hasMusicVideos)
   {
     if (g_stSettings.m_bMyVideoNavFlatten)
       vec.push_back(make_pair("3/2", 20389));
@@ -60,15 +60,15 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
   }
   if (!g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems)
   {
-    if (iMovies > 0)
+    if (hasMovies)
       vec.push_back(make_pair("4", 20386));  // Recently Added Movies
-    if (iTvShows > 0)
+    if (hasTvShows)
       vec.push_back(make_pair("5", 20387)); // Recently Added Episodes
-    if (iMusicVideos > 0)
+    if (hasMusicVideos)
       vec.push_back(make_pair("6", 20390)); // Recently Added Music Videos
   }
   CStdString path = BuildPath();
-  for (int i = 0; i < (int)vec.size(); ++i)
+  for (unsigned int i = 0; i < vec.size(); ++i)
   {
     CFileItem* pItem = new CFileItem(path + vec[i].first + "/", true);
     pItem->SetLabel(g_localizeStrings.Get(vec[i].second));

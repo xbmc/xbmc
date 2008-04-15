@@ -169,7 +169,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
       //  base class has opened the database, do our check
       m_database.Open();
-      DisplayEmptyDatabaseMessage(m_database.GetItemCount() <= 0);
+      DisplayEmptyDatabaseMessage(!m_database.HasContent());
 
       if (m_bDisplayEmptyDatabaseMessage)
       {
@@ -769,7 +769,7 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
 
   CUtil::DeleteVideoDatabaseDirectoryCache();
 
-  DisplayEmptyDatabaseMessage(m_database.GetItemCount() <= 0);
+  DisplayEmptyDatabaseMessage(!m_database.HasContent());
   Update( m_vecItems.m_strPath );
   m_viewControl.SetSelectedItem(iItem);
   return;
@@ -1001,7 +1001,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           if (node != NODE_TYPE_SEASONS)
             buttons.Add(CONTEXT_BUTTON_EDIT, 16105); //Edit Title
         }
-        if (m_database.GetTvShowCount() > 0 && item->HasVideoInfoTag() && !item->m_bIsFolder && item->GetVideoInfoTag()->m_iEpisode == -1 && item->GetVideoInfoTag()->m_strArtist.IsEmpty()) // movie entry
+        if (m_database.HasContent(VIDEODB_CONTENT_TVSHOWS) && item->HasVideoInfoTag() && !item->m_bIsFolder && item->GetVideoInfoTag()->m_iEpisode == -1 && item->GetVideoInfoTag()->m_strArtist.IsEmpty()) // movie entry
         {
           if (m_database.IsLinkedToTvshow(item->GetVideoInfoTag()->m_iDbId))
             buttons.Add(CONTEXT_BUTTON_UNLINK_MOVIE,20385);

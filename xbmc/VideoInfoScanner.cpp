@@ -894,11 +894,7 @@ namespace VIDEO
           CLog::Log(LOGERROR, "Failed to download fanart %s to %s", movieDetails.m_fanart.GetImageURL().c_str(), pItem->GetCachedVideoFanart().c_str());
       }
       else
-      {
-        long lEpisodeId = m_database.AddEpisode(idShow,pItem->m_strPath);
-
-        lResult=m_database.SetDetailsForEpisode(pItem->m_strPath,movieDetails,idShow, lEpisodeId);
-      }
+        lResult=m_database.SetDetailsForEpisode(pItem->m_strPath,movieDetails,idShow);
     }
     else if (content.Equals("musicvideos"))
     {

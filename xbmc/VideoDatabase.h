@@ -257,14 +257,10 @@ public:
   virtual bool CommitTransaction();
 
   long AddMovie(const CStdString& strFilenameAndPath);
-  long AddTvShow(const CStdString& strPath);
-  long AddEpisode(long idShow, const CStdString& strFilenameAndPath);
-  long AddMusicVideo(const CStdString& strFilenameAndPath);
 
   // editing functions
   void MarkAsWatched(const CFileItem &item);
-  void MarkAsWatched(long lMovieId, int iType=0); // 0=movie,1=episode,2=tvshow,3=musicvideo
-  void MarkAsUnWatched(long lMovieId, int iType=0); // 0=movie,1=episode,2=tvshow,3=musicvideo
+  void MarkAsUnWatched(const CFileItem &item);
   void UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle, int iType=0); // 0=movie,1=episode,2=tvshow,3=musicvideo
 
   bool HasMovieInfo(const CStdString& strFilenameAndPath);
@@ -281,10 +277,8 @@ public:
   void GetMusicVideoInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long idMVideo=-1);
 
   long GetPathId(const CStdString& strPath);
-  long GetMovieId(const CStdString& strFilenameAndPath);
   long GetTvShowId(const CStdString& strPath);
   long GetEpisodeId(const CStdString& strFilenameAndPath, long lEpisodeId=-1, long lSeasonId=-1); // lEpisodeId, lSeasonId are used for multipart episodes as hints
-  long GetMusicVideoId(const CStdString& strFilenameAndPath);
 
   void GetEpisodesByFile(const CStdString& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes);
 
@@ -329,8 +323,8 @@ public:
   bool GetPathHash(const CStdString &path, CStdString &hash);
   bool GetPaths(std::map<CStdString,VIDEO::SScanSettings> &paths);
 
-  long GetMusicVideoArtistByName(const CStdString& strArtist);
-  long GetMusicVideoByArtistAndAlbumAndTitle(const CStdString& strArtist, const CStdString& strAlbum, const CStdString& strTitle);
+  // for music + musicvideo linkups - if no album and title given it will return the artist id, else the id of the matching video
+  long GetMatchingMusicVideo(const CStdString& strArtist, const CStdString& strAlbum = "", const CStdString& strTitle = "");
 
   // searching functions
   void GetMoviesByActor(const CStdString& strActor, VECMOVIES& movies);
@@ -384,10 +378,8 @@ public:
   bool GetRecentlyAddedEpisodesNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetRecentlyAddedMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items);
 
-  int GetItemCount();
-  int GetMovieCount();
-  int GetTvShowCount();
-  int GetMusicVideoCount();
+  bool HasContent();
+  bool HasContent(VIDEODB_CONTENT_IDS type);
 
   void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL, const std::vector<long>* paths=NULL);
   
@@ -409,11 +401,16 @@ public:
 
 protected:
   long GetFileId(const CStdString& strFilenameAndPath);
+  long GetMovieId(const CStdString& strFilenameAndPath);
+  long GetMusicVideoId(const CStdString& strFilenameAndPath);
 
   long AddPath(const CStdString& strPath);
   long AddGenre(const CStdString& strGenre1);
   long AddActor(const CStdString& strActor, const CStdString& strThumb);
   long AddStudio(const CStdString& strStudio1);
+  long AddTvShow(const CStdString& strPath);
+  long AddEpisode(long idShow, const CStdString& strFilenameAndPath);
+  long AddMusicVideo(const CStdString& strFilenameAndPath);
 
   // link functions - these two do all the work
   void AddLinkToActor(const char *table, long actorID, const char *secondField, long secondID, const CStdString &role);
