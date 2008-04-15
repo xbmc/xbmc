@@ -311,7 +311,7 @@ namespace VIDEO
       if (!m_bStop && (m_info.strContent.Equals("movies") || m_info.strContent.Equals("musicvideos")))
       {
         m_database.SetPathHash(strDirectory, hash);
-        m_pathsToClean.push_back(m_database.GetPath(strDirectory));
+        m_pathsToClean.push_back(m_database.GetPathId(strDirectory));
       }
     }
 
@@ -419,12 +419,12 @@ namespace VIDEO
       {
         long lTvShowId2;
         if (pItem->m_bIsFolder)
-          lTvShowId2 = m_database.GetTvShowInfo(pItem->m_strPath);
+          lTvShowId2 = m_database.GetTvShowId(pItem->m_strPath);
         else
         {
           CStdString strPath;
           CUtil::GetDirectory(pItem->m_strPath,strPath);
-          lTvShowId2 = m_database.GetTvShowInfo(strPath);
+          lTvShowId2 = m_database.GetTvShowId(strPath);
         }
         if (lTvShowId2 > -1 && (!bRefresh || !pItem->m_bIsFolder))
         {
@@ -780,7 +780,7 @@ namespace VIDEO
         }
         return;
       }
-      m_pathsToClean.push_back(m_database.GetPath(item->m_strPath));
+      m_pathsToClean.push_back(m_database.GetPathId(item->m_strPath));
       m_database.SetPathHash(item->m_strPath,hash);
     }
     else
@@ -1001,7 +1001,7 @@ namespace VIDEO
       }
 
       CVideoInfoTag episodeDetails;
-      if (m_database.GetEpisodeInfo(iter->second.m_url[0].m_url,iter->first.second,iter->first.first) > -1)
+      if (m_database.GetEpisodeId(iter->second.m_url[0].m_url,iter->first.second,iter->first.first) > -1)
       {
         if (m_pObserver)
           m_pObserver->OnSetTitle(g_localizeStrings.Get(20415));

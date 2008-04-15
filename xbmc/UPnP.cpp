@@ -1091,7 +1091,7 @@ CUPnPServer::OnSearch(PLT_ActionReference& action,
         return NPT_SUCCESS;
       }
 
-      if(!database.GetTitlesNav("videodb://1/2", items)) {
+      if(!database.GetMoviesNav("videodb://1/2", items)) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }

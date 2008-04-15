@@ -294,7 +294,7 @@ bool CVideoDatabase::CreateTables()
 }
 
 //********************************************************************************************************************************
-long CVideoDatabase::GetPath(const CStdString& strPath)
+long CVideoDatabase::GetPathId(const CStdString& strPath)
 {
   CStdString strSQL;
   try
@@ -482,7 +482,7 @@ long CVideoDatabase::AddFile(const CStdString& strFileNameAndPath)
     CStdString strFileName, strPath;
     SplitPath(strFileNameAndPath,strPath,strFileName);
 
-    long lPathId=GetPath(strPath);
+    long lPathId=GetPathId(strPath);
     if (lPathId < 0)
       lPathId = AddPath(strPath);
 
@@ -524,7 +524,7 @@ bool CVideoDatabase::SetPathHash(const CStdString &path, const CStdString &hash)
       if (!CDirectory::Exists(path))
         return false;
     }
-    long pathId = GetPath(path);
+    long pathId = GetPathId(path);
     if (pathId < 0)
       pathId = AddPath(path);
     if (pathId < 0) return false;
@@ -597,7 +597,7 @@ bool CVideoDatabase::IsLinkedToTvshow(long idMovie)
 
 
 //********************************************************************************************************************************
-long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath)
+long CVideoDatabase::GetFileId(const CStdString& strFilenameAndPath)
 {
   try
   {
@@ -606,7 +606,7 @@ long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath)
     CStdString strPath, strFileName;
     SplitPath(strFilenameAndPath,strPath,strFileName);
 
-    long lPathId = GetPath(strPath);
+    long lPathId = GetPathId(strPath);
     if (lPathId < 0)
       return -1;
 
@@ -628,7 +628,7 @@ long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath)
 }
 
 //********************************************************************************************************************************
-long CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath)
+long CVideoDatabase::GetMovieId(const CStdString& strFilenameAndPath)
 {
   try
   {
@@ -637,7 +637,7 @@ long CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath)
     long lMovieId = -1;
 
     // needed for query parameters
-    long lFileId = GetFile(strFilenameAndPath);
+    long lFileId = GetFileId(strFilenameAndPath);
     long lPathId=-1;
     CStdString strPath, strFile;
     if (lFileId < 0)
@@ -645,7 +645,7 @@ long CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath)
       SplitPath(strFilenameAndPath,strPath,strFile);
 
       // have to join movieinfo table for correct results
-      lPathId = GetPath(strPath);
+      lPathId = GetPathId(strPath);
       if (lPathId < 0 && strPath != strFilenameAndPath)
         return -1;
     }
@@ -674,7 +674,7 @@ long CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath)
   return -1;
 }
 
-long CVideoDatabase::GetTvShowInfo(const CStdString& strPath)
+long CVideoDatabase::GetTvShowId(const CStdString& strPath)
 {
   try
   {
@@ -683,7 +683,7 @@ long CVideoDatabase::GetTvShowInfo(const CStdString& strPath)
     long lTvShowId = -1;
 
     // have to join movieinfo table for correct results
-    long lPathId = GetPath(strPath);
+    long lPathId = GetPathId(strPath);
     if (lPathId < 0)
       return -1;
 
@@ -723,7 +723,7 @@ long CVideoDatabase::GetTvShowInfo(const CStdString& strPath)
   return -1;
 }
 
-long CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, long lEpisodeId, long lSeasonId) // input value is episode/season number hint - for multiparters
+long CVideoDatabase::GetEpisodeId(const CStdString& strFilenameAndPath, long lEpisodeId, long lSeasonId) // input value is episode/season number hint - for multiparters
 {
   try
   {
@@ -735,7 +735,7 @@ long CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, long l
     pDS.reset(m_pDB->CreateDataset());
     if (NULL == pDS.get()) return -1;
 
-    long lFileId = GetFile(strFilenameAndPath);
+    long lFileId = GetFileId(strFilenameAndPath);
     if (lFileId < 0)
       return -1;
 
@@ -779,14 +779,14 @@ long CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, long l
   return -1;
 }
 
-long CVideoDatabase::GetMusicVideoInfo(const CStdString& strFilenameAndPath)
+long CVideoDatabase::GetMusicVideoId(const CStdString& strFilenameAndPath)
 {
   try
   {
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    long lFileId = GetFile(strFilenameAndPath);
+    long lFileId = GetFileId(strFilenameAndPath);
     if (lFileId < 0)
       return -1;
 
@@ -817,11 +817,11 @@ long CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath)
     if (NULL == m_pDS.get()) return -1;
     
     long lFileId, lMovieId=-1;
-    lFileId = GetFile(strFilenameAndPath);
+    lFileId = GetFileId(strFilenameAndPath);
     if (lFileId < 0)
       lFileId = AddFile(strFilenameAndPath);
     else
-      lMovieId = GetMovieInfo(strFilenameAndPath);
+      lMovieId = GetMovieId(strFilenameAndPath);
     if (lMovieId < 0)
     {
       CStdString strSQL=FormatSQL("insert into movie (idMovie, idFile) values (NULL, %u)", lFileId);
@@ -855,7 +855,7 @@ long CVideoDatabase::AddTvShow(const CStdString& strPath)
     m_pDS->exec(strSQL.c_str());
     long lTvShow = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
     
-    long lPathId = GetPath(strPath);
+    long lPathId = GetPathId(strPath);
     if (lPathId < 0)
       lPathId = AddPath(strPath);
     strSQL=FormatSQL("insert into tvshowlinkpath values (%u,%u)",lTvShow,lPathId);
@@ -881,7 +881,7 @@ long CVideoDatabase::AddEpisode(long idShow, const CStdString& strFilenameAndPat
     if (NULL == m_pDS.get()) return -1;
     
     long lFileId, lEpisodeId=-1;
-    lFileId = GetFile(strFilenameAndPath);
+    lFileId = GetFileId(strFilenameAndPath);
     if (lFileId < 0)
       lFileId = AddFile(strFilenameAndPath);
 
@@ -910,11 +910,11 @@ long CVideoDatabase::AddMusicVideo(const CStdString& strFilenameAndPath)
     if (NULL == m_pDS.get()) return -1;
     
     long lFileId, lMVideoId=-11;
-    lFileId = GetFile(strFilenameAndPath);
+    lFileId = GetFileId(strFilenameAndPath);
     if (lFileId < 0)
       lFileId = AddFile(strFilenameAndPath);
     else
-      lMVideoId = GetMusicVideoInfo(strFilenameAndPath);
+      lMVideoId = GetMusicVideoId(strFilenameAndPath);
     if (lMVideoId < 0)
     {
       CStdString strSQL=FormatSQL("insert into musicvideo (idMVideo, idFile) values (NULL, %u)", lFileId);
@@ -1163,7 +1163,7 @@ bool CVideoDatabase::HasMovieInfo(const CStdString& strFilenameAndPath)
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    long lMovieId = GetMovieInfo(strFilenameAndPath);
+    long lMovieId = GetMovieId(strFilenameAndPath);
     return lMovieId != -1;
   }
   catch (...)
@@ -1180,7 +1180,7 @@ bool CVideoDatabase::HasTvShowInfo(const CStdString& strPath)
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    long lTvShowId = GetTvShowInfo(strPath);
+    long lTvShowId = GetTvShowId(strPath);
     if ( lTvShowId < 0) return false;
     return true;
   }
@@ -1198,7 +1198,7 @@ bool CVideoDatabase::HasEpisodeInfo(const CStdString& strFilenameAndPath)
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    long lEpisodeId = GetEpisodeInfo(strFilenameAndPath);
+    long lEpisodeId = GetEpisodeId(strFilenameAndPath);
     if ( lEpisodeId < 0) return false;
     return true;
   }
@@ -1216,7 +1216,7 @@ bool CVideoDatabase::HasMusicVideoInfo(const CStdString& strFilenameAndPath)
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    long lMVideoId = GetMusicVideoInfo(strFilenameAndPath);
+    long lMVideoId = GetMusicVideoId(strFilenameAndPath);
     return lMVideoId != -1;
   }
   catch (...)
@@ -1234,7 +1234,7 @@ void CVideoDatabase::DeleteDetailsForTvShow(const CStdString& strPath)
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
-    long lTvShowId = GetTvShowInfo(strPath);
+    long lTvShowId = GetTvShowId(strPath);
     if ( lTvShowId < 0) return ;
 
     DeleteThumbForItem(strPath,true);
@@ -1384,7 +1384,7 @@ void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath, CVideoIn
   {
     // TODO: Optimize this - no need for all the queries!
     if (lMovieId < 0)
-      lMovieId = GetMovieInfo(strFilenameAndPath);
+      lMovieId = GetMovieId(strFilenameAndPath);
     if (lMovieId < 0) return ;
 
     CStdString sql = FormatSQL("select * from movieview where idMovie=%i", lMovieId);
@@ -1404,7 +1404,7 @@ void CVideoDatabase::GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& det
   try
   {
     if (lTvShowId < 0)
-      lTvShowId = GetTvShowInfo(strPath);
+      lTvShowId = GetTvShowId(strPath);
     if (lTvShowId < 0) return ;
 
     CStdString sql = FormatSQL("select * from tvshowview where idshow=%i", lTvShowId);
@@ -1424,7 +1424,7 @@ bool CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, CVideo
   {
     // TODO: Optimize this - no need for all the queries!
     if (lEpisodeId < 0)
-      lEpisodeId = GetEpisodeInfo(strFilenameAndPath);
+      lEpisodeId = GetEpisodeId(strFilenameAndPath);
     if (lEpisodeId < 0) return false;
 
     CStdString sql = FormatSQL("select * from episodeview where idepisode=%u",lEpisodeId);
@@ -1446,7 +1446,7 @@ void CVideoDatabase::GetMusicVideoInfo(const CStdString& strFilenameAndPath, CVi
   {
     // TODO: Optimize this - no need for all the queries!
     if (lMVideoId < 0)
-      lMVideoId = GetMusicVideoInfo(strFilenameAndPath);
+      lMVideoId = GetMusicVideoId(strFilenameAndPath);
     if (lMVideoId < 0) return ;
 
     CStdString sql = FormatSQL("select * from musicvideoview where idmvideo=%i", lMVideoId);
@@ -1543,10 +1543,10 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
 {
   try
   {
-    long lFileId = GetFile(strFilenameAndPath);
+    long lFileId = GetFileId(strFilenameAndPath);
     if (lFileId < 0)
       lFileId = AddFile(strFilenameAndPath);
-    long lMovieId = GetMovieInfo(strFilenameAndPath);
+    long lMovieId = GetMovieId(strFilenameAndPath);
     if (lMovieId > -1)
     {
       DeleteMovie(strFilenameAndPath);
@@ -1602,7 +1602,7 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
 {
   try
   {
-    long lTvShowId = GetTvShowInfo(strPath);
+    long lTvShowId = GetTvShowId(strPath);
     if (lTvShowId < 0)
       lTvShowId = AddTvShow(strPath);
 
@@ -1634,7 +1634,7 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
     sql += FormatSQL("where idShow=%u", lTvShowId);
     m_pDS->exec(sql.c_str());
     // update tvshowlinkpath info to reflect it points to this tvshow
-    long lPathId = GetPath(strPath);
+    long lPathId = GetPathId(strPath);
     if (lPathId < 0)
       lPathId = AddPath(strPath);
     g_infoManager.ResetPersistentCache(); // needed since # of movies have changed
@@ -1654,7 +1654,7 @@ long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
   {
     if (lEpisodeId == -1)
     {
-      lEpisodeId = GetEpisodeInfo(strFilenameAndPath);
+      lEpisodeId = GetEpisodeId(strFilenameAndPath);
       if (lEpisodeId > 0)
         DeleteEpisode(strFilenameAndPath,lEpisodeId);
 
@@ -1711,10 +1711,10 @@ void CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPat
 {
   try
   {
-    long lFileId = GetFile(strFilenameAndPath);
+    long lFileId = GetFileId(strFilenameAndPath);
     if (lFileId < 0)
       lFileId = AddFile(strFilenameAndPath);
-    long lMVideoId = GetMusicVideoInfo(strFilenameAndPath);
+    long lMVideoId = GetMusicVideoId(strFilenameAndPath);
     if (lMVideoId > -1)
     {
       DeleteMusicVideo(strFilenameAndPath);
@@ -1774,7 +1774,7 @@ void CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPat
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetFilePath(long lMovieId, CStdString &filePath, int iType)
+void CVideoDatabase::GetFilePathById(long lMovieId, CStdString &filePath, int iType)
 {
   try
   {
@@ -1817,7 +1817,7 @@ void CVideoDatabase::GetBookMarksForFile(const CStdString& strFilenameAndPath, V
 {
   try
   {
-    long lFileId = GetFile(strFilenameAndPath);
+    long lFileId = GetFileId(strFilenameAndPath);
     if (lFileId < 0) return ;
     if (!bAppend)
       bookmarks.erase(bookmarks.begin(), bookmarks.end());
@@ -1870,7 +1870,7 @@ void CVideoDatabase::GetEpisodesByFile(const CStdString& strFilenameAndPath, vec
 {
   try
   {
-    CStdString strSQL = FormatSQL("select * from episodeview where idFile=%i order by c%02d, c%02d asc", GetFile(strFilenameAndPath), VIDEODB_ID_EPISODE_SORTSEASON, VIDEODB_ID_EPISODE_SORTEPISODE);
+    CStdString strSQL = FormatSQL("select * from episodeview where idFile=%i order by c%02d, c%02d asc", GetFileId(strFilenameAndPath), VIDEODB_ID_EPISODE_SORTSEASON, VIDEODB_ID_EPISODE_SORTEPISODE);
     m_pDS->query(strSQL.c_str());
     while (!m_pDS->eof())
     {
@@ -1890,7 +1890,7 @@ void CVideoDatabase::AddBookMarkToFile(const CStdString& strFilenameAndPath, con
 {
   try
   {
-    long lFileId = GetFile(strFilenameAndPath);
+    long lFileId = GetFileId(strFilenameAndPath);
     if (lFileId < 0)
     {
       // Doesn't exist in the database yet - add it.
@@ -1943,7 +1943,7 @@ void CVideoDatabase::ClearBookMarkOfFile(const CStdString& strFilenameAndPath, C
 {
   try
   {
-    long lFileId = GetFile(strFilenameAndPath);
+    long lFileId = GetFileId(strFilenameAndPath);
     if (lFileId < 0) return ;
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
@@ -1980,7 +1980,7 @@ void CVideoDatabase::ClearBookMarksOfFile(const CStdString& strFilenameAndPath, 
 {
   try
   {
-    long lFileId = GetFile(strFilenameAndPath);
+    long lFileId = GetFileId(strFilenameAndPath);
     if (lFileId < 0) return ;
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
@@ -2033,7 +2033,7 @@ void CVideoDatabase::AddBookMarkForEpisode(const CVideoInfoTag& tag, const CBook
 {
   try
   {
-    long lFileId = GetFile(tag.m_strFileNameAndPath);
+    long lFileId = GetFileId(tag.m_strFileNameAndPath);
     // delete the current episode for the selected episode number
     CStdString strSQL = FormatSQL("delete from bookmark where idBookmark in (select c%02d from episode where c%02d=%i and c%02d=%i and idFile=%i)", VIDEODB_ID_EPISODE_BOOKMARK, VIDEODB_ID_EPISODE_SEASON, tag.m_iSeason, VIDEODB_ID_EPISODE_EPISODE, tag.m_iEpisode, lFileId);
     m_pDS->exec(strSQL.c_str());
@@ -2071,7 +2071,7 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath)
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    long lMovieId = GetMovieInfo(strFilenameAndPath);
+    long lMovieId = GetMovieId(strFilenameAndPath);
     if (lMovieId < 0)
     {
       return ;
@@ -2117,7 +2117,7 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath)
     long lTvShowId=-1;
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    lTvShowId = GetTvShowInfo(strPath);
+    lTvShowId = GetTvShowId(strPath);
     if (lTvShowId < 0)
     {
       return ;
@@ -2172,7 +2172,7 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
     if (NULL == m_pDS.get()) return ;
     if (lEpisodeId < 0)
     {
-      lEpisodeId = GetEpisodeInfo(strFilenameAndPath);
+      lEpisodeId = GetEpisodeId(strFilenameAndPath);
       if (lEpisodeId < 0)
       {
         return ;
@@ -2201,7 +2201,7 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
     m_pDS->exec(strSQL.c_str());
 
     CStdString path;
-    GetFilePath(idShow, path, 2);
+    GetFilePathById(idShow, path, 2);
     InvalidatePathHash(path);
   }
   catch (...)
@@ -2216,7 +2216,7 @@ void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath)
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    long lMVideoId = GetMusicVideoInfo(strFilenameAndPath);
+    long lMVideoId = GetMusicVideoId(strFilenameAndPath);
     if (lMVideoId < 0)
     {
       return ;
@@ -2425,7 +2425,7 @@ bool CVideoDatabase::GetVideoSettings(const CStdString &strFilenameAndPath, CVid
     CUtil::Split(strFilenameAndPath, strPath, strFileName);
     CStdString strSQL=FormatSQL("select * from settings, files, path where settings.idfile=files.idfile and path.idpath=files.idpath and path.strPath like '%s' and files.strFileName like '%s'", strPath.c_str() , strFileName.c_str());
 #else
-    long lFileId = GetFile(strFilenameAndPath);
+    long lFileId = GetFileId(strFilenameAndPath);
     if (lFileId < 0) return false;
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
@@ -2477,7 +2477,7 @@ void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, cons
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    long lFileId = GetFile(strFilenameAndPath);
+    long lFileId = GetFileId(strFilenameAndPath);
     if (lFileId < 0)
     { // no files found - we have to add one
       lFileId = AddFile(strFilenameAndPath);
@@ -2533,7 +2533,7 @@ bool CVideoDatabase::GetStackTimes(const CStdString &filePath, vector<long> &tim
   try
   {
     // obtain the FileID (if it exists)
-    long lFileId = GetFile(filePath);
+    long lFileId = GetFileId(filePath);
     if (lFileId < 0) return false;
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
@@ -2570,7 +2570,7 @@ void CVideoDatabase::SetStackTimes(const CStdString& filePath, vector<long> &tim
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    long lFileId = GetFile(filePath);
+    long lFileId = GetFileId(filePath);
     if (lFileId < 0)
     { // no files found - we have to add one
       lFileId = AddFile(filePath);
@@ -2699,7 +2699,7 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const SScrape
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    long lPathId = GetPath(filePath);
+    long lPathId = GetPathId(filePath);
     if (lPathId < 0)
     { // no path found - we have to add one
       lPathId = AddPath(filePath);
@@ -3003,17 +3003,17 @@ void CVideoDatabase::MarkAsWatched(const CFileItem &item)
   // find the movie in the db
   long movieID = -1;
   if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iEpisode == -1) // movie
-    movieID = GetMovieInfo(item.m_strPath);
+    movieID = GetMovieId(item.m_strPath);
 
   int iType=0;
   if (movieID < 0)
   {
     iType = 1;
-    movieID = GetEpisodeInfo(item.m_strPath);
+    movieID = GetEpisodeId(item.m_strPath);
   }
   if (movieID < 0)
   {
-    movieID = GetMusicVideoInfo(item.m_strPath);
+    movieID = GetMusicVideoId(item.m_strPath);
     if (movieID < 0)
       return;    
     iType = 3;
@@ -3908,7 +3908,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
   return false;
 }
 
-bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idYear, long idActor, long idDirector, long idStudio)
+bool CVideoDatabase::GetMoviesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idYear, long idActor, long idDirector, long idStudio)
 {
   CStdString where;
   if (idGenre != -1)
@@ -4327,7 +4327,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
 
     CStdString strPath1;
     CUtil::GetDirectory(strPath,strPath1);
-    long lPathId = GetPath(strPath1);
+    long lPathId = GetPathId(strPath1);
 
     if (lPathId > -1)
     {

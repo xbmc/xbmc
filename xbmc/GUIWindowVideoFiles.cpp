@@ -623,7 +623,8 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           m_database.Open();
           if (!item->IsParentFolder())
           {
-            if (m_database.GetMovieInfo(item->m_strPath)<0 && m_database.GetEpisodeInfo(item->m_strPath)<0)
+            // todo: replace these
+            if (m_database.GetMovieId(item->m_strPath)<0 && m_database.GetEpisodeId(item->m_strPath)<0)
               buttons.Add(CONTEXT_BUTTON_ADD_TO_LIBRARY, 527); // Add to Database
           }
           m_database.Close();

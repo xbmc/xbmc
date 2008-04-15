@@ -382,7 +382,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
         lEpisodeHint = item->GetVideoInfoTag()->m_iEpisode;
       long lEpisodeId=-1;
       g_infoManager.m_content = "episodes";
-      if ((lEpisodeId = m_database.GetEpisodeInfo(item->m_strPath,lEpisodeHint)) > -1)
+      if ((lEpisodeId = m_database.GetEpisodeId(item->m_strPath,lEpisodeHint)) > -1)
       {
         bHasInfo = true;
         m_database.GetEpisodeInfo(item->m_strPath, movieDetails, lEpisodeId);

@@ -359,7 +359,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         CLog::Log(LOGDEBUG, "WindowVideoNav::GetDirectory");
         // grab the show thumb
         CFileItem showItem;
-        m_database.GetFilePath(params.GetTvShowId(),showItem.m_strPath,2);
+        m_database.GetFilePathById(params.GetTvShowId(),showItem.m_strPath,2);
         showItem.SetVideoThumb();
         items.SetProperty("tvshowthumb", showItem.GetThumbnailImage());
         // Grab fanart data
@@ -807,7 +807,7 @@ void CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
   CVideoDatabase database;
   database.Open();
 
-  database.GetFilePath(pItem->GetVideoInfoTag()->m_iDbId, path, iType);
+  database.GetFilePathById(pItem->GetVideoInfoTag()->m_iDbId, path, iType);
   if (path.IsEmpty()) return;
   if (iType == 0)
     database.DeleteMovie(path);

@@ -261,9 +261,9 @@ public:
   long AddEpisode(long idShow, const CStdString& strFilenameAndPath);
   long AddMusicVideo(const CStdString& strFilenameAndPath);
 
+  // editing functions
   void MarkAsWatched(const CFileItem &item);
   void MarkAsWatched(long lMovieId, int iType=0); // 0=movie,1=episode,2=tvshow,3=musicvideo
-
   void MarkAsUnWatched(long lMovieId, int iType=0); // 0=movie,1=episode,2=tvshow,3=musicvideo
   void UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle, int iType=0); // 0=movie,1=episode,2=tvshow,3=musicvideo
 
@@ -272,22 +272,20 @@ public:
   bool HasEpisodeInfo(const CStdString& strFilenameAndPath);
   bool HasMusicVideoInfo(const CStdString& strFilenameAndPath);
   
-  void DeleteDetailsForTvShow(const CStdString& strPath);
-
-  void GetFilePath(long lMovieId, CStdString &filePath, int iType=0); // 0=movies, 1=episodes, 2=tvshows, 3=musicvideo
-  long GetPath(const CStdString& strPath);
-  bool GetPathHash(const CStdString &path, CStdString &hash);
-  bool GetPaths(std::map<CStdString,VIDEO::SScanSettings> &paths);
+  void GetFilePathById(long id, CStdString &filePath, int iType=0); // 0=movies, 1=episodes, 2=tvshows, 3=musicvideo
+  bool GetGenreById(long id, CStdString& strGenre);
 
   void GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long lMovieId = -1);
   void GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& details, long lTvShowId = -1);
   bool GetEpisodeInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long lEpisodeId = -1);
   void GetMusicVideoInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long idMVideo=-1);
 
-  long GetMovieInfo(const CStdString& strFilenameAndPath);
-  long GetTvShowInfo(const CStdString& strPath);
-  long GetEpisodeInfo(const CStdString& strFilenameAndPath, long lEpisodeId=-1, long lSeasonId=-1); // lEpisodeId, lSeasonId are used for multipart episodes as hints
-  long GetMusicVideoInfo(const CStdString& strFilenameAndPath);
+  long GetPathId(const CStdString& strPath);
+  long GetMovieId(const CStdString& strFilenameAndPath);
+  long GetTvShowId(const CStdString& strPath);
+  long GetEpisodeId(const CStdString& strFilenameAndPath, long lEpisodeId=-1, long lSeasonId=-1); // lEpisodeId, lSeasonId are used for multipart episodes as hints
+  long GetMusicVideoId(const CStdString& strFilenameAndPath);
+
   void GetEpisodesByFile(const CStdString& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes);
 
   void SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
@@ -295,16 +293,57 @@ public:
   long SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, long idShow, long lEpisodeId=-1);
   void SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
 
+  void DeleteMovie(const CStdString& strFilenameAndPath);
+  void DeleteTvShow(const CStdString& strPath);
+  void DeleteEpisode(const CStdString& strFilenameAndPath, long lEpisodeId=-1);
+  void DeleteMusicVideo(const CStdString& strFilenameAndPath);
+  void DeleteDetailsForTvShow(const CStdString& strPath);
+  void RemoveContentForPath(const CStdString& strPath,CGUIDialogProgress *progress = NULL);
+
+  // per-file video settings
+  bool GetVideoSettings(const CStdString &strFilenameAndPath, CVideoSettings &settings);
+  void SetVideoSettings(const CStdString &strFilenameAndPath, const CVideoSettings &settings);
+  void EraseVideoSettings();
+
+  bool GetStackTimes(const CStdString &filePath, std::vector<long> &times);
+  void SetStackTimes(const CStdString &filePath, std::vector<long> &times);
+
+  void GetBookMarksForFile(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type = CBookmark::STANDARD, bool bAppend=false);
+  void AddBookMarkToFile(const CStdString& strFilenameAndPath, const CBookmark &bookmark, CBookmark::EType type = CBookmark::STANDARD);
+  bool GetResumeBookMark(const CStdString& strFilenameAndPath, CBookmark &bookmark);
+  void ClearBookMarkOfFile(const CStdString& strFilenameAndPath, CBookmark& bookmark, CBookmark::EType type = CBookmark::STANDARD);
+  void ClearBookMarksOfFile(const CStdString& strFilenameAndPath, CBookmark::EType type = CBookmark::STANDARD);
+  bool GetBookMarkForEpisode(const CVideoInfoTag& tag, CBookmark& bookmark);
+  void AddBookMarkForEpisode(const CVideoInfoTag& tag, const CBookmark& bookmark);
+  void DeleteBookMarkForEpisode(const CVideoInfoTag& tag);
+
+  // scraper settings
+  void SetScraperForPath(const CStdString& filePath, const SScraperInfo& info, const VIDEO::SScanSettings& settings);
+  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info);
+  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, int& iFound);
+  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, VIDEO::SScanSettings& settings);
+  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, VIDEO::SScanSettings& settings, int& iFound);
+
+  // scanning hashes and paths scanned
+  bool SetPathHash(const CStdString &path, const CStdString &hash);
+  bool GetPathHash(const CStdString &path, CStdString &hash);
+  bool GetPaths(std::map<CStdString,VIDEO::SScanSettings> &paths);
+
+  long GetMusicVideoArtistByName(const CStdString& strArtist);
+  long GetMusicVideoByArtistAndAlbumAndTitle(const CStdString& strArtist, const CStdString& strAlbum, const CStdString& strTitle);
+
+  // searching functions
   void GetMoviesByActor(const CStdString& strActor, VECMOVIES& movies);
   void GetTvShowsByActor(const CStdString& strActor, VECMOVIES& movies);
   void GetEpisodesByActor(const CStdString& strActor, VECMOVIES& movies);
-  void GetMusicVideosByArtist(const CStdString& strArtist, CFileItemList& items);
 
+  void GetMusicVideosByArtist(const CStdString& strArtist, CFileItemList& items);
   void GetMusicVideosByAlbum(const CStdString& strAlbum, CFileItemList& items);
 
   void GetMovieGenresByName(const CStdString& strSearch, CFileItemList& items);
   void GetTvShowGenresByName(const CStdString& strSearch, CFileItemList& items);
   void GetMusicVideoGenresByName(const CStdString& strSearch, CFileItemList& items);
+
   void GetMusicVideoAlbumsByName(const CStdString& strSearch, CFileItemList& items);
 
   void GetMovieActorsByName(const CStdString& strSearch, CFileItemList& items);
@@ -322,63 +361,33 @@ public:
 
   void GetEpisodesByPlot(const CStdString& strSearch, CFileItemList& items);
 
-  void GetBookMarksForFile(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type = CBookmark::STANDARD, bool bAppend=false);
-  void AddBookMarkToFile(const CStdString& strFilenameAndPath, const CBookmark &bookmark, CBookmark::EType type = CBookmark::STANDARD);
-  bool GetResumeBookMark(const CStdString& strFilenameAndPath, CBookmark &bookmark);
-  void ClearBookMarkOfFile(const CStdString& strFilenameAndPath, CBookmark& bookmark, CBookmark::EType type = CBookmark::STANDARD);
-  void ClearBookMarksOfFile(const CStdString& strFilenameAndPath, CBookmark::EType type = CBookmark::STANDARD);
-  bool GetBookMarkForEpisode(const CVideoInfoTag& tag, CBookmark& bookmark);
-  void AddBookMarkForEpisode(const CVideoInfoTag& tag, const CBookmark& bookmark);
-  void DeleteBookMarkForEpisode(const CVideoInfoTag& tag);
-
-  void RemoveContentForPath(const CStdString& strPath,CGUIDialogProgress *progress = NULL);
-
-  void DeleteMovie(const CStdString& strFilenameAndPath);
-  void DeleteTvShow(const CStdString& strPath);
-  void DeleteEpisode(const CStdString& strFilenameAndPath, long lEpisodeId=-1);
-  void DeleteMusicVideo(const CStdString& strFilenameAndPath);
-
-  bool GetVideoSettings(const CStdString &strFilenameAndPath, CVideoSettings &settings);
-  void SetVideoSettings(const CStdString &strFilenameAndPath, const CVideoSettings &settings);
-  void EraseVideoSettings();
-
-  bool GetStackTimes(const CStdString &filePath, std::vector<long> &times);
-  void SetStackTimes(const CStdString &filePath, std::vector<long> &times);
-  void SetScraperForPath(const CStdString& filePath, const SScraperInfo& info, const VIDEO::SScanSettings& settings);
-  bool SetPathHash(const CStdString &path, const CStdString &hash);
   bool LinkMovieToTvshow(long idMovie, long idShow);
   bool IsLinkedToTvshow(long idMovie);
 
   bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
                          const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult);
 
+  // general browsing
   bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
   bool GetStudiosNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
   bool GetActorsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
   bool GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
-  bool GetTitlesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1, long idStudio=-1);
-  bool GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1);
   bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
+
+  bool GetMoviesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1, long idStudio=-1);
+  bool GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1);
   bool GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& items, long idActor=-1, long idDirector=-1, long idGenre=-1, long idYear=-1, long idShow=-1);
   bool GetEpisodesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1, long idShow=-1, long idSeason=-1);
+  bool GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idArtist=-1, long idDirector=-1, long idStudio=-1);
+
   bool GetRecentlyAddedMoviesNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetRecentlyAddedEpisodesNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetRecentlyAddedMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items);
-  bool GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idArtist=-1, long idDirector=-1, long idStudio=-1);
-  long GetMusicVideoArtistByName(const CStdString& strArtist);
-  long GetMusicVideoByArtistAndAlbumAndTitle(const CStdString& strArtist, const CStdString& strAlbum, const CStdString& strTitle);
 
   int GetItemCount();
   int GetMovieCount();
   int GetTvShowCount();
   int GetMusicVideoCount();
-
-  bool GetGenreById(long lIdGenre, CStdString& strGenre);
-
-  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info);
-  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, int& iFound);
-  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, VIDEO::SScanSettings& settings);
-  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, VIDEO::SScanSettings& settings, int& iFound);
 
   void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL, const std::vector<long>* paths=NULL);
   
@@ -387,7 +396,7 @@ public:
   void ImportFromXML(const CStdString &xmlFile);
   void DumpToDummyFiles(const CStdString &path);
 
-  // smart playlist retrieval
+  // smart playlists and main retrieval work in these functions
   bool GetMoviesByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items);
   bool GetTvShowsByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items);
   bool GetEpisodesByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items, bool appendFullShowPath = true);
@@ -399,13 +408,14 @@ public:
   bool GetRandomMusicVideo(CFileItem* item, long& lSongId, const CStdString& strWhere);
 
 protected:
-  long GetFile(const CStdString& strFilenameAndPath);
+  long GetFileId(const CStdString& strFilenameAndPath);
 
   long AddPath(const CStdString& strPath);
   long AddGenre(const CStdString& strGenre1);
   long AddActor(const CStdString& strActor, const CStdString& strThumb);
   long AddStudio(const CStdString& strStudio1);
 
+  // link functions - these two do all the work
   void AddLinkToActor(const char *table, long actorID, const char *secondField, long secondID, const CStdString &role);
   void AddToLinkTable(const char *table, const char *firstField, long firstID, const char *secondField, long secondID);
 
