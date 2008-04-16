@@ -7,8 +7,19 @@
 //
 #import <Cocoa/Cocoa.h>
 #import <OpenGL/OpenGL.h>
+#include <CoreFoundation/CoreFoundation.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <stdio.h>
+
+#include <mach/mach_port.h>
+#include <mach/mach_interface.h>
+#include <mach/mach_init.h>
+
+#include <IOKit/pwr_mgt/IOPMLib.h>
+#include <IOKit/IOKitLib.h>
 #include "CocoaUtils.h"
-#import "XBMCMain.h"
+#import "XBMCMain.h" 
 
 void Cocoa_Initialize(void* pApplication)
 {
@@ -102,7 +113,7 @@ double Cocoa_GetScreenRefreshRate(int screen)
 {
   // Figure out the refresh rate.
   CFDictionaryRef mode = CGDisplayCurrentMode(Cocoa_GetDisplay(screen));
-  return getDictDouble (mode, kCGDisplayRefreshRate);
+  return (mode != NULL) ? getDictDouble(mode, kCGDisplayRefreshRate) : 0.0f;
  }
 
 void Cocoa_GL_ResizeWindow(void *theContext, int w, int h)
@@ -131,7 +142,7 @@ void Cocoa_GL_ResizeWindow(void *theContext, int w, int h)
 
 static NSOpenGLContext* lastOwnedContext = 0;
 
-void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs)
+void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool blankOtherDisplays)
 {
   static NSView* lastView = NULL;
   static int fullScreenDisplay = 0;
@@ -141,7 +152,7 @@ void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs)
   // Recurse to reset fullscreen mode and then continue.
   //
   if (fs == true && lastScreen != NULL)
-	Cocoa_GL_SetFullScreen(0, 0, 0, false);
+	Cocoa_GL_SetFullScreen(0, 0, 0, false, blankOtherDisplays);
   
   NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
   
@@ -181,7 +192,13 @@ void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs)
     
     // Capture the display before going fullscreen.
     fullScreenDisplay = Cocoa_GetDisplay(screen);
-    CGDisplayCapture(fullScreenDisplay);
+    if (blankOtherDisplays == true)
+      CGCaptureAllDisplays();
+    else
+      CGDisplayCapture(fullScreenDisplay);
+    
+    // Hide the mouse.
+    [NSCursor hide];
     
     // If we don't hide menu bar, it will get events and interrupt the program.
     if (fullScreenDisplay == kCGDirectMainDisplay)
@@ -214,11 +231,13 @@ void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs)
     // exit fullscreen
     [context clearDrawable];
     
+    [NSCursor unhide];
+    
     if (fullScreenDisplay == kCGDirectMainDisplay)
       ShowMenuBar();
     
-    // release display
-    CGDisplayRelease(fullScreenDisplay);
+    // release displays
+    CGReleaseAllDisplays();
     
     // obtain windowed pixel format
     NSOpenGLPixelFormat* pixFmt = (NSOpenGLPixelFormat*)Cocoa_GL_GetWindowPixelFormat();
@@ -272,7 +291,9 @@ void Cocoa_GL_EnableVSync(bool enable)
     else
       interval = 0;
     
-    CGLSetParameter(cglContext, kCGLCPSwapInterval, &interval);
+    int cglErr = CGLSetParameter(cglContext, kCGLCPSwapInterval, &interval);
+    if (cglErr != kCGLNoError)
+      printf("ERROR: CGLSetParameter for kCGLCPSwapInterval failed with error %d: %s", cglErr, CGLErrorString(cglErr));
   }
 }
 
@@ -355,3 +376,33 @@ void Cocoa_GL_ReplaceSDLWindowContext()
   lastOwnedContext = newContext;
 }
 
+int Cocoa_DimDisplayNow()
+{
+	io_registry_entry_t r = IORegistryEntryFromPath(kIOMasterPortDefault, "IOService:/IOResources/IODisplayWrangler");
+	if(!r) return 1;
+	int err = IORegistryEntrySetCFProperty(r, CFSTR("IORequestIdle"), kCFBooleanTrue);
+	IOObjectRelease(r);
+	return err;
+}
+
+void Cocoa_UpdateSystemActivity()
+{
+  UpdateSystemActivity(UsrActivity);   
+}
+                   
+int Cocoa_SleepSystem()
+{
+  io_connect_t root_domain;
+  mach_port_t root_port;
+
+  if (KERN_SUCCESS != IOMasterPort(MACH_PORT_NULL, &root_port))
+    return 1;
+
+  if (0 == (root_domain = IOPMFindPowerManagement(root_port)))    
+    return 2;
+
+  if (kIOReturnSuccess != IOPMSleepSystem(root_domain))
+    return 3;
+
+  return 0;
+}        
