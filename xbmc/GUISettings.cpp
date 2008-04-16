@@ -211,6 +211,7 @@ CGUISettings::CGUISettings(void)
 
   // Programs settings
   AddGroup(1, 0);
+#ifdef HAS_XBOX_HARDWARE
   AddCategory(1, "myprograms", 16000);
   AddBool(1, "myprograms.autoffpatch", 29999, false);
   AddSeparator(2,"myprograms.sep1");
@@ -223,6 +224,7 @@ CGUISettings::CGUISettings(void)
   AddSeparator(7,"myprograms.sep3");
   AddBool(8, "myprograms.usedashpath", 13007, true);
   AddString(9, "myprograms.dashboard", 13006, "C:\\xboxdash.xbe", BUTTON_CONTROL_PATH_INPUT, false, 655);
+#endif
 
   AddCategory(1,"programfiles",744);
   AddInt(1, "programfiles.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
@@ -335,6 +337,9 @@ CGUISettings::CGUISettings(void)
   // advanced only configuration
   AddBool(1, "system.debuglogging", 20191, false);
   AddInt(2, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+#ifdef __APPLE__
+  AddInt(3, "system.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+#endif
 #ifdef HAS_XBOX_HARDWARE
   AddSeparator(3, "system.sep2");
   AddInt(4, "system.ledcolour", 13339, LED_COLOUR_NO_CHANGE, LED_COLOUR_NO_CHANGE, 1, LED_COLOUR_OFF, SPIN_CONTROL_TEXT);
@@ -364,6 +369,10 @@ CGUISettings::CGUISettings(void)
   AddBool(8, "lcd.enableonpaused", 20312, true);
 #endif
 
+  //AddCategory(4, "appleremote", 13600);
+  //AddInt(1, "appleremote.mode", 13601, APPLE_REMOTE_DISABLED, APPLE_REMOTE_DISABLED, 1, APPLE_REMOTE_UNIVERSAL, SPIN_CONTROL_TEXT);
+  // Always running: [x]
+  
   AddCategory(4, "autorun", 447);
   AddBool(1, "autorun.dvd", 240, true);
   AddBool(2, "autorun.vcd", 241, true);
@@ -413,11 +422,13 @@ CGUISettings::CGUISettings(void)
   AddString(7, "audiooutput.passthroughdevice", 546, "iec958", BUTTON_CONTROL_INPUT);
 #endif
 
+#ifndef __APPLE__
   AddCategory(4, "videooutput", 21373);
   AddInt(1, "videooutput.aspect", 21374, VIDEO_NORMAL, VIDEO_NORMAL, 1, VIDEO_WIDESCREEN, SPIN_CONTROL_TEXT);
   AddBool(2,  "videooutput.hd480p", 21378, true);
   AddBool(3,  "videooutput.hd720p", 21379, true);
   AddBool(4,  "videooutput.hd1080i", 21380, true);
+#endif
 
   AddCategory(4, "masterlock", 12360);
   AddString(1, "masterlock.lockcode"       , 20100, "-", BUTTON_CONTROL_STANDARD);
@@ -461,7 +472,9 @@ CGUISettings::CGUISettings(void)
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
   AddString(2, "videoplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(3, "videoplayer.sep1");
+#ifndef __APPLE__
   AddInt(4, "videoplayer.rendermethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADERV2, SPIN_CONTROL_TEXT);
+#endif
   AddInt(5, "videoplayer.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(6, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
   
@@ -509,6 +522,7 @@ CGUISettings::CGUISettings(void)
   // network settings
   AddGroup(6, 705);
   AddCategory(6, "network", 705);
+#ifndef __APPLE__
   AddString(1, "network.interface",775,"", SPIN_CONTROL_TEXT);
   AddInt(2, "network.assignment", 715, NETWORK_DHCP, NETWORK_DHCP, 1, NETWORK_DISABLED, SPIN_CONTROL_TEXT);
   AddString(3, "network.ipaddress", 719, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
@@ -520,11 +534,13 @@ CGUISettings::CGUISettings(void)
   AddString(9, "network.key", 777, "0.0.0.0", BUTTON_CONTROL_INPUT);
   AddString(10, "network.save", 779, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(11, "network.sep1");
+#endif
   AddBool(12, "network.usehttpproxy", 708, false);
   AddString(13, "network.httpproxyserver", 706, "", BUTTON_CONTROL_IP_INPUT);
   AddString(14, "network.httpproxyport", 707, "8080", BUTTON_CONTROL_INPUT, false, 707);
   AddSeparator(15, "network.sep2");
   AddBool(16, "network.enableinternet", 14054, true);
+  
   // hidden proxy authentication details
   AddString(0, "network.httpproxyusername", 706, "", BUTTON_CONTROL_INPUT);
   AddString(0, "network.httpproxypassword", 706, "", BUTTON_CONTROL_INPUT);
@@ -628,6 +644,11 @@ CGUISettings::CGUISettings(void)
   AddCategory(7, "videoscreen", 131);
   AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddString(2, "videoscreen.testresolution",13109,"", BUTTON_CONTROL_STANDARD);
+  
+#ifdef __APPLE__
+  AddInt(3, "videoscreen.displayblanking", 13130, BLANKING_DISABLED, BLANKING_DISABLED, 1, BLANKING_ALL_DISPLAYS, SPIN_CONTROL_TEXT);
+#endif
+  
   AddString(3, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
 #ifdef HAS_XBOX_HARDWARE
   AddInt(4, "videoscreen.flickerfilter", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
@@ -992,6 +1013,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGINFO, "AC3 pass through is %s", GetBool("audiooutput.ac3passthrough") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "DTS pass through is %s", GetBool("audiooutput.dtspassthrough") ? "enabled" : "disabled");
 
+#ifndef __APPLE__
   if (g_videoConfig.HasLetterbox())
     SetInt("videooutput.aspect", VIDEO_LETTERBOX);
   else if (g_videoConfig.HasWidescreen())
@@ -1002,6 +1024,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   SetBool("videooutput.hd480p", g_videoConfig.Has480p());
   SetBool("videooutput.hd720p", g_videoConfig.Has720p());
   SetBool("videooutput.hd1080i", g_videoConfig.Has1080i());
+#endif
 
 #ifdef HAS_XBOX_HARDWARE
   SetInt("locale.timezone", g_timezone.GetTimeZoneIndex());
