@@ -85,6 +85,9 @@
 //Progressbar used for buffering status and after seeking
 #define CONTROL_PROGRESS 23
 
+#ifdef __APPLE__
+static CLinuxResourceCounter m_resourceCounter;
+#endif
 
 static DWORD color[6] = { 0xFFFFFF00, 0xFFFFFFFF, 0xFF0099FF, 0xFF00FF00, 0xFFCCFF00, 0xFF00FFFF };
 
@@ -591,8 +594,15 @@ void CGUIWindowFullScreen::RenderFullScreen()
     g_application.m_pPlayer->GetGeneralInfo(strGeneral);
     {
       CStdString strGeneralFPS;
+#ifdef __APPLE__
+      // We show CPU usage for the entire process, as it's arguably more useful.
+      double dCPU = m_resourceCounter.GetCPUUsage();
+      CStdString strCores;
+      strCores.Format("cpu: %.0f%%", dCPU);
+#else
       CStdString strCores = g_cpuInfo.GetCoresUsageString();
-      strGeneralFPS.Format("fps:%02.2f %s\n%s", g_infoManager.GetFPS(), strCores.c_str(), strGeneral.c_str() );
+#endif
+      strGeneralFPS.Format("fps: %02.2f %s\n%s", g_infoManager.GetFPS(), strCores.c_str(), strGeneral.c_str() );
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strGeneralFPS);
       OnMessage(msg);
