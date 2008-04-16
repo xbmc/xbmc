@@ -380,10 +380,13 @@ CApplication::CApplication(void)
   XSetProcessQuantumLength(5); //default=20msec
   XSetFileCacheSize (256*1024); //default=64kb
 #endif
-  m_bInactive = false;   // CB: SCREENSAVER PATCH
-  m_bScreenSave = false;   // CB: SCREENSAVER PATCH
+  m_bInactive = false;
+  m_bScreenSave = false;
   m_iScreenSaveLock = 0;
-  m_dwSaverTick = timeGetTime(); // CB: SCREENSAVER PATCH
+  m_dwSaverTick = timeGetTime();
+#ifdef __APPLE__
+  m_dwOSXscreensaverTicks = timeGetTime();
+#endif
   m_dwSkinTime = 0;
   m_bInitializing = true;
   m_eForcedNextPlayer = EPC_NONE;
@@ -1581,10 +1584,13 @@ CProfile* CApplication::InitDirectoriesOSX()
 #ifdef __APPLE__
   Cocoa_Initialize(this);
 
+  // We're going to manually manage the screensaver. 
+  setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", true);
+
   CStdString strExecutablePath;
   CUtil::GetHomePath(strExecutablePath);
   setenv("XBMC_HOME", strExecutablePath.c_str(), 0);
-
+  
   // Z: common for both
   CIoSupport::RemapDriveLetter('Z',"/tmp/xbmc");
   CreateDirectory(_P("Z:\\"), NULL);
@@ -3105,10 +3111,11 @@ void CApplication::RenderMemoryStatus()
           xShift *= -1;
         lastShift = now;
       }
+      
+#ifndef __APPLE__
       float x = xShift + 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
       float y = yShift + 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
-
-#ifndef __APPLE__
+      
       // Disable this for now as it might still be responsible for some crashes.
       CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, wszText);
 #endif
@@ -4087,13 +4094,63 @@ bool CApplication::ProcessEventServer(float frameTime)
   if (!es || !es->Running())
     return false;
 
-  WORD wKeyID = es->GetButtonCode();
+  std::string joystickName;
+  WORD wKeyID = es->GetButtonCode(joystickName);
+  
   if (wKeyID)
   {
-    CKey key(wKeyID);
-    return OnKey( key );
-  }
+    printf("wKey: %d, mapName: %s\n", wKeyID, joystickName.c_str());
+    
+    if (joystickName.length() > 0)
+    {
+      m_idleTimer.StartZero();
 
+      // Make sure to reset screen saver, mouse.
+      ResetScreenSaver();
+      if (ResetScreenSaverWindow())
+        return true;
+      
+      g_Joystick.Reset();
+      g_Mouse.SetInactive();
+      
+      // Figure out what window we're taking the event for.
+      WORD iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
+      if (m_gWindowManager.HasModalDialog())
+          iWin = m_gWindowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
+      
+      // This code is copied from the OnKey handler, it should be factored out.
+      if (iWin == WINDOW_FULLSCREEN_VIDEO && 
+          g_application.m_pPlayer && 
+          g_application.m_pPlayer->IsInMenu())
+      {
+        // If player is in some sort of menu, (ie DVDMENU) map buttons differently.
+        iWin = WINDOW_VIDEO_MENU;
+      }
+        
+      bool fullRange = false;
+      CAction action;
+        
+      // Translate using regular joystick translator.
+      if (g_buttonTranslator.TranslateJoystickString(iWin, joystickName.c_str(), (int)wKeyID, false, action.wID, action.strAction, fullRange))
+      {
+        action.fAmount1 = 1.0f;
+        action.fRepeat = 0.0f;
+        printf("Got action: [%s] window: %d\n", action.strAction.c_str(), iWin);
+        g_audioManager.PlayActionSound(action);
+        return OnAction(action);
+      }
+      else
+      {
+        printf("ERROR mapping joystick action.\n");
+      }
+    }
+    else
+    {
+      CKey key(wKeyID);
+      return OnKey( key );
+    }
+  }
+  
   {
     CAction action;
     action.wID = ACTION_MOUSE;
@@ -4948,8 +5005,9 @@ bool CApplication::IsPlayingVideo() const
     return false;
   if (!m_pPlayer->IsPlaying())
     return false;
-  if (m_pPlayer->HasVideo())
+  if (m_pPlayer->HasVideo()) 
     return true;
+      
   return false;
 }
 
@@ -5062,7 +5120,16 @@ void CApplication::ResetScreenSaver()
   {
     m_dwSaverTick = timeGetTime(); // Start the timer going ...
   }
-}
+  
+#ifdef __APPLE__
+	if (m_bDisplaySleeping)
+	{
+		m_bInactive = false;
+		m_dwSaverTick = timeGetTime(); // Start the timer going ...
+		m_bDisplaySleeping = false;
+	}
+#endif
+}	
 
 bool CApplication::ResetScreenSaverWindow()
 {
@@ -5246,7 +5313,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   else if (m_screenSaverMode == "Dim")
   {
     fFadeLevel = (FLOAT) g_guiSettings.GetInt("screensaver.dimlevel") / 100; // 0.07f;
-  }
+  }  
   else if (m_screenSaverMode == "Black")
   {
     fFadeLevel = 0;
@@ -5296,10 +5363,9 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 
 void CApplication::CheckShutdown()
 {
-#ifdef HAS_XBOX_HARDWARE
+#if defined(HAS_XBOX_HARDWARE) || defined(__APPLE__)
   CGUIDialogMusicScan *pMusicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   CGUIDialogVideoScan *pVideoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-  CGUIWindowVideoFiles *pVideoFiles = (CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
 
   // Note: if the the screensaver is switched on, the shutdown timeout is
   // counted from when the screensaver activates.
@@ -5346,10 +5412,12 @@ void CApplication::CheckShutdown()
       {
         m_dwSaverTick = timeGetTime();
       }
+#ifdef HAS_FTP_SERVER    
       else if (m_pFileZilla && m_pFileZilla->GetNoConnections() != 0) // is FTP active ?
       {
         m_dwSaverTick = timeGetTime();
-      }
+      }                        
+#endif
       else if (m_gWindowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS))
       {
         m_dwSaverTick = timeGetTime();  // progress dialog is on screen
@@ -5360,11 +5428,85 @@ void CApplication::CheckShutdown()
       }
 
       if (bShutDown)
+      { 
+#ifdef __APPLE__ 
+        // Since it is a sleep instead of a shutdown, let's set everything to reset when we wake up.
+        bShutDown = false; 
+        m_dwSaverTick = timeGetTime();
+        m_bInactive = false;
+        
+        // Sleep the box
+        Cocoa_SleepSystem();
+#else                                                         
         m_applicationMessenger.Shutdown(); // Turn off the box
+#endif
+      }   
     }
   }
 
   return ;
+#endif
+}
+
+
+void CApplication::CheckDisplaySleep()
+{
+#ifdef __APPLE__
+  // Note: if the the screensaver is switched on, the display sleep timeout is
+  // counted from when the screensaver activates.
+  //
+  if (!m_bInactive)
+  {
+    if (IsPlayingVideo() && !m_pPlayer->IsPaused())
+    {
+      // We're playing a movie.
+      m_bInactive = false;
+    }
+    else if (IsPlayingAudio())
+    {
+      // We playing some music.
+      m_bInactive = false;
+    }
+	else 
+    {
+      // Nothing doing here, so start the timer going.
+      m_bInactive = true;
+    }
+
+    if (m_bInactive)
+    {
+      // Start the timer going ...
+      m_dwSaverTick = timeGetTime();
+    }
+  }
+  else
+  {
+    if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("system.displaysleeptime")*60*1000L) )
+    {
+      bool bDisplaySleep = false;
+      if (m_pPlayer && m_pPlayer->IsPlaying())
+      {
+        // We're playing something, so don't shutdown.
+        m_dwSaverTick = timeGetTime();
+      }
+      else if (m_gWindowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS))
+      {
+        // Progress dialog is on screen.
+        m_dwSaverTick = timeGetTime();
+      }
+      else
+      {
+        // Not playing.
+        bDisplaySleep = true;
+      }
+
+      if (bDisplaySleep && !m_bDisplaySleeping)
+      {
+        Cocoa_DimDisplayNow();
+        m_bDisplaySleeping = true;
+      }
+    }
+  }
 #endif
 }
 
@@ -5885,13 +6027,35 @@ void CApplication::ProcessSlow()
     CheckHDSpindown();
 #endif
 
-  // check if we need to activate the screensaver (if enabled)
+  // Check if we need to activate the screensaver (if enabled).
   if (g_guiSettings.GetString("screensaver.mode") != "None")
     CheckScreenSaver();
+  
+#ifdef __APPLE__       
+   // If playing video tickle system, or else if in full-screen always tickle.  
+   if (((IsPlayingVideo() && !m_pPlayer->IsPaused()) && ((timeGetTime() - m_dwOSXscreensaverTicks) > 5000)) ||
+       g_advancedSettings.m_fullScreen == true)
+   {            
+     Cocoa_UpdateSystemActivity();
+     m_dwOSXscreensaverTicks = timeGetTime();
+   }
+   
+  // Only activate display sleep if fullscreen mode.
+  if (g_guiSettings.GetInt("system.displaysleeptime" ) && g_advancedSettings.m_fullScreen)
+  {
+    CheckDisplaySleep();
+  }
+#endif
 
-  // check if we need to shutdown (if enabled)
+  // Check if we need to shutdown (if enabled).
+#ifdef __APPLE__  
+  if (g_guiSettings.GetInt("system.shutdowntime") && g_advancedSettings.m_fullScreen)
+#else                                                                                
   if (g_guiSettings.GetInt("system.shutdowntime"))
+#endif
+  {
     CheckShutdown();
+  }
 
   // check if we should restart the player
   CheckDelayedPlayerRestart();
@@ -6541,4 +6705,3 @@ CPerformanceStats &CApplication::GetPerformanceStats()
   return m_perfStats;
 }
 #endif
-
