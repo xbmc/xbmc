@@ -414,7 +414,7 @@ bool SSortFileItem::SongArtistAscending(CFileItem *left, CFileItem *right)
       l = (char *)left->GetMusicInfoTag()->GetArtist().c_str();
     else if (left->HasVideoInfoTag())
     {
-      strL = left->GetVideoInfoTag()->GetArtist();
+      strL = left->GetVideoInfoTag()->m_strArtist;
       l = (char*)strL.c_str();
     }
     else
@@ -425,7 +425,7 @@ bool SSortFileItem::SongArtistAscending(CFileItem *left, CFileItem *right)
       r = (char *)right->GetMusicInfoTag()->GetArtist().c_str();
     else if (right->HasVideoInfoTag())
     {
-      strR = right->GetVideoInfoTag()->GetArtist();
+      strR = right->GetVideoInfoTag()->m_strArtist;
       r = (char*)strR.c_str();
     }
     else
@@ -486,25 +486,18 @@ bool SSortFileItem::SongArtistDescending(CFileItem *left, CFileItem *right)
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
     char *l;
-    CStdString strL;
+    CStdString strL, strR;
     if (left->HasMusicInfoTag())
       l = (char *)left->GetMusicInfoTag()->GetArtist().c_str();
     else if (left->HasVideoInfoTag())
-    {
-      strL = left->GetVideoInfoTag()->GetArtist();
-      l = (char*)strL.c_str();
-    }
+      l = (char *)left->GetVideoInfoTag()->m_strArtist.c_str();
     else
       l = (char*)strL.c_str();
     char *r;
-    CStdString strR;
     if (right->HasMusicInfoTag())
       r = (char *)right->GetMusicInfoTag()->GetArtist().c_str();
     else if (right->HasVideoInfoTag())
-    {
-      strR = right->GetVideoInfoTag()->GetArtist();
-      r = (char*)strR.c_str();
-    }
+      r = (char*)right->GetVideoInfoTag()->m_strArtist.c_str();
     else
       r = (char*)strR.c_str();
 
@@ -569,7 +562,7 @@ bool SSortFileItem::SongArtistAscendingNoThe(CFileItem *left, CFileItem *right)
       l = (char *)left->GetMusicInfoTag()->GetArtist().c_str();
     else if (left->HasVideoInfoTag())
     {
-      strL = left->GetVideoInfoTag()->GetArtist();
+      strL = left->GetVideoInfoTag()->m_strArtist;
       l = (char*)strL.c_str();
     }
     else
@@ -580,7 +573,7 @@ bool SSortFileItem::SongArtistAscendingNoThe(CFileItem *left, CFileItem *right)
       r = (char *)right->GetMusicInfoTag()->GetArtist().c_str();
     else if (right->HasVideoInfoTag())
     {
-      strR = right->GetVideoInfoTag()->GetArtist();
+      strR = right->GetVideoInfoTag()->m_strArtist;
       r = (char*)strR.c_str();
     }
     else
@@ -647,7 +640,7 @@ bool SSortFileItem::SongArtistDescendingNoThe(CFileItem *left, CFileItem *right)
       l = (char *)left->GetMusicInfoTag()->GetArtist().c_str();
     else if (left->HasVideoInfoTag())
     {
-      strL = left->GetVideoInfoTag()->GetArtist();
+      strL = left->GetVideoInfoTag()->m_strArtist;
       l = (char*)strL.c_str();
     }
     else
@@ -658,7 +651,7 @@ bool SSortFileItem::SongArtistDescendingNoThe(CFileItem *left, CFileItem *right)
       r = (char *)right->GetMusicInfoTag()->GetArtist().c_str();
     else if (right->HasVideoInfoTag())
     {
-      strR = right->GetVideoInfoTag()->GetArtist();
+      strR = right->GetVideoInfoTag()->m_strArtist;
       r = (char*)strR.c_str();
     }
     else
@@ -742,14 +735,14 @@ bool SSortFileItem::SongAlbumAscending(CFileItem *left, CFileItem *right)
       l = (char *)left->GetMusicInfoTag()->GetArtist().c_str();
     else if (left->HasVideoInfoTag())
     {
-      strL = left->GetVideoInfoTag()->GetArtist();
+      strL = left->GetVideoInfoTag()->m_strArtist;
       l = (char*)strL.c_str();
     }
     if (right->HasMusicInfoTag())
       r = (char *)right->GetMusicInfoTag()->GetArtist().c_str();
     else if (right->HasVideoInfoTag())
     {
-      strR = right->GetVideoInfoTag()->GetArtist();
+      strR = right->GetVideoInfoTag()->m_strArtist;
       r = (char*)strR.c_str();
     }
     result = StringUtils::AlphaNumericCompare(l, r);
@@ -798,14 +791,14 @@ bool SSortFileItem::SongAlbumDescending(CFileItem *left, CFileItem *right)
       l = (char *)left->GetMusicInfoTag()->GetArtist().c_str();
     else if (left->HasVideoInfoTag())
     {
-      strL = left->GetVideoInfoTag()->GetArtist();
+      strL = left->GetVideoInfoTag()->m_strArtist;
       l = (char*)strL.c_str();
     }
     if (right->HasMusicInfoTag())
       r = (char *)right->GetMusicInfoTag()->GetArtist().c_str();
     else if (right->HasVideoInfoTag())
     {
-      strR = right->GetVideoInfoTag()->GetArtist();
+      strR = right->GetVideoInfoTag()->m_strArtist;
       r = (char*)strR.c_str();
     }
     result = StringUtils::AlphaNumericCompare(l, r);
@@ -857,14 +850,14 @@ bool SSortFileItem::SongAlbumAscendingNoThe(CFileItem *left, CFileItem *right)
       l = (char *)left->GetMusicInfoTag()->GetArtist().c_str();
     else if (left->HasVideoInfoTag())
     {
-      strL = left->GetVideoInfoTag()->GetArtist();
+      strL = left->GetVideoInfoTag()->m_strArtist;
       l = (char*)strL.c_str();
     }
     if (right->HasMusicInfoTag())
       r = (char *)right->GetMusicInfoTag()->GetArtist().c_str();
     else if (right->HasVideoInfoTag())
     {
-      strR = right->GetVideoInfoTag()->GetArtist();
+      strR = right->GetVideoInfoTag()->m_strArtist;
       r = (char*)strR.c_str();
     }
     l += StartsWithToken(l);
@@ -920,14 +913,14 @@ bool SSortFileItem::SongAlbumDescendingNoThe(CFileItem *left, CFileItem *right)
       l = (char *)left->GetMusicInfoTag()->GetArtist().c_str();
     else if (left->HasVideoInfoTag())
     {
-      strL = left->GetVideoInfoTag()->GetArtist();
+      strL = left->GetVideoInfoTag()->m_strArtist;
       l = (char*)strL.c_str();
     }
     if (right->HasMusicInfoTag())
       r = (char *)right->GetMusicInfoTag()->GetArtist().c_str();
     else if (right->HasVideoInfoTag())
     {
-      strR = right->GetVideoInfoTag()->GetArtist();
+      strR = right->GetVideoInfoTag()->m_strArtist;
       r = (char*)strR.c_str();
     }
     l += StartsWithToken(l);

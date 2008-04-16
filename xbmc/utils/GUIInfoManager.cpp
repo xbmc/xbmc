@@ -591,8 +591,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_HAS_FOCUS : CONTAINER_HAS_FOCUS, id, itemID));
     }
     else if (info.Equals("showplot")) ret = CONTAINER_SHOWPLOT;
-    if (id && (ret == CONTAINER_ON_NEXT || ret == CONTAINER_ON_PREVIOUS || ret == CONTAINER_NUM_PAGES ||
-               ret == CONTAINER_NUM_ITEMS || ret == CONTAINER_CURRENT_PAGE))
+    if (id && (ret == CONTAINER_ON_NEXT || ret == CONTAINER_ON_PREVIOUS))
       return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id));
   }
   else if (strCategory.Left(8).Equals("listitem"))
@@ -1478,16 +1477,16 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     switch (condition)
     {
       case LIBRARY_HAS_VIDEO:
-        bReturn = (database.GetItemCount() > 0);
+        bReturn = database.HasContent();
         break;
       case LIBRARY_HAS_MOVIES:
-        bReturn = (database.GetMovieCount() > 0);
+        bReturn = database.HasContent(VIDEODB_CONTENT_MOVIES);
         break;
       case LIBRARY_HAS_TVSHOWS:
-        bReturn = (database.GetTvShowCount() > 0);
+        bReturn = database.HasContent(VIDEODB_CONTENT_TVSHOWS);
         break;
       case LIBRARY_HAS_MUSICVIDEOS:
-        bReturn = (database.GetMusicVideoCount() > 0);
+        bReturn = database.HasContent(VIDEODB_CONTENT_MUSICVIDEOS);
         break;
       default: // should never get here
         bReturn = false;
@@ -1895,7 +1894,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
             control = window->GetControl(window->GetViewContainerID());
         }
         if (control)
-          bReturn = control->GetCondition(condition, info.m_data2);
+          bReturn = control->GetCondition(info.m_info, info.m_data2);
       }
       break;
     case CONTAINER_HAS_FOCUS:
@@ -1934,7 +1933,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           }
         }
         if (item)
-          bReturn = GetBool(condition, dwContextWindow, item);
+          bReturn = GetBool(info.m_info, dwContextWindow, item);
       }
       break;
     case VIDEOPLAYER_CONTENT:
@@ -1944,7 +1943,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           strContent = "files";
         if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_iSeason > -1) // episode
           strContent = "episodes";
-        if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_artist.size() > 0)
+        if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strArtist.IsEmpty())
           strContent = "musicvideos";
         if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_strStatus == "livetv")
           strContent = "livetv";
@@ -2605,8 +2604,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_CAST_AND_ROLE:
       return m_currentFile->GetVideoInfoTag()->GetCast(true);
     case VIDEOPLAYER_ARTIST:
-      if (m_currentFile->GetVideoInfoTag()->m_artist.size() > 0)
-        return m_currentFile->GetVideoInfoTag()->GetArtist();
+      return m_currentFile->GetVideoInfoTag()->m_strArtist;
       break;
     case VIDEOPLAYER_ALBUM:
       return m_currentFile->GetVideoInfoTag()->m_strAlbum;
@@ -3184,8 +3182,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     if (item->HasMusicInfoTag())
       return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetArtist());
     if (item->HasVideoInfoTag())
-      if (item->GetVideoInfoTag()->m_artist.size() > 0)
-        return item->GetVideoInfoTag()->GetArtist();
+      return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strArtist);
     break;
   case LISTITEM_DIRECTOR:
     if (item->HasVideoInfoTag())
@@ -3280,7 +3277,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     if (item->HasVideoInfoTag())
     {
       if (!(!item->GetVideoInfoTag()->m_strShowTitle.IsEmpty() && item->GetVideoInfoTag()->m_iSeason == -1)) // dont apply to tvshows
-        if (!item->GetVideoInfoTag()->m_bWatched && g_guiSettings.GetBool("videolibrary.hideplots"))
+        if (item->GetVideoInfoTag()->m_playCount == 0 && g_guiSettings.GetBool("videolibrary.hideplots"))
           return g_localizeStrings.Get(20370);
 
       return item->GetVideoInfoTag()->m_strPlot;

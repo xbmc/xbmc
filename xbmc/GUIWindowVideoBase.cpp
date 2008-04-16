@@ -397,7 +397,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
         lEpisodeHint = item->GetVideoInfoTag()->m_iEpisode;
       long lEpisodeId=-1;
       g_infoManager.m_content = "episodes";
-      if ((lEpisodeId = m_database.GetEpisodeInfo(item->m_strPath,lEpisodeHint)) > -1)
+      if ((lEpisodeId = m_database.GetEpisodeId(item->m_strPath,lEpisodeHint)) > -1)
       {
         bHasInfo = true;
         m_database.GetEpisodeInfo(item->m_strPath, movieDetails, lEpisodeId);
@@ -1332,16 +1332,10 @@ void CGUIWindowVideoBase::MarkUnWatched(CFileItem* item)
   for (int i=0;i<items.Size();++i)
   {
     CFileItem* pItem=items[i];
-    if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_bWatched)
+    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount == 0)
       continue;
 
-    VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
-    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder)
-      iType = VIDEODB_CONTENT_EPISODES;
-    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0)
-      iType = VIDEODB_CONTENT_MUSICVIDEOS;
-
-    database.MarkAsUnWatched(pItem->GetVideoInfoTag()->m_iDbId,iType);
+    database.MarkAsUnWatched(*pItem);
   }
 }
 
@@ -1365,16 +1359,10 @@ void CGUIWindowVideoBase::MarkWatched(CFileItem* item)
   for (int i=0;i<items.Size();++i)
   {
     CFileItem* pItem=items[i];
-    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_bWatched)
+    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount > 0)
       continue;
 
-    VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
-    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder)
-      iType = VIDEODB_CONTENT_EPISODES;
-    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0)
-      iType = VIDEODB_CONTENT_MUSICVIDEOS;
-
-    database.MarkAsWatched(pItem->GetVideoInfoTag()->m_iDbId,iType);
+    database.MarkAsWatched(*pItem);
   }
 }
 
@@ -1393,7 +1381,7 @@ void CGUIWindowVideoBase::UpdateVideoTitle(CFileItem* pItem)
   }
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder)
     iType = VIDEODB_CONTENT_EPISODES;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0)
+  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
     iType = VIDEODB_CONTENT_MUSICVIDEOS;
 
   if (iType == VIDEODB_CONTENT_MOVIES)
@@ -1517,6 +1505,16 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
 */
     newPlaylist = new CFileItem("newsmartplaylist://video", false);
     newPlaylist->SetLabel(g_localizeStrings.Get(21437));
+    newPlaylist->SetLabelPreformated(true);
+    items.Add(newPlaylist);
+
+    newPlaylist = new CFileItem("newsmartplaylist://tvshows", false);
+    newPlaylist->SetLabel(g_localizeStrings.Get(21440));
+    newPlaylist->SetLabelPreformated(true);
+    items.Add(newPlaylist);
+
+    newPlaylist = new CFileItem("newsmartplaylist://episodes", false);
+    newPlaylist->SetLabel(g_localizeStrings.Get(21441));
     newPlaylist->SetLabelPreformated(true);
     items.Add(newPlaylist);
   }

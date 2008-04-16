@@ -10,20 +10,36 @@ public:
   CSmartPlaylistRule();
 
   enum DATABASE_FIELD { FIELD_NONE = 0,
-                        SONG_GENRE = 1,
+                        FIELD_GENRE = 1,
                         SONG_ALBUM,
                         SONG_ARTIST,
                         SONG_ALBUM_ARTIST,
-                        SONG_TITLE,
-                        SONG_YEAR,
-                        SONG_TIME,
+                        FIELD_TITLE,
+                        FIELD_YEAR,
+                        FIELD_TIME,
                         SONG_TRACKNUMBER,
                         SONG_FILENAME,
-                        SONG_PLAYCOUNT,
+                        FIELD_PLAYCOUNT,
                         SONG_LASTPLAYED,
-                        SONG_RATING,
+                        FIELD_RATING,
                         SONG_COMMENT,
-                        SONG_DATEADDED,
+                        FIELD_DATEADDED,
+                        VIDEO_PLOT,
+                        VIDEO_PLOTOUTLINE,
+                        VIDEO_TAGLINE,
+                        TVSHOW_STATUS,
+                        VIDEO_VOTES,
+                        VIDEO_DIRECTOR,
+                        VIDEO_ACTOR,
+                        VIDEO_STUDIO,
+                        VIDEO_MPAA,
+                        VIDEO_TOP250,
+                        TVSHOW_NUMEPISODES,
+                        TVSHOW_NUMWATCHED,
+                        VIDEO_WRITER,
+                        EPISODE_AIRDATE,
+                        EPISODE_EPISODE,
+                        EPISODE_SEASON,
                         FIELD_PLAYLIST,
                         FIELD_RANDOM
                       };
@@ -53,6 +69,8 @@ public:
 
   static CStdString     GetLocalizedField(DATABASE_FIELD field);
   static CStdString     GetLocalizedOperator(SEARCH_OPERATOR oper);
+  static std::vector<DATABASE_FIELD> GetFields(const CStdString &type);
+
   CStdString            GetLocalizedRule();
 
   TiXmlElement GetAsElement();
