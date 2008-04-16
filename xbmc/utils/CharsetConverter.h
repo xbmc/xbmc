@@ -58,6 +58,7 @@ public:
 
   void wToUTF8(const CStdStringW& strSource, CStdStringA &strDest);
   void utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest);
+  void utf16LEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest);
   void ucs2ToUTF8(const CStdStringW& strSource, CStdStringA& strDest);
 
   void utf32ToStringCharset(const unsigned long* strSource, CStdStringA& strDest);
@@ -85,6 +86,7 @@ private:
   iconv_t m_iconvWtoUtf8;
   iconv_t m_iconvUtf16LEtoW;
   iconv_t m_iconvUtf16BEtoUtf8;
+  iconv_t m_iconvUtf16LEtoUtf8;
   iconv_t m_iconvUtf8toW;
   iconv_t m_iconvUcs2CharsetToUtf8;
   
