@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Kim Buchwald Christensen-->
 <!--Email: kimbchr@gmail.com-->
-<!--Date of translation: 03/19/2008-->
+<!--Date of translation: 04/14/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 12175-->
+<!--Based on english strings version 12644-->
 <strings>
   <string id="0">Programmer</string>
   <string id="1">Billeder</string>
@@ -111,7 +111,7 @@
   <string id="172">Udgivelsesdato:</string>
   <string id="173">Bedømmelse:</string>
   <string id="174">Genre:</string>
-  <string id="175">Toner:</string>
+  <string id="175">Stemninger:</string>
   <string id="176">Stilarter:</string>
   <string id="177">Anmeldelse:</string>
   <string id="178">Spor:</string>
@@ -340,7 +340,7 @@
   <string id="415">Henter ikon...</string>
   <string id="416">Ikke tilgængelig</string>
   <string id="417">Vis: Store ikoner</string>
-  <string id="418"></string>
+  <string id="418">Aktiver database</string>
   <string id="419"></string>
   <string id="420"></string>
   <string id="421"></string>
@@ -1062,6 +1062,7 @@
   <string id="13408">(IMDb brugerbedømmelse)</string>
   <string id="13409">Top 250:</string>
   <string id="13410">Stil ind på last.fm</string>
+  <string id="13411">Mindste blæserhastighed</string>
   <string id="14000">Stakning</string>
   <string id="14001">Ingen stakning</string>
   <string id="14003">Henter afspilningsliste...</string>
@@ -1513,14 +1514,14 @@
   <string id="20189"></string>
   <string id="20190"></string>
   <string id="20191"></string>
-  <string id="20192"></string>
-  <string id="20193"></string>
-  <string id="20194"></string>
-  <string id="20195"></string>
-  <string id="20196"></string>
-  <string id="20197"></string>
-  <string id="20198"></string>
-  <string id="20199"></string>
+  <string id="20192">Hent information om album ved skanning</string>
+  <string id="20193">Hent information om kunstner ved skanning</string>
+  <string id="20194">Standard scraper</string>
+  <string id="20195">Skift scraper</string>
+  <string id="20196">Eksporter musikdatabase</string>
+  <string id="20197">Importer musikdatabase</string>
+  <string id="20198">Ingen kunstner fundet!</string>
+  <string id="20199">Fejl ved hentning af kunstnerinfo</string>
   <string id="20250">Så skal der festes! (videoer)</string>
   <string id="20251">Blander drinks (videoer)</string>
   <string id="20252">Fylder glassene (videoer)</string>
@@ -1637,6 +1638,9 @@
   <string id="20410">Trailer</string>
   <string id="20411">Fladgør liste</string>
   <string id="20412">Vis ikke sæsonmapper hvis TV-showet kun har én sæson</string>
+  <string id="20413">Hent fan-ikoner</string>
+  <string id="20414">Vis fan-ikoner i videodatabasen</string>
+  <string id="20415">Søger efter nyt indhold</string>
   <string id="21330">Vis skjulte filer og mapper</string>
   <string id="21331">TuxBox-klient</string>
   <string id="21332">ADVARSEL: den valgte TuxBox er i optagetilstand!</string>
@@ -1777,7 +1781,25 @@
   <string id="21881">Aktiver UPnP-renderer</string>
   <string id="21882">Forsøg at gå direkte til DVD-menuen</string>
   <string id="21883">Rippede lyd-cd'er</string>
+  <string id="21884">Forespørger info til alle kunstnere</string>
+  <string id="21885">Henter information om album</string>
+  <string id="21886">Henter information om kunstner</string>
+  <string id="21887">Biografi</string>
+  <string id="21888">Diskografi</string>
+  <string id="21889">Søger på kunstner</string>
+  <string id="21890">Vælg kunstner</string>
+  <string id="21891">Information om kunstner</string>
+  <string id="21892">Instrumenter:</string>
+  <string id="21893">Født:</string>
+  <string id="21894">Dannet:</string>
+  <string id="21895">Temaer:</string>
+  <string id="21896">Opløst:</string>
+  <string id="21897">Død:</string>
+  <string id="21898">Aktive år:</string>
+  <string id="21899">Label:</string>
+  <string id="21900">Født/dannet:</string>
   <string id="22000">Opdater databasen ved opstart</string>
   <string id="22001">Opdater altid databasen i baggrunden</string>
+  <string id="22002">- DNS-suffiks</string>
   <string id="29999">Brug flimmerfilter på spil</string>
 </strings>
