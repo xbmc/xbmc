@@ -93,6 +93,7 @@ CCharsetConverter::CCharsetConverter()
   ICONV_PREPARE(m_iconvSubtitleCharsetToW);
   ICONV_PREPARE(m_iconvWtoUtf8);
   ICONV_PREPARE(m_iconvUtf16BEtoUtf8);
+  ICONV_PREPARE(m_iconvUtf16LEtoUtf8);
   ICONV_PREPARE(m_iconvUtf16LEtoW);
   ICONV_PREPARE(m_iconvUtf32ToStringCharset);
   ICONV_PREPARE(m_iconvUtf8toW);
@@ -160,6 +161,7 @@ void CCharsetConverter::reset(void)
   ICONV_SAFE_CLOSE(m_iconvSubtitleCharsetToW);
   ICONV_SAFE_CLOSE(m_iconvWtoUtf8);
   ICONV_SAFE_CLOSE(m_iconvUtf16BEtoUtf8);
+  ICONV_SAFE_CLOSE(m_iconvUtf16LEtoUtf8);
   ICONV_SAFE_CLOSE(m_iconvUtf32ToStringCharset);
   ICONV_SAFE_CLOSE(m_iconvUtf8toW);
   ICONV_SAFE_CLOSE(m_iconvUcs2CharsetToUtf8);
@@ -444,6 +446,26 @@ void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA 
   }
 }
 
+void CCharsetConverter::utf16LEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest)
+{
+  if (m_iconvUtf16LEtoUtf8 == (iconv_t) - 1)
+    m_iconvUtf16LEtoUtf8 = iconv_open("UTF-8", "UTF-16LE");
+
+  if (m_iconvUtf16LEtoUtf8 != (iconv_t) - 1)
+  {
+    const char* src = (const char*) strSource.c_str();
+    size_t inBytes = (strSource.length() + 1)*sizeof(wchar_t);
+    size_t outBytes = (inBytes + 1)*sizeof(wchar_t);  // UTF-8 is up to 4 bytes/character  
+    char *dst = strDest.GetBuffer(outBytes);
+    if (iconv_const(m_iconvUtf16LEtoUtf8, &src, &inBytes, &dst, &outBytes))
+    { // failed :(
+      strDest.ReleaseBuffer();
+      strDest = strSource;
+      return;
+    }
+    strDest.ReleaseBuffer();
+  }
+}
 
 void CCharsetConverter::ucs2ToUTF8(const CStdStringW& strSource, CStdStringA& strDest)
 {
