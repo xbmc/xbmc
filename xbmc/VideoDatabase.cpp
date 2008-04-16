@@ -263,7 +263,7 @@ bool CVideoDatabase::CreateTables()
                                     "counts.totalcount=counts.watchedcount as watched from tvshow "
                                     "join tvshowlinkpath on tvshow.idShow=tvshowlinkpath.idShow "
                                     "join path on path.idpath=tvshowlinkpath.idPath "
-                                    "join ("
+                                    "left outer join ("
                                     "    select tvshow.idShow as idShow,count(1) as totalcount,count(episode.c%02d) as watchedcount from tvshow "
                                     "    join tvshowlinkepisode on tvshow.idShow = tvshowlinkepisode.idShow "
                                     "    join episode on episode.idEpisode = tvshowlinkepisode.idEpisode "
@@ -1638,10 +1638,7 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
     CStdString sql = "update tvshow set " + GetValueString(details, VIDEODB_ID_TV_MIN, VIDEODB_ID_TV_MAX, DbTvShowOffsets);
     sql += FormatSQL("where idShow=%u", lTvShowId);
     m_pDS->exec(sql.c_str());
-    // update tvshowlinkpath info to reflect it points to this tvshow
-    long lPathId = GetPathId(strPath);
-    if (lPathId < 0)
-      lPathId = AddPath(strPath);
+
     g_infoManager.ResetPersistentCache(); // needed since # of movies have changed
     return lTvShowId;
   }
@@ -2933,7 +2930,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
                                     "counts.totalcount=counts.watchedcount as watched from tvshow "
                                     "join tvshowlinkpath on tvshow.idShow=tvshowlinkpath.idShow "
                                     "join path on path.idpath=tvshowlinkpath.idPath "
-                                    "join ("
+                                    "left outer join ("
                                     "    select tvshow.idShow as idShow,count(1) as totalcount,count(episode.c%02d) as watchedcount from tvshow "
                                     "    join tvshowlinkepisode on tvshow.idShow = tvshowlinkepisode.idShow "
                                     "    join episode on episode.idEpisode = tvshowlinkepisode.idEpisode "
@@ -5028,6 +5025,10 @@ void CVideoDatabase::GetEpisodesByName(const CStdString& strSearch, CFileItemLis
 
 void CVideoDatabase::GetMusicVideosByName(const CStdString& strSearch, CFileItemList& items)
 {
+// Alternative searching - not quite as fast though due to
+// retrieving all information
+//  CStdString where = FormatSQL("where c%02d like '%s%%' or c%02d like '%% %s%%'", VIDEODB_ID_MUSICVIDEO_TITLE, strSearch.c_str(), VIDEODB_ID_MUSICVIDEO_TITLE, strSearch.c_str());
+//  GetMusicVideosByWhere("videodb://3/2/", where, items);
   CStdString strSQL;
 
   try
@@ -5069,6 +5070,12 @@ void CVideoDatabase::GetMusicVideosByName(const CStdString& strSearch, CFileItem
 
 void CVideoDatabase::GetEpisodesByPlot(const CStdString& strSearch, CFileItemList& items)
 {
+// Alternative searching - not quite as fast though due to
+// retrieving all information
+//  CStdString where = FormatSQL("where c%02d like '%s%%' or c%02d like '%% %s%%'", VIDEODB_ID_EPISODE_PLOT, strSearch.c_str(), VIDEODB_ID_EPISODE_PLOT, strSearch.c_str());
+//  where += FormatSQL("or c%02d like '%s%%' or c%02d like '%% %s%%'", VIDEODB_ID_EPISODE_TITLE, strSearch.c_str(), VIDEODB_ID_EPISODE_TITLE, strSearch.c_str());
+//  GetEpisodesByWhere("videodb://2/2/", where, items);
+//  return;
   CStdString strSQL;
 
   try
