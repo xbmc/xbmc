@@ -17,7 +17,6 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-
 #include "stdafx.h"
 #include "Thread.h"
 #ifndef _LINUX
@@ -171,9 +170,6 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
 #ifdef __APPLE__
   // Set the TLS.
   pthread_setspecific(tlsLocalThread, (void*)pThread);
-  
-  // Start time counting from now by keeping track of the offset.
-  QueryPerformanceCounter(&pThread->m_startTime, true);
 #endif
 
   try 
@@ -384,13 +380,6 @@ void CThread::Process()
     m_pRunnable->Run(); 
 }
 
-#ifdef __APPLE__
-CThread* CThread::GetCurrent()
-{
-  return (CThread* )pthread_getspecific(tlsLocalThread);
-}
-#endif
-
 float CThread::GetRelativeUsage()
 {
   unsigned __int64 iTime = GetTickCount();
@@ -402,7 +391,6 @@ float CThread::GetRelativeUsage()
   FILETIME CreationTime, ExitTime, UserTime, KernelTime;
   if( GetThreadTimes( m_ThreadHandle, &CreationTime, &ExitTime, &KernelTime, &UserTime ) )
   {
-
     unsigned __int64 iUsage = 0;
     iUsage += (((unsigned __int64)UserTime.dwHighDateTime) << 32) + ((unsigned __int64)UserTime.dwLowDateTime);
     iUsage += (((unsigned __int64)KernelTime.dwHighDateTime) << 32) + ((unsigned __int64)KernelTime.dwLowDateTime);
