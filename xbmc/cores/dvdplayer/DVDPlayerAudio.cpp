@@ -522,7 +522,7 @@ void CDVDPlayerAudio::WaitForBuffers()
 string CDVDPlayerAudio::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "aq:" << std::setw(3) << std::left << min(100,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
+  s << "aq:" << std::setw(3) << min(99,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
   s << ", ";
   s << "cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%, ";
   s << "bitrate: " << std::setprecision(6) << (double)GetAudioBitrate() / 1024.0 << " KBit/s";
