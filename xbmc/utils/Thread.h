@@ -14,6 +14,9 @@
 #include "PlatformInclude.h"
 #endif
 #include "Event.h"
+#ifdef __APPLE__
+#include <mach/mach.h>
+#endif
 
 class IRunnable
 {
@@ -52,13 +55,6 @@ public:
   // returns the relative cpu usage of this thread since last call
   float GetRelativeUsage();
   
-#ifdef __APPLE__
-  static CThread* GetCurrent();
-  LARGE_INTEGER*  getStartTime() { return &m_startTime; }
-  
-  LARGE_INTEGER m_startTime;
-#endif
-
 protected:
   virtual void OnStartup(){};
   virtual void OnExit(){};
