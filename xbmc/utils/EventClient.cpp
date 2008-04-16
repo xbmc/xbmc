@@ -302,10 +302,8 @@ bool CEventClient::OnPacketBYE(CEventPacket *packet)
 
 bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
 {
-#ifndef __APPLE__
   if (!Greeted())
     return false;
-#endif
 
   unsigned char *payload = (unsigned char *)packet->Payload();
   int psize = (int)packet->PayloadSize();
