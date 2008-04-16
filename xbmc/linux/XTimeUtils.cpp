@@ -86,19 +86,6 @@ BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount, bool bUseHighRes
 
   lpPerformanceCount->QuadPart = ((__int64)aTime.tv_sec * 1000000000L) + aTime.tv_nsec;
 
-#if 0
-  // Get current thread's offset to make sure time starts from 0. This doesn't work
-  // right because different threads call into the DVDClock, for example, which results
-  // in them getting different offsets.
-  //
-  if (bUseHighRes == false)
-  {
-	  CThread* currentThread = CThread::GetCurrent();
-	  if (currentThread)
-		  lpPerformanceCount->QuadPart -= currentThread->getStartTime()->QuadPart;
-  }
-#endif
-
 #else
   struct timespec now;
 
