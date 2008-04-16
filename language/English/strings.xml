@@ -963,6 +963,10 @@
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
 
+  <string id="13130">Display Blanking</string>
+  <string id="13131">Disabled</string>
+  <string id="13132">Blank displays</string>
+
   <string id="13150">HDD Key:</string>
   <string id="13151">HDD Temp:</string>
   <string id="13152">DVD Model:</string>
@@ -1135,6 +1139,8 @@
   <string id="13408">(IMDb User Rating)</string>
   <string id="13409">Top 250:</string>
   <string id="13410">Tune in on lastfm</string>
+  
+  <string id="13600">Apple Remote</string>
 
   <string id="14000">Stack</string>
   <string id="14001">Unstack</string>
@@ -1427,6 +1433,8 @@
   <string id="16304">Lanczos2</string>
   <string id="16305">Lanczos3</string>
   <string id="16306">Sinc8</string>
+
+  <string id="17500">Display Sleep Timeout</string> 
 
   <string id="20000">CDDA Rip Folder</string>
   <string id="20001">Use external DVD Player</string>
