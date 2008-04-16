@@ -36,11 +36,28 @@ CCPUInfo::CCPUInfo(void)
   // The number of cores.
   if (sysctlbyname("hw.activecpu", &m_cpuCount, &len, NULL, 0) == -1) 
       m_cpuCount = 1;
+
+  // Get CPU frequency, scaled to MHz.
+  long long hz = 0;
+  len = sizeof(hz);
+  if (sysctlbyname("hw.cpufrequency", &hz, &len, NULL, 0) == -1)
+    m_cpuFreq = 0.0;
+  else
+    m_cpuFreq = hz / 1000000.0;
   
+  // The model.
   char buffer[512];
   len = 512;
   if (sysctlbyname("machdep.cpu.brand_string", &buffer, &len, NULL, 0) == 0)
     m_cpuModel = buffer;
+
+  // Go through each core.
+  for (int i=0; i<m_cpuCount; i++)
+  {
+    CoreInfo core;
+    core.m_id = i;
+    m_cores[core.m_id] = core;
+  }
   
 #else
   m_fProcStat = fopen("/proc/stat", "r");
@@ -251,7 +268,11 @@ CStdString CCPUInfo::GetCoresUsageString() const
   while (iter != m_cores.end())
   {
     CStdString strCore;
+#ifdef __APPLE__
+    strCore.Format("CPU%d: %3.1f%% ",iter->first, iter->second.m_fPct);
+#else
     strCore.Format("Core%d: %4.2f%% ",iter->first, iter->second.m_fPct);
+#endif
     strCores+=strCore;
     iter++;
   }
