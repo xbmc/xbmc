@@ -1372,6 +1372,11 @@ bool CGraphicContext::ToggleFullScreenRoot ()
 
 void CGraphicContext::SetFullScreenRoot(bool fs)
 {
+#ifdef __APPLE__
+  int blanking = g_guiSettings.GetInt("videoscreen.displayblanking");
+  bool blankOtherDisplays = (blanking == BLANKING_ALL_DISPLAYS);
+#endif
+  
   int width, height;
   if (fs)
   {
@@ -1392,9 +1397,9 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     mode.id = g_settings.m_ResInfo[res].strId;
     g_xrandr.SetMode(out, mode);
 #endif
-
+    
 #ifdef __APPLE__
-    Cocoa_GL_SetFullScreen(g_settings.m_ResInfo[m_Resolution].iScreen, g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, true);
+    Cocoa_GL_SetFullScreen(g_settings.m_ResInfo[m_Resolution].iScreen, g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, true, blankOtherDisplays);
     m_screenSurface->RefreshCurrentContext();
     g_fontManager.ReloadTTFFonts();
 #else
@@ -1410,7 +1415,7 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
   else
   {
 #ifdef __APPLE__
-    Cocoa_GL_SetFullScreen(g_settings.m_ResInfo[m_Resolution].iScreen, g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, false);
+    Cocoa_GL_SetFullScreen(g_settings.m_ResInfo[m_Resolution].iScreen, g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, false, blankOtherDisplays);
     m_screenSurface->RefreshCurrentContext();
     g_fontManager.ReloadTTFFonts();
 #else
