@@ -591,7 +591,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_HAS_FOCUS : CONTAINER_HAS_FOCUS, id, itemID));
     }
     else if (info.Equals("showplot")) ret = CONTAINER_SHOWPLOT;
-    if (id && (ret == CONTAINER_ON_NEXT || ret == CONTAINER_ON_PREVIOUS))
+    if (id && (ret == CONTAINER_ON_NEXT || ret == CONTAINER_ON_PREVIOUS || ret == CONTAINER_NUM_PAGES ||
+               ret == CONTAINER_NUM_ITEMS || ret == CONTAINER_CURRENT_PAGE))
       return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id));
   }
   else if (strCategory.Left(8).Equals("listitem"))
