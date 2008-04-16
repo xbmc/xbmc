@@ -80,6 +80,9 @@ static int InternalThreadFunc(void *data)
 #ifdef __APPLE__
   pthread_once(&keyOnce, MakeTlsKey);
   pthread_setspecific(tlsParamKey, data);
+  
+  // Save the Mach port with the handle.
+  ((InternalThreadParam* )data)->handle->m_machThreadPort = mach_thread_self();
 #else
   pParam = (InternalThreadParam *)data;
 #endif
@@ -213,43 +216,41 @@ BOOL WINAPI GetThreadTimes (
   
 #ifdef __APPLE__
   
-  if (lpUserTime)
+  thread_info_data_t     threadInfo;
+  mach_msg_type_number_t threadInfoCount = THREAD_INFO_MAX;
+  
+  kern_return_t ret = thread_info(hThread->m_machThreadPort, THREAD_BASIC_INFO, (thread_info_t)threadInfo, &threadInfoCount);
+  if (ret == KERN_SUCCESS)
   {
-     lpUserTime->dwLowDateTime = 0;
-     lpUserTime->dwHighDateTime = 0;
-     pthread_t thread = (pthread_t)SDL_GetThreadID(hThread->m_hThread);
-     if(thread)
-     {
-       kern_return_t   ret;
-       clock_serv_t    aClock;
-       mach_timespec_t aTime;
+    thread_basic_info_t threadBasicInfo = (thread_basic_info_t)threadInfo;
+     
+    if (lpUserTime)
+    {
+      // User time.
+      unsigned long long time = ((__int64)threadBasicInfo->user_time.seconds * 10000000L) + threadBasicInfo->user_time.microseconds*10L;
+      lpUserTime->dwLowDateTime = (time & 0xFFFFFFFF);
+      lpUserTime->dwHighDateTime = (time >> 32);
+    }
 
-       // Get the clock.
-       ret = host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &aClock);
-       if (ret != KERN_SUCCESS)
-       {
-         CLog::Log(LOGERROR, "host_get_clock_service() failed: %s", mach_error_string(ret));
-         return false;
-       }
-         
-       // Query it for the time.
-       ret = clock_get_time(aClock, &aTime);
-       if (ret != KERN_SUCCESS) 
-       {
-         CLog::Log(LOGERROR, "clock_get_time() failed: %s", mach_error_string(ret));
-         return false;
-       }
-
-       //if(pthread_getcpuclockid(thread, &clock) == 0)
-       {
-         unsigned long long time = ((__int64)aTime.tv_sec * 1000000L) + aTime.tv_nsec/100; 
-         lpUserTime->dwLowDateTime = (time & 0xFFFFFFFF);
-         lpUserTime->dwHighDateTime = (time >> 32);
-       }
-     }
-   }
+    if (lpKernelTime)
+    {
+      // System time.
+      unsigned long long time = ((__int64)threadBasicInfo->system_time.seconds * 10000000L) + threadBasicInfo->system_time.microseconds*10L;
+      lpKernelTime->dwLowDateTime = (time & 0xFFFFFFFF);
+      lpKernelTime->dwHighDateTime = (time >> 32);
+    }
+  }
+  else
+  {
+    if (lpUserTime)
+      lpUserTime->dwLowDateTime = lpUserTime->dwHighDateTime = 0;
+    
+    if (lpKernelTime)
+      lpKernelTime->dwLowDateTime = lpKernelTime->dwHighDateTime = 0;
+  }
   
 #elif _POSIX_THREAD_CPUTIME != -1
+  
     if(lpUserTime)
     {
       lpUserTime->dwLowDateTime = 0;
