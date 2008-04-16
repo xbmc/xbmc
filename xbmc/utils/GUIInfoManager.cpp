@@ -1895,7 +1895,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
             control = window->GetControl(window->GetViewContainerID());
         }
         if (control)
-          bReturn = control->GetCondition(info.m_info, info.m_data2);
+          bReturn = control->GetCondition(condition, info.m_data2);
       }
       break;
     case CONTAINER_HAS_FOCUS:
@@ -1934,7 +1934,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           }
         }
         if (item)
-          bReturn = GetBool(info.m_info, dwContextWindow, item);
+          bReturn = GetBool(condition, dwContextWindow, item);
       }
       break;
     case VIDEOPLAYER_CONTENT:
