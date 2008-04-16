@@ -40,7 +40,7 @@ namespace EVENTSERVER
     void StopServer();
     
     // get events
-    unsigned short GetButtonCode();
+    unsigned short GetButtonCode(std::string& strMapName);
     bool GetMousePos(float &x, float &y);
 
   protected:
