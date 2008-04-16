@@ -93,8 +93,12 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 
     tag.SetURL(strFileName);
 
-    auto_aptr<unsigned char> pData(new unsigned char[65536]);
-    file.Read(pData.get(), 65536);
+    // Note that we're reading in a bit more than 64k, because the 'peek'ing below looks is dealing
+    // with integers and reads off the end. Rather than change all the checks below, I've simply
+    // allocated a bigger buffer.
+    //
+    auto_aptr<unsigned char> pData(new unsigned char[65536+32]);
+    file.Read(pData.get(), 65536+32);
     file.Close();
 
     int iOffset = 0;
@@ -148,11 +152,11 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 
       // TODO: UTF-8 Do we need to "fixString" these strings at all?
       CStdString utf8String = "";
-      g_charsetConverter.wToUTF8((LPWSTR)(pData.get() + iOffset), utf8String);
+      g_charsetConverter.utf16LEtoUTF8((LPWSTR)(pData.get() + iOffset), utf8String);
       tag.SetTitle(utf8String);
 
       utf8String = "";
-      g_charsetConverter.wToUTF8((LPWSTR)(pData.get() + iOffset + nTitleSize), utf8String);
+      g_charsetConverter.utf16LEtoUTF8((LPWSTR)(pData.get() + iOffset + nTitleSize), utf8String);
       tag.SetArtist(utf8String);
 
       //General(ZT("Copyright"))=(LPWSTR)(pData.get()+iOffset+(nTitleSize+nAuthorSize));
@@ -231,9 +235,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         // Get frame name
         CStdString strFrameName = "";
         CStdStringW wString = "";
-        g_charsetConverter.utf16LEtoW((char*)(pData.get() + iOffset), wString);
-        g_charsetConverter.wToUTF8(wString, strFrameName);
-        //CStdString strFrameName((LPWSTR)(pData.get() + iOffset));
+        g_charsetConverter.utf16LEtoUTF8((char*)(pData.get() + iOffset), strFrameName);
         iOffset += iFrameNameSize;
 
         // Get datatype of frame
@@ -251,7 +253,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
           LPWSTR pwszValue = (LPWSTR)(pData.get() + iOffset);
           // TODO: UTF-8: Do we need to "fixString" these utf8 strings?
           CStdString utf8String;
-          g_charsetConverter.wToUTF8(pwszValue, utf8String);
+          g_charsetConverter.utf16LEtoUTF8(pwszValue, utf8String);
           SetTagValueString(strFrameName, utf8String, tag);
         }
         else if (iFrameType == WMT_TYPE_BINARY && iValueSize > 0)
@@ -315,9 +317,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         // Get frame name
         CStdString strFrameName = "";
         CStdStringW wString = "";
-        g_charsetConverter.utf16LEtoW((char*)(pData.get() + iOffset), wString);
-        g_charsetConverter.wToUTF8(wString, strFrameName);
-        // CStdString strFrameName((LPWSTR)(pData.get() + iOffset));
+        g_charsetConverter.utf16LEtoUTF8((char*)(pData.get() + iOffset), strFrameName);
         iOffset += iFrameNameSize;
 
         // Parse frame value and fill
@@ -327,7 +327,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
           LPWSTR pwszValue = (LPWSTR)(pData.get() + iOffset);
           // TODO: UTF-8: Do we need to "fixString" these utf8 strings?
           CStdString utf8String;
-          g_charsetConverter.wToUTF8(pwszValue, utf8String);
+          g_charsetConverter.utf16LEtoUTF8(pwszValue, utf8String);
           SetTagValueString(strFrameName, utf8String, tag);
         }
         else if (iFrameType == WMT_TYPE_BINARY && iValueSize > 0)
