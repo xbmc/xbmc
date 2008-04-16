@@ -46,13 +46,20 @@ extern "C"
   void* Cocoa_GL_GetCurrentContext();
   void* Cocoa_GL_CreateContext(void* pixFmt, void* shareCtx);
   void  Cocoa_GL_ResizeWindow(void *theContext, int w, int h);
-  void  Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs);
+  void  Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool blankOtherDisplay);
   void  Cocoa_GL_EnableVSync(bool enable);
 
   //
   // SDL Hack
   //
   void Cocoa_GL_ReplaceSDLWindowContext();
+  
+  //
+  // Power and Screen
+  //
+  int Cocoa_DimDisplayNow();      
+  void Cocoa_UpdateSystemActivity();
+  int Cocoa_SleepSystem();
 
 #ifdef __cplusplus
 }
