@@ -48,11 +48,13 @@ namespace EVENTCLIENT
     unsigned short KeyCode()   { return m_iKeyCode; }
     float Amount()   { return m_fAmount; }
     void Load();
+    const std::string& JoystickName() const { return m_joystickName; }
 
     // data
     unsigned short    m_iKeyCode;
     std::string       m_buttonName;
     std::string       m_mapName;
+    std::string       m_joystickName;
     float             m_fAmount;
     bool              m_bRepeat;
     bool              m_bActive;
@@ -129,7 +131,7 @@ namespace EVENTCLIENT
     void FreePacketQueues();
 
     // return event states
-    unsigned short GetButtonCode();
+    unsigned short GetButtonCode(std::string& strMapName);
 
     // update mouse position
     bool GetMousePos(float& x, float& y);

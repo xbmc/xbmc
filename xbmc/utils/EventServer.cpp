@@ -285,7 +285,7 @@ void CEventServer::ExecuteEvents()
   }
 }
 
-unsigned short CEventServer::GetButtonCode()
+unsigned short CEventServer::GetButtonCode(std::string& strMapName)
 {
   CSingleLock lock(m_critSection);
   map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
@@ -293,7 +293,7 @@ unsigned short CEventServer::GetButtonCode()
 
   while (iter != m_clients.end())
   {
-    bcode = iter->second->GetButtonCode();
+    bcode = iter->second->GetButtonCode(strMapName);
     if (bcode)
       return bcode;
     iter++;

@@ -73,6 +73,12 @@ void CEventButtonState::Load()
         CLog::Log(LOGERROR, "ES: LIRC support not enabled");
 #endif
       }
+      else if (m_mapName.length() > 0)
+      {
+        // We're dealing with a joystick button, parse the button ID.
+        m_iKeyCode = atoi(m_buttonName.c_str());
+        m_joystickName = m_mapName;
+      }
       else
       {
         Reset(); // disable key since its invalid
@@ -296,8 +302,10 @@ bool CEventClient::OnPacketBYE(CEventPacket *packet)
 
 bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
 {
+#ifndef __APPLE__
   if (!Greeted())
     return false;
+#endif
 
   unsigned char *payload = (unsigned char *)packet->Payload();
   int psize = (int)packet->PayloadSize();
@@ -540,7 +548,7 @@ void CEventClient::FreePacketQueues()
   m_seqPackets.clear();
 }
 
-unsigned short CEventClient::GetButtonCode()
+unsigned short CEventClient::GetButtonCode(std::string& joystickName)
 {
   CSingleLock lock(m_critSection);
   unsigned short bcode = 0;
@@ -555,6 +563,7 @@ unsigned short CEventClient::GetButtonCode()
       if (btn->Active())
       {
         bcode = btn->KeyCode();
+        joystickName = btn->JoystickName();
       }
       delete btn;
     }
@@ -562,6 +571,8 @@ unsigned short CEventClient::GetButtonCode()
   else if ( m_currentButton.Active() )
   {
     bcode = m_currentButton.KeyCode();
+    joystickName = m_currentButton.JoystickName();
+    
     if ( ! m_currentButton.Repeat() )
       m_currentButton.Reset();
     else
