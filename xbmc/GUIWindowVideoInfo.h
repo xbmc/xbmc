@@ -30,7 +30,7 @@ protected:
   void SetLabel(int iControl, const CStdString& strLabel);
 
   // link cast to movies
-  void AddItemsToList(const std::vector<std::pair<CStdString,CStdString> > &vecStr);
+  void ClearCastList();
   void OnSearch(CStdString& strSearch);
   void DoSearch(CStdString& strSearch, CFileItemList& items);
   void OnSearchItemFound(const CFileItem* pItem);
@@ -38,11 +38,12 @@ protected:
   void OnGetThumb();
   void OnGetFanart();
   void PlayTrailer();
+
   CFileItem* m_movieItem;
+  CFileItemList *m_castList;
   bool m_bViewReview;
   bool m_bRefresh;
   bool m_bRefreshAll;
-  std::vector<std::pair<CStdString,CStdString> > m_vecStrCast;
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;
 };
