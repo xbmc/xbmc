@@ -23,9 +23,9 @@ import sys
 sys.path.append('../../lib/python')
 from xbmcclient import *
 from socket import *
-from bluetooth import *
 import os
 from threading import Thread
+from bt.bt import *
 
 host = "localhost"
 port = 9777
@@ -33,7 +33,7 @@ addr = (host, port)
 sock = socket(AF_INET,SOCK_DGRAM)
 
 def send_key(key):
-    packet = PacketBUTTON(map_name="KB", button_name=key, queue=1)
+    packet = PacketBUTTON(map_name="J2ME", button_name=key, queue=1)
     packet.send(sock, addr)
 
 def send_message(caption, msg):
@@ -67,19 +67,14 @@ def main():
     # this only needs to be done once.
     # by default this is where XBMC will be listening for incoming
     # connections.
-    server_sock=BluetoothSocket( RFCOMM )
-    server_sock.bind(("",PORT_ANY))
+    server_sock=bt_create_rfcomm_socket()
     server_sock.listen(2)
 
     portBT = server_sock.getsockname()[1]
 
     uuid = "ACDC"
+    bt_advertise(socket=server_sock, name="XBMC Remote", uuid=uuid)
 
-    advertise_service( server_sock, "XBMC Remote",
-                       service_id = uuid,
-                       service_classes = [ uuid, SERIAL_PORT_CLASS ],
-                       profiles = [ SERIAL_PORT_PROFILE ] )
-                   
     print "Waiting for connection on RFCOMM channel %d" % portBT
 
     packet = PacketHELO(devicename="J2ME Remote",
@@ -97,7 +92,7 @@ def main():
             print "Accepted connection from ", client_addr
         except KeyboardInterrupt:
             print "User interrupted"		
-            stop_advertising(server_sock)
+            bt_stop_advertising(socket = server_sock)
             server_sock.close()
             sys.exit(0)
         try:
@@ -116,36 +111,15 @@ def main():
                     if(data[1] == "1"):
                         print "Shuting down server"
                         client_sock.close()
-                        stop_advertising(server_sock)
+                        bt_stop_advertising(socket = server_sock)
                         server_sock.close()
                         packet = PacketBYE()
                         packet.send(sock, addr)
                         sys.exit(0)
 
                 elif(data[0] == "2"):
-                    if(data[1] == "U"):
-                        send_key("up")
-                    elif(data[1] == "D"):
-                        send_key("down")
-                    elif(data[1] == "R"):
-                        send_key("right")
-                    elif(data[1] == "L"):
-                        send_key("left")
-                    elif(ord( data[1] ) == 251):
-                        send_key("return")
-
-                    elif(ord( data[1] ) == 245):
-                        send_key("escape")
-                    elif(ord( data[1] ) == 248):
-                        send_key("backslash")
-
-                    elif(ord( data[1] ) == 220):
-                        send_key("volume_up")
-                    elif(ord( data[1] ) == 219):
-                        send_key("volume_down")
-
-                    else:
-                        print "Unknown key: [%i]" % ord( data[1] )
+                    print "<button id=\"%i\">" % ord( data[1] )
+                    send_key(str( ord( data[1] ) ))
                 else:
                   print "Unkown received data [%s]" % data
         except IOError:
@@ -156,7 +130,7 @@ def main():
         except KeyboardInterrupt:
             print "User interrupted"
             client_sock.close()
-            stop_advertising(server_sock)
+            bt_stop_advertising(socket = server_sock)
             server_sock.close()
             packet = PacketBYE()    # PacketPING if you want to ping
             packet.send(sock, addr)
