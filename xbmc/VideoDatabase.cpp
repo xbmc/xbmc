@@ -43,7 +43,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 20
+#define VIDEO_DATABASE_VERSION 21
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 #define RECENTLY_ADDED_LIMIT  25
@@ -288,6 +288,9 @@ bool CVideoDatabase::CreateTables()
     CLog::Log(LOGINFO, "create movieview");
     m_pDS->exec("create view movieview as select movie.*,files.strFileName as strFileName,path.strPath as strPath "
                 "from movie join files on files.idFile=movie.idFile join path on path.idPath=files.idPath");
+
+    CLog::Log(LOGINFO, "create livedb table");
+    m_pDS->exec("CREATE TABLE livedb ( idLink integer primary key, linkColumn text, linkUrl text, linkType integer, idFile integer)\n");
   }
   catch (...)
   {
@@ -2988,6 +2991,11 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
                   "from musicvideo join files on files.idFile=musicvideo.idFile join path on path.idPath=files.idPath");
       m_pDS->exec("create view movieview as select movie.*,files.strFileName as strFileName,path.strPath as strPath "
                   "from movie join files on files.idFile=movie.idFile join path on path.idPath=files.idPath");
+    }
+    if (iVersion < 21)
+    {
+      CLog::Log(LOGINFO, "create livedb table");
+      m_pDS->exec("CREATE TABLE livedb ( idLink integer primary key, linkColumn text, linkUrl text, linkType integer, idFile integer)\n");
     }
   }
   catch (...)
