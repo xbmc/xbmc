@@ -5120,12 +5120,12 @@ void CApplication::ResetScreenSaver()
   }
   
 #ifdef __APPLE__
-	if (m_bDisplaySleeping)
-	{
-		m_bInactive = false;
-		m_dwSaverTick = timeGetTime(); // Start the timer going ...
-		m_bDisplaySleeping = false;
-	}
+  if (m_bDisplaySleeping)
+  {
+    m_bInactive = false;
+    m_dwSaverTick = timeGetTime(); // Start the timer going ...
+    m_bDisplaySleeping = false;
+  }
 #endif
 }	
 
