@@ -919,7 +919,7 @@
 				<posy>370</posy>
 				<width>85</width>
 				<height>130</height>
-				<info>Container(50).ListItem.Thumb</info>
+				<info>Container(50).ListItem.Icon</info>
 				<aspectratio aligny="center">keep</aspectratio>
 				<align>center</align>
 			</control>
