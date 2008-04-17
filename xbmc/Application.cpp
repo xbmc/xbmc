@@ -4099,8 +4099,6 @@ bool CApplication::ProcessEventServer(float frameTime)
   
   if (wKeyID)
   {
-    printf("wKey: %d, mapName: %s\n", wKeyID, joystickName.c_str());
-    
     if (joystickName.length() > 0)
     {
       m_idleTimer.StartZero();
