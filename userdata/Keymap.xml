@@ -385,7 +385,7 @@
 
     <joystick name="Microsoft Xbox Controller S">
       <altname>Mad Catz MicroCON</altname>
-      <button id="17">Playlist</button>
+      <button id="3">Playlist</button>
       <button id="5">Queue</button>
      </joystick>
     
