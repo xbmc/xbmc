@@ -350,6 +350,7 @@ void CGUIWindowVideoInfo::Update()
       CFileItem *item = new CFileItem(*it);
       if (CFile::Exists(item->GetCachedArtistThumb()))
         item->SetThumbnailImage(item->GetCachedArtistThumb());
+      item->SetIconImage("DefaultArtist.png");
       m_castList->Add(item);
     }
   }
@@ -365,8 +366,7 @@ void CGUIWindowVideoInfo::Update()
       CFileItem *item = new CFileItem(it->strName);
       if (CFile::Exists(item->GetCachedActorThumb()))
         item->SetThumbnailImage(item->GetCachedActorThumb());
-      else
-        item->SetThumbnailImage("DefaultActorBig.png");
+      item->SetIconImage("DefaultActor.png");
       item->SetLabel(character);
       m_castList->Add(item);
     }
