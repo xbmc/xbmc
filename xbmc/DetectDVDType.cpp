@@ -396,10 +396,13 @@ DWORD CDetectDVDMedia::GetTrayState()
   CdIo_t* cdio = cdio_open(dvdDevice, DRIVER_UNKNOWN);
   if (cdio)
   {
-    discmode_t discmode = CDIO_DISC_MODE_NO_INFO;
+    static discmode_t discmode = CDIO_DISC_MODE_NO_INFO;
     int status = mmc_get_tray_status(cdio);
-    if (status==0)
+    static int laststatus = -1;
+    // We only poll for new discmode when status has changed or there have been read errors (The last usually happens when new media is inserted)
+    if (status == 0 && (laststatus != status || discmode == CDIO_DISC_MODE_ERROR))
       discmode = cdio_get_discmode(cdio);
+
     switch(status)
     {
     case 0: //closed
@@ -413,6 +416,7 @@ DWORD CDetectDVDMedia::GetTrayState()
       m_dwTrayState = TRAY_OPEN;
       break;
     }
+    laststatus = status;
     cdio_destroy(cdio);
   }
 
