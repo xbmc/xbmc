@@ -215,6 +215,7 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
 {
   // check packet validity
   CEventPacket* packet = new CEventPacket(pSize, m_pPacketBuffer);
+  unsigned int clientToken;
 
   if (!packet->IsValid())
   {
@@ -223,8 +224,12 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
     return;
   }
 
+  clientToken = packet->ClientToken();
+  if (!clientToken)
+    clientToken = addr.ULong(); // use IP if packet doesn't have a token
+
   // first check if we have a client for this address
-  map<unsigned long, CEventClient*>::iterator iter = m_clients.find(addr.ULong());
+  map<unsigned long, CEventClient*>::iterator iter = m_clients.find(clientToken);
 
   if ( iter == m_clients.end() )
   {
@@ -242,9 +247,9 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
       return;
     }
 
-    m_clients[addr.ULong()] = client;
+    m_clients[clientToken] = client;
   }
-  m_clients[addr.ULong()]->AddPacket(packet);
+  m_clients[clientToken]->AddPacket(packet);
 }
 
 void CEventServer::RefreshClients()

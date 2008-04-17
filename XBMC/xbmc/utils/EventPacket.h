@@ -27,7 +27,8 @@ namespace EVENTPACKET
   /*     | -H4 Sequence number       | - 1  x UNSIGNED LONG       4B      */
   /*     | -H5 No. of packets in msg | - 1  x UNSIGNED LONG       4B      */
   /*     | -H6 Payload size          | - 1  x UNSIGNED SHORT      2B      */
-  /*     | -H7 Reserved              | - 14 x UNSIGNED CHAR      14B      */
+  /*     | -H7 Client's unique token | - 1  x UNSIGNED LONG       4B      */
+  /*     | -H8 Reserved              | - 10 x UNSIGNED CHAR      10B      */
   /*     |---------------------------|                                    */
   /*     | -P1 payload               | -                                  */
   /*     -----------------------------                                    */
@@ -185,6 +186,7 @@ namespace EVENTPACKET
     unsigned int Sequence() { return m_iSeq; }
     void*        Payload() { return m_pPayload; }
     unsigned int PayloadSize() { return m_iPayloadSize; }
+    unsigned int ClientToken() { return m_iClientToken; }
     void         SetPayload(unsigned int psize, void *payload)
     {
       if (m_pPayload)
@@ -200,6 +202,7 @@ namespace EVENTPACKET
     unsigned char  m_header[32];
     void*          m_pPayload;
     unsigned int   m_iPayloadSize;
+    unsigned int   m_iClientToken;
     unsigned char  m_cMajVer;
     unsigned char  m_cMinVer;
     PacketType     m_eType;
