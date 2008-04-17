@@ -26,7 +26,7 @@ def bt_create_rfcomm_socket():
         sock.bind(("",bluetooth.PORT_ANY))
     else:
         sock = lightblue.socket(lightblue.RFCOMM)
-        sock.bind(("",lightblue.PORT_ANY))
+        sock.bind(("",0))
     return sock
 
 def bt_discover_devices():
@@ -56,10 +56,10 @@ def bt_advertise(name, uuid, socket):
                            service_classes = [ uuid, bluetooth.SERIAL_PORT_CLASS ],
                            profiles = [ bluetooth.SERIAL_PORT_PROFILE ] )
     else:
-        lightblue.advertise(name, socket, uuid)
+        lightblue.advertise(name, socket, lightblue.RFCOMM)
 
 def bt_stop_advertising(socket):
     if BLUEZ:
         stop_advertising(socket)
     else:
-        stopadvertise(socket)
+        lightblue.stopadvertise(socket)
