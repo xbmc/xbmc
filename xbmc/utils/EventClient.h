@@ -145,7 +145,7 @@ namespace EVENTCLIENT
     virtual bool OnPacketBUTTON(EVENTPACKET::CEventPacket *packet);
     virtual bool OnPacketMOUSE(EVENTPACKET::CEventPacket *packet);
     virtual bool OnPacketNOTIFICATION(EVENTPACKET::CEventPacket *packet);
-
+    virtual bool OnPacketLOG(EVENTPACKET::CEventPacket *packet);
     bool CheckButtonRepeat();
 
     // returns true if the client has received the HELO packet

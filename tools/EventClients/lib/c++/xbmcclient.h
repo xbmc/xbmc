@@ -30,6 +30,7 @@
 #define PT_BROADCAST    0x06
 #define PT_NOTIFICATION 0x07
 #define PT_BLOB         0x08
+#define PT_LOG          0x09
 #define PT_DEBUG        0xFF
 
 #define ICON_NONE       0x00
@@ -43,6 +44,15 @@
 
 #define MAJOR_VERSION 2
 #define MINOR_VERSION 0
+
+#define LOGDEBUG   0
+#define LOGINFO    1
+#define LOGNOTICE  2
+#define LOGWARNING 3
+#define LOGERROR   4
+#define LOGSEVERE  5
+#define LOGFATAL   6
+#define LOGNONE    7
 
 class CAddress
 {
@@ -243,7 +253,9 @@ public:
   CPacketHELO(const char *DevName, unsigned short IconType, const char *IconFile = NULL) : CPacket()
   {
     m_PacketType = PT_HELO;
-    for (unsigned int i = 0; i < strlen(DevName); i++)
+
+    unsigned int len = strlen(DevName);
+    for (unsigned int i = 0; i < len; i++)
       m_DeviceName.push_back(DevName[i]);    
 
     m_IconType = IconType;
@@ -327,15 +339,18 @@ public:
     m_PacketType = PT_NOTIFICATION;
     m_IconData = NULL;
 
+    unsigned int len = 0;
     if (Title != NULL)
     {
-      for (unsigned int i = 0; i < strlen(Title); i++)
+      len = strlen(Title);
+      for (unsigned int i = 0; i < len; i++)
         m_Title.push_back(Title[i]);
     }
 
     if (Message != NULL)
     {
-      for (unsigned int i = 0; i < strlen(Message); i++)
+      len = strlen(Message);
+      for (unsigned int i = 0; i < len; i++)
         m_Message.push_back(Message[i]);
     }
     m_IconType = IconType;
@@ -459,10 +474,12 @@ public:
     m_Amount = Amount;
     m_ButtonCode = 0;
 
-    for (unsigned int i = 0; i < strlen(DeviceMap); i++)
+    unsigned int len = strlen(DeviceMap);
+    for (unsigned int i = 0; i < len; i++)
       m_DeviceMap.push_back(DeviceMap[i]);
 
-    for (unsigned int i = 0; i < strlen(Button); i++)
+    len = strlen(Button);
+    for (unsigned int i = 0; i < len; i++)
       m_Button.push_back(Button[i]);
   }
 
@@ -560,5 +577,42 @@ public:
   }
   
   virtual ~CPacketMOUSE()
+  { }
+};
+
+class CPacketLOG : public CPacket
+{
+    /************************************************************************/
+    /* Payload format                                                       */
+    /* %c - log type                                                        */
+    /* %s - message                                                         */
+    /************************************************************************/
+private:
+  std::vector<char> m_Message;
+  unsigned char  m_LogType;
+public:
+  CPacketLOG(int LogType, const char *Message)
+  {
+    m_PacketType = PT_LOG;
+
+    unsigned int len = strlen(Message);
+    for (unsigned int i = 0; i < len; i++)
+      m_Message.push_back(Message[i]);
+
+    m_LogType = LogType;
+  }
+
+  virtual void ConstructPayload()
+  {
+    m_Payload.clear();
+
+    m_Payload.push_back( (m_LogType & 0x00ff) );
+
+    for (unsigned int i = 0; i < m_Message.size(); i++)
+      m_Payload.push_back(m_Message[i]);
+    m_Payload.push_back('\0');
+  }
+  
+  virtual ~CPacketLOG()
   { }
 };
