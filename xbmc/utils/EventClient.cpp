@@ -198,6 +198,10 @@ bool CEventClient::ProcessPacket(CEventPacket *packet)
     valid = true;
     break;
 
+  case PT_LOG:
+    valid = OnPacketLOG(packet);
+    break;
+
   default:
     CLog::Log(LOGDEBUG, "ES: Got Unknown Packet");
     break;
@@ -474,6 +478,25 @@ bool CEventClient::OnPacketNOTIFICATION(CEventPacket *packet)
                                                         title.c_str(),
                                                         message.c_str());
   }
+  return true;
+}
+
+bool CEventClient::OnPacketLOG(CEventPacket *packet)
+{
+  if (!Greeted())
+    return false;
+
+  unsigned char *payload = (unsigned char *)packet->Payload();
+  int psize = (int)packet->PayloadSize();
+  string logmsg;
+  unsigned char ltype;
+
+  if (!ParseByte(payload, psize, ltype))
+    return false;
+  if (!ParseString(payload, psize, logmsg))
+    return false;
+
+  CLog::Log((int)ltype, logmsg.c_str());
   return true;
 }
 
