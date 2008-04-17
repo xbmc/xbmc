@@ -487,6 +487,7 @@ void CGUIWindow::OnMouseAction()
   g_graphicsContext.SetScalingResolution(m_coordsRes, posX, posY, m_needsScaling);
   CPoint mousePoint(g_Mouse.GetLocation());
   g_graphicsContext.InvertFinalCoords(mousePoint.x, mousePoint.y);
+  m_transform.InverseTransformPosition(mousePoint.x, mousePoint.y);
 
   bool bHandled = false;
   // check if we have exclusive access
@@ -1075,7 +1076,7 @@ bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
 
 bool CGUIWindow::RenderAnimation(DWORD time)
 {
-  TransformMatrix transform;
+  m_transform.Reset();
   CPoint center(m_posX + m_width * 0.5f, m_posY + m_height * 0.5f);
   // show animation
   for (unsigned int i = 0; i < m_animations.size(); i++)
@@ -1083,9 +1084,9 @@ bool CGUIWindow::RenderAnimation(DWORD time)
     CAnimation &anim = m_animations[i];
     anim.Animate(time, true);
     UpdateStates(anim.GetType(), anim.GetProcess(), anim.GetState());
-    anim.RenderAnimation(transform, center);
+    anim.RenderAnimation(m_transform, center);
   }
-  g_graphicsContext.SetWindowTransform(transform);
+  g_graphicsContext.SetWindowTransform(m_transform);
   return true;
 }
 
