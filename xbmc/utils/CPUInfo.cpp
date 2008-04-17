@@ -268,11 +268,7 @@ CStdString CCPUInfo::GetCoresUsageString() const
   while (iter != m_cores.end())
   {
     CStdString strCore;
-#ifdef __APPLE__
     strCore.Format("CPU%d: %3.1f%% ",iter->first, iter->second.m_fPct);
-#else
-    strCore.Format("Core%d: %4.2f%% ",iter->first, iter->second.m_fPct);
-#endif
     strCores+=strCore;
     iter++;
   }
