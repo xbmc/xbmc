@@ -83,6 +83,7 @@ public:
 
   void SetBluetoothAddress(const char * btaddr);
   void SetSensativity(float DeadX, float DeadY, int Samples);
+  void SetJoystickMap(const char *JoyMap);
 private:
   int  m_NumSamples;
   int  *m_SamplesX;
@@ -96,7 +97,7 @@ private:
   bool CheckConnection();
   int  m_LastMsgTime;
 #endif  
-	
+  char *m_JoyMap;
   int  m_lastKeyPressed;
   int  m_LastKey;
   bool m_buttonRepeat;

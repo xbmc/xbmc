@@ -74,3 +74,17 @@ The WiiRemote will emulate mouse by default but can be disabled by running with 
 The sensitivity of the mouseemulation can be set using the --deadzone_x or --deadzone_y where the number is
 the percentage of the space is considered "dead", higher means more sensative.
 Other commands can be listed with --help
+
+The WiiRemote is mappable with keymap.xml where button id's are the following:
+1 = Up
+2 = Down
+3 = Left
+4 = Right
+5 = A
+6 = B
+7 = Minus
+8 = Home
+9 = Plus
+10 = 1
+11 = 2
+The name is by standard WiiRemote but this can be changed with the --joystick-name
