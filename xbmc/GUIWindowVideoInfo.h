@@ -14,11 +14,9 @@ public:
   CGUIWindowVideoInfo(void);
   virtual ~CGUIWindowVideoInfo(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void Render();
   void SetMovie(const CFileItem *item);
   bool NeedRefresh() const;
   bool RefreshAll() const;
-  virtual bool OnAction(const CAction& action);
 
   const CStdString &GetThumbnail() const;
   virtual CFileItem* GetCurrentListItem(int offset = 0) { return m_movieItem; }
