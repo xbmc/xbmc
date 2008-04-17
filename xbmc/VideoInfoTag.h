@@ -4,6 +4,7 @@
 #include "utils/ScraperUrl.h"
 #include "utils/ScraperUrl.h"
 #include "utils/Fanart.h"
+#include "StringUtils.h"
 
 #include <vector>
 
@@ -64,6 +65,8 @@ public:
   float m_fRating;
   int m_iBookmarkId;
   CFanart m_fanart;
+
+  CStdStringArray m_astrLiveUrls;
 };
 
 typedef std::vector<CVideoInfoTag> VECMOVIES;

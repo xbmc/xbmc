@@ -14,6 +14,9 @@
 			<RegExp input="$$1" output="&lt;setting label=&quot;Language Override for Banners&quot; type=&quot;bool&quot; id=&quot;override&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;TVDB Userid&quot; type=&quot;text&quot; id=&quot;userid&quot; default=&quot;&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetSettings>
@@ -61,6 +64,9 @@
 			<RegExp input="$$5" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="4">
 				<expression noclean="1">&lt;Overview&gt;([^&lt;]*)&lt;/Overview&gt;</expression>
 			</RegExp>
+		  <RegExp input="$$2" output="&lt;livedburl&gt;http://thetvdb.com/api/User_Rating.php?accountid=$INFO[userid]&amp;amp;itemtype=series&amp;amp;itemid=\1&amp;amp;rating=%%tvshow.c04%%&lt;/livedburl&gt;" dest="4+">
+				<expression></expression>
+		  </RegExp>
 			<RegExp input="$$5" output="&lt;premiered&gt;\1&lt;/premiered&gt;" dest="4+">
 				<expression>&lt;FirstAired&gt;([^&lt;]*)&lt;/FirstAired&gt;</expression>
 			</RegExp>

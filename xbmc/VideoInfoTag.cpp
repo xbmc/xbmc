@@ -136,6 +136,11 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   // reset our details if we aren't chained.
   if (!chained) Reset();
 
+#ifdef _DEBUG
+  const TiXmlDocument* xmldoc = movie->GetDocument();
+  xmldoc->SaveFile("parsed.xml");
+#endif
+
   XMLUtils::GetString(movie, "title", m_strTitle);
   XMLUtils::GetString(movie, "originaltitle", m_strOriginalTitle);
   XMLUtils::GetFloat(movie, "rating", m_fRating);
@@ -312,6 +317,16 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   {
     m_fanart.m_xml << *fanart;
     m_fanart.Unpack();
+  }
+
+  // LiveDB URLs
+  // Can be any number of them
+  node = movie->FirstChild("livedburl");
+  while (node)
+  {
+    strTemp = node->FirstChild()->Value();
+    m_astrLiveUrls.push_back(strTemp);
+    node = node->NextSibling("livedburl");
   }
   return true;
 }
