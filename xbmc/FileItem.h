@@ -150,19 +150,19 @@ public:
   CPictureInfoTag* GetPictureInfoTag();
 
   // Gets the cached thumb filename (no existence checks)
-  CStdString GetCachedVideoThumb();
-  CStdString GetCachedPictureThumb();
-  CStdString GetCachedArtistThumb();
-  CStdString GetCachedProgramThumb();
-  CStdString GetCachedGameSaveThumb();
-  CStdString GetCachedProfileThumb();
-  CStdString GetCachedSeasonThumb();
-  CStdString GetCachedActorThumb();
-  CStdString GetCachedVideoFanart();
+  CStdString GetCachedVideoThumb() const;
+  CStdString GetCachedPictureThumb() const;
+  CStdString GetCachedArtistThumb() const;
+  CStdString GetCachedProgramThumb() const;
+  CStdString GetCachedGameSaveThumb() const;
+  CStdString GetCachedProfileThumb() const;
+  CStdString GetCachedSeasonThumb() const;
+  CStdString GetCachedActorThumb() const;
+  CStdString GetCachedVideoFanart() const;
 
   // Sets the video thumb (cached first, else caches user thumb)
   void SetVideoThumb();
-  void CacheVideoFanart();
+  void CacheVideoFanart() const;
 
   // Sets the cached thumb for the item if it exists
   void SetCachedVideoThumb();
@@ -174,8 +174,8 @@ public:
   void SetCachedSeasonThumb();
 
   // Gets the user thumb, if it exists
-  CStdString GetUserVideoThumb();
-  CStdString GetUserMusicThumb(bool alwaysCheckRemote = false);
+  CStdString GetUserVideoThumb() const;
+  CStdString GetUserMusicThumb(bool alwaysCheckRemote = false) const;
 
   // Caches the user thumb and assigns it to the item
   void SetUserVideoThumb();
@@ -197,9 +197,9 @@ public:
   bool IsSamePath(const CFileItem *item) const;
 private:
   // Gets the .tbn file associated with this item
-  CStdString GetTBNFile();
+  CStdString GetTBNFile() const;
   // Gets the previously cached thumb file (with existence checks)
-  CStdString GetPreviouslyCachedMusicThumb();
+  CStdString GetPreviouslyCachedMusicThumb() const;
 
 public:
   CStdString m_strPath;            ///< complete path to item
@@ -303,17 +303,17 @@ public:
   void RemoveExtensions();
   void CleanFileNames();
   void SetFastLookup(bool fastLookup);
-  bool Contains(const CStdString& fileName);
-  bool GetFastLookup() { return m_fastLookup; };
+  bool Contains(const CStdString& fileName) const;
+  bool GetFastLookup() const { return m_fastLookup; };
   void Stack();
   SORT_ORDER GetSortOrder() const { return m_sortOrder; }
   SORT_METHOD GetSortMethod() const { return m_sortMethod; }
   bool Load();
   bool Save();
   void SetCacheToDisc(bool bYesNo) { m_bCacheToDisc=bYesNo; }
-  bool GetCacheToDisc() { return m_bCacheToDisc; }
-  void RemoveDiscCache();
-  bool AlwaysCache();
+  bool GetCacheToDisc() const { return m_bCacheToDisc; }
+  void RemoveDiscCache() const;
+  bool AlwaysCache() const;
 
   void SetCachedVideoThumbs();
   void SetCachedProgramThumbs();
@@ -337,7 +337,7 @@ public:
   void ClearSortState();
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
-  CStdString GetDiscCacheFile();
+  CStdString GetDiscCacheFile() const;
 
   VECFILEITEMS m_items;
   MAPFILEITEMS m_map;

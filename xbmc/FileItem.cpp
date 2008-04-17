@@ -862,7 +862,7 @@ void CFileItem::FillInDefaultIcon()
   }
 }
 
-CStdString CFileItem::GetCachedArtistThumb()
+CStdString CFileItem::GetCachedArtistThumb() const
 {
   Crc32 crc;
   crc.ComputeFromLowerCase("artist" + GetLabel());
@@ -871,7 +871,7 @@ CStdString CFileItem::GetCachedArtistThumb()
   return cachedThumb;
 }
 
-CStdString CFileItem::GetCachedProfileThumb()
+CStdString CFileItem::GetCachedProfileThumb() const
 {
   Crc32 crc;
   crc.ComputeFromLowerCase("profile" + m_strPath);
@@ -880,7 +880,7 @@ CStdString CFileItem::GetCachedProfileThumb()
   return cachedThumb;
 }
 
-CStdString CFileItem::GetCachedSeasonThumb()
+CStdString CFileItem::GetCachedSeasonThumb() const
 {
   Crc32 crc;
   crc.ComputeFromLowerCase("season" + GetVideoInfoTag()->m_strPath+GetLabel());
@@ -891,7 +891,7 @@ CStdString CFileItem::GetCachedSeasonThumb()
   return cachedThumb;
 }
 
-CStdString CFileItem::GetCachedActorThumb()
+CStdString CFileItem::GetCachedActorThumb() const
 {
   Crc32 crc;
   crc.ComputeFromLowerCase("actor" + GetLabel());
@@ -1124,7 +1124,7 @@ void CFileItemList::SetFastLookup(bool fastLookup)
   m_fastLookup = fastLookup;
 }
 
-bool CFileItemList::Contains(const CStdString& fileName)
+bool CFileItemList::Contains(const CStdString& fileName) const
 {
   // checks case insensitive
   CStdString checkPath(fileName); checkPath.ToLower();
@@ -1133,7 +1133,7 @@ bool CFileItemList::Contains(const CStdString& fileName)
   // slow method...
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
-    CFileItem *pItem = m_items[i];
+    const CFileItem *pItem = m_items[i];
     if (pItem->m_strPath.Equals(checkPath))
       return true;
   }
@@ -1958,14 +1958,14 @@ bool CFileItemList::Save()
   return false;
 }
 
-void CFileItemList::RemoveDiscCache()
+void CFileItemList::RemoveDiscCache() const
 {
   CLog::Log(LOGDEBUG,"Clearing cached fileitems [%s]",m_strPath.c_str());
   if (CFile::Exists(GetDiscCacheFile()))
     CFile::Delete(GetDiscCacheFile());
 }
 
-CStdString CFileItemList::GetDiscCacheFile()
+CStdString CFileItemList::GetDiscCacheFile() const
 {
   CStdString strPath=m_strPath;
   CUtil::RemoveSlashAtEnd(strPath);
@@ -1985,7 +1985,7 @@ CStdString CFileItemList::GetDiscCacheFile()
   return cacheFile;
 }
 
-bool CFileItemList::AlwaysCache()
+bool CFileItemList::AlwaysCache() const
 {
   // some database folders are always cached
   if (IsMusicDb())
@@ -2025,7 +2025,7 @@ void CFileItemList::SetCachedMusicThumbs()
   }
 }
 
-CStdString CFileItem::GetCachedPictureThumb()
+CStdString CFileItem::GetCachedPictureThumb() const
 {
   // get the locally cached thumb
   Crc32 crc;
@@ -2057,7 +2057,7 @@ void CFileItem::SetCachedMusicThumb()
     // SetIconImage(cachedThumb);
 }
 
-CStdString CFileItem::GetPreviouslyCachedMusicThumb()
+CStdString CFileItem::GetPreviouslyCachedMusicThumb() const
 {
   // the highest priority thumb is album name + album path
   CStdString strPath;
@@ -2106,7 +2106,7 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb()
   return "";
 }
 
-CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */)
+CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) const
 {
   if (m_bIsShareOrDrive) return "";
   if (IsInternetStream()) return "";
@@ -2171,7 +2171,7 @@ void CFileItem::SetCachedPictureThumb()
     SetThumbnailImage(cachedThumb);
 }
 
-CStdString CFileItem::GetCachedVideoThumb()
+CStdString CFileItem::GetCachedVideoThumb() const
 {
   // get the locally cached thumb
   Crc32 crc;
@@ -2201,7 +2201,7 @@ void CFileItem::SetCachedVideoThumb()
 // Gets the .tbn filename from a file or folder name.
 // <filename>.ext -> <filename>.tbn
 // <foldername>/ -> <foldername>.tbn
-CStdString CFileItem::GetTBNFile()
+CStdString CFileItem::GetTBNFile() const
 {
   // special case for zip/rar
   if (IsRAR() || IsZIP())
@@ -2228,7 +2228,7 @@ CStdString CFileItem::GetTBNFile()
   }
 }
 
-CStdString CFileItem::GetUserVideoThumb()
+CStdString CFileItem::GetUserVideoThumb() const
 {
   if (m_bIsShareOrDrive) return "";
   if (IsInternetStream()) return "";
@@ -2303,7 +2303,7 @@ void CFileItem::SetUserVideoThumb()
 ///
 /// If a cached fanart image already exists, then we're fine.  Otherwise, we look for a local fanart.jpg
 /// and cache that image as our fanart.
-void CFileItem::CacheVideoFanart()
+void CFileItem::CacheVideoFanart() const
 {
   CStdString cachedFanart(GetCachedVideoFanart());
   // First check for an already cached fanart image
@@ -2321,7 +2321,7 @@ void CFileItem::CacheVideoFanart()
   pic.CacheImage(folderFanart, cachedFanart);
 }
 
-CStdString CFileItem::GetCachedVideoFanart()
+CStdString CFileItem::GetCachedVideoFanart() const
 {
   // get the locally cached thumb
   Crc32 crc;
@@ -2338,7 +2338,7 @@ CStdString CFileItem::GetCachedVideoFanart()
   return thumb;
 }
 
-CStdString CFileItem::GetCachedProgramThumb()
+CStdString CFileItem::GetCachedProgramThumb() const
 {
   // get the locally cached thumb
   Crc32 crc;
@@ -2357,7 +2357,7 @@ CStdString CFileItem::GetCachedProgramThumb()
   return thumb;
 }
 
-CStdString CFileItem::GetCachedGameSaveThumb()
+CStdString CFileItem::GetCachedGameSaveThumb() const
 {
   CStdString extension;
   CUtil::GetExtension(m_strPath,extension);
