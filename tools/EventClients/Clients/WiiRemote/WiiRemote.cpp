@@ -124,6 +124,8 @@ CWiiRemote::CWiiRemote(char *wii_btaddr)
   SetBluetoothAddress(wii_btaddr);
   m_SamplesX = NULL;
   m_SamplesY = NULL;
+
+  m_JoyMap   = NULL;
 }
 
 //Destructor
@@ -136,6 +138,9 @@ CWiiRemote::~CWiiRemote()
     free(m_SamplesY);
   if (m_SamplesX != NULL)
     free(m_SamplesX);
+
+  if (m_JoyMap)
+    free(m_JoyMap);
 }
 
 //---------------------Public-------------------------------------------------------------------
@@ -165,6 +170,22 @@ void CWiiRemote::SetSensativity(float DeadX, float DeadY, int NumSamples)
 
   m_SamplesY = new int[m_NumSamples];
   m_SamplesX = new int[m_NumSamples];
+}
+
+void CWiiRemote::SetJoystickMap(const char *JoyMap)
+{
+  if (m_JoyMap)
+    free(m_JoyMap);
+  if (JoyMap != NULL)
+  {
+    m_JoyMap = new char[strlen(JoyMap)];
+    strcpy(m_JoyMap, JoyMap);
+  }
+  else
+  {
+    m_JoyMap = new char[strlen("WiiRemote")];
+    strcpy(m_JoyMap, "WiiRemote");
+  }
 }
 
 void CWiiRemote::Initialize(CAddress Addr, int Socket)
@@ -426,35 +447,35 @@ void CWiiRemote::ProcessKey(int Key)
   char *RtnKey = NULL;
 
   if      (Key == CWIID_BTN_UP)
-    RtnKey = "up";
+    RtnKey = "1";
   else if (Key == CWIID_BTN_RIGHT)
-    RtnKey = "right";
+    RtnKey = "4";
   else if (Key == CWIID_BTN_LEFT)
-    RtnKey = "left";
+    RtnKey = "3";
   else if (Key == CWIID_BTN_DOWN)
-    RtnKey = "down";
+    RtnKey = "2";
     
   else if (Key == CWIID_BTN_A)
-    RtnKey = "return";
+    RtnKey = "5";
   else if (Key == CWIID_BTN_B)
-    RtnKey = "escape";
+    RtnKey = "6";
   
   else if (Key == CWIID_BTN_MINUS)
-    RtnKey = "volume_down";
+    RtnKey = "7";
   else if (Key == CWIID_BTN_PLUS)
-    RtnKey = "volume_up";
+    RtnKey = "9";
 
   else if (Key == CWIID_BTN_HOME)
-    RtnKey = "browser_home";
+    RtnKey = "8";
   
   else if (Key == CWIID_BTN_1)
-    RtnKey = "menu";
+    RtnKey = "10";
   else if (Key == CWIID_BTN_2)
-    RtnKey = "tab";
+    RtnKey = "11";
 
   if (RtnKey != NULL)
   {
-    CPacketBUTTON btn(RtnKey, "KB", true);
+    CPacketBUTTON btn(RtnKey, m_JoyMap, true);
     btn.Send(m_Socket, m_MyAddr);
   }
 }
@@ -632,6 +653,7 @@ void PrintHelp(const char *Prog)
   printf("\t--deadzone-y DEADY          | Number between 0 - 100 (Default: %i)\n", (int)(DEADZONE_Y * 100));
   printf("\t--deadzone DEAD             | Sets both X and Y too the number\n");
   printf("\t--smoothing-samples SAMPLE  | Number 1 counts as Off (Default: %i)\n", WIIREMOTE_SAMPLES);
+  printf("\t--joystick-map JOYMAP       | The string ID for the joymap (Default: WiiRemote)\n");
 }
 
 int main(int argc, char **argv)
@@ -643,6 +665,8 @@ int main(int argc, char **argv)
   int NumSamples = WIIREMOTE_SAMPLES;
   float DeadX    = DEADZONE_X;
   float DeadY    = DEADZONE_Y;
+
+  char *JoyMap = NULL;
 
   for (int i = 0; i < argc; i++)
   {
@@ -671,6 +695,8 @@ int main(int argc, char **argv)
       DeadX = DeadY = ((float)atoi(argv[i + 1]) / 100.0f);
     else if (strcmp(argv[i], "--smoothing-samples") == 0 && ((i + 1) <= argc))
       NumSamples = atoi(argv[i + 1]);
+    else if (strcmp(argv[i], "--joystick-map") == 0 && ((i + 1) <= argc))
+      JoyMap = argv[i + 1];
   }
 
   if (NumSamples < 1 || DeadX < 0 || DeadY < 0 || DeadX > 1 || DeadY > 1)
@@ -697,6 +723,7 @@ int main(int argc, char **argv)
   g_WiiRemote.SetBluetoothAddress(btaddr);
   g_WiiRemote.SetSensativity(DeadX, DeadY, NumSamples);
   g_WiiRemote.SetSensativity(DeadX, DeadY, NumSamples);
+  g_WiiRemote.SetJoystickMap(JoyMap);
   if (g_AllowMouse)
     g_WiiRemote.EnableMouseEmulation();
   else
