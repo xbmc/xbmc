@@ -290,7 +290,8 @@ bool CVideoDatabase::CreateTables()
                 "from movie join files on files.idFile=movie.idFile join path on path.idPath=files.idPath");
 
     CLog::Log(LOGINFO, "create livedb table");
-    m_pDS->exec("CREATE TABLE livedb ( idLink integer primary key, linkColumn text, linkUrl text, linkType integer, idFile integer)\n");
+    m_pDS->exec("CREATE TABLE livedb ( linkColumn text, linkUrl text, linkType integer, idFile integer, idType integer)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_livedb ON livedb ( idFile, idType )\n");
   }
   catch (...)
   {
@@ -2995,7 +2996,8 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     if (iVersion < 21)
     {
       CLog::Log(LOGINFO, "create livedb table");
-      m_pDS->exec("CREATE TABLE livedb ( idLink integer primary key, linkColumn text, linkUrl text, linkType integer, idFile integer)\n");
+      m_pDS->exec("CREATE TABLE livedb ( linkColumn text, linkUrl text, linkType integer, idFile integer, idType integer)\n");
+      m_pDS->exec("CREATE UNIQUE INDEX ix_livedb ON livedb ( idFile, idType )\n");
     }
   }
   catch (...)
