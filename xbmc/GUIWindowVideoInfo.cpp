@@ -56,7 +56,6 @@ using namespace XFILE;
 #define CONTROL_RUNTIME             31
 #define CONTROL_MPAARATING          32
 #define CONTROL_TITLE_AND_YEAR      33
-#define CONTROL_ACTOR_IMAGE         34
 #define CONTROL_STUDIO              36
 #define CONTROL_TOP250              37
 #define CONTROL_TRAILER             38
@@ -425,35 +424,6 @@ void CGUIWindowVideoInfo::Update()
     pImageControl->FreeResources();
     pImageControl->SetFileName(m_movieItem->GetThumbnailImage());
   }
-}
-
-void CGUIWindowVideoInfo::Render()
-{
-  CGUIDialog::Render();
-}
-
-bool CGUIWindowVideoInfo::OnAction(const CAction& action)
-{
-  bool bResult = CGUIDialog::OnAction(action);
-
-  // WHY IS THIS NEEDED - surely container(id).listitem.thumb will do the trick??
-  CGUIImage* pImage = (CGUIImage*)GetControl(CONTROL_ACTOR_IMAGE);
-  if (pImage)
-  {
-    if (GetFocusedControlID() == CONTROL_LIST)
-    {
-      // get current selected item
-      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_LIST, 0, 0, NULL);
-      g_graphicsContext.SendMessage(msg);
-      int iItem = msg.GetParam1();
-      if (iItem >= 0 || iItem < m_castList->Size())
-        pImage->SetFileName(m_castList->Get(iItem)->GetThumbnailImage());
-    }
-    else
-      pImage->SetFileName("");
-  }
-
-  return bResult;
 }
 
 void CGUIWindowVideoInfo::Refresh()
