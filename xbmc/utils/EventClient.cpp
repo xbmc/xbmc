@@ -306,9 +306,6 @@ bool CEventClient::OnPacketBYE(CEventPacket *packet)
 
 bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
 {
-  if (!Greeted())
-    return false;
-
   unsigned char *payload = (unsigned char *)packet->Payload();
   int psize = (int)packet->PayloadSize();
 
@@ -375,9 +372,6 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
 
 bool CEventClient::OnPacketMOUSE(CEventPacket *packet)
 {
-  if (!Greeted())
-    return false;
-
   unsigned char *payload = (unsigned char *)packet->Payload();
   int psize = (int)packet->PayloadSize();
   unsigned char flags;
@@ -410,9 +404,6 @@ bool CEventClient::OnPacketMOUSE(CEventPacket *packet)
 
 bool CEventClient::OnPacketNOTIFICATION(CEventPacket *packet)
 {
-  if (!Greeted())
-    return false;
-
   unsigned char *payload = (unsigned char *)packet->Payload();
   int psize = (int)packet->PayloadSize();
   string title, message;
@@ -483,9 +474,6 @@ bool CEventClient::OnPacketNOTIFICATION(CEventPacket *packet)
 
 bool CEventClient::OnPacketLOG(CEventPacket *packet)
 {
-  if (!Greeted())
-    return false;
-
   unsigned char *payload = (unsigned char *)packet->Payload();
   int psize = (int)packet->PayloadSize();
   string logmsg;
