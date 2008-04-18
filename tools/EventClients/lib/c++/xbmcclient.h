@@ -118,7 +118,8 @@ class CPacket
          | -H4 Sequence number       | - 1  x UNSIGNED LONG       4B
          | -H5 No. of packets in msg | - 1  x UNSIGNED LONG       4B
          | -H6 Payload size          | - 1  x UNSIGNED SHORT      2B
-         | -H7 Reserved              | - 14 x UNSIGNED CHAR      14B
+         | -H7 Client's unique token | - 1  x UNSIGNED LONG       4B
+         | -H8 Reserved              | - 10 x UNSIGNED CHAR      10B
          |---------------------------|
          | -P1 payload               | -
          -----------------------------
@@ -171,7 +172,18 @@ public:
     }
     return SendSuccessfull;
   }
+
+  static void SetUniqueToken(unsigned int ID)
+  {
+    m_UniqueToken = ID;
+  }
+
+  static unsigned int GetUniqueToken()
+  {
+    return m_UniqueToken;
+  }
 protected:
+  static unsigned int m_UniqueToken;
   char            m_Header[HEADER_SIZE];
   unsigned short  m_PacketType;
 
@@ -206,6 +218,11 @@ protected:
 
     Header[16] = ((PayloadSize & 0xff00) >> 8);
     Header[17] =  (PayloadSize & 0x00ff);
+
+    Header[18] = ((m_UniqueToken & 0xff000000) >> 24);
+    Header[19] = ((m_UniqueToken & 0x00ff0000) >> 16);
+    Header[20] = ((m_UniqueToken & 0x0000ff00) >> 8);
+    Header[21] =  (m_UniqueToken & 0x000000ff);
   }
 
   virtual void ConstructPayload()
@@ -616,3 +633,5 @@ public:
   virtual ~CPacketLOG()
   { }
 };
+
+unsigned int CPacket::m_UniqueToken = 0;
