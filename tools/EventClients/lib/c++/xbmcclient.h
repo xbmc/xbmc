@@ -606,9 +606,10 @@ class CPacketLOG : public CPacket
     /************************************************************************/
 private:
   std::vector<char> m_Message;
-  unsigned char  m_LogType;
+  unsigned char  m_LogLevel;
+  bool m_AutoPrintf;
 public:
-  CPacketLOG(int LogType, const char *Message)
+  CPacketLOG(int LogLevel, const char *Message, bool AutoPrintf = true)
   {
     m_PacketType = PT_LOG;
 
@@ -616,17 +617,24 @@ public:
     for (unsigned int i = 0; i < len; i++)
       m_Message.push_back(Message[i]);
 
-    m_LogType = LogType;
+    m_LogLevel = LogLevel;
+    m_AutoPrintf = AutoPrintf;
   }
 
   virtual void ConstructPayload()
   {
     m_Payload.clear();
 
-    m_Payload.push_back( (m_LogType & 0x00ff) );
+    m_Payload.push_back( (m_LogLevel & 0x00ff) );
 
+    if (m_AutoPrintf)
+    {
+      char* str=&m_Message[0];
+      printf("%s\n", str);
+    }
     for (unsigned int i = 0; i < m_Message.size(); i++)
       m_Payload.push_back(m_Message[i]);
+
     m_Payload.push_back('\0');
   }
   
