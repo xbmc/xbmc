@@ -667,7 +667,6 @@ void PrintHelp(const char *Prog)
   printf("\t--deadzone DEAD             | Sets both X and Y too the number\n");
   printf("\t--smoothing-samples SAMPLE  | Number 1 counts as Off (Default: %i)\n", WIIREMOTE_SAMPLES);
   printf("\t--joystick-map JOYMAP       | The string ID for the joymap (Default: WiiRemote)\n");
-  printf("\t--unique-id ID              | Identification for the EventClient (Default: %i)\n", 100);
 }
 
 int main(int argc, char **argv)
@@ -675,7 +674,6 @@ int main(int argc, char **argv)
   char *Address = NULL;
   char *btaddr  = NULL;
   int  Port = 9777;
-  unsigned int UniqueID = 100;
 
   int NumSamples = WIIREMOTE_SAMPLES;
   float DeadX    = DEADZONE_X;
@@ -712,8 +710,6 @@ int main(int argc, char **argv)
       NumSamples = atoi(argv[i + 1]);
     else if (strcmp(argv[i], "--joystick-map") == 0 && ((i + 1) <= argc))
       JoyMap = argv[i + 1];
-    else if (strcmp(argv[i], "--unique-id") == 0 && ((i + 1) <= argc))
-      UniqueID = atol(argv[i + 1]);
   }
 
   if (NumSamples < 1 || DeadX < 0 || DeadY < 0 || DeadX > 1 || DeadY > 1)
@@ -729,7 +725,6 @@ int main(int argc, char **argv)
     printf("Error creating socket\n");
     return -1;
   }
-  CPacket::SetUniqueToken(UniqueID);
 
   if (hci_get_route(NULL) < 0)
   {
