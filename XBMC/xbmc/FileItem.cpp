@@ -883,7 +883,10 @@ CStdString CFileItem::GetCachedProfileThumb() const
 CStdString CFileItem::GetCachedSeasonThumb() const
 {
   Crc32 crc;
-  crc.ComputeFromLowerCase("season" + GetVideoInfoTag()->m_strPath+GetLabel());
+  CStdString seasonPath;
+  if (HasVideoInfoTag())
+    seasonPath = GetVideoInfoTag()->m_strPath;
+  crc.ComputeFromLowerCase("season" + seasonPath + GetLabel());
   CStdString hex;
   hex.Format("%08x", (__int32)crc);
   CStdString cachedThumb;
