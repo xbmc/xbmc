@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <arpa/inet.h>
+#include <sys/time.h>
 
 #define STD_PORT       9777
 
@@ -99,6 +100,17 @@ public:
   }
 };
 
+unsigned int GetUniqueIdentifier()
+{
+  struct timespec t;
+  if(clock_gettime(CLOCK_REALTIME, &t) == 0)
+    return t.tv_nsec;
+  else
+    return time(NULL);
+}
+
+unsigned int g_UniqueToken = GetUniqueIdentifier();
+
 class CPacket
 {
 /*   Base class that implements a single event packet.
@@ -172,18 +184,7 @@ public:
     }
     return SendSuccessfull;
   }
-
-  static void SetUniqueToken(unsigned int ID)
-  {
-    m_UniqueToken = ID;
-  }
-
-  static unsigned int GetUniqueToken()
-  {
-    return m_UniqueToken;
-  }
 protected:
-  static unsigned int m_UniqueToken;
   char            m_Header[HEADER_SIZE];
   unsigned short  m_PacketType;
 
@@ -219,10 +220,10 @@ protected:
     Header[16] = ((PayloadSize & 0xff00) >> 8);
     Header[17] =  (PayloadSize & 0x00ff);
 
-    Header[18] = ((m_UniqueToken & 0xff000000) >> 24);
-    Header[19] = ((m_UniqueToken & 0x00ff0000) >> 16);
-    Header[20] = ((m_UniqueToken & 0x0000ff00) >> 8);
-    Header[21] =  (m_UniqueToken & 0x000000ff);
+    Header[18] = ((g_UniqueToken & 0xff000000) >> 24);
+    Header[19] = ((g_UniqueToken & 0x00ff0000) >> 16);
+    Header[20] = ((g_UniqueToken & 0x0000ff00) >> 8);
+    Header[21] =  (g_UniqueToken & 0x000000ff);
   }
 
   virtual void ConstructPayload()
@@ -641,5 +642,3 @@ public:
   virtual ~CPacketLOG()
   { }
 };
-
-unsigned int CPacket::m_UniqueToken = 0;
