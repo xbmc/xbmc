@@ -267,7 +267,8 @@ void CWiiRemote::EnableMouseEmulation()
     SetRptMode();
 #endif
 
-  printf("Enabled WiiRemote mouse emulation\n");
+  CPacketLOG log(LOGDEBUG, "Enabled WiiRemote mouse emulation");
+  log.Send(m_Socket, m_MyAddr);
 }
 /* Disable mouse emulation */
 void CWiiRemote::DisableMouseEmulation()
@@ -284,7 +285,8 @@ void CWiiRemote::DisableMouseEmulation()
     SetRptMode();
 #endif
 
-  printf("Disabled WiiRemote mouse emulation\n");
+  CPacketLOG log(LOGDEBUG, "Disabled WiiRemote mouse emulation");
+  log.Send(m_Socket, m_MyAddr);
 }
 
 /* Is a wiiremote connected*/
@@ -340,7 +342,9 @@ bool CWiiRemote::Connect()
       }
       else
       {
-        printf("Problem probing for status of Wiiremote; cwiid_get_state returned non-zero\n");
+        printf("Problem probing for status of WiiRemote; cwiid_get_state returned non-zero\n");
+        CPacketLOG log(LOGNOTICE, "Problem probing for status of WiiRemote; cwiid_get_state returned non-zero");
+        log.Send(m_Socket, m_MyAddr);
         CPacketNOTIFICATION notification("Wii Remote connected", "", ICON_PNG, "../../icons/bluetooth.png");
         notification.Send(m_Socket, m_MyAddr);
       }
@@ -351,7 +355,8 @@ bool CWiiRemote::Connect()
 #endif      
       m_connected = true;
 
-      printf("Sucessfully connected a WiiRemote\n");
+      CPacketLOG log(LOGNOTICE, "Sucessfully connected a WiiRemote");
+      log.Send(m_Socket, m_MyAddr);
       return true;
     }
     //Here's a good place to have a quit flag check...
@@ -378,7 +383,8 @@ void CWiiRemote::DisconnectNow(bool startConnectThread)
       notification.Send(m_Socket, m_MyAddr);
     }
 
-    printf("Sucessfully disconnected a Wiiremote\n");
+    CPacketLOG log(LOGNOTICE, "Sucessfully disconnected a WiiRemote");
+    log.Send(m_Socket, m_MyAddr);
   }
   m_connected = false;
 }
@@ -391,7 +397,8 @@ bool CWiiRemote::CheckConnection()
 {
   if ((getTicks() - m_LastMsgTime) > 1000)
   {
-    printf("Lost connection to the WiiRemote\n");
+    CPacketLOG log(LOGNOTICE, "Lost connection to the WiiRemote");
+    log.Send(m_Socket, m_MyAddr);
     return false;
   }
   else
@@ -412,7 +419,10 @@ void CWiiRemote::SetupWiiRemote()
   }
 
   if (cwiid_set_mesg_callback(m_wiiremoteHandle, MessageCallback))
-    printf("Unable to set message callback to the Wiiremote\n");
+  {
+    CPacketLOG log(LOGERROR, "Unable to set message callback to the WiiRemote");
+    log.Send(m_Socket, m_MyAddr);
+  }
 }
 
 void CWiiRemote::ProcessKey(int Key)
@@ -558,22 +568,26 @@ void CWiiRemote::SetRptMode()
 { //Sets our wiiremote to report something, for example IR, Buttons
 #ifdef CWIID_OLD
   if (cwiid_command(m_wiiremoteHandle, CWIID_CMD_RPT_MODE, m_rptMode))
-    printf("Error setting Wiiremote report mode\n");
 #else  
   if (cwiid_set_rpt_mode(m_wiiremoteHandle, m_rptMode))
-    printf("Error setting Wiiremote report mode\n");
 #endif
+  {
+    CPacketLOG log(LOGERROR, "Error setting WiiRemote report mode");
+    log.Send(m_Socket, m_MyAddr);
+  }
 }
 /* Tell cwiid the LED states */
 void CWiiRemote::SetLedState()
 { //Sets our leds on the wiiremote
 #ifdef CWIID_OLD
   if (cwiid_command(m_wiiremoteHandle, CWIID_CMD_LED, m_ledState))
-    printf("Error setting Wiiremote LED state\n");
 #else  
   if (cwiid_set_led(m_wiiremoteHandle, m_ledState))
-    printf("Error setting Wiiremote LED state\n");
 #endif
+  {
+    CPacketLOG log(LOGERROR, "Error setting WiiRemote LED state");
+    log.Send(m_Socket, m_MyAddr);
+  }
 }
 
 /* Calculate the mousepointer from 2 IR sources (Default) */
@@ -642,7 +656,6 @@ void CWiiRemote::CalculateMousePointer(int x1, int y1, int x2, int y2)
 
 
 
-
 void PrintHelp(const char *Prog)
 {
   printf("Commands:\n");
@@ -654,6 +667,7 @@ void PrintHelp(const char *Prog)
   printf("\t--deadzone DEAD             | Sets both X and Y too the number\n");
   printf("\t--smoothing-samples SAMPLE  | Number 1 counts as Off (Default: %i)\n", WIIREMOTE_SAMPLES);
   printf("\t--joystick-map JOYMAP       | The string ID for the joymap (Default: WiiRemote)\n");
+  printf("\t--unique-id ID              | Identification for the EventClient (Default: %i)\n", 100);
 }
 
 int main(int argc, char **argv)
@@ -661,6 +675,7 @@ int main(int argc, char **argv)
   char *Address = NULL;
   char *btaddr  = NULL;
   int  Port = 9777;
+  unsigned int UniqueID = 100;
 
   int NumSamples = WIIREMOTE_SAMPLES;
   float DeadX    = DEADZONE_X;
@@ -697,6 +712,8 @@ int main(int argc, char **argv)
       NumSamples = atoi(argv[i + 1]);
     else if (strcmp(argv[i], "--joystick-map") == 0 && ((i + 1) <= argc))
       JoyMap = argv[i + 1];
+    else if (strcmp(argv[i], "--unique-id") == 0 && ((i + 1) <= argc))
+      UniqueID = atol(argv[i + 1]);
   }
 
   if (NumSamples < 1 || DeadX < 0 || DeadY < 0 || DeadX > 1 || DeadY > 1)
@@ -712,10 +729,12 @@ int main(int argc, char **argv)
     printf("Error creating socket\n");
     return -1;
   }
+  CPacket::SetUniqueToken(UniqueID);
 
   if (hci_get_route(NULL) < 0)
   {
-    printf("Error No bluetooth device\n");
+    CPacketLOG log(LOGERROR, "Error No bluetooth device");
+    log.Send(sockfd, my_addr);
     return -1;
   }
   g_Ping = new CPacketHELO("WiiRemote", ICON_PNG, "../../icons/bluetooth.png");
