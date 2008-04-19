@@ -36,7 +36,6 @@
 #ifdef HAS_SDL_OPENGL
 #include "Application.h"
 #include "LinuxRendererGL.h"
-#include "LinuxRendererATI.h"
 #else 
 #include "LinuxRenderer.h"
 #endif
