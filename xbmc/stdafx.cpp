@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 
-#ifndef _LINUX
+#ifdef _XBOX
 #undef QueryPerformanceFrequency
 
 __int64 lFrequency = 0LL;
@@ -42,5 +42,17 @@ WINBASEAPI BOOL WINAPI QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency)
 
   (*lpFrequency).QuadPart = lFrequency;
   return TRUE;
+}
+#endif
+
+#if defined(_MSC_VER) && _MSC_VER < 1500 //vs2008 and up already has strnlen, libsmb needs this function
+extern "C" {
+  size_t strnlen(const char *s, size_t n)
+  {
+    size_t i;
+    for (i=0; i<n && s[i] != '\0'; i++)
+      /* noop */ ;
+    return i;
+  }
 }
 #endif

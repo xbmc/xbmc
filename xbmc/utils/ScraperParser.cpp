@@ -1,10 +1,9 @@
+#include "stdafx.h"
 #include "ScraperParser.h"
 
 #ifdef _LINUX
 #include "system.h"
 #endif
-
-#include "stdafx.h"
 
 #include <cstring>
 #include "RegExp.h"

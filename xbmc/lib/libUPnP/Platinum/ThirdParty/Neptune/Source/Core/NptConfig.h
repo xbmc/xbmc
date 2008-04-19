@@ -68,7 +68,9 @@
 #if !defined(STRICT)
 #define STRICT
 #endif
+#if defined(_MSC_VER) && _MSC_VER < 1500
 #define vsnprintf _vsnprintf
+#endif
 #define snprintf  _snprintf
 #endif
 

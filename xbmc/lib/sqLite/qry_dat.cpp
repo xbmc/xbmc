@@ -30,6 +30,7 @@
  *              on string values that are 1 or 0
  **********************************************************************/
 
+#include "stdafx.h"
 #include "qry_dat.h"
 
 #ifndef __GNUC__
