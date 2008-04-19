@@ -19,6 +19,7 @@
 */
 
 
+#include "stdafx.h"
 #include "include.h"
 #include "../RenderFlags.h"
 #include "YUV2RGBShader.h"

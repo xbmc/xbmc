@@ -1,5 +1,5 @@
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "DummyVideoPlayer.h"
 #include "GUIFontManager.h"
 #include "GUITextLayout.h"

@@ -1,5 +1,5 @@
+#include "include.h"
 #include "SDLMouse.h"
-#include "../include.h"
 #include "../Key.h"
 
 #ifdef HAS_SDL

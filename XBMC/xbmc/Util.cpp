@@ -18,6 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include "stdafx.h"
 #ifdef __APPLE__
 #include <sys/param.h>
 #include <mach-o/dyld.h>
@@ -31,7 +32,6 @@
 #include <sys/wait.h>
 #endif
 
-#include "stdafx.h"
 #include "Application.h"
 #include "GUIWindowVideoBase.h"
 #include "Util.h"

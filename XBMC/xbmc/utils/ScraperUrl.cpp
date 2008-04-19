@@ -1,10 +1,9 @@
+#include "stdafx.h"
 #include "ScraperUrl.h"
 
 #ifdef _LINUX
 #include "system.h"
 #endif
-
-#include "stdafx.h"
 
 #include <cstring>
 #include "HTMLUtil.h"
