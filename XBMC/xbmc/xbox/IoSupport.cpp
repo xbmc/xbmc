@@ -82,7 +82,7 @@ stDriveMapping driveMapping[] =
     {'Z', new char[MAX_PATH], 0},
   };
 
-#include "../../Tools/Win32/XBMC_PC.h"
+#include "../../xbmc/Win32/XBMC_PC.h"
 
 #else
 stDriveMapping driveMapping[] =
