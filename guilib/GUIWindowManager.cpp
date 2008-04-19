@@ -9,7 +9,7 @@
 #include "../xbmc/Util.h"
 
 #if !defined(_XBOX) && !defined(_LINUX)
-#include "../Tools/Win32/XBMC_PC.h"
+#include "../xbmc/Win32/XBMC_PC.h"
 #endif
 
 using namespace std;
