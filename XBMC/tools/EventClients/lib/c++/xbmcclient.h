@@ -9,7 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <arpa/inet.h>
-#include <sys/time.h>
+#include <time.h>
 
 #define STD_PORT       9777
 
@@ -102,11 +102,7 @@ public:
 
 unsigned int GetUniqueIdentifier()
 {
-  struct timespec t;
-  if(clock_gettime(CLOCK_REALTIME, &t) == 0)
-    return t.tv_nsec;
-  else
-    return time(NULL);
+  return time(NULL);
 }
 
 unsigned int g_UniqueToken = GetUniqueIdentifier();
@@ -144,7 +140,7 @@ public:
   virtual ~CPacket()
   { }
 
-  bool Send(int Socket, CAddress &Addr)
+  bool Send(int Socket, CAddress &Addr, unsigned int UID = g_UniqueToken)
   {
     if (m_Payload.size() == 0)
       ConstructPayload();
@@ -166,7 +162,7 @@ public:
         Left = 0;
       }
 
-      ConstructHeader(m_PacketType, NbrOfPackages, Package, Send, m_Header);
+      ConstructHeader(m_PacketType, NbrOfPackages, Package, Send, UID, m_Header);
       char t[MAX_PACKET_SIZE];
       int i, j;
       for (i = 0; i < 32; i++)
@@ -190,7 +186,7 @@ protected:
 
   std::vector<char> m_Payload;
 
-  static void ConstructHeader(int PacketType, int NumberOfPackets, int CurrentPacket, unsigned short PayloadSize, char *Header)
+  static void ConstructHeader(int PacketType, int NumberOfPackets, int CurrentPacket, unsigned short PayloadSize, unsigned int UniqueToken, char *Header)
   {
     sprintf(Header, "XBMC");
     for (int i = 4; i < HEADER_SIZE; i++)
@@ -220,10 +216,10 @@ protected:
     Header[16] = ((PayloadSize & 0xff00) >> 8);
     Header[17] =  (PayloadSize & 0x00ff);
 
-    Header[18] = ((g_UniqueToken & 0xff000000) >> 24);
-    Header[19] = ((g_UniqueToken & 0x00ff0000) >> 16);
-    Header[20] = ((g_UniqueToken & 0x0000ff00) >> 8);
-    Header[21] =  (g_UniqueToken & 0x000000ff);
+    Header[18] = ((UniqueToken & 0xff000000) >> 24);
+    Header[19] = ((UniqueToken & 0x00ff0000) >> 16);
+    Header[20] = ((UniqueToken & 0x0000ff00) >> 8);
+    Header[21] =  (UniqueToken & 0x000000ff);
   }
 
   virtual void ConstructPayload()
@@ -641,4 +637,80 @@ public:
   
   virtual ~CPacketLOG()
   { }
+};
+
+class CXBMCClient
+{
+private:
+  CAddress      m_Addr;
+  int           m_Socket;
+  unsigned int  m_UID;
+public:
+  CXBMCClient(const char *IP = "127.0.0.1", int Port = 9777, int Socket = -1, unsigned int UID = 0)
+  {
+    m_Addr = CAddress(IP, Port);
+    if (Socket = -1)
+      m_Socket = socket(AF_INET, SOCK_DGRAM, 0);
+    else
+      m_Socket = Socket;
+
+    if (UID)
+      m_UID = UID;
+    else
+      m_UID = GetUniqueIdentifier();
+  }
+
+  void SendNOTIFICATION(const char *Title, const char *Message, unsigned short IconType, const char *IconFile = NULL)
+  {
+    if (m_Socket < 0)
+      return;
+
+    CPacketNOTIFICATION notification(Title, Message, IconType, IconFile);
+    notification.Send(m_Socket, m_Addr, m_UID);
+  }
+
+  void SendHELO(const char *DevName, unsigned short IconType, const char *IconFile = NULL)
+  {
+    if (m_Socket < 0)
+      return;
+
+    CPacketHELO helo(DevName, IconType, IconFile);
+    helo.Send(m_Socket, m_Addr, m_UID);
+  }
+
+  void SendButton(const char *Button, const char *DeviceMap, bool Queue = false, bool Repeat = true, bool Down = true, unsigned short Amount = 0)
+  {
+    if (m_Socket < 0)
+      return;
+
+    CPacketBUTTON button(Button, DeviceMap, Queue, Repeat, Down, Amount);
+    button.Send(m_Socket, m_Addr, m_UID);
+  }
+
+  void SendBUTTON(unsigned short ButtonCode, bool Queue = false, bool Repeat = true, bool Down = true, unsigned short Amount = 0)
+  {
+    if (m_Socket < 0)
+      return;
+
+    CPacketBUTTON button(ButtonCode, Queue, Repeat, Down, Amount);
+    button.Send(m_Socket, m_Addr, m_UID);
+  }
+
+  void SendMOUSE(int X, int Y, unsigned char Flag = MS_ABSOLUTE)
+  {
+    if (m_Socket < 0)
+      return;
+
+    CPacketMOUSE mouse(X, Y, Flag);
+    mouse.Send(m_Socket, m_Addr, m_UID);
+  }
+
+  void SendLOG(int LogLevel, const char *Message, bool AutoPrintf = true)
+  {
+    if (m_Socket < 0)
+      return;
+
+    CPacketLOG log(LogLevel, Message, AutoPrintf);
+    log.Send(m_Socket, m_Addr, m_UID);
+  }
 };
