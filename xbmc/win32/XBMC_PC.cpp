@@ -7,7 +7,7 @@
 //
 // Copyright (c) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
-#include "../../xbmc/stdafx.h"
+#include "stdafx.h"
 #include "XBMC_PC.h"
 #ifndef HAS_SDL
 #include <d3d8.h>
