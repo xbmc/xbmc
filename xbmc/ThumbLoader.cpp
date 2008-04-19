@@ -19,6 +19,7 @@
  *
  */
 
+#include "stdafx.h"
 #ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
 #endif
@@ -28,7 +29,6 @@
 #define INT64_C __int64
 #endif
 
-#include "stdafx.h"
 #include "FileSystem/StackDirectory.h"
 #include "ThumbLoader.h"
 #include "Util.h"

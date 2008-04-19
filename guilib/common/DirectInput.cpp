@@ -1,4 +1,4 @@
-#include "../include.h"
+#include "include.h"
 #include "DirectInput.h"
 
 CDirectInput g_directInput;
