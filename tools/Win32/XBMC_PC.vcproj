@@ -131,7 +131,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../xbmc/cores/dvdplayer;../../tools/Win32;../../xbmc/cores;../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32"
+				AdditionalIncludeDirectories="../../xbmc/cores/dvdplayer;../../xbmc/Win32;../../xbmc/cores;../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0500;WINVER=0x0500;HAS_SDL;NOMINMAX"
 				MinimalRebuild="TRUE"
 				ExceptionHandling="FALSE"
@@ -192,7 +192,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="TRUE"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="../../xbmc/cores/dvdplayer;../../tools/Win32;../../xbmc/cores;../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32"
+				AdditionalIncludeDirectories="../../xbmc/cores/dvdplayer;../../xbmc/Win32;../../xbmc/cores;../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32"
 				PreprocessorDefinitions="_MSVC;WIN32;NDEBUG;_WINDOWS;_WIN32_WINNT=0x0500;WINVER=0x0500;HAS_SDL;NOMINMAX"
 				StringPooling="FALSE"
 				MinimalRebuild="FALSE"
@@ -256,7 +256,7 @@
 				RelativePath="..\..\xbmc\win32\PlatformInclude.h">
 			</File>
 			<File
-				RelativePath=".\resource.h">
+				RelativePath="..\..\xbmc\win32\resource.h">
 			</File>
 			<File
 				RelativePath="..\..\xbmc\win32\WIN32Util.cpp">
@@ -265,13 +265,13 @@
 				RelativePath="..\..\xbmc\win32\WIN32Util.h">
 			</File>
 			<File
-				RelativePath=".\XBMC_PC.cpp">
+				RelativePath="..\..\xbmc\win32\XBMC_PC.cpp">
 			</File>
 			<File
-				RelativePath=".\XBMC_PC.h">
+				RelativePath="..\..\xbmc\win32\XBMC_PC.h">
 			</File>
 			<File
-				RelativePath=".\XBMC_PC.rc">
+				RelativePath="..\..\xbmc\win32\XBMC_PC.rc">
 			</File>
 			<File
 				RelativePath="..\..\xbmc\win32\XCriticalSection.cpp">
@@ -1345,6 +1345,9 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\CueDocument.cpp">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\stdafx.cpp">
 			</File>
 			<Filter
 				Name="Settings"
@@ -4139,7 +4142,7 @@
 			</Filter>
 		</Filter>
 		<File
-			RelativePath=".\xbmc.ico">
+			RelativePath="..\..\xbmc\win32\XBMC.ico">
 		</File>
 	</Files>
 	<Globals>

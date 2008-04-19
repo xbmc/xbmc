@@ -7,7 +7,7 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include "afxres.h"
+#include "windows.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -34,7 +34,7 @@ END
 
 2 TEXTINCLUDE 
 BEGIN
-    "#include ""afxres.h""\r\n"
+    "#include ""windows.h""\r\n"
     "\0"
 END
 
@@ -72,10 +72,10 @@ BEGIN
             VALUE "CompanyName", "Team XBMC"
             VALUE "FileDescription", "XBMC "
             VALUE "FileVersion", "pre-2.1"
-            VALUE "InternalName", "XBMC_PC.exe"
+            VALUE "InternalName", "XBMC.exe"
             VALUE "LegalCopyright", "CopyRight (c) Team XBMC.  All rights reserved."
-            VALUE "OriginalFilename", "XBMC_PC.exe"
-            VALUE "ProductName", "XBMC PC"
+            VALUE "OriginalFilename", "XBMC.exe"
+            VALUE "ProductName", "XBMC for Windows"
             VALUE "ProductVersion", "pre-2.1"
         END
     END
@@ -148,7 +148,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_MAIN_ICON           ICON                    "xbmc_pc.ico"
+IDI_MAIN_ICON           ICON                    "xbmc.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
