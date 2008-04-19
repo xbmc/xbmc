@@ -20,8 +20,8 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-#ifndef HAS_SDL_2D
 #include "stdafx.h"
+#ifndef HAS_SDL_2D
 #include <locale.h>
 #include "LinuxRendererGL.h"
 #include "../../Application.h"

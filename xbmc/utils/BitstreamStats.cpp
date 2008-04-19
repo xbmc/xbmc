@@ -1,6 +1,4 @@
-#ifndef _LINUX
 #include "stdafx.h"
-#endif
 #include "BitstreamStats.h"
 #ifdef _LINUX
 #include "linux/XTimeUtils.h"

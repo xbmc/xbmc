@@ -9,10 +9,9 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#include "stdafx.h"
 #ifdef _LINUX
 #include "../linux/PlatformDefs.h"
-#else
-#include "stdafx.h"
 #endif
 #include "CacheMemBuffer.h"
 #include "Util.h"

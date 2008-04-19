@@ -1,4 +1,4 @@
-#include "../include.h"
+#include "include.h"
 #include "DirectInputKeyboard.h"
 #include "DirectInput.h"
 
