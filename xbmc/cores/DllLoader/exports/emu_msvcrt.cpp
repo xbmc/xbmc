@@ -1554,10 +1554,15 @@ extern "C"
 
   void (__cdecl * dll_signal(int sig, void (__cdecl *func)(int)))(int)
   {
+#ifdef _XBOX
     // the xbox has a NSIG of 23 (+1), problem is when calling signal with 
     // one of the signals below the xbox wil crash. Just return SIG_ERR
     if (sig == SIGILL || sig == SIGFPE || sig == SIGSEGV) return SIG_ERR;
-    
+#elif defined(_WIN32PC)
+    //vs2008 asserts for known signals, return err for everything unknown to windows.
+    if (sig == 5 || sig == 7 || sig == 9 || sig == 10 || sig == 12 || sig == 14 || sig == 18 || sig == 19 || sig == 20)
+      return SIG_ERR;
+#endif
     return signal(sig, func);
   }
 
