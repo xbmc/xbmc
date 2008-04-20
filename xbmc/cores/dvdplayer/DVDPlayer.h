@@ -13,6 +13,8 @@
 //#include "DVDChapterReader.h"
 #include "DVDSubtitles/DVDFactorySubtitle.h"
 
+#include "../../Edl.h"
+
 
 class CDVDInputStream;
 
@@ -127,6 +129,7 @@ public:
   virtual void ToggleFrameDrop();
   virtual bool CanSeek();
   virtual void Seek(bool bPlus, bool bLargeStep);
+  virtual bool SeekScene(bool bPlus = true);
   virtual void SeekPercentage(float iPercent);
   virtual float GetPercentage();
   virtual void SetVolume(long nVolume)                          { m_dvdPlayerAudio.SetVolume(nVolume); }
@@ -216,7 +219,8 @@ protected:
   void SyncronizePlayers(DWORD sources, double pts = DVD_NOPTS_VALUE);
   void SyncronizeDemuxer(DWORD timeout);
   void CheckContinuity(DemuxPacket* pPacket, unsigned int source);
-  void CheckPlayerInit(CCurrentStream& current, unsigned int source, bool& drop);
+  bool CheckSceneSkip(CCurrentStream& current, unsigned int source);
+  bool CheckPlayerInit(CCurrentStream& current, unsigned int source);
 
   bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);
   bool IsValidStream(CCurrentStream& stream, StreamType type);
@@ -259,5 +263,7 @@ protected:
   
   HANDLE m_hReadyEvent;
   CRITICAL_SECTION m_critStreamSection; // need to have this lock when switching streams (audio / video)
+
+  CEdl m_Edl;
 };
 
