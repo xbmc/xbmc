@@ -176,7 +176,6 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
 {
   m_dwLastTime = timeGetTime();
   int ret;
-  RIP_MANAGER_OPTIONS m_opt;
   set_rip_manager_options_defaults(&m_opt);
 
   CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
