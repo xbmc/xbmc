@@ -208,15 +208,15 @@
 #define MEASURE_FUNCTION
 #endif
 
-#ifdef HAS_SDL
+#ifdef HAS_SDL_AUDIO
 #include <SDL/SDL_mixer.h>
-#ifdef _WIN32
+#endif
+#if defined(HAS_SDL) && defined(_WIN32)
 #include <SDL/SDL_syswm.h>
-#if !defined(HAS_XBOX_HARDWARE)
+#endif
+#ifdef _WIN32
 #include <shlobj.h>
 #include <win32/MockXboxSymbols.h>
-#endif
-#endif
 #endif
 #ifdef HAS_XRANDR
 #include "XRandR.h"

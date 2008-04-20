@@ -8,7 +8,7 @@
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/Directory.h"
-#ifdef HAS_SDL
+#ifdef HAS_SDL_AUDIO
 #include <SDL/SDL_mixer.h>
 #endif
 
