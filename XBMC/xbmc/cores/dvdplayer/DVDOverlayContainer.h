@@ -28,7 +28,7 @@ public:
 
   void UpdateOverlayInfo(CDVDInputStreamNavigator* pStream, CDVDDemuxSPU *pSpu, int iAction);
 private:
-  CDVDOverlay* Remove(CDVDOverlay* pOverlay); // removes a specific overlay
+  VecOverlaysIter Remove(VecOverlaysIter itOverlay); // removes a specific overlay
 
   VecOverlays m_overlays;
 
