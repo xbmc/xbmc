@@ -1607,14 +1607,16 @@ void CUtil::GetHomePath(CStdString& strPath)
 {
   char szXBEFileName[1024];
   CIoSupport::GetXbePath(szXBEFileName);
-#ifndef _LINUX
-  char *szFileName = strrchr(szXBEFileName, '\\');
-  *szFileName = 0;
-  strPath = szXBEFileName;
-#else
-  if (getenv("XBMC_HOME") != NULL)
+  strPath = getenv("XBMC_HOME");
+  if (strPath != NULL && !strPath.IsEmpty())
   {
-    strPath = getenv("XBMC_HOME");
+#ifdef _WIN32PC
+    //expand potential relative path to full path
+    if(GetFullPathName(strPath, 1024, szXBEFileName, 0) != 0)
+    {
+      strPath = szXBEFileName;
+    }
+#endif
   }
   else
   {
@@ -1639,15 +1641,14 @@ void CUtil::GetHomePath(CStdString& strPath)
       if (realpath(given_path, real_path) != NULL)
       {
         strPath = real_path;
-	return;
+        return;
       }
     }
 #endif
-    char *szFileName = strrchr(szXBEFileName, '/');
+    char *szFileName = strrchr(szXBEFileName, PATH_SEPARATOR_CHAR);
     *szFileName = 0;
     strPath = szXBEFileName;
   }
-#endif
 }
 
 /* WARNING, this function can easily fail on full urls, since they might have options at the end */
