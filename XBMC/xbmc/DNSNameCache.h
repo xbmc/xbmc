@@ -19,6 +19,8 @@ public:
   static void Add(const CStdString& strHostName, const CStdString& strIpAdres);
 
 protected:
+  static bool GetCached(const CStdString& strHostName, CStdString& strIpAdres);
+  static CCriticalSection m_critical;
   std::vector<CDNSName> m_vecDNSNames;
   typedef std::vector<CDNSName>::iterator ivecDNSNames;
 };
