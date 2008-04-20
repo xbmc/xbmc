@@ -143,7 +143,6 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   m_bQueueFailed = false;
 
   m_decoder[m_currentDecoder].Start();  // start playback
-  m_pStream[m_currentStream]->Play(0, 0, DSBPLAY_LOOPING);
 
   return true;
 }
@@ -495,6 +494,13 @@ bool PAPlayer::ProcessPAP()
     int status = m_decoder[m_currentDecoder].GetStatus();
     if (status == STATUS_NO_FILE)
       return false;
+    if (status == STATUS_PLAYING && !m_bPaused)
+    {
+      DWORD status;
+      m_pStream[m_currentStream]->GetStatus(&status);
+      if (!(status & DSBSTATUS_PLAYING)) 
+        m_pStream[m_currentStream]->Play(0, 0, DSBPLAY_LOOPING);
+    }
 
     UpdateCacheLevel();
 
