@@ -1,0 +1,79 @@
+#!/bin/csh
+#
+# smbadduser - Written by Mike Zakharoff
+#
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+LIBDIR=@libdir@
+PRIVATEDIR=@privatedir@
+CONFIGDIR=@configdir@
+
+unalias *
+set path = ($path /usr/bin)
+
+set smbpasswd = $PRIVATEDIR/smbpasswd
+set user_map  = $CONFIGDIR/smbusers
+
+#
+# Set to site specific passwd command
+#
+set passwd    = "getent passwd"
+#set passwd    = "niscat passwd.org_dir"
+#set passwd    = "ypcat passwd"
+
+set line = "----------------------------------------------------------"
+if ($#argv == 0) then
+	echo $line
+	echo "Written: Mike Zakharoff email: michael.j.zakharoff@boeing.com"
+	echo ""
+	echo "   1) Updates $smbpasswd"
+	echo "   2) Updates $user_map"
+	echo "   3) Executes smbpasswd for each new user"
+	echo ""
+	echo "smbadduser unixid:ntid unixid:ntid ..."
+	echo ""
+	echo "Example: smbadduser zak:zakharoffm johns:smithj"
+	echo $line
+	exit 1
+endif
+
+touch $smbpasswd $user_map
+set new  = ()
+foreach one ($argv)
+	echo $one | grep ':' >& /dev/null
+	if ($status != 0) then
+		echo "ERROR: Must use unixid:ntid like -> zak:zakharoffm"
+		continue
+	endif
+	set unix = `echo $one | awk -F: '{print $1}'`
+	set ntid = `echo $one | awk -F: '{print $2}'`
+
+	set usr = `eval $passwd | awk -F: '$1==USR {print $1}' USR=$unix`
+	if ($#usr != 1) then
+		echo "ERROR: $unix Not in passwd database SKIPPING..."
+		continue
+	endif
+        set tmp = `cat $smbpasswd | awk -F: '$1==USR {print $1}' USR=$unix`
+	if ($#tmp != 0) then
+		echo "ERROR: $unix is already in $smbpasswd SKIPPING..."
+		continue
+	endif
+
+	echo "Adding: $unix to $smbpasswd"
+	/usr/bin/smbpasswd -a -n $unix
+	if ($unix != $ntid) then
+		echo "Adding: {$unix = $ntid} to $user_map"
+		echo "$unix = $ntid" >> $user_map
+	endif
+	set new = ($new $unix)
+end
+
+#
+# Enter password for new users
+#
+foreach one ($new)
+	echo $line
+	echo "ENTER password for $one"
+	smbpasswd $one
+end

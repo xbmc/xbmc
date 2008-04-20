@@ -1,0 +1,54 @@
+#! /bin/sh
+
+SMBW_LIBDIR=${SMBW_LIBDIR-@builddir@/smbwrapper}
+
+if [ ! -f ${SMBW_LIBDIR}/smbwrapper.so ]; then
+    echo You need to set LIBDIR in smbsh
+    exit
+fi
+
+# a simple launcher for the smbwrapper.so preloadde library
+
+if [ x"${SMBW_USER+set}" != x"set" ]; then
+    echo username?
+    read user
+    SMBW_USER=$user
+    export SMBW_USER
+fi
+
+# this doesn't hide the password - we need a proper launch app for that
+if [ x"${SMBW_PASSWORD+set}" != x"set" ]; then
+    echo password?
+    read pass
+    SMBW_PASSWORD=$pass
+    export SMBW_PASSWORD
+fi
+
+PWD=`pwd`
+export PWD
+PS1='smbsh$ '
+export PS1
+
+
+host_os=@HOST_OS@
+
+case "$host_os" in
+        *irix*)
+		_RLDN32_LIST=$SMBW_LIBDIR/smbwrapper.so:DEFAULT
+		_RLD_LIST=$SMBW_LIBDIR/smbwrapper.32.so:DEFAULT
+		export _RLDN32_LIST
+		export _RLD_LIST
+		;;
+	*osf*)
+		_RLD_LIST=$SMBW_LIBDIR/smbwrapper.so:DEFAULT
+		export _RLD_LIST
+		;;	        
+	*) 
+		LD_PRELOAD=$SMBW_LIBDIR/smbwrapper.so
+		export LD_PRELOAD
+		;;
+esac
+
+echo starting smbwrapper on $host_os
+
+exec ${SMBW_SHELL-${SHELL-/bin/sh}} ${1+"$@"}

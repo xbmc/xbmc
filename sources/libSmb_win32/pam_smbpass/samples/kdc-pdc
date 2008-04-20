@@ -1,0 +1,15 @@
+#%PAM-1.0
+# kdc-pdc
+# 
+# A sample PAM configuration that shows pam_smbpass used together with
+# pam_krb5.  This could be useful on a Samba PDC that is also a member of
+# a Kerberos realm.
+
+auth       requisite        pam_nologin.so
+auth       requisite        pam_krb5.so
+auth       optional         pam_smbpass.so migrate
+account    required         pam_krb5.so
+password   requisite        pam_cracklib.so retry=3
+password   optional         pam_smbpass.so nullok use_authtok try_first_pass
+password   required         pam_krb5.so use_authtok try_first_pass
+session    required         pam_krb5.so

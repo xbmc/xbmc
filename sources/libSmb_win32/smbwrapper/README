@@ -1,0 +1,94 @@
+This is a prelodable shared library that provides SMB client services
+for existing executables. Using this you can simulate a smb
+filesystem.
+
+*** This is code under development. Some things don't work yet ***
+
+Currently this code has been tested on:
+
+- Linux 2.0 with glibc2 (RH5.1)
+- Linux 2.1 with glibc2
+- Solaris 2.5.1 with gcc
+- Solaris 2.6 with gcc
+- SunOS 4.1.3 with gcc
+- IRIX 6.4 with cc
+- OSF1 with gcc
+
+
+It probably won't run on other systems without some porting. If you
+have a different system then see the file PORTING.
+
+To use it you need to do this:
+
+1) build smbwrapper.so using the command "make smbwrapper"
+3) run smbsh
+
+You will be asked for a username and password. After that you will be
+returned to a shell prompt. It is actually a subshell running with
+smbwrapper enabled. 
+
+Now try to access /smb/SERVER for some SMB server name and see what
+happens. If you use the -W option to set your workgroup or have
+workgroup set in your smb.conf then listing /smb/ should list all SMB
+servers in your workgroup.
+
+
+OPTIONS
+-------
+
+-U username
+   specify the username and optional password (as user%password)
+
+-d debug level
+ This is an integer that controls the internal debug level of smbw. It
+ defaults to 0, which means no debug info.
+
+-l logfile
+ The place where smbw debug logs are put. If this is not set then
+ stderr is used.
+
+-P prefix
+ The root of the SMB filesystem. This defaults to /smb/ but you can
+ set it to any name you like.
+
+-W workgroup
+ This is the workgroup used for browsing (ie. listing machines in the
+ /smb/ directory). It defaults to the one set in smb.conf.
+
+-R resolve order
+ This allows you to override the setting of the name resolve order
+ from smb.conf
+
+
+ATTRIBUTE MAPPING
+-----------------
+
+smbwrapper does an inverse attribute maping to what Samba does. This
+means that the archive bit appears as the user execute bit, the system
+bit appears as the group execute bit and the hidden bit appears as the
+other execute bit. You can control these with chmod. The mapping can
+be enabled an disabled using the normal smb.conf controls (ie. "map
+archive", "map system" and "map hidden").
+
+Read-only files appear as non-writeable by everyone. Writeable files
+appear as writeable by the current user.
+
+
+WHAT WORKS
+----------
+
+Things that I have tried and do seem to work include:
+
+  emacs, tar, ls, cmp, cp, rsync, du, cat, rm, mv, less, more, wc, head,
+  tail, bash, tcsh, mkdir, rmdir, vim, xedit, diff
+
+things that I know don't work:
+ 
+ anything executing from the share
+ anything that uses mmap
+ redirection within shells to smbsh files
+
+If you want to help with the development of this code then join the
+samba-technical mailing list.
+
+

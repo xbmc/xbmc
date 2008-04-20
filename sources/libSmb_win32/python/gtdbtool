@@ -1,0 +1,39 @@
+#!/usr/bin/env python
+
+import sys
+from gtkdictbrowser import GtkDictBrowser
+import gtk
+from samba import tdb
+import string
+
+# Open handle on tdb
+
+if len(sys.argv) != 2:
+    print "Usage: gdbtool <tdbfile>"
+    sys.exit(1)
+
+try:
+    t = tdb.open(sys.argv[1])
+except tdb.error, t:
+    print "gtdbtool: error opening %s: %s" % (sys.argv[1], t)
+    sys.exit(1)
+
+# Create interface
+
+db = GtkDictBrowser(t)
+
+def display_key_x00(key):
+    """Remove \x00 from all keys as they mucks up GTK."""
+    return string.replace(key, "\x00", "")
+
+db.register_get_key_text_fn(display_key_x00)
+
+db.build_ui('gtdbtool')
+
+# Override Python's handling of ctrl-c so we can break out of the
+# gui from the command line.
+
+import signal
+signal.signal(signal.SIGINT, signal.SIG_DFL)
+
+gtk.mainloop()
