@@ -56,23 +56,13 @@ VecOverlays* CDVDOverlayContainer::GetOverlays()
   return &m_overlays;
 }
 
-CDVDOverlay* CDVDOverlayContainer::Remove(CDVDOverlay* pOverlay)
+VecOverlaysIter CDVDOverlayContainer::Remove(VecOverlaysIter itOverlay)
 {
-  CDVDOverlay* pNext = NULL;
-  
+  VecOverlaysIter itNext;
+  CDVDOverlay* pOverlay = *itOverlay;
+
   EnterCriticalSection(&m_critSection);
-  
-  VecOverlaysIter it = m_overlays.begin();
-  while (it != m_overlays.end())
-  {
-    if (*it == pOverlay)
-    {
-      it = m_overlays.erase(it);
-      if (it != m_overlays.end()) pNext = *it;
-    }
-    else it++;
-  }
-    
+  itNext = m_overlays.erase(itOverlay);
   LeaveCriticalSection(&m_critSection);
   
 #ifdef DVDDEBUG_OVERLAY_TRACKER
@@ -81,7 +71,7 @@ CDVDOverlay* CDVDOverlayContainer::Remove(CDVDOverlay* pOverlay)
 
   pOverlay->Release();
 
-  return pNext;
+  return itNext;
 }
 
 void CDVDOverlayContainer::CleanUp(double pts)
@@ -103,7 +93,7 @@ void CDVDOverlayContainer::CleanUp(double pts)
     {
       //CLog::Log(LOGDEBUG,"CDVDOverlay::CleanUp, removing %d", (int)(pts / 1000));
       //CLog::Log(LOGDEBUG,"CDVDOverlay::CleanUp, remove, start : %d, stop : %d", (int)(pOverlay->iPTSStartTime / 1000), (int)(pOverlay->iPTSStopTime / 1000));
-      pOverlay = Remove(pOverlay);
+      it = Remove(it);
       continue;
     }
     else if (pOverlay->bForced)
@@ -120,7 +110,7 @@ void CDVDOverlayContainer::CleanUp(double pts)
 
       if (bNewer)
       {
-        pOverlay = Remove(pOverlay);
+        it = Remove(it);
         continue;
       }
     }
