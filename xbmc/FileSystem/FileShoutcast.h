@@ -10,6 +10,7 @@
 #endif // _MSC_VER > 1000
 
 #include "IFile.h"
+#include "../lib/libshout/rip_manager.h"
 
 #ifdef _LINUX
 #include <errno.h>
@@ -49,6 +50,7 @@ protected:
   void outputTimeoutMessage(const char* message);
   DWORD m_dwLastTime;
   int m_contenttype;
+  RIP_MANAGER_OPTIONS m_opt;
 };
 }
 #endif // !defined(AFX_FILESHOUTCAST_H__6B6082E6_547E_44C4_8801_9890781659C0__INCLUDED_)
