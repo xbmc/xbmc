@@ -332,6 +332,8 @@ bool CDVDPlayer::CloseFile()
   // we are done after the StopThread call
   StopThread();
 
+  m_Edl.Reset();
+
   CLog::Log(LOGNOTICE, "DVDPlayer: finished waiting");
 
   return true;
@@ -543,14 +545,19 @@ void CDVDPlayer::Process()
     return;
   }
 
-  // find any available external subtitles for non dvd files
-  if( !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
+
+  if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
   &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
   {
+    // find any available external subtitles
     std::vector<std::string> filenames;
     CDVDFactorySubtitle::GetSubtitles(filenames, m_filename);
     for(unsigned int i=0;i<filenames.size();i++)
       AddSubtitleFile(filenames[i]);
+
+    // look for any edl files
+    if (g_guiSettings.GetBool("videoplayer.editdecision"))
+      m_Edl.ReadnCacheAny(m_filename);
   }
 
   // make sure application know our info
@@ -821,8 +828,12 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
   else if(pPacket->pts != DVD_NOPTS_VALUE)
     m_CurrentAudio.dts = pPacket->pts;
 
-  bool drop;
-  CheckPlayerInit(m_CurrentAudio, DVDPLAYER_AUDIO, drop);
+  bool drop = false;
+  if (CheckPlayerInit(m_CurrentAudio, DVDPLAYER_AUDIO))
+    drop = true;
+
+  if (CheckSceneSkip(m_CurrentAudio, DVDPLAYER_AUDIO))
+    drop = true;
 
   m_dvdPlayerAudio.SendMessage(new CDVDMsgDemuxerPacket(pPacket, drop));
 }
@@ -851,9 +862,13 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
     else if(pPacket->pts != DVD_NOPTS_VALUE)
       m_CurrentVideo.dts = pPacket->pts;
   }
+  
+  bool drop = false;
+  if (CheckPlayerInit(m_CurrentVideo, DVDPLAYER_VIDEO))
+    drop = true;
 
-  bool drop;
-  CheckPlayerInit(m_CurrentVideo, DVDPLAYER_VIDEO, drop);
+  if (CheckSceneSkip(m_CurrentAudio, DVDPLAYER_VIDEO))
+    drop = true;
 
   m_dvdPlayerVideo.SendMessage(new CDVDMsgDemuxerPacket(pPacket, drop));
 }
@@ -878,8 +893,12 @@ void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket)
   else if(pPacket->pts != DVD_NOPTS_VALUE)
     m_CurrentSubtitle.dts = pPacket->pts;
 
-  bool drop;
-  CheckPlayerInit(m_CurrentSubtitle, DVDPLAYER_SUBTITLE, drop);
+  bool drop = false;
+  if (CheckPlayerInit(m_CurrentSubtitle, DVDPLAYER_SUBTITLE))
+    drop = true;
+
+  if (CheckSceneSkip(m_CurrentAudio, DVDPLAYER_SUBTITLE))
+    drop = true;
 
   m_dvdPlayerSubtitle.SendMessage(new CDVDMsgDemuxerPacket(pPacket, drop));
 
@@ -887,10 +906,8 @@ void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket)
     m_dvdPlayerSubtitle.UpdateOverlayInfo((CDVDInputStreamNavigator*)m_pInputStream, LIBDVDNAV_BUTTON_NORMAL);
 }
 
-void CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source, bool& drop)
+bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
 {
-  drop = false;
-
   if(current.startsync)
   {
     if(current.startpts < current.dts && current.dts != DVD_NOPTS_VALUE
@@ -923,8 +940,7 @@ void CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source, b
   if(current.startsync)
   {
     CLog::Log(LOGDEBUG, "%s - dropping packet type:%d dts:%f to get to start point at %f", __FUNCTION__, source,  current.dts, current.startpts);
-    drop = true;
-    return;
+    return true;
   }
 
 
@@ -947,7 +963,7 @@ void CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source, b
     else if(source == DVDPLAYER_SUBTITLE)
       m_dvdPlayerSubtitle.SendMessage(msg);
   }
-  return;
+  return false;
 }
 
 void CDVDPlayer::CheckContinuity(DemuxPacket* pPacket, unsigned int source)
@@ -1033,6 +1049,30 @@ void CDVDPlayer::CheckContinuity(DemuxPacket* pPacket, unsigned int source)
   }
 
 }
+
+bool CDVDPlayer::CheckSceneSkip(CCurrentStream& current, unsigned int source)
+{
+  CEdl::Cut cut;
+
+  if(!m_Edl.HaveCutpoints())
+    return false;
+
+  if(current.dts == DVD_NOPTS_VALUE)
+    return false;
+
+  if (m_Edl.InCutpoint(DVD_TIME_TO_MSEC(current.dts), &cut) && cut.CutAction == CEdl::CUT)
+  {
+    // check if both streams are in cut position, if they are do the seek
+    if (m_CurrentAudio.id >= 0 && m_CurrentAudio.dts != DVD_NOPTS_VALUE && m_CurrentAudio.dts > DVD_MSEC_TO_TIME(cut.CutStart)
+    &&  m_CurrentVideo.id >= 0 && m_CurrentVideo.dts != DVD_NOPTS_VALUE && m_CurrentVideo.dts > DVD_MSEC_TO_TIME(cut.CutStart))
+      m_messenger.Put(new CDVDMsgPlayerSeek(cut.CutEnd+1, false, false, true)); // seek past cutpoint
+
+    return true;
+  }
+  return false;
+}
+
+
 void CDVDPlayer::SyncronizeDemuxer(DWORD timeout)
 {
   if(CThread::ThreadId() == GetCurrentThreadId())
@@ -1422,6 +1462,18 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
   }
 }
 
+bool CDVDPlayer::SeekScene(bool bPlus)
+{
+  __int64 iScenemarker;
+  if( m_Edl.HaveScenes() && m_Edl.SeekScene(bPlus,&iScenemarker) )
+  {
+    m_messenger.Put(new CDVDMsgPlayerSeek((int)iScenemarker, false, false, true)); 
+    SyncronizeDemuxer(100);
+    return true;
+  }
+  return false;
+}
+
 void CDVDPlayer::ToggleFrameDrop()
 {
   m_dvdPlayerVideo.EnableFrameDrop( !m_dvdPlayerVideo.IsFrameDropEnabled() );
@@ -1466,13 +1518,15 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
     double apts = m_dvdPlayerAudio.GetCurrentPts();
     double vpts = m_dvdPlayerVideo.GetCurrentPts();
     double dDiff = 0;
+    char cEdlStatus;
 
     if( apts != DVD_NOPTS_VALUE && vpts != DVD_NOPTS_VALUE )
       dDiff = (apts - vpts) / DVD_TIME_BASE;
 
     int iFramesDropped = m_dvdPlayerVideo.GetNrOfDroppedFrames();
+    cEdlStatus = m_Edl.GetEdlStatus();
 
-    strGeneralInfo.Format("DVD Player ad:%6.3f, a/v:%6.3f, dropped:%d, cpu: %i%%", dDelay, dDiff, iFramesDropped, (int)(CThread::GetRelativeUsage()*100));
+    strGeneralInfo.Format("DVD Player ad:%6.3f, a/v:%6.3f, dropped:%d, cpu: %i%%, edl: %c", dDelay, dDiff, iFramesDropped, (int)(CThread::GetRelativeUsage()*100), cEdlStatus);
   }
 }
 
@@ -1610,48 +1664,54 @@ void CDVDPlayer::SeekTime(__int64 iTime)
 // return the time in milliseconds
 __int64 CDVDPlayer::GetTime()
 {
+  __int64 msec = 0;
   // get timing and seeking from libdvdnav for dvd's
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     if(m_dvd.state == DVDSTATE_STILL)
-      return GetTickCount() - m_dvd.iDVDStillStartTime;
+      msec = GetTickCount() - m_dvd.iDVDStillStartTime;
     else
-      return ((CDVDInputStreamNavigator*)m_pInputStream)->GetTime(); // we should take our buffers into account
+      msec = ((CDVDInputStreamNavigator*)m_pInputStream)->GetTime(); // we should take our buffers into account
   }
 
-  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+  else if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
   {
-    int msec;
-    msec  = (__int64)(m_clock.GetClock() * 1000 / DVD_TIME_BASE);
+    msec = (__int64)(m_clock.GetClock() * 1000 / DVD_TIME_BASE);
     msec += ((CDVDInputStreamTV*)m_pInputStream)->GetStartTime();
-    return msec;
   }
 
-  return (__int64)(m_clock.GetClock() * 1000 / DVD_TIME_BASE);
+  else
+    msec = (__int64)(m_clock.GetClock() * 1000 / DVD_TIME_BASE);
+
+  if (m_Edl.HaveCutpoints())
+    msec = m_Edl.RemoveCutTime(msec);
+
+  return msec;
 }
 
 // return length in msec
 __int64 CDVDPlayer::GetTotalTimeInMsec()
 {
+  __int64 msec = 0;
   // get timing and seeking from libdvdnav for dvd's
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     if(m_dvd.state == DVDSTATE_STILL && m_dvd.iDVDStillTime > 0)
-      return m_dvd.iDVDStillTime;
+      msec = m_dvd.iDVDStillTime;
     else
-      return ((CDVDInputStreamNavigator*)m_pInputStream)->GetTotalTime(); // we should take our buffers into account
+      msec = ((CDVDInputStreamNavigator*)m_pInputStream)->GetTotalTime(); // we should take our buffers into account
   }
 
-  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
-  {
-    int msec = ((CDVDInputStreamTV*)m_pInputStream)->GetTotalTime();
-    if (msec > 0)
-      return msec;
-  }
+  else if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+    msec = ((CDVDInputStreamTV*)m_pInputStream)->GetTotalTime();
 
-  if (m_pDemuxer) return m_pDemuxer->GetStreamLenght();
+  else if (m_pDemuxer) 
+    msec = m_pDemuxer->GetStreamLenght();
+
+  if (m_Edl.HaveCutpoints())
+    msec -= m_Edl.TotalCutTime();
+
   return 0;
-
 }
 
 // return length in seconds.. this should be changed to return in milleseconds throughout xbmc
