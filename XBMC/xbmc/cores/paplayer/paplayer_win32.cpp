@@ -80,7 +80,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
   m_crossFading = g_guiSettings.GetInt("musicplayer.crossfade");
   //no crossfading for cdda, cd-reading goes mad and no crossfading for last.fm doesn't like two connections
-  if (file.IsCDDA() || file.IsLastFM()) m_crossFading = 0;
+  if (file.IsCDDA() || file.IsLastFM() || file.IsShoutCast()) m_crossFading = 0;
   if (m_crossFading && IsPlaying())
   {
     //do a short crossfade on trackskip
@@ -156,6 +156,7 @@ void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
       (
         file.IsCDDA() ||
         file.IsLastFM() ||
+        file.IsShoutCast() ||
         (
           file.HasMusicInfoTag() && !g_guiSettings.GetBool("musicplayer.crossfadealbumtracks") &&
           (m_currentFile.GetMusicInfoTag()->GetAlbum() != "") &&
