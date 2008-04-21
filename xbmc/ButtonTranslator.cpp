@@ -162,7 +162,7 @@ WORD CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const ch
 }
 #endif
 
-#ifdef HAS_SDL_JOYSTICK
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
 void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
 {
   string joyname = "_xbmc_"; // default global map name
@@ -482,7 +482,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
       pButton = pButton->NextSiblingElement();
     }
   }
-#ifdef HAS_SDL_JOYSTICK
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
   if ((pDevice = pWindow->FirstChild("joystick")) != NULL)
   { 
     // map joystick actions
