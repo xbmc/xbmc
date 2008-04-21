@@ -4130,7 +4130,6 @@ bool CApplication::ProcessEventServer(float frameTime)
       bool fullRange = false;
       CAction action;
 
-#ifdef HAS_SDL_JOYSTICK      
       // Translate using regular joystick translator.
       if (g_buttonTranslator.TranslateJoystickString(iWin, joystickName.c_str(), (int)wKeyID, false, action.wID, action.strAction, fullRange))
       {
@@ -4144,7 +4143,6 @@ bool CApplication::ProcessEventServer(float frameTime)
       {
         printf("ERROR mapping joystick action.\n");
       }
-#endif
     }
     else
     {

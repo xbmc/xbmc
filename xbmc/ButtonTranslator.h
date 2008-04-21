@@ -37,7 +37,7 @@ public:
 #ifdef HAS_LIRC
   WORD TranslateLircRemoteString(const char* szDevice, const char *szButton);
 #endif
-#ifdef HAS_SDL_JOYSTICK
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
   bool TranslateJoystickString(WORD wWindow, const char* szDevice, int id, 
                                bool axis, WORD& action, CStdString& strAction,
                                bool &fullrange);
@@ -70,7 +70,7 @@ private:
   std::map<CStdString, lircButtonMap> lircRemotesMap;
 #endif
 
-#ifdef HAS_SDL_JOYSTICK
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
   void MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick); 
 
   typedef std::map<WORD, std::map<int, std::string> > JoystickMap; // <window, <button/axis, action> >
