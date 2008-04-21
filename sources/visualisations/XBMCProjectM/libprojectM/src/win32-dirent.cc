@@ -144,7 +144,7 @@ int scandir(
 	int(*compar)(const void*, const void*)
 ) {
 	int entries = 0;
-	int max_entries = 512; // assume 2*512 = 1024 entries (used for allocation)
+	int max_entries = 1024; // assume 2*512 = 1024 entries (used for allocation)
 	DIR* d;
 	
 	*namelist = 0;
@@ -166,7 +166,7 @@ int scandir(
 			struct dirent** new_entries;
 			
 			max_entries *= 2;
-			new_entries = (dirent**)realloc(*namelist, max_entries);
+			new_entries = (struct dirent**)realloc(*namelist, max_entries);
 			if (!new_entries) {
 				scandir_free_dir_entries(namelist, entries);
 				closedir(d);
@@ -178,7 +178,7 @@ int scandir(
 		}
 
 		// allocate new entry
-		(*namelist)[entries] = (dirent*)malloc(sizeof(struct dirent) + strlen(ent->d_name) + 1);
+		(*namelist)[entries] = (struct dirent*)malloc(sizeof(struct dirent) + strlen(ent->d_name) + 1);
 		if (!(*namelist)[entries]) {
 			scandir_free_dir_entries(namelist, entries);
 			closedir(d);

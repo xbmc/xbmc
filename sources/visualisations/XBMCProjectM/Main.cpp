@@ -354,15 +354,3 @@ extern "C" void UpdateSetting(int num)
   if (strcasecmp(setting.name, "Use Preset")==0)
     OnAction(34, (void*)&setting.current);
 }
-
-#ifdef _WIN32PC
-extern "C" void DebugOut(const char *format, ...)
-{
-    va_list va;
-    static char tmp[2048];
-    va_start(va, format);
-    _vsnprintf(tmp, 2048, format, va);
-    va_end(va);
-    OutputDebugString(tmp);
-}
-#endif

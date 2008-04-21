@@ -82,7 +82,7 @@ int x, y;
 #ifndef WIN32
       pm->Time = getTicks( &pm->startTime ) * 0.001;
 #else
-        pm->Time = getTicks( pm->startTime ) * 0.001;
+      pm->Time = getTicks( pm->startTime ) * 0.001;
 #endif /** !WIN32 */
       
       pm->frame++;  //number of frames for current preset

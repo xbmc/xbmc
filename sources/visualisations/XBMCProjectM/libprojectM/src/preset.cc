@@ -189,24 +189,27 @@ int switchPreset(switch_mode_t switch_mode, int cut_type) {
 		int dir_size = scandir(PM->presetURL, &entries, is_valid_extension, alphasort);
 		if (dir_size > 0) {
 			int i;
-			
+
 			switch_index %= dir_size;
 			if (switch_index < 0) switch_index += dir_size;			
 			
 			for (i = 0; i < dir_size; ++i) {
+
 				if (switch_index == i) {
 					// matching entry
 					const size_t len = strlen(PM->presetURL);
 					char* path = (char *) malloc(len + strlen(entries[i]->d_name) + 2);
 					if (path) {					
 						strcpy(path, PM->presetURL);
-						if (len && ((path[len - 1] != '/')||(path[len - 1] != '\\'))) {
-							strcat(path + len, "/");
+						if (len && ((path[len - 1] != '/')||(path[len - 1] != '\\'))) 
+            {
+              path[len] = PATH_SEPARATOR;
+              path[len+1] = '\0';
 						}
 						strcat(path + len, entries[i]->d_name);
 						
 						new_preset = load_preset(path);
-                                                new_preset->index = switch_index;
+            new_preset->index = switch_index;
 						free(path);
 						
 						// we must keep iterating to free the remaining entries

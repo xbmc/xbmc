@@ -329,7 +329,7 @@ typedef struct PROJECTM {
   } projectM_t;
 
 /** Functions */
-#ifdef __CPLUSPLUS
+#ifdef __cplusplus
  void projectM_init(projectM_t *pm);
  void projectM_reset( projectM_t *pm );
  void projectM_resetGL( projectM_t *pm, int width, int height );
