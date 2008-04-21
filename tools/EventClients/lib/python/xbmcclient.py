@@ -413,11 +413,12 @@ class PacketLOG (Packet):
 class XBMCClient:
     """An XBMC event client"""
 
-    def __init__(self, name ="", icon_file=None, broadcast=False):
+    def __init__(self, name ="", icon_file=None, broadcast=False, uid=UNIQUE_IDENTIFICATION):
         """
         Keyword arguments:
         name -- Name of the client
         icon_file -- location of an icon file, if any (png, jpg or gif)
+        uid  -- unique identification
         """
         self.name = str(name)
         self.icon_file = icon_file
@@ -427,6 +428,7 @@ class XBMCClient:
         self.sock = socket(AF_INET,SOCK_DGRAM)
         if broadcast:
             self.sock.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
+        self.uid = uid
 
     
     def connect(self, ip=None, port=None):
@@ -440,19 +442,19 @@ class XBMCClient:
             self.port = int(port)
         self.addr = (self.ip, self.port)
         packet = PacketHELO(self.name, self.icon_type, self.icon_file)                            
-        packet.send(self.sock, self.addr)
+        packet.send(self.sock, self.addr, self.uid)
 
 
     def close(self):
         """Close the current connection"""
         packet = PacketBYE()
-        packet.send(self.sock, self.addr)
+        packet.send(self.sock, self.addr, self.uid)
 
 
     def ping(self):
         """Send a PING packet"""
         packet = PacketPING()
-        packet.send(self.sock, self.addr)
+        packet.send(self.sock, self.addr, self.uid)
 
         
     def send_notification(self, title="", message="", icon_file=None):
@@ -466,7 +468,7 @@ class XBMCClient:
         packet = PacketNOTIFICATION(title, message,
                                     self._get_icon_type(icon_file),
                                     icon_file)
-        packet.send(self.sock, self.addr)
+        packet.send(self.sock, self.addr, self.uid)
 
 
     def send_keyboard_button(self, button=None):
@@ -482,7 +484,7 @@ class XBMCClient:
     def release_button(self):
         """Release all buttons"""
         packet = PacketBUTTON(code=0x01, down=0)
-        packet.send(self.sock, self.addr)
+        packet.send(self.sock, self.addr, self.uid)
         return
 
 
@@ -505,7 +507,7 @@ class XBMCClient:
                   "printscreen", "minus", "x", etc.
         """
         packet = PacketBUTTON(map_name=str(map), button_name=str(button))
-        packet.send(self.sock, self.addr)
+        packet.send(self.sock, self.addr, self.uid)
         return
 
 
@@ -517,7 +519,7 @@ class XBMCClient:
         y -- same a 'x' but relates to the screen height
         """
         packet = PacketMOUSE(int(x), int(y))
-        packet.send(self.sock, self.addr)
+        packet.send(self.sock, self.addr, self.uid)
 
     def send_log(self, loglevel=0, logmessage="", autoprint=True):
         """
@@ -527,7 +529,7 @@ class XBMCClient:
         autoprint -- if the logmessage should automaticly be printed to stdout
         """
         packet = PacketLOG(loglevel, logmessage)
-        packet.send(self.sock, self.addr)
+        packet.send(self.sock, self.addr, self.uid)
 
     def _get_icon_type(self, icon_file):
         if icon_file:
