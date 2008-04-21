@@ -2,6 +2,7 @@
 #include "utils/Thread.h"
 #include "VideoDatabase.h"
 #include "utils/IMDB.h"
+#include "NfoFile.h"
 
 namespace VIDEO
 {
@@ -42,7 +43,7 @@ namespace VIDEO
     void OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, IMDB_EPISODELIST& files, long lShowId, CIMDB& IMDB, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
     static CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false);
     long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const SScraperInfo& info, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL);
-    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* m_dlgProgress  = NULL);
+    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* dlgProgress  = NULL);
     static void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
   protected:
     virtual void Process();
@@ -52,6 +53,9 @@ namespace VIDEO
     int CountFiles(const CStdString& strPath);
     void FetchSeasonThumbs(long lTvShowId);
     void FetchActorThumbs(const std::vector<SActorInfo>& actors);
+    void CheckForNFOFile(CFileItem* pItem, const CNfoFile& nfoReader, 
+                         const SScraperInfo& info, bool bDirNames, 
+                         CGUIDialogProgress* dlgProgress  = NULL);
     static int GetPathHash(const CFileItemList &items, CStdString &hash);
 
   protected:
