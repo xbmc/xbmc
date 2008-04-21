@@ -20,7 +20,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;..\win32\freetype-2.2.1\freetype2\include&quot;;..\FTGL\include;D:\Coding\xbmc_sdl\sdl_libs\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;HAS_SDL_OPENGL;HAS_SDL;_WIN32PC"
+				PreprocessorDefinitions="WIN32;DEBUG;_WINDOWS;HAS_SDL_OPENGL;HAS_SDL;_WIN32PC"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -33,7 +33,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="opengl32.lib glu32.lib"
-				OutputFile="$(OutDir)/ProjectM.vis"
+				OutputFile="$(OutDir)/ProjectM_win32.vis"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/win32.pdb"

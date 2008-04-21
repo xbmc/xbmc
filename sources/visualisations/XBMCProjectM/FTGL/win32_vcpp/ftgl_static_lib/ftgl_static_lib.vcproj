@@ -25,7 +25,7 @@
 				AdditionalIncludeDirectories="&quot;..\..\..\win32\freetype-2.2.1\freetype2\include&quot;;..\..\include"
 				PreprocessorDefinitions="_DEBUG;WIN32;_LIB;FTGL_LIBRARY_STATIC"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Debug_MT/ftgl_static_lib.pch"
 				AssemblerListingLocation=".\Debug_MT/"
@@ -177,10 +177,10 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="D:\cots\freetype-2.0.5\include,..\..\include"
+				AdditionalIncludeDirectories="&quot;..\..\..\win32\freetype-2.2.1\freetype2\include&quot;;..\..\include"
 				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;FTGL_LIBRARY_STATIC"
 				StringPooling="TRUE"
-				RuntimeLibrary="0"
+				RuntimeLibrary="4"
 				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Release_ST/ftgl_static_lib.pch"
@@ -194,7 +194,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\Build\ftgl_static_MT.lib"
+				OutputFile="..\Build\ftgl_static.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
