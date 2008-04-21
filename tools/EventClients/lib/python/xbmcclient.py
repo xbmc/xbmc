@@ -38,6 +38,7 @@ PT_PING          = 0x05
 PT_BROADCAST     = 0x06
 PT_NOTIFICATION  = 0x07
 PT_BLOB          = 0x08
+PT_LOG           = 0x09
 PT_DEBUG         = 0xFF
 
 ICON_NONE = 0x00
@@ -54,6 +55,14 @@ BT_NO_REPEAT  = 0x20
 
 MS_ABSOLUTE = 0x01
 
+LOGDEBUG   = 0x00
+LOGINFO    = 0x01
+LOGNOTICE  = 0x02
+LOGWARNING = 0x03
+LOGERROR   = 0x04
+LOGSEVERE  = 0x05
+LOGFATAL   = 0x06
+LOGNONE    = 0x07
 
 ######################################################################
 # Helper Functions
@@ -372,6 +381,24 @@ class PacketPING (Packet):
         Packet.__init__(self)
         self.packettype = PT_PING
 
+class PacketLOG (Packet):
+    """A LOG packet
+
+    A LOG packet tells XBMC to log the message to xbmc.log with the loglevel as specified.
+    """
+    def __init__(self, loglevel=0, logmessage="", autoprint=True):
+        """
+        Keyword arguments:
+        loglevel -- the loglevel, follows XBMC standard.
+        logmessage -- the message to log
+        autoprint -- if the logmessage should automaticly be printed to stdout
+        """
+        Packet.__init__(self)
+        self.packettype = PT_LOG
+        self.append_payload( chr (loglevel) )
+        self.append_payload( format_string(logmessage) )
+        if (autoprint):
+          print logmessage
 
 ######################################################################
 # XBMC Client Class
@@ -486,6 +513,15 @@ class XBMCClient:
         packet = PacketMOUSE(int(x), int(y))
         packet.send(self.sock, self.addr)
 
+    def send_log(self, loglevel=0, logmessage="", autoprint=True):
+        """
+        Keyword arguments:
+        loglevel -- the loglevel, follows XBMC standard.
+        logmessage -- the message to log
+        autoprint -- if the logmessage should automaticly be printed to stdout
+        """
+        packet = PacketLOG(loglevel, logmessage)
+        packet.send(self.sock, self.addr)
 
     def _get_icon_type(self, icon_file):
         if icon_file:
