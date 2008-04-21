@@ -26,6 +26,10 @@
 #include "SkinInfo.h"
 #include "Key.h"
 
+#ifdef _WIN32PC
+#define strcasecmp stricmp
+#endif
+
 using namespace std;
 
 CButtonTranslator g_buttonTranslator;
