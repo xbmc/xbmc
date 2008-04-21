@@ -91,7 +91,8 @@ def main():
             firstRun = True
             print "Accepted connection from ", client_addr
         except KeyboardInterrupt:
-            print "User interrupted"		
+            packet = PacketLOG(LOGNOTICE, "J2ME: User interrupted")
+            packet.send(sock, addr)
             bt_stop_advertising(socket = server_sock)
             server_sock.close()
             sys.exit(0)
@@ -100,13 +101,15 @@ def main():
                 if firstRun:
                     client_name = client_sock.recv(1024)
                     firstRun = False
-                    send_message("Phone Connected", client_name)
-
+                    send_message("J2ME: Phone Connected", client_name)
+                    packet = PacketLOG(LOGNOTICE, "Phone Connected")
+                    packet.send(sock, addr)
                 data = client_sock.recv(3)
                 if(data[0] == "0"):
                     if(data[1] == "0"):
                         runFlag = False
-                        print "Recieved disconnect command"
+                        packet = PacketLOG(LOGNOTICE, "J2ME: Recieved disconnect command")
+                        packet.send(sock, addr)
                         client_sock.close()
                     if(data[1] == "1"):
                         print "Shuting down server"
@@ -128,7 +131,8 @@ def main():
             send_message("Phone Disconnected", client_name)
             pass
         except KeyboardInterrupt:
-            print "User interrupted"
+            packet = PacketLOG(LOGNOTICE, "J2ME: User interrupted")
+            packet.send(sock, addr)
             client_sock.close()
             bt_stop_advertising(socket = server_sock)
             server_sock.close()
