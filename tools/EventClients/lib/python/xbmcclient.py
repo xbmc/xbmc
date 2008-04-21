@@ -25,10 +25,12 @@ __version__ = "0.0.3"
 
 from struct import pack
 from socket import *
+import time
 
 MAX_PACKET_SIZE  = 1024
 HEADER_SIZE      = 32
 MAX_PAYLOAD_SIZE = MAX_PACKET_SIZE - HEADER_SIZE
+UNIQUE_IDENTIFICATION = (int)(time.time())
 
 PT_HELO          = 0x01
 PT_BYE           = 0x02
@@ -106,8 +108,8 @@ class Packet:
          | -H3 PacketType            | - 1  x UNSIGNED SHORT      2B
          | -H4 Sequence number       | - 1  x UNSIGNED LONG       4B
          | -H5 No. of packets in msg | - 1  x UNSIGNED LONG       4B
-         | -H6 Payload size          | - 1  x UNSIGNED SHORT      2B
-         | -H7 Reserved              | - 14 x UNSIGNED CHAR      14B
+         | -H7 Client's unique token | - 1  x UNSIGNED LONG       4B
+         | -H8 Reserved              | - 10 x UNSIGNED CHAR      10B
          |---------------------------|
          | -P1 payload               | -
          -----------------------------
@@ -119,7 +121,8 @@ class Packet:
         self.seq = 1
         self.maxseq = 1
         self.payloadsize = 0
-        self.reserved = "\0" * 14
+        self.uid = UNIQUE_IDENTIFICATION
+        self.reserved = "\0" * 10
         self.payload = ""
         return
 
@@ -170,6 +173,7 @@ class Packet:
         header += format_uint32(seq)
         header += format_uint32(maxseq)
         header += format_uint16(payload_size)
+        header += format_uint32(self.uid)
         header += self.reserved
         return header
 
@@ -211,13 +215,15 @@ class Packet:
                                 self.get_payload_size(packetnum) ]
         return header + payload
 
-    def send(self, sock, addr):
+    def send(self, sock, addr, uid=UNIQUE_IDENTIFICATION):
         """Send the entire message to the specified socket and address.
 
         Arguments:
         sock -- datagram socket object (socket.socket)
         addr -- address, port pair (eg: ("127.0.0.1", 9777) )
+        uid  -- unique identification
         """
+        self.uid = uid
         for a in range ( 0, self.num_packets() ):
             sock.sendto(self.get_udp_message(a+1), addr)
 
