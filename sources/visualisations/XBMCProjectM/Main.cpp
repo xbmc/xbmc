@@ -43,17 +43,22 @@ d4rk@xboxmediacenter.com
 #include <string>
 #ifdef _WIN32PC
 #include "libprojectM/src/win32-dirent.h"
-extern int preset_index;
 #else
 #include <dirent.h>
 #endif
 
 #define CONFIG_FILE "/config"
+#ifdef _WIN32PC
+#define PRESETS_DIR "visualisations\\projectM"
+#define FONTS_DIR "fonts"
+#else
 #define PRESETS_DIR "/visualisations/projectM"
 #define FONTS_DIR "/fonts"
+#endif
 #define PROJECTM_DATADIR "userdata"
 
 projectM_t *globalPM = NULL;
+extern int preset_index;
 
 int maxSamples=512;
 
@@ -137,13 +142,13 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   {
     rootdir = ".";
   }
-  dirname = string(rootdir) + "/" + string(PROJECTM_DATADIR) + string(FONTS_DIR);;
+  dirname = string(rootdir) + PATH_SEPARATOR + string(PROJECTM_DATADIR) + string(FONTS_DIR);;
   fprintf(stderr, "ProjectM Fonts Dir: %s\n", dirname.c_str());
   
   globalPM->fontURL = (char *)malloc( sizeof( char ) * 512 );
   strncpy(globalPM->fontURL, dirname.c_str(), 512);
   
-  dirname = string(rootdir) + "/" + string(PRESETS_DIR);;
+  dirname = string(rootdir) + PATH_SEPARATOR + string(PRESETS_DIR);;
   fprintf(stderr, "ProjectM Presets Dir: %s", dirname.c_str());
   
   globalPM->presetURL = (char *)malloc( sizeof( char ) * 512 );
@@ -272,7 +277,6 @@ extern "C" bool OnAction(long flags, void *param)
   if (flags == VIS_ACTION_LOAD_PRESET && param)
   {
     int pindex = *(int*)param;
-    extern int preset_index;
     preset_index = pindex;
     switchPreset(RESTART_ACTIVE, SOFT_CUT);
     ret = true;
@@ -313,7 +317,9 @@ extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets
           {
             strcpy(g_presets[i], entries[i]->d_name);
           }
+          free(entries[i]);
         }
+        free(entries);
       }
     }
   }
@@ -348,3 +354,15 @@ extern "C" void UpdateSetting(int num)
   if (strcasecmp(setting.name, "Use Preset")==0)
     OnAction(34, (void*)&setting.current);
 }
+
+#ifdef _WIN32PC
+extern "C" void DebugOut(const char *format, ...)
+{
+    va_list va;
+    static char tmp[2048];
+    va_start(va, format);
+    _vsnprintf(tmp, 2048, format, va);
+    va_end(va);
+    OutputDebugString(tmp);
+}
+#endif
