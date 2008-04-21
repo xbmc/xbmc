@@ -852,12 +852,10 @@ static void CopyUserDataIfNeeded(CStdString strPath, LPCTSTR file)
 {
   strPath.append(PATH_SEPARATOR_STRING);
   strPath.append(file);
-  //printf("Checking for existance of %s\n", strPath.c_str());
   if (access(strPath.c_str(), 0) == -1)
   {
     CStdString srcFile = _P("q:\\userdata\\");
     srcFile.append(file);
-    //printf("Copying from %s to %s\n", srcFile.c_str(), strPath.c_str());
     CopyFile(srcFile.c_str(), strPath.c_str(), TRUE);
   }
 }
@@ -4135,13 +4133,12 @@ bool CApplication::ProcessEventServer(float frameTime)
       {
         action.fAmount1 = 1.0f;
         action.fRepeat = 0.0f;
-        printf("Got action: [%s] window: %d\n", action.strAction.c_str(), iWin);
         g_audioManager.PlayActionSound(action);
         return OnAction(action);
       }
       else
       {
-        printf("ERROR mapping joystick action.\n");
+        CLog::Log(LOGDEBUG, "ERROR mapping joystick action");
       }
     }
     else
