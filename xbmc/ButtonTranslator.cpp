@@ -26,10 +26,6 @@
 #include "SkinInfo.h"
 #include "Key.h"
 
-#ifdef _WIN32PC
-#define strcasecmp stricmp
-#endif
-
 using namespace std;
 
 CButtonTranslator g_buttonTranslator;
@@ -200,11 +196,11 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
     {
       if ((pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS) && id>=0 && id<=256)
       {
-        if (strcasecmp(szType, "button")==0) 
+        if (strcmpi(szType, "button")==0) 
         {
           buttonMap[id] = string(szAction);
         }
-        else if (strcasecmp(szType, "axis")==0)
+        else if (strcmpi(szType, "axis")==0)
         {
           int limit = 0;
           if (pButton->QueryIntAttribute("limit", &limit) == TIXML_SUCCESS)
@@ -239,7 +235,7 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
           CLog::Log(LOGERROR, "Error reading joystick map element, unknown button type: %s", szType);
         }
       }
-      else if (strcasecmp(szType, "altname")==0)
+      else if (strcmpi(szType, "altname")==0)
       {
         joynames.push_back(string(szAction));
       }
