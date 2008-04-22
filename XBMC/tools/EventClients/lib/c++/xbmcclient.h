@@ -22,6 +22,8 @@
 #define BTN_USE_AMOUNT 0x08
 #define BTN_QUEUE      0x10
 #define BTN_NO_REPEAT  0x20
+#define BTN_VKEY       0x40
+#define BTN_AXIS       0x80
 
 #define PT_HELO         0x01
 #define PT_BYE          0x02
@@ -411,6 +413,8 @@ class CPacketBUTTON : public CPacket
     /*            0x08 => use amount                                        */
     /*            0x10 => queue event                                       */
     /*            0x20 => do not repeat                                     */
+    /*            0x40 => virtual key                                       */
+    /*            0x40 => axis key                                          */
     /* %i - amount ( 0 => 65k maps to -1 => 1 )                             */
     /* %s - device map (case sensitive and required if flags & 0x01)        */
     /*      "KB" - Standard keyboard map                                    */
@@ -419,6 +423,10 @@ class CPacketBUTTON : public CPacket
     /*      "R2" - Xbox Universal Remote                                    */
     /*      "LI:devicename" -  valid LIRC device map where 'devicename'     */
     /*                         is the actual name of the LIRC device        */
+    /*      "JS<num>:joyname" -  valid Joystick device map where            */
+    /*                           'joyname'  is the name specified in        */
+    /*                           the keymap. JS only supports button code   */
+    /*                           and not button name currently (!0x01).     */
     /* %s - button name (required if flags & 0x01)                          */
     /************************************************************************/
 private:
@@ -426,42 +434,34 @@ private:
   std::vector<char> m_Button;
   unsigned short m_ButtonCode;
   unsigned short m_Amount;
-  bool m_Repeat, m_Down, m_Queue;
+  unsigned short m_Flags;
 public:
   virtual void ConstructPayload()
   {
     m_Payload.clear();
-    unsigned short Flags = 0;
 
-    if (m_Button.size() != 0 && m_DeviceMap.size() != 0)
+    if (m_Button.size() != 0)
     {
-      Flags |= BTN_USE_NAME;
+      if (!(m_Flags & BTN_USE_NAME)) // If the BTN_USE_NAME isn't flagged for some reason
+        m_Flags |= BTN_USE_NAME;
       m_ButtonCode = 0;
     }
     else
-    {
-      m_DeviceMap.clear();
       m_Button.clear();
-    }
+
     if (m_Amount > 0)
-      Flags |= BTN_USE_AMOUNT;
-
-    if (m_Down)
-      Flags |= BTN_DOWN;
-    else
-      Flags |= BTN_UP;
-
-    if (!m_Repeat)
-      Flags |= BTN_NO_REPEAT;
-
-    if (m_Queue)
-      Flags |= BTN_QUEUE;
+    {
+      if (!(m_Flags & BTN_USE_AMOUNT))
+        m_Flags |= BTN_USE_AMOUNT;
+    }
+    if (!((m_Flags & BTN_DOWN) || (m_Flags & BTN_UP))) //If none of them are tagged.
+      m_Flags |= BTN_DOWN;
 
     m_Payload.push_back(((m_ButtonCode & 0xff00) >> 8));
     m_Payload.push_back( (m_ButtonCode & 0x00ff));
 
-    m_Payload.push_back(((Flags & 0xff00) >> 8) );
-    m_Payload.push_back( (Flags & 0x00ff));
+    m_Payload.push_back(((m_Flags & 0xff00) >> 8) );
+    m_Payload.push_back( (m_Flags & 0x00ff));
 
     m_Payload.push_back(((m_Amount & 0xff00) >> 8) );
     m_Payload.push_back( (m_Amount & 0x00ff));
@@ -478,14 +478,10 @@ public:
     m_Payload.push_back('\0');
   }
 
-  CPacketBUTTON(const char *Button, const char *DeviceMap, bool Queue = false, bool Repeat = true, bool Down = true, unsigned short Amount = 0) : CPacket()
+  CPacketBUTTON(const char *Button, const char *DeviceMap, unsigned short Flags, unsigned short Amount = 0) : CPacket()
   {
     m_PacketType = PT_BUTTON;
-
-    m_Repeat = Repeat;
-    m_Down   = Down;
-    m_Queue  = Queue;
-    m_Amount = Amount;
+    m_Flags      = Flags;
     m_ButtonCode = 0;
 
     unsigned int len = strlen(DeviceMap);
@@ -497,14 +493,21 @@ public:
       m_Button.push_back(Button[i]);
   }
 
-  CPacketBUTTON(unsigned short ButtonCode, bool Queue = false, bool Repeat = true, bool Down = true, unsigned short Amount = 0) : CPacket()
+  CPacketBUTTON(unsigned short ButtonCode, const char *DeviceMap, unsigned short Flags, unsigned short Amount = 0) : CPacket()
   {
     m_PacketType = PT_BUTTON;
+    m_Flags      = Flags;
+    m_ButtonCode = ButtonCode;
 
-    m_Repeat = Repeat;
-    m_Down   = Down;
-    m_Queue  = Queue;
-    m_Amount = Amount;
+    unsigned int len = strlen(DeviceMap);
+    for (unsigned int i = 0; i < len; i++)
+      m_DeviceMap.push_back(DeviceMap[i]);
+  }
+
+  CPacketBUTTON(unsigned short ButtonCode, unsigned short Flags, unsigned short Amount = 0) : CPacket()
+  {
+    m_PacketType = PT_BUTTON;
+    m_Flags      = Flags;
     m_ButtonCode = ButtonCode;
   }
 
@@ -512,10 +515,7 @@ public:
   CPacketBUTTON() : CPacket()
   {
     m_PacketType = PT_BUTTON;
-
-    m_Repeat = false;
-    m_Down   = false;
-    m_Queue  = false;
+    m_Flags = BTN_UP;
     m_Amount = 0;
     m_ButtonCode = 0;
   }
@@ -678,21 +678,21 @@ public:
     helo.Send(m_Socket, m_Addr, m_UID);
   }
 
-  void SendButton(const char *Button, const char *DeviceMap, bool Queue = false, bool Repeat = true, bool Down = true, unsigned short Amount = 0)
+  void SendButton(const char *Button, const char *DeviceMap, unsigned short Flags, unsigned short Amount = 0)
   {
     if (m_Socket < 0)
       return;
 
-    CPacketBUTTON button(Button, DeviceMap, Queue, Repeat, Down, Amount);
+    CPacketBUTTON button(Button, DeviceMap, Flags, Amount);
     button.Send(m_Socket, m_Addr, m_UID);
   }
 
-  void SendBUTTON(unsigned short ButtonCode, bool Queue = false, bool Repeat = true, bool Down = true, unsigned short Amount = 0)
+  void SendBUTTON(unsigned short ButtonCode, unsigned Flags, unsigned short Amount = 0)
   {
     if (m_Socket < 0)
       return;
 
-    CPacketBUTTON button(ButtonCode, Queue, Repeat, Down, Amount);
+    CPacketBUTTON button(ButtonCode, Flags, Amount);
     button.Send(m_Socket, m_Addr, m_UID);
   }
 
