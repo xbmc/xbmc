@@ -1628,7 +1628,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   { // new resolution choosen... - update if necessary
     CSettingInt *pSettingInt = (CSettingInt *)pSettingControl->GetSetting();
     int iControlID = pSettingControl->GetID();
-    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID, 0, 0, NULL);
+    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
     g_graphicsContext.SendMessage(msg);
     m_NewResolution = (RESOLUTION)msg.GetParam1();
     // reset our skin if necessary
@@ -1723,7 +1723,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CSettingInt *pSettingInt = (CSettingInt *)pSettingControl->GetSetting();
     int iControlID = pSettingControl->GetID();
-    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID, 0, 0, NULL);
+    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
     g_graphicsContext.SendMessage(msg);
     pSettingInt->SetData(msg.GetParam1());
   }

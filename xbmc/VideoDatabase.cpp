@@ -6522,6 +6522,6 @@ void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder)
     
     //   tell our GUI to completely reload all controls (as some of them
     // are likely to have had this image in use so will need refreshing)
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, NULL);
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
 	m_gWindowManager.SendThreadMessage(msg);
 }

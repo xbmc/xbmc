@@ -378,7 +378,7 @@ void CGUIWindowBuddies::OnDeInitialise()
 
 CBuddyItem* CGUIWindowBuddies::GetBuddySelection()
 {
-  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_LISTEX, 0, 0, NULL);
+  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_LISTEX);
   g_graphicsContext.SendMessage(msg);
   //return dynamic_cast<CBuddyItem*>((CGUIListExItem*)msg.GetLPVOID());
 
@@ -392,7 +392,7 @@ CBuddyItem* CGUIWindowBuddies::GetBuddySelection()
 
 CArenaItem* CGUIWindowBuddies::GetArenaSelection()
 {
-  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_LISTEX, 0, 0, NULL);
+  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_LISTEX);
   g_graphicsContext.SendMessage(msg);
 
   CGUIListExItem* pItem = (CGUIListExItem*)msg.GetLPVOID();

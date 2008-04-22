@@ -577,7 +577,7 @@ bool CLastFmManager::MovePlaying()
 
 void CLastFmManager::SendUpdateMessage()
 {
-  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL);
+  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
 }
 
