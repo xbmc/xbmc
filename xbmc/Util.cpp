@@ -3720,7 +3720,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       CLog::Log(LOGERROR, "XBMC.SlideShow called with empty parameter");
       return -2;
     }
-    CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, execute.Equals("SlideShow") ? 0 : 1, 0, 0);
+    CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, execute.Equals("SlideShow") ? 0 : 1);
     msg.SetStringParam(strParameterCaseIntact);
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
     if (pWindow) pWindow->OnMessage(msg);
