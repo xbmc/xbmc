@@ -128,10 +128,7 @@ int CPosixUDPSocket::SendTo(const CAddress& addr, const int buffersize,
 
 CUDPSocket* CSocketFactory::CreateUDPSocket()
 {
-#if defined(_LINUX) || defined (_XBOX)
   return new CPosixUDPSocket();
-#endif
-  return NULL;
 }
 
 /**********************************************************************/
