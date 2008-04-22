@@ -260,7 +260,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
           if (!g_Mouse.IsActive())
           {
             //move to next item
-            CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), iControl, iItem + 1, 0, NULL);
+            CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), iControl, iItem + 1);
             g_graphicsContext.SendMessage(msg);
           }
         }
@@ -320,7 +320,7 @@ void CGUIWindowFileManager::OnSort(int iList)
 
 void CGUIWindowFileManager::ClearFileItems(int iList)
 {
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), iList + CONTROL_LEFT_LIST, 0, 0, NULL);
+  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), iList + CONTROL_LEFT_LIST);
   g_graphicsContext.SendMessage(msg);
 
   m_vecItems[iList]->Clear(); // will clean up everything
