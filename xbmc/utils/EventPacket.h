@@ -104,7 +104,7 @@ namespace EVENTPACKET
     /*            0x10 => queue event                                       */
     /*            0x20 => do not repeat                                     */
     /*            0x40 => virtual key                                       */
-    /*            0x40 => axis key                                          */
+    /*            0x80 => axis key                                          */
     /* %i - amount ( 0 => 65k maps to -1 => 1 )                             */
     /* %s - device map (case sensitive and required if flags & 0x01)        */
     /*      "KB" - Standard keyboard map                                    */
