@@ -109,7 +109,7 @@ else
 fi
 
 if test "$use_mms" = "yes"; then
-  AC_CHECK_LIB([mms], [main],, use_mms="no";AC_MSG_RESULT(== Could not find libmms. MMS support disabled. ==))
+  AC_CHECK_LIB([mms], [main],AC_CHECK_LIB([mms], [mms_seek],,use_mms="no";AC_MSG_RESULT(== Your libmms doesn't have mms_seek. MMS support disabled ==)), use_mms="no";AC_MSG_RESULT(== Could not find libmms. MMS support disabled. ==))
 else
   AC_MSG_RESULT(== MMS support disabled. ==)
 fi
