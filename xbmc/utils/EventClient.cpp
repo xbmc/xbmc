@@ -73,12 +73,6 @@ void CEventButtonState::Load()
         CLog::Log(LOGERROR, "ES: LIRC support not enabled");
 #endif
       }
-      else if (m_mapName.length() > 0)
-      {
-        // We're dealing with a joystick button, parse the button ID.
-        m_iKeyCode = atoi(m_buttonName.c_str());
-        m_joystickName = m_mapName;
-      }
       else
       {
         Reset(); // disable key since its invalid
@@ -89,7 +83,14 @@ void CEventButtonState::Load()
   }
   else
   {
-    m_iKeyCode |= KEY_VKEY;
+    if (m_mapName.length() > 3 && 
+        (m_mapName.compare(0, 2, "JS") == 0) )
+    {
+      m_joystickName = m_mapName.substr(2);  // <num>:joyname
+      m_iControllerNumber = (unsigned char)(*(m_joystickName.c_str())) -  // convert <num> to int
+        (unsigned char)'0';
+      m_joystickName = m_joystickName.substr(2); // extract joyname
+    }
   }
 }
 
@@ -353,11 +354,13 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
     CSingleLock lock(m_critSection);
     if ( flags & PTB_DOWN )
     {
-      m_currentButton.m_iKeyCode   = (flags & PTB_USE_NAME) ? 0 : bcode;
+      m_currentButton.m_iKeyCode   = (flags & PTB_USE_NAME) ? 0 :  // use name? if so no bcode
+        ( (flags & PTB_VKEY) ? (bcode|KEY_VKEY) : bcode );         // not name, use vkey?
       m_currentButton.m_mapName    = map;
       m_currentButton.m_buttonName = button;
       m_currentButton.m_fAmount    = (flags & PTB_USE_AMOUNT) ? amount/65535.0f : 1.0f;
-      m_currentButton.m_bRepeat    = (flags & PTB_NO_REPEAT) ? false : true;      
+      m_currentButton.m_bRepeat    = (flags & PTB_NO_REPEAT)  ? false : true;
+      m_currentButton.m_bAxis      = (flags & PTB_AXIS)       ? false : true;
       m_currentButton.SetActive();
       m_currentButton.Load();
       m_iNextRepeat = 0;
