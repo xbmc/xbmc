@@ -403,7 +403,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString
         return;
       }
       bRefresh = true;
-       m_musicdatabase.DeleteArtistInfo(artistInfo.idArtist);
+      m_musicdatabase.DeleteArtistInfo(artistInfo.idArtist);
     }
   }
 
@@ -453,6 +453,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString
 */
         if (pDlgAlbumInfo->NeedRefresh())
         {
+          m_musicdatabase.DeleteArtistInfo(artistInfo.idArtist);
           ShowArtistInfo(artist, path, true, bShowInfo);
           return;
         }
@@ -498,7 +499,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& p
         return;
       }
       bRefresh = true;
-       m_musicdatabase.DeleteAlbumInfo(albumInfo.idAlbum);
+      m_musicdatabase.DeleteAlbumInfo(albumInfo.idAlbum);
     }
   }
 
@@ -552,6 +553,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& p
 
         if (pDlgAlbumInfo->NeedRefresh())
         {
+          m_musicdatabase.DeleteAlbumInfo(albumInfo.idAlbum);
           ShowAlbumInfo(album, path, true, bShowInfo);
           return;
         }
