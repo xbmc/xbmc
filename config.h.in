@@ -1,4 +1,4 @@
-/* config.h.in.  Generated from configure.ac by autoheader.  */
+/* config.h.in.  Generated from configure.in by autoheader.  */
 
 /* Define to 1 if the `closedir' function returns void instead of `int'. */
 #undef CLOSEDIR_VOID
@@ -94,8 +94,11 @@
 /* Define to 1 if you have the `lchown' function. */
 #undef HAVE_LCHOWN
 
-/* Define to 1 if you have the `cdio' library (-lcdio). */
-#undef HAVE_LIBCDIO
+/* Define to 1 if you have the `asound' library (-lasound). */
+#undef HAVE_LIBASOUND
+
+/* Define to 1 if you have the `dbus-1' library (-ldbus-1). */
+#undef HAVE_LIBDBUS_1
 
 /* Define to 1 if you have the `dl' library (-ldl). */
 #undef HAVE_LIBDL
@@ -115,8 +118,44 @@
 /* Define to 1 if you have the `GLU' library (-lGLU). */
 #undef HAVE_LIBGLU
 
+/* Define to 1 if you have the `hal-storage' library (-lhal-storage). */
+#undef HAVE_LIBHAL_STORAGE
+
+/* Define to 1 if you have the `jasper' library (-ljasper). */
+#undef HAVE_LIBJASPER
+
+/* Define to 1 if you have the `jpeg' library (-ljpeg). */
+#undef HAVE_LIBJPEG
+
 /* Define to 1 if you have the `lzo' library (-llzo). */
 #undef HAVE_LIBLZO
+
+/* Define to 1 if you have the `lzo2' library (-llzo2). */
+#undef HAVE_LIBLZO2
+
+/* Define to 1 if you have the `mad' library (-lmad). */
+#undef HAVE_LIBMAD
+
+/* Define to 1 if you have the `mms' library (-lmms). */
+#undef HAVE_LIBMMS
+
+/* Define to 1 if you have the `mysqlclient' library (-lmysqlclient). */
+#undef HAVE_LIBMYSQLCLIENT
+
+/* Define to 1 if you have the `ogg' library (-logg). */
+#undef HAVE_LIBOGG
+
+/* Define to 1 if you have the `pcre' library (-lpcre). */
+#undef HAVE_LIBPCRE
+
+/* Define to 1 if you have the `png12' library (-lpng12). */
+#undef HAVE_LIBPNG12
+
+/* Define to 1 if you have the `resolv' library (-lresolv). */
+#undef HAVE_LIBRESOLV
+
+/* Define to 1 if you have the `rt' library (-lrt). */
+#undef HAVE_LIBRT
 
 /* Define to 1 if you have the `SDL' library (-lSDL). */
 #undef HAVE_LIBSDL
@@ -130,11 +169,20 @@
 /* Define to 1 if you have the `SDL_mixer' library (-lSDL_mixer). */
 #undef HAVE_LIBSDL_MIXER
 
-/* Define to 1 if you have the `smbclient' library (-lsmbclient). */
-#undef HAVE_LIBSMBCLIENT
-
 /* Define to 1 if you have the `sqlite3' library (-lsqlite3). */
 #undef HAVE_LIBSQLITE3
+
+/* Define to 1 if you have the `tre' library (-ltre). */
+#undef HAVE_LIBTRE
+
+/* Define to 1 if you have the `vorbis' library (-lvorbis). */
+#undef HAVE_LIBVORBIS
+
+/* Define to 1 if you have the `Xinerama' library (-lXinerama). */
+#undef HAVE_LIBXINERAMA
+
+/* Define to 1 if you have the `Xrandr' library (-lXrandr). */
+#undef HAVE_LIBXRANDR
 
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H
@@ -149,9 +197,8 @@
    zero-length file name argument. */
 #undef HAVE_LSTAT_EMPTY_STRING_BUG
 
-/* Define to 1 if your system has a GNU libc compatible `malloc' function, and
-   to 0 otherwise. */
-#undef HAVE_MALLOC
+/* Define to 1 if you have the <lzo/lzo1.h> header file. */
+#undef HAVE_LZO_LZO1_H
 
 /* Define to 1 if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
@@ -191,9 +238,6 @@
 
 /* Define to 1 if you have the `pow' function. */
 #undef HAVE_POW
-
-/* Define to 1 if the system has the type `ptrdiff_t'. */
-#undef HAVE_PTRDIFF_T
 
 /* Define to 1 if your system has a GNU libc compatible `realloc' function,
    and to 0 otherwise. */
@@ -470,9 +514,6 @@
    a type exists and the standard includes do not define it. */
 #undef int8_t
 
-/* Define to rpl_malloc if the replacement function should be used. */
-#undef malloc
-
 /* Define to `int' if <sys/types.h> does not define. */
 #undef mode_t
 
@@ -513,7 +554,3 @@
 /* Define to the type of an unsigned integer type of width exactly 8 bits if
    such a type exists and the standard includes do not define it. */
 #undef uint8_t
-
-/* Define to empty if the keyword `volatile' does not work. Warning: valid
-   code using `volatile' can become incorrect without. Disable with care. */
-#undef volatile
