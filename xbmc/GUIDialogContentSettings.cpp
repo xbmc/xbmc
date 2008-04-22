@@ -371,7 +371,7 @@ void CGUIDialogContentSettings::FillListControl()
       item->Select(true);
     }
     m_vecItems->Add(item);
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_SCRAPER_LIST, 0, 0, (void*)item);
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_SCRAPER_LIST, 0, 0, item);
     OnMessage(msg);
     iIndex++;
   }

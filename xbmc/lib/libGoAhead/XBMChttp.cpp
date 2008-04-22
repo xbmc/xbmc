@@ -1453,7 +1453,7 @@ int CXbmcHttp::xbmcPlaySlideshow(int numParas, CStdString paras[] )
       recursive=atoi(paras[1].c_str());
     else
       recursive=0;
-    CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, recursive, 0, 0);
+    CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, recursive);
     if (numParas==0)
       msg.SetStringParam("");
     else

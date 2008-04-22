@@ -109,13 +109,13 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       m_bRefreshAll = true;
       CGUIDialog::OnMessage(message);
       m_bViewReview = true;
-      CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_DISC, 0, 0, NULL);
+      CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_DISC);
       g_graphicsContext.SendMessage(msg);
       for (int i = 0; i < 1000; ++i)
       {
         CStdString strItem;
         strItem.Format("DVD#%03i", i);
-        CGUIMessage msg2(GUI_MSG_LABEL_ADD, GetID(), CONTROL_DISC, 0, 0);
+        CGUIMessage msg2(GUI_MSG_LABEL_ADD, GetID(), CONTROL_DISC);
         msg2.SetLabel(strItem);
         g_graphicsContext.SendMessage(msg2);
       }
@@ -256,7 +256,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
         int iAction = message.GetParam1();
         if (ACTION_SELECT_ITEM == iAction)
         {
-          CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
+          CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
           g_graphicsContext.SendMessage(msg);
           int iItem = msg.GetParam1();
           if (iItem < 0 || iItem >= m_castList->Size())
@@ -371,7 +371,7 @@ void CGUIWindowVideoInfo::Update()
       m_castList->Add(item);
     }
   }
-  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, (void*)m_castList);
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_castList);
   g_graphicsContext.SendMessage(msg);
 
   if (m_bViewReview)
@@ -607,7 +607,7 @@ void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
 
 void CGUIWindowVideoInfo::ClearCastList()
 {
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST, 0, 0, NULL);
+  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
   g_graphicsContext.SendMessage(msg);
   m_castList->Clear();
 }
@@ -742,7 +742,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
 
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, NULL);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
   g_graphicsContext.SendMessage(msg);
   // Update our screen
   Update();
@@ -827,7 +827,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
 
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, NULL);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
   g_graphicsContext.SendMessage(msg);
   // Update our screen
   Update();

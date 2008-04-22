@@ -3882,7 +3882,7 @@ void CApplication::OnPlayBackEnded()
 
   CLog::Log(LOGDEBUG, "Playback has finished");
 
-  CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0, 0, 0, NULL);
+  CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
   StartLEDControl(false);
   DimLCDOnPlayback(false);
@@ -3905,7 +3905,7 @@ void CApplication::OnPlayBackStarted()
 
   CLog::Log(LOGDEBUG, "Playback has started");
 
-  CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0, 0, 0, NULL);
+  CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
 
   CheckNetworkHDSpinDown(true);
@@ -3926,7 +3926,7 @@ void CApplication::OnQueueNextItem()
 
   CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
-  CGUIMessage msg(GUI_MSG_QUEUE_NEXT_ITEM, 0, 0, 0, 0, NULL);
+  CGUIMessage msg(GUI_MSG_QUEUE_NEXT_ITEM, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
 }
 
@@ -3941,7 +3941,7 @@ void CApplication::OnPlayBackStopped()
     g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackStopped;1");
 
   OutputDebugString("Playback was stopped\n");
-  CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
+  CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
   m_gWindowManager.SendMessage(msg);
   StartLEDControl(false);
   DimLCDOnPlayback(false);
@@ -4531,7 +4531,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         int nRemoved = g_playlistPlayer.RemoveDVDItems();
         if ( nRemoved > 0 )
         {
-          CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
+          CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0 );
           m_gWindowManager.SendMessage( msg );
         }
         // stop the file if it's on dvd (will set the resume point etc)
@@ -4550,7 +4550,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         // update the playlist manager
         WORD currentSong = g_playlistPlayer.GetCurrentSong();
         DWORD dwParam = ((currentSong & 0xffff) << 16) | (m_nextPlaylistItem & 0xffff);
-        CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, g_playlistPlayer.GetCurrentPlaylist(), dwParam, (LPVOID)&item);
+        CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, g_playlistPlayer.GetCurrentPlaylist(), dwParam, &item);
         m_gWindowManager.SendThreadMessage(msg);
         g_playlistPlayer.SetCurrentSong(m_nextPlaylistItem);
         *m_itemCurrentFile = item;
