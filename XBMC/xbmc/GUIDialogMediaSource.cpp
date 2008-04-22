@@ -446,7 +446,7 @@ void CGUIDialogMediaSource::UpdateButtons()
       url.GetURLWithoutUserDetails(path);
       if (path.IsEmpty()) path = "<"+g_localizeStrings.Get(231)+">"; // <None>
       item->SetLabel(path);
-      CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PATH, 0, 0, (void*)item);
+      CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PATH, 0, 0, item);
       OnMessage(msg);
     }
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_PATH, currentItem);
