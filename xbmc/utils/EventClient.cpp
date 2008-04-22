@@ -327,13 +327,13 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
   if (!ParseUInt16(payload, psize, amount))
     return false;
 
+  // parse the map to use
+  if (!ParseString(payload, psize, map))
+    return false;
+
   // parse button name
   if (flags & PTB_USE_NAME)
   {
-    // parse the map to use
-    if (!ParseString(payload, psize, map))
-      return false;
-
     if (!ParseString(payload, psize, button))
       return false;
   }
