@@ -4189,7 +4189,6 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
         strDir.Format("%ld", lMovieId);
         pItem->m_strPath=strBaseDir + strDir;
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
-
         items.Add(pItem);
       }
 
@@ -4270,6 +4269,8 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_dateTime.SetFromDateString(movie.m_strPremiered);
         pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
+        CStdString strTempPath = pItem->m_strPath;
+        pItem->SetProperty("fanart_image", pItem->GetCachedVideoFanart(movie.m_strPath));
         items.Add(pItem);
       }
       m_pDS->next();
