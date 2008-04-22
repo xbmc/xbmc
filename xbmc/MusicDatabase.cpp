@@ -1012,7 +1012,7 @@ bool CMusicDatabase::GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS* songs)
                                 , idAlbum);
 
     if (!m_pDS2->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
+    int iRowsFound = m_pDS2->num_rows();
     if (iRowsFound != 0)
     {
       info.idAlbum = idAlbum;
