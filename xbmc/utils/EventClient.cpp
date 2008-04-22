@@ -87,8 +87,8 @@ void CEventButtonState::Load()
         (m_mapName.compare(0, 2, "JS") == 0) )
     {
       m_joystickName = m_mapName.substr(2);  // <num>:joyname
-      m_iControllerNumber = (unsigned char)(*(m_joystickName.c_str())) -  // convert <num> to int
-        (unsigned char)'0';
+      m_iControllerNumber = (unsigned char)(*(m_joystickName.c_str()))
+        - (unsigned char)'0'; // convert <num> to int
       m_joystickName = m_joystickName.substr(2); // extract joyname
     }
   }
