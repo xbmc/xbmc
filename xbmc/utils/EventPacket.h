@@ -188,13 +188,13 @@ namespace EVENTPACKET
 
     virtual      ~CEventPacket() { if (m_pPayload) free(m_pPayload); }
     virtual bool Parse(int datasize, const void *data);
-    bool         IsValid() { return m_bValid; }
-    PacketType   Type() { return m_eType; }
-    unsigned int Size() { return m_iTotalPackets; }
-    unsigned int Sequence() { return m_iSeq; }
+    bool         IsValid() const { return m_bValid; }
+    PacketType   Type() const { return m_eType; }
+    unsigned int Size() const { return m_iTotalPackets; }
+    unsigned int Sequence() const { return m_iSeq; }
     void*        Payload() { return m_pPayload; }
-    unsigned int PayloadSize() { return m_iPayloadSize; }
-    unsigned int ClientToken() { return m_iClientToken; }
+    unsigned int PayloadSize() const { return m_iPayloadSize; }
+    unsigned int ClientToken() const { return m_iClientToken; }
     void         SetPayload(unsigned int psize, void *payload)
     {
       if (m_pPayload)

@@ -48,12 +48,12 @@ namespace EVENTCLIENT
 
     void Reset()     { m_bActive = false; }
     void SetActive() { m_bActive = true; }
-    bool Active()    { return m_bActive; }
-    bool Repeat()    { return m_bRepeat; }
-    int  ControllerNumber()  { return m_iControllerNumber; }
-    bool Axis()              { return m_bAxis; }
-    unsigned short KeyCode()   { return m_iKeyCode; }
-    float Amount()   { return m_fAmount; }
+    bool Active() const { return m_bActive; }
+    bool Repeat() const { return m_bRepeat; }
+    int  ControllerNumber() const { return m_iControllerNumber; }
+    bool Axis() const { return m_bAxis; }
+    unsigned short KeyCode() const { return m_iKeyCode; }
+    float Amount() const  { return m_fAmount; }
     void Load();
     const std::string& JoystickName() const { return m_joystickName; }
 
@@ -103,7 +103,7 @@ namespace EVENTCLIENT
       RefreshSettings();
     }
 
-    std::string Name()
+    std::string Name() const
     {
       return m_deviceName;
     }
@@ -128,7 +128,7 @@ namespace EVENTCLIENT
     bool AddPacket(EVENTPACKET::CEventPacket *packet);
 
     // return true if client received ping with the last 1 minute
-    bool Alive();
+    bool Alive() const;
 
     // process the packet queue
     bool ProcessQueue();
