@@ -118,7 +118,7 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
         int iAction = message.GetParam1();
         if (ACTION_SELECT_ITEM == iAction && m_bArtistInfo)
         {
-          CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
+          CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
           g_graphicsContext.SendMessage(msg);
           int iItem = msg.GetParam1();
           if (iItem < 0 || iItem >= (int)m_albumSongs->Size())
@@ -248,7 +248,7 @@ void CGUIWindowMusicInfo::Update()
       if (GetControl(CONTROL_LIST))
       {
         SET_CONTROL_HIDDEN(CONTROL_TEXTAREA);
-        CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, &m_albumSongs);
+        CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_albumSongs);
         OnMessage(message);
       }
       else
@@ -285,7 +285,7 @@ void CGUIWindowMusicInfo::Update()
       if (GetControl(CONTROL_LIST))
       {
         SET_CONTROL_HIDDEN(CONTROL_TEXTAREA);
-        CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, &m_albumSongs);
+        CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_albumSongs);
         OnMessage(message);
       }
       else
@@ -525,7 +525,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
 
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, NULL);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
   g_graphicsContext.SendMessage(msg);
   // Update our screen
   Update();
