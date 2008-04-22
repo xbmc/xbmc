@@ -1041,7 +1041,7 @@ bool CMusicDatabase::GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS* songs)
 
       return true;
     }
-    m_pDS->close();
+    m_pDS2->close();
     return false;
   }
   catch (...)
