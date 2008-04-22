@@ -103,7 +103,7 @@ namespace EVENTCLIENT
       RefreshSettings();
     }
 
-    std::string Name() const
+    const std::string& Name() const
     {
       return m_deviceName;
     }
