@@ -591,7 +591,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_HAS_FOCUS : CONTAINER_HAS_FOCUS, id, itemID));
     }
     else if (info.Equals("showplot")) ret = CONTAINER_SHOWPLOT;
-    if (id && (ret == CONTAINER_ON_NEXT || ret == CONTAINER_ON_PREVIOUS))
+    if (id && (ret == CONTAINER_ON_NEXT || ret == CONTAINER_ON_PREVIOUS || ret == CONTAINER_NUM_PAGES ||
+               ret == CONTAINER_NUM_ITEMS || ret == CONTAINER_CURRENT_PAGE))
       return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id));
   }
   else if (strCategory.Left(8).Equals("listitem"))
@@ -1894,7 +1895,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
             control = window->GetControl(window->GetViewContainerID());
         }
         if (control)
-          bReturn = control->GetCondition(info.m_info, info.m_data2);
+          bReturn = control->GetCondition(condition, info.m_data2);
       }
       break;
     case CONTAINER_HAS_FOCUS:
@@ -1933,7 +1934,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           }
         }
         if (item)
-          bReturn = GetBool(info.m_info, dwContextWindow, item);
+          bReturn = GetBool(condition, dwContextWindow, item);
       }
       break;
     case VIDEOPLAYER_CONTENT:
