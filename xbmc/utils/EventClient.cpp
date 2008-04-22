@@ -342,11 +342,12 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
   {
     CSingleLock lock(m_critSection);
     m_buttonQueue.push (
-      new CEventButtonState( (flags & PTB_USE_NAME) ? 0 : bcode,
-                        map,
-                        button,
-                        (float)amount/65535.0f,
-                        false /* queued buttons cannot be repeated */ )
+      new CEventButtonState( (flags & PTB_USE_NAME) ? 0 : 
+                             ( (flags & PTB_VKEY) ? (bcode|KEY_VKEY) : bcode ),
+                             map,
+                             button,
+                             (float)amount/65535.0f,
+                             false /* queued buttons cannot be repeated */ )
       );
   }
   else
