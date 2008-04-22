@@ -24,13 +24,16 @@ namespace EVENTCLIENT
       m_fAmount    = 0.0f;
       m_bRepeat    = false;
       m_bActive    = false;
+      m_bAxis      = false;
+      m_iControllerNumber = 0;
     }
 
     CEventButtonState(unsigned short iKeyCode,
-                 std::string mapName,
-                 std::string buttonName,
-                 float fAmount,
-                 bool bRepeat)
+                      std::string mapName,
+                      std::string buttonName,
+                      float fAmount,
+                      bool bRepeat
+      )
     {
       m_iKeyCode   = iKeyCode;
       m_buttonName = buttonName;
@@ -38,6 +41,8 @@ namespace EVENTCLIENT
       m_fAmount    = fAmount;
       m_bRepeat    = bRepeat;
       m_bActive    = true;
+      m_bAxis      = false;
+      m_iControllerNumber = 0;
       Load();
     }
 
@@ -45,6 +50,8 @@ namespace EVENTCLIENT
     void SetActive() { m_bActive = true; }
     bool Active()    { return m_bActive; }
     bool Repeat()    { return m_bRepeat; }
+    int  ControllerNumber()  { return m_iControllerNumber; }
+    bool Axis()              { return m_bAxis; }
     unsigned short KeyCode()   { return m_iKeyCode; }
     float Amount()   { return m_fAmount; }
     void Load();
@@ -52,12 +59,14 @@ namespace EVENTCLIENT
 
     // data
     unsigned short    m_iKeyCode;
+    unsigned short    m_iControllerNumber;
     std::string       m_buttonName;
     std::string       m_mapName;
     std::string       m_joystickName;
     float             m_fAmount;
     bool              m_bRepeat;
     bool              m_bActive;
+    bool              m_bAxis;
   };
 
 

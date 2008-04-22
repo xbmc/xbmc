@@ -64,7 +64,9 @@ namespace EVENTPACKET
     PTB_UP         = 0x04,
     PTB_USE_AMOUNT = 0x08,
     PTB_QUEUE      = 0x10,
-    PTB_NO_REPEAT  = 0x20
+    PTB_NO_REPEAT  = 0x20,
+    PTB_VKEY       = 0x40,
+    PTB_AXIS       = 0x80
   };
 
   enum MouseFlags
@@ -101,6 +103,8 @@ namespace EVENTPACKET
     /*            0x08 => use amount                                        */
     /*            0x10 => queue event                                       */
     /*            0x20 => do not repeat                                     */
+    /*            0x40 => virtual key                                       */
+    /*            0x40 => axis key                                          */
     /* %i - amount ( 0 => 65k maps to -1 => 1 )                             */
     /* %s - device map (case sensitive and required if flags & 0x01)        */
     /*      "KB" - Standard keyboard map                                    */
@@ -109,6 +113,10 @@ namespace EVENTPACKET
     /*      "R2" - Xbox Universal Remote                                    */
     /*      "LI:devicename" -  valid LIRC device map where 'devicename'     */
     /*                         is the actual name of the LIRC device        */
+    /*      "JS<num>:joyname" -  valid Joystick device map where            */
+    /*                           'joyname'  is the name specified in        */
+    /*                           the keymap. JS only supports button code   */
+    /*                           and not button name currently (!0x01).     */
     /* %s - button name (required if flags & 0x01)                          */
     /************************************************************************/
 
