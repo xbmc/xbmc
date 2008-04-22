@@ -632,7 +632,7 @@ bool CEventClient::CheckButtonRepeat()
   return false;
 }
 
-bool CEventClient::Alive()
+bool CEventClient::Alive() const
 {
   // 60 seconds timeout
   if ( (time(NULL) - m_lastPing) > 60 )
