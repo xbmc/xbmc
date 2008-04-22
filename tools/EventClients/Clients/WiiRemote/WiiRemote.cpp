@@ -180,13 +180,13 @@ void CWiiRemote::SetJoystickMap(const char *JoyMap)
     free(m_JoyMap);
   if (JoyMap != NULL)
   {
-    m_JoyMap = new char[strlen(JoyMap)];
-    strcpy(m_JoyMap, JoyMap);
+    m_JoyMap = new char[strlen(JoyMap) + 4];
+    sprintf(m_JoyMap, "JS0:%s", JoyMap);
   }
   else
   {
-    m_JoyMap = new char[strlen("WiiRemote")];
-    strcpy(m_JoyMap, "WiiRemote");
+    m_JoyMap = new char[strlen("JS0:WiiRemote")];
+    strcpy(m_JoyMap, "JS0:WiiRemote");
   }
 }
 
@@ -456,38 +456,38 @@ void CWiiRemote::ProcessKey(int Key)
     }
   }
 
-  char *RtnKey = NULL;
+  int RtnKey = -1;
 
   if      (Key == CWIID_BTN_UP)
-    RtnKey = "1";
+    RtnKey = 1;
   else if (Key == CWIID_BTN_RIGHT)
-    RtnKey = "4";
+    RtnKey = 4;
   else if (Key == CWIID_BTN_LEFT)
-    RtnKey = "3";
+    RtnKey = 3;
   else if (Key == CWIID_BTN_DOWN)
-    RtnKey = "2";
+    RtnKey = 2;
     
   else if (Key == CWIID_BTN_A)
-    RtnKey = "5";
+    RtnKey = 5;
   else if (Key == CWIID_BTN_B)
-    RtnKey = "6";
+    RtnKey = 6;
   
   else if (Key == CWIID_BTN_MINUS)
-    RtnKey = "7";
+    RtnKey = 7;
   else if (Key == CWIID_BTN_PLUS)
-    RtnKey = "9";
+    RtnKey = 9;
 
   else if (Key == CWIID_BTN_HOME)
-    RtnKey = "8";
+    RtnKey = 8;
   
   else if (Key == CWIID_BTN_1)
-    RtnKey = "10";
+    RtnKey = 10;
   else if (Key == CWIID_BTN_2)
-    RtnKey = "11";
+    RtnKey = 11;
 
-  if (RtnKey != NULL)
+  if (RtnKey != -1)
   {
-    CPacketBUTTON btn(RtnKey, m_JoyMap, true);
+    CPacketBUTTON btn(RtnKey, m_JoyMap, BTN_QUEUE | BTN_NO_REPEAT);
     btn.Send(m_Socket, m_MyAddr);
   }
 }
@@ -498,14 +498,14 @@ void CWiiRemote::ProcessNunchuck(struct cwiid_nunchuk_mesg &Nunchuck)
   { //R
     int x = (int)((((float)Nunchuck.stick[0] - 135.0f) / 95.0f) * 65535.0f);
     printf("Right: %i\n", x);
-    CPacketBUTTON btn("rightthumbstickleft", "XG", true, true, true, x);
+    CPacketBUTTON btn(24, m_JoyMap, (BTN_QUEUE | BTN_DOWN), x);
     btn.Send(m_Socket, m_MyAddr);
   }
   else if (Nunchuck.stick[0] < 125)
   { //L
     int x = (int)((((float)Nunchuck.stick[0] - 125.0f) / 90.0f) * -65535.0f);
     printf("Left: %i\n", x);
-    CPacketBUTTON btn("leftthumbstickleft", "XG", true, true, true, x);
+    CPacketBUTTON btn(23, m_JoyMap, (BTN_QUEUE | BTN_DOWN), x);
     btn.Send(m_Socket, m_MyAddr);
   }
 
@@ -513,14 +513,14 @@ void CWiiRemote::ProcessNunchuck(struct cwiid_nunchuk_mesg &Nunchuck)
   { //U
     int x = (int)((((float)Nunchuck.stick[1] - 130.0f) / 92.0f) * 65535.0f);
     printf("Up: %i\n", x);
-    CPacketBUTTON btn("upthumbstickleft", "XG", true, true, true, x);
+    CPacketBUTTON btn(21, m_JoyMap, (BTN_QUEUE | BTN_DOWN), x);
     btn.Send(m_Socket, m_MyAddr);
   }
   else if (Nunchuck.stick[1] < 120)
   { //D
     int x = (int)((((float)Nunchuck.stick[1] - 120.0f) / 90.0f) * -65535.0f);
     printf("Down: %i\n", x);
-    CPacketBUTTON btn("downthumbstickleft", "XG", true, true, true, x);
+    CPacketBUTTON btn(22, m_JoyMap, (BTN_QUEUE | BTN_DOWN), x);
     btn.Send(m_Socket, m_MyAddr);
   }
 
@@ -551,16 +551,16 @@ void CWiiRemote::ProcessNunchuck(struct cwiid_nunchuk_mesg &Nunchuck)
     }
   }
 
-  char *RtnKey = NULL;
+  int RtnKey = -1;
 
   if      (Nunchuck.buttons == CWIID_NUNCHUK_BTN_C)
-    RtnKey = "x";
+    RtnKey = 25;
   else if (Nunchuck.buttons == CWIID_NUNCHUK_BTN_Z)
-    RtnKey = "end";
+    RtnKey = 26;
 
-  if (RtnKey != NULL)
+  if (RtnKey != -1)
   {
-    CPacketBUTTON btn(RtnKey, "KB", true);
+    CPacketBUTTON btn(RtnKey, m_JoyMap, BTN_QUEUE | BTN_NO_REPEAT);
     btn.Send(m_Socket, m_MyAddr);
   }
 }
