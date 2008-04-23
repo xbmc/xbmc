@@ -332,7 +332,7 @@ CGUISettings::CGUISettings(void)
   AddSeparator(10, "system.sep4");
   AddBool(11, "system.autotemperature", 13301, false);
   AddInt(12, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
-  AddInt(13, "system.minfanspeed", 13411, 5, 2, 1, 50, SPIN_CONTROL_TEXT);
+  AddInt(13, "system.minfanspeed", 13411, 1, 1, 1, 50, SPIN_CONTROL_TEXT);
 
   AddCategory(4, "lcd", 448);
   AddInt(2, "lcd.type", 4501, LCD_TYPE_NONE, LCD_TYPE_NONE, 1, LCD_TYPE_VFD, SPIN_CONTROL_TEXT);
@@ -1034,5 +1034,6 @@ void CGUISettings::Clear()
     delete settingsGroups[i];
   settingsGroups.clear();
 }
+
 
 
