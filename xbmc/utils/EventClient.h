@@ -32,6 +32,7 @@ namespace EVENTCLIENT
                       std::string mapName,
                       std::string buttonName,
                       float fAmount,
+                      bool isAxis,
                       bool bRepeat
       )
     {
@@ -41,7 +42,7 @@ namespace EVENTCLIENT
       m_fAmount    = fAmount;
       m_bRepeat    = bRepeat;
       m_bActive    = true;
-      m_bAxis      = false;
+      m_bAxis      = isAxis;
       m_iControllerNumber = 0;
       Load();
     }
@@ -140,7 +141,7 @@ namespace EVENTCLIENT
     void FreePacketQueues();
 
     // return event states
-    unsigned short GetButtonCode(std::string& strMapName);
+    unsigned short GetButtonCode(std::string& strMapName, bool& isAxis, float& amount);
 
     // update mouse position
     bool GetMousePos(float& x, float& y);
