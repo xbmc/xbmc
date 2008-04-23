@@ -2,6 +2,10 @@ DIRS=guilib xbmc xbmc/FileSystem xbmc/FileSystem/MusicDatabaseDirectory xbmc/Fil
 
 LIBS=@LIBS@
 DEBUG_FLAGS=@DEBUG_FLAGS@
+CFLAGS=@CFLAGS@
+CXXFLAGS=@CXXFLAGS@
+LDFLAGS=@LDFLAGS@
+INCLUDES=@INCLUDES@
 
 all : compile 
 	$(MAKE) XboxMediaCenter
