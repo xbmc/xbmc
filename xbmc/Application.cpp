@@ -4093,53 +4093,37 @@ bool CApplication::ProcessEventServer(float frameTime)
     return false;
 
   std::string joystickName;
-  WORD wKeyID = es->GetButtonCode(joystickName);
+  bool isAxis = false;
+  float fAmount = 0.0;
+  
+  WORD wKeyID = es->GetButtonCode(joystickName, isAxis, fAmount);
+  
+  if (wKeyID)
+  {
+    // If it's an axis, save the value to repeat it.
+    if (isAxis == true)
+    {
+      if (fabs(fAmount) >= 0.08)
+        m_lastAxisMap[joystickName][wKeyID] = fAmount;
+      else
+        m_lastAxisMap[joystickName].erase(wKeyID);
+    }
+  }
+  else if (m_lastAxisMap.size() > 0)
+  {
+    // Process all the stored axis.
+    for (map<std::string, map<int, float> >::iterator iter = m_lastAxisMap.begin(); iter != m_lastAxisMap.end(); ++iter)
+    {
+      for (map<int, float>::iterator iterAxis = (*iter).second.begin(); iterAxis != (*iter).second.end(); ++iterAxis)
+        ProcessJoystickEvent((*iter).first, (*iterAxis).first, true, (*iterAxis).second);
+    }
+  }
   
   if (wKeyID)
   {
     if (joystickName.length() > 0)
     {
-      m_idleTimer.StartZero();
-
-      // Make sure to reset screen saver, mouse.
-      ResetScreenSaver();
-      if (ResetScreenSaverWindow())
-        return true;
-
-#ifdef HAS_SDL_JOYSTICK
-      g_Joystick.Reset();
-#endif
-      g_Mouse.SetInactive();
-      
-      // Figure out what window we're taking the event for.
-      WORD iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
-      if (m_gWindowManager.HasModalDialog())
-          iWin = m_gWindowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
-      
-      // This code is copied from the OnKey handler, it should be factored out.
-      if (iWin == WINDOW_FULLSCREEN_VIDEO && 
-          g_application.m_pPlayer && 
-          g_application.m_pPlayer->IsInMenu())
-      {
-        // If player is in some sort of menu, (ie DVDMENU) map buttons differently.
-        iWin = WINDOW_VIDEO_MENU;
-      }
-        
-      bool fullRange = false;
-      CAction action;
-
-      // Translate using regular joystick translator.
-      if (g_buttonTranslator.TranslateJoystickString(iWin, joystickName.c_str(), (int)wKeyID, false, action.wID, action.strAction, fullRange))
-      {
-        action.fAmount1 = 1.0f;
-        action.fRepeat = 0.0f;
-        g_audioManager.PlayActionSound(action);
-        return OnAction(action);
-      }
-      else
-      {
-        CLog::Log(LOGDEBUG, "ERROR mapping joystick action");
-      }
+      ProcessJoystickEvent(joystickName, wKeyID, isAxis, fAmount);
     }
     else
     {
@@ -4184,6 +4168,58 @@ bool CApplication::ProcessEventServer(float frameTime)
   }
 #endif  
   return false;
+}
+
+bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKeyID, bool isAxis, float fAmount)
+{
+#ifdef HAS_EVENT_SERVER
+  m_idleTimer.StartZero();
+
+   // Make sure to reset screen saver, mouse.
+   ResetScreenSaver();
+   if (ResetScreenSaverWindow())
+     return true;
+
+#ifdef HAS_SDL_JOYSTICK
+   g_Joystick.Reset();
+#endif
+   g_Mouse.SetInactive();
+   
+   // Figure out what window we're taking the event for.
+   WORD iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
+   if (m_gWindowManager.HasModalDialog())
+       iWin = m_gWindowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
+   
+   // This code is copied from the OnKey handler, it should be factored out.
+   if (iWin == WINDOW_FULLSCREEN_VIDEO && 
+       g_application.m_pPlayer && 
+       g_application.m_pPlayer->IsInMenu())
+   {
+     // If player is in some sort of menu, (ie DVDMENU) map buttons differently.
+     iWin = WINDOW_VIDEO_MENU;
+   }
+     
+   bool fullRange = false;
+   CAction action;
+   action.fAmount1 = fAmount;
+
+   //if (action.fAmount1 < 0.0)
+   // wKeyID = -wKeyID;
+   
+   // Translate using regular joystick translator.
+   if (g_buttonTranslator.TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis, action.wID, action.strAction, fullRange))
+   {
+     action.fRepeat = 0.0f;
+     g_audioManager.PlayActionSound(action);
+     return OnAction(action);
+   }
+   else
+   {
+     CLog::Log(LOGDEBUG, "ERROR mapping joystick action");
+   }
+#endif
+   
+   return false;
 }
 
 bool CApplication::ProcessKeyboard()

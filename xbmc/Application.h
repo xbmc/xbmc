@@ -280,6 +280,9 @@ protected:
   bool ProcessRemote(float frameTime);
   bool ProcessGamepad(float frameTime);
   bool ProcessEventServer(float frameTime);
+  
+  bool ProcessJoystickEvent(const std::string& joystickName, int button, bool isAxis, float fAmount);
+  
   void CheckForDebugButtonCombo();
   void StartFtpEmergencyRecoveryMode();
   float NavigationIdleTime();
@@ -304,7 +307,10 @@ protected:
 #ifdef _LINUX
   CLinuxResourceCounter m_resourceCounter;
 #endif
-
+  
+#ifdef HAS_EVENT_SERVER
+  std::map<std::string, std::map<int, float> > m_lastAxisMap;
+#endif
 };
 
 extern CApplication g_application;
