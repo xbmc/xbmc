@@ -1,3 +1,6 @@
+#ifndef __XBMC_CLIENT_H__
+#define __XBMC_CLIENT_H__
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -714,3 +717,5 @@ public:
     log.Send(m_Socket, m_Addr, m_UID);
   }
 };
+
+#endif
