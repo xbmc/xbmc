@@ -214,34 +214,16 @@
 					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 				</control>
-				<control type="group" id="241">
-					<height>37</height>
-					<control type="button" id="128">
-						<posx>0</posx>
-						<posy>0</posy>
-						<description>Startup Playlist Path</description>
-						<width>485</width>
-						<label>15311</label>
-						<onclick>Skin.SetFile(Startup_Playlist_Path,.m3u,Q:\UserData\playlists\music\)</onclick>
-						<textoffsetx>7</textoffsetx>
-						<texturefocus>list-focus.png</texturefocus>
-						<texturenofocus>-</texturenofocus>
-						<enable>Skin.HasSetting(Use_Startup_Playlist)</enable>
-						<onup>127</onup>
-						<ondown>130</ondown>
-					</control>
-					<control type="label">
-						<posx>480</posx>
-						<posy>0</posy>
-						<height>33</height>
-						<description>Startup Playlist Path label</description>
-						<width>380</width>
-						<align>right</align>
-						<aligny>center</aligny>
-						<scroll>true</scroll>
-						<info>Skin.String(Startup_Playlist_Path)</info>
-						<enable>Skin.HasSetting(Use_Startup_Playlist)</enable>
-					</control>
+				<control type="button" id="128">
+					<description>Startup Playlist Path</description>
+					<width>485</width>
+					<label>15311</label>
+					<label2>$INFO[Skin.String(Startup_Playlist_Path)]</label2>
+					<onclick>Skin.SetFile(Startup_Playlist_Path,.m3u,Q:\UserData\playlists\music\)</onclick>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<enable>Skin.HasSetting(Use_Startup_Playlist)</enable>
 				</control>
 				<control type="image" id="129">
 					<width>510</width>
@@ -258,34 +240,18 @@
 					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 				</control>
-				<control type="group" id="242">
-					<height>37</height>
-					<control type="button" id="131">
-						<posx>0</posx>
-						<posy>0</posy>
-						<description>Custom_Background Path</description>
-						<width>485</width>
-						<label>15311</label>
-						<onclick>Skin.SetImage(Custom_Background)</onclick>
-						<textoffsetx>7</textoffsetx>
-						<texturefocus>list-focus.png</texturefocus>
-						<texturenofocus>-</texturenofocus>
-						<enable>Skin.HasSetting(Use_Custom_Background)</enable>
-						<onup>130</onup>
-						<ondown>120</ondown>
-					</control>
-					<control type="label">
-						<posx>480</posx>
-						<posy>0</posy>
-						<height>33</height>
-						<description>Custom_Background label</description>
-						<width>380</width>
-						<align>right</align>
-						<aligny>center</aligny>
-						<scroll>true</scroll>
-						<info>Skin.String(Custom_Background)</info>
-						<enable>Skin.HasSetting(Use_Custom_Background)</enable>
-					</control>
+				<control type="button" id="131">
+					<description>Custom_Background Path</description>
+					<width>485</width>
+					<label>15311</label>
+					<label2>$INFO[Skin.String(Custom_Background)]</label2>
+					<onclick>Skin.SetImage(Custom_Background)</onclick>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<enable>Skin.HasSetting(Use_Custom_Background)</enable>
+					<onup>130</onup>
+					<ondown>120</ondown>
 				</control>
 				<control type="image" id="132">
 					<width>510</width>
