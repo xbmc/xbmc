@@ -1,12 +1,16 @@
 #include "stdafx.h"
 #ifndef _LINUX
-#include "../python/Python.h"
+#include "lib/libPython/python/Python.h"
 #else
 #include <python2.4/Python.h>
 #include "../XBPythonDll.h"
 #endif
 #include "listitem.h"
 #include "pyutil.h"
+#include "VideoInfoTag.h"
+#include "PictureInfoTag.h"
+#include "MusicInfoTag.h"
+#include "FileItem.h"
 
 using namespace std;
 

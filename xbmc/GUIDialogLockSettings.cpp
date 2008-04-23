@@ -25,6 +25,7 @@
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogGamepad.h"
 #include "GUIDialogContextMenu.h"
+#include "GUIWindowManager.h"
 #include "Util.h"
 
 CGUIDialogLockSettings::CGUIDialogLockSettings(void)
@@ -152,7 +153,7 @@ void CGUIDialogLockSettings::OnSettingChanged(unsigned int num)
       menu->DoModal();
 
       CStdString newPassword;
-      int iLockMode = -1;
+      LockType iLockMode = LOCK_MODE_UNKNOWN;
       bool bResult = false;
       switch(menu->GetButton())
       {
@@ -233,13 +234,13 @@ bool CGUIDialogLockSettings::ShowAndGetUserAndPassword(CStdString& strUser, CStd
   return false;
 }
 
-bool CGUIDialogLockSettings::ShowAndGetLock(int& iLockMode, CStdString& strPassword, int iHeader)
+bool CGUIDialogLockSettings::ShowAndGetLock(LockType& iLockMode, CStdString& strPassword, int iHeader)
 {
   bool f;
   return ShowAndGetLock(iLockMode,strPassword,f,f,f,f,f,f,iHeader,false,false);
 }
 
-bool CGUIDialogLockSettings::ShowAndGetLock(int& iLockMode, CStdString& strPassword, bool& bLockMusic, bool& bLockVideo, bool& bLockPictures, bool& bLockPrograms, bool& bLockFiles, bool& bLockSettings, int iButtonLabel, bool bConditional, bool bDetails)
+bool CGUIDialogLockSettings::ShowAndGetLock(LockType& iLockMode, CStdString& strPassword, bool& bLockMusic, bool& bLockVideo, bool& bLockPictures, bool& bLockPrograms, bool& bLockFiles, bool& bLockSettings, int iButtonLabel, bool bConditional, bool bDetails)
 {
   CGUIDialogLockSettings *dialog = (CGUIDialogLockSettings *)m_gWindowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
   if (!dialog) return false;

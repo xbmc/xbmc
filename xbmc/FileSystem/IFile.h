@@ -10,7 +10,9 @@
 #endif // _MSC_VER > 1000
 
 #include "system.h"
-#include "../URL.h"
+#include "URL.h"
+
+#include <stdio.h>
 
 #define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
 

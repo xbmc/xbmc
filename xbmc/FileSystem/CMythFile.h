@@ -3,7 +3,7 @@
 #include "IFile.h"
 #include "ILiveTV.h"
 #include "CMythSession.h"
-
+#include "VideoInfoTag.h"
 
 class DllLibCMyth;
 

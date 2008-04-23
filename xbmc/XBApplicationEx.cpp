@@ -13,6 +13,7 @@
 #include "stdafx.h"
 #include "XBApplicationEx.h"
 #include "XBVideoConfig.h"
+#include "Settings.h"
 #include "Application.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -20,7 +21,6 @@
 #define MEASURE_FUNCTION
 #endif
 #include "GUIFontManager.h"
-
 
 
 //-----------------------------------------------------------------------------

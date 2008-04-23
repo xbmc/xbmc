@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "MediaManager.h"
 #include "xbox/IoSupport.h"
+#include "URL.h"
 #include "Util.h"
 #ifdef _LINUX
 #include "LinuxFileSystem.h"
@@ -101,7 +102,7 @@ bool CMediaManager::SaveSources()
   return xmlDoc.SaveFile(xmlFile.c_str());
 }
 
-void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
+void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
 {
 #if defined(_WIN32PC)
   char lDrives[128];
@@ -137,39 +138,39 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
 #else
 #ifndef _LINUX
   // Local shares
-  CShare share;
+  CMediaSource share;
   share.strPath = _P("C:\\");
   share.strName.Format(g_localizeStrings.Get(21438),'C');
   share.m_ignore = true;
-  share.m_iDriveType = SHARE_TYPE_LOCAL;
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   localDrives.push_back(share);
 #endif
 
 #ifdef _LINUX
   // Home directory
-  CShare share;
+  CMediaSource share;
   share.strPath = getenv("HOME");
   share.strName = g_localizeStrings.Get(21440);
   share.m_ignore = true;
-  share.m_iDriveType = SHARE_TYPE_LOCAL;
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   localDrives.push_back(share);
 #endif
 
   share.strPath = _P("D:\\");
   share.strName = g_localizeStrings.Get(218);
-  share.m_iDriveType = SHARE_TYPE_DVD;
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
   localDrives.push_back(share);
 
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
 #ifndef _LINUX
   share.strPath = _P("E:\\");
-  share.m_iDriveType = SHARE_TYPE_LOCAL;
   share.strName.Format(g_localizeStrings.Get(21438),'E');
   localDrives.push_back(share);
   for (char driveletter=EXTEND_DRIVE_BEGIN; driveletter<=EXTEND_DRIVE_END; driveletter++)
   {
     if (CIoSupport::DriveExists(driveletter))
     {
-      CShare share;
+      CMediaSource share;
       share.strPath.Format("%c:\\", driveletter);
       share.strName.Format(g_localizeStrings.Get(21438),driveletter);
       share.m_ignore = true;
@@ -178,7 +179,7 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
   }
   if (includeQ)
   {
-    CShare share;
+    CMediaSource share;
     share.strPath = _P("Q:\\");
     share.strName.Format(g_localizeStrings.Get(21438),'Q');
     share.m_ignore = true;
@@ -196,23 +197,23 @@ void CMediaManager::GetLocalDrives(VECSHARES &localDrives, bool includeQ)
 #endif
   for (unsigned int i = 0; i < result.size(); i++)
   {
-     CShare share;
-     share.strPath = result[i];
-     share.strName = CUtil::GetFileName(result[i]);
-     share.m_ignore = true;
-     localDrives.push_back(share) ;
+    CMediaSource share;
+    share.strPath = result[i];
+    share.strName = CUtil::GetFileName(result[i]);
+    share.m_ignore = true;
+    localDrives.push_back(share) ;
   }
 #endif
 #endif // Win32PC
 }
 
-void CMediaManager::GetNetworkLocations(VECSHARES &locations)
+void CMediaManager::GetNetworkLocations(VECSOURCES &locations)
 {
   // Load our xml file
   LoadSources();
   for (unsigned int i = 0; i < m_locations.size(); i++)
   {
-    CShare share;
+    CMediaSource share;
     share.strPath = m_locations[i].path;
     CURL url(share.strPath);
     url.GetURLWithoutUserDetails(share.strName);

@@ -1,8 +1,8 @@
 #ifndef SCRAPER_PARSER_H
 #define SCRAPER_PARSER_H
 
-#include "../../guilib/tinyXML/tinyxml.h"
-#include "../../guilib/StdString.h"
+#include "tinyXML/tinyxml.h"
+#include "StdString.h"
 
 #include <vector>
 
@@ -24,7 +24,6 @@ public:
   bool HasFunction(const CStdString& strTag);
 
   CStdString m_param[MAX_SCRAPER_BUFFERS];
-  static char* ConvertHTMLToAnsi(const char *szHTML);
   static void ClearCache();
 
 private:

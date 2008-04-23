@@ -11,9 +11,9 @@
 
 #include "Thread.h"
 #include "IMDB.h"
-#include "../FileSystem/IDirectory.h"
-#include "../VideoDatabase.h"
-#include "../Settings.h"
+#include "FileSystem/IDirectory.h"
+#include "VideoDatabase.h"
+#include "Settings.h"
 
 #define RECENT_MOVIES 3
 

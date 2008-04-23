@@ -12,13 +12,16 @@
 #else
 #include <python2.4/Python.h>
 #endif
-#include "../../cores/DllLoader/DllLoaderContainer.h"
-#include "../../GUIPassword.h"
+#include "cores/DllLoader/DllLoaderContainer.h"
+#include "GUIPassword.h"
+
 #include "../../Util.h"
 
 #include "XBPython.h"
 #include "XBPythonDll.h"
 #include "ActionManager.h"
+#include "Settings.h"
+#include "Profile.h"
 
 XBPython g_pythonParser;
 

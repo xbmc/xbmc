@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "../../guilib/StdString.h"
+#include "StdString.h"
 
 class CTrainer 
 {

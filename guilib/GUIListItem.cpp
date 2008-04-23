@@ -2,7 +2,7 @@
 #include "GUIListItem.h"
 #include "guiImage.h"
 #include "GUIListItemLayout.h"
-#include "../xbmc/utils/Archive.h"
+#include "utils/Archive.h"
 
 CGUIListItem::CGUIListItem(const CGUIListItem& item)
 {
@@ -315,5 +315,10 @@ int CGUIListItem::GetPropertyInt(const CStdString &strKey) const
 double CGUIListItem::GetPropertyDouble(const CStdString &strKey) const
 {
   return atof(GetProperty(strKey).c_str()) ;
+}
+
+void CGUIListItem::ClearProperties()
+{
+  m_mapProperties.clear();
 }
 

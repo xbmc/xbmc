@@ -10,14 +10,13 @@
 
 #pragma once
 
-#include "../xbox/IoSupport.h"
+#include "xbox/IoSupport.h"
 
 #ifndef _LINUX
 //#include "../lib/libcdio/intTypes.h"
-#include "../lib/libcdio/Types.h"
-#include "../lib/libcdio/cdio.h"
-#include "../lib/libcdio/cd_Types.h"
-#include "../lib/libcdio/cdtext.h"
+#include "lib/libcdio/cdio.h"
+#include "lib/libcdio/cd_Types.h"
+#include "lib/libcdio/cdtext.h"
 #else
 #include "../lib/libcdio/cdio.h"
 #endif

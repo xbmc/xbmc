@@ -3,8 +3,8 @@
 
 extern "C"
 {
-#include "../lib/libXDAAP/client.h"
- #include "../lib/libXDAAP/private.h"
+#include "lib/libXDAAP/client.h"
+#include "lib/libXDAAP/private.h"
 }
 
 namespace DIRECTORY

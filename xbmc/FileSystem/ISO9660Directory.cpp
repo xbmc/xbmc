@@ -1,9 +1,11 @@
 
 #include "stdafx.h"
 #include "ISO9660Directory.h"
-#include "../xbox/IoSupport.h"
+#include "xbox/IoSupport.h"
 #include "iso9660.h"
-#include "../Util.h"
+#include "Util.h"
+#include "URL.h"
+#include "FileItem.h"
 
 using namespace DIRECTORY;
 

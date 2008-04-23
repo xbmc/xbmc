@@ -1,7 +1,5 @@
 #include "include.h"
 #include "GUISettingsSliderControl.h"
-#include "../xbmc/utils/GUIInfoManager.h"
-
 
 CGUISettingsSliderControl::CGUISettingsSliderControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float sliderWidth, float sliderHeight, const CImage &textureFocus, const CImage &textureNoFocus, const CImage& backGroundTexture, const CImage& nibTexture, const CImage& nibTextureFocus, const CLabelInfo &labelInfo, int iType)
     : CGUISliderControl(dwParentID, dwControlId, posX, posY, sliderWidth, sliderHeight, backGroundTexture, nibTexture,nibTextureFocus, iType)

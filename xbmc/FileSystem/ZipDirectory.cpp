@@ -1,8 +1,11 @@
 #include "stdafx.h"
 #include "ZipDirectory.h"
-#include "../utils/log.h"
-#include "../Util.h"
-#include "../lib/zlib/zlib.h"
+#include "utils/log.h"
+#include "Util.h"
+#include "lib/zlib/zlib.h"
+#include "URL.h"
+#include "ZipManager.h"
+#include "FileItem.h"
 
 #include <vector>
 
@@ -23,7 +26,7 @@ namespace DIRECTORY
 
     /* if this isn't a proper archive path, assume it's the path to a archive file */
     if( !strPathOrig.Left(6).Equals("zip://") )
-      CUtil::CreateZipPath(strPath, strPathOrig, "");
+      CUtil::CreateArchivePath(strPath, "zip", strPathOrig, "");
     else
       strPath = strPathOrig;
 

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CDDAcodec.h"
-#include "../../lib/libcdio/sector.h"
+#include "lib/libcdio/sector.h"
 
 
 #define SECTOR_COUNT 55 // max. sectors that can be read at once

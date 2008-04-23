@@ -29,6 +29,7 @@
 #include "GUICheckMarkControl.h"
 #include "utils/Weather.h"
 #include "MusicDatabase.h"
+#include "VideoDatabase.h"
 #include "ProgramDatabase.h"
 #include "ViewDatabase.h"
 #include "XBAudioConfig.h"
@@ -56,11 +57,15 @@
 #include "GUIDialogFileBrowser.h"
 #include "GUIFontManager.h"
 #include "GUIDialogContextMenu.h"
+#include "GUIDialogKeyboard.h"
+#include "GUIDialogYesNo.h"
+#include "GUIDialogOK.h"
 #include "GUIWindowPrograms.h"
 #include "MediaManager.h"
 #include "utils/Network.h"
 #include "lib/libGoAhead/WebServer.h"
 #include "GUIControlGroupList.h"
+#include "GUIWindowManager.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "XBTimeZone.h"
 #endif
@@ -73,6 +78,10 @@
 #ifdef HAS_LINUX_NETWORK
 #include "GUIDialogAccessPoints.h"
 #endif
+#include "FileSystem/Directory.h"
+#include "utils/ScraperParser.h"
+
+#include "FileItem.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -559,12 +568,12 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("system.fanspeed"))
+    else if (strSetting.Equals("system.fanspeed") || strSetting.Equals("system.fanspeed")) 
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       CStdString strPercentMask = g_localizeStrings.Get(14047);
-      for (int i = 5; i <= pSettingInt->m_iMax; i += 5)
+      for (int i=pSettingInt->m_iMin; i <= pSettingInt->m_iMax; i += pSettingInt->m_iStep)
       {
         CStdString strLabel;
         strLabel.Format(strPercentMask.c_str(), i*2);
@@ -952,7 +961,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("screensaver.uselock"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE && !g_guiSettings.GetString("screensaver.mode").Equals("Black"));
+      if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE                                    &&
+                                         g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE &&
+                                         !g_guiSettings.GetString("screensaver.mode").Equals("Black"));
     }
     else if (strSetting.Equals("upnp.musicshares") || strSetting.Equals("upnp.videoshares") || strSetting.Equals("upnp.pictureshares"))
     {
@@ -1013,7 +1024,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("system.fanspeedcontrol"));
     }
-    else if (strSetting.Equals("system.targettemperature"))
+    else if (strSetting.Equals("system.targettemperature") || strSetting.Equals("system.minfanspeed"))
     { // only visible if we have autotemperature enabled
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("system.autotemperature"));
@@ -1475,7 +1486,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting.Equals("videolibrary.export"))
   {
     CStdString path(g_settings.GetDatabaseFolder());
-    VECSHARES shares;
+    VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
     {
@@ -1489,7 +1500,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting.Equals("musiclibrary.export"))
   {
     CStdString path(g_settings.GetDatabaseFolder());
-    VECSHARES shares;
+    VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
     {
@@ -1503,7 +1514,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting.Equals("videolibrary.import"))
   {
     CStdString path(g_settings.GetDatabaseFolder());
-    VECSHARES shares;
+    VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "videodb.xml", g_localizeStrings.Get(651) , path))
     {
@@ -1516,7 +1527,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting.Equals("musiclibrary.import"))
   {
     CStdString path(g_settings.GetDatabaseFolder());
-    VECSHARES shares;
+    VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "musicdb.xml", g_localizeStrings.Get(651) , path))
     {
@@ -1622,7 +1633,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CSettingInt *pSetting = (CSettingInt*)pSettingControl->GetSetting();
     int iControlID = pSettingControl->GetID();
-    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID, 0, 0, NULL);
+    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
     g_graphicsContext.SendMessage(msg);
     int iSpeed = (RESOLUTION)msg.GetParam1();
     g_guiSettings.SetInt("system.fanspeed", iSpeed);
@@ -1634,10 +1645,15 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (pSetting->GetData())
     {
       g_guiSettings.SetBool("system.fanspeedcontrol", false);
-      CFanController::Instance()->Start(g_guiSettings.GetInt("system.targettemperature"));
+      CFanController::Instance()->Start(g_guiSettings.GetInt("system.targettemperature"), g_guiSettings.GetInt("system.minfanspeed") );
     }
     else
       CFanController::Instance()->Stop();
+  }
+  else if (strSetting.Equals("system.minfanspeed"))
+  {
+    CSettingInt *pSetting = (CSettingInt*)pSettingControl->GetSetting();
+    CFanController::Instance()->SetMinFanSpeed(pSetting->GetData());
   }
   else if (strSetting.Equals("system.fanspeedcontrol"))
   {
@@ -1755,7 +1771,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = pSettingString->GetData();
-    VECSHARES shares;
+    VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     // TODO 2.0: Localize this
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", g_localizeStrings.Get(655), path))
@@ -1871,7 +1887,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting.Equals("videoscreen.resolution"))
   { // new resolution choosen... - update if necessary
     int iControlID = pSettingControl->GetID();
-    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID, 0, 0, NULL);
+    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
     g_graphicsContext.SendMessage(msg);
     m_NewResolution = (RESOLUTION)msg.GetParam1();
     // reset our skin if necessary
@@ -1884,7 +1900,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting.Equals("videoscreen.vsync"))
   {
     int iControlID = pSettingControl->GetID();
-    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID, 0, 0, NULL);
+    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
     g_graphicsContext.SendMessage(msg);
     g_videoConfig.SetVSyncMode((VSYNC)msg.GetParam1());
   }
@@ -1968,7 +1984,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CSettingInt *pSettingInt = (CSettingInt *)pSettingControl->GetSetting();
     int iControlID = pSettingControl->GetID();
-    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID, 0, 0, NULL);
+    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
     g_graphicsContext.SendMessage(msg);
     pSettingInt->SetData(msg.GetParam1());
   }
@@ -2009,7 +2025,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = pSettingString->GetData();
-    VECSHARES shares;
+    VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
@@ -2018,7 +2034,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = g_guiSettings.GetString(strSetting,false);
-    VECSHARES shares;
+    VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     UpdateSettings();
     bool bWriteOnly = true;
@@ -2175,7 +2191,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
     CStdString strDummy;
     g_settings.LoadUPnPXml(filename);
-    if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_UPnPMusicSources,"upnpmusic"))
+    if (CGUIDialogFileBrowser::ShowAndGetSource(strDummy,false,&g_settings.m_UPnPMusicSources,"upnpmusic"))
       g_settings.SaveUPnPXml(filename);
     else
       g_settings.LoadUPnPXml(filename);
@@ -2186,7 +2202,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
     CStdString strDummy;
     g_settings.LoadUPnPXml(filename);
-    if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_UPnPVideoSources,"upnpvideo"))
+    if (CGUIDialogFileBrowser::ShowAndGetSource(strDummy,false,&g_settings.m_UPnPVideoSources,"upnpvideo"))
       g_settings.SaveUPnPXml(filename);
     else
       g_settings.LoadUPnPXml(filename);
@@ -2197,7 +2213,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
     CStdString strDummy;
     g_settings.LoadUPnPXml(filename);
-    if (CGUIDialogFileBrowser::ShowAndGetShare(strDummy,false,&g_settings.m_UPnPPictureSources,"upnppictures"))
+    if (CGUIDialogFileBrowser::ShowAndGetSource(strDummy,false,&g_settings.m_UPnPPictureSources,"upnppictures"))
       g_settings.SaveUPnPXml(filename);
     else
       g_settings.LoadUPnPXml(filename);

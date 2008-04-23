@@ -1,5 +1,5 @@
 #pragma once
-#include "../../DynamicDll.h"
+#include "DynamicDll.h"
 #include "shn/shnplay.h"
 #include "FileSystem/File.h"
 

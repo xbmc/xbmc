@@ -3,9 +3,13 @@
 #ifdef HAS_RAR
 #include "../lib/UnrarXLib/rar.hpp"
 #endif
-#include "../Util.h"
-#include "../utils/SingleLock.h"
-#include "../FileItem.h"
+#include "Util.h"
+#include "utils/SingleLock.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogYesNo.h"
+#include "FileSystem/Directory.h"
+#include "Settings.h"
+#include "FileItem.h"
 
 #include <set>
 

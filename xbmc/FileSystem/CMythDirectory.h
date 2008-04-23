@@ -3,6 +3,8 @@
 #include "IDirectory.h"
 #include "CMythSession.h"
 
+class CDateTime;
+
 namespace DIRECTORY
 {
 
@@ -25,7 +27,7 @@ private:
   bool GetChannelsDb(const CStdString& base, CFileItemList &items);
 
   CStdString GetValue(char* str)           { return m_session->GetValue(str); }
-  CDateTime  GetValue(cmyth_timestamp_t t) { return m_session->GetValue(t); }
+  CDateTime  GetValue(cmyth_timestamp_t t);
 
   XFILE::CCMythSession* m_session;
   DllLibCMyth*          m_dll;

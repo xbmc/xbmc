@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "DVDInputStreamTV.h"
 #include "FileSystem/CMythFile.h"
-
+#include "URL.h"
 
 using namespace XFILE;
 

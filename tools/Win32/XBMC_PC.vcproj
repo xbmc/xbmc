@@ -20,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32"
+				AdditionalIncludeDirectories="../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32;../../xbmc/cores/dvdplayer"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_WIN32_WINNT=0x0500;WINVER=0x0500"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="0"
@@ -74,7 +74,7 @@
 				Optimization="0"
 				InlineFunctionExpansion="0"
 				OmitFramePointers="FALSE"
-				AdditionalIncludeDirectories="../../xbmc;../../guilib;../..;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32"
+				AdditionalIncludeDirectories="../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32;../../xbmc/cores/dvdplayer"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_WIN32_WINNT=0x0500;WINVER=0x0500"
 				StringPooling="FALSE"
 				MinimalRebuild="TRUE"
@@ -1779,6 +1779,12 @@
 					RelativePath="..\..\xbmc\DynamicDll.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\Edl.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Edl.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\Event.cpp">
 				</File>
 				<File
@@ -1876,6 +1882,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\MediaManager.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\MediaSource.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\MediaSource.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\memutil.cpp">
@@ -2577,6 +2589,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\MusicDatabaseDirectory.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\MusicFileDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\MusicFileDirectory.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\MusicSearchDirectory.cpp">

@@ -20,6 +20,8 @@
 
 #include "stdafx.h"
 #include "FileISO.h"
+#include "URL.h"
+
 #include <sys/stat.h>
 
 using namespace std;

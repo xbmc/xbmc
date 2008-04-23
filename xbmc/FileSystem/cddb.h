@@ -1,11 +1,12 @@
 #pragma once
-#include "../Util.h"
 #include <sstream>
 #include <iostream>
 #ifndef _LINUX
 #include <strstream>
 #endif
 #include "cdioSupport.h"
+
+#include "AutoPtrHandle.h"
 
 namespace CDDB
 {

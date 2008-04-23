@@ -6,7 +6,7 @@
 #else
 #include <python2.4/Python.h>
 #endif
-#include "../../utils/Thread.h"
+#include "utils/Thread.h"
 
 class XBPython;
 

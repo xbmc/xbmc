@@ -3,6 +3,8 @@
 
 #define VIEW_DATABASE_NAME "ViewModes.db"
 
+class CViewState;
+
 class CViewDatabase : public CDatabase
 {
 public:

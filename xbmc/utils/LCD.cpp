@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "LCD.h"
-#include "GUIInfoManager.h"
-#include "../Util.h"
+#include "Settings.h"
 
 using namespace std;
 

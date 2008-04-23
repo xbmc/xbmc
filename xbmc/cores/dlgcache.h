@@ -1,5 +1,7 @@
 #pragma once
-#include "../FileSystem/File.h"
+#include "FileSystem/File.h"
+
+class CGUIDialogProgress;
 
 class CDlgCache : public CThread, public XFILE::IFileCallback
 {

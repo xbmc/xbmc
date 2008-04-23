@@ -21,18 +21,16 @@
 
 #include "stdafx.h"
 #include "GUIWindowVideoOverlay.h"
-#include "Util.h"
-#include "Application.h"
 #include "utils/GUIInfoManager.h"
+#include "GUIWindowManager.h"
 
-
-#define CONTROL_PLAYTIME  2
-#define CONTROL_PLAY_LOGO   3
-#define CONTROL_PAUSE_LOGO  4
-#define CONTROL_INFO     5
+#define CONTROL_PLAYTIME     2
+#define CONTROL_PLAY_LOGO    3
+#define CONTROL_PAUSE_LOGO   4
+#define CONTROL_INFO         5
 #define CONTROL_BIG_PLAYTIME 6
-#define CONTROL_FF_LOGO  7
-#define CONTROL_RW_LOGO  8
+#define CONTROL_FF_LOGO      7
+#define CONTROL_RW_LOGO      8
 
 
 CGUIWindowVideoOverlay::CGUIWindowVideoOverlay()

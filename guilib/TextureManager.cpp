@@ -4,9 +4,9 @@
 #include "PackedTexture.h"
 #include "GraphicContext.h"
 #include "../xbmc/Picture.h"
-#include "../xbmc/utils/SingleLock.h"
-#include "../xbmc/StringUtils.h"
-#include "../xbmc/utils/CharsetConverter.h"
+#include "utils/SingleLock.h"
+#include "StringUtils.h"
+#include "utils/CharsetConverter.h"
 #include "../xbmc/Util.h"
 
 #ifdef HAS_XBOX_D3D

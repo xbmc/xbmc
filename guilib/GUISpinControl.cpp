@@ -1,6 +1,6 @@
 #include "include.h"
 #include "GUISpinControl.h"
-#include "../xbmc/utils/CharsetConverter.h"
+#include "utils/CharsetConverter.h"
 
 using namespace std;
 

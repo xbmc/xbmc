@@ -1,5 +1,5 @@
 #pragma once
-#include "../../../../DynamicDll.h"
+#include "DynamicDll.h"
 
 typedef signed char int8_t;
 typedef signed short int16_t;

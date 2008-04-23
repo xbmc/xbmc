@@ -8,6 +8,7 @@
 #include "DVDInputStreamFFmpeg.h"
 #include "../../../FileSystem/cdioSupport.h"
 #include "DVDInputStreamTV.h"
+#include "FileItem.h"
 
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content)
 {

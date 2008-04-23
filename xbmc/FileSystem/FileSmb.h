@@ -18,6 +18,7 @@
 #endif // _MSC_VER > 1000
 
 #include "IFile.h"
+#include "URL.h"
 
 #define NT_STATUS_CONNECTION_REFUSED long(0xC0000000 | 0x0236)
 #define NT_STATUS_INVALID_HANDLE long(0xC0000000 | 0x0008)

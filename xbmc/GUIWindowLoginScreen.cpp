@@ -25,7 +25,6 @@
 #include "GUIWindowSettingsProfile.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogProfileSettings.h"
-#include "utils/GUIInfoManager.h"
 #include "GUIPassword.h"
 #ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
@@ -35,21 +34,29 @@
 #include "utils/FanController.h"
 #include "utils/Network.h"
 #include "SkinInfo.h"
+#include "Profile.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
+#include "Settings.h"
+#include "FileSystem/File.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 
-#define CONTROL_BIG_LIST 52
-#define CONTROL_LABEL_HEADER 2
-#define CONTROL_LABEL_SELECTED_PROFILE 3
+#define CONTROL_BIG_LIST               52
+#define CONTROL_LABEL_HEADER            2
+#define CONTROL_LABEL_SELECTED_PROFILE  3
 
 CGUIWindowLoginScreen::CGUIWindowLoginScreen(void)
 : CGUIWindow(WINDOW_LOGIN_SCREEN, "LoginScreen.xml")
 {
   watch.StartZero();
+  m_vecItems = new CFileItemList;
 }
 
 CGUIWindowLoginScreen::~CGUIWindowLoginScreen(void)
 {
+  delete m_vecItems;
 }
 
 bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
@@ -217,7 +224,7 @@ void CGUIWindowLoginScreen::OnWindowLoaded()
 
 void CGUIWindowLoginScreen::Update()
 {
-  m_vecItems.Clear();
+  m_vecItems->Clear();
   for (unsigned int i=0;i<g_settings.m_vecProfiles.size(); ++i)
   {
     CFileItem item(g_settings.m_vecProfiles[i].getName());
@@ -231,9 +238,9 @@ void CGUIWindowLoginScreen::Update()
     if (g_settings.m_vecProfiles[i].getThumb().IsEmpty() || g_settings.m_vecProfiles[i].getThumb().Equals("-"))
       item.SetThumbnailImage("unknown-user.png");
     item.SetLabelPreformated(true);
-    m_vecItems.Add(new CFileItem(item));
+    m_vecItems->Add(new CFileItem(item));
   }
-  m_viewControl.SetItems(m_vecItems);
+  m_viewControl.SetItems(*m_vecItems);
   if (g_settings.m_iLastUsedProfileIndex > -1)
   {
     m_viewControl.SetSelectedItem(g_settings.m_iLastUsedProfileIndex);
@@ -243,7 +250,7 @@ void CGUIWindowLoginScreen::Update()
 
 bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
 {
-  if ( iItem < 0 || iItem >= m_vecItems.Size() ) return false;
+  if ( iItem < 0 || iItem >= m_vecItems->Size() ) return false;
   // calculate our position
   float posX = 200, posY = 100;
   const CGUIControl *pList = GetControl(CONTROL_BIG_LIST);
@@ -253,9 +260,9 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
     posY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
 
-  bool bSelect = m_vecItems[iItem]->IsSelected();
+  bool bSelect = m_vecItems->Get(iItem)->IsSelected();
   // mark the item
-  m_vecItems[iItem]->Select(true);
+  m_vecItems->Get(iItem)->Select(true);
 
   // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
@@ -304,7 +311,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   }
   //NOTE: this can potentially (de)select the wrong item if the filelisting has changed because of an action above.
   if (iItem < (int)g_settings.m_vecProfiles.size())
-    m_vecItems[iItem]->Select(bSelect);
+    m_vecItems->Get(iItem)->Select(bSelect);
 
   return (btnid > 0);
 }
@@ -312,9 +319,9 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
 CFileItem* CGUIWindowLoginScreen::GetCurrentListItem(int offset)
 {
   int item = m_viewControl.GetSelectedItem();
-  if (item < 0 || !m_vecItems.Size()) return NULL;
+  if (item < 0 || !m_vecItems->Size()) return NULL;
 
-  item = (item + offset) % m_vecItems.Size();
-  if (item < 0) item += m_vecItems.Size();
-  return m_vecItems[item];
+  item = (item + offset) % m_vecItems->Size();
+  if (item < 0) item += m_vecItems->Size();
+  return m_vecItems->Get(item);
 }

@@ -193,6 +193,7 @@ protected:
   bool   m_hasCamera;
   CPoint m_camera;      // 3D camera position (x,y coords - z is fixed currently)
   std::vector<CAnimation> m_animations;
+  TransformMatrix m_transform;
 
   int m_renderOrder;      // for render order of dialogs
   bool m_hasRendered;

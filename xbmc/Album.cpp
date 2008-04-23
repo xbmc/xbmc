@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "Settings.h"
 #include "Album.h"
 #include "XMLUtils.h"
 

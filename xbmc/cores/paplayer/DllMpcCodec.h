@@ -1,5 +1,5 @@
 #pragma once
-#include "../../DynamicDll.h"
+#include "DynamicDll.h"
 
 #include "mpc/config_win32.h"
 #include "mpc/reader.h"

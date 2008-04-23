@@ -1,6 +1,11 @@
 #pragma once
-#include "FileItem.h"
-#include "PlayList.h"
+
+class CFileItem;
+class CFileItemList;
+namespace PLAYLIST
+{
+  class CPlayList;
+}
 
 typedef enum
 {

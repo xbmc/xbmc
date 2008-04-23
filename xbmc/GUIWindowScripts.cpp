@@ -5,6 +5,9 @@
 #include "lib/libPython/XBPython.h"
 #endif
 #include "GUIWindowScriptsInfo.h"
+#include "GUIWindowManager.h"
+#include "FileSystem/File.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 
@@ -42,8 +45,8 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
-      if (m_vecItems.m_strPath == "?")
-        m_vecItems.m_strPath = g_settings.GetScriptsFolder();
+      if (m_vecItems->m_strPath == "?")
+        m_vecItems->m_strPath = g_settings.GetScriptsFolder();
       return CGUIMediaWindow::OnMessage(message);
     }
     break;
@@ -70,9 +73,9 @@ bool CGUIWindowScripts::Update(const CStdString &strDirectory)
     {
       const char* filename = g_pythonParser.getFileName(id);
 
-      for (int i = 0; i < m_vecItems.Size(); i++)
+      for (int i = 0; i < m_vecItems->Size(); i++)
       {
-        CFileItem* pItem = m_vecItems[i];
+        CFileItem* pItem = m_vecItems->Get(i);
         if (pItem->m_strPath == filename)
         {
           char tstr[1024];
@@ -93,7 +96,7 @@ bool CGUIWindowScripts::Update(const CStdString &strDirectory)
 
 bool CGUIWindowScripts::OnPlayMedia(int iItem)
 {
-  CFileItem* pItem=m_vecItems[iItem];
+  CFileItem* pItem=m_vecItems->Get(iItem);
   CStdString strPath = pItem->m_strPath;
 
 #ifdef HAS_PYTHON
@@ -112,7 +115,7 @@ bool CGUIWindowScripts::OnPlayMedia(int iItem)
 
       // update items
       int selectedItem = m_viewControl.GetSelectedItem();
-      Update(m_vecItems.m_strPath);
+      Update(m_vecItems->m_strPath);
       m_viewControl.SetSelectedItem(selectedItem);
       return true;
     }
@@ -136,7 +139,7 @@ void CGUIWindowScripts::Render()
   if (g_pythonParser.ScriptsSize() != m_scriptSize)
   {
     int selectedItem = m_viewControl.GetSelectedItem();
-    Update(m_vecItems.m_strPath);
+    Update(m_vecItems->m_strPath);
     m_viewControl.SetSelectedItem(selectedItem);
     m_scriptSize = g_pythonParser.ScriptsSize();
   }

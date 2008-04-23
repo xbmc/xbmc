@@ -1,6 +1,6 @@
 #include "include.h"
 #include "GUIControlGroupList.h"
-#include "../xbmc/utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 
 #define TIME_TO_SCROLL 200;
 
@@ -160,6 +160,8 @@ void CGUIControlGroupList::ValidateOffset()
 
 void CGUIControlGroupList::AddControl(CGUIControl *control)
 {
+  // NOTE: We override control navigation here, but we don't override the <onleft> etc. builtins
+  //       if specified.
   if (control)
   { // set the navigation of items so that they form a list
     if (m_orientation == VERTICAL)
@@ -181,6 +183,7 @@ void CGUIControlGroupList::AddControl(CGUIControl *control)
     }
     else
     {
+
       DWORD leftID = GetControlIdLeft();
       DWORD rightID = GetControlIdRight();
       if (m_children.size())

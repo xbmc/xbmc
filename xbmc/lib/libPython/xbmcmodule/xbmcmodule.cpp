@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #ifndef _LINUX
-#include "../python/Python.h"
+#include "lib/libPython/python/Python.h"
 #else
 #include <python2.4/Python.h>
 #include "../XBPythonDll.h"
@@ -8,22 +8,25 @@
 #include "player.h"
 #include "pyplaylist.h"
 #include "keyboard.h"
-#include "../../../xbox/IoSupport.h"
+#include "xbox/IoSupport.h"
 #ifndef _LINUX
 #include <ConIo.h>
 #endif
 #include "infotagvideo.h"
 #include "infotagmusic.h"
-#include "../../libGoAhead/XBMChttp.h"
-#include "../../../utils/GUIInfoManager.h"
-#include "../../../../guilib/GUIAudioManager.h"
-#include "../../../Application.h"
-#include "../../../Crc32.h"
-#include "../../../Util.h"
+#include "lib/libGoAhead/XBMChttp.h"
+#include "utils/GUIInfoManager.h"
+#include "GUIWindowManager.h"
+#include "GUIAudioManager.h"
+#include "Application.h"
+#include "Crc32.h"
+#include "Util.h"
+#include "FileSystem/File.h"
+#include "Settings.h"
 
 // include for constants
 #include "pyutil.h"
-#include "../../../PlayListPlayer.h"
+#include "PlayListPlayer.h"
 
 using namespace std;
 using namespace XFILE;

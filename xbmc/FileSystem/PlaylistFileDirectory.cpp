@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "PlaylistFileDirectory.h"
-#include "../utils/log.h"
-#include "../PlayListFactory.h"
-#include "../Util.h"
+#include "utils/log.h"
+#include "PlayListFactory.h"
+#include "MusicInfoTag.h"
+#include "FileSystem/File.h"
+#include "PlayList.h"
 
 using namespace std;
 using namespace PLAYLIST;
@@ -51,6 +53,11 @@ namespace DIRECTORY
       return (pPlayList->size() > 1);
     }
     return false;
+  }
+
+  bool CPlaylistFileDirectory::Remove(const char *strPath) 
+  { 
+    return XFILE::CFile::Delete(strPath); 
   }
 }
 

@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "Encoder.h"
-#include "../Util.h"
-
 
 bool CEncoder::Init(const char* strFile, int iInChannels, int iInRate, int iInBits)
 {

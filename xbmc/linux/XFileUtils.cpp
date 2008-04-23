@@ -1,3 +1,5 @@
+#include "system.h"
+#include "PlatformInclude.h"
 #include "XFileUtils.h"
 #include "XTimeUtils.h"
 #include "Util.h"

@@ -1,6 +1,7 @@
 #include "rar.hpp"
 #include "UnrarX.hpp"
-#include "../../../guilib/GUIWindowManager.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogProgress.h"
 
 #include "smallfn.cpp"
 

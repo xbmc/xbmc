@@ -23,14 +23,15 @@
 #include "GUIWindowSettingsProfile.h"
 #include "GUIWindowFileManager.h"
 #include "Profile.h"
-#include "Util.h"
 #include "Application.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogProfileSettings.h"
 #include "utils/Network.h"
-#include "utils/GUIInfoManager.h"
 #include "utils/Weather.h"
 #include "GUIPassword.h"
+#include "GUIWindowManager.h"
+#include "FileSystem/Directory.h"
+#include "FileItem.h"
 
 using namespace DIRECTORY;
 
@@ -59,7 +60,7 @@ bool CGUIWindowSettingsProfile::OnAction(const CAction &action)
 
 int CGUIWindowSettingsProfile::GetSelectedItem()
 {
-  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_PROFILES, 0, 0, NULL);
+  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_PROFILES);
   g_graphicsContext.SendMessage(msg);
 
   return msg.GetParam1();
@@ -98,7 +99,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
   {
     unsigned iCtrlID = GetFocusedControlID();
     g_application.StopPlaying();
-    CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, m_gWindowManager.GetActiveWindow(), iCtrlID, 0, 0, NULL);
+    CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, m_gWindowManager.GetActiveWindow(), iCtrlID);
     g_graphicsContext.SendMessage(msg2);
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
 #ifdef HAS_XBOX_NETWORK
@@ -162,7 +163,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
           iAction == ACTION_MOUSE_RIGHT_CLICK
         )
         {
-          CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_PROFILES, 0, 0, NULL);
+          CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_PROFILES);
           g_graphicsContext.SendMessage(msg);
           int iItem = msg.GetParam1();
           if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
@@ -227,13 +228,13 @@ void CGUIWindowSettingsProfile::LoadList()
     item->SetLabel2(profile.getDate());
     item->SetThumbnailImage(profile.getThumb());
     item->SetOverlayImage(profile.getLockMode() == LOCK_MODE_EVERYONE ? CGUIListItem::ICON_OVERLAY_NONE : CGUIListItem::ICON_OVERLAY_LOCKED);
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PROFILES, 0, 0, (void*)item);
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PROFILES, 0, 0, item);
     g_graphicsContext.SendMessage(msg);
     m_vecListItems.push_back(item);
   }
   {
     CFileItem* item = new CFileItem(g_localizeStrings.Get(20058));
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PROFILES, 0, 0, (void*)item);
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PROFILES, 0, 0, item);
     g_graphicsContext.SendMessage(msg);
     item->m_strPath.Empty();
     m_vecListItems.push_back(item);
@@ -251,7 +252,7 @@ void CGUIWindowSettingsProfile::LoadList()
 
 void CGUIWindowSettingsProfile::ClearListItems()
 {
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PROFILES, 0, 0, NULL);
+  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PROFILES);
   g_graphicsContext.SendMessage(msg);
 
   for (int i = 0;i < (int)m_vecListItems.size();++i)

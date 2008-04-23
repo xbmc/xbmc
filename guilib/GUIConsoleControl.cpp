@@ -1,7 +1,7 @@
 #include "include.h"
 #include "GUIConsoleControl.h"
 #include "GUIWindowManager.h"
-#include "../xbmc/utils/CharsetConverter.h"
+#include "utils/CharsetConverter.h"
 #include "GUITextLayout.h"
 
 

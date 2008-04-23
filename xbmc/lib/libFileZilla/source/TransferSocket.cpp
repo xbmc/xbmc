@@ -24,8 +24,8 @@
 #include "ControlSocket.h"
 #include "options.h"
 #if defined(_XBOX)
-#include "../../../util.h"
-#include "../../../GUISettings.h"
+#include "util.h"
+#include "GUISettings.h"
 #endif
 #include "ServerThread.h"
 #ifndef NOLAYERS

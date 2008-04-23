@@ -3,8 +3,9 @@
 #include "GUIFontManager.h"
 #include "GUIMessage.h"
 #include "IMsgSenderCallback.h"
-#include "../xbmc/Settings.h"
-#include "../xbmc/XBVideoConfig.h"
+#include "Settings.h"
+#include "GUISettings.h"
+#include "XBVideoConfig.h"
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/Application.h"
 #ifdef HAS_XBOX_D3D

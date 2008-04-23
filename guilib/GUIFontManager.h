@@ -13,6 +13,8 @@
 // Forward
 class CGUIFont;
 class CGUIFontTTF;
+class TiXmlDocument;
+class TiXmlNode;
 
 struct OrigFontInfo
 {

@@ -2,9 +2,9 @@
 #include "GUIFont.h"
 #include "GraphicContext.h"
 
+#include "utils/SingleLock.h"
 #include <math.h>
 
-#include "../xbmc/utils/SingleLock.h"
 
 using namespace std;
 

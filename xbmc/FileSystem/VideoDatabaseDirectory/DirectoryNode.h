@@ -1,5 +1,9 @@
 #pragma once
 
+#include "StdString.h"
+
+class CFileItemList;
+
 namespace DIRECTORY
 {
   namespace VIDEODATABASEDIRECTORY

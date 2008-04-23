@@ -2,7 +2,7 @@
 #include "IFile.h"
 #include "RingBuffer.h"
 #include <map>
-#include "../utils/HttpHeader.h"
+#include "utils/HttpHeader.h"
 
 namespace XCURL
 {
