@@ -561,7 +561,8 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
         CVideoDatabase database;
         database.Open();
         SScraperInfo info;
-        if (database.GetScraperForPath(share->strPath,info))
+        
+        if (share != 0 && database.GetScraperForPath(share->strPath,info))
         {
           if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
             if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
