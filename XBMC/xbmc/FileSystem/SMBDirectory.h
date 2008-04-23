@@ -1,6 +1,7 @@
 #pragma once
 #include "IDirectory.h"
 #include "FileSmb.h"
+#include "MediaSource.h"
 
 namespace DIRECTORY
 {
@@ -23,7 +24,7 @@ public:
   static void UnMountShare(const CStdString &strType, const CStdString &strName);
   static CStdString GetMountPoint(const CStdString &strType, const CStdString &strName);
 
-  static bool MountShare(const CStdString &strType, CShare &share);
+  static bool MountShare(const CStdString &strType, CMediaSource &share);
 
 private:
   int OpenDir(const CURL &url, CStdString& strAuth);

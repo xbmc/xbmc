@@ -1,19 +1,21 @@
 #include "stdafx.h"
 #include "mplayer.h"
-#include "../DllLoader/DllLoader.h"
+#include "cores/DllLoader/DllLoader.h"
 #include "DllMPlayer.h"
-#include "../dlgcache.h"
-#include "../../util.h"
-#include "../../filesystem/fileshoutcast.h"
-#include "../../FileSystem/FileSmb.h"
-#include "../../XBAudioConfig.h"
-#include "../../XBVideoConfig.h"
-#include "../../langcodeexpander.h"
-#include "../../VideoDatabase.h"
-#include "../../utils/GUIInfoManager.h"
-#include "../VideoRenderers/RenderManager.h"
-#include "../../utils/win32exception.h"
-#include "../DllLoader/exports/emu_registry.h"
+#include "cores/dlgcache.h"
+#include "Util.h"
+#include "FileSystem/FileShoutcast.h"
+#include "FileSystem/FileSmb.h"
+#include "XBAudioConfig.h"
+#include "XBVideoConfig.h"
+#include "langcodeexpander.h"
+#include "VideoDatabase.h"
+#include "utils/GUIInfoManager.h"
+#include "cores/VideoRenderers/RenderManager.h"
+#include "utils/win32exception.h"
+#include "cores/DllLoader/exports/emu_registry.h"
+#include "Settings.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace XFILE;
@@ -882,9 +884,10 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
     // Read EDL
     if (!bFileOnInternet && bIsVideo && !bIsDVD )
     {
-      if (m_Edl.ReadnCacheAny(strFile))
+      if (g_guiSettings.GetBool("videoplayer.editdecision"))
       {
-        options.SetEdl(m_Edl.GetCachedEdl());
+        if (m_Edl.ReadnCacheAny(strFile))
+          options.SetEdl(m_Edl.GetCachedEdl());
       }
     }
     
@@ -1533,9 +1536,11 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
     {
       iSeek= bPlus ? g_advancedSettings.m_videoTimeSeekForward : g_advancedSettings.m_videoTimeSeekBackward;
     }
-    m_Edl.CompensateSeek(bPlus, &iSeek);
 
-    SeekRelativeTime(iSeek);    
+    if (m_Edl.HaveCutpoints())
+      SeekTime(GetTime() + iSeek*1000);
+    else
+      SeekRelativeTime(iSeek);
   }
   else
   {
@@ -1564,8 +1569,11 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
         timeInSecs = -1;
 
       iSeek=(int)timeInSecs;
-      m_Edl.CompensateSeek(bPlus, &iSeek);
-      SeekRelativeTime(iSeek);
+
+      if (m_Edl.HaveCutpoints())
+        SeekTime(GetTime() + iSeek*1000);
+      else
+        SeekRelativeTime(iSeek);
     }    
   }
 }
@@ -1573,13 +1581,12 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
 bool CMPlayer::SeekScene(bool bPlus)
 {
   __int64 iScenemarker;
-  bool bSeek=false;
   if( m_Edl.HaveScenes() && m_Edl.SeekScene(bPlus,&iScenemarker) )
   {
-    SeekTime(iScenemarker);
-    bSeek=true;
+    SeekTime(m_Edl.RemoveCutTime(iScenemarker));
+    return true;
   }
-  return bSeek;
+  return false;
 }
 
 void CMPlayer::SeekRelativeTime(int iSeconds)
@@ -1721,6 +1728,7 @@ bool CMPlayer::Record(bool bOnOff)
 
 void CMPlayer::SeekPercentage(float percent)
 {
+  // No EDL compensation possible, because we don't know the total time.
   if (percent > 100) percent = 100;
   if (percent < 0) percent = 0;
 
@@ -1730,7 +1738,10 @@ void CMPlayer::SeekPercentage(float percent)
 
 float CMPlayer::GetPercentage()
 {
-  return (float)mplayer_getPercentage( );
+  if (m_Edl.HaveCutpoints())
+    return ( (float)(100 / ((double)(GetTotalTime()*1000)/(double)GetTime())) ); 
+
+  return (float)mplayer_getPercentage(); 
 }
 
 
@@ -1886,6 +1897,7 @@ void CMPlayer::SeekTime(__int64 iTime)
   {
     try 
     {
+      iTime=m_Edl.RestoreCutTime(iTime);
       mplayer_setTimeMs(iTime);
     }
     catch(win32_exception e)
@@ -1901,14 +1913,15 @@ void CMPlayer::SeekTime(__int64 iTime)
 //Time in milleseconds
 __int64 CMPlayer::GetTime()
 {
+  __int64 time = 0;
   if (m_bIsPlaying)
   {
     try 
     {
       if (HasVideo()) //As mplayer has the audio counter 10 times to big. Should be fixed
-        return 1000*mplayer_getCurrentTime();
+        time = 1000*mplayer_getCurrentTime();
       else
-        return 100*m_iPTS;
+        time = 100*m_iPTS;
     }
     catch(win32_exception e)
     {
@@ -1916,16 +1929,21 @@ __int64 CMPlayer::GetTime()
       g_applicationMessenger.MediaStop();
     }
   }
-  return 0;
+
+  if(m_Edl.HaveCutpoints())
+    time = m_Edl.RemoveCutTime(time);
+
+  return time;
 }
 
 int CMPlayer::GetTotalTime()
 {
+  int time = 0;
   if (m_bIsPlaying)
   {
     try 
     {
-      return mplayer_getTime();
+      time = mplayer_getTime();
     }
     catch(win32_exception e)
     {
@@ -1933,7 +1951,11 @@ int CMPlayer::GetTotalTime()
       g_applicationMessenger.MediaStop();
     }
   }
-  return 0;
+
+  if(m_Edl.HaveCutpoints())
+    time -= (int)(m_Edl.TotalCutTime()/1000);
+
+  return time;
 }
 
 void CMPlayer::ToFFRW(int iSpeed)

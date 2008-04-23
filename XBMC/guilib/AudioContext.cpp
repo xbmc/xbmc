@@ -1,8 +1,9 @@
 #include "include.h"
 #include "AudioContext.h"
 #include "IAudioDeviceChangedCallback.h"
-#include "../xbmc/Settings.h"
-#include "../xbmc/XBAudioConfig.h"
+#include "Settings.h"
+#include "GUISettings.h"
+#include "XBAudioConfig.h"
 
 #ifndef _XBOX
 extern HWND g_hWnd;

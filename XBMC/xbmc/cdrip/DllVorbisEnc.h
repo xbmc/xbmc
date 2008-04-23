@@ -1,6 +1,6 @@
 #pragma once
-#include "../DynamicDll.h"
-#include "../cdrip/oggvorbis/vorbisenc.h"
+#include "DynamicDll.h"
+#include "cdrip/oggvorbis/vorbisenc.h"
 
 class DllVorbisEncInterface
 {

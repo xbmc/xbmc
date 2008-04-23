@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "VoiceManager.h"
 #include "MediaPacketQueue.h"
-#include "../Utils/KaiVoice.h"
+#include "Utils/KaiVoice.h"
 
 
 // Global instance of the voice manager

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "EncoderVorbis.h"
-#include "../Util.h"
+#include "GUISettings.h"
 
 CEncoderVorbis::CEncoderVorbis()
 {

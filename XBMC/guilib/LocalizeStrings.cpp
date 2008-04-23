@@ -1,6 +1,6 @@
 #include "include.h"
 #include "LocalizeStrings.h"
-#include "../xbmc/utils/CharsetConverter.h"
+#include "utils/CharsetConverter.h"
 #include "../xbmc/Util.h"
 #include "XMLUtils.h"
 

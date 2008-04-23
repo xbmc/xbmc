@@ -3,6 +3,7 @@
 #include <wchar.h>
 #include <vector>
 #include "SkinInfo.h"
+#include "tinyXML/tinyxml.h"
 
 using namespace std;
 

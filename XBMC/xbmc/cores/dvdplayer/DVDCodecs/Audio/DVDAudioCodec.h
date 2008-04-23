@@ -1,7 +1,9 @@
 
 #pragma once
 
+#include <vector>
 #ifndef _LINUX
+
 enum CodecID;
 #else
 #ifdef __APPLE__

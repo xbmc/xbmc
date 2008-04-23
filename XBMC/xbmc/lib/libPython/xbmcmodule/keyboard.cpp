@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "keyboard.h"
 #include "pyutil.h"
-#include "../../../Util.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogKeyboard.h"
 #include "Application.h"
 
 using namespace std;

@@ -2,6 +2,7 @@
 #include "InfoLoader.h"
 #include "Weather.h"
 #include "SystemInfo.h"
+#include "GUIWindowManager.h"
 
 CBackgroundLoader::CBackgroundLoader(CInfoLoader *callback) : CThread()
 {

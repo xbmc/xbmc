@@ -18,12 +18,12 @@
 #include <vector>
 #include <stack>
 #include <map>
-#include "../xbmc/utils/CriticalSection.h"  // base class
-#include "TransformMatrix.h"                // for the members m_guiTransform etc.
+#include "utils/CriticalSection.h"  // base class
+#include "TransformMatrix.h"        // for the members m_guiTransform etc.
 #ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>
 #endif
-#include "Geometry.h"                       // for CRect/CPoint
+#include "Geometry.h"               // for CRect/CPoint
 #include "gui3d.h"
 
 #include "Surface.h"

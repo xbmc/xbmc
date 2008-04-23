@@ -1,16 +1,16 @@
 #include "stdafx.h"
 #include "winxml.h"
 #ifndef _LINUX
-#include "../python/Python.h"
+#include "lib/libPython/python/Python.h"
 #else
 #include <python2.4/Python.h>
 #include "../XBPythonDll.h"
 #endif
 #include "pyutil.h"
 #include "GUIPythonWindowXMLDialog.h"
-#include "../../../Application.h"
-#include "../../../../guilib/SkinInfo.h"
-#include "../../../Util.h"
+#include "SkinInfo.h"
+#include "Util.h"
+#include "FileSystem/File.h"
 
 #define ACTIVE_WINDOW  m_gWindowManager.GetActiveWindow()
 

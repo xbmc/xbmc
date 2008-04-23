@@ -1,7 +1,7 @@
 #include "include.h"
 #include "GUIInfoColor.h"
-#include "../xbmc/utils/CharsetConverter.h"
-#include "../xbmc/utils/GUIInfoManager.h"
+#include "utils/CharsetConverter.h"
+#include "utils/GUIInfoManager.h"
 #include "LocalizeStrings.h"
 #include "GUIColorManager.h"
 
@@ -46,6 +46,9 @@ void CGUIInfoColor::Parse(const CStdString &label)
 {
   // Check for the standard $INFO[] block layout, and strip it if present
   CStdString label2 = label;
+  if (label.Equals("-", false))
+    return;
+
   if (label.Left(5).Equals("$INFO", false))
     label2 = label.Mid(6, label.length()-7);
 

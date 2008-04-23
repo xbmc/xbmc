@@ -1,4 +1,4 @@
-/*
+  /*
  *      Copyright (C) 2005-2007 Team XboxMediaCenter
  *      http://www.xboxmediacenter.com
  *
@@ -39,7 +39,15 @@
 #include "MusicDatabase.h"
 #include "SortFileItem.h"
 #include "utils/TuxBoxUtil.h"
+#include "VideoInfoTag.h"
 #include "utils/SingleLock.h"
+#include "MusicInfoTag.h"
+#include "PictureInfoTag.h"
+#include "Artist.h"
+#include "Album.h"
+#include "Song.h"
+#include "URL.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace XFILE;
@@ -184,7 +192,7 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
     CUtil::AddSlashAtEnd(m_strPath);
 }
 
-CFileItem::CFileItem(const CShare& share)
+CFileItem::CFileItem(const CMediaSource& share)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
@@ -314,7 +322,7 @@ void CFileItem::Reset()
   m_bIsParentFolder=false;
   m_bIsShareOrDrive = false;
   m_dateTime.Reset();
-  m_iDriveType = SHARE_TYPE_UNKNOWN;
+  m_iDriveType = CMediaSource::SOURCE_TYPE_UNKNOWN;
   m_lStartOffset = 0;
   m_lEndOffset = 0;
   m_iprogramCount = 0;
@@ -402,7 +410,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_idepth;
     ar >> m_lStartOffset;
     ar >> m_lEndOffset;
-    ar >> m_iLockMode;
+    ar >> (int&)m_iLockMode;
     ar >> m_strLockCode;
     ar >> m_iBadPwdCount;
 
@@ -559,9 +567,9 @@ bool CFileItem::IsFileFolder() const
     IsPlayList() ||
     IsZIP() ||
     IsRAR() ||
-    IsType("ogg") ||
-    IsType("nsf") ||
-    IsType("sid") ||
+    IsType(".ogg") ||
+    IsType(".nsf") ||
+    IsType(".sid") ||
     IsShoutCast()
     )
     );
@@ -860,7 +868,7 @@ void CFileItem::FillInDefaultIcon()
   }
 }
 
-CStdString CFileItem::GetCachedArtistThumb()
+CStdString CFileItem::GetCachedArtistThumb() const
 {
   Crc32 crc;
   crc.ComputeFromLowerCase("artist" + GetLabel());
@@ -869,7 +877,7 @@ CStdString CFileItem::GetCachedArtistThumb()
   return _P(cachedThumb);
 }
 
-CStdString CFileItem::GetCachedProfileThumb()
+CStdString CFileItem::GetCachedProfileThumb() const
 {
   Crc32 crc;
   crc.ComputeFromLowerCase("profile" + m_strPath);
@@ -878,10 +886,13 @@ CStdString CFileItem::GetCachedProfileThumb()
   return _P(cachedThumb);
 }
 
-CStdString CFileItem::GetCachedSeasonThumb()
+CStdString CFileItem::GetCachedSeasonThumb() const
 {
   Crc32 crc;
-  crc.ComputeFromLowerCase("season" + GetVideoInfoTag()->m_strPath+GetLabel());
+  CStdString seasonPath;
+  if (HasVideoInfoTag())
+    seasonPath = GetVideoInfoTag()->m_strPath;
+  crc.ComputeFromLowerCase("season" + seasonPath + GetLabel());
   CStdString hex;
   hex.Format("%08x", (__int32)crc);
   CStdString cachedThumb;
@@ -889,7 +900,7 @@ CStdString CFileItem::GetCachedSeasonThumb()
   return _P(cachedThumb);
 }
 
-CStdString CFileItem::GetCachedActorThumb()
+CStdString CFileItem::GetCachedActorThumb() const
 {
   Crc32 crc;
   crc.ComputeFromLowerCase("actor" + GetLabel());
@@ -1130,7 +1141,7 @@ void CFileItemList::SetFastLookup(bool fastLookup)
   m_fastLookup = fastLookup;
 }
 
-bool CFileItemList::Contains(const CStdString& fileName)
+bool CFileItemList::Contains(const CStdString& fileName) const
 {
   CSingleLock lock(m_lock);
 
@@ -1141,7 +1152,7 @@ bool CFileItemList::Contains(const CStdString& fileName)
   // slow method...
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
-    CFileItem *pItem = m_items[i];
+    const CFileItem *pItem = m_items[i];
     if (pItem->m_strPath.Equals(checkPath))
       return true;
   }
@@ -2008,14 +2019,14 @@ bool CFileItemList::Save()
   return false;
 }
 
-void CFileItemList::RemoveDiscCache()
+void CFileItemList::RemoveDiscCache() const
 {
   CLog::Log(LOGDEBUG,"Clearing cached fileitems [%s]",m_strPath.c_str());
   if (CFile::Exists(GetDiscCacheFile()))
     CFile::Delete(GetDiscCacheFile());
 }
 
-CStdString CFileItemList::GetDiscCacheFile()
+CStdString CFileItemList::GetDiscCacheFile() const
 {
   CStdString strPath=m_strPath;
   CUtil::RemoveSlashAtEnd(strPath);
@@ -2035,7 +2046,7 @@ CStdString CFileItemList::GetDiscCacheFile()
   return _P(cacheFile);
 }
 
-bool CFileItemList::AlwaysCache()
+bool CFileItemList::AlwaysCache() const
 {
   // some database folders are always cached
   if (IsMusicDb())
@@ -2078,7 +2089,7 @@ void CFileItemList::SetCachedMusicThumbs()
   }
 }
 
-CStdString CFileItem::GetCachedPictureThumb()
+CStdString CFileItem::GetCachedPictureThumb() const
 {
   // get the locally cached thumb
   Crc32 crc;
@@ -2110,7 +2121,7 @@ void CFileItem::SetCachedMusicThumb()
     // SetIconImage(cachedThumb);
 }
 
-CStdString CFileItem::GetPreviouslyCachedMusicThumb()
+CStdString CFileItem::GetPreviouslyCachedMusicThumb() const
 {
   // the highest priority thumb is album name + album path
   CStdString strPath;
@@ -2159,7 +2170,7 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb()
   return "";
 }
 
-CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */)
+CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) const
 {
   if (m_bIsShareOrDrive) return "";
   if (IsInternetStream()) return "";
@@ -2224,7 +2235,7 @@ void CFileItem::SetCachedPictureThumb()
     SetThumbnailImage(cachedThumb);
 }
 
-CStdString CFileItem::GetCachedVideoThumb()
+CStdString CFileItem::GetCachedVideoThumb() const
 {
   // get the locally cached thumb
   Crc32 crc;
@@ -2254,7 +2265,7 @@ void CFileItem::SetCachedVideoThumb()
 // Gets the .tbn filename from a file or folder name.
 // <filename>.ext -> <filename>.tbn
 // <foldername>/ -> <foldername>.tbn
-CStdString CFileItem::GetTBNFile()
+CStdString CFileItem::GetTBNFile() const
 {
   // special case for zip/rar
   if (IsRAR() || IsZIP())
@@ -2281,7 +2292,7 @@ CStdString CFileItem::GetTBNFile()
   }
 }
 
-CStdString CFileItem::GetUserVideoThumb()
+CStdString CFileItem::GetUserVideoThumb() const
 {
   if (m_bIsShareOrDrive) return "";
   if (IsInternetStream()) return "";
@@ -2356,7 +2367,7 @@ void CFileItem::SetUserVideoThumb()
 ///
 /// If a cached fanart image already exists, then we're fine.  Otherwise, we look for a local fanart.jpg
 /// and cache that image as our fanart.
-void CFileItem::CacheVideoFanart()
+void CFileItem::CacheVideoFanart() const
 {
   CStdString cachedFanart(GetCachedVideoFanart());
   // First check for an already cached fanart image
@@ -2374,24 +2385,24 @@ void CFileItem::CacheVideoFanart()
   pic.CacheImage(folderFanart, cachedFanart);
 }
 
-CStdString CFileItem::GetCachedVideoFanart()
+CStdString CFileItem::GetCachedVideoFanart() const
+{
+  // get the locally cached thumb
+  return CFileItem::GetCachedVideoFanart(m_strPath);
+}
+
+CStdString CFileItem::GetCachedVideoFanart(const CStdString &path)
 {
   // get the locally cached thumb
   Crc32 crc;
-  if (IsStack())
-  {
-    CStackDirectory dir;
-    crc.ComputeFromLowerCase(dir.GetFirstStackedFile(m_strPath));
-  }
-  else
-    crc.ComputeFromLowerCase(m_strPath);
+  crc.ComputeFromLowerCase(path);
 
   CStdString thumb;
   thumb.Format("%s\\%08x.tbn", g_settings.GetVideoFanartFolder().c_str(),(unsigned __int32)crc);
   return _P(thumb);
 }
 
-CStdString CFileItem::GetCachedProgramThumb()
+CStdString CFileItem::GetCachedProgramThumb() const
 {
   // get the locally cached thumb
   Crc32 crc;
@@ -2410,7 +2421,7 @@ CStdString CFileItem::GetCachedProgramThumb()
   return _P(thumb);
 }
 
-CStdString CFileItem::GetCachedGameSaveThumb()
+CStdString CFileItem::GetCachedGameSaveThumb() const
 {
   CStdString extension;
   CUtil::GetExtension(m_strPath,extension);
@@ -2688,5 +2699,29 @@ void CFileItemList::ClearSortState()
 {
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
+}
+
+CVideoInfoTag* CFileItem::GetVideoInfoTag()
+{
+  if (!m_videoInfoTag)
+    m_videoInfoTag = new CVideoInfoTag;
+
+  return m_videoInfoTag;
+}
+
+CPictureInfoTag* CFileItem::GetPictureInfoTag()
+{
+  if (!m_pictureInfoTag)
+    m_pictureInfoTag = new CPictureInfoTag;
+
+  return m_pictureInfoTag;
+}
+
+MUSIC_INFO::CMusicInfoTag* CFileItem::GetMusicInfoTag()
+{
+  if (!m_musicInfoTag)
+    m_musicInfoTag = new MUSIC_INFO::CMusicInfoTag;
+
+  return m_musicInfoTag;
 }
 

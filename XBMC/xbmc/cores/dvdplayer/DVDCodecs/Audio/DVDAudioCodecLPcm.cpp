@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "DVDAudioCodecLPcm.h"
-#include "../../DVDStreamInfo.h"
+#include "DVDStreamInfo.h"
 
 CDVDAudioCodecLPcm::CDVDAudioCodecLPcm() : CDVDAudioCodecPcm()
 {

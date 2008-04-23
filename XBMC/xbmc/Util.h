@@ -1,14 +1,26 @@
 #pragma once
 #include <vector>
 #include <math.h>
-#include "PlayList.h"
-#include "FileSystem/RarManager.h"
-#include "Settings.h"
+#include "MediaSource.h"
+
 #ifdef HAS_XBOX_HARDWARE
 #include "xbox/custom_launch_params.h"
 #else
 typedef void CUSTOM_LAUNCH_DATA;
 #endif
+
+namespace XFILE
+{
+  class IFileCallback;
+}
+
+namespace PLAYLIST
+{
+  class CPlayListItem;
+}
+
+class CFileItem;
+class CFileItemList;
 
 #ifdef HAS_TRAINER
 class CTrainer;
@@ -221,12 +233,8 @@ public:
   static void AddSlashAtEnd(CStdString& strFolder);
   static void RemoveSlashAtEnd(CStdString& strFolder);  
   static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
-  static void CreateZipPath(CStdString& strUrlPath, const CStdString& strRarPath, 
-    const CStdString& strFilePathInRar,  const WORD wOptions = EXFILE_AUTODELETE , 
-    const CStdString& strPwd = RAR_DEFAULT_PASSWORD, const CStdString& strCachePath = RAR_DEFAULT_CACHE);
-  static void CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath, 
-    const CStdString& strFilePathInRar,  const WORD wOptions = EXFILE_AUTODELETE , 
-    const CStdString& strPwd = RAR_DEFAULT_PASSWORD, const CStdString& strCachePath = RAR_DEFAULT_CACHE);
+  static void CreateArchivePath(CStdString& strUrlPath, const CStdString& strType, const CStdString& strArchivePath,
+    const CStdString& strFilePathInArchive, const CStdString& strCachePath = "Z:\\", const CStdString strPwd="");
   static bool ThumbExists(const CStdString& strFileName, bool bAddCache = false);
   static bool ThumbCached(const CStdString& strFileName);
   static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);
@@ -252,13 +260,13 @@ public:
 #endif
   static bool CreateDirectoryEx(const CStdString& strPath);
   static CStdString MakeLegalFileName(const CStdString &strFile, bool isFATX);
-  static void ConvertFileItemToPlayListItem(const CFileItem *pItem, PLAYLIST::CPlayList::CPlayListItem &playlistitem);
+  static void ConvertFileItemToPlayListItem(const CFileItem *pItem, PLAYLIST::CPlayListItem &playlistitem);
   static void AddDirectorySeperator(CStdString& strPath);
   static char GetDirectorySeperator(const CStdString& strFile);
 
   static bool IsUsingTTFSubtitles();
   static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
-  static int GetMatchingShare(const CStdString& strPath, VECSHARES& vecShares, bool& bIsSourceName);
+  static int GetMatchingSource(const CStdString& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);
   static CStdString TranslateSpecialPath(const CStdString &strSpecial);
   static CStdString TranslateSpecialSource(const CStdString &strSpecial);
   static void DeleteDirectoryCache(const CStdString strType = "");
@@ -277,7 +285,7 @@ public:
   static bool GetXBOXNickName(CStdString &strXboxNickNameOut);
   static bool AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort);
   static bool AutoDetection();
-  static void AutoDetectionGetShare(VECSHARES &share);
+  static void AutoDetectionGetSource(VECSOURCES &share);
   static void GetSkinThemes(std::vector<CStdString>& vecTheme);
   static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, bool bUseFileDirectories=false);
   static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);

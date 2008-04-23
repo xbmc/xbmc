@@ -1,8 +1,8 @@
 #pragma once
-#include "../IPlayer.h"
-#include "../../utils/Thread.h"
+#include "cores/IPlayer.h"
+#include "utils/Thread.h"
 #include "AudioDecoder.h"
-#include "../ssrc.h"
+#include "cores/ssrc.h"
 #ifdef __APPLE__
 #include <portaudio.h>
 #include "../../utils/PCMAmplifier.h"
@@ -12,6 +12,7 @@
 #include "../../utils/PCMAmplifier.h"
 #endif
 
+class CFileItem;
 #ifndef _LINUX
 #define PACKET_COUNT  20 // number of packets of size PACKET_SIZE (defined in AudioDecoder.h)
 #else
@@ -182,8 +183,8 @@ private:
   bool             m_resampleAudio;
 
   // our file
-  CFileItem        m_currentFile;
-  CFileItem        m_nextFile;
+  CFileItem*        m_currentFile;
+  CFileItem*        m_nextFile;
 
   // stuff for visualisation
   unsigned int     m_visBufferLength;

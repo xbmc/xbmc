@@ -26,15 +26,20 @@
 #include "GUIViewStatePicturesProgramsScripts.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
+#include "URL.h"
 #include "GUIPassword.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE_*
 #include "ViewDatabase.h"
 #include "AutoSwitch.h"
+#include "GUIWindowManager.h"
+#include "ViewState.h"
+#include "Settings.h"
+#include "FileItem.h"
 
 using namespace std;
 
 CStdString CGUIViewState::m_strPlaylistDirectory;
-VECSHARES CGUIViewState::m_shares;
+VECSOURCES CGUIViewState::m_sources;
 
 CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& items)
 {
@@ -318,9 +323,9 @@ CStdString CGUIViewState::GetExtensions()
   return "";
 }
 
-VECSHARES& CGUIViewState::GetShares()
+VECSOURCES& CGUIViewState::GetSources()
 {
-  return m_shares;
+  return m_sources;
 }
 
 CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIViewState(items)

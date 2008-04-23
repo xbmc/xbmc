@@ -41,6 +41,11 @@
 #include "PltDidl.h"
 #include "NptNetwork.h"
 #include "NptConsole.h"
+#include "MusicInfoTag.h"
+#include "FileSystem/Directory.h"
+#include "URL.h"
+#include "Settings.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -693,7 +698,7 @@ CUPnPServer::Build(CFileItem*      item,
     path.TrimRight("/");
     if (file_path.GetLength()) {
         // make sure the path starts with something that is shared given the share
-        if (!CUPnPVirtualPathDirectory::FindSharePath(share_name, file_path, true)) goto failure;
+        if (!CUPnPVirtualPathDirectory::FindSourcePath(share_name, file_path, true)) goto failure;
         
         // this is not a virtual directory
         object = BuildObject(item, file_path, with_count, info);
@@ -714,7 +719,7 @@ CUPnPServer::Build(CFileItem*      item,
             object->m_ParentID = parent_id;
         } else {
             // populate parentid manually
-            if (CUPnPVirtualPathDirectory::FindSharePath(share_name, file_path)) {
+            if (CUPnPVirtualPathDirectory::FindSourcePath(share_name, file_path)) {
                 // found the file_path as one of the path of the share
                 // this means the parent id is the share
                 object->m_ParentID = share_name;
@@ -724,7 +729,7 @@ CUPnPServer::Build(CFileItem*      item,
                 if (parent_path.IsEmpty()) goto failure;
 
                 // try again with parent
-                if (CUPnPVirtualPathDirectory::FindSharePath(share_name, parent_path)) {
+                if (CUPnPVirtualPathDirectory::FindSourcePath(share_name, parent_path)) {
                     // found the file_path parent folder as one of the path of the share
                     // this means the parent id is the share
                     object->m_ParentID = share_name;
@@ -757,13 +762,13 @@ CUPnPServer::Build(CFileItem*      item,
                 ((PLT_MediaContainer*)object)->m_ChildrenCount = 0;
 
                 // look up number of shares
-                VECSHARES *shares = NULL;
+                VECSOURCES *shares = NULL;
                 if (path == "virtualpath://upnpmusic") {
-                    shares = g_settings.GetSharesFromType("upnpmusic");
+                    shares = g_settings.GetSourcesFromType("upnpmusic");
                 } else if (path == "virtualpath://upnpvideo") {
-                    shares = g_settings.GetSharesFromType("upnpvideo");
+                    shares = g_settings.GetSourcesFromType("upnpvideo");
                 } else if (path == "virtualpath://upnppictures") {
-                    shares = g_settings.GetSharesFromType("upnppictures");
+                    shares = g_settings.GetSourcesFromType("upnppictures");
                 }
 
                 // use only shares that would some path with local files
@@ -771,14 +776,14 @@ CUPnPServer::Build(CFileItem*      item,
                     CUPnPVirtualPathDirectory dir;
                     for (unsigned int i = 0; i < shares->size(); i++) {
                         // Does this share contains any local paths?
-                        CShare &share = shares->at(i);
+                        CMediaSource &share = shares->at(i);
                         vector<CStdString> paths;
 
                         // reconstruct share name as it could have been replaced by
                         // a path if there was just one entry
                         NPT_String share_name = path + "/";
                         share_name += share.strName;
-                        if (dir.GetMatchingShare((const char*)share_name, share, paths) && paths.size()) {
+                        if (dir.GetMatchingSource((const char*)share_name, share, paths) && paths.size()) {
                             ((PLT_MediaContainer*)object)->m_ChildrenCount++;
                         }
                     }
@@ -805,10 +810,10 @@ CUPnPServer::Build(CFileItem*      item,
                 ((PLT_MediaContainer*)object)->m_ChildrenCount = 0;
 
                 // get all the paths for a given share
-                CShare share;
+                CMediaSource share;
                 CUPnPVirtualPathDirectory dir;
                 vector<CStdString> paths;
-                if (!dir.GetMatchingShare((const char*)share_name, share, paths)) goto failure;
+                if (!dir.GetMatchingSource((const char*)share_name, share, paths)) goto failure;
                 for (unsigned int i=0; i<paths.size(); i++) {
                     // FIXME: this is not efficient, we only need the number of items given a mask
                     // and not the list of items
@@ -843,7 +848,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
     NPT_String                     didl;
     NPT_Reference<PLT_MediaObject> object;
     NPT_String                     id = object_id;
-    CShare                         share;
+    CMediaSource                         share;
     CUPnPVirtualPathDirectory      dir;
     vector<CStdString>             paths;
     CFileItem*                     item = NULL;
@@ -878,7 +883,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
             item->SetLabel("Picture Files");
             item->SetLabelPreformated(true);
             object = Build(item, true, info);
-        } else if (dir.GetMatchingShare((const char*)id, share, paths)) {
+        } else if (dir.GetMatchingSource((const char*)id, share, paths)) {
             id += "/";
             item = new CFileItem((const char*)id, true);
             item->SetLabel(share.strName);
@@ -1418,7 +1423,7 @@ CUPnP::StartServer()
     }
 #endif
 
-    // load upnpserver.xml so that g_settings.m_vecUPnPMusicShares, etc.. are loaded
+    // load upnpserver.xml so that g_settings.m_vecUPnPMusiCMediaSources, etc.. are loaded
     CStdString filename;
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
     g_settings.LoadUPnPXml(filename);

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "CubeCodec.h"
-#include "../../Util.h"
 
 CubeCodec::CubeCodec()
 {

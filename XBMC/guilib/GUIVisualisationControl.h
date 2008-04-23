@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GUIControl.h"
-#include "../xbmc/cores/IAudioCallback.h"
+#include "cores/IAudioCallback.h"
 
 // forward definitions
 class CVisualisation;

@@ -5,9 +5,9 @@
 #include "GUIFontManager.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"
-#include "../xbmc/utils/GUIInfoManager.h"
-#include "../xbmc/utils/CharsetConverter.h"
-#include "../xbmc/FileItem.h"
+#include "utils/GUIInfoManager.h"
+#include "utils/CharsetConverter.h"
+#include "FileItem.h"
 
 using namespace std;
 

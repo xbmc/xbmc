@@ -19,8 +19,6 @@
 */
 #include "stdafx.h"
 #include "RGBRenderer.h"
-#include "../../application.h"
-#include "../../util.h"
 
 #define SURFTOTEX(a) ((a)->Parent ? (a)->Parent : (D3DBaseTexture*)(a))
 

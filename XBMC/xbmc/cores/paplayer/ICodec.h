@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ReplayGain.h"
+#include "StdString.h"
 #include "FileSystem/File.h"
 
 #define READ_EOF      -1

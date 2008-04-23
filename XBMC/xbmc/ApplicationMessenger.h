@@ -1,5 +1,6 @@
 #pragma once
 
+class CFileItem;
 #include "GUIDialog.h"
 
 // defines here

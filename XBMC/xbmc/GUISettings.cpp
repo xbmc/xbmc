@@ -21,8 +21,6 @@
 
 #include "stdafx.h"
 #include "GUISettings.h"
-#include "Application.h"
-#include "Util.h"
 #include "GUIDialogFileBrowser.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/FanController.h"
@@ -39,6 +37,7 @@
 #ifdef _LINUX
 #include "LinuxTimezone.h"
 #endif
+#include "utils/Network.h"
 
 using namespace std;
 
@@ -349,10 +348,11 @@ CGUISettings::CGUISettings(void)
   AddBool(6, "system.ledenableonpaused", 20313, true);
   AddSeparator(7, "system.sep3");
   AddBool(8, "system.fanspeedcontrol", 13302, false);
-  AddInt(9, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 1, 1, 50, SPIN_CONTROL_TEXT);
+  AddInt(9, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 5, 50, SPIN_CONTROL_TEXT);
   AddSeparator(10, "system.sep4");
   AddBool(11, "system.autotemperature", 13301, false);
   AddInt(12, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
+  AddInt(13, "system.minfanspeed", 13411, 1, 1, 1, 50, SPIN_CONTROL_TEXT);
 #endif
 
 #ifdef HAS_LCD
@@ -497,6 +497,7 @@ CGUISettings::CGUISettings(void)
 #endif
   AddInt(15, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(16, "videoplayer.dvdautomenu", 21882, false);
+  AddBool(17, "videoplayer.editdecision", 22003, false);
 
   AddCategory(5, "subtitles", 287);
   AddString(1, "subtitles.font", 288, "Arial.ttf", SPIN_CONTROL_TEXT);
@@ -531,17 +532,18 @@ CGUISettings::CGUISettings(void)
   AddString(4, "network.subnet", 720, "255.255.255.0", BUTTON_CONTROL_IP_INPUT);
   AddString(5, "network.gateway", 721, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
   AddString(6, "network.dns", 722, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
-  AddString(7, "network.essid", 776, "0.0.0.0", BUTTON_CONTROL_STANDARD);
-  AddInt(8, "network.enc", 778, ENC_NONE, ENC_NONE, 1, ENC_WPA2, SPIN_CONTROL_TEXT);
-  AddString(9, "network.key", 777, "0.0.0.0", BUTTON_CONTROL_INPUT);
-  AddString(10, "network.save", 779, "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(11, "network.sep1");
+  AddString(7, "network.dnssuffix", 22002, "", BUTTON_CONTROL_INPUT, true);
+  AddString(8, "network.essid", 776, "0.0.0.0", BUTTON_CONTROL_STANDARD);
+  AddInt(9, "network.enc", 778, ENC_NONE, ENC_NONE, 1, ENC_WPA2, SPIN_CONTROL_TEXT);
+  AddString(10, "network.key", 777, "0.0.0.0", BUTTON_CONTROL_INPUT);
+  AddString(11, "network.save", 779, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(12, "network.sep1");
 #endif
-  AddBool(12, "network.usehttpproxy", 708, false);
-  AddString(13, "network.httpproxyserver", 706, "", BUTTON_CONTROL_IP_INPUT);
-  AddString(14, "network.httpproxyport", 707, "8080", BUTTON_CONTROL_INPUT, false, 707);
-  AddSeparator(15, "network.sep2");
-  AddBool(16, "network.enableinternet", 14054, true);
+  AddBool(13, "network.usehttpproxy", 708, false);
+  AddString(14, "network.httpproxyserver", 706, "", BUTTON_CONTROL_IP_INPUT);
+  AddString(15, "network.httpproxyport", 707, "8080", BUTTON_CONTROL_INPUT, false, 707);
+  AddSeparator(16, "network.sep2");
+  AddBool(17, "network.enableinternet", 14054, true);
   
   // hidden proxy authentication details
   AddString(0, "network.httpproxyusername", 706, "", BUTTON_CONTROL_INPUT);
@@ -897,7 +899,7 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
       CStdString strData = "";
       if (bPrompt)
       {
-        VECSHARES shares;
+        VECSOURCES shares;
         g_mediaManager.GetLocalDrives(shares);
         if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares,g_localizeStrings.Get(result->GetLabel()),strData,false))
         {
@@ -915,7 +917,7 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
       CStdString strData = "";
       if (bPrompt)
       {
-        VECSHARES shares;
+        VECSOURCES shares;
         g_mediaManager.GetLocalDrives(shares);
         if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares,g_localizeStrings.Get(result->GetLabel()),strData,true))
         {
@@ -1147,4 +1149,6 @@ void CGUISettings::Clear()
     delete settingsGroups[i];
   settingsGroups.clear();
 }
+
+
 

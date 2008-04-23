@@ -26,19 +26,19 @@
 #include "GUIButtonControl.h"
 #include "utils/KaiClient.h"
 #include "ArenaItem.h"
+#include "GUIDialogKeyboard.h"
 
-
-#define CTL_LABEL_CAPTION 1
-#define CTL_LABEL_SCHEDULE 2
-#define CTL_LABEL_GAME  3
-#define CTL_LABEL_DATE  4
-#define CTL_LABEL_TIME  5
-#define CTL_LABEL_CONFIRM 6
-#define CTL_LABEL_CONFIRM2 7
-#define CTL_BUTTON_SEND  10
-#define CTL_BUTTON_CANCEL 11
+#define CTL_LABEL_CAPTION    1
+#define CTL_LABEL_SCHEDULE   2
+#define CTL_LABEL_GAME       3
+#define CTL_LABEL_DATE       4
+#define CTL_LABEL_TIME       5
+#define CTL_LABEL_CONFIRM    6
+#define CTL_LABEL_CONFIRM2   7
+#define CTL_BUTTON_SEND     10
+#define CTL_BUTTON_CANCEL   11
 #define CTL_BUTTON_MESSAGE  20
-#define CTL_SPIN_GAMES  30
+#define CTL_SPIN_GAMES      30
 
 
 CGUIDialogInvite::CGUIDialogInvite(void)

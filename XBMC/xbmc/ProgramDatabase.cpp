@@ -27,6 +27,7 @@
 #include "xbox/xbeheader.h"
 #endif
 #include "GUIWindowFileManager.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 
@@ -531,7 +532,7 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
     CUtil::GetDirectory(item->m_strPath,strPath);
     // special case - programs in root of sources
     bool bIsShare=false;
-    CUtil::GetMatchingShare(strPath,g_settings.m_programSources,bIsShare);
+    CUtil::GetMatchingSource(strPath,g_settings.m_programSources,bIsShare);
     __int64 iSize=0;
     if (bIsShare || !item->IsDefaultXBE())
     {

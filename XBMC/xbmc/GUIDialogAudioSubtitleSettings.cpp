@@ -27,6 +27,11 @@
 #include "Application.h"
 #include "VideoDatabase.h"
 #include "XBAudioConfig.h"
+#include "GUIDialogYesNo.h"
+#include "FileSystem/Directory.h"
+#include "FileSystem/File.h"
+#include "URL.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace XFILE;
@@ -277,13 +282,13 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
     else
       strPath = g_application.CurrentFileItem().m_strPath;
 
-    CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip";
+    CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.rar|.zip";
     if (g_application.GetCurrentPlayer() == EPC_DVDPLAYER)
       strMask = ".srt|.rar|.zip|.ifo|.smi|.sub|.idx";
-    VECSHARES shares(g_settings.m_videoSources);
+    VECSOURCES shares(g_settings.m_videoSources);
     if (g_stSettings.iAdditionalSubtitleDirectoryChecked != -1 && !g_guiSettings.GetString("subtitles.custompath").IsEmpty())
     {
-      CShare share;
+      CMediaSource share;
       std::vector<CStdString> paths;
       CStdString strPath1;
       CUtil::GetDirectory(strPath,strPath1);
@@ -292,6 +297,15 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
       paths.push_back(g_guiSettings.GetString("subtitles.custompath"));
       share.FromNameAndPaths("video",g_localizeStrings.Get(21367),paths);
       // hack
+      g_settings.m_videoSources.push_back(share);
+      strPath = share.strPath;
+      CUtil::AddSlashAtEnd(strPath);
+    }
+    else // add source pointing to movie path
+    {
+      CMediaSource share;
+      share.strName = g_localizeStrings.Get(20338);
+      CUtil::GetParentPath(strPath,share.strPath);
       g_settings.m_videoSources.push_back(share);
       strPath = share.strPath;
       CUtil::AddSlashAtEnd(strPath);
@@ -381,7 +395,8 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
   }
   else if (setting.id == AUDIO_SETTINGS_MAKE_DEFAULT)
   {
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].settingsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].settingsLocked() && 
+        g_settings.m_vecProfiles[0].getLockMode() != ::LOCK_MODE_EVERYONE)
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;
 

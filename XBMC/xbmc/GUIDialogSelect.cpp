@@ -21,8 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIDialogSelect.h"
-#include "Application.h"
-#include "SortFileItem.h"
+#include "FileItem.h"
 
 #define CONTROL_HEADING       1
 #define CONTROL_LIST          3
@@ -33,11 +32,16 @@ CGUIDialogSelect::CGUIDialogSelect(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_SELECT, "DialogSelect.xml")
 {
   m_bButtonEnabled = false;
-  m_vecList = &m_vecListInternal;
+  m_vecListInternal = new CFileItemList;
+  m_selectedItem = new CFileItem;
+  m_vecList = m_vecListInternal;
 }
 
 CGUIDialogSelect::~CGUIDialogSelect(void)
-{}
+{
+  delete m_vecListInternal;
+  delete m_selectedItem;
+}
 
 bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 {
@@ -56,7 +60,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
       m_bButtonPressed = false;
       CGUIDialog::OnMessage(message);
       m_iSelected = -1;
-      CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, (void*)m_vecList);
+      CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_vecList);
       g_graphicsContext.SendMessage(msg);
 
       CStdString items;
@@ -65,12 +69,12 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 
       if (m_bButtonEnabled)
       {
-        CGUIMessage msg2(GUI_MSG_VISIBLE, GetID(), CONTROL_BUTTON, 0, 0, NULL);
+        CGUIMessage msg2(GUI_MSG_VISIBLE, GetID(), CONTROL_BUTTON);
         g_graphicsContext.SendMessage(msg2);
       }
       else
       {
-        CGUIMessage msg2(GUI_MSG_HIDDEN, GetID(), CONTROL_BUTTON, 0, 0, NULL);
+        CGUIMessage msg2(GUI_MSG_HIDDEN, GetID(), CONTROL_BUTTON);
         g_graphicsContext.SendMessage(msg2);
       }
       return true;
@@ -86,12 +90,12 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
         int iAction = message.GetParam1();
         if (ACTION_SELECT_ITEM == iAction || ACTION_MOUSE_LEFT_CLICK == iAction)
         {
-          CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
+          CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
           g_graphicsContext.SendMessage(msg);            
           m_iSelected = msg.GetParam1();
           if(m_iSelected >= 0 && m_iSelected < (int)m_vecList->Size())
           {
-            m_selectedItem = *((*m_vecList)[m_iSelected]);
+            *m_selectedItem = *m_vecList->Get(m_iSelected);
             Close();
           }
           else
@@ -119,15 +123,15 @@ void CGUIDialogSelect::Close(bool forceClose)
 void CGUIDialogSelect::Reset()
 {
   m_bButtonEnabled = false;
-  m_vecListInternal.Clear();
-  m_vecList = &m_vecListInternal;
+  m_vecListInternal->Clear();
+  m_vecList = m_vecListInternal;
 }
 
 void CGUIDialogSelect::Add(const CStdString& strLabel)
 {
   //CGUIListItem* pItem = new CGUIListItem(strLabel);
   CFileItem* pItem = new CFileItem(strLabel);
-  m_vecListInternal.Add(pItem);
+  m_vecListInternal->Add(pItem);
 }
 
 void CGUIDialogSelect::Add(const CFileItemList& items)
@@ -138,7 +142,7 @@ void CGUIDialogSelect::Add(const CFileItemList& items)
 
 void CGUIDialogSelect::Add(const CFileItem* pItem)
 {
-  m_vecListInternal.Add(new CFileItem(*pItem));
+  m_vecListInternal->Add(new CFileItem(*pItem));
 }
 
 void CGUIDialogSelect::SetItems(CFileItemList* pList)
@@ -153,12 +157,12 @@ int CGUIDialogSelect::GetSelectedLabel() const
 
 const CFileItem& CGUIDialogSelect::GetSelectedItem()
 {
-  return m_selectedItem;
+  return *m_selectedItem;
 }
 
 const CStdString& CGUIDialogSelect::GetSelectedLabelText()
 {
-  return m_selectedItem.GetLabel();
+  return m_selectedItem->GetLabel();
 }
 
 void CGUIDialogSelect::EnableButton(bool bOnOff)

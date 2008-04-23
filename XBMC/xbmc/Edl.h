@@ -5,43 +5,31 @@
 #include <vector>
 #include "linux/PlatformDefs.h"
 
-#define CACHED_EDL_FILENAME "Z:\\xbmc.edl"
-
-#define COMSKIPSTR "FILE PROCESSING COMPLETE"
-#define VRSTR "<Version>2"
-#define VRCUT "<Cut>"
-#define VRSCENE "<SceneMarker "
-#define BTVSTR "<cutlist>"
-#define BTVCUT "<Region><start"
-#define BTVSTREND "</cutlist>"
-
-
-typedef enum 
-  {
-    CUT = 0,
-    MUTE = 1,
-    SCENE = 2
-  } Action;  
-
-struct Cut
-  {
-    double CutStart;
-    double CutEnd;
-    Action CutAction;
-  };
-
 class CEdl
 {
 public:
   CEdl();
   virtual ~CEdl(void);
 
+  typedef enum 
+  {
+    CUT = 0,
+    MUTE = 1,
+    SCENE = 2
+  } Action;  
+
+  struct Cut
+  {
+    __int64 CutStart;
+    __int64 CutEnd;
+    Action CutAction;
+  };
+
   bool ReadnCacheAny(const CStdString& strMovie);
   bool ReadEdl();
   bool ReadComskip();
   bool ReadVideoRedo();
   bool ReadBeyondTV();
-  //bool ReadVDR();
   void Reset();
   
   bool AddCutpoint(const Cut& NewCut);
@@ -54,15 +42,15 @@ public:
   bool HaveCutpoints();
   bool HaveScenes();
   char GetEdlStatus();
+  __int64 TotalCutTime();
+  __int64 RemoveCutTime(__int64 iTime);
+  __int64 RestoreCutTime(__int64 iTime);
 
   bool IsCached();
-  bool InCutpoint(double dCurSeek, Cut *pCurCut = NULL);
+  bool InCutpoint(__int64 iAbsSeek, Cut *pCurCut = NULL);
 
-  void CompensateSeek(bool bPlus,int *iSeek);
   bool SeekScene(bool bPlus,__int64 *iScenemarker);
 
-  void AddBookmark(double dSceneMarker);
-  
 protected:
 private:
   CStdString m_strCachedEdl;
@@ -71,9 +59,10 @@ private:
   bool m_bCutpoints;
   bool m_bCached;
   bool m_bScenes;
+  __int64 m_iTotalCutTime; // msec
   char m_szBuffer[1024]; // Buffer for file reading
   std::vector<Cut> m_vecCutlist;
-  std::vector<double> m_vecScenelist;
+  std::vector<__int64> m_vecScenelist;
 };
 
 #endif // CEDL_H

@@ -1,17 +1,18 @@
 #include "include.h"
 #include "GUIVisualisationControl.h"
-#include "../xbmc/GUIUserMessages.h"
-#include "../xbmc/Application.h"
-#include "../xbmc/visualizations/Visualisation.h"
-#include "../xbmc/visualizations/VisualisationFactory.h"
-#include "../xbmc/visualizations/fft.h"
+#include "GUIUserMessages.h"
+#include "Application.h"
+#include "visualizations/Visualisation.h"
+#include "visualizations/VisualisationFactory.h"
+#include "visualizations/fft.h"
 #ifdef HAS_KARAOKE
-#include "../xbmc/CdgParser.h"
+#include "CdgParser.h"
 #endif
-#include "../xbmc/Util.h"
-#include "../xbmc/utils/CriticalSection.h"
-#include "../xbmc/utils/SingleLock.h"
-#include "../xbmc/utils/GUIInfoManager.h"
+#include "Util.h"
+#include "utils/CriticalSection.h"
+#include "utils/SingleLock.h"
+#include "utils/GUIInfoManager.h"
+#include "GUISettings.h"
 
 using namespace std;
 

@@ -10,11 +10,12 @@
 #endif // _MSC_VER > 1000
 
 #include "IFile.h"
-#include "../lib/libshout/rip_manager.h"
+#include "StdString.h"
 
-#ifdef _LINUX
-#include <errno.h>
-#endif
+namespace MUSIC_INFO
+{
+  class CMusicInfoTag;
+}
 
 namespace XFILE
 {
@@ -49,8 +50,7 @@ public:
 protected:
   void outputTimeoutMessage(const char* message);
   DWORD m_dwLastTime;
-  int m_contenttype;
-  RIP_MANAGER_OPTIONS m_opt;
+  CStdString m_contenttype;
 };
 }
 #endif // !defined(AFX_FILESHOUTCAST_H__6B6082E6_547E_44C4_8801_9890781659C0__INCLUDED_)

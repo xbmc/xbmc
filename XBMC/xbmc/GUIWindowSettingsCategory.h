@@ -2,6 +2,7 @@
 
 #include "GUIWindow.h"
 #include "SettingsControls.h"
+#include "Settings.h"
 
 class CGUIWindowSettingsCategory :
       public CGUIWindow

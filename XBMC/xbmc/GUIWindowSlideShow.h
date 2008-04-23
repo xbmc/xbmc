@@ -5,6 +5,8 @@
 #include "SlideShowPicture.h"
 #include "DllImageLib.h"
 
+class CFileItemList;
+
 class CGUIWindowSlideShow;
 
 class CBackgroundPicLoader : public CThread
@@ -78,7 +80,7 @@ private:
   bool m_bPause;
   bool m_bErrorMessage;
 
-  CFileItemList m_slides;
+  CFileItemList* m_slides;
 
   CSlideShowPic m_Image[2];
 

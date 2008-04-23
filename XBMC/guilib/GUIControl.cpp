@@ -1,9 +1,8 @@
 #include "include.h"
 #include "GUIControl.h"
 
-#include "../xbmc/utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 #include "LocalizeStrings.h"
-#include "../xbmc/Util.h"
 #include "GUIWindowManager.h"
 
 using namespace std;

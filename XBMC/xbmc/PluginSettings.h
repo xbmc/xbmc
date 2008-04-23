@@ -1,7 +1,9 @@
 #ifndef PLUGINSETTINGS_H_
 #define PLUGINSETTINGS_H_
 
-#include "../guilib/tinyXML/tinyxml.h"
+#include "tinyXML/tinyxml.h"
+#include "URL.h"
+#include "Settings.h"
 
 class CBasicSettings
 {

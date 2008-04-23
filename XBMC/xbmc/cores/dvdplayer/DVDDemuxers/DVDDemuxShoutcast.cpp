@@ -1,10 +1,10 @@
 
 #include "stdafx.h"
-#include "../DVDCodecs/DVDCodecs.h"
-#include "../DVDInputStreams/DVDInputStreamHttp.h"
+#include "DVDCodecs/DVDCodecs.h"
+#include "DVDInputStreams/DVDInputStreamHttp.h"
 #include "DVDDemuxShoutcast.h"
 #include "DVDDemuxUtils.h"
-#include "../DVDClock.h" // for DVD_TIME_BASE
+#include "DVDClock.h" // for DVD_TIME_BASE
 #include "../../../utils/HttpHeader.h"
 
 #define ICY_NOTICE1           "icy-notice1" // string

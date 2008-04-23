@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "cdioSupport.h"
-#include "../lib/libcdio/cdio.h"
-#include "../lib/libcdio/logging.h"
+#include "lib/libcdio/cdio.h"
+#include "lib/libcdio/logging.h"
 #include "../lib/libcdio/util.h"
 #ifdef _LINUX
 #include "../lib/libcdio/cd_types.h"

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DirectoryNodeAlbumRecentlyAddedSong.h"
-#include "../../MusicDatabase.h"
+#include "MusicDatabase.h"
 
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
 

@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "../../Util.h"
 
 #include "ADPCMCodec.h"
 

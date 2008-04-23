@@ -5,6 +5,8 @@
 #include "GUIViewControl.h"
 #include "GUIDialogContextMenu.h"
 
+class CFileItemList;
+
 // base class for all media windows
 class CGUIMediaWindow : public CGUIWindow
 {
@@ -17,7 +19,7 @@ public:
   virtual void OnWindowUnload();
   virtual void OnInitWindow();
   virtual bool IsMediaWindow() const { return true; };
-  const CFileItemList &CurrentDirectory() const { return m_vecItems;};
+  const CFileItemList &CurrentDirectory() const;
   int GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
   virtual bool HasListItems() const { return true; };
   virtual CFileItem *GetCurrentListItem(int offset = 0);
@@ -59,7 +61,7 @@ protected:
   CGUIViewControl m_viewControl;
 
   // current path and history
-  CFileItemList m_vecItems;
+  CFileItemList* m_vecItems;
   CDirectoryHistory m_history;
   std::auto_ptr<CGUIViewState> m_guiState;
 

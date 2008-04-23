@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #ifndef _LINUX
-#include "../python/Python.h"
+#include "lib/libPython/python/Python.h"
 #else
 #include <python2.4/Python.h>
 #include "../XBPythonDll.h"
 #endif
 #include "GUIRadioButtonControl.h"
-#include "../xbmc/utils/CharsetConverter.h"
+#include "utils/CharsetConverter.h"
 #include "GUIFontManager.h"
 #include "control.h"
 #include "pyutil.h"

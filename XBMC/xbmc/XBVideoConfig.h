@@ -1,5 +1,7 @@
 #pragma once
 
+#include "GraphicContext.h"
+
 #define XC_VIDEO_FLAGS 8
 #define MAX_RESOLUTIONS 64
 

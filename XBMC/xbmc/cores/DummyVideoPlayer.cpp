@@ -3,7 +3,8 @@
 #include "DummyVideoPlayer.h"
 #include "GUIFontManager.h"
 #include "GUITextLayout.h"
-#include "../Application.h"
+#include "Application.h"
+#include "Settings.h"
 
 CDummyVideoPlayer::CDummyVideoPlayer(IPlayerCallback& callback)
     : IPlayer(callback),

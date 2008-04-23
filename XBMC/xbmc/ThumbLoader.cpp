@@ -32,7 +32,10 @@
 #include "FileSystem/StackDirectory.h"
 #include "ThumbLoader.h"
 #include "Util.h"
+#include "URL.h"
 #include "Picture.h"
+#include "FileSystem/File.h"
+#include "FileItem.h"
 #include "Settings.h"
 
 #include "cores/ffmpeg/DllAvFormat.h"

@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIDialogYesNo.h"
+#include "GUIWindowManager.h"
 
 CGUIDialogYesNo::CGUIDialogYesNo(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_YES_NO, "DialogYesNo.xml")

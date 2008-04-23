@@ -1,7 +1,8 @@
 #pragma once
 #include "IFile.h"
 #include "CacheStrategy.h"
-#include "../utils/CriticalSection.h"
+#include "utils/CriticalSection.h"
+#include "FileSystem/File.h"
 
 namespace XFILE
 {  

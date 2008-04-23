@@ -1,7 +1,7 @@
 #include "include.h"
 #include "GUISound.h"
 #include "AudioContext.h"
-#include "../xbmc/Settings.h"
+#include "Settings.h"
 #ifdef HAS_SDL_AUDIO
 #include <SDL/SDL_mixer.h>
 #endif
