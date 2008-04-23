@@ -3,6 +3,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#include "stdafx.h"
 #include "FileShoutcast.h"
 #include "GUISettings.h"
 #include "GUIDialogProgress.h"
