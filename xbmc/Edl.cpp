@@ -1,6 +1,6 @@
+#include "stdafx.h"
 #include "Edl.h"
 #include "include.h"
-#include "stdafx.h"
 #include "Util.h"
 #include "FileSystem/File.h"
 

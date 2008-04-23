@@ -110,16 +110,16 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
   char *pch = lDrives;
   while (*pch) 
   {
-    CShare share;
+    CMediaSource share;
     int iDrive = GetDriveType(pch);
     if(iDrive == DRIVE_CDROM)
     {
-      share.m_iDriveType = SHARE_TYPE_DVD;
+      share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
       //share.strName = g_localizeStrings.Get(218);
     }
     else 
     {     
-      share.m_iDriveType = SHARE_TYPE_LOCAL;
+      share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     }
     share.m_ignore = true;
     share.strName.Format(g_localizeStrings.Get(21438),pch[0]);
@@ -129,7 +129,7 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
   }
   if (includeQ)
   {
-    CShare share;
+    CMediaSource share;
     share.strPath = _P("Q:\\");
     share.strName.Format(g_localizeStrings.Get(21438),'Q');
     share.m_ignore = true;

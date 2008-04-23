@@ -1,6 +1,8 @@
 #ifndef _WIN32DLLLOADER_H_
 #define _WIN32DLLLOADER_H_
 
+#include "LibraryLoader.h"
+
 class Win32DllLoader : public LibraryLoader
 {
 public:
