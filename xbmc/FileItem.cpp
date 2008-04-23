@@ -2327,31 +2327,14 @@ void CFileItem::CacheVideoFanart() const
 CStdString CFileItem::GetCachedVideoFanart() const
 {
   // get the locally cached thumb
-  Crc32 crc;
-  if (IsStack())
-  {
-    CStackDirectory dir;
-    crc.ComputeFromLowerCase(dir.GetFirstStackedFile(m_strPath));
-  }
-  else
-    crc.ComputeFromLowerCase(m_strPath);
-
-  CStdString thumb;
-  thumb.Format("%s\\%08x.tbn", g_settings.GetVideoFanartFolder().c_str(),(unsigned __int32)crc);
-  return thumb;
+  return CFileItem::GetCachedVideoFanart(m_strPath);
 }
 
-CStdString CFileItem::GetCachedVideoFanart(CStdString path) const
+CStdString CFileItem::GetCachedVideoFanart(const CStdString &path)
 {
   // get the locally cached thumb
   Crc32 crc;
-  if (IsStack())
-  {
-    CStackDirectory dir;
-    crc.ComputeFromLowerCase(dir.GetFirstStackedFile(path));
-  }
-  else
-    crc.ComputeFromLowerCase(path);
+  crc.ComputeFromLowerCase(path);
 
   CStdString thumb;
   thumb.Format("%s\\%08x.tbn", g_settings.GetVideoFanartFolder().c_str(),(unsigned __int32)crc);
