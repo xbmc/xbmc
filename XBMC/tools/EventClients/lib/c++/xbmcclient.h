@@ -486,6 +486,7 @@ public:
     m_PacketType = PT_BUTTON;
     m_Flags      = Flags;
     m_ButtonCode = 0;
+    m_Amount     = Amount;
 
     unsigned int len = strlen(DeviceMap);
     for (unsigned int i = 0; i < len; i++)
@@ -501,6 +502,7 @@ public:
     m_PacketType = PT_BUTTON;
     m_Flags      = Flags;
     m_ButtonCode = ButtonCode;
+    m_Amount     = Amount;
 
     unsigned int len = strlen(DeviceMap);
     for (unsigned int i = 0; i < len; i++)
@@ -512,6 +514,7 @@ public:
     m_PacketType = PT_BUTTON;
     m_Flags      = Flags;
     m_ButtonCode = ButtonCode;
+    m_Amount     = Amount;
   }
 
   // Used to send a release event
