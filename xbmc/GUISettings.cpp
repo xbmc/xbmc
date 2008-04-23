@@ -474,7 +474,7 @@ CGUISettings::CGUISettings(void)
   AddString(3, "network.subnet", 720, "255.255.255.0", BUTTON_CONTROL_IP_INPUT);
   AddString(4, "network.gateway", 721, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
   AddString(5, "network.dns", 722, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
-  AddString(6, "network.dnssuffix", 22002, "", BUTTON_CONTROL_INPUT);
+  AddString(6, "network.dnssuffix", 22002, "", BUTTON_CONTROL_INPUT, true);
   AddSeparator(7, "network.sep1");
   AddBool(8, "network.usehttpproxy", 708, false);
   AddString(9, "network.httpproxyserver", 706, "", BUTTON_CONTROL_IP_INPUT);
