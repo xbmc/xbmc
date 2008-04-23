@@ -3,6 +3,7 @@
 
 class CURL;
 class TiXmlElement;
+class CGUIDialogProgress;
 
 namespace DIRECTORY
 {

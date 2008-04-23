@@ -21,7 +21,7 @@ public:
 
 protected:
   virtual void SaveViewState();
-  virtual VECSHARES& GetShares();
+  virtual VECSOURCES& GetSources();
 };
 
 class CGUIViewStateWindowVideoNav : public CGUIViewStateWindowVideo
@@ -32,7 +32,7 @@ public:
 
 protected:
   virtual void SaveViewState();
-  virtual VECSHARES& GetShares();
+  virtual VECSOURCES& GetSources();
 };
 
 class CGUIViewStateWindowVideoPlaylist : public CGUIViewStateWindowVideo
@@ -44,5 +44,5 @@ protected:
   virtual void SaveViewState();
   virtual bool HideExtensions();
   virtual bool HideParentDirItems();
-  virtual VECSHARES& GetShares();
+  virtual VECSOURCES& GetSources();
 };

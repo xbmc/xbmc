@@ -41,6 +41,7 @@
 #include "HDHomeRun.h"
 #include "CMythFile.h"
 #include "Application.h"
+#include "URL.h"
 
 using namespace XFILE;
 

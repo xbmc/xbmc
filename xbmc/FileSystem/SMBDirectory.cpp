@@ -12,13 +12,17 @@
 
 #include "stdafx.h"
 #include "SMBDirectory.h"
-#include "../Util.h"
+#include "Util.h"
 #include "DirectoryCache.h"
 #include "LocalizeStrings.h"
-#include "../GUIPassword.h"
+#include "GUIPassword.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
 #include "Application.h"
+#include "FileItem.h"
+
 #ifndef _LINUX
-#include "../lib/libsmb/xbLibSmb.h"
+#include "lib/libsmb/xbLibSmb.h"
 #else
 #include "../lib/libsmb/libsmbclient.h"
 #endif

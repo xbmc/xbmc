@@ -8,8 +8,8 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <io.h>
-#include "../../../../guilib/tinyXML/tinyxml.cpp"
-#include "../../../utils/log.h"
+#include "tinyXML/tinyxml.cpp"
+#include "utils/log.h"
 
 #include "emu_registry.h"
 #include "emu_dummy.h"

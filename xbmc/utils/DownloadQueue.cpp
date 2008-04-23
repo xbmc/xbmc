@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "DownloadQueue.h"
 #include "HTTP.h"
-#include "../Util.h"
+#include "Util.h"
 
 using namespace std;
 

@@ -12,6 +12,8 @@
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDMessageTracker.h"
 
+#include <assert.h>
+
 class CDVDMsg
 {
 public:

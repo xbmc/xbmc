@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "DynamicDll.h"
+#include "FileSystem/File.h"
 
 using namespace XFILE;
 

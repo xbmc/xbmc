@@ -3,6 +3,11 @@
 #include "FileSystem/VirtualDirectory.h"
 #include "FileSystem/DirectoryHistory.h"
 #include "utils/CriticalSection.h"
+#include "FileSystem/File.h"
+
+class CFileItem;
+class CFileItemList;
+class CGUIDialogProgress;
 
 class CGUIWindowFileManager :
       public CGUIWindow,
@@ -16,7 +21,7 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void Render();
   virtual bool OnFileCallback(void* pContext, int ipercent, float avgSpeed);
-  const CFileItem &CurrentDirectory(int indx) const { return m_Directory[indx];};
+  const CFileItem &CurrentDirectory(int indx) const;
 
   // static members for all windows to use
   static bool DeleteItem(const CFileItem *pItem);
@@ -73,9 +78,9 @@ protected:
 
 
   DIRECTORY::CVirtualDirectory m_rootDir;
-  CFileItemList m_vecItems[2];
+  CFileItemList* m_vecItems[2];
   typedef std::vector <CFileItem*> ::iterator ivecItems;
-  CFileItem m_Directory[2];
+  CFileItem* m_Directory[2];
   CStdString m_strParentPath[2];
   CGUIDialogProgress* m_dlgProgress;
   CDirectoryHistory m_history[2];

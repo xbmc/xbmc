@@ -22,7 +22,6 @@
 
 #ifdef HAS_EVENT_SERVER
 
-#include "Util.h"
 #include "EventClient.h"
 #include "EventPacket.h"
 #include "Application.h"
@@ -32,6 +31,7 @@
 #include "Key.h"
 #include <map>
 #include <queue>
+#include "Util.h"
 
 using namespace EVENTCLIENT;
 using namespace EVENTPACKET;

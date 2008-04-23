@@ -1,5 +1,6 @@
 #pragma once
 #include "IDirectory.h"
+#include "Settings.h"
 
 namespace DIRECTORY
 {
@@ -15,34 +16,34 @@ namespace DIRECTORY
     virtual ~CVirtualDirectory(void);
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items, bool bUseFileDirectories); 
-    void SetShares(VECSHARES& vecShares);
-    inline unsigned int GetNumberOfShares() { 
-      if (m_vecShares)
-        return m_vecShares->size(); 
+    void SetSources(VECSOURCES& vecSources);
+    inline unsigned int GetNumberOfSources() { 
+      if (m_vecSources)
+        return m_vecSources->size(); 
       else
         return 0;
       }
-    bool IsShare(const CStdString& strPath) const;
-    bool IsInShare(const CStdString& strPath) const;
+    bool IsSource(const CStdString& strPath) const;
+    bool IsInSource(const CStdString& strPath) const;
 
-    inline const CShare& operator [](const int index) const
+    inline const CMediaSource& operator [](const int index) const
     {
-      return m_vecShares->at(index);
+      return m_vecSources->at(index);
     }
 
-    inline CShare& operator[](const int index)
+    inline CMediaSource& operator[](const int index)
     {
-      return m_vecShares->at(index);
+      return m_vecSources->at(index);
     }
 
-    void GetShares(VECSHARES &shares) const;
+    void GetSources(VECSOURCES &sources) const;
 
-    void AllowNonLocalShares(bool allow) { m_allowNonLocalShares = allow; };
+    void AllowNonLocalSources(bool allow) { m_allowNonLocalSources = allow; };
 
   protected:
     void CacheThumbs(CFileItemList &items);
 
-    VECSHARES* m_vecShares;
-    bool       m_allowNonLocalShares;
+    VECSOURCES* m_vecSources;
+    bool       m_allowNonLocalSources;
   };
 }

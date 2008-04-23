@@ -1,5 +1,6 @@
 #pragma once
 #include "cores/DllLoader/LibraryLoader.h"
+#include "StdString.h"
 
 ///////////////////////////////////////////////////////////
 //

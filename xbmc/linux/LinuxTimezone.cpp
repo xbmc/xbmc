@@ -1,4 +1,6 @@
 #include <time.h>
+#include "system.h"
+#include "PlatformInclude.h"
 #include "LinuxTimezone.h"
 #include "Util.h"
 #include "getdelim.h"

@@ -1,6 +1,8 @@
 #pragma once
 #include "IDirectory.h"
 
+class CMediaSource;
+
 namespace DIRECTORY
 {
 class CVirtualPathDirectory :
@@ -16,6 +18,6 @@ public:
 
 protected:
   bool GetTypeAndSource(const CStdString& strPath, CStdString& strType, CStdString& strSource);
-  bool GetMatchingShare(const CStdString &strPath, CShare& share);
+  bool GetMatchingSource(const CStdString &strPath, CMediaSource& share);
 };
 }

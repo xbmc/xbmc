@@ -18,8 +18,8 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 #include "stdafx.h"
-#include "../VideoRenderers/RenderManager.h"
-#include "../../application.h"
+#include "cores/VideoRenderers/RenderManager.h"
+#include "Application.h"
 
 #include "video.h"
 #include "mplayer.h"

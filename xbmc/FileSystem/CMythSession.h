@@ -10,6 +10,8 @@ typedef struct cmyth_database  *cmyth_database_t;
 typedef struct cmyth_timestamp *cmyth_timestamp_t;
 
 class DllLibCMyth;
+class CDateTime;
+class CURL;
 
 namespace XFILE
 {

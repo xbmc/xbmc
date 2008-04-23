@@ -1,7 +1,7 @@
 
 #pragma once
 #include "DVDOverlayCodec.h"
-#include "../../../ffmpeg/DllAvCodec.h"
+#include "cores/ffmpeg/DllAvCodec.h"
 
 class CDVDOverlaySpu;
 class CDVDOverlayText;

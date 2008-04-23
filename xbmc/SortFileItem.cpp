@@ -20,8 +20,12 @@
  */
 
 #include "stdafx.h"
+#include "Settings.h"
 #include "SortFileItem.h"
-#include "Util.h"
+#include "VideoInfoTag.h"
+#include "MusicInfoTag.h"
+#include "FileItem.h"
+#include "URL.h"
 #include "utils/log.h"
 
 #define RETURN_IF_NULL(x,y) if ((x) == NULL) { CLog::Log(LOGWARNING, "%s, sort item is null", __FUNCTION__); return y; }

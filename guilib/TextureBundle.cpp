@@ -7,14 +7,13 @@
 #include "DirectXGraphics.h"
 #endif
 #ifndef _LINUX
-#include "../xbmc/lib/liblzo/LZO1X.H"
+#include "lib/liblzo/LZO1X.H"
 #else
 #include <lzo1x.h>
 #endif
 #include "SkinInfo.h"
-#include "../xbmc/GUISettings.h"
-#include "../xbmc/Settings.h"
-#include "../xbmc/Util.h"
+#include "GUISettings.h"
+#include "Util.h"
 
 #ifdef _XBOX
 #pragma comment(lib,"xbmc/lib/liblzo/lzo.lib")

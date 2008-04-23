@@ -9,11 +9,13 @@
 #define INT64_C __int64
 #endif
 #include "DVDDemuxFFmpeg.h"
-#include "../DVDInputStreams/DVDInputStream.h"
-#include "../DVDInputStreams/DVDInputStreamNavigator.h"
+#include "DVDInputStreams/DVDInputStream.h"
+#include "DVDInputStreams/DVDInputStreamNavigator.h"
 #include "DVDDemuxUtils.h"
-#include "../DVDClock.h" // for DVD_TIME_BASE
+#include "DVDClock.h" // for DVD_TIME_BASE
 #include "utils/Win32Exception.h"
+#include "Settings.h"
+#include "FileSystem/IFile.h"
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {

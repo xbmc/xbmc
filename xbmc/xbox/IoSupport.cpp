@@ -24,10 +24,11 @@
 
 #include "stdafx.h"
 #include "IoSupport.h"
+#include "Settings.h"
 #ifdef HAS_UNDOCUMENTED
 #ifdef _XBOX
 #include "Undocumented.h"
-#include "../xbox/XKExports.h"
+#include "XKExports.h"
 #else
 #include "ntddcdrm.h"
 #endif

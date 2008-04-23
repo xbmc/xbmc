@@ -20,9 +20,8 @@
  */
 
 #include "stdafx.h"
-#include "musicInfoTag.h"
-#include "MusicDatabase.h"
-
+#include "MusicInfoTag.h"
+#include "Album.h"
 
 using namespace MUSIC_INFO;
 

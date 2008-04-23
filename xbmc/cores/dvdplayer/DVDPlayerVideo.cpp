@@ -1,5 +1,6 @@
 
 #include "stdafx.h"
+#include "Settings.h"
 #include "DVDPlayer.h"
 #include "DVDPlayerVideo.h"
 #include "DVDCodecs/DVDFactoryCodec.h"

@@ -31,6 +31,11 @@
 #include "FileSystem/StackDirectory.h"
 #include "FileSystem/MultiPathDirectory.h"
 #include "VideoInfoScanner.h"
+#include "GUIWindowManager.h"
+#include "FileSystem/Directory.h"
+#include "FileSystem/File.h"
+#include "GUIDialogProgress.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace dbiplus;
@@ -1985,7 +1990,7 @@ void CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPat
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetFilePath(long lMovieId, CStdString &filePath, int iType)
+void CVideoDatabase::GetFilePath(long lMovieId, CStdString &filePath, VIDEODB_CONTENT_TYPE iType)
 {
   try
   {
@@ -1995,19 +2000,19 @@ void CVideoDatabase::GetFilePath(long lMovieId, CStdString &filePath, int iType)
     if (lMovieId < 0) return ;
     
     CStdString strSQL;
-    if (iType == 0)
+    if (iType == VIDEODB_CONTENT_MOVIES)
       strSQL=FormatSQL("select path.strPath,files.strFileName from path, files, movie where path.idPath=files.idPath and files.idFile=movie.idFile and movie.idMovie=%u order by strFilename", lMovieId );
-    if (iType == 1)
+    if (iType == VIDEODB_CONTENT_EPISODES)
       strSQL=FormatSQL("select path.strPath,files.strFileName from path, files, episode where path.idPath=files.idPath and files.idFile=episode.idFile and episode.idEpisode=%u order by strFilename", lMovieId );
-    if (iType == 2)
+    if (iType == VIDEODB_CONTENT_TVSHOWS)
       strSQL=FormatSQL("select path.strPath from path,tvshowlinkpath where path.idpath=tvshowlinkpath.idpath and tvshowlinkpath.idshow=%i", lMovieId );
-    if (iType ==3)
+    if (iType ==VIDEODB_CONTENT_MUSICVIDEOS)
       strSQL=FormatSQL("select path.strPath,files.strFileName from path, files, musicvideo where path.idPath=files.idPath and files.idFile=musicvideo.idFile and musicvideo.idmvideo=%u order by strFilename", lMovieId );
     
     m_pDS->query( strSQL.c_str() );
     if (!m_pDS->eof())
     {
-      if (iType != 2)
+      if (iType != VIDEODB_CONTENT_TVSHOWS)
       {
         CStdString fileName = m_pDS->fv("files.strFilename").get_asString();
         ConstructPath(filePath,m_pDS->fv("path.strPath").get_asString(),fileName);
@@ -2418,7 +2423,7 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
     m_pDS->exec(strSQL.c_str());
 
     CStdString path;
-    GetFilePath(idShow, path, 2);
+    GetFilePath(idShow, path, VIDEODB_CONTENT_TVSHOWS);
     InvalidatePathHash(path);
   }
   catch (...)
@@ -3203,10 +3208,10 @@ void CVideoDatabase::MarkAsWatched(const CFileItem &item)
   if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iEpisode == -1) // movie
     movieID = GetMovieInfo(item.m_strPath);
 
-  int iType=0;
+  VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
   if (movieID < 0)
   {
-    iType = 1;
+    iType = VIDEODB_CONTENT_EPISODES;
     movieID = GetEpisodeInfo(item.m_strPath);
   }
   if (movieID < 0)
@@ -3214,31 +3219,31 @@ void CVideoDatabase::MarkAsWatched(const CFileItem &item)
     movieID = GetMusicVideoInfo(item.m_strPath);
     if (movieID < 0)
       return;    
-    iType = 3;
+    iType = VIDEODB_CONTENT_MUSICVIDEOS;
   }
 
   // and mark as watched
   MarkAsWatched(movieID,iType);
 }
 
-void CVideoDatabase::MarkAsWatched(long lMovieId, int iType /* = 0 */)
+void CVideoDatabase::MarkAsWatched(long lMovieId, VIDEODB_CONTENT_TYPE iType /* = VIDEODB_CONTENT_MOVIES */)
 {
   try
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
     CStdString strSQL;
-    if (iType == 0)
+    if (iType == VIDEODB_CONTENT_MOVIES)
     {
       CLog::Log(LOGINFO, "Updating Movie:%ld as Watched", lMovieId);
       strSQL.Format("UPDATE movie set c%02d='true' WHERE idMovie=%u", VIDEODB_ID_WATCHED, lMovieId);
     }
-    else if (iType == 1)
+    else if (iType == VIDEODB_CONTENT_EPISODES)
     {
       CLog::Log(LOGINFO, "Updating Episode:%ld as Watched", lMovieId);
       strSQL.Format("UPDATE episode set c%02d='true' WHERE idEpisode=%u", VIDEODB_ID_EPISODE_WATCHED, lMovieId);
     }
-    else if (iType == 3)
+    else if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
     {
       CLog::Log(LOGINFO, "Updating MusicVideo:%ld as Watched", lMovieId);
       strSQL.Format("UPDATE musicvideo set c%02d='true' WHERE idMVideo=%u", VIDEODB_ID_MUSICVIDEO_WATCHED, lMovieId);
@@ -3252,25 +3257,25 @@ void CVideoDatabase::MarkAsWatched(long lMovieId, int iType /* = 0 */)
   }
 }
 
-void CVideoDatabase::MarkAsUnWatched(long lMovieId, int iType /* = 0 */)
+void CVideoDatabase::MarkAsUnWatched(long lMovieId, VIDEODB_CONTENT_TYPE iType /* = VIDEODB_CONTENT_MOVIES */)
 {
   try
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
     CStdString strSQL;
-    if (iType == 0)
+    if (iType == VIDEODB_CONTENT_MOVIES)
     {
       CLog::Log(LOGINFO, "Updating Movie:%ld as UnWatched", lMovieId);
       strSQL.Format("UPDATE movie set c%02d='false' WHERE idMovie=%u", VIDEODB_ID_WATCHED, lMovieId);
     }
 
-    else if (iType == 1)
+    else if (iType == VIDEODB_CONTENT_EPISODES)
     {
       CLog::Log(LOGINFO, "Updating Episode:%ld as UnWatched", lMovieId);
       strSQL.Format("UPDATE episode set c%02d='false' WHERE idEpisode=%u", VIDEODB_ID_EPISODE_WATCHED, lMovieId);
     }
-    else if (iType == 3)
+    else if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
     {
       CLog::Log(LOGINFO, "Updating MusicVideo:%ld as UnWatched", lMovieId);
       strSQL.Format("UPDATE musicvideo set c%02d='false' WHERE idMVideo=%u", VIDEODB_ID_MUSICVIDEO_WATCHED, lMovieId);
@@ -3283,29 +3288,29 @@ void CVideoDatabase::MarkAsUnWatched(long lMovieId, int iType /* = 0 */)
   }
 }
 
-void CVideoDatabase::UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle, int iType)
+void CVideoDatabase::UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType)
 {
   try
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
     CStdString strSQL;
-    if (iType == 0)    
+    if (iType == VIDEODB_CONTENT_MOVIES)    
     {
       CLog::Log(LOGINFO, "Changing Movie:id:%ld New Title:%s", lMovieId, strNewMovieTitle.c_str());
       strSQL = FormatSQL("UPDATE movie SET c%02d='%s' WHERE idMovie=%i", VIDEODB_ID_TITLE, strNewMovieTitle.c_str(), lMovieId );
     }
-    else if (iType == 1)
+    else if (iType == VIDEODB_CONTENT_EPISODES)
     {
       CLog::Log(LOGINFO, "Changing Episode:id:%ld New Title:%s", lMovieId, strNewMovieTitle.c_str());
       strSQL = FormatSQL("UPDATE episode SET c%02d='%s' WHERE idEpisode=%i", VIDEODB_ID_EPISODE_TITLE, strNewMovieTitle.c_str(), lMovieId );
     }
-    else if (iType == 2)
+    else if (iType == VIDEODB_CONTENT_TVSHOWS)
     {
       CLog::Log(LOGINFO, "Changing TvShow:id:%ld New Title:%s", lMovieId, strNewMovieTitle.c_str());
       strSQL = FormatSQL("UPDATE tvshow SET c%02d='%s' WHERE idShow=%i", VIDEODB_ID_TV_TITLE, strNewMovieTitle.c_str(), lMovieId );
     }
-    else if (iType == 3)
+    else if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
     {
       CLog::Log(LOGINFO, "Changing MusicVideo:id:%ld New Title:%s", lMovieId, strNewMovieTitle.c_str());
       strSQL = FormatSQL("UPDATE musicvideo SET c%02d='%s' WHERE idMVideo=%i", VIDEODB_ID_MUSICVIDEO_TITLE, strNewMovieTitle.c_str(), lMovieId );
@@ -4186,7 +4191,6 @@ bool CVideoDatabase::GetTitlesNav(const CStdString& strBaseDir, CFileItemList& i
         strDir.Format("%ld", lMovieId);
         pItem->m_strPath=strBaseDir + strDir;
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
-
         items.Add(pItem);
       }
 
@@ -4269,6 +4273,8 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_dateTime.SetFromDateString(movie.m_strPremiered);
         pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
+        CStdString strTempPath = pItem->m_strPath;
+        pItem->SetProperty("fanart_image", pItem->GetCachedVideoFanart(movie.m_strPath));
         items.Add(pItem);
       }
       m_pDS->next();
@@ -4361,9 +4367,15 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
       }
 
       CFileItem* pItem=new CFileItem(movie);
-      CStdString strDir;
-      strDir.Format("%ld", lEpisodeId);
-      pItem->m_strPath=strBaseDir + strDir;
+      if (idSeason == -1)
+      {
+        CStdString strDir;
+        CUtil::GetParentPath(strBaseDir,strDir);
+        pItem->m_strPath.Format("%s%ld/%ld",strDir.c_str(),movie.m_iSeason,lEpisodeId);
+      }
+      else
+        pItem->m_strPath.Format("%s%ld", strBaseDir.c_str(),lEpisodeId);
+        
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_bWatched);
       pItem->m_dateTime.SetFromDateString(movie.m_strFirstAired);
       pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
@@ -4512,8 +4524,10 @@ bool CVideoDatabase::GetRecentlyAddedMoviesNav(const CStdString& strBaseDir, CFi
     {
       long lMovieId = m_pDS->fv("movie.idMovie").get_asLong();
       CVideoInfoTag movie = GetDetailsForMovie(m_pDS);
-      if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser ||
-          g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath,g_settings.m_videoSources))
+      if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || 
+          g_passwordManager.bMasterUser                                   ||
+          g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath,
+                                                   g_settings.m_videoSources))
       {
         CFileItem* pItem=new CFileItem(movie);
         CStdString strDir;
@@ -4648,8 +4662,10 @@ bool CVideoDatabase::GetRecentlyAddedMusicVideosNav(const CStdString& strBaseDir
     {
       long lMVideoId = m_pDS->fv("musicvideo.idmvideo").get_asLong();
       CVideoInfoTag movie = GetDetailsForMusicVideo(m_pDS);
-      if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser ||
-          g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath,g_settings.m_videoSources))
+      if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || 
+          g_passwordManager.bMasterUser                                   ||
+          g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath,
+                                                   g_settings.m_videoSources))
       {
         CFileItem* pItem=new CFileItem(movie);
         CStdString strDir;
@@ -4933,7 +4949,8 @@ void CVideoDatabase::GetMovieGenresByName(const CStdString& strSearch, CFileItem
     while (!m_pDS->eof())
     {
       if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
+        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),
+                                                      g_settings.m_videoSources))
         {
           m_pDS->next();
           continue;
@@ -6512,7 +6529,7 @@ void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder)
     
     //   tell our GUI to completely reload all controls (as some of them
     // are likely to have had this image in use so will need refreshing)
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, NULL);
-    g_graphicsContext.SendMessage(msg);
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+	m_gWindowManager.SendThreadMessage(msg);
 }
 

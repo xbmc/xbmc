@@ -29,6 +29,11 @@
 #include "Picture.h"
 #include "FileSystem/StackDirectory.h"
 #include "xbox/XKGeneral.h"
+#include "utils/IMDB.h"
+#include "FileSystem/File.h"
+#include "GUIDialogProgress.h"
+#include "Settings.h"
+#include "FileItem.h"
 
 #define REGEXSAMPLEFILE "[-\\._ ](sample|trailer)[-\\._ ]"
 
@@ -183,7 +188,10 @@ namespace VIDEO
     }
 
     if (m_pObserver)
+    {
       m_pObserver->OnDirectoryChanged(strDirectory);
+      m_pObserver->OnSetTitle(g_localizeStrings.Get(20415));
+    }
 
     // load subfolder
     CFileItemList items;
@@ -555,7 +563,24 @@ namespace VIDEO
                   }
                   else
                   {
-                    CheckForNFOFile(pItem, nfoReader, info, bDirNames, dlgProgress);
+                    CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
+                    CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", nfoReader.m_strScraper.c_str());
+                    CLog::Log(LOGDEBUG,"-- nfo url: %s", scrUrl.m_url[0].m_url.c_str());
+                    scrUrl.strId  = nfoReader.m_strImDbNr;
+                    SScraperInfo info2(info);
+                    info2.strPath = nfoReader.m_strScraper;
+                    if (m_pObserver)
+                    {
+                      CStdString strPath = pItem->m_strPath;
+                      if (pItem->IsStack())
+                      {
+                        CStackDirectory dir;
+                        strPath = dir.GetStackedTitlePath(pItem->m_strPath);
+                      }
+
+                      m_pObserver->OnSetTitle(CUtil::GetFileName(strPath));
+                    }
+                    GetIMDBDetails(pItem, scrUrl, info2, bDirNames, dlgProgress);
                     continue;
                   }
                 }
@@ -987,7 +1012,11 @@ namespace VIDEO
 
       CVideoInfoTag episodeDetails;
       if (m_database.GetEpisodeInfo(iter->second.m_url[0].m_url,iter->first.second,iter->first.first) > -1)
+      {
+        if (m_pObserver)
+          m_pObserver->OnSetTitle(g_localizeStrings.Get(20415));
         continue;
+      }
 
       CFileItem item;
       item.m_strPath = iter->second.m_url[0].m_url;

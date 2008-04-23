@@ -1,6 +1,8 @@
 #pragma once
 #include "GUIPythonWindow.h"
-#include "../../../GUIViewControl.h"
+#include "GUIViewControl.h"
+
+class CFileItemList;
 
 int Py_XBMC_Event_OnClick(void* arg);
 int Py_XBMC_Event_OnFocus(void* arg);
@@ -46,5 +48,5 @@ protected:
   CStdString       m_backupMediaDir;
   CGUIViewControl  m_viewControl;
   std::auto_ptr<CGUIViewState> m_guiState;
-  CFileItemList    m_vecItems;
+  CFileItemList*    m_vecItems;
 };

@@ -22,6 +22,8 @@
 #include "stdafx.h"
 #include "PlayListB4S.h"
 #include "Util.h"
+#include "tinyXML/tinyxml.h"
+#include "Settings.h"
 
 using namespace XFILE;
 using namespace PLAYLIST;

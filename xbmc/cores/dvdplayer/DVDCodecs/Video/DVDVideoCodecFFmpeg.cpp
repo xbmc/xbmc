@@ -1,10 +1,10 @@
 
 #include "stdafx.h"
 #include "DVDVideoCodecFFmpeg.h"
-#include "../../DVDDemuxers/DVDDemux.h"
-#include "../../DVDStreamInfo.h"
-#include "../../DVDClock.h"
-#include "../DVDCodecs.h"
+#include "DVDDemuxers/DVDDemux.h"
+#include "DVDStreamInfo.h"
+#include "DVDClock.h"
+#include "DVDCodecs/DVDCodecs.h"
 #include "../../../../utils/Win32Exception.h"
 #ifdef _LINUX
 #include "utils/CPUInfo.h"

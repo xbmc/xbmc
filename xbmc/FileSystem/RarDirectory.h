@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IFileDirectory.h"
-#include "RarManager.h"
 
 namespace DIRECTORY 
 {

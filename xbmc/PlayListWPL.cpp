@@ -22,6 +22,8 @@
 #include "stdafx.h"
 #include "PlayListWPL.h"
 #include "Util.h"
+#include "tinyXML/tinyxml.h"
+#include "Settings.h"
 
 using namespace XFILE;
 using namespace PLAYLIST;

@@ -28,6 +28,8 @@
 #include "cores/dllloader/exports/emu_msvcrt.h"
 #endif
 
+#include "Settings.h"
+
 using namespace PLAYLIST;
 using namespace XFILE;
 

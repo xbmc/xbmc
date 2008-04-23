@@ -21,19 +21,20 @@
 
 #include "stdafx.h"
 #include "GUIDialogNumeric.h"
-#include "Util.h"
 #include "GUILabelControl.h"
 #include "utils/md5.h"
 #include "xbox/XKGeneral.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
-#define CONTROL_HEADING_LABEL 1
-#define CONTROL_INPUT_LABEL 4
-#define CONTROL_NUM0 10
-#define CONTROL_NUM9 19
-#define CONTROL_PREVIOUS 20
-#define CONTROL_ENTER 21
-#define CONTROL_NEXT 22
-#define CONTROL_BACKSPACE 23
+#define CONTROL_HEADING_LABEL  1
+#define CONTROL_INPUT_LABEL    4
+#define CONTROL_NUM0          10
+#define CONTROL_NUM9          19
+#define CONTROL_PREVIOUS      20
+#define CONTROL_ENTER         21
+#define CONTROL_NEXT          22
+#define CONTROL_BACKSPACE     23
 
 
 CGUIDialogNumeric::CGUIDialogNumeric(void)

@@ -1,5 +1,5 @@
 #pragma once
-#include "../../../../DynamicDll.h"
+#include "DynamicDll.h"
 
 #ifndef _LINUX
 typedef unsigned __int32 uint32_t;

@@ -2,9 +2,8 @@
 #include "GUIButtonControl.h"
 #include "GUIWindowManager.h"
 #include "GUIDialog.h"
-#include "../xbmc/utils/CharsetConverter.h"
+#include "utils/CharsetConverter.h"
 #include "GUIFontManager.h"
-#include "../xbmc/utils/GUIInfoManager.h"
 
 using namespace std;
 
@@ -20,7 +19,6 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, float 
   m_dwFocusCounter = 0;
   m_dwFlickerCounter = 0;
   m_dwFrameCounter = 0;
-  m_strLabel2 = "";
   m_label = labelInfo;
   ControlType = GUICONTROL_BUTTON;
 }
@@ -94,11 +92,12 @@ void CGUIButtonControl::Render()
       m_textLayout.Render( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, m_label.align, m_label.width);
 
     // render the second label if it exists
-    if (m_strLabel2.size() > 0)
+    CStdString label2(m_info2.GetLabel(m_dwParentID));
+    if (!label2.IsEmpty())
     {
       float textWidth, textHeight;
       m_textLayout.GetTextExtent(textWidth, textHeight);
-      m_textLayout2.Update(m_strLabel2);
+      m_textLayout2.Update(label2);
 
       float width = m_width - 2 * m_label.offsetX - textWidth - 5;
       if (width < 0) width = 0;
@@ -187,8 +186,8 @@ void CGUIButtonControl::SetLabel(const string &label)
 }
 
 void CGUIButtonControl::SetLabel2(const string &label2)
-{
-  m_strLabel2 = label2;
+{ // NOTE: No fallback for buttons at this point
+  m_info2.SetLabel(label2, "");
 }
 
 void CGUIButtonControl::Update()
@@ -245,6 +244,12 @@ void CGUIButtonControl::Flicker(bool bFlicker)
 CStdString CGUIButtonControl::GetDescription() const
 {
   CStdString strLabel(m_info.GetLabel(m_dwParentID));
+  return strLabel;
+}
+
+CStdString CGUIButtonControl::GetLabel2() const
+{
+  CStdString strLabel(m_info2.GetLabel(m_dwParentID));
   return strLabel;
 }
 

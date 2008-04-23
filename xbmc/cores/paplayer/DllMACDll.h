@@ -1,5 +1,5 @@
 #pragma once
-#include "../../DynamicDll.h"
+#include "DynamicDll.h"
 
 #define MAC_VERSION_NUMBER 3990       // From MAC SDK
 typedef void * APE_DECOMPRESS_HANDLE; // From MAC SDK

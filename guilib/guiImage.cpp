@@ -1,8 +1,6 @@
 #include "include.h"
 #include "guiImage.h"
 #include "TextureManager.h"
-#include "../xbmc/Settings.h"
-#include "../xbmc/utils/GUIInfoManager.h"
 #include "../xbmc/Util.h"
 #if defined(HAS_SDL_OPENGL)
 #include <GL/glew.h>

@@ -25,19 +25,16 @@
 #else
 #include <sys/utsname.h>
 #endif
-#include "../Settings.h"
-#include "../utils/log.h"
-#include "../cores/DllLoader/DllLoader.h"
-#include "../utils/HTTP.h"
+#include "utils/HTTP.h"
+#include "utils/GUIInfoManager.h"
 #include "Network.h"
 #include "Application.h"
 #ifdef HAS_XBOX_HARDWARE
-#include "../xbox/Undocumented.h"
-#include "../xbox/XKUtils.h"
-#include "../xbox/XKHDD.h"
-#include "../xbox/XKflash.h"
-#include "../xbox/XKRC4.h"
-
+#include "xbox/Undocumented.h"
+#include "xbox/XKUtils.h"
+#include "xbox/XKHDD.h"
+#include "xbox/XKflash.h"
+#include "xbox/XKRC4.h"
 extern "C" XPP_DEVICE_TYPE XDEVICE_TYPE_IR_REMOTE_TABLE;
 #endif
 CSysInfo g_sysinfo;

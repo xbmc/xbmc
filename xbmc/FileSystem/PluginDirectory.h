@@ -1,12 +1,15 @@
 #pragma once
 #include "FileSystem/IDirectory.h"
-#include "FileItem.h"
-#include "Settings.h"
 #include "FileSystem/Directory.h"
-#include <string>
 #include "StdString.h"
+#include "SortFileItem.h"
+
+#include <string>
 #include <vector>
 #include "../utils/CriticalSection.h"
+
+class CURL;
+class CFileItemList;
 
 namespace DIRECTORY
 {
@@ -37,7 +40,7 @@ private:
   static void removeHandle(int handle);
   static CCriticalSection m_handleLock;
 
-  CFileItemList m_listItems;
+  CFileItemList* m_listItems;
   HANDLE        m_directoryFetched;
 
   bool          m_cancelled;    // set to true when we are cancelled

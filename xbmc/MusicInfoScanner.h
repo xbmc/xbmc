@@ -64,5 +64,7 @@ protected:
   std::set<CAlbum> m_albumsToScan;
   std::set<CArtist> m_artistsToScan;
   std::set<CStdString> m_pathsToCount;
+  std::vector<long> m_artistsScanned;
+  std::vector<long> m_albumsScanned;
 };
 }

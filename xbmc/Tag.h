@@ -1,10 +1,10 @@
+#pragma once
+
 #include "cores/paplayer/ReplayGain.h"
+#include "MusicInfoTag.h"
 
 namespace MUSIC_INFO
 {
-
-#pragma once
-
 class CTag
 {
 public:

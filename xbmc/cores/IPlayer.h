@@ -1,5 +1,6 @@
 #pragma once
 #include "IAudioCallback.h"
+#include "Key.h"
 
 class IPlayerCallback
 {

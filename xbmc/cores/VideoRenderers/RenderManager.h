@@ -10,7 +10,8 @@
 #include "WinRenderManager.h"
 #endif
 
-#include "../../utils/SharedSection.h"
+#include "utils/SharedSection.h"
+#include "utils/Thread.h"
 
 class CXBoxRenderManager : private CThread
 {

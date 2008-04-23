@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "FileZip.h"
+#include "URL.h"
+
 #include <sys/stat.h>
 
 #ifndef __GNUC__

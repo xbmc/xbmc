@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIDialogOK.h"
+#include "GUIWindowManager.h"
 
 #define ID_BUTTON_OK   10
 

@@ -21,13 +21,16 @@
 
 #include "stdafx.h"
 #include "GUIDialogSongInfo.h"
-#include "utils/HTTP.h"
 #include "Util.h"
 #include "Picture.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIPassword.h"
 #include "MusicDatabase.h"
 #include "GUIWindowMusicBase.h"
+#include "MusicInfoTag.h"
+#include "GUIWindowManager.h"
+#include "FileSystem/File.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 
@@ -42,10 +45,12 @@ CGUIDialogSongInfo::CGUIDialogSongInfo(void)
   m_cancelled = false;
   m_needsUpdate = false;
   m_startRating = -1;
+  m_song = new CFileItem;
 }
 
 CGUIDialogSongInfo::~CGUIDialogSongInfo(void)
 {
+  delete m_song;
 }
 
 bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
@@ -54,12 +59,12 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      if (!m_cancelled && m_startRating != m_song.GetMusicInfoTag()->GetRating())
+      if (!m_cancelled && m_startRating != m_song->GetMusicInfoTag()->GetRating())
       {
         CMusicDatabase db;
         if (db.Open())      // OpenForWrite() ?
         {
-          db.SetSongRating(m_song.m_strPath, m_song.GetMusicInfoTag()->GetRating());
+          db.SetSongRating(m_song->m_strPath, m_song->GetMusicInfoTag()->GetRating());
           db.Close();
         }
         m_needsUpdate = true;
@@ -95,8 +100,8 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
         CGUIWindowMusicBase *window = (CGUIWindowMusicBase *)m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
         if (window)
         {
-          CFileItem item(m_song);
-          CUtil::GetDirectory(m_song.m_strPath,item.m_strPath);
+          CFileItem item(*m_song);
+          CUtil::GetDirectory(m_song->m_strPath,item.m_strPath);
           item.m_bIsFolder = true;
           window->OnInfo(&item, true);
         }
@@ -116,7 +121,7 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
 
 bool CGUIDialogSongInfo::OnAction(const CAction &action)
 {
-  char rating = m_song.GetMusicInfoTag()->GetRating();
+  char rating = m_song->GetMusicInfoTag()->GetRating();
   if (action.wID == ACTION_INCREASE_RATING)
   {
     if (rating < '5')
@@ -136,7 +141,7 @@ bool CGUIDialogSongInfo::OnAction(const CAction &action)
 
 void CGUIDialogSongInfo::OnInitWindow()
 {
-  if (!g_guiSettings.GetBool("musiclibrary.enabled") || m_song.GetMusicInfoTag()->GetDatabaseId() == -1)
+  if (!g_guiSettings.GetBool("musiclibrary.enabled") || m_song->GetMusicInfoTag()->GetDatabaseId() == -1)
   {
     CONTROL_DISABLE(CONTROL_ALBUMINFO)
   }
@@ -150,24 +155,24 @@ void CGUIDialogSongInfo::SetRating(char rating)
 {
   if (rating < '0') rating = '0';
   if (rating > '5') rating = '5';
-  m_song.GetMusicInfoTag()->SetRating(rating);
+  m_song->GetMusicInfoTag()->SetRating(rating);
   // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, &m_song);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_song);
   g_graphicsContext.SendMessage(msg);
 }
 
 void CGUIDialogSongInfo::SetSong(CFileItem *item)
 {
-  m_song = *item;
-  m_song.LoadMusicTag();
-  m_startRating = m_song.GetMusicInfoTag()->GetRating();
-  MUSIC_INFO::CMusicInfoLoader::LoadAdditionalTagInfo(&m_song);
+  *m_song = *item;
+  m_song->LoadMusicTag();
+  m_startRating = m_song->GetMusicInfoTag()->GetRating();
+  MUSIC_INFO::CMusicInfoLoader::LoadAdditionalTagInfo(m_song);
   m_needsUpdate = false;
 }
 
 CFileItem* CGUIDialogSongInfo::GetCurrentListItem(int offset)
 {
-  return &m_song;
+  return m_song;
 }
 
 bool CGUIDialogSongInfo::DownloadThumbnail(const CStdString &thumbFile)
@@ -206,20 +211,20 @@ void CGUIDialogSongInfo::OnGetThumb()
   }*/
 
   // Current thumb
-  if (CFile::Exists(m_song.GetThumbnailImage()))
+  if (CFile::Exists(m_song->GetThumbnailImage()))
   {
     CFileItem *item = new CFileItem("thumb://Current", false);
-    item->SetThumbnailImage(m_song.GetThumbnailImage());
+    item->SetThumbnailImage(m_song->GetThumbnailImage());
     item->SetLabel(g_localizeStrings.Get(20016));
     items.Add(item);
   }
 
   // local thumb
   CStdString cachedLocalThumb;
-  CStdString localThumb(m_song.GetUserMusicThumb(true));
-  if (m_song.IsMusicDb())
+  CStdString localThumb(m_song->GetUserMusicThumb(true));
+  if (m_song->IsMusicDb())
   {
-    CFileItem item(m_song.GetMusicInfoTag()->GetURL(), false);
+    CFileItem item(m_song->GetMusicInfoTag()->GetURL(), false);
     localThumb = item.GetUserMusicThumb(true);
   }
   if (CFile::Exists(localThumb))
@@ -254,7 +259,7 @@ void CGUIDialogSongInfo::OnGetThumb()
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
 
-  CStdString cachedThumb(CUtil::GetCachedAlbumThumb(m_song.GetMusicInfoTag()->GetAlbum(), m_song.GetMusicInfoTag()->GetArtist()));
+  CStdString cachedThumb(CUtil::GetCachedAlbumThumb(m_song->GetMusicInfoTag()->GetAlbum(), m_song->GetMusicInfoTag()->GetArtist()));
 
   if (result == "thumb://None")
   { // cache the default thumb
@@ -271,11 +276,11 @@ void CGUIDialogSongInfo::OnGetThumb()
     pic.DoCreateThumbnail(result, cachedThumb);
   }
 
-  m_song.SetThumbnailImage(cachedThumb);
+  m_song->SetThumbnailImage(cachedThumb);
 
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, NULL);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
   g_graphicsContext.SendMessage(msg);
 
 //  m_hasUpdatedThumb = true;

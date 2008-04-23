@@ -26,7 +26,6 @@
 #include "Util.h"
 #include "utils/RegExp.h"
 #include "PlayListM3U.h"
-#include "Application.h"
 #include "PlayListPlayer.h"
 #include "GUIPassword.h"
 #include "GUILabelControl.h"
@@ -38,6 +37,14 @@
 #include "GUIDialogVideoScan.h"
 #include "PartyModeManager.h"
 #include "MusicDatabase.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogYesNo.h"
+#include "GUIDialogSelect.h"
+#include "GUIDialogKeyboard.h"
+#include "FileSystem/Directory.h"
+#include "FileSystem/File.h"
+#include "FileItem.h"
+#include "Application.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -66,13 +73,15 @@ using namespace VIDEODATABASEDIRECTORY;
 CGUIWindowVideoNav::CGUIWindowVideoNav(void)
     : CGUIWindowVideoBase(WINDOW_VIDEO_NAV, "MyVideoNav.xml")
 {
-  m_vecItems.m_strPath = "?";
+  m_vecItems->m_strPath = "?";
   m_bDisplayEmptyDatabaseMessage = false;
   m_thumbLoader.SetObserver(this);
+  m_unfilteredItems = new CFileItemList;
 }
 
 CGUIWindowVideoNav::~CGUIWindowVideoNav(void)
 {
+  delete m_unfilteredItems;
 }
 
 bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
@@ -80,7 +89,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
   switch (message.GetMessage())
   {
   case GUI_MSG_WINDOW_RESET:
-    m_vecItems.m_strPath = "?";
+    m_vecItems->m_strPath = "?";
     break;
   case GUI_MSG_WINDOW_DEINIT:
     if (m_thumbLoader.IsLoading())
@@ -89,7 +98,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
 /* We don't want to show Autosourced items (ie removable pendrives, memorycards) in Library mode */
-      m_rootDir.AllowNonLocalShares(false);
+      m_rootDir.AllowNonLocalSources(false);
       // check for valid quickpath parameter
       CStdString strDestination = message.GetStringParam();
       if (!strDestination.IsEmpty())
@@ -99,71 +108,73 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       }
 
       // is this the first time the window is opened?
-      if (m_vecItems.m_strPath == "?" && strDestination.IsEmpty())
+      if (m_vecItems->m_strPath == "?" && strDestination.IsEmpty())
       {
         strDestination = g_settings.m_defaultVideoLibSource;
-        m_vecItems.m_strPath = strDestination;
+        m_vecItems->m_strPath = strDestination;
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
 
       if (!strDestination.IsEmpty())
       {
         if (strDestination.Equals("$ROOT") || strDestination.Equals("Root"))
-          m_vecItems.m_strPath = "";
+          m_vecItems->m_strPath = "";
         else if (strDestination.Equals("MovieGenres"))
-          m_vecItems.m_strPath = "videodb://1/1/";
+          m_vecItems->m_strPath = "videodb://1/1/";
         else if (strDestination.Equals("MovieTitles"))
-          m_vecItems.m_strPath = "videodb://1/2/";
+          m_vecItems->m_strPath = "videodb://1/2/";
         else if (strDestination.Equals("MovieYears"))
-          m_vecItems.m_strPath = "videodb://1/3/";
+          m_vecItems->m_strPath = "videodb://1/3/";
         else if (strDestination.Equals("MovieActors"))
-          m_vecItems.m_strPath = "videodb://1/4/";
+          m_vecItems->m_strPath = "videodb://1/4/";
         else if (strDestination.Equals("MovieDirectors"))
-          m_vecItems.m_strPath = "videodb://1/5/";
+          m_vecItems->m_strPath = "videodb://1/5/";
         else if (strDestination.Equals("MovieStudios"))
-          m_vecItems.m_strPath = "videodb://1/6/";
+          m_vecItems->m_strPath = "videodb://1/6/";
         else if (strDestination.Equals("Movies"))
-          m_vecItems.m_strPath = "videodb://1/";
+          m_vecItems->m_strPath = "videodb://1/";
         else if (strDestination.Equals("TvShowGenres"))
-          m_vecItems.m_strPath = "videodb://2/1/";
+          m_vecItems->m_strPath = "videodb://2/1/";
         else if (strDestination.Equals("TvShowTitles"))
-          m_vecItems.m_strPath = "videodb://2/2/";
+          m_vecItems->m_strPath = "videodb://2/2/";
         else if (strDestination.Equals("TvShowYears"))
-          m_vecItems.m_strPath = "videodb://2/3/";
+          m_vecItems->m_strPath = "videodb://2/3/";
         else if (strDestination.Equals("TvShowActors"))
-          m_vecItems.m_strPath = "videodb://2/4/";
+          m_vecItems->m_strPath = "videodb://2/4/";
         else if (strDestination.Equals("TvShows"))
-          m_vecItems.m_strPath = "videodb://2/";
+          m_vecItems->m_strPath = "videodb://2/";
         else if (strDestination.Equals("MusicVideoGenres"))
-          m_vecItems.m_strPath = "videodb://3/1/";
+          m_vecItems->m_strPath = "videodb://3/1/";
         else if (strDestination.Equals("MusicVideoTitles"))
-          m_vecItems.m_strPath = "videodb://3/2/";
+          m_vecItems->m_strPath = "videodb://3/2/";
         else if (strDestination.Equals("MusicVideoYears"))
-          m_vecItems.m_strPath = "videodb://3/3/";
+          m_vecItems->m_strPath = "videodb://3/3/";
         else if (strDestination.Equals("MusicVideoArtists"))
-          m_vecItems.m_strPath = "videodb://3/4/";
+          m_vecItems->m_strPath = "videodb://3/4/";
         else if (strDestination.Equals("MusicVideoDirectors"))
-          m_vecItems.m_strPath = "videodb://3/5/";
+          m_vecItems->m_strPath = "videodb://3/5/";
         else if (strDestination.Equals("MusicVideoStudios"))
-          m_vecItems.m_strPath = "videodb://3/6/";
+          m_vecItems->m_strPath = "videodb://3/6/";
         else if (strDestination.Equals("MusicVideos"))
-          m_vecItems.m_strPath = "videodb://3/";
+          m_vecItems->m_strPath = "videodb://3/";
         else if (strDestination.Equals("RecentlyAddedMovies"))
-          m_vecItems.m_strPath = "videodb://4/";
+          m_vecItems->m_strPath = "videodb://4/";
         else if (strDestination.Equals("RecentlyAddedEpisodes"))
-          m_vecItems.m_strPath = "videodb://5/";
+          m_vecItems->m_strPath = "videodb://5/";
         else if (strDestination.Equals("RecentlyAddedMusicVideos"))
-          m_vecItems.m_strPath = "videodb://6/";
+          m_vecItems->m_strPath = "videodb://6/";
         else if (strDestination.Equals("Playlists"))
-          m_vecItems.m_strPath = "special://videoplaylists/";
+          m_vecItems->m_strPath = "special://videoplaylists/";
+        else if (strDestination.Equals("Plugins"))
+          m_vecItems->m_strPath = "plugin://video/";
         else
         {
           CLog::Log(LOGWARNING, "Warning, destination parameter (%s) may not be valid", strDestination.c_str());
-          m_vecItems.m_strPath = strDestination;
+          m_vecItems->m_strPath = strDestination;
         }
-        SetHistoryForPath(m_vecItems.m_strPath);
+        SetHistoryForPath(m_vecItems->m_strPath);
       }
-      
+
       DisplayEmptyDatabaseMessage(false); // reset message state
 
       if (!CGUIWindowVideoBase::OnMessage(message))
@@ -176,7 +187,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       if (m_bDisplayEmptyDatabaseMessage)
       {
         SET_CONTROL_FOCUS(CONTROL_BTNTYPE, 0);
-        Update(m_vecItems.m_strPath);  // Will remove content from the list/thumb control
+        Update(m_vecItems->m_strPath);  // Will remove content from the list/thumb control
       }
 
       m_database.Close();
@@ -225,7 +236,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         // TODO: Can we perhaps filter this directly?  Probably not for some of the more complicated views,
         //       but for those perhaps we can just display them all, and only filter when we get a list
         //       of actual videos?
-        Update(m_vecItems.m_strPath);
+        Update(m_vecItems->m_strPath);
         return true;
       }
       else if (iControl == CONTROL_BTNFLATTEN)
@@ -247,7 +258,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         // TODO: Can we perhaps filter this directly?  Probably not for some of the more complicated views,
         //       but for those perhaps we can just display them all, and only filter when we get a list
         //       of actual videos?
-        Update(m_vecItems.m_strPath);
+        Update(m_vecItems->m_strPath);
         return true;
       }
     }
@@ -256,7 +267,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
     case GUI_MSG_SCAN_FINISHED:
     case GUI_MSG_REFRESH_THUMBS:
     {
-      Update(m_vecItems.m_strPath);
+      Update(m_vecItems->m_strPath);
     }
     break;
 
@@ -271,8 +282,8 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       else if (message.GetParam1()==GUI_MSG_UPDATE_SOURCES && IsActive())
       {
         CUtil::DeleteVideoDatabaseDirectoryCache();
-        if (!m_vecItems.m_strPath.Equals("?"))
-          Update(m_vecItems.m_strPath);
+        if (!m_vecItems->m_strPath.Equals("?"))
+          Update(m_vecItems->m_strPath);
         return true;
       }
     }
@@ -343,6 +354,8 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     m_thumbLoader.StopThread();
 
   m_rootDir.SetCacheDirectory(false);
+  items.ClearProperties();
+
   bool bResult = CGUIWindowVideoBase::GetDirectory(strDirectory, items);
   if (bResult)
   {
@@ -352,19 +365,16 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       CQueryParams params;
       dir.GetQueryParams(items.m_strPath,params);
       VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
-      
+
       items.SetThumbnailImage("");
-      items.ClearProperty("tvshowthumb");
-      items.ClearProperty("fanart_image");
-      items.ClearProperty("fanart_color1");
-      items.ClearProperty("fanart_color2");
-      items.ClearProperty("fanart_color3");
-      if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES || node == NODE_TYPE_SEASONS || node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
+      if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES ||
+          node == NODE_TYPE_SEASONS                          ||
+          node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
       {
         CLog::Log(LOGDEBUG, "WindowVideoNav::GetDirectory");
         // grab the show thumb
         CFileItem showItem;
-        m_database.GetFilePath(params.GetTvShowId(),showItem.m_strPath,2);
+        m_database.GetFilePath(params.GetTvShowId(),showItem.m_strPath,VIDEODB_CONTENT_TVSHOWS);
         showItem.SetVideoThumb();
         items.SetProperty("tvshowthumb", showItem.GetThumbnailImage());
         // Grab fanart data
@@ -378,23 +388,54 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         if (CFile::Exists(fanart))
           items.SetProperty("fanart_image", fanart);
 
+        // save the show description (showplot)
+        items.SetProperty("showplot", details.m_strPlot);
+
+        // set the season thumb
+        CStdString strLabel;
+        if (params.GetSeason() == 0)
+          strLabel = g_localizeStrings.Get(20381);
+        else
+          strLabel.Format(g_localizeStrings.Get(20358), params.GetSeason());
+
+        CFileItem item(strLabel);
+        CUtil::GetParentPath(items.m_strPath,item.m_strPath);
+        item.m_bIsFolder = true;
+        item.SetCachedSeasonThumb();
+        if (item.HasThumbnail())
+          items.SetProperty("seasonthumb",item.GetThumbnailImage());
+
         // the container folder thumb is the parent (i.e. season or show)
         if (node == NODE_TYPE_EPISODES || node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
         {
           g_infoManager.m_content = "episodes";
           // grab the season thumb as the folder thumb
           CStdString strLabel;
-          if (params.GetSeason() == 0)
-            strLabel = g_localizeStrings.Get(20381);
+          CStdString strPath;
+          if (params.GetSeason() == -1 && items.Size() > 0)
+          {
+            CQueryParams params2;
+            dir.GetQueryParams(items[0]->m_strPath,params2);
+            strLabel.Format(g_localizeStrings.Get(20358), params2.GetSeason());
+            CUtil::GetParentPath(items.m_strPath,strPath);
+          }
           else
-            strLabel.Format(g_localizeStrings.Get(20358), params.GetSeason());
+          {
+            if (params.GetSeason() == 0)
+              strLabel = g_localizeStrings.Get(20381);
+            else
+              strLabel.Format(g_localizeStrings.Get(20358), params.GetSeason());
+            strPath = items.m_strPath;
+          }
 
           CFileItem item(strLabel);
-          item.m_strPath = items.m_strPath;
+          item.m_strPath = strPath;
           item.m_bIsFolder = true;
           item.GetVideoInfoTag()->m_strPath = showItem.m_strPath;
           item.SetCachedSeasonThumb();
+
           items.SetThumbnailImage(item.GetThumbnailImage());
+          items.SetProperty("seasonthumb",item.GetThumbnailImage());
         }
         else
         {
@@ -406,7 +447,8 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         g_infoManager.m_content = "movies";
       else if (node == NODE_TYPE_TITLE_TVSHOWS)
         g_infoManager.m_content = "tvshows";
-      else if (node == NODE_TYPE_TITLE_MUSICVIDEOS || node == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
+      else if (node == NODE_TYPE_TITLE_MUSICVIDEOS ||
+               node == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
         g_infoManager.m_content = "musicvideos";
       else
         g_infoManager.m_content = "";
@@ -423,20 +465,20 @@ void CGUIWindowVideoNav::UpdateButtons()
   CGUIWindowVideoBase::UpdateButtons();
 
   // Update object count
-  int iItems = m_vecItems.Size();
+  int iItems = m_vecItems->Size();
   if (iItems)
   {
     // check for parent dir and "all" items
     // should always be the first two items
     for (int i = 0; i <= (iItems>=2 ? 1 : 0); i++)
     {
-      CFileItem* pItem = m_vecItems[i];
+      CFileItem* pItem = m_vecItems->Get(i);
       if (pItem->IsParentFolder()) iItems--;
       if (pItem->m_strPath.Left(4).Equals("/-1/")) iItems--;
     }
     // or the last item
-    if (m_vecItems.Size() > 2 &&
-      m_vecItems[m_vecItems.Size()-1]->m_strPath.Left(4).Equals("/-1/"))
+    if (m_vecItems->Size() > 2 &&
+      m_vecItems->Get(m_vecItems->Size()-1)->m_strPath.Left(4).Equals("/-1/"))
       iItems--;
   }
   CStdString items;
@@ -447,20 +489,20 @@ void CGUIWindowVideoNav::UpdateButtons()
   CStdString strLabel;
 
   // "Playlists"
-  if (m_vecItems.m_strPath.Equals("special://videoplaylists/"))
+  if (m_vecItems->m_strPath.Equals("special://videoplaylists/"))
     strLabel = g_localizeStrings.Get(136);
   // "{Playlist Name}"
-  else if (m_vecItems.IsPlayList())
+  else if (m_vecItems->IsPlayList())
   {
     // get playlist name from path
     CStdString strDummy;
-    CUtil::Split(m_vecItems.m_strPath, strDummy, strLabel);
+    CUtil::Split(m_vecItems->m_strPath, strDummy, strLabel);
   }
   // everything else is from a videodb:// path
   else
   {
     CVideoDatabaseDirectory dir;
-    dir.GetLabel(m_vecItems.m_strPath, strLabel);
+    dir.GetLabel(m_vecItems->m_strPath, strLabel);
   }
 
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
@@ -494,7 +536,7 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
     }
     items.Append(tempItems);
   }
-  
+
   tempItems.Clear();
   m_database.GetTvShowGenresByName(strSearch, tempItems);
   if (tempItems.Size())
@@ -671,7 +713,7 @@ void CGUIWindowVideoNav::PlayItem(int iItem)
   // and cleared!
 
   // root is not allowed
-  if (m_vecItems.IsVirtualDirectoryRoot())
+  if (m_vecItems->IsVirtualDirectoryRoot())
     return;
 
   CGUIWindowVideoBase::PlayItem(iItem);
@@ -720,7 +762,7 @@ void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, const SScraperInfo& info)
   m_database.Open(); // since we can be called from the music library without being inited
   if (pItem->IsVideoDb())
     m_database.GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath,info2);
-  else if (m_vecItems.IsPluginFolder())
+  else if (m_vecItems->IsPluginFolder())
     info2.strContent = "plugin";
   else
   {
@@ -733,15 +775,15 @@ void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, const SScraperInfo& info)
 
 void CGUIWindowVideoNav::OnDeleteItem(int iItem)
 {
-  if (iItem < 0 || iItem >= (int)m_vecItems.Size()) return;
+  if (iItem < 0 || iItem >= (int)m_vecItems->Size()) return;
 
-  if (m_vecItems.m_strPath.Equals("special://videoplaylists/"))
+  if (m_vecItems->m_strPath.Equals("special://videoplaylists/"))
   {
     CGUIWindowVideoBase::OnDeleteItem(iItem);
     return;
   }
 
-  CFileItem* pItem = m_vecItems[iItem];
+  CFileItem* pItem = m_vecItems->Get(iItem);
   DeleteItem(pItem);
 
   CStdString strDeletePath;
@@ -750,7 +792,8 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
   else
     strDeletePath=pItem->GetVideoInfoTag()->m_strFileNameAndPath;
 
-  if (g_guiSettings.GetBool("filelists.allowfiledeletion") && CUtil::SupportsFileOperations(strDeletePath))
+  if (g_guiSettings.GetBool("filelists.allowfiledeletion") &&
+      CUtil::SupportsFileOperations(strDeletePath))
   {
     pItem->m_strPath = strDeletePath;
     CGUIWindowVideoBase::OnDeleteItem(iItem);
@@ -759,30 +802,30 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
   CUtil::DeleteVideoDatabaseDirectoryCache();
 
   DisplayEmptyDatabaseMessage(m_database.GetItemCount() <= 0);
-  Update( m_vecItems.m_strPath );
+  Update( m_vecItems->m_strPath );
   m_viewControl.SetSelectedItem(iItem);
   return;
 }
 
 void CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
 {
-  int iType=0;
-  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow
-    iType = 2;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
-    iType = 1;
+  VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
+  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty())
+    iType = VIDEODB_CONTENT_TVSHOWS;
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder)
+    iType = VIDEODB_CONTENT_EPISODES;
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0)
-    iType = 3;
+    iType = VIDEODB_CONTENT_MUSICVIDEOS;
 
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (!pDialog) return;
-  if (iType == 0)
+  if (iType == VIDEODB_CONTENT_MOVIES)
     pDialog->SetHeading(432);
-  if (iType == 1)
+  if (iType == VIDEODB_CONTENT_EPISODES)
     pDialog->SetHeading(20362);
-  if (iType == 2)
+  if (iType == VIDEODB_CONTENT_TVSHOWS)
     pDialog->SetHeading(20363);
-  if (iType == 3)
+  if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
     pDialog->SetHeading(20392);
   CStdString strLine;
   strLine.Format(g_localizeStrings.Get(433),pItem->GetLabel());
@@ -798,17 +841,17 @@ void CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
 
   database.GetFilePath(pItem->GetVideoInfoTag()->m_iDbId, path, iType);
   if (path.IsEmpty()) return;
-  if (iType == 0)
+  if (iType == VIDEODB_CONTENT_MOVIES)
     database.DeleteMovie(path);
-  if (iType == 1)
+  if (iType == VIDEODB_CONTENT_EPISODES)
     database.DeleteEpisode(path);
-  if (iType == 2)
+  if (iType == VIDEODB_CONTENT_TVSHOWS)
     database.DeleteTvShow(path);
-  if (iType == 3)
+  if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
     database.DeleteMusicVideo(path);
 
-  if (iType == 2)
-    database.SetPathHash(path,"");  
+  if (iType == VIDEODB_CONTENT_TVSHOWS)
+    database.SetPathHash(path,"");
   else
   {
     CStdString strDirectory;
@@ -823,20 +866,27 @@ void CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
 
 void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
 {
-  m_unfilteredItems.AppendPointer(items);
+  m_unfilteredItems->AppendPointer(items);
   // now filter as necessary
   CVideoDatabaseDirectory dir;
   CQueryParams params;
   dir.GetQueryParams(items.m_strPath,params);
   bool filterWatched=false;
-  if ((params.GetContentType() == VIDEODB_CONTENT_TVSHOWS && dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_EPISODES) || dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_EPISODES)
+  if ((params.GetContentType() == VIDEODB_CONTENT_TVSHOWS &&
+       dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_EPISODES) ||
+       dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_EPISODES)
     filterWatched = true;
   if (items.IsPluginFolder())
     filterWatched = true;
   if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
     filterWatched = false;
-  if (params.GetContentType() == VIDEODB_CONTENT_MOVIES || params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS || dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MOVIES || dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS) // need to filter no matter to get rid of duplicates - price to pay for not filtering in db
+  if (params.GetContentType() == VIDEODB_CONTENT_MOVIES                             ||
+      params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS                        ||
+      dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MOVIES ||
+      dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
+  { // need to filter no matter to get rid of duplicates - price to pay for not filtering in db
     filterWatched = true;
+  }
 
   if (filterWatched || !m_filter.IsEmpty())
     FilterItems(items);
@@ -845,8 +895,8 @@ void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
 void CGUIWindowVideoNav::ClearFileItems()
 {
   m_viewControl.Clear();
-  m_vecItems.ClearKeepPointer();
-  m_unfilteredItems.Clear();
+  m_vecItems->ClearKeepPointer();
+  m_unfilteredItems->Clear();
 }
 
 void CGUIWindowVideoNav::OnFilterItems()
@@ -854,14 +904,14 @@ void CGUIWindowVideoNav::OnFilterItems()
   CStdString currentItem;
   int item = m_viewControl.GetSelectedItem();
   if (item >= 0)
-    currentItem = m_vecItems[item]->m_strPath;
+    currentItem = m_vecItems->Get(item)->m_strPath;
 
   m_viewControl.Clear();
 
-  FilterItems(m_vecItems);
+  FilterItems(*m_vecItems);
 
   // and update our view control + buttons
-  m_viewControl.SetItems(m_vecItems);
+  m_viewControl.SetItems(*m_vecItems);
   m_viewControl.SetSelectedItem(currentItem);
   UpdateButtons();
 }
@@ -872,25 +922,39 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
   CQueryParams params;
   dir.GetQueryParams(items.m_strPath,params);
   bool filterWatched=false;
-  if ((params.GetContentType() == VIDEODB_CONTENT_TVSHOWS && dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_EPISODES) || dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_EPISODES)
+  if ((params.GetContentType() == VIDEODB_CONTENT_TVSHOWS &&
+       dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_EPISODES) ||
+       dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_EPISODES)
+  {
     filterWatched = true;
-  if (params.GetContentType() == VIDEODB_CONTENT_MOVIES || params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS|| dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MOVIES || dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
+  }
+  if (params.GetContentType() == VIDEODB_CONTENT_MOVIES                             ||
+      params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS                        ||
+      dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MOVIES ||
+      dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
     filterWatched = true;
   if (items.IsPluginFolder())
     filterWatched = true;
   if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
     filterWatched = false;
-  
+
   NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
-  if (m_vecItems.IsVirtualDirectoryRoot() || node == NODE_TYPE_MOVIES_OVERVIEW || node == NODE_TYPE_TVSHOWS_OVERVIEW || node == NODE_TYPE_MUSICVIDEOS_OVERVIEW)
+  if (m_vecItems->IsVirtualDirectoryRoot() ||
+      node == NODE_TYPE_MOVIES_OVERVIEW    ||
+      node == NODE_TYPE_TVSHOWS_OVERVIEW   ||
+      node == NODE_TYPE_MUSICVIDEOS_OVERVIEW)
+  {
     return;
+  }
 
   items.ClearKeepPointer();
-  for (int i = 0; i < m_unfilteredItems.Size(); i++)
+  for (int i = 0; i < m_unfilteredItems->Size(); i++)
   {
-    CFileItem *item = m_unfilteredItems[i];
-    if (item->m_bIsFolder || item->IsParentFolder() || CVideoDatabaseDirectory::IsAllItem(item->m_strPath) ||
-        (m_filter.IsEmpty() && (!filterWatched || item->GetVideoInfoTag()->m_bWatched == (g_stSettings.m_iMyVideoWatchMode==2))))
+    CFileItem *item = m_unfilteredItems->Get(i);
+    if (item->m_bIsFolder || item->IsParentFolder()         ||
+        CVideoDatabaseDirectory::IsAllItem(item->m_strPath) ||
+       (m_filter.IsEmpty() && (!filterWatched               ||
+        item->GetVideoInfoTag()->m_bWatched == (g_stSettings.m_iMyVideoWatchMode==2))))
     {
       if ((params.GetContentType() != VIDEODB_CONTENT_MOVIES  && params.GetContentType() != VIDEODB_CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
         items.Add(item);
@@ -908,7 +972,7 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
       match = item->GetLayout()->GetAllText();
     else*/
       match = item->GetLabel() + " " + item->GetLabel2();
-    if (StringUtils::FindWords(match.c_str(), m_filter.c_str()) && 
+    if (StringUtils::FindWords(match.c_str(), m_filter.c_str()) &&
         (!filterWatched || item->GetVideoInfoTag()->m_bWatched == (g_stSettings.m_iMyVideoWatchMode==2)))
     {
       if ((params.GetContentType() != VIDEODB_CONTENT_MOVIES && params.GetContentType() != VIDEODB_CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
@@ -919,15 +983,15 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
 
 void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems.Size()) ? m_vecItems[itemNumber] : NULL;
+  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : NULL;
 
   CGUIWindowVideoBase::GetContextButtons(itemNumber, buttons);
 
   CVideoDatabaseDirectory dir;
-  NODE_TYPE node = dir.GetDirectoryChildType(m_vecItems.m_strPath);
-  
+  NODE_TYPE node = dir.GetDirectoryChildType(m_vecItems->m_strPath);
+
   if (!item)
-  {       
+  {
     CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
     if (pScanDlg && pScanDlg->IsScanning())
       buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
@@ -939,7 +1003,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
     SScraperInfo info;
     VIDEO::SScanSettings settings;
     GetScraperForItem(item, info, settings);
-    
+
     if (info.strContent.Equals("tvshows"))
       buttons.Add(CONTEXT_BUTTON_INFO, item->m_bIsFolder ? 20351 : 20352);
     else if (info.strContent.Equals("musicvideos"))
@@ -961,12 +1025,18 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       if (database.GetAlbumByName(item->GetVideoInfoTag()->m_strAlbum) > -1)
         buttons.Add(CONTEXT_BUTTON_GO_TO_ALBUM, 20397);
     }
-    if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_strAlbum.size() > 0 && item->GetVideoInfoTag()->GetArtist().size() > 0 && item->GetVideoInfoTag()->m_strTitle.size() > 0)
+    if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_strAlbum.size() > 0 &&
+        item->GetVideoInfoTag()->GetArtist().size() > 0                           &&
+        item->GetVideoInfoTag()->m_strTitle.size() > 0)
     {
       CMusicDatabase database;
       database.Open();
-      if (database.GetSongByArtistAndAlbumAndTitle(item->GetVideoInfoTag()->GetArtist(),item->GetVideoInfoTag()->m_strAlbum,item->GetVideoInfoTag()->m_strTitle) > -1)
+      if (database.GetSongByArtistAndAlbumAndTitle(item->GetVideoInfoTag()->GetArtist(),
+                                                   item->GetVideoInfoTag()->m_strAlbum,
+                                                   item->GetVideoInfoTag()->m_strTitle) > -1)
+      {
         buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 20398);
+      }
     }
     if (!item->IsParentFolder())
     {
@@ -981,7 +1051,8 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           else
             buttons.Add(CONTEXT_BUTTON_UPDATE_TVSHOW, 13349);
         }
-        if (node == NODE_TYPE_TITLE_TVSHOWS || node == NODE_TYPE_SEASONS || (item->IsVideoDb() && item->HasVideoInfoTag() && !item->m_bIsFolder))
+        if (node == NODE_TYPE_TITLE_TVSHOWS || node == NODE_TYPE_SEASONS ||
+           (item->IsVideoDb() && item->HasVideoInfoTag() && !item->m_bIsFolder))
         {
           if (item->m_bIsFolder || item->GetVideoInfoTag()->m_bWatched)
             buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
@@ -990,7 +1061,9 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           if (node != NODE_TYPE_SEASONS)
             buttons.Add(CONTEXT_BUTTON_EDIT, 16105); //Edit Title
         }
-        if (m_database.GetTvShowCount() > 0 && item->HasVideoInfoTag() && !item->m_bIsFolder && item->GetVideoInfoTag()->m_iEpisode == -1 && item->GetVideoInfoTag()->m_artist.size() == 0) // movie entry
+        if (m_database.GetTvShowCount() > 0 && item->HasVideoInfoTag()    &&
+          !item->m_bIsFolder && item->GetVideoInfoTag()->m_iEpisode == -1 &&
+           item->GetVideoInfoTag()->m_artist.size() == 0) // movie entry
         {
           if (m_database.IsLinkedToTvshow(item->GetVideoInfoTag()->m_iDbId))
             buttons.Add(CONTEXT_BUTTON_UNLINK_MOVIE,20385);
@@ -1001,22 +1074,26 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         if (node == NODE_TYPE_SEASONS && !dir.IsAllItem(item->m_strPath) && item->m_bIsFolder)
           buttons.Add(CONTEXT_BUTTON_SET_SEASON_THUMB, 20371);
 
-        if (m_vecItems.m_strPath.Equals("plugin://video/"))
+        if (m_vecItems->m_strPath.Equals("plugin://video/"))
           buttons.Add(CONTEXT_BUTTON_SET_PLUGIN_THUMB, 1044);
-        
+
         if (node == NODE_TYPE_ACTOR && !dir.IsAllItem(item->m_strPath) && item->m_bIsFolder)
         {
-          if (m_vecItems.m_strPath.Left(11).Equals("videodb://3")) // mvids
+          if (m_vecItems->m_strPath.Left(11).Equals("videodb://3")) // mvids
             buttons.Add(CONTEXT_BUTTON_SET_ARTIST_THUMB, 13359);
           else
             buttons.Add(CONTEXT_BUTTON_SET_ACTOR_THUMB, 20403);
         }
-        if (item->IsVideoDb() && item->HasVideoInfoTag() && (!item->m_bIsFolder || node == NODE_TYPE_TITLE_TVSHOWS))
+        if (item->IsVideoDb() && item->HasVideoInfoTag() &&
+          (!item->m_bIsFolder || node == NODE_TYPE_TITLE_TVSHOWS))
         {
-          if (info.strContent.Equals("tvshows")) 
+          if (info.strContent.Equals("tvshows"))
           {
-            if(item->GetVideoInfoTag()->m_iBookmarkId != -1 && item->GetVideoInfoTag()->m_iBookmarkId != 0)
+            if(item->GetVideoInfoTag()->m_iBookmarkId != -1 &&
+               item->GetVideoInfoTag()->m_iBookmarkId != 0)
+            {
               buttons.Add(CONTEXT_BUTTON_UNLINK_BOOKMARK, 20405);
+            }
           }
           buttons.Add(CONTEXT_BUTTON_DELETE, 646);
         }
@@ -1035,8 +1112,12 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       //Set default and/or clear default
       CVideoDatabaseDirectory dir;
       NODE_TYPE nodetype = dir.GetDirectoryType(item->m_strPath);
-      if (!item->IsParentFolder() && !m_vecItems.m_strPath.Equals("special://videoplaylists/") &&
-        (nodetype == NODE_TYPE_ROOT || nodetype == NODE_TYPE_OVERVIEW || nodetype == NODE_TYPE_TVSHOWS_OVERVIEW || nodetype == NODE_TYPE_MOVIES_OVERVIEW || nodetype == NODE_TYPE_MUSICVIDEOS_OVERVIEW))
+      if (!item->IsParentFolder() && !m_vecItems->m_strPath.Equals("special://videoplaylists/") &&
+        (nodetype == NODE_TYPE_ROOT             ||
+         nodetype == NODE_TYPE_OVERVIEW         ||
+         nodetype == NODE_TYPE_TVSHOWS_OVERVIEW ||
+         nodetype == NODE_TYPE_MOVIES_OVERVIEW  ||
+         nodetype == NODE_TYPE_MUSICVIDEOS_OVERVIEW))
       {
         if (!item->m_strPath.Equals(g_settings.m_defaultVideoLibSource))
           buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // set default
@@ -1044,7 +1125,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
       }
 
-      if (m_vecItems.m_strPath.Equals("special://videoplaylists/"))
+      if (m_vecItems->m_strPath.Equals("special://videoplaylists/"))
       { // video playlists, file operations are allowed
         if (!item->IsReadOnly())
         {
@@ -1062,7 +1143,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   switch (button)
   {
   case CONTEXT_BUTTON_SET_DEFAULT:
-    g_settings.m_defaultVideoLibSource = GetQuickpathName(m_vecItems[itemNumber]->m_strPath);
+    g_settings.m_defaultVideoLibSource = GetQuickpathName(m_vecItems->Get(itemNumber)->m_strPath);
     g_settings.Save();
     return true;
 
@@ -1072,22 +1153,22 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_MARK_WATCHED:
-    MarkWatched(m_vecItems[itemNumber]);
+    MarkWatched(m_vecItems->Get(itemNumber));
     CUtil::DeleteVideoDatabaseDirectoryCache();
-    Update(m_vecItems.m_strPath);
+    Update(m_vecItems->m_strPath);
     return true;
 
 
   case CONTEXT_BUTTON_MARK_UNWATCHED:
-    MarkUnWatched(m_vecItems[itemNumber]);
+    MarkUnWatched(m_vecItems->Get(itemNumber));
     CUtil::DeleteVideoDatabaseDirectoryCache();
-    Update(m_vecItems.m_strPath);
+    Update(m_vecItems->m_strPath);
     return true;
 
   case CONTEXT_BUTTON_EDIT:
-    UpdateVideoTitle(m_vecItems[itemNumber]);
+    UpdateVideoTitle(m_vecItems->Get(itemNumber));
     CUtil::DeleteVideoDatabaseDirectoryCache();
-    Update(m_vecItems.m_strPath);
+    Update(m_vecItems->m_strPath);
     return true;
 
   case CONTEXT_BUTTON_SET_SEASON_THUMB:
@@ -1104,16 +1185,21 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CFileItem* noneitem = new CFileItem("thumb://None", false);
       int i=1;
       CVideoInfoTag tag;
-      if (button != CONTEXT_BUTTON_SET_ARTIST_THUMB && button != CONTEXT_BUTTON_SET_PLUGIN_THUMB)
+      if (button != CONTEXT_BUTTON_SET_ARTIST_THUMB &&
+          button != CONTEXT_BUTTON_SET_PLUGIN_THUMB)
       {
         if (button == CONTEXT_BUTTON_SET_SEASON_THUMB)
-          m_database.GetTvShowInfo("",tag,m_vecItems[itemNumber]->GetVideoInfoTag()->m_iDbId);
+          m_database.GetTvShowInfo("",tag,m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iDbId);
         else
-          tag = *m_vecItems[itemNumber]->GetVideoInfoTag();
+          tag = *m_vecItems->Get(itemNumber)->GetVideoInfoTag();
         for (std::vector<CScraperUrl::SUrlEntry>::iterator iter=tag.m_strPictureURL.m_url.begin();iter != tag.m_strPictureURL.m_url.end();++iter)
         {
-          if ((iter->m_type != CScraperUrl::URL_TYPE_SEASON || iter->m_season != m_vecItems[itemNumber]->GetVideoInfoTag()->m_iSeason) && button == CONTEXT_BUTTON_SET_SEASON_THUMB)
+          if ((iter->m_type != CScraperUrl::URL_TYPE_SEASON ||
+               iter->m_season != m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iSeason) &&
+               button == CONTEXT_BUTTON_SET_SEASON_THUMB)
+          {
             continue;
+          }
           CStdString thumbFromWeb;
           CStdString strLabel;
           strLabel.Format("imdbthumb%i.jpg",i);
@@ -1130,17 +1216,17 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           }
         }
       }
-      CStdString cachedThumb = m_vecItems[itemNumber]->GetCachedSeasonThumb();
+      CStdString cachedThumb = m_vecItems->Get(itemNumber)->GetCachedSeasonThumb();
       if (button == CONTEXT_BUTTON_SET_ACTOR_THUMB)
-        cachedThumb = m_vecItems[itemNumber]->GetCachedActorThumb();
+        cachedThumb = m_vecItems->Get(itemNumber)->GetCachedActorThumb();
       if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
-        cachedThumb = m_vecItems[itemNumber]->GetCachedArtistThumb();
+        cachedThumb = m_vecItems->Get(itemNumber)->GetCachedArtistThumb();
       if (button == CONTEXT_BUTTON_SET_SEASON_THUMB)
       {
         CFileItemList tbnItems;
         CDirectory::GetDirectory(tag.m_strPath,tbnItems,".tbn");
         CStdString strExpression;
-        strExpression.Format("season[ ._-](0?%i)\\.tbn",m_vecItems[itemNumber]->GetVideoInfoTag()->m_iSeason);
+        strExpression.Format("season[ ._-](0?%i)\\.tbn",m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iSeason);
         CRegExp reg;
         if (reg.RegComp(strExpression.c_str()))
         {
@@ -1153,7 +1239,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
               CFileItem *item = new CFileItem("thumb://Local", false);
               item->SetThumbnailImage(cachedThumb); // this doesn't look right to me - perhaps tbnItems[j]->m_strPath?
               item->SetLabel(g_localizeStrings.Get(20017));
-              items.Add(item);              
+              items.Add(item);
               break;
             }
             else
@@ -1166,7 +1252,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
       if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
       {
-        strPath = m_vecItems[itemNumber]->m_strPath;
+        strPath = m_vecItems->Get(itemNumber)->m_strPath;
         strPath.Replace("plugin://video/","Q:\\plugins\\video\\");
         strPath.Replace("/","\\");
         CFileItem item(strPath,true);
@@ -1236,7 +1322,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       {
         CStdString picturePath;
 
-        CStdString strPath = m_vecItems[itemNumber]->m_strPath;
+        CStdString strPath = m_vecItems->Get(itemNumber)->m_strPath;
         CUtil::RemoveSlashAtEnd(strPath);
 
         int nPos=strPath.ReverseFind("/");
@@ -1247,7 +1333,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           CMusicDatabase database;
           database.Open();
           CFileItemList albums;
-          long idArtist=database.GetArtistByName(m_vecItems[itemNumber]->GetLabel());
+          long idArtist=database.GetArtistByName(m_vecItems->Get(itemNumber)->GetLabel());
           CStdString path;
           database.GetArtistPath(idArtist, picturePath);
         }
@@ -1290,8 +1376,11 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       items.Add(noneitem);
 
       CStdString result;
-      if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_videoSources, g_localizeStrings.Get(20019), result))
+      if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_videoSources,
+                                                  g_localizeStrings.Get(20019), result))
+      {
         return false;   // user cancelled
+      }
 
       if (result == "thumb://Current")
         return false;   // user chose the one they have
@@ -1323,9 +1412,9 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         CFile::Cache(result,cachedThumb);
 
       CUtil::DeleteVideoDatabaseDirectoryCache();
-      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, NULL);
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
       g_graphicsContext.SendMessage(msg);
-      Update(m_vecItems.m_strPath);
+      Update(m_vecItems->m_strPath);
 
       return true;
     }
@@ -1338,7 +1427,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_UNLINK_MOVIE:
     {
-      m_database.LinkMovieToTvshow(m_vecItems[itemNumber]->GetVideoInfoTag()->m_iDbId,-1);
+      m_database.LinkMovieToTvshow(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iDbId,-1);
       CUtil::DeleteVideoDatabaseDirectoryCache();
       return true;
     }
@@ -1352,7 +1441,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString strPath;
       CMusicDatabase database;
       database.Open();
-      strPath.Format("musicdb://2/%ld/",database.GetArtistByName(m_vecItems[itemNumber]->GetVideoInfoTag()->GetArtist()));
+      strPath.Format("musicdb://2/%ld/",database.GetArtistByName(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->GetArtist()));
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_NAV,strPath);
       return true;
     }
@@ -1361,7 +1450,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString strPath;
       CMusicDatabase database;
       database.Open();
-      strPath.Format("musicdb://3/%ld/",database.GetAlbumByName(m_vecItems[itemNumber]->GetVideoInfoTag()->m_strAlbum));
+      strPath.Format("musicdb://3/%ld/",database.GetAlbumByName(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_strAlbum));
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_NAV,strPath);
       return true;
     }
@@ -1370,21 +1459,25 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CMusicDatabase database;
       database.Open();
       CSong song;
-      if (database.GetSongById(database.GetSongByArtistAndAlbumAndTitle(m_vecItems[itemNumber]->GetVideoInfoTag()->GetArtist(),m_vecItems[itemNumber]->GetVideoInfoTag()->m_strAlbum,m_vecItems[itemNumber]->GetVideoInfoTag()->m_strTitle),song))
+      if (database.GetSongById(database.GetSongByArtistAndAlbumAndTitle(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->GetArtist(),m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_strAlbum,
+                                                                        m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_strTitle),
+                                                                        song))
+      {
         g_application.getApplicationMessenger().PlayFile(song);
+      }
       return true;
     }
 
   case CONTEXT_BUTTON_UNLINK_BOOKMARK:
     {
       m_database.Open();
-      m_database.DeleteBookMarkForEpisode(*m_vecItems[itemNumber]->GetVideoInfoTag());
+      m_database.DeleteBookMarkForEpisode(*m_vecItems->Get(itemNumber)->GetVideoInfoTag());
       m_database.Close();
       CUtil::DeleteVideoDatabaseDirectoryCache();
-      Update(m_vecItems.m_strPath);
+      Update(m_vecItems->m_strPath);
       return true;
     }
-  
+
   default:
     break;
 
@@ -1404,10 +1497,9 @@ void CGUIWindowVideoNav::OnLinkMovieToTvShow(int itemnumber)
   pDialog->DoModal();
   if (pDialog->GetSelectedLabel() > -1)
   {
-    m_database.LinkMovieToTvshow(m_vecItems[itemnumber]->GetVideoInfoTag()->m_iDbId,pDialog->GetSelectedItem().GetVideoInfoTag()->m_iDbId);
+    m_database.LinkMovieToTvshow(m_vecItems->Get(itemnumber)->GetVideoInfoTag()->m_iDbId,
+                                 pDialog->GetSelectedItem().GetVideoInfoTag()->m_iDbId);
     CUtil::DeleteVideoDatabaseDirectoryCache();
   }
 }
-
-
 
