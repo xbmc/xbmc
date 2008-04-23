@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Fat32Device.h"
-#include "../../xbox/Undocumented.h"
+#include "xbox/Undocumented.h"
 
 using namespace std;
 

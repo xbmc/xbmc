@@ -1,9 +1,9 @@
 #include "include.h"
 #include "GUITextBox.h"
-#include "../xbmc/utils/CharsetConverter.h"
-#include "../xbmc/StringUtils.h"
+#include "utils/CharsetConverter.h"
+#include "StringUtils.h"
 #include "GUILabelControl.h"
-#include "../xbmc/utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 
 using namespace std;
 

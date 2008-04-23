@@ -37,7 +37,6 @@
 #else
 #include <sqlite3.h>
 #endif
-#include "../../utils/log.h"
 //#include <unistd.h>
 
 using namespace std;

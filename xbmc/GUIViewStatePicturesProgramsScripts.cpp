@@ -22,6 +22,10 @@
 #include "stdafx.h"
 #include "GUIViewStatePicturesProgramsScripts.h"
 #include "GUIBaseContainer.h"
+#include "FileItem.h"
+#include "ViewState.h"
+#include "Settings.h"
+#include "FileSystem/Directory.h"
 
 using namespace DIRECTORY;
 
@@ -71,7 +75,7 @@ CStdString CGUIViewStateWindowPictures::GetExtensions()
   return g_stSettings.m_pictureExtensions;
 }
 
-VECSHARES& CGUIViewStateWindowPictures::GetShares()
+VECSOURCES& CGUIViewStateWindowPictures::GetSources()
 {
   return g_settings.m_pictureSources;
 }
@@ -109,7 +113,7 @@ CStdString CGUIViewStateWindowPrograms::GetExtensions()
   return ".xbe|.cut";
 }
 
-VECSHARES& CGUIViewStateWindowPrograms::GetShares()
+VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
 {
   return g_settings.m_programSources;
 }
@@ -138,20 +142,20 @@ CStdString CGUIViewStateWindowScripts::GetExtensions()
   return ".py";
 }
 
-VECSHARES& CGUIViewStateWindowScripts::GetShares()
+VECSOURCES& CGUIViewStateWindowScripts::GetSources()
 {
-  m_shares.clear();
+  m_sources.clear();
 
-  CShare share;
+  CMediaSource share;
   if (g_settings.m_vecProfiles.size() > 1)
   {
     if (CDirectory::Exists("P:\\scripts"))
     {
-      CShare share2;
+      CMediaSource share2;
       share2.strName = "Profile Scripts";
       share2.strPath = "P:\\scripts";
-      share2.m_iDriveType = SHARE_TYPE_LOCAL;
-      m_shares.push_back(share2);
+      share2.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+      m_sources.push_back(share2);
     }
     share.strName = "Shared Scripts";
   }
@@ -159,10 +163,10 @@ VECSHARES& CGUIViewStateWindowScripts::GetShares()
     share.strName = "Scripts";
 
   share.strPath = "Q:\\scripts";
-  share.m_iDriveType = SHARE_TYPE_LOCAL;
-  m_shares.push_back(share);
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+  m_sources.push_back(share);
 
-  return CGUIViewState::GetShares();
+  return CGUIViewState::GetSources();
 }
 
 
@@ -190,13 +194,13 @@ void CGUIViewStateWindowGameSaves::SaveViewState()
 }
 
 
-VECSHARES& CGUIViewStateWindowGameSaves::GetShares()
+VECSOURCES& CGUIViewStateWindowGameSaves::GetSources()
 {
-  m_shares.clear();
-  CShare share;
+  m_sources.clear();
+  CMediaSource share;
   share.strName = "Local GameSaves";
   share.strPath = "E:\\udata";
-  share.m_iDriveType = SHARE_TYPE_LOCAL;
-  m_shares.push_back(share);
-  return CGUIViewState::GetShares();
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+  m_sources.push_back(share);
+  return CGUIViewState::GetSources();
 }

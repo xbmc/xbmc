@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "GUIWindowMusicOverlay.h"
 #include "utils/GUIInfoManager.h"
+#include "GUIWindowManager.h"
 
 #define CONTROL_LOGO_PIC    1
 

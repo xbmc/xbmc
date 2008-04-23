@@ -3,15 +3,16 @@
 \brief 
 */
 
-#ifndef CGUIControlFactory_H
-#define CGUIControlFactory_H
+#ifndef GUI_CONTROL_FACTORY_H
+#define GIU_CONTROL_FACTORY_H
 
 #pragma once
 
 #include "GUIControl.h"
-#include "guiImage.h" // for aspect ratio
+#include "guiImage.h"
 
 class CImage; // forward
+class TiXmlNode;
 
 /*!
  \ingroup controls
@@ -35,7 +36,7 @@ public:
   static void GetInfoLabels(const TiXmlNode *pControlNode, const CStdString &labelTag, std::vector<CGUIInfoLabel> &infoLabels);
   static bool GetColor(const TiXmlNode* pRootNode, const char* strTag, DWORD &value);
   static bool GetInfoColor(const TiXmlNode* pRootNode, const char* strTag, CGUIInfoColor &value);
-  static CStdString GetLabel(const CStdString &label);
+  static CStdString FilterLabel(const CStdString &label);
   static bool GetConditionalVisibility(const TiXmlNode* control, int &condition);
   static bool GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, std::vector<CStdString>& vecStringValue);
   static void GetRectFromString(const CStdString &string, FRECT &rect);
@@ -44,6 +45,7 @@ private:
   bool GetCondition(const TiXmlNode *control, const char *tag, int &condition);
   static bool GetConditionalVisibility(const TiXmlNode* control, int &condition, bool &allowHiddenFocus);
   bool GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringPath);
+  bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strString);
   bool GetFloatRange(const TiXmlNode* pRootNode, const char* strTag, float& iMinValue, float& iMaxValue, float& iIntervalValue);
   bool GetIntRange(const TiXmlNode* pRootNode, const char* strTag, int& iMinValue, int& iMaxValue, int& iIntervalValue);
   bool GetHitRect(const TiXmlNode* pRootNode, CRect &rect);

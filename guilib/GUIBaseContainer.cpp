@@ -1,10 +1,10 @@
 #include "include.h"
 #include "GUIBaseContainer.h"
 #include "GuiControlFactory.h"
-#include "../xbmc/FileItem.h"
-#include "../xbmc/utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"
+#include "FileItem.h"
 
 using namespace std;
 
@@ -584,14 +584,14 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         const char *id = item->Attribute("id");
         int visibleCondition = 0;
         CGUIControlFactory::GetConditionalVisibility(item, visibleCondition);
-        newItem = new CFileItem(CGUIControlFactory::GetLabel(label));
+        newItem = new CFileItem(CGUIControlFactory::FilterLabel(label));
         // multiple action strings are concat'd together, separated with " , "
         vector<CStdString> actions;
         CGUIControlFactory::GetMultipleString(item, "onclick", actions);
         for (vector<CStdString>::iterator it = actions.begin(); it != actions.end(); ++it)
           (*it).Replace(",", ",,");
         StringUtils::JoinString(actions, " , ", newItem->m_strPath);
-        newItem->SetLabel2(CGUIControlFactory::GetLabel(label2));
+        newItem->SetLabel2(CGUIControlFactory::FilterLabel(label2));
         newItem->SetThumbnailImage(thumb);
         newItem->SetIconImage(icon);
         if (id) newItem->m_iprogramCount = atoi(id);
@@ -604,9 +604,9 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         const char *thumb = item->Attribute("thumb");
         const char *icon = item->Attribute("icon");
         const char *id = item->Attribute("id");
-        newItem = new CFileItem(label ? CGUIControlFactory::GetLabel(label) : "");
+        newItem = new CFileItem(label ? CGUIControlFactory::FilterLabel(label) : "");
         newItem->m_strPath = item->FirstChild()->Value();
-        if (label2) newItem->SetLabel2(CGUIControlFactory::GetLabel(label2));
+        if (label2) newItem->SetLabel2(CGUIControlFactory::FilterLabel(label2));
         if (thumb) newItem->SetThumbnailImage(thumb);
         if (icon) newItem->SetIconImage(icon);
         if (id) newItem->m_iprogramCount = atoi(id);
@@ -734,19 +734,35 @@ bool CGUIBaseContainer::HasPreviousPage() const
   return false;
 }
 
-unsigned int CGUIBaseContainer::GetNumPages() const
+CStdString CGUIBaseContainer::GetLabel(int info) const
 {
-  return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
+  CStdString label;
+  switch (info)
+  {
+  case CONTAINER_NUM_PAGES:
+    label.Format("%u", (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage);
+    break;
+  case CONTAINER_CURRENT_PAGE:
+    label.Format("%u", GetCurrentPage());
+    break;
+  case CONTAINER_NUM_ITEMS:
+    {
+      unsigned int numItems = GetNumItems();
+      if (numItems && m_items[0]->IsFileItem() && ((CFileItem *)m_items[0])->IsParentFolder())
+        label.Format("%u", numItems-1);
+      else
+        label.Format("%u", numItems);
+    }
+    break;
+  default:
+      break;
+  }
+  return label;
 }
 
-unsigned int CGUIBaseContainer::GetCurrentPage() const
+int CGUIBaseContainer::GetCurrentPage() const
 {
-  // TODO: Probably won't work for wraplist, but the concept of which page doesn't
-  //       make as much sense in that case anyway
-  unsigned int page = m_offset / m_itemsPerPage + 1;
-  if (m_offset + m_itemsPerPage >= (int)GetRows())
-    return GetNumPages();
-  return page;
+  if (m_offset + m_itemsPerPage >= (int)GetRows())  // last page
+    return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
+  return m_offset / m_itemsPerPage + 1;
 }
-
-

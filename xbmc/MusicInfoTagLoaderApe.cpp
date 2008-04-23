@@ -22,11 +22,7 @@
 #include "stdafx.h"
 #include "MusicInfoTagLoaderApe.h"
 #include "cores/paplayer/DllMACDll.h"
-
-// MPC stuff
-#include "Util.h"
-// MPC stuff
-
+#include "MusicInfoTag.h"
 
 using namespace MUSIC_INFO;
 

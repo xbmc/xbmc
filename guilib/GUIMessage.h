@@ -189,6 +189,13 @@ do { \
  SendWindowMessage(msg); \
 } while(0);
 
+// forwards
+class CGUIListItem;
+class CVisualisation;
+//#ifdef HAS_KAI_VOICE
+class CGUIList;
+//#endif
+
 /*!
  \ingroup winmsg
  \brief 
@@ -196,7 +203,12 @@ do { \
 class CGUIMessage
 {
 public:
-  CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1 = 0, DWORD dwParam2 = 0, void* lpVoid = NULL);
+  CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1 = 0, DWORD dwParam2 = 0);
+  CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CGUIListItem* item);
+  CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CVisualisation* vis);
+//#ifdef HAS_KAI_VOICE
+  CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CGUIList* vis);
+//#endif
   CGUIMessage(const CGUIMessage& msg);
   virtual ~CGUIMessage(void);
   const CGUIMessage& operator = (const CGUIMessage& msg);

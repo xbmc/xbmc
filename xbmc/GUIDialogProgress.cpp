@@ -24,6 +24,7 @@
 #include "GUIProgressControl.h"
 #include "Application.h"
 #include "utils/GUIInfoManager.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 

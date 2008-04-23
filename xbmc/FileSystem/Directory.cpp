@@ -4,9 +4,10 @@
 #include "FactoryDirectory.h"
 #include "FactoryFileDirectory.h"
 #ifndef _LINUX
-#include "../utils/Win32Exception.h"
+#include "utils/Win32Exception.h"
 #endif
-#include "../Util.h"
+#include "Util.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace DIRECTORY;

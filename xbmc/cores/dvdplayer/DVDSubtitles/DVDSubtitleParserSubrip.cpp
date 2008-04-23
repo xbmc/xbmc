@@ -1,8 +1,8 @@
 
 #include "stdafx.h"
 #include "DVDSubtitleParserSubrip.h"
-#include "../DVDCodecs/Overlay/DVDOverlayText.h"
-#include "../DVDClock.h"
+#include "DVDCodecs/Overlay/DVDOverlayText.h"
+#include "DVDClock.h"
 
 using namespace std;
 

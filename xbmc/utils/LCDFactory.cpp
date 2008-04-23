@@ -2,9 +2,9 @@
 #include "stdafx.h"
 #include "LCDFactory.h"
 #ifdef _XBOX
-#include "../lib/smartxx/smartxxLCD.h"
-#include "../lib/libXenium/XeniumLCD.h"
-#include "../lib/x3lcd/x3lcd.h"
+#include "lib/libXenium/XeniumLCD.h"
+#include "lib/x3lcd/x3lcd.h"
+#include "GUISettings.h"
 #else
 #include "../linux/XLCDproc.h"
 #endif

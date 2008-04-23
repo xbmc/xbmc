@@ -2,6 +2,8 @@
 #include "BackgroundInfoLoader.h"
 #include "MusicDatabase.h"
 
+class CFileItemList;
+
 namespace MUSIC_INFO
 {
 class CMusicInfoLoader : public CBackgroundInfoLoader
@@ -21,8 +23,7 @@ protected:
   void SaveCache(const CStdString& strFileName, CFileItemList& items);
 protected:
   CStdString m_strCacheFileName;
-  CFileItemList m_mapFileItems;
-  IMAPFILEITEMS it;
+  CFileItemList* m_mapFileItems;
   CSongMap m_songsMap;
   CStdString m_strPrevPath;
   CMusicDatabase m_musicDatabase;

@@ -1,5 +1,8 @@
 #pragma once
 
+#include "tinyXML/tinyxml.h"
+#include <map>
+
 class CLangCodeExpander
 {
 public:

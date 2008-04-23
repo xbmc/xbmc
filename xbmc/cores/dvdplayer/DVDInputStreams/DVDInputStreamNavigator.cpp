@@ -3,8 +3,9 @@
 #include "DVDInputStreamNavigator.h"
 #include "../../../Util.h"
 #include "../../../LangCodeExpander.h"
-#include "../DVDDemuxSPU.h"
+#include "DVDDemuxSPU.h"
 #include "DVDStateSerializer.h"
+#include "GUISettings.h"
 
 #define HOLDMODE_NONE 0
 #define HOLDMODE_HELD 1 /* set internally when we wish to flush demuxer */

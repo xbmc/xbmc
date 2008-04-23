@@ -2,8 +2,8 @@
 #include "MusicAlbumInfo.h"
 #include "MusicArtistInfo.h"
 #include "HTTP.h"
+#include "ScraperSettings.h"
 
-struct SScraperInfo;
 namespace MUSIC_GRABBER
 {
 class CMusicInfoScraper : public CThread

@@ -42,7 +42,7 @@ public:
   void SetFocusActions(const std::vector<CStdString>& focusActions) { m_focusActions = focusActions; };
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   virtual CStdString GetLabel() const { return GetDescription(); };
-  virtual const std::string& GetLabel2() const { return m_strLabel2; };
+  virtual CStdString GetLabel2() const;
   void SetTabButton(bool bIsTabButton = TRUE) { m_bTabButton = bIsTabButton; };
   void SetSelected(bool bSelected);
   void Flicker(bool bFlicker = TRUE);
@@ -69,8 +69,8 @@ protected:
   DWORD m_dwFrameCounter;
   unsigned char m_alpha;
 
-  std::string m_strLabel2;
   CGUIInfoLabel  m_info;
+  CGUIInfoLabel  m_info2;
   CLabelInfo m_label;
   CGUITextLayout m_textLayout;
   CGUITextLayout m_textLayout2;

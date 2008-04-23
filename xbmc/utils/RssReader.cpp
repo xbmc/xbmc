@@ -5,11 +5,13 @@
 #include "stdafx.h"
 #include "RssReader.h"
 #include "HTTP.h"
-#include "../utils/HTMLUtil.h"
-#include "../Util.h"
+#include "utils/HTMLUtil.h"
 #include "../utils/Network.h"
 #include "Application.h"
 #include "CharsetConverter.h"
+#include "GUISettings.h"
+#include "URL.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace XFILE;

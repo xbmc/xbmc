@@ -1,6 +1,10 @@
 #pragma once
 #include "IDirectory.h"
-#include "../utils/HTTP.h"
+#include "utils/HTTP.h"
+#include "tinyXML/tinyxml.h"
+
+class CFileItemList;
+class CGUIDialogProgress;
 
 namespace DIRECTORY
 {
@@ -45,6 +49,6 @@ protected:
   CStdString m_strDestination;
 
   CGUIDialogProgress* m_dlgProgress;
-  CFileItemList m_vecCachedItems;
+  CFileItemList* m_vecCachedItems;
 };
 }

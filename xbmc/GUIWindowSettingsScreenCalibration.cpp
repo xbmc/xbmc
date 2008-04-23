@@ -8,7 +8,9 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
 #include "Application.h"
-#include "Util.h"
+#include "Settings.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogYesNo.h"
 
 using namespace std;
 

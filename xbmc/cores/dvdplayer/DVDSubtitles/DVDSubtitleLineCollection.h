@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "../DVDCodecs/Overlay/DVDOverlay.h"
+#include "DVDCodecs/Overlay/DVDOverlay.h"
 
 typedef struct stListElement
 {

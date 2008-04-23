@@ -24,13 +24,16 @@
 #include "Util.h"
 #include "PlayListFactory.h"
 #include <sstream>
+#include "VideoInfoTag.h"
+#include "MusicInfoTag.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace PLAYLIST;
 
-CPlayList::CPlayListItem::CPlayListItem() : m_lDuration(0)
+CPlayListItem::CPlayListItem() : m_lDuration(0)
 {
   m_lStartOffset = 0;
   m_lEndOffset = 0;
@@ -38,7 +41,7 @@ CPlayList::CPlayListItem::CPlayListItem() : m_lDuration(0)
   m_iprogramCount = 0;
 }
 
-CPlayList::CPlayListItem::CPlayListItem(const CStdString& strDescription, const CStdString& strFileName, long lDuration, long lStartOffset, long lEndOffset)
+CPlayListItem::CPlayListItem(const CStdString& strDescription, const CStdString& strFileName, long lDuration, long lStartOffset, long lEndOffset)
 {
   m_strLabel = strDescription;
   m_strPath = strFileName;
@@ -49,70 +52,70 @@ CPlayList::CPlayListItem::CPlayListItem(const CStdString& strDescription, const 
   m_iprogramCount = 0;
 }
 
-CPlayList::CPlayListItem::~CPlayListItem()
+CPlayListItem::~CPlayListItem()
 {}
 
-void CPlayList::CPlayListItem::SetFileName(const CStdString& strFileName)
+void CPlayListItem::SetFileName(const CStdString& strFileName)
 {
   m_strPath = strFileName;
 }
 
-const CStdString& CPlayList::CPlayListItem::GetFileName() const
+const CStdString& CPlayListItem::GetFileName() const
 {
   return m_strPath;
 }
 
-void CPlayList::CPlayListItem::SetDescription(const CStdString& strDescription)
+void CPlayListItem::SetDescription(const CStdString& strDescription)
 {
   m_strLabel = strDescription;
 }
 
-const CStdString& CPlayList::CPlayListItem::GetDescription() const
+const CStdString& CPlayListItem::GetDescription() const
 {
   return m_strLabel;
 }
 
-void CPlayList::CPlayListItem::SetDuration(long lDuration)
+void CPlayListItem::SetDuration(long lDuration)
 {
   m_lDuration = lDuration;
 }
 
-long CPlayList::CPlayListItem::GetDuration() const
+long CPlayListItem::GetDuration() const
 {
   return m_lDuration;
 }
 
-void CPlayList::CPlayListItem::SetStartOffset(long lStartOffset)
+void CPlayListItem::SetStartOffset(long lStartOffset)
 {
   m_lStartOffset = lStartOffset;
 }
 
-long CPlayList::CPlayListItem::GetStartOffset() const
+long CPlayListItem::GetStartOffset() const
 {
   return m_lStartOffset;
 }
 
-void CPlayList::CPlayListItem::SetEndOffset(long lEndOffset)
+void CPlayListItem::SetEndOffset(long lEndOffset)
 {
   m_lEndOffset = lEndOffset;
 }
 
-long CPlayList::CPlayListItem::GetEndOffset() const
+long CPlayListItem::GetEndOffset() const
 {
   return m_lEndOffset;
 }
 
-void CPlayList::CPlayListItem::SetMusicTag(const CMusicInfoTag &tag)
+void CPlayListItem::SetMusicTag(const CMusicInfoTag &tag)
 {
   *GetMusicInfoTag() = tag;
 }
 
-void CPlayList::CPlayListItem::SetVideoTag(const CVideoInfoTag &tag)
+void CPlayListItem::SetVideoTag(const CVideoInfoTag &tag)
 {
   *GetVideoInfoTag() = tag;
 }
 
-bool CPlayList::CPlayListItem::LoadMusicTag()
+bool CPlayListItem::LoadMusicTag()
 {
   if (CFileItem::LoadMusicTag())
   {
@@ -122,12 +125,12 @@ bool CPlayList::CPlayListItem::LoadMusicTag()
   return false;
 }
 
-const CMusicInfoTag* CPlayList::CPlayListItem::GetMusicTag() const
+const CMusicInfoTag* CPlayListItem::GetMusicTag() const
 {
   return GetMusicInfoTag();
 }
 
-const CVideoInfoTag* CPlayList::CPlayListItem::GetVideoTag() const
+const CVideoInfoTag* CPlayListItem::GetVideoTag() const
 {
   return GetVideoInfoTag();
 }
@@ -188,7 +191,7 @@ void CPlayList::Add(CPlayList& playlist)
 
 void CPlayList::Add(CFileItem *pItem)
 {
-  CPlayList::CPlayListItem playlistItem;
+  CPlayListItem playlistItem;
   CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
   Add(playlistItem, -1, -1);
 }
@@ -227,7 +230,7 @@ void CPlayList::Insert(CFileItemList& items, int iPosition /* = -1 */)
   for (int i = 0; i < (int)items.Size(); i++)
   {
     int iPos = iPosition + i;
-    CPlayList::CPlayListItem playlistItem;
+    CPlayListItem playlistItem;
     CUtil::ConvertFileItemToPlayListItem(items[i], playlistItem);
     Add(playlistItem, iPos, iPos);
   }
@@ -287,17 +290,17 @@ int CPlayList::size() const
   return m_vecItems.size();
 }
 
-const CPlayList::CPlayListItem& CPlayList::operator[] (int iItem) const
+const CPlayListItem& CPlayList::operator[] (int iItem) const
 {
   return m_vecItems[iItem];
 }
 
-CPlayList::CPlayListItem& CPlayList::operator[] (int iItem)
+CPlayListItem& CPlayList::operator[] (int iItem)
 {
   return m_vecItems[iItem];
 }
 
-bool CPlayList::CPlayListItem::IsUnPlayable() const
+bool CPlayListItem::IsUnPlayable() const
 {
   return m_bUnPlayable;
 }
@@ -327,7 +330,7 @@ void CPlayList::Shuffle(int iPosition)
 
 struct SSortPlayListItem
 {
-  static bool PlaylistSort(const CPlayList::CPlayListItem &left, const CPlayList::CPlayListItem &right)
+  static bool PlaylistSort(const CPlayListItem &left, const CPlayListItem &right)
   {
     return (left.m_iprogramCount <= right.m_iprogramCount);
   }

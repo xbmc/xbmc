@@ -1,6 +1,8 @@
+#include "stdafx.h"
+#include "PlatformInclude.h"
 #include "XLCDproc.h"
 #include "../utils/log.h"
-#include "stdafx.h"
+#include "Settings.h"
 
 #define SCROLL_SPEED_IN_MSEC 250
 

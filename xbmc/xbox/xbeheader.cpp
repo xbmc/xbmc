@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "xbeheader.h"
+#include "Util.h"
+#include "GUISettings.h"
 
 using namespace AUTOPTR;
 

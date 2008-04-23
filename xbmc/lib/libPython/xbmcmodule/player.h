@@ -1,11 +1,11 @@
 #ifndef _LINUX
-#include "../python/Python.h"
+#include "lib/libPython/python/Python.h"
 #else
 #include <python2.4/Python.h>
 #include "../XBPythonDll.h"
 #endif
 #include "PythonPlayer.h"
-#include "../../../cores/PlayerCoreFactory.h"
+#include "cores/PlayerCoreFactory.h"
 #pragma once
 
 #ifdef __cplusplus

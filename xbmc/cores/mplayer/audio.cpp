@@ -1,5 +1,6 @@
 
 #include "stdafx.h"
+#include "GUISettings.h"
 #include "audio.h"
 #include "IDirectSoundRenderer.h"
 #include "ASyncDirectSound.h"
@@ -7,7 +8,7 @@
 #include "ResampleDirectSound.h"
 #include "IAudioCallback.h"
 #include "MPlayer.h"
-#include "../VideoRenderers/RenderManager.h"
+#include "cores/VideoRenderers/RenderManager.h"
 
 
 static IDirectSoundRenderer* m_pAudioDecoder = NULL;

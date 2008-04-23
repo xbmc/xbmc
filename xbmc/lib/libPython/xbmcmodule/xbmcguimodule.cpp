@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #ifndef _LINUX
-#include "../python/Python.h"
-#include "../python/structmember.h"
+#include "lib/libPython/python/Python.h"
+#include "lib/libPython/python/structmember.h"
 #else
 #include <python2.4/Python.h>
 #include <python2.4/structmember.h>
@@ -13,6 +13,8 @@
 #include "winxml.h"
 #include "pyutil.h"
 #include "action.h"
+#include "GUIWindowManager.h"
+#include "GUIListItem.h"
 
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")

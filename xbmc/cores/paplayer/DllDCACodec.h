@@ -1,5 +1,5 @@
 #pragma once
-#include "../../DynamicDll.h"
+#include "DynamicDll.h"
 
 #ifdef HAS_DTS_CODEC
 #ifndef _LINUX
@@ -12,7 +12,7 @@ typedef __int16          int16_t;
 
 #include "../dvdplayer/DVDCodecs/Audio/libdts/dts.h"
 
-#include "../dvdplayer/DVDCodecs/Audio/libdts/dts.h"
+#include "cores/dvdplayer/DVDCodecs/Audio/libdts/dts.h"
 
 #ifdef LIBDTS_DOUBLE
 typedef float convert_t;

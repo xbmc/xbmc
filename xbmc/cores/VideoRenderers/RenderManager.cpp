@@ -28,6 +28,7 @@
 #include "RGBRendererV2.h"
 #endif
 #include "Application.h"
+#include "Settings.h"
 
 #ifdef _LINUX
 #include "PlatformInclude.h"

@@ -9,7 +9,7 @@
 
 #include "GUIFontTTF.h"
 #include "GraphicContext.h"
-#include "../xbmc/utils/SingleLock.h"
+#include "utils/SingleLock.h"
 
 class CScrollInfo
 {

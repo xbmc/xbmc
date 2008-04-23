@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "KaiClient.h"
 #include "KaiRequestList.h"
-#include "../Application.h"
+#include "GUISettings.h"
 #ifdef HAS_KAI_VOICE
 #include "dsstdfx.h"
 #endif

@@ -4,8 +4,7 @@
 #pragma once
 
 #ifndef _LINUX
-#include "../lib/libiconv/iconv.h"
-#include "../lib/libfribidi/fribidi.h"
+#include "lib/libfribidi/fribidi.h"
 #else
 #include <iconv.h>
 #include <fribidi/fribidi.h>

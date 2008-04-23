@@ -3,8 +3,8 @@
 #include "GUIFont.h"
 #include "GUIControl.h"
 #include "GUIColorManager.h"
-#include "../xbmc/utils/CharsetConverter.h"
-#include "../xbmc/StringUtils.h"
+#include "utils/CharsetConverter.h"
+#include "StringUtils.h"
 
 using namespace std;
 

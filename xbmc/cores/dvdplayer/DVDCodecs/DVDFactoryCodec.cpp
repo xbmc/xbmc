@@ -16,7 +16,7 @@
 #include "Audio/DVDAudioCodecLPcm.h"
 #include "Audio/DVDAudioCodecPassthrough.h"
 
-#include "../DVDStreamInfo.h"
+#include "DVDStreamInfo.h"
 
 
 CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )

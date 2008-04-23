@@ -9,12 +9,18 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include "StdString.h"
 #include "Thread.h"
 #ifndef _LINUX
 #include "../lib/libiconv/iconv.h"
 #else
 #include <iconv.h>
 #endif
+
+#include <vector>
+#include <list>
+
+#include "tinyXML/tinyxml.h"
 
 #define RSS_COLOR_BODY  0
 #define RSS_COLOR_HEADLINE 1

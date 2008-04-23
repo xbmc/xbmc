@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../Util.h"
-
 #ifdef HAS_XBOX_HARDWARE
 #include "Undocumented.h"
 #else // from Undocumented.h

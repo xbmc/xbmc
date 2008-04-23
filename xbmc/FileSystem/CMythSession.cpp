@@ -1,10 +1,15 @@
 #include "stdafx.h"
 #include "DllLibCMyth.h"
 #include "CMythSession.h"
+#include "VideoInfoTag.h"
+#include "Settings.h"
+#include "DateTime.h"
+#include "FileItem.h"
+#include "URL.h"
 
 extern "C" {
-#include "../lib/libcmyth/cmyth.h"
-#include "../lib/libcmyth/mvp_refmem.h"
+#include "lib/libcmyth/cmyth.h"
+#include "lib/libcmyth/mvp_refmem.h"
 }
 
 using namespace XFILE;
@@ -26,14 +31,18 @@ void CCMythSession::CheckIdle()
   CSingleLock lock(m_section_session);
 
   std::vector<CCMythSession*>::iterator it;
-  for(it = m_sessions.begin(); it != m_sessions.end(); it++)
+  for(it = m_sessions.begin(); it != m_sessions.end();)
   {
     CCMythSession* session = *it;
     if(session->m_timestamp + 5000 < GetTickCount())
     {
       CLog::Log(LOGINFO, "%s - Closing idle connection to mythtv backend %s", __FUNCTION__, session->m_hostname.c_str());
       delete session;
-      it = m_sessions.erase(it)-1;
+      it = m_sessions.erase(it);
+    }
+    else
+    {
+      it++;
     }
   }
 }

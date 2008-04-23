@@ -1,6 +1,8 @@
 #pragma once
 #include "GUIDialog.h"
 
+class CFileItemList;
+
 class CGUIDialogFileStacking :
       public CGUIDialog
 {
@@ -16,5 +18,5 @@ protected:
   int m_iSelectedFile;
   int m_iNumberOfFiles;
   int m_iFrames;
-  CFileItemList m_stackItems;
+  CFileItemList* m_stackItems;
 };

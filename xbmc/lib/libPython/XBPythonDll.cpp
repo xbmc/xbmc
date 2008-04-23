@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "XBPythonDll.h"
-#include "../../cores/DllLoader/DllLoader.h"
+#include "cores/DllLoader/DllLoader.h"
 
 // macro to make life a bit simpler
 

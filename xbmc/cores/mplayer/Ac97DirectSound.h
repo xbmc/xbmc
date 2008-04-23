@@ -31,7 +31,7 @@
 
 #include "IDirectSoundRenderer.h"
 #include "IAudioCallback.h"
-#include "../ssrc.h"
+#include "cores/ssrc.h"
 
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();

@@ -1,7 +1,7 @@
 #pragma once
 #include "GUIWindow.h"
 #ifndef _LINUX
-#include "../python/Python.h"
+#include "lib/libPython/python/Python.h"
 #else
 #include <python2.4/Python.h>
 #endif

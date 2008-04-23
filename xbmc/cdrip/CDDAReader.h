@@ -5,8 +5,9 @@
 #define CDDARIP_ERR   1
 #define CDDARIP_DONE  2
 
-#include "../utils/Thread.h"
-#include "../lib/libcdio/cdio.h"
+#include "utils/Thread.h"
+#include "lib/libcdio/cdio.h"
+#include "FileSystem/File.h"
 
 #include "FileItem.h"
 #include "FileSystem/File.h"

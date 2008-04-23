@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "MP3codec.h"
+#include "FileItem.h"
 
 using namespace MUSIC_INFO;
 

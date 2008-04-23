@@ -79,6 +79,8 @@
 #include "GUILargeTextureManager.h"
 #include "LastFmManager.h"
 #include "SmartPlaylist.h"
+#include "FileSystem/RarManager.h"
+#include "PlayList.h"
 
 #if defined(FILESYSTEM) && !defined(_LINUX)
 #include "FileSystem/FileDAAP.h"
@@ -121,6 +123,7 @@
 #endif
 
 // Windows includes
+#include "GUIWindowManager.h"
 #include "GUIWindowHome.h"
 #include "GUIStandardWindow.h"
 #include "GUIWindowSettings.h"
@@ -346,8 +349,10 @@ static void WaitCallback(DWORD flags)
 }
 #endif
 
-CBackgroundPlayer::CBackgroundPlayer(const CFileItem &item, int iPlayList) : m_item(item), m_iPlayList(iPlayList)
+CBackgroundPlayer::CBackgroundPlayer(const CFileItem &item, int iPlayList) : m_iPlayList(iPlayList)
 {
+  m_item = new CFileItem;
+  *m_item = item;
 }
 
 CBackgroundPlayer::~CBackgroundPlayer()
@@ -356,7 +361,7 @@ CBackgroundPlayer::~CBackgroundPlayer()
 
 void CBackgroundPlayer::Process()
 {
-  g_application.PlayMediaSync(m_item, m_iPlayList);
+  g_application.PlayMediaSync(*m_item, m_iPlayList);
 }
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
@@ -402,6 +407,9 @@ CApplication::CApplication(void)
   m_pCdgParser = new CCdgParser();
 #endif
 
+  m_itemCurrentFile = new CFileItem;
+  m_currentStack = new CFileItemList;
+
 #ifdef HAS_SDL
   m_frameCount = 0;
   m_frameMutex = SDL_CreateMutex();
@@ -414,7 +422,10 @@ CApplication::CApplication(void)
 
 CApplication::~CApplication(void)
 {
-  if (m_frameMutex)
+  delete m_itemCurrentFile;
+  delete m_currentStack;
+
+    if (m_frameMutex)
     SDL_DestroyMutex(m_frameMutex);
   
   if (m_frameCond)
@@ -1920,8 +1931,12 @@ HRESULT CApplication::Initialize()
 
   SAFE_DELETE(m_splash);
 
-  if (g_guiSettings.GetBool("masterlock.startuplock") && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_settings.m_vecProfiles[0].getLockCode().IsEmpty())
-    g_passwordManager.CheckStartUpLock();
+  if (g_guiSettings.GetBool("masterlock.startuplock") && 
+      g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && 
+     !g_settings.m_vecProfiles[0].getLockCode().IsEmpty())
+  {
+     g_passwordManager.CheckStartUpLock();
+  }
 
   // check if we should use the login screen
   if (g_settings.bUseLoginScreen)
@@ -2402,7 +2417,7 @@ void CApplication::StartServices()
   if (g_guiSettings.GetBool("system.autotemperature"))
   {
     CLog::Log(LOGNOTICE, "start fancontroller");
-    CFanController::Instance()->Start(g_guiSettings.GetInt("system.targettemperature"));
+    CFanController::Instance()->Start(g_guiSettings.GetInt("system.targettemperature"), g_guiSettings.GetInt("system.minfanspeed"));
   }
   else if (g_guiSettings.GetBool("system.fanspeedcontrol"))
   {
@@ -3331,17 +3346,17 @@ bool CApplication::OnAction(const CAction &action)
     const CMusicInfoTag *tag = g_infoManager.GetCurrentSongTag();
     if (tag)
     {
-      *m_itemCurrentFile.GetMusicInfoTag() = *tag;
+      *m_itemCurrentFile->GetMusicInfoTag() = *tag;
       char rating = tag->GetRating();
       bool needsUpdate(false);
       if (rating > '0' && action.wID == ACTION_DECREASE_RATING)
       {
-        m_itemCurrentFile.GetMusicInfoTag()->SetRating(rating - 1);
+        m_itemCurrentFile->GetMusicInfoTag()->SetRating(rating - 1);
         needsUpdate = true;
       }
       else if (rating < '5' && action.wID == ACTION_INCREASE_RATING)
       {
-        m_itemCurrentFile.GetMusicInfoTag()->SetRating(rating + 1);
+        m_itemCurrentFile->GetMusicInfoTag()->SetRating(rating + 1);
         needsUpdate = true;
       }
       if (needsUpdate)
@@ -3349,11 +3364,11 @@ bool CApplication::OnAction(const CAction &action)
         CMusicDatabase db;
         if (db.Open())      // OpenForWrite() ?
         {
-          db.SetSongRating(m_itemCurrentFile.m_strPath, m_itemCurrentFile.GetMusicInfoTag()->GetRating());
+          db.SetSongRating(m_itemCurrentFile->m_strPath, m_itemCurrentFile->GetMusicInfoTag()->GetRating());
           db.Close();
         }
         // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, &m_itemCurrentFile);
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_itemCurrentFile);
         g_graphicsContext.SendMessage(msg);
       }
     }
@@ -4624,12 +4639,12 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
 
   // calculate the total time of the stack
   CStackDirectory dir;
-  dir.GetDirectory(item.m_strPath, m_currentStack);
+  dir.GetDirectory(item.m_strPath, *m_currentStack);
   long totalTime = 0;
-  for (int i = 0; i < m_currentStack.Size(); i++)
+  for (int i = 0; i < m_currentStack->Size(); i++)
   {
     if (haveTimes)
-      m_currentStack[i]->m_lEndOffset = times[i];
+      (*m_currentStack)[i]->m_lEndOffset = times[i];
     else
     {
       EPLAYERCORES eNewCore = m_eForcedNextPlayer;
@@ -4639,16 +4654,16 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
       m_pPlayer = CPlayerCoreFactory::CreatePlayer(eNewCore, *this);
       if(!m_pPlayer)
       {
-        m_currentStack.Clear();
+        m_currentStack->Clear();
         return false;
       }
 
       CPlayerOptions options;
       options.identify = true;
 
-      if (!m_pPlayer->OpenFile(*m_currentStack[i], options))
+      if (!m_pPlayer->OpenFile(*(*m_currentStack)[i], options))
       {
-        m_currentStack.Clear();
+        m_currentStack->Clear();
         return false;
       }
 
@@ -4657,12 +4672,12 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
       m_pPlayer->CloseFile();
       SAFE_DELETE(m_pPlayer);
 
-      m_currentStack[i]->m_lEndOffset = totalTime;
+      (*m_currentStack)[i]->m_lEndOffset = totalTime;
       times.push_back(totalTime);
     }
   }
 
-  m_itemCurrentFile = item;
+  *m_itemCurrentFile = item;
   m_currentStackPosition = 0;
   m_eCurrentPlayer = EPC_NONE; // must be reset on initial play otherwise last player will be used
 
@@ -4691,12 +4706,12 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
   if (seconds > 0)
   {
     // work out where to seek to
-    for (int i = 0; i < m_currentStack.Size(); i++)
+    for (int i = 0; i < m_currentStack->Size(); i++)
     {
-      if (seconds < m_currentStack[i]->m_lEndOffset)
+      if (seconds < (*m_currentStack)[i]->m_lEndOffset)
       {
-        CFileItem item(*m_currentStack[i]);
-        long start = (i > 0) ? m_currentStack[i-1]->m_lEndOffset : 0;
+        CFileItem item(*(*m_currentStack)[i]);
+        long start = (i > 0) ? (*m_currentStack)[i-1]->m_lEndOffset : 0;
         item.m_lStartOffset = (long)(seconds - start) * 75;
         m_currentStackPosition = i;
         return PlayFile(item, true);
@@ -4704,7 +4719,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
     }
   }
 
-  return PlayFile(*m_currentStack[0], true);
+  return PlayFile(*(*m_currentStack)[0], true);
 }
 
 bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
@@ -4719,7 +4734,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // see if we have saved options in the database
 
     m_iPlaySpeed = 1;
-    m_itemCurrentFile = item;
+    *m_itemCurrentFile = item;
     m_nextPlaylistItem = -1;
   }
 
@@ -4763,8 +4778,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     // have to be set here due to playstack using this for starting the file
     options.starttime = item.m_lStartOffset / 75.0;
-    if (m_itemCurrentFile.IsStack() && m_itemCurrentFile.m_lStartOffset != 0)
-      m_itemCurrentFile.m_lStartOffset = STARTOFFSET_RESUME; // to force fullscreen switching
+    if (m_itemCurrentFile->IsStack() && m_itemCurrentFile->m_lStartOffset != 0)
+      m_itemCurrentFile->m_lStartOffset = STARTOFFSET_RESUME; // to force fullscreen switching
 
     if( m_eForcedNextPlayer != EPC_NONE )
       eNewCore = m_eForcedNextPlayer;
@@ -4824,16 +4839,16 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // don't switch to fullscreen if we are not playing the first item...
     options.fullscreen = !g_playlistPlayer.HasPlayedFirstFile();
   }
-  else if(m_itemCurrentFile.IsStack())
+  else if(m_itemCurrentFile->IsStack())
   {
     // TODO - this will fail if user seeks back to first file in stack
     if(m_currentStackPosition == 0
-    || m_itemCurrentFile.m_lStartOffset == STARTOFFSET_RESUME)
+    || m_itemCurrentFile->m_lStartOffset == STARTOFFSET_RESUME)
       options.fullscreen = true;
     else
       options.fullscreen = false;
     // reset this so we don't think we are resuming on seek
-    m_itemCurrentFile.m_lStartOffset = 0;
+    m_itemCurrentFile->m_lStartOffset = 0;
   }
   else
     options.fullscreen = true;
@@ -4891,10 +4906,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
        SwitchToFullScreen();
     }
 #endif
-  }
 
-  if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-    g_audioManager.Enable(false);
+    if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
+      g_audioManager.Enable(false);
+  }
 
   return bResult;
 }
@@ -4918,7 +4933,7 @@ void CApplication::OnPlayBackEnded()
 
   CLog::Log(LOGDEBUG, "Playback has finished");
 
-  CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0, 0, 0, NULL);
+  CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
   StartLEDControl(false);
   DimLCDOnPlayback(false);
@@ -4945,7 +4960,7 @@ void CApplication::OnPlayBackStarted()
 
   CLog::Log(LOGDEBUG, "Playback has started");
 
-  CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0, 0, 0, NULL);
+  CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
 
 #ifdef HAS_XBOX_HARDWARE
@@ -4971,7 +4986,7 @@ void CApplication::OnQueueNextItem()
 #endif
   CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
-  CGUIMessage msg(GUI_MSG_QUEUE_NEXT_ITEM, 0, 0, 0, 0, NULL);
+  CGUIMessage msg(GUI_MSG_QUEUE_NEXT_ITEM, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
 }
 
@@ -4990,7 +5005,7 @@ void CApplication::OnPlayBackStopped()
 #endif
 
   OutputDebugString("Playback was stopped\n");
-  CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
+  CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
   m_gWindowManager.SendMessage(msg);
   StartLEDControl(false);
   DimLCDOnPlayback(false);
@@ -5072,10 +5087,10 @@ void CApplication::StopPlaying()
         // mark as watched if we are passed the usual amount
         if (GetPercentage() >= g_advancedSettings.m_playCountMinimumPercent)
         {
-          if (m_itemCurrentFile.HasVideoInfoTag() && m_itemCurrentFile.GetVideoInfoTag()->m_iEpisode > -1)
-            dbs.MarkAsWatched(m_itemCurrentFile.GetVideoInfoTag()->m_iDbId,1);
+          if (m_itemCurrentFile->HasVideoInfoTag() && m_itemCurrentFile->GetVideoInfoTag()->m_iEpisode > -1)
+            dbs.MarkAsWatched(m_itemCurrentFile->GetVideoInfoTag()->m_iDbId,VIDEODB_CONTENT_EPISODES);
           else
-            dbs.MarkAsWatched(m_itemCurrentFile);
+            dbs.MarkAsWatched(*m_itemCurrentFile);
           CUtil::DeleteVideoDatabaseDirectoryCache();
         }
 
@@ -5174,8 +5189,15 @@ bool CApplication::ResetScreenSaverWindow()
   // if Screen saver is active
   if (m_bScreenSave)
   {
+    int iProfile = g_settings.m_iLastLoadedProfileIndex;
     if (m_iScreenSaveLock == 0)
-      if (g_guiSettings.GetBool("screensaver.uselock") && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE && !(g_application.IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead")) && !g_guiSettings.GetString("screensaver.mode").Equals("Black"))
+      if (g_guiSettings.GetBool("screensaver.uselock")                           &&
+          g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE        &&
+          g_settings.m_vecProfiles[iProfile].getLockMode() != LOCK_MODE_EVERYONE &&
+         !g_guiSettings.GetString("screensaver.mode").Equals("Black")            &&
+        !(g_guiSettings.GetBool("screensaver.usemusicvisinstead")                && 
+         !g_guiSettings.GetString("screensaver.mode").Equals("Black")            &&
+          g_application.IsPlayingAudio())                                          )
       {
         m_iScreenSaveLock = 2;
         CGUIMessage msg(GUI_MSG_CHECK_LOCK,0,0);
@@ -5585,8 +5607,8 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
     if (IsPlayingAudio())
     {
       //try to get duration from current tag because mplayer doesn't calculate vbr mp3 correctly
-      if (m_itemCurrentFile.HasMusicInfoTag())
-        iDuration = m_itemCurrentFile.GetMusicInfoTag()->GetDuration();
+      if (m_itemCurrentFile->HasMusicInfoTag())
+        iDuration = m_itemCurrentFile->GetMusicInfoTag()->GetDuration();
     }
     if (IsPlaying() && iDuration <= 0)
     {
@@ -5595,7 +5617,7 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
     //spin down harddisk when the current file being played is not on local harddrive and
     //duration is more then spindown timeoutsetting or duration is unknown (streams)
     if (
-      !m_itemCurrentFile.IsHD() &&
+      !m_itemCurrentFile->IsHD() &&
       (
         (iSpinDown == SPIN_DOWN_VIDEO && IsPlayingVideo()) ||
         (iSpinDown == SPIN_DOWN_MUSIC && IsPlayingAudio()) ||
@@ -5671,7 +5693,7 @@ void CApplication::CheckHDSpindown()
   if (!m_bSpinDown &&
       (
         !IsPlaying() ||
-        (IsPlaying() && !m_itemCurrentFile.IsHD())
+        (IsPlaying() && !m_itemCurrentFile->IsHD())
       )
      )
   {
@@ -5711,11 +5733,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
         int nRemoved = g_playlistPlayer.RemoveDVDItems();
         if ( nRemoved > 0 )
         {
-          CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
+          CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0 );
           m_gWindowManager.SendMessage( msg );
         }
         // stop the file if it's on dvd (will set the resume point etc)
-        if (m_itemCurrentFile.IsOnDVD())
+        if (m_itemCurrentFile->IsOnDVD())
           StopPlaying();
       }
     }
@@ -5726,43 +5748,43 @@ bool CApplication::OnMessage(CGUIMessage& message)
       // Update our infoManager with the new details etc.
       if (m_nextPlaylistItem >= 0)
       { // we've started a previously queued item
-        CPlayList::CPlayListItem &item = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist())[m_nextPlaylistItem];
+        CPlayListItem &item = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist())[m_nextPlaylistItem];
         // update the playlist manager
         WORD currentSong = g_playlistPlayer.GetCurrentSong();
         DWORD dwParam = ((currentSong & 0xffff) << 16) | (m_nextPlaylistItem & 0xffff);
-        CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, g_playlistPlayer.GetCurrentPlaylist(), dwParam, (LPVOID)&item);
+        CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, g_playlistPlayer.GetCurrentPlaylist(), dwParam, &item);
         m_gWindowManager.SendThreadMessage(msg);
         g_playlistPlayer.SetCurrentSong(m_nextPlaylistItem);
-        m_itemCurrentFile = item;
+        *m_itemCurrentFile = item;
       }
-      g_infoManager.SetCurrentItem(m_itemCurrentFile);
-      CLastFmManager::GetInstance()->OnSongChange(m_itemCurrentFile);
+      g_infoManager.SetCurrentItem(*m_itemCurrentFile);
+      CLastFmManager::GetInstance()->OnSongChange(*m_itemCurrentFile);
       g_partyModeManager.OnSongChange(true);
 
       if (IsPlayingAudio())
       {
         // Start our cdg parser as appropriate
 #ifdef HAS_KARAOKE
-        if (m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled") && !m_itemCurrentFile.IsInternetStream())
+        if (m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled") && !m_itemCurrentFile->IsInternetStream())
         {
           if (m_pCdgParser->IsRunning())
             m_pCdgParser->Stop();
-          if (m_itemCurrentFile.IsMusicDb())
+          if (m_itemCurrentFile->IsMusicDb())
           {
-            if (!m_itemCurrentFile.HasMusicInfoTag() || !m_itemCurrentFile.GetMusicInfoTag()->Loaded())
+            if (!m_itemCurrentFile->HasMusicInfoTag() || !m_itemCurrentFile->GetMusicInfoTag()->Loaded())
             {
-              IMusicInfoTagLoader* tagloader = CMusicInfoTagLoaderFactory::CreateLoader(m_itemCurrentFile.m_strPath);
-              tagloader->Load(m_itemCurrentFile.m_strPath,*m_itemCurrentFile.GetMusicInfoTag());
+              IMusicInfoTagLoader* tagloader = CMusicInfoTagLoaderFactory::CreateLoader(m_itemCurrentFile->m_strPath);
+              tagloader->Load(m_itemCurrentFile->m_strPath,*m_itemCurrentFile->GetMusicInfoTag());
               delete tagloader;
             }
-            m_pCdgParser->Start(m_itemCurrentFile.GetMusicInfoTag()->GetURL());
+            m_pCdgParser->Start(m_itemCurrentFile->GetMusicInfoTag()->GetURL());
           }
           else
-            m_pCdgParser->Start(m_itemCurrentFile.m_strPath);
+            m_pCdgParser->Start(m_itemCurrentFile->m_strPath);
         }
 #endif
         //  Activate audio scrobbler
-        if (CLastFmManager::GetInstance()->CanScrobble(m_itemCurrentFile))
+        if (CLastFmManager::GetInstance()->CanScrobble(*m_itemCurrentFile))
         {
           CScrobbler::GetInstance()->SetSongStartTime();
           CScrobbler::GetInstance()->SetSubmitSong(true);
@@ -5802,9 +5824,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
       // first check if we still have items in the stack to play
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
-        if (m_itemCurrentFile.IsStack() && m_currentStackPosition < m_currentStack.Size() - 1)
+        if (m_itemCurrentFile->IsStack() && m_currentStackPosition < m_currentStack->Size() - 1)
         { // just play the next item in the stack
-          PlayFile(*m_currentStack[++m_currentStackPosition], true);
+          PlayFile(*(*m_currentStack)[++m_currentStackPosition], true);
           return true;
         }
       }
@@ -5815,25 +5837,25 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
       // Save our settings for the current file for next time
       SaveCurrentFileSettings();
-      if (m_itemCurrentFile.IsVideo() && message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
+      if (m_itemCurrentFile->IsVideo() && message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
         CVideoDatabase dbs;
         dbs.Open();
 
-        if (m_itemCurrentFile.HasVideoInfoTag() && m_itemCurrentFile.GetVideoInfoTag()->m_iEpisode > -1)
-          dbs.MarkAsWatched(m_itemCurrentFile.GetVideoInfoTag()->m_iDbId,1);
+        if (m_itemCurrentFile->HasVideoInfoTag() && m_itemCurrentFile->GetVideoInfoTag()->m_iEpisode > -1)
+          dbs.MarkAsWatched(m_itemCurrentFile->GetVideoInfoTag()->m_iDbId,VIDEODB_CONTENT_EPISODES);
         else
-          dbs.MarkAsWatched(m_itemCurrentFile);
+          dbs.MarkAsWatched(*m_itemCurrentFile);
 
         CUtil::DeleteVideoDatabaseDirectoryCache();
-        dbs.ClearBookMarksOfFile(m_itemCurrentFile.m_strPath, CBookmark::RESUME);
+        dbs.ClearBookMarksOfFile(m_itemCurrentFile->m_strPath, CBookmark::RESUME);
         dbs.Close();
       }
 
       // reset the current playing file
-      m_itemCurrentFile.Reset();
+      m_itemCurrentFile->Reset();
       g_infoManager.ResetCurrentItem();
-      m_currentStack.Clear();
+      m_currentStack->Clear();
 
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
@@ -5878,7 +5900,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
 
       // DVD ejected while playing in vis ?
-      if (!IsPlayingAudio() && (m_itemCurrentFile.IsCDDA() || m_itemCurrentFile.IsOnDVD()) && !CDetectDVDMedia::IsDiscInDrive() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+      if (!IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !CDetectDVDMedia::IsDiscInDrive() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
       {
         // yes, disable vis
         g_settings.Save();    // save vis settings
@@ -5902,9 +5924,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
           m_gWindowManager.PreviousWindow();
 
       // reset the current playing file
-      m_itemCurrentFile.Reset();
+      m_itemCurrentFile->Reset();
       g_infoManager.ResetCurrentItem();
-      m_currentStack.Clear();
+      m_currentStack->Clear();
       CLastFmManager::GetInstance()->StopRadio();
 
 #ifdef HAS_KARAOKE
@@ -6205,7 +6227,7 @@ void CApplication::Restart(bool bSamePosition)
   if (false == bSamePosition)
   {
     // no, then just reopen the file and start at the beginning
-    PlayFile(m_itemCurrentFile, true);
+    PlayFile(*m_itemCurrentFile, true);
     return ;
   }
 
@@ -6216,21 +6238,21 @@ void CApplication::Restart(bool bSamePosition)
   CStdString state = m_pPlayer->GetPlayerState();
 
   // set the requested starttime
-  m_itemCurrentFile.m_lStartOffset = (long)(time * 75.0);
+  m_itemCurrentFile->m_lStartOffset = (long)(time * 75.0);
 
   // reopen the file
-  if ( PlayFile(m_itemCurrentFile, true) && m_pPlayer )
+  if ( PlayFile(*m_itemCurrentFile, true) && m_pPlayer )
     m_pPlayer->SetPlayerState(state);
 }
 
 const CStdString& CApplication::CurrentFile()
 {
-  return m_itemCurrentFile.m_strPath;
+  return m_itemCurrentFile->m_strPath;
 }
 
 CFileItem& CApplication::CurrentFileItem()
 {
-  return m_itemCurrentFile;
+  return *m_itemCurrentFile;
 }
 
 void CApplication::Mute(void)
@@ -6353,8 +6375,8 @@ double CApplication::GetTotalTime() const
 
   if (IsPlaying() && m_pPlayer)
   {
-    if (m_itemCurrentFile.IsStack())
-      rc = m_currentStack[m_currentStack.Size() - 1]->m_lEndOffset;
+    if (m_itemCurrentFile->IsStack())
+      rc = (*m_currentStack)[m_currentStack->Size() - 1]->m_lEndOffset;
     else
       rc = m_pPlayer->GetTotalTime();
   }
@@ -6377,9 +6399,9 @@ double CApplication::GetTime() const
 
   if (IsPlaying() && m_pPlayer)
   {
-    if (m_itemCurrentFile.IsStack())
+    if (m_itemCurrentFile->IsStack())
     {
-      long startOfCurrentFile = (m_currentStackPosition > 0) ? m_currentStack[m_currentStackPosition-1]->m_lEndOffset : 0;
+      long startOfCurrentFile = (m_currentStackPosition > 0) ? (*m_currentStack)[m_currentStackPosition-1]->m_lEndOffset : 0;
       rc = (double)startOfCurrentFile + m_pPlayer->GetTime() * 0.001;
     }
     else
@@ -6399,23 +6421,23 @@ void CApplication::SeekTime( double dTime )
   if (IsPlaying() && m_pPlayer && (dTime >= 0.0))
   {
     if (!m_pPlayer->CanSeek()) return;
-    if (m_itemCurrentFile.IsStack())
+    if (m_itemCurrentFile->IsStack())
     {
       // find the item in the stack we are seeking to, and load the new
       // file if necessary, and calculate the correct seek within the new
       // file.  Otherwise, just fall through to the usual routine if the
       // time is higher than our total time.
-      for (int i = 0; i < m_currentStack.Size(); i++)
+      for (int i = 0; i < m_currentStack->Size(); i++)
       {
-        if (m_currentStack[i]->m_lEndOffset > dTime)
+        if ((*m_currentStack)[i]->m_lEndOffset > dTime)
         {
-          long startOfNewFile = (i > 0) ? m_currentStack[i-1]->m_lEndOffset : 0;
+          long startOfNewFile = (i > 0) ? (*m_currentStack)[i-1]->m_lEndOffset : 0;
           if (m_currentStackPosition == i)
             m_pPlayer->SeekTime((__int64)((dTime - startOfNewFile) * 1000.0));
           else
           { // seeking to a new file
             m_currentStackPosition = i;
-            CFileItem item(*m_currentStack[i]);
+            CFileItem item(*(*m_currentStack)[i]);
             item.m_lStartOffset = (long)((dTime - startOfNewFile) * 75.0);
             // don't just call "PlayFile" here, as we are quite likely called from the
             // player thread, so we won't be able to delete ourselves.
@@ -6434,14 +6456,14 @@ float CApplication::GetPercentage() const
 {
   if (IsPlaying() && m_pPlayer)
   {
-    if (IsPlayingAudio() && m_itemCurrentFile.HasMusicInfoTag())
+    if (IsPlayingAudio() && m_itemCurrentFile->HasMusicInfoTag())
     {
-      const CMusicInfoTag& tag = *m_itemCurrentFile.GetMusicInfoTag();
+      const CMusicInfoTag& tag = *m_itemCurrentFile->GetMusicInfoTag();
       if (tag.GetDuration() > 0)
         return (float)(GetTime() / tag.GetDuration() * 100);
     } 
     
-    if (m_itemCurrentFile.IsStack())
+    if (m_itemCurrentFile->IsStack())
       return (float)(GetTime() / GetTotalTime() * 100);
     else
       return m_pPlayer->GetPercentage();
@@ -6454,7 +6476,7 @@ void CApplication::SeekPercentage(float percent)
   if (IsPlaying() && m_pPlayer && (percent >= 0.0))
   {
     if (!m_pPlayer->CanSeek()) return;
-    if (m_itemCurrentFile.IsStack())
+    if (m_itemCurrentFile->IsStack())
       SeekTime(percent * 0.01 * GetTotalTime());
     else
       m_pPlayer->SeekPercentage(percent);
@@ -6562,7 +6584,7 @@ void CApplication::CheckPlayingProgress()
         CMusicDatabase musicdatabase;
         if (musicdatabase.Open())
         {
-          musicdatabase.IncrTop100CounterByFileName(m_itemCurrentFile.m_strPath);
+          musicdatabase.IncrTop100CounterByFileName(m_itemCurrentFile->m_strPath);
           musicdatabase.Close();
         }
       }
@@ -6574,7 +6596,7 @@ void CApplication::CheckPlayingProgress()
 
 void CApplication::CheckAudioScrobblerStatus()
 {
-  if (IsPlayingAudio() && CLastFmManager::GetInstance()->CanScrobble(m_itemCurrentFile) &&
+  if (IsPlayingAudio() && CLastFmManager::GetInstance()->CanScrobble(*m_itemCurrentFile) &&
       !CScrobbler::GetInstance()->ShouldSubmit() && GetTime()==0.0)
   {
     //  We seeked to the beginning of the file
@@ -6704,13 +6726,13 @@ void CApplication::StartFtpEmergencyRecoveryMode()
 
 void CApplication::SaveCurrentFileSettings()
 {
-  if (m_itemCurrentFile.IsVideo())
+  if (m_itemCurrentFile->IsVideo())
   { // save video settings
     if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
     {
       CVideoDatabase dbs;
       dbs.Open();
-      dbs.SetVideoSettings(m_itemCurrentFile.m_strPath, g_stSettings.m_currentVideoSettings);
+      dbs.SetVideoSettings(m_itemCurrentFile->m_strPath, g_stSettings.m_currentVideoSettings);
       dbs.Close();
     }
   }

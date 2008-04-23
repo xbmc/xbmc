@@ -37,6 +37,12 @@
 #ifdef HAS_TRAINER
 #include "utils/Trainer.h"
 #endif
+#include "GUIDialogYesNo.h"
+#include "FileSystem/Directory.h"
+#include "FileSystem/File.h"
+#include "Settings.h"
+#include "PlayList.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -170,7 +176,7 @@ void CAutorun::RunXboxCd(bool bypassSettings)
   bool bPlaying = RunDisc(pDir.get(), "D:\\", nAddedToPlaylist, true, bypassSettings);
   if ( !bPlaying && nAddedToPlaylist > 0 )
   {
-    CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
+    CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0 );
     m_gWindowManager.SendMessage( msg );
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
     // Start playing the items we inserted
@@ -203,7 +209,7 @@ void CAutorun::RunISOMedia(bool bypassSettings)
   bool bPlaying = RunDisc(pDir.get(), "iso9660://", nAddedToPlaylist, true, bypassSettings);
   if ( !bPlaying && nAddedToPlaylist > 0 )
   {
-    CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
+    CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0 );
     m_gWindowManager.SendMessage( msg );
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
     // Start playing the items we inserted

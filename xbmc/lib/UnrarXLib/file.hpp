@@ -9,7 +9,7 @@ typedef FILE* FileHandle;
 #define BAD_HANDLE NULL
 #endif
 
-#include "../../FileSystem/File.h"
+#include "FileSystem/File.h"
 
 class RAROptions;
 

@@ -21,9 +21,12 @@
 
 #include "stdafx.h"
 #include "DNSNameCache.h"
-
+#include "Settings.h"
+#include "GUISettings.h"
 
 CDNSNameCache g_DNSCache;
+
+CCriticalSection CDNSNameCache::m_critical;
 
 CDNSNameCache::CDNSNameCache(void)
 {}
@@ -33,7 +36,7 @@ CDNSNameCache::~CDNSNameCache(void)
 
 bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres)
 {
-  // first see if this is already an ipadres
+  // first see if this is already an ip address
   unsigned long ulHostIp = inet_addr( strHostName.c_str() );
 
   if ( ulHostIp != 0xFFFFFFFF )
@@ -43,16 +46,12 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
     return true;
   }
 
-  // nop this is an hostname
-  // check if we already cached the hostname <->ip adres
-  for (int i = 0; i < (int)g_DNSCache.m_vecDNSNames.size(); ++i)
+  // nop this is a hostname
+  // check if we already cached the hostname <-> ip address
+  if(g_DNSCache.GetCached(strHostName, strIpAdres))
   {
-    CDNSName& DNSname = g_DNSCache.m_vecDNSNames[i];
-    if ( DNSname.m_strHostName == strHostName )
-    {
-      strIpAdres = DNSname.m_strIpAdres;
-      return true;
-    }
+    // it was already cached
+    return true;
   }
 
   // hostname not found in cache.
@@ -128,10 +127,7 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
     if (host->h_addr_list[0])
     {
       strIpAdres.Format("%d.%d.%d.%d", (unsigned char)host->h_addr_list[0][0], (unsigned char)host->h_addr_list[0][1], (unsigned char)host->h_addr_list[0][2], (unsigned char)host->h_addr_list[0][3]);
-      CDNSName dnsName;
-      dnsName.m_strHostName = strHostName;
-      dnsName.m_strIpAdres = strIpAdres;
-      g_DNSCache.m_vecDNSNames.push_back(dnsName);
+      g_DNSCache.Add(strHostName, strIpAdres);
     }
 
     closesocket(sd);
@@ -162,10 +158,7 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
 
     strIpAdres.Format("%d.%d.%d.%d", (ulHostIp & 0xFF), (ulHostIp & 0xFF00) >> 8, (ulHostIp & 0xFF0000) >> 16, (ulHostIp & 0xFF000000) >> 24 );
 
-    CDNSName dnsName;
-    dnsName.m_strHostName = fqdn;
-    dnsName.m_strIpAdres = strIpAdres;
-    g_DNSCache.m_vecDNSNames.push_back(dnsName);
+    g_DNSCache.Add(fqdn, strIpAdres);
 
     XNetDnsRelease(pDns);
     WSACloseEvent(hEvent);
@@ -183,11 +176,33 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
   return false;
 }
 
+bool CDNSNameCache::GetCached(const CStdString& strHostName, CStdString& strIpAdres)
+{
+  CSingleLock lock(m_critical);
+
+  // loop through all DNSname entries and see if strHostName is cached
+  for (int i = 0; i < (int)g_DNSCache.m_vecDNSNames.size(); ++i)
+  {
+    CDNSName& DNSname = g_DNSCache.m_vecDNSNames[i];
+    if ( DNSname.m_strHostName == strHostName )
+    {
+      strIpAdres = DNSname.m_strIpAdres;
+      return true;
+    }
+  }
+
+  // not cached
+  return false;
+}
+
 void CDNSNameCache::Add(const CStdString &strHostName, const CStdString &strIpAddress)
 {
   CDNSName dnsName;
+
   dnsName.m_strHostName = strHostName;
   dnsName.m_strIpAdres  = strIpAddress;
+
+  CSingleLock lock(m_critical);
   g_DNSCache.m_vecDNSNames.push_back(dnsName);
 }
 

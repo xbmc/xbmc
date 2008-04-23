@@ -1,5 +1,5 @@
 #pragma once
-#include "../DynamicDll.h"
+#include "DynamicDll.h"
 
 /* put types of curl in namespace to avoid namespace pollution */
 namespace XCURL

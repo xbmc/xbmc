@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DirectoryNode.h"
-#include "../../Util.h"
+#include "Util.h"
 #include "QueryParams.h"
 #include "DirectoryNodeRoot.h"
 #include "DirectoryNodeOverview.h"
@@ -20,6 +20,10 @@
 #include "DirectoryNodeMusicVideosOverview.h"
 #include "DirectoryNodeRecentlyAddedMusicVideos.h"
 #include "DirectoryNodeTitleMusicVideos.h"
+#include "VideoInfoTag.h"
+#include "URL.h"
+#include "Settings.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;

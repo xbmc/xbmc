@@ -4,7 +4,8 @@
 
 #include "stdafx.h"
 #include "FileRTV.h"
-#include "../Util.h"
+#include "URL.h"
+
 #include <sys/stat.h>
 
 using namespace XFILE;

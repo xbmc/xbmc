@@ -5,9 +5,9 @@
 
 #include "stdafx.h"
 #include "HTTP.h"
-#include "../DNSNameCache.h"
-#include "../Util.h"
+#include "DNSNameCache.h"
 #include "../utils/Network.h"
+#include "GUISettings.h"
 #include "Application.h"
 
 #ifdef _LINUX

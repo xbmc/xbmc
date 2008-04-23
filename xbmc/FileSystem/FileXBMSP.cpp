@@ -20,7 +20,11 @@
 
 #include "stdafx.h"
 #include "FileXBMSP.h"
-#include "../Util.h"
+#include "Util.h"
+#include "FileSystem/Directory.h"
+#include "URL.h"
+#include "Settings.h"
+
 #include <sys/stat.h>
 
 using namespace DIRECTORY;

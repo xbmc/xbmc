@@ -3,6 +3,8 @@
 
 #include "Cdg.h"
 #include "CdgVoiceManager.h" // Karaoke patch (114097)
+#include "utils/Thread.h"
+#include "FileSystem/File.h"
 
 //////////////////////
 //////CdgLoader///////

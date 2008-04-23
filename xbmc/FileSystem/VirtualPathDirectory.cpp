@@ -2,8 +2,12 @@
 #include "stdafx.h"
 #include "VirtualPathDirectory.h"
 #include "Directory.h"
-#include "../Settings.h"
-#include "../Util.h"
+#include "Settings.h"
+#include "Util.h"
+#include "URL.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogProgress.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -20,8 +24,8 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
 {
   CLog::Log(LOGDEBUG,"CVirtualPathDirectory::GetDirectory(%s)", strPath.c_str());
 
-  CShare share;
-  if (!GetMatchingShare(strPath, share))
+  CMediaSource share;
+  if (!GetMatchingSource(strPath, share))
     return false;
 
   DWORD progressTime = timeGetTime() + 3000L;   // 3 seconds before showing progress bar
@@ -85,8 +89,8 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
 bool CVirtualPathDirectory::Exists(const CStdString& strPath)
 {
   CLog::Log(LOGDEBUG,"Testing Existance (%s)", strPath.c_str());
-  CShare share;
-  if (!GetMatchingShare(strPath, share))
+  CMediaSource share;
+  if (!GetMatchingSource(strPath, share))
     return false;
 
   unsigned int iFailures = 0;
@@ -108,8 +112,8 @@ bool CVirtualPathDirectory::Exists(const CStdString& strPath)
 
 bool CVirtualPathDirectory::GetPathes(const CStdString& strPath, vector<CStdString>& vecPaths)
 {
-  CShare share;
-  if (!GetMatchingShare(strPath, share))
+  CMediaSource share;
+  if (!GetMatchingSource(strPath, share))
     return false;
   vecPaths = share.vecPaths;
   return true;
@@ -135,7 +139,7 @@ bool CVirtualPathDirectory::GetTypeAndSource(const CStdString& strPath, CStdStri
   return false;
 }
 
-bool CVirtualPathDirectory::GetMatchingShare(const CStdString &strPath, CShare& share)
+bool CVirtualPathDirectory::GetMatchingSource(const CStdString &strPath, CMediaSource& share)
 {
   CStdString strType, strSource;
   if (!GetTypeAndSource(strPath, strType, strSource))
@@ -144,18 +148,18 @@ bool CVirtualPathDirectory::GetMatchingShare(const CStdString &strPath, CShare& 
   // no support for "files" operation
   if (strType == "files")
     return false;
-  VECSHARES *vecShares = g_settings.GetSharesFromType(strType);
-  if (!vecShares)
+  VECSOURCES *VECSOURCES = g_settings.GetSourcesFromType(strType);
+  if (!VECSOURCES)
     return false;
 
   bool bIsSourceName = false;
-  int iIndex = CUtil::GetMatchingShare(strSource, *vecShares, bIsSourceName);
+  int iIndex = CUtil::GetMatchingSource(strSource, *VECSOURCES, bIsSourceName);
   if (!bIsSourceName)
     return false;
   if (iIndex < 0)
     return false;
 
-  share = (*vecShares)[iIndex];
+  share = (*VECSOURCES)[iIndex];
   return true;
 }
 
