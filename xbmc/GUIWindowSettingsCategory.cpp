@@ -1376,7 +1376,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CSettingInt *pSetting = (CSettingInt*)pSettingControl->GetSetting();
     int iControlID = pSettingControl->GetID();
-    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID, 0, 0, NULL);
+    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
     g_graphicsContext.SendMessage(msg);
     int iSpeed = (RESOLUTION)msg.GetParam1();
     g_guiSettings.SetInt("system.fanspeed", iSpeed);
