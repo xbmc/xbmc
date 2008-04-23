@@ -1,5 +1,7 @@
 #pragma once
 
+#include "URL.h"
+
 class CWIN32Util
 {
 public:
