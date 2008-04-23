@@ -8,6 +8,7 @@
 #include "SMBDirectory.h"
 #include "Util.h"
 #ifndef _LINUX
+#include "Win32Exception.h"
 #include "lib/libsmb/xbLibSmb.h"
 #else
 #include "../lib/libsmb/libsmbclient.h"
