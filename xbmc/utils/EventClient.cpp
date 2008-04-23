@@ -347,6 +347,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
                              map,
                              button,
                              (float)amount/65535.0f,
+                             (flags & PTB_AXIS),
                              false /* queued buttons cannot be repeated */ )
       );
   }
@@ -361,7 +362,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
       m_currentButton.m_buttonName = button;
       m_currentButton.m_fAmount    = (flags & PTB_USE_AMOUNT) ? amount/65535.0f : 1.0f;
       m_currentButton.m_bRepeat    = (flags & PTB_NO_REPEAT)  ? false : true;
-      m_currentButton.m_bAxis      = (flags & PTB_AXIS)       ? false : true;
+      m_currentButton.m_bAxis      = (flags & PTB_AXIS)       ? true : false;
       m_currentButton.SetActive();
       m_currentButton.Load();
       m_iNextRepeat = 0;
@@ -561,7 +562,7 @@ void CEventClient::FreePacketQueues()
   m_seqPackets.clear();
 }
 
-unsigned short CEventClient::GetButtonCode(std::string& joystickName)
+unsigned short CEventClient::GetButtonCode(std::string& joystickName, bool& isAxis, float& amount)
 {
   CSingleLock lock(m_critSection);
   unsigned short bcode = 0;
@@ -577,6 +578,8 @@ unsigned short CEventClient::GetButtonCode(std::string& joystickName)
       {
         bcode = btn->KeyCode();
         joystickName = btn->JoystickName();
+        isAxis = btn->Axis();
+        amount = btn->Amount();
       }
       delete btn;
     }
@@ -585,6 +588,8 @@ unsigned short CEventClient::GetButtonCode(std::string& joystickName)
   {
     bcode = m_currentButton.KeyCode();
     joystickName = m_currentButton.JoystickName();
+    isAxis = m_currentButton.Axis();
+    amount = m_currentButton.Amount();
     
     if ( ! m_currentButton.Repeat() )
       m_currentButton.Reset();
