@@ -584,14 +584,14 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         const char *id = item->Attribute("id");
         int visibleCondition = 0;
         CGUIControlFactory::GetConditionalVisibility(item, visibleCondition);
-        newItem = new CFileItem(CGUIControlFactory::GetLabel(label));
+        newItem = new CFileItem(CGUIControlFactory::FilterLabel(label));
         // multiple action strings are concat'd together, separated with " , "
         vector<CStdString> actions;
         CGUIControlFactory::GetMultipleString(item, "onclick", actions);
         for (vector<CStdString>::iterator it = actions.begin(); it != actions.end(); ++it)
           (*it).Replace(",", ",,");
         StringUtils::JoinString(actions, " , ", newItem->m_strPath);
-        newItem->SetLabel2(CGUIControlFactory::GetLabel(label2));
+        newItem->SetLabel2(CGUIControlFactory::FilterLabel(label2));
         newItem->SetThumbnailImage(thumb);
         newItem->SetIconImage(icon);
         if (id) newItem->m_iprogramCount = atoi(id);
@@ -604,9 +604,9 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         const char *thumb = item->Attribute("thumb");
         const char *icon = item->Attribute("icon");
         const char *id = item->Attribute("id");
-        newItem = new CFileItem(label ? CGUIControlFactory::GetLabel(label) : "");
+        newItem = new CFileItem(label ? CGUIControlFactory::FilterLabel(label) : "");
         newItem->m_strPath = item->FirstChild()->Value();
-        if (label2) newItem->SetLabel2(CGUIControlFactory::GetLabel(label2));
+        if (label2) newItem->SetLabel2(CGUIControlFactory::FilterLabel(label2));
         if (thumb) newItem->SetThumbnailImage(thumb);
         if (icon) newItem->SetIconImage(icon);
         if (id) newItem->m_iprogramCount = atoi(id);
