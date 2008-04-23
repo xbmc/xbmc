@@ -6,6 +6,7 @@
 #include "DVDMessageQueue.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDStreamInfo.h"
+#include "BitstreamStats.h"
 
 class CDVDPlayer;
 class CDVDAudioCodec;

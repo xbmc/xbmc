@@ -1,14 +1,20 @@
 
 #include "stdafx.h"
 #include "Weather.h"
-#include "../FileSystem/ZipManager.h"
-#include "../FileSystem/RarManager.h"
+#include "FileSystem/ZipManager.h"
+#include "FileSystem/RarManager.h"
 #include "HTTP.h"
 #include "XMLUtils.h"
-#include "../Temperature.h"
+#include "Temperature.h"
 #include "../utils/Network.h"
 #include "../Util.h"
 #include "Application.h"
+#include "GUISettings.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogProgress.h"
+#include "GUIDialogSelect.h"
+#include "DateTime.h"
+#include "FileSystem/Directory.h"
 
 using namespace std;
 using namespace DIRECTORY;

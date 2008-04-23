@@ -2,14 +2,14 @@
 #include "stdafx.h"
 #include "DVDAudio.h"
 #ifdef _XBOX
-#include "../mplayer/ASyncDirectSound.h"
-#include "../mplayer/ac97directsound.h"
+#include "cores/mplayer/ASyncDirectSound.h"
+#include "cores/mplayer/ac97directsound.h"
 #elif defined(__APPLE__)
 #include "PortaudioDirectSound.h"
 #elif _LINUX
 #include "ALSADirectSound.h"
 #else
-#include "../mplayer/Win32DirectSound.h"
+#include "cores/mplayer/Win32DirectSound.h"
 #endif
 #include "../../Util.h"
 #include "DVDClock.h"
@@ -207,17 +207,16 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   len -= copied;
 
   // if we have more data left, save it for the next call to this funtion
-  if (len > 0)
+  if (len > 0 && !m_bStop)
   {
     CSingleLock lock (m_critSection);
     if(len > m_dwPacketSize)
       CLog::Log(LOGERROR, "%s - More bytes left than can be stored in buffer", __FUNCTION__);
 
-    if(m_pBuffer)
-    {
       m_iBufferSize = std::min(len, m_dwPacketSize);
-      memcpy(m_pBuffer, data, m_iBufferSize);
-    }
+    memcpy(m_pBuffer, data, m_iBufferSize);
+    len  -= m_iBufferSize;
+    data += m_iBufferSize;
   }
   return total - len;
 }

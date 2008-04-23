@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "DirectoryNodeYear.h"
 #include "QueryParams.h"
-#include "../../MusicDatabase.h"
+#include "MusicDatabase.h"
 
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
 

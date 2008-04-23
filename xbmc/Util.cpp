@@ -76,7 +76,6 @@
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogVideoScan.h"
 #include "utils/fstrcmp.h"
-#include "utils/GUIInfoManager.h"
 #include "utils/Trainer.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
@@ -107,9 +106,16 @@
 #include "lib/libGoAhead/XBMChttp.h"
 #include "DNSNameCache.h"
 #include "FileSystem/PluginDirectory.h"
+#include "MusicInfoTag.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
 #ifdef _WIN32PC
 #include <shlobj.h>
 #endif
+#include "GUIDialogYesNo.h"
+#include "GUIDialogKeyboard.h"
+#include "FileSystem/File.h"
+#include "PlayList.h"
 
 using namespace std;
 
@@ -1488,7 +1494,8 @@ void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, 
 {
 #ifdef HAS_XBOX_HARDWARE
   // check if locked
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked() && 
+      g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;
 
@@ -2439,7 +2446,7 @@ void CUtil::ClearSubtitles()
   }
 }
 
-static const char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx", ".ifo", NULL};
+static const char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx", NULL};
 
 void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback )
 {
@@ -2685,7 +2692,7 @@ bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, cons
   if (CUtil::GetExtension(strRarPath).Equals(".zip"))
   {
     CStdString strZipPath;
-    CUtil::CreateZipPath(strZipPath,strRarPath,"");
+    CUtil::CreateArchivePath(strZipPath,"zip",strRarPath,"");
     if (!CDirectory::GetDirectory(strZipPath,ItemList,"",false))
       return false;
   }
@@ -2707,9 +2714,9 @@ bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, cons
       CStdString strExtAdded;
       CStdString strRarInRar;
       if (CUtil::GetExtension(strPathInRar).Equals(".rar"))
-        CUtil::CreateRarPath(strRarInRar, strRarPath, strPathInRar);
+        CUtil::CreateArchivePath(strRarInRar, "rar", strRarPath, strPathInRar);
       else
-        CUtil::CreateZipPath(strRarInRar, strRarPath, strPathInRar);
+        CUtil::CreateArchivePath(strRarInRar, "zip", strRarPath, strPathInRar);
       CacheRarSubtitles(vecExtensionsCached,strRarInRar,strCompare, strExtExt);
     }
     // done checking if this is a rar-in-rar
@@ -2726,7 +2733,7 @@ bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, cons
         {
           CStdString strSourceUrl, strDestUrl;
           if (CUtil::GetExtension(strRarPath).Equals(".rar"))
-            CUtil::CreateRarPath(strSourceUrl, strRarPath, strPathInRar);
+            CUtil::CreateArchivePath(strSourceUrl, "rar", strRarPath, strPathInRar);
           else
             strSourceUrl = strPathInRar;
 
@@ -2911,17 +2918,16 @@ void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CSt
   strPath = strFileNameAndPath.Left(i + 1);
   strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i - 1);
 }
-
-void CUtil::CreateZipPath(CStdString& strUrlPath, const CStdString& strRarPath, const CStdString& strFilePathInRar,const WORD wOptions,  const CStdString& strPwd, const CStdString& strCachePath)
+  
+void CUtil::CreateArchivePath(CStdString& strUrlPath, const CStdString& strType, 
+                              const CStdString& strArchivePath,
+                              const CStdString& strFilePathInArchive, 
+                              const CStdString& strCachePath, 
+                              const CStdString strPwd)
 {
-  //The possibilties for wOptions are
-  //RAR_AUTODELETE : the cached version of the rar (strRarPath) will be deleted in file's dtor.
-  //EXFILE_AUTODELETE : the extracted file (strFilePathInRar) will be deleted in file's dtor.
-  //RAR_OVERWRITE : if the rar is already cached, overwrite the local copy.
-  //EXFILE_OVERWRITE : if the extracted file is already cached, overwrite the local copy.
   CStdString strBuffer;
 
-  strUrlPath = "zip://";
+  strUrlPath = strType+"://";
 
   if( !strPwd.IsEmpty() )
   {
@@ -2931,57 +2937,12 @@ void CUtil::CreateZipPath(CStdString& strUrlPath, const CStdString& strRarPath, 
     strUrlPath += "@";
   }
 
-  strBuffer = strRarPath;
+  strBuffer = strArchivePath;
   CUtil::URLEncode(strBuffer);
 
   strUrlPath += strBuffer;
 
-  strBuffer = strFilePathInRar;
-  strBuffer.Replace('\\', '/');
-  strBuffer.TrimLeft('/');
-
-  strUrlPath += "/";
-  strUrlPath += strBuffer;
-
-#if 0  // options are not used
-  strBuffer = strCachePath;
-  CUtil::URLEncode(strBuffer);
-
-  strUrlPath += "?cache=";
-  strUrlPath += strBuffer;
-
-  strBuffer.Format("%i", wOptions);
-  strUrlPath += "&flags=";
-  strUrlPath += strBuffer;
-#endif
-}
-
-
-void CUtil::CreateRarPath(CStdString& strUrlPath, const CStdString& strRarPath, const CStdString& strFilePathInRar,const WORD wOptions,  const CStdString& strPwd, const CStdString& strCachePath)
-{
-  //The possibilties for wOptions are
-  //RAR_AUTODELETE : the cached version of the rar (strRarPath) will be deleted in file's dtor.
-  //EXFILE_AUTODELETE : the extracted file (strFilePathInRar) will be deleted in file's dtor.
-  //RAR_OVERWRITE : if the rar is already cached, overwrite the local copy.
-  //EXFILE_OVERWRITE : if the extracted file is already cached, overwrite the local copy.
-  CStdString strBuffer;
-
-  strUrlPath = "rar://";
-
-  if( !strPwd.IsEmpty() )
-  {
-    strBuffer = strPwd;
-    CUtil::URLEncode(strBuffer);
-    strUrlPath += strBuffer;
-    strUrlPath += "@";
-  }
-
-  strBuffer = strRarPath;
-  CUtil::URLEncode(strBuffer);
-
-  strUrlPath += strBuffer;
-
-  strBuffer = strFilePathInRar;
+  strBuffer = strFilePathInArchive;
   strBuffer.Replace('\\', '/');
   strBuffer.TrimLeft('/');
 
@@ -3544,7 +3505,7 @@ char CUtil::GetDirectorySeperator(const CStdString &strFilename)
   return url.GetDirectorySeparator();
 }
 
-void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPlayListItem &playlistitem)
+void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayListItem &playlistitem)
 {
   *(CFileItem*)&playlistitem = *pItem;
 
@@ -3959,7 +3920,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       CLog::Log(LOGERROR, "XBMC.SlideShow called with empty parameter");
       return -2;
     }
-    CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, execute.Equals("SlideShow") ? 0 : 1, 0, 0);
+    CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, execute.Equals("SlideShow") ? 0 : 1);
     msg.SetStringParam(strParameterCaseIntact);
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
     if (pWindow) pWindow->OnMessage(msg);
@@ -4362,7 +4323,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     else
       string = g_settings.TranslateSkinString(strParameterCaseIntact);
     CStdString value = g_settings.GetSkinString(string);
-    VECSHARES localShares;
+    VECSOURCES localShares;
     g_mediaManager.GetLocalDrives(localShares);
     if (execute.Equals("skin.setstring"))
     {
@@ -4381,7 +4342,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     }
     else if (execute.Equals("skin.setlargeimage"))
     {
-      VECSHARES *shares = g_settings.GetSharesFromType("pictures");
+      VECSOURCES *shares = g_settings.GetSourcesFromType("pictures");
       if (!shares) shares = &localShares;
       if (CGUIDialogFileBrowser::ShowAndGetImage(*shares, g_localizeStrings.Get(1030), value))
         g_settings.SetSkinString(string, value);
@@ -4398,9 +4359,9 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         value = CUtil::TranslateSpecialPath(strMask.Mid(iEnd+1)); // translate here to start inside (or path wont match the fileitem in the filebrowser so it wont find it)
         CUtil::AddSlashAtEnd(value);
         bool bIsSource;
-        if (GetMatchingShare(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
+        if (GetMatchingSource(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
         {
-          CShare share;
+          CMediaSource share;
           share.strName = g_localizeStrings.Get(13278);
           share.strPath = value;
           localShares.push_back(share);
@@ -4598,12 +4559,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     return -1;
   return 0;
 }
-int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bool& bIsSourceName)
+int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES, bool& bIsSourceName)
 {
   if (strPath1.IsEmpty())
     return -1;
 
-  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing original path/name [%s]", strPath1.c_str());
+  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource, testing original path/name [%s]", strPath1.c_str());
 
   // copy as we may change strPath
   CStdString strPath = strPath1;
@@ -4624,14 +4585,14 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
   if (checkURL.GetProtocol() == "multipath")
     strPath = CMultiPathDirectory::GetFirstPath(strPath);
 
-  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing for matching name [%s]", strPath.c_str());
+  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource, testing for matching name [%s]", strPath.c_str());
   bIsSourceName = false;
   int iIndex = -1;
   int iLength = -1;
   // we first test the NAME of a source
-  for (int i = 0; i < (int)vecShares.size(); ++i)
+  for (int i = 0; i < (int)VECSOURCES.size(); ++i)
   {
-    CShare share = vecShares.at(i);
+    CMediaSource share = VECSOURCES.at(i);
     CStdString strName = share.strName;
 
     // special cases for dvds
@@ -4647,7 +4608,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
       if (iPos > 1)
         strName = strName.Mid(0, iPos - 1);
     }
-    //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, comparing name [%s]", strName.c_str());
+    //CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource, comparing name [%s]", strName.c_str());
     if (strPath.Equals(strName))
     {
       bIsSourceName = true;
@@ -4667,11 +4628,11 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
     strDest += "/";
   int iLenPath = strDest.size();
 
-  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, testing url [%s]", strDest.c_str());
+  //CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource, testing url [%s]", strDest.c_str());
 
-  for (int i = 0; i < (int)vecShares.size(); ++i)
+  for (int i = 0; i < (int)VECSOURCES.size(); ++i)
   {
-    CShare share = vecShares.at(i);
+    CMediaSource share = VECSOURCES.at(i);
 
     // does it match a source name?
     if (share.strPath.substr(0,8) == "shout://")
@@ -4703,7 +4664,7 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
       if (!HasSlashAtEnd(strShare))
         strShare += "/";
       int iLenShare = strShare.size();
-      //CLog::Log(LOGDEBUG,"CUtil::GetMatchingShare, comparing url [%s]", strShare.c_str());
+      //CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource, comparing url [%s]", strShare.c_str());
 
       if ((iLenPath >= iLenShare) && (strDest.Left(iLenShare).Equals(strShare)) && (iLenShare > iLength))
       {
@@ -4738,10 +4699,10 @@ int CUtil::GetMatchingShare(const CStdString& strPath1, VECSHARES& vecShares, bo
 
       bIsSourceName = false;
       bool bDummy;
-      return GetMatchingShare(strPath, vecShares, bDummy);
+      return GetMatchingSource(strPath, VECSOURCES, bDummy);
     }
 
-    CLog::Log(LOGWARNING,"CUtil::GetMatchingShare... no matching source found for [%s]", strPath1.c_str());
+    CLog::Log(LOGWARNING,"CUtil::GetMatchingSource... no matching source found for [%s]", strPath1.c_str());
   }
   return iIndex;
 }
@@ -5330,12 +5291,12 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
   return bFoundNewClient;
 }
 
-void CUtil::AutoDetectionGetShare(VECSHARES &shares)
+void CUtil::AutoDetectionGetSource(VECSOURCES &shares)
 {
   if(v_xboxclients.client_ip.size() > 0)
   {
     // client list is not empty, add to shares
-    CShare share;
+    CMediaSource share;
     for (unsigned int i=0; i< v_xboxclients.client_ip.size(); i++)
     {
       //extract client info string: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE

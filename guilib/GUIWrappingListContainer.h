@@ -30,6 +30,8 @@ protected:
   virtual bool SelectItemFromPoint(const CPoint &point);
   virtual void SelectItem(int item);
   virtual void Reset();
+  virtual unsigned int GetNumItems() const { return m_items.size() - m_extraItems; };
+  virtual int GetCurrentPage() const;
 
   void ResetExtraItems();
   unsigned int m_extraItems;

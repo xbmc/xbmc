@@ -1,7 +1,14 @@
 #include "stdafx.h"
 #include "FileRar.h"
 #include <sys/stat.h>
-#include "../Util.h"
+#include "Util.h"
+#include "URL.h"
+#include "GUIDialogOK.h"
+#include "FileSystem/Directory.h"
+#include "RarManager.h"
+#include "Settings.h"
+#include "FileItem.h"
+
 #ifndef _LINUX
 #include <process.h>
 #endif

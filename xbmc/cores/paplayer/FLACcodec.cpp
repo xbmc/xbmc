@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "FLACcodec.h"
-#include "../../FlacTag.h"
+#include "FlacTag.h"
 
 using namespace MUSIC_INFO;
 

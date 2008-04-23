@@ -1,6 +1,6 @@
 #include "include.h"
 #include "GUIRadioButtonControl.h"
-#include "../xbmc/utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 #include "GUIFontManager.h"
 
 

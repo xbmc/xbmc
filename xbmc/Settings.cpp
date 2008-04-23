@@ -24,6 +24,7 @@
 #include "Application.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "Util.h"
+#include "URL.h"
 #include "GUIWindowFileManager.h"
 #include "GUIDialogButtonMenu.h"
 #include "GUIFontManager.h"
@@ -41,6 +42,10 @@
 #include "MediaManager.h"
 #include "XBVideoConfig.h"
 #include "DNSNameCache.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogYesNo.h"
+#include "FileSystem/Directory.h"
+#include "FileItem.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
 #endif
@@ -60,115 +65,6 @@ struct CSettings::AdvancedSettings g_advancedSettings;
 class CSettings g_settings;
 
 extern CStdString g_LoadErrorStr;
-
-bool CShare::isWritable() const
-{
-#ifndef _LINUX
-  if (strPath[1] == ':' && (strPath[0] != 'D' && strPath[0] != 'd'))
-#else
-  if (strPath[0] == '/')
-#endif    
-    return true; // local disk
-  if (strPath.size() > 4)
-  {
-    if (strPath.substr(0,4) == "smb:")
-      return true; // smb path
-    #ifdef HAS_XBOX_HARDWARE
-    else if (strPath.substr(0,4) == "mem:")
-    {
-      return g_memoryUnitManager.IsDriveWriteable(strPath);
-    }
-    #endif
-  }
-
-  return false;
-}
-void CShare::FromNameAndPaths(const CStdString &category, const CStdString &name, const vector<CStdString> &paths)
-{
-  vecPaths = paths;
-  if (paths.size() == 0)
-  { // no paths - return
-    strPath.Empty();
-  }
-  else if (paths.size() == 1)
-  { // only one valid path? make it the strPath
-    strPath = paths[0];
-  }
-  else
-  { // multiple valid paths?
-    if (g_advancedSettings.m_useMultipaths) // use new multipath:// protocol
-      strPath = CMultiPathDirectory::ConstructMultiPath(vecPaths);
-    else // use older virtualpath:// protocol
-      strPath.Format("virtualpath://%s/%s/", category.c_str(), name.c_str());
-  }
-
-  strName = name;
-  m_iLockMode = LOCK_MODE_EVERYONE;
-  m_strLockCode = "0";
-  m_iBadPwdCount = 0;
-  m_iHasLock = 0;
-
-  if (CUtil::IsVirtualPath(strPath) || CUtil::IsMultiPath(strPath))
-    m_iDriveType = SHARE_TYPE_VPATH;
-  else if (strPath.Left(4).Equals("udf:"))
-  {
-    m_iDriveType = SHARE_TYPE_VIRTUAL_DVD;
-    strPath = "D:\\";
-  }
-  else if (strPath.Left(11).Equals("soundtrack:"))
-    m_iDriveType = SHARE_TYPE_LOCAL;
-  else if (CUtil::IsISO9660(strPath))
-    m_iDriveType = SHARE_TYPE_VIRTUAL_DVD;
-  else if (CUtil::IsDVD(strPath))
-    m_iDriveType = SHARE_TYPE_DVD;
-  else if (CUtil::IsRemote(strPath))
-    m_iDriveType = SHARE_TYPE_REMOTE;
-  else if (CUtil::IsHD(strPath))
-    m_iDriveType = SHARE_TYPE_LOCAL;
-  else
-    m_iDriveType = SHARE_TYPE_UNKNOWN;
-  // check - convert to url and back again to make sure strPath is accurate
-  // in terms of what we expect
-  CUtil::AddSlashAtEnd(strPath);
-
-  strOriginalPath = strPath;
-
-  CURL url(strPath);
-  url.GetURL(strPath);
-
-#ifdef HAS_FILESYSTEM_SMB
-  // if its smb - we try to mount it and change the path to the mount point
-  if (CUtil::IsSmb(strPath) && g_guiSettings.GetBool("smb.mountshares"))
-  {
-    CStdString strRes;
-    CStdString strPassword = url.GetPassWord();
-    CStdString strUserName = url.GetUserName();
-    CStdString strPathToShare = "//"+url.GetHostName() + "/" + url.GetShareName();
-    if(!url.GetUserName().IsEmpty())
-#ifdef _WIN32PC
-      strRes = CWIN32Util::MountShare(strPathToShare, strUserName, strPassword);
-#else
-      strRes = DIRECTORY::CSMBDirectory::MountShare(strPathToShare, category, strName, strUserName, strPassword);
-#endif
-    else
-#ifdef _WIN32PC
-      strRes = CWIN32Util::MountShare(strPathToShare, "", "");
-#else
-      strRes = DIRECTORY::CSMBDirectory::MountShare(strPathToShare, category, strName, "", "");
-#endif
-    if (!strRes.IsEmpty())
-    {
-      strRes += url.GetFileName().Mid(url.GetShareName().GetLength() );
-      if (CFile::Exists(strRes))
-      {
-        strPath = strRes;
-        CUtil::AddSlashAtEnd(strPath);
-        m_iDriveType = SHARE_TYPE_LOCAL;
-      }
-    }
-  }
-#endif
-}
 
 CSettings::CSettings(void)
 {
@@ -477,14 +373,14 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
   if (pRootElement)
   { // parse sources...
-    GetShares(pRootElement, "programs", m_programSources, m_defaultProgramSource);
+    GetSources(pRootElement, "programs", m_programSources, m_defaultProgramSource);
     if (!m_programSources.size()) // backward compatibility with "my" notation
-      GetShares(pRootElement, "myprograms", m_programSources, m_defaultProgramSource);
+      GetSources(pRootElement, "myprograms", m_programSources, m_defaultProgramSource);
 
-    GetShares(pRootElement, "pictures", m_pictureSources, m_defaultPictureSource);
-    GetShares(pRootElement, "files", m_fileSources, m_defaultFileSource);
-    GetShares(pRootElement, "music", m_musicSources, m_defaultMusicSource);
-    GetShares(pRootElement, "video", m_videoSources, m_defaultVideoSource);
+    GetSources(pRootElement, "pictures", m_pictureSources, m_defaultPictureSource);
+    GetSources(pRootElement, "files", m_fileSources, m_defaultFileSource);
+    GetSources(pRootElement, "music", m_musicSources, m_defaultMusicSource);
+    GetSources(pRootElement, "video", m_videoSources, m_defaultVideoSource);
   }
 
   bXboxMediacenter = true;
@@ -535,7 +431,7 @@ void CSettings::ConvertHomeVar(CStdString& strText)
   }
 }
 
-VECSHARES *CSettings::GetSharesFromType(const CStdString &type)
+VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
 {
   if (type == "programs" || type == "myprograms")
     return &g_settings.m_programSources;
@@ -554,7 +450,7 @@ VECSHARES *CSettings::GetSharesFromType(const CStdString &type)
     }
     if (!bAdded)
     {
-      VECSHARES shares;
+      VECSOURCES shares;
       g_mediaManager.GetLocalDrives(shares, true);  // true to include Q
       m_fileSources.insert(m_fileSources.end(),shares.begin(),shares.end());
     }
@@ -577,7 +473,7 @@ VECSHARES *CSettings::GetSharesFromType(const CStdString &type)
   return NULL;
 }
 
-CStdString CSettings::GetDefaultShareFromType(const CStdString &type)
+CStdString CSettings::GetDefaultSourceFromType(const CStdString &type)
 {
   CStdString defaultShare;
   if (type == "programs" || type == "myprograms")
@@ -593,7 +489,7 @@ CStdString CSettings::GetDefaultShareFromType(const CStdString &type)
   return defaultShare;
 }
 
-void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault)
+void CSettings::GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault)
 {
   //CLog::Log(LOGDEBUG, "  Parsing <%s> tag", strTagName.c_str());
   strDefault = "";
@@ -608,8 +504,8 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
       CStdString strValue = pChild->Value();
       if (strValue == "source" || strValue == "bookmark") // "bookmark" left in for backwards compatibility
       {
-        CShare share;
-        if (GetShare(strTagName, pChild, share))
+        CMediaSource share;
+        if (GetSource(strTagName, pChild, share))
         {
           items.push_back(share);
         }
@@ -639,7 +535,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
   }
 }
 
-bool CSettings::GetShare(const CStdString &category, const TiXmlNode *source, CShare &share)
+bool CSettings::GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share)
 {
   //CLog::Log(LOGDEBUG,"    ---- SOURCE START ----");
   const TiXmlNode *pNodeName = source->FirstChild("name");
@@ -757,7 +653,7 @@ bool CSettings::GetShare(const CStdString &category, const TiXmlNode *source, CS
     share.m_iBadPwdCount = 0;
     if (pLockMode)
     {
-      share.m_iLockMode = atoi( pLockMode->FirstChild()->Value() );
+      share.m_iLockMode = LockType(atoi(pLockMode->FirstChild()->Value()));
       share.m_iHasLock = 2;
     }
 
@@ -1990,7 +1886,7 @@ bool CSettings::LoadProfile(int index)
     if (g_guiSettings.GetBool("system.autotemperature"))
     {
       CLog::Log(LOGNOTICE, "start fancontroller");
-      CFanController::Instance()->Start(g_guiSettings.GetInt("system.targettemperature"));
+      CFanController::Instance()->Start(g_guiSettings.GetInt("system.targettemperature"), g_guiSettings.GetInt("system.minfanspeed"));
     }
     else if (g_guiSettings.GetBool("system.fanspeedcontrol"))
     {
@@ -2158,9 +2054,9 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     bHas = false;
     XMLUtils::GetBoolean(pProfile, "useavpacksettings", bHas);
     profile.setUseAvpackSettings(bHas);
-    int iLockMode=LOCK_MODE_EVERYONE;
-    XMLUtils::GetInt(pProfile,"lockmode",iLockMode);
-    if (iLockMode > LOCK_MODE_QWERTY || iLockMode < 0)
+    LockType iLockMode=LOCK_MODE_EVERYONE;
+    XMLUtils::GetInt(pProfile,"lockmode",(int&)iLockMode);
+    if (iLockMode > LOCK_MODE_QWERTY || iLockMode < LOCK_MODE_EVERYONE)
       iLockMode = LOCK_MODE_EVERYONE;
     profile.setLockMode(iLockMode);
 
@@ -2249,9 +2145,9 @@ bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
   XMLUtils::GetString(pRootElement, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
 
   CStdString strDefault;
-  GetShares(pRootElement,"music",g_settings.m_UPnPMusicSources,strDefault);
-  GetShares(pRootElement,"video",g_settings.m_UPnPVideoSources,strDefault);
-  GetShares(pRootElement,"pictures",g_settings.m_UPnPPictureSources,strDefault);
+  GetSources(pRootElement,"music",g_settings.m_UPnPMusicSources,strDefault);
+  GetSources(pRootElement,"video",g_settings.m_UPnPVideoSources,strDefault);
+  GetSources(pRootElement,"pictures",g_settings.m_UPnPPictureSources,strDefault);
 
   return true;
 }
@@ -2267,7 +2163,7 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
   XMLUtils::SetString(pRoot, "UUID", g_settings.m_UPnPUUID);
   XMLUtils::SetString(pRoot, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
   
-  VECSHARES* pShares[3];
+  VECSOURCES* pShares[3];
   pShares[0] = &g_settings.m_UPnPMusicSources;
   pShares[1] = &g_settings.m_UPnPVideoSources;
   pShares[2] = &g_settings.m_UPnPPictureSources;
@@ -2312,15 +2208,15 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
   return xmlDoc.SaveFile(_P(strSettingsFile));
 }
 
-bool CSettings::UpdateShare(const CStdString &type, const CStdString oldName, const CShare &share)
+bool CSettings::UpdateShare(const CStdString &type, const CStdString oldName, const CMediaSource &share)
 {
-  VECSHARES *pShares = GetSharesFromType(type);
+  VECSOURCES *pShares = GetSourcesFromType(type);
 
   if (!pShares) return false;
 
   // update our current share list
-  CShare* pShare=NULL;
-  for (IVECSHARES it = pShares->begin(); it != pShares->end(); it++)
+  CMediaSource* pShare=NULL;
+  for (IVECSOURCES it = pShares->begin(); it != pShares->end(); it++)
   {
     if ((*it).strName == oldName)
     {
@@ -2342,7 +2238,7 @@ bool CSettings::UpdateShare(const CStdString &type, const CStdString oldName, co
 // NOTE: This function does NOT save the sources.xml file - you need to call SaveSources() separately.
 bool CSettings::UpdateSource(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateElement, const CStdString &strUpdateText)
 {
-  VECSHARES *pShares = GetSharesFromType(strType);
+  VECSOURCES *pShares = GetSourcesFromType(strType);
 
   if (!pShares) return false;
 
@@ -2350,14 +2246,14 @@ bool CSettings::UpdateSource(const CStdString &strType, const CStdString strOldN
   if (strUpdateElement.Equals("path") && CUtil::IsVirtualPath(strUpdateText))
     return false;
 
-  for (IVECSHARES it = pShares->begin(); it != pShares->end(); it++)
+  for (IVECSOURCES it = pShares->begin(); it != pShares->end(); it++)
   {
     if ((*it).strName == strOldName)
     {
       if ("name" == strUpdateElement)
         (*it).strName = strUpdateText;
       else if ("lockmode" == strUpdateElement)
-        (*it).m_iLockMode = atoi(strUpdateText);
+        (*it).m_iLockMode = LockType(atoi(strUpdateText));
       else if ("lockcode" == strUpdateElement)
         (*it).m_strLockCode = strUpdateText;
       else if ("badpwdcount" == strUpdateElement)
@@ -2380,12 +2276,12 @@ bool CSettings::UpdateSource(const CStdString &strType, const CStdString strOldN
 
 bool CSettings::DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath)
 {
-  VECSHARES *pShares = GetSharesFromType(strType);
+  VECSOURCES *pShares = GetSourcesFromType(strType);
   if (!pShares) return false;
 
   bool found(false);
 
-  for (IVECSHARES it = pShares->begin(); it != pShares->end(); it++)
+  for (IVECSOURCES it = pShares->begin(); it != pShares->end(); it++)
   {
     if ((*it).strName == strName && (*it).strPath == strPath)
     {
@@ -2402,16 +2298,16 @@ bool CSettings::DeleteSource(const CStdString &strType, const CStdString strName
   return SaveSources();
 }
 
-bool CSettings::AddShare(const CStdString &type, const CShare &share)
+bool CSettings::AddShare(const CStdString &type, const CMediaSource &share)
 {
-  VECSHARES *pShares = GetSharesFromType(type);
+  VECSOURCES *pShares = GetSourcesFromType(type);
   if (!pShares) return false;
 
   // translate dir and add to our current shares
   CStdString strPath1 = share.strPath;
   strPath1.ToUpper();
 
-  CShare shareToAdd = share;
+  CMediaSource shareToAdd = share;
   if (strPath1.at(0) == '$')
   {
     shareToAdd.strPath = CUtil::TranslateSpecialSource(strPath1);
@@ -2441,16 +2337,16 @@ bool CSettings::SaveSources()
   if (!pRoot) return false;
 
   // ok, now run through and save each sources section
-  SetShares(pRoot, "programs", g_settings.m_programSources, g_settings.m_defaultProgramSource);
-  SetShares(pRoot, "video", g_settings.m_videoSources, g_settings.m_defaultVideoSource);
-  SetShares(pRoot, "music", g_settings.m_musicSources, g_settings.m_defaultMusicSource);
-  SetShares(pRoot, "pictures", g_settings.m_pictureSources, g_settings.m_defaultPictureSource);
-  SetShares(pRoot, "files", g_settings.m_fileSources, g_settings.m_defaultFileSource);
+  SetSources(pRoot, "programs", g_settings.m_programSources, g_settings.m_defaultProgramSource);
+  SetSources(pRoot, "video", g_settings.m_videoSources, g_settings.m_defaultVideoSource);
+  SetSources(pRoot, "music", g_settings.m_musicSources, g_settings.m_defaultMusicSource);
+  SetSources(pRoot, "pictures", g_settings.m_pictureSources, g_settings.m_defaultPictureSource);
+  SetSources(pRoot, "files", g_settings.m_fileSources, g_settings.m_defaultFileSource);
 
   return doc.SaveFile(g_settings.GetSourcesFile());
 }
 
-bool CSettings::SetShares(TiXmlNode *root, const char *section, const VECSHARES &shares, const char *defaultPath)
+bool CSettings::SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath)
 {
   TiXmlElement sectionElement(section);
   TiXmlNode *sectionNode = root->InsertEndChild(sectionElement);
@@ -2459,7 +2355,7 @@ bool CSettings::SetShares(TiXmlNode *root, const char *section, const VECSHARES 
     SetString(sectionNode, "default", defaultPath);
     for (unsigned int i = 0; i < shares.size(); i++)
     {
-      const CShare &share = shares[i];
+      const CMediaSource &share = shares[i];
       if (share.m_ignore)
         continue;
       TiXmlElement source("source");

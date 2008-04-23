@@ -2,8 +2,11 @@
 #include "stdafx.h"
 #include "MultiPathDirectory.h"
 #include "Directory.h"
-#include "../Settings.h"
-#include "../Util.h"
+#include "Util.h"
+#include "URL.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogProgress.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace DIRECTORY;

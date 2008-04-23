@@ -1,5 +1,6 @@
 
 #include "stdafx.h"
+#include "utils/BitstreamStats.h"
 #include "PlayerCoreFactory.h"
 #include "dvdplayer/DVDPlayer.h"
 #ifdef HAS_MODPLAYER
@@ -7,10 +8,14 @@
 #endif
 #include "paplayer/paplayer.h"
 #include "paplayer/DVDPlayerCodec.h"
-#include "../GUIDialogContextMenu.h"
-#include "../XBAudioConfig.h"
-#include "../FileSystem/FileCurl.h"
-#include "../utils/HttpHeader.h"
+#include "GUIDialogContextMenu.h"
+#include "XBAudioConfig.h"
+#include "FileSystem/FileCurl.h"
+#include "utils/HttpHeader.h"
+#include "GUISettings.h"
+#include "URL.h"
+#include "GUIWindowManager.h"
+#include "FileItem.h"
 
 using namespace AUTOPTR;
 

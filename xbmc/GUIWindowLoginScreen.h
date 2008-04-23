@@ -3,6 +3,8 @@
 #include "GUIViewControl.h"
 #include "utils/Stopwatch.h"
 
+class CFileItemList;
+
 class CGUIWindowLoginScreen : public CGUIWindow
 {
 public:
@@ -23,7 +25,7 @@ protected:
 
   bool OnPopupMenu(int iItem);
   CGUIViewControl m_viewControl;
-  CFileItemList m_vecItems;
+  CFileItemList* m_vecItems;
 
   int m_iSelectedItem;
   CStopWatch watch;  

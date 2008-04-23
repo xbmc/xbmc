@@ -1,11 +1,10 @@
 #include "stdafx.h"
 
-#include "./MusicInfoScraper.h"
-#include "./HTMLUtil.h"
-#include "./HTMLTable.h"
-#include "../Util.h"
+#include "MusicInfoScraper.h"
+#include "HTMLUtil.h"
+#include "HTMLTable.h"
+#include "Util.h"
 #include "ScraperParser.h"
-#include "HTTP.h"
 
 using namespace MUSIC_GRABBER;
 using namespace HTML;

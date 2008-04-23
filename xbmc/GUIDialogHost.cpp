@@ -20,23 +20,25 @@
  */
 
 #include "stdafx.h"
+#include "Settings.h"
 #include "GUIDialogHost.h"
 #include "GUISpinControl.h"
 #include "GUILabelControl.h"
 #include "GUIButtonControl.h"
 #include "GUIRadioButtonControl.h"
+#include "GUIDialogKeyboard.h"
 
 #define CTL_CHECKMARK_HOSTING_TYPE 3101
-#define CTL_LABEL_PLAYER_LIMIT  3102
-#define CTL_SPIN_PLAYER_LIMIT  3103
-#define CTL_LABEL_PASSWORD   3104
-#define CTL_BUTTON_PASSWORD   3105
-#define CTL_LABEL_DESCRIPTION  3106
-#define CTL_BUTTON_DESCRIPTION  3107
-#define CTL_BUTTON_OK    3108
-#define CTL_BUTTON_CANCEL   3109
+#define CTL_LABEL_PLAYER_LIMIT     3102
+#define CTL_SPIN_PLAYER_LIMIT      3103
+#define CTL_LABEL_PASSWORD         3104
+#define CTL_BUTTON_PASSWORD        3105
+#define CTL_LABEL_DESCRIPTION      3106
+#define CTL_BUTTON_DESCRIPTION     3107
+#define CTL_BUTTON_OK              3108
+#define CTL_BUTTON_CANCEL          3109
 
-#define KAI_PRIVATE_ARENA_LIMIT  32
+#define KAI_PRIVATE_ARENA_LIMIT      32
 
 CGUIDialogHost::CGUIDialogHost(void)
 : CGUIDialog(WINDOW_DIALOG_HOST, "DialogHost.xml")

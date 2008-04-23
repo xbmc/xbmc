@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "include.h"
+#include "Settings.h"
 #include "XBVideoConfig.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "xbox/Undocumented.h"

@@ -21,8 +21,10 @@
 
 #include "stdafx.h"
 #include "GUIDialogAccessPoints.h"
+#include "GUIDialogKeyboard.h"
 #include "NetworkLinux.h"
 #include "Application.h"
+#include "FileItem.h"
 
 #define CONTROL_ACCESS_POINTS 3
 
@@ -38,7 +40,7 @@ bool CGUIDialogAccessPoints::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_SELECT_ITEM)
   {
-    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_ACCESS_POINTS, 0, 0, NULL);
+    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_ACCESS_POINTS);
     OnMessage(msg);
     int iItem = msg.GetParam1();
     
@@ -93,12 +95,12 @@ void CGUIDialogAccessPoints::OnInitWindow()
       if (m_aps[i].getEncryptionMode() != ENC_NONE)      
          item->SetIconImage("ap-lock.png");
          
-      CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_ACCESS_POINTS, 0, 0, (void*)item);
+      CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_ACCESS_POINTS, 0, 0, item);
       OnMessage(msg);
   }
   
   CFileItem *item = new CFileItem(g_localizeStrings.Get(1047));
-  CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_ACCESS_POINTS, 0, 0, (void*)item);
+  CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_ACCESS_POINTS, 0, 0, item);
   OnMessage(msg);  
 }
 

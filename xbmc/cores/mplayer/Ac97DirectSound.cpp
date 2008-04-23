@@ -20,6 +20,7 @@
 
 
 #include "stdafx.h"
+#include "Settings.h"
 #include "Ac97DirectSound.h"
 #include "AudioContext.h"
 

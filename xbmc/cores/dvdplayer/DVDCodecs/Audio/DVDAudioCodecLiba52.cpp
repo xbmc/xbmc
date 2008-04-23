@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "AudioContext.h"
 #include "DVDAudioCodecLiba52.h"
-#include "../../DVDStreamInfo.h"
+#include "DVDStreamInfo.h"
 
 #ifndef _LINUX
 typedef __int16 int16_t;

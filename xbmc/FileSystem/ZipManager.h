@@ -4,6 +4,12 @@
 #define ZIP_LOCAL_HEADER 0x04034b50
 #define ZIP_CENTRAL_HEADER 0x02014b50
 
+#include  "StdString.h"
+
+#include <memory.h>
+#include <vector>
+#include <map>
+
 struct SZipEntry { // sizeof(zipentry) == 30 + flength + elength
   unsigned int header;
   unsigned short version;

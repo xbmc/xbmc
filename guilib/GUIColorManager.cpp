@@ -1,6 +1,6 @@
 #include "include.h"
 #include "GUIColorManager.h"
-#include "../xbmc/Util.h"
+#include "Util.h"
 #include "SkinInfo.h"
 
 CGUIColorManager g_colorManager;

@@ -1,5 +1,5 @@
 #pragma once
-#include "../../DynamicDll.h"
+#include "DynamicDll.h"
 #include "ogg/vorbisfile.h"
 
 //  Note: the vorbisfile.dll has the ogg.dll and vorbis.dll statically linked 

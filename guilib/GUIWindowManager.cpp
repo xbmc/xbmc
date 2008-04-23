@@ -3,10 +3,10 @@
 #include "GUIAudioManager.h"
 #include "GUIDialog.h"
 #include "Application.h"
-#include "../xbmc/Settings.h"
-#include "../xbmc/GUIPassword.h"
-#include "../xbmc/utils/GUIInfoManager.h"
-#include "../xbmc/Util.h"
+#include "GUIPassword.h"
+#include "utils/GUIInfoManager.h"
+#include "Util.h"
+#include "Settings.h"
 
 #if !defined(_XBOX) && !defined(_LINUX)
 #include "../xbmc/Win32/XBMC_PC.h"

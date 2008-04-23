@@ -2,7 +2,7 @@
 #ifndef _LINUX
 
 #include "WinRenderer.h"
-#include "../xbmc/utils/SharedSection.h"
+#include "utils/SharedSection.h"
 
 class CWinRenderManager
 {

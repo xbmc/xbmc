@@ -1,6 +1,8 @@
 #ifndef XBOX_RENDERER
 #define XBOX_RENDERER
 
+#include "GraphicContext.h"
+
 #ifdef HAS_SDL_OPENGL
 #include "LinuxRendererGL.h"
 

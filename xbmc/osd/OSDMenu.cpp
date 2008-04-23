@@ -1,5 +1,5 @@
-#include "../stdafx.h"
-#include "./osdmenu.h"
+#include "stdafx.h"
+#include "osdmenu.h"
 #include "GUIFontManager.h"
 
 #ifdef _DEBUG

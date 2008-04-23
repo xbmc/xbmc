@@ -11,7 +11,10 @@
 
 #include <iostream>
 #include "IFile.h"
+#include "StdString.h"
 #include "../utils/BitstreamStats.h"
+
+class CURL;
 
 namespace XFILE
 {
@@ -108,7 +111,7 @@ public:
   CFileStream(int backsize = 0);
   ~CFileStream();
 
-  bool Open(const CStdString& filename)  { return Open(CURL(filename)); }
+  bool Open(const CStdString& filename);
   bool Open(const CURL& filename);
   void Close();
 

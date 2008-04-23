@@ -4,16 +4,17 @@
 
 #include "stdafx.h"
 #include "FileSmb.h"
-#include "../GUIPassword.h"
+#include "GUIPassword.h"
 #include "SMBDirectory.h"
+#include "Util.h"
 #ifndef _LINUX
-#include "../lib/libsmb/xbLibSmb.h"
+#include "lib/libsmb/xbLibSmb.h"
 #else
 #include "../lib/libsmb/libsmbclient.h"
 #endif
-#include "../Util.h"
 #include "../utils/Network.h"
-#include "../utils/Win32Exception.h"
+#include "Settings.h"
+
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -60,10 +61,17 @@ void CSMB::Deinit()
       smbc_set_context(NULL);
       smbc_free_context(m_context, 1);
     }
+#ifndef _LINUX
     catch(win32_exception e)
     {
       e.writelog(__FUNCTION__);
     }
+#else
+    catch(...)
+    {
+      CLog::Log(LOGERROR,"exception on CSMB::Deinit. errno: %d", errno);
+    }
+#endif
     m_context = NULL;
   }
 }

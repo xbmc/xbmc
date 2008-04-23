@@ -1,11 +1,12 @@
 #pragma once
 
 #ifndef _LINUX
-#include "../python/Python.h"
+#include "lib/libPython/python/Python.h"
 #else
 #include <python2.4/Python.h>
 #endif
-#include "../../../cores/IPlayer.h"
+#include "cores/IPlayer.h"
+
 
 int Py_XBMC_Event_OnPlayBackStarted(void* arg);
 int Py_XBMC_Event_OnPlayBackEnded(void* arg);

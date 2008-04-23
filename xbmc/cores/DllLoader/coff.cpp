@@ -11,7 +11,7 @@
 #pragma warning (disable:4806)
 #endif
 
-#include "../../utils/log.h"
+#include "utils/log.h"
 #define printf CLog::DebugLog
 
 const char *DATA_DIR_NAME[16] =

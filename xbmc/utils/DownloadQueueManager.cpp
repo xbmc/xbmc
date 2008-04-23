@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "DownloadQueueManager.h"
 
+#include <assert.h>
 
 // Global instance of the download manager
 CDownloadQueueManager g_DownloadManager;

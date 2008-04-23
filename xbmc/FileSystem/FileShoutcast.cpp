@@ -3,8 +3,11 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
 #include "FileShoutcast.h"
+#include "GUISettings.h"
+#include "GUIDialogProgress.h"
+#include "GUIWindowManager.h"
+#include "URL.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -15,11 +18,12 @@
 #define WIN32 1
 #endif
 
-#include "../lib/libshout/rip_manager.h"
-#include "../lib/libshout/filelib.h"
+#include "lib/libshout/rip_manager.h"
+//#include "lib/libshout/util.h"
+#include "lib/libshout/filelib.h"
 #include "RingBuffer.h"
 #include "ShoutcastRipFile.h"
-#include "../utils/GUIInfoManager.h"
+#include "utils/GUIInfoManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -176,9 +180,18 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
 {
   m_dwLastTime = timeGetTime();
   int ret;
-  set_rip_manager_options_defaults(&m_opt);
+  RIP_MANAGER_OPTIONS m_opt;
+  m_opt.relay_port = 8000;
+  m_opt.max_port = 18000;
+  m_opt.flags = OPT_AUTO_RECONNECT |
+                OPT_SEPERATE_DIRS |
+                OPT_SEARCH_PORTS |
+                OPT_ADD_ID3V2;
 
   CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+
+  set_rip_manager_options_defaults(&m_opt);
+
   strcpy(m_opt.output_directory, "./");
   m_opt.proxyurl[0] = '\0';
 
@@ -383,15 +396,5 @@ bool CFileShoutcast::GetMusicInfoTag(CMusicInfoTag& tag)
 
 CStdString CFileShoutcast::GetContent()
 {
-  switch (m_contenttype)
-  {
-  case CONTENT_TYPE_MP3:
-	return "audio/mpeg";
-  case CONTENT_TYPE_OGG:
-	return "audio/ogg";
-  case CONTENT_TYPE_AAC:
-	return "audio/aac";
-  default:
-	return "application/octet-stream"; 
-  }
+  return  m_contenttype;
 }

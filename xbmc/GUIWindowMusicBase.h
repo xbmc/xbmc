@@ -6,7 +6,6 @@
 #pragma once
 #include "GUIMediaWindow.h"
 #include "MusicDatabase.h"
-#include "PlayList.h"
 #include "musicInfoTagLoaderFactory.h"
 #include "utils/MusicInfoScraper.h"
 #include "PlayListPlayer.h"

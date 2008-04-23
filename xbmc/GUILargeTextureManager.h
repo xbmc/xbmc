@@ -7,6 +7,8 @@
 #include "TextureManager.h"
 #endif
 
+#include <assert.h>
+
 class CGUILargeTextureManager : public CThread
 {
 public:

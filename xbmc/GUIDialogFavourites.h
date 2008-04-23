@@ -1,6 +1,9 @@
 #pragma once
 #include "GUIDialog.h"
 
+class CFileItem;
+class CFileItemList;
+
 class CGUIDialogFavourites :
       public CGUIDialog
 {
@@ -23,5 +26,5 @@ protected:
   void OnRename(int item);
   void UpdateList();
 
-  CFileItemList m_favourites;
+  CFileItemList* m_favourites;
 };

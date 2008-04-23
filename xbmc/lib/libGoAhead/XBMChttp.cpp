@@ -10,33 +10,40 @@
 /********************************* Includes ***********************************/
 
 #include "stdafx.h"
+#include "Application.h"
 #include "WebServer.h"
 #include "XBMChttp.h"
 #include "includes.h"
+#include "GUIWindowManager.h"
 
-#include "../../PlayListFactory.h"
-#include "../../Application.h"
-#include "../../Util.h"
-#include "../../PlayListPlayer.h"
-#include "../../FileSystem/HDDirectory.h" 
-#include "../../FileSystem/CDDADirectory.h"
-#include "../../VideoDatabase.h"
+#include "PlayListFactory.h"
+#include "Util.h"
+#include "PlayListPlayer.h"
+#include "PlayList.h"
+#include "FileSystem/HDDirectory.h" 
+#include "FileSystem/CDDADirectory.h"
+#include "VideoDatabase.h"
 #include "GUIButtonControl.h"
-#include "../../utils/GUIInfoManager.h"
-#include "../../Picture.h"
-#include "../../musicInfoTagLoaderFactory.h"
-#include "../../utils/MusicInfoScraper.h"
-#include "../../MusicDatabase.h"
-#include "../../GUIWindowSlideShow.h"
-#include "../../GUIMediaWindow.h"
-#include "../../GUIWindowFileManager.h"
+#include "utils/GUIInfoManager.h"
+#include "Picture.h"
+#include "musicInfoTagLoaderFactory.h"
+#include "utils/MusicInfoScraper.h"
+#include "MusicDatabase.h"
+#include "GUIWindowSlideShow.h"
+#include "GUIMediaWindow.h"
+#include "GUIWindowFileManager.h"
 #include "GUIButtonScroller.h"
-#include "../../FileSystem/FactoryDirectory.h"
-#include "../../FileSystem/VirtualDirectory.h"
-#include "../../utils/UdpClient.h"
+#include "FileSystem/FactoryDirectory.h"
+#include "FileSystem/VirtualDirectory.h"
+#include "utils/UdpClient.h"
 #ifndef _LINUX
-#include "../../xbox/XKHDD.h"
+#include "xbox/XKHDD.h"
 #endif
+#include "FileSystem/Directory.h"
+#include "MusicInfoTag.h"
+#include "PictureInfoTag.h"
+#include "FileItem.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace MUSIC_GRABBER;
@@ -519,7 +526,7 @@ bool CXbmcHttp::LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, 
     return false;
 
   // first item of the list, used to determine the intent
-  CPlayList::CPlayListItem playlistItem = playlist[0];
+  CPlayListItem playlistItem = playlist[0];
 
   if ((playlist.size() == 1) && (autoStart))
   {
@@ -635,7 +642,7 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
       bShowDate = false;
   }
 
-  VECSHARES *pShares = NULL;
+  VECSOURCES *pShares = NULL;
   enum SHARETYPES { MUSIC, VIDEO, PICTURES, FILES };
   switch(iType)
   {
@@ -705,16 +712,16 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
 
   if (!strLocation.IsEmpty() && !bSpecial)
   {
-    VECSHARES vecShares = *pShares;
+    VECSOURCES VECSOURCES = *pShares;
     bool bIsShareName = false;
-    int iIndex = CUtil::GetMatchingShare(strLocation, vecShares, bIsShareName);
+    int iIndex = CUtil::GetMatchingSource(strLocation, VECSOURCES, bIsShareName);
     if (iIndex < 0)
     {
       CStdString strError = "Error: invalid location, " + strLocation;
       return SetResponse(openTag+strError);
     }
     if (bIsShareName)
-      strLocation = vecShares[iIndex].strPath;
+      strLocation = VECSOURCES[iIndex].strPath;
   }
 
   CFileItemList items;
@@ -725,7 +732,7 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
     params[1] = "appendone";
     if (bPathsOnly)
       params[1] = "pathsonly";
-    return xbmcGetShares(2, params);
+    return xbmcGetSources(2, params);
   }
   else if (!CDirectory::GetDirectory(strLocation, items, strMask))
   {
@@ -801,7 +808,7 @@ int CXbmcHttp::xbmcGetXBETitle(int numParas, CStdString paras[])
   }
 }
 
-int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
+int CXbmcHttp::xbmcGetSources(int numParas, CStdString paras[])
 {
   // returns the share listing in this format:
   // <li>type;name;path
@@ -858,7 +865,7 @@ int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
   for (int i = iStart; i < iEnd; ++i)
   {
     CStdString strType;
-    VECSHARES *pShares = NULL;
+    VECSOURCES *pShares = NULL;
     switch(i)
     {
     case MUSIC:
@@ -890,10 +897,10 @@ int CXbmcHttp::xbmcGetShares(int numParas, CStdString paras[])
     if (!pShares)
       return SetResponse(openTag+"Error");
     
-    VECSHARES vecShares = *pShares;
-    for (int j = 0; j < (int)vecShares.size(); ++j)
+    VECSOURCES VECSOURCES = *pShares;
+    for (int j = 0; j < (int)VECSOURCES.size(); ++j)
     {
-      CShare share = vecShares.at(j);
+      CMediaSource share = VECSOURCES.at(j);
       CStdString strName = share.strName;
       strName.Replace(";", ";;");
       CStdString strPath = share.strPath;
@@ -1450,7 +1457,7 @@ int CXbmcHttp::xbmcPlaySlideshow(int numParas, CStdString paras[] )
       recursive=atoi(paras[1].c_str());
     else
       recursive=0;
-    CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, recursive, 0, 0);
+    CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, recursive);
     if (numParas==0)
       msg.SetStringParam("");
     else
@@ -1713,7 +1720,7 @@ int CXbmcHttp::xbmcGetPlayListContents(int numParas, CStdString paras[])
     if (g_application.IsPlayingAudio())
 	{
 	  for (int i=0; i< thePlayList.size(); i++) {
-        const CPlayList::CPlayListItem& item=thePlayList[i];
+        const CPlayListItem& item=thePlayList[i];
 		const CMusicInfoTag* tagVal=item.GetMusicTag();
 	    if (tagVal && tagVal->GetURL()!="")
           list += closeTag+openTag + tagVal->GetURL();
@@ -1723,7 +1730,7 @@ int CXbmcHttp::xbmcGetPlayListContents(int numParas, CStdString paras[])
 	}
 	else
 	  for (int i=0; i< thePlayList.size(); i++) {
-        const CPlayList::CPlayListItem& item=thePlayList[i];
+        const CPlayListItem& item=thePlayList[i];
         list += closeTag+openTag + item.GetFileName();
       }
   return SetResponse(list) ;
@@ -2483,13 +2490,13 @@ int CXbmcHttp::xbmcGetSystemInfoByName(int numParas, CStdString paras[])
         strTemp = "Error:No information retrieved for " + paras[i];
       strInfo += openTag + strTemp;
     }
-    if(strInfo.Find("°") && strInfo.Find("Â"))
+    if(strInfo.Find("ï¿½") && strInfo.Find("ï¿½"))
     {
-      // The Charset Converter ToUtf8() will add. only in this case= "°" a char "Â°" during converting, 
+      // The Charset Converter ToUtf8() will add. only in this case= "ï¿½" a char "Â°" during converting, 
       // which is the right value for the GUI!
       // A length depending fix in CCharsetConverter::stringCharsetToUtf8() will couse a wrong char in GUI. 
-      // So just for http, we remove the "Â", to fix BUG ID:[1586251]
-      strInfo.Replace("Â","");
+      // So just for http, we remove the "ï¿½", to fix BUG ID:[1586251]
+      strInfo.Replace("ï¿½","");
     }
     return SetResponse(strInfo);
   }
@@ -2877,7 +2884,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "getcurrentlyplaying")      retVal = xbmcGetCurrentlyPlaying(numParas, paras); 
       else if (command == "getxbeid")                 retVal = xbmcGetXBEID(numParas, paras); 
       else if (command == "getxbetitle")              retVal = xbmcGetXBETitle(numParas, paras); 
-      else if (command == "getshares")                retVal = xbmcGetShares(numParas, paras); 
+      else if (command == "getshares")                retVal = xbmcGetSources(numParas, paras); 
       else if (command == "getdirectory")             retVal = xbmcGetDirectory(numParas, paras); 
       else if (command == "getmedialocation")         retVal = xbmcGetMediaLocation(numParas, paras); 
       else if (command == "gettagfromfilename")       retVal = xbmcGetTagFromFilename(numParas, paras);

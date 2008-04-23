@@ -1,6 +1,8 @@
 #pragma once
 #include "GUIDialog.h"
 
+class CFileItem;
+
 class CGUIDialogSongInfo :
       public CGUIDialog
 {
@@ -20,7 +22,7 @@ protected:
   void OnGetThumb();
   void SetRating(char rating);
 
-  CFileItem m_song;
+  CFileItem* m_song;
   char m_startRating;
   bool m_cancelled;
   bool m_needsUpdate;

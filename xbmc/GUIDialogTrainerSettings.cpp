@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "GUIDialogTrainerSettings.h"
 #include "utils/Trainer.h"
+#include "GUIWindowManager.h"
 
 #define CONTROL_SETTINGS_LABEL      2
 #define CONTROL_START              30

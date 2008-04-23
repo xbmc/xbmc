@@ -22,34 +22,34 @@
 #include "stdafx.h"
 #include "GUIWindowWeather.h"
 #include "guiImage.h"
-#include "Util.h"
 #include "utils/Weather.h"
+#include "GUISettings.h"
+#include "GUIWindowManager.h"
 
+#define CONTROL_BTNREFRESH             2
+#define CONTROL_SELECTLOCATION         3
+#define CONTROL_LABELUPDATED          11
+#define CONTROL_IMAGELOGO            101
 
-#define CONTROL_BTNREFRESH  2
-#define CONTROL_SELECTLOCATION 3
-#define CONTROL_LABELUPDATED 11
-#define CONTROL_IMAGELOGO  101
+#define CONTROL_STATICTEMP           223
+#define CONTROL_STATICFEEL           224
+#define CONTROL_STATICUVID           225
+#define CONTROL_STATICWIND           226
+#define CONTROL_STATICDEWP           227
+#define CONTROL_STATICHUMI           228
 
-#define CONTROL_STATICTEMP  223
-#define CONTROL_STATICFEEL  224
-#define CONTROL_STATICUVID  225
-#define CONTROL_STATICWIND  226
-#define CONTROL_STATICDEWP  227
-#define CONTROL_STATICHUMI  228
+#define CONTROL_LABELD0DAY            31
+#define CONTROL_LABELD0HI             32
+#define CONTROL_LABELD0LOW            33
+#define CONTROL_LABELD0GEN            34
+#define CONTROL_IMAGED0IMG            35
 
-#define CONTROL_LABELD0DAY  31
-#define CONTROL_LABELD0HI  32
-#define CONTROL_LABELD0LOW  33
-#define CONTROL_LABELD0GEN  34
-#define CONTROL_IMAGED0IMG  35
+#define PARTNER_ID          "1004124588"   //weather.com partner id
+#define PARTNER_KEY   "079f24145f208494"  //weather.com partner key
 
-#define PARTNER_ID    "1004124588"   //weather.com partner id
-#define PARTNER_KEY    "079f24145f208494"  //weather.com partner key
-
-#define MAX_LOCATION   3
-#define LOCALIZED_TOKEN_FIRSTID 370
-#define LOCALIZED_TOKEN_LASTID 395
+#define MAX_LOCATION                   3
+#define LOCALIZED_TOKEN_FIRSTID      370
+#define LOCALIZED_TOKEN_LASTID       395
 /*
 FIXME'S
 >strings are not centered

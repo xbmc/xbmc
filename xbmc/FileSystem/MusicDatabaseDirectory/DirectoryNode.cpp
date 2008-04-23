@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DirectoryNode.h"
-#include "../../Util.h"
+#include "Util.h"
 #include "QueryParams.h"
 #include "DirectoryNodeRoot.h"
 #include "DirectoryNodeOverview.h"
@@ -21,6 +21,10 @@
 #include "DirectoryNodeYear.h"
 #include "DirectoryNodeYearAlbum.h"
 #include "DirectoryNodeYearSong.h"
+#include "MusicInfoTag.h"
+#include "URL.h"
+#include "Settings.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;

@@ -11,7 +11,7 @@ protected:
   virtual CStdString GetLockType();
   virtual bool UnrollArchives();
   virtual CStdString GetExtensions();
-  virtual VECSHARES& GetShares();
+  virtual VECSOURCES& GetSources();
 };
 
 class CGUIViewStateWindowPrograms : public CGUIViewState
@@ -23,7 +23,7 @@ protected:
   virtual void SaveViewState();
   virtual CStdString GetLockType();
   virtual CStdString GetExtensions();
-  virtual VECSHARES& GetShares();
+  virtual VECSOURCES& GetSources();
 };
 
 class CGUIViewStateWindowScripts : public CGUIViewState
@@ -34,7 +34,7 @@ public:
 protected:
   virtual void SaveViewState();
   virtual CStdString GetExtensions();
-  virtual VECSHARES& GetShares();
+  virtual VECSOURCES& GetSources();
 };
 class CGUIViewStateWindowGameSaves : public CGUIViewState
 {
@@ -44,5 +44,5 @@ public:
 protected:
   virtual void SaveViewState();
   //virtual CStdString GetExtensions();
-  virtual VECSHARES& GetShares();
+  virtual VECSOURCES& GetSources();
 };

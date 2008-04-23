@@ -22,9 +22,9 @@
 #include "stdafx.h"
 #include "Artist.h"
 #include "XMLUtils.h"
+#include "Settings.h"
 
 using namespace std;
-using namespace MUSIC_INFO;
 
 bool CArtist::Load(const TiXmlElement *artist)
 {

@@ -26,7 +26,7 @@
 #define new new( _NORMAL_BLOCK, __FILE__, __LINE__)
 #endif
 #endif
-#include "../xbmc/utils/log.h"
+#include "utils/log.h"
 
 // guilib internal
 #include "gui3d.h"

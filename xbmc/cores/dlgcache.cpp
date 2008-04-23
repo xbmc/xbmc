@@ -1,7 +1,9 @@
 
 #include "stdafx.h"
 #include "dlgcache.h"
+#include "GUIWindowManager.h"
 #include "Application.h"
+#include "GUIDialogProgress.h"
 
 #ifdef HAS_MPLAYER
 extern "C" void mplayer_exit_player(void);

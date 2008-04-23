@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GUIDialogSettings.h"
+#include "MediaSource.h"
 
 class CGUIDialogProfileSettings : public CGUIDialogSettings
 {
@@ -30,7 +31,7 @@ protected:
 
   // lock stuff
   CStdString m_strLockCode;
-  int m_iLockMode;
+  LockType m_iLockMode;
   bool m_bLockSettings;
   bool m_bLockMusic;
   bool m_bLockVideo;

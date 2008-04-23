@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include <ConIo.h>
 #include "FanController.h"
-#include "../xbox/Undocumented.h"
-#include "../xbox/XKExports.h"
-
+#include "xbox/Undocumented.h"
+#include "xbox/XKExports.h"
+#include "GUISettings.h"
 
 #define PIC_ADDRESS      0x20
 #define XCALIBUR_ADDRESS 0xE0 // XCalibur/1.6 videochip
@@ -43,6 +43,7 @@ CFanController::CFanController()
   unsigned long iDummy;
   bIs16Box = (HalReadSMBusValue(XCALIBUR_ADDRESS, 0, 0, (LPBYTE)&iDummy) == 0);
   cpuTempCount = 0;
+  m_minFanspeed = 1;
 }
 
 
@@ -99,6 +100,16 @@ void CFanController::SetTargetTemperature(int targetTemperature)
   targetTemp = targetTemperature;
 }
 
+void CFanController::SetMinFanSpeed(int minFanspeed)
+{
+  m_minFanspeed = minFanspeed;
+  if (m_minFanspeed < 1)
+    m_minFanspeed=1;
+  if (m_minFanspeed > 50)
+    m_minFanspeed=50; // Should not be possible
+}
+
+
 void CFanController::RestoreStartupSpeed()
 {
   SetFanSpeed(systemFanSpeed);
@@ -112,10 +123,11 @@ void CFanController::RestoreStartupSpeed()
   inCustomMode = false;
 }
 
-void CFanController::Start(int targetTemperature)
+void CFanController::Start(int targetTemperature, int minFanspeed)
 {
   StopThread();
   targetTemp = targetTemperature;
+  SetMinFanSpeed(minFanspeed);
   Create();
 }
 
@@ -334,6 +346,9 @@ void CFanController::CalcSpeed(int targetTemp)
     }
   }
 
-  if (calculatedFanSpeed < 1) {calculatedFanSpeed = 1;} // always keep the fan running
+  if (calculatedFanSpeed < m_minFanspeed) 
+  {
+    calculatedFanSpeed = m_minFanspeed;
+  } 
   if (calculatedFanSpeed > 50) {calculatedFanSpeed = 50;}
 }

@@ -1,6 +1,8 @@
 #pragma once
 #ifndef _LINUX
 
+#include "GraphicContext.h"
+
 //#define MP_DIRECTRENDERING
 
 #ifdef MP_DIRECTRENDERING

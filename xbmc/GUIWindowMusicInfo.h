@@ -1,5 +1,11 @@
 #pragma once
 #include "GUIDialog.h"
+#include "Song.h"
+#include "Artist.h"
+#include "Album.h"
+
+class CFileItem;
+class CFileItemList;
 
 class CGUIWindowMusicInfo :
       public CGUIDialog
@@ -16,7 +22,7 @@ public:
   void RefreshThumb();
 
   virtual bool HasListItems() const { return true; };
-  virtual CFileItem *GetCurrentListItem(int offset = 0) { return &m_albumItem; };
+  virtual CFileItem *GetCurrentListItem(int offset = 0);
 protected:
   virtual void OnInitWindow();
   void Update();
@@ -33,6 +39,6 @@ protected:
   bool m_bRefresh;
   bool m_hasUpdatedThumb;
   bool m_bArtistInfo;
-  CFileItem     m_albumItem;
-  CFileItemList m_albumSongs;
+  CFileItem*     m_albumItem;
+  CFileItemList* m_albumSongs;
 };

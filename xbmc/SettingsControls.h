@@ -4,6 +4,8 @@
 #include "GUIButtonControl.h"
 #include "GUIRadioButtonControl.h"
 
+class CSetting;
+
 class CBaseSettingControl
 {
 public:

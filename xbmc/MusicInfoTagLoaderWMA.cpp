@@ -26,6 +26,9 @@
 #include "MusicInfoTagLoaderWMA.h"
 #include "Util.h"
 #include "Picture.h"
+#include "MusicInfoTag.h"
+#include "FileSystem/File.h"
+#include "Settings.h"
 
 using namespace AUTOPTR;
 using namespace XFILE;

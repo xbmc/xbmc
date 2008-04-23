@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ZipManager.h"
-#include "../Util.h"
+#include "Util.h"
+#include "URL.h"
+#include "FileSystem/File.h"
 
 using namespace XFILE;
 
@@ -172,8 +174,7 @@ bool CZipManager::ExtractArchive(const CStdString& strArchive, const CStdString&
 {
   std::vector<SZipEntry> entry;
   CStdString strZipPath;
-  //strZipPath.Format("zip://Z:\\temp,1,,%s,\\",strArchive.c_str());
-  CUtil::CreateZipPath(strZipPath, strArchive, "", 1);  
+  CUtil::CreateArchivePath(strZipPath, "zip", strArchive, "");  
   GetZipList(strZipPath,entry);
   for (std::vector<SZipEntry>::iterator it=entry.begin();it != entry.end();++it)
   {
@@ -182,8 +183,7 @@ bool CZipManager::ExtractArchive(const CStdString& strArchive, const CStdString&
     CStdString strFilePath(it->name);
     
     
-    //strZipPath.Format("zip://Z:\\temp,1,,%s,\\%s",strArchive.c_str(),strFilePath.c_str());
-    CUtil::CreateZipPath(strZipPath, strArchive, strFilePath, 1);  
+    CUtil::CreateArchivePath(strZipPath, "zip", strArchive, strFilePath);
     strFilePath.Replace("/","\\");
     if (!CFile::Cache(strZipPath.c_str(),(strPath+strFilePath).c_str()))
       return false;
@@ -195,8 +195,7 @@ void CZipManager::CleanUp(const CStdString& strArchive, const CStdString& strPat
 {
   std::vector<SZipEntry> entry;
   CStdString strZipPath;
-  //strZipPath.Format("zip://Z:\\temp,1,,%s,\\",strArchive.c_str());
-  CUtil::CreateZipPath(strZipPath, strArchive, "", 1);  
+  CUtil::CreateArchivePath(strZipPath, "zip", strArchive, "");  
 
   GetZipList(strZipPath,entry);
   for (std::vector<SZipEntry>::iterator it=entry.begin();it != entry.end();++it)

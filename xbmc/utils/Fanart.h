@@ -4,7 +4,7 @@
 #if !defined(_FANART_H_)
 #define _FANART_H_
 
-#include "../../guilib/StdString.h"
+#include "StdString.h"
 #include <vector>
 
 #pragma once

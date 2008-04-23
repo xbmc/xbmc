@@ -23,6 +23,7 @@
 #include "FlacTag.h"
 #include "Util.h"
 #include "Picture.h"
+#include "FileSystem/File.h"
 
 #define BYTES_TO_CHECK_FOR_BAD_TAGS 8192
 

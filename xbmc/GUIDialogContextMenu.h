@@ -1,6 +1,8 @@
 #pragma once
 #include "GUIDialog.h"
 
+class CMediaSource;
+
 enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_LAUNCH,
                       CONTEXT_BUTTON_LAUNCH_IN,
@@ -112,10 +114,10 @@ public:
   static bool SourcesMenu(const CStdString &strType, const CFileItem *item, float posX, float posY);
   static void SwitchMedia(const CStdString& strType, const CStdString& strPath);
 
-  static void GetContextButtons(const CStdString &type, CShare *share, CContextButtons &buttons);
-  static bool OnContextButton(const CStdString &type, CShare *share, CONTEXT_BUTTON button);
+  static void GetContextButtons(const CStdString &type, CMediaSource *share, CContextButtons &buttons);
+  static bool OnContextButton(const CStdString &type, CMediaSource *share, CONTEXT_BUTTON button);
 
-  static CShare *GetShare(const CStdString &type, const CFileItem *item);
+  static CMediaSource *GetShare(const CStdString &type, const CFileItem *item);
 protected:
   virtual void OnInitWindow();
   static CStdString GetDefaultShareNameByType(const CStdString &strType);

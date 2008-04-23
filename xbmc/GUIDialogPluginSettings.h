@@ -1,6 +1,7 @@
 #ifndef GUIDIALOG_PLUGIN_SETTINGS_
 #define GUIDIALOG_PLUGIN_SETTINGS_
 
+#include "GUIDialogBoxBase.h"
 #include "PluginSettings.h"
 
 struct SScraperInfo;
