@@ -4270,7 +4270,8 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->m_dateTime.SetFromDateString(movie.m_strPremiered);
         pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
         CStdString strTempPath = pItem->m_strPath;
-        pItem->SetProperty("fanart_image", pItem->GetCachedVideoFanart(movie.m_strPath));
+        if (movie.m_fanart.GetNumFanarts != 0)
+          pItem->SetProperty("fanart_image", pItem->GetCachedVideoFanart(movie.m_strPath));
         items.Add(pItem);
       }
       m_pDS->next();
