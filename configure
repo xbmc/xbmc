@@ -653,6 +653,14 @@ LIBS
 build_alias
 host_alias
 target_alias
+build
+build_cpu
+build_vendor
+build_os
+host
+host_cpu
+host_vendor
+host_os
 CCACHE
 AWK
 CXX
@@ -667,20 +675,13 @@ CFLAGS
 ac_ct_CC
 LN_S
 SET_MAKE
+INCLUDES
 CPP
 GREP
 EGREP
 ALLOCA
 LIBOBJS
 POW_LIB
-build
-build_cpu
-build_vendor
-build_os
-host
-host_cpu
-host_vendor
-host_os
 ARCH
 python_lib_a
 DEBUG_FLAGS
@@ -1734,6 +1735,121 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 ac_config_headers="$ac_config_headers config.h"
+
+
+ac_aux_dir=
+for ac_dir in "$srcdir" "$srcdir/.." "$srcdir/../.."; do
+  if test -f "$ac_dir/install-sh"; then
+    ac_aux_dir=$ac_dir
+    ac_install_sh="$ac_aux_dir/install-sh -c"
+    break
+  elif test -f "$ac_dir/install.sh"; then
+    ac_aux_dir=$ac_dir
+    ac_install_sh="$ac_aux_dir/install.sh -c"
+    break
+  elif test -f "$ac_dir/shtool"; then
+    ac_aux_dir=$ac_dir
+    ac_install_sh="$ac_aux_dir/shtool install -c"
+    break
+  fi
+done
+if test -z "$ac_aux_dir"; then
+  { { echo "$as_me:$LINENO: error: cannot find install-sh or install.sh in \"$srcdir\" \"$srcdir/..\" \"$srcdir/../..\"" >&5
+echo "$as_me: error: cannot find install-sh or install.sh in \"$srcdir\" \"$srcdir/..\" \"$srcdir/../..\"" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+# These three variables are undocumented and unsupported,
+# and are intended to be withdrawn in a future Autoconf release.
+# They can cause serious problems if a builder's source tree is in a directory
+# whose full name contains unusual characters.
+ac_config_guess="$SHELL $ac_aux_dir/config.guess"  # Please don't use this var.
+ac_config_sub="$SHELL $ac_aux_dir/config.sub"  # Please don't use this var.
+ac_configure="$SHELL $ac_aux_dir/configure"  # Please don't use this var.
+
+
+# Make sure we can run config.sub.
+$SHELL "$ac_aux_dir/config.sub" sun4 >/dev/null 2>&1 ||
+  { { echo "$as_me:$LINENO: error: cannot run $SHELL $ac_aux_dir/config.sub" >&5
+echo "$as_me: error: cannot run $SHELL $ac_aux_dir/config.sub" >&2;}
+   { (exit 1); exit 1; }; }
+
+{ echo "$as_me:$LINENO: checking build system type" >&5
+echo $ECHO_N "checking build system type... $ECHO_C" >&6; }
+if test "${ac_cv_build+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_build_alias=$build_alias
+test "x$ac_build_alias" = x &&
+  ac_build_alias=`$SHELL "$ac_aux_dir/config.guess"`
+test "x$ac_build_alias" = x &&
+  { { echo "$as_me:$LINENO: error: cannot guess build type; you must specify one" >&5
+echo "$as_me: error: cannot guess build type; you must specify one" >&2;}
+   { (exit 1); exit 1; }; }
+ac_cv_build=`$SHELL "$ac_aux_dir/config.sub" $ac_build_alias` ||
+  { { echo "$as_me:$LINENO: error: $SHELL $ac_aux_dir/config.sub $ac_build_alias failed" >&5
+echo "$as_me: error: $SHELL $ac_aux_dir/config.sub $ac_build_alias failed" >&2;}
+   { (exit 1); exit 1; }; }
+
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_build" >&5
+echo "${ECHO_T}$ac_cv_build" >&6; }
+case $ac_cv_build in
+*-*-*) ;;
+*) { { echo "$as_me:$LINENO: error: invalid value of canonical build" >&5
+echo "$as_me: error: invalid value of canonical build" >&2;}
+   { (exit 1); exit 1; }; };;
+esac
+build=$ac_cv_build
+ac_save_IFS=$IFS; IFS='-'
+set x $ac_cv_build
+shift
+build_cpu=$1
+build_vendor=$2
+shift; shift
+# Remember, the first character of IFS is used to create $*,
+# except with old shells:
+build_os=$*
+IFS=$ac_save_IFS
+case $build_os in *\ *) build_os=`echo "$build_os" | sed 's/ /-/g'`;; esac
+
+
+{ echo "$as_me:$LINENO: checking host system type" >&5
+echo $ECHO_N "checking host system type... $ECHO_C" >&6; }
+if test "${ac_cv_host+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test "x$host_alias" = x; then
+  ac_cv_host=$ac_cv_build
+else
+  ac_cv_host=`$SHELL "$ac_aux_dir/config.sub" $host_alias` ||
+    { { echo "$as_me:$LINENO: error: $SHELL $ac_aux_dir/config.sub $host_alias failed" >&5
+echo "$as_me: error: $SHELL $ac_aux_dir/config.sub $host_alias failed" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_host" >&5
+echo "${ECHO_T}$ac_cv_host" >&6; }
+case $ac_cv_host in
+*-*-*) ;;
+*) { { echo "$as_me:$LINENO: error: invalid value of canonical host" >&5
+echo "$as_me: error: invalid value of canonical host" >&2;}
+   { (exit 1); exit 1; }; };;
+esac
+host=$ac_cv_host
+ac_save_IFS=$IFS; IFS='-'
+set x $ac_cv_host
+shift
+host_cpu=$1
+host_vendor=$2
+shift; shift
+# Remember, the first character of IFS is used to create $*,
+# except with old shells:
+host_os=$*
+IFS=$ac_save_IFS
+case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
+
 
 
 # Check whether --enable-debug was given.
@@ -3217,6 +3333,18 @@ echo "${ECHO_T}no" >&6; }
 fi
 
 
+if test "$host_vendor" = "apple" ; then
+   CFLAGS="-L/System/Library/Frameworks/OpenGL.framework/Libraries -L/opt/local/lib -L/opt/local/lib/mysql5/mysql -I/opt/local/include"
+
+   CXXFLAGS="-L/System/Library/Frameworks/OpenGL.framework/Libraries -L/opt/local/lib -L/opt/local/lib/mysql5/mysql -I/opt/local/include"
+
+   LDFLAGS="-L/System/Library/Frameworks/OpenGL.framework/Libraries -L/opt/local/lib -L/opt/local/lib/mysql5/mysql"
+
+   INCLUDES="-I/opt/local/include -I/opt/local/include/freetype2 -I/opt/local/include/mysql5 -I../xbmc -I../xbmc/lib -I../xbmc/osx -Ixbmc/lib -Ixbmc/osx -Ilib/libffmpeg-OSX/libavutil -I../xbmc/lib/libffmpeg-OSX -Ilib -Iosx -I."
+
+fi
+
+
 # Checks for libraries.
 if test "$use_gl" = "yes"; then
 
@@ -3429,6 +3557,7 @@ fi
 
 fi
 
+if test "$host_vendor" != "apple"; then
 
 { echo "$as_me:$LINENO: checking for main in -lXinerama" >&5
 echo $ECHO_N "checking for main in -lXinerama... $ECHO_C" >&6; }
@@ -3498,6 +3627,7 @@ echo "$as_me: error: libXinerama is required. Please see README.linux" >&2;}
    { (exit 1); exit 1; }; }
 fi
 
+fi
 
 { echo "$as_me:$LINENO: checking for main in -lmad" >&5
 echo $ECHO_N "checking for main in -lmad... $ECHO_C" >&6; }
@@ -3567,6 +3697,7 @@ echo "$as_me: error: libmad is required. Please see README.linux" >&2;}
    { (exit 1); exit 1; }; }
 fi
 
+if test "$host_vendor" != "apple"; then
 
 { echo "$as_me:$LINENO: checking for main in -ltre" >&5
 echo $ECHO_N "checking for main in -ltre... $ECHO_C" >&6; }
@@ -3636,6 +3767,7 @@ echo "$as_me: error: libtre is required. Please see README.linux" >&2;}
    { (exit 1); exit 1; }; }
 fi
 
+fi
 
 { echo "$as_me:$LINENO: checking for main in -logg" >&5
 echo $ECHO_N "checking for main in -logg... $ECHO_C" >&6; }
@@ -4925,7 +5057,8 @@ _ACEOF
 
 fi
       # check for cximage library
-if test "$use_xrandr" = "yes"; then
+if test "$host_vendor" != "apple" ; then
+   if test "$use_xrandr" = "yes" ; then
 
 { echo "$as_me:$LINENO: checking for main in -lXrandr" >&5
 echo $ECHO_N "checking for main in -lXrandr... $ECHO_C" >&6; }
@@ -4994,9 +5127,10 @@ else
 echo "${ECHO_T}== Could not find libXRandR. SDL will be used for resolution support. ==" >&6; }
 fi
 
-else
-  { echo "$as_me:$LINENO: result: == XRandR support disabled. SDL will be used for resolution support. ==" >&5
+   else
+      { echo "$as_me:$LINENO: result: == XRandR support disabled. SDL will be used for resolution support. ==" >&5
 echo "${ECHO_T}== XRandR support disabled. SDL will be used for resolution support. ==" >&6; }
+   fi
 fi
 
 if test "$use_mms" = "yes"; then
@@ -5214,6 +5348,7 @@ else
 echo "${ECHO_T}== PCRE support disabled. ==" >&6; }
 fi
 
+if test "$host_vendor" != "apple" ; then
 { echo "$as_me:$LINENO: checking for main in -lhal" >&5
 echo $ECHO_N "checking for main in -lhal... $ECHO_C" >&6; }
 if test "${ac_cv_lib_hal_main+set}" = set; then
@@ -5416,6 +5551,7 @@ echo "$as_me: error: == Could not find a required library. Please see README.lin
    { (exit 1); exit 1; }; }
 fi
 
+fi
 
 # Checks for header files.
 
@@ -9251,11 +9387,13 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <stdio.h>
+#include <sys/types.h> /* for off_t */
+     #include <stdio.h>
 int
 main ()
 {
-return fseeko (stdin, 0, 0) && (fseeko) (stdin, 0, 0);
+int (*fp) (FILE *, off_t, int) = fseeko;
+     return fseeko (stdin, 0, 0) && fp (stdin, 0, 0);
   ;
   return 0;
 }
@@ -9295,11 +9433,13 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #define _LARGEFILE_SOURCE 1
-#include <stdio.h>
+#include <sys/types.h> /* for off_t */
+     #include <stdio.h>
 int
 main ()
 {
-return fseeko (stdin, 0, 0) && (fseeko) (stdin, 0, 0);
+int (*fp) (FILE *, off_t, int) = fseeko;
+     return fseeko (stdin, 0, 0) && fp (stdin, 0, 0);
   ;
   return 0;
 }
@@ -12431,126 +12571,15 @@ else
   LZO_INCLUDES="$LZO_INCLUDES"
 fi
 
-ac_aux_dir=
-for ac_dir in "$srcdir" "$srcdir/.." "$srcdir/../.."; do
-  if test -f "$ac_dir/install-sh"; then
-    ac_aux_dir=$ac_dir
-    ac_install_sh="$ac_aux_dir/install-sh -c"
-    break
-  elif test -f "$ac_dir/install.sh"; then
-    ac_aux_dir=$ac_dir
-    ac_install_sh="$ac_aux_dir/install.sh -c"
-    break
-  elif test -f "$ac_dir/shtool"; then
-    ac_aux_dir=$ac_dir
-    ac_install_sh="$ac_aux_dir/shtool install -c"
-    break
-  fi
-done
-if test -z "$ac_aux_dir"; then
-  { { echo "$as_me:$LINENO: error: cannot find install-sh or install.sh in \"$srcdir\" \"$srcdir/..\" \"$srcdir/../..\"" >&5
-echo "$as_me: error: cannot find install-sh or install.sh in \"$srcdir\" \"$srcdir/..\" \"$srcdir/../..\"" >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
-# These three variables are undocumented and unsupported,
-# and are intended to be withdrawn in a future Autoconf release.
-# They can cause serious problems if a builder's source tree is in a directory
-# whose full name contains unusual characters.
-ac_config_guess="$SHELL $ac_aux_dir/config.guess"  # Please don't use this var.
-ac_config_sub="$SHELL $ac_aux_dir/config.sub"  # Please don't use this var.
-ac_configure="$SHELL $ac_aux_dir/configure"  # Please don't use this var.
-
-
-# Make sure we can run config.sub.
-$SHELL "$ac_aux_dir/config.sub" sun4 >/dev/null 2>&1 ||
-  { { echo "$as_me:$LINENO: error: cannot run $SHELL $ac_aux_dir/config.sub" >&5
-echo "$as_me: error: cannot run $SHELL $ac_aux_dir/config.sub" >&2;}
-   { (exit 1); exit 1; }; }
-
-{ echo "$as_me:$LINENO: checking build system type" >&5
-echo $ECHO_N "checking build system type... $ECHO_C" >&6; }
-if test "${ac_cv_build+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_build_alias=$build_alias
-test "x$ac_build_alias" = x &&
-  ac_build_alias=`$SHELL "$ac_aux_dir/config.guess"`
-test "x$ac_build_alias" = x &&
-  { { echo "$as_me:$LINENO: error: cannot guess build type; you must specify one" >&5
-echo "$as_me: error: cannot guess build type; you must specify one" >&2;}
-   { (exit 1); exit 1; }; }
-ac_cv_build=`$SHELL "$ac_aux_dir/config.sub" $ac_build_alias` ||
-  { { echo "$as_me:$LINENO: error: $SHELL $ac_aux_dir/config.sub $ac_build_alias failed" >&5
-echo "$as_me: error: $SHELL $ac_aux_dir/config.sub $ac_build_alias failed" >&2;}
-   { (exit 1); exit 1; }; }
-
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_build" >&5
-echo "${ECHO_T}$ac_cv_build" >&6; }
-case $ac_cv_build in
-*-*-*) ;;
-*) { { echo "$as_me:$LINENO: error: invalid value of canonical build" >&5
-echo "$as_me: error: invalid value of canonical build" >&2;}
-   { (exit 1); exit 1; }; };;
-esac
-build=$ac_cv_build
-ac_save_IFS=$IFS; IFS='-'
-set x $ac_cv_build
-shift
-build_cpu=$1
-build_vendor=$2
-shift; shift
-# Remember, the first character of IFS is used to create $*,
-# except with old shells:
-build_os=$*
-IFS=$ac_save_IFS
-case $build_os in *\ *) build_os=`echo "$build_os" | sed 's/ /-/g'`;; esac
-
-
-{ echo "$as_me:$LINENO: checking host system type" >&5
-echo $ECHO_N "checking host system type... $ECHO_C" >&6; }
-if test "${ac_cv_host+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  if test "x$host_alias" = x; then
-  ac_cv_host=$ac_cv_build
-else
-  ac_cv_host=`$SHELL "$ac_aux_dir/config.sub" $host_alias` ||
-    { { echo "$as_me:$LINENO: error: $SHELL $ac_aux_dir/config.sub $host_alias failed" >&5
-echo "$as_me: error: $SHELL $ac_aux_dir/config.sub $host_alias failed" >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_host" >&5
-echo "${ECHO_T}$ac_cv_host" >&6; }
-case $ac_cv_host in
-*-*-*) ;;
-*) { { echo "$as_me:$LINENO: error: invalid value of canonical host" >&5
-echo "$as_me: error: invalid value of canonical host" >&2;}
-   { (exit 1); exit 1; }; };;
-esac
-host=$ac_cv_host
-ac_save_IFS=$IFS; IFS='-'
-set x $ac_cv_host
-shift
-host_cpu=$1
-host_vendor=$2
-shift; shift
-# Remember, the first character of IFS is used to create $*,
-# except with old shells:
-host_os=$*
-IFS=$ac_save_IFS
-case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
-
-
 case $host in
     i*86-*-linux-gnu)
        ARCH="i486-linux"
        ;;
     x86_64-*-linux-gnu)
        ARCH="x86_64-linux"
+       ;;
+    i386-apple-darwin9.2.2)
+       ARCH="x86-osx"
        ;;
     *)
        { { echo "$as_me:$LINENO: error: ==unsupported host" >&5
@@ -12560,6 +12589,7 @@ esac
 
 
 # check for where libpython is
+if test "$host_vendor" != "apple" ; then
 { echo "$as_me:$LINENO: checking for /usr/lib/python2.4/config/libpython2.4-pic.a" >&5
 echo $ECHO_N "checking for /usr/lib/python2.4/config/libpython2.4-pic.a... $ECHO_C" >&6; }
 if test "${ac_cv_file__usr_lib_python2_4_config_libpython2_4_pic_a+set}" = set; then
@@ -12610,6 +12640,7 @@ fi
 
 fi
 
+fi
 
 if test "$use_halmount" = "yes"; then
   final_message="$final_message\n  Automount:\tYes"
@@ -13297,6 +13328,14 @@ LIBS!$LIBS$ac_delim
 build_alias!$build_alias$ac_delim
 host_alias!$host_alias$ac_delim
 target_alias!$target_alias$ac_delim
+build!$build$ac_delim
+build_cpu!$build_cpu$ac_delim
+build_vendor!$build_vendor$ac_delim
+build_os!$build_os$ac_delim
+host!$host$ac_delim
+host_cpu!$host_cpu$ac_delim
+host_vendor!$host_vendor$ac_delim
+host_os!$host_os$ac_delim
 CCACHE!$CCACHE$ac_delim
 AWK!$AWK$ac_delim
 CXX!$CXX$ac_delim
@@ -13311,20 +13350,13 @@ CFLAGS!$CFLAGS$ac_delim
 ac_ct_CC!$ac_ct_CC$ac_delim
 LN_S!$LN_S$ac_delim
 SET_MAKE!$SET_MAKE$ac_delim
+INCLUDES!$INCLUDES$ac_delim
 CPP!$CPP$ac_delim
 GREP!$GREP$ac_delim
 EGREP!$EGREP$ac_delim
 ALLOCA!$ALLOCA$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
 POW_LIB!$POW_LIB$ac_delim
-build!$build$ac_delim
-build_cpu!$build_cpu$ac_delim
-build_vendor!$build_vendor$ac_delim
-build_os!$build_os$ac_delim
-host!$host$ac_delim
-host_cpu!$host_cpu$ac_delim
-host_vendor!$host_vendor$ac_delim
-host_os!$host_os$ac_delim
 ARCH!$ARCH$ac_delim
 python_lib_a!$python_lib_a$ac_delim
 DEBUG_FLAGS!$DEBUG_FLAGS$ac_delim
@@ -13333,7 +13365,7 @@ LZO_INCLUDES!$LZO_INCLUDES$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 71; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 72; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
