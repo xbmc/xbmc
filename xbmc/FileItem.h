@@ -159,7 +159,7 @@ public:
   CStdString GetCachedSeasonThumb() const;
   CStdString GetCachedActorThumb() const;
   CStdString GetCachedVideoFanart() const;
-  CStdString GetCachedVideoFanart(CStdString path) const;
+  static CStdString GetCachedVideoFanart(const CStdString &path);
 
   // Sets the video thumb (cached first, else caches user thumb)
   void SetVideoThumb();
