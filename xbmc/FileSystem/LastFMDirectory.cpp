@@ -21,10 +21,12 @@ CLastFMDirectory::CLastFMDirectory()
 {
   m_Error = false;
   m_Downloaded = false;
+  m_vecCachedItems = new CFileItemList();
 }
 
 CLastFMDirectory::~CLastFMDirectory()
 {
+  delete m_vecCachedItems;
 }
 
 CStdString CLastFMDirectory::BuildURLFromInfo()
