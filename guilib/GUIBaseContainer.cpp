@@ -266,7 +266,7 @@ CGUIListItem *CGUIBaseContainer::GetListItem(int offset, bool wrap) const
   else
   {
     item = GetSelectedItem() + offset;
-    if (item >= m_items.size())
+    if (item >= (int)m_items.size())
       return NULL;
     if (item < 0)
       return NULL;
