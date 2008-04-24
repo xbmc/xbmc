@@ -12,6 +12,7 @@
 #include "CriticalSection.h"
 #include "IMsgTargetCallback.h"
 #include "DateTime.h"
+#include "inttypes.h"
 
 #include <list>
 #include <map>
@@ -432,15 +433,17 @@ class CGUIListItem;
 class CInfoLabel;
 class CGUIWindow;
 
-// Info Packing
-#define PACKED_LISTITEM_NOWRAP        ((unsigned int) (1 << 14))
+// Info Flags
+// Stored in the top 8 bits of GUIInfo::m_data1
+// therefore we only have room for 8 flags
+#define INFOFLAG_LISTITEM_NOWRAP        ((uint32_t) (1 << 25))
 
 // structure to hold multiple integer data
 // for storage referenced from a single integer
 class GUIInfo
 {
 public:
-  GUIInfo(int info, int data1 = 0, int data2 = 0)
+  GUIInfo(int info, uint32_t data1 = 0, int data2 = 0)
   {
     m_info = info;
     m_data1 = data1;
@@ -450,13 +453,13 @@ public:
   {
     return (m_info == right.m_info && m_data1 == right.m_data1 && m_data2 == right.m_data2);
   };
-  void SetInfoFlag(unsigned int flag, char position);
-  void ToggleInfoFlag(unsigned int flag, char position);
-  void ClearInfoFlag(unsigned int flag, char position);
-  bool IsInfoFlagSet(unsigned int flag, char position) const;
-  int StripInfoFlag(unsigned int flag, char position) const;
+  void SetInfoFlag(uint32_t flag);
+  bool IsInfoFlagSet(uint32_t flag) const;
+  uint32_t GetData1() const;
+  int GetData2() const;
   int m_info;
-  int m_data1;
+private:
+  uint32_t m_data1;
   int m_data2;
 };
 
