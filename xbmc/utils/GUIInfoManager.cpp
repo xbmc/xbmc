@@ -544,7 +544,18 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     int id = atoi(strCategory.Mid(10, strCategory.GetLength() - 11));
     CStdString info = strTest.Mid(strCategory.GetLength() + 1);
-    if (info.Left(8).Equals("listitem"))
+    if (info.Left(14).Equals("listitemnowrap"))
+    {
+      int offset = atoi(info.Mid(15, info.GetLength() - 16));
+      ret = TranslateListItem(info.Mid(info.Find(".")+1));
+      if (offset || id)
+      {
+        GUIInfo info(bNegate ? -ret : ret, id, offset);
+        info.SetInfoFlag(PACKED_LISTITEM_NOWRAP, 0);
+        return AddMultiInfo(info);
+      }
+    }
+    else if (info.Left(8).Equals("listitem"))
     {
       int offset = atoi(info.Mid(9, info.GetLength() - 10));
       ret = TranslateListItem(info.Mid(info.Find(".")+1));
@@ -2008,23 +2019,40 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
   if (info.m_info >= LISTITEM_START && info.m_info <= LISTITEM_END)
   {
     CFileItem *item = NULL;
-    if (!info.m_data1)
-    { // no id given, must be a media window
-      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
-      if (window)
-        item = window->GetCurrentListItem(info.m_data2);
-    }
-    else
+    CGUIWindow *window = NULL;
+
+    int data1 = info.m_data1;
+    bool noWrap = info.IsInfoFlagSet(PACKED_LISTITEM_NOWRAP, 0);
+    if (noWrap)
+      data1 = info.StripInfoFlag(PACKED_LISTITEM_NOWRAP, 0);
+
+    if (!data1) // No container specified, so we lookup the current view container
     {
-      CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
-      if (window)
+      window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
+      if (window && window->IsMediaWindow())
+        data1 = ((CGUIMediaWindow*)(window))->GetViewContainerID();
+    }
+
+    if (!window) // If we don't have a window already (from lookup above), get one
+      window = GetWindowWithCondition(contextWindow, 0);
+
+    if (window)
+    {
+      if (noWrap) // Get list item specified, without wrapping
       {
-        const CGUIControl *control = window->GetControl(info.m_data1);
+        const CGUIControl *control = window->GetControl(data1);
         if (control && control->IsContainer())
-          item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.m_data2);
+          item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.m_data2, false);
+      }
+      else // Get list item specified with wrapping
+      {
+        const CGUIControl *control = window->GetControl(data1);
+        if (control && control->IsContainer())
+          item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.m_data2, true);
       }
     }
-    if (item)
+
+    if (item) // If we got a valid item, do the lookup
       return GetItemImage(item, info.m_info); // Image prioritizes images over labels (in the case of music item ratings for instance)
   }
   else if (info.m_info == PLAYER_TIME)
@@ -3638,4 +3666,99 @@ const CVideoInfoTag* CGUIInfoManager::GetCurrentMovieTag() const
     return m_currentFile->GetVideoInfoTag(); 
 
   return NULL;
+}
+
+void GUIInfo::SetInfoFlag(unsigned int flag, char position)
+{
+  // our data variable is assumed to be unsigned, and no range checking
+  // is done in here.
+  unsigned int data;
+
+  if (position == 0)
+  {
+    data = (unsigned int) m_data1;
+    data |= flag;
+    m_data1 = data;
+    return;
+  }
+  else
+  {
+    data = (unsigned int) m_data2;
+    data |= flag;
+    m_data2 = data;
+    return;
+  }
+}
+
+void GUIInfo::ClearInfoFlag(unsigned int flag, char position)
+{
+  // our data variable is assumed to be unsigned, and no range checking
+  // is done in here.
+  unsigned int data;
+
+  if (position == 0)
+  {
+    data = (unsigned int) m_data1;
+    data &= ~flag;
+    m_data1 = data;
+    return;
+  }
+  else
+  {
+    data = (unsigned int) m_data2;
+    data &= ~flag;
+    m_data2 = data;
+    return;
+  }
+}
+
+void GUIInfo::ToggleInfoFlag(unsigned int flag, char position)
+{
+  // our data variable is assumed to be unsigned, and no range checking
+  // is done in here.
+  unsigned int data;
+
+  if (position == 0)
+  {
+    data = (unsigned int) m_data1;
+    data ^= flag;
+    m_data1 = data;
+    return;
+  }
+  else
+  {
+    data = (unsigned int) m_data2;
+    data ^= flag;
+    m_data2 = data;
+    return;
+  }
+}
+
+bool GUIInfo::IsInfoFlagSet(unsigned int flag, char position) const
+{
+  // our data variable is assumed to be unsigned, and no range checking
+  // is done in here.
+  unsigned int data;
+
+  if (position == 0)
+    data = (unsigned int) m_data1;
+  else
+    data = (unsigned int) m_data2;
+
+  return (data & flag) != 0;
+}
+
+int GUIInfo::StripInfoFlag(unsigned int flag, char position) const
+{
+  // our data variable is assumed to be unsigned, and no range checking
+  // is done in here.
+  unsigned int data;
+
+  if (position == 0)
+    data = (unsigned int) m_data1;
+  else
+    data = (unsigned int) m_data2;
+  
+  data &= ~flag;
+  return (int)data;
 }

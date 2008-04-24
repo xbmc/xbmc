@@ -253,12 +253,24 @@ int CGUIBaseContainer::GetSelectedItem() const
   return CorrectOffset(m_offset, m_cursor);
 }
 
-CGUIListItem *CGUIBaseContainer::GetListItem(int offset) const
+CGUIListItem *CGUIBaseContainer::GetListItem(int offset, bool wrap) const
 {
   if (!m_items.size())
     return NULL;
-  int item = (GetSelectedItem() + offset) % ((int)m_items.size());
-  if (item < 0) item += m_items.size();
+  int item;
+  if (wrap)
+  {
+    item = (GetSelectedItem() + offset) % ((int)m_items.size());
+    if (item < 0) item += m_items.size();
+  }
+  else
+  {
+    item = GetSelectedItem() + offset;
+    if (item >= m_items.size())
+      return NULL;
+    if (item < 0)
+      return NULL;
+  }
   return m_items[item];
 }
 
