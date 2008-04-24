@@ -2883,6 +2883,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\utils\InfoLoader.h">
 			</File>
 			<File
+				RelativePath="..\..\xbmc\inttypes.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\xbox\IoSupport.h">
 			</File>
 			<File
@@ -3076,6 +3079,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\stdafx.h">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\stdint.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\StringUtils.h">
