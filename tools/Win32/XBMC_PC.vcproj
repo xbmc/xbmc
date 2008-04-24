@@ -3142,6 +3142,9 @@
 				RelativePath="..\..\xbmc\utils\InfoLoader.h">
 			</File>
 			<File
+				RelativePath="..\..\xbmc\inttypes.h">
+			</File>
+			<File
 				RelativePath="..\..\xbmc\xbox\IoSupport.h">
 			</File>
 			<File
@@ -3287,6 +3290,9 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\stdafx.h">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\stdint.h">
 			</File>
 			<File
 				RelativePath="..\..\xbmc\StringUtils.h">
