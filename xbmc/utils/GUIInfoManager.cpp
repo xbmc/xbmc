@@ -240,10 +240,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     {
       // determine if this is a System.Time(TIME_FORMAT) infolabel or a System.Time(13:00,14:00) boolean based on the contents of the param
       // essentially if it isn't a valid TIME_FORMAT then its considered to be the latter.
-      CStdString param = strTest.Mid(12, strTest.length() - 13);
+      CStdString param = strTest.Mid(11);
       TIME_FORMAT timeFormat = TranslateTimeFormat(param);
       if ((timeFormat == TIME_FORMAT_GUESS) && (!param.IsEmpty()))
       {
+        param = strTest.Mid(12, strTest.length() - 13);
         CStdStringArray params;
         StringUtils::SplitString(param, ",", params);
         if (params.size() == 2)
@@ -2038,17 +2039,13 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
 
     if (window)
     {
-      if (noWrap) // Get list item specified, without wrapping
+      const CGUIControl *control = window->GetControl(data1);
+      if (control && control->IsContainer())
       {
-        const CGUIControl *control = window->GetControl(data1);
-        if (control && control->IsContainer())
-          item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.m_data2, false);
-      }
-      else // Get list item specified with wrapping
-      {
-        const CGUIControl *control = window->GetControl(data1);
-        if (control && control->IsContainer())
-          item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.m_data2, true);
+        if (noWrap) // Get list item specified, without wrapping
+            item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.m_data2, false);
+        else // Get list item specified with wrapping
+            item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.m_data2, true);
       }
     }
 
