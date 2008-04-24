@@ -1711,7 +1711,7 @@ __int64 CDVDPlayer::GetTotalTimeInMsec()
   if (m_Edl.HaveCutpoints())
     msec -= m_Edl.TotalCutTime();
 
-  return 0;
+  return msec;
 }
 
 // return length in seconds.. this should be changed to return in milleseconds throughout xbmc
