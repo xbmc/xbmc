@@ -766,3 +766,4 @@ int CGUIBaseContainer::GetCurrentPage() const
     return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
   return m_offset / m_itemsPerPage + 1;
 }
+
