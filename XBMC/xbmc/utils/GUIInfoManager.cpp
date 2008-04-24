@@ -550,18 +550,18 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       int offset = atoi(info.Mid(15, info.GetLength() - 16));
       ret = TranslateListItem(info.Mid(info.Find(".")+1));
       if (offset || id)
-      {
-        GUIInfo info(bNegate ? -ret : ret, id, offset);
-        info.SetInfoFlag(INFOFLAG_LISTITEM_NOWRAP);
-        return AddMultiInfo(info);
-      }
+        return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id, offset));
     }
     else if (info.Left(8).Equals("listitem"))
     {
       int offset = atoi(info.Mid(9, info.GetLength() - 10));
       ret = TranslateListItem(info.Mid(info.Find(".")+1));
       if (offset || id)
-        return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id, offset));
+      {
+        GUIInfo info(bNegate ? -ret : ret, id, offset);
+        info.SetInfoFlag(INFOFLAG_LISTITEM_WRAP);
+        return AddMultiInfo(info);
+      }
     }
     else if (info.Equals("folderthumb")) ret = CONTAINER_FOLDERTHUMB;
     else if (info.Equals("tvshowthumb")) ret = CONTAINER_TVSHOWTHUMB;
@@ -612,18 +612,18 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     int offset = atoi(strCategory.Mid(9, strCategory.GetLength() - 10));
     ret = TranslateListItem(strTest.Mid(strCategory.GetLength() + 1));
     if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING)
-      return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, 0, offset));
+    {
+        GUIInfo info(bNegate ? -ret : ret, 0, offset);
+        info.SetInfoFlag(INFOFLAG_LISTITEM_WRAP);
+        return AddMultiInfo(info);
+    }
   }
   else if (strCategory.Left(14).Equals("listitemnowrap"))
   {
     int offset = atoi(strCategory.Mid(15, strCategory.GetLength() - 16));
     ret = TranslateListItem(strTest.Mid(strCategory.GetLength() + 1));
     if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING)
-    {
-        GUIInfo info(bNegate ? -ret : ret, 0, offset);
-        info.SetInfoFlag(INFOFLAG_LISTITEM_NOWRAP);
-        return AddMultiInfo(info);
-    }
+      return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, 0, offset));
   }
   else if (strCategory.Equals("visualisation"))
   {
@@ -2033,7 +2033,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
     CFileItem *item = NULL;
     CGUIWindow *window = NULL;
 
-    bool noWrap = info.IsInfoFlagSet(INFOFLAG_LISTITEM_NOWRAP);
+    bool wrap = info.IsInfoFlagSet(INFOFLAG_LISTITEM_WRAP);
     int data1 = info.GetData1();
 
     if (!data1) // No container specified, so we lookup the current view container
@@ -2051,10 +2051,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
       const CGUIControl *control = window->GetControl(data1);
       if (control && control->IsContainer())
       {
-        if (noWrap) // Get list item specified, without wrapping
-            item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.GetData2(), false);
-        else // Get list item specified with wrapping
-            item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.GetData2(), true);
+        item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.GetData2(), wrap);
       }
     }
 
