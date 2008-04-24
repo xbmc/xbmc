@@ -432,6 +432,9 @@ class CGUIListItem;
 class CInfoLabel;
 class CGUIWindow;
 
+// Info Packing
+#define PACKED_LISTITEM_NOWRAP        ((unsigned int) (1 << 14))
+
 // structure to hold multiple integer data
 // for storage referenced from a single integer
 class GUIInfo
@@ -447,6 +450,11 @@ public:
   {
     return (m_info == right.m_info && m_data1 == right.m_data1 && m_data2 == right.m_data2);
   };
+  void SetInfoFlag(unsigned int flag, char position);
+  void ToggleInfoFlag(unsigned int flag, char position);
+  void ClearInfoFlag(unsigned int flag, char position);
+  bool IsInfoFlagSet(unsigned int flag, char position) const;
+  int StripInfoFlag(unsigned int flag, char position) const;
   int m_info;
   int m_data1;
   int m_data2;
