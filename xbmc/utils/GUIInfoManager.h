@@ -436,7 +436,7 @@ class CGUIWindow;
 // Info Flags
 // Stored in the top 8 bits of GUIInfo::m_data1
 // therefore we only have room for 8 flags
-#define INFOFLAG_LISTITEM_NOWRAP        ((uint32_t) (1 << 25))
+#define INFOFLAG_LISTITEM_WRAP        ((uint32_t) (1 << 25))  // Wrap ListItem lookups
 
 // structure to hold multiple integer data
 // for storage referenced from a single integer
