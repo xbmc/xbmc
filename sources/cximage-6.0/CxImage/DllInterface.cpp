@@ -254,7 +254,8 @@ extern "C"
 
 #else
 		struct stat holder;
-    	stat(file, &holder);
+    	if (stat(file, &holder) == -1)
+          return false;
 	    if (S_ISDIR(holder.st_mode))
 	      return true;
 	
