@@ -9,10 +9,8 @@ using namespace std;
 size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft, 
 		    char* * outbuf, size_t *outbytesleft)
 {
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(_LINUX) || defined(__APPLE__)
   return iconv(cd, (char**)inbuf, inbytesleft, outbuf, outbytesleft);
-#elif defined(__APPLE__)
-  return iconv(cd, inbuf, inbytesleft, outbuf, outbytesleft);
 #else
   return iconv(cd, inbuf, inbytesleft, outbuf, outbytesleft);
 #endif
