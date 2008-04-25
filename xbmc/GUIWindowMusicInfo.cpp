@@ -162,6 +162,11 @@ void CGUIWindowMusicInfo::SetAlbum(const CAlbum& album, const CStdString &path)
   m_albumItem->SetProperty("albumlabel", m_album.strLabel);
   m_albumItem->SetProperty("albumtype", m_album.strType);
   m_albumItem->SetMusicThumb();
+  // set the artist thumb
+  CFileItem artist(m_album.strArtist);
+  artist.SetCachedArtistThumb();
+  if (CFile::Exists(artist.GetThumbnailImage()))
+    m_albumItem->SetProperty("artistthumb", artist.GetThumbnailImage());
   m_hasUpdatedThumb = false;
   m_bArtistInfo = false;
   g_infoManager.m_content = "albums";
