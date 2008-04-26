@@ -167,6 +167,14 @@ void CGUIDialogSongInfo::SetSong(CFileItem *item)
   m_song->LoadMusicTag();
   m_startRating = m_song->GetMusicInfoTag()->GetRating();
   MUSIC_INFO::CMusicInfoLoader::LoadAdditionalTagInfo(m_song);
+  // set artist thumb as well
+  if (m_song->HasMusicInfoTag())
+  {
+    CFileItem artist(m_song->GetMusicInfoTag()->GetArtist());
+    artist.SetCachedArtistThumb();
+    if (CFile::Exists(artist.GetThumbnailImage()))
+      m_song->SetProperty("artistthumb", artist.GetThumbnailImage());
+  }
   m_needsUpdate = false;
 }
 
