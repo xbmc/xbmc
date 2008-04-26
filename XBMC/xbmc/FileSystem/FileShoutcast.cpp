@@ -181,13 +181,6 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
 {
   m_dwLastTime = timeGetTime();
   int ret;
-  RIP_MANAGER_OPTIONS m_opt;
-  m_opt.relay_port = 8000;
-  m_opt.max_port = 18000;
-  m_opt.flags = OPT_AUTO_RECONNECT |
-                OPT_SEPERATE_DIRS |
-                OPT_SEARCH_PORTS |
-                OPT_ADD_ID3V2;
 
   CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
