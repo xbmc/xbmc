@@ -169,7 +169,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Win32"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_USE_32BIT_TIME_T"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -234,7 +234,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Win32"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_USE_32BIT_TIME_T"
 				RuntimeLibrary="0"
 				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="0"
