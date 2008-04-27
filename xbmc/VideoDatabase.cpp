@@ -5827,6 +5827,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const s
     else
     {
       pObserver->OnDirectoryChanged("");
+      pObserver->OnSetTitle("");
       pObserver->OnSetCurrentProgress(0,1);
       pObserver->OnStateChanged(CLEANING_UP_DATABASE);
     }
