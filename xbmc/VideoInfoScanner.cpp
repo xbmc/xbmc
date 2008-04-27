@@ -839,6 +839,7 @@ namespace VIDEO
             std::pair<int,int> key(iSeason,iEpisode);
             CScraperUrl url(items[i]->m_strPath);
             episodeList.insert(std::make_pair<std::pair<int,int>,CScraperUrl>(key,url));
+            bMatched = true;
 
             // check the remainder of the string for any further episodes.
             CRegExp reg2;
