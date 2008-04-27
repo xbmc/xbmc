@@ -815,6 +815,7 @@ namespace VIDEO
         continue;
       }
 
+      bool bMatched=false;
       for (unsigned int j=0;j<expression.size();++j)
       {
         CRegExp reg;
@@ -878,6 +879,8 @@ namespace VIDEO
           }
         }
       }
+      if (!bMatched)
+        CLog::Log(LOGDEBUG,"could not enumerate file %s",items[i]->m_strPath.c_str());
     }
   }
 
