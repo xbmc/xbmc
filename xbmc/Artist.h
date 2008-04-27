@@ -33,7 +33,7 @@ public:
   }
 
   bool Load(const TiXmlElement *movie);
-  bool Save(TiXmlNode *node, const CStdString &tag);
+  bool Save(TiXmlNode *node, const CStdString &tag, const CStdString& strPath);
 
   CStdString strArtist;
   CStdString strGenre;
