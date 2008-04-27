@@ -6094,6 +6094,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const s
 
 void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* = false */)
 {
+  CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   try
   {
     if (NULL == m_pDB.get()) return;
@@ -6110,7 +6111,6 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
  
     m_pDS->query(sql.c_str());
 
-    CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
       progress->SetHeading(647);
@@ -6295,16 +6295,15 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
         XMLUtils::SetString(pPath,"scraperpath",info.strPath);
       }
     }
-
-    if (progress)
-      progress->Close();
-
     xmlDoc.SaveFile(xmlFile.c_str());
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
+
+  if (progress)
+    progress->Close();
 }
 
 void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
