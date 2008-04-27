@@ -693,6 +693,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\MusicInfoTagLoaderApe.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderASAP.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderASAP.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\MusicInfoTagLoaderCDDA.cpp">
 				</File>
 				<File
@@ -1446,6 +1452,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			<Filter
 				Name="Filesystem"
 				Filter="">
+				<File
+					RelativePath=".\xbmc\FileSystem\ASAPFileDirectory.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\ASAPFileDirectory.h">
+				</File>
 				<File
 					RelativePath=".\xbmc\FileSystem\CacheMemBuffer.cpp">
 				</File>
@@ -3747,6 +3759,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\paplayer\APEcodec.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\cores\paplayer\ASAPCodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\ASAPCodec.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\paplayer\AudioDecoder.cpp">
 				</File>
 				<File
@@ -3784,6 +3802,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\DllAdplug.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DllASAP.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\DllCube.h">
