@@ -894,9 +894,11 @@ namespace VIDEO
       if (pItem->m_bIsFolder)
       {
         lResult=m_database.SetDetailsForTvShow(pItem->m_strPath, movieDetails);
+        pItem->CacheVideoFanart();
         // get & save fanart image
-        if (!movieDetails.m_fanart.DownloadImage(pItem->GetCachedVideoFanart()))
-          CLog::Log(LOGERROR, "Failed to download fanart %s to %s", movieDetails.m_fanart.GetImageURL().c_str(), pItem->GetCachedVideoFanart().c_str());
+        if (!CFile::Exists(pItem->GetCachedVideoFanart()))
+          if (!movieDetails.m_fanart.DownloadImage(pItem->GetCachedVideoFanart()))
+            CLog::Log(LOGERROR, "Failed to download fanart %s to %s", movieDetails.m_fanart.GetImageURL().c_str(), pItem->GetCachedVideoFanart().c_str());
       }
       else
       {
@@ -914,6 +916,7 @@ namespace VIDEO
     CStdString strImage = movieDetails.m_strPictureURL.GetFirstThumb().m_url;
     if (strImage.size() > 0)
     {
+      pItem->SetThumbnailImage("");
       // check for a cached thumb or user thumb
       pItem->SetVideoThumb();
       strThumb = pItem->GetCachedVideoThumb();
