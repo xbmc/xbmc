@@ -653,6 +653,12 @@
 					RelativePath="..\..\xbmc\cores\paplayer\APEcodec.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\paplayer\ASAPCodec.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\paplayer\ASAPCodec.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\paplayer\AudioDecoder.cpp">
 				</File>
 				<File
@@ -1467,6 +1473,12 @@
 					RelativePath="..\..\xbmc\MusicInfoTagLoaderApe.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\MusicInfoTagLoaderASAP.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\MusicInfoTagLoaderASAP.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\MusicInfoTagLoaderCDDA.cpp">
 				</File>
 				<File
@@ -2202,6 +2214,12 @@
 			<Filter
 				Name="Filesystem"
 				Filter="">
+				<File
+					RelativePath="..\..\xbmc\FileSystem\ASAPFileDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\ASAPFileDirectory.h">
+				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\CacheMemBuffer.cpp">
 				</File>
