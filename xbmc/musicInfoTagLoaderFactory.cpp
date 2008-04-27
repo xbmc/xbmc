@@ -44,6 +44,7 @@
 #include "MusicInfoTagLoaderAdplug.h"
 #include "MusicInfoTagLoaderYM.h"
 #include "MusicInfoTagLoaderDatabase.h"
+#include "MusicInfoTagLoaderASAP.h"
 
 #include "Util.h"
 #include "FileItem.h"
@@ -169,6 +170,11 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
   else if (AdplugCodec::IsSupportedFormat(strExtension))
   {
     CMusicInfoTagLoaderAdplug *pTagLoader = new CMusicInfoTagLoaderAdplug();
+    return (IMusicInfoTagLoader*)pTagLoader;
+  }
+  else if (ASAPCodec::IsSupportedFormat(strExtension) || strExtension == "asapstream")
+  {
+    CMusicInfoTagLoaderASAP *pTagLoader = new CMusicInfoTagLoaderASAP();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
 
