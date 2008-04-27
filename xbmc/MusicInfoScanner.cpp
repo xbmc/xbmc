@@ -947,7 +947,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   if (XFILE::CFile::Exists(strNfo))
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
-    CNfoFile nfoReader("albums");
+    CNfoFile nfoReader("artists");
     if (nfoReader.Create(strNfo) == S_OK)
     {
       if (nfoReader.m_strScraper == "NFO")
@@ -964,6 +964,8 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
         CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
         CMusicArtistInfo artist("nfo",scrUrl);
         scraper.GetArtists().push_back(artist);
+        info.strPath = nfoReader.m_strScraper;
+        scraper.SetScraperInfo(info);
       }
     }
     else
@@ -983,7 +985,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
     Sleep(1);
   }
 
-  if (scraper.Successfull() && scraper.GetArtistCount() >= 1)
+  if (scraper.GetArtistCount() >= 1)
   {
     int iSelectedArtist = 0;
     // now load the first match
