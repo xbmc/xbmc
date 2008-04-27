@@ -1,0 +1,1 @@
+To compile on darwin, you will need to use the darwin makefile, gcc 3.3 or later and the universal SDK. for more info, see http://portaudio.com/trac/wiki/TutorialDir/Compile/MacintoshCoreAudio

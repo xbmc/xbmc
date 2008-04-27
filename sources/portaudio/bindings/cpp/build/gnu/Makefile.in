@@ -1,0 +1,106 @@
+#
+# Makefile template for PortAudioCpp
+# Ludwig Schwardt
+# 01/10/2003
+#
+# Not much to edit here - rather check configure.ac
+#
+
+PREFIX = @prefix@
+CC = @CC@
+CXX = @CXX@
+CFLAGS = @CFLAGS@ @DEFS@
+CXXFLAGS = @CXXFLAGS@
+SHARED_FLAGS = @SHARED_FLAGS@
+LIBS = @LIBS@
+DLL_LIBS = @DLL_LIBS@
+AR = @AR@
+RANLIB = @RANLIB@
+INSTALL = @INSTALL@
+
+PACPP_ROOT = @PACPP_ROOT@
+PORTAUDIO = @PORTAUDIO@
+PADLL = @PADLL@
+PACPP_DLL = @PACPP_DLL@
+PALIB = libportaudio.a
+PACPP_LIB = libportaudiocpp.a
+PACPP_DLLV = $(PACPP_DLL).0.0.12
+
+SRCDIR = $(PACPP_ROOT)/source/portaudiocpp
+BINDIR = $(PACPP_ROOT)/example
+LIBDIR = $(PACPP_ROOT)/lib
+DOCDIR = $(PACPP_ROOT)/doc
+
+OBJS = \
+       $(SRCDIR)/BlockingStream.o \
+       $(SRCDIR)/CallbackInterface.o \
+       $(SRCDIR)/CallbackStream.o \
+       $(SRCDIR)/CFunCallbackStream.o \
+       $(SRCDIR)/CppFunCallbackStream.o \
+       $(SRCDIR)/Device.o \
+       $(SRCDIR)/DirectionSpecificStreamParameters.o \
+       $(SRCDIR)/Exception.o \
+       $(SRCDIR)/HostApi.o \
+       $(SRCDIR)/InterfaceCallbackStream.o \
+       $(SRCDIR)/MemFunCallbackStream.o \
+       $(SRCDIR)/Stream.o \
+       $(SRCDIR)/StreamParameters.o \
+       $(SRCDIR)/System.o \
+       $(SRCDIR)/SystemDeviceIterator.o \
+       $(SRCDIR)/SystemHostApiIterator.o
+
+# Not supported yet
+#      $(SRCDIR)/AsioDeviceAdapter.o
+
+EXAMPLES = \
+           $(BINDIR)/devs \
+	   $(BINDIR)/sine
+
+.PHONY: all clean docs
+
+all: $(EXAMPLES) $(LIBDIR)/$(PACPP_LIB) $(LIBDIR)/$(PACPP_DLL)
+
+clean:
+	rm -rf $(SRCDIR)/*.o $(BINDIR)/*.o $(EXAMPLES) $(LIBDIR) $(DOCDIR)/api_reference 
+	rm -rf autom4te.cache config.status config.log
+
+docs:
+	cd $(DOCDIR); doxygen config.doxy.linux
+	
+%.o: %.c
+	$(CC) -c $(CFLAGS) $< -o $@
+		
+%.o: %.cxx
+	$(CXX) -c $(CXXFLAGS) $< -o $@
+
+
+$(EXAMPLES): $(BINDIR)/%: $(BINDIR)/%.o $(OBJS)
+	$(CXX) $^ -o $@ $(LIBS)
+
+$(LIBDIR)/$(PACPP_LIB): $(LIBDIR) $(OBJS)
+	$(AR) ruv $(LIBDIR)/$(PACPP_LIB) $(OBJS)
+	$(RANLIB) $(LIBDIR)/$(PACPP_LIB)
+
+$(LIBDIR)/$(PACPP_DLLV): $(LIBDIR) $(OBJS)
+	$(CXX) $(SHARED_FLAGS) -o $(LIBDIR)/$(PACPP_DLLV) $(OBJS) $(DLL_LIBS)
+
+$(LIBDIR)/$(PACPP_DLL): $(LIBDIR) $(OBJS)
+	$(CXX) $(SHARED_FLAGS) -o $(LIBDIR)/$(PACPP_DLL) $(OBJS) $(DLL_LIBS)
+
+#install: $(LIBDIR)/$(PACPP_LIB) $(LIBDIR)/$(PACPP_DLLV)
+#	$(INSTALL) -m 644 $(LIBDIR)/$(PACPP_DLLV) $(PREFIX)/lib/$(PACPP_DLLV)
+#	$(INSTALL) -m 644 $(LIBDIR)/$(PACPP_LIB) $(PREFIX)/lib/$(PACPP_LIB)
+#	cd $(PREFIX)/lib && rm -f $(PACPP_DLL) && ln -s $(PACPP_DLLV) $(PACPP_DLL)
+#	@echo ""
+#	@echo "------------------------------------------------------------"
+#	@echo "PortAudioCpp was successfully installed."
+#	@echo ""
+#	@echo "On some systems (e.g. Linux) you should run 'ldconfig' now"
+#	@echo "to make the shared object available.  You may also need to"
+#	@echo "modify your LD_LIBRARY_PATH environment variable to include"
+#	@echo "the directory $(PREFIX)/lib"
+#	@echo "------------------------------------------------------------"
+#	@echo ""
+
+$(LIBDIR):
+	mkdir $(LIBDIR)

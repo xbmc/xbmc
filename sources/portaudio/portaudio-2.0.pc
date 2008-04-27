@@ -1,0 +1,12 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: PortAudio
+Description: Portable audio I/O
+Requires:
+Version: 19
+
+Libs: -L${libdir} -lportaudio -framework CoreAudio -framework AudioToolbox -framework AudioUnit -framework Carbon
+Cflags: -I${includedir} 

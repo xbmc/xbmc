@@ -1,0 +1,64 @@
+import os.path
+
+Import("env", "buildDir")
+env.Append(CPPPATH="include")
+
+ApiVer = "0.0.12"
+Major, Minor, Micro = [int(c) for c in ApiVer.split(".")]
+
+sharedLibs = []
+staticLibs = []
+Import("Platform", "Posix")
+if Platform in Posix:
+    env["SHLIBSUFFIX"] = ".so.%d.%d.%d" % (Major, Minor, Micro)
+    soFile = "libportaudiocpp.so"
+    env.AppendUnique(SHLINKFLAGS="-Wl,-soname=%s.%d" % (soFile, Major))
+
+    # Create symlinks
+    def symlink(env, target, source):
+        trgt = str(target[0])
+        src = str(source[0])
+        if os.path.islink(trgt) or os.path.exists(trgt):
+            os.remove(trgt)
+        os.symlink(os.path.basename(src), trgt)
+    lnk0 = env.Command(soFile + ".%d" % (Major), soFile + ".%d.%d.%d" % (Major, Minor, Micro), symlink)
+    lnk1 = env.Command(soFile, soFile + ".%d" % (Major), symlink)
+    sharedLibs.append(lnk0)
+    sharedLibs.append(lnk1)
+
+src = [os.path.join("source", "portaudiocpp", "%s.cxx" % f) for f in ("BlockingStream", "CallbackInterface", \
+    "CallbackStream", "CFunCallbackStream","CppFunCallbackStream", "Device",
+    "DirectionSpecificStreamParameters", "Exception", "HostApi", "InterfaceCallbackStream",
+    "MemFunCallbackStream", "Stream", "StreamParameters", "System", "SystemDeviceIterator",
+    "SystemHostApiIterator")]
+env.Append(LIBS="portaudio", LIBPATH=buildDir)
+sharedLib = env.SharedLibrary("portaudiocpp", src, LIBS=["portaudio"])
+staticLib = env.Library("portaudiocpp", src, LIBS=["portaudio"])
+sharedLibs.append(sharedLib)
+staticLibs.append(staticLib)
+
+headers = Split("""AutoSystem.hxx                         
+                   BlockingStream.hxx                     
+                   CallbackInterface.hxx                  
+                   CallbackStream.hxx
+                   CFunCallbackStream.hxx                 
+                   CppFunCallbackStream.hxx               
+                   Device.hxx                             
+                   DirectionSpecificStreamParameters.hxx  
+                   Exception.hxx                           
+                   HostApi.hxx
+                   InterfaceCallbackStream.hxx
+                   MemFunCallbackStream.hxx
+                   PortAudioCpp.hxx
+                   SampleDataFormat.hxx
+                   Stream.hxx
+                   StreamParameters.hxx
+                   SystemDeviceIterator.hxx
+                   SystemHostApiIterator.hxx
+                   System.hxx
+                   """)
+if env["PLATFORM"] == "win32":
+    headers.append("AsioDeviceAdapter.hxx") 
+headers = [File(os.path.join("include", "portaudiocpp", h)) for h in headers]
+
+Return("sharedLibs", "staticLibs", "headers")

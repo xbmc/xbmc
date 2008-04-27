@@ -1,0 +1,43 @@
+EXPORTS
+
+;
+Pa_GetVersion                       @1
+Pa_GetVersionText                   @2
+Pa_GetErrorText                     @3                 
+Pa_Initialize                       @4
+Pa_Terminate                        @5
+Pa_GetHostApiCount                  @6
+Pa_GetDefaultHostApi                @7
+Pa_GetHostApiInfo                   @8
+Pa_HostApiTypeIdToHostApiIndex      @9
+Pa_HostApiDeviceIndexToDeviceIndex  @10
+Pa_GetLastHostErrorInfo             @11
+Pa_GetDeviceCount                   @12
+Pa_GetDefaultInputDevice            @13
+Pa_GetDefaultOutputDevice           @14
+Pa_GetDeviceInfo                    @15
+Pa_IsFormatSupported                @16
+Pa_OpenStream                       @17
+Pa_OpenDefaultStream                @18
+Pa_CloseStream                      @19
+Pa_SetStreamFinishedCallback        @20
+Pa_StartStream                      @21
+Pa_StopStream                       @22
+Pa_AbortStream                      @23
+Pa_IsStreamStopped                  @24
+Pa_IsStreamActive                   @25
+Pa_GetStreamInfo                    @26
+Pa_GetStreamTime                    @27
+Pa_GetStreamCpuLoad                 @28
+Pa_ReadStream                       @29
+Pa_WriteStream                      @30
+Pa_GetStreamReadAvailable           @31
+Pa_GetStreamWriteAvailable          @32
+Pa_GetSampleSize                    @33
+Pa_Sleep                            @34
+PaAsio_GetAvailableLatencyValues    @50
+PaAsio_ShowControlPanel             @51
+PaUtil_InitializeX86PlainConverters @52
+PaAsio_GetInputChannelName          @53
+PaAsio_GetOutputChannelName         @54
+PaUtil_SetDebugPrintFunction        @55
