@@ -151,7 +151,7 @@ bool CAlbum::Load(const TiXmlElement *album)
   return true;
 }
 
-bool CAlbum::Save(TiXmlNode *node, const CStdString &tag)
+bool CAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strPath)
 {
   if (!node) return false;
 
@@ -190,6 +190,7 @@ bool CAlbum::Save(TiXmlNode *node, const CStdString &tag)
   XMLUtils::SetString(album,       "label", strLabel);
   XMLUtils::SetString(album,        "type", strType);
   XMLUtils::SetString(album,      "thumbs", thumbURL.m_xml);
+  XMLUtils::SetString(album,        "path", strPath);
 
   XMLUtils::SetInt(album,         "rating", iRating);
   XMLUtils::SetInt(album,           "year", iYear);
