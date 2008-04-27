@@ -31,6 +31,10 @@ public:
   {
     return m_vecAlbums;
   }
+  void SetScraperInfo(const SScraperInfo& info)
+  {
+    m_info = info;
+  }
 protected:
   void FindAlbuminfo();
   void LoadAlbuminfo();
