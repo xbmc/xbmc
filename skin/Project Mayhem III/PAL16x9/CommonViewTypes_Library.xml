@@ -1035,6 +1035,83 @@
 			</focusedlayout>
 		</control>
 	</include>
+	<include name="VideoLibrarySeasonView">
+		<control type="list" id="58">
+			<posx>190</posx>
+			<posy>100</posy>
+			<width>330</width>
+			<height>425</height>
+			<onleft>9000</onleft>
+			<onright>60</onright>
+			<onup>58</onup>
+			<ondown>58</ondown>
+			<viewtype label="$LOCALIZE[535] 2">list</viewtype>
+			<pagecontrol>60</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<include>contentpanelslide</include>
+			<visible>Container.Content(Seasons)</visible>
+			<itemlayout height="29">
+				<control type="image">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>22</width>
+					<height>22</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>3</posy>
+					<width>245</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="29">
+				<control type="image">
+					<width>280</width>
+					<height>29</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<visible>Control.HasFocus(58)</visible>
+					<texture border="5">list-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>22</width>
+					<height>22</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>3</posy>
+					<width>245</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="group">
+			<include>contentpanelslide</include>
+			<control type="image">
+				<posx>500</posx>
+				<posy>100</posy>
+				<width>200</width>
+				<height>425</height>
+				<aspectratio>keep</aspectratio>
+				<info>ListItem.Icon</info>
+				<visible>Control.IsVisible(58)</visible>
+			</control>
+		</control>
+	</include>
 	<include name="MusicLibraryMediaInfo">
 		<control type="list" id="51">
 			<posx>190</posx>
