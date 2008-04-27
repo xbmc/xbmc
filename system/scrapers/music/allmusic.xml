@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scraper name="Allmusic" content="albums" thumb="allmusic.gif">
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="\1" dest="3">
+			<expression>(http://www.allmusic.com/cg/.*)</expression>
+		</RegExp>
+	</NfoUrl>
 	<CreateAlbumSearchUrl dest="3">
 		<RegExp input="$$1" output="&lt;url post=&quot;yes&quot;&gt;http://www.allmusic.com/cg/amg.dll?P=amg&amp;amp;SQL=\1&amp;amp;OPT1=2&lt;/url&gt;" dest="3">
 			<expression></expression>
