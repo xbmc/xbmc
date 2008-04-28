@@ -277,9 +277,6 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
     m_content = file.GetContentType();
 
-    /* otherwise player will think we need to be restarted */
-    g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
-
     /* allow renderer to switch to fullscreen if requested */
     m_dvdPlayerVideo.EnableFullscreen(options.fullscreen);
 
@@ -517,6 +514,9 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, StreamType type, CDemux
     if(stream->type != type)
       return false;
 
+    if(type == STREAM_SUBTITLE)
+      return false;
+
     if(current.id < 0)
       return true;
   }
@@ -549,11 +549,16 @@ void CDVDPlayer::Process()
   if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
   &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
   {
-    // find any available external subtitles
-    std::vector<std::string> filenames;
-    CDVDFactorySubtitle::GetSubtitles(filenames, m_filename);
-    for(unsigned int i=0;i<filenames.size();i++)
-      AddSubtitleFile(filenames[i]);
+    if(g_stSettings.m_currentVideoSettings.m_SubtitleOn)
+    {
+      // find any available external subtitles
+      std::vector<std::string> filenames;
+      CDVDFactorySubtitle::GetSubtitles(filenames, m_filename);
+      for(unsigned int i=0;i<filenames.size();i++)
+        AddSubtitleFile(filenames[i]);
+
+      g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
+    }
 
     // look for any edl files
     if (g_guiSettings.GetBool("videoplayer.editdecision"))
@@ -579,12 +584,15 @@ void CDVDPlayer::Process()
     if(OpenAudioStream(s.id, s.source))
       break;
   }
-  count = m_SelectionStreams.Count(STREAM_SUBTITLE);
-  for(int i = 0;i<count;i++)
+  if(g_stSettings.m_currentVideoSettings.m_SubtitleOn)
   {
-    SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
-    if(OpenSubtitleStream(s.id, s.source))
-      break;
+    count = m_SelectionStreams.Count(STREAM_SUBTITLE);
+    for(int i = 0;i<count;i++)
+    {
+      SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
+      if(OpenSubtitleStream(s.id, s.source))
+        break;
+    }
   }
 
   // we are done initializing now, set the readyevent
