@@ -10,6 +10,14 @@ extern HWND g_hWnd;
 #endif
 
 
+//***********************************************************************************************
+static void CALLBACK AC97Callback(LPVOID pStreamContext, LPVOID pPacketContext, DWORD dwStatus)
+{
+  LPAC97MEDIAOBJECT device = (LPAC97MEDIAOBJECT)pStreamContext;
+
+}
+
+
 CAudioContext g_audioContext;
 
 CAudioContext::CAudioContext()
@@ -75,7 +83,7 @@ void CAudioContext::SetActiveDevice(int iDevice)
   {
 #ifdef HAS_AUDIO_PASS_THROUGH
     // Create AC97 Device
-    if (FAILED(Ac97CreateMediaObject(DSAC97_CHANNEL_DIGITAL, NULL, NULL, &m_pAC97Device)))
+    if (FAILED(Ac97CreateMediaObject(DSAC97_CHANNEL_DIGITAL, AC97Callback, m_pAC97Device, &m_pAC97Device)))
 #endif
     {
       CLog::Log(LOGERROR, "Failed to create digital Ac97CreateMediaObject()");
