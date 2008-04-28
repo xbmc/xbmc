@@ -4020,11 +4020,12 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
       album.thumbURL.ParseString(m_pDS->fv("albuminfo.strImage").get_asString());
       long idAlbumInfo = m_pDS->fv("albuminfo.idAlbumInfo").get_asLong();
       GetAlbumInfoSongs(idAlbumInfo,album.songs);
-      album.Save(pMain, "album");
+      CStdString strPath;
+      GetAlbumPath(album.idAlbum,strPath);
+      album.Save(pMain, "album", strPath);
       if (singleFiles)
       {
-        CStdString strPath, nfoFile;
-        GetAlbumPath(album.idAlbum,strPath);
+        CStdString nfoFile;
         CUtil::AddFileToFolder(strPath, "album.nfo", nfoFile);
         xmlDoc.SaveFile(nfoFile.c_str());
         xmlDoc.Clear();
@@ -4067,11 +4068,12 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
         artist.discography.push_back(make_pair(m_pDS2->fv("strAlbum").get_asString(),m_pDS2->fv("strYear").get_asString()));
         m_pDS2->next();
       }
-      artist.Save(pMain, "artist");
+      CStdString strPath;
+      GetArtistPath(artist.idArtist,strPath);
+      artist.Save(pMain, "artist", strPath);
       if (singleFiles)
       {
-        CStdString strPath, nfoFile;
-        GetArtistPath(artist.idArtist,strPath);
+        CStdString nfoFile;
         CUtil::AddFileToFolder(strPath, "artist.nfo", nfoFile);
         xmlDoc.SaveFile(nfoFile.c_str());
         xmlDoc.Clear();

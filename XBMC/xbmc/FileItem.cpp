@@ -570,6 +570,7 @@ bool CFileItem::IsFileFolder() const
     IsType(".ogg") ||
     IsType(".nsf") ||
     IsType(".sid") ||
+    IsType(".sap") ||
     IsShoutCast()
     )
     );
