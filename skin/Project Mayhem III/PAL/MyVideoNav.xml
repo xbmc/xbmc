@@ -304,6 +304,7 @@
 		</control>
 		<include>OldListViewCommons</include>
 		<include>VideoLibraryList2View</include>
+		<include>VideoLibrarySeasonView</include>
 		<include>VideoLibraryWideIcon_Small</include>
 		<include>AllViewCommonThumbSmall</include>
 		<include>AllViewCommonThumbLarge</include>
