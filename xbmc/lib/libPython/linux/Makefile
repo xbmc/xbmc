@@ -10,7 +10,7 @@ wrapper_python.o : wrapper_python.c
 	gcc -fpic -o $@ -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -c $<
 
 wrapper_python.def : wrapper_python.c
-	(echo -n "-Wl"; grep __wrap wrapper_python.c | grep -v bash | sed "s/.*__wrap_//g" | sed "s/(.*//g" | awk '{printf(",-wrap,%s",$$0);}') > wrapper_python.def
+	(echo -n "-Wl"; grep PYTHON_WRAP wrapper_python.c | grep -v define | awk -F ')' '{print $$1}' | awk -F'(' '{print $$2}' | grep -v '^l*stat$$' | awk '{printf(",-wrap,%s",$$0);}') > wrapper_python.def
 
 clean:
 	$(RM) *.so *.o *.def
