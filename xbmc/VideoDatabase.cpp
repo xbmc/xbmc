@@ -4274,7 +4274,8 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->m_dateTime.SetFromDateString(movie.m_strPremiered);
         pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
         CStdString strTempPath = pItem->m_strPath;
-        pItem->SetProperty("fanart_image", pItem->GetCachedVideoFanart(movie.m_strPath));
+        if (movie.m_fanart.GetNumFanarts() != 0)
+          pItem->SetProperty("fanart_image", pItem->GetCachedVideoFanart(movie.m_strPath));
         items.Add(pItem);
       }
       m_pDS->next();
@@ -5832,6 +5833,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const s
     else
     {
       pObserver->OnDirectoryChanged("");
+      pObserver->OnSetTitle("");
       pObserver->OnSetCurrentProgress(0,1);
       pObserver->OnStateChanged(CLEANING_UP_DATABASE);
     }
@@ -6098,6 +6100,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const s
 
 void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* = false */)
 {
+  CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   try
   {
     if (NULL == m_pDB.get()) return;
@@ -6114,7 +6117,6 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
  
     m_pDS->query(sql.c_str());
 
-    CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
       progress->SetHeading(647);
@@ -6299,16 +6301,15 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
         XMLUtils::SetString(pPath,"scraperpath",info.strPath);
       }
     }
-
-    if (progress)
-      progress->Close();
-
     xmlDoc.SaveFile(xmlFile.c_str());
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
+
+  if (progress)
+    progress->Close();
 }
 
 void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
@@ -6524,12 +6525,14 @@ bool CVideoDatabase::CommitTransaction()
 
 void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder)
 {
-    CFileItem item(strPath,bFolder);
-    XFILE::CFile::Delete(item.GetCachedVideoThumb());
+  CFileItem item(strPath,bFolder);
+  XFILE::CFile::Delete(item.GetCachedVideoThumb());
+  if (bFolder)
+    XFILE::CFile::Delete(item.GetCachedVideoFanart());
     
-    //   tell our GUI to completely reload all controls (as some of them
-    // are likely to have had this image in use so will need refreshing)
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-	m_gWindowManager.SendThreadMessage(msg);
+  // tell our GUI to completely reload all controls (as some of them
+  // are likely to have had this image in use so will need refreshing)
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+  m_gWindowManager.SendThreadMessage(msg);
 }
 

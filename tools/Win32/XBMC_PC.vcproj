@@ -837,6 +837,12 @@
 					RelativePath="..\..\xbmc\cores\paplayer\APEcodec.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\paplayer\ASAPCodec.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\paplayer\ASAPCodec.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\paplayer\AudioDecoder.cpp">
 				</File>
 				<File
@@ -1592,6 +1598,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\MusicInfoTagLoaderApe.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\MusicInfoTagLoaderASAP.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\MusicInfoTagLoaderASAP.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\MusicInfoTagLoaderCDDA.cpp">
@@ -2353,6 +2365,12 @@
 			<Filter
 				Name="Filesystem"
 				Filter="">
+				<File
+					RelativePath="..\..\xbmc\FileSystem\ASAPFileDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\ASAPFileDirectory.h">
+				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\CacheMemBuffer.cpp">
 				</File>
@@ -3440,6 +3458,9 @@
 				RelativePath="..\..\xbmc\utils\InfoLoader.h">
 			</File>
 			<File
+				RelativePath="..\..\xbmc\inttypes.h">
+			</File>
+			<File
 				RelativePath="..\..\xbmc\xbox\IoSupport.h">
 			</File>
 			<File
@@ -3570,6 +3591,9 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\stdafx.h">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\stdint.h">
 			</File>
 			<File
 				RelativePath="..\..\xbmc\StringUtils.h">

@@ -820,6 +820,7 @@ namespace VIDEO
         continue;
       }
 
+      bool bMatched=false;
       for (unsigned int j=0;j<expression.size();++j)
       {
         CRegExp reg;
@@ -843,6 +844,7 @@ namespace VIDEO
             std::pair<int,int> key(iSeason,iEpisode);
             CScraperUrl url(items[i]->m_strPath);
             episodeList.insert(std::make_pair<std::pair<int,int>,CScraperUrl>(key,url));
+            bMatched = true;
 
             // check the remainder of the string for any further episodes.
             CRegExp reg2;
@@ -883,6 +885,8 @@ namespace VIDEO
           }
         }
       }
+      if (!bMatched)
+        CLog::Log(LOGDEBUG,"could not enumerate file %s",items[i]->m_strPath.c_str());
     }
   }
 
@@ -899,9 +903,11 @@ namespace VIDEO
       if (pItem->m_bIsFolder)
       {
         lResult=m_database.SetDetailsForTvShow(pItem->m_strPath, movieDetails);
+        pItem->CacheVideoFanart();
         // get & save fanart image
-        if (!movieDetails.m_fanart.DownloadImage(pItem->GetCachedVideoFanart()))
-          CLog::Log(LOGERROR, "Failed to download fanart %s to %s", movieDetails.m_fanart.GetImageURL().c_str(), pItem->GetCachedVideoFanart().c_str());
+        if (!CFile::Exists(pItem->GetCachedVideoFanart()))
+          if (!movieDetails.m_fanart.DownloadImage(pItem->GetCachedVideoFanart()))
+            CLog::Log(LOGERROR, "Failed to download fanart %s to %s", movieDetails.m_fanart.GetImageURL().c_str(), pItem->GetCachedVideoFanart().c_str());
       }
       else
       {
@@ -919,6 +925,7 @@ namespace VIDEO
     CStdString strImage = movieDetails.m_strPictureURL.GetFirstThumb().m_url;
     if (strImage.size() > 0)
     {
+      pItem->SetThumbnailImage("");
       // check for a cached thumb or user thumb
       pItem->SetVideoThumb();
       strThumb = pItem->GetCachedVideoThumb();

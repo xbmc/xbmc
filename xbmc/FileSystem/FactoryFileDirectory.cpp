@@ -6,6 +6,8 @@
 #include "OGGFileDirectory.h"
 #include "NSFFileDirectory.h"
 #include "SIDFileDirectory.h"
+#include "ASAPFileDirectory.h"
+#include "cores/paplayer/ASAPCodec.h"
 #endif
 #include "RarDirectory.h"
 #include "ZipDirectory.h"
@@ -42,7 +44,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
   if (strExtension.Equals(".ogg") && CFile::Exists(strPath))
   {
     IFileDirectory* pDir=new COGGFileDirectory;
-    //  Has the ogg file more then one bitstream?
+    //  Has the ogg file more than one bitstream?
     if (pDir->ContainsFiles(strPath))
     {
       return pDir; // treat as directory
@@ -54,7 +56,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
   if (strExtension.Equals(".nsf") && CFile::Exists(strPath))
   {
     IFileDirectory* pDir=new CNSFFileDirectory;
-    //  Has the nsf file more then one track?
+    //  Has the nsf file more than one track?
     if (pDir->ContainsFiles(strPath))
       return pDir; // treat as directory
 
@@ -64,7 +66,17 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
   if (strExtension.Equals(".sid") && CFile::Exists(strPath))
   {
     IFileDirectory* pDir=new CSIDFileDirectory;
-    //  Has the nsf file more then one track?
+    //  Has the sid file more than one track?
+    if (pDir->ContainsFiles(strPath))
+      return pDir; // treat as directory
+
+    delete pDir;
+    return NULL;
+  }
+  if (ASAPCodec::IsSupportedFormat(strExtension) && CFile::Exists(strPath))
+  {
+    IFileDirectory* pDir=new CASAPFileDirectory;
+    //  Has the asap file more than one track?
     if (pDir->ContainsFiles(strPath))
       return pDir; // treat as directory
 
