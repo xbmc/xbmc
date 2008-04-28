@@ -278,5 +278,7 @@ protected:
   CRITICAL_SECTION m_critStreamSection; // need to have this lock when switching streams (audio / video)
 
   CEdl m_Edl;
+
+  CPlayerOptions m_PlayerOptions;
 };
 

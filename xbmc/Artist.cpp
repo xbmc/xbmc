@@ -130,7 +130,7 @@ bool CArtist::Load(const TiXmlElement *artist)
   return true;
 }
 
-bool CArtist::Save(TiXmlNode *node, const CStdString &tag)
+bool CArtist::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strPath)
 {
   if (!node) return false;
 
@@ -165,6 +165,7 @@ bool CArtist::Save(TiXmlNode *node, const CStdString &tag)
   XMLUtils::SetString(artist,        "died", strDied);
   XMLUtils::SetString(artist,   "disbanded", strDisbanded);
   XMLUtils::SetString(artist,      "thumbs", thumbURL.m_xml);
+  XMLUtils::SetString(artist,        "path", strPath);
 
   // albums
   for (vector< pair<CStdString,CStdString> >::const_iterator it = discography.begin(); it != discography.end(); ++it)
