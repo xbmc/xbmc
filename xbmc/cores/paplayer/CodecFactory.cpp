@@ -27,6 +27,7 @@
 #include "AIFFcodec.h"
 #include "ADPCMCodec.h"
 #include "TimidityCodec.h"
+#include "ASAPCodec.h"
 #include "URL.h"
 #include "DVDPlayerCodec.h"
 
@@ -88,6 +89,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new ADPCMCodec();
   else if (TimidityCodec::IsSupportedFormat(strFileType))
     return new TimidityCodec();
+  else if (ASAPCodec::IsSupportedFormat(strFileType) || strFileType.Equals("asapstream"))
+    return new ASAPCodec();
 
   return NULL;
 }

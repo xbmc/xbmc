@@ -65,7 +65,7 @@ public:
   void SetType(VIEW_TYPE type, const CStdString &label);
 
   virtual bool IsContainer() const { return true; };
-  CGUIListItem *GetListItem(int offset) const;
+  CGUIListItem *GetListItem(int offset, bool wrap=true) const;
 
   virtual bool GetCondition(int condition, int data) const;
   CStdString GetLabel(int info) const;
