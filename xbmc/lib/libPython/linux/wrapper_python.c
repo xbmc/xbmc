@@ -136,12 +136,12 @@ int PYTHON_WRAP(lstat)(const char * path, struct stat * buf)
   return xbp_lstat(path, buf);
 }
 #else
-int __wrap___xstat64(int ver, const char *filename, struct stat64 *stat_buf)
+int PYTHON_WRAP(__xstat64)(int ver, const char *filename, struct stat64 *stat_buf)
 {
   return xbp__xstat64(ver, filename, stat_buf);
 }
 
-int __wrap___lxstat64(int ver, const char *filename, struct stat64 *stat_buf)
+int PYTHON_WRAP(__lxstat64)(int ver, const char *filename, struct stat64 *stat_buf)
 {
   return xbp__lxstat64(ver, filename, stat_buf);
 }
