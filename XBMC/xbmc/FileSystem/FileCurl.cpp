@@ -25,6 +25,8 @@ extern "C" int __stdcall dllselect(int ntfs, fd_set *readfds, fd_set *writefds, 
 #define dllselect select
 #elif defined(_WIN32PC)
 extern "C" int __stdcall dllselect(int ntfs, fd_set *readfds, fd_set *writefds, fd_set *errorfds, const timeval *timeout);
+//NOTE: call system select instead of dllselect 'cause filecurl is loaded with WIN32DllLoader instead of default loader.
+#define dllselect select
 #else
 #define dllselect select
 #endif
