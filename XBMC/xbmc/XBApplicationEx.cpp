@@ -227,7 +227,7 @@ INT CXBApplicationEx::Run()
     try
     {
 #endif
-      FrameMove();
+      if (!m_bStop) FrameMove();
       //reset exception count
       frameMoveExceptionCount = 0;
 
@@ -252,7 +252,7 @@ INT CXBApplicationEx::Run()
     try
     {
 #endif
-      Render();
+      if (!m_bStop) Render();
       //reset exception count
       renderExceptionCount = 0;
 
