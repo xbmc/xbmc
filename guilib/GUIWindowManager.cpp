@@ -8,10 +8,6 @@
 #include "Util.h"
 #include "Settings.h"
 
-#if !defined(_XBOX) && !defined(_LINUX)
-#include "../xbmc/Win32/XBMC_PC.h"
-#endif
-
 using namespace std;
 
 CGUIWindowManager m_gWindowManager;
