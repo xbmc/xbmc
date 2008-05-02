@@ -319,8 +319,11 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     // Playback might have been stopped due to some error
     if (m_bStop || m_bAbortRequest) 
     {
-      m_pDlgCache->Close();
-      m_pDlgCache = NULL;
+      if (m_pDlgCache)
+      {
+        m_pDlgCache->Close();
+        m_pDlgCache = NULL;
+      }
       return false;
     }
 
