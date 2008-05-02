@@ -133,6 +133,12 @@ public:
   virtual void         Reset(); /* resets renderer after seek for example */
   virtual void         OnClose(); // called from main GUI thread
 
+  // Feature support
+  virtual bool SupportsBrightness() { return false; }
+  virtual bool SupportsContrast() { return false; }
+  virtual bool SupportsGamma() { return false; }
+  virtual bool SupportsMultiPassRendering() { return false; }
+
   void AutoCrop(bool bCrop);
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   RESOLUTION GetResolution();  
