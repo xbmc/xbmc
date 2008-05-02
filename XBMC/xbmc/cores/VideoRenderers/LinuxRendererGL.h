@@ -139,6 +139,12 @@ public:
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   RESOLUTION GetResolution();  
 
+  // Feature support
+  virtual bool SupportsBrightness();
+  virtual bool SupportsContrast();
+  virtual bool SupportsGamma();
+  virtual bool SupportsMultiPassRendering();
+
 protected:
   virtual void Render(DWORD flags);
   virtual void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fUserPixelRatio, float fZoomAmount);

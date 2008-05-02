@@ -2385,6 +2385,28 @@ void CLinuxRendererGL::TextureCallback(DWORD dwContext)
   SetEvent((HANDLE)dwContext);
 }
 
+bool CLinuxRendererGL::SupportsBrightness()
+{
+  return (bool)glewIsSupported("GL_ARB_imaging");
+}
+
+bool CLinuxRendererGL::SupportsContrast()
+{
+  return (bool)glewIsSupported("GL_ARB_imaging");
+}
+
+bool CLinuxRendererGL::SupportsGamma()
+{
+  return false;
+}
+
+bool CLinuxRendererGL::SupportsMultiPassRendering()
+{
+  return glewIsSupported("GL_EXT_framebuffer_object") && glCreateProgram;
+}
+
+
+
 #endif
 
 #endif
