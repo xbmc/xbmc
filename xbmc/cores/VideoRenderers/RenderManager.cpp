@@ -324,6 +324,33 @@ float CXBoxRenderManager::GetMaximumFPS()
   return fps;
 }
 
+bool CXBoxRenderManager::SupportsBrightness()
+{
+  if (m_pRenderer)
+  {
+    return m_pRenderer->SupportsBrightness();
+  }
+  return false;
+}
+
+bool CXBoxRenderManager::SupportsContrast()
+{
+  if (m_pRenderer)
+  {
+    return m_pRenderer->SupportsContrast();
+  }
+  return false;
+}
+
+bool CXBoxRenderManager::SupportsGamma()
+{
+  if (m_pRenderer)
+  {
+    return m_pRenderer->SupportsGamma();
+  }
+  return false;
+}
+
 void CXBoxRenderManager::Present()
 {
 #ifdef HAS_SDL_OPENGL
