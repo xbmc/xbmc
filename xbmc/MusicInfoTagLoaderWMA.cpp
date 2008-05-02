@@ -320,7 +320,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         // Get frame name
         CStdString strFrameName = "";
         CStdStringW wString = "";
-        g_charsetConverter.utf16LEtoUTF8((char*)(pData.get() + iOffset), strFrameName);
+        g_charsetConverter.utf16LEtoUTF8((LPWSTR)(pData.get() + iOffset), strFrameName);
         iOffset += iFrameNameSize;
 
         // Parse frame value and fill
