@@ -104,6 +104,9 @@ public:
   inline DWORD GetPresentDelay() { return m_presentdelay;  }
   inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}
+  bool SupportsBrightness();
+  bool SupportsContrast();
+  bool SupportsGamma();
 
 #ifdef HAS_SDL_OPENGL
   CLinuxRendererGL *m_pRenderer;
