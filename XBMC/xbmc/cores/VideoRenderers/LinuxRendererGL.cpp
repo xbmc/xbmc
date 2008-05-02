@@ -2405,8 +2405,6 @@ bool CLinuxRendererGL::SupportsMultiPassRendering()
   return glewIsSupported("GL_EXT_framebuffer_object") && glCreateProgram;
 }
 
-
-
 #endif
 
 #endif
