@@ -256,6 +256,7 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
   if ((int)playlist.size())
   {
+    g_application.m_strPlayListFile = strUrl; //needed to highlight the playing item
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
     g_playlistPlayer.Play(0);
     CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(timeGetTime() - start));
