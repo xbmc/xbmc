@@ -1303,7 +1303,7 @@
   <string id="15203">Last.FM Password</string>
   <string id="15204">Unable to handshake: sleeping...</string>
   <string id="15205">Please Update XBMC</string>
-  <string id="15206">Bad authorisation: Check username and password</string>
+  <string id="15206">Bad authorization: Check username and password</string>
   <string id="15207">Connected</string>
   <string id="15208">Not Connected</string>
   <string id="15209">Submit Interval %i</string>
@@ -1311,7 +1311,7 @@
   <string id="15211">Submitting...</string>
   <string id="15212">Submitting in %i secs</string>
   <string id="15213">Play Using...</string>
-  <string id="15214">Use Smoothed A/V Synchronisation</string>
+  <string id="15214">Use Smoothed A/V Synchronization</string>
   <string id="15215">Hide File Names in Thumbs View</string>
   <string id="15216">Play in Partymode</string>
 
