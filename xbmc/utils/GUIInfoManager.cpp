@@ -3463,7 +3463,14 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
   else if (condition == LISTITEM_ISPLAYING)
   {
     if (item->IsFileItem() && !m_currentFile->m_strPath.IsEmpty())
+    {
+      if (!g_application.m_strPlayListFile.IsEmpty())
+      { 
+        //playlist file that is currently playing or the playlistitem that is currently playing.
+        return g_application.m_strPlayListFile.Equals(((const CFileItem *)item)->m_strPath) || m_currentFile->IsSamePath((const CFileItem *)item);
+      }
       return m_currentFile->IsSamePath((const CFileItem *)item);
+    }
   }
   else if (condition == LISTITEM_ISSELECTED)
     return item->IsSelected();
