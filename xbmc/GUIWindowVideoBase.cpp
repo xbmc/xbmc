@@ -819,7 +819,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem, CFileItemLis
     // recursive
     CFileItemList items;
     GetDirectory(pItem->m_strPath, items);
-    SortItems(items);
+    FormatAndSort(items);
 
     for (int i = 0; i < items.Size(); ++i)
     {

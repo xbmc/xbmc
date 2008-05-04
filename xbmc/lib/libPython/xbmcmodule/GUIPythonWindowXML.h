@@ -35,7 +35,7 @@ public:
 protected:
   CGUIControl      *GetFirstFocusableControl(int id);
   virtual void     UpdateButtons();
-  virtual void     OnSort();
+  virtual void     FormatAndSort(CFileItemList &items);
   virtual void     Update();
   virtual void     OnWindowLoaded();
   virtual void     OnInitWindow();
