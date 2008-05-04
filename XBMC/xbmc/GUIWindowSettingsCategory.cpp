@@ -538,7 +538,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("system.fanspeed") || strSetting.Equals("system.fanspeed")) 
+    else if (strSetting.Equals("system.fanspeed") || strSetting.Equals("system.minfanspeed")) 
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
