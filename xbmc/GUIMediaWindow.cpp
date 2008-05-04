@@ -429,15 +429,15 @@ void CGUIMediaWindow::FormatItemLabels(CFileItemList &items, const LABEL_MASKS &
 }
 
 // \brief Prepares and adds the fileitems list/thumb panel
-void CGUIMediaWindow::OnSort()
+void CGUIMediaWindow::FormatAndSort(CFileItemList &items)
 {
   if (m_guiState.get())
   {
     LABEL_MASKS labelMasks;
     m_guiState->GetSortMethodLabelMasks(labelMasks);
-    FormatItemLabels(*m_vecItems, labelMasks);
+    FormatItemLabels(items, labelMasks);
   }
-  SortItems(*m_vecItems);
+  SortItems(items);
 }
 
 /*!
@@ -561,7 +561,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), *m_vecItems));
 
-  OnSort();
+  FormatAndSort(*m_vecItems);
 
   // Ask the devived class if it wants to do custom list operations,
   // eg. changing the label
@@ -965,7 +965,7 @@ void CGUIMediaWindow::UpdateFileList()
   CFileItem* pItem = m_vecItems->Get(nItem);
   const CStdString& strSelected = pItem->m_strPath;
 
-  OnSort();
+  FormatAndSort(*m_vecItems);
   UpdateButtons();
 
   m_viewControl.SetItems(*m_vecItems);
