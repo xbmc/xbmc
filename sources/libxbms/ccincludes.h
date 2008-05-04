@@ -30,7 +30,9 @@
 
 #ifndef CCINCLUDES_H_INCLUDED
 #define CCINCLUDES_H_INCLUDED 1
-
+#ifdef __APPLE__
+#include <sys/select.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,7 +40,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <errno.h>
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
 #include <inttypes.h>
 #else
 #include "inttypes.h"
@@ -48,7 +50,7 @@
 
 #ifdef _XBOX
 #include <xtl.h>
-#elif defined(__linux__)
+#elif defined(__linux__) || defined(__APPLE__)
 #include <sys/socket.h>
 #include <inttypes.h>
 #include <netdb.h>
@@ -62,7 +64,7 @@ extern int errno;
 #define PATH_MAX 1024
 #endif /* ! PATH_MAX */
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
 #define CC_UINT_64_TYPE_NAME      uint64_t
 #else
 #define CC_UINT_64_TYPE_NAME	  UINT64

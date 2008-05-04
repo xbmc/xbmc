@@ -32,7 +32,7 @@
  *  the same conditions as the XBMP itself.
  *
  */
-
+ 
 #include "ccincludes.h"
 #include "ccbuffer.h"
 #include "ccxclient.h"
@@ -40,7 +40,7 @@
 
 static unsigned long timeout_start()
 {
-#if defined (__linux__) || defined (__NetBSD__) || defined (__FreeBSD__) || defined (__CYGWIN__) || defined (sun)
+#if defined (__linux__) || defined(__APPLE__) || defined (__NetBSD__) || defined (__FreeBSD__) || defined (__CYGWIN__) || defined (sun)
   struct timeval tv;
   unsigned long r;
 

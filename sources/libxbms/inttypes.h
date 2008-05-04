@@ -40,7 +40,7 @@
 #pragma once
 #endif
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
 #include <stdint.h>
 #else
 #include "stdint.h"
