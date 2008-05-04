@@ -19,6 +19,7 @@ namespace XFILE
     // CThread methods
     virtual void Process();
     virtual void OnExit();
+    virtual void StopThread();
     
     // IFIle methods
     virtual bool          Open(const CURL& url, bool bBinary = true);
