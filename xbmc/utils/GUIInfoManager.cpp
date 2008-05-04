@@ -767,6 +767,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("genre")) return LISTITEM_GENRE;
   else if (info.Equals("director")) return LISTITEM_DIRECTOR;
   else if (info.Equals("filename")) return LISTITEM_FILENAME;
+  else if (info.Equals("filenameandpath")) return LISTITEM_FILENAME_AND_PATH;
   else if (info.Equals("date")) return LISTITEM_DATE;
   else if (info.Equals("size")) return LISTITEM_SIZE;
   else if (info.Equals("rating")) return LISTITEM_RATING;
@@ -3256,6 +3257,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strGenre);
     break;
   case LISTITEM_FILENAME:
+    if (item->HasMusicInfoTag())
+      return CUtil::GetFileName(CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetURL()));
+    if (item->HasVideoInfoTag())
+      return CUtil::GetFileName(CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath));
     return CUtil::GetFileName(item->m_strPath);
   case LISTITEM_DATE:
     if (item->m_dateTime.IsValid())
@@ -3371,6 +3376,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
   case LISTITEM_THUMB:
     return item->GetThumbnailImage();
   case LISTITEM_PATH:
+  case LISTITEM_FILENAME_AND_PATH:
+    if (item->HasMusicInfoTag())
+      return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetURL());
+    if (item->HasVideoInfoTag())
+      return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath);
     return item->m_strPath;
   case LISTITEM_PICTURE_PATH:
     if (item->IsPicture() && (!item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
