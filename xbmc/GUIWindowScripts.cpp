@@ -150,7 +150,7 @@ bool CGUIWindowScripts::GetDirectory(const CStdString& strDirectory, CFileItemLi
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItem *item = items[i];
-    if (item->m_bIsFolder && !item->IsParentFolder() && !item->m_bIsShareOrDrive)
+    if (item->m_bIsFolder && !item->IsParentFolder() && !item->m_bIsShareOrDrive && !item->GetLabel().Left(1).Equals("."))
     { // folder item - let's check for a default.py file, and flatten if we have one
       CStdString defaultPY;
       CUtil::AddFileToFolder(item->m_strPath, "default.py", defaultPY);
@@ -163,7 +163,7 @@ bool CGUIWindowScripts::GetDirectory(const CStdString& strDirectory, CFileItemLi
         item->SetLabelPreformated(true);
       }
     }
-    if (item->GetLabel().Equals("autoexec.py"))
+    if (item->GetLabel().Equals("autoexec.py") || (item->GetLabel().Left(1).Equals(".") && !item->IsParentFolder()))
     {
       items.Remove(i);
       i--;
