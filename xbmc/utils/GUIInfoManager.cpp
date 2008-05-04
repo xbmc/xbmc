@@ -3257,9 +3257,9 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strGenre);
     break;
   case LISTITEM_FILENAME:
-    if (item->HasMusicInfoTag())
+    if (item->IsMusicDb())
       return CUtil::GetFileName(CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetURL()));
-    if (item->HasVideoInfoTag())
+    if (item->IsVideoDb())
       return CUtil::GetFileName(CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath));
     return CUtil::GetFileName(item->m_strPath);
   case LISTITEM_DATE:
@@ -3377,9 +3377,9 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     return item->GetThumbnailImage();
   case LISTITEM_PATH:
   case LISTITEM_FILENAME_AND_PATH:
-    if (item->HasMusicInfoTag())
+    if (item->IsMusicDb())
       return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetURL());
-    if (item->HasVideoInfoTag())
+    if (item->IsVideoDb())
       return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath);
     return item->m_strPath;
   case LISTITEM_PICTURE_PATH:
