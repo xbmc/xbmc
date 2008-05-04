@@ -37,7 +37,7 @@ protected:
   virtual void UpdateButtons();
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual bool Update(const CStdString &strDirectory);
-  virtual void OnSort();
+  virtual void FormatAndSort(CFileItemList &items);
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual void OnFinalizeFileItems(CFileItemList &items);
 
