@@ -672,6 +672,9 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 
 bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
 {
+  if(time < 0)
+    time = 0;
+
   if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     CLog::Log(LOGDEBUG, "%s - seeking using navigator", __FUNCTION__);
