@@ -84,13 +84,13 @@ XboxMediaCenter: $(wildcard xbmc/*.o xbmc/settings/*.o guilib/*.o guilib/tinyXML
 xbmc-xrandr: xbmc-xrandr.c
 	gcc -g -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 
 
-install:
-	@echo "Creating target directories in /usr/share/xbmc"
-	@find language media screensavers scripts skin sounds userdata visualisations system -type d -not -iregex ".*svn.*" -exec mkdir -p /usr/share/xbmc/"{}" \; -printf " -- %f                           \r"
-	@echo "Copying system files to /usr/share/xbmc"
-	@find language media screensavers scripts skin sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*osx.*|.*x86_64.*|.*\.dll" -exec cp "{}" /usr/share/xbmc/"{}" \; -printf " -- %f                           \r"
-	@echo "Copying XBMC binary to /usr/share/xbmc/xbmc.bin"
-	@cp XboxMediaCenter /usr/share/xbmc/xbmc.bin
+install: all
+	@echo "Creating target directories in $(prefix)/xbmc"
+	@find language media screensavers scripts skin sounds userdata visualisations system -type d -not -iregex ".*svn.*" -exec mkdir -p $(prefix)/xbmc/"{}" \; -printf " -- %f                           \r"
+	@echo "Copying system files to $(prefix)/xbmc"
+	@find language media screensavers scripts skin sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*osx.*|.*x86_64.*|.*\.dll" -exec cp "{}" $(prefix)/xbmc/"{}" \; -printf " -- %f                           \r"
+	@echo "Copying XBMC binary to $(prefix)/xbmc/xbmc.bin"
+	@cp XboxMediaCenter $(prefix)/xbmc/xbmc.bin
 	@cp tools/Linux/xbmc.sh /usr/bin/xbmc
 	@chmod 755 /usr/bin/xbmc
 	@echo "Done!"
@@ -98,7 +98,7 @@ install:
 
 uninstall:
 	@echo "Removing XBMC..."
-	@rm -rf /usr/share/xbmc /usr/bin/xbmc
+	@rm -rf $(prefix)/xbmc /usr/bin/xbmc
 	@echo "Done!"
 
 include Makefile.include
