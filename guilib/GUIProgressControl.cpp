@@ -82,7 +82,7 @@ void CGUIProgressControl::Render()
     m_guiLeft.Render();
 
     posX += fScaleX*m_guiLeft.GetTextureWidth();
-    if (m_fPercent && (int)fWidth > 1)
+    if (m_fPercent && (int)(fScaleX * fWidth) > 1)
     {
       float offset = fabs(fScaleY * 0.5f * (m_guiMid.GetTextureHeight() - m_guiBackground.GetTextureHeight()));
       if (offset > 0)  //  Center texture to the background if necessary
