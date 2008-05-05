@@ -43,7 +43,9 @@
 
 #define XXLog(a,b) printf("%s", (b))
 
+#ifndef INSTALL_PATH
 #define INSTALL_PATH    "/usr/share/xbmc"
+#endif
 
 #define CONST		const
 #define FALSE		0
