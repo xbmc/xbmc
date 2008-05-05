@@ -47,20 +47,38 @@ void CGUIControlGroupList::Render()
   // we run through the controls, rendering as we go
   bool render(g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height));
   float pos = 0;
+  float focusedPos = 0;
+  CGUIControl *focusedControl = NULL;
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     // note we render all controls, even if they're offscreen, as then they'll be updated
     // with respect to animations
     CGUIControl *control = *it;
     control->UpdateVisibility();
-    if (m_orientation == VERTICAL)
-      g_graphicsContext.SetOrigin(m_posX, m_posY + pos - m_offset);
+    if (m_renderFocusedLast && control->HasFocus())
+    {
+      focusedControl = control;
+      focusedPos = pos;
+    }
     else
-      g_graphicsContext.SetOrigin(m_posX + pos - m_offset, m_posY);
-    control->DoRender(m_renderTime);
+    {
+      if (m_orientation == VERTICAL)
+        g_graphicsContext.SetOrigin(m_posX, m_posY + pos - m_offset);
+      else
+        g_graphicsContext.SetOrigin(m_posX + pos - m_offset, m_posY);
+      control->DoRender(m_renderTime);
+    }
     if (control->IsVisible())
       pos += Size(control) + m_itemGap;
     g_graphicsContext.RestoreOrigin();
+  }
+  if (focusedControl)
+  {
+    if (m_orientation == VERTICAL)
+      g_graphicsContext.SetOrigin(m_posX, m_posY + focusedPos - m_offset);
+    else
+      g_graphicsContext.SetOrigin(m_posX + focusedPos - m_offset, m_posY);
+    focusedControl->DoRender(m_renderTime);
   }
   if (render) g_graphicsContext.RestoreClipRegion();
   CGUIControl::Render();
