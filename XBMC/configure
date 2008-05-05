@@ -578,6 +578,7 @@ PACKAGE_VERSION='2.1'
 PACKAGE_STRING='"xbmc" 2.1'
 PACKAGE_BUGREPORT='bugs@xboxmediacenter.com'
 
+ac_default_prefix="/usr/share"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -1735,6 +1736,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 ac_config_headers="$ac_config_headers config.h"
+
 
 
 ac_aux_dir=
@@ -12667,7 +12669,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile"
+ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -13226,6 +13228,7 @@ do
     "Makefile.include") CONFIG_FILES="$CONFIG_FILES Makefile.include" ;;
     "xbmc/lib/libPython/linux/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libPython/linux/Makefile" ;;
     "xbmc/lib/libUPnP/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libUPnP/Makefile" ;;
+    "tools/Linux/xbmc.sh") CONFIG_FILES="$CONFIG_FILES tools/Linux/xbmc.sh" ;;
 
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
@@ -13786,5 +13789,5 @@ if test "$no_create" != yes; then
 fi
 
 
-final_message="$final_message\n$dashes"
+final_message="$final_message\n  prefix:\t$prefix\n$dashes"
 echo -e "$final_message\n"
