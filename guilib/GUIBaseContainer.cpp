@@ -118,11 +118,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
         Reset();
         CFileItemList *items = (CFileItemList *)message.GetLPVOID();
         for (int i = 0; i < items->Size(); i++)
-        {
-          CFileItem *item = items->Get(i);
-          item->FreeMemory(); // make sure the memory is free
-          m_items.push_back(item);
-        }
+          m_items.push_back(items->Get(i));
         UpdateLayout();
         SelectItem(message.GetParam1());
         return true;
@@ -449,6 +445,10 @@ void CGUIBaseContainer::FreeResources()
 
 void CGUIBaseContainer::UpdateLayout()
 {
+  // free memory of items
+  for (iItems it = m_items.begin(); it != m_items.end(); it++)
+    (*it)->FreeMemory();
+  // and recalculate the layout
   CalculateLayout();
   if (m_pageControl)
   {
@@ -460,6 +460,16 @@ void CGUIBaseContainer::UpdateLayout()
 void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
 {
   CGUIControl::UpdateVisibility(item);
+  // check whether we need to update our layouts
+  if ((m_layout && m_layout->GetCondition() && !g_infoManager.GetBool(m_layout->GetCondition(), GetParentID())) ||
+      (m_focusedLayout && m_focusedLayout->GetCondition() && !g_infoManager.GetBool(m_focusedLayout->GetCondition(), GetParentID()))) 
+  {
+    // and do it
+    int item = GetSelectedItem();
+    UpdateLayout();
+    SelectItem(item);
+  }
+
   if (m_staticContent)
   { // update our item list with our new content, but only add those items that should
     // be visible.  Save the previous item and keep it if we are adding that one.
