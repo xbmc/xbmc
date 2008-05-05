@@ -30,11 +30,13 @@ CGUIDialogFileStacking::CGUIDialogFileStacking(void)
 {
   m_iSelectedFile = -1;
   m_iNumberOfFiles = 0;
-  m_stackItems = NULL;
+  m_stackItems = new CFileItemList;
 }
 
 CGUIDialogFileStacking::~CGUIDialogFileStacking(void)
-{}
+{
+  delete m_stackItems;
+}
 
 bool CGUIDialogFileStacking::OnMessage(CGUIMessage& message)
 {
