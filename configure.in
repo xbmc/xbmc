@@ -4,7 +4,6 @@
 AC_PREREQ(2.59)
 AC_INIT("xbmc", 2.1, bugs@xboxmediacenter.com)
 AC_CONFIG_HEADER([config.h])
-AC_PREFIX_DEFAULT("/usr/share")
 
 AC_CANONICAL_HOST
 
