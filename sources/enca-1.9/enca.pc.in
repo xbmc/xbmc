@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+libexecdir=@libexecdir@
+
+encaextconvdir=${libexecdir}/enca/extconv
+
+Name: Enca
+Description: Extermely Naive Charset Analyser library
+Version: @VERSION@
+Libs: -L${libdir} -lenca @LIBM@
+Cflags: -I${includedir}

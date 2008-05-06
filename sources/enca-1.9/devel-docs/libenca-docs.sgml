@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<book id="index" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <bookinfo>
+    <title>Enca Library Reference Manual</title>
+  </bookinfo>
+
+  <chapter>
+    <title>Enca Library API</title>
+    <xi:include href="xml/analyser.xml"/>
+    <xi:include href="xml/enums.xml"/>
+    <xi:include href="xml/encodings.xml"/>
+    <xi:include href="xml/auxiliary.xml"/>
+  </chapter>
+
+<!--
+    <chapter>
+    <title>Enca Library Internal Functions</title>
+    <xi:include href="xml/internal.xml"/>
+  </chapter>
+-->
+</book>

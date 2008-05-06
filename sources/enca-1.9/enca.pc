@@ -1,0 +1,13 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+libexecdir=${exec_prefix}/libexec
+
+encaextconvdir=${libexecdir}/enca/extconv
+
+Name: Enca
+Description: Extermely Naive Charset Analyser library
+Version: 1.9
+Libs: -L${libdir} -lenca -lm
+Cflags: -I${includedir}

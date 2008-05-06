@@ -1,0 +1,294 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Auxiliary functions</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.65.1">
+<link rel="home" href="index.html" title="Enca Library Reference Manual">
+<link rel="up" href="ch01.html" title="Enca Library API">
+<link rel="previous" href="libenca-Charsets-and-Surfaces.html" title="Charsets and Surfaces">
+<meta name="generator" content="GTK-Doc V1.4 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="Enca Library API">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle">
+<td><a accesskey="p" href="libenca-Charsets-and-Surfaces.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">Enca Library Reference Manual</th>
+</tr></table>
+<div class="refentry" lang="en">
+<a name="libenca-Auxiliary-Functions"></a><div class="titlepage">
+<div></div>
+<div></div>
+</div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle">Auxiliary functions</span></h2>
+<p>Auxiliary functions &#8212; Variouis auxiliary functions and informations about libenca.</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+
+
+int         <a href="libenca-Auxiliary-Functions.html#enca-charset-has-ucs2-map">enca_charset_has_ucs2_map</a>       (int charset);
+int         <a href="libenca-Auxiliary-Functions.html#enca-charset-ucs2-map">enca_charset_ucs2_map</a>           (int charset,
+                                             unsigned int *buffer);
+size_t      <a href="libenca-Auxiliary-Functions.html#enca-number-of-charsets">enca_number_of_charsets</a>         (void);
+const char* <a href="libenca-Auxiliary-Functions.html#enca-analyser-language">enca_analyser_language</a>          (EncaAnalyser analyser);
+const char** <a href="libenca-Auxiliary-Functions.html#enca-get-languages">enca_get_languages</a>             (size_t *n);
+const char* <a href="libenca-Auxiliary-Functions.html#enca-language-english-name">enca_language_english_name</a>      (const char *lang);
+int*        <a href="libenca-Auxiliary-Functions.html#enca-get-language-charsets">enca_get_language_charsets</a>      (const char *langname,
+                                             size_t *n);
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2831925"></a><h2>Description</h2>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2831935"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2831940"></a><h3>
+<a name="enca-charset-has-ucs2-map"></a>enca_charset_has_ucs2_map ()</h3>
+<a class="indexterm" name="id2831948"></a><pre class="programlisting">int         enca_charset_has_ucs2_map       (int charset);</pre>
+<p>
+Find whether we have charset -&gt; UCS-2 map.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><i class="parameter"><tt>charset</tt></i>&#160;:</span></td>
+<td> An 8bit charset.
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> Nonzero when the map is available, zero otherwise.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2768703"></a><h3>
+<a name="enca-charset-ucs2-map"></a>enca_charset_ucs2_map ()</h3>
+<a class="indexterm" name="id2768712"></a><pre class="programlisting">int         enca_charset_ucs2_map           (int charset,
+                                             unsigned int *buffer);</pre>
+<p>
+Creates map from an 8bit charset to UCS-2.
+</p>
+<p>
+The buffer must be at least 256*sizeof(unsigned int) long to hold the map.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><i class="parameter"><tt>charset</tt></i>&#160;:</span></td>
+<td> An 8bit charset.
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><i class="parameter"><tt>buffer</tt></i>&#160;:</span></td>
+<td> Buffer to store the map to.
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> Nonzero when the map was successfully created, zero otherwise.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2768782"></a><h3>
+<a name="enca-number-of-charsets"></a>enca_number_of_charsets ()</h3>
+<a class="indexterm" name="id2768790"></a><pre class="programlisting">size_t      enca_number_of_charsets         (void);</pre>
+<p>
+Returns number of known charsets.
+</p>
+<p>
+Charsets idetifiers are assigned successively starting from zero, so last
+charset has identifier <a href="libenca-Auxiliary-Functions.html#enca-number-of-charsets"><tt class="function">enca_number_of_charsets()</tt></a> - 1.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The number of charsets.
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2768833"></a><h3>
+<a name="enca-analyser-language"></a>enca_analyser_language ()</h3>
+<a class="indexterm" name="id2768841"></a><pre class="programlisting">const char* enca_analyser_language          (EncaAnalyser analyser);</pre>
+<p>
+Returns name of language which was <i class="parameter"><tt>analyser</tt></i> initialized for.
+</p>
+<p>
+The returned string must be considered constant and must NOT be freed.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><i class="parameter"><tt>analyser</tt></i>&#160;:</span></td>
+<td> An analyser.
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The language name.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2851027"></a><h3>
+<a name="enca-get-languages"></a>enca_get_languages ()</h3>
+<a class="indexterm" name="id2851035"></a><pre class="programlisting">const char** enca_get_languages             (size_t *n);</pre>
+<p>
+Returns list of known languages.
+</p>
+<p>
+The returned strings are two-letter ISO-639 language codes, the same as
+<a href="libenca-Analyser.html#enca-analyser-alloc"><tt class="function">enca_analyser_alloc()</tt></a> accepts.
+</p>
+<p>
+The list of languages has to be freed by caller; the strings themselves
+must be considered constant and must NOT be freed.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><i class="parameter"><tt>n</tt></i>&#160;:</span></td>
+<td> The number of languages will be stored here.
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The list of languages, storing their number into *<i class="parameter"><tt>n</tt></i>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2851104"></a><h3>
+<a name="enca-language-english-name"></a>enca_language_english_name ()</h3>
+<a class="indexterm" name="id2851112"></a><pre class="programlisting">const char* enca_language_english_name      (const char *lang);</pre>
+<p>
+Returns an English name of a language given its ISO-639 code.
+</p>
+<p>
+The returned string must be considered constant and must NOT be freed.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><i class="parameter"><tt>lang</tt></i>&#160;:</span></td>
+<td> A two-letter language code, such as obtained from
+       <a href="libenca-Auxiliary-Functions.html#enca-analyser-language"><tt class="function">enca_analyser_language()</tt></a> or <a href="libenca-Auxiliary-Functions.html#enca-get-languages"><tt class="function">enca_get_languages()</tt></a>.
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The English language name.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2851179"></a><h3>
+<a name="enca-get-language-charsets"></a>enca_get_language_charsets ()</h3>
+<a class="indexterm" name="id2851188"></a><pre class="programlisting">int*        enca_get_language_charsets      (const char *langname,
+                                             size_t *n);</pre>
+<p>
+Returns list of identifiers of charsets supported for language <i class="parameter"><tt>language</tt></i>.
+</p>
+<p>
+The list of charset identifiers has to be freed by caller.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><i class="parameter"><tt>langname</tt></i>&#160;:</span></td>
+<td> Two-letter ISO-639 language code.
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><i class="parameter"><tt>n</tt></i>&#160;:</span></td>
+<td> The number of charsets will be stored here.
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The list of charsets, storing their number into *<i class="parameter"><tt>n</tt></i>.  When language
+         contains no charsets or <i class="parameter"><tt>langname</tt></i> is invalid, <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><span class="type">NULL</span></a> is returned
+         and zero stored into *<i class="parameter"><tt>n</tt></i>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
+<td align="left"><a accesskey="p" href="libenca-Charsets-and-Surfaces.html"><b>&lt;&lt;&#160;Charsets and Surfaces</b></a></td>
+<td align="right"></td>
+</tr></table>
+</body>
+</html>

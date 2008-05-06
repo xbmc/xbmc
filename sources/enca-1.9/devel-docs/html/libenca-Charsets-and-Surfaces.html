@@ -1,0 +1,492 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Charsets and Surfaces</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.65.1">
+<link rel="home" href="index.html" title="Enca Library Reference Manual">
+<link rel="up" href="ch01.html" title="Enca Library API">
+<link rel="previous" href="libenca-Typedefs-and-Constants.html" title="Typedefs and Constants">
+<link rel="next" href="libenca-Auxiliary-Functions.html" title="Auxiliary functions">
+<meta name="generator" content="GTK-Doc V1.4 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="Enca Library API">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle">
+<td><a accesskey="p" href="libenca-Typedefs-and-Constants.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">Enca Library Reference Manual</th>
+<td><a accesskey="n" href="libenca-Auxiliary-Functions.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry" lang="en">
+<a name="libenca-Charsets-and-Surfaces"></a><div class="titlepage">
+<div></div>
+<div></div>
+</div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle">Charsets and Surfaces</span></h2>
+<p>Charsets and Surfaces &#8212; Functions and macros for getting something sensible from <a href="libenca-Typedefs-and-Constants.html#EncaEncoding"><span class="type">EncaEncoding</span></a>.</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+
+
+const char* <a href="libenca-Charsets-and-Surfaces.html#enca-charset-name">enca_charset_name</a>               (int charset,
+                                             <a href="libenca-Typedefs-and-Constants.html#EncaNameStyle">EncaNameStyle</a> whatname);
+const char** <a href="libenca-Charsets-and-Surfaces.html#enca-get-charset-aliases">enca_get_charset_aliases</a>       (int charset,
+                                             size_t *n);
+char*       <a href="libenca-Charsets-and-Surfaces.html#enca-get-surface-name">enca_get_surface_name</a>           (<a href="libenca-Typedefs-and-Constants.html#EncaSurface">EncaSurface</a> surface,
+                                             <a href="libenca-Typedefs-and-Constants.html#EncaNameStyle">EncaNameStyle</a> whatname);
+<a href="libenca-Typedefs-and-Constants.html#EncaEncoding">EncaEncoding</a> <a href="libenca-Charsets-and-Surfaces.html#enca-parse-encoding-name">enca_parse_encoding_name</a>       (const char *name);
+<a href="libenca-Typedefs-and-Constants.html#EncaSurface">EncaSurface</a> <a href="libenca-Charsets-and-Surfaces.html#enca-charset-natural-surface">enca_charset_natural_surface</a>    (int charset);
+<a href="libenca-Typedefs-and-Constants.html#EncaCharsetFlags">EncaCharsetFlags</a> <a href="libenca-Charsets-and-Surfaces.html#enca-charset-properties">enca_charset_properties</a>    (int charset);
+#define     <a href="libenca-Charsets-and-Surfaces.html#enca-charset-is-7bit">enca_charset_is_7bit</a>            (cs)
+#define     <a href="libenca-Charsets-and-Surfaces.html#enca-charset-is-8bit">enca_charset_is_8bit</a>            (cs)
+#define     <a href="libenca-Charsets-and-Surfaces.html#enca-charset-is-16bit">enca_charset_is_16bit</a>           (cs)
+#define     <a href="libenca-Charsets-and-Surfaces.html#enca-charset-is-32bit">enca_charset_is_32bit</a>           (cs)
+#define     <a href="libenca-Charsets-and-Surfaces.html#enca-charset-is-fixed">enca_charset_is_fixed</a>           (cs)
+#define     <a href="libenca-Charsets-and-Surfaces.html#enca-charset-is-variable">enca_charset_is_variable</a>        (cs)
+#define     <a href="libenca-Charsets-and-Surfaces.html#enca-charset-is-binary">enca_charset_is_binary</a>          (cs)
+#define     <a href="libenca-Charsets-and-Surfaces.html#enca-charset-is-regular">enca_charset_is_regular</a>         (cs)
+#define     <a href="libenca-Charsets-and-Surfaces.html#enca-charset-is-multibyte">enca_charset_is_multibyte</a>       (cs)
+#define     <a href="libenca-Charsets-and-Surfaces.html#enca-charset-is-known">enca_charset_is_known</a>           (cs)
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2834056"></a><h2>Description</h2>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2830781"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2830786"></a><h3>
+<a name="enca-charset-name"></a>enca_charset_name ()</h3>
+<a class="indexterm" name="id2830795"></a><pre class="programlisting">const char* enca_charset_name               (int charset,
+                                             <a href="libenca-Typedefs-and-Constants.html#EncaNameStyle">EncaNameStyle</a> whatname);</pre>
+<p>
+Translates numeric charset id <i class="parameter"><tt>charset</tt></i> to some kind of name.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><i class="parameter"><tt>charset</tt></i>&#160;:</span></td>
+<td> A charset id.
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><i class="parameter"><tt>whatname</tt></i>&#160;:</span></td>
+<td> Teh type of name you request.
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The requested charset name; <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><span class="type">NULL</span></a> for invalid <i class="parameter"><tt>whatname</tt></i> or
+<i class="parameter"><tt>charset</tt></i>, or when <i class="parameter"><tt>whatname</tt></i> name doesn't exist for charset <i class="parameter"><tt>charset</tt></i>
+(<a href="libenca-Typedefs-and-Constants.html#ENCA-CS-UNKNOWN:CAPS"><span class="type">ENCA_CS_UNKNOWN</span></a> is OK).
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2830888"></a><h3>
+<a name="enca-get-charset-aliases"></a>enca_get_charset_aliases ()</h3>
+<a class="indexterm" name="id2830896"></a><pre class="programlisting">const char** enca_get_charset_aliases       (int charset,
+                                             size_t *n);</pre>
+<p>
+Returns list of accepted aliases for charset <i class="parameter"><tt>charset</tt></i>.
+</p>
+<p>
+The list of aliases has to be freed by caller; the strings themselves
+must be considered constant and must NOT be freed.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><i class="parameter"><tt>charset</tt></i>&#160;:</span></td>
+<td> A charset id.
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><i class="parameter"><tt>n</tt></i>&#160;:</span></td>
+<td> The number of aliases will be stored here.
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The list of aliases, storing their number into *<i class="parameter"><tt>n</tt></i>; <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><span class="type">NULL</span></a> for
+invalid <i class="parameter"><tt>charset</tt></i> (*<i class="parameter"><tt>n</tt></i> is zero then).
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2868156"></a><h3>
+<a name="enca-get-surface-name"></a>enca_get_surface_name ()</h3>
+<a class="indexterm" name="id2868165"></a><pre class="programlisting">char*       enca_get_surface_name           (<a href="libenca-Typedefs-and-Constants.html#EncaSurface">EncaSurface</a> surface,
+                                             <a href="libenca-Typedefs-and-Constants.html#EncaNameStyle">EncaNameStyle</a> whatname);</pre>
+<p>
+Constructs surface name from surface flags <i class="parameter"><tt>surface</tt></i>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><i class="parameter"><tt>surface</tt></i>&#160;:</span></td>
+<td> A surface.
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><i class="parameter"><tt>whatname</tt></i>&#160;:</span></td>
+<td> The type of name you request.
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The requested surface name; <a
+href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"
+><span class="type">NULL</span></a> for invalid <i class="parameter"><tt>whatname</tt></i>; empty
+string for naming style not supporting surfaces.  In all cases, the
+returned string must be freed by caller when no longer used.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2868244"></a><h3>
+<a name="enca-parse-encoding-name"></a>enca_parse_encoding_name ()</h3>
+<a class="indexterm" name="id2868253"></a><pre class="programlisting"><a href="libenca-Typedefs-and-Constants.html#EncaEncoding">EncaEncoding</a> enca_parse_encoding_name       (const char *name);</pre>
+<p>
+Transofrms encoding specification charset/surface into numeric <a href="libenca-Typedefs-and-Constants.html#EncaEncoding"><span class="type">EncaEncoding</span></a>.
+</p>
+<p>
+When the charset name is not recognized, surfaces are not parsed at all and
+<a href="libenca-Typedefs-and-Constants.html#ENCA-CS-UNKNOWN:CAPS"><span class="type">ENCA_CS_UNKNOWN</span></a> is returned as charset.  However, unrecognized surfaces are
+considered only a minor problem causing <tt class="literal">ENCA_SURFACE_UNKNOWN</tt> flag to be
+set in the result, beside recognized surface flags.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><i class="parameter"><tt>name</tt></i>&#160;:</span></td>
+<td> An encoding specification.
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The charset/surface pair.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2868323"></a><h3>
+<a name="enca-charset-natural-surface"></a>enca_charset_natural_surface ()</h3>
+<a class="indexterm" name="id2868334"></a><pre class="programlisting"><a href="libenca-Typedefs-and-Constants.html#EncaSurface">EncaSurface</a> enca_charset_natural_surface    (int charset);</pre>
+<p>
+Returns natural surface of a charset.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><i class="parameter"><tt>charset</tt></i>&#160;:</span></td>
+<td> A charset.
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The requested charset natural surface (called `implied' in recode),
+         zero for invalid <i class="parameter"><tt>charset</tt></i> or for charsets with no natural surface.
+
+         Natrual surface is the surface one expects for a given charset --
+         e.g. CRLF EOLs for IBM/Microsoft charsets, CR EOLs for Macintosh
+         charsets and LF EOLs for ISO/Unix charsets.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2832322"></a><h3>
+<a name="enca-charset-properties"></a>enca_charset_properties ()</h3>
+<a class="indexterm" name="id2832331"></a><pre class="programlisting"><a href="libenca-Typedefs-and-Constants.html#EncaCharsetFlags">EncaCharsetFlags</a> enca_charset_properties    (int charset);</pre>
+<p>
+Returns charset properties.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td>
+<span class="term"><i class="parameter"><tt>charset</tt></i>&#160;:</span></td>
+<td> A charset.
+</td>
+</tr>
+<tr>
+<td>
+<span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The requested charset properties; zero for invalid <i class="parameter"><tt>charset</tt></i>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2832383"></a><h3>
+<a name="enca-charset-is-7bit"></a>enca_charset_is_7bit()</h3>
+<a class="indexterm" name="id2832391"></a><pre class="programlisting">#define     enca_charset_is_7bit(cs)</pre>
+<p>
+Expands to nonzero when characters are represented with 7bit characters.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td>
+<span class="term"><i class="parameter"><tt>cs</tt></i>&#160;:</span></td>
+<td> Charset id.
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2832420"></a><h3>
+<a name="enca-charset-is-8bit"></a>enca_charset_is_8bit()</h3>
+<a class="indexterm" name="id2832429"></a><pre class="programlisting">#define     enca_charset_is_8bit(cs)</pre>
+<p>
+Expands to nonzero when characters are represented with bytes.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td>
+<span class="term"><i class="parameter"><tt>cs</tt></i>&#160;:</span></td>
+<td> Charset id.
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2832457"></a><h3>
+<a name="enca-charset-is-16bit"></a>enca_charset_is_16bit()</h3>
+<a class="indexterm" name="id2832466"></a><pre class="programlisting">#define     enca_charset_is_16bit(cs)</pre>
+<p>
+Expands to nonzero when characters are represented with 2byte words.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td>
+<span class="term"><i class="parameter"><tt>cs</tt></i>&#160;:</span></td>
+<td> Charset id.
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2832495"></a><h3>
+<a name="enca-charset-is-32bit"></a>enca_charset_is_32bit()</h3>
+<a class="indexterm" name="id2832503"></a><pre class="programlisting">#define     enca_charset_is_32bit(cs)</pre>
+<p>
+Expands to nonzero when characters are represented with 4byte words.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td>
+<span class="term"><i class="parameter"><tt>cs</tt></i>&#160;:</span></td>
+<td> Charset id.
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2832532"></a><h3>
+<a name="enca-charset-is-fixed"></a>enca_charset_is_fixed()</h3>
+<a class="indexterm" name="id2832540"></a><pre class="programlisting">#define     enca_charset_is_fixed(cs)</pre>
+<p>
+Expands to nonzero when one characters consists of one fundamental piece.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td>
+<span class="term"><i class="parameter"><tt>cs</tt></i>&#160;:</span></td>
+<td> Charset id.
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2884701"></a><h3>
+<a name="enca-charset-is-variable"></a>enca_charset_is_variable()</h3>
+<a class="indexterm" name="id2884708"></a><pre class="programlisting">#define     enca_charset_is_variable(cs)</pre>
+<p>
+Expands to nonzero when one character consists of variable number of
+fundamental pieces.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td>
+<span class="term"><i class="parameter"><tt>cs</tt></i>&#160;:</span></td>
+<td> Charset id.
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2884738"></a><h3>
+<a name="enca-charset-is-binary"></a>enca_charset_is_binary()</h3>
+<a class="indexterm" name="id2884746"></a><pre class="programlisting">#define     enca_charset_is_binary(cs)</pre>
+<p>
+Expands to nonzero when charset is binary from ASCII viewpoint.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td>
+<span class="term"><i class="parameter"><tt>cs</tt></i>&#160;:</span></td>
+<td> Charset id.
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2884776"></a><h3>
+<a name="enca-charset-is-regular"></a>enca_charset_is_regular()</h3>
+<a class="indexterm" name="id2884784"></a><pre class="programlisting">#define     enca_charset_is_regular(cs)</pre>
+<p>
+Expands to nonzero when charset is language dependent (8bit) charset.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td>
+<span class="term"><i class="parameter"><tt>cs</tt></i>&#160;:</span></td>
+<td> Charset id.
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2884814"></a><h3>
+<a name="enca-charset-is-multibyte"></a>enca_charset_is_multibyte()</h3>
+<a class="indexterm" name="id2884823"></a><pre class="programlisting">#define     enca_charset_is_multibyte(cs)</pre>
+<p>
+Expands to nonzero when charset is multibyte.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td>
+<span class="term"><i class="parameter"><tt>cs</tt></i>&#160;:</span></td>
+<td> Charset id.
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2884852"></a><h3>
+<a name="enca-charset-is-known"></a>enca_charset_is_known()</h3>
+<a class="indexterm" name="id2884860"></a><pre class="programlisting">#define     enca_charset_is_known(cs)</pre>
+<p>
+Expands to nonzero when the charset is known (i.e. it's not
+ENCA_CS_UNKNOWN).</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td>
+<span class="term"><i class="parameter"><tt>cs</tt></i>&#160;:</span></td>
+<td> Charset id.
+</td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+</div>
+<table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle">
+<td align="left"><a accesskey="p" href="libenca-Typedefs-and-Constants.html"><b>&lt;&lt;&#160;Typedefs and Constants</b></a></td>
+<td align="right"><a accesskey="n" href="libenca-Auxiliary-Functions.html"><b>Auxiliary functions&#160;&gt;&gt;</b></a></td>
+</tr></table>
+</body>
+</html>
