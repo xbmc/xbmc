@@ -91,14 +91,14 @@ install: all
 	@find language media screensavers scripts skin sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*osx.*|.*x86_64.*|.*\.dll" -exec cp "{}" $(prefix)/xbmc/"{}" \; -printf " -- %f                           \r"
 	@echo "Copying XBMC binary to $(prefix)/xbmc/xbmc.bin"
 	@cp XboxMediaCenter $(prefix)/xbmc/xbmc.bin
-	@cp tools/Linux/xbmc.sh /usr/bin/xbmc
-	@chmod 755 /usr/bin/xbmc
+	@cp tools/Linux/xbmc.sh $(prefix)/bin/xbmc
+	@chmod 755 $(prefix)/bin/xbmc
 	@echo "Done!"
 	@echo "You can run XBMC with the command 'xbmc'"
 
 uninstall:
 	@echo "Removing XBMC..."
-	@rm -rf $(prefix)/xbmc /usr/bin/xbmc
+	@rm -rf $(prefix)/xbmc $(prefix)/bin/xbmc
 	@echo "Done!"
 
 include Makefile.include

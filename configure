@@ -578,7 +578,6 @@ PACKAGE_VERSION='2.1'
 PACKAGE_STRING='"xbmc" 2.1'
 PACKAGE_BUGREPORT='bugs@xboxmediacenter.com'
 
-ac_default_prefix="/usr/share"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -1736,7 +1735,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 ac_config_headers="$ac_config_headers config.h"
-
 
 
 ac_aux_dir=
