@@ -227,11 +227,7 @@ class CDVDMsgPlayerSeek : public CDVDMsg
 {
 public:
   CDVDMsgPlayerSeek(int time, bool backward, bool flush = true,
-#ifdef __APPLE__
-      bool accurate = false)
-#else
       bool accurate = true)
-#endif
     : CDVDMsg(PLAYER_SEEK)
     , m_time(time)
     , m_backward(backward)
