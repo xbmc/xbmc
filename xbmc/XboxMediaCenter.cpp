@@ -33,19 +33,9 @@
 
 
 CApplication g_application;
-#ifndef _LINUX
-void main()
-#else
+
 int main(int argc, char* argv[])
-#endif
 {
-#ifdef __APPLE__
-  // We're always going to use platform directories, because nobody
-  // starts the app from the command line in normal usage.
-  //
-  g_application.EnablePlatformDirectories();  
-#endif
-  
   CFileItemList playlist;
   if (argc > 1)
   {
@@ -59,11 +49,6 @@ int main(int argc, char* argv[])
         printf("Running in fullscreen mode...\n");
         g_advancedSettings.m_fullScreen = true;
       }
-      else if (strnicmp(argv[i], "-p", 2) == 0)
-      {
-        printf("Using platform specific directories...\n");
-        g_application.EnablePlatformDirectories();
-      }
       else if (argv[i][0] != '-')
       {
         CFileItem *pItem = new CFileItem(argv[i]);
@@ -73,6 +58,20 @@ int main(int argc, char* argv[])
     }
   }
   
+  // if we're on a Mac or if XBMC_PLATFORM_MODE is set, enable platform
+  // specific directories.
+  if (getenv("XBMC_PLATFORM_MODE")
+      || (getenv("OSTYPE") && strcmp(getenv("OSTYPE"), "darwin9.0")==0))       
+  {
+    g_application.EnablePlatformDirectories();
+  }
+
+  // if XBMC_DEFAULT_MODE is set, disable platform specific directories
+  if (getenv("XBMC_DEFAULT_MODE"))
+  {
+    g_application.EnablePlatformDirectories(false);
+  }
+
   g_application.Create(NULL);
   if (playlist.Size() > 0)
   {
