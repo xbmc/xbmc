@@ -3558,8 +3558,16 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("setfocus"))
   {
-    CGUIMessage msg(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), atol(parameter.c_str()));
-    g_graphicsContext.SendMessage(msg);
+    // see whether we have more than one param
+    std::vector<CStdString> params;
+    StringUtils::SplitString(parameter,",",params);
+    if (params.size())
+    {
+      int controlID = atol(params[0].c_str());
+      int subItem = (params.size() > 1) ? atol(params[1].c_str())+1 : 0;
+      CGUIMessage msg(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), controlID, subItem);
+      g_graphicsContext.SendMessage(msg);
+    }
   }
   else if (execute.Equals("runscript"))
   {

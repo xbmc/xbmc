@@ -580,7 +580,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_ROW : CONTAINER_ROW, id, atoi(info.Mid(4, info.GetLength() - 5))));
     else if (info.Left(7).Equals("column("))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_COLUMN : CONTAINER_COLUMN, id, atoi(info.Mid(7, info.GetLength() - 8))));
-    else if (info.Left(9).Equals("position("))
+    else if (info.Left(8).Equals("position"))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_POSITION : CONTAINER_POSITION, id, atoi(info.Mid(9, info.GetLength() - 10))));
     else if (info.Left(8).Equals("subitem("))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SUBITEM : CONTAINER_SUBITEM, id, atoi(info.Mid(8, info.GetLength() - 9))));
@@ -2099,7 +2099,8 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
   {
     return GetTime((TIME_FORMAT)info.GetData1());
   }
-  else if (info.m_info == CONTAINER_NUM_PAGES || info.m_info == CONTAINER_CURRENT_PAGE || info.m_info == CONTAINER_NUM_ITEMS)
+  else if (info.m_info == CONTAINER_NUM_PAGES || info.m_info == CONTAINER_CURRENT_PAGE ||
+           info.m_info == CONTAINER_NUM_ITEMS || info.m_info == CONTAINER_POSITION)
   {
     const CGUIControl *control = NULL;
     if (info.GetData1())
