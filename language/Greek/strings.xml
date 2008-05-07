@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 04/27/2008-->
+<!--Date of translation: 05/07/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 12644-->
+<!--Based on english strings version 12748-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -13,7 +13,7 @@
   <string id="4">Οδηγός Τηλεόρασης</string>
   <string id="5">Ρυθμίσεις</string>
   <string id="6">Xbox Media Center SVN</string>
-  <string id="7">Αρχεία</string>
+  <string id="7">Διαχείριση Αρχείων</string>
   <string id="8">Καιρός</string>
   <string id="9">Χbox media center</string>
   <string id="11">Δευτέρα</string>
@@ -45,7 +45,7 @@
   <string id="105">Ταξιν.: Μέγεθος</string>
   <string id="106">Όχι</string>
   <string id="107">Ναι</string>
-  <string id="108">Εμφάνιση Διαφάνειας</string>
+  <string id="108">Παρουσίαση</string>
   <string id="109">Δημιουργία Μικρογραφιών</string>
   <string id="110">Δημιουργία Μικρογραφιών</string>
   <string id="111">Συντομεύσεις</string>
@@ -66,7 +66,7 @@
   <string id="126">Πρόοδος</string>
   <string id="127">Αντικείμενα</string>
   <string id="128">Γενικά</string>
-  <string id="129">Εμφάνιση διαφάνειας</string>
+  <string id="129">Παρουσίαση</string>
   <string id="130">Πληροφορίες Συστήματος</string>
   <string id="131">Οθόνη</string>
   <string id="132">Άλμπουμ</string>
@@ -134,7 +134,7 @@
   <string id="194">Αναζήτηση...</string>
   <string id="195">Δεν βρέθηκαν πληροφορίες!</string>
   <string id="196">Επιλογή ταινίας:</string>
-  <string id="197">Αναζήτηση πληροφοριών IMDB</string>
+  <string id="197">Αναζήτηση πληροφοριών %s</string>
   <string id="198">Φόρτωση πληροφοριών ταινίας</string>
   <string id="199">Σκηνοθέτης:</string>
   <string id="200">Σεναριογράφος:</string>
@@ -308,8 +308,8 @@
   <string id="382">Σποραδική</string>
   <string id="383">Άνεμος</string>
   <string id="384">Δυνατός</string>
-  <string id="385">Αίθριος</string>
-  <string id="386">Νεφελώδης</string>
+  <string id="385">Νεφελώδης</string>
+  <string id="386">Αίθριος</string>
   <string id="387">Νεφοσκεπής</string>
   <string id="388">Νωρίς</string>
   <string id="389">Καταιγίδα</string>
@@ -350,17 +350,16 @@
   <string id="424">Επιλογή</string>
   <string id="425">Δεν βρέθηκαν πληροφορίες άλμπουμ.</string>
   <string id="426">Δεν βρέθηκαν πληροφορίες CDDB.</string>
-  <string id="427">Δίσκος</string>
+  <string id="427">Δίσκος:</string>
   <string id="428">Εισαγωγή ορθού CD/DVD</string>
   <string id="429">Παρακαλώ εισάγετε το παρακάτω CD/DVD</string>
   <string id="430">Ταξ.: DVD#</string>
   <string id="431">Δεν υπάρχει ελεύθερη Λανθάνουσα Μνήμη</string>
   <string id="432">Διαγραφή ταινίας από την βιβλιοθήκη</string>
-  <string id="433">Είστε σίγουροι για τη διαγραφή;</string>
-  <string id="434">της ταινίας;</string>
+  <string id="433">Να διαγραφεί '%s';</string>
   <string id="435">Κομμάτι</string>
-  <string id="436">Χρονιά</string>
-  <string id="437">Διάρκεια</string>
+  <string id="436">Χρονιά:</string>
+  <string id="437">Διάρκεια:</string>
   <string id="438">Άνοιγμα Αρχείου</string>
   <string id="439">Λανθάνουσα Μνήμη</string>
   <string id="440">Σκληρός Δίσκος</string>
@@ -402,7 +401,7 @@
   <string id="479">Κέλυφος και γλώσσα</string>
   <string id="480">Εξατομίκευση</string>
   <string id="481">Ιδιότητες ήχου</string>
-  <string id="482">Σχετικά με το XBMC</string>
+  <string id="482">Περί XBMC</string>
   <string id="483">Άλμπουμ</string>
   <string id="484">Καλλιτέχνης</string>
   <string id="485">Διαγραφή άλμπουμ</string>
@@ -745,7 +744,7 @@
   <string id="10000">Αρχική τοποθεσία</string>
   <string id="10001">Προγράμματα</string>
   <string id="10002">Φωτογραφίες</string>
-  <string id="10003">Αρχεία</string>
+  <string id="10003">Διαχείριση  Αρχείων</string>
   <string id="10004">Ρυθμίσεις</string>
   <string id="10005">Μουσική</string>
   <string id="10006">Βίντεο</string>
@@ -943,7 +942,7 @@
   <string id="13274">Το Χbox συνδέθηκε, αλλά δεν υπάρχει DNS.</string>
   <string id="13275">Σκληρός Δίσκος</string>
   <string id="13276">DVD-ROM</string>
-  <string id="13277">Μνήμη</string>
+  <string id="13277">Μέσα αποθήκευσης</string>
   <string id="13278">Προεπιλογή</string>
   <string id="13279">Δίκτυο</string>
   <string id="13280">Βίντεο</string>
@@ -1145,10 +1144,10 @@
   <string id="15002">Προσπάθεια για επανασύνδεση;</string>
   <string id="15003">Εισάγετε το μήνυμα σας</string>
   <string id="15004">Πήρατε πρόσκληση για να παίξετε %s.</string>
-  <string id="15005">Hμ/νία: %s.</string>
+  <string id="15005">Hμ/νία: %s</string>
   <string id="15006">Από: %s</string>
   <string id="15007">Πρόσκληση</string>
-  <string id="15008">Έχετε πρόσκληση για συμμετοχή στο %s</string>
+  <string id="15008">Έχετε πρόσκληση για συμμετοχή στο %s.</string>
   <string id="15009">Εκτός Σύνδεσης</string>
   <string id="15010">Φίλοι</string>
   <string id="15011">Προβολή: Φίλων</string>
@@ -1169,7 +1168,7 @@
   <string id="15026">Συνομιλία</string>
   <string id="15027">Προβολή: Συνομιλία</string>
   <string id="15028">Πληκτρολόγιο</string>
-  <string id="15029">Για να συμμετάσχετε, απαιτείται συνθηματικό</string>
+  <string id="15029">Για να συμμετάσχετε, απαιτείται συνθηματικό.</string>
   <string id="15030">Η υπηρεσία αποσυνδέθηκε</string>
   <string id="15031">Πιστοποίηση XLink Kai</string>
   <string id="15032">Το όνομα και το συνθηματικό σας απορρίφθηκαν από</string>
@@ -1257,8 +1256,8 @@
   <string id="15273">Εβδομαδιαίο chart καλλιτέχνη του %name%</string>
   <string id="15274">Εβδομαδιαίο chart άλμπουμ του %name%</string>
   <string id="15275">Εβδομαδιαίο chart κομματιού του %name%</string>
-  <string id="15276">Ακούστε του γείτονα σας %name% Last.FM radio</string>
-  <string id="15277">Ακούστε του χρήστη %name% το προσωπικό του Last.FM radio</string>
+  <string id="15276">Ακούστε των %name% το Last.FM radio</string>
+  <string id="15277">Ακούστε του %name% το προσωπικό Last.FM radio</string>
   <string id="15278">Ακούστε του %name% τα αγαπημένα κομμάτια στο Last.FM radio</string>
   <string id="15279">Ανάκτηση λίστας από Last.FM...</string>
   <string id="15280">Αδύνατη η ανάκτηση λίστας από Last.FM...</string>
@@ -1666,7 +1665,7 @@
   <string id="21369">Ενεργοποιημένο Ποντίκι</string>
   <string id="21370">Ενεργοποίηση ήχων πλοήγησης κατά την εκτέλεση Πολυμέσων</string>
   <string id="21371">Μικρογραφία</string>
-  <string id="21372">Γεωγραφική Περιοχή Αναπαραγωγέα DVD</string>
+  <string id="21372">Περιοχή Αναπαραγωγέα DVD</string>
   <string id="21373">Υλικό Βίντεο</string>
   <string id="21374">Απεικόνιση Οθόνης</string>
   <string id="21375">Κανονική</string>
@@ -1801,7 +1800,8 @@
   <string id="21899">Ετικέτα:</string>
   <string id="21900">Γέννηση/Δημιουργία:</string>
   <string id="22000">Ενημέρωση της βιβλιοθήκης κατά την εκκίνηση</string>
-  <string id="22001">Ενημέρωση της βιβλιοθήκης πάντα στο παρασκήνιο</string>
-  <string id="22002">- Επίθεμα DNS</string>
+  <string id="22001">Ενημέρωση της βιβλιοθήκης στο παρασκήνιο</string>
+  <string id="22002">- Κατάληξη DNS</string>
+  <string id="22003">Ενεργοποίηση Επεξεργασίας των Καταλόγων διανομής</string>
   <string id="29999">Αυτόματο Φίλτρο Flicker</string>
 </strings>
