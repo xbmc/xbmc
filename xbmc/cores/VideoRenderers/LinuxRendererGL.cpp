@@ -1157,9 +1157,7 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     glClearColor(0,0,0,0);
     if (alpha<255)
     {
-#ifdef _LINUX
-// FIXME: Alpha blending currently disabled
-#endif
+      //FIXME: Alpha blending currently disabled
       //glDisable(GL_BLEND);
     }
     else
