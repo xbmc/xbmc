@@ -235,5 +235,8 @@ Export export_kernel32[] =
   { "GetFileSize",                                  -1, (void*)GetFileSize,                                  NULL },
   { "FindResourceA",                                -1, (void*)dllFindResourceA,                             NULL },
   { "LoadResource",                                 -1, (void*)dllLoadResource,                              NULL },
+  { "LockResource",                                 -1, (void*)dllLockResource,                              NULL },
+  { "GlobalSize",                                   -1, (void*)dllGlobalSize,                                NULL },
+  { "SizeofResource",                               -1, (void*)dllSizeofResource,                            NULL },
   { NULL,                                           -1, (void*)NULL,                                         NULL }
 };
