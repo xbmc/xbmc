@@ -187,6 +187,11 @@ bool CGUIListContainer::OnMessage(CGUIMessage& message)
       SelectItem(message.GetParam1());
       return true;
     }
+    else if (message.GetMessage() == GUI_MSG_SETFOCUS)
+    {
+      if (message.GetParam1()) // subfocus item is specified, so set the offset appropriately
+        m_cursor = (int)message.GetParam1() - 1;
+    }
   }
   return CGUIBaseContainer::OnMessage(message);
 }
