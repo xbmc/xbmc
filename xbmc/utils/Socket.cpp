@@ -76,10 +76,11 @@ bool CPosixUDPSocket::Bind(CAddress& addr, int port, int range)
       CLog::Log(LOGWARNING, "UDP: Error binding socket on port %d", m_iPort);
       CLog::Log(LOGWARNING, "UDP: %s", strerror(errno));
       m_iPort++;
+      m_addr.saddr.sin_port = htons(m_iPort);
     }
     else
     {
-      CLog::Log(LOGNOTICE, "UDP: Listening on port %d", port);
+      CLog::Log(LOGNOTICE, "UDP: Listening on port %d", m_iPort);
       SetBound();
       SetReady();
       break;
