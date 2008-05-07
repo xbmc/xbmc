@@ -30,6 +30,7 @@ public:
   virtual bool      IsMediaWindow() const { return true; };
   virtual bool      HasListItems() const { return true; };
   virtual CFileItem *GetCurrentListItem(int offset = 0);
+  const CFileItemList& CurrentDirectory() const;
   int               GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
 
 protected:

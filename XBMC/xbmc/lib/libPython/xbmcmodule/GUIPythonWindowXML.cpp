@@ -452,3 +452,8 @@ CGUIControl *CGUIPythonWindowXML::GetFirstFocusableControl(int id)
     id = m_viewControl.GetCurrentControl();
   return CGUIWindow::GetFirstFocusableControl(id);
 }
+
+const CFileItemList& CGUIPythonWindowXML::CurrentDirectory() const 
+{ 
+  return *m_vecItems;
+}
