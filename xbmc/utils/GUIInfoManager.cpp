@@ -1978,7 +1978,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
     case CONTAINER_SORT_METHOD:
     {
       CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-      if (window)
+      if (window && window->IsMediaWindow())
       {
         const CFileItemList &item = ((CGUIMediaWindow*)window)->CurrentDirectory();
         SORT_METHOD method = item.GetSortMethod();
