@@ -1192,11 +1192,6 @@ void CLinuxRendererGL::FlipPage(int source)
   m_OSDRendered = false;
 
   // Called from non-GUI thread so don't actually flip
-  /*
-    g_graphicsContext.BeginPaint();
-    g_graphicsContext.Flip();
-    g_graphicsContext.EndPaint();
-  */
 
   return;
 }
