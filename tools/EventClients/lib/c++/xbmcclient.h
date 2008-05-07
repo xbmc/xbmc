@@ -94,14 +94,19 @@ public:
     memset(m_Addr.sin_zero, '\0', sizeof m_Addr.sin_zero);
   }
 
+  void SetPort(int port)
+  {
+    m_Addr.sin_port = htons(port);
+  }
+
   const sockaddr *GetAddress()
   {
     return ((struct sockaddr *)&m_Addr);
   }
 
-  void Bind(int Sockfd)
+  bool Bind(int Sockfd)
   {
-    bind(Sockfd, (struct sockaddr *)&m_Addr, sizeof m_Addr);
+    return (bind(Sockfd, (struct sockaddr *)&m_Addr, sizeof m_Addr) == 0);
   }
 };
 
