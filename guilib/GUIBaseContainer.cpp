@@ -767,6 +767,9 @@ CStdString CGUIBaseContainer::GetLabel(int info) const
   case CONTAINER_CURRENT_PAGE:
     label.Format("%u", GetCurrentPage());
     break;
+  case CONTAINER_POSITION:
+    label.Format("%i", m_cursor);
+    break;
   case CONTAINER_NUM_ITEMS:
     {
       unsigned int numItems = GetNumItems();
