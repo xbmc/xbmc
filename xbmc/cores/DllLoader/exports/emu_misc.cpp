@@ -861,3 +861,13 @@ extern "C" UINT WINAPI dllRegisterClipboardFormatA(LPCSTR lpszFormat)
   CLog::Log(LOGDEBUG, "RegisterClipboardFormatA() -> 0");
   return 0;
 }
+
+extern "C" BOOL WINAPI dllGetIconInfo(HICON hIcon, PICONINFO piconinfo)
+{
+#ifdef _WIN32PC
+  return GetIconInfo(hIcon, piconinfo);
+#else
+  CLog::Log(LOGDEBUG, "GetIconInfo() -> 0");
+  return 0;
+#endif
+}
