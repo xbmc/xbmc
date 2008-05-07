@@ -19,17 +19,25 @@ GUIFontManager::GUIFontManager(void)
 GUIFontManager::~GUIFontManager(void)
 {}
 
-CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle, float lineSpacing, float aspect)
+CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle, float lineSpacing, float aspect, RESOLUTION sourceRes)
 {
   //check if font already exists
   CGUIFont* pFont = GetFont(strFontName, false);
   if (pFont)
     return pFont;
 
+  if (sourceRes == INVALID) // no source res specified, so assume the skin res
+    sourceRes = m_skinResolution;
+
+
+  // set scaling resolution so that we can scale our font sizes correctly
+  // as fonts aren't scaled at render time (due to aliasing) we must scale
+  // the size of the fonts before they are drawn to bitmaps
+  g_graphicsContext.SetScalingResolution(sourceRes, 0, 0, true);
+
   // adjust aspect ratio
-  RESOLUTION res = g_graphicsContext.GetVideoResolution();
   // #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  if (g_SkinInfo.GetVersion() > 2.0 && m_skinResolution == PAL_16x9 || m_skinResolution == PAL60_16x9 || m_skinResolution == NTSC_16x9 || m_skinResolution == HDTV_480p_16x9)
+  if (g_SkinInfo.GetVersion() > 2.0 && sourceRes == PAL_16x9 || sourceRes == PAL60_16x9 || sourceRes == NTSC_16x9 || sourceRes == HDTV_480p_16x9)
     aspect *= 0.75f;
 
   aspect *= g_graphicsContext.GetGUIScaleY() / g_graphicsContext.GetGUIScaleX();
@@ -152,11 +160,6 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
   TiXmlDocument xmlDoc;
   if (!OpenFontFile(xmlDoc))
     return;
-
-  // set scaling resolution so that we can scale our font sizes correctly
-  // as fonts aren't scaled at render time (due to aliasing) we must scale
-  // the size of the fonts before they are drawn to bitmaps
-  g_graphicsContext.SetScalingResolution(m_skinResolution, 0, 0, true);
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   const TiXmlNode *pChild = pRootElement->FirstChild();
