@@ -1054,7 +1054,13 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_PLAY_WITH:
     {   
       VECPLAYERCORES vecCores;
-      CPlayerCoreFactory::GetPlayers(*item, vecCores);
+      if (item->IsVideoDb())
+      {
+        CFileItem item2(*item->GetVideoInfoTag());
+        CPlayerCoreFactory::GetPlayers(item2, vecCores);
+      }
+      else
+        CPlayerCoreFactory::GetPlayers(*item, vecCores);
       g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores);
       if (g_application.m_eForcedNextPlayer != EPC_NONE)
         OnClick(itemNumber);
