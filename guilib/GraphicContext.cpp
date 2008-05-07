@@ -873,19 +873,11 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_videoConfig.GetDesktopResolution(g_settings.m_ResInfo[res].iWidth,
                                        g_settings.m_ResInfo[res].iHeight);
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * g_settings.m_ResInfo[res].iHeight);
-#ifdef __APPLE__
-    // Terminology is confusing Apple users, bless their hearts.
     snprintf(g_settings.m_ResInfo[res].strMode, sizeof(g_settings.m_ResInfo[res].strMode), 
-             "%dx%d (Full screen)", g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
-#else
-    snprintf(g_settings.m_ResInfo[res].strMode, sizeof(g_settings.m_ResInfo[res].strMode), 
-             "%dx%d (Desktop)", g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
-#endif
-    
+             "%dx%d (Full Screen)", g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);    
     // Set widescreen flag if appropriate. The number 1.4 is arbitrary, but chosen because 4:3 = 1.3333.
     if ((float)g_settings.m_ResInfo[res].iWidth/(float)g_settings.m_ResInfo[res].iHeight >= 1.4)
       g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
-    
     break;
   case WINDOW:
     g_settings.m_ResInfo[WINDOW] = g_settings.m_ResInfo[PAL60_4x3];
