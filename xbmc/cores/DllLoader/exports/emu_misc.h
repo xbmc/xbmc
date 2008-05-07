@@ -93,6 +93,7 @@ extern "C" UINT    WINAPI dllRegisterWindowMessageA(LPCSTR lpString);
 extern "C" HBRUSH  WINAPI dllGetSysColorBrush(int nIndex);
 extern "C" DWORD   WINAPI dllGetSysColor(int nIndex);
 extern "C" UINT    WINAPI dllRegisterClipboardFormatA(LPCSTR lpszFormat);
+extern "C" BOOL    WINAPI dllGetIconInfo(HICON hIcon, PICONINFO piconinfo);
 
 #ifdef _XBOX
 typedef BOOL (*MONITORENUMPROC)(HMONITOR, HDC, LPRECT, LPARAM);

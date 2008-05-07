@@ -70,6 +70,7 @@ Export export_user32[] =
   { "GetSysColorBrush",           -1, dllGetSysColorBrush,           NULL },
   { "GetSysColor",                -1, dllGetSysColor,                NULL },
   { "RegisterClipboardFormatA",   -1, dllRegisterClipboardFormatA,   NULL },
+  { "GetIconInfo",                -1, dllGetIconInfo,                NULL },
   { NULL, NULL, NULL, NULL }
 };
 
