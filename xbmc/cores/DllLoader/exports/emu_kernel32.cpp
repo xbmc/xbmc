@@ -1197,3 +1197,30 @@ extern "C" BOOL WINAPI dllDVDReadFileLayerChangeHack(HANDLE hFile, LPVOID lpBuff
   }
   return ret;
 }
+
+extern "C" LPVOID WINAPI dllLockResource(HGLOBAL hResData)
+{
+#ifdef _WIN32PC
+  return LockResource(hResData);
+#else
+  not_implement("kernel32.dll fake function LockResource called\n"); //warning
+#endif
+}
+
+extern "C" SIZE_T WINAPI dllGlobalSize(HGLOBAL hMem)
+{
+#ifdef _WIN32PC
+  return GlobalSize(hMem);
+#else
+  not_implement("kernel32.dll fake function GlobalSize called\n"); //warning
+#endif
+}
+
+extern "C" DWORD WINAPI dllSizeofResource(HMODULE hModule, HRSRC hResInfo)
+{
+#ifdef _WIN32PC
+  return SizeofResource(hModule, hResInfo);
+#else
+  not_implement("kernel32.dll fake function SizeofResource called\n"); //warning
+#endif
+}
