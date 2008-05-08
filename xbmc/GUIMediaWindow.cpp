@@ -431,10 +431,12 @@ void CGUIMediaWindow::FormatItemLabels(CFileItemList &items, const LABEL_MASKS &
 // \brief Prepares and adds the fileitems list/thumb panel
 void CGUIMediaWindow::FormatAndSort(CFileItemList &items)
 {
-  if (m_guiState.get())
+  auto_ptr<CGUIViewState> viewState(CGUIViewState::GetViewState(GetID(), items));
+
+  if (viewState.get())
   {
     LABEL_MASKS labelMasks;
-    m_guiState->GetSortMethodLabelMasks(labelMasks);
+    viewState->GetSortMethodLabelMasks(labelMasks);
     FormatItemLabels(items, labelMasks);
   }
   SortItems(items);
