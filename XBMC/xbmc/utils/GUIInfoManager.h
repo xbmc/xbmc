@@ -548,7 +548,6 @@ public:
 
   // Called from tuxbox service thread to update current status
   void UpdateFromTuxBox();
-  CStdString m_content;
 
   void SetLaunchingXBEName(const CStdString &name) { m_launchingXBE = name; };
   void SetContainerMoving(int id, int direction) { m_containerMoves[id] = direction; };
