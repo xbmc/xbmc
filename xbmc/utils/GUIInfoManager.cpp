@@ -47,6 +47,8 @@
 #include "LabelFormatter.h"
 
 #include "GUILabelControl.h"  // for CInfoLabel
+#include "GUIWindowVideoInfo.h"
+#include "GUIWindowMusicInfo.h"
 
 using namespace std;
 using namespace XFILE;
@@ -1893,15 +1895,32 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
     case SYSTEM_GET_BOOL:
       bReturn = g_guiSettings.GetBool(m_stringParameters[info.GetData1()]);
       break;
-    case CONTAINER_CONTENT:
-      bReturn = m_stringParameters[info.GetData1()].Equals(m_content);
-      break;
     case CONTAINER_ON_NEXT:
     case CONTAINER_ON_PREVIOUS:
       {
         map<int,int>::const_iterator it = m_containerMoves.find(info.GetData1());
         if (it != m_containerMoves.end())
           bReturn = condition == CONTAINER_ON_NEXT ? it->second > 0 : it->second < 0;
+      }
+      break;
+    case CONTAINER_CONTENT:
+      {
+        CStdString content;
+        CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+        if (window)
+          content = ((CGUIMediaWindow *)window)->CurrentDirectory().GetContent();
+        else
+        {
+          window = GetWindowWithCondition(dwContextWindow, 0);
+          if (window)
+          {
+            if (window->GetID() == WINDOW_MUSIC_INFO)
+              content = ((CGUIWindowMusicInfo *)window)->CurrentDirectory().GetContent();
+            else if (window->GetID() == WINDOW_VIDEO_INFO)
+              content = ((CGUIWindowVideoInfo *)window)->CurrentDirectory().GetContent();
+          }
+        }
+        bReturn = m_stringParameters[info.GetData1()].Equals(content);
       }
       break;
     case CONTAINER_ROW:
