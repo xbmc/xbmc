@@ -795,6 +795,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 {
   // For now these are all on the first screen.
   g_settings.m_ResInfo[res].iScreen = 0;
+  static const float fOptimalSwitchPoint = 8.0f / (3.0f*sqrt(3.0f)); // see XboxRenderer.cpp
   
   // 1080i
   switch (res)
@@ -875,8 +876,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * g_settings.m_ResInfo[res].iHeight);
     snprintf(g_settings.m_ResInfo[res].strMode, sizeof(g_settings.m_ResInfo[res].strMode), 
              "%dx%d (Full Screen)", g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
-    // Set widescreen flag if appropriate. The number 1.4 is arbitrary, but chosen because 4:3 = 1.3333.
-    if ((float)g_settings.m_ResInfo[res].iWidth/(float)g_settings.m_ResInfo[res].iHeight >= 1.4)
+    if ((float)g_settings.m_ResInfo[res].iWidth/(float)g_settings.m_ResInfo[res].iHeight >= fOptimalSwitchPoint)
       g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
     break;
   case WINDOW:
