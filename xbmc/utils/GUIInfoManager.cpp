@@ -552,16 +552,19 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       if (offset || id)
         return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id, offset));
     }
+    else if (info.Left(16).Equals("listitemposition"))
+    {
+      int offset = atoi(info.Mid(17, info.GetLength() - 18));
+      ret = TranslateListItem(info.Mid(info.Find(".")+1));
+      if (offset || id)
+        return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id, offset, INFOFLAG_LISTITEM_POSITION));
+    }
     else if (info.Left(8).Equals("listitem"))
     {
       int offset = atoi(info.Mid(9, info.GetLength() - 10));
       ret = TranslateListItem(info.Mid(info.Find(".")+1));
       if (offset || id)
-      {
-        GUIInfo info(bNegate ? -ret : ret, id, offset);
-        info.SetInfoFlag(INFOFLAG_LISTITEM_WRAP);
-        return AddMultiInfo(info);
-      }
+        return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id, offset, INFOFLAG_LISTITEM_WRAP));
     }
     else if (info.Equals("folderthumb")) ret = CONTAINER_FOLDERTHUMB;
     else if (info.Equals("tvshowthumb")) ret = CONTAINER_TVSHOWTHUMB;
@@ -612,11 +615,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     int offset = atoi(strCategory.Mid(9, strCategory.GetLength() - 10));
     ret = TranslateListItem(strTest.Mid(strCategory.GetLength() + 1));
     if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING)
-    {
-        GUIInfo info(bNegate ? -ret : ret, 0, offset);
-        info.SetInfoFlag(INFOFLAG_LISTITEM_WRAP);
-        return AddMultiInfo(info);
-    }
+      return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, 0, offset, INFOFLAG_LISTITEM_WRAP));
+  }
+  else if (strCategory.Left(16).Equals("listitemposition"))
+  {
+    int offset = atoi(strCategory.Mid(17, strCategory.GetLength() - 18));
+    ret = TranslateListItem(strCategory.Mid(strCategory.GetLength()+1));
+    if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING)
+      return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, 0, offset, INFOFLAG_LISTITEM_POSITION));
   }
   else if (strCategory.Left(14).Equals("listitemnowrap"))
   {
@@ -2034,9 +2040,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
     CFileItem *item = NULL;
     CGUIWindow *window = NULL;
 
-    bool wrap = info.IsInfoFlagSet(INFOFLAG_LISTITEM_WRAP);
     int data1 = info.GetData1();
-
     if (!data1) // No container specified, so we lookup the current view container
     {
       window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
@@ -2051,9 +2055,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
     {
       const CGUIControl *control = window->GetControl(data1);
       if (control && control->IsContainer())
-      {
-        item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.GetData2(), wrap);
-      }
+        item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.GetData2(), info.GetInfoFlag());
     }
 
     if (item) // If we got a valid item, do the lookup
@@ -3705,9 +3707,11 @@ void GUIInfo::SetInfoFlag(uint32_t flag)
   m_data1 |= flag;
 }
 
-bool GUIInfo::IsInfoFlagSet(uint32_t flag) const
+uint32_t GUIInfo::GetInfoFlag() const
 {
-  return (m_data1 & flag) != 0;
+  // we strip out the bottom 24 bits, where we keep data
+  // and return the flag only
+  return m_data1 & 0xff000000;
 }
 
 uint32_t GUIInfo::GetData1() const
