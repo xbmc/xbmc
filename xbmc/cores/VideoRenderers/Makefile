@@ -1,5 +1,5 @@
 INCLUDES=-I. -I.. -I../../ -I../../linux -I../../../guilib -I../../utils
-SRCS=LinuxRenderer.cpp RenderManager.cpp LinuxRendererATI.cpp LinuxRendererGL.cpp
+SRCS=LinuxRenderer.cpp RenderManager.cpp LinuxRendererGL.cpp
 DIRS=VideoShaders
 
 LIB=VideoRenderer.a

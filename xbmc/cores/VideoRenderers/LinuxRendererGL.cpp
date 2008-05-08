@@ -747,7 +747,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   {
     m_image[i].flags = 0;
   }
-  
+  m_iLastRenderBuffer = -1;
   return true;
 }
 
@@ -1128,6 +1128,7 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     return;
 
   int index = m_iYV12RenderBuffer;
+
   if (!m_YUVTexture[index][FIELD_FULL][0]) return ;
 
   if (m_image[index].flags==0)
@@ -1141,9 +1142,17 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if( WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
   {
     CLog::Log(LOGWARNING, "%s - Timeout waiting for texture %d", __FUNCTION__, index);
+
+    // render the previous frame if this one isn't ready yet
+    if (m_iLastRenderBuffer > -1)
+    {
+      m_iYV12RenderBuffer = m_iLastRenderBuffer;
+      index = m_iYV12RenderBuffer;
+    }
   }
   else
   {
+    m_iLastRenderBuffer = index;
     LoadTextures(index);
   }
 
@@ -1166,11 +1175,10 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     }
   }
   glDisable(GL_BLEND);
-  Render(flags);
+  Render(flags, index);
   VerifyGLState();
   glEnable(GL_BLEND);
   g_graphicsContext.EndPaint();
-
 }
 
 void CLinuxRendererGL::FlipPage(int source)
@@ -1451,7 +1459,7 @@ void CLinuxRendererGL::OnClose()
   m_bValidated = false;
 }
 
-void CLinuxRendererGL::Render(DWORD flags)
+void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
 {
   // obtain current field, if interlaced
   if( flags & RENDER_FLAG_ODD)
@@ -1499,28 +1507,28 @@ void CLinuxRendererGL::Render(DWORD flags)
     {
     case RQ_LOW:
     case RQ_SINGLEPASS:
-      RenderSinglePass(flags);
+      RenderSinglePass(flags, renderBuffer);
       VerifyGLState();
       break;
 
     case RQ_MULTIPASS:
-      RenderMultiPass(flags);
+      RenderMultiPass(flags, renderBuffer);
       VerifyGLState();
       break;
 
     case RQ_SOFTWARE:
-      RenderSoftware(flags);
+      RenderSoftware(flags, renderBuffer);
       VerifyGLState();
       break;
     }
   }
   else if (m_renderMethod & RENDER_ARB)
   {
-    RenderSinglePass(flags);
+    RenderSinglePass(flags, renderBuffer);
   }
   else
   {
-    RenderSoftware(flags);
+    RenderSoftware(flags, renderBuffer);
     VerifyGLState();
   }
 
@@ -1667,7 +1675,7 @@ void CLinuxRendererGL::AutoCrop(bool bCrop)
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
 }
 
-void CLinuxRendererGL::RenderSinglePass(DWORD flags)
+void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
 {
   int field = FIELD_FULL;
   DWORD fieldmask = (flags&RENDER_FLAG_FIELDMASK);
@@ -1688,7 +1696,6 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
     }
   }
 
-  int index = m_iYV12RenderBuffer;
   YV12Image &im = m_image[index];
 
   // set scissors if we are not in fullscreen video
@@ -1818,10 +1825,8 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags)
   VerifyGLState();
 }
 
-void CLinuxRendererGL::RenderMultiPass(DWORD flags)
+void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
 {
-  //int index = 0; //m_iYV12RenderBuffer;
-  int index = m_iYV12RenderBuffer;
   YV12Image &im = m_image[index];
 
   // set scissors if we are not in fullscreen video
@@ -2049,9 +2054,8 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags)
   VerifyGLState();
 }
 
-void CLinuxRendererGL::RenderSoftware(DWORD flags)
+void CLinuxRendererGL::RenderSoftware(DWORD flags, int index)
 {
-  int index = m_iYV12RenderBuffer;
   int field = FIELD_FULL;
   DWORD fieldmask = (flags&RENDER_FLAG_FIELDMASK);
 
@@ -2167,7 +2171,7 @@ void CLinuxRendererGL::CreateThumbnail(SDL_Surface* surface, unsigned int width,
   glPushMatrix();
   glTranslatef(0, height, 0);
   glScalef(1.0, -1.0f, 1.0f);
-  Render(RENDER_FLAG_NOOSD);
+  Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
 
   // read pixels
   glReadPixels(0, rv.bottom-height, width, height, GL_BGRA, GL_UNSIGNED_BYTE, surface->pixels);
