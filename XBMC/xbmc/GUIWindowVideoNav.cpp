@@ -931,6 +931,7 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
   }
 
   items.ClearKeepPointer(true); // clear the items only - we want to keep content etc.
+  items.SetFastLookup(true);
   for (int i = 0; i < m_unfilteredItems->Size(); i++)
   {
     CFileItem *item = m_unfilteredItems->Get(i);
@@ -962,6 +963,7 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
         items.Add(item);
     }
   }
+  items.SetFastLookup(false);
 }
 
 void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &buttons)
