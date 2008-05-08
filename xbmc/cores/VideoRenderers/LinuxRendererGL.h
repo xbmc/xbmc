@@ -146,7 +146,7 @@ public:
   virtual bool SupportsMultiPassRendering();
 
 protected:
-  virtual void Render(DWORD flags);
+  virtual void Render(DWORD flags, int renderBuffer);
   virtual void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fUserPixelRatio, float fZoomAmount);
   void CalculateFrameAspectRatio(int desired_width, int desired_height);
   void ChooseBestResolution(float fps);
@@ -172,15 +172,16 @@ protected:
 
   // renderers
   //void RenderLowMem(DWORD flags);     // low mem renderer
-  void RenderMultiPass(DWORD flags);  // multi pass glsl renderer
-  void RenderSinglePass(DWORD flags); // single pass glsl renderer
-  void RenderSoftware(DWORD flags);   // single pass s/w yuv2rgb renderer
+  void RenderMultiPass(DWORD flags, int renderBuffer);  // multi pass glsl renderer
+  void RenderSinglePass(DWORD flags, int renderBuffer); // single pass glsl renderer
+  void RenderSoftware(DWORD flags, int renderBuffer);   // single pass s/w yuv2rgb renderer
 
   CFrameBufferObject m_fbo;
   CSurface *m_pBuffer;
 
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
+  int m_iLastRenderBuffer;
 
   float m_fSourceFrameRatio; // the frame aspect ratio of the source (corrected for pixel ratio)
   RESOLUTION m_iResolution;    // the resolution we're running in
