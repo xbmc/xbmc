@@ -372,7 +372,6 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
 
   if (info.strContent.Equals("movies"))
   {
-    g_infoManager.m_content = "movies";
     if (m_database.HasMovieInfo(item->m_strPath))
     {
       bHasInfo = true;
@@ -383,7 +382,6 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   {
     if (item->m_bIsFolder)
     {
-      g_infoManager.m_content = "tvshows";
       if (m_database.HasTvShowInfo(item->m_strPath))
       {
         bHasInfo = true;
@@ -396,7 +394,6 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       if (item->HasVideoInfoTag())
         lEpisodeHint = item->GetVideoInfoTag()->m_iEpisode;
       long lEpisodeId=-1;
-      g_infoManager.m_content = "episodes";
       if ((lEpisodeId = m_database.GetEpisodeInfo(item->m_strPath,lEpisodeHint)) > -1)
       {
         bHasInfo = true;
@@ -406,7 +403,6 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   }
   if (info.strContent.Equals("musicvideos"))
   {
-    g_infoManager.m_content = "musicvideos";
     if (m_database.HasMusicVideoInfo(item->m_strPath))
     {
       bHasInfo = true;

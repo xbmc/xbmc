@@ -240,10 +240,8 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   SScraperInfo info2;
 
   g_stSettings.m_iMyVideoStack &= ~STACK_UNAVAILABLE;
-  if (!m_vecItems->GetContent().IsEmpty())
-    g_infoManager.m_content = m_vecItems->GetContent();
-  else
-    g_infoManager.m_content = "files";
+  if (items.GetContent().IsEmpty())
+    items.SetContent("files");
 
   if (m_database.GetScraperForPath(strDirectory,info2) && info2.strContent.Equals("tvshows"))
   { // dont stack in tv dirs
