@@ -930,7 +930,7 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
     return;
   }
 
-  items.ClearKeepPointer();
+  items.ClearKeepPointer(true); // clear the items only - we want to keep content etc.
   for (int i = 0; i < m_unfilteredItems->Size(); i++)
   {
     CFileItem *item = m_unfilteredItems->Get(i);
