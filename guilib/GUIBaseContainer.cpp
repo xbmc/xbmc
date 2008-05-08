@@ -249,25 +249,26 @@ int CGUIBaseContainer::GetSelectedItem() const
   return CorrectOffset(m_offset, m_cursor);
 }
 
-CGUIListItem *CGUIBaseContainer::GetListItem(int offset, bool wrap) const
+CGUIListItem *CGUIBaseContainer::GetListItem(int offset, unsigned int flag) const
 {
   if (!m_items.size())
     return NULL;
-  int item;
-  if (wrap)
+  int item = GetSelectedItem() + offset;
+  if (flag & INFOFLAG_LISTITEM_POSITION) // use offset from the first item displayed, taking into account scrolling
+    item = CorrectOffset((int)(m_scrollOffset / m_layout->Size(m_orientation)), offset);
+
+  if (flag & INFOFLAG_LISTITEM_WRAP)
   {
-    item = (GetSelectedItem() + offset) % ((int)m_items.size());
+    item %= ((int)m_items.size());
     if (item < 0) item += m_items.size();
+    return m_items[item];
   }
   else
   {
-    item = GetSelectedItem() + offset;
-    if (item >= (int)m_items.size())
-      return NULL;
-    if (item < 0)
-      return NULL;
+    if (item >= 0 && item < (int)m_items.size())
+      return m_items[item];
   }
-  return m_items[item];
+  return NULL;
 }
 
 CGUIListItemLayout *CGUIBaseContainer::GetFocusedLayout() const
