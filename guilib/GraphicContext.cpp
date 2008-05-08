@@ -874,7 +874,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
                                        g_settings.m_ResInfo[res].iHeight);
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * g_settings.m_ResInfo[res].iHeight);
     snprintf(g_settings.m_ResInfo[res].strMode, sizeof(g_settings.m_ResInfo[res].strMode), 
-             "%dx%d (Full Screen)", g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);    
+             "%dx%d (Full Screen)", g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
     // Set widescreen flag if appropriate. The number 1.4 is arbitrary, but chosen because 4:3 = 1.3333.
     if ((float)g_settings.m_ResInfo[res].iWidth/(float)g_settings.m_ResInfo[res].iHeight >= 1.4)
       g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
@@ -892,13 +892,13 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 
 float CGraphicContext::GetPixelRatio(RESOLUTION iRes) const
 {
-#ifndef _LINUX
+  if (!m_bFullScreenRoot)
+    return 1.0f;
   if (iRes == HDTV_1080i || iRes == HDTV_720p) return 1.0f;
   if (iRes == HDTV_480p_4x3 || iRes == NTSC_4x3 || iRes == PAL60_4x3) return 4320.0f / 4739.0f;
   if (iRes == HDTV_480p_16x9 || iRes == NTSC_16x9 || iRes == PAL60_16x9) return 4320.0f / 4739.0f*4.0f / 3.0f;
   if (iRes == PAL_16x9) return 128.0f / 117.0f*4.0f / 3.0f;
-  return 128.0f / 117.0f;
-#endif
+
   // TODO: use XRandR to query physical size and obtain exact pixel ratio
   // for now, just assume square pixels (most monitors' native resolution)
   return 1.0f;
