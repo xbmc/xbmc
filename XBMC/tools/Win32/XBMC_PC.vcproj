@@ -1296,12 +1296,6 @@
 					RelativePath="..\..\xbmc\cores\VideoRenderers\LinuxRenderer.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\LinuxRendererATI.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\LinuxRendererATI.h">
-				</File>
-				<File
 					RelativePath="..\..\xbmc\cores\VideoRenderers\LinuxRendererGL.cpp">
 				</File>
 				<File
