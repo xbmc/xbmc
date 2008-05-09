@@ -100,6 +100,11 @@ void CGUIDialogKeyboard::OnInitWindow()
 
 bool CGUIDialogKeyboard::OnAction(const CAction &action)
 {
+  // check if we're doing a search, and if so, interrupt the search timer.
+  DWORD now = timeGetTime();
+  if (m_lastSearchUpdate || m_lastSearchUpdate + SEARCH_DELAY >= now)
+    m_lastSearchUpdate = now;
+
   if (action.wID == ACTION_BACKSPACE)
   {
     Backspace();
