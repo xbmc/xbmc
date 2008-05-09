@@ -1397,7 +1397,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     m_renderMethod = RENDER_SW;
   }
 
-  // determine whether GPU support NPOT textures
+  // determine whether GPU supports NPOT textures
   CSurface *screen = g_graphicsContext.getScreenSurface();
   int maj, min;
   screen->GetGLVersion(maj, min);
