@@ -674,39 +674,14 @@ void CLinuxRendererGL::ChooseBestResolution(float fps)
 bool CLinuxRendererGL::ValidateRenderTarget()
 {
   if (!m_bValidated)
-  {      
-    CSurface *screen = g_graphicsContext.getScreenSurface();
-    int maj, min;
-    screen->GetGLVersion(maj, min);
-    if (!glewIsSupported("GL_ARB_texture_non_power_of_two"))
-    {
-      CLog::Log(LOGNOTICE, "GL: OpenGL version %d.%d detected", maj, min);
-      if (!glewIsSupported("GL_ARB_texture_rectangle"))
-      {
-        CLog::Log(LOGNOTICE, "GL: GL_ARB_texture_rectangle not supported and OpenGL version is not 2.x");
-        CLog::Log(LOGNOTICE, "GL: Reverting to POT textures");
-        m_renderMethod |= RENDER_POT;
-      }
-      else
-      {
-        CLog::Log(LOGNOTICE, "GL: NPOT textures are supported through GL_ARB_texture_rectangle extension");
-        m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
-        glEnable(GL_TEXTURE_RECTANGLE_ARB);
-      }
-    }
-    else
-    {
-      CLog::Log(LOGNOTICE, "GL: OpenGL version %d.%d detected", maj, min);
-      CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
-    }
-    m_bValidated = true;
-
-    // create the yuv textures    
+  {
+    // create the yuv textures
     LoadShaders();
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
     {
       CreateYV12Texture(i);
     }
+    m_bValidated = true;
     return true;
   }
   return false;  
@@ -1421,7 +1396,32 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     CLog::Log(LOGERROR, "GL: Falling back to Software YUV2RGB");
     m_renderMethod = RENDER_SW;
   }
-  return;
+
+  // determine whether GPU support NPOT textures
+  CSurface *screen = g_graphicsContext.getScreenSurface();
+  int maj, min;
+  screen->GetGLVersion(maj, min);
+  if (!glewIsSupported("GL_ARB_texture_non_power_of_two"))
+  {
+    CLog::Log(LOGNOTICE, "GL: OpenGL version %d.%d detected", maj, min);
+    if (!glewIsSupported("GL_ARB_texture_rectangle"))
+    {
+      CLog::Log(LOGNOTICE, "GL: GL_ARB_texture_rectangle not supported and OpenGL version is not 2.x");
+      CLog::Log(LOGNOTICE, "GL: Reverting to POT textures");
+      m_renderMethod |= RENDER_POT;
+    }
+    else
+    {
+      CLog::Log(LOGNOTICE, "GL: NPOT textures are supported through GL_ARB_texture_rectangle extension");
+      m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
+      glEnable(GL_TEXTURE_RECTANGLE_ARB);
+    }
+  }
+  else
+  {
+    CLog::Log(LOGNOTICE, "GL: OpenGL version %d.%d detected", maj, min);
+    CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
+  }
 }
 
 void CLinuxRendererGL::UnInit()
