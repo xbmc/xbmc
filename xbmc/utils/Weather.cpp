@@ -92,7 +92,7 @@ void CBackgroundWeatherLoader::GetInformation()
   CStdString strSetting;
   strSetting.Format("weather.areacode%i", callback->GetArea() + 1);
   CStdString areaCode(callback->GetAreaCode(g_guiSettings.GetString(strSetting)));
-  strURL.Format("http://xoap.weather.com/weather/local/%s?cc=*&unit=m&dayf=4&prod=xoap&par=%s&key=%s",
+  strURL.Format("http://xoap.weather.com/weather/local/%s?cc=*&unit=m&dayf=4&prod=xoap&link=xoap&par=%s&key=%s",
                 areaCode.c_str(), PARTNER_ID, PARTNER_KEY);
   CStdString xml;
   if (httpUtil.Get(strURL, xml))
