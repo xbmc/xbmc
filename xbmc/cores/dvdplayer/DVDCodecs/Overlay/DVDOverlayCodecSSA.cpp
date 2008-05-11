@@ -3,6 +3,7 @@
 #include "DVDOverlayCodecSSA.h"
 #include "DVDOverlaySSA.h"
 #include "DVDStreamInfo.h"
+#include "cores/ffmpeg/avcodec.h"
 
 CDVDOverlayCodecSSA::CDVDOverlayCodecSSA() : CDVDOverlayCodec("SSA Subtitle Decoder")
 {
