@@ -6,6 +6,7 @@
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDCodecs/Overlay/DVDOverlayCodecFFmpeg.h"
 #include "DVDCodecs/Overlay/DVDOverlayCodecText.h"
+#include "DVDCodecs/Overlay/DVDOverlayCodecSSA.h"
 #include "DVDClock.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDInputStreams/DVDInputStream.h"
@@ -45,7 +46,9 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
 
     if (m_pOverlayCodec)
     {
-      int result = m_pOverlayCodec->Decode(pPacket->pData, pPacket->iSize);
+      double pts = pPacket->dts != DVD_NOPTS_VALUE ? pPacket->dts : pPacket->pts;
+      double duration = pPacket->duration;
+      int result = m_pOverlayCodec->Decode(pPacket->pData, pPacket->iSize, pts, duration);
 
       if(result == OC_OVERLAY)
       {
@@ -53,9 +56,6 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
         while((overlay = m_pOverlayCodec->GetOverlay()) != NULL)
         {
           overlay->iGroupId = pPacket->iGroupId;
-
-          double pts = pPacket->dts != DVD_NOPTS_VALUE ? pPacket->dts : pPacket->pts;
-          double duration = pPacket->duration;
 
           if(pts == DVD_NOPTS_VALUE)
           {
@@ -148,8 +148,10 @@ bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, string &filename)
   if(hints.codec == CODEC_ID_DVD_SUBTITLE && filename == "dvd")
     return true;
 
-  if(hints.codec == CODEC_ID_TEXT || hints.codec == CODEC_ID_SSA)
+  if(hints.codec == CODEC_ID_TEXT)
     m_pOverlayCodec = new CDVDOverlayCodecText();
+  else if(hints.codec == CODEC_ID_SSA)
+    m_pOverlayCodec = new CDVDOverlayCodecSSA();
   else
     m_pOverlayCodec = new CDVDOverlayCodecFFmpeg();
 
