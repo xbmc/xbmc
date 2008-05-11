@@ -9,6 +9,7 @@ CGUIControlGroup::CGUIControlGroup(DWORD dwParentID, DWORD dwControlId, float po
   m_defaultControl = 0;
   m_focusedControl = 0;
   m_renderTime = 0;
+  m_renderFocusedLast = false;
   ControlType = GUICONTROL_GROUP;
 }
 
@@ -61,12 +62,18 @@ void CGUIControlGroup::DynamicResourceAlloc(bool bOnOff)
 void CGUIControlGroup::Render()
 {
   g_graphicsContext.SetOrigin(m_posX, m_posY);
+  CGUIControl *focusedControl = NULL;
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *control = *it;
     control->UpdateVisibility();
-    control->DoRender(m_renderTime);
+    if (m_renderFocusedLast && control->HasFocus())
+      focusedControl = control;
+    else
+      control->DoRender(m_renderTime);
   }
+  if (focusedControl)
+    focusedControl->DoRender(m_renderTime);
   CGUIControl::Render();
   g_graphicsContext.RestoreOrigin();
 }

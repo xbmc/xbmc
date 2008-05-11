@@ -79,7 +79,18 @@
 				<imagepath>home-settings</imagepath>
 				<timeperimage>5000</timeperimage>
 				<fadetime>2000</fadetime>
-				<visible>ControlGroup(9001).HasFocus(9) | ControlGroup(9001).HasFocus(10)</visible>
+				<visible>ControlGroup(9001).HasFocus(9)</visible>
+				<animation effect="fade" time="200">VisibleChange</animation>
+			</control>
+			<control type="multiimage">
+				<posx>180</posx>
+				<posy>89</posy>
+				<width>600</width>
+				<height>400</height>
+				<imagepath>home-scripts</imagepath>
+				<timeperimage>5000</timeperimage>
+				<fadetime>2000</fadetime>
+				<visible>ControlGroup(9001).HasFocus(10)</visible>
 				<animation effect="fade" time="200">VisibleChange</animation>
 			</control>
 		</control>

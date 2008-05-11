@@ -706,3 +706,5 @@ bool CWeather::IsFetched()
   return (0 != *m_szLastUpdateTime);
 }
 
+
+

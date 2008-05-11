@@ -28,7 +28,6 @@
 #include "GUIPassword.h"
 #include "MusicDatabase.h"
 #include "LastFmManager.h"
-#include "utils/GUIInfoManager.h"
 #include "MusicInfoTag.h"
 #include "URL.h"
 #include "FileSystem/File.h"
@@ -169,7 +168,7 @@ void CGUIWindowMusicInfo::SetAlbum(const CAlbum& album, const CStdString &path)
     m_albumItem->SetProperty("artistthumb", artist.GetThumbnailImage());
   m_hasUpdatedThumb = false;
   m_bArtistInfo = false;
-  g_infoManager.m_content = "albums";
+  m_albumSongs->SetContent("albums");
 }
 
 void CGUIWindowMusicInfo::SetArtist(const CArtist& artist, const CStdString &path)
@@ -194,7 +193,7 @@ void CGUIWindowMusicInfo::SetArtist(const CArtist& artist, const CStdString &pat
   m_albumItem->SetCachedArtistThumb();
   m_hasUpdatedThumb = false;
   m_bArtistInfo = true;
-  g_infoManager.m_content = "artists";
+  m_albumSongs->SetContent("artists");
 }
 
 void CGUIWindowMusicInfo::SetSongs(const VECSONGS &songs)
