@@ -20,6 +20,7 @@
 
 #include "emu_msvcrt.h"
 #include "emu_dummy.h"
+#include "emu_kernel32.h"
 #include "util/EmuFileWrapper.h"
 
 using namespace std;
@@ -1179,9 +1180,7 @@ extern "C"
                            LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags,
                            LPDWORD lpThreadId)
   {
-    // FIXME        --possible use xbox createthread function?
-    HANDLE hThread = CreateThread(lpThreadAttributes, dwStackSize, lpStartAddress, lpParameter, dwCreationFlags, lpThreadId);
-    return hThread;
+    return dllCreateThread(lpThreadAttributes, dwStackSize, lpStartAddress, lpParameter, dwCreationFlags, lpThreadId);
   }
 
   //SLOW CODE SHOULD BE REVISED
