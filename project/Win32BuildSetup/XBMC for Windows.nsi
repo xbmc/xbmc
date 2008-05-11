@@ -26,7 +26,7 @@
   InstallDirRegKey HKCU "Software\XBMC" ""
 
   ;Request application privileges for Windows Vista
-  RequestExecutionLevel user
+  RequestExecutionLevel highest
 
 ;--------------------------------
 ;Variables
@@ -115,6 +115,7 @@ Section "XBMC" SecXBMC
   
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   ;Create shortcuts
+  SetOutPath "$INSTDIR"
   CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
   CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk" "$INSTDIR\XBMC.exe" \
     "-fs -p" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
@@ -122,17 +123,31 @@ Section "XBMC" SecXBMC
   CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk" "$INSTDIR\XBMC.exe" \
     "-p" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
     "" "Start XBMC in windowed mode."
+  
+  WriteINIStr "$SMPROGRAMS\$StartMenuFolder\Visit XBMC Online.url" "InternetShortcut" "URL" "http://xbmc.org"
   !insertmacro MUI_STARTMENU_WRITE_END  
 	
   ;add entry to add/remove programs
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
                  "DisplayName" "XBMC for Windows"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
-                 "UninstallString" "$INSTDIR\uninstall.exe"	  
+                 "UninstallString" "$INSTDIR\uninstall.exe"
   WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
                  "NoModify" 1
   WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
                  "NoRepair" 1
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
+                 "InstallLocation" "$INSTDIR"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
+                 "DisplayIcon" "$INSTDIR\XBMC.exe,0"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
+                 "Publisher" "Team XBMC"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
+                 "HelpLink" "http://xbmc.org/forum/index.php"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
+                 "HelpLink" "http://xbmc.org/forum/index.php"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
+                 "URLInfoAbout" "http://xbmc.org"
 SectionEnd
 
 SectionGroup "Language" SecLanguages
@@ -301,6 +316,7 @@ Section "Uninstall"
   !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
   Delete "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk"
+  Delete "$SMPROGRAMS\$StartMenuFolder\Visit XBMC Online.url"
   RMDir "$SMPROGRAMS\$StartMenuFolder"  
   DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC"
 
