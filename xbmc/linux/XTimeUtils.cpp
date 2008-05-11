@@ -1,4 +1,5 @@
 #include "system.h"
+#include "LinuxTimezone.h"
 #include "XTimeUtils.h"
 #include "../utils/log.h"
 #include <errno.h>
@@ -51,6 +52,7 @@ VOID GetLocalTime(LPSYSTEMTIME sysTime)
   sysTime->wMinute = now->tm_min;
   sysTime->wSecond = now->tm_sec;
   sysTime->wMilliseconds = 0;
+  g_timezone.m_IsDST = now->tm_isdst;
 }
 
 DWORD GetTickCount(void) 
@@ -133,7 +135,7 @@ BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTi
   sysTime.tm_min = lpSystemTime->wMinute;
   sysTime.tm_sec = lpSystemTime->wSecond;
   sysTime.tm_yday = dayoffset[sysTime.tm_mon] + (sysTime.tm_mday - 1);
-  sysTime.tm_isdst = 0;
+  sysTime.tm_isdst = g_timezone.m_IsDST;
   
   // If this is a leap year, and we're past the 28th of Feb, increment tm_yday.
   if (IsLeapYear(lpSystemTime->wYear) && (sysTime.tm_yday > 58))
