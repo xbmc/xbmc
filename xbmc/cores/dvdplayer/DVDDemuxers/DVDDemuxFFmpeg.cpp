@@ -604,13 +604,14 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
               {
                 stream->duration = duration;
                 duration = m_dllAvUtil.av_rescale_rnd(stream->duration, stream->time_base.num * AV_TIME_BASE, stream->time_base.den, AV_ROUND_NEAR_INF);
-                if(duration > m_pFormatContext->duration)
+                if(m_pFormatContext->duration == AV_NOPTS_VALUE && m_pFormatContext->file_size > 0
+                || m_pFormatContext->duration != AV_NOPTS_VALUE && duration > m_pFormatContext->duration)
                   m_pFormatContext->duration = duration;
               }
           }
 
           // check if stream seem to have grown since start
-          if(m_pFormatContext->pb)
+          if(m_pFormatContext->file_size > 0 && m_pFormatContext->pb)
           {
             if(m_pFormatContext->pb->pos > m_pFormatContext->file_size)
               m_pFormatContext->file_size = m_pFormatContext->pb->pos;
