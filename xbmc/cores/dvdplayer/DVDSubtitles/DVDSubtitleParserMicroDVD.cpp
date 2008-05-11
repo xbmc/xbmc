@@ -34,7 +34,11 @@ bool CDVDSubtitleParserMicroDVD::Open(CDVDStreamInfo &hints)
 
   CRegExp reg;
   if (!reg.RegComp("\\{([0-9]+)\\}\\{([0-9]+)\\}([^|]*?)(\\|([^|]*?))?$"))//(\\|([^|]*?))?$"))
-    assert(0);
+  {
+    delete m_pStream;
+    m_pStream = NULL;
+    return false;
+  }
 
   while (m_pStream->ReadLine(line, sizeof(line)))
   {
@@ -73,6 +77,9 @@ CLog::Log(LOGDEBUG, strUTF8);
       m_collection.Add(pOverlay);
     }
   }
+  delete m_pStream;
+  m_pStream = NULL;
+
   return true;
 }
 

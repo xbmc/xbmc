@@ -126,7 +126,8 @@ __int64 CDVDSubtitleStream::Seek(__int64 offset, int whence)
     {
       case SEEK_CUR:
       {
-        if ((m_iBufferPos + offset) > m_iBufferSize)
+        if ((m_iBufferPos + offset) > m_iBufferSize
+        ||  (m_iBufferPos + offset) < 0)
         {
           m_iBufferPos = 0;
           m_iBufferSize = 0;
@@ -135,9 +136,9 @@ __int64 CDVDSubtitleStream::Seek(__int64 offset, int whence)
         }
         else
         {
-          m_iBufferPos += (int)offset;
+          m_iBufferPos  += (int)offset;
           m_iBufferSize -= (int)offset;
-          
+
           return iPos + m_iBufferPos;
         }
         break;
@@ -152,18 +153,19 @@ __int64 CDVDSubtitleStream::Seek(__int64 offset, int whence)
       }
       case SEEK_SET:
       {
-        if ((offset - iPos) > m_iBufferSize)
+        if ((offset > iPos)
+        ||  (offset + m_iBufferSize + m_iBufferPos < iPos))
         {
           m_iBufferPos = 0;
           m_iBufferSize = 0;
-          
+
           return m_pInputStream->Seek(offset, whence);
         }
         else
         {
-          m_iBufferPos += (int)(offset - iPos);
-          m_iBufferSize -= (int)(offset - iPos);
-          
+          m_iBufferPos  += (int)(offset - iPos) + m_iBufferSize;
+          m_iBufferSize -= (int)(offset - iPos) + m_iBufferSize;
+
           return offset;
         }
         break;
@@ -206,25 +208,22 @@ char* CDVDSubtitleStream::ReadLine(char* buf, int iLen)
       
       // now find end of string
       char* pLineStart = (char*)(m_buffer + m_iBufferPos);
-      char* pLineEnd = strnchr(pLineStart, m_iBufferSize, '\n');
+      char* pLineEnd = strnchr(pLineStart, iBytesToRead, '\n');
       if (pLineEnd)
       {
-        pLineEnd[0] = '\0';
-        if ((pLineEnd - pLineStart > 0) && pLineEnd[-1] == '\r') pLineEnd[-1] = '\0';
         
         // we have a line
-        int iStringLength = (pLineEnd + 1) - pLineStart; // + 1 for '\n'
+        int iStringLength = pLineEnd - pLineStart;
         if (iStringLength > iLen)
-        {
-          // unable to copy string
           return NULL;
-        }
-        
-        m_iBufferPos += iStringLength;
-        m_iBufferSize -= iStringLength;
-        
-        memcpy(pBuffer, pLineStart, iStringLength);
 
+        if(iStringLength > 0 && pLineStart[iStringLength - 1] == '\r')
+          iStringLength--;
+
+        m_iBufferPos += pLineEnd - pLineStart + 1;
+        m_iBufferSize -= pLineEnd - pLineStart + 1;
+
+        memcpy(pBuffer, pLineStart, iStringLength);
         pBuffer += iStringLength;
         pBuffer[0] = 0;
         return buf;
