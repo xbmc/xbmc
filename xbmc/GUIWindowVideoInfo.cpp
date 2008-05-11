@@ -343,7 +343,7 @@ void CGUIWindowVideoInfo::Update()
   strTmp.Trim();
   SetLabel(CONTROL_TEXTAREA, strTmp);
 
-  // setup cast list
+  // setup cast list + determine type
   ClearCastList();
   if (m_movieItem->GetVideoInfoTag()->m_artist.size())
   { // music video
@@ -355,6 +355,7 @@ void CGUIWindowVideoInfo::Update()
       item->SetIconImage("DefaultArtist.png");
       m_castList->Add(item);
     }
+    m_castList->SetContent("musicvideos");
   }
   else
   { // movie/show/episode
@@ -372,6 +373,13 @@ void CGUIWindowVideoInfo::Update()
       item->SetLabel(character);
       m_castList->Add(item);
     }
+    // determine type:
+    if (m_movieItem->m_bIsFolder)
+      m_castList->SetContent("tvshows");
+    else if (m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
+      m_castList->SetContent("episodes");
+    else
+      m_castList->SetContent("movies");
   }
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_castList);
   g_graphicsContext.SendMessage(msg);

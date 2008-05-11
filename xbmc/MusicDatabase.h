@@ -259,5 +259,21 @@ private:
     album_strThumb
   } AlbumFields;
 
+  enum _ArtistFields 
+  {
+    artist_idArtist=1, // not a typo - we have the primary key @ 0
+    artist_strBorn,
+    artist_strFormed,
+    artist_strGenres,
+    artist_strMoods,
+    artist_strStyles,
+    artist_strInstruments,
+    artist_strBiography,
+    artist_strDied,
+    artist_strDisbanded,
+    artist_strYearsActive,
+    artist_strImage
+  } ArtistFields;
+
   int m_iSongsBeforeCommit;
 };

@@ -343,15 +343,16 @@ int Py_XBMC_Event_OnInit(void* arg)
 /// Functions Below here are speceifc for the 'MediaWindow' Like stuff (such as Sort and View)
 
 // \brief Prepares and adds the fileitems list/thumb panel
-void CGUIPythonWindowXML::OnSort()
+void CGUIPythonWindowXML::FormatAndSort(CFileItemList &items)
 {
   FormatItemLabels();
-  SortItems(*m_vecItems);
+  SortItems(items);
 }
 
 // \brief Formats item labels based on the formatting provided by guiViewState
 void CGUIPythonWindowXML::FormatItemLabels()
 {
+  // NOTE: this function doesn't do anything.  What it should do, I have no idea.
   if (!m_guiState.get())
     return;
 
@@ -381,7 +382,7 @@ void CGUIPythonWindowXML::UpdateFileList()
   CFileItem* pItem = m_vecItems->Get(nItem);
   const CStdString& strSelected = pItem->m_strPath;
 
-  OnSort();
+  FormatAndSort(*m_vecItems);
   UpdateButtons();
 
   m_viewControl.SetItems(*m_vecItems);
@@ -457,4 +458,9 @@ CGUIControl *CGUIPythonWindowXML::GetFirstFocusableControl(int id)
   if (m_viewControl.HasControl(id))
     id = m_viewControl.GetCurrentControl();
   return CGUIWindow::GetFirstFocusableControl(id);
+}
+
+const CFileItemList& CGUIPythonWindowXML::CurrentDirectory() const 
+{ 
+  return *m_vecItems;
 }

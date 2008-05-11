@@ -279,7 +279,7 @@ public:
   CFileItem* operator[] (const CStdString& strPath);
   const CFileItem* operator[] (const CStdString& strPath) const;
   void Clear();
-  void ClearKeepPointer();
+  void ClearKeepPointer(bool itemsOnly = false);
   void Add(CFileItem* pItem);
   void AddFront(CFileItem* pItem, int itemPosition);
   void Remove(CFileItem* pItem);

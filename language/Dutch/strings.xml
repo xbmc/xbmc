@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: MsG-->
 <!--Email: mathijs.groothuis@gmail.com-->
-<!--Date of translation: 04/16/2008-->
+<!--Date of translation: 05/09/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 12479-->
+<!--Based on english strings version 12748-->
 <strings>
   <string id="0">Programma's</string>
   <string id="1">Afbeeldingen</string>
@@ -204,7 +204,7 @@
   <string id="271">Top 100</string>
   <string id="272">Beeldpositie linksboven</string>
   <string id="273">Beeldpositie rechtsonder</string>
-  <string id="274">Positie ondertiteling</string>
+  <string id="274">Positie van ondertiteling</string>
   <string id="275">Pixelratio aanpassing</string>
   <string id="276">Beweeg de pijlen om de overscan aan te passen</string>
   <string id="277">Beweeg de balk om de ondertiteling te verplaatsen</string>
@@ -239,7 +239,7 @@
   <string id="312">(0=auto)</string>
   <string id="313">Bibliotheek opschonen</string>
   <string id="314">Voorbereiden...</string>
-  <string id="315">Database fout</string>
+  <string id="315">Databasefout</string>
   <string id="316">Zoeken op nummers...</string>
   <string id="317">Klaar met opschonen</string>
   <string id="318">Markeer verwijderde nummers</string>
@@ -436,7 +436,7 @@
   <string id="524">Kies playlist</string>
   <string id="525">Nieuwe playlist</string>
   <string id="526">Toevoegen aan playlist</string>
-  <string id="527">Handmatig aan database toevoegen</string>
+  <string id="527">Handmatig toevoegen</string>
   <string id="528">Voer titel in</string>
   <string id="529">Fout : Bestaande titel</string>
   <string id="530">Kies genre</string>
@@ -547,7 +547,7 @@
   <string id="661">Kies exporteerlocatie</string>
   <string id="700">Bibliotheek opschonen</string>
   <string id="701">Oude nummers uit bibiotheek verwijderen</string>
-  <string id="702">Deze map is al eerder gescanned</string>
+  <string id="702">Deze locatie is al eerder gescant</string>
   <string id="705">Netwerk</string>
   <string id="706">- Host</string>
   <string id="707">- Poort</string>
@@ -593,7 +593,7 @@
   <string id="747">Fout tijdens het laden van de afbeelding</string>
   <string id="748">Snelkoppeling wijzingen</string>
   <string id="749">Snelkoppeling toevoegen</string>
-  <string id="750">Weet je het zeker?</string>
+  <string id="750">Weet u het zeker?</string>
   <string id="751">Snelkoppeling verwijderen</string>
   <string id="752">Snelkoppeling wijzingen</string>
   <string id="753">Snelkoppelingnaam wijzingen</string>
@@ -620,6 +620,7 @@
   <string id="790">Gebeurtenissen op afstand</string>
   <string id="791">Activeer gebeurtenissen op afstand</string>
   <string id="792">Gebeurtenissen op afstand-poort</string>
+  <string id="794">Ontvang gebeurtenissen van andere computers</string>
   <string id="795">Initiële Herhalingsvertraging (ms)</string>
   <string id="797">Maximaal aantal clients</string>
   <string id="998">XLink Kai</string>
@@ -649,14 +650,14 @@
   <string id="1022">Voer een naam in voor deze locatie.</string>
   <string id="1023">Blader voor nieuwe locatie</string>
   <string id="1024">Bladeren</string>
-  <string id="1025">Kon geen directoryinformatie verkrijgen.</string>
+  <string id="1025">Kon geen locatie-informatie verkrijgen.</string>
   <string id="1026">Locatie toevoegen</string>
   <string id="1027">Locatie aanpassen</string>
   <string id="1028">Pas %s locatie aan</string>
   <string id="1029">Voer nieuwe label in</string>
   <string id="1030">Bladeren voor een afbeelding</string>
   <string id="1031">Bladeren voor een afbeeldingenmap</string>
-  <string id="1032">Voeg netwerklocatie toe...</string>
+  <string id="1032">Netwerklocatie toevoegen...</string>
   <string id="1033">Bestand selecteren</string>
   <string id="1034">Submenu</string>
   <string id="1035">Submenu knoppen inschakelen</string>
@@ -739,9 +740,9 @@
   <string id="10006">Films</string>
   <string id="10007">Systeeminformatie</string>
   <string id="10008">Instellingen-&gt;Algemeen</string>
-  <string id="10009">Instellingen-&gt;Scherm</string>
-  <string id="10010">Instellingen-&gt;Uiterlijk-&gt;GUI kalibratie</string>
-  <string id="10011">Instellingen-&gt;Films-&gt;Scherm kalibratie</string>
+  <string id="10009">Instellingen-&gt;Beeld</string>
+  <string id="10010">Instellingen-&gt;Uiterlijk-&gt;GUI-kalibratie</string>
+  <string id="10011">Instellingen-&gt;Films-&gt;Schermkalibratie</string>
   <string id="10012">Instellingen-&gt;Afbeeldingen</string>
   <string id="10013">Instellingen-&gt;Programma' </string>
   <string id="10014">Instellingen-&gt;Weer</string>
@@ -770,8 +771,8 @@
   <string id="10516">Muziek - Bibliotheek</string>
   <string id="10517">Muziek - Afspeellijst</string>
   <string id="10522">Films - Afspeellijst</string>
-  <string id="10523">Album-informatie</string>
-  <string id="10524">Film-informatie</string>
+  <string id="10523">Albuminformatie</string>
+  <string id="10524">Filminformatie</string>
   <string id="12000">Selecteren</string>
   <string id="12001">Muziek/Informatie</string>
   <string id="12002">Bevestiging</string>
@@ -937,7 +938,7 @@
   <string id="13294">DVD regio:</string>
   <string id="13295">Internet:</string>
   <string id="13296">Xbox is verbonden</string>
-  <string id="13297">Xbox is niet verbonden. Controleer Netwerkinstellingen.</string>
+  <string id="13297">Xbox is niet verbonden. Controleer netwerkinstellingen.</string>
   <string id="13298">XBLIVE sleutel:</string>
   <string id="13299">- Doeltemperatuur</string>
   <string id="13300">- Ventilatorsnelheid</string>
@@ -985,12 +986,12 @@
   <string id="13343">Rood</string>
   <string id="13344">Afwisselen</string>
   <string id="13345">LED uit tijdens afspelen</string>
-  <string id="13346">Film informatie</string>
+  <string id="13346">Filminformatie</string>
   <string id="13347">Toevoegen aan afspeellijst</string>
   <string id="13348">IMDb doorzoeken...</string>
   <string id="13349">Scan voor nieuwe inhoud</string>
   <string id="13350">Afspeellijst weergeven</string>
-  <string id="13351">Album informatie</string>
+  <string id="13351">Albuminformatie</string>
   <string id="13352">Aan database toevoegen</string>
   <string id="13353">Stop scannen</string>
   <string id="13354">Rendermethode</string>
@@ -1036,9 +1037,10 @@ voor deze visualisatie</string>
   <string id="13405">Thumbnails</string>
   <string id="13406">Afbeeldingsinformatie</string>
   <string id="13407">%s presets</string>
-  <string id="13408">IMDb score</string>
+  <string id="13408">IMDb-score</string>
   <string id="13409">Top 250:</string>
   <string id="13410">Beluister het op Last.FM</string>
+  <string id="13411">Minimale ventilatorsnelheid</string>
   <string id="14000">Groeperen</string>
   <string id="14001">Groeperen: Uit</string>
   <string id="14003">Afspeellijst downloaden...</string>
@@ -1076,7 +1078,7 @@ voor deze visualisatie</string>
   <string id="14037">Uiterlijk</string>
   <string id="14038">Netwerkinstellingen gewijzigd</string>
   <string id="14039">XBMC moet herstarten om de netwerkinstellingen</string>
-  <string id="14040">te wijzigen. Wil je nu herstarten?</string>
+  <string id="14040">te wijzigen. Wilt u nu herstarten?</string>
   <string id="14041">Voorbewerking</string>
   <string id="14042">Kai engine IP-adres</string>
   <string id="14043">- Uitschakelen tijdens gebruik</string>
@@ -1090,7 +1092,7 @@ voor deze visualisatie</string>
   <string id="14051">Tijdnotatie</string>
   <string id="14052">Datumnotatie</string>
   <string id="14053">GUI filters</string>
-  <string id="14054">Informatie van internet halen</string>
+  <string id="14054">Informatie van het internet halen</string>
   <string id="14055">Gebruik scannen op achtergrond</string>
   <string id="14056">Scan stoppen</string>
   <string id="14057">Niet mogelijk tijdens scannen naar media info</string>
@@ -1119,11 +1121,11 @@ voor deze visualisatie</string>
   <string id="15001">De service is niet verbonden.</string>
   <string id="15002">Nu opnieuw verbinding proberen te maken?</string>
   <string id="15003">Type je bericht.</string>
-  <string id="15004">Je bent uitgenodigd te komen spelen in %s.</string>
+  <string id="15004">U bent uitgenodigd om te komen spelen in %s.</string>
   <string id="15005">Datum: %s</string>
   <string id="15006">Van: %s</string>
   <string id="15007">Uitnodiging</string>
-  <string id="15008">Je bent uitgenodigd mee te doen met %s.</string>
+  <string id="15008">U bent uitgenodigd om mee te doen met %s.</string>
   <string id="15009">Offline</string>
   <string id="15010">Vrienden</string>
   <string id="15011">Weergeven: Vrienden</string>
@@ -1147,23 +1149,23 @@ voor deze visualisatie</string>
   <string id="15029">Er is een wachtwoord nodig om deze arena te betreden.</string>
   <string id="15030">Verbinding verbroken</string>
   <string id="15031">XLink Kai authentificatie</string>
-  <string id="15032">Je gebruikersnaam en wachwoord blijken volgens</string>
-  <string id="15033">de server onjuist de zijn. Controleer je configuratie.</string>
+  <string id="15032">Uw gebruikersnaam en wachwoord zijn volgens</string>
+  <string id="15033">de server onjuist. Controleer uw instellingen.</string>
   <string id="15034">heeft zich net aangemeld</string>
   <string id="15035">doet mee met de voice chat</string>
-  <string id="15036">heeft je een uitnodiging gestuurd</string>
-  <string id="15037">XBMC was niet in staat te controleren of je netwerk bereikbaar is.</string>
-  <string id="15038">Het kan zijn dat je problemen tegenkomt tijdens het meedoen of hosten van spellen.</string>
+  <string id="15036">heeft u een uitnodiging gestuurd</string>
+  <string id="15037">XBMC was niet in staat te controleren of uw netwerk bereikbaar is.</string>
+  <string id="15038">Het kan zijn dat u problemen tegenkomt tijdens het meedoen of hosten van spellen.</string>
   <string id="15039">XBMC kon het spel niet automatisch vinden.</string>
-  <string id="15040">Plaats de speldisk in je Xbox of druk op 'A' om te stoppen</string>
+  <string id="15040">Plaats de speldisk in uw Xbox of druk op 'A' om te stoppen</string>
   <string id="15041">en het spel zelf te starten.</string>
   <string id="15042">Toegang geweigerd</string>
   <string id="15043">%s is de chat binnengekomen.</string>
   <string id="15044">%s heeft de chat verlaten.</string>
-  <string id="15045">Type je persoonlijke bericht.</string>
+  <string id="15045">Typ uw persoonlijk bericht.</string>
   <string id="15046">Huidige arena</string>
-  <string id="15047">Geef een wachtwoord voor je arena.</string>
-  <string id="15048">Geef een beschrijving voor je arena.</string>
+  <string id="15047">Geef een wachtwoord voor uw arena.</string>
+  <string id="15048">Geef een beschrijving voor uw arena.</string>
   <string id="15049">Spel hosten</string>
   <string id="15050">In een prive-arena hosten</string>
   <string id="15051">Spelerslimiet</string>
@@ -1171,12 +1173,12 @@ voor deze visualisatie</string>
   <string id="15053">Beschrijving</string>
   <string id="15054">Uitnodigingsvenster</string>
   <string id="15055">Kies een spel:</string>
-  <string id="15056">Type je bericht:</string>
+  <string id="15056">Typ uw bericht:</string>
   <string id="15057">Verzenden</string>
   <string id="15058">Host</string>
   <string id="15059">Uitnodiging geaccepteerd!</string>
   <string id="15060">Bericht hier</string>
-  <string id="15061">Je bent uitgenodigd %s te spelen.</string>
+  <string id="15061">U bent uitgenodigd om %s te spelen.</string>
   <string id="15100">Bibliotheek</string>
   <string id="15101">Database</string>
   <string id="15102">* Alle albums</string>
@@ -1243,8 +1245,8 @@ voor deze visualisatie</string>
   <string id="15284">Luister naar %name%'s aanbevelingen Last.FM radio</string>
   <string id="15285">Top tags van %name%</string>
   <string id="15286">Luister naar %name%'s Last.FM afspeellijst radio</string>
-  <string id="15287">Wil je dit nummer toevoegen aan je favoriete nummers?</string>
-  <string id="15288">Wil je dit nummer verbannen?</string>
+  <string id="15287">Wilt u dit nummer toevoegen aan uw favoriete nummers?</string>
+  <string id="15288">Witl u dit nummer verbannen?</string>
   <string id="15289">Toegevoegd aan favoriete nummers: %s</string>
   <string id="15290">Toevoegen van '%s' aan favoriete nummers mislukt.</string>
   <string id="15291">Verbannen: '%s'.</string>
@@ -1253,8 +1255,8 @@ voor deze visualisatie</string>
   <string id="15294">Recent verbannen muzieknummers door %name%</string>
   <string id="15295">Verwijderen uit favoriete muzieknummers</string>
   <string id="15296">Ban opheffen</string>
-  <string id="15297">Wil je dit nummer verwijderen uit je favoriete nummers?</string>
-  <string id="15298">Wil je de ban op dit nummer opheffen?</string>
+  <string id="15297">Wilt u dit nummer verwijderen uit uw favoriete nummers?</string>
+  <string id="15298">Wilt u de ban op dit nummer opheffen?</string>
   <string id="15300">Pad niet gevonden of ongeldig</string>
   <string id="15301">Kan niet verbinden met netwerkserver</string>
   <string id="15302">Geen servers gevonden</string>
@@ -1322,7 +1324,7 @@ voor deze visualisatie</string>
   <string id="20009">Gebruik XBMC</string>
   <string id="20011">Muziekafspeellijst</string>
   <string id="20012">Video-afspeellijst</string>
-  <string id="20013">Wil je het spel starten?</string>
+  <string id="20013">Wilt u het spel starten?</string>
   <string id="20014">Sorteer: Afspeellijst</string>
   <string id="20015">Internet afbeelding</string>
   <string id="20016">Huidige afbeelding</string>
@@ -1330,7 +1332,7 @@ voor deze visualisatie</string>
   <string id="20018">Geen afbeelding</string>
   <string id="20019">Thumbnail kiezen</string>
   <string id="20020">KAI en trainer kunnen niet tegelijkertijd</string>
-  <string id="20021">Kies welke je wilt gebruiken</string>
+  <string id="20021">Kies welke u wil gebruiken</string>
   <string id="20023">Conflict</string>
   <string id="20024">Scan nieuwe</string>
   <string id="20025">Scan alles</string>
@@ -1365,10 +1367,10 @@ voor deze visualisatie</string>
   <string id="20066">Vergrendelingsvoorkeuren</string>
   <string id="20067">Profiel wijzigen</string>
   <string id="20068">Profiel vergrendeling</string>
-  <string id="20069">Kan map niet creeren</string>
+  <string id="20069">Kan map niet creëren</string>
   <string id="20070">Profiellocatie</string>
-  <string id="20071">Begin met verse media bronnen</string>
-  <string id="20072">Controleer of de gekozen folder beschrijfbaar</string>
+  <string id="20071">Begin met verse mediabronnen</string>
+  <string id="20072">Controleer of de gekozen locatie beschrijfbaar is</string>
   <string id="20073">is en dat de nieuwe mapnaam geldig is</string>
   <string id="20074">MPAA rating:</string>
   <string id="20075">Voer vergrendelcode in</string>
@@ -1389,9 +1391,9 @@ voor deze visualisatie</string>
   <string id="20090">Voer de naam van een bestaande gedeelde map in</string>
   <string id="20091">Vergrendel code</string>
   <string id="20092">Laad profiel</string>
-  <string id="20093">Profiel naam</string>
-  <string id="20094">Media bronnen</string>
-  <string id="20095">Geef profiel vergrendel code</string>
+  <string id="20093">Profielnaam</string>
+  <string id="20094">Mediabronnen</string>
+  <string id="20095">Geef profiel vergrendelcode</string>
   <string id="20096">Inlogscherm</string>
   <string id="20097">Ophalen albuminfo</string>
   <string id="20098">Ophalen info over album</string>
@@ -1401,7 +1403,7 @@ voor deze visualisatie</string>
   <string id="20102">of maak een kopie van de huidige instellingen?</string>
   <string id="20103">Wijzigingen opslaan in profiel?</string>
   <string id="20104">Oude instellingen gevonden.</string>
-  <string id="20105">Wil je deze gebruiken?</string>
+  <string id="20105">Wilt u deze gebruiken?</string>
   <string id="20106">Oude media bronnen gevonden.</string>
   <string id="20107">Afzonderlijk (vergrendelt)</string>
   <string id="20108">Hoofdmap</string>
@@ -1415,7 +1417,7 @@ voor deze visualisatie</string>
   <string id="20116">Gebruik vergendeling in Login scherm</string>
   <string id="20117">Ongeldige vergrendelcode.</string>
   <string id="20118">Dit vereist een actieve Hoofdvergrendeling.</string>
-  <string id="20119">Wil je deze nu instellen?</string>
+  <string id="20119">Wilt u deze nu instellen?</string>
   <string id="20120">Programma-informatie wordt geladen</string>
   <string id="20121">Feesten maar!</string>
   <string id="20122">Waar</string>
@@ -1428,9 +1430,9 @@ voor deze visualisatie</string>
   <string id="20130">Weven (omgekeerd)</string>
   <string id="20131">Overgaan</string>
   <string id="20132">Herstart Video</string>
-  <string id="20133">Wijzig netwerklocatie</string>
-  <string id="20134">Verwijder netwerklocatie</string>
-  <string id="20135">Wil je de map doorzoeken?</string>
+  <string id="20133">Netwerklocatie wijzigen</string>
+  <string id="20134">Netwerklocatie verwijderen</string>
+  <string id="20135">Wilt u de map doorzoeken?</string>
   <string id="20136">Geheugenmodule</string>
   <string id="20137">Geheugenmodule geplaatst</string>
   <string id="20138">Kan geheugenmodule niet koppelen</string>
@@ -1481,8 +1483,8 @@ voor deze visualisatie</string>
   <string id="20183">Skin herladen</string>
   <string id="20184">Draaien m.b.v. EXIF-informatie</string>
   <string id="20186">Even geduld</string>
-  <string id="20187">Uitlezen EEPROM-waardes</string>
-  <string id="20188">Uitlezen EEPROM is gebeurd</string>
+  <string id="20187">Bezig met het backuppen van het EEPROM</string>
+  <string id="20188">Bezig met het backuppen van het BIOS</string>
   <string id="20189">Plot en review automatisch scrollen</string>
   <string id="20190">Handmatig</string>
   <string id="20191">Activeer het registreren van fouten</string>
@@ -1601,16 +1603,18 @@ voor deze visualisatie</string>
   <string id="20407">Scraper instellingen</string>
   <string id="20408">Muziekvideo-informatie ophalen</string>
   <string id="20409">Tv-showinformatie ophalen</string>
-  <string id="20411">Inklappen</string>
+  <string id="20410">Trailer</string>
+  <string id="20411">Details inklappen</string>
   <string id="20412">Geen seizoenen laten zien als TV-show maar één seizoen bevat</string>
   <string id="20413">Haal Fanart op</string>
   <string id="20414">Laat Fanart zien in videobibliotheek</string>
+  <string id="20415">Bezig met scannen naar nieuwe inhoud</string>
   <string id="21330">Verborgen bestanden en mappen weergeven</string>
   <string id="21331">TuxBox-client</string>
   <string id="21332">WAARSCHUWING: TuxBox-apparaat is aan het opnemen.</string>
   <string id="21333">De stream wordt gestopt!</string>
   <string id="21334">Zappen naar kanaal %s mislukt!</string>
-  <string id="21335">Weet je zeker dat je de stream wilt starten?</string>
+  <string id="21335">Weet u zeker dat u de stream wil starten?</string>
   <string id="21336">Verbinden met: %s</string>
   <string id="21337">TuxBox-apparaat</string>
   <string id="21356">UPnP-muziek</string>
@@ -1645,7 +1649,7 @@ voor deze visualisatie</string>
   <string id="21386">Akoestiekbeheerniveau</string>
   <string id="21387">Snel</string>
   <string id="21388">Stil</string>
-  <string id="21389">Zelf een achtergrond kiezen</string>
+  <string id="21389">Activeer handmatige achtergrond</string>
   <string id="21390">Stroombeheer niveau</string>
   <string id="21391">Hoog Energie</string>
   <string id="21392">Laag Energie</string>
@@ -1745,6 +1749,7 @@ voor deze visualisatie</string>
   <string id="21881">UPnP-rendererer inschakelen</string>
   <string id="21882">Direct naar het DVD-menu gaan</string>
   <string id="21883">Geripte audio-CD's</string>
+  <string id="21884">Query-informatie voor alle artiesten</string>
   <string id="21885">Ophalen van Albuminformatie</string>
   <string id="21886">Ophalen van Artiestinformatie</string>
   <string id="21887">Biografie</string>
@@ -1762,7 +1767,7 @@ voor deze visualisatie</string>
   <string id="21899">Platenlabel</string>
   <string id="21900">Geboren/gevormd</string>
   <string id="22000">Bibliotheek updaten bij het opstarten</string>
-  <string id="22001">Bibliotheek continue op de achtergrond updaten</string>
+  <string id="22001">Bibliotheek continu op de achtergrond updaten</string>
   <string id="22002">- DNS Suffix</string>
   <string id="29999">Flikkerfilter toepassen op spellen</string>
 </strings>

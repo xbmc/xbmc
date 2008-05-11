@@ -254,7 +254,7 @@ bool CGUIWindowMusicPlaylistEditor::Update(const CStdString &strDirectory)
   if (!CGUIMediaWindow::Update(strDirectory))
     return false;
 
-  g_infoManager.m_content = "files";
+  m_vecItems->SetContent("files");
   m_thumbLoader.Load(*m_vecItems);
 
   // update our playlist control
