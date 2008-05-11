@@ -3,7 +3,7 @@
 #include "DllLibass.h"
 
 extern "C"{
-  #include "libass/ass.h"
+  #include "../../../lib/libass/ass.h"
 }
 
 /** Wrapper for Libass **/
