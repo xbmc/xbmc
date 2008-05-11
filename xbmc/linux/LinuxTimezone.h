@@ -16,7 +16,7 @@ public:
    CStdString GetCountryByTimezone(const CStdString timezone);
 
    void SetTimezone(CStdString timezone);
-   
+   int m_IsDST;   
 private:
    std::vector<CStdString> m_counties;
    std::map<CStdString, CStdString> m_countryByCode;
