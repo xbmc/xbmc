@@ -203,7 +203,7 @@ void CLinuxRendererATI::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     }
   }
   glDisable(GL_BLEND);
-  Render(flags);
+  Render(flags,source);
   VerifyGLState();
   glEnable(GL_BLEND);
   g_graphicsContext.EndPaint();
