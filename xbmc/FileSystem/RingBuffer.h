@@ -129,6 +129,7 @@ public:
   virtual ~CRingBuffer()
   {
     Destroy();
+    DeleteCriticalSection(&m_critSection);
   }
 
   ///////////////////////////////////////////////////////////////////
@@ -184,7 +185,6 @@ public:
     m_iReadPtr = 0;
     m_iWritePtr = 0;
     ::LeaveCriticalSection(&m_critSection );
-    DeleteCriticalSection(&m_critSection);
   }
 
   ///////////////////////////////////////////////////////////////////
