@@ -116,6 +116,17 @@ Export export_gdi32[] =
   { "DeleteObject",               -1, dllDeleteObject,               NULL },
   { "GetDeviceCaps",              -1, dllGetDeviceCaps,              NULL },
   { "CreatePalette",              -1, dllCreatePalette,              NULL },
+  { "StretchDIBits",              -1, dllStretchDIBits,              NULL },
+  { "RectVisible",                -1, dllRectVisible,                NULL },
+  { "SaveDC",                     -1, dllSaveDC,                     NULL },
+  { "GetClipBox",                 -1, dllGetClipBox,                 NULL },
+  { "CreateRectRgnIndirect",      -1, dllCreateRectRgnIndirect,      NULL },
+  { "ExtSelectClipRgn",           -1, dllExtSelectClipRgn,           NULL },
+  { "SetStretchBltMode",          -1, dllSetStretchBltMode,          NULL },
+  { "SetDIBitsToDevice",          -1, dllSetDIBitsToDevice,          NULL },
+  { "RestoreDC",                  -1, dllRestoreDC,                  NULL },
+  { "GetObjectA",                 -1, dllGetObjectA,                 NULL },
+  { "CombineRgn",                 -1, dllCombineRgn,                 NULL },
   { NULL, NULL, NULL, NULL }
 };
 
