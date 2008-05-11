@@ -129,7 +129,7 @@
 				<expression noclean="1">Eine Inhaltsangabe von(.*)&lt;option value=&quot;All&quot;&gt;</expression>
 			</RegExp>
 			<RegExp input="$$9" output="\1" dest="7">
-				<expression noclean="1">&lt;br&gt;([^&lt;]+)</expression>
+				<expression noclean="1">&lt;br&gt;&lt;br&gt;([^&lt;]+)</expression>
 			</RegExp>
 			<RegExp input="$$9" output=" \1" dest="7+">
 				<expression noclean="1" repeat="yes">&lt;br /&gt;([^&lt;]+)</expression>

@@ -1185,7 +1185,7 @@ void CFileItemList::Clear()
   m_content.Empty();
 }
 
-void CFileItemList::ClearKeepPointer()
+void CFileItemList::ClearKeepPointer(bool itemsOnly)
 {
   CSingleLock lock(m_lock);
 
@@ -1194,6 +1194,9 @@ void CFileItemList::ClearKeepPointer()
     m_items.clear();
     m_map.clear();
   }
+
+  if (itemsOnly)
+    return;
 
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;

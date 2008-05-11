@@ -51,6 +51,7 @@ public:
   virtual bool RemoveControl(int id);
   virtual void ClearAll();
   void SetDefaultControl(DWORD id) { m_defaultControl = id; };
+  void SetRenderFocusedLast(bool renderLast) { m_renderFocusedLast = renderLast; };
 
   virtual void SaveStates(std::vector<CControlState> &states);
 
@@ -68,6 +69,7 @@ protected:
 
   int m_defaultControl;
   int m_focusedControl;
+  bool m_renderFocusedLast;
 
   // render time
   DWORD m_renderTime;

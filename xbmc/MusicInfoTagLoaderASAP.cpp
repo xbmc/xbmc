@@ -36,12 +36,8 @@ bool CMusicInfoTagLoaderASAP::Load(const CStdString &strFile, CMusicInfoTag &tag
     CUtil::RemoveSlashAtEnd(strFileToLoad);
   }
 
-  // hack until i figure out why the dll isnt wrapped
-  if (!XFILE::CFile::Cache(strFileToLoad,"z:\\cachedasap.sap"))
-    return false;
-
   ASAP_SongInfo songInfo;
-  if (!m_dll.asapGetInfo("z:\\cachedasap.sap", song, &songInfo))
+  if (!m_dll.asapGetInfo(strFileToLoad.c_str(), song, &songInfo))
     return false;
 
   tag.SetURL(strFileToLoad);

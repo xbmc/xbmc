@@ -32,12 +32,8 @@ bool ASAPCodec::Init(const CStdString &strFile, unsigned int filecache)
     CUtil::RemoveSlashAtEnd(strFileToLoad);
   }
 
-  // hack until i figure out why the dll fails to be wrapped
-  if (!XFILE::CFile::Cache(strFileToLoad,"z:\\cachedasap.sap"))
-    return false;
-
   int duration;
-  if (!m_dll.asapLoad("z:\\cachedasap.sap", song, &m_Channels, &duration))
+  if (!m_dll.asapLoad(strFileToLoad.c_str(), song, &m_Channels, &duration))
     return false;
   m_TotalTime = duration;
   m_SampleRate = 44100;
