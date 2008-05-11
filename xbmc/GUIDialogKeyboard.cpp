@@ -108,7 +108,12 @@ void CGUIDialogKeyboard::OnInitWindow()
 
 bool CGUIDialogKeyboard::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_BACKSPACE 
+  // check if we're doing a search, and if so, interrupt the search timer.
+  DWORD now = timeGetTime();
+  if (m_lastSearchUpdate || m_lastSearchUpdate + SEARCH_DELAY >= now)
+    m_lastSearchUpdate = now;
+
+  if (action.wID == ACTION_BACKSPACE
 #ifdef __APPLE__
      || action.wID == ACTION_PARENT_DIR
 #endif

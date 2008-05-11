@@ -2623,18 +2623,11 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
     CUtil::TakeScreenshot();
   else
   {
-    CStdString filepath, path, filename;
+    CStdString filepath;
     if (paras[0]=="")
       filepath="Z:\\screenshot.jpg";
     else
       filepath=paras[0];
-    // check we have a valid path
-    filename = CUtil::GetFileName(filepath);
-    if (!CUtil::GetParentPath(filepath, path) || !CDirectory::Exists(path))
-    {
-      CLog::Log(LOGERROR, "Invalid path in xbmcTakeScreenShot - saving to Z:");
-      CUtil::AddFileToFolder("Z:", filename, filepath);
-    }
     if (numParas>5)
     {
       CUtil::TakeScreenshot("Z:\\temp.bmp", paras[1].ToLower()=="true");

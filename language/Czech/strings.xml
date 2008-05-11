@@ -1,7 +1,7 @@
 ﻿<?xml version='1.0' encoding='UTF-8' standalone="yes"?>
 <!-- XBMC Czech Translation -->
 <!-- (c) ezechiel1917 -->
-<!-- last update: 30/08/2007 -->
+<!-- last update: 05/05/2008 -->
 <!-- $Revision$ -->
 
 <strings>
@@ -44,7 +44,7 @@
 <string id="102">Prohledat</string>
 <string id="103">Dle názvu</string>
 <string id="104">Dle datumu</string>
-<string id="105">Dle velikosti</string>
+<string id="105">Dle velikosti</string> 
 <string id="106">Ne</string>
 <string id="107">Ano</string>
 <string id="108">Prezentace</string>
@@ -108,7 +108,7 @@
 <string id="166">Vzhled</string>
 <string id="167">FTP Server:</string>
 <string id="168">Synchronizovat čas z internetu</string>
-<string id="169">TV Norma</string>
+<string id="169">Rozlišení obrazovky</string>
 <string id="170">Album:</string>
 <string id="171">Interpret:</string>
 <string id="172">Datum vydání:</string>
@@ -139,7 +139,7 @@
 <string id="197">Probíhá získávání informací pro %s</string>
 <string id="198">Probíhá načítání informací k filmu</string>
 <string id="199">Režisér:</string>
-<string id="200">Tvůrce:</string>
+<string id="200">Scénář:</string>
 <string id="201">Rok:</string>
 <string id="202">Ve zkratce:</string>
 <string id="203">Děj filmu:</string>
@@ -164,7 +164,7 @@
 <string id="225">Délka přechodu</string>
 <string id="227">Stahovat informace z freedb</string>
 <string id="228">Po načtení seznamu stop přehrávat skladby náhodně</string>
-<string id="229">Uspávat HDD (minut)</string>
+<string id="229">Uspávat HDD</string>
 <string id="230">Video filtry</string>
 <string id="231">vypnuto</string>
 <string id="232">Bodový</string>
@@ -198,7 +198,7 @@
 <string id="260">Shoutcast</string>
 <string id="261">Probíhá příprava spuštění...</string>
 <string id="262">Výstup skriptů</string>
-<string id="263">Webový server:</string>
+<string id="263">Povolit webový server XBMC:</string>
 <string id="264">Nahrávat</string>
 <string id="265">Ukončit nahrávání</string>
 <string id="266">Dle stopy</string>
@@ -231,6 +231,7 @@
 <string id="294">Vytvořit záložku</string>
 <string id="296">Vymazat záložky</string>
 <string id="297">Zpoždění zvuku</string>
+<string id="298">Záložky</string>
 <string id="303">Zpoždění titulků</string>
 <string id="304">Jazyk</string>
 <string id="305">Zobrazovat titulky</string>
@@ -259,7 +260,7 @@
 <string id="328">Probíhá ukládání změn...</string>
 <string id="329">Chyba při ukládání změn</string>
 <string id="330">Tento proces může chvíli trvat...</string>
-<string id="331">Probíhá komprimace knihovnu...</string>
+<string id="331">Probíhá komprimace knihovny...</string>
 <string id="332">Chyba při komprimaci knihovny</string>
 <string id="333">Chcete aktualizovat položky v knihovně?</string>
 <string id="334">Aktualizovat položky v knihovně...</string>
@@ -281,9 +282,9 @@
 <string id="354">Kód Matrixu</string>
 <string id="355">Vyčkat</string>
 <string id="356">Špořič obrazovky</string>
-<string id="357">Vypnout při nečinnosti</string>
+<string id="357">Vypnout systém při nečinnosti</string>
 <string id="358">Všechna alba</string>
-<string id="359">Poslední alba</string>
+<string id="359">Naposled přidaná alba</string>
 <string id="360">Spořič obrazovky</string>
 <string id="361">Celková prezentace</string>
 <string id="362">Úroveň ztmavení</string>
@@ -320,7 +321,7 @@
 <string id="393">vysoký</string>
 <string id="394">hustá mlha</string>
 <string id="395">slabé mrholení</string>
-<string id="396">Zvolte Lokaci</string>
+<string id="396">Vyberte město</string>
 <string id="397">Obnovovat po</string>
 <string id="398">Jednotky teploty</string>
 <string id="399">Jednotky rychlosti</string>
@@ -333,8 +334,9 @@
 <string id="406">Vlhkost</string>
 <string id="407">Od</string>
 <string id="408">v</string>
+<string id="409">Výchozí hodnoty</string>
 
-<string id="410">Probíhá připojování k weather.com</string>
+<string id="410">Probíhá připojování k weather.com</string>  
 <string id="411">Probíhá stahování počasí pro:</string>
 <string id="412">Informace o počasí se nepodařilo získat</string>
 <string id="413">Ručně</string>
@@ -342,7 +344,7 @@
 <string id="415">Probíhá stahování náhledu...</string>
 <string id="416">Není k dispozici</string>
 <string id="417">Velké ikony</string>
-<string id="418"></string>
+<string id="418">Povolit mód Knihovny</string>
 <string id="419"></string>
 <string id="420"></string>
 <string id="421"></string>
@@ -362,7 +364,7 @@
 <string id="435">Stopa:</string>
 <string id="436">Rok:</string>
 <string id="437">Délka:</string>
-<string id="438">Probíhá otevírání soubor</string>
+<string id="438">Probíhá otevírání souboru</string>
 <string id="439">Mezipaměť</string>
 <string id="440">HDD</string>
 <string id="441">UDF</string>
@@ -434,7 +436,7 @@
 <string id="514">Manuální nastavení</string>
 <string id="515">Žánr</string>
 <string id="516">Povolit přehrávání z archivů</string>
-<string id="517">Posledně přehraná alba</string>
+<string id="517">Naposled přehrávána alba</string>
 <string id="518">Spustit</string>
 <string id="519">Spustit v ...</string>
 <string id="520">Upravit název XBE</string>
@@ -447,7 +449,7 @@
 <string id="527">Přidat ručně do knihovny</string>
 <string id="528">Vložte název</string>
 <string id="529">Chyba: Duplikátní název</string>
-<string id="530">Zvolte žánr</string>
+<string id="530">Vyberte žánr</string>
 <string id="531">Nový žánr</string>
 <string id="532">Ruční přidání</string>
 <string id="533">Vložte žánr</string>
@@ -456,12 +458,14 @@
 <string id="536">Ikony</string>
 <string id="537">List 2</string>
 <string id="538">Ikony 2</string>
-<string id="539">WS</string>
-<string id="540">WS 2</string>
+<string id="539">Sloupce</string>
+<string id="540">Sloupec</string>
 <string id="541">Alba</string>
 <string id="542">DVD</string>
 <string id="543">DVD 2</string>
 <string id="544">Info</string>
+<string id="545">Zařízení pro výstup zvuku</string>
+<string id="546">Zařízení pro passthrough zvuku</string>
 
 <string id="550">Řadit dle: %s</string>
 <string id="551">Názvu</string>
@@ -547,7 +551,7 @@
 <string id="649">Probíhá import</string>
 <string id="650">Probíhá export</string>
 <string id="651">Knihovna videí</string>
-<string id="652">let</string>
+<string id="652">Rok</string>
 <string id="653">Aktualizovat knihovnu</string>
 <string id="654">Zobrazovat Debug informace</string>
 <string id="655">Vybrat spouštěcí soubor</string>
@@ -555,6 +559,8 @@
 <string id="657">Vybrat složku</string>
 <string id="658">Informace o skladbě</string>
 <string id="659">Komentář:</string>
+<string id="660">Zesílení hlasitosti</string>
+<string id="661">Vyberte složku pro export</string>
 
 <string id="700">Probíhá aktualizace knihovny</string>
 <string id="701">Probíhá odebírání skladby z knihovny</string>
@@ -567,24 +573,24 @@
 <string id="710">XLink Kai - Heslo:</string>
 <string id="711">Internetový protokol (IP):</string>
 <string id="712">Nebyl nastaven platný port. Hodnota musí být od 1 do 65535.</string>
-<string id="713">Nastavení HTTP Proxy</string>
-<string id="714">XLink Kai</string>
-<string id="715">Přidělování</string>
-<string id="716">Automatické (DHCP)</string>
-<string id="717">Manuálně (Statická IP)</string>
-<string id="718">Výchozí (Dashboard)</string>
-<string id="719">- IP adresa</string>
-<string id="720">- Maska podsítě</string>
-<string id="721">- Výchozí brána</string>
+<string id="713">Nastavení HTTP Proxy</string>	
+<string id="714">XLink Kai</string>	
+<string id="715">Přidělování IP adresy</string>	
+<string id="716">Automatické (DHCP)</string>	
+<string id="717">Manuálně (Statická IP)</string>	
+<string id="718">Výchozí (Dashboard)</string>	
+<string id="719">- IP adresa</string>	
+<string id="720">- Maska podsítě</string>	
+<string id="721">- Výchozí brána</string>	
 <string id="722">- DNS server</string>
 <string id="723">Uložit nastavení a restartovat XBOX</string>
 <string id="724">Nebyla nastavena platná IP adresa. Hodnota musí být ve tvaru AAA.BBB.CCC.DDD</string>
 <string id="725">a obsahovat čísla od 0 do 255.</string>
 <string id="726">Změny nebyly uloženy. Pokračovat bez uložení?</string>
-<string id="727">Webový Server</string>
-<string id="728">FTP Server</string>
-<string id="729">Čas z internetu</string>
-<string id="730">Port webového serveru:</string>
+<string id="727">Webový server</string>	
+<string id="728">FTP Server</string>	
+<string id="729">Čas z internetu</string>	
+<string id="730">Port webového serveru:</string>	
 <string id="731">Adresa serveru k synchronizaci</string>
 <string id="732">Uložit &amp; použít</string>
 <string id="733">Heslo pro webový server</string>
@@ -629,6 +635,30 @@
 <string id="772">Audio Hardware</string>
 <string id="773">Probíhá vyhledávání</string>
 <string id="774">Složka s obrázky pro Spořič obrazovky</string>
+<string id="775">Síťové rozhraní</string>
+<string id="776">- Název Bezdrátové sítě (ESSID)</string>
+<string id="777">- Heslo Bezdrátové sítě</string>
+<string id="778">- Bezpečnost Bezdrátové sítě</string>
+<string id="779">Uložit a použít nastavení Bezdrátové sítě</string>
+<string id="780">Bez šifrování</string>
+<string id="781">WEP</string>
+<string id="782">WPA</string>
+<string id="783">WPA2</string>
+<string id="784">Probíhá aplikace změn nastavení Bezdrátové sítě. Vyčkejte prosím.</string>
+<string id="785">Restart síťové rozhraní proběhl úspěšně.</string>
+<string id="786">Spuštění siťového rozhraní se nezdařilo.</string>
+<string id="787">Rozhraní není aktivováno</string>
+<string id="788">Síťové rozhraní bylo úspěšně deaktivováno.</string>
+<string id="789">Název Bezdrátové sítě (ESSID)</string>
+
+<string id="790">Dálkové ovládání</string>
+<string id="791">Povolit dálkové ovládání</string>
+<string id="792">Port dálkového ovládání</string>
+<string id="793">Rozsah portů pro dálkové ovládání</string>
+<string id="794">Povolit ovládání z jiných počítačů</string>
+<string id="795">Zpoždění odezvy pro první stisk (ms)</string>
+<string id="796">Zpoždění odezvy pro delší stisk (ms)</string>
+<string id="797">Maximální počet klientů</string>
 
 <string id="998">XLink Kai</string>
 <string id="999">Online hry</string>
@@ -653,7 +683,7 @@
 <string id="1018">Zadejte číslo portu</string>
 <string id="1019">Zadejte uživatelské jméno</string>
 <string id="1020">Přidat %s zdroj</string>
-<string id="1021">Zadejte cestu nebo vyhledejte umístění médií.</string>
+<string id="1021">Zadejte cestu nebo vyberte umístění médií.</string>
 <string id="1022">Vložte název pro tento zdroj médií.</string>
 <string id="1023">Procházet pro novou položku</string>
 <string id="1024">Procházet</string>
@@ -675,6 +705,11 @@
 <string id="1040">Probíhá načítání složky</string>
 <string id="1041">Bylo nalezeno %i položek</string>
 <string id="1042">Bylo nalezeno %i z %i položek</string>
+<string id="1043">Pluginy programů</string>
+<string id="1044">Nastavení náhledu pluginu</string>
+<string id="1045">Nastavení pluginu</string>
+<string id="1046">Přístupové body (AP)</string>
+<string id="1047">Ostatní...</string>
 
 <string id="1200">SMB klient</string>
 <string id="1202">Pracovní skupina</string>
@@ -682,6 +717,7 @@
 <string id="1204">Heslo</string>
 
 <string id="1207">SMB WINS-Server</string>
+<string id="1208">Připojit SMB sdílené složky</string>
 
 <string id="1210">Odebrat</string>
 <string id="1211">Hudba</string>
@@ -777,6 +813,12 @@
 <string id="10100">Dialog Ano/Ne</string>
 <string id="10101">Dialog s průběhem</string>
 
+<string id="10210">Probíhá vyhledávání titulků...</string>
+<string id="10211">Probíhá načítání titulků...</string>
+<string id="10212">Probíhá přerušení požadavku</string>
+<string id="10213">Probíhá načítání do mezipaměti</string>
+<string id="10214">Probíhá otevírání souboru</string>
+
 <string id="10500">Hudba/Seznam stop</string>
 <string id="10501">Hudba/Soubory</string>
 <string id="10502">Hudba/Knihovna</string>
@@ -820,13 +862,14 @@
 <string id="12014">Žádné trainery nebyly nalezeny</string>
 <string id="12015">Nastavení trainerů</string>
 <string id="12016">Všechny registrované trainery chybí. Aktualizujte seznam prosím.</string>
-<string id="12017">Automaticky pokračovat z pozice videa při posledním ukončení</string>
+<string id="12017">Automaticky pokračovat v poslední přehrávané pozici videa</string>
 <string id="12018">Ne</string>
 <string id="12019">Ano</string>
 <string id="12020">Zeptat se</string>
 <string id="12021">Začít od začátku</string>
 <string id="12022">Pokračovat z poslední pozice</string>
 <string id="12023">Probíhá ověření stávájících trainerů...</string>
+<string id="12024">Automaticky generovat náhledy k videím, které nemají k dispozici obal/plakát</string>
 
 <string id="12310">0</string>
 <string id="12311">1</string>
@@ -910,6 +953,22 @@
 <string id="13106">Zakázáno</string>
 <string id="13107">Povoleno pro přehrávání videa</string>
 <string id="13108">Vždy povoleno</string>
+<string id="13109">Zkouška rozlišení</string>
+<string id="13110">Chcete toto rozlišení uložit?</string>
+<string id="13111">Chcete ponechat toto rozlišení?</string>
+  
+<string id="13112">Vysoce kvalitní softwarový přepočet</string>
+<string id="13113">Zakázano</string>
+<string id="13114">Povolit pro SD videa</string>
+<string id="13115">Vždy povoleno</string>
+ 
+<string id="13116">Metoda přepočtu</string>
+<string id="13117">Bicubic</string>
+<string id="13118">Lanczos</string>
+
+<string id="13130">Blikání displeje</string>
+<string id="13131">Zakázano</string>
+<string id="13132">Povolit blikání</string>
 
 <string id="13150">Klíč:</string>
 <string id="13151">Teplota:</string>
@@ -992,7 +1051,7 @@
 <string id="13303">Písmo vzhledu</string>
 <string id="13304">Aktivovat převrácené zobrazení titulků</string>
 <string id="13305">Zobrazovat RSS zpravodajství</string>
-<string id="13306">Nezobrazovat položku pro návrat o složku zpět (...)</string>
+<string id="13306">Nezobrazovat položku pro návrat o složku zpět (..)</string>
 <string id="13307">Způsob zobrazení názvu stopy</string>
 <string id="13308">Opravdu chcete restartovat XBOX</string>
 <string id="13309">místo XBMC?</string>
@@ -1080,6 +1139,12 @@
 <string id="13405">Získat náhled</string>
 <string id="13406">Informace o obrázku</string>
 <string id="13407">%s předvoleb</string>
+<string id="13408">(Hodnocení uživatelů IMDb)</string>
+<string id="13409">Top 250:</string>
+<string id="13410">Naladit na LastFM</string>
+<string id="13411">Minimální rychlost větráčku</string>
+
+<string id="13600">Dálkové ovládání Apple</string>
 
 <string id="14000">Spojovat videa</string>
 <string id="14001">Nespojovat videa</string>
@@ -1104,7 +1169,7 @@
 <string id="14021">Kód 3. oblasti</string>
 <string id="14022">Knihovna</string>
 <string id="14023">Bez TV</string>
-<string id="14024">Zadejte kód nejbližšího velkého města nebo americký ZIP</string>
+<string id="14024">Zadejte kód nejbližšího velkoměsta nebo americký ZIP</string>
 <string id="14025">Mezipaměť - Video/Audio/DVD - Harddisk</string>
 <string id="14026">Mezipaměť - Video - DVDROM</string>
 <string id="14027">- Místní síť</string>
@@ -1114,7 +1179,7 @@
 <string id="14032">- Internet</string>
 <string id="14034">Mezipaměť - DVD - DVDROM</string>
 <string id="14035">- Místní síť</string>
-<string id="14036">Servery</string>
+<string id="14036">Webový Server</string>
 <string id="14037">Nastavení</string>
 <string id="14038">Nastavení sítě bylo změněno</string>
 <string id="14039">Změna síťového nastavení vyžaduje</string>
@@ -1157,6 +1222,8 @@
 <string id="14076">Přidat mezi oblíbené</string>
 <string id="14077">Odebrat z oblíbených</string>
 <string id="14078">Barvy vzhledu</string>
+<string id="14079">Časové pásmo - země</string>
+<string id="14080">Časové pásmo</string>
 
 <string id="15000">XLink Kai</string>
 <string id="15001">Služba není připojena</string>
@@ -1213,7 +1280,7 @@
 <string id="15052">Heslo</string>
 <string id="15053">Popis</string>
 <string id="15054">Dialog s pozvánkou</string>
-<string id="15055">Zvolte hru:</string>
+<string id="15055">Vyberte hru:</string>
 <string id="15056">Zpráva:</string>
 <string id="15057">Odeslat</string>
 <string id="15058">Hostovat</string>
@@ -1249,6 +1316,7 @@
 <string id="15213">Přehrát v</string>
 <string id="15214">Používat hladkou synchronizaci A/V</string>
 <string id="15215">Nezobrazovat názvy souborů při zobrazení náhledů</string>
+<string id="15216">Přehrát v Párty módu</string>
 
 <string id="15250">Odesílat informace o posledním Last.FM radiu</string>
 <string id="15251">Probíhá připojování k Last.FM...</string>
@@ -1287,6 +1355,18 @@
 <string id="15284">Poslouchám: %name%'s doporučení Last.FM radio</string>
 <string id="15285">Nejoblíběnější tagy uživatele %name%</string>
 <string id="15286">Poslechnout si Last.FM seznam stop uživatele %name% </string>
+<string id="15287">Chcete přidat tuto skladbu k vašim oblíbeným?</string>
+<string id="15288">Chcete zakázat aktuální skladbu?</string>
+<string id="15289">Skladba přidána mezi oblíbené: '%s'.</string>
+<string id="15290">Skladba '%s' se nepodařilo přidat mezi oblíbené.</string>
+<string id="15291">Zakázané: '%s'.</string>
+<string id="15292">Skladbu '%s' se nepodařilo přidat mezi zakázané.</string>
+<string id="15293">Poslední oblíbené skladby uživatele %name%</string>
+<string id="15294">Poslední zakázané skladby uživatele %name%</string>
+<string id="15295">Odstranit z oblíbených skladeb</string>
+<string id="15296">Povolit zakázanou</string>
+<string id="15297">Chcete tuto skladbu odebrat ze seznamu vašich oblíbených skladeb?</string>
+<string id="15298">Chcete opět povolit tuto zakázanou skladbu?</string>
 
 <string id="15300">Cesta ke složce nebyla nalezena</string>
 <string id="15301">K síťovému serveru se nepodařilo připojit</string>
@@ -1328,6 +1408,7 @@
 <string id="16032">Incializace knihovny nebyla úspěšná.</string>
 <string id="16033">Nemohu otevřít knihovnu.</string>
 <string id="16034">Nepodařilo se načíst skladby z knihovny.</string>
+<string id="16035">Seznam stop Party módu</string>
 
 <string id="16100">Všechny videa</string>
 <string id="16101">Neshlédnuté</string>
@@ -1345,9 +1426,19 @@
 <string id="16201">Kopírování selhalo</string>
 <string id="16202">Minimálně 1 soubor se nepodařilo zkopírovat</string>
 <string id="16203">Přesouvání selhalo</string>
-<string id="16204">Minimálně 1 soubor se nepodařilo přesunout</string>
+<string id="16204">Minimálně 1 soubor se nepodařilo přesunout</string>  
 <string id="16205">Smazání selhalo</string>
 <string id="16206">Minimálně 1 soubor se nepodařilo smazat</string>
+
+<string id="16300">Způsob přepočítání videa</string>
+<string id="16301">Nearest Neighbour</string>
+<string id="16302">Bilinear</string>
+<string id="16303">Bicubic</string>
+<string id="16304">Lanczos2</string>
+<string id="16305">Lanczos3</string>
+<string id="16306">Sinc8</string>
+
+<string id="17500">Zobrazit odpočet do uspání</string> 
 
 <string id="20000">Složka pro ukládání CDDA kopií</string>
 <string id="20001">Použít externí DVD přehrávač</string>
@@ -1371,11 +1462,15 @@
 <string id="20019">Přiřadit náhled</string>
 <string id="20020">Nelze použít zároveň KAI a trainer</string>
 <string id="20021">Vyberte který chcete použít</string>
+ <!-- string id 20022 will always be set to an empty string (LocalizeStrings.cpp)-->
 <string id="20022"></string>
 <string id="20023">Konflikt</string>
 <string id="20024">Prohledat nové</string>
 <string id="20025">Prohledat vše</string>
 <string id="20026">Region</string>
+
+<!-- string id's 20027 thru 20034 are reserved for temperaturestrings  (LocalizeStrings.cpp)-->
+
 <string id="20038">Uzamknout hudební sekci</string>
 <string id="20039">Uzamknout video sekci</string>
 <string id="20040">Uzamknout sekci s obrázky</string>
@@ -1438,7 +1533,7 @@
 <string id="20097">Probíhá načítání informací o albu</string>
 <string id="20098">Probíhá ukládání informací o albu</string>
 <string id="20099">CD nebo jeho stopu nelze uložit pokud probíhá přehrávání</string>
-<string id="20100">Aktivovat uzamčení</string>
+<string id="20100">Aktivovat uzamčení</string> 
 <string id="20101">Vložením hlavního kódu aktivujete vždy hlavní mód</string>
 <string id="20102">nebo chcete zkopírovat výchozí hodnoty?</string>
 <string id="20103">Uložit změny v profilu?</string>
@@ -1453,7 +1548,7 @@
 <string id="20112">Poslední přihlášení: %s</string>
 <string id="20113">Nikdy nepřihlášen</string>
 <string id="20114">Profil %i / %i</string>
-<string id="20115">Uživatelské přihlášení / Zvolte profil</string>
+<string id="20115">Uživatelské přihlášení / Vyberte profil</string>
 <string id="20116">Použít uzamčení na obrazovce s přihlášením</string>
 <string id="20117">Neplatný kód uzamčení.</string>
 <string id="20118">Toto nastavení vyžaduje aby byl nastaveno hlavní uzamčení.</string>
@@ -1462,12 +1557,12 @@
 <string id="20121">Párty zahájena!</string>
 <string id="20122">Pravdivý</string>
 <string id="20123">Míchám nápoje</string>
-<string id="20124">Nalejvám sklenice</string>
+<string id="20124">Nalévám sklenice</string>
 <string id="20125">Přihlášen jako</string>
 <string id="20126">Odhlásit</string>
 <string id="20128">Přejít do domov. složky</string>
 <string id="20129">Weave</string>
-<string id="20130">Weave (obraceně)</string>
+<string id="20130">Weave (Inverzně)</string>
 <string id="20131">Blend</string>
 <string id="20132">Restartovat video</string>
 <string id="20133">Upravit síťové umístění</string>
@@ -1526,17 +1621,24 @@
 <string id="20186">Vyčkejte</string>
 <string id="20187">Zálohuji EEPROM</string>
 <string id="20188">Zálohuji BIOS</string>
-<string id="20189"></string>
-<string id="20190"></string>
-<string id="20191"></string>
-<string id="20192"></string>
-<string id="20193"></string>
-<string id="20194"></string>
-<string id="20195"></string>
-<string id="20196"></string>
-<string id="20197"></string>
-<string id="20198"></string>
-<string id="20199"></string>
+<string id="20189">Aktivovat automatické posouvání děje a recenze</string>
+<string id="20190">Vlastní</string>
+<string id="20191">Povolit logování debug informací</string>
+<string id="20192">Při skenování použít Stahovač pro získání informací o albu</string>
+<string id="20193">Při skenování použít Stahovač pro získání informací o interpretovi</string>
+<string id="20194">Výchozí Stahovač</string>
+<string id="20195">Změnit Stahovač</string>
+<string id="20196">Export Hudební knihovny</string>
+<string id="20197">Import Hudební knihovny</string>
+<string id="20198">Interpret nenalezen!</string>
+<string id="20199">Stažení informací o interpretovi se nezdařilo</string>
+
+<!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
+  
+<string id="20250">Párty zahájena! (videa)</string>
+<string id="20251">Míchám nápoje (videa)</string>
+<string id="20252">Nalévám sklenice (videas)</string>
+
 <string id="20300"></string>
 <string id="20301"></string>
 <string id="20302"></string>
@@ -1584,7 +1686,7 @@
 <string id="20343">TV Seriály</string>
 <string id="20344">Tato složka obsahuje</string>
 <string id="20345">Spustit automatické prohledání</string>
-<string id="20346">Prohledávat včetně podsložek</string>
+<string id="20346">Prohledávat včetně podsložek druhé a vyšší úrovně</string>
 <string id="20347">jako</string>
 <string id="20348">Režiséři</string>
 <string id="20349">V tomto umístění nebyl nalezen žádný video soubor!</string>
@@ -1596,22 +1698,22 @@
 <string id="20355">Probíhá načítání informací k epizodám ve složce</string>
 <string id="20356">Vyberte seriál:</string>
 <string id="20357">Zadejte název seriálu</string>
-<string id="20358">Sezóna %i</string>
+<string id="20358">Řada %i</string>
 <string id="20359">Epizoda</string>
-<string id="20360">Epizody</string>
+<string id="20360">Epizod(y)</string>
 <string id="20361">Probíhá načítání detailů k epizodě</string>
 <string id="20362">Odebrat epizodu z knihovny</string>
 <string id="20363">Odebrat seriál z knihovny</string>
 <string id="20364">Seriál</string>
 <string id="20365">Děj epizody</string>
-<string id="20366">* Všechny Sezóny</string>
+<string id="20366">* Všechny řady</string>
 <string id="20367">Skrýt shlédnuté</string>
 <string id="20368">Kód produkce</string>
 <string id="20369">Skrýt děj u neshlédnutých videí</string>
 <string id="20370">* nezobrazeno kvuli spoilerům *</string>
-<string id="20371">Přiřadit sezóně obrázek</string>
-<string id="20372">Obrázek sezóny</string>
-<string id="20373">Sezóna</string>
+<string id="20371">Přiřadit obrázek řadě</string>
+<string id="20372">Obrázek řady</string>
+<string id="20373">Řada</string>
 <string id="20374">Probíhá stahování informací k videu</string>
 <string id="20375">Odebrat obsah</string>
 <string id="20376">První vysílání:</string>
@@ -1620,18 +1722,45 @@
 <string id="20379">Složka obsahuje jediný seriál</string>
 <string id="20380">Nezahrnovat složku při skenování</string>
 <string id="20381">Specialní epizody</string>
-<string id="20382">Automaticky stahovat náhledy sezón</string>
+<string id="20382">Automaticky stahovat náhledy řad</string>
 <string id="20383">Složka obsahuje jediné video</string>
 <string id="20384">Přiřadit k seriálu</string>
 <string id="20385">Odebrat ze seriálu</string>
 <string id="20386">Naposled přidané filmy</string>
 <string id="20387">Naposled přidané epizody</string>
 <string id="20388">Studia</string>
+<string id="20389">Hudební videoklipy</string>
+<string id="20390">Naposled přidané hudební videoklipy</string>
+<string id="20391">Hudební videoklipy</string>
+<string id="20392">Odstranit hudební videoklip z knihovny</string>
+<string id="20393">Informace k hudebnímu videoklipu</string>
+<string id="20394">Probíhá načítání informací o hudebním videoklipu</string>
+<string id="20395">Smíšené</string>
+<string id="20396">Přejít k intepretovým albům</string>
+<string id="20397">Přejít k albu</string>
+<string id="20398">Přehrát skladbu</string>
+<string id="20399">Přejít k hudebním videoklipům alba</string>
+<string id="20400">Přejít k hudebním videoklipům interpreta</string>
+<string id="20401">Přehrát hudební videoklip</string>
+<string id="20402">Automaticky stahovat fotky herců</string>
+<string id="20403">Nastavení ikony herce</string>
+<string id="20404">Studio:</string>
+<string id="20405">Odstranit záložku epizody</string>
+<string id="20406">Nastavit záložku epizody</string>
+<string id="20407">Nastavení Stahovače</string>
+<string id="20408">Stahují se informace k hudebnímu videu</string>
+<string id="20409">Stahují se informace k seriálu</string>
+<string id="20410">Trailer</string>
+<string id="20411">Jednoduchý mód</string>
+<string id="20412">Použít jednoduchý mód u seriálů, které májí pouze jednu řadu</string>
+<string id="20413">Stáhnout FanArt</string>
+<string id="20414">Povolit Fanart v knihovně videí</string>
+<string id="20415">Probíhá vyhledávání nového obsahu</string>
 
 <!-- up to 21329 is reserved for the video db !! !-->
 
 <string id="21330">Zobrazovat skryté soubory a složky</string>
-
+  
 <string id="21331">TuxBox klient</string>
 <string id="21332">UPOZORNĚNÍ: Cílový TuxBox je v módu nahrávání!</string>
 <string id="21333">Streamování bude zastaveno!</string>
@@ -1640,7 +1769,7 @@
 <string id="21336">Probíhá připojení k: %s</string>
 <string id="21337">Zařízení TuxBox</string>
 <!-- up to 21355 is reserved for the TuxBox Client!! !-->
-
+  
 <string id="21356">UPnP Hudba</string>
 <string id="21357">UPnP Video</string>
 <string id="21358">UPnP Obrázky</string>
@@ -1650,10 +1779,11 @@
 <string id="21362">Spravovat UPnP sdílení videa</string>
 <string id="21363">Spravovat UPnP sdílení obrázků</string>
 <string id="21364">Upravit sdílení</string>
-<string id="21365">Odebrat sdílení</string>
+<string id="21365">Odebrat sdílení</string>  
 <string id="21366">Vlastní složka s titulky</string>
 <string id="21367">Video &amp; alternativní složka s titulky</string>
 
+<string id="21369">Povolit kurzor myši</string>  
 <string id="21370">Při přehrávání multimediálních souborů nevypínat zvuky navigace</string>
 <string id="21371">Náhled</string>
 <string id="21372">Vynucení regionu DVD přehrávače</string>
@@ -1717,6 +1847,7 @@
 <string id="21437">Nový Chytrý Seznam stop...</string>
 <string id="21438">%c</string>
 <string id="21439">Upravit pravidla Party módu</string>
+<string id="21440">Domovská složka</string>
 
 <string id="21800">Název souboru</string>
 <string id="21801">Cesta k souboru</string>
@@ -1776,9 +1907,35 @@
 <string id="21880">Referenční služba</string>
 <string id="21881">Aktivovat UPnP Renderer</string>
 <string id="21882">Při spuštění DVD se pokusit přeskočit přímo do hlavního menu DVD</string>
-
+<string id="21883">Zkopírované Hudební CD</string>
+<string id="21884">Stáhnout Info pro všechny Interprety</string>
+<string id="21885">Probíhá stahování informací k albu</string>
+<string id="21886">Probíhá stahování informací o Interpretovi</string>
+<string id="21887">Biografie</string>
+<string id="21888">Diskografie</string>
+<string id="21889">Probíhá vyhledávání informací o Interptreta</string>
+<string id="21890">Vyberte Interpreta</string>
+<string id="21891">Informace o interpretovi</string>
+<string id="21892">Hudební nástroje:</string>
+<string id="21893">Datum narození:</string>
+<string id="21894">Datum seskupení:</string>
+<string id="21895">Témata:</string>
+<string id="21896">Datum rozpuštění:</string>
+<string id="21897">Datum úmrtí:</string>
+<string id="21898">Aktivní v letech:</string>
+<string id="21899">Label:</string>
+<string id="21900">Datum narození/sekupení:</string>
 
 <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
+<string id="22000">Aktualizovat knihovnu po spuštění</string>
+<string id="22001">Aktualizovat knihovnu vždy na pozadí</string>
+<string id="22002">- DNS sufix</string>
+<string id="22003">Povolit EDL (soubor s časovými údaji určený k přeskakování úseků ve videu)</string>
+
 <string id="29999">Automaticky aplikovat filtr blikání pro hry</string>
+
+<!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
+<!-- strings 31000 thru 31999 reserved for skins -->
+
 </strings>

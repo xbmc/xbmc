@@ -23,9 +23,5 @@ int CASAPFileDirectory::GetTrackCount(const CStdString &strPath)
   loader.Load(strPath,m_tag);
   m_tag.SetDuration(0); // ignore duration or all songs get duration of track 1
 
-  // hack until i figure out why the dll isnt properly wrapped
-  if (!XFILE::CFile::Cache(strPath,"z:\\cachedasap.sap"))
-    return 0;
-
-  return m_dll.asapGetSongs("z:\\cachedasap.sap");
+  return m_dll.asapGetSongs(strPath.c_str());
 }

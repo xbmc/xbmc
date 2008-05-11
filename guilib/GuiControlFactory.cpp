@@ -659,6 +659,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   int focusPosition = 0;
   int scrollTime = 200;
   bool useControlCoords = false;
+  bool renderFocusedLast = false;
 
   CRect hitRect;
   CPoint camera;
@@ -965,6 +966,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetInt(pControlNode, "scrolltime", scrollTime);
 
   XMLUtils::GetBoolean(pControlNode, "usecontrolcoords", useControlCoords);
+  XMLUtils::GetBoolean(pControlNode, "renderfocusedlast", renderFocusedLast);
 
   // view type
   VIEW_TYPE viewType = VIEW_TYPE_NONE;
@@ -1027,11 +1029,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     control = new CGUIControlGroup(
       dwParentId, id, posX, posY, width, height);
     ((CGUIControlGroup *)control)->SetDefaultControl(defaultControl);
+    ((CGUIControlGroup *)control)->SetRenderFocusedLast(renderFocusedLast);
   }
   else if (strType == "grouplist")
   {
     control = new CGUIControlGroupList(
       dwParentId, id, posX, posY, width, height, buttonGap, pageControl, orientation, useControlCoords);
+    ((CGUIControlGroup *)control)->SetRenderFocusedLast(renderFocusedLast);
   }
   else if (strType == "label")
   {
