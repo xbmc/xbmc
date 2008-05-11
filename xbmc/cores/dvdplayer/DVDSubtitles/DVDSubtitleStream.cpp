@@ -152,7 +152,8 @@ __int64 CDVDSubtitleStream::Seek(__int64 offset, int whence)
       }
       case SEEK_SET:
       {
-        if ((offset - iPos) > m_iBufferSize)
+        if ((offset > iPos)
+        ||  (offset + m_iBufferSize + m_iBufferPos < iPos))
         {
           m_iBufferPos = 0;
           m_iBufferSize = 0;
@@ -161,8 +162,8 @@ __int64 CDVDSubtitleStream::Seek(__int64 offset, int whence)
         }
         else
         {
-          m_iBufferPos += (int)(offset - iPos);
-          m_iBufferSize -= (int)(offset - iPos);
+          m_iBufferPos  += (int)(offset - iPos) + m_iBufferSize;
+          m_iBufferSize -= (int)(offset - iPos) + m_iBufferSize;
           
           return offset;
         }
