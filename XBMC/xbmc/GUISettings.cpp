@@ -459,7 +459,7 @@ CGUISettings::CGUISettings(void)
   AddBool(1, "videolibrary.enabled", 418, true);
   AddSeparator(2, "videolibrary.sep1");
   AddBool(3, "videolibrary.hideplots", 20369, false);
-  AddBool(4, "videolibrary.seasonthumbs", 20382, false);
+  AddBool(4, "videolibrary.seasonthumbs", 20382, true);
   AddBool(5, "videolibrary.actorthumbs", 20402, false);
   AddBool(6, "videolibrary.singleseason", 20412, true);
   AddSeparator(7, "videolibrary.sep1");

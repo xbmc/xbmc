@@ -49,6 +49,8 @@
 #include "LabelFormatter.h"
 
 #include "GUILabelControl.h"  // for CInfoLabel
+#include "GUIWindowVideoInfo.h"
+#include "GUIWindowMusicInfo.h"
 
 using namespace std;
 using namespace XFILE;
@@ -560,16 +562,19 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       if (offset || id)
         return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id, offset));
     }
+    else if (info.Left(16).Equals("listitemposition"))
+    {
+      int offset = atoi(info.Mid(17, info.GetLength() - 18));
+      ret = TranslateListItem(info.Mid(info.Find(".")+1));
+      if (offset || id)
+        return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id, offset, INFOFLAG_LISTITEM_POSITION));
+    }
     else if (info.Left(8).Equals("listitem"))
     {
       int offset = atoi(info.Mid(9, info.GetLength() - 10));
       ret = TranslateListItem(info.Mid(info.Find(".")+1));
       if (offset || id)
-      {
-        GUIInfo info(bNegate ? -ret : ret, id, offset);
-        info.SetInfoFlag(INFOFLAG_LISTITEM_WRAP);
-        return AddMultiInfo(info);
-      }
+        return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id, offset, INFOFLAG_LISTITEM_WRAP));
     }
     else if (info.Equals("folderthumb")) ret = CONTAINER_FOLDERTHUMB;
     else if (info.Equals("tvshowthumb")) ret = CONTAINER_TVSHOWTHUMB;
@@ -588,7 +593,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_ROW : CONTAINER_ROW, id, atoi(info.Mid(4, info.GetLength() - 5))));
     else if (info.Left(7).Equals("column("))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_COLUMN : CONTAINER_COLUMN, id, atoi(info.Mid(7, info.GetLength() - 8))));
-    else if (info.Left(9).Equals("position("))
+    else if (info.Left(8).Equals("position"))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_POSITION : CONTAINER_POSITION, id, atoi(info.Mid(9, info.GetLength() - 10))));
     else if (info.Left(8).Equals("subitem("))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SUBITEM : CONTAINER_SUBITEM, id, atoi(info.Mid(8, info.GetLength() - 9))));
@@ -620,11 +625,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     int offset = atoi(strCategory.Mid(9, strCategory.GetLength() - 10));
     ret = TranslateListItem(strTest.Mid(strCategory.GetLength() + 1));
     if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING)
-    {
-        GUIInfo info(bNegate ? -ret : ret, 0, offset);
-        info.SetInfoFlag(INFOFLAG_LISTITEM_WRAP);
-        return AddMultiInfo(info);
-    }
+      return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, 0, offset, INFOFLAG_LISTITEM_WRAP));
+  }
+  else if (strCategory.Left(16).Equals("listitemposition"))
+  {
+    int offset = atoi(strCategory.Mid(17, strCategory.GetLength() - 18));
+    ret = TranslateListItem(strCategory.Mid(strCategory.GetLength()+1));
+    if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING)
+      return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, 0, offset, INFOFLAG_LISTITEM_POSITION));
   }
   else if (strCategory.Left(14).Equals("listitemnowrap"))
   {
@@ -775,6 +783,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("genre")) return LISTITEM_GENRE;
   else if (info.Equals("director")) return LISTITEM_DIRECTOR;
   else if (info.Equals("filename")) return LISTITEM_FILENAME;
+  else if (info.Equals("filenameandpath")) return LISTITEM_FILENAME_AND_PATH;
   else if (info.Equals("date")) return LISTITEM_DATE;
   else if (info.Equals("size")) return LISTITEM_SIZE;
   else if (info.Equals("rating")) return LISTITEM_RATING;
@@ -1969,15 +1978,32 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
     case SYSTEM_HAS_CORE_ID:
       bReturn = g_cpuInfo.HasCoreId(info.GetData1());
       break;
-    case CONTAINER_CONTENT:
-      bReturn = m_stringParameters[info.GetData1()].Equals(m_content);
-      break;
     case CONTAINER_ON_NEXT:
     case CONTAINER_ON_PREVIOUS:
       {
         map<int,int>::const_iterator it = m_containerMoves.find(info.GetData1());
         if (it != m_containerMoves.end())
           bReturn = condition == CONTAINER_ON_NEXT ? it->second > 0 : it->second < 0;
+      }
+      break;
+    case CONTAINER_CONTENT:
+      {
+        CStdString content;
+        CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+        if (window)
+          content = ((CGUIMediaWindow *)window)->CurrentDirectory().GetContent();
+        else
+        {
+          window = GetWindowWithCondition(dwContextWindow, 0);
+          if (window)
+          {
+            if (window->GetID() == WINDOW_MUSIC_INFO)
+              content = ((CGUIWindowMusicInfo *)window)->CurrentDirectory().GetContent();
+            else if (window->GetID() == WINDOW_VIDEO_INFO)
+              content = ((CGUIWindowVideoInfo *)window)->CurrentDirectory().GetContent();
+          }
+        }
+        bReturn = m_stringParameters[info.GetData1()].Equals(content);
       }
       break;
     case CONTAINER_ROW:
@@ -2116,9 +2142,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
     CFileItem *item = NULL;
     CGUIWindow *window = NULL;
 
-    bool wrap = info.IsInfoFlagSet(INFOFLAG_LISTITEM_WRAP);
     int data1 = info.GetData1();
-
     if (!data1) // No container specified, so we lookup the current view container
     {
       window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
@@ -2133,9 +2157,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
     {
       const CGUIControl *control = window->GetControl(data1);
       if (control && control->IsContainer())
-      {
-        item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.GetData2(), wrap);
-      }
+        item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.GetData2(), info.GetInfoFlag());
     }
 
     if (item) // If we got a valid item, do the lookup
@@ -2181,7 +2203,8 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
   {
     return GetTime((TIME_FORMAT)info.GetData1());
   }
-  else if (info.m_info == CONTAINER_NUM_PAGES || info.m_info == CONTAINER_CURRENT_PAGE || info.m_info == CONTAINER_NUM_ITEMS)
+  else if (info.m_info == CONTAINER_NUM_PAGES || info.m_info == CONTAINER_CURRENT_PAGE ||
+           info.m_info == CONTAINER_NUM_ITEMS || info.m_info == CONTAINER_POSITION)
   {
     const CGUIControl *control = NULL;
     if (info.GetData1())
@@ -3364,6 +3387,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strGenre);
     break;
   case LISTITEM_FILENAME:
+    if (item->IsMusicDb() && item->HasMusicInfoTag())
+      return CUtil::GetFileName(CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetURL()));
+    if (item->IsVideoDb() && item->HasVideoInfoTag())
+      return CUtil::GetFileName(CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath));
     return CUtil::GetFileName(item->m_strPath);
   case LISTITEM_DATE:
     if (item->m_dateTime.IsValid())
@@ -3479,6 +3506,21 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
   case LISTITEM_THUMB:
     return item->GetThumbnailImage();
   case LISTITEM_PATH:
+    {
+      CStdString path;
+      if (item->IsMusicDb() && item->HasMusicInfoTag())
+        CUtil::GetDirectory(CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetURL()), path);
+      else if (item->IsVideoDb() && item->HasVideoInfoTag())
+        CUtil::GetDirectory(CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath), path);
+      else
+        CUtil::GetDirectory(item->m_strPath, path);
+      return path;
+    }
+  case LISTITEM_FILENAME_AND_PATH:
+    if (item->IsMusicDb() && item->HasMusicInfoTag())
+      return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetURL());
+    if (item->IsVideoDb() && item->HasVideoInfoTag())
+      return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath);
     return item->m_strPath;
   case LISTITEM_PICTURE_PATH:
     if (item->IsPicture() && (!item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
@@ -3571,7 +3613,14 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
   else if (condition == LISTITEM_ISPLAYING)
   {
     if (item->IsFileItem() && !m_currentFile->m_strPath.IsEmpty())
+    {
+      if (!g_application.m_strPlayListFile.IsEmpty())
+      { 
+        //playlist file that is currently playing or the playlistitem that is currently playing.
+        return g_application.m_strPlayListFile.Equals(((const CFileItem *)item)->m_strPath) || m_currentFile->IsSamePath((const CFileItem *)item);
+      }
       return m_currentFile->IsSamePath((const CFileItem *)item);
+    }
   }
   else if (condition == LISTITEM_ISSELECTED)
     return item->IsSelected();
@@ -3785,9 +3834,11 @@ void GUIInfo::SetInfoFlag(uint32_t flag)
   m_data1 |= flag;
 }
 
-bool GUIInfo::IsInfoFlagSet(uint32_t flag) const
+uint32_t GUIInfo::GetInfoFlag() const
 {
-  return (m_data1 & flag) != 0;
+  // we strip out the bottom 24 bits, where we keep data
+  // and return the flag only
+  return m_data1 & 0xff000000;
 }
 
 uint32_t GUIInfo::GetData1() const

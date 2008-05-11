@@ -750,21 +750,21 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(dbiplus::Dataset* pDS)
 CArtist CMusicDatabase::GetArtistFromDataset(dbiplus::Dataset* pDS, bool needThumb)
 {
   CArtist artist;
-  artist.idArtist = pDS->fv("artistinfo.idArtist").get_asLong();
+  artist.idArtist = pDS->fv(artist_idArtist).get_asLong();
   artist.strArtist = pDS->fv("artist.strArtist").get_asString();
-  artist.strGenre = pDS->fv("artistinfo.strGenres").get_asString();
-  artist.strBiography = pDS->fv("albuminfo.strBiography").get_asString();
-  artist.strStyles = pDS->fv("albuminfo.strStyles").get_asString();
-  artist.strMoods = pDS->fv("albuminfo.strMoods").get_asString();
-  artist.strBorn = pDS->fv("albuminfo.strBorn").get_asString();
-  artist.strFormed = pDS->fv("albuminfo.strFormed").get_asString();
-  artist.strDied = pDS->fv("albuminfo.strDied").get_asString();
-  artist.strDisbanded = pDS->fv("albuminfo.strDisbanded").get_asString();
-  artist.strYearsActive = pDS->fv("albuminfo.strYearsActive").get_asString();
-  artist.strInstruments = pDS->fv("albuminfo.strInstruments").get_asString();
+  artist.strGenre = pDS->fv(artist_strGenres).get_asString();
+  artist.strBiography = pDS->fv(artist_strBiography).get_asString();
+  artist.strStyles = pDS->fv(artist_strStyles).get_asString();
+  artist.strMoods = pDS->fv(artist_strMoods).get_asString();
+  artist.strBorn = pDS->fv(artist_strBorn).get_asString();
+  artist.strFormed = pDS->fv(artist_strFormed).get_asString();
+  artist.strDied = pDS->fv(artist_strDied).get_asString();
+  artist.strDisbanded = pDS->fv(artist_strDisbanded).get_asString();
+  artist.strYearsActive = pDS->fv(artist_strYearsActive).get_asString();
+  artist.strInstruments = pDS->fv(artist_strInstruments).get_asString();
 
   if (needThumb)
-    artist.thumbURL.ParseString(pDS->fv("artistinfo.strImage").get_asString());
+    artist.thumbURL.ParseString(pDS->fv(artist_strImage).get_asString());
 
   return artist;
 }

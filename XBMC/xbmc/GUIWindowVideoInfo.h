@@ -20,6 +20,7 @@ public:
 
   const CStdString &GetThumbnail() const;
   virtual CFileItem* GetCurrentListItem(int offset = 0) { return m_movieItem; }
+  const CFileItemList& CurrentDirectory() const { return *m_castList; };
   virtual bool HasListItems() const { return true; };
 protected:
   virtual void OnInitWindow();

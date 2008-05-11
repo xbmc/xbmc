@@ -118,11 +118,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
         Reset();
         CFileItemList *items = (CFileItemList *)message.GetLPVOID();
         for (int i = 0; i < items->Size(); i++)
-        {
-          CFileItem *item = items->Get(i);
-          item->FreeMemory(); // make sure the memory is free
-          m_items.push_back(item);
-        }
+          m_items.push_back(items->Get(i));
         UpdateLayout();
         SelectItem(message.GetParam1());
         return true;
@@ -253,25 +249,26 @@ int CGUIBaseContainer::GetSelectedItem() const
   return CorrectOffset(m_offset, m_cursor);
 }
 
-CGUIListItem *CGUIBaseContainer::GetListItem(int offset, bool wrap) const
+CGUIListItem *CGUIBaseContainer::GetListItem(int offset, unsigned int flag) const
 {
   if (!m_items.size())
     return NULL;
-  int item;
-  if (wrap)
+  int item = GetSelectedItem() + offset;
+  if (flag & INFOFLAG_LISTITEM_POSITION) // use offset from the first item displayed, taking into account scrolling
+    item = CorrectOffset((int)(m_scrollOffset / m_layout->Size(m_orientation)), offset);
+
+  if (flag & INFOFLAG_LISTITEM_WRAP)
   {
-    item = (GetSelectedItem() + offset) % ((int)m_items.size());
+    item %= ((int)m_items.size());
     if (item < 0) item += m_items.size();
+    return m_items[item];
   }
   else
   {
-    item = GetSelectedItem() + offset;
-    if (item >= (int)m_items.size())
-      return NULL;
-    if (item < 0)
-      return NULL;
+    if (item >= 0 && item < (int)m_items.size())
+      return m_items[item];
   }
-  return m_items[item];
+  return NULL;
 }
 
 CGUIListItemLayout *CGUIBaseContainer::GetFocusedLayout() const
@@ -449,6 +446,10 @@ void CGUIBaseContainer::FreeResources()
 
 void CGUIBaseContainer::UpdateLayout()
 {
+  // free memory of items
+  for (iItems it = m_items.begin(); it != m_items.end(); it++)
+    (*it)->FreeMemory();
+  // and recalculate the layout
   CalculateLayout();
   if (m_pageControl)
   {
@@ -460,6 +461,16 @@ void CGUIBaseContainer::UpdateLayout()
 void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
 {
   CGUIControl::UpdateVisibility(item);
+  // check whether we need to update our layouts
+  if ((m_layout && m_layout->GetCondition() && !g_infoManager.GetBool(m_layout->GetCondition(), GetParentID())) ||
+      (m_focusedLayout && m_focusedLayout->GetCondition() && !g_infoManager.GetBool(m_focusedLayout->GetCondition(), GetParentID()))) 
+  {
+    // and do it
+    int item = GetSelectedItem();
+    UpdateLayout();
+    SelectItem(item);
+  }
+
   if (m_staticContent)
   { // update our item list with our new content, but only add those items that should
     // be visible.  Save the previous item and keep it if we are adding that one.
@@ -756,6 +767,9 @@ CStdString CGUIBaseContainer::GetLabel(int info) const
     break;
   case CONTAINER_CURRENT_PAGE:
     label.Format("%u", GetCurrentPage());
+    break;
+  case CONTAINER_POSITION:
+    label.Format("%i", m_cursor);
     break;
   case CONTAINER_NUM_ITEMS:
     {

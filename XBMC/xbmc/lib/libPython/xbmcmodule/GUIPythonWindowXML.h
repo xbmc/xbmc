@@ -30,12 +30,13 @@ public:
   virtual bool      IsMediaWindow() const { return true; };
   virtual bool      HasListItems() const { return true; };
   virtual CFileItem *GetCurrentListItem(int offset = 0);
+  const CFileItemList& CurrentDirectory() const;
   int               GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
 
 protected:
   CGUIControl      *GetFirstFocusableControl(int id);
   virtual void     UpdateButtons();
-  virtual void     OnSort();
+  virtual void     FormatAndSort(CFileItemList &items);
   virtual void     Update();
   virtual void     OnWindowLoaded();
   virtual void     OnInitWindow();
