@@ -118,6 +118,17 @@ rem	CONFIG START
   Echo Desktop.ini>>exclude.txt
   Echo dsstdfx.bin>>exclude.txt
   Echo exclude.txt>>exclude.txt
+  rem and exclude potential leftovers
+  Echo mediasources.xml>>exclude.txt
+  Echo cache>>exclude.txt
+  Echo database>>exclude.txt
+  Echo playlists>>exclude.txt
+  Echo script_data>>exclude.txt
+  Echo thumbnails>>exclude.txt
+  Echo advancedsettings.xml>>exclude.txt
+  Echo guisettings.xml>>exclude.txt
+  Echo profiles.xml>>exclude.txt
+  Echo sources.xml>>exclude.txt
 
   xcopy %EXE% BUILD_WIN32\Xbmc > NUL
   xcopy ..\..\UserData BUILD_WIN32\Xbmc\UserData /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
