@@ -593,6 +593,132 @@ extern "C" HPALETTE WINAPI dllCreatePalette(CONST LOGPALETTE *lpgpl)
 
 }
 
+extern "C" int WINAPI dllStretchDIBits(HDC hdc, int XDest, int YDest, int nDestWidth, int nDestHeight, int XSrc,
+                                        int YSrc, int nSrcWidth, int nSrcHeight, CONST VOID *lpBits, 
+                                        CONST BITMAPINFO *lpBitsInfo, UINT iUsage, DWORD dwRop)
+{
+#ifdef _WIN32PC
+  return StretchDIBits(hdc, XDest, YDest, nDestWidth, nDestHeight, XSrc, YSrc, nSrcWidth, nSrcHeight, lpBits, 
+                       lpBitsInfo, iUsage, dwRop);
+#else
+  not_implement("GDI32.dll fake function StretchDIBits called\n"); //warning
+  return NULL;
+#endif
+}
+
+extern "C" BOOL WINAPI dllRectVisible(HDC hdc, const RECT* lpRect)
+{
+#ifdef _WIN32PC
+  return RectVisible(hdc, lpRect);
+#else
+  not_implement("GDI32.dll fake function RectVisible called\n"); //warning
+  return NULL;
+#endif
+}
+
+extern "C" int WINAPI dllSaveDC(HDC hdc)
+{
+#ifdef _WIN32PC
+  return SaveDC(hdc);
+#else
+  not_implement("GDI32.dll fake function SaveDC called\n"); //warning
+  return NULL;
+#endif
+}
+
+extern "C" int WINAPI dllGetClipBox(HDC hdc, LPRECT lpRect)
+{
+#ifdef _WIN32PC
+  return GetClipBox(hdc, lpRect);
+#else
+  not_implement("GDI32.dll fake function GetClipBox called\n"); //warning
+  return NULL;
+#endif
+}
+
+extern "C" HRGN WINAPI dllCreateRectRgnIndirect(LPRECT lpRect)
+{
+#ifdef _WIN32PC
+  return CreateRectRgnIndirect(lpRect);
+#else
+  not_implement("GDI32.dll fake function CreateRectRgnIndirect called\n"); //warning
+  return NULL;
+#endif
+}
+
+extern "C" int WINAPI dllExtSelectClipRgn(HDC hdc, HRGN hrgn, int fnMode)
+{
+#ifdef _WIN32PC
+  return ExtSelectClipRgn(hdc, hrgn, fnMode);
+#else
+  not_implement("GDI32.dll fake function ExtSelectClipRgn called\n"); //warning
+  return NULL;
+#endif
+}
+
+extern "C" int WINAPI dllSetStretchBltMode(HDC hdc, int nStretchMode)
+{
+#ifdef _WIN32PC
+  return SetStretchBltMode(hdc, nStretchMode);
+#else
+  not_implement("GDI32.dll fake function SetStretchBltMode called\n"); //warning
+  return NULL;
+#endif
+}
+
+extern "C" int WINAPI dllSetDIBitsToDevice( HDC hdc,                 // handle to DC
+                                            int XDest,               // x-coord of destination upper-left corner
+                                            int YDest,               // y-coord of destination upper-left corner 
+                                            DWORD dwWidth,           // source rectangle width
+                                            DWORD dwHeight,          // source rectangle height
+                                            int XSrc,                // x-coord of source lower-left corner
+                                            int YSrc,                // y-coord of source lower-left corner
+                                            UINT uStartScan,         // first scan line in array
+                                            UINT cScanLines,         // number of scan lines
+                                            CONST VOID *lpvBits,     // array of DIB bits
+                                            CONST BITMAPINFO *lpbmi, // bitmap information
+                                            UINT fuColorUse          // RGB or palette indexes
+                                          )
+{
+#ifdef _WIN32PC
+  return SetDIBitsToDevice(hdc, XDest, YDest, dwWidth, dwHeight, XSrc, YSrc, uStartScan, cScanLines, lpvBits, lpbmi, fuColorUse);
+#else
+  not_implement("GDI32.dll fake function SetDIBitsToDevice called\n"); //warning
+  return NULL;
+#endif
+}
+
+extern "C" BOOL WINAPI dllRestoreDC(HDC hdc, int nSavedDC)
+{
+#ifdef _WIN32PC
+  return RestoreDC(hdc, nSavedDC);
+#else
+  not_implement("GDI32.dll fake function RestoreDC called\n"); //warning
+  return NULL;
+#endif
+}
+
+extern "C" int WINAPI dllGetObjectA(HGDIOBJ hgdiobj, int cbBuffer, LPVOID lpvObject)
+{
+#ifdef _WIN32PC
+  return GetObjectA(hgdiobj, cbBuffer, lpvObject);
+#else
+  not_implement("GDI32.dll fake function GetObjectA called\n"); //warning
+  return NULL;
+#endif
+}
+
+extern "C" int WINAPI dllCombineRgn(HRGN hrgnDest, HRGN hrgnSrc1, HRGN hrgnSrc2, int fnCombineMode)
+{
+#ifdef _WIN32PC
+  return CombineRgn(hrgnDest, hrgnSrc1, hrgnSrc2, fnCombineMode);
+#else
+  not_implement("GDI32.dll fake function CombineRgn called\n"); //warning
+  return NULL;
+#endif
+}
+
+
 extern "C" int WINAPI dllGetSystemMetrics(int nIndex)
 {
 #define SM_CXSCREEN  0
