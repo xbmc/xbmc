@@ -13,6 +13,7 @@
 #include "DVDPerformanceCounter.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/Overlay/DVDOverlayCodecCC.h"
+#include "DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include <sstream>
 #include <iomanip>
 
@@ -604,9 +605,9 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     if(pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime >= pts2 || pOverlay->iPTSStopTime == 0LL) || pts == 0)
     {
       if (bHasSpecialOverlay && m_pTempOverlayPicture) 
-        CDVDOverlayRenderer::Render(m_pTempOverlayPicture, pOverlay);
+        CDVDOverlayRenderer::Render(m_pTempOverlayPicture, pOverlay, pts);
       else 
-        CDVDOverlayRenderer::Render(pDest, pOverlay);
+        CDVDOverlayRenderer::Render(pDest, pOverlay, pts);
     }
   }
   
