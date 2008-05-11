@@ -3556,12 +3556,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxShoutcast.h">
 					</File>
 					<File
-						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxText.cpp">
-					</File>
-					<File
-						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxText.h">
-					</File>
-					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxUtils.cpp">
 					</File>
 					<File
