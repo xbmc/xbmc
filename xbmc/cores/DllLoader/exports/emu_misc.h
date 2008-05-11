@@ -199,6 +199,31 @@ extern "C" BOOL WINAPI dllDeleteDC(HDC hdc);
 extern "C" int WINAPI dllSetBkMode(HDC hdc, int iBkMode);
 extern "C" COLORREF WINAPI dllGetPixel(HDC hdc, int nXPos, int nYPos);
 extern "C" BOOL WINAPI dllDeleteObject(HGDIOBJ hObject);
+extern "C" int WINAPI dllStretchDIBits(HDC hdc, int XDest, int YDest, int nDestWidth, int nDestHeight, int XSrc,
+                                        int YSrc, int nSrcWidth, int nSrcHeight, CONST VOID *lpBits, 
+                                        CONST BITMAPINFO *lpBitsInfo, UINT iUsage, DWORD dwRop);
+extern "C" BOOL WINAPI dllRectVisible(HDC hdc, const RECT* lpRect);
+extern "C" int WINAPI dllSaveDC(HDC hdc);
+extern "C" int WINAPI dllGetClipBox(HDC hdc, LPRECT lpRect);
+extern "C" HRGN WINAPI dllCreateRectRgnIndirect(LPRECT lpRect);
+extern "C" int WINAPI dllExtSelectClipRgn(HDC hdc, HRGN hrgn, int fnMode);
+extern "C" int WINAPI dllSetStretchBltMode(HDC hdc, int nStretchMode);
+extern "C" int WINAPI dllSetDIBitsToDevice( HDC hdc,                 // handle to DC
+                                            int XDest,               // x-coord of destination upper-left corner
+                                            int YDest,               // y-coord of destination upper-left corner 
+                                            DWORD dwWidth,           // source rectangle width
+                                            DWORD dwHeight,          // source rectangle height
+                                            int XSrc,                // x-coord of source lower-left corner
+                                            int YSrc,                // y-coord of source lower-left corner
+                                            UINT uStartScan,         // first scan line in array
+                                            UINT cScanLines,         // number of scan lines
+                                            CONST VOID *lpvBits,     // array of DIB bits
+                                            CONST BITMAPINFO *lpbmi, // bitmap information
+                                            UINT fuColorUse          // RGB or palette indexes
+                                          );
+extern "C" BOOL WINAPI dllRestoreDC(HDC hdc, int nSavedDC);
+extern "C" int WINAPI dllGetObjectA(HGDIOBJ hgdiobj, int cbBuffer, LPVOID lpvObject);
+extern "C" int WINAPI dllCombineRgn(HRGN hrgnDest, HRGN hrgnSrc1, HRGN hrgnSrc2, int fnCombineMode);
 
 ////////////////////////////////////////////////
 //ddraw.dll
