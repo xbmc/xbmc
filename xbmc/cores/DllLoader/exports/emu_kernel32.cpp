@@ -1204,6 +1204,7 @@ extern "C" LPVOID WINAPI dllLockResource(HGLOBAL hResData)
   return LockResource(hResData);
 #else
   not_implement("kernel32.dll fake function LockResource called\n"); //warning
+  return 0;
 #endif
 }
 
@@ -1213,6 +1214,7 @@ extern "C" SIZE_T WINAPI dllGlobalSize(HGLOBAL hMem)
   return GlobalSize(hMem);
 #else
   not_implement("kernel32.dll fake function GlobalSize called\n"); //warning
+  return 0;
 #endif
 }
 
@@ -1222,5 +1224,6 @@ extern "C" DWORD WINAPI dllSizeofResource(HMODULE hModule, HRSRC hResInfo)
   return SizeofResource(hModule, hResInfo);
 #else
   not_implement("kernel32.dll fake function SizeofResource called\n"); //warning
+  return 0;
 #endif
 }
