@@ -558,7 +558,7 @@ extern "C" HMODULE WINAPI dllRtlUnwind(PVOID TargetFrame OPTIONAL, PVOID TargetI
 extern "C" LPTSTR WINAPI dllGetCommandLineA();
 extern "C" HMODULE WINAPI dllExitProcess(UINT uExitCode);
 extern "C" HMODULE WINAPI dllTerminateProcess(HANDLE hProcess, UINT uExitCode);
-extern "C" HMODULE WINAPI dllGetCurrentProcess();
+extern "C" HANDLE WINAPI dllGetCurrentProcess();
 extern "C" UINT WINAPI dllGetACP();
 extern "C" UINT WINAPI dllSetHandleCount(UINT uNumber);
 extern "C" HANDLE WINAPI dllGetStdHandle(DWORD nStdHandle);
