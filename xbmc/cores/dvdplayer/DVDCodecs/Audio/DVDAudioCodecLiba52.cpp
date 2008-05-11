@@ -118,7 +118,7 @@ void CDVDAudioCodecLiba52::SetupChannels()
     }
   }
   
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(_WIN32PC)
   // If we're not passing through, go to 2-channel mixdown.
   if (g_audioContext.IsPassthroughActive() == false)
     m_iOutputMapping = 0x21;
@@ -219,7 +219,7 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
       float fLevel = 1.0f;      
       int iFlags = m_iSourceFlags;
       
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(_WIN32PC)
       // If we're not passing through, go to 2-channel mixdown.
       if (g_audioContext.IsPassthroughActive() == false)
         iFlags = A52_STEREO;
