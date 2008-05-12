@@ -44,9 +44,9 @@ namespace PYXBMC
     return (PyObject*)self;
   }
 
-  void PlayListItem_Dealloc(PlayList* self)
+  void PlayListItem_Dealloc(PlayListItem* self)
   {
-    if (self->pPlayList) delete self->pPlayList;
+    if (self->item) delete self->item;
     self->ob_type->tp_free((PyObject*)self);
   }
 
@@ -144,8 +144,6 @@ namespace PYXBMC
     else
     {
       CPlayListItem Item;
-      CFileItem item(strUrl, false);
-
       Item.SetFileName(strUrl);
         
       CStdString strDescription;
