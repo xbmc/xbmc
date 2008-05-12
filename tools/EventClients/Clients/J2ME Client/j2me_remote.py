@@ -44,12 +44,12 @@ def send_key(key):
     packet.send(sock, addr)
 
 def send_message(caption, msg):
-	  packet = PacketNOTIFICATION(caption,
+    packet = PacketNOTIFICATION(caption,
                                 msg,
                                 ICON_PNG,
                                 icon_file=ICON_PATH + "/phone.png")
 
-	  packet.send(sock, addr)
+    packet.send(sock, addr)
 
 def send_ImageToBluetooth(Image):
     imageData = file( Image ).read()
