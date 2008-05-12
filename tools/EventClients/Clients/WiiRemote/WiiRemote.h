@@ -51,12 +51,16 @@
 #include <bluetooth/hci.h>
 #include <bluetooth/hci_lib.h>
 // UDP Client
+#ifdef DEB_PACK
+#include <xbmc/xbmcclient.h>
+#else
 #include "../../lib/c++/xbmcclient.h"
-
+#endif
 /*#include <stdio.h>*/
 #include <stdlib.h>
 #include <time.h>
 #include <sys/time.h>
+#include <string>
 
 class CWiiRemote
 {
