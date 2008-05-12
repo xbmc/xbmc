@@ -41,10 +41,10 @@ void CRemoteControl::Initialize()
     shutdown(m_fd, SHUT_RDWR); //Not certain this is needed, topfs2
 
   struct sockaddr_un addr;
-  
+
   addr.sun_family = AF_UNIX;
   strcpy(addr.sun_path, LIRC_DEVICE);
- 
+
   // Open the socket from which we will receive the remote commands 
   m_fd = socket(AF_UNIX, SOCK_STREAM,0);
   if (m_fd == -1)  
@@ -52,14 +52,14 @@ void CRemoteControl::Initialize()
     CLog::Log(LOGERROR, "LIRC %s: socket failed: %s", __FUNCTION__, strerror(errno));
     return;
   }
-  
+
   // Connect to the socket
   if (connect(m_fd, (struct sockaddr *)&addr, sizeof(addr)) == -1)  
   {
     CLog::Log(LOGERROR, "LIRC %s: connect failed: %s", __FUNCTION__, strerror(errno));
     return;
   }
-  
+
   // Set the socket to non-blocking
   int opts = fcntl(m_fd,F_GETFL);
   if (opts == -1) 
@@ -67,14 +67,14 @@ void CRemoteControl::Initialize()
     CLog::Log(LOGERROR, "LIRC %s: fcntl(F_GETFL) failed: %s", __FUNCTION__, strerror(errno));
     return;
   }
-	
+
   opts = (opts | O_NONBLOCK);
   if (fcntl(m_fd,F_SETFL,opts) == -1) 
   {
     CLog::Log(LOGERROR, "LIRC %s: fcntl(F_SETFL) failed: %s", __FUNCTION__, strerror(errno));
     return;
   }
-	  
+
   m_file = fdopen(m_fd, "r");
   if (m_file == NULL)
   {
