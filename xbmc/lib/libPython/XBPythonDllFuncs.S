@@ -1,8 +1,15 @@
+#ifndef __APPLE__
 #define FUNCTION(name)			\
 	.globl name;			\
 	.type name, @function;		\
 	name:				\
 		jmp *(p_##name)
+#else
+#define FUNCTION(name)			\
+	.globl _##name;			\
+	_##name:				\
+		jmp *(_p_##name)
+#endif
 
 .text
 
@@ -41,7 +48,7 @@
   FUNCTION(PyLong_AsLong)
   FUNCTION(PyLong_AsLongLong)
   FUNCTION(PyErr_Format)
-#ifndef _LINUX
+#if !defined(_LINUX) || defined(__APPLE__)
   FUNCTION(PyUnicodeUCS2_AsUnicode)
 #else
   FUNCTION(PyUnicodeUCS4_AsUnicode)
