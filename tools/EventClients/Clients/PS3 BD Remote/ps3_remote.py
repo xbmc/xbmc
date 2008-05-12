@@ -16,16 +16,23 @@
 #
 
 import sys
-sys.path.append("../../lib/python")
+try:
+    from xbmc.xbmcclient import *
+    from xbmc.ps3.keymaps import keymap_remote as g_keymap # look here to change the keymapping
+    from xbmc.bt.bt import *
+    from xbmc.xbmc.defs import *
+except:
+    sys.path.append("../../lib/python")
+    from xbmcclient import *
+    from ps3.keymaps import keymap_remote as g_keymap # look here to change the keymapping
+    from bt.bt import *
+    ICON_PATH = "../../icons/"
 
 import os
 import time
-from xbmcclient import *
-from ps3.keymaps import keymap_remote as g_keymap # look here to change the keymapping
-from bt.bt import *
 
 xbmc = None
-bticon = "../../icons/bluetooth.png"
+bticon = ICON_PATH + "/bluetooth.png"
 
 def get_remote_address(remote, target_name = "BD Remote Control"):
     global xbmc

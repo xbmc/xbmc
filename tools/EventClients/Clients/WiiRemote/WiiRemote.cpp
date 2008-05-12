@@ -30,7 +30,10 @@ bool g_AllowNunchuck  = true;
 
 CPacketHELO *g_Ping = NULL;
 
-char *g_BluetoothIconPath = "../../icons/bluetooth.png";
+#ifndef ICON_PATH
+#define ICON_PATH "../../"
+#endif
+std::string g_BluetoothIconPath = std::string(ICON_PATH) + std::string("/bluetooth.png");
 
 long getTicks()
 {
@@ -339,7 +342,7 @@ bool CWiiRemote::Connect()
       {
         char Mesg[1024];
         sprintf(Mesg, "%i%% battery remaining", static_cast<int>(((float)(wiiremote_state.battery)/CWIID_BATTERY_MAX)*100.0));
-        CPacketNOTIFICATION notification("Wii Remote connected", Mesg, ICON_PNG, g_BluetoothIconPath);
+        CPacketNOTIFICATION notification("Wii Remote connected", Mesg, ICON_PNG, g_BluetoothIconPath.c_str());
         notification.Send(m_Socket, m_MyAddr);
       }
       else
@@ -347,7 +350,7 @@ bool CWiiRemote::Connect()
         printf("Problem probing for status of WiiRemote; cwiid_get_state returned non-zero\n");
         CPacketLOG log(LOGNOTICE, "Problem probing for status of WiiRemote; cwiid_get_state returned non-zero");
         log.Send(m_Socket, m_MyAddr);
-        CPacketNOTIFICATION notification("Wii Remote connected", "", ICON_PNG, g_BluetoothIconPath);
+        CPacketNOTIFICATION notification("Wii Remote connected", "", ICON_PNG, g_BluetoothIconPath.c_str());
         notification.Send(m_Socket, m_MyAddr);
       }
 #ifdef CWIID_OLD
@@ -376,12 +379,12 @@ void CWiiRemote::DisconnectNow(bool startConnectThread)
 
     if (g_AllowReconnect)
     {
-      CPacketNOTIFICATION notification("Wii Remote disconnected", "Press 1 and 2 to reconnect", ICON_PNG, g_BluetoothIconPath);
+      CPacketNOTIFICATION notification("Wii Remote disconnected", "Press 1 and 2 to reconnect", ICON_PNG, g_BluetoothIconPath.c_str());
       notification.Send(m_Socket, m_MyAddr);
     }
     else
     {
-      CPacketNOTIFICATION notification("Wii Remote disconnected", "", ICON_PNG, g_BluetoothIconPath);
+      CPacketNOTIFICATION notification("Wii Remote disconnected", "", ICON_PNG, g_BluetoothIconPath.c_str());
       notification.Send(m_Socket, m_MyAddr);
     }
 
@@ -734,7 +737,7 @@ int main(int argc, char **argv)
     log.Send(sockfd, my_addr);
     return -1;
   }
-  g_Ping = new CPacketHELO("WiiRemote", ICON_PNG, g_BluetoothIconPath);
+  g_Ping = new CPacketHELO("WiiRemote", ICON_PNG, g_BluetoothIconPath.c_str());
   g_WiiRemote.Initialize(my_addr, sockfd);
   g_WiiRemote.SetBluetoothAddress(btaddr);
   g_WiiRemote.SetSensativity(DeadX, DeadY, NumSamples);
