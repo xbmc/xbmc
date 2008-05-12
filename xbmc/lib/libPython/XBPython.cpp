@@ -278,15 +278,15 @@ void XBPython::Initialize()
 #ifdef _LINUX
       // Required for python to find optimized code (pyo) files
       setenv("PYTHONOPTIMIZE", "1", 1);
+      //setenv("PYTHONDEBUG", "1", 1);
+      //setenv("PYTHONINSPECT", "1", 1);
+      //setenv("PYTHONVERBOSE", "1", 1);
+      setenv("PYTHONCASEOK", "1", 1);
 #endif
       
 #ifdef __APPLE__
       setenv("PYTHONHOME", _P("Q:\\system\\python"), 1);
 #endif
-      //setenv("PYTHONDEBUG", "1", 1);
-      //setenv("PYTHONINSPECT", "1", 1);
-      //setenv("PYTHONVERBOSE", "1", 1);
-      setenv("PYTHONCASEOK", "1", 1);
 
       Py_Initialize();
       PyEval_InitThreads();
