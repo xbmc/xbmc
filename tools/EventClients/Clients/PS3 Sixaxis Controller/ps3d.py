@@ -1,20 +1,28 @@
 #!/usr/bin/python
 
 import sys
-sys.path.append("../../lib/python")
 sys.path.append("../PS3 BD Remote")
-
+try:
+    from xbmc.bt.hid import HID
+    from xbmc.bt.bt import bt_lookup_name
+    from xbmc.xbmcclient import XBMCClient
+    from xbmc.ps3 import sixaxis
+    from xbmc.ps3.keymaps import keymap_sixaxis
+    from xbmc.ps3_remote import process_keys as process_remote
+    from xbmc.xbmc.defs import *
+except:
+    sys.path.append("../../lib/python")
+    from bt.hid import HID
+    from bt.bt import bt_lookup_name
+    from xbmcclient import XBMCClient
+    from ps3 import sixaxis
+    from ps3.keymaps import keymap_sixaxis
+    from ps3_remote import process_keys as process_remote
+    ICON_PATH = "../../icons/"
 
 import time
 import struct
 import threading
-
-from bt.hid import HID
-from bt.bt import bt_lookup_name
-from xbmcclient import XBMCClient
-from ps3 import sixaxis
-from ps3.keymaps import keymap_sixaxis
-from ps3_remote import process_keys as process_remote
 
 event_threads = []
 
@@ -66,7 +74,7 @@ class PS3SixaxisThread ( StoppableThread ):
         StoppableThread.__init__(self)
         self.csock = csock
         self.isock = isock
-        self.xbmc = XBMCClient("PS3 Sixaxis", "../../icons/bluetooth.png")
+        self.xbmc = XBMCClient("PS3 Sixaxis", ICON_PATH + "/bluetooth.png")
         self.set_timeout(300)
 
     def run(self):
@@ -124,7 +132,7 @@ class PS3RemoteThread ( StoppableThread ):
         StoppableThread.__init__(self)
         self.csock = csock
         self.isock = isock
-        self.xbmc = XBMCClient("PS3 Blu-Ray Remote", "../../icons/bluetooth.png")
+        self.xbmc = XBMCClient("PS3 Blu-Ray Remote", ICON_PATH + "/bluetooth.png")
         self.set_timeout(300)
 
     def run(self):
