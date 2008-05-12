@@ -6,24 +6,24 @@
 class CRemoteControl
 {
 public:
-   CRemoteControl();
-   ~CRemoteControl();
-   void Initialize();
-   void Reset();
-   void Update();
-   WORD GetButton();
-   bool IsHolding();
-   
+  CRemoteControl();
+  ~CRemoteControl();
+  void Initialize();
+  void Reset();
+  void Update();
+  WORD GetButton();
+  bool IsHolding();
+
 private:
-   int   m_fd;
-   FILE* m_file;
-   bool  m_isHolding;
-   WORD  m_button;
-   char  m_buf[128];
-   bool  m_bInitialized;
-   bool  m_Reinitialize;
-   bool  m_skipHold;
-   Uint32 m_firstClickTime;
+  int   m_fd;
+  FILE* m_file;
+  bool  m_isHolding;
+  WORD  m_button;
+  char  m_buf[128];
+  bool  m_bInitialized;
+  bool  m_Reinitialize;
+  bool  m_skipHold;
+  Uint32 m_firstClickTime;
 };
 
 extern CRemoteControl g_RemoteControl;
