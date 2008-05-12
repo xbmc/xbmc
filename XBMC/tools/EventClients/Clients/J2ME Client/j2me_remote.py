@@ -20,12 +20,19 @@
 #
 
 import sys
-sys.path.append('../../lib/python')
-from xbmcclient import *
+try:
+    from xbmc.xbmcclient import *
+    from xbmc.bt.bt import *
+    from xbmc.xbmc.defs import *
+except:
+    sys.path.append('../../lib/python')
+    from xbmcclient import *
+    from bt.bt import *
+    ICON_PATH = "../../icons/"
+
 from socket import *
 import os
 from threading import Thread
-from bt.bt import *
 
 host = "localhost"
 port = 9777
@@ -38,9 +45,10 @@ def send_key(key):
 
 def send_message(caption, msg):
 	  packet = PacketNOTIFICATION(caption,
-		                            msg,
-		                            ICON_PNG,
-		                            "../../icons/phone.png")
+                                msg,
+                                ICON_PNG,
+                                icon_file=ICON_PATH + "/phone.png")
+
 	  packet.send(sock, addr)
 
 def send_ImageToBluetooth(Image):
@@ -79,7 +87,7 @@ def main():
 
     packet = PacketHELO(devicename="J2ME Remote",
                         icon_type=ICON_PNG,
-                        icon_file="../../icons/phone.png")
+                        icon_file=ICON_PATH + "/phone.png")
     packet.send(sock, addr)
     Ping().start()
     while(True):
