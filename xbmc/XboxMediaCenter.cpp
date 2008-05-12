@@ -60,8 +60,11 @@ int main(int argc, char* argv[])
   
   // if we're on a Mac or if XBMC_PLATFORM_MODE is set, enable platform
   // specific directories.
-  if (getenv("XBMC_PLATFORM_MODE")
-      || (getenv("OSTYPE") && strcmp(getenv("OSTYPE"), "darwin9.0")==0))       
+#ifdef __APPLE__
+  if (1)
+#else
+  if (getenv("XBMC_PLATFORM_MODE"))
+#endif
   {
     g_application.EnablePlatformDirectories();
   }
