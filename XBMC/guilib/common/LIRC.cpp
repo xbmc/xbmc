@@ -7,6 +7,7 @@
 #include "ButtonTranslator.h"
 #include "log.h"
 #include "Settings.h"
+#include <errno.h>
 
 #define LIRC_DEVICE "/dev/lircd"
 
@@ -17,6 +18,7 @@ CRemoteControl::CRemoteControl()
   m_fd = -1;
   m_file = NULL;  
   m_bInitialized = false;
+  m_Reinitialize = false;
   m_skipHold = false;
   Reset();
 }
@@ -35,6 +37,9 @@ void CRemoteControl::Reset()
 
 void CRemoteControl::Initialize()
 {
+  if (m_Reinitialize)
+    shutdown(m_fd, SHUT_RDWR); //Not certain this is needed, topfs2
+
   struct sockaddr_un addr;
   
   addr.sun_family = AF_UNIX;
@@ -76,18 +81,22 @@ void CRemoteControl::Initialize()
     CLog::Log(LOGERROR, "LIRC %s: fdopen failed: %s", __FUNCTION__, strerror(errno));
     return;
   }
-  
+
+  m_Reinitialize = false;
   m_bInitialized = true;
 }
 
 void CRemoteControl::Update()
 {
+  if (m_Reinitialize)
+    Initialize();
   if (!m_bInitialized)
     return;
 
   Uint32 now = SDL_GetTicks(); 
 
   // Read a line from the socket
+  errno = 0;
   while (fgets(m_buf, sizeof(m_buf), m_file) != NULL)
   {
     // Remove the \n
@@ -121,6 +130,14 @@ void CRemoteControl::Update()
       m_button = 0;
     }
   }
+  if (errno == 0) //If we don't get any error we've lost connection to LIRC when doing a standby
+  {
+    CLog::Log(LOGDEBUG, "LIRC: Reinitializing");
+    fclose(m_file);
+    m_Reinitialize = true;
+    m_bInitialized = false;
+  }
+
   m_skipHold = false;
 }
 
