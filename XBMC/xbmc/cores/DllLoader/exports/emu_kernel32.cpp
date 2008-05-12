@@ -168,7 +168,7 @@ extern "C" HANDLE WINAPI dllGetCurrentThread(void)
 
 extern "C" DWORD WINAPI dllGetCurrentProcessId(void)
 {
-#ifdef _WIN32
+#ifndef _XBOX
   return GetCurrentProcessId();
 #else
 #ifdef API_DEBUG
@@ -407,7 +407,7 @@ extern "C" HMODULE WINAPI dllTerminateProcess(HANDLE hProcess, UINT uExitCode)
 }
 extern "C" HANDLE WINAPI dllGetCurrentProcess()
 {
-#ifdef _WIN32
+#ifndef _XBOX
   return GetCurrentProcess();
 #else
 #ifdef API_DEBUG
