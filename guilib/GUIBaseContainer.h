@@ -83,7 +83,7 @@ protected:
   virtual void MoveToItem(int item);
   virtual void ValidateOffset();
   virtual int  CorrectOffset(int offset, int cursor) const;
-  virtual void UpdateLayout();
+  virtual void UpdateLayout(bool refreshAllItems = false);
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {};
   virtual void Reset();
