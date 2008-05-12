@@ -119,6 +119,7 @@ void XBPyThread::Process()
   // get path from script file name and add python path's
   // this is used for python so it will search modules from script path first
   strcpy(sourcedir, source);
+  
 #ifndef _LINUX
   strcpy(strrchr(sourcedir, PATH_SEPARATOR_CHAR), ";");
 #else
@@ -130,7 +131,12 @@ void XBPyThread::Process()
 #ifndef _LINUX
   strcat(path, dll_getenv("PYTHONPATH"));
 #else
+#ifdef __APPLE__
+  strcat(path, _P("Q:\\system\\python\\lib-osx:"));
+  strcat(path, _P("Q:\\system\\python\\lib"));
+#else
   strcat(path, Py_GetPath());
+#endif
 #endif
 
   // set current directory and python's path.
