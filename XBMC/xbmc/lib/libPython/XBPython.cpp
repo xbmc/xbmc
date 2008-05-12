@@ -283,11 +283,14 @@ void XBPython::Initialize()
 #ifdef __APPLE__
       setenv("PYTHONHOME", _P("Q:\\system\\python"), 1);
 #endif
+      //setenv("PYTHONDEBUG", "1", 1);
+      //setenv("PYTHONINSPECT", "1", 1);
+      //setenv("PYTHONVERBOSE", "1", 1);
+      setenv("PYTHONCASEOK", "1", 1);
 
       Py_Initialize();
       PyEval_InitThreads();
 
-      //char* python_argv[1] = { "--verbose" } ;
       char* python_argv[1] = { "" } ;
       PySys_SetArgv(1, python_argv);
 
