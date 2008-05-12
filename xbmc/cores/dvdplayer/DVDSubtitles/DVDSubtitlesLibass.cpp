@@ -122,7 +122,7 @@ long CDVDSubtitlesLibass::Acquire()
 
 long CDVDSubtitlesLibass::Release()
 {
-  long count = InterlockedIncrement(&m_references); 
+  long count = InterlockedDecrement(&m_references); 
   if (count == 0) 
     delete this;
 
