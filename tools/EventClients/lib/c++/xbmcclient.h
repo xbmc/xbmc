@@ -41,6 +41,7 @@
 #define PT_NOTIFICATION 0x07
 #define PT_BLOB         0x08
 #define PT_LOG          0x09
+#define PT_ACTION       0x0A
 #define PT_DEBUG        0xFF
 
 #define ICON_NONE       0x00
@@ -63,6 +64,8 @@
 #define LOGSEVERE  5
 #define LOGFATAL   6
 #define LOGNONE    7
+
+#define ACTION_EXECBUILTIN 0x01
 
 static void Clean()
 {
@@ -671,6 +674,42 @@ public:
   { }
 };
 
+class CPacketACTION : public CPacket
+{
+    /************************************************************************/
+    /* Payload format                                                       */
+    /* %c - action type                                                     */
+    /* %s - action message                                                  */
+    /************************************************************************/
+private:
+  unsigned char     m_ActionType;
+  std::vector<char> m_Action;
+public:
+  CPacketACTION(const char *Action, unsigned char ActionType = ACTION_EXECBUILTIN)
+  {
+    m_PacketType = PT_ACTION;
+
+    m_ActionType = ActionType;
+    unsigned int len = strlen(Action);
+    for (unsigned int i = 0; i < len; i++)
+      m_Action.push_back(Action[i]);
+  }
+
+  virtual void ConstructPayload()
+  {
+    m_Payload.clear();
+
+    m_Payload.push_back(m_ActionType);
+    for (unsigned int i = 0; i < m_Action.size(); i++)
+      m_Payload.push_back(m_Action[i]);
+
+    m_Payload.push_back('\0');
+  }
+  
+  virtual ~CPacketACTION()
+  { }
+};
+
 class CXBMCClient
 {
 private:
@@ -744,6 +783,15 @@ public:
 
     CPacketLOG log(LogLevel, Message, AutoPrintf);
     log.Send(m_Socket, m_Addr, m_UID);
+  }
+
+  void SendACTION(const char *ActionMessage, int ActionType = ACTION_EXECBUILTIN)
+  {
+    if (m_Socket < 0)
+      return;
+
+    CPacketACTION action(ActionMessage, ActionType);
+    action.Send(m_Socket, m_Addr, m_UID);
   }
 };
 
