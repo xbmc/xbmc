@@ -44,7 +44,7 @@ namespace VIDEO
     void OnProcessSeriesFolder(std::map<std::pair<int,int>,CScraperUrl>& episodes, std::map<std::pair<int,int>,CScraperUrl>& files, long lShowId, CIMDB& IMDB, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
     static CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false);
     long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const SScraperInfo& info, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL);
-    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* m_dlgProgress  = NULL);
+    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* pDlgProgress  = NULL);
     static void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
   protected:
     virtual void Process();
@@ -55,6 +55,13 @@ namespace VIDEO
     void FetchSeasonThumbs(long lTvShowId);
     void FetchActorThumbs(const std::vector<SActorInfo>& actors);
     static int GetPathHash(const CFileItemList &items, CStdString &hash);
+    enum NFOResult
+    {
+      NO_NFO   = 0,
+      FULL_NFO = 1,
+      URL_NFO  = 2
+    };
+    NFOResult CheckForNFOFile(CFileItem* pItem, bool bGrabAny, SScraperInfo& info, CGUIDialogProgress* pDlgProgress, CScraperUrl& scrUrl);
 
   protected:
     IVideoInfoScannerObserver* m_pObserver;
