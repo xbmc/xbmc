@@ -183,11 +183,18 @@ extern "C" HANDLE WINAPI dllGetCurrentThread(void)
 
 extern "C" DWORD WINAPI dllGetCurrentProcessId(void)
 {
-  //not_implement("kernel32.dll fake function GetCurrentProcessId called\n");  //warning
+#ifndef _XBOX
+#ifdef _LINUX
+  return (DWORD)getppid();
+#else
+  return GetCurrentProcessId();
+#endif
+#else
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "GetCurrentProcessId(void) => 31337");
 #endif
   return 31337;
+#endif
 }
 
 extern "C" BOOL WINAPI dllGetProcessTimes(HANDLE hProcess, LPFILETIME lpCreationTime, LPFILETIME lpExitTime, LPFILETIME lpKernelTime, LPFILETIME lpUserTime)
@@ -431,8 +438,9 @@ extern "C" HMODULE WINAPI dllTerminateProcess(HANDLE hProcess, UINT uExitCode)
 }
 extern "C" HANDLE WINAPI dllGetCurrentProcess()
 {
-  //not_implement("kernel32.dll fake function GetCurrentProcess called\n"); //warning
-  //return NULL;
+#if !defined (_XBOX) && !defined(_LINUX)
+  return GetCurrentProcess();
+#else
 #ifdef _WIN32PC
   return GetCurrentProcess();
 #endif
@@ -440,6 +448,7 @@ extern "C" HANDLE WINAPI dllGetCurrentProcess()
   CLog::Log(LOGDEBUG, "GetCurrentProcess(void) => 9375");
 #endif
   return (HANDLE)9375;
+#endif
 }
 
 extern "C" UINT WINAPI dllGetACP()
