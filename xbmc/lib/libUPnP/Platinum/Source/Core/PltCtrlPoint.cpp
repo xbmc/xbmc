@@ -790,7 +790,7 @@ PLT_CtrlPoint::ProcessSsdpMessage(NPT_HttpMessage* message,
 
             // renew expiration time
             data->SetLeaseTime(NPT_TimeInterval(leasetime, 0));
-            NPT_LOG_INFO_1("Device (%s) expiration time renewed..", (const char*)uuid);
+            NPT_LOG_FINE_1("Device (%s) expiration time renewed..", (const char*)uuid);
             return NPT_SUCCESS;
         }
     }
