@@ -62,7 +62,7 @@ XBPython::XBPython()
   nextid = 0;
   mainThreadState = NULL;
   InitializeCriticalSection(&m_critSection);
-  m_hEvent = CreateEvent(NULL, false, false, "pythonEvent");
+  m_hEvent = CreateEvent(NULL, false, false, (char*)"pythonEvent");
   dThreadId = GetCurrentThreadId();
   vecPlayerCallbackList.clear();
   m_iDllScriptCounter = 0;
@@ -154,7 +154,7 @@ void XBPython::RegisterExtensionLib(LibraryLoader *pLib)
   if (!pLib) 
     return;
 
-  CLog::Log(LOGDEBUG,"%s, adding %s (0x%p)", __FUNCTION__, pLib->GetName(), (void*)pLib);
+  CLog::Log(LOGDEBUG,"%s, adding %s (%p)", __FUNCTION__, pLib->GetName(), (void*)pLib);
   EnterCriticalSection(&m_critSection);
   m_extensions.push_back(pLib);
   LeaveCriticalSection(&m_critSection);
@@ -291,7 +291,7 @@ void XBPython::Initialize()
       Py_Initialize();
       PyEval_InitThreads();
 
-      char* python_argv[1] = { "" } ;
+      char* python_argv[1] = { (char*)"" } ;
       PySys_SetArgv(1, python_argv);
 
       InitXBMCTypes();
