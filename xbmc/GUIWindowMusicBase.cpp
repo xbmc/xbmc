@@ -397,9 +397,9 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString
 
       if (!pDlgAlbumInfo->NeedRefresh())
       {
-/*        if (pDlgAlbumInfo->HasUpdatedThumb())
-          UpdateThumb(artistInfo, path);
-*/
+        if (pDlgAlbumInfo->HasUpdatedThumb())
+          Update(m_vecItems->m_strPath);
+
         return;
       }
       bRefresh = true;
@@ -451,6 +451,8 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString
         if (pDlgAlbumInfo->HasUpdatedThumb())
           UpdateThumb(artistInfo, path);
 */
+        // just update for now
+        Update(m_vecItems->m_strPath);
         if (pDlgAlbumInfo->NeedRefresh())
         {
           m_musicdatabase.DeleteArtistInfo(artistInfo.idArtist);
@@ -687,7 +689,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem, CFileItemLis
     CFileItemList items;
     GetDirectory(pItem->m_strPath, items);
     //OnRetrieveMusicInfo(items);
-    SortItems(items);
+    FormatAndSort(items);
     for (int i = 0; i < items.Size(); ++i)
       AddItemToPlayList(items[i], queuedItems);
   }
@@ -1324,4 +1326,5 @@ void CGUIWindowMusicBase::OnPrepareFileItems(CFileItemList &items)
   if (!items.m_strPath.Equals("plugin://music/"))
     items.SetCachedMusicThumbs();
 }
+
 

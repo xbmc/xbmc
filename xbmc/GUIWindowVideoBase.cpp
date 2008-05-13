@@ -372,7 +372,6 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
 
   if (info.strContent.Equals("movies"))
   {
-    g_infoManager.m_content = "movies";
     if (m_database.HasMovieInfo(item->m_strPath))
     {
       bHasInfo = true;
@@ -383,7 +382,6 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   {
     if (item->m_bIsFolder)
     {
-      g_infoManager.m_content = "tvshows";
       if (m_database.HasTvShowInfo(item->m_strPath))
       {
         bHasInfo = true;
@@ -396,7 +394,6 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       if (item->HasVideoInfoTag())
         lEpisodeHint = item->GetVideoInfoTag()->m_iEpisode;
       long lEpisodeId=-1;
-      g_infoManager.m_content = "episodes";
       if ((lEpisodeId = m_database.GetEpisodeId(item->m_strPath,lEpisodeHint)) > -1)
       {
         bHasInfo = true;
@@ -406,7 +403,6 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   }
   if (info.strContent.Equals("musicvideos"))
   {
-    g_infoManager.m_content = "musicvideos";
     if (m_database.HasMusicVideoInfo(item->m_strPath))
     {
       bHasInfo = true;
@@ -819,7 +815,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem, CFileItemLis
     // recursive
     CFileItemList items;
     GetDirectory(pItem->m_strPath, items);
-    SortItems(items);
+    FormatAndSort(items);
 
     for (int i = 0; i < items.Size(); ++i)
     {
@@ -1054,7 +1050,13 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_PLAY_WITH:
     {   
       VECPLAYERCORES vecCores;
-      CPlayerCoreFactory::GetPlayers(*item, vecCores);
+      if (item->IsVideoDb())
+      {
+        CFileItem item2(*item->GetVideoInfoTag());
+        CPlayerCoreFactory::GetPlayers(item2, vecCores);
+      }
+      else
+        CPlayerCoreFactory::GetPlayers(*item, vecCores);
       g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores);
       if (g_application.m_eForcedNextPlayer != EPC_NONE)
         OnClick(itemNumber);

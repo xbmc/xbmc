@@ -319,6 +319,7 @@ long CVideoDatabase::GetPathId(const CStdString& strPath)
     if (!m_pDS->eof())
       lPathId = m_pDS->fv("path.idPath").get_asLong();
 
+    m_pDS->close();
     return lPathId;
   }
   catch (...)
@@ -1595,7 +1596,6 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
     CStdString sql = "update movie set " + GetValueString(details, VIDEODB_ID_MIN, VIDEODB_ID_MAX, DbMovieOffsets);
     sql += FormatSQL(" where idMovie=%u", lMovieId);
     m_pDS->exec(sql.c_str());
-    g_infoManager.ResetPersistentCache(); // needed since # of movies have changed
   }
   catch (...)
   {
@@ -1639,7 +1639,6 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
     sql += FormatSQL("where idShow=%u", lTvShowId);
     m_pDS->exec(sql.c_str());
 
-    g_infoManager.ResetPersistentCache(); // needed since # of movies have changed
     return lTvShowId;
   }
   catch (...)
@@ -1767,7 +1766,6 @@ void CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPat
     CStdString sql = "update musicvideo set " + GetValueString(details, VIDEODB_ID_MUSICVIDEO_MIN, VIDEODB_ID_MUSICVIDEO_MAX, DbMusicVideoOffsets);
     sql += FormatSQL(" where idMVideo=%u", lMVideoId);
     m_pDS->exec(sql.c_str());
-    g_infoManager.ResetPersistentCache(); // needed since # of movies have changed
   }
   catch (...)
   {
@@ -5289,6 +5287,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const s
     else
     {
       pObserver->OnDirectoryChanged("");
+      pObserver->OnSetTitle("");
       pObserver->OnSetCurrentProgress(0,1);
       pObserver->OnStateChanged(CLEANING_UP_DATABASE);
     }
@@ -5528,7 +5527,6 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const s
 
     Compress(false);
 
-    g_infoManager.ResetPersistentCache(); // needed since # of movies have changed
     CUtil::DeleteVideoDatabaseDirectoryCache();
 
     if (progress)
@@ -5574,6 +5572,7 @@ void CVideoDatabase::DumpToDummyFiles(const CStdString &path)
 
 void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* = false */)
 {
+  CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   try
   {
     if (NULL == m_pDB.get()) return;
@@ -5590,7 +5589,6 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
  
     m_pDS->query(sql.c_str());
 
-    CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
       progress->SetHeading(647);
@@ -5775,16 +5773,15 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
         XMLUtils::SetString(pPath,"scraperpath",info.strPath);
       }
     }
-
-    if (progress)
-      progress->Close();
-
     xmlDoc.SaveFile(xmlFile.c_str());
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
+
+  if (progress)
+    progress->Close();
 }
 
 void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
@@ -6000,11 +5997,13 @@ bool CVideoDatabase::CommitTransaction()
 
 void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder)
 {
-    CFileItem item(strPath,bFolder);
-    XFILE::CFile::Delete(item.GetCachedVideoThumb());
+  CFileItem item(strPath,bFolder);
+  XFILE::CFile::Delete(item.GetCachedVideoThumb());
+  if (bFolder)
+    XFILE::CFile::Delete(item.GetCachedVideoFanart());
     
-    //   tell our GUI to completely reload all controls (as some of them
-    // are likely to have had this image in use so will need refreshing)
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, NULL);
-	m_gWindowManager.SendThreadMessage(msg);
+  // tell our GUI to completely reload all controls (as some of them
+  // are likely to have had this image in use so will need refreshing)
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+  m_gWindowManager.SendThreadMessage(msg);
 }

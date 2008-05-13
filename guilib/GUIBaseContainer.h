@@ -65,7 +65,7 @@ public:
   void SetType(VIEW_TYPE type, const CStdString &label);
 
   virtual bool IsContainer() const { return true; };
-  CGUIListItem *GetListItem(int offset) const;
+  CGUIListItem *GetListItem(int offset, unsigned int flag = 0) const;
 
   virtual bool GetCondition(int condition, int data) const;
   CStdString GetLabel(int info) const;
@@ -83,7 +83,7 @@ protected:
   virtual void MoveToItem(int item);
   virtual void ValidateOffset();
   virtual int  CorrectOffset(int offset, int cursor) const;
-  virtual void UpdateLayout();
+  virtual void UpdateLayout(bool refreshAllItems = false);
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {};
   virtual void Reset();

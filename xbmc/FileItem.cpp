@@ -564,6 +564,7 @@ bool CFileItem::IsFileFolder() const
     IsType(".ogg") ||
     IsType(".nsf") ||
     IsType(".sid") ||
+    IsType(".sap") ||
     IsShoutCast()
     )
     );
@@ -1166,13 +1167,16 @@ void CFileItemList::Clear()
   m_content.Empty();
 }
 
-void CFileItemList::ClearKeepPointer()
+void CFileItemList::ClearKeepPointer(bool itemsOnly)
 {
   if (m_items.size())
   {
     m_items.clear();
     m_map.clear();
   }
+
+  if (itemsOnly)
+    return;
 
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
@@ -2327,14 +2331,14 @@ void CFileItem::CacheVideoFanart() const
 CStdString CFileItem::GetCachedVideoFanart() const
 {
   // get the locally cached thumb
+  return CFileItem::GetCachedVideoFanart(m_strPath);
+}
+
+CStdString CFileItem::GetCachedVideoFanart(const CStdString &path)
+{
+  // get the locally cached thumb
   Crc32 crc;
-  if (IsStack())
-  {
-    CStackDirectory dir;
-    crc.ComputeFromLowerCase(dir.GetFirstStackedFile(m_strPath));
-  }
-  else
-    crc.ComputeFromLowerCase(m_strPath);
+  crc.ComputeFromLowerCase(path);
 
   CStdString thumb;
   thumb.Format("%s\\%08x.tbn", g_settings.GetVideoFanartFolder().c_str(),(unsigned __int32)crc);

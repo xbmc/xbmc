@@ -118,12 +118,8 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
         Reset();
         CFileItemList *items = (CFileItemList *)message.GetLPVOID();
         for (int i = 0; i < items->Size(); i++)
-        {
-          CFileItem *item = items->Get(i);
-          item->FreeMemory(); // make sure the memory is free
-          m_items.push_back(item);
-        }
-        UpdateLayout();
+          m_items.push_back(items->Get(i));
+        UpdateLayout(true); // true to refresh all items
         SelectItem(message.GetParam1());
         return true;
       }
@@ -253,13 +249,26 @@ int CGUIBaseContainer::GetSelectedItem() const
   return CorrectOffset(m_offset, m_cursor);
 }
 
-CGUIListItem *CGUIBaseContainer::GetListItem(int offset) const
+CGUIListItem *CGUIBaseContainer::GetListItem(int offset, unsigned int flag) const
 {
   if (!m_items.size())
     return NULL;
-  int item = (GetSelectedItem() + offset) % ((int)m_items.size());
-  if (item < 0) item += m_items.size();
-  return m_items[item];
+  int item = GetSelectedItem() + offset;
+  if (flag & INFOFLAG_LISTITEM_POSITION) // use offset from the first item displayed, taking into account scrolling
+    item = CorrectOffset((int)(m_scrollOffset / m_layout->Size(m_orientation)), offset);
+
+  if (flag & INFOFLAG_LISTITEM_WRAP)
+  {
+    item %= ((int)m_items.size());
+    if (item < 0) item += m_items.size();
+    return m_items[item];
+  }
+  else
+  {
+    if (item >= 0 && item < (int)m_items.size())
+      return m_items[item];
+  }
+  return NULL;
 }
 
 CGUIListItemLayout *CGUIBaseContainer::GetFocusedLayout() const
@@ -435,8 +444,14 @@ void CGUIBaseContainer::FreeResources()
   m_scrollSpeed = 0;
 }
 
-void CGUIBaseContainer::UpdateLayout()
+void CGUIBaseContainer::UpdateLayout(bool updateAllItems)
 {
+  if (updateAllItems)
+  { // free memory of items
+    for (iItems it = m_items.begin(); it != m_items.end(); it++)
+      (*it)->FreeMemory();
+  }
+  // and recalculate the layout
   CalculateLayout();
   if (m_pageControl)
   {
@@ -448,6 +463,16 @@ void CGUIBaseContainer::UpdateLayout()
 void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
 {
   CGUIControl::UpdateVisibility(item);
+  // check whether we need to update our layouts
+  if ((m_layout && m_layout->GetCondition() && !g_infoManager.GetBool(m_layout->GetCondition(), GetParentID())) ||
+      (m_focusedLayout && m_focusedLayout->GetCondition() && !g_infoManager.GetBool(m_focusedLayout->GetCondition(), GetParentID()))) 
+  {
+    // and do it
+    int item = GetSelectedItem();
+    UpdateLayout(true); // true to refresh all items
+    SelectItem(item);
+  }
+
   if (m_staticContent)
   { // update our item list with our new content, but only add those items that should
     // be visible.  Save the previous item and keep it if we are adding that one.
@@ -584,14 +609,14 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         const char *id = item->Attribute("id");
         int visibleCondition = 0;
         CGUIControlFactory::GetConditionalVisibility(item, visibleCondition);
-        newItem = new CFileItem(CGUIControlFactory::GetLabel(label));
+        newItem = new CFileItem(CGUIControlFactory::FilterLabel(label));
         // multiple action strings are concat'd together, separated with " , "
         vector<CStdString> actions;
         CGUIControlFactory::GetMultipleString(item, "onclick", actions);
         for (vector<CStdString>::iterator it = actions.begin(); it != actions.end(); ++it)
           (*it).Replace(",", ",,");
         StringUtils::JoinString(actions, " , ", newItem->m_strPath);
-        newItem->SetLabel2(CGUIControlFactory::GetLabel(label2));
+        newItem->SetLabel2(CGUIControlFactory::FilterLabel(label2));
         newItem->SetThumbnailImage(thumb);
         newItem->SetIconImage(icon);
         if (id) newItem->m_iprogramCount = atoi(id);
@@ -604,9 +629,9 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         const char *thumb = item->Attribute("thumb");
         const char *icon = item->Attribute("icon");
         const char *id = item->Attribute("id");
-        newItem = new CFileItem(label ? CGUIControlFactory::GetLabel(label) : "");
+        newItem = new CFileItem(label ? CGUIControlFactory::FilterLabel(label) : "");
         newItem->m_strPath = item->FirstChild()->Value();
-        if (label2) newItem->SetLabel2(CGUIControlFactory::GetLabel(label2));
+        if (label2) newItem->SetLabel2(CGUIControlFactory::FilterLabel(label2));
         if (thumb) newItem->SetThumbnailImage(thumb);
         if (icon) newItem->SetIconImage(icon);
         if (id) newItem->m_iprogramCount = atoi(id);
@@ -744,6 +769,9 @@ CStdString CGUIBaseContainer::GetLabel(int info) const
     break;
   case CONTAINER_CURRENT_PAGE:
     label.Format("%u", GetCurrentPage());
+    break;
+  case CONTAINER_POSITION:
+    label.Format("%i", m_cursor);
     break;
   case CONTAINER_NUM_ITEMS:
     {

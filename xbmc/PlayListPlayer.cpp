@@ -265,12 +265,12 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
   {
     if (iPreviousSong < 0)
     {
-      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STARTED, 0, 0, m_iCurrentPlayList, m_iCurrentSong, (LPVOID)&item);
+      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STARTED, 0, 0, m_iCurrentPlayList, m_iCurrentSong, (CFileItem*)&item);
       m_gWindowManager.SendThreadMessage( msg );
     }
     else
     {
-      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, m_iCurrentPlayList, MAKELONG(m_iCurrentSong, iPreviousSong), (LPVOID)&item);
+      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, m_iCurrentPlayList, MAKELONG(m_iCurrentSong, iPreviousSong), (CFileItem*)&item);
       m_gWindowManager.SendThreadMessage(msg);
     }
   }
@@ -339,7 +339,7 @@ void CPlayListPlayer::ClearPlaylist(int iPlaylist)
   playlist.Clear();
 
   // its likely that the playlist changed
-  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL);
+  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
   m_gWindowManager.SendMessage(msg);
 }
 
@@ -382,7 +382,7 @@ void CPlayListPlayer::Reset()
   m_bPlayedFirstFile = false;
 
   // its likely that the playlist changed
-  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL);
+  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
   m_gWindowManager.SendMessage(msg);
 }
 

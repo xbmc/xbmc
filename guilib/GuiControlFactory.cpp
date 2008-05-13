@@ -472,7 +472,7 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStd
 }
 
 // Convert a string to a GUI label, by translating/parsing the label for localisable strings
-CStdString CGUIControlFactory::GetLabel(const CStdString &label)
+CStdString CGUIControlFactory::FilterLabel(const CStdString &label)
 {
   CStdString viewLabel = label;
   if (StringUtils::IsNaturalNumber(viewLabel))
@@ -484,6 +484,19 @@ CStdString CGUIControlFactory::GetLabel(const CStdString &label)
   // translate the label
   CGUIInfoLabel info(viewLabel, "");
   return info.GetLabel(0);
+}
+
+bool CGUIControlFactory::GetString(const TiXmlNode* pRootNode, const char *strTag, CStdString &text)
+{
+  if (!XMLUtils::GetString(pRootNode, strTag, text))
+    return false;
+  if (text == "-")
+    text.Empty();
+  if (StringUtils::IsNaturalNumber(text))
+    text = g_localizeStrings.Get(atoi(text.c_str()));
+  else // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
+    g_charsetConverter.stringCharsetToUtf8(text);
+  return true;
 }
 
 CStdString CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
@@ -639,10 +652,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   float radioPosY = 0;
 
   CStdString altLabel;
+  CStdString strLabel2;
 
   int focusPosition = 0;
   int scrollTime = 200;
   bool useControlCoords = false;
+  bool renderFocusedLast = false;
 
   CRect hitRect;
   CPoint camera;
@@ -898,26 +913,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   vector<CGUIInfoLabel> infoLabels;
   GetInfoLabels(pControlNode, "label", infoLabels);
   
-  if (XMLUtils::GetString(pControlNode, "label", strLabel))
-  {
-    if (strLabel == "-")
-      strLabel.Empty();
-    if (StringUtils::IsNaturalNumber(strLabel))
-      strLabel = g_localizeStrings.Get(atoi(strLabel.c_str()));
-    else
-    { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
-      g_charsetConverter.stringCharsetToUtf8(strLabel);
-    }
-  }
-  if (XMLUtils::GetString(pControlNode, "altlabel", altLabel))
-  {
-    if (StringUtils::IsNaturalNumber(altLabel))
-      altLabel = g_localizeStrings.Get(atoi(altLabel.c_str()));
-    else
-    { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
-      g_charsetConverter.stringCharsetToUtf8(altLabel);
-    }
-  }
+  GetString(pControlNode, "label", strLabel);
+  GetString(pControlNode, "altlabel", altLabel);
+  GetString(pControlNode, "label2", strLabel2);
 
   XMLUtils::GetBoolean(pControlNode, "wrapmultiline", wrapMultiLine);
   XMLUtils::GetInt(pControlNode,"urlset",iUrlSet);
@@ -966,6 +964,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetInt(pControlNode, "scrolltime", scrollTime);
 
   XMLUtils::GetBoolean(pControlNode, "usecontrolcoords", useControlCoords);
+  XMLUtils::GetBoolean(pControlNode, "renderfocusedlast", renderFocusedLast);
 
   // view type
   VIEW_TYPE viewType = VIEW_TYPE_NONE;
@@ -1007,7 +1006,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       viewType = VIEW_TYPE_BIG_WRAP;
     const char *label = itemElement->Attribute("label");
     if (label)
-      viewLabel = GetLabel(label);
+      viewLabel = FilterLabel(label);
   }
 
   TiXmlElement *cam = pControlNode->FirstChildElement("camera");
@@ -1028,11 +1027,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     control = new CGUIControlGroup(
       dwParentId, id, posX, posY, width, height);
     ((CGUIControlGroup *)control)->SetDefaultControl(defaultControl);
+    ((CGUIControlGroup *)control)->SetRenderFocusedLast(renderFocusedLast);
   }
   else if (strType == "grouplist")
   {
     control = new CGUIControlGroupList(
       dwParentId, id, posX, posY, width, height, buttonGap, pageControl, orientation, useControlCoords);
+    ((CGUIControlGroup *)control)->SetRenderFocusedLast(renderFocusedLast);
   }
   else if (strType == "label")
   {
@@ -1091,6 +1092,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       labelInfo);
 
     ((CGUIButtonControl *)control)->SetLabel(strLabel);
+    ((CGUIButtonControl *)control)->SetLabel2(strLabel2);
     ((CGUIButtonControl *)control)->SetClickActions(clickActions);
     ((CGUIButtonControl *)control)->SetFocusActions(focusActions);
   }

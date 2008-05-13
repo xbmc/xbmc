@@ -79,8 +79,16 @@ CWebServer::CWebServer()
 CWebServer::~CWebServer()
 {
   CloseHandle(m_hEvent);
-  if (pXbmcWeb) delete pXbmcWeb;
-  if (pXbmcWebConfig) delete pXbmcWebConfig;
+  if (pXbmcWeb)
+  {
+    delete pXbmcWeb;
+    pXbmcWeb=NULL;
+  }
+  if (pXbmcWebConfig)
+  {
+	delete pXbmcWebConfig;
+    pXbmcWebConfig=NULL;
+  }
   if (pXbmcHttpShim)
   {
     delete pXbmcHttpShim;

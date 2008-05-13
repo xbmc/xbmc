@@ -105,7 +105,7 @@ void CGUIViewControl::SetCurrentView(int viewMode)
   { // have an old view - let's clear it out and hide it.
     hasFocus = previousView->HasFocus();
     item = GetSelectedItem(previousView);
-    CGUIMessage msg(GUI_MSG_LABEL_RESET, m_parentWindow, previousView->GetID(), 0, 0, NULL);
+    CGUIMessage msg(GUI_MSG_LABEL_RESET, m_parentWindow, previousView->GetID());
     previousView->OnMessage(msg);
   }
 
@@ -134,7 +134,7 @@ void CGUIViewControl::SetItems(CFileItemList &items)
 void CGUIViewControl::UpdateContents(const CGUIControl *control, int currentItem)
 {
   if (!control || !m_fileItems) return;
-  CGUIMessage msg(GUI_MSG_LABEL_BIND, m_parentWindow, control->GetID(), currentItem, 0, (void*)m_fileItems);
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, m_parentWindow, control->GetID(), currentItem, 0, m_fileItems);
   g_graphicsContext.SendMessage(msg);
 }
 
@@ -153,7 +153,7 @@ void CGUIViewControl::UpdateView()
 int CGUIViewControl::GetSelectedItem(const CGUIControl *control) const
 {
   if (!control || !m_fileItems) return -1;
-  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, m_parentWindow, control->GetID(), 0, 0, NULL);
+  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, m_parentWindow, control->GetID());
   g_graphicsContext.SendMessage(msg);
 
   int iItem = msg.GetParam1();

@@ -354,28 +354,23 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   }
 
   // update our content in the info manager
-  g_infoManager.m_content = "";
-  if (!items.GetContent().IsEmpty())
-    g_infoManager.m_content = items.GetContent();
-  else if (strDirectory.Left(10).Equals("videodb://"))
+  if (strDirectory.Left(10).Equals("videodb://"))
   {
     CVideoDatabaseDirectory dir;
-    VIDEODATABASEDIRECTORY::CQueryParams params;
-    dir.GetQueryParams(strDirectory,params);
     VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
     if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_MUSICVIDEOS)
-      g_infoManager.m_content = "musicvideos";
+      items.SetContent("musicvideos");
   }
-  else
+  else if (items.GetContent().IsEmpty())
   {
     CMusicDatabaseDirectory dir;
     NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
     if (node == NODE_TYPE_ALBUM)
-      g_infoManager.m_content = "albums";
+      items.SetContent("albums");
     else if (node == NODE_TYPE_ARTIST)
-      g_infoManager.m_content = "artists";
+      items.SetContent("artists");
     else if (node == NODE_TYPE_SONG)
-      g_infoManager.m_content = "songs";
+      items.SetContent("songs");
   }
   return bResult;
 }
@@ -864,7 +859,7 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
     {
       CMusicDatabaseDirectory dir;
       dir.ClearDirectoryCache(m_vecItems->m_strPath);
-      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, NULL);
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
       g_graphicsContext.SendMessage(msg);
       Update(m_vecItems->m_strPath);
     }

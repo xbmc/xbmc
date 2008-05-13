@@ -23,6 +23,7 @@ public:
 
   virtual bool HasListItems() const { return true; };
   virtual CFileItem *GetCurrentListItem(int offset = 0);
+  const CFileItemList& CurrentDirectory() const { return *m_albumSongs; };
 protected:
   virtual void OnInitWindow();
   void Update();

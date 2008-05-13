@@ -29,7 +29,8 @@ protected:
   virtual void CreateSettings();
   void FillListControl();
   void OnSettingChanged(unsigned int setting);
-  
+  SScraperInfo CGUIDialogContentSettings::FindDefault(const CStdString& strType, const CStdString& strDefault);
+
   bool m_bNeedSave;
 
   bool m_bRunScan;

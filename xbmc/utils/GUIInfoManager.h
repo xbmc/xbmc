@@ -12,6 +12,7 @@
 #include "CriticalSection.h"
 #include "IMsgTargetCallback.h"
 #include "DateTime.h"
+#include "inttypes.h"
 
 #include <list>
 #include <map>
@@ -418,6 +419,7 @@ class CGUIListItem;
 #define LISTITEM_RATING_AND_VOTES   (LISTITEM_START + 39)
 #define LISTITEM_TRAILER            (LISTITEM_START + 40)
 #define LISTITEM_STAR_RATING        (LISTITEM_START + 41)
+#define LISTITEM_FILENAME_AND_PATH  (LISTITEM_START + 42)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
@@ -432,23 +434,36 @@ class CGUIListItem;
 class CInfoLabel;
 class CGUIWindow;
 
+// Info Flags
+// Stored in the top 8 bits of GUIInfo::m_data1
+// therefore we only have room for 8 flags
+#define INFOFLAG_LISTITEM_WRAP        ((uint32_t) (1 << 25))  // Wrap ListItem lookups
+#define INFOFLAG_LISTITEM_POSITION    ((uint32_t) (1 << 26))  // Absolute ListItem lookups
+
 // structure to hold multiple integer data
 // for storage referenced from a single integer
 class GUIInfo
 {
 public:
-  GUIInfo(int info, int data1 = 0, int data2 = 0)
+  GUIInfo(int info, uint32_t data1 = 0, int data2 = 0, uint32_t flag = 0)
   {
     m_info = info;
     m_data1 = data1;
     m_data2 = data2;
+    if (flag)
+      SetInfoFlag(flag);
   }
   bool operator ==(const GUIInfo &right) const
   {
     return (m_info == right.m_info && m_data1 == right.m_data1 && m_data2 == right.m_data2);
   };
+  uint32_t GetInfoFlag() const;
+  uint32_t GetData1() const;
+  int GetData2() const;
   int m_info;
-  int m_data1;
+private:
+  void SetInfoFlag(uint32_t flag);
+  uint32_t m_data1;
   int m_data2;
 };
 
@@ -533,7 +548,6 @@ public:
 
   // Called from tuxbox service thread to update current status
   void UpdateFromTuxBox();
-  CStdString m_content;
 
   void SetLaunchingXBEName(const CStdString &name) { m_launchingXBE = name; };
   void SetContainerMoving(int id, int direction) { m_containerMoves[id] = direction; };

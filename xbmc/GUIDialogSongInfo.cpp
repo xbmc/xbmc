@@ -157,7 +157,7 @@ void CGUIDialogSongInfo::SetRating(char rating)
   if (rating > '5') rating = '5';
   m_song->GetMusicInfoTag()->SetRating(rating);
   // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, &m_song);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_song);
   g_graphicsContext.SendMessage(msg);
 }
 
@@ -167,6 +167,14 @@ void CGUIDialogSongInfo::SetSong(CFileItem *item)
   m_song->LoadMusicTag();
   m_startRating = m_song->GetMusicInfoTag()->GetRating();
   MUSIC_INFO::CMusicInfoLoader::LoadAdditionalTagInfo(m_song);
+  // set artist thumb as well
+  if (m_song->HasMusicInfoTag())
+  {
+    CFileItem artist(m_song->GetMusicInfoTag()->GetArtist());
+    artist.SetCachedArtistThumb();
+    if (CFile::Exists(artist.GetThumbnailImage()))
+      m_song->SetProperty("artistthumb", artist.GetThumbnailImage());
+  }
   m_needsUpdate = false;
 }
 
@@ -280,7 +288,7 @@ void CGUIDialogSongInfo::OnGetThumb()
 
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, NULL);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
   g_graphicsContext.SendMessage(msg);
 
 //  m_hasUpdatedThumb = true;

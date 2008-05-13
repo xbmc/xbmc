@@ -159,6 +159,7 @@ public:
   CStdString GetCachedSeasonThumb() const;
   CStdString GetCachedActorThumb() const;
   CStdString GetCachedVideoFanart() const;
+  static CStdString GetCachedVideoFanart(const CStdString &path);
 
   // Sets the video thumb (cached first, else caches user thumb)
   void SetVideoThumb();
@@ -277,7 +278,7 @@ public:
   CFileItem* operator[] (const CStdString& strPath);
   const CFileItem* operator[] (const CStdString& strPath) const;
   void Clear();
-  void ClearKeepPointer();
+  void ClearKeepPointer(bool itemsOnly = false);
   void Add(CFileItem* pItem);
   void AddFront(CFileItem* pItem, int itemPosition);
   void Remove(CFileItem* pItem);

@@ -253,7 +253,7 @@ bool CGUIWindowMusicPlaylistEditor::Update(const CStdString &strDirectory)
   if (!CGUIMediaWindow::Update(strDirectory))
     return false;
 
-  g_infoManager.m_content = "files";
+  m_vecItems->SetContent("files");
   m_thumbLoader.Load(*m_vecItems);
 
   // update our playlist control
@@ -263,7 +263,7 @@ bool CGUIWindowMusicPlaylistEditor::Update(const CStdString &strDirectory)
 
 void CGUIWindowMusicPlaylistEditor::ClearPlaylist()
 {
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PLAYLIST, 0, 0, NULL);
+  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PLAYLIST);
   OnMessage(msg);
 
   m_playlist->Clear();
@@ -279,7 +279,7 @@ void CGUIWindowMusicPlaylistEditor::UpdatePlaylist()
     m_playlist->Get(i)->Select(false);
 
   // bind them to the list
-  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_PLAYLIST, 0, 0, &m_playlist);
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_PLAYLIST, 0, 0, m_playlist);
   OnMessage(msg);
 
   // indicate how many songs we have

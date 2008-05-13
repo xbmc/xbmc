@@ -405,7 +405,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         // the container folder thumb is the parent (i.e. season or show)
         if (node == NODE_TYPE_EPISODES || node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
         {
-          g_infoManager.m_content = "episodes";
+          items.SetContent("episodes");
           // grab the season thumb as the folder thumb
           CStdString strLabel;
           CStdString strPath;
@@ -436,22 +436,20 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         }
         else
         {
-          g_infoManager.m_content = "seasons";
+          items.SetContent("seasons");
           items.SetThumbnailImage(showItem.GetThumbnailImage());
         }
       }
       else if (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_RECENTLY_ADDED_MOVIES)
-        g_infoManager.m_content = "movies";
+        items.SetContent("movies");
       else if (node == NODE_TYPE_TITLE_TVSHOWS)
-        g_infoManager.m_content = "tvshows";
+        items.SetContent("tvshows");
       else if (node == NODE_TYPE_TITLE_MUSICVIDEOS ||
                node == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
-        g_infoManager.m_content = "musicvideos";
+        items.SetContent("musicvideos");
       else
-        g_infoManager.m_content = "";
+        items.SetContent("");
     }
-    else
-      g_infoManager.m_content = items.GetContent();
   }
 
   return bResult;
@@ -932,7 +930,8 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
     return;
   }
 
-  items.ClearKeepPointer();
+  items.ClearKeepPointer(true); // clear the items only - we want to keep content etc.
+  items.SetFastLookup(true);
   for (int i = 0; i < m_unfilteredItems->Size(); i++)
   {
     CFileItem *item = m_unfilteredItems->Get(i);
@@ -964,6 +963,7 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
         items.Add(item);
     }
   }
+  items.SetFastLookup(false);
 }
 
 void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &buttons)
@@ -1397,7 +1397,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         CFile::Cache(result,cachedThumb);
 
       CUtil::DeleteVideoDatabaseDirectoryCache();
-      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, NULL);
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
       g_graphicsContext.SendMessage(msg);
       Update(m_vecItems->m_strPath);
 

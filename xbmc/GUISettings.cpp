@@ -327,12 +327,12 @@ CGUISettings::CGUISettings(void)
   AddSeparator(7, "system.sep3");
   AddBool(8, "system.fanspeedcontrol", 13302, false);
 #ifdef HAS_XBOX_HARDWARE
-  AddInt(9, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 1, 1, 50, SPIN_CONTROL_TEXT);
+  AddInt(9, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 5, 50, SPIN_CONTROL_TEXT);
 #endif
   AddSeparator(10, "system.sep4");
   AddBool(11, "system.autotemperature", 13301, false);
   AddInt(12, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
-  AddInt(13, "system.minfanspeed", 13411, 5, 2, 1, 50, SPIN_CONTROL_TEXT);
+  AddInt(13, "system.minfanspeed", 13411, 1, 1, 1, 50, SPIN_CONTROL_TEXT);
 
   AddCategory(4, "lcd", 448);
   AddInt(2, "lcd.type", 4501, LCD_TYPE_NONE, LCD_TYPE_NONE, 1, LCD_TYPE_VFD, SPIN_CONTROL_TEXT);
@@ -414,7 +414,7 @@ CGUISettings::CGUISettings(void)
   AddBool(1, "videolibrary.enabled", 418, true);
   AddSeparator(2, "videolibrary.sep1");
   AddBool(3, "videolibrary.hideplots", 20369, false);
-  AddBool(4, "videolibrary.seasonthumbs", 20382, false);
+  AddBool(4, "videolibrary.seasonthumbs", 20382, true);
   AddBool(5, "videolibrary.actorthumbs", 20402, false);
   AddBool(6, "videolibrary.singleseason", 20412, true);
   AddSeparator(7, "videolibrary.sep1");
@@ -474,7 +474,7 @@ CGUISettings::CGUISettings(void)
   AddString(3, "network.subnet", 720, "255.255.255.0", BUTTON_CONTROL_IP_INPUT);
   AddString(4, "network.gateway", 721, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
   AddString(5, "network.dns", 722, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
-  AddString(6, "network.dnssuffix", 22002, "", BUTTON_CONTROL_INPUT);
+  AddString(6, "network.dnssuffix", 22002, "", BUTTON_CONTROL_INPUT, true);
   AddSeparator(7, "network.sep1");
   AddBool(8, "network.usehttpproxy", 708, false);
   AddString(9, "network.httpproxyserver", 706, "", BUTTON_CONTROL_IP_INPUT);
@@ -1034,5 +1034,6 @@ void CGUISettings::Clear()
     delete settingsGroups[i];
   settingsGroups.clear();
 }
+
 
 

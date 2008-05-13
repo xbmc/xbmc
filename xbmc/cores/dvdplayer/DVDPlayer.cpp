@@ -276,12 +276,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
       m_filename = strFile;
 
     m_content = file.GetContentType();
-
-    /* otherwise player will think we need to be restarted */
-    g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
-
-    /* allow renderer to switch to fullscreen if requested */
-    m_dvdPlayerVideo.EnableFullscreen(options.fullscreen);
+    m_PlayerOptions = options;
 
     ResetEvent(m_hReadyEvent);
     Create();
@@ -290,14 +285,6 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     // Playback might have been stopped due to some error
     if (m_bStop || m_bAbortRequest) return false;
 
-    /* check if we got a full dvd state, then use that */
-    if( options.state.size() > 0 && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-      SetPlayerState(options.state);
-    else if( options.starttime > 0 )
-      SeekTime( (__int64)(options.starttime * 1000) );
-    
-    // settings that can only be set after the inputstream, demuxer and or codecs are opened
-    SetSubtitleVisible(g_stSettings.m_currentVideoSettings.m_SubtitleOn);
    
     return true;
   }
@@ -517,6 +504,9 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, StreamType type, CDemux
     if(stream->type != type)
       return false;
 
+    if(type == STREAM_SUBTITLE)
+      return false;
+
     if(current.id < 0)
       return true;
   }
@@ -535,8 +525,15 @@ void CDVDPlayer::Process()
     return;
   }
 
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+  if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+  {
     CLog::Log(LOGNOTICE, "DVDPlayer: playing a dvd with menu's");
+    m_PlayerOptions.starttime = 0;
+
+    if(m_PlayerOptions.state.size() > 0)
+      ((CDVDInputStreamNavigator*)m_pInputStream)->SetNavigatorState(m_PlayerOptions.state);
+    ((CDVDInputStreamNavigator*)m_pInputStream)->EnableSubtitleStream(g_stSettings.m_currentVideoSettings.m_SubtitleOn);
+  }
 
   CLog::Log(LOGNOTICE, "Creating Demuxer");
   if(!OpenDemuxStream())
@@ -545,20 +542,47 @@ void CDVDPlayer::Process()
     return;
   }
 
-
   if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
   &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
   {
-    // find any available external subtitles
-    std::vector<std::string> filenames;
-    CDVDFactorySubtitle::GetSubtitles(filenames, m_filename);
-    for(unsigned int i=0;i<filenames.size();i++)
-      AddSubtitleFile(filenames[i]);
+    if(g_stSettings.m_currentVideoSettings.m_SubtitleOn)
+    {
+      // find any available external subtitles
+      std::vector<std::string> filenames;
+      CDVDFactorySubtitle::GetSubtitles(filenames, m_filename);
+      for(unsigned int i=0;i<filenames.size();i++)
+        AddSubtitleFile(filenames[i]);
+
+      g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
+    }
 
     // look for any edl files
     if (g_guiSettings.GetBool("videoplayer.editdecision"))
       m_Edl.ReadnCacheAny(m_filename);
   }
+
+  if( m_PlayerOptions.starttime > 0 )
+  {
+    double startpts = DVD_NOPTS_VALUE;
+    if(m_pDemuxer)
+    {
+      if (m_pDemuxer->SeekTime(m_PlayerOptions.starttime, false, &startpts))
+        CLog::Log(LOGDEBUG, "%s - starting demuxer from: %f", m_PlayerOptions.starttime, __FUNCTION__);
+      else
+        CLog::Log(LOGDEBUG, "%s - failed to start demuxing from %f: %f", m_PlayerOptions.starttime, __FUNCTION__);
+    }
+
+    if(m_pSubtitleDemuxer)
+    {
+      if(m_pSubtitleDemuxer->SeekTime(m_PlayerOptions.starttime, false, &startpts))
+        CLog::Log(LOGDEBUG, "%s - starting subtitle demuxer from: %f", m_PlayerOptions.starttime);
+      else
+        CLog::Log(LOGDEBUG, "%s - failed to start subtitle demuxing from: %f", m_PlayerOptions.starttime);
+    }
+  }
+
+  // allow renderer to switch to fullscreen if requested
+  m_dvdPlayerVideo.EnableFullscreen(m_PlayerOptions.fullscreen);
 
   // make sure application know our info
   UpdateApplication();
@@ -579,13 +603,20 @@ void CDVDPlayer::Process()
     if(OpenAudioStream(s.id, s.source))
       break;
   }
-  count = m_SelectionStreams.Count(STREAM_SUBTITLE);
-  for(int i = 0;i<count;i++)
+  if(g_stSettings.m_currentVideoSettings.m_SubtitleOn)
   {
-    SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
-    if(OpenSubtitleStream(s.id, s.source))
-      break;
+    m_dvdPlayerVideo.EnableSubtitle(true);
+
+    count = m_SelectionStreams.Count(STREAM_SUBTITLE);
+    for(int i = 0;i<count;i++)
+    {
+      SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
+      if(OpenSubtitleStream(s.id, s.source))
+        break;
+    }
   }
+  else
+    m_dvdPlayerVideo.EnableSubtitle(false);
 
   // we are done initializing now, set the readyevent
   SetEvent(m_hReadyEvent);
@@ -1711,7 +1742,7 @@ __int64 CDVDPlayer::GetTotalTimeInMsec()
   if (m_Edl.HaveCutpoints())
     msec -= m_Edl.TotalCutTime();
 
-  return 0;
+  return msec;
 }
 
 // return length in seconds.. this should be changed to return in milleseconds throughout xbmc

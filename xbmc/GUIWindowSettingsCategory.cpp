@@ -66,6 +66,7 @@
 #include "FileSystem/Directory.h"
 #include "utils/ScraperParser.h"
 #include "FileItem.h"
+#include "GUIToggleButtonControl.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -369,7 +370,11 @@ void CGUIWindowSettingsCategory::SetupControls()
   {
     if (m_vecSections[i]->m_dwLabelID == 12360 && g_settings.m_iLastLoadedProfileIndex != 0)
       continue;
-    CGUIButtonControl *pButton = new CGUIButtonControl(*m_pOriginalCategoryButton);
+    CGUIButtonControl *pButton = NULL;
+    if (m_pOriginalCategoryButton->GetControlType() == CGUIControl::GUICONTROL_TOGGLEBUTTON)
+      pButton = new CGUIToggleButtonControl(*(CGUIToggleButtonControl *)m_pOriginalCategoryButton);
+    else
+      pButton = new CGUIButtonControl(*m_pOriginalCategoryButton);
     pButton->SetLabel(g_localizeStrings.Get(m_vecSections[i]->m_dwLabelID));
     pButton->SetID(CONTROL_START_BUTTONS + j);
     pButton->SetVisible(true);
@@ -533,12 +538,12 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("system.fanspeed") || strSetting.Equals("system.minfanspeed"))
+    else if (strSetting.Equals("system.fanspeed") || strSetting.Equals("system.minfanspeed")) 
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       CStdString strPercentMask = g_localizeStrings.Get(14047);
-      for (int i = 5; i <= pSettingInt->m_iMax; i += 5)
+      for (int i=pSettingInt->m_iMin; i <= pSettingInt->m_iMax; i += pSettingInt->m_iStep)
       {
         CStdString strLabel;
         strLabel.Format(strPercentMask.c_str(), i*2);
@@ -1376,7 +1381,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CSettingInt *pSetting = (CSettingInt*)pSettingControl->GetSetting();
     int iControlID = pSettingControl->GetID();
-    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID, 0, 0, NULL);
+    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
     g_graphicsContext.SendMessage(msg);
     int iSpeed = (RESOLUTION)msg.GetParam1();
     g_guiSettings.SetInt("system.fanspeed", iSpeed);
@@ -1628,7 +1633,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   { // new resolution choosen... - update if necessary
     CSettingInt *pSettingInt = (CSettingInt *)pSettingControl->GetSetting();
     int iControlID = pSettingControl->GetID();
-    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID, 0, 0, NULL);
+    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
     g_graphicsContext.SendMessage(msg);
     m_NewResolution = (RESOLUTION)msg.GetParam1();
     // reset our skin if necessary
@@ -1723,7 +1728,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CSettingInt *pSettingInt = (CSettingInt *)pSettingControl->GetSetting();
     int iControlID = pSettingControl->GetID();
-    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID, 0, 0, NULL);
+    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
     g_graphicsContext.SendMessage(msg);
     pSettingInt->SetData(msg.GetParam1());
   }
@@ -2074,17 +2079,29 @@ void CGUIWindowSettingsCategory::Render()
   // update alpha status of current button
   bool bAlphaFaded = false;
   CGUIControl *control = GetFirstFocusableControl(CONTROL_START_BUTTONS + m_iSection);
-  if (control && !control->HasFocus() && control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
+  if (control && !control->HasFocus())
   {
-    control->SetFocus(true);
-    ((CGUIButtonControl *)control)->SetAlpha(0x80);
-    bAlphaFaded = true;
+    if (control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
+    {
+      control->SetFocus(true);
+      ((CGUIButtonControl *)control)->SetAlpha(0x80);
+      bAlphaFaded = true;
+    }
+    else if (control->GetControlType() == CGUIControl::GUICONTROL_TOGGLEBUTTON)
+    {
+      control->SetFocus(true);
+      ((CGUIButtonControl *)control)->SetSelected(true);
+      bAlphaFaded = true;
+    }
   }
   CGUIWindow::Render();
   if (bAlphaFaded)
   {
     control->SetFocus(false);
-    ((CGUIButtonControl *)control)->SetAlpha(0xFF);
+    if (control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
+      ((CGUIButtonControl *)control)->SetAlpha(0xFF);
+    else
+      ((CGUIButtonControl *)control)->SetSelected(false);
   }
   // render the error message if necessary
   if (m_strErrorMessage.size())
