@@ -203,6 +203,10 @@ bool CEventClient::ProcessPacket(CEventPacket *packet)
     valid = OnPacketLOG(packet);
     break;
 
+  case PT_ACTION:
+    valid = OnPacketACTION(packet);
+    break;
+
   default:
     CLog::Log(LOGDEBUG, "ES: Got Unknown Packet");
     break;
@@ -490,6 +494,32 @@ bool CEventClient::OnPacketLOG(CEventPacket *packet)
     return false;
 
   CLog::Log((int)ltype, logmsg.c_str());
+  return true;
+}
+
+bool CEventClient::OnPacketACTION(CEventPacket *packet)
+{
+  unsigned char *payload = (unsigned char *)packet->Payload();
+  int psize = (int)packet->PayloadSize();
+  string actionString;
+  unsigned char actionType;
+
+  if (!ParseByte(payload, psize, actionType))
+    return false;
+  if (!ParseString(payload, psize, actionString))
+    return false;
+
+  switch(actionType)
+  {
+  case AT_EXEC_BUILTIN:
+    CUtil::ExecBuiltIn(actionString);
+    break;
+
+  default:
+    CLog::Log(LOGDEBUG, "ES: Failed - ActionType: %i ActionString: %s", actionType, actionString.c_str());
+    return false;
+    break;
+  }
   return true;
 }
 
