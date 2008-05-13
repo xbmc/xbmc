@@ -84,7 +84,7 @@ void CGUIFadeLabelControl::Render()
     vector<DWORD> text;
     m_textLayout.GetFirstText(text);
     if (m_scrollInfo.characterPos && m_scrollInfo.characterPos < text.size())
-      text.erase(text.begin(), text.begin() + m_scrollInfo.characterPos - 1);
+      text.erase(text.begin(), text.begin() + min(m_scrollInfo.characterPos - 1, text.size()));
     if (m_label.font->GetTextWidth(text) < m_width)
     {
       if (m_fadeAnim->GetProcess() != ANIM_PROCESS_NORMAL)
