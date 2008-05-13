@@ -287,6 +287,7 @@ long CVideoDatabase::GetPath(const CStdString& strPath)
     if (!m_pDS->eof())
       lPathId = m_pDS->fv("path.idPath").get_asLong();
 
+    m_pDS->close();
     return lPathId;
   }
   catch (...)
@@ -1756,7 +1757,6 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
     sql.TrimRight(',');
     sql += FormatSQL(" where idMovie=%u", lMovieId);
     m_pDS->exec(sql.c_str());
-    g_infoManager.ResetPersistentCache(); // needed since # of movies have changed
   }
   catch (...)
   {
@@ -1826,7 +1826,6 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
     long lPathId = GetPath(strPath);
     if (lPathId < 0)
       lPathId = AddPath(strPath);
-    g_infoManager.ResetPersistentCache(); // needed since # of movies have changed
     return lTvShowId;
   }
   catch (...)
@@ -1981,7 +1980,6 @@ void CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPat
     sql.TrimRight(',');
     sql += FormatSQL(" where idMVideo=%u", lMVideoId);
     m_pDS->exec(sql.c_str());
-    g_infoManager.ResetPersistentCache(); // needed since # of movies have changed
   }
   catch (...)
   {
@@ -6080,7 +6078,6 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const s
 
     Compress(false);
 
-    g_infoManager.ResetPersistentCache(); // needed since # of movies have changed
     CUtil::DeleteVideoDatabaseDirectoryCache();
 
     if (progress)
