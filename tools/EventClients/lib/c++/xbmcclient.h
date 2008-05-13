@@ -5,13 +5,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#ifdef _WIN32
+#include <winsock.h>
+#else
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <arpa/inet.h>
+#endif
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include <arpa/inet.h>
 #include <time.h>
 
 #define STD_PORT       9777
@@ -60,6 +64,23 @@
 #define LOGFATAL   6
 #define LOGNONE    7
 
+static void Clean()
+{
+#ifdef _WIN32
+  WSACleanup();
+#endif
+}
+
+static bool Initialize()
+{
+#ifdef _WIN32
+  WSADATA wsaData;
+  if (WSAStartup(MAKEWORD(1, 1), &wsaData))
+    return false;
+#endif
+  return true;
+}
+
 class CAddress
 {
 private:
@@ -81,7 +102,7 @@ public:
     if (Address == NULL || (h=gethostbyname(Address)) == NULL)
     {
         if (Address != NULL)
-          herror("gethostbyname");
+			printf("Error: Get host by name\n");
 
         m_Addr.sin_addr.s_addr  = INADDR_ANY;
         m_Addr.sin_family       = AF_INET;
