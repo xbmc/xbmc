@@ -41,6 +41,7 @@ PT_BROADCAST     = 0x06
 PT_NOTIFICATION  = 0x07
 PT_BLOB          = 0x08
 PT_LOG           = 0x09
+PT_ACTION        = 0x0A
 PT_DEBUG         = 0xFF
 
 ICON_NONE = 0x00
@@ -65,6 +66,8 @@ LOGERROR   = 0x04
 LOGSEVERE  = 0x05
 LOGFATAL   = 0x06
 LOGNONE    = 0x07
+
+ACTION_EXECBUILTIN = 0x01
 
 ######################################################################
 # Helper Functions
@@ -406,6 +409,24 @@ class PacketLOG (Packet):
         if (autoprint):
           print logmessage
 
+class PacketACTION (Packet):
+    """An ACTION packet
+
+    An ACTION packet tells XBMC to do the action specified, based on the type it knows were it needs to be sent.
+    The idea is that this will be as in scripting/skining and keymapping, just triggered from afar.
+    """
+    def __init__(self, actionmessage="", actiontype=ACTION_EXECBUILTIN):
+        """
+        Keyword arguments:
+        loglevel -- the loglevel, follows XBMC standard.
+        logmessage -- the message to log
+        autoprint -- if the logmessage should automaticly be printed to stdout
+        """
+        Packet.__init__(self)
+        self.packettype = PT_ACTION
+        self.append_payload( chr (actiontype) )
+        self.append_payload( format_string(actionmessage) )
+
 ######################################################################
 # XBMC Client Class
 ######################################################################
@@ -529,6 +550,15 @@ class XBMCClient:
         autoprint -- if the logmessage should automaticly be printed to stdout
         """
         packet = PacketLOG(loglevel, logmessage)
+        packet.send(self.sock, self.addr, self.uid)
+
+    def send_action(self, actionmessage="", actiontype=ACTION_EXECBUILTIN):
+        """
+        Keyword arguments:
+        actionmessage -- the ActionString
+        actiontype -- The ActionType the ActionString should be sent to.
+        """
+        packet = PacketACTION(actionmessage, actiontype)
         packet.send(self.sock, self.addr, self.uid)
 
     def _get_icon_type(self, icon_file):
