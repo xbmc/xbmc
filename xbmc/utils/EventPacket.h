@@ -75,6 +75,11 @@ namespace EVENTPACKET
     /* PTM_RELATIVE = 0x02 */
   };
 
+  enum ActionType
+  {
+    AT_EXEC_BUILTIN = 0x01
+  };
+
   enum PacketType
   {
     PT_HELO          = 0x01,
@@ -161,7 +166,12 @@ namespace EVENTPACKET
     /* %c - log type                                                        */
     /* %s - message                                                         */
     /************************************************************************/
-
+    PT_ACTION        = 0x0A,
+    /************************************************************************/
+    /* Payload format                                                       */
+    /* %c - action type                                                     */
+    /* %s - action message                                                  */
+    /************************************************************************/
     PT_DEBUG         = 0xFF,
     /************************************************************************/
     /* Payload format:                                                      */
