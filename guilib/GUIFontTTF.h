@@ -10,9 +10,11 @@
 // forward definition
 struct FT_FaceRec_;
 struct FT_LibraryRec_;
+struct FT_GlyphSlotRec_;
 
 typedef struct FT_FaceRec_ *FT_Face;
 typedef struct FT_LibraryRec_ *FT_Library;
+typedef struct FT_GlyphSlotRec_ *FT_GlyphSlot;
 
 // flags for alignment
 #define XBFONT_LEFT       0x00000000
@@ -83,6 +85,10 @@ protected:
   bool CacheCharacter(WCHAR letter, DWORD style, Character *ch);
   inline void RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor);
   void ClearCharacterCache();
+
+  // modifying glyphs
+  void EmboldenGlyph(FT_GlyphSlot slot);
+  void ObliqueGlyph(FT_GlyphSlot slot);
 
   LPDIRECT3DDEVICE8 m_pD3DDevice;
   LPDIRECT3DTEXTURE8 m_texture;      // texture that holds our rendered characters (8bit alpha only)
