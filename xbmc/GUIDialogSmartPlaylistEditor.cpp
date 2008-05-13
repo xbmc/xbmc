@@ -174,8 +174,11 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
     {
       CStdString filename = CUtil::GetFileName(m_path);
       CStdString strType = m_path.Mid(g_guiSettings.GetString("system.playlistspath").size(),m_path.size()-filename.size()-g_guiSettings.GetString("system.playlistspath").size()-1);
-      if (!strType.Equals(m_playlist.m_playlistType))
-      {
+      // TODO: This probably needs to be rethought somewhat - ideally we'd just have a couple of folders involved, 
+      //       as they're really "smart folders" more than playlists at this point
+      if ((strType == "music" || strType == "video" || strType == "mixed") && strType != m_playlist.m_playlistType &&
+          (m_playlist.m_playlistType == "music" || m_playlist.m_playlistType == "video" || m_playlist.m_playlistType == "mixed"))
+      { // significant type change, move to the correct folder
         XFILE::CFile::Delete(m_path);
         CStdString strTmp;
         CUtil::AddFileToFolder(m_playlist.m_playlistType,filename,strTmp);
