@@ -1012,7 +1012,7 @@ void CGUIFontTTF::EmboldenGlyph(FT_GlyphSlot slot)
 
   FT_Pos dx = bbox_after.xMax - bbox_before.xMax;
   FT_Pos dy = bbox_after.yMax - bbox_before.yMax;
-  
+
   if ( slot->advance.x )
     slot->advance.x += dx;
 
@@ -1027,3 +1027,4 @@ void CGUIFontTTF::EmboldenGlyph(FT_GlyphSlot slot)
   slot->metrics.vertBearingY += dy;
   slot->metrics.vertAdvance  += dy;
 }
+
