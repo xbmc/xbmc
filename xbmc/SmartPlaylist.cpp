@@ -325,7 +325,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
 
   // now the query parameter
   CStdString query;
-  if (strType == "musics")
+  if (strType == "music")
   {
     if (m_field == FIELD_GENRE)
       query = "(strGenre" + parameter + ") or (idsong IN (select idsong from genre,exgenresong where exgenresong.idgenre = genre.idgenre and genre.strGenre" + parameter + "))";
@@ -392,6 +392,16 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
         query.Format("NOT (%s)", playlistQuery.c_str());
       else if (m_operator == OPERATOR_EQUALS)
         query = playlistQuery;
+    }
+  }
+  if (m_field == FIELD_PLAYCOUNT && strType != "music")
+  { // playcount is stored as NULL or number
+    if ((m_operator == OPERATOR_EQUALS && m_parameter == "0") ||
+        (m_operator == OPERATOR_DOES_NOT_EQUAL && m_parameter != "0") ||
+        (m_operator == OPERATOR_LESS_THAN))
+    {
+      CStdString field = GetDatabaseField(FIELD_PLAYCOUNT, strType);
+      query = field + " is NULL or " + field + parameter;
     }
   }
   else if (query.IsEmpty() && m_field != FIELD_NONE)
