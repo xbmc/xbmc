@@ -17,6 +17,11 @@
 
 using namespace DIRECTORY;
 
+#define DEFAULT_MOVIE_SCRAPER      "imdb.xml"
+#define DEFAULT_TVSHOW_SCRAPER     "tvdb.xml"
+#define DEFAULT_MUSICVIDEO_SCRAPER "mtv.xml"
+#define DEFAULT_ALBUM_SCRAPER      "allmusic.xml"
+
 CGUIDialogContentSettings::CGUIDialogContentSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_CONTENT_SETTINGS, "DialogContentSettings.xml")
 {
@@ -79,22 +84,22 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
               SetupPage();
               break;
       case 1: strLabel = g_localizeStrings.Get(20342);
-              m_info = m_scrapers["movies"][0];
+              m_info = FindDefault("movies",DEFAULT_MOVIE_SCRAPER);
               CreateSettings();
               SetupPage();
               break;
       case 2: strLabel = g_localizeStrings.Get(20343);
-              m_info = m_scrapers["tvshows"][0];
+              m_info = FindDefault("tvshows",DEFAULT_TVSHOW_SCRAPER);
               CreateSettings();
               SetupPage();
               break;
       case 3: strLabel = g_localizeStrings.Get(20389);
-              m_info = m_scrapers["musicvideos"][0];
+              m_info = FindDefault("musicvideos",DEFAULT_MUSICVIDEO_SCRAPER);
               CreateSettings();
               SetupPage();
               break;
       case 4: strLabel = g_localizeStrings.Get(132);
-              m_info = m_scrapers["albums"][0];
+              m_info = FindDefault("albums",DEFAULT_ALBUM_SCRAPER);
               CreateSettings();
               SetupPage();
               break;
@@ -500,3 +505,17 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
   return false;
 }
 
+SScraperInfo CGUIDialogContentSettings::FindDefault(const CStdString& strType, const CStdString& strDefault)
+{
+  SScraperInfo result = m_scrapers[strType][0]; // default to first
+  for (unsigned int i=0;i<m_scrapers[strType].size();++i)
+  {
+    if (m_scrapers[strType][i].strPath.Equals(strDefault))
+    {
+      result = m_scrapers[strType][i];
+      break;
+    }
+  }
+  
+  return result;
+}
