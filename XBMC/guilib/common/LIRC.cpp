@@ -10,23 +10,21 @@
 #include <errno.h>
 
 #define LIRC_DEVICE "/dev/lircd"
+#define LIRC_MAXIMUM_RECONNECT 10
 
 CRemoteControl g_RemoteControl;
 
 CRemoteControl::CRemoteControl()
 {
   m_fd = -1;
-  m_file = NULL;  
   m_bInitialized = false;
-  m_Reinitialize = false;
+  m_Reinitialize = 0;
   m_skipHold = false;
   Reset();
 }
 
 CRemoteControl::~CRemoteControl()
 {
-  if (m_file != NULL)
-    fclose(m_file);
 }
 
 void CRemoteControl::Reset()
@@ -37,8 +35,8 @@ void CRemoteControl::Reset()
 
 void CRemoteControl::Initialize()
 {
-  if (m_Reinitialize)
-    shutdown(m_fd, SHUT_RDWR); //Not certain this is needed, topfs2
+  if (m_Reinitialize > 0)
+    m_Reinitialize--;
 
   struct sockaddr_un addr;
 
@@ -67,29 +65,25 @@ void CRemoteControl::Initialize()
     CLog::Log(LOGERROR, "LIRC %s: fcntl(F_GETFL) failed: %s", __FUNCTION__, strerror(errno));
     return;
   }
-
   opts = (opts | O_NONBLOCK);
+
   if (fcntl(m_fd,F_SETFL,opts) == -1) 
   {
     CLog::Log(LOGERROR, "LIRC %s: fcntl(F_SETFL) failed: %s", __FUNCTION__, strerror(errno));
     return;
   }
 
-  m_file = fdopen(m_fd, "r");
-  if (m_file == NULL)
-  {
-    CLog::Log(LOGERROR, "LIRC %s: fdopen failed: %s", __FUNCTION__, strerror(errno));
-    return;
-  }
-
-  m_Reinitialize = false;
+  m_Reinitialize = 0;
   m_bInitialized = true;
 }
 
 void CRemoteControl::Update()
 {
-  if (m_Reinitialize)
+  if (m_Reinitialize > 0)
+  {
+    CLog::Log(LOGDEBUG, "LIRC: Reinitializing attempt %i/%i", m_Reinitialize, LIRC_MAXIMUM_RECONNECT);
     Initialize();
+  }
   if (!m_bInitialized)
     return;
 
@@ -97,7 +91,9 @@ void CRemoteControl::Update()
 
   // Read a line from the socket
   errno = 0;
-  while (fgets(m_buf, sizeof(m_buf), m_file) != NULL)
+  int i = recv(m_fd, m_buf, sizeof(m_buf), 0);
+
+  if (i > 0)
   {
     // Remove the \n
     m_buf[strlen(m_buf)-1] = '\0';
@@ -130,12 +126,17 @@ void CRemoteControl::Update()
       m_button = 0;
     }
   }
-  if (errno == 0) //If we don't get any error we've lost connection to LIRC when doing a standby
+
+  if (i == -1)
   {
-    CLog::Log(LOGDEBUG, "LIRC: Reinitializing");
-    fclose(m_file);
-    m_Reinitialize = true;
-    m_bInitialized = false;
+    if (errno != 11) //If we don't get EAGAIN error we've lost connection to LIRC when doing a standby
+    {
+      CLog::Log(LOGDEBUG, "LIRC: Reinitializing - Reason %i", errno);
+      shutdown(m_fd, SHUT_RDWR);
+      closesocket(m_fd);
+      m_Reinitialize = LIRC_MAXIMUM_RECONNECT;
+      m_bInitialized = false;
+    }
   }
 
   m_skipHold = false;
