@@ -119,7 +119,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
         CFileItemList *items = (CFileItemList *)message.GetLPVOID();
         for (int i = 0; i < items->Size(); i++)
           m_items.push_back(items->Get(i));
-        UpdateLayout();
+        UpdateLayout(true); // true to refresh all items
         SelectItem(message.GetParam1());
         return true;
       }
@@ -444,11 +444,13 @@ void CGUIBaseContainer::FreeResources()
   m_scrollSpeed = 0;
 }
 
-void CGUIBaseContainer::UpdateLayout()
+void CGUIBaseContainer::UpdateLayout(bool updateAllItems)
 {
-  // free memory of items
-  for (iItems it = m_items.begin(); it != m_items.end(); it++)
-    (*it)->FreeMemory();
+  if (updateAllItems)
+  { // free memory of items
+    for (iItems it = m_items.begin(); it != m_items.end(); it++)
+      (*it)->FreeMemory();
+  }
   // and recalculate the layout
   CalculateLayout();
   if (m_pageControl)
@@ -467,7 +469,7 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
   {
     // and do it
     int item = GetSelectedItem();
-    UpdateLayout();
+    UpdateLayout(true); // true to refresh all items
     SelectItem(item);
   }
 
