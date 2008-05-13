@@ -16,7 +16,7 @@
 #endif
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
-#include FT_SYNTHESIS_H
+#include FT_OUTLINE_H
 
 #define USE_RELEASE_LIBS
 
@@ -530,10 +530,10 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
   }
   // make bold if applicable
   if (style & FONT_STYLE_BOLD)
-    FT_GlyphSlot_Embolden(m_face->glyph);
+    EmboldenGlyph(m_face->glyph);
   // and italics if applicable
   if (style & FONT_STYLE_ITALICS)
-    FT_GlyphSlot_Oblique(m_face->glyph);
+    ObliqueGlyph(m_face->glyph);
   // grab the glyph
   if (FT_Get_Glyph(m_face->glyph, &glyph))
   {
@@ -970,3 +970,60 @@ struct CUSTOMVERTEX {
 #endif
 }
 
+// Oblique code - original taken from freetype2 (ftsynth.c)
+void CGUIFontTTF::ObliqueGlyph(FT_GlyphSlot slot)
+{
+  FT_Outline*  outline = &slot->outline;
+
+  /* only oblique outline glyphs */
+  if ( slot->format != FT_GLYPH_FORMAT_OUTLINE )
+    return;
+
+  /* we don't touch the advance width */
+
+  /* For italic, simply apply a shear transform, with an angle */
+  /* of about 12 degrees.                                      */
+
+  FT_Matrix    transform;
+  transform.xx = 0x10000L;
+  transform.yx = 0x00000L;
+
+  transform.xy = 0x06000L;
+  transform.yy = 0x10000L;
+
+  FT_Outline_Transform( &slot->outline, &transform );
+}
+
+
+// Embolden code - original taken from freetype2 (ftsynth.c)
+void CGUIFontTTF::EmboldenGlyph(FT_GlyphSlot slot)
+{
+  if ( slot->format != FT_GLYPH_FORMAT_OUTLINE )
+    return;
+
+  /* some reasonable strength */
+  FT_Pos strength = FT_MulFix( m_face->units_per_EM,
+                    m_face->size->metrics.y_scale ) / 24;
+
+  FT_BBox bbox_before, bbox_after;
+  FT_Outline_Get_CBox( &slot->outline, &bbox_before );
+  FT_Outline_Embolden( &slot->outline, strength );  // ignore error
+  FT_Outline_Get_CBox( &slot->outline, &bbox_after );
+
+  FT_Pos dx = bbox_after.xMax - bbox_before.xMax;
+  FT_Pos dy = bbox_after.yMax - bbox_before.yMax;
+  
+  if ( slot->advance.x )
+    slot->advance.x += dx;
+
+  if ( slot->advance.y )
+    slot->advance.y += dy;
+
+  slot->metrics.width        += dx;
+  slot->metrics.height       += dy;
+  slot->metrics.horiBearingY += dy;
+  slot->metrics.horiAdvance  += dx;
+  slot->metrics.vertBearingX -= dx / 2;
+  slot->metrics.vertBearingY += dy;
+  slot->metrics.vertAdvance  += dy;
+}
