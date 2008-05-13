@@ -129,6 +129,7 @@ rem	CONFIG START
   Echo guisettings.xml>>exclude.txt
   Echo profiles.xml>>exclude.txt
   Echo sources.xml>>exclude.txt
+  Echo lib-osx>>exclude.txt
 
   xcopy %EXE% BUILD_WIN32\Xbmc > NUL
   xcopy ..\..\UserData BUILD_WIN32\Xbmc\UserData /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
