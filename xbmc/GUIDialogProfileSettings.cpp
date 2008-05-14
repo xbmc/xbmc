@@ -380,7 +380,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
     g_settings.m_vecProfiles[iProfile].setPicturesLocked(dialog->m_bLockPictures);
     g_settings.m_vecProfiles[iProfile].setProgramsLocked(dialog->m_bLockPrograms);
 
-    g_settings.SaveProfiles("q:\\system\\profiles.xml");
+    g_settings.SaveProfiles(PROFILES_FILE);
     return true;
   }
 

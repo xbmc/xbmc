@@ -1617,7 +1617,7 @@ CProfile* CApplication::InitDirectoriesOSX()
   }
 
   g_settings.m_vecProfiles.clear();
-  g_settings.LoadProfiles(_P("q:\\system\\profiles.xml"));
+  g_settings.LoadProfiles(_P(PROFILES_FILE));
 
   CProfile* profile = NULL;
 
@@ -1715,7 +1715,7 @@ CProfile* CApplication::InitDirectoriesWin32()
   }
 
   g_settings.m_vecProfiles.clear();
-  g_settings.LoadProfiles(_P("q:\\system\\profiles.xml"));
+  g_settings.LoadProfiles(_P(PROFILES_FILE));
 
   if (m_bPlatformDirectories)
   {
