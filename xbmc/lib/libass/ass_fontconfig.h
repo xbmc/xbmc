@@ -18,8 +18,13 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-#ifndef __ASS_FONTCONFIG_H__
-#define __ASS_FONTCONFIG_H__
+#ifndef LIBASS_FONTCONFIG_H
+#define LIBASS_FONTCONFIG_H
+
+#include <stdint.h>
+#include "ass_types.h"
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #ifdef HAVE_FONTCONFIG
 #include <fontconfig/fontconfig.h>
@@ -27,13 +32,8 @@
 
 typedef struct fc_instance_s fc_instance_t;
 
-fc_instance_t* fontconfig_init(ass_library_t* library, FT_Library ftlibrary, const char* family, const char* path);
-char* fontconfig_select(fc_instance_t* priv, const char* family, unsigned bold, unsigned italic, int* index);
+fc_instance_t* fontconfig_init(ass_library_t* library, FT_Library ftlibrary, const char* family, const char* path, int fc);
+char* fontconfig_select(fc_instance_t* priv, const char* family, unsigned bold, unsigned italic, int* index, uint32_t code);
 void fontconfig_done(fc_instance_t* priv);
 
-#ifdef HAVE_FONTCONFIG
-char* fontconfig_select_with_charset(fc_instance_t* priv, const char* family, unsigned bold, unsigned italic, int* index, FcCharSet* charset);
-#endif
-
-#endif
-
+#endif /* LIBASS_FONTCONFIG_H */
