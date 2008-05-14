@@ -126,7 +126,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     }
     iLabel = 515;
   }
-  if (m_rule.m_field == CSmartPlaylistRule::SONG_ARTIST || m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM_ARTIST)
+  else if (m_rule.m_field == CSmartPlaylistRule::SONG_ARTIST || m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM_ARTIST)
   {
     if (m_type.Equals("music") || m_type.Equals("mixed"))
       database.GetArtistsNav("musicdb://5/",items,-1,m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM_ARTIST);
@@ -138,7 +138,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     }
     iLabel = 484;
   }
-  if (m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM)
+  else if (m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM)
   {
     if (m_type.Equals("music") || m_type.Equals("mixed"))
       database.GetAlbumsNav("musicdb://6/",items,-1,-1);
@@ -150,11 +150,14 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     }
     iLabel = 483;
   }
-  // TODO: SMARTPLAYLISTS add support for different types of content + directors
-  if (m_rule.m_field == CSmartPlaylistRule::VIDEO_ACTOR)
+  else if (m_rule.m_field == CSmartPlaylistRule::VIDEO_ACTOR)
   { 
     videodatabase.GetActorsNav("",items,VIDEODB_CONTENT_TVSHOWS);
     iLabel = 20337;
+  }
+  else
+  { // TODO: Add browseability in here.
+    assert(true);
   }
 
   CGUIDialogSelect* pDialog = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -181,13 +184,14 @@ void CGUIDialogSmartPlaylistRule::OnCancel()
 void CGUIDialogSmartPlaylistRule::OnValue()
 {
   CStdString value(m_rule.m_parameter);
-  switch (GetFieldType(m_rule.m_field))
+  switch (CSmartPlaylistRule::GetFieldType(m_rule.m_field))
   {
-  case TEXT_FIELD:
+  case CSmartPlaylistRule::TEXT_FIELD:
+  case CSmartPlaylistRule::BROWSEABLE_FIELD:
     if (CGUIDialogKeyboard::ShowAndGetInput(value, g_localizeStrings.Get(21420), false))
       m_rule.m_parameter = value;
     break;
-  case DATE_FIELD:
+  case CSmartPlaylistRule::DATE_FIELD:
     if (m_rule.m_operator == CSmartPlaylistRule::OPERATOR_IN_THE_LAST)
     {
       if (CGUIDialogKeyboard::ShowAndGetInput(value, g_localizeStrings.Get(21420), false))
@@ -208,15 +212,15 @@ void CGUIDialogSmartPlaylistRule::OnValue()
       }
     }
     break;
-  case SECONDS_FIELD:
+  case CSmartPlaylistRule::SECONDS_FIELD:
     if (CGUIDialogNumeric::ShowAndGetSeconds(value, g_localizeStrings.Get(21420)))
       m_rule.m_parameter = value;
     break;
-  case NUMERIC_FIELD:
+  case CSmartPlaylistRule::NUMERIC_FIELD:
     if (CGUIDialogNumeric::ShowAndGetNumber(value, g_localizeStrings.Get(21420)))
       m_rule.m_parameter = value;
     break;
-  case PLAYLIST_FIELD:
+  case CSmartPlaylistRule::PLAYLIST_FIELD:
     // use filebrowser to grab another smart playlist
 
     // Note: This can cause infinite loops (playlist that refers to the same playlist) but I don't
@@ -276,9 +280,13 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
   CGUIMessage reset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_OPERATOR);
   OnMessage(reset);
 
-  switch (GetFieldType(m_rule.m_field))
+  CONTROL_DISABLE(CONTROL_BROWSE);
+  switch (CSmartPlaylistRule::GetFieldType(m_rule.m_field))
   {
-  case TEXT_FIELD:
+  case CSmartPlaylistRule::BROWSEABLE_FIELD:
+    CONTROL_ENABLE(CONTROL_BROWSE);
+    // fall through...
+  case CSmartPlaylistRule::TEXT_FIELD:
     // text fields - add the usual comparisons
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_EQUALS);
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL);
@@ -288,8 +296,8 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_ENDS_WITH);
     break;
 
-  case NUMERIC_FIELD:
-  case SECONDS_FIELD:
+  case CSmartPlaylistRule::NUMERIC_FIELD:
+  case CSmartPlaylistRule::SECONDS_FIELD:
     // numerical fields - less than greater than
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_EQUALS);
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL);
@@ -297,7 +305,7 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_LESS_THAN);
     break;
 
-  case DATE_FIELD:
+  case CSmartPlaylistRule::DATE_FIELD:
     // date field
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_AFTER);
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_BEFORE);
@@ -305,25 +313,18 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_NOT_IN_THE_LAST);
     break;
 
-  case PLAYLIST_FIELD:
+  case CSmartPlaylistRule::PLAYLIST_FIELD:
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_EQUALS);
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL);
     break;
   }
 
+  // check our operator is valid, and update if not
   CGUIMessage select(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_OPERATOR, m_rule.m_operator);
   OnMessage(select);
   CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_OPERATOR);
   OnMessage(selected);
   m_rule.m_operator = (CSmartPlaylistRule::SEARCH_OPERATOR)selected.GetParam1();
-  if ((m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM || m_rule.m_field == CSmartPlaylistRule::SONG_ARTIST || m_rule.m_field == CSmartPlaylistRule::FIELD_GENRE || m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM_ARTIST) && (m_rule.m_operator == CSmartPlaylistRule::OPERATOR_EQUALS || m_rule.m_operator == CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL))
-  {
-    CONTROL_ENABLE(CONTROL_BROWSE)
-  }
-  else
-  {
-    CONTROL_DISABLE(CONTROL_BROWSE)
-  }
 
   SET_CONTROL_LABEL(CONTROL_VALUE, m_rule.m_parameter);
 }
@@ -360,38 +361,3 @@ bool CGUIDialogSmartPlaylistRule::EditRule(CSmartPlaylistRule &rule, const CStdS
   rule = editor->m_rule;
   return !editor->m_cancelled;
 }
-
-CGUIDialogSmartPlaylistRule::FIELD CGUIDialogSmartPlaylistRule::GetFieldType(CSmartPlaylistRule::DATABASE_FIELD field)
-{
-  switch (field)
-  {
-  case CSmartPlaylistRule::FIELD_GENRE:
-  case CSmartPlaylistRule::SONG_ALBUM:
-  case CSmartPlaylistRule::SONG_ARTIST:
-  case CSmartPlaylistRule::SONG_ALBUM_ARTIST:
-  case CSmartPlaylistRule::FIELD_TITLE:
-  case CSmartPlaylistRule::SONG_FILENAME:
-  case CSmartPlaylistRule::SONG_COMMENT:
-    return TEXT_FIELD;
-
-  case CSmartPlaylistRule::FIELD_YEAR:
-  case CSmartPlaylistRule::SONG_TRACKNUMBER:
-  case CSmartPlaylistRule::FIELD_PLAYCOUNT:
-  case CSmartPlaylistRule::FIELD_RATING:
-    return NUMERIC_FIELD;
-
-  case CSmartPlaylistRule::FIELD_TIME:
-    return SECONDS_FIELD;
-
-  case CSmartPlaylistRule::SONG_LASTPLAYED:
-    return DATE_FIELD;
-
-  case CSmartPlaylistRule::FIELD_PLAYLIST:
-    return PLAYLIST_FIELD;
-
-  default:
-    break;
-  }
-  return TEXT_FIELD;
-}
-

@@ -27,6 +27,7 @@
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
 #include "GUISettings.h"
+#include "Settings.h"
 #include "FileItem.h"
 
 #define CONTROL_HEADING         2
@@ -156,8 +157,7 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
     if (CGUIDialogKeyboard::ShowAndGetInput(filename, g_localizeStrings.Get(16013), false))
     {
       CStdString strTmp;
-      if (m_playlist.m_playlistType != "music")
-        CUtil::AddFileToFolder("video",filename,strTmp);
+      CUtil::AddFileToFolder("video",filename,m_playlist.GetSaveLocation());
       CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),strTmp,path);
     }
     else
@@ -170,18 +170,17 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
   }
   else
   {
+    // check if we need to actually change the save location for this playlist
+    // this occurs if the user switches from music video <> songs <> mixed
     if (m_path.Left(g_guiSettings.GetString("system.playlistspath").size()).Equals(g_guiSettings.GetString("system.playlistspath"))) // fugly, well aware
     {
       CStdString filename = CUtil::GetFileName(m_path);
-      CStdString strType = m_path.Mid(g_guiSettings.GetString("system.playlistspath").size(),m_path.size()-filename.size()-g_guiSettings.GetString("system.playlistspath").size()-1);
-      // TODO: This probably needs to be rethought somewhat - ideally we'd just have a couple of folders involved, 
-      //       as they're really "smart folders" more than playlists at this point
-      if ((strType == "music" || strType == "video" || strType == "mixed") && strType != m_playlist.m_playlistType &&
-          (m_playlist.m_playlistType == "music" || m_playlist.m_playlistType == "video" || m_playlist.m_playlistType == "mixed"))
-      { // significant type change, move to the correct folder
+      CStdString strFolder = m_path.Mid(g_guiSettings.GetString("system.playlistspath").size(),m_path.size()-filename.size()-g_guiSettings.GetString("system.playlistspath").size()-1);
+      if (strFolder != m_playlist.GetSaveLocation())
+      { // move to the correct folder
         XFILE::CFile::Delete(m_path);
         CStdString strTmp;
-        CUtil::AddFileToFolder(m_playlist.m_playlistType,filename,strTmp);
+        CUtil::AddFileToFolder(m_playlist.GetSaveLocation(),filename,strTmp);
         CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),strTmp,m_path);
       }
     }
@@ -487,9 +486,9 @@ bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const CStdString &path)
   if (!editor) return false;
 
   editor->m_isPartyMode = 0;
-  if (path.Equals("P:\\PartyMode.xsp"))
+  if (path.Equals(g_settings.GetUserDataItem("PartyMode.xsp")))
     editor->m_isPartyMode = 1;
-  if (path.Equals("P:\\PartyMode-Video.xsp"))
+  if (path.Equals(g_settings.GetUserDataItem("PartyMode-Video.xsp")))
     editor->m_isPartyMode = 2;
 
   CSmartPlaylist playlist;

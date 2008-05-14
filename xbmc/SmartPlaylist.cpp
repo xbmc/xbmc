@@ -38,43 +38,44 @@ typedef struct
 {
   char string[13];
   CSmartPlaylistRule::DATABASE_FIELD field;
+  CSmartPlaylistRule::FIELD_TYPE type;
   int localizedString;
 } translateField;
 
-static const translateField fields[] = { { "none", CSmartPlaylistRule::FIELD_NONE, 231 }, 
-                                         { "genre", CSmartPlaylistRule::FIELD_GENRE, 515 },
-                                         { "album", CSmartPlaylistRule::SONG_ALBUM, 558 },
-                                         { "albumartist", CSmartPlaylistRule::SONG_ALBUM_ARTIST, 566 },
-                                         { "artist", CSmartPlaylistRule::SONG_ARTIST, 557 },
-                                         { "title", CSmartPlaylistRule::FIELD_TITLE, 556 },
-                                         { "year", CSmartPlaylistRule::FIELD_YEAR, 562 },
-                                         { "time", CSmartPlaylistRule::FIELD_TIME, 180 },
-                                         { "tracknumber", CSmartPlaylistRule::SONG_TRACKNUMBER, 554 },
-                                         { "filename", CSmartPlaylistRule::SONG_FILENAME, 561 },
-                                         { "playcount", CSmartPlaylistRule::FIELD_PLAYCOUNT, 567 },
-                                         { "lastplayed", CSmartPlaylistRule::SONG_LASTPLAYED, 568 },
-                                         { "rating", CSmartPlaylistRule::FIELD_RATING, 563 },
-                                         { "comment", CSmartPlaylistRule::SONG_COMMENT, 569 },
-                                         { "dateadded", CSmartPlaylistRule::FIELD_DATEADDED, 570 },
-                                         { "plot", CSmartPlaylistRule::VIDEO_PLOT, 207 },
-                                         { "plotouline", CSmartPlaylistRule::VIDEO_PLOTOUTLINE, 203 }, // contains :
-                                         { "tagline", CSmartPlaylistRule::VIDEO_TAGLINE, 202 },   // contains :
-                                         { "mpaarating", CSmartPlaylistRule::VIDEO_MPAA, 20074 }, // contains :
-                                         { "top250", CSmartPlaylistRule::VIDEO_TOP250, 13409 },   // contains :
-                                         { "status", CSmartPlaylistRule::TVSHOW_STATUS, 126 },
-                                         { "votes", CSmartPlaylistRule::VIDEO_VOTES, 20350 },
-                                         { "director", CSmartPlaylistRule::VIDEO_DIRECTOR, 20339 },
-                                         { "actor", CSmartPlaylistRule::VIDEO_ACTOR, 20337 },
-                                         { "studio", CSmartPlaylistRule::VIDEO_STUDIO, 572 },
-                                         { "numepisodes", CSmartPlaylistRule::TVSHOW_NUMEPISODES, 20360 },
-                                         { "numwatched", CSmartPlaylistRule::TVSHOW_NUMWATCHED, 16102 },
-                                         { "writers", CSmartPlaylistRule::VIDEO_WRITER, 20417 },
-                                         { "airdate", CSmartPlaylistRule::EPISODE_AIRDATE, 20416 },
-                                         { "episode", CSmartPlaylistRule::EPISODE_EPISODE, 20359 },
-                                         { "season", CSmartPlaylistRule::EPISODE_SEASON, 20373 },
-                                         { "tvshow", CSmartPlaylistRule::FIELD_TVSHOWTITLE, 20364 },
-                                         { "random", CSmartPlaylistRule::FIELD_RANDOM, 590 },
-                                         { "playlist", CSmartPlaylistRule::FIELD_PLAYLIST, 559 }
+static const translateField fields[] = { { "none", CSmartPlaylistRule::FIELD_NONE, CSmartPlaylistRule::TEXT_FIELD, 231 }, 
+                                         { "genre", CSmartPlaylistRule::FIELD_GENRE, CSmartPlaylistRule::BROWSEABLE_FIELD, 515 },
+                                         { "album", CSmartPlaylistRule::SONG_ALBUM, CSmartPlaylistRule::BROWSEABLE_FIELD, 558 },
+                                         { "albumartist", CSmartPlaylistRule::SONG_ALBUM_ARTIST, CSmartPlaylistRule::BROWSEABLE_FIELD, 566 },
+                                         { "artist", CSmartPlaylistRule::SONG_ARTIST, CSmartPlaylistRule::BROWSEABLE_FIELD, 557 },
+                                         { "title", CSmartPlaylistRule::FIELD_TITLE, CSmartPlaylistRule::TEXT_FIELD, 556 },
+                                         { "year", CSmartPlaylistRule::FIELD_YEAR, CSmartPlaylistRule::NUMERIC_FIELD, 562 },
+                                         { "time", CSmartPlaylistRule::FIELD_TIME, CSmartPlaylistRule::SECONDS_FIELD, 180 },
+                                         { "tracknumber", CSmartPlaylistRule::SONG_TRACKNUMBER, CSmartPlaylistRule::NUMERIC_FIELD, 554 },
+                                         { "filename", CSmartPlaylistRule::SONG_FILENAME, CSmartPlaylistRule::TEXT_FIELD, 561 },
+                                         { "playcount", CSmartPlaylistRule::FIELD_PLAYCOUNT, CSmartPlaylistRule::NUMERIC_FIELD, 567 },
+                                         { "lastplayed", CSmartPlaylistRule::SONG_LASTPLAYED, CSmartPlaylistRule::DATE_FIELD, 568 },
+                                         { "rating", CSmartPlaylistRule::FIELD_RATING, CSmartPlaylistRule::NUMERIC_FIELD, 563 },
+                                         { "comment", CSmartPlaylistRule::SONG_COMMENT, CSmartPlaylistRule::TEXT_FIELD, 569 },
+                                         { "dateadded", CSmartPlaylistRule::FIELD_DATEADDED, CSmartPlaylistRule::DATE_FIELD, 570 },
+                                         { "plot", CSmartPlaylistRule::VIDEO_PLOT, CSmartPlaylistRule::TEXT_FIELD, 207 },
+                                         { "plotoutline", CSmartPlaylistRule::VIDEO_PLOTOUTLINE, CSmartPlaylistRule::TEXT_FIELD, 203 },
+                                         { "tagline", CSmartPlaylistRule::VIDEO_TAGLINE, CSmartPlaylistRule::TEXT_FIELD, 202 },
+                                         { "mpaarating", CSmartPlaylistRule::VIDEO_MPAA, CSmartPlaylistRule::TEXT_FIELD, 20074 },
+                                         { "top250", CSmartPlaylistRule::VIDEO_TOP250, CSmartPlaylistRule::NUMERIC_FIELD, 13409 },
+                                         { "status", CSmartPlaylistRule::TVSHOW_STATUS, CSmartPlaylistRule::TEXT_FIELD, 126 },
+                                         { "votes", CSmartPlaylistRule::VIDEO_VOTES, CSmartPlaylistRule::TEXT_FIELD, 20350 },
+                                         { "director", CSmartPlaylistRule::VIDEO_DIRECTOR, CSmartPlaylistRule::BROWSEABLE_FIELD, 20339 },
+                                         { "actor", CSmartPlaylistRule::VIDEO_ACTOR, CSmartPlaylistRule::BROWSEABLE_FIELD, 20337 },
+                                         { "studio", CSmartPlaylistRule::VIDEO_STUDIO, CSmartPlaylistRule::BROWSEABLE_FIELD, 572 },
+                                         { "numepisodes", CSmartPlaylistRule::TVSHOW_NUMEPISODES, CSmartPlaylistRule::NUMERIC_FIELD, 20360 },
+                                         { "numwatched", CSmartPlaylistRule::TVSHOW_NUMWATCHED, CSmartPlaylistRule::NUMERIC_FIELD, 16102 },
+                                         { "writers", CSmartPlaylistRule::VIDEO_WRITER, CSmartPlaylistRule::BROWSEABLE_FIELD, 20417 },
+                                         { "airdate", CSmartPlaylistRule::EPISODE_AIRDATE, CSmartPlaylistRule::DATE_FIELD, 20416 },
+                                         { "episode", CSmartPlaylistRule::EPISODE_EPISODE, CSmartPlaylistRule::NUMERIC_FIELD, 20359 },
+                                         { "season", CSmartPlaylistRule::EPISODE_SEASON, CSmartPlaylistRule::NUMERIC_FIELD, 20373 },
+                                         { "tvshow", CSmartPlaylistRule::FIELD_TVSHOWTITLE, CSmartPlaylistRule::BROWSEABLE_FIELD, 20364 },
+                                         { "random", CSmartPlaylistRule::FIELD_RANDOM, CSmartPlaylistRule::TEXT_FIELD, 590 },
+                                         { "playlist", CSmartPlaylistRule::FIELD_PLAYLIST, CSmartPlaylistRule::PLAYLIST_FIELD, 559 }
                                        };
 
 #define NUM_FIELDS sizeof(fields) / sizeof(translateField)
@@ -159,6 +160,13 @@ CStdString CSmartPlaylistRule::GetLocalizedField(DATABASE_FIELD field)
   for (unsigned int i = 0; i < NUM_FIELDS; i++)
     if (field == fields[i].field) return g_localizeStrings.Get(fields[i].localizedString);
   return g_localizeStrings.Get(16018);
+}
+
+CSmartPlaylistRule::FIELD_TYPE CSmartPlaylistRule::GetFieldType(DATABASE_FIELD field)
+{
+  for (unsigned int i = 0; i < NUM_FIELDS; i++)
+    if (field == fields[i].field) return fields[i].type;
+  return TEXT_FIELD;
 }
 
 vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const CStdString &type)
@@ -705,3 +713,10 @@ const vector<CSmartPlaylistRule> &CSmartPlaylist::GetRules() const
   return m_playlistRules;
 }
 
+CStdString CSmartPlaylist::GetSaveLocation() const
+{
+  if (m_playlistType == "music" || m_playlistType == "mixed")
+    return m_playlistType;
+  // all others are video
+  return "video";
+}
