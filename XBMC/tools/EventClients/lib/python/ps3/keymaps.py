@@ -1,65 +1,65 @@
 # PS3 Remote and Controller Keymaps
 
 keymap_remote = {
-    "16": 's' ,#EJECT
-    "64": 'w' ,#AUDIO
-    "65": 'z' ,#ANGLE
-    "63": 'n' ,#SUBTITLE
-    "0f": 'd' ,#CLEAR
-    "28": 't' ,#TIME
+    "16": 'power'  ,#EJECT
+    "64": None     ,#AUDIO
+    "65": None     ,#ANGLE
+    "63": None     ,#SUBTITLE
+    "0f": None     ,#CLEAR
+    "28": None     ,#TIME
 
-    "00": '1' ,#1
-    "01": '2' ,#2
-    "02": '3' ,#3
-    "03": '4' ,#4
-    "04": '5' ,#5
-    "05": '6' ,#6
-    "06": '7' ,#7
-    "07": '8' ,#8
-    "08": '9' ,#9
-    "09": '0' ,#0
+    "00": 'one'   ,#1
+    "01": 'two'   ,#2
+    "02": 'three' ,#3
+    "03": 'four'  ,#4
+    "04": 'five'  ,#5
+    "05": 'six'   ,#6
+    "06": 'seven' ,#7
+    "07": 'eight' ,#8
+    "08": 'nine'  ,#9
+    "09": 'zero'  ,#0
 
-    "81": None ,#RED
-    "82": None ,#GREEN
-    "80": None ,#BLUE
-    "83": None ,#YELLOW
+    "81": 'mytv'       ,#RED
+    "82": 'mymusic'    ,#GREEN
+    "80": 'mypictures' ,#BLUE
+    "83": 'myvideo'    ,#YELLOW
 
-    "70": 'I'      ,#DISPLAY
-    "1a": None     ,#TOP MENU
-    "40": 'menu'   ,#POP UP/MENU
-    "0e": 'escape' ,#RETURN
+    "70": 'display'  ,#DISPLAY
+    "1a": None       ,#TOP MENU
+    "40": 'menu'     ,#POP UP/MENU
+    "0e": None       ,#RETURN
 
-    "5c": 'menu'   ,#OPTIONS/TRIANGLE
-    "5d": 'escape' ,#BACK/CIRCLE
-    "5e": 'tab'    ,#X
-    "5f": 'V'      ,#VIEW/SQUARE
+    "5c": 'menu'    ,#OPTIONS/TRIANGLE
+    "5d": 'back'    ,#BACK/CIRCLE
+    "5e": 'info'    ,#X
+    "5f": 'title'   ,#VIEW/SQUARE
 
     "54": 'up'     ,#UP
     "55": 'right'  ,#RIGHT
     "56": 'down'   ,#DOWN
     "57": 'left'   ,#LEFT
-    "0b": 'return' ,#ENTER
+    "0b": 'select' ,#ENTER
 
-    "5a": 'plus'     ,#L1
-    "58": 'minus'    ,#L2
-    "51": None       ,#L3
-    "5b": 'pageup'   ,#R1
-    "59": 'pagedown' ,#R2
-    "52": 'c'        ,#R3
+    "5a": 'volumeplus'  ,#L1
+    "58": 'volumeminus' ,#L2
+    "51": 'Mute'        ,#L3
+    "5b": 'pageplus'    ,#R1
+    "59": 'pageminus'   ,#R2
+    "52": None          ,#R3
 
-    "43": 's'                  ,#PLAYSTATION
-    "50": 'opensquarebracket'  ,#SELECT
-    "53": 'closesquarebracket' ,#START
+    "43": None          ,#PLAYSTATION
+    "50": None          ,#SELECT
+    "53": None          ,#START
 
-    "33": 'r'      ,#<-SCAN
-    "34": 'f'      ,#  SCAN->
-    "30": 'comma'  ,#PREV
-    "31": 'period' ,#NEXT
-    "60": None     ,#<-SLOW/STEP
-    "61": None     ,#  SLOW/STEP->
-    "32": 'P'      ,#PLAY
-    "38": 'x'      ,#STOP
-    "39": 'space'  #PAUSE
+    "33": 'reverse'   ,#<-SCAN
+    "34": 'forward'   ,#  SCAN->
+    "30": 'skipminus' ,#PREV
+    "31": 'skipplus'  ,#NEXT
+    "60": None        ,#<-SLOW/STEP
+    "61": None        ,#  SLOW/STEP->
+    "32": 'play'      ,#PLAY
+    "38": 'stop'      ,#STOP
+    "39": 'pause'     ,#PAUSE
     }
 
 

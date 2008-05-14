@@ -502,6 +502,16 @@ class XBMCClient:
         self.send_button(map="KB", button=button)
 
 
+    def send_remote_button(self, button=None):
+        """Send a remote control event to XBMC
+        Keyword Arguments:
+        button -- name of the remote control button to send (same as in Keymap.xml)
+        """
+        if not button:
+            return
+        self.send_button(map="R1", button=button)
+
+
     def release_button(self):
         """Release all buttons"""
         packet = PacketBUTTON(code=0x01, down=0)
