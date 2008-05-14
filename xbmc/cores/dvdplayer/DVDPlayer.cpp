@@ -1734,7 +1734,11 @@ __int64 CDVDPlayer::GetTotalTimeInMsec()
   }
 
   else if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+  {
     msec = ((CDVDInputStreamTV*)m_pInputStream)->GetTotalTime();
+    if(msec <= 0 && m_pDemuxer)
+      msec = m_pDemuxer->GetStreamLenght();
+  }
 
   else if (m_pDemuxer) 
     msec = m_pDemuxer->GetStreamLenght();
