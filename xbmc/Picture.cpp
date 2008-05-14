@@ -140,11 +140,17 @@ bool CPicture::CacheImage(const CStdString& sourceFileName, const CStdString& de
 
 bool CPicture::CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName)
 {
+  CStdString strExt=".";
+  if(strExtension.Left(1).Compare(".")==0)
+    strExt = strExtension;
+  else
+    strExt.append(strExtension);
+
   CLog::Log(LOGINFO, "Creating album thumb from memory: %s", strThumbFileName.c_str());
   if (!m_dll.Load()) return false;
-  if (!m_dll.CreateThumbnailFromMemory((BYTE *)pBuffer, nBufSize, strExtension.c_str(), strThumbFileName.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize))
+  if (!m_dll.CreateThumbnailFromMemory((BYTE *)pBuffer, nBufSize, strExt.c_str(), strThumbFileName.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize))
   {
-    CLog::Log(LOGERROR, "PICTURE::CreateAlbumThumbnailFromMemory: exception: memfile FileType: %s\n", strExtension.c_str());
+    CLog::Log(LOGERROR, "PICTURE::CreateAlbumThumbnailFromMemory: exception: memfile FileType: %s\n", strExt.c_str());
     return false;
   }
   return true;
