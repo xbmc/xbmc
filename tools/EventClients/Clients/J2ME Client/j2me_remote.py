@@ -23,7 +23,7 @@ import sys
 try:
     from xbmc.xbmcclient import *
     from xbmc.bt.bt import *
-    from xbmc.xbmc.defs import *
+    from xbmc.defs import *
 except:
     sys.path.append('../../lib/python')
     from xbmcclient import *

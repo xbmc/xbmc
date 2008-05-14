@@ -20,7 +20,7 @@ try:
     from xbmc.xbmcclient import *
     from xbmc.ps3.keymaps import keymap_remote as g_keymap # look here to change the keymapping
     from xbmc.bt.bt import *
-    from xbmc.xbmc.defs import *
+    from xbmc.defs import *
 except:
     sys.path.append("../../lib/python")
     from xbmcclient import *
