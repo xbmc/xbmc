@@ -24,6 +24,7 @@ public:
                         FIELD_RATING,
                         SONG_COMMENT,
                         FIELD_DATEADDED,
+                        FIELD_TVSHOWTITLE,
                         VIDEO_PLOT,
                         VIDEO_PLOTOUTLINE,
                         VIDEO_TAGLINE,

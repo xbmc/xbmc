@@ -72,6 +72,7 @@ static const translateField fields[] = { { "none", CSmartPlaylistRule::FIELD_NON
                                          { "airdate", CSmartPlaylistRule::EPISODE_AIRDATE, 20416 },
                                          { "episode", CSmartPlaylistRule::EPISODE_EPISODE, 20359 },
                                          { "season", CSmartPlaylistRule::EPISODE_SEASON, 20373 },
+                                         { "tvshow", CSmartPlaylistRule::FIELD_TVSHOWTITLE, 20364 },
                                          { "random", CSmartPlaylistRule::FIELD_RANDOM, 590 },
                                          { "playlist", CSmartPlaylistRule::FIELD_PLAYLIST, 559 }
                                        };
@@ -199,6 +200,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
   else if (type == "episodes")
   {
     fields.push_back(FIELD_TITLE);
+    fields.push_back(FIELD_TVSHOWTITLE);
     fields.push_back(VIDEO_PLOT);
     fields.push_back(VIDEO_VOTES);
     fields.push_back(FIELD_RATING);
@@ -491,6 +493,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
   {
     CStdString result;
     if (field == FIELD_TITLE) result.Format("c%02d", VIDEODB_ID_EPISODE_TITLE);
+    else if (field == FIELD_TVSHOWTITLE) result = "strTitle";
     else if (field == VIDEO_PLOT) result.Format("c%02d", VIDEODB_ID_EPISODE_PLOT);
     else if (field == VIDEO_VOTES) result.Format("c%02d", VIDEODB_ID_EPISODE_VOTES);
     else if (field == FIELD_RATING) result.Format("c%02d", VIDEODB_ID_EPISODE_RATING);
