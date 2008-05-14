@@ -163,6 +163,7 @@ void CKeyboard::Update()
     else if (KeyDown(DIK_MINUS)) { m_VKey = 0xbd; m_cAscii = m_bShift ? '_' : '-'; }
     else if (KeyDown(DIK_PERIOD)) { m_VKey = 0xbe; m_cAscii = m_bShift ? '>' : '.'; }
     else if (KeyDown(DIK_DIVIDE)) { m_VKey = 0xbf; m_cAscii = m_bShift ? '?' : '/'; }
+    else if (KeyDown(DIK_SLASH)) { m_VKey = 0xbf; m_cAscii = m_bShift ? '?' : '/'; }
     else if (KeyDown(DIK_GRAVE)) { m_VKey = 0xc0; m_cAscii = m_bShift ? '~' : '`'; }
     else if (KeyDown(DIK_LBRACKET)) { m_VKey = 0xeb; m_cAscii = m_bShift ? '{' : '['; }
     else if (KeyDown(DIK_BACKSLASH)) { m_VKey = 0xec; m_cAscii = m_bShift ? '|' : '\\'; }
