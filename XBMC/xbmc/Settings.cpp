@@ -1893,6 +1893,7 @@ bool CSettings::LoadProfile(int index)
       CLog::Log(LOGNOTICE, "setting fanspeed");
       CFanController::Instance()->SetFanSpeed(g_guiSettings.GetInt("system.fanspeed"));
     }
+    g_application.StartLEDControl(false);
 #endif
 
     // to set labels - shares are reloaded
