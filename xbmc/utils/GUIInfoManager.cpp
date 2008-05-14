@@ -1989,19 +1989,19 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
     case CONTAINER_CONTENT:
       {
         CStdString content;
-        CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+        CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
         if (window)
-          content = ((CGUIMediaWindow *)window)->CurrentDirectory().GetContent();
-        else
         {
-          window = GetWindowWithCondition(dwContextWindow, 0);
+          if (window->GetID() == WINDOW_MUSIC_INFO)
+            content = ((CGUIWindowMusicInfo *)window)->CurrentDirectory().GetContent();
+          else if (window->GetID() == WINDOW_VIDEO_INFO)
+            content = ((CGUIWindowVideoInfo *)window)->CurrentDirectory().GetContent();
+        }
+        if (content.IsEmpty())
+        {
+          window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
           if (window)
-          {
-            if (window->GetID() == WINDOW_MUSIC_INFO)
-              content = ((CGUIWindowMusicInfo *)window)->CurrentDirectory().GetContent();
-            else if (window->GetID() == WINDOW_VIDEO_INFO)
-              content = ((CGUIWindowVideoInfo *)window)->CurrentDirectory().GetContent();
-          }
+            content = ((CGUIMediaWindow *)window)->CurrentDirectory().GetContent();
         }
         bReturn = m_stringParameters[info.GetData1()].Equals(content);
       }
