@@ -55,14 +55,14 @@ HRESULT CNfoFile::Create(const CStdString& strPath)
     CVideoInfoTag details;
     bNfo = GetDetails(details);
     CDirectory::GetDirectory("q:\\system\\scrapers\\video",items,".xml",false);
-    if (m_strContent.Equals("tvshows")) // need to identify which scraper
+    if (m_strContent.Equals("tvshows") && bNfo) // need to identify which scraper
       strURL = details.m_strEpisodeGuide;
 
   }
   if (bNfo)
   {
     m_strScraper = "NFO";
-    if (!m_strContent.Equals("tvshows")) // need to identify which scraper
+    if (!m_strContent.Equals("tvshows") || !CUtil::GetFileName(strPath).Equals("tvshow.nfo")) // need to identify which scraper
       return S_OK;
   }
 
