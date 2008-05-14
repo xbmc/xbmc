@@ -18,8 +18,10 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-#ifndef __ASS_TYPES_H__
-#define __ASS_TYPES_H__
+#ifndef LIBASS_TYPES_H
+#define LIBASS_TYPES_H
+
+#include <stdint.h>
 
 #define VALIGN_SUB 0
 #define VALIGN_CENTER 8
@@ -110,5 +112,4 @@ typedef struct ass_track_s {
 	parser_priv_t* parser_priv;
 } ass_track_t;
 
-#endif
-
+#endif /* LIBASS_TYPES_H */
