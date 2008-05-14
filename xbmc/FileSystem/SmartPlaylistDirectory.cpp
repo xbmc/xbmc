@@ -69,6 +69,7 @@ namespace DIRECTORY
 
       CStdString whereOrder = playlist.GetWhereClause() + " " + playlist.GetOrderClause();
       success = db.GetSongsByWhere("", whereOrder, items);
+      items.SetContent("songs");
       db.Close();
       playlist.SetType(type);
     }
@@ -84,6 +85,7 @@ namespace DIRECTORY
       success2 = db.GetMusicVideosByWhere("videodb://3/2/", whereOrder, items2, false); // TODO: SMARTPLAYLISTS Don't check locks???
       db.Close();
       items.Append(items2);
+      items.SetContent("musicvideos");
       playlist.SetType(type);
     }
     if (playlist.GetType().Equals("mixed"))

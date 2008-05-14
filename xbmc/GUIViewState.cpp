@@ -57,6 +57,20 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (url.GetProtocol()=="musicsearch")
     return new CGUIViewStateMusicSearch(items);
 
+  if (items.IsSmartPlayList())
+  {
+    if (items.GetContent() == "songs")
+      return new CGUIViewStateMusicSmartPlaylist(items);
+    else if (items.GetContent() == "musicvideos") // TODO: Update this
+      return new CGUIViewStateMusicSmartPlaylist(items);
+    else if (items.GetContent() == "tvshows")
+      return new CGUIViewStateVideoTVShows(items);
+    else if (items.GetContent() == "episodes")
+      return new CGUIViewStateVideoEpisodes(items);
+    else if (items.GetContent() == "movies")
+      return new CGUIViewStateVideoMovies(items);
+  }
+
   if (items.IsPlayList())
     return new CGUIViewStateMusicPlaylist(items);
 
@@ -65,9 +79,6 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (url.GetProtocol() == "lastfm")
     return new CGUIViewStateMusicLastFM(items);
-
-  if (items.IsSmartPlayList())
-    return new CGUIViewStateMusicSmartPlaylist(items);
 
   if (windowId==WINDOW_MUSIC_NAV)
     return new CGUIViewStateWindowMusicNav(items);
@@ -85,7 +96,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
     return new CGUIViewStateWindowVideoFiles(items);
 
   if (windowId==WINDOW_VIDEO_NAV)
+  {
     return new CGUIViewStateWindowVideoNav(items);
+  }
 
   if (windowId==WINDOW_VIDEO_PLAYLIST)
     return new CGUIViewStateWindowVideoPlaylist(items);

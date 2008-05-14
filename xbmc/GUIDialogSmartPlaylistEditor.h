@@ -8,13 +8,15 @@ class CGUIDialogSmartPlaylistEditor :
       public CGUIDialog
 {
 public:
+  enum PLAYLIST_TYPE { TYPE_SONGS = 1, TYPE_MIXED, TYPE_MUSICVIDEOS, TYPE_MOVIES, TYPE_TVSHOWS, TYPE_EPISODES };
+
   CGUIDialogSmartPlaylistEditor(void);
   virtual ~CGUIDialogSmartPlaylistEditor(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   virtual void OnWindowLoaded();
 
-  static bool EditPlaylist(const CStdString &path);
+  static bool EditPlaylist(const CStdString &path, const CStdString &type = "");
   static bool NewPlaylist(const CStdString &type);
 
 protected:
@@ -32,6 +34,9 @@ protected:
   void UpdateButtons();
   int GetSelectedItem();
   void HighlightItem(int item);
+  PLAYLIST_TYPE ConvertType(const CStdString &type);
+  CStdString ConvertType(PLAYLIST_TYPE type);
+  int GetLocalizedType(PLAYLIST_TYPE type);
 
   CSmartPlaylist m_playlist;
 
@@ -40,5 +45,5 @@ protected:
 
   CStdString m_path;
   bool m_cancelled;
-  int m_isPartyMode; // 0 - no, 1 - music, 2 - videos
+  CStdString m_mode;  // mode we're in (partymode etc.)
 };

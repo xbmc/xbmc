@@ -47,6 +47,23 @@
 
 using namespace PLAYLIST;
 
+typedef struct
+{
+  CGUIDialogSmartPlaylistEditor::PLAYLIST_TYPE type;
+  char string[13];
+  int localizedString;
+} translateType;
+
+static const translateType types[] = { { CGUIDialogSmartPlaylistEditor::TYPE_SONGS, "music", 134 },
+                                       { CGUIDialogSmartPlaylistEditor::TYPE_MIXED, "mixed", 20395 },
+                                       { CGUIDialogSmartPlaylistEditor::TYPE_MUSICVIDEOS, "musicvideos", 20389 },
+                                       { CGUIDialogSmartPlaylistEditor::TYPE_MOVIES, "movies", 20342 },
+                                       { CGUIDialogSmartPlaylistEditor::TYPE_TVSHOWS, "tvshows", 20343 },
+                                       { CGUIDialogSmartPlaylistEditor::TYPE_EPISODES, "episodes", 20360 }
+                                     };
+
+#define NUM_TYPES (sizeof(types) / sizeof(translateType))
+
 CGUIDialogSmartPlaylistEditor::CGUIDialogSmartPlaylistEditor(void)
     : CGUIDialog(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR, "SmartPlaylistEditor.xml")
 {
@@ -218,18 +235,7 @@ void CGUIDialogSmartPlaylistEditor::OnType()
 {
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_TYPE);
   OnMessage(msg);
-  if (msg.GetParam1() == 1)
-    m_playlist.SetType("music");
-  if (msg.GetParam1() == 2)
-      m_playlist.SetType("musicvideos");
-  if (msg.GetParam1() == 3)
-    m_playlist.SetType("mixed");
-  if (msg.GetParam1() == 4)
-    m_playlist.SetType("tvshows");
-  if (msg.GetParam1() == 5)
-    m_playlist.SetType("episodes");
-  if (msg.GetParam1() == 6)
-    m_playlist.SetType("movies");
+  m_playlist.SetType(ConvertType((PLAYLIST_TYPE)msg.GetParam1()));
   UpdateButtons();
 }
 
@@ -339,84 +345,74 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_ORDER_FIELD, m_playlist.m_orderField);
     OnMessage(msg);
   }
-  // type
-  if (m_playlist.GetType().Equals("tvshows"))
+  std::vector<PLAYLIST_TYPE> allowedTypes;
+  if (m_mode.Equals("partymusic"))
   {
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 4);
-    CStdString label = g_localizeStrings.Get(20343);    // tvshows
-    msg.SetLabel(label);
-    OnMessage(msg);
-    CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_TYPE, 4);
-    OnMessage(msg2);
-    return;
-  }
-  else if (m_playlist.GetType().Equals("episodes"))
-  {
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 5);
-    CStdString label = g_localizeStrings.Get(20360);    // episodes
-    msg.SetLabel(label);
-    OnMessage(msg);
-    CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_TYPE, 5);
-    OnMessage(msg2);
-    return;
-  }
-  else if (m_playlist.GetType().Equals("movies"))
-  {
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 6);
-    CStdString label = g_localizeStrings.Get(342);    // movies
-    msg.SetLabel(label);
-    OnMessage(msg);
-    CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_TYPE, 6);
-    OnMessage(msg2);
-    return;
-  }
-  if (m_isPartyMode != 2)
-  {
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 1);
-    CStdString label = g_localizeStrings.Get(2);    // music
-    msg.SetLabel(label);
-    OnMessage(msg);
-  }
-  if (m_isPartyMode != 1)
-  {
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 2);
-    CStdString label = g_localizeStrings.Get(3);    // video (music video!)
-    msg.SetLabel(label);
-    OnMessage(msg);
-  }
-  {
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 3);
-    CStdString label= g_localizeStrings.Get(20395); // mixed
-    msg.SetLabel(label);
-    OnMessage(msg);
-  }
-  {
-    int iType=1;
-    if (m_playlist.GetType().Equals("music"))
-    {
-      if (m_isPartyMode == 2) // unallowed type - reset to video
-      {
-        m_playlist.SetType("musicvideos");
-        iType = 2;
-      }
-    }
+    allowedTypes.push_back(TYPE_SONGS);
+    allowedTypes.push_back(TYPE_MIXED);
     if (m_playlist.GetType().Equals("musicvideos"))
-    {
-      if (m_isPartyMode == 1) // unallowed type - reset to music
-      {
-        m_playlist.SetType("music");
-        iType = 1;
-      }
-      else 
-        iType = 2;
-    }
-    if (m_playlist.GetType().Equals("mixed"))
-      iType = 3;
-
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_TYPE, iType);
+      m_playlist.SetType("music");  // set valid
+  }
+  else if (m_mode.Equals("partyvideo"))
+  {
+    allowedTypes.push_back(TYPE_SONGS);
+    allowedTypes.push_back(TYPE_MIXED);
+    if (m_playlist.GetType().Equals("music"))
+      m_playlist.SetType("musicvideos"); // set valid
+  }
+  else if (m_mode.Equals("music"))
+  { // music types + mixed
+    allowedTypes.push_back(TYPE_SONGS);
+    allowedTypes.push_back(TYPE_MIXED);
+    if (!m_playlist.GetType().Equals("music") && !m_playlist.GetType().Equals("mixed"))
+      m_playlist.SetType("music");  // set valid
+  }
+  else if (m_mode.Equals("video"))
+  { // general category for videos
+    allowedTypes.push_back(TYPE_MOVIES);
+    allowedTypes.push_back(TYPE_TVSHOWS);
+    allowedTypes.push_back(TYPE_EPISODES);
+    allowedTypes.push_back(TYPE_MUSICVIDEOS);
+    allowedTypes.push_back(TYPE_MIXED);
+    if (m_playlist.GetType().Equals("music") || m_playlist.GetType().Equals("mixed") || m_playlist.GetType().Equals("video"))
+      m_playlist.SetType("movies"); // set valid
+  }
+  // add to the spinner
+  for (unsigned int i = 0; i < allowedTypes.size(); i++)
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, allowedTypes[i]);
+    msg.SetLabel(GetLocalizedType(allowedTypes[i]));
     OnMessage(msg);
   }
+  CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_TYPE, ConvertType(m_playlist.GetType()));
+  OnMessage(msg);
+}
 
+CGUIDialogSmartPlaylistEditor::PLAYLIST_TYPE CGUIDialogSmartPlaylistEditor::ConvertType(const CStdString &type)
+{
+  for (int i = 0; i < NUM_TYPES; i++)
+    if (type.Equals(types[i].string))
+      return types[i].type;
+  assert(true);
+  return TYPE_SONGS;
+}
+
+int CGUIDialogSmartPlaylistEditor::GetLocalizedType(PLAYLIST_TYPE type)
+{
+  for (int i = 0; i < NUM_TYPES; i++)
+    if (types[i].type == type)
+      return types[i].localizedString;
+  assert(true);
+  return 0;
+}
+
+CStdString CGUIDialogSmartPlaylistEditor::ConvertType(PLAYLIST_TYPE type)
+{
+  for (int i = 0; i < NUM_TYPES; i++)
+    if (types[i].type == type)
+      return types[i].string;
+  assert(true);
+  return "music";
 }
 
 int CGUIDialogSmartPlaylistEditor::GetSelectedItem()
@@ -474,32 +470,32 @@ bool CGUIDialogSmartPlaylistEditor::NewPlaylist(const CStdString &type)
   editor->m_playlist = CSmartPlaylist();
   editor->m_playlist.m_playlistRules.push_back(CSmartPlaylistRule());
   editor->m_playlist.SetType(type);
-  editor->m_isPartyMode = 0;
+  editor->m_mode = "";
   editor->Initialize();
   editor->DoModal(m_gWindowManager.GetActiveWindow());
   return !editor->m_cancelled;
 }
 
-bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const CStdString &path)
+bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const CStdString &path, const CStdString &type)
 {
   CGUIDialogSmartPlaylistEditor *editor = (CGUIDialogSmartPlaylistEditor *)m_gWindowManager.GetWindow(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
   if (!editor) return false;
 
-  editor->m_isPartyMode = 0;
+  editor->m_mode = type;
   if (path.Equals(g_settings.GetUserDataItem("PartyMode.xsp")))
-    editor->m_isPartyMode = 1;
+    editor->m_mode = "partymusic";
   if (path.Equals(g_settings.GetUserDataItem("PartyMode-Video.xsp")))
-    editor->m_isPartyMode = 2;
+    editor->m_mode = "partyvideo";
 
   CSmartPlaylist playlist;
   bool loaded(playlist.Load(path));
   if (!loaded)
   { // failed to load
-    if (editor->m_isPartyMode == 0)
+    if (!editor->m_mode.Left(5).Equals("party"))
       return false; // only edit normal playlists that exist
     // party mode playlists can be editted even if they don't exist
     playlist.m_playlistRules.push_back(CSmartPlaylistRule());
-    playlist.SetType(editor->m_isPartyMode == 1 ? "music" : "video");
+    playlist.SetType(editor->m_mode == "partymusic" ? "music" : "musicvideos");
   }
 
   editor->m_playlist = playlist;

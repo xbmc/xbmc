@@ -46,3 +46,35 @@ protected:
   virtual bool HideParentDirItems();
   virtual VECSOURCES& GetSources();
 };
+
+class CGUIViewStateVideoMovies : public CGUIViewStateWindowVideo
+{
+public:
+  CGUIViewStateVideoMovies(const CFileItemList& items);
+protected:
+  virtual void SaveViewState();
+};
+
+class CGUIViewStateVideoMusicVideos : public CGUIViewStateWindowVideo
+{
+public:
+  CGUIViewStateVideoMusicVideos(const CFileItemList& items);
+protected:
+  virtual void SaveViewState();
+};
+
+class CGUIViewStateVideoTVShows : public CGUIViewStateWindowVideo
+{
+public:
+  CGUIViewStateVideoTVShows(const CFileItemList& items);
+protected:
+  virtual void SaveViewState();
+};
+
+class CGUIViewStateVideoEpisodes : public CGUIViewStateWindowVideo
+{
+public:
+  CGUIViewStateVideoEpisodes(const CFileItemList& items);
+protected:
+  virtual void SaveViewState();
+};

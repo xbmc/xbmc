@@ -952,7 +952,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       }
 
       if (GetID() != WINDOW_VIDEO_NAV || (!m_vecItems->m_strPath.IsEmpty() && 
-         !item->m_strPath.Equals("newsmartplaylist://video")))
+         !item->m_strPath.Left(19).Equals("newsmartplaylist://")))
       {
         buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist
       }
@@ -1129,7 +1129,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_EDIT_SMART_PLAYLIST:
     {
       CStdString playlist = m_vecItems->Get(itemNumber)->IsSmartPlayList() ? m_vecItems->Get(itemNumber)->m_strPath : m_vecItems->m_strPath; // save path as activatewindow will destroy our items
-      if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
+      if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist, "video"))
       { // need to update
         m_vecItems->RemoveDiscCache();
         Update(m_vecItems->m_strPath);
@@ -1506,17 +1506,7 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
     items.Add(newPlaylist);
 */
     newPlaylist = new CFileItem("newsmartplaylist://video", false);
-    newPlaylist->SetLabel(g_localizeStrings.Get(21437));
-    newPlaylist->SetLabelPreformated(true);
-    items.Add(newPlaylist);
-
-    newPlaylist = new CFileItem("newsmartplaylist://tvshows", false);
-    newPlaylist->SetLabel(g_localizeStrings.Get(21440));
-    newPlaylist->SetLabelPreformated(true);
-    items.Add(newPlaylist);
-
-    newPlaylist = new CFileItem("newsmartplaylist://episodes", false);
-    newPlaylist->SetLabel(g_localizeStrings.Get(21441));
+    newPlaylist->SetLabel(g_localizeStrings.Get(21440));  // "new smart folder..."
     newPlaylist->SetLabelPreformated(true);
     items.Add(newPlaylist);
   }
