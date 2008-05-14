@@ -184,7 +184,7 @@ void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wStr
   CStdStringA strFlipped;
   const char* src;
   size_t inBytes;
-
+  
   // Try to flip hebrew/arabic characters, if any
   if (bVisualBiDiFlip)
   {
@@ -199,7 +199,7 @@ void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wStr
   }
 
   if (m_iconvUtf8toW == (iconv_t) - 1)
-    m_iconvUtf8toW = iconv_open(WCHAR_CHARSET, "UTF-8");
+    m_iconvUtf8toW = iconv_open(WCHAR_CHARSET, UTF8_SOURCE);
 
   if (m_iconvUtf8toW != (iconv_t) - 1)
   {
@@ -310,7 +310,7 @@ void CCharsetConverter::utf8ToStringCharset(const CStdStringA& strSource, CStdSt
   if (m_iconvUtf8ToStringCharset == (iconv_t) - 1)
   {
     CStdString strCharset=g_langInfo.GetGuiCharSet();
-    m_iconvUtf8ToStringCharset = iconv_open(strCharset.c_str(), "UTF-8");
+    m_iconvUtf8ToStringCharset = iconv_open(strCharset.c_str(), UTF8_SOURCE);
   }
 
   if (m_iconvUtf8ToStringCharset != (iconv_t) - 1)
