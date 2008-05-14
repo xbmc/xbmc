@@ -129,7 +129,7 @@ def process_keys(remote, xbmc):
             return done
         try:
             if g_keymap[keycode]:
-                xbmc.send_keyboard_button(g_keymap[keycode])
+                xbmc.send_remote_button(g_keymap[keycode])
         except Exception, e:
             print "Unknown data: %s" % str(e)
     return done
