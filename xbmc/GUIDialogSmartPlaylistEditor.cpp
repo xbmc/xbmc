@@ -393,7 +393,7 @@ CGUIDialogSmartPlaylistEditor::PLAYLIST_TYPE CGUIDialogSmartPlaylistEditor::Conv
   for (int i = 0; i < NUM_TYPES; i++)
     if (type.Equals(types[i].string))
       return types[i].type;
-  assert(true);
+  assert(false);
   return TYPE_SONGS;
 }
 
@@ -402,7 +402,7 @@ int CGUIDialogSmartPlaylistEditor::GetLocalizedType(PLAYLIST_TYPE type)
   for (int i = 0; i < NUM_TYPES; i++)
     if (types[i].type == type)
       return types[i].localizedString;
-  assert(true);
+  assert(false);
   return 0;
 }
 
@@ -411,7 +411,7 @@ CStdString CGUIDialogSmartPlaylistEditor::ConvertType(PLAYLIST_TYPE type)
   for (int i = 0; i < NUM_TYPES; i++)
     if (types[i].type == type)
       return types[i].string;
-  assert(true);
+  assert(false);
   return "music";
 }
 
