@@ -37,7 +37,7 @@ clean:
 	$(RM) $(OBJS) $(LIB) $(PCH:.h=.h.gch)
 	for d in $(DIRS); do (cd $$d; $(MAKE) clean ); done
 
-distclean:
+distclean: clean
 	@echo "Removing all object file (.o)"
 	@find . -name "*.o" -exec echo 'Removing "{}"' \; -exec rm "{}" \;
 	@echo "Removing all object file (.depend)"
