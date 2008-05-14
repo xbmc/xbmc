@@ -18,8 +18,12 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-#ifndef __ASS_CACHE_H__
-#define __ASS_CACHE_H__
+#ifndef LIBASS_CACHE_H
+#define LIBASS_CACHE_H
+
+#include "ass.h"
+#include "ass_font.h"
+#include "ass_bitmap.h"
 
 void ass_font_cache_init(void);
 ass_font_t* ass_font_cache_find(ass_font_desc_t* desc);
@@ -94,5 +98,4 @@ void hashmap_done(hashmap_t* map);
 void* hashmap_insert(hashmap_t* map, void* key, void* value);
 void* hashmap_find(hashmap_t* map, void* key);
 
-#endif
-
+#endif /* LIBASS_CACHE_H */
