@@ -19,10 +19,13 @@ size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft,
 
 #ifdef __APPLE__
   #define WCHAR_CHARSET "UTF-32LE"
+  #define UTF8_SOURCE "UTF-8-MAC" 
 #elif defined(_XBOX) || defined(WIN32)
   #define WCHAR_CHARSET "UTF-16LE"
+  #define UTF8_SOURCE "UTF-8"
 #else
   #define WCHAR_CHARSET "WCHAR_T"
+  #define UTF8_SOURCE "UTF-8"
 #endif
 
 class CCharsetConverter
