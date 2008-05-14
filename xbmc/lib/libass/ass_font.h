@@ -18,12 +18,14 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-#ifndef __ASS_FONT_H__
-#define __ASS_FONT_H__
+#ifndef LIBASS_FONT_H
+#define LIBASS_FONT_H
 
-#ifdef HAVE_FONTCONFIG
-#include <fontconfig/fontconfig.h>
-#endif
+#include <stdint.h>
+#include <ft2build.h>
+#include FT_GLYPH_H
+#include "ass.h"
+#include "ass_types.h"
 
 typedef struct ass_font_desc_s {
 	char* family;
@@ -35,15 +37,13 @@ typedef struct ass_font_desc_s {
 
 typedef struct ass_font_s {
 	ass_font_desc_t desc;
+	ass_library_t* library;
 	FT_Library ftlibrary;
 	FT_Face faces[ASS_FONT_MAX_FACES];
 	int n_faces;
 	double scale_x, scale_y; // current transform
 	FT_Vector v; // current shift
 	double size;
-#ifdef HAVE_FONTCONFIG
-	FcCharSet* charset;
-#endif
 } ass_font_t;
 
 ass_font_t* ass_font_new(ass_library_t* library, FT_Library ftlibrary, void* fc_priv, ass_font_desc_t* desc);
@@ -54,4 +54,4 @@ FT_Glyph ass_font_get_glyph(void* fontconfig_priv, ass_font_t* font, uint32_t ch
 FT_Vector ass_font_get_kerning(ass_font_t* font, uint32_t c1, uint32_t c2);
 void ass_font_free(ass_font_t* font);
 
-#endif
+#endif /* LIBASS_FONT_H */
