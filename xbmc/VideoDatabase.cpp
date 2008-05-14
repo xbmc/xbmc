@@ -43,7 +43,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 20
+#define VIDEO_DATABASE_VERSION 21
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 #define RECENTLY_ADDED_LIMIT  25
@@ -130,6 +130,11 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE directorlinkmovie ( idDirector integer, idMovie integer)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_directorlinkmovie_1 ON directorlinkmovie ( idDirector, idMovie )\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_directorlinkmovie_2 ON directorlinkmovie ( idMovie, idDirector )\n");
+
+    CLog::Log(LOGINFO, "create writerlinkmovie table");
+    m_pDS->exec("CREATE TABLE writerlinkmovie ( idWriter integer, idMovie integer)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_writerlinkmovie_1 ON writerlinkmovie ( idWriter, idMovie )\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_writerlinkmovie_2 ON writerlinkmovie ( idMovie, idWriter )\n");
 
     CLog::Log(LOGINFO, "create actors table");
     m_pDS->exec("CREATE TABLE actors ( idActor integer primary key, strActor text, strThumb text )\n");
@@ -1125,6 +1130,11 @@ void CVideoDatabase::AddWriterToEpisode(long lEpisodeId, long lWriterId)
   AddToLinkTable("writerlinkepisode", "idWriter", lWriterId, "idEpisode", lEpisodeId);
 }
 
+void CVideoDatabase::AddWriterToMovie(long lMovieId, long lWriterId)
+{
+  AddToLinkTable("writerlinkmovie", "idWriter", lWriterId, "idMovie", lMovieId);
+}
+
 void CVideoDatabase::AddDirectorToEpisode(long lEpisodeId, long lDirectorId)
 {
   AddToLinkTable("directorlinkepisode", "idDirector", lDirectorId, "idEpisode", lEpisodeId);
@@ -1568,27 +1578,34 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
     vector<long> vecStudios;
     AddGenreAndDirectorsAndStudios(details,vecDirectors,vecGenres,vecStudios);
     
+    for (unsigned int i = 0; i < vecGenres.size(); ++i)
+      AddGenreToMovie(lMovieId, vecGenres[i]);
+
+    for (unsigned int i = 0; i < vecDirectors.size(); ++i)
+      AddDirectorToMovie(lMovieId, vecDirectors[i]);
+    
+    for (unsigned int i = 0; i < vecStudios.size(); ++i)
+      AddStudioToMovie(lMovieId, vecStudios[i]);
+
+    // add writers...
+    if (!details.m_strWritingCredits.IsEmpty())
+    {
+      CStdStringArray writers;
+      StringUtils::SplitString(details.m_strWritingCredits, "/", writers);
+      for (unsigned int i = 0; i < writers.size(); i++)
+      {
+        CStdString writer(writers[i]);
+        writer.Trim();
+        long lWriterId = AddActor(writer,"");
+        AddWriterToMovie(lMovieId, lWriterId );
+      }
+    }
+
     // add cast...
     for (CVideoInfoTag::iCast it = details.m_cast.begin(); it != details.m_cast.end(); ++it)
     {
       long lActor = AddActor(it->strName,it->thumbUrl.m_xml);
       AddActorToMovie(lMovieId, lActor, it->strRole);
-    }
-    
-    unsigned int i;
-    for (i = 0; i < vecGenres.size(); ++i)
-    {
-      AddGenreToMovie(lMovieId, vecGenres[i]);
-    }
-
-    for (i = 0; i < vecDirectors.size(); ++i)
-    {
-      AddDirectorToMovie(lMovieId, vecDirectors[i]);
-    }
-    
-    for (i = 0; i < vecStudios.size(); ++i)
-    {
-      AddStudioToMovie(lMovieId, vecStudios[i]);
     }
 
     // update our movie table (we know it was added already above)
@@ -2986,6 +3003,39 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
                   "from musicvideo join files on files.idFile=musicvideo.idFile join path on path.idPath=files.idPath");
       m_pDS->exec("create view movieview as select movie.*,files.strFileName as strFileName,path.strPath as strPath "
                   "from movie join files on files.idFile=movie.idFile join path on path.idPath=files.idPath");
+    }
+    if (iVersion < 21)
+    {
+      // add the writerlinkmovie table, and fill it
+      CLog::Log(LOGINFO, "create writerlinkmovie table");
+      m_pDS->exec("CREATE TABLE writerlinkmovie ( idWriter integer, idMovie integer)\n");
+      m_pDS->exec("CREATE UNIQUE INDEX ix_writerlinkmovie_1 ON writerlinkmovie ( idWriter, idMovie )\n");
+      m_pDS->exec("CREATE UNIQUE INDEX ix_writerlinkmovie_2 ON writerlinkmovie ( idMovie, idWriter )\n");
+      CStdString sql = FormatSQL("select idMovie,c%02d from movie", VIDEODB_ID_CREDITS);
+      m_pDS->query(sql.c_str());
+      vector< pair<long, CStdString> > writingCredits;
+      while (!m_pDS->eof())
+      {
+        writingCredits.push_back(pair<long, CStdString>(m_pDS->fv(0).get_asLong(), m_pDS->fv(1).get_asString()));
+        m_pDS->next();
+      }
+      m_pDS->close();
+      for (unsigned int i = 0; i < writingCredits.size(); i++)
+      {
+        long idMovie = writingCredits[i].first;
+        if (writingCredits[i].second.size())
+        {
+          CStdStringArray writers;
+          StringUtils::SplitString(writingCredits[i].second, "/", writers);
+          for (unsigned int i = 0; i < writers.size(); i++)
+          {
+            CStdString writer(writers[i]);
+            writer.Trim();
+            long lWriterId = AddActor(writer,"");
+            AddWriterToMovie(idMovie, lWriterId);
+          }
+        }
+      }
     }
   }
   catch (...)
@@ -5418,6 +5468,10 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const s
     sql = "delete from directorlinkmovie where idMovie in " + moviesToDelete;
     m_pDS->exec(sql.c_str());
 
+    CLog::Log(LOGDEBUG, "%s Cleaning writerlinkmovie table", __FUNCTION__);
+    sql = "delete from writerlinkmovie where idMovie in " + moviesToDelete;
+    m_pDS->exec(sql.c_str());
+
     CLog::Log(LOGDEBUG, "%s Cleaning genrelinkmovie table", __FUNCTION__);
     sql = "delete from genrelinkmovie where idMovie in " + moviesToDelete;
     m_pDS->exec(sql.c_str());
@@ -5436,6 +5490,10 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const s
 
     CLog::Log(LOGDEBUG, "%s Cleaning directorlinkepisode table", __FUNCTION__);
     sql = "delete from directorlinkepisode where idEpisode in " + episodesToDelete;
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, "%s Cleaning writerlinkepisode table", __FUNCTION__);
+    sql = "delete from writerlinkepisode where idEpisode in " + episodesToDelete;
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s Cleaning tvshowlinkepisode table", __FUNCTION__);

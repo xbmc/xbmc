@@ -425,6 +425,7 @@ protected:
   void AddDirectorToEpisode(long lEpisodeId, long lDirectorId);
   void AddDirectorToMusicVideo(long lMVideo, long lDirectorId);
   void AddWriterToEpisode(long lEpisodeId, long lWriterId);
+  void AddWriterToMovie(long lMovieId, long lWriterId);
 
   void AddGenreToMovie(long lMovieId, long lGenreId);
   void AddGenreToTvShow(long lTvShowId, long lGenreId);
