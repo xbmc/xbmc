@@ -110,7 +110,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     g_settings.LoadProfile(iItem);
 
     g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].setDate();
-    g_settings.SaveProfiles("q:\\system\\profiles.xml"); // to set last loaded
+    g_settings.SaveProfiles(PROFILES_FILE); // to set last loaded
 
     g_passwordManager.bMasterUser = bOldMaster;
 #ifdef HAS_XBOX_NETWORK
@@ -206,7 +206,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_LOGINSCREEN)
       {
         g_settings.bUseLoginScreen = !g_settings.bUseLoginScreen;
-        g_settings.SaveProfiles("q:\\system\\profiles.xml");
+        g_settings.SaveProfiles(PROFILES_FILE);
         return true;
       }
     }

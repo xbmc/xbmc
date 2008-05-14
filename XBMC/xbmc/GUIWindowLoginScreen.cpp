@@ -131,7 +131,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
             }
 
             g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].setDate();
-            g_settings.SaveProfiles("q:\\system\\profiles.xml");
+            g_settings.SaveProfiles(PROFILES_FILE);
 
             g_weatherManager.Refresh();
 #ifdef HAS_PYTHON
