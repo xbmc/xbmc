@@ -584,7 +584,7 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
   m_database.GetMusicVideoArtistsByName(strSearch, tempItems);
   if (tempItems.Size())
   {
-    CStdString strActor = g_localizeStrings.Get(484); // Actor
+    CStdString strActor = g_localizeStrings.Get(557); // Artist
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
       tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
@@ -671,7 +671,7 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
   {
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
-      tempItems[i]->SetLabel("[" + g_localizeStrings.Get(483) + "] " + tempItems[i]->GetLabel());
+      tempItems[i]->SetLabel("[" + g_localizeStrings.Get(558) + "] " + tempItems[i]->GetLabel());
     }
     items.Append(tempItems);
   }

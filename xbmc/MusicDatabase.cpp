@@ -923,7 +923,7 @@ bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &arti
       return false;
     }
     
-    CStdString artistLabel(g_localizeStrings.Get(484)); // Artist
+    CStdString artistLabel(g_localizeStrings.Get(557)); // Artist
     while (!m_pDS->eof())
     {
       CStdString path;

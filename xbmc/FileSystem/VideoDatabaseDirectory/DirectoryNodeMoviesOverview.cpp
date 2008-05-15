@@ -33,7 +33,7 @@ bool CDirectoryNodeMoviesOverview::GetContent(CFileItemList& items)
   CStdStringArray vecRoot;
   vecRoot.push_back(g_localizeStrings.Get(135));  // Genres
   vecRoot.push_back(g_localizeStrings.Get(369));  // Title
-  vecRoot.push_back(g_localizeStrings.Get(345));  // Year
+  vecRoot.push_back(g_localizeStrings.Get(562));  // Year
   vecRoot.push_back(g_localizeStrings.Get(344));  // Actors
   vecRoot.push_back(g_localizeStrings.Get(20348));  // Directors
   vecRoot.push_back(g_localizeStrings.Get(20388));  // Studios

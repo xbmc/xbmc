@@ -136,7 +136,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
       videodatabase.GetMusicVideoArtistsByName("",items2);
       items.Append(items2);
     }
-    iLabel = 484;
+    iLabel = 557;
   }
   else if (m_rule.m_field == CSmartPlaylistRule::SONG_ALBUM)
   {
@@ -148,7 +148,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
       videodatabase.GetMusicVideoAlbumsByName("",items2);
       items.Append(items2);
     }
-    iLabel = 483;
+    iLabel = 558;
   }
   else if (m_rule.m_field == CSmartPlaylistRule::VIDEO_ACTOR)
   { 

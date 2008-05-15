@@ -1017,7 +1017,7 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
   if (iTrack >= 1)
   {
   //	Tracknumber
-  CStdString strText=g_localizeStrings.Get(435);	//	"Track"
+  CStdString strText=g_localizeStrings.Get(554);	//	"Track"
   if (strText.GetAt(strText.size()-1) != ' ')
   strText+=" ";
   CStdString strTrack;
@@ -1031,7 +1031,7 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
   if (iYear >=1900)
   {
   //	Year
-  CStdString strText=g_localizeStrings.Get(436);	//	"Year:"
+  CStdString strText=g_localizeStrings.Get(562);	//	"Year:"
   if (strText.GetAt(strText.size()-1) != ' ')
   strText+=" ";
   CStdString strYear;
@@ -1043,7 +1043,7 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
   //	Duration
   CStdString strDuration, strTime;
 
-  CStdString strText=g_localizeStrings.Get(437);
+  CStdString strText=g_localizeStrings.Get(180);
   if (strText.GetAt(strText.size()-1) != ' ')
   strText+=" ";
 
@@ -1062,7 +1062,7 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
   int iTrack=tag.GetTrackNumber();
   if (iTrack >=1)
   {
-  CStdString strText=g_localizeStrings.Get(435);	//	"Track"
+  CStdString strText=g_localizeStrings.Get(554);	//	"Track"
   if (strText.GetAt(strText.size()-1) != ' ')
   strText+=" ";
   CStdString strTrack;
@@ -1074,7 +1074,7 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
   {
   CStdString strDuration, strTime;
 
-  CStdString strText=g_localizeStrings.Get(437);
+  CStdString strText=g_localizeStrings.Get(180);
   if (strText.GetAt(strText.size()-1) != ' ')
   strText+=" ";
 

@@ -63,17 +63,18 @@ static const translateField fields[] = { { "none", CSmartPlaylistRule::FIELD_NON
                                          { "mpaarating", CSmartPlaylistRule::VIDEO_MPAA, CSmartPlaylistRule::TEXT_FIELD, 20074 },
                                          { "top250", CSmartPlaylistRule::VIDEO_TOP250, CSmartPlaylistRule::NUMERIC_FIELD, 13409 },
                                          { "status", CSmartPlaylistRule::TVSHOW_STATUS, CSmartPlaylistRule::TEXT_FIELD, 126 },
-                                         { "votes", CSmartPlaylistRule::VIDEO_VOTES, CSmartPlaylistRule::TEXT_FIELD, 20350 },
+                                         { "votes", CSmartPlaylistRule::VIDEO_VOTES, CSmartPlaylistRule::TEXT_FIELD, 205 },
                                          { "director", CSmartPlaylistRule::VIDEO_DIRECTOR, CSmartPlaylistRule::BROWSEABLE_FIELD, 20339 },
                                          { "actor", CSmartPlaylistRule::VIDEO_ACTOR, CSmartPlaylistRule::BROWSEABLE_FIELD, 20337 },
                                          { "studio", CSmartPlaylistRule::VIDEO_STUDIO, CSmartPlaylistRule::BROWSEABLE_FIELD, 572 },
                                          { "numepisodes", CSmartPlaylistRule::TVSHOW_NUMEPISODES, CSmartPlaylistRule::NUMERIC_FIELD, 20360 },
-                                         { "numwatched", CSmartPlaylistRule::TVSHOW_NUMWATCHED, CSmartPlaylistRule::NUMERIC_FIELD, 16102 },
+                                         { "numwatched", CSmartPlaylistRule::TVSHOW_NUMWATCHED, CSmartPlaylistRule::NUMERIC_FIELD, 21441 },
                                          { "writers", CSmartPlaylistRule::VIDEO_WRITER, CSmartPlaylistRule::BROWSEABLE_FIELD, 20417 },
                                          { "airdate", CSmartPlaylistRule::EPISODE_AIRDATE, CSmartPlaylistRule::DATE_FIELD, 20416 },
                                          { "episode", CSmartPlaylistRule::EPISODE_EPISODE, CSmartPlaylistRule::NUMERIC_FIELD, 20359 },
                                          { "season", CSmartPlaylistRule::EPISODE_SEASON, CSmartPlaylistRule::NUMERIC_FIELD, 20373 },
                                          { "tvshow", CSmartPlaylistRule::FIELD_TVSHOWTITLE, CSmartPlaylistRule::BROWSEABLE_FIELD, 20364 },
+                                         { "episodetitle", CSmartPlaylistRule::FIELD_EPISODETITLE, CSmartPlaylistRule::TEXT_FIELD, 21442 },
                                          { "random", CSmartPlaylistRule::FIELD_RANDOM, CSmartPlaylistRule::TEXT_FIELD, 590 },
                                          { "playlist", CSmartPlaylistRule::FIELD_PLAYLIST, CSmartPlaylistRule::PLAYLIST_FIELD, 559 }
                                        };
@@ -207,7 +208,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
   }
   else if (type == "episodes")
   {
-    fields.push_back(FIELD_TITLE);
+    fields.push_back(FIELD_EPISODETITLE);
     fields.push_back(FIELD_TVSHOWTITLE);
     fields.push_back(VIDEO_PLOT);
     fields.push_back(VIDEO_VOTES);
@@ -500,7 +501,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
   if (type == "episodes")
   {
     CStdString result;
-    if (field == FIELD_TITLE) result.Format("c%02d", VIDEODB_ID_EPISODE_TITLE);
+    if (field == FIELD_EPISODETITLE) result.Format("c%02d", VIDEODB_ID_EPISODE_TITLE);
     else if (field == FIELD_TVSHOWTITLE) result = "strTitle";
     else if (field == VIDEO_PLOT) result.Format("c%02d", VIDEODB_ID_EPISODE_PLOT);
     else if (field == VIDEO_VOTES) result.Format("c%02d", VIDEODB_ID_EPISODE_VOTES);

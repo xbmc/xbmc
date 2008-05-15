@@ -2809,7 +2809,7 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
       int iTrack = tag.GetTrackNumber();
       if (iTrack >= 1)
       {
-        CStdString strText = g_localizeStrings.Get(435); // "Track"
+        CStdString strText = g_localizeStrings.Get(554); // "Track"
         if (strText.GetAt(strText.size() - 1) != ' ')
           strText += " ";
         CStdString strTrack;
