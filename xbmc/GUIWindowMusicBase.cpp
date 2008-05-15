@@ -770,11 +770,14 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
   CStdString strPath;
   long idAlbum = m_musicdatabase.GetAlbumByName(strAlbum,strArtist);
   strPath.Format("musicdb://3/%u/",idAlbum);
-  if (!scanner.DownloadAlbumInfo(strPath,strArtist,strAlbum,m_dlgProgress))
+  bool bCanceled;
+  if (!scanner.DownloadAlbumInfo(strPath,strArtist,strAlbum,bCanceled,m_dlgProgress) && !bCanceled)
   { // no albums found
     CGUIDialogOK::ShowAndGetInput(185, 0, 187, 0);
     return false;
   }
+  if (bCanceled)
+    return false;
 
   m_musicdatabase.GetAlbumInfo(idAlbum,album.GetAlbum(),&album.GetAlbum().songs);
   album.SetLoaded(true);
