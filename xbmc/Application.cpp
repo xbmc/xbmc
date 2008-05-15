@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2007 Team XboxMediaCenter
- *      http://www.xboxmediacenter.com
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
