@@ -57,21 +57,24 @@ DWORD GetImageType(const char *file)
   else if ( 0 == strcmpi(ext, ".tga") ) return CXIMAGE_FORMAT_TGA;
   else if ( 0 == strcmpi(ext, ".pcx") ) return CXIMAGE_FORMAT_PCX;
   else if ( 0 == strcmpi(ext, ".bmp") ) return CXIMAGE_FORMAT_BMP;
-  else if ( 0 == strcmpi(ext, ".bmp") ) return CXIMAGE_FORMAT_BMP;
-  else if ( 0 == strcmpi(ext, ".bitmap") ) return CXIMAGE_FORMAT_BMP;
-  else if ( 0 == strcmpi(ext, ".gif") ) return CXIMAGE_FORMAT_GIF;
-  else if ( 0 == strcmpi(ext, ".jpg") ) return CXIMAGE_FORMAT_JPG;
-  else if ( 0 == strcmpi(ext, ".tbn") ) return CXIMAGE_FORMAT_JPG;
-  else if ( 0 == strcmpi(ext, ".jpeg") ) return CXIMAGE_FORMAT_JPG;
-  else if ( 0 == strcmpi(ext, ".png") ) return CXIMAGE_FORMAT_PNG;
-  else if ( 0 == strcmpi(ext, ".ico") ) return CXIMAGE_FORMAT_ICO;
-  else if ( 0 == strcmpi(ext, ".tif") ) return CXIMAGE_FORMAT_TIF;
-  else if ( 0 == strcmpi(ext, ".tiff") ) return CXIMAGE_FORMAT_TIF;
-  else if ( 0 == strcmpi(ext, ".tga") ) return CXIMAGE_FORMAT_TGA;
-  else if ( 0 == strcmpi(ext, ".pcx") ) return CXIMAGE_FORMAT_PCX;
   else if ( 0 == strcmpi(ext, ".cr2") ) return CXIMAGE_FORMAT_RAW;
   else if ( 0 == strcmpi(ext, ".nef") ) return CXIMAGE_FORMAT_RAW;
   else if ( 0 == strcmpi(ext, ".dng") ) return CXIMAGE_FORMAT_RAW;
+  else if ( 0 == strcmpi(ext, "bmp") ) return CXIMAGE_FORMAT_BMP;
+  else if ( 0 == strcmpi(ext, "bitmap") ) return CXIMAGE_FORMAT_BMP;
+  else if ( 0 == strcmpi(ext, "gif") ) return CXIMAGE_FORMAT_GIF;
+  else if ( 0 == strcmpi(ext, "jpg") ) return CXIMAGE_FORMAT_JPG;
+  else if ( 0 == strcmpi(ext, "tbn") ) return CXIMAGE_FORMAT_JPG;
+  else if ( 0 == strcmpi(ext, "jpeg") ) return CXIMAGE_FORMAT_JPG;
+  else if ( 0 == strcmpi(ext, "png") ) return CXIMAGE_FORMAT_PNG;
+  else if ( 0 == strcmpi(ext, "ico") ) return CXIMAGE_FORMAT_ICO;
+  else if ( 0 == strcmpi(ext, "tif") ) return CXIMAGE_FORMAT_TIF;
+  else if ( 0 == strcmpi(ext, "tiff") ) return CXIMAGE_FORMAT_TIF;
+  else if ( 0 == strcmpi(ext, "tga") ) return CXIMAGE_FORMAT_TGA;
+  else if ( 0 == strcmpi(ext, "pcx") ) return CXIMAGE_FORMAT_PCX;
+  else if ( 0 == strcmpi(ext, "cr2") ) return CXIMAGE_FORMAT_RAW;
+  else if ( 0 == strcmpi(ext, "nef") ) return CXIMAGE_FORMAT_RAW;
+  else if ( 0 == strcmpi(ext, "dng") ) return CXIMAGE_FORMAT_RAW;
   return CXIMAGE_FORMAT_UNKNOWN;
 }
 
