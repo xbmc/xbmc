@@ -56,7 +56,7 @@ public:
   static void CheckForVariousArtists(VECSONGS &songs);
   static bool HasSingleAlbum(const VECSONGS &songs, CStdString &album, CStdString &artist);
 
-  bool DownloadAlbumInfo(const CStdString& strPath, const CStdString& strArtist, const CStdString& strAlbum, CGUIDialogProgress* pDialog=NULL);
+  bool DownloadAlbumInfo(const CStdString& strPath, const CStdString& strArtist, const CStdString& strAlbum, bool& bCanceled, CGUIDialogProgress* pDialog=NULL);
   bool DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist, CGUIDialogProgress* pDialog=NULL);
 protected:
   virtual void Process();
