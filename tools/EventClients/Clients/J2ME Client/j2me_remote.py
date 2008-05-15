@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #
 # XBoxMediaCenter
-# UDP Event Server
+# J2ME Remote
 # Copyright (c) 2008 topfs2
 #
 # This program is free software; you can redistribute it and/or modify
