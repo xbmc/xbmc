@@ -1,6 +1,47 @@
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 // RegExp.cpp
-////////////////////////////////////////////////////////////////////////////////
+//
+// Changes by JM for XBMC:
+//  replaced all TCHAR with char
+//  replaced all new/delete's with malloc/free's.
+//
+// This code has been derived from work by Henry Spencer. 
+// The main changes are
+// 1. All char variables and functions have been changed to char
+//    counterparts
+// 2. Added GetFindLen() & GetReplaceString() to enable search
+//    and replace operations.
+// 3. And of course, added the C++ Wrapper
+//
+// Comments from Russell Moss who posted UNICODE fixes to codeguru, herein adopted:
+// Both CRegExp::regnode and CRegExp::reginsert were leaving 
+// 2 "locations" for a short.  In the case of UNICODE, a 
+// char is a short so leaving room for a short is equivalent 
+// to skipping only one char
+//
+//
+// The original copyright notice follows:
+//
+// Copyright (c) 1986, 1993, 1995 by University of Toronto.
+// Written by Henry Spencer.  Not derived from licensed software.
+//
+// Permission is granted to anyone to use this software for any
+// purpose on any computer system, and to redistribute it in any way,
+// subject to the following restrictions:
+//
+// 1. The author is not responsible for the consequences of use of
+// this software, no matter how awful, even if they arise
+// from defects in it.
+//
+// 2. The origin of this software must not be misrepresented, either
+// by explicit claim or by omission.
+//
+// 3. Altered versions must be plainly marked as such, and must not
+// be misrepresented (by explicit claim or omission) as being
+// the original software.
+//
+// 4. This notice must not be removed or altered.
+/////////////////////////////////////////////////////////////////////////////
 
 #include <stdlib.h>
 #include <string.h>
