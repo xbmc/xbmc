@@ -23,7 +23,7 @@ CXbmcConfiguration::~CXbmcConfiguration()
 }
 
 /*
- * Load XboxMediaCenter.xml
+ * Load sources.xml
  */
 int CXbmcConfiguration::Load()
 {
@@ -72,11 +72,11 @@ int CXbmcConfiguration::BookmarkSize( int eid, webs_t wp, CStdString& response, 
   else response="<li>Error:Bookmark type does not exist";
   return -1;
 
-/*	// load xboxmediacenter.xml, write a messages if file could not be loaded
+/*	// load sources.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
-    eid!=-1 ? websError(wp, 500, T("Could not load XboxMediaCenter.xml\n")):
-              response="<li>Error:Could not load XboxMediaCenter.xml";
+    eid!=-1 ? websError(wp, 500, T("Could not load sources.xml\n")):
+              response="<li>Error:Could not load sources.xml";
 		return -1;
 	}
 
@@ -180,11 +180,11 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
   return -1;
 
 
-	/*// load xboxmediacenter.xml, write a messages if file could not be loaded
+	/*// load sources.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
-    eid!=-1 ? websError(wp, 500, T("Could not load XboxMediaCenter.xml\n")):
-              response="<li>Error:Could not load XboxMediaCenter.xml";
+    eid!=-1 ? websError(wp, 500, T("Could not load sources.xml\n")):
+              response="<li>Error:Could not load sources.xml";
 		return -1;
 	}
 
@@ -301,11 +301,11 @@ int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, CStdString& response, i
 
   return 0;
 /*
-	// load xboxmediacenter.xml, write a messages if file could not be loaded
+	// load sources.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
-    eid!=-1 ? websError(wp, 500, T("Could not load XboxMediaCenter.xml\n")):
-              response="<li>Error:Could not load XboxMediaCenter.xml";
+    eid!=-1 ? websError(wp, 500, T("Could not load sources.xml\n")):
+              response="<li>Error:Could not load sources.xml";
     return -1;
 	}
 
@@ -400,11 +400,11 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
   return -1;
 
 
-/*	// load xboxmediacenter.xml, write a messages if file could not be loaded
+/*	// load sources.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
-    eid!=-1 ? websError(wp, 500, T("Could not load XboxMediaCenter.xml\n")):
-              response="<li>Error:Could not load XboxMediaCenter.xml";
+    eid!=-1 ? websError(wp, 500, T("Could not load sources.xml\n")):
+              response="<li>Error:Could not load sources.xml";
     return -1;
 	}
 
@@ -477,11 +477,11 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
     else response="<li>Error:Position not found";
   return -1;
   /*
-	// load xboxmediacenter.xml, write a messages if file could not be loaded
+	// load sources.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
-    eid!=-1 ? websError(wp, 500, T("Could not load XboxMediaCenter.xml\n")):
-              response="<li>Error:Could not load XboxMediaCenter.xml";
+    eid!=-1 ? websError(wp, 500, T("Could not load sources.xml\n")):
+              response="<li>Error:Could not load sources.xml";
     return -1;
 	}
 
@@ -536,11 +536,11 @@ int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& respo
   	   return -1;
 	}
 
-	// load xboxmediacenter.xml, write a messages if file could not be loaded
+	// load sources.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
-          if (eid!=-1) websError(wp, 500, T("Could not load XboxMediaCenter.xml\n"));
-              else response="<li>Error:Could not load XboxMediaCenter.xml";
+          if (eid!=-1) websError(wp, 500, T("Could not load sources.xml\n"));
+              else response="<li>Error:Could not load sources.xml";
           return -1;
 	}
 
@@ -581,11 +581,11 @@ return -1;
 		return -1;
 	}
 
-	// load xboxmediacenter.xml, write a messages if file could not be loaded
+	// load sources.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
-    eid!=-1 ? websError(wp, 500, T("Could not load XboxMediaCenter.xml\n")):
-              response="<li>Error:Could not load XboxMediaCenter.xml";;
+    eid!=-1 ? websError(wp, 500, T("Could not load sources.xml\n")):
+              response="<li>Error:Could not load sources.xml";;
 		return -1;
 	}
 
@@ -642,11 +642,11 @@ int CXbmcConfiguration::SetOption( int eid, webs_t wp, CStdString& response, int
   response="<li>Error:Function is deprecated";
   return -1;
 
-	// load xboxmediacenter.xml, write a messages if file could not be loaded
+	// load sources.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
-    eid!=-1 ? websError(wp, 500, T("Could not load XboxMediaCenter.xml\n")) : 
-              response="<li>Error:Could not load XboxMediaCenter.xml";
+    eid!=-1 ? websError(wp, 500, T("Could not load sources.xml\n")) : 
+              response="<li>Error:Could not load sources.xml";
 		return -1;
 	}
 
@@ -703,7 +703,7 @@ int CXbmcConfiguration::SetOption( int eid, webs_t wp, CStdString& response, int
 }
 
 /*
- * Check if option is a valid one in xboxmediacenter.xml
+ * Check if option is a valid one in sources.xml
  */
 bool CXbmcConfiguration::IsValidOption(char* option)
 {
