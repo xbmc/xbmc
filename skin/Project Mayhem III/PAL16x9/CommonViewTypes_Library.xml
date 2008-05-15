@@ -13,7 +13,7 @@
 			<pagecontrol>61</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<include>contentpanelslide</include>
-			<visible>!Container.Content(TVshows) + !Container.Content(Seasons)</visible>
+			<visible>Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)</visible>
 			<itemlayout height="29">
 				<control type="image">
 					<posx>5</posx>
@@ -329,7 +329,7 @@
 	</include>
 	<include name="VideoLibraryWideIcon_Small">
 		<control type="panel" id="57">
-			<visible>!Container.Content(Seasons) + !Container.Content(MusicVideos)</visible>
+			<visible>Container.Content(Movies) | Container.Content(tvshows) | Container.Content(MusicVideos) | Container.Content(Episodes)</visible>
 			<posx>432</posx>
 			<posy>100</posy>
 			<width>242</width>
