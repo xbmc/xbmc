@@ -20,7 +20,7 @@
  */
 
 
-// XboxMediaCenter
+// XBMC
 //
 // libraries:
 //   - CDRipX   : doesnt support section loading yet
