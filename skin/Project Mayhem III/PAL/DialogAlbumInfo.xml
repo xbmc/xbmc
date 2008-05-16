@@ -49,7 +49,7 @@
 				<description>Artist</description>
 				<posx>200</posx>
 				<posy>123</posy>
-				<label>171</label>
+				<label>$LOCALIZE[557]:</label>
 				<width>90</width>
 				<font>font11</font>
 			</control>
@@ -57,7 +57,7 @@
 				<description>Year</description>
 				<posx>200</posx>
 				<posy>143</posy>
-				<label>201</label>
+				<label>$LOCALIZE[562]:</label>
 				<width>90</width>
 				<font>font11</font>
 			</control>
@@ -65,7 +65,7 @@
 				<description>Rating</description>
 				<posx>200</posx>
 				<posy>163</posy>
-				<label>173</label>
+				<label>$LOCALIZE[563]:</label>
 				<width>90</width>
 				<font>font11</font>
 			</control>
@@ -74,7 +74,7 @@
 				<posx>200</posx>
 				<posy>183</posy>
 				<width>90</width>
-				<label>174</label>
+				<label>$LOCALIZE[515]:</label>
 				<font>font11</font>
 			</control>
 			<control type="label">
@@ -82,7 +82,7 @@
 				<posx>200</posx>
 				<posy>203</posy>
 				<width>90</width>
-				<label>175</label>
+				<label>$LOCALIZE[175]:</label>
 				<font>font11</font>
 			</control>
 			<control type="label">
@@ -90,7 +90,7 @@
 				<posx>200</posx>
 				<posy>223</posy>
 				<width>90</width>
-				<label>176</label>
+				<label>$LOCALIZE[176]:</label>
 				<font>font11</font>
 			</control>
 			<control type="label">
@@ -98,7 +98,7 @@
 				<posx>200</posx>
 				<posy>243</posy>
 				<width>90</width>
-				<label>21895</label>
+				<label>$LOCALIZE[21895]:</label>
 				<font>font11</font>
 			</control>
 			<control type="label">
@@ -106,7 +106,7 @@
 				<posx>200</posx>
 				<posy>263</posy>
 				<width>90</width>
-				<label>21899</label>
+				<label>$LOCALIZE[21899]:</label>
 				<font>font11</font>
 			</control>
 			<control type="label">
@@ -270,7 +270,7 @@
 				<description>Born</description>
 				<posx>200</posx>
 				<posy>123</posy>
-				<label>21893</label>
+				<label>$LOCALIZE[21893]:</label>
 				<width>90</width>
 				<font>font11</font>
 				<visible>!IsEmpty(ListItem.Property(Born))</visible>
@@ -279,7 +279,7 @@
 				<description>Formed</description>
 				<posx>200</posx>
 				<posy>123</posy>
-				<label>21894</label>
+				<label>$LOCALIZE[21894]:</label>
 				<width>90</width>
 				<font>font11</font>
 				<visible>!IsEmpty(ListItem.Property(Formed))</visible>
@@ -288,7 +288,7 @@
 				<description>Born/Formed</description>
 				<posx>200</posx>
 				<posy>123</posy>
-				<label>21900</label>
+				<label>$LOCALIZE[21900]:</label>
 				<width>90</width>
 				<font>font11</font>
 				<visible>IsEmpty(ListItem.Property(Born)) + IsEmpty(ListItem.Property(Formed))</visible>
@@ -297,7 +297,7 @@
 				<description>Genre</description>
 				<posx>200</posx>
 				<posy>143</posy>
-				<label>174</label>
+				<label>$LOCALIZE[515]:</label>
 				<width>90</width>
 				<font>font11</font>
 			</control>
@@ -305,7 +305,7 @@
 				<description>Styles</description>
 				<posx>200</posx>
 				<posy>163</posy>
-				<label>176</label>
+				<label>$LOCALIZE[176]:</label>
 				<width>90</width>
 				<font>font11</font>
 			</control>
@@ -314,7 +314,7 @@
 				<posx>200</posx>
 				<posy>183</posy>
 				<width>90</width>
-				<label>175</label>
+				<label>$LOCALIZE[175]:</label>
 				<font>font11</font>
 			</control>
 			<control type="label">
@@ -322,7 +322,7 @@
 				<posx>200</posx>
 				<posy>203</posy>
 				<width>90</width>
-				<label>21892</label>
+				<label>$LOCALIZE[21892]:</label>
 				<font>font11</font>
 			</control>
 			<control type="label">
@@ -330,7 +330,7 @@
 				<posx>200</posx>
 				<posy>223</posy>
 				<width>90</width>
-				<label>21897</label>
+				<label>$LOCALIZE[21897]:</label>
 				<font>font11</font>
 			</control>
 			<control type="label">
@@ -338,7 +338,7 @@
 				<posx>200</posx>
 				<posy>243</posy>
 				<width>90</width>
-				<label>21896</label>
+				<label>$LOCALIZE[21896]:</label>
 				<font>font11</font>
 			</control>
 			<control type="label">
@@ -346,7 +346,7 @@
 				<posx>200</posx>
 				<posy>263</posy>
 				<width>90</width>
-				<label>21898</label>
+				<label>$LOCALIZE[21898]:</label>
 				<font>font11</font>
 			</control>
 			<control type="label">

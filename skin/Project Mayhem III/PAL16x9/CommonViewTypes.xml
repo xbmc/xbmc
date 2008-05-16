@@ -316,7 +316,7 @@
 					<aligny>center</aligny>
 					<selectedcolor>white</selectedcolor>
 					<scroll>true</scroll>
-					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
+					<label>$INFO[ListItem.Year ,$LOCALIZE[562]: ]</label>
 				</control>
 				<control type="label">
 					<posx>120</posx>
@@ -327,7 +327,7 @@
 					<scroll>true</scroll>
 					<aligny>center</aligny>
 					<selectedcolor>white</selectedcolor>
-					<label>$INFO[ListItem.Genre ,$LOCALIZE[174] ]</label>
+					<label>$INFO[ListItem.Genre ,$LOCALIZE[515]: ]</label>
 				</control>
 				<control type="label">
 					<posx>475</posx>
@@ -404,7 +404,7 @@
 					<aligny>center</aligny>
 					<selectedcolor>white</selectedcolor>
 					<scroll>true</scroll>
-					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
+					<label>$INFO[ListItem.Year ,$LOCALIZE[562]: ]</label>
 				</control>
 				<control type="label">
 					<posx>120</posx>
@@ -415,7 +415,7 @@
 					<scroll>true</scroll>
 					<aligny>center</aligny>
 					<selectedcolor>white</selectedcolor>
-					<label>$INFO[ListItem.Genre ,$LOCALIZE[174] ]</label>
+					<label>$INFO[ListItem.Genre ,$LOCALIZE[515]: ]</label>
 				</control>
 				<control type="label">
 					<posx>475</posx>
@@ -540,7 +540,7 @@
 					<aligny>center</aligny>
 					<selectedcolor>white</selectedcolor>
 					<scroll>true</scroll>
-					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
+					<label>$INFO[ListItem.Year ,$LOCALIZE[562]: ]</label>
 				</control>
 				<control type="label">
 					<posx>60</posx>
@@ -1241,7 +1241,7 @@
 			<font>font13</font>
 			<textcolor>lightgrey</textcolor>
 			<scroll>true</scroll>
-			<label>$INFO[ListItem.Director ,$LOCALIZE[199] ]</label>
+			<label>$INFO[ListItem.Director ,$LOCALIZE[20339]: ]</label>
 			<visible>Control.IsVisible(56) + Window.IsVisible(25)</visible>
 			<include>contentpanelslide</include>
 		</control>
@@ -1254,7 +1254,7 @@
 			<textcolor>lightgrey</textcolor>
 			<selectedcolor>white</selectedcolor>
 			<scroll>true</scroll>
-			<label>$INFO[ListItem.Genre ,$LOCALIZE[174] ]</label>
+			<label>$INFO[ListItem.Genre ,$LOCALIZE[515]: ]</label>
 			<visible>Control.IsVisible(56) + Window.IsVisible(25)</visible>
 			<include>contentpanelslide</include>
 		</control>
@@ -1266,7 +1266,7 @@
 			<font>font13</font>
 			<textcolor>lightgrey</textcolor>
 			<scroll>true</scroll>
-			<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
+			<label>$INFO[ListItem.Year ,$LOCALIZE[562]: ]</label>
 			<visible>Control.IsVisible(56) + Window.IsVisible(25)</visible>
 			<include>contentpanelslide</include>
 		</control>
@@ -1279,7 +1279,7 @@
 			<textcolor>lightgrey</textcolor>
 			<scroll>true</scroll>
 			<align>right</align>
-			<label>$INFO[ListItem.Rating ,$LOCALIZE[204] ]</label>
+			<label>$INFO[ListItem.Rating ,$LOCALIZE[563]: ]</label>
 			<visible>Control.IsVisible(56) + Window.IsVisible(25)</visible>
 			<include>contentpanelslide</include>
 		</control>
@@ -1291,7 +1291,7 @@
 			<font>font13</font>
 			<textcolor>lightgrey</textcolor>
 			<scroll>true</scroll>
-			<label>$INFO[ListItem.PlotOutline ,$LOCALIZE[203] ]</label>
+			<label>$INFO[ListItem.PlotOutline ,$LOCALIZE[203]: ]</label>
 			<visible>Control.IsVisible(56) + Window.IsVisible(25)</visible>
 			<include>contentpanelslide</include>
 		</control>
@@ -1391,7 +1391,7 @@
 			<font>font13</font>
 			<textcolor>lightgrey</textcolor>
 			<scroll>true</scroll>
-			<label>$INFO[ListItem.Album ,$LOCALIZE[170] ]</label>
+			<label>$INFO[ListItem.Album ,$LOCALIZE[558]: ]</label>
 			<visible>Control.IsVisible(56)</visible>
 			<include>contentpanelslide</include>
 		</control>
@@ -1403,7 +1403,7 @@
 			<font>font13</font>
 			<textcolor>lightgrey</textcolor>
 			<scroll>true</scroll>
-			<label>$INFO[ListItem.Genre ,$LOCALIZE[174] ]</label>
+			<label>$INFO[ListItem.Genre ,$LOCALIZE[515]: ]</label>
 			<visible>Control.IsVisible(56)</visible>
 			<include>contentpanelslide</include>
 		</control>
@@ -1798,6 +1798,7 @@
 			<visible>![Window.IsActive(mymusicfiles) + Control.IsVisible(57)]</visible>
 			<visible>![Window.IsActive(mymusiclibrary) + Control.IsVisible(57)]</visible>
 			<visible>![Window.IsActive(mymusiclibrary) + Control.IsVisible(51)]</visible>
+			<visible>![Window.IsActive(mymusiclibrary) + Control.IsVisible(58)]</visible>
 			<visible>![Window.IsActive(mymusicplaylist) + Control.IsVisible(57)]</visible>
 			<animation effect="slide" start="0,0" end="-205,0" time="0" condition="Container.Content(Seasons) + Control.IsVisible(58)">conditional</animation>
 		</control>
