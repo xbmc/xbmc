@@ -7,24 +7,24 @@
 #include "ButtonTranslator.h"
 #include "log.h"
 #include "Settings.h"
-#include <errno.h>
 
 #define LIRC_DEVICE "/dev/lircd"
-#define LIRC_MAXIMUM_RECONNECT 10
 
 CRemoteControl g_RemoteControl;
 
 CRemoteControl::CRemoteControl()
 {
   m_fd = -1;
+  m_file = NULL;  
   m_bInitialized = false;
-  m_Reinitialize = 0;
   m_skipHold = false;
   Reset();
 }
 
 CRemoteControl::~CRemoteControl()
 {
+  if (m_file != NULL)
+    fclose(m_file);
 }
 
 void CRemoteControl::Reset()
@@ -35,14 +35,11 @@ void CRemoteControl::Reset()
 
 void CRemoteControl::Initialize()
 {
-  if (m_Reinitialize > 0)
-    m_Reinitialize--;
-
   struct sockaddr_un addr;
-
+  
   addr.sun_family = AF_UNIX;
   strcpy(addr.sun_path, LIRC_DEVICE);
-
+ 
   // Open the socket from which we will receive the remote commands 
   m_fd = socket(AF_UNIX, SOCK_STREAM,0);
   if (m_fd == -1)  
@@ -50,14 +47,14 @@ void CRemoteControl::Initialize()
     CLog::Log(LOGERROR, "LIRC %s: socket failed: %s", __FUNCTION__, strerror(errno));
     return;
   }
-
+  
   // Connect to the socket
   if (connect(m_fd, (struct sockaddr *)&addr, sizeof(addr)) == -1)  
   {
     CLog::Log(LOGERROR, "LIRC %s: connect failed: %s", __FUNCTION__, strerror(errno));
     return;
   }
-
+  
   // Set the socket to non-blocking
   int opts = fcntl(m_fd,F_GETFL);
   if (opts == -1) 
@@ -65,35 +62,33 @@ void CRemoteControl::Initialize()
     CLog::Log(LOGERROR, "LIRC %s: fcntl(F_GETFL) failed: %s", __FUNCTION__, strerror(errno));
     return;
   }
+	
   opts = (opts | O_NONBLOCK);
-
   if (fcntl(m_fd,F_SETFL,opts) == -1) 
   {
     CLog::Log(LOGERROR, "LIRC %s: fcntl(F_SETFL) failed: %s", __FUNCTION__, strerror(errno));
     return;
   }
-
-  m_Reinitialize = 0;
+	  
+  m_file = fdopen(m_fd, "r");
+  if (m_file == NULL)
+  {
+    CLog::Log(LOGERROR, "LIRC %s: fdopen failed: %s", __FUNCTION__, strerror(errno));
+    return;
+  }
+  
   m_bInitialized = true;
 }
 
 void CRemoteControl::Update()
 {
-  if (m_Reinitialize > 0)
-  {
-    CLog::Log(LOGDEBUG, "LIRC: Reinitializing attempt %i/%i", m_Reinitialize, LIRC_MAXIMUM_RECONNECT);
-    Initialize();
-  }
   if (!m_bInitialized)
     return;
 
   Uint32 now = SDL_GetTicks(); 
 
   // Read a line from the socket
-  errno = 0;
-  int i = recv(m_fd, m_buf, sizeof(m_buf), 0);
-
-  if (i > 0)
+  while (fgets(m_buf, sizeof(m_buf), m_file) != NULL)
   {
     // Remove the \n
     m_buf[strlen(m_buf)-1] = '\0';
@@ -126,19 +121,6 @@ void CRemoteControl::Update()
       m_button = 0;
     }
   }
-
-  if (i == -1)
-  {
-    if (errno != 11) //If we don't get EAGAIN error we've lost connection to LIRC when doing a standby
-    {
-      CLog::Log(LOGDEBUG, "LIRC: Reinitializing - Reason %i", errno);
-      shutdown(m_fd, SHUT_RDWR);
-      closesocket(m_fd);
-      m_Reinitialize = LIRC_MAXIMUM_RECONNECT;
-      m_bInitialized = false;
-    }
-  }
-
   m_skipHold = false;
 }
 
