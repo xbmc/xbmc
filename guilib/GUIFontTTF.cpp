@@ -973,8 +973,6 @@ struct CUSTOMVERTEX {
 // Oblique code - original taken from freetype2 (ftsynth.c)
 void CGUIFontTTF::ObliqueGlyph(FT_GlyphSlot slot)
 {
-  FT_Outline*  outline = &slot->outline;
-
   /* only oblique outline glyphs */
   if ( slot->format != FT_GLYPH_FORMAT_OUTLINE )
     return;
