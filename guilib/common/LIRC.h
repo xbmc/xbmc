@@ -16,11 +16,11 @@ public:
 
 private:
   int   m_fd;
+  FILE* m_file;
   bool  m_isHolding;
   WORD  m_button;
   char  m_buf[128];
   bool  m_bInitialized;
-  int   m_Reinitialize;
   bool  m_skipHold;
   Uint32 m_firstClickTime;
 };
