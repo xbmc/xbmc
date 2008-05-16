@@ -1798,6 +1798,7 @@
 			<visible>![Window.IsActive(mymusicfiles) + Control.IsVisible(57)]</visible>
 			<visible>![Window.IsActive(mymusiclibrary) + Control.IsVisible(57)]</visible>
 			<visible>![Window.IsActive(mymusiclibrary) + Control.IsVisible(51)]</visible>
+			<visible>![Window.IsActive(mymusiclibrary) + Control.IsVisible(58)]</visible>
 			<visible>![Window.IsActive(mymusicplaylist) + Control.IsVisible(57)]</visible>
 			<animation effect="slide" start="0,0" end="-205,0" time="0" condition="Container.Content(Seasons) + Control.IsVisible(58)">conditional</animation>
 		</control>
