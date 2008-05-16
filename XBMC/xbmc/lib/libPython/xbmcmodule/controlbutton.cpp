@@ -204,9 +204,9 @@ namespace PYXBMC
 
   // setLabel() Method
   PyDoc_STRVAR(setLabel__doc__,
-    "setLabel(label[, font, textColor, disabledColor, shadowColor, focusedColor]) -- Set's this buttons text attributes.\n"
+    "setLabel([label, font, textColor, disabledColor, shadowColor, focusedColor]) -- Set's this buttons text attributes.\n"
     "\n"
-    "label          : string or unicode - text string.\n"
+    "label          : [opt] string or unicode - text string.\n"
     "font           : [opt] string - font used for label text. (e.g. 'font13')\n"
     "textColor      : [opt] hexstring - color of enabled button's label. (e.g. '0xFFFFFFFF')\n"
     "disabledColor  : [opt] hexstring - color of disabled button's label. (e.g. '0xFFFF3300')\n"
@@ -242,7 +242,7 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "O|sssssO",
+      "|OsssssO",
       keywords,
       &pObjectText,
       &cFont,
@@ -254,13 +254,8 @@ namespace PYXBMC
     {
       return NULL;
     }
-    if (!PyGetUnicodeString(self->strText, pObjectText, 1))
-    {
-      return NULL;
-    }
-    if (pObjectText2)
-      PyGetUnicodeString(self->strText2, pObjectText2, 1);
-
+    if (pObjectText) PyGetUnicodeString(self->strText, pObjectText, 1);
+    if (pObjectText2) PyGetUnicodeString(self->strText2, pObjectText2, 1);
     if (cFont) self->strFont = cFont;
     if (cTextColor) sscanf(cTextColor, "%lx", &self->dwTextColor);
     if (cDisabledColor) sscanf( cDisabledColor, "%lx", &self->dwDisabledColor );
@@ -271,7 +266,7 @@ namespace PYXBMC
     if (self->pGUIControl)
     {
       ((CGUIButtonControl*)self->pGUIControl)->PythonSetLabel(
-        self->strFont, self->strText, self->dwTextColor, self->dwShadowColor, self->dwFocusedColor );
+        self->strFont, self->strText, self->dwTextColor, self->dwShadowColor, self->dwFocusedColor);
       ((CGUIButtonControl*)self->pGUIControl)->SetLabel2(self->strText2);
       ((CGUIButtonControl*)self->pGUIControl)->PythonSetDisabledColor(self->dwDisabledColor);
     }
