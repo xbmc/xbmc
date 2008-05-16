@@ -1,15 +1,15 @@
 <window id="129">
-	<defaultcontrol always="true">12</defaultcontrol>
+	<defaultcontrol always="true">22</defaultcontrol>
 	<coordinates>
 		<system>1</system>
 		<posx>110</posx>
-		<posy>100</posy>
+		<posy>70</posy>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
 		<control type="image" id="0">
 			<posx>-110</posx>
-			<posy>-100</posy>
+			<posy>-70</posy>
 			<width>720</width>
 			<height>576</height>
 			<texture>black.png</texture>
@@ -20,23 +20,37 @@
 			<posx>-15</posx>
 			<posy>-15</posy>
 			<width>520</width>
-			<height>440</height>
+			<height>485</height>
 			<texture>dialog-panel2.png</texture>
 		</control>
 		<control type="label">
 			<description>heading label</description>
 			<posx>20</posx>
 			<posy>-2</posy>
-			<width>420</width>
+			<width>460</width>
 			<align>left</align>
 			<font>special13</font>
 			<label>21432</label>
 			<textcolor>dialogheader</textcolor>
 		</control>
+		<control type="spincontrolex" id="22">
+			<description>Set Playlist type</description>
+			<posx>10</posx>
+			<posy>30</posy>
+			<width>480</width>
+			<label>467</label>
+			<font>font12</font>
+			<texturefocus border="3">input-focus.png</texturefocus>
+			<texturenofocus  border="3">input-nofocus.png</texturenofocus>
+			<onright>22</onright>
+			<onleft>22</onleft>
+			<onup>9001</onup>
+			<ondown>12</ondown>
+		</control>
 		<control type="label" id="0">
 			<description>Name Label</description>
 			<posx>10</posx>
-			<posy>30</posy>
+			<posy>70</posy>
 			<width>420</width>
 			<font>font12</font>
 			<label>21433</label>
@@ -44,7 +58,7 @@
 		<control type="button" id="12">
 			<description>Name Button</description>
 			<posx>10</posx>
-			<posy>55</posy>
+			<posy>95</posy>
 			<width>480</width>
 			<height>32</height>
 			<font>font12</font>
@@ -54,7 +68,7 @@
 			<texturefocus>input-focus.png</texturefocus>
 			<texturenofocus>input-nofocus.png</texturenofocus>
 			<label>-</label>
-			<onup>9001</onup>
+			<onup>22</onup>
 			<onleft>12</onleft>
 			<onright>12</onright>
 			<ondown>10</ondown>
@@ -62,7 +76,7 @@
 		<control type="label">
 			<description>rules label</description>
 			<posx>10</posx>
-			<posy>95</posy>
+			<posy>135</posy>
 			<width>420</width>
 			<align>left</align>
 			<font>font12</font>
@@ -71,7 +85,7 @@
 		<control type="list" id="10">
 			<description>Rules List Control</description>
 			<posx>10</posx>
-			<posy>120</posy>
+			<posy>160</posy>
 			<width>370</width>
 			<height>102</height>
 			<onup>12</onup>
@@ -130,7 +144,7 @@
 			<control type="button" id="13">
 				<description>Add Rule Button</description>
 				<posx>390</posx>
-				<posy>120</posy>
+				<posy>160</posy>
 				<height>32</height>
 				<width>100</width>
 				<font>font12</font>
@@ -148,7 +162,7 @@
 			<control type="button" id="14">
 				<description>Remove Rule Button</description>
 				<posx>390</posx>
-				<posy>154</posy>
+				<posy>194</posy>
 				<height>32</height>
 				<width>100</width>
 				<font>font12</font>
@@ -166,7 +180,7 @@
 			<control type="button" id="15">
 				<description>Edit Rule Button</description>
 				<posx>390</posx>
-				<posy>188</posy>
+				<posy>228</posy>
 				<height>32</height>
 				<width>100</width>
 				<font>font12</font>
@@ -185,7 +199,7 @@
 		
 		<control type="spincontrolex" id="16">
 			<posx>10</posx>
-			<posy>230</posy>
+			<posy>270</posy>
 			<width>480</width>
 			<label>21424</label>
 			<font>font12</font>
@@ -199,7 +213,7 @@
 		
 		<control type="spincontrolex" id="17">
 			<posx>10</posx>
-			<posy>270</posy>
+			<posy>310</posy>
 			<width>480</width>
 			<label>21427</label>
 			<font>font12</font>
@@ -213,7 +227,7 @@
 
 		<control type="spincontrolex" id="18">
 			<posx>10</posx>
-			<posy>310</posy>
+			<posy>350</posy>
 			<width>350</width>
 			<label>21429</label>
 			<font>font12</font>
@@ -227,7 +241,7 @@
 
 		<control type="togglebutton" id="19">
 			<posx>370</posx>
-			<posy>310</posy>
+			<posy>350</posy>
 			<width>120</width>
 			<height>32</height>
 			<font>font12</font>
@@ -248,7 +262,7 @@
 			<control type="button" id="20">
 				<description>Ok Button</description>
 				<posx>290</posx>
-				<posy>355</posy>
+				<posy>395</posy>
 				<width>90</width>
 				<height>32</height>
 				<font>font12</font>
@@ -259,14 +273,14 @@
 				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
 				<label>186</label>
 				<onup>18</onup>
-				<onleft>22</onleft>
+				<onleft>21</onleft>
 				<onright>21</onright>
-				<ondown>12</ondown>
+				<ondown>22</ondown>
 			</control>
 			<control type="button" id="21">
 				<description>Cancel Button</description>
 				<posx>390</posx>
-				<posy>355</posy>
+				<posy>395</posy>
 				<width>90</width>
 				<height>32</height>
 				<font>font12</font>
@@ -279,22 +293,8 @@
 				<onup>18</onup>
 				<onleft>20</onleft>
 				<onright>20</onright>
-				<ondown>12</ondown>
+				<ondown>22</ondown>
 			</control>
-			<control type="spincontrolex" id="22">
-				<posx>10</posx>
-				<posy>355</posy>
-				<width>280</width>
-				<label>467</label>
-				<font>font12</font>
-				<texturefocus border="3">input-focus.png</texturefocus>
-				<texturenofocus  border="3">input-nofocus.png</texturenofocus>
-				<onright>20</onright>
-				<onleft>21</onleft>
-				<onup>18</onup>
-				<ondown>10</ondown>
-			</control>
-
 		</control>
 	</controls>
 </window>
