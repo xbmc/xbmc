@@ -93,6 +93,7 @@ install: all
 	@find language media screensavers scripts skin sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*osx.*|.*x86_64.*|.*\.dll" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@echo "Copying XBMC binary to $(prefix)/share/xbmc/xbmc.bin"
 	@cp XboxMediaCenter $(prefix)/share/xbmc/xbmc.bin
+	@mkdir -p $(prefix)/bin
 	@cp tools/Linux/xbmc.sh $(prefix)/bin/xbmc
 	@chmod 755 $(prefix)/bin/xbmc
 	@echo "Done!"
