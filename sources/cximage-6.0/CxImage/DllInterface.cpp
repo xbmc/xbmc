@@ -7,6 +7,10 @@
 #include <sys/stat.h>
 #include <errno.h>
 #define strcmpi strcasecmp
+#else //win32
+#include <sys/types.h>
+#include <sys/stat.h>
+#define S_ISDIR(mode) (((mode) & S_IFMT) == S_IFDIR)
 #endif
 
 #define RESAMPLE_QUALITY 0
@@ -245,26 +249,16 @@ bool SaveThumb(CxImage &image, const char *file, const char *thumb, int maxWidth
 
 extern "C"
 {
-	bool IsDir(const char* file)
-	{
-#ifdef _WIN32
-    DWORD dwAttrs; 
-    dwAttrs = GetFileAttributes(file); 
-    if ((dwAttrs & FILE_ATTRIBUTE_DIRECTORY)) 
+  bool IsDir(const char* file)
+  {
+    struct stat holder;
+    if (stat(file, &holder) == -1)
+      return false;
+    if (S_ISDIR(holder.st_mode))
       return true;
 
     return false;
-
-#else
-		struct stat holder;
-    	if (stat(file, &holder) == -1)
-          return false;
-	    if (S_ISDIR(holder.st_mode))
-	      return true;
-	
-		return false;
-#endif
-	}
+  }
 
   bool __declspec(dllexport) ReleaseImage(ImageInfo *info) 
   {
