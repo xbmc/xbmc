@@ -371,9 +371,12 @@ CGUISettings::CGUISettings(void)
   AddBool(8, "lcd.enableonpaused", 20312, true);
 #endif
 
-  //AddCategory(4, "appleremote", 13600);
-  //AddInt(1, "appleremote.mode", 13601, APPLE_REMOTE_DISABLED, APPLE_REMOTE_DISABLED, 1, APPLE_REMOTE_UNIVERSAL, SPIN_CONTROL_TEXT);
-  // Always running: [x]
+#ifdef __APPLE__
+  AddCategory(4, "appleremote", 13600);
+  AddInt(1, "appleremote.mode", 13601, APPLE_REMOTE_STANDARD, APPLE_REMOTE_DISABLED, 1, APPLE_REMOTE_UNIVERSAL, SPIN_CONTROL_TEXT);
+  AddBool(2, "appleremote.alwayson", 13602, false);
+  AddInt(3, "appleremote.sequencetime", 13603, 500, 50, 50, 1000, SPIN_CONTROL_INT_PLUS, MASK_MS, TEXT_OFF);
+#endif
   
   AddCategory(4, "autorun", 447);
   AddBool(1, "autorun.dvd", 240, true);
@@ -418,7 +421,7 @@ CGUISettings::CGUISettings(void)
   AddBool(5, "audiooutput.dtspassthrough", 254, true);
 #ifdef __APPLE__
   AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
-  AddString(7, "audiooutput.passthroughdevice", 546, "S/PDIF", BUTTON_CONTROL_INPUT);
+  //AddString(7, "audiooutput.passthroughdevice", 546, "S/PDIF", BUTTON_CONTROL_INPUT);
 #elif defined(_LINUX)
   AddString(6, "audiooutput.audiodevice", 545, "default", BUTTON_CONTROL_INPUT);
   AddString(7, "audiooutput.passthroughdevice", 546, "iec958", BUTTON_CONTROL_INPUT);
@@ -482,7 +485,7 @@ CGUISettings::CGUISettings(void)
   
   AddSeparator(7, "videoplayer.sep1.5");
   AddInt(8, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
-  AddInt(9, "videoplayer.upscalingalgorithm", 13116, UPSCALING_BICUBIC, UPSCALING_BICUBIC, 1, UPSCALING_LANCZOS, SPIN_CONTROL_TEXT);
+  AddInt(9, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_SINC_SOFTWARE, SPIN_CONTROL_TEXT);
   
 #ifdef HAS_XBOX_HARDWARE
   AddInt(7, "videoplayer.flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
@@ -631,19 +634,23 @@ CGUISettings::CGUISettings(void)
   AddString(2, "locale.language",248,"english", SPIN_CONTROL_TEXT);
   AddString(3, "locale.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
   AddSeparator(4, "locale.sep1");
+#ifndef __APPLE__
   AddString(5, "locale.time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
   AddString(6, "locale.date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
+#endif
 #ifdef HAS_XBOX_HARDWARE
   AddInt(7, "locale.timezone", 14074, 0, 0, 1, g_timezone.GetNumberOfTimeZones(), SPIN_CONTROL_TEXT);
   AddBool(8, "locale.usedst", 14075, false);
 #endif
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
   AddString(8, "locale.timezone", 14081, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
   AddString(7, "locale.timezonecountry", 14080, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
 #endif
+#ifndef __APPLE__
   AddSeparator(9, "locale.sep2");
   AddBool(10,   "locale.timeserver"       , 168  , false);
   AddString(11, "locale.timeserveraddress"      , 731  , "pool.ntp.org", BUTTON_CONTROL_INPUT);
+#endif
 
   AddCategory(7, "videoscreen", 131);
   AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
@@ -1068,7 +1075,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   m_replayGain.iType = GetInt("musicplayer.replaygaintype");
   m_replayGain.bAvoidClipping = GetBool("musicplayer.replaygainavoidclipping");
 
-#ifdef _LINUX  
+#if defined(_LINUX) && !defined(__APPLE__)  
   CStdString timezone = GetString("locale.timezone");
   if(timezone == "0" || timezone.IsEmpty())
   {
