@@ -77,10 +77,7 @@ PaStream* CPortAudio::CreateOutputStream(const CStdString& strName, int channels
           
           CLog::Log(LOGDEBUG, "Considering:              [%s]\n", deviceInfo->name);
           
-          if (strName.Equals(deviceInfo->name) || 
-              (isDigital == true && 
-                  (strstr(deviceInfo->name, "Digital") != 0 ||
-                   strstr(deviceInfo->name, "S/P-DIF") != 0)) ||
+          if (strName.Equals(deviceInfo->name) ||
               (backupDevice != -1 && strName.Equals("Default")))
           {
             CLog::Log(LOGNOTICE, "Picked device:            [%s]\n", deviceInfo->name);
