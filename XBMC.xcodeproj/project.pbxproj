@@ -38,7 +38,6 @@
 		810CA00C0D683DEF0095F5DD /* libSDL_mixer.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 810CA0080D683DEF0095F5DD /* libSDL_mixer.dylib */; };
 		810CA01A0D68A6820095F5DD /* libSDLmain.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 810CA0190D68A6820095F5DD /* libSDLmain.a */; };
 		810CA01C0D68A6E20095F5DD /* libShout-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E30B3E8E0D5D59290030A311 /* libShout-osx.a */; };
-		880694050DCF5D1000836761 /* libSDL_gfx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 880694040DCF5D1000836761 /* libSDL_gfx.dylib */; };
 		8806941F0DCF67A500836761 /* libSDL_image.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8806941E0DCF67A500836761 /* libSDL_image.dylib */; };
 		880DBE4E0DC223FF00E26B71 /* MediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE4B0DC223FF00E26B71 /* MediaSource.cpp */; };
 		880DBE550DC224A100E26B71 /* MusicFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE530DC224A100E26B71 /* MusicFileDirectory.cpp */; };
@@ -50,6 +49,7 @@
 		88ACB0220DCF40D00083CFDF /* MusicInfoTagLoaderASAP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88ACB0200DCF40D00083CFDF /* MusicInfoTagLoaderASAP.cpp */; };
 		88D9FF600DD264B500EDA56F /* XBPythonDllFuncs.S in Sources */ = {isa = PBXBuildFile; fileRef = 88D9FF5F0DD264B500EDA56F /* XBPythonDllFuncs.S */; };
 		8DD76F790486A8DE00D96B5E /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */; };
+		E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */; };
 		E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */; };
 		E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E33466A50D2E5103005A65EC /* IOKit.framework */; };
 		E33979930D62FC46004ECDDA /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */; };
@@ -884,7 +884,6 @@
 		810CA0050D683DEF0095F5DD /* libSDL.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL.dylib; path = /opt/local/lib/libSDL.dylib; sourceTree = "<absolute>"; };
 		810CA0080D683DEF0095F5DD /* libSDL_mixer.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL_mixer.dylib; path = /opt/local/lib/libSDL_mixer.dylib; sourceTree = "<absolute>"; };
 		810CA0190D68A6820095F5DD /* libSDLmain.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDLmain.a; path = /opt/local/lib/libSDLmain.a; sourceTree = "<absolute>"; };
-		880694040DCF5D1000836761 /* libSDL_gfx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL_gfx.dylib; path = /opt/local/lib/libSDL_gfx.dylib; sourceTree = "<absolute>"; };
 		8806941E0DCF67A500836761 /* libSDL_image.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL_image.dylib; path = /opt/local/lib/libSDL_image.dylib; sourceTree = "<absolute>"; };
 		880DBE360DC2077000E26B71 /* README.osx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.osx; sourceTree = "<group>"; };
 		880DBE490DC223FF00E26B71 /* Album.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Album.h; sourceTree = "<group>"; };
@@ -911,6 +910,8 @@
 		88ACB0210DCF40D00083CFDF /* MusicInfoTagLoaderASAP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderASAP.h; sourceTree = "<group>"; };
 		88D9FF5F0DD264B500EDA56F /* XBPythonDllFuncs.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = XBPythonDllFuncs.S; sourceTree = "<group>"; };
 		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
+		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
+		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		E30B3E8E0D5D59290030A311 /* libShout-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libShout-osx.a"; path = "xbmc/lib/libshout/libShout-osx.a"; sourceTree = "<group>"; };
 		E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxVobsub.cpp; sourceTree = "<group>"; };
 		E33466A50D2E5103005A65EC /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
@@ -2875,7 +2876,6 @@
 				E3DAAF880D6E1A8E00F17647 /* libmysqlclient.16.0.0.dylib in Frameworks */,
 				E3D547960D723EFD00F36320 /* libsmbclient.dylib in Frameworks */,
 				E3BBB7A20D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib in Frameworks */,
-				880694050DCF5D1000836761 /* libSDL_gfx.dylib in Frameworks */,
 				8806941F0DCF67A500836761 /* libSDL_image.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2913,7 +2913,6 @@
 				810CA0190D68A6820095F5DD /* libSDLmain.a */,
 				810CA0050D683DEF0095F5DD /* libSDL.dylib */,
 				810CA0080D683DEF0095F5DD /* libSDL_mixer.dylib */,
-				880694040DCF5D1000836761 /* libSDL_gfx.dylib */,
 				E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */,
 				E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */,
 				E3EB8F040D5D5C0300FFF489 /* libogg.0.5.3.dylib */,
@@ -3017,6 +3016,8 @@
 		E37D5CB40D3023BB0081D327 /* osx */ = {
 			isa = PBXGroup;
 			children = (
+				E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */,
+				E306D12D0DDF7B590052C2AD /* XBMCHelper.h */,
 				E363844E0D767767005744DD /* AppleRemote.h */,
 				E363844F0D767767005744DD /* AppleRemote.m */,
 				E37D5CB50D3023BB0081D327 /* CocoaUtils.h */,
@@ -6783,6 +6784,7 @@
 				8883CEA10DD817D1004E8B72 /* DVDOverlayCodecSSA.cpp in Sources */,
 				8883CEA70DD81807004E8B72 /* DVDSubtitleParserSSA.cpp in Sources */,
 				8883CEA80DD81807004E8B72 /* DVDSubtitlesLibass.cpp in Sources */,
+				E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
