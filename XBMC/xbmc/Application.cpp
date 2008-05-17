@@ -226,6 +226,7 @@
 #endif
 #ifdef __APPLE__
 #include "CocoaUtils.h"
+#include "XBMCHelper.h"
 #endif
 #ifdef HAS_HAL
 #include "linux/LinuxFileSystem.h"
@@ -1223,6 +1224,11 @@ HRESULT CApplication::Create(HWND hWnd)
 
   //Check for X+Y - if pressed, set debug log mode and mplayer debuging on
   CheckForDebugButtonCombo();
+  
+#ifdef __APPLE__
+  // Configure and possible manually start the helper.
+  g_xbmcHelper.Configure();
+#endif
 
 #ifdef HAS_XBOX_HARDWARE
   bool bNeedReboot = false;
@@ -1592,7 +1598,7 @@ CProfile* CApplication::InitDirectoriesOSX()
 {
 #ifdef __APPLE__
   Cocoa_Initialize(this);
-
+  
   // We're going to manually manage the screensaver. 
   setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", true);
 
@@ -1605,16 +1611,7 @@ CProfile* CApplication::InitDirectoriesOSX()
   CreateDirectory(_P("Z:\\"), NULL);
 
   CStdString home = getenv("HOME");
-
-  if (m_bPlatformDirectories)
-  {
-    // Always get system files from the same place!
-    CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
-  }
-  else
-  {
-    CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
-  }
+  CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
 
   g_settings.m_vecProfiles.clear();
   g_settings.LoadProfiles(_P(PROFILES_FILE));
@@ -1644,7 +1641,8 @@ CProfile* CApplication::InitDirectoriesOSX()
     str = getenv("HOME");
     str.append("/Library/Application Support/XBMC");
     CIoSupport::RemapDriveLetter('T', str.c_str());
-
+    CIoSupport::RemapDriveLetter('U', str.c_str());
+    
     if (g_settings.m_vecProfiles.size()==0)
     {
       profile = new CProfile;
@@ -3412,7 +3410,7 @@ bool CApplication::OnAction(const CAction &action)
   if ( IsPlaying())
   {
     // pause : pauses current audio song
-    if (action.wID == ACTION_PAUSE)
+    if (action.wID == ACTION_PAUSE && m_iPlaySpeed == 1)
     {
       m_pPlayer->Pause();
       if (!m_pPlayer->IsPaused())
@@ -3427,7 +3425,7 @@ bool CApplication::OnAction(const CAction &action)
     {
       // if we do a FF/RW in my music then map PLAY action togo back to normal speed
       // if we are playing at normal speed, then allow play to pause
-      if (action.wID == ACTION_PLAYER_PLAY)
+      if (action.wID == ACTION_PLAYER_PLAY || action.wID == ACTION_PAUSE)
       {
         if (m_iPlaySpeed != 1)
         {
@@ -4502,6 +4500,11 @@ void CApplication::Stop()
 
     CLog::Log(LOGNOTICE, "unload skin");
     UnloadSkin();
+    
+#ifdef __APPLE__
+    if (g_xbmcHelper.IsAlwaysOn() == false)
+      g_xbmcHelper.Stop();
+#endif
 
 /* Python resource freeing must be done after skin has been unloaded, not before
    some windows still need it when deinitializing during skin unloading. */
