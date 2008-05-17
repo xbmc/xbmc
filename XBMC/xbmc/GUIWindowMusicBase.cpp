@@ -282,6 +282,10 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
   // Try to find an album to lookup from the current item
   CAlbum album;
   CArtist artist;
+  bool foundAlbum = false;
+  
+  album.idAlbum = -1;
+  
   if (pItem->IsMusicDb())
   {
     CQueryParams params;
@@ -290,7 +294,6 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
     {
       artist.idArtist = params.GetArtistId();
       artist.strArtist = pItem->GetMusicInfoTag()->GetArtist();
-      album.idAlbum = -1;
     }
     else
     {
@@ -322,7 +325,6 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
     GetDirectory(strPath, items);
 
     // check the first song we find in the folder, and grab it's album info
-    bool foundAlbum(false);
     for (int i = 0; i < items.Size() && !foundAlbum; i++)
     {
       CFileItem* pItem = items[i];
@@ -347,13 +349,12 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
     {
       CLog::Log(LOGINFO, "%s called on a folder containing no songs with tag info - nothing can be done", __FUNCTION__);
       if (m_dlgProgress && bShowInfo) m_dlgProgress->Close();
-      return;
     }
   }
 
   if (m_dlgProgress && bShowInfo) m_dlgProgress->Close();
 
-  if (album.idAlbum == -1)
+  if (album.idAlbum == -1 && foundAlbum == false)
     ShowArtistInfo(artist, pItem->m_strPath, false, bShowInfo);
   else
     ShowAlbumInfo(album, strPath, false, bShowInfo);
@@ -770,14 +771,18 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
   CMusicInfoScanner scanner;
   CStdString strPath;
   long idAlbum = m_musicdatabase.GetAlbumByName(strAlbum,strArtist);
-  strPath.Format("musicdb://3/%u/",idAlbum);
-  if (!scanner.DownloadAlbumInfo(strPath,strArtist,strAlbum,m_dlgProgress))
+  
+  strPath.Format("musicdb://3/%d/",idAlbum);
+  if (!scanner.DownloadAlbumInfo(strPath,strArtist,strAlbum,album,m_dlgProgress))
   { // no albums found
     CGUIDialogOK::ShowAndGetInput(185, 0, 187, 0);
     return false;
   }
 
-  m_musicdatabase.GetAlbumInfo(idAlbum,album.GetAlbum(),&album.GetAlbum().songs);
+  // Read the album information from the database if we are dealing with a DB album.
+  if (idAlbum != -1)
+    m_musicdatabase.GetAlbumInfo(idAlbum,album.GetAlbum(),&album.GetAlbum().songs);
+  
   album.SetLoaded(true);
   return true;
 }
