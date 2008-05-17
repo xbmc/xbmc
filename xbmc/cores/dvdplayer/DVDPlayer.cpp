@@ -714,7 +714,7 @@ void CDVDPlayer::Process()
       if (m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.inited && m_CurrentAudio.id >= 0
       ||  m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.inited && m_CurrentVideo.id >= 0)
       {
-        if(!m_caching)
+        if(!m_caching && m_playSpeed == DVD_PLAYSPEED_NORMAL)
         {
           m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
           m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
