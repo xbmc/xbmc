@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "include.h"
 #include "GUIFadeLabelControl.h"
 #include "utils/CharsetConverter.h"
@@ -71,9 +92,12 @@ void CGUIFadeLabelControl::Render()
     m_lastLabel = m_currentLabel;
   }
 
+  float posY = m_posY;
+  if (m_label.align & XBFONT_CENTER_Y)
+    posY += m_height * 0.5f;
   if (m_infoLabels.size() == 1 && m_shortText) 
   { // single label set and no scrolling required - just display
-    m_textLayout.Render(m_posX + m_label.offsetX, m_posY, 0, m_label.textColor, m_label.shadowColor, 0, m_width - m_label.offsetX);
+    m_textLayout.Render(m_posX + m_label.offsetX, posY, 0, m_label.textColor, m_label.shadowColor, (m_label.align & ~3), m_width - m_label.offsetX);
     CGUIControl::Render();
     return;
   }
@@ -113,10 +137,10 @@ void CGUIFadeLabelControl::Render()
       posX = m_posX + m_width * 0.5f;
     else if (m_label.align & XBFONT_RIGHT)
       posX = m_posX + m_width;
-    m_textLayout.Render(posX, m_posY, 0, m_label.textColor, m_label.shadowColor, m_label.align & 3, m_width);
+    m_textLayout.Render(posX, posY, 0, m_label.textColor, m_label.shadowColor, m_label.align, m_width);
   }
   else
-    m_textLayout.RenderScrolling(m_posX, m_posY, 0, m_label.textColor, m_label.shadowColor, 0, m_width, m_scrollInfo);
+    m_textLayout.RenderScrolling(m_posX, posY, 0, m_label.textColor, m_label.shadowColor, (m_label.align & ~3), m_width, m_scrollInfo);
 
   if (moveToNextLabel)
   { // increment the label and reset scrolling
