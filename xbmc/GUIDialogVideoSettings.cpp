@@ -67,12 +67,22 @@ void CGUIDialogVideoSettings::CreateSettings()
   m_settings.clear();
   // create our settings
   {
+#ifdef __APPLE__
+    const int entries[] = { 16018, 16019, 16020, 16021, 16022, 20129, 20130 };
+    AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_stSettings.m_currentVideoSettings.m_InterlaceMethod, 7, entries);
+#else
     const int entries[] = { 16018, 16019, 16020, 16021, 16022, 20129, 20130, 20131 };
     AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_stSettings.m_currentVideoSettings.m_InterlaceMethod, 8, entries);
+#endif
   }
   {
-    const int entries[] = { 16301, 16302, 16303, 16304, 16305, 16306 };
+#ifdef __APPLE__
+    const int entries[] = { 16301, 16302, 16307, 16308, 16309 };
+    AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int*)&g_stSettings.m_currentVideoSettings.m_ScalingMethod, 5, entries);
+#else
+    const int entries[] = { 16301, 16302, 16303, 16304, 16305, 16306, 16307, 16308, 16309 };
     AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int*)&g_stSettings.m_currentVideoSettings.m_ScalingMethod, 3, entries);
+#endif
   }
   AddBool(VIDEO_SETTINGS_CROP, 644, &g_stSettings.m_currentVideoSettings.m_Crop);
   {
