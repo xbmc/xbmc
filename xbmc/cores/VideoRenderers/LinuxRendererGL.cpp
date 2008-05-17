@@ -49,7 +49,7 @@ CLinuxRendererGL::CLinuxRendererGL()
     m_pOSDYTexture[i] = 0;
     m_pOSDATexture[i] = 0;
 
-    // possiblly not needed?
+    // possibly not needed?
     m_eventTexturesDone[i] = CreateEvent(NULL,FALSE,TRUE,NULL);
     //m_eventOSDDone[i] = CreateEvent(NULL,TRUE,TRUE,NULL);
   }
@@ -70,11 +70,11 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_pYUVShader = NULL;
   m_pVideoFilterShader = NULL;
   m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
-  
-  m_upscalingMethod = UPSCALING_DISABLED;
+
   m_upscalingWidth = 0;
   m_upscalingHeight = 0;
-  memset(&m_imScaled, 0, sizeof(m_imScaled)); 
+  memset(&m_imScaled, 0, sizeof(m_imScaled));
+  m_isSoftwareUpscaling = false;
 
   memset(m_image, 0, sizeof(m_image));
   memset(m_YUVTexture, 0, sizeof(m_YUVTexture));
@@ -675,7 +675,7 @@ bool CLinuxRendererGL::ValidateRenderTarget()
 {
   if (!m_bValidated)
   {
-    // create the yuv textures
+     // create the yuv textures    
     LoadShaders();
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
     {
@@ -701,7 +701,10 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   ChooseBestResolution(m_fps);
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
   ManageDisplay();
-  SelectUpscalingMethod();
+  
+  m_upscalingWidth = rd.right-rd.left;
+  m_upscalingHeight = rd.bottom-rd.top;
+  m_scalingMethod = GetDefaultUpscalingMethod();
 
   if (m_rgbBuffer != NULL)
   {
@@ -726,12 +729,9 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   return true;
 }
 
-void CLinuxRendererGL::SelectUpscalingMethod()
+ESCALINGMETHOD CLinuxRendererGL::GetDefaultUpscalingMethod()
 {
   int upscale = g_guiSettings.GetInt("videoplayer.highqualityupscaling");
-  
-  m_upscalingWidth = rd.right-rd.left;
-  m_upscalingHeight = rd.bottom-rd.top;
   
   // See if we're a candiate for upscaling.
   bool candidateForUpscaling = false;
@@ -748,47 +748,56 @@ void CLinuxRendererGL::SelectUpscalingMethod()
     candidateForUpscaling = false;
   }
   
-  if (candidateForUpscaling)
-    m_upscalingMethod = g_guiSettings.GetInt("videoplayer.upscalingalgorithm");
-  else
-    m_upscalingMethod = UPSCALING_DISABLED;
+  ESCALINGMETHOD ret = VS_SCALINGMETHOD_LINEAR;
   
-  // If we're upscaling, allocate the buffer.
-  if (m_upscalingMethod != UPSCALING_DISABLED)
+  if (candidateForUpscaling)
   {
-    // Allocate a new destination image.
-    m_imScaled.cshift_x = m_imScaled.cshift_y = 1;
-    m_imScaled.texcoord_x = m_imScaled.texcoord_y = 1;
+    ret = (ESCALINGMETHOD)g_guiSettings.GetInt("videoplayer.upscalingalgorithm");
     
-    // Free the old planes if they exist.
-    for (int i=0; i<3; i++)
-    {
-      if (m_imScaled.plane[i])
-      {
-        delete [] m_imScaled.plane[i];
-        m_imScaled.plane[i] = 0;
-      }
-    }
+    // Make sure to override the default setting for the video
+    g_stSettings.m_currentVideoSettings.m_ScalingMethod = ret;
     
-    // FIXME: I'm not sure why we can't allocate less memory for the UV planes. 
-    m_imScaled.plane[0] = new BYTE[m_upscalingWidth * m_upscalingHeight];
-    m_imScaled.plane[1] = new BYTE[(m_upscalingWidth /* /2 */) * (m_upscalingHeight/2)];
-    m_imScaled.plane[2] = new BYTE[(m_upscalingWidth /* /2 */) * (m_upscalingHeight/2)];
-    m_imScaled.stride[0] = m_upscalingWidth;
-    m_imScaled.stride[1] = m_upscalingWidth/2;
-    m_imScaled.stride[2] = m_upscalingWidth/2;
-    m_imScaled.width = m_upscalingWidth;
-    m_imScaled.height = m_upscalingHeight;
-    m_imScaled.flags = IMAGE_FLAG_READY;
+    // Initialize software upscaling.
+    InitializeSoftwareUpscaling();
   }
   
-  CLog::Log(LOGWARNING, "Upscale: selected algorithm %d", m_upscalingMethod);
+  CLog::Log(LOGWARNING, "Upscale: selected algorithm %d", ret);
+  
+  return ret;
 }
 
-bool CLinuxRendererGL::IsUpscaling()
+void CLinuxRendererGL::InitializeSoftwareUpscaling()
+{
+  // Allocate a new destination image.
+  m_imScaled.cshift_x = m_imScaled.cshift_y = 1;
+  m_imScaled.texcoord_x = m_imScaled.texcoord_y = 1;
+  
+  // Free the old planes if they exist.
+  for (int i=0; i<3; i++)
+  {
+    if (m_imScaled.plane[i])
+    {
+      delete [] m_imScaled.plane[i];
+      m_imScaled.plane[i] = 0;
+    }
+  }
+  
+  // FIXME: I'm not sure why we can't allocate less memory for the UV planes.
+  m_imScaled.plane[0] = new BYTE[m_upscalingWidth * m_upscalingHeight];
+  m_imScaled.plane[1] = new BYTE[(m_upscalingWidth /* /2 */) * (m_upscalingHeight/2)];
+  m_imScaled.plane[2] = new BYTE[(m_upscalingWidth /* /2 */) * (m_upscalingHeight/2)];
+  m_imScaled.stride[0] = m_upscalingWidth;
+  m_imScaled.stride[1] = m_upscalingWidth/2;
+  m_imScaled.stride[2] = m_upscalingWidth/2;
+  m_imScaled.width = m_upscalingWidth;
+  m_imScaled.height = m_upscalingHeight;
+  m_imScaled.flags = 0;
+}
+
+bool CLinuxRendererGL::IsSoftwareUpscaling()
 {
   // See if we should be performing software upscaling on this frame.
-  if (m_upscalingMethod == UPSCALING_DISABLED ||
+  if (m_scalingMethod < VS_SCALINGMETHOD_BICUBIC_SOFTWARE ||
        (m_currentField != FIELD_FULL && 
         g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_NONE && 
         g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_DEINTERLACE))
@@ -888,22 +897,39 @@ void CLinuxRendererGL::LoadTextures(int source)
     return;
   }
 
-  if (IsUpscaling())
+  // See if we need to recreate textures.
+  if (m_isSoftwareUpscaling != IsSoftwareUpscaling())
+  {
+    for (int i = 0 ; i < m_NumYV12Buffers ; i++)
+      CreateYV12Texture(i);
+    
+    im->flags = IMAGE_FLAG_READY;
+  }
+  
+  if (IsSoftwareUpscaling())
   {
     // Perform the scaling.
     uint8_t* src[] =       { im->plane[0],  im->plane[1],  im->plane[2] };
     int      srcStride[] = { im->stride[0], im->stride[1], im->stride[2] };
     uint8_t* dst[] =       { m_imScaled.plane[0],  m_imScaled.plane[1],  m_imScaled.plane[2] };
     int      dstStride[] = { m_imScaled.stride[0], m_imScaled.stride[1], m_imScaled.stride[2] };
+    int      algorithm   = 0;
+    
+    switch (m_scalingMethod)
+    {
+    case VS_SCALINGMETHOD_BICUBIC_SOFTWARE: algorithm = SWS_BICUBIC; break;
+    case VS_SCALINGMETHOD_LANCZOS_SOFTWARE: algorithm = SWS_LANCZOS; break;
+    case VS_SCALINGMETHOD_SINC_SOFTWARE:    algorithm = SWS_SINC;    break;
+    }
     
     struct SwsContext *ctx = m_dllSwScale.sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
                                                          m_upscalingWidth, m_upscalingHeight, PIX_FMT_YUV420P,
-                                                         m_upscalingMethod == UPSCALING_BICUBIC ? SWS_BICUBIC : SWS_LANCZOS, 
-                                                         NULL, NULL, NULL);
+                                                         algorithm, NULL, NULL, NULL);
     m_dllSwScale.sws_scale(ctx, src, srcStride, 0, im->height, dst, dstStride);
     m_dllSwScale.sws_freeContext(ctx);
     
     im = &m_imScaled;
+    im->flags = IMAGE_FLAG_READY;
   }
   
   // if we don't have a shader, fallback to SW YUV2RGB for now
@@ -1271,9 +1297,10 @@ void CLinuxRendererGL::UpdateVideoFilter()
     delete m_pVideoFilterShader;
     m_pVideoFilterShader = NULL;
   }
+  
   VerifyGLState();
   m_scalingMethod = g_stSettings.m_currentVideoSettings.m_ScalingMethod;
-
+  
   switch (g_stSettings.m_currentVideoSettings.m_ScalingMethod)
   {
   case VS_SCALINGMETHOD_NEAREST:
@@ -1286,6 +1313,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
     m_renderQuality = RQ_SINGLEPASS;
     break;
 
+#ifndef __APPLE__
   case VS_SCALINGMETHOD_CUBIC:
     SetTextureFilter(GL_LINEAR);
     m_renderQuality = RQ_MULTIPASS;
@@ -1309,6 +1337,13 @@ void CLinuxRendererGL::UpdateVideoFilter()
   case VS_SCALINGMETHOD_NEDI:
     CLog::Log(LOGERROR, "GL: TODO: This scaler has not yet been implemented");
     m_renderQuality = RQ_SINGLEPASS;
+    break;
+#endif
+    
+  case VS_SCALINGMETHOD_BICUBIC_SOFTWARE:
+  case VS_SCALINGMETHOD_LANCZOS_SOFTWARE:
+  case VS_SCALINGMETHOD_SINC_SOFTWARE:
+    InitializeSoftwareUpscaling();
     break;
   }
 }
@@ -1396,7 +1431,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     CLog::Log(LOGERROR, "GL: Falling back to Software YUV2RGB");
     m_renderMethod = RENDER_SW;
   }
-
+  
   // determine whether GPU supports NPOT textures
   CSurface *screen = g_graphicsContext.getScreenSurface();
   int maj, min;
@@ -2234,6 +2269,9 @@ void CLinuxRendererGL::ClearYV12Texture(int index)
 
 bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 {
+  // Remember if we're software upscaling.
+  m_isSoftwareUpscaling = IsSoftwareUpscaling();
+  
   /* since we also want the field textures, pitch must be texture aligned */
   unsigned p;
 
@@ -2301,7 +2339,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     {
       CLog::Log(LOGDEBUG, "GL: Creating Y NPOT texture of size %d x %d", im.width, im.height);
       
-      if (IsUpscaling())
+      if (IsSoftwareUpscaling())
         glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, m_upscalingWidth, m_upscalingHeight/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
       else
         glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width, im.height/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
@@ -2318,7 +2356,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
       CLog::Log(LOGDEBUG, "GL: Creating U NPOT texture of size %d x %d", im.width/2, im.height/2/divfactor);
       glBindTexture(m_textureTarget, fields[f][1]);
       
-      if (IsUpscaling())
+      if (IsSoftwareUpscaling())
         glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, m_upscalingWidth/2, m_upscalingHeight/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
       else
         glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
@@ -2332,7 +2370,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
       CLog::Log(LOGDEBUG, "GL: Creating V NPOT texture of size %d x %d", im.width/2, im.height/2/divfactor);
       glBindTexture(m_textureTarget, fields[f][2]);
       
-      if (IsUpscaling())
+      if (IsSoftwareUpscaling())
         glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, m_upscalingWidth/2, m_upscalingHeight/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
       else
         glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
@@ -2344,6 +2382,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
       VerifyGLState();
     }
   }
+  
   SetEvent(m_eventTexturesDone[index]);
   return true;
 }
