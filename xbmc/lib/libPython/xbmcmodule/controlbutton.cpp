@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #ifndef _LINUX
 #include "lib/libPython/python/Python.h"
@@ -188,9 +209,9 @@ namespace PYXBMC
 
   // setLabel() Method
   PyDoc_STRVAR(setLabel__doc__,
-    "setLabel(label[, font, textColor, disabledColor, shadowColor, focusedColor]) -- Set's this buttons text attributes.\n"
+    "setLabel([label, font, textColor, disabledColor, shadowColor, focusedColor]) -- Set's this buttons text attributes.\n"
     "\n"
-    "label          : string or unicode - text string.\n"
+    "label          : [opt] string or unicode - text string.\n"
     "font           : [opt] string - font used for label text. (e.g. 'font13')\n"
     "textColor      : [opt] hexstring - color of enabled button's label. (e.g. '0xFFFFFFFF')\n"
     "disabledColor  : [opt] hexstring - color of disabled button's label. (e.g. '0xFFFF3300')\n"
@@ -226,7 +247,7 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "O|sssssO",
+      "|OsssssO",
       keywords,
       &pObjectText,
       &cFont,
@@ -238,13 +259,8 @@ namespace PYXBMC
     {
       return NULL;
     }
-    if (!PyGetUnicodeString(self->strText, pObjectText, 1))
-    {
-      return NULL;
-    }
-    if (pObjectText2)
-      PyGetUnicodeString(self->strText2, pObjectText2, 1);
-
+    if (pObjectText) PyGetUnicodeString(self->strText, pObjectText, 1);
+    if (pObjectText2) PyGetUnicodeString(self->strText2, pObjectText2, 1);
     if (cFont) self->strFont = cFont;
     if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
     if (cDisabledColor) sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
@@ -255,7 +271,7 @@ namespace PYXBMC
     if (self->pGUIControl)
     {
       ((CGUIButtonControl*)self->pGUIControl)->PythonSetLabel(
-        self->strFont, self->strText, self->dwTextColor, self->dwShadowColor, self->dwFocusedColor );
+        self->strFont, self->strText, self->dwTextColor, self->dwShadowColor, self->dwFocusedColor);
       ((CGUIButtonControl*)self->pGUIControl)->SetLabel2(self->strText2);
       ((CGUIButtonControl*)self->pGUIControl)->PythonSetDisabledColor(self->dwDisabledColor);
     }

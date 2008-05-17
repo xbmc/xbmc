@@ -1,5 +1,3 @@
-
-#include "stdafx.h"
 //------------------------------------------------------------------------
 // Copyright (C) Sewell Development Corporation, 1994 - 2000.
 //     Web: www.sewelld.com      E-mail: support@sewelld.com
@@ -11,8 +9,9 @@
 // resold as stand-alone CRC code, and the copyright notice and license
 // agreement must not be removed from the code.
 //------------------------------------------------------------------------
-#include "Crc32.h"
 
+#include "stdafx.h"
+#include "Crc32.h"
 
 // Implementation of 32-bit CRC (cyclic redundancy check) class:
 //     Polynomial:                 04C11DB7
