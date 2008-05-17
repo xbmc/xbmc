@@ -166,6 +166,7 @@ public:
 
   virtual int  GetChapterCount();
   virtual int  GetChapter();
+  virtual int  SeekChapter(int iChapter);
 
   virtual void SeekTime(__int64 iTime);
   virtual __int64 GetTime();
