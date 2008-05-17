@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2007 Team XboxMediaCenter
- *      http://www.xboxmediacenter.com
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with GNU Make; see the file COPYING.  If not, write to
+ *  along with XBMC; see the file COPYING.  If not, write to
  *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  *  http://www.gnu.org/copyleft/gpl.html
  *
@@ -773,11 +773,14 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
   long idAlbum = m_musicdatabase.GetAlbumByName(strAlbum,strArtist);
   
   strPath.Format("musicdb://3/%d/",idAlbum);
-  if (!scanner.DownloadAlbumInfo(strPath,strArtist,strAlbum,album,m_dlgProgress))
+  bool bCanceled;
+  if (!scanner.DownloadAlbumInfo(strPath,strArtist,strAlbum,bCanceled,album,m_dlgProgress))
   { // no albums found
     CGUIDialogOK::ShowAndGetInput(185, 0, 187, 0);
     return false;
   }
+  if (bCanceled)
+    return false;
 
   // Read the album information from the database if we are dealing with a DB album.
   if (idAlbum != -1)

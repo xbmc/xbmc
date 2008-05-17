@@ -29,7 +29,7 @@
 			<control type="fadelabel" id="101">
 				<description>current Directory text label left</description>
 				<posx>78</posx>
-				<posy>45</posy>
+				<posy>53</posy>
 				<width>270</width>
 				<font>font12</font>
 				<align>left</align>
@@ -38,7 +38,7 @@
 			<control type="fadelabel" id="102">
 				<description>current Directory text label right</description>
 				<posx>367</posx>
-				<posy>45</posy>
+				<posy>53</posy>
 				<width>270</width>
 				<font>font12</font>
 				<align>left</align>
