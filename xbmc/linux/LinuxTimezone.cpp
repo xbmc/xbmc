@@ -115,10 +115,12 @@ CStdString CLinuxTimezone::GetCountryByTimezone(const CStdString timezone)
 
 void CLinuxTimezone::SetTimezone(CStdString timezoneName)
 {
+#ifndef __APPLE__
    static char env_var[255];
    sprintf(env_var, "TZ=:%s", timezoneName.c_str());
    putenv(env_var);
    tzset();
+#endif
 }
 
 CStdString CLinuxTimezone::GetOSConfiguredTimezone()
