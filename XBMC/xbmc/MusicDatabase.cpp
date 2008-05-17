@@ -2650,7 +2650,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
 
       m_pDS->next();
     }
-    CLog::Log(LOGDEBUG,"Time to retrieve artists from dataset = %lu", timeGetTime() - time);
+    CLog::Log(LOGDEBUG,"Time to retrieve artists from dataset = %u", timeGetTime() - time);
 
     // cleanup
     m_pDS->close();
