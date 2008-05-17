@@ -329,3 +329,4 @@ void CGUIViewControl::UpdateViewVisibility()
       m_visibleViews.push_back(view);
   }
 }
+
