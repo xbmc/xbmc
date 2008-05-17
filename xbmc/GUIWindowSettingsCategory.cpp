@@ -74,6 +74,7 @@
 #endif
 #ifdef __APPLE__
 #include "CPortAudio.h"
+#include "XBMCHelper.h"
 #endif
 #ifdef HAS_LINUX_NETWORK
 #include "GUIDialogAccessPoints.h"
@@ -312,6 +313,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
           g_audioConfig.Save();
         }
       }
+#ifndef __APPLE__
       switch(g_guiSettings.GetInt("videooutput.aspect"))
       {
       case VIDEO_NORMAL:
@@ -327,6 +329,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       g_videoConfig.Set480p(g_guiSettings.GetBool("videooutput.hd480p"));
       g_videoConfig.Set720p(g_guiSettings.GetBool("videooutput.hd720p"));
       g_videoConfig.Set1080i(g_guiSettings.GetBool("videooutput.hd1080i"));
+#endif
 
       if (g_videoConfig.NeedsSave())
         g_videoConfig.Save();
@@ -756,10 +759,30 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(13117), UPSCALING_BICUBIC);
-      pControl->AddLabel(g_localizeStrings.Get(13118), UPSCALING_LANCZOS);
+      pControl->AddLabel(g_localizeStrings.Get(13117), VS_SCALINGMETHOD_BICUBIC_SOFTWARE);
+      pControl->AddLabel(g_localizeStrings.Get(13118), VS_SCALINGMETHOD_LANCZOS_SOFTWARE);
+      pControl->AddLabel(g_localizeStrings.Get(13119), VS_SCALINGMETHOD_SINC_SOFTWARE);
       pControl->SetValue(pSettingInt->GetData());
     }
+#ifdef __APPLE__
+    else if (strSetting.Equals("videoscreen.displayblanking"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(13131), BLANKING_DISABLED);
+      pControl->AddLabel(g_localizeStrings.Get(13132), BLANKING_ALL_DISPLAYS);
+      pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting.Equals("appleremote.mode"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(13610), APPLE_REMOTE_DISABLED);
+      pControl->AddLabel(g_localizeStrings.Get(13611), APPLE_REMOTE_STANDARD);
+      pControl->AddLabel(g_localizeStrings.Get(13612), APPLE_REMOTE_UNIVERSAL);
+      pControl->SetValue(pSettingInt->GetData());
+    }
+#endif
     else if (strSetting.Equals("system.ledcolour"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -782,6 +805,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(476), LED_PLAYBACK_VIDEO_MUSIC); // Video & Music
       pControl->SetValue(pSettingInt->GetData());
     }
+#ifndef __APPLE__
     else if (strSetting.Equals("videoplayer.rendermethod"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -792,6 +816,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(21397), RENDER_HQ_RGB_SHADERV2);
       pControl->SetValue(pSettingInt->GetData());
     }
+#endif
     else if (strSetting.Equals("musicplayer.replaygaintype"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -931,6 +956,61 @@ void CGUIWindowSettingsCategory::UpdateSettings()
           pControl->SetEnabled(true);
       }
     }
+#ifdef __APPLE__
+    else if (strSetting.Equals("videoscreen.displayblanking"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl)
+      {
+        int value = g_guiSettings.GetInt("videoscreen.resolution");
+        if (strstr(g_settings.m_ResInfo[value].strMode, "Full screen") != 0)
+          pControl->SetEnabled(true);
+        else
+          pControl->SetEnabled(false);
+      }
+    }
+    else if (strSetting.Equals("appleremote.mode"))
+    {
+      // Set new configuration.
+      g_xbmcHelper.Configure();
+      
+      if (g_xbmcHelper.ErrorStarting() == true)
+      {
+        // Display an error.
+        if (g_xbmcHelper.IsRemoteBuddyInstalled())
+          CGUIDialogOK::ShowAndGetInput(13600, 13620, 13621, 13622);
+        if (g_xbmcHelper.IsSofaControlRunning())
+          CGUIDialogOK::ShowAndGetInput(13600, 13623, 13621, 13624);
+        
+        CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+        pControl->SetValue(APPLE_REMOTE_DISABLED);
+      }
+    }
+    else if (strSetting.Equals("appleremote.alwayson"))
+     {
+       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+       if (pControl)
+       {
+         int value = g_guiSettings.GetInt("appleremote.mode");
+         if (value != APPLE_REMOTE_DISABLED)
+           pControl->SetEnabled(true);
+         else
+           pControl->SetEnabled(false);
+       }
+     }
+     else if (strSetting.Equals("appleremote.sequencetime"))
+     {
+       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+       if (pControl)
+       {
+         int value = g_guiSettings.GetInt("appleremote.mode");
+         if (value == APPLE_REMOTE_UNIVERSAL)
+           pControl->SetEnabled(true);
+         else
+           pControl->SetEnabled(false);
+       }
+     }
+#endif
     else if (strSetting.Equals("filelists.allowfiledeletion"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1285,11 +1365,13 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
         pControl->SetLabel2("");
     }
+#ifdef HAS_XBOX_HARDWARE
     else if (strSetting.Equals("myprograms.dashboard"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("myprograms.usedashpath"));
     }
+#endif
     else if (strSetting.Equals("lcd.enableonpaused"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -2026,6 +2108,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_pictureSources, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
   }
+#ifdef HAS_XBOX_HARDWARE
   else if (strSetting.Equals("myprograms.dashboard"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
@@ -2035,6 +2118,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
   }
+#endif
   else if (strSetting.Equals("myprograms.trainerpath") || strSetting.Equals("pictures.screenshotpath") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("subtitles.custompath"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
@@ -3518,11 +3602,13 @@ void CGUIWindowSettingsCategory::FillInStartupWindow(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::OnInitWindow()
 {
+#ifndef __APPLE__
   m_iNetworkAssignment = g_guiSettings.GetInt("network.assignment");
   m_strNetworkIPAddress = g_guiSettings.GetString("network.ipaddress");
   m_strNetworkSubnet = g_guiSettings.GetString("network.subnet");
   m_strNetworkGateway = g_guiSettings.GetString("network.gateway");
   m_strNetworkDNS = g_guiSettings.GetString("network.dns");
+#endif
   m_strOldTrackFormat = g_guiSettings.GetString("musicfiles.trackformat");
   m_strOldTrackFormatRight = g_guiSettings.GetString("musicfiles.trackformatright");
   m_NewResolution = INVALID;
@@ -3676,6 +3762,10 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
 
 void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
 {
+#ifdef __APPLE__
+  return;
+#endif
+  
 #ifdef HAS_LINUX_NETWORK
    NetworkAssignment iAssignment;
    CStdString sIPAddress;
