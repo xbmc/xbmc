@@ -202,12 +202,12 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     break;
 
   case ACTION_BIG_STEP_BACK:
-    Seek(false, true);
+    SeekChapter(g_application.m_pPlayer->GetChapter() - 1);
     return true;
     break;
 
   case ACTION_BIG_STEP_FORWARD:
-    Seek(true, true);
+    SeekChapter(g_application.m_pPlayer->GetChapter() + 1);
     return true;
     break;
 
@@ -444,8 +444,16 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
         CStdString fontPath = _P("Q:\\media\\Fonts\\");
         fontPath += g_guiSettings.GetString("subtitles.font");
+#ifdef __APPLE__
+        g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
+        float aspect = 1.0f;
+        if (res == PAL_16x9 || res == PAL60_16x9 || res == NTSC_16x9 || res == HDTV_480p_16x9)
+          aspect *= 0.75f;
+        CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", fontPath, color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), 1.0f, aspect);
+#else
         // we scale based on PAL4x3 - this at least ensures all sizing is constant across resolutions
         CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", PTH_IC(fontPath), color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), 1.0f, 1.0f, PAL_4x3);
+#endif
         if (!subFont)
           CLog::Log(LOGERROR, "CGUIWindowFullScreen::OnMessage(WINDOW_INIT) - Unable to load subtitle font");
         else
@@ -800,6 +808,14 @@ void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
 {
   g_application.m_pPlayer->Seek(bPlus, bLargeStep);
 
-  //Make sure gui items are visible
+  // Make sure gui items are visible.
+  g_infoManager.SetDisplayAfterSeek();
+}
+
+void CGUIWindowFullScreen::SeekChapter(int iChapter)
+{
+  g_application.m_pPlayer->SeekChapter(iChapter);
+  
+  // Make sure gui items are visible.
   g_infoManager.SetDisplayAfterSeek();
 }
