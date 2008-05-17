@@ -301,3 +301,4 @@ int CGUIWrappingListContainer::GetCurrentPage() const
     return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
   return offset / m_itemsPerPage + 1;
 }
+

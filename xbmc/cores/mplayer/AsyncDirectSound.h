@@ -43,7 +43,7 @@ public:
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual DWORD GetChunkLen();
   virtual FLOAT GetDelay();
-  CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, char* strAudioCodec = "", bool bIsMusic = false);
+  CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, const char* strAudioCodec = "", bool bIsMusic = false);
   virtual ~CASyncDirectSound();
 
   virtual DWORD AddPackets(unsigned char* data, DWORD len);
