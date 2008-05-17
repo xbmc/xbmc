@@ -1,4 +1,3 @@
-
 #ifndef _EMU_REGISTRY_H
 #define _EMU_REGISTRY_H
 

@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2007 Team XboxMediaCenter
- *      http://www.xboxmediacenter.com
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,13 +13,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with GNU Make; see the file COPYING.  If not, write to
+ *  along with XBMC; see the file COPYING.  If not, write to
  *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
 
-// XboxMediaCenter
+
+// XBMC
 //
 // libraries:
 //   - CDRipX   : doesnt support section loading yet
@@ -85,9 +86,17 @@ int main(int argc, char* argv[])
   ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, (DWORD) -1};
   g_application.getApplicationMessenger().SendMessage(tMsg, false);
 
-  while (1)
+  try 
   {
-    g_application.Run();
+    while (1)
+    {
+      g_application.Run();
+    }
+  }
+  catch(...)
+  {
+    printf("********ERROR- exception caught on main loop. exiting");
+	return -1;
   }
 
   return 0;

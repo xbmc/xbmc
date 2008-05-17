@@ -209,6 +209,7 @@
 		</control>
 		<include>OldListViewCommons</include>
 		<include>MusicLibraryMediaInfo</include>
+		<include>MusicLibrarySongInfo</include>
 		<include>3D_Cover_View</include>
 		<include>AllViewCommonThumbSmall</include>
 		<include>AllViewCommonThumbLarge</include>
