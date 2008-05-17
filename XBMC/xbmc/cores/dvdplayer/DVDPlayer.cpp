@@ -1,4 +1,24 @@
-
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+ 
 #include "stdafx.h"
 #include "DVDPlayer.h"
 
@@ -616,7 +636,7 @@ void CDVDPlayer::Process()
     double startpts = DVD_NOPTS_VALUE;
     if(m_pDemuxer)
     {
-      if (m_pDemuxer->SeekTime((int)m_PlayerOptions.starttime, false, &startpts))
+      if (m_pDemuxer->SeekTime(m_PlayerOptions.starttime * 1000, false, &startpts))
         CLog::Log(LOGDEBUG, "%s - starting demuxer from: %f", __FUNCTION__, m_PlayerOptions.starttime);
       else
         CLog::Log(LOGDEBUG, "%s - failed to start demuxing from %f", __FUNCTION__,  m_PlayerOptions.starttime);
@@ -624,7 +644,7 @@ void CDVDPlayer::Process()
 
     if(m_pSubtitleDemuxer)
     {
-      if(m_pSubtitleDemuxer->SeekTime((int)m_PlayerOptions.starttime, false, &startpts))
+      if(m_pSubtitleDemuxer->SeekTime(m_PlayerOptions.starttime * 1000, false, &startpts))
         CLog::Log(LOGDEBUG, "%s - starting subtitle demuxer from: %f", __FUNCTION__, m_PlayerOptions.starttime);
       else
         CLog::Log(LOGDEBUG, "%s - failed to start subtitle demuxing from: %f", __FUNCTION__, m_PlayerOptions.starttime);
@@ -734,7 +754,15 @@ void CDVDPlayer::Process()
     {
       if (m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.inited && m_CurrentAudio.id >= 0
       ||  m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.inited && m_CurrentVideo.id >= 0)
-        SetCaching(true);
+      {
+        if(!m_caching && m_playSpeed == DVD_PLAYSPEED_NORMAL)
+        {
+          m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
+          m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
+          m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
+          m_caching = true;
+        }
+      }
     }
 
     DemuxPacket* pPacket = NULL;

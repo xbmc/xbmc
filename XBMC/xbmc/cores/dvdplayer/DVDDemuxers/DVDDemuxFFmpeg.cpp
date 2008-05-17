@@ -1,4 +1,24 @@
-
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+ 
 #include "stdafx.h"
 #ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
@@ -88,6 +108,18 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
   buffer.erase(0, start);
 }
 
+static DWORD g_urltimeout = 0;
+static int interrupt_cb(void)
+{
+  if(!g_urltimeout)
+    return 0;
+  
+  if(GetTickCount() > g_urltimeout)
+    return 1;
+
+  return 0;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /*
@@ -99,6 +131,9 @@ static int dvd_file_open(URLContext *h, const char *filename, int flags)
 
 static int dvd_file_read(URLContext *h, BYTE* buf, int size)
 {
+  if (g_urltimeout && GetTickCount() > g_urltimeout)
+    return -1;
+
   CDVDInputStream* pInputStream = (CDVDInputStream*)h->priv_data;
   return pInputStream->Read(buf, size);
 }
@@ -109,7 +144,10 @@ static int dvd_file_write(URLContext *h, BYTE* buf, int size)
 }
 */
 static offset_t dvd_file_seek(URLContext *h, offset_t pos, int whence)
-{  
+{
+  if (g_urltimeout && GetTickCount() > g_urltimeout)
+    return -1;
+
   CDVDInputStream* pInputStream = (CDVDInputStream*)h->priv_data;
   if(whence == AVSEEK_SIZE)
     return pInputStream->GetLength();
@@ -119,18 +157,6 @@ static offset_t dvd_file_seek(URLContext *h, offset_t pos, int whence)
 
 static int dvd_file_close(URLContext *h)
 {
-  return 0;
-}
-
-static DWORD g_urltimeout = 0;
-static int interrupt_cb(void)
-{
-  if(!g_urltimeout)
-    return 0;
-  
-  if(GetTickCount() > g_urltimeout)
-    return 1;
-
   return 0;
 }
 
