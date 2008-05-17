@@ -30,7 +30,7 @@ static XBMCMain *_o_sharedMainInstance = nil;
   [o_remote setDelegate: _o_sharedMainInstance];
   
   // Start listening in exclusive mode.
-  [o_remote startListening: self];
+  //[o_remote startListening: self];
     
   return _o_sharedMainInstance;
 }
