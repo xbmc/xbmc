@@ -417,8 +417,6 @@ __int64 CEdl::RemoveCutTime(__int64 iTime)
 
 __int64 CEdl::RestoreCutTime(__int64 iTime)
 {
-  __int64 OldiTime=iTime;
-
   if (!HaveCutpoints())
     return iTime;
   for(int i = 0; i < (int)m_vecCutlist.size(); i++ )

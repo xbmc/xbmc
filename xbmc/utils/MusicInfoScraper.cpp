@@ -137,7 +137,6 @@ void CMusicInfoScraper::FindAlbuminfo()
     TiXmlElement* link = album->FirstChildElement("url");
     TiXmlNode* artist = album->FirstChild("artist");
     TiXmlNode* year = album->FirstChild("year");
-    TiXmlNode* id = album->FirstChild("id");
     if (title && title->FirstChild())
     {
       CStdString strTitle = title->FirstChild()->Value();
