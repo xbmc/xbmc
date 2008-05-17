@@ -278,7 +278,7 @@
   <string id="354">Matrix Trails</string>
   <string id="355">Screensaver Idle Timeout</string>
   <string id="356">Screensaver Mode</string>
-  <string id="357">Shutdown Idle Timeout</string>
+  <string id="357">Sleep Idle Timeout</string>
   <string id="358">All albums</string>
   <string id="359">Recently Added Albums</string>
   <string id="360">Screensaver</string>
@@ -962,6 +962,7 @@
   <string id="13116">Upscaling Method</string>
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
+  <string id="13119">Sinc</string>
 
   <string id="13130">Display Blanking</string>
   <string id="13131">Disabled</string>
@@ -1142,6 +1143,20 @@
   <string id="13411">Minimum fanspeed</string>
   
   <string id="13600">Apple Remote</string>
+  <string id="13601">Mode</string>
+  <string id="13602">Always Running</string>
+  <string id="13603">Sequence Delay Time</string>
+  
+  <string id="13610">Disabled</string>
+  <string id="13611">Standard</string>
+  <string id="13612">Universal Remote</string>
+  
+  <string id="13620">Remote Buddy driver is installed.</string>
+  <string id="13621">Apple Remote support can't be enabled.</string>
+  <string id="13622">Please see Remote Buddy FAQ to uninstall.</string>
+
+  <string id="13623">Sofa Control is running.</string>
+  <string id="13624">Please see Sofa Control documentation to uninstall.</string>
 
   <string id="14000">Stack</string>
   <string id="14001">Unstack</string>
@@ -1434,6 +1449,10 @@
   <string id="16304">Lanczos2</string>
   <string id="16305">Lanczos3</string>
   <string id="16306">Sinc8</string>
+  
+  <string id="16307">Bicubic (software)</string>
+  <string id="16308">Lanczos (software)</string>  
+  <string id="16309">Sinc (software)</string>
 
   <string id="17500">Display Sleep Timeout</string> 
 
@@ -1620,7 +1639,7 @@
   <string id="20188">Backing up BIOS</string>
   <string id="20189">Enable Auto Scrolling for Plot &amp; Review</string>
   <string id="20190">Custom</string>
-  <string id="20191">Enable debug logging</string>
+  <string id="20191">Enable Debug Logging</string>
   <string id="20192">Fetch Album Information On Scan</string>
   <string id="20193">Fetch Artist Information On Scan</string>
   <string id="20194">Default Scraper</string>
