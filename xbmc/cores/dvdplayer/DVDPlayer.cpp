@@ -586,18 +586,18 @@ void CDVDPlayer::Process()
     double startpts = DVD_NOPTS_VALUE;
     if(m_pDemuxer)
     {
-      if (m_pDemuxer->SeekTime(m_PlayerOptions.starttime, false, &startpts))
-        CLog::Log(LOGDEBUG, "%s - starting demuxer from: %f", m_PlayerOptions.starttime, __FUNCTION__);
+      if (m_pDemuxer->SeekTime(m_PlayerOptions.starttime * 1000, false, &startpts))
+        CLog::Log(LOGDEBUG, "%s - starting demuxer from: %f", __FUNCTION__, m_PlayerOptions.starttime);
       else
-        CLog::Log(LOGDEBUG, "%s - failed to start demuxing from %f: %f", m_PlayerOptions.starttime, __FUNCTION__);
+        CLog::Log(LOGDEBUG, "%s - failed to start demuxing from %f: %f", __FUNCTION__, m_PlayerOptions.starttime);
     }
 
     if(m_pSubtitleDemuxer)
     {
-      if(m_pSubtitleDemuxer->SeekTime(m_PlayerOptions.starttime, false, &startpts))
-        CLog::Log(LOGDEBUG, "%s - starting subtitle demuxer from: %f", m_PlayerOptions.starttime);
+      if(m_pSubtitleDemuxer->SeekTime(m_PlayerOptions.starttime * 1000, false, &startpts))
+        CLog::Log(LOGDEBUG, "%s - starting subtitle demuxer from: %f", __FUNCTION__, m_PlayerOptions.starttime);
       else
-        CLog::Log(LOGDEBUG, "%s - failed to start subtitle demuxing from: %f", m_PlayerOptions.starttime);
+        CLog::Log(LOGDEBUG, "%s - failed to start subtitle demuxing from: %f", __FUNCTION__, m_PlayerOptions.starttime);
     }
   }
 
