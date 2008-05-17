@@ -452,7 +452,8 @@ void CDVDPlayerAudio::Process()
 
       if(m_droptime == 0.0)
         m_droptime = m_pClock->GetAbsoluteClock();
-      m_droptime += audioframe.duration * DVD_PLAYSPEED_NORMAL / m_speed;
+      if(m_speed > 0)
+        m_droptime += audioframe.duration * DVD_PLAYSPEED_NORMAL / m_speed;
       while( !m_bStop && m_droptime > m_pClock->GetAbsoluteClock() ) Sleep(1);
     } 
     else
