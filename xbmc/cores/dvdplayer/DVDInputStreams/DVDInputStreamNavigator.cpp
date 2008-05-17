@@ -213,7 +213,7 @@ int CDVDInputStreamNavigator::Read(BYTE* buf, int buf_size)
 
 // not working yet, but it is the recommanded way for seeking
 __int64 CDVDInputStreamNavigator::Seek(__int64 offset, int whence)
-{
+{  
   if (!m_dvdnav) return -1;  
   uint32_t pos=0, len=1;
   if (m_dll.dvdnav_sector_search(m_dvdnav, (uint64_t)(offset / DVD_VIDEO_LB_LEN), (int32_t)whence) != DVDNAV_STATUS_ERR)
@@ -991,6 +991,17 @@ bool CDVDInputStreamNavigator::SeekTime(int iTimeInMsec)
     CLog::Log(LOGDEBUG, "dvdnav: dvdnav_time_search failed( %s )", m_dll.dvdnav_err_to_string(m_dvdnav));
     return false;
   }
+  return true;
+}
+
+bool CDVDInputStreamNavigator::SeekChapter(int iChapter)
+{
+  if (m_dll.dvdnav_part_play(m_dvdnav, m_iTitle, iChapter) == DVDNAV_STATUS_ERR)
+  {
+    CLog::Log(LOGERROR, "dvdnav: dvdnav_part_play failed( %s )", m_dll.dvdnav_err_to_string(m_dvdnav));
+    return false;
+  }
+  
   return true;
 }
 

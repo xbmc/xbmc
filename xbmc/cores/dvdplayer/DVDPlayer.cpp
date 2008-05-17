@@ -746,7 +746,7 @@ void CDVDPlayer::Process()
       CDVDDemuxUtils::FreeDemuxPacket(pPacket); 
       continue;
     }
-
+    
     if (!pPacket)
     {
       // when paused, demuxer could be be returning empty
@@ -1400,6 +1400,17 @@ void CDVDPlayer::HandleMessages()
 
         // set flag to indicate we have finished a seeking request
         g_infoManager.m_performingSeek = false;
+      }
+      else if (pMsg->IsType(CDVDMsg::CDVDMsg::PLAYER_SEEK_CHAPTER))
+      {
+        CDVDMsgPlayerSeekChapter &msg(*((CDVDMsgPlayerSeekChapter*)pMsg));
+        
+        // This should always be the case. 
+        if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+        {
+          CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
+          pStream->SeekChapter(msg.GetChapter());
+        }
       }
       else if (pMsg->IsType(CDVDMsg::DEMUXER_RESET))
       {
@@ -2548,7 +2559,33 @@ int CDVDPlayer::GetChapter()
     return pStream->GetChapter();
   }
   return -1;
-} 
+}
+
+int CDVDPlayer::SeekChapter(int iChapter)
+{
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+  {
+    if (iChapter < 0)
+      iChapter = 0;
+    if (iChapter > GetChapterCount())
+      return 0;
+      
+    // Seek to the chapter.
+    m_messenger.Put(new CDVDMsgPlayerSeekChapter(iChapter));
+    SyncronizeDemuxer(100);
+    m_tmLastSeek = time(NULL);
+  }
+  else
+  {
+    // Do a regular big jump.
+    if (iChapter > GetChapter())
+      Seek(true, true);
+    else
+      Seek(false, true);
+  }
+  
+  return 0;
+}
 
 bool CDVDPlayer::AddSubtitle(const CStdString& strSubPath)
 {
