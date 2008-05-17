@@ -65,10 +65,10 @@ PortAudioDirectSound::PortAudioDirectSound(IAudioCallback* pCallback, int iChann
 
   /* Open the device */
   CStdString device, deviceuse;
-  if (!m_bPassthrough)
+  //if (!m_bPassthrough)
     device = g_guiSettings.GetString("audiooutput.audiodevice");
-  else
-    device = g_guiSettings.GetString("audiooutput.passthroughdevice");
+  //else
+  //  device = g_guiSettings.GetString("audiooutput.passthroughdevice");
 
   CLog::Log(LOGINFO, "Asked to open device: [%s]\n", device.c_str());
 
