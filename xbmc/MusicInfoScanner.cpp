@@ -162,7 +162,8 @@ void CMusicInfoScanner::Process()
           m_pObserver->OnSetProgress(iCurrentItem++, m_albumsToScan.size());
         }
         
-        DownloadAlbumInfo(it->strGenre,it->strArtist,it->strAlbum); // genre field holds path - see fetchalbuminfo() 
+        CMusicAlbumInfo albumInfo;
+        DownloadAlbumInfo(it->strGenre,it->strArtist,it->strAlbum, albumInfo); // genre field holds path - see fetchalbuminfo() 
 
         if (m_bStop)
           break;
@@ -485,10 +486,12 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       long iAlbum = m_musicDatabase.GetAlbumByName(song.strAlbum,song.strArtist);
       CStdString strPath;
       strPath.Format("musicdb://3/%u/",iAlbum);
-      if (find(m_albumsScanned.begin(),m_albumsScanned.end(),iAlbum) == m_albumsScanned.end())
-        if (DownloadAlbumInfo(strPath,song.strArtist,song.strAlbum))
+      
+     CMusicAlbumInfo albumInfo;
+     if (find(m_albumsScanned.begin(),m_albumsScanned.end(),iAlbum) == m_albumsScanned.end())
+        if (DownloadAlbumInfo(strPath,song.strArtist,song.strAlbum, albumInfo))
           m_albumsScanned.push_back(iAlbum);
-  
+
       if (m_pObserver)
         m_pObserver->OnStateChanged(READING_MUSIC_INFO);
     }
@@ -718,13 +721,12 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, CStdString &hash)
 
 #define THRESHOLD .95f
 
-bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdString& strArtist, const CStdString& strAlbum, CGUIDialogProgress* pDialog)
+bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdString& strArtist, const CStdString& strAlbum, CMusicAlbumInfo& albumInfo, CGUIDialogProgress* pDialog)
 {
   CAlbum album;
   VECSONGS songs;
   DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams params;
   DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strPath, params);
-
   m_musicDatabase.Open();
   if (m_musicDatabase.GetAlbumInfo(params.GetAlbumId(),album,&songs) && !album.strAlbum.IsEmpty())
     return true;
@@ -845,7 +847,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
    }
 
     iSelectedAlbum = bestMatch;
-    if (pDialog)
+    if (pDialog && bestRelevance < THRESHOLD)
     {
       pDlg->Sort(false);
       pDlg->DoModal();
@@ -867,7 +869,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
         pDialog->Progress();
 
         m_musicDatabase.Close();
-        return DownloadAlbumInfo(strPath,strArtist,strAlbum,pDialog);
+        return DownloadAlbumInfo(strPath,strArtist,strAlbum,albumInfo,pDialog);
       }
       iSelectedAlbum = pDlg->GetSelectedItem().m_idepth;
     }
@@ -891,6 +893,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
 
   if (scraper.Successfull())
   {
+    albumInfo = scraper.GetAlbum(iSelectedAlbum);
     album = scraper.GetAlbum(iSelectedAlbum).GetAlbum();
     m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), album, scraper.GetAlbum(iSelectedAlbum).GetSongs(),false);
   }
@@ -947,7 +950,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   if (XFILE::CFile::Exists(strNfo))
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
-    CNfoFile nfoReader("artists");
+    CNfoFile nfoReader("albums");
     if (nfoReader.Create(strNfo) == S_OK)
     {
       if (nfoReader.m_strScraper == "NFO")
@@ -964,8 +967,6 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
         CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
         CMusicArtistInfo artist("nfo",scrUrl);
         scraper.GetArtists().push_back(artist);
-        info.strPath = nfoReader.m_strScraper;
-        scraper.SetScraperInfo(info);
       }
     }
     else
@@ -985,7 +986,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
     Sleep(1);
   }
 
-  if (scraper.GetArtistCount() >= 1)
+  if (scraper.Successfull() && scraper.GetArtistCount() >= 1)
   {
     int iSelectedArtist = 0;
     // now load the first match

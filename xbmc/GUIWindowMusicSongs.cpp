@@ -401,7 +401,9 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
         else if (!item->IsParentFolder() && !item->IsLastFM() && !item->IsShoutCast() && 
                  !item->m_strPath.Left(3).Equals("new") && item->m_bIsFolder)
         {
+#if 0
           if (m_musicdatabase.GetAlbumIdByPath(item->m_strPath) > -1)
+#endif
             buttons.Add(CONTEXT_BUTTON_INFO, 13351); // Album Info
         }
       }
