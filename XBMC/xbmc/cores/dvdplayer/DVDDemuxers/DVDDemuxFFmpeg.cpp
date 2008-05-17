@@ -100,6 +100,18 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
   buffer.erase(0, start);
 }
 
+static DWORD g_urltimeout = 0;
+static int interrupt_cb(void)
+{
+  if(!g_urltimeout)
+    return 0;
+  
+  if(GetTickCount() > g_urltimeout)
+    return 1;
+
+  return 0;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /*
@@ -111,6 +123,9 @@ static int dvd_file_open(URLContext *h, const char *filename, int flags)
 
 static int dvd_file_read(URLContext *h, BYTE* buf, int size)
 {
+  if (g_urltimeout && GetTickCount() > g_urltimeout)
+    return -1;
+
   CDVDInputStream* pInputStream = (CDVDInputStream*)h->priv_data;
   return pInputStream->Read(buf, size);
 }
@@ -121,7 +136,10 @@ static int dvd_file_write(URLContext *h, BYTE* buf, int size)
 }
 */
 static __int64 dvd_file_seek(URLContext *h, __int64 pos, int whence)
-{  
+{
+  if (g_urltimeout && GetTickCount() > g_urltimeout)
+    return -1;
+
   CDVDInputStream* pInputStream = (CDVDInputStream*)h->priv_data;
   if(whence == AVSEEK_SIZE)
     return pInputStream->GetLength();
@@ -131,18 +149,6 @@ static __int64 dvd_file_seek(URLContext *h, __int64 pos, int whence)
 
 static int dvd_file_close(URLContext *h)
 {
-  return 0;
-}
-
-static DWORD g_urltimeout = 0;
-static int interrupt_cb(void)
-{
-  if(!g_urltimeout)
-    return 0;
-  
-  if(GetTickCount() > g_urltimeout)
-    return 1;
-
   return 0;
 }
 
