@@ -16,11 +16,8 @@
 #define SOFTWARE_UPSCALING_SD_CONTENT 1
 #define SOFTWARE_UPSCALING_ALWAYS     2
 
-#define UPSCALING_DISABLED 0
-#define UPSCALING_BICUBIC  1
-#define UPSCALING_LANCZOS  2
-
 #ifdef __APPLE__
+
 // Display blanking options.
 #define BLANKING_DISABLED     0
 #define BLANKING_ALL_DISPLAYS 1
@@ -28,7 +25,8 @@
 // Apple Remote options.
 #define APPLE_REMOTE_DISABLED  0
 #define APPLE_REMOTE_STANDARD  1
-#define APPLE_REMOTE_UNIVERSAL 2
+#define APPLE_REMOTE_UNIVERSAL 2 
+
 #endif
 
 // Subtitle colours
