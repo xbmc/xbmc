@@ -34,11 +34,7 @@ extern "C" {
 
 #ifndef EXTERNAL_LIBCDIO_CONFIG_H
 #define EXTERNAL_LIBCDIO_CONFIG_H
-#ifdef _LINUX
 #include "cdio_config.h"
-#else
-#include "cdio_confw32.h"
-#endif
 #endif
 
 #ifdef HAVE_SYS_TYPES_H
@@ -50,10 +46,6 @@ extern "C" {
 #if defined(HAVE_SYS_TYPES_H) 
 #include <sys/types.h>
 #endif 
-
-#if defined(_XBOX) || defined(WIN32)
-#include "inttypes.h"
-#endif
 
 #if defined(HAVE_STDINT_H)
 # include <stdint.h>
@@ -201,19 +193,11 @@ typedef uint8_t ubyte;
     
     @see lba_t
   */
-#if defined(_XBOX) || defined(WIN32)
-  #pragma pack(1)
-#else
   PRAGMA_BEGIN_PACKED
-#endif
   struct msf_s {
     uint8_t m, s, f; /* BCD encoded! */
   } GNUC_PACKED;
-#if defined(_XBOX) || defined(WIN32)
-  #pragma pack()
-#else
   PRAGMA_END_PACKED
-#endif
   
   typedef struct msf_s msf_t;
 
