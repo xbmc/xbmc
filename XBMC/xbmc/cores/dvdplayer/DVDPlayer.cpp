@@ -553,6 +553,8 @@ void CDVDPlayer::Process()
     if(m_PlayerOptions.state.size() > 0)
       ((CDVDInputStreamNavigator*)m_pInputStream)->SetNavigatorState(m_PlayerOptions.state);
     ((CDVDInputStreamNavigator*)m_pInputStream)->EnableSubtitleStream(g_stSettings.m_currentVideoSettings.m_SubtitleOn);
+
+    g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
   }
 
   CLog::Log(LOGNOTICE, "Creating Demuxer");
