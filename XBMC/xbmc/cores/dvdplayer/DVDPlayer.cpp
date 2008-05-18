@@ -1429,7 +1429,7 @@ void CDVDPlayer::HandleMessages()
         // set flag to indicate we have finished a seeking request
         g_infoManager.m_performingSeek = false;
       }
-      else if (pMsg->IsType(CDVDMsg::CDVDMsg::PLAYER_SEEK_CHAPTER))
+      else if (pMsg->IsType(CDVDMsg::PLAYER_SEEK_CHAPTER))
       {
         CDVDMsgPlayerSeekChapter &msg(*((CDVDMsgPlayerSeekChapter*)pMsg));
         
