@@ -963,7 +963,8 @@ lsn_t iso9660_get_dir_extent(const iso9660_dir_t *p_idr);
   /*!
     Return the directory name stored in the iso9660_dir_t
     
-    A string is allocated: the caller must deallocate.
+    A string is allocated: the caller must deallocate. This routine
+    can return NULL if memory allocation fails.
   */
   char * iso9660_dir_to_name (const iso9660_dir_t *p_iso9660_dir);
   
