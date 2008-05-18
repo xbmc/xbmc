@@ -1,8 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 05/10/2008-->
+<!--Date of translation: 05/17/2008-->
 <!--$Revision$-->
 <!--Based on english strings version 12748-->
 <strings>
@@ -63,7 +63,7 @@
   <string id="123">Αντιγραφή των Αρχείων;</string>
   <string id="124">Μετακίνηση των Αρχείων;</string>
   <string id="125">Διαγραφή των Αρχείων;</string>
-  <string id="126">Κατάσταση</string>
+  <string id="126">Λειτουργία</string>
   <string id="127">Αντικείμενα</string>
   <string id="128">Γενικά</string>
   <string id="129">Παρουσίαση</string>
@@ -275,17 +275,17 @@
   <string id="345">Έτος</string>
   <string id="350">Προγράμματα</string>
   <string id="351">Ανενεργή</string>
-  <string id="352">Αμυδρή</string>
-  <string id="353">Μαύρη</string>
+  <string id="352">Αμυδρό φως</string>
+  <string id="353">Μαύρη οθόνη</string>
   <string id="354">Matrix Trails</string>
   <string id="355">Προφύλαξη οθόνης μετά από</string>
-  <string id="356">Κατάσταση προφύλαξης οθόνης</string>
+  <string id="356">Λειτουργία Προφύλαξης οθόνης</string>
   <string id="357">Απενεργοποίηση μετά από</string>
   <string id="358">Όλα τα άλμπουμ</string>
   <string id="359">Πρόσφατα άλμπουμ</string>
   <string id="360">Προφύλαξη οθόνης</string>
   <string id="361">Παρουσίαση</string>
-  <string id="362">Επίπεδο εμφάνισηςπροφύλαξης οθόνης (%)</string>
+  <string id="362">Επίπεδο εμφάνισης Προφύλαξης οθόνης (%)</string>
   <string id="363">Ταξιν.: Αρχείο</string>
   <string id="364">- Δέκτης ικανός για AC3</string>
   <string id="365">Ταξιν.: Όνομα</string>
@@ -378,7 +378,7 @@
   <string id="453">Διεύθυνση 3ης Γραμμής</string>
   <string id="454">Διεύθυνση 4ης Γραμμής</string>
   <string id="455">Γραμμές</string>
-  <string id="456">Κατάσταση</string>
+  <string id="456">(Μέθοδος)</string>
   <string id="457">Αλλαγή εμφάνισης</string>
   <string id="459">Subs</string>
   <string id="460">Ηχητική Ροή</string>
@@ -543,13 +543,13 @@
   <string id="651">Βιβλιοθήκη Βίντεο</string>
   <string id="652">Έτος</string>
   <string id="653">Ενημέρωση Βιβλιοθήκης</string>
-  <string id="654">Παρουσίαση Σφαλμάτων</string>
+  <string id="654">Επίδειξη Σφαλμάτων</string>
   <string id="655">Αναζήτηση Εκτελέσιμου</string>
   <string id="656">Αναζήτηση Λίστας Αναπαραγωγής</string>
   <string id="657">Αναζήτηση Φακέλου</string>
   <string id="658">Πληροφορίες τραγουδιού</string>
   <string id="659">Σχόλιο:</string>
-  <string id="660">Ένταση Amplification</string>
+  <string id="660">Ενίσχυση Έντασης</string>
   <string id="661">Επιλογή Φακέλου Εξαγωγής</string>
   <string id="700">Καθαρισμός Βιβλιοθήκης</string>
   <string id="701">Απομάκρυνση παλαιών τραγουδιών από την Βιβλιοθήκη</string>
@@ -568,11 +568,11 @@
   <string id="716">Αυτόματο (DHCP)</string>
   <string id="717">Χειροκίνητο (Στατικό)</string>
   <string id="718">Προεπιλογή (Dashboard)</string>
-  <string id="719">Διεύθυνση IP</string>
-  <string id="720">Μάσκα δικτύου</string>
-  <string id="721">Προεπιλεγμένη Πύλη</string>
-  <string id="722">Διακομιστής DNS</string>
-  <string id="723">Σώσε &amp; Επανεκκίνηση</string>
+  <string id="719">- Διεύθυνση IP</string>
+  <string id="720">- Μάσκα δικτύου</string>
+  <string id="721">- Προεπιλεγμένη Πύλη</string>
+  <string id="722">- Διακομιστής DNS</string>
+  <string id="723">Αποθήκευση &amp; Επανεκκίνηση</string>
   <string id="724">Προσδιορίστηκε εσφαλμένη διεύθυνση. Η τιμή πρέπει να έχει τη μορφή AAA.BBB.CCC.DDD</string>
   <string id="725">με τιμές μεταξύ 0 και 255.</string>
   <string id="726">Οι αλλαγές δεν σώθηκαν. Συνέχιση χωρίς αποθήκευση;</string>
@@ -600,7 +600,7 @@
   <string id="748">Επεξεργασία Διαδρομής</string>
   <string id="749">Προσθήκη κοινόχρηστων</string>
   <string id="750">Είστε σίγουρος;</string>
-  <string id="751">Απομάκρυνση κοινοχρήστων</string>
+  <string id="751">Απομάκρυνση Προέλευσης</string>
   <string id="752">Επεξεργασία διαδρομής κοινόχρηστων</string>
   <string id="753">Επεξεργασία ονόματος κοινοχρήστων</string>
   <string id="754">Προσθήκη Συνδέσμου Προγράμματος</string>
@@ -622,7 +622,7 @@
   <string id="770">Σφάλμα %i: ο Κοινόχρηστος πόρος δεν είναι διαθέσιμος</string>
   <string id="771">- Αυτόματο όριο Fatx</string>
   <string id="772">Υλικό Ήχου</string>
-  <string id="773">Εξερεύνηση</string>
+  <string id="773">Αναζήτηση</string>
   <string id="774">Φάκελος Παρουσίασης</string>
   <string id="790">Απομακρυσμένα Γεγονότα</string>
   <string id="791">Ενεργοποίηση Απομακρυσμένων Γεγονότων</string>
@@ -634,8 +634,8 @@
   <string id="797">Μέγιστος Αριθμός Πελατών</string>
   <string id="998">XLink Kai</string>
   <string id="999">Παιχνίδια στο Διαδίκτυο</string>
-  <string id="1000">Επισκόπηση Προφύλαξης Οθόνης</string>
-  <string id="1001">Ανίκανο να συνδεθεί</string>
+  <string id="1000">Επισκόπηση Προφύλαξης οθόνης</string>
+  <string id="1001">Αδυναμία σύνδεσης</string>
   <string id="1002">Το ΧΒMC είναι ανίκανο να συνδεθεί στο δίκτυο.</string>
   <string id="1003">Αυτό μπορεί να συμβαίνει διότι το δίκτυο δεν είναι συνδεμένο.</string>
   <string id="1004">Θέλετε να το προσθέσετε ακόμα;</string>
@@ -815,7 +815,7 @@
   <string id="12017">Αυτόματη επανεκκίνηση από τη τελευταία θέση αναπαραγωγής</string>
   <string id="12018">Όχι</string>
   <string id="12019">Ναι</string>
-  <string id="12020">Ρώτα</string>
+  <string id="12020">Ερώτηση</string>
   <string id="12021">Εκκίνηση από την αρχή</string>
   <string id="12022">Επανεκκίνηση από τη τελευταία θέση</string>
   <string id="12023">Επικύρωση υπαρχόντων Εκπαιδευτών...</string>
@@ -833,16 +833,16 @@
   <string id="12321">εντάξει</string>
   <string id="12322">*</string>
   <string id="12325">Κλειδωμένος! Εισαγωγή Κωδικού...</string>
-  <string id="12326">Βάλτε  Συνθηματικό</string>
-  <string id="12327">Βάλτε Κεντρικό Κωδικό</string>
-  <string id="12328">Βάλτε Κωδικό Ξεκλειδώματος και πατήστε Α,</string>
+  <string id="12326">Εισαγωγή Συνθηματικού</string>
+  <string id="12327">Εισαγωγή Κεντρικού Κωδικού</string>
+  <string id="12328">Εισάγετε Κωδικό Ξεκλειδώματος και πατήστε Α,</string>
   <string id="12329">ή πατήστε Β για ακύρωση</string>
   <string id="12330">Εισάγετε συνδυασμό πλήκτρων του μοχλού και πατήστε Start</string>
   <string id="12331">πατήστε Start, ή Back για ακύρωση</string>
-  <string id="12332">Κλείδωμα Κοινόχρηστου πόρου</string>
-  <string id="12333">Ξεκλείδωμα Κοινόχρηστου πόρου</string>
-  <string id="12334">Επανεισαγωγή κλειδιού Κοινόχρηστου πόρου</string>
-  <string id="12335">Διαγραφεί κλειδιού Κοινόχρηστου πόρου</string>
+  <string id="12332">Κλείδωμα</string>
+  <string id="12333">Ξεκλείδωμα</string>
+  <string id="12334">Επανατοποθέτηση Κλειδώματος</string>
+  <string id="12335">Απομάκρυνση Κλειδώματος</string>
   <string id="12337">Αριθμητικό Συνθηματικό</string>
   <string id="12338">Συνδυασμός πλήκτρων του μοχλού</string>
   <string id="12339">Συνθηματικό πλήρες κειμένου</string>
@@ -993,7 +993,7 @@
   <string id="13325">Διαφάνεια σε πρώτο πλάνο</string>
   <string id="13326">A/V καθυστέρηση</string>
   <string id="13327">Καραόκε</string>
-  <string id="13328">%s δεν βρέθηκε.</string>
+  <string id="13328">%s δεν βρέθηκε</string>
   <string id="13329">Σφάλμα κατά το άνοιγμα %s</string>
   <string id="13330">Αδυναμία φόρτωσης %s</string>
   <string id="13331">Σφάλμα: Έλλειψη μνήμης.</string>
@@ -1161,13 +1161,13 @@
   <string id="15019">Προσθήκη</string>
   <string id="15020">Υποδοχή</string>
   <string id="15021">Αρένες</string>
-  <string id="15022">Προβολή: Αρένων</string>
+  <string id="15022">Προβολή: Αρένες</string>
   <string id="15023">Παίξτε</string>
   <string id="15024">Προσθήκη</string>
   <string id="15025">Υποδοχή</string>
   <string id="15026">Συνομιλία</string>
   <string id="15027">Προβολή: Συνομιλία</string>
-  <string id="15028">Πληκτρολόγιο</string>
+  <string id="15028">Διάταξη πληκτρολογίου</string>
   <string id="15029">Για να συμμετάσχετε, απαιτείται συνθηματικό.</string>
   <string id="15030">Η υπηρεσία αποσυνδέθηκε</string>
   <string id="15031">Πιστοποίηση XLink Kai</string>
@@ -1208,7 +1208,7 @@
   <string id="15104">* Όλα τα τραγούδια</string>
   <string id="15105">* Όλα τα είδη</string>
   <string id="15106">Απομνημόνευση επιλεγμένου αρχείου κατά την πλοήγηση</string>
-  <string id="15107">Buffering...</string>
+  <string id="15107">Φόρτωση...</string>
   <string id="15108">Ήχοι Πλοήγησης</string>
   <string id="15109">Προεπιλεγμένο Κέλυφος</string>
   <string id="15111">Θέμα Κελύφους</string>
@@ -1463,7 +1463,7 @@
   <string id="20137">Προσάρτηση Μονάδας Μνήμης</string>
   <string id="20138">Αδύνατη Προσάρτηση Μονάδας Μνήμης</string>
   <string id="20139">Στη θύρα %i ,υποδοχή %i</string>
-  <string id="20140">Κλείδωμα Προφύλαξης Οθόνης</string>
+  <string id="20140">Κλείδωμα Προφύλαξης οθόνης</string>
   <string id="20141">Ορισμός</string>
   <string id="20142">Όνομα χρήστη</string>
   <string id="20143">Εισαγωγή συνθηματικού για</string>
