@@ -131,8 +131,8 @@ static int dvd_file_open(URLContext *h, const char *filename, int flags)
 
 static int dvd_file_read(URLContext *h, BYTE* buf, int size)
 {
-  if (g_urltimeout && GetTickCount() > g_urltimeout)
-    return -1;
+  //if (g_urltimeout && GetTickCount() > g_urltimeout)
+  //  return -1;
 
   CDVDInputStream* pInputStream = (CDVDInputStream*)h->priv_data;
   return pInputStream->Read(buf, size);
@@ -145,8 +145,8 @@ static int dvd_file_write(URLContext *h, BYTE* buf, int size)
 */
 static offset_t dvd_file_seek(URLContext *h, offset_t pos, int whence)
 {
-  if (g_urltimeout && GetTickCount() > g_urltimeout)
-    return -1;
+  //if (g_urltimeout && GetTickCount() > g_urltimeout)
+  //  return -1;
 
   CDVDInputStream* pInputStream = (CDVDInputStream*)h->priv_data;
   if(whence == AVSEEK_SIZE)
