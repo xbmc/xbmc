@@ -445,13 +445,12 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         CStdString fontPath = _P("Q:\\media\\Fonts\\");
         fontPath += g_guiSettings.GetString("subtitles.font");
 #ifdef __APPLE__
-        g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
-        float aspect = 1.0f;
-        if (res == PAL_16x9 || res == PAL60_16x9 || res == NTSC_16x9 || res == HDTV_480p_16x9)
-          aspect *= 0.75f;
-        CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", fontPath, color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), 1.0f, aspect);
+        // We scale based on PAL16x9 - this at least ensures all sizing is constant across resolutions.
+        // I'm picking 16x9 because the 4x3 aspect below gives me squashed subtitles.
+        //
+        CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", PTH_IC(fontPath), color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), 1.0f, 1.0f, PAL_16x9);
 #else
-        // we scale based on PAL4x3 - this at least ensures all sizing is constant across resolutions
+        // We scale based on PAL4x3 - this at least ensures all sizing is constant across resolutions
         CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", PTH_IC(fontPath), color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), 1.0f, 1.0f, PAL_4x3);
 #endif
         if (!subFont)
