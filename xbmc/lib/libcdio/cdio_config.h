@@ -84,7 +84,7 @@
 #define HAVE_GLOB_H 1
 
 /* Define if you have the iconv() function. */
-/* #undef HAVE_ICONV */
+#define HAVE_ICONV 1
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
@@ -97,13 +97,13 @@
 
 /* Define 1 if you want ISO-9660 Joliet extension support. You must have also
    libiconv installed to get Joliet extension support. */
-/* #undef HAVE_JOLIET */
+#define HAVE_JOLIET 1
 
 /* Define this if your libcurses has keypad */
 #define HAVE_KEYPAD 
 
 /* Define if you have <langinfo.h> and nl_langinfo(CODESET). */
-/* #undef HAVE_LANGINFO_CODESET */
+#define HAVE_LANGINFO_CODESET 1
 
 /* Define to 1 if you have the `nsl' library (-lnsl). */
 /* #undef HAVE_LIBNSL */
@@ -142,7 +142,7 @@
 #define HAVE_MEMSET 1
 
 /* Define to 1 if you have the <ncurses.h> header file. */
-/* #undef HAVE_NCURSES_H */
+#define HAVE_NCURSES_H 1
 
 /* Define to 1 if you have the <pwd.h> header file. */
 #define HAVE_PWD_H 1
@@ -232,3 +232,6 @@
 /* #undef HAVE_VCDINFO */
 
 /* Define to 1 if you have the `vsnprintf' function. */
+#define HAVE_VSNPRINTF 1
+
+/* Define 1 if you have MinGW CD-ROM support */
