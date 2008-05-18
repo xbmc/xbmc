@@ -37,7 +37,7 @@
 #include "Application.h"
 #include "Util.h"
 #include "Picture.h"
-#if defined (LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM > 77)
+#if defined (LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM > 77) || defined (__APPLE__)
 #define USING_CDIO78
 #include "lib/libcdio/mmc.h"
 #endif
@@ -341,9 +341,6 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
 
 DWORD CDetectDVDMedia::GetTrayState()
 {
-#ifdef __APPLE__
-  return DRIVE_READY;
-#else
 #ifdef HAS_UNDOCUMENTED
   HalReadSMCTrayState(&m_dwTrayState, &m_dwTrayCount);
 #endif
@@ -488,7 +485,6 @@ DWORD CDetectDVDMedia::GetTrayState()
 #else
   return DRIVE_READY;
 #endif
-#endif // __APPLE__
 }
 
 void CDetectDVDMedia::UpdateState()
