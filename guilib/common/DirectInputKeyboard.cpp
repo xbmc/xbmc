@@ -256,10 +256,6 @@ void CLowLevelKeyboard::Acquire()
 {
   if (m_keyboard)
     m_keyboard->Acquire();
-<<<<<<< .working
 }
 
 #endif
-=======
-}
->>>>>>> .merge-right.r13055
