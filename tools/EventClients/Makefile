@@ -1,10 +1,11 @@
 # Default prefix dir
 prefix=/usr/local
+installdir=$(prefix)
 
 all: wiimote install
 
 wiimote:
-	cd Clients/WiiRemote && g++ WiiRemote.cpp -lcwiid -DICON_PATH="\"$(prefix)/share/pixmaps/xbmc/\"" -o WiiRemote
+	cd Clients/WiiRemote && g++ WiiRemote.cpp -lcwiid -DICON_PATH="\"$(installdir)/share/pixmaps/xbmc/\"" -o WiiRemote
 
 j2me-remote:
 	cd Clients/J2ME\ Client
@@ -17,7 +18,7 @@ install:
 	cp -a Clients/PS3\ BD\ Remote/ps3_remote.py $(prefix)/bin/xbmc-ps3remote
 	#cp -a Clients/PS3\ Sixaxis\ Controller/ps3d.py $(prefix)/bin/xbmc-ps3d
 	mkdir -p $(prefix)/lib/python2.5/site-packages/xbmc
-	echo 'ICON_PATH="$(prefix)/share/pixmaps/xbmc/"' > $(prefix)/lib/python2.5/site-packages/xbmc/defs.py
+	echo 'ICON_PATH="$(installdir)/share/pixmaps/xbmc/"' > $(prefix)/lib/python2.5/site-packages/xbmc/defs.py
 	cp -a lib/python/* $(prefix)/lib/python2.5/site-packages/xbmc/
 	cp -a Clients/PS3\ BD\ Remote/ps3_remote.py $(prefix)/lib/python2.5/site-packages/xbmc/
 	mkdir -p $(prefix)/include/xbmc
