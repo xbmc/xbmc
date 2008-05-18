@@ -84,7 +84,7 @@ void CDetectDVDMedia::Process()
   }
 
   //Before entering loop make sure we actually have a CDrom drive
-  CdIo_t *p_cdio = cdio_open (NULL, DRIVER_OSX);
+  CdIo_t *p_cdio = cdio_open (NULL, DRIVER_DEVICE);
   if (p_cdio == NULL)
     return;
   else
