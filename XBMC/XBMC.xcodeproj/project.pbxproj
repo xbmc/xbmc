@@ -50,6 +50,9 @@
 		88D9FF600DD264B500EDA56F /* XBPythonDllFuncs.S in Sources */ = {isa = PBXBuildFile; fileRef = 88D9FF5F0DD264B500EDA56F /* XBPythonDllFuncs.S */; };
 		88ECB6590DE013C4003396A7 /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6580DE013C4003396A7 /* DiskArbitration.framework */; };
 		88ECB6680DE01550003396A7 /* libcdio-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6670DE01550003396A7 /* libcdio-osx.a */; };
+		88ECB6E70DE07BA6003396A7 /* libfontconfig.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6E60DE07BA6003396A7 /* libfontconfig.a */; };
+		88ECB6EA0DE07BEE003396A7 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6E90DE07BEE003396A7 /* libogg.a */; };
+		88ECB6EC0DE07C56003396A7 /* libmysqlclient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6EB0DE07C56003396A7 /* libmysqlclient.a */; };
 		8DD76F790486A8DE00D96B5E /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */; };
 		E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */; };
 		E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */; };
@@ -809,7 +812,6 @@
 		E3BBB7A20D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */; };
 		E3D547960D723EFD00F36320 /* libsmbclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3D547950D723EFD00F36320 /* libsmbclient.dylib */; };
 		E3D87AEB0D3182F4000CF031 /* XCriticalSection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3D87AE90D3182F4000CF031 /* XCriticalSection.cpp */; };
-		E3DAAF880D6E1A8E00F17647 /* libmysqlclient.16.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3DAAF870D6E1A8E00F17647 /* libmysqlclient.16.0.0.dylib */; };
 		E3DAAF8C0D6E1B0500F17647 /* FileSmb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3DAAF8A0D6E1B0500F17647 /* FileSmb.cpp */; };
 		E3DAAF8D0D6E1B0500F17647 /* SMBDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3DAAF8B0D6E1B0500F17647 /* SMBDirectory.cpp */; };
 		E3E91FFD0D8C61DF002BF43D /* EventPacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E91FFA0D8C61DF002BF43D /* EventPacket.cpp */; };
@@ -818,7 +820,6 @@
 		E3E920020D8C622A002BF43D /* EventClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E920010D8C622A002BF43D /* EventClient.cpp */; };
 		E3E920060D8C6277002BF43D /* ScraperSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E920050D8C6277002BF43D /* ScraperSettings.cpp */; };
 		E3EB8F060D5D5C0300FFF489 /* libmad.0.2.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */; };
-		E3EB8F070D5D5C0300FFF489 /* libogg.0.5.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F040D5D5C0300FFF489 /* libogg.0.5.3.dylib */; };
 		E3EB8F080D5D5C0300FFF489 /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */; };
 		E3FFF0070D46FD1D003D79C3 /* libavutil-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */; };
 		E3FFF0090D46FD1D003D79C3 /* libavcodec-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */; };
@@ -912,6 +913,9 @@
 		88D9FF5F0DD264B500EDA56F /* XBPythonDllFuncs.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = XBPythonDllFuncs.S; sourceTree = "<group>"; };
 		88ECB6580DE013C4003396A7 /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = /System/Library/Frameworks/DiskArbitration.framework; sourceTree = "<absolute>"; };
 		88ECB6670DE01550003396A7 /* libcdio-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libcdio-osx.a"; path = "xbmc/lib/libcdio/libcdio-osx.a"; sourceTree = "<group>"; };
+		88ECB6E60DE07BA6003396A7 /* libfontconfig.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfontconfig.a; path = /opt/local/lib/libfontconfig.a; sourceTree = "<absolute>"; };
+		88ECB6E90DE07BEE003396A7 /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = /opt/local/lib/libogg.a; sourceTree = "<absolute>"; };
+		88ECB6EB0DE07C56003396A7 /* libmysqlclient.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmysqlclient.a; path = /opt/local/lib/mysql5/mysql/libmysqlclient.a; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
 		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
 		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
@@ -2816,7 +2820,6 @@
 		E3D547950D723EFD00F36320 /* libsmbclient.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsmbclient.dylib; path = ../../../../../opt/local/lib/samba3/libsmbclient.dylib; sourceTree = SOURCE_ROOT; };
 		E3D87AE90D3182F4000CF031 /* XCriticalSection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XCriticalSection.cpp; sourceTree = "<group>"; };
 		E3D87AEA0D3182F4000CF031 /* XCriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XCriticalSection.h; sourceTree = "<group>"; };
-		E3DAAF870D6E1A8E00F17647 /* libmysqlclient.16.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmysqlclient.16.0.0.dylib; path = "/opt/local/lib/mysql5-devel/mysql/libmysqlclient.16.0.0.dylib"; sourceTree = "<absolute>"; };
 		E3DAAF8A0D6E1B0500F17647 /* FileSmb.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileSmb.cpp; sourceTree = "<group>"; };
 		E3DAAF8B0D6E1B0500F17647 /* SMBDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SMBDirectory.cpp; sourceTree = "<group>"; };
 		E3E91FFA0D8C61DF002BF43D /* EventPacket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventPacket.cpp; sourceTree = "<group>"; };
@@ -2825,7 +2828,6 @@
 		E3E920010D8C622A002BF43D /* EventClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventClient.cpp; sourceTree = "<group>"; };
 		E3E920050D8C6277002BF43D /* ScraperSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ScraperSettings.cpp; sourceTree = "<group>"; };
 		E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmad.0.2.1.dylib; path = /opt/local/lib/libmad.0.2.1.dylib; sourceTree = "<absolute>"; };
-		E3EB8F040D5D5C0300FFF489 /* libogg.0.5.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libogg.0.5.3.dylib; path = ./opt/local/lib/libogg.0.5.3.dylib; sourceTree = SOURCE_ROOT; };
 		E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbis.dylib; path = /opt/local/lib/libvorbis.dylib; sourceTree = "<absolute>"; };
 		E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavutil-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavutil-osx.a"; sourceTree = "<group>"; };
 		E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavcodec-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavcodec-osx.a"; sourceTree = "<group>"; };
@@ -2867,19 +2869,20 @@
 				E34486750D4DD18B0020377B /* libswscale-osx.a in Frameworks */,
 				E34486760D4DD18B0020377B /* libpostproc-osx.a in Frameworks */,
 				E3EB8F060D5D5C0300FFF489 /* libmad.0.2.1.dylib in Frameworks */,
-				E3EB8F070D5D5C0300FFF489 /* libogg.0.5.3.dylib in Frameworks */,
 				E3EB8F080D5D5C0300FFF489 /* libvorbis.dylib in Frameworks */,
 				E33979930D62FC46004ECDDA /* libsqlite3.0.dylib in Frameworks */,
 				810CA0090D683DEF0095F5DD /* libSDL.dylib in Frameworks */,
 				810CA00C0D683DEF0095F5DD /* libSDL_mixer.dylib in Frameworks */,
 				810CA01A0D68A6820095F5DD /* libSDLmain.a in Frameworks */,
 				810CA01C0D68A6E20095F5DD /* libShout-osx.a in Frameworks */,
-				E3DAAF880D6E1A8E00F17647 /* libmysqlclient.16.0.0.dylib in Frameworks */,
 				E3D547960D723EFD00F36320 /* libsmbclient.dylib in Frameworks */,
 				E3BBB7A20D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib in Frameworks */,
 				8806941F0DCF67A500836761 /* libSDL_image.dylib in Frameworks */,
 				88ECB6590DE013C4003396A7 /* DiskArbitration.framework in Frameworks */,
 				88ECB6680DE01550003396A7 /* libcdio-osx.a in Frameworks */,
+				88ECB6E70DE07BA6003396A7 /* libfontconfig.a in Frameworks */,
+				88ECB6EA0DE07BEE003396A7 /* libogg.a in Frameworks */,
+				88ECB6EC0DE07C56003396A7 /* libmysqlclient.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2909,18 +2912,19 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				88ECB6EB0DE07C56003396A7 /* libmysqlclient.a */,
+				88ECB6E90DE07BEE003396A7 /* libogg.a */,
+				88ECB6E60DE07BA6003396A7 /* libfontconfig.a */,
 				88ECB6670DE01550003396A7 /* libcdio-osx.a */,
 				88ECB6580DE013C4003396A7 /* DiskArbitration.framework */,
 				8806941E0DCF67A500836761 /* libSDL_image.dylib */,
 				E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */,
 				E3D547950D723EFD00F36320 /* libsmbclient.dylib */,
-				E3DAAF870D6E1A8E00F17647 /* libmysqlclient.16.0.0.dylib */,
 				810CA0190D68A6820095F5DD /* libSDLmain.a */,
 				810CA0050D683DEF0095F5DD /* libSDL.dylib */,
 				810CA0080D683DEF0095F5DD /* libSDL_mixer.dylib */,
 				E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */,
 				E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */,
-				E3EB8F040D5D5C0300FFF489 /* libogg.0.5.3.dylib */,
 				E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */,
 				E30B3E8E0D5D59290030A311 /* libShout-osx.a */,
 				E34486730D4DD18B0020377B /* libswscale-osx.a */,
