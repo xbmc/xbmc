@@ -1,7 +1,7 @@
 /*
-    $Id: mmc.h,v 1.29 2006/10/27 10:38:41 rocky Exp $
+    $Id: mmc.h,v 1.30 2007/11/21 03:01:58 rocky Exp $
 
-    Copyright (C) 2003, 2004, 2005, 2006 Rocky Bernstein <rocky@cpan.org>
+    Copyright (C) 2003, 2004, 2005, 2006, 2007 Rocky Bernstein <rocky@gnu.org>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -209,11 +209,7 @@ extern "C" {
   } cdio_mmc_mode_page_t;
     
 
-#if defined(_XBOX) || defined(WIN32)
-  #pragma pack(1)
-#else
-  PRAGMA_BEGIN_PACKED
-#endif
+PRAGMA_BEGIN_PACKED
   struct mmc_audio_volume_entry_s 
   {
     uint8_t  selection; /* Only the lower 4 bits are used. */
@@ -230,11 +226,7 @@ extern "C" {
 
   typedef struct mmc_audio_volume_s mmc_audio_volume_t;
   
-#if defined(_XBOX) || defined(WIN32)
-  #pragma pack()
-#else
-  PRAGMA_END_PACKED
-#endif
+PRAGMA_END_PACKED
   
 
 /** Return type codes for GET_CONFIGURATION. */
@@ -793,6 +785,31 @@ mmc_audio_read_subchannel (CdIo_t *p_cdio,
                    const mmc_cdb_t *p_cdb,
                    cdio_mmc_direction_t e_direction, unsigned int i_buf, 
                    /*in/out*/ void *p_buf );
+
+  /**
+    Run a Multimedia command (MMC) specifying the CDB length.
+    The motivation here is for example ot use in is an undocumented 
+    debug command for LG drives (namely E7), whose length is being 
+    miscalculated by mmc_get_cmd_len(); it doesn't follow the usual 
+    code number to length conventions. Patch supplied by SukkoPera.
+
+    @param p_cdio	 CD structure set by cdio_open().
+    @param i_timeout_ms  time in milliseconds we will wait for the command
+                         to complete. 
+    @param p_cdb	 CDB bytes. All values that are needed should be set 
+                         on input. 
+    @param i_cdb	 number of CDB bytes. 
+    @param e_direction   direction the transfer is to go.
+    @param i_buf	 Size of buffer
+    @param p_buf	 Buffer for data, both sending and receiving.
+
+    @return 0 if command completed successfully.
+  */
+  int mmc_run_cmd_len( const CdIo_t *p_cdio, unsigned int i_timeout_ms,
+                   const mmc_cdb_t *p_cdb, unsigned int i_cdb,
+                   cdio_mmc_direction_t e_direction, unsigned int i_buf,
+                   /*in/out*/ void *p_buf );
+
   /**
     Set the block size for subsequest read requests, via MMC.
   */
