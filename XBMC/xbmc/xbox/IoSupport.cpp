@@ -261,7 +261,12 @@ HRESULT CIoSupport::EjectTray()
   HalWriteSMBusValue(0x20, 0x0C, FALSE, 0);  // eject tray
 #endif
 #ifdef __APPLE__
-  // FIXME...
+  char* dvdDevice = CCdIoSupport::GetDeviceFileName();
+  CdIo_t* cdio = cdio_open(dvdDevice, DRIVER_UNKNOWN);
+  if (cdio)
+  {
+    cdio_eject_media(&cdio);
+  }
 #elif defined(_LINUX)
   char* dvdDevice = CCdIoSupport::GetDeviceFileName();
   if (strlen(dvdDevice) != 0)
