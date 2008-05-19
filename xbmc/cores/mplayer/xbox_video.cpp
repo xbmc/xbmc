@@ -1,5 +1,5 @@
 /*
-* XBoxMediaCenter
+* XBMC
 * Copyright (c) 2003 Frodo/jcmarshall
 * Portions Copyright (c) by the authors of ffmpeg / xvid /mplayer
 *

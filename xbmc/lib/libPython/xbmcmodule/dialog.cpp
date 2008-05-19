@@ -96,7 +96,7 @@ namespace PYXBMC
     "\n"
     "example:\n"
     "  - dialog = xbmcgui.Dialog()\n"
-    "  - ok = dialog.ok('Xbox Media Center', 'There was an error.')\n");
+    "  - ok = dialog.ok('XBMC', 'There was an error.')\n");
 
   PyObject* Dialog_OK(PyObject *self, PyObject *args)
   {
@@ -151,7 +151,7 @@ namespace PYXBMC
     "\n"
     "example:\n"
     "  - dialog = xbmcgui.Dialog()\n"
-    "  - fn = dialog.browse(3, 'Xbox Media Center', 'files', '', False, False, 'T:\\script_data\\XBMC Lyrics')\n");
+    "  - fn = dialog.browse(3, 'XBMC', 'files', '', False, False, 'T:\\script_data\\XBMC Lyrics')\n");
 
   PyObject* Dialog_Browse(PyObject *self, PyObject *args)
   {
@@ -273,7 +273,7 @@ namespace PYXBMC
     "\n"
     "example:\n"
     "  - dialog = xbmcgui.Dialog()\n"
-    "  - ret = dialog.yesno('Xbox Media Center', 'Do you want to exit this script?')\n");
+    "  - ret = dialog.yesno('XBMC', 'Do you want to exit this script?')\n");
 
   PyObject* Dialog_YesNo(PyObject *self, PyObject *args)
   {
@@ -369,7 +369,7 @@ namespace PYXBMC
     "\n"
     "example:\n"
     "  - pDialog = xbmcgui.DialogProgress()\n"
-    "  - ret = pDialog.create('Xbox Media Center', 'Initializing script...')\n");
+    "  - ret = pDialog.create('XBMC', 'Initializing script...')\n");
 
   PyObject* Dialog_ProgressCreate(PyObject *self, PyObject *args)
   {

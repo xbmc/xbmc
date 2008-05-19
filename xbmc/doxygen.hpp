@@ -1,6 +1,6 @@
 // Mainpage layout
 /*!
-	\mainpage Developer documentation for xbox media center
+	\mainpage Developer documentation for XBMC
 	\section intro Introduction
 	Introduction to the manual
 
@@ -59,8 +59,8 @@
 
 	\section links Links
 	Related links
-	Xbox Media Center - http://www.xboxmediacenter.com \n
-	Xbox Media Center Forum - http://www.xboxmediaplayer.de/cgi-bin/forums/ikonboard.pl \n
+	XBMC - http://www.xbmc.org \n
+	XBMC Forum - http://xbmc.org/forum/index.php \n
   */
 
 
