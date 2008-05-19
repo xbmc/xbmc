@@ -1,5 +1,5 @@
 /*
-* DAAP Support for XBox Media Center
+* DAAP Support for XBMC
 * Copyright (c) 2004 Forza (Chris Barnett)
 * Portions Copyright (c) by the authors of libOpenDAAP
 *

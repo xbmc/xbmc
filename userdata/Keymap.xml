@@ -845,7 +845,7 @@
     </remote>
 
     <keyboard>
-      <return>OSD</return>
+      <return>Select</return>
       <backspace>PreviousMenu</backspace>
     </keyboard>
   </VideoMenu>
