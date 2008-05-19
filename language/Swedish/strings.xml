@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 04/12/2008-->
+<!--Date of translation: 05/18/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 12592-->
+<!--Based on english strings version 12748-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1598,6 +1598,7 @@ den här visualiseringen</string>
   <string id="20407">Scraper-inställningar</string>
   <string id="20408">Hämtar Musikvideo-information</string>
   <string id="20409">Hämtar TV-serieinformation</string>
+  <string id="20410">Trailer</string>
   <string id="20411">Lägg ihop</string>
   <string id="20412">Lägg ihop TV-serie om endast ett avsnitt</string>
   <string id="20413">Hämta Fan-konst</string>
@@ -1762,15 +1763,6 @@ den här visualiseringen</string>
   <string id="22000">Uppdatera biblioteket vid uppstart</string>
   <string id="22001">Uppdatera alltid biblioteket i bakgrunden</string>
   <string id="22002">- DNS suffix</string>
-  <!-- WiiRemote/Wiimote Input Device -->
-  <string id="21884">Wii Remote</string>
-  <string id="21885">Aktivera musemulering</string>
-  <string id="21886">Ingen Bluetooth sändare ansluten</string>
-  <string id="21887">Wii Remote ansluten</string>
-  <string id="21888">%i%% batteri kvarstår</string>
-  <string id="21889">Wii Remote otillgänglig</string>
-  <string id="21890">Wii Remote kopplades bort</string>
-  <string id="21891">Tryck 1 och 2 för att återansluta</string>
-
+  <string id="22003">Aktivera redigera- och besluts-listor</string>
   <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>
 </strings>

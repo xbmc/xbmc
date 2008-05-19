@@ -1628,7 +1628,7 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
   CGUIDialogProgress& dialog = *((CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
 
   dialog.SetHeading(strGame.c_str());
-  dialog.SetLine(0, 15039); // Xbox Media Center unable to locate game automatically.
+  dialog.SetLine(0, 15039); // XBMC unable to locate game automatically.
   dialog.SetLine(1, 15040); // Insert the game disk into your XBOX or press 'A' to cancel
   dialog.SetLine(2, 15041); // and launch the game manually.
 

@@ -3,7 +3,7 @@
 // Released under LGPL
 // Updated to C++ class by Spoon (www.dbpoweramp.com) March 2002 dbpoweramp@dbpoweramp.com
 //
-// Updated to work with XBoxMediaCenter March 2004 by JMarshall
+// Updated to work with XBMC March 2004 by JMarshall
 //
 //
 // Example (NB wfxInformat should be already filled in with the input data type):
