@@ -572,12 +572,14 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
     return 0;
   }
 
+  // we don't want to see the "no disc in drive" windows message box
+  SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
+
   if (FAILED(myApp.Create(hInst, commandLine)))
 	  return 1;
 
   return myApp.Run();
 }
-
 
 
 #ifndef HAS_SDL
