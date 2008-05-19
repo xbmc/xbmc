@@ -1871,6 +1871,24 @@ bool CUtil::IsZIP(const CStdString& strFile) // also checks for comic books!
   return false;
 }
 
+bool CUtil::Is7z(const CStdString& strFile) // also checks for comic books!
+{
+  CStdString strExtension;
+  CUtil::GetExtension(strFile,strExtension);
+  if (strExtension.CompareNoCase(".7z") == 0) return true;
+  return false;
+}
+
+bool CUtil::IsIn7z(const CStdString& strFile)
+{
+  if( strFile.substr(0,6) == "7z://" )
+  {
+    CURL url(strFile);
+    return url.GetFileName() != "";
+  }
+  return false;
+}
+
 bool CUtil::IsCDDA(const CStdString& strFile)
 {
   return strFile.Left(5).Equals("cdda:");
@@ -2948,18 +2966,6 @@ void CUtil::CreateArchivePath(CStdString& strUrlPath, const CStdString& strType,
 
   strUrlPath += "/";
   strUrlPath += strBuffer;
-
-#if 0 // options are not used
-  strBuffer = strCachePath;
-  CUtil::URLEncode(strBuffer);
-
-  strUrlPath += "?cache=";
-  strUrlPath += strBuffer;
-
-  strBuffer.Format("%i", wOptions);
-  strUrlPath += "&flags=";
-  strUrlPath += strBuffer;
-#endif
 }
 
 bool CUtil::ThumbExists(const CStdString& strFileName, bool bAddCache)
@@ -4697,14 +4703,12 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
   // return the index of the share with the longest match
   if (iIndex == -1)
   {
-
-    // rar:// and zip://
+    // rar:// and zip:// and 7z://
     // if archive wasn't mounted, look for a matching share for the archive instead
-    if( strPath.Left(6).Equals("rar://") || strPath.Left(6).Equals("zip://") )
+    if( strPath.Left(6).Equals("rar://") || strPath.Left(6).Equals("zip://") || strPath.Left(5).Equals("7z://") )
     {
       // get the hostname portion of the url since it contains the archive file
       strPath = checkURL.GetHostName();
-
       bIsSourceName = false;
       bool bDummy;
       return GetMatchingSource(strPath, VECSOURCES, bDummy);
@@ -5925,7 +5929,6 @@ CStdString CUtil::TranslatePathConvertCase(const CStdString& path)
 //
 bool CUtil::Command(const CStdStringArray& arrArgs)
 {
-  printf("Executing: ");
   for (size_t i=0; i<arrArgs.size(); i++)
     printf("%s ", arrArgs[i].c_str());
   printf("\n");
