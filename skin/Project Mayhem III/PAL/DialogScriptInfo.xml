@@ -38,7 +38,7 @@
 			<animation effect="slide" time="200" start="0,0" end="204,0" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
 		</control>
 		<control type="label">
-			<description>xbox media center label</description>
+			<description>XBMC label</description>
 			<posx>200</posx>
 			<posy>43</posy>
 			<align>right</align>
