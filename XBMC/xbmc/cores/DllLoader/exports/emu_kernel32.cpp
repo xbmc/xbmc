@@ -503,7 +503,7 @@ extern "C" int WINAPI dllGetStartupInfoA(LPSTARTUPINFOA lpStartupInfo)
   lpStartupInfo->lpDesktop = NULL;
   lpStartupInfo->lpReserved = NULL;
   lpStartupInfo->lpReserved2 = 0;
-  lpStartupInfo->lpTitle = (LPTSTR)"Xbox Media Center";
+  lpStartupInfo->lpTitle = (LPTSTR)"XBMC";
   lpStartupInfo->wShowWindow = 0;
   return 1;
 }
