@@ -44,6 +44,9 @@
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
+#ifdef _WIN32PC
+#include "WIN32Util.h"
+#endif
 
 using namespace XFILE;
 using namespace MEDIA_DETECT;
@@ -121,10 +124,14 @@ VOID CDetectDVDMedia::UpdateDvdrom()
       case DRIVE_OPEN:
         {
           // Send Message to GUI that disc been ejected
+#ifdef _WIN32PC
+          SetNewDVDShareUrl(CCdIoSupport::GetDeviceFileName(), false, g_localizeStrings.Get(502));
+#else
           SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(502));
+          m_isoReader.Reset();
+#endif
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
           m_gWindowManager.SendThreadMessage( msg );
-          m_isoReader.Reset();
           waitLock.Leave();
           m_DriveState = DRIVE_OPEN;
           return;
@@ -134,8 +141,12 @@ VOID CDetectDVDMedia::UpdateDvdrom()
       case DRIVE_NOT_READY:
         {
           // drive is not ready (closing, opening)
+#ifdef _WIN32PC
+          SetNewDVDShareUrl(CCdIoSupport::GetDeviceFileName(), false, g_localizeStrings.Get(503));
+#else
           m_isoReader.Reset();
           SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(503));
+#endif
           m_DriveState = DRIVE_NOT_READY;
           // DVD-ROM in undefined state
           // better delete old CD Information
@@ -161,9 +172,13 @@ VOID CDetectDVDMedia::UpdateDvdrom()
       case DRIVE_CLOSED_NO_MEDIA:
         {
           // nothing in there...
+#ifdef _WIN32PC
+          SetNewDVDShareUrl(CCdIoSupport::GetDeviceFileName(), false, g_localizeStrings.Get(504));
+#else
           m_isoReader.Reset();
-          m_DriveState = DRIVE_CLOSED_NO_MEDIA;
           SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(504));
+#endif
+          m_DriveState = DRIVE_CLOSED_NO_MEDIA;
           // Send Message to GUI that disc has changed
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
           waitLock.Leave();
@@ -309,7 +324,7 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
   m_diskPath = strNewUrl;
 
   // delete any previously cached disc thumbnail
-  CStdString strCache = "Z:\\dvdicon.tbn";
+  CStdString strCache = _P("Z:\\dvdicon.tbn");
   if (CFile::Exists(strCache))
     CFile::Delete(strCache);
 
@@ -431,10 +446,45 @@ DWORD CDetectDVDMedia::GetTrayState()
 #endif // USING_CDIO78
 #endif // _LINUX
 #if defined(_WIN32PC)
+ 
+  char* dvdDevice = CCdIoSupport::GetDeviceFileName();
+  if (strlen(dvdDevice) == 0)
+    return DRIVE_NOT_READY;
 
-  // just a workaround until we have a working gettray method.
-  // prevents win32 build to crash when in ADD NETWORK SHARE
-  return DRIVE_READY;
+  m_dwTrayState = TRAY_CLOSED_MEDIA_PRESENT;
+  CdIo_t* cdio = cdio_open(dvdDevice, DRIVER_UNKNOWN);
+  if (cdio)
+  {
+    static discmode_t discmode = CDIO_DISC_MODE_NO_INFO;
+    int status = CWIN32Util::GetDriveStatus(CCdIoSupport::GetDeviceFileName());//mmc_get_tray_status(cdio);
+    
+    static int laststatus = -1;
+    // We only poll for new discmode when status has changed or there have been read errors (The last usually happens when new media is inserted)
+    //if (status == 0 && (laststatus != status || discmode == CDIO_DISC_MODE_ERROR))
+      discmode = cdio_get_discmode(cdio);
+
+    switch(status)
+    {
+    case -1: // error
+      m_dwTrayState = DRIVE_NOT_READY;
+      break;
+    case 0: // no media
+      m_dwTrayState = DRIVE_CLOSED_NO_MEDIA;
+      break;
+    case 1: // media accessible
+      m_dwTrayState = DRIVE_CLOSED_MEDIA_PRESENT;
+      break;
+    }
+    cdio_destroy(cdio);
+
+    if(laststatus != status)
+    {
+      laststatus = status;    
+      return m_dwTrayState;
+    }
+    else
+      return DRIVE_READY;
+  }
 
 #endif
 
