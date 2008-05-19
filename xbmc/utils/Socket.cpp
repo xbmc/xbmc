@@ -1,5 +1,5 @@
 /*
-* XBoxMediaCenter
+* XBMC
 * Socket classes
 * Copyright (c) 2008 d4rk
 *
