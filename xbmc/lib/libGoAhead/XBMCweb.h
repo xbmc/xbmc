@@ -4,7 +4,7 @@
 
 /* 
  *	Header fil for the module that provides the links between the web server and 
- *  XBox Media Center. This defines the Web private APIs
+ *  XBMC. This defines the Web private APIs
  *	Include this header when you want to create XBMC handlers.
  */
 
