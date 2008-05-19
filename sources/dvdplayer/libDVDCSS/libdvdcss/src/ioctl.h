@@ -321,7 +321,7 @@ typedef struct _SCSI_PASS_THROUGH_DIRECT
 typedef WINAPI DWORD (*GETASPI32SUPPORTINFO)(VOID);
 typedef WINAPI DWORD (*SENDASPI32COMMAND)(LPVOID);
 
-#ifdef _XBOX
+#if defined(_XBOX) || defined(WIN32)
 	#define WIN2K	1
 #else
 	#define WIN2K               ( GetVersion() < 0x80000000 )
