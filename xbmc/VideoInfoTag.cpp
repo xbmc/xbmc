@@ -203,9 +203,9 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   m_strPictureURL.ParseElement(movie->FirstChildElement("thumbs"));
   if (m_strPictureURL.m_url.size() == 0)
   {
-    if (movie->FirstChildElement("thumb"))
+    if (movie->FirstChildElement("thumb") && !movie->FirstChildElement("thumb")->FirstChildElement())
     {
-      if (movie->FirstChildElement("thumb")->FirstChild() && !movie->FirstChildElement("thumb")->FirstChild()->FirstChild() )
+      if (movie->FirstChildElement("thumb")->FirstChild() && strncmp(movie->FirstChildElement("thumb")->FirstChild()->Value(),"<thumb>",7) == 0)
       {
         CStdString strValue = movie->FirstChildElement("thumb")->FirstChild()->Value();
         TiXmlDocument doc;
@@ -218,6 +218,8 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
       else
         m_strPictureURL.ParseElement(movie->FirstChildElement("thumb"));
     }
+    else
+      m_strPictureURL.ParseElement(movie->FirstChildElement("thumb"));
   }
 
   CStdString strTemp;
