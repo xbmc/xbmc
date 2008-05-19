@@ -3,8 +3,10 @@
 #include "WIN32Util.h"
 #include "GUISettings.h"
 #include "../Util.h"
+#include "FileSystem/cdioSupport.h"
 
 using namespace std;
+using namespace MEDIA_DETECT;
 
 
 
@@ -127,10 +129,56 @@ CStdString CWIN32Util::URLEncode(const CURL &url)
   return flat;
 }
 
+int CWIN32Util::GetDriveStatus(const CStdString &strPath)
+{
+  HANDLE hDevice;               // handle to the drive to be examined 
+  int iResult;                  // results flag
+  DWORD junk;                   // discard results
+  ULONG ulChanges=0;
+
+  hDevice = CreateFile(strPath.c_str(),  // drive 
+                    0,                // no access to the drive
+                    FILE_SHARE_READ,  // share mode 
+                    NULL,             // default security attributes
+                    OPEN_EXISTING,    // disposition
+                    FILE_ATTRIBUTE_READONLY,                // file attributes
+                    NULL);            // do not copy file attributes
+
+  if (hDevice == INVALID_HANDLE_VALUE) // cannot open the drive
+  {
+    return -1;
+  }
+  iResult = DeviceIoControl(
+                    (HANDLE) hDevice,            // handle to device
+                    IOCTL_STORAGE_CHECK_VERIFY2,  // dwIoControlCode
+                    NULL,                        // lpInBuffer
+                    0,                           // nInBufferSize
+                    &ulChanges,                  // lpOutBuffer
+                    sizeof(ULONG),               // nOutBufferSize
+                    &junk ,                      // number of bytes returned
+                    NULL );                      // OVERLAPPED structure
+
+  CloseHandle(hDevice);
+
+  return iResult;
+
+}
+
 CStdString CWIN32Util::GetLocalPath(const CStdString &strPath)
 {
   CURL url(strPath);
   CStdString strLocalPath = url.GetFileName();
   strLocalPath.Replace(url.GetShareName()+"/","");
   return strLocalPath;
+}
+
+char CWIN32Util::FirstDriveFromMask (ULONG unitmask)
+{
+    char i;
+    for (i = 0; i < 26; ++i)
+    {
+        if (unitmask & 0x1) break;
+        unitmask = unitmask >> 1;
+    }
+    return (i + 'A');
 }
