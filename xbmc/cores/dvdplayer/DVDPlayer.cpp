@@ -320,8 +320,10 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
         strFile.CompareNoCase("d:\\video_ts\\video_ts.ifo") == 0 ||
         strFile.CompareNoCase("iso9660://video_ts/video_ts.ifo") == 0)
     {
-#ifndef HAS_XBOX_HARDWARE
+#ifdef _LINUX
       m_filename = MEDIA_DETECT::CCdIoSupport::GetDeviceFileName();
+#elif defined(_WIN32PC)
+      m_filename = MEDIA_DETECT::CCdIoSupport::GetDeviceFileName()+4;
 #else
       m_filename = "\\Device\\Cdrom0";
 #endif

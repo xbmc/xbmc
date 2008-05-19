@@ -34,7 +34,11 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
 {
   CFileItem item(file.c_str(), false);
   if (item.IsDVDFile(false, true) || item.IsDVDImage() ||
-      file.compare(MEDIA_DETECT::CCdIoSupport::GetDeviceFileName()) == 0 )
+#ifdef _WIN32PC
+    file.compare(MEDIA_DETECT::CCdIoSupport::GetDeviceFileName()+4) == 0 )
+#else
+    file.compare(MEDIA_DETECT::CCdIoSupport::GetDeviceFileName()) == 0 )
+#endif
   {
     return (new CDVDInputStreamNavigator(pPlayer));
   }
