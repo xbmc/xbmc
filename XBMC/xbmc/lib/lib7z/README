@@ -1,0 +1,3 @@
+This lib is based upon http://www.7-zip.org/sdk.html but it's heavily patched by Team-XBMC.
+
+On linux make with build.sh in lib7z/
