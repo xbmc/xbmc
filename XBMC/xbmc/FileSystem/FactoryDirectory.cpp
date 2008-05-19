@@ -67,6 +67,7 @@
 #include "../utils/Network.h"
 #include "ZipDirectory.h"
 #include "RarDirectory.h"
+#include "7zDirectory.h"
 #include "DirectoryTuxBox.h"
 #include "HDHomeRun.h"
 #include "CMythDirectory.h"
@@ -88,7 +89,10 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   CFileItem item;
   IFileDirectory* pDir=CFactoryFileDirectory::Create(strPath, &item);
   if (pDir)
+  {
+    printf("CFacDir::Create return CFacFileDir\n");
     return pDir;
+  }
 
   CStdString strProtocol = url.GetProtocol();
 
@@ -105,6 +109,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if (strProtocol == "plugin") return new CPluginDirectory();
   if (strProtocol == "zip") return new CZipDirectory();
   if (strProtocol == "rar") return new CRarDirectory();
+  if (strProtocol == "7z")  return new C7zDirectory();
   if (strProtocol == "virtualpath") return new CVirtualPathDirectory();
   if (strProtocol == "multipath") return new CMultiPathDirectory();
   if (strProtocol == "stack") return new CStackDirectory();
