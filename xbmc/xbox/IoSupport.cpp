@@ -318,7 +318,7 @@ DWORD CIoSupport::GetTrayState()
   }
 
   return dwTrayState;
-#elif defined(_LINUX)
+#elif defined(_LINUX) || defined(_WIN32PC)
   return MEDIA_DETECT::CDetectDVDMedia::DriveReady();
 #else
   return DRIVE_NOT_READY;
