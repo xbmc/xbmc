@@ -89,10 +89,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   CFileItem item;
   IFileDirectory* pDir=CFactoryFileDirectory::Create(strPath, &item);
   if (pDir)
-  {
-    printf("CFacDir::Create return CFacFileDir\n");
     return pDir;
-  }
 
   CStdString strProtocol = url.GetProtocol();
 
