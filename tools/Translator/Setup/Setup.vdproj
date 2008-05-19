@@ -347,7 +347,7 @@
             {
             "Name" = "8:XBMC Translator"
             "Arguments" = "8:"
-            "Description" = "8:Helps to translate language files for the XboxMediaCenter"
+            "Description" = "8:Helps to translate language files for XBMC"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"

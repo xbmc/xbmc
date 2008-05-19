@@ -1,5 +1,5 @@
 TestXBS v1.0 by Warren
-This program was made to assist with screensaver (XBS) development for the Xbox Media Center Project.
+This program was made to assist with screensaver (XBS) development for XBMC.
 It is simply a wrapper program that calls the XBS start and stop routines and does the basic DirectX8 
 render loop calling the XBS render func to draw the pretty pictures.
 
