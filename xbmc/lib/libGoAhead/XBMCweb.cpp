@@ -6,7 +6,7 @@
 /******************************** Description *********************************/
 
 /*
-*	This module provides the links between the web server and XBox Media Center
+*	This module provides the links between the web server and XBMC
 */
 
 /********************************* Includes ***********************************/
