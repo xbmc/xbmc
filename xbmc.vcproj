@@ -71,7 +71,7 @@
 				NoPreload="LIBXBMS;LIBSMB;ISO9660;LIBHTTP;LIBMP4;LIBXDAAP;PLATINUM;LCODE"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
-				TitleName="Xbox Media Center Debug"/>
+				TitleName="XBMC Debug"/>
 		</Configuration>
 		<Configuration
 			Name="Profile|Xbox"
@@ -135,7 +135,7 @@
 				NoPreload="LIBXBMS;LIBSMB;ISO9660;LIBHTTP;LIBMP4;LIBXDAAP;PLATINUM;LCODE"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
-				TitleName="Xbox Media Center Profile"/>
+				TitleName="XBMC Profile"/>
 		</Configuration>
 		<Configuration
 			Name="Profile_FastCap|Xbox"
@@ -200,7 +200,7 @@
 				NoPreload="LIBXBMS;LIBSMB;ISO9660;LIBHTTP;LIBMP4;LIBXDAAP;PLATINUM;LCODE"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
-				TitleName="Xbox Media Center Profile_FastCap"/>
+				TitleName="XBMC Profile_FastCap"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Xbox"
@@ -270,7 +270,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				NoPreload="LIBXBMS;LIBSMB;ISO9660;LIBHTTP;LIBMP4;LIBXDAAP;PLATINUM;LCODE"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
-				TitleName="Xbox Media Center"
+				TitleName="XBMC"
 				TitleImage="$(ProjectDir)xbelogo\titleimage.xbx"
 				SaveGameImage="$(ProjectDir)xbelogo\saveimage.xbx"/>
 		</Configuration>
@@ -334,7 +334,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				NoPreload="LIBXBMS;LIBSMB;ISO9660;LIBHTTP;LIBMP4;LIBXDAAP;PLATINUM;LCODE"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
-				TitleName="Xbox Media Center"/>
+				TitleName="XBMC"/>
 		</Configuration>
 		<Configuration
 			Name="Debug Xbox No Memory Tracking|Xbox"
@@ -393,7 +393,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				NoPreload="LIBXBMS;LIBSMB;ISO9660;LIBHTTP;LIBMP4;LIBXDAAP;PLATINUM;LCODE"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
-				TitleName="Xbox Media Center"/>
+				TitleName="XBMC"/>
 		</Configuration>
 	</Configurations>
 	<References>
