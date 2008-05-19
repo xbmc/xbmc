@@ -208,7 +208,7 @@ namespace TeamXBMC.TranslatorCore
 
 			foreach (StringItem item in strings)
 			{
-				if (item.Id!=6) // "XboxMediaCenter CVS"
+				if (item.Id!=6) // "XBMC SVN"
 				{
 					StringItem stringItem=null;
 					arr.GetStringById(item.Id, ref stringItem);
@@ -230,7 +230,7 @@ namespace TeamXBMC.TranslatorCore
 
 			foreach (StringItem item in strings)
 			{
-				if (item.Id!=6) // "XboxMediaCenter CVS"
+				if (item.Id!=6) // "XBMC SVN"
 				{
 					StringItem stringItem=null;
 					arr.GetStringById(item.Id, ref stringItem);
