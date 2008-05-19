@@ -1,5 +1,5 @@
 /*
-* XboxMediaCenter
+* XBMC
 * 2003 by The Joker / Avalaunch team
 * 
 *

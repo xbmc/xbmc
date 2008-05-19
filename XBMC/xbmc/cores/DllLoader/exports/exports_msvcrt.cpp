@@ -81,6 +81,7 @@ extern "C" void* memset();
 extern "C" void* mktime();
 extern "C" void* dllperror();
 extern "C" void* dllprintf();
+extern "C" void* dllvprintf();
 extern "C" void* dll_putchar();
 extern "C" void* dllputs();
 extern "C" void* qsort();
@@ -227,6 +228,10 @@ extern "C" void* _wcsicmp();
 extern "C" void* _wcsnicmp();
 extern "C" void* _CIacos();
 extern "C" void* _CIasin();
+extern "C" void* _CIcos();
+extern "C" void* _CIsin();
+extern "C" void* _CIlog();
+extern "C" void* _CIexp();
 extern "C" void* dllfree71();
 extern "C" void* isalpha();
 extern "C" void* _setjmp3();
@@ -339,6 +344,7 @@ Export export_msvcrt[] =
   { "mktime",                     -1, (void*)mktime,                        NULL },
   { "perror",                     -1, (void*)dllperror,                     NULL },
   { "printf",                     -1, (void*)dllprintf,                     NULL },
+  { "vprintf",                    -1, (void*)dllvprintf,                    NULL },
   { "putchar",                    -1, (void*)dll_putchar,                   NULL },
   { "puts",                       -1, (void*)dllputs,                       NULL },
   { "qsort",                      -1, (void*)qsort,                         NULL },
@@ -683,6 +689,10 @@ Export export_msvcr71[] =
 #ifndef _LINUX
   { "_CIacos",                    -1, (void*)_CIacos,                       NULL },
   { "_CIasin",                    -1, (void*)_CIasin,                       NULL },
+  { "_CIexp",                     -1, (void*)_CIexp,                        NULL },
+  { "_CIcos",                     -1, (void*)_CIcos,                        NULL },
+  { "_CIlog",                     -1, (void*)_CIlog,                        NULL },
+  { "_CIsin",                     -1, (void*)_CIsin,                        NULL },
   { "_CxxThrowException",         -1, (void*)_CxxThrowException,            NULL },
   { "__CxxFrameHandler",          -1, (void*)__CxxFrameHandler,             NULL },
   { "__CxxLongjmpUnwind",         -1, (void*)__CxxLongjmpUnwind,            NULL },

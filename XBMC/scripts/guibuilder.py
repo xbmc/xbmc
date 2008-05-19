@@ -93,7 +93,7 @@ Post a message at http://www.xbmc.xbox-scene.com/forum/ with any suggestions.
 
 Credits:
 GetConditionalVisibility(), GetSkinPath(), LoadReferences(), LoadIncludes(), ResolveInclude()
-The above functions were translated from Xbox Media Center's source, thanks Developers.
+The above functions were translated from XBMC's source, thanks Developers.
 A special thanks to elupus for shaming me into doing it the right way. :)
 
 Nuka1195
