@@ -1,6 +1,6 @@
 // Mainpage layout
 /*!
-	\mainpage Developer documentation for xbox media center
+	\mainpage Developer documentation for XBMC
 	\section intro Introduction
 	Introduction to the manual
 
