@@ -50,7 +50,7 @@ void CDVDOverlayCodecText::Dispose()
     SAFE_RELEASE(m_pOverlay);
 }
 
-int CDVDOverlayCodecText::Decode(BYTE* data, int size)
+int CDVDOverlayCodecText::Decode(BYTE* data, int size, double pts, double duration)
 {  
   if(m_pOverlay)
     SAFE_RELEASE(m_pOverlay);
