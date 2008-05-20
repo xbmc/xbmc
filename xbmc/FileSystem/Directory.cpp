@@ -43,9 +43,9 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
   try 
   {
     CStdString translatedPath = CUtil::TranslateSpecialPath(_P(strPath));
-
     auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
-    if (!pDirectory.get()) return false;
+    if (!pDirectory.get())
+     return false;
 
     pDirectory->SetMask(strMask);
     pDirectory->SetAllowPrompting(allowPrompting);

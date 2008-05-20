@@ -82,6 +82,7 @@
 #include "FileSystem/RarManager.h"
 #include "PlayList.h"
 
+#include "FileSystem/CacheManager.h"
 #if defined(FILESYSTEM) && !defined(_LINUX)
 #include "FileSystem/FileDAAP.h"
 #endif
@@ -6174,6 +6175,8 @@ void CApplication::ProcessSlow()
     m_gWindowManager.SendThreadMessage(msg);
   }
 #endif
+
+  g_CacheManager.CheckIn();
 }
 
 // Global Idle Time in Seconds
