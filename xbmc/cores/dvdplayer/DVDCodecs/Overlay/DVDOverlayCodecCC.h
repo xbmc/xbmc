@@ -32,7 +32,7 @@ public:
   virtual ~CDVDOverlayCodecCC();
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();
-  virtual int Decode(BYTE* pData, int iSize);
+  virtual int Decode(BYTE* pData, int iSize, double pts, double duration);
   virtual void Reset();
   virtual void Flush();
   virtual CDVDOverlay* GetOverlay();
