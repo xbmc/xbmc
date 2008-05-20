@@ -56,6 +56,7 @@
 #endif
 #include "FileZip.h"
 #include "FileRar.h"
+#include "File7z.h"
 #include "FileMusicDatabase.h"
 #include "../utils/Network.h"
 #include "FileTuxBox.h"
@@ -87,6 +88,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 
   if (strProtocol == "zip") return new CFileZip();
   else if (strProtocol == "rar") return new CFileRar();
+#ifdef HAS_FILESYSTEM_7Z
+  else if (strProtocol == "7z") return new CFile7z();
+#endif
   else if (strProtocol == "musicdb") return new CFileMusicDatabase();
   else if (strProtocol == "file" || strProtocol.IsEmpty()) return new CFileHD();
   else if (strProtocol == "filereader") return new CFileFileReader();
@@ -138,6 +142,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "myth") return new CCMythFile();
     else if (strProtocol == "cmyth") return new CCMythFile();
   }
+  printf("Unrecognis\n");
 
   return NULL;
 }
