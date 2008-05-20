@@ -34,12 +34,6 @@ void CDVDOverlayCodecSSA::Dispose()
     SAFE_RELEASE(m_pOverlay);
 }
 
-int CDVDOverlayCodecSSA::Decode(BYTE* data, int size)
-{
-  //Libass can't do much without times
-  return OC_ERROR;
-}
-
 int CDVDOverlayCodecSSA::Decode(BYTE* data, int size, double pts, double duration)
 {
 

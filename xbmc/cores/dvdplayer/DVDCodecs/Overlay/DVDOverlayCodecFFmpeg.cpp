@@ -102,7 +102,7 @@ void CDVDOverlayCodecFFmpeg::FreeSubtitle(AVSubtitle& sub)
   sub.num_rects = 0;
 }
 
-int CDVDOverlayCodecFFmpeg::Decode(BYTE* data, int size)
+int CDVDOverlayCodecFFmpeg::Decode(BYTE* data, int size, double pts, double duration)
 {  
   if (!m_pCodecContext) 
     return 1;
