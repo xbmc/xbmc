@@ -147,9 +147,9 @@ void CFile7zExtractThread::Run()
     m_inFile  = new XFILE::CFile();
     m_TempOut = new XFILE::CFile(); //Is this needed?
     CStdString tempfile;
-    tempfile.Format("/home/topfs/%s", f->Name);
+    tempfile.Format("z:\\%s", f->Name);
     CLog::Log(LOGNOTICE, "7z: Going to write temp to %s", tempfile.c_str());
-    if (!m_outFile->OpenForWrite(tempfile.c_str()))
+    if (!m_outFile->OpenForWrite(tempfile.c_str(), true, true))
     {
       CLog::Log(LOGERROR, "7z: Can't open temp out file for write");
       delete m_outFile;
