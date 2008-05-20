@@ -543,6 +543,12 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
     CUtil::CreateArchivePath(strArcivedPath, "rar", pItem->m_strPath, "");
     Update(iList, strArcivedPath);
   }
+  else if (pItem->Is7z())
+  {
+    CStdString strArcivedPath;
+    CUtil::CreateArchivePath(strArcivedPath, "7z", pItem->m_strPath, "");
+    Update(iList, strArcivedPath);
+  }
   else
   {
     OnStart(pItem);
@@ -1061,7 +1067,7 @@ int CGUIWindowFileManager::GetSelectedItem(int iControl)
 void CGUIWindowFileManager::GoParentFolder(int iList)
 {
   CURL url(m_Directory[iList]->m_strPath);
-  if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip"))
+  if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip") || (url.GetProtocol() == "7z"))
   {
     // check for step-below, if, unmount rar
     if (url.GetFileName().IsEmpty())

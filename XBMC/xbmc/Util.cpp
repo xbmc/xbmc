@@ -701,7 +701,7 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
 
   CURL url(strPath);
   CStdString strFile = url.GetFileName();
-  if ( ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) && strFile.IsEmpty())
+  if ( ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip") || (url.GetProtocol() == "7z")) && strFile.IsEmpty())
   {
     strFile = url.GetHostName();
     return GetParentPath(strFile, strParent);
@@ -712,14 +712,14 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
     CFileItemList items;
     dir.GetDirectory(strPath,items);
     CUtil::GetDirectory(items[0]->m_strPath,items[0]->m_strDVDLabel);
-    if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
+    if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://") || items[0]->m_strDVDLabel.Mid(0,5).Equals("7z://"))
       GetParentPath(items[0]->m_strDVDLabel, strParent);
     else
       strParent = items[0]->m_strDVDLabel;
     for( int i=1;i<items.Size();++i)
     {
       CUtil::GetDirectory(items[i]->m_strPath,items[i]->m_strDVDLabel);
-      if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
+      if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://") || items[0]->m_strDVDLabel.Mid(0,5).Equals("7z://"))
         GetParentPath(items[i]->m_strDVDLabel, items[i]->m_strPath);
       else
         items[i]->m_strPath = items[i]->m_strDVDLabel;
@@ -1755,7 +1755,7 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
     return true;
 
   CURL url(strPath);
-  if(IsInRAR(strPath) || IsInZIP(strPath))
+  if(IsInRAR(strPath) || IsInZIP(strPath) || IsIn7z(strPath))
     return CUtil::IsOnLAN(url.GetHostName());
 
   if(!IsRemote(strPath))
@@ -5460,7 +5460,7 @@ void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items,
   {
     if (myItems[i]->m_bIsFolder)
       CUtil::GetRecursiveListing(myItems[i]->m_strPath,items,strMask,bUseFileDirectories);
-    else if (!myItems[i]->IsRAR() && !myItems[i]->IsZIP())
+    else if (!myItems[i]->IsRAR() && !myItems[i]->IsZIP() &!myItems[i]->Is7z())
       items.Add(new CFileItem(*myItems[i]));
   }
 }

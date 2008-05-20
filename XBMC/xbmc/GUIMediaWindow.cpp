@@ -704,7 +704,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
           if (item->m_bIsFolder)
             continue;
 
-          if (!item->IsPlayList() && !item->IsZIP() && !item->IsRAR())
+          if (!item->IsPlayList() && !item->IsZIP() && !item->IsRAR() && !item->Is7z())
             queueItems.Add(item);
 
           if (item == pItem)
@@ -991,7 +991,7 @@ void CGUIMediaWindow::UpdateFileList()
       if (pItem->m_bIsFolder)
         continue;
 
-      if (!pItem->IsPlayList() && !pItem->IsZIP() && !pItem->IsRAR())
+      if (!pItem->IsPlayList() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->Is7z())
         g_playlistPlayer.Add(iPlaylist, pItem);
 
       if (pItem->m_strPath == playlistItem.m_strPath &&

@@ -162,7 +162,7 @@ int LzmaDecode(CLzmaDecoderState *vs,
     unsigned char *outStream, SizeT outSize, SizeT *outSizeProcessed, size_t *nowPos, WriteCache *writeCache, void *writeOBJECT, int SizeToCache, ReadCache *readCache, void *readOBJECT)
 {
 /* Temporära lek variabler */
-  #define XBMC_CACHE 1024000
+  #define XBMC_CACHE 32000000
 /* END */
 
   size_t currOutSize = 0;

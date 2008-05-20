@@ -772,7 +772,7 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems->Size() ) return ;
 
   CFileItem item(*m_vecItems->Get(iItem));
-  if (item.IsRAR() || item.IsZIP())
+  if (item.IsRAR() || item.IsZIP() || item.Is7z())
     return;
 
   //  Allow queuing of unqueueable items
@@ -796,7 +796,7 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
 
 void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem, CFileItemList &queuedItems)
 {
-  if (!pItem->CanQueue() || pItem->IsRAR() || pItem->IsZIP() || pItem->IsParentFolder()) // no zip/rar enques thank you!
+  if (!pItem->CanQueue() || pItem->IsRAR() || pItem->IsZIP() || pItem->Is7z() || pItem->IsParentFolder()) // no zip/rar enques thank you!
     return;
 
   if (pItem->m_bIsFolder)

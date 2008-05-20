@@ -879,6 +879,8 @@ void CFileItem::FillInDefaultIcon()
       SetOverlayImage(CGUIListItem::ICON_OVERLAY_RAR);
     else if (CUtil::IsInZIP(m_strPath))
       SetOverlayImage(CGUIListItem::ICON_OVERLAY_ZIP);
+    else if (CUtil::IsIn7z(m_strPath))
+      SetOverlayImage(CGUIListItem::ICON_OVERLAY_ZIP);
   }
 }
 
