@@ -215,6 +215,8 @@ public:
   static bool IsInRAR(const CStdString& strFile);
   static bool IsZIP(const CStdString& strFile);
   static bool IsInZIP(const CStdString& strFile);
+  static bool Is7z(const CStdString& strFile);
+  static bool IsIn7z(const CStdString& strFile);
   static bool IsCDDA(const CStdString& strFile);
   static bool IsMemCard(const CStdString& strFile);
   static bool IsTuxBox(const CStdString& strFile);
