@@ -3508,6 +3508,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecFFmpeg.h">
 						</File>
 						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecSSA.cpp">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecSSA.h">
+						</File>
+						<File
 							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecText.cpp">
 						</File>
 						<File
@@ -3518,6 +3524,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						</File>
 						<File
 							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlaySpu.h">
+						</File>
+						<File
+							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlaySSA.h">
 						</File>
 						<File
 							RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayText.h">
@@ -3673,6 +3682,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					Name="DVDSubtitles"
 					Filter="">
 					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DllLibass.h">
+					</File>
+					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDFactorySubtitle.cpp">
 					</File>
 					<File
@@ -3700,10 +3712,22 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSami.h">
 					</File>
 					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSSA.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSSA.h">
+					</File>
+					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSubrip.cpp">
 					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSubrip.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitlesLibass.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitlesLibass.h">
 					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleStream.cpp">

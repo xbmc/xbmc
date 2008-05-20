@@ -26,6 +26,7 @@
 #include "DVDSubtitleParserSubrip.h"
 #include "DVDSubtitleParserMicroDVD.h"
 #include "DVDSubtitleParserSami.h"
+#include "DVDSubtitleParserSSA.h"
 #include "Util.h"
 
 using namespace std;
@@ -88,7 +89,10 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(string& strFile)
       {
         pParser = new CDVDSubtitleParserSubrip(pStream, strFile.c_str());
       }
-
+      else if ((!memcmp(line, "Dialogue: Marked", 16)) || (!memcmp(line, "Dialogue: ", 10)))
+      {
+        pParser =  new CDVDSubtitleParserSSA(pStream, strFile.c_str());
+      }
       //   if (sscanf (line, "%d:%d:%d.%d,%d:%d:%d.%d",     &i, &i, &i, &i, &i, &i, &i, &i)==8){
       //     this->uses_time=1;
       //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "subviewer subtitle format detected\n");

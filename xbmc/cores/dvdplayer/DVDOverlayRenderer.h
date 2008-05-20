@@ -29,6 +29,7 @@
 #endif
 
 class CDVDOverlayImage;
+class CDVDOverlaySSA;
 
 typedef struct stDVDPictureRenderer
 {
@@ -43,10 +44,12 @@ DVDPictureRenderer;
 class CDVDOverlayRenderer
 {
 public:
-  static void Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOverlay);
+  static void Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOverlay, double pts);
   static void Render(DVDPictureRenderer* pPicture, CDVDOverlayImage* pOverlay);
+  static void Render(DVDPictureRenderer* pPicture, CDVDOverlaySSA *pOverlay, double pts);
 
-  static void Render(YV12Image* pImage, CDVDOverlay* pOverlay)
+
+  static void Render(YV12Image* pImage, CDVDOverlay* pOverlay, double pts)
   {
     DVDPictureRenderer p;
     
@@ -63,10 +66,10 @@ public:
     p.width  = pImage->width;
     p.height = pImage->height;
     
-    Render(&p, pOverlay);
+    Render(&p, pOverlay, pts);
   }
   
-  static void Render(DVDVideoPicture* pPicture, CDVDOverlay* pOverlay)
+  static void Render(DVDVideoPicture* pPicture, CDVDOverlay* pOverlay, double pts)
   {
     DVDPictureRenderer p;
     
@@ -83,7 +86,7 @@ public:
     p.width  = pPicture->iWidth;
     p.height = pPicture->iHeight;
 
-    Render(&p, pOverlay);
+    Render(&p, pOverlay, pts);
   }
 
 private:
