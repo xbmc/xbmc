@@ -58,6 +58,7 @@ Export export_msvcrt[];
 Export export_pncrt[];
 Export export_iconvx[];
 Export export_xbp[];
+Export export_zlib[];
 
 DllLoader kernel32("kernel32.dll",        false, true, false, export_kernel32);
 DllLoader msvcr80("msvcr80.dll",          false, true, false, export_msvcrt);
@@ -82,6 +83,7 @@ DllLoader gdi32("gdi32.dll",              false, true, false, export_gdi32);
 DllLoader comctl32("comctl32.dll",        false, true, false, export_comctl32);
 DllLoader pncrt("pncrt.dll",              false, true, false, export_pncrt);
 DllLoader iconvx("iconv.dll",             false, true, false, export_iconvx);
+DllLoader zlib("zlib1.dll",               false, true, false, export_zlib);
   
 void DllLoaderContainer::Clear()
 {
