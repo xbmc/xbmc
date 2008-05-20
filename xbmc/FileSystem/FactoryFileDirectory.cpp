@@ -32,7 +32,6 @@
 #endif
 #include "RarDirectory.h"
 #include "ZipDirectory.h"
-#include "7zDirectory.h"
 #include "SmartPlaylistDirectory.h"
 #include "SmartPlaylist.h"
 #include "PlaylistFileDirectory.h"
@@ -106,39 +105,6 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     return NULL;
   }
 #endif
-  if (strExtension.Equals(".7z"))
-  {
-    CStdString strUrl; 
-    CUtil::CreateArchivePath(strUrl, "7z",strPath, "");
-    CFileItemList item;
-    CGUIViewState* guiState = CGUIViewState::GetViewState(0,item);
-    if (guiState)
-    {
-      bool bState = guiState->UnrollArchives();
-      delete guiState;
-      guiState = NULL;
-      if (!bState)
-      {
-        pItem->m_strPath = strUrl;
-        return new C7zDirectory;
-      }
-    }
-
-    if (g_7zManager.HasMultipleEntries(strPath))
-    {
-      pItem->m_strPath = strUrl;
-      return new C7zDirectory;
-    }
-
-    item.Clear();
-    CDirectory dir; dir.GetDirectory(strUrl,item,strMask);
-    if (item.Size())
-      *pItem = *item[0];
-    else
-      pItem->m_bIsFolder = true;
-
-    return NULL;
-  }
   if (strExtension.Equals(".zip"))
   {
     CStdString strUrl; 
