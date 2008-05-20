@@ -156,6 +156,8 @@
 #ifndef __APPLE__
 #define HAS_HAL
 #endif
+#define HAS_FILESYSTEM_7Z
+#define _LZMA_IN_CB
 #define HAS_FILESYSTEM_CDDA
 #define HAS_FILESYSTEM_SMB
 #define HAS_FILESYSTEM

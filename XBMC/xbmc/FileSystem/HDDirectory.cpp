@@ -218,7 +218,9 @@ bool CHDDirectory::Exists(const char* strPath)
 #ifndef _LINUX
   g_charsetConverter.utf8ToStringCharset(strReplaced);
   strReplaced.Replace("/","\\");
+#ifdef HAS_XBOX_HARDWARE
   CUtil::GetFatXQualifiedPath(strReplaced);
+#endif
   if (!CUtil::HasSlashAtEnd(strReplaced))
     strReplaced += '\\';
 #endif    
