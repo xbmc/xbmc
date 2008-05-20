@@ -261,7 +261,7 @@ CURL::CURL(const CStdString& strURL)
   SetFileName(m_strFileName);
 
   /* decode urlencoding on this stuff */
-  if( m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip") || m_strProtocol.Equals("musicsearch"))
+  if( m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip") || m_strProtocol.Equals("7z") || m_strProtocol.Equals("musicsearch"))
     CUtil::UrlDecode(m_strHostName);
 
   CUtil::UrlDecode(m_strUserName);
