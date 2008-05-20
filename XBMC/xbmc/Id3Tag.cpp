@@ -210,7 +210,7 @@ bool CID3Tag::Write(const CStdString& strFile)
   SetTrack(m_musicInfoTag.GetTrackNumber());
   SetGenre(m_musicInfoTag.GetGenre());
   SetYear(m_musicInfoTag.GetYearString());
-  SetEncodedBy("XboxMediaCenter");
+  SetEncodedBy("XBMC");
 
   m_dll.id3_tag_options(m_tag, ID3_TAG_OPTION_COMPRESSION, 0);
   m_dll.id3_tag_options(m_tag, ID3_TAG_OPTION_CRC, 0);

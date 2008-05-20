@@ -1054,6 +1054,14 @@ extern "C"
     return -1;
   }
 
+  int dllvprintf(const char *format, va_list va)
+  {
+    CStdString buffer;
+    buffer.FormatV(format, va);
+    CLog::Log(LOGDEBUG, "  msg: %s", buffer.c_str());
+    return buffer.length();
+  }
+
   int dll_vfprintf(FILE *stream, const char *format, va_list va)
   {
     static char tmp[2048];
