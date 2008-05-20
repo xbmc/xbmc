@@ -24,6 +24,7 @@
 #include "DVDFactoryCodec.h"
 #include "Video/DVDVideoCodec.h"
 #include "Audio/DVDAudioCodec.h"
+#include "Overlay/DVDOverlayCodec.h"
 
 #include "Video/DVDVideoCodecFFmpeg.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
@@ -35,6 +36,9 @@
 #include "Audio/DVDAudioCodecPcm.h"
 #include "Audio/DVDAudioCodecLPcm.h"
 #include "Audio/DVDAudioCodecPassthrough.h"
+#include "Overlay/DVDOverlayCodecSSA.h"
+#include "Overlay/DVDOverlayCodecText.h"
+#include "Overlay/DVDOverlayCodecFFmpeg.h"
 
 #include "DVDStreamInfo.h"
 
@@ -82,6 +86,29 @@ CDVDAudioCodec* CDVDFactoryCodec::OpenCodec(CDVDAudioCodec* pCodec, CDVDStreamIn
   }
   return NULL;
 }
+
+CDVDOverlayCodec* CDVDFactoryCodec::OpenCodec(CDVDOverlayCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )
+{  
+  try
+  {
+    CLog::Log(LOGDEBUG, "FactoryCodec - Overlay: %s - Opening", pCodec->GetName());
+    if( pCodec->Open( hints, options ) )
+    {
+      CLog::Log(LOGDEBUG, "FactoryCodec - Overlay: %s - Opened", pCodec->GetName());
+      return pCodec;
+    }
+
+    CLog::Log(LOGDEBUG, "FactoryCodec - Overlay: %s - Failed", pCodec->GetName());
+    pCodec->Dispose();
+    delete pCodec;
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "FactoryCodec - Audio: Failed with exception");
+  }
+  return NULL;
+}
+
 
 CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 {
@@ -185,6 +212,32 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint )
 
   pCodec = OpenCodec( new CDVDAudioCodecFFmpeg(), hint, options );
   if( pCodec ) return pCodec;
+
+  return NULL;
+}
+
+CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
+{
+  CDVDOverlayCodec* pCodec = NULL;
+  CDVDCodecOptions options;
+
+  switch (hint.codec)
+  {
+    case CODEC_ID_TEXT:
+      pCodec = OpenCodec(new CDVDOverlayCodecText(), hint, options);
+      if( pCodec ) return pCodec;
+
+    case CODEC_ID_SSA:
+      pCodec = OpenCodec(new CDVDOverlayCodecSSA(), hint, options);
+      if( pCodec ) return pCodec;
+
+      pCodec = OpenCodec(new CDVDOverlayCodecText(), hint, options);
+      if( pCodec ) return pCodec;
+
+    default:
+      pCodec = OpenCodec(new CDVDOverlayCodecFFmpeg(), hint, options);
+      if( pCodec ) return pCodec;
+  }
 
   return NULL;
 }

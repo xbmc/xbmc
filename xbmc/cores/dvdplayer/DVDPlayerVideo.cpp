@@ -32,6 +32,7 @@
 #include "DVDPerformanceCounter.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/Overlay/DVDOverlayCodecCC.h"
+#include "DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include <sstream>
 #include <iomanip>
 
@@ -573,7 +574,8 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   // then do all the rendering on that temp picture and finaly copy it to video memory.
   // In almost all cases this is 5 or more times faster!.
   bool bHasSpecialOverlay = m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SPU) 
-                         || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_IMAGE);
+                         || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_IMAGE)
+                         || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SSA);
   
   if (bHasSpecialOverlay)
   {
@@ -610,9 +612,9 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     if(pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime >= pts2 || pOverlay->iPTSStopTime == 0LL) || pts == 0)
     {
       if (bHasSpecialOverlay && m_pTempOverlayPicture) 
-        CDVDOverlayRenderer::Render(m_pTempOverlayPicture, pOverlay);
+        CDVDOverlayRenderer::Render(m_pTempOverlayPicture, pOverlay, pts);
       else 
-        CDVDOverlayRenderer::Render(pDest, pOverlay);
+        CDVDOverlayRenderer::Render(pDest, pOverlay, pts);
     }
   }
   
