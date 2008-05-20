@@ -38,11 +38,11 @@ CFile7z::~CFile7z()
 
 __int64 CFile7z::GetPosition()
 {
-
+  return m_FilePosition;
 }
 __int64 CFile7z::GetLength()
 {
-
+  return m_FileLength;
 }
 
 bool CFile7z::Open(const CURL& url, bool bBinary)
@@ -81,7 +81,7 @@ bool CFile7z::Open(const CURL& url, bool bBinary)
   {
     while (!m_ExtractInfo->m_Ready);
      // printf("Not Ready yet, needs to wait\n");
-    while (m_ExtractInfo->m_NowPos < MINIMUM_BUFFER && m_ExtractInfo->m_NowPos != m_FileLength && !m_ExtractInfo->m_Error)
+    while (m_ExtractInfo->m_NowPos < CRITICAL_BUFFER && m_ExtractInfo->m_NowPos != m_FileLength && !m_ExtractInfo->m_Error)
     {
       sleep(1);
       CLog::Log(LOGDEBUG, "7z: To little buffer (%i) - Wait for it to fill up\n", m_ExtractInfo->m_NowPos);
@@ -103,6 +103,7 @@ int	CFile7z::Stat(const CURL& url, struct __stat64* buffer)
 
 unsigned int CFile7z::Read(void* lpBuf, __int64 uiBufSize)
 {
+
   if (m_FilePosition >= m_FileLength) // we are done
     return 0;
 
@@ -111,8 +112,13 @@ unsigned int CFile7z::Read(void* lpBuf, __int64 uiBufSize)
     CLog::Log(LOGERROR, "7z: Extraction error");
     return 0;
   }
-
-  return m_ExtractInfo->m_TempOut->Read(lpBuf, uiBufSize);
+  if ((m_ExtractInfo->m_NowPos - m_FilePosition) < MINIMUM_BUFFER)
+  {
+    sleep(1);
+  }
+  int ret = m_ExtractInfo->m_TempOut->Read(lpBuf, uiBufSize);
+  m_FilePosition = m_FilePosition + ret;
+  return ret;
 
 
 
@@ -150,7 +156,9 @@ int	CFile7z::Write(const void* lpBuf, __int64 uiBufSize)
 
 __int64	CFile7z::Seek(__int64 iFilePosition, int iWhence)
 {
-  return m_ExtractInfo->m_TempOut->Seek(iFilePosition, iWhence);
+  __int64 ret = m_ExtractInfo->m_TempOut->Seek(iFilePosition, iWhence);
+
+  return ret;
   
   switch (iWhence)
   {
