@@ -110,6 +110,16 @@ Tip: by adding -j<number> to the make command, you describe how many
 
     # make -j2
 
+.3  # make install   #  (optional)
+
+This will install XBMC in the prefix provided in 4.2.1 as well as a launcher script.
+
+NOTE: You may need to run this with sudo (sudo make install) if your user doesn't have write permissions to the prefix you have provided (as in the default case, /usr/local).
+
+NOTE2: The launcher script runs with -q as well as platform dependant dirs (aka userdata in ~/.xbmc) by default.  Inherently you can't go moving things around after make install has been run and expect XBMC to work (an exception here is anything in ~/.xbmc).  If you want to remove XBMC see NOTE3.
+
+NOTE3: XBMC can be uninstalled from the system by issuing "make uninstall" from the root of the source tree (sudo applies here as above).  If you have rerun configure with a different prefix (or you've run build.sh) you will need to rerun configure with the appropriate prefix BEFORE issuing "make uninstall"
+
 -----------------------------------------------------------------------------
 5. How to run
 -----------------------------------------------------------------------------
@@ -119,7 +129,7 @@ Tip: by adding -j<number> to the make command, you describe how many
 ----------------------------------------
 If using build.sh with default options, simply:
    # cd BUILD
-   # ./XboxMediaCenter
+   # ./xbmc.bin
 
 ----------------------------------------
 5.2 Manual
@@ -132,7 +142,7 @@ What it does:
 Usage:
    # ./build.sh NOUPDATE NOCOMPILE
    # cd BUILD
-   # ./XboxMediaCenter
+   # ./xbmc.bin
 
 
 -----------------------------------------------------------------------------
@@ -156,7 +166,7 @@ If you have a multi-monitor setup and you want to run XBMC fullscreen
 only on one monitor, then make sure to set the environment variable
 SDL_VIDEO_FULLSCREEN_HEAD to the display no.  which you want to use.
 
-For e.g. "SDL_VIDEO_FULLSCREEN_HEAD=1 ./XboxMediaCenter" to tell XBMC 
+For e.g. "SDL_VIDEO_FULLSCREEN_HEAD=1 ./xbmc.bin" to tell XBMC 
 to use display no.1.
 
 Note: Nvidia Twinview users should be aware that X treats the
@@ -205,7 +215,7 @@ acceleration. From SDL docs:
 
 The proper way is to compile with the --disable-debug option this will 
 make a smaller executeable as well.
-Add -q to the commandline "./XboxMediaCenter -q" will remove the on screen
+Add -q to the commandline "./xbmc.bin -q" will remove the on screen
 Debug info when you have compiled with debug mode on (default)
 
 ----------------------------------------
