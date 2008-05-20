@@ -567,7 +567,6 @@ bool CFileItem::IsFileFolder() const
     IsPlayList() ||
     IsZIP() ||
     IsRAR() ||
-    Is7z()  ||
     IsType(".ogg") ||
     IsType(".nsf") ||
     IsType(".sid") ||
@@ -659,18 +658,6 @@ bool CFileItem::IsRAR() const
 bool CFileItem::IsZIP() const
 {
   return CUtil::GetExtension(m_strPath).Equals(".zip", false);
-}
-
-bool CFileItem::Is7z() const
-{
-  if (CUtil::GetExtension(m_strPath).Equals(".7z", false))
-  {
-    printf("CFileItem::Is7z %s\n", m_strPath.c_str());
-    return true;
-  }
-
-  return false;
-
 }
 
 bool CFileItem::IsCBZ() const
@@ -1910,7 +1897,6 @@ void CFileItemList::Stack()
          || item->IsSmb()
          || CUtil::IsInRAR(item->m_strPath)
          || CUtil::IsInZIP(item->m_strPath)
-         || CUtil::IsIn7z(item->m_strPath)
          || item->m_strPath.Left(5).Equals("xbms", false)
          )
         {
@@ -2195,7 +2181,7 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) co
   if (IsParentFolder()) return "";
   if (IsMusicDb()) return "";
   CURL url(m_strPath);
-  if (url.GetProtocol() == "rar" || url.GetProtocol() == "zip" || url.GetProtocol() == "7z") return "";
+  if (url.GetProtocol() == "rar" || url.GetProtocol() == "zip") return "";
   if (url.GetProtocol() == "upnp" || url.GetProtocol() == "ftp" || url.GetProtocol() == "ftps") return "";
 
   // we first check for <filename>.tbn or <foldername>.tbn
@@ -2286,7 +2272,7 @@ void CFileItem::SetCachedVideoThumb()
 CStdString CFileItem::GetTBNFile() const
 {
   // special case for zip/rar
-  if (IsRAR() || IsZIP() || Is7z())
+  if (IsRAR() || IsZIP())
   {
     // extract the filename portion and find the tbn based on that
     CURL url(m_strPath);
@@ -2316,7 +2302,7 @@ CStdString CFileItem::GetUserVideoThumb() const
   if (IsInternetStream()) return "";
   if (IsParentFolder()) return "";
   CURL url(m_strPath);
-  if (url.GetProtocol() == "rar" || url.GetProtocol() == "zip" || url.GetProtocol() == "7z") return "";
+  if (url.GetProtocol() == "rar" || url.GetProtocol() == "zip") return "";
   if (url.GetProtocol() == "upnp" || url.GetProtocol() == "ftp") return "";
   if (url.GetProtocol() == "tuxbox")
   {
