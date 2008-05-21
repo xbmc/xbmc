@@ -177,7 +177,7 @@ void CFile7zExtractThread::Run()
                     &m_blockIndex, &m_Buffer, &m_BufferSize, 
                     &m_offset, &m_outSizeProcessed, 
                     &allocImp, &allocTempImp, &m_NowPos,
-                    Write, m_outFile, 1024, Read, m_inFile);
+                    Write, m_outFile, 256, Read, m_inFile);
     printf("Extractat klart\n");
 
     if (res != SZ_OK)

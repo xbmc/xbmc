@@ -21,9 +21,9 @@
 #include "File7z.h"
 #include "../utils/log.h"
 
-#define MINIMUM_BUFFER 4096
+#define MINIMUM_BUFFER (4096 * 3)
 
-#define CRITICAL_BUFFER 1024
+#define CRITICAL_BUFFER 256
 
 
 
@@ -81,7 +81,7 @@ bool CFile7z::Open(const CURL& url, bool bBinary)
   {
     while (!m_ExtractInfo->m_Ready);
      // printf("Not Ready yet, needs to wait\n");
-    while (m_ExtractInfo->m_NowPos < CRITICAL_BUFFER && m_ExtractInfo->m_NowPos != m_FileLength && !m_ExtractInfo->m_Error)
+    while (m_ExtractInfo->m_NowPos < MINIMUM_BUFFER && m_ExtractInfo->m_NowPos != m_FileLength && !m_ExtractInfo->m_Error)
     {
       sleep(1);
       CLog::Log(LOGDEBUG, "7z: To little buffer (%i) - Wait for it to fill up\n", m_ExtractInfo->m_NowPos);
@@ -112,15 +112,22 @@ unsigned int CFile7z::Read(void* lpBuf, __int64 uiBufSize)
     CLog::Log(LOGERROR, "7z: Extraction error");
     return 0;
   }
-  if ((m_ExtractInfo->m_NowPos - m_FilePosition) < MINIMUM_BUFFER)
+
+  /*if (*/
+  while ((m_ExtractInfo->m_TempOut->GetLength() - m_FilePosition) == 0)
+  {}
+/*    sleep(1);*/
+  
   {
-    sleep(1);
+
+    int ret = m_ExtractInfo->m_TempOut->Read(lpBuf, uiBufSize);
+
+    m_FilePosition = m_FilePosition + ret;
+    return ret;
   }
-  int ret = m_ExtractInfo->m_TempOut->Read(lpBuf, uiBufSize);
-  m_FilePosition = m_FilePosition + ret;
-  return ret;
-
-
+  printf("Use Buffer\n");
+  while ((m_ExtractInfo->m_NowPos - m_FilePosition) == 0)
+  {sleep(1);}
 
 
   __int64 Copy;
@@ -139,11 +146,11 @@ unsigned int CFile7z::Read(void* lpBuf, __int64 uiBufSize)
 //  lpBuf = m_ExtractInfo->m_Buffer + m_Processed;
   memcpy(lpBuf, (m_ExtractInfo->m_Buffer + m_FilePosition), size_t(Copy));
 
-  while ((m_ExtractInfo->m_NowPos - m_FilePosition) < CRITICAL_BUFFER)
+/*  while ((m_ExtractInfo->m_NowPos - m_FilePosition) < CRITICAL_BUFFER)
   {
     CLog::Log(LOGDEBUG, "7z: BELOW CRITICALBUFFER - NowPos (%i) Buffer (%i)", m_ExtractInfo->m_NowPos, (m_ExtractInfo->m_NowPos - m_FilePosition));
     sleep(1);
-  }
+  }*/
   m_FilePosition += Copy;
 
   return Copy;
