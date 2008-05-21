@@ -2415,7 +2415,7 @@ void CUtil::ClearSubtitles()
   //delete cached subs
   WIN32_FIND_DATA wfd;
 #ifndef _LINUX
-  CAutoPtrFind hFind ( FindFirstFile("Z:\\*.*", &wfd));
+  CAutoPtrFind hFind ( FindFirstFile(_P("Z:\\*.*"), &wfd));
 #else
   CAutoPtrFind hFind ( FindFirstFile(_P("Z:\\*"), &wfd));
 #endif
