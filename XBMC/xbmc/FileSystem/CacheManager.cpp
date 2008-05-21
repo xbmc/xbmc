@@ -20,7 +20,6 @@
 #include "stdafx.h"
 #include "CacheManager.h"
 #include "../utils/log.h"
-//#include "../linux/XTimeUtils.h" //This is for timeGetTime() but I suspect it should be included else were to be crossplattform
 
 CCacheManager g_CacheManager;
 
@@ -77,7 +76,6 @@ CCacheEntry::~CCacheEntry()
 
 void CCacheEntry::CheckIn()
 {
-//  printf("%i\n", timeGetTime());
   m_Time = (timeGetTime() + TIMEOUT);
 }
 
@@ -150,23 +148,18 @@ const std::vector<CCache *> CCacheEntry::List(const CStdString& strPathInCacheEn
   std::vector<CCache *> vec;
   for (unsigned int i = 0; i < m_FilesInCache.size(); i++)
   {
-
     std::vector<CStdString> testTokens;
     CUtil::Tokenize(m_FilesInCache[i]->Path(), testTokens, "/");
 
     bool Approved = (inTokens.size() + 1 == testTokens.size());
-//    if (Approved) printf("First PASS Approved\n");
+
     for (unsigned int j = 0; Approved && j < inTokens.size(); j++)
     {
       if (!testTokens[j].Equals(inTokens[j].c_str()))
         Approved = false;
     }
     if (Approved)
-    {
-
       vec.push_back(m_FilesInCache[i]);
-    }
-    
   }
   return vec;
 }
@@ -192,25 +185,21 @@ CCacheManager::~CCacheManager()
 
 }
 
-
 // Public
 bool CCacheManager::List(CFileItemList& vecpItems, const CStdString& strCacheEntry, const CStdString& strPathInCacheEntry)
 {
   CCacheEntry *ent = NULL;
-  int pos = GetCacheEntry(strCacheEntry);
+  int pos = GetCacheEntryPos(strCacheEntry);
   if (pos == -1)
     return false;
-
 
   ent = m_Cached[pos];
   std::vector<CCache *> vec = ent->List(strPathInCacheEntry);
   for (unsigned int i = 0; i < vec.size(); i++)
   {
-
-// Detta måste sparas i FILEINFO
     std::vector<CStdString> tokens; 
     CUtil::Tokenize(vec[i]->Path(), tokens, "/");
-/*    */
+
     CFileItem* pItem = new CFileItem(tokens[(tokens.size() - 1)]);
 
     CStdString strPath;
@@ -238,6 +227,7 @@ bool CCacheManager::IsInCache(const CStdString &strCacheEntry, const CStdString 
   }
   return false;
 }
+
 bool CCacheManager::IsCached(const CStdString &strCacheEntry) const
 {
   for (unsigned int i = 0; i < m_Cached.size(); i++)
@@ -250,9 +240,8 @@ bool CCacheManager::IsCached(const CStdString &strCacheEntry) const
 
 bool CCacheManager::AddToCache(const CStdString &strCacheEntry, CCache *Cache)
 {
-
   CCacheEntry *ent = NULL;
-  int pos = GetCacheEntry(strCacheEntry);
+  int pos = GetCacheEntryPos(strCacheEntry);
   if (pos == -1)
   {
 
@@ -261,21 +250,16 @@ bool CCacheManager::AddToCache(const CStdString &strCacheEntry, CCache *Cache)
   else
     ent = m_Cached[pos];
 
-//  CFileInf *in = new CFileInf(Cache.Path(), Cache.IsFolder(), Cache.Size());
   ent->Add(Cache);
   return true;
 }
 
 bool CCacheManager::AddToCache(const CStdString &strCacheEntry, const CStdString &strPathInCacheEntry, bool IsFolder)
 {
-
   CCacheEntry *ent = NULL;
-  int pos = GetCacheEntry(strCacheEntry);
+  int pos = GetCacheEntryPos(strCacheEntry);
   if (pos == -1)
-  {
-
     ent = AddCacheEntry(strCacheEntry);
-  }
   else
     ent = m_Cached[pos];
 
@@ -285,7 +269,6 @@ bool CCacheManager::AddToCache(const CStdString &strCacheEntry, const CStdString
 }
 CCacheEntry *CCacheManager::AddCacheEntry(const CStdString &strCacheEntry)
 {
-
   CCacheEntry *ent = new CCacheEntry(strCacheEntry);
 
   m_Cached.push_back(ent);
@@ -294,7 +277,7 @@ CCacheEntry *CCacheManager::AddCacheEntry(const CStdString &strCacheEntry)
 
 void CCacheManager::Clear(const CStdString& strCacheEntry)
 {
-  int pos = GetCacheEntry(strCacheEntry);
+  int pos = GetCacheEntryPos(strCacheEntry);
   Clear(pos);
 }
 
@@ -319,12 +302,11 @@ void CCacheManager::Clear()
 
 void CCacheManager::Print() const
 {
-
   for (unsigned int i = 0; i < m_Cached.size(); i++)
     m_Cached[i]->Print();
 }
 
-int CCacheManager::GetCacheEntry(const CStdString& strCacheEntry) const
+int CCacheManager::GetCacheEntryPos(const CStdString& strCacheEntry) const
 {
   for (unsigned int i = 0; i < m_Cached.size(); i++)
   {
@@ -338,7 +320,7 @@ int CCacheManager::GetCacheEntry(const CStdString& strCacheEntry) const
 
 const CCache* CCacheManager::GetCached(const CStdString& strCacheEntry, const CStdString& strPathInCacheEntry) const
 {
-  int Pos = GetCacheEntry(strCacheEntry);
+  int Pos = GetCacheEntryPos(strCacheEntry);
   if (Pos == -1)
     return NULL;
   
@@ -347,9 +329,25 @@ const CCache* CCacheManager::GetCached(const CStdString& strCacheEntry, const CS
 
 void CCacheManager::AutoDelete(const CStdString& strCacheEntry, bool AutoDelete)
 {
-  int Pos = GetCacheEntry(strCacheEntry);
+  int Pos = GetCacheEntryPos(strCacheEntry);
   if (Pos == -1) return;
   m_Cached[Pos]->AutoDelete(AutoDelete);
+}
+
+CCacheEntry* CCacheManager::GetCacheEntry(const CStdString& strCacheEntry)
+{
+  int Pos = GetCacheEntryPos(strCacheEntry);
+  if (Pos != -1)
+    return m_Cached[Pos];
+  else
+    return NULL;
+}
+
+void CCacheManager::Ping(const CStdString &strCacheEntry)
+{
+  int Pos = GetCacheEntryPos(strCacheEntry);
+  if (Pos != -1)
+    m_Cached[Pos]->CheckIn();
 }
 
 #define CLEAR
@@ -358,16 +356,15 @@ void CCacheManager::CheckIn()
 {
 #ifdef CLEAR
   int time = timeGetTime();
-//  printf("CheckIn %i | ", time);
+
   std::vector<int> vec;
   for (unsigned int i = 0; i < m_Cached.size(); i++)
   {
     int t = m_Cached[i]->GetTimeOut();
-//    printf("%s %i | ", m_Cached[i]->GetID().c_str(), t);
     if (m_Cached[i]->AutoDelete() && t < time)
       vec.push_back(i);
   }
-//  printf("\n");
+
   for (unsigned int i = 0; i < vec.size(); i++)
   {
     printf("CManager: \"%s\" is Overdue and will be cleared\n", m_Cached[vec[i]]->GetID().c_str());

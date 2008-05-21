@@ -21,9 +21,9 @@
 #include "File7z.h"
 #include "../utils/log.h"
 
-#define MINIMUM_BUFFER (4096 * 3)
+#define MINIMUM_BUFFER 4096
 
-#define CRITICAL_BUFFER 256
+#define CRITICAL_BUFFER 1024
 
 
 
@@ -50,9 +50,9 @@ bool CFile7z::Open(const CURL& url, bool bBinary)
   if (!bBinary)
     return false;
 
-  CStdString strArchive = url.GetHostName();
+  m_strArchive = url.GetHostName();
   CStdString strOptions = url.GetOptions();
-  CStdString strPathInArchive = url.GetFileName();
+  m_strPathInArchive = url.GetFileName();
 
   m_FilePosition = 0;
   m_FileLength   = 0;
@@ -61,26 +61,25 @@ bool CFile7z::Open(const CURL& url, bool bBinary)
 
   m_Open         = false;
   const CCache *File = NULL;
-  if (g_7zManager.Cache(strArchive) && (File = g_7zManager.GetFileIn7z(strArchive, strPathInArchive)) != NULL)
+  if (g_7zManager.Cache(m_strArchive) && (File = g_7zManager.GetFileIn7z(m_strArchive, m_strPathInArchive)) != NULL)
   {
-    m_FileLength = File->Size();
-//    printf("Size: %lld", m_FileLength);
+    m_FileLength       = File->Size();
     Byte    *Buffer    = 0;
     size_t  BufferSize = 0;
-    m_ExtractInfo = new CFile7zExtractThread(strArchive, strPathInArchive, &Buffer, &BufferSize);
-    m_ExtractThread = new CThread(m_ExtractInfo);
+    m_ExtractInfo      = new CFile7zExtractThread(m_strArchive, m_strPathInArchive, &Buffer, &BufferSize);
+    m_ExtractThread    = new CThread(m_ExtractInfo);
     if (m_ExtractThread != NULL)
     {
       m_Open = true;
       m_ExtractThread->Create();
-      //m_ExtractInfo->Run();
     }
+    m_CacheEntry = g_CacheManager.GetCacheEntry(m_strArchive);
   }
 
   if (m_Open)
   {
     while (!m_ExtractInfo->m_Ready);
-     // printf("Not Ready yet, needs to wait\n");
+    { }
     while (m_ExtractInfo->m_NowPos < MINIMUM_BUFFER && m_ExtractInfo->m_NowPos != m_FileLength && !m_ExtractInfo->m_Error)
     {
       sleep(1);
@@ -103,7 +102,6 @@ int	CFile7z::Stat(const CURL& url, struct __stat64* buffer)
 
 unsigned int CFile7z::Read(void* lpBuf, __int64 uiBufSize)
 {
-
   if (m_FilePosition >= m_FileLength) // we are done
     return 0;
 
@@ -113,47 +111,14 @@ unsigned int CFile7z::Read(void* lpBuf, __int64 uiBufSize)
     return 0;
   }
 
-  /*if (*/
-  while ((m_ExtractInfo->m_TempOut->GetLength() - m_FilePosition) == 0)
-  {}
-/*    sleep(1);*/
-  
+  if ((m_ExtractInfo->m_TempOut->GetLength() - m_FilePosition) < CRITICAL_BUFFER)
   {
-
-    int ret = m_ExtractInfo->m_TempOut->Read(lpBuf, uiBufSize);
-
-    m_FilePosition = m_FilePosition + ret;
-    return ret;
+    while ((m_ExtractInfo->m_TempOut->GetLength() - m_FilePosition) < MINIMUM_BUFFER)
+      sleep(1);
   }
-  printf("Use Buffer\n");
-  while ((m_ExtractInfo->m_NowPos - m_FilePosition) == 0)
-  {sleep(1);}
-
-
-  __int64 Copy;
-/*  if ((m_FileLength - m_FilePosition) < uiBufSize)
-    Copy = (m_FileLength - m_FilePosition);*/
-  if ((m_FilePosition + uiBufSize) > m_ExtractInfo->m_NowPos)
-    Copy = (m_ExtractInfo->m_NowPos - m_FilePosition);
-  else
-    Copy = uiBufSize;
-//  printf("uiBufSize  %lld\n", uiBufSize);
-//  printf("FilePos    %lld\n", m_FilePosition);
-//  printf("NowPos     %lld\n", m_ExtractInfo->m_NowPos);
-//  printf("Copy       %lld\n", Copy);
-//  printf("blockIndex %lld\n", m_ExtractInfo->m_blockIndex);
-
-//  lpBuf = m_ExtractInfo->m_Buffer + m_Processed;
-  memcpy(lpBuf, (m_ExtractInfo->m_Buffer + m_FilePosition), size_t(Copy));
-
-/*  while ((m_ExtractInfo->m_NowPos - m_FilePosition) < CRITICAL_BUFFER)
-  {
-    CLog::Log(LOGDEBUG, "7z: BELOW CRITICALBUFFER - NowPos (%i) Buffer (%i)", m_ExtractInfo->m_NowPos, (m_ExtractInfo->m_NowPos - m_FilePosition));
-    sleep(1);
-  }*/
-  m_FilePosition += Copy;
-
-  return Copy;
+  int ret = m_ExtractInfo->m_TempOut->Read(lpBuf, uiBufSize);
+  m_FilePosition = m_FilePosition + ret;
+  return ret;
 }
 
 int	CFile7z::Write(const void* lpBuf, __int64 uiBufSize)
@@ -163,48 +128,7 @@ int	CFile7z::Write(const void* lpBuf, __int64 uiBufSize)
 
 __int64	CFile7z::Seek(__int64 iFilePosition, int iWhence)
 {
-  __int64 ret = m_ExtractInfo->m_TempOut->Seek(iFilePosition, iWhence);
-
-  return ret;
-  
-  switch (iWhence)
-  {
-
-
-    case SEEK_CUR:
-//      printf("SEEK_CUR %lld\n", iFilePosition);
-      if (iFilePosition == 0)
-        return m_FilePosition;
-      else if ((m_FilePosition + iFilePosition) <= m_ExtractInfo->m_NowPos)
-        m_FilePosition += iFilePosition;
-      else
-        return -1;
-      break;
-    case SEEK_END:
-//      printf("SEEK_END %lld\n", iFilePosition);
-/*      if (m_ExtractInfo->m_NowPos == m_FileLength)
-      {
-        m_FilePosition = m_FileLength;
-        return m_FilePosition;
-      }
-      else*/
-        return -1;
-      break;
-    case SEEK_SET:
-//      printf("SEEK_SET %lld\n", iFilePosition);
-      if (iFilePosition > m_FileLength)
-        return -1;
-      if (iFilePosition > m_ExtractInfo->m_NowPos)
-        return -1;
-//      printf("SEEK_SET APPROVED\n");
-      m_FilePosition = iFilePosition;
-      return m_FilePosition;
-      break;
-    default:
-      //printf("DEFAULT #%i | %lld\n", iWhence, iFilePosition);
-      return -1;
-      break;
-  }
+  return m_ExtractInfo->m_TempOut->Seek(iFilePosition, iWhence);
 }
 
 void CFile7z::Close()

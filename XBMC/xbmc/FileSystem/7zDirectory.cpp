@@ -39,9 +39,6 @@ namespace DIRECTORY
   bool C7zDirectory::GetDirectory(const CStdString& strPathOrig, CFileItemList &items)
   {
     CStdString strPath;
-//    printf("---------Detta fanns innan----------\n");
-//    g_CacheManager.Print();
-//    printf("------------------------------------\n");
 
     /* if this isn't a proper archive path, assume it's the path to a archive file */
     if( !strPathOrig.Left(5).Equals("7z://") )
@@ -63,7 +60,6 @@ namespace DIRECTORY
 
   bool C7zDirectory::ContainsFiles(const CStdString& strPath)
   {
-
     CURL url(strPath);
     CStdString strArchive = url.GetHostName();
     CStdString strOptions = url.GetOptions();
@@ -77,7 +73,6 @@ namespace DIRECTORY
   }
   bool C7zDirectory::Exists(const char* strPath)
   {
-
     CURL url(strPath);
     CStdString strArchive = url.GetHostName();
     CStdString strOptions = url.GetOptions();

@@ -27,45 +27,30 @@
 #include <set>
 
 using namespace std;
-//using namespace XFILE;
-//using namespace DIRECTORY;
 
-static int lol = 0;
-
+// Write callback for the temp file
 bool Write(void *object, unsigned char *buffer, int size)
 {
-//  printf("LOL - 1: %i\n", lol);
-  
   XFILE::CFile *file = (XFILE::CFile *)object;
-  //printf("Writing (%i)\n", size);
+
   file->Seek(file->GetLength(), SEEK_SET);
   int i = 0;
   i = file->Write(buffer, size);
   if (i != size)
     CLog::Log(LOGERROR, "7z: Write failure");
-
-/*  int i = size;
-  for ( ; i != 0; )
-  {//printf("bef(%i) ", i);
-    i = file->Write(buffer, i);
-    //printf(" - after (%i / %i)\n", i, size);
-  }*/
-  lol +=size;
   file->Flush();
-//  file->Seek(size, SEEK_CUR);
-//  printf("LOL - 2: %i\n", lol);
 }
 
+// Read callback for the temp file
 Byte Read(void *object, size_t position)
 {
   XFILE::CFile *file = (XFILE::CFile *)object;
-  //printf("read (%i)", file->Seek(position, SEEK_SET));
   if (file->Seek(position, SEEK_SET) == -1)
     CLog::Log(LOGERROR, "7z: Can't seek temp out file");
 
   Byte t[1];
   file->Read(t, 1);
-//  printf(" (%i)\n", (int)t[0]);
+
   return t[0];
 }
 
@@ -177,7 +162,7 @@ void CFile7zExtractThread::Run()
                     &m_blockIndex, &m_Buffer, &m_BufferSize, 
                     &m_offset, &m_outSizeProcessed, 
                     &allocImp, &allocTempImp, &m_NowPos,
-                    Write, m_outFile, 256, Read, m_inFile);
+                    Write, m_outFile, 1024, Read, m_inFile);
     printf("Extractat klart\n");
 
     if (res != SZ_OK)
@@ -209,17 +194,16 @@ size_t C7zManager::ReadArchiveFile(XFILE::CFile *file, void *data, size_t size)
   return file->Read(data, size);
 }
 
-size_t C7zManager::Writer(XFILE::CFile *file, void *data, size_t size)
+/*size_t C7zManager::Writer(XFILE::CFile *file, void *data, size_t size)
 {
   if (size == 0)
     return 0;
 
   return file->Write(data, size);
-}
+}*/
 
 int C7zManager::CloseArchiveFile(XFILE::CFile *file)
 {
-  //delete file;
   file->Close();
   return 0;
 }
@@ -228,7 +212,7 @@ int C7zManager::CloseArchiveFile(XFILE::CFile *file)
 
 #define kBufferSize (1 << 12)
 Byte g_Buffer[kBufferSize];
-
+// Read callback for the archive file 
 SZ_RESULT C7zManager::FileRead(void *object, void **buffer, size_t maxRequiredSize, size_t *processedSize)
 {
   CFileInStream *s = (CFileInStream *)object;
@@ -243,7 +227,7 @@ SZ_RESULT C7zManager::FileRead(void *object, void **buffer, size_t maxRequiredSi
 }
 
 #else
-
+// Read callback for the archive file
 SZ_RESULT C7zManager::FileRead(void *object, void *buffer, size_t size, size_t *processedSize)
 {
   CFileInStream *s = (CFileInStream *)object;
@@ -254,7 +238,7 @@ SZ_RESULT C7zManager::FileRead(void *object, void *buffer, size_t size, size_t *
 }
 
 #endif
-
+// Seek callback for the archive file
 SZ_RESULT C7zManager::FileSeek(void *object, CFileSize pos)
 {
   CFileInStream *s = (CFileInStream *)object;

@@ -28,7 +28,6 @@ namespace XFILE
 	{
 	public:
 		CFile7z();
-//    CFileRar(bool bSeekable); // used for caching files
 		virtual ~CFile7z();
 		virtual __int64			  GetPosition();
 		virtual __int64			  GetLength();
@@ -51,6 +50,10 @@ namespace XFILE
     // Read
     CThread               *m_ExtractThread;
     CFile7zExtractThread  *m_ExtractInfo;
+
+    CStdString            m_strArchive;
+    CStdString            m_strPathInArchive;
+    CCacheEntry           *m_CacheEntry;
 
     __int64                m_Processed;
   };

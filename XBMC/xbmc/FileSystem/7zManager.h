@@ -90,7 +90,7 @@ public:
 //  CThread *CreateExtractThread(const CStdString& str7zPath, const CStdString& strPathIn7z, Byte *Buffer, size_t *BufferSize);
 //   7zCallbacks
   static size_t    ReadArchiveFile(XFILE::CFile *file, void *data, size_t size);
-  static size_t    Writer(XFILE::CFile *file, void *data, size_t size);
+//  static size_t    Writer(XFILE::CFile *file, void *data, size_t size);
   static SZ_RESULT FileRead(void *, void **, size_t, size_t *);
   static SZ_RESULT FileSeek(void *object, CFileSize pos);
   static int       CloseArchiveFile(XFILE::CFile *file);

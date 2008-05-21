@@ -93,13 +93,15 @@ public:
   void  Clear(const CStdString& strCacheEntry);
   void  Clear();
   const CCache* GetCached(const CStdString& strCacheEntry, const CStdString& strPathInCacheEntry) const;
+  CCacheEntry* GetCacheEntry(const CStdString& strCacheEntry);
 
   void  AutoDelete(const CStdString& strCacheEntry, bool AutoDelete);
 
   void  CheckIn();
+  void  Ping(const CStdString &strCacheEntry);
 protected:
   CCacheEntry *AddCacheEntry(const CStdString& strCacheEntry);
-  int   GetCacheEntry(const CStdString& strCacheEntry) const;
+  int   GetCacheEntryPos(const CStdString& strCacheEntry) const;
 };
 
 extern CCacheManager g_CacheManager;
