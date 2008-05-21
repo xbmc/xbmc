@@ -167,7 +167,9 @@ int LzmaDecode(CLzmaDecoderState *vs,
 
   size_t currOutSize = 0;
 //int *ptr = malloc(10 * sizeof (int));
-  unsigned char sendBuffer[2 * SizeToCache];//malloc(2 * SizeToCache * sizeof (unsigned char));
+
+  unsigned char sendBuffer[2 * SizeToCache + 1];//malloc(2 * SizeToCache * sizeof (unsigned char));
+
   unsigned long int maxSize = 0;
   unsigned long int minSize = 0;
   CProb *p = vs->Probs;
@@ -289,6 +291,7 @@ int LzmaDecode(CLzmaDecoderState *vs,
       writeCache(object, (void *)outStream, (*nowPos));
   }
   currOutSize = (*nowPos);*/
+
   while((*nowPos) < outSize)
   {
     CProb *prob;
@@ -325,10 +328,15 @@ int LzmaDecode(CLzmaDecoderState *vs,
         matchByte = dictionary[pos];
         #else
 //        matchByte = outStream[(*nowPos) - rep0];
-        if (rep0 < XBMC_CACHE)
-          matchByte = outStream[(*nowPos) - rep0];
+        if (SizeToCache == 0)
+           matchByte = outStream[(*nowPos) - rep0];
         else
-          matchByte = readCache(readOBJECT, (*nowPos) - rep0);
+        {
+          if (rep0 < XBMC_CACHE)
+            matchByte = outStream[(*nowPos) - rep0];
+          else
+            matchByte = readCache(readOBJECT, (*nowPos) - rep0); 
+        }
         #endif
         do
         {
@@ -348,7 +356,8 @@ int LzmaDecode(CLzmaDecoderState *vs,
       }
       previousByte = (Byte)symbol;
       outStream[(*nowPos)++] = previousByte;
-      sendBuffer[((*nowPos) - currOutSize)] = previousByte;
+      if (SizeToCache > 0)
+        sendBuffer[((*nowPos) - currOutSize)] = previousByte;
       #ifdef _LZMA_OUT_READ
       if (distanceLimit < dictionarySize)
         distanceLimit++;
@@ -407,13 +416,19 @@ int LzmaDecode(CLzmaDecoderState *vs,
               dictionaryPos = 0;
             #else
 //            previousByte = outStream[(*nowPos) - rep0];
-            if (rep0 < XBMC_CACHE)
-              previousByte = outStream[(*nowPos) - rep0];
+            if (SizeToCache == 0)
+               previousByte = outStream[(*nowPos) - rep0];
             else
-              previousByte = readCache(readOBJECT, (*nowPos) - rep0);
+            {
+              if (rep0 < XBMC_CACHE)
+                previousByte = outStream[(*nowPos) - rep0];
+              else
+                previousByte = readCache(readOBJECT, (*nowPos) - rep0);
+            }
             #endif
             outStream[(*nowPos)++] = previousByte;
-            sendBuffer[((*nowPos) - currOutSize)] = previousByte;
+            if (SizeToCache > 0)
+              sendBuffer[((*nowPos) - currOutSize)] = previousByte;
             #ifdef _LZMA_OUT_READ
             if (distanceLimit < dictionarySize)
               distanceLimit++;
@@ -576,29 +591,39 @@ int LzmaDecode(CLzmaDecoderState *vs,
         if (++dictionaryPos == dictionarySize)
           dictionaryPos = 0;
         #else
-        if (rep0 < XBMC_CACHE)
-          previousByte = outStream[(*nowPos) - rep0];
+        if (SizeToCache == 0)
+           previousByte = outStream[(*nowPos) - rep0];
         else
-          previousByte = readCache(readOBJECT, (*nowPos) - rep0);
-
+        {
+          if (rep0 < XBMC_CACHE)
+            previousByte = outStream[(*nowPos) - rep0];
+          else
+            previousByte = readCache(readOBJECT, (*nowPos) - rep0);
+        }
         #endif
         len--;
         outStream[(*nowPos)++] = previousByte;
-        sendBuffer[((*nowPos) - currOutSize)] = previousByte;
+        if (SizeToCache > 0)
+          sendBuffer[((*nowPos) - currOutSize)] = previousByte;
       }
       while(len != 0 && (*nowPos)< outSize);
     }
-
-    if (((*nowPos) - currOutSize) >= (size_t)SizeToCache)
+    if (SizeToCache != 0)
     {
-      writeCache(writeOBJECT, (outStream + currOutSize), ((*nowPos) - currOutSize));
-      currOutSize = (*nowPos);
+      if (((*nowPos) - currOutSize) >= (size_t)SizeToCache)
+      {
+        writeCache(writeOBJECT, (outStream + currOutSize), ((*nowPos) - currOutSize));
+        currOutSize = (*nowPos);
+      }
     }
   }
   printf("Left when done (%i) NowPos(%lld)\n", ((*nowPos) - currOutSize), (*nowPos));
   //Writing the remaining
-  if (((*nowPos) - currOutSize) > 0)
-    writeCache(writeOBJECT, (outStream + currOutSize), ((*nowPos) - currOutSize));
+    if (SizeToCache != 0)
+    {
+      if (((*nowPos) - currOutSize) > 0)
+        writeCache(writeOBJECT, (outStream + currOutSize), ((*nowPos) - currOutSize));
+    }
   RC_NORMALIZE;
 //  free(tempBuffer);
 
