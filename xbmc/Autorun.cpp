@@ -220,7 +220,6 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
 {
   bool bPlaying(false);
   CFileItemList vecItems;
-  CFileItemList itemlist(vecItems);
   char szSlash = '\\';
   if (strDrive.Find("iso9660") != -1) szSlash = '/';
 
@@ -308,7 +307,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     CFileItemList tempItems;
     tempItems.Append(vecItems);
     tempItems.Stack();
-    itemlist.Clear();
+    CFileItemList itemlist;
 
     for (int i = 0; i < tempItems.Size(); i++)
     {
