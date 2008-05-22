@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -22,8 +43,8 @@
 
 using namespace std;
 
-CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, CStdString interfaceName) 
-      
+CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, CStdString interfaceName)
+
 {
    m_network = network;
    m_interfaceName = interfaceName;
@@ -33,9 +54,9 @@ CNetworkInterfaceLinux::~CNetworkInterfaceLinux(void)
 {
 }
 
-CStdString& CNetworkInterfaceLinux::GetName(void) 
-{ 
-   return m_interfaceName; 
+CStdString& CNetworkInterfaceLinux::GetName(void)
+{
+   return m_interfaceName;
 }
 
 bool CNetworkInterfaceLinux::IsWireless()
@@ -43,10 +64,10 @@ bool CNetworkInterfaceLinux::IsWireless()
 #ifdef __APPLE__
   return false;
 #else
-	struct iwreq wrq;      
-   strcpy(wrq.ifr_name, m_interfaceName.c_str()); 
+  struct iwreq wrq;
+   strcpy(wrq.ifr_name, m_interfaceName.c_str());
    if (ioctl(m_network->GetSocket(), SIOCGIWNAME, &wrq) < 0)
-    	return false;
+      return false;
 #endif
 
    return true;
@@ -91,14 +112,14 @@ CStdString CNetworkInterfaceLinux::GetMacAddress()
    strcpy(ifr.ifr_name, m_interfaceName.c_str());
    if (ioctl(m_network->GetSocket(), SIOCGIFHWADDR, &ifr) >= 0)
    {
-      result.Format("%hhX:%hhX:%hhX:%hhX:%hhX:%hhX", 
-         ifr.ifr_hwaddr.sa_data[0], 
-         ifr.ifr_hwaddr.sa_data[1], 
-         ifr.ifr_hwaddr.sa_data[2], 
-         ifr.ifr_hwaddr.sa_data[3], 
-         ifr.ifr_hwaddr.sa_data[4], 
+      result.Format("%hhX:%hhX:%hhX:%hhX:%hhX:%hhX",
+         ifr.ifr_hwaddr.sa_data[0],
+         ifr.ifr_hwaddr.sa_data[1],
+         ifr.ifr_hwaddr.sa_data[2],
+         ifr.ifr_hwaddr.sa_data[3],
+         ifr.ifr_hwaddr.sa_data[4],
          ifr.ifr_hwaddr.sa_data[5]);
-   } 
+   }
 #endif
 
    return result;
@@ -107,14 +128,14 @@ CStdString CNetworkInterfaceLinux::GetMacAddress()
 CStdString CNetworkInterfaceLinux::GetCurrentIPAddress(void)
 {
    CStdString result = "";
-   
+
    struct ifreq ifr;
    strcpy(ifr.ifr_name, m_interfaceName.c_str());
    ifr.ifr_addr.sa_family = AF_INET;
    if (ioctl(m_network->GetSocket(), SIOCGIFADDR, &ifr) >= 0)
    {
       result = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
-   } 
+   }
 
    return result;
 }
@@ -122,14 +143,14 @@ CStdString CNetworkInterfaceLinux::GetCurrentIPAddress(void)
 CStdString CNetworkInterfaceLinux::GetCurrentNetmask(void)
 {
    CStdString result = "";
-   
+
    struct ifreq ifr;
    strcpy(ifr.ifr_name, m_interfaceName.c_str());
    ifr.ifr_addr.sa_family = AF_INET;
    if (ioctl(m_network->GetSocket(), SIOCGIFNETMASK, &ifr) >= 0)
    {
       result = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
-   } 
+   }
 
    return result;
 }
@@ -138,10 +159,10 @@ CStdString CNetworkInterfaceLinux::GetCurrentWirelessEssId(void)
 {
    CStdString result = "";
 
-#ifndef __APPLE__  
+#ifndef __APPLE__
    char essid[IW_ESSID_MAX_SIZE + 1];
    memset(&essid, 0, sizeof(essid));
-   
+
    struct iwreq wrq;
    strcpy(wrq.ifr_name,  m_interfaceName.c_str());
    wrq.u.essid.pointer = (caddr_t) essid;
@@ -152,14 +173,14 @@ CStdString CNetworkInterfaceLinux::GetCurrentWirelessEssId(void)
       result = essid;
    }
 #endif
-   
-   return result;   
+
+   return result;
 }
 
 CStdString CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
 {
    CStdString result = "";
-   
+
 #ifndef __APPLE__
    FILE* fp = fopen("/proc/net/route", "r");
    if (!fp)
@@ -167,7 +188,7 @@ CStdString CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
      // TBD: Error
      return result;
    }
-   
+
    char* line = NULL;
    char iface[16];
    char dst[128];
@@ -181,7 +202,7 @@ CStdString CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
       if (linenum++ < 1)
          continue;
 
-      // search where the word begins	
+      // search where the word begins
       n = sscanf(line,  "%16s %128s %128s",
          iface, dst, gateway);
 
@@ -189,7 +210,7 @@ CStdString CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
          continue;
 
       if (strcmp(iface, m_interfaceName.c_str()) == 0 &&
-          strcmp(dst, "00000000") == 0 && 
+          strcmp(dst, "00000000") == 0 &&
           strcmp(gateway, "00000000") != 0)
       {
          unsigned char gatewayAddr[4];
@@ -197,27 +218,27 @@ CStdString CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
          if (len == 4)
          {
             struct in_addr in;
-            in.s_addr = (gatewayAddr[0] << 24) | (gatewayAddr[1] << 16) | 
+            in.s_addr = (gatewayAddr[0] << 24) | (gatewayAddr[1] << 16) |
                         (gatewayAddr[2] << 8) | (gatewayAddr[3]);
-            result = inet_ntoa(in);                    
+            result = inet_ntoa(in);
             break;
          }
       }
    }
-  
+
    if (line)
      free(line);
- 
+
    fclose(fp);
 #endif
-   
+
    return result;
 }
 
 CNetworkLinux::CNetworkLinux(void)
 {
    m_sock = socket(AF_INET, SOCK_DGRAM, 0);
-   queryInterfaceList();   
+   queryInterfaceList();
 }
 
 CNetworkLinux::~CNetworkLinux(void)
@@ -249,17 +270,17 @@ void CNetworkLinux::queryInterfaceList()
    struct ifaddrs *list;
    if (getifaddrs(&list) < 0)
      return;
-   
-   struct ifaddrs *cur;        
+
+   struct ifaddrs *cur;
    for(cur = list; cur != NULL; cur = cur->ifa_next)
    {
      if(cur->ifa_addr->sa_family != AF_INET)
        continue;
-     
+
      // Add the interface.
      m_interfaces.push_back(new CNetworkInterfaceLinux(this, cur->ifa_name));
    }
-   
+
    freeifaddrs(list);
 
 #else
@@ -269,7 +290,7 @@ void CNetworkLinux::queryInterfaceList()
      // TBD: Error
      return;
    }
-   
+
    char* line = NULL;
    size_t linel = 0;
    int n;
@@ -280,30 +301,30 @@ void CNetworkLinux::queryInterfaceList()
       // skip first two lines
       if (linenum++ < 2)
          continue;
-   	
-   	// search where the word begins	
+
+    // search where the word begins
       p = line;
       while (isspace(*p))
-   		++p;
-      
+      ++p;
+
       // read word until :
       n = strcspn(p, ": \t");
       p[n] = 0;
-   
-      // make sure the device has ethernet encapsulation	
+
+      // make sure the device has ethernet encapsulation
       struct ifreq ifr;
       strcpy(ifr.ifr_name, p);
       if (ioctl(GetSocket(), SIOCGIFHWADDR, &ifr) >= 0 && ifr.ifr_hwaddr.sa_family == ARPHRD_ETHER)
       {
-         // save the result   	   
+         // save the result
          CStdString interfaceName = p;
-   	 m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaceName));
+     m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaceName));
       }
    }
-  
+
    if (line)
      free(line);
- 
+
    fclose(fp);
 #endif
 }
@@ -313,13 +334,13 @@ std::vector<CStdString> CNetworkLinux::GetNameServers(void)
    std::vector<CStdString> result;
 #ifndef __APPLE__
    res_init();
-   
+
    for (int i = 0; i < _res.nscount; i ++)
    {
       CStdString ns = inet_ntoa(((struct sockaddr_in *)&_res.nsaddr_list[0])->sin_addr);
       result.push_back(ns);
    }
-#endif 
+#endif
    return result;
 }
 
@@ -346,22 +367,22 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
 
    if (!IsWireless())
       return result;
-   
+
 #ifndef __APPLE__
-   // Query the wireless extentsions version number. It will help us when we 
-   // parse the resulting events   
+   // Query the wireless extentsions version number. It will help us when we
+   // parse the resulting events
    struct iwreq iwr;
    char rangebuffer[sizeof(iw_range) * 2];    /* Large enough */
    struct iw_range*  range = (struct iw_range*) rangebuffer;
-      
+
    memset(rangebuffer, 0, sizeof(rangebuffer));
    iwr.u.data.pointer = (caddr_t) rangebuffer;
    iwr.u.data.length = sizeof(rangebuffer);
    iwr.u.data.flags = 0;
-   strncpy(iwr.ifr_name, GetName().c_str(), IFNAMSIZ);   
+   strncpy(iwr.ifr_name, GetName().c_str(), IFNAMSIZ);
    if (ioctl(m_network->GetSocket(), SIOCGIWRANGE, &iwr) < 0)
    {
-      CLog::Log(LOGWARNING, "%-8.16s  Driver has no Wireless Extension version information.", 
+      CLog::Log(LOGWARNING, "%-8.16s  Driver has no Wireless Extension version information.",
          GetName().c_str());
       return result;
    }
@@ -369,12 +390,12 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
    // Scan for wireless access points
    memset(&iwr, 0, sizeof(iwr));
    strncpy(iwr.ifr_name, GetName().c_str(), IFNAMSIZ);
-   if (ioctl(m_network->GetSocket(), SIOCSIWSCAN, &iwr) < 0) 
+   if (ioctl(m_network->GetSocket(), SIOCSIWSCAN, &iwr) < 0)
    {
       CLog::Log(LOGWARNING, "Cannot initiate wireless scan: ioctl[SIOCSIWSCAN]: %s", strerror(errno));
       return result;
    }
-   
+
    // Get the results of the scanning. Three scenarios:
    //    1. There's not enough room in the result buffer (E2BIG)
    //    2. The scanning is not complete (EAGAIN) and we need to try again. We cap this with 15 seconds.
@@ -384,15 +405,15 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
    int res_buf_len = IW_SCAN_MAX_DATA;
    while (duration < 15000)
    {
-      if (!res_buf)      
+      if (!res_buf)
          res_buf = (unsigned char*) malloc(res_buf_len);
-         
+
       if (res_buf == NULL)
       {
          CLog::Log(LOGWARNING, "Cannot alloc memory for wireless scanning");
          return result;
       }
-      
+
       strncpy(iwr.ifr_name, GetName().c_str(), IFNAMSIZ);
       iwr.u.data.pointer = res_buf;
       iwr.u.data.length = res_buf_len;
@@ -401,7 +422,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
       if (x == 0)
          break;
 
-      if (errno == E2BIG && res_buf_len < 100000) 
+      if (errno == E2BIG && res_buf_len < 100000)
       {
          free(res_buf);
          res_buf = NULL;
@@ -414,15 +435,15 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
          usleep(250000); // sleep for 250ms
          duration += 250;
       }
-      else 
+      else
       {
          CLog::Log(LOGWARNING, "Cannot get wireless scan results: ioctl[SIOCGIWSCAN]: %s", strerror(errno));
          free(res_buf);
          return result;
       }
    }
-   
-   size_t len = iwr.u.data.length;    
+
+   size_t len = iwr.u.data.length;
    char* pos = (char *) res_buf;
    char* end = (char *) res_buf + len;
    char* custom;
@@ -433,33 +454,33 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
    EncMode encryption = ENC_NONE;
    bool first = true;
 
-   while (pos + IW_EV_LCP_LEN <= end) 
+   while (pos + IW_EV_LCP_LEN <= end)
    {
       /* Event data may be unaligned, so make a local, aligned copy
        * before processing. */
       memcpy(&iwe_buf, pos, IW_EV_LCP_LEN);
       if (iwe->len <= IW_EV_LCP_LEN)
          break;
-     
+
       custom = pos + IW_EV_POINT_LEN;
-      if (range->we_version_compiled > 18 && 
+      if (range->we_version_compiled > 18 &&
           (iwe->cmd == SIOCGIWESSID ||
            iwe->cmd == SIOCGIWENCODE ||
            iwe->cmd == IWEVGENIE ||
-           iwe->cmd == IWEVCUSTOM)) 
+           iwe->cmd == IWEVCUSTOM))
       {
          /* Wireless extentsions v19 removed the pointer from struct iw_point */
          char *dpos = (char *) &iwe_buf.u.data.length;
          int dlen = dpos - (char *) &iwe_buf;
          memcpy(dpos, pos + IW_EV_LCP_LEN, sizeof(struct iw_event) - dlen);
-      } 
-      else 
+      }
+      else
       {
          memcpy(&iwe_buf, pos, sizeof(struct iw_event));
          custom += IW_EV_POINT_OFF;
       }
-      
-      switch (iwe->cmd) 
+
+      switch (iwe->cmd)
       {
          case SIOCGIWAP:
             if (first)
@@ -468,7 +489,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
                result.push_back(NetworkAccessPoint(essId, quality, encryption));
                encryption = ENC_NONE;
             break;
-           
+
          case SIOCGIWESSID:
          {
             char essid[IW_ESSID_MAX_SIZE+1];
@@ -480,16 +501,16 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
             }
             break;
          }
-         
+
          case IWEVQUAL:
              quality = iwe->u.qual.qual;
              break;
-             
+
          case SIOCGIWENCODE:
              if (!(iwe->u.data.flags & IW_ENCODE_DISABLED) && encryption == ENC_NONE)
                 encryption = ENC_WEP;
              break;
-             
+
          case IWEVGENIE:
          {
             int offset = 0;
@@ -504,25 +525,25 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
                   case 0x30: /* WPA2 */
                      encryption = ENC_WPA2;
                }
-               
+
                offset += custom[offset+1] + 2;
             }
-         }         
+         }
       }
-      
+
       pos += iwe->len;
    }
-   
+
    if (!first)
       result.push_back(NetworkAccessPoint(essId, quality, encryption));
-      
+
    free(res_buf);
    res_buf = NULL;
 #endif
-   
-   return result;  
+
+   return result;
 }
-  
+
 void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
 {
    ipAddress = "0.0.0.0";
@@ -552,7 +573,7 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdStri
 
       s = line;
       s.TrimLeft(" \t").TrimRight(" \n");
-   
+
       // skip comments
       if (s.length() == 0 || s.GetAt(0) == '#')
          continue;
@@ -583,7 +604,7 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdStri
          else if (tokens[0].Equals("netmask")) networkMask = tokens[1];
          else if (tokens[0].Equals("gateway")) defaultGateway = tokens[1];
          else if (tokens[0].Equals("wireless-essid")) essId = tokens[1];
-         else if (tokens[0].Equals("wireless-key")) 
+         else if (tokens[0].Equals("wireless-key"))
          {
             key = tokens[1];
             if (key.length() > 2 && key[0] == 's' && key[1] == ':')
@@ -604,7 +625,7 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdStri
    // Fallback in case wpa-proto is not set
    if (key != "" && encryptionMode == ENC_NONE)
       encryptionMode = ENC_WPA;
-      
+
    fclose(fp);
 #endif
 }
@@ -625,7 +646,7 @@ void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdStri
       // TODO
       return;
    }
-   
+
    char* line = NULL;
    size_t linel = 0;
    CStdString s;
@@ -638,10 +659,10 @@ void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdStri
 
       s = line;
       s.TrimLeft(" \t").TrimRight(" \n");
-   
+
       // skip comments
       if (!foundInterface && (s.length() == 0 || s.GetAt(0) == '#'))
-      {       
+      {
         fprintf(fw, "%s", line);
         continue;
       }
@@ -660,11 +681,11 @@ void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdStri
           tokens[1].Equals(GetName()) &&
           tokens[2].Equals("inet"))
       {
-         foundInterface = true;         
+         foundInterface = true;
          WriteSettings(fw, assignment, ipAddress, networkMask, defaultGateway, essId, key, encryptionMode);
          dataWritten = true;
       }
-      else if (foundInterface && 
+      else if (foundInterface &&
                tokens.size() == 4 &&
                tokens[0].Equals("iface"))
       {
@@ -676,26 +697,26 @@ void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdStri
         fprintf(fw, "%s", line);
       }
    }
-  
+
    if (line)
      free(line);
- 
+
    if (!dataWritten && assignment != NETWORK_DISABLED)
    {
       fprintf(fw, "\n");
-      WriteSettings(fw, assignment, ipAddress, networkMask, defaultGateway, essId, key, encryptionMode);      
+      WriteSettings(fw, assignment, ipAddress, networkMask, defaultGateway, essId, key, encryptionMode);
    }
-   
+
    fclose(fr);
    fclose(fw);
-   
+
    // Rename the file
    if (rename("/tmp/interfaces.temp", "/etc/network/interfaces") < 0)
    {
       // TODO
       return;
    }
-   
+
    CLog::Log(LOGINFO, "Stopping interface %s", GetName().c_str());
    std::string cmd = "/sbin/ifdown " + GetName();
    system(cmd.c_str());
@@ -708,7 +729,7 @@ void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdStri
    }
 #endif
 }
-     
+
 void CNetworkInterfaceLinux::WriteSettings(FILE* fw, NetworkAssignment assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
 {
    if (assignment == NETWORK_DHCP)
@@ -722,7 +743,7 @@ void CNetworkInterfaceLinux::WriteSettings(FILE* fw, NetworkAssignment assignmen
       fprintf(fw, "  netmask %s\n", networkMask.c_str());
       fprintf(fw, "  gateway %s\n", defaultGateway.c_str());
    }
-   
+
    if (assignment != NETWORK_DISABLED && IsWireless())
    {
       if (encryptionMode == ENC_NONE)
@@ -738,13 +759,13 @@ void CNetworkInterfaceLinux::WriteSettings(FILE* fw, NetworkAssignment assignmen
       {
          fprintf(fw, "  wpa-ssid %s\n", essId.c_str());
          fprintf(fw, "  wpa-psk %s\n", key.c_str());
-         fprintf(fw, "  wpa-proto %s\n", encryptionMode == ENC_WPA ? "WPA" : "WPA2");               
+         fprintf(fw, "  wpa-proto %s\n", encryptionMode == ENC_WPA ? "WPA" : "WPA2");
       }
    }
 
-   if (assignment != NETWORK_DISABLED)            
+   if (assignment != NETWORK_DISABLED)
       fprintf(fw, "auto %s\n\n", GetName().c_str());
-}     
+}
 
 /*
 int main(void)
@@ -757,7 +778,7 @@ int main(void)
   printf("%s en=%d run=%d wi=%d mac=%s ip=%s nm=%s gw=%s ess=%s\n", i1->GetName().c_str(), i1->IsEnabled(), i1->IsConnected(), i1->IsWireless(), i1->GetMacAddress().c_str(), i1->GetCurrentIPAddress().c_str(), i1->GetCurrentNetmask().c_str(), i1->GetCurrentDefaultGateway().c_str(), i1->GetCurrentWirelessEssId().c_str());
   i1 = ifaces[1];
   printf("%s en=%d run=%d wi=%d mac=%s ip=%s nm=%s gw=%s ess=%s\n", i1->GetName().c_str(), i1->IsEnabled(), i1->IsConnected(), i1->IsWireless(), i1->GetMacAddress().c_str(), i1->GetCurrentIPAddress().c_str(), i1->GetCurrentNetmask().c_str(), i1->GetCurrentDefaultGateway().c_str(), i1->GetCurrentWirelessEssId().c_str());
-   
+
   return 0;
 }
 */

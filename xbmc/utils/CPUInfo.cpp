@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "CPUInfo.h"
 #include <string>
@@ -33,9 +54,9 @@ CCPUInfo::CCPUInfo(void)
 {
 #ifdef __APPLE__
   size_t len = 4;
-  
+
   // The number of cores.
-  if (sysctlbyname("hw.activecpu", &m_cpuCount, &len, NULL, 0) == -1) 
+  if (sysctlbyname("hw.activecpu", &m_cpuCount, &len, NULL, 0) == -1)
       m_cpuCount = 1;
 
   // Get CPU frequency, scaled to MHz.
@@ -45,7 +66,7 @@ CCPUInfo::CCPUInfo(void)
     m_cpuFreq = 0.0;
   else
     m_cpuFreq = hz / 1000000.0;
-  
+
   // The model.
   char buffer[512];
   len = 512;
@@ -59,7 +80,7 @@ CCPUInfo::CCPUInfo(void)
     core.m_id = i;
     m_cores[core.m_id] = core;
   }
-  
+
 #else
   m_fProcStat = fopen("/proc/stat", "r");
   m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THRM/temperature", "r");
@@ -88,7 +109,7 @@ CCPUInfo::CCPUInfo(void)
           core.m_id = atoi(needle+2);
           nCurrId = core.m_id;
           m_cores[core.m_id] = core;
-        }   
+        }
         m_cpuCount++;
       }
       else if (strncmp(buffer, "cpu MHz", strlen("cpu MHz"))==0)
@@ -131,7 +152,7 @@ CCPUInfo::CCPUInfo(void)
     m_cpuModel = "Unknown";
   }
 
-  readProcStat(m_userTicks, m_niceTicks, m_systemTicks, m_idleTicks);  
+  readProcStat(m_userTicks, m_niceTicks, m_systemTicks, m_idleTicks);
 #endif
 }
 
@@ -139,11 +160,11 @@ CCPUInfo::~CCPUInfo()
 {
   if (m_fProcStat != NULL)
     fclose(m_fProcStat);
-    
+
   if (m_fProcTemperature != NULL)
     fclose(m_fProcTemperature);
 }
-  
+
 int CCPUInfo::getUsedPercentage()
 {
   if (m_lastReadTime + MINIMUM_TIME_BETWEEN_READS > time(NULL))
@@ -155,26 +176,26 @@ int CCPUInfo::getUsedPercentage()
   unsigned long long niceTicks;
   unsigned long long systemTicks;
   unsigned long long idleTicks;
-       
+
   if (!readProcStat(userTicks, niceTicks, systemTicks, idleTicks))
   {
     return 0;
   }
-  
+
   userTicks -= m_userTicks;
   niceTicks -= m_niceTicks;
   systemTicks -= m_systemTicks;
   idleTicks -= m_idleTicks;
-  
+
   int result = (int) ((userTicks + niceTicks + systemTicks) * 100 / (userTicks + niceTicks + systemTicks + idleTicks));
-  
+
   m_userTicks += userTicks;
   m_niceTicks += niceTicks;
   m_systemTicks += systemTicks;
   m_idleTicks += idleTicks;
-  
+
   m_lastUsedPercentage = result;
-  
+
   return result;
 }
 
@@ -182,13 +203,13 @@ CTemperature CCPUInfo::getTemperature()
 {
   int value;
   char scale;
- 
+
   if (m_fProcTemperature == NULL)
     return CTemperature();
 
   rewind(m_fProcTemperature);
   fflush(m_fProcTemperature);
-  
+
   char buf[256];
   if (!fgets(buf, sizeof(buf), m_fProcTemperature))
     return CTemperature();
@@ -223,19 +244,19 @@ const CoreInfo &CCPUInfo::GetCoreInfo(int nCoreId)
   return dummy;
 }
 
-bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice, 
+bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
     unsigned long long& system, unsigned long long& idle)
 {
   if (m_fProcStat == NULL)
     return false;
-    
+
   rewind(m_fProcStat);
   fflush(m_fProcStat);
-  
+
   char buf[256];
   if (!fgets(buf, sizeof(buf), m_fProcStat))
     return false;
-    
+
   int num = sscanf(buf, "cpu %llu %llu %llu %llu %*s\n", &user, &nice, &system, &idle);
   while (fgets(buf, sizeof(buf), m_fProcStat) && num >= 4)
   {
@@ -249,7 +270,7 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
       coreNice -= iter->second.m_nice;
       coreSystem -= iter->second.m_system;
       coreIdle -= iter->second.m_idle;
-      iter->second.m_fPct = ((double)(coreUser + coreNice + coreSystem) * 100.0) / (double)(coreUser + coreNice + coreSystem + coreIdle);      
+      iter->second.m_fPct = ((double)(coreUser + coreNice + coreSystem) * 100.0) / (double)(coreUser + coreNice + coreSystem + coreIdle);
       iter->second.m_user += coreUser;
       iter->second.m_nice += coreNice;
       iter->second.m_system += coreSystem;
@@ -258,7 +279,7 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
     }
   }
 
-  m_lastReadTime = time(NULL);  
+  m_lastReadTime = time(NULL);
   return true;
 }
 
@@ -273,7 +294,7 @@ CStdString CCPUInfo::GetCoresUsageString() const
     strCores+=strCore;
     iter++;
   }
-  return strCores; 
+  return strCores;
 }
 
 CCPUInfo g_cpuInfo;

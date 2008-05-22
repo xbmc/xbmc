@@ -1,3 +1,23 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include <SDL/SDL.h>
 
@@ -7,15 +27,15 @@
 int CXHandle::m_objectTracker[10] = {0};
 
 CXHandle::CXHandle()
-{ 
+{
   Init();
   m_objectTracker[m_type]++;
 }
 
 CXHandle::CXHandle(HandleType nType)
-{ 
+{
   Init();
-  m_type=nType; 
+  m_type=nType;
   m_objectTracker[m_type]++;
 }
 
@@ -41,14 +61,14 @@ CXHandle::CXHandle(const CXHandle &src)
   m_bManualEvent = src.m_bManualEvent;
   m_tmCreation = time(NULL);
   m_FindFileResults = src.m_FindFileResults;
-  m_nFindFileIterator = src.m_nFindFileIterator; 
+  m_nFindFileIterator = src.m_nFindFileIterator;
   m_FindFileDir = src.m_FindFileDir;
   m_iOffset = src.m_iOffset;
   m_bCDROM = src.m_bCDROM;
   m_objectTracker[m_type]++;
 }
 
-CXHandle::~CXHandle() 
+CXHandle::~CXHandle()
 {
 
   m_objectTracker[m_type]--;
@@ -74,7 +94,7 @@ CXHandle::~CXHandle()
   if (m_internalLock) {
     SDL_DestroyMutex(m_internalLock);
   }
-  
+
   if (m_hCond) {
     SDL_DestroyCond(m_hCond);
   }
@@ -90,12 +110,12 @@ CXHandle::~CXHandle()
 
 }
 
-void CXHandle::Init() 
+void CXHandle::Init()
 {
-  fd=0; 
-  m_hSem=NULL; 
-  m_hMutex=NULL; 
-  m_hThread=NULL; 
+  fd=0;
+  m_hSem=NULL;
+  m_hMutex=NULL;
+  m_hThread=NULL;
   m_hCond=NULL;
   m_type = HND_NULL;
   RecursionCount=0;
@@ -136,7 +156,7 @@ bool CloseHandle(HANDLE hObject) {
     bDelete = true;
   SDL_UnlockMutex(hObject->m_internalLock);
 
-  if (bDelete) 
+  if (bDelete)
     delete hObject;
 
   return true;

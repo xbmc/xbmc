@@ -1,6 +1,27 @@
 #ifndef __X_HANDLE__
 #define __X_HANDLE__
 
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #ifndef _WIN32
 
 #include "../../guilib/StdString.h"
@@ -23,14 +44,14 @@ public:
   void Init();
   inline HandleType GetType() { return m_type; }
   void ChangeType(HandleType newType);
-  
+
   SDL_sem    *m_hSem;
   SDL_Thread  *m_hThread;
   SDL_cond    *m_hCond;
-  
+
 #ifdef __APPLE__
   // Save the Mach thrad port, I don't think it can be obtained from
-  // the pthread_t. We'll use it for querying timer information. 
+  // the pthread_t. We'll use it for querying timer information.
   //
   mach_port_t m_machThreadPort;
 #endif
@@ -43,13 +64,13 @@ public:
   bool     m_bManualEvent;
   time_t    m_tmCreation;
   CStdStringArray  m_FindFileResults;
-  int              m_nFindFileIterator;  
+  int              m_nFindFileIterator;
   CStdString       m_FindFileDir;
   off64_t          m_iOffset;
   bool             m_bCDROM;
   bool             m_bEventSet;
   int              m_nRefCount;
-  SDL_mutex *m_internalLock; 
+  SDL_mutex *m_internalLock;
 
   static void DumpObjectTracker();
 

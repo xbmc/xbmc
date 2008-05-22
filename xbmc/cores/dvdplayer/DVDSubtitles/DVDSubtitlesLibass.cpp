@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "DVDSubtitlesLibass.h"
 #include "Util.h"
@@ -7,7 +28,7 @@ using namespace std;
 
 CDVDSubtitlesLibass::CDVDSubtitlesLibass()
 {
-  
+
   m_track = 0;
   hasHeader = false;
   m_references = 1;
@@ -17,7 +38,7 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
     CLog::Log(LOGERROR, "CDVDSubtitlesLibass: Failed to load libass library");
     return;
   }
-  
+
   //Setting a Default Font
   string strFont = "Arial.ttf";
   string strPath = "";
@@ -38,7 +59,7 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
 
   m_dll.ass_set_extract_fonts(m_library, 0);
   m_dll.ass_set_style_overrides(m_library, NULL);
-  
+
   CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Initializing ASS Renderer");
 
   m_renderer = m_dll.ass_renderer_init(m_library);
@@ -71,8 +92,8 @@ bool CDVDSubtitlesLibass::DecodeHeader(char* data, int size)
 
   if(!m_track)
   {
-    CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Creating new ASS track");	 
-    m_track = m_dll.ass_new_track(m_library) ; 
+    CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Creating new ASS track");
+    m_track = m_dll.ass_new_track(m_library) ;
   }
 
   m_dll.ass_process_codec_private(m_track, data, size);
@@ -82,7 +103,7 @@ bool CDVDSubtitlesLibass::DecodeHeader(char* data, int size)
 
 bool CDVDSubtitlesLibass::DecodeDemuxPkt(char* data, int size, double start, double duration)
 {
-  if(!hasHeader) 
+  if(!hasHeader)
   {
     CLog::Log(LOGERROR, "CDVDSubtitlesLibass: No SSA header found.");
     return false;
@@ -101,12 +122,12 @@ bool CDVDSubtitlesLibass::ReadFile(const string& strFile)
   }
 
   //Fixing up the pathname.
-  string fileName =  strFile; 
+  string fileName =  strFile;
   fileName = _P(fileName);
 #ifdef _LINUX
   fileName = PTH_IC(fileName);
 #endif
-  
+
   CLog::Log(LOGINFO, "SSA Parser: Creating m_track from SSA file:  %s", fileName.c_str());
 
   m_track = m_dll.ass_read_file(m_library, (char* )fileName.c_str(), 0);
@@ -122,8 +143,8 @@ long CDVDSubtitlesLibass::Acquire()
 
 long CDVDSubtitlesLibass::Release()
 {
-  long count = InterlockedDecrement(&m_references); 
-  if (count == 0) 
+  long count = InterlockedDecrement(&m_references);
+  if (count == 0)
     delete this;
 
   return count;

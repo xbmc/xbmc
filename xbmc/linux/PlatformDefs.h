@@ -1,6 +1,27 @@
 #ifndef __PLATFORM_DEFS_H__
 #define __PLATFORM_DEFS_H__
 
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #ifdef _LINUX
 
 #ifndef _LARGEFILE64_SOURCE
@@ -47,27 +68,27 @@
 #define INSTALL_PATH    "/usr/share/xbmc"
 #endif
 
-#define CONST		const
-#define FALSE		0
-#define TRUE		1
+#define CONST   const
+#define FALSE   0
+#define TRUE    1
 
 #define _fdopen fdopen
 #define _vsnprintf vsnprintf
-#define _stricmp 	strcasecmp
-#define stricmp 	strcasecmp
-#define strcmpi	strcasecmp
+#define _stricmp  strcasecmp
+#define stricmp   strcasecmp
+#define strcmpi strcasecmp
 #define strnicmp  strncasecmp
 #define _atoi64(x) atoll(x)
 #define CopyMemory(dst,src,size) memmove(dst, src, size)
 #define ZeroMemory(dst,size) bzero(dst, size)
 
-#define VOID		void
-#define byte		unsigned char
-#define __int8 		char
-#define __int16		short
-#define __int32		int
-#define __int64		long long
-#define __uint64	unsigned long long
+#define VOID    void
+#define byte    unsigned char
+#define __int8    char
+#define __int16   short
+#define __int32   int
+#define __int64   long long
+#define __uint64  unsigned long long
 
 #ifdef __x86_64__
 #define __stdcall
@@ -92,7 +113,7 @@
 #define _declspec(X)
 #define __declspec(X)
 
-#define __try	try
+#define __try try
 #define EXCEPTION_EXECUTE_HANDLER ...
 //NOTE: dont try to define __except because it breaks g++ (already uses it).
 
@@ -103,62 +124,62 @@ typedef void* HINSTANCE;
 typedef void* HMODULE;
 
 #ifdef __APPLE__
-typedef int64_t		off64_t;
+typedef int64_t   off64_t;
 typedef off_t     __off_t;
 typedef off64_t   __off64_t;
 #include <sched.h>
 #endif
 
-typedef unsigned int 	DWORD;
-typedef unsigned short 	WORD;
-typedef unsigned char 	BYTE;
-typedef char				CHAR;
-typedef unsigned char	UCHAR;
-typedef wchar_t			WCHAR;
-typedef int 				BOOL;
-typedef BYTE 				BOOLEAN;
-typedef short				SHORT;
+typedef unsigned int  DWORD;
+typedef unsigned short  WORD;
+typedef unsigned char   BYTE;
+typedef char        CHAR;
+typedef unsigned char UCHAR;
+typedef wchar_t     WCHAR;
+typedef int         BOOL;
+typedef BYTE        BOOLEAN;
+typedef short       SHORT;
 typedef unsigned short  USHORT;
-typedef int 				INT;
-typedef unsigned int 	UINT;
-typedef unsigned int 	INT32;
-typedef unsigned int 	UINT32;
-typedef long long 		INT64;
-typedef unsigned long long		UINT64;
-typedef long				LONG;
-typedef long long			LONGLONG;
-typedef unsigned long 	ULONG;
-typedef float 				FLOAT;
-typedef size_t				SIZE_T;
-typedef void* 				PVOID;
-typedef void* 				LPVOID;
-//typedef PVOID 				HANDLE;
+typedef int         INT;
+typedef unsigned int  UINT;
+typedef unsigned int  INT32;
+typedef unsigned int  UINT32;
+typedef long long     INT64;
+typedef unsigned long long    UINT64;
+typedef long        LONG;
+typedef long long     LONGLONG;
+typedef unsigned long   ULONG;
+typedef float         FLOAT;
+typedef size_t        SIZE_T;
+typedef void*         PVOID;
+typedef void*         LPVOID;
+//typedef PVOID         HANDLE;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
-typedef HANDLE				HDC;
-typedef void*				HWND;
-typedef LONG				HRESULT;
-typedef BYTE*				LPBYTE;
-typedef DWORD*				LPDWORD;
-typedef CONST CHAR*		LPCSTR;
-typedef CONST WCHAR*		LPCWSTR;
-typedef CHAR*			LPTSTR;
-typedef WCHAR     		*PWSTR,      *LPWSTR,    *NWPSTR;
-typedef CHAR           	*PSTR,       *LPSTR,     *NPSTR;
-typedef LONG				*PLONG, *LPLONG;
+typedef HANDLE        HDC;
+typedef void*       HWND;
+typedef LONG        HRESULT;
+typedef BYTE*       LPBYTE;
+typedef DWORD*        LPDWORD;
+typedef CONST CHAR*   LPCSTR;
+typedef CONST WCHAR*    LPCWSTR;
+typedef CHAR*     LPTSTR;
+typedef WCHAR         *PWSTR,      *LPWSTR,    *NWPSTR;
+typedef CHAR            *PSTR,       *LPSTR,     *NPSTR;
+typedef LONG        *PLONG, *LPLONG;
 #ifdef UNICODE
-typedef LPCWSTR 			LPCTSTR; 
+typedef LPCWSTR       LPCTSTR;
 #else
-typedef LPCSTR 			LPCTSTR;
+typedef LPCSTR      LPCTSTR;
 #endif
 typedef unsigned __int64 ULONGLONG;
-typedef long 				LONG_PTR;
-typedef unsigned long 	ULONG_PTR;
-typedef ULONG_PTR 		DWORD_PTR;
-typedef __int64		 	__time64_t;
+typedef long        LONG_PTR;
+typedef unsigned long   ULONG_PTR;
+typedef ULONG_PTR     DWORD_PTR;
+typedef __int64     __time64_t;
 typedef intptr_t (*FARPROC)(void);
 
-#define MAXWORD		0xffff
-#define MAXDWORD	0xffffffff
+#define MAXWORD   0xffff
+#define MAXDWORD  0xffffffff
 
 typedef DWORD LCID;
 typedef WORD* LPWORD;
@@ -167,49 +188,49 @@ typedef CHAR* LPCHAR;
 typedef CHAR* PCHAR;
 typedef const void* LPCVOID;
 
-typedef union _LARGE_INTEGER 
-{  
-	struct {    
-		DWORD LowPart;    
-		int32_t HighPart;  
-	} u;  
-	LONGLONG QuadPart;
+typedef union _LARGE_INTEGER
+{
+  struct {
+    DWORD LowPart;
+    int32_t HighPart;
+  } u;
+  LONGLONG QuadPart;
 } LARGE_INTEGER, *PLARGE_INTEGER;
 
- typedef union _ULARGE_INTEGER { 
+ typedef union _ULARGE_INTEGER {
   struct {
-      DWORD LowPart; 
-      DWORD HighPart; 
+      DWORD LowPart;
+      DWORD HighPart;
   } u;
   ULONGLONG QuadPart;
 } ULARGE_INTEGER, *PULARGE_INTEGER;
 
 #define MAKELONG(low,high)     ((LONG)(((WORD)((DWORD_PTR)(low) & 0xFFFF)) | ((DWORD)((WORD)((DWORD_PTR)(high) & 0xFFFF))) << 16))
-LONGLONG Int32x32To64(LONG Multiplier, LONG Multiplicand); 
+LONGLONG Int32x32To64(LONG Multiplier, LONG Multiplicand);
 
 void OutputDebugString(LPCTSTR lpOuputString);
 
 // Date / Time
 
-typedef struct _SYSTEMTIME 
-{  
-	WORD wYear;  
-	WORD wMonth;  
-	WORD wDayOfWeek;  
-	WORD wDay;  
-	WORD wHour;  
-	WORD wMinute;  
-	WORD wSecond;  
-	WORD wMilliseconds;
+typedef struct _SYSTEMTIME
+{
+  WORD wYear;
+  WORD wMonth;
+  WORD wDayOfWeek;
+  WORD wDay;
+  WORD wHour;
+  WORD wMinute;
+  WORD wSecond;
+  WORD wMilliseconds;
 } SYSTEMTIME, *PSYSTEMTIME, *LPSYSTEMTIME;
 
-typedef struct _TIME_ZONE_INFORMATION {  
-  LONG Bias;  
-  WCHAR StandardName[32];  
-  SYSTEMTIME StandardDate;  
-  LONG StandardBias;  
-  WCHAR DaylightName[32];  
-  SYSTEMTIME DaylightDate;  
+typedef struct _TIME_ZONE_INFORMATION {
+  LONG Bias;
+  WCHAR StandardName[32];
+  SYSTEMTIME StandardDate;
+  LONG StandardBias;
+  WCHAR DaylightName[32];
+  SYSTEMTIME DaylightDate;
   LONG DaylightBias;
 } TIME_ZONE_INFORMATION, *PTIME_ZONE_INFORMATION, *LPTIME_ZONE_INFORMATION;
 
@@ -237,7 +258,7 @@ typedef struct _TIME_ZONE_INFORMATION {
 #define IN_ADDR struct in_addr
 #define SOCKET_ERROR (-1)
 #define INVALID_SOCKET (~0)
-#define closesocket(s) 	close(s)
+#define closesocket(s)  close(s)
 #define ioctlsocket(s, f, v) ioctl(s, f, v)
 #define WSAGetLastError() (errno)
 #define WSASetLastError(e) (errno = e)
@@ -268,13 +289,13 @@ typedef int (*LPTHREAD_START_ROUTINE)(void *);
 #define _off_t off_t
 
 struct __stat64 {
-  dev_t 			 st_dev;
-  ino_t 			  st_ino;
-  mode_t 		  st_mode;
+  dev_t        st_dev;
+  ino_t         st_ino;
+  mode_t      st_mode;
   nlink_t        st_nlink;
   uid_t          st_uid;
   gid_t          st_gid;
-  dev_t	 		  st_rdev;
+  dev_t       st_rdev;
   __int64 st_size;
   __time64_t _st_atime;
   __time64_t _st_mtime;
@@ -295,10 +316,10 @@ struct _stati64 {
   time_t _st_ctime;
 };
 
-typedef struct _FILETIME 
-{  
-	DWORD dwLowDateTime;  
-	DWORD dwHighDateTime;
+typedef struct _FILETIME
+{
+  DWORD dwLowDateTime;
+  DWORD dwHighDateTime;
 } FILETIME, *PFILETIME, *LPFILETIME;
 
 typedef struct _WIN32_FIND_DATA
@@ -319,10 +340,10 @@ typedef struct _WIN32_FIND_DATA
 
 #define FILE_ATTRIBUTE_DIRECTORY           0x00000010
 
-typedef struct _SECURITY_ATTRIBUTES {  
-	DWORD nLength;  
-	LPVOID lpSecurityDescriptor;  
-	BOOL bInheritHandle;
+typedef struct _SECURITY_ATTRIBUTES {
+  DWORD nLength;
+  LPVOID lpSecurityDescriptor;
+  BOOL bInheritHandle;
 } SECURITY_ATTRIBUTES, *PSECURITY_ATTRIBUTES, *LPSECURITY_ATTRIBUTES;
 
 #define FILE_BEGIN              0
@@ -336,54 +357,54 @@ typedef struct _SECURITY_ATTRIBUTES {
 #define _stat stat
 
 // Memory
-typedef struct _MEMORYSTATUS 
-{  
-	DWORD dwLength;  
-	DWORD dwMemoryLoad;
-	
+typedef struct _MEMORYSTATUS
+{
+  DWORD dwLength;
+  DWORD dwMemoryLoad;
+
 #ifdef __APPLE__
-	uint64_t dwTotalPhys;
-	uint64_t dwAvailPhys;
-	uint64_t dwTotalPageFile;
-	uint64_t dwAvailPageFile;
-	uint64_t dwTotalVirtual;
-	uint64_t dwAvailVirtual;
+  uint64_t dwTotalPhys;
+  uint64_t dwAvailPhys;
+  uint64_t dwTotalPageFile;
+  uint64_t dwAvailPageFile;
+  uint64_t dwTotalVirtual;
+  uint64_t dwAvailVirtual;
 #else
-	SIZE_T dwTotalPhys;  
-	SIZE_T dwAvailPhys;  
-	SIZE_T dwTotalPageFile;  
-	SIZE_T dwAvailPageFile;  
-	SIZE_T dwTotalVirtual;  
-	SIZE_T dwAvailVirtual;
+  SIZE_T dwTotalPhys;
+  SIZE_T dwAvailPhys;
+  SIZE_T dwTotalPageFile;
+  SIZE_T dwAvailPageFile;
+  SIZE_T dwTotalVirtual;
+  SIZE_T dwAvailVirtual;
 #endif
 } MEMORYSTATUS, *LPMEMORYSTATUS;
 
 // Common HRESULT values
 #ifndef NOERROR
-#define NOERROR 					(0L)
+#define NOERROR           (0L)
 #endif
-#define S_OK						(0L)
-#define E_FAIL						(0x80004005L)
-#define E_OUTOFMEMORY					(0x8007000EL)
-#define FAILED(Status)     				((HRESULT)(Status)<0)
+#define S_OK            (0L)
+#define E_FAIL            (0x80004005L)
+#define E_OUTOFMEMORY         (0x8007000EL)
+#define FAILED(Status)            ((HRESULT)(Status)<0)
 
 // Basic D3D stuff
-typedef struct _RECT { 
-  LONG left; 
-  LONG top; 
-  LONG right; 
-  LONG bottom; 
+typedef struct _RECT {
+  LONG left;
+  LONG top;
+  LONG right;
+  LONG bottom;
 } RECT, *PRECT;
 
 typedef DWORD D3DCOLOR;
 
 typedef enum _D3DFORMAT
 {
-	D3DFMT_A8R8G8B8					= 0x00000006,
-	D3DFMT_DXT1					= 0x0000000C,
-	D3DFMT_DXT2					= 0x0000000E,					
-	D3DFMT_DXT4					= 0x0000000F,
-	D3DFMT_UNKNOWN					= 0xFFFFFFFF
+  D3DFMT_A8R8G8B8         = 0x00000006,
+  D3DFMT_DXT1         = 0x0000000C,
+  D3DFMT_DXT2         = 0x0000000E,
+  D3DFMT_DXT4         = 0x0000000F,
+  D3DFMT_UNKNOWN          = 0xFFFFFFFF
 } D3DFORMAT;
 
 typedef enum D3DRESOURCETYPE
@@ -435,7 +456,7 @@ typedef struct _D3DPRESENT_PARAMETERS_
     BOOL                EnableAutoDepthStencil;
     D3DFORMAT           AutoDepthStencilFormat;
     DWORD               Flags;
-    UINT                FullScreen_RefreshRateInHz; 
+    UINT                FullScreen_RefreshRateInHz;
     UINT                FullScreen_PresentationInterval;
     //D3DSurface         *BufferSurfaces[3];
     //D3DSurface         *DepthStencilSurface;
@@ -469,9 +490,9 @@ typedef void* LPDIRECT3DTEXTURE8;
 typedef void* LPDIRECT3DDEVICE8;
 
 // Misc stuff found in the code, not really important
-#define PAGE_READONLY 	  0x02
-#define PAGE_READWRITE	  0x04
-#define MAXULONG_PTR	  ((ULONG) 0xffffffff)
+#define PAGE_READONLY     0x02
+#define PAGE_READWRITE    0x04
+#define MAXULONG_PTR    ((ULONG) 0xffffffff)
 
 // CreateFile defines
 #define FILE_FLAG_WRITE_THROUGH         0x80000000
@@ -492,18 +513,18 @@ typedef void* LPDIRECT3DDEVICE8;
 #define OPEN_ALWAYS         4
 #define TRUNCATE_EXISTING   5
 
-#define FILE_ATTRIBUTE_NORMAL 0x00000080  
-#define FILE_ATTRIBUTE_READONLY	0x00000001  
-#define FILE_ATTRIBUTE_HIDDEN	0x00000002  
-#define FILE_ATTRIBUTE_SYSTEM	0x00000004  
-#define FILE_ATTRIBUTE_DIRECTORY	0x00000010  
+#define FILE_ATTRIBUTE_NORMAL 0x00000080
+#define FILE_ATTRIBUTE_READONLY 0x00000001
+#define FILE_ATTRIBUTE_HIDDEN 0x00000002
+#define FILE_ATTRIBUTE_SYSTEM 0x00000004
+#define FILE_ATTRIBUTE_DIRECTORY  0x00000010
 
-#define FILE_READ_DATA	 ( 0x0001 )    
-#define FILE_WRITE_DATA  ( 0x0002 )    
+#define FILE_READ_DATA   ( 0x0001 )
+#define FILE_WRITE_DATA  ( 0x0002 )
 #define FILE_APPEND_DATA ( 0x0004 )
 
-#define GENERIC_READ	FILE_READ_DATA
-#define GENERIC_WRITE	FILE_WRITE_DATA
+#define GENERIC_READ  FILE_READ_DATA
+#define GENERIC_WRITE FILE_WRITE_DATA
 #define FILE_SHARE_READ                  0x00000001
 #define FILE_SHARE_WRITE                 0x00000002
 #define FILE_SHARE_DELETE                0x00000004
@@ -528,7 +549,7 @@ WORD    cbSize;
 
 #define WAVE_FORMAT_PCM 0x0001
 
-#endif 
+#endif
 
 #endif //__PLATFORM_DEFS_H__
 
