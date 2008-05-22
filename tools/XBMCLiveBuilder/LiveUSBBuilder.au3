@@ -142,9 +142,11 @@ Func writeImage($sFName, $sDrive)
 	$ExternalCmdLine = $HPUSBFORMAT_Path & " " & $sDrive & " " & $HPUSBFORMAT_SWITCHES
 	$oExec = RunWait($ExternalCmdLine, @ScriptDir, @SW_HIDE)
 	;
-	; Remove command.com from flash (not needed any more)
+	; Remove fake DOS boot files from flash (not needed any more)
 	;
-	; FileDelete($sDrive & "\command.com" )
+	FileDelete($sDrive & "\COMMAND.COM" )
+	FileDelete($sDrive & "\MSDOS.SYS" )
+	FileDelete($sDrive & "\IO.SYS" )
 
 	;
 	; Extract files from LiveXBMC image
