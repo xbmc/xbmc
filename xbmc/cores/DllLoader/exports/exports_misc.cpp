@@ -174,3 +174,17 @@ Export export_iconvx[] =
   { "libiconvlist",               -1, libiconvlist,                  NULL },
   { NULL, NULL, NULL, NULL }
 };
+
+extern "C" void* inflate();
+extern "C" void* inflateEnd();
+extern "C" void* inflateInit2_();
+extern "C" void* inflateReset();
+
+Export export_zlib[] =
+{
+  { "inflate",       -1, inflate,        NULL },
+  { "inflateEnd",    -1, inflateEnd,     NULL },
+  { "inflateInit2_", -1, inflateInit2_,  NULL },
+  { "inflateReset",  -1, inflateReset,   NULL },
+  { NULL, NULL, NULL, NULL }
+};
