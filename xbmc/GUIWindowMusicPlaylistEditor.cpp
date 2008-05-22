@@ -415,7 +415,7 @@ void CGUIWindowMusicPlaylistEditor::OnSavePlaylist()
   if (CGUIDialogKeyboard::ShowAndGetInput(name, g_localizeStrings.Get(16012), false))
   { // save playlist as an .m3u
     PLAYLIST::CPlayListM3U playlist;
-    playlist.Add(m_playlist);
+    playlist.Add(*m_playlist);
     CStdString path, strBase;
     CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "music", strBase);
     CUtil::AddFileToFolder(strBase, name + ".m3u", path);
