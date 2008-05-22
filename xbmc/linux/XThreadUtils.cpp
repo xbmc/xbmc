@@ -1,3 +1,23 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "PlatformDefs.h"
 #include "XHandle.h"
@@ -75,21 +95,21 @@ static void MakeTlsKey()
 }
 #endif
 
-static int InternalThreadFunc(void *data) 
+static int InternalThreadFunc(void *data)
 {
 #ifdef __APPLE__
   pthread_once(&keyOnce, MakeTlsKey);
   pthread_setspecific(tlsParamKey, data);
-  
+
   // Save the Mach port with the handle.
   ((InternalThreadParam* )data)->handle->m_machThreadPort = mach_thread_self();
 #else
   pParam = (InternalThreadParam *)data;
 #endif
-  
+
   int nRc = -1;
 
-  // assign termination handler  
+  // assign termination handler
   struct sigaction action;
   action.sa_handler = handler;
   sigemptyset (&action.sa_mask);
@@ -100,7 +120,7 @@ static int InternalThreadFunc(void *data)
 #ifdef __APPLE__
   void* pool = InitializeAutoReleasePool();
 #endif
-  
+
   try {
      CLog::Log(LOGDEBUG,"Running thread %lu", (unsigned long)SDL_ThreadID());
      nRc = GET_PARAM()->threadFunc(GET_PARAM()->data);
@@ -108,9 +128,9 @@ static int InternalThreadFunc(void *data)
   catch(...) {
     CLog::Log(LOGERROR,"thread 0x%x raised an exception. terminating it.", SDL_ThreadID());
   }
-  
+
 #ifdef __APPLE__
-  	DestroyAutoReleasePool(pool);
+    DestroyAutoReleasePool(pool);
 #endif
 
   if (OwningCriticalSection(g_graphicsContext))
@@ -133,7 +153,7 @@ HANDLE WINAPI CreateThread(
         DWORD dwCreationFlags,
           LPDWORD lpThreadId
     ) {
-      
+
         // a thread handle would actually contain an event
         // the event would mark if the thread is running or not. it will be used in the Wait functions.
   // DO NOT use SDL_WaitThread for waiting. it will delete the thread object.
@@ -143,13 +163,13 @@ HANDLE WINAPI CreateThread(
   pParam->threadFunc = lpStartAddress;
   pParam->data = lpParameter;
   pParam->handle = h;
-  
+
   h->m_nRefCount++;
   h->m_hThread = SDL_CreateThread(InternalThreadFunc, (void*)pParam);
   if (lpThreadId)
     *lpThreadId = SDL_GetThreadID(h->m_hThread);
   return h;
-  
+
 }
 
 
@@ -161,18 +181,18 @@ HANDLE WINAPI GetCurrentThread(void) {
   return (HANDLE)-1; // -1 a special value - pseudo handle
 }
 
-HANDLE _beginthreadex( 
+HANDLE _beginthreadex(
    void *security,
    unsigned stack_size,
    int ( *start_address )( void * ),
    void *arglist,
    unsigned initflag,
-   unsigned *thrdaddr 
+   unsigned *thrdaddr
 ) {
-  
+
   HANDLE h = CreateThread(NULL, stack_size, start_address, arglist, initflag, (LPDWORD)thrdaddr);
   return h;
-  
+
 }
 
 uintptr_t _beginthread(
@@ -193,7 +213,7 @@ BOOL WINAPI GetThreadTimes (
 ) {
   if (hThread == NULL)
     return false;
-    
+
   if (hThread == (HANDLE)-1) {
     if (lpCreationTime)
       TimeTToFileTime(0,lpCreationTime);
@@ -203,27 +223,27 @@ BOOL WINAPI GetThreadTimes (
       TimeTToFileTime(0,lpKernelTime);
     if (lpUserTime)
       TimeTToFileTime(0,lpUserTime);
-      
+
     return true;
   }
-  
+
   if (lpCreationTime)
     TimeTToFileTime(hThread->m_tmCreation,lpCreationTime);
   if (lpExitTime)
     TimeTToFileTime(time(NULL),lpExitTime);
   if (lpKernelTime)
     TimeTToFileTime(0,lpKernelTime);
-  
+
 #ifdef __APPLE__
-  
+
   thread_info_data_t     threadInfo;
   mach_msg_type_number_t threadInfoCount = THREAD_INFO_MAX;
-  
+
   kern_return_t ret = thread_info(hThread->m_machThreadPort, THREAD_BASIC_INFO, (thread_info_t)threadInfo, &threadInfoCount);
   if (ret == KERN_SUCCESS)
   {
     thread_basic_info_t threadBasicInfo = (thread_basic_info_t)threadInfo;
-     
+
     if (lpUserTime)
     {
       // User time.
@@ -244,13 +264,13 @@ BOOL WINAPI GetThreadTimes (
   {
     if (lpUserTime)
       lpUserTime->dwLowDateTime = lpUserTime->dwHighDateTime = 0;
-    
+
     if (lpKernelTime)
       lpKernelTime->dwLowDateTime = lpKernelTime->dwHighDateTime = 0;
   }
-  
+
 #elif _POSIX_THREAD_CPUTIME != -1
-  
+
     if(lpUserTime)
     {
       lpUserTime->dwLowDateTime = 0;
@@ -276,7 +296,7 @@ BOOL WINAPI GetThreadTimes (
   return true;
 }
 
-BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority) 
+BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority)
 {
   return true;
 }

@@ -1,6 +1,27 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 /*!
 \file Surface.cpp
-\brief 
+\brief
 */
 #include "include.h"
 #include "Surface.h"
@@ -18,7 +39,7 @@ using namespace Surface;
 #ifdef HAS_GLX
 Display* CSurface::s_dpy = 0;
 
-static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg) 
+static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg)
 {
   return (event->type == MapNotify) && (event->xmap.window == (Window) arg);
 }
@@ -44,7 +65,7 @@ static bool (APIENTRY *_wglSwapIntervalEXT)(GLint) = 0;
 #ifdef HAS_SDL
 CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
                    CSurface* window, SDL_Surface* parent, bool fullscreen,
-                   bool pixmap, bool pbuffer, int antialias) 
+                   bool pixmap, bool pbuffer, int antialias)
 {
   CLog::Log(LOGDEBUG, "Constructing surface %dx%d, shared=%p, fullscreen=%d\n", width, height, (void *)shared, fullscreen);
   m_bOK = false;
@@ -55,17 +76,17 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_iGreenSize = 8;
   m_iBlueSize = 8;
   m_iAlphaSize = 8;
-  m_bFullscreen = fullscreen;  
+  m_bFullscreen = fullscreen;
   m_pShared = shared;
   m_bVSync = false;
   m_iVSyncMode = 0;
   m_iGLMajVer = 0;
   m_iGLMinVer = 0;
-  
+
 #ifdef __APPLE__
   m_glContext = 0;
 #endif
-  
+
 #ifdef HAS_GLX
   m_glWindow = 0;
   m_parentWindow = 0;
@@ -78,7 +99,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   XVisualInfo *vInfo = NULL;
   int num = 0;
 
-  int singleVisAttributes[] = 
+  int singleVisAttributes[] =
     {
       GLX_RENDER_TYPE, GLX_RGBA_BIT,
       GLX_RED_SIZE, m_iRedSize,
@@ -89,8 +110,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
       GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
       None
     };
-  
-  int doubleVisAttributes[] = 
+
+  int doubleVisAttributes[] =
     {
       GLX_RENDER_TYPE, GLX_RGBA_BIT,
       GLX_RED_SIZE, m_iRedSize,
@@ -103,7 +124,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
       None
     };
 
-  int doubleVisAttributesAA[] = 
+  int doubleVisAttributesAA[] =
     {
       GLX_RENDER_TYPE, GLX_RGBA_BIT,
       GLX_RED_SIZE, m_iRedSize,
@@ -116,9 +137,9 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
       GLX_SAMPLE_BUFFERS, 1,
       None
     };
-  
+
   // are we using an existing window to create the context?
-  if (window) 
+  if (window)
   {
     // obtain the GLX window associated with the CSurface object
     m_glWindow = window->GetWindow();
@@ -128,18 +149,18 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     CLog::Log(LOGINFO, "GLX Info: NOT Using destination window");
   }
 
-  if (!s_dpy) 
+  if (!s_dpy)
   {
     // try to open root display
     s_dpy = XOpenDisplay(0);
-    if (!s_dpy) 
+    if (!s_dpy)
     {
       CLog::Log(LOGERROR, "GLX Error: No Display found");
       return;
     }
   }
 
-  if (pbuffer) 
+  if (pbuffer)
   {
     MakePBuffer();
     return;
@@ -150,8 +171,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     MakePixmap();
     return;
   }
-  
-  if (doublebuffer) 
+
+  if (doublebuffer)
   {
     if (antialias)
     {
@@ -164,17 +185,17 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
       }
     }
     else
-    {    
+    {
       // query compatible framebuffers based on double buffered attributes
       fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), doubleVisAttributes, &num);
     }
-  } 
-  else 
+  }
+  else
   {
     // query compatible framebuffers based on single buffered attributes (not used currently)
     fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), singleVisAttributes, &num);
   }
-  if (fbConfigs==NULL) 
+  if (fbConfigs==NULL)
   {
     CLog::Log(LOGERROR, "GLX Error: No compatible framebuffers found");
     return;
@@ -185,7 +206,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 
   // if no window is specified, create a window because a GL context needs to be
   // associated to a window
-  if (!m_glWindow) 
+  if (!m_glWindow)
   {
     XSetWindowAttributes  swa;
     int swaMask;
@@ -194,7 +215,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     m_SDLSurface = parent;
 
     // check if a parent was passed
-    if (parent) 
+    if (parent)
     {
       SDL_SysWMinfo info;
 
@@ -203,8 +224,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
       m_parentWindow = p = info.info.x11.window;
       swaMask = 0;
       CLog::Log(LOGINFO, "GLX Info: Using parent window");
-    } 
-    else  
+    }
+    else
     {
       // create a window with the desktop as the parent
       p = RootWindow(s_dpy, vInfo->screen);
@@ -221,7 +242,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     mapWindow = true;
 
     // success?
-    if (!m_glWindow) 
+    if (!m_glWindow)
     {
       XFree(fbConfigs);
       CLog::Log(LOGERROR, "GLX Error: Could not create window");
@@ -230,19 +251,19 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   }
 
   // now create the actual context
-  if (shared) 
+  if (shared)
   {
     CLog::Log(LOGINFO, "GLX Info: Creating shared context");
-    m_glContext = glXCreateContext(s_dpy, vInfo, shared->GetContext(), True); 
+    m_glContext = glXCreateContext(s_dpy, vInfo, shared->GetContext(), True);
   } else {
     CLog::Log(LOGINFO, "GLX Info: Creating unshared context");
-    m_glContext = glXCreateContext(s_dpy, vInfo, NULL, True); 
+    m_glContext = glXCreateContext(s_dpy, vInfo, NULL, True);
   }
   XFree(fbConfigs);
   XFree(vInfo);
 
   // map the window and wait for notification that it was successful (X-specific)
-  if (mapWindow) 
+  if (mapWindow)
   {
     XEvent event;
     XMapWindow(s_dpy, m_glWindow);
@@ -250,7 +271,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   }
 
   // success?
-  if (m_glContext) 
+  if (m_glContext)
   {
     // make this context current
     glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
@@ -294,13 +315,13 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 #ifdef __APPLE__
     // Enable vertical sync to avoid any tearing.
     SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
-    
-    // We always want to use a shared context as we jump around in resolution, 
+
+    // We always want to use a shared context as we jump around in resolution,
     // otherwise we lose all our textures. However, contexts do not share correctly
     // between fullscreen and non-fullscreen.
     //
     shared = g_graphicsContext.getScreenSurface();
-    
+
     // If we're coming from or going to fullscreen do NOT share.
     if (g_graphicsContext.getScreenSurface() != 0 &&
         (fullscreen == false && g_graphicsContext.getScreenSurface()->m_bFullscreen == true ||
@@ -310,18 +331,18 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     }
 
     // Make sure we DON'T call with SDL_FULLSCREEN, because we need a view!
-    m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, SDL_OPENGL); 
+    m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, SDL_OPENGL);
 
     // the context SDL creates isn't full screen compatible, so we create new one
     Cocoa_GL_ReplaceSDLWindowContext();
 #else
     m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options);
 #endif
-    if (m_SDLSurface) 
+    if (m_SDLSurface)
     {
       m_bOK = true;
     }
-    
+
     if (!b_glewInit)
     {
       if (glewInit()!=GLEW_OK)
@@ -339,8 +360,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
         }
       }
     }
-    
-#ifdef __APPLE__    
+
+#ifdef __APPLE__
     // Get the context.
     m_glContext = Cocoa_GL_GetCurrentContext();
   }
@@ -351,19 +372,19 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     MakeCurrent();
     m_bOK = true;
   }
-  
+
 #endif
-  
+
 #else
   int options = SDL_HWSURFACE | SDL_DOUBLEBUF;
-  if (fullscreen) 
+  if (fullscreen)
   {
     options |= SDL_FULLSCREEN;
   }
   s_glVendor   = "Unknown";
   s_glRenderer = "Unknown";
   m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 32, options);
-  if (m_SDLSurface) 
+  if (m_SDLSurface)
   {
     m_bOK = true;
   }
@@ -383,7 +404,7 @@ bool CSurface::MakePBuffer()
   XVisualInfo *visInfo=NULL;
 
   bool status = false;
-  int singleVisAttributes[] = 
+  int singleVisAttributes[] =
     {
       GLX_RENDER_TYPE, GLX_RGBA_BIT,
       GLX_RED_SIZE, m_iRedSize,
@@ -395,7 +416,7 @@ bool CSurface::MakePBuffer()
       None
     };
 
-  int doubleVisAttributes[] = 
+  int doubleVisAttributes[] =
     {
       GLX_RENDER_TYPE, GLX_RGBA_BIT,
       GLX_RED_SIZE, m_iRedSize,
@@ -407,22 +428,22 @@ bool CSurface::MakePBuffer()
       GLX_DOUBLEBUFFER, True,
       None
     };
-  
-  int pbufferAttributes[] = 
+
+  int pbufferAttributes[] =
     {
-      GLX_PBUFFER_WIDTH, m_iWidth, 
-      GLX_PBUFFER_HEIGHT, m_iHeight, 
+      GLX_PBUFFER_WIDTH, m_iWidth,
+      GLX_PBUFFER_HEIGHT, m_iHeight,
       GLX_LARGEST_PBUFFER, True,
       None
     };
 
-  if (m_bDoublebuffer) 
+  if (m_bDoublebuffer)
   {
     fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), doubleVisAttributes, &num);
   } else {
     fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), singleVisAttributes, &num);
   }
-  if (fbConfigs==NULL) 
+  if (fbConfigs==NULL)
   {
     CLog::Log(LOGERROR, "GLX Error: MakePBuffer: No compatible framebuffers found");
     XFree(fbConfigs);
@@ -439,13 +460,13 @@ bool CSurface::MakePBuffer()
       CLog::Log(LOGINFO, "GLX Error: Could not obtain X Visual Info");
       return false;
     }
-    if (m_pShared) 
+    if (m_pShared)
     {
       CLog::Log(LOGINFO, "GLX: Creating shared PBuffer context");
-      m_glContext = glXCreateContext(s_dpy, visInfo, m_pShared->GetContext(), True); 
+      m_glContext = glXCreateContext(s_dpy, visInfo, m_pShared->GetContext(), True);
     } else {
       CLog::Log(LOGINFO, "GLX: Creating unshared PBuffer context");
-      m_glContext = glXCreateContext(s_dpy, visInfo, NULL, True); 
+      m_glContext = glXCreateContext(s_dpy, visInfo, NULL, True);
     }
     XFree(visInfo);
     if (glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext))
@@ -465,13 +486,13 @@ bool CSurface::MakePBuffer()
           }
         }
       }
-      m_bOK = status = true;      
+      m_bOK = status = true;
     } else {
       CLog::Log(LOGINFO, "GLX Error: Could not make PBuffer current");
       status = false;
     }
-  } 
-  else 
+  }
+  else
   {
     CLog::Log(LOGINFO, "GLX Error: Could not create PBuffer");
     status = false;
@@ -487,20 +508,20 @@ bool CSurface::MakePixmap()
 }
 #endif
 
-CSurface::~CSurface() 
+CSurface::~CSurface()
 {
 #ifdef HAS_GLX
-  if (m_glContext && !IsShared()) 
+  if (m_glContext && !IsShared())
   {
     CLog::Log(LOGINFO, "GLX: Destroying OpenGL Context");
     glXDestroyContext(s_dpy, m_glContext);
   }
-  if (m_glPBuffer) 
+  if (m_glPBuffer)
   {
     CLog::Log(LOGINFO, "GLX: Destroying PBuffer");
     glXDestroyPbuffer(s_dpy, m_glPBuffer);
   }
-  if (m_glWindow && !IsShared()) 
+  if (m_glWindow && !IsShared())
   {
     CLog::Log(LOGINFO, "GLX: Destroying Window");
     glXDestroyWindow(s_dpy, m_glWindow);
@@ -510,12 +531,12 @@ CSurface::~CSurface()
 #ifdef __APPLE__
       && !IsShared()
 #endif
-     ) 
+     )
   {
     CLog::Log(LOGINFO, "Freeing surface");
     SDL_FreeSurface(m_SDLSurface);
   }
-  
+
 #ifdef __APPLE__
   if (m_glContext && !IsShared())
   {
@@ -523,7 +544,7 @@ CSurface::~CSurface()
     Cocoa_GL_ReleaseContext(m_glContext);
   }
 #endif
-  
+
 #endif
 }
 
@@ -613,7 +634,7 @@ void CSurface::EnableVSync(bool enable)
     if (!_glXSwapIntervalMESA)
     {
       _glXSwapIntervalMESA = (int (*)(int))glXGetProcAddress((const GLubyte*)"glXSwapIntervalMESA");
-    }      
+    }
 #elif defined (_WIN32)
     if (!_wglSwapIntervalEXT)
     {
@@ -670,9 +691,9 @@ void CSurface::EnableVSync(bool enable)
 #endif
 }
 
-void CSurface::Flip() 
+void CSurface::Flip()
 {
-  if (m_bOK && m_bDoublebuffer) 
+  if (m_bOK && m_bDoublebuffer)
   {
 #ifdef HAS_GLX
     if (m_iVSyncMode == 4)
@@ -709,8 +730,8 @@ void CSurface::Flip()
 #else
     SDL_Flip(m_SDLSurface);
 #endif
-  } 
-  else 
+  }
+  else
   {
     OutputDebugString("Surface Error: Could not flip surface.");
   }
@@ -782,11 +803,11 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight)
 #endif
 #ifdef __APPLE__
   Cocoa_GL_ResizeWindow(m_glContext, newWidth, newHeight);
-  
+
   // If we've resize, we likely lose the vsync settings.
   m_bVSync = false;
 #endif
-  
+
   return false;
 }
 

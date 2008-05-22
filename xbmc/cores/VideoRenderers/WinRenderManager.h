@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -19,7 +21,6 @@
  *
  */
 
-#pragma once
 #ifndef _LINUX
 
 #include "WinRenderer.h"

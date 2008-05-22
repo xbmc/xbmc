@@ -1,3 +1,5 @@
+#ifndef XBMC_PC_H_
+#define XBMC_PC_H_
 
 class CXBMC_PC
 {
@@ -40,3 +42,5 @@ protected:
 #endif
   HINSTANCE m_hInstance;
 };
+
+#endif

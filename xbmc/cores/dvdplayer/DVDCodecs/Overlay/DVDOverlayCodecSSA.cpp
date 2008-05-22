@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "AutoPtrHandle.h"
 #include "DVDOverlayCodecSSA.h"
@@ -10,11 +31,11 @@ CDVDOverlayCodecSSA::CDVDOverlayCodecSSA() : CDVDOverlayCodec("SSA Subtitle Deco
   m_pOverlay = NULL;
 }
 
-CDVDOverlayCodecSSA::~CDVDOverlayCodecSSA() 
+CDVDOverlayCodecSSA::~CDVDOverlayCodecSSA()
 {
   if(m_pOverlay)
     SAFE_RELEASE(m_pOverlay);
-  
+
   if(m_libass)
     SAFE_RELEASE(m_libass);
 }
@@ -23,19 +44,19 @@ bool CDVDOverlayCodecSSA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   if(hints.codec != CODEC_ID_SSA)
     return false;
-  
+
   m_libass = new CDVDSubtitlesLibass();
   m_libass->DecodeHeader((char *)hints.extradata, hints.extrasize);
-  
+
   return true;
 }
 
 void CDVDOverlayCodecSSA::Dispose()
-{ 
+{
   if(m_pOverlay)
     SAFE_RELEASE(m_pOverlay);
 }
-    
+
 int CDVDOverlayCodecSSA::Decode(BYTE* data, int size)
 {
   //Libass can't do much without times
@@ -43,15 +64,15 @@ int CDVDOverlayCodecSSA::Decode(BYTE* data, int size)
 }
 
 int CDVDOverlayCodecSSA::Decode(BYTE* data, int size, double pts, double duration)
-{ 
+{
 
   if(m_pOverlay)
     SAFE_RELEASE(m_pOverlay);
-  
+
   printf("[%s] at %.1f for %.1f\n", (char* )data, pts, duration);
 
   m_libass->DecodeDemuxPkt((char *)data, size, pts, duration);
-  
+
   CDVDOverlaySSA* ssaOverlay = new CDVDOverlaySSA(m_libass);
   m_pOverlay = ssaOverlay;
 
@@ -80,4 +101,4 @@ CDVDOverlay* CDVDOverlayCodecSSA::GetOverlay()
   return NULL;
 }
 
- 
+

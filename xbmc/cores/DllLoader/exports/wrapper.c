@@ -1,6 +1,27 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 //
 // To recreate wrapper.def:
-// 
+//
 // bash# (echo -n "-Wl"; grep __wrap wrapper.c | grep -v bash | sed "s/.*__wrap_//g" | sed "s/(.*//g" | awk '{printf(",-wrap,%s",$0);}') > wrapper.def
 //
 #include <sys/types.h>
@@ -10,7 +31,7 @@
 #include <stdarg.h>
 
 #ifdef __APPLE__
-typedef int64_t		off64_t;
+typedef int64_t   off64_t;
 typedef off_t     __off_t;
 typedef off64_t   __off64_t;
 #endif
@@ -57,32 +78,32 @@ int dll_ioctl(int d, unsigned long int request, va_list va);
 
 void* __wrap_calloc( size_t num, size_t size )
 {
-	return dllcalloc(num, size);
+  return dllcalloc(num, size);
 }
 
 void* __wrap_malloc(size_t size)
 {
-	return dllmalloc(size);
+  return dllmalloc(size);
 }
 
 void* __wrap_realloc( void *memblock, size_t size )
 {
-	return dllrealloc(memblock, size);
+  return dllrealloc(memblock, size);
 }
 
 void __wrap_free( void* pPtr )
 {
-	dllfree(pPtr);
+  dllfree(pPtr);
 }
 
 int __wrap_open(const char *file, int oflag, ...)
 {
-	return dll_open(file, oflag);
+  return dll_open(file, oflag);
 }
 
 int __wrap_open64(const char *file, int oflag, ...)
 {
-	return dll_open(file, oflag);
+  return dll_open(file, oflag);
 }
 
 int __wrap_close(int fd)
@@ -115,7 +136,7 @@ int __wrap_fclose(FILE *fp)
 {
   return dll_fclose(fp);
 }
- 
+
 int __wrap_ferror(FILE *stream)
 {
   return dll_ferror(stream);
@@ -213,7 +234,7 @@ int __wrap_fprintf(FILE *stream, const char *format, ...)
     va_start(va, format);
     res = dll_vfprintf(stream, format, va);
     va_end(va);
-    return res; 
+    return res;
 }
 
 int __wrap_vfprintf(FILE *stream, const char *format, va_list ap)
@@ -228,7 +249,7 @@ int __wrap_printf(const char *format, ...)
     va_start(va, format);
     res = dll_vfprintf(stdout, format, va);
     va_end(va);
-    return res; 
+    return res;
 }
 
 int __wrap_fgetc(FILE *stream)
@@ -258,5 +279,5 @@ int __wrap_ioctl(int d, unsigned long int request, ...)
     va_start(va, request);
     res = dll_ioctl(d, request, va);
     va_end(va);
-    return res; 
+    return res;
 }

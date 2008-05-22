@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "LinuxFileSystem.h"
 #include "RegExp.h"
 #include "SingleLock.h"
@@ -91,7 +112,7 @@ vector<CStdString> CLinuxFileSystem::GetRemovableDrives()
 #endif
 }
 
-/* if DeviceType == NULL we return all devices 
+/* if DeviceType == NULL we return all devices
    To decide wich types types are approved to be returned send for example int DevTypes[] = {0, 5, 6, 7, 8, 9, 10, 13}.
    this will return all removable types like pendrives, memcards and such but NOT removable hdd's have type 1.
    for more information on these for now is in libhal-storage.h. TODO Make defined types that can be common on all O/S */
@@ -106,7 +127,7 @@ vector<CStdString> CLinuxFileSystem::GetDrives(int *DeviceType, int len)
 #ifdef __APPLE__
     reMount.RegComp("on (.+) \\(([^,]+)");
 #else
- 	  reMount.RegComp("on (.+) type ([^ ]+)"); 
+    reMount.RegComp("on (.+) type ([^ ]+)");
 #endif
     char line[1024];
 
@@ -124,20 +145,20 @@ vector<CStdString> CLinuxFileSystem::GetDrives(int *DeviceType, int len)
           // Ignore the stuff that doesn't make sense.
         if (strcmp(fs, "devfs") == 0 || strcmp(fs, "fdesc") == 0 || strcmp(fs, "autofs") == 0)
           continue;
-              
+
         // Skip this for now, until we can figure out the name of the root volume.
         if (strcmp(mount, "/") == 0)
           continue;
-        
+
         result.push_back(mount);
-#else 
-	        // Ignore root 
-	        if (strcmp(mount, "/") == 0) 
-	          continue; 
-	        // Here we choose wich filesystems are approved 
-	        if (strcmp(fs, "fuseblk") == 0 || strcmp(fs, "vfat") == 0 || strcmp(fs, "ext2") == 0 || strcmp(fs, "ext3") == 0 || strcmp(fs, "reiserfs") == 0 || strcmp(fs, "xfs") == 0 || strcmp(fs, "ntfs-3g") == 0) 
-	          result.push_back(mount); 
-#endif 
+#else
+          // Ignore root
+          if (strcmp(mount, "/") == 0)
+            continue;
+          // Here we choose wich filesystems are approved
+          if (strcmp(fs, "fuseblk") == 0 || strcmp(fs, "vfat") == 0 || strcmp(fs, "ext2") == 0 || strcmp(fs, "ext3") == 0 || strcmp(fs, "reiserfs") == 0 || strcmp(fs, "xfs") == 0 || strcmp(fs, "ntfs-3g") == 0)
+            result.push_back(mount);
+#endif
           free(fs);
           free(mount);
         }

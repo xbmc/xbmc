@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include <dlfcn.h>
 #include "SoLoader.h"
 #include "StdString.h"
@@ -21,7 +42,7 @@ bool SoLoader::Load()
 {
   if (m_soHandle != NULL)
     return true;
-    
+
   CStdString strFileName= _P(GetFileName());
   if(strFileName == "xbmc.so")
     CLog::Log(LOGDEBUG, "Loading Internal Library\n");
@@ -41,7 +62,7 @@ bool SoLoader::Load()
     }
   }
   m_bLoaded = true;
-  return true;  
+  return true;
 }
 
 void SoLoader::Unload()
@@ -56,7 +77,7 @@ void SoLoader::Unload()
   m_bLoaded = false;
   m_soHandle = NULL;
 }
-  
+
 int SoLoader::ResolveExport(const char* symbol, void** f)
 {
   if (!m_bLoaded && !Load())
@@ -64,14 +85,14 @@ int SoLoader::ResolveExport(const char* symbol, void** f)
     CLog::Log(LOGWARNING, "Unable to resolve: %s %s, reason: so not loaded", GetName(), symbol);
     return 0;
   }
-    
+
   void* s = dlsym(m_soHandle, symbol);
   if (!s)
   {
     CLog::Log(LOGWARNING, "Unable to resolve: %s %s, reason: %s", GetName(), symbol, dlerror());
     return 0;
   }
-    
+
   *f = s;
   return 1;
 }
@@ -89,4 +110,4 @@ HMODULE SoLoader::GetHModule()
 bool SoLoader::HasSymbols()
 {
   return false;
-}  
+}
