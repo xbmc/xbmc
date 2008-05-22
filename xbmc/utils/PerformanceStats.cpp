@@ -1,14 +1,24 @@
-//
-// C++ Implementation: PerformanceStats
-//
-// Description: 
-//
-//
-// Author: Team XBMC <>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "PerformanceStats.h"
 #include "PerformanceSample.h"
 #include "log.h"
@@ -58,7 +68,7 @@ void CPerformanceStats::DumpStats()
     double dAvg = iter->second->m_time / (double)iter->second->m_samples;
     double dAvgUser = iter->second->m_user / (double)iter->second->m_samples;
     double dAvgSys  = iter->second->m_sys / (double)iter->second->m_samples;
-    CLog::Log(LOGINFO, "%s - counter <%s>. avg duration: <%f sec>, avg user: <%f>, avg sys: <%f> (%llu samples)", 
+    CLog::Log(LOGINFO, "%s - counter <%s>. avg duration: <%f sec>, avg user: <%f>, avg sys: <%f> (%llu samples)",
       __FUNCTION__, iter->first.c_str(), dAvg, dAvgUser, dAvgSys, iter->second->m_samples);
     iter++;
   }

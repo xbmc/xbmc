@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -18,8 +20,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#pragma once
 
 #if defined(HAS_XBOX_HARDWARE)
 #include "XBoxRenderer.h"
@@ -88,7 +88,7 @@ public:
   // should be called from the GUI thread after playback has finished
   void OnClose()
   {
-    CSharedLock lock(m_sharedSection);    
+    CSharedLock lock(m_sharedSection);
     if (m_pRenderer)
     {
       m_pRenderer->OnClose();

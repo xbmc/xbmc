@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 //-----------------------------------------------------------------------------
 // File: XBMC_PC.cpp
 //
@@ -116,16 +137,16 @@ LRESULT CXBMC_PC::MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
       }
       break;
     case WM_COMMAND:
-			switch( LOWORD(wParam) )
+      switch( LOWORD(wParam) )
       {
-				case ID_SETTINGS_MOUSE:
+        case ID_SETTINGS_MOUSE:
           // mouse disabled/enabled
           m_mouseEnabled = !m_mouseEnabled;
           {
             HMENU menu = GetMenu(m_hWnd);
             CheckMenuItem(menu, ID_SETTINGS_MOUSE, m_mouseEnabled ? MF_CHECKED : MF_UNCHECKED);
           }
-					break;
+          break;
         case ID_RESOLUTION_PAL4X3:
           g_applicationMessenger.ExecBuiltIn("Resolution(PAL)");
           break;
@@ -164,8 +185,8 @@ LRESULT CXBMC_PC::MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
           PostQuitMessage( 0 );
           return 0;
           break;
-			}
-			break;
+      }
+      break;
   }
 
   return DefWindowProc( hWnd, msg, wParam, lParam );
@@ -338,11 +359,11 @@ HRESULT CXBMC_PC::Create( HINSTANCE hInstance, LPSTR commandLine )
       toolMenu = NULL;
     } else {
       m_dwWindowStyle = WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_THICKFRAME|
-                        WS_MINIMIZEBOX|WS_MAXIMIZEBOX|WS_VISIBLE;  
-      toolMenu = LoadMenu( hInstance, MAKEINTRESOURCE(IDR_MENU) );                        
+                        WS_MINIMIZEBOX|WS_MAXIMIZEBOX|WS_VISIBLE;
+      toolMenu = LoadMenu( hInstance, MAKEINTRESOURCE(IDR_MENU) );
     }
 
-    // Set the window's initial width 
+    // Set the window's initial width
     RECT rc;
     SetRect( &rc, 0, 0, m_dwCreationWidth, m_dwCreationHeight );
     AdjustWindowRect( &rc, m_dwWindowStyle, !m_fullscreen );
@@ -512,7 +533,7 @@ void CXBMC_PC::OnResizeToAspectRatio()
   float frameRatio = (pixelRatio * g_graphicsContext.GetWidth()) / g_graphicsContext.GetHeight();
   // resize so that it fits within the window the user has
   RECT rect;
-  
+
   GetClientRect(m_hWnd, &rect);
   if (rect.bottom * frameRatio > rect.right)
     rect.bottom = (int)(rect.right / frameRatio);
@@ -540,7 +561,7 @@ void CXBMC_PC::OnResizeToPixel()
     AdjustWindowRect(&client2, WS_POPUP | WS_MAXIMIZE, TRUE);
     SetWindowPos( m_hWnd, HWND_NOTOPMOST,0,0,client2.right, client2.bottom, SWP_SHOWWINDOW );
   }
-  else 
+  else
   {
     AdjustWindowRect(&client, m_dwWindowStyle, TRUE);
     SetWindowPos( m_hWnd, HWND_NOTOPMOST,
@@ -576,7 +597,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
 
   if (FAILED(myApp.Create(hInst, commandLine)))
-	  return 1;
+    return 1;
 
   return myApp.Run();
 }
