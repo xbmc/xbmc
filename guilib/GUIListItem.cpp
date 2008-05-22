@@ -258,6 +258,11 @@ void CGUIListItem::SetProperty(const CStdString &strKey, const char *strValue)
   m_mapProperties[strKey] = strValue;
 }
 
+void CGUIListItem::SetProperty(const CStdString &strKey, const CStdString &strValue)
+{
+  m_mapProperties[strKey] = strValue;
+}
+
 CStdString CGUIListItem::GetProperty(const CStdString &strKey) const
 {
   std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(strKey);

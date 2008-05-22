@@ -78,6 +78,7 @@ public:
   bool m_bIsFolder;     ///< is item a folder or a file
 
   void SetProperty(const CStdString &strKey, const char *strValue);
+  void SetProperty(const CStdString &strKey, const CStdString &strValue);
   void SetProperty(const CStdString &strKey, int nVal);
   void SetProperty(const CStdString &strKey, bool bVal);
   void SetProperty(const CStdString &strKey, double dVal);
