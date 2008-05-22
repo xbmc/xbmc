@@ -202,24 +202,28 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
 
   m_strPictureURL.ParseElement(movie->FirstChildElement("thumbs"));
   if (m_strPictureURL.m_url.size() == 0)
-  {
-    if (movie->FirstChildElement("thumb") && !movie->FirstChildElement("thumb")->FirstChildElement())
+  { // no <thumbs> tag found, look for <thumb>
+    const TiXmlElement *thumb = movie->FirstChildElement("thumb");
+    if (thumb)
     {
-      if (movie->FirstChildElement("thumb")->FirstChild() && strncmp(movie->FirstChildElement("thumb")->FirstChild()->Value(),"<thumb>",7) == 0)
-      {
-        CStdString strValue = movie->FirstChildElement("thumb")->FirstChild()->Value();
+      if (thumb->FirstChild() && !thumb->FirstChildElement())
+      { // must have <thumb>child</thumb>, where child contains no XML.  Check for escaped XML
+        CStdString strValue = thumb->FirstChild()->Value();
         TiXmlDocument doc;
         doc.Parse(strValue.c_str());
-        if (doc.FirstChildElement("thumbs"))
-          m_strPictureURL.ParseElement(doc.FirstChildElement("thumbs"));
-        else
-          m_strPictureURL.ParseElement(doc.FirstChildElement("thumb"));
+        if (doc.RootElement())
+        { // valid XML
+          if (doc.FirstChildElement("thumbs"))
+            m_strPictureURL.ParseElement(doc.FirstChildElement("thumbs"));
+          else if (doc.FirstChildElement("thumb"))
+            m_strPictureURL.ParseElement(doc.FirstChildElement("thumb"));
+        }
+        else  // not XML at all - assume a single child
+          m_strPictureURL.ParseElement(thumb);
       }
       else
-        m_strPictureURL.ParseElement(movie->FirstChildElement("thumb"));
+        m_strPictureURL.ParseElement(thumb);
     }
-    else
-      m_strPictureURL.ParseElement(movie->FirstChildElement("thumb"));
   }
 
   CStdString strTemp;
