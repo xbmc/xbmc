@@ -3301,38 +3301,20 @@ bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-//    DWORD time = timeGetTime();
-    // get primary genres for movies
     CStdString strSQL;
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
-      {
         strSQL=FormatSQL("select studio.idstudio,studio.strstudio,path.strPath,movie.c%02d from studio,studiolinkmovie,movie,path,files where studio.idStudio=studiolinkmovie.idstudio and studiolinkMovie.idMovie = movie.idMovie and files.idFile=movie.idFile and path.idPath = files.idPath",VIDEODB_ID_PLAYCOUNT);
-      }
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-      {
         strSQL=FormatSQL("select studio.idstudio,studio.strstudio,path.strPath,musicvideo.c%02d from studio,studiolinkmusicvideo,musicvideo,path,files where studio.idStudio=studiolinkmusicvideo.idstudio and studiolinkmusicvideo.idMVideo = musicvideo.idMVideo and files.idFile=musicvideo.idFile and path.idPath = files.idPath",VIDEODB_ID_MUSICVIDEO_PLAYCOUNT);
-      }
-/*      else if (idContent == VIDEODB_CONTENT_TVSHOWS) // TODO?
-      {
-        strSQL=FormatSQL("select genre.idgenre,genre.strgenre,path.strPath from genre,genrelinktvshow,tvshow,tvshowlinkpath,files,path where genre.idGenre=genrelinkTvShow.idGenre and genrelinkTvShow.idShow = tvshow.idshow and files.idPath=tvshowlinkpath.idPath and tvshowlinkpath.idShow=tvshow.idShow and path.idPath = files.idPath");
-      }*/
     }
     else
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
-      {
         strSQL=FormatSQL("select distinct studio.idstudio,studio.strstudio,movie.c%02d from studio,studiolinkmovie,movie where studio.idstudio=studiolinkMovie.idstudio and studiolinkMovie.idMovie = movie.idMovie",VIDEODB_ID_PLAYCOUNT);
-      }
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-      {
         strSQL=FormatSQL("select distinct studio.idstudio,studio.strstudio,musicvideo.c%02d from studio,studiolinkmusicvideo,musicvideo where studio.idstudio=studiolinkmusicvideo.idstudio and studiolinkmusicvideo.idMVideo = musicvideo.idMVideo",VIDEODB_ID_MUSICVIDEO_PLAYCOUNT);
-      }
-/*      else if (idContent == VIDEODB_CONTENT_TVSHOWS) // TODO?
-      {
-        strSQL=FormatSQL("select distinct genre.idgenre,genre.strgenre from genre,genrelinktvshow,tvshow where genre.idGenre=genrelinkTvShow.idGenre and genrelinkTvShow.idShow = tvshow.idshow");
-      }*/
     }
 
     // run query
@@ -3360,8 +3342,7 @@ bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& 
           // check path
           CStdString strPath;
           if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
-            if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-              mapStudios.insert(pair<long, pair<CStdString,int> >(lStudioId, pair<CStdString,int>(strStudio,m_pDS->fv(3).get_asInteger())));
+            mapStudios.insert(pair<long, pair<CStdString,int> >(lStudioId, pair<CStdString,int>(strStudio,m_pDS->fv(3).get_asInteger())));
         }
         m_pDS->next();
       }
@@ -3374,8 +3355,7 @@ bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& 
         strDir.Format("%ld/", it->first);
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
-        if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-          pItem->GetVideoInfoTag()->m_playCount = it->second.second;
+        pItem->GetVideoInfoTag()->m_playCount = it->second.second;
         if (!items.Contains(pItem->m_strPath))
         {
           pItem->SetLabelPreformated(true);
@@ -3413,10 +3393,53 @@ bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& 
   return false;
 }
 
+bool CVideoDatabase::GetWritersNav(const CStdString& strBaseDir, CFileItemList& items, long idContent)
+{
+  return GetPeopleNav(strBaseDir, items, "studio", idContent);
+}
+
 bool CVideoDatabase::GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent)
+{
+  return GetPeopleNav(strBaseDir, items, "director", idContent);
+}
+
+bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent)
+{
+  if (GetPeopleNav(strBaseDir, items, "actor", idContent))
+  { // set thumbs - ideally this should be in the normal thumb setting routines
+    for (int i = 0; i < items.Size(); i++)
+    {
+      CFileItem *pItem = items[i];
+      if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
+      {
+        if (CFile::Exists(pItem->GetCachedArtistThumb()))
+          pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
+        else
+          pItem->SetThumbnailImage("DefaultArtistBig.png");
+      }
+      else
+      {
+        if (CFile::Exists(pItem->GetCachedActorThumb()))
+          pItem->SetThumbnailImage(pItem->GetCachedActorThumb());
+        else
+          pItem->SetThumbnailImage("DefaultActorBig.png");
+      }
+    }
+    return true;
+  }
+  return false;
+}
+
+bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& items, const CStdString &type, long idContent)
 {
   try
   {
+    // TODO: This routine (and probably others at this same level) use playcount as a reference to filter on at a later
+    //       point.  This means that we *MUST* filter these levels as you'll get double ups.  Ideally we'd allow playcount
+    //       to filter through as we normally do for tvshows to save this happening.
+
+    // General routine that the other actor/director/writer routines call
+
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
@@ -3425,149 +3448,27 @@ bool CVideoDatabase::GetDirectorsNav(const CStdString& strBaseDir, CFileItemList
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
-      {
-        strSQL=FormatSQL("select actors.idActor,actors.strActor,path.strPath,movie.c%02d from actors,directorlinkmovie,movie,path,files where actors.idActor=directorlinkMovie.idDirector and directorlinkMovie.idMovie = movie.idMovie and files.idFile=movie.idFile and path.idPath = files.idPath",VIDEODB_ID_PLAYCOUNT);
-      }
+        strSQL=FormatSQL("select actors.idActor,actors.strActor,actors.strThumb,path.strPath,movie.c%02d from actors,%slinkmovie,movie,path,files where actors.idActor=%slinkMovie.id%s and %slinkMovie.idMovie = movie.idMovie and files.idFile=movie.idFile and path.idPath = files.idPath", VIDEODB_ID_PLAYCOUNT, type.c_str(), type.c_str(), type.c_str(), type.c_str());
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
-      {
-        strSQL=FormatSQL("select actors.idActor,actors.strActor,path.strPath from actors,directorlinktvshow,tvshow,path,files,episode,tvshowlinkepisode where actors.idActor=directorlinktvshow.idDirector and directorlinktvshow.idShow = tvshow.idShow and files.idFile=episode.idFile and tvshowlinkepisode.idShow=tvshow.idShow and episode.idEpisode=tvshowlinkepisode.idEpisode and path.idPath = files.idPath");
-      }
+        strSQL=FormatSQL("select actors.idActor,actors.strActor,actors.strThumb,path.strPath from actors,%slinktvshow,tvshow,path,files,episode,tvshowlinkepisode where actors.idActor=%slinktvshow.id%s and %slinktvshow.idShow = tvshow.idShow and files.idFile=episode.idFile and tvshowlinkepisode.idShow=tvshow.idShow and episode.idEpisode=tvshowlinkepisode.idEpisode and path.idPath = files.idPath", type.c_str(), type.c_str(), type.c_str(), type.c_str());
+      else if (idContent == VIDEODB_CONTENT_EPISODES)
+        strSQL=FormatSQL("select actors.idActor,actors.strActor,actors.strThumb,path.strPath,episode.c%02d from actors,%slinkepisode,episode,path,files where actors.idActor=%slinkepisode.id%s and %slinkepisode.idEpisode = episode.idEpisode and files.idFile=episode.idFile and path.idPath = files.idPath", VIDEODB_ID_EPISODE_PLAYCOUNT, type.c_str(), type.c_str(), type.c_str(), type.c_str());
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-      {
-        strSQL=FormatSQL("select actors.idActor,actors.strActor,path.strPath,musicvideo.c%02d from actors,directorlinkmusicvideo,musicvideo,path,files where actors.idActor=directorlinkmusicvideo.idDirector and directorlinkmusicvideo.idMVideo = musicvideo.idMVideo and files.idFile=musicvideo.idFile and path.idPath = files.idPath",VIDEODB_ID_MUSICVIDEO_PLAYCOUNT);
-      }
+        strSQL=FormatSQL("select actors.idActor,actors.strActor,actors.strThumb,path.strPath,musicvideo.c%02d from actors,%slinkmusicvideo,musicvideo,path,files where actors.idActor=%slinkmusicvideo.id%s and %slinkmusicvideo.idMVideo = musicvideo.idMVideo and files.idFile=musicvideo.idFile and path.idPath = files.idPath", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT, type.c_str(), type.c_str(), type.c_str(), type.c_str());
     }
     else
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
-      {
-        strSQL=FormatSQL("select distinct actors.idactor,actors.strActor,movie.c%02d from directorlinkmovie,actors,movie where actors.idActor=directorlinkmovie.idDirector and directorlinkmovie.idmovie=movie.idmovie",VIDEODB_ID_PLAYCOUNT);
-      }
+        strSQL=FormatSQL("select distinct actors.idactor,actors.strActor,actors.strThumb,movie.c%02d from %slinkmovie,actors,movie where actors.idActor=%slinkmovie.id%s and %slinkmovie.idmovie=movie.idmovie", VIDEODB_ID_PLAYCOUNT, type.c_str(), type.c_str(), type.c_str(), type.c_str());
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
-      {
-        strSQL=FormatSQL("select distinct actors.idActor,actors.strActor from actors,directorlinktvshow,tvshow where actors.idActor=directorlinktvshow.idDirector and directorlinktvshow.idShow = tvshow.idShow");
-      }
+        strSQL=FormatSQL("select distinct actors.idActor,actors.strActor,actors.strThumb from actors,%slinktvshow,tvshow where actors.idActor=%slinktvshow.id%s and %slinktvshow.idShow = tvshow.idShow", type.c_str(), type.c_str(), type.c_str(), type.c_str());
+      else if (idContent == VIDEODB_CONTENT_EPISODES)
+        strSQL=FormatSQL("select distinct actors.idActor,actors.strActor,actors.strThumb,episode.c%02d from actors,%slinkepisode,episode where actors.idActor=%slinkepisode.id%s and %slinkepisode.idEpisode = episode.idEpisode", VIDEODB_ID_EPISODE_PLAYCOUNT, type.c_str(), type.c_str(), type.c_str(), type.c_str());
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-      {
-        strSQL=FormatSQL("select distinct actors.idactor,actors.strActor,musicvideo.c%02d from directorlinkmusicvideo,actors,musicvideo where actors.idActor=directorlinkmusicvideo.idDirector and directorlinkmusicvideo.idmvideo=musicvideo.idmvideo",VIDEODB_ID_MUSICVIDEO_PLAYCOUNT);
-      }
+        strSQL=FormatSQL("select distinct actors.idactor,actors.strActor,actors.strThumb,musicvideo.c%02d from %slinkmusicvideo,actors,musicvideo where actors.idActor=%slinkmusicvideo.id%s and %slinkmusicvideo.idmvideo=musicvideo.idmvideo", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT, type.c_str(), type.c_str(), type.c_str(), type.c_str());
     }
 
     // run query
-    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return true;
-    }
-
-    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-    {
-      map<long, std::pair<CStdString,int> > mapDirector;
-      map<long, std::pair<CStdString,int> >::iterator it;
-      while (!m_pDS->eof())
-      {
-        long lDirectorId = m_pDS->fv("actors.idactor").get_asLong();
-        CStdString strDirector = m_pDS->fv("actors.strActor").get_asString();
-        it = mapDirector.find(lDirectorId);
-        // was this genre already found?
-        if (it == mapDirector.end())
-        {
-          // check path
-          CStdString strPath;
-          if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
-            if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-              mapDirector.insert(pair<long, pair<CStdString,int> >(lDirectorId, pair<CStdString,int>(strDirector,m_pDS->fv(3).get_asInteger())));
-            else
-              mapDirector.insert(pair<long, pair<CStdString,int> >(lDirectorId, pair<CStdString,int>(strDirector,0)));
-        }
-        m_pDS->next();
-      }
-      m_pDS->close();
-
-      for (it=mapDirector.begin();it != mapDirector.end();++it)
-      {
-        CFileItem* pItem=new CFileItem(it->second.first);
-        CStdString strDir;
-        strDir.Format("%ld/", it->first);
-        pItem->m_strPath=strBaseDir + strDir;
-        pItem->m_bIsFolder=true;
-        if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-          pItem->GetVideoInfoTag()->m_playCount = it->second.second;
-        pItem->SetLabelPreformated(true);
-        items.Add(pItem);
-      }
-    }
-    else
-    {
-      while (!m_pDS->eof())
-      {
-        CFileItem* pItem=new CFileItem(m_pDS->fv("actors.strActor").get_asString());
-        CStdString strDir;
-        strDir.Format("%ld/", m_pDS->fv("actors.idactor").get_asLong());
-        pItem->m_strPath=strBaseDir + strDir;
-        pItem->m_bIsFolder=true;
-        pItem->SetLabelPreformated(true);
-        if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-          pItem->GetVideoInfoTag()->m_playCount = m_pDS->fv(2).get_asInteger();
-        items.Add(pItem);
-        m_pDS->next();
-      }
-      m_pDS->close();
-    }
-      
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
-  return false;
-}
-
-bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-//    DWORD time = timeGetTime();
-    CStdString strSQL;
-    
-    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
-    {
-      if (idContent == VIDEODB_CONTENT_MOVIES)
-      {
-        strSQL=FormatSQL("select actors.idactor,actors.strActor,path.strPath,movie.c%02d,actors.strThumb from actorlinkmovie,actors,movie,files,path where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and files.idFile = movie.idFile and files.idPath = path.idPath",VIDEODB_ID_PLAYCOUNT);
-      }
-      else if (idContent == VIDEODB_CONTENT_TVSHOWS)
-      {
-        strSQL=FormatSQL("select actors.idactor,actors.strActor,path.strPath,actors.strThumb from actorlinktvshow,actors,tvshow,tvshowlinkpath,path where actors.idActor=actorlinktvshow.idActor and actorlinktvshow.idshow=tvshow.idshow and tvshowlinkpath.idshow=tvshow.idshow and tvshowlinkpath.idpath=path.idpath");
-      }
-      else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-      {
-        strSQL=FormatSQL("select actors.idactor,actors.strActor,path.strPath,musicvideo.c%02d,actors.strThumb from artistlinkmusicvideo,actors,musicvideo,files,path where actors.idActor=artistlinkmusicvideo.idArtist and artistlinkmusicvideo.idmvideo=musicvideo.idmvideo and files.idFile = musicvideo.idFile and files.idPath = path.idPath",VIDEODB_ID_MUSICVIDEO_PLAYCOUNT);
-      }
-    }
-    else
-    {
-      if (idContent == VIDEODB_CONTENT_MOVIES)
-      {
-        strSQL=FormatSQL("select distinct actors.idactor,actors.strActor,movie.c%02d,actors.strThumb from actorlinkmovie,actors,movie where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie",VIDEODB_ID_PLAYCOUNT);
-      }
-      else if (idContent == VIDEODB_CONTENT_TVSHOWS)
-      {
-        strSQL=FormatSQL("select distinct actors.idactor,actors.strActor,actors.strThumb from actorlinktvshow,actors,tvshow where actors.idActor=actorlinktvshow.idActor and actorlinktvshow.idshow=tvshow.idshow");
-      }
-      else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-      {
-        strSQL=FormatSQL("select distinct actors.idactor,actors.strActor,musicvideo.c%02d,actors.strThumb from artistlinkmusicvideo,actors,musicvideo where actors.idActor=artistlinkmusicvideo.idartist and artistlinkmusicvideo.idmvideo=musicvideo.idmvideo",VIDEODB_ID_MUSICVIDEO_PLAYCOUNT);
-      }
-    }
-
     unsigned int time = timeGetTime();
     if (!m_pDS->query(strSQL.c_str())) return false;
     CLog::Log(LOGDEBUG, "%s -  query took %lu ms", __FUNCTION__, timeGetTime() - time); time = timeGetTime();
@@ -3585,26 +3486,19 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
 
       while (!m_pDS->eof())
       {
-        long lActorId = m_pDS->fv("actors.idactor").get_asLong();
+        long lActorId = m_pDS->fv(0).get_asLong();
         CActor actor;
-        actor.name = m_pDS->fv("actors.strActor").get_asString();
-        actor.thumb = m_pDS->fv("actors.strThumb").get_asString();
-        actor.playcount = m_pDS->fv(3).get_asInteger();
+        actor.name = m_pDS->fv(1).get_asString();
+        actor.thumb = m_pDS->fv(2).get_asString();
+        if (idContent != VIDEODB_CONTENT_TVSHOWS)
+          actor.playcount = m_pDS->fv(3).get_asInteger();
         it = mapActors.find(lActorId);
         // is this actor already known?
         if (it == mapActors.end())
         {
           // check path
           if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
-          {
-            if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-              mapActors.insert(pair<long, CActor>(lActorId, actor));
-            else
-            {
-              actor.playcount = 0;
-              mapActors.insert(pair<long, CActor>(lActorId, actor));
-            }
-          }
+            mapActors.insert(pair<long, CActor>(lActorId, actor));
         }
         m_pDS->next();
       }
@@ -3617,19 +3511,8 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
         strDir.Format("%ld/", it->first);
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
-        if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-          pItem->GetVideoInfoTag()->m_playCount = it->second.playcount;
+        pItem->GetVideoInfoTag()->m_playCount = it->second.playcount;
         pItem->GetVideoInfoTag()->m_strPictureURL.ParseString(it->second.thumb);
-        pItem->SetThumbnailImage("DefaultActorBig.png");
-        if (idContent != VIDEODB_CONTENT_MUSICVIDEOS && CFile::Exists(pItem->GetCachedActorThumb()))
-          pItem->SetThumbnailImage(pItem->GetCachedActorThumb());
-        if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-        {
-          if (CFile::Exists(pItem->GetCachedArtistThumb()))
-            pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
-          else
-            pItem->SetThumbnailImage("DefaultArtistBig.png");
-        }
         items.Add(pItem);
       }
     }
@@ -3637,24 +3520,14 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
     {
       while (!m_pDS->eof())
       {
-        CFileItem* pItem=new CFileItem(m_pDS->fv("actors.strActor").get_asString());
+        CFileItem* pItem=new CFileItem(m_pDS->fv(1).get_asString());
         CStdString strDir;
-        strDir.Format("%ld/", m_pDS->fv("actors.idactor").get_asLong());
+        strDir.Format("%ld/", m_pDS->fv(0).get_asLong());
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
-        pItem->SetThumbnailImage("DefaultActorBig.png");
-        if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-          pItem->GetVideoInfoTag()->m_playCount = m_pDS->fv(2).get_asInteger();
-        if (idContent != VIDEODB_CONTENT_MUSICVIDEOS && CFile::Exists(pItem->GetCachedActorThumb()))
-          pItem->SetThumbnailImage(pItem->GetCachedActorThumb());
-        if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-        {
-          if (CFile::Exists(pItem->GetCachedArtistThumb()))
-            pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
-          else
-            pItem->SetThumbnailImage("DefaultArtistBig.png");
-        }
-        pItem->GetVideoInfoTag()->m_strPictureURL.ParseString(m_pDS->fv("actors.strThumb").get_asString());
+        pItem->GetVideoInfoTag()->m_strPictureURL.ParseString(m_pDS->fv(2).get_asString());
+        if (idContent != VIDEODB_CONTENT_TVSHOWS)
+          pItem->GetVideoInfoTag()->m_playCount = m_pDS->fv(3).get_asInteger();
         items.Add(pItem);
         m_pDS->next();
       }
@@ -3662,7 +3535,6 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
     }
     CLog::Log(LOGDEBUG, "%s item retrieval took %lu ms", __FUNCTION__, timeGetTime() - time); time = timeGetTime();
 
-//    CLog::Log(LOGDEBUG, "%s Time: %d ms", timeGetTime() - time);
     return true;
   }
   catch (...)
@@ -3671,6 +3543,8 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
   }
   return false;
 }
+
+
 
 bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent)
 {
