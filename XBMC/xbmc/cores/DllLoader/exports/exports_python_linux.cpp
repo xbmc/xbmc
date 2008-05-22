@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include <sys/types.h>
 #include <utime.h>
@@ -43,7 +64,7 @@ void *xbp_dlopen(const char *filename, int flag)
   {
     g_pythonParser.RegisterExtensionLib(pDll);
   }
-  else 
+  else
   {
     CLog::Log(LOGERROR,"%s failed to load %s", __FUNCTION__, filename);
   }
@@ -83,7 +104,7 @@ char* xbp_getcwd(char *buf, int size)
     pthread_setspecific(tWorkingDir, (void*)path);
   }
 #endif
-  
+
   if (buf == NULL) buf = (char *)malloc(size);
   strcpy(buf, xbp_cw_dir);
   return buf;
@@ -94,7 +115,7 @@ int xbp_chdir(const char *dirname)
 #ifdef __APPLE__
   // Initialize thread local storage and local thread pointer.
   pthread_once(&keyOnce, MakeTlsKeys);
-  
+
   if (xbp_cw_dir == 0)
   {
     char* path = (char* )malloc(MAX_PATH);
@@ -102,7 +123,7 @@ int xbp_chdir(const char *dirname)
     pthread_setspecific(tWorkingDir, (void*)path);
   }
 #endif
-  
+
   if (strlen(dirname) > MAX_PATH) return -1;
   strcpy(xbp_cw_dir, dirname);
   return 0;
@@ -153,7 +174,7 @@ int xbp_mkdir(const char *dirname)
   struct stat buf;
   if (stat(strName.c_str(), &buf) == 0 && S_ISDIR(buf.st_mode))
     return 0;
-*/    
+*/
   return mkdir(strName.c_str(), 0755);
 }
 

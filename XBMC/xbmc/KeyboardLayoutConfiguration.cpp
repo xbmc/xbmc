@@ -1,19 +1,27 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "utils/CharsetConverter.h"
-
-//
-// C++ Implementation: CKeyboardLayoutConfiguration
-//
-// Description: 
-//
-//
-// Author: Team XBMC <>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 
 // Comment OUT, if not really debugging!!!
 //#define DEBUG_KEYBOARD_GETCHAR
@@ -92,7 +100,7 @@ void CKeyboardLayoutConfiguration::readCharMapFromXML(const TiXmlElement* pXMLMa
     {
       CStdString strInChar = pEntry->Attribute("inchar");
       CStdString strOutChar = pEntry->Attribute("outchar");
-      if (strInChar.length() > 0 && strOutChar.length() > 0) 
+      if (strInChar.length() > 0 && strOutChar.length() > 0)
       {
         CStdStringW fromStr;
         g_charsetConverter.utf8ToW(strInChar, fromStr);
@@ -114,8 +122,8 @@ void CKeyboardLayoutConfiguration::readCharMapFromXML(const TiXmlElement* pXMLMa
       }
       pEntry = pEntry->NextSiblingElement();
     }
-  } 
-  else 
+  }
+  else
   {
     CLog::Log(LOGDEBUG, "XML-Configuration doesn't contain expected map root element %s", mapRootElement);
   }
@@ -130,9 +138,9 @@ void CKeyboardLayoutConfiguration::readByteMapFromXML(const TiXmlElement* pXMLMa
     {
       CStdString strInHex = pEntry->Attribute("inhex");
       CStdString strOutChar = pEntry->Attribute("outchar");
-      if (strInHex.length() > 0 && strOutChar.length() > 0) 
+      if (strInHex.length() > 0 && strOutChar.length() > 0)
       {
-        CStdString hexValue = strInHex; 
+        CStdString hexValue = strInHex;
         CStdStringW toStr;
         g_charsetConverter.utf8ToW(strOutChar, toStr);
 
@@ -141,7 +149,7 @@ void CKeyboardLayoutConfiguration::readByteMapFromXML(const TiXmlElement* pXMLMa
         {
           if (from != 0) // eats nearly any typing error as 0: catch it:
           {
-            if (from < 256) 
+            if (from < 256)
             {
               if (toStr.size()==1)
               {
@@ -174,8 +182,8 @@ void CKeyboardLayoutConfiguration::readByteMapFromXML(const TiXmlElement* pXMLMa
       }
       pEntry = pEntry->NextSiblingElement();
     }
-  } 
-  else 
+  }
+  else
   {
     CLog::Log(LOGERROR, "XML-Configuration doesn't contain expected map root element %s", mapRootElement);
   }

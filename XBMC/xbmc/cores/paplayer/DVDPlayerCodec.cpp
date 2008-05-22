@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "DVDPlayerCodec.h"
 #include "../../Util.h"
@@ -60,7 +81,7 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
   }
 
   m_pDemuxer = NULL;
-  
+
   try
   {
     m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
@@ -83,7 +104,7 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
     delete m_pInputStream;
     m_pInputStream = NULL;
     return false;
-  }    
+  }
 
   CDemuxStream* pStream = NULL;
   m_nAudioStream = -1;
@@ -106,7 +127,7 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
     m_pInputStream = NULL;
     return false;
   }
- 
+
   CDVDStreamInfo hint(*pStream, true);
   m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec(hint);
   if (!m_pAudioCodec)
@@ -127,7 +148,7 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
     int nSize = 256;
     ReadPCM(dummy, nSize, &nSize);
 
-    // We always ask ffmpeg to return s16le 
+    // We always ask ffmpeg to return s16le
     m_BitsPerSample = m_pAudioCodec->GetBitsPerSample();
     m_SampleRate = m_pAudioCodec->GetSampleRate();
     m_Channels = m_pAudioCodec->GetChannels();
@@ -158,26 +179,26 @@ void DVDPlayerCodec::DeInit()
     delete m_pDemuxer;
     m_pDemuxer = NULL;
   }
-    
+
   if (m_pInputStream != NULL)
   {
     delete m_pInputStream;
     m_pInputStream = NULL;
   }
-  
+
   if (m_pAudioCodec != NULL)
   {
     delete m_pAudioCodec;
     m_pAudioCodec = NULL;
   }
-  
+
   m_audioPos = 0;
   m_decoded = NULL;;
   m_nDecodedLen = 0;
 }
 
 __int64 DVDPlayerCodec::Seek(__int64 iSeekTime)
-{  
+{
   if (m_pPacket)
     CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
   m_pPacket = NULL;
@@ -196,7 +217,7 @@ int DVDPlayerCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   {
     int nLen = (size<m_nDecodedLen)?size:m_nDecodedLen;
     *actualsize = nLen;
-    memcpy(pBuffer, m_decoded, *actualsize);  
+    memcpy(pBuffer, m_decoded, *actualsize);
     m_nDecodedLen -= nLen;
     m_decoded += (*actualsize);
     return READ_SUCCESS;
@@ -237,7 +258,7 @@ int DVDPlayerCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   }
 
   m_audioPos += decodeLen;
-  
+
   m_nDecodedLen = m_pAudioCodec->GetData(&m_decoded);
 
   *actualsize = (m_nDecodedLen <= size) ? m_nDecodedLen : size;

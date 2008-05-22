@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2007 Team XboxMediaCenter
- *      http://www.xboxmediacenter.com
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,11 +13,12 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with GNU Make; see the file COPYING.  If not, write to
+ *  along with XBMC; see the file COPYING.  If not, write to
  *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+
 #include "../../guilib/system.h"
 #include "HalManager.h"
 #ifdef HAS_HAL
@@ -129,10 +130,10 @@ CHalManager::~CHalManager()
 #endif
   dbus_error_free(&m_Error); // Needed?
 
-	if (m_Context != NULL)	
-  	libhal_ctx_shutdown(m_Context, NULL);
   if (m_Context != NULL)
-  	libhal_ctx_free(m_Context); 
+    libhal_ctx_shutdown(m_Context, NULL);
+  if (m_Context != NULL)
+    libhal_ctx_free(m_Context);
 }
 
 // Initialize
@@ -154,81 +155,81 @@ void CHalManager::Initialize()
 // Initialize basic DBus connection
 bool CHalManager::InitializeDBus()
 {
-	if (m_DBusConnection != NULL)
-		return TRUE;
+  if (m_DBusConnection != NULL)
+    return TRUE;
 
-	dbus_error_init (&m_Error);
-	if (!(m_DBusConnection = dbus_bus_get (DBUS_BUS_SYSTEM, &m_Error)))
+  dbus_error_init (&m_Error);
+  if (!(m_DBusConnection = dbus_bus_get (DBUS_BUS_SYSTEM, &m_Error)))
   {
-		CLog::Log(LOGERROR, "DBus: Could not get system bus: %s", m_Error.message);
-		dbus_error_free (&m_Error);
-		return FALSE;
-	}
+    CLog::Log(LOGERROR, "DBus: Could not get system bus: %s", m_Error.message);
+    dbus_error_free (&m_Error);
+    return FALSE;
+  }
 
-	return TRUE;
+  return TRUE;
 }
 
 // Initialize basic HAL connection
 LibHalContext *CHalManager::InitializeHal()
 {
-	LibHalContext *ctx;
-	char **devices;
-	int nr;
+  LibHalContext *ctx;
+  char **devices;
+  int nr;
 
-	if (!InitializeDBus())
-		return NULL;
+  if (!InitializeDBus())
+    return NULL;
 
-	if (!(ctx = libhal_ctx_new()))
+  if (!(ctx = libhal_ctx_new()))
   {
-		CLog::Log(LOGERROR, "HAL: failed to create a HAL context!");
-		return NULL;
-	}
+    CLog::Log(LOGERROR, "HAL: failed to create a HAL context!");
+    return NULL;
+  }
 
-	if (!libhal_ctx_set_dbus_connection(ctx, m_DBusConnection))
+  if (!libhal_ctx_set_dbus_connection(ctx, m_DBusConnection))
     CLog::Log(LOGERROR, "HAL: Failed to connect with dbus");
-	
-	libhal_ctx_set_device_added(ctx, DeviceAdded);
-	libhal_ctx_set_device_removed(ctx, DeviceRemoved);
-	libhal_ctx_set_device_new_capability(ctx, DeviceNewCapability);
-	libhal_ctx_set_device_lost_capability(ctx, DeviceLostCapability);
-	libhal_ctx_set_device_property_modified(ctx, DevicePropertyModified);
-	libhal_ctx_set_device_condition(ctx, DeviceCondition);
 
-	if (!libhal_device_property_watch_all(ctx, &m_Error))
+  libhal_ctx_set_device_added(ctx, DeviceAdded);
+  libhal_ctx_set_device_removed(ctx, DeviceRemoved);
+  libhal_ctx_set_device_new_capability(ctx, DeviceNewCapability);
+  libhal_ctx_set_device_lost_capability(ctx, DeviceLostCapability);
+  libhal_ctx_set_device_property_modified(ctx, DevicePropertyModified);
+  libhal_ctx_set_device_condition(ctx, DeviceCondition);
+
+  if (!libhal_device_property_watch_all(ctx, &m_Error))
   {
-		CLog::Log(LOGERROR, "HAL: Failed to set property watch %s", m_Error.message);
-		dbus_error_free(&m_Error);
-		libhal_ctx_free(ctx);
-		return NULL;
-	}
-	
-	if (!libhal_ctx_init(ctx, &m_Error))
+    CLog::Log(LOGERROR, "HAL: Failed to set property watch %s", m_Error.message);
+    dbus_error_free(&m_Error);
+    libhal_ctx_free(ctx);
+    return NULL;
+  }
+
+  if (!libhal_ctx_init(ctx, &m_Error))
   {
     CLog::Log(LOGERROR, "HAL: Failed to initialize hal context: %s", m_Error.message);
-		dbus_error_free(&m_Error);
-		libhal_ctx_free(ctx);
-		return NULL;
-	}
+    dbus_error_free(&m_Error);
+    libhal_ctx_free(ctx);
+    return NULL;
+  }
 
- 	/*
+  /*
  * Do something to ping the HAL daemon - the above functions will
  * succeed even if hald is not running, so long as DBUS is.  But we
  * want to exit silently if hald is not running, to behave on
  * pre-2.6 systems.
  */
-	if (!(devices = libhal_get_all_devices(ctx, &nr, &m_Error)))
+  if (!(devices = libhal_get_all_devices(ctx, &nr, &m_Error)))
   {
-		CLog::Log(LOGERROR, "HAL: seems that Hal daemon is not running: %s", m_Error.message);
-		dbus_error_free(&m_Error);
-		
-		libhal_ctx_shutdown(ctx, NULL);
-		libhal_ctx_free(ctx);
-		return NULL;
-	}
-	
-	libhal_free_string_array(devices);
-	
-	return ctx;
+    CLog::Log(LOGERROR, "HAL: seems that Hal daemon is not running: %s", m_Error.message);
+    dbus_error_free(&m_Error);
+
+    libhal_ctx_shutdown(ctx, NULL);
+    libhal_ctx_free(ctx);
+    return NULL;
+  }
+
+  libhal_free_string_array(devices);
+
+  return ctx;
 }
 
 // Helper function. creates a CStorageDevice from a HAL udi
@@ -242,7 +243,7 @@ bool CHalManager::DeviceFromVolumeUdi(const char *udi, CStorageDevice *device)
   bool Created = false;
 
   tempVolume = libhal_volume_from_udi(g_HalManager.m_Context, udi);
-  if (tempVolume)    
+  if (tempVolume)
   {
     const char *DriveUdi = libhal_volume_get_storage_device_udi(tempVolume);
     tempDrive = libhal_drive_from_udi(g_HalManager.m_Context, DriveUdi);
@@ -306,7 +307,7 @@ std::vector<CStorageDevice> CHalManager::DeviceFromDriveUdi(const char *udi)
       {
         tempVolume = libhal_volume_from_udi(g_HalManager.m_Context, AllVolumes[n]);
 
-        if (tempVolume)    
+        if (tempVolume)
         {
           CStorageDevice dev(AllVolumes[n]);
           char * FriendlyName = libhal_device_get_property_string(g_HalManager.m_Context, AllVolumes[n], "info.product", NULL);
@@ -334,7 +335,7 @@ std::vector<CStorageDevice> CHalManager::DeviceFromDriveUdi(const char *udi)
     }
     libhal_drive_free(tempDrive);
   }
- 
+
   libhal_free_string_array(AllVolumes);
   return Devices;
 }
@@ -508,12 +509,12 @@ void CHalManager::ParseDevice(const char *udi)
   else if (strcmp(category, "bluetooth_hci") == 0)
   { // Bluetooth-Devices }
   else if (strcmp(category, "portable audio player") == 0)
-  { // MTP-Devices } 
+  { // MTP-Devices }
   else if (strcmp(category, "alsa") == 0)
   { //Alsa Devices }
 */
 
-	libhal_free_string(category);
+  libhal_free_string(category);
 }
 /* Here we should iterate through our remembered devices if any of them are removed */
 bool CHalManager::RemoveDevice(const char *udi)

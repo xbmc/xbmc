@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "system.h"
 #include "LinuxTimezone.h"
 #include "XTimeUtils.h"
@@ -40,7 +61,7 @@ void WINAPI Sleep(DWORD dwMilliSeconds)
     ;
 }
 
-VOID GetLocalTime(LPSYSTEMTIME sysTime) 
+VOID GetLocalTime(LPSYSTEMTIME sysTime)
 {
   const time_t t = time(NULL);
   struct tm* now = localtime(&t);
@@ -55,7 +76,7 @@ VOID GetLocalTime(LPSYSTEMTIME sysTime)
   g_timezone.m_IsDST = now->tm_isdst;
 }
 
-DWORD GetTickCount(void) 
+DWORD GetTickCount(void)
 {
   return SDL_GetTicks();
 }
@@ -65,7 +86,7 @@ BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount, bool bUseHighRes
     return false;
 
 #ifdef __APPLE__
-  
+
   kern_return_t   ret;
   clock_serv_t    aClock;
   mach_timespec_t aTime;
@@ -74,16 +95,16 @@ BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount, bool bUseHighRes
   ret = host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &aClock);
   if (ret != KERN_SUCCESS)
   {
-	  CLog::Log(LOGERROR, "host_get_clock_service() failed: %s", mach_error_string(ret));
-	  return false;
+    CLog::Log(LOGERROR, "host_get_clock_service() failed: %s", mach_error_string(ret));
+    return false;
   }
-	  
+
   // Query it for the time.
   ret = clock_get_time(aClock, &aTime);
-  if (ret != KERN_SUCCESS) 
+  if (ret != KERN_SUCCESS)
   {
-	  CLog::Log(LOGERROR, "clock_get_time() failed: %s", mach_error_string(ret));
-	  return false;
+    CLog::Log(LOGERROR, "clock_get_time() failed: %s", mach_error_string(ret));
+    return false;
   }
 
   lpPerformanceCount->QuadPart = ((__int64)aTime.tv_sec * 1000000000L) + aTime.tv_nsec;
@@ -99,7 +120,7 @@ BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount, bool bUseHighRes
     CLog::Log(LOGERROR,"%s - error %d getting timer", __FUNCTION__, errno);
     return false;
   }
-  
+
   lpPerformanceCount->QuadPart = ((__int64)now.tv_sec * 1000000000L) + now.tv_nsec;
 #endif
 
@@ -115,14 +136,14 @@ BOOL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency) {
   return true;
 }
 
-BOOL FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileTime) 
+BOOL FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileTime)
 {
   // TODO: FileTimeToLocalTime not implemented
   *lpLocalFileTime = *lpFileTime;
   return true;
 }
 
-BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTime) 
+BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTime)
 {
   static const int dayoffset[12] = {0, 31, 59, 90, 120, 151, 182, 212, 243, 273, 304, 334};
 
@@ -136,24 +157,24 @@ BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTi
   sysTime.tm_sec = lpSystemTime->wSecond;
   sysTime.tm_yday = dayoffset[sysTime.tm_mon] + (sysTime.tm_mday - 1);
   sysTime.tm_isdst = g_timezone.m_IsDST;
-  
+
   // If this is a leap year, and we're past the 28th of Feb, increment tm_yday.
   if (IsLeapYear(lpSystemTime->wYear) && (sysTime.tm_yday > 58))
     sysTime.tm_yday++;
-  
+
   time_t t = mktime(&sysTime);
 
   ULARGE_INTEGER result;
   result.QuadPart = (unsigned long long) t * 10000000 + (unsigned long long) lpSystemTime->wMilliseconds * 10000;
   result.QuadPart += WIN32_TIME_OFFSET;
-  
+
   lpFileTime->dwLowDateTime = result.u.LowPart;
   lpFileTime->dwHighDateTime = result.u.HighPart;
-    
+
   return 1;
 }
 
-LONG   CompareFileTime(const FILETIME* lpFileTime1, const FILETIME* lpFileTime2) 
+LONG   CompareFileTime(const FILETIME* lpFileTime1, const FILETIME* lpFileTime2)
 {
   ULARGE_INTEGER t1;
   t1.u.LowPart = lpFileTime1->dwLowDateTime;
@@ -171,7 +192,7 @@ LONG   CompareFileTime(const FILETIME* lpFileTime1, const FILETIME* lpFileTime2)
      return 1;
 }
 
-BOOL   FileTimeToSystemTime( const FILETIME* lpFileTime, LPSYSTEMTIME lpSystemTime) 
+BOOL   FileTimeToSystemTime( const FILETIME* lpFileTime, LPSYSTEMTIME lpSystemTime)
 {
   ULARGE_INTEGER fileTime;
   fileTime.u.LowPart = lpFileTime->dwLowDateTime;
@@ -181,11 +202,11 @@ BOOL   FileTimeToSystemTime( const FILETIME* lpFileTime, LPSYSTEMTIME lpSystemTi
   fileTime.QuadPart /= 10000; /* to milliseconds */
   lpSystemTime->wMilliseconds = fileTime.QuadPart % 1000;
   fileTime.QuadPart /= 1000; /* to seconds */
-  
+
   time_t ft = fileTime.QuadPart;
 
   struct tm tm_ft;
-  localtime_r(&ft,&tm_ft);  
+  localtime_r(&ft,&tm_ft);
 
   lpSystemTime->wYear = tm_ft.tm_year + 1900;
   lpSystemTime->wMonth = tm_ft.tm_mon + 1;
@@ -198,24 +219,24 @@ BOOL   FileTimeToSystemTime( const FILETIME* lpFileTime, LPSYSTEMTIME lpSystemTi
   return 1;
 }
 
-BOOL   LocalFileTimeToFileTime( const FILETIME* lpLocalFileTime, LPFILETIME lpFileTime) 
+BOOL   LocalFileTimeToFileTime( const FILETIME* lpLocalFileTime, LPFILETIME lpFileTime)
 {
   ULARGE_INTEGER l;
   l.u.LowPart = lpLocalFileTime->dwLowDateTime;
   l.u.HighPart = lpLocalFileTime->dwHighDateTime;
- 
+
   l.QuadPart += (unsigned long long) timezone * 10000000;
-  
+
   lpFileTime->dwLowDateTime = l.u.LowPart;
   lpFileTime->dwHighDateTime = l.u.HighPart;
-  
+
   return 1;
 }
 
-BOOL	FileTimeToTimeT(const FILETIME* lpLocalFileTime, time_t *pTimeT) {
-  
+BOOL  FileTimeToTimeT(const FILETIME* lpLocalFileTime, time_t *pTimeT) {
+
   if (lpLocalFileTime == NULL || pTimeT == NULL)
-	return false;
+  return false;
 
   ULARGE_INTEGER fileTime;
   fileTime.u.LowPart  = lpLocalFileTime->dwLowDateTime;
@@ -224,7 +245,7 @@ BOOL	FileTimeToTimeT(const FILETIME* lpLocalFileTime, time_t *pTimeT) {
   fileTime.QuadPart -= WIN32_TIME_OFFSET;
   fileTime.QuadPart /= 10000; /* to milliseconds */
   fileTime.QuadPart /= 1000; /* to seconds */
-  
+
   time_t ft = fileTime.QuadPart;
 
   struct tm tm_ft;
@@ -234,15 +255,15 @@ BOOL	FileTimeToTimeT(const FILETIME* lpLocalFileTime, time_t *pTimeT) {
   return true;
 }
 
-BOOL	TimeTToFileTime(time_t timeT, FILETIME* lpLocalFileTime) {
+BOOL  TimeTToFileTime(time_t timeT, FILETIME* lpLocalFileTime) {
 
   if (lpLocalFileTime == NULL)
-	return false;
+  return false;
 
   ULARGE_INTEGER result;
   result.QuadPart = (unsigned long long) timeT * 10000000;
   result.QuadPart += WIN32_TIME_OFFSET;
-  
+
   lpLocalFileTime->dwLowDateTime  = result.u.LowPart;
   lpLocalFileTime->dwHighDateTime = result.u.HighPart;
 
