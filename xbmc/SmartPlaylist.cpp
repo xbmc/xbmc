@@ -199,7 +199,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
   else if (type == "albums")
   {
     fields.push_back(FIELD_GENRE);
-    fields.push_back(FIELD_TITLE);
+    fields.push_back(FIELD_ALBUM);
     fields.push_back(FIELD_ARTIST);        // any artist
     fields.push_back(FIELD_ALBUMARTIST);  // album artist
     fields.push_back(FIELD_YEAR);
@@ -213,7 +213,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
   }
   else if (type == "tvshows")
   {
-    fields.push_back(FIELD_TITLE);
+    fields.push_back(FIELD_TVSHOWTITLE);
     fields.push_back(FIELD_PLOT);
     fields.push_back(FIELD_STATUS);
     fields.push_back(FIELD_VOTES);
@@ -473,7 +473,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
   }
   else if (type == "albums")
   {
-    if (field == FIELD_TITLE) return "strAlbum";
+    if (field == FIELD_ALBUM) return "strAlbum";
     else if (field == FIELD_GENRE) return "never_use_this"; // join required
     else if (field == FIELD_ARTIST) return "never_use_this"; // join required
     else if (field == FIELD_ALBUMARTIST) return "never_use_this"; // join required
@@ -531,7 +531,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
   if (type == "tvshows")
   {
     CStdString result;
-    if (field == FIELD_TITLE) result.Format("c%02d", VIDEODB_ID_TV_TITLE);
+    if (field == FIELD_TVSHOWTITLE) result.Format("c%02d", VIDEODB_ID_TV_TITLE);
     else if (field == FIELD_PLOT) result.Format("c%02d", VIDEODB_ID_TV_PLOT);
     else if (field == FIELD_STATUS) result.Format("c%02d", VIDEODB_ID_TV_STATUS);
     else if (field == FIELD_VOTES) result.Format("c%02d", VIDEODB_ID_TV_VOTES);
