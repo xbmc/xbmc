@@ -57,7 +57,7 @@ int CDVDOverlayCodecCC::DecodeFieldData(BYTE* pData, int iSize)
 }
 */
 
-int CDVDOverlayCodecCC::Decode(BYTE* pData, int iSize)
+int CDVDOverlayCodecCC::Decode(BYTE* pData, int iSize, double pts, double duration)
 {
   // minimum amount of data is even more for cc
   decode_cc(m_cc_decoder, pData, iSize);
