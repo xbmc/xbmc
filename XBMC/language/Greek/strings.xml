@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 05/17/2008-->
+<!--Date of translation: 05/19/2008-->
 <!--$Revision$-->
 <!--Based on english strings version 12748-->
 <strings>
@@ -162,9 +162,9 @@
   <string id="225">Αλλαγή χρόνου</string>
   <string id="227">Αναζήτηση πληροφοριών Μουσικών CD's </string>
   <string id="228">Ανακάτεμα Λίστας Αναπαραγωγής στην εκκίνηση</string>
-  <string id="229">Χρόνος Spindown Σκληρού Δίσκου</string>
+  <string id="229">Ελάττωση περιστροφής (Spindown)</string>
   <string id="230">Φίλτρα</string>
-  <string id="231">Κανένα</string>
+  <string id="231">Καμία</string>
   <string id="232">Σημείο</string>
   <string id="233">Γραμμικά</string>
   <string id="234">Ανισοτροπικά</string>
@@ -232,7 +232,7 @@
   <string id="298">Σελιδοδείκτες</string>
   <string id="303">Καθυστέρηση</string>
   <string id="304">Γλώσσα</string>
-  <string id="305">Ενεργοποίηση</string>
+  <string id="305">Ενεργό/ή</string>
   <string id="306">Μη-διαστρωματωμένο</string>
   <string id="307">- Αυτόματο postprocessing</string>
   <string id="308">- Κάθετο φίλτρο deblocking</string>
@@ -274,7 +274,7 @@
   <string id="344">Ηθοποιοί</string>
   <string id="345">Έτος</string>
   <string id="350">Προγράμματα</string>
-  <string id="351">Ανενεργή</string>
+  <string id="351">Ανενεργό/ή</string>
   <string id="352">Αμυδρό φως</string>
   <string id="353">Μαύρη οθόνη</string>
   <string id="354">Matrix Trails</string>
@@ -371,7 +371,7 @@
   <string id="446">DVD</string>
   <string id="447">Αυτόματη έναρξη</string>
   <string id="448">LCD</string>
-  <string id="449">Ενεργοποιημένο</string>
+  <string id="449">Ενεργό/ή</string>
   <string id="450">Στήλες</string>
   <string id="451">Διεύθυνση 1ης Γραμμής</string>
   <string id="452">Διεύθυνση 2ης Γραμμής</string>
@@ -393,7 +393,7 @@
   <string id="469">Θέση OSD</string>
   <string id="470">Συντελεστές</string>
   <string id="471">Τσιπάκι</string>
-  <string id="474">Απενεργοποιημένο</string>
+  <string id="474">Ανενεργό/ή</string>
   <string id="475">Μουσική μόνο</string>
   <string id="476">Μουσική &amp; Βίντεο</string>
   <string id="477">Αδύνατη η φόρτωση της Λίστας Αναπαραγωγής</string>
@@ -428,7 +428,7 @@
   <string id="510">Ενεργοποίηση Απεικονίσεων</string>
   <string id="511">Ενεργοποίηση εναλλαγής λειτουργίας βίντεο</string>
   <string id="512">Παράθυρο εκκίνησης</string>
-  <string id="513">Παράθυρο Home</string>
+  <string id="513">Αρχικό</string>
   <string id="514">Χειροκίνητες Ρυθμίσεις</string>
   <string id="515">Είδος</string>
   <string id="516">Αρχειοθέτηση σε ένα φάκελο</string>
@@ -462,7 +462,7 @@
   <string id="544">Πληροφορίες</string>
   <string id="550">Κατάταξη: %s</string>
   <string id="551">Όνομα</string>
-  <string id="552">Ημ/νία</string>
+  <string id="552">Ημερομηνία</string>
   <string id="553">Μέγεθος</string>
   <string id="554">Κομμάτι</string>
   <string id="555">Ώρα</string>
@@ -510,7 +510,7 @@
   <string id="606">Αριθμός κομματιού:</string>
   <string id="607">Προς:</string>
   <string id="608">Αδυναμία Αντιγραφής CD ή Κομματιού</string>
-  <string id="609">Δεν ορίσθηκε διαδρομή εξαγωγής CDDA στο XboxMediaCenter.xml</string>
+  <string id="609">Δεν ορίσθηκε διαδρομή εξαγωγής CDDA.</string>
   <string id="610">Αντιγραφή Κομματιού</string>
   <string id="620">Αντιγραφή CD</string>
   <string id="621">Κωδικοποιητής</string>
@@ -587,7 +587,7 @@
   <string id="735">- Σετ Χαρακτήρων</string>
   <string id="736">- Στυλ</string>
   <string id="737">- Χρώμα</string>
-  <string id="738">Κανονικό</string>
+  <string id="738">Κανονικά</string>
   <string id="739">Έντονα</string>
   <string id="740">Πλάγια</string>
   <string id="741">Πλάγια έντονα</string>
@@ -698,7 +698,7 @@
   <string id="1220">Εικόνες &amp; Αρχεία</string>
   <string id="1221">Μουσική &amp; Βίντεο &amp; Εικόνες</string>
   <string id="1222">Μουσική &amp; Βίντεο &amp; Εικόνες &amp; Αρχεία</string>
-  <string id="1223">Απενεργοποιημένο</string>
+  <string id="1223">Ανενεργό/ή</string>
   <string id="1226">Αρχεία &amp; Μουσική &amp; Βίντεο</string>
   <string id="1227">Αρχεία &amp; Εικόνες &amp; Μουσική</string>
   <string id="1228">Αρχεία &amp; Εικόνες &amp; Βίντεο</string>
@@ -885,8 +885,8 @@
   <string id="12900">Προφύλαξη οθόνης</string>
   <string id="12901">OSD πλήρους οθόνης</string>
   <string id="13000">Σύστημα</string>
-  <string id="13001">Άμεσο Spindown Σκληρού Δίσκου</string>
-  <string id="13002">Μόνο Βίντεο</string>
+  <string id="13001">Άμεση Ελάττωση περιστροφής (Spindown)</string>
+  <string id="13002">Βίντεο μόνο</string>
   <string id="13003">- Καθυστέρηση</string>
   <string id="13004">- Ελάχιστη διάρκεια αρχείου</string>
   <string id="13005">Τερματισμός Xbox</string>
@@ -894,7 +894,7 @@
   <string id="13007">Χρήση τροποποιημένου Εκκινητή</string>
   <string id="13100">Φίλτρο Flicker</string>
   <string id="13105">Κενός Κατακόρυφος χρονισμός</string>
-  <string id="13106">Απενεργοποιημένο</string>
+  <string id="13106">Ανενεργό/ή</string>
   <string id="13107">Ενεργοποιημένο During Video Playback</string>
   <string id="13108">Πάντα Ενεργοποιημένο</string>
   <string id="13150">Κλειδί</string>
@@ -1105,7 +1105,7 @@
   <string id="14042">Μηχανή διεύθυνσης IP</string>
   <string id="14043">- Τερματισμός κατά την ώρα της αναπαραγωγής</string>
   <string id="14044">%i λεπτά</string>
-  <string id="14045">%i δεύτερα</string>
+  <string id="14045">%i sec</string>
   <string id="14046">%i ms</string>
   <string id="14047">%i %%</string>
   <string id="14048">%i kbps</string>

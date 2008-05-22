@@ -677,7 +677,7 @@ namespace PYXBMC
 
   PyObject* XBMC_GetSupportedMedia(PyObject *self, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = { "id", NULL };
+    static char *keywords[] = { "media", NULL };
     char *media = NULL;
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(

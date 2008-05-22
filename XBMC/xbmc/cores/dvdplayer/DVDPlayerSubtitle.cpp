@@ -177,11 +177,10 @@ bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, string &filename)
 
   CDVDCodecOptions options;
   if(!m_pOverlayCodec->Open(hints, options))
-  {
-    CLog::Log(LOGERROR, "%s - Unable to init overlay codec", __FUNCTION__);
     CloseStream(false);
     return false;
-  }
+
+  CLog::Log(LOGERROR, "%s - Unable to init overlay codec", __FUNCTION__);
   return true;
 }
 
