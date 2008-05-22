@@ -96,10 +96,6 @@ DllLoader gdi32("gdi32.dll",              false, true, false, export_gdi32);
 DllLoader comctl32("comctl32.dll",        false, true, false, export_comctl32);
 DllLoader pncrt("pncrt.dll",              false, true, false, export_pncrt);
 DllLoader iconvx("iconv.dll",             false, true, false, export_iconvx);
-DllLoader kernel32("kernel32.dll",        false, true, false, export_kernel32);
-DllLoader msvcr71("msvcr71.dll",          false, true, false, export_msvcr71);
-DllLoader msvcrt("msvcrt.dll",            false, true, false, export_msvcrt);
-DllLoader pncrt("pncrt.dll",              false, true, false, export_pncrt);
 DllLoader zlib("zlib1.dll",               false, true, false, export_zlib);
 #else
 extern Export export_kernel32[];
