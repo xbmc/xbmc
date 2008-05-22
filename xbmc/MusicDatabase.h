@@ -145,6 +145,7 @@ public:
   bool GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist,long idAlbum);
   bool GetSongsByYear(const CStdString& baseDir, CFileItemList& items, long year);
   bool GetSongsByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items);
+  bool GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, CFileItemList &items);
   bool GetRandomSong(CFileItem* item, long& lSongId, const CStdString& strWhere);
   int GetSongsCount();
   int GetSongsCount(const CStdString& strWhere);
@@ -190,11 +191,10 @@ protected:
   bool SetAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs);
   bool GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs);
 private:
-  bool GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, CFileItemList &items, bool needInfo=false);
   void SplitString(const CStdString &multiString, std::vector<CStdString> &vecStrings, CStdString &extraStrings);
   CSong GetSongFromDataset(bool bWithMusicDbPath=false);
   CArtist GetArtistFromDataset(dbiplus::Dataset* pDS, bool needThumb=true);
-  CAlbum GetAlbumFromDataset(dbiplus::Dataset* pDS);
+  CAlbum GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL=false);
   void GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath);
   bool CleanupSongs();
   bool CleanupSongsByIds(const CStdString &strSongIds);
@@ -256,7 +256,16 @@ private:
     album_strArtist,
     album_strGenre,
     album_iYear,
-    album_strThumb
+    album_strThumb,
+    album_idAlbumInfo,
+    album_strMoods,
+    album_strStyles,
+    album_strThemes,
+    album_strReview,
+    album_strLabel,
+    album_strType,
+    album_strThumbURL,
+    album_iRating
   } AlbumFields;
 
   enum _ArtistFields 

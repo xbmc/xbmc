@@ -3538,7 +3538,7 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
       smartpl.OpenAndReadName(item.m_strPath);
       CPlayList playlist;
       playlist.Add(items);
-      return ProcessAndStartPlaylist(smartpl.GetName(), playlist, smartpl.GetType() == "music"?PLAYLIST_MUSIC:PLAYLIST_VIDEO);
+      return ProcessAndStartPlaylist(smartpl.GetName(), playlist, (smartpl.GetType() == "songs" || smartpl.GetType() == "albums") ? PLAYLIST_MUSIC:PLAYLIST_VIDEO);
     }
   }
   else if (item.IsPlayList() || item.IsInternetStream())

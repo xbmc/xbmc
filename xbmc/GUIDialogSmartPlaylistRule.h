@@ -12,7 +12,7 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void OnInitWindow();
 
-  static bool EditRule(CSmartPlaylistRule &rule, const CStdString& type="music");
+  static bool EditRule(CSmartPlaylistRule &rule, const CStdString& type="songs");
 
 protected:
   void OnValue();
