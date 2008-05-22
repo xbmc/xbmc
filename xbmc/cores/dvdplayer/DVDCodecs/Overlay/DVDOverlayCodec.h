@@ -57,15 +57,7 @@ public:
    * returns one or a combination of VC_ messages
    * pData and iSize can be NULL, this means we should flush the rest of the data.
    */
-  virtual int Decode(BYTE* data, int size) = 0;
-
-  /*
-   * Some subtitles(namely ASS/SSA) require pts to correctly decode
-   */
-  virtual int Decode(BYTE* data, int size, double pts, double duration)
-    {
-      return Decode(data, size);
-    }
+  virtual int Decode(BYTE* data, int size, double pts, double duration) = 0;
   
   /*
    * Reset the decoder.

@@ -23,6 +23,7 @@
 #include "GUIViewControl.h"
 #include "Util.h"
 #include "FileItem.h"
+#include "utils/GUIInfoManager.h"
 
 CGUIViewControl::CGUIViewControl(void)
 {
@@ -315,6 +316,9 @@ void CGUIViewControl::UpdateViewAsControl(const CStdString &viewLabel)
 
 void CGUIViewControl::UpdateViewVisibility()
 {
+  // first reset our infomanager cache, as it's likely that the vis conditions
+  // used for views (i.e. based on contenttype) may have changed
+  g_infoManager.ResetCache();
   m_visibleViews.clear();
   for (unsigned int i = 0; i < m_allViews.size(); i++)
   {

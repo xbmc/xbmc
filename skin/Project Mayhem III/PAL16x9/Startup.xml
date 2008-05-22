@@ -25,6 +25,15 @@
 			<width>600</width>
 			<height>400</height>
 			<texture>home-myprograms\home-myprograms.png</texture>
+			<visible>System.Platform.Xbox</visible>
+		</control>
+		<control type="image">
+			<posx>180</posx>
+			<posy>89</posy>
+			<width>600</width>
+			<height>400</height>
+			<texture>home-myvideos\home-myvideos.png</texture>
+			<visible>!System.Platform.Xbox</visible>
 		</control>
 		<control type="image">
 			<description>background image</description>
