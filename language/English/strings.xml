@@ -1771,9 +1771,9 @@
 
   <string id="21420">Value to match</string>
   <string id="21421">Smart Playlist Rule</string>
-  <string id="21422">Match songs where</string>
+  <string id="21422">Match items where</string>
   <string id="21423">New Rule...</string>
-  <string id="21424">Songs must match</string>
+  <string id="21424">Items must match</string>
   <string id="21425">all of the rules</string>
   <string id="21426">one or more of the rules</string>
   <string id="21427">Limit to</string>
@@ -1783,13 +1783,12 @@
   <string id="21431">descending</string>
   <string id="21432">Edit Smart Playlist</string>
   <string id="21433">Name of the playlist</string>
-  <string id="21434">Find songs matching</string>
+  <string id="21434">Find items where</string>
   <string id="21435">Edit</string>
-  <string id="21436">%i songs</string>
+  <string id="21436">%i items</string>
   <string id="21437">New Smart Playlist...</string>
   <string id="21438">%c Drive</string>
   <string id="21439">Edit Party Mode Rules</string>
-  <string id="21440">New Smart Folder...</string>
   <string id="21441">Watched count</string>
   <string id="21442">Episode Title</string>
 
