@@ -120,19 +120,25 @@ rem	CONFIG START
   Echo exclude.txt>>exclude.txt
   rem and exclude potential leftovers
   Echo mediasources.xml>>exclude.txt
-  Echo cache>>exclude.txt
-  Echo database>>exclude.txt
-  Echo playlists>>exclude.txt
-  Echo script_data>>exclude.txt
-  Echo thumbnails>>exclude.txt
   Echo advancedsettings.xml>>exclude.txt
   Echo guisettings.xml>>exclude.txt
   Echo profiles.xml>>exclude.txt
   Echo sources.xml>>exclude.txt
+  Echo userdata\cache\>>exclude.txt
+  Echo userdata\database\>>exclude.txt
+  Echo userdata\playlists\>>exclude.txt
+  Echo userdata\script_data\>>exclude.txt
+  Echo userdata\thumbnails\>>exclude.txt
+  rem UserData\visualisations contains currently only xbox visualisationfiles
+  Echo userdata\visualisations\>>exclude.txt
+  rem other platform stuff
   Echo lib-osx>>exclude.txt
+  Echo "FileZilla Server.xml">>exclude.txt
+  Echo asound.conf>>exclude.txt
+  Echo voicemasks.xml>>exclude.txt
 
   xcopy %EXE% BUILD_WIN32\Xbmc > NUL
-  xcopy ..\..\UserData BUILD_WIN32\Xbmc\UserData /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  xcopy ..\..\userdata BUILD_WIN32\Xbmc\userdata /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
   xcopy ..\..\*.txt BUILD_WIN32 /EXCLUDE:exclude.txt  > NUL
   copy ..\..\LICENSE.GPL BUILD_WIN32 > NUL
   copy sources.xml BUILD_WIN32\Xbmc > NUL
