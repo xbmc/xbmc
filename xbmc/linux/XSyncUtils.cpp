@@ -1,3 +1,23 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "XSyncUtils.h"
 #include "PlatformDefs.h"
@@ -41,7 +61,7 @@ bool InitializeRecursiveMutex(HANDLE hMutex, BOOL bInitialOwner) {
 }
 
 bool  DestroyRecursiveMutex(HANDLE hMutex) {
-  if (hMutex == NULL || hMutex->m_hMutex == NULL || hMutex->m_hSem == NULL) 
+  if (hMutex == NULL || hMutex->m_hMutex == NULL || hMutex->m_hSem == NULL)
     return false;
 
   SDL_DestroySemaphore(hMutex->m_hSem);
@@ -80,7 +100,7 @@ bool WINAPI ReleaseMutex( HANDLE hMutex ) {
   return bOk;
 }
 
-void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer) 
+void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
 {
   if (!lpBuffer)
     return;
@@ -92,12 +112,12 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
   uint64_t physmem;
   size_t len = sizeof physmem;
   int mib[2] = { CTL_HW, HW_MEMSIZE };
-  size_t miblen = sizeof(mib) / sizeof(mib[0]); 
+  size_t miblen = sizeof(mib) / sizeof(mib[0]);
 
   // Total physical memory.
   if (sysctl(mib, miblen, &physmem, &len, NULL, 0) == 0 && len == sizeof (physmem))
       lpBuffer->dwTotalPhys = physmem;
-      
+
   // Virtual memory.
   mib[0] = CTL_VM; mib[1] = VM_SWAPUSAGE;
   struct xsw_usage swap;
@@ -107,7 +127,7 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
       lpBuffer->dwAvailPageFile = swap.xsu_avail;
       lpBuffer->dwTotalVirtual = lpBuffer->dwTotalPhys + swap.xsu_total;
   }
-  
+
   // In use.
   mach_port_t stat_port = mach_host_self();
   vm_statistics_data_t vm_stat;
@@ -121,7 +141,7 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
       if (sysctl(mib, miblen, &pageSize, &len, NULL, 0) == 0)
       {
           uint64_t used = (vm_stat.active_count + vm_stat.inactive_count + vm_stat.wire_count) * pageSize;
-  
+
           lpBuffer->dwAvailPhys = lpBuffer->dwTotalPhys - used;
           lpBuffer->dwAvailVirtual  = lpBuffer->dwAvailPhys; // FIXME.
       }
@@ -135,7 +155,7 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
   lpBuffer->dwAvailPageFile  = (info.freeswap * info.mem_unit);
   lpBuffer->dwAvailPhys    = (info.freeram * info.mem_unit);
   lpBuffer->dwAvailVirtual  = (info.freeram * info.mem_unit);
-  lpBuffer->dwTotalPhys    = (info.totalram * info.mem_unit); 
+  lpBuffer->dwTotalPhys    = (info.totalram * info.mem_unit);
   lpBuffer->dwTotalVirtual  = (info.totalram * info.mem_unit);
 #endif
 }
@@ -143,40 +163,40 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
 //////////////////////////////////////////////////////////////////////////////
 DWORD WINAPI WaitForEvent(HANDLE hHandle, DWORD dwMilliseconds)
 {
-	DWORD dwRet = 0;
-	int   nRet = 0;
+  DWORD dwRet = 0;
+  int   nRet = 0;
 
-	if (dwMilliseconds == 0)
-	{
-		if (hHandle->m_bEventSet == true)
-			nRet = 0;
-		else
-			nRet = SDL_MUTEX_TIMEDOUT;
-	}
-	else if (dwMilliseconds == INFINITE)
-	{
-		if (hHandle->m_bEventSet == false)
-			nRet = SDL_CondWait(hHandle->m_hCond, hHandle->m_hMutex);
-		if (hHandle->m_bManualEvent == false)
-			hHandle->m_bEventSet = false;
-	}
-	else
-	{
-		if (hHandle->m_bEventSet == false)
-			nRet = SDL_CondWaitTimeout(hHandle->m_hCond, hHandle->m_hMutex, dwMilliseconds);
-		if (hHandle->m_bManualEvent == false && nRet != SDL_MUTEX_TIMEDOUT)
-			hHandle->m_bEventSet = false;
-	}
+  if (dwMilliseconds == 0)
+  {
+    if (hHandle->m_bEventSet == true)
+      nRet = 0;
+    else
+      nRet = SDL_MUTEX_TIMEDOUT;
+  }
+  else if (dwMilliseconds == INFINITE)
+  {
+    if (hHandle->m_bEventSet == false)
+      nRet = SDL_CondWait(hHandle->m_hCond, hHandle->m_hMutex);
+    if (hHandle->m_bManualEvent == false)
+      hHandle->m_bEventSet = false;
+  }
+  else
+  {
+    if (hHandle->m_bEventSet == false)
+      nRet = SDL_CondWaitTimeout(hHandle->m_hCond, hHandle->m_hMutex, dwMilliseconds);
+    if (hHandle->m_bManualEvent == false && nRet != SDL_MUTEX_TIMEDOUT)
+      hHandle->m_bEventSet = false;
+  }
 
-	// Translate return code.
-	if (nRet == 0)
-		dwRet = WAIT_OBJECT_0;
-	else if (nRet == SDL_MUTEX_TIMEDOUT)
-		dwRet = WAIT_TIMEOUT;
-	else
-		dwRet = WAIT_FAILED;
-	
-	return dwRet;
+  // Translate return code.
+  if (nRet == 0)
+    dwRet = WAIT_OBJECT_0;
+  else if (nRet == SDL_MUTEX_TIMEDOUT)
+    dwRet = WAIT_TIMEOUT;
+  else
+    dwRet = WAIT_FAILED;
+
+  return dwRet;
 }
 
 DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds ) {
@@ -188,19 +208,19 @@ DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds ) {
 
   switch (hHandle->GetType()) {
     case CXHandle::HND_EVENT:
-		
-			SDL_mutexP(hHandle->m_hMutex);
-			
-			// Perform the wait.
-			dwRet = WaitForEvent(hHandle, dwMilliseconds);
-			
-			SDL_mutexV(hHandle->m_hMutex);
-			break;
-      
+
+      SDL_mutexP(hHandle->m_hMutex);
+
+      // Perform the wait.
+      dwRet = WaitForEvent(hHandle, dwMilliseconds);
+
+      SDL_mutexV(hHandle->m_hMutex);
+      break;
+
     case CXHandle::HND_MUTEX:
 
       SDL_mutexP(hHandle->m_hMutex);
-      if (hHandle->OwningThread == SDL_ThreadID() && 
+      if (hHandle->OwningThread == SDL_ThreadID() &&
         hHandle->RecursionCount > 0) {
         hHandle->RecursionCount++;
         dwRet = WAIT_OBJECT_0;
@@ -212,24 +232,24 @@ DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds ) {
         break; // no need for the wait.
 
     case CXHandle::HND_THREAD:
-			
-			SDL_mutexP(hHandle->m_hMutex);
-			
-			// Perform the wait.
-			dwRet = WaitForEvent(hHandle, dwMilliseconds);
+
+      SDL_mutexP(hHandle->m_hMutex);
+
+      // Perform the wait.
+      dwRet = WaitForEvent(hHandle, dwMilliseconds);
 
       // In case of successful wait with manual event wake up all threads that are waiting.
       if (dwRet == WAIT_OBJECT_0 && (hHandle->GetType() == CXHandle::HND_EVENT || hHandle->GetType() == CXHandle::HND_THREAD) && hHandle->m_bManualEvent)
-			{
-				SDL_CondBroadcast(hHandle->m_hCond);
-			}
-			else if (dwRet == WAIT_OBJECT_0 && hHandle->GetType() == CXHandle::HND_MUTEX)
-			{
-				hHandle->OwningThread = SDL_ThreadID();
+      {
+        SDL_CondBroadcast(hHandle->m_hCond);
+      }
+      else if (dwRet == WAIT_OBJECT_0 && hHandle->GetType() == CXHandle::HND_MUTEX)
+      {
+        hHandle->OwningThread = SDL_ThreadID();
         hHandle->RecursionCount = 1;
-			}
-			
-			SDL_mutexV(hHandle->m_hMutex);
+      }
+
+      SDL_mutexV(hHandle->m_hMutex);
 
       break;
     default:
@@ -248,13 +268,13 @@ DWORD WINAPI WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWait
   BOOL bWaitEnded    = FALSE;
   DWORD dwStartTime   = SDL_GetTicks();
   BOOL *bDone = new BOOL[nCount];
-  
-  for (unsigned int nFlag=0; nFlag<nCount; nFlag++ ) 
+
+  for (unsigned int nFlag=0; nFlag<nCount; nFlag++ )
     bDone[nFlag] = FALSE;
 
   DWORD nSignalled = 0;
   while (!bWaitEnded) {
-  
+
     for (unsigned int i=0; i < nCount; i++) {
 
       if (!bDone[i]) {
@@ -330,7 +350,7 @@ LONG InterlockedCompareExchange(
   if (*Destination == Comparand)
     *Destination = Exchange;
   SDL_mutexV(g_mutex);
-  
+
   return nKeep;
 }
 
@@ -346,7 +366,7 @@ LONG InterlockedExchange(
   LONG nKeep = *Target;
   *Target = Value;
   SDL_mutexV(g_mutex);
-  
+
   return nKeep;
 }
 

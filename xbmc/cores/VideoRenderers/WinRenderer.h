@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -19,7 +21,6 @@
  *
  */
 
-#pragma once
 #ifndef _LINUX
 
 #include "GraphicContext.h"
@@ -146,7 +147,7 @@ public:
 
   void AutoCrop(bool bCrop);
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
-  RESOLUTION GetResolution();  
+  RESOLUTION GetResolution();
 
 protected:
   virtual void Render(DWORD flags);

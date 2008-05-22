@@ -1,3 +1,23 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
 #include "WIN32Util.h"
@@ -58,7 +78,7 @@ CStdString CWIN32Util::MountShare(const CStdString &smbPath, const CStdString &s
     CLog::Log(LOGERROR, "Can't mount %s to %s. Error code %d",strRemote.c_str(), strDrive.c_str(),dwRes);
     return StringUtils::EmptyString;
   }
-  
+
   return strDrive;
 }
 
@@ -112,7 +132,7 @@ CStdString CWIN32Util::URLEncode(const CURL &url)
     flat += "@";
   }
 
-  flat += url.GetHostName();  
+  flat += url.GetHostName();
 
   /* okey sadly since a slash is an invalid name we have to tokenize */
   std::vector<CStdString> parts;
@@ -131,14 +151,14 @@ CStdString CWIN32Util::URLEncode(const CURL &url)
 
 int CWIN32Util::GetDriveStatus(const CStdString &strPath)
 {
-  HANDLE hDevice;               // handle to the drive to be examined 
+  HANDLE hDevice;               // handle to the drive to be examined
   int iResult;                  // results flag
   DWORD junk;                   // discard results
   ULONG ulChanges=0;
 
-  hDevice = CreateFile(strPath.c_str(),  // drive 
+  hDevice = CreateFile(strPath.c_str(),  // drive
                     0,                // no access to the drive
-                    FILE_SHARE_READ,  // share mode 
+                    FILE_SHARE_READ,  // share mode
                     NULL,             // default security attributes
                     OPEN_EXISTING,    // disposition
                     FILE_ATTRIBUTE_READONLY,                // file attributes
