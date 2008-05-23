@@ -78,6 +78,7 @@ public:
   WCHAR m_strFrameRate[20];  // Frame rate written to a CStdString
   HANDLE m_hFrameCounter;     // Handle to frame rate perf counter
   bool m_bStop;
+  bool m_AppActive;
 #ifdef HAS_GAMEPAD
   // Members to init the XINPUT devices.
   XDEVICE_PREALLOC_TYPE* m_InputDeviceTypes;
