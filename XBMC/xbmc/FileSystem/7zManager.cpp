@@ -23,7 +23,8 @@
 #include "../Util.h"
 #include "../utils/SingleLock.h"
 #include "../FileItem.h"
-
+//#include "../../guilib/StdString.h"
+#include <vector>
 #include <set>
 
 using namespace std;
@@ -132,7 +133,9 @@ void CFile7zExtractThread::Run()
     m_inFile  = new XFILE::CFile();
     m_TempOut = new XFILE::CFile(); //Is this needed?
     CStdString tempfile;
-    tempfile.Format("z:\\%s", f->Name);
+    std::vector<CStdString> tokens;
+    CUtil::Tokenize(f->Name, tokens, "/");
+    tempfile.Format("z:\\%s", tokens[tokens.size() - 1]);
     CLog::Log(LOGNOTICE, "7z: Going to write temp to %s", tempfile.c_str());
     if (!m_outFile->OpenForWrite(tempfile.c_str(), true, true))
     {
