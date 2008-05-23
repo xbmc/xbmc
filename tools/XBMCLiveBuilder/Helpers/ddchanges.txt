@@ -1,0 +1,109 @@
+0.5
+===
+- count, seek and skip can now use a multiplicative suffix like bs
+- stdin and stdout are now the defaults
+
+0.4beta6
+========
+- Implemented of=- for stdout
+- Renamed if=- for stdin
+- Messages are now printed to stderr
+
+0.4beta5
+========
+- If a partial block write fails, the buffer is padded to the end of the block and the write is attempted again.
+  This allows disk images which are not an exact multiple of the block size to be written to disk.
+
+0.4beta4
+========
+- Implemented if=stdin
+- added --filter=<filter> to limit the types of devices which can be written to
+  <filter> can be one of:
+    fixed	Only write to a fixed disk
+    removable	Only write to a removable disk
+    disk	Only write to any kind of disk
+    partition	Only write to a partition
+
+    These filters may change in the future.
+- set default filter by renaming to dd-<filter>.exe (eg. dd-removable.exe can only write to removable disks)
+    
+
+0.4beta2
+========
+- --list shows disk and partition sizes
+- --size added
+
+0.4beta1
+========
+- --list shows correct syntax for drive letters
+- virtual devices added
+
+0.3 -> 0.4
+==========
+- rrtool runs on Linux
+
+0.2 -> 0.3
+==========
+- Modified native device scan to find noncontigiously numbered devices
+- Show symlink destinations in device scan
+- Open source file with FILE_SHARE_READ
+- Stupid bug opening native output devices (assigned handle to input instead of
+  output)
+- Stupid bug where native devices were always read only
+- addedd progress indicator
+
+
+WTF is the deal with all the device names?
+==========================================
+With every version of windows, the real name of disks and partitions changes.
+If you realy want to know what is going on, grab a copy of System Internals
+WinObj.
+
+There are 2 main sets of devices.  Those which are exported to the Win32
+namespace and those which can only be accessed from NT Native API.
+
+Win32 devices names are also called "Dos Devices" and are opened using the Win32
+CreateFile function (This means Create a File handle, which may refer to an
+already existing file).  The filename is passed in as '\\.\devicename'.
+This gets confusing because the "Dos Devices" are stored inside the NT directory
+called '\??' so the Win32 API converts '\\.\devicename' into '\??\devicename'.
+
+For these "Dos Devices", dd uses the prefix '\\.'.  When it sees this prefix it
+open the device using the Win32 API like a normal file.
+
+The other devices are only exported into the NT object namespace.  These devices
+are normally in the 'Device' directory so for example, the first cdrom CdRom0
+is called '\Device\CdRom0'.  This name must be passed into NtCreateFile so dd
+introduces a special prefix '\\?' to indicate this.  Therefor, 'dd --list' will
+show names like '\\?\Device\CdRom0'
+
+Multiple names
+Unfortunatly, there are multiple ways to identify a single device.  Each version
+of windows is different but normally there is only a single device and the
+alternative name is a symbolic link.  Symbolic links will be familiar to Unix
+users but for the sake of Windows users, it is like a shortcut to another file.
+These symbolic links can only exist in the NT object namespace and are not
+generaly exported to Win32.  (AFAIK, the normal NT filesystems do not suport
+Unix like symbolic links, though there is no reason why they couldn't)
+
+'dd --list' will print out the destination of a link under the name of the
+device.  These links are always is the NT namespace and start with '\\?'.
+You can use these links to match up which devices from each namespace are
+indeed the same device.
+
+Simple eh?
+
+Unmounting devices
+==================
+Before writing to a device, it is probably a good idea to make sure that it is
+not mounted.  This is especially important if you will be writing a new
+partition table.  For this reason dd also implements a --unmount=<mount point>
+flag.  This will unmount the particular mount point.  This should only be used
+for removable media.  The flag can be combined with regular dd options and can
+be used multiple times to unmount from multiple locations
+
+dd --umount=i:\
+
+WARNING: This removes the drive letter assignment.  To restore the drive letter
+you may have to use the Disk Manager (diskmgmt.msc)!
+
