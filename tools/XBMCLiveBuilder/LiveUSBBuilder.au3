@@ -6,6 +6,7 @@ AutoItSetOption("MustDeclareVars", 1)
 
 Dim $gs_ConsoleMsgs
 
+; Using GPL-ed helpers only
 Const $SYSLINUX_EXE = "syslinux.exe"
 Const $DD_EXE = "DD.exe"
 
