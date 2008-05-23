@@ -2,43 +2,29 @@
 #include <GUIListView.au3>
 #include <GuiEdit.au3>
 
-; AutoItSetOption("MustDeclareVars", 1)
+AutoItSetOption("MustDeclareVars", 1)
 
 Dim $gs_ConsoleMsgs
 
-;
-; Path of HP USB DIsk Format Utility, syslinux, EXTIMAGE
-;
-
-Const $LIVEXBMC_FILES = "LiveXBMC"
-
-Const $HPUSBFORMAT_EXE = "HPUSBF.exe"
-Const $HPUSBFORMAT_SYSFILES = "BOOTFILES"
-
 Const $SYSLINUX_EXE = "syslinux.exe"
-Const $SYSLINUX_SWITCHES = "-f -m -a"
+Const $DD_EXE = "DD.exe"
 
-Const $EXTIMAGE_EXE = "EXTIMAGE.exe"
-Const $EXTIMAGE_DLL = "WIMADLL.DLL"
+Dim $GUI, $M_File, $M_Exit, $hFileSelButton, $hImageFileName, $hDriveCombo
+Dim $hWriteImageButton, $ConsoleBox
+Dim $remDrives, $diskArray, $iMsg, $sRemovableDrive
+Dim $sImageFileName
 
-
-$HPUSBFORMAT_Path = @ScriptDir & "\Helpers\" & $HPUSBFORMAT_EXE
-$HPUSBFORMAT_SYSFILES_Path = @ScriptDir & "\" & $HPUSBFORMAT_SYSFILES
-$HPUSBFORMAT_SWITCHES = "-Y -FS:FAT -B:" & '"' & $HPUSBFORMAT_SYSFILES_Path & '"'
+;
+; Path of dd, syslinux
+;
+Dim $SYSLINUX_Path, $DD_Path
 
 $SYSLINUX_Path = @ScriptDir & "\Helpers\" & $SYSLINUX_EXE
-
-$EXTIMAGE_Path = @ScriptDir & "\Helpers\" & $EXTIMAGE_EXE
-$EXTIMAGE_DLL_Path = @ScriptDir & "\Helpers\" & $EXTIMAGE_DLL
+$DD_Path = @ScriptDir & "\Helpers\" & $DD_EXE
 
 
 if not IsAdmin() Then
 	MsgBox(0, "Bye!", "You must have administrator rights to continue, exiting ...")
-	Exit
-EndIf
-
-If not FileExists($HPUSBFORMAT_Path) Then
-	MsgBox(0, "Bye!", "File: " &  $HPUSBFORMAT_Path & " does not exist, exiting ...")
 	Exit
 EndIf
 
@@ -47,20 +33,13 @@ If not FileExists($SYSLINUX_Path) Then
 	Exit
 EndIf
 
-If not FileExists($EXTIMAGE_Path) Then
-	MsgBox(0, "Bye!", "File: " &  $EXTIMAGE_Path & " does not exist, exiting ...")
+If not FileExists($DD_Path) Then
+	MsgBox(0, "Bye!", "File: " &  $DD_Path & " does not exist, exiting ...")
 	Exit
 EndIf
-
-If not FileExists($EXTIMAGE_DLL_Path) Then
-	MsgBox(0, "Bye!", "File: " &  $EXTIMAGE_DLL_Path & " does not exist, exiting ...")
-	Exit
-EndIf
-
-
 
 ; Create the GUI and the controls inside it
-$GUI = GUICreate("LiveXBMC Image Creator", 512, 376)
+$GUI = GUICreate("XBMCLive Image Creator", 512, 376)
 
 ; Create the menu
 $M_File = GUICtrlCreateMenu("File")
@@ -89,7 +68,7 @@ GUICtrlSetState($hWriteImageButton, $GUI_DISABLE)
 GUISetState(@SW_SHOW)
 
 
-writeConsole("Welcome to LiveXBMC Image Creator by Luigi Capriotti")
+writeConsole("Welcome to XBMCLive Image Creator by Luigi Capriotti")
 
 $remDrives = findRemovableDisks()
 If $remDrives = "" Then
@@ -123,6 +102,8 @@ Exit
 
 
 Func findRemovableDisks()
+	Dim $drives, $drivesrem, $i
+
 	$drives = ""
 	$drivesrem = DriveGetDrive("REMOVABLE")
 	If IsArray($drivesrem) Then
@@ -134,26 +115,14 @@ Func findRemovableDisks()
 EndFunc
 
 Func writeImage($sFName, $sDrive)
-	;
-	; Formatting Removable Disk
-	;
-	writeConsole("Formatting Drive " & $sDrive & " ...") 
-
-	$ExternalCmdLine = $HPUSBFORMAT_Path & " " & $sDrive & " " & $HPUSBFORMAT_SWITCHES
-	$oExec = RunWait($ExternalCmdLine, @ScriptDir, @SW_HIDE)
-	;
-	; Remove fake DOS boot files from flash (not needed any more)
-	;
-	FileDelete($sDrive & "\COMMAND.COM" )
-	FileDelete($sDrive & "\MSDOS.SYS" )
-	FileDelete($sDrive & "\IO.SYS" )
+	Dim $ExternalCmdLine
+	Dim $oExec
 
 	;
-	; Extract files from LiveXBMC image
-	;
-	writeConsole("Extracting files from " & $sFName)
+	writeConsole("Writing image file to Disk: " & $sDrive) 
+	writeConsole("It may take a while, be patient...") 
 
-	$ExternalCmdLine = $EXTIMAGE_Path & " " & $sFName & " " & $sDrive & "\"
+	$ExternalCmdLine = $DD_Path & ' bs=1M if="' & $sFName & '" of=\\.\' & $sDrive & " --progress"
 	$oExec = RunWait($ExternalCmdLine, @ScriptDir, @SW_HIDE)
 
 	;
@@ -161,7 +130,7 @@ Func writeImage($sFName, $sDrive)
 	;
 	writeConsole("Now injecting syslinux on Drive " & $sDrive & " ...") 
 
-	$ExternalCmdLine = $SYSLINUX_Path & " " & $SYSLINUX_SWITCHES & " " & $sDrive 
+	$ExternalCmdLine = $SYSLINUX_Path & " -f -m -a " & $sDrive 
 	$oExec = RunWait($ExternalCmdLine, @ScriptDir, @SW_HIDE)
 
 	writeConsole("All done!" & @CRLF) 
