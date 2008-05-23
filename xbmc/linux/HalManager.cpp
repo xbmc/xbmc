@@ -25,6 +25,7 @@
 #include <libhal-storage.h>
 #include "LinuxFileSystem.h"
 #include "SingleLock.h"
+#include "../Util.h"
 //#define HAL_HANDLEMOUNT
 
 bool CHalManager::NewMessage;
@@ -36,21 +37,21 @@ CCriticalSection CHalManager::m_lock;
 void CHalManager::DeviceRemoved(LibHalContext *ctx, const char *udi)
 {
   NewMessage = true;
-  CLog::Log(LOGDEBUG, "HAL: Removed %s", udi);
+  CLog::Log(LOGDEBUG, "HAL: Device (%s) Removed", udi);
   g_HalManager.RemoveDevice(udi);
 }
 
 void CHalManager::DeviceNewCapability(LibHalContext *ctx, const char *udi, const char *capability)
 {
   NewMessage = true;
-  CLog::Log(LOGDEBUG, "HAL: Device got new capability %s", udi);
+  CLog::Log(LOGDEBUG, "HAL: Device (%s) gained capability %s", udi, capability);
   g_HalManager.ParseDevice(udi);
 }
 
 void CHalManager::DeviceLostCapability(LibHalContext *ctx, const char *udi, const char *capability)
 {
   NewMessage = true;
-  CLog::Log(LOGDEBUG, "HAL: Device lost capability %s", udi);
+  CLog::Log(LOGDEBUG, "HAL: Device (%s) lost capability %s", udi, capability);
   g_HalManager.ParseDevice(udi);
 }
 
@@ -58,13 +59,18 @@ void CHalManager::DeviceLostCapability(LibHalContext *ctx, const char *udi, cons
 void CHalManager::DevicePropertyModified(LibHalContext *ctx, const char *udi, const char *key, dbus_bool_t is_removed, dbus_bool_t is_added)
 {
   NewMessage = true;
-  CLog::Log(LOGDEBUG, "HAL: Property modified %s", udi);
+  CLog::Log(LOGDEBUG, "HAL: Device (%s) Property %s modified", udi, key);
   g_HalManager.ParseDevice(udi);
 }
 
 void CHalManager::DeviceCondition(LibHalContext *ctx, const char *udi, const char *condition_name, const char *condition_details)
 {
-  CLog::Log(LOGDEBUG, "HAL: Condition %s", udi);
+  CLog::Log(LOGDEBUG, "HAL: Device (%s) Condition %s | %s", udi, condition_name, condition_details);
+  if (!strcmp(condition_name, "ButtonPressed") && !strcmp(condition_details, "power"))
+  {
+    CUtil::ExecBuiltIn("XBMC.ActivateWindow(ShutdownMenu)");
+    return;
+  }
   NewMessage = true;
   g_HalManager.ParseDevice(udi);
 }
@@ -73,7 +79,7 @@ void CHalManager::DeviceCondition(LibHalContext *ctx, const char *udi, const cha
 void CHalManager::DeviceAdded(LibHalContext *ctx, const char *udi)
 {
   NewMessage = true;
-  CLog::Log(LOGDEBUG, "HAL: Added %s", udi);
+  CLog::Log(LOGDEBUG, "HAL: Device (%s) Added", udi);
   g_HalManager.ParseDevice(udi);
 }
 
