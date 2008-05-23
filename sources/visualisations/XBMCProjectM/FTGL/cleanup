@@ -1,4 +1,0 @@
-#!/bin/sh -fx
-# script to get rid of the grabage that MAC OSX drops in all the directories
-
-find . -name .DS_Store -print -exec rm {} \;
