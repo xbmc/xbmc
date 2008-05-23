@@ -134,12 +134,17 @@ public:
   }
 };
 
-unsigned int GetUniqueIdentifier()
+class XBMCClientUtils
 {
-  return time(NULL);
-}
-
-unsigned int g_UniqueToken = GetUniqueIdentifier();
+public:
+  XBMCClientUtils() {}
+  ~XBMCClientUtils() {}
+  static unsigned int GetUniqueIdentifier()
+  {
+    static time_t id = time(NULL);
+    return id;
+  }
+};
 
 class CPacket
 {
@@ -174,7 +179,7 @@ public:
   virtual ~CPacket()
   { }
 
-  bool Send(int Socket, CAddress &Addr, unsigned int UID = g_UniqueToken)
+  bool Send(int Socket, CAddress &Addr, unsigned int UID = XBMCClientUtils::GetUniqueIdentifier())
   {
     if (m_Payload.size() == 0)
       ConstructPayload();
@@ -560,6 +565,8 @@ public:
     m_DeviceMap.clear();
     m_Button.clear();
   }
+
+  inline unsigned short GetFlags() { return m_Flags; }
 };
 
 class CPacketPING : public CPacket
@@ -720,7 +727,7 @@ public:
   CXBMCClient(const char *IP = "127.0.0.1", int Port = 9777, int Socket = -1, unsigned int UID = 0)
   {
     m_Addr = CAddress(IP, Port);
-    if (Socket = -1)
+    if (Socket == -1)
       m_Socket = socket(AF_INET, SOCK_DGRAM, 0);
     else
       m_Socket = Socket;
@@ -728,7 +735,7 @@ public:
     if (UID)
       m_UID = UID;
     else
-      m_UID = GetUniqueIdentifier();
+      m_UID = XBMCClientUtils::GetUniqueIdentifier();
   }
 
   void SendNOTIFICATION(const char *Title, const char *Message, unsigned short IconType, const char *IconFile = NULL)
