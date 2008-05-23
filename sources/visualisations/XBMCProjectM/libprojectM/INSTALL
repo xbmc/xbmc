@@ -1,9 +1,0 @@
-If you just checked out of CVS run './autogen.sh' first. 
-
-If you downloaded a tarball then do this:
-
-./configure 
-make
-make install (as root)
-
-projectM will install its presets, fonts, and default config in $DATADIR, which defaults to $PREFIX/share/projectM.   So feel free to change these values with the --prefix, or --datadir arguments to ./configure.

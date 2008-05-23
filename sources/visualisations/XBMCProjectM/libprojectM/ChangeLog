@@ -1,3 +1,25 @@
+New for version 1.00
+------------------------------------------------------
+This release includes months of refactoring. The code changes are immense. The list below does not even begin to explain the amount of upheaval that has occured.
+	
+*Smooth Preset Switching
+
+*OpenGL Framebuffer Objects (sharper rendering)
+
+*PerPixel Warp effect added
+
+*Custom Shape Texturing via Images (imageURL property)
+
+*Serious Parser/Evaluator improvements for better .milk Compatability
+
+*projectM-engine can render to a texture instead of the framebuffer (see projectM-test/projectM-test-texture.cpp)
+
+*projectM-engine, projectM-xmms, projectM-jack, and projectM-test build system converted to CMake
+
+*3D Song title animation
+
+*New Configuration File (more options, more flexible)
+
 New for version 0.99
 ------------------------------------------------------
 *config file now saved at ~/.projectM/config
