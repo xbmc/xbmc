@@ -3019,6 +3019,8 @@ void CApplication::SetQuiet(bool bQuiet)
 #ifndef HAS_XBOX_D3D
 void CApplication::Render()
 {
+  if (!m_AppActive && !m_bStop) {Sleep(1); return;}
+
   MEASURE_FUNCTION;
 
   { // frame rate limiter (really bad, but it does the trick :p)
