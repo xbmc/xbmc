@@ -329,13 +329,13 @@ void CXBApplicationEx::ReadInput()
   //SDL_PumpEvents();
   
   static RESOLUTION windowres = WINDOW;
+
+  // Read the input from the mouse
+  g_Mouse.Update();
+
   SDL_Event event;
-  bool eventIsValid = false;
-  
-  if (SDL_PollEvent(&event))
+  while (SDL_PollEvent(&event))
   {
-    eventIsValid = true;
-    
     switch(event.type)
     {
     case SDL_QUIT:
@@ -362,34 +362,32 @@ void CXBApplicationEx::ReadInput()
       g_Joystick.Update(event);
       break;
 #endif
-      case SDL_KEYDOWN:
-        g_Keyboard.Update(event);
-        break;
-      case SDL_ACTIVEEVENT:
-        //If the window was inconified or restored
-        if( event.active.state & SDL_APPACTIVE )
-        {
-          m_AppActive = event.active.gain != 0;
-        }
-        break;
-     }     
+    case SDL_KEYDOWN:
+      g_Keyboard.Update(event);
+      break;
+    case SDL_ACTIVEEVENT:
+      //If the window was inconified or restored
+      if( event.active.state & SDL_APPACTIVE )
+      {
+        m_AppActive = event.active.gain != 0;
+      }
+      break;
+    case SDL_MOUSEBUTTONDOWN:
+      // mouse scroll wheel.
+      if (event.button.button == 4)
+        g_Mouse.UpdateMouseWheel(1);
+      else if (event.button.button == 5)
+        g_Mouse.UpdateMouseWheel(-1);
+      break;
+    }
   }
 #else
   // Read the input from the keyboard
   g_Keyboard.Update();
-#endif
 
   // Read the input from the mouse
   g_Mouse.Update();
-  
-  // Some extra work for mouse wheel.
-  if (eventIsValid && event.type == SDL_MOUSEBUTTONDOWN)
-  {
-    if (event.button.button == 4)
-      g_Mouse.UpdateMouseWheel(1);
-    else if (event.button.button == 5)
-      g_Mouse.UpdateMouseWheel(-1);
-  }
+#endif
 
 #ifdef HAS_LIRC
   g_RemoteControl.Update();
