@@ -34,6 +34,7 @@ using namespace Surface;
 
 #ifdef HAS_SDL_OPENGL
 #include <SDL/SDL_syswm.h>
+#include "XBVideoConfig.h"
 #endif
 
 #ifdef HAS_GLX
@@ -655,8 +656,14 @@ void CSurface::EnableVSync(bool enable)
 #ifdef _WIN32
     if (_wglSwapIntervalEXT)
     {
-      if(_wglSwapIntervalEXT(1))
-        CLog::Log(LOGWARNING, "%s - wglSwapIntervalEXT failed", __FUNCTION__);
+      m_iVSyncMode = 1;
+      if(!_wglSwapIntervalEXT(1))
+      {
+        CLog::Log(LOGWARNING, "%s - wglSwapIntervalEXT failed, disabling vsync", __FUNCTION__);
+        //stop it from trying to set vsync again
+        g_videoConfig.SetVSyncMode(VSYNC_DISABLED);
+        m_iVSyncMode = 0;
+      }
     }
 #endif
 #ifdef HAS_GLX
