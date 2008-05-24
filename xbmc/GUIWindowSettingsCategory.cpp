@@ -71,6 +71,9 @@
 #endif
 #ifdef _LINUX
 #include "LinuxTimezone.h"
+#ifdef HAS_HAL
+#include "HalManager.h"
+#endif
 #endif
 #ifdef __APPLE__
 #include "CPortAudio.h"
@@ -780,6 +783,18 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13610), APPLE_REMOTE_DISABLED);
       pControl->AddLabel(g_localizeStrings.Get(13611), APPLE_REMOTE_STANDARD);
       pControl->AddLabel(g_localizeStrings.Get(13612), APPLE_REMOTE_UNIVERSAL);
+      pControl->SetValue(pSettingInt->GetData());
+    }
+#endif
+#ifdef HAS_HAL
+    else if (strSetting.Equals("system.shutdownstate"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(13009), 0);
+      pControl->AddLabel(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN);
+      pControl->AddLabel(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE);
+      pControl->AddLabel(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND);
       pControl->SetValue(pSettingInt->GetData());
     }
 #endif

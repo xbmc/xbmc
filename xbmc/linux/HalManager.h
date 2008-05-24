@@ -34,6 +34,14 @@
 #include "../utils/log.h"
 #include "../utils/CriticalSection.h"
 
+enum PowerState
+{
+  POWERSTATE_SHUTDOWN  = 1,
+  POWERSTATE_HIBERNATE = 2,
+  POWERSTATE_SUSPEND   = 3,
+  POWERSTATE_REBOOT    = 4
+};
+
 class CHalDevice
 {
 public:
@@ -98,8 +106,10 @@ CHalManager();
 std::vector<CStorageDevice> GetVolumeDevices();
 std::vector<CHalDevice> GetMTPDevices();
 
+static bool PowerManagement(PowerState State);
+
 protected:
-DBusConnection *m_DBusConnection;
+DBusConnection *m_DBusSystemConnection;
 LibHalContext  *m_Context;
 static DBusError m_Error;
 static bool NewMessage;
