@@ -4426,6 +4426,9 @@ HRESULT CApplication::Cleanup()
 #endif
     CScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
+#ifdef HAS_EVENT_SERVER
+    CEventServer::RemoveInstance();
+#endif
     g_infoManager.Clear();
     DllLoaderContainer::Clear();
     g_settings.Clear();
