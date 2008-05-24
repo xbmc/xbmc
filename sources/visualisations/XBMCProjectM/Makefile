@@ -4,6 +4,7 @@ SRCS=Main.cpp
 
 LIB=ProjectM.vis
 SDL_DEFINES=-DHAS_SDL_OPENGL -DHAS_SDL
+CFLAGS=-O3
 
 include ../../Makefile.include
 
