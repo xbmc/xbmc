@@ -33,16 +33,17 @@ d4rk@xboxmediacenter.com
 
 */
 
+#include "../../guilib/system.h"
 #include "../xbmc_vis.h"
 #ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>
 #endif
-#include "libprojectM/src/projectM.h"
-#include "libprojectM/src/preset.h"
-#include "libprojectM/src/PCM.h"
+#include "libprojectM/projectM.hpp"
+#include "libprojectM/Preset.hpp"
+#include "libprojectM/PCM.hpp"
 #include <string>
 #ifdef _WIN32PC
-#include "libprojectM/src/win32-dirent.h"
+#include "libprojectM/win32-dirent.h"
 #else
 #include <dirent.h>
 #endif
@@ -57,7 +58,7 @@ d4rk@xboxmediacenter.com
 #endif
 #define PROJECTM_DATADIR "userdata"
 
-projectM_t *globalPM = NULL;
+projectM *globalPM = NULL;
 extern int preset_index;
 
 int maxSamples=512;
@@ -119,43 +120,49 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
 {
   strcpy(g_visName, szVisualisationName);
 
-   /** Initialise projectM */
-    
-  if (!globalPM)
-      globalPM = (projectM_t *)malloc( sizeof( projectM_t ) );
-
-  projectM_reset( globalPM );
-  
-  globalPM->fullscreen = fullscreen;
-  globalPM->renderTarget->texsize = texsize;
-  globalPM->gx=gx;
-  globalPM->gy=gy;
-  globalPM->fps=fps;
-  globalPM->renderTarget->usePbuffers=0;
-  globalPM->avgtime = 200;
-  globalPM->maxsamples=maxSamples;
+  /** Initialise projectM */
 
   char *rootdir = getenv("XBMC_HOME");
-  std::string dirname;
-
   if (rootdir==NULL)
   {
     rootdir = ".";
   }
-  dirname = string(rootdir) + PATH_SEPARATOR + string(PROJECTM_DATADIR) + string(FONTS_DIR);;
-  fprintf(stderr, "ProjectM Fonts Dir: %s\n", dirname.c_str());
+
+  std::string fontsDir;
+  fontsDir = string(rootdir) + PATH_SEPARATOR + string(PROJECTM_DATADIR) + string(FONTS_DIR);
+  fprintf(stderr, "ProjectM Fonts Dir: %s\n", fontsDir.c_str());
+
+  std::string presetsDir;
+  presetsDir = string(rootdir) + PATH_SEPARATOR + string(PRESETS_DIR);;
+  fprintf(stderr, "ProjectM Presets Dir: %s", presetsDir.c_str());
+
+  std::string configFile;
+  configFile = string(rootdir) + PATH_SEPARATOR + string(PRESETS_DIR) + PATH_SEPARATOR + "config.inp";
+
+  projectM::Settings configPM;
+  configPM.meshX = gx;
+  configPM.meshY = gy;
+  configPM.fps = fps;
+  configPM.textureSize = texsize;
+  configPM.windowWidth = iWidth;
+  configPM.windowHeight = iHeight;
+  configPM.presetURL = presetsDir;
+  configPM.titleFontURL = fontsDir;
+  configPM.menuFontURL = fontsDir;
+  configPM.smoothPresetDuration = 5;
+  configPM.presetDuration = 15;
+  configPM.beatSensitivity = 10.0;
+  configPM.aspectCorrection = true;
+  configPM.easterEgg = 0.0;
+  configPM.shuffleEnabled = true;
+
+  projectM::writeConfig(configFile, configPM);
   
-  globalPM->fontURL = (char *)malloc( sizeof( char ) * 512 );
-  strncpy(globalPM->fontURL, dirname.c_str(), 512);
-  
-  dirname = string(rootdir) + PATH_SEPARATOR + string(PRESETS_DIR);;
-  fprintf(stderr, "ProjectM Presets Dir: %s", dirname.c_str());
-  
-  globalPM->presetURL = (char *)malloc( sizeof( char ) * 512 );
-  strncpy(globalPM->presetURL, dirname.c_str(), 512);
-    
-  projectM_init( globalPM );
-  
+  if (globalPM)
+    delete globalPM;
+
+  globalPM = new projectM(configFile);
+
   g_Width = iWidth;
   g_Height = iHeight;
   g_PosX = iPosX;
@@ -177,11 +184,7 @@ extern "C" void Stop()
 {
   if (globalPM) 
   {
-    if (globalPM->fontURL)
-      free(globalPM->fontURL);
-    if (globalPM->presetURL)
-      free(globalPM->presetURL);
-    free(globalPM);
+    delete globalPM;
     globalPM = NULL;
   }
   if (g_presets)
@@ -201,10 +204,7 @@ extern "C" void Stop()
 //-----------------------------------------------------------------------------
 extern "C" void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
-  if (iAudioDataLength>=512)
-  {
-    addPCM16Data(pAudioData, 512); 
-  }
+  globalPM->pcm()->addPCM16Data(pAudioData, iAudioDataLength);
 }
 
 
@@ -229,14 +229,11 @@ extern "C" void Render()
   GLint params[4];
   glGetIntegerv(GL_VIEWPORT, params);
 
-  globalPM->vx = params[0];
-  globalPM->vy = params[1];
-
-  projectM_resetGL( globalPM, params[2], params[3] );
+  globalPM->projectM_resetGL(params[2], params[3]);
 
   glDisable(GL_DEPTH_TEST);
   glClearColor(0.0, 0.0, 0.0, 0.0);
-  renderFrame(globalPM);
+  globalPM->renderFrame();
 
   glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
@@ -276,19 +273,28 @@ extern "C" bool OnAction(long flags, void *param)
 
   if (flags == VIS_ACTION_LOAD_PRESET && param)
   {
-    int pindex = *(int*)param;
-    preset_index = pindex;
-    switchPreset(RESTART_ACTIVE, SOFT_CUT);
+    int pindex = *((int *)param);
+    globalPM->selectPreset(pindex);
     ret = true;
   }
   else if (flags == VIS_ACTION_NEXT_PRESET)
   {
-    switchPreset(ALPHA_NEXT, SOFT_CUT);
-    ret = true;
+//    switchPreset(ALPHA_NEXT, SOFT_CUT);
+    ret = false;
   }
   else if (flags == VIS_ACTION_PREV_PRESET)
   {
-    switchPreset(ALPHA_PREVIOUS, SOFT_CUT);
+//    switchPreset(ALPHA_PREVIOUS, SOFT_CUT);
+    ret = false;
+  }
+  else if (flags == VIS_ACTION_RANDOM_PRESET)
+  {
+    globalPM->setShuffleEnabled(!globalPM->isShuffleEnabled());
+    ret = true;
+  }
+  else if (flags == VIS_ACTION_LOCK_PRESET)
+  {
+    globalPM->setPresetLock(!globalPM->isPresetLocked());
     ret = true;
   }
   return ret;
@@ -302,8 +308,9 @@ extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets
   if (!g_presets)
   {
     struct dirent** entries;
-    fprintf(stderr, "Preset Dir: %s\n", globalPM->presetURL);
-    int dir_size = scandir(globalPM->presetURL, &entries, check_valid_extension, alphasort);
+    fprintf(stderr, "Preset Dir: %s\n", globalPM->getPresetURL(0).c_str());
+    int dir_size = scandir(globalPM->getPresetURL(0).c_str(), &entries,
+                           check_valid_extension, alphasort);
     if (dir_size>0)
     {
       g_numPresets = dir_size;
@@ -327,11 +334,10 @@ extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets
   {
     *pPresets = g_presets;
     *numPresets = g_numPresets;
-    preset_t* preset = getActivePreset();
-    if (preset && preset->index>=0 && preset->index<g_numPresets)
-    {
-      *currentPreset = preset->index;
-    }
+    unsigned int presetIndex;
+    if (globalPM->selectedPresetIndex(presetIndex) && presetIndex >= 0 &&
+        presetIndex < g_numPresets)
+      *currentPreset = presetIndex;
   }
 }
 

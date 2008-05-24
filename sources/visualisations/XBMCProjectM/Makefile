@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../../xbmc/linux -I../../xbmc
+INCLUDES=-I. -I.. -I../../xbmc/linux -I../../xbmc -I../../guilib
 
 SRCS=Main.cpp
 
@@ -9,5 +9,4 @@ include ../../Makefile.include
 
 vis:
 	$(MAKE)
-	$(CXX) ./FTGL/unix/src/*.o ./libprojectM/src/*.o -fPIC -shared -g -o $(LIB) $(OBJS)
-#./FTGL/unix/src/*.o ./libprojectM/src/*.o
+	$(CXX) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared -O3 -o $(LIB) $(OBJS)
