@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2007 Team XboxMediaCenter
- *      http://www.xboxmediacenter.com
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with GNU Make; see the file COPYING.  If not, write to
+ *  along with XBMC; see the file COPYING.  If not, write to
  *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  *  http://www.gnu.org/copyleft/gpl.html
  *
@@ -696,26 +696,31 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_SET_CONTENT:
-    bool bScan=false;
-    SScraperInfo info;
-    if (!m_musicdatabase.GetScraperForPath(m_vecItems->Get(itemNumber)->m_strPath,info))
-      info.strContent = "albums";
-
-    int iLabel=132;
-    // per genre or for all artists
-    if (m_vecItems->m_strPath.Equals("musicdb://1/") ||
-        m_vecItems->Get(itemNumber)->m_strPath.Equals("musicdb://2/"))
     {
-      iLabel = 133;
+      bool bScan=false;
+      SScraperInfo info;
+      if (!m_musicdatabase.GetScraperForPath(m_vecItems->Get(itemNumber)->m_strPath,info))
+        info.strContent = "albums";
+
+      int iLabel=132;
+      // per genre or for all artists
+      if (m_vecItems->m_strPath.Equals("musicdb://1/") ||
+          m_vecItems->Get(itemNumber)->m_strPath.Equals("musicdb://2/"))
+      {
+        iLabel = 133;
+      }
+
+      if (CGUIDialogContentSettings::Show(info, bScan,iLabel))
+      {
+        m_musicdatabase.SetScraperForPath(m_vecItems->Get(itemNumber)->m_strPath,info);
+        if (bScan)
+          OnInfoAll(itemNumber,true);
+      }
+      return true;
     }
 
-    if (CGUIDialogContentSettings::Show(info, bScan,iLabel))
-    {
-      m_musicdatabase.SetScraperForPath(m_vecItems->Get(itemNumber)->m_strPath,info);
-      if (bScan)
-        OnInfoAll(itemNumber,true);
-    }
-    return true;
+  default:
+    break;
   }
 
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);

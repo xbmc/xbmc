@@ -1669,7 +1669,6 @@
 					<width>132</width>
 					<aspectratio>stretch</aspectratio>
 					<info>ListItem.StarRating</info>
-					<visible>Container.Sort(SongRating)</visible>
 				</control>
 			</control>
 		</control>

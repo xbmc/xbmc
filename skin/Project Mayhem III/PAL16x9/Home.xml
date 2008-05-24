@@ -1,5 +1,5 @@
 <window id="0">
-	<defaultcontrol>2</defaultcontrol>
+	<defaultcontrol>9003</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
 		<!-- backgrounds -->
@@ -566,6 +566,7 @@
 		</control>
 		<!-- main buttons -->
 		<control type="group" id="9001">
+			<visible>System.Platform.Xbox</visible>
 			<control type="group" id="9002">
 				<posx>60</posx>
 				<posy>450</posy>
@@ -646,7 +647,7 @@
 					<textoffsetx>20</textoffsetx>
 				</control>
 			</control>
-			<control type="group">
+			<control type="group" id="9003">
 				<posx>40</posx>
 				<posy>190</posy>
 				<include>homebuttonanimation</include>
@@ -678,7 +679,7 @@
 					<onleft>98</onleft>
 					<onright>96</onright>
 					<onup>9</onup>
-					<ondown>4</ondown>
+					<ondown>5</ondown>
 					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<textoffsetx>30</textoffsetx>
@@ -690,20 +691,20 @@
 					<height>22</height>
 					<texture>homebutton-small.png</texture>
 				</control>
-				<control type="button" id="4">
-					<description>My Pictures normal push button</description>
+				<control type="button" id="5">
+					<description>My Videos normal push button</description>
 					<posx>53</posx>
 					<posy>74</posy>
 					<width>12</width>
 					<height>14</height>
 					<hitrect x="45" y="60" w="220" h="40" />
-					<label>1</label>
-					<onclick>ActivateWindow(MyPictures)</onclick>
+					<label>3</label>
 					<font>special13</font>
+					<onclick>ActivateWindow(MyVideos)</onclick>
 					<onleft>98</onleft>
 					<onright>96</onright>
 					<onup>2</onup>
-					<ondown>5</ondown>
+					<ondown>3</ondown>
 					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<textoffsetx>30</textoffsetx>
@@ -715,20 +716,20 @@
 					<height>22</height>
 					<texture>homebutton-small.png</texture>
 				</control>
-				<control type="button" id="5">
-					<description>My Videos normal push button</description>
+				<control type="button" id="3">
+					<description>My Music normal push button</description>
 					<posx>53</posx>
 					<posy>119</posy>
 					<width>12</width>
 					<height>14</height>
 					<hitrect x="45" y="105" w="200" h="40" />
-					<label>3</label>
+					<label>2</label>
+					<onclick>ActivateWindow(MyMusic)</onclick>
 					<font>special13</font>
-					<onclick>ActivateWindow(MyVideos)</onclick>
 					<onleft>98</onleft>
 					<onright>96</onright>
-					<onup>4</onup>
-					<ondown>3</ondown>
+					<onup>5</onup>
+					<ondown>4</ondown>
 					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<textoffsetx>30</textoffsetx>
@@ -740,19 +741,19 @@
 					<height>22</height>
 					<texture>homebutton-small.png</texture>
 				</control>
-				<control type="button" id="3">
-					<description>My Music normal push button</description>
+				<control type="button" id="4">
+					<description>My Pictures normal push button</description>
 					<posx>53</posx>
 					<posy>163</posy>
 					<width>12</width>
 					<height>14</height>
 					<hitrect x="45" y="150" w="170" h="40" />
-					<label>2</label>
-					<onclick>ActivateWindow(MyMusic)</onclick>
+					<label>1</label>
+					<onclick>ActivateWindow(MyPictures)</onclick>
 					<font>special13</font>
 					<onleft>98</onleft>
 					<onright>96</onright>
-					<onup>5</onup>
+					<onup>3</onup>
 					<ondown>7</ondown>
 					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>
@@ -777,7 +778,203 @@
 					<onclick>ActivateWindow(Weather)</onclick>
 					<onleft>98</onleft>
 					<onright>96</onright>
+					<onup>4</onup>
+					<ondown>9</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+			</control>
+		</control>
+		<control type="group" id="9001">
+			<visible>!System.Platform.Xbox</visible>
+			<control type="group" id="9002">
+				<posx>60</posx>
+				<posy>450</posy>
+				<include>buttonpanelslide</include>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>16</width>
+					<height>20</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="image">
+					<posx>115</posx>
+					<posy>0</posy>
+					<width>16</width>
+					<height>20</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="9">
+					<description>Settings normal push button</description>
+					<posx>3</posx>
+					<posy>2</posy>
+					<width>10</width>
+					<height>12</height>
+					<hitrect x="3" y="0" w="100" h="18" />
+					<label>5</label>
+					<font>font10</font>
+					<onclick>ActivateWindow(4)</onclick>
+					<onleft>98</onleft>
+					<onright>6</onright>
+					<onup>10</onup>
+					<ondown>5</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>20</textoffsetx>
+				</control>
+				<control type="button" id="6">
+					<description>My Files normal push button</description>
+					<posx>118</posx>
+					<posy>3</posy>
+					<width>10</width>
+					<height>12</height>
+					<hitrect x="118" y="0" w="100" h="18" />
+					<label>7</label>
+					<onclick>ActivateWindow(MyFiles)</onclick>
+					<font>font10</font>
+					<onleft>9</onleft>
+					<onright>96</onright>
+					<onup>10</onup>
+					<ondown>5</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>20</textoffsetx>
+				</control>
+			</control>
+			<control type="group" id="9003">
+				<posx>40</posx>
+				<posy>190</posy>
+				<include>homebuttonanimation</include>
+				<control type="image">
+					<description>background image</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>310</width>
+					<height>270</height>
+					<texture>home_buttons.png</texture>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>26</posy>
+					<width>18</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="5">
+					<description>My Videos normal push button</description>
+					<posx>53</posx>
+					<posy>28</posy>
+					<width>12</width>
+					<height>14</height>
+					<hitrect x="45" y="15" w="220" h="40" />
+					<label>3</label>
+					<font>special13</font>
+					<onclick>ActivateWindow(MyVideos)</onclick>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>9</onup>
+					<ondown>3</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>72</posy>
+					<width>18</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="3">
+					<description>My Music normal push button</description>
+					<posx>53</posx>
+					<posy>74</posy>
+					<width>12</width>
+					<height>14</height>
+					<hitrect x="45" y="60" w="220" h="40" />
+					<label>2</label>
+					<onclick>ActivateWindow(MyMusic)</onclick>
+					<font>special13</font>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>5</onup>
+					<ondown>4</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>117</posy>
+					<width>18</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="4">
+					<description>My Pictures normal push button</description>
+					<posx>53</posx>
+					<posy>119</posy>
+					<width>12</width>
+					<height>14</height>
+					<hitrect x="45" y="105" w="200" h="40" />
+					<label>1</label>
+					<onclick>ActivateWindow(MyPictures)</onclick>
+					<font>special13</font>
+					<onleft>98</onleft>
+					<onright>96</onright>
 					<onup>3</onup>
+					<ondown>7</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>161</posy>
+					<width>18</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="7">
+					<description>My Weather normal push button</description>
+					<posx>53</posx>
+					<posy>163</posy>
+					<width>12</width>
+					<height>14</height>
+					<hitrect x="45" y="150" w="170" h="40" />
+					<label>8</label>
+					<font>special13</font>
+					<onclick>ActivateWindow(Weather)</onclick>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>4</onup>
+					<ondown>10</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>204</posy>
+					<width>18</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="10">
+					<description>Scripts normal push button</description>
+					<posx>53</posx>
+					<posy>206</posy>
+					<width>12</width>
+					<height>14</height>
+					<hitrect x="45" y="195" w="125" h="40" />
+					<label>247</label>
+					<font>special13</font>
+					<onclick>ActivateWindow(Scripts)</onclick>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>7</onup>
 					<ondown>9</ondown>
 					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>

@@ -1,17 +1,37 @@
-
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+ 
 #include "stdafx.h"
 #include "DVDPlayerSubtitle.h"
 #include "DVDCodecs/Overlay/DVDOverlay.h"
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
-#include "DVDCodecs/Overlay/DVDOverlayCodecFFmpeg.h"
-#include "DVDCodecs/Overlay/DVDOverlayCodecText.h"
+#include "DVDCodecs/Overlay/DVDOverlayCodec.h"
 #include "DVDClock.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDInputStreams/DVDInputStreamNavigator.h"
 #include "DVDSubtitles/DVDSubtitleParser.h"
 #include "DVDCodecs/DVDCodecs.h"
+#include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 
 using namespace std;
@@ -45,7 +65,9 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
 
     if (m_pOverlayCodec)
     {
-      int result = m_pOverlayCodec->Decode(pPacket->pData, pPacket->iSize);
+      double pts = pPacket->dts != DVD_NOPTS_VALUE ? pPacket->dts : pPacket->pts;
+      double duration = pPacket->duration;
+      int result = m_pOverlayCodec->Decode(pPacket->pData, pPacket->iSize, pts, duration);
 
       if(result == OC_OVERLAY)
       {
@@ -53,9 +75,6 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
         while((overlay = m_pOverlayCodec->GetOverlay()) != NULL)
         {
           overlay->iGroupId = pPacket->iGroupId;
-
-          double pts = pPacket->dts != DVD_NOPTS_VALUE ? pPacket->dts : pPacket->pts;
-          double duration = pPacket->duration;
 
           if(pts == DVD_NOPTS_VALUE)
           {
@@ -148,19 +167,12 @@ bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, string &filename)
   if(hints.codec == CODEC_ID_DVD_SUBTITLE && filename == "dvd")
     return true;
 
-  if(hints.codec == CODEC_ID_TEXT || hints.codec == CODEC_ID_SSA)
-    m_pOverlayCodec = new CDVDOverlayCodecText();
-  else
-    m_pOverlayCodec = new CDVDOverlayCodecFFmpeg();
+  m_pOverlayCodec = CDVDFactoryCodec::CreateOverlayCodec(hints);
+  if(m_pOverlayCodec)
+    return true;
 
-  CDVDCodecOptions options;
-  if(!m_pOverlayCodec->Open(hints, options))
-  {
-    CLog::Log(LOGERROR, "%s - Unable to init overlay codec", __FUNCTION__);
-    CloseStream(false);
-    return false;
-  }
-  return true;
+  CLog::Log(LOGERROR, "%s - Unable to init overlay codec", __FUNCTION__);
+  return false;
 }
 
 void CDVDPlayerSubtitle::CloseStream(bool flush)

@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2007 Team XboxMediaCenter
- *      http://www.xboxmediacenter.com
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with GNU Make; see the file COPYING.  If not, write to
+ *  along with XBMC; see the file COPYING.  If not, write to
  *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  *  http://www.gnu.org/copyleft/gpl.html
  *
@@ -117,6 +117,8 @@ CSettings::CSettings(void)
 
   g_stSettings.iAdditionalSubtitleDirectoryChecked = 0;
 
+  g_settings.bUseLoginScreen = false;
+
   // Advanced settings
   g_advancedSettings.m_useMultipaths = true;
   g_advancedSettings.m_DisableModChipDetection = true;
@@ -161,7 +163,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_usePCDVDROM = false;
   g_advancedSettings.m_noDVDROM = false;
   g_advancedSettings.m_cachePath = "Z:\\";
-  g_advancedSettings.m_FTPShowCache = false;
+  g_advancedSettings.m_displayRemoteCodes = false;
   
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
@@ -184,19 +186,18 @@ CSettings::CSettings(void)
 
   g_advancedSettings.m_remoteRepeat = 480;
   g_advancedSettings.m_controllerDeadzone = 0.2f;
-  g_advancedSettings.m_displayRemoteCodes = false;
-
-  g_advancedSettings.m_thumbSize = 192;
-
-  g_advancedSettings.m_sambadoscodepage = "";
-  g_advancedSettings.m_sambaclienttimeout = 10;
+  g_advancedSettings.m_FTPShowCache = false;
 
   g_advancedSettings.m_playlistAsFolders = true;
   g_advancedSettings.m_detectAsUdf = false;
-  g_settings.bUseLoginScreen = false;
 
+  g_advancedSettings.m_thumbSize = 192;
+
+  g_advancedSettings.m_sambaclienttimeout = 10;
+  g_advancedSettings.m_sambadoscodepage = "";
   g_advancedSettings.m_musicThumbs = "folder.jpg";
   g_advancedSettings.m_dvdThumbs = "folder.jpg";
+
   g_advancedSettings.m_bMusicLibraryHideAllItems = false;
   g_advancedSettings.m_bMusicLibraryAllItemsOnBottom = false;
   g_advancedSettings.m_bMusicLibraryHideCompilationArtists = false;
@@ -224,6 +225,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_iTuxBoxZapWaitTime = 0; // Time in sec. Default 0:OFF
 
   g_advancedSettings.m_curlclienttimeout = 10;
+  g_advancedSettings.m_playlistRetries = 100;
 }
 
 CSettings::~CSettings(void)
@@ -1807,6 +1809,7 @@ bool CSettings::LoadProfile(int index)
       CLog::Log(LOGNOTICE, "setting fanspeed");
       CFanController::Instance()->SetFanSpeed(g_guiSettings.GetInt("system.fanspeed"));
     }
+    g_application.StartLEDControl(false);
 #endif
 
     // to set labels - shares are reloaded

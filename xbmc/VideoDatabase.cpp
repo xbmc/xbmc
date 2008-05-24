@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2007 Team XboxMediaCenter
- *      http://www.xboxmediacenter.com
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with GNU Make; see the file COPYING.  If not, write to
+ *  along with XBMC; see the file COPYING.  If not, write to
  *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  *  http://www.gnu.org/copyleft/gpl.html
  *
@@ -3437,6 +3437,9 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
     // TODO: This routine (and probably others at this same level) use playcount as a reference to filter on at a later
     //       point.  This means that we *MUST* filter these levels as you'll get double ups.  Ideally we'd allow playcount
     //       to filter through as we normally do for tvshows to save this happening.
+    //       Also, we apply this same filtering logic to the locked or unlocked paths to prevent these from showing.
+    //       Whether or not this should happen is a tricky one - it complicates all the high level categories (everything
+    //       above titles).
 
     // General routine that the other actor/director/writer routines call
 

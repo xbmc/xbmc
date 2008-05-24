@@ -1,4 +1,24 @@
-
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+ 
 #include "stdafx.h"
 #include "DllLoaderContainer.h"
 #include "DllLoader.h"
@@ -38,6 +58,7 @@ Export export_msvcrt[];
 Export export_pncrt[];
 Export export_iconvx[];
 Export export_xbp[];
+Export export_zlib[];
 
 DllLoader kernel32("kernel32.dll",        false, true, false, export_kernel32);
 DllLoader msvcr80("msvcr80.dll",          false, true, false, export_msvcrt);
@@ -62,6 +83,7 @@ DllLoader gdi32("gdi32.dll",              false, true, false, export_gdi32);
 DllLoader comctl32("comctl32.dll",        false, true, false, export_comctl32);
 DllLoader pncrt("pncrt.dll",              false, true, false, export_pncrt);
 DllLoader iconvx("iconv.dll",             false, true, false, export_iconvx);
+DllLoader zlib("zlib1.dll",               false, true, false, export_zlib);
   
 void DllLoaderContainer::Clear()
 {

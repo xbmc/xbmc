@@ -1,13 +1,35 @@
-
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+ 
 #include "stdafx.h"
 #include "DVDOverlayRenderer.h"
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDCodecs/Overlay/DVDOverlayImage.h"
+#include "DVDCodecs/Overlay/DVDOverlaySSA.h"
 
 #define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))
 
-void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOverlay)
+
+void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOverlay, double pts)
 {
   if (pOverlay->IsOverlayType(DVDOVERLAY_TYPE_SPU))
   {
@@ -17,6 +39,10 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOve
   else if (pOverlay->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
   {
     Render(pPicture, (CDVDOverlayImage*)pOverlay);
+  }
+  else if (pOverlay->IsOverlayType(DVDOVERLAY_TYPE_SSA))
+  {     
+    Render(pPicture, (CDVDOverlaySSA*)pOverlay, pts);
   }
   else if (false && pOverlay->IsOverlayType(DVDOVERLAY_TYPE_TEXT))
   {
@@ -34,6 +60,66 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOve
       }
       e = e->pNext;
     }
+  }
+}
+
+
+void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlaySSA* pOverlay, double pts)
+{
+
+  int height, width;
+  height = pPicture->height;
+  width = pPicture->width;
+
+  ass_image_t* img = pOverlay->m_libass->RenderImage(width, height, pts);
+
+  while(img)
+  {
+    DWORD color = img->color;
+
+    //ass_image colors are RGBA
+    double b = ((color >> 24) & 0xff) / 255.0;
+    double g = ((color >> 16) & 0xff) / 255.0;
+    double r = ((color >> 8 ) & 0xff) / 255.0;
+
+    BYTE luma  = (BYTE)(255 * CLAMP(0.299 * r + 0.587 * g + 0.114 * b, 0.0, 1.0));
+    BYTE u     = (BYTE)(127.5 + 255 * CLAMP( 0.500 * r - 0.419 * g - 0.081 * b, -0.5, 0.5));
+    BYTE v     = (BYTE)(127.5 + 255 * CLAMP(-0.169 * r - 0.331 * g + 0.500 * b, -0.5, 0.5));
+    BYTE alpha = (BYTE)(color &0xff);
+
+    int y = max(0,min(img->dst_y, pPicture->height-img->h));
+    int x = max(0,min(img->dst_x, pPicture->width-img->w));
+
+    for(int i=0; i<img->h; i++)
+    {
+      if(y + i >= pPicture->height)
+        break;
+
+      BYTE* line = img->bitmap + img->w*i;
+
+      BYTE* target[3];
+      target[0] = pPicture->data[0] + pPicture->stride[0]*(i + y) + x;
+      target[1] = pPicture->data[1] + pPicture->stride[1]*((i + y)>>1) + (x>>1);
+      target[2] = pPicture->data[2] + pPicture->stride[2]*((i + y)>>1) + (x>>1);
+
+      for(int j=0; j<img->w; j++)
+      {
+        if(x + j >= pPicture->width)
+          break;
+
+        unsigned char index, opacity, k;
+        index = line[j];
+
+        //Blend the image with the underlying picture
+        opacity = 255 - alpha;
+        k = (unsigned char)index * opacity / 255;
+
+        target[0][j]    = (k*luma + (255-k)*target[0][j])/255;
+        target[1][j>>1] = (k*u    + (255-k)*target[1][j>>1])/255;
+        target[2][j>>1] = (k*v    + (255-k)*target[2][j>>1])/255;
+      }
+    }
+    img = img->next;
   }
 }
 

@@ -1,4 +1,24 @@
-
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+ 
 //#include "stdafx.h"
 
 #include "../DllLoader.h"
@@ -49,6 +69,7 @@ extern "C" void* memset();
 extern "C" void* mktime();
 extern "C" void* dllperror();
 extern "C" void* dllprintf();
+extern "C" void* dllvprintf();
 extern "C" void* dll_putchar();
 extern "C" void* dllputs();
 extern "C" void* qsort();
@@ -195,6 +216,10 @@ extern "C" void* _wcsicmp();
 extern "C" void* _wcsnicmp();
 extern "C" void* _CIacos();
 extern "C" void* _CIasin();
+extern "C" void* _CIcos();
+extern "C" void* _CIsin();
+extern "C" void* _CIlog();
+extern "C" void* _CIexp();
 extern "C" void* dllfree71();
 extern "C" void* isalpha();
 extern "C" void* _setjmp3();
@@ -295,6 +320,7 @@ Export export_msvcrt[] =
   { "mktime",                     -1, mktime,                        NULL },
   { "perror",                     -1, dllperror,                     NULL },
   { "printf",                     -1, dllprintf,                     NULL },
+  { "vprintf",                    -1, dllvprintf,                    NULL },
   { "putchar",                    -1, dll_putchar,                   NULL },
   { "puts",                       -1, dllputs,                       NULL },
   { "qsort",                      -1, qsort,                         NULL },
@@ -418,6 +444,10 @@ Export export_msvcrt[] =
   { "_wcsnicmp",                  -1, _wcsnicmp,                     NULL },
   { "_CIacos",                    -1, _CIacos,                       NULL },
   { "_CIasin",                    -1, _CIasin,                       NULL },
+  { "_CIexp",                     -1, _CIexp,                        NULL },
+  { "_CIcos",                     -1, _CIcos,                        NULL },
+  { "_CIlog",                     -1, _CIlog,                        NULL },
+  { "_CIsin",                     -1, _CIsin,                        NULL },
   { "??_V@YAXPAX@Z",              -1, dllfree,                       track_free},
   { "isalpha",                    -1, isalpha,                       NULL },
   { "_CxxThrowException",         -1, _CxxThrowException,            NULL },

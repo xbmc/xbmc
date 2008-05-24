@@ -1,3 +1,23 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 #include "VideoInfoTag.h"
 #include "XMLUtils.h"
 #include "LocalizeStrings.h"
@@ -172,21 +192,27 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
 
   m_strPictureURL.ParseElement(movie->FirstChildElement("thumbs"));
   if (m_strPictureURL.m_url.size() == 0)
-  {
-    if (movie->FirstChildElement("thumb"))
+  { // no <thumbs> tag found, look for <thumb>
+    const TiXmlElement *thumb = movie->FirstChildElement("thumb");
+    if (thumb)
     {
-      if (movie->FirstChildElement("thumb")->FirstChild() && !movie->FirstChildElement("thumb")->FirstChild()->FirstChild() )
-      {
-        CStdString strValue = movie->FirstChildElement("thumb")->FirstChild()->Value();
+      if (thumb->FirstChild() && !thumb->FirstChildElement())
+      { // must have <thumb>child</thumb>, where child contains no XML.  Check for escaped XML
+        CStdString strValue = thumb->FirstChild()->Value();
         TiXmlDocument doc;
         doc.Parse(strValue.c_str());
-        if (doc.FirstChildElement("thumbs"))
-          m_strPictureURL.ParseElement(doc.FirstChildElement("thumbs"));
-        else
-          m_strPictureURL.ParseElement(doc.FirstChildElement("thumb"));
+        if (doc.RootElement())
+        { // valid XML
+          if (doc.FirstChildElement("thumbs"))
+            m_strPictureURL.ParseElement(doc.FirstChildElement("thumbs"));
+          else if (doc.FirstChildElement("thumb"))
+            m_strPictureURL.ParseElement(doc.FirstChildElement("thumb"));
+        }
+        else  // not XML at all - assume a single child
+          m_strPictureURL.ParseElement(thumb);
       }
       else
-        m_strPictureURL.ParseElement(movie->FirstChildElement("thumb"));
+        m_strPictureURL.ParseElement(thumb);
     }
   }
 

@@ -1,4 +1,24 @@
-
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+ 
 #include "stdafx.h"
 #include "Settings.h"
 #include "DVDPlayer.h"
@@ -12,6 +32,7 @@
 #include "DVDPerformanceCounter.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/Overlay/DVDOverlayCodecCC.h"
+#include "DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include <sstream>
 #include <iomanip>
 
@@ -495,7 +516,7 @@ void CDVDPlayerVideo::ProcessVideoUserData(DVDVideoUserData* pVideoUserData, dou
       
       if (m_pOverlayCodecCC)
       {
-        m_pOverlayCodecCC->Decode(data, size);
+        m_pOverlayCodecCC->Decode(data, size, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
 
         CDVDOverlay* overlay;
         while((overlay = m_pOverlayCodecCC->GetOverlay()) != NULL)
@@ -553,7 +574,8 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   // then do all the rendering on that temp picture and finaly copy it to video memory.
   // In almost all cases this is 5 or more times faster!.
   bool bHasSpecialOverlay = m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SPU) 
-                         || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_IMAGE);
+                         || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_IMAGE)
+                         || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SSA);
   
   if (bHasSpecialOverlay)
   {
@@ -590,9 +612,9 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     if(pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime >= pts2 || pOverlay->iPTSStopTime == 0LL) || pts == 0)
     {
       if (bHasSpecialOverlay && m_pTempOverlayPicture) 
-        CDVDOverlayRenderer::Render(m_pTempOverlayPicture, pOverlay);
+        CDVDOverlayRenderer::Render(m_pTempOverlayPicture, pOverlay, pts);
       else 
-        CDVDOverlayRenderer::Render(pDest, pOverlay);
+        CDVDOverlayRenderer::Render(pDest, pOverlay, pts);
     }
   }
   

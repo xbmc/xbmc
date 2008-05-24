@@ -1,9 +1,30 @@
-
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+ 
 #include "stdafx.h"
 
 #include "DVDFactoryCodec.h"
 #include "Video/DVDVideoCodec.h"
 #include "Audio/DVDAudioCodec.h"
+#include "Overlay/DVDOverlayCodec.h"
 
 #include "Video/DVDVideoCodecFFmpeg.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
@@ -15,6 +36,9 @@
 #include "Audio/DVDAudioCodecPcm.h"
 #include "Audio/DVDAudioCodecLPcm.h"
 #include "Audio/DVDAudioCodecPassthrough.h"
+#include "Overlay/DVDOverlayCodecSSA.h"
+#include "Overlay/DVDOverlayCodecText.h"
+#include "Overlay/DVDOverlayCodecFFmpeg.h"
 
 #include "DVDStreamInfo.h"
 
@@ -62,6 +86,29 @@ CDVDAudioCodec* CDVDFactoryCodec::OpenCodec(CDVDAudioCodec* pCodec, CDVDStreamIn
   }
   return NULL;
 }
+
+CDVDOverlayCodec* CDVDFactoryCodec::OpenCodec(CDVDOverlayCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )
+{  
+  try
+  {
+    CLog::Log(LOGDEBUG, "FactoryCodec - Overlay: %s - Opening", pCodec->GetName());
+    if( pCodec->Open( hints, options ) )
+    {
+      CLog::Log(LOGDEBUG, "FactoryCodec - Overlay: %s - Opened", pCodec->GetName());
+      return pCodec;
+    }
+
+    CLog::Log(LOGDEBUG, "FactoryCodec - Overlay: %s - Failed", pCodec->GetName());
+    pCodec->Dispose();
+    delete pCodec;
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "FactoryCodec - Audio: Failed with exception");
+  }
+  return NULL;
+}
+
 
 CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 {
@@ -165,6 +212,32 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint )
 
   pCodec = OpenCodec( new CDVDAudioCodecFFmpeg(), hint, options );
   if( pCodec ) return pCodec;
+
+  return NULL;
+}
+
+CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
+{
+  CDVDOverlayCodec* pCodec = NULL;
+  CDVDCodecOptions options;
+
+  switch (hint.codec)
+  {
+    case CODEC_ID_TEXT:
+      pCodec = OpenCodec(new CDVDOverlayCodecText(), hint, options);
+      if( pCodec ) return pCodec;
+
+    case CODEC_ID_SSA:
+      pCodec = OpenCodec(new CDVDOverlayCodecSSA(), hint, options);
+      if( pCodec ) return pCodec;
+
+      pCodec = OpenCodec(new CDVDOverlayCodecText(), hint, options);
+      if( pCodec ) return pCodec;
+
+    default:
+      pCodec = OpenCodec(new CDVDOverlayCodecFFmpeg(), hint, options);
+      if( pCodec ) return pCodec;
+  }
 
   return NULL;
 }

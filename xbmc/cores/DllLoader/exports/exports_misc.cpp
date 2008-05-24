@@ -1,4 +1,24 @@
-
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+ 
 #include "stdafx.h"
 #include "../DllLoader.h"
 #include "emu_misc.h"
@@ -140,5 +160,19 @@ Export export_iconvx[] =
   { "libiconv_set_relocation_prefix",-1, libiconv_set_relocation_prefix, NULL },
   { "libiconvctl",                -1, libiconvctl,                   NULL },
   { "libiconvlist",               -1, libiconvlist,                  NULL },
+  { NULL, NULL, NULL, NULL }
+};
+
+extern "C" void* inflate();
+extern "C" void* inflateEnd();
+extern "C" void* inflateInit2_();
+extern "C" void* inflateReset();
+
+Export export_zlib[] =
+{
+  { "inflate",       -1, inflate,        NULL },
+  { "inflateEnd",    -1, inflateEnd,     NULL },
+  { "inflateInit2_", -1, inflateInit2_,  NULL },
+  { "inflateReset",  -1, inflateReset,   NULL },
   { NULL, NULL, NULL, NULL }
 };

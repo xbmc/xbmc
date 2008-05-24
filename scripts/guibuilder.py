@@ -1,3 +1,23 @@
+#
+#      Copyright (C) 2005-2008 Team XBMC
+#      http://www.xbmc.org
+#
+#  This Program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2, or (at your option)
+#  any later version.
+#
+#  This Program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with XBMC; see the file COPYING.  If not, write to
+#  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+#  http://www.gnu.org/copyleft/gpl.html
+#
+
 '''
 This module creates your scripts GUI from a standard XBMC skinfile.xml. It works for both Windows and
 WindowDialogs. Hopefully it will make it easier to skin your scripts for different XBMC skins.
@@ -73,7 +93,7 @@ Post a message at http://www.xbmc.xbox-scene.com/forum/ with any suggestions.
 
 Credits:
 GetConditionalVisibility(), GetSkinPath(), LoadReferences(), LoadIncludes(), ResolveInclude()
-The above functions were translated from Xbox Media Center's source, thanks Developers.
+The above functions were translated from XBMC's source, thanks Developers.
 A special thanks to elupus for shaming me into doing it the right way. :)
 
 Nuka1195

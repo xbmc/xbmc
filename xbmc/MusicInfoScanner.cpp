@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2007 Team XboxMediaCenter
- *      http://www.xboxmediacenter.com
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with GNU Make; see the file COPYING.  If not, write to
+ *  along with XBMC; see the file COPYING.  If not, write to
  *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  *  http://www.gnu.org/copyleft/gpl.html
  *
@@ -162,7 +162,8 @@ void CMusicInfoScanner::Process()
           m_pObserver->OnSetProgress(iCurrentItem++, m_albumsToScan.size());
         }
         
-        DownloadAlbumInfo(it->strGenre,it->strArtist,it->strAlbum); // genre field holds path - see fetchalbuminfo() 
+        bool bCanceled;
+        DownloadAlbumInfo(it->strGenre,it->strArtist,it->strAlbum,bCanceled); // genre field holds path - see fetchalbuminfo() 
 
         if (m_bStop)
           break;
@@ -485,8 +486,9 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       long iAlbum = m_musicDatabase.GetAlbumByName(song.strAlbum,song.strArtist);
       CStdString strPath;
       strPath.Format("musicdb://3/%u/",iAlbum);
+      bool bCanceled;
       if (find(m_albumsScanned.begin(),m_albumsScanned.end(),iAlbum) == m_albumsScanned.end())
-        if (DownloadAlbumInfo(strPath,song.strArtist,song.strAlbum))
+        if (DownloadAlbumInfo(strPath,song.strArtist,song.strAlbum,bCanceled))
           m_albumsScanned.push_back(iAlbum);
   
       if (m_pObserver)
@@ -718,13 +720,14 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, CStdString &hash)
 
 #define THRESHOLD .95f
 
-bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdString& strArtist, const CStdString& strAlbum, CGUIDialogProgress* pDialog)
+bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdString& strArtist, const CStdString& strAlbum, bool& bCanceled, CGUIDialogProgress* pDialog)
 {
   CAlbum album;
   VECSONGS songs;
   DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams params;
   DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strPath, params);
 
+  bCanceled = false;
   m_musicDatabase.Open();
   if (m_musicDatabase.GetAlbumInfo(params.GetAlbumId(),album,&songs) && !album.strAlbum.IsEmpty())
     return true;
@@ -853,7 +856,11 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
       // and wait till user selects one
       if (pDlg->GetSelectedLabel() < 0) 
       { // none chosen
-        if (!pDlg->IsButtonPressed()) return false;
+        if (!pDlg->IsButtonPressed()) 
+        {
+          bCanceled = true;
+          return false;
+        }
         // manual button pressed
         CStdString strNewAlbum = strAlbum;
         if (!CGUIDialogKeyboard::ShowAndGetInput(strNewAlbum, g_localizeStrings.Get(16011), false)) return false;
@@ -867,7 +874,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
         pDialog->Progress();
 
         m_musicDatabase.Close();
-        return DownloadAlbumInfo(strPath,strArtist,strAlbum,pDialog);
+        return DownloadAlbumInfo(strPath,strArtist,strAlbum,bCanceled,pDialog);
       }
       iSelectedAlbum = pDlg->GetSelectedItem().m_idepth;
     }

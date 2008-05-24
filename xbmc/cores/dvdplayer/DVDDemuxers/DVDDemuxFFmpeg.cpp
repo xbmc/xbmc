@@ -1,4 +1,24 @@
-
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+ 
 #include "stdafx.h"
 #include "DVDDemuxFFmpeg.h"
 #include "DVDInputStreams/DVDInputStream.h"
@@ -80,6 +100,18 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
   buffer.erase(0, start);
 }
 
+static DWORD g_urltimeout = 0;
+static int interrupt_cb(void)
+{
+  if(!g_urltimeout)
+    return 0;
+  
+  if(GetTickCount() > g_urltimeout)
+    return 1;
+
+  return 0;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /*
@@ -91,6 +123,9 @@ static int dvd_file_open(URLContext *h, const char *filename, int flags)
 
 static int dvd_file_read(URLContext *h, BYTE* buf, int size)
 {
+  if (g_urltimeout && GetTickCount() > g_urltimeout)
+    return -1;
+
   CDVDInputStream* pInputStream = (CDVDInputStream*)h->priv_data;
   return pInputStream->Read(buf, size);
 }
@@ -101,7 +136,10 @@ static int dvd_file_write(URLContext *h, BYTE* buf, int size)
 }
 */
 static __int64 dvd_file_seek(URLContext *h, __int64 pos, int whence)
-{  
+{
+  if (g_urltimeout && GetTickCount() > g_urltimeout)
+    return -1;
+
   CDVDInputStream* pInputStream = (CDVDInputStream*)h->priv_data;
   if(whence == AVSEEK_SIZE)
     return pInputStream->GetLength();
@@ -111,18 +149,6 @@ static __int64 dvd_file_seek(URLContext *h, __int64 pos, int whence)
 
 static int dvd_file_close(URLContext *h)
 {
-  return 0;
-}
-
-static DWORD g_urltimeout = 0;
-static int interrupt_cb(void)
-{
-  if(!g_urltimeout)
-    return 0;
-  
-  if(GetTickCount() > g_urltimeout)
-    return 1;
-
   return 0;
 }
 
@@ -604,8 +630,8 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
               {
                 stream->duration = duration;
                 duration = m_dllAvUtil.av_rescale_rnd(stream->duration, stream->time_base.num * AV_TIME_BASE, stream->time_base.den, AV_ROUND_NEAR_INF);
-                if(m_pFormatContext->duration == AV_NOPTS_VALUE && m_pFormatContext->file_size > 0
-                || m_pFormatContext->duration != AV_NOPTS_VALUE && duration > m_pFormatContext->duration)
+                if(m_pFormatContext->duration == (int64_t)AV_NOPTS_VALUE && m_pFormatContext->file_size > 0
+                || m_pFormatContext->duration != (int64_t)AV_NOPTS_VALUE && duration > m_pFormatContext->duration)
                   m_pFormatContext->duration = duration;
               }
           }

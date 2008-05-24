@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "lib/libPython/python/Python.h"
 #include "player.h"
@@ -631,6 +652,54 @@ namespace PYXBMC
     return Py_BuildValue("s", result.c_str());
   }
 
+  // getSupportedMedia function
+  PyDoc_STRVAR(getSupportedMedia__doc__,
+    "getSupportedMedia(media) -- Returns the supported file types for the specific media as a string.\n"
+    "\n"
+    "media          : string - media type\n"
+    "\n"
+    "*Note, media type can be (video, music, picture).\n"
+    "\n"
+    "       The return value is a pipe separated string of filetypes (eg. '.mov|.avi').\n"
+    "\n"
+    "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "\n"
+    "example:\n"
+    "  - mTypes = xbmc.getSupportedMedia('video')\n");
+
+  PyObject* XBMC_GetSupportedMedia(PyObject *self, PyObject *args, PyObject *kwds)
+  {
+    static char *keywords[] = { "media", NULL };
+    char *media = NULL;
+    // parse arguments to constructor
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      "s",
+      keywords,
+      &media
+      ))
+    {
+      return NULL;
+    };
+
+    CStdString result;
+    if (strcmpi(media, "video") == 0)
+      result = g_stSettings.m_videoExtensions;
+    else if (strcmpi(media, "music") == 0)
+      result = g_stSettings.m_musicExtensions;
+    else if (strcmpi(media, "picture") == 0)
+      result = g_stSettings.m_pictureExtensions;
+    else
+    {
+      PyErr_SetString(PyExc_ValueError, "media = (video, music, picture)");
+      return NULL;
+    }
+
+    return Py_BuildValue("s", result.c_str());
+  }
+
   // define c functions to be used in python here
   PyMethodDef xbmcMethods[] = {
     {"output", (PyCFunction)XBMC_Output, METH_VARARGS, output__doc__},
@@ -666,6 +735,7 @@ namespace PYXBMC
     {"translatePath", (PyCFunction)XBMC_TranslatePath, METH_VARARGS, translatePath__doc__},
 
     {"getRegion", (PyCFunction)XBMC_GetRegion, METH_VARARGS|METH_KEYWORDS, getRegion__doc__},
+    {"getSupportedMedia", (PyCFunction)XBMC_GetSupportedMedia, METH_VARARGS|METH_KEYWORDS, getSupportedMedia__doc__},
     {NULL, NULL, 0, NULL}
   };
 
