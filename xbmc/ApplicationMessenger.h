@@ -50,6 +50,11 @@ class CFileItem;
 #define TMSG_RESTARTAPP           304
 #define TMSG_SWITCHTOFULLSCREEN   305
 
+#ifndef HAS_XBOX_HARDWARE
+#define TMSG_HIBERNATE            306
+#define TMSG_SUSPEND              307
+#endif
+
 #define TMSG_HTTPAPI              400
 
 #define TMSG_NETWORKMESSAGE         500
