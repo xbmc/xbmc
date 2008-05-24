@@ -589,7 +589,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 #ifdef HAS_KAI
       g_application.StopKai();   
 #endif
-#ifndef HAS_UPNP
+#ifdef HAS_UPNP
       g_application.StopUPnP();
 #endif
       CScrobbler::GetInstance()->Term();
