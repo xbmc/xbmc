@@ -104,7 +104,6 @@ void Initialize();
 CHalManager();
 ~CHalManager();
 std::vector<CStorageDevice> GetVolumeDevices();
-std::vector<CHalDevice> GetMTPDevices();
 
 static bool PowerManagement(PowerState State);
 
