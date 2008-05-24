@@ -39,6 +39,7 @@ namespace EVENTSERVER
   class CEventServer : public IRunnable
   {
   public:
+    static void RemoveInstance();
     static CEventServer* GetInstance();
     virtual ~CEventServer() {}
 

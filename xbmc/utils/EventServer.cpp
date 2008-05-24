@@ -55,6 +55,15 @@ CEventServer::CEventServer()
   m_iListenTimeout = 1000;
 }
 
+void CEventServer::RemoveInstance()
+{
+  if (m_pInstance)
+  {
+    delete m_pInstance;
+    m_pInstance=NULL;
+  }
+}
+
 CEventServer* CEventServer::GetInstance()
 {
   if (!m_pInstance)
