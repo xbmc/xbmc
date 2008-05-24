@@ -134,12 +134,18 @@ CHalManager::~CHalManager()
     }
   }
 #endif
-  dbus_error_free(&m_Error); // Needed?
 
   if (m_Context != NULL)
     libhal_ctx_shutdown(m_Context, NULL);
   if (m_Context != NULL)
     libhal_ctx_free(m_Context);
+
+  if (m_DBusSystemConnection != NULL)
+  {
+    dbus_connection_unref(m_DBusSystemConnection);
+    m_DBusSystemConnection = NULL;
+  }
+  dbus_error_free(&m_Error); // Needed?
 }
 
 // Initialize
@@ -161,18 +167,20 @@ void CHalManager::Initialize()
 // Initialize basic DBus connection
 bool CHalManager::InitializeDBus()
 {
-  if (m_DBusConnection != NULL)
-    return TRUE;
+  if (m_DBusSystemConnection != NULL)
+    return true;
 
   dbus_error_init (&m_Error);
-  if (!(m_DBusConnection = dbus_bus_get (DBUS_BUS_SYSTEM, &m_Error)))
+  if (m_DBusSystemConnection == NULL && !(m_DBusSystemConnection = dbus_bus_get (DBUS_BUS_SYSTEM, &m_Error)))
   {
     CLog::Log(LOGERROR, "DBus: Could not get system bus: %s", m_Error.message);
     dbus_error_free (&m_Error);
-    return FALSE;
   }
 
-  return TRUE;
+  if (m_DBusSystemConnection != NULL)
+    return true;
+  else
+    return false;
 }
 
 // Initialize basic HAL connection
@@ -191,7 +199,7 @@ LibHalContext *CHalManager::InitializeHal()
     return NULL;
   }
 
-  if (!libhal_ctx_set_dbus_connection(ctx, m_DBusConnection))
+  if (!libhal_ctx_set_dbus_connection(ctx, m_DBusSystemConnection))
     CLog::Log(LOGERROR, "HAL: Failed to connect with dbus");
 
   libhal_ctx_set_device_added(ctx, DeviceAdded);
@@ -350,12 +358,12 @@ std::vector<CStorageDevice> CHalManager::DeviceFromDriveUdi(const char *udi)
 bool CHalManager::Update()
 {
   CSingleLock lock(m_lock);
-  if (g_HalManager.m_Context == NULL)
+  if (m_Context == NULL)
     return false;
 
-  if (!dbus_connection_read_write_dispatch(g_HalManager.m_DBusConnection, 0)) // We choose 0 that means we won't wait for a message
+  if (!dbus_connection_read_write_dispatch(m_DBusSystemConnection, 0)) // We choose 0 that means we won't wait for a message
   {
-    CLog::Log(LOGERROR, "DBus: read/write dispatch");
+    CLog::Log(LOGERROR, "DBus: System - read/write dispatch");
     return false;
   }
   if (NewMessage)
@@ -365,6 +373,61 @@ bool CHalManager::Update()
   }
   else
     return false;
+}
+
+// Makes a temporary DBus connection and sends a PowerManagement call
+bool CHalManager::PowerManagement(PowerState State)
+{
+  DBusMessage* msg;
+  DBusConnection *connection = dbus_bus_get (DBUS_BUS_SESSION, &m_Error);
+  if (connection)
+  {
+    CStdString StateString;
+    switch (State)
+    {
+    case POWERSTATE_HIBERNATE:
+      StateString = "Hibernate";
+      break;
+    case POWERSTATE_SUSPEND:
+      StateString = "Suspend";
+      break;
+    case POWERSTATE_SHUTDOWN:
+      StateString = "Shutdown";
+      break;
+    case POWERSTATE_REBOOT:
+      StateString = "Reboot";
+      break;
+    default:
+      CLog::Log(LOGERROR, "DBus: Unrecognised State");
+      return false;
+      break;
+    }
+    msg = dbus_message_new_method_call("org.freedesktop.PowerManagement", "/org/freedesktop/PowerManagement", "org.freedesktop.PowerManagement", StateString.c_str());
+
+    if (msg == NULL)
+      CLog::Log(LOGERROR, "DBus: Create PowerManagement Message failed");
+    else
+    {
+      dbus_message_set_no_reply(msg, TRUE);
+
+      if (!dbus_connection_send(connection, msg, NULL))
+      {
+        CLog::Log(LOGERROR, "DBus: Ran out of memory while queueing message");
+        return false;
+      }
+
+      printf("Waiting for send-queue to be sent out\n");
+      dbus_connection_flush(connection);
+
+      printf("Queue is now empty\n");
+
+      dbus_message_unref(msg);
+      msg = NULL;
+    }
+
+    dbus_connection_unref(connection);
+    connection = NULL;
+  }
 }
 
 /* libhal-storage type to readable form */

@@ -341,6 +341,9 @@ CGUISettings::CGUISettings(void)
 #ifdef __APPLE__
   AddInt(3, "system.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
 #endif
+#ifdef HAS_HAL
+  AddInt(3, "system.shutdownstate", 13008, 0, 0, 1, 4, SPIN_CONTROL_TEXT);
+#endif
 #ifdef HAS_XBOX_HARDWARE
   AddSeparator(3, "system.sep2");
   AddInt(4, "system.ledcolour", 13339, LED_COLOUR_NO_CHANGE, LED_COLOUR_NO_CHANGE, 1, LED_COLOUR_OFF, SPIN_CONTROL_TEXT);
