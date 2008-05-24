@@ -42,6 +42,9 @@
 #include "GUIWindowManager.h"
 #include "Settings.h"
 #include "FileItem.h"
+#ifdef HAS_HAL
+#include "linux/HalManager.h"
+#endif
 
 using namespace std;
 
@@ -142,7 +145,11 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
   {
     case TMSG_SHUTDOWN:
       {
+#ifdef HAS_HAL
+        int ShutdownState = g_guiSettings.GetInt("system.shutdownstate");
+#else
         g_application.Stop();
+#endif
 #ifdef _XBOX
         Sleep(200);
 #ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
@@ -156,7 +163,18 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 #endif
 #else
         // exit the application
+#ifdef HAS_HAL
+        if (ShutdownState) // If we have a setting for powerstate mode
+          CHalManager::PowerManagement((PowerState)ShutdownState);
+
+        if (ShutdownState == POWERSTATE_SHUTDOWN || ShutdownState == 0)
+        {
+          g_application.Stop();
+          exit(0);
+        }
+#else
         exit(0);
+#endif
 #endif
       }
       break;
@@ -182,7 +200,9 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 #endif
 #else
         // exit the application
-        // TODO LINUX actually restart
+#ifdef HAS_HAL
+        CHalManager::PowerManagement(POWERSTATE_REBOOT);
+#endif
         exit(0);
 #endif
       }
@@ -203,7 +223,9 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 #endif
 #else
         // exit the application
-        // TODO LINUX actually restart
+#ifdef HAS_HAL
+        CHalManager::PowerManagement(POWERSTATE_REBOOT);
+#endif
         exit(0);
 #endif
       }
