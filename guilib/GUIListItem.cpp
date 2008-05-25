@@ -195,10 +195,10 @@ void CGUIListItem::Serialize(CArchive &ar)
     ar << m_bSelected;
     ar << m_overlayIcon;
     ar << m_mapProperties.size();
-    for (std::map<std::string, std::string>::const_iterator it = m_mapProperties.begin(); it != m_mapProperties.end(); it++)
+    for (std::map<CStdString, CStdString, icompare>::const_iterator it = m_mapProperties.begin(); it != m_mapProperties.end(); it++)
     {
-      ar << (CStdString)it->first;
-      ar << (CStdString)it->second;
+      ar << it->first;
+      ar << it->second;
     }
   }
   else
@@ -274,23 +274,37 @@ void CGUIListItem::SetInvalid()
   if (m_focusedLayout) m_focusedLayout->SetInvalid();
 }
 
-void CGUIListItem::SetProperty(const std::string &strKey, const std::string &strValue)
+void CGUIListItem::SetProperty(const CStdString &strKey, const char *strValue)
 {
   m_mapProperties[strKey] = strValue;
 }
 
-std::string CGUIListItem::GetProperty(const std::string &strKey) const
+void CGUIListItem::SetProperty(const CStdString &strKey, const CStdString &strValue)
 {
-  std::map<std::string,std::string>::const_iterator iter = m_mapProperties.find(strKey);
+  m_mapProperties[strKey] = strValue;
+}
+
+CStdString CGUIListItem::GetProperty(const CStdString &strKey) const
+{
+  std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(strKey);
   if (iter == m_mapProperties.end())
     return "";
 
   return iter->second;
 }
 
-void CGUIListItem::ClearProperty(const std::string &strKey)
+bool CGUIListItem::HasProperty(const CStdString &strKey) const
 {
-  std::map<std::string,std::string>::iterator iter = m_mapProperties.find(strKey);
+  std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(strKey);
+  if (iter == m_mapProperties.end())
+    return false;
+
+  return true;
+}
+
+void CGUIListItem::ClearProperty(const CStdString &strKey)
+{
+  std::map<CStdString,CStdString,icompare>::iterator iter = m_mapProperties.find(strKey);
   if (iter != m_mapProperties.end())
     m_mapProperties.erase(iter);
 }
@@ -299,3 +313,38 @@ void CGUIListItem::ClearProperties()
 {
   m_mapProperties.clear();
 }
+
+void CGUIListItem::SetProperty(const CStdString &strKey, int nVal)
+{
+  CStdString strVal;
+  strVal.Format("%d",nVal);
+  SetProperty(strKey, strVal);
+}
+
+void CGUIListItem::SetProperty(const CStdString &strKey, bool bVal)
+{
+  SetProperty(strKey, bVal?"1":"0");
+}
+
+void CGUIListItem::SetProperty(const CStdString &strKey, double dVal)
+{
+  CStdString strVal;
+  strVal.Format("%f",dVal);
+  SetProperty(strKey, strVal);
+}
+
+bool CGUIListItem::GetPropertyBOOL(const CStdString &strKey) const
+{
+  return GetProperty(strKey) == "1";
+}
+
+int CGUIListItem::GetPropertyInt(const CStdString &strKey) const
+{
+  return atoi(GetProperty(strKey).c_str()) ;
+}
+
+double CGUIListItem::GetPropertyDouble(const CStdString &strKey) const
+{
+  return atof(GetProperty(strKey).c_str()) ;
+}
+

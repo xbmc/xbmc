@@ -178,7 +178,7 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
     case NODE_TYPE_GENRE: // Genres
       strLabel = g_localizeStrings.Get(135); break;
     case NODE_TYPE_YEAR: // Year
-      strLabel = g_localizeStrings.Get(345); break;
+      strLabel = g_localizeStrings.Get(562); break;
     case NODE_TYPE_DIRECTOR: // Director
       strLabel = g_localizeStrings.Get(20348); break;
     case NODE_TYPE_MOVIES_OVERVIEW: // Movies
