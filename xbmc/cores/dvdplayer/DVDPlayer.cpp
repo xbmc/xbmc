@@ -422,7 +422,18 @@ bool CDVDPlayer::OpenDemuxStream()
 
   try
   {
-    m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
+    int attempts = 10;
+    while(!m_bStop && attempts-- > 0)
+    {
+      m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
+      if(!m_pDemuxer && m_pInputStream->NextStream())
+      {
+        CLog::Log(LOGDEBUG, "%s - New stream available from input, retry open", __FUNCTION__);
+        continue;
+      }
+      break;
+    }
+
     if(!m_pDemuxer)
     {
       CLog::Log(LOGERROR, "%s - Error creating demuxer", __FUNCTION__);
@@ -778,7 +789,7 @@ void CDVDPlayer::Process()
       CDVDDemuxUtils::FreeDemuxPacket(pPacket); 
       continue;
     }
-    
+
     if (!pPacket)
     {
       // when paused, demuxer could be be returning empty

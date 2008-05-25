@@ -24,11 +24,12 @@
 #include "DVDOverlayCodecSSA.h"
 #include "DVDOverlaySSA.h"
 #include "DVDStreamInfo.h"
-#include "cores/ffmpeg/avcodec.h"
+#include "DVDCodecs/DVDCodecs.h"
 
 CDVDOverlayCodecSSA::CDVDOverlayCodecSSA() : CDVDOverlayCodec("SSA Subtitle Decoder")
 {
   m_pOverlay = NULL;
+  m_libass = NULL;
 }
 
 CDVDOverlayCodecSSA::~CDVDOverlayCodecSSA()
@@ -46,9 +47,7 @@ bool CDVDOverlayCodecSSA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     return false;
 
   m_libass = new CDVDSubtitlesLibass();
-  m_libass->DecodeHeader((char *)hints.extradata, hints.extrasize);
-
-  return true;
+  return m_libass->DecodeHeader((char *)hints.extradata, hints.extrasize);
 }
 
 void CDVDOverlayCodecSSA::Dispose()
@@ -63,12 +62,8 @@ int CDVDOverlayCodecSSA::Decode(BYTE* data, int size, double pts, double duratio
   if(m_pOverlay)
     SAFE_RELEASE(m_pOverlay);
 
-  printf("[%s] at %.1f for %.1f\n", (char* )data, pts, duration);
-
-  m_libass->DecodeDemuxPkt((char *)data, size, pts, duration);
-
-  CDVDOverlaySSA* ssaOverlay = new CDVDOverlaySSA(m_libass);
-  m_pOverlay = ssaOverlay;
+  if(m_libass->DecodeDemuxPkt((char *)data, size, pts, duration))
+    m_pOverlay = new CDVDOverlaySSA(m_libass);
 
   return OC_OVERLAY;
 }

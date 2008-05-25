@@ -24,15 +24,14 @@
 #include "DVDCodecs/Overlay/DVDOverlay.h"
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
-#include "DVDCodecs/Overlay/DVDOverlayCodecFFmpeg.h"
-#include "DVDCodecs/Overlay/DVDOverlayCodecText.h"
-#include "DVDCodecs/Overlay/DVDOverlayCodecSSA.h"
+#include "DVDCodecs/Overlay/DVDOverlayCodec.h"
 #include "DVDClock.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDInputStreams/DVDInputStreamNavigator.h"
 #include "DVDSubtitles/DVDSubtitleParser.h"
 #include "DVDCodecs/DVDCodecs.h"
+#include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 
 using namespace std;
@@ -168,20 +167,12 @@ bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, string &filename)
   if(hints.codec == CODEC_ID_DVD_SUBTITLE && filename == "dvd")
     return true;
 
-  if(hints.codec == CODEC_ID_TEXT)
-    m_pOverlayCodec = new CDVDOverlayCodecText();
-  else if(hints.codec == CODEC_ID_SSA)
-    m_pOverlayCodec = new CDVDOverlayCodecSSA();
-  else
-    m_pOverlayCodec = new CDVDOverlayCodecFFmpeg();
-
-  CDVDCodecOptions options;
-  if(!m_pOverlayCodec->Open(hints, options))
-    CloseStream(false);
-    return false;
+  m_pOverlayCodec = CDVDFactoryCodec::CreateOverlayCodec(hints);
+  if(m_pOverlayCodec)
+    return true;
 
   CLog::Log(LOGERROR, "%s - Unable to init overlay codec", __FUNCTION__);
-  return true;
+  return false;
 }
 
 void CDVDPlayerSubtitle::CloseStream(bool flush)

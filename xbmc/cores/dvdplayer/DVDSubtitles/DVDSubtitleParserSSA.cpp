@@ -20,12 +20,10 @@
  */
 
 #include "stdafx.h"
-#include "AutoPtrHandle.h"
 #include "DVDSubtitleParserSSA.h"
-#include "DVDOverlaySSA.h"
+#include "DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "DVDClock.h"
 #include "Util.h"
-#include "File.h"
 
 using namespace std;
 
@@ -55,14 +53,14 @@ bool CDVDSubtitleParserSSA::Open(CDVDStreamInfo &hints)
     ass_event_t* curEvent =  (assEvent+i);
     if (curEvent)
     {
-      CDVDOverlaySSA* ssaOverlay = new CDVDOverlaySSA(m_libass);
-      ssaOverlay->Acquire(); // increase ref count with one so that we can hold a handle to this overlay
+      CDVDOverlaySSA* overlay = new CDVDOverlaySSA(m_libass);
+      overlay->Acquire(); // increase ref count with one so that we can hold a handle to this overlay
 
-      ssaOverlay->iPTSStartTime = curEvent->Start * (DVD_TIME_BASE / 1000);
-      ssaOverlay->iPTSStopTime  = (curEvent->Start + curEvent->Duration) * (DVD_TIME_BASE / 1000);
+      overlay->iPTSStartTime = (double)curEvent->Start * (DVD_TIME_BASE / 1000);
+      overlay->iPTSStopTime  = (double)(curEvent->Start + curEvent->Duration) * (DVD_TIME_BASE / 1000);
 
-      ssaOverlay->replace = true;
-      m_collection.Add(ssaOverlay);
+      overlay->replace = true;
+      m_collection.Add(overlay);
     }
   }
   return true;
@@ -86,6 +84,5 @@ void CDVDSubtitleParserSSA::Reset()
 
 CDVDOverlay* CDVDSubtitleParserSSA::Parse(double iPts)
 {
-  CDVDOverlay* pOverlay = m_collection.Get(iPts);
-  return pOverlay;
+  return m_collection.Get(iPts);
 }
