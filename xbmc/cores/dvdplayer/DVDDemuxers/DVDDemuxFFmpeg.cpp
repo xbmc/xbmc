@@ -527,8 +527,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
       m_pFormatContext->pb->eof_reached = 0;
 
     // timeout reads after 100ms
-    g_urltimeout = GetTickCount() + 100;
-    //g_urltimeout = 0;
+    g_urltimeout = GetTickCount() + 20000;
     int result = 0;
     try
     {
