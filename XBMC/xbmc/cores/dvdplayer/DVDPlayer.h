@@ -186,6 +186,7 @@ public:
 
   virtual int  GetChapterCount();
   virtual int  GetChapter();
+  virtual int  SeekChapter(int iChapter);
 
   virtual void SeekTime(__int64 iTime);
   virtual __int64 GetTime();
@@ -231,11 +232,13 @@ protected:
    */
   void SetPlaySpeed(int iSpeed);
   int GetPlaySpeed()                                                { return m_playSpeed; }
-  
+  void SetCaching(bool enabled);
+
   __int64 GetTotalTimeInMsec();
   void FlushBuffers(bool queued);
 
   void HandleMessages();
+  void HandlePlaySpeed();
   bool IsInMenu() const;
 
   void SyncronizePlayers(DWORD sources, double pts = DVD_NOPTS_VALUE);
@@ -267,7 +270,7 @@ protected:
   int m_playSpeed;
 
   double m_lastpts;  // holds last display pts during ff/rw operations
-  
+  int m_errorCount;
   // classes
   CDVDPlayerVideo m_dvdPlayerVideo; // video part
   CDVDPlayerAudio m_dvdPlayerAudio; // audio part

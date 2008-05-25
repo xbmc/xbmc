@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -21,6 +19,7 @@
  *
  */
 
+#pragma once
 #include "utils/Thread.h"
 
 #include "DVDAudio.h"
@@ -166,6 +165,7 @@ protected:
   int     m_speed;
   double  m_droptime;
   bool    m_stalled;
+  bool    m_started;
   CRITICAL_SECTION m_critCodecSection;
 };
 

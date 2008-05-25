@@ -84,7 +84,7 @@ public:
   double GetSubtitleDelay()                                { return m_iSubtitleDelay; }
   void SetSubtitleDelay(double delay)                      { m_iSubtitleDelay = delay; }
 
-  bool IsStalled()                                  { return m_DetectedStill;  }
+  bool IsStalled()                                  { return m_stalled;  }
   int GetNrOfDroppedFrames()                        { return m_iDroppedFrames; }
 
   bool InitializedOutputDevice();
@@ -133,7 +133,8 @@ protected:
     unsigned int dheight;
     unsigned int color_matrix : 4;
     unsigned int color_range  : 1;
-    float framerate;
+    float        framerate;
+    bool         inited;
   } m_output; //holds currently configured output
 
   bool m_bAllowFullscreen;
@@ -147,7 +148,8 @@ protected:
   double m_droptime;
   double m_dropbase;
 
-  bool m_DetectedStill;
+  bool m_stalled;
+  bool m_started;
 
   /* autosync decides on how much of clock we should use when deciding sleep time */
   /* the value is the same as 63% timeconstant, ie that the step response of */
