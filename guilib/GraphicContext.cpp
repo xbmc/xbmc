@@ -697,6 +697,12 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
 #elif defined(_WIN32) && !defined(HAS_XBOX_HARDWARE)
     m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, g_advancedSettings.m_fullScreen);
+    //get the display frequency
+    DEVMODE devmode;
+    ZeroMemory(&devmode, sizeof(devmode));
+    devmode.dmSize = sizeof(devmode);
+    EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
+    g_settings.m_ResInfo[res].fRefreshRate = (float)devmode.dmDisplayFrequency;
 #else
     m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0);
 #endif
@@ -1165,9 +1171,11 @@ float CGraphicContext::GetFPS() const
   // Get the actual refresh rate of the display
   return Cocoa_GetScreenRefreshRate(g_settings.m_ResInfo[m_Resolution].iScreen);
 #else
+  if (g_settings.m_ResInfo[m_Resolution].fRefreshRate > 0)
+    return g_settings.m_ResInfo[m_Resolution].fRefreshRate;
   if (m_Resolution == PAL_4x3 || m_Resolution == PAL_16x9)
     return 50.0f;
-  else if (m_Resolution == HDTV_1080i)
+  if (m_Resolution == HDTV_1080i)
     return 30.0f;
   return 60.0f;
 #endif
