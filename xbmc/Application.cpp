@@ -3034,9 +3034,6 @@ void CApplication::Render()
     m_bPresentFrame = false;
     if (g_graphicsContext.IsFullScreenVideo() && !IsPaused())
     {
-      if (lastFrameTime + singleVideoFrameTime > currentTime)
-        nDelayTime = lastFrameTime + singleVideoFrameTime - currentTime;
-
       SDL_mutexP(m_frameMutex);
       
       // If we have frames or if we get notified of one, consume it.
@@ -3049,12 +3046,19 @@ void CApplication::Render()
     }
     else
     {
-      if (lastFrameTime + singleFrameTime > currentTime)
-        nDelayTime = lastFrameTime + singleFrameTime - currentTime;
-
       // only "limit frames" if we are not using vsync.
-      if (g_videoConfig.GetVSyncMode()!=VSYNC_ALWAYS)
+      if (g_videoConfig.GetVSyncMode() != VSYNC_ALWAYS)
+      {
+        if (lastFrameTime + singleFrameTime > currentTime)
+          nDelayTime = lastFrameTime + singleFrameTime - currentTime;
         Sleep(nDelayTime);
+      }
+      else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000/singleFrameTime)
+      {
+        //The driver is ignoring vsync. Was set to ALWAYS, set to VIDEO. Framerate will be limited from next render.
+        CLog::Log(LOGWARNING, "VSYNC ignored by driver, enabling framerate limiter.");
+        g_videoConfig.SetVSyncMode(VSYNC_VIDEO);
+      }
     }
 #else
     if (lastFrameTime + singleFrameTime > currentTime)
