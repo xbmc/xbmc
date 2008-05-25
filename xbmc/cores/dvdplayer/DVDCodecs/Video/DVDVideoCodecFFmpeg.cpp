@@ -197,7 +197,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   }
   catch (win32_exception e)
   {
-    e.writelog(__FUNCTION__"::avcodec_decode_video");
+    CLog::Log(LOGERROR, "%s::avcodec_decode_video", __FUNCTION__);
     return VC_ERROR;
   }
 

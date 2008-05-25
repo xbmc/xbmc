@@ -64,3 +64,4 @@ protected:
   XFILE::IRecordable*      m_pRecordable;
   bool m_eof;
 };
+

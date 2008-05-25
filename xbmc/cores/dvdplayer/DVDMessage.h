@@ -51,6 +51,7 @@ public:
     PLAYER_SET_STATE,               // restore the dvdplayer to a certain state
     PLAYER_SET_RECORD,              // set record state
     PLAYER_SEEK,                    // 
+    PLAYER_SEEK_CHAPTER,            //
     PLAYER_SETSPEED,                // set the playback speed
 
     PLAYER_CHANNEL_NEXT,            // switches to next playback channel
@@ -255,6 +256,21 @@ private:
   bool m_backward;
   bool m_flush;
   bool m_accurate;
+};
+
+class CDVDMsgPlayerSeekChapter : public CDVDMsg
+{
+  public:
+    CDVDMsgPlayerSeekChapter(int iChapter)
+      : CDVDMsg(PLAYER_SEEK_CHAPTER)
+      , m_iChapter(iChapter)
+    {}
+    
+    int GetChapter() const { return m_iChapter; }
+    
+  private:
+    
+    int m_iChapter;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
