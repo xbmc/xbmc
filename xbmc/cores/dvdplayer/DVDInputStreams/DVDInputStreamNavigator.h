@@ -106,6 +106,7 @@ public:
 
   int GetChapter()      { return m_iPart; }      // the current part in the current title
   int GetChapterCount() { return m_iPartCount; } // the number of parts in the current title
+  bool SeekChapter(int iChapter);
 
   int GetTotalTime(); // the total time in milli seconds
   int GetTime(); // the current position in milli seconds

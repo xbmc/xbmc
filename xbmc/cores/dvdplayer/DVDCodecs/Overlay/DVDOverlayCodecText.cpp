@@ -28,6 +28,7 @@
 CDVDOverlayCodecText::CDVDOverlayCodecText() : CDVDOverlayCodec("Text Subtitle Decoder")
 {
   m_pOverlay = NULL;
+  m_bIsSSA = false;
 }
 
 CDVDOverlayCodecText::~CDVDOverlayCodecText()
@@ -38,10 +39,10 @@ CDVDOverlayCodecText::~CDVDOverlayCodecText()
 
 bool CDVDOverlayCodecText::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  if(hints.codec == CODEC_ID_TEXT)
+  m_bIsSSA = (hints.codec == CODEC_ID_SSA);
+  if(hints.codec == CODEC_ID_TEXT || hints.codec == CODEC_ID_SSA)
     return true;
-  else
-    return false;
+  return false;
 }
 
 void CDVDOverlayCodecText::Dispose()
@@ -64,6 +65,21 @@ int CDVDOverlayCodecText::Decode(BYTE* data, int size, double pts, double durati
   start = (char*)data;
   end   = (char*)data + size;
   p     = (char*)data;
+
+  if (m_bIsSSA)
+  {
+    // currently just skip the prefixed ssa fields (8 fields)
+    int nFieldCount = 8;
+    while (nFieldCount > 0 && start < end)
+    {
+      if (*start == ',')
+        nFieldCount--;
+
+      start++;
+      p++;
+    }
+  }
+
   while(p<end)
   {
     if(*p == '{')

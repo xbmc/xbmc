@@ -28,6 +28,7 @@
 #include "DVDCodecs/Video/DVDVideoPPFFmpeg.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
+#include "../../Util.h"
 #include "DVDOverlayRenderer.h"
 #include "DVDPerformanceCounter.h"
 #include "DVDCodecs/DVDCodecs.h"
@@ -49,7 +50,8 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverl
   m_speed = DVD_PLAYSPEED_NORMAL;
   
   m_bRenderSubs = false;
-  m_DetectedStill = false;
+  m_stalled = false;
+  m_started = false;
   m_iVideoDelay = 0;
   m_iSubtitleDelay = 0;
   m_fForcedAspectRatio = 0;
@@ -63,6 +65,7 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverl
   m_bDropFrames = true;
   m_fFrameRate = 25;
   m_bAllowFullscreen = false;
+  memset(&m_output, 0, sizeof(m_output));
 }
 
 CDVDPlayerVideo::~CDVDPlayerVideo()
@@ -70,6 +73,14 @@ CDVDPlayerVideo::~CDVDPlayerVideo()
   StopThread();
   g_dvdPerformanceCounter.DisableVideoQueue();
   DeleteCriticalSection(&m_critCodecSection);
+
+#ifdef HAS_VIDEO_PLAYBACK
+  if(m_output.inited)
+  {
+    CLog::Log(LOGNOTICE, "%s - uninitting video device", __FUNCTION__);
+    g_renderManager.UnInit();
+  }
+#endif
 }
 
 double CDVDPlayerVideo::GetOutputDelay()
@@ -126,6 +137,9 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
     return false;
   }
 
+  m_stalled = false;
+  m_started = false;
+
   m_messageQueue.Init();
 
   CLog::Log(LOGNOTICE, "Creating video thread");
@@ -170,11 +184,13 @@ void CDVDPlayerVideo::OnStartup()
   
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_FlipTimeStamp = m_pClock->GetAbsoluteClock();
-  m_DetectedStill = false;
-  
-  memset(&m_output, 0, sizeof(m_output));
+
 #ifdef HAS_VIDEO_PLAYBACK
-  g_renderManager.PreInit();
+  if(!m_output.inited)
+  {
+    g_renderManager.PreInit();
+    m_output.inited = true;
+  }
 #endif
   g_dvdPerformanceCounter.EnableVideoDecodePerformance(ThreadHandle());
 }
@@ -198,7 +214,7 @@ void CDVDPlayerVideo::Process()
   {
     while (!m_bStop && m_speed == DVD_PLAYSPEED_PAUSE && !m_messageQueue.RecievedAbortRequest() && m_iNrOfPicturesNotToSkip==0) Sleep(5);
 
-    int iQueueTimeOut = (int)(m_DetectedStill ? frametime / 4 : frametime * 4) / 1000;
+    int iQueueTimeOut = (int)(m_stalled ? frametime / 4 : frametime * 10) / 1000;
     
     CDVDMsg* pMsg;
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, iQueueTimeOut);
@@ -211,10 +227,10 @@ void CDVDPlayerVideo::Process()
     else if (ret == MSGQ_TIMEOUT)
     {
       //Okey, start rendering at stream fps now instead, we are likely in a stillframe
-      if( !m_DetectedStill )
+      if( !m_stalled && m_started )
       {
         CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe detected, switching to forced %f fps", m_fFrameRate);
-        m_DetectedStill = true;
+        m_stalled = true;
         pts+= frametime*4;
       }
 
@@ -290,10 +306,11 @@ void CDVDPlayerVideo::Process()
       DemuxPacket* pPacket = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
       bool bPacketDrop     = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
 
-      if (m_DetectedStill)
+      m_started = true;
+      if (m_stalled)
       {
         CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe left, switching to normal playback");      
-        m_DetectedStill = false;
+        m_stalled = false;
 
         //don't allow the first frames after a still to be dropped
         //sometimes we get multiple stills (long duration frames) after each other
@@ -353,7 +370,7 @@ void CDVDPlayerVideo::Process()
             if(picture.iDuration == 0)
               picture.iDuration = frametime;
 
-            if(bRequestDrop)
+            if(bPacketDrop)
               picture.iFlags |= DVP_FLAG_DROPPED;
 
             if (m_iNrOfPicturesNotToSkip > 0)
@@ -473,11 +490,6 @@ void CDVDPlayerVideo::Process()
 void CDVDPlayerVideo::OnExit()
 {
   g_dvdPerformanceCounter.DisableVideoDecodePerformance();
-  
-  CLog::Log(LOGNOTICE, "uninitting video device");
-#ifdef HAS_VIDEO_PLAYBACK
-  g_renderManager.UnInit();
-#endif
 
   if (m_pOverlayCodecCC)
   {
@@ -716,7 +728,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   iClockSleep = min(iClockSleep, DVD_MSEC_TO_TIME(500));
   iFrameSleep = min(iFrameSleep, DVD_MSEC_TO_TIME(500));
 
-  if( m_DetectedStill )
+  if( m_stalled )
   { // when we render a still, we can't sync to clock anyway
     iSleepTime = iFrameSleep;
   }
@@ -735,7 +747,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 
   // present the current pts of this frame to user, and include the actual
   // presentation delay, to allow him to adjust for it
-  if( !m_DetectedStill )
+  if( !m_stalled )
     m_iCurrentPts = pts - max(0.0, iSleepTime);
 
   // timestamp when we think next picture should be displayed based on current duration
