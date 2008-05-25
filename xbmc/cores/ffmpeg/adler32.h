@@ -21,7 +21,9 @@
 #ifndef FFMPEG_ADLER32_H
 #define FFMPEG_ADLER32_H
 
+#include "common.h"
+
 unsigned long av_adler32_update(unsigned long adler, const uint8_t *buf,
-                                unsigned int len);
+                                unsigned int len) av_pure;
 
 #endif /* FFMPEG_ADLER32_H */

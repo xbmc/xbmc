@@ -21,6 +21,9 @@
 #ifndef FFMPEG_MATHEMATICS_H
 #define FFMPEG_MATHEMATICS_H
 
+#ifndef _WIN32
+#include <stdint.h>
+#endif
 #include "rational.h"
 
 enum AVRounding {
@@ -35,17 +38,17 @@ enum AVRounding {
  * rescale a 64bit integer with rounding to nearest.
  * a simple a*b/c isn't possible as it can overflow
  */
-int64_t av_rescale(int64_t a, int64_t b, int64_t c);
+int64_t av_rescale(int64_t a, int64_t b, int64_t c) av_const;
 
 /**
  * rescale a 64bit integer with specified rounding.
  * a simple a*b/c isn't possible as it can overflow
  */
-int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding);
+int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding) av_const;
 
 /**
  * rescale a 64bit integer by 2 rational numbers.
  */
-int64_t av_rescale_q(int64_t a, AVRational bq, AVRational cq);
+int64_t av_rescale_q(int64_t a, AVRational bq, AVRational cq) av_const;
 
 #endif /* FFMPEG_MATHEMATICS_H */
