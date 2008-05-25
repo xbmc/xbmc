@@ -21,8 +21,16 @@
 #ifndef FFMPEG_AVFORMAT_H
 #define FFMPEG_AVFORMAT_H
 
-#define LIBAVFORMAT_VERSION_INT ((52<<16)+(4<<8)+0)
-#define LIBAVFORMAT_VERSION     52.4.0
+#define LIBAVFORMAT_VERSION_MAJOR 52
+#define LIBAVFORMAT_VERSION_MINOR 14
+#define LIBAVFORMAT_VERSION_MICRO  0
+
+#define LIBAVFORMAT_VERSION_INT AV_VERSION_INT(LIBAVFORMAT_VERSION_MAJOR, \
+                                               LIBAVFORMAT_VERSION_MINOR, \
+                                               LIBAVFORMAT_VERSION_MICRO)
+#define LIBAVFORMAT_VERSION     AV_VERSION(LIBAVFORMAT_VERSION_MAJOR,   \
+                                           LIBAVFORMAT_VERSION_MINOR,   \
+                                           LIBAVFORMAT_VERSION_MICRO)
 #define LIBAVFORMAT_BUILD       LIBAVFORMAT_VERSION_INT
 
 #define LIBAVFORMAT_IDENT       "Lavf" AV_STRINGIFY(LIBAVFORMAT_VERSION)
@@ -36,8 +44,23 @@
 /* packet functions */
 
 typedef struct AVPacket {
-    int64_t pts;                            ///< presentation time stamp in time_base units
-    int64_t dts;                            ///< decompression time stamp in time_base units
+    /**
+     * Presentation time stamp in time_base units.
+     * This is the time at which the decompressed packet will be presented
+     * to the user.
+     * Can be AV_NOPTS_VALUE if it is not stored in the file.
+     * pts MUST be larger or equal to dts as presentation can not happen before
+     * decompression, unless one wants to view hex dumps. Some formats misuse
+     * the terms dts and pts/cts to mean something different, these timestamps
+     * must be converted to true pts/dts before they are stored in AVPacket.
+     */
+    int64_t pts;
+    /**
+     * Decompression time stamp in time_base units.
+     * This is the time at which the packet is decompressed.
+     * Can be AV_NOPTS_VALUE if it is not stored in the file.
+     */
+    int64_t dts;
     uint8_t *data;
     int   size;
     int   stream_index;
@@ -197,7 +220,7 @@ typedef struct AVInputFormat {
     /** size of private data so that it can be allocated in the wrapper */
     int priv_data_size;
     /**
-     * tell if a given file has a chance of being parsed by this format.
+     * Tell if a given file has a chance of being parsed by this format.
      * The buffer provided is guaranteed to be AVPROBE_PADDING_SIZE bytes
      * big so you do not have to check for that unless you need more.
      */
@@ -227,7 +250,7 @@ typedef struct AVInputFormat {
                      int stream_index, int64_t timestamp, int flags);
     /**
      * gets the next timestamp in stream[stream_index].time_base units.
-     * @return the timestamp or AV_NOPTS_VALUE if an error occured
+     * @return the timestamp or AV_NOPTS_VALUE if an error occurred
      */
     int64_t (*read_timestamp)(struct AVFormatContext *s, int stream_index,
                               int64_t *pos, int64_t pos_limit);
@@ -270,6 +293,13 @@ typedef struct AVIndexEntry {
     int min_distance;         /**< min distance between this and the previous keyframe, used to avoid unneeded searching */
 } AVIndexEntry;
 
+#define AV_DISPOSITION_DEFAULT   0x0001
+#define AV_DISPOSITION_DUB       0x0002
+#define AV_DISPOSITION_ORIGINAL  0x0004
+#define AV_DISPOSITION_COMMENT   0x0008
+#define AV_DISPOSITION_LYRICS    0x0010
+#define AV_DISPOSITION_KARAOKE   0x0020
+
 /**
  * Stream structure.
  * New fields can be added to the end with minor version bumps.
@@ -282,11 +312,11 @@ typedef struct AVStream {
     int id;       /**< format specific stream id */
     AVCodecContext *codec; /**< codec context */
     /**
-     * real base frame rate of the stream.
+     * Real base frame rate of the stream.
      * This is the lowest frame rate with which all timestamps can be
      * represented accurately (it is the least common multiple of all
      * frame rates in the stream), Note, this value is just a guess!
-     * for example if the timebase is 1/90000 and all frames have either
+     * For example if the timebase is 1/90000 and all frames have either
      * approximately 3600 or 1800 timer ticks then r_frame_rate will be 50/1.
      */
     AVRational r_frame_rate;
@@ -298,8 +328,8 @@ typedef struct AVStream {
     struct AVFrac pts;
 
     /**
-     * this is the fundamental unit of time (in seconds) in terms
-     * of which frame timestamps are represented. for fixed-fps content,
+     * This is the fundamental unit of time (in seconds) in terms
+     * of which frame timestamps are represented. For fixed-fps content,
      * timebase should be 1/frame rate and timestamp increments should be
      * identically 1.
      */
@@ -313,16 +343,16 @@ typedef struct AVStream {
      * MN: dunno if that is the right place for it */
     float quality;
     /**
-     * decoding: pts of the first frame of the stream, in stream time base.
-     * only set this if you are absolutely 100% sure that the value you set
+     * Decoding: pts of the first frame of the stream, in stream time base.
+     * Only set this if you are absolutely 100% sure that the value you set
      * it to really is the pts of the first frame.
      * This may be undefined (AV_NOPTS_VALUE).
-     * @note the ASF header does NOT contain a correct start_time the ASF
+     * @note The ASF header does NOT contain a correct start_time the ASF
      * demuxer must NOT set this.
      */
     int64_t start_time;
     /**
-     * decoding: duration of the stream, in stream time base.
+     * Decoding: duration of the stream, in stream time base.
      * If a source file does not specify a duration, but does specify
      * a bitrate, this value will be estimates from bit rate and file size.
      */
@@ -347,6 +377,10 @@ typedef struct AVStream {
 
 #define MAX_REORDER_DELAY 4
     int64_t pts_buffer[MAX_REORDER_DELAY+1];
+
+    char *filename; /**< source filename of the stream */
+
+    int disposition; /**< AV_DISPOSITION_* bitfield */
 } AVStream;
 
 #define AV_PROGRAM_RUNNING 1
@@ -369,6 +403,13 @@ typedef struct AVProgram {
 
 #define AVFMTCTX_NOHEADER      0x0001 /**< signal that no header is present
                                          (streams are added dynamically) */
+
+typedef struct AVChapter {
+    int id;                 ///< Unique id to identify the chapter
+    AVRational time_base;   ///< Timebase in which the start/end timestamps are specified
+    int64_t start, end;     ///< chapter start/end time in time_base units
+    char *title;            ///< chapter title
+} AVChapter;
 
 #if 1
 /* dvd's can have maximally 41 streams */
@@ -494,6 +535,15 @@ typedef struct AVFormatContext {
      * demuxing: set by user
      */
     unsigned int max_index_size;
+
+    /**
+     * Maximum amount of memory in bytes to use for buffering frames
+     * obtained from real-time capture devices.
+     */
+    unsigned int max_picture_buffer;
+
+    unsigned int nb_chapters;
+    AVChapter **chapters;
 } AVFormatContext;
 
 typedef struct AVPacketList {
@@ -725,6 +775,21 @@ AVStream *av_new_stream(AVFormatContext *s, int id);
 AVProgram *av_new_program(AVFormatContext *s, int id);
 
 /**
+ * Add a new chapter.
+ * This function is NOT part of the public API
+ * and should be ONLY used by demuxers.
+ *
+ * @param s media file handle
+ * @param id unique id for this chapter
+ * @param start chapter start time in time_base units
+ * @param end chapter end time in time_base units
+ * @param title chapter title
+ *
+ * @return AVChapter or NULL if error.
+ */
+AVChapter *ff_new_chapter(AVFormatContext *s, int id, AVRational time_base, int64_t start, int64_t end, const char *title);
+
+/**
  * Set the pts for a given stream.
  *
  * @param s stream
@@ -848,7 +913,7 @@ int av_interleaved_write_frame(AVFormatContext *s, AVPacket *pkt);
  * @param flush 1 if no further packets are available as input and all
  *              remaining packets should be output
  * @return 1 if a packet was output, 0 if no packet could be output,
- *         < 0 if an error occured
+ *         < 0 if an error occurred
  */
 int av_interleave_packet_per_dts(AVFormatContext *s, AVPacket *out, AVPacket *pkt, int flush);
 
@@ -963,7 +1028,7 @@ int avf_sdp_create(AVFormatContext *ac[], int n_files, char *buff, int size);
 
 #ifdef HAVE_AV_CONFIG_H
 
-void __dynarray_add(unsigned long **tab_ptr, int *nb_ptr, unsigned long elem);
+void ff_dynarray_add(unsigned long **tab_ptr, int *nb_ptr, unsigned long elem);
 
 #ifdef __GNUC__
 #define dynarray_add(tab, nb_ptr, elem)\
@@ -971,12 +1036,12 @@ do {\
     typeof(tab) _tab = (tab);\
     typeof(elem) _elem = (elem);\
     (void)sizeof(**_tab == _elem); /* check that types are compatible */\
-    __dynarray_add((unsigned long **)_tab, nb_ptr, (unsigned long)_elem);\
+    ff_dynarray_add((unsigned long **)_tab, nb_ptr, (unsigned long)_elem);\
 } while(0)
 #else
 #define dynarray_add(tab, nb_ptr, elem)\
 do {\
-    __dynarray_add((unsigned long **)(tab), nb_ptr, (unsigned long)(elem));\
+    ff_dynarray_add((unsigned long **)(tab), nb_ptr, (unsigned long)(elem));\
 } while(0)
 #endif
 
