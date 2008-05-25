@@ -118,7 +118,7 @@
 				<width>400</width>
 				<posx>180</posx>
 				<posy>60</posy>
-				<label>$INFO[MusicPlayer.Album]$INFO[musicplayer.discnumber, - $LOCALIZE[427]]$INFO[musicplayer.year, - (,)]</label>
+				<label>$INFO[MusicPlayer.Album]$INFO[musicplayer.discnumber, - $LOCALIZE[427]:]$INFO[musicplayer.year, - (,)]</label>
 				<align>left</align>
 				<font>font10</font>
 				<scroll>true</scroll>
@@ -145,7 +145,7 @@
 				<width>200</width>
 				<posx>680</posx>
 				<posy>80</posy>
-				<label>$INFO[musicplayer.Playlistposition,$LOCALIZE[435] ]$INFO[musicplayer.Playlistlength, / ]</label>
+				<label>$INFO[musicplayer.Playlistposition,$LOCALIZE[554]: ]$INFO[musicplayer.Playlistlength, / ]</label>
 				<visible>!MusicPartyMode.Enabled</visible>
 				<align>right</align>
 				<font>font10</font>

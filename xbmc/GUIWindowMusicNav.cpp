@@ -558,7 +558,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     {
       CVideoDatabase database;
       database.Open();
-      if (database.GetMusicVideoArtistByName(item->GetMusicInfoTag()->GetArtist()) > -1)
+      if (database.GetMatchingMusicVideo(item->GetMusicInfoTag()->GetArtist()) > -1)
         buttons.Add(CONTEXT_BUTTON_GO_TO_ARTIST, 20400);
     }
     if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetArtist().size() > 0 &&
@@ -567,12 +567,12 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     {
       CVideoDatabase database;
       database.Open();
-      if (database.GetMusicVideoByArtistAndAlbumAndTitle(item->GetMusicInfoTag()->GetArtist(),item->GetMusicInfoTag()->GetAlbum(),item->GetMusicInfoTag()->GetTitle()) > -1)
+      if (database.GetMatchingMusicVideo(item->GetMusicInfoTag()->GetArtist(),item->GetMusicInfoTag()->GetAlbum(),item->GetMusicInfoTag()->GetTitle()) > -1)
         buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 20401);
     }
     if (item->HasVideoInfoTag() && !item->m_bIsFolder)
     {
-      if (item->GetVideoInfoTag()->m_bWatched)
+      if (item->GetVideoInfoTag()->m_playCount > 0)
         buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
       else
         buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
@@ -656,7 +656,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString strPath;
       CVideoDatabase database;
       database.Open();
-      strPath.Format("videodb://3/4/%ld/",database.GetMusicVideoArtistByName(m_vecItems->Get(itemNumber)->GetMusicInfoTag()->GetArtist()));
+      strPath.Format("videodb://3/4/%ld/",database.GetMatchingMusicVideo(m_vecItems->Get(itemNumber)->GetMusicInfoTag()->GetArtist()));
       m_gWindowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
       return true;
     }
@@ -666,7 +666,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CVideoDatabase database;
       database.Open();
       CVideoInfoTag details;
-      database.GetMusicVideoInfo("",details,database.GetMusicVideoByArtistAndAlbumAndTitle(m_vecItems->Get(itemNumber)->GetMusicInfoTag()->GetArtist(),m_vecItems->Get(itemNumber)->GetMusicInfoTag()->GetAlbum(),m_vecItems->Get(itemNumber)->GetMusicInfoTag()->GetTitle()));
+      database.GetMusicVideoInfo("",details,database.GetMatchingMusicVideo(m_vecItems->Get(itemNumber)->GetMusicInfoTag()->GetArtist(),m_vecItems->Get(itemNumber)->GetMusicInfoTag()->GetAlbum(),m_vecItems->Get(itemNumber)->GetMusicInfoTag()->GetTitle()));
       g_applicationMessenger.PlayFile(CFileItem(details));
       return true;
     }

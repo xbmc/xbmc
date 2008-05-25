@@ -54,7 +54,7 @@
 				<posx>200</posx>
 				<posy>103</posy>
 				<width>105</width>
-				<label>13409</label>
+				<label>$LOCALIZE[13409]:</label>
 				<font>font11</font>
 				<visible>!IsEmpty(listitem.top250) + !container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 				<scroll>true</scroll>
@@ -74,7 +74,7 @@
 				<posx>200</posx>
 				<posy>123</posy>
 				<width>105</width>
-				<label>20404</label>
+				<label>$LOCALIZE[572]:</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
@@ -83,7 +83,7 @@
 				<posx>200</posx>
 				<posy>143</posy>
 				<width>105</width>
-				<label>199</label>
+				<label>$LOCALIZE[20339]:</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
@@ -92,7 +92,7 @@
 				<posx>200</posx>
 				<posy>163</posy>
 				<width>105</width>
-				<label>200</label>
+				<label>$LOCALIZE[20417]:</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
@@ -101,7 +101,7 @@
 				<posx>200</posx>
 				<posy>183</posy>
 				<width>105</width>
-				<label>174</label>
+				<label>$LOCALIZE[515]:</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
@@ -110,7 +110,7 @@
 				<posx>200</posx>
 				<posy>203</posy>
 				<width>105</width>
-				<label>201</label>
+				<label>$LOCALIZE[562]:</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
@@ -119,7 +119,7 @@
 				<posx>200</posx>
 				<posy>223</posy>
 				<width>105</width>
-				<label>202</label>
+				<label>$LOCALIZE[202]:</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
@@ -128,7 +128,7 @@
 				<posx>200</posx>
 				<posy>243</posy>
 				<width>105</width>
-				<label>203</label>
+				<label>$LOCALIZE[203]:</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
@@ -137,7 +137,7 @@
 				<posx>200</posx>
 				<posy>263</posy>
 				<width>105</width>
-				<label>204</label>
+				<label>$LOCALIZE[563]:</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
@@ -146,7 +146,7 @@
 				<posx>200</posx>
 				<posy>283</posy>
 				<width>105</width>
-				<label>2050</label>
+				<label>$LOCALIZE[2050]:</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
@@ -155,7 +155,7 @@
 				<posx>200</posx>
 				<posy>303</posy>
 				<width>105</width>
-				<label>20074</label>
+				<label>$LOCALIZE[20074]:</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 			</control>
@@ -306,7 +306,7 @@
 				<posx>60</posx>
 				<posy>255</posy>
 				<width>90</width>
-				<label>$LOCALIZE[20360] :</label>
+				<label>$LOCALIZE[20360]:</label>
 				<font>font13</font>
 				<visible>container.content(tvshows)</visible>
 			</control>
@@ -325,7 +325,7 @@
 				<posx>60</posx>
 				<posy>280</posy>
 				<width>90</width>
-				<label>$LOCALIZE[20376] :</label>
+				<label>$LOCALIZE[20416]:</label>
 				<font>font13</font>
 				<visible>container.content(tvshows)</visible>
 				<scroll>true</scroll>
@@ -345,7 +345,7 @@
 				<posx>60</posx>
 				<posy>305</posy>
 				<width>90</width>
-				<label>174</label>
+				<label>$LOCALIZE[515]:</label>
 				<font>font13</font>
 				<visible>container.content(tvshows)</visible>
 			</control>
@@ -434,7 +434,7 @@
 				<posx>200</posx>
 				<posy>215</posy>
 				<width>90</width>
-				<label>199</label>
+				<label>$LOCALIZE[20339]:</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
 			</control>
@@ -443,7 +443,7 @@
 				<posx>200</posx>
 				<posy>235</posy>
 				<width>90</width>
-				<label>200</label>
+				<label>$LOCALIZE[20417]:</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
 			</control>
@@ -452,7 +452,7 @@
 				<posx>200</posx>
 				<posy>255</posy>
 				<width>90</width>
-				<label>174</label>
+				<label>$LOCALIZE[515]:</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
 			</control>
@@ -461,7 +461,7 @@
 				<posx>200</posx>
 				<posy>275</posy>
 				<width>90</width>
-				<label>20376</label>
+				<label>$LOCALIZE[20416]:</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
 			</control>
@@ -470,7 +470,7 @@
 				<posx>200</posx>
 				<posy>295</posy>
 				<width>90</width>
-				<label>204</label>
+				<label>$LOCALIZE[563]:</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
 			</control>
@@ -580,7 +580,7 @@
 				<posx>200</posx>
 				<posy>160</posy>
 				<width>90</width>
-				<label>$LOCALIZE[171]</label>
+				<label>$LOCALIZE[557]:</label>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
 			</control>
@@ -589,7 +589,7 @@
 				<posx>200</posx>
 				<posy>185</posy>
 				<width>90</width>
-				<label>$LOCALIZE[170]</label>
+				<label>$LOCALIZE[558]:</label>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
 			</control>
@@ -598,7 +598,7 @@
 				<posx>200</posx>
 				<posy>210</posy>
 				<width>90</width>
-				<label>$LOCALIZE[174]</label>
+				<label>$LOCALIZE[515]:</label>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
 			</control>
@@ -607,7 +607,7 @@
 				<posx>200</posx>
 				<posy>235</posy>
 				<width>90</width>
-				<label>$LOCALIZE[436]</label>
+				<label>$LOCALIZE[562]:</label>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
 			</control>
@@ -616,7 +616,7 @@
 				<posx>200</posx>
 				<posy>260</posy>
 				<width>90</width>
-				<label>$LOCALIZE[2050]</label>
+				<label>$LOCALIZE[2050]:</label>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
 			</control>
@@ -625,7 +625,7 @@
 				<posx>200</posx>
 				<posy>285</posy>
 				<width>90</width>
-				<label>$LOCALIZE[199]</label>
+				<label>$LOCALIZE[20339]:</label>
 				<font>font12</font>
 				<visible>container.content(musicvideos)</visible>
 			</control>
