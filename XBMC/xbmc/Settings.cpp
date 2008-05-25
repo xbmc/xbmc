@@ -70,12 +70,14 @@ CSettings::CSettings(void)
 {
   for (int i = HDTV_1080i; i <= PAL60_16x9; i++)
   {
+    ZeroMemory(&m_ResInfo[i], sizeof(RESOLUTION));
     g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
     g_graphicsContext.ResetOverscan((RESOLUTION)i, m_ResInfo[i].Overscan);
   }
 
   for (int i = DESKTOP ; i<=CUSTOM ; i++)
   {
+    ZeroMemory(&m_ResInfo[i], sizeof(RESOLUTION));
     g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
     g_graphicsContext.ResetOverscan(m_ResInfo[i]);
   }
