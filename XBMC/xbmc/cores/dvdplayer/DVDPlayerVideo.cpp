@@ -588,7 +588,8 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   // then do all the rendering on that temp picture and finaly copy it to video memory.
   // In almost all cases this is 5 or more times faster!.
   bool bHasSpecialOverlay = m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SPU) 
-                         || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_IMAGE);
+                         || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_IMAGE)
+                         || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SSA);
   
   if (bHasSpecialOverlay)
   {
