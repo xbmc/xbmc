@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "DVDSubtitlesLibass.h"
 #include "DVDClock.h"
+#include "Util.h"
 
 using namespace std;
 
@@ -96,7 +97,6 @@ bool CDVDSubtitlesLibass::DecodeHeader(char* data, int size)
   }
 
   m_dll.ass_process_codec_private(m_track, data, size);
-  hasHeader = true;
   return true;
 }
 
