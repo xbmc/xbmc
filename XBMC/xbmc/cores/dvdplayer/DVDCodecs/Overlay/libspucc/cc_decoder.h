@@ -1,6 +1,6 @@
-
+#ifndef _LINUX
 #define EMULATE_INTTYPES
-
+#endif /* _LINUX */
 
 #ifndef EMULATE_INTTYPES
 #   include <inttypes.h>
