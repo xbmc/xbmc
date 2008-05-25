@@ -146,6 +146,13 @@ void XBVideoConfig::GetDesktopResolution(int &w, int &h) const
 {
 #ifdef __APPLE__
   Cocoa_GetScreenResolution(&w, &h);
+#elif defined(_WIN32PC)
+    DEVMODE devmode;
+    ZeroMemory(&devmode, sizeof(devmode));
+    devmode.dmSize = sizeof(devmode);
+    EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
+    w = devmode.dmPelsWidth;
+    h = devmode.dmPelsHeight;
 #endif
   
 #ifdef HAS_GLX
