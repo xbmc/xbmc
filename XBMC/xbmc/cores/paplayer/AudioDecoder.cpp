@@ -66,7 +66,8 @@ bool CAudioDecoder::Create(const CFileItem &file, __int64 seekOffset, unsigned i
 
   CSingleLock lock(m_critSection);
   // create our pcm buffer
-  m_pcmBuffer.Create( std::max((unsigned int) 2, nBufferSize) * INTERNAL_BUFFER_LENGTH );
+  m_pcmBuffer.Create((int)std::max<unsigned int>(2, nBufferSize) *
+                     INTERNAL_BUFFER_LENGTH);
 
   // reset our playback timing variables
   m_eof = false;
@@ -160,7 +161,7 @@ void *CAudioDecoder::GetData(unsigned int size)
     // check for end of file + end of buffer
     if ( m_status == STATUS_ENDING && m_pcmBuffer.GetMaxReadSize() < (int) (OUTPUT_SAMPLES * sizeof(float)))
     {
-      CLog::Log(LOGINFO, "CAudioDecoder::GetData() ending track - only have %i samples left", m_pcmBuffer.GetMaxReadSize() / sizeof(float));
+      CLog::Log(LOGINFO, "CAudioDecoder::GetData() ending track - only have %lu samples left", m_pcmBuffer.GetMaxReadSize() / sizeof(float));
       m_status = STATUS_ENDED;
     }
     return m_outputBuffer;
@@ -176,7 +177,7 @@ void CAudioDecoder::PrefixData(void *data, unsigned int size)
     CLog::Log(LOGERROR, "CAudioDecoder::PrefixData() failed - null data pointer");
     return;
   }
-  m_gaplessBufferSize = std::min((unsigned int) PACKET_SIZE, size);
+  m_gaplessBufferSize = std::min<unsigned int>(PACKET_SIZE, size);
   memcpy(m_gaplessBuffer, data, m_gaplessBufferSize*sizeof(float));
   if (m_gaplessBufferSize != size)
     CLog::Log(LOGWARNING, "CAudioDecoder::PrefixData - losing %i bytes of audio data in track transistion", size - m_gaplessBufferSize);
@@ -195,8 +196,9 @@ int CAudioDecoder::ReadSamples(int numsamples)
   CSingleLock lock(m_critSection);
 
   // Read in more data
-  int maxsize = std::min<unsigned int>(INPUT_SAMPLES, m_pcmBuffer.GetMaxWriteSize() / sizeof(float));
-  numsamples = std::min(numsamples, maxsize);
+  int maxsize = std::min<int>(INPUT_SAMPLES,
+                  (m_pcmBuffer.GetMaxWriteSize() / (int)(sizeof (float))));
+  numsamples = std::min<int>(numsamples, maxsize);
   numsamples -= (numsamples % m_codec->m_Channels);  // make sure it's divisible by our number of channels
   if ( numsamples )
   {
