@@ -27,8 +27,6 @@
 #include <math.h>
 
 
-using namespace std;
-
 #ifndef _LINUX
 namespace MathUtils {
   int round_int (double x);
@@ -36,8 +34,6 @@ namespace MathUtils {
 #define ROUND(x) (float)(MathUtils::round_int(x))
 #else
 #define ROUND roundf
-#define max(a,b) ((a)>(b)?(a):(b))
-#define min(a,b) ((a)<(b)?(a):(b))
 #endif
 
 CGUIFont::CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, DWORD shadowColor, float lineSpacing, CGUIFontTTF *font)
@@ -64,8 +60,8 @@ CStdString& CGUIFont::GetFontName()
   return m_strFontName;
 }
 
-void CGUIFont::DrawText( float x, float y, const vector<DWORD> &colors, DWORD shadowColor,
-                const vector<DWORD> &text, DWORD alignment, float maxPixelWidth)
+void CGUIFont::DrawText( float x, float y, const std::vector<DWORD> &colors, DWORD shadowColor,
+                const std::vector<DWORD> &text, DWORD alignment, float maxPixelWidth)
 {
   if (!m_font) return;
 
@@ -74,7 +70,7 @@ void CGUIFont::DrawText( float x, float y, const vector<DWORD> &colors, DWORD sh
     return;
       
   maxPixelWidth = ROUND(maxPixelWidth / g_graphicsContext.GetGUIScaleX());
-  vector<DWORD> renderColors;
+  std::vector<DWORD> renderColors;
   for (unsigned int i = 0; i < colors.size(); i++)
     renderColors.push_back(g_graphicsContext.MergeAlpha(colors[i] ? colors[i] : m_textColor));
   if (!shadowColor) shadowColor = m_shadowColor;
@@ -86,14 +82,18 @@ void CGUIFont::DrawText( float x, float y, const vector<DWORD> &colors, DWORD sh
     g_graphicsContext.RestoreClipRegion();
 }
 
-void CGUIFont::DrawScrollingText(float x, float y, const vector<DWORD> &colors, DWORD shadowColor,
-                const vector<DWORD> &text, DWORD alignment, float maxWidth, CScrollInfo &scrollInfo)
+void CGUIFont::DrawScrollingText(float x, float y, const std::vector<DWORD> &colors, DWORD shadowColor,
+                const std::vector<DWORD> &text, DWORD alignment, float maxWidth, CScrollInfo &scrollInfo)
 {
   if (!m_font) return;
   if (!shadowColor) shadowColor = m_shadowColor;
 
   float spaceWidth = GetCharWidth(L' ');
-  unsigned int maxChars = min((long unsigned int)(text.size() + scrollInfo.suffix.size()), (long unsigned int)((maxWidth*1.05f)/spaceWidth)); //max chars on screen + extra marginchars
+  // max chars on screen + extra margin chars
+  std::vector<DWORD>::size_type maxChars =
+    std::min<std::vector<DWORD>::size_type>(
+      (text.size() + (std::vector<DWORD>::size_type)scrollInfo.suffix.size()),
+      (std::vector<DWORD>::size_type)((maxWidth * 1.05f) / spaceWidth));
 
   if (!text.size() || ClippedRegionIsEmpty(x, y, maxWidth, alignment))
     return; // nothing to render
@@ -135,9 +135,9 @@ void CGUIFont::DrawScrollingText(float x, float y, const vector<DWORD> &colors, 
 
   // Now rotate our string as needed, only take a slightly larger then visible part of the text.
   unsigned int pos = scrollInfo.characterPos;
-  vector<DWORD> renderText;
+  std::vector<DWORD> renderText;
   renderText.reserve(maxChars);
-  for (unsigned int i = 0; i < maxChars; i++)
+  for (std::vector<DWORD>::size_type i = 0; i < maxChars; i++)
   {
     if (pos >= text.size() + scrollInfo.suffix.size())
       pos = 0;
@@ -148,7 +148,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const vector<DWORD> &colors, 
     pos++;
   }
 
-  vector<DWORD> renderColors;
+  std::vector<DWORD> renderColors;
   for (unsigned int i = 0; i < colors.size(); i++)
     renderColors.push_back(g_graphicsContext.MergeAlpha(colors[i] ? colors[i] : m_textColor));
 
