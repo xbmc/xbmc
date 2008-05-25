@@ -675,6 +675,11 @@ bool CLinuxRendererGL::ValidateRenderTarget()
 {
   if (!m_bValidated)
   {
+    if (!glewIsSupported("GL_ARB_texture_non_power_of_two") && glewIsSupported("GL_ARB_texture_rectangle"))
+    {
+      m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
+    }
+
      // create the yuv textures    
     LoadShaders();
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
@@ -1004,7 +1009,7 @@ void CLinuxRendererGL::LoadTextures(int source)
     imaging++;
   }
 
-  glEnable(GL_TEXTURE_2D);
+  glEnable(m_textureTarget);
   VerifyGLState();
 
   if (m_renderMethod & RENDER_SW)
@@ -1449,8 +1454,6 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     else
     {
       CLog::Log(LOGNOTICE, "GL: NPOT textures are supported through GL_ARB_texture_rectangle extension");
-      m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
-      glEnable(GL_TEXTURE_RECTANGLE_ARB);
     }
   }
   else
@@ -1819,7 +1822,7 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
     // are not normalized)
     float deint = (field!=FIELD_FULL) && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_NONE)
       && (g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_DEINTERLACE)?2.0f:1.0f;
-    
+
     glMultiTexCoord2fARB(GL_TEXTURE0, (float)rs.left, (float)rs.top );
     glMultiTexCoord2fARB(GL_TEXTURE1, (float)rs.left / 2.0f, (float)rs.top / 2.0f);
     glMultiTexCoord2fARB(GL_TEXTURE2, (float)rs.left / 2.0f, (float)rs.top / 2.0f );
