@@ -25,6 +25,7 @@
 #define FFMPEG_FIFO_H
 
 //#include <stdint.h>
+#include "common.h"
 
 typedef struct AVFifoBuffer {
     uint8_t *buffer;
@@ -76,7 +77,21 @@ int av_fifo_generic_read(AVFifoBuffer *f, int buf_size, void (*func)(void*, void
  * @param *buf data source
  * @param size data size
  */
-void av_fifo_write(AVFifoBuffer *f, const uint8_t *buf, int size);
+attribute_deprecated void av_fifo_write(AVFifoBuffer *f, const uint8_t *buf, int size);
+
+/**
+ * Feeds data from a user supplied callback to an AVFifoBuffer.
+ * @param *f AVFifoBuffer to write to
+ * @param *src data source
+ * @param size number of bytes to write
+ * @param *func generic write function. First parameter is src,
+ * second is dest_buf, third is dest_buf_size.
+ * func must return the number of bytes written to dest_buf, or <= 0 to
+ * indicate no more data available to write.
+ * If func is NULL, src is interpreted as a simple byte array for source data.
+ * @return the number of bytes written to the fifo.
+ */
+int av_fifo_generic_write(AVFifoBuffer *f, void *src, int size, int (*func)(void*, void*, int));
 
 /**
  * Resizes an AVFifoBuffer.
