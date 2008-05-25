@@ -35,6 +35,9 @@ typedef int64_t offset_t;
  * sizeof(URLContext) must not be used outside libav*.
  */
 struct URLContext {
+#if LIBAVFORMAT_VERSION_MAJOR >= 53
+    const AVClass *av_class; ///< information for av_log(). Set by url_open().
+#endif
     struct URLProtocol *prot;
     int flags;
     int is_streamed;  /**< true if streamed (no seek possible), default = false */
@@ -67,7 +70,7 @@ offset_t url_filesize(URLContext *h);
 
 /**
  * Return the maximum packet size associated to packetized file
- * handle. If the file is not packetized (stream like http or file on
+ * handle. If the file is not packetized (stream like HTTP or file on
  * disk), then 0 is returned.
  *
  * @param h file handle
@@ -77,7 +80,7 @@ int url_get_max_packet_size(URLContext *h);
 void url_get_filename(URLContext *h, char *buf, int buf_size);
 
 /**
- * the callback is called in blocking functions to test regulary if
+ * The callback is called in blocking functions to test regulary if
  * asynchronous interruption is needed. AVERROR(EINTR) is returned
  * in this case by the interrupted function. 'NULL' means no interrupt
  * callback is given.
@@ -202,11 +205,36 @@ void put_tag(ByteIOContext *s, const char *tag);
 
 void put_strz(ByteIOContext *s, const char *buf);
 
+/**
+ * fseek() equivalent for ByteIOContext.
+ * @return new position or AVERROR.
+ */
 offset_t url_fseek(ByteIOContext *s, offset_t offset, int whence);
+
+/**
+ * Skip given number of bytes forward.
+ * @param offset number of bytes
+ */
 void url_fskip(ByteIOContext *s, offset_t offset);
+
+/**
+ * ftell() equivalent for ByteIOContext.
+ * @return position or AVERROR.
+ */
 offset_t url_ftell(ByteIOContext *s);
+
+/**
+ * Gets the filesize.
+ * @return filesize or AVERROR
+ */
 offset_t url_fsize(ByteIOContext *s);
+
+/**
+ * feof() equivalent for ByteIOContext.
+ * @return non zero if and only if end of file
+ */
 int url_feof(ByteIOContext *s);
+
 int url_ferror(ByteIOContext *s);
 
 int av_url_read_fpause(ByteIOContext *h, int pause);
@@ -230,7 +258,19 @@ char *url_fgets(ByteIOContext *s, char *buf, int buf_size);
 
 void put_flush_packet(ByteIOContext *s);
 
+
+/**
+ * Reads size bytes from ByteIOContext into buf.
+ * @returns number of bytes read or AVERROR
+ */
 int get_buffer(ByteIOContext *s, unsigned char *buf, int size);
+
+/**
+ * Reads size bytes from ByteIOContext into buf.
+ * This reads at most 1 packet. If that is not enough fewer bytes will be
+ * returned.
+ * @returns number of bytes read or AVERROR
+ */
 int get_partial_buffer(ByteIOContext *s, unsigned char *buf, int size);
 
 /** @note return 0 if EOF, so you cannot use it if EOF handling is
