@@ -373,15 +373,21 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   UpdateCurrentPTS();
 
   // add the ffmpeg streams to our own stream array
-  m_program = 0;
   if (m_pFormatContext->nb_programs)
   {
-    // discard nonselected programs
+    m_program = UINT_MAX;
+    // look for first non empty stream and discard nonselected programs
     for (unsigned int i = 0; i < m_pFormatContext->nb_programs; i++)
     {
+      if(m_program == UINT_MAX && m_pFormatContext->programs[i]->nb_stream_indexes > 0)
+        m_program = i;
+
       if(i != m_program)
-        m_pFormatContext->programs[m_program]->discard = AVDISCARD_ALL;
+        m_pFormatContext->programs[i]->discard = AVDISCARD_ALL;
     }
+    if(m_program == UINT_MAX)
+      m_program = 0;
+
     // add streams from selected program
     for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)
       AddStream(m_pFormatContext->programs[m_program]->stream_index[i]);
