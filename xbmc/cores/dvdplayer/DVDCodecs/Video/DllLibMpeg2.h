@@ -23,20 +23,6 @@
 
 #include "DynamicDll.h"
 
-typedef signed char int8_t;
-typedef signed short int16_t;
-typedef signed int int32_t;
-typedef unsigned char uint8_t;
-typedef unsigned short uint16_t;
-typedef unsigned int uint32_t;
-#if __WORDSIZE == 64
-typedef signed long int64_t;
-typedef unsigned long uint64_t;
-#else /* __WORDSIZE != 64 */
-typedef signed __int64 int64_t;
-typedef unsigned __int64 uint64_t;
-#endif /* __WORDSIZE == 64 */
-
 #ifdef __cplusplus
 extern "C"
 {
