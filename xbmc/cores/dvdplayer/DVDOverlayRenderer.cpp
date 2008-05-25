@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDOverlayRenderer.h"
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
@@ -76,6 +76,13 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlaySSA* p
   while(img)
   {
     DWORD color = img->color;
+    BYTE alpha = (BYTE)(color &0xff);
+
+    if(alpha == 255)
+    {
+      img = img->next;
+      continue;
+    }
 
     //ass_image colors are RGBA
     double b = ((color >> 24) & 0xff) / 255.0;
@@ -85,7 +92,6 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlaySSA* p
     BYTE luma  = (BYTE)(255 * CLAMP(0.299 * r + 0.587 * g + 0.114 * b, 0.0, 1.0));
     BYTE u     = (BYTE)(127.5 + 255 * CLAMP( 0.500 * r - 0.419 * g - 0.081 * b, -0.5, 0.5));
     BYTE v     = (BYTE)(127.5 + 255 * CLAMP(-0.169 * r - 0.331 * g + 0.500 * b, -0.5, 0.5));
-    BYTE alpha = (BYTE)(color &0xff);
 
     int y = max(0,min(img->dst_y, pPicture->height-img->h));
     int x = max(0,min(img->dst_x, pPicture->width-img->w));

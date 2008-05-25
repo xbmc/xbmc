@@ -612,7 +612,8 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
           pPacket->iSize = pkt.size;
 
           // maybe we can avoid a memcpy here by detecting where pkt.destruct is pointing too?
-          memcpy(pPacket->pData, pkt.data, pPacket->iSize);
+          if (pkt.data)
+            memcpy(pPacket->pData, pkt.data, pPacket->iSize);
 
           pPacket->pts = ConvertTimestamp(pkt.pts, stream->time_base.den, stream->time_base.num);
           pPacket->dts = ConvertTimestamp(pkt.dts, stream->time_base.den, stream->time_base.num);
@@ -741,7 +742,7 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
   Unlock();
 
   if(m_iCurrentPts == DVD_NOPTS_VALUE)
-    CLog::Log(LOGDEBUG, "%s - unknown positon after seek", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "%s - unknown position after seek", __FUNCTION__);
   else
     CLog::Log(LOGDEBUG, "%s - seek ended up on time %d", __FUNCTION__, (int)(m_iCurrentPts / DVD_TIME_BASE * 1000));
 
