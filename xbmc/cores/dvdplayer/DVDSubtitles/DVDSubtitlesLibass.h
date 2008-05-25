@@ -49,7 +49,6 @@ public:
   long Release();
 
 private:
-  bool hasHeader;
   DllLibass m_dll;
   long m_references;
   ass_library_t* m_library;
