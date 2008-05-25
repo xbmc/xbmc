@@ -27,6 +27,7 @@
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
 #include "GUISettings.h"
+#include "Settings.h"
 #include "FileItem.h"
 
 #define CONTROL_HEADING         2
@@ -45,6 +46,24 @@
 #define CONTROL_TYPE            22
 
 using namespace PLAYLIST;
+
+typedef struct
+{
+  CGUIDialogSmartPlaylistEditor::PLAYLIST_TYPE type;
+  char string[13];
+  int localizedString;
+} translateType;
+
+static const translateType types[] = { { CGUIDialogSmartPlaylistEditor::TYPE_SONGS, "songs", 134 },
+                                       { CGUIDialogSmartPlaylistEditor::TYPE_ALBUMS, "albums", 132 },
+                                       { CGUIDialogSmartPlaylistEditor::TYPE_MIXED, "mixed", 20395 },
+                                       { CGUIDialogSmartPlaylistEditor::TYPE_MUSICVIDEOS, "musicvideos", 20389 },
+                                       { CGUIDialogSmartPlaylistEditor::TYPE_MOVIES, "movies", 20342 },
+                                       { CGUIDialogSmartPlaylistEditor::TYPE_TVSHOWS, "tvshows", 20343 },
+                                       { CGUIDialogSmartPlaylistEditor::TYPE_EPISODES, "episodes", 20360 }
+                                     };
+
+#define NUM_TYPES (sizeof(types) / sizeof(translateType))
 
 CGUIDialogSmartPlaylistEditor::CGUIDialogSmartPlaylistEditor(void)
     : CGUIDialog(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR, "SmartPlaylistEditor.xml")
@@ -156,7 +175,7 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
     if (CGUIDialogKeyboard::ShowAndGetInput(filename, g_localizeStrings.Get(16013), false))
     {
       CStdString strTmp;
-      CUtil::AddFileToFolder(m_playlist.m_playlistType,filename,strTmp);
+      CUtil::AddFileToFolder(m_playlist.GetSaveLocation(), filename, strTmp);
       CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),strTmp,path);
     }
     else
@@ -169,15 +188,17 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
   }
   else
   {
+    // check if we need to actually change the save location for this playlist
+    // this occurs if the user switches from music video <> songs <> mixed
     if (m_path.Left(g_guiSettings.GetString("system.playlistspath").size()).Equals(g_guiSettings.GetString("system.playlistspath"))) // fugly, well aware
     {
       CStdString filename = CUtil::GetFileName(m_path);
-      CStdString strType = m_path.Mid(g_guiSettings.GetString("system.playlistspath").size(),m_path.size()-filename.size()-g_guiSettings.GetString("system.playlistspath").size()-1);
-      if (!strType.Equals(m_playlist.m_playlistType))
-      {
+      CStdString strFolder = m_path.Mid(g_guiSettings.GetString("system.playlistspath").size(),m_path.size()-filename.size()-g_guiSettings.GetString("system.playlistspath").size()-1);
+      if (strFolder != m_playlist.GetSaveLocation())
+      { // move to the correct folder
         XFILE::CFile::Delete(m_path);
         CStdString strTmp;
-        CUtil::AddFileToFolder(m_playlist.m_playlistType,filename,strTmp);
+        CUtil::AddFileToFolder(m_playlist.GetSaveLocation(),filename,strTmp);
         CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),strTmp,m_path);
       }
     }
@@ -215,12 +236,7 @@ void CGUIDialogSmartPlaylistEditor::OnType()
 {
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_TYPE);
   OnMessage(msg);
-  if (msg.GetParam1() == 1)
-    m_playlist.SetType("music");
-  if (msg.GetParam1() == 2)
-      m_playlist.SetType("video");
-  if (msg.GetParam1() == 3)
-    m_playlist.SetType("mixed");
+  m_playlist.SetType(ConvertType((PLAYLIST_TYPE)msg.GetParam1()));
   UpdateButtons();
 }
 
@@ -330,54 +346,77 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_ORDER_FIELD, m_playlist.m_orderField);
     OnMessage(msg);
   }
-  // type
-  if (m_isPartyMode != 2)
+  std::vector<PLAYLIST_TYPE> allowedTypes;
+  if (m_mode.Equals("partymusic"))
   {
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 1);
-    CStdString label = g_localizeStrings.Get(2);
-    msg.SetLabel(label);
+    allowedTypes.push_back(TYPE_SONGS);
+    allowedTypes.push_back(TYPE_MIXED);
+  }
+  else if (m_mode.Equals("partyvideo"))
+  {
+    allowedTypes.push_back(TYPE_MUSICVIDEOS);
+    allowedTypes.push_back(TYPE_MIXED);
+  }
+  else if (m_mode.Equals("music"))
+  { // music types + mixed
+    allowedTypes.push_back(TYPE_SONGS);
+    allowedTypes.push_back(TYPE_ALBUMS);
+    allowedTypes.push_back(TYPE_MIXED);
+  }
+  else if (m_mode.Equals("video"))
+  { // general category for videos
+    allowedTypes.push_back(TYPE_MOVIES);
+    allowedTypes.push_back(TYPE_TVSHOWS);
+    allowedTypes.push_back(TYPE_EPISODES);
+    allowedTypes.push_back(TYPE_MUSICVIDEOS);
+    allowedTypes.push_back(TYPE_MIXED);
+  }
+  // add to the spinner
+  for (unsigned int i = 0; i < allowedTypes.size(); i++)
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, allowedTypes[i]);
+    msg.SetLabel(GetLocalizedType(allowedTypes[i]));
     OnMessage(msg);
   }
-  if (m_isPartyMode != 1)
-  {
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 2);
-    CStdString label = g_localizeStrings.Get(3);
-    msg.SetLabel(label);
-    OnMessage(msg);
-  }
-  {
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TYPE, 3);
-    CStdString label= g_localizeStrings.Get(20395);
-    msg.SetLabel(label);
-    OnMessage(msg);
-  }
-  {
-    int iType=1;
-    if (m_playlist.GetType().Equals("music"))
-    {
-      if (m_isPartyMode == 2) // unallowed type - reset to video
-      {
-        m_playlist.SetType("video");
-        iType = 2;
-      }
-    }
-    if (m_playlist.GetType().Equals("video"))
-    {
-      if (m_isPartyMode == 1) // unallowed type - reset to music
-      {
-        m_playlist.SetType("music");
-        iType = 1;
-      }
-      else 
-        iType = 2;
-    }
-    if (m_playlist.GetType().Equals("mixed"))
-      iType = 3;
+  // check our playlist type is allowed
+  PLAYLIST_TYPE type = ConvertType(m_playlist.GetType());
+  bool allowed = false;
+  for (unsigned int i = 0; i < allowedTypes.size(); i++)
+    if (type == allowedTypes[i])
+      allowed = true;
+  if (!allowed && allowedTypes.size())
+    type = allowedTypes[0];
 
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_TYPE, iType);
-    OnMessage(msg);
-  }
+  CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_TYPE, type);
+  OnMessage(msg);
+  m_playlist.SetType(ConvertType(type));
+}
 
+CGUIDialogSmartPlaylistEditor::PLAYLIST_TYPE CGUIDialogSmartPlaylistEditor::ConvertType(const CStdString &type)
+{
+  for (int i = 0; i < NUM_TYPES; i++)
+    if (type.Equals(types[i].string))
+      return types[i].type;
+  assert(false);
+  return TYPE_SONGS;
+}
+
+int CGUIDialogSmartPlaylistEditor::GetLocalizedType(PLAYLIST_TYPE type)
+{
+  for (int i = 0; i < NUM_TYPES; i++)
+    if (types[i].type == type)
+      return types[i].localizedString;
+  assert(false);
+  return 0;
+}
+
+CStdString CGUIDialogSmartPlaylistEditor::ConvertType(PLAYLIST_TYPE type)
+{
+  for (int i = 0; i < NUM_TYPES; i++)
+    if (types[i].type == type)
+      return types[i].string;
+  assert(false);
+  return "songs";
 }
 
 int CGUIDialogSmartPlaylistEditor::GetSelectedItem()
@@ -434,33 +473,32 @@ bool CGUIDialogSmartPlaylistEditor::NewPlaylist(const CStdString &type)
   editor->m_path = "";
   editor->m_playlist = CSmartPlaylist();
   editor->m_playlist.m_playlistRules.push_back(CSmartPlaylistRule());
-  editor->m_playlist.SetType(type);
-  editor->m_isPartyMode = 0;
+  editor->m_mode = type;
   editor->Initialize();
   editor->DoModal(m_gWindowManager.GetActiveWindow());
   return !editor->m_cancelled;
 }
 
-bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const CStdString &path)
+bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const CStdString &path, const CStdString &type)
 {
   CGUIDialogSmartPlaylistEditor *editor = (CGUIDialogSmartPlaylistEditor *)m_gWindowManager.GetWindow(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
   if (!editor) return false;
 
-  editor->m_isPartyMode = 0;
-  if (path.Equals("P:\\PartyMode.xsp"))
-    editor->m_isPartyMode = 1;
-  if (path.Equals("P:\\PartyMode-Video.xsp"))
-    editor->m_isPartyMode = 2;
+  editor->m_mode = type;
+  if (path.Equals(g_settings.GetUserDataItem("PartyMode.xsp")))
+    editor->m_mode = "partymusic";
+  if (path.Equals(g_settings.GetUserDataItem("PartyMode-Video.xsp")))
+    editor->m_mode = "partyvideo";
 
   CSmartPlaylist playlist;
   bool loaded(playlist.Load(path));
   if (!loaded)
   { // failed to load
-    if (editor->m_isPartyMode == 0)
+    if (!editor->m_mode.Left(5).Equals("party"))
       return false; // only edit normal playlists that exist
     // party mode playlists can be editted even if they don't exist
     playlist.m_playlistRules.push_back(CSmartPlaylistRule());
-    playlist.SetType(editor->m_isPartyMode == 1 ? "music" : "video");
+    playlist.SetType(editor->m_mode == "partymusic" ? "songs" : "musicvideos");
   }
 
   editor->m_playlist = playlist;
