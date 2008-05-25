@@ -362,8 +362,10 @@ namespace PYXBMC
           self->item->GetVideoInfoTag()->m_fRating = (float)PyFloat_AsDouble(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
           self->item->m_dwSize = (__int64)PyLong_AsLongLong(value);
-        else if (strcmpi(PyString_AsString(key), "watched") == 0)
-          self->item->GetVideoInfoTag()->m_bWatched = PyInt_AsLong(value)==1;
+        else if (strcmpi(PyString_AsString(key), "watched") == 0) // backward compat - do we need it?
+          self->item->GetVideoInfoTag()->m_playCount = PyInt_AsLong(value);
+        else if (strcmpi(PyString_AsString(key), "playcount") == 0)
+          self->item->GetVideoInfoTag()->m_playCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "overlay") == 0)
           // TODO: Add a check for a valid overlay value
           self->item->SetOverlayImage((CGUIListItem::GUIIconOverlay)PyInt_AsLong(value));
@@ -530,7 +532,7 @@ namespace PYXBMC
 
     PyGUILock();
     CStdString lowerKey = key;
-    self->item->SetProperty(lowerKey.ToLower(), uText);
+    self->item->SetProperty(lowerKey.ToLower(), uText.c_str());
     PyGUIUnlock();
 
     Py_INCREF(Py_None);

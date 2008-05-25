@@ -42,7 +42,7 @@ bool CDirectoryNodeTitleMovies::GetContent(CFileItemList& items)
   CollectQueryParams(params);
 
   CStdString strBaseDir=BuildPath();
-  bool bSuccess=videodatabase.GetTitlesNav(strBaseDir, items, params.GetGenreId(), params.GetYear(), params.GetActorId(), params.GetDirectorId(),params.GetStudioId());
+  bool bSuccess=videodatabase.GetMoviesNav(strBaseDir, items, params.GetGenreId(), params.GetYear(), params.GetActorId(), params.GetDirectorId(),params.GetStudioId());
 
   videodatabase.Close();
 

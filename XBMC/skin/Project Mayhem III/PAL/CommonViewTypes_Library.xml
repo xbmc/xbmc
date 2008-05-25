@@ -240,7 +240,7 @@
 				<height>22</height>
 				<font>special13</font>
 				<align>right</align>
-				<label>$INFO[ListItem.Duration,$LOCALIZE[2050] ]</label>
+				<label>$INFO[ListItem.Duration,$LOCALIZE[2050]: ]</label>
 				<visible>Control.IsVisible(51) + container.content(musicvideos)</visible>
 				<scroll>true</scroll>
 			</control>
@@ -401,7 +401,7 @@
 					<font>font13</font>
 					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
-					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
+					<label>$INFO[ListItem.Year ,$LOCALIZE[562]: ]</label>
 					<aligny>center</aligny>
 					<visible>container.content(movies)</visible>
 				</control>
@@ -414,7 +414,7 @@
 					<align>right</align>
 					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
-					<label>$INFO[ListItem.Rating ,$LOCALIZE[204] ]</label>
+					<label>$INFO[ListItem.Rating ,$LOCALIZE[563]: ]</label>
 					<aligny>center</aligny>
 					<visible>container.content(movies)</visible>
 				</control>
@@ -494,7 +494,7 @@
 					<font>font13</font>
 					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
-					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
+					<label>$INFO[ListItem.Year ,$LOCALIZE[562]: ]</label>
 					<aligny>center</aligny>
 					<visible>container.content(movies)</visible>
 				</control>
@@ -507,7 +507,7 @@
 					<align>right</align>
 					<selectedcolor>green</selectedcolor>
 					<scroll>true</scroll>
-					<label>$INFO[ListItem.Rating ,$LOCALIZE[204] ]</label>
+					<label>$INFO[ListItem.Rating ,$LOCALIZE[563]: ]</label>
 					<aligny>center</aligny>
 					<visible>container.content(movies)</visible>
 				</control>
@@ -693,7 +693,7 @@
 					<aligny>center</aligny>
 					<selectedcolor>white</selectedcolor>
 					<scroll>true</scroll>
-					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
+					<label>$INFO[ListItem.Year ,$LOCALIZE[562]: ]</label>
 				</control>
 				<control type="label">
 					<posx>125</posx>
@@ -714,7 +714,7 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<selectedcolor>green</selectedcolor>
-					<label>$INFO[ListItem.Rating,$LOCALIZE[173] ]</label>
+					<label>$INFO[ListItem.Rating,$LOCALIZE[563]: ]</label>
 				</control>
 			</itemlayout>
 			<focusedlayout condition="!Container.Content(Episodes) + !Container.Content(TVShows)" height="141">
@@ -767,7 +767,7 @@
 					<aligny>center</aligny>
 					<selectedcolor>white</selectedcolor>
 					<scroll>true</scroll>
-					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
+					<label>$INFO[ListItem.Year ,$LOCALIZE[562]: ]</label>
 				</control>
 				<control type="label">
 					<posx>125</posx>
@@ -788,7 +788,7 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<selectedcolor>green</selectedcolor>
-					<label>$INFO[ListItem.Rating,$LOCALIZE[173] ]</label>
+					<label>$INFO[ListItem.Rating,$LOCALIZE[563]: ]</label>
 				</control>
 			</focusedlayout>
 			<itemlayout condition="Container.Content(TVShows)" height="141">
@@ -954,7 +954,7 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<selectedcolor>green</selectedcolor>
-					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
+					<label>$INFO[ListItem.Year ,$LOCALIZE[562]: ]</label>
 				</control>
 			</itemlayout>
 			<focusedlayout condition="Container.Content(Episodes)" height="141">
@@ -1028,7 +1028,7 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<selectedcolor>green</selectedcolor>
-					<label>$INFO[ListItem.Year ,$LOCALIZE[201] ]</label>
+					<label>$INFO[ListItem.Year ,$LOCALIZE[562]: ]</label>
 				</control>
 			</focusedlayout>
 		</control>
@@ -1291,7 +1291,7 @@
 				<height>22</height>
 				<font>special13</font>
 				<align>right</align>
-				<label>$INFO[ListItem.Property(Rating),$LOCALIZE[173] ]</label>
+				<label>$INFO[ListItem.Property(Rating),$LOCALIZE[563]: ]</label>
 				<visible>Control.IsVisible(51) + container.content(Albums)</visible>
 				<scroll>true</scroll>
 			</control>
@@ -1323,7 +1323,7 @@
 				<height>22</height>
 				<font>special13</font>
 				<align>right</align>
-				<label>$INFO[ListItem.Duration,$LOCALIZE[2050] ]</label>
+				<label>$INFO[ListItem.Duration,$LOCALIZE[2050]: ]</label>
 				<visible>Control.IsVisible(51) + container.content(Artists)</visible>
 				<scroll>true</scroll>
 			</control>
