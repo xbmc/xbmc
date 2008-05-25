@@ -218,6 +218,16 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   nErr = snd_pcm_sw_params_set_start_threshold(m_pPlayHandle, sw_params, m_dwPacketSize);
   CHECK_ALSA_RETURN(LOGERROR,"sw_params_set_start_threshold",nErr);
 
+  snd_pcm_uframes_t boundary;
+  nErr = snd_pcm_sw_params_get_boundary( sw_params, &boundary );
+  CHECK_ALSA_RETURN(LOGERROR,"snd_pcm_sw_params_get_boundary",nErr);
+
+  nErr = snd_pcm_sw_params_set_silence_threshold(m_pPlayHandle, sw_params, 0 );
+  CHECK_ALSA_RETURN(LOGERROR,"snd_pcm_sw_params_set_silence_threshold",nErr);
+
+  nErr = snd_pcm_sw_params_set_silence_size( m_pPlayHandle, sw_params, boundary );
+  CHECK_ALSA_RETURN(LOGERROR,"snd_pcm_sw_params_set_silence_size",nErr);
+
   nErr = snd_pcm_sw_params(m_pPlayHandle, sw_params);
   CHECK_ALSA_RETURN(LOGERROR,"snd_pcm_sw_params",nErr);
 
