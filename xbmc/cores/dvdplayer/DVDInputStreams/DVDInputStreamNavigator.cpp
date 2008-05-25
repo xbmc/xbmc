@@ -1015,6 +1015,17 @@ bool CDVDInputStreamNavigator::SeekTime(int iTimeInMsec)
   return true;
 }
 
+bool CDVDInputStreamNavigator::SeekChapter(int iChapter)
+{
+  if (m_dll.dvdnav_part_play(m_dvdnav, m_iTitle, iChapter) == DVDNAV_STATUS_ERR)
+  {
+    CLog::Log(LOGERROR, "dvdnav: dvdnav_part_play failed( %s )", m_dll.dvdnav_err_to_string(m_dvdnav));
+    return false;
+  }
+  
+  return true;
+}
+
 float CDVDInputStreamNavigator::GetVideoAspectRatio()
 {
   int iAspect = m_dll.dvdnav_get_video_aspect(m_dvdnav);
