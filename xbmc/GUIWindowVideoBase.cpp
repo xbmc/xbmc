@@ -394,7 +394,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       if (item->HasVideoInfoTag())
         lEpisodeHint = item->GetVideoInfoTag()->m_iEpisode;
       long lEpisodeId=-1;
-      if ((lEpisodeId = m_database.GetEpisodeInfo(item->m_strPath,lEpisodeHint)) > -1)
+      if ((lEpisodeId = m_database.GetEpisodeId(item->m_strPath,lEpisodeHint)) > -1)
       {
         bHasInfo = true;
         m_database.GetEpisodeInfo(item->m_strPath, movieDetails, lEpisodeId);
@@ -952,7 +952,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       }
 
       if (GetID() != WINDOW_VIDEO_NAV || (!m_vecItems->m_strPath.IsEmpty() && 
-         !item->m_strPath.Equals("newsmartplaylist://video")))
+         !item->m_strPath.Left(19).Equals("newsmartplaylist://")))
       {
         buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist
       }
@@ -1129,7 +1129,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_EDIT_SMART_PLAYLIST:
     {
       CStdString playlist = m_vecItems->Get(itemNumber)->IsSmartPlayList() ? m_vecItems->Get(itemNumber)->m_strPath : m_vecItems->m_strPath; // save path as activatewindow will destroy our items
-      if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
+      if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist, "video"))
       { // need to update
         m_vecItems->RemoveDiscCache();
         Update(m_vecItems->m_strPath);
@@ -1334,16 +1334,10 @@ void CGUIWindowVideoBase::MarkUnWatched(CFileItem* item)
   for (int i=0;i<items.Size();++i)
   {
     CFileItem* pItem=items[i];
-    if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_bWatched)
+    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount == 0)
       continue;
 
-    VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
-    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder)
-      iType = VIDEODB_CONTENT_EPISODES;
-    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0)
-      iType = VIDEODB_CONTENT_MUSICVIDEOS;
-
-    database.MarkAsUnWatched(pItem->GetVideoInfoTag()->m_iDbId,iType);
+    database.MarkAsUnWatched(*pItem);
   }
 }
 
@@ -1367,16 +1361,10 @@ void CGUIWindowVideoBase::MarkWatched(CFileItem* item)
   for (int i=0;i<items.Size();++i)
   {
     CFileItem* pItem=items[i];
-    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_bWatched)
+    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount > 0)
       continue;
 
-    VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
-    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder)
-      iType = VIDEODB_CONTENT_EPISODES;
-    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0)
-      iType = VIDEODB_CONTENT_MUSICVIDEOS;
-
-    database.MarkAsWatched(pItem->GetVideoInfoTag()->m_iDbId,iType);
+    database.MarkAsWatched(*pItem);
   }
 }
 
@@ -1395,7 +1383,7 @@ void CGUIWindowVideoBase::UpdateVideoTitle(CFileItem* pItem)
   }
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder)
     iType = VIDEODB_CONTENT_EPISODES;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0)
+  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
     iType = VIDEODB_CONTENT_MUSICVIDEOS;
 
   if (iType == VIDEODB_CONTENT_MOVIES)
@@ -1518,7 +1506,7 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
     items.Add(newPlaylist);
 */
     newPlaylist = new CFileItem("newsmartplaylist://video", false);
-    newPlaylist->SetLabel(g_localizeStrings.Get(21437));
+    newPlaylist->SetLabel(g_localizeStrings.Get(21440));  // "new smart folder..."
     newPlaylist->SetLabelPreformated(true);
     items.Add(newPlaylist);
   }
