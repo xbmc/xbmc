@@ -248,8 +248,7 @@ private:
 class CDVDMsgPlayerSeek : public CDVDMsg
 {
 public:
-  CDVDMsgPlayerSeek(int time, bool backward, bool flush = true,
-      bool accurate = true)
+  CDVDMsgPlayerSeek(int time, bool backward, bool flush = true, bool accurate = true)
     : CDVDMsg(PLAYER_SEEK)
     , m_time(time)
     , m_backward(backward)

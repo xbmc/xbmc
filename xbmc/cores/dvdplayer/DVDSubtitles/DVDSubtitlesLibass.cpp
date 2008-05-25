@@ -21,16 +21,15 @@
 
 #include "stdafx.h"
 #include "DVDSubtitlesLibass.h"
-#include "Util.h"
-#include "File.h"
+#include "DVDClock.h"
 
 using namespace std;
 
 CDVDSubtitlesLibass::CDVDSubtitlesLibass()
 {
 
-  m_track = 0;
-  hasHeader = false;
+  m_track = NULL;
+  m_library = NULL;
   m_references = 1;
 
   if(!m_dll.Load())
@@ -103,13 +102,13 @@ bool CDVDSubtitlesLibass::DecodeHeader(char* data, int size)
 
 bool CDVDSubtitlesLibass::DecodeDemuxPkt(char* data, int size, double start, double duration)
 {
-  if(!hasHeader)
+  if(!m_track)
   {
     CLog::Log(LOGERROR, "CDVDSubtitlesLibass: No SSA header found.");
     return false;
   }
 
-  m_dll.ass_process_chunk(m_track, data, size, (long long)(start/1000), (long long)(duration/1000));
+  m_dll.ass_process_chunk(m_track, data, size, DVD_TIME_TO_MSEC(start), DVD_TIME_TO_MSEC(duration));
   return true;
 }
 
@@ -131,6 +130,9 @@ bool CDVDSubtitlesLibass::ReadFile(const string& strFile)
   CLog::Log(LOGINFO, "SSA Parser: Creating m_track from SSA file:  %s", fileName.c_str());
 
   m_track = m_dll.ass_read_file(m_library, (char* )fileName.c_str(), 0);
+  if(m_track == NULL)
+    return false;
+
   return true;
 }
 
@@ -164,8 +166,7 @@ ass_image_t* CDVDSubtitlesLibass::RenderImage(int imageWidth, int imageHeight, d
   }
 
   m_dll.ass_set_frame_size(m_renderer, imageWidth, imageHeight);
-  ass_image_t* img = m_dll.ass_render_frame(m_renderer, m_track,(long long)(pts/1000), NULL);
-  return img;
+  return m_dll.ass_render_frame(m_renderer, m_track, DVD_TIME_TO_MSEC(pts), NULL);
 }
 
 ass_event_t* CDVDSubtitlesLibass::GetEvents()

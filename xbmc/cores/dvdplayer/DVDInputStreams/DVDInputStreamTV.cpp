@@ -31,7 +31,6 @@ CDVDInputStreamTV::CDVDInputStreamTV() : CDVDInputStream(DVDSTREAM_TYPE_TV)
   m_pFile = NULL;
   m_pRecordable = NULL;
   m_pLiveTV = NULL;
-  m_pRecordable = NULL;
   m_eof = true;
 }
 

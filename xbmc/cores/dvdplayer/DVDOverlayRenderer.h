@@ -23,7 +23,6 @@
 
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDCodecs/Overlay/DVDOverlay.h"
-#include "DVDSubtitles/DVDSubtitlesLibass.h"
 
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
