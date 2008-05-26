@@ -34,7 +34,7 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void OnInitWindow();
 
-  static bool EditRule(CSmartPlaylistRule &rule, const CStdString& type="music");
+  static bool EditRule(CSmartPlaylistRule &rule, const CStdString& type="songs");
 
 protected:
   void OnValue();
@@ -45,9 +45,6 @@ protected:
   void UpdateButtons();
   void AddOperatorLabel(CSmartPlaylistRule::SEARCH_OPERATOR op);
   void OnBrowse();
-
-  enum FIELD { TEXT_FIELD, NUMERIC_FIELD, DATE_FIELD, PLAYLIST_FIELD, SECONDS_FIELD };
-  FIELD GetFieldType(CSmartPlaylistRule::DATABASE_FIELD field);
 
   CSmartPlaylistRule m_rule;
   bool m_cancelled;

@@ -99,12 +99,14 @@ public:
   bool m_bIsFolder;     ///< is item a folder or a file
 
   void SetProperty(const CStdString &strKey, const char *strValue);
+  void SetProperty(const CStdString &strKey, const CStdString &strValue);
   void SetProperty(const CStdString &strKey, int nVal);
   void SetProperty(const CStdString &strKey, bool bVal);
   void SetProperty(const CStdString &strKey, double dVal);
   void ClearProperties();
 
   void Serialize(CArchive& ar);
+
   bool       HasProperty(const CStdString &strKey) const;
   void       ClearProperty(const CStdString &strKey);
 
@@ -135,3 +137,4 @@ protected:
   std::map<CStdString, CStdString, icompare> m_mapProperties;
 };
 #endif
+

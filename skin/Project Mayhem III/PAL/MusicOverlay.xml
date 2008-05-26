@@ -35,7 +35,7 @@
 			<scrollout>false</scrollout>
 			<pauseatend>2000</pauseatend>
 			<font>font10</font>
-			<label>$INFO[MusicPlayer.Artist]$INFO[MusicPlayer.Album, | ]$INFO[MusicPlayer.Title, | ]$INFO[MusicPlayer.DiscNumber, - $LOCALIZE[427]]$INFO[MusicPlayer.Year, | ]</label>
+			<label>$INFO[MusicPlayer.Artist]$INFO[MusicPlayer.Album, | ]$INFO[MusicPlayer.Title, | ]$INFO[MusicPlayer.DiscNumber, - $LOCALIZE[427]:]$INFO[MusicPlayer.Year, | ]</label>
 			<include>mediaoverlay</include>
 		</control>
 	</controls>

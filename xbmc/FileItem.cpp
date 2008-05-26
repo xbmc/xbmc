@@ -85,6 +85,15 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
     m_strThumbnailImage = album.thumbURL.m_url[0].m_url;
   else
     m_strThumbnailImage.clear();
+
+  SetProperty("description", album.strReview);
+  SetProperty("theme", album.strThemes);
+  SetProperty("mood", album.strMoods);
+  SetProperty("style", album.strStyles);
+  SetProperty("type", album.strType);
+  SetProperty("label", album.strLabel);
+  if (album.iRating > 0)
+    SetProperty("rating", album.iRating);
 }
 
 CFileItem::CFileItem(const CVideoInfoTag& movie)
