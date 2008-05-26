@@ -600,8 +600,10 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     if (!m_pTempOverlayPicture) m_pTempOverlayPicture = CDVDCodecUtils::AllocatePicture(pSource->iWidth, pSource->iHeight);
   }
 
-  if (bHasSpecialOverlay && m_pTempOverlayPicture) CDVDCodecUtils::CopyPicture(m_pTempOverlayPicture, pSource);
-  else CDVDCodecUtils::CopyPictureToOverlay(pDest, pSource);
+  if (bHasSpecialOverlay && m_pTempOverlayPicture) 
+    CDVDCodecUtils::CopyPicture(m_pTempOverlayPicture, pSource);
+  else 
+    CDVDCodecUtils::CopyPicture(pDest, pSource);
   
   m_pOverlayContainer->Lock();
 
@@ -633,9 +635,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   m_pOverlayContainer->Unlock();
   
   if (bHasSpecialOverlay && m_pTempOverlayPicture)
-  {
-    CDVDCodecUtils::CopyPictureToOverlay(pDest, m_pTempOverlayPicture);
-  }
+    CDVDCodecUtils::CopyPicture(pDest, m_pTempOverlayPicture);
 }
 
 int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
