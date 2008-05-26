@@ -133,7 +133,7 @@ rem	CONFIG START
   Echo userdata\visualisations\>>exclude.txt
   rem other platform stuff
   Echo lib-osx>>exclude.txt
-  Echo "FileZilla Server.xml">>exclude.txt
+  Echo FileZilla Server.xml>>exclude.txt
   Echo asound.conf>>exclude.txt
   Echo voicemasks.xml>>exclude.txt
 
