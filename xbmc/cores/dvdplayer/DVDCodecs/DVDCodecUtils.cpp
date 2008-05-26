@@ -103,7 +103,7 @@ bool CDVDCodecUtils::CopyPicture(DVDVideoPicture* pDst, DVDVideoPicture* pSrc)
   return true;
 }
 
-bool CDVDCodecUtils::CopyPictureToOverlay(YV12Image* pImage, DVDVideoPicture *pSrc)
+bool CDVDCodecUtils::CopyPicture(YV12Image* pImage, DVDVideoPicture *pSrc)
 {
   BYTE *s = pSrc->data[0];
   BYTE *d = pImage->plane[0];
