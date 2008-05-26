@@ -1506,7 +1506,7 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
     items.Add(newPlaylist);
 */
     newPlaylist = new CFileItem("newsmartplaylist://video", false);
-    newPlaylist->SetLabel(g_localizeStrings.Get(21440));  // "new smart folder..."
+    newPlaylist->SetLabel(g_localizeStrings.Get(21437));  // "new smart playlist..."
     newPlaylist->SetLabelPreformated(true);
     items.Add(newPlaylist);
   }
