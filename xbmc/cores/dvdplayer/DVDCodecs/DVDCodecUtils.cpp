@@ -66,16 +66,40 @@ void CDVDCodecUtils::FreePicture(DVDVideoPicture* pPicture)
 
 bool CDVDCodecUtils::CopyPicture(DVDVideoPicture* pDst, DVDVideoPicture* pSrc)
 {
-  if (pDst->iWidth != pSrc->iWidth || pDst->iHeight != pSrc->iHeight) return false;
+  BYTE *s, *d;
+  int w = pSrc->iWidth;
+  int h = pSrc->iHeight;
 
-  int size_y = (pSrc->iWidth * pSrc->iHeight);
-  int size_u = pSrc->iWidth / 2 * pSrc->iHeight / 2;
-  int size_v = size_u;
+  s = pSrc->data[0];
+  d = pDst->data[0];
 
-  memcpy(pDst->data[0], pSrc->data[0], size_y);
-  memcpy(pDst->data[1], pSrc->data[1], size_u);
-  memcpy(pDst->data[2], pSrc->data[2], size_v);
+  for (int y = 0; y < h; y++)
+  {
+    memcpy(d, s, w);
+    s += pSrc->iLineSize[0];
+    d += pDst->iLineSize[0];
+  }
 
+  w >>= 1;
+  h >>= 1;
+
+  s = pSrc->data[1];
+  d = pDst->data[1];
+  for (int y = 0; y < h; y++)
+  {
+    memcpy(d, s, w);
+    s += pSrc->iLineSize[1];
+    d += pDst->iLineSize[1];
+  }
+
+  s = pSrc->data[2];
+  d = pDst->data[2];
+  for (int y = 0; y < h; y++)
+  {
+    memcpy(d, s, w);
+    s += pSrc->iLineSize[2];
+    d += pDst->iLineSize[2];
+  }
   return true;
 }
 
