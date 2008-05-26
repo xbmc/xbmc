@@ -43,7 +43,6 @@ void CVideoInfoTag::Reset()
   m_strOriginalTitle = "";
   m_strVotes = "";
   m_cast.clear();
-  m_artist.clear();
   m_strFile = "";
   m_strPath = "";
   m_strIMDBNumber = "";
@@ -54,6 +53,7 @@ void CVideoInfoTag::Reset()
   m_strFirstAired= "";
   m_strStudio = "";
   m_strAlbum = "";
+  m_strArtist = "";
   m_strTrailer = "";
   m_iTop250 = 0;
   m_iYear = 0;
@@ -66,7 +66,7 @@ void CVideoInfoTag::Reset()
   m_iBookmarkId = -1;
   m_fanart.m_xml = "";
 
-  m_bWatched = false;
+  m_playCount = 0;
 }
 
 bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo)
@@ -105,7 +105,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
     movie->InsertEndChild(*doc.RootElement());
   }
   XMLUtils::SetString(movie, "mpaa", m_strMPAARating);
-  XMLUtils::SetBoolean(movie, "watched", m_bWatched);
+  XMLUtils::SetInt(movie, "playcount", m_playCount);
   if (savePathInfo)
   {
     XMLUtils::SetString(movie, "file", m_strFile);
@@ -146,17 +146,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
     TiXmlText th(it->thumbUrl.m_xml);
     thumbNode->InsertEndChild(th);
   }
-  // artists
-  for (std::vector<CStdString>::const_iterator it = m_artist.begin(); it != m_artist.end(); ++it)
-  {
-    // add a <actor> tag
-    TiXmlElement cast("artist");
-    TiXmlNode *node = movie->InsertEndChild(cast);
-    TiXmlElement actor("name");
-    TiXmlNode *actorNode = node->InsertEndChild(actor);
-    TiXmlText name(*it);
-    actorNode->InsertEndChild(name);
-  }
+  XMLUtils::SetString(movie, "artist", m_strArtist);
 
   return true;
 }
@@ -190,7 +180,7 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   XMLUtils::GetString(movie, "tagline", m_strTagLine);
   XMLUtils::GetString(movie, "runtime", m_strRuntime);
   XMLUtils::GetString(movie, "mpaa", m_strMPAARating);
-  XMLUtils::GetBoolean(movie, "watched", m_bWatched);
+  XMLUtils::GetInt(movie, "playcount", m_playCount);
   XMLUtils::GetString(movie, "file", m_strFile);
   XMLUtils::GetString(movie, "path", m_strPath);
   XMLUtils::GetString(movie, "id", m_strIMDBNumber);
@@ -204,24 +194,28 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
 
   m_strPictureURL.ParseElement(movie->FirstChildElement("thumbs"));
   if (m_strPictureURL.m_url.size() == 0)
-  {
-    if (movie->FirstChildElement("thumb") && !movie->FirstChildElement("thumb")->FirstChildElement())
+  { // no <thumbs> tag found, look for <thumb>
+    const TiXmlElement *thumb = movie->FirstChildElement("thumb");
+    if (thumb)
     {
-      if (movie->FirstChildElement("thumb")->FirstChild() && strncmp(movie->FirstChildElement("thumb")->FirstChild()->Value(),"<thumb>",7) == 0)
-      {
-        CStdString strValue = movie->FirstChildElement("thumb")->FirstChild()->Value();
+      if (thumb->FirstChild() && !thumb->FirstChildElement())
+      { // must have <thumb>child</thumb>, where child contains no XML.  Check for escaped XML
+        CStdString strValue = thumb->FirstChild()->Value();
         TiXmlDocument doc;
         doc.Parse(strValue.c_str());
-        if (doc.FirstChildElement("thumbs"))
-          m_strPictureURL.ParseElement(doc.FirstChildElement("thumbs"));
-        else
-          m_strPictureURL.ParseElement(doc.FirstChildElement("thumb"));
+        if (doc.RootElement())
+        { // valid XML
+          if (doc.FirstChildElement("thumbs"))
+            m_strPictureURL.ParseElement(doc.FirstChildElement("thumbs"));
+          else if (doc.FirstChildElement("thumb"))
+            m_strPictureURL.ParseElement(doc.FirstChildElement("thumb"));
+        }
+        else  // not XML at all - assume a single child
+          m_strPictureURL.ParseElement(thumb);
       }
       else
-        m_strPictureURL.ParseElement(movie->FirstChildElement("thumb"));
+        m_strPictureURL.ParseElement(thumb);
     }
-    else
-      m_strPictureURL.ParseElement(movie->FirstChildElement("thumb"));
   }
 
   CStdString strTemp;
@@ -316,8 +310,12 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
     else if (node->FirstChild())
       pValue = node->FirstChild()->Value();
     if (pValue)
-      m_artist.push_back(pValue);
-
+    {
+      if (m_strArtist.IsEmpty())
+        m_strArtist += pValue;
+      else
+        m_strArtist += g_advancedSettings.m_videoItemSeparator + pValue;
+    }
     node = node->NextSibling("artist");
   }
 
@@ -368,9 +366,6 @@ void CVideoInfoTag::Serialize(CArchive& ar)
       ar << m_cast[i].strRole;
       ar << m_cast[i].thumbUrl.m_xml;
     }
-    ar << (int)m_artist.size();
-    for (unsigned int i=0;i<m_artist.size();++i)
-      ar << m_artist[i];
 
     ar << m_strRuntime;
     ar << m_strFile;
@@ -386,7 +381,8 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_strFirstAired;
     ar << m_strShowTitle;
     ar << m_strAlbum;
-    ar << m_bWatched;
+    ar << m_strArtist;
+    ar << m_playCount;
     ar << m_iTop250;
     ar << m_iYear;
     ar << m_iSeason;
@@ -426,15 +422,6 @@ void CVideoInfoTag::Serialize(CArchive& ar)
       info.thumbUrl.ParseString(strXml);
       m_cast.push_back(info);
     }
-    int iArtistSize;
-    ar >> iArtistSize;
-    for (int i=0;i<iArtistSize;++i)
-    {
-      CStdString strFirst;
-      ar >> strFirst;
-      m_artist.push_back(strFirst);
-    }
-
     ar >> m_strRuntime;
     ar >> m_strFile;
     ar >> m_strPath;
@@ -449,7 +436,8 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_strFirstAired;
     ar >> m_strShowTitle;
     ar >> m_strAlbum;
-    ar >> m_bWatched;
+    ar >> m_strArtist;
+    ar >> m_playCount;
     ar >> m_iTop250;
     ar >> m_iYear;
     ar >> m_iSeason;
@@ -460,16 +448,6 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_iSpecialSortEpisode;
     ar >> m_iBookmarkId;
   }
-}
-
-const CStdString CVideoInfoTag::GetArtist() const
-{
-  CStdString result;
-  for (unsigned int i=0;i<m_artist.size();++i)
-    result += m_artist[i]+g_advancedSettings.m_videoItemSeparator;
-  result.TrimRight(g_advancedSettings.m_videoItemSeparator);
-
-  return result;
 }
 
 const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const

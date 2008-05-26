@@ -337,7 +337,7 @@ void CGUIWindowVideoInfo::Update()
   // setup plot text area
   strTmp = m_movieItem->GetVideoInfoTag()->m_strPlot;
   if (!(!m_movieItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty() && m_movieItem->GetVideoInfoTag()->m_iSeason == 0)) // dont apply to tvshows
-    if (!m_movieItem->GetVideoInfoTag()->m_bWatched && g_guiSettings.GetBool("videolibrary.hideplots"))
+    if (m_movieItem->GetVideoInfoTag()->m_playCount == 0 && g_guiSettings.GetBool("videolibrary.hideplots"))
       strTmp = g_localizeStrings.Get(20370);
 
   strTmp.Trim();
@@ -345,9 +345,11 @@ void CGUIWindowVideoInfo::Update()
 
   // setup cast list + determine type
   ClearCastList();
-  if (m_movieItem->GetVideoInfoTag()->m_artist.size())
+  if (!m_movieItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
   { // music video
-    for (std::vector<CStdString>::const_iterator it = m_movieItem->GetVideoInfoTag()->m_artist.begin(); it != m_movieItem->GetVideoInfoTag()->m_artist.end(); ++it)
+    CStdStringArray artists;
+    StringUtils::SplitString(m_movieItem->GetVideoInfoTag()->m_strArtist, g_advancedSettings.m_videoItemSeparator, artists);
+    for (std::vector<CStdString>::const_iterator it = artists.begin(); it != artists.end(); ++it)
     {
       CFileItem *item = new CFileItem(*it);
       if (CFile::Exists(item->GetCachedArtistThumb()))
@@ -386,7 +388,7 @@ void CGUIWindowVideoInfo::Update()
 
   if (m_bViewReview)
   {
-    if (m_movieItem->GetVideoInfoTag()->m_artist.size() > 0)
+    if (!m_movieItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
     {
       SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 133);
     }
@@ -559,7 +561,7 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
     strItem.Format("[%s] %s", g_localizeStrings.Get(20364), movies[i].m_strTitle);  // Movie
     CFileItem *pItem = new CFileItem(strItem);
     *pItem->GetVideoInfoTag() = movies[i];
-    pItem->m_strPath.Format("videodb://1/%u",m_database.GetTvShowInfo(movies[i].m_strPath));
+    pItem->m_strPath.Format("videodb://1/%u",movies[i].m_iDbId);
     items.Add(pItem);
   }
   movies.clear();
@@ -596,7 +598,7 @@ void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
     iType = 2;
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
     iType = 1;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_artist.size() > 0)
+  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
     iType = 3;
 
   CVideoInfoTag movieDetails;

@@ -30,20 +30,44 @@ public:
   CSmartPlaylistRule();
 
   enum DATABASE_FIELD { FIELD_NONE = 0,
-                        SONG_GENRE = 1,
-                        SONG_ALBUM,
-                        SONG_ARTIST,
-                        SONG_ALBUM_ARTIST,
-                        SONG_TITLE,
-                        SONG_YEAR,
-                        SONG_TIME,
-                        SONG_TRACKNUMBER,
-                        SONG_FILENAME,
-                        SONG_PLAYCOUNT,
-                        SONG_LASTPLAYED,
-                        SONG_RATING,
-                        SONG_COMMENT,
-                        SONG_DATEADDED,
+                        FIELD_GENRE = 1,
+                        FIELD_ALBUM,
+                        FIELD_ARTIST,
+                        FIELD_ALBUMARTIST,
+                        FIELD_TITLE,
+                        FIELD_YEAR,
+                        FIELD_TIME,
+                        FIELD_TRACKNUMBER,
+                        FIELD_FILENAME,
+                        FIELD_PLAYCOUNT,
+                        FIELD_LASTPLAYED,
+                        FIELD_RATING,
+                        FIELD_COMMENT,
+                        FIELD_DATEADDED,
+                        FIELD_TVSHOWTITLE,
+                        FIELD_EPISODETITLE,
+                        FIELD_PLOT,
+                        FIELD_PLOTOUTLINE,
+                        FIELD_TAGLINE,
+                        FIELD_STATUS,
+                        FIELD_VOTES,
+                        FIELD_DIRECTOR,
+                        FIELD_ACTOR,
+                        FIELD_STUDIO,
+                        FIELD_MPAA,
+                        FIELD_TOP250,
+                        FIELD_NUMEPISODES,
+                        FIELD_NUMWATCHED,
+                        FIELD_WRITER,
+                        FIELD_AIRDATE,
+                        FIELD_EPISODE,
+                        FIELD_SEASON,
+                        FIELD_REVIEW,
+                        FIELD_THEMES,
+                        FIELD_MOODS,
+                        FIELD_STYLES,
+                        FIELD_ALBUMTYPE,
+                        FIELD_LABEL,
                         FIELD_PLAYLIST,
                         FIELD_RANDOM
                       };
@@ -64,6 +88,14 @@ public:
                          OPERATOR_END
                        };
 
+  enum FIELD_TYPE { TEXT_FIELD = 0,
+                    BROWSEABLE_FIELD,
+                    NUMERIC_FIELD,
+                    DATE_FIELD,
+                    PLAYLIST_FIELD,
+                    SECONDS_FIELD
+                  };
+ 
   CStdString GetWhereClause(const CStdString& strType);
   void TranslateStrings(const char *field, const char *oper, const char *parameter);
   static DATABASE_FIELD TranslateField(const char *field);
@@ -73,6 +105,9 @@ public:
 
   static CStdString     GetLocalizedField(DATABASE_FIELD field);
   static CStdString     GetLocalizedOperator(SEARCH_OPERATOR oper);
+  static std::vector<DATABASE_FIELD> GetFields(const CStdString &type);
+  static FIELD_TYPE     GetFieldType(DATABASE_FIELD field);
+
   CStdString            GetLocalizedRule();
 
   TiXmlElement GetAsElement();
@@ -117,6 +152,7 @@ public:
 
   const std::vector<CSmartPlaylistRule> &GetRules() const;
 
+  CStdString GetSaveLocation() const;
 private:
   friend class CGUIDialogSmartPlaylistEditor;
 
