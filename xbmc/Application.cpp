@@ -4576,7 +4576,7 @@ bool CApplication::PlayMediaSync(const CFileItem& item, int iPlaylist)
       smartpl.OpenAndReadName(item.m_strPath);
       CPlayList playlist;
       playlist.Add(items);
-      return ProcessAndStartPlaylist(smartpl.GetName(), playlist, smartpl.GetType() == "music"?PLAYLIST_MUSIC:PLAYLIST_VIDEO);
+      return ProcessAndStartPlaylist(smartpl.GetName(), playlist, (smartpl.GetType() == "songs" || smartpl.GetType() == "albums") ? PLAYLIST_MUSIC:PLAYLIST_VIDEO);
     }
   }
   else if (item.IsPlayList() || item.IsInternetStream())
@@ -5099,10 +5099,7 @@ void CApplication::StopPlaying()
         // mark as watched if we are passed the usual amount
         if (GetPercentage() >= g_advancedSettings.m_playCountMinimumPercent)
         {
-          if (m_itemCurrentFile->HasVideoInfoTag() && m_itemCurrentFile->GetVideoInfoTag()->m_iEpisode > -1)
-            dbs.MarkAsWatched(m_itemCurrentFile->GetVideoInfoTag()->m_iDbId,VIDEODB_CONTENT_EPISODES);
-          else
-            dbs.MarkAsWatched(*m_itemCurrentFile);
+          dbs.MarkAsWatched(*m_itemCurrentFile);
           CUtil::DeleteVideoDatabaseDirectoryCache();
         }
 
@@ -5853,12 +5850,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       {
         CVideoDatabase dbs;
         dbs.Open();
-
-        if (m_itemCurrentFile->HasVideoInfoTag() && m_itemCurrentFile->GetVideoInfoTag()->m_iEpisode > -1)
-          dbs.MarkAsWatched(m_itemCurrentFile->GetVideoInfoTag()->m_iDbId,VIDEODB_CONTENT_EPISODES);
-        else
-          dbs.MarkAsWatched(*m_itemCurrentFile);
-
+        dbs.MarkAsWatched(*m_itemCurrentFile);
         CUtil::DeleteVideoDatabaseDirectoryCache();
         dbs.ClearBookMarksOfFile(m_itemCurrentFile->m_strPath, CBookmark::RESUME);
         dbs.Close();

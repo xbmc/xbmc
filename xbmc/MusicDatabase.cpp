@@ -52,7 +52,7 @@ using namespace MUSICDATABASEDIRECTORY;
 using namespace MEDIA_DETECT;
 
 #define MUSIC_DATABASE_OLD_VERSION 1.6f
-#define MUSIC_DATABASE_VERSION        9
+#define MUSIC_DATABASE_VERSION        10
 #define MUSIC_DATABASE_NAME "MyMusic7.db"
 #define RECENTLY_ADDED_LIMIT  25
 #define RECENTLY_PLAYED_LIMIT 25
@@ -155,7 +155,14 @@ bool CMusicDatabase::CreateTables()
     CLog::Log(LOGINFO, "create song view");
     m_pDS->exec("create view songview as select idSong, song.strExtraArtists as strExtraArtists, song.strExtraGenres as strExtraGenres, strTitle, iTrack, iDuration, song.iYear as iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed, rating, comment, song.idAlbum as idAlbum, strAlbum, strPath, song.idArtist as idArtist, strArtist, song.idGenre as idGenre, strGenre, strThumb from song join album on song.idAlbum=album.idAlbum join path on song.idPath=path.idPath join artist on song.idArtist=artist.idArtist join genre on song.idGenre=genre.idGenre join thumb on song.idThumb=thumb.idThumb");
     CLog::Log(LOGINFO, "create album view");
-    m_pDS->exec("create view albumview as select idAlbum, strAlbum, strExtraArtists, album.idArtist as idArtist, strExtraGenres, album.idGenre as idGenre, strArtist, strGenre, iYear, strThumb from album left outer join artist on album.idArtist=artist.idArtist left outer join genre on album.idGenre=genre.idGenre left outer join thumb on album.idThumb=thumb.idThumb");
+    m_pDS->exec("create view albumview as select album.idAlbum as idAlbum, strAlbum, strExtraArtists, "
+                "album.idArtist as idArtist, album.strExtraGenres as strExtraGenres, album.idGenre as idGenre, "
+                "strArtist, strGenre, album.iYear as iYear, strThumb, idAlbumInfo, strMoods, strStyles, strThemes, "
+                "strReview, strLabel, strType, strImage, iRating from album "
+                "left outer join artist on album.idArtist=artist.idArtist "
+                "left outer join genre on album.idGenre=genre.idGenre "
+                "left outer join thumb on album.idThumb=thumb.idThumb "
+                "left outer join albuminfo on album.idAlbum=albumInfo.idAlbum");
   }
   catch (...)
   {
@@ -725,7 +732,7 @@ void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& s
   }
 }
 
-CAlbum CMusicDatabase::GetAlbumFromDataset(dbiplus::Dataset* pDS)
+CAlbum CMusicDatabase::GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL /* = false*/)
 {
   CAlbum album;
   album.idAlbum = pDS->fv(album_idAlbum).get_asLong();
@@ -740,10 +747,22 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(dbiplus::Dataset* pDS)
   album.strGenre = pDS->fv(album_strGenre).get_asString();
   album.strGenre += pDS->fv(album_strExtraGenres).get_asString();
   album.iYear = pDS->fv(album_iYear).get_asLong();
-  CStdString strThumb = pDS->fv(album_strThumb).get_asString();
-  if (strThumb != "NONE")
-    album.thumbURL.ParseString(strThumb);
-  
+  if (imageURL)
+    album.thumbURL.ParseString(pDS->fv(album_strThumbURL).get_asString());
+  else
+  {
+    CStdString strThumb = pDS->fv(album_strThumb).get_asString();
+    if (strThumb != "NONE")
+      album.thumbURL.ParseString(strThumb);
+  }
+  album.iRating = pDS->fv(album_iRating).get_asLong();
+  album.iYear = pDS->fv(album_iYear).get_asLong();
+  album.strReview = pDS->fv(album_strReview).get_asString();
+  album.strStyles = pDS->fv(album_strStyles).get_asString();
+  album.strMoods = pDS->fv(album_strMoods).get_asString();
+  album.strThemes = pDS->fv(album_strThemes).get_asString();
+  album.strLabel = pDS->fv(album_strLabel).get_asString();
+  album.strType = pDS->fv(album_strType).get_asString();
   return album;
 }
 
@@ -924,7 +943,7 @@ bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &arti
       return false;
     }
     
-    CStdString artistLabel(g_localizeStrings.Get(484)); // Artist
+    CStdString artistLabel(g_localizeStrings.Get(557)); // Artist
     while (!m_pDS->eof())
     {
       CStdString path;
@@ -1007,35 +1026,14 @@ bool CMusicDatabase::GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS* songs)
     if (idAlbum == -1)
       return false; // not in the database
 
-    CStdString strSQL=FormatSQL("select * from albuminfo "
-                                  "join albumview on albuminfo.idAlbum=albumview.idAlbum "
-                                  "join genre on albuminfo.idGenre=genre.idGenre "
-                                "where albumview.idAlbum = %ld"
-                                , idAlbum);
+    CStdString strSQL=FormatSQL("select * from albumview where idAlbum = %ld", idAlbum);
 
     if (!m_pDS2->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS2->num_rows();
     if (iRowsFound != 0)
     {
-      info.idAlbum = idAlbum;
-      info.iRating = m_pDS2->fv("albuminfo.iRating").get_asLong() ;
-      info.iYear = m_pDS2->fv("albuminfo.iYear").get_asLong() ;
-      info.strAlbum = m_pDS2->fv("albumview.strAlbum").get_asString();
-      info.strArtist = m_pDS2->fv("albumview.strArtist").get_asString();
-      info.strArtist += m_pDS2->fv("albumview.strExtraArtists").get_asString();
-      info.strGenre = m_pDS2->fv("genre.strGenre").get_asString();
-      info.strGenre += m_pDS2->fv("albumview.strExtraGenres").get_asString();
-      if (songs)
-        info.thumbURL.ParseString(m_pDS2->fv("albuminfo.strImage").get_asString());
-      info.strReview = m_pDS2->fv("albuminfo.strReview").get_asString();
-      info.strStyles = m_pDS2->fv("albuminfo.strStyles").get_asString();
-      info.strMoods = m_pDS2->fv("albuminfo.strMoods").get_asString();
-      info.strThemes = m_pDS2->fv("albuminfo.strThemes").get_asString();
-      info.strLabel = m_pDS2->fv("albuminfo.strLabel").get_asString();
-      info.strType = m_pDS2->fv("albuminfo.strType").get_asString();
-
-      long idAlbumInfo = m_pDS2->fv("albuminfo.idAlbumInfo").get_asLong();
-
+      info = GetAlbumFromDataset(m_pDS2.get(), true); // true to grab the thumburl rather than the thumb
+      long idAlbumInfo = m_pDS2->fv(album_idAlbumInfo).get_asLong();
       m_pDS2->close(); // cleanup recordset data
 
       if (songs)
@@ -2785,23 +2783,23 @@ bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& i
                           , idArtist, idArtist, idArtist, idArtist);
   }
 
-  return GetAlbumsByWhere(strBaseDir, strWhere, items, true);
+  return GetAlbumsByWhere(strBaseDir, strWhere, items);
 }
 
-bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, CFileItemList &items, bool needInfo)
+bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, CFileItemList &items)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString sql = "select * from albumview " + where;
-
+    CStdString sql = "select * from albumview ";
+    
     // block null album names
     if (where.IsEmpty())
       sql += "where ";
     else
-      sql += " and ";
+      sql += where + " and ";
     sql += "albumview.strAlbum != \"\"";
 
     // run query
@@ -2823,26 +2821,6 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdStrin
       long idAlbum = m_pDS->fv("idAlbum").get_asLong();
       strDir.Format("%s%ld/", baseDir.c_str(), idAlbum);
       CFileItem* pItem=new CFileItem(strDir, GetAlbumFromDataset(m_pDS.get()));
-      if (needInfo)
-      {
-        CAlbum album;
-        GetAlbumInfo(idAlbum,album,NULL);
-        pItem->SetProperty("album",album.strAlbum);
-        pItem->SetProperty("artist",album.strArtist);
-        pItem->SetProperty("description",album.strReview);
-        pItem->SetProperty("theme",album.strThemes);
-        pItem->SetProperty("mood",album.strMoods);
-        pItem->SetProperty("style",album.strStyles);
-        pItem->SetProperty("type",album.strType);
-        pItem->SetProperty("genre",album.strGenre);
-        pItem->SetProperty("label",album.strLabel);
-        if (album.iRating > 0)
-        {
-          CStdString strRating;
-          strRating.Format("%i",album.iRating);
-          pItem->SetProperty("rating",strRating);
-        }
-      }
       items.Add(pItem);
 
       m_pDS->next();
@@ -3109,6 +3087,19 @@ bool CMusicDatabase::UpdateOldVersion(int version)
       m_pDS->exec("CREATE INDEX idxArtistInfo on artistinfo(idArtist)");
       m_pDS->exec("CREATE INDEX idxAlbumInfo on albuminfo(idAlbum)");
     }
+    if (version < 10)
+    { // extend albumview to include all info
+      m_pDS->exec("drop view albumview");
+      m_pDS->exec("create view albumview as select album.idAlbum as idAlbum, strAlbum, strExtraArtists, "
+                  "album.idArtist as idArtist, album.strExtraGenres as strExtraGenres, album.idGenre as idGenre, "
+                  "strArtist, strGenre, album.iYear as iYear, strThumb, idAlbumInfo, strMoods, strStyles, strThemes, "
+                  "strReview, strLabel, strType, strImage, iRating from album "
+                  "left outer join artist on album.idArtist=artist.idArtist "
+                  "left outer join genre on album.idGenre=genre.idGenre "
+                  "left outer join thumb on album.idThumb=thumb.idThumb "
+                  "left outer join albuminfo on album.idAlbum=albumInfo.idAlbum");
+    }
+
     return true;
   }
   catch (...)

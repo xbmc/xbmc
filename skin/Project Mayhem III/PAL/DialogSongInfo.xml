@@ -65,7 +65,7 @@
 			<posy>65</posy>
 			<width>300</width>
 			<font>font12</font>
-			<label>171</label>
+			<label>$LOCALIZE[557]:</label>
 		</control>
 		<control type="fadelabel">
 			<description>Artist value</description>
@@ -81,21 +81,21 @@
 			<posy>90</posy>
 			<width>300</width>
 			<font>font12</font>
-			<label>170</label>
+			<label>$LOCALIZE[558]:</label>
 		</control>
 		<control type="fadelabel">
 			<description>Album value</description>
 			<posx>110</posx>
 			<posy>90</posy>
 			<width>365</width>
-			<label>$INFO[ListItem.Album]$INFO[musicplayer.discnumber, - $LOCALIZE[427]]</label>
+			<label>$INFO[ListItem.Album]$INFO[musicplayer.discnumber, - $LOCALIZE[427]:]</label>
 			<font>font12</font>
 		</control>
 		<control type="label">
 			<description>Genre</description>
 			<posx>20</posx>
 			<posy>115</posy>
-			<label>174</label>
+			<label>$LOCALIZE[515]:</label>
 			<font>font12</font>
 		</control>
 		<control type="fadelabel">
@@ -110,7 +110,7 @@
 			<description>Year</description>
 			<posx>20</posx>
 			<posy>140</posy>
-			<label>201</label>
+			<label>$LOCALIZE[562]:</label>
 			<font>font12</font>
 		</control>
 		<control type="fadelabel">
@@ -125,7 +125,7 @@
 			<description>Track Number</description>
 			<posx>20</posx>
 			<posy>165</posy>
-			<label>$LOCALIZE[435] :</label>
+			<label>$LOCALIZE[554]:</label>
 			<font>font12</font>
 		</control>
 		<control type="fadelabel">
@@ -140,7 +140,7 @@
 			<description>Rating</description>
 			<posx>20</posx>
 			<posy>190</posy>
-			<label>173</label>
+			<label>$LOCALIZE[563]:</label>
 			<font>font12</font>
 		</control>
 		<control type="image">
@@ -155,7 +155,7 @@
 			<description>Comment</description>
 			<posx>20</posx>
 			<posy>215</posy>
-			<label>659</label>
+			<label>$LOCALIZE[569]:</label>
 			<font>font12</font>
 		</control>
 		<control type="textbox">

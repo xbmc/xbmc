@@ -902,7 +902,7 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_EDIT_SMART_PLAYLIST:
     {
       CStdString playlist = m_vecItems->Get(itemNumber)->IsSmartPlayList() ? m_vecItems->Get(itemNumber)->m_strPath : m_vecItems->m_strPath; // save path as activatewindow will destroy our items
-      if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
+      if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist, "music"))
       { // need to update
         m_vecItems->RemoveDiscCache();
         Update(m_vecItems->m_strPath);
