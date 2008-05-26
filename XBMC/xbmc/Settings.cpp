@@ -131,6 +131,8 @@ CSettings::CSettings(void)
 
   g_stSettings.iAdditionalSubtitleDirectoryChecked = 0;
 
+  g_settings.bUseLoginScreen = false;
+
   // Advanced settings
   g_advancedSettings.m_useMultipaths = true;
   g_advancedSettings.m_DisableModChipDetection = true;
@@ -175,7 +177,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_usePCDVDROM = false;
   g_advancedSettings.m_noDVDROM = false;
   g_advancedSettings.m_cachePath = "Z:\\";
-  g_advancedSettings.m_FTPShowCache = false;
+  g_advancedSettings.m_displayRemoteCodes = false;
   
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
@@ -199,19 +201,18 @@ CSettings::CSettings(void)
 
   g_advancedSettings.m_remoteRepeat = 480;
   g_advancedSettings.m_controllerDeadzone = 0.2f;
-  g_advancedSettings.m_displayRemoteCodes = false;
-
-  g_advancedSettings.m_thumbSize = 512;
-
-  g_advancedSettings.m_sambadoscodepage = "";
-  g_advancedSettings.m_sambaclienttimeout = 10;
+  g_advancedSettings.m_FTPShowCache = false;
 
   g_advancedSettings.m_playlistAsFolders = true;
   g_advancedSettings.m_detectAsUdf = false;
-  g_settings.bUseLoginScreen = false;
 
+  g_advancedSettings.m_thumbSize = 512;
+
+  g_advancedSettings.m_sambaclienttimeout = 10;
+  g_advancedSettings.m_sambadoscodepage = "";
   g_advancedSettings.m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg";
   g_advancedSettings.m_dvdThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
+
   g_advancedSettings.m_bMusicLibraryHideAllItems = false;
   g_advancedSettings.m_bMusicLibraryAllItemsOnBottom = false;
   g_advancedSettings.m_bMusicLibraryHideCompilationArtists = false;
@@ -243,6 +244,8 @@ CSettings::CSettings(void)
 #ifdef HAS_SDL
   g_advancedSettings.m_fullScreen = false;
 #endif
+
+  g_advancedSettings.m_playlistRetries = 100;
 }
 
 CSettings::~CSettings(void)

@@ -387,7 +387,7 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
     CVideoInfoTag tag;
     if (ScrapeFilename(strMovie,tag))
     {
-      m_parser.m_param[0] = tag.GetArtist();
+      m_parser.m_param[0] = tag.m_strArtist;
       m_parser.m_param[1] = tag.m_strTitle;
       CUtil::URLEncode(m_parser.m_param[0]);
       CUtil::URLEncode(m_parser.m_param[1]);
