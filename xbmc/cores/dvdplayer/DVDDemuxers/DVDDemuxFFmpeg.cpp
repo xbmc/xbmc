@@ -36,6 +36,7 @@
 #include "utils/Win32Exception.h"
 #include "Settings.h"
 #include "FileSystem/IFile.h"
+#include "linux/XThreadUtils.h"
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {
@@ -111,7 +112,8 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 #ifdef _MSC_VER
 static __declspec(thread) DWORD g_urltimeout = 0;
 #else
-static __thread DWORD g_urltimeout = 0;
+static TLS g_tls;
+#define g_urltimeout (*((DWORD*)g_tls.Get()))
 #endif
 static int interrupt_cb(void)
 {
