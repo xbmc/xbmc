@@ -108,7 +108,11 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
   buffer.erase(0, start);
 }
 
-static DWORD g_urltimeout = 0;
+#ifdef _MSC_VER
+static __declspec(thread) DWORD g_urltimeout = 0;
+#else
+static __thread DWORD g_urltimeout = 0;
+#endif
 static int interrupt_cb(void)
 {
   if(!g_urltimeout)
