@@ -100,3 +100,4 @@ public:
 protected:
   virtual void SaveViewState();
 };
+
