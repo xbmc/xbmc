@@ -1,7 +1,0 @@
-version.lo version.o: version.c config.h global.h version.h
-
-config.h:
-
-global.h:
-
-version.h:
