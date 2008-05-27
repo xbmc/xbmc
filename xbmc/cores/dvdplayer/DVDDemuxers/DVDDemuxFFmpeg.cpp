@@ -25,6 +25,7 @@
 #endif
 #ifdef _LINUX
 #include "stdint.h"
+#include "linux/XThreadUtils.h"
 #else
 #define INT64_C __int64
 #endif
@@ -36,7 +37,6 @@
 #include "utils/Win32Exception.h"
 #include "Settings.h"
 #include "FileSystem/IFile.h"
-#include "linux/XThreadUtils.h"
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {
