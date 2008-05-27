@@ -1056,7 +1056,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
 
     if (scraper.Successfull())
     {
-      artist = scraper.GetArtist(0).GetArtist();
+      artist = scraper.GetArtist(iSelectedArtist).GetArtist();
       m_musicDatabase.SetArtistInfo(params.GetArtistId(), artist);
     }
   }
