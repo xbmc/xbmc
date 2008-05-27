@@ -154,9 +154,8 @@ Usage:
 ----------------------------------------
 
 The best way is to go into settings\Appearance\Screen and set Resolution 
-to the one with (Desktop) next to it.  Toggle FS with the \ key while XBMC
-is running. To start XBMC in fullscreen mode append a '-fs' to the command
-line. 
+to the one with (Full Screen) next to it eg: "1360x768 (Full Screen)".  
+Toggle FS with the \ key while XBMC is running.
 
 ----------------------------------------
 6.2 Multi-monitor Fullscreen
