@@ -82,6 +82,7 @@ CXbmcHttp::CXbmcHttp()
   key = temp;
   lastKey = temp;
   lastThumbFn="";
+  lastPlayingInfo="";
   repeatKeyRate=0;
   MarkTime=0;
   pUdpBroadcast=NULL;
@@ -1180,17 +1181,28 @@ int CXbmcHttp::xbmcGetMovieDetails(int numParas, CStdString paras[])
 }
 
 int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
+//paras: filename_to_save_thumb, filename_if_nothing_playing, only_return_info_if_changed
 {
   CStdString output="", tmp="", tag="", thumbFn="", thumbNothingPlaying="", thumb="";
+  bool justChange=false, changed=false;
   if (numParas>0)
     thumbFn=paras[0];
   if (numParas>1)
     thumbNothingPlaying=paras[1];
+  if (numParas>2)
+    justChange=paras[2].ToLower()=="true";
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
   if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW && pSlideShow)
   {
     const CFileItem *slide = pSlideShow->GetCurrentSlide();
     output=openTag+"Filename:"+slide->m_strPath;
+	if (lastPlayingInfo!=output)
+	{
+	  changed=true;
+	  lastPlayingInfo=output;
+	}
+    if (justChange && !changed)
+	  return SetResponse(openTag+"Changed:False");
     output+=closeTag+openTag+"Type:Picture" ;
     CStdString resolution = "0x0";
     if (slide && slide->HasPictureInfoTag() && slide->GetPictureInfoTag()->Loaded())
@@ -1213,6 +1225,10 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
 	else
       copyThumb(thumb,thumbFn);
     output+=closeTag+openTag+"Thumb:"+thumb;
+	if (changed)
+	  output+=closeTag+openTag+"Changed:True";
+	else  
+	  output+=closeTag+openTag+"Changed:False";
     return SetResponse(output);
   }
 
@@ -1220,11 +1236,26 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
   if (fileItem.m_strPath.IsEmpty())
   {
     output=openTag+"Filename:[Nothing Playing]";
+	if (lastPlayingInfo!=output)
+	{
+	  changed=true;
+	  lastPlayingInfo=output;
+	}
+    if (justChange && !changed)
+	  return SetResponse(openTag+"Changed:False");
 	copyThumb(thumbNothingPlaying,thumbFn);
+	return SetResponse(output);
   }
   else
   {
     output = openTag + "Filename:" + fileItem.m_strPath;  // currently playing item filename
+	if (g_application.IsPlaying())
+	  if (!g_application.m_pPlayer->IsPaused()) 
+		output+=closeTag+openTag+"PlayStatus:Playing";
+      else
+        output+=closeTag+openTag+"PlayStatus:Paused";
+	else
+		output+=closeTag+openTag+"PlayStatus:Stopped";
     if (g_application.IsPlayingVideo())
     { // Video information
       tmp.Format("%i",g_playlistPlayer.GetCurrentSong());
@@ -1237,6 +1268,15 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
           output+=closeTag+openTag+"Show Title"+tag+":"+tagVal->m_strShowTitle ;
         if (!tagVal->m_strTitle.IsEmpty())
           output+=closeTag+openTag+"Title"+tag+":"+tagVal->m_strTitle ;
+		//now have enough info to check for a change
+		if (lastPlayingInfo!=output)
+	    {
+	      changed=true;
+	      lastPlayingInfo=output;
+	    }
+        if (justChange && !changed)
+	      return SetResponse(openTag+"Changed:False");
+        //if still here, continue collecting info
         if (!tagVal->m_strGenre.IsEmpty())
           output+=closeTag+openTag+"Genre"+tag+":"+tagVal->m_strGenre;
         if (!tagVal->m_strStudio.IsEmpty())
@@ -1270,6 +1310,18 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
         if (tagVal->m_iEpisode != -1)
           output.Format("%s%i",output+closeTag+openTag+"Episode"+tag+":",tagVal->m_iEpisode);
 	  }
+	  else
+	  {
+		//now have enough info to estimate a change
+		if (lastPlayingInfo!=output)
+	    {
+	      changed=true;
+	      lastPlayingInfo=output;
+	    }
+        if (justChange && !changed)
+	      return SetResponse(openTag+"Changed:False");
+        //if still here, continue collecting info
+	  }
 	  thumb=g_infoManager.GetImage(VIDEOPLAYER_COVER, -1);
 		
 		//CPicture pic;
@@ -1296,6 +1348,15 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
         output+=closeTag+openTag+"Artist"+tag+":"+tagVal->GetArtist();
       if (tagVal && !tagVal->GetAlbum().IsEmpty())
         output+=closeTag+openTag+"Album"+tag+":"+tagVal->GetAlbum();
+	  //now have enough info to check for a change
+	  if (lastPlayingInfo!=output)
+	  {
+	    changed=true;
+	    lastPlayingInfo=output;
+	  }
+      if (justChange && !changed)
+	    return SetResponse(openTag+"Changed:False");
+      //if still here, continue collecting info
       if (tagVal && !tagVal->GetGenre().IsEmpty())
         output+=closeTag+openTag+"Genre"+tag+":"+tagVal->GetGenre();
       if (tagVal && tagVal->GetYear())
@@ -1317,13 +1378,6 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
       copyThumb(thumb,thumbFn);
 	  output+=closeTag+openTag+"Thumb"+tag+":"+thumb;
     }
-	if (g_application.IsPlaying())
-	  if (!g_application.m_pPlayer->IsPaused()) 
-		output+=closeTag+openTag+"PlayStatus:Playing";
-      else
-        output+=closeTag+openTag+"PlayStatus:Paused";
-	else
-		output+=closeTag+openTag+"PlayStatus:Stopped";
     output+=closeTag+openTag+"Time:"+g_infoManager.GetCurrentPlayTime();
     output+=closeTag+openTag+"Duration:";
     if (g_application.IsPlayingVideo())
@@ -1340,6 +1394,10 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
       tmp.Format("%I64d",fileItem.m_dwSize);
       output+=closeTag+openTag+"File size:"+tmp;
     }
+	if (changed)
+	  output+=closeTag+openTag+"Changed:True";
+	else  
+	  output+=closeTag+openTag+"Changed:False";
   }
   return SetResponse(output);
 }
@@ -2966,7 +3024,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
     retVal = SetResponse(openTag+"Error:Missing command");
 //relinquish the remainder of time slice
   Sleep(0);
-  CLog::Log(LOGDEBUG, "HttpApi Finished command: %s", command.c_str());
+  //CLog::Log(LOGDEBUG, "HttpApi Finished command: %s", command.c_str());
   return retVal;
 }
 
@@ -3047,7 +3105,7 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
       return "";
   CStdString cmd=command, paras=parameter, response="[No response yet]", retVal;
   bool legalCmd=true;
-  CLog::Log(LOGDEBUG, "XBMCHTTPShim: Received command %s (%s)", cmd.c_str(), paras.c_str());
+  //CLog::Log(LOGDEBUG, "XBMCHTTPShim: Received command %s (%s)", cmd.c_str(), paras.c_str());
   int cnt=0;
 
   checkForFunctionTypeParas(cmd, paras);
