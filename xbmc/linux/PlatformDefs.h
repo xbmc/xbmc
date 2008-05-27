@@ -52,6 +52,8 @@
 #include <SDL/SDL_mutex.h>
 #endif
 
+#include "stdint.h"
+
 #ifndef PRId64
 #ifdef _MSC_VER
 #define PRId64 "I64d"
