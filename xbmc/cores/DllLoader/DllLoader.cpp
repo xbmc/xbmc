@@ -298,7 +298,8 @@ int DllLoader::Parse()
     if (CoffLoader::ParseCoff(fp))
     {
       if(WindowsHeader)
-        tracker_dll_set_addr(this, (uintptr_t)hModule, (uintptr_t)hModule + WindowsHeader->SizeOfImage - 1);
+        tracker_dll_set_addr(this, (uintptr_t)hModule,
+          (uintptr_t)hModule + WindowsHeader->SizeOfImage - 1);
       else
       {
         uintptr_t iMinAddr = std::numeric_limits<uintptr_t>::max();
