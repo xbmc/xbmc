@@ -36,10 +36,17 @@ class DllMadCodec : public DllDynamic, DllMadCodecInterface
 #ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllMadCodec, Q:\\system\\players\\PAPlayer\\MADCodec.dll)
 #elif __APPLE__
-  DECLARE_DLL_WRAPPER(DllMadCodec, Q:\\system\\players\\paplayer\\MADCodec-osx.so)
-#else
-  DECLARE_DLL_WRAPPER(DllMadCodec, Q:\\system\\players\\paplayer\\MADCodec-i486-linux.so)
-#endif
+  DECLARE_DLL_WRAPPER(DllMadCodec,
+                      Q:\\system\\players\\paplayer\\MADCodec-osx.so)
+#else /* _LINUX and !__APPLE__ */
+#ifdef __x86_64__
+  DECLARE_DLL_WRAPPER(DllMadCodec,
+                      Q:\\system\\players\\paplayer\\MADCodec-x86_64-linux.so)
+#else /* !__x86_64__ */
+  DECLARE_DLL_WRAPPER(DllMadCodec,
+                      Q:\\system\\players\\paplayer\\MADCodec-i486-linux.so)
+#endif /* !__x86_64__ */
+#endif /* _LINUX */
   DEFINE_METHOD2(IAudioDecoder*, CreateAudioDecoder, (unsigned int p1, IAudioOutput **p2))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(CreateAudioDecoder)
