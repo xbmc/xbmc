@@ -47,16 +47,16 @@ bool CLinuxFileSystem::ApproveDevice(CStorageDevice *device)
   //This is only because it's easier to read...
   const char *fs = device->FileSystem.c_str();
 
-  if (strcmp(fs, "vfat") == 0 || strcmp(fs, "ext2") == 0 || strcmp(fs, "ext3") == 0 || strcmp(fs, "reiserfs") == 0 || strcmp(fs, "xfs") == 0 || strcmp(fs, "ntfs") == 0)
+  if ( strcmp(fs, "vfat") == 0    || strcmp(fs, "ext2") == 0
+       || strcmp(fs, "ext3") == 0 || strcmp(fs, "reiserfs") == 0
+       || strcmp(fs, "xfs") == 0  || strcmp(fs, "ntfs") == 0
+       || strcmp(fs, "iso9660") == 0 )
     approve = true;
   else
     approve = false;
 
   // Ignore root
   if (strcmp(device->MountPoint, "/") == 0)
-    approve = false;
-
-  if (device->Type == 3) //We don't approve CD/DVD it's handled elsewere
     approve = false;
 
   device->Approved = approve;
@@ -156,7 +156,10 @@ vector<CStdString> CLinuxFileSystem::GetDrives(int *DeviceType, int len)
           if (strcmp(mount, "/") == 0)
             continue;
           // Here we choose wich filesystems are approved
-          if (strcmp(fs, "fuseblk") == 0 || strcmp(fs, "vfat") == 0 || strcmp(fs, "ext2") == 0 || strcmp(fs, "ext3") == 0 || strcmp(fs, "reiserfs") == 0 || strcmp(fs, "xfs") == 0 || strcmp(fs, "ntfs-3g") == 0)
+          if (strcmp(fs, "fuseblk") == 0 || strcmp(fs, "vfat") == 0
+              || strcmp(fs, "ext2") == 0 || strcmp(fs, "ext3") == 0
+              || strcmp(fs, "reiserfs") == 0 || strcmp(fs, "xfs") == 0
+              || strcmp(fs, "ntfs-3g") == 0 || strcmp(fs, "iso9660") == 0)
             result.push_back(mount);
 #endif
           free(fs);
