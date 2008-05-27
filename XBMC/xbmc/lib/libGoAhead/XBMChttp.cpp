@@ -1228,6 +1228,10 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
 	else
       copyThumb(thumb,thumbFn);
     output+=closeTag+openTag+"Thumb:"+thumb;
+	if (changed)
+	  output+=closeTag+openTag+"Changed:True";
+	else  
+	  output+=closeTag+openTag+"Changed:False";
     return SetResponse(output);
   }
 
