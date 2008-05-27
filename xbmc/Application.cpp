@@ -3025,7 +3025,6 @@ void CApplication::Render()
 
   { // frame rate limiter (really bad, but it does the trick :p)
     const static unsigned int singleFrameTime = 10;       // default limit 100 fps
-    const static unsigned int singleVideoFrameTime = 33;  // 30 fps for fullscreen video
     static unsigned int lastFrameTime = 0;
     unsigned int currentTime = timeGetTime();
     int nDelayTime = 0;
