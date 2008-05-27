@@ -261,16 +261,30 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
 #endif
 #ifdef HAS_HAL
 /*  static int DevTypes[] = {0, 5, 6, 7, 8, 9, 10, 13}; //These numbers can be found in libhal-storage.h. 9 is Camera and 10 is Audio player, these are uncertain.
-  std::vector<CStdString> result = CLinuxFileSystem::GetDevices(DevTypes, 8); */
-  std::vector<CStdString> result = CLinuxFileSystem::GetRemovableDrives();
-  for (unsigned int i = 0; i < result.size(); i++)
-  {
-     CMediaSource share;
-     share.strPath = result[i];
-     share.strName = CUtil::GetFileName(result[i]);
-     share.m_ignore = true;
-     shares.push_back(share);
-  }
+    std::vector<CStdString> result = CLinuxFileSystem::GetDevices(DevTypes, 8); */
+    std::vector<CStdString> result = CLinuxFileSystem::GetRemovableDrives();
+    for (unsigned int i = 0; i < result.size(); i++)
+    {
+      CMediaSource share;
+      share.strPath = result[i];
+      share.strName = CUtil::GetFileName(result[i]);
+      share.m_ignore = true;
+      shares.push_back(share);
+    }
+    int type = CMediaSource::SOURCE_TYPE_DVD;
+    result = CLinuxFileSystem::GetDrives(&type, 1);
+    for (unsigned int i = 0; i < result.size(); i++)
+    {
+      CMediaSource share;
+      share.strPath = result[i];
+      share.strName = "DVD: ";
+      share.strName += CStdString(CUtil::GetFileName(result[i]));
+      fprintf(stderr, "DVD: %s\n", result[i].c_str());
+      share.m_ignore = true;
+      share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+      share.m_strThumbnailImage = "defaultDVDRom.png";
+      shares.push_back(share);
+    }
 #endif
     CUtil::AutoDetectionGetSource(shares);
   }
