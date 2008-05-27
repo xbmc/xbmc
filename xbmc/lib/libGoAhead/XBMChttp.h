@@ -137,7 +137,7 @@ private:
   int repeatKeyRate; //ms
   DWORD MarkTime;
   bool autoGetPictureThumbs;
-  CStdString lastThumbFn;
+  CStdString lastThumbFn, lastPlayingInfo;
   CStdString openTag, closeTag,  openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField, openBroadcast, closeBroadcast;
   bool  closeFinalTag;
 
