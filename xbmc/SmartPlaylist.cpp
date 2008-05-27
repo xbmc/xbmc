@@ -266,7 +266,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_STUDIO);
 //    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
   }
-  else if (type == "musicvideo")
+  else if (type == "musicvideos")
   {
     fields.push_back(FIELD_TITLE);
     fields.push_back(FIELD_GENRE);
@@ -379,7 +379,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
     else if (m_field == FIELD_ALBUMARTIST)
       query = "idalbum in (select idalbum from artist,album where album.idartist=artist.idartist and artist.strArtist" + parameter + ") or idalbum in (select idalbum from artist,exartistalbum where exartistalbum.idartist = artist.idartist and artist.strArtist" + parameter + ")";
   }
-  else if (strType == "movie")
+  else if (strType == "movies")
   {
     if (m_field == FIELD_GENRE)
       query = "idmovie in (select idmovie from genrelinkmovie join genre on genre.idgenre=genrelinkmovie.idgenre where genre.strGenre" + parameter + ")";
@@ -388,7 +388,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
     else if (m_field == FIELD_ACTOR)
       query = "idmovie in (select idmovie from actorlinkmovie join actors on actors.idactor=actorlinkmovie.idactor where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_WRITER)
-      query = "idmovie in (select idmovie from writerlinkmovie join actors on actors.idactor=writerlinkmovie.idactor where actors.strActor" + parameter + ")";
+      query = "idmovie in (select idmovie from writerlinkmovie join actors on actors.idactor=writerlinkmovie.idwriter where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_STUDIO)
       query = "idmovie in (select idmovie from studiolinkmovie join studio on studio.idstudio=studiolinkmovie.idstudio where studio.strStudio" + parameter + ")";
   }
@@ -397,7 +397,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
     if (m_field == FIELD_GENRE)
       query = "idmvideo in (select idmvideo from genrelinkmusicvideo join genre on genre.idgenre=genrelinkmusicvideo.idgenre where genre.strGenre" + parameter + ")";
     else if (m_field == FIELD_ARTIST)
-      query = "idmvideo in (select idmvideo from artistlinkmusicvideo join actor on actor.idactor=artistlinkmusicvideo.idactor where actor.strActor" + parameter + ")";
+      query = "idmvideo in (select idmvideo from artistlinkmusicvideo join actors on actors.idactor=artistlinkmusicvideo.idartist where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_STUDIO)
       query = "idmvideo in (select idmvideo from studiolinkmusicvideo join studio on studio.idstudio=studiolinkmusicvideo.idstudio where studio.strStudio" + parameter + ")";
     else if (m_field == FIELD_DIRECTOR)
@@ -421,7 +421,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
     else if (m_field == FIELD_ACTOR)
       query = "idepisode in (select idepisode from actorlinkepisode join actors on actors.idactor=actorlinkepisode.idactor where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_WRITER)
-      query = "idepisode in (select idepisode from writerlinkepisode join actors on actors.idactor=writerlinkepisode.idactor where actors.strActor" + parameter + ")";
+      query = "idepisode in (select idepisode from writerlinkepisode join actors on actors.idactor=writerlinkepisode.idwriter where actors.strActor" + parameter + ")";
   }
   if (m_field == FIELD_PLAYLIST)
   { // playlist field - grab our playlist and add to our where clause
@@ -509,6 +509,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_STUDIO) result = "never_use_this";   // join required
     else if (field == FIELD_RANDOM) result = "random()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) result = "idshow";       // only used for order clauses
+    return result;
   }
   else if (type == "musicvideos")
   {
