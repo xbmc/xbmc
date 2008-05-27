@@ -96,45 +96,45 @@ public:
 class CHalManager
 {
 public:
-static const char *StorageTypeToString(int DeviceType);
-static int StorageTypeFromString(const char *DeviceString);
-bool Update();
+  static const char *StorageTypeToString(int DeviceType);
+  static int StorageTypeFromString(const char *DeviceString);
+  bool Update();
 
-void Initialize();
-CHalManager();
-~CHalManager();
-std::vector<CStorageDevice> GetVolumeDevices();
+  void Initialize();
+  CHalManager();
+  ~CHalManager();
+  std::vector<CStorageDevice> GetVolumeDevices();
 
-static bool PowerManagement(PowerState State);
+  static bool PowerManagement(PowerState State);
 
 protected:
-DBusConnection *m_DBusSystemConnection;
-LibHalContext  *m_Context;
-static DBusError m_Error;
-static bool NewMessage;
+  DBusConnection *m_DBusSystemConnection;
+  LibHalContext  *m_Context;
+  static DBusError m_Error;
+  static bool NewMessage;
 
-void ParseDevice(const char *udi);
-bool RemoveDevice(const char *udi);
+  void ParseDevice(const char *udi);
+  bool RemoveDevice(const char *udi);
 
 private:
-LibHalContext *InitializeHal();
-bool InitializeDBus();
-void GenerateGDL();
+  LibHalContext *InitializeHal();
+  bool InitializeDBus();
+  void GenerateGDL();
 
-static bool DeviceFromVolumeUdi(const char *udi, CStorageDevice *device);
-static std::vector<CStorageDevice> DeviceFromDriveUdi(const char *udi);
-static CCriticalSection m_lock;
+  static bool DeviceFromVolumeUdi(const char *udi, CStorageDevice *device);
+  static std::vector<CStorageDevice> DeviceFromDriveUdi(const char *udi);
+  static CCriticalSection m_lock;
 
-//Callbacks HAL
-static void DeviceRemoved(LibHalContext *ctx, const char *udi);
-static void DeviceNewCapability(LibHalContext *ctx, const char *udi, const char *capability);
-static void DeviceLostCapability(LibHalContext *ctx, const char *udi, const char *capability);
-static void DevicePropertyModified(LibHalContext *ctx, const char *udi, const char *key, dbus_bool_t is_removed, dbus_bool_t is_added);
-static void DeviceCondition(LibHalContext *ctx, const char *udi, const char *condition_name, const char *condition_details);
-static void DeviceAdded(LibHalContext *ctx, const char *udi);
+  //Callbacks HAL
+  static void DeviceRemoved(LibHalContext *ctx, const char *udi);
+  static void DeviceNewCapability(LibHalContext *ctx, const char *udi, const char *capability);
+  static void DeviceLostCapability(LibHalContext *ctx, const char *udi, const char *capability);
+  static void DevicePropertyModified(LibHalContext *ctx, const char *udi, const char *key, dbus_bool_t is_removed, dbus_bool_t is_added);
+  static void DeviceCondition(LibHalContext *ctx, const char *udi, const char *condition_name, const char *condition_details);
+  static void DeviceAdded(LibHalContext *ctx, const char *udi);
 
-//Remembered Devices
-std::vector<CStorageDevice> m_Volumes;
+  //Remembered Devices
+  std::vector<CStorageDevice> m_Volumes;
 };
 
 extern CHalManager g_HalManager;
