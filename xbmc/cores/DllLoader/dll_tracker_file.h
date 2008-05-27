@@ -24,8 +24,8 @@
 
 #include "dll_tracker.h"
 
-extern "C" void tracker_file_track(uintptr_t caller, unsigned handle, TrackedFileType type, const char* sFile = "");
-extern "C" void tracker_file_free(uintptr_t caller, unsigned handle, TrackedFileType type);
+extern "C" void tracker_file_track(uintptr_t caller, uintptr_t handle, TrackedFileType type, const char* sFile = "");
+extern "C" void tracker_file_free(uintptr_t caller, uintptr_t handle, TrackedFileType type);
 extern "C" void tracker_file_free_all(DllTrackInfo* pInfo);
 
 extern "C"

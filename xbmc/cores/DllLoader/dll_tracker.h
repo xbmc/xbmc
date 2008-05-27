@@ -41,7 +41,7 @@ enum TrackedFileType
 typedef struct _TrackedFile
 {
   TrackedFileType type;
-  unsigned handle;
+  uintptr_t handle;
   char* name;
 } TrackedFile;
 
