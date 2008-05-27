@@ -44,7 +44,7 @@ void CPCMAmplifier::SetVolume(int nVolume)
   if( nVolume == VOLUME_MINIMUM)
 	m_dFactor = 0;
   else
-	m_dFactor = exp(nVolume/2000.f);
+	m_dFactor = pow(10,nVolume/2000.f);
 }
 
 int  CPCMAmplifier::GetVolume()
