@@ -1,9 +1,11 @@
-#ifndef _LINUX
+#ifdef _LINUX
+#undef EMULATE_INTTYPES
+#else
 #define EMULATE_INTTYPES
 #endif /* _LINUX */
 
 #ifndef EMULATE_INTTYPES
-#   include <inttypes.h>
+#   include <stdint.h>
 #else
     typedef signed char  int8_t;
     typedef signed short int16_t;
