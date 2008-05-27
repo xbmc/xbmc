@@ -427,7 +427,10 @@ bool CHalManager::PowerManagement(PowerState State)
 
     dbus_connection_unref(connection);
     connection = NULL;
+    return true;
   }
+
+  return false;
 }
 
 /* libhal-storage type to readable form */
