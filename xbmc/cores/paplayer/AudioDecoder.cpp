@@ -161,7 +161,7 @@ void *CAudioDecoder::GetData(unsigned int size)
     // check for end of file + end of buffer
     if ( m_status == STATUS_ENDING && m_pcmBuffer.GetMaxReadSize() < (int) (OUTPUT_SAMPLES * sizeof(float)))
     {
-      CLog::Log(LOGINFO, "CAudioDecoder::GetData() ending track - only have %lu samples left", m_pcmBuffer.GetMaxReadSize() / sizeof(float));
+      CLog::Log(LOGINFO, "CAudioDecoder::GetData() ending track - only have %u samples left", m_pcmBuffer.GetMaxReadSize() / sizeof(float));
       m_status = STATUS_ENDED;
     }
     return m_outputBuffer;
