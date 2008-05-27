@@ -1361,8 +1361,19 @@
 				<height>30</height>
 				<align>center</align>
 				<font>font13</font>
-				<label>$LOCALIZE[207] - $LOCALIZE[416]</label>
-				<visible>Control.IsVisible(51) + IsEmpty(ListItem.Property(Description))</visible>
+				<label>$LOCALIZE[21887] - $LOCALIZE[416]</label>
+				<visible>Control.IsVisible(51) + IsEmpty(ListItem.Property(Description))+IsEmpty(ListItem.Album)</visible>
+			</control>
+			<control type="label">
+				<description>Label when both textboxes (Plot) are empty</description>
+				<posx>200</posx>
+				<posy>420</posy>
+				<width>480</width>
+				<height>30</height>
+				<align>center</align>
+				<font>font13</font>
+				<label>$LOCALIZE[183] - $LOCALIZE[416]</label>
+				<visible>Control.IsVisible(51) + IsEmpty(ListItem.Property(Description))+!IsEmpty(ListItem.Album)</visible>
 			</control>
 			<control type="button">
 				<posx>663</posx>
