@@ -484,9 +484,13 @@ void CGUIBaseContainer::UpdateLayout(bool updateAllItems)
 void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
 {
   CGUIControl::UpdateVisibility(item);
+
+  if (!IsVisible())
+    return; // no need to update the content if we're not visible
+
   // check whether we need to update our layouts
   if ((m_layout && m_layout->GetCondition() && !g_infoManager.GetBool(m_layout->GetCondition(), GetParentID())) ||
-      (m_focusedLayout && m_focusedLayout->GetCondition() && !g_infoManager.GetBool(m_focusedLayout->GetCondition(), GetParentID()))) 
+      (m_focusedLayout && m_focusedLayout->GetCondition() && !g_infoManager.GetBool(m_focusedLayout->GetCondition(), GetParentID())))
   {
     // and do it
     int item = GetSelectedItem();
