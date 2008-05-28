@@ -974,7 +974,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
         }
         else
           CPlayerCoreFactory::GetPlayers(*item, vecCores);
-        if (vecCores.size() >= 1)
+        if (vecCores.size() > 1)
           buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213);
       }
       if (item->IsSmartPlayList())
