@@ -929,14 +929,18 @@ char* CCdIoSupport::GetDeviceFileName()
       s_defaultDevice = strdup(getenv("XBMC_DVD_DEVICE"));
     else
     {
+#ifndef __APPLE__
       CdIo_t *p_cdio = cdio_open(NULL, DRIVER_UNKNOWN);
+#else
+      CdIo_t *p_cdio = cdio_open(NULL, DRIVER_OSX);
+#endif
       if (p_cdio != NULL)
       {
         s_defaultDevice = strdup(cdio_get_arg(p_cdio, "source"));
         cdio_destroy(p_cdio);
       }
       else
-        s_defaultDevice = strdup("");
+        return "";
     }
   }
 #endif
