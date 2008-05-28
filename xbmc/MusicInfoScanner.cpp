@@ -729,7 +729,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
 
   bCanceled = false;
   m_musicDatabase.Open();
-  if (m_musicDatabase.GetAlbumInfo(params.GetAlbumId(),album,&songs) && !album.strAlbum.IsEmpty())
+  if (m_musicDatabase.HasAlbumInfo(params.GetAlbumId()) && m_musicDatabase.GetAlbumInfo(params.GetAlbumId(),album,&songs))
     return true;
 
   // find album info
