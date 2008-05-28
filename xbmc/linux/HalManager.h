@@ -117,6 +117,7 @@ protected:
   bool RemoveDevice(const char *udi);
 
 private:
+  bool m_Notifications;
   LibHalContext *InitializeHal();
   bool InitializeDBus();
   void GenerateGDL();
