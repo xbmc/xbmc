@@ -439,7 +439,10 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
 
         m_dll.dvdnav_current_title_info(m_dvdnav, &m_iTitle, &m_iPart);
         m_dll.dvdnav_get_number_of_titles(m_dvdnav, &m_iTitleCount);
-        m_dll.dvdnav_get_number_of_parts(m_dvdnav, m_iTitle, &m_iPartCount);        
+        if(m_iTitle > 0)
+          m_dll.dvdnav_get_number_of_parts(m_dvdnav, m_iTitle, &m_iPartCount);        
+        else
+          m_iPartCount = 0;
         m_dll.dvdnav_get_position(m_dvdnav, &pos, &len);
 
         CLog::Log(LOGDEBUG, "%s - Cell change: Title %d, Chapter %d\n", __FUNCTION__, m_iTitle, m_iPart);
