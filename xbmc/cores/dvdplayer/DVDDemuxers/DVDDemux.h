@@ -197,6 +197,22 @@ public:
   virtual bool SeekTime(int time, bool backwords = false, double* startpts = NULL) = 0;
 
   /*
+   * Seek to a specified chapter.
+   * startpts can be updated to the point where display should start 
+   */
+  virtual bool SeekChapter(int chapter, double* startpts = NULL) { return false; }
+
+  /*
+   * Get the number of chapters available
+   */
+  virtual int GetChapterCount() { return 0; }
+
+  /*
+   * Get current chapter 
+   */
+  virtual int GetChapter() { return -1; }
+
+  /*
    * Set the playspeed, if demuxer can handle different
    * speeds of playback
    */
