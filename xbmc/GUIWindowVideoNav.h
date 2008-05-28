@@ -43,7 +43,7 @@ public:
 
 protected:
   virtual void OnItemLoaded(CFileItem* pItem) {};
-  void OnLinkMovieToTvShow(int itemnumber);
+  void OnLinkMovieToTvShow(int itemnumber, bool bRemove);
   // override base class methods
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void UpdateButtons();
