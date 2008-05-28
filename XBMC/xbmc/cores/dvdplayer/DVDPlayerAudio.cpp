@@ -184,7 +184,6 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
 
   // shut down the adio_decode thread and wait for it
   StopThread(); // will set this->m_bStop to true
-  this->WaitForThreadExit(INFINITE);
 
   // uninit queue
   m_messageQueue.End();
