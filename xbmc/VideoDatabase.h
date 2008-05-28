@@ -374,8 +374,9 @@ public:
 
   void GetEpisodesByPlot(const CStdString& strSearch, CFileItemList& items);
 
-  bool LinkMovieToTvshow(long idMovie, long idShow);
+  bool LinkMovieToTvshow(long idMovie, long idShow, bool bRemove);
   bool IsLinkedToTvshow(long idMovie);
+  bool GetLinksToTvShow(long idMovie, std::vector<long>& ids);
 
   bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
                          const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult);
