@@ -92,6 +92,11 @@ public:
   CDemuxStream* GetStream(int iStreamId);
   int GetNrOfStreams();
 
+  bool SeekChapter(int chapter, double* startpts = NULL);
+  int GetChapterCount();
+  int GetChapter();
+
+
   AVFormatContext* m_pFormatContext;
 
 protected:
