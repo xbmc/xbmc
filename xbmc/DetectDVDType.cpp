@@ -86,18 +86,21 @@ void CDetectDVDMedia::Process()
     m_DriveState = DRIVE_CLOSED_MEDIA_PRESENT;
   }
 
+// for apple - currently disable this check since cdio will return null if no media is loaded
+#ifndef __APPLE__
   //Before entering loop make sure we actually have a CDrom drive
   CdIo_t *p_cdio = cdio_open (NULL, DRIVER_DEVICE);
   if (p_cdio == NULL)
     return;
   else
     cdio_destroy(p_cdio);
+#endif
 
   while (( !m_bStop ) && (!g_advancedSettings.m_usePCDVDROM))
   {
     UpdateDvdrom();
     m_bStartup = false;
-    Sleep(500);
+    Sleep(1000);
     if ( m_bAutorun )
     {
       Sleep(1500); // Media in drive, wait 1.5s more to be sure the device is ready for playback

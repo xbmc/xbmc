@@ -262,7 +262,7 @@ HRESULT CIoSupport::EjectTray()
 #endif
 #ifdef __APPLE__
   char* dvdDevice = CCdIoSupport::GetDeviceFileName();
-  CdIo_t* cdio = cdio_open(dvdDevice, DRIVER_UNKNOWN);
+  CdIo_t* cdio = cdio_open(dvdDevice, DRIVER_OSX);
   if (cdio)
   {
     cdio_eject_media(&cdio);
