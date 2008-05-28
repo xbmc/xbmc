@@ -20,8 +20,9 @@
  */
 
 #include "../../guilib/system.h"
-#include "HalManager.h"
 #ifdef HAS_HAL
+#include "HalManager.h"
+#include "Application.h"
 #include <libhal-storage.h>
 #include "LinuxFileSystem.h"
 #include "SingleLock.h"
@@ -151,6 +152,7 @@ CHalManager::~CHalManager()
 // Initialize
 void CHalManager::Initialize()
 {
+  m_Notifications = false;
   CLog::Log(LOGINFO, "HAL: Starting initializing");
   g_HalManager.m_Context = g_HalManager.InitializeHal();
   if (g_HalManager.m_Context == NULL)
@@ -162,6 +164,7 @@ void CHalManager::Initialize()
   GenerateGDL();
 
   CLog::Log(LOGINFO, "HAL: Sucessfully initialized");
+  m_Notifications = true;
 }
 
 // Initialize basic DBus connection
@@ -532,7 +535,7 @@ void CHalManager::ParseDevice(const char *udi)
             Nbr++;
             MountPoint.Format("/media/%s%i", StorageTypeToString(dev.Type), Nbr);
           }
-          MountCmd.Format("pmount %s \"%s\"", dev.DevID.c_str(), MountPoint.c_str());
+          MountCmd.Format("pmount -w %s \"%s\"", dev.DevID.c_str(), MountPoint.c_str());
         }
         CLog::Log(LOGDEBUG, "HAL: %s", MountCmd.c_str());
         system(MountCmd.c_str());
@@ -544,6 +547,8 @@ void CHalManager::ParseDevice(const char *udi)
         {
           dev.MountedByXBMC = true;
           CLog::Log(LOGINFO, "HAL: mounted %s on %s", dev.FriendlyName.c_str(), dev.MountPoint.c_str());
+          if (m_Notifications)
+            g_application.m_guiDialogKaiToast.QueueNotification("Mounted removable harddrive", dev.FriendlyName.c_str());
         }
       }
       libhal_free_string_array(capability);
@@ -606,6 +611,8 @@ bool CHalManager::RemoveDevice(const char *udi)
         uMountCmd.Format("pumount -l %s", m_Volumes[i].DevID.c_str());
         CLog::Log(LOGDEBUG, "HAL: %s", uMountCmd.c_str());
         system(uMountCmd.c_str());
+        if (m_Notifications)
+          g_application.m_guiDialogKaiToast.QueueNotification("Unsafe device removal", m_Volumes[i].FriendlyName.c_str());
       }
 #endif
       m_Volumes.erase(m_Volumes.begin() + i);
