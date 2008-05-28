@@ -243,6 +243,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_dvd.iSelectedSPUStream = -1;
 
   memset(&m_State, 0, sizeof(m_State));
+  m_UpdateApplication = 0;
 
   m_bAbortRequest = false;
   m_errorCount = 0;
@@ -614,7 +615,7 @@ void CDVDPlayer::Process()
   m_dvdPlayerVideo.EnableFullscreen(m_PlayerOptions.fullscreen);
 
   // make sure application know our info
-  UpdateApplication();
+  UpdateApplication(0);
 
   int count;
 
@@ -678,7 +679,7 @@ void CDVDPlayer::Process()
         continue;
       }
 
-      UpdateApplication();
+      UpdateApplication(0);
     }
 
     // handle eventual seeks due tp playspeed
@@ -686,6 +687,9 @@ void CDVDPlayer::Process()
 
     // update player state
     HandlePlayState(200);
+
+    // update application with our state
+    UpdateApplication(1000);
 
     // if the queues are full, no need to read more
     if(!m_dvdPlayerAudio.AcceptsData() && m_CurrentAudio.id >= 0
@@ -2530,7 +2534,7 @@ void CDVDPlayer::HandlePlayState(double timeout)
   CSingleLock lock(m_StateSection);
 
   if(m_State.timestamp != 0 
-  && m_State.timestamp + timeout > CDVDClock::GetAbsoluteClock())
+  && m_State.timestamp + DVD_MSEC_TO_TIME(timeout) > CDVDClock::GetAbsoluteClock())
     return;
 
   if(m_pDemuxer)
@@ -2585,8 +2589,12 @@ void CDVDPlayer::HandlePlayState(double timeout)
   m_State.timestamp = CDVDClock::GetAbsoluteClock();
 }
 
-void CDVDPlayer::UpdateApplication()
+void CDVDPlayer::UpdateApplication(double timeout)
 {
+  if(m_UpdateApplication != 0 
+  || m_UpdateApplication + DVD_MSEC_TO_TIME(timeout) > CDVDClock::GetAbsoluteClock())
+    return;
+
   if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
   {
     CDVDInputStreamTV* pStream = static_cast<CDVDInputStreamTV*>(m_pInputStream);
@@ -2598,6 +2606,7 @@ void CDVDPlayer::UpdateApplication()
       g_infoManager.SetCurrentItem(item);
     }
   }
+  m_UpdateApplication = CDVDClock::GetAbsoluteClock();
 }
 
 bool CDVDPlayer::CanRecord()

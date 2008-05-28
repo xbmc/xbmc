@@ -254,7 +254,8 @@ protected:
 
   bool OpenDemuxStream();
 
-  void UpdateApplication();
+  void UpdateApplication(double timeout);
+  double m_UpdateApplication;
 
   bool m_bAbortRequest;
 
