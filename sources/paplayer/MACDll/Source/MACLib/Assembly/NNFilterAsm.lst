@@ -1,0 +1,364 @@
+     1                                  
+     2                                  %include "MACLib/Assembly/Tools.inc"
+     3                              <1> ;
+     4                              <1> ; (C) Ururi 1999
+     5                              <1> ;
+     6                              <1> 
+     7                              <1> BITS 32
+     8                              <1> 
+     9                              <1> %ifdef WIN32
+    10                              <1>         %define _NAMING
+    11                              <1>         %define segment_code segment .text align=32 class=CODE use32
+    12                              <1>         %define segment_data segment .data align=32 class=DATA use32
+    13                              <1>   %ifdef __BORLANDC__
+    14                              <1>         %define segment_bss  segment .data align=32 class=DATA use32
+    15                              <1>   %else
+    16                              <1>         %define segment_bss  segment .bss  align=32 class=DATA use32
+    17                              <1>   %endif
+    18                              <1> 
+    19                              <1> %elifdef AOUT
+    20                              <1>         %define _NAMING
+    21                              <1>         %define segment_code segment .text
+    22                              <1>         %define segment_data segment .data
+    23                              <1>         %define segment_bss  segment .bss
+    24                              <1> 
+    25                              <1> %else
+    26                              <1>         %define segment_code segment .text align=32 class=CODE use32
+    27                              <1>         %define segment_data segment .data align=32 class=DATA use32
+    28                              <1>         %define segment_bss  segment .bss  align=32 class=DATA use32
+    29                              <1> %endif
+    30                              <1> 
+    31                              <1> %define pmov    movq
+    32                              <1> %define pmovd   movd
+    33                              <1> 
+    34                              <1> %define pupldq  punpckldq
+    35                              <1> %define puphdq  punpckhdq
+    36                              <1> %define puplwd  punpcklwd
+    37                              <1> %define puphwd  punpckhwd
+    38                              <1> 
+    39                              <1> %imacro globaldef 1
+    40                              <1>         %ifdef _NAMING
+    41                              <1>                 %define %1 _%1
+    42                              <1>         %endif
+    43                              <1>         global %1
+    44                              <1> %endmacro
+    45                              <1> 
+    46                              <1> %imacro externdef 1
+    47                              <1>         %ifdef _NAMING
+    48                              <1>                 %define %1 _%1
+    49                              <1>         %endif
+    50                              <1>         extern %1
+    51                              <1> %endmacro
+    52                              <1> 
+    53                              <1> %imacro proc 1
+    54                              <1>         %push   proc
+    55                              <1>         global  _%1
+    56                              <1>         global  %1
+    57                              <1> _%1:
+    58                              <1> %1:
+    59                              <1>         %assign %$STACK  0
+    60                              <1>         %assign %$STACKN 0
+    61                              <1>         %assign %$ARG    4
+    62                              <1> %endmacro
+    63                              <1> 
+    64                              <1> %imacro endproc 0
+    65                              <1>         %ifnctx proc
+    66                              <1>                 %error expected 'proc' before 'endproc'.
+    67                              <1>         %else
+    68                              <1>                 %if %$STACK > 0
+    69                              <1>                         add esp, %$STACK
+    70                              <1>                 %endif
+    71                              <1> 
+    72                              <1>                 %if %$STACK <> (-%$STACKN)
+    73                              <1>                         %error STACKLEVEL mismatch check 'local', 'alloc', 'pushd', 'popd'
+    74                              <1>                 %endif
+    75                              <1> 
+    76                              <1>                 ret
+    77                              <1>                 %pop
+    78                              <1>         %endif
+    79                              <1> %endmacro
+    80                              <1> 
+    81                              <1> %idefine sp(a) esp+%$STACK+a
+    82                              <1> 
+    83                              <1> %imacro arg 1
+    84                              <1>         %00     equ %$ARG
+    85                              <1>         %assign %$ARG %$ARG+%1
+    86                              <1> %endmacro
+    87                              <1> 
+    88                              <1> %imacro local 1
+    89                              <1>         %assign %$STACKN %$STACKN-%1
+    90                              <1>         %00 equ %$STACKN
+    91                              <1> %endmacro
+    92                              <1> 
+    93                              <1> %imacro alloc 0
+    94                              <1>         sub esp, (-%$STACKN)-%$STACK
+    95                              <1>         %assign %$STACK (-%$STACKN)
+    96                              <1> %endmacro
+    97                              <1> 
+    98                              <1> %imacro pushd 1-*
+    99                              <1>         %rep %0
+   100                              <1>                 push %1
+   101                              <1>                 %assign %$STACK %$STACK+4
+   102                              <1>         %rotate 1
+   103                              <1>         %endrep
+   104                              <1> %endmacro
+   105                              <1> 
+   106                              <1> %imacro popd 1-*
+   107                              <1>         %rep %0
+   108                              <1>         %rotate -1
+   109                              <1>                 pop %1
+   110                              <1>                 %assign %$STACK %$STACK-4
+   111                              <1>         %endrep
+   112                              <1> %endmacro
+   113                              <1> 
+   114                              <1> %macro  algn    1
+   115                              <1>         align   16
+   116                              <1>         %rep    (65536-%1) & 15
+   117                              <1>         nop
+   118                              <1>         %endrep
+   119                              <1> %endm
+   120                                  
+   121                                  segment_code
+   122                                  
+   123                                  ;
+   124                                  ; void  Adapt ( short* pM, const short* pAdapt, int nDirection, int nOrder )
+   125                                  ;
+   126                                  ;   [esp+16]    nOrder
+   127                                  ;   [esp+12]    nDirection
+   128                                  ;   [esp+ 8]    pAdapt
+   129                                  ;   [esp+ 4]    pM
+   130                                  ;   [esp+ 0]    Return Address
+   131                                  
+   132                                              align 16
+   133 00000000 90                                  nop
+   134 00000001 90                                  nop
+   135 00000002 90                                  nop
+   136 00000003 90                                  nop
+   137 00000004 90                                  nop
+   138 00000005 90                                  nop
+   139 00000006 90                                  nop
+   140 00000007 90                                  nop
+   141 00000008 90                                  nop
+   142 00000009 90                                  nop
+   143                                  proc        Adapt
+   144                              <1>  %push proc
+   145                              <1>  global _%1
+   146                              <1>  global %1
+   147                              <1> _%1:
+   148                              <1> %1:
+   149                              <1>  %assign %$STACK 0
+   150                              <1>  %assign %$STACKN 0
+   151                              <1>  %assign %$ARG 4
+   152                                  
+   153 0000000A 8B442404                            mov  eax, [esp +  4]                ; pM
+   154 0000000E 8B4C2408                            mov  ecx, [esp +  8]                ; pAdapt
+   155 00000012 8B542410                            mov  edx, [esp + 16]                ; nOrder
+   156 00000016 C1EA04                              shr  edx, 4
+   157                                  
+   158 00000019 837C240C00                          cmp  dword [esp + 12], byte 0       ; nDirection
+   159 0000001E 7E4E                                jle  short AdaptSub
+   160                                  
+   161                                  AdaptAddLoop:
+   162 00000020 0F6F00                              movq  mm0, [eax]
+   163 00000023 0FFD01                              paddw mm0, [ecx]
+   164 00000026 0F7F00                              movq  [eax], mm0
+   165 00000029 0F6F4808                            movq  mm1, [eax + 8]
+   166 0000002D 0FFD4908                            paddw mm1, [ecx + 8]
+   167 00000031 0F7F4808                            movq  [eax + 8], mm1
+   168 00000035 0F6F5010                            movq  mm2, [eax + 16]
+   169 00000039 0FFD5110                            paddw mm2, [ecx + 16]
+   170 0000003D 0F7F5010                            movq  [eax + 16], mm2
+   171 00000041 0F6F5818                            movq  mm3, [eax + 24]
+   172 00000045 0FFD5918                            paddw mm3, [ecx + 24]
+   173 00000049 0F7F5818                            movq  [eax + 24], mm3
+   174 0000004D 83C020                              add   eax, byte 32
+   175 00000050 83C120                              add   ecx, byte 32
+   176 00000053 4A                                  dec   edx
+   177 00000054 75CA                                jnz   AdaptAddLoop
+   178                                  
+   179 00000056 0F77                                emms
+   180 00000058 C3                                  ret
+   181                                  
+   182 00000059 90<rept>                            align 16
+   183 00000060 90                                  nop
+   184 00000061 90                                  nop
+   185 00000062 90                                  nop
+   186 00000063 90                                  nop
+   187 00000064 90                                  nop
+   188 00000065 90                                  nop
+   189 00000066 90                                  nop
+   190 00000067 90                                  nop
+   191 00000068 90                                  nop
+   192 00000069 90                                  nop
+   193 0000006A 90                                  nop
+   194 0000006B 90                                  nop
+   195 0000006C 90                                  nop
+   196 0000006D 90                                  nop
+   197                                  
+   198 0000006E 7438                    AdaptSub:   je    short AdaptDone
+   199                                  
+   200                                  AdaptSubLoop:
+   201 00000070 0F6F00                              movq  mm0, [eax]
+   202 00000073 0FF901                              psubw mm0, [ecx]
+   203 00000076 0F7F00                              movq  [eax], mm0
+   204 00000079 0F6F4808                            movq  mm1, [eax + 8]
+   205 0000007D 0FF94908                            psubw mm1, [ecx + 8]
+   206 00000081 0F7F4808                            movq  [eax + 8], mm1
+   207 00000085 0F6F5010                            movq  mm2, [eax + 16]
+   208 00000089 0FF95110                            psubw mm2, [ecx + 16]
+   209 0000008D 0F7F5010                            movq  [eax + 16], mm2
+   210 00000091 0F6F5818                            movq  mm3, [eax + 24]
+   211 00000095 0FF95918                            psubw mm3, [ecx + 24]
+   212 00000099 0F7F5818                            movq  [eax + 24], mm3
+   213 0000009D 83C020                              add   eax, byte 32
+   214 000000A0 83C120                              add   ecx, byte 32
+   215 000000A3 4A                                  dec   edx
+   216 000000A4 75CA                                jnz   AdaptSubLoop
+   217                                  
+   218 000000A6 0F77                                emms
+   219                                  AdaptDone:
+   220                                  
+   221                                  endproc
+   222                              <1>  %ifnctx proc
+   223                              <1>  %error expected 'proc' before 'endproc'.
+   224                              <1>  %else
+   225                              <1>  %if %$STACK > 0
+   226                              <1>  add esp, %$STACK
+   227                              <1>  %endif
+   228                              <1> 
+   229                              <1>  %if %$STACK <> (-%$STACKN)
+   230                              <1>  %error STACKLEVEL mismatch check 'local', 'alloc', 'pushd', 'popd'
+   231                              <1>  %endif
+   232                              <1> 
+   233 000000A8 C3                  <1>  ret
+   234                              <1>  %pop
+   235                              <1>  %endif
+   236                                  
+   237                                  ;
+   238                                  ; int  CalculateDotProduct ( const short* pA, const short* pB, int nOrder )
+   239                                  ;
+   240                                  ;   [esp+12]    nOrder
+   241                                  ;   [esp+ 8]    pB
+   242                                  ;   [esp+ 4]    pA
+   243                                  ;   [esp+ 0]    Return Address
+   244                                  
+   245 000000A9 90<rept>                            align   16
+   246 000000B0 90                                  nop
+   247 000000B1 90                                  nop
+   248 000000B2 90                                  nop
+   249 000000B3 90                                  nop
+   250 000000B4 90                                  nop
+   251 000000B5 90                                  nop
+   252 000000B6 90                                  nop
+   253 000000B7 90                                  nop
+   254 000000B8 90                                  nop
+   255 000000B9 90                                  nop
+   256 000000BA 90                                  nop
+   257 000000BB 90                                  nop
+   258 000000BC 90                                  nop
+   259 000000BD 90                                  nop
+   260                                  
+   261                                  proc        CalculateDotProduct
+   262                              <1>  %push proc
+   263                              <1>  global _%1
+   264                              <1>  global %1
+   265                              <1> _%1:
+   266                              <1> %1:
+   267                              <1>  %assign %$STACK 0
+   268                              <1>  %assign %$STACKN 0
+   269                              <1>  %assign %$ARG 4
+   270                                  
+   271 000000BE 8B442404                            mov     eax, [esp +  4]             ; pA
+   272 000000C2 8B4C2408                            mov     ecx, [esp +  8]             ; pB
+   273 000000C6 8B54240C                            mov     edx, [esp + 12]             ; nOrder
+   274 000000CA C1EA04                              shr     edx, 4
+   275 000000CD 0FEFFF                              pxor    mm7, mm7
+   276                                  
+   277 000000D0 0F6F00                  loopDot:    movq    mm0, [eax]
+   278 000000D3 0FF501                              pmaddwd mm0, [ecx]
+   279 000000D6 0FFEF8                              paddd   mm7, mm0
+   280 000000D9 0F6F4808                            movq    mm1, [eax +  8]
+   281 000000DD 0FF54908                            pmaddwd mm1, [ecx +  8]
+   282 000000E1 0FFEF9                              paddd   mm7, mm1
+   283 000000E4 0F6F5010                            movq    mm2, [eax + 16]
+   284 000000E8 0FF55110                            pmaddwd mm2, [ecx + 16]
+   285 000000EC 0FFEFA                              paddd   mm7, mm2
+   286 000000EF 0F6F5818                            movq    mm3, [eax + 24]
+   287 000000F3 0FF55918                            pmaddwd mm3, [ecx + 24]
+   288 000000F7 83C020                              add     eax, byte 32
+   289 000000FA 83C120                              add     ecx, byte 32
+   290 000000FD 0FFEFB                              paddd   mm7, mm3
+   291 00000100 4A                                  dec     edx
+   292 00000101 75CD                                jnz     loopDot
+   293                                  
+   294 00000103 0F6FF7                              movq    mm6, mm7
+   295 00000106 0F73D720                            psrlq   mm7, 32
+   296 0000010A 0FFEF7                              paddd   mm6, mm7
+   297 0000010D 0F7E742404                          movd    [esp + 4], mm6
+   298 00000112 0F77                                emms
+   299 00000114 8B442404                            mov     eax, [esp + 4]
+   300                                  endproc
+   301                              <1>  %ifnctx proc
+   302                              <1>  %error expected 'proc' before 'endproc'.
+   303                              <1>  %else
+   304                              <1>  %if %$STACK > 0
+   305                              <1>  add esp, %$STACK
+   306                              <1>  %endif
+   307                              <1> 
+   308                              <1>  %if %$STACK <> (-%$STACKN)
+   309                              <1>  %error STACKLEVEL mismatch check 'local', 'alloc', 'pushd', 'popd'
+   310                              <1>  %endif
+   311                              <1> 
+   312 00000118 C3                  <1>  ret
+   313                              <1>  %pop
+   314                              <1>  %endif
+   315                                  
+   316                                  
+   317                                  ;
+   318                                  ; BOOL GetMMXAvailable ( void );
+   319                                  ;
+   320                                  
+   321                                  proc        GetMMXAvailable
+   322                              <1>  %push proc
+   323                              <1>  global _%1
+   324                              <1>  global %1
+   325                              <1> _%1:
+   326                              <1> %1:
+   327                              <1>  %assign %$STACK 0
+   328                              <1>  %assign %$STACKN 0
+   329                              <1>  %assign %$ARG 4
+   330 00000119 60                                  pushad
+   331 0000011A 9C                                  pushfd
+   332 0000011B 58                                  pop     eax
+   333 0000011C 89C1                                mov     ecx, eax
+   334 0000011E 3500002000                          xor     eax, 0x200000
+   335 00000123 50                                  push    eax
+   336 00000124 9D                                  popfd
+   337 00000125 9C                                  pushfd
+   338 00000126 58                                  pop     eax
+   339 00000127 39C8                                cmp     eax, ecx
+   340 00000129 740D                                jz      short return        ; no CPUID command, so no MMX
+   341                                  
+   342 0000012B B801000000                          mov     eax,1
+   343 00000130 0FA2                                CPUID
+   344 00000132 F7C200008000                        test    edx,0x800000
+   345 00000138 61                      return:     popad
+   346 00000139 0F95C0                              setnz   al
+   347 0000013C 83E001                              and     eax, byte 1
+   348                                  endproc
+   349                              <1>  %ifnctx proc
+   350                              <1>  %error expected 'proc' before 'endproc'.
+   351                              <1>  %else
+   352                              <1>  %if %$STACK > 0
+   353                              <1>  add esp, %$STACK
+   354                              <1>  %endif
+   355                              <1> 
+   356                              <1>  %if %$STACK <> (-%$STACKN)
+   357                              <1>  %error STACKLEVEL mismatch check 'local', 'alloc', 'pushd', 'popd'
+   358                              <1>  %endif
+   359                              <1> 
+   360 0000013F C3                  <1>  ret
+   361                              <1>  %pop
+   362                              <1>  %endif
+   363                                  
+   364                                              end

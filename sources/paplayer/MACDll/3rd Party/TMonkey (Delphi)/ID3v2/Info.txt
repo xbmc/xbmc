@@ -1,0 +1,32 @@
+ID3v2.pas
+Tested with Borland Delphi 3,4,5,6
+
+{ *************************************************************************** }
+{                                                                             }
+{ Audio Tools Library (Freeware)                                              }
+{ Class TID3v2 - for manipulating with ID3v2 tags                             }
+{                                                                             }
+{ Copyright (c) 2001,2002 by Jurgen Faul                                      }
+{ E-mail: jfaul@gmx.de                                                        }
+{ http://jfaul.de/atl                                                         }
+{                                                                             }
+{ Version 1.4 (24 March 2002)                                                 }
+{   - Reading support for ID3v2.2.x & ID3v2.4.x tags                          }
+{                                                                             }
+{ Version 1.3 (16 February 2002)                                              }
+{   - Fixed bug with property Comment                                         }
+{   - Added info: composer, encoder, copyright, language, link                }
+{                                                                             }
+{ Version 1.2 (17 October 2001)                                               }
+{   - Writing support for ID3v2.3.x tags                                      }
+{   - Fixed bug with track number detection                                   }
+{   - Fixed bug with tag reading                                              }
+{                                                                             }
+{ Version 1.1 (31 August 2001)                                                }
+{   - Added public procedure ResetData                                        }
+{                                                                             }
+{ Version 1.0 (14 August 2001)                                                }
+{   - Reading support for ID3v2.3.x tags                                      }
+{   - Tag info: title, artist, album, track, year, genre, comment             }
+{                                                                             }
+{ *************************************************************************** }

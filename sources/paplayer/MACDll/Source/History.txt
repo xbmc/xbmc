@@ -1,0 +1,79 @@
+History:
+
+Monkey's Audio 3.99 Update 4
+
+1. Fixed: Decoder could erroneously report a CRC error on the last frame of some files.
+
+Monkey's Audio 3.99 Update 3
+
+1. Changed: Worked on making data types more standard / cross-platform friendly.
+2. Changed: Switched code from tab-based to space based. (may still be some out-of-whack formatting)
+3. Fixed: Building ID3 tags could cause a crash.
+4. Fixed: APL builder treated the last part of a CUE time as a hundreth of a second instead of as a frame. (1 / 75 of a second)
+5. Fixed: File Info dialog used by Winamp plugin wouldn't accept / save Unicode tag values properly.
+6. Fixed: APL files could output noise or silence at the end of the file in some cases.
+
+Monkey's Audio 3.99 Update 2
+
+1. Fixed: Possible buffer overflow attack weakness in APE tagging code.
+2. Fixed: MACDll.dll was not doing ANSI to Unicode conversions properly.
+3. Changed: Added Unicode versions of interface wrappers to MACDll.dll.
+4. Changed: Updated Winamp plugin to better handle Unicode.
+5. Changed: Removed peak-level normalize from file and Winamp plugin. (newer players can do normalize / replay gain during playback)
+6. Changed: Updated Cool Edit filter to 3.99.
+
+Monkey's Audio 3.99 Update 1
+
+1. Fixed: MACDll.dll wasn't working on Win9x / ME systems.
+2. Changed: MAC.exe updated to 3.99.
+
+Monkey's Audio 3.99
+
+1. Changed: Decoding engine better at handling corrupt streams / loss of internet connection while playing.
+2. Changed: Simplified assembly code building for 3rd party developers.
+3. NEW: Improved entropy coder for increased compression.
+4. Changed: Removed RKAU support. (since it is no longer commonly used)
+
+Monkey's Audio 3.98a1
+
+1. Changed: Now natively using APE tag version 2 tagging. (updated spec for better streaming and international support)
+2. Changed: Using smaller frame sizes with Fast, Normal, and High for faster, smoother seeking.
+3. NEW: Added built-in MD5 checking, for super secure, super fast file verification.
+4. Changed: Using a new and improved file header format.
+5. NEW: Added "Insane" mode for when compression is all that matters.
+6. NEW: Introduced new GUI.
+	- full Unicode support
+	- few or no dependencies
+	- multi-thread friendly -- can process multiple files at once
+	- XML based external plugin architecture
+
+Monkey's Audio 3.97 (July 7, 2002)
+
+1. Changed: "Save File List Between Sessions" now on by default in front end.
+2. Changed: Replaced usage of "#pragma once" with more non-MS compiler friendly alterternative.
+3. NEW: MakeAPL now supports command line APL generation. (pass a .CUE file (no wildcards yet) -- operates in silent mode using existing settings)
+4. Changed: Assembly support no longer required for backwards compatibility. (thanks Torgeir Strand Henriksen)
+5. Changed: Several non-Windows buildability issues.
+6. Changed: Using NASM to compile all assembly code. (aids cross-platform buildability)
+7. Changed: Encapsulated the APELink code.
+8. Changed: Tags aren't analyzed immediately when opening an http:// or m01p:// stream.
+9. Changed: Added more functionality to the APL parser.
+10. Changed: Added CreateIAPEDecompressEx2(...) to allow the creation of a ranged decoder.
+
+Monkey's Audio 3.96 (April 7, 2002)
+
+1. Fixed: WAV analysis could hang on invalid wav files.
+2. Changed: Monkey's Audio would try to analyze files with file extensions not related to Monkey's Audio.
+3. NEW: Added APE_DECOMPRESS_AVERAGE_BITRATE field so APL's can report the bitrate for the region they represent.
+4. Changed: Improved overall non-Windows build-ability. (MACLib.lib doesn't require <windows.h> to build)
+5. Changed: APL parser no longer requires Windows.
+6. Fixed: APE tagging code would fail to save tags for files with existing ID3v1 tags.
+7. Fixed: MakeAPL would not run on Win95 / 98.
+8. Changed: More non-Windows build-ability issues.
+9. Changed: Minor assembly optimizations. (like a 2% performance improvement)
+10. Changed: MACLib now builds with gcc under Linux. (no backwards compatibility or assembly support yet)
+11. Fixed: Bitstream fix / change that may have accounted for decompression failures in extremely rare cases.
+12. Changed: Slight NNFilter optimization. (thanks to Chun-Yu Shei)
+13. Changed: Turned off "Explorer" by default for the Monkey's Audio GUI. (doesn't work well under XP... will still leave it in for a while)
+14. Changed: Included the WavPack 3.93.
+15. Changed: Changed the history reporting method.

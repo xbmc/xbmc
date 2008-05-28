@@ -1,0 +1,25 @@
+Source Code Credits: (listed in alphabetical order by first name)
+
+Chun-Yu Shei:
+- cool suggestion for a slightly more optimized GetSaturatedShortFromInt(...) routine
+
+David Bryant:
+- lots of ideas and support from continued discussions
+
+Florin Ghido:
+- planted the seed for a more efficient stereo decorrelator
+
+Frank Klemm:
+- helped with several Linux building issues, APEv2 tags, and MD5 checksums
+
+Janne Hyvärinen: (case@mobiili.net)
+- donated some nice UTF / ANSI conversion code for APE version 2 tagging
+
+Torgeir Strand Henriksen: (torgshen@stud.iet.hist.no)
+- did all the footwork to enable BACKWARDS_COMPATIBILITY without requiring assembly
+
+Michael Bevin: (support@lossless-audio.com)
+- had a good entropy idea for improving entropy coding ( http://www.lossless-audio.com/theory.htm )
+
+Igor Janos: (radscorpion@radlight.com)
+- wrote the APE DirectShow filter
