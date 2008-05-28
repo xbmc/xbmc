@@ -553,16 +553,16 @@ bool CVideoDatabase::SetPathHash(const CStdString &path, const CStdString &hash)
   return false;
 }
 
-bool CVideoDatabase::LinkMovieToTvshow(long idMovie, long idShow, bool bRemove)
+bool CVideoDatabase::LinkMovieToTvshow(long idMovie, long idShow)
 {
    try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    if (bRemove) // delete link
+    if (idShow == -1) // delete link
     {
-      CStdString strSQL=FormatSQL("delete from movielinktvshow where idMovie=%u and idShow=%u", idMovie, idShow);
+      CStdString strSQL=FormatSQL("delete from movielinktvshow where idMovie=%u", idMovie);
       m_pDS->exec(strSQL.c_str());
       return true;
     }
@@ -593,32 +593,6 @@ bool CVideoDatabase::IsLinkedToTvshow(long idMovie)
     {
       m_pDS->close();
       return false;
-    }
-
-    m_pDS->close();
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s (%ld) failed", __FUNCTION__, idMovie);
-  }
-
-  return false;
-}
-
-bool CVideoDatabase::GetLinksToTvShow(long idMovie, vector<long>& ids)
-{
-   try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    CStdString strSQL=FormatSQL("select * from movielinktvshow where idMovie=%u", idMovie);
-    m_pDS->query(strSQL.c_str());
-    while (!m_pDS->eof())
-    {
-      ids.push_back(m_pDS->fv(1).get_asLong());
-      m_pDS->next();
     }
 
     m_pDS->close();
