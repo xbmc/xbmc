@@ -711,16 +711,11 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
   if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     CLog::Log(LOGDEBUG, "%s - seeking using navigator", __FUNCTION__);
-    if (((CDVDInputStreamNavigator*)m_pInput)->SeekTime(time))
-    {
-      // since seek happens behind demuxers back, we have to reset it
-      // this won't be a problem if we setup ffmpeg properly later
-      Reset();
+    if (!((CDVDInputStreamNavigator*)m_pInput)->SeekTime(time))
+      return false;
 
-      // todo, calculate starting pts in this case
-      return true;
-    }
-    return false;
+    Reset();
+    return true;
   }
 
   if(!m_pInput->Seek(0, SEEK_POSSIBLE) 
@@ -941,8 +936,62 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
 
 std::string CDVDDemuxFFmpeg::GetFileName()
 {
-  if(m_pInput)
+  if(m_pInput && m_pInput)
     return m_pInput->GetFileName(); 
   else 
     return ""; 
+}
+
+int CDVDDemuxFFmpeg::GetChapterCount()
+{
+  if(m_pInput && m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+    return ((CDVDInputStreamNavigator*)m_pInput)->GetChapterCount();
+
+  if(m_pFormatContext == NULL)
+    return 0;
+  return m_pFormatContext->nb_chapters;
+}
+
+int CDVDDemuxFFmpeg::GetChapter()
+{
+  if(m_pInput && m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+    return ((CDVDInputStreamNavigator*)m_pInput)->GetChapter();
+    
+  if(m_pFormatContext == NULL 
+  || m_iCurrentPts == DVD_NOPTS_VALUE)
+    return 0;
+
+  for(unsigned i = 0; i < m_pFormatContext->nb_chapters; i++)
+  {
+    AVChapter *chapter = m_pFormatContext->chapters[i];
+    if(m_iCurrentPts >= ConvertTimestamp(chapter->start, chapter->time_base.den, chapter->time_base.num)
+    && m_iCurrentPts <  ConvertTimestamp(chapter->end,   chapter->time_base.den, chapter->time_base.num))
+      return i + 1;
+  }
+  return 0;
+}
+
+bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
+{
+  if(chapter < 1)
+    chapter = 1;
+
+  if(m_pInput && m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+  {
+    CLog::Log(LOGDEBUG, "%s - chapter seeking using navigator", __FUNCTION__);
+    if(!((CDVDInputStreamNavigator*)m_pInput)->SeekChapter(chapter))
+      return false;
+    Reset();
+    return true;
+  }
+
+  if(m_pFormatContext == NULL)
+    return false;
+
+  if(chapter < 1 || chapter > (int)m_pFormatContext->nb_chapters)
+    return false;
+
+  AVChapter *ch = m_pFormatContext->chapters[chapter-1];
+  double dts = ConvertTimestamp(ch->start, ch->time_base.den, ch->time_base.num);
+  return SeekTime(DVD_TIME_TO_MSEC(dts), false, startpts);
 }
