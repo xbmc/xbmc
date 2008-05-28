@@ -239,6 +239,7 @@ protected:
 
   void HandleMessages();
   void HandlePlaySpeed();
+  void HandlePlayState(double timeout);
   bool IsInMenu() const;
 
   void SyncronizePlayers(DWORD sources, double pts = DVD_NOPTS_VALUE);
@@ -285,7 +286,22 @@ protected:
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
   CDVDDemux* m_pSubtitleDemuxer;
   DVDInfo m_dvd;
-  
+
+  struct SPlayerState
+  {
+    double timestamp;         // last time of update
+
+    double time;              // current playback time
+    double time_total;        // total playback time
+
+    int chapter;              // current chapter
+    int chapter_count;        // number of chapter
+
+    bool canrecord;           // can input stream record
+    bool recording;           // are we currently recording
+  } m_State;
+  CCriticalSection m_StateSection;
+
   HANDLE m_hReadyEvent;
   CRITICAL_SECTION m_critStreamSection; // need to have this lock when switching streams (audio / video)
 
