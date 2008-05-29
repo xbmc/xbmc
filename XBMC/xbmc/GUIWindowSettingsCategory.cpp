@@ -2456,6 +2456,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
      g_guiSettings.SetString("locale.timezonecountry", tzControl->GetLabel().c_str());
   }
 #endif
+  else if (strSetting.Equals("lookandfeel.skinzoom"))
+  {
+    g_fontManager.ReloadTTFFonts();
+  }
 
   UpdateSettings();
 }
