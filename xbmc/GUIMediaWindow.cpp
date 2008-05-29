@@ -1124,6 +1124,22 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
       buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
   }
 
+  // user added buttons
+  CStdString label;
+  CStdString action;
+  for (int i = CONTEXT_BUTTON_USER1; i <= CONTEXT_BUTTON_USER10; i++)
+  {
+    label.Format("contextmenulabel(%i)", i - CONTEXT_BUTTON_USER1);
+    if (item->GetProperty(label).IsEmpty())
+      break;
+
+    action.Format("contextmenuaction(%i)", i - CONTEXT_BUTTON_USER1);
+    if (item->GetProperty(action).IsEmpty())
+      break;
+
+    buttons.Add((CONTEXT_BUTTON)i, item->GetProperty(label));
+  }
+
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   // check if the skin even supports favourites
   RESOLUTION res;
@@ -1155,6 +1171,22 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       CURL url(m_vecItems->Get(itemNumber)->m_strPath);
       CGUIDialogPluginSettings::ShowAndGetInput(url);
+      return true;
+    }
+  case CONTEXT_BUTTON_USER1:
+  case CONTEXT_BUTTON_USER2:
+  case CONTEXT_BUTTON_USER3:
+  case CONTEXT_BUTTON_USER4:
+  case CONTEXT_BUTTON_USER5:
+  case CONTEXT_BUTTON_USER6:
+  case CONTEXT_BUTTON_USER7:
+  case CONTEXT_BUTTON_USER8:
+  case CONTEXT_BUTTON_USER9:
+  case CONTEXT_BUTTON_USER10:
+    {
+      CStdString action;
+      action.Format("contextmenuaction(%i)", button - CONTEXT_BUTTON_USER1);
+      g_applicationMessenger.ExecBuiltIn(m_vecItems->Get(itemNumber)->GetProperty(action));
       return true;
     }
   default:

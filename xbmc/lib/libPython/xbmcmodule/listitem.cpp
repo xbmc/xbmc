@@ -497,7 +497,7 @@ namespace PYXBMC
     "setProperty(key, value) -- Sets a listitem property, similar to an infolabel.\n"
     "\n"
     "key            : string - property name.\n"
-    "value          : string - value of property.\n"
+    "value          : string or unicode - value of property.\n"
     "\n"
     "*Note, Key is NOT case sensitive.\n"
     "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
@@ -577,6 +577,67 @@ namespace PYXBMC
     return Py_BuildValue("s", value.c_str());
   }
 
+  // addContextMenuItem() method
+  PyDoc_STRVAR(addContextMenuItem__doc__,
+  "addContextMenuItem([(label, action,)*]) -- Adds item(s) to the context menu for media lists.\n"
+    "\n"
+    "[(label, action,)*] : list - A list of tuples consisting of label and action pairs.\n"
+    "  - label           : string or unicode - item's label.\n"
+    "  - action          : string - any built-in function to perform.\n"
+    "\n"
+    "List of functions - http://xbmc.org/wiki/?title=List_of_Built_In_Functions \n"
+    "\n"
+    "example:\n"
+    "  - listitem.addContextMenuItem([('Theater Showtimes', 'XBMC.RunScript(q:\\\\scripts\\\\showtimes\\\\default.py,Iron Man)',)])\n");
+
+  PyObject* ListItem_AddContextMenuItem(ListItem *self, PyObject *args)
+  {
+    if (!self->item) return NULL;
+
+    PyObject *pList = NULL;
+    if (!PyArg_ParseTuple(args, "O", &pList) || pList == NULL || !PyObject_TypeCheck(pList, &PyList_Type))
+    {
+      PyErr_SetString(PyExc_TypeError, "Object should be of type List");
+      return NULL;
+    }
+
+    for (int item = 0; item < PyList_Size(pList); item++)
+    {
+      PyObject *pTuple = NULL;
+      pTuple = PyList_GetItem(pList, item);
+      if (!pTuple || !PyObject_TypeCheck(pTuple, &PyTuple_Type))
+      {
+        PyErr_SetString(PyExc_TypeError, "List must only contain tuples");
+        return NULL;
+      }
+      PyObject *label = NULL;
+      char *action = NULL;
+      if (!PyArg_ParseTuple(pTuple, "Os", &label, &action))
+      {
+        PyErr_SetString(PyExc_TypeError, "Error unpacking tuple found in list");
+        return NULL;
+      }
+      if (!label || !action) return NULL;
+
+      string uText;
+      if (label && !PyGetUnicodeString(uText, label, 1))
+        return NULL;
+      PyGUILock();
+
+      CStdString property;
+      property.Format("contextmenulabel(%i)", item);
+      self->item->SetProperty(property, uText);
+
+      property.Format("contextmenuaction(%i)", item);
+      self->item->SetProperty(property, action);
+
+      PyGUIUnlock();
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   PyMethodDef ListItem_methods[] = {
     {"getLabel" , (PyCFunction)ListItem_GetLabel, METH_VARARGS, getLabel__doc__},
     {"setLabel" , (PyCFunction)ListItem_SetLabel, METH_VARARGS, setLabel__doc__},
@@ -589,6 +650,7 @@ namespace PYXBMC
     {"setInfo", (PyCFunction)ListItem_SetInfo, METH_KEYWORDS, setInfo__doc__},
     {"setProperty", (PyCFunction)ListItem_SetProperty, METH_KEYWORDS, setProperty__doc__},
     {"getProperty", (PyCFunction)ListItem_GetProperty, METH_KEYWORDS, getProperty__doc__},
+    {"addContextMenuItem", (PyCFunction)ListItem_AddContextMenuItem, METH_VARARGS, addContextMenuItem__doc__},
     {NULL, NULL, 0, NULL}
   };
 
