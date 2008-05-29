@@ -128,7 +128,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
         {
           // Send Message to GUI that disc been ejected
 #ifdef _WIN32PC
-          SetNewDVDShareUrl(CCdIoSupport::GetDeviceFileName(), false, g_localizeStrings.Get(502));
+          SetNewDVDShareUrl(CCdIoSupport::GetDeviceFileName()+4, false, g_localizeStrings.Get(502));
 #else
           SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(502));
           m_isoReader.Reset();
@@ -145,7 +145,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
         {
           // drive is not ready (closing, opening)
 #ifdef _WIN32PC
-          SetNewDVDShareUrl(CCdIoSupport::GetDeviceFileName(), false, g_localizeStrings.Get(503));
+          SetNewDVDShareUrl(CCdIoSupport::GetDeviceFileName()+4, false, g_localizeStrings.Get(503));
 #else
           m_isoReader.Reset();
           SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(503));
@@ -176,7 +176,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
         {
           // nothing in there...
 #ifdef _WIN32PC
-          SetNewDVDShareUrl(CCdIoSupport::GetDeviceFileName(), false, g_localizeStrings.Get(504));
+          SetNewDVDShareUrl(CCdIoSupport::GetDeviceFileName()+4, false, g_localizeStrings.Get(504));
 #else
           m_isoReader.Reset();
           SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(504));
@@ -245,16 +245,14 @@ void CDetectDVDMedia::DetectMediaType()
             m_pCdInfo->GetAudioTrackCount(),
             m_pCdInfo->GetDataTrackCount() );
 
-#if defined(_WIN32) && !defined(HAS_XBOX_HARDWARE)
-  // Detect ISO9660(mode1/mode2), CDDA filesystem or UDF
-  if (m_pCdInfo->IsAudio(1))
+#ifdef _WIN32PC
+  if(m_pCdInfo->IsAudio(1))
   {
     strNewUrl = "cdda://local/";
     bCDDA = true;
   }
   else
     strNewUrl = CCdIoSupport::GetDeviceFileName()+4;
-
 #else
   // Detect ISO9660(mode1/mode2), CDDA filesystem or UDF
   if (m_pCdInfo->IsISOHFS(1) || m_pCdInfo->IsIso9660(1) || m_pCdInfo->IsIso9660Interactive(1))
