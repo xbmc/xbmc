@@ -101,7 +101,7 @@
       <altname>Logitech Xbox Cordless Controller</altname>
       <button id="1">Select</button>
       <button id="2">ParentDir</button>
-      <button id="3">ToggleFullScreen</button>
+      <button id="3"></button>
       <button id="4">FullScreen</button>
       <button id="5">Queue</button>
       <button id="6">ContextMenu</button>
