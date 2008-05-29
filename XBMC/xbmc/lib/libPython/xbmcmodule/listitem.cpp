@@ -540,7 +540,7 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(getProperty__doc__,
-    "setProperty(key) -- Returns a listitem property as a string, similar to an infolabel.\n"
+    "getProperty(key) -- Returns a listitem property as a string, similar to an infolabel.\n"
     "\n"
     "key            : string - property name.\n"
     "\n"
