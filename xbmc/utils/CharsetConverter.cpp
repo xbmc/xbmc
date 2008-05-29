@@ -553,9 +553,10 @@ void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource,
 
   if (m_iconvUcs2CharsetToStringCharset != (iconv_t) - 1)
   {
-    size_t inBytes  = (strSource.length() + 1) * sizeof(wchar_t);
-    size_t outBytes = (strSource.length() + 1) * 4;
-    const char *src = (const char*) strSource.c_str();
+    CStdStringW strCopy = strSource;
+    size_t inBytes  = (strCopy.length() + 1) * sizeof(wchar_t);
+    size_t outBytes = (strCopy.length() + 1) * 4;
+    const char *src = (const char*)strCopy.c_str();
     char       *dst = strDest.GetBuffer(inBytes);
 
     if (swap)
