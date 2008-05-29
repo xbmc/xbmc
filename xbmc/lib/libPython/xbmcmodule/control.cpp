@@ -237,10 +237,10 @@ namespace PYXBMC
     "  - event        : string - The event to animate.\n"
     "  - attr         : string - The whole attribute string separated by spaces.\n"
     "\n"
-    "Animating your skin - http://www.xboxmediacenter.com/wiki/index.php?title=Animating_Your_Skin \n"
+    "Animating your skin - http://xbmc.org/wiki/?title=Animating_Your_Skin \n"
     "\n"
     "example:\n"
-    "  - self.button.setAnimations([('focus', 'effect=zoom end=90,247,220,56 time=0')])\n");
+    "  - self.button.setAnimations([('focus', 'effect=zoom end=90,247,220,56 time=0',)])\n");
 
   PyObject* Control_SetAnimations(Control* self, PyObject* args)
   {
