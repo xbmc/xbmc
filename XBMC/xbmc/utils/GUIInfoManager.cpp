@@ -467,28 +467,25 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   }
   else if (strCategory.Equals("musicplayer"))
   {
-    if (strTest.Equals("musicplayer.title")) ret = MUSICPLAYER_TITLE;
-    else if (strTest.Equals("musicplayer.album")) ret = MUSICPLAYER_ALBUM;
-    else if (strTest.Equals("musicplayer.artist")) ret = MUSICPLAYER_ARTIST;
-    else if (strTest.Equals("musicplayer.year")) ret = MUSICPLAYER_YEAR;
-    else if (strTest.Equals("musicplayer.genre")) ret = MUSICPLAYER_GENRE;
-    else if (strTest.Left(25).Equals("musicplayer.timeremaining")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME_REMAINING, TranslateTimeFormat(strTest.Mid(25))));
-    else if (strTest.Left(21).Equals("musicplayer.timespeed")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(strTest.Mid(21))));
-    else if (strTest.Left(16).Equals("musicplayer.time")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(16))));
-    else if (strTest.Left(20).Equals("musicplayer.duration")) ret = AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(strTest.Mid(20))));
-    else if (strTest.Equals("musicplayer.tracknumber")) ret = MUSICPLAYER_TRACK_NUMBER;
-    else if (strTest.Equals("musicplayer.cover")) ret = MUSICPLAYER_COVER;
-    else if (strTest.Equals("musicplayer.bitrate")) ret = MUSICPLAYER_BITRATE;
-    else if (strTest.Equals("musicplayer.playlistlength")) ret = MUSICPLAYER_PLAYLISTLEN;
-    else if (strTest.Equals("musicplayer.playlistposition")) ret = MUSICPLAYER_PLAYLISTPOS;
-    else if (strTest.Equals("musicplayer.channels")) ret = MUSICPLAYER_CHANNELS;
-    else if (strTest.Equals("musicplayer.bitspersample")) ret = MUSICPLAYER_BITSPERSAMPLE;
-    else if (strTest.Equals("musicplayer.samplerate")) ret = MUSICPLAYER_SAMPLERATE;
-    else if (strTest.Equals("musicplayer.codec")) ret = MUSICPLAYER_CODEC;
-    else if (strTest.Equals("musicplayer.discnumber")) ret = MUSICPLAYER_DISC_NUMBER;
-    else if (strTest.Equals("musicplayer.rating")) ret = MUSICPLAYER_RATING;
-    else if (strTest.Equals("musicplayer.comment")) ret = MUSICPLAYER_COMMENT;
-    else if (strTest.Equals("musicplayer.lyrics")) ret = MUSICPLAYER_LYRICS;
+    CStdString info = strTest.Mid(strCategory.GetLength() + 1);
+    if (info.Left(9).Equals("position("))
+    {
+      int position = atoi(info.Mid(9));
+      int value = TranslateMusicPlayerString(info.Mid(info.Find(".")+1));
+      ret = AddMultiInfo(GUIInfo(value, 0, position));
+    }
+    else if (info.Left(7).Equals("offset("))
+    {
+      int position = atoi(info.Mid(7));
+      int value = TranslateMusicPlayerString(info.Mid(info.Find(".")+1));
+      ret = AddMultiInfo(GUIInfo(value, 1, position));
+    }
+    else if (info.Left(13).Equals("timeremaining")) return AddMultiInfo(GUIInfo(PLAYER_TIME_REMAINING, TranslateTimeFormat(info.Mid(13))));
+    else if (info.Left(9).Equals("timespeed")) return AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(info.Mid(9))));
+    else if (info.Left(4).Equals("time")) return AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(info.Mid(4))));
+    else if (info.Left(8).Equals("duration")) return AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(info.Mid(8))));
+    else
+      ret = TranslateMusicPlayerString(strTest.Mid(12));
   }
   else if (strCategory.Equals("videoplayer"))
   {
@@ -826,6 +823,34 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("trailer")) return LISTITEM_TRAILER;
   else if (info.Equals("starrating")) return LISTITEM_STAR_RATING;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
+  return 0;
+}
+
+int CGUIInfoManager::TranslateMusicPlayerString(const CStdString &info) const
+{
+  if (info.Equals("title")) return MUSICPLAYER_TITLE;
+  else if (info.Equals("album")) return MUSICPLAYER_ALBUM;
+  else if (info.Equals("artist")) return MUSICPLAYER_ARTIST;
+  else if (info.Equals("year")) return MUSICPLAYER_YEAR;
+  else if (info.Equals("genre")) return MUSICPLAYER_GENRE;
+  else if (info.Equals("duration")) return MUSICPLAYER_DURATION;
+  else if (info.Equals("tracknumber")) return MUSICPLAYER_TRACK_NUMBER;
+  else if (info.Equals("cover")) return MUSICPLAYER_COVER;
+  else if (info.Equals("bitrate")) return MUSICPLAYER_BITRATE;
+  else if (info.Equals("playlistlength")) return MUSICPLAYER_PLAYLISTLEN;
+  else if (info.Equals("playlistposition")) return MUSICPLAYER_PLAYLISTPOS;
+  else if (info.Equals("channels")) return MUSICPLAYER_CHANNELS;
+  else if (info.Equals("bitspersample")) return MUSICPLAYER_BITSPERSAMPLE;
+  else if (info.Equals("samplerate")) return MUSICPLAYER_SAMPLERATE;
+  else if (info.Equals("codec")) return MUSICPLAYER_CODEC;
+  else if (info.Equals("discnumber")) return MUSICPLAYER_DISC_NUMBER;
+  else if (info.Equals("rating")) return MUSICPLAYER_RATING;
+  else if (info.Equals("comment")) return MUSICPLAYER_COMMENT;
+  else if (info.Equals("lyrics")) return MUSICPLAYER_LYRICS;
+  else if (info.Equals("playlistplaying")) return MUSICPLAYER_PLAYLISTPLAYING;
+  else if (info.Equals("exists")) return MUSICPLAYER_EXISTS;
+  else if (info.Equals("hasprevious")) return MUSICPLAYER_HASPREVIOUS;
+  else if (info.Equals("hasnext")) return MUSICPLAYER_HASNEXT;
   return 0;
 }
 
@@ -1748,6 +1773,29 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     case LASTFM_CANBAN:
       bReturn = CLastFmManager::GetInstance()->CanBan();
       break;
+    case MUSICPLAYER_HASPREVIOUS:
+      {
+        // requires current playlist be PLAYLIST_MUSIC
+        bReturn = false;
+        if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
+          bReturn = (g_playlistPlayer.GetCurrentSong() > 0); // not first song
+      }
+      break;
+    case MUSICPLAYER_HASNEXT:
+      {
+        // requires current playlist be PLAYLIST_MUSIC
+        bReturn = false;
+        if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
+          bReturn = (g_playlistPlayer.GetCurrentSong() < (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() - 1)); // not last song
+      }
+      break;
+    case MUSICPLAYER_PLAYLISTPLAYING:
+      {
+        bReturn = false;
+        if (g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
+          bReturn = true;
+      }
+      break;
     case VIDEOPLAYER_USING_OVERLAYS:
       bReturn = (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_OVERLAYS);
     break;
@@ -2058,6 +2106,20 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           bReturn = currentTime >= startTime && currentTime < stopTime;
       }
       break;
+    case MUSICPLAYER_EXISTS:
+      {
+        int index = info.GetData2();
+        if (info.GetData1() == 1) 
+        { // relative index
+          if (g_playlistPlayer.GetCurrentPlaylist() != PLAYLIST_MUSIC)
+            return false;
+          index += g_playlistPlayer.GetCurrentSong();
+        }
+        if (index >= 0 && index < g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size())
+          return true;
+        return false;
+      }
+      break;
   }
   return (info.m_info < 0) ? !bReturn : bReturn;
 }
@@ -2160,6 +2222,8 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
     if (control && control->IsContainer())
       return ((CGUIBaseContainer *)control)->GetLabel(info.m_info);
   }
+  else if (info.m_info >= MUSICPLAYER_TITLE && info.m_info <= MUSICPLAYER_DISC_NUMBER)
+    return GetMusicPlaylistInfo(info);
   return StringUtils::EmptyString;
 }
 
@@ -2407,7 +2471,46 @@ CStdString CGUIInfoManager::GetMusicPartyModeLabel(int item)
   return "";
 }
 
-CStdString CGUIInfoManager::GetPlaylistLabel(int item)
+const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info) const
+{
+  PLAYLIST::CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+  if (playlist.size() < 1)
+    return "";
+  int index = info.GetData2();
+  if (info.GetData1() == 1)
+  { // relative index (requires current playlist is PLAYLIST_MUSIC)
+    if (g_playlistPlayer.GetCurrentPlaylist() != PLAYLIST_MUSIC)
+      return "";
+    index += g_playlistPlayer.GetCurrentSong();
+  }
+  if (index < 0 || index >= playlist.size())
+    return "";
+  PLAYLIST::CPlayListItem &playlistItem = playlist[index];
+  if (!playlistItem.GetMusicInfoTag()->Loaded())
+  {
+    playlistItem.LoadMusicTag();
+    playlistItem.GetMusicInfoTag()->SetLoaded();
+  }
+  // try to set a thumbnail
+  if (!playlistItem.HasThumbnail())
+  {
+    playlistItem.SetMusicThumb();
+    // still no thumb? then just the set the default cover
+    if (!playlistItem.HasThumbnail())
+      playlistItem.SetThumbnailImage("defaultAlbumCover.png");
+  }
+  if (info.m_info == MUSICPLAYER_PLAYLISTPOS)
+  {
+    CStdString strPosition = "";
+    strPosition.Format("%i", index + 1);
+    return strPosition;
+  }
+  else if (info.m_info == MUSICPLAYER_COVER)
+    return playlistItem.GetThumbnailImage();
+  return GetMusicTagLabel(info.m_info, &playlistItem);
+}
+
+CStdString CGUIInfoManager::GetPlaylistLabel(int item) const
 {
   if (!g_application.IsPlaying()) return "";
   int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
@@ -2446,38 +2549,11 @@ CStdString CGUIInfoManager::GetPlaylistLabel(int item)
   return "";
 }
 
-
 CStdString CGUIInfoManager::GetMusicLabel(int item)
 {
   if (!g_application.IsPlayingAudio() || !m_currentFile->HasMusicInfoTag()) return "";
-  CMusicInfoTag& tag = *m_currentFile->GetMusicInfoTag();
   switch (item)
   {
-  case MUSICPLAYER_TITLE:
-    if (tag.GetTitle().size()) { return tag.GetTitle(); }
-    break;
-  case MUSICPLAYER_ALBUM: 
-    if (tag.GetAlbum().size()) { return tag.GetAlbum(); }
-    break;
-  case MUSICPLAYER_ARTIST: 
-    if (tag.GetArtist().size()) { return tag.GetArtist(); }
-    break;
-  case MUSICPLAYER_YEAR: 
-    if (tag.GetYear()) { return tag.GetYearString(); }
-    break;
-  case MUSICPLAYER_GENRE: 
-    if (tag.GetGenre().size()) { return tag.GetGenre(); }
-    break;
-  case MUSICPLAYER_TRACK_NUMBER:
-    {
-      CStdString strTrack;
-      if (tag.Loaded() && tag.GetTrackNumber() > 0)
-      {
-        strTrack.Format("%02i", tag.GetTrackNumber());
-        return strTrack;
-      }
-    }
-    break;
   case MUSICPLAYER_PLAYLISTLEN:
     {
       if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
@@ -2541,6 +2617,43 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
       return strCodec;
     }
     break;
+  case MUSICPLAYER_LYRICS: 
+    return GetItemLabel(m_currentFile, AddListItemProp("lyrics"));
+  }
+  return GetMusicTagLabel(item, m_currentFile);
+}
+
+CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) const
+{
+  if (!item->HasMusicInfoTag()) return "";
+  const CMusicInfoTag &tag = *item->GetMusicInfoTag();
+  switch (info)
+  {
+  case MUSICPLAYER_TITLE:
+    if (tag.GetTitle().size()) { return tag.GetTitle(); }
+    break;
+  case MUSICPLAYER_ALBUM: 
+    if (tag.GetAlbum().size()) { return tag.GetAlbum(); }
+    break;
+  case MUSICPLAYER_ARTIST: 
+    if (tag.GetArtist().size()) { return tag.GetArtist(); }
+    break;
+  case MUSICPLAYER_YEAR: 
+    if (tag.GetYear()) { return tag.GetYearString(); }
+    break;
+  case MUSICPLAYER_GENRE: 
+    if (tag.GetGenre().size()) { return tag.GetGenre(); }
+    break;
+  case MUSICPLAYER_TRACK_NUMBER:
+    {
+      CStdString strTrack;
+      if (tag.Loaded() && tag.GetTrackNumber() > 0)
+      {
+        strTrack.Format("%02i", tag.GetTrackNumber());
+        return strTrack;
+      }
+    }
+    break;
   case MUSICPLAYER_DISC_NUMBER:
     {
       CStdString strDisc;
@@ -2552,11 +2665,11 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     }
     break;
   case MUSICPLAYER_RATING:
-    return GetItemLabel(m_currentFile, LISTITEM_RATING);
+    return GetItemLabel(item, LISTITEM_RATING);
   case MUSICPLAYER_COMMENT:
-    return GetItemLabel(m_currentFile, LISTITEM_COMMENT);
-  case MUSICPLAYER_LYRICS: 
-    return GetItemLabel(m_currentFile, AddListItemProp("lyrics"));
+    return GetItemLabel(item, LISTITEM_COMMENT);
+  case MUSICPLAYER_DURATION:
+    return GetItemLabel(item, LISTITEM_DURATION);
   }
   return "";
 }
