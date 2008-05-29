@@ -2574,7 +2574,7 @@ void CDVDPlayer::HandlePlayState(double timeout)
     {
       if(((CDVDInputStreamTV*)m_pInputStream)->GetTotalTime() > 0)
       {
-        m_State.time      += ((CDVDInputStreamTV*)m_pInputStream)->GetStartTime();
+        m_State.time      -= ((CDVDInputStreamTV*)m_pInputStream)->GetStartTime();
         m_State.time_total = ((CDVDInputStreamTV*)m_pInputStream)->GetTotalTime();
       }
     }
