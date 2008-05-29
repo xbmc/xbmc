@@ -100,9 +100,19 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_SET_ACTOR_THUMB,
                       CONTEXT_BUTTON_SET_PLUGIN_THUMB,
                       CONTEXT_BUTTON_UNLINK_BOOKMARK,
-            	      CONTEXT_BUTTON_PLUGIN_SETTINGS,
+                      CONTEXT_BUTTON_PLUGIN_SETTINGS,
                       CONTEXT_BUTTON_LASTFM_UNLOVE_ITEM,
-                      CONTEXT_BUTTON_LASTFM_UNBAN_ITEM
+                      CONTEXT_BUTTON_LASTFM_UNBAN_ITEM,
+                      CONTEXT_BUTTON_USER1,
+                      CONTEXT_BUTTON_USER2,
+                      CONTEXT_BUTTON_USER3,
+                      CONTEXT_BUTTON_USER4,
+                      CONTEXT_BUTTON_USER5,
+                      CONTEXT_BUTTON_USER6,
+                      CONTEXT_BUTTON_USER7,
+                      CONTEXT_BUTTON_USER8,
+                      CONTEXT_BUTTON_USER9,
+                      CONTEXT_BUTTON_USER10
                     };
 
 class CContextButtons : public std::vector< std::pair<CONTEXT_BUTTON, CStdString> >
