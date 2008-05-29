@@ -233,7 +233,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         CStdString colorTheme(m_strNewSkinTheme);
         CUtil::ReplaceExtension(colorTheme, ".xml", colorTheme);
         if (colorTheme.Equals("Textures.xml"))
-          colorTheme = "default.xml";
+          colorTheme = "defaults.xml";
         g_guiSettings.SetString("lookandfeel.skincolors", colorTheme);
         g_settings.Save();
       }
@@ -2992,7 +2992,7 @@ void CGUIWindowSettingsCategory::FillInSkinThemes(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting)
 {
-  // There is a default theme (just default.xml)
+  // There is a default theme (just defaults.xml)
   // any other *.xml files are additional color themes on top of this one.
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   CStdString strSettingString = g_guiSettings.GetString("lookandfeel.skincolors");
@@ -3002,7 +3002,7 @@ void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting)
   // Clear and add. the Default Label
   pControl->Clear();
   pControl->SetShowRange(true);
-  pControl->AddLabel(g_localizeStrings.Get(15109), 0); // "SKINDEFAULT"! The standard default.xml will be used!
+  pControl->AddLabel(g_localizeStrings.Get(15109), 0); // "SKINDEFAULT"! The standard defaults.xml will be used!
 
   // Search for colors in the Current skin!
   vector<CStdString> vecColors;
