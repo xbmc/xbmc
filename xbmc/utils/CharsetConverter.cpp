@@ -248,10 +248,10 @@ void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStr
 
   if (m_iconvSubtitleCharsetToW != (iconv_t) - 1)
   {
-    const char* src = strSource.c_str();
-    size_t inBytes = strSource.length() + 1;
-    char *dst = (char*)strDest.GetBuffer(inBytes * sizeof(wchar_t));
-    size_t outBytes = inBytes * sizeof(wchar_t);
+    size_t inBytes  = (strSource.length() + 1);
+    size_t outBytes = (strSource.length() + 1) * sizeof(wchar_t);
+    const char *src = strSource.c_str();
+    char       *dst = (char*)strDest.GetBuffer(outBytes);
 
     if (iconv(m_iconvSubtitleCharsetToW, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
     {
@@ -337,11 +337,10 @@ void CCharsetConverter::utf8ToStringCharset(const CStdStringA& strSource, CStdSt
 
   if (m_iconvUtf8ToStringCharset != (iconv_t) - 1)
   {
-    const char* src = strSource.c_str();
-    size_t inBytes = strSource.length() + 1;
-
-    char *dst = strDest.GetBuffer(inBytes);
-    size_t outBytes = inBytes;
+    size_t inBytes  = strSource.length() + 1;
+    size_t outBytes = strSource.length() + 1;
+    const char *src = strSource.c_str();
+    char       *dst = strDest.GetBuffer(inBytes);
 
     if (iconv(m_iconvUtf8ToStringCharset, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
     {
@@ -380,11 +379,10 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdSt
 
   if (m_iconvStringCharsetToUtf8 != (iconv_t) - 1)
   {
-    const char* src = strSource.c_str();
-    size_t inBytes = strSource.length() + 1;
-
-    size_t outBytes = (inBytes * 4) + 1;
-    char *dst = strDest.GetBuffer(outBytes);
+    size_t inBytes  = (strSource.length() + 1);
+    size_t outBytes = (strSource.length() + 1) * 4;
+    const char *src = strSource.c_str();
+    char       *dst = strDest.GetBuffer(outBytes);
 
     if (iconv(m_iconvStringCharsetToUtf8, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
     {
@@ -418,11 +416,10 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset,
 
   if (iconvString != (iconv_t) - 1)
   {
-    const char* src = strSource.c_str();
-    size_t inBytes = strSource.length() + 1;
-
-    size_t outBytes = (inBytes * 4) + 1;
-    char *dst = strDest.GetBuffer(outBytes);
+    size_t inBytes  = (strSource.length() + 1);
+    size_t outBytes = (strSource.length() + 1) * 4;
+    const char *src = strSource.c_str();
+    char       *dst = strDest.GetBuffer(outBytes);
 
     if (iconv(iconvString, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
     {
@@ -453,10 +450,10 @@ void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDe
 
   if (m_iconvWtoUtf8 != (iconv_t) - 1)
   {
-    const char* src = (const char*) strSource.c_str();
-    size_t inBytes = (strSource.length() + 1) * sizeof(wchar_t);
-    size_t outBytes = (inBytes + 1)*sizeof(wchar_t);  // some free for UTF-8 (up to 4 bytes/char)
-    char *dst = strDest.GetBuffer(outBytes);
+    size_t inBytes  = (strSource.length() + 1) * sizeof(wchar_t);
+    size_t outBytes = (strSource.length() + 1) * 4;
+    const char *src = (const char*) strSource.c_str();
+    char       *dst = strDest.GetBuffer(outBytes);
 
     if (iconv(m_iconvWtoUtf8, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
     {
@@ -485,10 +482,10 @@ void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA 
 
   if (m_iconvUtf16BEtoUtf8 != (iconv_t) - 1)
   {
-    const char* src = (const char*) strSource.c_str();
-    size_t inBytes = (strSource.length() + 1)*sizeof(wchar_t);
-    size_t outBytes = (inBytes + 1)*sizeof(wchar_t);  // UTF-8 is up to 4 bytes/character  
-    char *dst = strDest.GetBuffer(outBytes);
+    size_t inBytes  = (strSource.length() + 1) * sizeof(wchar_t);
+    size_t outBytes = (strSource.length() + 1) * 4;
+    const char *src = (const char*) strSource.c_str();
+    char       *dst = strDest.GetBuffer(outBytes);
 
     if (iconv(m_iconvUtf16BEtoUtf8, &src, &inBytes, &dst, &outBytes))
     {
@@ -556,8 +553,10 @@ void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource,
 
   if (m_iconvUcs2CharsetToStringCharset != (iconv_t) - 1)
   {
-    const char* src = (const char*) strSource.c_str();
-    size_t inBytes = (strSource.length() + 1) * sizeof(wchar_t);
+    size_t inBytes  = (strSource.length() + 1) * sizeof(wchar_t);
+    size_t outBytes = (strSource.length() + 1) * 4;
+    const char *src = (const char*) strSource.c_str();
+    char       *dst = strDest.GetBuffer(inBytes);
 
     if (swap)
     {
@@ -573,9 +572,6 @@ void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource,
         s++;
       }
     }
-
-    char *dst = strDest.GetBuffer(inBytes);
-    size_t outBytes = inBytes;
 
     if (iconv(m_iconvUcs2CharsetToStringCharset, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
     {
