@@ -97,6 +97,8 @@ protected:
   std::queue<std::pair<int, std::string> > m_events;
 
   bool              m_recording;
+
+  DWORD             m_timestamp;
 };
 
 }
