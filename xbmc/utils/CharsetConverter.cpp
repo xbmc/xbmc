@@ -212,20 +212,25 @@ void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wStr
 
   if (m_iconvUtf8toW != (iconv_t) - 1)
   {
-    char *dst = new char[inBytes * sizeof(wchar_t)];
     size_t outBytes = inBytes * sizeof(wchar_t);
-    char *outdst = dst;
-    if (iconv(m_iconvUtf8toW, &src, &inBytes, &outdst, &outBytes))
+    char      * dst = (char*)wString.GetBuffer(outBytes);
+
+    if (iconv(m_iconvUtf8toW, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
     {
-      // For some reason it failed (maybe wrong charset?). Nothing to do but
-      // return the original..
+      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+      wString.ReleaseBuffer();
       wString = utf8String;
+      return;
     }
-    else
+
+    if (iconv(m_iconvUtf8toW, NULL, NULL, &dst, &outBytes) == (size_t)-1)
     {
-      wString = (WCHAR *)dst;
+      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
+      wString.ReleaseBuffer();
+      wString = utf8String;
+      return;
     }
-    delete[] dst;
+    wString.ReleaseBuffer();
   }
 }
 
@@ -248,12 +253,20 @@ void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStr
     char *dst = (char*)strDest.GetBuffer(inBytes * sizeof(wchar_t));
     size_t outBytes = inBytes * sizeof(wchar_t);
 
-    if (iconv(m_iconvSubtitleCharsetToW, &src, &inBytes, &dst, &outBytes))
+    if (iconv(m_iconvSubtitleCharsetToW, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
     {
+      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
       strDest.ReleaseBuffer();
-      // For some reason it failed (maybe wrong charset?). Nothing to do but
-      // return the original..
       strDest = strSource;
+      return;
+    }
+
+    if (iconv(m_iconvSubtitleCharsetToW, NULL, NULL, &dst, &outBytes) == (size_t)-1)
+    {
+      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
+      strDest.ReleaseBuffer();
+      strDest = strSource;
+      return;
     }
     strDest.ReleaseBuffer();
   }
@@ -328,15 +341,24 @@ void CCharsetConverter::utf8ToStringCharset(const CStdStringA& strSource, CStdSt
     size_t inBytes = strSource.length() + 1;
 
     char *dst = strDest.GetBuffer(inBytes);
-    size_t outBytes = inBytes - 1;
+    size_t outBytes = inBytes;
 
-    if (iconv(m_iconvUtf8ToStringCharset, &src, &inBytes, &dst, &outBytes) == -1)
+    if (iconv(m_iconvUtf8ToStringCharset, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
     {
+      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
       strDest.ReleaseBuffer();
-      // For some reason it failed (maybe wrong charset?). Nothing to do but
-      // return the original..
       strDest = strSource;
+      return;
     }
+
+    if (iconv(m_iconvUtf8ToStringCharset, NULL, NULL, &dst, &outBytes) == (size_t)-1)
+    {
+      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
+      strDest.ReleaseBuffer();
+      strDest = strSource;
+      return;
+    }
+
     strDest.ReleaseBuffer();
   }
 }
@@ -364,13 +386,20 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdSt
     size_t outBytes = (inBytes * 4) + 1;
     char *dst = strDest.GetBuffer(outBytes);
 
-    if (iconv(m_iconvStringCharsetToUtf8, &src, &inBytes, &dst, &outBytes) == -1)
+    if (iconv(m_iconvStringCharsetToUtf8, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
     {
+      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
       strDest.ReleaseBuffer();
-      // For some reason it failed (maybe wrong charset?). Nothing to do but
-      // return the original..
       strDest = strSource;
-      return ;
+      return;
+    }
+
+    if (iconv(m_iconvStringCharsetToUtf8, NULL, NULL, &dst, &outBytes) == (size_t)-1)
+    {
+      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
+      strDest.ReleaseBuffer();
+      strDest = strSource;
+      return;
     }
 
     strDest.ReleaseBuffer();
@@ -397,11 +426,18 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset,
 
     if (iconv(iconvString, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
     {
+      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
       strDest.ReleaseBuffer();
-      // For some reason it failed (maybe wrong charset?). Nothing to do but
-      // return the original..
       strDest = strSource;
-      return ;
+      return;
+    }
+
+    if (iconv(iconvString, NULL, NULL, &dst, &outBytes) == (size_t)-1)
+    {
+      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
+      strDest.ReleaseBuffer();
+      strDest = strSource;
+      return;
     }
 
     strDest.ReleaseBuffer();
@@ -421,13 +457,23 @@ void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDe
     size_t inBytes = (strSource.length() + 1) * sizeof(wchar_t);
     size_t outBytes = (inBytes + 1)*sizeof(wchar_t);  // some free for UTF-8 (up to 4 bytes/char)
     char *dst = strDest.GetBuffer(outBytes);
-    if (iconv(m_iconvWtoUtf8, &src, &inBytes, &dst, &outBytes))
-    { // failed :(
-      CLog::Log(LOGERROR, "CCharsetConverter::wToUTF8 failed for subtitle.");
+
+    if (iconv(m_iconvWtoUtf8, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
+    {
+      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
       strDest.ReleaseBuffer();
       strDest = strSource;
       return;
     }
+
+    if (iconv(m_iconvWtoUtf8, NULL, NULL, &dst, &outBytes) == (size_t)-1)
+    {
+      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
+      strDest.ReleaseBuffer();
+      strDest = strSource;
+      return;
+    }
+
     strDest.ReleaseBuffer();
   }
 }
@@ -443,8 +489,18 @@ void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA 
     size_t inBytes = (strSource.length() + 1)*sizeof(wchar_t);
     size_t outBytes = (inBytes + 1)*sizeof(wchar_t);  // UTF-8 is up to 4 bytes/character  
     char *dst = strDest.GetBuffer(outBytes);
+
     if (iconv(m_iconvUtf16BEtoUtf8, &src, &inBytes, &dst, &outBytes))
-    { // failed :(
+    {
+      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+      strDest.ReleaseBuffer();
+      strDest = strSource;
+      return;
+    }
+
+    if (iconv(m_iconvUtf16BEtoUtf8, NULL, NULL, &dst, &outBytes))
+    {
+      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
       strDest.ReleaseBuffer();
       strDest = strSource;
       return;
@@ -469,12 +525,23 @@ void CCharsetConverter::utf16LEtoW(const char* strSource, CStdStringW &strDest)
     }
     size_t outBytes = (inBytes + 1)*sizeof(wchar_t);  // UTF-8 is up to 4 bytes/character  
     char *dst = (char*) strDest.GetBuffer(outBytes);
-    if (iconv(m_iconvUtf16LEtoW, &strSource, &inBytes, &dst, &outBytes))
-    { // failed :(
+
+    if (iconv(m_iconvUtf16LEtoW, &strSource, &inBytes, &dst, &outBytes) == (size_t)-1)
+    {
+      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
       strDest.ReleaseBuffer();
       strDest = strSource;
       return;
     }
+
+    if (iconv(m_iconvUtf16LEtoW, NULL, NULL, &dst, &outBytes) == (size_t)-1)
+    {
+      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
+      strDest.ReleaseBuffer();
+      strDest = strSource;
+      return;
+    }
+
     strDest.ReleaseBuffer();
   }
 }
@@ -510,13 +577,22 @@ void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource,
     char *dst = strDest.GetBuffer(inBytes);
     size_t outBytes = inBytes;
 
-    if (iconv(m_iconvUcs2CharsetToStringCharset, &src, &inBytes, &dst, &outBytes))
+    if (iconv(m_iconvUcs2CharsetToStringCharset, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
     {
+      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
       strDest.ReleaseBuffer();
-      // For some reason it failed (maybe wrong charset?). Nothing to do but
-      // return the original..
       strDest = strSource;
+      return;
     }
+
+    if (iconv(m_iconvUcs2CharsetToStringCharset, NULL, NULL, &dst, &outBytes) == (size_t)-1)
+    {
+      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
+      strDest.ReleaseBuffer();
+      strDest = strSource;
+      return;
+    }
+
     strDest.ReleaseBuffer();
   }
 }
@@ -539,13 +615,22 @@ void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, CSt
     char *dst = strDest.GetBuffer(inBytes);
     size_t outBytes = inBytes;
 
-    if (iconv(m_iconvUtf32ToStringCharset, &src, &inBytes, &dst, &outBytes))
+    if (iconv(m_iconvUtf32ToStringCharset, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
     {
+      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
       strDest.ReleaseBuffer();
-      // For some reason it failed (maybe wrong charset?). Nothing to do but
-      // return the original..
       strDest = (const char *)strSource;
+      return;
     }
+
+    if (iconv(m_iconvUtf32ToStringCharset, NULL, NULL, &dst, &outBytes) == (size_t)-1)
+    {
+      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
+      strDest.ReleaseBuffer();
+      strDest = (const char *)strSource;
+      return;
+    }
+
     strDest.ReleaseBuffer();
   }
 }
