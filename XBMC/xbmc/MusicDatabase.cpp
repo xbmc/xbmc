@@ -1052,6 +1052,28 @@ bool CMusicDatabase::GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS* songs)
   return false;
 }
 
+bool CMusicDatabase::HasAlbumInfo(long idAlbum)
+{
+  try
+  {
+    if (idAlbum == -1)
+      return false; // not in the database
+
+    CStdString strSQL=FormatSQL("select * from albuminfo where idAlbum = %ld", idAlbum);
+
+    if (!m_pDS2->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS2->num_rows();
+    m_pDS2->close();
+    return iRowsFound > 0;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%ld) failed", __FUNCTION__, idAlbum);
+  }
+
+  return false;
+}
+
 bool CMusicDatabase::DeleteAlbumInfo(long idAlbum)
 {
   try

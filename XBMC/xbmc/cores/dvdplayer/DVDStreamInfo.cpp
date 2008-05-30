@@ -81,8 +81,7 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
   if( fpsscale != right.fpsscale
   ||  fpsrate != right.fpsrate
   ||  height != right.height
-  ||  width != right.width 
-  ||  aspect != right.aspect) return false;
+  ||  width != right.width) return false;
 
   // AUDIO
   if( channels != right.channels

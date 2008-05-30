@@ -324,7 +324,7 @@ void CGUIWindowMusicInfo::SetLabel(int iControl, const CStdString& strLabel)
 {
   if (strLabel.IsEmpty())
   {
-    SET_CONTROL_LABEL(iControl, (iControl == CONTROL_TEXTAREA) ? 414 : 416);
+    SET_CONTROL_LABEL(iControl, (iControl == CONTROL_TEXTAREA) ? (m_bArtistInfo?547:414) : 416);
   }
   else
   {
