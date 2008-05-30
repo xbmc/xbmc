@@ -80,7 +80,7 @@ public:
 
   void wToUTF8(const CStdStringW& strSource, CStdStringA &strDest);
   void utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest);
-  void utf16LEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest);
+  void utf16LEtoUTF8(const void *strSource, CStdStringA &strDest);
   void ucs2ToUTF8(const CStdStringW& strSource, CStdStringA& strDest);
 
   void utf32ToStringCharset(const unsigned long* strSource, CStdStringA& strDest);
