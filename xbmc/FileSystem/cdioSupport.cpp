@@ -940,7 +940,7 @@ char* CCdIoSupport::GetDeviceFileName()
         cdio_destroy(p_cdio);
       }
       else
-        return "";
+        return (char*)"";
     }
   }
 #endif
