@@ -829,7 +829,12 @@ namespace VIDEO
             CLog::Log(LOGERROR, "Failed to download fanart %s to %s", movieDetails.m_fanart.GetImageURL().c_str(), pItem->GetCachedVideoFanart().c_str());
       }
       else
-        lResult=m_database.SetDetailsForEpisode(pItem->m_strPath,movieDetails,idShow);
+      {
+        // we add episode then set details, as otherwise set details will delete the
+        // episode then add, which breaks multi-episode files.
+        long idEpisode = m_database.AddEpisode(idShow, pItem->m_strPath);
+        lResult = m_database.SetDetailsForEpisode(pItem->m_strPath, movieDetails, idShow, idEpisode);
+      }
     }
     else if (content.Equals("musicvideos"))
     {
@@ -1107,9 +1112,18 @@ namespace VIDEO
           CUtil::GetParentPath(strPath,strParent);
           CUtil::AddFileToFolder(strParent,CUtil::GetFileName(pItem->m_strPath),strFile);
         }
-        strFile.Insert(strFile.rfind("."),"-trailer");
-        if (CFile::Exists(strFile))
-          movieDetails.m_strTrailer = strFile;
+        CUtil::RemoveExtension(strFile);
+        strFile += "-trailer";
+        std::vector<CStdString> exts;
+        StringUtils::SplitString(g_stSettings.m_videoExtensions,"|",exts);
+        for (unsigned int i=0;i<exts.size();++i)
+        {
+          if (CFile::Exists(strFile+exts[i]))
+          {
+            movieDetails.m_strTrailer = strFile+exts[i];
+            break;
+          }
+        }
       }
       return AddMovieAndGetThumb(pItem, info.strContent, movieDetails, -1, bUseDirNames);
     }

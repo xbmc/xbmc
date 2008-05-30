@@ -293,6 +293,7 @@ public:
   virtual bool CommitTransaction();
 
   long AddMovie(const CStdString& strFilenameAndPath);
+  long AddEpisode(long idShow, const CStdString& strFilenameAndPath);
 
   // editing functions
   void MarkAsWatched(const CFileItem &item);
@@ -391,8 +392,9 @@ public:
 
   void GetEpisodesByPlot(const CStdString& strSearch, CFileItemList& items);
 
-  bool LinkMovieToTvshow(long idMovie, long idShow);
+  bool LinkMovieToTvshow(long idMovie, long idShow, bool bRemove);
   bool IsLinkedToTvshow(long idMovie);
+  bool GetLinksToTvShow(long idMovie, std::vector<long>& ids);
 
   bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
                          const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult);
@@ -446,7 +448,6 @@ protected:
   long AddActor(const CStdString& strActor, const CStdString& strThumb);
   long AddStudio(const CStdString& strStudio1);
   long AddTvShow(const CStdString& strPath);
-  long AddEpisode(long idShow, const CStdString& strFilenameAndPath);
   long AddMusicVideo(const CStdString& strFilenameAndPath);
 
   // link functions - these two do all the work

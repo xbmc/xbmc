@@ -86,6 +86,7 @@ CXbmcHttp::CXbmcHttp()
   key = temp;
   lastKey = temp;
   lastThumbFn="";
+  lastPlayingInfo="";
   repeatKeyRate=0;
   MarkTime=0;
   pUdpBroadcast=NULL;
@@ -3027,7 +3028,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
     retVal = SetResponse(openTag+"Error:Missing command");
 //relinquish the remainder of time slice
   Sleep(0);
-  CLog::Log(LOGDEBUG, "HttpApi Finished command: %s", command.c_str());
+  //CLog::Log(LOGDEBUG, "HttpApi Finished command: %s", command.c_str());
   return retVal;
 }
 
@@ -3108,7 +3109,7 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
       return "";
   CStdString cmd=command, paras=parameter, response="[No response yet]", retVal;
   bool legalCmd=true;
-  CLog::Log(LOGDEBUG, "XBMCHTTPShim: Received command %s (%s)", cmd.c_str(), paras.c_str());
+  //CLog::Log(LOGDEBUG, "XBMCHTTPShim: Received command %s (%s)", cmd.c_str(), paras.c_str());
   int cnt=0;
 
   checkForFunctionTypeParas(cmd, paras);
