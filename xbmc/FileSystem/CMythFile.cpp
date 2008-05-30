@@ -229,6 +229,9 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
   }
 
   m_program = m_dll->recorder_get_cur_proginfo(m_recorder);
+  m_timestamp = GetTickCount();
+  if(m_program)
+    m_starttime = m_dll->proginfo_rec_start(m_program);
 
   if(m_recording)
   {
@@ -315,6 +318,11 @@ void CCMythFile::Close()
   if(!m_dll)
     return;
 
+  if(m_starttime)
+  {
+    m_dll->ref_release(m_starttime);
+    m_starttime = NULL;
+  }
   if(m_program)
   {
     m_dll->ref_release(m_program);
@@ -342,12 +350,14 @@ void CCMythFile::Close()
 CCMythFile::CCMythFile()
 {
   m_dll         = NULL;
+  m_starttime   = NULL;
   m_program     = NULL;
   m_recorder    = NULL;
   m_control     = NULL;
   m_database    = NULL;
   m_file        = NULL;
   m_session     = NULL;
+  m_timestamp   = 0;
   m_recording   = false;
 }
 
@@ -484,6 +494,14 @@ bool CCMythFile::UpdateItem(CFileItem& item)
 
 int CCMythFile::GetTotalTime()
 {
+  if(m_recorder && m_timestamp + 5000 < GetTickCount())
+  {
+    m_timestamp = GetTickCount();
+    if(m_program)
+      m_dll->ref_release(m_program);
+    m_program = m_dll->recorder_get_cur_proginfo(m_recorder);
+  }
+
   if(m_program && m_recorder)
     return m_dll->proginfo_length_sec(m_program) * 1000;
 
@@ -492,15 +510,14 @@ int CCMythFile::GetTotalTime()
 
 int CCMythFile::GetStartTime()
 {
-  if(m_program && m_recorder)
+  if(m_program && m_recorder && m_starttime)
   {
     cmyth_timestamp_t start = m_dll->proginfo_start(m_program);
-    cmyth_timestamp_t end = m_dll->proginfo_rec_start(m_program);
 
-    double diff = difftime(m_dll->timestamp_to_unixtime(end), m_dll->timestamp_to_unixtime(start));
+    double diff = difftime(m_dll->timestamp_to_unixtime(start), m_dll->timestamp_to_unixtime(m_starttime));
 
     m_dll->ref_release(start);
-    m_dll->ref_release(end);
+
     return (int)(diff * 1000);
   }
   return 0;

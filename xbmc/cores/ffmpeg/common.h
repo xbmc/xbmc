@@ -20,7 +20,7 @@
 
 /**
  * @file common.h
- * common internal and external api header.
+ * common internal and external API header
  */
 
 #ifndef FFMPEG_COMMON_H
@@ -57,6 +57,30 @@
 #endif
 #endif
 
+#ifndef av_pure
+#if defined(__GNUC__) && (__GNUC__ > 3 || __GNUC__ == 3 && __GNUC_MINOR__ > 0)
+#    define av_pure __attribute__((pure))
+#else
+#    define av_pure
+#endif
+#endif
+
+#ifndef av_const
+#if defined(__GNUC__) && (__GNUC__ > 2 || __GNUC__ == 2 && __GNUC_MINOR__ > 5)
+#    define av_const __attribute__((const))
+#else
+#    define av_const
+#endif
+#endif
+
+#ifndef av_cold
+#if defined(__GNUC__) && (__GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ > 2)
+#    define av_cold __attribute__((cold))
+#else
+#    define av_cold
+#endif
+#endif
+
 #ifdef HAVE_AV_CONFIG_H
 #    include "internal.h"
 #endif /* HAVE_AV_CONFIG_H */
@@ -87,14 +111,16 @@
 #define FFSIGN(a) ((a) > 0 ? 1 : -1)
 
 #define FFMAX(a,b) ((a) > (b) ? (a) : (b))
+#define FFMAX3(a,b,c) FFMAX(FFMAX(a,b),c)
 #define FFMIN(a,b) ((a) > (b) ? (b) : (a))
+#define FFMIN3(a,b,c) FFMIN(FFMIN(a,b),c)
 
 #define FFSWAP(type,a,b) do{type SWAP_tmp= b; b= a; a= SWAP_tmp;}while(0)
 
 /* misc math functions */
 extern const uint8_t ff_log2_tab[256];
 
-static inline int av_log2(unsigned int v)
+static inline av_const int av_log2(unsigned int v)
 {
     int n = 0;
     if (v & 0xffff0000) {
@@ -110,7 +136,7 @@ static inline int av_log2(unsigned int v)
     return n;
 }
 
-static inline int av_log2_16bit(unsigned int v)
+static inline av_const int av_log2_16bit(unsigned int v)
 {
     int n = 0;
     if (v & 0xff00) {
@@ -123,7 +149,7 @@ static inline int av_log2_16bit(unsigned int v)
 }
 
 /* median of 3 */
-static inline int mid_pred(int a, int b, int c)
+static inline av_const int mid_pred(int a, int b, int c)
 {
 #ifdef HAVE_CMOV
     int i=b;
@@ -170,7 +196,7 @@ static inline int mid_pred(int a, int b, int c)
  * @param amax maximum value of the clip range
  * @return clipped value
  */
-static inline int av_clip(int a, int amin, int amax)
+static inline av_const int av_clip(int a, int amin, int amax)
 {
     if      (a < amin) return amin;
     else if (a > amax) return amax;
@@ -182,7 +208,7 @@ static inline int av_clip(int a, int amin, int amax)
  * @param a value to clip
  * @return clipped value
  */
-static inline uint8_t av_clip_uint8(int a)
+static inline av_const uint8_t av_clip_uint8(int a)
 {
     if (a&(~255)) return (-a)>>31;
     else          return a;
@@ -193,19 +219,19 @@ static inline uint8_t av_clip_uint8(int a)
  * @param a value to clip
  * @return clipped value
  */
-static inline int16_t av_clip_int16(int a)
+static inline av_const int16_t av_clip_int16(int a)
 {
     if ((a+32768) & ~65535) return (a>>31) ^ 32767;
     else                    return a;
 }
 
 /* math */
-int64_t ff_gcd(int64_t a, int64_t b);
+int64_t av_const ff_gcd(int64_t a, int64_t b);
 
 /**
  * converts fourcc string to int
  */
-static inline int ff_get_fourcc(const char *s){
+static inline av_pure int ff_get_fourcc(const char *s){
 #ifdef HAVE_AV_CONFIG_H
     assert( strlen(s)==4 );
 #endif
@@ -317,7 +343,7 @@ static inline uint64_t read_time(void)
     uint32_t tbu, tbl, temp;
 
      /* from section 2.2.1 of the 32-bit PowerPC PEM */
-     __asm__ __volatile__(
+     asm volatile(
          "1:\n"
          "mftbu  %2\n"
          "mftb   %0\n"
