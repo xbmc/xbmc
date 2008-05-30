@@ -93,16 +93,16 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 
     tag.SetURL(strFileName);
 
-    // Note that we're reading in a bit more than 64k, because the 'peek'ing below looks is dealing
-    // with integers and reads off the end. Rather than change all the checks below, I've simply
-    // allocated a bigger buffer.
-    //
+    // Note that we're reading in a bit more than 64k, because the 'peek'ing
+    // below is dealing with integers and reads off the end. Rather than change
+    // all the checks below, I've simply allocated a bigger buffer.
     auto_aptr<unsigned char> pData(new unsigned char[65536+32]);
     file.Read(pData.get(), 65536+32);
     file.Close();
 
-    int iOffset = 0;
+    int iOffset;
     unsigned int* pDataI;
+    void *utf16String;
 
     //Play time
     iOffset = 0;
@@ -151,12 +151,14 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
       iOffset += 10;
 
       // TODO: UTF-8 Do we need to "fixString" these strings at all?
-      CStdString utf8String = "";
-      g_charsetConverter.utf16LEtoUTF8((LPWSTR)(pData.get() + iOffset), utf8String);
+      CStdString utf8String;
+      utf16String = (void *)(pData.get() + iOffset);
+      g_charsetConverter.utf16LEtoUTF8(utf16String, utf8String);
       tag.SetTitle(utf8String);
 
       utf8String = "";
-      g_charsetConverter.utf16LEtoUTF8((LPWSTR)(pData.get() + iOffset + nTitleSize), utf8String);
+      utf16String = (void *)(pData.get() + iOffset + nTitleSize);
+      g_charsetConverter.utf16LEtoUTF8(utf16String, utf8String);
       tag.SetArtist(utf8String);
 
       //General(ZT("Copyright"))=(LPWSTR)(pData.get()+iOffset+(nTitleSize+nAuthorSize));
@@ -233,9 +235,10 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         iOffset += 2;
 
         // Get frame name
-        CStdString strFrameName = "";
+        CStdString strFrameName;
         CStdStringW wString = "";
-        g_charsetConverter.utf16LEtoUTF8((LPWSTR)(pData.get() + iOffset), strFrameName);
+        utf16String = (void *)(pData.get() + iOffset);
+        g_charsetConverter.utf16LEtoUTF8(utf16String, strFrameName);
         iOffset += iFrameNameSize;
 
         // Get datatype of frame
@@ -250,10 +253,10 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         // tag with extended metadata
         if (iFrameType == WMT_TYPE_STRING && iValueSize > 0)
         {
-          LPWSTR pwszValue = (LPWSTR)(pData.get() + iOffset);
           // TODO: UTF-8: Do we need to "fixString" these utf8 strings?
           CStdString utf8String;
-          g_charsetConverter.utf16LEtoUTF8(pwszValue, utf8String);
+          utf16String = (void *)(pData.get() + iOffset);
+          g_charsetConverter.utf16LEtoUTF8(utf16String, utf8String);
           SetTagValueString(strFrameName, utf8String, tag);
         }
         else if (iFrameType == WMT_TYPE_BINARY && iValueSize > 0)
@@ -317,17 +320,18 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         // Get frame name
         CStdString strFrameName = "";
         CStdStringW wString = "";
-        g_charsetConverter.utf16LEtoUTF8((LPWSTR)(pData.get() + iOffset), strFrameName);
+        utf16String = (void *)(pData.get() + iOffset);
+        g_charsetConverter.utf16LEtoUTF8(utf16String, strFrameName);
         iOffset += iFrameNameSize;
 
         // Parse frame value and fill
         // tag with extended metadata
         if (iFrameType == WMT_TYPE_STRING && iValueSize > 0)
         {
-          LPWSTR pwszValue = (LPWSTR)(pData.get() + iOffset);
           // TODO: UTF-8: Do we need to "fixString" these utf8 strings?
           CStdString utf8String;
-          g_charsetConverter.utf16LEtoUTF8(pwszValue, utf8String);
+          utf16String = (void *)(pData.get() + iOffset);
+          g_charsetConverter.utf16LEtoUTF8(utf16String, utf8String);
           SetTagValueString(strFrameName, utf8String, tag);
         }
         else if (iFrameType == WMT_TYPE_BINARY && iValueSize > 0)
