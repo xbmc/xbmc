@@ -24,15 +24,29 @@
 #include <stdarg.h>
 
 /**
- * Used by av_log
+ * Describes the class of an AVClass context structure, that is an
+ * arbitrary struct of which the first field is a pointer to an
+ * AVClass struct (e.g. AVCodecContext, AVFormatContext etc.).
  */
 typedef struct AVCLASS AVClass;
 struct AVCLASS {
+    /**
+     * The name of the class; usually it is the same name as the
+     * context structure type to which the AVClass is associated.
+     */
     const char* class_name;
-    const char* (*item_name)(void*); /* actually passing a pointer to an AVCodecContext
-                                        or AVFormatContext, which begin with an AVClass.
-                                        Needed because av_log is in libavcodec and has no visibility
-                                        of AVIn/OutputFormat */
+
+    /**
+     * a pointer to a function which returns the name of a context
+     * instance \p ctx associated with the class
+     */
+    const char* (*item_name)(void* ctx);
+
+    /**
+     * a pointer to the first option specified in the class if any or NULL
+     *
+     * @see av_set_default_options()
+     */
     const struct AVOption *option;
 };
 
@@ -101,15 +115,15 @@ extern int av_log_level;
  * @see av_vlog
  */
 #ifdef __GNUC__
-extern void av_log(void*, int level, const char *fmt, ...) __attribute__ ((__format__ (__printf__, 3, 4)));
+void av_log(void*, int level, const char *fmt, ...) __attribute__ ((__format__ (__printf__, 3, 4)));
 #else
-extern void av_log(void*, int level, const char *fmt, ...);
+void av_log(void*, int level, const char *fmt, ...);
 #endif
 
-extern void av_vlog(void*, int level, const char *fmt, va_list);
-extern int av_log_get_level(void);
-extern void av_log_set_level(int);
-extern void av_log_set_callback(void (*)(void*, int, const char*, va_list));
-extern void av_log_default_callback(void* ptr, int level, const char* fmt, va_list vl);
+void av_vlog(void*, int level, const char *fmt, va_list);
+int av_log_get_level(void);
+void av_log_set_level(int);
+void av_log_set_callback(void (*)(void*, int, const char*, va_list));
+void av_log_default_callback(void* ptr, int level, const char* fmt, va_list vl);
 
 #endif /* FFMPEG_LOG_H */
