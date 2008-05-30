@@ -731,7 +731,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strPath, params);
   bCanceled = false;
   m_musicDatabase.Open();
-  if (m_musicDatabase.GetAlbumInfo(params.GetAlbumId(),album,&songs) && !album.strAlbum.IsEmpty())
+  if (m_musicDatabase.HasAlbumInfo(params.GetAlbumId()) && m_musicDatabase.GetAlbumInfo(params.GetAlbumId(),album,&songs))
     return true;
 
   // find album info
@@ -1057,7 +1057,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
 
     if (scraper.Successfull())
     {
-      artist = scraper.GetArtist(0).GetArtist();
+      artist = scraper.GetArtist(iSelectedArtist).GetArtist();
       m_musicDatabase.SetArtistInfo(params.GetArtistId(), artist);
     }
   }

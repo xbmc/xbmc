@@ -701,6 +701,8 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
     CMediaSource *share = CGUIDialogContextMenu::GetShare("video", item);
     if (CGUIDialogContextMenu::OnContextButton("video", share, button))
     {
+      if (button == CONTEXT_BUTTON_REMOVE_SOURCE)
+        OnUnAssignContent(itemNumber);
       Update("");
       return true;
     }

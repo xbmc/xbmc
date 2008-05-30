@@ -188,6 +188,7 @@ class CGUIListItem;
 #define MUSICPLAYER_ARTIST          202
 #define MUSICPLAYER_GENRE           203
 #define MUSICPLAYER_YEAR            204
+#define MUSICPLAYER_DURATION        205
 #define MUSICPLAYER_TRACK_NUMBER    208
 #define MUSICPLAYER_COVER           210
 #define MUSICPLAYER_BITRATE         211
@@ -201,6 +202,10 @@ class CGUIListItem;
 #define MUSICPLAYER_RATING          219
 #define MUSICPLAYER_COMMENT         220
 #define MUSICPLAYER_LYRICS          221
+#define MUSICPLAYER_HASPREVIOUS     222
+#define MUSICPLAYER_HASNEXT         223
+#define MUSICPLAYER_EXISTS          224
+#define MUSICPLAYER_PLAYLISTPLAYING 225
 
 #define VIDEOPLAYER_TITLE             250
 #define VIDEOPLAYER_GENRE             251
@@ -538,9 +543,11 @@ public:
   const CVideoInfoTag* GetCurrentMovieTag() const;
 
   CStdString GetMusicLabel(int item);
+  CStdString GetMusicTagLabel(int info, const CFileItem *item) const;
   CStdString GetVideoLabel(int item);
-  CStdString GetPlaylistLabel(int item);
+  CStdString GetPlaylistLabel(int item) const;
   CStdString GetMusicPartyModeLabel(int item);
+  const CStdString GetMusicPlaylistInfo(const GUIInfo& info) const;
   CStdString GetPictureLabel(int item) const;
 
   __int64 GetPlayTime() const;  // in ms
@@ -590,6 +597,7 @@ protected:
   CStdString GetMultiInfoLabel(const GUIInfo &info, DWORD dwContextWindow = 0) const;
   int TranslateSingleString(const CStdString &strCondition);
   int TranslateListItem(const CStdString &info);
+  int TranslateMusicPlayerString(const CStdString &info) const;
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
   CStdString LocalizeTime(const CDateTime &time, TIME_FORMAT format) const;
   bool GetItemBool(const CGUIListItem *item, int condition) const;
