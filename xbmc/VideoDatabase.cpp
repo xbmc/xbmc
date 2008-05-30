@@ -553,16 +553,16 @@ bool CVideoDatabase::SetPathHash(const CStdString &path, const CStdString &hash)
   return false;
 }
 
-bool CVideoDatabase::LinkMovieToTvshow(long idMovie, long idShow)
+bool CVideoDatabase::LinkMovieToTvshow(long idMovie, long idShow, bool bRemove)
 {
    try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    if (idShow == -1) // delete link
+    if (bRemove) // delete link
     {
-      CStdString strSQL=FormatSQL("delete from movielinktvshow where idMovie=%u", idMovie);
+      CStdString strSQL=FormatSQL("delete from movielinktvshow where idMovie=%u and idShow=%u", idMovie, idShow);
       m_pDS->exec(strSQL.c_str());
       return true;
     }
@@ -593,6 +593,32 @@ bool CVideoDatabase::IsLinkedToTvshow(long idMovie)
     {
       m_pDS->close();
       return false;
+    }
+
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%ld) failed", __FUNCTION__, idMovie);
+  }
+
+  return false;
+}
+
+bool CVideoDatabase::GetLinksToTvShow(long idMovie, vector<long>& ids)
+{
+   try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=FormatSQL("select * from movielinktvshow where idMovie=%u", idMovie);
+    m_pDS->query(strSQL.c_str());
+    while (!m_pDS->eof())
+    {
+      ids.push_back(m_pDS->fv(1).get_asLong());
+      m_pDS->next();
     }
 
     m_pDS->close();
@@ -3404,7 +3430,7 @@ bool CVideoDatabase::GetDirectorsNav(const CStdString& strBaseDir, CFileItemList
 
 bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent)
 {
-  if (GetPeopleNav(strBaseDir, items, "actor", idContent))
+  if (GetPeopleNav(strBaseDir, items, (idContent == VIDEODB_CONTENT_MUSICVIDEOS) ? "artist" : "actor", idContent))
   { // set thumbs - ideally this should be in the normal thumb setting routines
     for (int i = 0; i < items.Size(); i++)
     {
@@ -4082,17 +4108,16 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
 {
   CStdString where;
   if (idGenre != -1)
-    where = FormatSQL("select * from musicvideoview join genrelinkmusicvideo on genrelinkmusicvideo.idmvideo=musicvideoview.idmvideo where genrelinkmusicvideo.idGenre=%u", idGenre);
+    where = FormatSQL("join genrelinkmusicvideo on genrelinkmusicvideo.idmvideo=musicvideoview.idmvideo where genrelinkmusicvideo.idGenre=%u", idGenre);
   else if (idStudio != -1)
-    where = FormatSQL("select * from musicvideoview join studiolinkmusicvideo on studiolinkmusicvideo.idmvideo=musicvideoview.idmvideo where studiolinkmusicvideo.idstudio=%u", idStudio);
+    where = FormatSQL("join studiolinkmusicvideo on studiolinkmusicvideo.idmvideo=musicvideoview.idmvideo where studiolinkmusicvideo.idstudio=%u", idStudio);
   else if (idDirector != -1)
-    where = FormatSQL("select * from musicvideoview join directorlinkmusicvideo on directorlinkmusicvideo.idmvideo=musicvideoview.idmvideo where directorlinkmusicvideo.idDirector=%u", idDirector);
+    where = FormatSQL("join directorlinkmusicvideo on directorlinkmusicvideo.idmvideo=musicvideoview.idmvideo where directorlinkmusicvideo.idDirector=%u", idDirector);
   else if (idYear !=-1)
-    where = FormatSQL("select * from musicvideoview where c%02d='%i'",VIDEODB_ID_MUSICVIDEO_YEAR,idYear);
+    where = FormatSQL("where c%02d='%i'",VIDEODB_ID_MUSICVIDEO_YEAR,idYear);
   else if (idArtist != -1)
-    where = FormatSQL("select * from musicvideoview join artistlinkmusicvideo on artistlinkmusicvideo.idmvideo=musicvideoview.idmvideo join actors on actors.idActor=artistlinkmusicvideo.idartist where actors.idActor=%u",idArtist);
+    where = FormatSQL("join artistlinkmusicvideo on artistlinkmusicvideo.idmvideo=musicvideoview.idmvideo join actors on actors.idActor=artistlinkmusicvideo.idartist where actors.idActor=%u",idArtist);
 
-  CStdString strSQL = "select * from musicvideoview " + where;
   return GetMusicVideosByWhere(strBaseDir, where, items);
 }
 

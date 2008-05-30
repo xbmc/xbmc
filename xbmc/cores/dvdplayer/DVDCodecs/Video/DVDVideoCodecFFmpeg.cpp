@@ -251,7 +251,8 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   if (!iGotPicture)
     return VC_BUFFER;
 
-  if (m_pCodecContext->pix_fmt != PIX_FMT_YUV420P)
+  if (m_pCodecContext->pix_fmt != PIX_FMT_YUV420P
+   && m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P)
   {
     if (!m_dllSwScale.IsLoaded())
     {
@@ -356,6 +357,8 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iFlags |= frame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
   pDvdVideoPicture->iFlags |= frame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
   pDvdVideoPicture->iFlags |= frame->data[0] ? 0 : DVP_FLAG_DROPPED;
+  if(m_pCodecContext->pix_fmt == PIX_FMT_YUVJ420P)
+    pDvdVideoPicture->color_range = 1;
 
   if(frame->opaque)
     pDvdVideoPicture->pts = *(double*)frame->opaque;

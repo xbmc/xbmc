@@ -132,6 +132,7 @@ public:
   long SetArtistInfo(long idArtist, const CArtist& artist);
   bool DeleteArtistInfo(long idArtist);
   bool GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS* songs);
+  bool HasAlbumInfo(long idAlbum);
   bool GetArtistInfo(long idArtist, CArtist &info, bool needAll=true);
   bool GetSongByFileName(const CStdString& strFileName, CSong& song);
   long GetAlbumIdByPath(const CStdString& path);
