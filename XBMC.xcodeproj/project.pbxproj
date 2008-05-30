@@ -44,6 +44,7 @@
 		8883CEA10DD817D1004E8B72 /* DVDOverlayCodecSSA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CE9E0DD817D1004E8B72 /* DVDOverlayCodecSSA.cpp */; };
 		8883CEA70DD81807004E8B72 /* DVDSubtitleParserSSA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CEA30DD81807004E8B72 /* DVDSubtitleParserSSA.cpp */; };
 		8883CEA80DD81807004E8B72 /* DVDSubtitlesLibass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CEA50DD81807004E8B72 /* DVDSubtitlesLibass.cpp */; };
+		889693370DF0B72500F1DA75 /* libbz2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 889693360DF0B72500F1DA75 /* libbz2.a */; };
 		88ACB01B0DCF40800083CFDF /* ASAPFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88ACB0190DCF40800083CFDF /* ASAPFileDirectory.cpp */; };
 		88ACB01F0DCF409E0083CFDF /* ASAPCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88ACB01C0DCF409E0083CFDF /* ASAPCodec.cpp */; };
 		88ACB0220DCF40D00083CFDF /* MusicInfoTagLoaderASAP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88ACB0200DCF40D00083CFDF /* MusicInfoTagLoaderASAP.cpp */; };
@@ -903,6 +904,7 @@
 		8883CEA40DD81807004E8B72 /* DVDSubtitleParserSSA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserSSA.h; sourceTree = "<group>"; };
 		8883CEA50DD81807004E8B72 /* DVDSubtitlesLibass.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitlesLibass.cpp; sourceTree = "<group>"; };
 		8883CEA60DD81807004E8B72 /* DVDSubtitlesLibass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitlesLibass.h; sourceTree = "<group>"; };
+		889693360DF0B72500F1DA75 /* libbz2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbz2.a; path = /opt/local/lib/libbz2.a; sourceTree = "<absolute>"; };
 		88ACB0190DCF40800083CFDF /* ASAPFileDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ASAPFileDirectory.cpp; sourceTree = "<group>"; };
 		88ACB01A0DCF40800083CFDF /* ASAPFileDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASAPFileDirectory.h; sourceTree = "<group>"; };
 		88ACB01C0DCF409E0083CFDF /* ASAPCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ASAPCodec.cpp; sourceTree = "<group>"; };
@@ -2883,6 +2885,7 @@
 				88ECB6E70DE07BA6003396A7 /* libfontconfig.a in Frameworks */,
 				88ECB6EA0DE07BEE003396A7 /* libogg.a in Frameworks */,
 				88ECB6EC0DE07C56003396A7 /* libmysqlclient.a in Frameworks */,
+				889693370DF0B72500F1DA75 /* libbz2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2912,6 +2915,7 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				889693360DF0B72500F1DA75 /* libbz2.a */,
 				88ECB6EB0DE07C56003396A7 /* libmysqlclient.a */,
 				88ECB6E90DE07BEE003396A7 /* libogg.a */,
 				88ECB6E60DE07BA6003396A7 /* libfontconfig.a */,
