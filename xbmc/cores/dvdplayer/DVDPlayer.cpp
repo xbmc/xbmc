@@ -741,9 +741,6 @@ void CDVDPlayer::Process()
         continue;
       }
 
-      if (m_pInputStream->IsEOF()) 
-        break;
-
       if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
       {
         CDVDInputStreamNavigator* pStream = static_cast<CDVDInputStreamNavigator*>(m_pInputStream);
@@ -773,6 +770,10 @@ void CDVDPlayer::Process()
         continue;
       }
 
+      // if we are caching, start playing it agian
+      if (m_caching && !m_bAbortRequest)
+        SetCaching(false);
+
       // while players are still playing, keep going to allow seekbacks
       if(m_dvdPlayerAudio.m_messageQueue.GetDataSize() > 0 
       || m_dvdPlayerVideo.m_messageQueue.GetDataSize() > 0)
@@ -780,6 +781,9 @@ void CDVDPlayer::Process()
         Sleep(100);
         continue;
       }
+
+      if (m_pInputStream->IsEOF()) 
+        break;
 
       // any demuxer supporting non blocking reads, should return empty packates
       CLog::Log(LOGINFO, "%s - eof reading from demuxer", __FUNCTION__);
