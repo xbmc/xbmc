@@ -1,7 +1,0 @@
-The only changes have been:
-
-1.  Creation of build/xbox directory, with a VS .Net 2003 solution/project file.
-
-2.  include/freetype/config/ftmodule.h - removed some module includes
-
-3.  include/freetype/config/ftoption.h - uncommented the truetype hinting
