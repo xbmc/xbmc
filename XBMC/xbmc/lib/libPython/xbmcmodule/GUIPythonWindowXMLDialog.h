@@ -34,6 +34,7 @@ class CGUIPythonWindowXMLDialog : public CGUIPythonWindowXML
     virtual bool    IsDialogRunning() const { return m_bRunning; }
     virtual bool    IsDialog() const { return true;};
     virtual bool    IsModalDialog() const { return true; };
+    virtual bool    IsMediaWindow() const { return false; };
   protected:
     bool             m_bRunning;
 };
