@@ -812,9 +812,6 @@ void CDVDPlayer::Process()
         continue;
       }
 
-      if (m_pInputStream->IsEOF()) 
-        break;
-
       if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
       {
         CDVDInputStreamNavigator* pStream = static_cast<CDVDInputStreamNavigator*>(m_pInputStream);
