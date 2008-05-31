@@ -43,7 +43,7 @@ return floor(arg_list[0]);
 
 static inline float sqr_wrapper(float * arg_list) {
 
-return pow(2, arg_list[0]);
+return pow(2, (int)arg_list[0]);
 }
 
 

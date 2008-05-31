@@ -69,7 +69,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;..\win32\freetype-2.2.1\freetype2\include&quot;;..\FTGL\include;D:\Coding\xbmc_sdl\sdl_libs\include"
+				AdditionalIncludeDirectories=".\pthreads;D:\Coding\xbmc_sdl\sdl_libs\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;HAS_SDL_OPENGL;HAS_SDL;_WIN32PC"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
@@ -80,7 +80,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib glu32.lib"
+				AdditionalDependencies="opengl32.lib  glew32.lib"
 				OutputFile="$(OutDir)/ProjectM_win32.vis"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames=""
@@ -137,214 +137,280 @@
 			Name="libprojectM"
 			Filter="">
 			<File
-				RelativePath="..\libprojectM\src\beat_detect.cc">
+				RelativePath="..\libprojectM\Algorithms.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\beat_detect.h">
+				RelativePath="..\libprojectM\BeatDetect.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\browser.cc">
+				RelativePath="..\libprojectM\BeatDetect.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\browser.h">
+				RelativePath="..\libprojectM\BuiltinFuncs.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\builtin_funcs.cc">
+				RelativePath="..\libprojectM\BuiltinFuncs.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\builtin_funcs.h">
+				RelativePath="..\libprojectM\BuiltinParams.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\common.h">
+				RelativePath="..\libprojectM\BuiltinParams.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\compare.h">
+				RelativePath="..\libprojectM\carbontoprojectM.h">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\console_interface.cc">
+				RelativePath="..\libprojectM\Common.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\console_interface.h">
+				RelativePath="..\libprojectM\compare.h">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\custom_shape.cc">
+				RelativePath="..\libprojectM\ConfigFile.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\custom_shape.h">
+				RelativePath="..\libprojectM\ConfigFile.h">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\custom_shape_types.h">
+				RelativePath="..\libprojectM\CustomShape.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\custom_wave.cc">
+				RelativePath="..\libprojectM\CustomShape.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\custom_wave.h">
+				RelativePath="..\libprojectM\CustomWave.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\custom_wave_types.h">
+				RelativePath="..\libprojectM\CustomWave.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\editor.cc">
+				RelativePath="..\libprojectM\CValue.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\editor.h">
+				RelativePath="..\libprojectM\dlldefs.h">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\eval.cc">
+				RelativePath="..\libprojectM\Eval.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\eval.h">
+				RelativePath="..\libprojectM\Eval.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\event.h">
+				RelativePath="..\libprojectM\event.h">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\expr_types.h">
+				RelativePath="..\libprojectM\Expr.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\fatal.h">
+				RelativePath="..\libprojectM\Expr.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\fftsg.cc">
+				RelativePath="..\libprojectM\fatal.h">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\fftsg.h">
+				RelativePath="..\libprojectM\FBO.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\func.cc">
+				RelativePath="..\libprojectM\FBO.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\func.h">
+				RelativePath="..\libprojectM\fftsg.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\func_types.h">
+				RelativePath="..\libprojectM\fftsg.h">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\glConsole.cc">
+				RelativePath="..\libprojectM\Func.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\glConsole.h">
+				RelativePath="..\libprojectM\Func.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\glf.h">
+				RelativePath="..\libprojectM\glError.h">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\idle_preset.h">
+				RelativePath="..\libprojectM\IdlePreset.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\init_cond.cc">
+				RelativePath="..\libprojectM\IdlePreset.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\init_cond.h">
+				RelativePath="..\libprojectM\IdleTextures.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\init_cond_types.h">
+				RelativePath="..\libprojectM\image_DXT.c">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\interface_types.h">
+				RelativePath="..\libprojectM\image_DXT.h">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\menu.cc">
+				RelativePath="..\libprojectM\image_helper.c">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\menu.h">
+				RelativePath="..\libprojectM\image_helper.h">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\param.cc">
+				RelativePath="..\libprojectM\InitCond.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\param.h">
+				RelativePath="..\libprojectM\InitCond.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\param_types.h">
+				RelativePath="..\libprojectM\InitCondUtils.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\parser.cc">
+				RelativePath="..\libprojectM\KeyHandler.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\parser.h">
+				RelativePath="..\libprojectM\KeyHandler.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\pbuffer.cc">
+				RelativePath="..\libprojectM\libprojectM.rc">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\pbuffer.h">
+				RelativePath="..\libprojectM\lvtoprojectM.h">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\PCM.cc">
+				RelativePath="..\libprojectM\Param.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\PCM.h">
+				RelativePath="..\libprojectM\Param.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\per_frame_eqn.cc">
+				RelativePath="..\libprojectM\ParamUtils.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\per_frame_eqn.h">
+				RelativePath="..\libprojectM\Parser.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\per_frame_eqn_types.h">
+				RelativePath="..\libprojectM\Parser.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\per_pixel_eqn.cc">
+				RelativePath="..\libprojectM\PCM.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\per_pixel_eqn.h">
+				RelativePath="..\libprojectM\PCM.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\per_pixel_eqn_types.h">
+				RelativePath="..\libprojectM\PerFrameEqn.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\per_point_types.h">
+				RelativePath="..\libprojectM\PerFrameEqn.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\preset.cc">
+				RelativePath="..\libprojectM\PerPixelEqn.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\preset.h">
+				RelativePath="..\libprojectM\PerPixelEqn.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\preset_types.h">
+				RelativePath="..\libprojectM\PerPointEqn.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\projectM.cc">
+				RelativePath="..\libprojectM\PerPointEqn.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\projectM.h">
+				RelativePath="..\libprojectM\Preset.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\splaytree.cc">
+				RelativePath="..\libprojectM\Preset.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\splaytree.h">
+				RelativePath="..\libprojectM\PresetChooser.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\splaytree_types.h">
+				RelativePath="..\libprojectM\PresetChooser.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\timer.cc">
+				RelativePath="..\libprojectM\PresetFrameIO.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\timer.h">
+				RelativePath="..\libprojectM\PresetFrameIO.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\tree_types.cc">
+				RelativePath="..\libprojectM\PresetLoader.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\tree_types.h">
+				RelativePath="..\libprojectM\PresetLoader.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\win32-dirent.cc">
+				RelativePath="..\libprojectM\PresetMerge.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\win32-dirent.h">
+				RelativePath="..\libprojectM\PresetMerge.hpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\wipemalloc.cc">
+				RelativePath="..\libprojectM\projectM.cpp">
 			</File>
 			<File
-				RelativePath="..\libprojectM\src\wipemalloc.h">
+				RelativePath="..\libprojectM\projectM.hpp">
+			</File>
+			<File
+				RelativePath="..\libprojectM\RandomNumberGenerators.hpp">
+			</File>
+			<File
+				RelativePath="..\libprojectM\Renderer.cpp">
+			</File>
+			<File
+				RelativePath="..\libprojectM\Renderer.hpp">
+			</File>
+			<File
+				RelativePath="..\libprojectM\resource.h">
+			</File>
+			<File
+				RelativePath="..\libprojectM\RingBuffer.hpp">
+			</File>
+			<File
+				RelativePath="..\libprojectM\sdltoprojectM.h">
+			</File>
+			<File
+				RelativePath="..\libprojectM\SOIL.c">
+			</File>
+			<File
+				RelativePath="..\libprojectM\SOIL.h">
+			</File>
+			<File
+				RelativePath="..\libprojectM\stb_image_aug.c">
+			</File>
+			<File
+				RelativePath="..\libprojectM\stb_image_aug.h">
+			</File>
+			<File
+				RelativePath="..\libprojectM\stbi_DDS_aug.h">
+			</File>
+			<File
+				RelativePath="..\libprojectM\stbi_DDS_aug_c.h">
+			</File>
+			<File
+				RelativePath="..\libprojectM\TextureManager.cpp">
+			</File>
+			<File
+				RelativePath="..\libprojectM\TextureManager.hpp">
+			</File>
+			<File
+				RelativePath="..\libprojectM\TimeKeeper.cpp">
+			</File>
+			<File
+				RelativePath="..\libprojectM\TimeKeeper.hpp">
+			</File>
+			<File
+				RelativePath="..\libprojectM\timer.cpp">
+			</File>
+			<File
+				RelativePath="..\libprojectM\timer.h">
+			</File>
+			<File
+				RelativePath="..\libprojectM\win32-dirent.cpp">
+			</File>
+			<File
+				RelativePath="..\libprojectM\win32-dirent.h">
+			</File>
+			<File
+				RelativePath="..\libprojectM\wipemalloc.cpp">
+			</File>
+			<File
+				RelativePath="..\libprojectM\wipemalloc.h">
 			</File>
 		</Filter>
 	</Files>

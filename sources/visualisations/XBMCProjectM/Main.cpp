@@ -44,6 +44,7 @@ d4rk@xboxmediacenter.com
 #include <string>
 #ifdef _WIN32PC
 #include "libprojectM/win32-dirent.h"
+#include <io.h>
 #else
 #include <dirent.h>
 #endif
@@ -129,11 +130,11 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   }
 
   std::string fontsDir;
-  fontsDir = string(rootdir) + PATH_SEPARATOR + string(PROJECTM_DATADIR) + string(FONTS_DIR);
+  fontsDir = string(rootdir) + PATH_SEPARATOR + string(PROJECTM_DATADIR) + PATH_SEPARATOR + string(FONTS_DIR);
   fprintf(stderr, "ProjectM Fonts Dir: %s\n", fontsDir.c_str());
 
   std::string presetsDir;
-  presetsDir = string(rootdir) + PATH_SEPARATOR + string(PRESETS_DIR);;
+  presetsDir = string(rootdir) + PATH_SEPARATOR + string(PRESETS_DIR);
   fprintf(stderr, "ProjectM Presets Dir: %s", presetsDir.c_str());
 
   std::string configFile;
@@ -155,6 +156,17 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   configPM.aspectCorrection = true;
   configPM.easterEgg = 0.0;
   configPM.shuffleEnabled = true;
+
+#ifdef WIN32
+  // workaround: projectM crashes without configFile and 
+  // fstream won't create it
+  if(_access(configFile.c_str(),6) == -1)
+  {
+    FILE *f;
+    f=fopen(configFile.c_str(),"w");
+    fclose(f);
+  }
+#endif
 
   projectM::writeConfig(configFile, configPM);
   
@@ -308,9 +320,10 @@ extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets
   if (!g_presets)
   {
     struct dirent** entries;
-    fprintf(stderr, "Preset Dir: %s\n", globalPM->getPresetURL(0).c_str());
-    int dir_size = scandir(globalPM->getPresetURL(0).c_str(), &entries,
+    fprintf(stderr, "Preset Dir: %s\n",globalPM->settings().presetURL.c_str());
+    int dir_size = scandir(globalPM->settings().presetURL.c_str(), &entries,
                            check_valid_extension, alphasort);
+
     if (dir_size>0)
     {
       g_numPresets = dir_size;

@@ -25,6 +25,7 @@
 #include "compare.h"
 #ifdef WIN32
 #include "win32-dirent.h"
+#define CMAKE_INSTALL_PREFIX  ""
 #endif
 
 #include "timer.h"
@@ -150,7 +151,7 @@ bool projectM::writeConfig(const std::string & configFile, const Settings & sett
 	config.add("Shuffle Enabled", settings.shuffleEnabled);
 	
 	std::fstream file(configFile.c_str());	
-	if (file) {
+	if (file.is_open()) {
 		file << config;
 		return true;
 	} else
