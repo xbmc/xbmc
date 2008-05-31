@@ -359,15 +359,7 @@ while(1){
 	demuxer->movi_end=stream_tell(demuxer->stream); // fixup movi-end
     if(index_mode && !priv->isodml){
       int i;
-#ifdef _XBOX
-      // might make atleast some more indexes readable
-      if(size2 > (demuxer->stream->end_pos - demuxer->movi_end))
-        priv->idx_size=(demuxer->stream->end_pos - demuxer->movi_end)>>4;
-      else
-        priv->idx_size=size2>>4;
-#else
       priv->idx_size=size2>>4;
-#endif
       mp_msg(MSGT_HEADER,MSGL_V,MSGTR_MPDEMUX_AVIHDR_ReadingIndexBlockChunksForFrames,
         priv->idx_size,avih.dwTotalFrames, (int64_t)stream_tell(demuxer->stream));
       priv->idx=malloc(priv->idx_size<<4);
