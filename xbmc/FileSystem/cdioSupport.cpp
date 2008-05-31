@@ -123,14 +123,14 @@ HRESULT CCdIoSupport::CloseTray()
 HANDLE CCdIoSupport::OpenCDROM()
 {
   char* source_name = GetDeviceFileName();
-  CdIo* cdio = cdio_open (source_name, DRIVER_UNKNOWN);
+  CdIo* cdio = cdio_open (source_name, s_defaultDriver);
 
   return (HANDLE) cdio;
 }
 
 HANDLE CCdIoSupport::OpenIMAGE( CStdString& strFilename )
 {
-  CdIo* cdio = cdio_open (strFilename, DRIVER_UNKNOWN);
+  CdIo* cdio = cdio_open (strFilename, s_defaultDriver);
 
   return (HANDLE) cdio;
 }
@@ -625,7 +625,7 @@ void CCdIoSupport::GetCdTextInfo(trackinfo *pti, int trackNum)
 CCdInfo* CCdIoSupport::GetCdInfo()
 {
   char* source_name = GetDeviceFileName();
-  cdio = cdio_open (source_name, DRIVER_UNKNOWN);
+  cdio = cdio_open (source_name, s_defaultDriver);
   if (cdio == NULL)
   {
     char buf[1024];
@@ -920,20 +920,13 @@ ULONG CCdIoSupport::CddbDiscId()
 
 char* CCdIoSupport::GetDeviceFileName()
 {
-#ifdef HAS_XBOX_HARDWARE
-  s_defaultDevice = strdup("\\\\.\\D:");
-#else
   if (s_defaultDevice == NULL)  
   {
     if (getenv("XBMC_DVD_DEVICE") != NULL)
       s_defaultDevice = strdup(getenv("XBMC_DVD_DEVICE"));
     else
     {
-#ifndef __APPLE__
-      CdIo_t *p_cdio = cdio_open(NULL, DRIVER_UNKNOWN);
-#else
-      CdIo_t *p_cdio = cdio_open(NULL, DRIVER_OSX);
-#endif
+      CdIo_t *p_cdio = cdio_open(NULL, s_defaultDriver);
       if (p_cdio != NULL)
       {
         s_defaultDevice = strdup(cdio_get_arg(p_cdio, "source"));
@@ -943,10 +936,17 @@ char* CCdIoSupport::GetDeviceFileName()
         return (char*)"";
     }
   }
-#endif
-
   return s_defaultDevice;
 }
 
+#ifdef HAS_XBOX_HARDWARE
+char* CCdIoSupport::s_defaultDevice = "\\\\.\\D:";
+#else
 char* CCdIoSupport::s_defaultDevice = NULL;
+#endif
 
+#ifdef __APPLE__
+driver_id_t CCdIoSupport::s_defaultDriver = DRIVER_OSX;
+#else
+driver_id_t CCdIoSupport::s_defaultDriver = DRIVER_UNKNOWN;
+#endif
