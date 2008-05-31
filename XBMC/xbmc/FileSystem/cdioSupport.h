@@ -325,6 +325,8 @@ private:
   int m_nNumAudio;              /* # of audio tracks */
 
   static char* s_defaultDevice;
+  static driver_id_t s_defaultDriver;
+
 };
 
 }
