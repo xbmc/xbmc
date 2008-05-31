@@ -843,7 +843,14 @@ void CDVDPlayer::Process()
 
       // if we are caching, start playing it agian
       if (m_caching && !m_bAbortRequest)
+      {
         SetCaching(false);
+        if (m_pDlgCache)
+        {
+          m_pDlgCache->Close();
+          m_pDlgCache = NULL;
+        }
+      }
 
       // while players are still playing, keep going to allow seekbacks
       if(m_dvdPlayerAudio.m_messageQueue.GetDataSize() > 0 
