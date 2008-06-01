@@ -44,6 +44,8 @@ class DllLibMad : public DllDynamic, DllLibMadInterface
   DECLARE_DLL_WRAPPER(DllLibMad, Q:\\system\\players\\dvdplayer\\libmad.dll)
 #elif defined(__APPLE__)
   DECLARE_DLL_WRAPPER(DllLibMad, Q:\\system\\players\\dvdplayer\\libmad-osx.so)
+#elif defined(__x86_64__)
+  DECLARE_DLL_WRAPPER(DllLibMad, Q:\\system\\players\\dvdplayer\\libmad-x86_64-linux.so)
 #else
   DECLARE_DLL_WRAPPER(DllLibMad, Q:\\system\\players\\dvdplayer\\libmad-i486-linux.so)
 #endif
