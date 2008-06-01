@@ -2678,6 +2678,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\md5.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\MediaManager.cpp"
 					>
 				</File>
@@ -5613,14 +5617,6 @@
 			<Filter
 				Name="libScrobbler"
 				>
-				<File
-					RelativePath="..\..\xbmc\lib\libscrobbler\md5.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\lib\libscrobbler\md5.h"
-					>
-				</File>
 				<File
 					RelativePath="..\..\xbmc\lib\libscrobbler\scrobbler.cpp"
 					>
