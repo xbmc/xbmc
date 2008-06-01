@@ -3019,7 +3019,7 @@ void CApplication::SetQuiet(bool bQuiet)
 #ifndef HAS_XBOX_D3D
 void CApplication::Render()
 {
-  if (!m_AppActive && !m_bStop) {Sleep(1); return;}
+  if (!m_AppActive && !m_bStop) {Sleep(1); ResetScreenSaver(); return;}
 
   MEASURE_FUNCTION;
 
