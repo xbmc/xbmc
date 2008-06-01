@@ -157,16 +157,11 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   configPM.easterEgg = 0.0;
   configPM.shuffleEnabled = true;
 
-#ifdef WIN32
   // workaround: projectM crashes without configFile and 
   // fstream won't create it
-  if(_access(configFile.c_str(),6) == -1)
-  {
-    FILE *f;
-    f=fopen(configFile.c_str(),"w");
+  FILE *f = fopen(configFile.c_str(), "a");
+  if (f)
     fclose(f);
-  }
-#endif
 
   projectM::writeConfig(configFile, configPM);
   
