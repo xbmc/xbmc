@@ -114,7 +114,7 @@ rem	CONFIG START
   md BUILD_WIN32\Xbmc
 
   Echo .svn>exclude.txt
-  Echo .so>exclude.txt
+  Echo .so>>exclude.txt
   Echo Thumbs.db>>exclude.txt
   Echo Desktop.ini>>exclude.txt
   Echo dsstdfx.bin>>exclude.txt
@@ -134,20 +134,24 @@ rem	CONFIG START
   Echo userdata\visualisations\>>exclude.txt
   rem other platform stuff
   Echo lib-osx>>exclude.txt
+  Echo players\mplayer>>exclude.txt
   Echo FileZilla Server.xml>>exclude.txt
   Echo asound.conf>>exclude.txt
   Echo voicemasks.xml>>exclude.txt
 
   xcopy %EXE% BUILD_WIN32\Xbmc > NUL
   xcopy ..\..\userdata BUILD_WIN32\Xbmc\userdata /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
-  xcopy ..\..\*.txt BUILD_WIN32 /EXCLUDE:exclude.txt  > NUL
-  copy ..\..\LICENSE.GPL BUILD_WIN32 > NUL
-  copy sources.xml BUILD_WIN32\Xbmc > NUL
+  copy ..\..\copying.txt BUILD_WIN32\Xbmc > NUL
+  copy ..\..\LICENSE.GPL BUILD_WIN32\Xbmc > NUL
+  xcopy dependencies\*.* BUILD_WIN32\Xbmc /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  copy sources.xml BUILD_WIN32\Xbmc\userdata > NUL
   
   xcopy ..\..\credits BUILD_WIN32\Xbmc\credits /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\language BUILD_WIN32\Xbmc\language /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
-  xcopy ..\..\screensavers BUILD_WIN32\Xbmc\screensavers /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
-  xcopy ..\..\visualisations BUILD_WIN32\Xbmc\visualisations /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  rem screensavers currently are xbox only
+  rem xcopy ..\..\screensavers BUILD_WIN32\Xbmc\screensavers /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  xcopy ..\..\visualisations\*_win32.vis BUILD_WIN32\Xbmc\visualisations /Q /I /Y /EXCLUDE:exclude.txt > NUL
+  xcopy ..\..\visualisations\projectM BUILD_WIN32\Xbmc\visualisations\projectM /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\system BUILD_WIN32\Xbmc\system /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\media BUILD_WIN32\Xbmc\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\sounds BUILD_WIN32\Xbmc\sounds /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
@@ -188,7 +192,7 @@ rem	CONFIG START
 	  set DIETEXT=Failed to create %XBMC_SETUPFILE%.
 	  goto DIE
   )
-  del BUILD_WIN32\Xbmc\sources.xml > NUL
+  del BUILD_WIN32\Xbmc\userdata\sources.xml > NUL
   ECHO ------------------------------------------------------------
   ECHO Done!
   ECHO Setup is located at %CD%\%XBMC_SETUPFILE%

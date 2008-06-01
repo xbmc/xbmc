@@ -87,10 +87,9 @@ Section "XBMC" SecXBMC
   ;ADD YOUR OWN FILES HERE...
   SetOutPath "$INSTDIR"
   File "${xbmc_root}\Xbmc\XBMC.exe"
-  File "${xbmc_root}\copying.txt"
-  File "${xbmc_root}\keymapping.txt"
-  File "${xbmc_root}\LICENSE.GPL"
-  File "dependencies\*.*"
+  File "${xbmc_root}\Xbmc\copying.txt"
+  File "${xbmc_root}\Xbmc\LICENSE.GPL"
+  File "${xbmc_root}\Xbmc\*.dll"
   SetOutPath "$INSTDIR\credits"
   File /r /x *.so ${xbmc_root}\Xbmc\credits\*.*
   SetOutPath "$INSTDIR\media"
@@ -187,7 +186,7 @@ Section "-hidden section"
 ;setup sources.xml
   SetOutPath "$APPDATA\XBMC\UserData"
   SetOverwrite off
-  File "${xbmc_root}\Xbmc\sources.xml"
+  File "${xbmc_root}\Xbmc\userdata\sources.xml"
   SetOverwrite on
 
   ;setup sources.xml for plugins  
@@ -288,7 +287,6 @@ Section "Uninstall"
   ;ADD YOUR OWN FILES HERE...
   Delete "$INSTDIR\XBMC.exe"
   Delete "$INSTDIR\copying.txt"
-  Delete "$INSTDIR\keymapping.txt"
   Delete "$INSTDIR\LICENSE.GPL"
   Delete "$INSTDIR\glew32.dll"
   Delete "$INSTDIR\jpeg.dll"
