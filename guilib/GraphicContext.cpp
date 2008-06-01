@@ -589,7 +589,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     res = g_videoConfig.GetSafeMode();
   }
 #ifdef _WIN32PC
-  if (res>=DESKTOP || g_advancedSettings.m_fullScreen)
+  if (g_advancedSettings.m_fullScreen)
 #else
   if (res>=DESKTOP)
 #endif
