@@ -4378,6 +4378,8 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
 
   if (checkURL.GetProtocol() == "shout")
     strPath = checkURL.GetHostName();
+  if (checkURL.GetProtocol() == "lastfm")
+    return 1;
   if (checkURL.GetProtocol() == "tuxbox")
     return 1;
   if (checkURL.GetProtocol() == "plugin")
