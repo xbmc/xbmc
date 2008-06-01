@@ -161,17 +161,13 @@ int LzmaDecode(CLzmaDecoderState *vs,
     #endif
     unsigned char *outStream, SizeT outSize, SizeT *outSizeProcessed, size_t *nowPos, WriteCache *writeCache, void *writeOBJECT, int SizeToCache, ReadCache *readCache, void *readOBJECT)
 {
-/* Temporära lek variabler */
-  #define XBMC_CACHE 32000000
-/* END */
-
+/* Team-XBMC vars */
+  #define XBMC_CACHE (128 * 1024)
+  unsigned char RingBuffer[XBMC_CACHE];
+  int RingPos = (*nowPos) = 0;
+  unsigned char sendBuffer[2 * SizeToCache];
   size_t currOutSize = 0;
-//int *ptr = malloc(10 * sizeof (int));
-
-  unsigned char sendBuffer[2 * SizeToCache + 1];//malloc(2 * SizeToCache * sizeof (unsigned char));
-
-  unsigned long int maxSize = 0;
-  unsigned long int minSize = 0;
+/* END */
   CProb *p = vs->Probs;
 
   Byte previousByte = 0;
@@ -283,15 +279,6 @@ int LzmaDecode(CLzmaDecoderState *vs,
 
   #endif /* _LZMA_OUT_READ */
 
-
-/*  if (*nowPos != 0)
-  {
-    printf("---------\n- %i\n---------\n", (*nowPos));
-//    if (writeCache != NULL)
-      writeCache(object, (void *)outStream, (*nowPos));
-  }
-  currOutSize = (*nowPos);*/
-
   while((*nowPos) < outSize)
   {
     CProb *prob;
@@ -328,12 +315,19 @@ int LzmaDecode(CLzmaDecoderState *vs,
         matchByte = dictionary[pos];
         #else
 //        matchByte = outStream[(*nowPos) - rep0];
-        if (SizeToCache == 0)
+        if (readCache == NULL || readOBJECT == NULL)
            matchByte = outStream[(*nowPos) - rep0];
         else
         {
           if (rep0 < XBMC_CACHE)
-            matchByte = outStream[(*nowPos) - rep0];
+//            matchByte = outStream[(*nowPos) - rep0];
+          {
+            int RetrievePos = RingPos - rep0;
+            if (RetrievePos < 0)
+              RetrievePos = XBMC_CACHE + RetrievePos;
+
+            matchByte = RingBuffer[RetrievePos];
+          }
           else
             matchByte = readCache(readOBJECT, (*nowPos) - rep0); 
         }
@@ -355,9 +349,18 @@ int LzmaDecode(CLzmaDecoderState *vs,
         RC_GET_BIT(probLit, symbol)
       }
       previousByte = (Byte)symbol;
-      outStream[(*nowPos)++] = previousByte;
+      if (readCache == NULL || readOBJECT == NULL)
+        outStream[(*nowPos)] = previousByte;
+
+      RingBuffer[RingPos++] = previousByte;
+
+      if (RingPos == XBMC_CACHE)
+        RingPos = 0;
+
       if (SizeToCache > 0)
         sendBuffer[((*nowPos) - currOutSize)] = previousByte;
+
+      (*nowPos)++;
       #ifdef _LZMA_OUT_READ
       if (distanceLimit < dictionarySize)
         distanceLimit++;
@@ -416,19 +419,35 @@ int LzmaDecode(CLzmaDecoderState *vs,
               dictionaryPos = 0;
             #else
 //            previousByte = outStream[(*nowPos) - rep0];
-            if (SizeToCache == 0)
+            if (readCache == NULL || readOBJECT == NULL)
                previousByte = outStream[(*nowPos) - rep0];
             else
             {
               if (rep0 < XBMC_CACHE)
-                previousByte = outStream[(*nowPos) - rep0];
+//                previousByte = outStream[(*nowPos) - rep0];
+            {
+              int RetrievePos = RingPos - rep0;
+              if (RetrievePos < 0)
+                RetrievePos = XBMC_CACHE + RetrievePos;
+
+              previousByte = RingBuffer[RetrievePos];
+            }
               else
                 previousByte = readCache(readOBJECT, (*nowPos) - rep0);
             }
             #endif
-            outStream[(*nowPos)++] = previousByte;
+            if (readCache == NULL || readOBJECT == NULL)
+              outStream[(*nowPos)] = previousByte;
+
+            RingBuffer[RingPos++] = previousByte;
+
+            if (RingPos == XBMC_CACHE)
+              RingPos = 0;
+
             if (SizeToCache > 0)
               sendBuffer[((*nowPos) - currOutSize)] = previousByte;
+
+            (*nowPos)++;
             #ifdef _LZMA_OUT_READ
             if (distanceLimit < dictionarySize)
               distanceLimit++;
@@ -591,20 +610,34 @@ int LzmaDecode(CLzmaDecoderState *vs,
         if (++dictionaryPos == dictionarySize)
           dictionaryPos = 0;
         #else
-        if (SizeToCache == 0)
+        if (readCache == NULL || readOBJECT == NULL)
            previousByte = outStream[(*nowPos) - rep0];
         else
         {
           if (rep0 < XBMC_CACHE)
-            previousByte = outStream[(*nowPos) - rep0];
+//            previousByte = outStream[(*nowPos) - rep0];
+          {
+            int RetrievePos = RingPos - rep0;
+            if (RetrievePos < 0)
+              RetrievePos = XBMC_CACHE + RetrievePos;
+            previousByte = RingBuffer[RetrievePos];
+          } 
           else
             previousByte = readCache(readOBJECT, (*nowPos) - rep0);
         }
         #endif
         len--;
-        outStream[(*nowPos)++] = previousByte;
+        if (readCache == NULL || readOBJECT == NULL)
+          outStream[(*nowPos)] = previousByte;
+
+        RingBuffer[RingPos++] = previousByte;
+        if (RingPos == XBMC_CACHE)
+          RingPos = 0;
+
         if (SizeToCache > 0)
           sendBuffer[((*nowPos) - currOutSize)] = previousByte;
+
+        (*nowPos)++;
       }
       while(len != 0 && (*nowPos)< outSize);
     }
@@ -612,20 +645,18 @@ int LzmaDecode(CLzmaDecoderState *vs,
     {
       if (((*nowPos) - currOutSize) >= (size_t)SizeToCache)
       {
-        writeCache(writeOBJECT, (outStream + currOutSize), ((*nowPos) - currOutSize));
+        writeCache(writeOBJECT, sendBuffer, ((*nowPos) - currOutSize));
         currOutSize = (*nowPos);
       }
     }
   }
-  printf("Left when done (%i) NowPos(%lld)\n", ((*nowPos) - currOutSize), (*nowPos));
   //Writing the remaining
     if (SizeToCache != 0)
     {
       if (((*nowPos) - currOutSize) > 0)
-        writeCache(writeOBJECT, (outStream + currOutSize), ((*nowPos) - currOutSize));
+        writeCache(writeOBJECT, sendBuffer, ((*nowPos) - currOutSize));
     }
   RC_NORMALIZE;
-//  free(tempBuffer);
 
   #ifdef _LZMA_OUT_READ
   vs->Range = Range;

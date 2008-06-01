@@ -31,12 +31,13 @@ SZ_RESULT SzExtract(
   {
     allocMain->Free(*outBuffer);
     *blockIndex = folderIndex;
-    *outBuffer = 0;
+    if (readCache == NULL || readOBJECT == NULL)
+      *outBuffer = 0;
     *outBufferSize = 0;
     return SZ_OK;
   }
 
-  if (*outBuffer == 0 || *blockIndex != folderIndex)
+  if (/**outBuffer == 0 ||*/ *blockIndex != folderIndex)
   {
     CFolder *folder = db->Database.Folders + folderIndex;
     CFileSize unPackSizeSpec = SzFolderGetUnPackSize(folder);
@@ -55,8 +56,11 @@ SZ_RESULT SzExtract(
     if (unPackSize != unPackSizeSpec)
       return SZE_OUTOFMEMORY;
     *blockIndex = folderIndex;
-    allocMain->Free(*outBuffer);
-    *outBuffer = 0;
+    if (readCache == NULL || readOBJECT == NULL)
+    {
+      allocMain->Free(*outBuffer);
+      *outBuffer = 0;
+    }
     
     RINOK(inStream->Seek(inStream, startOffset));
     
@@ -76,9 +80,12 @@ SZ_RESULT SzExtract(
       *outBufferSize = unPackSize;
       if (unPackSize != 0)
       {
-        *outBuffer = (Byte *)allocMain->Alloc(unPackSize);
-        if (*outBuffer == 0)
-          res = SZE_OUTOFMEMORY;
+        if (readCache == NULL || readOBJECT == NULL)
+        {
+          *outBuffer = (Byte *)allocMain->Alloc(unPackSize);
+          if (*outBuffer == 0)
+            res = SZE_OUTOFMEMORY;
+        }
       }
       if (res == SZ_OK)
       {
@@ -94,8 +101,11 @@ SZ_RESULT SzExtract(
         {
           if (folder->UnPackCRCDefined)
           {
-            if (CrcCalc(*outBuffer, unPackSize) != folder->UnPackCRC)
-              res = SZE_CRC_ERROR;
+            if (readCache == NULL || readOBJECT == NULL)
+            {
+              if (CrcCalc(*outBuffer, unPackSize) != folder->UnPackCRC)
+                res = SZE_CRC_ERROR;
+            }
           }
         }
       }
@@ -117,8 +127,11 @@ SZ_RESULT SzExtract(
     {
       if (fileItem->IsFileCRCDefined)
       {
-        if (CrcCalc(*outBuffer + *offset, *outSizeProcessed) != fileItem->FileCRC)
-          res = SZE_CRC_ERROR;
+        if (readCache == NULL || readOBJECT == NULL)
+        {
+          if (CrcCalc(*outBuffer + *offset, *outSizeProcessed) != fileItem->FileCRC)
+            res = SZE_CRC_ERROR;
+        }
       }
     }
   }
