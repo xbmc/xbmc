@@ -69,8 +69,9 @@ typedef std::list<HANDLE>::iterator HeapObjectListIter;
 typedef std::map<uintptr_t, AllocLenCaller> VAllocList;
 typedef std::map<uintptr_t, AllocLenCaller>::iterator  VAllocListIter;
 
-typedef struct _DllTrackInfo
+class DllTrackInfo : public CCriticalSection
 {
+public:
   DllLoader* pDll;
   uintptr_t lMinAddr;
   uintptr_t lMaxAddr;
@@ -90,7 +91,7 @@ typedef struct _DllTrackInfo
   HeapObjectList heapobjectList;
   
   VAllocList virtualList;
-} DllTrackInfo;
+};
 
 typedef std::list<DllTrackInfo*> TrackedDllList;
 typedef std::list<DllTrackInfo*>::iterator TrackedDllsIter;
