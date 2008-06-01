@@ -18,26 +18,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-/*
- *      Copyright (C) 2005-2008 Team XBMC
- *      http://www.xbmc.org
- *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
- *
- *  This Program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
- *
- */
 
 /*
 XBOX Front LED control
@@ -90,7 +70,7 @@ ILEDSmartxxRGB::ILEDSmartxxRGB()
 {
   strCurrentStatus = "NULL";
   strLastStatus = "NULL";
-  
+
   s_RGBs.strTransition = "NULL";
   s_CurRGB.red = 0;
   s_CurRGB.green = 0;
@@ -184,12 +164,12 @@ void ILEDSmartxxRGB::Process()
           s_CurRGB.red--;
         else if(s_CurRGB.red < s_RGBs.red2)
           s_CurRGB.red++;
-        
+
         if(s_CurRGB.green > s_RGBs.green2)
           s_CurRGB.green--;
         else if(s_CurRGB.green < s_RGBs.green2)
           s_CurRGB.green++;
-        
+
         if(s_CurRGB.blue > s_RGBs.blue2)
           s_CurRGB.blue--;
         else if(s_CurRGB.blue < s_RGBs.blue2)
@@ -199,7 +179,7 @@ void ILEDSmartxxRGB::Process()
           s_CurRGB.white--;
         else if(s_CurRGB.white < s_RGBs.white2)
           s_CurRGB.white++;
-        
+
          dwLastTime = timeGetTime();
         SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue,s_CurRGB.white);
       }
@@ -223,12 +203,12 @@ void ILEDSmartxxRGB::Process()
           s_CurRGB.red--;
         else if(s_CurRGB.red < s_RGBs.red2)
           s_CurRGB.red++;
-        
+
         if(s_CurRGB.green > s_RGBs.green2)
           s_CurRGB.green--;
         else if(s_CurRGB.green < s_RGBs.green2)
           s_CurRGB.green++;
-        
+
         if(s_CurRGB.blue > s_RGBs.blue2)
           s_CurRGB.blue--;
         else if(s_CurRGB.blue < s_RGBs.blue2)
@@ -240,10 +220,10 @@ void ILEDSmartxxRGB::Process()
           s_CurRGB.white++;
 
         if (s_CurRGB.red == s_RGBs.red2 && s_CurRGB.green == s_RGBs.green2 && s_CurRGB.blue == s_RGBs.blue2 && s_CurRGB.white == s_RGBs.white2)
-        { 
+        {
           strLastTransition.clear();
         }
-        
+
         dwLastTime = timeGetTime();
         SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue,s_CurRGB.white);
       }
@@ -273,12 +253,12 @@ void ILEDSmartxxRGB::Process()
           s_CurRGB.red--;
         else if(s_CurRGB.red < i_RGB_R)
           s_CurRGB.red++;
-        
+
         if(s_CurRGB.green > i_RGB_G)
           s_CurRGB.green--;
         else if(s_CurRGB.green < i_RGB_G)
           s_CurRGB.green++;
-        
+
          if(s_CurRGB.blue > i_RGB_B)
            s_CurRGB.blue--;
          else if(s_CurRGB.blue < i_RGB_B)
@@ -309,7 +289,7 @@ void ILEDSmartxxRGB::OnExit()
   SetRGBLed(0,0,0,0xb); //r=0,g=0,b=0  w=0xb (Status LED ON)
 
   // SmartXX OPX port for RGB-Red is the same port for display brightness control
-  // Restoring brightness value from the settings 
+  // Restoring brightness value from the settings
   if ( g_sysinfo.SmartXXModCHIP().Equals("SmartXX OPX") )
     g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
 
@@ -323,7 +303,7 @@ bool ILEDSmartxxRGB::Start()
     Create();
     return true;
   }
-  else 
+  else
     return false;
 }
 void ILEDSmartxxRGB::Stop()
@@ -338,8 +318,8 @@ bool ILEDSmartxxRGB::IsRunning()
 void ILEDSmartxxRGB::getRGBValues(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strWhiteA, const CStdString &strWhiteB, RGBVALUES* s_rgb)
 {
   DWORD red=0,green=0,blue=0,white=0;
-  
-  int ret = sscanf(strRGBa,"#%2X%2X%2X",&red,&green,&blue); 
+
+  int ret = sscanf(strRGBa,"#%2X%2X%2X",&red,&green,&blue);
   if(ret == 3)
   {
     s_rgb->red1 = int(red/2);
@@ -366,7 +346,7 @@ void ILEDSmartxxRGB::getRGBValues(const CStdString &strRGBa, const CStdString &s
     s_rgb->green2 = 0;
     s_rgb->blue2 = 0;
   }
-  
+
   ret = sscanf(strWhiteA,"#%2X",&white);
   if(ret == 1)
   {
@@ -398,11 +378,11 @@ bool ILEDSmartxxRGB::SetRGBStatus(const CStdString &strStatus)
 bool ILEDSmartxxRGB::SetRGBLed(int red, int green, int blue, int white)
 {
   _outp( g_sysinfo.SmartXXModCHIP().Equals("SmartXX V3") ? SMARTXX_PWD_RED:SMARTXX_OPX_PWD_RED, red);
-  _outp( g_sysinfo.SmartXXModCHIP().Equals("SmartXX V3") ? SMARTXX_PWD_GREEN:SMARTXX_OPX_PWD_GREEN, green); 
+  _outp( g_sysinfo.SmartXXModCHIP().Equals("SmartXX V3") ? SMARTXX_PWD_GREEN:SMARTXX_OPX_PWD_GREEN, green);
   _outp( g_sysinfo.SmartXXModCHIP().Equals("SmartXX V3") ? SMARTXX_PWD_BLUE:SMARTXX_OPX_PWD_BLUE, blue);
-    
+
   _outp( SMARTXX_PWM_STATUS, white);
-  
+
   return true;
 }
 

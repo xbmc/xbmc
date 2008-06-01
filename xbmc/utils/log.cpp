@@ -18,26 +18,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-/*
- *      Copyright (C) 2005-2008 Team XBMC
- *      http://www.xbmc.org
- *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
- *
- *  This Program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
- *
- */
 
 #include "stdafx.h"
 #include "log.h"
@@ -77,7 +57,7 @@ void CLog::Close()
 
 void CLog::Log(int loglevel, const char *format, ... )
 {
-  if (g_advancedSettings.m_logLevel > LOG_LEVEL_NORMAL || 
+  if (g_advancedSettings.m_logLevel > LOG_LEVEL_NORMAL ||
      (g_advancedSettings.m_logLevel > LOG_LEVEL_NONE && loglevel >= LOGNOTICE))
   {
     CSingleLock waitLock(critSec);
@@ -86,7 +66,7 @@ void CLog::Log(int loglevel, const char *format, ... )
       // g_stSettings.m_logFolder is initialized in the CSettings constructor to Q:
       // and if we are running from DVD, it's changed to T: in CApplication::Create()
       CStdString strLogFile, strLogFileOld;
-      
+
       strLogFile.Format("%sxbmc.log", _P(g_stSettings.m_logFolder).c_str());
       strLogFileOld.Format("%sxbmc.old.log", _P(g_stSettings.m_logFolder).c_str());
 
@@ -98,13 +78,13 @@ void CLog::Log(int loglevel, const char *format, ... )
       ::rename(strLogFile.c_str(), strLogFileOld.c_str());
 #endif
 
-#ifndef _LINUX      
+#ifndef _LINUX
       fd = _fsopen(strLogFile, "a+", _SH_DENYWR);
 #else
       fd = fopen(strLogFile, "a+");
 #endif
     }
-      
+
     if (!fd)
       return ;
 
@@ -125,16 +105,16 @@ void CLog::Log(int loglevel, const char *format, ... )
     strData.reserve(16384);
     va_list va;
     va_start(va, format);
-    strData.FormatV(format,va);    
+    strData.FormatV(format,va);
     va_end(va);
-    
+
 
     int length = 0;
     while ( length != (int)strData.length() )
     {
       length = strData.length();
       strData.TrimRight(" ");
-      strData.TrimRight('\n');      
+      strData.TrimRight('\n');
       strData.TrimRight("\r");
     }
 
@@ -146,7 +126,7 @@ void CLog::Log(int loglevel, const char *format, ... )
     /* fixup newline alignment, number of spaces should equal prefix length */
     strData.Replace("\n", "\n                             ");
     strData += "\n";
-       
+
     fwrite(strPrefix.c_str(), strPrefix.size(), 1, fd);
     fwrite(strData.c_str(), strData.size(), 1, fd);
     fflush(fd);
@@ -162,13 +142,13 @@ void CLog::Log(int loglevel, const char *format, ... )
 
     va_list va;
     va_start(va, format);
-    strData.FormatV(format, va);    
+    strData.FormatV(format, va);
     va_end(va);
-    
+
     OutputDebugString(strData.c_str());
     if( strData.Right(1) != "\n" )
       OutputDebugString("\n");
-    
+
   }
 #endif
 #endif
@@ -184,9 +164,9 @@ void CLog::DebugLog(const char *format, ... )
 
   va_list va;
   va_start(va, format);
-  strData.FormatV(format, va);    
+  strData.FormatV(format, va);
   va_end(va);
-  
+
   OutputDebugString(strData.c_str());
   if( strData.Right(1) != "\n" )
     OutputDebugString("\n");
@@ -249,8 +229,8 @@ void _VerifyGLState(const char* szfile, const char* szfunction, int lineno){
                   matrix[ixx*4], matrix[ixx*4+1], matrix[ixx*4+2],      \
                   matrix[ixx*4+3]);                                     \
       }                                                                 \
-  } 
-  
+  }
+
   GLenum err = glGetError();
   if (err==GL_NO_ERROR)
     return;
