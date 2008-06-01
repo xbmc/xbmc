@@ -284,7 +284,7 @@ copy() {
   fi
   error
 
-  for I in credits language media screensavers scripts skin sounds system userdata visualisations web xbmc-xrandr XboxMediaCenter README.linux copying.txt Changelog.txt
+  for I in credits language media screensavers scripts skin sounds system userdata visualisations web xbmc-xrandr xbmc.bin README.linux copying.txt Changelog.txt
   do
     printf "\r Copying %-16.16s" $I 
     if [[ "$I" == "skin" ]]
@@ -352,7 +352,7 @@ copy() {
           "$RAR" x -y -inul "$WEB" "$BUILDDIR/web/"
         fi
       fi
-    elif [[ "$I" == "XboxMediaCenter" ]]
+    elif [[ "$I" == "xbmc.bin" ]]
     then
       if [[ -e "${SOURCEDIR}/$I" ]]
       then
@@ -389,7 +389,7 @@ copy() {
   if ! (( DEBUG ))
   then
     echo " Stripping binary."
-    strip "$BUILDDIR/XboxMediaCenter"
+    strip "$BUILDDIR/xbmc.bin"
   fi
 
   printf "\r Copying %-16.16s\n" "complete!" 
@@ -653,13 +653,13 @@ if (( COPY ))
 then
   if (( QUICKCOPY ))
   then
-    if [[ -e "${SOURCEDIR}/XboxMediaCenter" ]]
+    if [[ -e "${SOURCEDIR}/xbmc.bin" ]]
     then
       if (( VERBOSE ))
       then
-        mv -v "${SOURCEDIR}/XboxMediaCenter" "$BUILDDIR"
+        mv -v "${SOURCEDIR}/xbmc.bin" "$BUILDDIR"
       else
-        mv "${SOURCEDIR}/XboxMediaCenter" "$BUILDDIR" &> /dev/null
+        mv "${SOURCEDIR}/xbmc.bin" "$BUILDDIR" &> /dev/null
       fi
     fi
   else
