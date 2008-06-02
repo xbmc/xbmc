@@ -36,7 +36,7 @@ using namespace XFILE;
 
 CFileCache::CFileCache()
 {
-   m_bDeleteCache = false;
+   m_bDeleteCache = true;
    m_nSeekResult = 0;
    m_seekPos = 0;
    m_readPos = 0;
