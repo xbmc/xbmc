@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "stdafx.h" 
 #include "pyutil.h"
 #include <wchar.h>
 #include <vector>
@@ -29,20 +29,13 @@
 using namespace std;
 
 static int iPyGUILockRef = 0;
-static TiXmlDocument pySkinReferences;
+static TiXmlDocument pySkinReferences; 
 
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
-#endif
-
-#ifdef __APPLE__
-#undef PyUnicode_AsUnicode
-// FIXME: hack to get it to compile since r12386
-// -d4rk (04/01/08)
-#define PyUnicode_AsUnicode(a) (const char *)(a) 
 #endif
 
 namespace PYXBMC
@@ -60,13 +53,8 @@ namespace PYXBMC
       //
       CStdString utf8String;
 
-#ifdef __APPLE__
-      CStdStringW utf16String((wchar_t*)PyUnicodeUCS2_AsUnicode(pObject), PyUnicode_GET_SIZE(pObject));
-      g_charsetConverter.ucs2ToUTF8(utf16String, utf8String);
-#else
       CStdStringW utf16String = (wchar_t*) PyUnicode_AsUnicode(pObject);
       g_charsetConverter.wToUTF8(utf16String, utf8String);
-#endif
       
       buf = utf8String;
       return 1;
