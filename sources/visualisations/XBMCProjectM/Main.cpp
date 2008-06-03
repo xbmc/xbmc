@@ -49,13 +49,13 @@ d4rk@xboxmediacenter.com
 #include <dirent.h>
 #endif
 
-#define CONFIG_FILE "/config"
+#define CONFIG_FILE "config.inp"
 #ifdef _WIN32PC
 #define PRESETS_DIR "visualisations\\projectM"
 #define FONTS_DIR "fonts"
 #else
-#define PRESETS_DIR "/visualisations/projectM"
-#define FONTS_DIR "/fonts"
+#define PRESETS_DIR "visualisations/projectM"
+#define FONTS_DIR "fonts"
 #endif
 #define PROJECTM_DATADIR "userdata"
 
@@ -130,7 +130,8 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   }
 
   std::string fontsDir;
-  fontsDir = string(rootdir) + PATH_SEPARATOR + string(PROJECTM_DATADIR) + PATH_SEPARATOR + string(FONTS_DIR);
+  fontsDir = string(rootdir) + PATH_SEPARATOR + string(PROJECTM_DATADIR) +
+             PATH_SEPARATOR + string(FONTS_DIR);
   fprintf(stderr, "ProjectM Fonts Dir: %s\n", fontsDir.c_str());
 
   std::string presetsDir;
@@ -138,7 +139,8 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   fprintf(stderr, "ProjectM Presets Dir: %s", presetsDir.c_str());
 
   std::string configFile;
-  configFile = string(rootdir) + PATH_SEPARATOR + string(PRESETS_DIR) + PATH_SEPARATOR + "config.inp";
+  configFile = string(rootdir) + PATH_SEPARATOR + string(PRESETS_DIR) +
+               PATH_SEPARATOR + CONFIG_FILE;
 
   projectM::Settings configPM;
   configPM.meshX = gx;
@@ -219,8 +221,7 @@ extern "C" void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqD
 // Called once per frame. Do all rendering here.
 //-----------------------------------------------------------------------------
 extern "C" void Render()
-{ 
-
+{
   glClearColor(0,0,0,0);
 
   glMatrixMode(GL_TEXTURE);
