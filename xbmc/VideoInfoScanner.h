@@ -75,9 +75,6 @@ namespace VIDEO
     int CountFiles(const CStdString& strPath);
     void FetchSeasonThumbs(long lTvShowId);
     void FetchActorThumbs(const std::vector<SActorInfo>& actors);
-    void CheckForNFOFile(CFileItem* pItem, const CNfoFile& nfoReader, 
-                         const SScraperInfo& info, bool bDirNames, 
-                         CGUIDialogProgress* dlgProgress  = NULL);
     static int GetPathHash(const CFileItemList &items, CStdString &hash);
     enum NFOResult
     {
