@@ -264,7 +264,7 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double pts)
     case STATE_PICTURE:
       {
         m_dll.mpeg2_skip(m_pHandle, 0);
-        if(m_hurry>1 && m_pInfo->current_picture)
+        if(m_hurry>0 && m_pInfo->current_picture)
         {
           if((m_pInfo->current_picture->flags&PIC_MASK_CODING_TYPE) == PIC_FLAG_CODING_TYPE_B)
             m_dll.mpeg2_skip(m_pHandle, 1);
