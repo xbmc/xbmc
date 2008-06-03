@@ -626,8 +626,8 @@
 			<posy>135</posy>
 			<width>235</width>
 			<height>424</height>
-			<font>special12</font>
-			<label>$INFO[ListItem.episode,, $LOCALIZE[20360]]</label>
+			<font>font13</font>
+			<label>$INFO[ListItem.episode,, $LOCALIZE[20360]][COLOR=grey]$INFO[ListItem.Property(UnWatchedEpisodes), (, $LOCALIZE[16101])][/COLOR]</label>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(57) + container.content(tvshows)</visible>
 		</control>
