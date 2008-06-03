@@ -1,0 +1,129 @@
+<includes>
+	<include name="FileBrowser_ThumbView">
+		<control type="panel" id="451">
+			<posx>265</posx>
+			<posy>105</posy>
+			<width>390</width>
+			<height>417</height>
+			<onleft>9000</onleft>
+			<onright>60</onright>
+			<onup>451</onup>
+			<ondown>451</ondown>
+			<scrolltime>200</scrolltime>
+			<viewtype>icon</viewtype>
+			<pagecontrol>60</pagecontrol>
+			<itemlayout height="139" width="97">
+				<control type="image">
+					<posx>4</posx>
+					<posy>5</posy>
+					<width>89</width>
+					<height>100</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>45</posx>
+					<posy>115</posy>
+					<width>82</width>
+					<height>22</height>
+					<font>font13</font>
+					<selectedcolor>green</selectedcolor>
+					<align>center</align>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="139" width="97">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>97</width>
+					<height>110</height>
+					<texture>folder-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>4</posx>
+					<posy>5</posy>
+					<width>89</width>
+					<height>100</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>45</posx>
+					<posy>115</posy>
+					<width>82</width>
+					<height>22</height>
+					<font>font13</font>
+					<selectedcolor>green</selectedcolor>
+					<align>center</align>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+	</include>
+	<include name="OSDBookmark_ThumbView">
+		<control type="panel" id="11">
+			<posx>0</posx>
+			<posy>30</posy>
+			<width>440</width>
+			<height>290</height>
+			<onleft>2</onleft>
+			<onright>3</onright>
+			<ondown>2</ondown>
+			<onup>2</onup>
+			<scrolltime>200</scrolltime>
+			<viewtype label="536">icon</viewtype>
+			<pagecontrol>-</pagecontrol>
+			<itemlayout height="145" width="146">
+				<control type="image">
+					<posx>1</posx>
+					<posy>1</posy>
+					<width>143</width>
+					<height>144</height>
+					<texture border="5">input-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>6</posx>
+					<posy>6</posy>
+					<width>134</width>
+					<height>115</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>73</posx>
+					<posy>123</posy>
+					<width>134</width>
+					<height>22</height>
+					<font>font12</font>
+					<selectedcolor>green</selectedcolor>
+					<align>center</align>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="145" width="145">
+				<control type="image">
+					<posx>1</posx>
+					<posy>1</posy>
+					<width>143</width>
+					<height>144</height>
+					<texture border="5">input-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>6</posx>
+					<posy>6</posy>
+					<width>134</width>
+					<height>115</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>73</posx>
+					<posy>123</posy>
+					<width>134</width>
+					<height>22</height>
+					<font>font12</font>
+					<selectedcolor>green</selectedcolor>
+					<align>center</align>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+	</include>
+</includes>

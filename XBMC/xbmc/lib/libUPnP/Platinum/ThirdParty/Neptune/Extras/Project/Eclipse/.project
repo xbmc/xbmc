@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>Neptune</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.cdt.core.cnature</nature>
+		<nature>org.eclipse.cdt.core.ccnature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
+		<nature>com.symbian.cdt.core.symbiannature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>Core</name>
+			<type>2</type>
+			<location>NEPTUNE_HOME/Source/Core</location>
+		</link>
+		<link>
+			<name>Neptune_S60_3_1_Emulator_Debug_[S60_3rd_FP1].lib</name>
+			<type>1</type>
+			<location>C:/Symbian/9.2/S60_3rd_FP1/epoc32/release/WINSCW/UDEB/Neptune.lib</location>
+		</link>
+	</linkedResources>
+</projectDescription>

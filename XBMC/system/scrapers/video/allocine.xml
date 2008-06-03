@@ -1,0 +1,166 @@
+<scraper name="allocine.fr" content="movies" thumb="allocine.jpg">
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="http://www.allocine.fr/film/fichefilm_gen_cfilm=\1.html"  dest="3">
+			<expression noclean="1">allocine\.fr/film/fichefilm_gen_cfilm=([0-9]*)\.html</expression>
+		</RegExp>
+	</NfoUrl>
+
+	<CreateSearchUrl dest="3">
+		<RegExp input="$$1" output="http://www.allocine.fr/recherche/?motcle=\1/" dest="3">
+			<expression></expression>
+		</RegExp>
+	</CreateSearchUrl>
+
+	<GetSearchResults dest="8">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\4 (\5) | \1&lt;/title&gt;&lt;url&gt;http://www.allocine.fr/\1/\2=\3.html&lt;/url&gt;&lt;id&gt;\3&lt;/id&gt;&lt;/entity&gt;" dest="5+">
+				<expression repeat="yes">&lt;h4&gt;&lt;a href=&quot;/([^/pat]*)/([^=pwat]*)=([0-9]+)\.html&quot; class=&quot;link1&quot;&gt;([^(]*)&lt;/a&gt;[^(]*\(([^)]*)\)</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSearchResults>
+
+	<GetDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<!--Title -->
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
+				<expression trim="1" noclean="1">&lt;title&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<!--URL TO Film -->
+     		 <RegExp input="$$1" output="&lt;url function=&quot;FILM&quot;&gt;http://www.allocine.fr/film/casting_gen_cfilm=\1.html&lt;/url&gt;" dest="5+">
+        		<expression noclean="1">casting_gen_cfilm=([0-9]*)</expression>
+      		</RegExp>
+			<!--URL TO Serie -->
+     		<RegExp input="$$1" output="&lt;url function=&quot;SERIE&quot;&gt;http://www.allocine.fr/series/casting_gen_cserie=\1.html&lt;/url&gt;" dest="5+">
+        		<expression noclean="1">casting_gen_cserie=([0-9]*)</expression>
+      		</RegExp>
+			<!--URL TO Tagline -->
+     		<RegExp input="$$1" output="&lt;url function=&quot;Tagline&quot;&gt;http://www.allocine.fr/film/revuedepresse_gen_cfilm=\1.html&lt;/url&gt;" dest="5+">
+        		<expression noclean="1">revuedepresse_gen_cfilm=([0-9]*)</expression>
+      		</RegExp>
+			<!--URL TO Thumbnail -->
+     		<RegExp input="$$1" output="&lt;url function=&quot;Thumbnail&quot;&gt;http://www.allocine.fr/film/galerie_gen_cfilm=\1&amp;amp;filtre=&amp;amp;page=1.html&lt;/url&gt;" dest="5+">
+        		<expression noclean="1">galerievignette_gen_cfilm=([0-9]*)</expression>
+      		</RegExp>
+			<!--Thumbnail Film-->
+			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="5+">
+				<expression>&quot;([^&quot;]*)&quot; border=&quot;0&quot; alt=&quot;&quot; class=&quot;affichette</expression>
+			</RegExp>
+			<!--Year Film-->
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
+				<expression>&gt;Année de production : ([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<!--Director-->
+			<RegExp input="$$1" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
+				<expression>Réalisé par &lt;[^&gt;]*&gt;([^&lt;]*)</expression>
+			</RegExp>
+			<!--Director Year Serie-->
+			<RegExp input="$$1" output="&lt;director&gt;\1&lt;/director&gt;&lt;year&gt;\2&lt;/year&gt;" dest="5+">
+				<expression>Série créée[^&gt;]*&gt;([^(]*) en ([^&lt;]*)</expression>
+			</RegExp>
+			<!--Runtime Film-->
+			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="5+">
+				<expression>Durée : ([^.]*)</expression>
+			</RegExp>
+			<!--Runtime Serie-->
+			<RegExp input="$$1" output="&lt;runtime&gt;Format : \1&lt;/runtime&gt;" dest="5+">
+				<expression>Format : ([^.]*)</expression>
+			</RegExp>
+			<!--Thumbnail Serie-->
+			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="5+">
+				<expression>&lt;img src=&quot;([^&quot;]*)&quot; style=&quot;border: solid 1 black;&quot; width=&quot;250&quot; /&gt;</expression>
+            </RegExp>
+			<!--Rating Votes-->
+			<RegExp input="$$1" output="\1#\2" dest="7">
+				<expression>&lt;h4&gt;Note moyenne : &lt;([^&gt;]*)&gt;[^0-9]*([0-9]*)</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;rating&gt;\1étoile(s)&lt;/rating&gt;&lt;votes&gt;\2&lt;/votes&gt;" dest="5+">
+				<expression>class=&quot;etoile_([0-9]*)&quot;[^#]*#([0-9]*)</expression>
+			</RegExp>
+			<!--Genre Film-->
+			<RegExp input="$$1" output="\1" dest="7">
+				<expression noclean="1">Genre :([^:]*):</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+				<RegExp input="$$7" output=" / \1" dest="6">
+					<expression repeat="yes" noclean="1">&lt;a href[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
+				</RegExp>
+				<expression> / (.*)</expression>
+			</RegExp>
+			<!--Genre Serie-->
+			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+				<expression>Genre :([^(]*)Nationalité :</expression>
+			</RegExp>
+			<!--Plot outline -->
+			<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+				<expression>&lt;td valign=&quot;top&quot; style=&quot;padding:10 0 0 0&quot;&gt;&lt;div align=&quot;justify&quot;&gt;&lt;h4&gt;([^#]*)&lt;/h4&gt;&lt;/div&gt;</expression>
+			</RegExp>
+    		<!--MPAA-->
+			<RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="5+">
+				<expression>N° de visa[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<!--Tagline Serie-->
+			<RegExp input="$$1" output="&lt;tagline&gt;Saisons : \1 Episodes : \2&lt;/tagline&gt;" dest="5+">
+				<expression>Saisons : ([0-9]*)[^-]*- Episodes : ([0-9]*)</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetDetails>
+
+	<FILM dest="5">
+		<RegExp input="$$3" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="7">
+				<expression noclean="1">Scénariste([^(]*)Equipe technique</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="3+">
+				<RegExp input="$$7" output=" / \1" dest="6">
+					<expression repeat="yes" noclean="1">&gt;([^&lt;]*)&lt;/a</expression>
+				</RegExp>
+				<expression noclean="1"> / (.*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1">&lt;b&gt;Acteurs&lt;/b&gt;(.*)&lt;b&gt;Production&lt;/b&gt;</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\1&lt;/role&gt;&lt;/actor&gt;" dest="3+">
+				<expression repeat="yes" noclean="1,2">&lt;h5&gt;([^&lt;]*)&lt;/h5&gt;&lt;/td&gt;[^&lt;]*&lt;[^&gt;]*&gt;&lt;h5&gt;&lt;a[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+			</RegExp> 
+      			<expression noclean="1"></expression>
+    		</RegExp>
+  	</FILM>
+
+	<SERIE dest="5">
+		<RegExp input="$$3" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1">&lt;b&gt;Acteurs[^&lt;]*&lt;/b&gt;([^(]*)Acteurs[^&lt;]*secondaires</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\1&lt;/role&gt;&lt;/actor&gt;" dest="3+">
+				<expression repeat="yes" noclean="1,2">&lt;h5&gt;([^&lt;]*)&lt;/h5*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\1&lt;/role&gt;&lt;/actor&gt;" dest="3+">
+				<expression repeat="yes" noclean="1,2">&lt;h5&gt;&lt;img[^&gt;]*&gt;([^&lt;]*)&lt;/h5*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+			</RegExp> 
+      			<expression noclean="1"></expression>
+    		</RegExp>
+  	</SERIE>
+
+	<Tagline dest="5">
+		<RegExp input="$$3" output="&lt;details&gt;&lt;tagline&gt;\1&lt;/tagline&gt;&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="3+">
+				<expression>Barème AlloCiné. : [^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+	  		<expression></expression>
+    		</RegExp>
+  	</Tagline>
+
+	<Thumbnail dest="5">
+		<RegExp input="$$3" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="7">
+				<expression noclean="1">Toutes les vignettes(.*)class=&quot;galerie&quot;</expression>
+                        </RegExp>
+			<RegExp input="$$7" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="3+">
+				<expression repeat="yes" noclean="1">img src=&quot;([^&quot;]*)&quot;</expression>
+                        </RegExp>
+			<expression></expression>
+		</RegExp>
+  	</Thumbnail>
+</scraper>

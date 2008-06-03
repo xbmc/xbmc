@@ -1,0 +1,192 @@
+<window id="128">
+	<defaultcontrol>10</defaultcontrol>
+	<include>dialogeffect</include>
+	<coordinates>
+		<system>1</system>
+		<posx>155</posx>
+		<posy>150</posy>
+	</coordinates>
+	<controls>
+		<control type="image" id="1">
+			<description>background image</description>
+			<posx>-15</posx>
+			<posy>-15</posy>
+			<width>440</width>
+			<height>340</height>
+			<texture>dialog-panel2.png</texture>
+		</control>
+		<control type="label" id="2">
+			<description>Heading Label</description>
+			<posx>10</posx>
+			<posy>-2</posy>
+			<width>420</width>
+			<align>left</align>
+			<label>1007</label>
+			<font>special13</font>
+			<textcolor>dialogheader</textcolor>
+		</control>
+		<control type="spincontrolex" id="10">
+			<description>Protocol SpinControl</description>
+			<posx>10</posx>
+			<posy>35</posy>
+			<height>32</height>
+			<width>400</width>
+			<texturefocus>input-focus.png</texturefocus>
+			<texturenofocus>input-nofocus.png</texturenofocus>
+			<textureup>scroll-up.png</textureup>
+			<texturedown>scroll-down.png</texturedown>
+			<textureupfocus>scroll-up-focus.png</textureupfocus>
+			<texturedownfocus>scroll-down-focus.png</texturedownfocus>
+			<font>font12</font>
+			<textcolor>white</textcolor>
+			<disabledcolor>disabled</disabledcolor>
+			<textoffsetx>12</textoffsetx>
+			<aligny>center</aligny>
+			<reverse>yes</reverse>
+			<label>1008</label>
+			<onup>18</onup>
+			<ondown>11</ondown>
+			<onleft>10</onleft>
+			<onright>10</onright>
+		</control>
+		<control type="button" id="11">
+			<description>Server Address Button</description>
+			<posx>10</posx>
+			<posy>70</posy>
+			<width>320</width>
+			<height>32</height>
+			<font>font12</font>
+			<textoffsetx>12</textoffsetx>
+			<aligny>center</aligny>
+			<texturefocus>input-focus.png</texturefocus>
+			<texturenofocus>input-nofocus.png</texturenofocus>
+			<label>-</label>
+			<onup>10</onup>
+			<onleft>12</onleft>
+			<onright>12</onright>
+			<ondown>16</ondown>
+		</control>
+		<control type="button" id="12">
+			<description>Server Browse Button</description>
+			<posx>333</posx>
+			<posy>70</posy>
+			<width>77</width>
+			<height>32</height>
+			<font>font12</font>
+			<textoffsetx>12</textoffsetx>
+			<label>1024</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onup>10</onup>
+			<onleft>11</onleft>
+			<onright>11</onright>
+			<ondown>16</ondown>
+		</control>
+		<control type="button" id="16">
+			<description>Remote path Button</description>
+			<posx>10</posx>
+			<posy>105</posy>
+			<width>400</width>
+			<height>32</height>
+			<font>font12</font>
+			<textoffsetx>12</textoffsetx>
+			<aligny>center</aligny>
+			<texturefocus>input-focus.png</texturefocus>
+			<texturenofocus>input-nofocus.png</texturenofocus>
+			<label>-</label>
+			<onup>11</onup>
+			<onleft>16</onleft>
+			<onright>16</onright>
+			<ondown>13</ondown>
+		</control>
+		<control type="button" id="13">
+			<description>Port Button</description>
+			<posx>10</posx>
+			<posy>140</posy>
+			<width>400</width>
+			<height>32</height>
+			<font>font12</font>
+			<textoffsetx>12</textoffsetx>
+			<aligny>center</aligny>
+			<texturefocus>input-focus.png</texturefocus>
+			<texturenofocus>input-nofocus.png</texturenofocus>
+			<label>1013</label>
+			<onup>16</onup>
+			<onleft>13</onleft>
+			<onright>13</onright>
+			<ondown>14</ondown>
+		</control>
+		<control type="button" id="14">
+			<description>Username Button</description>
+			<posx>10</posx>
+			<posy>175</posy>
+			<width>400</width>
+			<height>32</height>
+			<font>font12</font>
+			<textoffsetx>12</textoffsetx>
+			<aligny>center</aligny>
+			<texturefocus>input-focus.png</texturefocus>
+			<texturenofocus>input-nofocus.png</texturenofocus>
+			<label>1014</label>
+			<onup>13</onup>
+			<onleft>14</onleft>
+			<onright>14</onright>
+			<ondown>15</ondown>
+		</control>
+		<control type="button" id="15">
+			<description>Password Button</description>
+			<posx>10</posx>
+			<posy>210</posy>
+			<width>400</width>
+			<height>32</height>
+			<font>font12</font>
+			<textoffsetx>12</textoffsetx>
+			<aligny>center</aligny>
+			<texturefocus>input-focus.png</texturefocus>
+			<texturenofocus>input-nofocus.png</texturenofocus>
+			<label>15052</label>
+			<onup>14</onup>
+			<onleft>15</onleft>
+			<onright>15</onright>
+			<ondown>18</ondown>
+		</control>
+		<control type="button" id="18">
+			<description>Ok Button</description>
+			<posx>253</posx>
+			<posy>255</posy>
+			<width>77</width>
+			<height>32</height>
+			<font>font12</font>
+			<textoffsetx>12</textoffsetx>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<label>186</label>
+			<onup>15</onup>
+			<onleft>19</onleft>
+			<onright>19</onright>
+			<ondown>10</ondown>
+		</control>
+		<control type="button" id="19">
+			<description>Cancel Button</description>
+			<posx>333</posx>
+			<posy>255</posy>
+			<width>77</width>
+			<height>32</height>
+			<font>font12</font>
+			<textoffsetx>12</textoffsetx>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<label>222</label>
+			<onup>15</onup>
+			<onleft>18</onleft>
+			<onright>18</onright>
+			<ondown>10</ondown>
+		</control>
+	</controls>
+</window>

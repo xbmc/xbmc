@@ -1,0 +1,67 @@
+<screensaver>
+
+ <!-- global settings....... -->
+ 
+ <!-- controls for the display itself -->
+ <fov>65.0</fov>
+ <aspectratio>1.5</aspectratio>
+ 
+ <!-- maps: -->
+ <!-- cube - the basic environment -->
+ <!-- diffuse - should be a blurred version of the cubemap -->
+ <!-- specular - should be a version of the cubemap highlighting light -->
+ <cubemap>q:\screensavers\pmBlobs\cube.dds</cubemap>
+ <diffusecubemap>q:\screensavers\pmBlobs\cube_diffuse.dds</diffusecubemap>
+ <specularcubemap>q:\screensavers\pmBlobs\cube_specular.dds</specularcubemap>
+ 
+ <!-- this controls how the specular map is applied to the diffuse map: -->
+ <!-- 1 - disabled -->
+ <!-- 4 - modulate -->
+ <!-- 5 - modulate 2x -->
+ <!-- 6 - modulate 4x -->
+ <!-- 7 - add -->    
+ <!-- 8 - add signed (dark parts darken) -->
+ <!-- 9 - add signed 2x -->
+ <!-- 10 - subtract -->
+ <!-- 11 - add smooth -->
+ <blendstyle>11</blendstyle> 
+ 
+ <globalspeed>0.01</globalspeed>
+
+ <!-- whether or not to show environment --> 
+ <showcube>true</showcube>
+ 
+ <!-- when environment isn't showing, a gradient background with these colors is used -->
+ <bgtopcolor>0 0 0</bgtopcolor>
+ <bgbottomcolor>0 0 100</bgbottomcolor>
+ 
+ <!-- controls world rotation speed --> 
+ <worldrot>0.5 -0.2 0.1</worldrot>
+
+ <!-- blobs settings....... -->
+ 
+ <!-- max. 5 -->
+ <numblobs>5</numblobs>
+ 
+ <!-- reduce this if blobs are being cut off at edges -->
+ <movescale>0.3</movescale>
+ 
+ <!-- bigger will be slower! -->
+ <smoothness>24</smoothness>
+ 
+ <!-- smaller values will be blobbier -->
+ <blobbiness>24.0</blobbiness>
+ 
+ <!-- each blob has a starting position (xyz), an influence (size), and speed (xyz, can be negative) --> 
+ <blob1>0.5 0.5 0.5 0.5 2.0 4.0 0.0</blob1>
+ 
+ <blob2>0.6 0.5 0.5 0.51 -4.0 2.0 0.0</blob2>
+ 
+ <blob3>0.3 0.5 0.3 0.4 -2.0 0.0 3.0</blob3>
+ 
+ <blob4>0.5 0.1 0.1 0.25 0.0 2.0 1.0</blob4>
+ 
+ <blob5>0.25 0.5 0.2 0.3 0.5 0.0 1.0</blob5>
+ 
+
+</screensaver>

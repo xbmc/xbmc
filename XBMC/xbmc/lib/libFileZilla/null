@@ -1,0 +1,5 @@
+Microsoft (R) COFF/PE Editor Version 7.10.3077
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+EDITBIN : fatal error LNK1137: invalid argument '.rdata=FILEZILLA_RDATA' specified with /SECTION

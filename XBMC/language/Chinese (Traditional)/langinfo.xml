@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<language>
+  <charsets>
+    <gui unicodefont="true">CP950</gui>
+    <subtitle>CP950</subtitle>
+  </charsets>
+
+  <dvd>
+    <menu>zh</menu>
+    <audio>zh</audio>
+    <subtitle>zh</subtitle>
+  </dvd>
+
+  <regions>
+    <region name="台北">
+      <dateshort>M/D</dateshort>
+      <datelong>M'月'D'日', DDDD</datelong>
+      <time symbolAM="上午" symbolPM="下午">xx h:mm</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+    </region>
+  </regions>
+
+  <sorttokens>
+    <token>The</token>
+  </sorttokens>
+</language>

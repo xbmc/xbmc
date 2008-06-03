@@ -1,0 +1,7 @@
+Texture titleimage
+{
+   Source titleimage.bmp
+   Format D3DFMT_DXT1
+   Width 128
+   Height 128
+}

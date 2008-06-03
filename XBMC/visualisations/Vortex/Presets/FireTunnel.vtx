@@ -1,0 +1,74 @@
+Map map;
+Tunnel tunnel;
+
+int x,y;
+float dx,dy,a,r,d,tp,s,t,c;
+float basstime;
+
+void Init()
+{
+	map.SetTimed();
+}
+
+void Render()
+{
+   gfxPushMatrix();
+
+	map.Render();
+
+	gfxSetRenderTarget(map);
+
+	gfxTranslate(0,0,2.414);
+	gfxSetAspect(0);
+	
+	gfxSetBlendMode(BLEND_ADD);
+ 
+//	gfxSetDrawMode3d();
+	gfxBegin(PRIM_LINESTRIP);
+	for (int x=0; x < 256; x = x+1)
+	{
+		r = Fabs(WaveLeft(x) * 3);
+		gfxColour(1, r + 0.1, 0.1, 1);
+		gfxVertex((x-128)/128.0f, (WaveLeft(x) / 5.0f) - 0.15f, 0);
+	}
+	gfxEnd();
+
+	gfxBegin(PRIM_LINESTRIP);
+	for (int x=0; x < 256; x = x+1)
+	{
+		r = Fabs(WaveRight(x) * 3);
+		gfxColour(1, r + 0.1, 0.1, 1);
+		gfxVertex((WaveRight(x) / 5.0f) + 0.15f, (x-128)/128.0f, 0);
+	}
+	gfxEnd();
+
+//   gfxPopMatrix();
+
+   t = TIMEPASS*(BASS+0.25)*40;
+
+   basstime = basstime + (TIMEPASS*(BASS+1));
+
+   r = Cos(basstime)+Sin(basstime*1.23);
+
+	for (y=0;y<24;y=y+1)
+	{
+		for (x=0;x<32;x=x+1)
+		{
+			map.SetValues(x, y, MIDDLE, (BASS*2.0f) - 1.0f, -0.5, -2, -3);
+		}
+	}
+  gfxPopMatrix(); 
+      
+	gfxSetRenderTarget(TEXTURE_FRAMEBUFFER);
+	gfxSetAspect(1);
+
+	gfxSetBlendMode(BLEND_OFF);
+
+   gfxPushMatrix();
+	gfxSetTexture(map);
+	tunnel.Update(4 * BASS * TIMEPASS, 0);
+	tunnel.Render(20, 0.8, 2, 7);
+  
+  gfxPopMatrix(); 
+
+}

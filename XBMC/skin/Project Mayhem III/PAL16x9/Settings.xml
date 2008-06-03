@@ -1,0 +1,334 @@
+<window id="4">
+	<defaultcontrol>6</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>88</height>
+			<texture>background-settings.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-bottom.png</texture>
+		</control>
+		<control type="label" id="1">
+			<description>xbox media center label</description>
+			<posx>200</posx>
+			<posy>43</posy>
+			<align>right</align>
+			<label>9</label>
+			<font>special12</font>
+		</control>
+		<control type="label" id="1">
+			<description>description label</description>
+			<posx>207</posx>
+			<posy>43</posy>
+			<align>left</align>
+			<label>10507</label>
+			<font>special13</font>
+		</control>
+		<include>contentpanel</include>
+		<control type="group" id="9000">
+			<posx>20</posx>
+			<posy>100</posy>
+			<include>buttonpanelslide</include>
+			<control type="button" id="11">
+				<description>profiles</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<label>13200</label>
+				<onclick>XBMC.ActivateWindow(34)</onclick>
+				<onleft>8</onleft>
+				<onright>6</onright>
+				<onup>20</onup>
+				<ondown>112</ondown>
+			</control>
+			<control type="button" id="112">
+				<description>About XBMC</description>
+				<posx>0</posx>
+				<posy>37</posy>
+				<label>482</label>
+				<onclick>XBMC.Credits()</onclick>
+				<onleft>8</onleft>
+				<onright>6</onright>
+				<onup>11</onup>
+				<ondown>13</ondown>
+			</control>
+			<control type="button" id="13">
+				<description>skin Settings</description>
+				<posx>0</posx>
+				<posy>74</posy>
+				<label>20077</label>
+				<onclick>ActivateWindow(56)</onclick>
+				<onleft>8</onleft>
+				<onright>6</onright>
+				<onup>112</onup>
+				<ondown>14</ondown>
+			</control>
+			<control type="button" id="14">
+				<description>reload skin</description>
+				<posx>0</posx>
+				<posy>111</posy>
+				<label>20183</label>
+				<onclick>XBMC.ReloadSkin()</onclick>
+				<onleft>8</onleft>
+				<onright>6</onright>
+				<onup>13</onup>
+				<ondown>20</ondown>
+			</control>
+			<control type="group">
+				<description>LastFM Love Hate Stuff</description>
+				<posx>0</posx>
+				<posy>148</posy>
+				<visible>LastFM.RadioPlaying</visible>
+				<control type="image">
+					<description>Unfocus Background</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>160</width>
+					<height>33</height>
+					<texture>button-nofocus.png</texture>
+					<visible>!Control.HasFocus(20) + !Control.HasFocus(21)</visible>
+				</control>
+				<control type="image">
+					<description>Focus Background</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>160</width>
+					<height>33</height>
+					<texture>button-focus.png</texture>
+					<visible>Control.HasFocus(20) | Control.HasFocus(21)</visible>
+					<animation effect="fade" start="100" end="70" time="900" pulse="true" condition="Control.HasFocus(20) | Control.HasFocus(21)">conditional</animation>
+				</control>
+				<control type="label">
+					<description>LastFM Label</description>
+					<posx>17</posx>
+					<posy>0</posy>
+					<width>80</width>
+					<height>33</height>
+					<aligny>center</aligny>
+					<label>15200</label>
+				</control>
+				<control type="button" id="20">
+					<description>Love button</description>
+					<posx>105</posx>
+					<posy>7</posy>
+					<height>20</height>
+					<width>20</width>
+					<font>font13</font>
+					<texturefocus>Love-focus.png</texturefocus>
+					<texturenofocus>Love.png</texturenofocus>
+					<onclick>XBMC.LastFM.Love</onclick>
+					<aspectratio align="right">keep</aspectratio>
+					<pulseonselect>false</pulseonselect>
+					<animation effect="zoom" start="100" end="120" center="auto" time="100">focus</animation>
+					<onleft>8</onleft>
+					<onright>21</onright>
+					<onup>14</onup>
+					<ondown>11</ondown>
+				</control>
+				<control type="button" id="21">
+					<description>Hate button</description>
+					<posx>130</posx>
+					<posy>7</posy>
+					<height>20</height>
+					<width>20</width>
+					<texturefocus>Ban-focus.png</texturefocus>
+					<texturenofocus>Ban.png</texturenofocus>
+					<onclick>XBMC.LastFM.Ban</onclick>
+					<aspectratio align="right">keep</aspectratio>
+					<pulseonselect>false</pulseonselect>
+					<animation effect="zoom" start="100" end="120" center="auto" time="100">focus</animation>
+					<onleft>20</onleft>
+					<onright>6</onright>
+					<onup>14</onup>
+					<ondown>11</ondown>
+				</control>
+			</control>
+		</control>
+		<control type="button" id="6">
+			<description>My Videos</description>
+			<posx>210</posx>
+			<posy>150</posy>
+			<width>90</width>
+			<height>120</height>
+			<texturefocus>settings-videos-focus.png</texturefocus>
+			<texturenofocus>settings-videos-nofocus.png</texturenofocus>
+			<aligny>top</aligny>
+			<textoffsety>125</textoffsety>
+			<label>3</label>
+			<align>center</align>
+			<onclick>ActivateWindow(MyVideosSettings)</onclick>
+			<onleft>9000</onleft>
+			<onright>7</onright>
+			<onup>10</onup>
+			<ondown>10</ondown>
+			<pulseonselect>no</pulseonselect>
+			<include>contentpanelslide</include>
+			<animation effect="zoom" start="100" end="120" center="auto" time="100">focus</animation>
+			<animation effect="zoom" start="120" end="100" center="auto" time="100">unfocus</animation>
+		</control>
+		<control type="button" id="7">
+			<description>My Music</description>
+			<posx>330</posx>
+			<posy>150</posy>
+			<width>90</width>
+			<height>120</height>
+			<texturefocus>settings-music-focus.png</texturefocus>
+			<texturenofocus>settings-music-nofocus.png</texturenofocus>
+			<aligny>top</aligny>
+			<textoffsety>125</textoffsety>
+			<label>2</label>
+			<align>center</align>
+			<onclick>ActivateWindow(MyMusicSettings)</onclick>
+			<onleft>6</onleft>
+			<onright>9</onright>
+			<onup>2</onup>
+			<ondown>2</ondown>
+			<pulseonselect>no</pulseonselect>
+			<include>contentpanelslide</include>
+			<animation effect="zoom" start="100" end="120" center="auto" time="100">focus</animation>
+			<animation effect="zoom" start="120" end="100" center="auto" time="100">unfocus</animation>
+		</control>
+		<control type="button" id="9">
+			<description>My Pictures</description>
+			<posx>450</posx>
+			<posy>150</posy>
+			<width>90</width>
+			<height>120</height>
+			<texturefocus>settings-pictures-focus.png</texturefocus>
+			<texturenofocus>settings-pictures-nofocus.png</texturenofocus>
+			<aligny>top</aligny>
+			<textoffsety>125</textoffsety>
+			<label>1</label>
+			<align>center</align>
+			<onclick>ActivateWindow(MyPicturesSettings)</onclick>
+			<onleft>7</onleft>
+			<onright>8</onright>
+			<onup>4</onup>
+			<ondown>4</ondown>
+			<pulseonselect>no</pulseonselect>
+			<include>contentpanelslide</include>
+			<animation effect="zoom" start="100" end="120" center="auto" time="100">focus</animation>
+			<animation effect="zoom" start="120" end="100" center="auto" time="100">unfocus</animation>
+		</control>
+		<control type="button" id="8">
+			<description>My Programs</description>
+			<posx>570</posx>
+			<posy>150</posy>
+			<width>90</width>
+			<height>120</height>
+			<texturefocus>settings-programs-focus.png</texturefocus>
+			<texturenofocus>settings-programs-nofocus.png</texturenofocus>
+			<aligny>top</aligny>
+			<textoffsety>125</textoffsety>
+			<label>0</label>
+			<align>center</align>
+			<onclick>ActivateWindow(MyProgramsSettings)</onclick>
+			<onleft>9</onleft>
+			<onright>9000</onright>
+			<onup>3</onup>
+			<ondown>3</ondown>
+			<pulseonselect>no</pulseonselect>
+			<include>contentpanelslide</include>
+			<animation effect="zoom" start="100" end="120" center="auto" time="100">focus</animation>
+			<animation effect="zoom" start="120" end="100" center="auto" time="100">unfocus</animation>
+		</control>
+		<control type="button" id="10">
+			<description>My Weather</description>
+			<posx>210</posx>
+			<posy>325</posy>
+			<width>90</width>
+			<height>120</height>
+			<texturefocus>settings-weather-focus.png</texturefocus>
+			<texturenofocus>settings-weather-nofocus.png</texturenofocus>
+			<aligny>top</aligny>
+			<textoffsety>125</textoffsety>
+			<label>8</label>
+			<align>center</align>
+			<onclick>ActivateWindow(MyWeatherSettings)</onclick>
+			<onleft>9000</onleft>
+			<onright>2</onright>
+			<onup>6</onup>
+			<ondown>6</ondown>
+			<pulseonselect>no</pulseonselect>
+			<include>contentpanelslide</include>
+			<animation effect="zoom" start="100" end="120" center="auto" time="100">focus</animation>
+			<animation effect="zoom" start="120" end="100" center="auto" time="100">unfocus</animation>
+		</control>
+		<control type="button" id="2">
+			<description>Network</description>
+			<posx>330</posx>
+			<posy>325</posy>
+			<width>90</width>
+			<height>120</height>
+			<texturefocus>settings-network-focus.png</texturefocus>
+			<texturenofocus>settings-network-nofocus.png</texturenofocus>
+			<aligny>top</aligny>
+			<textoffsety>125</textoffsety>
+			<label>705</label>
+			<align>center</align>
+			<onclick>ActivateWindow(NetworkSettings)</onclick>
+			<onleft>10</onleft>
+			<onright>4</onright>
+			<onup>7</onup>
+			<ondown>7</ondown>
+			<pulseonselect>no</pulseonselect>
+			<include>contentpanelslide</include>
+			<animation effect="zoom" start="100" end="120" center="auto" time="100">focus</animation>
+			<animation effect="zoom" start="120" end="100" center="auto" time="100">unfocus</animation>
+		</control>
+		<control type="button" id="4">
+			<description>System</description>
+			<posx>450</posx>
+			<posy>325</posy>
+			<width>90</width>
+			<height>120</height>
+			<texturefocus>settings-system-focus.png</texturefocus>
+			<texturenofocus>settings-system-nofocus.png</texturenofocus>
+			<aligny>top</aligny>
+			<textoffsety>125</textoffsety>
+			<label>13000</label>
+			<align>center</align>
+			<onclick>ActivateWindow(SystemSettings)</onclick>
+			<onleft>2</onleft>
+			<onright>3</onright>
+			<onup>9</onup>
+			<ondown>9</ondown>
+			<pulseonselect>no</pulseonselect>
+			<include>contentpanelslide</include>
+			<animation effect="zoom" start="100" end="120" center="auto" time="100">focus</animation>
+			<animation effect="zoom" start="120" end="100" center="auto" time="100">unfocus</animation>
+		</control>
+		<control type="button" id="3">
+			<description>Appearance</description>
+			<posx>570</posx>
+			<posy>325</posy>
+			<width>90</width>
+			<height>120</height>
+			<texturefocus>settings-appearance-focus.png</texturefocus>
+			<texturenofocus>settings-appearance-nofocus.png</texturenofocus>
+			<aligny>top</aligny>
+			<textoffsety>125</textoffsety>
+			<label>480</label>
+			<align>center</align>
+			<onclick>ActivateWindow(AppearanceSettings)</onclick>
+			<onleft>4</onleft>
+			<onright>9000</onright>
+			<onup>8</onup>
+			<ondown>8</ondown>
+			<pulseonselect>no</pulseonselect>
+			<include>contentpanelslide</include>
+			<animation effect="zoom" start="100" end="120" center="auto" time="100">focus</animation>
+			<animation effect="zoom" start="120" end="100" center="auto" time="100">unfocus</animation>
+		</control>
+		<include>windowswitchtransition</include>
+	</controls>
+</window>
