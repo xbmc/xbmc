@@ -1629,7 +1629,10 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   if (!pNode) return false;
 
   SetInteger(pNode, "startwindow", g_stSettings.m_iVideoStartWindow);
-  SetInteger(pNode, "stackvideomode", g_stSettings.m_iMyVideoStack);
+
+  int iStack = g_stSettings.m_iMyVideoStack;  // make sure we only save this without the temporary flag
+  iStack &= ~STACK_UNAVAILABLE;
+  SetInteger(pNode, "stackvideomode", iStack);
 
   SetBoolean(pNode, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
   SetString(pNode, "cleantokens", g_stSettings.m_szMyVideoCleanTokens);
