@@ -1,2 +1,0 @@
-dlltool.exe --export-all-symbols -z ./libdvdcss.def src/libdvdcss.o src/css.o src/device.o src/error.o src/ioctl.o
-make -f Makefile.xbmc dll

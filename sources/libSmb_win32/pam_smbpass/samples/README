@@ -1,3 +1,0 @@
-This directory contains example configurations demonstrating various uses
-of pam_smbpass.  These examples use Linux-style /etc/pam.d syntax, and
-must be modified for use on Solaris systems.

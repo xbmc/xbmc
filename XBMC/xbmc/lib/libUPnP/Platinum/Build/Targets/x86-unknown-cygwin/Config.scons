@@ -1,4 +1,0 @@
-LoadTool('gcc-generic', env)
-
-### Neptune System Files
-env['NPT_SYSTEM_SOURCES']={'System/StdC':'*.cpp', 'System/Bsd':'*.cpp', 'System/Posix':'*.cpp'}

@@ -1,3 +1,0 @@
-How to install libmpcdec:
-"./configure [--prefix=/usr] && make" as a regular user
-"make install" as root

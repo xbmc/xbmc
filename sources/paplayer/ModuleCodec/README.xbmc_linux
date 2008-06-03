@@ -1,3 +1,0 @@
-To compile
-1. First compile the library normally with make at the main dir. This should create lib/unix/libdumb.a
-2. Go to vc6/dumb and run make. This will compile the XBMC stuff and create the .so

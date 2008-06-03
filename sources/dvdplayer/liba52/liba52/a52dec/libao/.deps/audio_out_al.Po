@@ -1,3 +1,0 @@
-audio_out_al.o audio_out_al.o: audio_out_al.c ../include/config.h
-
-../include/config.h:
