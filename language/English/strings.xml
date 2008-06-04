@@ -1702,6 +1702,7 @@
   <string id="20415">Scanning for new content</string>
   <string id="20416">First Aired</string>
   <string id="20417">Writer</string>
+  <string id="20418">Clean filenames</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
