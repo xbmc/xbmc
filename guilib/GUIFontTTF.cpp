@@ -60,8 +60,16 @@ using namespace std;
 #ifdef _LINUX
 #define max(a,b) ((a)>(b)?(a):(b))
 #define min(a,b) ((a)<(b)?(a):(b))
-#define ROUND rintf
-#define ROUND_TO_PIXEL rintf
+// NOTE: rintf is inaccurate - it appears to round to the nearest EVEN integer, rather than to the nearest integer
+//       this is a useful reference for wintel platforms that may be useful:
+//         http://ldesoras.free.fr/doc/articles/rounding_en.pdf
+//       For now, we've dumped down to the simple (and slow?) floor(x + 0.5f)
+//       Ideally we'd have a common round_int routine that does float -> float, as this is the case
+//       we actually use (both here and in CGUIImage)
+//#define ROUND rintf
+//#define ROUND_TO_PIXEL rintf
+#define ROUND floor(x + 0.5f);
+#define ROUND_TO_PIXEL(x) floor(x + 0.5f);
 #else
 namespace MathUtils {
   inline int round_int (double x);
