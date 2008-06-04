@@ -68,8 +68,8 @@ using namespace std;
 //       we actually use (both here and in CGUIImage)
 //#define ROUND rintf
 //#define ROUND_TO_PIXEL rintf
-#define ROUND floor(x + 0.5f);
-#define ROUND_TO_PIXEL(x) floor(x + 0.5f);
+#define ROUND(x) floor(x + 0.5f)
+#define ROUND_TO_PIXEL(x) floor(x + 0.5f)
 #else
 namespace MathUtils {
   inline int round_int (double x);
