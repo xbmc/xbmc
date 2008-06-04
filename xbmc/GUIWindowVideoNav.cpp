@@ -97,11 +97,15 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       // check for valid quickpath parameter
-      CStdString strDestination = message.GetStringParam();
+      CStdStringArray params;
+      StringUtils::SplitString(message.GetStringParam(), ",", params);
+      bool returning = params.size() > 1 && params[1] == "return";
+
+      CStdString strDestination = params.size() ? params[0] : "";
       if (!strDestination.IsEmpty())
       {
         message.SetStringParam("");
-        CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
+        CLog::Log(LOGINFO, "Attempting to %s to: %s", returning ? "return" : "quickpath", strDestination.c_str());
       }
 
       // is this the first time the window is opened?
@@ -112,62 +116,67 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
 
+      CStdString destPath;
       if (!strDestination.IsEmpty())
       {
         if (strDestination.Equals("$ROOT") || strDestination.Equals("Root"))
-          m_vecItems->m_strPath = "";
+          destPath = "";
         else if (strDestination.Equals("MovieGenres"))
-          m_vecItems->m_strPath = "videodb://1/1/";
+          destPath = "videodb://1/1/";
         else if (strDestination.Equals("MovieTitles"))
-          m_vecItems->m_strPath = "videodb://1/2/";
+          destPath = "videodb://1/2/";
         else if (strDestination.Equals("MovieYears"))
-          m_vecItems->m_strPath = "videodb://1/3/";
+          destPath = "videodb://1/3/";
         else if (strDestination.Equals("MovieActors"))
-          m_vecItems->m_strPath = "videodb://1/4/";
+          destPath = "videodb://1/4/";
         else if (strDestination.Equals("MovieDirectors"))
-          m_vecItems->m_strPath = "videodb://1/5/";
+          destPath = "videodb://1/5/";
         else if (strDestination.Equals("MovieStudios"))
-          m_vecItems->m_strPath = "videodb://1/6/";
+          destPath = "videodb://1/6/";
         else if (strDestination.Equals("Movies"))
-          m_vecItems->m_strPath = "videodb://1/";
+          destPath = "videodb://1/";
         else if (strDestination.Equals("TvShowGenres"))
-          m_vecItems->m_strPath = "videodb://2/1/";
+          destPath = "videodb://2/1/";
         else if (strDestination.Equals("TvShowTitles"))
-          m_vecItems->m_strPath = "videodb://2/2/";
+          destPath = "videodb://2/2/";
         else if (strDestination.Equals("TvShowYears"))
-          m_vecItems->m_strPath = "videodb://2/3/";
+          destPath = "videodb://2/3/";
         else if (strDestination.Equals("TvShowActors"))
-          m_vecItems->m_strPath = "videodb://2/4/";
+          destPath = "videodb://2/4/";
         else if (strDestination.Equals("TvShows"))
-          m_vecItems->m_strPath = "videodb://2/";
+          destPath = "videodb://2/";
         else if (strDestination.Equals("MusicVideoGenres"))
-          m_vecItems->m_strPath = "videodb://3/1/";
+          destPath = "videodb://3/1/";
         else if (strDestination.Equals("MusicVideoTitles"))
-          m_vecItems->m_strPath = "videodb://3/2/";
+          destPath = "videodb://3/2/";
         else if (strDestination.Equals("MusicVideoYears"))
-          m_vecItems->m_strPath = "videodb://3/3/";
+          destPath = "videodb://3/3/";
         else if (strDestination.Equals("MusicVideoArtists"))
-          m_vecItems->m_strPath = "videodb://3/4/";
+          destPath = "videodb://3/4/";
         else if (strDestination.Equals("MusicVideoDirectors"))
-          m_vecItems->m_strPath = "videodb://3/5/";
+          destPath = "videodb://3/5/";
         else if (strDestination.Equals("MusicVideoStudios"))
-          m_vecItems->m_strPath = "videodb://3/6/";
+          destPath = "videodb://3/6/";
         else if (strDestination.Equals("MusicVideos"))
-          m_vecItems->m_strPath = "videodb://3/";
+          destPath = "videodb://3/";
         else if (strDestination.Equals("RecentlyAddedMovies"))
-          m_vecItems->m_strPath = "videodb://4/";
+          destPath = "videodb://4/";
         else if (strDestination.Equals("RecentlyAddedEpisodes"))
-          m_vecItems->m_strPath = "videodb://5/";
+          destPath = "videodb://5/";
         else if (strDestination.Equals("RecentlyAddedMusicVideos"))
-          m_vecItems->m_strPath = "videodb://6/";
+          destPath = "videodb://6/";
         else if (strDestination.Equals("Playlists"))
-          m_vecItems->m_strPath = "special://videoplaylists/";
+          destPath = "special://videoplaylists/";
         else if (strDestination.Equals("Plugins"))
-          m_vecItems->m_strPath = "plugin://video/";
+          destPath = "plugin://video/";
         else
         {
           CLog::Log(LOGWARNING, "Warning, destination parameter (%s) may not be valid", strDestination.c_str());
-          m_vecItems->m_strPath = strDestination;
+          destPath = strDestination;
+        }
+        if (!returning || m_vecItems->m_strPath.Left(destPath.GetLength()) != destPath)
+        { // we're not returning to the same path, so set our directory to the requested path
+          m_vecItems->m_strPath = destPath;
         }
         SetHistoryForPath(m_vecItems->m_strPath);
       }
