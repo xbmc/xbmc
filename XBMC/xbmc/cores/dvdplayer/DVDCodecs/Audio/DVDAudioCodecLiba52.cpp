@@ -27,7 +27,9 @@
 typedef __int16 int16_t;
 typedef __int32 int32_t;
 
-static inline __int16 convert(int32_t i)
+#define HEADER_SIZE 7
+
+static inline int16_t convert(int32_t i)
 {
 #ifdef LIBA52_FIXED
     i >>= 15;
@@ -75,7 +77,8 @@ CDVDAudioCodecLiba52::~CDVDAudioCodecLiba52()
 
 bool CDVDAudioCodecLiba52::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  if (!m_dll.Load()) return false;
+  if (!m_dll.Load())
+    return false;
 
   SetDefault();
   
@@ -101,8 +104,9 @@ void CDVDAudioCodecLiba52::Dispose()
   m_pState = NULL;
 }
 
-void CDVDAudioCodecLiba52::SetupChannels()
+void CDVDAudioCodecLiba52::SetupChannels(int flags)
 {
+  m_iSourceFlags = flags;
   // setup channel map for how to translate to linear format
   // standard windows format
   if(m_iSourceFlags & A52_LFE)
@@ -140,19 +144,27 @@ void CDVDAudioCodecLiba52::SetupChannels()
   if(channels == 5 || channels == 3)
     channels = 6;
 
-  if(m_iOutputChannels > 0 && m_iOutputChannels != channels)
+  if(m_iSourceChannels > 0 && m_iSourceChannels != channels)
     CLog::Log(LOGINFO, "%s - Number of channels changed in stream from %d to %d, data might be truncated", __FUNCTION__, m_iOutputChannels, channels);
 
-  m_iOutputChannels = channels;
+  m_iSourceChannels = channels;
 
   // make sure map contains enough channels
-  for(int i=0;i<m_iOutputChannels;i++)
+  for(int i=0;i<m_iSourceChannels;i++)
   {
     if((m_iOutputMapping & (0xf<<(i*4))) == 0)
       m_iOutputMapping |= 0xf<<(i*4);
   }
   // and nothing more
-  m_iOutputMapping &= ~(0xffffffff<<(m_iOutputChannels*4));
+  m_iOutputMapping &= ~(0xffffffff<<(m_iSourceChannels*4));
+
+
+  m_iOutputChannels = m_iSourceChannels;
+  m_iOutputFlags    = m_iSourceFlags;
+
+  /* adjust level should always be set, to keep samples in proper range */
+  /* after any downmixing has been done */
+  m_iOutputFlags |= A52_ADJUST_LEVEL;
 }
 
 int CDVDAudioCodecLiba52::ParseFrame(BYTE* data, int size, BYTE** frame, int* framesize)
@@ -163,7 +175,7 @@ int CDVDAudioCodecLiba52::ParseFrame(BYTE* data, int size, BYTE** frame, int* fr
   *frame     = NULL;
   *framesize = 0;
 
-  if(m_inputSize == 0)
+  if(m_inputSize == 0 && size > HEADER_SIZE)
   {
     // try to sync directly in packet
     m_iFrameSize = m_dll.a52_syncinfo(data, &flags, &m_iSourceSampleRate, &m_iSourceBitrate);
@@ -172,10 +184,7 @@ int CDVDAudioCodecLiba52::ParseFrame(BYTE* data, int size, BYTE** frame, int* fr
     {
 
       if(m_iSourceFlags != flags)
-      {
-        m_iSourceFlags = flags;
-        SetupChannels();
-      }
+        SetupChannels(flags);
 
       if(size >= m_iFrameSize)
       {
@@ -193,9 +202,9 @@ int CDVDAudioCodecLiba52::ParseFrame(BYTE* data, int size, BYTE** frame, int* fr
   }
 
   // attempt to fill up to 7 bytes
-  if(m_inputSize < 7) 
+  if(m_inputSize < HEADER_SIZE) 
   {
-    len = 7-m_inputSize;
+    len = HEADER_SIZE-m_inputSize;
     if(len > size)
       len = size;
     memcpy(m_inputBuffer+m_inputSize, data, len);
@@ -204,7 +213,7 @@ int CDVDAudioCodecLiba52::ParseFrame(BYTE* data, int size, BYTE** frame, int* fr
     size        -= len;
   }
 
-  if(m_inputSize < 7) 
+  if(m_inputSize < HEADER_SIZE) 
     return data - orig;
 
   // attempt to sync by shifting bytes
@@ -217,17 +226,14 @@ int CDVDAudioCodecLiba52::ParseFrame(BYTE* data, int size, BYTE** frame, int* fr
     if(size == 0)
       return data - orig;
 
-    memmove(m_inputBuffer, m_inputBuffer+1, 6);
-    m_inputBuffer[6] = data[0];
+    memmove(m_inputBuffer, m_inputBuffer+1, HEADER_SIZE-1);
+    m_inputBuffer[HEADER_SIZE-1] = data[0];
     data++;
     size--;
   }
 
   if(m_iSourceFlags != flags)
-  {
-    m_iSourceFlags = flags;
-    SetupChannels();
-  }
+    SetupChannels(flags);
 
   len = m_iFrameSize-m_inputSize;
   if(size < len)
@@ -259,17 +265,14 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
   if(!frame)
     return len;
 
-  // we have a frame to decode
-  float fLevel = 1.0f;      
-  int iFlags = m_iSourceFlags;
+  level_t level = 1.0f;
+  sample_t bias = 384;
+  int     flags = m_iOutputFlags;
 
-  /* adjust level should always be set, to keep samples in proper range */
-  /* after any downmixing has been done */
-  iFlags |= A52_ADJUST_LEVEL;
+  m_dll.a52_frame(m_pState, frame, &flags, &level, bias);
 
-  m_dll.a52_frame(m_pState, frame, &iFlags, &fLevel, 384);
+  //m_dll.a52_dynrng(m_pState, NULL, NULL);
 
-  // [a52_dynrng (state, ...); this is only optional]
   for (int i = 0; i < 6; i++)
   {
     if (m_dll.a52_block(m_pState) != 0)
@@ -293,8 +296,11 @@ void CDVDAudioCodecLiba52::SetDefault()
 {
   m_iFrameSize = 0;
   m_iSourceFlags = 0;
+  m_iSourceChannels = 0;
   m_iSourceSampleRate = 0;
   m_iSourceBitrate = 0;
+  m_iOutputChannels = 0;
+  m_iOutputFlags = 0;
   m_decodedSize = 0;
   m_inputSize = 0;
 }
@@ -309,17 +315,3 @@ void CDVDAudioCodecLiba52::Reset()
   m_fSamples = m_dll.a52_samples(m_pState);
 }
 
-int CDVDAudioCodecLiba52::GetChannels()
-{
-  return m_iOutputChannels;
-}
-
-int CDVDAudioCodecLiba52::GetSampleRate()
-{
-  return m_iSourceSampleRate;
-}
-
-int CDVDAudioCodecLiba52::GetBitsPerSample()
-{
-  return 16;
-}
