@@ -126,7 +126,7 @@ void CMusicInfoScanner::Process()
           if (m_pObserver)
             m_pObserver->OnStateChanged(COMPRESSING_DATABASE);
 
-          m_musicDatabase.Compress();
+          m_musicDatabase.Compress(false);
         }
       }
       else
