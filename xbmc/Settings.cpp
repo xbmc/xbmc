@@ -70,7 +70,6 @@ CSettings::CSettings(void)
 
   g_stSettings.m_iMyVideoStack = STACK_NONE;
 
-  g_stSettings.m_bMyVideoCleanTitles = false;
   strcpy(g_stSettings.m_szMyVideoCleanTokens, "divx|xvid|3ivx|ac3|ac351|dts|mp3|wma|m4a|mp4|aac|ogg|scr|ts|sharereactor|dvd|dvdrip");
   strcpy(g_stSettings.m_szMyVideoCleanSeparators, "- _.[({+");
 
@@ -908,7 +907,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "startwindow", g_stSettings.m_iVideoStartWindow, WINDOW_VIDEO_FILES, WINDOW_VIDEO_FILES, WINDOW_VIDEO_NAV);
     GetInteger(pElement, "stackvideomode", g_stSettings.m_iMyVideoStack, STACK_NONE, STACK_NONE, STACK_SIMPLE);
 
-    XMLUtils::GetBoolean(pElement, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
     GetString(pElement, "cleantokens", g_stSettings.m_szMyVideoCleanTokens, g_stSettings.m_szMyVideoCleanTokens);
     GetString(pElement, "cleanseparators", g_stSettings.m_szMyVideoCleanSeparators, g_stSettings.m_szMyVideoCleanSeparators);
 
@@ -1634,7 +1632,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   iStack &= ~STACK_UNAVAILABLE;
   SetInteger(pNode, "stackvideomode", iStack);
 
-  SetBoolean(pNode, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
   SetString(pNode, "cleantokens", g_stSettings.m_szMyVideoCleanTokens);
   SetString(pNode, "cleanseparators", g_stSettings.m_szMyVideoCleanSeparators);
   SetString(pNode, "defaultlibview", g_settings.m_defaultVideoLibSource);
