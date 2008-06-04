@@ -294,6 +294,13 @@ void CGUIControlGroup::ResetAnimation(ANIMATION_TYPE animType)
   }
 }
 
+void CGUIControlGroup::ResetAnimations()
+{ // resets all animations, regardless of condition
+  CGUIControl::ResetAnimations();
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+    (*it)->ResetAnimations();
+}
+
 bool CGUIControlGroup::IsAnimating(ANIMATION_TYPE animType)
 {
   if (CGUIControl::IsAnimating(animType))
