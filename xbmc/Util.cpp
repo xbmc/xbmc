@@ -3402,6 +3402,7 @@ const BUILT_IN commands[] = {
   { "Container.NextSortMethod",   false,  "Change to the next sort method" },
   { "Container.PreviousSortMethod",false, "Change to the previous sort method" },
   { "Container.SetSortMethod",    true,   "Change to the specified sort method" },
+  { "Container.SortDirection",    false,  "Toggle the sort direction" },
   { "Control.Move",               true,   "Tells the specified control to 'move' to another entry specified by offset" },
 };
 
@@ -4353,6 +4354,11 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("container.setsortmethod"))
   {
     CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, atoi(parameter.c_str()));
+    g_graphicsContext.SendMessage(message);
+  }
+  else if (execute.Equals("container.sortdirection"))
+  {
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_DIRECTION, m_gWindowManager.GetActiveWindow(), 0, 0);
     g_graphicsContext.SendMessage(message);
   }
   else
