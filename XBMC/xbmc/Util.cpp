@@ -107,21 +107,15 @@ inline int round_int (double x)
   assert (x < static_cast <double>(INT_MAX / 2) + 1.0);
   const float round_to_nearest = 0.5f;
   int i;
-	__asm
-	{	fld x
-		fistp i
-		} ;
-		
-	return i ;
-  //__asm
-  //{
-  //  fld x
-  //  fadd st, st (0)
-  //  fadd round_to_nearest
-  //  fistp i
-  //  sar i, 1
-  //}
-  //return (i);
+  __asm
+  {
+    fld x
+    fadd st, st (0)
+    fadd round_to_nearest
+    fistp i
+    sar i, 1
+  }
+  return (i);
 }
 
 inline int ceil_int (double x)
