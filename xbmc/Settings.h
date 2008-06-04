@@ -263,7 +263,6 @@ public:
     int m_iVideoStartWindow;
 
     int m_iMyVideoStack;
-    bool m_bMyVideoCleanTitles;
     char m_szMyVideoCleanTokens[256];
     char m_szMyVideoCleanSeparators[32];
 
