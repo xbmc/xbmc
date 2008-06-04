@@ -65,11 +65,7 @@ static int resample_int16(sample_t * in, int16_t *out, int32_t channel_map)
 CDVDAudioCodecLiba52::CDVDAudioCodecLiba52() : CDVDAudioCodec()
 {
   m_pState = NULL;
-  m_iSourceFlags = 0;
-  m_iSourceSampleRate = 0;
-  m_iSourceBitrate = 0;
-  m_decodedDataSize = 0;
-  m_pInputBuffer = NULL;
+  SetDefault();
 }
 
 CDVDAudioCodecLiba52::~CDVDAudioCodecLiba52()
@@ -159,122 +155,148 @@ void CDVDAudioCodecLiba52::SetupChannels()
   m_iOutputMapping &= ~(0xffffffff<<(m_iOutputChannels*4));
 }
 
-int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
+int CDVDAudioCodecLiba52::ParseFrame(BYTE* data, int size, BYTE** frame, int* framesize)
 {
-  int iLen = 0;
-  m_decodedDataSize = 0;
-  BYTE* pOldDataPointer = pData;
-  while (iSize > 0)
+  int flags, len;
+  BYTE* orig = data;
+
+  *frame     = NULL;
+  *framesize = 0;
+
+  if(m_inputSize == 0)
   {
-    if (m_iFrameSize == 0)
+    // try to sync directly in packet
+    m_iFrameSize = m_dll.a52_syncinfo(data, &flags, &m_iSourceSampleRate, &m_iSourceBitrate);
+
+    if(m_iFrameSize > 0)
     {
-      // no header seen : find one. We need at least 7 bytes to parse it
-      int i = 0;
-      while (i <= (iSize - 7))
+
+      if(m_iSourceFlags != flags)
       {
-        // it's possible that m_inputBuffer already contains 6 bits from our previous run
-        // so use m_pInputBuffer to copy the rest of the data. We must rest it after a52_syncinfo though!!
-        for (int u = 0; u < 7; u++) m_pInputBuffer[u] = pData[u];
-
-        int flags;
-        iLen = m_dll.a52_syncinfo(m_inputBuffer, &flags, &m_iSourceSampleRate, &m_iSourceBitrate);
-        if (iLen > 0)
-        {
-          if(flags != m_iSourceFlags)
-          {
-            m_iSourceFlags = flags;
-            SetupChannels();
-          }
-          m_iFrameSize = iLen;
-          pData += 7;
-          m_pInputBuffer += 7;
-          iSize -= 7;
-          break;
-        }
-
-        // reset the buffer pointer if needed
-        if ((m_pInputBuffer - m_inputBuffer) > 0) m_pInputBuffer = m_inputBuffer;
-
-        // no sync found, shift one byte
-        i++;
-        pData++;
-        //m_pInputBuffer++;
-        iSize--;
-      }
-      if (m_iFrameSize == 0 && iSize < 7)
-      {
-        // we are at the end of our stream and don't have enough data for our header anymore.
-        // copy it to our buffer for later use;
-        for (int i = 0; i < iSize; i++) m_pInputBuffer[i] = pData[i];
-        m_pInputBuffer += iSize;
-        pData += iSize;
-        iSize = 0;
-        break;
-      }
-    }
-    else if (m_pInputBuffer - m_inputBuffer < m_iFrameSize)
-    {
-      // we are working on a frame that is m_iFrameSize big, but we don't have all data yet
-      // just copy more data to it
-      iLen = m_iFrameSize - (m_pInputBuffer - m_inputBuffer);
-      if (iSize < iLen) iLen = iSize;
-      memcpy(m_pInputBuffer, pData, iLen);
-      m_pInputBuffer += iLen;
-      pData += iLen;
-      iSize -= iLen;
-    }
-    else
-    {
-      // we have a frame to decode
-
-      
-      float fLevel = 1.0f;      
-      int iFlags = m_iSourceFlags;
-
-      /* adjust level should always be set, to keep samples in proper range */
-      /* after any downmixing has been done */
-      iFlags |= A52_ADJUST_LEVEL;
-
-      m_dll.a52_frame(m_pState, m_inputBuffer, &iFlags, &fLevel, 384);
-
-      // [a52_dynrng (state, ...); this is only optional]
-      for (int i = 0; i < 6; i++)
-      {
-        if (m_dll.a52_block(m_pState) != 0)
-        {
-          CLog::Log(LOGERROR, "CDVDAudioCodecLiba52::Decode - a52_block failed");
-          m_pInputBuffer = m_inputBuffer;
-          m_iFrameSize = 0;
-          m_decodedDataSize = 0;
-          return -1;
-        }
- 
-        m_decodedDataSize += 2*resample_int16(m_fSamples, (int16_t*)(m_decodedData + m_decodedDataSize), m_iOutputMapping);
+        m_iSourceFlags = flags;
+        SetupChannels();
       }
 
-      m_pInputBuffer = m_inputBuffer;
-      m_iFrameSize = 0;      
-      return (pData - pOldDataPointer);
+      if(size >= m_iFrameSize)
+      {
+        *frame     = data;
+        *framesize = m_iFrameSize;
+        return m_iFrameSize;
+      }
+      else
+      {
+        m_inputSize = size;
+        memcpy(m_inputBuffer, data, m_inputSize);
+        return m_inputSize;
+      }
     }
   }
-  return (pData - pOldDataPointer);
+
+  // attempt to fill up to 7 bytes
+  if(m_inputSize < 7) 
+  {
+    len = 7-m_inputSize;
+    if(len > size)
+      len = size;
+    memcpy(m_inputBuffer+m_inputSize, data, len);
+    m_inputSize += len;
+    data        += len;
+    size        -= len;
+  }
+
+  if(m_inputSize < 7) 
+    return data - orig;
+
+  // attempt to sync by shifting bytes
+  while(true)
+  {
+    m_iFrameSize = m_dll.a52_syncinfo(m_inputBuffer, &flags, &m_iSourceSampleRate, &m_iSourceBitrate);
+    if(m_iFrameSize > 0)
+      break;
+
+    if(size == 0)
+      return data - orig;
+
+    memmove(m_inputBuffer, m_inputBuffer+1, 6);
+    m_inputBuffer[6] = data[0];
+    data++;
+    size--;
+  }
+
+  if(m_iSourceFlags != flags)
+  {
+    m_iSourceFlags = flags;
+    SetupChannels();
+  }
+
+  len = m_iFrameSize-m_inputSize;
+  if(size < len)
+    len = size;
+
+  memcpy(m_inputBuffer+m_inputSize, data, size);
+  m_inputSize += size;
+  data        += size;
+  size        -= size;
+
+  if(m_inputSize >= m_iFrameSize)
+  {
+    *frame     = m_inputBuffer;
+    *framesize = m_iFrameSize;
+    m_inputSize = 0;
+  }
+
+  return data - orig;
+}
+
+int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
+{
+  int len, framesize;
+  BYTE* frame;
+
+  m_decodedSize = 0;
+
+  len = ParseFrame(pData, iSize, &frame, &framesize);
+  if(!frame)
+    return len;
+
+  // we have a frame to decode
+  float fLevel = 1.0f;      
+  int iFlags = m_iSourceFlags;
+
+  /* adjust level should always be set, to keep samples in proper range */
+  /* after any downmixing has been done */
+  iFlags |= A52_ADJUST_LEVEL;
+
+  m_dll.a52_frame(m_pState, frame, &iFlags, &fLevel, 384);
+
+  // [a52_dynrng (state, ...); this is only optional]
+  for (int i = 0; i < 6; i++)
+  {
+    if (m_dll.a52_block(m_pState) != 0)
+    {
+      CLog::Log(LOGERROR, "CDVDAudioCodecLiba52::Decode - a52_block failed");
+      break;
+    }
+    m_decodedSize += 2*resample_int16(m_fSamples, (int16_t*)(m_decodedData + m_decodedSize), m_iOutputMapping);
+  }
+  return len;
 }
 
 
 int CDVDAudioCodecLiba52::GetData(BYTE** dst)
 {
   *dst = (BYTE*)m_decodedData;
-  return m_decodedDataSize;
+  return m_decodedSize;
 }
 
 void CDVDAudioCodecLiba52::SetDefault()
 {
-  m_pInputBuffer = m_inputBuffer;
   m_iFrameSize = 0;
   m_iSourceFlags = 0;
   m_iSourceSampleRate = 0;
   m_iSourceBitrate = 0;
-  m_decodedDataSize = 0;
+  m_decodedSize = 0;
+  m_inputSize = 0;
 }
 
 void CDVDAudioCodecLiba52::Reset()
