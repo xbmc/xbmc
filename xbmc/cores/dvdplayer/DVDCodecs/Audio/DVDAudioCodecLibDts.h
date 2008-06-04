@@ -36,12 +36,15 @@ public:
   virtual void Reset();
   virtual int GetChannels()      { return m_iOutputChannels; }
   virtual int GetSampleRate()    { return m_iSourceSampleRate; }
+  virtual int GetBufferSize()    { return m_inputSize; }
   virtual int GetBitsPerSample() { return 16; }
   virtual const char* GetName()  { return "libdts"; }
 
 protected:
-  virtual void SetDefault();
-  int GetNrOfChannels(int flags);
+  void SetDefault();
+  int  GetNrOfChannels(int flags);
+  void SetupChannels(int flags);
+  int ParseFrame(BYTE* data, int size, BYTE** frame, int* framesize);
   
   // taken from the libdts project
   static void convert2s16_1(convert_t * _f, int16_t * s16);
@@ -52,23 +55,23 @@ protected:
   static void convert2s16_multi(convert_t * _f, int16_t * s16, int flags);
 
   dts_state_t* m_pState;
-
-  BYTE m_inputBuffer[4096];
-  int m_iInputBufferSize;
-  //BYTE* m_pInputBuffer;
-  
-  BYTE m_decodedData[131072]; // could be a bit to big
-  int m_iDecodedDataSize;
-  //int m_decodedDataSize;
   
   int m_iFrameSize;
-  int m_iFlags;
   float* m_fSamples;
 
+  int m_iSourceFlags;
   int m_iSourceSampleRate;
   int m_iSourceChannels;
   int m_iSourceBitrate;
 
+  int m_iOutputFlags;
   int m_iOutputChannels;
+
   DllLibDts m_dll;
-};
+
+  BYTE m_decodedData[131072]; // could be a bit to big
+  int  m_decodedSize;
+
+  BYTE m_inputBuffer[4096];
+  int  m_inputSize;
+  };
