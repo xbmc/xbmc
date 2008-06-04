@@ -1,0 +1,105 @@
+#!/bin/bash
+# Live CD filesystem mounting			-*- shell-script -*-
+
+mountroot ()
+{
+	CFG_FILE=/etc/moblin-initramfs.cfg
+	QUIET="$(grep "quiet" /proc/cmdline)"
+
+	if [ -f ${CFG_FILE} ]
+	then
+		. ${CFG_FILE}
+	else
+		echo "Did not find config file: ${CFG_FILE}"
+		sleep 5
+	fi
+
+	mkdir -p /container
+	mkdir -p /squashmnt1
+	mkdir -p /squashmnt2
+	mkdir -p /squashmnt3
+	mkdir -p /volatilemnt
+
+	# Find the CD drive
+	if [ "$ROOT" != "" ]; then
+		if [ "$QUIET_KPARAM" == "" ]; then
+			echo "will mount root from ${ROOT}"
+		fi
+
+		mount -o ro -t iso9660 ${ROOT} /container 2> /dev/null
+		while [ ! -e "/container/rootfs.img" ]; do
+			/bin/sleep 0.5
+			mount -o ro -t iso9660 ${ROOT} /container 2> /dev/null
+		done
+	else
+		while true
+		do
+			for device in 'scd0' 'scd1' 'scd2' 'scd3'; do
+				if [ "$QUIET_KPARAM" == "" ]; then
+					echo "checking device /dev/${device} for installation source..."
+				fi
+				
+				mount /dev/${device}  /mnt
+				if [ -f /mnt/rootfs.img ] ; then
+					if [ "$QUIET_KPARAM" == "" ]; then
+						echo "Found Boot drive at /dev/${device}1"
+					fi
+					found="yes"
+				fi
+				umount /dev/${device}
+				if [ "$found" = "yes" ]; then
+					break;
+				fi
+				if [ "$QUIET_KPARAM" == "" ]; then
+					echo "/dev/${device}1 does not contain a rootfs"
+				fi
+			done
+
+			if [ "$found" = "yes" ]; then
+				break;
+			fi
+			if [ "$QUIET_KPARAM" == "" ]; then
+				echo "Sleeping for 5 seconds"
+			fi
+			/bin/sleep 5
+		done
+		if [ "$QUIET_KPARAM" == "" ]; then
+			echo "will mount root from /dev/${device}"
+		fi
+
+		mount -o rw /dev/${device} /container 2> /dev/null
+		while [ ! -e "/container/rootfs.img" ]; do
+			/bin/sleep 0.5
+			mount -o ro -t iso9660 /dev/${device} /container 2> /dev/null
+		done
+	fi
+
+	mount -o ro,loop -t squashfs /container/rootfs.img /squashmnt1
+
+	if [ -f /container/restrictedDrivers.img ]; then
+		mount -o ro,loop,noatime,nodiratime /container/restrictedDrivers.img /squashmnt3
+	fi
+
+	if [ -f /container/xbmc.img ]; then
+		mount -o ro,loop,noatime,nodiratime /container/xbmc.img /squashmnt2
+	fi
+
+	mount -t tmpfs -o noatime,nodiratime none /volatilemnt
+
+	mount -t unionfs -o dirs=/volatilemnt=rw:/squashmnt3=ro:/squashmnt2=ro:/squashmnt1=ro none ${rootmnt}
+
+	if [ -f /container/install.sh ]; then
+		log_begin_msg "Install Process will begin shortly..."
+		maybe_break preinstall
+
+		mkdir -p ${rootmnt}/tmp/install
+		mount --bind /dev ${rootmnt}/dev
+		mount --bind /sys ${rootmnt}/sys
+		mount --bind /container ${rootmnt}/tmp/install
+		cp /container/install.sh ${rootmnt}
+		cp /container/install.cfg ${rootmnt}
+
+		maybe_break install
+		chroot ${rootmnt} /install.sh
+	fi
+}
