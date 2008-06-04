@@ -31,6 +31,21 @@
 
 using namespace std;
 
+#ifdef _LINUX
+#define ROUND_TO_PIXEL(x) x
+#else
+namespace MathUtils {
+  inline int round_int (double x);
+}
+
+#if defined(HAS_XBOX_D3D) || defined(HAS_SDL_OPENGL)
+#define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
+#else
+#define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x)) - 0.5f
+#endif
+
+#endif // _LINUX
+
 #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
 
 CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, DWORD dwColorKey)
@@ -357,30 +372,20 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
 
   if (vertex.IsEmpty())
     return; // nothing to render
-  /*
-  float x1 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1) + 0.5f);// - 0.5f;
-  float y1 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1) + 0.5f);// - 0.5f;
-  float x2 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1) + 0.5f);// - 0.5f;
-  float y2 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1) + 0.5f);// - 0.5f;
-  float x3 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2) + 0.5f);// - 0.5f;
-  float y3 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2) + 0.5f);// - 0.5f;
-  float x4 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2) + 0.5f);// - 0.5f;
-  float y4 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2) + 0.5f);// - 0.5f;
-  */
 
-  float x1 = g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1);
-  float y1 = g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1);
-  float x2 = g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1);
-  float y2 = g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1);
-  float x3 = g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2);
-  float y3 = g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2);
-  float x4 = g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2);
-  float y4 = g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2);
+  float x1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1));
+  float y1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
+  float x2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1));
+  float y2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
+  float x3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2));
+  float y3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
+  float x4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2));
+  float y4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
 
-  float z1 = g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1);
-  float z2 = g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1);
-  float z3 = g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2);
-  float z4 = g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2);
+  float z1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
+  float z2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
+  float z3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
+  float z4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
 
   if (y3 == y1) y3 += 1.0f; if (x3 == x1) x3 += 1.0f;
   if (y4 == y2) y4 += 1.0f; if (x4 == x2) x4 += 1.0f;

@@ -69,7 +69,7 @@ namespace MathUtils {
 
 #define ROUND(x) (float)(MathUtils::round_int(x))
 
-#ifdef HAS_XBOX_D3D
+#if defined(HAS_XBOX_D3D) || defined(HAS_SDL_OPENGL)
 #define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
 #else
 #define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x)) - 0.5f
