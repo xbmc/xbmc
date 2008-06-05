@@ -1,7 +1,7 @@
 
 deb http://archive.ubuntu.com/ubuntu/ hardy main restricted universe multiverse
-deb http://archive.ubuntu.org/ubuntu/ hardy-updates universe main multiverse restricted
-deb http://archive.ubuntu.org/ubuntu/ hardy-backports universe main multiverse restricted
+deb http://archive.ubuntu.com/ubuntu/ hardy-updates universe main multiverse restricted
+deb http://archive.ubuntu.com/ubuntu/ hardy-backports universe main multiverse restricted
 
 deb http://archive.canonical.com/ubuntu hardy partner
 
