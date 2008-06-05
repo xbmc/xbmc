@@ -845,9 +845,7 @@ namespace VIDEO
     CStdString strImage = movieDetails.m_strPictureURL.GetFirstThumb().m_url;
     if (strImage.size() > 0)
     {
-      pItem->SetThumbnailImage("");
       // check for a cached thumb or user thumb
-      pItem->SetVideoThumb();
       strThumb = pItem->GetCachedVideoThumb();
 
       CHTTP http;
@@ -858,7 +856,7 @@ namespace VIDEO
       }
 
       string image;
-      if ((!pItem->HasThumbnail() || pItem->GetProperty("HasAutoThumb") == "1") && http.Get(strImage, image))
+      if (pItem->GetUserVideoThumb().IsEmpty() && http.Get(strImage, image))
       {
         try
         {
