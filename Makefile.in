@@ -99,8 +99,10 @@ install-datas:
 	@echo "Creating target directories in $(prefix)/share/xbmc"
 	@find language media screensavers scripts skin sounds userdata visualisations system -type d -not -iregex ".*svn.*" -exec mkdir -p $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@echo "Copying system files to $(prefix)/share/xbmc"
-	@find language media screensavers scripts skin sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*osx.*|.*x86_64.*|.*i486.*|.*\.dll" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
-	@find language media screensavers scripts skin sounds userdata visualisations system -regextype posix-extended -type f -iregex ".*@ARCH@.*" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
+	# Arch independent files
+	@find language media screensavers scripts skin sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
+	# Arch dependent files
+	@find system -regextype posix-extended -type f -not iregex ".*svn.*" -iregex ".*/[^.].*@ARCH@.*" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 
 uninstall:
 	@echo "Removing XBMC..."
