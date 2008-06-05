@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
 <!--Simple Chinese Translated by PCMan-->
 <strings>
@@ -8,10 +8,10 @@
   <string id="3">视频</string>
   <string id="4">电视导游</string>
   <string id="5">系统设置</string>
-  <string id="6">Xbox Media Center SVN</string>
+  <string id="6">XBMC Media Center SVN</string>
   <string id="7">文件管理</string>
   <string id="8">天气</string>
-  <string id="9">xbox 媒体中心</string>
+  <string id="9">xbmc 媒体中心</string>
 
   <string id="11">星期一</string>
   <string id="12">星期二</string>
@@ -331,6 +331,7 @@
   <string id="406">湿度</string>
   <string id="407">风向</string>
   <string id="408">风速</string>
+ <string id="409">默认</string>
 
   <string id="410">访问 Weather.com</string>
   <string id="411">取得天气数据：</string>
@@ -460,6 +461,9 @@
   <string id="542">DVD 图标</string>
   <string id="543">DVD</string>
   <string id="544">媒体信息</string>
+  <string id="545">音频输出设备</string>
+  <string id="546">直通输出设备</string>
+  <string id="547">此艺人没有传记</string>
 
   <string id="550">排序：%s</string>
   <string id="551">名称</string>
@@ -515,6 +519,7 @@
   <string id="608">不能压缩 CD 或音轨</string>
   <string id="609">CD 压缩路径没有设置</string>
   <string id="610">压缩音轨</string>
+  <string id="611">请输入序号</string>
 
   <string id="620">压缩音乐 CD</string>
   <string id="621">编码器</string>
@@ -554,6 +559,7 @@
   <string id="658">歌曲信息</string>
   <string id="659">注释：</string>
   <string id="660">音量放大</string>
+  <string id="661">选择导出文件夹</string>
 
   <string id="700">清除音乐库</string>
   <string id="701">清除音乐库中的旧歌曲</string>
@@ -628,6 +634,30 @@
   <string id="772">音频硬件</string>
   <string id="773">搜索中</string>
   <string id="774">幻灯图片目录</string>
+  <string id="775">网卡</string>
+  <string id="776">- 无线网络名 (ESSID)</string>
+  <string id="777">- 无线网密码</string>
+  <string id="778">- 无线网安全</string>
+  <string id="779">保存和应用网卡设置</string>
+  <string id="780">不加密</string>
+  <string id="781">WEP</string>
+  <string id="782">WPA</string>
+  <string id="783">WPA2</string>
+  <string id="784">应用网卡设置，请稍等.</string>
+  <string id="785">网卡完成重启.</string>
+  <string id="786">网卡无法重启.</string>
+  <string id="787">网卡停用</string>
+  <string id="788">网卡停用完成.</string>
+  <string id="789">无线网络名 (ESSID)</string>
+
+  <string id="790">Remote Events</string>
+  <string id="791">Enable Remote Events</string>
+  <string id="792">Remote Events Port</string>
+  <string id="793">Remote Events Port Range</string>
+  <string id="794">Receive events from other computers</string>
+  <string id="795">Initial Repeat Delay (ms)</string>
+  <string id="796">Continuous Repeat Delay (ms)</string>
+  <string id="797">Maximum Number of Clients</string>
 
   <string id="998">XLink KAI</string>
   <string id="999">在线游戏</string>
@@ -677,6 +707,8 @@
   <string id="1043">程序插件</string>
   <string id="1044">设置插件缩略图</string>
   <string id="1045">插件设置</string>
+  <string id="1046">接入点</string>^
+  <string id="1047">其它...</string>^
 
   <string id="1200">SMB 共享设置</string>
   <string id="1202">工作组</string>
@@ -684,6 +716,7 @@
   <string id="1204">密码</string>
 
   <string id="1207">WINS-服务器</string>
+  <string id="1208">安装SMB共享</string>
 
   <string id="1210">移除</string>
   <string id="1211">音乐</string>
@@ -780,6 +813,12 @@
   <string id="10100">是/否</string>
   <string id="10101">进度</string>
 
+  <string id="10210">查找字幕...</string>
+  <string id="10211">缓冲字幕...</string>
+  <string id="10212">结束</string>
+  <string id="10213">正在缓冲</string>
+  <string id="10214">打开流</string>
+
   <string id="10500">音乐/播放列表</string>
   <string id="10501">音乐/文件</string>
   <string id="10502">音乐/资料库</string>
@@ -830,6 +869,7 @@
   <string id="12021">从头开始播放</string>
   <string id="12022">从上次中断处继续播放</string>
   <string id="12023">正在验证金手指…</string>
+  <string id="12024">自动为没有封面的视频生成缩略图</string>
 
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -907,12 +947,33 @@
   <string id="13005">关机</string>
   <string id="13006">Dashboard</string>
   <string id="13007">使用定制 Dashboard 路径</string>
+  <string id="13008">当关闭XBMC时</string>
+  <string id="13009">Do nothing</string>
+  <string id="13010">休眠</string>
+  <string id="13011">待机</string>
 
   <string id="13100">闪烁过滤</string>
   <string id="13105">垂直空白同步</string>
   <string id="13106">停用</string>
   <string id="13107">开启在视频播放时</string>
   <string id="13108">强制开启</string>
+  <string id="13109">测试此分辨率</string>
+  <string id="13110">保持此分辨率?</string>
+  <string id="13111">请问是否保存此分辨率?</string>
+  
+  <string id="13112">高品质软件倍线</string>
+  <string id="13113">关闭</string>
+  <string id="13114">打开 SD 内容</string>
+  <string id="13115">始终打开</string>
+  
+  <string id="13116">倍线方式</string>
+  <string id="13117">二元平面</string>
+  <string id="13118">Lanczos</string>
+  <string id="13119">Sinc</string>
+
+  <string id="13130">显示空白</string>
+  <string id="13131">禁止</string>
+  <string id="13132">空白显示</string>
 
   <string id="13150">硬盘密匙：</string>
   <string id="13151">硬盘温度：</string>
@@ -1085,6 +1146,24 @@
   <string id="13407">%s 预设</string>
   <string id="13408">(IMDb 用户评价)</string>
   <string id="13409">排名前 250：</string>
+  <string id="13410">Tune in on lastfm</string>
+  <string id="13411">风扇最低转速</string>
+  
+  <string id="13600">Apple Remote</string>
+  <string id="13601">模式</string>
+  <string id="13602">始终运行</string>
+  <string id="13603">序列延时</string>
+  
+  <string id="13610">关闭</string>
+  <string id="13611">标准</string>
+  <string id="13612">Universal Remote</string>
+  
+  <string id="13620">已安装Remote Buddy驱动.</string>
+  <string id="13621">不能打开Apple Remote支持.</string>
+  <string id="13622">请参照Remote Buddy FAQ删除.</string>
+
+  <string id="13623">Sofa Control正在运行</string>
+  <string id="13624">请参照Sofa Control文档删除.</string>
 
   <string id="14000">视频堆叠</string>
   <string id="14001">堆叠关闭</string>
@@ -1162,6 +1241,8 @@
   <string id="14076">添加到收藏夹</string>
   <string id="14077">从收藏夹移除</string>
   <string id="14078">皮肤颜色</string>
+  <string id="14079">时区国家</string>
+  <string id="14080">时区</string>
 
   <string id="15000">XLink Kai</string>
   <string id="15001">没有连线到服务器</string>
@@ -1254,8 +1335,9 @@
   <string id="15213">打开方式…</string>
   <string id="15214">使用平滑的影音同步</string>
   <string id="15215">缩略图显示时隐藏文件名</string>
+  <string id="15216">合作模式Play in Partymode</string>
 
-  <string id="15250">提交 Last.FM 电台到 Last.FM</string>
+  <string id="15250">将电台提交到 Last.FM</string>
   <string id="15251">连接到 Last.FM…</string>
   <string id="15252">选择电台…</string>
   <string id="15253">寻找相似的艺人…</string>
@@ -1366,6 +1448,20 @@
   <string id="16204">部分移动文件失败</string>
   <string id="16205">删除文件失败</string>
   <string id="16206">部分删除文件失败</string>
+
+  <string id="16300">视频扫描方式</string>
+  <string id="16301">最近邻近点</string>
+  <string id="16302">Bilinear</string>
+  <string id="16303">Bicubic</string>
+  <string id="16304">Lanczos2</string>
+  <string id="16305">Lanczos3</string>
+  <string id="16306">Sinc8</string>
+  
+  <string id="16307">Bicubic (软件)</string>
+  <string id="16308">Lanczos (软件)</string>  
+  <string id="16309">Sinc (软件)</string>
+
+  <string id="17500">显示睡眠时间</string> 
 
   <string id="20000">音乐 CD 抓取目录</string>
   <string id="20001">使用外部 DVD 播放程序</string>
@@ -1550,6 +1646,15 @@
   <string id="20188">备份 BIOS</string>
   <string id="20189">启用剧情和评论自动卷动</string>
   <string id="20190">自订</string>
+  <string id="20191">记录除错信息</string>
+  <string id="20192">通过扫描获取专辑信息</string>
+  <string id="20193">通过扫描获取艺人信息</string>
+  <string id="20194">缺省刮削器</string>
+  <string id="20195">改变刮削器</string>
+  <string id="20196">导出音乐库</string>
+  <string id="20197">导入音乐库</string>
+  <string id="20198">未找到艺人!</string>
+  <string id="20199">下载艺人信息失败</string>
 
   <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
 
@@ -1557,15 +1662,6 @@
   <string id="20251">混合饮料(视频)</string>
   <string id="20252">填入玻璃(视频)</string>
 
-  <string id="20191"></string>
-  <string id="20192"></string>
-  <string id="20193"></string>
-  <string id="20194"></string>
-  <string id="20195"></string>
-  <string id="20196"></string>
-  <string id="20197"></string>
-  <string id="20198"></string>
-  <string id="20199"></string>
   <string id="20300"></string>
   <string id="20301"></string>
   <string id="20302"></string>
@@ -1674,6 +1770,17 @@
   <string id="20404">视频制作公司：</string>
   <string id="20405">移除影集书签</string>
   <string id="20406">设置影集书签</string>
+  <string id="20407">刮削器设置</string>
+  <string id="20408">下载MV信息</string>
+  <string id="20409">下载TV Show信息</string>
+  <string id="20410">宣传片</string>
+  <string id="20411">弄平</string>
+  <string id="20412">Flatten TV Show if only a single season</string>
+  <string id="20413">获取影迷</string>
+  <string id="20414">在视频库中显示影迷</string>
+  <string id="20415">扫描新内容</string>
+  <string id="20416">最初发表</string>
+  <string id="20417">作者</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
@@ -1700,13 +1807,14 @@
   <string id="21366">定制字幕目录</string>
   <string id="21367">视频和相关字幕目录</string>
 
+  <string id="21369">使用鼠标</string>
   <string id="21370">在播放媒体文件时播放导航声效</string>
   <string id="21371">缩略图</string>
   <string id="21372">强制 DVD 播放器区码</string>
   <string id="21373">视频硬件</string>
   <string id="21374">视频模式</string>
   <string id="21375">一般</string>
-  <string id="21376">Letterbox</string>
+  <string id="21376">信箱模式</string>
   <string id="21377">宽屏幕</string>
   <string id="21378">开启 480p</string>
   <string id="21379">开启 720p</string>
@@ -1763,6 +1871,9 @@
   <string id="21437">新的智能播放列表…</string>
   <string id="21438">%c磁碟</string>
   <string id="21439">编辑舞会模式规则</string>
+  <string id="21440">Home文件夹</string>
+  <string id="21441">观看次数</string>
+  <string id="21442">插曲标题</string>
 
   <string id="21800">文件名称</string>
   <string id="21801">文件路径</string>
@@ -1823,11 +1934,30 @@
   <string id="21881">启用 UPnP 播放器</string>
   <string id="21882">尝试略过介绍直接跳至 DVD 菜单</string>
   <string id="21883">压缩音乐 CD</string>
+  <string id="21884">查询所有艺人信息</string>
+  <string id="21885">下载专辑信息</string>
+  <string id="21886">下载艺人信息</string>
+  <string id="21887">传记</string>
+  <string id="21888">唱片分类</string>
+  <string id="21889">搜索艺人</string>
+  <string id="21890">选择艺人</string>
+  <string id="21891">艺人信息</string>
+  <string id="21892">乐器:</string>
+  <string id="21893">创建时间:</string>
+  <string id="21894">成型时间:</string>
+  <string id="21895">风格:</string>
+  <string id="21896">解散时间:</string>
+  <string id="21897">死亡时间:</string>
+  <string id="21898">活跃年代:</string>
+  <string id="21899">标签:</string>
+  <string id="21900">创建/成型:</string>
 
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="22000">在启动时更新资料库</string>
   <string id="22001">总是在幕后更新资料库</string>
+  <string id="22002">- DNS 后缀</string>
+  <string id="22003">允许编辑和选择列表</string>
 
   <string id="29999">自动开启游戏抗闪烁过滤</string>
 
