@@ -114,7 +114,6 @@ bool CDVDAudioCodecPassthrough::SyncDTSHeader(BYTE* pData, int iDataSize, int* i
     // no sync found, shift one byte
     i++;
     pData++;
-    iDataSize--;
   } 
   return false;
 }
@@ -199,7 +198,6 @@ bool CDVDAudioCodecPassthrough::SyncAC3Header(BYTE* pData, int iDataSize, int* i
     // no sync found, shift one byte
     i++;
     pData++;
-    iDataSize--;
   } 
   return false;
 }

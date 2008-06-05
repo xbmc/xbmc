@@ -612,6 +612,16 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("numitems")) ret = CONTAINER_NUM_ITEMS;
     else if (info.Equals("currentpage")) ret = CONTAINER_CURRENT_PAGE;
     else if (info.Equals("sortmethod")) ret = CONTAINER_SORT_METHOD;
+    else if (info.Left(13).Equals("sortdirection"))
+    {
+      CStdString direction = info.Mid(14, info.GetLength() - 15);
+      SORT_ORDER order = SORT_ORDER_NONE;
+      if (direction == "ascending")
+        order = SORT_ORDER_ASC;
+      else if (direction == "descending")
+        order = SORT_ORDER_DESC;
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SORT_DIRECTION : CONTAINER_SORT_DIRECTION, order));
+    }
     else if (info.Left(5).Equals("sort("))
     {
       SORT_METHOD sort = SORT_METHOD_NONE;
@@ -1125,7 +1135,11 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
-        strLabel = g_localizeStrings.Get(((CGUIMediaWindow*)window)->GetContainerSortMethod());
+      {
+        const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
+        if (viewState)
+          strLabel = g_localizeStrings.Get(viewState->GetSortMethodLabel());
+      }
     }
     break;
   case CONTAINER_NUM_PAGES:
@@ -2074,9 +2088,20 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
       {
-        const CFileItemList &item = ((CGUIMediaWindow*)window)->CurrentDirectory();
-        SORT_METHOD method = item.GetSortMethod();
-        bReturn = (method == info.GetData1());
+        const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
+        if (viewState)
+          bReturn = (viewState->GetSortMethod() == info.GetData1());
+      }
+      break;
+    }
+    case CONTAINER_SORT_DIRECTION:
+    {
+      CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+      {
+        const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
+        if (viewState)
+          bReturn = (viewState->GetDisplaySortOrder() == info.GetData1());
       }
       break;
     }
@@ -3537,14 +3562,23 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
         CUtil::GetDirectory(CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath), path);
       else
         CUtil::GetDirectory(item->m_strPath, path);
+      CURL url(path);
+      url.GetURLWithoutUserDetails(path);
+      return path;
+     }
+   case LISTITEM_FILENAME_AND_PATH:
+    {
+      CStdString path;
+      if (item->IsMusicDb() && item->HasMusicInfoTag())
+        path = CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetURL());
+      else if (item->IsVideoDb() && item->HasVideoInfoTag())
+        path = CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath);
+      else
+        path = item->m_strPath;
+      CURL url(path);
+      url.GetURLWithoutUserDetails(path);
       return path;
     }
-  case LISTITEM_FILENAME_AND_PATH:
-    if (item->IsMusicDb() && item->HasMusicInfoTag())
-      return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetURL());
-    if (item->IsVideoDb() && item->HasVideoInfoTag())
-      return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath);
-    return item->m_strPath;
   case LISTITEM_PICTURE_PATH:
     if (item->IsPicture() && (!item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
       return item->m_strPath;

@@ -2113,7 +2113,7 @@ int CMusicDatabase::Cleanup(CGUIDialogProgress *pDlgProgress)
   pDlgProgress->SetLine(1, 331);
   pDlgProgress->SetPercentage(100);
   pDlgProgress->Progress();
-  if (!Compress())
+  if (!Compress(false))
   {
     return ERROR_COMPRESSING;
   }

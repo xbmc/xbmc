@@ -148,9 +148,9 @@ SORT_ORDER CGUIViewState::GetDisplaySortOrder() const
 SORT_ORDER CGUIViewState::SetNextSortOrder()
 {
   if (m_sortOrder==SORT_ORDER_ASC)
-    m_sortOrder=SORT_ORDER_DESC;
+    SetSortOrder(SORT_ORDER_DESC);
   else
-    m_sortOrder=SORT_ORDER_ASC;
+    SetSortOrder(SORT_ORDER_ASC);
 
   SaveViewState();
 
@@ -347,6 +347,14 @@ CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIVie
   SetViewAsControl(DEFAULT_VIEW_LIST);
 
   SetSortOrder(SORT_ORDER_ASC);
+}
+
+void CGUIViewState::SetSortOrder(SORT_ORDER sortOrder)
+{
+  if (GetSortMethod() == SORT_METHOD_NONE)
+    m_sortOrder = SORT_ORDER_NONE;
+  else
+    m_sortOrder = sortOrder;
 }
 
 void CGUIViewState::LoadViewState(const CStdString &path, int windowID)
