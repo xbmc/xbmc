@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: MsG-->
 <!--Email: mathijs.groothuis@gmail.com-->
@@ -301,7 +301,7 @@
   <string id="378">AM</string>
   <string id="379">PM</string>
   <string id="380">Buien</string>
-  <string id="381">Weining</string>
+  <string id="381">Weinig</string>
   <string id="382">Verspreid</string>
   <string id="383">Wind</string>
   <string id="384">Sterk</string>
@@ -1375,7 +1375,7 @@ voor deze visualisatie</string>
   <string id="20074">MPAA rating:</string>
   <string id="20075">Voer vergrendelcode in</string>
   <string id="20076">Vraag om vergrendelcode bij opstarten</string>
-  <string id="20077">Skin-instellingen</string>
+  <string id="20077">Skin Instellingen</string>
   <string id="20078">- geen link ingesteld -</string>
   <string id="20079">Thema-animaties inschakelen</string>
   <string id="20080">RSS-feeds niet weergeven tijdens muziek</string>
