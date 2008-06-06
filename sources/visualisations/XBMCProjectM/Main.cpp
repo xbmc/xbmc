@@ -166,10 +166,9 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
     f = fopen(_P(configFile.c_str()), "w");
     if (f)
       fclose(f);
+    projectM::writeConfig(_P(configFile), configPM);
   }
 
-  projectM::writeConfig(_P(configFile), configPM);
-  
   if (globalPM)
     delete globalPM;
 
