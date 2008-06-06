@@ -102,7 +102,7 @@ install-datas:
 	# Arch independent files
 	@find language media screensavers scripts skin sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	# Arch dependent files
-	@find system -regextype posix-extended -type f -not iregex ".*svn.*" -iregex ".*/[^.].*@ARCH@.*" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
+	@find system -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*@ARCH@.*" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 
 uninstall:
 	@echo "Removing XBMC..."
