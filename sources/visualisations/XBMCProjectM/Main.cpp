@@ -50,15 +50,13 @@ d4rk@xboxmediacenter.com
 #include <dirent.h>
 #endif
 
-#define CONFIG_FILE "config.inp"
 #ifdef _WIN32PC
-#define PRESETS_DIR "visualisations\\projectM"
-#define FONTS_DIR "fonts"
+#define PRESETS_DIR "Q:\\visualisations\\projectM"
+#define CONFIG_FILE "P:\\visualisations\projectM.conf"
 #else
-#define PRESETS_DIR "visualisations/projectM"
-#define FONTS_DIR "fonts"
+#define PRESETS_DIR "Q:/visualisations/projectM"
+#define CONFIG_FILE "P:/visualisations/projectM.conf"
 #endif
-#define PROJECTM_DATADIR "userdata"
 
 projectM *globalPM = NULL;
 extern int preset_index;
@@ -124,20 +122,8 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
 
   /** Initialise projectM */
 
-  char *rootdir = "Q:";
-
-  std::string fontsDir;
-  fontsDir = string(rootdir) + PATH_SEPARATOR + string(PROJECTM_DATADIR) +
-             PATH_SEPARATOR + string(FONTS_DIR);
-  fprintf(stderr, "ProjectM Fonts Dir: %s\n", fontsDir.c_str());
-
-  std::string presetsDir;
-  presetsDir = string(rootdir) + PATH_SEPARATOR + string(PRESETS_DIR);
-  fprintf(stderr, "ProjectM Presets Dir: %s", presetsDir.c_str());
-
-  std::string configFile;
-  configFile = string(rootdir) + PATH_SEPARATOR + string(PRESETS_DIR) +
-               PATH_SEPARATOR + CONFIG_FILE;
+  std::string presetsDir = _P(PRESETS_DIR);
+  std::string configFile = _P(CONFIG_FILE);
 
   projectM::Settings configPM;
   configPM.meshX = gx;
@@ -146,9 +132,7 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   configPM.textureSize = texsize;
   configPM.windowWidth = iWidth;
   configPM.windowHeight = iHeight;
-  configPM.presetURL = _P(presetsDir);
-  configPM.titleFontURL = _P(fontsDir);
-  configPM.menuFontURL = _P(fontsDir);
+  configPM.presetURL = presetsDir;
   configPM.smoothPresetDuration = 5;
   configPM.presetDuration = 15;
   configPM.beatSensitivity = 10.0;
@@ -158,21 +142,21 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
 
   // workaround: projectM crashes without configFile and 
   // fstream won't create it
-  FILE *f = fopen(_P(configFile.c_str()), "r");
+  FILE *f = fopen(configFile.c_str(), "r");
   if (f)
     fclose(f);
   else
   {
-    f = fopen(_P(configFile.c_str()), "w");
+    f = fopen(configFile.c_str(), "w");
     if (f)
       fclose(f);
-    projectM::writeConfig(_P(configFile), configPM);
+    projectM::writeConfig(configFile, configPM);
   }
 
   if (globalPM)
     delete globalPM;
 
-  globalPM = new projectM(_P(configFile));
+  globalPM = new projectM(configFile);
 
   g_Width = iWidth;
   g_Height = iHeight;
