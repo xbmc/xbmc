@@ -162,6 +162,11 @@ FILE *__wrap_fopen(const char *path, const char *mode)
   return dll_fopen(path, mode);
 }
 
+FILE *__wrap_fopen64(const char *path, const char *mode)
+{
+  return dll_fopen(path, mode);
+}
+
 FILE *__wrap_fdopen(int fildes, const char *mode)
 {
   return dll_fdopen(fildes, mode);
