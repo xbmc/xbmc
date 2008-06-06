@@ -10,4 +10,4 @@ include ../../../XBMC/Makefile.include
 
 vis:
 	$(MAKE)
-	$(CXX) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared -O3 -o $(LIB) $(OBJS)
+	$(CXX) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared -O3 -o $(LIB) $(OBJS) `cat ../../../XBMC/xbmc/cores/DllLoader/exports/wrapper.def` ../../../XBMC/xbmc/cores/DllLoader/exports/wrapper.o

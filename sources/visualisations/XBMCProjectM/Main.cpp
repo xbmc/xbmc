@@ -33,8 +33,9 @@ d4rk@xboxmediacenter.com
 
 */
 
-#include "../../guilib/system.h"
-#include "../xbmc_vis.h"
+#include "system.h"
+#include "xbmc_vis.h"
+#include "Util.h"
 #ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>
 #endif
@@ -123,11 +124,7 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
 
   /** Initialise projectM */
 
-  char *rootdir = getenv("XBMC_HOME");
-  if (rootdir==NULL)
-  {
-    rootdir = ".";
-  }
+  char *rootdir = "Q:";
 
   std::string fontsDir;
   fontsDir = string(rootdir) + PATH_SEPARATOR + string(PROJECTM_DATADIR) +
@@ -149,9 +146,9 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   configPM.textureSize = texsize;
   configPM.windowWidth = iWidth;
   configPM.windowHeight = iHeight;
-  configPM.presetURL = presetsDir;
-  configPM.titleFontURL = fontsDir;
-  configPM.menuFontURL = fontsDir;
+  configPM.presetURL = _P(presetsDir);
+  configPM.titleFontURL = _P(fontsDir);
+  configPM.menuFontURL = _P(fontsDir);
   configPM.smoothPresetDuration = 5;
   configPM.presetDuration = 15;
   configPM.beatSensitivity = 10.0;
@@ -161,16 +158,22 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
 
   // workaround: projectM crashes without configFile and 
   // fstream won't create it
-  FILE *f = fopen(configFile.c_str(), "a");
+  FILE *f = fopen(_P(configFile.c_str()), "r");
   if (f)
     fclose(f);
+  else
+  {
+    f = fopen(_P(configFile.c_str()), "w");
+    if (f)
+      fclose(f);
+  }
 
-  projectM::writeConfig(configFile, configPM);
+  projectM::writeConfig(_P(configFile), configPM);
   
   if (globalPM)
     delete globalPM;
 
-  globalPM = new projectM(configFile);
+  globalPM = new projectM(_P(configFile));
 
   g_Width = iWidth;
   g_Height = iHeight;
