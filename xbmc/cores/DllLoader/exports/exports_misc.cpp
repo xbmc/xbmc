@@ -91,6 +91,9 @@ Export export_user32[] =
   { "GetSysColor",                -1, dllGetSysColor,                NULL },
   { "RegisterClipboardFormatA",   -1, dllRegisterClipboardFormatA,   NULL },
   { "GetIconInfo",                -1, dllGetIconInfo,                NULL },
+#ifdef _WIN32PC
+  { "DrawTextA",                  -1, DrawTextA,                     NULL },
+#endif
   { NULL, NULL, NULL, NULL }
 };
 
@@ -147,6 +150,25 @@ Export export_gdi32[] =
   { "RestoreDC",                  -1, dllRestoreDC,                  NULL },
   { "GetObjectA",                 -1, dllGetObjectA,                 NULL },
   { "CombineRgn",                 -1, dllCombineRgn,                 NULL },
+#ifdef _WIN32PC
+  { "SelectPalette",              -1, SelectPalette,                 NULL },
+  { "StretchBlt",                 -1, StretchBlt,                    NULL },
+  { "CreateFontIndirectA",        -1, CreateFontIndirectA,           NULL },
+  { "CreateRectRgn",              -1, CreateRectRgn,                 NULL },
+  { "SetWinMetaFileBits",         -1, SetWinMetaFileBits,            NULL },
+  { "DeleteEnhMetaFile",          -1, DeleteEnhMetaFile,             NULL }, 
+  { "GetEnhMetaFileHeader",       -1, GetEnhMetaFileHeader,          NULL },
+  { "SetEnhMetaFileBits",         -1, SetEnhMetaFileBits,            NULL },
+  { "GetDIBits",                  -1, GetDIBits,                     NULL },
+  { "PlayEnhMetaFile",            -1, PlayEnhMetaFile,               NULL },
+  { "RealizePalette",             -1, RealizePalette,                NULL },
+  { "GetEnhMetaFilePaletteEntries", -1, GetEnhMetaFilePaletteEntries,NULL },
+  { "CreateCompatibleBitmap",     -1, CreateCompatibleBitmap,        NULL },
+  { "PatBlt",                     -1, PatBlt,                        NULL },
+  { "SetBrushOrgEx",              -1, SetBrushOrgEx,                 NULL },
+  { "CreateDIBPatternBrushPt",    -1, CreateDIBPatternBrushPt,       NULL },
+  { "CreateDIBSection",           -1, CreateDIBSection,              NULL },
+#endif
   { NULL, NULL, NULL, NULL }
 };
 
