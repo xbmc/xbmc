@@ -10,19 +10,19 @@ fi
 make
 
 echo wrapping libavutil
-gcc -shared -fpic --soname,avutil-51-i486-linux.so -o avutil-51-i486-linux.so -rdynamic libavutil/*.o -Wl`sed 's/[(\*]/ /g' $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.c | grep -v bash | awk '/__wrap/ {out=out","$2} END {print out}' | sed 's/__wrap_/-wrap,/g'`
+gcc -shared -fPIC --soname,avutil-51-i486-linux.so -o avutil-51-i486-linux.so -rdynamic libavutil/*.o 
 
 echo wrapping libavcodec
-gcc -o avcodec-51-i486-linux.so --soname,avcodec-51-i486-linux.so -shared -fpic -rdynamic /usr/lib/libfaac.a  libavcodec/*.o libavcodec/i386/*.o -Wl`sed 's/[(\*]/ /g' $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.c | grep -v bash | awk '/__wrap/ {out=out","$2} END {print out}' | sed 's/__wrap_/-wrap,/g'` 
+gcc -o avcodec-51-i486-linux.so --soname,avcodec-51-i486-linux.so -shared -fPIC -rdynamic /usr/lib/libfaac.a  libavcodec/*.o libavcodec/i386/*.o `cat $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.def` $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.o
 
 echo wrapping libavformat
-gcc -o avformat-51-i486-linux.so --soname,avformat-51-i486-linux.so -shared  -fpic  -rdynamic libavformat/*.o -Wl,-export-all-symbols`sed 's/[(\*]/ /g' $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.c | grep -v bash | awk '/__wrap/ {out=out","$2} END {print out}' | sed 's/__wrap_/-wrap,/g'`
+gcc -o avformat-51-i486-linux.so --soname,avformat-51-i486-linux.so -shared  -fPIC  -rdynamic libavformat/*.o `cat $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.def`,-export-all-symbols $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.o
 
 echo wrapping libswscale
-gcc -o swscale-51-i486-linux.so --soname,swscale-51-i486-linux.so -shared -fpic -rdynamic libswscale/*.o -Wl`sed 's/[(\*]/ /g' $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.c | grep -v bash | awk '/__wrap/ {out=out","$2} END {print out}' | sed 's/__wrap_/-wrap,/g'`
+gcc -o swscale-51-i486-linux.so --soname,swscale-51-i486-linux.so -shared -fPIC -rdynamic libswscale/*.o `cat $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.def` $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.o
 
 echo wrapping libpostproc
-gcc -o postproc-51-i486-linux.so --soname,postproc-51-i486-linux.so -shared -fpic -rdynamic libpostproc/*.o -Wl`sed 's/[(\*]/ /g' $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.c | grep -v bash | awk '/__wrap/ {out=out","$2} END {print out}' | sed 's/__wrap_/-wrap,/g'`
+gcc -o postproc-51-i486-linux.so --soname,postproc-51-i486-linux.so -shared -fPIC -rdynamic libpostproc/*.o `cat $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.def` $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.o
 
 echo copying libs
 cp -v avcodec-51-i486-linux.so avformat-51-i486-linux.so avutil-51-i486-linux.so swscale-51-i486-linux.so postproc-51-i486-linux.so $XBMC_ROOT/system/players/dvdplayer
