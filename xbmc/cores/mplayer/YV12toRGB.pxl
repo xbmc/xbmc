@@ -1,0 +1,59 @@
+xps.1.1
+
+; this code performs the YV12 -> RGB conversion.
+; Y, U, and V textures are inputted (pre-scaled by the hardware)
+; RGB values are then calculated.
+
+; Formula is as follows:
+
+; We start with separate Y, U, V textures.  In byte notation, they have the following allowed ranges:
+
+; Y in [16,235]
+; U in [16,239]
+; V in [16,239]
+
+; Step 1: These are converted to a 0..1 range for Y and a -0.5..0.5 range for U and V:
+
+; we let Y' = (Y-16)/219
+; we let U' = (U-128)/223
+; we let V' = (V-128)/223
+
+; Step 2: We then calculate using the known YUV->RGB formula:
+
+; r0_R = Y'              + 1.403 * V'
+; r0_G = Y' - 0.344 * U' - 0.714 * V'
+; r0_B = Y' + 1.770 * U'
+
+; see http://www.fourcc.org/fccyvrgb.php for more info
+
+; Set up u and v co-efficients, to be doubled before applying
+;def c0, 0      ,0.18664,0.96032,0
+;def c1, 0.76120,0.38738,0      ,0
+; FIXME: coefficient corresponding to 1.770 should be 1.012 
+def c0, 0      ,0.19668,1,0
+def c1, 0.80216,0.40823,0,0
+; setup sign multiplier value as constants can't be negative
+def c2, 1,0,1,1 
+; y adjust
+def c3, 0.0625,0.0625,0.0625,0
+; y co-efficient, halved
+def c4, 0.58219,0.58219,0.58219,0.5
+; texture read
+tex t0
+tex t1
+tex t2
+
+; try to keep this to 4 or less ops!
+
+; r0 = 2*(u-0.5)*c0, r1 = 2*(v-0.5)*c1;
+xmma_x2 r0,r1,discard, t1_bias,c0, t2_bias,c1
+
+; r0 = r0 + r1, with green channel negate
+xmma discard,discard,r0, r0,c2_bx2, r1,c2_bx2
+
+; r1 = 2*yfac*(y-yadj)
+; r2 = y-yadj, r1 = 2*yfac*r2
+xmma_x2 discard,discard,r1, t0,c4, -c3,c4
+
+; r0 = r0 + r1 (alpha set from y, a = 1.0)
+add r0, r0, r1

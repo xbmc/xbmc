@@ -1,0 +1,69 @@
+#pragma once
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
+#include "FileSystem/IDirectory.h"
+#include "FileSystem/Directory.h"
+#include "StdString.h"
+#include "SortFileItem.h"
+
+#include <string>
+#include <vector>
+
+class CURL;
+class CFileItemList;
+
+namespace DIRECTORY
+{
+
+class CPluginDirectory : public IDirectory
+{
+public:
+  CPluginDirectory(void);
+  ~CPluginDirectory(void);
+  virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
+  static bool RunScriptWithParams(const CStdString& strPath);
+  static bool HasPlugins(const CStdString &type);
+  bool GetPluginsDirectory(const CStdString &type, CFileItemList &items);
+  static void LoadPluginStrings(const CURL &url);
+  static void ClearPluginStrings();
+
+  // callbacks from python
+  static bool AddItem(int handle, const CFileItem *item, int totalItems);
+  static void EndOfDirectory(int handle, bool success, bool replaceListing);
+  static void AddSortMethod(int handle, SORT_METHOD sortMethod);
+  static void SetContent(int handle, const CStdString &strContent);
+
+private:
+  bool WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName);
+
+  static std::vector<CPluginDirectory*> globalHandles;
+  static int getNewHandle(CPluginDirectory *cp);
+  static void removeHandle(int handle);
+
+  CFileItemList* m_listItems;
+  HANDLE        m_directoryFetched;
+
+  bool          m_cancelled;    // set to true when we are cancelled
+  bool          m_success;      // set by script in EndOfDirectory
+  int    m_totalItems;   // set by script in AddDirectoryItem
+};
+}

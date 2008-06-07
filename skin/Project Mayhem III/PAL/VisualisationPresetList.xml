@@ -1,0 +1,137 @@
+<window id="122">
+	<defaultcontrol>2</defaultcontrol>
+	<include>dialogeffect</include>
+	<coordinates>
+		<system>1</system>
+		<posx>220</posx>
+		<posy>110</posy>
+	</coordinates>
+	<controls>
+		<control type="image" id="1">
+			<description>background image</description>
+			<posx>-25</posx>
+			<posy>-11</posy>
+			<width>480</width>
+			<height>410</height>
+			<texture>dialog-panel2.png</texture>
+			<colordiffuse>AAFFFFFF</colordiffuse>
+		</control>
+		<control type="label" id="3">
+			<description>Presets Label</description>
+			<posx>0</posx>
+			<posy>2</posy>
+			<width>420</width>
+			<align>left</align>
+			<font>special13</font>
+			<textcolor>dialogheader</textcolor>
+		</control>
+		<control type="label" id="4">
+			<description>No Presets Label</description>
+			<posx>0</posx>
+			<posy>170</posy>
+			<width>408</width>
+			<align>center</align>
+			<label>13389</label>
+			<font>font12</font>
+		</control>
+		<control type="list" id="2">
+			<posx>0</posx>
+			<posy>45</posy>
+			<width>420</width>
+			<height>310</height>
+			<onleft>60</onleft>
+			<onright>60</onright>
+			<onup>2</onup>
+			<ondown>2</ondown>
+			<pagecontrol>60</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="31">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>420</width>
+					<height>29</height>
+					<texture>input-nofocus.png</texture>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>0</posy>
+					<width>410</width>
+					<height>29</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="31">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>420</width>
+					<height>29</height>
+					<texture>input-nofocus.png</texture>
+					<visible>!Control.hasfocus(2)</visible>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>420</width>
+					<height>29</height>
+					<texture>input-focus.png</texture>
+					<visible>Control.hasfocus(2)</visible>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>0</posy>
+					<width>410</width>
+					<height>29</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="button">
+			<posx>425</posx>
+			<posy>45</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<colordiffuse>99FFFFFF</colordiffuse>
+			<onclick>PageUp(60)</onclick>
+			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
+			<visible>Control.IsVisible(60)</visible>
+		</control>
+		<control type="button">
+			<posx>425</posx>
+			<posy>335</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<colordiffuse>99FFFFFF</colordiffuse>
+			<onclick>PageDown(60)</onclick>
+			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
+			<visible>Control.IsVisible(60)</visible>
+		</control>
+		<control type="scrollbar" id="60">
+			<posx>425</posx>
+			<posy>65</posy>
+			<include>scrollbar_width</include>
+			<height>270</height>
+			<colordiffuse>99FFFFFF</colordiffuse>
+			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>-</textureslidernib>
+			<textureslidernibfocus>-</textureslidernibfocus>
+			<onleft>2</onleft>
+			<onright>2</onright>
+			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,65 @@
+// Sphere.tra
+// Author - MrC
+// Based on FadeSphere.r4 by Gordon Williams
+
+const int stripx = 32;
+const int stripy = 16;
+
+int x,y;
+float dx,da,db,sa,sb,a,b,mytime;
+
+void Init()
+{   
+}
+
+void Render()
+{
+	mytime = mytime + (TIMEPASS * 0.25);
+	FINISHED = (mytime>1);
+
+	gfxSetTexture(TEXTURE_NEXTPRESET);
+	gfxSetAspect(0);
+	gfxTranslate(0,0,2.414);
+	gfxColour(1, 1, 1, 1);
+	gfxTexRect(-1, 1, 1, -1);
+	gfxTranslate(0,0,-2.414);
+
+	a = mytime*2;
+	if (a>1.0) a=1.0;
+	a = (1.0-Cos(a*3.14159))/2.0;
+
+	gfxSetAspect(a);
+
+	b = (mytime*2)-1.0;
+	if (b<0.0) b=0.0;
+	b = (1.0-Cos(b*3.14159))/2.0;
+
+	gfxTranslate(b*6,0,2.414+(a*1.5));
+
+	gfxRotate(mytime*720,1,1,1);   
+
+	gfxSetTexture(TEXTURE_CURRPRESET);
+
+	gfxColour(1,1,1,1);
+	for (y=0;y<stripy;y=y+1)
+	{
+		da = (1.0*y)/stripy;
+		db = (1.0*(y+1))/stripy;
+		sa = Sin(da*3.14159);
+		sb = Sin(db*3.14159);
+		da = -Cos(da*3.14159);
+		db = -Cos(db*3.14159);
+		gfxBegin(PRIM_QUADSTRIP);
+		for (x=0;x<=stripx;x=x+1)
+		{
+			dx = (1.0*x)/stripx;
+			gfxTexCoord(dx,(da*-0.5)+0.5);
+			gfxVertex(((dx*2.0)-1.0)*(1.0-a)+(Cos(3.14159*2.0*dx)*a*sa),da,(Sin(3.14159*2.0*dx)*a*sa));
+			gfxTexCoord(dx,(db*-0.5)+0.5);
+			gfxVertex(((dx*2.0)-1.0)*(1.0-a)+(Cos(3.14159*2.0*dx)*a*sb),db,(Sin(3.14159*2.0*dx)*a*sb));
+		}
+		gfxEnd();
+	}
+
+}
+

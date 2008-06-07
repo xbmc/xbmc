@@ -1,0 +1,88 @@
+<window type="dialog" id="134">
+	<defaultcontrol always="true">450</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>500</posx>
+		<posy>125</posy>
+	</coordinates>
+	<controls>
+		<control type="image" id="1">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>240</width>
+			<height>355</height>
+			<texture>dialog-panel2.png</texture>
+			<colordiffuse>CCFFFFFF</colordiffuse>
+			<include>contentpanelslide</include>
+		</control>
+		<control type="list" id="450">
+			<posx>-50</posx>
+			<posy>18</posy>
+			<width>250</width>
+			<height>300</height>
+			<font>font101</font>
+			<onleft>450</onleft>
+			<onright>450</onright>
+			<onup>450</onup>
+			<ondown>450</ondown>
+			<include>contentpanelslide</include>
+			<itemlayout height="30">
+				<control type="image">
+					<posx>70</posx>
+					<posy>0</posy>
+					<width>170</width>
+					<height>28</height>
+					<texture>keyboard-btn-space.png</texture>
+				</control>
+				<control type="label">
+					<posx>98</posx>
+					<posy>3</posy>
+					<width>135</width>
+					<height>20</height>
+					<font>font101</font>
+					<aligny>center</aligny>
+					<align>left</align>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="image">
+					<posx>75</posx>
+					<posy>4</posy>
+					<width>20</width>
+					<height>20</height>
+					<aspectratio>keep</aspectratio>
+					<info>ListItem.Thumb</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="30">
+				<control type="image">
+					<posx>70</posx>
+					<posy>0</posy>
+					<width>170</width>
+					<height>28</height>
+					<texture>keyboard-btn-space-focus2.png</texture>
+				</control>
+				<control type="label">
+					<posx>98</posx>
+					<posy>3</posy>
+					<width>135</width>
+					<height>20</height>
+					<font>font101</font>
+					<aligny>center</aligny>
+					<align>left</align>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="image">
+					<posx>75</posx>
+					<posy>4</posy>
+					<width>20</width>
+					<height>20</height>
+					<aspectratio>keep</aspectratio>
+					<info>ListItem.Thumb</info>
+				</control>
+			</focusedlayout>
+		</control>
+	</controls>
+</window>

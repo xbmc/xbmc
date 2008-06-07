@@ -1,0 +1,42 @@
+<window id="2004">
+	<defaultcontrol>2</defaultcontrol>
+	<animation effect="fade" time="500">WindowOpen</animation>
+	<animation effect="fade" time="500" condition="!Window.IsActive(Home)">WindowClose</animation>
+	<controls>
+		<control type="image" id="0">
+			<description>music logo</description>
+			<posx>30</posx>
+			<posy>395</posy>
+			<width>110</width>
+			<height>120</height>
+			<bordertexture>blue_rectangle_music.png</bordertexture>
+			<bordersize>5</bordersize>
+			<texture>defaultAlbumCover.png</texture>
+			<info>MusicPlayer.Cover</info>
+			<aspectratio align="left">keep</aspectratio>
+			<include>mediaoverlay</include>
+			<visible>![Window.IsVisible(myvideolibrary) + [system.haslocks + LastFM.RadioPlaying]]</visible>
+		</control>
+		<control type="label" id="0">
+			<description>play time label</description>
+			<posx>35</posx>
+			<posy>515</posy>
+			<width>135</width>
+			<label>$INFO[musicplayer.Time]$INFO[musicplayer.Duration, / ]</label>
+			<align>left</align>
+			<font>font13</font>
+			<include>mediaoverlay</include>
+		</control>
+		<control type="fadelabel" id="0">
+			<description>album/artist/genre etc info label</description>
+			<width>135</width>
+			<posx>35</posx>
+			<posy>540</posy>
+			<scrollout>false</scrollout>
+			<pauseatend>2000</pauseatend>
+			<font>font10</font>
+			<label>$INFO[MusicPlayer.Artist]$INFO[MusicPlayer.Album, | ]$INFO[MusicPlayer.Title, | ]$INFO[MusicPlayer.DiscNumber, - $LOCALIZE[427]:]$INFO[MusicPlayer.Year, | ]</label>
+			<include>mediaoverlay</include>
+		</control>
+	</controls>
+</window>

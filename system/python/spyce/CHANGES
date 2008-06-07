@@ -1,0 +1,528 @@
+Change Log
+
+v1.3.11
+  user request: daemon webserver mode
+  fix: mod_python flush problem
+  performance: rewrote tokenizer/parser
+    - no longer using clusmy parser generator package
+    - still pure python, compilation times between 2-6x faster
+  user request: expose functionality to define spyceProcess function
+    with arbitrary parameters, and pass in parameters... helps 
+    Coil framework with Spyce integration
+  fix: spyce webserver not performing path manipulations correctly 
+    on Windows
+  fix: spyce.mime file not copied for .rpm and Windows installers
+
+v1.3.10
+  Default development configuration changed to:
+    Apache 2.0.40 and Python 2.2.x
+    Release testing will be performed:
+      both on Linux and Windows
+      under CGI, FastCGI and mod_python
+    Other versions of Apache and Python should continue to work, but
+    will not be tested. I am depending on user feedback to catch any
+    errant bugs under these older configurations.
+  fix: spyceWWW properly deals with directory URLs that don't end in '/'
+  fix: request.getpost1/postget1() now accept default values
+  fix: memory cache checks file permission as well as modification time
+  fix: makefile was including .pyc/.pyo files in tarball
+  fix: spyce.vim syntax highlighting for spyce lambdas
+  fix: error module should be loaded last to avoid stdout module being
+    unloaded on error, thereby causing print statements to no longer go
+    to the browser during error handling
+  fix: error module setHandler used incorrect variable name, causing
+    setHandler to fail
+  updated spyce.vim syntax file for JSP/ASP like delimeters
+    spyce.vim now included in vim distribution
+  rpm generates spyceParserTable.py 
+    (allowing for different versions of python)
+  added 'no-store' and 'must-revalidate' to response.uncacheable()
+  added pageerror configuration option to modify default page-level handler
+  rpm now requires http >2.0 and python >2.2 installed
+
+v1.3.9
+  spyceWWW web server improved
+    - configuration options integrated into spyce.conf
+    - handler mechanism created
+    - defined spyce and dump handlers
+    - reads Apache format mime-type definition files
+    - .spy files ==> spyce handler; rest ==> dump handler
+    - can display directory listings
+    - configuration options added accordingly
+    - corresponding documentation changed
+  documentation restructured to explain common configuration file 
+    options in the runtime section
+  fix: docs/examples/*.gif added to rpm and windows installer
+  expanded section on how to get Spyce running under IIS via CGI
+
+v1.3.8
+  user request:
+    modified request.get/post/get1/post1/env() to accept default values
+    (note: will break code that provided caseInsensitive parameter by position)
+    added request.getpost/getpost1/postget/postget1/default() methods
+  bug fixes: python 1.5 backwards compatibility issues in the following
+    online examples: gif.spy, myPortal.spy, mysession.spy
+
+v1.3.7
+  support for ASP-style delimeters -- <% %>
+  use of Bastion eliminated, due to Python deprecation
+
+v1.3.6
+  info.spy example updated to deal with implicitly loaded taglib module
+  minor documentation fix for doc-mod_include
+  quotes for the PythonPath in httpd.conf
+
+v1.3.5
+  taglib and spylambda modules loaded implicitly only when needed
+    (i.e. when tags or spyce lambdas are actually used in a given file)
+  make install made more portable; removed install -D switch
+  EOFError now handled for file-based spyce caching (strange Windows bug?)
+  improvements to automaton module
+
+v1.3.4
+  doc updates - session module
+  minor mod_python bug - filename attribute used over environment
+  fix - windows installer unable to find python executable in some cases
+
+v1.3.3
+  examples/info.spy added
+  keep track of spyce entry point, added to spyce header
+  fix - CGI fails (only on Apache2.0!) with GET info due v1.3.2 changes
+  fix - typo in core:if tag
+
+v1.3.2
+  mod_python 3.0.1 compatibility
+  - switched to sre module, despite stack limits, because
+    pre module conflicts with pcre shared object that apache uses
+    (actually, just fails on some complicate reg.exps!)
+    This implies that very, very long spyce files might fail, until
+    sre module implements a state-machine-based reg.exp engine.
+  - apacheRequest.connection.child_num mysteriously removed,
+    therefore using os.getpid() in spyceModpyRequest.getServerID()
+  spyceApache.conf tweaked (should be more compatible)
+  installHelper.py converts backslash to forward slash 
+    for httpd.conf on Windows
+  switched from pre to sre module in spyceCompile.py
+    - reason: Apache 2.0.x uses different pcre library from Python
+        causing failure under mod_python
+    - pre was used over the default (sre) because sre implementation is 
+        stack-based and encountered overruns... Oh, well! Don't write 
+        Spyce files that blow the stack until sre is fixed.
+
+v1.3.1
+  fix - wrapped thread-unsafe yacc-like package with lock
+  renamed util module to spyceUtil.py
+    - conflict with python1.5 site-package
+  renamed cache.py, lock.py (just in case)
+  make website update script faster
+
+v1.3.0
+  active tags introduced
+    - see: http://spyce.sourceforge.net/doc-tag.html
+    - [[.taglib]] directive added
+    - taglib spyce module added 
+    - compiler changes to deal with active tags
+    - tagging infrastructure (spyceTag, spyceTagPlus, spyceTagLibrary)
+        - see: spyceTags.py
+        - user-defined active tag libraries possible
+        - see: http://spyce.sourceforge.net/doc-tag_new.html
+    - core active tag library
+        see: tags/core.py
+        see: http://spyce.sourceforge.net/doc-tag_core.html
+    - tag libraries loaded from same path as modules
+    - compiler syntax checking improved
+      - check for unbalanced parens
+      - check for unbalanced active tags
+      - extensible syntax checking for active tags
+
+v1.2.10
+  bugfix - typo in spyceWWW caused threading mode startup failure
+
+v1.2.9
+  stdout.push() can now accept no file argument
+  stdout.pop() now returns captured output
+  stdout.capture() added
+    see: examples/stdout.spy and stdout module docs
+  session_user session handler added in session module
+    see: examples/mysession.spy and session module docs
+  spylambda.define() can now memoize
+    see: http://spyce.sourceforge.net/doc-mod_lambda.html
+  memoized spyce lambda syntax: [[spy! ...: ...]]
+    see: http://spyce.sourceforge.net/doc-lang_lambda.html
+  slight modification to spyce.vim syntax file
+  response.addHeader() now support replacement
+  response.timestamp(), expire(), expireRel(), lastModified()
+      and uncacheable() methods added
+    see: http://spyce.sourceforge.net/doc-mod_response.html
+  performance!
+
+v1.2.8
+  links page added
+  spyce VIM syntax file updated; deals with spyce lambdas
+  include module improvements
+  - 'vars' field added
+  - included file can return value
+  - documentation updated, specifically regarding use of 'context'
+
+v1.2.7
+  internal restructuring continues
+  - separated spyce exceptions
+  - separated spyce configuration
+  - expanded spyce API and spyceServer
+  - spyce.spyceDone now imported as spyceDone
+  simplified spyceModule
+  - renamed wrapper field, to _api
+  - old spyceModule available as spyceModulePlus
+  - all standard modules updated
+  fixed - syntax errors were not reported properly
+  file-based spyce caching, with config option
+  performance improvements
+
+v1.2.6
+  single and multi-page documentation
+  minor fixes:
+  - NoCloseOut.flush() added
+  - BufferedOutput.flush() flushes sub-stream
+  - template module pointed at new location of cache code
+
+v1.2.5
+  spyceAPI defined: module access to spyceWrapper object restricted
+  - see: http://spyce.sourceforge.net/doc-mod_new.html
+  - (in general, will be moving towards restricted execution space)
+  toc module improved; add level(), l1()...l9() methods
+  server-level debug option added to config file
+  - see: http://spyce.sourceforge.net/doc-conf_common_debug.html
+  - debug Spyce module deprecated
+  engine now supports recursive requests (include spyce from itself)
+  sys.stdout (and therefore print statements) made thread-safe
+  spyce engine supports concurrent requests
+  server-level concurrency option added to config file
+  - see: http://spyce.sourceforge.net/doc-conf_common_concurrency.html
+  - spyce webserver operates in single, forking and threading modes
+  server-level Spyce module caching
+  - replaces Spyce-level module caching
+  - caching-related code separated from wrapper
+  code compilation seperated from wrapper (spyce.spyceCode)
+  autodetect when PYTHONOPTIMIZE causes lexer/parser failure
+  minor fixes and performance tweaks
+
+v1.2.4
+  fix - new PLY parser uses reflection at runtime to read 
+        documentation strings containing grammar, thus you
+        should not run Python in optimize mode, thus
+        mod_python option in spyceApache.conf changed.
+  fix - python 1.5 compatible .spy files for docs
+
+v1.2.3
+  fix - code for new tokenizer/parser made python 1.5.2 compatible
+
+v1.2.2
+  fix - PATH_INFO via CGI
+  fix - magic (#!) on first line treated as comment
+
+v1.2.1
+  complete rewrite of spyce tokenizer and parser
+    - using PLY, table-driven
+  added spyce lambdas to language
+
+v1.2.0
+  contrib section added
+  support for SPYCE_PATH environment variable
+  lots of documentation fixes
+  decided spyce was mature enough for 1.2.0
+
+v1.1.46
+  feature request: improved examples page on website
+
+v1.1.45
+  site and documentation revamp
+  refactored the spyceModule class (see spyceModule.py)
+    altered all standard modules to conform to new internal design
+  new table-of-contents (toc) module (see docs)
+  improved stdout module (see docs)
+    added push() and pop() methods
+    now loaded implicitly
+  exception tracebacks in chunks identify specific error lines
+  file globbing added to -O command-line option
+
+v1.1.44
+  module directive deprecated
+    replaced with import tag
+  import tag accepts args attribute
+    calls module init() method at location of directive
+    init() methods added to modules: session, compress
+    see: http://spyce.sourceforge.net/doc_lang_directive.html
+         http://spyce.sourceforge.net/doc_mod.html
+         http://spyce.sourceforge.net/doc_mod_compress.html
+         http://spyce.sourceforge.net/doc_mod_session.html
+         http://spyce.sourceforge.net/doc_mod_new.html
+  bugfix - modules finalized on redirect
+
+v1.1.43
+  bugfix - included files not inheriting modules properly
+  bugfix - transform module inside included file
+
+v1.1.42
+  renamed spyce.conf to spyceApache.conf
+  renamed spyceApache to spyceModpy
+  renamed run_spyceApache to run_spyceModpy (affect spyceApache.conf)
+  added server-level configuration file functionality
+    server module search path
+    modules to load at startup
+    server-level error handler
+    global server variables
+    see: docs/doc_conf_common.html
+  added response.isCancelled() function
+    see: docs/doc_mod_response.html
+  bugfix - early client disconnect caused problems under mod_python
+
+v1.1.41
+  extended HTTP response constants to conform to spec
+  extended HTML entity encoded characters to conform to spec
+  modified internal buffering semantics to allow eliminiation of special 
+    case code for specific HTTP return codes (redirects) in the common path
+  performance improvements
+  convenience functions transform.html_encode() and url_encode() added
+  error module added: handles errors that occur during spyce processing
+  bugfix - HTTP return codes propagated correctly under mod_python
+
+v1.1.40
+  bugfix - spyce syntax error propagated properly
+  response headers cleared on an internal redirect
+  case insensitive request.get,post,get1,post1,file
+
+v1.1.39
+  modified how filter module injects itself into output stream
+  added response.addFilter() to allow piped functionality
+    on the output stream, modules can insert write, writeStatic,
+    writeExpr, flush and clear handlers
+  added compress module for dynamic compression functionality
+  compress module documentation
+  renamed filter module to transform (name conflict with Python builtin)
+  sys.path forced to be absolute before changing directory in CGI mode
+  bugfix - spyce path trimmed to just filename when directory changed for 
+    CGI processing
+  bugfix - spyce web server closes sockets
+
+v1.1.38
+  spyce can now run as a (proxy) web server
+    spyce -l [-p port] <server root>
+
+v1.1.37
+  spyceDone exception to stop spyce processing
+    raise spyceDone, see gif.spy, fileupload.spy examples
+  response.close() deprecated
+    not needed with spyceDone functionality
+  cPickle used in session module
+    improved session serialization performance
+
+v1.1.36
+  redirect.externalRefresh now has url= in string
+  internal redirect fixed
+  bug fix - consecutive compact line removal now possible
+  examples added: hello2.spy, form.spy
+  handle ISINDEX CGI queries that have extra command-line parameters
+  Status CGI header used for spyce redirect return codes
+
+v1.1.35
+  bug - fixed cgi chdir in case of local directory
+  request - invoke spyce engine programmatically with spyce string
+  source tarball does not contain extra CVS junk
+
+v1.1.34
+  fixed apache config bug in windows installer
+
+v1.1.33
+  appended current Spyce file's directory to sys.path
+
+v1.1.32
+  minor documentation tweaks
+  names attribute added to [[.module ]] tag
+  request.__getitem__() added
+  chdir in cgi mode
+
+v1.1.31
+  windows installer improved: apache configuration and restart
+  fixed - handling of initial spaces in multi-line strings in python chunks
+
+v1.1.30
+  red page marker in docs
+  created undefined windows lock variables
+
+v1.1.29
+  documentation split up
+  rpm is now noarch
+
+v1.1.28
+  include.dump() now has binary option
+  stdout changed to binary mode on windows for cgi purposes
+  fixed session_dir handler bug on windows
+  
+v1.1.27
+  fcgi implemented on windows too
+  windows installer
+
+v1.1.26
+  fixed - nasty bug with the new module behaviour
+  small improvements to documentation and examples
+  improved request.uri() function
+
+v1.1.25
+  fixed - fcgi module broke on windows
+
+v1.1.24
+  line compaction improved
+  module behaviour on include.spyce() defined
+
+v1.1.23
+  lots of changes so that: it works on Python 1.5.2 now too!
+  file-based session handler now uses pid, and file locks
+  live examples on sourceforge
+
+v1.1.22
+  fixed Python v2.1.1-related bugs.
+  improved installation process and documentation
+  rpm more likely to succeed - uses fcgi or drops back to cgi
+  no longer mod_python based by default
+
+v1.1.21 (faulty release)
+  stochastic session clean up; no more threading dependency
+  documentation: better installation notes
+  peep-hole optimizer
+
+v1.1.20 (faulty release)
+  created explicit (swappable) cache infrastructure
+  BUG ** Spyce also works on Python v2.1
+  request - request.post(),post1() works in includes
+  documentation: cheetah install, ...
+
+v1.1.19
+  filter module
+
+v1.1.18
+  fcgi support added
+  X-Spyce header added
+  documentation: how to write new modules
+
+v1.1.17
+  feature request - compaction algorithm improved
+
+v1.1.16
+  generalised session.setHandler (session handler selection mechanism)
+  gdbm, bsd db session handlers added
+
+v1.1.15
+  minor makefile and rpm script changes
+  handling of multi-line strings in python code
+  response.flush() added
+
+v1.1.14
+  wrappers to check python version
+
+v1.1.13
+  added new language construct: "Python chunks"
+
+v1.1.12
+  stdout module redirects stdout to response object
+  added writeln() to response module
+
+v1.1.11
+  fixed lots of CGI bugs:
+    reported bug - headers not sent
+    session module thread prevented script death
+    added spyce.ONE_SHOT variable
+    cookie module fixed
+    gif.spy example fixed
+    external redirect fixed
+
+v1.1.10
+  performance:
+    implemented semantic cache for spyce compilation
+    templating module performs caching
+  lots of commenting
+
+v1.1.9
+  templating module (cheetah integration)
+  documentation
+
+v1.1.8
+  automaton module
+  documentation
+
+v1.1.7
+  associative array access to session and cookie information
+  added pool module
+  documentation
+  comments emitted as tokens
+  syntax highlighting function: include.spycecode
+  documentation
+
+v1.1.6
+  dynamically loading modules
+
+v1.1.5
+  redirect module added
+
+v1.1.4
+  response.unbuffer()
+
+v1.1.3
+  support for file upload
+  request.get1(),post1()
+
+v1.1.2
+  more reliable exception location reporting
+
+v1.1.1
+  static includes
+  module search path
+
+v1.1.0
+  Implemented modules -- major rewrite.
+  Changed includes, sessions, cookies, ... everything into modules
+  Changed the generated "stub", though this is mostly under-the-covers
+  Rewrote most of the documentation
+
+v1.0.5
+  CGI support
+  Expanded install docs
+
+v1.0.4
+  Many doc updates
+  Autosession support
+  changed directives tags to use html-like attributes
+
+v1.0.3
+  Automatic session cleanup
+  Updated pilpel image
+
+v1.0.2
+  Handle 403 - Forbidden
+  Handle 404 - Not Found
+
+v1.0.1
+  Tracking original spyce code locations in generated code
+  Reporting runtime exceptions in original spyce code
+  Reporting syntax (compile) exceptions in original spyce code
+
+v1.0 - Initial release
+  Documentation
+  Added [[.nocompact]] and [[.compact]]
+  Allowed escaped \[[ and \]] in HTML
+  Added session support, with on-disk implementation
+  Realised and implemented command-line
+  Added cookies
+  Added http header calls
+  Added get and post support
+  Created request and response objects
+  Added [[.include]]
+  Added [[.funcion]] and [[./function]]
+  Create in-memory spyce cache
+  Wrote a token-based Brace Converter
+  Added [[ ]] and [[= ]]
+  Created Spyce compiler shell
+  Wrote initial mod_python "hello world" handler
+  Read up on mod_python
+  Looked at PyServ
+  Attempted to engineer a WebWare-based solution
+
