@@ -33,9 +33,8 @@ d4rk@xboxmediacenter.com
 
 */
 
-#include "system.h"
+
 #include "xbmc_vis.h"
-#include "Util.h"
 #ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>
 #endif
@@ -47,12 +46,14 @@ d4rk@xboxmediacenter.com
 #include "libprojectM/win32-dirent.h"
 #include <io.h>
 #else
+#include "system.h"
+#include "Util.h"
 #include <dirent.h>
 #endif
 
 #ifdef _WIN32PC
-#define PRESETS_DIR "Q:\\visualisations\\projectM"
-#define CONFIG_FILE "P:\\visualisations\projectM.conf"
+#define PRESETS_DIR "visualisations\\projectM"
+#define CONFIG_FILE "visualisations\\projectM.conf"
 #else
 #define PRESETS_DIR "Q:/visualisations/projectM"
 #define CONFIG_FILE "P:/visualisations/projectM.conf"
@@ -122,8 +123,15 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
 
   /** Initialise projectM */
 
+#ifdef _WIN32PC
+  std::string presetsDir = string(getenv("XBMC_HOME")) + "\\" + PRESETS_DIR;
+  std::string configFile = string(getenv("XBMC_PROFILE_USERDATA")) + "\\" + CONFIG_FILE;
+  DebugW("preset dir %s",presetsDir.c_str());
+  DebugW("config file %s",configFile.c_str());
+#else
   std::string presetsDir = _P(PRESETS_DIR);
   std::string configFile = _P(CONFIG_FILE);
+#endif
 
   projectM::Settings configPM;
   configPM.meshX = gx;
@@ -353,5 +361,8 @@ extern "C" void UpdateSetting(int num)
 {
   VisSetting &setting = m_vecSettings[num];
   if (strcasecmp(setting.name, "Use Preset")==0)
+  {
     OnAction(34, (void*)&setting.current);
+    DebugW("Change preset");
+  }
 }
