@@ -80,6 +80,8 @@ float g_fWaveform[2][512];
 char **g_presets=NULL;
 int g_numPresets = 0;
 
+std::string configFile;
+
 
 // Some helper Functions
 
@@ -125,11 +127,10 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
 
 #ifdef _WIN32PC
   std::string presetsDir = string(getenv("XBMC_HOME")) + "\\" + PRESETS_DIR;
-  std::string configFile = string(getenv("XBMC_PROFILE_USERDATA")) + "\\" + CONFIG_FILE;
- 
+  configFile = string(getenv("XBMC_PROFILE_USERDATA")) + "\\" + CONFIG_FILE;
 #else
   std::string presetsDir = _P(PRESETS_DIR);
-  std::string configFile = _P(CONFIG_FILE);
+  configFile = _P(CONFIG_FILE);
 #endif
 
   projectM::Settings configPM;
@@ -165,6 +166,10 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
 
   globalPM = new projectM(configFile);
 
+  VisSetting setting(VisSetting::CHECK, "Shuffle Mode");
+  setting.current = globalPM->isShuffleEnabled();
+  m_vecSettings.push_back(setting);
+
   g_Width = iWidth;
   g_Height = iHeight;
   g_PosX = iPosX;
@@ -186,6 +191,7 @@ extern "C" void Stop()
 {
   if (globalPM) 
   {
+    projectM::writeConfig(configFile,globalPM->settings());
     delete globalPM;
     globalPM = NULL;
   }
@@ -360,8 +366,7 @@ extern "C" void UpdateSetting(int num)
 {
   VisSetting &setting = m_vecSettings[num];
   if (strcasecmp(setting.name, "Use Preset")==0)
-  {
     OnAction(34, (void*)&setting.current);
-    DebugW("Change preset");
-  }
+  else if (strcasecmp(setting.name, "Shuffle Mode")==0)
+    OnAction(VIS_ACTION_RANDOM_PRESET, (void*)&setting.current);
 }
