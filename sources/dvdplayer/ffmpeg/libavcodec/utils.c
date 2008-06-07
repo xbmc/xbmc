@@ -177,8 +177,8 @@ int avcodec_check_dimensions(void *av_log_ctx, unsigned int w, unsigned int h){
 
 int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic){
     int i;
-    int w= s->width;
-    int h= s->height;
+    int w __attribute__((volatile)) = s->width;
+    int h __attribute__((volatile)) = s->height;
     InternalBuffer *buf;
     int *picture_number;
 

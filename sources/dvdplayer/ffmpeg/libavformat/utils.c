@@ -1004,7 +1004,11 @@ int av_find_default_stream_index(AVFormatContext *s)
 /**
  * Flush the frame reader.
  */
+#ifdef _XBOX
+void av_read_frame_flush(AVFormatContext *s)
+#else
 static void av_read_frame_flush(AVFormatContext *s)
+#endif
 {
     AVStream *st;
     int i;
@@ -1642,6 +1646,37 @@ static void av_estimate_timings_from_pts(AVFormatContext *ic, offset_t old_offse
     }
 }
 
+static void av_estimate_timings_from_pts2(AVFormatContext *ic, offset_t old_offset)
+{
+    AVStream *st;
+    int i, step= 1024;
+    int64_t ts, pos;
+
+    for(i=0;i<ic->nb_streams;i++) {
+        st = ic->streams[i];
+
+        pos = 0;
+        ts = ic->iformat->read_timestamp(ic, i, &pos, DURATION_MAX_READ_SIZE);
+        if (ts == AV_NOPTS_VALUE)
+            continue;
+        st->start_time = ts;
+
+        pos = url_fsize(ic->pb) - 1;
+        do {
+            pos -= step;
+            ts = ic->iformat->read_timestamp(ic, i, &pos, pos + step);
+            step += step;
+        } while (ts == AV_NOPTS_VALUE && pos >= step && step < DURATION_MAX_READ_SIZE);
+
+        if (ts != AV_NOPTS_VALUE)
+            st->duration = ts - st->start_time;
+    }
+
+    fill_all_stream_timings(ic);
+
+    url_fseek(ic->pb, old_offset, SEEK_SET);
+}
+
 static void av_estimate_timings(AVFormatContext *ic, offset_t old_offset)
 {
     int64_t file_size;
@@ -1661,6 +1696,10 @@ static void av_estimate_timings(AVFormatContext *ic, offset_t old_offset)
         file_size && !url_is_streamed(ic->pb)) {
         /* get accurate estimate from the PTSes */
         av_estimate_timings_from_pts(ic, old_offset);
+    } else if (ic->iformat->read_timestamp && 
+        file_size && !url_is_streamed(ic->pb)) {
+        /* get accurate estimate from the PTSes */
+        av_estimate_timings_from_pts2(ic, old_offset);
     } else if (av_has_duration(ic)) {
         /* at least one component has timings - we use them for all
            the components */

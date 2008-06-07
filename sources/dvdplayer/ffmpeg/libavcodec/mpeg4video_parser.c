@@ -85,6 +85,9 @@ static int av_mpeg4_decode_header(AVCodecParserContext *s1,
     if (s->width) {
         avcodec_set_dimensions(avctx, s->width, s->height);
     }
+#ifdef _XBOX
+    avctx->has_b_frames = !s->low_delay;
+#endif
     s1->pict_type= s->pict_type;
     pc->first_picture = 0;
     return ret;
@@ -136,3 +139,4 @@ AVCodecParser mpeg4video_parser = {
     ff_parse1_close,
     ff_mpeg4video_split,
 };
+

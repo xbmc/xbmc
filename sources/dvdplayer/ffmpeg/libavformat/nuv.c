@@ -149,8 +149,6 @@ static int nuv_header(AVFormatContext *s, AVFormatParameters *ap) {
     if (v_packs) {
         ctx->v_id = stream_nr++;
         vst = av_new_stream(s, ctx->v_id);
-        if (!vst)
-            return AVERROR(ENOMEM);
         vst->codec->codec_type = CODEC_TYPE_VIDEO;
         vst->codec->codec_id = CODEC_ID_NUV;
         vst->codec->width = width;
@@ -165,8 +163,6 @@ static int nuv_header(AVFormatContext *s, AVFormatParameters *ap) {
     if (a_packs) {
         ctx->a_id = stream_nr++;
         ast = av_new_stream(s, ctx->a_id);
-        if (!ast)
-            return AVERROR(ENOMEM);
         ast->codec->codec_type = CODEC_TYPE_AUDIO;
         ast->codec->codec_id = CODEC_ID_PCM_S16LE;
         ast->codec->channels = 2;
@@ -213,9 +209,14 @@ static int nuv_packet(AVFormatContext *s, AVPacket *pkt) {
                 ret = av_new_packet(pkt, copyhdrsize + size);
                 if (ret < 0)
                     return ret;
-                pkt->pos = url_ftell(pb) - copyhdrsize;
+                pkt->pos = url_ftell(pb) - HDRSIZE;
                 pkt->pts = AV_RL32(&hdr[4]);
                 pkt->stream_index = ctx->v_id;
+                if(hdr[2] == 0) {
+                    AVStream *st = s->streams[pkt->stream_index];
+                    pkt->flags |= PKT_FLAG_KEY;
+                    av_add_index_entry(st, pkt->pos, pkt->pts, size + HDRSIZE, 0, AVINDEX_KEYFRAME);
+                }
                 memcpy(pkt->data, hdr, copyhdrsize);
                 ret = get_buffer(pb, pkt->data + copyhdrsize, size);
                 return ret;
@@ -240,6 +241,83 @@ static int nuv_packet(AVFormatContext *s, AVPacket *pkt) {
     return AVERROR(EIO);
 }
 
+/**
+ * \brief looks for the string RTjjjjjjjjjj in the stream too resync reading
+ * \return TRUE if the syncword is found.
+ */
+static int nuv_resync(AVFormatContext *s, int64_t pos_limit) {
+    ByteIOContext *pb = s->pb;
+    uint32_t tag;
+
+    tag = get_be32(pb);
+    while(!url_feof(pb) && url_ftell(pb) < pos_limit) {
+        if(tag != MKBETAG('R','T','j','j')) {
+            tag = (tag << 8) | get_byte(pb);
+            continue;
+        }
+        tag = get_be32(pb);
+        if(tag != MKBETAG('j','j','j','j'))
+          continue;
+
+        tag = get_be32(pb);
+        if(tag != MKBETAG('j','j','j','j'))
+          continue;
+
+        return 1;
+    }
+    return 0;
+}
+
+/**
+ * \brief attempts to read a timestamp from stream at the given stream position
+ * \return timestamp if successfull and AV_NOPTS_VALUE if failure
+ */
+static int64_t nuv_read_dts(AVFormatContext *s, int stream_index,
+                               int64_t *ppos, int64_t pos_limit)
+{
+    NUVContext *ctx = s->priv_data;
+    ByteIOContext *pb = s->pb;
+    uint8_t hdr[HDRSIZE];
+    frametype_t frametype;
+    int size;
+    int64_t pos, dts;
+
+    if (url_fseek(pb, *ppos, SEEK_SET) < 0)
+        return AV_NOPTS_VALUE;
+
+    if (!nuv_resync(s, pos_limit))
+        return AV_NOPTS_VALUE;
+
+    while (!url_feof(pb) && url_ftell(pb) < pos_limit) {
+        if (get_buffer(pb, hdr, HDRSIZE) <= 0)
+            return AV_NOPTS_VALUE;
+        frametype = hdr[0];
+        size = PKTSIZE(AV_RL32(&hdr[8]));
+        switch (frametype) {
+            case NUV_SEEKP:
+                break;
+            case NUV_AUDIO:
+            case NUV_VIDEO:
+                pos = url_ftell(s->pb) - HDRSIZE;
+                dts = AV_RL32(&hdr[4]);
+                // TODO - add general support in av_gen_search, so it adds positions after reading timestamps
+                av_add_index_entry(s->streams[frametype == NUV_VIDEO ? ctx->v_id : ctx->a_id]
+                                 , pos, dts, size + HDRSIZE, 0, hdr[2] == 0 ? AVINDEX_KEYFRAME : 0);
+
+                if ((frametype == NUV_VIDEO && stream_index == ctx->v_id) ||
+                    (frametype == NUV_AUDIO && stream_index == ctx->a_id)) {
+                    *ppos = pos;
+                    return dts;
+                }
+            default:
+                url_fskip(pb, size);
+                break;
+        }
+    }
+    return AV_NOPTS_VALUE;
+}
+
+
 AVInputFormat nuv_demuxer = {
     "nuv",
     "NuppelVideo format",
@@ -249,4 +327,5 @@ AVInputFormat nuv_demuxer = {
     nuv_packet,
     NULL,
     NULL,
+    nuv_read_dts,
 };

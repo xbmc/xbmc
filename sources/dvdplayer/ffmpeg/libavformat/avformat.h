@@ -404,14 +404,19 @@ typedef struct AVProgram {
 #define AVFMTCTX_NOHEADER      0x0001 /**< signal that no header is present
                                          (streams are added dynamically) */
 
+#ifdef _XBOX
+/* dvd's can have maximally 41 streams */
+#define MAX_STREAMS 42
+#else
+#define MAX_STREAMS 20
+#endif
+
 typedef struct AVChapter {
     int id;                 ///< Unique id to identify the chapter
     AVRational time_base;   ///< Timebase in which the start/end timestamps are specified
     int64_t start, end;     ///< chapter start/end time in time_base units
     char *title;            ///< chapter title
 } AVChapter;
-
-#define MAX_STREAMS 20
 
 /**
  * format I/O context.

@@ -28,6 +28,7 @@
 #define ff_neterrno() WSAGetLastError()
 #define FF_NETERROR(err) WSA##err
 #define WSAEAGAIN WSAEWOULDBLOCK
+#define WSAEINPROGRESS WSAEWOULDBLOCK
 #else
 #include <sys/types.h>
 #include <sys/socket.h>

@@ -42,6 +42,48 @@
 #include <bzlib.h>
 #endif
 
+#ifdef CONFIG_ZLIB
+#include <zlib.h>
+
+static int do_decompress(unsigned char *src, unsigned char **dst, int slen) {
+  int result, dstsize, n;
+  z_stream d_stream;
+  d_stream.zalloc = (alloc_func)0;
+  d_stream.zfree = (free_func)0;
+  d_stream.opaque = (voidpf)0;
+  result = inflateInit(&d_stream);
+  if (result != Z_OK) {
+    av_log(NULL, AV_LOG_ERROR, "inflateInit() failed. Result: %d\n", result);
+    return -1;
+  }
+
+  d_stream.next_in = (Bytef *)src;
+  d_stream.avail_in = slen;
+  n = 0;
+  *dst = NULL;
+  do {
+    n++;
+    *dst = (unsigned char *)av_realloc(*dst, n * 1000);
+    d_stream.next_out = (Bytef *)&(*dst)[(n - 1) * 1000];
+    d_stream.avail_out = 1000;
+    result = inflate(&d_stream, Z_NO_FLUSH);
+    if ((result != Z_OK) && (result != Z_STREAM_END)) {
+      av_log(NULL, AV_LOG_ERROR, "Zlib decompression failed (%d). Result: %d\n",n, result);
+      inflateEnd(&d_stream);
+      return -1;
+    }
+  } while ((d_stream.avail_out == 0) && (d_stream.avail_in != 0) &&
+           (result != Z_STREAM_END));
+
+  dstsize = d_stream.total_out;
+  inflateEnd(&d_stream);
+
+  *dst = (unsigned char *)av_realloc(*dst, dstsize);
+
+  return dstsize;
+}
+#endif
+
 typedef struct Track {
     MatroskaTrackType type;
 
@@ -2507,7 +2549,9 @@ matroska_read_header (AVFormatContext    *s,
                 /* Offset of biCompression. Stored in LE. */
                 vtrack->fourcc = AV_RL32(track->codec_priv + 16);
                 codec_id = codec_get_id(codec_bmp_tags, vtrack->fourcc);
-
+#ifdef _XBOX
+                track->flags |= MATROSKA_TRACK_MSCOMP;
+#endif
             }
 
             /* This is the MS compatibility mode which stores a
@@ -2521,6 +2565,9 @@ matroska_read_header (AVFormatContext    *s,
                 /* Offset of wFormatTag. Stored in LE. */
                 tag = AV_RL16(track->codec_priv);
                 codec_id = codec_get_id(codec_wav_tags, tag);
+#ifdef _XBOX
+                track->flags |= MATROSKA_TRACK_MSCOMP;
+#endif
 
             }
 
@@ -2660,6 +2707,10 @@ matroska_read_header (AVFormatContext    *s,
                 st->codec->sample_rate = audiotrack->samplerate;
                 st->codec->channels = audiotrack->channels;
                 st->codec->block_align = audiotrack->block_align;
+#ifdef _XBOX
+                if (track->flags & MATROSKA_TRACK_MSCOMP)
+                  st->need_parsing = AVSTREAM_PARSE_TIMESTAMPS;
+#endif
             } else if (track->type == MATROSKA_TRACK_TYPE_SUBTITLE) {
                 st->codec->codec_type = CODEC_TYPE_SUBTITLE;
             }
@@ -2867,6 +2918,41 @@ matroska_parse_block(MatroskaDemuxContext *matroska, uint8_t *data, int size,
                     pkt->stream_index = stream_index;
                     matroska_queue_packet(matroska, pkt);
                 }
+#ifdef CONFIG_ZLIB
+            } else if (st->codec->codec_id == CODEC_ID_DVD_SUBTITLE) {
+
+                unsigned char* d;
+                int s;
+
+                s = do_decompress(data,&d,lace_size[n]);
+                if(s > 0) {
+                    pkt = av_mallocz(sizeof(AVPacket));
+                    if (av_new_packet(pkt, 0) < 0) {
+                        res = AVERROR(ENOMEM);
+                        n = laces-1;
+                    break;
+                    }
+    
+                    pkt->data = d;
+                    pkt->size = s;
+
+                    if (n == 0)
+                        pkt->flags = is_keyframe;
+                    pkt->stream_index = matroska->tracks[track]->stream_index;
+
+                    if (matroska->tracks[track]->flags & MATROSKA_TRACK_MSCOMP)
+                        pkt->dts = timecode;
+                    else
+                        pkt->pts = timecode;
+                    pkt->pos = pos;
+                    pkt->duration = duration;
+
+                    matroska_queue_packet(matroska, pkt);
+                } else {
+                    if(data) av_freep(&data);
+                }
+#endif
+
             } else {
                 int result, offset = 0, ilen, olen, pkt_size = lace_size[n];
                 uint8_t *pkt_data = data;
@@ -2957,7 +3043,10 @@ matroska_parse_block(MatroskaDemuxContext *matroska, uint8_t *data, int size,
                     pkt->flags = is_keyframe;
                 pkt->stream_index = stream_index;
 
-                pkt->pts = timecode;
+                if (matroska->tracks[track]->flags & MATROSKA_TRACK_MSCOMP)
+                    pkt->dts = timecode;
+                else
+                    pkt->pts = timecode;
                 pkt->pos = pos;
                 pkt->duration = duration;
 
