@@ -1717,16 +1717,17 @@ CProfile* CApplication::InitDirectoriesWin32()
 
   if (m_bPlatformDirectories)
   {
-
+    CUtil::AddFileToFolder(strWin32UserFolder,"XBMC\\UserData",strPath);
+    SetEnvironmentVariable("XBMC_PROFILE_USERDATA",strPath.c_str());
     if (g_settings.m_vecProfiles.size()==0)
     {
       profile = new CProfile;
-      CUtil::AddFileToFolder(strWin32UserFolder,"XBMC\\UserData",strPath);
       profile->setDirectory(strPath.c_str());
     }
   }
   else
   {
+    SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("q:\\UserData"));
     if (g_settings.m_vecProfiles.size()==0)
     {
       profile = new CProfile;
