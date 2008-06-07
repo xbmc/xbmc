@@ -671,9 +671,15 @@ CGUISettings::CGUISettings(void)
 #ifdef HAS_XBOX_HARDWARE
   AddInt(4, "videoscreen.flickerfilter", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(5, "videoscreen.soften", 215, false);
-#else
-  AddInt(6, "videoscreen.vsync", 13105, 2, 0, 1, 2, SPIN_CONTROL_TEXT);
-#endif
+#else /* HAS_XBOX_HARDWARE */
+  AddInt(6, "videoscreen.vsync", 13105,
+#ifdef _LINUX
+         VSYNC_VIDEO,
+#else /* _LINUX */
+         VSYNC_ALWAYS,
+#endif /* _LINUX */
+         VSYNC_DISABLED, 1, VSYNC_ALWAYS, SPIN_CONTROL_TEXT);
+#endif /* HAS_XBOX_HARDWARE */
 
   AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, false);
