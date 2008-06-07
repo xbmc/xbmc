@@ -27,35 +27,35 @@
 
 typedef struct { uint64_t a, b; } xmm_t;
 
-extern const uint64_t ff_bone;
-extern const uint64_t ff_wtwo;
+extern const uint64_t __attribute__((visibility("hidden"))) ff_bone;
+extern const uint64_t __attribute__((visibility("hidden"))) ff_wtwo;
 
-extern const uint64_t ff_pdw_80000000[2];
+extern const uint64_t __attribute__((visibility("hidden"))) ff_pdw_80000000[2];
 
-extern const uint64_t ff_pw_3;
-extern const uint64_t ff_pw_4;
-extern const xmm_t    ff_pw_5;
-extern const uint64_t ff_pw_8;
-extern const uint64_t ff_pw_15;
-extern const xmm_t    ff_pw_16;
-extern const uint64_t ff_pw_20;
-extern const xmm_t    ff_pw_28;
-extern const xmm_t    ff_pw_32;
-extern const uint64_t ff_pw_42;
-extern const uint64_t ff_pw_64;
-extern const uint64_t ff_pw_96;
-extern const uint64_t ff_pw_128;
-extern const uint64_t ff_pw_255;
+extern const uint64_t __attribute__((visibility("hidden"))) ff_pw_3;
+extern const uint64_t __attribute__((visibility("hidden"))) ff_pw_4;
+extern const xmm_t    __attribute__((visibility("hidden"))) ff_pw_5;
+extern const uint64_t __attribute__((visibility("hidden"))) ff_pw_8;
+extern const uint64_t __attribute__((visibility("hidden"))) ff_pw_15;
+extern const xmm_t    __attribute__((visibility("hidden"))) ff_pw_16;
+extern const uint64_t __attribute__((visibility("hidden"))) ff_pw_20;
+extern const xmm_t    __attribute__((visibility("hidden"))) ff_pw_28;
+extern const xmm_t    __attribute__((visibility("hidden"))) ff_pw_32;
+extern const uint64_t __attribute__((visibility("hidden"))) ff_pw_42;
+extern const uint64_t __attribute__((visibility("hidden"))) ff_pw_64;
+extern const uint64_t __attribute__((visibility("hidden"))) ff_pw_96;
+extern const uint64_t __attribute__((visibility("hidden"))) ff_pw_128;
+extern const uint64_t __attribute__((visibility("hidden"))) ff_pw_255;
 
-extern const uint64_t ff_pb_1;
-extern const uint64_t ff_pb_3;
-extern const uint64_t ff_pb_7;
-extern const uint64_t ff_pb_3F;
-extern const uint64_t ff_pb_A1;
-extern const uint64_t ff_pb_FC;
+extern const uint64_t __attribute__((visibility("hidden"))) ff_pb_1;
+extern const uint64_t __attribute__((visibility("hidden"))) ff_pb_3;
+extern const uint64_t __attribute__((visibility("hidden"))) ff_pb_7;
+extern const uint64_t __attribute__((visibility("hidden"))) ff_pb_3F;
+extern const uint64_t __attribute__((visibility("hidden"))) ff_pb_A1;
+extern const uint64_t __attribute__((visibility("hidden"))) ff_pb_FC;
 
-extern const double ff_pd_1[2];
-extern const double ff_pd_2[2];
+extern const double __attribute__((visibility("hidden"))) ff_pd_1[2];
+extern const double __attribute__((visibility("hidden"))) ff_pd_2[2];
 
 /* in/out: mma=mma+mmb, mmb=mmb-mma */
 #define SUMSUB_BA( a, b ) \
