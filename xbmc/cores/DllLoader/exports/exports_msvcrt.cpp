@@ -275,6 +275,18 @@ extern "C" void* _aligned_malloc();
 extern "C" void* _aligned_free();
 extern "C" void* _aligned_realloc();
 extern "C" void* _callnewh();
+#if defined(_WIN32) && !defined(HAS_XBOX_HARDWARE)
+extern "C" void* _cabs();
+extern "C" void* _mbsnbicmp();
+extern "C" void* ldiv();
+extern "C" void* _mbsnbcpy();
+extern "C" void* _mbslen();
+extern "C" void* tmpnam();
+extern "C" void* _CItanh();
+extern "C" void* tmpfile();
+extern "C" void* _unlink();
+extern "C" void* _setmode();
+#endif
 #endif
 
 // tracker functions
@@ -780,6 +792,18 @@ Export export_msvcr71[] =
   { "_aligned_free",              -1, (void*)_aligned_free,                 NULL },
   { "_aligned_realloc",           -1, (void*)_aligned_realloc,              NULL },
   { "_callnewh",                  -1, (void*)_callnewh,                     NULL },
+#endif
+#if defined(_WIN32) && !defined(HAS_XBOX_HARDWARE)
+  { "_cabs",                      -1, (void*)_cabs,                         NULL },
+  { "_mbsnbicmp",                 -1, (void*)_mbsnbicmp,                    NULL },
+  { "ldiv",                       -1, (void*)ldiv,                          NULL },
+  { "_mbsnbcpy",                  -1, (void*)_mbsnbcpy,                     NULL },
+  { "_mbslen",                    -1, (void*)_mbslen,                       NULL },
+  { "tmpnam",                     -1, (void*)tmpnam,                        NULL },
+  { "_CItanh",                    -1, (void*)_CItanh,                       NULL },
+  { "tmpfile",                    -1, (void*)tmpfile,                       NULL },
+  { "_unlink",                    -1, (void*)_unlink,                       NULL },
+  { "_setmode",                   -1, (void*)_setmode,                      NULL },
 #endif
   { NULL,                         -1, (void*)NULL,                          NULL }
 };
