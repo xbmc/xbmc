@@ -58,14 +58,14 @@ static void flush_packet(AVFormatContext *s)
 /* 'first' is true if first data of a frame */
 static void ffm_write_data(AVFormatContext *s,
                            const uint8_t *buf, int size,
-                           int64_t pts, int first)
+                           int64_t pts, int header)
 {
     FFMContext *ffm = s->priv_data;
     int len;
 
-    if (first && ffm->frame_offset == 0)
+    if (header && ffm->frame_offset == 0)
         ffm->frame_offset = ffm->packet_ptr - ffm->packet + FFM_HEADER_SIZE;
-    if (first && ffm->pts == 0)
+    if (header && ffm->pts == 0)
         ffm->pts = pts;
 
     /* write as many packets as needed */
@@ -92,7 +92,6 @@ static int ffm_write_header(AVFormatContext *s)
 {
     FFMContext *ffm = s->priv_data;
     AVStream *st;
-    FFMStream *fst;
     ByteIOContext *pb = s->pb;
     AVCodecContext *codec;
     int bit_rate, i;
@@ -116,11 +115,7 @@ static int ffm_write_header(AVFormatContext *s)
     /* list of streams */
     for(i=0;i<s->nb_streams;i++) {
         st = s->streams[i];
-        fst = av_mallocz(sizeof(FFMStream));
-        if (!fst)
-            goto fail;
         av_set_pts_info(st, 64, 1, 1000000);
-        st->priv_data = fst;
 
         codec = st->codec;
         /* generic info */
@@ -176,12 +171,13 @@ static int ffm_write_header(AVFormatContext *s)
         default:
             return -1;
         }
-        /* hack to have real time */
-        if (ffm_nopts)
-            fst->pts = 0;
-        else
-            fst->pts = av_gettime();
     }
+
+    /* hack to have real time */
+    if (ffm_nopts)
+        ffm->start_time = 0;
+    else
+        ffm->start_time = av_gettime();
 
     /* flush until end of block reached */
     while ((url_ftell(pb) % ffm->packet_size) != 0)
@@ -198,22 +194,16 @@ static int ffm_write_header(AVFormatContext *s)
     ffm->first_packet = 1;
 
     return 0;
- fail:
-    for(i=0;i<s->nb_streams;i++) {
-        st = s->streams[i];
-        av_freep(&st->priv_data);
-    }
-    return -1;
 }
 
 static int ffm_write_packet(AVFormatContext *s, AVPacket *pkt)
 {
+    FFMContext *ffm = s->priv_data;
     AVStream *st = s->streams[pkt->stream_index];
-    FFMStream *fst = st->priv_data;
     int64_t pts;
     uint8_t header[FRAME_HEADER_SIZE];
 
-    pts = fst->pts;
+    pts = ffm->start_time + pkt->pts;
     /* packet size & key_frame */
     header[0] = pkt->stream_index;
     header[1] = 0;
@@ -224,7 +214,6 @@ static int ffm_write_packet(AVFormatContext *s, AVPacket *pkt)
     ffm_write_data(s, header, FRAME_HEADER_SIZE, pts, 1);
     ffm_write_data(s, pkt->data, pkt->size, pts, 0);
 
-    fst->pts += pkt->duration;
     return 0;
 }
 
@@ -253,7 +242,7 @@ static int ffm_write_trailer(AVFormatContext *s)
 
 AVOutputFormat ffm_muxer = {
     "ffm",
-    "ffm format",
+    NULL_IF_CONFIG_SMALL("ffm format"),
     "",
     "ffm",
     sizeof(FFMContext),

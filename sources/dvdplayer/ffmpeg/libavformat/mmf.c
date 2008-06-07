@@ -295,28 +295,22 @@ static int mmf_read_close(AVFormatContext *s)
     return 0;
 }
 
-static int mmf_read_seek(AVFormatContext *s,
-                         int stream_index, int64_t timestamp, int flags)
-{
-    return pcm_read_seek(s, stream_index, timestamp, flags);
-}
-
 #ifdef CONFIG_MMF_DEMUXER
 AVInputFormat mmf_demuxer = {
     "mmf",
-    "mmf format",
+    NULL_IF_CONFIG_SMALL("mmf format"),
     sizeof(MMFContext),
     mmf_probe,
     mmf_read_header,
     mmf_read_packet,
     mmf_read_close,
-    mmf_read_seek,
+    pcm_read_seek,
 };
 #endif
 #ifdef CONFIG_MMF_MUXER
 AVOutputFormat mmf_muxer = {
     "mmf",
-    "mmf format",
+    NULL_IF_CONFIG_SMALL("mmf format"),
     "application/vnd.smaf",
     "mmf",
     sizeof(MMFContext),

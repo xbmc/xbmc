@@ -79,7 +79,7 @@ static int ffm_is_avail_data(AVFormatContext *s, int size)
 
 /* first is true if we read the frame header */
 static int ffm_read_data(AVFormatContext *s,
-                         uint8_t *buf, int size, int first)
+                         uint8_t *buf, int size, int header)
 {
     FFMContext *ffm = s->priv_data;
     ByteIOContext *pb = s->pb;
@@ -122,7 +122,7 @@ static int ffm_read_data(AVFormatContext *s,
                 if ((frame_offset & 0x7fff) < FFM_HEADER_SIZE)
                     return -1;
                 ffm->packet_ptr = ffm->packet + (frame_offset & 0x7fff) - FFM_HEADER_SIZE;
-                if (!first)
+                if (!header)
                     break;
             } else {
                 ffm->packet_ptr = ffm->packet;
@@ -133,7 +133,7 @@ static int ffm_read_data(AVFormatContext *s,
         buf += len;
         ffm->packet_ptr += len;
         size -= len;
-        first = 0;
+        header = 0;
     }
     return size1 - size;
 }
@@ -232,7 +232,6 @@ static int ffm_read_header(AVFormatContext *s, AVFormatParameters *ap)
 {
     FFMContext *ffm = s->priv_data;
     AVStream *st;
-    FFMStream *fst;
     ByteIOContext *pb = s->pb;
     AVCodecContext *codec;
     int i, nb_streams;
@@ -263,14 +262,9 @@ static int ffm_read_header(AVFormatContext *s, AVFormatParameters *ap)
         st = av_new_stream(s, 0);
         if (!st)
             goto fail;
-        fst = av_mallocz(sizeof(FFMStream));
-        if (!fst)
-            goto fail;
         s->streams[i] = st;
 
         av_set_pts_info(st, 64, 1, 1000000);
-
-        st->priv_data = fst;
 
         codec = st->codec;
         /* generic info */
@@ -454,6 +448,13 @@ static int ffm_seek(AVFormatContext *s, int stream_index, int64_t wanted_pts, in
         pos -= FFM_PACKET_SIZE;
  found:
     ffm_seek1(s, pos);
+
+    /* reset read state */
+    ffm->read_state = READ_HEADER;
+    ffm->packet_ptr = ffm->packet;
+    ffm->packet_end = ffm->packet;
+    ffm->first_packet = 1;
+
     return 0;
 }
 
@@ -480,7 +481,7 @@ static int ffm_probe(AVProbeData *p)
 
 AVInputFormat ffm_demuxer = {
     "ffm",
-    "ffm format",
+    NULL_IF_CONFIG_SMALL("ffm format"),
     sizeof(FFMContext),
     ffm_probe,
     ffm_read_header,

@@ -300,6 +300,12 @@ disabled_any(){
     done
 }
 
+set_default(){
+    for opt; do
+        eval test -z "\$$opt" && eval $opt=\$${opt}_default
+    done
+}
+
 is_in(){
     value=$1
     shift
@@ -706,6 +712,7 @@ ARCH_EXT_LIST='
     mmi
     mmx
     mmx2
+    neon
     ssse3
     vis
 '
@@ -783,22 +790,27 @@ CMDLINE_SELECT="
     static
     stripping
 "
-CMDLINE_SET='
-    arch
+
+PATHS_LIST='
     bindir
+    incdir
+    libdir
+    mandir
+    prefix
+    shlibdir
+'
+
+CMDLINE_SET="
+    $PATHS_LIST
+    arch
     build_suffix
     cc
     cpu
     cross_prefix
-    incdir
-    libdir
     logfile
-    mandir
-    prefix
-    shlibdir
     source_path
     target_os
-'
+"
 
 # code dependency declarations
 
@@ -811,6 +823,7 @@ iwmmxt_deps="armv4l"
 mmi_deps="mips"
 mmx_deps="x86"
 mmx2_deps="x86 mmx"
+neon_deps="armv4l"
 ssse3_deps="x86"
 vis_deps="sparc"
 
@@ -898,12 +911,12 @@ vhook_extralibs='$ldl'
 logfile="config.err"
 
 # installation paths
-prefix="/usr/local"
-libdir='$(PREFIX)/lib'
-shlibdir="$libdir"
-incdir='$(PREFIX)/include'
-mandir='$(PREFIX)/share/man'
-bindir='$(PREFIX)/bin'
+prefix_default="/usr/local"
+bindir_default='${prefix}/bin'
+incdir_default='${prefix}/include'
+libdir_default='${prefix}/lib'
+mandir_default='${prefix}/share/man'
+shlibdir_default="$libdir_default"
 
 # toolchain
 cc="gcc"
@@ -942,7 +955,7 @@ vhook="default"
 # build settings
 SHFLAGS='-shared -Wl,-soname,$$(@F)'
 VHOOKSHFLAGS='$(SHFLAGS)'
-LDLATEFLAGS='-Wl,-rpath-link,\$(BUILD_ROOT)/libavcodec -Wl,-rpath-link,\$(BUILD_ROOT)/libavformat -Wl,-rpath-link,\$(BUILD_ROOT)/libavutil'
+LDLATEFLAGS='-Wl,-rpath-link,\$(BUILD_ROOT)/libpostproc -Wl,-rpath-link,\$(BUILD_ROOT)/libswscale -Wl,-rpath-link,\$(BUILD_ROOT)/libavfilter -Wl,-rpath-link,\$(BUILD_ROOT)/libavdevice -Wl,-rpath-link,\$(BUILD_ROOT)/libavformat -Wl,-rpath-link,\$(BUILD_ROOT)/libavcodec -Wl,-rpath-link,\$(BUILD_ROOT)/libavutil'
 FFSERVERLDFLAGS=-Wl,-E
 LIBPREF="lib"
 LIBSUF=".a"
@@ -1162,7 +1175,7 @@ enabled     sparc64       && enable sparc
 # OS specific
 case $target_os in
     beos|haiku|zeta)
-        prefix="$HOME/config"
+        prefix_default="$HOME/config"
         # helps building libavcodec
         add_cflags "-DPIC -fomit-frame-pointer"
         # 3 gcc releases known for BeOS, each with ugly bugs
@@ -1231,7 +1244,7 @@ case $target_os in
             disable need_memalign
             LIBTARGET=x64
         fi
-        shlibdir="$bindir"
+        shlibdir_default="$bindir"
         VHOOKSHFLAGS='-shared -L$(BUILD_ROOT)/libavformat -L$(BUILD_ROOT)/libavcodec -L$(BUILD_ROOT)/libavutil'
         VHOOKLIBS='-lavformat$(BUILDSUF) -lavcodec$(BUILDSUF) -lavutil$(BUILDSUF) $(EXTRALIBS)'
         if enabled swscale; then
@@ -1252,7 +1265,7 @@ case $target_os in
         ;;
     cygwin*)
         target_os=cygwin
-        shlibdir="$bindir"
+        shlibdir_default="$bindir"
         VHOOKSHFLAGS='-shared -L$(BUILD_ROOT)/libavformat -L$(BUILD_ROOT)/libavcodec -L$(BUILD_ROOT)/libavutil'
         VHOOKLIBS='-lavformat$(BUILDSUF) -lavcodec$(BUILDSUF) -lavutil$(BUILDSUF) $(EXTRALIBS)'
         if enabled swscale; then
@@ -1312,6 +1325,8 @@ case $target_os in
         target_os="${target_os}-UNKNOWN"
         ;;
 esac
+
+set_default $PATHS_LIST
 
 add_extralibs $osextralibs
 
@@ -1446,7 +1461,7 @@ if test $cpu != "generic"; then
         sparc64)
             add_cflags "-mcpu=v9"
         ;;
-        arm*)
+        arm*|cortex*)
             add_cflags "-mcpu=$cpu"
         ;;
         *)
@@ -1560,6 +1575,7 @@ enabled armv6   && check_asm armv6   '"sadd16 r0, r0, r0"'
 enabled armvfp  && check_asm armvfp  '"fadds s0, s0, s0"'
 enabled iwmmxt  && check_asm iwmmxt  '"wunpckelub wr6, wr4"'
 enabled mmi     && check_asm mmi     '"lq $2, 0($2)"'
+enabled neon    && check_asm neon    '"vadd.i16 q0, q0, q0"'
 enabled vis     && check_asm vis     '"pdist %f0, %f0, %f0"' -mcpu=ultrasparc
 
 enabled vis && add_cflags "-mcpu=ultrasparc -mtune=ultrasparc"
@@ -1921,6 +1937,7 @@ if test $arch = "armv4l"; then
     echo "ARMv6 enabled             ${armv6-no}"
     echo "ARM VFP enabled           ${armvfp-no}"
     echo "IWMMXT enabled            ${iwmmxt-no}"
+    echo "NEON enabled              ${neon-no}"
 fi
 if test $arch = "mips"; then
     echo "MMI enabled               ${mmi-no}"
@@ -2002,7 +2019,7 @@ echo "#ifndef FFMPEG_CONFIG_H" >> $TMPH
 echo "#define FFMPEG_CONFIG_H" >> $TMPH
 echo "#define FFMPEG_CONFIGURATION \"$FFMPEG_CONFIGURATION\"" >> $TMPH
 
-echo "PREFIX=$prefix" >> config.mak
+echo "prefix=$prefix" >> config.mak
 echo "LIBDIR=\$(DESTDIR)$libdir" >> config.mak
 echo "SHLIBDIR=\$(DESTDIR)$shlibdir" >> config.mak
 echo "INCDIR=\$(DESTDIR)$incdir" >> config.mak

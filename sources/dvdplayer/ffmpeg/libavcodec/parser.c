@@ -76,6 +76,25 @@ AVCodecParserContext *av_parser_init(int codec_id)
     return s;
 }
 
+void ff_fetch_timestamp(AVCodecParserContext *s, int off, int remove){
+    int i;
+
+    s->dts= s->pts= AV_NOPTS_VALUE;
+    s->offset= 0;
+    for(i = 0; i < AV_PARSER_PTS_NB; i++) {
+        if (   s->next_frame_offset + off >= s->cur_frame_offset[i]
+            &&(s->     frame_offset       <  s->cur_frame_offset[i] || !s->frame_offset)
+            //check is disabled  becausue mpeg-ts doesnt send complete PES packets
+            && /*s->next_frame_offset + off <*/  s->cur_frame_end[i]){
+            s->dts= s->cur_frame_dts[i];
+            s->pts= s->cur_frame_pts[i];
+            s->offset = s->next_frame_offset - s->cur_frame_offset[i];
+            if(remove)
+                s->cur_frame_offset[i]= INT64_MAX;
+        }
+    }
+}
+
 /**
  *
  * @param buf           input
@@ -106,7 +125,7 @@ int av_parser_parse(AVCodecParserContext *s,
                     const uint8_t *buf, int buf_size,
                     int64_t pts, int64_t dts)
 {
-    int index, i, k;
+    int index, i;
     uint8_t dummy_buf[FF_INPUT_BUFFER_PADDING_SIZE];
 
     if (buf_size == 0) {
@@ -115,21 +134,21 @@ int av_parser_parse(AVCodecParserContext *s,
         buf = dummy_buf;
     } else {
         /* add a new packet descriptor */
-        k = (s->cur_frame_start_index + 1) & (AV_PARSER_PTS_NB - 1);
-        s->cur_frame_start_index = k;
-        s->cur_frame_offset[k] = s->cur_offset;
-        s->cur_frame_pts[k] = pts;
-        s->cur_frame_dts[k] = dts;
-
-        /* fill first PTS/DTS */
-        if (s->fetch_timestamp){
-            s->fetch_timestamp=0;
-            s->last_pts = pts;
-            s->last_dts = dts;
-            s->last_offset = 0;
-            s->cur_frame_pts[k] =
-            s->cur_frame_dts[k] = AV_NOPTS_VALUE;
+        if(pts != AV_NOPTS_VALUE || dts != AV_NOPTS_VALUE){
+            i = (s->cur_frame_start_index + 1) & (AV_PARSER_PTS_NB - 1);
+            s->cur_frame_start_index = i;
+            s->cur_frame_offset[i] = s->cur_offset;
+            s->cur_frame_end[i] = s->cur_offset + buf_size;
+            s->cur_frame_pts[i] = pts;
+            s->cur_frame_dts[i] = dts;
         }
+    }
+
+    if (s->fetch_timestamp){
+        s->fetch_timestamp=0;
+        s->last_pts = s->pts;
+        s->last_dts = s->dts;
+        ff_fetch_timestamp(s, 0, 0);
     }
 
     /* WARNING: the returned index can be negative */
@@ -138,35 +157,11 @@ int av_parser_parse(AVCodecParserContext *s,
     /* update the file pointer */
     if (*poutbuf_size) {
         /* fill the data for the current frame */
-        s->frame_offset = s->last_frame_offset;
-        s->pts = s->last_pts;
-        s->dts = s->last_dts;
-        s->offset = s->last_offset;
+        s->frame_offset = s->next_frame_offset;
 
         /* offset of the next frame */
-        s->last_frame_offset = s->cur_offset + index;
-        /* find the packet in which the new frame starts. It
-           is tricky because of MPEG video start codes
-           which can begin in one packet and finish in
-           another packet. In the worst case, an MPEG
-           video start code could be in 4 different
-           packets. */
-        k = s->cur_frame_start_index;
-        for(i = 0; i < AV_PARSER_PTS_NB; i++) {
-            if (s->last_frame_offset >= s->cur_frame_offset[k])
-                break;
-            k = (k - 1) & (AV_PARSER_PTS_NB - 1);
-        }
-
-        s->last_pts = s->cur_frame_pts[k];
-        s->last_dts = s->cur_frame_dts[k];
-        s->last_offset = s->last_frame_offset - s->cur_frame_offset[k];
-
-        /* some parsers tell us the packet size even before seeing the first byte of the next packet,
-           so the next pts/dts is in the next chunk */
-        if(index == buf_size){
-            s->fetch_timestamp=1;
-        }
+        s->next_frame_offset = s->cur_offset + index;
+        s->fetch_timestamp=1;
     }
     if (index < 0)
         index = 0;

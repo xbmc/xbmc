@@ -154,6 +154,7 @@ typedef struct {
     int   end_freq[AC3_MAX_CHANNELS];       ///< end frequency bin
     AC3BitAllocParameters bit_alloc_params; ///< bit allocation parameters
 
+    int num_exp_groups[AC3_MAX_CHANNELS];   ///< Number of exponent groups
     int8_t  dexps[AC3_MAX_CHANNELS][256];   ///< decoded exponents
     uint8_t bap[AC3_MAX_CHANNELS][256];     ///< bit allocation pointers
     int16_t psd[AC3_MAX_CHANNELS][256];     ///< scaled exponents
@@ -323,6 +324,13 @@ static int ac3_parse_header(AC3DecodeContext *s)
     s->frame_size                   = hdr.frame_size;
     s->center_mix_level             = hdr.center_mix_level;
     s->surround_mix_level           = hdr.surround_mix_level;
+
+    if(s->lfe_on) {
+        s->start_freq[s->lfe_ch] = 0;
+        s->end_freq[s->lfe_ch] = 7;
+        s->num_exp_groups[s->lfe_ch] = 2;
+        s->channel_in_cpl[s->lfe_ch] = 0;
+    }
 
     /* read the rest of the bsi. read twice for dual mono mode. */
     i = !(s->channel_mode);
@@ -895,10 +903,7 @@ static int ac3_parse_audio_block(AC3DecodeContext *s, int blk)
     s->exp_strategy[CPL_CH] = EXP_REUSE;
     s->exp_strategy[s->lfe_ch] = EXP_REUSE;
     for (ch = !s->cpl_in_use; ch <= s->channels; ch++) {
-        if(ch == s->lfe_ch)
-            s->exp_strategy[ch] = get_bits(gbc, 1);
-        else
-            s->exp_strategy[ch] = get_bits(gbc, 2);
+        s->exp_strategy[ch] = get_bits(gbc, 2 - (ch == s->lfe_ch));
         if(s->exp_strategy[ch] != EXP_REUSE)
             bit_alloc_stages[ch] = 3;
     }
@@ -907,6 +912,7 @@ static int ac3_parse_audio_block(AC3DecodeContext *s, int blk)
     for (ch = 1; ch <= fbw_channels; ch++) {
         s->start_freq[ch] = 0;
         if (s->exp_strategy[ch] != EXP_REUSE) {
+            int group_size;
             int prev = s->end_freq[ch];
             if (s->channel_in_cpl[ch])
                 s->end_freq[ch] = s->start_freq[CPL_CH];
@@ -918,26 +924,23 @@ static int ac3_parse_audio_block(AC3DecodeContext *s, int blk)
                 }
                 s->end_freq[ch] = bandwidth_code * 3 + 73;
             }
+            group_size = 3 << (s->exp_strategy[ch] - 1);
+            s->num_exp_groups[ch] = (s->end_freq[ch]+group_size-4) / group_size;
             if(blk > 0 && s->end_freq[ch] != prev)
                 memset(bit_alloc_stages, 3, AC3_MAX_CHANNELS);
         }
     }
-    s->start_freq[s->lfe_ch] = 0;
-    s->end_freq[s->lfe_ch] = 7;
+    if (s->cpl_in_use && s->exp_strategy[CPL_CH] != EXP_REUSE) {
+        s->num_exp_groups[CPL_CH] = (s->end_freq[CPL_CH] - s->start_freq[CPL_CH]) /
+                                    (3 << (s->exp_strategy[CPL_CH] - 1));
+    }
 
     /* decode exponents for each channel */
     for (ch = !s->cpl_in_use; ch <= s->channels; ch++) {
         if (s->exp_strategy[ch] != EXP_REUSE) {
-            int group_size, num_groups;
-            group_size = 3 << (s->exp_strategy[ch] - 1);
-            if(ch == CPL_CH)
-                num_groups = (s->end_freq[ch] - s->start_freq[ch]) / group_size;
-            else if(ch == s->lfe_ch)
-                num_groups = 2;
-            else
-                num_groups = (s->end_freq[ch] + group_size - 4) / group_size;
             s->dexps[ch][0] = get_bits(gbc, 4) << !ch;
-            decode_exponents(gbc, s->exp_strategy[ch], num_groups, s->dexps[ch][0],
+            decode_exponents(gbc, s->exp_strategy[ch],
+                             s->num_exp_groups[ch], s->dexps[ch][0],
                              &s->dexps[ch][s->start_freq[ch]+!!ch]);
             if(ch != CPL_CH && ch != s->lfe_ch)
                 skip_bits(gbc, 2); /* skip gainrng */
@@ -951,9 +954,8 @@ static int ac3_parse_audio_block(AC3DecodeContext *s, int blk)
         s->bit_alloc_params.slow_gain  = ff_ac3_slow_gain_tab[get_bits(gbc, 2)];
         s->bit_alloc_params.db_per_bit = ff_ac3_db_per_bit_tab[get_bits(gbc, 2)];
         s->bit_alloc_params.floor  = ff_ac3_floor_tab[get_bits(gbc, 3)];
-        for(ch=!s->cpl_in_use; ch<=s->channels; ch++) {
+        for(ch=!s->cpl_in_use; ch<=s->channels; ch++)
             bit_alloc_stages[ch] = FFMAX(bit_alloc_stages[ch], 2);
-        }
     } else if (!blk) {
         av_log(s->avctx, AV_LOG_ERROR, "new bit allocation info must be present in block 0\n");
         return -1;
@@ -1005,6 +1007,8 @@ static int ac3_parse_audio_block(AC3DecodeContext *s, int blk)
                     s->dba_lengths[ch][seg] = get_bits(gbc, 4);
                     s->dba_values[ch][seg] = get_bits(gbc, 3);
                 }
+                /* run last 2 bit allocation stages if new dba values */
+                bit_alloc_stages[ch] = FFMAX(bit_alloc_stages[ch], 2);
             }
         }
     } else if(blk == 0) {
@@ -1150,12 +1154,11 @@ static int ac3_decode_frame(AVCodecContext * avctx, void *data, int *data_size,
         }
     }
 
-    /* parse the syncinfo */
     if(err && err != AC3_PARSE_ERROR_CRC) {
         switch(err) {
             case AC3_PARSE_ERROR_SYNC:
                 av_log(avctx, AV_LOG_ERROR, "frame sync error\n");
-                break;
+                return -1;
             case AC3_PARSE_ERROR_BSID:
                 av_log(avctx, AV_LOG_ERROR, "invalid bitstream id\n");
                 break;
@@ -1207,6 +1210,8 @@ static int ac3_decode_frame(AVCodecContext * avctx, void *data, int *data_size,
         if (!err && ac3_parse_audio_block(s, blk)) {
             av_log(avctx, AV_LOG_ERROR, "error parsing the audio block\n");
         }
+
+        /* interleave output samples */
         for (i = 0; i < 256; i++)
             for (ch = 0; ch < s->out_channels; ch++)
                 *(out_samples++) = s->int_output[ch][i];

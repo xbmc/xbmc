@@ -1106,7 +1106,7 @@ static int asf_read_seek(AVFormatContext *s, int stream_index, int64_t pts, int 
 
 AVInputFormat asf_demuxer = {
     "asf",
-    "asf format",
+    NULL_IF_CONFIG_SMALL("ASF format"),
     sizeof(ASFContext),
     asf_probe,
     asf_read_header,

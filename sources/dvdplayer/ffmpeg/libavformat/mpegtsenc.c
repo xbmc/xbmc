@@ -61,8 +61,8 @@ static void mpegts_write_section(MpegTSSection *s, uint8_t *buf, int len)
             b |= 0x40;
         *q++ = b;
         *q++ = s->pid;
-        s->cc = (s->cc + 1) & 0xf;
         *q++ = 0x10 | s->cc;
+        s->cc = (s->cc + 1) & 0xf;
         if (first)
             *q++ = 0; /* 0 offset */
         len1 = TS_PACKET_SIZE - (q - packet);
@@ -684,9 +684,9 @@ static int mpegts_write_end(AVFormatContext *s)
 
 AVOutputFormat mpegts_muxer = {
     "mpegts",
-    "MPEG2 transport stream format",
+    NULL_IF_CONFIG_SMALL("MPEG-2 transport stream format"),
     "video/x-mpegts",
-    "ts",
+    "ts,m2t",
     sizeof(MpegTSWrite),
     CODEC_ID_MP2,
     CODEC_ID_MPEG2VIDEO,

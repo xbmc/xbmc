@@ -512,7 +512,12 @@ void img_resample_close(ImgReSampleContext *s)
     av_free(s);
 }
 
-static const AVClass context_class = { "imgresample", NULL, NULL };
+static const char *context_to_name(void* ptr)
+{
+    return "imgconvert";
+}
+
+static const AVClass context_class = { "imgresample", context_to_name, NULL };
 
 struct SwsContext *sws_getContext(int srcW, int srcH, int srcFormat,
                                   int dstW, int dstH, int dstFormat,
@@ -531,7 +536,7 @@ struct SwsContext *sws_getContext(int srcW, int srcH, int srcFormat,
 
     if ((srcH != dstH) || (srcW != dstW)) {
         if ((srcFormat != PIX_FMT_YUV420P) || (dstFormat != PIX_FMT_YUV420P)) {
-            av_log(NULL, AV_LOG_INFO, "PIX_FMT_YUV420P will be used as an intermediate format for rescaling\n");
+            av_log(ctx, AV_LOG_INFO, "PIX_FMT_YUV420P will be used as an intermediate format for rescaling\n");
         }
         ctx->resampling_ctx = img_resample_init(dstW, dstH, srcW, srcH);
     } else {
@@ -634,7 +639,7 @@ int sws_scale(struct SwsContext *ctx, uint8_t* src[], int srcStride[],
                             &src_pict, ctx->src_pix_fmt,
                             ctx->resampling_ctx->iwidth, ctx->resampling_ctx->iheight) < 0) {
 
-                av_log(NULL, AV_LOG_ERROR, "pixel format conversion not handled\n");
+                av_log(ctx, AV_LOG_ERROR, "pixel format conversion not handled\n");
                 res = -1;
                 goto the_end;
             }
@@ -673,7 +678,7 @@ int sws_scale(struct SwsContext *ctx, uint8_t* src[], int srcStride[],
                         resampled_picture, current_pix_fmt,
                         ctx->resampling_ctx->owidth, ctx->resampling_ctx->oheight) < 0) {
 
-            av_log(NULL, AV_LOG_ERROR, "pixel format conversion not handled\n");
+            av_log(ctx, AV_LOG_ERROR, "pixel format conversion not handled\n");
 
             res = -1;
             goto the_end;

@@ -34,11 +34,11 @@ typedef struct {
     unsigned int     old_energy;        ///< previous frame energy
 
     /* the swapped buffers */
-    unsigned int     lpc_tables[4][10];
-    unsigned int    *lpc_refl;          ///< LPC reflection coefficients
+    unsigned int     lpc_tables[2][10];
     unsigned int    *lpc_coef;          ///< LPC coefficients
-    unsigned int    *lpc_refl_old;      ///< previous frame LPC reflection coefs
     unsigned int    *lpc_coef_old;      ///< previous frame LPC coefficients
+    unsigned int     lpc_refl_rms;
+    unsigned int     lpc_refl_rms_old;
 
     unsigned int buffer[5];
     uint16_t adapt_cb[148];             ///< adaptive codebook
@@ -48,10 +48,8 @@ static int ra144_decode_init(AVCodecContext * avctx)
 {
     RA144Context *ractx = avctx->priv_data;
 
-    ractx->lpc_refl     = ractx->lpc_tables[0];
-    ractx->lpc_coef     = ractx->lpc_tables[1];
-    ractx->lpc_refl_old = ractx->lpc_tables[2];
-    ractx->lpc_coef_old = ractx->lpc_tables[3];
+    ractx->lpc_coef     = ractx->lpc_tables[0];
+    ractx->lpc_coef_old = ractx->lpc_tables[1];
 
     return 0;
 }
@@ -73,26 +71,26 @@ static int t_sqrt(unsigned int x)
 
 /**
  * Evaluate the LPC filter coefficients from the reflection coefficients.
- * Does the inverse of the eq() function.
+ * Does the inverse of the eval_refl() function.
  */
-static void do_voice(const int *a1, int *a2)
+static void eval_coefs(const int *refl, int *coefs)
 {
     int buffer[10];
     int *b1 = buffer;
-    int *b2 = a2;
+    int *b2 = coefs;
     int x, y;
 
     for (x=0; x < 10; x++) {
-        b1[x] = a1[x] << 4;
+        b1[x] = refl[x] << 4;
 
         for (y=0; y < x; y++)
-            b1[y] = ((a1[x] * b2[x-y-1]) >> 12) + b2[y];
+            b1[y] = ((refl[x] * b2[x-y-1]) >> 12) + b2[y];
 
         FFSWAP(int *, b1, b2);
     }
 
     for (x=0; x < 10; x++)
-        a2[x] >>= 4;
+        coefs[x] >>= 4;
 }
 
 /* rotate block */
@@ -174,7 +172,12 @@ static void final(const int16_t *i1, const int16_t *i2,
     memcpy(statbuf, work + 40, 20);
 }
 
-static unsigned int rms(const int *data, int f)
+static unsigned int rescale_rms(int rms, int energy)
+{
+    return (rms * energy) >> 10;
+}
+
+static unsigned int rms(const int *data)
 {
     int x;
     unsigned int res = 0x10000;
@@ -185,9 +188,6 @@ static unsigned int rms(const int *data, int f)
 
         if (res == 0)
             return 0;
-
-        if (res > 0x10000)
-            return 0; /* We're screwed, might as well go out with a bang. :P */
 
         while (res <= 0x3fff) {
             b++;
@@ -200,13 +200,12 @@ static unsigned int rms(const int *data, int f)
         res = t_sqrt(res);
 
     res >>= (b + 10);
-    res = (res * f) >> 10;
     return res;
 }
 
 /* do quarter-block output */
 static void do_output_subblock(RA144Context *ractx,
-                               const uint16_t  *gsp, unsigned int gval,
+                               const uint16_t  *lpc_coefs, unsigned int gval,
                                int16_t *output_buffer, GetBitContext *gb)
 {
     uint16_t buffer_a[40];
@@ -236,27 +235,25 @@ static void do_output_subblock(RA144Context *ractx,
     add_wav(gain, cba_idx, m, buffer_a, etable1[cb1_idx], etable2[cb2_idx],
             block);
 
-    final(gsp, block, output_buffer, ractx->buffer, BLOCKSIZE);
+    final(lpc_coefs, block, output_buffer, ractx->buffer, BLOCKSIZE);
 }
 
-static int dec1(int16_t *decsp, const int *data, const int *inp, int f)
+static void int_to_int16(int16_t *decsp, const int *inp)
 {
     int i;
 
     for (i=0; i<30; i++)
         *(decsp++) = *(inp++);
-
-    return rms(data, f);
 }
 
 /**
  * Evaluate the reflection coefficients from the filter coefficients.
- * Does the inverse of the do_voice() function.
+ * Does the inverse of the eval_coefs() function.
  *
  * @return 1 if one of the reflection coefficients is of magnitude greater than
  *         4095, 0 if not.
  */
-static int eq(const int16_t *in, int *target)
+static int eval_refl(const int16_t *coefs, int *refl, RA144Context *ractx)
 {
     int retval = 0;
     int b, c, i;
@@ -267,12 +264,14 @@ static int eq(const int16_t *in, int *target)
     int *bp2 = buffer2;
 
     for (i=0; i < 10; i++)
-        buffer2[i] = in[i];
+        buffer2[i] = coefs[i];
 
-    u = target[9] = bp2[9];
+    u = refl[9] = bp2[9];
 
-    if (u + 0x1000 > 0x1fff)
-        return 0; /* We're screwed, might as well go out with a bang. :P */
+    if (u + 0x1000 > 0x1fff) {
+        av_log(ractx, AV_LOG_ERROR, "Overflow. Broken sample?\n");
+        return 0;
+    }
 
     for (c=8; c >= 0; c--) {
         if (u == 0x1000)
@@ -287,9 +286,9 @@ static int eq(const int16_t *in, int *target)
             b++;
 
         for (u=0; u<=c; u++)
-            bp1[u] = ((bp2[u] - ((target[c+1] * bp2[c-u]) >> 12)) * (0x1000000 / b)) >> 12;
+            bp1[u] = ((bp2[u] - ((refl[c+1] * bp2[c-u]) >> 12)) * (0x1000000 / b)) >> 12;
 
-        target[c] = u = bp1[c];
+        refl[c] = u = bp1[c];
 
         if ((u + 0x1000) > 0x1fff)
             retval = 1;
@@ -299,8 +298,8 @@ static int eq(const int16_t *in, int *target)
     return retval;
 }
 
-static int dec2(RA144Context *ractx, int16_t *decsp, int block_num,
-                int copynew, int f)
+static int interp(RA144Context *ractx, int16_t *decsp, int block_num,
+                  int copynew, int energy)
 {
     int work[10];
     int a = block_num + 1;
@@ -312,15 +311,18 @@ static int dec2(RA144Context *ractx, int16_t *decsp, int block_num,
     for (x=0; x<30; x++)
         decsp[x] = (a * ractx->lpc_coef[x] + b * ractx->lpc_coef_old[x])>> 2;
 
-    if (eq(decsp, work)) {
+    if (eval_refl(decsp, work, ractx)) {
         // The interpolated coefficients are unstable, copy either new or old
         // coefficients
-        if (copynew)
-            return dec1(decsp, ractx->lpc_refl, ractx->lpc_coef, f);
-        else
-            return dec1(decsp, ractx->lpc_refl_old, ractx->lpc_coef_old, f);
+        if (copynew) {
+            int_to_int16(decsp, ractx->lpc_coef);
+            return rescale_rms(ractx->lpc_refl_rms, energy);
+        } else {
+            int_to_int16(decsp, ractx->lpc_coef_old);
+            return rescale_rms(ractx->lpc_refl_rms_old, energy);
+        }
     } else {
-        return rms(work, f);
+        return rescale_rms(rms(work), energy);
     }
 }
 
@@ -331,7 +333,8 @@ static int ra144_decode_frame(AVCodecContext * avctx,
 {
     static const uint8_t sizes[10] = {6, 5, 5, 4, 4, 3, 3, 3, 3, 2};
     unsigned int refl_rms[4];  // RMS of the reflection coefficients
-    uint16_t gbuf2[4][30];
+    uint16_t block_coefs[4][30]; // LPC coefficients of each sub-block
+    unsigned int lpc_refl[10];   // LPC reflection coefficients of the frame
     int i, c;
     int16_t *data = vdata;
     unsigned int energy;
@@ -348,21 +351,24 @@ static int ra144_decode_frame(AVCodecContext * avctx,
 
     for (i=0; i<10; i++)
         // "<< 1"? Doesn't this make one value out of two of the table useless?
-        ractx->lpc_refl[i] = decodetable[i][get_bits(&gb, sizes[i]) << 1];
+        lpc_refl[i] = decodetable[i][get_bits(&gb, sizes[i]) << 1];
 
-    do_voice(ractx->lpc_refl, ractx->lpc_coef);
+    eval_coefs(lpc_refl, ractx->lpc_coef);
+    ractx->lpc_refl_rms = rms(lpc_refl);
 
     energy = decodeval[get_bits(&gb, 5) << 1]; // Useless table entries?
 
-    refl_rms[0] = dec2(ractx, gbuf2[0], 0, 0, ractx->old_energy);
-    refl_rms[1] = dec2(ractx, gbuf2[1], 1, energy > ractx->old_energy,
+    refl_rms[0] = interp(ractx, block_coefs[0], 0, 0, ractx->old_energy);
+    refl_rms[1] = interp(ractx, block_coefs[1], 1, energy > ractx->old_energy,
                     t_sqrt(energy*ractx->old_energy) >> 12);
-    refl_rms[2] = dec2(ractx, gbuf2[2], 2, 1, energy);
-    refl_rms[3] = dec1(gbuf2[3], ractx->lpc_refl, ractx->lpc_coef, energy);
+    refl_rms[2] = interp(ractx, block_coefs[2], 2, 1, energy);
+    refl_rms[3] = rescale_rms(ractx->lpc_refl_rms, energy);
+
+    int_to_int16(block_coefs[3], ractx->lpc_coef);
 
     /* do output */
     for (c=0; c<4; c++) {
-        do_output_subblock(ractx, gbuf2[c], refl_rms[c], data, &gb);
+        do_output_subblock(ractx, block_coefs[c], refl_rms[c], data, &gb);
 
         for (i=0; i<BLOCKSIZE; i++) {
             *data = av_clip_int16(*data << 2);
@@ -371,8 +377,8 @@ static int ra144_decode_frame(AVCodecContext * avctx,
     }
 
     ractx->old_energy = energy;
+    ractx->lpc_refl_rms_old = ractx->lpc_refl_rms;
 
-    FFSWAP(unsigned int *, ractx->lpc_refl_old, ractx->lpc_refl);
     FFSWAP(unsigned int *, ractx->lpc_coef_old, ractx->lpc_coef);
 
     *data_size = 2*160;

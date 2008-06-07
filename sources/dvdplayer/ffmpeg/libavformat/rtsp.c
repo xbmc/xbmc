@@ -1356,7 +1356,7 @@ static int rtsp_read_close(AVFormatContext *s)
 #ifdef CONFIG_RTSP_DEMUXER
 AVInputFormat rtsp_demuxer = {
     "rtsp",
-    "RTSP input format",
+    NULL_IF_CONFIG_SMALL("RTSP input format"),
     sizeof(RTSPState),
     rtsp_probe,
     rtsp_read_header,
@@ -1464,7 +1464,7 @@ static int sdp_read_close(AVFormatContext *s)
 #ifdef CONFIG_SDP_DEMUXER
 AVInputFormat sdp_demuxer = {
     "sdp",
-    "SDP",
+    NULL_IF_CONFIG_SMALL("SDP"),
     sizeof(RTSPState),
     sdp_probe,
     sdp_read_header,
@@ -1531,7 +1531,7 @@ static int redir_read_header(AVFormatContext *s, AVFormatParameters *ap)
 
 AVInputFormat redir_demuxer = {
     "redir",
-    "Redirector format",
+    NULL_IF_CONFIG_SMALL("Redirector format"),
     0,
     redir_probe,
     redir_read_header,
