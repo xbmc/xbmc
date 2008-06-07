@@ -372,10 +372,8 @@ void CGUIWindowVideoPlaylist::SavePlayList()
     CUtil::AddFileToFolder(strFolder, strNewFileName, strPath);
 
     CPlayListM3U playlist;
-    for (int i = 0; i < m_vecItems->Size(); ++i)
-    {
-      playlist.Add(m_vecItems->Get(i));
-    }
+    playlist.Add(*m_vecItems);
+
     CLog::Log(LOGDEBUG, "Saving video playlist: [%s]", strPath.c_str());
     playlist.Save(strPath);
   }
