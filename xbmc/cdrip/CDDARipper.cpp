@@ -291,7 +291,7 @@ bool CCDDARipper::RipCD()
   //  Get cddb info
   for (int i = 0; i < vecItems.Size(); ++i)
   {
-    CFileItem* pItem = vecItems[i];
+    CFileItemPtr pItem = vecItems[i];
     CMusicInfoTagLoaderFactory factory;
     auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
     if (NULL != pLoader.get())
@@ -346,7 +346,8 @@ bool CCDDARipper::RipCD()
   // rip all tracks one by one, if one fails we quit and return false
   for (int i = 0; i < vecItems.Size() && bResult == true; i++)
   {
-    CStdString track(GetTrackName(vecItems[i], bIsFATX));
+    CFileItemPtr item = vecItems[i];
+    CStdString track(GetTrackName(item.get(), bIsFATX));
 
     // construct filename
     CUtil::AddFileToFolder(strDirectory, track, strFile);
@@ -354,11 +355,11 @@ bool CCDDARipper::RipCD()
     DWORD dwTick = timeGetTime();
 
     // don't rip non cdda items
-    if (vecItems[i]->m_strPath.Find(".cdda") < 0)
+    if (item->m_strPath.Find(".cdda") < 0)
       continue;
 
     // return false if Rip returned false (this means an error or the user cancelled
-    if (!Rip(vecItems[i]->m_strPath, strFile.c_str(), *vecItems[i]->GetMusicInfoTag())) return false;
+    if (!Rip(item->m_strPath, strFile.c_str(), *item->GetMusicInfoTag())) return false;
 
     dwTick = timeGetTime() - dwTick;
     CStdString strTmp;

@@ -440,7 +440,7 @@ void CGUIDialogMediaSource::UpdateButtons()
     OnMessage(msgReset);
     for (int i = 0; i < m_paths->Size(); i++)
     {
-      CFileItem* item = m_paths->Get(i);
+      CFileItemPtr item = m_paths->Get(i);
       CStdString path;
       CURL url(item->m_strPath);
       url.GetURLWithoutUserDetails(path);
@@ -483,9 +483,15 @@ void CGUIDialogMediaSource::SetShare(const CMediaSource &share)
 {
   m_paths->Clear();
   for (unsigned int i = 0; i < share.vecPaths.size(); i++)
-    m_paths->Add(new CFileItem(share.vecPaths[i], true));
+  {
+    CFileItemPtr item(new CFileItem(share.vecPaths[i], true));
+    m_paths->Add(item);
+  }
   if (0 == share.vecPaths.size())
-    m_paths->Add(new CFileItem("", true));
+  {
+    CFileItemPtr item(new CFileItem("", true));
+    m_paths->Add(item);
+  }
   m_name = share.strName;
   UpdateButtons();
 }
@@ -574,7 +580,8 @@ void CGUIDialogMediaSource::OnPathRemove(int item)
 void CGUIDialogMediaSource::OnPathAdd()
 {
   // add a new item and select it as well
-  m_paths->Add(new CFileItem("", true));
+  CFileItemPtr item(new CFileItem("", true));
+  m_paths->Add(item);
   UpdateButtons();
   HighlightItem(m_paths->Size() - 1);
 }

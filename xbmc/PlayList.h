@@ -24,7 +24,7 @@
 
 namespace PLAYLIST
 {
-  class CPlayListItem : public CFileItem
+/*  class CPlayListItem : public CFileItem
   {
   public:
     CPlayListItem();
@@ -61,7 +61,7 @@ namespace PLAYLIST
   protected:
     long m_lDuration;
     bool m_bUnPlayable;
-  };
+  };*/
 
 class CPlayList
 {
@@ -73,9 +73,8 @@ public:
   virtual bool LoadData(const CStdString& strData);
   virtual void Save(const CStdString& strFileName) const {};
 
-  void Add(CPlayListItem& item);
   void Add(CPlayList& playlist);
-  void Add(CFileItem *pItem);
+  void Add(const CFileItemPtr &pItem);
 	void Add(CFileItemList& items);
 
   // for Party Mode
@@ -92,8 +91,8 @@ public:
   int size() const;
   int RemoveDVDItems();
 
-  const CPlayListItem& operator[] (int iItem) const;
-  CPlayListItem& operator[] (int iItem);
+  const CFileItemPtr operator[] (int iItem) const;
+  CFileItemPtr operator[] (int iItem);
 
   // why are these virtual functions? there is no derived child class
   void Shuffle(int iPosition = 0);
@@ -114,11 +113,13 @@ protected:
   int m_iPlayableItems;
   bool m_bShuffled;
   bool m_bWasPlayed;
-  std::vector <CPlayListItem> m_vecItems;
-  typedef std::vector <CPlayListItem>::iterator ivecItems;
+
+//  CFileItemList m_vecItems;
+  std::vector <CFileItemPtr> m_vecItems;
+  typedef std::vector <CFileItemPtr>::iterator ivecItems;
 
 private:
-  void Add(CPlayListItem& item, int iPosition, int iOrderOffset);
+  void Add(const CFileItemPtr& item, int iPosition, int iOrderOffset);
   void DecrementOrder(int iOrder);
   void IncrementOrder(int iPosition, int iOrder);
 };

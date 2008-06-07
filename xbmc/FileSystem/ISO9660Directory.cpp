@@ -81,7 +81,7 @@ bool CISO9660Directory::GetDirectory(const CStdString& strPath, CFileItemList &i
         CStdString strDir = wfd.cFileName;
         if (strDir != "." && strDir != "..")
         {
-          CFileItem *pItem = new CFileItem(wfd.cFileName);
+          CFileItemPtr pItem(new CFileItem(wfd.cFileName));
           pItem->m_strPath = strRoot;
           pItem->m_strPath += wfd.cFileName;
           pItem->m_bIsFolder = true;
@@ -96,7 +96,7 @@ bool CISO9660Directory::GetDirectory(const CStdString& strPath, CFileItemList &i
       {
         if ( IsAllowed( wfd.cFileName) )
         {
-          CFileItem *pItem = new CFileItem(wfd.cFileName);
+          CFileItemPtr pItem(new CFileItem(wfd.cFileName));
           pItem->m_strPath = strRoot;
           pItem->m_strPath += wfd.cFileName;
           pItem->m_bIsFolder = false;

@@ -41,7 +41,7 @@ public:
   bool RefreshAll() const;
 
   const CStdString &GetThumbnail() const;
-  virtual CFileItem* GetCurrentListItem(int offset = 0) { return m_movieItem; }
+  virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return m_movieItem; }
   const CFileItemList& CurrentDirectory() const { return *m_castList; };
   virtual bool HasListItems() const { return true; };
 protected:
@@ -59,7 +59,7 @@ protected:
   void OnGetFanart();
   void PlayTrailer();
 
-  CFileItem* m_movieItem;
+  CFileItemPtr m_movieItem;
   CFileItemList *m_castList;
   bool m_bViewReview;
   bool m_bRefresh;

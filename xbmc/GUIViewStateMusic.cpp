@@ -502,7 +502,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
   CDirectory::GetDirectory("musicdb://", items);
   for (int i=0; i<items.Size(); ++i)
   {
-    CFileItem* item=items[i];
+    CFileItemPtr item=items[i];
     CMediaSource share;
     share.strName=item->GetLabel();
     share.strPath = item->m_strPath;

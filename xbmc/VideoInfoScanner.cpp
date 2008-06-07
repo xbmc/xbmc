@@ -259,11 +259,11 @@ namespace VIDEO
       }
       else
       {
-        CFileItem item(CUtil::GetFileName(strDirectory));
-        item.m_strPath = strDirectory;
-        item.m_bIsFolder = true;
-        items.Add(new CFileItem(item));
-        CUtil::GetParentPath(item.m_strPath,items.m_strPath);
+        CFileItemPtr item(new CFileItem(CUtil::GetFileName(strDirectory)));
+        item->m_strPath = strDirectory;
+        item->m_bIsFolder = true;
+        items.Add(item);
+        CUtil::GetParentPath(item->m_strPath,items.m_strPath);
       }
     }
     else if (m_info.strContent.Equals("musicvideos"))
@@ -327,7 +327,7 @@ namespace VIDEO
 
     for (int i = 0; i < items.Size(); ++i)
     {
-      CFileItem *pItem = items[i];
+      CFileItemPtr pItem = items[i];
 
       if (m_bStop)
         break;
@@ -392,7 +392,7 @@ namespace VIDEO
     {
       IMDB_EPISODELIST episodes;
       IMDB_EPISODELIST files;
-      CFileItem* pItem = items[i];
+      CFileItemPtr pItem = items[i];
 
       // we do this since we may have a override per dir
       SScraperInfo info2;
@@ -443,7 +443,7 @@ namespace VIDEO
             // fetch episode guide
             m_database.GetTvShowInfo(pItem->m_strPath,showDetails,lTvShowId);
             files.clear();
-            EnumerateSeriesFolder(pItem,files);
+            EnumerateSeriesFolder(pItem.get(),files);
             if (files.size() == 0) // no update or no files
               continue;
 
@@ -549,7 +549,7 @@ namespace VIDEO
             {
               // handle .nfo files
               CScraperUrl scrUrl;
-              NFOResult result = CheckForNFOFile(pItem,bDirNames,info2,pDlgProgress,scrUrl);
+              NFOResult result = CheckForNFOFile(pItem.get(),bDirNames,info2,pDlgProgress,scrUrl);
               if (result == FULL_NFO || result == URL_NFO)
                 continue;
             }
@@ -561,7 +561,7 @@ namespace VIDEO
             if (!m_database.HasMusicVideoInfo(pItem->m_strPath))
             {
               CScraperUrl scrUrl;
-              NFOResult result = CheckForNFOFile(pItem,false,info2,pDlgProgress,scrUrl);
+              NFOResult result = CheckForNFOFile(pItem.get(),false,info2,pDlgProgress,scrUrl);
               if (result == FULL_NFO || result == URL_NFO)
                 continue;
             }
@@ -572,7 +572,7 @@ namespace VIDEO
           {
             // handle .nfo files
             CScraperUrl scrUrl;
-            NFOResult result = CheckForNFOFile(pItem,false,info2,pDlgProgress,scrUrl);
+            NFOResult result = CheckForNFOFile(pItem.get(),false,info2,pDlgProgress,scrUrl);
             if (result == FULL_NFO || result == URL_NFO)
             {
               SScraperInfo info3(info2);
@@ -606,7 +606,7 @@ namespace VIDEO
                 m_pObserver->OnSetTitle(url.strTitle);
               CUtil::ClearCache();
               long lResult=1;
-              lResult=GetIMDBDetails(pItem, url, info,bDirNames&&info.strContent.Equals("movies"));
+              lResult=GetIMDBDetails(pItem.get(), url, info,bDirNames&&info.strContent.Equals("movies"));
               if (info.strContent.Equals("tvshows"))
               {
                 if (!bRefresh)
@@ -618,7 +618,7 @@ namespace VIDEO
                   {
                     CScraperUrl url;
                     url.ParseEpisodeGuide(details.m_strEpisodeGuide);
-                    EnumerateSeriesFolder(pItem,files);
+                    EnumerateSeriesFolder(pItem.get(),files);
                     if (!IMDB.GetEpisodeList(url,episodes))
                       continue;
                   }
@@ -663,7 +663,7 @@ namespace VIDEO
 
     for (int i=0; i<items.Size(); ++i)
     {
-      CFileItem* pItem=items[i];
+      CFileItemPtr pItem=items[i];
 
       if (m_bStop)
         return 0;
@@ -713,7 +713,10 @@ namespace VIDEO
       m_database.SetPathHash(item->m_strPath,hash);
     }
     else
-      items.Add(new CFileItem(*item));
+    {
+      CFileItemPtr newItem(new CFileItem(*item));
+      items.Add(newItem);
+    }
 
     // enumerate
     CStdStringArray expression = g_advancedSettings.m_tvshowStackRegExps;
@@ -1152,7 +1155,7 @@ namespace VIDEO
     int count = 0;
     for (int i = 0; i < items.Size(); ++i)
     {
-      const CFileItem *pItem = items[i];
+      const CFileItemPtr pItem = items[i];
       MD5Update(&md5state, (unsigned char *)pItem->m_strPath.c_str(), (int)pItem->m_strPath.size());
       MD5Update(&md5state, (unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
       FILETIME time = pItem->m_dateTime;

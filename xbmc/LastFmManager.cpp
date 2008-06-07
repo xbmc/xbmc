@@ -321,9 +321,7 @@ bool CLastFmManager::RequestRadioTracks()
   }
   while (pTrackElement)
   {
-    CMusicInfoTag tag;
-
-    CPlayListItem newItem("","");
+    CFileItemPtr newItem(new CFileItem);
 
     TiXmlElement* pElement = pTrackElement->FirstChildElement("location");
     if (pElement)
@@ -333,7 +331,7 @@ bool CLastFmManager::RequestRadioTracks()
       {
         CStdString url = child->Value();
         url.Replace("http:", "lastfm:");
-        newItem.SetFileName(url);
+        newItem->m_strPath = url;
       }
     }
     pElement = pTrackElement->FirstChildElement("title");
@@ -342,8 +340,8 @@ bool CLastFmManager::RequestRadioTracks()
       TiXmlNode* child = pElement->FirstChild();
       if (child)
       {
-        newItem.SetDescription(child->Value());
-        tag.SetTitle(child->Value());
+        newItem->SetLabel(child->Value());
+        newItem->GetMusicInfoTag()->SetTitle(child->Value());
       }
     }
     pElement = pTrackElement->FirstChildElement("creator");
@@ -352,7 +350,7 @@ bool CLastFmManager::RequestRadioTracks()
       TiXmlNode* child = pElement->FirstChild();
       if (child)
       {
-        tag.SetArtist(child->Value());
+        newItem->GetMusicInfoTag()->SetArtist(child->Value());
       }
     }
     pElement = pTrackElement->FirstChildElement("album");
@@ -361,7 +359,7 @@ bool CLastFmManager::RequestRadioTracks()
       TiXmlNode* child = pElement->FirstChild();
       if (child)
       {
-        tag.SetAlbum(child->Value());
+        newItem->GetMusicInfoTag()->SetAlbum(child->Value());
       }
     }
    
@@ -372,11 +370,10 @@ bool CLastFmManager::RequestRadioTracks()
       if (child)
       {
         int iDuration = atoi(child->Value())/1000;
-        newItem.SetDuration(iDuration);
-        tag.SetDuration(iDuration);
+        newItem->GetMusicInfoTag()->SetDuration(iDuration);
       }
     }
-    newItem.FillInDefaultIcon();
+    newItem->FillInDefaultIcon();
     pElement = pTrackElement->FirstChildElement("image");
     if (pElement)
     {
@@ -386,11 +383,10 @@ bool CLastFmManager::RequestRadioTracks()
         CStdString coverUrl = child->Value();
         if ((coverUrl != "") && (coverUrl.Find("noimage") == -1) && (coverUrl.Right(1) != "/"))
         {
-          newItem.SetThumbnailImage(coverUrl);
+          newItem->SetThumbnailImage(coverUrl);
         }
       }
     }
-    newItem.SetMusicTag(tag);
 
     {
       CSingleLock lock(m_lockCache);
@@ -414,13 +410,13 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
   CHTTP http;
   for (int i = 0; i < nrInitialTracksToAdd && i < iNrCachedTracks; i++)
   {
-    CPlayListItem& item = (*m_RadioTrackQueue)[i];
-    if (!item.GetMusicInfoTag()->Loaded())
+    CFileItemPtr item = (*m_RadioTrackQueue)[i];
+    if (!item->GetMusicInfoTag()->Loaded())
     {
       //cache albumthumb, GetThumbnailImage contains the url to cache
-      if (item.HasThumbnail())
+      if (item->HasThumbnail())
       {
-        CStdString coverUrl = item.GetThumbnailImage();
+        CStdString coverUrl = item->GetThumbnailImage();
         CStdString crcFile;
         CStdString cachedFile;
         CStdString thumbFile;
@@ -430,14 +426,14 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
         crcFile.Format("%08x.tbn", (__int32)crc);
         CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, crcFile, cachedFile);
         CUtil::AddFileToFolder(g_settings.GetLastFMThumbFolder(), crcFile, thumbFile);
-        item.SetThumbnailImage("");
+        item->SetThumbnailImage("");
         try
         {
           //download to temp, then make a thumb
           if (CFile::Exists(thumbFile) || (http.Download(coverUrl, cachedFile) && pic.DoCreateThumbnail(cachedFile, thumbFile)))
           {
             if (CFile::Exists(cachedFile)) CFile::Delete(cachedFile);
-            item.SetThumbnailImage(thumbFile);
+            item->SetThumbnailImage(thumbFile);
           }
         }
         catch(...)
@@ -445,11 +441,11 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
           CLog::Log(LOGERROR, "LastFmManager: exception while caching %s to %s.", coverUrl.c_str(), thumbFile.c_str());
         }
       }
-      if (!item.HasThumbnail())
+      if (!item->HasThumbnail())
       {
-        item.SetThumbnailImage("defaultAlbumCover.png");
+        item->SetThumbnailImage("defaultAlbumCover.png");
       }
-      item.GetMusicInfoTag()->SetLoaded();
+      item->GetMusicInfoTag()->SetLoaded();
     }
   }
   CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(timeGetTime() - start));
@@ -463,8 +459,8 @@ void CLastFmManager::AddToPlaylist(const int nrTracks)
     int iNrCachedTracks = m_RadioTrackQueue->size();
     if (iNrCachedTracks > 0)
     {
-      CPlayListItem item = (*m_RadioTrackQueue)[0];
-      if (item.GetMusicInfoTag()->Loaded())
+      CFileItemPtr item = (*m_RadioTrackQueue)[0];
+      if (item->GetMusicInfoTag()->Loaded())
       {
         CSingleLock lock(m_lockCache);
         m_RadioTrackQueue->Remove(0);
@@ -623,7 +619,7 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
     CPlayList &playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
     for (int i = playlist.size() - 1; i >= 0; i--)
     {
-      if (playlist[i].IsLastFM())
+      if (playlist[i]->IsLastFM())
       {
         playlist.Remove(i);
       }

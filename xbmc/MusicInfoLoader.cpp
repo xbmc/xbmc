@@ -113,9 +113,9 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
   if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded())
     return true;
 
-  CFileItem* mapItem=NULL;
   // first check the cached item
-  if ((mapItem=(*m_mapFileItems)[pItem->m_strPath])!=NULL && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasMusicInfoTag() && mapItem->GetMusicInfoTag()->Loaded())
+  CFileItemPtr mapItem = (*m_mapFileItems)[pItem->m_strPath];
+  if (mapItem && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasMusicInfoTag() && mapItem->GetMusicInfoTag()->Loaded())
   { // Query map if we previously cached the file on HD
     *pItem->GetMusicInfoTag() = *mapItem->GetMusicInfoTag();
     pItem->SetThumbnailImage(mapItem->GetThumbnailImage());
@@ -202,7 +202,7 @@ void CMusicInfoLoader::LoadCache(const CStdString& strFileName, CFileItemList& i
     ar >> iSize;
     for (int i = 0; i < iSize; i++)
     {
-      CFileItem* pItem = new CFileItem();
+      CFileItemPtr pItem(new CFileItem());
       ar >> *pItem;
       items.Add(pItem);
     }
@@ -227,7 +227,7 @@ void CMusicInfoLoader::SaveCache(const CStdString& strFileName, CFileItemList& i
     ar << (int)items.Size();
     for (int i = 0; i < iSize; i++)
     {
-      CFileItem* pItem = items[i];
+      CFileItemPtr pItem = items[i];
       ar << *pItem;
     }
     ar.Close();

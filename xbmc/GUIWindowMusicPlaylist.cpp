@@ -283,10 +283,10 @@ void CGUIWindowMusicPlayList::SavePlayList()
     CStdString strSelectedItem = "";
     if (iItem >= 0 && iItem < m_vecItems->Size())
     {
-      CFileItem* pItem = m_vecItems->Get(iItem);
+      CFileItemPtr pItem = m_vecItems->Get(iItem);
       if (!pItem->IsParentFolder())
       {
-        GetDirectoryHistoryString(pItem, strSelectedItem);
+        GetDirectoryHistoryString(pItem.get(), strSelectedItem);
       }
     }
 
@@ -296,22 +296,14 @@ void CGUIWindowMusicPlayList::SavePlayList()
     CPlayListM3U playlist;
     for (int i = 0; i < (int)m_vecItems->Size(); ++i)
     {
-      CFileItem* pItem = m_vecItems->Get(i);
-      CPlayListItem newItem;
-      newItem.SetFileName(pItem->m_strPath);
-      newItem.SetDescription(pItem->GetLabel());
-      if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->GetDuration())
-        newItem.SetDuration(pItem->GetMusicInfoTag()->GetDuration());
-      else
-        newItem.SetDuration(0);
+      CFileItemPtr pItem = m_vecItems->Get(i);
 
       //  Musicdatabase items should contain the real path instead of a musicdb url
       //  otherwise the user can't save and reuse the playlist when the musicdb gets deleted
       if (pItem->IsMusicDb())
-        newItem.m_strPath=pItem->GetMusicInfoTag()->GetURL();
+        pItem->m_strPath=pItem->GetMusicInfoTag()->GetURL();
 
-      playlist.Add(newItem);
-      m_vecItems->Remove(i--);
+      playlist.Add(pItem);
     }
     CLog::Log(LOGDEBUG, "Saving music playlist: [%s]", strPath.c_str());
     playlist.Save(strPath);
@@ -424,7 +416,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   int iItems = m_vecItems->Size();
   if (iItems)
   {
-    CFileItem* pItem = m_vecItems->Get(0);
+    CFileItemPtr pItem = m_vecItems->Get(0);
     if (pItem->IsParentFolder()) iItems--;
   }
   CStdString items;
@@ -453,7 +445,7 @@ bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
     {
       // Reset Playlistplayer, playback started now does
       // not use the playlistplayer.
-      CFileItem* pItem=m_vecItems->Get(iItem);
+      CFileItemPtr pItem=m_vecItems->Get(iItem);
       g_playlistPlayer.Reset();
       g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
       g_application.PlayFile(*pItem);
@@ -506,12 +498,12 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   if (m_guiState.get())
   {
     CPlayList& playlist=g_playlistPlayer.GetPlaylist(m_guiState->GetPlaylist());
-    CPlayListItem& item=playlist[pItem->m_iprogramCount];
-    if (item.m_strPath==pItem->m_strPath &&
-        item.m_lStartOffset==pItem->m_lStartOffset &&
-        item.m_lEndOffset==pItem->m_lEndOffset)
+    CFileItemPtr item=playlist[pItem->m_iprogramCount];
+    if (item->m_strPath==pItem->m_strPath &&
+        item->m_lStartOffset==pItem->m_lStartOffset &&
+        item->m_lEndOffset==pItem->m_lEndOffset)
     {
-      item.SetDescription(pItem->GetLabel());
+      item->SetLabel(pItem->GetLabel());
     }
     else
     { // for some reason the order is wrong - do it the incredibly slow way
@@ -523,13 +515,13 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
       // is called and this is annoying. ;)
       for (int i=0; i<playlist.size(); ++i)
       {
-        CPlayListItem& item=playlist[i];
+        CFileItemPtr item=playlist[i];
 
-        if (item.m_strPath==pItem->m_strPath &&
-            item.m_lStartOffset==pItem->m_lStartOffset &&
-            item.m_lEndOffset==pItem->m_lEndOffset)
+        if (item->m_strPath==pItem->m_strPath &&
+            item->m_lStartOffset==pItem->m_lStartOffset &&
+            item->m_lEndOffset==pItem->m_lEndOffset)
         {
-          item.SetDescription(pItem->GetLabel());
+          item->SetLabel(pItem->GetLabel());
           break;
         }
       }

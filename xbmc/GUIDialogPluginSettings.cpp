@@ -440,7 +440,7 @@ void CGUIDialogPluginSettings::CreateControls()
       int iItem = 0;
       for (int i = 0; i < items.Size(); ++i)
       {
-        CFileItem* pItem = items[i];
+        CFileItemPtr pItem = items[i];
         if ((mask.Equals("/") && pItem->m_bIsFolder) || !pItem->m_bIsFolder)
         {
           ((CGUISpinControlEx *)pControl)->AddLabel(pItem->GetLabel(), iItem);

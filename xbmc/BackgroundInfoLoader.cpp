@@ -71,8 +71,8 @@ void CBackgroundInfoLoader::Run()
       while (!m_bStop)
       {
         CSingleLock lock(m_lock);
-        CFileItem *pItem = NULL;
-        std::vector<CFileItem*>::iterator iter = m_vecItems.begin();
+        CFileItemPtr pItem;
+        std::vector<CFileItemPtr>::iterator iter = m_vecItems.begin();
         if (iter != m_vecItems.end())
         {
           pItem = *iter;
@@ -89,8 +89,8 @@ void CBackgroundInfoLoader::Run()
         lock.Leave();
         try
         {
-          if (!m_bStop && LoadItem(pItem) && m_pObserver)
-            m_pObserver->OnItemLoaded(pItem);
+          if (!m_bStop && LoadItem(pItem.get()) && m_pObserver)
+            m_pObserver->OnItemLoaded(pItem.get());
         }
         catch (...)
         {
