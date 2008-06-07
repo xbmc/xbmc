@@ -126,8 +126,7 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
 #ifdef _WIN32PC
   std::string presetsDir = string(getenv("XBMC_HOME")) + "\\" + PRESETS_DIR;
   std::string configFile = string(getenv("XBMC_PROFILE_USERDATA")) + "\\" + CONFIG_FILE;
-  DebugW("preset dir %s",presetsDir.c_str());
-  DebugW("config file %s",configFile.c_str());
+ 
 #else
   std::string presetsDir = _P(PRESETS_DIR);
   std::string configFile = _P(CONFIG_FILE);
