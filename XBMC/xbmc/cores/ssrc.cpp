@@ -2932,7 +2932,7 @@ bool Cssrc::InitFilters(void)
 
     iza = dbesi0(alp);
 
-    for (n1b = 1;n1b < n1;n1b *= 2);
+    for (n1b = 1;n1b < n1;n1b *= 2) {}
     n1b *= 2;
 
     stage1DS = new REAL[n1b];
@@ -2979,7 +2979,7 @@ bool Cssrc::InitFilters(void)
 
     iza = dbesi0(alp);
 
-    for (n2b = 1;n2b < n2;n2b *= 2);
+    for (n2b = 1;n2b < n2;n2b *= 2) {}
     n2b *= 2;
 
     stage2US = new REAL[n2b];
