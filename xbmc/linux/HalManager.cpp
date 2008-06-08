@@ -309,6 +309,7 @@ std::vector<CStorageDevice> CHalManager::DeviceFromDriveUdi(const char *udi)
   int  Type;
   int  n;
 
+  AllVolumes = NULL;
   tempDrive = libhal_drive_from_udi(g_HalManager.m_Context, udi);
 
   if (tempDrive)
