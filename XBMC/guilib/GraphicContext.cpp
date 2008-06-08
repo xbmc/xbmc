@@ -1389,6 +1389,7 @@ bool CGraphicContext::ToggleFullScreenRoot ()
       SetVideoResolution(desktopres);
     }
   }
+  g_fontManager.ReloadTTFFonts();
   return  m_bFullScreenRoot;
 }
 
