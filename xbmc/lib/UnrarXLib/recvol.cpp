@@ -32,14 +32,15 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
   {
     for (int DigitGroup=0;Ext>ArcName && DigitGroup<3;Ext--)
       if (!isdigit(*Ext))
+      {
         if (isdigit(*(Ext-1)) && (*Ext=='_' || DigitGroup<2))
           DigitGroup++;
-        else
-          if (DigitGroup<2)
-          {
-            NewStyle=true;
-            break;
-          }
+        else if (DigitGroup<2)
+        {
+          NewStyle=true;
+          break;
+        }
+      }
     while (isdigit(*Ext) && Ext>ArcName+1)
       Ext--;
     strcpy(Ext,"*.*");
@@ -147,7 +148,7 @@ bool RecVolumes::Restore(RAROptions *Cmd,const char *Name,
     }
     if (P[1]+P[2]>255)
       continue;
-    if (RecVolNumber!=0 && RecVolNumber!=P[1] || FileNumber!=0 && FileNumber!=P[2])
+    if ((RecVolNumber!=0 && RecVolNumber!=P[1]) || (FileNumber!=0 && FileNumber!=P[2]))
     {
 #ifndef SILENT
       Log(NULL,St(MRecVolDiffSets),Name,PrevName);

@@ -312,8 +312,8 @@ float CXBoxRenderManager::GetMaximumFPS()
   if( m_rendermethod == RENDER_HQ_RGB_SHADER
    || m_rendermethod == RENDER_HQ_RGB_SHADERV2)
   {
-    if( method == VS_INTERLACEMETHOD_AUTO && m_presentfield != FS_NONE
-    || method == VS_INTERLACEMETHOD_RENDER_BOB )
+    if((method == VS_INTERLACEMETHOD_AUTO && m_presentfield != FS_NONE)
+    ||  method == VS_INTERLACEMETHOD_RENDER_BOB )
       fps *= 0.5;
   }
 

@@ -3345,7 +3345,7 @@ bool CApplication::OnAction(const CAction &action)
     return true;
   }
 
-  if (action.wID == ACTION_INCREASE_RATING || action.wID == ACTION_DECREASE_RATING && IsPlayingAudio())
+  if ((action.wID == ACTION_INCREASE_RATING || action.wID == ACTION_DECREASE_RATING) && IsPlayingAudio())
   {
     const CMusicInfoTag *tag = g_infoManager.GetCurrentSongTag();
     if (tag)
@@ -4020,6 +4020,7 @@ bool CApplication::ProcessMouse()
 void  CApplication::CheckForTitleChange()
 { 
   if (g_stSettings.m_HttpApiBroadcastLevel>=1)
+  {
     if (IsPlayingVideo())
     {
       const CVideoInfoTag* tagVal = g_infoManager.GetCurrentMovieTag();
@@ -4037,21 +4038,21 @@ void  CApplication::CheckForTitleChange()
     {
       const CMusicInfoTag* tagVal=g_infoManager.GetCurrentSongTag();
       if (m_pXbmcHttp && tagVal)
-	  {
-	    CStdString msg="";
-	    if (!tagVal->GetTitle().IsEmpty())
-        msg=m_pXbmcHttp->GetOpenTag()+"AudioTitle:"+tagVal->GetTitle()+m_pXbmcHttp->GetCloseTag();
-	    if (!tagVal->GetArtist().IsEmpty())
-        msg+=m_pXbmcHttp->GetOpenTag()+"AudioArtist:"+tagVal->GetArtist()+m_pXbmcHttp->GetCloseTag();
-	    if (m_prevMedia!=msg)
-	    {
-        getApplicationMessenger().HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
-	      m_prevMedia=msg;
-	    }
+      {
+        CStdString msg="";
+        if (!tagVal->GetTitle().IsEmpty())
+          msg=m_pXbmcHttp->GetOpenTag()+"AudioTitle:"+tagVal->GetTitle()+m_pXbmcHttp->GetCloseTag();
+        if (!tagVal->GetArtist().IsEmpty())
+          msg+=m_pXbmcHttp->GetOpenTag()+"AudioArtist:"+tagVal->GetArtist()+m_pXbmcHttp->GetCloseTag();
+        if (m_prevMedia!=msg)
+        {
+          getApplicationMessenger().HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
+          m_prevMedia=msg;
+        }
       }
     }
+  }
 }
-
 
 bool CApplication::ProcessHTTPApiButtons()
 {
@@ -4307,10 +4308,10 @@ HRESULT CApplication::Cleanup()
   {
     if (m_pXbmcHttp)
     {
-	  if(g_stSettings.m_HttpApiBroadcastLevel>=1)
-	    getApplicationMessenger().HttpApi("broadcastlevel; ShutDown;1");
-	  m_pXbmcHttp->shuttingDown=true;
-     //Sleep(100);
+      if(g_stSettings.m_HttpApiBroadcastLevel>=1)
+        getApplicationMessenger().HttpApi("broadcastlevel; ShutDown;1");
+      m_pXbmcHttp->shuttingDown=true;
+      //Sleep(100);
     }
 
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST);
@@ -5186,7 +5187,7 @@ void CApplication::ResetScreenSaver()
     m_bDisplaySleeping = false;
   }
 #endif
-}	
+} 
 
 bool CApplication::ResetScreenSaverWindow()
 {
@@ -5531,7 +5532,7 @@ void CApplication::CheckDisplaySleep()
       // We playing some music.
       m_bInactive = false;
     }
-	else 
+  else 
     {
       // Nothing doing here, so start the timer going.
       m_bInactive = true;

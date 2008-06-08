@@ -50,17 +50,17 @@ bool CmpName(char *Wildcard,char *Name,int CmpPath)
     if ((CmpPath==MATCH_PATH || CmpPath==MATCH_EXACTPATH) && stricompc(Path1,Path2)!=0)
       return(false);
     if (CmpPath==MATCH_SUBPATH || CmpPath==MATCH_WILDSUBPATH)
+    {
       if (IsWildcard(Path1))
         return(match(Wildcard,Name));
-      else
-        if (CmpPath==MATCH_SUBPATH || IsWildcard(Wildcard))
+      else if (CmpPath==MATCH_SUBPATH || IsWildcard(Wildcard))
         {
           if (*Path1 && strnicompc(Path1,Path2,strlen(Path1))!=0)
             return(false);
         }
-        else
-          if (stricompc(Path1,Path2)!=0)
-            return(false);
+        else if (stricompc(Path1,Path2)!=0)
+          return(false);
+    }
   }
   char *Name1=PointToName(Wildcard);
   char *Name2=PointToName(Name);
@@ -90,17 +90,17 @@ bool CmpName(wchar *Wildcard,wchar *Name,int CmpPath)
     if ((CmpPath==MATCH_PATH || CmpPath==MATCH_EXACTPATH) && stricompcw(Path1,Path2)!=0)
       return(false);
     if (CmpPath==MATCH_SUBPATH || CmpPath==MATCH_WILDSUBPATH)
+    {
       if (IsWildcard(NULL,Path1))
         return(match(Wildcard,Name));
-      else
-        if (CmpPath==MATCH_SUBPATH || IsWildcard(NULL,Wildcard))
-        {
-          if (*Path1 && strnicompcw(Path1,Path2,strlenw(Path1))!=0)
-            return(false);
-        }
-        else
-          if (stricompcw(Path1,Path2)!=0)
-            return(false);
+      else if (CmpPath==MATCH_SUBPATH || IsWildcard(NULL,Wildcard))
+      {
+        if (*Path1 && strnicompcw(Path1,Path2,strlenw(Path1))!=0)
+          return(false);
+      }
+      else if (stricompcw(Path1,Path2)!=0)
+        return(false);
+    }
   }
   wchar *Name1=PointToName(Wildcard);
   wchar *Name2=PointToName(Name);
@@ -149,10 +149,12 @@ bool match(char *pattern,char *string)
         return(false);
       default:
         if (patternc != stringc)
+        {
           if (patternc=='.' && stringc==0)
             return(match(pattern,string));
           else
             return(false);
+        }
         break;
     }
   }
@@ -198,10 +200,12 @@ bool match(wchar *pattern,wchar *string)
         return(false);
       default:
         if (patternc != stringc)
+        {
           if (patternc=='.' && stringc==0)
             return(match(pattern,string));
           else
             return(false);
+        }
         break;
     }
   }
