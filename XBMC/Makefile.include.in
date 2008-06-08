@@ -39,9 +39,9 @@ clean:
 
 distclean: clean
 	@echo "Removing all object file (.o)"
-	@find . -name "*.o" -exec echo 'Removing "{}"' \; -exec rm "{}" \;
+	@find . -name "*.o" -exec echo 'Removing "{}"' \; -exec rm -f "{}" \;
 	@echo "Removing all object file (.depend)"
-	@find . -name "*.depend" -exec echo 'Removing "{}"' \; -exec rm "{}" \;
+	@find . -name "*.depend" -exec echo 'Removing "{}"' \; -exec rm -f "{}" \;
 	@echo "Done."
 
 depend: $(PCH) $(SRCS)
