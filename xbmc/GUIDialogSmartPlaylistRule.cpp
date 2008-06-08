@@ -106,7 +106,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   else if (m_type.Equals("episodes"))
     type = VIDEODB_CONTENT_EPISODES;
 
-  int iLabel;
+  int iLabel = 0;
   if (m_rule.m_field == CSmartPlaylistRule::FIELD_GENRE)
   {
     if (m_type.Equals("tvshows") || m_type.Equals("episodes") || m_type.Equals("movies"))

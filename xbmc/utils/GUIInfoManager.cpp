@@ -2409,6 +2409,9 @@ CStdString CGUIInfoManager::GetLcdTime( int _eInfo ) const
   UINT       nLine;
   CStdString strTimeMarker;
 
+  nCharset = 0;
+  nLine = 0;
+
   switch ( _eInfo )
   {
     case LCD_TIME_21:
