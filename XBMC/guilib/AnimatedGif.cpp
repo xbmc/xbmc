@@ -562,6 +562,7 @@ int LZWDecoder (char * bufIn, char * bufOut,
   nPixels = 0;
   maxPixels = Width * Height;
   RowOffset = 0;
+  PrevCode = 0;
 
   while (nPixels < maxPixels)
   {

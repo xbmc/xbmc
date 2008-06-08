@@ -145,6 +145,10 @@ int ftpparse(struct ftpparse *fp,char *buf,int len)
   long hour;
   long minute;
 
+  size = 0;
+  month = 0;
+  mday = 0;
+
   fp->name = 0;
   fp->namelen = 0;
   fp->flagtrycwd = 0;

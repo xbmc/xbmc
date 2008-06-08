@@ -146,7 +146,7 @@ CFileItem::CFileItem(const CGenre& genre)
   GetMusicInfoTag()->SetGenre(genre.strGenre);
 }
 
-CFileItem::CFileItem(const CFileItem& item)
+CFileItem::CFileItem(const CFileItem& item): CGUIListItem()
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
