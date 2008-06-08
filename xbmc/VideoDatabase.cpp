@@ -3264,10 +3264,12 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
           // check path
           CStdString strPath;
           if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
+          {
             if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
               mapGenres.insert(pair<long, pair<CStdString,int> >(lGenreId, pair<CStdString,int>(strGenre,m_pDS->fv(3).get_asInteger())));
             else
               mapGenres.insert(pair<long, pair<CStdString,int> >(lGenreId, pair<CStdString,int>(strGenre,0)));
+          }
         }
         m_pDS->next();
       }

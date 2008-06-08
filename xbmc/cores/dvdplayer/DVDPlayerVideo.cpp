@@ -625,7 +625,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
 
     double pts2 = pOverlay->bForced ? pts : pts - m_iSubtitleDelay;
 
-    if(pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime >= pts2 || pOverlay->iPTSStopTime == 0LL) || pts == 0)
+    if((pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime >= pts2 || pOverlay->iPTSStopTime == 0LL)) || pts == 0)
     {
       if (bHasSpecialOverlay && m_pTempOverlayPicture) 
         CDVDOverlayRenderer::Render(m_pTempOverlayPicture, pOverlay, pts);

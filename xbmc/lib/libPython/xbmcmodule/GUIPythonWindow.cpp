@@ -31,7 +31,7 @@ using namespace PYXBMC;
 
 PyXBMCAction::~PyXBMCAction() {
      if (pObject) {
-	Py_DECREF(pObject);
+       Py_DECREF(pObject);
      }
 
      pObject = NULL;
@@ -218,8 +218,9 @@ int Py_XBMC_Event_OnControl(void* arg)
   {
     PyXBMCAction* action = (PyXBMCAction*)arg;
     PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, "onControl", "(O)", action->pObject);
-    if (ret)
+    if (ret) {
        Py_DECREF(ret);
+    }
     delete action;
   }
   return 0;
@@ -240,8 +241,8 @@ int Py_XBMC_Event_OnAction(void* arg)
       Py_DECREF(ret);
     }
     else {
-	CLog::Log(LOGERROR,"Exception in python script's onAction");
-	PyErr_Print();
+      CLog::Log(LOGERROR,"Exception in python script's onAction");
+    	PyErr_Print();
     }
     delete action;
   }

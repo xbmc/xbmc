@@ -163,19 +163,20 @@ int ComprDataIO::UnpRead(byte *Addr,uint Count)
     RetCode=TotalRead;
 #ifndef NOCRYPT
     if (Decryption)
+    {
 #ifndef SFX_MODULE
       if (Decryption<20)
         Decrypt.Crypt(Addr,RetCode,(Decryption==15) ? NEW_CRYPT : OLD_DECODE);
+      else if (Decryption==20)
+        for (int I=0;I<RetCode;I+=16)
+          Decrypt.DecryptBlock20(&Addr[I]);
       else
-        if (Decryption==20)
-          for (int I=0;I<RetCode;I+=16)
-            Decrypt.DecryptBlock20(&Addr[I]);
-        else
 #endif
-        {
-          int CryptSize=(RetCode & 0xf)==0 ? RetCode:((RetCode & ~0xf)+16);
-          Decrypt.DecryptBlock(Addr,CryptSize);
-        }
+      {
+        int CryptSize=(RetCode & 0xf)==0 ? RetCode:((RetCode & ~0xf)+16);
+        Decrypt.DecryptBlock(Addr,CryptSize);
+      }
+    }
 #endif
   }
   Wait();
@@ -232,12 +233,14 @@ void ComprDataIO::UnpWrite(byte *Addr,uint Count)
   
   CurUnpWrite+=Count;
   if (!SkipUnpCRC)
+  {
 #ifndef SFX_MODULE
     if (((Archive *)SrcFile)->OldFormat)
       UnpFileCRC=OldCRC((ushort)UnpFileCRC,Addr,Count);
     else
 #endif
       UnpFileCRC=CRC(UnpFileCRC,Addr,Count);
+  }
   ShowUnpWrite();
   Wait();
   if (m_pDlgProgress)
