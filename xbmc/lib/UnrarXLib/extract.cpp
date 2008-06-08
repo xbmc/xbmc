@@ -53,7 +53,7 @@ void CmdExtract::DoExtract(CommandData *Cmd)
     else
     {
       if (ErrHandler.GetErrorCount()==0)
-         mprintf(St(MExtrAllOk));
+        mprintf(St(MExtrAllOk));
       else
         mprintf(St(MExtrTotalErr),ErrHandler.GetErrorCount());
     }

@@ -84,7 +84,8 @@ bool CDVDSubtitleParserMicroDVD::Open(CDVDStreamInfo &hints)
         g_charsetConverter.wToUTF8(strUTF16, strUTF8);
         if (strUTF8.IsEmpty())
           continue;
-CLog::Log(LOGDEBUG, strUTF8);
+        
+        CLog::Log(LOGDEBUG, "%s", strUTF8.c_str());
         // add a new text element to our container
         pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));
       }

@@ -845,7 +845,7 @@ CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeco
       // To be able to display a "'" in the string,
       // find the last "'" that doesn't follow a "'"
       int pos=i+1;
-      while(((pos=strFormat.Find(c,pos+1))>-1 && pos<strFormat.GetLength()) && strFormat[pos+1]=='\'');
+      while(((pos=strFormat.Find(c,pos+1))>-1 && pos<strFormat.GetLength()) && strFormat[pos+1]=='\'') {}
 
       CStdString strPart;
       if (pos>-1)
@@ -1005,7 +1005,7 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
       // To be able to display a "'" in the string,
       // find the last "'" that doesn't follow a "'"
       int pos=i+1;
-      while(((pos=strFormat.Find(c,pos+1))>-1 && pos<strFormat.GetLength()) && strFormat[pos+1]=='\'');
+      while(((pos=strFormat.Find(c,pos+1))>-1 && pos<strFormat.GetLength()) && strFormat[pos+1]=='\'') {}
 
       CStdString strPart;
       if (pos>-1)

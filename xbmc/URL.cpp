@@ -419,7 +419,7 @@ const CStdString CURL::GetFileNameWithoutPath() const
   return CUtil::GetFileName(file);
 }
 
-const char CURL::GetDirectorySeparator() const
+char CURL::GetDirectorySeparator() const
 {
 #ifndef _LINUX
   if ( IsLocal() )

@@ -64,7 +64,7 @@ void CDaapClient::Release()
   {
     try
     {
-      while( DAAP_Client_Release(m_pClient) != 0 );    
+      while( DAAP_Client_Release(m_pClient) != 0 ) {} 
     }
     catch(...)
     {

@@ -494,7 +494,7 @@ bool CEventClient::OnPacketLOG(CEventPacket *packet)
   if (!ParseString(payload, psize, logmsg))
     return false;
 
-  CLog::Log((int)ltype, logmsg.c_str());
+  CLog::Log((int)ltype, "%s", logmsg.c_str());
   return true;
 }
 

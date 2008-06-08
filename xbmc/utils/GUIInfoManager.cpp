@@ -3949,7 +3949,8 @@ const MUSIC_INFO::CMusicInfoTag* CGUIInfoManager::GetCurrentSongTag() const
     return m_currentFile->GetMusicInfoTag(); 
 
   return NULL;
-};
+}
+
 const CVideoInfoTag* CGUIInfoManager::GetCurrentMovieTag() const
 { 
   if (m_currentFile->HasVideoInfoTag())

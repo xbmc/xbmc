@@ -6527,7 +6527,7 @@ bool CApplication::SwitchToFullScreen()
   return false;
 }
 
-const EPLAYERCORES CApplication::GetCurrentPlayer()
+EPLAYERCORES CApplication::GetCurrentPlayer()
 {
   return m_eCurrentPlayer;
 }
