@@ -126,7 +126,7 @@ void CGUISound::Stop()
     Mix_HaltChannel(GUI_SOUND_CHANNEL);    
 #endif
 
-    while(IsPlaying());
+    while(IsPlaying()) {}
   }
 }
 

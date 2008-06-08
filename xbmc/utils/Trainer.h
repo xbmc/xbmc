@@ -47,7 +47,7 @@ public:
   {
     return m_vecText.size()-2;
   }
-  inline const unsigned char* const data() const
+  inline const unsigned char* data() const
   {
     return m_pTrainerData;
   }
