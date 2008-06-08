@@ -302,7 +302,7 @@ CStdString CSmartPlaylistRule::GetLocalizedRule()
 CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
 {
   SEARCH_OPERATOR op = m_operator;
-  if (strType == "tvshows" || strType == "episodes" && m_field == FIELD_YEAR)
+  if ((strType == "tvshows" || strType == "episodes") && m_field == FIELD_YEAR)
   { // special case for premiered which is a date rather than a year
     // TODO: SMARTPLAYLISTS do we really need this, or should we just make this field the premiered date and request a date?
     if (op == OPERATOR_EQUALS)

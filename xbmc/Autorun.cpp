@@ -60,7 +60,7 @@ CAutorun::~CAutorun()
 
 void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying )
 {
-  if ( (!ignoreplaying && (g_application.IsPlayingAudio() || g_application.IsPlayingVideo() || m_gWindowManager.HasModalDialog()) || m_gWindowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN))
+  if ((!ignoreplaying && (g_application.IsPlayingAudio() || g_application.IsPlayingVideo() || m_gWindowManager.HasModalDialog())) || m_gWindowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN)
     return ;
 
   CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
