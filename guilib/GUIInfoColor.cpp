@@ -60,7 +60,7 @@ DWORD CGUIInfoColor::GetColor() const
 
   // We now have an expanded label that we can convert into a color
   int color;
-  sscanf(infoLabel.c_str(), "%x", &color);
+  sscanf(infoLabel.c_str(), "%x", (unsigned int*)&color);
   return color;
 }
 
