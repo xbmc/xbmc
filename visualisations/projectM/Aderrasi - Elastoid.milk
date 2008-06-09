@@ -1,0 +1,81 @@
+[preset00]
+fRating=3.000000
+fGammaAdj=1.000000
+fDecay=0.970000
+fVideoEchoZoom=1.000000
+fVideoEchoAlpha=0.000000
+nVideoEchoOrientation=1
+nWaveMode=0
+bAdditiveWaves=0
+bWaveDots=0
+bWaveThick=0
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=0
+bTexWrap=0
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=100.000000
+fWaveScale=0.655694
+fWaveSmoothing=0.000000
+fWaveParam=-0.500000
+fModWaveAlphaStart=0.500000
+fModWaveAlphaEnd=1.000000
+fWarpAnimSpeed=1.000000
+fWarpScale=1.000000
+fZoomExponent=1.000000
+fShader=0.000000
+zoom=1.000000
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000010
+dy=0.000010
+warp=0.010000
+sx=1.000000
+sy=1.000000
+wave_r=1.000000
+wave_g=1.000000
+wave_b=1.000000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.015000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=1.000000
+ib_size=0.005000
+ib_r=1.000000
+ib_g=0.000000
+ib_b=0.000000
+ib_a=0.000000
+nMotionVectorsX=64.000000
+nMotionVectorsY=48.000000
+mv_dx=0.000000
+mv_dy=0.000000
+mv_l=0.000000
+mv_r=1.000000
+mv_g=1.000000
+mv_b=1.000000
+mv_a=0.000000
+per_frame_1=wave_r = wave_r + 0.35*sin(4*time) + 0.15*sin(2.5*time);
+per_frame_2=wave_g = wave_g + 0.35*sin(3.7*time) + 0.15*sin(2.11*time);
+per_frame_3=wave_b = wave_b + 0.35*sin(3.84*time) + 0.15*sin(2.3*time);
+per_frame_4=ob_r = wave_r;
+per_frame_5=ob_g = wave_g;
+per_frame_6=ob_b=wave_b;
+per_frame_7=zoom = zoom - 0.02;
+per_pixel_1=thresh = above(bass_att,thresh)*2+(1-above(bass_att,thresh))*((thresh-1.3)*0.96+1.3);
+per_pixel_2=dx_r = equal(thresh,2)*0.015*sin(5*time)+(1-equal(thresh,2))*dx_r;
+per_pixel_3=dy_r = equal(thresh,2)*0.015*sin(6*time)+(1-equal(thresh,2))*dy_r;
+per_pixel_4=
+per_pixel_5=m1 = 2*sin(1.25*time);
+per_pixel_6=m2 = 1.25*sin(4*time);
+per_pixel_7=m3 = 5*sin(0.33*time);
+per_pixel_8=sx = sx  + if (above(m1,m2), if (above(m1,m3), dx_r, -dx_r), dx_r*1.75)*(.75-rad);
+per_pixel_9=sy = sy + if (above(m2,m3), if (above(m3,m1), dy_r, dy_r*1.5), dy_r*0.75)*(.75-rad);
+per_pixel_10=dx = dx + if (above(m2,m1), if (below(m1,m3), dx_r, dx_r*0.66), dx_r*1.8)*(.75-rad);
+per_pixel_11=dy = dy + if (above(m3,m1), if(below(m2,m3), -dy_r, dy_r*1.25), dy_r*0.8)*(0.75-rad);
