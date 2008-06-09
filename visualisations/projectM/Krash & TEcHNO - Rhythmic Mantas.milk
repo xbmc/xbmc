@@ -1,0 +1,81 @@
+[preset00]
+fRating=3.000000
+fGammaAdj=1.700000
+fDecay=0.995000
+fVideoEchoZoom=1.000224
+fVideoEchoAlpha=0.000000
+nVideoEchoOrientation=0
+nWaveMode=6
+bAdditiveWaves=0
+bWaveDots=0
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=0
+bTexWrap=0
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=1.003100
+fWaveScale=1.004873
+fWaveSmoothing=0.000000
+fWaveParam=-1.000000
+fModWaveAlphaStart=1.010000
+fModWaveAlphaEnd=1.010000
+fWarpAnimSpeed=0.999994
+fWarpScale=1.002083
+fZoomExponent=1.001830
+fShader=1.000000
+zoom=0.995048
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.010000
+dy=0.010000
+warp=0.010000
+sx=1.000000
+sy=1.000000
+wave_r=0.000000
+wave_g=0.000000
+wave_b=0.000000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.005000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=0.050000
+ib_size=0.010000
+ib_r=0.250000
+ib_g=0.250000
+ib_b=0.250000
+ib_a=0.000000
+nMotionVectorsX=1.000000
+nMotionVectorsY=0.000000
+mv_l=0.900000
+mv_r=1.000000
+mv_g=1.000000
+mv_b=1.000000
+mv_a=1.000000
+per_frame_1=volume = 0.3*(bass+mid+att);
+per_frame_2=beatrate = equal(beatrate,0) + (1-equal(beatrate,0))*(below(volume,0.01) + (1-below(volume,0.01))*beatrate);
+per_frame_3=lastbeat = lastbeat + equal(lastbeat,0)*time;
+per_frame_4=meanbass_att = 0.1*(meanbass_att*9 + bass_att);
+per_frame_5=peakbass_att = max(bass_att,peakbass_att);
+per_frame_6=beat = above(volume,0.8)*below(peakbass_att - bass_att, 0.05*peakbass_att)*above(time - lastbeat, 0.1 + 0.5*(beatrate - 0.1));
+per_frame_7=beatrate = max(if(beat,if(below(time-lastbeat,2*beatrate),0.1*(beatrate*9 + time - lastbeat),beatrate),beatrate),0.1);
+per_frame_8=peakbass_att = beat*bass_att + (1-beat)*peakbass_att*(above(time - lastbeat, 2*beatrate)*0.95 + (1-above(time - lastbeat, 2*beatrate))*0.995);
+per_frame_9=lastbeat = beat*time + (1-beat)*lastbeat;
+per_frame_10=peakbass_att = max(peakbass_att,1.1*meanbass_att);
+per_frame_11=mode = if(beat,rand(4),mode);
+per_frame_12=q1 = ((time*20)%50)*0.08;
+per_frame_13=q2 = 1 - below(mode,2)*2;
+per_frame_14=q3 = 1 - 2*(mode%2);
+per_frame_15=wave_x = 1-below(mode,2);
+per_frame_16=wave_mystery = (frame%2)*(2*(1-equal(mode%3,0))-1);
+per_frame_17=wave_r=if(below(frame%6,3),bass*0.5,0);
+per_frame_18=wave_b=0.9+sin(time)*0.1;
+per_frame_19=wave_g=if(above(frame%6,2),bass*0.5,0);
+per_pixel_1=dx = dx*pow(-1,0&(13+q1 - 5*(q2*y)))*min(bass,1.2);
+per_pixel_2=dy = dy*pow(-1,0&(13+q1 - 5*(q3*x)))*min(bass,1.2);
