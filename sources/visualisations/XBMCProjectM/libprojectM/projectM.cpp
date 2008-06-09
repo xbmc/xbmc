@@ -752,7 +752,10 @@ int projectM::initPresetTools()
 
 	// Load idle preset
 	//std::cerr << "[projectM] Allocating idle preset..." << std::endl;
-	switchPreset(m_activePreset, presetInputs, presetOutputs);
+	if (m_presetChooser->empty())
+                m_activePreset = IdlePreset::allocate ( presetInputs, presetOutputs );
+        else
+                switchPreset(m_activePreset, presetInputs, presetOutputs);
 
 	// Case where no valid presets exist in directory. Could also mean 
 	// playlist initialization was deferred
