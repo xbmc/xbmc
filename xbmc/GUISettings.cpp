@@ -674,7 +674,7 @@ CGUISettings::CGUISettings(void)
 #else /* HAS_XBOX_HARDWARE */
   AddInt(6, "videoscreen.vsync", 13105,
 #ifdef _LINUX
-         VSYNC_VIDEO,
+         VSYNC_DISABLED,
 #else /* _LINUX */
          VSYNC_ALWAYS,
 #endif /* _LINUX */
