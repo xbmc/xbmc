@@ -50,8 +50,11 @@ public:
   virtual bool OpenForWrite(const CURL& url, bool bBinary = true, bool bOverWrite = false) { return false; };
   virtual bool Exists(const CURL& url) = 0;
   virtual int Stat(const CURL& url, struct __stat64* buffer) = 0;
-//  virtual int Stat(struct stat64* buffer)  { errno = ENOENT; return -1; }
-
+#ifdef _WIN32PC
+  virtual int Stat(struct _stat64* buffer)  { errno = ENOENT; return -1; }
+#else
+  virtual int Stat(struct stat64* buffer)  { errno = ENOENT; return -1; }
+#endif
   virtual unsigned int Read(void* lpBuf, __int64 uiBufSize) = 0;
   virtual int Write(const void* lpBuf, __int64 uiBufSize) { return -1;};
   virtual bool ReadString(char *szLine, int iLineLength)
