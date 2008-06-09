@@ -1,0 +1,101 @@
+[preset00]
+fRating=5.000000
+fGammaAdj=1.700000
+fDecay=0.980000
+fVideoEchoZoom=2.000000
+fVideoEchoAlpha=0.000000
+nVideoEchoOrientation=0
+nWaveMode=0
+bAdditiveWaves=0
+bWaveDots=0
+bWaveThick=0
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=1
+bTexWrap=0
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=1.078276
+fWaveScale=0.274297
+fWaveSmoothing=0.750000
+fWaveParam=-0.480000
+fModWaveAlphaStart=0.750000
+fModWaveAlphaEnd=0.950000
+fWarpAnimSpeed=1.000000
+fWarpScale=1.000000
+fZoomExponent=1.000000
+fShader=0.000000
+zoom=1.000000
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000000
+dy=0.000000
+warp=1.000000
+sx=1.000000
+sy=1.000000
+wave_r=0.500000
+wave_g=0.500000
+wave_b=0.500000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.005000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=1.000000
+ib_size=0.010000
+ib_r=0.250000
+ib_g=0.250000
+ib_b=0.250000
+ib_a=0.000000
+nMotionVectorsX=64.000000
+nMotionVectorsY=48.000000
+mv_dx=0.000000
+mv_dy=0.000000
+mv_l=0.000000
+mv_r=1.000000
+mv_g=1.000000
+mv_b=1.000000
+mv_a=0.000000
+per_frame_1=warp = 0;
+per_frame_2=wave_x = locx;
+per_frame_3=wave_y = if(below(locy,.01),.01,locy);
+per_frame_4=wave_r = if(equal(expt2,0),.6,1);
+per_frame_5=wave_g = .6;
+per_frame_6=wave_b = if(equal(expt2,0),.6,.05);
+per_frame_7=wave_mode = if(equal(expt2,0),2,0);
+per_frame_8=locx=locx-xspeed;
+per_frame_9=locy=if(below(locy,.02),.01,locy-yspeed);
+per_frame_10=xspeed = if(below(locy,.01),0,xspeed - (xspeed)*.03);
+per_frame_11=yspeed = if(below(locy,.01),0,yspeed+(yspeed)*.03);
+per_frame_12=decay = if(below(locy,.02),.94,.4);
+per_frame_13=expt = if(below(locy,.011),if(below(expt,0.001),0,expt-.01),expt);
+per_frame_14=expt2 = if(equal(expt,0),if(below(expt2,0.001),0,expt2-.01),expt2);
+per_frame_15=q1 = locx;
+per_frame_16=q2 = locy;
+per_frame_17=q3 = expt;
+per_frame_18=q4 = expt2;
+per_frame_19=monitor = timer;
+per_frame_20=timer = if(above(timer,.01),timer-.01,6);
+per_frame_21=yspeed = if(below(timer,.012),.02,yspeed);
+per_frame_22=xspeed = if(below(timer,.012),rand(200)*.0001,xspeed);
+per_frame_23=locy = if(below(timer,.012),1,locy);
+per_frame_24=locx = if(below(timer,.012),(rand(80)+20)*.01,locx);
+per_frame_25=expt = if(below(timer,.012),.5,expt);
+per_frame_26=expt2 = if(below(timer,.012),1,expt2);
+per_pixel_1=randomn = rand(100)*.006;
+per_pixel_2=xcenter = q1;
+per_pixel_3=ycenter = abs(q2-1);
+per_pixel_4=dx = if(below(q2,.011),if(equal(q3,0),if(equal(q4,0),dx + (x - xcenter)*.03,dx + (x - xcenter)*.1),dx + (x - xcenter)*randomn),0);
+per_pixel_5=dy = if(below(q2,.011),if(equal(q3,0),if(equal(q4,0),dy + (y - ycenter)*.06*bass,dy + (y - ycenter)*.1),dy + (y - ycenter)*randomn),0);
+per_frame_init_1=yspeed = .02;
+per_frame_init_2=xspeed = rand(200)*.0001;
+per_frame_init_3=locy = 1;
+per_frame_init_4=locx = (rand(80)+20)*.01;
+per_frame_init_5=expt = .5;
+per_frame_init_6=expt2 = 1;
+per_frame_init_7=timer = 6;
