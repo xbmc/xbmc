@@ -1,0 +1,70 @@
+[preset00]
+fRating=3.000000
+fGammaAdj=2.001000
+fDecay=1.000000
+fVideoEchoZoom=1.469141
+fVideoEchoAlpha=0.500000
+nVideoEchoOrientation=3
+nWaveMode=5
+bAdditiveWaves=0
+bWaveDots=1
+bWaveThick=0
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=0
+bTexWrap=0
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=1.386134
+fWaveScale=1.568857
+fWaveSmoothing=0.000000
+fWaveParam=0.000000
+fModWaveAlphaStart=0.710000
+fModWaveAlphaEnd=1.300000
+fWarpAnimSpeed=1.000000
+fWarpScale=1.331000
+fZoomExponent=1.000000
+fShader=0.000000
+zoom=0.999513
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000000
+dy=0.000000
+warp=0.010100
+sx=1.000000
+sy=1.000000
+wave_r=0.650000
+wave_g=0.650000
+wave_b=0.650000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.005000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=0.800000
+ib_size=0.000000
+ib_r=0.250000
+ib_g=0.250000
+ib_b=0.250000
+ib_a=0.000000
+nMotionVectorsX=12.000000
+nMotionVectorsY=9.000000
+mv_dx=0.000000
+mv_dy=0.000000
+mv_l=0.900000
+mv_r=1.000000
+mv_g=1.000000
+mv_b=1.000000
+mv_a=0.000000
+per_frame_1=wave_r = wave_r + 0.5*sin(time*1.13);
+per_frame_2=wave_g = wave_g + 0.5*sin(time*1.23);
+per_frame_3=wave_b = wave_b + 0.5*sin(time*1.33);
+per_pixel_1=zoom = zoom + 0.25*(0.05*bass_att + sin(sin(time+rad))*0.3 - cos(rad)*0.1);
+per_pixel_2=rot = 0.06*sin(rad);
+per_pixel_3=dx = dx + 0.008*(0.99*1-rad)*sin(0.733*time);
+per_pixel_4=dy = dy + 0.008*(0.99*1-rad)*cos(0.953*time);
