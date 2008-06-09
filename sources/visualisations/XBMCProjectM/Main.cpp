@@ -35,9 +35,7 @@ d4rk@xboxmediacenter.com
 
 
 #include "xbmc_vis.h"
-#ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>
-#endif
 #include "libprojectM/projectM.hpp"
 #include "libprojectM/Preset.hpp"
 #include "libprojectM/PCM.hpp"
@@ -344,7 +342,7 @@ extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets
     *numPresets = g_numPresets;
     unsigned int presetIndex;
     if (globalPM->selectedPresetIndex(presetIndex) && presetIndex >= 0 &&
-        presetIndex < g_numPresets)
+        (int)presetIndex < g_numPresets)
       *currentPreset = presetIndex;
   }
 }

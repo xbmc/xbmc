@@ -11,16 +11,4 @@ unset CC
 unset CXX
 
 Quick and dirty projectM build instructions:
-cd libprojectM
-ccmake .
-Hit 'c' to configure.
-Ignore the FTGL warning and hit 'e'.
-Change CMAKE_BUILD_TYPE to "Release".
-Hit 'c' to configure, again.
-Ignore the FTGL warning and hit 'e', again.
-Hit 'g' to generate Makefile.
 make
-cd ..
-
-To build the .vis:
-make vis
