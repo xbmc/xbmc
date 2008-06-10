@@ -3577,7 +3577,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       if(!strThumb.IsEmpty() && !CURL::IsFileOnly(strThumb) && !CUtil::IsHD(strThumb))
         strThumb = "";
 
-      if(strThumb.IsEmpty())
+      if(strThumb.IsEmpty() && !item->GetIconImage().IsEmpty())
       {
         strThumb = item->GetIconImage();
         strThumb.Insert(strThumb.Find("."), "Big");
