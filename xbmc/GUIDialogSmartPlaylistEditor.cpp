@@ -269,7 +269,15 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
     CONTROL_ENABLE(CONTROL_MATCH)
   }
   // name
-  SET_CONTROL_LABEL(CONTROL_NAME, m_playlist.m_playlistName)
+  if (m_mode == "partyvideo" || m_mode == "partymusic")
+  {
+    SET_CONTROL_LABEL(CONTROL_NAME, g_localizeStrings.Get(16035))
+    CONTROL_DISABLE(CONTROL_NAME)
+  }
+  else
+  {
+    SET_CONTROL_LABEL(CONTROL_NAME, m_playlist.m_playlistName)
+  }
 
   int currentItem = GetSelectedItem();
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_RULE_LIST);
