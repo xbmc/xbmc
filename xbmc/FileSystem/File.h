@@ -89,6 +89,7 @@ public:
 
   static bool Exists(const CStdString& strFileName);
   static int  Stat(const CStdString& strFileName, struct __stat64* buffer);
+  int Stat(struct stat64 *buffer);
   static bool Delete(const CStdString& strFileName);
   static bool Rename(const CStdString& strFileName, const CStdString& strNewFileName);
   static bool Cache(const CStdString& strFileName, const CStdString& strDest, XFILE::IFileCallback* pCallback = NULL, void* pContext = NULL);
