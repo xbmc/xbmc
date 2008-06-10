@@ -69,15 +69,15 @@ void CKeyboard::Initialize(HWND hWnd)
 
 void CKeyboard::Update()
 {
+  m_cAscii = 0;
+  m_bShift = false;
+  m_bCtrl = false;
+  m_bAlt = false;
+  m_VKey = 0;
+
   ZeroMemory(m_keystate, sizeof(BYTE)* 256);
   if (S_OK == m_keyboard->GetDeviceState(sizeof(unsigned char[256]), (LPVOID)m_keystate))
   {
-    m_cAscii = 0;
-    m_bShift = false;
-    m_bCtrl = false;
-    m_bAlt = false;
-    m_VKey = 0;
-
     // only a press
     if (m_keyDownLastFrame + KEY_DELAY_TIME > timeGetTime())
       return;
