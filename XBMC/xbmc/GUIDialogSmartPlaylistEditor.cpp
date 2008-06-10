@@ -161,7 +161,7 @@ void CGUIDialogSmartPlaylistEditor::OnRuleList(int item)
 
 void CGUIDialogSmartPlaylistEditor::OnName()
 {
-  CGUIDialogKeyboard::ShowAndGetInput(m_playlist.m_playlistName, g_localizeStrings.Get(1022), false);
+  CGUIDialogKeyboard::ShowAndGetInput(m_playlist.m_playlistName, g_localizeStrings.Get(21381), false);
   UpdateButtons();
 }
 
