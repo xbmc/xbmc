@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "EmuFileWrapper.h"
 #include "FileSystem/File.h"
-#include "utils/Mutex.h"
 
 CEmuFileWrapper g_emuFileWrapper;
 
@@ -54,11 +53,6 @@ void CEmuFileWrapper::CleanUp()
       m_files[i].file_xbmc->Close();
       delete m_files[i].file_xbmc;
 
-      if (m_files[i].file_lock)
-      {
-        delete m_files[i].file_lock;
-        m_files[i].file_lock = NULL;
-      }
       memset(&m_files[i], 0, sizeof(EmuFileObject));
       m_files[i].used = false;
       m_files[i].file_emu._file = -1;
@@ -82,7 +76,6 @@ EmuFileObject* CEmuFileWrapper::RegisterFileObject(XFILE::CFile* pFile)
       object->used = true;
       object->file_xbmc = pFile;
       object->file_emu._file = (i + FILE_WRAPPER_OFFSET);
-      object->file_lock = new CMutex();
       break;
     }
   }
@@ -104,11 +97,6 @@ void CEmuFileWrapper::UnRegisterFileObjectByDescriptor(int fd)
       // we assume the emulated function alreay deleted the CFile object
       if (m_files[i].used)
       {
-        if (m_files[i].file_lock)
-        {
-          delete m_files[i].file_lock;
-          m_files[i].file_lock = NULL;
-        }
         memset(&m_files[i], 0, sizeof(EmuFileObject));
         m_files[i].used = false;
         m_files[i].file_emu._file = -1;
@@ -124,43 +112,6 @@ void CEmuFileWrapper::UnRegisterFileObjectByStream(FILE* stream)
   if (stream != NULL)
   {
     return UnRegisterFileObjectByDescriptor(stream->_file);
-  }
-}
-
-void CEmuFileWrapper::LockFileObjectByDescriptor(int fd)
-{
-  int i = fd - FILE_WRAPPER_OFFSET;
-  if (i >= 0 && i < MAX_EMULATED_FILES)
-  {
-    if (m_files[i].used)
-    {
-      m_files[i].file_lock->Wait();
-    }
-  }
-}
-
-bool CEmuFileWrapper::TryLockFileObjectByDescriptor(int fd)
-{ 
-  int i = fd - FILE_WRAPPER_OFFSET;  
-  if (i >= 0 && i < MAX_EMULATED_FILES)
-  { 
-    if (m_files[i].used)
-    {   
-      return m_files[i].file_lock->WaitMSec(0);
-    }
-  }
-  return false;
-}
-
-void CEmuFileWrapper::UnlockFileObjectByDescriptor(int fd)
-{ 
-  int i = fd - FILE_WRAPPER_OFFSET;  
-  if (i >= 0 && i < MAX_EMULATED_FILES)
-  { 
-    if (m_files[i].used)
-    {   
-      m_files[i].file_lock->Release();
-    }
   }
 }
 

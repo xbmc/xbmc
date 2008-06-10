@@ -76,10 +76,7 @@ HANDLE CMutex::GetHandle()
   return m_hMutex;
 }
 
-bool CMutex::WaitMSec(DWORD dwMillSeconds)
+void CMutex::WaitMSec(DWORD dwMillSeconds)
 {
-  if (m_hMutex &&
-      WaitForSingleObject(m_hMutex, dwMillSeconds) == WAIT_OBJECT_0)
-    return true;
-  return false;
+  if (m_hMutex) WaitForSingleObject(m_hMutex, dwMillSeconds);
 }
