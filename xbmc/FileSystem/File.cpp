@@ -432,6 +432,11 @@ bool CFile::Exists(const CStdString& strFileName)
   return false;
 }
 
+int CFile::Stat(struct stat64 *buffer)
+{
+  return m_pFile->Stat(buffer);
+}
+
 int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
 {
   try
