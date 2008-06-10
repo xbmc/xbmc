@@ -9,6 +9,7 @@
 #include <utime.h>
 #include <fcntl.h>
 
+FILE * xbp_fopen64(const char * filename, const char * mode);
 char* xbp_getcwd(char *buf, int size);
 int xbp_chdir(const char *dirname);
 int xbp_access(const char *path, int mode);
@@ -19,6 +20,9 @@ int xbp_utime(const char *filename, struct utimbuf *times);
 int xbp_rename(const char *oldname, const char *newname);
 int xbp_mkdir(const char *dirname);
 int xbp_open(const char *filename, int oflag, int pmode);
+FILE* xbp_fopen(const char *filename, const char *mode);
+FILE* xbp_freopen(const char *path, const char *mode, FILE *stream);
+FILE* xbp_fopen64(const char *filename, const char *mode);
 DIR *xbp_opendir(const char *name);
 #ifdef __APPLE__
 int xbp_stat(const char * path, struct stat * buf);
@@ -36,6 +40,11 @@ void *xbp_dlsym(void *handle, const char *symbol);
 #else
 #define PYTHON_WRAP(func) __wrap_##func
 #endif
+
+FILE *PYTHON_WRAP(fopen64)(const char *path, const char *mode)
+{
+  return xbp_fopen64(path, mode);
+}
 
 DIR* PYTHON_WRAP(opendir)(const char *name)
 {
@@ -55,6 +64,35 @@ char* PYTHON_WRAP(getcwd)(char *buf, int size)
 int PYTHON_WRAP(chdir)(const char *dirname)
 {
   return xbp_chdir(dirname);
+}
+
+int PYTHON_WRAP(open)(const char *file, int oflag, ...)
+{
+  if (oflag & O_CREAT) 
+  {
+  	va_list args;
+	  mode_t mode;
+	  va_start(args, oflag);
+#ifdef __APPLE__
+	  mode = va_arg(args, int);
+#else
+	  mode = va_arg(args, mode_t);
+#endif
+	  va_end(args);
+	  return xbp_open(file, oflag | O_NONBLOCK, mode);
+  } 
+  else 
+	  return xbp_open(file, oflag | O_NONBLOCK, 0);
+}
+
+FILE *PYTHON_WRAP(fopen)(const char *path, const char *mode)
+{
+  return xbp_fopen(path, mode);
+}
+
+FILE *PYTHON_WRAP(freopen)(const char *path, const char *mode, FILE *stream)
+{
+  return xbp_freopen(path, mode, stream);
 }
 
 int PYTHON_WRAP(unlink)(const char *filename)
