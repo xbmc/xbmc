@@ -329,19 +329,13 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     EnterCriticalSection(&m_critCodecSection);
     
     if (ret == MSGQ_TIMEOUT) 
-    {
-      if(m_started)
-        m_stalled = true;
-      continue;
-    }
+      return DECODE_FLAG_TIMEOUT;
 
     if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT) 
       return DECODE_FLAG_ABORT;
 
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {
-      m_stalled = false;
-      m_started = true;
       m_decode.Attach((CDVDMsgDemuxerPacket*)pMsg);
       m_ptsInput.Add( m_decode.size, m_decode.dts );
     }
@@ -425,6 +419,13 @@ void CDVDPlayerAudio::Process()
       continue;
     }
 
+    if( result & DECODE_FLAG_TIMEOUT ) 
+    {
+      if(m_started)
+        m_stalled = true;
+      continue;
+    }
+
     if( result & DECODE_FLAG_ABORT )
     {
       CLog::Log(LOGDEBUG, "CDVDPlayerAudio::Process - Abort recieved, exiting thread");
@@ -438,6 +439,9 @@ void CDVDPlayerAudio::Process()
     
     if( audioframe.size == 0 )
       continue;
+
+    m_stalled = false;
+    m_started = true;
 
     // we have succesfully decoded an audio frame, setup renderer to match
     if (!m_dvdAudio.IsValidFormat(audioframe))
