@@ -1321,15 +1321,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogPictureInfo);      // window id = 139
   m_gWindowManager.Add(new CGUIDialogPluginSettings);      // window id = 140
 
-  CGUIDialogLockSettings* pDialog = NULL;
-  CStdString strPath;
-  RESOLUTION res2;
-  strPath = g_SkinInfo.GetSkinPath("LockSettings.xml", &res2);
-  if (CFile::Exists(strPath))
-    pDialog = new CGUIDialogLockSettings;
-
-  if (pDialog)
-    m_gWindowManager.Add(pDialog); // window id = 131
+  m_gWindowManager.Add(new CGUIDialogLockSettings); // window id = 131
 
   m_gWindowManager.Add(new CGUIDialogContentSettings);        // window id = 132
 
