@@ -1,8 +1,8 @@
 
-python24-@ARCH@.so : wrapper_python.o @python_lib_a@ wrapper_python.def ../../../cores/DllLoader/exports/wrapper.def ../../../cores/DllLoader/exports/wrapper.o
+python24-@ARCH@.so : wrapper_python.o @python_lib_a@ wrapper_python.def
 	if [ \! -d tmp ]; then mkdir tmp; fi
 	(cd ./tmp; ar x @python_lib_a@)
-	gcc -shared -o $@ tmp/*.o `cat wrapper_python.def` wrapper_python.o `cat ../../../cores/DllLoader/exports/wrapper.def` ../../../cores/DllLoader/exports/wrapper.o
+	gcc -shared -o $@ tmp/*.o `cat wrapper_python.def` wrapper_python.o
 	rm -rf tmp
 	cp -f $@ ../../../../system/python/
 
