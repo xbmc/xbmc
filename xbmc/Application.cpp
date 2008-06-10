@@ -1324,6 +1324,15 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogLockSettings); // window id = 131
 
   m_gWindowManager.Add(new CGUIDialogContentSettings);        // window id = 132
+    
+  CGUIDialogFullScreenInfo* pDialog = NULL;
+  RESOLUTION res;
+  CStdString strPath = g_SkinInfo.GetSkinPath("DialogFullScreenInfo.xml", &res);
+  if (CFile::Exists(strPath))
+    pDialog = new CGUIDialogFullScreenInfo;
+   
+  if (pDialog)
+    m_gWindowManager.Add(pDialog); // window id = 142
 
   m_gWindowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
   m_gWindowManager.Add(new CGUIWindowMusicSongs);             // window id = 501

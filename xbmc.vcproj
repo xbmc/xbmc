@@ -1335,6 +1335,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<File
 					RelativePath=".\xbmc\GUIDialogYesNo.cpp">
 				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogFullScreenInfo.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogFullScreenInfo.h">
+				</File>
 			</Filter>
 			<Filter
 				Name="GUI Other"
