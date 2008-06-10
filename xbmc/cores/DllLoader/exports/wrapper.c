@@ -25,6 +25,8 @@
 // bash# (echo -n "-Wl"; grep __wrap wrapper.c | grep -v bash | sed "s/.*__wrap_//g" | sed "s/(.*//g" | awk '{printf(",-wrap,%s",$0);}') > wrapper.def
 //
 #include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/statvfs.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -75,6 +77,17 @@ char * dll_fgets (char* pszString, int num , FILE * stream);
 int dll_getc (FILE * stream);
 int dll_ungetc (int c, FILE * stream);
 int dll_ioctl(int d, unsigned long int request, va_list va);
+void dll_flockfile(FILE *file);
+int dll_ftrylockfile(FILE *file);
+void dll_funlockfile(FILE *file);
+int dll_fstat64(int fd, struct stat64 *buf);
+int dll_fstatvfs64(int fd, struct statvfs64 *buf);
+FILE* dll_popen(const char *command, const char *mode);
+
+FILE *__wrap_popen(const char *command, const char *mode)
+{
+  return dll_popen(command, mode);
+}
 
 void* __wrap_calloc( size_t num, size_t size )
 {
@@ -158,6 +171,11 @@ int __wrap_fileno(FILE *stream)
 }
 
 FILE *__wrap_fopen(const char *path, const char *mode)
+{
+  return dll_fopen(path, mode);
+}
+
+FILE *__wrap_fopen64(const char *path, const char *mode)
 {
   return dll_fopen(path, mode);
 }
@@ -267,6 +285,11 @@ int __wrap__IO_getc(FILE *stream)
   return dll_getc(stream);
 }
 
+int __wrap_getc_unlocked(FILE *stream)
+{
+  return dll_getc(stream);
+}
+
 int __wrap_ungetc(int c, FILE *stream)
 {
   return dll_ungetc(c, stream);
@@ -281,3 +304,29 @@ int __wrap_ioctl(int d, unsigned long int request, ...)
     va_end(va);
     return res;
 }
+
+void __wrap_flockfile(FILE *file)
+{
+    dll_flockfile(file);
+}
+
+int __wrap_ftrylockfile(FILE *file)
+{
+    return dll_ftrylockfile(file);
+}
+
+void __wrap_funlockfile(FILE *file)
+{
+    dll_funlockfile(file);
+}
+
+int __wrap___fxstat64(int ver, int fd, struct stat64 *buf)
+{
+  return dll_fstat64(fd, buf);
+}
+
+int __wrap_fstatvfs64(int fd, struct statvfs64 *buf)
+{
+  return dll_fstatvfs64(fd, buf);
+}
+
