@@ -19,3 +19,16 @@ diff -rup pdk-org/lib/InstallImage.py pdk/lib/InstallImage.py
          self.project.chroot(cmd)
  
      def delete_bootfs(self):
+diff -rup pdk-org/platforms/platforms.cfg pdk/platforms/platforms.cfg
+--- pdk-org/platforms/platforms.cfg	2008-05-31 10:02:23.000000000 -0400
++++ pdk/platforms/platforms.cfg	2008-05-31 10:05:51.000000000 -0400
+@@ -42,3 +42,9 @@ target_os = ubuntu
+ description = [BETA] McCaslin on LPIA architecture (e.g. Samsung Q1 Ultra) using Fedora
+ package_manager = yum
+ target_os = fedora
++
++[xbmc-ubuntu-hardy]
++description = XBMC for Linux on Generic i386 Platform using Hardy
++package_manager = apt
++target_os = ubuntu
++
