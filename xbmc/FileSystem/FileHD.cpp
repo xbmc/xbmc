@@ -95,9 +95,9 @@ bool CFileHD::Exists(const CURL& url)
   return (_stat64(strFile.c_str(), &buffer)==0);
 }
 
-int CFileHD::Stat(struct stat64* buffer)
+int CFileHD::Stat(struct __stat64* buffer)
 {
-#if _LINUX
+#if 0
   return fstat64((*m_hFile).fd, buffer);
 #else
   CLog::Log(LOGERROR, "Not implemented: CFileHD::Stat(struct __stat64 *buffer)");
