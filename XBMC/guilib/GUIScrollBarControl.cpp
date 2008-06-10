@@ -206,7 +206,7 @@ void CGUIScrollBar::UpdateBarSize()
     m_guiNibFocus.SetHeight(nibSize);
 
     // and the position
-    percent = (float)m_offset / (m_numItems - m_pageSize);
+    percent = (m_numItems == m_pageSize) ? 0 : (float)m_offset / (m_numItems - m_pageSize);
     float nibPos = (GetHeight() - nibSize) * percent;
     if (nibPos < 0) nibPos = 0;
     if (nibPos > GetHeight() - nibSize) nibPos = GetHeight() - nibSize;
