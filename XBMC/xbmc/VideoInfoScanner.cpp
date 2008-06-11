@@ -426,51 +426,46 @@ namespace VIDEO
       }
       if (info2.strContent.Equals("tvshows"))
       {
-        long lTvShowId2;
         if (pItem->m_bIsFolder)
-          lTvShowId2 = m_database.GetTvShowId(pItem->m_strPath);
+          lTvShowId = m_database.GetTvShowId(pItem->m_strPath);
         else
         {
           CStdString strPath;
           CUtil::GetDirectory(pItem->m_strPath,strPath);
-          lTvShowId2 = m_database.GetTvShowId(strPath);
+          lTvShowId = m_database.GetTvShowId(strPath);
         }
-        if (lTvShowId2 > -1 && (!bRefresh || !pItem->m_bIsFolder))
+        if (lTvShowId > -1 && (!bRefresh || !pItem->m_bIsFolder))
         {
-          if (lTvShowId2 != lTvShowId)
-          {
-            lTvShowId = lTvShowId2;
-            // fetch episode guide
-            m_database.GetTvShowInfo(pItem->m_strPath,showDetails,lTvShowId);
-            files.clear();
-            EnumerateSeriesFolder(pItem,files);
-            if (files.size() == 0) // no update or no files
-              continue;
+          // fetch episode guide
+          m_database.GetTvShowInfo(pItem->m_strPath,showDetails,lTvShowId);
+          files.clear();
+          EnumerateSeriesFolder(pItem,files);
+          if (files.size() == 0) // no update or no files
+            continue;
 
-            CScraperUrl url;
-            //convert m_strEpisodeGuide in url.m_scrURL
-            if (!showDetails.m_strEpisodeGuide.IsEmpty()) // assume local-only series if no episode guide url
+          CScraperUrl url;
+          //convert m_strEpisodeGuide in url.m_scrURL
+          if (!showDetails.m_strEpisodeGuide.IsEmpty()) // assume local-only series if no episode guide url
+          {
+            url.ParseEpisodeGuide(showDetails.m_strEpisodeGuide);
+            if (pDlgProgress)
             {
-              url.ParseEpisodeGuide(showDetails.m_strEpisodeGuide);
+              if (pItem->m_bIsFolder)
+                pDlgProgress->SetHeading(20353);
+              else
+                pDlgProgress->SetHeading(20361);
+              pDlgProgress->SetLine(0, pItem->GetLabel());
+              pDlgProgress->SetLine(1,showDetails.m_strTitle);
+              pDlgProgress->SetLine(2,20354);
+              pDlgProgress->Progress();
+            }
+            if (!IMDB.GetEpisodeList(url,episodes))
+            {
               if (pDlgProgress)
-              {
-                if (pItem->m_bIsFolder)
-                  pDlgProgress->SetHeading(20353);
-                else
-                  pDlgProgress->SetHeading(20361);
-                pDlgProgress->SetLine(0, pItem->GetLabel());
-                pDlgProgress->SetLine(1,showDetails.m_strTitle);
-                pDlgProgress->SetLine(2,20354);
-                pDlgProgress->Progress();
-              }
-              if (!IMDB.GetEpisodeList(url,episodes))
-              {
-                if (pDlgProgress)
-                  pDlgProgress->Close();
-                m_database.RollbackTransaction();
-                m_database.Close();
-                return false;
-              }
+                pDlgProgress->Close();
+              m_database.RollbackTransaction();
+              m_database.Close();
+              return false;
             }
           }
           if (m_bStop || (pDlgProgress && pDlgProgress->IsCanceled()))
@@ -484,7 +479,7 @@ namespace VIDEO
           if (m_pObserver)
             m_pObserver->OnDirectoryChanged(pItem->m_strPath);
 
-          OnProcessSeriesFolder(episodes,files,lTvShowId2,IMDB,showDetails.m_strTitle,pDlgProgress);
+          OnProcessSeriesFolder(episodes,files,lTvShowId,IMDB,showDetails.m_strTitle,pDlgProgress);
           continue;
         }
         else
