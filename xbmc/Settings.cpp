@@ -206,6 +206,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_prioritiseAPEv2tags = false;
   g_advancedSettings.m_musicItemSeparator = " / ";
   g_advancedSettings.m_videoItemSeparator = " / ";
+  g_advancedSettings.m_programItemSeparator = " / ";
 
   g_advancedSettings.m_bVideoLibraryHideAllItems = false;
   g_advancedSettings.m_bVideoLibraryAllItemsOnBottom = false;
@@ -1086,6 +1087,12 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "hiderecentlyaddeditems", g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems);
     XMLUtils::GetBoolean(pElement, "hideemptyseries", g_advancedSettings.m_bVideoLibraryHideEmptySeries);
     GetString(pElement, "itemseparator", g_advancedSettings.m_videoItemSeparator, " / ");
+  }
+  
+  pElement = pRootElement->FirstChildElement("programlibrary");
+  if (pElement)
+  {
+    GetString(pElement, "itemseparator", g_advancedSettings.m_programItemSeparator, " / ");
   }
 
   pElement = pRootElement->FirstChildElement("slideshow");

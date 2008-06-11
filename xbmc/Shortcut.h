@@ -36,7 +36,9 @@ public:
   virtual ~CShortcut();
 
   bool Create(const CStdString& szPath);
+  bool Parse();
   bool Save(const CStdString& strFileName);
+  void Reset();
 
   CStdString m_strPath;
   CStdString m_strVideo;
@@ -44,6 +46,9 @@ public:
   CStdString m_strCustomGame;
   CStdString m_strThumb;
   CStdString m_strLabel;
+  CStdString m_xml;
+protected:
+  bool ParseInternal(const TiXmlElement* pRootElement);
 };
 
 #endif // !defined(AFX_SHORTCUT_H__641CCF68_6D2A_426E_9204_C0E4BEF12D00__INCLUDED_)

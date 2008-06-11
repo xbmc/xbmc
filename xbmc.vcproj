@@ -1100,6 +1100,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\VideoInfoTag.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\ProgramInfoTag.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\ProgramInfoTag.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\utils\Weather.cpp">
 				</File>
 				<File

@@ -191,6 +191,7 @@ public:
     bool m_prioritiseAPEv2tags;
     CStdString m_musicItemSeparator;
     CStdString m_videoItemSeparator;
+    CStdString m_programItemSeparator;
     std::vector<CStdString> m_musicTagsFromFileFilters;
 
     bool m_bVideoLibraryHideAllItems;
