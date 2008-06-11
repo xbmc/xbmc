@@ -22,7 +22,6 @@
 
 #include "utils/Archive.h"
 #include "utils/ScraperUrl.h"
-#include "utils/ScraperUrl.h"
 #include "utils/Fanart.h"
 
 #include <vector>
