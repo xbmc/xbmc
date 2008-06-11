@@ -8,5 +8,5 @@ include ../../../Makefile.include
 -include Makefile.depend
 
 OBJSC+=$(SRCSC:.c=.o)
-
+OBJS=$(OBJSC)
 lib: $(OBJSC)
