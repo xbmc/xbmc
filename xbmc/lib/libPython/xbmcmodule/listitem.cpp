@@ -26,6 +26,7 @@
 #include "VideoInfoTag.h"
 #include "PictureInfoTag.h"
 #include "MusicInfoTag.h"
+#include "ProgramInfoTag.h"
 #include "FileItem.h"
 
 using namespace std;
@@ -357,7 +358,7 @@ namespace PYXBMC
         else if (strcmpi(PyString_AsString(key), "season") == 0)
           self->item->GetVideoInfoTag()->m_iSeason = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "count") == 0)
-          self->item->m_iprogramCount = PyInt_AsLong(value);
+          self->item->GetProgramInfoTag()->m_iPlayCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "rating") == 0)
           self->item->GetVideoInfoTag()->m_fRating = (float)PyFloat_AsDouble(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
@@ -437,7 +438,7 @@ namespace PYXBMC
         if (strcmpi(PyString_AsString(key), "tracknumber") == 0)
           self->item->GetMusicInfoTag()->SetTrackNumber(PyInt_AsLong(value));
         else if (strcmpi(PyString_AsString(key), "count") == 0)
-          self->item->m_iprogramCount = PyInt_AsLong(value);
+          self->item->GetProgramInfoTag()->m_iPlayCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
           self->item->m_dwSize = (__int64)PyLong_AsLongLong(value);
         else if (strcmpi(PyString_AsString(key), "duration") == 0)
@@ -466,7 +467,7 @@ namespace PYXBMC
       else if (strcmpi(cType, "pictures") == 0)
       {
         if (strcmpi(PyString_AsString(key), "count") == 0)
-          self->item->m_iprogramCount = PyInt_AsLong(value);
+          self->item->GetProgramInfoTag()->m_iPlayCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
           self->item->m_dwSize = (__int64)PyLong_AsLongLong(value);
         else

@@ -245,7 +245,6 @@ public:
   __int64 m_dwSize;             ///< file size (0 for folders)
   CStdString m_strDVDLabel;
   CStdString m_strTitle;
-  int m_iprogramCount;
   int m_idepth;
   long m_lStartOffset;
   long m_lEndOffset;

@@ -493,12 +493,12 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
     else if (pItem->GetLabel() == "") // pls labels come in preformatted
     {
       // FIXME: get the position of the item in the playlist
-      //        currently it is hacked into m_iprogramCount
+      //        currently it is hacked into m_idepth 
 
       // No music info and it's not CDDA so we'll just show the filename
       CStdString str;
       str = CUtil::GetTitleFromPath(pItem->m_strPath);
-      str.Format("%02.2i. %s ", pItem->m_iprogramCount, str);
+      str.Format("%02.2i. %s ", pItem->m_idepth, str);
       pItem->SetLabel(str);
     }
   }
@@ -506,7 +506,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   if (m_guiState.get())
   {
     CPlayList& playlist=g_playlistPlayer.GetPlaylist(m_guiState->GetPlaylist());
-    CPlayListItem& item=playlist[pItem->m_iprogramCount];
+    CPlayListItem& item=playlist[pItem->m_idepth];
     if (item.m_strPath==pItem->m_strPath &&
         item.m_lStartOffset==pItem->m_lStartOffset &&
         item.m_lEndOffset==pItem->m_lEndOffset)

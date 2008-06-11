@@ -38,7 +38,7 @@ CPlayListItem::CPlayListItem() : m_lDuration(0)
   m_lStartOffset = 0;
   m_lEndOffset = 0;
   m_bUnPlayable = false;
-	m_iprogramCount = 0;
+  m_ideth = 0;
 }
 
 CPlayListItem::CPlayListItem(const CStdString& strDescription, const CStdString& strFileName, long lDuration, long lStartOffset, long lEndOffset)
@@ -49,7 +49,7 @@ CPlayListItem::CPlayListItem(const CStdString& strDescription, const CStdString&
   m_lStartOffset = lStartOffset;
   m_lEndOffset = lEndOffset;
   m_bUnPlayable = false;
-	m_iprogramCount = 0;
+  m_idepth = 0;
 }
 
 CPlayListItem::~CPlayListItem()
@@ -154,9 +154,9 @@ void CPlayList::Add(CPlayListItem& item, int iPosition, int iOrder)
   if (iPosition < 0 || iPosition >= iOldSize)
     iPosition = iOldSize;
   if (iOrder < 0 || iOrder >= iOldSize)
-    item.m_iprogramCount = iOldSize;
-	else
-		item.m_iprogramCount = iOrder;
+    item.m_idepth = iOldSize;
+  else
+    item.m_idepth = iOrder;
 
   // increment the playable counter
   item.ClearUnPlayable();
@@ -165,7 +165,7 @@ void CPlayList::Add(CPlayListItem& item, int iPosition, int iOrder)
   else
     m_iPlayableItems++;
 
-  //CLog::Log(LOGDEBUG,"%s item:(%02i/%02i)[%s]", __FUNCTION__, iPosition, item.m_iprogramCount, item.m_strPath.c_str());
+  //CLog::Log(LOGDEBUG,"%s item:(%02i/%02i)[%s]", __FUNCTION__, iPosition, item.m_idepth, item.m_strPath.c_str());
   if (iPosition == iOldSize)
     m_vecItems.push_back(item);
   else
@@ -249,10 +249,10 @@ void CPlayList::DecrementOrder(int iOrder)
   while (it != m_vecItems.end())
   {
     CPlayListItem& item = *it;
-    if (item.m_iprogramCount > iOrder)
+    if (item.m_idepth > iOrder)
     {
-      //CLog::Log(LOGDEBUG,"%s fixing item at order %i", __FUNCTION__, item.m_iprogramCount);
-      item.m_iprogramCount--;
+      //CLog::Log(LOGDEBUG,"%s fixing item at order %i", __FUNCTION__, item.m_idepth);
+      item.m_idepth--;
     }
     ++it;
   }
@@ -268,10 +268,10 @@ void CPlayList::IncrementOrder(int iPosition, int iOrder)
   while (it != m_vecItems.end())
   {
     CPlayListItem& item = *it;
-    if (item.m_iprogramCount >= iOrder)
+    if (item.m_idepth >= iOrder)
     {
-      //CLog::Log(LOGDEBUG,"%s fixing item at order %i", __FUNCTION__, item.m_iprogramCount);
-      item.m_iprogramCount++;
+      //CLog::Log(LOGDEBUG,"%s fixing item at order %i", __FUNCTION__, item.m_idepth);
+      item.m_idepth++;
     }
     ++it;
   }
@@ -332,7 +332,7 @@ struct SSortPlayListItem
 {
   static bool PlaylistSort(const CPlayListItem &left, const CPlayListItem &right)
   {
-    return (left.m_iprogramCount <= right.m_iprogramCount);
+    return (left.m_idepth <= right.m_idepth);
   }
 };
 
@@ -358,7 +358,7 @@ void CPlayList::Remove(const CStdString& strFileName)
     CPlayListItem& item = *it;
     if (item.GetFileName() == strFileName)
     {
-      iOrder = item.m_iprogramCount;
+      iOrder = item.m_idepth;
       it = m_vecItems.erase(it);
       //CLog::Log(LOGDEBUG,"PLAYLIST, removing item at order %i", iPos);
     }
@@ -372,7 +372,7 @@ int CPlayList::FindOrder(int iOrder)
 {
   for (int i = 0; i < size(); i++)
   {
-    if (m_vecItems[i].m_iprogramCount == iOrder)
+    if (m_vecItems[i].m_idepth == iOrder)
       return i;
   }
   return -1;
@@ -384,7 +384,7 @@ void CPlayList::Remove(int position)
   int iOrder = -1;
   if (position < (int)m_vecItems.size())
   {
-    iOrder = m_vecItems[position].m_iprogramCount;
+    iOrder = m_vecItems[position].m_idepth;
     m_vecItems.erase(m_vecItems.begin() + position);
   }
   DecrementOrder(iOrder);
@@ -440,10 +440,10 @@ bool CPlayList::Swap(int position1, int position2)
   if (!IsShuffled())
   {
     // swap the ordinals before swapping the items!
-    //CLog::Log(LOGDEBUG,"PLAYLIST swapping items at orders (%i, %i)",m_vecItems[position1].m_iprogramCount,m_vecItems[position2].m_iprogramCount);
-    iOrder = m_vecItems[position1].m_iprogramCount;
-    m_vecItems[position1].m_iprogramCount = m_vecItems[position2].m_iprogramCount;
-    m_vecItems[position2].m_iprogramCount = iOrder;
+    //CLog::Log(LOGDEBUG,"PLAYLIST swapping items at orders (%i, %i)",m_vecItems[position1].m_idepth,m_vecItems[position2].m_idepth);
+    iOrder = m_vecItems[position1].m_idepth;
+    m_vecItems[position1].m_idepth = m_vecItems[position2].m_idepth;
+    m_vecItems[position2].m_idepth = iOrder;
   }
 
   // swap the items

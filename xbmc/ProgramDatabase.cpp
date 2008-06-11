@@ -26,6 +26,7 @@
 #include "xbox/xbeheader.h"
 #include "GUIWindowFileManager.h"
 #include "FileItem.h"
+#include "ProgramInfoTag.h"
 
 using namespace XFILE;
 
@@ -480,8 +481,8 @@ DWORD CProgramDatabase::GetProgramInfo(CFileItem *item)
     { // get info - only set the label if not preformatted
       if (!item->IsLabelPreformated())
         item->SetLabel(m_pDS->fv("xbedescription").get_asString());
-      item->m_iprogramCount = m_pDS->fv("iTimesPlayed").get_asLong();
-      item->m_strTitle = item->GetLabel();  // is this needed?
+      item->GetProgramInfoTag()->m_iPlayCount = m_pDS->fv("iTimesPlayed").get_asLong();
+      item->GetProgramInfoTag()->m_strTitle = item->GetLabel();
       item->m_dateTime = TimeStampToLocalTime(_atoi64(m_pDS->fv("lastAccessed").get_asString().c_str()));
       item->m_dwSize = _atoi64(m_pDS->fv("iSize").get_asString().c_str());
       titleID = m_pDS->fv("titleId").get_asLong();

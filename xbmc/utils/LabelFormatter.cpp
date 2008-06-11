@@ -26,6 +26,7 @@
 #include "Util.h"
 #include "VideoInfoTag.h"
 #include "MusicInfoTag.h"
+#include "ProgramInfoTag.h"
 #include "FileItem.h"
 
 using namespace MUSIC_INFO;
@@ -141,8 +142,9 @@ void CLabelFormatter::FormatLabel2(CFileItem *item) const
 CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileItem *item) const
 {
   if (!item) return "";
-  const CMusicInfoTag *music = item->GetMusicInfoTag();
-  const CVideoInfoTag *movie = item->GetVideoInfoTag();
+  const CMusicInfoTag   *music   = item->GetMusicInfoTag();
+  const CVideoInfoTag   *movie   = item->GetVideoInfoTag();
+  const CProgramInfoTag *program = item->GetProgramInfoTag();
   CStdString value;
   switch (mask.m_content)
   {
@@ -238,7 +240,8 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
       value.Format("%2.2f", movie->m_fRating);
     break;
   case 'C': // programs count
-    value.Format("%i", item->m_iprogramCount);
+    if (program)
+      value.Format("%i", program->m_iPlayCount);
     break;
   case 'K':
     value = item->m_strTitle;

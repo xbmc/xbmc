@@ -23,6 +23,7 @@
 #include "SortFileItem.h"
 #include "VideoInfoTag.h"
 #include "MusicInfoTag.h"
+#include "ProgramInfoTag.h"
 #include "FileItem.h"
 #include "URL.h"
 
@@ -995,7 +996,7 @@ bool SSortFileItem::ProgramCountAscending(CFileItem *left, CFileItem *right)
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return left->m_iprogramCount <= right->m_iprogramCount;
+    return left->GetProgramInfoTag()->m_iPlayCount <= right->GetProgramInfoTag()->m_iPlayCount;
   return left->m_bIsFolder;
 }
 
@@ -1005,7 +1006,7 @@ bool SSortFileItem::ProgramCountDescending(CFileItem *left, CFileItem *right)
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
   if (left->m_bIsFolder == right->m_bIsFolder)
-    return left->m_iprogramCount >= right->m_iprogramCount;
+    return left->GetProgramInfoTag()->m_iPlayCount >= right->GetProgramInfoTag()->m_iPlayCount;
   return left->m_bIsFolder;
 }
 

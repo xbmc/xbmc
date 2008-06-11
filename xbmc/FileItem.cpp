@@ -325,7 +325,6 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_lEndOffset = item.m_lEndOffset;
   m_strDVDLabel = item.m_strDVDLabel;
   m_strTitle = item.m_strTitle;
-  m_iprogramCount = item.m_iprogramCount;
   m_idepth = item.m_idepth;
   m_iLockMode = item.m_iLockMode;
   m_strLockCode = item.m_strLockCode;
@@ -356,7 +355,6 @@ void CFileItem::Reset()
   m_iDriveType = CMediaSource::SOURCE_TYPE_UNKNOWN;
   m_lStartOffset = 0;
   m_lEndOffset = 0;
-  m_iprogramCount = 0;
   m_idepth = 1;
   m_iLockMode = LOCK_MODE_EVERYONE;
   m_strLockCode = "";
@@ -395,7 +393,6 @@ void CFileItem::Serialize(CArchive& ar)
     ar << m_dwSize;
     ar << m_strDVDLabel;
     ar << m_strTitle;
-    ar << m_iprogramCount;
     ar << m_idepth;
     ar << m_lStartOffset;
     ar << m_lEndOffset;
@@ -447,7 +444,6 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_dwSize;
     ar >> m_strDVDLabel;
     ar >> m_strTitle;
-    ar >> m_iprogramCount;
     ar >> m_idepth;
     ar >> m_lStartOffset;
     ar >> m_lEndOffset;

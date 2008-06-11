@@ -2883,7 +2883,7 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString
       CFileItem *item = new CFileItem;
       GetFileItemFromDataset(item, baseDir);
       // HACK for sorting by database returned order
-      item->m_iprogramCount = ++count;
+      item->m_idepth = ++count;
       items.Add(item);
       m_pDS->next();
     }

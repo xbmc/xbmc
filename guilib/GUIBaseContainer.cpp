@@ -644,7 +644,7 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         newItem->SetLabel2(CGUIControlFactory::FilterLabel(label2));
         newItem->SetThumbnailImage(thumb);
         newItem->SetIconImage(icon);
-        if (id) newItem->m_iprogramCount = atoi(id);
+        if (id) newItem->m_iBadPwdCount = atoi(id);
         newItem->m_idepth = visibleCondition;
       }
       else
@@ -659,7 +659,7 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         if (label2) newItem->SetLabel2(CGUIControlFactory::FilterLabel(label2));
         if (thumb) newItem->SetThumbnailImage(thumb);
         if (icon) newItem->SetIconImage(icon);
-        if (id) newItem->m_iprogramCount = atoi(id);
+        if (id) newItem->m_iBadPwdCount = atoi(id);
         newItem->m_idepth = 0;  // no visibility condition
       }
       m_staticItems.push_back(newItem);

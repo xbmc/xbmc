@@ -54,7 +54,7 @@ namespace DIRECTORY
       for (int i = 0; i < (int)playlist.size(); ++i)
       {
         CFileItem *item = new CFileItem(playlist[i]);
-        item->m_iprogramCount = i;  // hack for playlist order
+        item->m_idepth = i;  // hack for playlist order
         item->GetMusicInfoTag()->SetDuration(playlist[i].GetDuration());
         items.Add(item);
       }

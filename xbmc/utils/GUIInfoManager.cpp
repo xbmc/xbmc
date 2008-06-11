@@ -70,6 +70,7 @@
 #include "GUILabelControl.h"  // for CInfoLabel
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicInfo.h"
+#include "ProgramInfoTag.h"
 
 using namespace std;
 using namespace XFILE;
@@ -2059,7 +2060,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           if (control && control->IsContainer())
           {
             CFileItem *item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(0);
-            if (item && item->m_iprogramCount == info.GetData2())  // programcount used to store item id
+            if (item && item->m_idepth == info.GetData2())  // depth used to store item id
               bReturn = true;
           }
         }
@@ -3508,6 +3509,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     {
       CStdString count;
       count.Format("%i", item->m_iprogramCount);
+      if (item->HasProgramInfoTag())
+        count.Format("%i", item->GetProgramInfoTag()->m_iPlayCount);
       return count;
     }
   case LISTITEM_DURATION:
