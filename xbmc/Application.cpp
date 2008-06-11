@@ -183,6 +183,7 @@
 #include "GUIDialogSmartPlaylistRule.h"
 #include "GUIDialogPictureInfo.h"
 #include "GUIDialogPluginSettings.h"
+#include "GUIDialogFullScreenInfo.h"
 
 using namespace std;
 using namespace XFILE;
