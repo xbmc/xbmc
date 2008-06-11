@@ -467,9 +467,6 @@ ref_release(void *p)
 #endif /* DEBUG */
 			free(block);
 		}
-		if (ref->refcount < 0)
-			fprintf(stderr, "*** %s(): %p refcount %d ***\n",
-				__FUNCTION__, p, ref->refcount);
 	}
 	refmem_dbg(REF_DBG_DEBUG, "%s(%p) }\n", __FUNCTION__, p);
 }
