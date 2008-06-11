@@ -470,6 +470,8 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
       CGUIDialog *pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
       if (pDialog) pDialog->Close(true);
+      pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
+      if (pDialog) pDialog->Close(true);
 
       FreeResources(true);
 
