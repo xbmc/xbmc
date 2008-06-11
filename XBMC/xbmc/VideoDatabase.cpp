@@ -1026,7 +1026,8 @@ long CVideoDatabase::AddActor(const CStdString& strActor, const CStdString& strT
       const field_value value = m_pDS->fv("idActor");
       long lActorId = value.get_asLong() ;
       // update the thumb url's
-      strSQL=FormatSQL("update actors set strThumb='%s' where idActor=%u",strThumb.c_str(),lActorId);
+      if (!strThumb.IsEmpty())
+        strSQL=FormatSQL("update actors set strThumb='%s' where idActor=%u",strThumb.c_str(),lActorId);
       m_pDS->close();
       return lActorId;
     }
@@ -5471,8 +5472,8 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const s
     sql = "delete from genre where idGenre not in (select distinct idGenre from genrelinkmovie) and idGenre not in (select distinct idGenre from genrelinktvshow) and idGenre not in (select distinct idGenre from genrelinkmusicvideo)";
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, "%s Cleaning actor table of actors and directors", __FUNCTION__);
-    sql = "delete from actors where idActor not in (select distinct idActor from actorlinkmovie) and idActor not in (select distinct idDirector from directorlinkmovie) and idActor not in (select distinct idActor from actorlinktvshow) and idActor not in (select distinct idActor from actorlinkepisode) and idActor not in (select distinct idDirector from directorlinktvshow) and idActor not in (select distinct idDirector from directorlinkepisode) and idActor not in (select distinct idArtist from artistlinkmusicvideo) and idActor not in (select distinct idDirector from directorlinkmusicvideo)";
+    CLog::Log(LOGDEBUG, "%s Cleaning actor table of actors, directors and writers", __FUNCTION__);
+    sql = "delete from actors where idActor not in (select distinct idActor from actorlinkmovie) and idActor not in (select distinct idDirector from directorlinkmovie) and idActor not in (select distinct idWriter from writerlinkmovie) and idActor not in (select distinct idActor from actorlinktvshow) and idActor not in (select distinct idActor from actorlinkepisode) and idActor not in (select distinct idDirector from directorlinktvshow) and idActor not in (select distinct idDirector from directorlinkepisode) and idActor not in (select distinct idWriter from writerlinkepisode) and idActor not in (select distinct idArtist from artistlinkmusicvideo) and idActor not in (select distinct idDirector from directorlinkmusicvideo)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s Cleaning studio table", __FUNCTION__);
