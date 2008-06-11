@@ -193,9 +193,8 @@ bool CFileRar::Open(const CURL& url, bool bBinary)
         }
         else
           m_bSeekable = (pFile->m_iIsSeekable == 1);
-        
-        return true;
       }
+      return true;
     }
     else 
     {
