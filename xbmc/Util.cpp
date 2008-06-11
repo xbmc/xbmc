@@ -2909,7 +2909,8 @@ void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CSt
   while (i > 0)
   {
     char ch = strFileNameAndPath[i];
-    if (ch == ':' || ch == '/' || ch == '\\') break;
+    // Only break on ':' if it's a drive separator for DOS (ie d:foo)
+    if (ch == '/' || ch == '\\' || (ch == ':' && i == 1)) break;
     else i--;
   }
   if (i == 0)
