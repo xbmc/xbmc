@@ -1325,15 +1325,6 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogLockSettings); // window id = 131
 
   m_gWindowManager.Add(new CGUIDialogContentSettings);        // window id = 132
-    
-  CGUIDialogFullScreenInfo* pDialog = NULL;
-  RESOLUTION res;
-  CStdString strPath = g_SkinInfo.GetSkinPath("DialogFullScreenInfo.xml", &res);
-  if (CFile::Exists(strPath))
-    pDialog = new CGUIDialogFullScreenInfo;
-   
-  if (pDialog)
-    m_gWindowManager.Add(pDialog); // window id = 142
 
   m_gWindowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
   m_gWindowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
@@ -2052,6 +2043,16 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_gWindowManager.Initialize();
   g_audioManager.Initialize(CAudioContext::DEFAULT_DEVICE);
   g_audioManager.Load();
+
+  CGUIDialogFullScreenInfo* pDialog = NULL;
+  RESOLUTION res;
+  CStdString strPath = g_SkinInfo.GetSkinPath("DialogFullScreenInfo.xml", &res);
+  if (CFile::Exists(strPath))
+    pDialog = new CGUIDialogFullScreenInfo;
+   
+  if (pDialog)
+    m_gWindowManager.Add(pDialog); // window id = 142
+
   CLog::Log(LOGINFO, "  skin loaded...");
 
   if (bKaiConnected)
@@ -2102,6 +2103,9 @@ void CApplication::UnloadSkin()
   m_guiDialogMuteBug.OnMessage(msg);
   m_guiDialogMuteBug.ResetControlStates();
   m_guiDialogMuteBug.FreeResources(true);
+
+  // remove the skin-dependent window
+  m_gWindowManager.Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
 
   CGUIWindow::FlushReferenceCache(); // flush the cache
 
