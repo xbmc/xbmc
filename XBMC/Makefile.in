@@ -86,6 +86,9 @@ xbmc.bin: $(wildcard xbmc/*.o xbmc/settings/*.o guilib/*.o guilib/tinyXML/*.o gu
 xbmc-xrandr: xbmc-xrandr.c
 	gcc -g -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 
 
+install-bin: all # developement convenience target
+	sudo cp xbmc.bin $(prefix)/share/xbmc
+
 install: all install-datas
 	@echo "Copying XBMC binary to $(prefix)/share/xbmc/xbmc.bin"
 	@cp xbmc.bin $(prefix)/share/xbmc/xbmc.bin
