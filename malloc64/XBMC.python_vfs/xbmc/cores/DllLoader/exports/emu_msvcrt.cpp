@@ -191,7 +191,7 @@ extern "C"
     void* pBlock = malloc(size);
     if (!pBlock)
     {
-      CLog::Log(LOGSEVERE, "malloc %u bytes failed, crash imminent", size);
+      CLog::Log(LOGSEVERE, "malloc %lu bytes failed, crash imminent", size);
     }
     return pBlock;
   }
@@ -206,7 +206,7 @@ extern "C"
     void* pBlock = calloc(num, size);
     if (!pBlock)
     {
-      CLog::Log(LOGSEVERE, "calloc %u bytes failed, crash imminent", size);
+      CLog::Log(LOGSEVERE, "calloc %lu bytes failed, crash imminent", size);
     }
     return pBlock;
   }
@@ -216,7 +216,7 @@ extern "C"
     void* pBlock =  realloc(memblock, size);
     if (!pBlock)
     {
-      CLog::Log(LOGSEVERE, "realloc %u bytes failed, crash imminent", size);
+      CLog::Log(LOGSEVERE, "realloc %lu bytes failed, crash imminent", size);
     }
     return pBlock;
   }
@@ -460,6 +460,23 @@ extern "C"
     return -1;
   }
 
+  int dll_fstat64(int fd, struct stat64 *buf)
+  {
+    CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
+    if (pFile != NULL)
+      return pFile->Stat(buf);
+    else if (IS_STD_DESCRIPTOR(fd))
+      return fstat64(fd, buf);
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
+    return -1;
+  }
+
+  int dll_fstatvfs64(int fd, struct statvfs64 *buf)
+  {
+    not_implement("msvcrt.dll incomplete function fstatvfs64(...) called\n");
+    return -1;
+  }
+
   int dll_close(int fd)
   {
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
@@ -536,6 +553,58 @@ extern "C"
   }
 
   //---------------------------------------------------------------------------------------------------------
+  void dll_flockfile(FILE *stream)
+  {
+    int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
+    if (fd >= 0)
+    { 
+      g_emuFileWrapper.LockFileObjectByDescriptor(fd);
+      return;
+    }
+    else if (!IS_STD_STREAM(stream))
+    {
+      // it might be something else than a file, let the operating system handle it
+      flockfile(stream);
+      return;
+    }
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
+  }
+
+  int dll_ftrylockfile(FILE *stream)
+  {
+    int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
+    if (fd >= 0)
+    {
+      if (g_emuFileWrapper.TryLockFileObjectByDescriptor(fd))
+        return 0;
+      return -1;
+    }
+    else if (!IS_STD_STREAM(stream))
+    {
+      // it might be something else than a file, let the operating system handle it
+      return ftrylockfile(stream);
+    }
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
+    return -1;
+  }
+
+  void dll_funlockfile(FILE *stream)
+  {
+    int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
+    if (fd >= 0)
+    {
+      g_emuFileWrapper.UnlockFileObjectByDescriptor(fd);
+      return;
+    }
+    else if (!IS_STD_STREAM(stream))
+    {
+      // it might be something else than a file, let the operating system handle it
+      funlockfile(stream);
+      return;
+    }
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
+  }
+
   int dll_fclose(FILE * stream)
   {
     int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
@@ -889,23 +958,24 @@ extern "C"
     if (g_emuFileWrapper.StreamIsEmulatedFile(stream))
     {
       // it is a emulated file
-      char szString[10];
+      int d;
       if (dll_fseek(stream, -1, SEEK_CUR)!=0)
-      {
         return -1;
-      }
-      if (dll_fread(&szString[0], 1, 1, stream) <= 0)
-      {
+      d = dll_fgetc(stream);
+      if (d == EOF)
         return -1;
-      }
-      if (dll_feof(stream))
-      {
-        return -1;
-      }
 
-      byte byKar = (byte)szString[0];
-      int iKar = byKar;
-      return iKar;
+      dll_fseek(stream, -1, SEEK_CUR);
+      if (c != d)
+      {
+        CLog::Log(LOGWARNING, "%s: c != d",  __FUNCTION__);
+        d = fputc(c, stream);
+        if (d != c)
+          CLog::Log(LOGERROR, "%s: Write failed!",  __FUNCTION__);
+        else
+          dll_fseek(stream, -1, SEEK_CUR);
+      }
+      return d;
     }
     else if (!IS_STD_STREAM(stream))
     {

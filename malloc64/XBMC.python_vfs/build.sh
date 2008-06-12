@@ -28,6 +28,7 @@ usage() {
 #  echo "   SHOWMAKE                         : Don't suppress make output"
 ## SHOWMAKE requires changes to Makefile.in
   echo "   NOCONFIG                         : Don't automatically run configure"
+  echo "   NOCHANGELOG                      : Don't create Changelog.txt"
   echo "   CONFIGOPT=<config-option>        : Option to pass to configure."
   echo "                                      One option per CONFIGOPT=,"
   echo "                                      can pass more than one"
@@ -374,6 +375,17 @@ copy() {
         fi
       else 
         ls "..." &> /dev/null  # force $? to be non-zero
+      fi
+    elif [[ "$I" == "Changelog.txt" ]]
+    then
+      if (( CHANGELOG ))
+      then
+        if (( VERBOSE ))
+        then
+          cp -vrf "${SOURCEDIR}/${I}" "$BUILDDIR"
+        else
+          cp -rf "${SOURCEDIR}/${I}" "$BUILDDIR" &> /dev/null
+        fi
       fi
     else
       if (( VERBOSE ))
