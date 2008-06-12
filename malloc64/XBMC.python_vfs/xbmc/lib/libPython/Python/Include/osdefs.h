@@ -46,7 +46,7 @@ extern "C" {
 
 /* Search path entry delimiter */
 #ifndef DELIM
-#define DELIM ':'
+#define DELIM ';'
 #endif
 
 #ifdef __cplusplus
