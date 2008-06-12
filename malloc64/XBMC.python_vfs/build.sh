@@ -676,4 +676,3 @@ if (( COMPILE && !CONFIRM))
 then
   view_log
 fi
-
