@@ -1,7 +1,8 @@
 
-python24-@ARCH@.so : wrapper_python.o @python_lib_a@ wrapper_python.def ../../../cores/DllLoader/exports/wrapper.def ../../../cores/DllLoader/exports/wrapper.o
+python24-@ARCH@.so : wrapper_python.o ../Python/libpython2.4.a wrapper_python.def ../../../cores/DllLoader/exports/wrapper.def ../../../cores/DllLoader/exports/wrapper.o ../Python/Makefile
+	$(MAKE) -C ../Python libpython2.4.a
 	if [ \! -d tmp ]; then mkdir tmp; fi
-	(cd ./tmp; ar x @python_lib_a@)
+	(cd ./tmp; ar x ../../Python/libpython2.4.a)
 	gcc -shared -o $@ tmp/*.o `cat wrapper_python.def` wrapper_python.o `cat ../../../cores/DllLoader/exports/wrapper.def` ../../../cores/DllLoader/exports/wrapper.o
 	rm -rf tmp
 	cp -f $@ ../../../../system/python/
@@ -12,5 +13,10 @@ wrapper_python.o : wrapper_python.c
 wrapper_python.def : wrapper_python.c
 	(echo -n "-Wl"; grep PYTHON_WRAP wrapper_python.c | grep -v define | awk -F ')' '{print $$1}' | awk -F'(' '{print $$2}' | grep -v '^l*stat$$' | awk '{printf(",-wrap,%s",$$0);}') > wrapper_python.def
 
+../Python/Makefile:
+	(cd ../Python; ./configure --enable-ipv6 --enable-unicode=ucs4 --without-cxx --enable-shared --libdir=Q:/system/python)
+	(cd ../Python; sed -i 's/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/' pyconfig.h)
+
 clean:
 	$(RM) *.so *.o *.def
+	if [ -e ../Python/Makefile ]; then $(MAKE) -C ../Python clean; fi

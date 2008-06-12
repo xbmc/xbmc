@@ -140,11 +140,7 @@ void XBPyThread::Process()
   // this is used for python so it will search modules from script path first
   strcpy(sourcedir, source);
   
-#ifndef _LINUX
-  strcpy(strrchr(sourcedir, PATH_SEPARATOR_CHAR), ";");
-#else
-  strcpy(strrchr(sourcedir, PATH_SEPARATOR_CHAR), ":");
-#endif
+  strcpy(strrchr(sourcedir, PATH_SEPARATOR_CHAR), DELIM);
 
   strcpy(path, sourcedir);
 
