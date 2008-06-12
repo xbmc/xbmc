@@ -1,0 +1,87 @@
+<window id="125">
+	<defaultcontrol always="true">2</defaultcontrol>
+	<animation effect="fade" time="400">WindowOpen</animation>
+	<animation effect="fade" time="400">WindowClose</animation>
+	<coordinates>
+		<system>1</system>
+		<posx>220</posx>
+		<posy>110</posy>
+	</coordinates>
+	<controls>
+		<control type="image" id="1">
+			<description>background image</description>
+			<posx>-25</posx>
+			<posy>-11</posy>
+			<width>480</width>
+			<height>410</height>
+			<texture>dialog-panel2.png</texture>
+			<colordiffuse>AAFFFFFF</colordiffuse>
+		</control>
+		<control type="label" id="0">
+			<description>Settings Label</description>
+			<posx>0</posx>
+			<posy>2</posy>
+			<width>420</width>
+			<align>left</align>
+			<font>special13</font>
+			<label>298</label>
+			<textcolor>dialogheader</textcolor>
+		</control>
+		<control type="button" id="2">
+			<description>Create Bookmark button</description>
+			<posx>0</posx>
+			<posy>325</posy>
+			<width>130</width>
+			<height>31</height>
+			<font>font10</font>
+			<textoffsetx>12</textoffsetx>
+			<aligny>center</aligny>
+			<align>center</align>
+			<label>294</label>
+			<onleft>4</onleft>
+			<onright>3</onright>
+			<ondown>11</ondown>
+			<onup>11</onup>
+			<texturenofocus>keyboard-btn-space.png</texturenofocus>
+			<texturefocus>keyboard-btn-space-focus2.png</texturefocus>
+			<animation effect="slide" start="0,0" end="82,0" time="0" condition="!videoplayer.content(episodes)">conditional</animation>
+		</control>
+		<control type="button" id="3">
+			<description>Clear Bookmarks button</description>
+			<posx>135</posx>
+			<posy>325</posy>
+			<width>135</width>
+			<height>31</height>
+			<font>font10</font>
+			<aligny>center</aligny>
+			<align>center</align>
+			<label>296</label>
+			<onleft>2</onleft>
+			<onright>4</onright>
+			<ondown>11</ondown>
+			<onup>11</onup>
+			<texturenofocus>keyboard-btn-space.png</texturenofocus>
+			<texturefocus>keyboard-btn-space-focus2.png</texturefocus>
+			<animation effect="slide" start="0,0" end="82,0" time="0" condition="!videoplayer.content(episodes)">conditional</animation>
+		</control>
+		<control type="button" id="4">
+			<description>Create Episode Bookmark Button</description>
+			<visible>videoplayer.content(episodes)</visible>
+			<posx>275</posx>
+			<posy>325</posy>
+			<width>165</width>
+			<height>31</height>
+			<font>font10</font>
+			<aligny>center</aligny>
+			<align>center</align>
+			<label>20406</label>
+			<onleft>3</onleft>
+			<onright>2</onright>
+			<ondown>11</ondown>
+			<onup>11</onup>
+			<texturenofocus>keyboard-btn-space.png</texturenofocus>
+			<texturefocus>keyboard-btn-space-focus2.png</texturefocus>
+		</control>
+		<include>OSDBookmark_ThumbView</include>
+	</controls>
+</window>

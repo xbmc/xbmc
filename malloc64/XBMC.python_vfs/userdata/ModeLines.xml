@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<modelines>
+	<modeline id="ATSC-480-60i" label="480i/60">
+            11.97 640 664 736 760 480 484 492 525 Interlace
+        </modeline>
+ 
+        <modeline id="ATSC-480-60" label="480p/60">
+            23.94 640 664 736 760 480 484 492 525
+        </modeline>
+
+        <modeline id="ATSC-720-60" label="720p/60">
+           74.25 1280 1320 1376 1650 720 722 728 750
+        </modeline>
+
+        <modeline id="ATSC-1080-60i" label="1080i/60">
+           74.25 1920 1960 2016 2200 1080 1082 1088 1125 Interlace
+        </modeline>
+
+        <modeline id="ATSC-1080-60p" label="1080p/60">
+           148.5 1920 1960 2016 2200 1080 1082 1088 1125
+        </modeline>
+</modelines>

@@ -1,0 +1,90 @@
+// WaveZoomer.vtx
+// Author - MrC
+// Based on WaveZoomer.r4 b Gordon Williams
+
+Map map;
+
+int x,y;
+float dx,dy,a,r;
+float cr,cg,cb,cx,cy,crot,cox,coy;
+float ccr,ccg,ccb;
+float sinrot,cosrot;
+float tx,ty,tz;
+float mx, my;
+int beat;
+
+void Init()
+{
+	map.SetTimed();
+	cx = 15.5;
+	cy = 11.5;
+	cox = 0;
+	coy = 0;
+	crot = 0;
+}
+
+void Render()
+{
+	if ((BASS+MIDDLE+TREBLE>0.6) && (beat!=1)) 
+	{
+      beat=1;
+      cx = (20.0*Rand())+6.0;
+      cy = (16.0*Rand())+4.0;
+      cox = (Rand()-0.5)*1.5;
+      coy = (Rand()-0.5)*1.5;
+      crot = (Rand()-0.5)*2;
+      ccr = Rand()-2;
+      ccg = Rand()-2;
+      ccb = Rand()-2;
+   }
+   else if ((BASS+MIDDLE+TREBLE<-0.6) && (beat!=0))
+   {
+      beat = 0;
+   }
+
+   sinrot = -0.05*Sin(crot)*(BASS+1.5);
+   cosrot = -0.05*Cos(crot)*(BASS+1.5);
+   
+   tx = cox*(MIDDLE+1.5);
+   ty = coy*(MIDDLE+1.5);
+   for (y=0;y<24;y=y+1)
+   {
+      for (x=0;x<32;x=x+1)
+      {
+         dx = x-cx;
+         dy = y-cy;
+         mx = tx+((dx*cosrot)+(dy*sinrot));
+         my = ty+((dy*cosrot)-(dx*sinrot));
+         map.SetValues(x, y, mx, my, ccr, ccg, ccb);
+      }
+	}
+
+	map.Render();
+
+	gfxSetRenderTarget(map);
+
+	gfxColour(0.8,0.8,0.8, 1);
+
+	gfxSetAspect(0);
+	gfxTranslate(0, 0, 2.414);
+
+	gfxBegin(PRIM_LINESTRIP);
+	for (int x=0; x < 256; x = x+1)
+	{
+		gfxVertex((x-128)*0.0078125f, (WaveLeft(x) * 0.2f) + 0.5f, 0);
+	}
+	gfxEnd();
+
+	gfxBegin(PRIM_LINESTRIP);
+	for (int x=0; x < 256; x = x+1)
+	{
+		gfxVertex((x-128)*0.0078125f, (WaveRight(x) * 0.2f) - 0.5f, 0);
+	}
+	gfxEnd();
+
+	gfxSetRenderTarget(0);
+	gfxSetTexture(map);
+	  
+	gfxTexRect(-1, 1, 1, -1);
+
+}

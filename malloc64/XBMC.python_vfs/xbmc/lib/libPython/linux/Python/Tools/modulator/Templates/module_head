@@ -1,0 +1,6 @@
+
+#include "Python.h"
+
+static PyObject *ErrorObject;
+
+/* ----------------------------------------------------- */

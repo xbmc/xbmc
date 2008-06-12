@@ -1,0 +1,44 @@
+out_packedresource  ..\credits.xpr
+out_header          ..\..\xbmc\credits_res.h
+out_version         XPR0
+
+UserData VShader
+{
+    DataFile Credits.xvu
+}
+
+UserData PShader
+{
+    DataFile Credits.xpu
+}
+
+UserData MeshInfo
+{
+    DataFile meshdata.bin
+}
+
+VertexBuffer XBMCVBuffer
+{
+}
+
+IndexBuffer XBMCIBuffer
+{
+}
+
+Texture NormMap
+{
+    Source normmap.png
+    Format D3DFMT_X8R8G8B8
+}
+
+CubeMap SpecEnvMap
+{
+    SourceXP indsrt.tga
+    SourceXN indslf.tga
+    SourceYP indsup.tga
+    SourceYN indsdn.tga
+    SourceZP indsbk.tga
+    SourceZN indsft.tga
+    Format D3DFMT_X8R8G8B8
+    Size 512
+}
