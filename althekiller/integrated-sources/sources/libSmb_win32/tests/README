@@ -1,0 +1,10 @@
+This directory contains autoconf test programs that are too large to
+comfortably fit in configure.in.
+
+These programs should test one feature of the OS and exit(0) if it
+works or exit(1) if it doesn't work (do _not_ use return)
+
+The programs should be kept simple and to the point. Beautiful/fast
+code is not necessary
+
+

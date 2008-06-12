@@ -1,0 +1,167 @@
+tdb - a trivial database system
+tridge@linuxcare.com December 1999
+==================================
+
+This is a simple database API. It was inspired by the realisation that
+in Samba we have several ad-hoc bits of code that essentially
+implement small databases for sharing structures between parts of
+Samba. As I was about to add another I realised that a generic
+database module was called for to replace all the ad-hoc bits.
+
+I based the interface on gdbm. I couldn't use gdbm as we need to be
+able to have multiple writers to the databases at one time.
+
+Compilation
+-----------
+
+add HAVE_MMAP=1 to use mmap instead of read/write
+add TDB_DEBUG=1 for verbose debug info
+add NOLOCK=1 to disable locking code
+
+Testing
+-------
+
+Compile tdbtest.c and link with gdbm for testing. tdbtest will perform
+identical operations via tdb and gdbm then make sure the result is the
+same
+
+Also included is tdbtool, which allows simple database manipulation
+on the commandline.
+
+tdbtest and tdbtool are not built as part of Samba, but are included
+for completeness.
+
+Interface
+---------
+
+The interface is very similar to gdbm except for the following:
+
+- different open interface. The tdb_open call is more similar to a
+  traditional open()
+- no tdbm_reorganise() function
+- no tdbm_sync() function. No operations are cached in the library anyway
+- added a tdb_traverse() function for traversing the whole database
+
+A general rule for using tdb is that the caller frees any returned
+TDB_DATA structures. Just call free(p.dptr) to free a TDB_DATA
+return value called p. This is the same as gdbm.
+
+here is a full list of tdb functions with brief descriptions.
+
+
+----------------------------------------------------------------------
+TDB_CONTEXT *tdb_open(char *name, int hash_size, int tdb_flags,
+		      int open_flags, mode_t mode)
+
+   open the database, creating it if necessary 
+
+   The open_flags and mode are passed straight to the open call on the database
+   file. A flags value of O_WRONLY is invalid
+
+   The hash size is advisory, use zero for a default value. 
+
+   return is NULL on error
+
+   possible tdb_flags are:
+    TDB_CLEAR_IF_FIRST - clear database if we are the only one with it open
+    TDB_INTERNAL - don't use a file, instaed store the data in
+                   memory. The filename is ignored in this case.
+    TDB_NOLOCK - don't do any locking
+    TDB_NOMMAP - don't use mmap
+
+----------------------------------------------------------------------
+char *tdb_error(TDB_CONTEXT *tdb);
+
+     return a error string for the last tdb error
+
+----------------------------------------------------------------------
+int tdb_close(TDB_CONTEXT *tdb);
+
+   close a database
+
+----------------------------------------------------------------------
+int tdb_update(TDB_CONTEXT *tdb, TDB_DATA key, TDB_DATA dbuf);
+
+   update an entry in place - this only works if the new data size
+   is <= the old data size and the key exists.
+   on failure return -1
+
+----------------------------------------------------------------------
+TDB_DATA tdb_fetch(TDB_CONTEXT *tdb, TDB_DATA key);
+
+   fetch an entry in the database given a key 
+   if the return value has a null dptr then a error occurred
+
+   caller must free the resulting data
+
+----------------------------------------------------------------------
+int tdb_exists(TDB_CONTEXT *tdb, TDB_DATA key);
+
+   check if an entry in the database exists 
+
+   note that 1 is returned if the key is found and 0 is returned if not found
+   this doesn't match the conventions in the rest of this module, but is
+   compatible with gdbm
+
+----------------------------------------------------------------------
+int tdb_traverse(TDB_CONTEXT *tdb, int (*fn)(TDB_CONTEXT *tdb,
+                 TDB_DATA key, TDB_DATA dbuf, void *state), void *state);
+
+   traverse the entire database - calling fn(tdb, key, data, state) on each 
+   element.
+
+   return -1 on error or the record count traversed
+
+   if fn is NULL then it is not called
+
+   a non-zero return value from fn() indicates that the traversal should stop
+
+----------------------------------------------------------------------
+TDB_DATA tdb_firstkey(TDB_CONTEXT *tdb);
+
+   find the first entry in the database and return its key
+
+   the caller must free the returned data
+
+----------------------------------------------------------------------
+TDB_DATA tdb_nextkey(TDB_CONTEXT *tdb, TDB_DATA key);
+
+   find the next entry in the database, returning its key
+
+   the caller must free the returned data
+
+----------------------------------------------------------------------
+int tdb_delete(TDB_CONTEXT *tdb, TDB_DATA key);
+
+   delete an entry in the database given a key
+
+----------------------------------------------------------------------
+int tdb_store(TDB_CONTEXT *tdb, TDB_DATA key, TDB_DATA dbuf, int flag);
+
+   store an element in the database, replacing any existing element
+   with the same key 
+
+   If flag==TDB_INSERT then don't overwrite an existing entry
+   If flag==TDB_MODIFY then don't create a new entry
+
+   return 0 on success, -1 on failure
+
+----------------------------------------------------------------------
+int tdb_writelock(TDB_CONTEXT *tdb);
+
+   lock the database. If we already have it locked then don't do anything
+
+----------------------------------------------------------------------
+int tdb_writeunlock(TDB_CONTEXT *tdb);
+   unlock the database
+
+----------------------------------------------------------------------
+int tdb_lockchain(TDB_CONTEXT *tdb, TDB_DATA key);
+
+   lock one hash chain. This is meant to be used to reduce locking
+   contention - it cannot guarantee how many records will be locked
+
+----------------------------------------------------------------------
+int tdb_unlockchain(TDB_CONTEXT *tdb, TDB_DATA key);
+
+   unlock one hash chain

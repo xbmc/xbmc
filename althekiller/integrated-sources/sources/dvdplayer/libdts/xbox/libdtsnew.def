@@ -1,0 +1,96 @@
+; c:\mingw\bin\dlltool.exe --export-all-symbols -z xbox/libdtsnew.def libdts/bitstream.o libdts/downmix.o libdts/parse.o
+EXPORTS
+	InverseQ @ 1
+	bitalloc_12 @ 2 DATA
+	bitalloc_a_12 @ 3 DATA
+	bitalloc_a_129 @ 4 DATA
+	bitalloc_a_13 @ 5 DATA
+	bitalloc_a_17 @ 6 DATA
+	bitalloc_a_25 @ 7 DATA
+	bitalloc_a_3 @ 8 DATA
+	bitalloc_a_33 @ 9 DATA
+	bitalloc_a_4 @ 10 DATA
+	bitalloc_a_5 @ 11 DATA
+	bitalloc_a_65 @ 12 DATA
+	bitalloc_a_7 @ 13 DATA
+	bitalloc_a_9 @ 14 DATA
+	bitalloc_b_12 @ 15 DATA
+	bitalloc_b_129 @ 16 DATA
+	bitalloc_b_13 @ 17 DATA
+	bitalloc_b_17 @ 18 DATA
+	bitalloc_b_25 @ 19 DATA
+	bitalloc_b_33 @ 20 DATA
+	bitalloc_b_4 @ 21 DATA
+	bitalloc_b_5 @ 22 DATA
+	bitalloc_b_65 @ 23 DATA
+	bitalloc_b_7 @ 24 DATA
+	bitalloc_b_9 @ 25 DATA
+	bitalloc_c_12 @ 26 DATA
+	bitalloc_c_129 @ 27 DATA
+	bitalloc_c_13 @ 28 DATA
+	bitalloc_c_17 @ 29 DATA
+	bitalloc_c_25 @ 30 DATA
+	bitalloc_c_33 @ 31 DATA
+	bitalloc_c_4 @ 32 DATA
+	bitalloc_c_5 @ 33 DATA
+	bitalloc_c_65 @ 34 DATA
+	bitalloc_c_7 @ 35 DATA
+	bitalloc_c_9 @ 36 DATA
+	bitalloc_d_12 @ 37 DATA
+	bitalloc_d_129 @ 38 DATA
+	bitalloc_d_17 @ 39 DATA
+	bitalloc_d_25 @ 40 DATA
+	bitalloc_d_33 @ 41 DATA
+	bitalloc_d_4 @ 42 DATA
+	bitalloc_d_65 @ 43 DATA
+	bitalloc_e_12 @ 44 DATA
+	bitalloc_e_129 @ 45 DATA
+	bitalloc_e_17 @ 46 DATA
+	bitalloc_e_25 @ 47 DATA
+	bitalloc_e_33 @ 48 DATA
+	bitalloc_e_65 @ 49 DATA
+	bitalloc_f_129 @ 50 DATA
+	bitalloc_f_17 @ 51 DATA
+	bitalloc_f_25 @ 52 DATA
+	bitalloc_f_33 @ 53 DATA
+	bitalloc_f_65 @ 54 DATA
+	bitalloc_g_129 @ 55 DATA
+	bitalloc_g_17 @ 56 DATA
+	bitalloc_g_25 @ 57 DATA
+	bitalloc_g_33 @ 58 DATA
+	bitalloc_g_65 @ 59 DATA
+	bitalloc_select @ 60 DATA
+	dts_bitstream_get_bh @ 61
+	dts_bitstream_init @ 62
+	dts_block @ 63
+	dts_blocks_num @ 64
+	dts_downmix @ 65
+	dts_downmix_coeff @ 66
+	dts_downmix_init @ 67
+	dts_dynrng @ 68
+	dts_frame @ 69
+	dts_free @ 70
+	dts_init @ 71
+	dts_samples @ 72
+	dts_subframe_footer @ 73
+	dts_subframe_header @ 74
+	dts_subsubframe @ 75
+	dts_syncinfo @ 76
+	dts_upmix @ 77
+	fir_32bands_nonperfect @ 78 DATA
+	fir_32bands_perfect @ 79 DATA
+	lfe_fir_128 @ 80 DATA
+	lfe_fir_64 @ 81 DATA
+	lossless_quant @ 82 DATA
+	lossless_quant_d @ 83 DATA
+	lossy_quant @ 84 DATA
+	lossy_quant_d @ 85 DATA
+	scale_factor_quant6 @ 86 DATA
+	scale_factor_quant7 @ 87 DATA
+	scales_129 @ 88 DATA
+	scales_a_129 @ 89 DATA
+	scales_b_129 @ 90 DATA
+	scales_c_129 @ 91 DATA
+	scales_d_129 @ 92 DATA
+	scales_e_129 @ 93 DATA
+	tmode @ 94 DATA

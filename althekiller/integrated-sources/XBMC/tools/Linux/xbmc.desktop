@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=XBMC Media Center
+Comment=Manage and View your media 
+Exec=xbmc
+Icon=xbmc.png
+Terminal=false
+Type=Application
+Categories=GNOME;GTK;AudioVideo;Video;Player;X-Ximian-Main;X-Red-Hat-Base;

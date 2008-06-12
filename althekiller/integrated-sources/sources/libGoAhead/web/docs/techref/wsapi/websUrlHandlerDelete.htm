@@ -1,0 +1,42 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websUrlHandlerDelete -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websUrlHandlerDelete</b></TD><td class="titleCenter" align=center width="33%"><b> 
+GoAhead WebServer API</b></TD><td class="titleRight" align=right width="33%"><B> 
+GoAhead EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p> Delete an existing 
+URL handler.</p><h2>Prototype</h2><pre> #include &quot;webs.h&quot; 
+ 
+ int <B>websUrlHandlerDelete</B>(int (*handler)(webs_t wp, char_t *urlPrefix, 
+     char_t *webDir, int arg, char_t *url, char_t *path, char_t *query)) </pre><h2>Parameters</h2><TABLE WIDTH=100% BORDER="0" CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" WIDTH="6%">wp <TD WIDTH="94%">Web server connection handle. 
+<TR> <TD VALIGN="TOP" WIDTH="6%">url <TD WIDTH="94%">Request URL. <TR> <TD VALIGN="TOP" WIDTH="6%">path 
+<TD WIDTH="94%">Request path portion of the URL.<TR> <TD VALIGN="TOP" WIDTH="6%">query 
+<TD WIDTH="94%">Query string portion of the URL.</TD></TR> <TR> <TD VALIGN="TOP" WIDTH="6%">flags 
+<TD WIDTH="94%">Specify a sorting value to modify the calling order of the handler.</TD></TR> 
+</TABLE><h2>Description</h2><P> The websUrlHandlerDelete procedure deletes existing 
+URL handlers. This is useful when you wish to replace a URL handler with a new 
+version, such as replacing the security handler.</P><p>If multiple handlers have 
+been defined for one function, only the first encountered will be removed.</p><h2>Return 
+Value</h2><p> Returns 0 if successful, otherwise returns -1 if the handler was 
+not found.</p><h2>Example</h2><pre>
+int myHandler(webs_t wp, char_t *url, char_t *path, char_t *query){
+
+/*
+ *    Processing here
+ */
+      return 1;
+}
+
+websUrlHandlerDelete(&quot;&quot;, myHandler, WEBS_HANDLER_FIRST);
+</pre><h2>Stability Classification</h2><p>Stable.</p><h2>See 
+Also</h2><p> <A HREF="websUrlHandlerDefine.htm">websUrlHandlerDefine</A>,      <A href="websSecurityHandler.htm">websSecurityHandler</A> 
+</p></td></tr></table>
+</body>
+</html>

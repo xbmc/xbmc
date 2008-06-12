@@ -1,0 +1,277 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_CONFIG DIALOGEX 0, 0, 261, 133
+STYLE WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "FAAC Decoder Configuration"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "Enable variable bitrate display",VARBITRATE_CHK,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,119,7,109,10
+    EDITTEXT        STREAM_BUFFER_TXT,187,21,21,12,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    EDITTEXT        LOCAL_BUFFER_TXT,187,38,21,12,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Buffer entire files into memory",IDC_MEMMAP,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,119,60,107,10
+    CONTROL         "Slider1",THREAD_PRIORITY_SLIDER,"msctls_trackbar32",
+                    TBS_AUTOTICKS | WS_TABSTOP,119,89,99,11,
+                    WS_EX_TRANSPARENT
+    PUSHBUTTON      "OK",OK_BTN,74,112,50,14
+    PUSHBUTTON      "Cancel",CANCEL_BTN,137,112,50,14
+    LTEXT           "HTTP stream buffer:",IDC_STATIC,119,22,65,8
+    LTEXT           "Decode Thread Priority: Highest (default)",IDC_STATIC2,
+                    119,78,135,8
+    LTEXT           "Local file buffer: ",IDC_STATIC,119,40,53,8
+    GROUPBOX        "Title Format",IDC_STATIC,7,7,102,95
+    EDITTEXT        IDC_FORMAT,13,20,89,14,ES_AUTOHSCROLL
+    LTEXT           "%0 Track",IDC_STATIC,13,41,31,8
+    LTEXT           "%1 Artist",IDC_STATIC,13,51,28,8
+    LTEXT           "%2 Title",IDC_STATIC,13,61,26,8
+    LTEXT           "%3 Album",IDC_STATIC,13,71,32,8
+    LTEXT           "%4 Year",IDC_STATIC,13,81,27,8
+    LTEXT           "%5 Comment",IDC_STATIC,58,41,42,8
+    LTEXT           "%6 Genre",IDC_STATIC,58,51,32,8
+    LTEXT           "%7 Filename",IDC_STATIC,58,61,40,8
+END
+
+IDD_INFO DIALOGEX 0, 0, 401, 237
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "File Properties"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "ID3v2 tag",IDC_ID3V2TAG,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,145,17,47,10
+    PUSHBUTTON      "Add standard",IDC_ADDSTFRAMES,145,209,50,14
+    PUSHBUTTON      "Add frame",IDC_ADDFRAME,200,209,50,14
+    PUSHBUTTON      "Edit frame",IDC_EDITFRAME,255,209,50,14
+    PUSHBUTTON      "Delete frame",IDC_DELFRAME,310,209,50,14
+    PUSHBUTTON      "Close",IDC_CLOSE,7,216,50,14
+    GROUPBOX        "ID3v2",IDC_STATIC,137,7,257,223
+    GROUPBOX        "AAC file info",IDC_STATIC,7,7,122,92
+    LTEXT           "Header type:",IDC_STATIC,21,34,42,8
+    LTEXT           "Profile:",IDC_STATIC,41,46,22,8
+    LTEXT           "Bitrate:",IDC_STATIC,40,58,23,8
+    LTEXT           "Samplerate:",IDC_STATIC,25,70,38,8
+    LTEXT           "Channels:",IDC_STATIC,31,82,32,8
+    LTEXT           "-",IDC_HEADER,69,34,50,8
+    LTEXT           "-",IDC_PROFILE,69,46,50,8
+    LTEXT           "-",IDC_BITRATE,69,58,50,8
+    LTEXT           "-",IDC_SAMPLERATE,69,70,50,8
+    LTEXT           "-",IDC_CHANNELS,69,82,50,8
+    LTEXT           "MPEG version:",IDC_STATIC,15,22,48,8
+    LTEXT           "-",IDC_VERSION,69,22,50,8
+    CONTROL         "List1",IDC_ID3LIST,"SysListView32",LVS_REPORT | 
+                    LVS_NOSORTHEADER | WS_TABSTOP,145,32,243,173,
+                    WS_EX_CLIENTEDGE
+END
+
+IDD_EDITTEXTFRAME DIALOGEX 0, 0, 210, 63
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Edit text frame"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_EDITTEXTFRAME,71,23,132,12,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,108,42,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,51,42,50,14
+    EDITTEXT        IDC_TEXTFRAMENAME,71,6,132,12,ES_AUTOHSCROLL
+    LTEXT           "Frame description",IDC_STATIC,11,9,56,8
+    LTEXT           "Frame data",IDC_STATIC,22,26,45,8,0,WS_EX_RIGHT
+END
+
+IDD_ADDFRAME DIALOGEX 0, 0, 213, 84
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    COMBOBOX        IDC_FRAMETYPE,72,7,134,63,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    EDITTEXT        IDC_COL0,72,23,134,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_COL1,72,39,134,12,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,109,63,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,53,63,50,14
+    LTEXT           "Frame type",IDC_STATIC,31,10,36,8
+    LTEXT           "Frame description",IDC_STATIC,11,25,56,8
+    LTEXT           "Frame data",IDC_STATIC,18,41,50,8,0,WS_EX_RIGHT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_CONFIG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 254
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 126
+    END
+
+    IDD_INFO, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 394
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 230
+    END
+
+    IDD_EDITTEXTFRAME, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 203
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 56
+    END
+
+    IDD_ADDFRAME, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 206
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 77
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Dutch (Netherlands) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NLD)
+#ifdef _WIN32
+LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ADDSTANDARD DIALOG DISCARDABLE  0, 0, 243, 245
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Add standard frames"
+FONT 8, "MS Sans Serif"
+BEGIN
+    EDITTEXT        IDC_TRACK,63,22,162,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_TITLE,63,36,162,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ARTIST,63,52,162,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ALBUM,63,68,162,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_YEAR,63,82,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_GENRE,132,81,93,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_COMMENT,63,97,162,35,ES_MULTILINE | ES_AUTOHSCROLL | 
+                    WS_VSCROLL
+    EDITTEXT        IDC_COMPOSER,63,135,162,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ORIGARTIST,63,151,162,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_COPYRIGHT,63,164,162,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_URL,63,180,162,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ENCBY,63,196,162,12,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,120,224,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,61,224,50,14
+    LTEXT           "Track #:",IDC_STATIC,26,24,28,8
+    LTEXT           "Title",IDC_STATIC,40,39,14,8
+    LTEXT           "Artist",IDC_STATIC,38,54,16,8
+    LTEXT           "Album",IDC_STATIC,34,69,20,8
+    LTEXT           "Year",IDC_STATIC,38,85,16,8
+    LTEXT           "Genre",IDC_STATIC,109,83,20,8
+    LTEXT           "Comment",IDC_STATIC,24,98,30,8
+    LTEXT           "Composer",IDC_STATIC,22,138,32,8
+    LTEXT           "Orig. artist",IDC_STATIC,22,152,32,8
+    LTEXT           "Copyright",IDC_STATIC,24,168,30,8
+    LTEXT           "URL",IDC_STATIC,38,182,16,8
+    LTEXT           "Encoded by",IDC_STATIC,15,197,39,8
+    GROUPBOX        "Standard frames",IDC_STATIC,7,7,229,210
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ADDSTANDARD, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 236
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 238
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // Dutch (Netherlands) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

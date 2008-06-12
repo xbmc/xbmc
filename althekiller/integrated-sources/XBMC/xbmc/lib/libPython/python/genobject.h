@@ -1,0 +1,35 @@
+
+/* Generator object interface */
+
+#ifndef Py_GENOBJECT_H
+#define Py_GENOBJECT_H
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+struct _frame; /* Avoid including frameobject.h */
+
+typedef struct {
+	PyObject_HEAD
+	/* The gi_ prefix is intended to remind of generator-iterator. */
+
+	struct _frame *gi_frame;
+
+	/* True if generator is being executed. */
+	int gi_running;
+
+	/* List of weak reference. */
+	PyObject *gi_weakreflist;
+} PyGenObject;
+
+PyAPI_DATA(PyTypeObject) PyGen_Type;
+
+#define PyGen_Check(op) PyObject_TypeCheck(op, &PyGen_Type)
+#define PyGen_CheckExact(op) ((op)->ob_type == &PyGen_Type)
+
+PyAPI_FUNC(PyObject *) PyGen_New(struct _frame *);
+
+#ifdef __cplusplus
+}
+#endif
+#endif /* !Py_GENOBJECT_H */

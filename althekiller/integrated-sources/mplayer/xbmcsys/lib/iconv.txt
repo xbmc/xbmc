@@ -1,0 +1,4 @@
+iconv.lib
+	dynamic link library that will link against iconv.dll on startup
+libiconv.a
+	static library for inclusion

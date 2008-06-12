@@ -1,0 +1,11 @@
+[Core]
+DESC=Fundamental fset that provide a basic console based system
+PKGS=grub ubuntu-minimal usplash-theme-ubuntu pm-utils vbetool
+DEBUG_PKGS=man-db manpages openssh-client openssh-server
+DEPS=
+
+[Developer-Tools]
+DESC=Tools for building source in the target (gcc, make, etc.)
+PKGS=ubuntu-mobile-dev libtool autoconf automake hildon-desktop-dev man manpages curl python-dev dh-make
+DEBUG_PKGS=
+DEPS=core

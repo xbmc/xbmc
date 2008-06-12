@@ -1,0 +1,13 @@
+; C:\MinGW\bin\dlltool.exe -z iconv.def --export-all-symbols libiconv.a
+EXPORTS
+	_libiconv_version @ 1 DATA
+;	aliases2_lookup @ 2
+;	aliases_lookup @ 3
+	libiconv @ 4
+	libiconv_close @ 5
+	libiconv_open @ 6
+;	libiconv_relocate @ 7
+	libiconv_set_relocation_prefix @ 8
+	libiconvctl @ 9
+	libiconvlist @ 10
+;	locale_charset @ 11

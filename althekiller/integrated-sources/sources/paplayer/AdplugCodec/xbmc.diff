@@ -1,0 +1,48 @@
+--- ../adplug-2.1-orig/src/Makefile.in	2007-04-08 18:58:13.000000000 +0200
++++ src/Makefile.in	2008-03-15 19:56:42.000000000 +0100
+@@ -63,7 +63,7 @@
+ 	s3m.lo dtm.lo fmc.lo mtk.lo rad.lo raw.lo sa2.lo xad.lo \
+ 	flash.lo bmf.lo hybrid.lo hyp.lo psi.lo rat.lo u6m.lo rol.lo \
+ 	xsm.lo adlibemu.lo dro.lo lds.lo realopl.lo analopl.lo \
+-	temuopl.lo msc.lo rix.lo adl.lo
++	temuopl.lo msc.lo rix.lo adl.lo AdplugXBMC.lo
+ libadplug_la_OBJECTS = $(am_libadplug_la_OBJECTS)
+ DEFAULT_INCLUDES = -I. -I$(srcdir)
+ depcomp = $(SHELL) $(top_srcdir)/depcomp
+@@ -81,7 +81,7 @@
+ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
+ 	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+ 	$(AM_CXXFLAGS) $(CXXFLAGS)
+-CXXLD = $(CXX)
++CXXLD = $(CXX) `cat ../../../../../XBMC/xbmc/cores/DllLoader/exports/wrapper.def` ../../../../../XBMC/xbmc/cores/DllLoader/exports/wrapper.o
+ CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+ 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+ SOURCES = $(libadplug_la_SOURCES)
+@@ -206,7 +206,7 @@
+ hsp.cpp ksm.cpp mad.cpp mid.cpp mkj.cpp cff.cpp dmo.cpp s3m.cpp dtm.cpp \
+ fmc.cpp mtk.cpp rad.cpp raw.cpp sa2.cpp xad.cpp flash.cpp bmf.cpp hybrid.cpp \
+ hyp.cpp psi.cpp rat.cpp u6m.cpp rol.cpp mididata.h xsm.cpp adlibemu.c dro.cpp \
+-lds.cpp realopl.cpp analopl.cpp temuopl.cpp msc.cpp rix.cpp adl.cpp
++lds.cpp realopl.cpp analopl.cpp temuopl.cpp msc.cpp rix.cpp adl.cpp AdplugXBMC.cpp
+ 
+ libadplug_la_LDFLAGS = -release @VERSION@ -version-info 0 $(libbinio_LIBS)
+ 
+@@ -344,6 +344,7 @@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/u6m.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xad.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsm.Plo@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AdplugXBMC.Plo@am__quote@
+ 
+ .c.o:
+ @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+--- ../adplug-2.1-orig/src/Makefile.am	2006-05-15 15:49:35.000000000 +0200
++++ src/Makefile.am	2008-03-15 19:20:52.000000000 +0100
+@@ -6,7 +6,7 @@
+ hsp.cpp ksm.cpp mad.cpp mid.cpp mkj.cpp cff.cpp dmo.cpp s3m.cpp dtm.cpp \
+ fmc.cpp mtk.cpp rad.cpp raw.cpp sa2.cpp xad.cpp flash.cpp bmf.cpp hybrid.cpp \
+ hyp.cpp psi.cpp rat.cpp u6m.cpp rol.cpp mididata.h xsm.cpp adlibemu.c dro.cpp \
+-lds.cpp realopl.cpp analopl.cpp temuopl.cpp msc.cpp rix.cpp adl.cpp
++lds.cpp realopl.cpp analopl.cpp temuopl.cpp msc.cpp rix.cpp adl.cpp AdplugXBMC.cpp
+ 
+ libadplug_la_LDFLAGS = -release @VERSION@ -version-info 0 $(libbinio_LIBS)
+ 

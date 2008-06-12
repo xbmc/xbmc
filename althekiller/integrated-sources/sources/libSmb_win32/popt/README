@@ -1,0 +1,18 @@
+This is the popt command line option parsing library. While it is similiar
+to getopt(3), it contains a number of enhancements, including:
+
+	1) popt is fully reentrant
+	2) popt can parse arbitrary argv[] style arrays while 
+	   getopt(2) makes this quite difficult
+	3) popt allows users to alias command line arguments
+	4) popt provides convience functions for parsing strings
+	   into argv[] style arrays
+
+popt is used by rpm, the Red Hat install program, and many other Red Hat
+utilities, all of which provide excellent examples of how to use popt. 
+Complete documentation on popt is available in popt.ps (included in this
+tarball), which is excerpted with permission from the book "Linux
+Application Development" by Michael K. Johnson and Erik Troan (availble
+from Addison Wesley in May, 1998).
+
+Comments on popt should be addressed to ewt@redhat.com.

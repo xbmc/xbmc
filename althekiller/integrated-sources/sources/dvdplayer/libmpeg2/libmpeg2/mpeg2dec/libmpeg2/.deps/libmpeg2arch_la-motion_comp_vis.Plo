@@ -1,0 +1,4 @@
+libmpeg2arch_la-motion_comp_vis.lo libmpeg2arch_la-motion_comp_vis.o:  \
+ motion_comp_vis.c ../include/config.h
+
+../include/config.h:

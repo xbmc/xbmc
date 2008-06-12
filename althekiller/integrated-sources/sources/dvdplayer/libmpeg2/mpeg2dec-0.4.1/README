@@ -1,0 +1,204 @@
+
+
+ABOUT LIBMPEG2
+
+libmpeg2 is a free library for decoding mpeg-2 and mpeg-1 video
+streams. It is released under the terms of the GPL license.
+
+The main goals in libmpeg2 development are:
+
+      *	Conformance - libmpeg2 is able to decode all mpeg streams that
+	conform to certain restrictions: "constrained parameters" for
+	mpeg-1, and "main profile" for mpeg-2. In practice, this is
+	what most people are using. For streams that follow these
+	restrictions, we believe libmpeg2 is 100% conformant to the
+	mpeg standards - and we have a pretty extensive test suite to
+	check this.
+
+      *	Speed - there has been huge efforts there, and we believe
+	libmpeg2 is the fastest library around for what it
+	does. Please tell us if you find a faster one ! With typical
+	video streams as found on DVD's, and doing only decoding with
+	no display, you should be able to get about 110 fps on a
+	PIII/666, or 150 fps on an Athlon/950. This is less than 20
+	cycles per output pixel. In a real player program, the display
+	routines will probably take as much time as the actual
+	decoding !
+
+      *	Portability - most of the code is written in C, and when we
+	use platform-specific optimizations (typically assembly
+	routines, currently used for the motion compensation and the
+	inverse cosine transform stages) we always have a generic C
+	routine to fall back on.  This should be portable to all
+	architectures - at least we have heard reports from people
+	running this code on x86, ppc, sparc, arm and
+	sh4. Assembly-optimized implementations are available on x86
+	(MMX) and ppc (altivec) architectures. Ultrasparc (VIS) is
+	probably the next on the list - we'll see.
+
+      *	Reuseability - we do not want libmpeg2 to include any
+	project-specific code, but it should still include enough
+	features to be used by very diverse projects. We are only
+	starting to get there - the best way to help here is to give
+	us some feedback !
+
+The project homepage is at http://libmpeg2.sourceforge.net/
+
+
+MPEG2DEC
+
+mpeg2dec is a test program for libmpeg2. It decodes mpeg-1 and mpeg-2
+video streams, and also includes a demultiplexer for mpeg-1 and mpeg-2
+program streams. It is purposely kept simple : it does not include
+features like reading files from a DVD, CSS, fullscreen output,
+navigation, etc... The main purpose of mpeg2dec is to have a simple
+test bed for libmpeg2.
+
+The libmpeg2 source code is always distributed in the mpeg2dec
+package, to make it easier for people to test it.
+
+The basic usage is to just type "mpeg2dec file" where file is a
+demultiplexed mpeg video file.
+
+The "-s" option must be used for multiplexed (audio and video) mpeg
+files using the "program stream" format. These files are usualy found
+on the internet or on unencrypted DVDs.
+
+The "-t" option must be used for multiplexed (audio and video) mpeg
+files using the "transport stream" format. These files are usualy
+found in digital TV applications.
+
+The "-o" option is used to select a given output module - for example
+to redirect the output to a file. This is also used for performance
+testing and conformance testing.
+
+The "-c" option is used to disable all optimizations.
+
+
+OTHER PROJECTS USING LIBMPEG2
+
+libmpeg2 is being used by various other projects, including:
+
+      *	xine (http://xine.sourceforge.net/) - started as a simple
+	mpeg-2 audio and video decoder, but it since became a
+	full-featured DVD and video media player.
+
+      *	VideoLAN (http://www.videolan.org/) - video streaming over an
+	ethernet network, can also be used as a standalone player.
+
+      *	MPlayer (http://www.MPlayerHQ.hu) - another good player, it is
+	also very robust against damaged streams.
+
+      *	movietime (http://movietime.sourceforge.net/) - still quite
+	young, but it looks very promising !
+
+      *	mpeg2decX (http://homepage1.nifty.com/~toku/software_en.html) -
+	a graphical interface for mpeg2dec for macintosh osX.
+
+      *	TCVP (http://tcvp.sf.net) - video and music player for unix.
+
+      *	drip (http://drip.sourceforge.net/) - a DVD to DIVX transcoder.
+
+      *	PoMP
+	(http://www.dmclab.hanyang.ac.kr/research/project/PoDS/PoDS_sw.htm) -
+	a research player optimized to minimize disk power consumption.
+
+      *	OMS (http://www.linuxvideo.org/oms/)
+
+      *	XMPS (http://xmps.sourceforge.net/)
+
+      *	GStreamer (http://www.gstreamer.net/) - a framework for
+	streaming media; it has an mpeg2 decoding plugin based on
+	libmpeg2.
+
+      *	mpeglib (http://mpeglib.sourceforge.net/) - a video decoding
+	library that usess libmpeg2 when decoding mpeg streams.
+
+      *	daphne (http://daphne.rulecity.com/) - a laserdisc arcade game
+	simulator.
+
+      *	GOPchop (http://outflux.net/unix/software/GOPchop/) - a
+	GOP-accurate editor for MPEG2 streams.
+
+If you use libmpeg2 in another project, let us know !
+
+
+TASKS
+
+There are several places where we could easily use some help:
+
+      *	Documentation: libmpeg2 still has no documentation. Every
+	project using it has had to figure things out by looking at
+	the header files, at the mpeg2dec sample application, and by
+	asking questions. Writing down a nice documentation would make
+	the code more easily reuseable.
+
+      *	Testing: If you find any stream that does not decode right
+	with libmpeg2, let us know ! The best thing would be to mail
+	to the libmpeg2-devel mailing list. Also, it would be nice to
+	build a stress test so we can make sure libmpeg2 never crashes
+	on bad streams.
+
+      *	Coding: There is a small TODO list in the mpeg2dec package,
+	you can have a look there ! Most items are pretty terse
+	though.
+
+      *	Porting: If you're porting to a new architecture, you might
+	want to experiment with the compile flags defined in
+	configure.in . When you figure out whats fastest on your
+	platform, send us a patch !
+
+      *	Assembly optimizations: We only have x86 and altivec
+	optimizations yet, it would be worthwhile writing routines for
+	other architectures, especially those that have SIMD
+	instruction set extensions ! Also the yuv2rgb x86 routines
+	could probably be optimized a lot.
+
+
+CVS SNAPSHOTS
+
+A daily snapshot is created using "make distcheck" every night and
+uploaded to http://libmpeg2.sourceforge.net/files/mpeg2dec-snapshot.tar.gz .
+It is easier to use than the CVS repository, because you do not need
+to have the right versions of automake, autoconf and libtool
+installed. It might be convenient when working on a libmpeg2 port for
+example.
+
+
+CVS REPOSITORY
+
+The latest libmpeg2 and mpeg2dec source code can always be found by
+anonymous CVS:
+
+# export CVSROOT=:pserver:anonymous@cvs.libmpeg2.sourceforge.net:/cvsroot/libmpeg2
+# cvs login (Just press Return when prompted for a password)
+# cvs checkout mpeg2dec
+
+You can also browse the latest changes online at
+http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/libmpeg2/mpeg2dec/
+
+The other CVS modules are mpeg2dec-streams for the test suite, and
+mpeg2dec-livid for the CVS history of the project while it was still
+hosted on the linuxvideo.org servers.
+
+
+MAILING LISTS
+
+See the subscription information at http://libmpeg2.sourceforge.net/lists.html
+
+libmpeg2-devel
+
+This is the main mailing list for technical discussion about
+libmpeg2. Anyone wanting to work on libmpeg2, or maybe just stay
+informed about the development process, should probably subscribe to
+this list.
+
+libmpeg2-checkins
+
+All libmpeg2 checkins are announced there. This is a good way to keep
+track of what goes into CVS.
+
+libmpeg2-announce
+
+This is a very low traffic mailing list, only for announcements of new
+versions of libmpeg2. Only project administrators can post there.

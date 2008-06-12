@@ -1,0 +1,115 @@
+DIRS=guilib xbmc xbmc/FileSystem xbmc/FileSystem/MusicDatabaseDirectory xbmc/FileSystem/VideoDatabaseDirectory xbmc/cores xbmc/cores/paplayer xbmc/cores/DllLoader xbmc/cores/DllLoader/exports xbmc/cores/DllLoader/exports/util xbmc/xbox xbmc/linux xbmc/visualizations xbmc/screensavers xbmc/utils guilib/common guilib/tinyXML xbmc/lib/sqLite xbmc/lib/libPython xbmc/lib/libPython/xbmcmodule xbmc/lib/libPython/linux xbmc/lib/libscrobbler xbmc/lib/UnrarXLib xbmc/lib/libGoAhead xbmc/lib/libUPnP xbmc/cores/dvdplayer xbmc/cores/dvdplayer/DVDSubtitles xbmc/cores/dvdplayer/DVDInputStreams xbmc/cores/dvdplayer/DVDCodecs xbmc/cores/dvdplayer/DVDCodecs/Audio xbmc/cores/dvdplayer/DVDCodecs/Video xbmc/cores/dvdplayer/DVDCodecs/Overlay xbmc/cores/dvdplayer/DVDCodecs/Overlay/libspucc xbmc/cores/dvdplayer/DVDDemuxers xbmc/cores/VideoRenderers xbmc/cores/VideoRenderers/VideoShaders xbmc/cdrip xbmc/lib/libcmyth tools/EventClients
+
+LIBS=@LIBS@
+DEBUG_FLAGS=@DEBUG_FLAGS@
+CFLAGS=@CFLAGS@
+CXXFLAGS=@CXXFLAGS@
+LDFLAGS=@LDFLAGS@
+INCLUDES=@INCLUDES@
+
+all : compile 
+	$(MAKE) xbmc.bin
+	$(MAKE) xbmc-xrandr
+
+.PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualizations screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients
+
+guilib: 
+	$(MAKE) -C guilib
+xbmc: 
+	$(MAKE) -C xbmc
+filesystem: 
+	$(MAKE) -C xbmc/FileSystem
+musicdatabase: 
+	$(MAKE) -C xbmc/FileSystem/MusicDatabaseDirectory
+videodatabase: 
+	$(MAKE) -C xbmc/FileSystem/VideoDatabaseDirectory
+cores: 
+	$(MAKE) -C xbmc/cores
+paplayer: 
+	$(MAKE) -C xbmc/cores/paplayer
+dllloader: 
+	$(MAKE) -C xbmc/cores/DllLoader
+exports: 
+	$(MAKE) -C xbmc/cores/DllLoader/exports
+	$(MAKE) -C xbmc/cores/DllLoader/exports/util
+xbox: 
+	$(MAKE) -C xbmc/xbox
+linux: 
+	$(MAKE) -C xbmc/linux
+visualizations: 
+	$(MAKE) -C xbmc/visualizations
+screensavers: 
+	$(MAKE) -C xbmc/screensavers
+utils: 
+	$(MAKE) -C xbmc/utils
+common: 
+	$(MAKE) -C guilib/common
+tinyxml: 
+	$(MAKE) -C guilib/tinyXML
+sqllite: 
+	$(MAKE) -C xbmc/lib/sqLite
+libscrobbler: 
+	$(MAKE) -C xbmc/lib/libscrobbler
+unrarxlib: 
+	$(MAKE) -C xbmc/lib/UnrarXLib
+libpython: 
+	$(MAKE) -C xbmc/lib/libPython
+	$(MAKE) -C xbmc/lib/libPython/xbmcmodule
+	$(MAKE) -C xbmc/lib/libPython/linux
+libgoahead: 
+	$(MAKE) -C xbmc/lib/libGoAhead
+libupnp: 
+	$(MAKE) -C xbmc/lib/libUPnP
+dvdplayer:
+	$(MAKE) -C xbmc/cores/dvdplayer
+	$(MAKE) -C xbmc/cores/dvdplayer/DVDSubtitles
+	$(MAKE) -C xbmc/cores/dvdplayer/DVDInputStreams
+	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs
+	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Audio
+	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Video
+	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Overlay
+	$(MAKE) -C xbmc/cores/dvdplayer/DVDDemuxers
+	$(MAKE) -C xbmc/cores/VideoRenderers 
+	$(MAKE) -C xbmc/cores/VideoRenderers/VideoShaders 
+cdrip:
+	$(MAKE) -C xbmc/cdrip
+libcmyth: 
+	$(MAKE) -C xbmc/lib/libcmyth
+eventclients:
+	$(MAKE) -C tools/EventClients
+	
+compile: guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualizations screensavers utils common tinyxml sqllite libscrobbler libgoahead unrarxlib libpython dvdplayer libupnp cdrip libcmyth
+
+xbmc.bin: $(wildcard xbmc/*.o xbmc/settings/*.o guilib/*.o guilib/tinyXML/*.o guilib/common/*.o xbmc/FileSystem/*.o xbmc/FileSystem/VideoDatabaseDirectory/*.o xbmc/FileSystem/MusicDatabaseDirectory/*.o xbmc/visualizations/*.o xbmc/screensavers/*.o xbmc/cores/*.o xbmc/cores/paplayer/*.o xbmc/linux/*.o xbmc/lib/sqLite/*.o xbmc/lib/libscrobbler/*.o xbmc/lib/libPython/*.o xbmc/lib/libPython/xbmcmodule/*.o xbmc/xbox/*.o xbmc/cores/DllLoader/*.o xbmc/cores/DllLoader/exports/*.o xbmc/cores/DllLoader/exports/util/*.o xbmc/utils/*.o xbmc/lib/UnrarXLib/*.o xbmc/lib/libGoAhead/*.o xbmc/cores/dvdplayer/*.o xbmc/cores/dvdplayer/DVDSubtitles/*.o xbmc/cores/dvdplayer/DVDInputStreams/*.o xbmc/cores/dvdplayer/DVDCodecs/*.o xbmc/cores/dvdplayer/DVDCodecs/Audio/*.o xbmc/cores/dvdplayer/DVDCodecs/Video/*.o xbmc/cores/dvdplayer/DVDCodecs/Overlay/*.o xbmc/cores/dvdplayer/DVDDemuxers/*.o xbmc/cores/dvdplayer/DVDCodecs/Overlay/libspucc/*.o xbmc/cores/VideoRenderers/*.o xbmc/cores/VideoRenderers/VideoShaders/*.o xbmc/cdrip/*.o xbmc/lib/libcmyth/*.o) xbmc/lib/libXBMS/libxbms-@ARCH@.a xbmc/lib/libUPnP/libupnp-@ARCH@.a 
+	g++ $(DEBUG_FLAGS) -o xbmc.bin xbmc/*.o xbmc/settings/*.o xbmc/cdrip/*.o guilib/*.o guilib/tinyXML/*.o guilib/common/*.o xbmc/FileSystem/*.o xbmc/FileSystem/VideoDatabaseDirectory/*.o xbmc/FileSystem/MusicDatabaseDirectory/*.o xbmc/visualizations/*.o xbmc/screensavers/*.o xbmc/cores/*.o xbmc/cores/paplayer/*.o xbmc/linux/*.o xbmc/lib/sqLite/*.o xbmc/lib/libscrobbler/*.o xbmc/lib/libPython/*.o xbmc/lib/libPython/xbmcmodule/*.o xbmc/xbox/*.o xbmc/cores/DllLoader/*.o xbmc/cores/DllLoader/exports/*.o xbmc/cores/DllLoader/exports/util/*.o xbmc/utils/*.o xbmc/lib/UnrarXLib/*.o xbmc/lib/libGoAhead/*.o xbmc/cores/dvdplayer/*.o xbmc/cores/dvdplayer/DVDSubtitles/*.o xbmc/cores/dvdplayer/DVDInputStreams/*.o xbmc/cores/dvdplayer/DVDCodecs/*.o xbmc/cores/dvdplayer/DVDCodecs/Audio/*.o xbmc/cores/dvdplayer/DVDCodecs/Video/*.o xbmc/cores/dvdplayer/DVDCodecs/Overlay/*.o xbmc/cores/dvdplayer/DVDDemuxers/*.o xbmc/cores/dvdplayer/DVDCodecs/Overlay/libspucc/*.o xbmc/cores/VideoRenderers/*.o xbmc/cores/VideoRenderers/VideoShaders/*.o xbmc/lib/libcmyth/*.o xbmc/lib/libGoAhead/libGoAheadD-@ARCH@.a xbmc/lib/libXBMS/libxbms-@ARCH@.a xbmc/lib/libUPnP/libupnp-@ARCH@.a xbmc/lib/libshout/libshout-@ARCH@.a xbmc/lib/libRTV/librtv-@ARCH@.a xbmc/lib/libXDAAP/libxdaap-@ARCH@.a xbmc/lib/libcdio/libcdio-@ARCH@.a xbmc/lib/libsmb/libsmbclient-@ARCH@.a $(LIBS) -rdynamic
+
+xbmc-xrandr: xbmc-xrandr.c
+	gcc -g -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 
+
+install-bin: all # developement convenience target
+	sudo cp xbmc.bin $(prefix)/share/xbmc
+
+install: all install-datas
+	@echo "Copying XBMC binary to $(prefix)/share/xbmc/xbmc.bin"
+	@cp xbmc.bin $(prefix)/share/xbmc/xbmc.bin
+	@mkdir -p $(prefix)/bin
+	@cp tools/Linux/xbmc.sh $(prefix)/bin/xbmc
+	@chmod 755 $(prefix)/bin/xbmc
+	@echo "Done!"
+	@echo "You can run XBMC with the command 'xbmc'"
+
+install-datas:
+	@echo "Creating target directories in $(prefix)/share/xbmc"
+	@find language media screensavers scripts skin sounds userdata visualisations system -type d -not -iregex ".*svn.*" -exec mkdir -p $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
+	@echo "Copying system files to $(prefix)/share/xbmc"
+	# Arch independent files
+	@find language media screensavers scripts skin sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
+	# Arch dependent files
+	@find system -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*@ARCH@.*" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
+
+uninstall:
+	@echo "Removing XBMC..."
+	@rm -rf $(prefix)/share/xbmc $(prefix)/bin/xbmc
+	@echo "Done!"
+
+include Makefile.include

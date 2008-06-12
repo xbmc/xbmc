@@ -1,0 +1,8 @@
+This is just a dopy little file used to test the CVS repository.
+Feel free to trash this file.
+Minor change.
+Another tweak.
+philburk tweak
+stephane test
+Phil changed this again on 2/21/02. Yawn...
+Bjorn test3!

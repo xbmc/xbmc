@@ -1,0 +1,9 @@
+/.cvsignore////
+/Makefile.am////
+/config.h////
+/inttypes.h////
+/libmpeg2.dsp////
+/libmpeg2convert.dsp////
+/libvo.dsp////
+/mpeg2dec.dsp////
+/mpeg2dec.dsw////

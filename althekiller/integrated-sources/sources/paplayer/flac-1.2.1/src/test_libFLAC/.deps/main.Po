@@ -1,0 +1,36 @@
+main.o main.o: main.c ../../config.h bitwriter.h \
+  ../../include/FLAC/ordinals.h /usr/include/inttypes.h \
+  /usr/include/features.h /usr/include/sys/cdefs.h \
+  /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
+  /usr/include/gnu/stubs-32.h /usr/include/stdint.h \
+  /usr/include/bits/wchar.h decoders.h encoders.h format.h metadata.h
+
+../../config.h:
+
+bitwriter.h:
+
+../../include/FLAC/ordinals.h:
+
+/usr/include/inttypes.h:
+
+/usr/include/features.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/bits/wordsize.h:
+
+/usr/include/gnu/stubs.h:
+
+/usr/include/gnu/stubs-32.h:
+
+/usr/include/stdint.h:
+
+/usr/include/bits/wchar.h:
+
+decoders.h:
+
+encoders.h:
+
+format.h:
+
+metadata.h:

@@ -1,0 +1,3 @@
+audio_out_oss.o audio_out_oss.o: audio_out_oss.c ../config.h
+
+../config.h:

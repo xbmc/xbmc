@@ -1,0 +1,85 @@
+Changes from 0.9.4 to 0.9.5
+---------------------------
+Added
+    MP4GetTrackAudioMpeg4Type()
+        Returns MPEG-4 Audio type (e.g. AAC, CELP, HXVC, MIDI, etc.)
+    MP4ReadSampleFromTime()
+        Variant of MP4ReadSample() that uses time instead of sample id
+        (basically MP4GetSampleIdFromTime() + MP4ReadSample())
+    MP4Info()
+    MP4FileInfo()
+        Returns summary info on tracks in file (from util/mp4info.cpp)
+
+    The following functions add support for mp4 authoring/editting:
+
+    MP4CloneTrack()
+        Make a copy of a specified track, without media samples
+    MP4CopyTrack()
+        Make a copy of a specified track, with or without media samples
+    MP4CopySample()
+        Make a copy of a specified media sample
+
+    MP4AddTrackEdit()
+        Add a track edit list element
+    MP4DeleteTrackEdit()
+        Delete a track edit list element
+    MP4GetTrackNumberOfEdits()
+        Return the number of track edit list elements
+    MP4GetTrackEditTotalDuration()
+        Return the total duration of the track edit list
+    MP4GetTrackEditStart()
+        Return the edit start time for the edit list element
+    MP4GetTrackEditMediaStart()
+        Return the media start time for the edit list element
+    MP4SetTrackEditMediaStart()
+        Set the media start time for the edit list element
+    MP4GetTrackEditDuration()
+        Return the edit list element duration
+    MP4SetTrackEditDuration()
+        Set the edit list element duration
+    MP4GetTrackEditDwell()
+        Return the edit list element dwell parameter, see man page
+    MP4SetTrackEditDwell()
+        Set the edit list element dwell parameter, see man page
+    MP4ReadSampleFromEditTime()
+        Apply the edit list timeline to reading a sample
+    MP4GetSampleIdFromEditTime()
+        Return the sample id for a specified time on the edit list timeline
+
+Modified
+    MP4GetSampleIdFromTime()
+        Semantic change - now returns sample id corresponding 
+        to specified time, not the sample id with the smallest positive
+        start time difference from the specified time.
+
+
+Changes from 0.9.3 to 0.9.4
+---------------------------
+Added
+    MP4GetTrackVideoFrameRate()
+        Returns video frame rate (average rate if video is variable rate).
+
+    MP4GetTrackBitRate()
+        Returns track average bit rate in bits-per-second.
+
+Changes from 0.9.2 to 0.9.3
+---------------------------
+Modified
+    MP4Optimize()
+        Second argument, newFileName, can now be NULL in which case
+        a temporary file is created for the results of the optimization.
+        Upon success, the existing file specified with the first argument 
+        is overwritten with the optimized file.
+
+    MP4GetNumberOfTracks()
+    MP4FindTrackId()
+        Both have a new optional argument, subType, with default value 0.
+        The subType can be specified for audio and video tracks to
+        match only a specific encoding type. See man page for more details.
+
+Added
+    MP4GetTrackVideoWidth()
+        Returns video width in pixels. See man page for caveat.
+
+    MP4GetTrackVideoHeight()
+        Returns video height in pixels. See man page for caveat.

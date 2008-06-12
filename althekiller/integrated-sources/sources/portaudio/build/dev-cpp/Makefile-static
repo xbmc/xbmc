@@ -1,0 +1,75 @@
+# Project: portaudio-static
+# Makefile created by Dev-C++ 4.9.8.2
+
+CPP  = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = 
+OBJ  = ./pa_skeleton.o ./pa_stream.o ./pa_trace.o ./pa_allocation.o ./pa_converters.o ./pa_cpuload.o ./pa_dither.o ./pa_front.o ./pa_process.o ./pa_asio.o ./pa_win_util.o ./pa_win_hostapis.o ./pa_win_ds.o ./dsound_wrapper.o ./pa_win_wmme.o ./iasiothiscallresolver.o $(RES)
+LINKOBJ  = ./pa_skeleton.o ./pa_stream.o ./pa_trace.o ./pa_allocation.o ./pa_converters.o ./pa_cpuload.o ./pa_dither.o ./pa_front.o ./pa_process.o ./pa_asio.o ./pa_win_util.o ./pa_win_hostapis.o ./pa_win_ds.o ./dsound_wrapper.o ./pa_win_wmme.o ./iasiothiscallresolver.o $(RES)
+LIBS =  -L"C:/Dev-CPP/lib" -fmessage-length=0 -O3 -s 
+INCS =  -I"C:/Dev-CPP/include"  -I"../../../asiosdk2"  -I"../../../asiosdk2/common"  -I"../../../asiosdk2/host"  -I"../../../asiosdk2/host/pc"  -I"../../pa_common" 
+CXXINCS =  -I"C:/Dev-CPP/include/c++"  -I"C:/Dev-CPP/include/c++/mingw32"  -I"C:/Dev-CPP/include/c++/backward"  -I"C:/Dev-CPP/include"  -I"../../../asiosdk2"  -I"../../../asiosdk2/common"  -I"../../../asiosdk2/host"  -I"../../../asiosdk2/host/pc"  -I"../../pa_common" 
+BIN  = portaudio-static.a
+CXXFLAGS = $(CXXINCS)-O3   -fmessage-length=0 -Wall
+CFLAGS = $(INCS)-O3   -fmessage-length=0 -Wall
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before portaudio-static.a all-after
+
+
+clean: clean-custom
+	rm -f $(OBJ) $(BIN)
+
+$(BIN): $(LINKOBJ)
+	ar r $(BIN) $(LINKOBJ)
+	ranlib $(BIN)
+
+./pa_skeleton.o: ../../pa_common/pa_skeleton.c
+	$(CPP) -c ../../pa_common/pa_skeleton.c -o ./pa_skeleton.o $(CXXFLAGS)
+
+./pa_stream.o: ../../pa_common/pa_stream.c
+	$(CPP) -c ../../pa_common/pa_stream.c -o ./pa_stream.o $(CXXFLAGS)
+
+./pa_trace.o: ../../pa_common/pa_trace.c
+	$(CPP) -c ../../pa_common/pa_trace.c -o ./pa_trace.o $(CXXFLAGS)
+
+./pa_allocation.o: ../../pa_common/pa_allocation.c
+	$(CPP) -c ../../pa_common/pa_allocation.c -o ./pa_allocation.o $(CXXFLAGS)
+
+./pa_converters.o: ../../pa_common/pa_converters.c
+	$(CPP) -c ../../pa_common/pa_converters.c -o ./pa_converters.o $(CXXFLAGS)
+
+./pa_cpuload.o: ../../pa_common/pa_cpuload.c
+	$(CPP) -c ../../pa_common/pa_cpuload.c -o ./pa_cpuload.o $(CXXFLAGS)
+
+./pa_dither.o: ../../pa_common/pa_dither.c
+	$(CPP) -c ../../pa_common/pa_dither.c -o ./pa_dither.o $(CXXFLAGS)
+
+./pa_front.o: ../../pa_common/pa_front.c
+	$(CPP) -c ../../pa_common/pa_front.c -o ./pa_front.o $(CXXFLAGS)
+
+./pa_process.o: ../../pa_common/pa_process.c
+	$(CPP) -c ../../pa_common/pa_process.c -o ./pa_process.o $(CXXFLAGS)
+
+./pa_asio.o: ../../pa_asio/pa_asio.cpp
+	$(CPP) -c ../../pa_asio/pa_asio.cpp -o ./pa_asio.o $(CXXFLAGS)
+
+./pa_win_util.o: ../pa_win_util.c
+	$(CPP) -c ../pa_win_util.c -o ./pa_win_util.o $(CXXFLAGS)
+
+./pa_win_hostapis.o: ../pa_win_hostapis.c
+	$(CPP) -c ../pa_win_hostapis.c -o ./pa_win_hostapis.o $(CXXFLAGS)
+
+./pa_win_ds.o: ../../pa_win_ds/pa_win_ds.c
+	$(CPP) -c ../../pa_win_ds/pa_win_ds.c -o ./pa_win_ds.o $(CXXFLAGS)
+
+./dsound_wrapper.o: ../../pa_win_ds/dsound_wrapper.c
+	$(CPP) -c ../../pa_win_ds/dsound_wrapper.c -o ./dsound_wrapper.o $(CXXFLAGS)
+
+./pa_win_wmme.o: ../../pa_win_wmme/pa_win_wmme.c
+	$(CPP) -c ../../pa_win_wmme/pa_win_wmme.c -o ./pa_win_wmme.o $(CXXFLAGS)
+
+./iasiothiscallresolver.o: ../../pa_asio/iasiothiscallresolver.cpp
+	$(CPP) -c ../../pa_asio/iasiothiscallresolver.cpp -o ./iasiothiscallresolver.o $(CXXFLAGS)

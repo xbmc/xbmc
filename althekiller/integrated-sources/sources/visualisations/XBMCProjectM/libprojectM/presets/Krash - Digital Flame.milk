@@ -1,0 +1,79 @@
+[preset00]
+fRating=3.000000
+fGammaAdj=2.000000
+fDecay=0.900000
+fVideoEchoZoom=1.000000
+fVideoEchoAlpha=0.000000
+nVideoEchoOrientation=0
+nWaveMode=6
+bAdditiveWaves=0
+bWaveDots=0
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=0
+bTexWrap=0
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=1.000000
+fWaveScale=0.369700
+fWaveSmoothing=0.750000
+fWaveParam=0.000000
+fModWaveAlphaStart=0.750000
+fModWaveAlphaEnd=0.950000
+fWarpAnimSpeed=53.523884
+fWarpScale=0.408391
+fZoomExponent=1.000000
+fShader=0.000000
+zoom=1.000000
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000000
+dy=0.000000
+warp=1.000000
+sx=1.000000
+sy=1.000000
+wave_r=0.699900
+wave_g=0.600000
+wave_b=0.800000
+wave_x=0.000000
+wave_y=0.500000
+ob_size=0.000000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=0.000000
+ib_size=0.000000
+ib_r=0.000000
+ib_g=0.000000
+ib_b=0.000000
+ib_a=0.000000
+nMotionVectorsX=12.000000
+nMotionVectorsY=9.000000
+mv_l=0.900000
+mv_r=1.000000
+mv_g=1.000000
+mv_b=1.000000
+mv_a=0.000000
+per_frame_1=q1 = (bass_att + mid_att + treb_att) /3;
+per_frame_2=q2 = time + 1000;
+per_frame_3=bass_thresh = above(bass_att,bass_thresh)*2 + (1-above(bass_att,bass_thresh))*((bass_thresh-1.4)*0.95+1.4);
+per_frame_4=treb_thresh = above(treb_att,treb_thresh)*2 + (1-above(treb_att,treb_thresh))*((treb_thresh-1.5)*0.85+1.2);
+per_frame_5=bass_on = above(bass_thresh,1.9);
+per_frame_6=treb_on = above(treb_thresh,1.9);
+per_frame_7=swapcolour = bass_on - treb_on;
+per_frame_8=red_aim = if(equal(swapcolour,1),1,if(equal(swapcolour,0),0.9,0.7));
+per_frame_9=green_aim = if(equal(swapcolour,1),0.7,if(equal(swapcolour,0),0.3,0.6));
+per_frame_10=blue_aim = if(equal(swapcolour,1),0,if(equal(swapcolour,0),0.2,0.8));
+per_frame_11=red = red + (red_aim - red)*0.5;
+per_frame_12=green = green + (green_aim - green)*0.5;
+per_frame_13=blue = blue + (blue_aim - blue)*0.5;
+per_frame_14=wave_r = red;
+per_frame_15=wave_g = green;
+per_frame_16=wave_b = blue;
+per_pixel_1=dy = -0.1*(q1-1)*log(2-(abs(y*2 - 1.8)));
+per_pixel_2=dy = below(dy,0.02)*dy - 0.02;
+per_pixel_3=dy = dy + 0.01*(sin((x*q2*0.483) + (y*q2*1.238)) + sin((x*q2*1.612) + (y*q2*0.648)));

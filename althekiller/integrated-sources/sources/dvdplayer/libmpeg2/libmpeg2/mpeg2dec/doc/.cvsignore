@@ -1,0 +1,16 @@
+.*.sw[po]
+*~
+*.diff
+*.patch
+*.lo
+*.o
+Makefile
+Makefile.in
+.deps
+.libs
+sample1
+sample2
+sample3
+sample4
+sample5
+sample6

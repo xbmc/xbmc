@@ -1,0 +1,89 @@
+#basedir ../../streams/tek/625
+
+100b/015	# OK
+100b/040	# OK
+100b/060	# OK
+100b/080	# OK
+100b/120	# OK
+#100b/180	# FAIL - 4:2:2 chroma
+#100b/400	# FAIL - 4:2:2 chroma
+
+bbc3/015	# OK
+bbc3/040	# OK
+bbc3/060	# OK
+bbc3/080	# OK
+bbc3/120	# OK
+#bbc3/180	# FAIL - 4:2:2 chroma
+#bbc3/400	# FAIL - 4:2:2 chroma
+
+cact/015	# OK
+cact/040	# OK
+cact/060	# OK
+cact/080	# OK
+cact/120	# OK
+#cact/180	# FAIL - 4:2:2 chroma
+#cact/400	# FAIL - 4:2:2 chroma
+
+flwr/015	# OK
+flwr/040	# OK
+flwr/060	# OK
+flwr/080	# OK
+flwr/120	# OK
+#flwr/180	# FAIL - 4:2:2 chroma
+#flwr/400	# FAIL - 4:2:2 chroma
+
+mobl/015	# OK
+mobl/040	# OK
+mobl/060	# OK
+mobl/080	# OK
+mobl/120	# OK
+#mobl/180	# FAIL - 4:2:2 chroma
+#mobl/400	# FAIL - 4:2:2 chroma
+
+mulb/015	# OK
+mulb/040	# OK
+mulb/060	# OK
+mulb/080	# OK
+mulb/120	# OK
+#mulb/180	# FAIL - 4:2:2 chroma
+#mulb/400	# FAIL - 4:2:2 chroma
+
+pulb/015	# OK
+pulb/040	# OK
+pulb/060	# OK
+pulb/080	# OK
+pulb/120	# OK
+#pulb/180	# FAIL - 4:2:2 chroma
+#pulb/400	# FAIL - 4:2:2 chroma
+
+susi/015	# OK
+susi/040	# OK
+susi/060	# OK
+susi/080	# OK
+susi/120	# OK
+#susi/180	# FAIL - 4:2:2 chroma
+#susi/400	# FAIL - 4:2:2 chroma
+
+tens/015	# OK
+tens/040	# OK
+tens/060	# OK
+tens/080	# OK
+tens/120	# OK
+#tens/180	# FAIL - 4:2:2 chroma
+#tens/400	# FAIL - 4:2:2 chroma
+
+time/015	# OK
+time/040	# OK
+time/060	# OK
+time/080	# OK
+time/120	# OK
+#time/180	# FAIL - 4:2:2 chroma
+#time/400	# FAIL - 4:2:2 chroma
+
+v700/015	# OK
+v700/040	# OK
+v700/060	# OK
+v700/080	# OK
+v700/120	# OK
+#v700/180	# FAIL - 4:2:2 chroma
+#v700/400	# FAIL - 4:2:2 chroma

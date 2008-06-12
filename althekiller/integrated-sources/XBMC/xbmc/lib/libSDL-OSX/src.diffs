@@ -1,0 +1,927 @@
+Only in SDL-1.2.13-XBMC: Makefile
+Only in SDL-1.2.13-XBMC: SDL
+Only in SDL-1.2.13-XBMC: SDL.qpg
+Only in SDL-1.2.13-XBMC: build
+Only in SDL-1.2.13-XBMC: build-deps
+Only in SDL-1.2.13-XBMC: config.log
+Only in SDL-1.2.13-XBMC: config.status
+diff -r -dc /Source/SDL-1.2.13/include/SDL_config.h SDL-1.2.13-XBMC/include/SDL_config.h
+*** /Source/SDL-1.2.13/include/SDL_config.h	2007-12-30 20:17:05.000000000 -1000
+--- SDL-1.2.13-XBMC/include/SDL_config.h	2008-01-04 14:15:28.000000000 -1000
+***************
+*** 1,3 ****
+--- 1,4 ----
++ /* include/SDL_config.h.  Generated from SDL_config.h.in by configure.  */
+  /*
+      SDL - Simple DirectMedia Layer
+      Copyright (C) 1997-2006 Sam Lantinga
+***************
+*** 23,45 ****
+  #ifndef _SDL_config_h
+  #define _SDL_config_h
+  
+  #include "SDL_platform.h"
+  
+! /* Add any platform that doesn't build using the configure system */
+! #if defined(__DREAMCAST__)
+! #include "SDL_config_dreamcast.h"
+! #elif defined(__MACOS__)
+! #include "SDL_config_macos.h"
+! #elif defined(__MACOSX__)
+! #include "SDL_config_macosx.h"
+! #elif defined(__SYMBIAN32__)
+! #include "SDL_config_symbian.h"  /* must be before win32! */
+! #elif defined(__WIN32__)
+! #include "SDL_config_win32.h"
+! #elif defined(__OS2__)
+! #include "SDL_config_os2.h"
+  #else
+! #include "SDL_config_minimal.h"
+! #endif /* platform config */
+  
+  #endif /* _SDL_config_h */
+--- 24,307 ----
+  #ifndef _SDL_config_h
+  #define _SDL_config_h
+  
++ /* This is a set of defines to configure the SDL features */
++ 
++ /* General platform specific identifiers */
+  #include "SDL_platform.h"
+  
+! /* Make sure that this isn't included by Visual C++ */
+! #ifdef _MSC_VER
+! #error You should copy include/SDL_config.h.default to include/SDL_config.h
+! #endif
+! 
+! /* C language features */
+! /* #undef const */
+! /* #undef inline */
+! /* #undef volatile */
+! 
+! /* C datatypes */
+! /* #undef size_t */
+! /* #undef int8_t */
+! /* #undef uint8_t */
+! /* #undef int16_t */
+! /* #undef uint16_t */
+! /* #undef int32_t */
+! /* #undef uint32_t */
+! /* #undef int64_t */
+! /* #undef uint64_t */
+! /* #undef uintptr_t */
+! #define SDL_HAS_64BIT_TYPE 1
+! 
+! /* Endianness */
+! #define SDL_BYTEORDER 1234
+! 
+! /* Comment this if you want to build without any C library requirements */
+! #define HAVE_LIBC 1
+! #if HAVE_LIBC
+! 
+! /* Useful headers */
+! #define HAVE_ALLOCA_H 1
+! #define HAVE_SYS_TYPES_H 1
+! #define HAVE_STDIO_H 1
+! #define STDC_HEADERS 1
+! #define HAVE_STDLIB_H 1
+! #define HAVE_STDARG_H 1
+! /* #undef HAVE_MALLOC_H */
+! #define HAVE_MEMORY_H 1
+! #define HAVE_STRING_H 1
+! #define HAVE_STRINGS_H 1
+! #define HAVE_INTTYPES_H 1
+! #define HAVE_STDINT_H 1
+! #define HAVE_CTYPE_H 1
+! #define HAVE_MATH_H 1
+! #define HAVE_ICONV_H 1
+! #define HAVE_SIGNAL_H 1
+! /* #undef HAVE_ALTIVEC_H */
+! 
+! /* C library functions */
+! #define HAVE_MALLOC 1
+! #define HAVE_CALLOC 1
+! #define HAVE_REALLOC 1
+! #define HAVE_FREE 1
+! #define HAVE_ALLOCA 1
+! #ifndef _WIN32 /* Don't use C runtime versions of these on Windows */
+! #define HAVE_GETENV 1
+! #define HAVE_PUTENV 1
+! #define HAVE_UNSETENV 1
+! #endif
+! #define HAVE_QSORT 1
+! #define HAVE_ABS 1
+! #define HAVE_BCOPY 1
+! #define HAVE_MEMSET 1
+! #define HAVE_MEMCPY 1
+! #define HAVE_MEMMOVE 1
+! #define HAVE_MEMCMP 1
+! #define HAVE_STRLEN 1
+! #define HAVE_STRLCPY 1
+! #define HAVE_STRLCAT 1
+! #define HAVE_STRDUP 1
+! /* #undef HAVE__STRREV */
+! /* #undef HAVE__STRUPR */
+! /* #undef HAVE__STRLWR */
+! /* #undef HAVE_INDEX */
+! /* #undef HAVE_RINDEX */
+! #define HAVE_STRCHR 1
+! #define HAVE_STRRCHR 1
+! #define HAVE_STRSTR 1
+! /* #undef HAVE_ITOA */
+! /* #undef HAVE__LTOA */
+! /* #undef HAVE__UITOA */
+! /* #undef HAVE__ULTOA */
+! #define HAVE_STRTOL 1
+! #define HAVE_STRTOUL 1
+! /* #undef HAVE__I64TOA */
+! /* #undef HAVE__UI64TOA */
+! #define HAVE_STRTOLL 1
+! #define HAVE_STRTOULL 1
+! #define HAVE_STRTOD 1
+! #define HAVE_ATOI 1
+! #define HAVE_ATOF 1
+! #define HAVE_STRCMP 1
+! #define HAVE_STRNCMP 1
+! /* #undef HAVE__STRICMP */
+! #define HAVE_STRCASECMP 1
+! /* #undef HAVE__STRNICMP */
+! #define HAVE_STRNCASECMP 1
+! #define HAVE_SSCANF 1
+! #define HAVE_SNPRINTF 1
+! #define HAVE_VSNPRINTF 1
+! /* #undef HAVE_ICONV */
+! #define HAVE_SIGACTION 1
+! #define HAVE_SETJMP 1
+! #define HAVE_NANOSLEEP 1
+! /* #undef HAVE_CLOCK_GETTIME */
+! /* #undef HAVE_DLVSYM */
+! /* #undef HAVE_GETPAGESIZE */
+! #define HAVE_MPROTECT 1
+! 
+  #else
+! /* We may need some replacement for stdarg.h here */
+! #include <stdarg.h>
+! #endif /* HAVE_LIBC */
+! 
+! /* Allow disabling of core subsystems */
+! /* #undef SDL_AUDIO_DISABLED */
+! /* #undef SDL_CDROM_DISABLED */
+! /* #undef SDL_CPUINFO_DISABLED */
+! /* #undef SDL_EVENTS_DISABLED */
+! /* #undef SDL_FILE_DISABLED */
+! /* #undef SDL_JOYSTICK_DISABLED */
+! /* #undef SDL_LOADSO_DISABLED */
+! /* #undef SDL_THREADS_DISABLED */
+! /* #undef SDL_TIMERS_DISABLED */
+! /* #undef SDL_VIDEO_DISABLED */
+! 
+! /* Enable various audio drivers */
+! /* #undef SDL_AUDIO_DRIVER_ALSA */
+! /* #undef SDL_AUDIO_DRIVER_ALSA_DYNAMIC */
+! /* #undef SDL_AUDIO_DRIVER_ARTS */
+! /* #undef SDL_AUDIO_DRIVER_ARTS_DYNAMIC */
+! /* #undef SDL_AUDIO_DRIVER_BAUDIO */
+! /* #undef SDL_AUDIO_DRIVER_BSD */
+! #define SDL_AUDIO_DRIVER_COREAUDIO 1
+! /* #undef SDL_AUDIO_DRIVER_DART */
+! /* #undef SDL_AUDIO_DRIVER_DC */
+! #define SDL_AUDIO_DRIVER_DISK 1
+! #define SDL_AUDIO_DRIVER_DUMMY 1
+! /* #undef SDL_AUDIO_DRIVER_DMEDIA */
+! /* #undef SDL_AUDIO_DRIVER_DSOUND */
+! /* #undef SDL_AUDIO_DRIVER_PULSE */
+! /* #undef SDL_AUDIO_DRIVER_PULSE_DYNAMIC */
+! /* #undef SDL_AUDIO_DRIVER_ESD */
+! /* #undef SDL_AUDIO_DRIVER_ESD_DYNAMIC */
+! /* #undef SDL_AUDIO_DRIVER_MINT */
+! /* #undef SDL_AUDIO_DRIVER_MMEAUDIO */
+! /* #undef SDL_AUDIO_DRIVER_NAS */
+! /* #undef SDL_AUDIO_DRIVER_OSS */
+! /* #undef SDL_AUDIO_DRIVER_OSS_SOUNDCARD_H */
+! /* #undef SDL_AUDIO_DRIVER_PAUD */
+! /* #undef SDL_AUDIO_DRIVER_QNXNTO */
+! #define SDL_AUDIO_DRIVER_SNDMGR 1
+! /* #undef SDL_AUDIO_DRIVER_SUNAUDIO */
+! /* #undef SDL_AUDIO_DRIVER_WAVEOUT */
+! 
+! /* Enable various cdrom drivers */
+! /* #undef SDL_CDROM_AIX */
+! /* #undef SDL_CDROM_BEOS */
+! /* #undef SDL_CDROM_BSDI */
+! /* #undef SDL_CDROM_DC */
+! /* #undef SDL_CDROM_DUMMY */
+! /* #undef SDL_CDROM_FREEBSD */
+! /* #undef SDL_CDROM_LINUX */
+! /* #undef SDL_CDROM_MACOS */
+! #define SDL_CDROM_MACOSX 1
+! /* #undef SDL_CDROM_MINT */
+! /* #undef SDL_CDROM_OPENBSD */
+! /* #undef SDL_CDROM_OS2 */
+! /* #undef SDL_CDROM_OSF */
+! /* #undef SDL_CDROM_QNX */
+! /* #undef SDL_CDROM_WIN32 */
+! 
+! /* Enable various input drivers */
+! /* #undef SDL_INPUT_LINUXEV */
+! /* #undef SDL_INPUT_TSLIB */
+! /* #undef SDL_JOYSTICK_BEOS */
+! /* #undef SDL_JOYSTICK_DC */
+! /* #undef SDL_JOYSTICK_DUMMY */
+! #define SDL_JOYSTICK_IOKIT 1
+! /* #undef SDL_JOYSTICK_LINUX */
+! /* #undef SDL_JOYSTICK_MACOS */
+! /* #undef SDL_JOYSTICK_MINT */
+! /* #undef SDL_JOYSTICK_OS2 */
+! /* #undef SDL_JOYSTICK_RISCOS */
+! /* #undef SDL_JOYSTICK_WINMM */
+! /* #undef SDL_JOYSTICK_USBHID */
+! /* #undef SDL_JOYSTICK_USBHID_MACHINE_JOYSTICK_H */
+! 
+! /* Enable various shared object loading systems */
+! /* #undef SDL_LOADSO_BEOS */
+! /* #undef SDL_LOADSO_DLCOMPAT */
+! #define SDL_LOADSO_DLOPEN 1
+! /* #undef SDL_LOADSO_DUMMY */
+! /* #undef SDL_LOADSO_LDG */
+! /* #undef SDL_LOADSO_MACOS */
+! /* #undef SDL_LOADSO_OS2 */
+! /* #undef SDL_LOADSO_WIN32 */
+! 
+! /* Enable various threading systems */
+! /* #undef SDL_THREAD_BEOS */
+! /* #undef SDL_THREAD_DC */
+! /* #undef SDL_THREAD_OS2 */
+! /* #undef SDL_THREAD_PTH */
+! #define SDL_THREAD_PTHREAD 1
+! #define SDL_THREAD_PTHREAD_RECURSIVE_MUTEX 1
+! /* #undef SDL_THREAD_PTHREAD_RECURSIVE_MUTEX_NP */
+! /* #undef SDL_THREAD_SPROC */
+! /* #undef SDL_THREAD_WIN32 */
+! 
+! /* Enable various timer systems */
+! /* #undef SDL_TIMER_BEOS */
+! /* #undef SDL_TIMER_DC */
+! /* #undef SDL_TIMER_DUMMY */
+! /* #undef SDL_TIMER_MACOS */
+! /* #undef SDL_TIMER_MINT */
+! /* #undef SDL_TIMER_OS2 */
+! /* #undef SDL_TIMER_RISCOS */
+! #define SDL_TIMER_UNIX 1
+! /* #undef SDL_TIMER_WIN32 */
+! /* #undef SDL_TIMER_WINCE */
+! 
+! /* Enable various video drivers */
+! /* #undef SDL_VIDEO_DRIVER_AALIB */
+! /* #undef SDL_VIDEO_DRIVER_BWINDOW */
+! /* #undef SDL_VIDEO_DRIVER_DC */
+! /* #undef SDL_VIDEO_DRIVER_DDRAW */
+! #define SDL_VIDEO_DRIVER_DGA 1
+! /* #undef SDL_VIDEO_DRIVER_DIRECTFB */
+! /* #undef SDL_VIDEO_DRIVER_DRAWSPROCKET */
+! #define SDL_VIDEO_DRIVER_DUMMY 1
+! /* #undef SDL_VIDEO_DRIVER_FBCON */
+! /* #undef SDL_VIDEO_DRIVER_GAPI */
+! /* #undef SDL_VIDEO_DRIVER_GEM */
+! /* #undef SDL_VIDEO_DRIVER_GGI */
+! /* #undef SDL_VIDEO_DRIVER_IPOD */
+! /* #undef SDL_VIDEO_DRIVER_NANOX */
+! /* #undef SDL_VIDEO_DRIVER_OS2FS */
+! /* #undef SDL_VIDEO_DRIVER_PHOTON */
+! /* #undef SDL_VIDEO_DRIVER_PICOGUI */
+! /* #undef SDL_VIDEO_DRIVER_PS2GS */
+! /* #undef SDL_VIDEO_DRIVER_QTOPIA */
+! #define SDL_VIDEO_DRIVER_QUARTZ 1
+! /* #undef SDL_VIDEO_DRIVER_RISCOS */
+! /* #undef SDL_VIDEO_DRIVER_SVGALIB */
+! /* #undef SDL_VIDEO_DRIVER_TOOLBOX */
+! /* #undef SDL_VIDEO_DRIVER_VGL */
+! /* #undef SDL_VIDEO_DRIVER_WINDIB */
+! /* #undef SDL_VIDEO_DRIVER_WSCONS */
+! #define SDL_VIDEO_DRIVER_X11 1
+! #define SDL_VIDEO_DRIVER_X11_DGAMOUSE 1
+! #define SDL_VIDEO_DRIVER_X11_DPMS 1
+! #define SDL_VIDEO_DRIVER_X11_DYNAMIC "/usr/X11R6/lib/libX11.6.dylib"
+! #define SDL_VIDEO_DRIVER_X11_DYNAMIC_XEXT "/usr/X11R6/lib/libXext.6.dylib"
+! #define SDL_VIDEO_DRIVER_X11_DYNAMIC_XRANDR "/usr/X11R6/lib/libXrandr.2.dylib"
+! #define SDL_VIDEO_DRIVER_X11_DYNAMIC_XRENDER "/usr/X11R6/lib/libXrender.1.dylib"
+! #define SDL_VIDEO_DRIVER_X11_VIDMODE 1
+! #define SDL_VIDEO_DRIVER_X11_XINERAMA 1
+! #define SDL_VIDEO_DRIVER_X11_XME 1
+! #define SDL_VIDEO_DRIVER_X11_XRANDR 1
+! #define SDL_VIDEO_DRIVER_X11_XV 1
+! /* #undef SDL_VIDEO_DRIVER_XBIOS */
+! 
+! /* Enable OpenGL support */
+! #define SDL_VIDEO_OPENGL 1
+! #define SDL_VIDEO_OPENGL_GLX 1
+! /* #undef SDL_VIDEO_OPENGL_WGL */
+! /* #undef SDL_VIDEO_OPENGL_OSMESA */
+! /* #undef SDL_VIDEO_OPENGL_OSMESA_DYNAMIC */
+! 
+! /* Enable assembly routines */
+! #define SDL_ASSEMBLY_ROUTINES 1
+! #define SDL_HERMES_BLITTERS 1
+! /* #undef SDL_ALTIVEC_BLITTERS */
+  
+  #endif /* _SDL_config_h */
+diff -r -dc /Source/SDL-1.2.13/include/SDL_syswm.h SDL-1.2.13-XBMC/include/SDL_syswm.h
+*** /Source/SDL-1.2.13/include/SDL_syswm.h	2007-12-30 18:48:36.000000000 -1000
+--- SDL-1.2.13-XBMC/include/SDL_syswm.h	2008-01-08 19:12:04.000000000 -1000
+***************
+*** 101,106 ****
+--- 101,112 ----
+  		/* Introduced in SDL 1.2.12 */
+  		Display *gfxdisplay;	/* The X11 display to which rendering is done */
+  	    } x11;
++ 	    struct {
++             int       displayID; // Display.
++             void*     nsWindow;  // Window.
++             void*     nsContext; // GL context.
++             void*     nsWindowPtr;
++         } quartz;
+  	} info;
+  } SDL_SysWMinfo;
+  
+diff -r -dc /Source/SDL-1.2.13/include/SDL_video.h SDL-1.2.13-XBMC/include/SDL_video.h
+*** /Source/SDL-1.2.13/include/SDL_video.h	2007-12-30 18:48:36.000000000 -1000
+--- SDL-1.2.13-XBMC/include/SDL_video.h	2008-01-08 23:06:37.000000000 -1000
+***************
+*** 345,351 ****
+   * are not available.
+   */
+  extern DECLSPEC SDL_Surface * SDLCALL SDL_SetVideoMode
+! 			(int width, int height, int bpp, Uint32 flags);
+  
+  /*
+   * Makes sure the given list of rectangles is updated on the given screen.
+--- 345,351 ----
+   * are not available.
+   */
+  extern DECLSPEC SDL_Surface * SDLCALL SDL_SetVideoMode
+! 			(int width, int height, int bpp, Uint32 flags, void* sharedContext);
+  
+  /*
+   * Makes sure the given list of rectangles is updated on the given screen.
+Only in SDL-1.2.13-XBMC: libtool
+Only in SDL-1.2.13-XBMC: sdl-config
+Only in SDL-1.2.13-XBMC: sdl.pc
+Only in /Source/SDL-1.2.13/src: .DS_Store
+diff -r -dc /Source/SDL-1.2.13/src/video/SDL_sysvideo.h SDL-1.2.13-XBMC/src/video/SDL_sysvideo.h
+*** /Source/SDL-1.2.13/src/video/SDL_sysvideo.h	2007-12-30 18:48:14.000000000 -1000
+--- SDL-1.2.13-XBMC/src/video/SDL_sysvideo.h	2008-01-08 23:06:01.000000000 -1000
+***************
+*** 72,78 ****
+  	   should take care of cleaning up the current mode.
+  	 */
+  	SDL_Surface *(*SetVideoMode)(_THIS, SDL_Surface *current,
+! 				int width, int height, int bpp, Uint32 flags);
+  
+  	/* Toggle the fullscreen mode */
+  	int (*ToggleFullScreen)(_THIS, int on);
+--- 72,78 ----
+  	   should take care of cleaning up the current mode.
+  	 */
+  	SDL_Surface *(*SetVideoMode)(_THIS, SDL_Surface *current,
+! 				int width, int height, int bpp, Uint32 flags, void* sharedContext);
+  
+  	/* Toggle the fullscreen mode */
+  	int (*ToggleFullScreen)(_THIS, int on);
+diff -r -dc /Source/SDL-1.2.13/src/video/SDL_video.c SDL-1.2.13-XBMC/src/video/SDL_video.c
+*** /Source/SDL-1.2.13/src/video/SDL_video.c	2007-12-30 18:48:14.000000000 -1000
+--- SDL-1.2.13-XBMC/src/video/SDL_video.c	2008-01-08 23:07:43.000000000 -1000
+***************
+*** 568,574 ****
+  /*
+   * Set the requested video mode, allocating a shadow buffer if necessary.
+   */
+! SDL_Surface * SDL_SetVideoMode (int width, int height, int bpp, Uint32 flags)
+  {
+  	SDL_VideoDevice *video, *this;
+  	SDL_Surface *prev_mode, *mode;
+--- 568,574 ----
+  /*
+   * Set the requested video mode, allocating a shadow buffer if necessary.
+   */
+! SDL_Surface * SDL_SetVideoMode (int width, int height, int bpp, Uint32 flags, void* sharedContext)
+  {
+  	SDL_VideoDevice *video, *this;
+  	SDL_Surface *prev_mode, *mode;
+***************
+*** 663,669 ****
+  	prev_mode = SDL_VideoSurface;
+  	SDL_LockCursor();
+  	SDL_VideoSurface = NULL;	/* In case it's freed by driver */
+! 	mode = video->SetVideoMode(this, prev_mode,video_w,video_h,video_bpp,flags);
+  	if ( mode ) { /* Prevent resize events from mode change */
+            /* But not on OS/2 */
+  #ifndef __OS2__
+--- 663,669 ----
+  	prev_mode = SDL_VideoSurface;
+  	SDL_LockCursor();
+  	SDL_VideoSurface = NULL;	/* In case it's freed by driver */
+! 	mode = video->SetVideoMode(this, prev_mode,video_w,video_h,video_bpp,flags,sharedContext);
+  	if ( mode ) { /* Prevent resize events from mode change */
+            /* But not on OS/2 */
+  #ifndef __OS2__
+diff -r -dc /Source/SDL-1.2.13/src/video/quartz/SDL_QuartzGL.m SDL-1.2.13-XBMC/src/video/quartz/SDL_QuartzGL.m
+*** /Source/SDL-1.2.13/src/video/quartz/SDL_QuartzGL.m	2007-12-30 18:48:04.000000000 -1000
+--- SDL-1.2.13-XBMC/src/video/quartz/SDL_QuartzGL.m	2008-02-08 16:12:18.000000000 -1000
+***************
+*** 51,60 ****
+  
+  /* OpenGL helper functions (used internally) */
+  
+! int QZ_SetupOpenGL (_THIS, int bpp, Uint32 flags) {
+! 
+      NSOpenGLPixelFormatAttribute attr[32];
+      NSOpenGLPixelFormat *fmt;
+      int i = 0;
+      int colorBits = bpp;
+  
+--- 51,60 ----
+  
+  /* OpenGL helper functions (used internally) */
+  
+! int QZ_SetupOpenGL (_THIS, int bpp, Uint32 flags, void* sharedCtx) {
+      NSOpenGLPixelFormatAttribute attr[32];
+      NSOpenGLPixelFormat *fmt;
++     NSOpenGLContext* sharedContext = (NSOpenGLContext* )sharedCtx;
+      int i = 0;
+      int colorBits = bpp;
+  
+***************
+*** 116,121 ****
+--- 116,122 ----
+          attr[i++] = NSOpenGLPFAAccelerated;
+      }
+  
++ 	printf("Using display %d\n", display_id);
+      attr[i++] = NSOpenGLPFAScreenMask;
+      attr[i++] = CGDisplayIDToOpenGLDisplayMask (display_id);
+      attr[i] = 0;
+***************
+*** 127,133 ****
+      }
+  
+      gl_context = [ [ NSOpenGLContext alloc ] initWithFormat:fmt
+!                                                shareContext:nil];
+  
+      [ fmt release ];
+  
+--- 128,135 ----
+      }
+  
+      gl_context = [ [ NSOpenGLContext alloc ] initWithFormat:fmt
+!                                                shareContext:sharedContext];
+! 	//printf("Creating OpenGL context with shared=0x%08lx --> 0x%08lx\n", sharedContext, gl_context);
+  
+      [ fmt release ];
+  
+***************
+*** 177,185 ****
+  
+  void QZ_TearDownOpenGL (_THIS) {
+  
+!     [ NSOpenGLContext clearCurrentContext ];
+!     [ gl_context clearDrawable ];
+!     [ gl_context release ];
+  }
+  
+  
+--- 179,188 ----
+  
+  void QZ_TearDownOpenGL (_THIS) {
+  
+!     //[ NSOpenGLContext clearCurrentContext ];
+!     // We'll take care of whacking this baby.
+!     //[ gl_context clearDrawable ];
+!     //[ gl_context release ];
+  }
+  
+  
+diff -r -dc /Source/SDL-1.2.13/src/video/quartz/SDL_QuartzVideo.h SDL-1.2.13-XBMC/src/video/quartz/SDL_QuartzVideo.h
+*** /Source/SDL-1.2.13/src/video/quartz/SDL_QuartzVideo.h	2007-12-30 18:48:04.000000000 -1000
+--- SDL-1.2.13-XBMC/src/video/quartz/SDL_QuartzVideo.h	2008-01-08 23:03:57.000000000 -1000
+***************
+*** 186,192 ****
+  int    QZ_GetGammaRamp      (_THIS, Uint16 *ramp);
+  
+  /* OpenGL functions */
+! int    QZ_SetupOpenGL       (_THIS, int bpp, Uint32 flags);
+  void   QZ_TearDownOpenGL    (_THIS);
+  void*  QZ_GL_GetProcAddress (_THIS, const char *proc);
+  int    QZ_GL_GetAttribute   (_THIS, SDL_GLattr attrib, int* value);
+--- 186,192 ----
+  int    QZ_GetGammaRamp      (_THIS, Uint16 *ramp);
+  
+  /* OpenGL functions */
+! int    QZ_SetupOpenGL       (_THIS, int bpp, Uint32 flags, void* sharedCtx);
+  void   QZ_TearDownOpenGL    (_THIS);
+  void*  QZ_GL_GetProcAddress (_THIS, const char *proc);
+  int    QZ_GL_GetAttribute   (_THIS, SDL_GLattr attrib, int* value);
+***************
+*** 213,219 ****
+  void         QZ_SetIcon          (_THIS, SDL_Surface *icon, Uint8 *mask);
+  int          QZ_IconifyWindow    (_THIS);
+  SDL_GrabMode QZ_GrabInput        (_THIS, SDL_GrabMode grab_mode);
+! /*int          QZ_GetWMInfo        (_THIS, SDL_SysWMinfo *info);*/
+  
+  /* YUV functions */
+  SDL_Overlay* QZ_CreateYUVOverlay (_THIS, int width, int height,
+--- 213,219 ----
+  void         QZ_SetIcon          (_THIS, SDL_Surface *icon, Uint8 *mask);
+  int          QZ_IconifyWindow    (_THIS);
+  SDL_GrabMode QZ_GrabInput        (_THIS, SDL_GrabMode grab_mode);
+! int          QZ_GetWMInfo        (_THIS, SDL_SysWMinfo *info);
+  
+  /* YUV functions */
+  SDL_Overlay* QZ_CreateYUVOverlay (_THIS, int width, int height,
+diff -r -dc /Source/SDL-1.2.13/src/video/quartz/SDL_QuartzVideo.m SDL-1.2.13-XBMC/src/video/quartz/SDL_QuartzVideo.m
+*** /Source/SDL-1.2.13/src/video/quartz/SDL_QuartzVideo.m	2007-12-30 18:48:04.000000000 -1000
+--- SDL-1.2.13-XBMC/src/video/quartz/SDL_QuartzVideo.m	2008-02-13 21:54:20.000000000 -1000
+***************
+*** 67,73 ****
+  
+  static SDL_Surface* QZ_SetVideoMode     (_THIS, SDL_Surface *current,
+                                           int width, int height, int bpp,
+!                                          Uint32 flags);
+  static int          QZ_ToggleFullScreen (_THIS, int on);
+  static int          QZ_SetColors        (_THIS, int first_color,
+                                           int num_colors, SDL_Color *colors);
+--- 67,73 ----
+  
+  static SDL_Surface* QZ_SetVideoMode     (_THIS, SDL_Surface *current,
+                                           int width, int height, int bpp,
+!                                          Uint32 flags, void* sharedContext);
+  static int          QZ_ToggleFullScreen (_THIS, int on);
+  static int          QZ_SetColors        (_THIS, int first_color,
+                                           int num_colors, SDL_Color *colors);
+***************
+*** 161,167 ****
+      device->SetCaption    = QZ_SetCaption;
+      device->SetIcon       = QZ_SetIcon;
+      device->IconifyWindow = QZ_IconifyWindow;
+!     /*device->GetWMInfo     = QZ_GetWMInfo;*/
+      device->GrabInput     = QZ_GrabInput;
+  
+      device->CreateYUVOverlay =  QZ_CreateYUVOverlay;
+--- 161,167 ----
+      device->SetCaption    = QZ_SetCaption;
+      device->SetIcon       = QZ_SetIcon;
+      device->IconifyWindow = QZ_IconifyWindow;
+!     device->GetWMInfo     = QZ_GetWMInfo;
+      device->GrabInput     = QZ_GrabInput;
+  
+      device->CreateYUVOverlay =  QZ_CreateYUVOverlay;
+***************
+*** 177,182 ****
+--- 177,184 ----
+      SDL_free (device);
+  }
+  
++ #define MAX_DISPLAYS 32
++ 
+  static int QZ_VideoInit (_THIS, SDL_PixelFormat *video_format) {
+  
+      NSRect r = NSMakeRect(0.0, 0.0, 0.0, 0.0);
+***************
+*** 184,189 ****
+--- 186,213 ----
+  
+      /* Initialize the video settings; this data persists between mode switches */
+      display_id = kCGDirectMainDisplay;
++ 
++ 	const char* strDisplayNum = SDL_getenv("SDL_VIDEO_FULLSCREEN_DISPLAY");
++ 	if (strDisplayNum != 0)
++ 	{
++ 		int display_num = atoi(strDisplayNum);
++ 		if (display_num != 0)
++ 		{
++ 			CGDirectDisplayID displayArray[MAX_DISPLAYS];
++ 			CGDisplayCount    numDisplays;
++ 			
++ 			// Get the list of displays.
++ 			CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
++ 			printf("There are %d displays, requested was %d.\n", numDisplays, display_num);
++ 			
++ 			if (display_num <= numDisplays)
++ 			{
++ 				printf("Replacing display ID %d with %d\n", display_id, displayArray[display_num-1]);
++ 				display_id = displayArray[display_num-1];
++ 			}
++ 		}
++ 	}
++ 
+      save_mode  = CGDisplayCurrentMode    (display_id);
+      mode_list  = CGDisplayAvailableModes (display_id);
+      palette    = CGPaletteCreateDefaultColorPalette ();
+***************
+*** 394,400 ****
+              CGLSetFullScreen (NULL);
+          }
+          if (to_desktop) {
+!             ShowMenuBar ();
+              /* Restore original screen resolution/bpp */
+              CGDisplaySwitchToMode (display_id, save_mode);
+              CGReleaseAllDisplays ();
+--- 418,426 ----
+              CGLSetFullScreen (NULL);
+          }
+          if (to_desktop) {
+! 			if (display_id == kCGDirectMainDisplay)
+!             	ShowMenuBar ();
+! 
+              /* Restore original screen resolution/bpp */
+              CGDisplaySwitchToMode (display_id, save_mode);
+              CGReleaseAllDisplays ();
+***************
+*** 423,436 ****
+      video_set = SDL_FALSE;
+  }
+  
+  static SDL_Surface* QZ_SetVideoFullScreen (_THIS, SDL_Surface *current, int width,
+!                                            int height, int bpp, Uint32 flags) {
+      boolean_t exact_match = 0;
+      NSRect screen_rect;
+      CGError error;
+      NSRect contentRect;
+      BOOL isCustom = NO;
+      CGDisplayFadeReservationToken fade_token = kCGDisplayFadeReservationInvalidToken;
+      
+      /* Fade to black to hide resolution-switching flicker (and garbage
+         that is displayed by a destroyed OpenGL context, if applicable) */
+--- 449,495 ----
+      video_set = SDL_FALSE;
+  }
+  
++ //------------------------------------------------------------------------------------------
++ Boolean GetDictionaryBoolean(CFDictionaryRef theDict, const void* key) 
++ {
++ 	// get a boolean from the dictionary
++ 	Boolean value = false;
++ 	CFBooleanRef boolRef;
++ 	boolRef = (CFBooleanRef)CFDictionaryGetValue(theDict, key);
++ 	if (boolRef != NULL)
++ 		value = CFBooleanGetValue(boolRef); 	
++ 	return value;
++ }
++ //------------------------------------------------------------------------------------------
++ long GetDictionaryLong(CFDictionaryRef theDict, const void* key) 
++ {
++ 	// get a long from the dictionary
++ 	long value = 0;
++ 	CFNumberRef numRef;
++ 	numRef = (CFNumberRef)CFDictionaryGetValue(theDict, key); 
++ 	if (numRef != NULL)
++ 		CFNumberGetValue(numRef, kCFNumberLongType, &value); 	
++ 	return value;
++ }
++ 
++ #define GetModeWidth(mode) GetDictionaryLong((mode), kCGDisplayWidth)
++ #define GetModeHeight(mode) GetDictionaryLong((mode), kCGDisplayHeight)
++ #define GetModeRefreshRate(mode) GetDictionaryLong((mode), kCGDisplayRefreshRate)
++ #define GetModeBitsPerPixel(mode) GetDictionaryLong((mode), kCGDisplayBitsPerPixel)
++ #define GetModeInterlaced(mode) GetDictionaryLong((mode), kCGDisplayModeIsInterlaced)
++ #define GetModeSafeForHardware(mode) GetDictionaryBoolean((mode), kCGDisplayModeIsSafeForHardware)
++ #define GetModeStretched(mode) GetDictionaryBoolean((mode), kCGDisplayModeIsStretched)
++ 
+  static SDL_Surface* QZ_SetVideoFullScreen (_THIS, SDL_Surface *current, int width,
+!                                            int height, int bpp, Uint32 flags, void* sharedContext) {
+! 
+      boolean_t exact_match = 0;
+      NSRect screen_rect;
+      CGError error;
+      NSRect contentRect;
+      BOOL isCustom = NO;
+      CGDisplayFadeReservationToken fade_token = kCGDisplayFadeReservationInvalidToken;
++ 	printf("QZ_SetVideoFullScreen(%d, %d, bpp=%d)\n", width, height, bpp);
+      
+      /* Fade to black to hide resolution-switching flicker (and garbage
+         that is displayed by a destroyed OpenGL context, if applicable) */
+***************
+*** 442,450 ****
+      if (video_set == SDL_TRUE)
+          QZ_UnsetVideoMode (this, FALSE);
+  
+!     /* See if requested mode exists */
+!     mode = CGDisplayBestModeForParameters (display_id, bpp, width,
+!                                            height, &exact_match);
+  
+      /* Require an exact match to the requested mode */
+      if ( ! exact_match ) {
+--- 501,552 ----
+      if (video_set == SDL_TRUE)
+          QZ_UnsetVideoMode (this, FALSE);
+  
+! 	// Look for the best non-interlaced mode with the highest refresh rate.
+! 	CFArrayRef modeList = CGDisplayAvailableModes(display_id);
+!     if (NULL != modeList)
+!     {
+!         //  Examine each mode
+! 		int  cnt = CFArrayGetCount(modeList);
+! 		int  i = 0;
+! 		long bestRefresh = 0;
+! 
+!         for (i = 0; i < cnt; i++ )
+!         {
+!             CFDictionaryRef m = (CFDictionaryRef)CFArrayGetValueAtIndex(modeList, i);
+! 			printf(" -> Considering mode %dx%d %dBPP @ %d HZ interlaced=%d hardware=%d\n", 
+! 					GetModeWidth(m), GetModeHeight(m), GetModeBitsPerPixel(m), GetModeRefreshRate(m), 
+! 					GetModeInterlaced(m), GetModeSafeForHardware(m));
+! 
+! 			if (GetModeBitsPerPixel(m) == bpp && 
+! 				GetModeWidth(m) == width && 
+! 				GetModeHeight(m) == height && 
+! 				GetModeInterlaced(m) == false &&
+! 				GetModeSafeForHardware(m) == true)
+! 			{
+! 				// It's a candidate.
+! 				if (GetModeRefreshRate(m) > bestRefresh)
+! 				{
+! 					bestRefresh = GetModeRefreshRate(m);
+! 					mode = m;
+! 				}
+! 			}
+!         }
+!     }
+! 
+! 	if (mode != 0)
+! 	{
+! 		// We did it!
+! 		printf("[SDL] Cherry picked Mode: %dx%d, refresh=%d, bpp=%d, HW=%d, stretched=%d, interlaced=%d\n",
+! 				GetModeWidth(mode), GetModeHeight(mode), GetModeRefreshRate(mode), GetModeBitsPerPixel(mode), GetModeSafeForHardware(mode), GetModeStretched(mode), GetModeInterlaced(mode));
+! 		exact_match = 1;
+! 	}
+! 	else
+! 	{
+!     	/* See if requested mode exists */
+! 		printf("[SDL] Falling back to automatically picking, didn't find good enough mode.\n");
+!     	mode = CGDisplayBestModeForParameters (display_id, bpp, width,
+!                                            	height, &exact_match);
+! 	}
+  
+      /* Require an exact match to the requested mode */
+      if ( ! exact_match ) {
+***************
+*** 581,587 ****
+          CGLError err;
+          CGLContextObj ctx;
+  
+!         if ( ! QZ_SetupOpenGL (this, bpp, flags) ) {
+              goto ERR_NO_GL;
+          }
+  
+--- 683,689 ----
+          CGLError err;
+          CGLContextObj ctx;
+  
+!         if ( ! QZ_SetupOpenGL (this, bpp, flags, sharedContext) ) {
+              goto ERR_NO_GL;
+          }
+  
+***************
+*** 609,615 ****
+      }
+  
+      /* If we don't hide menu bar, it will get events and interrupt the program */
+!     HideMenuBar ();
+  
+      /* Fade in again (asynchronously) */
+      if ( fade_token != kCGDisplayFadeReservationInvalidToken ) {
+--- 711,718 ----
+      }
+  
+      /* If we don't hide menu bar, it will get events and interrupt the program */
+! 	if (display_id == kCGDirectMainDisplay)
+!     	HideMenuBar ();
+  
+      /* Fade in again (asynchronously) */
+      if ( fade_token != kCGDisplayFadeReservationInvalidToken ) {
+***************
+*** 648,661 ****
+  }
+  
+  static SDL_Surface* QZ_SetVideoWindowed (_THIS, SDL_Surface *current, int width,
+!                                          int height, int *bpp, Uint32 flags) {
+      unsigned int style;
+      NSRect contentRect;
+      BOOL isCustom = NO;
+      int center_window = 1;
+      int origin_x, origin_y;
+      CGDisplayFadeReservationToken fade_token = kCGDisplayFadeReservationInvalidToken;
+! 
+      current->flags = 0;
+      current->w = width;
+      current->h = height;
+--- 751,765 ----
+  }
+  
+  static SDL_Surface* QZ_SetVideoWindowed (_THIS, SDL_Surface *current, int width,
+!                                          int height, int *bpp, Uint32 flags, void* sharedContext) {
+      unsigned int style;
+      NSRect contentRect;
+      BOOL isCustom = NO;
+      int center_window = 1;
+      int origin_x, origin_y;
+      CGDisplayFadeReservationToken fade_token = kCGDisplayFadeReservationInvalidToken;
+!     printf("QZ_SetVideoWindowed(%d, %d)\n", width, height);
+!     
+      current->flags = 0;
+      current->w = width;
+      current->h = height;
+***************
+*** 781,787 ****
+      /* For OpenGL, we bind the context to a subview */
+      if ( flags & SDL_OPENGL ) {
+  
+!         if ( ! QZ_SetupOpenGL (this, *bpp, flags) ) {
+              if (fade_token != kCGDisplayFadeReservationInvalidToken) {
+                  CGDisplayFade (fade_token, 0.5, kCGDisplayBlendSolidColor, kCGDisplayBlendNormal, 0.0, 0.0, 0.0, FALSE);
+                  CGReleaseDisplayFadeReservation (fade_token);
+--- 885,891 ----
+      /* For OpenGL, we bind the context to a subview */
+      if ( flags & SDL_OPENGL ) {
+  
+!         if ( ! QZ_SetupOpenGL (this, *bpp, flags, sharedContext) ) {
+              if (fade_token != kCGDisplayFadeReservationInvalidToken) {
+                  CGDisplayFade (fade_token, 0.5, kCGDisplayBlendSolidColor, kCGDisplayBlendNormal, 0.0, 0.0, 0.0, FALSE);
+                  CGReleaseDisplayFadeReservation (fade_token);
+***************
+*** 855,868 ****
+  }
+  
+  static SDL_Surface* QZ_SetVideoMode (_THIS, SDL_Surface *current, int width,
+!                                      int height, int bpp, Uint32 flags) {
+  
+      current->flags = 0;
+      current->pixels = NULL;
+  
+      /* Setup full screen video */
+      if ( flags & SDL_FULLSCREEN ) {
+!         current = QZ_SetVideoFullScreen (this, current, width, height, bpp, flags );
+          if (current == NULL)
+              return NULL;
+      }
+--- 959,972 ----
+  }
+  
+  static SDL_Surface* QZ_SetVideoMode (_THIS, SDL_Surface *current, int width,
+!                                      int height, int bpp, Uint32 flags, void* sharedContext) {
+  
+      current->flags = 0;
+      current->pixels = NULL;
+  
+      /* Setup full screen video */
+      if ( flags & SDL_FULLSCREEN ) {
+!         current = QZ_SetVideoFullScreen (this, current, width, height, bpp, flags, sharedContext);
+          if (current == NULL)
+              return NULL;
+      }
+***************
+*** 870,876 ****
+      else {
+          /* Force bpp to the device's bpp */
+          bpp = device_bpp;
+!         current = QZ_SetVideoWindowed (this, current, width, height, &bpp, flags);
+          if (current == NULL)
+              return NULL;
+      }
+--- 974,980 ----
+      else {
+          /* Force bpp to the device's bpp */
+          bpp = device_bpp;
+!         current = QZ_SetVideoWindowed (this, current, width, height, &bpp, flags, sharedContext);
+          if (current == NULL)
+              return NULL;
+      }
+diff -r -dc /Source/SDL-1.2.13/src/video/quartz/SDL_QuartzWM.m SDL-1.2.13-XBMC/src/video/quartz/SDL_QuartzWM.m
+*** /Source/SDL-1.2.13/src/video/quartz/SDL_QuartzWM.m	2007-12-30 18:48:04.000000000 -1000
+--- SDL-1.2.13-XBMC/src/video/quartz/SDL_QuartzWM.m	2008-02-01 00:57:13.000000000 -1000
+***************
+*** 367,377 ****
+      }
+  }
+  
+! /*
+! int  QZ_GetWMInfo  (_THIS, SDL_SysWMinfo *info) { 
+!     info->nsWindowPtr = qz_window;
+      return 0; 
+! }*/
+  
+  void QZ_ChangeGrabState (_THIS, int action) {
+  
+--- 367,379 ----
+      }
+  }
+  
+! int  QZ_GetWMInfo  (_THIS, SDL_SysWMinfo *info) {
+!     info->info.quartz.nsContext = gl_context;
+!     info->info.quartz.nsWindow = qz_window;
+!     info->info.quartz.displayID = display_id;
+!     info->info.quartz.nsWindowPtr = [ qz_window windowRef ];
+      return 0; 
+! }
+  
+  void QZ_ChangeGrabState (_THIS, int action) {
+  

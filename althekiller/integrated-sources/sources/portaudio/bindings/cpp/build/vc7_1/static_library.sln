@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "static_library", "static_library.vcproj", "{D18EA0C9-8C65-441D-884C-55EB43A84F2A}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{D18EA0C9-8C65-441D-884C-55EB43A84F2A}.Debug.ActiveCfg = Debug|Win32
+		{D18EA0C9-8C65-441D-884C-55EB43A84F2A}.Debug.Build.0 = Debug|Win32
+		{D18EA0C9-8C65-441D-884C-55EB43A84F2A}.Release.ActiveCfg = Release|Win32
+		{D18EA0C9-8C65-441D-884C-55EB43A84F2A}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

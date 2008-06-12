@@ -1,0 +1,11 @@
+.*.sw[po]
+*~
+*.diff
+*.patch
+*.lo
+*.o
+Makefile
+Makefile.in
+configure
+.deps
+.libs

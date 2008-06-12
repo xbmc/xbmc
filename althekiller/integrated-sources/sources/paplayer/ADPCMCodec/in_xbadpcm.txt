@@ -1,0 +1,47 @@
+######################################################################
+
+Xbox ADPCM plugin for Winamp
+by Luigi Auriemma
+e-mail: aluigi@autistici.org
+web:    aluigi.org
+plugin: http://aluigi.org/papers.htm#xbox
+
+######################################################################
+
+
+This is a plugin for Winamp which allows to play the audio compressed
+with the Xbox ADPCM codec.
+
+For using it simply move in_xbadpcm.dll into your Plugin folder or in
+the folder where is located your preferred player (Winamp, Xmplay and
+many others),
+
+Supports wave file (tag 0x0069), raw files (like those extracted with
+the old versions of my Unxwb tool), XWB/ZWB/WBA archives (the plugin
+will skip the WMA and PCM audio files and the XWB file will be read as
+an unique audio file, in future I hope to add subsongs handling) and
+XSD/XSH archives.
+
+It's open source and released under the GPL license.
+
+More info and tools are available here:
+
+  http://aluigi.org/papers.htm#xbox
+
+Note that raw audio files have no info in them (XWB archives store
+these info) so the sample rate is automatically set to 44100 and the
+channels to 2.
+I highly suggest you to use my xbadpdec tool for adding the wave
+header to your files:
+
+  xbadpdec -a 00000000.dat 00000000.wav
+
+or if your game uses the 32000 or 33000 sample rate (like Unreal
+Championship) use:
+
+  xbadpdec -f 32000 -a 00000000.dat 00000000.wav
+
+channels number can be set with the -c option.
+
+
+######################################################################

@@ -1,0 +1,402 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- Copyright (c) 2000,2001,2002,2003,2004,2005,2006,2007  Josh Coalson -->
+<!-- Permission is granted to copy, distribute and/or modify this document -->
+<!-- under the terms of the GNU Free Documentation License, Version 1.1 -->
+<!-- or any later version published by the Free Software Foundation; -->
+<!-- with no invariant sections. -->
+<!-- A copy of the license can be found at http://www.gnu.org/copyleft/fdl.html -->
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<meta name="author" content="Josh Coalson" />
+	<meta name="description" content="A free, open source codec for lossless audio compression and decompression" />
+	<meta name="keywords" content="free,lossless,audio,codec,encoder,decoder,compression,compressor,archival,archive,archiving,backup,music" />
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="flac.css" />
+	<title>FLAC - faq</title>
+</head>
+
+<body>
+
+<div class="logo">
+	<a href="http://flac.sourceforge.net/"><img src="images/logo130.gif" alt="FLAC Logo" align="middle" border="0" hspace="0" /></a>
+</div>
+
+<div class="above_nav"></div>
+
+<div class="navbar">
+	&nbsp;<a href="index.html">home</a>&nbsp;&nbsp;|
+	&nbsp;faq&nbsp;&nbsp;|
+	&nbsp;<a href="news.html">news</a>&nbsp;&nbsp;|
+	&nbsp;<a href="download.html">download</a>&nbsp;&nbsp;|
+	&nbsp;<a href="documentation.html">documentation</a>&nbsp;&nbsp;|
+	&nbsp;<a href="comparison.html">comparison</a>&nbsp;&nbsp;|
+	&nbsp;<a href="changelog.html">changelog</a>&nbsp;&nbsp;|
+	&nbsp;<a href="links.html">links</a>&nbsp;&nbsp;|
+	&nbsp;<a href="developers.html">developers</a>&nbsp;
+</div>
+
+<div class="langbar">
+	&nbsp;english&nbsp;&nbsp;|
+	&nbsp;<a href="ru/faq.html">russian</a>&nbsp;
+</div>
+
+<div class="below_nav"></div>
+
+<div class="box">
+	<div class="box_title">
+		faq
+	</div>
+	<div class="box_header"></div>
+	<div class="box_body">
+		<b>General</b>
+		<ul>
+			<li>
+				<a href="#general__what_is"><b>What is FLAC?</b></a>
+			</li>
+			<li>
+				<a href="#general__how_to"><b>I have a FLAC file, how do I play it?</b></a>
+			</li>
+			<li>
+				<a href="#general__how_to"><b>How can I create FLAC files?</b></a>
+			</li>
+			<li>
+				<a href="#general__license"><b>What licensing applies to the FLAC format and software?</b></a>
+			</li>
+			<li>
+				<a href="#general__tagging"><b>What kinds of tags does FLAC support?</b></a>
+			</li>
+			<li>
+				<a href="#general__software"><b>What software support FLAC?</b></a>
+			</li>
+			<li>
+				<a href="#general__software_wmp"><b>How can I play FLAC in Windows Media Player?</b></a>
+			</li>
+			<li>
+				<a href="#general__hardware"><b>What hardware products support FLAC?</b></a>
+			</li>
+			<li>
+				<a href="#general__native_vs_ogg"><b>What is the difference between (native) FLAC and Ogg FLAC?</b></a>
+			</li>
+			<li>
+				<a href="#general__native_or_ogg"><b>Which should I use, (native) FLAC or Ogg FLAC?</b></a>
+			</li>
+			<li>
+				<a href="#general__no_cuesheet_tags"><b>Why aren't PERFORMER/TITLE/etc tags stored in the FLAC CUESHEET block?</b></a>
+			</li>
+			<li>
+				<a href="#general__no_wave_metadata"><b>Why doesn't FLAC store all WAVE metadata?</b></a>
+			</li>
+			<li>
+				<a href="#general__not_wave_compressor"><b>If flac compresses WAVE files, why isn't it technically a WAVE file compressor?</b></a>
+			</li>
+			<li>
+				<a href="#general__no_riff_subchunks"><b>Why do some lossless comparisons say FLAC does not support RIFF chunks?</b></a>
+			</li>
+			<li>
+				<a href="#general__asymmetry"><b>Why do the encoder settings have a big effect on the encoding time but not the decoding time?</b></a>
+			</li>
+			<li>
+				<a href="#general__alternatives"><b>Why use FLAC instead of other codecs that compress more?</b></a>
+			</li>
+			<li>
+				<a href="#general__encode_faster"><b>Why can't you make FLAC encode faster?</b></a>
+			</li>
+			<li>
+				<a href="#general__lossless_trust"><b>How can I be sure FLAC is lossless?</b></a>
+			</li>
+			<li>
+				<a href="#general__testing"><b>How much testing has been done on FLAC?</b></a>
+			</li>
+			<li>
+				<a href="#general__lowest_bitrate"><b>What is the lowest bitrate (or highest compression) achievable with FLAC?</b></a>
+			</li>
+			<li>
+				<a href="#general__channels"><b>How many channels does FLAC support?</b></a>
+			</li>
+			<li>
+				<a href="#general__samples"><b>What kind of audio samples does FLAC support?</b></a>
+			</li>
+		</ul>
+		<b>Tools</b>
+		<ul>
+			<li>
+				<a href="#tools__eac_and_flac"><b>How do I set up EAC to rip directly to FLAC?</b></a>
+			</li>
+			<li>
+				<a href="#tools__runtime75"><b>Why am I getting "Run-time error '75': Path/File access error" with FLAC Frontend?</b></a>
+			</li>
+			<li>
+				<a href="#tools__option_blocking"><b>How do I encode a file that starts with a dash?</b></a>
+			</li>
+			<li>
+				<a href="#tools__long_meta_edits"><b>Why does it take so long to edit some FLAC files with metaflac?</b></a>
+			</li>
+			<li>
+				<a href="#tools__unicode_filenames_windows"><b>Why don't Unicode file names work with <span class="commandname">flac/<span class="commandname">metaflac</span></span> on Windows?</b></a>
+			</li>
+			<li>
+				<a href="#tools__wildcards_on_windows"><b>Why don't wildcards for file names like *.flac or *.wav work with <span class="commandname">flac</span>/<span class="commandname">metaflac</span> on Windows?</b></a>
+			</li>
+			<li>
+				<a href="#tools__hardware_prob"><b>I compressed a file to FLAC with verify on, and flac said "Verify FAILED!"  Why?</b></a>
+			</li>
+			<li>
+				<a href="#tools__wave_flac_wave"><b>I compressed a WAVE file to FLAC, then decompressed to WAVE, and the two weren't identical.  Why?</b></a>
+			</li>
+			<li>
+				<a href="#tools__skipped_subchunk"><b>I compressed a WAVE file to FLAC and it said "warning: skipping unknown sub-chunk LIST".  Why?</b></a>
+			</li>
+			<li>
+				<a href="#tools__two_bytes_short"><b>I decoded a FLAC file and the WAVE is 2 bytes shorter than the original.  Why?</b></a>
+			</li>
+			<li>
+				<a href="#tools__not_streamable"><b>Why did I get "ERROR initializing encoder, state = FLAC__STREAM_ENCODER_NOT_STREAMABLE"?</b></a>
+			</li>
+			<li>
+				<a href="#tools__different_sizes"><b>Why doesn't the same file compressed on different machines with the same options yield the same FLAC file?</b></a>
+			</li>
+		</ul>
+		<b>API</b>
+		<ul>
+			<li>
+				<a href="#api__release_versioning"><b>Why does your API change for point releases?</b></a>
+			</li>
+			<li>
+				<a href="#api__frame_length"><b>How can I determine the encoded frame length?</b></a>
+			</li>
+		</ul>
+		<b>Project</b>
+		<ul>
+			<li>
+				<a href="#project__lists"><b>Where are the mailing lists, forums, discussion areas, etc.?</b></a>
+			</li>
+			<li>
+				<a href="#project__submit_bug"><b>How do I submit a bug report?</b></a>
+			</li>
+		</ul>
+
+		<h2>
+			<b>General</b>
+		</h2>
+
+		<a name="general__what_is"><b>What is FLAC?</b></a><br />
+		<br />
+		FLAC stands for Free Lossless Audio Codec, an audio format similar to MP3, but lossless, meaning that audio is compressed in FLAC without any loss in quality.  This is similar to how Zip works, except with FLAC you will get much better compression because it is designed specifically for audio, and you can play back compressed FLAC files in your favorite player (or your car or home stereo, see <a href="links.html#hardware">supported devices</a>) just like you would an MP3 file.<br />
+		<br />
+		For more details, see <a href="features.html">What is FLAC?</a><br />
+		<br />
+		<a name="general__how_to"><b>I have a FLAC file, how do I play it?</b></a><br />
+		<b>How can I create FLAC files?</b></a><br />
+		<br />
+		See <a href="documentation_tasks.html">Using FLAC</a>.<br />
+		<br />
+		<a name="general__license"><b>What licensing applies to the FLAC format and software?</b></a><br />
+		<br />
+		See the <a href="license.html">license page</a>.<br />
+		<br />
+		<a name="general__tagging"><b>What kinds of tags does FLAC support?</b></a><br />
+		<br />
+		FLAC has it's own native tagging system which is identical to that of Vorbis.  They are called alternately "FLAC tags" and "Vorbis comments".  It is the only tagging system required and guaranteed to be supported by FLAC implementations.<br />
+		<br />
+		Out of convenience, the reference decoder knows how to skip ID3 tags so that they don't interfere with decoding.  But you should not expect any tags beside FLAC tags to be supported in applications; some implementations may not even be able to decode a FLAC file with ID3 tags.<br />
+		<br />
+		<a name="general__software"><b>What software support FLAC?</b></a><br />
+		<br />
+		This list is so large now it is difficult to maintain and keep up-to-date.  For a partial list of open-source software that supports FLAC, see the <a href="links.html#software">software section</a> of the links page.  For a partial list of the most popular software used to encode, decode, play, tag, and rip FLAC files, see the <a href="download.html">download page</a>.<br />
+		<br />
+		<a name="general__software_wmp"><b>How can I play FLAC in Windows Media Player?</b></a><br />
+		<br />
+		See <a href="http://www.losslessaudioblog.com/wmpmce-lossless-guide/">this guide</a>.<br />
+		<br />
+		<a name="general__hardware"><b>What hardware products support FLAC?</b></a><br />
+		<br />
+		See the <a href="links.html#hardware">hardware section</a> of the links page.<br />
+		<br />
+		<a name="general__native_vs_ogg"><b>What is the difference between (native) FLAC and Ogg FLAC?</b></a><br />
+		<br />
+		You can think of an audio codec as having two layers.  The inside layer is the raw compressed data, and the outside layer is the "container" or "transport layer" that splits and arranges the compressed data in pieces so it can be seeked through, edited, etc.<br />
+		<br />
+		"Native" FLAC is the compressed FLAC data stored in a very minimalist container, designed to be very efficient at storing single audio streams.<br />
+		<br />
+		Ogg FLAC is the compressed FLAC data stored in an <a href="http://xiph.org/ogg/vorbis/doc/oggstream.html">Ogg container</a>.  Ogg is a much more powerful transport layer that enables mixing several kinds of different streams (audio, data, metadata, etc).  The overhead is slightly higher than with native FLAC.<br />
+		<br />
+		In either case, the compressed FLAC data is the same and one can be converted to the other without re-encoding.<br />
+		<br />
+		<a name="general__native_or_ogg"><b>Which should I use, (native) FLAC or Ogg FLAC?</b></a><br />
+		<br />
+		The short answer right now is probably "native FLAC".  If all you are doing is compressing audio to be played back later, native FLAC will do everything you need, is more widely supported, and will yield smaller files.  If you plan to edit the compressed audio, or want to multiplex the audio with video later in an Ogg container, Ogg FLAC is a better choice.<br />
+		<br />
+		<a name="general__no_cuesheet_tags"><b>Why aren't PERFORMER/TITLE/etc tags stored in the FLAC CUESHEET block?</b></a><br />
+		<br />
+		This has turned out to be a pretty polarizing issue and requires a long explanation.<br />
+		<br />
+		The original purpose of a cue sheet in CD authoring software was to lay out the disc, essentially specifying how the audio will be organized on the disc; some of the information ends up as the CD table of contents: the track numbers and locations, and the index points.  Later CD-TEXT was added.  But CD-TEXT is a very complex spec, and actually goes in the CD subcode data.  It is internationalized, not through Unicode, but with several different character sets, some of them multi-byte.  It even allows for graphics.  In cue sheets, the TITLE/PERFORMER/etc tags are just a limited shorthand for authoring CD-TEXT, but when you rip, you almost never parse the CD-TEXT, you get it from another database, and it doesn't really belong in the FLAC CUESHEET block.<br />
+		<br />
+		For FLAC the intention is that applications can calculate the CDDB or CDindex ID from the CUESHEET block and look it up in an online or local database just like CD rippers and players do.  But if you really want it in the file itself, the track metadata should be stored separate from the CUESHEET, and already can be because of FLAC's metadata system.  There just isn't a method specified yet because as soon as it is, people will say that it's not flexible enough.  From experience (and you can see this come up time and time again in many lists), anyone who is going to the trouble of keeping a lossless collection in the first place will already be picky about metadata, and it is hard to come up with a standard that will please even the majority.  That is the big problem with metadata and is why Xiph has deferred on it, waiting for someone to come up with a good metadata spec that can be multiplexed together with data.<br />
+		<br />
+		Some players (for example Foobar2000) allow you to store the CDDB data as FLAC tags and can parse that.<br />
+		<br />
+		<a name="general__no_wave_metadata"><b>Why doesn't FLAC store all WAVE metadata?</b></a><br />
+		<a name="general__not_wave_compressor"><b>If flac compresses WAVE files, why isn't it technically a WAVE file compressor?</b></a><br />
+		<br />
+		(By default, <span class="commandname">flac</span> does not store WAVE metadata, but it can with the <span class="argument"><a href="documentation_tools_flac.html#flac_options_keep_foreign_metadata">--keep-foreign-metadata</a></span> option described below.)<br />
+		<br />
+		FLAC is a general-purpose audio format, not just a compressed WAVE file format.  There's a subtle difference.  WAVE is a complicated standard; many kinds of data besides audio data can be put in it.  FLAC's purpose is not to reproduce a WAVE file, including all the non-audio data that is in it, it is to losslessly compress the audio.<br />
+		<br />
+		However, if you really need to store the non-audio parts of a WAVE or AIFF file, you can use the <span class="argument"><a href="documentation_tools_flac.html#flac_options_keep_foreign_metadata">--keep-foreign-metadata</a></span> option to <span class="commandname">flac</span> when encoding to store it in FLAC metadata, then use the option again when decoding to restore in to the decoded WAVE/AIFF file.<br />
+		<br />
+		<a name="general__no_riff_subchunks"><b>Why do some lossless comparisons say FLAC does not support RIFF chunks?</b></a><br />
+		<br />
+		This is a limitation that no longer exists with FLAC (<a href="#general__no_wave_metadata">see above</a>).<br />
+		<br />
+		<a name="general__asymmetry"><b>Why do the encoder settings have a big effect on the encoding time but not the decoding time?</b></a><br />
+		<br />
+		It's hard to explain without going into the codec design, but to oversimplify, the encoder is looking for functions that approximate the signal.  Higher settings make the encoder search more to find better approximations.  The functions are themselves encoded in the FLAC file.  Decoding only requires computing the one chosen function, and the complexity of the function is very stable.  This is by design, to make decoding easier, and is one of the things that makes FLAC easy to implement in hardware.<br />
+		<br />
+		<a name="general__alternatives"><b>Why use FLAC instead of other codecs that compress more?</b></a><br />
+		<br />
+		For most users, a small difference in filesize is usually far outweighed by FLAC's advantages: open patent free codec, portable open source (BSD) reference implementation, documented API, multi-platform support, hardware support, multi-channel support, etc.  Improving FLAC to get a little more compression is not worth making it more complex and more compute-intensive to decode, and hence, less likely to be supported in hardware.<br />
+		<br />
+		<a name="general__encode_faster"><b>Why can't you make FLAC encode faster?</b></a><br />
+		<br />
+		FLAC already encodes pretty fast.  It is faster than real-time even on weak systems and is not much slower than even the fastest codecs.  And it is faster than the CD ripping process with which it is usually paired, meaning even if it went faster, it would not speed up the ripping-encoding process anyway.<br />
+		<br />
+		Part of the reason is that FLAC is asymmetric <a href="#general__asymmetry">(see also)</a>.  That means that it is optimized for decoding speed at the expense of encoding speed, because it makes it easier to decode on low-powered hardware, and because you only encode once but you decode many times.  <br />
+		<br />
+		<a name="general__lossless_trust"><b>How can I be sure FLAC is lossless?</b></a><br />
+		<a name="general__testing"><b>How much testing has been done on FLAC?</b></a><br />
+		<br />
+		First, FLAC is probably the only lossless compressor that has a published and comprehensive test suite.  With the others you rely on the author's personal testing or the longevity of the program.  But with FLAC you can download the whole test suite and run it on any version you like, or alter it to test your own data.  The test suite checks every function in the API, as well as running many thousands of streams through an encode-decode-verify process, to test every nook and cranny of the system.  Even on a fast machine the full test suite takes hours.  The full test suite must pass on several platforms before a release is made.<br />
+		<br />
+		Second, you can always use the <span class="argument">-V</span> option with <span class="commandname">flac</span> (also supported by most GUI frontends) to verify while encoding.  With this option, a decoder is run in parallel to the encoder and its output is compared against the original input.  If a difference is found <span class="commandname">flac</span> will stop with an error.<br />
+		<br />
+		Finally, FLAC is used by many people and has been judged stable enough by many software and hardware makers to be incorporated into their products.<br />
+		<br />
+		<a name="general__lowest_bitrate"><b>What is the lowest bitrate (or highest compression) achievable with FLAC?</b></a><br />
+		<br />
+		With FLAC you do not specify a bitrate like with some lossy codecs.  It's more like specifying a quality with Vorbis or MPC, except with FLAC the quality is always "lossless" and the resulting bitrate is roughly proportional to the amount of information in the original signal.  You cannot control the bitrate much and the result can be from around 100% of the input rate (if you are encoding noise), down to almost 0 (encoding silence).<br />
+		<br />
+		<a name="general__channels"><b>How many channels does FLAC support?</b></a><br />
+		<br />
+		FLAC supports from 1 to 8 channels per stream.  Channels are only grouped in FLAC to take advantage of interchannel correlation and to define common channel assignments (like stereo L/R, 5.1 surround, et cetera).  When encoding a large number of independent channels it is expected that they are coded separately and if required, multiplexed together in a suitable container like Ogg or Matroska.<br />
+		<br />
+		<a name="general__samples"><b>What kind of audio samples does FLAC support?</b></a><br />
+		<br />
+		FLAC supports linear PCM samples with a resolution between 4 and 32 bits per sample.  FLAC does not support floating point samples.  In some cases it is possible to losslessly transform samples from an incompatible range to a FLAC-compatible range before encoding.<br />
+		<br />
+		FLAC supports linear sample rates from 1Hz - 655350Hz in 1Hz increments.
+
+		<h2>
+			<b>Tools</b>
+		</h2>
+
+		<a name="tools__eac_and_flac"><b>How do I set up EAC to rip directly to FLAC?</b></a><br />
+		<br />
+		See Case's excellent <a href="http://www.saunalahti.fi/cse/EAC/index.html">EAC configuration page</a>.  Or use <a href="http://www.legroom.net/modules.php?op=modload&name=Open_Source&file=index&page=software&app=autoflac">AutoFLAC</a>, <a href="http://omniencoder.autobotcity.net/">Omni Encoder</a>, or <a href="http://mareo.netfirms.com/">MAREO</a> to rip to FLAC or multiple formats at once.<br />
+		<br />
+		<a name="tools__runtime75"><b>Why am I getting "Run-time error '75': Path/File access error" with FLAC Frontend?</b></a><br />
+		<br />
+		Depending on how FLAC Frontend is installed, it could be one of two things: 1) you are trying to encode to file to a directory where you do not have write permission; 2) the FLAC Frontend program must be set to run as Administrator by opening Windows Explorer, navigating to <span class="command">C:\Program Files\FLAC</span> (or wherever FLAC was installed), then right-clicking on <span class="command">FLAC Frontend.exe</span> and checking "Run this program as an administrator".<br />
+		<br />
+		<a name="tools__option_blocking"><b>How do I encode a file that starts with a dash?</b></a><br />
+		<br />
+		When using <span class="commandname">flac</span> to encode on the command-line, a file that starts with a dash will be treated as an option, but there is a simple workaround.  Use <span class="argument">--</span> to signal the end of options and the beginning of filenames, like so:<br />
+		<br />
+		<span class="code">flac -V -- -01-name.wav</span><br />
+		<br />
+		<a name="tools__long_meta_edits"><b>Why does it take so long to edit some FLAC files with metaflac?</b></a><br />
+		<br />
+		Since metadata is stored at the beginning of a FLAC file, changing the length of it can sometimes cause the whole file to be rewritten.  You can avoid this by adding padding with <span class="commandname">flac</span> when you encode, or with <span class="commandname">metaflac</span> after encoding.  By default, <span class="commandname">flac</span> adds 8k of padding; you can change this amount if you need more or less.<br />
+		<br />
+		<a name="tools__unicode_filenames_windows"><b>Why don't Unicode file names work with <span class="commandname">flac</span>/<span class="commandname">metaflac</span> on Windows?</b></a><br />
+		<br />
+		Windows implements Unicode filenames differently than all other operating systems, and can only be supported via Windows APIs (non-portable).  Also the method is different for different versions of Windows.  It's so hard to get right that most programs that have to work for other operating systems also do not support it.  A workaround can be found <a href="http://www.hydrogenaudio.org/forums/index.php?showtopic=48131">here</a>.<br />
+		<br />
+		<a name="tools__wildcards_on_windows"><b>Why don't wildcards for file names like *.flac or *.wav work with <span class="commandname">flac</span>/<span class="commandname">metaflac</span> on Windows?</b></a><br />
+		<br />
+		The Windows command shells (cmd.exe, command.com) implement wildcard handling differently than most other shells, leaving it up to the program to do everything including difficult and ambiguous cases.  For an explanation of why wildcards on cmd.exe/command.com are dangerous, see <a href="http://www.hydrogenaudio.org/forums/index.php?showtopic=50667&st=75&p=466078&#entry466078">here</a>.  Better command shells for Windows exist, e.g. from <a href="http://cygwin.com/">Cygwin</a>.  A workaround with the Windows shells is to do something like:<br />
+		<br />
+		<tt>for %F in (*.wav) do flac "%F"</tt><br />
+		<br />
+		but care must still be taken that the command will execute as intended.<br />
+		<br />
+		<a name="tools__hardware_prob"><b>I compressed a file to FLAC with verify on, and flac said "Verify FAILED!"  Why?</b></a><br />
+		<br />
+		The only known cause of verify errors is faulty hardware.  The dead giveaway is that if you repeat the exact same command, the error occurs in a different place or not at all.  This can also happen when decoding or testing a FLAC file.  If this is happening it is your hardware and not a FLAC bug.<br />
+		<br />
+		The problem is usually caused by overclocking/overheating the CPU or bad RAM.  Try one of the many free programs available for testing hardware (e.g. <a href="http://www.memtest86.org/">Memtest86+</a>).  We have had reports of a few cases where a system is passing with flying colors and still getting unrepeatable FLAC errors, and the one thing many (all?) of these systems have in common is an ASUS motherboard (A7V133 or P3V4X) which we suspect is buggy in some way.  (<a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=884401&amp;group_id=13478&amp;atid=113478">See also</a>)<br />
+		<br />
+		If you ever have a verify error that fails at the same place every time, please <a href="#project__submit_bug">file a bug</a>, uploading a sample according to <a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=585158&amp;group_id=13478&amp;atid=113478">the instructions found at the bottom of this bug report</a>.<br />
+		<br />
+		<a name="tools__wave_flac_wave"><b>I compressed a WAVE file to FLAC, then decompressed to WAVE, and the two weren't identical.  Why?</b></a><br />
+		<a name="tools__skipped_subchunk"><b>I compressed a WAVE file to FLAC and it said "warning: skipping unknown sub-chunk LIST".  Why?</b></a><br />
+		<br />
+		WAVE is a complicated standard; many kinds of data besides audio data can be put in it.  Most likely what has happened is that the application that created the original WAVE file also added some extra information for it's own use, which FLAC does not store or recreate by default (but can with the <span class="argument"><a href="documentation_tools_flac.html#flac_options_keep_foreign_metadata">--keep-foreign-metadata</a></span> option) (<a href="#tools__two_bytes_short">see also</a>).  The audio data in the two WAVE files will be identical.  There are other tools to compare just the audio content of two WAVE files; <a href="http://www.exactaudiocopy.de/">ExactAudioCopy</a> has such a feature.<br />
+		<br />
+		For the more technically inclined, by default FLAC only stores what is in the 'fmt ' and 'data' sub-chunks of a WAVE file.  <a href="#general__no_wave_metadata">(see also)</a><br />
+		<br />
+		<a name="tools__two_bytes_short"><b>I decoded a FLAC file and the WAVE is 2 bytes shorter than the original.  Why?</b></a><br />
+		<br />
+		The difference is probably that between an 18-byte 'fmt ' subchunk in the original WAVE vs. a 16-byte one in the decoded WAVE.  With WAVE there is more than one way to write identical formatting information, but FLAC always writes the most common legal form.  <a href="#tools__wave_flac_wave">(see also)</a><br />
+		<br />
+		<a name="tools__not_streamable"><b>Why did I get "ERROR initializing encoder, state = FLAC__STREAM_ENCODER_NOT_STREAMABLE"?</b></a><br />
+		<br />
+		You specified encoding options that are outside the <a href="format.html#subset">Streamable subset</a>.  If that is what you really wanted and you understand the consequences, you can use <span class="code">flac --lax</span> to generate a non-Subset stream.  The resulting file may not be streamable or play in all players.<br />
+		<br />
+		<a name="tools__different_sizes"><b>Why doesn't the same file compressed on different machines with the same options yield the same FLAC file?</b></a><br />
+		<br />
+		It's not supposed to, and neither does it mean either encoding was bad.  There are many variations between different machines or even different builds of <span class="commandname">flac</span> on the same machine that can lead to small differences in the FLAC file, even if they have the exact same final size.  This is normal.
+
+		<h2>
+			<b>API</b>
+		</h2>
+
+		<a name="api__release_versioning"><b>Why does your API change for point releases?</b></a><br />
+		<br />
+		The FLAC release numbering scheme of MAJOR.MINOR.MICRO reflects the state of the FLAC format, not the API.  This is most intuitive for users, at the expense of flustering developers.  The shared library number (derived from the libtool current:revision:age number) is the indicator of binary API compatibility.  As of FLAC 1.1.3, the current, revision, and age numbers are also <tt>#define</tt>d in the library headers to make porting easier; see the <a href="api/group__porting.html">porting guide</a>.<br />
+		<br />
+		<a name="api__frame_length"><b>How can I determine the encoded frame length?</b></a><br />
+		<br />
+		With native FLAC, it is not possible to determine the frame length without decoding.  Probably if I had it all to do again I would have constrained the possible block sizes, which would have made it more practical to put the frame length in the frame header.  For an example of how to find the frame boundaries in a stream, see the source code to <span class="commandname">metaflac</span>, in the functionality that adds seek points.<br />
+		<br />
+		With Ogg FLAC, it can be calculated from the Ogg page header.
+
+		<h2>
+			<b>Project</b>
+		</h2>
+
+		<a name="project__lists"><b>Where are the mailing lists, forums, discussion areas, etc.?</b></a><br />
+		<br />
+		There are a few places.  The main discussions happen on <a href="http://lists.xiph.org/mailman/listinfo">the official FLAC mailing lists</a> (you must subscribe to post).  Also, there is a lot of discussion relating to FLAC on <a href="http://www.hydrogenaudio.org/">Hydrogen Audio</a>.<br />
+		<br />
+		<a name="project__submit_bug"><b>How do I submit a bug report?</b></a><br />
+		<br />
+		First, <a href="http://sourceforge.net/tracker/?group_id=13478&amp;atid=113478">visit the bug tracking page</a> and do a little searching of both open and closed bugs to see if yours is already there.  If you have something truly new, <a href="http://sourceforge.net/bugs/?func=addbug&amp;group_id=13478">submit a new bug</a>.  <b>Make sure</b> to monitor the bug or include your email address in the description.  Include as much information as possible: the version of FLAC that you are running, the name and version of any frontend you are running, your operating system and version, your CPU type and speed, the amount of memory you have, where you downloaded FLAC from, the exact error message (if any) copied from the console, and anything else you may think will help.
+	</div>
+	<div class="box_footer"></div>
+</div>
+
+
+<div class="copyright">
+	<!-- @@@ oh so hacky -->
+	<table>
+		<tr>
+			<td align="left">
+				Copyright (c) 2000,2001,2002,2003,2004,2005,2006,2007  Josh Coalson
+			</td>
+			<td width="1%" align="right">
+				<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=13478&amp;type=1" width="88" height="31" border="0" alt="SourceForge.net Logo" /></a>
+			</td>
+			<td width="1%" align="right">
+				<a href="http://www.eff.org/cafe/"><img src="images/cafebug.gif" alt="CAFE Logo" border="0" /></a><br />
+			</td>
+			<td width="1%" align="right">
+				<a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" border="0" hspace="0" /></a>
+			</td>
+		</tr>
+	</table>
+</div>
+
+</body>
+</html>

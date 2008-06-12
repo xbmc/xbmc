@@ -1,0 +1,1146 @@
+<window id="0">
+	<defaultcontrol>9003</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<!-- backgrounds -->
+		<control type="group">
+			<visible>!Player.HasMedia | Skin.HasSetting(HomeViewToggle)</visible>
+			<control type="multiimage">
+				<posx>120</posx>
+				<posy>89</posy>
+				<width>680</width>
+				<height>400</height>
+				<imagepath>home-myprograms</imagepath>
+				<timeperimage>5000</timeperimage>
+				<fadetime>2000</fadetime>
+				<visible>ControlGroup(9001).HasFocus(2)</visible>
+				<animation effect="fade" time="200">VisibleChange</animation>
+			</control>
+			<control type="multiimage">
+				<posx>120</posx>
+				<posy>89</posy>
+				<width>680</width>
+				<height>400</height>
+				<imagepath>home-myfiles</imagepath>
+				<timeperimage>5000</timeperimage>
+				<fadetime>2000</fadetime>
+				<visible>ControlGroup(9001).HasFocus(6)</visible>
+				<animation effect="fade" time="200">VisibleChange</animation>
+			</control>
+			<control type="multiimage">
+				<posx>120</posx>
+				<posy>89</posy>
+				<width>680</width>
+				<height>400</height>
+				<imagepath>home-mymusic</imagepath>
+				<timeperimage>5000</timeperimage>
+				<fadetime>2000</fadetime>
+				<visible>ControlGroup(9001).HasFocus(3)</visible>
+				<animation effect="fade" time="200">VisibleChange</animation>
+			</control>
+			<control type="multiimage">
+				<posx>120</posx>
+				<posy>89</posy>
+				<width>680</width>
+				<height>400</height>
+				<imagepath>home-mypictures</imagepath>
+				<timeperimage>5000</timeperimage>
+				<fadetime>2000</fadetime>
+				<visible>ControlGroup(9001).HasFocus(4)</visible>
+				<animation effect="fade" time="200">VisibleChange</animation>
+			</control>
+			<control type="multiimage">
+				<posx>120</posx>
+				<posy>89</posy>
+				<width>680</width>
+				<height>400</height>
+				<imagepath>home-myvideos</imagepath>
+				<timeperimage>5000</timeperimage>
+				<fadetime>2000</fadetime>
+				<visible>ControlGroup(9001).HasFocus(5)</visible>
+				<animation effect="fade" time="200">VisibleChange</animation>
+			</control>
+			<control type="multiimage">
+				<posx>120</posx>
+				<posy>89</posy>
+				<width>680</width>
+				<height>400</height>
+				<imagepath>home-myweather</imagepath>
+				<timeperimage>5000</timeperimage>
+				<fadetime>2000</fadetime>
+				<visible>ControlGroup(9001).HasFocus(7)</visible>
+				<animation effect="fade" time="200">VisibleChange</animation>
+			</control>
+			<control type="multiimage">
+				<posx>120</posx>
+				<posy>89</posy>
+				<width>680</width>
+				<height>400</height>
+				<imagepath>home-settings</imagepath>
+				<timeperimage>5000</timeperimage>
+				<fadetime>2000</fadetime>
+				<visible>ControlGroup(9001).HasFocus(9)</visible>
+				<animation effect="fade" time="200">VisibleChange</animation>
+			</control>
+			<control type="multiimage">
+				<posx>120</posx>
+				<posy>89</posy>
+				<width>680</width>
+				<height>400</height>
+				<imagepath>home-scripts</imagepath>
+				<timeperimage>5000</timeperimage>
+				<fadetime>2000</fadetime>
+				<visible>ControlGroup(9001).HasFocus(10)</visible>
+				<animation effect="fade" time="200">VisibleChange</animation>
+			</control>
+		</control>
+		<control type="visualisation">
+			<posx>180</posx>
+			<posy>89</posy>
+			<width>545</width>
+			<height>400</height>
+			<visible>!Skin.HasSetting(HomeViewToggle)</visible>
+		</control>
+		<control type="videowindow" id="1">
+			<description>video preview window</description>
+			<posx>180</posx>
+			<posy>89</posy>
+			<width>545</width>
+			<height>400</height>
+			<visible>!Skin.HasSetting(HomeViewToggle)</visible>
+		</control>
+		<!-- main background overlay with scanlines and logo-->
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>89</posy>
+			<width>720</width>
+			<height>400</height>
+			<texture>Home_Middle.png</texture>
+		</control>
+		<control type="image">
+			<description>background image </description>
+			<posx>0</posx>
+			<posy>443</posy>
+			<width>720</width>
+			<height>153</height>
+			<texture>Home_Bottom.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>-20</posy>
+			<width>720</width>
+			<height>221</height>
+			<texture>Home_Top.png</texture>
+		</control>
+		<!-- media infos (video) -->
+		<control type="group">
+			<posx>365</posx>
+			<posy>360</posy>
+			<include>homevideoinfo</include>
+			<control type="image">
+				<description>gradient</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>400</width>
+				<height>100</height>
+				<texture>gradient.png</texture>
+			</control>
+			<control type="videowindow">
+				<description>Video Window</description>
+				<posx>220</posx>
+				<posy>0</posy>
+				<width>110</width>
+				<height>100</height>
+				<visible>Skin.HasSetting(HomeViewToggle)</visible>
+			</control>
+			<control type="image">
+				<description>Cover Image Window</description>
+				<posx>240</posx>
+				<posy>0</posy>
+				<width>90</width>
+				<height>100</height>
+				<info>VideoPlayer.cover</info>
+				<aspectratio>keep</aspectratio>
+				<visible>!Skin.HasSetting(HomeViewToggle)</visible>
+			</control>
+			<control type="group">
+				<animation effect="slide" time="0" end="-20,0" condition="Skin.HasSetting(HomeViewToggle)">Conditional</animation>
+				<control type="label">
+					<description>Director label</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>2</posy>
+					<info>VideoPlayer.Director</info>
+					<align>right</align>
+					<font>special12</font>
+					<scroll>true</scroll>
+					<visible>!videoplayer.content(episodes) + !videoplayer.content(musicvideos)</visible>
+				</control>
+				<control type="label">
+					<description>TV Show Title label</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>2</posy>
+					<info>VideoPlayer.tvshowtitle</info>
+					<align>right</align>
+					<font>special12</font>
+					<visible>videoplayer.content(episodes)</visible>
+				</control>
+				<control type="label">
+					<description>Music Video Artist label</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>2</posy>
+					<info>VideoPlayer.Artist</info>
+					<align>right</align>
+					<font>special12</font>
+					<visible>videoplayer.content(musicvideos)</visible>
+				</control>
+				<control type="label">
+					<description>Title label</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>27</posy>
+					<info>VideoPlayer.Title</info>
+					<align>right</align>
+					<font>special13</font>
+					<scroll>true</scroll>
+				</control>
+				<control type="label">
+					<description>Genre label</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>57</posy>
+					<info>VideoPlayer.Genre</info>
+					<align>right</align>
+					<font>font10</font>
+					<scroll>true</scroll>
+					<visible>!videoplayer.content(episodes) + !videoplayer.content(musicvideos)</visible>
+				</control>
+				<control type="label">
+					<description>Music Video Album label</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>57</posy>
+					<info>VideoPlayer.Album</info>
+					<align>right</align>
+					<font>font10</font>
+					<visible>videoplayer.content(musicvideos)</visible>
+				</control>
+				<control type="label">
+					<description>Season and Episode label</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>57</posy>
+					<label>$LOCALIZE[20373] $INFO[VideoPlayer.Season] - $LOCALIZE[20359] $INFO[VideoPlayer.episode]</label>
+					<align>right</align>
+					<font>font10</font>
+					<visible>videoplayer.content(episodes)</visible>
+				</control>
+				<control type="label">
+					<description>Time label</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>77</posy>
+					<label>$INFO[VideoPlayer.Time]$INFO[VideoPlayer.Duration, / ]</label>
+					<align>right</align>
+					<font>font10</font>
+				</control>
+			</control>
+		</control>
+		<!-- media infos (music) -->
+		<control type="group">
+			<posx>365</posx>
+			<posy>360</posy>
+			<include>homemediainfo</include>
+			<control type="image">
+				<description>gradient</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>400</width>
+				<height>100</height>
+				<texture>gradient.png</texture>
+			</control>
+			<control type="image">
+				<description>Cover image</description>
+				<posx>240</posx>
+				<posy>0</posy>
+				<width>90</width>
+				<height>100</height>
+				<info>MusicPlayer.Cover</info>
+			</control>
+			<control type="label">
+				<description>Artist label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>2</posy>
+				<info>MusicPlayer.Artist</info>
+				<align>right</align>
+				<font>special12</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<description>Title label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>27</posy>
+				<info>MusicPlayer.Title</info>
+				<align>right</align>
+				<font>special13</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<description>Album label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>57</posy>
+				<label>$INFO[MusicPlayer.Album]$INFO[musicplayer.discnumber, - $LOCALIZE[427]:]</label>
+				<align>right</align>
+				<font>font10</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<description>Time label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>77</posy>
+				<label>$INFO[MusicPlayer.Time]$INFO[MusicPlayer.Duration, / ]</label>
+				<align>right</align>
+				<font>font10</font>
+			</control>
+		</control>
+		<!-- Drive Space Info C: E: F:-->
+		<control type="group">
+			<posx>365</posx>
+			<posy>360</posy>
+			<visible>Control.HasFocus(6) + !Skin.HasSetting(homepageDriveinfo1) + !System.Platform.Linux</visible>
+			<include>homestatsinfo</include>
+			<control type="image">
+				<description>gradient</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>400</width>
+				<height>100</height>
+				<texture>gradient.png</texture>
+			</control>
+			<control type="image">
+				<description>settings image</description>
+				<posx>240</posx>
+				<posy>0</posy>
+				<width>90</width>
+				<height>100</height>
+				<texture>homeinfo-bgdrive.png</texture>
+			</control>
+			<control type="label">
+				<description>Free Space label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>2</posy>
+				<label>20089</label>
+				<align>right</align>
+				<font>special12</font>
+			</control>
+			<control type="label">
+				<description>freespace f:</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>27</posy>
+				<info>System.Freespace(F)</info>
+				<align>right</align>
+				<font>special13</font>
+			</control>
+			<control type="label">
+				<description>freespace C:</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>57</posy>
+				<info>System.Freespace(C)</info>
+				<align>right</align>
+				<font>font10</font>
+			</control>
+			<control type="label">
+				<description>freespace E:</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>77</posy>
+				<info>System.Freespace(E)</info>
+				<align>right</align>
+				<font>font10</font>
+			</control>
+		</control>
+		<!-- Drive Space Info E: F: G:-->
+		<control type="group">
+			<posx>365</posx>
+			<posy>360</posy>
+			<visible>Control.HasFocus(6) + Skin.HasSetting(homepageDriveinfo2) + !System.Platform.Linux</visible>
+			<include>homestatsinfo</include>
+			<control type="image">
+				<description>gradient</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>400</width>
+				<height>100</height>
+				<texture>gradient.png</texture>
+			</control>
+			<control type="image">
+				<description>settings image</description>
+				<posx>240</posx>
+				<posy>0</posy>
+				<width>90</width>
+				<height>100</height>
+				<texture>homeinfo-bgdrive.png</texture>
+			</control>
+			<control type="label">
+				<description>Free Space label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>2</posy>
+				<label>20089</label>
+				<align>right</align>
+				<font>special12</font>
+			</control>
+			<control type="label">
+				<description>freespace f:</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>27</posy>
+				<info>System.Freespace(F)</info>
+				<align>right</align>
+				<font>special13</font>
+			</control>
+			<control type="label">
+				<description>freespace e:</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>57</posy>
+				<info>System.Freespace(E)</info>
+				<align>right</align>
+				<font>font10</font>
+			</control>
+			<control type="label">
+				<description>freespace g:</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>77</posy>
+				<info>System.Freespace(G)</info>
+				<align>right</align>
+				<font>font10</font>
+			</control>
+		</control>
+		<!-- System Info -->
+		<control type="group">
+			<posx>365</posx>
+			<posy>360</posy>
+			<visible>Control.HasFocus(9) + !Skin.HasSetting(homepageSysteminfo)</visible>
+			<include>homestatsinfo</include>
+			<control type="image">
+				<description>gradient</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>400</width>
+				<height>100</height>
+				<texture>gradient.png</texture>
+			</control>
+			<control type="image">
+				<description>settings image</description>
+				<posx>240</posx>
+				<posy>0</posy>
+				<width>90</width>
+				<height>100</height>
+				<texture>homeinfo-system.png</texture>
+			</control>
+			<control type="label">
+				<description>Settings label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>2</posy>
+				<label>10511</label>
+				<align>right</align>
+				<font>special12</font>
+			</control>
+			<control type="label">
+				<description>IP Address label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>27</posy>
+				<info>Network.IPAddress</info>
+				<align>right</align>
+				<font>special13</font>
+			</control>
+			<control type="label">
+				<description>CPU temp Label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>57</posy>
+				<label>$INFO[System.CPUTemperature]</label>
+				<align>right</align>
+				<font>font10</font>
+			</control>
+			<control type="label">
+				<description>GPU temp Label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>77</posy>
+				<label>$INFO[System.GPUTemperature]</label>
+				<align>right</align>
+				<font>font10</font>
+			</control>
+		</control>
+		<!-- weather Info -->
+		<control type="group">
+			<posx>365</posx>
+			<posy>360</posy>
+			<visible>Control.HasFocus(7) + Weather.IsFetched + !Skin.HasSetting(homepageWeatherinfo)</visible>
+			<include>homestatsinfo</include>
+			<control type="image">
+				<description>weather gradient</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>400</width>
+				<height>100</height>
+				<texture>gradient.png</texture>
+			</control>
+			<control type="image">
+				<description>Weather image bg</description>
+				<posx>240</posx>
+				<posy>0</posy>
+				<width>90</width>
+				<height>100</height>
+				<texture>homeinfo-bg.png</texture>
+			</control>
+			<control type="image">
+				<description>Weather image</description>
+				<posx>250</posx>
+				<posy>10</posy>
+				<width>70</width>
+				<height>80</height>
+				<aspectratio>keep</aspectratio>
+				<info>Weather.Conditions</info>
+			</control>
+			<control type="image">
+				<description>Weather image overlay</description>
+				<posx>240</posx>
+				<posy>0</posy>
+				<width>90</width>
+				<height>100</height>
+				<texture>homeinfo-overlay.png</texture>
+			</control>
+			<control type="label">
+				<description>weather label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>2</posy>
+				<label>20088</label>
+				<align>right</align>
+				<font>special12</font>
+			</control>
+			<control type="label">
+				<description>location label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>27</posy>
+				<info>Weather.Location</info>
+				<align>right</align>
+				<font>special13</font>
+			</control>
+			<control type="label">
+				<description>conditions Label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>57</posy>
+				<label>$INFO[Weather.Conditions]</label>
+				<align>right</align>
+				<font>font10</font>
+			</control>
+			<control type="label">
+				<description>temp Label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>77</posy>
+				<label>$LOCALIZE[143] $INFO[Weather.Temperature]</label>
+				<align>right</align>
+				<font>font10</font>
+			</control>
+		</control>
+		<!-- main buttons -->
+		<control type="group" id="9001">
+			<visible>System.Platform.Xbox</visible>
+			<control type="group" id="9002">
+				<posx>55</posx>
+				<posy>450</posy>
+				<include>buttonpanelslide</include>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>20</width>
+					<height>20</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="image">
+					<posx>115</posx>
+					<posy>0</posy>
+					<width>20</width>
+					<height>20</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="image">
+					<posx>230</posx>
+					<posy>0</posy>
+					<width>20</width>
+					<height>20</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="9">
+					<description>Settings normal push button</description>
+					<posx>4</posx>
+					<posy>3</posy>
+					<width>12</width>
+					<height>12</height>
+					<hitrect x="4" y="0" w="100" h="18" />
+					<label>5</label>
+					<font>font10</font>
+					<onclick>ActivateWindow(4)</onclick>
+					<onleft>98</onleft>
+					<onright>10</onright>
+					<onup>7</onup>
+					<ondown>2</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>20</textoffsetx>
+				</control>
+				<control type="button" id="10">
+					<description>Script normal push button</description>
+					<posx>119</posx>
+					<posy>3</posy>
+					<width>12</width>
+					<height>12</height>
+					<hitrect x="119" y="0" w="100" h="18" />
+					<label>247</label>
+					<onclick>ActivateWindow(Scripts)</onclick>
+					<font>font10</font>
+					<onleft>9</onleft>
+					<onright>6</onright>
+					<onup>7</onup>
+					<ondown>2</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>20</textoffsetx>
+				</control>
+				<control type="button" id="6">
+					<description>My Files normal push button</description>
+					<posx>234</posx>
+					<posy>3</posy>
+					<width>12</width>
+					<height>12</height>
+					<hitrect x="234" y="0" w="100" h="18" />
+					<label>7</label>
+					<onclick>ActivateWindow(MyFiles)</onclick>
+					<font>font10</font>
+					<onleft>10</onleft>
+					<onright>96</onright>
+					<onup>7</onup>
+					<ondown>2</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>20</textoffsetx>
+				</control>
+			</control>
+			<control type="group" id="9003">
+				<posx>40</posx>
+				<posy>180</posy>
+				<include>homebuttonanimation</include>
+				<control type="image">
+					<description>background image</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>320</width>
+					<height>270</height>
+					<texture>home_buttons.png</texture>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>26</posy>
+					<width>22</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="2">
+					<description>My Programs normal push button</description>
+					<posx>54</posx>
+					<posy>28</posy>
+					<width>14</width>
+					<height>13</height>
+					<hitrect x="45" y="15" w="220" h="40" />
+					<label>0</label>
+					<font>special13</font>
+					<onclick>ActivateWindow(MyPrograms)</onclick>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>9</onup>
+					<ondown>5</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>72</posy>
+					<width>22</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="5">
+					<description>My Videos normal push button</description>
+					<posx>54</posx>
+					<posy>74</posy>
+					<width>14</width>
+					<height>13</height>
+					<hitrect x="45" y="60" w="220" h="40" />
+					<label>3</label>
+					<font>special13</font>
+					<onclick>ActivateWindow(MyVideos)</onclick>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>2</onup>
+					<ondown>3</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>117</posy>
+					<width>22</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="3">
+					<description>My Music normal push button</description>
+					<posx>54</posx>
+					<posy>119</posy>
+					<width>14</width>
+					<height>13</height>
+					<hitrect x="45" y="105" w="200" h="40" />
+					<label>2</label>
+					<onclick>ActivateWindow(MyMusic)</onclick>
+					<font>special13</font>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>5</onup>
+					<ondown>4</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>161</posy>
+					<width>22</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="4">
+					<description>My Pictures normal push button</description>
+					<posx>54</posx>
+					<posy>163</posy>
+					<width>14</width>
+					<height>13</height>
+					<hitrect x="45" y="150" w="170" h="40" />
+					<label>1</label>
+					<onclick>ActivateWindow(MyPictures)</onclick>
+					<font>special13</font>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>3</onup>
+					<ondown>7</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>204</posy>
+					<width>22</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="7">
+					<description>My Weather normal push button</description>
+					<posx>54</posx>
+					<posy>206</posy>
+					<width>14</width>
+					<height>13</height>
+					<hitrect x="45" y="195" w="125" h="40" />
+					<label>8</label>
+					<font>special13</font>
+					<onclick>ActivateWindow(Weather)</onclick>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>4</onup>
+					<ondown>9</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+			</control>
+		</control>
+		<control type="group" id="9001">
+			<visible>!System.Platform.Xbox</visible>
+			<control type="group" id="9002">
+				<posx>55</posx>
+				<posy>450</posy>
+				<include>buttonpanelslide</include>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>20</width>
+					<height>20</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="image">
+					<posx>115</posx>
+					<posy>0</posy>
+					<width>20</width>
+					<height>20</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="9">
+					<description>Settings normal push button</description>
+					<posx>4</posx>
+					<posy>3</posy>
+					<width>12</width>
+					<height>12</height>
+					<hitrect x="4" y="0" w="100" h="18" />
+					<label>5</label>
+					<font>font10</font>
+					<onclick>ActivateWindow(4)</onclick>
+					<onleft>98</onleft>
+					<onright>6</onright>
+					<onup>10</onup>
+					<ondown>5</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>20</textoffsetx>
+				</control>
+				<control type="button" id="6">
+					<description>My Files normal push button</description>
+					<posx>119</posx>
+					<posy>3</posy>
+					<width>12</width>
+					<height>12</height>
+					<hitrect x="119" y="0" w="100" h="18" />
+					<label>7</label>
+					<onclick>ActivateWindow(MyFiles)</onclick>
+					<font>font10</font>
+					<onleft>9</onleft>
+					<onright>96</onright>
+					<onup>10</onup>
+					<ondown>5</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>20</textoffsetx>
+				</control>
+			</control>
+			<control type="group" id="9003">
+				<posx>40</posx>
+				<posy>180</posy>
+				<include>homebuttonanimation</include>
+				<control type="image">
+					<description>background image</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>320</width>
+					<height>270</height>
+					<texture>home_buttons.png</texture>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>26</posy>
+					<width>22</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="5">
+					<description>My Videos normal push button</description>
+					<posx>54</posx>
+					<posy>28</posy>
+					<width>14</width>
+					<height>13</height>
+					<hitrect x="45" y="15" w="220" h="40" />
+					<label>3</label>
+					<font>special13</font>
+					<onclick>ActivateWindow(MyVideos)</onclick>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>9</onup>
+					<ondown>3</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>72</posy>
+					<width>22</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="3">
+					<description>My Music normal push button</description>
+					<posx>54</posx>
+					<posy>74</posy>
+					<width>14</width>
+					<height>13</height>
+					<hitrect x="45" y="60" w="220" h="40" />
+					<label>2</label>
+					<onclick>ActivateWindow(MyMusic)</onclick>
+					<font>special13</font>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>5</onup>
+					<ondown>4</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>117</posy>
+					<width>22</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="4">
+					<description>My Pictures normal push button</description>
+					<posx>54</posx>
+					<posy>119</posy>
+					<width>14</width>
+					<height>13</height>
+					<hitrect x="45" y="105" w="200" h="40" />
+					<label>1</label>
+					<onclick>ActivateWindow(MyPictures)</onclick>
+					<font>special13</font>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>3</onup>
+					<ondown>7</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>161</posy>
+					<width>22</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="7">
+					<description>My Weather normal push button</description>
+					<posx>54</posx>
+					<posy>163</posy>
+					<width>14</width>
+					<height>13</height>
+					<hitrect x="45" y="150" w="170" h="40" />
+					<label>8</label>
+					<font>special13</font>
+					<onclick>ActivateWindow(Weather)</onclick>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>4</onup>
+					<ondown>10</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>204</posy>
+					<width>22</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="10">
+					<description>Scripts normal push button</description>
+					<posx>54</posx>
+					<posy>206</posy>
+					<width>14</width>
+					<height>13</height>
+					<hitrect x="45" y="195" w="125" h="40" />
+					<label>247</label>
+					<font>special13</font>
+					<onclick>ActivateWindow(Scripts)</onclick>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>7</onup>
+					<ondown>9</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+			</control>
+		</control>
+		<!-- labels -->
+		<control type="label">
+			<description>date label</description>
+			<posx>660</posx>
+			<posy>57</posy>
+			<label>$INFO[System.Date] [COLOR=grey] |  $INFO[System.Time][/COLOR]</label>
+			<align>right</align>
+			<aligy>center</aligy>
+			<font>special12</font>
+			<include>contentpanelslide</include>
+		</control>
+		<control type="rss" id="1">
+			<description>rss feed</description>
+			<posx>0</posx>
+			<posy>493</posy>
+			<width>720</width>
+			<aligy>center</aligy>
+			<font>font13</font>
+			<urlset>1</urlset>
+			<titlecolor>green</titlecolor>
+			<headlinecolor>dialogheader</headlinecolor>
+			<textcolor>green</textcolor>
+			<visible>!Player.HasVideo</visible>
+			<visible>!Player.HasAudio | Skin.HasSetting(NoAudioRSS)</visible>
+			<include>homemisc</include>
+		</control>
+		<!-- sub-buttons -->
+		<control type="group">
+			<posx>510</posx>
+			<posy>525</posy>
+			<include>homemisc</include>
+			<control type="image">
+				<description>dvd-rom launch button</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>35</width>
+				<height>35</height>
+				<texture>home-dvd.png</texture>
+				<visible>System.HasMediaDVD + System.KaiConnected</visible>
+			</control>
+			<control type="button" id="95">
+				<description>dvd-rom launch button</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>35</width>
+				<height>35</height>
+				<label>-</label>
+				<texturefocus>home-dvd.gif</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<font>font12</font>
+				<textoffsetx>26</textoffsetx>
+				<visible>System.HasMediaDVD + System.KaiConnected</visible>
+				<include>homemisc</include>
+				<onclick>XBMC.PlayDVD()</onclick>
+				<onleft>96</onleft>
+				<onright>97</onright>
+				<onup>9001</onup>
+				<ondown>9001</ondown>
+			</control>
+			<control type="image">
+				<description>dvd-rom launch button 2</description>
+				<posx>35</posx>
+				<posy>0</posy>
+				<width>35</width>
+				<height>35</height>
+				<texture>home-dvd.png</texture>
+				<visible>System.HasMediaDVD + !System.KaiConnected</visible>
+			</control>
+			<control type="button" id="96">
+				<description>dvd-rom launch button 2</description>
+				<posx>35</posx>
+				<posy>0</posy>
+				<width>35</width>
+				<height>35</height>
+				<label>-</label>
+				<texturefocus>home-dvd.gif</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<font>font12</font>
+				<textoffsetx>26</textoffsetx>
+				<visible>System.HasMediaDVD + !System.KaiConnected</visible>
+				<include>homemisc</include>
+				<onclick>XBMC.PlayDVD()</onclick>
+				<onleft>9001</onleft>
+				<onright>95</onright>
+				<onup>9001</onup>
+				<ondown>9001</ondown>
+			</control>
+			<control type="image">
+				<description>xlink kai conditional button</description>
+				<posx>35</posx>
+				<posy>0</posy>
+				<width>35</width>
+				<height>35</height>
+				<texture>home-kai.png</texture>
+				<visible>System.KaiConnected</visible>
+			</control>
+			<control type="button" id="97">
+				<description>xlink kai conditional button</description>
+				<posx>35</posx>
+				<posy>0</posy>
+				<width>35</width>
+				<height>35</height>
+				<label>-</label>
+				<texturefocus>home-kai.gif</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<onclick>ActivateWindow(XlinkKai)</onclick>
+				<onleft>95</onleft>
+				<onright>100</onright>
+				<onup>9001</onup>
+				<ondown>9001</ondown>
+				<visible>System.KaiConnected</visible>
+			</control>
+			<control type="image">
+				<description>favourites button</description>
+				<posx>70</posx>
+				<posy>0</posy>
+				<width>35</width>
+				<height>35</height>
+				<texture>home-sub.png</texture>
+			</control>
+			<control type="button" id="100">
+				<description>favourites button</description>
+				<posx>70</posx>
+				<posy>0</posy>
+				<width>35</width>
+				<height>35</height>
+				<onclick>ActivateWindow(Favourites)</onclick>
+				<texturefocus>home-sub.gif</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<label>-</label>
+				<onleft>97</onleft>
+				<onright>98</onright>
+				<onup>9001</onup>
+				<ondown>9001</ondown>
+			</control>
+			<control type="image">
+				<description>submenu button</description>
+				<posx>105</posx>
+				<posy>0</posy>
+				<width>35</width>
+				<height>35</height>
+				<texture>home-power.png</texture>
+			</control>
+			<control type="button" id="98">
+				<description>submenu button</description>
+				<posx>105</posx>
+				<posy>0</posy>
+				<width>35</width>
+				<height>35</height>
+				<onclick>ActivateWindow(ShutdownMenu)</onclick>
+				<texturefocus>home-power.gif</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<label>-</label>
+				<onleft>100</onleft>
+				<onright>9001</onright>
+				<onup>9001</onup>
+				<ondown>9001</ondown>
+			</control>
+		</control>
+		<include>windowswitchtransition</include>
+	</controls>
+</window>

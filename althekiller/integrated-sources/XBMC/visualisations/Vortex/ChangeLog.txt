@@ -1,0 +1,105 @@
+Build 018 - 29-03-07
+added - AlbumArtWaveSpectrum preset
+
+Build 017 - 27-09-06
+fixed - more aspect ratio fixes.
+added - MentalHangover preset
+
+Build 016 - 16-09-06
+added - enable / disable transitions option.
+added - credits
+changed - renamed a few presets, tweaked WalkingCube.vtx
+
+Build 015 - 14-09-06
+changed - rewrote tunnel effect
+added - gfxSetFillMode for changing between wireframe and solid
+added - AlbumArtTunnel.vtx, CubeGridWire, SimpleTunnel.vtx, WavePit.vtx
+changed - a few textures
+
+Build 014 - 10-09-06
+changed - returns presets names to XBMC without .vtx extenstions
+changed - Additional random time now between 0 and 59 secs
+added - uses pixel ratio passed from xbmc 
+fixed - aspect ratio should now be correct
+changed - removed some obsolete functions
+added - lots of new textures
+added - spaceharrier.vtx, albumartstretch.vtx, cubegrid2.vtx, singingskull.vtx
+changed - tidied up all presets. Better movement on some. Changed some colours.
+fixed - map and voiceprints save and restore state when drawing
+changed - cols from gfxColour are clamped to 0 to 1
+fixed - overwriting memory due to Map object being wrong size
+changed - Beat detection tweaking
+
+Build 013 - 04-08-06
+added - support for user profiles
+
+Build 012 - 09-06-06
+changed - Visualision dll now called Vortex.vis instead of VortexViz.vis
+changed - new vortex logo
+changed - new speaker texture
+changed - voiceprint tweaks
+added - when unlocking a preset it now immediatey loads a new one
+
+Build 011 - 03-06-06
+added - default vortex logo when no album art is found
+added - enable / disable album art from menu
+added - transitions - Block, Cubes, FlipBoth, MiddleGrid
+changed - CubeBlowOut transition now actually blows out
+changed - CubeSlide, better movement
+changed - walking cube, better movement
+changed - voiceprint, better range
+fixed - invalid floats from GetSpec when viz started with sound paused
+changed - new sphere mapping shader
+
+Build 010 - 04-05-06
+changed - beat detection tweaks
+added - Speakers and WalkingCube presets
+added - now uses window size passed in
+changed - better random preset selection
+fixed - Hamster-matic no longer upside down. Fixed some other presets going backwards.
+
+Build 09 - 28-04-06
+added - new presets, ChessMania, CubeSlide, CubeTunnel, DynamicCubeTunnel and MrC1
+changed - Spectrum field now has random start angle
+fixed - removed redundant screen clears from presets
+changed - warp drive looks better
+added - gfxLookAt function for presets
+added - Sqrt function for presets
+
+Build 08 - 26-04-06
+fixed - handles not having any transitions and transition failures
+fixed - when audio is paused, waveforms now go to zero
+added - presets are now sorted
+
+Build 07 - 18-04-06
+added - xml settings
+added - can change time between presets
+
+Build 06 - 18-04-06
+added - AlbumArtZoomer and FireTunnel presets
+changed - all new beat detection
+changed - updated all presets to use new beat detection
+
+Build 05 - 11-04-06
+changed - another attempt at beat detection
+added - albumartcube, albumartcuberain and watchout presets
+added - presets can use albumart as a texture - use TEXTURE_ALBUMART
+added - presets now use actual frametime instead of hard coded value
+
+Build 04 - 03-04-06
+added - sphere, tunnel, CubeBlowout transitions
+added - gfxScale function
+added - gfxSetAspect - for enabling aspect correction in 3d mode
+added - global TIMEPASS variable for presets
+added - global FINISHED variable so transitions can say when they are finished
+
+Build 03 - 30-03-06
+added - support for compressed textures
+
+Build 02 - 30-03-06
+changed - textures no longer resized when they are loaded
+changed - alpha now comes from texture's alpha channel instead of dodgy magenta
+
+Build 01 - 28-03-06
+added - Voiceprint effect
+added - GetSpecLeft, GetSpecRight to get spectrum info

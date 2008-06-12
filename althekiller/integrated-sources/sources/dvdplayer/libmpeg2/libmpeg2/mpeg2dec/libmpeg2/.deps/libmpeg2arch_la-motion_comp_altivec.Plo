@@ -1,0 +1,5 @@
+libmpeg2arch_la-motion_comp_altivec.lo \
+  libmpeg2arch_la-motion_comp_altivec.o: motion_comp_altivec.c \
+  ../include/config.h
+
+../include/config.h:

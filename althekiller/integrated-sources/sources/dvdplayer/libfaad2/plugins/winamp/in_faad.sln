@@ -1,0 +1,60 @@
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "id3lib", "..\..\common\id3lib\libprj\id3lib.vcproj", "{D752E868-A336-460C-B55E-56DD8E8C583E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "in_faad", "in_faad.vcproj", "{6092126A-C1DE-4A92-B476-A49C6557546C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libfaad", "..\..\libfaad\libfaad.vcproj", "{74B58BDF-E2CF-4F01-B645-17FA7A79A938}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "..\..\common\id3lib\zlib\prj\zlib.vcproj", "{0ED3C668-F67C-41E0-8A9C-D7AFE626111E}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug
+		ConfigName.1 = NASM Debug
+		ConfigName.2 = NASM Release
+		ConfigName.3 = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+		{D752E868-A336-460C-B55E-56DD8E8C583E}.0 = {0ED3C668-F67C-41E0-8A9C-D7AFE626111E}
+		{6092126A-C1DE-4A92-B476-A49C6557546C}.0 = {74B58BDF-E2CF-4F01-B645-17FA7A79A938}
+		{6092126A-C1DE-4A92-B476-A49C6557546C}.1 = {D752E868-A336-460C-B55E-56DD8E8C583E}
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{D752E868-A336-460C-B55E-56DD8E8C583E}.Debug.ActiveCfg = Debug|Win32
+		{D752E868-A336-460C-B55E-56DD8E8C583E}.Debug.Build.0 = Debug|Win32
+		{D752E868-A336-460C-B55E-56DD8E8C583E}.NASM Debug.ActiveCfg = Debug|Win32
+		{D752E868-A336-460C-B55E-56DD8E8C583E}.NASM Debug.Build.0 = Debug|Win32
+		{D752E868-A336-460C-B55E-56DD8E8C583E}.NASM Release.ActiveCfg = Release|Win32
+		{D752E868-A336-460C-B55E-56DD8E8C583E}.NASM Release.Build.0 = Release|Win32
+		{D752E868-A336-460C-B55E-56DD8E8C583E}.Release.ActiveCfg = Release|Win32
+		{D752E868-A336-460C-B55E-56DD8E8C583E}.Release.Build.0 = Release|Win32
+		{6092126A-C1DE-4A92-B476-A49C6557546C}.Debug.ActiveCfg = Debug|Win32
+		{6092126A-C1DE-4A92-B476-A49C6557546C}.Debug.Build.0 = Debug|Win32
+		{6092126A-C1DE-4A92-B476-A49C6557546C}.NASM Debug.ActiveCfg = Debug|Win32
+		{6092126A-C1DE-4A92-B476-A49C6557546C}.NASM Debug.Build.0 = Debug|Win32
+		{6092126A-C1DE-4A92-B476-A49C6557546C}.NASM Release.ActiveCfg = Release|Win32
+		{6092126A-C1DE-4A92-B476-A49C6557546C}.NASM Release.Build.0 = Release|Win32
+		{6092126A-C1DE-4A92-B476-A49C6557546C}.Release.ActiveCfg = Release|Win32
+		{6092126A-C1DE-4A92-B476-A49C6557546C}.Release.Build.0 = Release|Win32
+		{74B58BDF-E2CF-4F01-B645-17FA7A79A938}.Debug.ActiveCfg = Debug|Win32
+		{74B58BDF-E2CF-4F01-B645-17FA7A79A938}.Debug.Build.0 = Debug|Win32
+		{74B58BDF-E2CF-4F01-B645-17FA7A79A938}.NASM Debug.ActiveCfg = Debug|Win32
+		{74B58BDF-E2CF-4F01-B645-17FA7A79A938}.NASM Debug.Build.0 = Debug|Win32
+		{74B58BDF-E2CF-4F01-B645-17FA7A79A938}.NASM Release.ActiveCfg = Release|Win32
+		{74B58BDF-E2CF-4F01-B645-17FA7A79A938}.NASM Release.Build.0 = Release|Win32
+		{74B58BDF-E2CF-4F01-B645-17FA7A79A938}.Release.ActiveCfg = Release|Win32
+		{74B58BDF-E2CF-4F01-B645-17FA7A79A938}.Release.Build.0 = Release|Win32
+		{0ED3C668-F67C-41E0-8A9C-D7AFE626111E}.Debug.ActiveCfg = Debug|Win32
+		{0ED3C668-F67C-41E0-8A9C-D7AFE626111E}.Debug.Build.0 = Debug|Win32
+		{0ED3C668-F67C-41E0-8A9C-D7AFE626111E}.NASM Debug.ActiveCfg = NASM Debug|Win32
+		{0ED3C668-F67C-41E0-8A9C-D7AFE626111E}.NASM Debug.Build.0 = NASM Debug|Win32
+		{0ED3C668-F67C-41E0-8A9C-D7AFE626111E}.NASM Release.ActiveCfg = NASM Release|Win32
+		{0ED3C668-F67C-41E0-8A9C-D7AFE626111E}.NASM Release.Build.0 = NASM Release|Win32
+		{0ED3C668-F67C-41E0-8A9C-D7AFE626111E}.Release.ActiveCfg = Release|Win32
+		{0ED3C668-F67C-41E0-8A9C-D7AFE626111E}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

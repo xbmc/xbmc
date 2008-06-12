@@ -1,0 +1,93 @@
+#!/bin/bash
+# Unified squash Hard Disk filesystem mounting		  -*- shell-script -*-
+
+mountroot ()
+{
+	CFG_FILE=/etc/moblin-initramfs.cfg
+	QUIET="$(grep "quiet" /proc/cmdline)"
+
+	if [ -f ${CFG_FILE} ]
+	then
+		. ${CFG_FILE}
+	else
+		echo "Did not find config file: ${CFG_FILE}"
+		sleep 5
+		halt
+	fi
+
+	# squashfs enabled?
+	if [ "${use_squashfs}" -eq 1 ]; then
+		echo "Using squashfs..."
+		mkdir -p /container
+		mkdir -p /squashmnt1
+		mkdir -p /squashmnt2
+		mkdir -p /squashmnt3
+		mkdir -p /persistmnt
+	else
+		echo "NOT using squashfs..."
+	fi
+
+	# Find the boot disk
+	while true; do
+	for device in 'hda' 'hdb' 'sda' 'sdb'; do
+		echo "checking device /dev/${device}"
+		if [ -e /sys/block/${device}/removable ]; then
+			if [ "$(cat /sys/block/${device}/removable)" = "0" ]; then
+				echo "found harddisk at /dev/${device}"
+				found="yes"
+				break
+			fi
+		fi
+	done
+	if [ "$found" = "yes" ]; then
+		break;
+	fi
+	/bin/sleep 5
+	done
+	
+	# try to resume first
+	echo "Attempting to resume from hibernation..."
+	/bin/resume /dev/${device}3
+
+	# if the resume succeeded then we won't get to here, so if we have got here
+	# then resume did NOT succeed, which is okay.
+	echo "Will mount root from /dev/${device}"
+	if [ "${use_squashfs}" -eq 1 ]; then
+		# We are using squashfs
+		echo "Setting up our squashfs and ext3fs unionfs system..."
+		mount -t ext3 -o ro /dev/${device}1 /container
+		while [ ! -e "/container/rootfs.img" ]
+		do
+			echo "Did not find /container/rootfs.img"
+			echo "sleeping for 0.5 seconds..."
+			/bin/sleep 0.5
+			echo "Mounting: mount -o ro /dev/${device}1 /container"
+			mount -t ext3 -o ro /dev/${device}1 /container
+		done
+		mount -o ro,loop -t squashfs /container/rootfs.img /squashmnt1
+
+		if [ -f /container/xbmc.img ]; then
+			mount -o ro,loop,noatime,nodiratime /container/xbmc.img /squashmnt2
+		fi
+
+		if [ -f /container/restrictedDrivers.img ]; then
+			mount -o ro,loop,noatime,nodiratime /container/restrictedDrivers.img /squashmnt3
+		fi
+
+		mount -t ext3 -o rw,noatime,nodiratime /dev/${device}2 /persistmnt
+		mount -t unionfs -o dirs=/persistmnt=rw:/squashmnt3=ro:/squashmnt2=ro:/squashmnt1=ro none ${rootmnt}
+	else
+		# We are NOT using squashfs
+		echo "mounting root partition, NOT using squashfs"   
+		mount -t ext3 -o rw,noatime,nodiratime /dev/${device}2 ${rootmnt}
+		while [ ! -e "${rootmnt}/bin" ]
+		do
+			echo "Did not find ${rootmnt}/bin"
+			echo "sleeping for 2 seconds..."
+			/bin/sleep 2
+			echo "Mounting: mount -o rw,noatime,nodiratime /dev/${device}2 ${rootmnt}"
+			mount -t ext3 -o rw,noatime,nodiratime /dev/${device}2 ${rootmnt}
+		done
+		mount -t ext3 -o rw,noatime,nodiratime /dev/${device}1 ${rootmnt}/boot 
+	fi
+}

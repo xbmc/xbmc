@@ -1,0 +1,88 @@
+// Block.tra
+// Author - MrC
+// Based on FadeBlocks.r4 by Gordon Williams
+
+int i,x,y;
+float dx,dy,sx,sy,dd,a,b,mytime;
+float[] d(64);
+Texture	mix;
+
+void Init()
+{
+	mix.CreateTexture();
+	for (x=0;x<64;x=x+1)
+		d[x] = Rand()-0.5;
+	mytime = 0;
+}
+
+void Rect(float x0, float y0, float x1, float y1)
+{
+	gfxBegin(PRIM_QUADLIST);
+
+    gfxTexCoord(0,1);
+    gfxVertex(x0, y0, 0.0);
+    gfxTexCoord(1, 1);
+    gfxVertex(x1, y0, 0.0);
+    gfxTexCoord(1, 0);
+    gfxVertex(x1, y1, 0.0);
+    gfxTexCoord(0, 0);
+    gfxVertex(x0, y1, 0.0);
+    
+    gfxEnd();
+
+}
+void Render()
+{
+     mytime = mytime + (TIMEPASS*0.25);
+	FINISHED = mytime>=1.0;
+	 b = (1.0-Cos(mytime*3.14159))*0.5;
+
+
+	gfxSetRenderTarget(mix);
+	gfxClear(0);
+	gfxSetAspect(0);
+	a = -2.414;
+	gfxTranslate(0, 0, -a);
+	gfxSetBlendMode(BLEND_MOD);
+	gfxColour(1, 1, 1, 1-b);
+	gfxSetTexture(TEXTURE_CURRPRESET);
+	gfxTexRect(-1, 1, 1, -1); 
+	gfxColour(1, 1, 1, b);
+	gfxSetTexture(TEXTURE_NEXTPRESET);
+	gfxTexRect(-1, -1, 1, 1); 
+	
+	gfxSetRenderTarget(TEXTURE_FRAMEBUFFER);
+	gfxSetBlendMode(BLEND_OFF);
+
+
+   gfxSetAspect((1.0-Cos(b*3.14159*2.0))*0.5);
+
+	gfxRotate(b*180, 0, 1, 0);
+	gfxRotate(b*180, 0, 0, 1);
+	gfxColour(1, 1, 1, 1);
+
+	gfxSetTexture(mix);
+	
+	gfxBegin(PRIM_QUADLIST);
+
+	for (i=0;i<64;i=i+1)
+	{
+      x = i%8;
+      y = i/8;
+      dx = (x/8.0);
+      dy = (y/8.0);
+      sx = ((x+1.0)/8.0);
+      sy = ((y+1.0)/8.0);
+      dd = 0.83*(a-((0.5-b)*2*d[i]));
+      gfxTexCoord(1.0-dx,dy);
+      gfxVertex(dd*(dx-0.5),dd*(dy-0.5),d[i]);
+      gfxTexCoord(1.0-sx,dy);
+      gfxVertex(dd*(sx-0.5),dd*(dy-0.5),d[i]);
+      gfxTexCoord(1.0-sx,sy);
+      gfxVertex(dd*(sx-0.5),dd*(sy-0.5),d[i]);
+      gfxTexCoord(1.0-dx,sy);
+      gfxVertex(dd*(dx-0.5),dd*(sy-0.5),d[i]);
+   }
+   gfxEnd();
+		
+}

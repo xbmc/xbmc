@@ -1,0 +1,39 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "aacDECdrop", "aacDECdrop.vcproj", "{C23A88D7-4997-4026-BBDB-5B0B2B22FDFF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{603E9D8A-1EDB-46E9-9126-F85A5BE2D65A} = {603E9D8A-1EDB-46E9-9126-F85A5BE2D65A}
+		{0CD046FC-940D-4286-9E18-E626C41FF67F} = {0CD046FC-940D-4286-9E18-E626C41FF67F}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libfaad", "..\..\libfaad\libfaad.vcproj", "{0CD046FC-940D-4286-9E18-E626C41FF67F}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmp4v2_st", "..\..\common\mp4v2\libmp4v2_st60.vcproj", "{603E9D8A-1EDB-46E9-9126-F85A5BE2D65A}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{C23A88D7-4997-4026-BBDB-5B0B2B22FDFF}.Debug.ActiveCfg = Debug|Win32
+		{C23A88D7-4997-4026-BBDB-5B0B2B22FDFF}.Debug.Build.0 = Debug|Win32
+		{C23A88D7-4997-4026-BBDB-5B0B2B22FDFF}.Release.ActiveCfg = Release|Win32
+		{C23A88D7-4997-4026-BBDB-5B0B2B22FDFF}.Release.Build.0 = Release|Win32
+		{0CD046FC-940D-4286-9E18-E626C41FF67F}.Debug.ActiveCfg = Debug|Win32
+		{0CD046FC-940D-4286-9E18-E626C41FF67F}.Debug.Build.0 = Debug|Win32
+		{0CD046FC-940D-4286-9E18-E626C41FF67F}.Release.ActiveCfg = Release|Win32
+		{0CD046FC-940D-4286-9E18-E626C41FF67F}.Release.Build.0 = Release|Win32
+		{603E9D8A-1EDB-46E9-9126-F85A5BE2D65A}.Debug.ActiveCfg = Debug|Win32
+		{603E9D8A-1EDB-46E9-9126-F85A5BE2D65A}.Debug.Build.0 = Debug|Win32
+		{603E9D8A-1EDB-46E9-9126-F85A5BE2D65A}.Release.ActiveCfg = Release|Win32
+		{603E9D8A-1EDB-46E9-9126-F85A5BE2D65A}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

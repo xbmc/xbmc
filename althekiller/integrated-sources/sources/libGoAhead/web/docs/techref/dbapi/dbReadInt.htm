@@ -1,0 +1,21 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>dbReadInt -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%">dbReadInt</TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR> <H2><B>Synopsis</B></H2><P>Retrieves integer values from the databases.</P><H2><B>Prototype</B></H2><PRE> #include &quot;emfdb.h&quot;
+
+ int dbReadInt(int did, char_t* table, char_t* column, 
+      int row, int *returnValue); </PRE><H2><B>Parameters</B></H2><p><TABLE WIDTH="54%" BORDER="0"><TR><TD WIDTH="16%">did</TD><TD WIDTH="83%">returned database ID</TD></TR><TR><TD WIDTH="16%">table</TD><TD WIDTH="83%">table name in the database</TD></TR><TR><TD WIDTH="16%">column</TD><TD WIDTH="83%">column name in the table</TD></TR><TR><TD WIDTH="16%">row</TD><TD WIDTH="83%">row number in the column</TD></TR><TR><TD WIDTH="16%">returnValue</TD><TD WIDTH="83%">pointer to an integer to contain the value read from the database</TD></TR></TABLE><H2><B>Description</B></H2><P>Read an integer from the database.</P><H2><B>Return Value</B></H2><P>dbReadInt returns the integer database element in  returnValue. It  returns 0 if successful,  or  -1 on errors.</P><H2><B>Example</B></H2><PRE>int driveno;
+if (dbReadInt(smd, &quot;base_fs_static&quot;, &quot;disk&quot;, row, &amp;driveno) &lt; 0) {
+    /* Error */
+}</PRE><H2><B>See Also</B></H2><P> <A HREF="dbReadStr.htm">dbReadStr</A></P><H2>&nbsp;</H2><BLOCKQUOTE>&nbsp;</BLOCKQUOTE></tr></td></table>
+</body>
+</html>

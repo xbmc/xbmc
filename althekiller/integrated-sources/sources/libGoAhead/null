@@ -1,0 +1,71 @@
+Microsoft (R) COFF/PE Editor Version 7.10.3077
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+.\Release\asp.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\balloc.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\base64.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\cgi.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\default.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\ejlex.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\ejparse.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\emfdb.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\form.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\h.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\handler.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\md5c.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\mime.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\misc.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\mocana_ssl.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\page.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\ringq.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\rom.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\security.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\sock.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\socketutil.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\sockGen.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\spy.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\sym.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\uemf.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\um.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\umui.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\url.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\value.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\webcomp.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\webrom.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\webs.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\websda.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist
+
+.\Release\websuemf.obj : warning LNK4039: section '.rdata' specified with /SECTION option does not exist

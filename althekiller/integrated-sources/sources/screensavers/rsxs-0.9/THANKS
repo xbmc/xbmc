@@ -1,0 +1,12 @@
+Many thanks to (in no special order):
+
+* Terry Welsh, for writing the screensavers in the first place. And releasing
+	the source!
+* Jeff Gibson, for pointing out an incompatibility with older versions of g++.
+* Bret Towe, for a useful Makefile patch.
+* Ari Pollak, for packaging rsxs for Debian.
+* Phillip Pi, for suggesting the configure script should let the user choose
+	the screensavers to install.
+* Florian Thiel, for testing with g++ 2.95 and finding some bugs.
+
+... and to everyone that's downloaded and tried this package out!

@@ -1,0 +1,336 @@
+#1:enca name (namestring)
+#  -- basic symbolic name
+#2:RFC-1345 name (namestring)
+#  -- must exist, use the most canonical name if RFC-1345 doesn't define it
+#3:cstocs name (namestring)
+#  -- left empty for new charsets, all cstocs charsets are present
+#4:iconv name (namestring)
+#  -- REPLACED FROM iconvenc.h, use @ICONV_NAME_...@
+#5:preferred MIME name (namestring)
+#  -- http://www.iana.org/assignments/character-sets
+#6:Alias list (space separated namestring list)
+#7:Human readable name (any string)
+#8:Charset flags (| joined C identifiers)
+#  -- see enca.h or API docs for flag list
+#9:Natural surface (C identifier)
+#  -- see enca.h or API docs for surface list
+
+enca:ASCII
+rfc:ANSI_X3.4-1968
+cstocs:ascii
+iconv:@ICONV_NAME_ASCII@
+mime:US-ASCII
+aliases:ASCII ANSI_X3.4-1986 367 CP367 IBM367 CSPC367 7bit ISO-646-US iso-ir-6 ISO_646.irv:1991 us US-ASCII csASCII
+human:7bit ASCII characters
+flags:ENCA_CHARSET_7BIT | ENCA_CHARSET_FIXED
+nsurface:ENCA_SURFACE_EOL_LF
+
+enca:ISO-8859-2
+rfc:ISO_8859-2:1987
+cstocs:il2
+iconv:@ICONV_NAME_ISO88592@
+mime:ISO-8859-2
+aliases:ISO-8859-2 8859-2 912 CP912 IBM912 ISO_8859-2:1987 il2 l2 Latin2 iso-ir-101 csISOLatin2 ISOLatin2 csLatin2
+human:ISO 8859-2 standard; ISO Latin 2
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_LF
+
+enca:ISO-8859-4
+rfc:ISO_8859-4:1988
+cstocs:
+iconv:@ICONV_NAME_ISO88594@
+mime:ISO-8859-4
+aliases:ISO-8859-4 8859-4 ISO_8859-4:1988 iso-ir-110 l4 Latin4 csLatin4 ISOLatin4
+human:ISO 8859-4 standard; Latin 4
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_LF
+
+enca:ISO-8859-5
+rfc:ISO_8859-5:1988
+cstocs:
+iconv:@ICONV_NAME_ISO88595@
+mime:ISO-8859-5
+aliases:ISO-8859-5 8859-5 Cyrillic ISO_8859-5:1988 iso-ir-144 csISOLatinCyrillic csLatin5 ISOLatin5
+human:ISO 8859-5 standard; ISO Cyrillic
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_LF
+
+enca:ISO-8859-13
+rfc:ISO_8859-13:1998
+cstocs:
+iconv:@ICONV_NAME_ISO885913@
+mime:ISO-8859-13
+aliases:ISO-8859-13 ISO8859-13 iso-baltic iso-ir-179a ISO_8859-13 ISO_8859-13:1998 l7 Latin7 csLatin7
+human:ISO 8859-13 standard; ISO Baltic; Latin 7
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_LF
+
+enca:ISO-8859-16
+rfc:ISO_8859-16:2000
+cstocs:
+iconv:@ICONV_NAME_ISO885916@
+mime:ISO-8859-16
+aliases:ISO-8859-16 ISO-IR-226 ISO_8859-16 ISO_8859-16:2000 latin10 l10 csLatin10
+human:ISO 8859-16 standard
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_LF
+
+enca:CP1125
+rfc:CP1125
+cstocs:
+iconv:@ICONV_NAME_CP1125@
+mime:windows-1125
+aliases:CP1125 1125 MS-1125 Win-1125 Windows-1125
+human:MS-Windows code page 1125
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_CRLF
+
+enca:CP1250
+rfc:CP1250
+cstocs:1250
+iconv:@ICONV_NAME_CP1250@
+mime:windows-1250
+aliases:CP1250 1250 ms-ee MS-1250 Win-1250 Windows-1250
+human:MS-Windows code page 1250
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_CRLF
+
+enca:CP1251
+rfc:CP1251
+cstocs:
+iconv:@ICONV_NAME_CP1251@
+mime:windows-1251
+aliases:CP1251 1251 ms-cyrl MS-1251 Win-1251 Windows-1251
+human:MS-Windows code page 1251
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_CRLF
+
+enca:CP1257
+rfc:CP1257
+cstocs:
+iconv:@ICONV_NAME_CP1257@
+mime:windows-1257
+aliases:CP1257 1257 ms-balt MS-1257 Win-1257 Windows-1257 WinBaltRim
+human:MS-Windows code page 1257; WinBaltRim
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_CRLF
+
+enca:IBM852
+rfc:IBM852
+cstocs:pc2
+iconv:@ICONV_NAME_IBM852@
+mime:IBM852
+aliases:IBM852 852 CP852 pc2 pcl2 pclatin2 pl2 PC852 csPC852 csIBM852
+human:IBM/MS code page 852; PC (DOS) Latin 2
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_CRLF
+
+enca:IBM855
+rfc:IBM855
+cstocs:
+iconv:@ICONV_NAME_IBM855@
+mime:IBM855
+aliases:IBM855 855 CP855 PC855 csPC855 csIBM855
+human:IBM/MS code page 855
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_CRLF
+
+enca:IBM775
+rfc:IBM775
+cstocs:
+iconv:@ICONV_NAME_IBM775@
+mime:IBM775
+aliases:IBM775 775 CP775 PC775 csPC775 csIBM775
+human:IBM/MS code page 775
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_CRLF
+
+enca:IBM866
+rfc:IBM866
+cstocs:
+iconv:@ICONV_NAME_IBM866@
+mime:IBM866
+aliases:IBM866 866 CP866 PC866 csPC866 csIBM866
+human:IBM/MS code page 866
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_CRLF
+
+enca:baltic
+rfc:iso-ir-179
+cstocs:
+iconv:@ICONV_NAME_BALTIC@
+mime:
+aliases:ISO-IR-179 baltic
+human:ISO-IR-179; Baltic
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_LF
+
+enca:KEYBCS2
+rfc:KEYBCS2
+cstocs:kam
+iconv:@ICONV_NAME_KEYBCS2@
+mime:
+aliases:KEYBCS2 Kamenicky kam 895 CP895 PC895 csPC895
+human:Kamenicky encoding; KEYBCS2
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_CRLF
+
+enca:macce
+rfc:macintosh_ce
+cstocs:macce
+iconv:@ICONV_NAME_MACCE@
+mime:
+aliases:macce macintoshce macee macintoshee
+human:Macintosh Central European
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_CR
+
+enca:maccyr
+rfc:mac_cyrillic
+cstocs:
+iconv:@ICONV_NAME_MACCYR@
+mime:
+aliases:maccyr maccyrillic macintoshcyr macintoshcyrillic
+human:Macintosh Cyrillic
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_CR
+
+enca:ECMA-113
+rfc:ECMA-113:1986
+cstocs:
+iconv:@ICONV_NAME_ECMA113@
+mime:ECMA-cyrillic
+aliases:ecma-cyrillic ECMA-113:1986 iso-ir-111
+human:ECMA Cyrillic; ECMA-113
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_LF
+
+enca:KOI-8_CS_2
+rfc:KOI-8_CS_2
+cstocs:koi8
+iconv:@ICONV_NAME_KOI8CS2@
+mime:KOI8-CS2
+aliases:KOI-8_CS2 koi8cs koi8cz T602
+human:KOI8-CS2 code (`T602')
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_CRLF
+
+enca:KOI8-R
+rfc:KOI8-R
+cstocs:
+iconv:@ICONV_NAME_KOI8R@
+mime:KOI8-R
+aliases:KOI8-R csKOI8R
+human:KOI8-R Cyrillic
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_CRLF
+
+enca:KOI8-U
+rfc:KOI8-U
+cstocs:
+iconv:@ICONV_NAME_KOI8U@
+mime:KOI8-U
+aliases:KOI8-U
+human:KOI8-U Cyrillic
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_CRLF
+
+enca:KOI8-UNI
+rfc:KOI8-UNI
+cstocs:
+iconv:@ICONV_NAME_KOI8UNI@
+mime:
+aliases:KOI8-UNI
+human:KOI8-Unified Cyrillic
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:ENCA_SURFACE_EOL_CRLF
+
+enca:TeX
+rfc:LaTeX
+cstocs: tex
+iconv:@ICONV_NAME_LATEX@
+mime:
+aliases:TeX latex ltex
+human:(La)TeX control sequences
+flags:ENCA_CHARSET_7BIT | ENCA_CHARSET_VARIABLE | ENCA_CHARSET_MULTIBYTE
+nsurface:ENCA_SURFACE_EOL_LF
+
+enca:UCS-2
+rfc:ISO-10646-UCS-2
+cstocs:
+iconv:@ICONV_NAME_UCS2@
+mime:ISO-10646-UCS-2
+aliases:UCS-2 ISO-10646-UCS-2 BMP u2 UNICODE-1-1 csUnicode11 csUnicode rune csUCS2
+human:Universal character set 2 bytes; UCS-2; BMP
+flags:ENCA_CHARSET_16BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_BINARY | ENCA_CHARSET_MULTIBYTE
+nsurface:
+
+enca:UCS-4
+rfc:ISO-10646-UCS-4
+cstocs:
+iconv:@ICONV_NAME_UCS4@
+mime:ISO-10646-UCS-4
+aliases:UCS-4 ISO-10646-UCS-4 10646 u4 UCS ISO-10646 csUCS4
+human:Universal character set 4 bytes; UCS-4; ISO-10646
+flags:ENCA_CHARSET_32BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_BINARY | ENCA_CHARSET_MULTIBYTE
+nsurface:
+
+enca:UTF-7
+rfc:UNICODE-1-1-UTF-7
+cstocs:
+iconv:@ICONV_NAME_UTF7@
+mime:UNICODE-1-1-UTF-7
+aliases:UTF-7 UNICODE-1-1-UTF-7 TF-7 u7 csUnicode11UTF7 csUTF7 ISO-10646-UTF7
+human:Universal transformation format 7 bits; UTF-7
+flags:ENCA_CHARSET_7BIT | ENCA_CHARSET_VARIABLE | ENCA_CHARSET_MULTIBYTE
+nsurface:ENCA_SURFACE_EOL_CRLF
+
+enca:UTF-8
+rfc:UTF-8
+cstocs: utf8
+iconv:@ICONV_NAME_UTF8@
+mime:UTF-8
+aliases:UTF-8 FSS_UTF TF-8 u8 UTF-2 UTF-FSS ISO-10646-UTF8 csUTF8
+human:Universal transformation format 8 bits; UTF-8
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_VARIABLE | ENCA_CHARSET_MULTIBYTE
+nsurface:ENCA_SURFACE_EOL_LF
+
+enca:CORK
+rfc:CORK
+cstocs:
+iconv:@ICONV_NAME_CORK@
+mime:
+aliases:Cork T1
+human:Cork encoding; T1
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_FIXED | ENCA_CHARSET_REGULAR
+nsurface:
+
+enca:GBK
+rfc:GB_2312-80
+cstocs:
+iconv:@ICONV_NAME_GBK@
+mime:GB2312
+aliases:GB_2312-80 GB2312.1980-0 ISO-IR-58 GB2312 GBK GB18030 CP936
+human:Simplified Chinese National Standard; GB2312
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_VARIABLE | ENCA_CHARSET_MULTIBYTE
+nsurface:ENCA_SURFACE_EOL_LF
+
+enca:BIG5
+rfc:Big5
+cstocs:
+iconv:@ICONV_NAME_BIG5@
+mime:BIG5
+aliases:BIG5 BIGFIVE BIG-5 BIG-FIVE CN-BIG5 CP950
+human:Traditional Chinese Industrial Standard; Big5
+flags:ENCA_CHARSET_8BIT | ENCA_CHARSET_VARIABLE | ENCA_CHARSET_MULTIBYTE
+nsurface:ENCA_SURFACE_EOL_LF
+
+enca:HZ
+rfc:HZ
+cstocs:
+iconv:@ICONV_NAME_HZ@
+mime:HZ-GB-2312
+aliases:HZ HZ-GB-2312
+human:HZ encoded GB2312
+flags:ENCA_CHARSET_7BIT | ENCA_CHARSET_VARIABLE | ENCA_CHARSET_MULTIBYTE
+nsurface:ENCA_SURFACE_EOL_LF

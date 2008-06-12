@@ -1,0 +1,161 @@
+#!@PERL@
+#
+# Prints info on all smb responding machines on a subnet.
+# This script needs to be run on a machine without nmbd running and be
+# run as root to get correct info from WIN95 clients.
+#
+# syntax:
+#    findsmb [-d|-D] [-r] [subnet broadcast address]
+#
+# with no agrument it will list machines on the current subnet
+#
+# There will be a "+" in front of the workgroup name for machines that are
+# local master browsers for that workgroup. There will be an "*" in front
+# of the workgroup name for machines that are the domain master browser for
+# that workgroup.
+# 
+# Options:
+#
+# -d|-D		enable debug
+# -r		add -r option to nmblookup when finding netbios name
+#
+
+$SAMBABIN = "@prefix@/bin";
+
+for ($i = 0; $i < 2; $i++) {	# test for -d and -r options
+	$_ = shift;
+	if (m/-d|-D/) {
+		$DEBUG = 1;
+	} elsif (m/-r/) {
+		$R_OPTION = "-r";
+	}
+}
+
+if ($_) {			# set broadcast address if it was specified
+	$BCAST = "-B $_";
+}
+
+
+######################################################################
+# do numeric sort on last field of IP address
+sub ipsort			
+{
+	@t1 = split(/\./,$a);
+	@t2 = split(/\./,$b);
+	@t1[3] <=> @t2[3];
+}
+######################################################################
+
+# look for all machines that respond to a name lookup
+
+open(NMBLOOKUP,"$SAMBABIN/nmblookup $BCAST '*' --debuglevel=0|") || 
+	die("Can't run nmblookup '*'.\n");
+
+# get rid of all lines that are not a response IP address,
+# strip everything but IP address and sort by last field in address
+
+@ipaddrs = sort ipsort grep(s/ \*<00>.*$//,<NMBLOOKUP>);
+
+# print header info
+print "\n                                *=DMB\n";
+print "                                +=LMB\n";
+print "IP ADDR         NETBIOS NAME     WORKGROUP/OS/VERSION $BCAST\n";
+print "---------------------------------------------------------------------\n";
+
+foreach $ip (@ipaddrs)		# loop through each IP address found
+{
+	$ip =~ s/\n//;		# strip newline from IP address
+
+	# find the netbios names registered by each machine
+
+	open(NMBLOOKUP,"$SAMBABIN/nmblookup $R_OPTION -A $ip --debuglevel=0|") || 
+		die("Can't get nmb name list.\n");
+	@nmblookup = <NMBLOOKUP>;
+  	close NMBLOOKUP;
+
+	# get the first <00> name
+
+	@name = grep(/<00>/,@nmblookup);
+	$_ = @name[0];
+
+	if ($_) {			# we have a netbios name
+		if (/GROUP/) {		# is it a group name
+			($name, $aliases, $type, $length, @addresses) = 
+			gethostbyaddr(pack('C4',split('\.',$ip)),2);
+			if (! $name) {			# could not get name
+				$name = "unknown nis name";
+			}
+		} else {
+			# The Netbios name can contain lot of characters also '<' '>'
+			# and spaces. The follwing cure inside name space but not
+			# names starting or ending with spaces
+			/(.{1,15})\s+<00>\s+/;
+			$name = $1;
+			$name =~ s/^\s+//g;
+    		}
+
+		# do an smbclient command on the netbios name.
+
+		if ( "$name" ) {
+			open(SMB,"$SAMBABIN/smbclient -L $name -I $ip -N --debuglevel=1 2>&1 |") ||
+				die("Can't do smbclient command.\n");
+			@smb = <SMB>;
+			close SMB;
+
+			if ($DEBUG) {		# if -d flag print results of nmblookup and smbclient
+				print "===============================================================\n";
+				print @nmblookup;
+				print @smb;
+			}
+
+			# look for the OS= string
+
+			@info = grep(/OS=/,@smb);
+			$_ = @info[0];
+			if ($_) {				# we found response
+				s/Domain=|OS=|Server=|\n//g;	# strip out descriptions to make line shorter
+
+			} else {				# no OS= string in response (WIN95 client)
+
+				# for WIN95 clients get workgroup name from nmblookup response
+				@name = grep(/<00> - <GROUP>/,@nmblookup);
+				$_ = @name[0];
+				if ($_) {
+					# Same as before for space and characters
+					/(.{1,15})\s+<00>\s+/;
+					$_ = "[$1]";
+				} else {
+					$_ = "Unknown Workgroup";
+				}
+			}
+		}
+
+		# see if machine registered a local master browser name
+		if (grep(/<1d>/,@nmblookup)) {
+			$master = '+';			# indicate local master browser
+			if (grep(/<1b>/,@nmblookup)) {	# how about domain master browser?
+				$master = '*';			# indicate domain master browser
+			}
+		} else {
+			$master = ' ';			# not a browse master
+		}
+
+		# line up info in 3 columns
+
+		print "$ip".' 'x(16-length($ip))."$name".' 'x(14-length($name))."$master"."$_\n";
+
+	} else {				# no netbios name found
+		# try getting the host name
+		($name, $aliases, $type, $length, @addresses) = 
+		gethostbyaddr(pack('C4',split('\.',$ip)),2);
+		if (! $name) {			# could not get name
+			$name = "unknown nis name";
+		}
+		if ($DEBUG) {			# if -d flag print results of nmblookup
+			print "===============================================================\n";
+			print @nmblookup;
+		}
+		print "$ip".' 'x(16-length($ip))."$name\n";
+	}
+} 
+

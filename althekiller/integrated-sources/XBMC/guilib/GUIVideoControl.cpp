@@ -1,0 +1,113 @@
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
+#include "include.h"
+#include "GUIVideoControl.h"
+#include "GUIWindowManager.h"
+#include "Application.h"
+#ifdef HAS_VIDEO_PLAYBACK
+#include "cores/VideoRenderers/RenderManager.h"
+#else
+#include "cores/DummyVideoPlayer.h"
+#endif
+
+CGUIVideoControl::CGUIVideoControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+{}
+
+CGUIVideoControl::~CGUIVideoControl(void)
+{}
+
+
+void CGUIVideoControl::Render()
+{
+#ifdef HAS_VIDEO_PLAYBACK
+  // don't render if we aren't playing video, or if the renderer isn't started
+  // (otherwise the lock we have from CApplication::Render() may clash with the startup
+  // locks in the RenderManager.)
+  if (g_application.IsPlayingVideo() && g_renderManager.IsStarted())
+  {
+#else
+  if (g_application.IsPlayingVideo())
+  {
+#endif
+    if (!g_application.m_pPlayer->IsPaused())
+      g_application.ResetScreenSaver();
+
+    g_graphicsContext.SetViewWindow(m_posX, m_posY, m_posX + m_width, m_posY + m_height);
+
+#ifdef HAS_VIDEO_PLAYBACK
+    DWORD alpha = g_graphicsContext.MergeAlpha(0xFF000000) >> 24;
+    g_renderManager.RenderUpdate(false, 0, alpha);
+#else
+    ((CDummyVideoPlayer *)g_application.m_pPlayer)->Render();
+#endif
+  }
+  CGUIControl::Render();
+}
+
+bool CGUIVideoControl::OnMouseClick(DWORD dwButton, const CPoint &point)
+{ // mouse has clicked in the video control
+  // switch to fullscreen video
+  if (!g_application.IsPlayingVideo()) return false;
+  if (dwButton == MOUSE_LEFT_BUTTON)
+  {
+    CGUIMessage message(GUI_MSG_FULLSCREEN, GetID(), GetParentID());
+    g_graphicsContext.SendMessage(message);
+    return true;
+  }
+  if (dwButton == MOUSE_RIGHT_BUTTON)
+  { // toggle the playlist window
+    if (m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_PLAYLIST)
+      m_gWindowManager.PreviousWindow();
+    else
+      m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
+    // reset the mouse button.
+    g_Mouse.bClick[MOUSE_RIGHT_BUTTON] = false;
+    return true;
+  }
+  return false;
+}
+
+bool CGUIVideoControl::OnMouseOver(const CPoint &point)
+{
+  // unfocusable, so return true
+  CGUIControl::OnMouseOver(point);
+  return false;
+}
+
+bool CGUIVideoControl::CanFocus() const
+{ // unfocusable
+  return false;
+}
+
+bool CGUIVideoControl::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
+{ // mouse is allowed to focus this control, but it doesn't actually receive focus
+  controlPoint = point;
+  m_transform.InverseTransformPosition(controlPoint.x, controlPoint.y);
+  if (HitTest(controlPoint))
+  {
+    *control = (CGUIControl *)this;
+    return true;
+  }
+  *control = NULL;
+  return false;
+}

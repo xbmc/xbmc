@@ -1,0 +1,34 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websOpen -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websOpen</b></TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p>Open and initialize the GoAhead 
+WebServer.</p><h2>Prototype</h2><pre> #include &quot;webs.h&quot; 
+
+ int <b>websOpen</b>(int port, int retries); </pre><h2>Parameters</h2><table width=100% border=0 CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" WIDTH="5%">port</TD><TD WIDTH="95%">The port to open for 
+GoAhead WebServer to listen on.</TD></TR> <TR> <TD VALIGN="TOP" WIDTH="5%">retries</TD><TD WIDTH="95%">The 
+number of times websOpen will try to open the next available port if <I>port</I> 
+is not available.</TD></TR> </table><h2>Description</h2><P>websOpen is the main 
+initialization procedure for the GoAhead WebServer. It creates all the URL handlers, 
+initializes the mime type table and finally calls <A href="websOpenListen.htm">websOpenListen</A> 
+to open the primary TCP/IP port on which the GoAhead WebServer will listen. You 
+should call <A href="websClose.htm">websClose</A> when you wish to shutdown the 
+GoAhead WebServer.</P><P>The <EM> port </EM>parameter specifies the TCP/IP to 
+open. If this cannot be opened and <EM > retries</EM> is greater than zero, the 
+next port in sequence will be opened for up to <EM> retries </EM>times until a 
+port is successfully opened. To determine the port number actually opened, call 
+<A href="websGetPort.htm" > websGetPort </a> .</P><h2>Return Value</h2><p>Returns 
+0 if the open succeeds, otherwise -1 is returned.</p><h2>Example</h2><pre> websOpen(80, 5); </pre><h2>Stability Classification</h2><p>Stable.</p><h2>See Also</h2><p> 
+<A href="websClose.htm">websClose</A>, <A href="websCloseListen.htm">websCloseListen</A>, 
+<A href="websOpenListen.htm">websOpenListen</A> </p></td></tr></table>
+</body>
+</html>

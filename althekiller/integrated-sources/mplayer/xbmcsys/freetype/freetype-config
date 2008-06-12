@@ -1,0 +1,134 @@
+#! /bin/sh
+
+prefix=/usr/local
+exec_prefix=${prefix}
+exec_prefix_set=no
+includedir=${prefix}/include
+libdir=${exec_prefix}/lib
+enable_shared=yes
+wl=-Wl,
+hardcode_libdir_flag_spec='${wl}--rpath ${wl}$libdir'
+
+usage()
+{
+  cat <<EOF
+Usage: freetype-config [OPTION]...
+Get FreeType compilation and linking information.
+
+Options:
+  --prefix               display \`--prefix' value used for building the
+                         FreeType library
+  --prefix=PREFIX        override \`--prefix' value with PREFIX
+  --exec-prefix          display \`--exec-prefix' value used for building
+                         the FreeType library
+  --exec-prefix=EPREFIX  override \`--exec-prefix' value with EPREFIX
+  --version              display libtool version of the FreeType library
+  --libs                 display flags for linking with the FreeType library
+  --libtool              display library name for linking with libtool
+  --cflags               display flags for compiling with the FreeType
+                         library
+EOF
+  exit $1
+}
+
+if test $# -eq 0 ; then
+  usage 1 1>&2
+fi
+
+while test $# -gt 0 ; do
+  case "$1" in
+  -*=*)
+    optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'`
+    ;;
+  *)
+    optarg=
+    ;;
+  esac
+
+  case $1 in
+  --prefix=*)
+    prefix=$optarg
+    local_prefix=yes
+    ;;
+  --prefix)
+    echo_prefix=yes
+    ;;
+  --exec-prefix=*)
+    exec_prefix=$optarg
+    exec_prefix_set=yes
+    local_prefix=yes
+    ;;
+  --exec-prefix)
+    echo_exec_prefix=yes
+    ;;
+  --version)
+    echo 9.7.3
+    exit 0
+    ;;
+  --cflags)
+    echo_cflags=yes
+    ;;
+  --libs)
+    echo_libs=yes
+    ;;
+  --libtool)
+    echo_libtool=yes
+    ;;
+  *)
+    usage 1 1>&2
+    ;;
+  esac
+  shift
+done
+
+if test "$local_prefix" = "yes" ; then
+  if test "$exec_prefix_set" != "yes" ; then
+    exec_prefix=$prefix
+  fi
+fi
+
+if test "$echo_prefix" = "yes" ; then
+  echo $prefix
+fi
+
+if test "$echo_exec_prefix" = "yes" ; then
+  echo $exec_prefix
+fi
+
+if test "$exec_prefix_set" = "yes" ; then
+  libdir=$exec_prefix/lib
+else
+  if test "$local_prefix" = "yes" ; then
+    includedir=$prefix/include
+    libdir=$prefix/lib
+  fi
+fi
+
+if test "$echo_cflags" = "yes" ; then
+  cflags="-I$includedir/freetype2"
+  if test "$includedir" != "/usr/include" ; then
+    echo $cflags -I$includedir
+  else
+    echo $cflags
+  fi
+fi
+
+if test "$echo_libs" = "yes" ; then
+  rpath=
+  if test "$enable_shared" = "yes" ; then
+    eval "rpath=\"$hardcode_libdir_flag_spec\""
+  fi
+  libs="-lfreetype "
+  if test "$libdir" != "/usr/lib" ; then
+    echo -L$libdir $rpath $libs
+  else
+    echo $libs
+  fi
+fi
+
+if test "$echo_libtool" = "yes" ; then
+  convlib="libfreetype.la"
+  echo $libdir/$convlib
+fi
+
+# EOF

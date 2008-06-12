@@ -1,0 +1,8 @@
+- get the filename
+
+Open.cpp
+- open the file & clear the structs in FileSpecs (EkszBox\Open.cpp)
+- figure out the format (EkszBox\FormatScan.cpp)
+- call correct format read function (EkszBox\Formats\Read\*.*),
+  info from file will be read into global structs 'FileSpecs.cpp'
+- call extract (EkszBox\Formats\Extract\StdExtract.cpp)

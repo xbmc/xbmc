@@ -1,0 +1,24 @@
+<!-- The matrix trails screensaver by Joakim Eriksson -->
+<screensaver>
+
+	<!-- How long we wait before we add a new char -->
+	<CharDelayMin>0.015</CharDelayMin>
+	<CharDelayMax>0.060</CharDelayMax>
+
+	<!-- How quickly the characters fade out -->
+	<FadeSpeedMin>1.0</FadeSpeedMin>
+	<FadeSpeedMax>1.5</FadeSpeedMax>
+
+	<NumColumns>50</NumColumns>
+	<NumRows>40</NumRows>
+
+	<!-- Color of the trails -->
+	<CharCol>0.0 1.0 0.0</CharCol>
+
+	<!-- Number of characters in the font texture and thier size in pixels -->
+	<NumChars>32</NumChars>
+	<CharSizeTexX>32</CharSizeTexX>
+	<CharSizeTexY>26</CharSizeTexY>
+
+
+</screensaver>

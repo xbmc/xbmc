@@ -1,0 +1,8 @@
+; This file provides declarations of the entrypoints in the DLL.
+
+LIBRARY CoreAAC.ax
+EXPORTS
+	DllGetClassObject   PRIVATE
+	DllCanUnloadNow     PRIVATE
+	DllRegisterServer   PRIVATE
+	DllUnregisterServer PRIVATE

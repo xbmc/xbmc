@@ -1,0 +1,19 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>umGetFirstUser -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<TABLE WIDTH="550" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD>
+
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%">umGetFirstUser</TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR><H2>Synopsis</H2><P>	Returns the first user ID found in the user table.</P><H2>Prototype</H2><PRE>
+ #include &quot;um.h&quot;
+
+ char_t *umGetFirstUser();</PRE><H2>Parameters</H2><P>	None</P><H2>Description</H2><P>	The returned string is a pointer to the data stored in the user table.  Use this function with <A HREF="umGetNextUser.htm">umGetNextUser</A> to retrieve a list of user IDs contained in the user table.</P><H2>Return Value</H2><P>	umGetFirstUser  returns a pointer to the user ID,  or a NULL on error.</P><H2>Example</H2><PRE>char_t	*userid = umGetFirstUser();</PRE><H2>See Also</H2><P>	<A HREF="umGetNextUser.htm">umGetNextUser</A>()</P><P></P><H2>&nbsp;</H2><BLOCKQUOTE>&nbsp;</BLOCKQUOTE></TD></TR></TABLE>
+</body>
+</html>

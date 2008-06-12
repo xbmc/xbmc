@@ -1,0 +1,43 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websUrlParse -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websUrlParse</b></TD><td class="titleCenter" align=center width="33%"><b> 
+GoAhead WebServer API</b></TD><td class="titleRight" align=right width="33%"><B> 
+GoAhead EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p>Parse a URL into its 
+component parts.</p><h2>Prototype</h2><pre>
+ #include &quot;webs.h&quot; 
+
+ int <B>websUrlParse</B>(char_t *url, char_t **buf, char_t **host, 
+        char_t **path, char_t **port, char_t **query, 
+        char_t **proto, char_t **tag, char_t **ext);
+</pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" WIDTH="6%">url <TD WIDTH="94%">Source URL to parse.<TR> 
+<TD VALIGN="TOP" WIDTH="6%">buf <TD WIDTH="94%">Pointer to buffer used to hold 
+the parsed components.<TR> <TD VALIGN="TOP" WIDTH="6%">host <TD WIDTH="94%">Host 
+name. <TR> <TD VALIGN="TOP" WIDTH="6%">path <TD WIDTH="94%">URL path portion after 
+the host name and optional port. <TR> <TD VALIGN="TOP" WIDTH="6%">query <TD WIDTH="94%">Optional 
+query string portion after &quot;?&quot; .<TR> <TD VALIGN="TOP" WIDTH="6%">proto 
+<TD WIDTH="94%">Protocol. Usually &quot;http&quot;.<TR> <TD VALIGN="TOP" WIDTH="6%">tag 
+<TD WIDTH="94%">Optional tag portion after &quot;#&quot;.<TR> <TD VALIGN="TOP" WIDTH="6%">ext 
+<TD WIDTH="94%">Document file name extension.</TD></TR></table><h2>Description</h2><P> 
+The websUrlParse procedure cracks the URL into its constituent components. To 
+store the parts, websUrlParse allocates a dynamic buffer. This must eventually 
+be freed via <A href="../basicapi/bfree.htm">bfree</A> by the caller.</P><P>websUrlParse 
+stores pointers to the URL components in <EM>host, path, port, query, proto, tag 
+</EM>and <EM>ext. </EM>If any of these parameters contains NULL, that component 
+is ignored.</P><P> <B>Note:</B> Tag parsing is not fully supported.</P><h2>Return 
+Value</h2><p> Returns 0 if successful. Returns -1 if memory cannot be allocated 
+to hold the results.</p><h2>Example</h2><pre> char_t *host, *port, *buf; 
+websUrlParse(url, &amp;buf, &amp;host, NULL, &amp;port, NULL, NULL, NULL, NULL); </pre><h2>Stability 
+Classification</h2><p>Stable.</p><h2>See Also</h2><p> <A href="../basicapi/balloc.htm">balloc</A>, 
+<A href="../basicapi/bfree.htm">bfree</A>, <A href="websUrlType.htm">websUrlType</A> 
+</p></td></tr></table>
+</body>
+</html>

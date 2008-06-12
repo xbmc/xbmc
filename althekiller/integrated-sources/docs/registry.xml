@@ -1,0 +1,25 @@
+<registry>
+	<!-- this is a template registry file                            -->
+	<!-- key elements can be nested, all parent paths are inherited  -->
+	<!-- values can exist as a child of any key element              -->
+	<!-- an id of "" will become written as the <default> element    -->
+	<!-- types supported are dword and string currently              -->
+	<key path="HKEY_LOCAL_MACHINE">
+		<key path="SOFTWARE">
+			
+			<key path="Microsoft\Windows\CurrentVersion">
+				<value type="string" id="ProductID">55555-333-7777777-55555</value>
+			</key>
+
+			<key path="Apple Computer, Inc.\QuickTime\SystemPreferences">
+				<value type="dword" id="WinVersion">117506916</value>
+				<value type="string" id="QTSysDir">Q:\system\players\mplayer\codecs</value>
+			</key>
+		</key>
+	</key>
+
+	<key path="HKEY_CURRENT_USER">
+		<key path="Software">
+		</key>
+	</key>
+</registry>

@@ -1,0 +1,45 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>ejOpenEngine -- GoAhead Embedded JavaScript</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+ <table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle">
+<TR>
+	<td class="titleLeft" align=left width="33%">ejOpenEngine</TD><td class="titleCenter" align=center width="33%"><b>GoAhead JavaScript API</b></TD><td class="titleRight" align=right><B>GoAhead EMF</B></TD></TR>
+</TABLE><HR>
+
+<h2>Synopsis</h2><p>Open a JavaScript interpreter session.</p><h2>Prototype</h2><pre>
+#include &quot;ej.h&quot;
+
+int <b>ejOpenEngine</b>(sym_fd_t variables, sym_fd_t functions);
+</pre>
+
+<h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    <TR>
+        
+    <TD VALIGN="TOP" width="8%">variables</TD><TD width="92%"> Symbol table for variables.</TD></TR><TR>
+        
+    <TD VALIGN="TOP" width="8%">functions</TD><TD width="92%">Symbol table for functions.</TD></TR>
+</table><h2>Description</h2><P>To use JavaScript, you must first open an interpreter session with <i>ejOpenEngine</i>. 
+  JavaScript interpreters usually have their own variable and global function 
+  name space. To share a variable or function name space, pass a symbol table 
+  into <b>ejOpenEngine</b> in the <i>variable</i> or <i>function</i> parameters. 
+  If either of these parameters are set to NULL, the symbol table will be created 
+  automatically.</P><p>Use <b>ejCloseEngine</b> to close the interpreter when finished. 
+
+<h2>Return Value</h2><p>Handle for the JavaScript interpreter.</p><h2>Example</h2><pre>
+if (ejOpenEngine(NULL, NULL)< 0) {
+    /* Can't open interpreter */
+    return -1;
+}
+</pre>
+<h2>Stability Classification</h2><p>Stable.</p><h2>See Also</h2><p> <A href="../../../over/ejs.htm">JavaScript</A>, <A href="../../../over/asp.htm">Active 
+  Server Pages</A> <A href="ejCloseEngine.htm">ejCloseEngine</A> <A href="ejEval.htm">ejEval</A> 
+</p></td></tr></table>
+
+</body>
+</html>

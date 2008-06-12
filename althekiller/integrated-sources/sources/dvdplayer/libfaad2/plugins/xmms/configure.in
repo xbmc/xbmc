@@ -1,0 +1,38 @@
+dnl configure.in for xmms faad2-2.0 package
+
+AC_INIT(src/libmp4.c)
+AM_INIT_AUTOMAKE(libmp4, 0.4)
+
+dnl save CFLAGS since AC_PROG_CC insert "-g -O2" if CFLAGS is empty
+cflags_save="$CFLAGS"
+
+AM_DISABLE_STATIC
+
+AC_PROG_CC
+AC_PROG_LIBTOOL
+AC_PROG_INSTALL
+
+AC_CHECK_PROGS(XMMS_CONFIG, xmms-config,
+	[AC_MSG_ERROR("*** xmms-config not found check PATH or install xmms")])
+
+AC_CHECK_LIB(mp4v2, MP4Create, ,AC_MSG_ERROR(*** libmp4v2 not installed), -lstdc++)
+
+CFLAGS="$cflags_save `xmms-config --cflags`"
+CPPFLAGS="$CPPFLAGS $CFLAGS"
+AC_SUBST(CFLAGS)
+
+AC_CHECK_HEADER(pthread.h,,
+	AC_MSG_ERROR(*** pthread headers support not installed or not found))
+AC_CHECK_HEADER(id3.h,,
+	AC_MSG_ERROR(*** id3lib headers support not installed or not found))
+AC_CHECK_HEADER(faad.h,,
+	AC_MSG_ERROR(*** faad header not installed check your CFLAGS))
+
+AC_OUTPUT(Makefile src/Makefile )
+
+echo ""
+echo "-------==========MP4 & MPEG2/4-AAC decoder configured===========------"
+echo "CFLAGS:   $CFLAGS"
+echo "CXXFLAGS: $CXXFLAGS"
+echo "install-dir = `xmms-config --input-plugin-dir`"
+echo ""

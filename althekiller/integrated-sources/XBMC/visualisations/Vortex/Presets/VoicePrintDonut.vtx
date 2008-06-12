@@ -1,0 +1,74 @@
+// VoicePrintDonut.vtx
+// Author - MrC
+// Based on VoicePrint.r4 by Gordon Williams
+
+VoicePrint	vp;
+Map map;
+float time = 0;
+float minX;
+
+float rx,rxamt,ry,ryamt;
+
+void Init()
+{
+	vp.LoadColourMap("huemap.jpg");
+	vp.SetSpeed(0.5);
+
+	for (int y=0;y<24;y=y+1)
+	{
+		for (int x=0;x<32;x=x+1)
+		{
+			float dx = (x-16)/16.0;
+			float dy = (y-12)/12.0;
+			float s = (Mag(dx,dy))-1.5;
+			map.SetValues(x, y, dx*s, dy*s, 1, 1, 1);
+		}
+	}
+	
+}
+
+void Render()
+{
+	gfxPushMatrix();
+	minX = 0.75f - BASS;
+	if (minX<0.5f) minX=0.5f;
+	if (minX>0.99f) minX=0.99f;
+
+	vp.SetRect(minX, 0, 0.5, 0.99);
+
+	vp.Render();
+
+	gfxSetRenderTarget(map);
+	gfxSetTexture(vp);
+	gfxSetAspect(0);
+	gfxTranslate(0, 0, 2.414);
+	gfxTexRect(-1, 1, 1, -1);
+
+	map.Render();
+	gfxSetRenderTarget(0);
+	gfxSetTexture(map);
+	gfxTexRect(-1, 1, 1, -1);
+
+	gfxPopMatrix();
+
+	time += TIMEPASS;
+
+	gfxSetTexture(vp);
+	gfxTranslate(0, 0, 2.0f-(BASS* 0.5f));
+
+	if (BASS>0.3) rxamt = 1;
+	if (BASS<-0.3) rxamt = -1;
+	if (TREBLE>0.3) ryamt = 1;
+	if (TREBLE<-0.3) ryamt = -1;
+	rx = rx + (rxamt*TIMEPASS);
+	ry = ry + (ryamt*TIMEPASS);
+
+	gfxRotate(-70+(Sin(time)*12),1,0,0);
+	gfxRotate(rx*90,0,0,1);
+	gfxRotate(ry*90,0,1,0);
+
+	gfxColour(1, 1, 1, 1);
+	gfxSetAspect(1);
+	gfxCube(-0.25f, -0.25f, -0.25f, 0.25f, 0.25f, 0.25f);
+	
+}

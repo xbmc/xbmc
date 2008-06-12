@@ -1,0 +1,8 @@
+* Determine the characteristics of the SID filter integrators. Spice
+  may perhaps be used to simulate the filter circuit.
+
+* Write documentation. Possibly a paper describing how SID was reverse
+  engineered.
+
+* Implement a SID tune player. A PSID player, VSID, is partly
+  implemented in VICE.

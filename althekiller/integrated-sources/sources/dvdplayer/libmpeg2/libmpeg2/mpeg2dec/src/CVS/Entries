@@ -1,0 +1,14 @@
+/.cvsignore/1.5/Mon Feb  3 10:24:14 2003//
+/Makefile.am/1.23/Wed Dec 17 10:13:01 2003//
+/configure.incl/1.5/Wed Jan 29 06:56:35 2003//
+/corrupt_mpeg2.c/1.3/Tue Feb 18 00:16:16 2003//
+/dump_state.c/1.14/Tue Feb 24 11:38:52 2004//
+/extract_mpeg2.1/1.2/Thu Jan  9 07:51:34 2003//
+/extract_mpeg2.c/1.23/Wed Feb  5 09:59:46 2003//
+/getopt.c/1.1/Mon Jul 23 00:37:11 2001//
+/getopt.h/1.1/Mon Jul 23 00:32:03 2001//
+/gettimeofday.c/1.2/Thu Jan  9 07:48:42 2003//
+/gettimeofday.h/1.5/Fri Dec 12 11:41:24 2003//
+/mpeg2dec.1/1.2/Thu Jan  9 07:51:34 2003//
+/mpeg2dec.c/1.70/Thu Feb 19 12:32:48 2004//
+D

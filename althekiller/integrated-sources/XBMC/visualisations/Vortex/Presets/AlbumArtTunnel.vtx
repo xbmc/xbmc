@@ -1,0 +1,14 @@
+// AlbumArtTunnel.vtx
+// Author - MrC
+
+Tunnel tunnel;
+
+
+void Render()
+{
+
+	gfxSetTexture(TEXTURE_ALBUMART);
+	tunnel.Update((1 + TREBLE) * 8 * TIMEPASS, 1 * TIMEPASS * BASS * 2);
+	tunnel.Render(20, 1, 1, 2);
+
+}

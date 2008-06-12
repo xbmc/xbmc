@@ -1,0 +1,6 @@
+TODO:
+
+	* handle AAC info such as MPEG-AAC type, header (ADTS/ADIF),...
+	* seeking... but it will certainly an option because it need
+	  a reading of whole file....
+	* any suggestions ... send me somes messages about it :)

@@ -1,0 +1,232 @@
+<window id="29">
+	<defaultcontrol always="true">52</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>88</height>
+			<texture>background-settings.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-bottom.png</texture>
+		</control>
+		<control type="label">
+			<description>Xbox media center label</description>
+			<posx>200</posx>
+			<posy>43</posy>
+			<align>right</align>
+			<label>9</label>
+			<font>special12</font>
+		</control>
+		<control type="label">
+			<description>Login label</description>
+			<posx>207</posx>
+			<posy>43</posy>
+			<align>left</align>
+			<label>20096</label>
+			<font>special13</font>
+		</control>
+		<control type="label">
+			<description>date label</description>
+			<posx>360</posx>
+			<posy>113</posy>
+			<label>$INFO[System.Date] [COLOR=grey] |  $INFO[System.Time][/COLOR]</label>
+			<align>center</align>
+			<aligy>center</aligy>
+			<font>special12</font>
+		</control>
+		<control type="fixedlist" id="52">
+			<posx>-80</posx>
+			<posy>170</posy>
+			<width>880</width>
+			<height>406</height>
+			<onleft>100</onleft>
+			<onright>100</onright>
+			<onup>52</onup>
+			<ondown>98</ondown>
+<!--			<pagecontrol>90</pagecontrol>  -->
+			<focusposition>2</focusposition>
+			<orientation>horizontal</orientation>
+			<itemlayout height="200" width="176">
+				<control type="image">
+					<posx>16</posx>
+					<posy>25</posy>
+					<width>144</width>
+					<height>180</height>
+					<texture>keyboard-numeric-bg.png</texture>
+				</control>
+				<control type="image">
+					<posx>38</posx>
+					<posy>40</posy>
+					<width>110</width>
+					<height>140</height>
+					<aspectratio>keep</aspectratio>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="image">
+					<posx>16</posx>
+					<posy>25</posy>
+					<width>144</width>
+					<height>180</height>
+					<texture>keyboard-numeric-overlay2.png</texture>
+				</control>
+				<control type="image">
+					<posx>16</posx>
+					<posy>180</posy>
+					<width>144</width>
+					<height>180</height>
+					<texture flipy="true" diffuse="diffuse_mirror.png">keyboard-numeric-bg.png</texture>
+				</control>
+				<control type="image">
+					<posx>38</posx>
+					<posy>205</posy>
+					<width>110</width>
+					<height>140</height>
+					<texture flipy="true" diffuse="diffuse_mirror.png" /> 
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>88</posx>
+					<posy>205</posy>
+					<width>176</width>
+					<height>22</height>
+					<font>font12</font>
+					<align>center</align>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="300"  width="176">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>176</width>
+					<height>225</height>
+					<texture>keyboard-numeric-bg.png</texture>
+					<animation effect="zoom" start="16,25,144,180" end="0,0,176,225" time="150">focus</animation>
+					<animation effect="zoom" end="16,25,144,180" start="0,0,176,225" time="150">unfocus</animation>
+				</control>
+				<control type="image">
+					<posx>22</posx>
+					<posy>15</posy>
+					<width>144</width>
+					<height>180</height>
+					<aspectratio>keep</aspectratio>
+					<info>ListItem.Icon</info>
+					<animation effect="zoom" start="38,40,110,140" end="22,15,144,180" time="150">focus</animation>
+					<animation effect="zoom" end="38,40,110,140" start="22,15,144,180" time="150">unfocus</animation>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>176</width>
+					<height>225</height>
+					<texture>keyboard-numeric-overlay2.png</texture>
+					<animation effect="zoom" start="16,25,144,180" end="0,0,176,225" time="150">focus</animation>
+					<animation effect="zoom" end="16,25,144,180" start="0,0,176,225" time="150">unfocus</animation>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>193</posy>
+					<width>176</width>
+					<height>220</height>
+					<texture flipy="true" diffuse="diffuse_mirror.png">keyboard-numeric-bg.png</texture>
+					<animation effect="zoom" start="16,180,144,180" end="0,193,175,225" time="150">focus</animation>
+					<animation effect="zoom" end="16,180,144,180" start="0,193,175,225" time="150">unfocus</animation>
+				</control>
+				<control type="image">
+					<posx>22</posx>
+					<posy>225</posy>
+					<width>144</width>
+					<height>180</height>
+					<texture flipy="true" diffuse="diffuse_mirror.png" /> 
+					<info>ListItem.Icon</info>
+					<animation effect="zoom" start="38,205,110,140" end="22,225,144,180" time="150">focus</animation>
+					<animation effect="zoom" end="38,205,110,140" start="22,225,144,180" time="150">unfocus</animation>
+				</control>
+				<control type="label">
+					<posx>88</posx>
+					<posy>205</posy>
+					<width>220</width>
+					<font>special13</font>
+					<align>center</align>
+					<scroll>true</scroll>
+					<info>ListItem.Label</info>
+					<animation reversible="false" effect="slide" start="0,0" end="0,25" time="150">focus</animation>
+					<animation reversible="false" effect="slide" end="0,0" start="0,25" time="150">unfocus</animation>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="label">
+			<posx>0</posx>
+			<posy>430</posy>
+			<width>720</width>
+			<font>font12</font>
+			<align>center</align>
+			<scroll>true</scroll>
+			<info>Container(52).ListItem.Label2</info>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-Login-Overlay.png</texture>
+		</control>
+		<control type="image">
+			<description>submenu button</description>
+			<posx>610</posx>
+			<posy>500</posy>
+			<width>28</width>
+			<height>35</height>
+			<texture>home-power.png</texture>
+		</control>
+		<control type="button" id="98">
+			<description>submenu button</description>
+			<posx>610</posx>
+			<posy>500</posy>
+			<width>28</width>
+			<height>35</height>
+			<onclick>ActivateWindow(ShutdownMenu)</onclick>
+			<texturefocus>home-power.gif</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<label>-</label>
+			<onleft>52</onleft>
+			<onright>52</onright>
+			<onup>52</onup>
+			<ondown>52</ondown>
+		</control>
+		<include>windowswitchtransition</include>
+		<control type="image">
+			<description>background image </description>
+			<posx>0</posx>
+			<posy>576</posy>
+			<width>720</width>
+			<height>331</height>
+			<texture border="0,150,0,0">Home_Bottom.png</texture>
+			<animation effect="slide" end="0,-331" time="800" condition="Window.Next(startup)">WindowClose</animation>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>-400</posy>
+			<width>720</width>
+			<height>400</height>
+			<texture border="0,0,0,218">Home_Top_16x9.png</texture>
+			<animation effect="slide" end="0,400" time="800" condition="Window.Next(startup)">WindowClose</animation>
+		</control>
+	</controls>
+</window>

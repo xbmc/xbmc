@@ -1,0 +1,293 @@
+<window id="109">
+	<defaultcontrol always="true">15</defaultcontrol>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image" id="0">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>576</height>
+			<texture>black.png</texture>
+			<animation effect="fade" time="2000">WindowOpen</animation>
+		</control>
+		<control type="image" id="0">
+			<posx>-10</posx>
+			<posy>150</posy>
+			<width>740</width>
+			<height>87</height>
+			<texture>sub-background.png</texture>
+		</control>
+		<control type="label" id="1">
+			<description>dialog Heading</description>
+			<posx>160</posx>
+			<posy>163</posy>
+			<font>font12</font>
+			<width>400</width>
+			<height>16</height>
+			<align>center</align>
+			<label>12325</label>
+		</control>
+		<control type="label" id="4">
+			<description>dialog line 1</description>
+			<posx>160</posx>
+			<posy>187</posy>
+			<width>400</width>
+			<height>16</height>
+			<label>12323</label>
+			<textcolor>green</textcolor>
+			<disabledcolor>disabled</disabledcolor>
+			<font>special13</font>
+			<align>center</align>
+		</control>
+		<control type="image" id="0">
+			<posx>275</posx>
+			<posy>240</posy>
+			<width>160</width>
+			<height>159</height>
+			<texture>keyboard-numeric-bg.png</texture>
+		</control>
+		<control type="button" id="11">
+			<description>1 button</description>
+			<posx>300</posx>
+			<posy>255</posy>
+			<width>30</width>
+			<height>30</height>
+			<font>special13</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus>keyboard-btn-Num1.png</texturenofocus>
+			<texturefocus>keyboard-btn-Num1-focus.png</texturefocus>
+			<label>12311</label>
+			<onleft>23</onleft>
+			<onright>12</onright>
+			<onup>20</onup>
+			<ondown>14</ondown>
+		</control>
+		<control type="button" id="12">
+			<description>2 button</description>
+			<posx>330</posx>
+			<posy>255</posy>
+			<width>30</width>
+			<height>30</height>
+			<font>special13</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus>keyboard-btn.png</texturenofocus>
+			<texturefocus>keyboard-btn-focus.png</texturefocus>
+			<label>12312</label>
+			<onleft>11</onleft>
+			<onright>13</onright>
+			<onup>10</onup>
+			<ondown>15</ondown>
+		</control>
+		<control type="button" id="13">
+			<description>3 button</description>
+			<posx>360</posx>
+			<posy>255</posy>
+			<width>30</width>
+			<height>30</height>
+			<font>special13</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus>keyboard-btn.png</texturenofocus>
+			<texturefocus>keyboard-btn-focus.png</texturefocus>
+			<label>12313</label>
+			<onleft>12</onleft>
+			<onright>23</onright>
+			<onup>22</onup>
+			<ondown>16</ondown>
+		</control>
+		<control type="button" id="23">
+			<description>backspace button</description>
+			<posx>390</posx>
+			<posy>255</posy>
+			<width>30</width>
+			<height>60</height>
+			<font>special13</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus>keyboard-btn-numclear.png</texturenofocus>
+			<texturefocus>keyboard-btn-numclear-focus.png</texturefocus>
+			<label>C</label>
+			<onleft>13</onleft>
+			<onright>11</onright>
+			<onup>21</onup>
+			<ondown>21</ondown>
+		</control>
+		<control type="button" id="14">
+			<description>4 button</description>
+			<posx>300</posx>
+			<posy>285</posy>
+			<width>30</width>
+			<height>30</height>
+			<font>special13</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus>keyboard-btn.png</texturenofocus>
+			<texturefocus>keyboard-btn-focus.png</texturefocus>
+			<label>12314</label>
+			<onleft>23</onleft>
+			<onright>15</onright>
+			<onup>11</onup>
+			<ondown>17</ondown>
+		</control>
+		<control type="button" id="15">
+			<description>5 button</description>
+			<posx>330</posx>
+			<posy>285</posy>
+			<width>30</width>
+			<height>30</height>
+			<font>special13</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus>keyboard-btn.png</texturenofocus>
+			<texturefocus>keyboard-btn-focus.png</texturefocus>
+			<label>12315</label>
+			<onleft>14</onleft>
+			<onright>16</onright>
+			<onup>12</onup>
+			<ondown>18</ondown>
+		</control>
+		<control type="button" id="16">
+			<description>6 button</description>
+			<posx>360</posx>
+			<posy>285</posy>
+			<width>30</width>
+			<height>30</height>
+			<font>special13</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus>keyboard-btn.png</texturenofocus>
+			<texturefocus>keyboard-btn-focus.png</texturefocus>
+			<label>12316</label>
+			<onleft>15</onleft>
+			<onright>23</onright>
+			<onup>13</onup>
+			<ondown>19</ondown>
+		</control>
+		<control type="button" id="17">
+			<description>7 button</description>
+			<posx>300</posx>
+			<posy>315</posy>
+			<width>30</width>
+			<height>30</height>
+			<font>special13</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus>keyboard-btn.png</texturenofocus>
+			<texturefocus>keyboard-btn-focus.png</texturefocus>
+			<label>12317</label>
+			<onleft>21</onleft>
+			<onright>18</onright>
+			<onup>14</onup>
+			<ondown>20</ondown>
+		</control>
+		<control type="button" id="18">
+			<description>8 button</description>
+			<posx>330</posx>
+			<posy>315</posy>
+			<width>30</width>
+			<height>30</height>
+			<font>special13</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus>keyboard-btn.png</texturenofocus>
+			<texturefocus>keyboard-btn-focus.png</texturefocus>
+			<label>12318</label>
+			<onleft>17</onleft>
+			<onright>19</onright>
+			<onup>15</onup>
+			<ondown>10</ondown>
+		</control>
+		<control type="button" id="19">
+			<description>9 button</description>
+			<posx>360</posx>
+			<posy>315</posy>
+			<width>30</width>
+			<height>30</height>
+			<font>special13</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus>keyboard-btn.png</texturenofocus>
+			<texturefocus>keyboard-btn-focus.png</texturefocus>
+			<label>12319</label>
+			<onleft>18</onleft>
+			<onright>21</onright>
+			<onup>16</onup>
+			<ondown>22</ondown>
+		</control>
+		<control type="button" id="21">
+			<description>OK button</description>
+			<posx>390</posx>
+			<posy>315</posy>
+			<width>30</width>
+			<height>60</height>
+			<font>special13</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus>keyboard-btn-numenter.png</texturenofocus>
+			<texturefocus>keyboard-btn-numenter-focus.png</texturefocus>
+			<label>E</label>
+			<onleft>19</onleft>
+			<onright>17</onright>
+			<onup>23</onup>
+			<ondown>23</ondown>
+		</control>
+		<control type="button" id="20">
+			<description>prev button</description>
+			<posx>300</posx>
+			<posy>345</posy>
+			<width>30</width>
+			<height>30</height>
+			<font>font12</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus>keyboard-btn-numprev.png</texturenofocus>
+			<texturefocus>keyboard-btn-numprev-focus.png</texturefocus>
+			<onleft>21</onleft>
+			<onright>10</onright>
+			<onup>17</onup>
+			<ondown>11</ondown>
+		</control>
+		<control type="button" id="10">
+			<description>0 button</description>
+			<posx>330</posx>
+			<posy>345</posy>
+			<width>30</width>
+			<height>30</height>
+			<font>special13</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus>keyboard-btn.png</texturenofocus>
+			<texturefocus>keyboard-btn-focus.png</texturefocus>
+			<label>12310</label>
+			<onleft>20</onleft>
+			<onright>22</onright>
+			<onup>18</onup>
+			<ondown>12</ondown>
+		</control>
+		<control type="button" id="22">
+			<description>next button</description>
+			<posx>360</posx>
+			<posy>345</posy>
+			<width>30</width>
+			<height>30</height>
+			<font>font12</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus>keyboard-btn-numnext.png</texturenofocus>
+			<texturefocus>keyboard-btn-numnext-focus.png</texturefocus>
+			<onleft>10</onleft>
+			<onright>21</onright>
+			<onup>19</onup>
+			<ondown>13</ondown>
+		</control>
+		<control type="image" id="0">
+			<posx>275</posx>
+			<posy>240</posy>
+			<width>160</width>
+			<height>159</height>
+			<texture>keyboard-numeric-overlay.png</texture>
+		</control>
+	</controls>
+</window>

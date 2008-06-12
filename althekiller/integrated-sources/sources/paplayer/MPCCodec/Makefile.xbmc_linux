@@ -1,0 +1,8 @@
+#
+# To build, first do ./configure and then make. The create the XBMC so by calling this makefile.
+#
+libmpcdec-i486-linux.so:
+	$(CC) -shared -o $@ src/.libs/*.o `cat ../../../XBMC/xbmc/cores/DllLoader/exports/wrapper.def` ../../../XBMC/xbmc/cores/DllLoader/exports/wrapper.o
+
+clean:
+	$(RM) *.so

@@ -1,0 +1,11 @@
+.*.sw[po]
+*~
+*.diff
+*.patch
+*.lo
+*.o
+Makefile
+Makefile.in
+.deps
+.libs
+libvo.la

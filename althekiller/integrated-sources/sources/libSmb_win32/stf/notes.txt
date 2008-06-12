@@ -1,0 +1,175 @@
+		-*- indented-text -*-
+
+(set lotus no)
+
+
+
+Notes on using comfychair with Samba (samba testing framework units):
+
+The tests need to rely on some external resources, such as 
+
+If suitable resources are not available, need to skip particular
+tests.  Must include a message indicating what resources would be
+needed to run that test.  (e.g. must be root.)
+
+We want to be able to select and run particular subsets of tests, such
+as "all winbind tests".
+
+We want to keep the number of configurable parameters down as much as
+possible, to make it easy on people running the tests.
+
+Wherever possible, the tests should set up their preconditions, but a
+few basic resources need to be provided by the people running the
+tests.  So for example, rather than asking the user for the name of a
+non-root user, we should give the tests the administrator name and
+password, and it can create a new user to use.
+
+This makes it simpler to get the tests running, and possible also
+makes them more reproducible.
+
+In the future, rather than using NT machines provided by the test
+person, we might have a way to drive VMWare non-persistent sessions,
+to make tests even more tightly controlled.
+
+
+Another design question is how to communicate this information to the
+tests.  If there's a lot of settings, then it might need to be stored
+in a configuration file.  
+
+However, if we succeed in cutting down the number of parameters, then
+it might be straightforward to pass the information on the command
+line or in an environment variable.  
+
+Environment variables are probably better because they can't be seen
+by other users, and they are more easily passed down through an
+invocation of "make check".
+
+
+
+Notes on Samba Testing Framework for Unittests
+----------------------------------------------
+
+This is to be read after reading the notes.txt from comfychair.  I'm
+proposing a slightly more concrete description of what's described
+there.
+
+The model of having tests require named resources looks useful for
+incorporation into a framework that can be run by many people in
+widely different environments.
+
+Some possible environments for running the test framework in are:
+
+    - Casual downloader of Samba compiling from source and just wants
+      to run 'make check'.  May only have one Unix machine and a
+      handful of clients.
+
+    - Samba team member with access to a small number of other
+      machines or VMware sessions.
+
+    - PSA developer who may not have intimate knowledge of Samba
+      internals and is only interested in testing against the PSA.
+
+    - Non-team hacker wanting to run test suite after making small
+      hacks. 
+
+    - Build farm environment (loaner machine with no physical access
+      or root privilege).
+
+    - HP BAT.
+
+Developers in most of these environments are also potential test case
+authors.  It should be easy for people unfamiliar with the framework
+to write new tests and have them work.  We should provide examples and
+the existing tests should well written and understandable.
+
+Different types of tests:
+
+    - Tests that check Samba internals and link against
+      libbigballofmud.so.  For example:
+
+        - Upper/lowercase string functions
+        - user_in_list() for large lists
+
+    - Tests that use the Samba Python extensions.
+
+    - Tests that execute Samba command line programs, for example
+      smbpasswd. 
+
+    - Tests that require other resources on the network such as domain
+      controllers or PSAs.
+
+    - Tests that are performed on the documentation or the source code
+      such as:
+
+        - grep for common spelling mistakes made by abartlet (-:
+        - grep for company copyright (IBM, HP)
+                         
+    - Link to other existing testing frameworks (smbtorture,
+      abartlet's bash based build farm tests)
+
+I propose a TestResourceManager which would be instantiated by a test
+case.  The test case would require("resourcename") as part of its
+constructor and raise a comfychair.NotRun exception if the resource
+was not present.  A TestResource class could be defined which could
+read a configuration file or examine a environment variable and
+register a resource only if some condition was satisfied.
+
+It would be nice to be able to completely separate the PSA testing
+from the test framework.  This would entail being able to define test
+resources dynamically, possibly with a plugin type system.
+
+class TestResourceManager:
+    def __init__(self, name):
+        self.resources = {}
+
+    def register(self, resource):
+        name = resource.name()
+        if self.resources.has_key(name):
+            raise "Test manager already has resource %s" % name
+        self.resources[name] = resource
+
+    def require(self, resource_name):
+        if not self.resources.has_key(resource_name):
+            raise "Test manager does not have resources %s" % resource_name
+
+class TestResource:
+    def __init__(self, name):
+        self.name = name
+
+    def name(self):
+        return self.name
+
+import os
+
+trm = TestResourceManager()
+
+if os.getuid() == 0:
+    trm.register(TestResource("root"))
+
+A config-o-matic Python module can take a list of machines and
+administrator%password entries and classify them by operating system
+version and service pack.  These resources would be registered with
+the TestResourceManager.
+
+Some random thoughts about named resources for network servers:
+
+require("nt4.sp3")
+require("nt4.domaincontroller")
+require("psa")
+
+Some kind of format for location of passwords, libraries:
+
+require("exec(smbpasswd)")
+require("lib(bigballofmud)")
+
+maybe require("exec.smbpasswd") looks nicer...
+
+The require() function could return a dictionary of configuration
+information or some handle to fetch dynamic information on.  We may
+need to create and destroy extra users or print queues.  How to manage
+cleanup of dynamic resources?
+
+Requirements for running stf:
+
+    - Python, obviously
+    - Samba python extensions

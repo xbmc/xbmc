@@ -1,0 +1,64 @@
+<visualisation>
+
+ <!-- amount to delay spectrum (range 0..255) -->
+ <syncdelay>15</syncdelay>
+
+ <!-- number of frequency bars to display -->
+ <bars>40</bars>
+
+ <!-- what the bars represent (options are: "average" and "peak" levels in that frequency range)-->
+ <levels>peak</levels>
+
+ <!-- frequency scale can be log or linear -->
+ <freqscale>linear</freqscale>
+
+ <!-- fraction of actual rise amount to do at one time (range 0.01..1) -->
+ <risespeed>0.5</risespeed>
+
+ <!-- fraction of actual fall amount to do at one time (range 0.01..1) -->
+ <fallspeed>0.5</fallspeed>
+
+ <!-- enable A/B/C-weighting of the data (options are: "A", "B", "C", or "none") -->
+ <weight>none</weight>
+
+ <!-- combine channels in to one? -->
+ <mixchannels>true</mixchannels>
+
+ <!-- show peaks separately? -->
+ <showpeaks>true</showpeaks>
+
+ <!-- speed of the decay of peaks in dB/frame (range 0.01..4) -->
+ <peakdecayspeed>0.3</peakdecayspeed>
+
+ <!-- frequency range (in Hz) -->
+ <freqmin>80</freqmin>
+ <freqmax>18000</freqmax>
+
+ <!-- level range (in dB - 0dB refers to a sine wave at minimum possible level, 96dB is highest possible) -->
+ <levelmin>20</levelmin>
+ <levelmax>90</levelmax>
+
+ <!-- Initial Color (Color when bar is lowest) (Red Green Blue Alpha) -->
+ <initialcolorR>255</initialcolorR>
+ <initialcolorG>50</initialcolorG>
+ <initialcolorB>50</initialcolorB>
+ <initialcolorA>255</initialcolorA>
+
+ <!-- Final Color (Color when bar is Highest) (Red Green Blue Alpha) -->
+ <finalcolorR>255</finalcolorR>
+ <finalcolorG>255</finalcolorG>
+ <finalcolorB>50</finalcolorB>
+ <finalcolorA>255</finalcolorA>
+ 
+ <!-- This is the radius to start the bar from (default 0 is the center of the screen) -->
+ <startradius>10</startradius>
+ 
+ <!-- -->
+ <minbar>20</minbar>
+
+ <!-- This is the speed at which to spin the vis (number of seconds per full rotation (ie the higher the number the slower the rotation)) (0 for no rotation)-->
+ <spinrate>5</spinrate>
+
+
+
+</visualisation>

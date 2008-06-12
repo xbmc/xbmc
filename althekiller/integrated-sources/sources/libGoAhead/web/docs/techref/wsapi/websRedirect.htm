@@ -1,0 +1,26 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websRedirect -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websRedirect</b></TD><td class="titleCenter" align=center width="33%"><b> 
+GoAhead WebServer API</b></TD><td class="titleRight" align=right width="33%"><B> 
+GoAhead EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p>Redirect the user's 
+browser to a new location.</p><h2>Prototype</h2><pre> #include &quot;webs.h&quot; 
+
+ void <b>websRedirect</b>(webs_t wp, char_t *url); </pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" WIDTH="4%">wp <TD WIDTH="96%">Web server connection handle.</TD></TR> 
+<TR> <TD VALIGN="TOP" WIDTH="4%">url <TD WIDTH="96%">The URL to redirect to.</TD></TR> 
+</table><h2>Description</h2><P>The websRedirect procedure sends the user's browser 
+to a new location. websRedirect sets the &quot;Location&quot; HTTP response header 
+to the nominated url.</P><h2>Return Value</h2><p>None</p><h2>Example</h2><pre> gnssprintf(path, &quot;http://%s/mypage.htm&quot;, websGetHostUrl()); 
+ websRedirect(wp, path); </pre><h2>Stability Classification</h2><p>Stable.</p><h2>See Also</h2><p> 
+<A href="websDone.htm">websDone</A> </p></td></tr></table>
+
+</body>
+</html>
