@@ -28,11 +28,7 @@
 
 // python.h should always be included first before any other includes
 #include "stdafx.h"
-#ifndef _LINUX
-#include "python/Python.h"
-#else
-#include <python2.4/Python.h>
-#endif
+#include "Python/Include/Python.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "GUIPassword.h"
 
@@ -300,7 +296,7 @@ void XBPython::Initialize()
       // Required for python to find optimized code (pyo) files
       setenv("PYTHONOPTIMIZE", "1", 1);
       setenv("PYTHONHOME", "Q:/system/python", 1);
-      //setenv("PYTHONPATH", "Q:/system/python/python24.zip", 1);
+      setenv("PYTHONPATH", "Q:/system/python/python24.zip", 1);
       //setenv("PYTHONDEBUG", "1", 1);
       //setenv("PYTHONINSPECT", "1", 1);
       //setenv("PYTHONVERBOSE", "1", 1);

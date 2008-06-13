@@ -1,7 +1,7 @@
 #ifndef Py_PYPORT_H
 #define Py_PYPORT_H
 
-#include "pyconfig.h" /* include for defines */
+#include "../pyconfig.h" /* include for defines */
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>

@@ -21,10 +21,8 @@
 
 // python.h should always be included first before any other includes
 #include "stdafx.h"
-#ifndef _LINUX
-#include "python/Python.h"
-#else
-#include <python2.4/Python.h>
+#include "Python/Include/osdefs.h"
+#ifdef _LINUX
 #include "XBPythonDll.h"
 #endif
 #include "Util.h"
@@ -139,8 +137,10 @@ void XBPyThread::Process()
   // get path from script file name and add python path's
   // this is used for python so it will search modules from script path first
   strcpy(sourcedir, source);
-  
-  strcpy(strrchr(sourcedir, PATH_SEPARATOR_CHAR), DELIM);
+
+  char *p = strrchr(sourcedir, PATH_SEPARATOR_CHAR);
+  *p = DELIM;
+  *++p = 0;
 
   strcpy(path, sourcedir);
 
@@ -162,9 +162,9 @@ void XBPyThread::Process()
   }
   PySys_SetPath(path);
 
-#ifdef _LINUX
+#if DELIM != ';'
   // Replace the : at the end with ; so it will be EXACTLY like the xbox version
-  strcpy(strrchr(sourcedir, ':'), ";");
+  strcpy(strrchr(sourcedir, DELIM), ";");
 #endif  
   xbp_chdir(sourcedir); // XXX, there is a ';' at the end
 
