@@ -2844,8 +2844,7 @@ void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CSt
 void CUtil::CreateArchivePath(CStdString& strUrlPath, const CStdString& strType, 
                               const CStdString& strArchivePath,
                               const CStdString& strFilePathInArchive, 
-                              const CStdString& strCachePath, 
-                              const CStdString strPwd)
+                              const CStdString& strPwd)
 {
   CStdString strBuffer;
 
