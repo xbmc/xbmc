@@ -410,6 +410,20 @@ WORD CButtonTranslator::GetActionCode(WORD wWindow, const CKey &key, CStdString 
     strAction = (*it2).second.strID;
     it2 = (*it).second.end();
   }
+#ifdef _LINUX
+  // Some buttoncodes changed in Hardy
+  if (wAction == 0 && wKey & (DWORD)0x0F00) {
+    CLog::Log(LOGDEBUG, "%s: Trying Hardy keycode for %#04x", __FUNCTION__, wKey);
+    wKey &= ~(DWORD)0x0F00;
+    buttonMap::iterator it2 = (*it).second.find(wKey);
+    while (it2 != (*it).second.end())
+    {
+      wAction = (*it2).second.wID;
+      strAction = (*it2).second.strID;
+      it2 = (*it).second.end();
+    }
+  }
+#endif
   return wAction;
 }
 
