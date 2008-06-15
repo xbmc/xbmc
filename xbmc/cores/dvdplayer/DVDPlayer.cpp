@@ -692,8 +692,8 @@ void CDVDPlayer::Process()
     UpdateApplication(1000);
 
     // if the queues are full, no need to read more
-    if(!m_dvdPlayerAudio.AcceptsData() && m_CurrentAudio.id >= 0
-    || !m_dvdPlayerVideo.AcceptsData() && m_CurrentVideo.id >= 0)
+    if ((!m_dvdPlayerAudio.AcceptsData() && m_CurrentAudio.id >= 0)
+    ||  (!m_dvdPlayerVideo.AcceptsData() && m_CurrentVideo.id >= 0))
     {
       Sleep(10);
       if (m_caching)
@@ -704,8 +704,8 @@ void CDVDPlayer::Process()
     // check if we are too slow and need to recache
     if(!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
     {
-      if (m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.inited && m_CurrentAudio.id >= 0
-      ||  m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.inited && m_CurrentVideo.id >= 0)
+      if ((m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.inited && m_CurrentAudio.id >= 0)
+      ||  (m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.inited && m_CurrentVideo.id >= 0))
       {
         if(!m_caching && m_playSpeed == DVD_PLAYSPEED_NORMAL)
         {
@@ -1007,8 +1007,8 @@ bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
 {
   if(current.startsync)
   {
-    if(current.startpts < current.dts && current.dts != DVD_NOPTS_VALUE
-    || current.startpts == DVD_NOPTS_VALUE)
+    if ((current.startpts < current.dts && current.dts != DVD_NOPTS_VALUE)
+    ||  (current.startpts == DVD_NOPTS_VALUE))
     {
       if(source == DVDPLAYER_VIDEO)
         m_dvdPlayerVideo.SendMessage(current.startsync);

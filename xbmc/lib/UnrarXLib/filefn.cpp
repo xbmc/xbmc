@@ -62,9 +62,9 @@ void CreatePath(const char *Path,const wchar *PathW,bool SkipLastName)
   {
     if (s==NULL || s-Path>=NM || *s==0)
       IgnoreAscii=true;
-    if (Wide && (PosW>=NM || PathW[PosW]==0) || !Wide && IgnoreAscii)
+    if ((Wide && (PosW>=NM || PathW[PosW]==0)) || (!Wide && IgnoreAscii))
       break;
-    if (Wide && PathW[PosW]==CPATHDIVIDER || !Wide && *s==CPATHDIVIDER)
+    if ((Wide && PathW[PosW]==CPATHDIVIDER) || (!Wide && *s==CPATHDIVIDER))
     {
       wchar *DirPtrW=NULL,DirNameW[NM];
       if (Wide)

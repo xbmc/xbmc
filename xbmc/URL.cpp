@@ -324,12 +324,14 @@ void CURL::SetOptions(const CStdString& strOptions)
 {
   m_strOptions.Empty();
   if( strOptions.length() > 0)
+  {
     if( strOptions[0] == '?' || strOptions[0] == '#' || strOptions[0] == ';' || strOptions.Find("xml") >=0 )
     {
       m_strOptions = strOptions;
     }
     else
       CLog::Log(LOGWARNING, "%s - Invalid options specified for url %s", __FUNCTION__, strOptions.c_str());
+  }
 }
 
 void CURL::SetPort(int port)
@@ -406,7 +408,7 @@ const CStdString CURL::GetFileNameWithoutPath() const
   return CUtil::GetFileName(file);
 }
 
-const char CURL::GetDirectorySeparator() const
+char CURL::GetDirectorySeparator() const
 {
   if ( IsLocal() )
     return '\\';

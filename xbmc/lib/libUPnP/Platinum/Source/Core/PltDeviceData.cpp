@@ -115,10 +115,10 @@ PLT_DeviceData::GetIconUrl(const char* mimetype,
     icon.width  = 0;
 
     for (NPT_Cardinal i=0; i<m_Icons.GetItemCount(); i++) {
-        if (mimetype && m_Icons[i].mimetype != mimetype ||
-            maxsize  && m_Icons[i].width > maxsize      ||
-            maxsize  && m_Icons[i].height > maxsize     ||
-            maxdepth && m_Icons[i].depth > maxdepth)
+        if ((mimetype && m_Icons[i].mimetype != mimetype) ||
+            (maxsize  && m_Icons[i].width > maxsize)      ||
+            (maxsize  && m_Icons[i].height > maxsize)     ||
+            (maxdepth && m_Icons[i].depth > maxdepth))
             continue;
 
         // pick the biggest and better resolution we can

@@ -953,11 +953,12 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       // if autoresume is enabled then add restart video button
       // check to see if the Resume Video button is applicable
       if (GetResumeItemOffset(item) > 0)
+      {
         if (g_guiSettings.GetBool("myvideos.autoresume"))
           buttons.Add(CONTEXT_BUTTON_RESTART_ITEM, 20132);    // Restart Video
         else
           buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, 13381);     // Resume Video
-      
+      } 
       if (item->IsSmartPlayList() || m_vecItems->IsSmartPlayList())
         buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
     }

@@ -537,7 +537,7 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
         frame_count = BYTES2INT(vbri[14], vbri[14 + 1],
                                 vbri[14 + 2], vbri[14 + 3]);
         nMp3DataSize = BYTES2INT(vbri[10], vbri[10 + 1], vbri[10 + 2], vbri[10 + 3]);
-        int iSeekOffsets = ((vbri[18] & 0xFF) << 8) | (vbri[19] & 0xFF) + 1;
+        int iSeekOffsets = (((vbri[18] & 0xFF) << 8) | (vbri[19] & 0xFF)) + 1;
         float *offset = new float[iSeekOffsets + 1];
         int iScaleFactor = ((vbri[20] & 0xFF) << 8) | (vbri[21] & 0xFF);
         int iOffsetSize = ((vbri[22] & 0xFF) << 8) | (vbri[23] & 0xFF);
