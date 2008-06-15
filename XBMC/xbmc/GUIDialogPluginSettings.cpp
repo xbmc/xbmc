@@ -226,7 +226,7 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
 #if defined(_XBOX)
                 strMask = ".xbe|.py";
 #elif defined(_WIN32_WINNT)
-                strMask = ".exe|.bat|.cmd";
+                strMask = ".exe|.bat|.cmd|.py";
 #else
                 strMask = "";
 #endif
