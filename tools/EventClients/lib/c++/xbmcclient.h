@@ -67,23 +67,6 @@
 
 #define ACTION_EXECBUILTIN 0x01
 
-static void Clean()
-{
-#ifdef _WIN32
-  WSACleanup();
-#endif
-}
-
-static bool Initialize()
-{
-#ifdef _WIN32
-  WSADATA wsaData;
-  if (WSAStartup(MAKEWORD(1, 1), &wsaData))
-    return false;
-#endif
-  return true;
-}
-
 class CAddress
 {
 private:
@@ -143,6 +126,23 @@ public:
   {
     static time_t id = time(NULL);
     return id;
+  }
+
+  static void Clean()
+  {
+  #ifdef _WIN32
+    WSACleanup();
+  #endif
+  }
+
+  static bool Initialize()
+  {
+  #ifdef _WIN32
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(1, 1), &wsaData))
+      return false;
+  #endif
+    return true;
   }
 };
 
