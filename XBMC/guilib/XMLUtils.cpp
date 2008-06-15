@@ -105,7 +105,7 @@ bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, CStdStr
 bool XMLUtils::GetEncoding(const TiXmlDocument* pDoc, CStdString& strEncoding)
 {
   const TiXmlNode* pNode=NULL;
-  while ((pNode=pDoc->IterateChildren(pNode)) && pNode->Type()!=TiXmlNode::DECLARATION);
+  while ((pNode=pDoc->IterateChildren(pNode)) && pNode->Type()!=TiXmlNode::DECLARATION) {}
   if (!pNode) return false;
   const TiXmlDeclaration* pDecl=pNode->ToDeclaration();
   if (!pDecl) return false;

@@ -48,8 +48,8 @@ void CGUIControlGroupList::Render()
   if (m_scrollSpeed != 0)
   {
     m_offset += m_scrollSpeed * (m_renderTime - m_scrollTime);
-    if (m_scrollSpeed < 0 && m_offset < m_scrollOffset ||
-        m_scrollSpeed > 0 && m_offset > m_scrollOffset)
+    if ((m_scrollSpeed < 0 && m_offset < m_scrollOffset) ||
+        (m_scrollSpeed > 0 && m_offset > m_scrollOffset))
     {
       m_offset = m_scrollOffset;
       m_scrollSpeed = 0;

@@ -1500,7 +1500,7 @@ void CApplication::StartWebServer()
     m_pWebServer = new CWebServer();
     m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "Q:\\web", false);
     if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
-	  g_applicationMessenger.HttpApi("broadcastlevel; StartUp;1");
+    g_applicationMessenger.HttpApi("broadcastlevel; StartUp;1");
   }
 }
 
@@ -1855,12 +1855,12 @@ void CApplication::CheckDate()
   if ((CurTime.wYear > 2099) || (CurTime.wYear < 2001) )        // XBOX MS Dashboard also uses min/max DateYear 2001/2099 !!
   {
     CLog::Log(LOGNOTICE, "- The Date is Wrong: Setting New Date!");
-    NewTime.wYear		= 2004;	// 2004
-    NewTime.wMonth		= 1;	// January
-    NewTime.wDayOfWeek	= 1;	// Monday
-    NewTime.wDay		= 5;	// Monday 05.01.2004!!
-    NewTime.wHour		= 12;
-    NewTime.wMinute		= 0;
+    NewTime.wYear   = 2004; // 2004
+    NewTime.wMonth    = 1;  // January
+    NewTime.wDayOfWeek  = 1;  // Monday
+    NewTime.wDay    = 5;  // Monday 05.01.2004!!
+    NewTime.wHour   = 12;
+    NewTime.wMinute   = 0;
 
     FILETIME stNewTime, stCurTime;
     SystemTimeToFileTime(&NewTime, &stNewTime);
@@ -2461,18 +2461,18 @@ bool CApplication::OnKey(CKey& key)
       }
     }
     else
-	{
-	  if (key.GetFromHttpApi())
+  {
+    if (key.GetFromHttpApi())
       {
         if (key.GetButtonCode() != KEY_INVALID)
-		{
+    {
           action.wID = (WORD) key.GetButtonCode();
-		  g_buttonTranslator.GetAction(iWin, key, action);
-		}
+      g_buttonTranslator.GetAction(iWin, key, action);
+    }
       }
-	  else
+    else
         g_buttonTranslator.GetAction(iWin, key, action);
-	}
+  }
   }
   if (!key.IsAnalogButton())
     CLog::Log(LOGDEBUG, "%s: %i pressed, action is %i", __FUNCTION__, (int) key.GetButtonCode(), action.wID);
@@ -2490,7 +2490,7 @@ bool CApplication::OnAction(const CAction &action)
   {
     CStdString tmp;
     tmp.Format("%i",action.wID);
-	g_applicationMessenger.HttpApi("broadcastlevel; OnAction:"+tmp+";2");
+  g_applicationMessenger.HttpApi("broadcastlevel; OnAction:"+tmp+";2");
   }
 
   // special case for switching between GUI & fullscreen mode.
@@ -2568,7 +2568,7 @@ bool CApplication::OnAction(const CAction &action)
     return true;
   }
 
-  if (action.wID == ACTION_INCREASE_RATING || action.wID == ACTION_DECREASE_RATING && IsPlayingAudio())
+  if ((action.wID == ACTION_INCREASE_RATING || action.wID == ACTION_DECREASE_RATING) && IsPlayingAudio())
   {
     const CMusicInfoTag *tag = g_infoManager.GetCurrentSongTag();
     if (tag)
@@ -3144,15 +3144,16 @@ bool CApplication::ProcessMouse()
 void  CApplication::CheckForTitleChange()
 { 
   if (g_stSettings.m_HttpApiBroadcastLevel>=1)
+  {
     if (IsPlayingVideo())
     {
-	  const CVideoInfoTag* tagVal = g_infoManager.GetCurrentMovieTag();
+    const CVideoInfoTag* tagVal = g_infoManager.GetCurrentMovieTag();
       if (m_pXbmcHttp && tagVal && !(tagVal->m_strTitle.IsEmpty()))
       {
         CStdString msg=m_pXbmcHttp->GetOpenTag()+"MovieTitle:"+tagVal->m_strTitle+m_pXbmcHttp->GetCloseTag();
-	    if (m_prevMedia!=msg && g_stSettings.m_HttpApiBroadcastLevel>=1)
-  	    {
-		  g_applicationMessenger.HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
+      if (m_prevMedia!=msg && g_stSettings.m_HttpApiBroadcastLevel>=1)
+        {
+      g_applicationMessenger.HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
           m_prevMedia=msg;
         }
       }
@@ -3161,19 +3162,20 @@ void  CApplication::CheckForTitleChange()
     {
       const CMusicInfoTag* tagVal=g_infoManager.GetCurrentSongTag();
       if (m_pXbmcHttp && tagVal)
-	  {
-	    CStdString msg="";
-	    if (!tagVal->GetTitle().IsEmpty())
-		  msg=m_pXbmcHttp->GetOpenTag()+"AudioTitle:"+tagVal->GetTitle()+m_pXbmcHttp->GetCloseTag();
-	    if (!tagVal->GetArtist().IsEmpty())
-		  msg+=m_pXbmcHttp->GetOpenTag()+"AudioArtist:"+tagVal->GetArtist()+m_pXbmcHttp->GetCloseTag();
-	    if (m_prevMedia!=msg)
-	    {
-	      g_applicationMessenger.HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
-	      m_prevMedia=msg;
-	    }
+      {
+        CStdString msg="";
+        if (!tagVal->GetTitle().IsEmpty())
+          msg=m_pXbmcHttp->GetOpenTag()+"AudioTitle:"+tagVal->GetTitle()+m_pXbmcHttp->GetCloseTag();
+        if (!tagVal->GetArtist().IsEmpty())
+          msg+=m_pXbmcHttp->GetOpenTag()+"AudioArtist:"+tagVal->GetArtist()+m_pXbmcHttp->GetCloseTag();
+        if (m_prevMedia!=msg)
+        {
+          g_applicationMessenger.HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
+          m_prevMedia=msg;
+        }
       }
     }
+  }
 }
 
 
@@ -3337,11 +3339,11 @@ void CApplication::Stop()
   {
     if (m_pXbmcHttp)
     {
-	  if(g_stSettings.m_HttpApiBroadcastLevel>=1)
-	    g_applicationMessenger.HttpApi("broadcastlevel; ShutDown;1");
-	  m_pXbmcHttp->shuttingDown=true;
+    if(g_stSettings.m_HttpApiBroadcastLevel>=1)
+      g_applicationMessenger.HttpApi("broadcastlevel; ShutDown;1");
+    m_pXbmcHttp->shuttingDown=true;
      //Sleep(100);
-	}
+  }
 
     CLog::Log(LOGNOTICE, "Storing total System Uptime");
     g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
@@ -3884,7 +3886,7 @@ void CApplication::OnPlayBackEnded()
   g_pythonParser.OnPlayBackEnded();
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
-	g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackEnded;1");
+  g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackEnded;1");
 
   CLog::Log(LOGDEBUG, "Playback has finished");
 
@@ -3907,7 +3909,7 @@ void CApplication::OnPlayBackStarted()
 
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
-	g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackStarted;1");
+  g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackStarted;1");
 
   CLog::Log(LOGDEBUG, "Playback has started");
 
@@ -3928,7 +3930,7 @@ void CApplication::OnQueueNextItem()
 
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
-	g_applicationMessenger.HttpApi("broadcastlevel; OnQueueNextItem;1");
+  g_applicationMessenger.HttpApi("broadcastlevel; OnQueueNextItem;1");
 
   CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
@@ -5257,7 +5259,7 @@ bool CApplication::SwitchToFullScreen()
   return false;
 }
 
-const EPLAYERCORES CApplication::GetCurrentPlayer()
+EPLAYERCORES CApplication::GetCurrentPlayer()
 {
   return m_eCurrentPlayer;
 }
