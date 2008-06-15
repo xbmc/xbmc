@@ -214,7 +214,7 @@ bool CFileRar::Open(const CURL& url, bool bBinary)
       m_bOpen = true;
       return true;
     }
-
+  }
   return false;
 }
 
