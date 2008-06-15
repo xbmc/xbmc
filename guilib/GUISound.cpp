@@ -53,6 +53,8 @@ CGUISound::~CGUISound()
 {
 #ifndef HAS_SDL_AUDIO
   FreeBuffer();
+#else
+  Mix_FreeChunk(m_soundBuffer);
 #endif
 }
 
