@@ -62,7 +62,9 @@ void CScraperUrl::Clear()
 
 bool CScraperUrl::Parse()
 {
-  return ParseString(m_xml);
+  CStdString strToParse = m_xml;
+  m_xml.Empty();
+  return ParseString(strToParse);
 }
 
 bool CScraperUrl::ParseElement(const TiXmlElement* element)
