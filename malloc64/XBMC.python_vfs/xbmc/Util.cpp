@@ -1842,24 +1842,21 @@ bool CUtil::IsRAR(const CStdString& strFile)
   return false;
 }
 
+bool CUtil::IsInArchive(const CStdString &strFile)
+{
+  return IsInZIP(strFile) || IsInRAR(strFile);
+}
+
 bool CUtil::IsInZIP(const CStdString& strFile)
 {
-  if( strFile.substr(0,6) == "zip://" )
-  {
-    CURL url(strFile);
-    return url.GetFileName() != "";
-  }
-  return false;
+  CURL url(strFile);
+  return url.GetProtocol() == "zip" && url.GetFileName() != "";
 }
 
 bool CUtil::IsInRAR(const CStdString& strFile)
 {
-  if( strFile.substr(0,6) == "rar://" )
-  {
-    CURL url(strFile);
-    return url.GetFileName() != "";
-  }
-  return false;
+  CURL url(strFile);
+  return url.GetProtocol() == "rar" && url.GetFileName() != "";
 }
 
 bool CUtil::IsZIP(const CStdString& strFile) // also checks for comic books!
