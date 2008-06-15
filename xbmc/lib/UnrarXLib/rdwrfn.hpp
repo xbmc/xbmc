@@ -5,7 +5,7 @@ class CmdAdd;
 class Unpack;
 
 #include <process.h>
-#include "GUIDialogProgress.h"
+class CGUIDialogProgress;
 
 class ComprDataIO
 {

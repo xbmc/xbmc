@@ -369,7 +369,7 @@ namespace VIDEO
 
     if (pDlgProgress)
     {
-      if (items.Size() > 1 || items[0]->m_bIsFolder && !bRefresh)
+      if (items.Size() > 1 || (items[0]->m_bIsFolder && !bRefresh))
       {
         pDlgProgress->ShowProgressBar(true);
         pDlgProgress->SetPercentage(0);
@@ -923,7 +923,7 @@ namespace VIDEO
           m_pObserver->OnSetProgress(m_currentItem++,m_itemCount);
         m_pObserver->OnSetCurrentProgress(iCurr++,iMax);
       }
-      if (pDlgProgress && pDlgProgress->IsCanceled() || m_bStop)
+      if ((pDlgProgress && pDlgProgress->IsCanceled()) || m_bStop)
       {
         if (pDlgProgress)
           pDlgProgress->Close();
@@ -1047,7 +1047,7 @@ namespace VIDEO
         }
       }
     }
-    if (item->m_bIsFolder || bGrabAny && nfoFile.IsEmpty())
+    if (item->m_bIsFolder || (bGrabAny && nfoFile.IsEmpty()))
     {
       // see if there is a unique nfo file in this folder, and if so, use that
       CFileItemList items;

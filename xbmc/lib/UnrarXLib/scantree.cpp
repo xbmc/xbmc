@@ -35,7 +35,7 @@ int ScanTree::GetNext(FindData *FindData)
   int FindCode;
   while (1)
   {
-    if ((*CurMask==0 || FastFindFile && Depth==0) && !PrepareMasks())
+    if ((*CurMask==0 || (FastFindFile && Depth==0)) && !PrepareMasks())
       return(SCAN_DONE);
     FindCode=FindProc(FindData);
     if (FindCode==SCAN_ERROR)
@@ -65,7 +65,7 @@ bool ScanTree::PrepareMasks()
   char *Name=PointToName(CurMask);
   if (*Name==0)
     strcat(CurMask,MASKALL);
-  if (Name[0]=='.' && (Name[1]==0 || Name[1]=='.' && Name[2]==0))
+  if (Name[0]=='.' && (Name[1]==0 || (Name[1]=='.' && Name[2]==0)))
   {
     AddEndSlash(CurMask);
     strcat(CurMask,MASKALL);
@@ -81,7 +81,7 @@ bool ScanTree::PrepareMasks()
     wchar *NameW=PointToName(CurMaskW);
     if (*NameW==0)
       strcatw(CurMaskW,MASKALLW);
-    if (NameW[0]=='.' && (NameW[1]==0 || NameW[1]=='.' && NameW[2]==0))
+    if (NameW[0]=='.' && (NameW[1]==0 || (NameW[1]=='.' && NameW[2]==0)))
     {
       AddEndSlash(CurMaskW);
       strcatw(CurMaskW,MASKALLW);
@@ -113,8 +113,7 @@ int ScanTree::FindProc(FindData *FindData)
     bool Wildcards=IsWildcard(CurMask,CurMaskW);
     bool FindCode=!Wildcards && FindFile::FastFind(CurMask,CurMaskW,FindData,GetLinks);
     bool IsDir=FindCode && FindData->IsDir;
-    bool SearchAll=!IsDir && (Depth>0 || Recurse==RECURSE_ALWAYS ||
-                   Wildcards && Recurse==RECURSE_WILDCARDS);
+    bool SearchAll=!IsDir && (Depth>0 || Recurse==RECURSE_ALWAYS || (Wildcards && Recurse==RECURSE_WILDCARDS));
     if (Depth==0)
       SearchAllInRoot=SearchAll;
     if (SearchAll || Wildcards)

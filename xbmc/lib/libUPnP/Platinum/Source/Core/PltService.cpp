@@ -480,7 +480,7 @@ PLT_Service::ProcessRenewSubscription(NPT_SocketAddress& addr,
     NPT_AutoLock lock(m_Lock);
 
     // first look if we don't have a subscriber with same callbackURL
-    PLT_EventSubscriber* subscriber;
+    PLT_EventSubscriber* subscriber = NULL;
     if (NPT_SUCCEEDED(NPT_ContainerFind(m_Subscribers, 
                                         PLT_EventSubscriberFinderBySID(sid), 
                                         subscriber))) {
@@ -519,7 +519,7 @@ PLT_Service::ProcessCancelSubscription(NPT_SocketAddress& /* addr */,
     NPT_AutoLock lock(m_Lock);
 
     // first look if we don't have a subscriber with same callbackURL
-    PLT_EventSubscriber* sub;
+    PLT_EventSubscriber* sub = NULL;
     if (NPT_SUCCEEDED(NPT_ContainerFind(m_Subscribers, 
                                         PLT_EventSubscriberFinderBySID(sid), 
                                         sub))) {

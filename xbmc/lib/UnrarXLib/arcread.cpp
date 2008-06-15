@@ -609,11 +609,13 @@ bool Archive::ReadSubData(Array<byte> *UnpData,File *DestFile)
     SubDataIO.SetUnpackToMemory(&(*UnpData)[0],SubHead.UnpSize);
   }
   if (SubHead.Flags & LHD_PASSWORD)
+  {
     if (*Cmd->Password)
       SubDataIO.SetEncryption(SubHead.UnpVer,Cmd->Password,
              (SubHead.Flags & LHD_SALT) ? SubHead.Salt:NULL,false);
     else
       return(false);
+  }
   SubDataIO.SetPackedSizeToRead(SubHead.PackSize);
   SubDataIO.EnableShowProgress(false);
   SubDataIO.SetFiles(this,DestFile);

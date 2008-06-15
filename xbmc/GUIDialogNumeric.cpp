@@ -447,7 +447,7 @@ void CGUIDialogNumeric::OnNumber(unsigned int num)
     }
     else
       m_ip[m_block] = num;
-    if (m_ip[m_block] > 25 || m_ip[m_block] == 0 && num == 0)
+    if (m_ip[m_block] > 25 || (m_ip[m_block] == 0 && num == 0))
     {
       m_block++;
       if (m_block > 3) m_block = 0;
