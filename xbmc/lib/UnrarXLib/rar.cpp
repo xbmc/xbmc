@@ -1,6 +1,7 @@
 #include "rar.hpp"
 #include "UnrarX.hpp"
 #include "GUIWindowManager.h"
+#include "GUIDialogProgress.h"
 
 #include "smallfn.cpp"
 
@@ -388,7 +389,7 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
             iOffset = pArc->NextBlockPos;
             pArc->SeekToNext();
           }
-          if (pCmd->VolSize!=0 && ((pArc->NewLhd.Flags & LHD_SPLIT_AFTER) || pArc->GetHeaderType()==ENDARC_HEAD && (pArc->EndArcHead.Flags & EARC_NEXT_VOLUME)!=0))
+          if (pCmd->VolSize!=0 && ((pArc->NewLhd.Flags & LHD_SPLIT_AFTER) || (pArc->GetHeaderType()==ENDARC_HEAD && (pArc->EndArcHead.Flags & EARC_NEXT_VOLUME)!=0)))
           {
             if (FileCount == 1 && iArchive==0)
             {

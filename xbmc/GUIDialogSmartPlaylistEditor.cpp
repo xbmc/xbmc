@@ -92,7 +92,7 @@ bool CGUIDialogSmartPlaylistEditor::OnMessage(CGUIMessage& message)
     {
       int iControl = message.GetSenderId();
       int iAction = message.GetParam1();
-      if (iControl == CONTROL_RULE_LIST && iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+      if (iControl == CONTROL_RULE_LIST && (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK))
         OnRuleList(GetSelectedItem());
       else if (iControl == CONTROL_RULE_ADD)
         OnRuleAdd();

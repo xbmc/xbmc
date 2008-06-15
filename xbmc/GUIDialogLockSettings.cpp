@@ -263,7 +263,7 @@ bool CGUIDialogLockSettings::ShowAndGetLock(LockType& iLockMode, CStdString& str
   dialog->DoModal();
   if (dialog->m_bChanged)
   {
-    if (dialog->m_iLock != LOCK_MODE_EVERYONE && dialog->m_strLock == "-" || dialog->m_strLock.IsEmpty())
+    if (dialog->m_iLock != LOCK_MODE_EVERYONE && (dialog->m_strLock == "-" || dialog->m_strLock.IsEmpty()))
       iLockMode = LOCK_MODE_EVERYONE;
     else
       iLockMode = dialog->m_iLock;

@@ -430,7 +430,7 @@ bool RarVM::ExecuteCode(VM_PreparedCommand *PreparedCode,int CodeSize)
           uint Value1=GET_VALUE(Cmd->ByteMode,Op1);
           uint FC=(Flags&VM_FC);
           uint Result=UINT32(Value1+GET_VALUE(Cmd->ByteMode,Op2)+FC);
-          Flags=Result==0 ? VM_FZ:(Result<Value1 || Result==Value1 && FC)|(Result&VM_FS);
+          Flags=Result==0 ? VM_FZ:(Result<Value1 || (Result==Value1 && FC))|(Result&VM_FS);
           SET_VALUE(Cmd->ByteMode,Op1,Result);
         }
         break;
@@ -439,7 +439,7 @@ bool RarVM::ExecuteCode(VM_PreparedCommand *PreparedCode,int CodeSize)
           uint Value1=GET_VALUE(Cmd->ByteMode,Op1);
           uint FC=(Flags&VM_FC);
           uint Result=UINT32(Value1-GET_VALUE(Cmd->ByteMode,Op2)-FC);
-          Flags=Result==0 ? VM_FZ:(Result>Value1 || Result==Value1 && FC)|(Result&VM_FS);
+          Flags=Result==0 ? VM_FZ:(Result>Value1 || (Result==Value1 && FC))|(Result&VM_FS);
           SET_VALUE(Cmd->ByteMode,Op1,Result);
         }
         break;

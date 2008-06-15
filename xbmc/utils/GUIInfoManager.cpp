@@ -3391,7 +3391,7 @@ int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter)
 // workaround
 const CStdString &CorrectAllItemsSortHack(const CStdString &item)
 {
-  if (item.size() == 1 && item[0] == 0x01 || item.size() > 1 && ((unsigned char) item[1]) == 0xff)
+  if ((item.size() == 1 && item[0] == 0x01) || (item.size() > 1 && ((unsigned char) item[1]) == 0xff))
     return StringUtils::EmptyString;
   return item;
 }
@@ -3911,7 +3911,8 @@ const MUSIC_INFO::CMusicInfoTag* CGUIInfoManager::GetCurrentSongTag() const
     return m_currentFile->GetMusicInfoTag(); 
 
   return NULL;
-};
+}
+
 const CVideoInfoTag* CGUIInfoManager::GetCurrentMovieTag() const
 { 
   if (m_currentFile->HasVideoInfoTag())
