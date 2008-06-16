@@ -174,6 +174,11 @@ CSettings::CSettings(void)
   g_advancedSettings.m_busyDialogDelay = 2000;
   g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG;
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
+#if defined(HAS_HAL) && defined(HAL_MOUNT)
+  g_advancedSettings.m_useHalMount = true;
+#elif defined(HAS_HAL)
+  g_advancedSettings.m_useHalMount = false;
+#endif
   g_advancedSettings.m_usePCDVDROM = false;
   g_advancedSettings.m_noDVDROM = false;
   g_advancedSettings.m_cachePath = "Z:\\";
@@ -1204,7 +1209,9 @@ void CSettings::LoadAdvancedSettings()
       setting->SetAdvanced();
   }
   GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress, "freedb.freedb.org");
-
+#ifdef HAS_HAL
+  XMLUtils::GetBoolean(pRootElement, "usehalmount", g_advancedSettings.m_useHalMount);
+#endif
   XMLUtils::GetBoolean(pRootElement, "usepcdvdrom", g_advancedSettings.m_usePCDVDROM);
   XMLUtils::GetBoolean(pRootElement, "nodvdrom", g_advancedSettings.m_noDVDROM);
   XMLUtils::GetBoolean(pRootElement, "usemultipaths", g_advancedSettings.m_useMultipaths);
