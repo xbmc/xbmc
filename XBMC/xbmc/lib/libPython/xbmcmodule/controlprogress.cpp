@@ -121,7 +121,7 @@ namespace PYXBMC
     "percent       : integer - percentage of the bar.\n"
     "\n"
     "example:\n"
-    "  - self.progress.setValue(60)\n");
+    "  - self.progress.setPercent(60)\n");
 
   PyObject* ControlProgress_SetPercent(ControlProgress *self, PyObject *args)
   {
