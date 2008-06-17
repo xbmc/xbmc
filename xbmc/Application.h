@@ -110,10 +110,7 @@ public:
   void StartEventServer();
   void StopEventServer();
   void RefreshEventServer();
-  void StartLEDControl(bool switchoff = false);
   void DimLCDOnPlayback(bool dim);
-  void PrintXBEToLCD(const char* xbePath);
-  void CheckDate();
   DWORD GetThreadId() const { return m_threadID; };
   void Stop();
   void RestartApp();
