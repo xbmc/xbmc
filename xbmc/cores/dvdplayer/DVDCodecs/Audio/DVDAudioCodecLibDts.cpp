@@ -340,13 +340,13 @@ int CDVDAudioCodecLibDts::ParseFrame(BYTE* data, int size, BYTE** frame, int* fr
     SetupChannels(flags);
 
   len = m_iFrameSize-m_inputSize;
-  if(size < len)
+  if(len > size)
     len = size;
 
-  memcpy(m_inputBuffer+m_inputSize, data, size);
-  m_inputSize += size;
-  data        += size;
-  size        -= size;
+  memcpy(m_inputBuffer+m_inputSize, data, len);
+  m_inputSize += len;
+  data        += len;
+  size        -= len;
 
   if(m_inputSize >= m_iFrameSize)
   {

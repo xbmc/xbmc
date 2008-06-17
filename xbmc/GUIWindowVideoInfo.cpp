@@ -108,6 +108,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 
       m_bRefresh = false;
       m_bRefreshAll = true;
+      
       CGUIDialog::OnMessage(message);
       m_bViewReview = true;
       CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_DISC);
@@ -282,6 +283,62 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
 {
   *m_movieItem = *item;
+  // setup cast list + determine type.  We need to do this here as it makes
+  // sure that content type (among other things) is set correctly for the
+  // old fixed id labels that we have floating around (they may be using
+  // content type to determine visibility, so we'll set the wrong label)
+  ClearCastList();
+  if (!m_movieItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
+  { // music video
+    CStdStringArray artists;
+    StringUtils::SplitString(m_movieItem->GetVideoInfoTag()->m_strArtist, g_advancedSettings.m_videoItemSeparator, artists);
+    for (std::vector<CStdString>::const_iterator it = artists.begin(); it != artists.end(); ++it)
+    {
+      CFileItem *item = new CFileItem(*it);
+      if (CFile::Exists(item->GetCachedArtistThumb()))
+        item->SetThumbnailImage(item->GetCachedArtistThumb());
+      item->SetIconImage("DefaultArtist.png");
+      m_castList->Add(item);
+}
+    m_castList->SetContent("musicvideos");
+  }
+  else
+  { // movie/show/episode
+    for (CVideoInfoTag::iCast it = m_movieItem->GetVideoInfoTag()->m_cast.begin(); it != m_movieItem->GetVideoInfoTag()->m_cast.end(); ++it)
+    {
+      CStdString character;
+      if (it->strRole.IsEmpty())
+        character = it->strName;
+      else
+        character.Format("%s %s %s", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
+      CFileItem *item = new CFileItem(it->strName);
+      if (CFile::Exists(item->GetCachedActorThumb()))
+        item->SetThumbnailImage(item->GetCachedActorThumb());
+      item->SetIconImage("DefaultActor.png");
+      item->SetLabel(character);
+      m_castList->Add(item);
+    }
+    // determine type:
+    if (m_movieItem->m_bIsFolder)
+    {
+      m_castList->SetContent("tvshows");
+      // special case stuff for shows (not currently retrieved from the library in filemode (ref: GetTvShowInfo vs GetTVShowsByWhere)
+      m_movieItem->m_dateTime.SetFromDateString(m_movieItem->GetVideoInfoTag()->m_strPremiered);
+      m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
+      m_movieItem->SetProperty("watchedepisodes", m_movieItem->GetVideoInfoTag()->m_playCount);
+      m_movieItem->SetProperty("unwatchedepisodes", m_movieItem->GetVideoInfoTag()->m_iEpisode - m_movieItem->GetVideoInfoTag()->m_playCount);
+      m_movieItem->GetVideoInfoTag()->m_playCount = (m_movieItem->GetVideoInfoTag()->m_iEpisode == m_movieItem->GetVideoInfoTag()->m_playCount) ? 1 : 0;
+    }
+    else if (m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
+    {
+      m_castList->SetContent("episodes");
+      // special case stuff for episodes (not currently retrieved from the library in filemode (ref: GetEpisodeInfo vs GetEpisodesByWhere)
+      m_movieItem->m_dateTime.SetFromDateString(m_movieItem->GetVideoInfoTag()->m_strFirstAired);
+      m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
+    }
+    else
+      m_castList->SetContent("movies");
+  }
 }
 
 void CGUIWindowVideoInfo::Update()
@@ -343,46 +400,6 @@ void CGUIWindowVideoInfo::Update()
   strTmp.Trim();
   SetLabel(CONTROL_TEXTAREA, strTmp);
 
-  // setup cast list + determine type
-  ClearCastList();
-  if (!m_movieItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
-  { // music video
-    CStdStringArray artists;
-    StringUtils::SplitString(m_movieItem->GetVideoInfoTag()->m_strArtist, g_advancedSettings.m_videoItemSeparator, artists);
-    for (std::vector<CStdString>::const_iterator it = artists.begin(); it != artists.end(); ++it)
-    {
-      CFileItem *item = new CFileItem(*it);
-      if (CFile::Exists(item->GetCachedArtistThumb()))
-        item->SetThumbnailImage(item->GetCachedArtistThumb());
-      item->SetIconImage("DefaultArtist.png");
-      m_castList->Add(item);
-    }
-    m_castList->SetContent("musicvideos");
-  }
-  else
-  { // movie/show/episode
-    for (CVideoInfoTag::iCast it = m_movieItem->GetVideoInfoTag()->m_cast.begin(); it != m_movieItem->GetVideoInfoTag()->m_cast.end(); ++it)
-    {
-      CStdString character;
-      if (it->strRole.IsEmpty())
-        character = it->strName;
-      else
-        character.Format("%s %s %s", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
-      CFileItem *item = new CFileItem(it->strName);
-      if (CFile::Exists(item->GetCachedActorThumb()))
-        item->SetThumbnailImage(item->GetCachedActorThumb());
-      item->SetIconImage("DefaultActor.png");
-      item->SetLabel(character);
-      m_castList->Add(item);
-    }
-    // determine type:
-    if (m_movieItem->m_bIsFolder)
-      m_castList->SetContent("tvshows");
-    else if (m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
-      m_castList->SetContent("episodes");
-    else
-      m_castList->SetContent("movies");
-  }
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_castList);
   g_graphicsContext.SendMessage(msg);
 
@@ -639,13 +656,6 @@ void CGUIWindowVideoInfo::Play(bool resume)
       movie.m_lStartOffset = STARTOFFSET_RESUME;
     pWindow->PlayMovie(&movie);
   }
-}
-
-void CGUIWindowVideoInfo::OnInitWindow()
-{
-  CGUIDialog::OnInitWindow();
-  // disable button with id 10 as we don't have support for it yet!
-//  CONTROL_DISABLE(10);
 }
 
 // Get Thumb from user choice.

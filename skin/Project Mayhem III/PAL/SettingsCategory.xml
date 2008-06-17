@@ -115,6 +115,8 @@
 			<height>5</height>
 			<texture>separator.png</texture>
 		</control>
+		<control type="group">
+			<include>contentpanelslide</include>
 		<control type="button">
 			<posx>680</posx>
 			<posy>100</posy>
@@ -123,7 +125,6 @@
 			<onclick>PageUp(90)</onclick>
 			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
 			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
-			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(90)</visible>
 		</control>
 		<control type="button">
@@ -134,7 +135,6 @@
 			<onclick>PageDown(90)</onclick>
 			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
 			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
-			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(90)</visible>
 		</control>
 		<control type="scrollbar" id="90">
@@ -151,7 +151,7 @@
 			<onright>3</onright>
 			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
-			<include>contentpanelslide</include>
+		</control>
 		</control>
 		<include>windowswitchtransition</include>
 	</controls>

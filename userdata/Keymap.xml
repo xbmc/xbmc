@@ -439,6 +439,30 @@
   </FullscreenVideo>
 
 
+  <FullscreenInfo>
+    <remote>
+      <title>CodecInfo</title>
+      <info>Close</info>
+   </remote>
+
+    <gamepad>
+      <B>Close</B>
+      <black>CodecInfo</black>
+      <white>Close</white>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
+    </gamepad>
+
+    <keyboard>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <period>StepForward</period>
+      <backspace>Close</backspace>
+      <t>Close</t>
+      <i>CodecInfo</i>
+    </keyboard>
+  </FullscreenInfo>
+
   <PlayerControls>
     <gamepad>
       <back>Close</back>

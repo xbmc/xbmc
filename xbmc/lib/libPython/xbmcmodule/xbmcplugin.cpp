@@ -241,6 +241,45 @@ namespace PYXBMC
     return Py_None;
   }
 
+  PyDoc_STRVAR(setPluginCategory__doc__,
+    "setPluginCategory(handle, category) -- Sets the plugins name for skins to display.\n"
+    "\n"
+    "handle      : Integer - handle the plugin was started with.\n"
+    "category    : string or unicode - plugins sub category.\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments.\n"
+    "\n"
+    "example:\n"
+    "  - xbmcplugin.setPluginCategory(int(sys.argv[1]), 'Comedy')\n");
+
+  PyObject* XBMCPLUGIN_SetPluginCategory(PyTypeObject *type, PyObject *args, PyObject *kwds)
+  {
+    static char *keywords[] = { "handle", "category", NULL };
+    int handle = -1;
+    PyObject *category = NULL;
+    // parse arguments to constructor
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      "iO",
+      keywords,
+      &handle,
+      &category
+      ))
+    {
+      return NULL;
+    };
+
+    CStdString uCategory;
+    if (!category || (category && !PyGetUnicodeString(uCategory, category, 1)))
+      return NULL;
+
+    DIRECTORY::CPluginDirectory::SetProperty(handle, "plugincategory", uCategory);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   // define c functions to be used in python here
   PyMethodDef pluginMethods[] = {
     {"addDirectoryItem", (PyCFunction)XBMCPLUGIN_AddDirectoryItem, METH_VARARGS|METH_KEYWORDS, addDirectoryItem__doc__},
@@ -248,6 +287,7 @@ namespace PYXBMC
     {"addSortMethod", (PyCFunction)XBMCPLUGIN_AddSortMethod, METH_VARARGS|METH_KEYWORDS, addSortMethod__doc__},
     {"getSetting", (PyCFunction)XBMCPLUGIN_GetSetting, METH_VARARGS|METH_KEYWORDS, getSetting__doc__},
     {"setContent", (PyCFunction)XBMCPLUGIN_SetContent, METH_VARARGS|METH_KEYWORDS, setContent__doc__},
+    {"setPluginCategory", (PyCFunction)XBMCPLUGIN_SetPluginCategory, METH_VARARGS|METH_KEYWORDS, setPluginCategory__doc__},
     {NULL, NULL, 0, NULL}
   };
 
