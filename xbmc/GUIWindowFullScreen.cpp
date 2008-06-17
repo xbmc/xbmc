@@ -34,6 +34,7 @@
 #include "GUIFontManager.h"
 #include "GUITextLayout.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogFullScreenInfo.h"
 #include "Settings.h"
 #include "FileItem.h"
 
@@ -245,6 +246,17 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     }
     return true;
     break;
+
+  case ACTION_SHOW_INFO:
+    {
+      CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
+      if (pDialog)
+      {
+        pDialog->DoModal();
+        return true;
+      }
+      break;
+    }
 
   case ACTION_NEXT_SUBTITLE:
     {
@@ -468,6 +480,8 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       CGUIWindow::OnMessage(message);
 
       CGUIDialog *pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
+      if (pDialog) pDialog->Close(true);
+      pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
       if (pDialog) pDialog->Close(true);
 
       FreeResources(true);

@@ -2923,8 +2923,7 @@ void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CSt
 void CUtil::CreateArchivePath(CStdString& strUrlPath, const CStdString& strType, 
                               const CStdString& strArchivePath,
                               const CStdString& strFilePathInArchive, 
-                              const CStdString& strCachePath, 
-                              const CStdString strPwd)
+                              const CStdString& strPwd)
 {
   CStdString strBuffer;
 
@@ -3593,7 +3592,9 @@ const BUILT_IN commands[] = {
   { "Container.NextSortMethod",   false,  "Change to the next sort method" },
   { "Container.PreviousSortMethod",false, "Change to the previous sort method" },
   { "Container.SetSortMethod",    true,   "Change to the specified sort method" },
+  { "Container.SortDirection",    false,  "Toggle the sort direction" },
   { "Control.Move",               true,   "Tells the specified control to 'move' to another entry specified by offset" },
+  { "SendClick",                  true,   "Send a click message from the given control to the given window" },
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -4564,6 +4565,28 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, atoi(parameter.c_str()));
     g_graphicsContext.SendMessage(message);
   }
+  else if (execute.Equals("container.sortdirection"))
+  {
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_DIRECTION, m_gWindowManager.GetActiveWindow(), 0, 0);
+    g_graphicsContext.SendMessage(message);
+  }
+  else if (execute.Equals("sendclick"))
+  {
+    CStdStringArray params;
+    StringUtils::SplitString(parameter, ",", params);
+    if (params.size() == 2)
+    {
+      // have a window - convert it
+      int windowID = g_buttonTranslator.TranslateWindowString(params[0].c_str());
+      CGUIMessage message(GUI_MSG_CLICKED, atoi(params[1].c_str()), windowID);
+      g_graphicsContext.SendMessage(message);
+    }
+    else if (params.size() == 1)
+    { // single param - assume you meant the active window
+      CGUIMessage message(GUI_MSG_CLICKED, atoi(params[0].c_str()), m_gWindowManager.GetActiveWindow());
+      g_graphicsContext.SendMessage(message);
+    }
+  }
   else
     return -1;
   return 0;
@@ -4587,6 +4610,8 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
 
   if (checkURL.GetProtocol() == "shout")
     strPath = checkURL.GetHostName();
+  if (checkURL.GetProtocol() == "lastfm")
+    return 1;
   if (checkURL.GetProtocol() == "tuxbox")
     return 1;
   if (checkURL.GetProtocol() == "plugin")

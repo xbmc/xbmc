@@ -424,6 +424,15 @@
 					<width>32</width>
 					<height>32</height>
 					<info>ListItem.Overlay</info>
+					<visible>!container.content(tvshows)</visible>
+				</control>
+				<control type="image">
+					<posx>210</posx>
+					<posy>53</posy>
+					<width>32</width>
+					<height>32</height>
+					<info>ListItem.Overlay</info>
+					<visible>container.content(tvshows)</visible>
 				</control>
 			</itemlayout>
 			<focusedlayout condition="!Container.Content(Episodes)" height="106" width="242">
@@ -517,6 +526,15 @@
 					<width>32</width>
 					<height>32</height>
 					<info>ListItem.Overlay</info>
+					<visible>!container.content(tvshows)</visible>
+				</control>
+				<control type="image">
+					<posx>210</posx>
+					<posy>53</posy>
+					<width>32</width>
+					<height>32</height>
+					<info>ListItem.Overlay</info>
+					<visible>container.content(tvshows)</visible>
 				</control>
 			</focusedlayout>
 			<itemlayout condition="Container.Content(Episodes)" height="141" width="120">
@@ -608,8 +626,8 @@
 			<posy>135</posy>
 			<width>235</width>
 			<height>424</height>
-			<font>special12</font>
-			<label>$INFO[ListItem.episode,, $LOCALIZE[20360]]</label>
+			<font>font13</font>
+			<label>$INFO[ListItem.episode,, $LOCALIZE[20360]][COLOR=grey]$INFO[ListItem.Property(UnWatchedEpisodes), (, $LOCALIZE[16101])][/COLOR]</label>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(57) + container.content(tvshows)</visible>
 		</control>
@@ -810,8 +828,8 @@
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="image">
-					<posx>400</posx>
-					<posy>65</posy>
+					<posx>445</posx>
+					<posy>75</posy>
 					<width>32</width>
 					<height>32</height>
 					<info>ListItem.Overlay</info>
@@ -865,8 +883,8 @@
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="image">
-					<posx>400</posx>
-					<posy>65</posy>
+					<posx>445</posx>
+					<posy>75</posy>
 					<width>32</width>
 					<height>32</height>
 					<info>ListItem.Overlay</info>
@@ -1101,6 +1119,7 @@
 		</control>
 		<control type="group">
 			<include>contentpanelslide</include>
+			<visible>Control.IsVisible(58)</visible>
 			<control type="image">
 				<posx>500</posx>
 				<posy>100</posy>
@@ -1108,8 +1127,15 @@
 				<height>425</height>
 				<aspectratio>keep</aspectratio>
 				<info>ListItem.Icon</info>
-				<visible>Control.IsVisible(58)</visible>
 			</control>
+			<control type="image">
+				<posx>670</posx>
+				<posy>495</posy>
+				<width>32</width>
+				<height>32</height>
+				<aspectratio>keep</aspectratio>
+				<info>ListItem.Overlay</info>
+		</control>
 		</control>
 	</include>
 	<include name="MusicLibraryMediaInfo">

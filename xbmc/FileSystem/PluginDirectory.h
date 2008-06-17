@@ -52,6 +52,7 @@ public:
   static void EndOfDirectory(int handle, bool success, bool replaceListing);
   static void AddSortMethod(int handle, SORT_METHOD sortMethod);
   static void SetContent(int handle, const CStdString &strContent);
+  static void SetProperty(int handle, const CStdString &strProperty, const CStdString &strValue);
 
 private:
   bool WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName);

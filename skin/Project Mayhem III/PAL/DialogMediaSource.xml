@@ -1,5 +1,5 @@
 <window id="129">
-	<defaultcontrol>10</defaultcontrol>
+	<defaultcontrol always="true">10</defaultcontrol>
 	<animation effect="fade" time="400">WindowOpen</animation>
 	<animation effect="fade" time="400">WindowClose</animation>
 	<coordinates>
@@ -189,7 +189,7 @@
 		<control type="group" id="9001">
 			<control type="button" id="18">
 				<description>Ok Button</description>
-				<posx>400</posx>
+				<posx>285</posx>
 				<posy>290</posy>
 				<width>110</width>
 				<height>32</height>
@@ -201,13 +201,13 @@
 				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
 				<label>186</label>
 				<onup>12</onup>
-				<onleft>19</onleft>
-				<onright>20</onright>
+				<onleft>20</onleft>
+				<onright>19</onright>
 				<ondown>10</ondown>
 			</control>
 			<control type="button" id="19">
 				<description>Cancel Button</description>
-				<posx>285</posx>
+				<posx>400</posx>
 				<posy>290</posy>
 				<width>110</width>
 				<height>32</height>
@@ -219,8 +219,8 @@
 				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
 				<label>222</label>
 				<onup>12</onup>
-				<onleft>20</onleft>
-				<onright>18</onright>
+				<onleft>18</onleft>
+				<onright>20</onright>
 				<ondown>10</ondown>
 			</control>`
 			<control type="button" id="20">
@@ -237,8 +237,8 @@
 				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
 				<label>20333</label>
 				<onup>12</onup>
-				<onleft>18</onleft>
-				<onright>19</onright>
+				<onleft>19</onleft>
+				<onright>18</onright>
 				<ondown>10</ondown>
 			</control>
 		</control>

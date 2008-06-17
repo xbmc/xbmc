@@ -41,6 +41,11 @@
 		8806941F0DCF67A500836761 /* libSDL_image.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8806941E0DCF67A500836761 /* libSDL_image.dylib */; };
 		880DBE4E0DC223FF00E26B71 /* MediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE4B0DC223FF00E26B71 /* MediaSource.cpp */; };
 		880DBE550DC224A100E26B71 /* MusicFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE530DC224A100E26B71 /* MusicFileDirectory.cpp */; };
+		8863281D0E07B37200BB3DAB /* GUIDialogFullScreenInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 886328150E07B37200BB3DAB /* GUIDialogFullScreenInfo.cpp */; };
+		8863281E0E07B37200BB3DAB /* GUIViewStatePictures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 886328170E07B37200BB3DAB /* GUIViewStatePictures.cpp */; };
+		8863281F0E07B37200BB3DAB /* GUIViewStatePrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 886328190E07B37200BB3DAB /* GUIViewStatePrograms.cpp */; };
+		886328200E07B37200BB3DAB /* GUIViewStateScripts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8863281B0E07B37200BB3DAB /* GUIViewStateScripts.cpp */; };
+		886328230E07BE9E00BB3DAB /* GUIViewStateGameSaves.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 886328210E07BE9E00BB3DAB /* GUIViewStateGameSaves.cpp */; };
 		8883CEA10DD817D1004E8B72 /* DVDOverlayCodecSSA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CE9E0DD817D1004E8B72 /* DVDOverlayCodecSSA.cpp */; };
 		8883CEA70DD81807004E8B72 /* DVDSubtitleParserSSA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CEA30DD81807004E8B72 /* DVDSubtitleParserSSA.cpp */; };
 		8883CEA80DD81807004E8B72 /* DVDSubtitlesLibass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CEA50DD81807004E8B72 /* DVDSubtitlesLibass.cpp */; };
@@ -448,7 +453,6 @@
 		E38E20A80D25F9FD00618676 /* GUIViewControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17F70D25F9FA00618676 /* GUIViewControl.cpp */; };
 		E38E20A90D25F9FD00618676 /* GUIViewState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17F90D25F9FA00618676 /* GUIViewState.cpp */; };
 		E38E20AA0D25F9FD00618676 /* GUIViewStateMusic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17FB0D25F9FA00618676 /* GUIViewStateMusic.cpp */; };
-		E38E20AB0D25F9FD00618676 /* GUIViewStatePicturesProgramsScripts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17FD0D25F9FA00618676 /* GUIViewStatePicturesProgramsScripts.cpp */; };
 		E38E20AC0D25F9FD00618676 /* GUIViewStateVideo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17FF0D25F9FA00618676 /* GUIViewStateVideo.cpp */; };
 		E38E20AE0D25F9FD00618676 /* GUIWindowFileManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18030D25F9FA00618676 /* GUIWindowFileManager.cpp */; };
 		E38E20AF0D25F9FD00618676 /* GUIWindowFullScreen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18050D25F9FA00618676 /* GUIWindowFullScreen.cpp */; };
@@ -896,6 +900,16 @@
 		880DBE4D0DC223FF00E26B71 /* MusicInfoTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTag.h; sourceTree = "<group>"; };
 		880DBE530DC224A100E26B71 /* MusicFileDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicFileDirectory.cpp; sourceTree = "<group>"; };
 		880DBE540DC224A100E26B71 /* MusicFileDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicFileDirectory.h; sourceTree = "<group>"; };
+		886328150E07B37200BB3DAB /* GUIDialogFullScreenInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogFullScreenInfo.cpp; sourceTree = "<group>"; };
+		886328160E07B37200BB3DAB /* GUIDialogFullScreenInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogFullScreenInfo.h; sourceTree = "<group>"; };
+		886328170E07B37200BB3DAB /* GUIViewStatePictures.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStatePictures.cpp; sourceTree = "<group>"; };
+		886328180E07B37200BB3DAB /* GUIViewStatePictures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStatePictures.h; sourceTree = "<group>"; };
+		886328190E07B37200BB3DAB /* GUIViewStatePrograms.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStatePrograms.cpp; sourceTree = "<group>"; };
+		8863281A0E07B37200BB3DAB /* GUIViewStatePrograms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStatePrograms.h; sourceTree = "<group>"; };
+		8863281B0E07B37200BB3DAB /* GUIViewStateScripts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStateScripts.cpp; sourceTree = "<group>"; };
+		8863281C0E07B37200BB3DAB /* GUIViewStateScripts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStateScripts.h; sourceTree = "<group>"; };
+		886328210E07BE9E00BB3DAB /* GUIViewStateGameSaves.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStateGameSaves.cpp; sourceTree = "<group>"; };
+		886328220E07BE9E00BB3DAB /* GUIViewStateGameSaves.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStateGameSaves.h; sourceTree = "<group>"; };
 		8883CE9E0DD817D1004E8B72 /* DVDOverlayCodecSSA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodecSSA.cpp; sourceTree = "<group>"; };
 		8883CE9F0DD817D1004E8B72 /* DVDOverlayCodecSSA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayCodecSSA.h; sourceTree = "<group>"; };
 		8883CEA00DD817D1004E8B72 /* DVDOverlaySSA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlaySSA.h; sourceTree = "<group>"; };
@@ -1852,8 +1866,6 @@
 		E38E17FA0D25F9FA00618676 /* GUIViewState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewState.h; sourceTree = "<group>"; };
 		E38E17FB0D25F9FA00618676 /* GUIViewStateMusic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStateMusic.cpp; sourceTree = "<group>"; };
 		E38E17FC0D25F9FA00618676 /* GUIViewStateMusic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStateMusic.h; sourceTree = "<group>"; };
-		E38E17FD0D25F9FA00618676 /* GUIViewStatePicturesProgramsScripts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStatePicturesProgramsScripts.cpp; sourceTree = "<group>"; };
-		E38E17FE0D25F9FA00618676 /* GUIViewStatePicturesProgramsScripts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStatePicturesProgramsScripts.h; sourceTree = "<group>"; };
 		E38E17FF0D25F9FA00618676 /* GUIViewStateVideo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStateVideo.cpp; sourceTree = "<group>"; };
 		E38E18000D25F9FA00618676 /* GUIViewStateVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStateVideo.h; sourceTree = "<group>"; };
 		E38E18020D25F9FA00618676 /* GUIWindowBuddies.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowBuddies.h; sourceTree = "<group>"; };
@@ -3295,6 +3307,16 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
+				886328210E07BE9E00BB3DAB /* GUIViewStateGameSaves.cpp */,
+				886328220E07BE9E00BB3DAB /* GUIViewStateGameSaves.h */,
+				886328150E07B37200BB3DAB /* GUIDialogFullScreenInfo.cpp */,
+				886328160E07B37200BB3DAB /* GUIDialogFullScreenInfo.h */,
+				886328170E07B37200BB3DAB /* GUIViewStatePictures.cpp */,
+				886328180E07B37200BB3DAB /* GUIViewStatePictures.h */,
+				886328190E07B37200BB3DAB /* GUIViewStatePrograms.cpp */,
+				8863281A0E07B37200BB3DAB /* GUIViewStatePrograms.h */,
+				8863281B0E07B37200BB3DAB /* GUIViewStateScripts.cpp */,
+				8863281C0E07B37200BB3DAB /* GUIViewStateScripts.h */,
 				88ACB0200DCF40D00083CFDF /* MusicInfoTagLoaderASAP.cpp */,
 				88ACB0210DCF40D00083CFDF /* MusicInfoTagLoaderASAP.h */,
 				880DBE490DC223FF00E26B71 /* Album.h */,
@@ -3454,8 +3476,6 @@
 				E38E17FA0D25F9FA00618676 /* GUIViewState.h */,
 				E38E17FB0D25F9FA00618676 /* GUIViewStateMusic.cpp */,
 				E38E17FC0D25F9FA00618676 /* GUIViewStateMusic.h */,
-				E38E17FD0D25F9FA00618676 /* GUIViewStatePicturesProgramsScripts.cpp */,
-				E38E17FE0D25F9FA00618676 /* GUIViewStatePicturesProgramsScripts.h */,
 				E38E17FF0D25F9FA00618676 /* GUIViewStateVideo.cpp */,
 				E38E18000D25F9FA00618676 /* GUIViewStateVideo.h */,
 				E38E18020D25F9FA00618676 /* GUIWindowBuddies.h */,
@@ -6394,7 +6414,6 @@
 				E38E20A80D25F9FD00618676 /* GUIViewControl.cpp in Sources */,
 				E38E20A90D25F9FD00618676 /* GUIViewState.cpp in Sources */,
 				E38E20AA0D25F9FD00618676 /* GUIViewStateMusic.cpp in Sources */,
-				E38E20AB0D25F9FD00618676 /* GUIViewStatePicturesProgramsScripts.cpp in Sources */,
 				E38E20AC0D25F9FD00618676 /* GUIViewStateVideo.cpp in Sources */,
 				E38E20AE0D25F9FD00618676 /* GUIWindowFileManager.cpp in Sources */,
 				E38E20AF0D25F9FD00618676 /* GUIWindowFullScreen.cpp in Sources */,
@@ -6797,6 +6816,11 @@
 				8883CEA70DD81807004E8B72 /* DVDSubtitleParserSSA.cpp in Sources */,
 				8883CEA80DD81807004E8B72 /* DVDSubtitlesLibass.cpp in Sources */,
 				E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */,
+				8863281D0E07B37200BB3DAB /* GUIDialogFullScreenInfo.cpp in Sources */,
+				8863281E0E07B37200BB3DAB /* GUIViewStatePictures.cpp in Sources */,
+				8863281F0E07B37200BB3DAB /* GUIViewStatePrograms.cpp in Sources */,
+				886328200E07B37200BB3DAB /* GUIViewStateScripts.cpp in Sources */,
+				886328230E07BE9E00BB3DAB /* GUIViewStateGameSaves.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
