@@ -107,21 +107,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
             if (iItem != 0 || g_settings.m_iLastLoadedProfileIndex != 0)
             {
               g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
-#ifdef HAS_XBOX_NETWORK
-              g_application.getNetwork().Deinitialize();
-#endif
-#ifdef HAS_XBOX_HARDWARE
-              CLog::Log(LOGNOTICE, "stop fancontroller");
-              CFanController::Instance()->Stop();
-#endif
               g_settings.LoadProfile(m_viewControl.GetSelectedItem());
-#ifdef HAS_XBOX_NETWORK
-              g_application.getNetwork().Initialize(g_guiSettings.GetInt("network.assignment"),
-                g_guiSettings.GetString("network.ipaddress").c_str(),
-                g_guiSettings.GetString("network.subnet").c_str(),
-                g_guiSettings.GetString("network.gateway").c_str(),
-                g_guiSettings.GetString("network.dns").c_str());
-#endif
             }
             else
             {
