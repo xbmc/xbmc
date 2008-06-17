@@ -101,12 +101,6 @@ void CGUIDialogVideoSettings::CreateSettings()
 
   AddSeparator(8);
   AddButton(VIDEO_SETTINGS_MAKE_DEFAULT, 12376);
-#ifdef HAS_XBOX_HARDWARE
-  m_flickerFilter = g_guiSettings.GetInt("videoplayer.flicker");
-  AddSpin(VIDEO_SETTINGS_FLICKER, 13100, &m_flickerFilter, 0, 5, g_localizeStrings.Get(351).c_str());
-  m_soften = g_guiSettings.GetBool("videoplayer.soften");
-  AddBool(VIDEO_SETTINGS_SOFTEN, 215, &m_soften);
-#endif
   AddButton(VIDEO_SETTINGS_CALIBRATION, 214);
   if (g_application.GetCurrentPlayer() == EPC_MPLAYER)
   {
@@ -147,15 +141,6 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
 #endif
   else if (setting.id == VIDEO_SETTINGS_BRIGHTNESS || setting.id == VIDEO_SETTINGS_CONTRAST || setting.id == VIDEO_SETTINGS_GAMMA)
     CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, true);
-#ifdef HAS_XBOX_HARDWARE
-  else if (setting.id == VIDEO_SETTINGS_FLICKER || setting.id == VIDEO_SETTINGS_SOFTEN)
-  {
-    RESOLUTION res = g_graphicsContext.GetVideoResolution();
-    g_guiSettings.SetInt("videoplayer.flicker", m_flickerFilter);
-    g_guiSettings.SetBool("videoplayer.soften", m_soften);
-    g_graphicsContext.SetVideoResolution(res);
-  }
-#endif
   else if (setting.id == VIDEO_SETTINGS_CALIBRATION)
   {
     // launch calibration window
