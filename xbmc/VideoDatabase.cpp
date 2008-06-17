@@ -5515,7 +5515,7 @@ void CVideoDatabase::DumpToDummyFiles(const CStdString &path)
   for (int i = 0; i < items.Size(); i++)
   {
     // create a folder in this directory
-    CStdString showName = CUtil::MakeLegalFileName(items[i]->GetVideoInfoTag()->m_strShowTitle, false);
+    CStdString showName = CUtil::MakeLegalFileName(items[i]->GetVideoInfoTag()->m_strShowTitle);
     CStdString TVFolder;
     CUtil::AddFileToFolder(path, showName, TVFolder);
     if (CDirectory::Create(TVFolder))

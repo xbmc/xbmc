@@ -224,9 +224,7 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
               else if (strcmpi(type, "music") == 0)
                 strMask = g_stSettings.m_musicExtensions;
               else if (strcmpi(type, "programs") == 0)
-#if defined(_XBOX)
-                strMask = ".xbe|.py";
-#elif defined(_WIN32_WINNT)
+#if defined(_WIN32_WINNT)
                 strMask = ".exe|.bat|.cmd|.py";
 #else
                 strMask = "";

@@ -85,9 +85,7 @@ bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile
   }
 
   // init encoder
-  CStdString strFile2=strFile;
-  if (CUtil::IsHD(strFile))
-    CUtil::GetFatXQualifiedPath(strFile2);
+  CStdString strFile2=CUtil::MakeLegalFileName(strFile);
   if (!m_pEncoder->Init(strFile2.c_str(), 2, 44100, 16))
   {
     m_cdReader.DeInit();
@@ -250,7 +248,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
   // if album name is set, then we use this as the directory to place the new file in.
   if (pItem->GetMusicInfoTag()->GetAlbum().size() > 0)
   {
-    strDirectory += CUtil::MakeLegalFileName(pItem->GetMusicInfoTag()->GetAlbum().c_str(), bIsFATX);
+    strDirectory += CUtil::MakeLegalFileName(pItem->GetMusicInfoTag()->GetAlbum().c_str());
     CUtil::AddDirectorySeperator(strDirectory);
   }
 
@@ -315,7 +313,7 @@ bool CCDDARipper::RipCD()
   CStdString strAlbumDir;
   if (vecItems[0]->GetMusicInfoTag()->GetAlbum().size() > 0)
   {
-    strAlbumDir=CUtil::MakeLegalFileName(vecItems[0]->GetMusicInfoTag()->GetAlbum().c_str(), bIsFATX);
+    strAlbumDir=CUtil::MakeLegalFileName(vecItems[0]->GetMusicInfoTag()->GetAlbum().c_str());
   }
 
     // No legal fatx directory name or no album in tag
@@ -402,6 +400,6 @@ CStdString CCDDARipper::GetTrackName(CFileItem *item, bool isFatX)
   track += GetExtension(g_guiSettings.GetInt("cddaripper.encoder"));
 
   // make sure the filename is legal
-  track = CUtil::MakeLegalFileName(track.c_str(), isFatX);
+  track = CUtil::MakeLegalFileName(track.c_str());
   return track;
 }

@@ -151,14 +151,19 @@ void CGUIDialogProfileSettings::CreateSettings()
     }
     if (!m_strName.IsEmpty())
     {
-      m_strDirectory.Format("profiles\\%s",m_strName.c_str());
-      CUtil::GetFatXQualifiedPath(m_strDirectory);
-      CDirectory::Create(g_settings.m_vecProfiles[0].getDirectory()+"\\"+m_strDirectory);
+      m_strDirectory.Format("profiles\\%s",CUtil::MakeLegalFileName(m_strName).c_str());
+      CStdString strPath;
+      CUtil::AddFileToFolder(g_settings.m_vecProfiles[0].getDirectory(),m_strDirectory,strPath);
+      CDirectory::Create(_P(strPath));
     }
     CStdString strPath = m_strDirectory;
     OnSettingChanged(2); // id=3
     if (strPath != m_strDirectory)
-      CDirectory::Remove(g_settings.m_vecProfiles[0].getDirectory()+"\\"+strPath);
+    {
+      CStdString strPath2;
+      CUtil::AddFileToFolder(g_settings.m_vecProfiles[0].getDirectory(),strPath,strPath2);
+      CDirectory::Remove(_P(strPath2));
+    }
   }
 }
 

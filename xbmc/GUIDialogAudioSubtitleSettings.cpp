@@ -227,9 +227,6 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
         g_stSettings.m_currentVideoSettings.m_AudioStream = -1 - m_audioStream;
         // call monkeyh1's code here...
         //bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL) && g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers;
-#if defined(HAS_VIDEO_PLAYBACK) && defined(HAS_XBOX_HARDWARE)
-        xbox_audio_switch_channel(m_audioStream, bAudioOnAllSpeakers);
-#endif
         return;
       }
     }
