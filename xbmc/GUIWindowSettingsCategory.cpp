@@ -34,11 +34,6 @@
 #include "ViewDatabase.h"
 #include "XBAudioConfig.h"
 #include "XBVideoConfig.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "utils/LED.h"
-#include "utils/FanController.h"
-#include "xbox/XKHDD.h"
-#endif
 #ifdef _LINUX
 #include <dlfcn.h>
 #endif
@@ -66,9 +61,6 @@
 #include "lib/libGoAhead/WebServer.h"
 #include "GUIControlGroupList.h"
 #include "GUIWindowManager.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "XBTimeZone.h"
-#endif
 #ifdef _LINUX
 #include "LinuxTimezone.h"
 #ifdef HAS_HAL
@@ -337,14 +329,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       if (g_videoConfig.NeedsSave())
         g_videoConfig.Save();
 
-#ifdef HAS_XBOX_HARDWARE
-      if (g_timezone.GetTimeZoneIndex() != g_guiSettings.GetInt("locale.timezone"))
-        g_timezone.SetTimeZoneIndex(g_guiSettings.GetInt("locale.timezone"));
-
-      if (g_timezone.GetDST() != g_guiSettings.GetBool("locale.usedst"))
-        g_timezone.SetDST(g_guiSettings.GetBool("locale.usedst"));
-#endif
-
       CheckNetworkSettings();
       CGUIWindow::OnMessage(message);
       FreeControls();
@@ -529,27 +513,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(351), LCD_TYPE_NONE);
-#ifdef _XBOX
-      pControl->AddLabel("LCD - HD44780", LCD_TYPE_LCD_HD44780);
-      pControl->AddLabel("LCD - KS0073", LCD_TYPE_LCD_KS0073);
-      pControl->AddLabel("VFD", LCD_TYPE_VFD);
-#endif
 #ifdef _LINUX
       pControl->AddLabel("LCDproc", LCD_TYPE_LCDPROC);
 #endif
       pControl->SetValue(pSettingInt->GetData());
     }
-#ifdef _XBOX
-    else if (strSetting.Equals("lcd.modchip"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel("SmartXX", MODCHIP_SMARTXX);
-      pControl->AddLabel("Xenium", MODCHIP_XENIUM);
-      pControl->AddLabel("Xecuter3", MODCHIP_XECUTER3);
-      pControl->SetValue(pSettingInt->GetData());
-    }
-#endif
     else if (strSetting.Equals("harddisk.aamlevel"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -617,9 +585,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-#ifdef HAS_XBOX_NETWORK
-      pControl->AddLabel(g_localizeStrings.Get(718), NETWORK_DASH);
-#endif    
       pControl->AddLabel(g_localizeStrings.Get(716), NETWORK_DHCP);
       pControl->AddLabel(g_localizeStrings.Get(717), NETWORK_STATIC);
       pControl->AddLabel(g_localizeStrings.Get(787), NETWORK_DISABLED);
@@ -705,16 +670,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->SetValue(myTimezoneIndex);   
     }    
 #endif    
-#ifdef HAS_XBOX_HARDWARE
-    else if (strSetting.Equals("locale.timezone"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      for (int i=0; i < g_timezone.GetNumberOfTimeZones(); i++)
-        pControl->AddLabel(g_timezone.GetTimeZoneString(i), i);
-      pControl->SetValue(pSettingInt->GetData());
-    }
-#endif
     else if (strSetting.Equals("videoscreen.resolution"))
     {
       FillInResolutions(pSetting, false);
@@ -858,14 +813,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("servers.ftpserveruser"))
     {
       FillInFTPServerUser(pSetting);
-    }
-    else if (strSetting.Equals("autodetect.nickname"))
-    {
-#ifdef HAS_XBOX_HARDWARE
-      CStdString strXboxNickNameOut;
-      if (CUtil::GetXBOXNickName(strXboxNickNameOut))
-        g_guiSettings.SetString("autodetect.nickname", strXboxNickNameOut.c_str());
-#endif
     }
     else if (strSetting.Equals("videoplayer.externaldvdplayer"))
     {
@@ -1101,14 +1048,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
     }
-    else if (strSetting.Equals("videooutput.hd480p") || strSetting.Equals("videooutput.hd720p") || strSetting.Equals("videooutput.hd1080i"))
-    {
-#ifdef HAS_XBOX_HARDWARE
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      // disable if we do not have the HDTV pack and are not NTSC
-      if (pControl) pControl->SetEnabled(g_videoConfig.HasNTSC() && g_videoConfig.HasHDPack());
-#endif
-    }
     else if (strSetting.Equals("musicplayer.crossfadealbumtracks"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1160,25 +1099,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("network.ipaddress") || strSetting.Equals("network.subnet") || strSetting.Equals("network.gateway") || strSetting.Equals("network.dns"))
     {
-#ifdef HAS_XBOX_NETWORK
-      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
-      if (pControl)
-      {
-        if (g_guiSettings.GetInt("network.assignment") != NETWORK_STATIC)
-        {
-          //We are in non Static Mode! Setting the Received IP Information
-          if(strSetting.Equals("network.ipaddress"))
-            pControl->SetLabel2(g_network.m_networkinfo.ip);
-          else if(strSetting.Equals("network.subnet"))
-            pControl->SetLabel2(g_network.m_networkinfo.subnet);
-          else if(strSetting.Equals("network.gateway"))
-            pControl->SetLabel2(g_network.m_networkinfo.gateway);
-          else if(strSetting.Equals("network.dns"))
-            pControl->SetLabel2(g_network.m_networkinfo.DNS1);
-        }
-        pControl->SetEnabled(g_guiSettings.GetInt("network.assignment") == NETWORK_STATIC);
-      }
-#endif
 #ifdef _LINUX
       bool enabled = (geteuid() == 0);
 #else
@@ -1380,13 +1300,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
         pControl->SetLabel2("");
     }
-#ifdef HAS_XBOX_HARDWARE
-    else if (strSetting.Equals("myprograms.dashboard"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("myprograms.usedashpath"));
-    }
-#endif
     else if (strSetting.Equals("lcd.enableonpaused"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1399,12 +1312,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("system.leddisableonplayback") != LED_PLAYBACK_OFF && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_OFF && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_NO_CHANGE);
     }
-    else if (
-#ifdef _XBOX
-             strSetting.Equals("lcd.modchip") ||
-#endif
-             strSetting.Equals("lcd.backlight") ||
-             strSetting.Equals("lcd.disableonplayback"))
+    else if (strSetting.Equals("lcd.backlight") || strSetting.Equals("lcd.disableonplayback"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
@@ -1415,11 +1323,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       // X3 can't controll the Contrast via software graying out!
       if(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE)
       {
-#ifdef _XBOX
-        if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.modchip") != MODCHIP_XECUTER3);
-#else
         if (pControl) pControl->SetEnabled(true);
-#endif
       }
       else 
       { 
@@ -1710,102 +1614,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     g_lcd->SetBackLight(((CSettingInt *)pSettingControl->GetSetting())->GetData());
   }
-#ifdef _XBOX
-  else if (strSetting.Equals("lcd.modchip"))
-  {
-    g_lcd->Stop();
-    CLCDFactory factory;
-    delete g_lcd;
-    g_lcd = factory.Create();
-    g_lcd->Initialize();
-  }
-#endif
   else if (strSetting.Equals("lcd.contrast"))
   {
     g_lcd->SetContrast(((CSettingInt *)pSettingControl->GetSetting())->GetData());
   }
-#endif
-#ifdef HAS_XBOX_HARDWARE
-  else if (strSetting.Equals("system.targettemperature"))
-  {
-    CSettingInt *pSetting = (CSettingInt*)pSettingControl->GetSetting();
-    CFanController::Instance()->SetTargetTemperature(pSetting->GetData());
-  }
-  else if (strSetting.Equals("system.fanspeed"))
-  {
-    CSettingInt *pSetting = (CSettingInt*)pSettingControl->GetSetting();
-    int iControlID = pSettingControl->GetID();
-    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
-    g_graphicsContext.SendMessage(msg);
-    int iSpeed = (RESOLUTION)msg.GetParam1();
-    g_guiSettings.SetInt("system.fanspeed", iSpeed);
-    CFanController::Instance()->SetFanSpeed(iSpeed);
-  }
-  else if (strSetting.Equals("system.autotemperature"))
-  {
-    CSettingBool *pSetting = (CSettingBool*)pSettingControl->GetSetting();
-    if (pSetting->GetData())
-    {
-      g_guiSettings.SetBool("system.fanspeedcontrol", false);
-      CFanController::Instance()->Start(g_guiSettings.GetInt("system.targettemperature"), g_guiSettings.GetInt("system.minfanspeed") );
-    }
-    else
-      CFanController::Instance()->Stop();
-  }
-  else if (strSetting.Equals("system.minfanspeed"))
-  {
-    CSettingInt *pSetting = (CSettingInt*)pSettingControl->GetSetting();
-    CFanController::Instance()->SetMinFanSpeed(pSetting->GetData());
-  }
-  else if (strSetting.Equals("system.fanspeedcontrol"))
-  {
-    CSettingBool *pSetting = (CSettingBool*)pSettingControl->GetSetting();
-    if (pSetting->GetData())
-    {
-      g_guiSettings.SetBool("system.autotemperature", false);
-      CFanController::Instance()->Stop();
-      CFanController::Instance()->SetFanSpeed(g_guiSettings.GetInt("system.fanspeed"));
-    }
-    else
-      CFanController::Instance()->RestoreStartupSpeed();
-  }
-  else if (strSetting.Equals("harddisk.aamlevel"))
-  {
-    CSettingInt * pSetting = (CSettingInt*)pSettingControl->GetSetting();
-    int setting_level = pSetting->GetData();
-
-    if (setting_level == AAM_QUIET)
-      XKHDD::SetAAMLevel(0x80);
-    else if (setting_level == AAM_FAST)
-      XKHDD::SetAAMLevel(0xFE);
-  }
-  else if (strSetting.Equals("harddisk.apmlevel"))
-  {
-    CSettingInt * pSetting = (CSettingInt*)pSettingControl->GetSetting();
-    int setting_level = pSetting->GetData();
-
-    switch(setting_level)
-    {
-    case APM_LOPOWER:
-      XKHDD::SetAPMLevel(0x80);
-      break;
-    case APM_HIPOWER:
-      XKHDD::SetAPMLevel(0xFE);
-      break;
-    case APM_LOPOWER_STANDBY:
-      XKHDD::SetAPMLevel(0x01);
-      break;
-    case APM_HIPOWER_STANDBY:
-      XKHDD::SetAPMLevel(0x7F);
-      break;
-    }
-  }
-  else if (strSetting.Equals("autodetect.nickname") )
-  {
-    CStdString strXboxNickNameIn = g_guiSettings.GetString("autodetect.nickname");
-    CUtil::SetXBOXNickName(strXboxNickNameIn, strXboxNickNameIn);
-  }
-#endif
   else if (strSetting.Equals("servers.ftpserver"))
   {
     g_application.StopFtpServer();
@@ -2006,20 +1818,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_graphicsContext.SendMessage(msg);
     g_videoConfig.SetVSyncMode((VSYNC)msg.GetParam1());
   }
-  else if (strSetting.Equals("system.ledcolour"))
-  { 
-#ifdef HAS_XBOX_HARDWARE
-    // Alter LED Colour immediately
-    int iData =  ((CSettingInt *)pSettingControl->GetSetting())->GetData();
-    if (iData == LED_COLOUR_NO_CHANGE)
-      // LED_COLOUR_NO_CHANGE: to prevent "led off" on colour immediately change, set to default green! 
-      //                       (we have no previos reference LED COLOUR, to set the LED colour back)
-      //                       on next boot the colour will not changed and the default BIOS led colour will used
-      ILED::CLEDControl(LED_COLOUR_GREEN); 
-    else
-      ILED::CLEDControl(iData);
-#endif
-  }
   else if (strSetting.Equals("locale.language"))
   { // new language chosen...
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
@@ -2123,17 +1921,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_pictureSources, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
   }
-#ifdef HAS_XBOX_HARDWARE
-  else if (strSetting.Equals("myprograms.dashboard"))
-  {
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
-    CStdString path = pSettingString->GetData();
-    VECSOURCES shares;
-    g_mediaManager.GetLocalDrives(shares);
-    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
-      pSettingString->SetData(path);
-  }
-#endif
   else if (strSetting.Equals("myprograms.trainerpath") || strSetting.Equals("pictures.screenshotpath") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("subtitles.custompath"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
@@ -2617,18 +2404,6 @@ void CGUIWindowSettingsCategory::CheckNetworkSettings()
       // Todo: aquire new network settings without restart app!
     }
     else*/
-    {
-#ifdef HAS_XBOX_NETWORK
-      g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
-      g_network.Deinitialize();
-      g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
-        g_guiSettings.GetString("network.ipaddress").c_str(),
-        g_guiSettings.GetString("network.subnet").c_str(),
-        g_guiSettings.GetString("network.gateway").c_str(),
-        g_guiSettings.GetString("network.dns").c_str());
-#endif
-    }
-
 
     // update our settings variables    
     m_iNetworkAssignment = g_guiSettings.GetInt("network.assignment");
@@ -3083,9 +2858,7 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
   CStdString strCurMask = g_guiSettings.GetString(pSetting->GetSetting());
   if (strCurMask.CompareNoCase("None") == 0 || strCurMask.CompareNoCase("Custom") == 0 )
   {
-#ifndef HAS_XBOX_AUDIO
 #define XVOICE_MASK_PARAM_DISABLED (-1.0f)
-#endif
     g_stSettings.m_karaokeVoiceMask[dwPort].energy = XVOICE_MASK_PARAM_DISABLED;
     g_stSettings.m_karaokeVoiceMask[dwPort].pitch = XVOICE_MASK_PARAM_DISABLED;
     g_stSettings.m_karaokeVoiceMask[dwPort].whisper = XVOICE_MASK_PARAM_DISABLED;

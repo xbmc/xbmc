@@ -29,9 +29,6 @@
 #include "GUIDialogTrainerSettings.h"
 #endif
 #include "GUIDialogMediaSource.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "xbox/xbeheader.h"
-#endif
 #ifdef HAS_TRAINER
 #include "utils/Trainer.h"
 #endif
@@ -516,43 +513,8 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
 
 int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
 {
-  if (!g_guiSettings.GetBool("myprograms.gameautoregion"))
-    return 0;
-
-#ifdef HAS_XBOX_HARDWARE
-  int iRegion;
-  if (bReload || m_vecItems->Get(iItem)->IsOnDVD())
-  {
-    CXBE xbe;
-    iRegion = xbe.ExtractGameRegion(m_vecItems->Get(iItem)->m_strPath);
-  }
-  else
-  {
-    m_database.Open();
-    iRegion = m_database.GetRegion(m_vecItems->Get(iItem)->m_strPath);
-    m_database.Close();
-  }
-  if (iRegion == -1)
-  {
-    if (g_guiSettings.GetBool("myprograms.gameautoregion"))
-    {
-      CXBE xbe;
-      iRegion = xbe.ExtractGameRegion(m_vecItems->Get(iItem)->m_strPath);
-      if (iRegion < 1 || iRegion > 7)
-        iRegion = 0;
-      m_database.SetRegion(m_vecItems->Get(iItem)->m_strPath,iRegion);
-    }
-    else
-      iRegion = 0;
-  }
-
-  if (bReload)
-    return CXBE::FilterRegion(iRegion,true);
-  else
-    return CXBE::FilterRegion(iRegion);
-#else
+  // TODO?
   return 0;
-#endif
 }
 
 #ifdef HAS_TRAINER
