@@ -2511,15 +2511,41 @@ bool CDVDPlayer::OnAction(const CAction &action)
       case ACTION_NEXT_ITEM:
       case ACTION_PAGE_UP:
         m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_NEXT));
+        g_infoManager.SetDisplayAfterSeek();
         return true;
       break;
 
       case ACTION_PREV_ITEM:
       case ACTION_PAGE_DOWN:
         m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_PREV));
+        g_infoManager.SetDisplayAfterSeek();
         return true;
       break;
     }
+  }
+
+  switch (action.wID)
+  {
+    case ACTION_NEXT_ITEM:
+    case ACTION_PAGE_UP:
+      if(GetChapterCount() > 0) 
+      {
+        m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter()+1));
+        g_infoManager.SetDisplayAfterSeek();
+        return true;
+      }
+      else
+        break;
+    case ACTION_PREV_ITEM:
+    case ACTION_PAGE_DOWN:
+      if(GetChapterCount() > 0) 
+      {
+        m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter()-1));
+        g_infoManager.SetDisplayAfterSeek();
+        return true;
+      }
+      else
+        break;
   }
 
   // return false to inform the caller we didn't handle the message
@@ -2612,7 +2638,6 @@ int CDVDPlayer::SeekChapter(int iChapter)
     else
       Seek(false, true);
   }
-  
   return 0;
 }
 

@@ -20,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../xbmc/;../../xbmc/utils;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32;../../xbmc/cores/dvdplayer"
+				AdditionalIncludeDirectories="../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32;../../xbmc/cores/dvdplayer;../../xbmc/lib/boost"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_WIN32_WINNT=0x0500;WINVER=0x0500"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="0"
@@ -74,7 +74,7 @@
 				Optimization="0"
 				InlineFunctionExpansion="0"
 				OmitFramePointers="FALSE"
-				AdditionalIncludeDirectories="../../xbmc/;../../xbmc/utils;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32;../../xbmc/cores/dvdplayer"
+				AdditionalIncludeDirectories="../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32;../../xbmc/cores/dvdplayer;../../xbmc/lib/boost"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_WIN32_WINNT=0x0500;WINVER=0x0500"
 				StringPooling="FALSE"
 				MinimalRebuild="TRUE"
@@ -2263,6 +2263,12 @@
 				<File
 					RelativePath="..\..\xbmc\GUIDialogYesNo.cpp">
 				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogFullScreenInfo.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogFullScreenInfo.h">
+				</File>
 			</Filter>
 			<Filter
 				Name="GUI Other"
@@ -2280,10 +2286,31 @@
 					RelativePath="..\..\xbmc\GUIMediaWindow.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIViewStatePicturesProgramsScripts.cpp">
+					RelativePath="..\..\xbmc\GUIViewStatePictures.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIViewStatePicturesProgramsScripts.h">
+					RelativePath="..\..\xbmc\GUIViewStatePictures.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStatePrograms.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStatePrograms.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateScripts.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateScripts.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateGameSaves.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateGameSaves.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowBuddies.cpp">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowFileManager.cpp">

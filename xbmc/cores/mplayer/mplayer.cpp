@@ -117,6 +117,7 @@ CMPlayer::Options::Options()
   m_fSpeed = 1.0f;
   m_fFPS = 0.0f;
   m_iAutoSync = 0;
+  m_bForceIndex = false;
 
   m_iAudioStream = -1;
   m_iSubtitleStream = -1;

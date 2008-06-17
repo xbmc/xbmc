@@ -170,10 +170,6 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         if (g_stSettings.m_iMyVideoStack > STACK_SIMPLE)
           g_stSettings.m_iMyVideoStack = STACK_NONE;
 
-        if (g_stSettings.m_iMyVideoStack != STACK_NONE)
-          g_stSettings.m_bMyVideoCleanTitles = true;
-        else
-          g_stSettings.m_bMyVideoCleanTitles = false;
         g_settings.Save();
         UpdateButtons();
         Update( m_vecItems->m_strPath );
@@ -280,12 +276,9 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
 void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIWindowVideoBase::OnPrepareFileItems(items);
-  if (g_stSettings.m_bMyVideoCleanTitles && 
-    ((g_stSettings.m_iMyVideoStack & STACK_UNAVAILABLE) != STACK_UNAVAILABLE))
-  {
+  if (g_guiSettings.GetBool("myvideos.cleanfilenames"))
     items.CleanFileNames();
   }
-}
 
 bool CGUIWindowVideoFiles::OnClick(int iItem)
 {

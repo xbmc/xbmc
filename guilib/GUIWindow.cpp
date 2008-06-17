@@ -632,6 +632,10 @@ void CGUIWindow::OnInitWindow()
 {
   // set our rendered state
   m_hasRendered = false;
+  ResetAnimations();  // we need to reset our animations as those windows that don't dynamically allocate
+                      // need their anims reset. An alternative solution is turning off all non-dynamic
+                      // allocation (which in some respects may be nicer, but it kills hdd spindown and the like)
+
   // set our initial control visibility before restoring control state and
   // focusing the default control, and again afterward to make sure that
   // any controls that depend on the state of the focused control (and or on
@@ -1141,6 +1145,15 @@ bool CGUIWindow::HasAnimation(ANIMATION_TYPE animType)
   for (unsigned int i = 0; i < m_vecControls.size(); i++)
     if (m_vecControls[i]->GetAnimation(animType)) return true;
   return false;
+}
+
+void CGUIWindow::ResetAnimations()
+{
+  for (unsigned int i = 0; i < m_animations.size(); i++)
+    m_animations[i].ResetAnimation();
+
+  for (ivecControls it = m_vecControls.begin(); it != m_vecControls.end(); ++it)
+    (*it)->ResetAnimations();
 }
 
 // returns true if the control group with id groupID has controlID as
