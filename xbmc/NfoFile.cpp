@@ -74,7 +74,7 @@ HRESULT CNfoFile::Create(const CStdString& strPath)
     // first check if it's an XML file with the info we need
     CVideoInfoTag details;
     bNfo = GetDetails(details);
-    CDirectory::GetDirectory("q:\\system\\scrapers\\video",items,".xml",false);
+    CDirectory::GetDirectory(_P("q:\\system\\scrapers\\video"),items,".xml",false);
     if (m_strContent.Equals("tvshows") && bNfo) // need to identify which scraper
       strURL = details.m_strEpisodeGuide;
 
