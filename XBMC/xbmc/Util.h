@@ -254,7 +254,7 @@ public:
   static void RemoveSlashAtEnd(CStdString& strFolder);  
   static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   static void CreateArchivePath(CStdString& strUrlPath, const CStdString& strType, const CStdString& strArchivePath,
-    const CStdString& strFilePathInArchive, const CStdString& strCachePath = "Z:\\", const CStdString strPwd="");
+    const CStdString& strFilePathInArchive, const CStdString& strPwd="");
   static bool ThumbExists(const CStdString& strFileName, bool bAddCache = false);
   static bool ThumbCached(const CStdString& strFileName);
   static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);

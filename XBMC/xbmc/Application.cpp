@@ -204,6 +204,7 @@
 #ifdef HAS_LINUX_NETWORK
 #include "GUIDialogAccessPoints.h"
 #endif
+#include "GUIDialogFullScreenInfo.h"
 
 #ifdef HAS_PERFORMACE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -1884,15 +1885,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogAccessPoints);      // window id = 141
 #endif
 
-  CGUIDialogLockSettings* pDialog = NULL;
-  CStdString strPath;
-  RESOLUTION res2;
-  strPath = g_SkinInfo.GetSkinPath("LockSettings.xml", &res2);
-  if (CFile::Exists(strPath))
-    pDialog = new CGUIDialogLockSettings;
-
-  if (pDialog)
-    m_gWindowManager.Add(pDialog); // window id = 131
+  m_gWindowManager.Add(new CGUIDialogLockSettings); // window id = 131
 
   m_gWindowManager.Add(new CGUIDialogContentSettings);        // window id = 132
 
@@ -2649,6 +2642,16 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_gWindowManager.Initialize();
   g_audioManager.Initialize(CAudioContext::DEFAULT_DEVICE);
   g_audioManager.Load();
+
+  CGUIDialogFullScreenInfo* pDialog = NULL;
+  RESOLUTION res;
+  CStdString strPath = g_SkinInfo.GetSkinPath("DialogFullScreenInfo.xml", &res);
+  if (CFile::Exists(strPath))
+    pDialog = new CGUIDialogFullScreenInfo;
+   
+  if (pDialog)
+    m_gWindowManager.Add(pDialog); // window id = 142
+
   CLog::Log(LOGINFO, "  skin loaded...");
 
 #ifdef HAS_KAI
@@ -2701,6 +2704,9 @@ void CApplication::UnloadSkin()
   m_guiDialogMuteBug.OnMessage(msg);
   m_guiDialogMuteBug.ResetControlStates();
   m_guiDialogMuteBug.FreeResources(true);
+
+  // remove the skin-dependent window
+  m_gWindowManager.Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
 
   CGUIWindow::FlushReferenceCache(); // flush the cache
 
@@ -4310,9 +4316,58 @@ HRESULT CApplication::Cleanup()
     {
       if(g_stSettings.m_HttpApiBroadcastLevel>=1)
         getApplicationMessenger().HttpApi("broadcastlevel; ShutDown;1");
+
       m_pXbmcHttp->shuttingDown=true;
       //Sleep(100);
     }
+
+    CLog::Log(LOGNOTICE, "Storing total System Uptime");
+    g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
+
+    // Update the settings information (volume, uptime etc. need saving)
+    if (CFile::Exists(g_settings.GetSettingsFile()))
+    {
+      CLog::Log(LOGNOTICE, "Saving settings");
+      g_settings.Save();
+    }
+    else
+      CLog::Log(LOGNOTICE, "Not saving settings (settings.xml is not present)");
+
+    m_bStop = true;
+    CLog::Log(LOGNOTICE, "stop all");
+
+    StopServices();
+    //Sleep(5000);
+
+    if (m_pPlayer)
+    {
+      CLog::Log(LOGNOTICE, "stop mplayer");
+      delete m_pPlayer;
+      m_pPlayer = NULL;
+    }
+
+    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    if (musicScan && musicScan->IsDialogRunning())
+      musicScan->StopScanning();
+
+    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (videoScan && videoScan->IsDialogRunning())
+      videoScan->StopScanning();
+
+    CLog::Log(LOGNOTICE, "stop daap clients");
+#ifdef HAS_FILESSYTEM
+    g_DaapClient.Release();
+#endif
+    //g_lcd->StopThread();
+    CLog::Log(LOGNOTICE, "stop python");
+    getApplicationMessenger().Cleanup();
+    g_pythonParser.FreeResources();
+
+    CLog::Log(LOGNOTICE, "clean cached files!");
+    g_RarManager.ClearCache(true);
+
+    CLog::Log(LOGNOTICE, "unload skin");
+    UnloadSkin();
 
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST);
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST_EDITOR);

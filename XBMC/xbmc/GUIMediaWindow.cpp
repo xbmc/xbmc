@@ -324,6 +324,14 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
+  case GUI_MSG_CHANGE_SORT_DIRECTION:
+    {
+      if (m_guiState.get())
+        m_guiState->SetNextSortOrder();
+      UpdateFileList();
+      return true;
+  }
+    break;
   }
 
   return CGUIWindow::OnMessage(message);
@@ -1195,12 +1203,9 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   return false;
 }
 
-int CGUIMediaWindow::GetContainerSortMethod()
+const CGUIViewState *CGUIMediaWindow::GetViewState() const
 {
-  if (m_guiState.get())
-    return m_guiState->GetSortMethodLabel();
-  else 
-    return 0;
+  return m_guiState.get();
 }
 
 const CFileItemList& CGUIMediaWindow::CurrentDirectory() const 
