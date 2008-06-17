@@ -224,15 +224,6 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
       }
       buttons.Add(CONTEXT_BUTTON_LAUNCH, strLaunch);
 
-      DWORD dwTitleId = CUtil::GetXbeID(item->m_strPath);
-      CStdString strTitleID;
-      CStdString strGameSavepath;
-      strTitleID.Format("%08X",dwTitleId);
-      CUtil::AddFileToFolder("E:\\udata\\",strTitleID,strGameSavepath);
-
-      if (CDirectory::Exists(strGameSavepath))
-        buttons.Add(CONTEXT_BUTTON_GAMESAVES, 20322);         // Goto GameSaves
-
       if (g_guiSettings.GetBool("myprograms.gameautoregion"))
         buttons.Add(CONTEXT_BUTTON_LAUNCH_IN, 519); // launch in video mode
 
@@ -293,8 +284,8 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         else
         {
           // SetXBEDescription will truncate to 40 characters.
-          CUtil::SetXBEDescription(item->m_strPath,strDescription);
-          m_database.SetDescription(item->m_strPath,strDescription);
+          //CUtil::SetXBEDescription(item->m_strPath,strDescription);
+          //m_database.SetDescription(item->m_strPath,strDescription);
         }
         Update(m_vecItems->m_strPath);
       }
@@ -330,15 +321,6 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     OnClick(itemNumber);
     return true;
 
-  case CONTEXT_BUTTON_GAMESAVES:
-    {
-      CStdString strTitleID;
-      CStdString strGameSavepath;
-      strTitleID.Format("%08X",CUtil::GetXbeID(item->m_strPath));
-      CUtil::AddFileToFolder("E:\\udata\\",strTitleID,strGameSavepath);
-      m_gWindowManager.ActivateWindow(WINDOW_GAMESAVES,strGameSavepath);
-      return true;
-    }
   case CONTEXT_BUTTON_LAUNCH_IN:
     OnChooseVideoModeAndLaunch(itemNumber);
     return true;
@@ -453,62 +435,7 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
 
   if (pItem->m_bIsFolder) return false;
 
-  // launch xbe...
-  char szPath[1024];
-  char szParameters[1024];
-
-  m_database.IncTimesPlayed(pItem->m_strPath);
-
-  int iRegion = m_iRegionSet?m_iRegionSet:GetRegion(iItem);
-
-  DWORD dwTitleId = 0;
-  if (!pItem->IsOnDVD())
-    dwTitleId = m_database.GetTitleId(pItem->m_strPath);
-  if (!dwTitleId)
-    dwTitleId = CUtil::GetXbeID(pItem->m_strPath);
-#ifdef HAS_TRAINER
-  CStdString strTrainer = m_database.GetActiveTrainer(dwTitleId);
-  if (strTrainer != "")
-  {
-    bool bContinue=false;
-    if (CKaiClient::GetInstance()->IsEngineConnected())
-    {
-      if (CGUIDialogYesNo::ShowAndGetInput(20023,20020,20021,20022,714,12013))
-      {
-        CStdString emptyStr = "";
-        CKaiClient::GetInstance()->EnterVector(emptyStr, emptyStr);
-      }
-      else
-        bContinue = true;
-    }
-    if (!bContinue)
-    {
-      CTrainer trainer;
-      if (trainer.Load(strTrainer))
-      {
-        m_database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
-        CUtil::InstallTrainer(trainer);
-      }
-    }
-  }
-#endif
-
-  m_database.Close();
-  memset(szParameters, 0, sizeof(szParameters));
-
-  strcpy(szPath, pItem->m_strPath.c_str());
-
-  if (pItem->IsShortCut())
-  {
-    CUtil::RunShortcut(pItem->m_strPath.c_str());
-    return false;
-  }
-
-  if (strlen(szParameters))
-    CUtil::RunXBE(szPath, szParameters,F_VIDEO(iRegion));
-  else
-    CUtil::RunXBE(szPath,NULL,F_VIDEO(iRegion));
-  return true;
+  return false;
 }
 
 int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
@@ -735,35 +662,6 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
           formatter.FormatLabel2(item);
           item->SetLabelPreformated(true);
         }
-      }
-    }
-    if (item->IsXBE())
-    {
-      if (CUtil::GetFileName(item->m_strPath).Equals("default_ffp.xbe"))
-      {
-        m_vecItems->Remove(i--);
-        continue;
-      }
-      // add to database if not already there
-      DWORD dwTitleID = item->IsOnDVD() ? 0 : m_database.GetProgramInfo(item);
-      if (!dwTitleID)
-      {
-        CStdString description;
-        if (CUtil::GetXBEDescription(item->m_strPath, description) && (!item->IsLabelPreformated() && !item->GetLabel().IsEmpty()))
-          item->SetLabel(description);
-
-        dwTitleID = CUtil::GetXbeID(item->m_strPath);
-        if (!item->IsOnDVD())
-          m_database.AddProgramInfo(item, dwTitleID);
-      }
-
-      // SetOverlayIcons()
-      if (m_database.ItemHasTrainer(dwTitleID))
-      {
-        if (m_database.GetActiveTrainer(dwTitleID) != "")
-          item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_TRAINED);
-        else
-          item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_HAS_TRAINER);
       }
     }
     if (!shortcutPath.IsEmpty())

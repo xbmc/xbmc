@@ -233,10 +233,11 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
     case TMSG_RESTARTAPP:
       {
-        char szXBEFileName[1024];
+        // TODO
+        //char szXBEFileName[1024];
 
-        CIoSupport::GetXbePath(szXBEFileName);
-        CUtil::RunXBE(szXBEFileName);
+        //CIoSupport::GetXbePath(szXBEFileName);
+        //CUtil::RunXBE(szXBEFileName);
       }
       break;
 
