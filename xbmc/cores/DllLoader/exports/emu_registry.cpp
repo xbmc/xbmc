@@ -651,8 +651,12 @@ LONG WINAPI dllRegQueryInfoKeyA( HKEY hkey, LPSTR class_, LPDWORD class_len, LPD
                                 LPDWORD values, LPDWORD max_value, LPDWORD max_data,
                                 LPDWORD security, FILETIME *modif )
 {
+#ifdef _WIN32PC
+  return RegQueryInfoKeyA(hkey, class_, class_len, reserved, subkeys, max_subkey, max_class, values, max_value, max_data, security, modif);
+#else
   not_implement("advapi32.dll fake function RegQueryInfoKeyA called\n"); //warning
   return 1;
+#endif
 }
 
 /*LONG WINAPI dllRegQueryValueExA (HKEY hKey, LPCTSTR lpValueName, LPDWORD lpReserved,
@@ -694,12 +698,19 @@ return 1;
 
 BOOL WINAPI dllCryptAcquireContextA(HCRYPTPROV* phProv, LPCTSTR pszContainer, LPCTSTR pszProvider, DWORD dwProvType, DWORD dwFlags)
 {
+#ifdef _WIN32PC
+  return CryptAcquireContext(phProv, pszContainer, pszProvider, dwProvType, dwFlags);
+#else
   not_implement("advapi32.dll fake function dllCryptAcquireContext() called\n");
   return 1;
+#endif
 }
 
 BOOL WINAPI dllCryptGenRandom(HCRYPTPROV hProv, DWORD dwLen, BYTE* pbBuffer)
 {
+#ifdef _WIN32PC
+  return CryptGenRandom(hProv, dwLen, pbBuffer);
+#else
   unsigned int i;
   // just create some random data
   for (i = 0; i < dwLen; i = i + 4)
@@ -707,12 +718,17 @@ BOOL WINAPI dllCryptGenRandom(HCRYPTPROV hProv, DWORD dwLen, BYTE* pbBuffer)
     pbBuffer[i] = rand() & 0xFF;
   }
   return 1;
+#endif
 }
 
 BOOL WINAPI dllCryptReleaseContext(HCRYPTPROV hProv, DWORD dwFlags)
 {
+#ifdef _WIN32PC
+  return CryptReleaseContext(hProv, dwFlags);
+#else
   not_implement("advapi32.dll fake function dllCryptReleaseContext() called\n");
   return 1;
+#endif
 }
 
 static bool load_registry_key(long handle, TiXmlElement *key)
