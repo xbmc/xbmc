@@ -581,7 +581,7 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, "s|b", &cFilename, &bIsFatX)) return NULL;
 
     CStdString strFilename;
-    strFilename = CUtil::MakeLegalFileName(cFilename,bIsFatX);
+    strFilename = CUtil::MakeLegalFileName(cFilename);
     return Py_BuildValue("s", strFilename.c_str());
   }
 

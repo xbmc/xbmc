@@ -1235,12 +1235,6 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       }
     }
     break;
-  case SYSTEM_XBOX_NICKNAME:
-    {
-      if (!CUtil::GetXBOXNickName(strLabel))
-        strLabel=g_localizeStrings.Get(416); // 
-      break;
-    }
   case SYSTEM_DVD_LABEL:
     strLabel = CDetectDVDMedia::GetDVDLabel();
     break;

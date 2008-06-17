@@ -36,11 +36,6 @@
 #include "GUIWindowVideoBase.h"
 #include "Util.h"
 #include "xbox/IoSupport.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "xbox/xbeheader.h"
-#include "xbox/Undocumented.h"
-#include "xbresource.h"
-#endif
 #include "DetectDVDType.h"
 #include "Autorun.h"
 #include "FileSystem/HDDirectory.h"
@@ -77,17 +72,7 @@
 #include "GUIDialogVideoScan.h"
 #include "utils/fstrcmp.h"
 #include "utils/Trainer.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "utils/MemoryUnitManager.h"
-#include "utils/FilterFlickerPatch.h"
-#include "utils/LED.h"
-#include "utils/FanController.h"
-#include "utils/SystemInfo.h"
-#endif
 #include "MediaManager.h"
-#ifdef _XBOX
-#include <xbdm.h>
-#endif
 #include "utils/Network.h"
 #include "GUIPassword.h"
 #ifdef HAS_KAI
@@ -100,9 +85,7 @@
 #include "LastFmManager.h"
 #include "MusicInfoLoader.h"
 #include "XBVideoConfig.h"
-#ifndef HAS_XBOX_D3D
 #include "DirectXGraphics.h"
-#endif
 #include "lib/libGoAhead/XBMChttp.h"
 #include "DNSNameCache.h"
 #include "FileSystem/PluginDirectory.h"
@@ -154,185 +137,12 @@ static Uint16 flashrampBlue[256];
 
 XBOXDETECTION v_xboxclients;
 
-#ifdef HAS_XBOX_HARDWARE
-// This are 70 Original Data Bytes because we have to restore 70 patched Bytes, not just 57
-static BYTE rawData[70] =
-{
-    0x55, 0x8B, 0xEC, 0x81, 0xEC, 0x04, 0x01, 0x00, 0x00, 0x8B, 0x45, 0x08, 0x3D, 0x04, 0x01, 0x00, 
-    0x00, 0x53, 0x75, 0x32, 0x8B, 0x4D, 0x18, 0x85, 0xC9, 0x6A, 0x04, 0x58, 0x74, 0x02, 0x89, 0x01, 
-    0x39, 0x45, 0x14, 0x73, 0x0A, 0xB8, 0x23, 0x00, 0x00, 0xC0, 0xE9, 0x59, 0x01, 0x00, 0x00, 0x8B, 
-    0x4D, 0x0C, 0x89, 0x01, 0x8B, 0x45, 0x10, 0x8B, 0x0D, 0x9C, 0xFB, 0x04, 0x80, 0x89, 0x08, 0x33, 
-    0xC0, 0xE9, 0x42, 0x01, 0x00, 0x00, 
-};
-static BYTE OriginalData[57]=
-{
-  0x55,0x8B,0xEC,0x81,0xEC,0x04,0x01,0x00,0x00,0x8B,0x45,0x08,0x3D,0x04,0x01,0x00,
-  0x00,0x53,0x75,0x32,0x8B,0x4D,0x18,0x85,0xC9,0x6A,0x04,0x58,0x74,0x02,0x89,0x01,
-  0x39,0x45,0x14,0x73,0x0A,0xB8,0x23,0x00,0x00,0xC0,0xE9,0x59,0x01,0x00,0x00,0x8B,
-  0x4D,0x0C,0x89,0x01,0x8B,0x45,0x10,0x8B,0x0D
-};
-
-static BYTE PatchData[70]=
-{
-  0x55,0x8B,0xEC,0xB9,0x04,0x01,0x00,0x00,0x2B,0xE1,0x8B,0x45,0x08,0x53,0x3B,0xC1,
-  0x74,0x0C,0x49,0x3B,0xC1,0x75,0x2F,0xB8,0x00,0x03,0x80,0x00,0xEB,0x05,0xB8,0x04,
-  0x00,0x00,0x00,0x50,0x8B,0x4D,0x18,0x6A,0x04,0x58,0x85,0xC9,0x74,0x02,0x89,0x01,
-  0x8B,0x4D,0x0C,0x89,0x01,0x59,0x8B,0x45,0x10,0x89,0x08,0x33,0xC0,0x5B,0xC9,0xC2,
-  0x14,0x00,0x00,0x00,0x00,0x00
-};
-
-
-// for trainers
-#define KERNEL_STORE_ADDRESS 0x8000000C // this is address in kernel we store the address of our allocated memory block
-#define KERNEL_START_ADDRESS 0x80010000 // base addy of kernel
-#define KERNEL_ALLOCATE_ADDRESS 0x7FFD2200 // where we want to put our allocated memory block (under kernel so it works retail)
-#define KERNEL_SEARCH_RANGE 0x02AF90 // used for loop control base + search range to look xbe entry point bytes
-
-#define XBTF_HEAP_SIZE 15360 // plenty of room for trainer + xbtf support functions
-#define ETM_HEAP_SIZE 2400  // just enough room to match evox's etm spec limit (no need to give them more room then evox does)
-// magic kernel patch (asm included w/ source)
-static unsigned char trainerloaderdata[167] =
-{
-       0x60, 0xBA, 0x34, 0x12, 0x00, 0x00, 0x60, 0x6A, 0x01, 0x6A, 0x07, 0xE8, 0x67, 0x00, 0x00, 0x00,
-       0x6A, 0x0C, 0x6A, 0x08, 0xE8, 0x5E, 0x00, 0x00, 0x00, 0x61, 0x8B, 0x35, 0x18, 0x01, 0x01, 0x00,
-       0x83, 0xC6, 0x08, 0x8B, 0x06, 0x8B, 0x72, 0x12, 0x03, 0xF2, 0xB9, 0x03, 0x00, 0x00, 0x00, 0x3B,
-       0x06, 0x74, 0x0C, 0x83, 0xC6, 0x04, 0xE2, 0xF7, 0x68, 0xF0, 0x00, 0x00, 0x00, 0xEB, 0x29, 0x8B,
-       0xEA, 0x83, 0x7A, 0x1A, 0x00, 0x74, 0x05, 0x8B, 0x4A, 0x1A, 0xEB, 0x03, 0x8B, 0x4A, 0x16, 0x03,
-       0xCA, 0x0F, 0x20, 0xC0, 0x50, 0x25, 0xFF, 0xFF, 0xFE, 0xFF, 0x0F, 0x22, 0xC0, 0xFF, 0xD1, 0x58,
-       0x0F, 0x22, 0xC0, 0x68, 0xFF, 0x00, 0x00, 0x00, 0x6A, 0x08, 0xE8, 0x08, 0x00, 0x00, 0x00, 0x61,
-       0xFF, 0x15, 0x28, 0x01, 0x01, 0x00, 0xC3, 0x55, 0x8B, 0xEC, 0x66, 0xBA, 0x04, 0xC0, 0xB0, 0x20,
-       0xEE, 0x66, 0xBA, 0x08, 0xC0, 0x8A, 0x45, 0x08, 0xEE, 0x66, 0xBA, 0x06, 0xC0, 0x8A, 0x45, 0x0C,
-       0xEE, 0xEE, 0x66, 0xBA, 0x02, 0xC0, 0xB0, 0x1A, 0xEE, 0x50, 0xB8, 0x40, 0x42, 0x0F, 0x00, 0x48,
-       0x75, 0xFD, 0x58, 0xC9, 0xC2, 0x08, 0x00,
-};
-
-#define SIZEOFLOADERDATA 167// loaderdata is our kernel hack to handle if trainer (com file) is executed for title about to run
-
-static unsigned char trainerdata[XBTF_HEAP_SIZE] = { NULL }; // buffer to hold trainer in mem - needs to be global?
-// SM_Bus function for xbtf trainers
-static unsigned char sm_bus[48] =
-{
-  0x55, 0x8B, 0xEC, 0x66, 0xBA, 0x04, 0xC0, 0xB0, 0x20, 0xEE, 0x66, 0xBA, 0x08, 0xC0, 0x8A, 0x45, 
-  0x08, 0xEE, 0x66, 0xBA, 0x06, 0xC0, 0x8A, 0x45, 0x0C, 0xEE, 0xEE, 0x66, 0xBA, 0x02, 0xC0, 0xB0, 
-  0x1A, 0xEE, 0x50, 0xB8, 0x40, 0x42, 0x0F, 0x00, 0x48, 0x75, 0xFD, 0x58, 0xC9, 0xC2, 0x08, 0x00, 
-};
- 
-// PatchIt dynamic patching
-static unsigned char patch_it_toy[33] =
-{
-  0x55, 0x8B, 0xEC, 0x60, 0x0F, 0x20, 0xC0, 0x50, 0x25, 0xFF, 0xFF, 0xFE, 0xFF, 0x0F, 0x22, 0xC0, 
-  0x8B, 0x4D, 0x0C, 0x8B, 0x55, 0x08, 0x89, 0x0A, 0x58, 0x0F, 0x22, 0xC0, 0x61, 0xC9, 0xC2, 0x08, 
-  0x00, 
-};
-
-// HookIt
-static unsigned char hookit_toy[43] =
-{
-  0x55, 0x8B, 0xEC, 0x60, 0x8B, 0x55, 0x08, 0x8B, 0x45, 0x0C, 0xBD, 0x0C, 0x00, 0x00, 0x80, 0x8B, 
-  0x6D, 0x00, 0x83, 0xC5, 0x02, 0x8B, 0x6D, 0x00, 0x8D, 0x44, 0x05, 0x00, 0xC6, 0x02, 0x68, 0x89, 
-  0x42, 0x01, 0xC6, 0x42, 0x05, 0xC3, 0x61, 0xC9, 0xC2, 0x08, 0x00, 
-};
-
-// in game keys (main)
-static unsigned char igk_main_toy[403] =
-{
-  0x81, 0x3D, 0x4C, 0x01, 0x01, 0x00, 0xA4, 0x01, 0x00, 0x00, 0x74, 0x30, 0xC7, 0x05, 0x4C, 0x01, 
-  0x01, 0x00, 0xA4, 0x01, 0x00, 0x00, 0xC7, 0x05, 0x14, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 
-  0x60, 0xBA, 0x50, 0x01, 0x01, 0x00, 0xB9, 0x05, 0x00, 0x00, 0x00, 0xC7, 0x02, 0x00, 0x00, 0x00, 
-  0x00, 0x83, 0xC2, 0x04, 0xE2, 0xF5, 0x61, 0xE9, 0x4B, 0x01, 0x00, 0x00, 0x51, 0x8D, 0x4A, 0x08, 
-  0x60, 0x33, 0xC0, 0x8A, 0x41, 0x0C, 0x50, 0x8D, 0x15, 0x14, 0x00, 0x00, 0x80, 0x8B, 0x0A, 0x89, 
-  0x42, 0x04, 0x3B, 0xC1, 0x0F, 0x84, 0x1F, 0x01, 0x00, 0x00, 0x66, 0x25, 0x81, 0x00, 0x66, 0x3D, 
-  0x81, 0x00, 0x75, 0x0C, 0x80, 0x35, 0x51, 0x01, 0x01, 0x00, 0x01, 0xE9, 0x09, 0x01, 0x00, 0x00, 
-  0x58, 0x50, 0x66, 0x25, 0x82, 0x00, 0x66, 0x3D, 0x82, 0x00, 0x75, 0x0C, 0x80, 0x35, 0x52, 0x01, 
-  0x01, 0x00, 0x01, 0xE9, 0xF1, 0x00, 0x00, 0x00, 0x58, 0x50, 0x66, 0x25, 0x84, 0x00, 0x66, 0x3D, 
-  0x84, 0x00, 0x75, 0x0C, 0x80, 0x35, 0x53, 0x01, 0x01, 0x00, 0x01, 0xE9, 0xD9, 0x00, 0x00, 0x00, 
-  0x58, 0x50, 0x66, 0x25, 0x88, 0x00, 0x66, 0x3D, 0x88, 0x00, 0x75, 0x0C, 0x80, 0x35, 0x54, 0x01, 
-  0x01, 0x00, 0x01, 0xE9, 0xC1, 0x00, 0x00, 0x00, 0x58, 0x50, 0x66, 0x83, 0xE0, 0x41, 0x66, 0x83, 
-  0xF8, 0x41, 0x75, 0x0C, 0x80, 0x35, 0x55, 0x01, 0x01, 0x00, 0x01, 0xE9, 0xA9, 0x00, 0x00, 0x00, 
-  0x58, 0x50, 0x66, 0x83, 0xE0, 0x42, 0x66, 0x83, 0xF8, 0x42, 0x75, 0x0C, 0x80, 0x35, 0x56, 0x01, 
-  0x01, 0x00, 0x01, 0xE9, 0x91, 0x00, 0x00, 0x00, 0x58, 0x50, 0x66, 0x83, 0xE0, 0x44, 0x66, 0x83, 
-  0xF8, 0x44, 0x75, 0x09, 0x80, 0x35, 0x57, 0x01, 0x01, 0x00, 0x01, 0xEB, 0x7C, 0x58, 0x50, 0x66, 
-  0x83, 0xE0, 0x48, 0x66, 0x83, 0xF8, 0x48, 0x75, 0x09, 0x80, 0x35, 0x58, 0x01, 0x01, 0x00, 0x01, 
-  0xEB, 0x67, 0x58, 0x50, 0x66, 0x25, 0xC0, 0x00, 0x66, 0x3D, 0xC0, 0x00, 0x75, 0x09, 0x80, 0x35, 
-  0x59, 0x01, 0x01, 0x00, 0x01, 0xEB, 0x52, 0x58, 0x50, 0x66, 0x83, 0xE0, 0x60, 0x66, 0x83, 0xF8, 
-  0x60, 0x75, 0x09, 0x80, 0x35, 0x5A, 0x01, 0x01, 0x00, 0x01, 0xEB, 0x3D, 0x58, 0x50, 0x66, 0x83, 
-  0xE0, 0x50, 0x66, 0x83, 0xF8, 0x50, 0x75, 0x09, 0x80, 0x35, 0x5B, 0x01, 0x01, 0x00, 0x01, 0xEB, 
-  0x28, 0x58, 0x50, 0x66, 0x25, 0xA0, 0x00, 0x66, 0x3D, 0xA0, 0x00, 0x75, 0x09, 0x80, 0x35, 0x5C, 
-  0x01, 0x01, 0x00, 0x01, 0xEB, 0x13, 0x58, 0x50, 0x66, 0x25, 0x90, 0x00, 0x66, 0x3D, 0x90, 0x00, 
-  0x75, 0x07, 0x80, 0x35, 0x5D, 0x01, 0x01, 0x00, 0x01, 0x58, 0x8D, 0x15, 0x14, 0x00, 0x00, 0x80, 
-  0x8B, 0x42, 0x04, 0x89, 0x02, 0x61, 0x59, 0x5B, 0xB9, 0x10, 0x00, 0x00, 0x80, 0xFF, 0x11, 0x53, 
-  0x33, 0xDB, 0xC3, 
-};
-
-// HOOKIGK (moves stock pad call and patches game igk_main to use correct register)
-static unsigned char hook_igk_toy[76] =
-{
-  0x55, 0x8B, 0xEC, 0x60, 0xBA, 0x34, 0x12, 0x00, 0x00, 0x8B, 0x45, 0x08, 0xB9, 0x20, 0x00, 0x00, 
-  0x00, 0x8A, 0x18, 0x80, 0xFB, 0x50, 0x7C, 0x07, 0x80, 0xFB, 0x53, 0x7F, 0x02, 0xEB, 0x05, 0x48, 
-  0xE2, 0xEF, 0xEB, 0x23, 0x80, 0xEB, 0x08, 0x88, 0x5A, 0x3E, 0x83, 0x45, 0x08, 0x01, 0x8B, 0x45, 
-  0x08, 0x50, 0x03, 0x00, 0x83, 0xC0, 0x04, 0x2B, 0x55, 0x08, 0x83, 0xEA, 0x04, 0xBB, 0x10, 0x00, 
-  0x00, 0x80, 0x89, 0x03, 0x58, 0x89, 0x10, 0x61, 0xC9, 0xC2, 0x04, 0x00, 
-};
-
-// SmartXX / Aladin4 functions
-static unsigned char lcd_toy_xx[378] =
-{
-  0x55, 0x8B, 0xEC, 0x90, 0x66, 0x8B, 0x55, 0x08, 0x90, 0x8A, 0x45, 0x0C, 0x90, 0xEE, 0x90, 0x90, 
-  0xC9, 0xC2, 0x08, 0x00, 0x55, 0x8B, 0xEC, 0x60, 0x33, 0xC0, 0x33, 0xDB, 0x0F, 0xB6, 0x45, 0x08, 
-  0xC1, 0xF8, 0x02, 0x83, 0xE0, 0x28, 0xA2, 0x40, 0x01, 0x01, 0x00, 0x0F, 0xB6, 0x45, 0x08, 0x83, 
-  0xE0, 0x50, 0x0F, 0xB6, 0x0D, 0x40, 0x01, 0x01, 0x00, 0x0B, 0xC8, 0x88, 0x0D, 0x40, 0x01, 0x01, 
-  0x00, 0x0F, 0xB6, 0x45, 0x08, 0xC1, 0xE0, 0x02, 0x83, 0xE0, 0x28, 0xA2, 0x41, 0x01, 0x01, 0x00, 
-  0x0F, 0xB6, 0x45, 0x08, 0xC1, 0xE0, 0x04, 0x83, 0xE0, 0x50, 0x0F, 0xB6, 0x0D, 0x41, 0x01, 0x01, 
-  0x00, 0x0B, 0xC8, 0x88, 0x0D, 0x41, 0x01, 0x01, 0x00, 0x0F, 0xB6, 0x45, 0x0C, 0x83, 0xE0, 0x02, 
-  0x0F, 0xB6, 0x0D, 0x40, 0x01, 0x01, 0x00, 0x0B, 0xC1, 0x50, 0x68, 0x00, 0xF7, 0x00, 0x00, 0xE8, 
-  0x7C, 0xFF, 0xFF, 0xFF, 0x0F, 0xB6, 0x45, 0x0C, 0x83, 0xE0, 0x02, 0x83, 0xC8, 0x04, 0x0F, 0xB6, 
-  0x0D, 0x40, 0x01, 0x01, 0x00, 0x0B, 0xC1, 0x50, 0x68, 0x00, 0xF7, 0x00, 0x00, 0xE8, 0x5E, 0xFF, 
-  0xFF, 0xFF, 0x0F, 0xB6, 0x45, 0x0C, 0x83, 0xE0, 0x02, 0x0F, 0xB6, 0x0D, 0x40, 0x01, 0x01, 0x00, 
-  0x0B, 0xC1, 0x50, 0x68, 0x00, 0xF7, 0x00, 0x00, 0xE8, 0x43, 0xFF, 0xFF, 0xFF, 0x0F, 0xB6, 0x45, 
-  0x0C, 0x83, 0xE0, 0x01, 0x75, 0x6A, 0x0F, 0xB6, 0x45, 0x0C, 0x83, 0xE0, 0x02, 0x0F, 0xB6, 0x0D, 
-  0x41, 0x01, 0x01, 0x00, 0x0B, 0xC1, 0x50, 0x68, 0x00, 0xF7, 0x00, 0x00, 0xE8, 0x1F, 0xFF, 0xFF, 
-  0xFF, 0x0F, 0xB6, 0x45, 0x0C, 0x83, 0xE0, 0x02, 0x83, 0xC8, 0x04, 0x0F, 0xB6, 0x0D, 0x41, 0x01, 
-  0x01, 0x00, 0x0B, 0xC1, 0x50, 0x68, 0x00, 0xF7, 0x00, 0x00, 0xE8, 0x01, 0xFF, 0xFF, 0xFF, 0x0F, 
-  0xB6, 0x45, 0x0C, 0x83, 0xE0, 0x02, 0x0F, 0xB6, 0x0D, 0x41, 0x01, 0x01, 0x00, 0x0B, 0xC1, 0x50, 
-  0x68, 0x00, 0xF7, 0x00, 0x00, 0xE8, 0xE6, 0xFE, 0xFF, 0xFF, 0x0F, 0xB6, 0x45, 0x08, 0x25, 0xFC, 
-  0x00, 0x00, 0x00, 0x75, 0x0B, 0xF4, 0x90, 0x90, 0x90, 0x90, 0x90, 0xF4, 0x90, 0x90, 0x90, 0x90, 
-  0xF4, 0x90, 0x90, 0x90, 0x90, 0x90, 0xF4, 0x90, 0x90, 0x90, 0x90, 0x90, 0x61, 0xC9, 0xC2, 0x08, 
-  0x00, 0x6A, 0x00, 0x6A, 0x01, 0xE8, 0xCA, 0xFE, 0xFF, 0xFF, 0xC3, 0x55, 0x8B, 0xEC, 0x60, 0xB1, 
-  0x80, 0x0A, 0x4D, 0x0C, 0x6A, 0x00, 0x8A, 0xC1, 0x50, 0xE8, 0xB6, 0xFE, 0xFF, 0xFF, 0x33, 0xC9, 
-  0x8B, 0x55, 0x08, 0x8A, 0x04, 0x11, 0x3C, 0x00, 0x74, 0x0B, 0x6A, 0x02, 0x50, 0xE8, 0xA2, 0xFE, 
-  0xFF, 0xFF, 0x41, 0xEB, 0xEE, 0x61, 0xC9, 0xC2, 0x08, 0x00, 
-};
-
-// X3 LCD functions
-static unsigned char lcd_toy_x3[246] =
-{
-  0x55, 0x8B, 0xEC, 0x90, 0x66, 0x8B, 0x55, 0x08, 0x90, 0x8A, 0x45, 0x0C, 0x90, 0xEE, 0x90, 0x90, 
-  0xC9, 0xC2, 0x08, 0x00, 0x55, 0x8B, 0xEC, 0x60, 0x50, 0x33, 0xC0, 0x8A, 0x45, 0x0C, 0x24, 0x02, 
-  0x3C, 0x00, 0x74, 0x05, 0x32, 0xE4, 0x80, 0xCC, 0x01, 0x8A, 0x45, 0x08, 0x24, 0xF0, 0x50, 0x68, 
-  0x04, 0xF5, 0x00, 0x00, 0xE8, 0xC7, 0xFF, 0xFF, 0xFF, 0x8A, 0xC4, 0x50, 0x68, 0x05, 0xF5, 0x00, 
-  0x00, 0xE8, 0xBA, 0xFF, 0xFF, 0xFF, 0x50, 0x80, 0xCC, 0x04, 0x8A, 0xC4, 0x50, 0x68, 0x05, 0xF5, 
-  0x00, 0x00, 0xE8, 0xA9, 0xFF, 0xFF, 0xFF, 0x58, 0x8A, 0xC4, 0x50, 0x68, 0x05, 0xF5, 0x00, 0x00, 
-  0xE8, 0x9B, 0xFF, 0xFF, 0xFF, 0x8A, 0x45, 0x0C, 0x24, 0x01, 0x3C, 0x00, 0x75, 0x3D, 0x8A, 0x45, 
-  0x08, 0xC0, 0xE0, 0x04, 0x50, 0x68, 0x04, 0xF5, 0x00, 0x00, 0xE8, 0x81, 0xFF, 0xFF, 0xFF, 0x8A, 
-  0xC4, 0x50, 0x68, 0x05, 0xF5, 0x00, 0x00, 0xE8, 0x74, 0xFF, 0xFF, 0xFF, 0x50, 0x80, 0xCC, 0x04, 
-  0x8A, 0xC4, 0x50, 0x68, 0x05, 0xF5, 0x00, 0x00, 0xE8, 0x63, 0xFF, 0xFF, 0xFF, 0x58, 0x8A, 0xC4, 
-  0x50, 0x68, 0x05, 0xF5, 0x00, 0x00, 0xE8, 0x55, 0xFF, 0xFF, 0xFF, 0x58, 0xF4, 0x90, 0x90, 0x90, 
-  0x90, 0x90, 0xF4, 0x90, 0x90, 0x90, 0x90, 0x90, 0x61, 0xC9, 0xC2, 0x08, 0x00, 0x6A, 0x00, 0x6A, 
-  0x01, 0xE8, 0x4E, 0xFF, 0xFF, 0xFF, 0xC3, 0x55, 0x8B, 0xEC, 0x60, 0xB1, 0x80, 0x0A, 0x4D, 0x0C, 
-  0x6A, 0x00, 0x8A, 0xC1, 0x50, 0xE8, 0x3A, 0xFF, 0xFF, 0xFF, 0x33, 0xC9, 0x8B, 0x55, 0x08, 0x8A, 
-  0x04, 0x11, 0x3C, 0x00, 0x74, 0x0B, 0x6A, 0x02, 0x50, 0xE8, 0x26, 0xFF, 0xFF, 0xFF, 0x41, 0xEB, 
-  0xEE, 0x61, 0xC9, 0xC2, 0x08, 0x00, 
-};
-#endif
-
-
 CUtil::CUtil(void)
 {
 }
 
 CUtil::~CUtil(void)
 {}
-
 
 /* returns filename extension including period of filename */
 const CStdString CUtil::GetExtension(const CStdString& strFileName)
@@ -885,729 +695,22 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
   }
 }
 
-bool CUtil::PatchCountryVideo(F_COUNTRY Country, F_VIDEO Video)
-{
-#ifdef HAS_XBOX_HARDWARE
-  BYTE  *Kernel=(BYTE *)0x80010000;
-  DWORD i, j = 0, k;
-  DWORD *CountryPtr;
-  BYTE  CountryValues[4]={0, 1, 2, 4};
-  BYTE  VideoTyValues[5]={0, 1, 2, 3, 3};
-  BYTE  VideoFrValues[5]={0x00, 0x40, 0x40, 0x80, 0x40};
-
-  // Skip if no change is necessary...
-  // That is to avoid a situation in which our Patch *and* the EvoX patch are installed
-  // Otherwise the Infinite-Reboot-Patch does not work anymore!
-  if(Video == XGetVideoStandard())
-    return true;
-
-  switch (Country)
-  {
-    case COUNTRY_EUR:
-      if (!Video)
-          Video = VIDEO_PAL50;
-        break;
-      case COUNTRY_USA:
-        Video = VIDEO_NTSCM;
-      Country = COUNTRY_USA;
-        break;
-      case COUNTRY_JAP:
-        Video = VIDEO_NTSCJ;
-      Country = COUNTRY_JAP;
-        break;
-      default:
-      Country = COUNTRY_EUR;
-        Video = VIDEO_PAL50;
-  };
-
-  // Search for the original code in the Kernel.
-  // Searching from 0x80011000 to 0x80024000 in order that this will work on as many Kernels
-  // as possible.
-
-  for(i=0x1000; i<0x14000; i++)
-  {
-    if(Kernel[i]!=OriginalData[0])
-      continue;
-
-    for(j=0; j<57; j++)
-    {
-      if(Kernel[i+j]!=OriginalData[j])
-        break;
-    }
-    if(j==57)
-      break;
-  }
-
-  if(j==57)
-  {
-    // Ok, found the code to patch. Get pointer to original Country setting.
-    // This may not be strictly neccessary, but lets do it anyway for completeness.
-
-    j=(Kernel[i+57])+(Kernel[i+58]<<8)+(Kernel[i+59]<<16)+(Kernel[i+60]<<24);
-    CountryPtr=(DWORD *)j;
-  }
-  else
-  {
-    // Did not find code in the Kernel. Check if my patch is already there.
-
-    for(i=0x1000; i<0x14000; i++)
-    {
-      if(Kernel[i]!=PatchData[0])
-        continue;
-
-      for(j=0; j<25; j++)
-      {
-        if(Kernel[i+j]!=PatchData[j])
-          break;
-      }
-      if(j==25)
-        break;
-    }
-
-    if(j==25)
-    {
-      // Ok, found my patch. Get pointer to original Country setting.
-      // This may not be strictly neccessary, but lets do it anyway for completeness.
-
-      j=(Kernel[i+66])+(Kernel[i+67]<<8)+(Kernel[i+68]<<16)+(Kernel[i+69]<<24);
-      CountryPtr=(DWORD *)j;
-    }
-    else
-    {
-      // Did not find my patch - so I can't work with this BIOS. Exit.
-      return( false );
-    }
-  }
-
-  // Patch in new code.
-
-  j=MmQueryAddressProtect(&Kernel[i]);
-  MmSetAddressProtect(&Kernel[i], 70, PAGE_READWRITE);
-
-  memcpy(&Kernel[i], &PatchData[0], 70);
-
-  // Patch Success. Fix up values.
-
-  *CountryPtr=(DWORD)CountryValues[Country];
-  Kernel[i+0x1f]=CountryValues[Country];
-  Kernel[i+0x19]=VideoTyValues[Video];
-  Kernel[i+0x1a]=VideoFrValues[Video];
-
-  k=(DWORD)CountryPtr;
-  Kernel[i+66]=(BYTE)(k&0xff);
-  Kernel[i+67]=(BYTE)((k>>8)&0xff);
-  Kernel[i+68]=(BYTE)((k>>16)&0xff);
-  Kernel[i+69]=(BYTE)((k>>24)&0xff);
-
-  MmSetAddressProtect(&Kernel[i], 70, j);
-
-#endif
-  // All Done!
-  return( true );
-}
-
 #ifdef HAS_TRAINER
 bool CUtil::InstallTrainer(CTrainer& trainer)
 {
   bool Found = false;
-#ifdef HAS_XBOX_HARDWARE
-  unsigned char *xboxkrnl = (unsigned char *)KERNEL_START_ADDRESS;
-  unsigned char *hackptr = (unsigned char *)KERNEL_STORE_ADDRESS;
-  void *ourmemaddr = NULL; // pointer used to allocated trainer mem
-  unsigned int i = 0;
-  DWORD memsize;
-
-  CLog::Log(LOGDEBUG,"installing trainer %s",trainer.GetPath().c_str());
-
-  if (trainer.IsXBTF()) // size of our allocation buffer for trainer
-    memsize = XBTF_HEAP_SIZE;
-  else
-    memsize = ETM_HEAP_SIZE;
-
-  unsigned char xbe_entry_point[] = {0xff,0x15,0x28,0x01,0x01,0x00}; // xbe entry point bytes in kernel
-  unsigned char evox_tsr_hook[] = {0xff,0x15,0x10,0x00,0x00,0x80}; // check for evox's evil tsr hook
-
-  for(i = 0; i < KERNEL_SEARCH_RANGE; i++)
-  {
-    if (memcmp(&xboxkrnl[i], xbe_entry_point, sizeof(xbe_entry_point)) == 0 ||
-      memcmp(&xboxkrnl[i], evox_tsr_hook, sizeof(evox_tsr_hook)) == 0)
-    {
-      Found = true;
-      break;
-    }
-  }
-
-  if(Found)
-  {
-    unsigned char *patchlocation = xboxkrnl;
-
-    patchlocation += i + 2; // adjust to xbe entry point bytes in kernel (skipping actual call opcodes)
-    _asm
-    {
-      pushad
-
-      mov eax, cr0
-      push eax
-      and eax, 0FFFEFFFFh
-      mov cr0, eax // disable memory write prot
-
-      mov edi, patchlocation // address of call to xbe entry point in kernel
-      mov dword ptr [edi], KERNEL_STORE_ADDRESS // patch with address of where we store loaderdata+trainer buffer address
-
-      pop eax
-      mov cr0, eax // restore memory write prot
-
-      popad
-    }
-  }
-  else
-  {
-    __asm // recycle check
-    {
-      pushad
-
-      mov edx, KERNEL_STORE_ADDRESS
-      mov ecx, DWORD ptr [edx]
-      cmp ecx, 0 // just in case :)
-      jz cleanup
-
-      cmp word ptr [ecx], 0BA60h // address point to valid loaderdata?
-      jnz cleanup
-
-      mov Found, 1 // yes! flag it found
-
-      push ecx
-      call MmFreeContiguousMemory // release old memory
-cleanup:
-      popad
-    }
-  }
-
-  // allocate our memory space BELOW the kernel (so we can access buffer from game's scope)
-  // if you allocate above kernel our buffer is out of scope and only debug bio will allow
-  // game to access it
-  ourmemaddr = MmAllocateContiguousMemoryEx(memsize, 0, -1, KERNEL_ALLOCATE_ADDRESS, PAGE_NOCACHE | PAGE_READWRITE);
-  if ((DWORD)ourmemaddr > 0)
-  {
-    MmPersistContiguousMemory(ourmemaddr, memsize, true); // so we survive soft boots
-    memcpy(hackptr, &ourmemaddr, 4); // store location of ourmemaddr in kernel
-
-    memset(ourmemaddr, 0xFF, memsize); // init trainer buffer
-    memcpy(ourmemaddr, trainerloaderdata, sizeof(trainerloaderdata)); // copy loader data (actual kernel hack)
-
-    // patch loaderdata with trainer base address
-    _asm
-    {
-      pushad
-
-      mov eax, ourmemaddr
-      mov ebx, eax
-      add ebx, SIZEOFLOADERDATA
-      mov dword ptr [eax+2], ebx
-
-      popad
-    }
-
-    // adjust ourmemaddr pointer past loaderdata
-    ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(trainerloaderdata));
-
-    // copy our trainer data into allocated mem
-    memcpy(ourmemaddr, trainer.data(), trainer.Size());
-
-    if (trainer.IsXBTF())
-    {
-      DWORD dwSection = 0;
-
-      // get address of XBTF_Section
-      _asm
-      {
-        pushad
-
-        mov eax, ourmemaddr
-
-        cmp dword ptr [eax+0x1A], 0 // real xbtf or just a converted etm? - XBTF_ENTRYPOINT
-        je converted_etm
-
-        push eax
-        mov ebx, 0x16
-        add eax, ebx
-        mov ecx, DWORD PTR [eax]
-        pop eax
-        add eax, ecx
-        mov dwSection, eax // get address of xbtf_section
-
-      converted_etm:
-        popad
-      }
-
-      if (dwSection == 0)
-        return Found; // its a converted etm so we do not have toys section :)
-
-      // adjust past trainer
-      ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + trainer.Size());
-
-      // inject SMBus code
-      memcpy(ourmemaddr, sm_bus, sizeof(sm_bus));
-      _asm
-      {
-        pushad
-
-        mov eax, dwSection
-        mov ebx, ourmemaddr
-        cmp dword ptr [eax], 0
-        jne nosmbus
-        mov DWORD PTR [eax], ebx
-      nosmbus:
-        popad
-      }
-      // adjust past SMBus
-      ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(sm_bus));
-
-      // PatchIt
-      memcpy(ourmemaddr, patch_it_toy, sizeof(patch_it_toy));
-      _asm
-      {
-        pushad
-
-        mov eax, dwSection
-        add eax, 4 // 2nd dword in XBTF_Section
-        mov ebx, ourmemaddr
-        cmp dword PTR [eax], 0
-        jne nopatchit
-        mov DWORD PTR [eax], ebx
-      nopatchit:
-        popad
-      }
-
-      // adjust past PatchIt
-      ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(patch_it_toy));
-
-      // HookIt
-      memcpy(ourmemaddr, hookit_toy, sizeof(hookit_toy));
-      _asm
-      {
-        pushad
-
-        mov eax, dwSection
-        add eax, 8 // 3rd dword in XBTF_Section
-        mov ebx, ourmemaddr
-        cmp dword PTR [eax], 0
-        jne nohookit
-        mov DWORD PTR [eax], ebx
-      nohookit:
-        popad
-      }
-
-      // adjust past HookIt
-      ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(hookit_toy));
-
-      // igk_main_toy
-      memcpy(ourmemaddr, igk_main_toy, sizeof(igk_main_toy));
-      _asm
-      {
-        // patch hook_igk_toy w/ address
-        pushad
-
-        mov edx, offset hook_igk_toy
-        add edx, 5
-        mov ecx, ourmemaddr
-        mov dword PTR [edx], ecx
-
-        popad
-      }
-
-      // adjust past igk_main_toy
-      ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(igk_main_toy));
-
-      // hook_igk_toy
-      memcpy(ourmemaddr, hook_igk_toy, sizeof(hook_igk_toy));
-      _asm
-      {
-        pushad
-
-        mov eax, dwSection
-        add eax, 0ch // 4th dword in XBTF_Section
-        mov ebx, ourmemaddr
-        cmp dword PTR [eax], 0
-        jne nohookigk
-        mov DWORD PTR [eax], ebx
-      nohookigk:
-        popad
-      }
-      ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(igk_main_toy));
-
-      if (g_guiSettings.GetInt("lcd.mode") > 0 && g_guiSettings.GetInt("lcd.type") == MODCHIP_SMARTXX)
-      {
-        memcpy(ourmemaddr, lcd_toy_xx, sizeof(lcd_toy_xx));
-        _asm
-        {
-          pushad
-
-          mov ecx, ourmemaddr
-          add ecx, 0141h // lcd clear
-
-          mov eax, dwSection
-          add eax, 010h // 5th dword
-
-          cmp dword PTR [eax], 0
-          jne nolcdxx
-
-          mov dword PTR [eax], ecx
-          add ecx, 0ah // lcd writestring
-          add eax, 4 // 6th dword
-
-          cmp dword ptr [eax], 0
-          jne nolcd
-
-          mov dword ptr [eax], ecx
-        nolcdxx:
-          popad
-        }
-        ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(lcd_toy_xx));
-      }
-      else
-      {
-        // lcd toy
-        memcpy(ourmemaddr, lcd_toy_x3, sizeof(lcd_toy_x3));
-        _asm
-        {
-          pushad
-
-          mov ecx, ourmemaddr
-          add ecx, 0bdh // lcd clear
-
-          mov eax, dwSection
-          add eax, 010h // 5th dword
-
-          cmp dword PTR [eax], 0
-          jne nolcd
-
-          mov dword PTR [eax], ecx
-          add ecx, 0ah // lcd writestring
-          add eax, 4 // 6th dword
-
-          cmp dword ptr [eax], 0
-          jne nolcd
-
-          mov dword ptr [eax], ecx
-        nolcd:
-          popad
-        }
-        ourmemaddr=(PVOID *)(((unsigned int) ourmemaddr) + sizeof(lcd_toy_x3));
-      }
-    }
-  }
-#endif
-
   return Found;
 }
 
 bool CUtil::RemoveTrainer()
 {
   bool Found = false;
-#ifdef HAS_XBOX_HARDWARE
-  unsigned char *xboxkrnl = (unsigned char *)KERNEL_START_ADDRESS;
-  unsigned int i = 0;
-
-  unsigned char xbe_entry_point[] = {0xff,0x15,0x80,0x00,0x00,0x0c}; // xbe entry point bytes in kernel
-  *((DWORD*)(xbe_entry_point+2)) = KERNEL_STORE_ADDRESS;
-
-  for (i = 0; i < KERNEL_SEARCH_RANGE; i++)
-  {
-    if (memcmp(&xboxkrnl[i], xbe_entry_point, 6) == 0)
-    {
-      Found = true;
-      break;
-    }
-  }
-
-  if (Found)
-  {
-    unsigned char *patchlocation = xboxkrnl;
-    patchlocation += i + 2; // adjust to xbe entry point bytes in kernel (skipping actual call opcodes)
-    __asm // recycle check
-    {
-        pushad
-
-        mov eax, cr0
-        push eax
-        and eax, 0FFFEFFFFh
-        mov cr0, eax // disable memory write prot
-
-        mov edi, patchlocation // address of call to xbe entry point in kernel
-        mov dword ptr [edi], 0x00010128 // patch with address of where we store loaderdata+trainer buffer address
-
-        pop eax
-        mov cr0, eax // restore memory write prot
-
-        popad
-    }
-  }
-#endif
   return Found;
 }
 #endif
 
 void CUtil::RunShortcut(const char* szShortcutPath)
 {
-#ifdef HAS_XBOX_HARDWARE
-  CShortcut shortcut;
-  char szPath[1024];
-  char szParameters[1024];
-  if ( shortcut.Create(szShortcutPath))
-  {
-    CFileItem item(shortcut.m_strPath, false);
-    // if another shortcut is specified, load this up and use it
-    if (item.IsShortCut())
-    {
-      CHAR szNewPath[1024];
-      strcpy(szNewPath, szShortcutPath);
-      CHAR* szFile = strrchr(szNewPath, '\\');
-      strcpy(&szFile[1], shortcut.m_strPath.c_str());
-
-      CShortcut targetShortcut;
-      if (FAILED(targetShortcut.Create(szNewPath)))
-        return;
-
-      shortcut.m_strPath = targetShortcut.m_strPath;
-    }
-
-    strcpy( szPath, shortcut.m_strPath.c_str() );
-
-    CHAR szMode[16];
-    strcpy( szMode, shortcut.m_strVideo.c_str() );
-    strlwr( szMode );
-
-    strcpy(szParameters, shortcut.m_strParameters.c_str());
-
-    BOOL bRow = strstr(szMode, "pal") != NULL;
-    BOOL bJap = strstr(szMode, "ntsc-j") != NULL;
-    BOOL bUsa = strstr(szMode, "ntsc") != NULL;
-
-    F_VIDEO video = VIDEO_NULL;
-    if (bRow)
-      video = VIDEO_PAL50;
-    if (bJap)
-      video = (F_VIDEO)CXBE::FilterRegion(VIDEO_NTSCJ);
-    if (bUsa)
-      video = (F_VIDEO)CXBE::FilterRegion(VIDEO_NTSCM);
-
-    CUSTOM_LAUNCH_DATA data;
-    if (!shortcut.m_strCustomGame.IsEmpty())
-    {
-      char remap_path[MAX_PATH] = "";
-      char remap_xbe[MAX_PATH] = "";
-
-      memset(&data,0,sizeof(CUSTOM_LAUNCH_DATA));
-
-      strcpy(data.szFilename,shortcut.m_strCustomGame.c_str());
-
-      strncpy(remap_path, XeImageFileName->Buffer, XeImageFileName->Length);
-      for (int i = strlen(remap_path) - 1; i >=0; i--)
-        if (remap_path[i] == '\\' || remap_path[i] == '/')
-        {
-          break;
-        }
-      strcpy(remap_xbe, &remap_path[i+1]);
-      remap_path[i+1] = 0;
-
-      strcpy(data.szRemap_D_As, remap_path);
-      strcpy(data.szLaunchXBEOnExit, remap_xbe);
-
-      data.executionType = 0;
-
-      // not the actual "magic" value - used to pass XbeId for some reason?
-      data.magic = GetXbeID(szPath);
-    }
-
-    CUtil::RunXBE(szPath,strcmp(szParameters,"")?szParameters:NULL,video,COUNTRY_NULL,shortcut.m_strCustomGame.IsEmpty()?NULL:&data);
-  }
-#endif
-}
-
-bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
-{
-#ifdef HAS_XBOX_HARDWARE
-  if (!g_guiSettings.GetBool("myprograms.autoffpatch"))
-  {
-    CLog::Log(LOGDEBUG, "%s - Auto Filter Flicker is off. Skipping Filter Flicker Patching.", __FUNCTION__);
-    return false;
-  }
-  CStdString strIsPMode = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode;
-  if ( strIsPMode.Equals("480p 16:9") || strIsPMode.Equals("480p 4:3") || strIsPMode.Equals("720p 16:9"))
-  {
-    CLog::Log(LOGDEBUG, "%s - Progressive Mode detected: Skipping Auto Filter Flicker Patching!", __FUNCTION__);
-    return false;
-  }
-  if (strncmp(szPath1, "D:", 2) == 0)
-  {
-    CLog::Log(LOGDEBUG, "%s - Source is DVD-ROM! Skipping Filter Flicker Patching.", __FUNCTION__);
-    return false;
-  }
-
-  CLog::Log(LOGDEBUG, "%s - Auto Filter Flicker is ON. Starting Filter Flicker Patching.", __FUNCTION__);
-
-  // Test if we already have a patched _ffp XBE
-  // Since the FF can be changed in XBMC, we will not check for a pre patched _ffp xbe!
-  /* // May we can add. a changed FF detection.. then we can actived this!
-  CFile xbe;
-  if (xbe.Exists(szPath1))
-  {
-    char szDrive[_MAX_DRIVE], szDir[_MAX_DIR], szFname[_MAX_FNAME], szExt[_MAX_EXT];
-    _splitpath(szPath1, szDrive, szDir, szFname, szExt);
-    strncat(szFname, "_ffp", 4);
-    _makepath(szNewPath.GetBuffer(MAX_PATH), szDrive, szDir, szFname, szExt);
-    szNewPath.ReleaseBuffer();
-    if (xbe.Exists(szNewPath))
-      return true;
-  } */
-
-
-  CXBE m_xbe;
-  if((int)m_xbe.ExtractGameRegion(szPath1.c_str()) <= 0) // Reading the GameRegion is enought to detect a Patchable xbe!
-  {
-    CLog::Log(LOGDEBUG, "%s - %s",szPath1.c_str(), __FUNCTION__);
-    CLog::Log(LOGDEBUG, "%s - Not Patchable xbe detected (Homebrew?)! Skipping Filter Flicker Patching.", __FUNCTION__);
-    return false;
-  }
-
-  CGFFPatch m_ffp;
-  if (!m_ffp.FFPatch(szPath1, szNewPath))
-  {
-    CLog::Log(LOGDEBUG, "%s - ERROR during Filter Flicker Patching. Falling back to the original source.", __FUNCTION__);
-    return false;
-  }
-
-  if(szNewPath.IsEmpty())
-  {
-    CLog::Log(LOGDEBUG, "%s - ERROR NO Patchfile Path is empty! Falling back to the original source.", __FUNCTION__);
-    return false;
-  }
-  CLog::Log(LOGDEBUG, "%s - Filter Flicker Patching done. Starting %s.", __FUNCTION__, szNewPath.c_str());
-  return true;
-#else
-  return false;
-#endif
-}
-
-void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry, CUSTOM_LAUNCH_DATA* pData)
-{
-#ifdef HAS_XBOX_HARDWARE
-  // check if locked
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked() && 
-      g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
-    if (!g_passwordManager.IsMasterLockUnlocked(true))
-      return;
-
-  /// \brief Runs an executable file
-  /// \param szPath1 Path of executeable to run
-  /// \param szParameters Any parameters to pass to the executeable being run
-  g_application.PrintXBEToLCD(szPath1); //write to LCD
-  Sleep(600);        //and wait a little bit to execute
-
-  CStdString szNewPath;
-  if(RunFFPatchedXBE(szPath1, szNewPath))
-  {
-    szPath1 = szNewPath;
-  }
-  char szPath[1024];
-  strcpy(szPath, szPath1);
-  if (strncmp(szPath1, "Q:", 2) == 0)
-  { // mayaswell support the virtual drive as well...
-    CStdString strPath;
-    // home dir is xbe dir
-    GetHomePath(strPath);
-    if (!HasSlashAtEnd(strPath))
-      strPath += "\\";
-    if (szPath1[2] == '\\')
-      strPath += szPath1 + 3;
-    else
-      strPath += szPath1 + 2;
-    strcpy(szPath, strPath.c_str());
-  }
-  char* szBackslash = strrchr(szPath, '\\');
-  if (szBackslash)
-  {
-    *szBackslash = 0x00;
-    char* szXbe = &szBackslash[1];
-
-    char* szColon = strrchr(szPath, ':');
-    if (szColon)
-    {
-      *szColon = 0x00;
-      char* szDrive = szPath;
-      char* szDirectory = &szColon[1];
-
-      char szDevicePath[1024];
-      char szXbePath[1024];
-
-      CIoSupport::GetPartition(szDrive[0], szDevicePath);
-
-      strcat(szDevicePath, szDirectory);
-      wsprintf(szXbePath, "d:\\%s", szXbe);
-
-      g_application.Stop();
-
-      CUtil::LaunchXbe(szDevicePath, szXbePath, szParameters, ForceVideo, ForceCountry, pData);
-    }
-  }
-
-  CLog::Log(LOGERROR, "Unable to run xbe : %s", szPath);
-#endif
-}
-
-void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry, CUSTOM_LAUNCH_DATA* pData)
-{
-#ifdef HAS_XBOX_HARDWARE
-  CLog::Log(LOGINFO, "launch xbe:%s %s", szPath, szXbe);
-  CLog::Log(LOGINFO, " mount %s as D:", szPath);
-
-  CIoSupport::RemapDriveLetter('D', const_cast<char*>(szPath));
-
-  CLog::Log(LOGINFO, "launch xbe:%s", szXbe);
-
-  if (ForceVideo != VIDEO_NULL)
-  {
-    if (!ForceCountry)
-    {
-      if (ForceVideo == VIDEO_NTSCM)
-        ForceCountry = COUNTRY_USA;
-      if (ForceVideo == VIDEO_NTSCJ)
-        ForceCountry = COUNTRY_JAP;
-      if (ForceVideo == VIDEO_PAL50)
-        ForceCountry = COUNTRY_EUR;
-    }
-    CLog::Log(LOGDEBUG,"forcing video mode: %i",ForceVideo);
-    bool bSuccessful = PatchCountryVideo(ForceCountry, ForceVideo);
-    if( !bSuccessful )
-      CLog::Log(LOGINFO,"AutoSwitch: Failed to set mode");
-  }
-  if (pData)
-  {
-    DWORD dwTitleID = pData->magic;
-    pData->magic = CUSTOM_LAUNCH_MAGIC;
-    const char* xbe = szXbe+3;
-    CLog::Log(LOGINFO,"launching game %s from path %s",pData->szFilename,szPath);
-    CIoSupport::UnmapDriveLetter('D');
-    XWriteTitleInfoAndRebootA( (char*)xbe, (char*)(CStdString("\\Device\\")+szPath).c_str(), LDT_TITLE, dwTitleID, pData);
-  }
-  else
-  {
-    if (szParameters == NULL)
-    {
-      DWORD error = XLaunchNewImage(szXbe, NULL );
-      CLog::Log(LOGERROR, "%s - XLaunchNewImage returned with error code %d", __FUNCTION__, error);
-    }
-    else
-    {
-      LAUNCH_DATA LaunchData;
-      strcpy((char*)LaunchData.Data, szParameters);
-
-      DWORD error = XLaunchNewImage(szXbe, &LaunchData );
-      CLog::Log(LOGERROR, "%s - XLaunchNewImage returned with error code %d", __FUNCTION__, error);
-    }
-  }
-#endif
 }
 
 void CUtil::GetHomePath(CStdString& strPath)
@@ -1987,56 +1090,6 @@ void CUtil::URLEncode(CStdString& strURLData)
   strURLData = strResult;
 }
 
-bool CUtil::CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIcon)
-{
-  bool success(false);
-#ifndef HAS_SDL
-  // extract icon from .xbe
-  CStdString localFile;
-  g_charsetConverter.utf8ToStringCharset(strFilePath, localFile);
-  CXBE xbeReader;
-  CStdString strTempFile;
-  CStdString strExtension;
-
-  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"1.xpr",strTempFile);
-  CUtil::GetExtension(strFilePath,strExtension);
-  if (strExtension.Equals(".xbx"))
-  {
-  ::CopyFile(strFilePath.c_str(), strTempFile.c_str(),FALSE);
-  }
-  else
-  {
-  if (!xbeReader.ExtractIcon(localFile, strTempFile.c_str()))
-    return false;
-  }
-
-  CXBPackedResource* pPackedResource = new CXBPackedResource();
-  if ( SUCCEEDED( pPackedResource->Create( strTempFile.c_str(), 1, NULL ) ) )
-  {
-    LPDIRECT3DTEXTURE8 pTexture = pPackedResource->GetTexture((DWORD)0);
-    if ( pTexture )
-    {
-      D3DSURFACE_DESC descSurface;
-      if ( SUCCEEDED( pTexture->GetLevelDesc( 0, &descSurface ) ) )
-      {
-        int iHeight = descSurface.Height;
-        int iWidth = descSurface.Width;
-        DWORD dwFormat = descSurface.Format;
-        CPicture pic;
-        success = pic.CreateThumbnailFromSwizzledTexture(pTexture, iHeight, iWidth, strIcon.c_str());
-      }
-      pTexture->Release();
-    }
-  }
-  delete pPackedResource;
-  CFile::Delete(strTempFile);
-#else
-  success = true;
-#endif
-  
-  return success;
-}
-
 bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescription)
 {
   CStdString strFName = CUtil::GetFileName(strFileName);
@@ -2058,239 +1111,8 @@ bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescr
   return true;
 }
 
-bool CUtil::GetXBEDescription(const CStdString& strFileName, CStdString& strDescription)
-{
-#ifdef HAS_XBOX_HARDWARE
-  _XBE_CERTIFICATE HC;
-  _XBE_HEADER HS;
-
-  FILE* hFile = fopen(strFileName.c_str(), "rb");
-  if (!hFile)
-  {
-    strDescription = CUtil::GetFileName(strFileName);
-    return false;
-  }
-  fread(&HS, 1, sizeof(HS), hFile);
-  fseek(hFile, HS.XbeHeaderSize, SEEK_SET);
-  fread(&HC, 1, sizeof(HC), hFile);
-  fclose(hFile);
-
-  // The XBE title is stored in WCHAR (UTF16) format
-
-  // XBE titles can in fact use all 40 characters available to them,
-  // and thus are not necessarily NULL terminated
-  WCHAR TitleName[41];
-  wcsncpy(TitleName, HC.TitleName, 40);
-  TitleName[40] = 0;
-  if (wcslen(TitleName) > 0)
-  {
-    g_charsetConverter.wToUTF8(TitleName, strDescription);
-    return true;
-  }
-  strDescription = CUtil::GetFileName(strFileName);
-#endif
-  return false;
-}
-
-bool CUtil::SetXBEDescription(const CStdString& strFileName, const CStdString& strDescription)
-{
-#ifdef HAS_XBOX_HARDWARE
-  _XBE_CERTIFICATE HC;
-  _XBE_HEADER HS;
-
-  FILE* hFile = fopen(strFileName.c_str(), "r+b");
-  fread(&HS, 1, sizeof(HS), hFile);
-  fseek(hFile, HS.XbeHeaderSize, SEEK_SET);
-  fread(&HC, 1, sizeof(HC), hFile);
-  fseek(hFile,HS.XbeHeaderSize, SEEK_SET);
-
-  // The XBE title is stored in WCHAR (UTF16)
-
-  CStdStringW shortDescription;
-  g_charsetConverter.utf8ToW(strDescription, shortDescription);
-  if (shortDescription.size() > 40)
-    shortDescription = shortDescription.Left(40);
-  wcsncpy(HC.TitleName, shortDescription.c_str(), 40);  // only allow 40 chars*/
-  fwrite(&HC,1,sizeof(HC),hFile);
-  fclose(hFile);
-#endif
-  return true;
-}
-
-DWORD CUtil::GetXbeID( const CStdString& strFilePath)
-{
-  DWORD dwReturn = 0;
-
-#ifdef HAS_XBOX_HARDWARE
-  DWORD dwCertificateLocation;
-  DWORD dwLoadAddress;
-  DWORD dwRead;
-  //  WCHAR wcTitle[41];
-
-  CAutoPtrHandle hFile( CreateFile( strFilePath.c_str(),
-                                    GENERIC_READ,
-                                    FILE_SHARE_READ,
-                                    NULL,
-                                    OPEN_EXISTING,
-                                    FILE_ATTRIBUTE_NORMAL,
-                                    NULL ));
-  if ( hFile.isValid() )
-  {
-    if ( SetFilePointer( (HANDLE)hFile, 0x104, NULL, FILE_BEGIN ) == 0x104 )
-    {
-      if ( ReadFile( (HANDLE)hFile, &dwLoadAddress, 4, &dwRead, NULL ) )
-      {
-        if ( SetFilePointer( (HANDLE)hFile, 0x118, NULL, FILE_BEGIN ) == 0x118 )
-        {
-          if ( ReadFile( (HANDLE)hFile, &dwCertificateLocation, 4, &dwRead, NULL ) )
-          {
-            dwCertificateLocation -= dwLoadAddress;
-            // Add offset into file
-            dwCertificateLocation += 8;
-            if ( SetFilePointer( (HANDLE)hFile, dwCertificateLocation, NULL, FILE_BEGIN ) == dwCertificateLocation )
-            {
-              dwReturn = 0;
-              ReadFile( (HANDLE)hFile, &dwReturn, sizeof(DWORD), &dwRead, NULL );
-              if ( dwRead != sizeof(DWORD) )
-              {
-                dwReturn = 0;
-              }
-            }
-
-          }
-        }
-      }
-    }
-  }
-
-#endif
-
-  return dwReturn;
-}
-
 void CUtil::CreateShortcut(CFileItem* pItem)
 {
-#ifdef HAS_XBOX_HARDWARE
-  if ( pItem->IsXBE() )
-  {
-    // xbe
-    pItem->SetIconImage("defaultProgram.png");
-    if ( !pItem->IsOnDVD() )
-    {
-      CStdString strDescription;
-      if (! CUtil::GetXBEDescription(pItem->m_strPath, strDescription))
-      {
-        CUtil::GetDirectoryName(pItem->m_strPath, strDescription);
-      }
-      if (strDescription.size())
-      {
-        CStdString strFname;
-        strFname = CUtil::GetFileName(pItem->m_strPath);
-        strFname.ToLower();
-        if (strFname != "dashupdate.xbe" && strFname != "downloader.xbe" && strFname != "update.xbe")
-        {
-          CShortcut cut;
-          cut.m_strPath = pItem->m_strPath;
-          cut.Save(strDescription);
-        }
-      }
-    }
-  }
-#endif
-}
-
-void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
-{
-#ifndef _LINUX
-  // This routine gets rid of any "\\"'s at the start of the path.
-  // Should this be the case?
-  vector<CStdString> tokens;
-  CStdString strBasePath, strFileName;
-  strFileNameAndPath.Replace("/","\\");
-  if(strFileNameAndPath.Right(1) == "\\")
-  {
-    strBasePath = strFileNameAndPath;
-    strFileName = "";
-  }
-  else
-  {
-    CUtil::GetDirectory(strFileNameAndPath,strBasePath);
-    // TODO: GETDIR - is this required?  What happens to the tokenize below otherwise?
-    CUtil::RemoveSlashAtEnd(strBasePath);
-    strFileName = CUtil::GetFileName(strFileNameAndPath);
-  }
-  CUtil::Tokenize(strBasePath,tokens,"\\");
-  if (tokens.empty())
-    return; // nothing to do here (invalid path)
-  strFileNameAndPath = tokens.front();
-  for (vector<CStdString>::iterator token=tokens.begin()+1;token != tokens.end();++token)
-  {
-    CStdString strToken = token->Left(42);
-    if (token->size() > 42)
-    { // remove any spaces as a result of truncation only
-      while (strToken[strToken.size()-1] == ' ')
-        strToken.erase(strToken.size()-1);
-    }
-    CUtil::RemoveIllegalChars(strToken);
-    strFileNameAndPath += "\\"+strToken;
-  }
-  if (strFileName != "")
-  {
-    CUtil::ShortenFileName(strFileName);
-    if (strFileName[0] == '\\')
-      strFileName.erase(0,1);
-    CUtil::RemoveIllegalChars(strFileName);
-    CStdString strExtension;
-    CStdString strNoExt;
-    CUtil::GetExtension(strFileName,strExtension);
-    CUtil::ReplaceExtension(strFileName,"",strNoExt);
-    while (strNoExt[strNoExt.size()-1] == ' ')
-      strNoExt.erase(strNoExt.size()-1);
-    strFileNameAndPath += "\\"+strNoExt+strExtension;
-  }
-  else if( strBasePath.Right(1) == "\\" )
-    strFileNameAndPath += "\\";
-#endif    
-}
-
-void CUtil::ShortenFileName(CStdString& strFileNameAndPath)
-{
-  CStdString strFile = CUtil::GetFileName(strFileNameAndPath);
-  if (strFile.size() > 42)
-  {
-    CStdString strExtension;
-    CUtil::GetExtension(strFileNameAndPath, strExtension);
-    CStdString strPath = strFileNameAndPath.Left( strFileNameAndPath.size() - strFile.size() );
-
-    CRegExp reg;
-    CStdString strSearch=strFile; strSearch.ToLower();
-    reg.RegComp("([_\\-\\. ](cd|part)[0-9]*)[_\\-\\. ]");          // this is to ensure that cd1, cd2 or partXXX. do not
-    int matchPos = reg.RegFind(strSearch.c_str());                 // get cut from filenames when they are shortened.
-
-    CStdString strPartNumber;
-    char* szPart = reg.GetReplaceString("\\1");
-    strPartNumber = szPart;
-    free(szPart);
-
-    int partPos = 42 - strPartNumber.size() - strExtension.size();
-
-    if (matchPos > partPos )
-    {
-       strFile = strFile.Left(partPos);
-       strFile += strPartNumber;
-    } else
-    {
-       strFile = strFile.Left(42 - strExtension.size());
-    }
-    strFile += strExtension;
-
-    CStdString strNewFile = strPath;
-    if (!CUtil::HasSlashAtEnd(strPath))
-      strNewFile += "\\";
-
-    strNewFile += strFile;
-    strFileNameAndPath = strNewFile;
-  }
 }
 
 void CUtil::ConvertPathToUrl( const CStdString& strPath, const CStdString& strProtocol, CStdString& strOutUrl )
@@ -2397,17 +1219,6 @@ bool CUtil::IsHD(const CStdString& strFileName)
   return url.GetProtocol().IsEmpty();
 #endif
   return false;
-}
-
-void CUtil::RemoveIllegalChars( CStdString& strText)
-{
-  char szRemoveIllegal [1024];
-  strcpy(szRemoveIllegal , strText.c_str());
-  static char legalChars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~.���������������������������������� ";
-  char *cursor;
-  for (cursor = szRemoveIllegal; *(cursor += strspn(cursor, legalChars)); /**/ )
-    *cursor = '_';
-  strText = szRemoveIllegal;
 }
 
 void CUtil::ClearSubtitles()
@@ -2984,18 +1795,11 @@ bool CUtil::ThumbCached(const CStdString& strFileName)
 
 void CUtil::PlayDVD()
 {
-  if (g_guiSettings.GetBool("videoplayer.useexternaldvdplayer") && !g_guiSettings.GetString("videoplayer.externaldvdplayer").IsEmpty())
-  {
-    RunXBE(g_guiSettings.GetString("videoplayer.externaldvdplayer").c_str());
-  }
-  else
-  {
-    CIoSupport::Dismount("Cdrom0");
-    CIoSupport::RemapDriveLetter('D', "Cdrom0");
-    CFileItem item("dvd://1", false);
-    item.SetLabel(CDetectDVDMedia::GetDVDLabel());
-    g_application.PlayFile(item);
-  }
+  CIoSupport::Dismount("Cdrom0");
+  CIoSupport::RemapDriveLetter('D', "Cdrom0");
+  CFileItem item("dvd://1", false);
+  item.SetLabel(CDetectDVDMedia::GetDVDLabel());
+  g_application.PlayFile(item);
 }
 
 CStdString CUtil::GetNextFilename(const char* fn_template, int max)
@@ -3171,15 +1975,8 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
       memcpy(&g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan, &oscan, sizeof(OVERSCAN));
     }
     // now take screenshot
-#ifdef HAS_XBOX_D3D
-    g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
-#endif
-#ifdef HAS_XBOX_D3D
-    if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer( -1, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
-#else
     g_application.RenderNoPresent();
     if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
-#endif
     {
       if (FAILED(XGWriteSurfaceToFile(lpSurface, fn)))
       {
@@ -3194,14 +1991,8 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
     g_graphicsContext.Unlock();
     if (flashScreen)
     {
-#ifdef HAS_XBOX_D3D
-      g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
-#endif
       FlashScreen(true, true);
       Sleep(10);
-#ifdef HAS_XBOX_D3D
-      g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
-#endif
       FlashScreen(true, false);
     }
 #else
@@ -3471,26 +2262,26 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   return true;
 }
 
-CStdString CUtil::MakeLegalFileName(const CStdString &strFile, bool isFATX)
+CStdString CUtil::MakeLegalFileName(const CStdString &strFile)
 {
-  CStdString result = strFile;
-  // check if the filename is a legal FATX one.
-  if (isFATX)
-  {
-    CUtil::GetFatXQualifiedPath(result);
-  }
-  else
-  { // just filter out some illegal characters on windows
-    result.Remove('\\');
-    result.Remove('/');
-    result.Remove(':');
-    result.Remove('*');
-    result.Remove('?');
-    result.Remove('\"');
-    result.Remove('<');
-    result.Remove('>');
-    result.Remove('|');
-  }
+  CURL url(strFile);
+  CStdString result = url.GetFileName();
+
+  // just filter out some illegal characters on windows
+  result.Remove('\\');
+  result.Remove('/');
+  result.Remove(':');
+  result.Remove('*');
+  result.Remove('?');
+  result.Remove('\"');
+  result.Remove('<');
+  result.Remove('>');
+  result.Remove('|');
+
+  url.SetFileName(result);
+
+  url.GetURL(result);
+
   return result;
 }
 
@@ -3534,7 +2325,6 @@ const BUILT_IN commands[] = {
   { "Reboot",                     false,  "Reboot the xbox (power cycle)" },
   { "Restart",                    false,  "Restart the xbox (power cycle)" },
   { "ShutDown",                   false,  "Shutdown the xbox" },
-  { "Dashboard",                  false,  "Run your dashboard" },
   { "RestartApp",                 false,  "Restart XBMC" },
   { "Credits",                    false,  "Run XBMCs Credits" },
   { "Reset",                      false,  "Reset the xbox (warm reboot)" },
@@ -3543,7 +2333,6 @@ const BUILT_IN commands[] = {
   { "ReplaceWindow",              true,   "Replaces the current window with the new one" },
   { "TakeScreenshot",             false,  "Takes a Screenshot" },
   { "RunScript",                  true,   "Run the specified script" },
-  { "RunXBE",                     true,   "Run the specified executeable" },
   { "RunPlugin",                  true,   "Run the specified plugin" },
   { "Extract",                    true,   "Extracts the specified archive" },
   { "PlayMedia",                  true,   "Play the specified media file (or playlist)" },
@@ -3575,11 +2364,9 @@ const BUILT_IN commands[] = {
   { "SetVolume",                  true,   "Set the current volume" },
   { "Dialog.Close",               true,   "Close a dialog" },
   { "System.LogOff",              false,  "Log off current user" },
-  { "System.PWMControl",          true,   "Control PWM RGB LEDs" },
   { "System.Exec",                true,   "Execute shell commands" },
   { "Resolution",                 true,   "Change XBMC's Resolution" },
   { "SetFocus",                   true,   "Change current focus to a different control id" }, 
-  { "BackupSystemInfo",           false,  "Backup System Informations to local hdd" },
   { "UpdateLibrary",              true,   "Update the selected library (music or video)" },
   { "PageDown",                   true,   "Send a page down event to the pagecontrol with given id" },
   { "PageUp",                     true,   "Send a page up event to the pagecontrol with given id" },
@@ -3657,13 +2444,6 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("shutdown"))
   {
     g_application.getApplicationMessenger().Shutdown();
-  }
-  else if (execute.Equals("dashboard"))
-  {
-    if (g_guiSettings.GetBool("myprograms.usedashpath"))
-      RunXBE(g_guiSettings.GetString("myprograms.dashboard").c_str());
-    else
-      BootToDash();
   }
   else if (execute.Equals("restartapp"))
   {
@@ -3834,39 +2614,6 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     else
       CLog::Log(LOGERROR, "CUtil::ExecuteBuiltin: No archive given");
   }
-#ifdef HAS_XBOX_HARDWARE
-  else if (execute.Equals("runxbe"))
-  {
-    // only usefull if there is actualy a xbe to execute
-    if (!strParameterCaseIntact.IsEmpty())
-    {
-      CFileItem item(strParameterCaseIntact);
-      item.m_strPath = strParameterCaseIntact;
-      if (item.IsShortCut())
-        CUtil::RunShortcut(strParameterCaseIntact);
-      else if (item.IsXBE())
-      {
-        int iRegion;
-        if (g_guiSettings.GetBool("myprograms.gameautoregion"))
-        {
-          CXBE xbe;
-          iRegion = xbe.ExtractGameRegion(strParameterCaseIntact);
-          if (iRegion < 1 || iRegion > 7)
-            iRegion = 0;
-          iRegion = xbe.FilterRegion(iRegion);
-        }
-        else
-          iRegion = 0;
-
-        CUtil::RunXBE(strParameterCaseIntact.c_str(),NULL,F_VIDEO(iRegion));
-      }
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "CUtil::ExecBuiltIn, runxbe called with no arguments.");
-    }
-  }
-#endif
   else if (execute.Equals("runplugin"))
   {
     if (!strParameterCaseIntact.IsEmpty())
@@ -4423,55 +3170,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       musicScan->StopScanning();
 
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
-#ifdef HAS_XBOX_NETWORK
-    g_application.getNetwork().Deinitialize();
-#endif
-#ifdef HAS_XBOX_HARDWARE
-    CLog::Log(LOGNOTICE, "stop fancontroller");
-    CFanController::Instance()->Stop();
-#endif
     g_settings.LoadProfile(0); // login screen always runs as default user
     g_passwordManager.m_mapSMBPasswordCache.clear();
     g_passwordManager.bMasterUser = false;
     m_gWindowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
-#ifdef HAS_XBOX_NETWORK
-    g_application.getNetwork().Initialize(g_guiSettings.GetInt("network.assignment"),
-      g_guiSettings.GetString("network.ipaddress").c_str(),
-      g_guiSettings.GetString("network.subnet").c_str(),
-      g_guiSettings.GetString("network.gateway").c_str(),
-      g_guiSettings.GetString("network.dns").c_str());
-#endif
-  }
-  else if (execute.Left(18).Equals("system.pwmcontrol"))
-  {
-    CStdString strTemp ,strRgbA, strRgbB, strWhiteA, strWhiteB, strTran; 
-    CStdStringArray arSplit; 
-    int iTrTime = 0;
-    StringUtils::SplitString(parameter,",", arSplit);
-
-    if ((int)arSplit.size() > 1)
-    {
-      strRgbA  = arSplit[0].c_str();
-      strRgbB  = arSplit[1].c_str();
-      strWhiteA= arSplit[2].c_str();
-      strWhiteB= arSplit[3].c_str();
-      strTran  = arSplit[4].c_str();
-      iTrTime  = atoi(arSplit[5].c_str());
-    }
-    else if(parameter.size() > 6)
-    {
-      strRgbA = strRgbB = parameter;
-      strTran = "none";
-    }
-    CUtil::PWMControl(strRgbA,strRgbB,strWhiteA,strWhiteB,strTran, iTrTime);
-  }
-  else if (execute.Equals("backupsysteminfo"))
-  {
-#ifdef HAS_XBOX_HARDWARE
-    g_sysinfo.WriteTXTInfoFile();
-    g_sysinfo.CreateBiosBackup();
-    g_sysinfo.CreateEEPROMBackup();
-#endif
   }
   else if (execute.Equals("pagedown"))
   {
@@ -4939,12 +3641,7 @@ bool CUtil::SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int i
   FILETIME stNewTime, stCurTime;
   SystemTimeToFileTime(&NewTime, &stNewTime);
   SystemTimeToFileTime(&CurTime, &stCurTime);
-#ifdef HAS_XBOX_HARDWARE
-  bool bReturn=NT_SUCCESS(NtSetSystemTime(&stNewTime, &stCurTime));
-#else
-  bool bReturn(false);
-#endif
-  return bReturn;
+  return false;
 }
 int CUtil::GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew)
 {
@@ -4978,62 +3675,64 @@ int CUtil::GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew)
   }
   return iHourUTC;
 }
+
 bool CUtil::AutoDetection()
 {
-bool bReturn=false;
-if (g_guiSettings.GetBool("autodetect.onoff"))
-{
-  static DWORD pingTimer = 0;
-  if( timeGetTime() - pingTimer < (DWORD)g_advancedSettings.m_autoDetectPingTime * 1000)
-    return false;
-  pingTimer = timeGetTime();
-
-  // send ping and request new client info
-  if ( CUtil::AutoDetectionPing(
-    g_guiSettings.GetBool("Autodetect.senduserpw") ? g_guiSettings.GetString("servers.ftpserveruser"):"anonymous",
-    g_guiSettings.GetBool("Autodetect.senduserpw") ? g_guiSettings.GetString("servers.ftpserverpassword"):"anonymous",
-    g_guiSettings.GetString("autodetect.nickname"),21 /*Our FTP Port! TODO: Extract FTP from FTP Server settings!*/) )
+  bool bReturn=false;
+  if (g_guiSettings.GetBool("autodetect.onoff"))
   {
-    CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
-    CStdStringArray arSplit;
-    // do we have clients in our list ?
-    for(unsigned int i=0; i < v_xboxclients.client_ip.size(); i++)
+    static DWORD pingTimer = 0;
+    if( timeGetTime() - pingTimer < (DWORD)g_advancedSettings.m_autoDetectPingTime * 1000)
+      return false;
+    pingTimer = timeGetTime();
+
+    // send ping and request new client info
+    if ( CUtil::AutoDetectionPing(
+      g_guiSettings.GetBool("Autodetect.senduserpw") ? g_guiSettings.GetString("servers.ftpserveruser"):"anonymous",
+      g_guiSettings.GetBool("Autodetect.senduserpw") ? g_guiSettings.GetString("servers.ftpserverpassword"):"anonymous",
+      g_guiSettings.GetString("autodetect.nickname"),21 /*Our FTP Port! TODO: Extract FTP from FTP Server settings!*/) )
     {
-      // extract client informations
-      StringUtils::SplitString(v_xboxclients.client_info[i],";", arSplit);
-      if ((int)arSplit.size() > 1 && !v_xboxclients.client_informed[i])
+      CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
+      CStdStringArray arSplit;
+      // do we have clients in our list ?
+      for(unsigned int i=0; i < v_xboxclients.client_ip.size(); i++)
       {
-        //extract client info and build the ftp link!
-        strNickName     = arSplit[0].c_str();
-        strFtpUserName  = arSplit[1].c_str();
-        strFtpPassword  = arSplit[2].c_str();
-        strFtpPort      = arSplit[3].c_str();
-        strBoosMode     = arSplit[4].c_str();
-        strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),v_xboxclients.client_ip[i],strFtpPort.c_str());
-
-        //Do Notification for this Client
-        CStdString strtemplbl;
-        strtemplbl.Format("%s %s",strNickName, v_xboxclients.client_ip[i]);
-        g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(1251), strtemplbl);
-
-        //Debug Log
-        CLog::Log(LOGDEBUG,"%s: %s FTP-Link: %s", g_localizeStrings.Get(1251).c_str(), strNickName.c_str(), strFTPPath.c_str());
-
-        //set the client_informed to TRUE, to prevent loop Notification
-        v_xboxclients.client_informed[i]=true;
-
-        //YES NO PopUP: ask for connecting to the detected client via Filemanger!
-        if (g_guiSettings.GetBool("autodetect.popupinfo") && CGUIDialogYesNo::ShowAndGetInput(1251, 0, 1257, 0))
+        // extract client informations
+        StringUtils::SplitString(v_xboxclients.client_info[i],";", arSplit);
+        if ((int)arSplit.size() > 1 && !v_xboxclients.client_informed[i])
         {
-          m_gWindowManager.ActivateWindow(WINDOW_FILES, strFTPPath); //Open in MyFiles
+          //extract client info and build the ftp link!
+          strNickName     = arSplit[0].c_str();
+          strFtpUserName  = arSplit[1].c_str();
+          strFtpPassword  = arSplit[2].c_str();
+          strFtpPort      = arSplit[3].c_str();
+          strBoosMode     = arSplit[4].c_str();
+          strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),v_xboxclients.client_ip[i],strFtpPort.c_str());
+
+          //Do Notification for this Client
+          CStdString strtemplbl;
+          strtemplbl.Format("%s %s",strNickName, v_xboxclients.client_ip[i]);
+          g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(1251), strtemplbl);
+
+          //Debug Log
+          CLog::Log(LOGDEBUG,"%s: %s FTP-Link: %s", g_localizeStrings.Get(1251).c_str(), strNickName.c_str(), strFTPPath.c_str());
+
+          //set the client_informed to TRUE, to prevent loop Notification
+          v_xboxclients.client_informed[i]=true;
+
+          //YES NO PopUP: ask for connecting to the detected client via Filemanger!
+          if (g_guiSettings.GetBool("autodetect.popupinfo") && CGUIDialogYesNo::ShowAndGetInput(1251, 0, 1257, 0))
+          {
+            m_gWindowManager.ActivateWindow(WINDOW_FILES, strFTPPath); //Open in MyFiles
+          }
+          bReturn = true;
         }
-        bReturn = true;
       }
     }
   }
+  return bReturn;
 }
-return bReturn;
-}
+
 bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort)
 {
   bool bFoundNewClient= false;
@@ -5055,12 +3754,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
   struct sockaddr_in cliAddr;
   struct timeval timeout={0,500};
   fd_set readfds;
-#ifdef HAS_XBOX_HARDWARE
-    XNADDR xna;
-    DWORD dwState = XNetGetTitleXnAddr(&xna);
-    XNetInAddrToString(xna.ina,(char *)strLocalIP.c_str(),64);
-#else
-    char hostname[255];
+  char hostname[255];
 #ifndef _LINUX
     WORD wVer;
     WSADATA wData;
@@ -5082,7 +3776,6 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
 #ifndef _LINUX
       WSACleanup();
     }
-#endif
 #endif
   // get IP address
   sscanf( (char *)strLocalIP.c_str(), "%d.%d.%d.%d", &t1, &t2, &t3, &t4 );
@@ -5347,11 +4040,7 @@ void CUtil::AutoDetectionGetSource(VECSOURCES &shares)
         strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),v_xboxclients.client_ip[i].c_str(),strFtpPort.c_str());
 
         strNickName.TrimRight(' ');
-#ifdef HAS_XBOX_HARDWARE
-        share.strName.Format("FTP XBMC (%s)", strNickName.c_str());
-#else
         share.strName.Format("FTP XBMC_PC (%s)", strNickName.c_str());
-#endif
         share.strPath.Format("%s",strFTPPath.c_str());
         shares.push_back(share);
       }
@@ -5422,56 +4111,6 @@ bool CUtil::SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFt
   }
 #endif
   return false;
-}
-//strXboxNickNameIn: New NickName to write
-//strXboxNickNameOut: Same if it is in NICKNAME Cache
-bool CUtil::SetXBOXNickName(CStdString strXboxNickNameIn, CStdString &strXboxNickNameOut)
-{
-#ifdef HAS_XBOX_HARDWARE
-  WCHAR pszNickName[MAX_NICKNAME];
-  unsigned int uiSize = MAX_NICKNAME;
-  bool bfound= false;
-  HANDLE hNickName = XFindFirstNickname(false,pszNickName,MAX_NICKNAME);
-  if (hNickName != INVALID_HANDLE_VALUE)
-  { do
-      {
-        strXboxNickNameOut.Format("%ls",pszNickName );
-        if (strXboxNickNameIn.Equals(strXboxNickNameOut))
-        {
-          bfound = true;
-          break;
-        }
-        else if (strXboxNickNameIn.IsEmpty()) strXboxNickNameOut.Format("XbMediaCenter");
-      }while(XFindNextNickname(hNickName,pszNickName,uiSize) != false);
-    XFindClose(hNickName);
-  }
-  if(!bfound)
-  {
-    CStdStringW wstrName = strXboxNickNameIn.c_str();
-    XSetNickname(wstrName.c_str(), false);
-  }
-#endif
-  return true;
-}
-//strXboxNickNameOut: Will fast receive the last XBOX NICKNAME from Cache
-bool CUtil::GetXBOXNickName(CStdString &strXboxNickNameOut)
-{
-#ifdef HAS_XBOX_HARDWARE
-  WCHAR wszXboxNickname[MAX_NICKNAME];
-  HANDLE hNickName = XFindFirstNickname( FALSE, wszXboxNickname, MAX_NICKNAME );
-  if ( hNickName != INVALID_HANDLE_VALUE )
-  {
-    strXboxNickNameOut.Format("%ls",wszXboxNickname);
-    XFindClose( hNickName );
-    return true;
-  }
-  else
-#endif
-  {
-    // it seems to be empty? should we create one? or the user
-    strXboxNickNameOut.Format("");
-    return false;
-  }
 }
 
 void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, bool bUseFileDirectories)
@@ -5656,10 +4295,7 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
   }
   if (IsMultiPath(strPath))
     return CMultiPathDirectory::SupportsFileOperations(strPath);
-#ifdef HAS_XBOX_HARDWARE
-  if (IsMemCard(strPath) && g_memoryUnitManager.IsDriveWriteable(strPath))
-    return true;
-#endif
+
   return false;
 }
 
@@ -5710,76 +4346,6 @@ void CUtil::GetSkinThemes(std::vector<CStdString>& vecTheme)
   sort(vecTheme.begin(), vecTheme.end(), sortstringbyname());
 }
 
-bool CUtil::PWMControl(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strWhiteA, const CStdString &strWhiteB, const CStdString &strTransition, int iTrTime)
-{
-#ifdef HAS_XBOX_HARDWARE
-    if (strRGBa.IsEmpty() && strRGBb.IsEmpty() && strWhiteA.IsEmpty() && strWhiteB.IsEmpty()) // no color, return false!
-      return false;
-  if(g_iledSmartxxrgb.IsRunning())
-  {
-    return g_iledSmartxxrgb.SetRGBState(strRGBa,strRGBb, strWhiteA, strWhiteB, strTransition, iTrTime);
-  }
-  g_iledSmartxxrgb.Start();
-  return g_iledSmartxxrgb.SetRGBState(strRGBa,strRGBb, strWhiteA, strWhiteB, strTransition, iTrTime);
-#else
-  return false;
-#endif
-}
-
-// We check if the MediaCenter-Video-patch is already installed.
-// To do this we search for the original code in the Kernel.
-// This is done by searching from 0x80011000 to 0x80024000.
-bool CUtil::LookForKernelPatch()
-{
-#ifdef HAS_XBOX_HARDWARE
-  BYTE *Kernel=(BYTE *)0x80010000;
-  DWORD i, j = 0;
-
-  for(i=0x1000; i<0x14000; i++)
-  {
-    if(Kernel[i]!=PatchData[0])
-      continue;
-    for(j=0; j<25; j++)
-    {
-      if(Kernel[i+j]!=PatchData[j])
-        break;
-    }
-    if(j==25)
-      return true;
-  }
-#endif
-  return false;
-}
-// This routine removes our patch if it is not used.
-// This is to ensure proper testing whether we are responsible
-// for a mismatch of eeprom setting and current resolution.
-void CUtil::RemoveKernelPatch()
-{
-#ifdef HAS_XBOX_HARDWARE
-  BYTE  *Kernel=(BYTE *)0x80010000;
-  DWORD i, j = 0;
-
-  for(i=0x1000; i<0x14000; i++)
-  {
-    if(Kernel[i]!=PatchData[0])
-      continue;
-
-    for(j=0; j<25; j++)
-    {
-      if(Kernel[i+j]!=PatchData[j])
-        break;
-    }
-    if(j==25)
-    {
-      j=MmQueryAddressProtect(&Kernel[i]);
-      MmSetAddressProtect(&Kernel[i], 70, PAGE_READWRITE);
-      memcpy(&Kernel[i], &rawData[0], 70); // Reset Kernel
-      MmSetAddressProtect(&Kernel[i], 70, j);
-    }
-  }
-#endif
-}
-
 void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
 {
   CFileItemList items;
@@ -5810,18 +4376,6 @@ void CUtil::ClearFileItemCache()
     if (!items[i]->m_bIsFolder)
       CFile::Delete(items[i]->m_strPath);
   }
-}
-
-void CUtil::BootToDash()
-{
-#ifdef HAS_XBOX_HARDWARE
-  LD_LAUNCH_DASHBOARD ld;
-
-  ZeroMemory(&ld, sizeof(LD_LAUNCH_DASHBOARD));
-
-  ld.dwReason = XLD_LAUNCH_DASHBOARD_MAIN_MENU;
-  XLaunchNewImage(0, (PLAUNCH_DATA)&ld);
-#endif
 }
 
 CStdString CUtil::TranslatePath(const CStdString& path)
