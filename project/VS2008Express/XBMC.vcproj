@@ -3002,6 +3002,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIDialogFullScreenInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogFullScreenInfo.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIDialogGamepad.cpp"
 					>
 				</File>
@@ -3178,11 +3186,35 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIViewStatePicturesProgramsScripts.cpp"
+					RelativePath="..\..\xbmc\GUIViewStateGameSaves.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIViewStatePicturesProgramsScripts.h"
+					RelativePath="..\..\xbmc\GUIViewStateGameSaves.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStatePictures.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStatePictures.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStatePrograms.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStatePrograms.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateScripts.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateScripts.h"
 					>
 				</File>
 				<File
