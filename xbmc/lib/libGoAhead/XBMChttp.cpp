@@ -775,38 +775,12 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcGetXBEID(int numParas, CStdString paras[])
 {
-  if (numParas==0) {
-    return SetResponse(openTag+"Error:Missing Parameter");
-  }
-  CStdString tmp;
-  if (CFile::Exists(paras[0].c_str()))
-  {
-    tmp.Format("%09x",CUtil::GetXbeID(paras[0]));
-    return SetResponse(openTag + tmp);
-  }
-  else
-  {
-     return SetResponse(openTag+"Error:xbe doesn't exist");
-  }
-
+  return SetResponse(openTag+"Error:Missing Parameter");
 }
 
 int CXbmcHttp::xbmcGetXBETitle(int numParas, CStdString paras[])
 {
-  CStdString xbeinfo;
-  if (numParas==0) {
-    return SetResponse(openTag+"Error:Missing Parameter");
-  }
-  CStdString tmp;
-  if (CUtil::GetXBEDescription(paras[0],xbeinfo))
-  {
-    tmp.Format("%s",xbeinfo);
-    return SetResponse(openTag + tmp);
-  }
-  else
-  {
-     return SetResponse(openTag+"Error:Failed to getxbetitle");
-  }
+  return SetResponse(openTag+"Error:Missing Parameter");
 }
 
 int CXbmcHttp::xbmcGetSources(int numParas, CStdString paras[])

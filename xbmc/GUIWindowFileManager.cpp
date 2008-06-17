@@ -833,8 +833,7 @@ bool CGUIWindowFileManager::DoProcess(int iAction, CFileItemList & items, const 
           strFileName += CUtil::GetExtension(pItem->m_strPath);
         }
 
-        CUtil::RemoveIllegalChars(strFileName);
-        CUtil::ShortenFileName(strFileName);
+        strFileName = CUtil::MakeLegalFileName(strFileName);
       }
 
       CStdString strnewDestFile;

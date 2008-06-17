@@ -38,9 +38,6 @@ public:
   void Save();
 
 private:
-#ifdef HAS_XBOX_AUDIO
-  DWORD m_dwAudioFlags;
-#endif
 };
 
 extern XBAudioConfig g_audioConfig;

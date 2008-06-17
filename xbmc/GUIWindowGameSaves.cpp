@@ -254,7 +254,7 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
         newfile.Close();
         int pose = strDescription.find("\n",poss+1);
         strDescription = strDescription.Mid(poss+5, pose - poss-6);
-        strDescription = CUtil::MakeLegalFileName(strDescription,false);
+        strDescription = CUtil::MakeLegalFileName(strDescription);
 
         if (domode == 1)
         {

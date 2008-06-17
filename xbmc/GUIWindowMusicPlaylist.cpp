@@ -274,7 +274,7 @@ void CGUIWindowMusicPlayList::SavePlayList()
     // need 2 rename it
     CStdString strFolder, strPath;
     CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "music", strFolder);
-    CUtil::RemoveIllegalChars( strNewFileName );
+    strNewFileName= CUtil::MakeLegalFileName( strNewFileName );
     strNewFileName += ".m3u";
     CUtil::AddFileToFolder(strFolder, strNewFileName, strPath);
 
