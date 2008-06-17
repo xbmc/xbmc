@@ -31,6 +31,7 @@ extern "C" inline void tracker_critical_section_track(uintptr_t caller, LPCRITIC
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(caller);
   if (pInfo && cs)
   {
+    CSingleLock lock(*pInfo);
     pInfo->criticalSectionList.push_back(cs);
   }
 }
@@ -40,6 +41,7 @@ extern "C" inline void tracker_critical_section_free(uintptr_t caller, LPCRITICA
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(caller);
   if (pInfo && cs)
   {
+    CSingleLock lock(*pInfo);
     for (CriticalSectionListIter it = pInfo->criticalSectionList.begin(); it != pInfo->criticalSectionList.end(); ++it)
     {
       if (*it == cs)
@@ -56,6 +58,7 @@ extern "C" void tracker_critical_section_free_all(DllTrackInfo* pInfo)
   // unloading unloaded dll's
   if (!pInfo->criticalSectionList.empty())
   {
+    CSingleLock lock(*pInfo);
     CLog::Log(LOGDEBUG,"%s: Detected %d unfreed critical sections", pInfo->pDll->GetFileName(), pInfo->criticalSectionList.size());
     for (CriticalSectionListIter it = pInfo->criticalSectionList.begin(); it != pInfo->criticalSectionList.end(); ++it)
     {
