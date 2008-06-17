@@ -21,17 +21,11 @@
 
 #include "stdafx.h"
 #include "XBAudioConfig.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "xbox/Undocumented.h"
-#endif
 
 XBAudioConfig g_audioConfig;
 
 XBAudioConfig::XBAudioConfig()
 {
-#ifdef HAS_XBOX_AUDIO
-  m_dwAudioFlags = XGetAudioFlags();
-#endif
 }
 
 XBAudioConfig::~XBAudioConfig()
@@ -40,78 +34,34 @@ XBAudioConfig::~XBAudioConfig()
 
 bool XBAudioConfig::HasDigitalOutput()
 {
-#ifdef HAS_XBOX_AUDIO
-  DWORD dwAVPack = XGetAVPack();
-  if (dwAVPack == XC_AV_PACK_SCART ||
-      dwAVPack == XC_AV_PACK_HDTV ||
-      dwAVPack == XC_AV_PACK_VGA ||
-      dwAVPack == XC_AV_PACK_SVIDEO)
-#endif
-    return true;
+  return true;
 }
 
 void XBAudioConfig::SetAC3Enabled(bool bEnable)
 {
-#ifdef HAS_XBOX_AUDIO
-  if (bEnable)
-    m_dwAudioFlags |= XC_AUDIO_FLAGS_ENABLE_AC3;
-  else
-    m_dwAudioFlags &= ~XC_AUDIO_FLAGS_ENABLE_AC3;
-#endif
 }
 
 bool XBAudioConfig::GetAC3Enabled()
 {
-  if (!HasDigitalOutput()) return false;
-#ifdef HAS_XBOX_AUDIO
-  return (XC_AUDIO_FLAGS_ENCODED(XGetAudioFlags()) & XC_AUDIO_FLAGS_ENABLE_AC3) != 0;
-#else
-  return true;
-#endif
+  return HasDigitalOutput();
 }
 
 void XBAudioConfig::SetDTSEnabled(bool bEnable)
 {
-#ifdef HAS_XBOX_AUDIO
-  if (bEnable)
-    m_dwAudioFlags |= XC_AUDIO_FLAGS_ENABLE_DTS;
-  else
-    m_dwAudioFlags &= ~XC_AUDIO_FLAGS_ENABLE_DTS;
-#endif
 }
 
 bool XBAudioConfig::GetDTSEnabled()
 {
-  if (!HasDigitalOutput()) return false;
-#ifdef HAS_XBOX_AUDIO
-  return (XC_AUDIO_FLAGS_ENCODED(XGetAudioFlags()) & XC_AUDIO_FLAGS_ENABLE_DTS) != 0;
-#else
-  return true;
-#endif
+  return HasDigitalOutput();
 }
 
 bool XBAudioConfig::NeedsSave()
 {
-  if (!HasDigitalOutput()) return false;
-#ifdef HAS_XBOX_AUDIO
-  return m_dwAudioFlags != XGetAudioFlags();
-#else
   return false;
-#endif
 }
 
 // USE VERY CAREFULLY!!
 void XBAudioConfig::Save()
 {
-#ifdef HAS_XBOX_AUDIO
-  if (!NeedsSave()) return ;
-  // update the EEPROM settings
-  DWORD type = REG_BINARY;
-  ExSaveNonVolatileSetting(XC_AUDIO_FLAGS, &type, (PULONG)&m_dwAudioFlags, 4);
-  // check that we updated correctly
-  if (m_dwAudioFlags != XGetAudioFlags())
-  {
-    CLog::Log(LOGNOTICE, "Failed to save audio config!");
-  }
-#endif
 }
+
