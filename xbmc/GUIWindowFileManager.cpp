@@ -23,9 +23,6 @@
 #include "GUIWindowFileManager.h"
 #include "Application.h"
 #include "Util.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "xbox/xbeheader.h"
-#endif
 #include "FileSystem/Directory.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/FactoryFileDirectory.h"
@@ -582,24 +579,6 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
     g_pythonParser.evalFile(pItem->m_strPath.c_str());
     return ;
   }
-#endif
-#ifdef HAS_XBOX_HARDWARE
-  if (pItem->IsXBE())
-  {
-    int iRegion;
-    if (g_guiSettings.GetBool("myprograms.gameautoregion"))
-    {
-      CXBE xbe;
-      iRegion = xbe.ExtractGameRegion(pItem->m_strPath);
-      if (iRegion < 1 || iRegion > 7)
-        iRegion = 0;
-      iRegion = xbe.FilterRegion(iRegion);
-    }
-    else
-      iRegion = 0;
-    CUtil::RunXBE(pItem->m_strPath.c_str(),NULL,F_VIDEO(iRegion));
-  }
-  else
 #endif
   if (pItem->IsShortCut())
     CUtil::RunShortcut(pItem->m_strPath);
