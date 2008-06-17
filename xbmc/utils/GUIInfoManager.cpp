@@ -598,6 +598,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("tvshowthumb")) ret = CONTAINER_TVSHOWTHUMB;
     else if (info.Equals("seasonthumb")) ret = CONTAINER_SEASONTHUMB;
     else if (info.Equals("folderpath")) ret = CONTAINER_FOLDERPATH;
+    else if (info.Equals("pluginname")) ret = CONTAINER_PLUGINNAME;
     else if (info.Equals("viewmode")) ret = CONTAINER_VIEWMODE;
     else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
     else if (info.Equals("onprevious")) ret = CONTAINER_ON_PREVIOUS;
@@ -620,6 +621,16 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("numitems")) ret = CONTAINER_NUM_ITEMS;
     else if (info.Equals("currentpage")) ret = CONTAINER_CURRENT_PAGE;
     else if (info.Equals("sortmethod")) ret = CONTAINER_SORT_METHOD;
+    else if (info.Left(13).Equals("sortdirection"))
+    {
+      CStdString direction = info.Mid(14, info.GetLength() - 15);
+      SORT_ORDER order = SORT_ORDER_NONE;
+      if (direction == "ascending")
+        order = SORT_ORDER_ASC;
+      else if (direction == "descending")
+        order = SORT_ORDER_DESC;
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SORT_DIRECTION : CONTAINER_SORT_DIRECTION, order));
+    }
     else if (info.Left(5).Equals("sort("))
     {
       SORT_METHOD sort = SORT_METHOD_NONE;
@@ -632,6 +643,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     {
       int itemID = atoi(info.Mid(9, info.GetLength() - 10));
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_HAS_FOCUS : CONTAINER_HAS_FOCUS, id, itemID));
+    }
+    else if (info.Left(9).Equals("property("))
+    {
+      int compareString = ConditionalStringParameter(info.Mid(9, info.GetLength() - 10));
+      return AddMultiInfo(GUIInfo(CONTAINER_PROPERTY, id, compareString));
     }
     else if (info.Equals("showplot")) ret = CONTAINER_SHOWPLOT;
     if (id && (ret == CONTAINER_ON_NEXT || ret == CONTAINER_ON_PREVIOUS || ret == CONTAINER_NUM_PAGES ||
@@ -1119,6 +1135,20 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       }
       break;
     }
+  case CONTAINER_PLUGINNAME:
+    {
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+      {
+        CURL url(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath);
+        if (url.GetProtocol().Equals("plugin"))
+        {
+          strLabel = url.GetFileName();
+          CUtil::RemoveSlashAtEnd(strLabel);
+        }
+      }
+      break;
+    }
   case CONTAINER_VIEWMODE:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
@@ -1134,7 +1164,11 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
-        strLabel = g_localizeStrings.Get(((CGUIMediaWindow*)window)->GetContainerSortMethod());
+      {
+        const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
+        if (viewState)
+          strLabel = g_localizeStrings.Get(viewState->GetSortMethodLabel());
+    }
     }
     break;
   case CONTAINER_NUM_PAGES:
@@ -2157,9 +2191,20 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
       {
-        const CFileItemList &item = ((CGUIMediaWindow*)window)->CurrentDirectory();
-        SORT_METHOD method = item.GetSortMethod();
-        bReturn = (method == (int)info.GetData1());
+        const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
+        if (viewState)
+          bReturn = (viewState->GetSortMethod() == info.GetData1());
+      }
+      break;
+    }
+    case CONTAINER_SORT_DIRECTION:
+    {
+      CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+      {
+        const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
+        if (viewState)
+          bReturn = (viewState->GetDisplaySortOrder() == info.GetData1());
       }
       break;
     }
@@ -2313,6 +2358,21 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
   }
   else if (info.m_info >= MUSICPLAYER_TITLE && info.m_info <= MUSICPLAYER_DISC_NUMBER)
     return GetMusicPlaylistInfo(info);
+  else if (info.m_info == CONTAINER_PROPERTY)
+  {
+    CGUIWindow *window = NULL;
+    if (info.GetData1())
+    { // container specified
+      window = GetWindowWithCondition(contextWindow, 0);
+    }
+    else
+    { // no container specified - assume a mediawindow
+      window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    }
+    if (window)
+      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty(m_stringParameters[info.GetData2()]);
+  }
+
   return StringUtils::EmptyString;
 }
 
@@ -3627,7 +3687,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       if(!strThumb.IsEmpty() && !CURL::IsFileOnly(strThumb) && !CUtil::IsHD(strThumb))
         strThumb = "";
 
-      if(strThumb.IsEmpty())
+      if(strThumb.IsEmpty() && !item->GetIconImage().IsEmpty())
       {
         strThumb = item->GetIconImage();
         strThumb.Insert(strThumb.Find("."), "Big");
@@ -3647,14 +3707,23 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
         CUtil::GetDirectory(CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath), path);
       else
         CUtil::GetDirectory(item->m_strPath, path);
+      CURL url(path);
+      url.GetURLWithoutUserDetails(path);
       return path;
     }
   case LISTITEM_FILENAME_AND_PATH:
+    {
+      CStdString path;
     if (item->IsMusicDb() && item->HasMusicInfoTag())
-      return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetURL());
-    if (item->IsVideoDb() && item->HasVideoInfoTag())
-      return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath);
-    return item->m_strPath;
+        path = CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetURL());
+      else if (item->IsVideoDb() && item->HasVideoInfoTag())
+        path = CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath);
+      else
+        path = item->m_strPath;
+      CURL url(path);
+      url.GetURLWithoutUserDetails(path);
+      return path;
+    }
   case LISTITEM_PICTURE_PATH:
     if (item->IsPicture() && (!item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
       return item->m_strPath;

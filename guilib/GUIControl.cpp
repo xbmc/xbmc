@@ -543,6 +543,12 @@ void CGUIControl::ResetAnimation(ANIMATION_TYPE type)
   }
 }
 
+void CGUIControl::ResetAnimations()
+{
+  for (unsigned int i = 0; i < m_animations.size(); i++)
+    m_animations[i].ResetAnimation();
+}
+
 void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
 {
   // rule out the animations we shouldn't perform

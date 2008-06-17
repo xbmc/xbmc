@@ -1314,6 +1314,7 @@ void CFileItemList::AssignPointer(const CFileItemList& itemlist, bool append)
   m_sortDetails = itemlist.m_sortDetails;
   m_replaceListing = itemlist.m_replaceListing;
   m_content = itemlist.m_content;
+  m_mapProperties = itemlist.m_mapProperties;
 }
 
 CFileItem* CFileItemList::Get(int iItem)
