@@ -230,6 +230,7 @@ Export export_kernel32[] =
   { "GetConsoleOutputCP",                           -1, (void*)dllGetConsoleOutputCP,                        NULL },
   { "SetConsoleCtrlHandler",                        -1, (void*)dllSetConsoleCtrlHandler,                     NULL },
 #ifndef _LINUX
+  { "FlushConsoleInputBuffer",                      -1, (void*)FlushConsoleInputBuffer,                      NULL },
   { "GetExitCodeThread",                            -1, (void*)GetExitCodeThread,                            NULL },
   { "ResumeThread",                                 -1, (void*)ResumeThread,                                 NULL },
   { "ExitThread",                                   -1, (void*)ExitThread,                                   NULL },
@@ -251,6 +252,15 @@ Export export_kernel32[] =
 
 #ifndef _LINUX
   { "GetSystemTime",                                -1, (void*)GetSystemTime,                                NULL },
+  { "UnmapViewOfFile",                              -1, (void*)UnmapViewOfFile,                              NULL },
+  { "CreateFileMappingA",                           -1, (void*)CreateFileMappingA,                           NULL },
+  { "MapViewOfFile",                                -1, (void*)MapViewOfFile,                                NULL },
+
+  { "CreateFileW",                                  -1, (void*)CreateFileW,                                  NULL },
+  { "GetFullPathNameW",                             -1, (void*)GetFullPathNameW,                             NULL },
+  { "GetTempPathW",                                 -1, (void*)GetTempPathW,                                 NULL },
+  { "GetFileAttributesW",                           -1, (void*)GetFileAttributesW,                           NULL },
+  { "DeleteFileW",                                  -1, (void*)DeleteFileW,                                  NULL },
 #endif
   { "GetFileSize",                                  -1, (void*)GetFileSize,                                  NULL },
   { "FindResourceA",                                -1, (void*)dllFindResourceA,                             NULL },
