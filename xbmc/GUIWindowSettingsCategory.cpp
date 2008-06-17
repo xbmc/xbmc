@@ -1618,6 +1618,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     g_lcd->SetContrast(((CSettingInt *)pSettingControl->GetSetting())->GetData());
   }
+#endif
   else if (strSetting.Equals("servers.ftpserver"))
   {
     g_application.StopFtpServer();
