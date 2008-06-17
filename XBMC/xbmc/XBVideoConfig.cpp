@@ -23,9 +23,6 @@
 #include "include.h"
 #include "Settings.h"
 #include "XBVideoConfig.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "xbox/Undocumented.h"
-#endif
 #ifdef HAS_GLX
 #include "Surface.h"
 using namespace Surface;
@@ -47,11 +44,7 @@ XBVideoConfig::XBVideoConfig()
 {
   bHasPAL = false;
   bHasNTSC = false;
-#ifdef HAS_XBOX_D3D
-  m_dwVideoFlags = XGetVideoFlags();
-#else
   m_dwVideoFlags = 0;
-#endif
   m_VSyncMode = VSYNC_DISABLED;
 }
 
@@ -60,85 +53,47 @@ XBVideoConfig::~XBVideoConfig()
 
 bool XBVideoConfig::HasPAL() const
 {
-#ifdef HAS_XBOX_D3D
-  if (bHasPAL) return true;
-  if (bHasNTSC) return false; // has NTSC (or PAL60) but not PAL
-  return (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) != 0;
-#else
   return true;
-#endif
 }
 
 bool XBVideoConfig::HasPAL60() const
 {
-#ifdef HAS_XBOX_D3D
-  return (m_dwVideoFlags & XC_VIDEO_FLAGS_PAL_60Hz) != 0;
-#else
   return false; // no need for pal60 mode IMO
-#endif
 }
 
 bool XBVideoConfig::HasNTSC() const
 {
-#ifdef HAS_XBOX_D3D
-  return !HasPAL();
-#else
   return true;
-#endif
 }
 
 bool XBVideoConfig::HasWidescreen() const
 {
-#ifdef HAS_XBOX_D3D
-  return (m_dwVideoFlags & XC_VIDEO_FLAGS_WIDESCREEN) != 0;
-#else
   return true;
-#endif
 }
 
 bool XBVideoConfig::HasLetterbox() const
 {
-#ifdef HAS_XBOX_D3D
-  return (m_dwVideoFlags & XC_VIDEO_FLAGS_LETTERBOX) != 0;
-#else
   return true;
-#endif
 }
 
 bool XBVideoConfig::Has480p() const
 {
-#ifdef HAS_XBOX_D3D
-  return (m_dwVideoFlags & XC_VIDEO_FLAGS_HDTV_480p) != 0;
-#else
   return true;
-#endif
 }
 
 bool XBVideoConfig::Has720p() const
 {
-#ifdef HAS_XBOX_D3D
-  return (m_dwVideoFlags & XC_VIDEO_FLAGS_HDTV_720p) != 0;
-#else
   return true;
-#endif
 }
 
 bool XBVideoConfig::Has1080i() const
 {
-#ifdef HAS_XBOX_D3D
-  return (m_dwVideoFlags & XC_VIDEO_FLAGS_HDTV_1080i) != 0;
-#else
   return true;
-#endif
 }
 
 bool XBVideoConfig::HasHDPack() const
 {
-#ifdef HAS_XBOX_D3D
-  return XGetAVPack() == XC_AV_PACK_HDTV;
-#else
   return true;
-#endif
 }
 
 #ifdef HAS_SDL
@@ -211,24 +166,12 @@ void XBVideoConfig::GetModes(LPDIRECT3D8 pD3D)
     // Skip modes we don't care about
     if ( mode.Format != D3DFMT_LIN_A8R8G8B8 )
       continue;
-#ifdef HAS_XBOX_D3D
-    if ( mode.Flags & D3DPRESENTFLAG_FIELD )
-      continue;
-    if ( mode.Flags & D3DPRESENTFLAG_10X11PIXELASPECTRATIO )
-      continue;
-    if ( mode.Flags & D3DPRESENTFLAG_EMULATE_REFRESH_RATE )
-      continue;
-#endif
     // ignore 640 wide modes
     if ( mode.Width < 720)
       continue;
 
     // If we get here, we found an acceptable mode
-#ifdef HAS_XBOX_D3D
-    CLog::Log(LOGINFO, "Found mode: %ix%i at %iHz, %s", mode.Width, mode.Height, mode.RefreshRate, mode.Flags & D3DPRESENTFLAG_WIDESCREEN ? "Widescreen" : "");
-#else
     CLog::Log(LOGINFO, "Found mode: %ix%i at %iHz", mode.Width, mode.Height, mode.RefreshRate);
-#endif
     if (mode.Width == 720 && mode.Height == 576 && mode.RefreshRate == 50)
       bHasPAL = true;
     if (mode.Width == 720 && mode.Height == 480 && mode.RefreshRate == 60)
@@ -473,17 +416,6 @@ RESOLUTION XBVideoConfig::GetInitialMode(LPDIRECT3D8 pD3D, D3DPRESENT_PARAMETERS
   {
     pD3D->EnumAdapterModes( 0, i, &mode );
 
-#ifdef HAS_XBOX_D3D
-    // Skip modes we don't care about
-    if ( mode.Format != D3DFMT_LIN_A8R8G8B8 )
-      continue;
-    if ( mode.Flags & D3DPRESENTFLAG_FIELD )
-      continue;
-    if ( mode.Flags & D3DPRESENTFLAG_10X11PIXELASPECTRATIO )
-      continue;
-    if ( mode.Flags & D3DPRESENTFLAG_EMULATE_REFRESH_RATE )
-      continue;
-#endif
     // ignore 640 wide modes
     if ( mode.Width < 720)
       continue;
@@ -491,24 +423,11 @@ RESOLUTION XBVideoConfig::GetInitialMode(LPDIRECT3D8 pD3D, D3DPRESENT_PARAMETERS
     p3dParams->BackBufferWidth = mode.Width;
     p3dParams->BackBufferHeight = mode.Height;
     p3dParams->FullScreen_RefreshRateInHz = mode.RefreshRate;
-#ifdef HAS_XBOX_D3D
-    p3dParams->Flags = mode.Flags;
-#endif
     if ((bHasPal) && ((mode.Height != 576) || (mode.RefreshRate != 50)))
     {
       continue;
     }
     //take the first available mode
-#ifdef HAS_XBOX_D3D
-    if (!HasWidescreen() && !(mode.Flags & D3DPRESENTFLAG_WIDESCREEN))
-    {
-      break;
-    }
-    if (HasWidescreen() && (mode.Flags & D3DPRESENTFLAG_WIDESCREEN))
-    {
-      break;
-    }
-#endif
   }
 
   if (HasPAL())
@@ -541,141 +460,44 @@ RESOLUTION XBVideoConfig::GetInitialMode()
 
 CStdString XBVideoConfig::GetAVPack() const
 {
-#ifdef HAS_XBOX_HARDWARE
-  switch (XGetAVPack())
-  {
-    case XC_AV_PACK_STANDARD :
-      return "Standard";
-    case XC_AV_PACK_SVIDEO :
-      return "S-Video";
-    case XC_AV_PACK_SCART :
-      return "Scart";
-    case XC_AV_PACK_HDTV :
-      return "HDTV";
-    case XC_AV_PACK_VGA :
-      return "VGA";
-    case XC_AV_PACK_RFU :
-      return "RF";
-  }
-#endif
   return "Unknown";
 }
 
 void XBVideoConfig::PrintInfo() const
 {
-#ifdef HAS_XBOX_D3D
-  CLog::Log(LOGINFO, "AV Pack: %s", GetAVPack().c_str());
-  CStdString strAVFlags;
-  if (HasWidescreen()) strAVFlags += "Widescreen,";
-  if (HasPAL60()) strAVFlags += "Pal60,";
-  if (Has480p()) strAVFlags += "480p,";
-  if (Has720p()) strAVFlags += "720p,";
-  if (Has1080i()) strAVFlags += "1080i,";
-  if (strAVFlags.size() > 1) strAVFlags = strAVFlags.Left(strAVFlags.size() - 1);
-  CLog::Log(LOGINFO, "AV Flags: %s", strAVFlags.c_str());
-#endif
 }
 
 bool XBVideoConfig::NeedsSave()
 {
-#ifdef HAS_XBOX_D3D
-  return m_dwVideoFlags != XGetVideoFlags();
-#else
   return false;
-#endif
 }
 
 void XBVideoConfig::Set480p(bool bEnable)
 {
-#ifdef HAS_XBOX_D3D
-  if (bEnable)
-    m_dwVideoFlags |= XC_VIDEO_FLAGS_HDTV_480p;
-  else
-    m_dwVideoFlags &= ~XC_VIDEO_FLAGS_HDTV_480p;
-#endif
 }
 
 void XBVideoConfig::Set720p(bool bEnable)
 {
-#ifdef HAS_XBOX_D3D
-  if (bEnable)
-    m_dwVideoFlags |= XC_VIDEO_FLAGS_HDTV_720p;
-  else
-    m_dwVideoFlags &= ~XC_VIDEO_FLAGS_HDTV_720p;
-#endif
 }
 
 void XBVideoConfig::Set1080i(bool bEnable)
 {
-#ifdef HAS_XBOX_D3D
-  if (bEnable)
-    m_dwVideoFlags |= XC_VIDEO_FLAGS_HDTV_1080i;
-  else
-    m_dwVideoFlags &= ~XC_VIDEO_FLAGS_HDTV_1080i;
-#endif
 }
 
 void XBVideoConfig::SetNormal()
 {
-#ifdef HAS_XBOX_D3D
-  m_dwVideoFlags &= ~XC_VIDEO_FLAGS_LETTERBOX;
-  m_dwVideoFlags &= ~XC_VIDEO_FLAGS_WIDESCREEN;
-#endif
 }
 
 void XBVideoConfig::SetLetterbox(bool bEnable)
 {
-#ifdef HAS_XBOX_D3D
-  if (bEnable)
-  {
-    m_dwVideoFlags |= XC_VIDEO_FLAGS_LETTERBOX;
-    m_dwVideoFlags &= ~XC_VIDEO_FLAGS_WIDESCREEN;
-  }
-  else
-  {
-    m_dwVideoFlags &= ~XC_VIDEO_FLAGS_LETTERBOX;
-  }
-#endif
 }
 
 void XBVideoConfig::SetWidescreen(bool bEnable)
 {
-#ifdef HAS_XBOX_D3D
-  if (bEnable)
-  {
-    m_dwVideoFlags |= XC_VIDEO_FLAGS_WIDESCREEN;
-    m_dwVideoFlags &= ~XC_VIDEO_FLAGS_LETTERBOX;
-  }
-  else
-  {
-    m_dwVideoFlags &= ~XC_VIDEO_FLAGS_WIDESCREEN;
-  }
-#endif
 }
 
 void XBVideoConfig::Save()
 {
   if (!NeedsSave()) return;
-#ifdef HAS_XBOX_D3D
-  // update the EEPROM settings
-  DWORD type = REG_DWORD;
-  DWORD eepVideoFlags, size;
-
-  // Video flags do not exactly match the flags variable in the EEPROM
-  // To account for this, we get the actual value straight from the EEPROM (or shadow),
-  // and shift the flags to their proper location in the EEPROM variable.
-
-  ExQueryNonVolatileSetting(XC_VIDEO_FLAGS, &type, (PULONG)&eepVideoFlags, 4, &size);
-
-  eepVideoFlags &= ~(0x5F << 16);
-  eepVideoFlags |= ((m_dwVideoFlags & 0x5F) << 16);
-
-  ExSaveNonVolatileSetting(XC_VIDEO_FLAGS, &type, (PULONG)&eepVideoFlags, 4);
-
-  // check that we updated correctly
-  if (m_dwVideoFlags != XGetVideoFlags())
-  {
-    CLog::Log(LOGNOTICE, "Failed to save video config!");
-  }
-#endif
 }
+
