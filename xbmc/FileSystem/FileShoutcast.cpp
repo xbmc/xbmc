@@ -35,11 +35,6 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-/* needed for the shoutcast headers */
-#if defined(_XBOX) && !defined(WIN32)
-#define WIN32 1
-#endif
-
 #include "lib/libshout/rip_manager.h"
 //#include "lib/libshout/util.h"
 #include "lib/libshout/filelib.h"
