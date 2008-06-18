@@ -22,10 +22,6 @@
 #include "stdafx.h"
 #include "ApplicationMessenger.h"
 #include "Application.h"
-#ifdef _XBOX
-#include "xbox/XKUtils.h"
-#include "xbox/XKHDD.h"
-#endif
 
 #include "TextureManager.h"
 #include "PlayListPlayer.h"
@@ -150,13 +146,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 #else
         g_application.Stop();
 #endif
-#ifdef _XBOX
-        Sleep(200);
-#ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
-        XKHDD::SpindownHarddisk(); // Spindown the Harddisk
-        XKUtils::XBOXPowerOff();
-#endif
-#elif !defined(_LINUX)
+#if !defined(_LINUX)
 #ifndef HAS_SDL
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
@@ -189,11 +179,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       {
         g_application.Stop();
         Sleep(200);
-#ifdef _XBOX
-#ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
-        XKUtils::XBOXPowerCycle();
-#endif
-#elif !defined(_LINUX)
+#if !defined(_LINUX)
 #ifndef HAS_SDL
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
@@ -212,11 +198,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       {
         g_application.Stop();
         Sleep(200);
-#ifdef _XBOX
-#ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
-        XKUtils::XBOXReset();
-#endif
-#elif !defined(_LINUX)
+#if !defined(_LINUX)
 #ifndef HAS_SDL
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );

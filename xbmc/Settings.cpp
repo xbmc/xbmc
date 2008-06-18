@@ -46,9 +46,6 @@
 #include "GUIDialogYesNo.h"
 #include "FileSystem/Directory.h"
 #include "FileItem.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "utils/MemoryUnitManager.h"
-#endif
 #ifdef _WIN32PC
 #include "win32/WIN32Util.h"
 #endif
@@ -286,19 +283,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   bXboxMediacenter = bSettings = false;
 
   CStdString strMnt = GetProfileUserDataFolder();
-#ifdef _XBOX
-  char szDevicePath[1024];
-  if (GetProfileUserDataFolder().Left(2).Equals("Q:"))
-  {
-    CUtil::GetHomePath(strMnt);
-    strMnt += GetProfileUserDataFolder().substr(2);
-  }
-  CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath);
-  strcat(szDevicePath,strMnt.c_str()+2);
-  CIoSupport::RemapDriveLetter('P', szDevicePath);
-#else
   CIoSupport::RemapDriveLetter('P', (char*) strMnt.c_str());
-#endif  
   CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
   CStdString strFile=GetSettingsFile();
   if (!LoadSettings(strFile))
@@ -1063,9 +1048,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     {
       CStdString setting;
       setting.Format("karaoke%i", i);
-#ifndef HAS_XBOX_AUDIO
 #define XVOICE_MASK_PARAM_DISABLED (-1.0f)
-#endif
       GetFloat(pElement, setting + "energy", g_stSettings.m_karaokeVoiceMask[i].energy, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
       GetFloat(pElement, setting + "pitch", g_stSettings.m_karaokeVoiceMask[i].pitch, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
       GetFloat(pElement, setting + "whisper", g_stSettings.m_karaokeVoiceMask[i].whisper, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
@@ -1658,10 +1641,6 @@ bool CSettings::SaveAvpackSettings(TiXmlNode *io_pRoot) const
   TiXmlElement videoscreenNode("videoscreen");
   pNode = io_pRoot->InsertEndChild(videoscreenNode);
   if (!pNode) return false;
-#ifdef HAS_XBOX_HARDWARE
-  SetInteger(pNode, "flickerfilter", g_guiSettings.GetInt("videoscreen.flickerfilter"));
-  SetBoolean(pNode, "soften", g_guiSettings.GetBool("videoscreen.soften"));
-#endif
   SetInteger(pNode, "resolution", g_guiSettings.GetInt("videoscreen.resolution"));
 
   TiXmlElement videoplayerNode("videoplayer");
@@ -1893,20 +1872,6 @@ bool CSettings::LoadProfile(int index)
       if (doc.LoadFile(GetUserDataFolder()+"\\guisettings.xml"))
         g_guiSettings.LoadMasterLock(doc.RootElement());
     }
-
-#ifdef HAS_XBOX_HARDWARE
-    if (g_guiSettings.GetBool("system.autotemperature"))
-    {
-      CLog::Log(LOGNOTICE, "start fancontroller");
-      CFanController::Instance()->Start(g_guiSettings.GetInt("system.targettemperature"), g_guiSettings.GetInt("system.minfanspeed"));
-    }
-    else if (g_guiSettings.GetBool("system.fanspeedcontrol"))
-    {
-      CLog::Log(LOGNOTICE, "setting fanspeed");
-      CFanController::Instance()->SetFanSpeed(g_guiSettings.GetInt("system.fanspeed"));
-    }
-    g_application.StartLEDControl(false);
-#endif
 
     // to set labels - shares are reloaded
     CDetectDVDMedia::UpdateState();

@@ -80,9 +80,7 @@ public:
   virtual void FrameMove();
   virtual void Render();
   virtual void DoRender();
-#ifndef HAS_XBOX_D3D
   virtual void RenderNoPresent();
-#endif
   virtual HRESULT Create(HWND hWnd);
   virtual HRESULT Cleanup();
   void StartServices();

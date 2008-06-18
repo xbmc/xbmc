@@ -21,9 +21,6 @@
 
 #include "stdafx.h"
 #include "memutil.h"
-#ifdef _XBOX
-#include "xbox/Undocumented.h"
-#endif
 
 void fast_memcpy(void* d, const void* s, unsigned n)
 {
@@ -205,15 +202,3 @@ void fast_memset(void* d, int c, unsigned n)
 #endif
 }
 
-#ifdef _XBOX
-void usleep(int t)
-{
-  LARGE_INTEGER li;
-
-  li.QuadPart = (LONGLONG)t * -10;
-
-  // Where possible, Alertable should be set to FALSE and WaitMode should be set to KernelMode,
-  // in order to reduce driver complexity. The principal exception to this is when the wait is a long term wait.
-  KeDelayExecutionThread(KernelMode, false, &li);
-}
-#endif
