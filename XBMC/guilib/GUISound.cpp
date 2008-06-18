@@ -89,9 +89,7 @@ bool CGUISound::Load(const CStdString& strFile)
 void CGUISound::Play()
 {
   if (m_soundBuffer)
-#ifdef HAS_XBOX_AUDIO
-    m_soundBuffer->Play(0, 0, DSBPLAY_FROMSTART);
-#elif !defined(HAS_SDL_AUDIO)
+#if !defined(HAS_SDL_AUDIO)
     m_soundBuffer->Play(0, 0, 0);
 #else
     Mix_PlayChannel(GUI_SOUND_CHANNEL, m_soundBuffer, 0);    
@@ -120,9 +118,7 @@ void CGUISound::Stop()
 {
   if (m_soundBuffer)
   {
-#ifdef HAS_XBOX_AUDIO
-    m_soundBuffer->StopEx( 0, DSBSTOPEX_IMMEDIATE );
-#elif !defined(HAS_SDL_AUDIO)
+#if !defined(HAS_SDL_AUDIO)
     m_soundBuffer->Stop();
 #else
     Mix_HaltChannel(GUI_SOUND_CHANNEL);    
@@ -146,27 +142,12 @@ void CGUISound::SetVolume(int level)
 #ifndef HAS_SDL_AUDIO
 bool CGUISound::CreateBuffer(LPWAVEFORMATEX wfx, int iLength)
 {
-#ifdef HAS_XBOX_AUDIO
-  //  Use a volume pair preset
-  DSMIXBINVOLUMEPAIR vp[2] = { DSMIXBINVOLUMEPAIRS_DEFAULT_STEREO };
-
-  //  Set up DSMIXBINS structure
-  DSMIXBINS mixbins;
-  mixbins.dwMixBinCount=2;
-  mixbins.lpMixBinVolumePairs=vp;
-#endif
-
   //  Set up DSBUFFERDESC structure
   DSBUFFERDESC dsbdesc; 
   memset(&dsbdesc, 0, sizeof(DSBUFFERDESC)); 
   dsbdesc.dwSize=sizeof(DSBUFFERDESC);
-#ifdef HAS_XBOX_AUDIO
-  dsbdesc.dwFlags=0; 
-  dsbdesc.lpMixBins=&mixbins;
-#else
   // directsound requires ctrlvolume to be set
   dsbdesc.dwFlags = DSBCAPS_CTRLVOLUME;
-#endif
   dsbdesc.dwBufferBytes=iLength; 
   dsbdesc.lpwfxFormat=wfx;
 
@@ -184,13 +165,6 @@ bool CGUISound::CreateBuffer(LPWAVEFORMATEX wfx, int iLength)
 
   //  Make effects as loud as possible
   m_soundBuffer->SetVolume(g_stSettings.m_nVolumeLevel);
-#ifdef HAS_XBOX_AUDIO
-  m_soundBuffer->SetHeadroom(0);
-
-  // Set the default mixbins headroom to appropriate level as set in the settings file (to allow the maximum volume)
-  for (DWORD i = 0; i < mixbins.dwMixBinCount;i++)
-    directSound->SetMixBinHeadroom(i, DWORD(g_advancedSettings.m_audioHeadRoom / 6));
-#endif
 
   return true; 
 }

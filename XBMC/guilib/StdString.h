@@ -1,9 +1,6 @@
 #pragma once
 #include <string>
-#ifdef _XBOX
-#include <xtl.h>
-#include <malloc.h>
-#elif !defined(_LINUX)
+#if !defined(_LINUX)
 #include <windows.h>
 #endif
 
@@ -461,9 +458,7 @@
 //      yourself, if you prefer
 
 #if defined(_MSC_VER) || defined(__BORLANDC__) || defined(_WIN32)
-#ifndef _XBOX
  #define SS_WIN32
-#endif
 #endif
 
 // MACRO: SS_ANSI
@@ -677,14 +672,10 @@ inline const Type& SSMAX(const Type& arg1, const Type& arg2)
 // _bstr_t
 
 #if defined (_MSC_VER) && (_MSC_VER >= 1100)
- #ifdef _XBOX
- #define SS_NOTHROW
- #else
  #include <comdef.h>
  #define SS_INC_COMDEF  // signal that we #included MS comdef.h file
  #define STDSTRING_INC_COMDEF
  #define SS_NOTHROW __declspec(nothrow)
- #endif
 #else
 	#define SS_NOTHROW
 #endif
