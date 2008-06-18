@@ -683,11 +683,6 @@ HRESULT CApplication::Create(HWND hWnd)
   RESOLUTION initialResolution = g_videoConfig.GetInitialMode();
 #endif
 
-#ifndef __APPLE__
-  // Transfer the resolution information to our graphics context
-  g_graphicsContext.SetVideoResolution(initialResolution, TRUE);
-#endif
-
   // Initialize core peripheral port support. Note: If these parameters
   // are 0 and NULL, respectively, then the default number and types of
   // controllers will be initialized.

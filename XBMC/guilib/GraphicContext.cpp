@@ -553,6 +553,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   if ((g_settings.m_ResInfo[m_Resolution].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[m_Resolution].iHeight != g_settings.m_ResInfo[res].iHeight))
   { // set the mouse resolution
     g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
+    ResetOverscan(g_settings.m_ResInfo[res]);
+    g_fontManager.ReloadTTFFonts();
   }
 
   SetFullScreenViewWindow(res);
@@ -563,7 +565,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
   Unlock();  
 }
-
+// SDL (Linux, Apple, Windows)
 #else
 void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool forceClear /* = false */)
 {
@@ -617,7 +619,6 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     int options = SDL_HWSURFACE | SDL_DOUBLEBUF;
     if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
     m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, (bool)g_advancedSettings.m_fullScreen);
-    //m_screenSurface = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 32, options);
 #elif defined(HAS_SDL_OPENGL)
     int options = SDL_RESIZABLE;
     if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
@@ -625,7 +626,6 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     // Create a bare root window so that SDL Input handling works
 #ifdef HAS_GLX
     static SDL_Surface* rootWindow = NULL;
-    options = (options & (~SDL_FULLSCREEN));
     if (!rootWindow) 
     {
 #ifdef HAS_XRANDR
@@ -640,7 +640,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       
       rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
       // attach a GLX surface to the root window
-      m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, rootWindow, false, false, false, 1);
+      m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, rootWindow, false, false, false, g_advancedSettings.m_fullScreen);
       if (g_videoConfig.GetVSyncMode()==VSYNC_ALWAYS)
         m_screenSurface->EnableVSync();
       //glEnable(GL_MULTISAMPLE);
@@ -734,6 +734,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     if ((g_settings.m_ResInfo[lastRes].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[lastRes].iHeight != g_settings.m_ResInfo[res].iHeight))
     {
       g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
+      ResetOverscan(g_settings.m_ResInfo[res]);
+      g_fontManager.ReloadTTFFonts();
     }
    
     SetFullScreenViewWindow(res);
@@ -1374,11 +1376,11 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     
 #ifdef __APPLE__
     Cocoa_GL_SetFullScreen(g_settings.m_ResInfo[m_Resolution].iScreen, g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, true, blankOtherDisplays);
-    m_screenSurface->RefreshCurrentContext();
-    g_fontManager.ReloadTTFFonts();
 #else
     SDL_SetVideoMode(width, height, 0, SDL_FULLSCREEN);
 #endif
+    m_screenSurface->RefreshCurrentContext();
+    g_fontManager.ReloadTTFFonts();
     m_screenSurface->ResizeSurface(width, height);
 #ifdef HAS_SDL_OPENGL
     glViewport(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
@@ -1390,11 +1392,11 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
   {
 #ifdef __APPLE__
     Cocoa_GL_SetFullScreen(g_settings.m_ResInfo[m_Resolution].iScreen, g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, false, blankOtherDisplays);
-    m_screenSurface->RefreshCurrentContext();
-    g_fontManager.ReloadTTFFonts();
 #else
     SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0, SDL_RESIZABLE);
 #endif
+    m_screenSurface->RefreshCurrentContext();
+    g_fontManager.ReloadTTFFonts();
     m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
 #ifdef HAS_SDL_OPENGL
     glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
