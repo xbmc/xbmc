@@ -3,9 +3,7 @@
 
 #include "../system.h" // imports HAS_SDL or others
 
-#ifdef _XBOX
-#include "XBoxKeyboard.h"
-#elif defined(HAS_SDL)
+#if defined(HAS_SDL)
 #include "SDLKeyboard.h"
 #else
 #include "DirectInputKeyboard.h"
