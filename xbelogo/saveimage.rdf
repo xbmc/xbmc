@@ -1,7 +1,0 @@
-Texture saveimage
-{
-   Source saveimage.bmp
-   Format D3DFMT_DXT1
-   Width 64
-   Height 64
-}
