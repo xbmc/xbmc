@@ -29,12 +29,9 @@
 #include "XBVideoConfig.h"
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/Application.h"
-#ifdef HAS_XBOX_D3D
- #include "xgraphics.h"
- #define D3D_CLEAR_STENCIL D3DCLEAR_STENCIL
-#else
- #define D3D_CLEAR_STENCIL 0x0l
-#endif
+
+#define D3D_CLEAR_STENCIL 0x0l
+
 #ifdef HAS_SDL_OPENGL
 #define GLVALIDATE  { CSingleLock locker(*this); ValidateSurface(); }
 #endif
@@ -382,9 +379,6 @@ void CGraphicContext::ClipToViewWindow()
   if (m_videoRect.bottom > m_iScreenHeight) clip.y2 = m_iScreenHeight;
   if (clip.x2 < clip.x1) clip.x2 = clip.x1 + 1;
   if (clip.y2 < clip.y1) clip.y2 = clip.y1 + 1;
-#ifdef HAS_XBOX_D3D
-  m_pd3dDevice->SetScissors(1, FALSE, &clip);
-#endif
 #else
 #ifdef  __GNUC__
 // TODO: CGraphicContext::ClipToViewWindow not implemented
@@ -493,9 +487,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   interval = D3DPRESENT_INTERVAL_IMMEDIATE;
 #endif
 
-#ifndef HAS_XBOX_D3D
   interval = 0;
-#endif
 
   if (interval != m_pd3dParams->FullScreen_PresentationInterval)
   {
@@ -564,7 +556,6 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   }
 
   SetFullScreenViewWindow(res);
-  SetScreenFilters(m_bFullScreenVideo);
   
   m_Resolution = res;
   if(NeedReset)
@@ -695,7 +686,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     if (needsResize)
       m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
 
-#elif defined(_WIN32) && !defined(HAS_XBOX_HARDWARE)
+#elif defined(_WIN32)
     m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, g_advancedSettings.m_fullScreen);
     //get the display frequency
     DEVMODE devmode;
@@ -758,21 +749,6 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 RESOLUTION CGraphicContext::GetVideoResolution() const
 {
   return m_Resolution;
-}
-
-void CGraphicContext::SetScreenFilters(bool useFullScreenFilters)
-{
-#ifdef HAS_XBOX_D3D
-  Lock();
-  if (m_pd3dDevice)
-  {
-    // These are only valid here and nowhere else
-    // set soften on/off
-    m_pd3dDevice->SetSoftDisplayFilter(useFullScreenFilters ? g_guiSettings.GetBool("videoplayer.soften") : g_guiSettings.GetBool("videoscreen.soften"));
-    m_pd3dDevice->SetFlickerFilter(useFullScreenFilters ? g_guiSettings.GetInt("videoplayer.flicker") : g_guiSettings.GetInt("videoscreen.flickerfilter"));
-  }
-  Unlock();
-#endif
 }
 
 void CGraphicContext::ResetOverscan(RESOLUTION_INFO &res)
@@ -1111,32 +1087,7 @@ void CGraphicContext::UpdateCameraPosition(const CPoint &camera)
   // and calculate the offset from the screen center
   CPoint offset = camera - CPoint(m_iScreenWidth*0.5f, m_iScreenHeight*0.5f);
 
-#ifdef HAS_XBOX_D3D
-  // grab the viewport dimensions and location
-  D3DVIEWPORT8 viewport;
-  m_pd3dDevice->GetViewport(&viewport);
-  float w = viewport.Width*0.5f;
-  float h = viewport.Height*0.5f;
-
-  // world view.  Until this is moved onto the GPU (via a vertex shader for instance), we set it to the identity
-  // here.
-  D3DXMATRIX mtxWorld;
-  D3DXMatrixIdentity(&mtxWorld);
-  m_pd3dDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
-
-  // camera view.  Multiply the Y coord by -1 then translate so that everything is relative to the camera
-  // position.
-  D3DXMATRIX flipY, translate, mtxView;
-  D3DXMatrixScaling(&flipY, 1.0f, -1.0f, 1.0f);
-  D3DXMatrixTranslation(&translate, -(viewport.X + w + offset.x), -(viewport.Y + h + offset.y), 2*h);
-  D3DXMatrixMultiply(&mtxView, &translate, &flipY);
-  m_pd3dDevice->SetTransform(D3DTS_VIEW, &mtxView);
-
-  // projection onto screen space
-  D3DXMATRIX mtxProjection;
-  D3DXMatrixPerspectiveOffCenterLH(&mtxProjection, (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
-  m_pd3dDevice->SetTransform(D3DTS_PROJECTION, &mtxProjection);
-#elif defined(HAS_SDL_OPENGL)
+#if defined(HAS_SDL_OPENGL)
   // grab the viewport dimensions and location
   GLint viewport[4];
   BeginPaint();

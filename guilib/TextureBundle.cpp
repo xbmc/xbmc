@@ -3,11 +3,7 @@
 #include "include.h"
 #include "./TextureBundle.h"
 #include "GraphicContext.h"
-#ifdef HAS_XBOX_D3D
-#include <XGraphics.h>
-#else
 #include "DirectXGraphics.h"
-#endif
 #ifndef _LINUX
 #include "lib/liblzo/LZO1X.H"
 #else
@@ -17,9 +13,7 @@
 #include "GUISettings.h"
 #include "Util.h"
 
-#ifdef _XBOX
-#pragma comment(lib,"xbmc/lib/liblzo/lzo.lib")
-#elif !defined(__GNUC__)
+#if !defined(__GNUC__)
 #pragma comment(lib,"../../xbmc/lib/liblzo/lzo.lib")
 #endif
 
@@ -156,36 +150,6 @@ bool CTextureBundle::OpenBundle()
     return false;
 
   m_TimeStamp = fileStat.st_mtime;
-#endif
-
-#ifdef _XBOX
-  if (ALIGN % XGetDiskSectorSize(strPath.Left(3).c_str()))
-  {
-    CLog::Log(LOGWARNING, "Disk sector size is not supported, caching textures.xpr");
-
-    WIN32_FIND_DATA FindData[2];
-    FindClose(FindFirstFile(strPath.c_str(), &FindData[0]));
-    HANDLE hFind = FindFirstFile("Z:\\Textures.xpr", &FindData[1]);
-    FindClose(hFind);
-
-    if (hFind == INVALID_HANDLE_VALUE || FindData[0].nFileSizeLow != FindData[1].nFileSizeLow ||
-        CompareFileTime(&FindData[0].ftLastWriteTime, &FindData[1].ftLastWriteTime))
-    {
-      SetFileAttributes("Z:\\Textures.xpr", FILE_ATTRIBUTE_NORMAL); //must set readable before overwriting
-      if (!CopyFile(strPath, "Z:\\Textures.xpr", FALSE))
-      {
-        CLog::Log(LOGERROR, "Unable to open file: %s: %x", strPath.c_str(), GetLastError());
-        return false;
-      }
-      m_hFile = CreateFile(strPath.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING, 0, 0);
-      if (m_hFile != INVALID_HANDLE_VALUE)
-      {
-        GetFileTime(m_hFile, NULL, NULL, &m_TimeStamp);
-        CloseHandle(m_hFile);
-      }
-    }
-    strPath = "Z:\\Textures.xpr";
-  }
 #endif
 
   CAutoBuffer HeaderBuf(ALIGN);
@@ -533,20 +497,6 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
   m_PreLoadBuffer[m_LoadIdx] = 0;
   m_CurFileHeader[m_LoadIdx] = m_FileHeaders.end();
 
-  // switch on writecombine on memory and flush the cache for the gpu
-  // it's about 3 times faster to load in cached ram then do this than to load in wc ram. :)
-  if (hr == S_OK)
-  {
-#ifdef _XBOX
-    // this causes xbmc to crash when swtiching back to gui from pal60, not really needed anyway as nothing should be writing to texture ram.
-    //XPhysicalProtect(UnpackedBuf, m_CurFileHeader[m_LoadIdx]->second.UnpackedSize, PAGE_READWRITE | PAGE_WRITECOMBINE);
-
-    __asm {
-      wbinvd
-    }
-#endif
-  }
-
   return hr;
 }
 
@@ -566,11 +516,7 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* 
   if (r != S_OK)
     return r;
 
-  D3DTexture *pTex = (D3DTexture *)(new char[sizeof (D3DTexture)
-#ifdef HAS_XBOX_D3D
-                                            + sizeof (DWORD)
-#endif /* HAS_XBOX_D3D */
-                                           ]);
+  D3DTexture *pTex = (D3DTexture *)(new char[sizeof (D3DTexture)]);
   D3DPalette* pPal = 0;
   void* ResData = 0;
 
@@ -608,23 +554,8 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* 
   if ((pTex->Common & D3DCOMMON_TYPE_MASK) != D3DCOMMON_TYPE_TEXTURE)
     goto PackedLoadError;
 
-#ifdef HAS_XBOX_D3D
-  *ppTexture = (LPDIRECT3DTEXTURE8)pTex;
-  (*ppTexture)->Register(ResData);
-  *(DWORD *)(pTex + 1) = (DWORD)(BYTE *)UnpackedBuf;
-#else /* !HAS_XBOX_D3D */
   GetTextureFromData(pTex, ResData, ppTexture);
   delete[] pTex;
-#endif /* HAS_XBOX_D3D */
-
-#ifdef HAS_XBOX_D3D
-  if (pPal)
-  {
-    *ppPalette = (LPDIRECT3DPALETTE8)pPal;
-    (*ppPalette)->Register(ResData);
-  }
-  UnpackedBuf.Release();
-#endif
 
   pInfo->Width = RealSize[0];
   pInfo->Height = RealSize[1];
@@ -697,11 +628,7 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, 
   *ppDelays = new int[nTextures];
   for (int i = 0; i < nTextures; ++i)
   {
-    ppTex[i] = (D3DTexture *)(new char[sizeof (D3DTexture)
-#ifdef HAS_XBOX_D3D
-                                       + sizeof (DWORD)
-#endif /* HAS_XBOX_D3D */
-                                      ]);
+    ppTex[i] = (D3DTexture *)(new char[sizeof (D3DTexture)+ sizeof (DWORD)]);
 
     memcpy(ppTex[i], Next, sizeof(D3DTexture));
     Next += sizeof(D3DTexture);
@@ -723,30 +650,12 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, 
     if ((ppTex[i]->Common & D3DCOMMON_TYPE_MASK) != D3DCOMMON_TYPE_TEXTURE)
       goto PackedAnimError;
 
-#ifdef HAS_XBOX_D3D
-    (*ppTextures)[i] = (LPDIRECT3DTEXTURE8)ppTex[i];
-    (*ppTextures)[i]->Register(ResData);
-    *(DWORD *)(ppTex[i] + 1) = 0;
-#else /* !HAS_XBOX_D3D */
     GetTextureFromData(ppTex[i], ResData, &(*ppTextures)[i]);
     delete[] ppTex[i];
-#endif /* HAS_XBOX_D3D */
   }
-#ifdef HAS_XBOX_D3D
-  *(DWORD *)(ppTex[0] + 1) = (DWORD)(BYTE *)UnpackedBuf;
-#endif /* HAS_XBOX_D3D */
 
   delete [] ppTex;
   ppTex = 0;
-
-#ifdef HAS_XBOX_D3D
-  if (pPal)
-  {
-    *ppPalette = (LPDIRECT3DPALETTE8)pPal;
-    (*ppPalette)->Register(ResData);
-  }
-  UnpackedBuf.Release();
-#endif
 
   pInfo->Width = pAnimInfo->RealSize[0];
   pInfo->Height = pAnimInfo->RealSize[1];

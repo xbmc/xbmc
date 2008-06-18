@@ -404,9 +404,6 @@
 				RelativePath=".\LocalizeStrings.cpp">
 			</File>
 			<File
-				RelativePath=".\PackedTexture.cpp">
-			</File>
-			<File
 				RelativePath=".\Shader.cpp">
 			</File>
 			<File
@@ -650,9 +647,6 @@
 			</File>
 			<File
 				RelativePath=".\LocalizeStrings.h">
-			</File>
-			<File
-				RelativePath=".\PackedTexture.h">
 			</File>
 			<File
 				RelativePath=".\Shader.h">

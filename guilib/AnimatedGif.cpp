@@ -61,28 +61,6 @@ CAnimatedGif::~CAnimatedGif()
   delete [] Raster;
 }
 
-#ifdef _XBOX 
-// Round a number to the nearest power of 2 rounding up
-// runs pretty quickly - the only expensive op is the bsr
-// alternive would be to dec the source, round down and double the result
-// which is slightly faster but rounds 1 to 2
-DWORD __forceinline __stdcall PadPow2(DWORD x)
-{
-  __asm {
-    mov edx, x    // put the value in edx
-    xor ecx, ecx  // clear ecx - if x is 0 bsr doesn't alter it
-    bsr ecx, edx  // find MSB position
-    mov eax, 1    // shift 1 by result effectively
-    shl eax, cl   // doing a round down to power of 2
-    cmp eax, edx  // check if x was already a power of two
-    adc ecx, 0    // if it wasn't then CF is set so add to ecx
-    mov eax, 1    // shift 1 by result again, this does a round
-    shl eax, cl   // up as a result of adding CF to ecx
-  }
-  // return result in eax
-}
-#endif
-
 // Init: Allocates space for raster and palette in GDI-compatible structures.
 void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP, int iLoops)
 {
@@ -99,11 +77,7 @@ void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP, int iLoops)
   }
   // Standard members setup
   Transparent = -1;
-#ifdef _XBOX
-  BytesPerRow = PadPow2(Width = iWidth);
-#else
   BytesPerRow = Width = iWidth;
-#endif
   Height = iHeight;
   BPP = iBPP;
   // Animation Extra members setup:
@@ -121,14 +95,8 @@ void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP, int iLoops)
     Palette = (COLOR*)((char*)pbmi + sizeof(GUIBITMAPINFOHEADER));
   }
 
-#ifndef _XBOX // Not needed as already fixed to power of two
   BytesPerRow += (ALIGN - Width % ALIGN) % ALIGN; // Align BytesPerRow
   int size = BytesPerRow * Height;
-#else
-  // align to multiple of 4096 for XGSwizzleRect
-  int size = BytesPerRow * Height;
-  size += (4096 - size % 4096) % 4096;  // align size
-#endif
 
   Raster = new char [size];
 
@@ -145,7 +113,7 @@ void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP, int iLoops)
   pbmi->bmiHeader.biClrImportant = 0;
 }
 
-#if !defined(_XBOX) && !defined(_LINUX)
+#if !defined(_LINUX)
 // GDIPaint: Paint the raster image onto a DC
 int CAnimatedGif::GDIPaint (HDC hdc, int x, int y)
 {
