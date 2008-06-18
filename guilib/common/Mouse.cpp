@@ -22,9 +22,7 @@
 #include "include.h"
 #include "Mouse.h"
 
-#ifdef _XBOX
-#include "XBoxMouse.h"
-#elif defined (HAS_SDL)
+#if defined (HAS_SDL)
 #include "SDLMouse.h"
 #else
 #include "DirectInputMouse.h"
@@ -60,9 +58,7 @@ void CMouse::Initialize(void *appData)
     return; // nothing to do
 
   // create the mouse device
-#ifdef _XBOX
-  m_mouseDevice = new CXBoxMouse();
-#elif defined (HAS_SDL)
+#if defined (HAS_SDL)
   m_mouseDevice = new CSDLMouse();
 #else
   m_mouseDevice = new CDirectInputMouse();
