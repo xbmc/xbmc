@@ -44,19 +44,12 @@
 using namespace std;
 
 // our free type library (debug)
-#ifdef _XBOX
-#if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
-  #pragma comment (lib,"guilib/freetype2/freetype221_D.lib")
-#else
-  #pragma comment (lib,"guilib/freetype2/freetype221.lib")
-#endif
-#else
 #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
   #pragma comment (lib,"../../guilib/freetype2/freetype221_D.lib")
 #elif !defined(__GNUC__)
   #pragma comment (lib,"../../guilib/freetype2/freetype221.lib")
 #endif
-#endif
+
 #ifdef _LINUX
 #define max(a,b) ((a)>(b)?(a):(b))
 #define min(a,b) ((a)<(b)?(a):(b))
@@ -77,7 +70,7 @@ namespace MathUtils {
 
 #define ROUND(x) (float)(MathUtils::round_int(x))
 
-#if defined(HAS_XBOX_D3D) || defined(HAS_SDL_OPENGL)
+#if defined(HAS_SDL_OPENGL)
 #define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
 #else
 #define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x)) - 0.5f
@@ -592,9 +585,6 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
     {
       // create the new larger texture
       unsigned newHeight = m_posY + m_cellHeight;
-#ifdef HAS_XBOX
-      LPDIRECT3DTEXTURE8 newTexture;
-#endif
       // check for max height (can't be more than 4096 texels)
       if (newHeight > 4096)
       {
@@ -793,11 +783,6 @@ void CGUIFontTTF::Begin()
 
     m_pD3DDevice->SetVertexShader(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
 
-#ifdef HAS_XBOX_D3D
-    // Render the image
-    m_pD3DDevice->SetScreenSpaceOffset(-0.5f, -0.5f);
-    m_pD3DDevice->Begin(D3DPT_QUADLIST);
-#endif
 #elif defined(HAS_SDL_OPENGL)
     if (!m_glTextureLoaded)
     {
@@ -853,10 +838,6 @@ void CGUIFontTTF::End()
     return;
 
 #ifndef HAS_SDL
-#ifdef HAS_XBOX_D3D
-  m_pD3DDevice->End();
-  m_pD3DDevice->SetScreenSpaceOffset(0, 0);
-#endif
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
 #elif defined(HAS_SDL_OPENGL)
@@ -898,19 +879,7 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
   float y4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
   float z4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
 
-#ifdef HAS_XBOX_D3D
-  m_pD3DDevice->SetVertexDataColor( D3DVSDE_DIFFUSE, dwColor);
-
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y1);
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y1, z1, 1);
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x2, texture.y1);
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y2, z2, 1);
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x2, texture.y2);
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x3, y3, z3, 1);
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y2);
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, z4, 1);
-
-#elif !defined(HAS_SDL)
+#if !defined(HAS_SDL)
 struct CUSTOMVERTEX {
       FLOAT x, y, z;
       DWORD color;
