@@ -21,7 +21,6 @@
  *
  */
 
-#ifndef _XBOX
 #include "GraphicContext.h"
 
 LPVOID XPhysicalAlloc(SIZE_T s, DWORD ulPhysicalAddress, DWORD ulAlignment, DWORD flProtect);
@@ -185,5 +184,4 @@ public:
 private:
   BYTE *m_buffer;
 };
-#endif
 #endif
