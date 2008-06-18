@@ -26,9 +26,6 @@
 #include "Util.h"
 #include "Profile.h"
 #include "DirectoryCache.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "utils/MemoryUnitManager.h"
-#endif
 #include "DetectDVDType.h"
 #ifdef HAS_HAL // This should be ifdef _LINUX when hotplugging is supported on osx
 #include "linux/LinuxFileSystem.h"
@@ -256,9 +253,6 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
 
   if (m_allowNonLocalSources)
   {
-#ifdef HAS_XBOX_HARDWARE
-    g_memoryUnitManager.GetMemoryUnitSources(shares);
-#endif
 #ifdef HAS_HAL
 /*  static int DevTypes[] = {0, 5, 6, 7, 8, 9, 10, 13}; //These numbers can be found in libhal-storage.h. 9 is Camera and 10 is Audio player, these are uncertain.
     std::vector<CStdString> result = CLinuxFileSystem::GetDevices(DevTypes, 8); */

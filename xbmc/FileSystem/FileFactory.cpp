@@ -41,15 +41,9 @@
 #ifdef HAS_FILESYSTEM_RTV
 #include "FileRTV.h"
 #endif
-#ifdef HAS_XBOX_HARDWARE
-#include "FileSndtrk.h"
-#endif
 #ifdef HAS_FILESYSTEM_DAAP
 #include "FileDAAP.h"
 #endif
-#endif
-#ifdef HAS_XBOX_HARDWARE
-#include "FileMemUnit.h"
 #endif
 #ifdef HAS_MMS
 #include "FileMMS.h"
@@ -95,12 +89,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
 #ifdef HAS_FILESYSTEM
   else if (strProtocol == "iso9660") return new CFileISO();
-#ifdef HAS_XBOX_HARDWARE
-  else if (strProtocol == "soundtrack") return new CFileSndtrk();
-#endif
-#endif
-#ifdef HAS_XBOX_HARDWARE
-  else if (strProtocol.Left(3) == "mem") return new CFileMemUnit();
 #endif
   if( g_application.getNetwork().IsAvailable() )
   {
