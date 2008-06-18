@@ -469,10 +469,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\PackedTexture.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\Shader.cpp"
 				>
 			</File>
@@ -796,10 +792,6 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\LocalizeStrings.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\PackedTexture.h"
 				>
 			</File>
 			<File

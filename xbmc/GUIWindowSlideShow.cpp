@@ -553,9 +553,6 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
         m_ImageLib.Unload();
       }
       m_gWindowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
-      // set screen filters to video filters so that we
-      // get sharper images
-      g_graphicsContext.SetScreenFilters(false);
       FreeResources();
     }
     break;
@@ -582,9 +579,6 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
         m_ImageLib.Load();
       }
       m_gWindowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
-      // set screen filters to video filters so that we
-      // get sharper images
-      g_graphicsContext.SetScreenFilters(true);
 
       // turn off slideshow if we only have 1 image
       if (m_slides->Size() <= 1)

@@ -60,10 +60,6 @@ public:
   bool                        IsAC3EncoderActive() const;
   bool                        IsPassthroughActive() const;
 
-#ifdef HAS_XBOX_AUDIO
-  bool                        GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, DWORD* dwChannelMask, int Type, int Channels);
-#endif
-
   enum AUDIO_DEVICE {NONE=0, DEFAULT_DEVICE, DIRECTSOUND_DEVICE, AC97_DEVICE };
 protected:
   void                         RemoveActiveDevice();

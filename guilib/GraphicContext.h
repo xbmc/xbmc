@@ -54,9 +54,7 @@
 class IMsgSenderCallback;
 class CGUIMessage;
 
-#ifdef _XBOX
-#include "common/Mouse.h"
-#elif defined(HAS_SDL)
+#if defined(HAS_SDL)
 #include "common/Mouse.h"
 //#include "common/SDLMouse.h"
 #else
@@ -183,7 +181,6 @@ public:
   bool IsValidResolution(RESOLUTION res);
   void SetVideoResolution(RESOLUTION &res, BOOL NeedZ = FALSE, bool forceClear = false);
   RESOLUTION GetVideoResolution() const;
-  void SetScreenFilters(bool useFullScreenFilters);
   void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
   void ResetOverscan(RESOLUTION_INFO &resinfo);
   void ResetScreenParameters(RESOLUTION res);
