@@ -103,16 +103,6 @@ void CSMB::Init()
   CSingleLock(*this);
   if (!m_context)
   {
-#ifdef _XBOX
-    set_xbox_interface(g_network.m_networkinfo.ip, g_network.m_networkinfo.subnet);
-
-    // set log function
-    set_log_callback(xb_smbc_log);
-
-    // set workgroup for samba, after smbc_init it can be freed();
-    xb_setSambaWorkgroup((char*)g_guiSettings.GetString("smb.workgroup").c_str());
-#endif
-
     // setup our context
     m_context = smbc_new_context();
     m_context->debug = g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0;

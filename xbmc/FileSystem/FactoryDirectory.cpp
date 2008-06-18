@@ -55,9 +55,6 @@
 #include "DAAPDirectory.h"
 #endif
 #endif
-#ifdef HAS_XBOX_HARDWARE
-#include "MemUnitDirectory.h"
-#endif
 #ifdef HAS_UPNP
 #include "UPnPDirectory.h"
 #endif
@@ -109,9 +106,6 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if (strProtocol == "videodb") return new CVideoDatabaseDirectory();
   if (strProtocol == "filereader") 
     return CFactoryDirectory::Create(url.GetFileName());
-#ifdef HAS_XBOX_HARDWARE
-  if (strProtocol.Left(3) == "mem") return new CMemUnitDirectory();
-#endif
 
   if( g_application.getNetwork().IsAvailable() )
   {
