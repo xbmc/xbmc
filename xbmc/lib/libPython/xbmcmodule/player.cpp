@@ -65,8 +65,7 @@ namespace PYXBMC
 
     if (playerCore == EPC_DVDPLAYER ||
         playerCore == EPC_MPLAYER ||
-        playerCore == EPC_PAPLAYER ||
-        playerCore == EPC_MODPLAYER)
+        playerCore == EPC_PAPLAYER)
     {
       self->playerCore = (EPLAYERCORES)playerCore;
     }
@@ -458,8 +457,7 @@ namespace PYXBMC
     "         : - xbmc.PLAYER_CORE_AUTO\n"
     "         : - xbmc.PLAYER_CORE_DVDPLAYER\n"
     "         : - xbmc.PLAYER_CORE_MPLAYER\n"
-    "         : - xbmc.PLAYER_CORE_PAPLAYER\n"
-    "         : - xbmc.PLAYER_CORE_MODPLAYER\n");
+    "         : - xbmc.PLAYER_CORE_PAPLAYER\n");
 
 // Restore code and data sections to normal.
 #ifndef __GNUC__
