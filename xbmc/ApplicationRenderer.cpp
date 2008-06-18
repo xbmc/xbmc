@@ -143,13 +143,6 @@ void CApplicationRenderer::Process()
           if (m_lpSurface == NULL)
           {
             D3DSURFACE_DESC desc;
-#ifdef HAS_XBOX_D3D
-            if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer( -1, D3DBACKBUFFER_TYPE_MONO, &lpSurfaceFront)))
-            {
-              lpSurfaceFront->GetDesc( &desc );
-            }
-            else
-#else
             g_application.RenderNoPresent();
             HRESULT result = g_graphicsContext.Get3DDevice()->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &lpSurfaceFront);
             if (SUCCEEDED(result))
@@ -161,7 +154,6 @@ void CApplicationRenderer::Process()
               iHeight = desc.Height;
             }
             else
-#endif
             {
               lockg.Leave();
               Sleep(1000);
@@ -224,11 +216,7 @@ void CApplicationRenderer::Process()
           const RECT rc = { 0, 0, iWidth, iHeight };
           const RECT rcDest = { iLeft, iTop, iLeft + iWidth, iTop + iHeight };
           const D3DRECT rc2 = { iLeft, iTop, iLeft + iWidth, iTop + iHeight };
-#ifdef HAS_XBOX_D3D
-          g_graphicsContext.Get3DDevice()->Clear(1, &rc2, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L);
-#else
           g_graphicsContext.Get3DDevice()->Clear(1, &rc2, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L);
-#endif
           if (!CopySurface(m_lpSurface, &rc, lpSurfaceBack, &rcDest))
           {
               SAFE_RELEASE(lpSurfaceBack);

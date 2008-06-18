@@ -26,9 +26,6 @@
 #include "Util.h"
 #include "GUIPassword.h"
 #include "PlayListPlayer.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "xbox/xbeheader.h"
-#endif
 #include "FileSystem/StackDirectory.h"
 #ifdef HAS_KAI
 #include "utils/KaiClient.h"
@@ -95,78 +92,8 @@ void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying )
   }
 }
 
-void CAutorun::ExecuteXBE(const CStdString &xbeFile)
-{
-#ifdef HAS_XBOX_HARDWARE
-  int iRegion;
-  if (g_guiSettings.GetBool("myprograms.gameautoregion"))
-  {
-    CXBE xbe;
-    iRegion = xbe.ExtractGameRegion(xbeFile);
-    if (iRegion < 1 || iRegion > 7)
-      iRegion = 0;
-    iRegion = xbe.FilterRegion(iRegion);
-  }
-  else
-    iRegion = 0;
-
-#ifdef HAS_TRAINER
-  CProgramDatabase database;
-  database.Open();
-  DWORD dwTitleId = CUtil::GetXbeID(xbeFile);
-  CStdString strTrainer = database.GetActiveTrainer(dwTitleId);
-  if (strTrainer != "")
-  {
-      bool bContinue=false;
-      if (CKaiClient::GetInstance()->IsEngineConnected())
-      {
-        CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-        pDialog->SetHeading(714);
-        pDialog->SetLine(0,"Use trainer or KAI?");
-        pDialog->SetLine(1, "Yes for trainer");
-        pDialog->SetLine(2, "No for KAI");
-        pDialog->DoModal();
-        if (pDialog->IsConfirmed())
-        {
-          while (CKaiClient::GetInstance()->GetCurrentVector().size() > 1)
-            CKaiClient::GetInstance()->ExitVector();
-        }
-        else
-          bContinue = true;
-      }
-      if (!bContinue)
-      {
-        CTrainer trainer;
-        if (trainer.Load(strTrainer))
-        {
-          database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
-          CUtil::InstallTrainer(trainer);
-        }
-      }
-  }
-  database.Close();
-#endif
-  CUtil::RunXBE(xbeFile.c_str(), NULL,F_VIDEO(iRegion));
-#endif
-}
-
 void CAutorun::RunXboxCd(bool bypassSettings)
 {
-#ifdef HAS_XBOX_HARDWARE
-  if ( CFile::Exists("D:\\default.xbe") )
-  {
-    if (!g_guiSettings.GetBool("autorun.xbox") && !bypassSettings)
-      return;
-
-    if (!g_passwordManager.IsMasterLockUnlocked(false))
-      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked())
-        return;
-
-    ExecuteXBE("D:\\default.xbe");
-    return;
-  }
-#endif
-
   if ( !g_guiSettings.GetBool("autorun.dvd") && !g_guiSettings.GetBool("autorun.vcd") && !g_guiSettings.GetBool("autorun.video") && !g_guiSettings.GetBool("autorun.music") && !g_guiSettings.GetBool("autorun.pictures") )
     return ;
 

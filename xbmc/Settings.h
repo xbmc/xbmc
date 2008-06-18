@@ -61,14 +61,10 @@
 #define VIDEO_SHOW_UNWATCHED 1
 #define VIDEO_SHOW_WATCHED 2
 
-#ifdef _XBOX
-#define PROFILES_FILE "q:\\system\\profiles.xml"
-#else
-/* FIXME: eventaully the profile should dictate where t:\ is but for now it 
+/* FIXME: eventually the profile should dictate where t:\ is but for now it 
    makes sense to leave all the profile settings in a user writeable location 
    like t:\ */
 #define PROFILES_FILE "t:\\profiles.xml"
-#endif
 
 class CSkinString
 {
