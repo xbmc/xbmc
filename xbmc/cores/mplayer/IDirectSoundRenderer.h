@@ -29,10 +29,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#ifdef _XBOX
-#include <xtl.h>
-#endif
-
 #include "IAudioCallback.h"
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();
