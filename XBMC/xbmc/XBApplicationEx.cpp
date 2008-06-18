@@ -78,15 +78,6 @@ CXBApplicationEx::CXBApplicationEx()
   m_d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
   m_d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 #endif
-
-  // Specify number and type of input devices this app will be using. By
-  // default, you can use 0 and NULL, which triggers XInputDevices() to
-  // pre-alloc the default number and types of devices. To use chat or
-  // other devices, override these variables in your derived class.
-#ifdef HAS_XBOX_HARDWARE
-  m_dwNumInputDeviceTypes = 0;
-  m_InputDeviceTypes = NULL;
-#endif
 }
 
 

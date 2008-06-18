@@ -15,16 +15,10 @@
 #endif
 #include "IWindowManagerCallback.h"
 #include "common/Mouse.h"
-#ifdef _XBOX
-//#include "common/XBoxKeyboard.h"
-#elif defined(HAS_SDL)
-//#include "common/SDLMouse.h"
-//#include "common/SDLKeyboard.h"
+#if defined(HAS_SDL)
 #ifdef HAS_SDL_JOYSTICK
 #include "common/SDLJoystick.h"
 #endif
-#else
-//#include "common/DirectInputKeyboard.h"
 #endif
 #include "common/Keyboard.h"
 #ifdef HAS_LIRC

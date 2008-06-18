@@ -115,71 +115,6 @@ CUPnP* CUPnP::upnp = NULL;
 // don't change unless you know what you're doing!
 bool CUPnP::broadcast = true; 
 
-#ifdef HAS_XBOX_NETWORK
-#include <xtl.h>
-#include <winsockx.h>
-#include "NptXboxNetwork.h"
-
-/*----------------------------------------------------------------------
-|   static initializer
-+---------------------------------------------------------------------*/
-NPT_WinsockSystem::NPT_WinsockSystem() 
-{
-}
-
-NPT_WinsockSystem::~NPT_WinsockSystem() 
-{
-}
-
-NPT_WinsockSystem NPT_WinsockSystem::Initializer;
-
-/*----------------------------------------------------------------------
-|       NPT_NetworkInterface::GetNetworkInterfaces
-+---------------------------------------------------------------------*/
-NPT_Result
-NPT_NetworkInterface::GetNetworkInterfaces(NPT_List<NPT_NetworkInterface*>& interfaces)
-{
-    if (!g_application.getNetwork().IsAvailable(true))
-        return NPT_ERROR_NETWORK_DOWN;
-
-    NPT_IpAddress primary_address;
-    primary_address.ResolveName(g_application.getNetwork().m_networkinfo.ip);
-
-    NPT_IpAddress netmask;
-    netmask.ResolveName(g_application.getNetwork().m_networkinfo.subnet);
-
-    NPT_IpAddress broadcast_address;        
-    broadcast_address.ResolveName("255.255.255.255");
-
-    NPT_Flags flags = NPT_NETWORK_INTERFACE_FLAG_BROADCAST | NPT_NETWORK_INTERFACE_FLAG_MULTICAST;
-
-    NPT_MacAddress mac;
-    //mac.SetAddress(NPT_MacAddress::TYPE_ETHERNET, g_application.getNetwork().m_networkinfo.mac, 6);
-
-    // create an interface object
-    char iface_name[5];
-    iface_name[0] = 'i';
-    iface_name[1] = 'f';
-    iface_name[2] = '0';
-    iface_name[3] = '0';
-    iface_name[4] = '\0';
-    NPT_NetworkInterface* iface = new NPT_NetworkInterface(iface_name, mac, flags);
-
-    // set the interface address
-    NPT_NetworkInterfaceAddress iface_address(
-        primary_address,
-        broadcast_address,
-        NPT_IpAddress::Any,
-        netmask);
-    iface->AddAddress(iface_address);  
-
-    // add the interface to the list
-    interfaces.Add(iface);  
-
-    return NPT_SUCCESS;
-}
-#endif
-
 /*----------------------------------------------------------------------
 |   NPT_Console::Output
 +---------------------------------------------------------------------*/
@@ -1376,12 +1311,6 @@ CUPnP::StartClient()
     // start browser
     m_MediaBrowser = new PLT_SyncMediaBrowser(m_CtrlPointHolder->m_CtrlPoint, true);
 
-#ifdef _XBOX
-    // Issue a search request on the every 6 seconds, both on broadcast and multicast
-    // xbox can't receive multicast, but it can send it so upnp clients know we are here
-    m_CtrlPointHolder->m_CtrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1, 6000);
-    m_CtrlPointHolder->m_CtrlPoint->Discover(NPT_HttpUrl("239.255.255.250", 1900, "*"), "upnp:rootdevice", 1, 6000);
-#endif
 }
 
 /*----------------------------------------------------------------------
@@ -1416,12 +1345,10 @@ CUPnP::StartServer()
     NPT_String ip = g_network.m_networkinfo.ip;
 #endif
 
-#ifndef HAS_XBOX_NETWORK
     NPT_List<NPT_String> list;
     if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list))) {
         ip = *(list.GetFirstItem());
     }
-#endif
 
     // load upnpserver.xml so that g_settings.m_vecUPnPMusiCMediaSources, etc.. are loaded
     CStdString filename;
@@ -1442,12 +1369,6 @@ CUPnP::StartServer()
     m_ServerHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";    
     m_ServerHolder->m_Device->m_Manufacturer = "Team XBMC";
     m_ServerHolder->m_Device->m_ManufacturerURL = "http://www.xboxmediacenter.com/";
-
-#ifdef _XBOX
-    // since the xbox doesn't support multicast
-    // we use broadcast but we advertise more often
-    m_ServerHolder->m_Device->SetBroadcast(broadcast);
-#endif
 
     // tell controller to ignore ourselves from list of upnp servers
     if (!m_CtrlPointHolder->m_CtrlPoint.IsNull()) {
@@ -1502,12 +1423,10 @@ void CUPnP::StartRenderer()
 #else
     NPT_String ip = g_application.getNetwork().m_networkinfo.ip;
 #endif
-#ifndef HAS_XBOX_NETWORK
     NPT_List<NPT_String> list;
     if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list))) {
         ip = *(list.GetFirstItem());
     }
-#endif
 
     m_RendererHolder->m_Device = new CUPnPRenderer("XBMC: Media Renderer", true, 
           (g_settings.m_UPnPUUIDRenderer.length() ? g_settings.m_UPnPUUIDRenderer.c_str() : NULL) );
@@ -1519,10 +1438,6 @@ void CUPnP::StartRenderer()
     m_RendererHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";    
     m_RendererHolder->m_Device->m_Manufacturer = "Team XBMC";
     m_RendererHolder->m_Device->m_ManufacturerURL = "http://www.xboxmediacenter.com/";
-
-#ifdef _XBOX
-    m_RendererHolder->m_Device->SetBroadcast(broadcast);
-#endif
 
     m_UPnP->AddDevice(m_RendererHolder->m_Device);
 

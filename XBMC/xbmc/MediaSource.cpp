@@ -37,12 +37,6 @@ bool CMediaSource::isWritable() const
   {
     if (strPath.substr(0,4) == "smb:")
       return true; // smb path
-    #ifdef HAS_XBOX_HARDWARE
-    else if (strPath.substr(0,4) == "mem:")
-    {
-      return g_memoryUnitManager.IsDriveWriteable(strPath);
-    }
-    #endif
   }
 
   return false;
