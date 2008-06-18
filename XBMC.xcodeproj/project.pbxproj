@@ -328,7 +328,6 @@
 		E38E201A0D25F9FD00618676 /* FileMusicDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16D20D25F9FA00618676 /* FileMusicDatabase.cpp */; };
 		E38E201B0D25F9FD00618676 /* FileRar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16D40D25F9FA00618676 /* FileRar.cpp */; };
 		E38E201C0D25F9FD00618676 /* FileRTV.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16D60D25F9FA00618676 /* FileRTV.cpp */; };
-		E38E201F0D25F9FD00618676 /* FileSndtrk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16DC0D25F9FA00618676 /* FileSndtrk.cpp */; };
 		E38E20200D25F9FD00618676 /* FileTuxBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16DE0D25F9FA00618676 /* FileTuxBox.cpp */; };
 		E38E20220D25F9FD00618676 /* FileZip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16E20D25F9FA00618676 /* FileZip.cpp */; };
 		E38E20230D25F9FD00618676 /* FTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16E40D25F9FA00618676 /* FTPDirectory.cpp */; };
@@ -1605,8 +1604,6 @@
 		E38E16D60D25F9FA00618676 /* FileRTV.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileRTV.cpp; sourceTree = "<group>"; };
 		E38E16D70D25F9FA00618676 /* FileRTV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileRTV.h; sourceTree = "<group>"; };
 		E38E16DB0D25F9FA00618676 /* FileSmb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileSmb.h; sourceTree = "<group>"; };
-		E38E16DC0D25F9FA00618676 /* FileSndtrk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileSndtrk.cpp; sourceTree = "<group>"; };
-		E38E16DD0D25F9FA00618676 /* FileSndtrk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileSndtrk.h; sourceTree = "<group>"; };
 		E38E16DE0D25F9FA00618676 /* FileTuxBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileTuxBox.cpp; sourceTree = "<group>"; };
 		E38E16DF0D25F9FA00618676 /* FileTuxBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileTuxBox.h; sourceTree = "<group>"; };
 		E38E16E20D25F9FA00618676 /* FileZip.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileZip.cpp; sourceTree = "<group>"; };
@@ -4434,8 +4431,6 @@
 				E38E16D60D25F9FA00618676 /* FileRTV.cpp */,
 				E38E16D70D25F9FA00618676 /* FileRTV.h */,
 				E38E16DB0D25F9FA00618676 /* FileSmb.h */,
-				E38E16DC0D25F9FA00618676 /* FileSndtrk.cpp */,
-				E38E16DD0D25F9FA00618676 /* FileSndtrk.h */,
 				E38E16DE0D25F9FA00618676 /* FileTuxBox.cpp */,
 				E38E16DF0D25F9FA00618676 /* FileTuxBox.h */,
 				E38E16E20D25F9FA00618676 /* FileZip.cpp */,
@@ -6289,7 +6284,6 @@
 				E38E201A0D25F9FD00618676 /* FileMusicDatabase.cpp in Sources */,
 				E38E201B0D25F9FD00618676 /* FileRar.cpp in Sources */,
 				E38E201C0D25F9FD00618676 /* FileRTV.cpp in Sources */,
-				E38E201F0D25F9FD00618676 /* FileSndtrk.cpp in Sources */,
 				E38E20200D25F9FD00618676 /* FileTuxBox.cpp in Sources */,
 				E38E20220D25F9FD00618676 /* FileZip.cpp in Sources */,
 				E38E20230D25F9FD00618676 /* FTPDirectory.cpp in Sources */,
