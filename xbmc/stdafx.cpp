@@ -24,47 +24,6 @@
 
 #include "stdafx.h"
 
-#ifdef _XBOX
-#undef QueryPerformanceFrequency
-
-__int64 lFrequency = 0LL;
-WINBASEAPI BOOL WINAPI QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency)
-{
-  if( lFrequency == 0LL )
-  {
-    DWORD dwStandard;
-    _asm {
-      // get the Standard bits
-      mov eax, 1
-      cpuid
-      mov dwStandard, eax
-    }
-
-    int model = (dwStandard >> 4) & 0xF;
-    int stepping = dwStandard & 0xF;
-
-    if( model == 11 )
-    {
-      //This is likely the DreamX 1480      
-      //so only support fullspeed mode
-      lFrequency = 1481200000;
-    }
-    else if( model == 8 && stepping == 6 )
-    {
-      //Upgraded 1ghz cpu (Intel Pentium III Coppermine)
-      lFrequency = 999985000;
-    }
-    else
-    {      
-      QueryPerformanceFrequency((LARGE_INTEGER*)&lFrequency);
-    }
-  }
-
-  (*lpFrequency).QuadPart = lFrequency;
-  return TRUE;
-}
-#endif
-
 #if defined(_MSC_VER) && _MSC_VER < 1500 //vs2008 and up already has strnlen, libsmb needs this function
 extern "C" {
   size_t strnlen(const char *s, size_t n)
