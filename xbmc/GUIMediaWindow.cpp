@@ -1126,10 +1126,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 {
   CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : NULL;
 
-  if (item == NULL)
-     return;
- 
-  if (item->IsPluginFolder())
+  if (item && item->IsPluginFolder())
   {
     if (CPluginSettings::SettingsExist(item->m_strPath))
       buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
@@ -1159,7 +1156,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   {
 #endif
   // TODO: FAVOURITES Conditions on masterlock and localisation
-  if (!item->IsParentFolder() && !item->m_strPath.Equals("add") && !item->m_strPath.Equals("newplaylist://") && !item->m_strPath.Left(19).Equals("newsmartplaylist://"))
+  if (item && !item->IsParentFolder() && !item->m_strPath.Equals("add") && !item->m_strPath.Equals("newplaylist://") && !item->m_strPath.Left(19).Equals("newsmartplaylist://"))
   {
     if (CFavourites::IsFavourite(item, GetID()))
       buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite
