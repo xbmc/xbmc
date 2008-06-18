@@ -22,7 +22,6 @@
  */
 
 #include "md5.h"
-#include "xbox/XKEEPROM.h"
 #include "InfoLoader.h"
 
 #define KB  (1024)          // 1 KiloByte (1KB)   1024 Byte (2^10 Byte)
@@ -124,19 +123,7 @@ class CSysInfo : public CInfoLoader
     signed char byHddTemp;
 
   private:
-    #define XBOX_BIOS_ID_INI_FILE "Q:\\System\\SystemInfo\\BiosIDs.ini"
-    #define XBOX_BIOS_BACKUP_FILE "Q:\\System\\SystemInfo\\BIOSBackup.bin"
-    #define XBOX_EEPROM_BIN_BACKUP_FILE "Q:\\System\\SystemInfo\\EEPROMBackup.bin"
-    #define XBOX_EEPROM_CFG_BACKUP_FILE "Q:\\System\\SystemInfo\\EEPROMBackup.cfg"
-    #define XBOX_XBMC_TXT_INFOFILE "Q:\\System\\SystemInfo\\XBMCSystemInfo.txt"
-    #define SYSINFO_TMP_SIZE 256
-    #define XDEVICE_TYPE_IR_REMOTE  (&XDEVICE_TYPE_IR_REMOTE_TABLE)
-    #define DEBUG_KEYBOARD
-    #define DEBUG_MOUSE
-
     CStdString m_temp;
-    XKEEPROM* m_XKEEPROM;
-    XBOX_VERSION  m_XBOXVersion;
 
     double GetCPUFrequency();
     double RDTSC(void);
