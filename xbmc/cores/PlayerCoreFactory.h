@@ -23,6 +23,7 @@
 
 #include "IPlayer.h"
 
+// do not remove mplayer - will break scripts
 enum EPLAYERCORES
 {
   EPC_NONE,

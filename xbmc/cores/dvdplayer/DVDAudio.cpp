@@ -21,10 +21,7 @@
  
 #include "stdafx.h"
 #include "DVDAudio.h"
-#ifdef _XBOX
-#include "cores/mplayer/ASyncDirectSound.h"
-#include "cores/mplayer/ac97directsound.h"
-#elif defined(__APPLE__)
+#if defined(__APPLE__)
 #include "PortaudioDirectSound.h"
 #elif _LINUX
 #include "ALSADirectSound.h"
@@ -91,13 +88,7 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
   else
     codecstring = "PCM";
 
-#ifdef _XBOX
-  // we don't allow resampling now, there is a bug in sscc that causes it to return the wrong chunklen.
-  if( audioframe.passthrough )
-    m_pAudioDecoder = new CAc97DirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, true); // true = resample, 128 buffers
-  else
-    m_pAudioDecoder = new CASyncDirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, codecstring);
-#elif __APPLE__
+#ifdef __APPLE__
 
   PortAudioDirectSound* paDecoder = new PortAudioDirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
   if (paDecoder->IsValid() == false)
