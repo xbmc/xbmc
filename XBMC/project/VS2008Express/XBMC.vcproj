@@ -203,6 +203,10 @@
 			Name="win32"
 			>
 			<File
+				RelativePath="..\..\xbmc\win32\ntddcdrm.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\win32\PlatformDefs.h"
 				>
 			</File>
@@ -2863,10 +2867,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\XBAudioConfig.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\XBTimeZone.cpp"
 					>
 				</File>
 				<File
