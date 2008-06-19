@@ -76,3 +76,6 @@ void _VerifyGLState(const char* szfile, const char* szfunction, int lineno);
 #else
 #define VerifyGLState()
 #endif
+
+void LogGraphicsInfo();
+

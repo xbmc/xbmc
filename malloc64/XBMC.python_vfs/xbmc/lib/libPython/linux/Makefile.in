@@ -18,12 +18,8 @@ wrapper_python.o : wrapper_python.c
 wrapper_python.def : wrapper_python.c
 	(echo -n "-Wl"; grep PYTHON_WRAP wrapper_python.c | grep -v define | awk -F ')' '{print $$1}' | awk -F'(' '{print $$2}' | grep -v '^l*stat$$' | awk '{printf(",-wrap,%s",$$0);}') > wrapper_python.def
 
-../Python/Makefile:
-	(cd ../Python; ./configure --enable-ipv6 --enable-unicode=ucs4 --without-cxx --enable-shared --prefix=`pwd`/../linux/tmp)
-	(cd ../Python; sed -i 's/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/' pyconfig.h)
-
 ../Python/libpython2.4.a:
-	$(MAKE) -C ../Python libinstall sharedinstall
+	$(MAKE) -C ../Python python libinstall sharedinstall
 
 clean:
 	$(RM) *.so *.o *.def
