@@ -2043,9 +2043,6 @@
 					RelativePath="..\..\xbmc\XBAudioConfig.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\XBTimeZone.cpp">
-				</File>
-				<File
 					RelativePath="..\..\xbmc\XBVideoConfig.cpp">
 				</File>
 			</Filter>
@@ -2145,6 +2142,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogFileStacking.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogFullScreenInfo.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogFullScreenInfo.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogGamepad.cpp">
@@ -2263,12 +2266,6 @@
 				<File
 					RelativePath="..\..\xbmc\GUIDialogYesNo.cpp">
 				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogFullScreenInfo.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogFullScreenInfo.h">
-				</File>
 			</Filter>
 			<Filter
 				Name="GUI Other"
@@ -2284,6 +2281,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIMediaWindow.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateGameSaves.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateGameSaves.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIViewStatePictures.cpp">
@@ -2302,15 +2305,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIViewStateScripts.h">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIViewStateGameSaves.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIViewStateGameSaves.h">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowBuddies.cpp">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowFileManager.cpp">
