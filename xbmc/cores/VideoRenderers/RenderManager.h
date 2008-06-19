@@ -21,9 +21,7 @@
  *
  */
 
-#if defined(HAS_XBOX_HARDWARE)
-#include "XBoxRenderer.h"
-#elif defined (HAS_SDL_OPENGL)
+#if defined (HAS_SDL_OPENGL)
 #include "LinuxRendererGL.h"
 #elif defined(HAS_SDL)
 #include "LinuxRenderer.h"
