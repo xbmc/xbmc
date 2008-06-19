@@ -36,9 +36,6 @@
 #include "FileSystem/FactoryDirectory.h"
 #include "FileSystem/VirtualDirectory.h"
 #include "utils/UdpClient.h"
-#ifndef _LINUX
-#include "xbox/XKHDD.h"
-#endif
 #include "FileSystem/Directory.h"
 #include "MusicInfoTag.h"
 #include "PictureInfoTag.h"
