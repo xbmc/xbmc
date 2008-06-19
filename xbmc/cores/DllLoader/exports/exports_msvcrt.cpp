@@ -285,7 +285,7 @@ extern "C" void* _CItanh();
 extern "C" void* tmpfile();
 extern "C" void* _unlink();
 extern "C" void* _setmode();
-extern "C" void* __security_error_handler();
+extern "C" void* dll__security_error_handler();
 extern "C" void* _getch();
 #endif
 #endif
@@ -805,7 +805,7 @@ Export export_msvcr71[] =
   { "tmpfile",                    -1, (void*)tmpfile,                       NULL },
   { "_unlink",                    -1, (void*)_unlink,                       NULL },
   { "_setmode",                   -1, (void*)_setmode,                      NULL },
-  { "__security_error_handler",   -1, (void*)__security_error_handler,      NULL },
+  { "__security_error_handler",   -1, (void*)dll__security_error_handler,   NULL },
   { "_getch",                     -1, (void*)_getch,                        NULL },
 #endif
   { NULL,                         -1, (void*)NULL,                          NULL }
