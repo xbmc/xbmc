@@ -683,7 +683,6 @@ ALLOCA
 LIBOBJS
 POW_LIB
 ARCH
-python_lib_a
 DEBUG_FLAGS
 SDL_DEFINES
 LZO_INCLUDES
@@ -12726,60 +12725,6 @@ echo "$as_me: error: ==unsupported host" >&2;}
 esac
 
 
-# check for where libpython is
-if test "$host_vendor" != "apple" ; then
-{ echo "$as_me:$LINENO: checking for /usr/lib/python2.4/config/libpython2.4-pic.a" >&5
-echo $ECHO_N "checking for /usr/lib/python2.4/config/libpython2.4-pic.a... $ECHO_C" >&6; }
-if test "${ac_cv_file__usr_lib_python2_4_config_libpython2_4_pic_a+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  test "$cross_compiling" = yes &&
-  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
-echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
-   { (exit 1); exit 1; }; }
-if test -r "/usr/lib/python2.4/config/libpython2.4-pic.a"; then
-  ac_cv_file__usr_lib_python2_4_config_libpython2_4_pic_a=yes
-else
-  ac_cv_file__usr_lib_python2_4_config_libpython2_4_pic_a=no
-fi
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_file__usr_lib_python2_4_config_libpython2_4_pic_a" >&5
-echo "${ECHO_T}$ac_cv_file__usr_lib_python2_4_config_libpython2_4_pic_a" >&6; }
-if test $ac_cv_file__usr_lib_python2_4_config_libpython2_4_pic_a = yes; then
-  python_lib_a=/usr/lib/python2.4/config/libpython2.4-pic.a
-
-else
-  { echo "$as_me:$LINENO: checking for /usr/lib/python2.4/config/libpython2.4.a" >&5
-echo $ECHO_N "checking for /usr/lib/python2.4/config/libpython2.4.a... $ECHO_C" >&6; }
-if test "${ac_cv_file__usr_lib_python2_4_config_libpython2_4_a+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  test "$cross_compiling" = yes &&
-  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
-echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
-   { (exit 1); exit 1; }; }
-if test -r "/usr/lib/python2.4/config/libpython2.4.a"; then
-  ac_cv_file__usr_lib_python2_4_config_libpython2_4_a=yes
-else
-  ac_cv_file__usr_lib_python2_4_config_libpython2_4_a=no
-fi
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_file__usr_lib_python2_4_config_libpython2_4_a" >&5
-echo "${ECHO_T}$ac_cv_file__usr_lib_python2_4_config_libpython2_4_a" >&6; }
-if test $ac_cv_file__usr_lib_python2_4_config_libpython2_4_a = yes; then
-  python_lib_a=/usr/lib/python2.4/config/libpython2.4.a
-
-else
-  { { echo "$as_me:$LINENO: error: ==Can not find libPython anywhere" >&5
-echo "$as_me: error: ==Can not find libPython anywhere" >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
-
-fi
-
-fi
-
 if test "$use_halmount" = "yes"; then
   final_message="$final_message\n  Automount:\tYes"
   SDL_DEFINES="$SDL_DEFINES -DHAL_HANDLEMOUNT"
@@ -12801,11 +12746,11 @@ echo "$as_me: enabling ccache" >&6;}
 else
   final_message="$final_message\n  ccache:\tNo"
 fi
- 
+
 if test -x "/usr/bin/svnversion"; then
   SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$(svnversion -n .)\"'"
 else
-  if test -n $SVN_REV -a $SVN_REV != "" ; then 
+  if test -n $SVN_REV -a $SVN_REV != "" ; then
     SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$SVN_REV\"'"
   fi
 fi
@@ -13501,14 +13446,13 @@ ALLOCA!$ALLOCA$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
 POW_LIB!$POW_LIB$ac_delim
 ARCH!$ARCH$ac_delim
-python_lib_a!$python_lib_a$ac_delim
 DEBUG_FLAGS!$DEBUG_FLAGS$ac_delim
 SDL_DEFINES!$SDL_DEFINES$ac_delim
 LZO_INCLUDES!$LZO_INCLUDES$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 72; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 71; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

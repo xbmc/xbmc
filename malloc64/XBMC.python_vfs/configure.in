@@ -281,16 +281,6 @@ case $host in
 esac
 AC_SUBST([ARCH])
 
-# check for where libpython is
-if test "$host_vendor" != "apple" ; then
-AC_CHECK_FILE(/usr/lib/python2.4/config/libpython2.4-pic.a,
-    AC_SUBST(python_lib_a,/usr/lib/python2.4/config/libpython2.4-pic.a),
-    AC_CHECK_FILE(/usr/lib/python2.4/config/libpython2.4.a,
-       AC_SUBST(python_lib_a,/usr/lib/python2.4/config/libpython2.4.a),
-       AC_MSG_ERROR(==Can not find libPython anywhere))
-    )
-fi
-
 if test "$use_halmount" = "yes"; then
   final_message="$final_message\n  Automount:\tYes"
   SDL_DEFINES="$SDL_DEFINES -DHAL_HANDLEMOUNT"
