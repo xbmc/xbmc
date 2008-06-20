@@ -63,11 +63,10 @@ bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_INIT:
     {
-      CGUIDialog::OnMessage(message);
-
+      CGUIDialogBoxBase::OnMessage(message);
       FreeControls();
       CreateControls();
-      break;
+      return true;
     }
 
     case GUI_MSG_CLICKED:
