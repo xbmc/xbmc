@@ -13,6 +13,8 @@
 #include "PlatformDefs.h"
 #include "xwinapi.h"
 #define WIN32_FIND_DATAA WIN32_FIND_DATA
+#else
+#define XBMC_FILE_SEP '\\'
 #endif
 
 // Debug macros
@@ -334,7 +336,7 @@ void ConvertFile(const char* Dir, const char* Filename)
   CSurface surface;
 	char OutFilename[52];
 	if (Dir)
-		_snprintf(OutFilename, 52, "%s%c%s", Dir, '\\', Filename);
+		_snprintf(OutFilename, 52, "%s\\%s", Dir, Filename);
 	else
 		_snprintf(OutFilename, 52, "%s", Filename);
 	OutFilename[51] = 0;
