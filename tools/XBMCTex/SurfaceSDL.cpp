@@ -130,3 +130,4 @@ bool CGraphicsDevice::CreateSurface(unsigned int width, unsigned int height, enu
   return false;
 }
 #endif
+
