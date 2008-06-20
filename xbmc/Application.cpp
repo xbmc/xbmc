@@ -3622,61 +3622,6 @@ HRESULT CApplication::Cleanup()
 {
   try
   {
-    if (m_pXbmcHttp)
-    {
-      if(g_stSettings.m_HttpApiBroadcastLevel>=1)
-        getApplicationMessenger().HttpApi("broadcastlevel; ShutDown;1");
-
-      m_pXbmcHttp->shuttingDown=true;
-      //Sleep(100);
-    }
-
-    CLog::Log(LOGNOTICE, "Storing total System Uptime");
-    g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
-
-    // Update the settings information (volume, uptime etc. need saving)
-    if (CFile::Exists(g_settings.GetSettingsFile()))
-    {
-      CLog::Log(LOGNOTICE, "Saving settings");
-      g_settings.Save();
-    }
-    else
-      CLog::Log(LOGNOTICE, "Not saving settings (settings.xml is not present)");
-
-    m_bStop = true;
-    CLog::Log(LOGNOTICE, "stop all");
-
-    StopServices();
-    //Sleep(5000);
-
-    if (m_pPlayer)
-    {
-      CLog::Log(LOGNOTICE, "stop mplayer");
-      delete m_pPlayer;
-      m_pPlayer = NULL;
-    }
-
-    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (musicScan && musicScan->IsDialogRunning())
-      musicScan->StopScanning();
-
-    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    if (videoScan && videoScan->IsDialogRunning())
-      videoScan->StopScanning();
-
-    CLog::Log(LOGNOTICE, "stop daap clients");
-#ifdef HAS_FILESSYTEM
-    g_DaapClient.Release();
-#endif
-
-    getApplicationMessenger().Cleanup();
-
-    CLog::Log(LOGNOTICE, "clean cached files!");
-    g_RarManager.ClearCache(true);
-
-    CLog::Log(LOGNOTICE, "unload skin");
-    UnloadSkin();
-
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST);
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST_EDITOR);
     m_gWindowManager.Delete(WINDOW_MUSIC_FILES);
@@ -3823,6 +3768,16 @@ void CApplication::Stop()
 {
   try
   {
+#ifdef HAS_WEB_SERVER    
+    if (m_pXbmcHttp)
+    {
+      if (g_stSettings.m_HttpApiBroadcastLevel >= 1)
+        getApplicationMessenger().HttpApi("broadcastlevel; ShutDown;1");
+
+      m_pXbmcHttp->shuttingDown = true;
+    }
+#endif
+
     CLog::Log(LOGNOTICE, "Storing total System Uptime");
     g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
 
@@ -3838,17 +3793,12 @@ void CApplication::Stop()
     m_bStop = true;
     CLog::Log(LOGNOTICE, "stop all");
 
-#ifdef HAS_WEB_SERVER    
-    if (m_pXbmcHttp)
-      getApplicationMessenger().HttpApi("broadcastlevel; ShutDown;1");
-#endif
-
     StopServices();
     //Sleep(5000);
 
     if (m_pPlayer)
     {
-      CLog::Log(LOGNOTICE, "stop mplayer");
+      CLog::Log(LOGNOTICE, "stop player");
       delete m_pPlayer;
       m_pPlayer = NULL;
     }
