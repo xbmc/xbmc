@@ -381,8 +381,6 @@ static void __cdecl FEH_TextOut(XFONT* pFont, int iLine, const wchar_t* fmt, ...
     D3DDevice::Present(0, 0, 0, 0);
   }
 }
-#else
-static void __cdecl FEH_TextOut(void* pFont, int iLine, const wchar_t* fmt, ...) {}
 #endif
 
 HWND g_hWnd = NULL;
@@ -3670,10 +3668,8 @@ HRESULT CApplication::Cleanup()
 #ifdef HAS_FILESSYTEM
     g_DaapClient.Release();
 #endif
-    //g_lcd->StopThread();
-    CLog::Log(LOGNOTICE, "stop python");
+
     getApplicationMessenger().Cleanup();
-    g_pythonParser.FreeResources();
 
     CLog::Log(LOGNOTICE, "clean cached files!");
     g_RarManager.ClearCache(true);
@@ -3869,7 +3865,6 @@ void CApplication::Stop()
     CLog::Log(LOGNOTICE, "stop daap clients");
     g_DaapClient.Release();
 #endif
-    //g_lcd->StopThread();
     m_applicationMessenger.Cleanup();
 
     CLog::Log(LOGNOTICE, "clean cached files!");
