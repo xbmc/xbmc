@@ -448,6 +448,7 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
 void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, bool focused)
 {
   m_focused = focused;
+  g_SkinInfo.ResolveIncludes(layout);
   g_SkinInfo.ResolveConstant(layout->Attribute("width"), m_width);
   g_SkinInfo.ResolveConstant(layout->Attribute("height"), m_height);
   const char *condition = layout->Attribute("condition");
