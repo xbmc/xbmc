@@ -9,6 +9,7 @@
 #include "Surface.h"
 
 #ifdef _LINUX
+#include <string.h>
 #include "XFileUtils.h"
 #include "PlatformDefs.h"
 #include "xwinapi.h"
@@ -641,6 +642,10 @@ int main(int argc, char* argv[])
 		else if (!stricmp(args[i], "-output") || !stricmp(args[i], "-o"))
 		{
 			OutputFilename = args[++i];
+#ifdef _LINUX
+      char *c = NULL;
+      while ((c = strchr(OutputFilename, '\\')) != NULL) *c = '/';
+#endif
 		}
     else if (!stricmp(args[i], "-noprotect") || !stricmp(args[i], "-p"))
     {
