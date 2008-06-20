@@ -8,6 +8,13 @@
 #include "cmdlineargs.h"
 #include "Surface.h"
 
+#ifdef _LINUX
+#include "XFileUtils.h"
+#include "PlatformDefs.h"
+#include "xwinapi.h"
+#define WIN32_FIND_DATAA WIN32_FIND_DATA
+#endif
+
 // Debug macros
 #if defined(_DEBUG) && defined(_MSC_VER) 
 #include <crtdbg.h>
@@ -327,7 +334,7 @@ void ConvertFile(const char* Dir, const char* Filename)
   CSurface surface;
 	char OutFilename[52];
 	if (Dir)
-		_snprintf(OutFilename, 52, "%s\\%s", Dir, Filename);
+		_snprintf(OutFilename, 52, "%s%c%s", Dir, '\\', Filename);
 	else
 		_snprintf(OutFilename, 52, "%s", Filename);
 	OutFilename[51] = 0;
@@ -565,9 +572,9 @@ void ConvertDirectory(const char *strFullPath, char *strRelativePath)
 				{
 					char strNewFullPath[MAX_PATH];
 					char strNewRelativePath[MAX_PATH];
-					sprintf(strNewFullPath, "%s\\%s", strCurrentPath, FindData.cFileName);
+					sprintf(strNewFullPath, "%s%c%s", strCurrentPath, XBMC_FILE_SEP, FindData.cFileName);
 					if (strRelativePath)
-						sprintf(strNewRelativePath, "%s\\%s", strRelativePath, FindData.cFileName);
+						sprintf(strNewRelativePath, "%s%c%s", strRelativePath, XBMC_FILE_SEP, FindData.cFileName);
 					else
 						sprintf(strNewRelativePath, "%s", FindData.cFileName);
 					// Recurse into the new directory

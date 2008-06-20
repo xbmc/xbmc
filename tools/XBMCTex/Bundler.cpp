@@ -1,5 +1,5 @@
 #include "Bundler.h"
-#include "../../xbmc/lib/liblzo/lzo1x.h"
+#include "../../xbmc/lib/liblzo/LZO1X.H"
 
 // alignment of file blocks - should be a multiple of the sector size of the disk and a power of 2
 // HDD sector = 512 bytes, DVD/CD sector = 2048 bytes

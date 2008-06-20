@@ -31,7 +31,11 @@
 //
 // ****************************************************************************
 
+#ifdef _LINUX
+#include "PlatformDefs.h"
+#else
 #include <windows.h>
+#endif
 #include <vector>
 
 #pragma pack(1)
