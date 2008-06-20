@@ -556,6 +556,7 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* 
 
   GetTextureFromData(pTex, ResData, ppTexture);
   delete[] pTex;
+  if (pPal) delete pPal;
 
   pInfo->Width = RealSize[0];
   pInfo->Height = RealSize[1];
@@ -654,8 +655,9 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, 
     delete[] ppTex[i];
   }
 
-  delete [] ppTex;
+  delete[] ppTex;
   ppTex = 0;
+  if (pPal) delete pPal;
 
   pInfo->Width = pAnimInfo->RealSize[0];
   pInfo->Height = pAnimInfo->RealSize[1];
