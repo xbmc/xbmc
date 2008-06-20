@@ -175,6 +175,7 @@ CSettings::CSettings(void)
 #elif defined(HAS_HAL)
   g_advancedSettings.m_useHalMount = false;
 #endif
+  g_advancedSettings.m_fullScreenOnMovieStart = true;
   g_advancedSettings.m_usePCDVDROM = false;
   g_advancedSettings.m_noDVDROM = false;
   g_advancedSettings.m_cachePath = "Z:\\";
@@ -1193,6 +1194,7 @@ void CSettings::LoadAdvancedSettings()
 #ifdef HAS_HAL
   XMLUtils::GetBoolean(pRootElement, "usehalmount", g_advancedSettings.m_useHalMount);
 #endif
+  XMLUtils::GetBoolean(pRootElement, "fullscreenonmoviestart", g_advancedSettings.m_fullScreenOnMovieStart);
   XMLUtils::GetBoolean(pRootElement, "usepcdvdrom", g_advancedSettings.m_usePCDVDROM);
   XMLUtils::GetBoolean(pRootElement, "nodvdrom", g_advancedSettings.m_noDVDROM);
   XMLUtils::GetBoolean(pRootElement, "usemultipaths", g_advancedSettings.m_useMultipaths);
