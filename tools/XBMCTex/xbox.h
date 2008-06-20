@@ -2,12 +2,22 @@
 
 #pragma once
 
+#ifdef _LINUX
+#include "PlatformDefs.h"
+typedef struct tagPALETTEENTRY { 
+    BYTE peRed; 
+    BYTE peGreen; 
+    BYTE peBlue; 
+    BYTE peFlags; 
+} PALETTEENTRY; 
+#else
 typedef unsigned long DWORD;
 typedef unsigned int UINT;
 typedef int BOOL;
 typedef const void* LPCVOID;
 typedef void* LPVOID;
 typedef unsigned char BYTE;
+#endif 
 
 struct D3DTexture 
 {
