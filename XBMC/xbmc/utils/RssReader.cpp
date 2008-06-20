@@ -52,11 +52,7 @@ CRssReader::CRssReader() : CThread()
 
 CRssReader::~CRssReader()
 {
-  if (m_bIsRunning)
-  {
-    StopThread();
-    m_bIsRunning = false;
-  }
+  StopThread();
   for (unsigned int i = 0; i < m_vecTimeStamps.size(); i++)
     delete m_vecTimeStamps[i];
 }
@@ -447,11 +443,15 @@ CRssManager::CRssManager()
 
 CRssManager::~CRssManager()
 {
+  Stop();
+}
+
+void CRssManager::Stop()
+{
   for (unsigned int i = 0; i < m_readers.size(); i++)
   {
     if (m_readers[i].reader)
     {
-      m_readers[i].reader->StopThread();
       delete m_readers[i].reader;
     }
   }
