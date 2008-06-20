@@ -26,7 +26,8 @@
 //
 // ****************************************************************************
 
-#include "stdafx.h"
+#include <windows.h>
+#include "xbox.h"
 #include "AnimatedGif.h"
 
 #pragma pack(1)
