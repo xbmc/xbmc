@@ -75,3 +75,4 @@ private:
 
 extern CGraphicsDevice g_device;
 #endif
+
