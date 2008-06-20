@@ -3,6 +3,12 @@
 typedef unsigned long u32;
 typedef unsigned char u8;
 
+#ifdef _LINUX
+#include <string.h>
+#define __forceinline inline
+#define __int64 __int64_t
+#endif
+
 __forceinline static u32 rol(u32 x, u8 n)
 {
 	return (x << n) | (x >> (32-n));
@@ -10,6 +16,24 @@ __forceinline static u32 rol(u32 x, u8 n)
 
 static void bswapcpy(void* dst, const void* src, u32 n)
 {
+#ifdef _LINUX
+  __asm__ ( 
+    "mov %%ecx,%2\n\t"
+    "mov %%esi,%1\n\t"
+    "mov %%edi,%0\n\t"
+    "shr $2,%%ecx\n\t"
+    "jz  bswapcpy2\n"
+  "bswapcpy1:\n\t"
+    "mov %%eax,(%%esi)\n\t"
+    "bswap %%eax\n\t"
+    "mov (%%edi),%%eax\n\t"
+    "add %%esi,4\n\t"
+    "add %%edi,4\n\t"
+    "dec %%ecx\n\t"
+    "jnz bswapcpy1\n"
+  "bswapcpy2:" : : "r"(dst), "r"(src), "r"(n)
+  );
+#else
 	__asm {
 		mov ecx,n
 		mov esi,src
@@ -25,7 +49,8 @@ bswapcpy_1:
 		dec ecx
 		jnz bswapcpy_1
 bswapcpy_2:
-	}
+  }
+#endif
 }
 
 void SHA1(const u8* buf, u32 len, u8 hash[20])
