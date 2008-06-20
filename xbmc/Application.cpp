@@ -4212,21 +4212,21 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (playlist == PLAYLIST_VIDEO && g_playlistPlayer.GetPlaylist(playlist).size() > 1)
   { // playing from a playlist by the looks
     // don't switch to fullscreen if we are not playing the first item...
-    options.fullscreen = !g_playlistPlayer.HasPlayedFirstFile();
+    options.fullscreen = !g_playlistPlayer.HasPlayedFirstFile() && g_advancedSettings.m_fullScreenOnMovieStart;
   }
   else if(m_itemCurrentFile->IsStack())
   {
     // TODO - this will fail if user seeks back to first file in stack
     if(m_currentStackPosition == 0
     || m_itemCurrentFile->m_lStartOffset == STARTOFFSET_RESUME)
-      options.fullscreen = true;
+      options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart;
     else
       options.fullscreen = false;
     // reset this so we don't think we are resuming on seek
     m_itemCurrentFile->m_lStartOffset = 0;
   }
   else
-    options.fullscreen = true;
+    options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart;
 
   // reset any forced player
   m_eForcedNextPlayer = EPC_NONE;
