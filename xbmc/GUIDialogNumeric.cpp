@@ -80,7 +80,7 @@ bool CGUIDialogNumeric::OnAction(const CAction &action)
   else if (action.wID >= KEY_ASCII)
   { // input from the keyboard
     char ch = action.wID & 0xFF;
-    if (ch == 10) OnOK(); // enter
+    if (ch == 10 || ch == 13) OnOK(); // enter
     else if (ch == 8) OnBackSpace(); // backspace
     else if (ch == 27) OnCancel(); // escape
     else if (ch >= 48 && ch < 58)  // number

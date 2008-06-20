@@ -96,6 +96,8 @@ public:
   CRssManager();
   ~CRssManager();
 
+  void Stop();
+
   bool GetReader(DWORD controlID, DWORD windowID, IRssObserver* observer, CRssReader *&reader);
 
 private:
