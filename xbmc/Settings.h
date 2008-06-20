@@ -169,6 +169,7 @@ public:
 #ifdef HAS_HAL
     bool m_useHalMount;
 #endif
+    bool m_fullScreenOnMovieStart;
     bool m_usePCDVDROM;
     bool m_noDVDROM;
     CStdString m_cachePath;
