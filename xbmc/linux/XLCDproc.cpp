@@ -30,11 +30,12 @@
 
 XLCDproc::XLCDproc()
 {
-  m_iActualpos=0;
-  m_iRows    = 4;
-  m_iColumns = 16;
-  m_iBackLight=32;
-  m_iLCDContrast=50;
+  m_iActualpos   = 0;
+  m_iRows        = 4;
+  m_iColumns     = 16;
+  m_iBackLight   = 32;
+  m_iLCDContrast = 50;
+  sockfd         = -1;
 }
 
 XLCDproc::~XLCDproc()
@@ -44,13 +45,14 @@ XLCDproc::~XLCDproc()
 void XLCDproc::Initialize()
 {
   if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE)
-  return ;//nothing to do
+    return ;//nothing to do
 
   ILCD::Initialize();
 
   struct hostent *server;
   server = gethostbyname("localhost");
-  if (server == NULL) {
+  if (server == NULL)
+  {
      CLog::Log(LOGERROR, "LCDproc:Initialize: Unable to resolve LCDd host.");
      return;
   }
@@ -70,8 +72,8 @@ void XLCDproc::Initialize()
   serv_addr.sin_port = htons(13666);
   if (connect(sockfd,(struct sockaddr*)&serv_addr,sizeof(serv_addr)) < 0)
   {
-  CLog::Log(LOGERROR, "LCDproc:Initialize: Unable to connect to host.");
-  return;
+    CLog::Log(LOGERROR, "LCDproc:Initialize: Unable to connect to host.");
+    return;
   }
 
   //Build command to setup screen
@@ -84,7 +86,7 @@ void XLCDproc::Initialize()
 
   //Send to server
   if (write(sockfd,cmd.c_str(),cmd.size()) < 0)
-  CLog::Log(LOGERROR, "LCDproc:Initialize: Unable to write to socket");
+    CLog::Log(LOGERROR, "LCDproc:Initialize: Unable to write to socket");
   m_bStop = false;
 }
 void XLCDproc::SetBackLight(int iLight)
@@ -101,38 +103,45 @@ void XLCDproc::Stop()
   if (!m_bStop)
   {
     //Close connection
-    shutdown(sockfd,SHUT_RDWR);
+    if (sockfd >= 0)
+      shutdown(sockfd, SHUT_RDWR);
     m_bStop = true;
   }
 }
 
 void XLCDproc::SetLine(int iLine, const CStdString& strLine)
 {
-  if (m_bStop) return;
+  if (m_bStop)
+    return;
 
-  if (iLine < 0 || iLine >= (int)m_iRows) return;
+  if (iLine < 0 || iLine >= (int)m_iRows)
+    return;
+
   char cmd[1024];
-  CStdString strLineLong=strLine;
+  CStdString strLineLong = strLine;
   strLineLong.Trim();
   StringToLCDCharSet(strLineLong);
 
-  while (strLineLong.size() < m_iColumns) strLineLong+=" ";
+  while (strLineLong.size() < m_iColumns)
+    strLineLong += " ";
+
   if (strLineLong != m_strLine[iLine])
   {
     int ln = iLine + 1;
-    sprintf(cmd,"widget_set xbmc line%i 1 %i 16 %i m 1 \"%s\"\n",ln,ln,ln,strLineLong.c_str());
+    sprintf(cmd, "widget_set xbmc line%i 1 %i 16 %i m 1 \"%s\"\n", ln, ln, ln, strLineLong.c_str());
     //CLog::Log(LOGINFO, "LCDproc sending command: %s",cmd);
-    if (write(sockfd,cmd,strlen(cmd)) < 0)
+    if (write(sockfd, cmd, strlen(cmd)) < 0)
     {
         m_bStop = true;
         CLog::Log(LOGERROR, "XLCDproc::SetLine() Unable to write to socket, LCDd not running?");
         return;
     }
-    m_bUpdate[iLine]=true;
-    m_strLine[iLine]=strLineLong;
+    m_bUpdate[iLine] = true;
+    m_strLine[iLine] = strLineLong;
     m_event.Set();
   }
 }
+
 void XLCDproc::Process()
 {
 }
