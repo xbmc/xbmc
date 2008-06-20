@@ -55,6 +55,40 @@ public:
   void reset();
 
   void clear();
+  template<class INPUT,class OUTPUT>
+  void convert(iconv_t& type, int multiplier, const CStdString& strFromCharset, const CStdString& strToCharset, const INPUT& strSource,  OUTPUT& strDest)
+  {
+    if (type == (iconv_t) - 1)
+    {
+      type = iconv_open(strToCharset.c_str(), strFromCharset.c_str());
+    }
+
+    if (type != (iconv_t) - 1)
+    {
+      size_t inBytes  = (strSource.length() + 1)*sizeof(strSource[0]);
+      size_t outBytes = (strSource.length() + 1)*multiplier;
+      const char *src = (const char*)strSource.c_str();
+      char       *dst = (char*)strDest.GetBuffer(inBytes);
+
+      if (iconv_const(type, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
+      {
+        CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+        strDest.ReleaseBuffer();
+        strDest = strSource;
+        return;
+      }
+
+      if (iconv_const(type, NULL, NULL, &dst, &outBytes) == (size_t)-1)
+      {
+        CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
+        strDest.ReleaseBuffer();
+        strDest = strSource;
+        return;
+      }
+
+      strDest.ReleaseBuffer();
+    }
+  }
 
   void utf8ToW(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip=true);
 
