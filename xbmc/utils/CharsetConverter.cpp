@@ -203,85 +203,21 @@ void CCharsetConverter::reset(void)
 void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wString, bool bVisualBiDiFlip/*=true*/)
 {
   CStdStringA strFlipped;
-  const char* src;
-  size_t inBytes;
   
   // Try to flip hebrew/arabic characters, if any
   if (bVisualBiDiFlip)
   {
     logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_CHAR_SET_UTF8);
-    src = strFlipped.c_str();
-    inBytes = strFlipped.length() + 1;
+    convert(m_iconvUtf8toW,sizeof(wchar_t),"UTF-8",WCHAR_CHARSET,strFlipped,wString);
   }
   else
-  {
-    src = utf8String.c_str();
-    inBytes = utf8String.length() + 1;
-  }
-
-  if (m_iconvUtf8toW == (iconv_t) - 1)
-    m_iconvUtf8toW = iconv_open(WCHAR_CHARSET, UTF8_SOURCE);
-
-  if (m_iconvUtf8toW != (iconv_t) - 1)
-  {
-    size_t outBytes = inBytes * sizeof(wchar_t);
-    char      * dst = (char*)wString.GetBuffer(outBytes);
-
-    if (iconv_const(m_iconvUtf8toW, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
-    {
-      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-      wString.ReleaseBuffer();
-      wString = utf8String;
-      return;
-    }
-
-    if (iconv(m_iconvUtf8toW, NULL, NULL, &dst, &outBytes) == (size_t)-1)
-    {
-      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
-      wString.ReleaseBuffer();
-      wString = utf8String;
-      return;
-    }
-    wString.ReleaseBuffer();
-  }
+    convert(m_iconvUtf8toW,sizeof(wchar_t),"UTF-8",WCHAR_CHARSET,utf8String,wString);
 }
 
 void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStringW& strDest)
 {
-  CStdStringA strFlipped;
-
   // No need to flip hebrew/arabic as mplayer does the flipping
-
-  if (m_iconvSubtitleCharsetToW == (iconv_t) - 1)
-  {
-    CStdString strCharset=g_langInfo.GetSubtitleCharSet();
-    m_iconvSubtitleCharsetToW = iconv_open(WCHAR_CHARSET, strCharset.c_str());
-  }
-
-  if (m_iconvSubtitleCharsetToW != (iconv_t) - 1)
-  {
-    size_t inBytes  = (strSource.length() + 1);
-    size_t outBytes = (strSource.length() + 1) * sizeof(wchar_t);
-    const char *src = strSource.c_str();
-    char       *dst = (char*)strDest.GetBuffer(outBytes);
-
-    if (iconv_const(m_iconvSubtitleCharsetToW, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
-    {
-      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-      strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
-    }
-
-    if (iconv_const(m_iconvSubtitleCharsetToW, NULL, NULL, &dst, &outBytes) == (size_t)-1)
-    {
-      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
-      strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
-    }
-    strDest.ReleaseBuffer();
-  }
+  convert(m_iconvSubtitleCharsetToW,sizeof(wchar_t),g_langInfo.GetSubtitleCharSet(),WCHAR_CHARSET,strSource,strDest);
 }
 
 void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, CStdStringA& charset, FriBidiCharType base)
@@ -341,37 +277,7 @@ void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdSt
 
 void CCharsetConverter::utf8ToStringCharset(const CStdStringA& strSource, CStdStringA& strDest)
 {
-  if (m_iconvUtf8ToStringCharset == (iconv_t) - 1)
-  {
-    CStdString strCharset=g_langInfo.GetGuiCharSet();
-    m_iconvUtf8ToStringCharset = iconv_open(strCharset.c_str(), UTF8_SOURCE);
-  }
-
-  if (m_iconvUtf8ToStringCharset != (iconv_t) - 1)
-  {
-    size_t inBytes  = strSource.length() + 1;
-    size_t outBytes = strSource.length() + 1;
-    const char *src = strSource.c_str();
-    char       *dst = strDest.GetBuffer(inBytes);
-
-    if (iconv_const(m_iconvUtf8ToStringCharset, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
-    {
-      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-      strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
-    }
-
-    if (iconv_const(m_iconvUtf8ToStringCharset, NULL, NULL, &dst, &outBytes) == (size_t)-1)
-    {
-      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
-      strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
-    }
-
-    strDest.ReleaseBuffer();
-  }
+  convert(m_iconvUtf8ToStringCharset,1,"UTF-8",g_langInfo.GetGuiCharSet(),strSource,strDest);
 }
 
 void CCharsetConverter::utf8ToStringCharset(CStdStringA& strSourceDest)
@@ -383,37 +289,7 @@ void CCharsetConverter::utf8ToStringCharset(CStdStringA& strSourceDest)
 
 void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdStringA& strDest)
 {
-  if (m_iconvStringCharsetToUtf8 == (iconv_t) - 1)
-  {
-    CStdString strCharset=g_langInfo.GetGuiCharSet();
-    m_iconvStringCharsetToUtf8 = iconv_open("UTF-8", strCharset.c_str());
-  }
-
-  if (m_iconvStringCharsetToUtf8 != (iconv_t) - 1)
-  {
-    size_t inBytes  = (strSource.length() + 1);
-    size_t outBytes = (strSource.length() + 1) * 4;
-    const char *src = strSource.c_str();
-    char       *dst = strDest.GetBuffer(outBytes);
-
-    if (iconv_const(m_iconvStringCharsetToUtf8, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
-    {
-      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-      strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
-    }
-
-    if (iconv_const(m_iconvStringCharsetToUtf8, NULL, NULL, &dst, &outBytes) == (size_t)-1)
-    {
-      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
-      strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
-    }
-
-    strDest.ReleaseBuffer();
-  }
+  convert(m_iconvStringCharsetToUtf8,4,g_langInfo.GetGuiCharSet(),"UTF-8",strSource,strDest);
 }
 
 void CCharsetConverter::stringCharsetToUtf8(CStdStringA& strSourceDest)
@@ -424,98 +300,20 @@ void CCharsetConverter::stringCharsetToUtf8(CStdStringA& strSourceDest)
 
 void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest)
 {
-  iconv_t iconvString=iconv_open("UTF-8", strSourceCharset.c_str());
-
-  if (iconvString != (iconv_t) - 1)
-  {
-    size_t inBytes  = (strSource.length() + 1);
-    size_t outBytes = (strSource.length() + 1) * 4;
-    const char *src = strSource.c_str();
-    char       *dst = strDest.GetBuffer(outBytes);
-
-    if (iconv_const(iconvString, &src, &inBytes, &dst, &outBytes) == (size_t) -1)
-    {
-      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-      strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
-    }
-
-    if (iconv(iconvString, NULL, NULL, &dst, &outBytes) == (size_t)-1)
-    {
-      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
-      strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
-    }
-
-    strDest.ReleaseBuffer();
-
-    iconv_close(iconvString);
-  }
+  iconv_t iconvString;  
+  ICONV_PREPARE(iconvString);
+  convert(iconvString,4,strSourceCharset,"UTF-8",strSource,strDest);
+  iconv_close(iconvString);
 }
 
 void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDest)
 {
-  if (m_iconvWtoUtf8 == (iconv_t) - 1)
-    m_iconvWtoUtf8 = iconv_open("UTF-8", WCHAR_CHARSET);
-
-  if (m_iconvWtoUtf8 != (iconv_t) - 1)
-  {
-    size_t inBytes  = (strSource.length() + 1) * sizeof(wchar_t);
-    size_t outBytes = (strSource.length() + 1) * sizeof(wchar_t);  // some free for UTF-8 (up to 4 bytes/char);
-    const char *src = (const char*) strSource.c_str();
-    char       *dst = strDest.GetBuffer(outBytes);
-
-    if (iconv_const(m_iconvWtoUtf8, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
-    {
-      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-      strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
-    }
-
-    if (iconv(m_iconvWtoUtf8, NULL, NULL, &dst, &outBytes) == (size_t)-1)
-    {
-      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
-      strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
-    }
-
-    strDest.ReleaseBuffer();
-  }
+  convert(m_iconvWtoUtf8,sizeof(wchar_t),WCHAR_CHARSET,"UTF-8",strSource,strDest);
 }
 
 void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest)
 {
-  if (m_iconvUtf16BEtoUtf8 == (iconv_t) - 1)
-    m_iconvUtf16BEtoUtf8 = iconv_open("UTF-8", "UTF-16BE");
-
-  if (m_iconvUtf16BEtoUtf8 != (iconv_t) - 1)
-  {
-    size_t inBytes  = (strSource.length() + 1) * sizeof(wchar_t);
-    size_t outBytes = (strSource.length() + 1) * 4;
-    const char *src = (const char*) strSource.c_str();
-    char       *dst = strDest.GetBuffer(outBytes);
-
-    if (iconv_const(m_iconvUtf16BEtoUtf8, &src, &inBytes, &dst, &outBytes))
-    {
-      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-      strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
-    }
-
-    if (iconv(m_iconvUtf16BEtoUtf8, NULL, NULL, &dst, &outBytes))
-    {
-      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
-      strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
-    }
-    strDest.ReleaseBuffer();
-  }
+  convert(m_iconvUtf16BEtoUtf8,4,"UTF-16BE","UTF-8",strSource,strDest);
 }
 
 void CCharsetConverter::utf16LEtoUTF8(const void *strSource,
@@ -551,25 +349,7 @@ void CCharsetConverter::utf16LEtoUTF8(const void *strSource,
 
 void CCharsetConverter::ucs2ToUTF8(const CStdStringW& strSource, CStdStringA& strDest)
 {
-  if (m_iconvUcs2CharsetToUtf8 == (iconv_t) - 1)
-    m_iconvUcs2CharsetToUtf8 = iconv_open("UTF-8", "UCS-2LE");
-
-  if (m_iconvUcs2CharsetToUtf8 != (iconv_t) - 1)
-  {
-    const char* src = (const char*) strSource.c_str();
-    size_t inBytes = (strSource.length() + 1)*2;
-    size_t outBytes = (inBytes + 1)*2;  // some free for UTF-8 (up to 4 bytes/char)
-    char *dst = strDest.GetBuffer(outBytes);
-    
-    if (iconv_const(m_iconvUcs2CharsetToUtf8, &src, &inBytes, &dst, &outBytes) == (size_t) -1)
-    { // failed :(
-      CLog::Log(LOGERROR, "CCharsetConverter::ucs2ToUTF8 failed for Python with errno=%d", errno);
-      strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
-    }
-    strDest.ReleaseBuffer();
-  }
+  convert(m_iconvUcs2CharsetToUtf8,4,"UCS-2LE","UTF-8",strSource,strDest);
 }
 
 void CCharsetConverter::utf16LEtoW(const char* strSource, CStdStringW &strDest)
@@ -611,53 +391,24 @@ void CCharsetConverter::utf16LEtoW(const char* strSource, CStdStringW &strDest)
 
 void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest, bool swap)
 {
-  if (m_iconvUcs2CharsetToStringCharset == (iconv_t) - 1)
+  CStdStringW strCopy = strSource;
+  if (swap)
   {
-    CStdString strCharset=g_langInfo.GetGuiCharSet();
-    m_iconvUcs2CharsetToStringCharset = iconv_open(strCharset.c_str(), "UTF-16LE");
+    char* s = (char*) strCopy.c_str();
+
+    while (*s || *(s + 1))
+    {
+      char c = *s;
+      *s = *(s + 1);
+      *(s + 1) = c;
+
+      s++;
+      s++;
+    }
   }
 
-  if (m_iconvUcs2CharsetToStringCharset != (iconv_t) - 1)
-  {
-    CStdStringW strCopy = strSource;
-    size_t inBytes  = (strCopy.length() + 1) * sizeof(wchar_t);
-    size_t outBytes = (strCopy.length() + 1) * 4;
-    const char *src = (const char*)strCopy.c_str();
-    char       *dst = strDest.GetBuffer(inBytes);
-
-    if (swap)
-    {
-      char* s = (char*) src;
-
-      while (*s || *(s + 1))
-      {
-        char c = *s;
-        *s = *(s + 1);
-        *(s + 1) = c;
-
-        s++;
-        s++;
-      }
-    }
-
-    if (iconv_const(m_iconvUcs2CharsetToStringCharset, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
-    {
-      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-      strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
-    }
-
-    if (iconv_const(m_iconvUcs2CharsetToStringCharset, NULL, NULL, &dst, &outBytes) == (size_t)-1)
-    {
-      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
-      strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
-    }
-
-    strDest.ReleaseBuffer();
-  }
+  convert(m_iconvUcs2CharsetToStringCharset,4,"UTF-16LE",
+          g_langInfo.GetGuiCharSet(),strCopy,strDest);
 }
 
 void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, CStdStringA& strDest)
