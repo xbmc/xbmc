@@ -10,6 +10,7 @@ INCLUDES=@INCLUDES@
 all : compile 
 	$(MAKE) xbmc.bin
 	$(MAKE) xbmc-xrandr
+	$(MAKE) XBMCTex
 
 .PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualizations screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients
 
@@ -86,6 +87,9 @@ xbmc.bin: $(wildcard xbmc/*.o xbmc/settings/*.o guilib/*.o guilib/tinyXML/*.o gu
 xbmc-xrandr: xbmc-xrandr.c
 	gcc -g -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 
 
+XBMCTex:
+	$(MAKE) -C tools/XBMCTex/
+
 install-bin: all # developement convenience target
 	sudo cp xbmc.bin $(prefix)/share/xbmc
 
@@ -102,10 +106,13 @@ install-datas:
 	@echo "Creating target directories in $(prefix)/share/xbmc"
 	@find language media screensavers scripts skin sounds userdata visualisations system -type d -not -iregex ".*svn.*" -exec mkdir -p $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@echo "Copying system files to $(prefix)/share/xbmc"
-	# Arch independent files
-	@find language media screensavers scripts skin sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
-	# Arch dependent files
+	@# Arch independent files
+	@find language media screensavers scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
+	@# Arch dependent files
 	@find system -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*@ARCH@.*" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
+	@# PM3
+	@find skin -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.png|.*\.gif" -exec cp '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %f                            \r"
+	@tools/XBMCTex/XBMCTex -input skin/Project\ Mayhem\ III/media -output $(prefix)/share/xbmc/skin/Project\ Mayhem\ III\media\Textures.xpr
 
 uninstall:
 	@echo "Removing XBMC..."
