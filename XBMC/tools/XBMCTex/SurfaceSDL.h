@@ -3,9 +3,13 @@
 
 #ifdef USE_SDL
 
+#ifdef _LINUX
+#include "PlatformDefs.h"
+#else
 #define WIN32_LEAN_AND_MEAN   // Exclude rarely-used stuff from Windows headers
 #define _WIN32_WINNT 0x500    // Win 2k/XP REQUIRED!
 #include <windows.h>
+#endif
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>

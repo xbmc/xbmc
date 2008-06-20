@@ -1,7 +1,14 @@
 #ifndef CMDLINEARGS_H
 #define CMDLINEARGS_H
 
+#ifdef _LINUX
+#include "PlatformDefs.h"
+#include "xwinapi.h"
+typedef LPSTR PSZ;
+#define _snprintf snprintf
+#else
 #include <windows.h>
+#endif
 #include <vector>
 
 class CmdLineArgs : public std::vector<char*>
@@ -17,6 +24,10 @@ public:
         {
             strcpy (m_cmdline, cmdline);
             ParseCmdLine(); 
+        } else {
+#ifdef _LINUX
+          free(cmdline);
+#endif
         }
     }
     ~CmdLineArgs()
