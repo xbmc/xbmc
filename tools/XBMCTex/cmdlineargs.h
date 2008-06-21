@@ -10,6 +10,7 @@ typedef LPSTR PSZ;
 #include <windows.h>
 #endif
 #include <vector>
+#include <string>
 
 class CmdLineArgs : public std::vector<char*>
 {
@@ -30,6 +31,26 @@ public:
 #endif
         }
     }
+
+    CmdLineArgs (const int argc, const char **argv)
+    {
+	std::string cmdline;
+	for (int i = 0 ; i<argc ; i++)
+	{
+	    cmdline += std::string(argv[i]);
+	    if ( i != (argc-1) )
+	    {
+		cmdline += " ";
+	    }
+	}
+	m_cmdline = new char [cmdline.length() + 1];
+	if (m_cmdline)
+	{
+	    strcpy(m_cmdline, cmdline.c_str());
+	    ParseCmdLine();
+	}
+    }
+
     ~CmdLineArgs()
     {
         delete m_cmdline;

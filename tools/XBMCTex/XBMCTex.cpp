@@ -615,9 +615,9 @@ void Usage()
 
 int main(int argc, char* argv[])
 {
-  int NoProtect = 0;
+    int NoProtect = 0;
 
-	CmdLineArgs args;
+    CmdLineArgs args(argc, (const char**)argv);
 
 	if (args.size() == 1)
 	{
