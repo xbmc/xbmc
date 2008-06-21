@@ -280,7 +280,7 @@ bool CGUIAudioManager::Load()
 
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="SKINDEFAULT")
   {
-    m_strMediaDir=_P("T:\\skin\\"+g_guiSettings.GetString("lookandfeel.skin")+"\\sounds");
+    m_strMediaDir=_P("U:\\skin\\"+g_guiSettings.GetString("lookandfeel.skin")+"\\sounds");
     if ( ! CDirectory::Exists( m_strMediaDir ) )
       m_strMediaDir=_P("Q:\\skin\\"+g_guiSettings.GetString("lookandfeel.skin")+"\\sounds");
   }
