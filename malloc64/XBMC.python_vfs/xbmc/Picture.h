@@ -21,10 +21,6 @@
  */
 #include "DllImageLib.h"
 
-#ifdef _XBOX
-#define RESAMPLE_CACHED_IMAGES
-#endif
-
 class CPicture
 {
 public:

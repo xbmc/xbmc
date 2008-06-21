@@ -160,10 +160,6 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
       }
     }
     while (FindNextFile((HANDLE)hFind, &wfd));
-#ifdef _XBOX
-    // if we use AutoPtrHandle, this auto-closes
-    FindClose((HANDLE)hFind); //should be closed
-#endif
   }
   if (m_cacheDirectory)
     g_directoryCache.SetDirectory(strPath1, vecCacheItems);
@@ -218,9 +214,6 @@ bool CHDDirectory::Exists(const char* strPath)
 #ifndef _LINUX
   g_charsetConverter.utf8ToStringCharset(strReplaced);
   strReplaced.Replace("/","\\");
-#ifdef HAS_XBOX_HARDWARE
-  CUtil::GetFatXQualifiedPath(strReplaced);
-#endif
   if (!CUtil::HasSlashAtEnd(strReplaced))
     strReplaced += '\\';
 #endif    

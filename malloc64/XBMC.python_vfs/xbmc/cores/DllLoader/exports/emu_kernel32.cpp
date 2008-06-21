@@ -1012,10 +1012,14 @@ extern "C" int WINAPI dllWideCharToMultiByte(UINT CodePage, DWORD dwFlags, LPCWS
 
 extern "C" UINT WINAPI dllSetConsoleCtrlHandler(PHANDLER_ROUTINE HandlerRoutine, BOOL Add)
 {
+#ifdef _WIN32PC
+  return SetConsoleCtrlHandler(HandlerRoutine, Add);
+#else
   // no consoles exists on the xbox, do nothing
   not_implement("kernel32.dll fake function SetConsoleCtrlHandler called\n");  //warning
   SetLastError(ERROR_INVALID_FUNCTION);
   return 0;
+#endif
 }
 
 typedef struct _SFlsSlot

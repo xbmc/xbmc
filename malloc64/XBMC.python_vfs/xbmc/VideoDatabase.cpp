@@ -1026,6 +1026,7 @@ long CVideoDatabase::AddActor(const CStdString& strActor, const CStdString& strT
       const field_value value = m_pDS->fv("idActor");
       long lActorId = value.get_asLong() ;
       // update the thumb url's
+      if (!strThumb.IsEmpty())
       strSQL=FormatSQL("update actors set strThumb='%s' where idActor=%u",strThumb.c_str(),lActorId);
       m_pDS->close();
       return lActorId;
@@ -3920,6 +3921,10 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdSt
         CFileItem* pItem=new CFileItem(movie);
         pItem->m_strPath.Format("%s%ld", strBaseDir.c_str(), lMovieId);
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_playCount > 0);
+        pItem->CacheVideoFanart();
+        if (CFile::Exists(pItem->GetCachedVideoFanart()))
+          pItem->SetProperty("fanart_image",pItem->GetCachedVideoFanart());
+
         items.Add(pItem);
       }
       m_pDS->next();
@@ -5480,8 +5485,8 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const s
     sql = "delete from genre where idGenre not in (select distinct idGenre from genrelinkmovie) and idGenre not in (select distinct idGenre from genrelinktvshow) and idGenre not in (select distinct idGenre from genrelinkmusicvideo)";
     m_pDS->exec(sql.c_str());
 
-    CLog::Log(LOGDEBUG, "%s Cleaning actor table of actors and directors", __FUNCTION__);
-    sql = "delete from actors where idActor not in (select distinct idActor from actorlinkmovie) and idActor not in (select distinct idDirector from directorlinkmovie) and idActor not in (select distinct idActor from actorlinktvshow) and idActor not in (select distinct idActor from actorlinkepisode) and idActor not in (select distinct idDirector from directorlinktvshow) and idActor not in (select distinct idDirector from directorlinkepisode) and idActor not in (select distinct idArtist from artistlinkmusicvideo) and idActor not in (select distinct idDirector from directorlinkmusicvideo)";
+    CLog::Log(LOGDEBUG, "%s Cleaning actor table of actors, directors and writers", __FUNCTION__);
+    sql = "delete from actors where idActor not in (select distinct idActor from actorlinkmovie) and idActor not in (select distinct idDirector from directorlinkmovie) and idActor not in (select distinct idWriter from writerlinkmovie) and idActor not in (select distinct idActor from actorlinktvshow) and idActor not in (select distinct idActor from actorlinkepisode) and idActor not in (select distinct idDirector from directorlinktvshow) and idActor not in (select distinct idDirector from directorlinkepisode) and idActor not in (select distinct idWriter from writerlinkepisode) and idActor not in (select distinct idArtist from artistlinkmusicvideo) and idActor not in (select distinct idDirector from directorlinkmusicvideo)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s Cleaning studio table", __FUNCTION__);
@@ -5514,7 +5519,7 @@ void CVideoDatabase::DumpToDummyFiles(const CStdString &path)
   for (int i = 0; i < items.Size(); i++)
   {
     // create a folder in this directory
-    CStdString showName = CUtil::MakeLegalFileName(items[i]->GetVideoInfoTag()->m_strShowTitle, false);
+    CStdString showName = CUtil::MakeLegalFileName(items[i]->GetVideoInfoTag()->m_strShowTitle);
     CStdString TVFolder;
     CUtil::AddFileToFolder(path, showName, TVFolder);
     if (CDirectory::Create(TVFolder))

@@ -884,11 +884,7 @@ int CCdIoSupport::CddbDecDigitSum(int n)
 // Return the number of seconds (discarding frame portion) of an MSF
 UINT CCdIoSupport::MsfSeconds(msf_t *msf)
 {
-#ifdef _XBOX
-  return from_bcd8(msf->m)*60 + from_bcd8(msf->s);
-#else
   return cdio_from_bcd8(msf->m)*60 + cdio_from_bcd8(msf->s);
-#endif
 }
 
 
@@ -939,11 +935,7 @@ char* CCdIoSupport::GetDeviceFileName()
   return s_defaultDevice;
 }
 
-#ifdef HAS_XBOX_HARDWARE
-char* CCdIoSupport::s_defaultDevice = "\\\\.\\D:";
-#else
 char* CCdIoSupport::s_defaultDevice = NULL;
-#endif
 
 #ifdef __APPLE__
 driver_id_t CCdIoSupport::s_defaultDriver = DRIVER_OSX;

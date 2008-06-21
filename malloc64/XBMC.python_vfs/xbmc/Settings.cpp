@@ -46,9 +46,6 @@
 #include "GUIDialogYesNo.h"
 #include "FileSystem/Directory.h"
 #include "FileItem.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "utils/MemoryUnitManager.h"
-#endif
 #ifdef _WIN32PC
 #include "win32/WIN32Util.h"
 #endif
@@ -84,7 +81,6 @@ CSettings::CSettings(void)
 
   g_stSettings.m_iMyVideoStack = STACK_NONE;
 
-  g_stSettings.m_bMyVideoCleanTitles = false;
   strcpy(g_stSettings.m_szMyVideoCleanTokens, "divx|xvid|3ivx|ac3|ac351|dts|mp3|wma|m4a|mp4|aac|ogg|scr|ts|sharereactor|dvd|dvdrip|hd-dvd|remux|dtshd|ddplus|blue-ray");
   strcpy(g_stSettings.m_szMyVideoCleanSeparators, "- _.[({+");
 
@@ -116,7 +112,7 @@ CSettings::CSettings(void)
 
   g_stSettings.m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u|.dng|.nef";
   g_stSettings.m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adplug|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2";
-  g_stSettings.m_videoExtensions = ".m4v|.3gp|.nsv|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp";
+  g_stSettings.m_videoExtensions = ".m4v|.3gp|.nsv|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp|.m2t|.m2ts|.evo";
   // internal music extensions
   g_stSettings.m_musicExtensions += "|.sidstream|.oggstream|.nsfstream|.asapstream|.cdda";
 
@@ -174,6 +170,12 @@ CSettings::CSettings(void)
   g_advancedSettings.m_busyDialogDelay = 2000;
   g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG;
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
+#if defined(HAS_HAL) && defined(HAL_MOUNT)
+  g_advancedSettings.m_useHalMount = true;
+#elif defined(HAS_HAL)
+  g_advancedSettings.m_useHalMount = false;
+#endif
+  g_advancedSettings.m_fullScreenOnMovieStart = true;
   g_advancedSettings.m_usePCDVDROM = false;
   g_advancedSettings.m_noDVDROM = false;
   g_advancedSettings.m_cachePath = "Z:\\";
@@ -282,19 +284,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   bXboxMediacenter = bSettings = false;
 
   CStdString strMnt = GetProfileUserDataFolder();
-#ifdef _XBOX
-  char szDevicePath[1024];
-  if (GetProfileUserDataFolder().Left(2).Equals("Q:"))
-  {
-    CUtil::GetHomePath(strMnt);
-    strMnt += GetProfileUserDataFolder().substr(2);
-  }
-  CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath);
-  strcat(szDevicePath,strMnt.c_str()+2);
-  CIoSupport::RemapDriveLetter('P', szDevicePath);
-#else
   CIoSupport::RemapDriveLetter('P', (char*) strMnt.c_str());
-#endif  
   CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
   CStdString strFile=GetSettingsFile();
   if (!LoadSettings(strFile))
@@ -978,7 +968,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "startwindow", g_stSettings.m_iVideoStartWindow, WINDOW_VIDEO_FILES, WINDOW_VIDEO_FILES, WINDOW_VIDEO_NAV);
     GetInteger(pElement, "stackvideomode", g_stSettings.m_iMyVideoStack, STACK_NONE, STACK_NONE, STACK_SIMPLE);
 
-    XMLUtils::GetBoolean(pElement, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
     GetString(pElement, "cleantokens", g_stSettings.m_szMyVideoCleanTokens, g_stSettings.m_szMyVideoCleanTokens);
     GetString(pElement, "cleanseparators", g_stSettings.m_szMyVideoCleanSeparators, g_stSettings.m_szMyVideoCleanSeparators);
 
@@ -1060,9 +1049,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     {
       CStdString setting;
       setting.Format("karaoke%i", i);
-#ifndef HAS_XBOX_AUDIO
 #define XVOICE_MASK_PARAM_DISABLED (-1.0f)
-#endif
       GetFloat(pElement, setting + "energy", g_stSettings.m_karaokeVoiceMask[i].energy, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
       GetFloat(pElement, setting + "pitch", g_stSettings.m_karaokeVoiceMask[i].pitch, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
       GetFloat(pElement, setting + "whisper", g_stSettings.m_karaokeVoiceMask[i].whisper, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
@@ -1137,6 +1124,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "percentseekforwardbig", g_advancedSettings.m_videoPercentSeekForwardBig, 10, 0, 100);
     GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_videoPercentSeekBackwardBig, -10, -100, 0);
     GetInteger(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 1, 0, 255);
+    XMLUtils::GetBoolean(pRootElement, "fullscreenonmoviestart", g_advancedSettings.m_fullScreenOnMovieStart);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
@@ -1204,7 +1192,9 @@ void CSettings::LoadAdvancedSettings()
       setting->SetAdvanced();
   }
   GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress, "freedb.freedb.org");
-
+#ifdef HAS_HAL
+  XMLUtils::GetBoolean(pRootElement, "usehalmount", g_advancedSettings.m_useHalMount);
+#endif
   XMLUtils::GetBoolean(pRootElement, "usepcdvdrom", g_advancedSettings.m_usePCDVDROM);
   XMLUtils::GetBoolean(pRootElement, "nodvdrom", g_advancedSettings.m_noDVDROM);
   XMLUtils::GetBoolean(pRootElement, "usemultipaths", g_advancedSettings.m_useMultipaths);
@@ -1653,10 +1643,6 @@ bool CSettings::SaveAvpackSettings(TiXmlNode *io_pRoot) const
   TiXmlElement videoscreenNode("videoscreen");
   pNode = io_pRoot->InsertEndChild(videoscreenNode);
   if (!pNode) return false;
-#ifdef HAS_XBOX_HARDWARE
-  SetInteger(pNode, "flickerfilter", g_guiSettings.GetInt("videoscreen.flickerfilter"));
-  SetBoolean(pNode, "soften", g_guiSettings.GetBool("videoscreen.soften"));
-#endif
   SetInteger(pNode, "resolution", g_guiSettings.GetInt("videoscreen.resolution"));
 
   TiXmlElement videoplayerNode("videoplayer");
@@ -1707,9 +1693,11 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   if (!pNode) return false;
 
   SetInteger(pNode, "startwindow", g_stSettings.m_iVideoStartWindow);
-  SetInteger(pNode, "stackvideomode", g_stSettings.m_iMyVideoStack);
 
-  SetBoolean(pNode, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
+  int iStack = g_stSettings.m_iMyVideoStack;  // make sure we only save this without the temporary flag
+  iStack &= ~STACK_UNAVAILABLE;
+  SetInteger(pNode, "stackvideomode", iStack);
+
   SetString(pNode, "cleantokens", g_stSettings.m_szMyVideoCleanTokens);
   SetString(pNode, "cleanseparators", g_stSettings.m_szMyVideoCleanSeparators);
   SetString(pNode, "defaultlibview", g_settings.m_defaultVideoLibSource);
@@ -1886,20 +1874,6 @@ bool CSettings::LoadProfile(int index)
       if (doc.LoadFile(GetUserDataFolder()+"\\guisettings.xml"))
         g_guiSettings.LoadMasterLock(doc.RootElement());
     }
-
-#ifdef HAS_XBOX_HARDWARE
-    if (g_guiSettings.GetBool("system.autotemperature"))
-    {
-      CLog::Log(LOGNOTICE, "start fancontroller");
-      CFanController::Instance()->Start(g_guiSettings.GetInt("system.targettemperature"), g_guiSettings.GetInt("system.minfanspeed"));
-    }
-    else if (g_guiSettings.GetBool("system.fanspeedcontrol"))
-    {
-      CLog::Log(LOGNOTICE, "setting fanspeed");
-      CFanController::Instance()->SetFanSpeed(g_guiSettings.GetInt("system.fanspeed"));
-    }
-    g_application.StartLEDControl(false);
-#endif
 
     // to set labels - shares are reloaded
     CDetectDVDMedia::UpdateState();

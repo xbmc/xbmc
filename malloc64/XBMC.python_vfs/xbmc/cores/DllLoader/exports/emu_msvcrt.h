@@ -84,6 +84,7 @@ extern "C"
   intptr_t dll_findfirst(const char *file, struct _finddata_t *data);
   int dll_findnext(intptr_t f, _finddata_t* data);
   int dll_findclose(intptr_t handle);
+  void dll__security_error_handler(int code, void *data);
 #endif
   char * dll_fgets (char* pszString, int num , FILE * stream);
   int dll_fgetc (FILE* stream);

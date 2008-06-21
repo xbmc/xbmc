@@ -23,13 +23,13 @@
 
 #include "IPlayer.h"
 
+// do not remove mplayer - will break scripts
 enum EPLAYERCORES
 {
   EPC_NONE,
   EPC_DVDPLAYER,
   EPC_MPLAYER,
-  EPC_PAPLAYER,
-  EPC_MODPLAYER
+  EPC_PAPLAYER
 };
 
 typedef std::vector<EPLAYERCORES> VECPLAYERCORES;

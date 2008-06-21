@@ -121,5 +121,6 @@
 // Message sent to tell the GUI to change view mode
 #define GUI_MSG_CHANGE_VIEW_MODE      GUI_MSG_USER + 30
 
-// Message sent to tell the GUI to change sort method
+// Message sent to tell the GUI to change sort method/direction
 #define GUI_MSG_CHANGE_SORT_METHOD    GUI_MSG_USER + 31
+#define GUI_MSG_CHANGE_SORT_DIRECTION GUI_MSG_USER + 32

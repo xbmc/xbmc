@@ -22,13 +22,6 @@
 #include "stdafx.h"
 #include "Application.h"
 #include "KeyboardLayoutConfiguration.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "xbox/XKEEPROM.h"
-#include "utils/LCD.h"
-#include "xbox/IoSupport.h"
-#include "xbox/XKHDD.h"
-#include "xbox/xbeheader.h"
-#endif
 #include "Util.h"
 #include "TextureManager.h"
 #include "cores/PlayerCoreFactory.h"
@@ -45,11 +38,6 @@
 #endif
 #ifdef HAS_KAI
 #include "utils/KaiClient.h"
-#endif
-#ifdef HAS_XBOX_HARDWARE
-#include "utils/MemoryUnitManager.h"
-#include "utils/FanController.h"
-#include "utils/LED.h"
 #endif
 #include "XBVideoConfig.h"
 #include "LangCodeExpander.h"
@@ -204,6 +192,7 @@
 #ifdef HAS_LINUX_NETWORK
 #include "GUIDialogAccessPoints.h"
 #endif
+#include "GUIDialogFullScreenInfo.h"
 
 #ifdef HAS_PERFORMACE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -252,32 +241,13 @@ using namespace EVENTSERVER;
 // Atm this saves you 7 mb of memory
 #define USE_RELEASE_LIBS
 
-#ifdef HAS_LCD
-#ifdef _XBOX
-#pragma comment (lib,"xbmc/lib/libXenium/XeniumSPIg.lib")
-#endif
-#endif
 #ifdef HAS_KAI_VOICE
 #pragma comment (lib,"xbmc/lib/libSpeex/libSpeex.lib")
 #endif
 
-#if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
- #ifdef _XBOX
-  #ifdef HAS_FILESYSTEM
-    #pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
-    #pragma comment (lib,"xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
-    #pragma comment (lib,"xbmc/lib/libxdaap/libxdaapd.lib") // SECTIONNAME=LIBXDAAP
-    #pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
-  #endif
-  #pragma comment (lib,"xbmc/lib/libGoAhead/goaheadd.lib") // SECTIONNAME=LIBHTTP
-  #pragma comment (lib,"xbmc/lib/sqLite/libSQLite3d.lib")
-  #pragma comment (lib,"xbmc/lib/libshout/libshoutd.lib" )
-  #pragma comment (lib,"xbmc/lib/libcdio/libcdiod.lib" )
-  #pragma comment (lib,"xbmc/lib/libiconv/libiconvd.lib")
-  #pragma comment (lib,"xbmc/lib/libfribidi/libfribidid.lib")
-  #pragma comment (lib,"xbmc/lib/libpcre/libpcred.lib")
- #else
-  #if defined(HAS_FILESYSTEM) && !defined(_LINUX)
+#if defined(_WIN32)
+ #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
+  #if defined(HAS_FILESYSTEM)
     #pragma comment (lib,"../../xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
     #pragma comment (lib,"../../xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
     #pragma comment (lib,"../../xbmc/lib/libxdaap/libxdaapd.lib") // SECTIONNAME=LIBXDAAP
@@ -290,28 +260,7 @@ using namespace EVENTSERVER;
   #pragma comment (lib,"../../xbmc/lib/libiconv/libiconvd.lib")
   #pragma comment (lib,"../../xbmc/lib/libfribidi/libfribidid.lib")
   #pragma comment (lib,"../../xbmc/lib/libpcre/libpcred.lib")
- #endif
- #ifdef HAS_MIKMOD
-  #pragma comment (lib,"xbmc/lib/mikxbox/mikxboxd.lib")  // SECTIONNAME=MOD_RW,MOD_RX
- #endif
-#else
- #if defined (HAS_FILESYSTEM) && !defined (_LINUX)
-
- #endif
- #ifdef _XBOX
-  #ifdef HAS_FILESYSTEM
-    #pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")
-    #pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
-    #pragma comment (lib,"xbmc/lib/libxdaap/libxdaap.lib") // SECTIONNAME=LIBXDAAP
-    #pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")    // SECTIONNAME=LIBRTV
-  #endif
-  #pragma comment (lib,"xbmc/lib/libGoAhead/goahead.lib")
-  #pragma comment (lib,"xbmc/lib/sqLite/libSQLite3.lib")
-  #pragma comment (lib,"xbmc/lib/libcdio/libcdio.lib")
-  #pragma comment (lib,"xbmc/lib/libshout/libshout.lib")
-  #pragma comment (lib,"xbmc/lib/libiconv/libiconv.lib")
-  #pragma comment (lib,"xbmc/lib/libfribidi/libfribidi.lib")
- #elif !defined(_LINUX)
+ #else
   #ifdef HAS_FILESYSTEM
     #pragma comment (lib,"../../xbmc/lib/libXBMS/libXBMS.lib")
     #pragma comment (lib,"../../xbmc/lib/libsmb/libsmb.lib")
@@ -326,29 +275,11 @@ using namespace EVENTSERVER;
   #pragma comment (lib,"../../xbmc/lib/libfribidi/libfribidi.lib")
   #pragma comment (lib,"../../xbmc/lib/libpcre/libpcre.lib")
  #endif
- #ifdef HAS_MIKMOD
-  #pragma comment (lib,"xbmc/lib/mikxbox/mikxbox.lib")
- #endif
 #endif
 
 #define MAX_FFWD_SPEED 5
 
 CStdString g_LoadErrorStr;
-
-#ifdef HAS_XBOX_D3D
-static void WaitCallback(DWORD flags)
-{
-#ifndef PROFILE
-  /* if cpu is far ahead of gpu, sleep instead of yield */
-  if( flags & D3DWAIT_PRESENT )
-    while(D3DDevice::GetPushDistance(D3DDISTANCE_FENCES_TOWAIT) > 0)
-      Sleep(1);
-  else if( flags & (D3DWAIT_OBJECTLOCK | D3DWAIT_BLOCKONFENCE | D3DWAIT_BLOCKUNTILIDLE) )
-    while(D3DDevice::GetPushDistance(D3DDISTANCE_FENCES_TOWAIT) > 1)
-      Sleep(1);
-#endif
-}
-#endif
 
 CBackgroundPlayer::CBackgroundPlayer(const CFileItem &item, int iPlayList) : m_iPlayList(iPlayList)
 {
@@ -370,11 +301,6 @@ CApplication::CApplication(void)
     : m_ctrDpad(220, 220), m_bQuiet(false)
 {
   m_iPlaySpeed = 1;
-#ifdef HAS_XBOX_HARDWARE
-  m_bSpinDown = false;
-  m_bNetworkSpinDown = false;
-  m_dwSpinDownTime = timeGetTime();
-#endif
 #ifdef HAS_WEB_SERVER
   m_pWebServer = NULL;
   m_pXbmcHttp = NULL;
@@ -382,10 +308,6 @@ CApplication::CApplication(void)
 #endif
   m_pFileZilla = NULL;
   m_pPlayer = NULL;
-#ifdef HAS_XBOX_HARDWARE
-  XSetProcessQuantumLength(5); //default=20msec
-  XSetFileCacheSize (256*1024); //default=64kb
-#endif
   m_bInactive = false;
   m_bScreenSave = false;
   m_iScreenSaveLock = 0;
@@ -419,6 +341,8 @@ CApplication::CApplication(void)
 
   m_bPresentFrame = false;
   m_bPlatformDirectories = false;
+
+  m_logPath = NULL;
 }
 
 CApplication::~CApplication(void)
@@ -426,7 +350,10 @@ CApplication::~CApplication(void)
   delete m_itemCurrentFile;
   delete m_currentStack;
 
-    if (m_frameMutex)
+  if (m_logPath)
+    delete[] m_logPath;
+
+  if (m_frameMutex)
     SDL_DestroyMutex(m_frameMutex);
   
   if (m_frameCond)
@@ -459,8 +386,6 @@ static void __cdecl FEH_TextOut(XFONT* pFont, int iLine, const wchar_t* fmt, ...
     D3DDevice::Present(0, 0, 0, 0);
   }
 }
-#else
-static void __cdecl FEH_TextOut(void* pFont, int iLine, const wchar_t* fmt, ...) {}
 #endif
 
 HWND g_hWnd = NULL;
@@ -477,13 +402,9 @@ void CApplication::InitBasicD3D()
   m_d3dpp.BackBufferCount = 1;
   m_d3dpp.EnableAutoDepthStencil = FALSE;
   m_d3dpp.SwapEffect = D3DSWAPEFFECT_COPY;
-#ifdef HAS_XBOX_D3D
-  m_d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
-#else
   m_d3dpp.FullScreen_PresentationInterval = 0;
   m_d3dpp.Windowed = TRUE;
   m_d3dpp.hDeviceWindow = g_hWnd;
-#endif
 
   if (!(m_pD3D = Direct3DCreate8(D3D_SDK_VERSION)))
   {
@@ -514,15 +435,7 @@ void CApplication::InitBasicD3D()
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
 
   // Create the device
-#ifdef HAS_XBOX_D3D
-  // Xbox MUST use HAL / Hardware Vertex Processing!
-  if (m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
-  {
-    CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create D3D Device!");
-    Sleep(INFINITE); // die
-  }
-  m_pd3dDevice->GetBackBuffer(0, 0, &m_pBackBuffer);
-#elif !defined(HAS_SDL)
+#if !defined(HAS_SDL)
   if (m_pD3D->CreateDevice(0, D3DDEVTYPE_REF, NULL, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
   {
     CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create D3D Device!");
@@ -553,264 +466,9 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
   // g_LoadErrorStr should contain the reason
   CLog::Log(LOGWARNING, "Emergency recovery console starting...");
 
-#ifndef _XBOX
   fprintf(stderr, "Fatal error encountered, aborting\n");
   fprintf(stderr, "Error log at %sxbmc.log\n", g_stSettings.m_logFolder.c_str());
   abort();
-#endif
-
-  bool HaveGamepad = true; // should always have the gamepad when we get here
-  if (InitD3D)
-    InitBasicD3D();
-
-  if (m_splash)
-  {
-#ifndef HAS_SDL_OPENGL
-    m_splash->Stop();
-#else
-    m_splash->Hide();
-#endif
-  }
-
-#ifndef HAS_SDL  
-  m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
-  m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-#endif  
-
-  // D3D is up, load default font
-#ifdef HAS_XFONT
-  XFONT* pFont;
-  if (XFONT_OpenDefaultFont(&pFont) != S_OK)
-  {
-    CLog::Log(LOGFATAL, "FATAL ERROR: Unable to open default font!");
-    Sleep(INFINITE); // die
-  }
-
-  // defaults for text
-  pFont->SetBkMode(XFONT_OPAQUE);
-  pFont->SetBkColor(D3DCOLOR_XRGB(0, 0, 0));
-  pFont->SetTextColor(D3DCOLOR_XRGB(0xff, 0x20, 0x20));
-#else
-  void *pFont = NULL;
-#endif
-  int iLine = 0;
-  FEH_TextOut(pFont, iLine++, L"XBMC Fatal Error:");
-  char buf[500];
-  strncpy(buf, g_LoadErrorStr.c_str(), 500);
-  buf[499] = 0;
-  char* pNewline = strtok(buf, "\n");
-  while (pNewline)
-  {
-    FEH_TextOut(pFont, iLine++, L"%S", pNewline);
-    pNewline = strtok(NULL, "\n");
-  }
-  ++iLine;
-
-#ifdef HAS_XBOX_HARDWARE
-  if (MapDrives)
-  {
-    // map in default drives
-    CIoSupport::RemapDriveLetter('C',"Harddisk0\\Partition2");
-    CIoSupport::RemapDriveLetter('D',"Cdrom0");
-    CIoSupport::RemapDriveLetter('E',"Harddisk0\\Partition1");
-
-    //Add. also Drive F/G
-    if (CIoSupport::PartitionExists(6)) 
-      CIoSupport::RemapDriveLetter('F',"Harddisk0\\Partition6");
-    if (CIoSupport::PartitionExists(7))
-      CIoSupport::RemapDriveLetter('G',"Harddisk0\\Partition7");
-  }
-#endif
-  bool Pal = g_graphicsContext.GetVideoResolution() == PAL_4x3;
-
-  if (HaveGamepad)
-    FEH_TextOut(pFont, (Pal ? 16 : 12) | 0x18000, L"Press any button to reboot");
-
-
-#ifndef HAS_XBOX_NETWORK
-  bool NetworkUp = m_network.IsAvailable();
-#endif
-
-#ifdef HAS_XBOX_NETWORK
-  bool NetworkUp = false;
-
-  // Boot up the network for FTP
-  if (InitNetwork)
-  {
-    std::vector<int> netorder;
-    if (m_bXboxMediacenterLoaded)
-    {
-      if (g_guiSettings.GetInt("network.assignment") == NETWORK_DHCP)
-      {
-        netorder.push_back(NETWORK_DHCP);
-        netorder.push_back(NETWORK_STATIC);
-      }
-      else if (g_guiSettings.GetInt("network.assignment") == NETWORK_STATIC)
-      {
-        netorder.push_back(NETWORK_STATIC);
-        netorder.push_back(NETWORK_DHCP);
-      }
-      else
-      {
-        netorder.push_back(NETWORK_DASH);
-        netorder.push_back(NETWORK_DHCP);
-        netorder.push_back(NETWORK_STATIC);
-      }
-    }
-    else
-    {
-      netorder.push_back(NETWORK_DASH);
-      netorder.push_back(NETWORK_DHCP);
-      netorder.push_back(NETWORK_STATIC);
-    }
-
-    while(1)
-    {
-      std::vector<int>::iterator it;
-      for( it = netorder.begin();it != netorder.end(); it++)
-      {
-        m_network.Deinitialize();
-
-        if (!(XNetGetEthernetLinkStatus() & XNET_ETHERNET_LINK_ACTIVE))
-        {
-          FEH_TextOut(pFont, iLine, L"Network cable unplugged");
-          break;
-        }
-
-        switch( (*it) )
-        {
-          case NETWORK_DASH:
-            FEH_TextOut(pFont, iLine, L"Init network using dash settings...");
-            m_network.Initialize(NETWORK_DASH, "","","","");
-            break;
-          case NETWORK_DHCP:
-            FEH_TextOut(pFont, iLine, L"Init network using DHCP...");
-            m_network.Initialize(NETWORK_DHCP, "","","","");
-            break;
-          default:
-            FEH_TextOut(pFont, iLine, L"Init network using static ip...");
-            if( m_bXboxMediacenterLoaded )
-            {
-              m_network.Initialize(NETWORK_STATIC,
-                    g_guiSettings.GetString("network.ipaddress").c_str(),
-                    g_guiSettings.GetString("network.subnet").c_str(),
-                    g_guiSettings.GetString("network.gateway").c_str(),
-                    g_guiSettings.GetString("network.dns").c_str() );
-            }
-            else
-            {
-              m_network.Initialize(NETWORK_STATIC,
-                    "192.168.0.42",
-                    "255.255.255.0",
-                    "192.168.0.1",
-                    "192.168.0.1" );
-            }
-            break;
-        }
-
-        int count = 0;
-
-        DWORD dwState = XNET_GET_XNADDR_PENDING;
-
-        while(dwState == XNET_GET_XNADDR_PENDING)
-        {
-          dwState = m_network.UpdateState();
-
-          if( dwState != XNET_GET_XNADDR_PENDING )
-            break;
-
-          if (HaveGamepad && AnyButtonDown())
-            m_applicationMessenger.Restart();
-
-
-          Sleep(50);
-          ++count;
-        }
-
-        if( dwState != XNET_GET_XNADDR_PENDING && dwState != XNET_GET_XNADDR_NONE )
-        {
-          /* yay, we got network */
-          NetworkUp = true;
-          break;
-        }
-        /* increment line before next attempt */
-        ++iLine;
-      }
-
-      /* break out of the continous loop if we have network*/
-      if( NetworkUp )
-        break;
-      else
-      {
-        int n = 10;
-        while (n)
-        {
-          FEH_TextOut(pFont, (iLine + 1) | 0x8000, L"Unable to init network, retrying in %d seconds", n--);
-          for (int i = 0; i < 20; ++i)
-          {
-            Sleep(50);
-
-            if (HaveGamepad && AnyButtonDown())
-              m_applicationMessenger.Restart();
-          }
-        }
-      }
-    }
-  }
-#endif
-
-  if( NetworkUp )
-  {
-#ifdef HAS_LINUX_NETWORK
-    FEH_TextOut(pFont, iLine++, L"IP Address: %S", m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str());
-#else
-    FEH_TextOut(pFont, iLine++, L"IP Address: %S", m_network.m_networkinfo.ip);
-#endif
-    ++iLine;
-  }
-
-  if (NetworkUp)
-  {
-#ifdef HAS_FTP_SERVER
-    if (!m_pFileZilla)
-    {
-      // Start FTP with default settings
-      FEH_TextOut(pFont, iLine++, L"Starting FTP server...");
-      StartFtpEmergencyRecoveryMode();
-    }
-
-    FEH_TextOut(pFont, iLine++, L"FTP server running on port %d, login: xbox/xbox", m_pFileZilla->mSettings.GetServerPort());
-#endif
-    ++iLine;
-  }
-
-  if (HaveGamepad)
-  {
-    for (;;)
-    {
-      Sleep(50);
-      if (AnyButtonDown())
-      {
-        g_application.Stop();
-        Sleep(200);
-#ifdef _XBOX
-#ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
-        XKUtils::XBOXPowerCycle();
-#endif
-#elif !defined(HAS_SDL)
-        SendMessage(g_hWnd, WM_CLOSE, 0, 0);
-#endif
-      }
-    }
-  }
-  else
-  {
-#ifdef _XBOX
-    Sleep(INFINITE);
-#elif !defined(HAS_SDL)
-    SendMessage(g_hWnd, WM_CLOSE, 0, 0);
-#endif
-  }
 }
 
 #ifndef _LINUX
@@ -850,10 +508,6 @@ LONG WINAPI CApplication::UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *E
 }
 #endif
 
-#ifdef _XBOX
-#include "xbox/Undocumented.h"
-extern "C" HANDLE __stdcall KeGetCurrentThread(VOID);
-#endif
 extern "C" void __stdcall init_emu_environ();
 
 //
@@ -895,9 +549,9 @@ HRESULT CApplication::Create(HWND hWnd)
   }
   else
   {
-    char* logPath = new char[MAX_PATH];
-    snprintf(logPath, MAX_PATH, "%s/", strExecutablePath.c_str());
-    g_stSettings.m_logFolder = logPath;
+    m_logPath = new char[MAX_PATH];
+    snprintf(m_logPath, MAX_PATH, "%s/", strExecutablePath.c_str());
+    g_stSettings.m_logFolder = m_logPath;
   }
 #endif
   
@@ -914,15 +568,6 @@ HRESULT CApplication::Create(HWND hWnd)
   /* install win32 exception translator, win32 exceptions
    * can now be caught using c++ try catch */
   win32_exception::install_handler();
-#endif
-
-#ifdef HAS_XBOX_HARDWARE 
-  char szDevicePath[MAX_PATH];
-
-  CIoSupport::GetPartition(strExecutablePath.c_str()[0], szDevicePath);
-  strcat(szDevicePath, &strExecutablePath.c_str()[2]);
-  
-  CIoSupport::RemapDriveLetter('Q', szDevicePath);
 #endif
 
   CStdString strLogFile, strLogFileOld;
@@ -955,10 +600,8 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: GNU/Linux.  Built on %s (SVN:%s)", __DATE__, SVN_REV);
 #elif defined(__APPLE__)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Mac OS X.  Built on %s", __DATE__);
-#elif defined(_WIN32) && !defined(HAS_XBOX_HARDWARE)
+#elif defined(_WIN32)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Windows.  Built on %s (compiler %i)", __DATE__, _MSC_VER);
-#else
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Xbox.  Built on %s", __DATE__);
 #endif
   CLog::Log(LOGNOTICE, "Q is mapped to: %s", strExecutablePath.c_str());
   char szXBEFileName[1024];
@@ -980,21 +623,6 @@ HRESULT CApplication::Create(HWND hWnd)
     }
     g_settings.m_vecProfiles[0].setDirectory("T:\\");
     g_stSettings.m_logFolder = "T:\\";
-  }
-  else
-  {
-#ifdef HAS_XBOX_HARDWARE
-    CStdString strMnt = g_settings.GetUserDataFolder();
-    if (g_settings.GetUserDataFolder().Left(2).Equals("Q:"))
-    {
-      CUtil::GetHomePath(strMnt);
-      strMnt += g_settings.GetUserDataFolder().substr(2);
-    }
-
-    CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath);
-    strcat(szDevicePath, &strMnt.c_str()[2]);
-    CIoSupport::RemapDriveLetter('T',szDevicePath);
-#endif
   }
 
 #ifdef HAS_XRANDR
@@ -1058,30 +686,9 @@ HRESULT CApplication::Create(HWND hWnd)
   RESOLUTION initialResolution = g_videoConfig.GetInitialMode();
 #endif
 
-#ifndef __APPLE__
-  // Transfer the resolution information to our graphics context
-  g_graphicsContext.SetVideoResolution(initialResolution, TRUE);
-#endif
-
   // Initialize core peripheral port support. Note: If these parameters
   // are 0 and NULL, respectively, then the default number and types of
   // controllers will be initialized.
-#ifdef HAS_XBOX_HARDWARE
-  XInitDevices( m_dwNumInputDeviceTypes, m_InputDeviceTypes );
-
-  // Create the gamepad devices
-  if ( FAILED(hr = XBInput_CreateGamepads(&m_Gamepad)) )
-  {
-    CLog::Log(LOGERROR, "XBAppEx: Call to CreateGamepads() failed!" );
-    return hr;
-  }
-
-  if ( FAILED(hr = XBInput_CreateIR_Remotes()) )
-  {
-    CLog::Log(LOGERROR, "XBAppEx: Call to CreateIRRemotes() failed!" );
-    return hr;
-  }
-#endif
 
 #if defined(HAS_SDL) && defined(_WIN32)
   SDL_SysWMinfo wmInfo;
@@ -1100,15 +707,6 @@ HRESULT CApplication::Create(HWND hWnd)
   g_Joystick.Initialize(hWnd);
 #endif
 
-#ifdef HAS_XBOX_HARDWARE
-  // Wait for controller polling to finish. in an elegant way, instead of a Sleep(1000)
-  while (XGetDeviceEnumerationStatus() == XDEVICE_ENUMERATION_BUSY)
-  {
-    ReadInput();
-  }
-  Sleep(10); // needed or the readinput doesnt fetch anything
-  ReadInput();
-#endif
 #ifdef HAS_GAMEPAD
   //Check for LTHUMBCLICK+RTHUMBCLICK and BLACK+WHITE, no LTRIGGER+RTRIGGER
   if (((m_DefaultGamepad.wButtons & (XINPUT_GAMEPAD_LEFT_THUMB + XINPUT_GAMEPAD_RIGHT_THUMB)) && !(m_DefaultGamepad.wButtons & (KEY_BUTTON_LEFT_TRIGGER+KEY_BUTTON_RIGHT_TRIGGER))) ||
@@ -1165,42 +763,6 @@ HRESULT CApplication::Create(HWND hWnd)
   }
 #endif
 
-#ifdef HAS_XBOX_HARDWARE
-  CIoSupport::RemapDriveLetter('C', "Harddisk0\\Partition2");
-  CIoSupport::RemapDriveLetter('E', "Harddisk0\\Partition1");
-  CIoSupport::Dismount("Cdrom0");
-  CIoSupport::RemapDriveLetter('D', "Cdrom0");
-
-  // Attempt to read the LBA48 v3 patch partition table, if kernel supports the command and it exists.
-  CIoSupport::ReadPartitionTable();
-  if (CIoSupport::HasPartitionTable())
-  {
-    // Mount up to Partition15 (drive O:) if they are available.
-    for (int i=EXTEND_PARTITION_BEGIN; i <= EXTEND_PARTITION_END; i++)
-    {
-      char szDevice[32];
-      if (CIoSupport::PartitionExists(i))
-      {
-        char cDriveLetter = 'A' + i - 1;
-        sprintf(szDevice, "Harddisk0\\Partition%u", i);
-
-        CIoSupport::RemapDriveLetter(cDriveLetter, szDevice);
-      }
-    }
-  }
-  else
-  {
-    if (CIoSupport::DriveExists('F'))
-      CIoSupport::RemapDriveLetter('F', "Harddisk0\\Partition6");
-    if (CIoSupport::DriveExists('G'))
-      CIoSupport::RemapDriveLetter('G', "Harddisk0\\Partition7");
-  }
-
-  CIoSupport::RemapDriveLetter('X',"Harddisk0\\Partition3");
-  CIoSupport::RemapDriveLetter('Y',"Harddisk0\\Partition4");
-  CIoSupport::RemapDriveLetter('Z',"Harddisk0\\Partition5");
-#endif
-
   CLog::Log(LOGINFO, "Drives are mapped");
 
   CLog::Log(LOGNOTICE, "load settings...");
@@ -1230,107 +792,12 @@ HRESULT CApplication::Create(HWND hWnd)
   g_xbmcHelper.Configure();
 #endif
 
-#ifdef HAS_XBOX_HARDWARE
-  bool bNeedReboot = false;
-  char temp[1024];
-  CIoSupport::GetXbePath(temp);
-  char temp2[1024];
-  char temp3;
-  temp3 = temp[0];
-  CIoSupport::GetPartition(temp3,temp2);
-  CStdString strTemp(temp+2);
-  int iLastSlash = strTemp.rfind('\\');
-  strcat(temp2,strTemp.substr(0,iLastSlash).c_str());
-  F_VIDEO ForceVideo = VIDEO_NULL;
-  F_COUNTRY ForceCountry = COUNTRY_NULL;
-
-#ifdef HAS_TRAINER
-  if (CUtil::RemoveTrainer())
-    bNeedReboot = true;
-#endif
-
-// now check if we are switching video modes. if, are we in the wrong mode according to eeprom?
-  if (g_guiSettings.GetBool("myprograms.gameautoregion"))
-  {
-    bool fDoPatchTest = false;
-
-    // should use xkeeprom.h :/
-    EEPROMDATA EEPROM;
-    ZeroMemory(&EEPROM, sizeof(EEPROMDATA));
-
-    if( XKUtils::ReadEEPROMFromXBOX((LPBYTE)&EEPROM))
-    {
-      DWORD DWVideo = *(LPDWORD)(&EEPROM.VideoStandard[0]);
-      char temp[1024];
-      CIoSupport::GetXbePath(temp);
-      char temp2[1024];
-      char temp3;
-      temp3 = temp[0];
-      CIoSupport::GetPartition(temp3,temp2);
-      CStdString strTemp(temp+2);
-      int iLastSlash = strTemp.rfind('\\');
-      strcat(temp2,strTemp.substr(0,iLastSlash).c_str());
-
-      if ((DWVideo == XKEEPROM::VIDEO_STANDARD::NTSC_M) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) || (XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_J) || initialResolution > 5))
-      {
-        CLog::Log(LOGINFO, "Rebooting to change resolution from %s back to NTSC_M", (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) ? "PAL" : "NTSC_J");
-        ForceVideo = VIDEO_NTSCM;
-        ForceCountry = COUNTRY_USA;
-        bNeedReboot = true;
-        fDoPatchTest = true;
-      }
-      else if ((DWVideo == XKEEPROM::VIDEO_STANDARD::PAL_I) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) || (XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_J) || initialResolution < 6))
-      {
-        CLog::Log(LOGINFO, "Rebooting to change resolution from %s back to PAL_I", (XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) ? "NTSC_M" : "NTSC_J");
-        ForceVideo = VIDEO_PAL50;
-        ForceCountry = COUNTRY_EUR;
-        bNeedReboot = true;
-        fDoPatchTest = true;
-      }
-      else if ((DWVideo == XKEEPROM::VIDEO_STANDARD::NTSC_J) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) || (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) || initialResolution > 5))
-      {
-        CLog::Log(LOGINFO, "Rebooting to change resolution from %s back to NTSC_J", (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) ? "PAL" : "NTSC_M");
-        ForceVideo = VIDEO_NTSCJ;
-        ForceCountry = COUNTRY_JAP;
-        bNeedReboot = true;
-        fDoPatchTest = true;
-      }
-      else
-        CUtil::RemoveKernelPatch(); // This removes the Resolution patch from the kernel if it is not needed (if actual resolution matches eeprom setting)
-
-      if (fDoPatchTest) // Is set if we have to test whether our patch is in the kernel & therefore responsible for the mismatch of resolution & eeprom setting
-      {
-        if (!CUtil::LookForKernelPatch()) // If our patch is not present we are not responsible for the mismatch of current resolution & eeprom setting
-        {
-          // We do a hard reset to come back to default resolution and avoid infinite reboots
-          CLog::Log(LOGINFO, "No infinite reboot loop...");
-          m_applicationMessenger.Reset();
-        }
-      }
-    }
-  }
-
-  if (bNeedReboot)
-  {
-    Destroy();
-    CUtil::LaunchXbe(temp2,("D:\\"+strTemp.substr(iLastSlash+1)).c_str(),NULL,ForceVideo,ForceCountry);
-  }
-#endif
-
   CStdString strHomePath = "Q:";
   CLog::Log(LOGINFO, "Checking skinpath existance, and existence of keymap.xml:%s...", (strHomePath + "\\skin").c_str());
   CStdString keymapPath;
 
   keymapPath = g_settings.GetUserDataItem("Keymap.xml");
   
-#ifdef _XBOX
-  if (access(strHomePath + "\\skin", 0) || access(keymapPath.c_str(), 0))
-  {
-    g_LoadErrorStr = "Unable to find skin or Keymap.xml.  Make sure you have UserData/Keymap.xml and Skin/ folder";
-    FatalErrorHandler(true, false, true);
-  }
-#endif
-
   if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   {
     // Oh uh - doesn't look good for starting in their wanted screenmode
@@ -1338,7 +805,7 @@ HRESULT CApplication::Create(HWND hWnd)
     g_guiSettings.m_LookAndFeelResolution = initialResolution;
   }
   // Transfer the new resolution information to our graphics context
-#if !defined(HAS_XBOX_D3D) && !defined(HAS_SDL)
+#if !defined(HAS_SDL)
   m_d3dpp.Windowed = TRUE;
   m_d3dpp.hDeviceWindow = g_hWnd;
 #else
@@ -1464,10 +931,6 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifndef _LINUX  
   SetUnhandledExceptionFilter(UnhandledExceptionFilter);
 #endif  
-
-#ifdef HAS_XBOX_D3D
-  D3DDevice::SetWaitCallback(WaitCallback);
-#endif
 
   g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
 
@@ -1884,15 +1347,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogAccessPoints);      // window id = 141
 #endif
 
-  CGUIDialogLockSettings* pDialog = NULL;
-  CStdString strPath;
-  RESOLUTION res2;
-  strPath = g_SkinInfo.GetSkinPath("LockSettings.xml", &res2);
-  if (CFile::Exists(strPath))
-    pDialog = new CGUIDialogLockSettings;
-
-  if (pDialog)
-    m_gWindowManager.Add(pDialog); // window id = 131
+  m_gWindowManager.Add(new CGUIDialogLockSettings); // window id = 131
 
   m_gWindowManager.Add(new CGUIDialogContentSettings);        // window id = 132
 
@@ -1962,16 +1417,6 @@ HRESULT CApplication::Initialize()
     }
   }
 
-#ifdef HAS_XBOX_NETWORK
-  /* setup network based on our settings */
-  /* network will start it's init procedure */
-  m_network.Initialize(g_guiSettings.GetInt("network.assignment"),
-    g_guiSettings.GetString("network.ipaddress").c_str(),
-    g_guiSettings.GetString("network.subnet").c_str(),
-    g_guiSettings.GetString("network.gateway").c_str(),
-    g_guiSettings.GetString("network.dns").c_str());
-#endif
-
 #ifdef HAS_PYTHON
   g_pythonParser.bStartup = true;
 #endif  
@@ -2039,29 +1484,6 @@ HRESULT CApplication::Initialize()
   // final check for debugging combo
   CheckForDebugButtonCombo();
   return S_OK;
-}
-
-void CApplication::PrintXBEToLCD(const char* xbePath)
-{
-#ifdef HAS_LCD
-#ifdef _XBOX
-  CStdString strXBEName;
-  if (!CUtil::GetXBEDescription(xbePath, strXBEName))
-  {
-    CUtil::GetDirectoryName(xbePath, strXBEName);
-    CUtil::ShortenFileName(strXBEName);
-    CUtil::RemoveIllegalChars(strXBEName);
-  }
-  // crop to LCD screen size
-  if ((int)strXBEName.size() > g_advancedSettings.m_lcdColumns)
-    strXBEName = strXBEName.Left(g_advancedSettings.m_lcdColumns);
-  if (g_lcd)
-  {
-    g_infoManager.SetLaunchingXBEName(strXBEName);
-    g_lcd->Render(ILCD::LCD_MODE_XBE_LAUNCH);
-  }
-#endif
-#endif
 }
 
 void CApplication::StartIdleThread()
@@ -2349,23 +1771,6 @@ void CApplication::StopUPnPServer()
 #endif
 }
 
-void CApplication::StartLEDControl(bool switchoff)
-{
-#ifdef HAS_XBOX_HARDWARE
-  if (switchoff && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_NO_CHANGE)
-  {
-    if ( IsPlayingVideo() && (g_guiSettings.GetInt("system.leddisableonplayback") == LED_PLAYBACK_VIDEO))
-      ILED::CLEDControl(LED_COLOUR_OFF);
-    if ( IsPlayingAudio() && (g_guiSettings.GetInt("system.leddisableonplayback") == LED_PLAYBACK_MUSIC))
-      ILED::CLEDControl(LED_COLOUR_OFF);
-    if ( ((IsPlayingVideo() || IsPlayingAudio())) && (g_guiSettings.GetInt("system.leddisableonplayback") == LED_PLAYBACK_VIDEO_MUSIC))
-      ILED::CLEDControl(LED_COLOUR_OFF);
-  }
-  else if (!switchoff)
-    ILED::CLEDControl(g_guiSettings.GetInt("system.ledcolour"));
-#endif
-}
-
 void CApplication::DimLCDOnPlayback(bool dim)
 {
 #ifdef HAS_LCD
@@ -2385,13 +1790,6 @@ void CApplication::DimLCDOnPlayback(bool dim)
 
 void CApplication::StartServices()
 {
-#ifdef HAS_XBOX_HARDWARE
-  StartIdleThread();
-#endif
-
-  CheckDate();
-  StartLEDControl(false);
-
   // Start Thread for DVD Mediatype detection
   CLog::Log(LOGNOTICE, "start dvd mediatype detection");
   m_DetectDVDType.Create(false, THREAD_MINSTACKSIZE);
@@ -2411,70 +1809,6 @@ void CApplication::StartServices()
     g_lcd->Initialize();
   }
 #endif
-
-#ifdef HAS_XBOX_HARDWARE
-  if (g_guiSettings.GetBool("system.autotemperature"))
-  {
-    CLog::Log(LOGNOTICE, "start fancontroller");
-    CFanController::Instance()->Start(g_guiSettings.GetInt("system.targettemperature"), g_guiSettings.GetInt("system.minfanspeed"));
-  }
-  else if (g_guiSettings.GetBool("system.fanspeedcontrol"))
-  {
-    CLog::Log(LOGNOTICE, "setting fanspeed");
-    CFanController::Instance()->SetFanSpeed(g_guiSettings.GetInt("system.fanspeed"));
-  }
-  int setting_level = g_guiSettings.GetInt("harddisk.aamlevel");
-  if (setting_level == AAM_QUIET)
-    XKHDD::SetAAMLevel(0x80);
-  else if (setting_level == AAM_FAST)
-    XKHDD::SetAAMLevel(0xFE);
-  setting_level = g_guiSettings.GetInt("harddisk.apmlevel");
-  switch(setting_level)
-  {
-  case APM_LOPOWER:
-    XKHDD::SetAPMLevel(0x80);
-    break;
-  case APM_HIPOWER:
-    XKHDD::SetAPMLevel(0xFE);
-    break;
-  case APM_LOPOWER_STANDBY:
-    XKHDD::SetAPMLevel(0x01);
-    break;
-  case APM_HIPOWER_STANDBY:
-    XKHDD::SetAPMLevel(0x7F);
-    break;
-  }
-#endif
-}
-
-void CApplication::CheckDate()
-{
-  CLog::Log(LOGNOTICE, "Checking the Date!");
-  // Check the Date: Year, if it is  above 2099 set to 2004!
-  SYSTEMTIME CurTime;
-  SYSTEMTIME NewTime;
-  GetLocalTime(&CurTime);
-  GetLocalTime(&NewTime);
-  CLog::Log(LOGINFO, "- Current Date is: %i-%i-%i",CurTime.wDay, CurTime.wMonth, CurTime.wYear);
-  if ((CurTime.wYear > 2099) || (CurTime.wYear < 2001) )        // XBOX MS Dashboard also uses min/max DateYear 2001/2099 !!
-  {
-    CLog::Log(LOGNOTICE, "- The Date is Wrong: Setting New Date!");
-    NewTime.wYear       = 2004; // 2004
-    NewTime.wMonth      = 1;    // January
-    NewTime.wDayOfWeek  = 1;    // Monday
-    NewTime.wDay        = 5;    // Monday 05.01.2004!!
-    NewTime.wHour       = 12;
-    NewTime.wMinute     = 0;
-
-    FILETIME stNewTime, stCurTime;
-    SystemTimeToFileTime(&NewTime, &stNewTime);
-    SystemTimeToFileTime(&CurTime, &stCurTime);
-#ifdef HAS_XBOX_HARDWARE
-    NtSetSystemTime(&stNewTime, &stCurTime);    // Set a Default Year 2004!
-#endif
-    CLog::Log(LOGNOTICE, "- New Date is now: %i-%i-%i",NewTime.wDay, NewTime.wMonth, NewTime.wYear);
-  }
-  return ;
 }
 
 void CApplication::StopServices()
@@ -2483,13 +1817,6 @@ void CApplication::StopServices()
 
   CLog::Log(LOGNOTICE, "stop dvd detect media");
   m_DetectDVDType.StopThread();
-
-#ifdef HAS_XBOX_HARDWARE
-  CLog::Log(LOGNOTICE, "stop fancontroller");
-  CFanController::Instance()->Stop();
-  CFanController::RemoveInstance();
-  StopIdleThread();
-#endif  
 }
 
 void CApplication::DelayLoadSkin()
@@ -2649,6 +1976,16 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_gWindowManager.Initialize();
   g_audioManager.Initialize(CAudioContext::DEFAULT_DEVICE);
   g_audioManager.Load();
+
+  CGUIDialogFullScreenInfo* pDialog = NULL;
+  RESOLUTION res;
+  CStdString strPath = g_SkinInfo.GetSkinPath("DialogFullScreenInfo.xml", &res);
+  if (CFile::Exists(strPath))
+    pDialog = new CGUIDialogFullScreenInfo;
+   
+  if (pDialog)
+    m_gWindowManager.Add(pDialog); // window id = 142
+
   CLog::Log(LOGINFO, "  skin loaded...");
 
 #ifdef HAS_KAI
@@ -2701,6 +2038,9 @@ void CApplication::UnloadSkin()
   m_guiDialogMuteBug.OnMessage(msg);
   m_guiDialogMuteBug.ResetControlStates();
   m_guiDialogMuteBug.FreeResources(true);
+
+  // remove the skin-dependent window
+  m_gWindowManager.Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
 
   CGUIWindow::FlushReferenceCache(); // flush the cache
 
@@ -2835,13 +2175,8 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
   return true;
 }
 
-#ifdef HAS_XBOX_D3D  // needed for screenshot
-void CApplication::Render()
-{
-#else
 void CApplication::RenderNoPresent()
 {
-#endif
   MEASURE_FUNCTION;
 
   // don't do anything that would require graphiccontext to be locked before here in fullscreen.
@@ -2907,9 +2242,6 @@ void CApplication::DoRender()
   // draw GUI
   g_graphicsContext.Clear();
   //SWATHWIDTH of 4 improves fillrates (performance investigator)
-#ifdef HAS_XBOX_D3D
-  m_pd3dDevice->SetRenderState(D3DRS_SWATHWIDTH, 4);
-#endif
   m_gWindowManager.Render();
 
 
@@ -2988,9 +2320,6 @@ void CApplication::DoRender()
   m_pd3dDevice->EndScene();
 #endif
 
-#ifdef HAS_XBOX_D3D
-  m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-#endif
   g_graphicsContext.Unlock();
 
   // reset our info cache - we do this at the end of Render so that it is
@@ -3017,7 +2346,6 @@ void CApplication::SetQuiet(bool bQuiet)
   m_bQuiet = bQuiet;
 }
 
-#ifndef HAS_XBOX_D3D
 void CApplication::Render()
 {
   if (!m_AppActive && !m_bStop) {Sleep(1); ResetScreenSaver(); return;}
@@ -3082,7 +2410,6 @@ void CApplication::Render()
 #endif
   g_graphicsContext.Unlock();
 }
-#endif
 
 void CApplication::RenderMemoryStatus()
 {
@@ -3155,12 +2482,6 @@ bool CApplication::OnKey(CKey& key)
   // but not for the analog thumbsticks/triggers
   if (!key.IsAnalogButton())
   {
-#ifdef HAS_XBOX_HARDWARE
-    // reset harddisk spindown timer
-    m_bSpinDown = false;
-    m_bNetworkSpinDown = false;
-#endif
-
     // reset Idle Timer
     m_idleTimer.StartZero();
 
@@ -4306,14 +3627,6 @@ HRESULT CApplication::Cleanup()
 {
   try
   {
-    if (m_pXbmcHttp)
-    {
-      if(g_stSettings.m_HttpApiBroadcastLevel>=1)
-        getApplicationMessenger().HttpApi("broadcastlevel; ShutDown;1");
-      m_pXbmcHttp->shuttingDown=true;
-      //Sleep(100);
-    }
-
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST);
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST_EDITOR);
     m_gWindowManager.Delete(WINDOW_MUSIC_FILES);
@@ -4460,6 +3773,16 @@ void CApplication::Stop()
 {
   try
   {
+#ifdef HAS_WEB_SERVER    
+    if (m_pXbmcHttp)
+    {
+      if (g_stSettings.m_HttpApiBroadcastLevel >= 1)
+        getApplicationMessenger().HttpApi("broadcastlevel; ShutDown;1");
+
+      m_pXbmcHttp->shuttingDown = true;
+    }
+#endif
+
     CLog::Log(LOGNOTICE, "Storing total System Uptime");
     g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
 
@@ -4475,17 +3798,12 @@ void CApplication::Stop()
     m_bStop = true;
     CLog::Log(LOGNOTICE, "stop all");
 
-#ifdef HAS_WEB_SERVER    
-    if (m_pXbmcHttp)
-      getApplicationMessenger().HttpApi("broadcastlevel; ShutDown;1");
-#endif
-
     StopServices();
     //Sleep(5000);
 
     if (m_pPlayer)
     {
-      CLog::Log(LOGNOTICE, "stop mplayer");
+      CLog::Log(LOGNOTICE, "stop player");
       delete m_pPlayer;
       m_pPlayer = NULL;
     }
@@ -4502,7 +3820,6 @@ void CApplication::Stop()
     CLog::Log(LOGNOTICE, "stop daap clients");
     g_DaapClient.Release();
 #endif
-    //g_lcd->StopThread();
     m_applicationMessenger.Cleanup();
 
     CLog::Log(LOGNOTICE, "clean cached files!");
@@ -4538,7 +3855,7 @@ void CApplication::Stop()
     CLog::Log(LOGERROR, "Exception in CApplication::Stop()");
   }
 
-#if defined(_XBOX) || defined (_LINUX)
+#if defined (_LINUX)
   //Both xbox and linux don't finish the run cycle but exit immediately after a call to g_application.Stop()
   //so they never get to Destroy() in CXBApplicationEx::Run(), we call it here.
   Destroy();
@@ -4850,21 +4167,21 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (playlist == PLAYLIST_VIDEO && g_playlistPlayer.GetPlaylist(playlist).size() > 1)
   { // playing from a playlist by the looks
     // don't switch to fullscreen if we are not playing the first item...
-    options.fullscreen = !g_playlistPlayer.HasPlayedFirstFile();
+    options.fullscreen = !g_playlistPlayer.HasPlayedFirstFile() && g_advancedSettings.m_fullScreenOnMovieStart;
   }
   else if(m_itemCurrentFile->IsStack())
   {
     // TODO - this will fail if user seeks back to first file in stack
     if(m_currentStackPosition == 0
     || m_itemCurrentFile->m_lStartOffset == STARTOFFSET_RESUME)
-      options.fullscreen = true;
+      options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart;
     else
       options.fullscreen = false;
     // reset this so we don't think we are resuming on seek
     m_itemCurrentFile->m_lStartOffset = 0;
   }
   else
-    options.fullscreen = true;
+    options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart;
 
   // reset any forced player
   m_eForcedNextPlayer = EPC_NONE;
@@ -4948,7 +4265,6 @@ void CApplication::OnPlayBackEnded()
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
-  StartLEDControl(false);
   DimLCDOnPlayback(false);
 
   g_audioManager.Enable(true);
@@ -4976,11 +4292,6 @@ void CApplication::OnPlayBackStarted()
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
 
-#ifdef HAS_XBOX_HARDWARE
-  CheckNetworkHDSpinDown(true);
-
-  StartLEDControl(true);
-#endif
   DimLCDOnPlayback(true);
 }
 
@@ -5020,7 +4331,6 @@ void CApplication::OnPlayBackStopped()
   OutputDebugString("Playback was stopped\n");
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
   m_gWindowManager.SendMessage(msg);
-  StartLEDControl(false);
   DimLCDOnPlayback(false);
 
   g_audioManager.Enable(true);
@@ -5428,7 +4738,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 
 void CApplication::CheckShutdown()
 {
-#if defined(HAS_XBOX_HARDWARE) || defined(__APPLE__)
+#if defined(__APPLE__)
   CGUIDialogMusicScan *pMusicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   CGUIDialogVideoScan *pVideoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
 
@@ -5494,7 +4804,6 @@ void CApplication::CheckShutdown()
 
       if (bShutDown)
       { 
-#ifdef __APPLE__ 
         // Since it is a sleep instead of a shutdown, let's set everything to reset when we wake up.
         bShutDown = false; 
         m_dwSaverTick = timeGetTime();
@@ -5502,9 +4811,6 @@ void CApplication::CheckShutdown()
         
         // Sleep the box
         Cocoa_SleepSystem();
-#else                                                         
-        m_applicationMessenger.Shutdown(); // Turn off the box
-#endif
       }   
     }
   }
@@ -5512,7 +4818,6 @@ void CApplication::CheckShutdown()
   return ;
 #endif
 }
-
 
 void CApplication::CheckDisplaySleep()
 {
@@ -5574,162 +4879,6 @@ void CApplication::CheckDisplaySleep()
   }
 #endif
 }
-
-#ifdef HAS_XBOX_HARDWARE
-//Check if hd spindown must be blocked
-bool CApplication::MustBlockHDSpinDown(bool bCheckThisForNormalSpinDown)
-{
-  if (IsPlayingVideo())
-  {
-    //block immediate spindown when playing a video non-fullscreen (videocontrol is playing)
-    if ((!bCheckThisForNormalSpinDown) && (!g_graphicsContext.IsFullScreenVideo()))
-    {
-      return true;
-    }
-    //allow normal hd spindown always if the movie is paused
-    if ((bCheckThisForNormalSpinDown) && (m_pPlayer->IsPaused()))
-    {
-      return false;
-    }
-    //don't allow hd spindown when playing files with vobsub subtitles.
-    CStdString strSubTitelExtension;
-    if (m_pPlayer->GetSubtitleExtension(strSubTitelExtension))
-    {
-      return (strSubTitelExtension == ".idx");
-    }
-  }
-  return false;
-}
-
-void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
-{
-  int iSpinDown = g_guiSettings.GetInt("harddisk.remoteplayspindown");
-  if (iSpinDown == SPIN_DOWN_NONE)
-    return ;
-  if (m_gWindowManager.HasModalDialog())
-    return ;
-  if (MustBlockHDSpinDown(false))
-    return ;
-
-  if ((!m_bNetworkSpinDown) || playbackStarted)
-  {
-    int iDuration = 0;
-    if (IsPlayingAudio())
-    {
-      //try to get duration from current tag because mplayer doesn't calculate vbr mp3 correctly
-      if (m_itemCurrentFile->HasMusicInfoTag())
-        iDuration = m_itemCurrentFile->GetMusicInfoTag()->GetDuration();
-    }
-    if (IsPlaying() && iDuration <= 0)
-    {
-      iDuration = (int)GetTotalTime();
-    }
-    //spin down harddisk when the current file being played is not on local harddrive and
-    //duration is more then spindown timeoutsetting or duration is unknown (streams)
-    if (
-      !m_itemCurrentFile->IsHD() &&
-      (
-        (iSpinDown == SPIN_DOWN_VIDEO && IsPlayingVideo()) ||
-        (iSpinDown == SPIN_DOWN_MUSIC && IsPlayingAudio()) ||
-        (iSpinDown == SPIN_DOWN_BOTH && (IsPlayingVideo() || IsPlayingAudio()))
-      ) &&
-      (
-        (iDuration <= 0) ||
-        (iDuration > g_guiSettings.GetInt("harddisk.remoteplayhdspindownminduration")*60)
-      )
-    )
-    {
-      m_bNetworkSpinDown = true;
-      if (!playbackStarted)
-      { //if we got here not because of a playback start check what screen we are in
-        // get the current active window
-        int iWin = m_gWindowManager.GetActiveWindow();
-        if (iWin == WINDOW_FULLSCREEN_VIDEO)
-        {
-          // check if OSD is visible, if so don't do immediate spindown
-          CGUIWindowOSD *pOSD = (CGUIWindowOSD *)m_gWindowManager.GetWindow(WINDOW_OSD);
-          if (pOSD)
-            m_bNetworkSpinDown = !pOSD->IsDialogRunning();
-        }
-      }
-      if (m_bNetworkSpinDown)
-      {
-        //do the spindown right now + delayseconds
-        m_dwSpinDownTime = timeGetTime();
-      }
-    }
-  }
-  if (m_bNetworkSpinDown)
-  {
-    // check the elapsed time
-    DWORD dwTimeSpan = timeGetTime() - m_dwSpinDownTime;
-    if ( (m_dwSpinDownTime != 0) && (dwTimeSpan >= ((DWORD)g_guiSettings.GetInt("harddisk.remoteplayspindowndelay")*1000UL)) )
-    {
-      // time has elapsed, spin it down
-#ifdef HAS_XBOX_HARDWARE
-      XKHDD::SpindownHarddisk();
-#endif
-      //stop checking until a key is pressed.
-      m_dwSpinDownTime = 0;
-      m_bNetworkSpinDown = true;
-    }
-    else if (m_dwSpinDownTime == 0 && IsPlaying())
-    {
-      // we are currently spun down - let's spin back up again if we are playing media
-      // and we're within 10 seconds (or 0.5*spindown time) of the end.  This should
-      // make returning to the GUI a bit snappier + speed up stacked item changes.
-      int iMinSpinUp = 10;
-      if (iMinSpinUp > g_guiSettings.GetInt("harddisk.remoteplayspindowndelay")*0.5f)
-        iMinSpinUp = (int)(g_guiSettings.GetInt("harddisk.remoteplayspindowndelay")*0.5f);
-      if (g_infoManager.GetPlayTimeRemaining() == iMinSpinUp)
-      { // spin back up
-#ifdef HAS_XBOX_HARDWARE
-        XKHDD::SpindownHarddisk(false);
-#endif
-      }
-    }
-  }
-}
-
-void CApplication::CheckHDSpindown()
-{
-  if (!g_guiSettings.GetInt("harddisk.spindowntime"))
-    return ;
-  if (m_gWindowManager.HasModalDialog())
-    return ;
-  if (MustBlockHDSpinDown())
-    return ;
-
-  if (!m_bSpinDown &&
-      (
-        !IsPlaying() ||
-        (IsPlaying() && !m_itemCurrentFile->IsHD())
-      )
-     )
-  {
-    m_bSpinDown = true;
-    m_bNetworkSpinDown = false; // let networkspindown override normal spindown
-    m_dwSpinDownTime = timeGetTime();
-  }
-
-  //Can we do a spindown right now?
-  if (m_bSpinDown)
-  {
-    // yes, then check the elapsed time
-    DWORD dwTimeSpan = timeGetTime() - m_dwSpinDownTime;
-    if ( (m_dwSpinDownTime != 0) && (dwTimeSpan >= ((DWORD)g_guiSettings.GetInt("harddisk.spindowntime")*60UL*1000UL)) )
-    {
-      // time has elapsed, spin it down
-#ifdef HAS_XBOX_HARDWARE
-      XKHDD::SpindownHarddisk();
-#endif
-      //stop checking until a key is pressed.
-      m_dwSpinDownTime = 0;
-      m_bSpinDown = true;
-    }
-  }
-}
-#endif
 
 bool CApplication::OnMessage(CGUIMessage& message)
 {
@@ -5980,24 +5129,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
         }
         else 
 #endif
-#ifdef HAS_XBOX_HARDWARE
-        if (item.IsXBE())
-        { // an XBE
-          int iRegion;
-          if (g_guiSettings.GetBool("myprograms.gameautoregion"))
-          {
-            CXBE xbe;
-            iRegion = xbe.ExtractGameRegion(item.m_strPath);
-            if (iRegion < 1 || iRegion > 7)
-              iRegion = 0;
-            iRegion = xbe.FilterRegion(iRegion);
-          }
-          else
-            iRegion = 0;
-          CUtil::RunXBE(item.m_strPath.c_str(),NULL,F_VIDEO(iRegion));
-        }
-        else 
-#endif
         if (item.IsAudio() || item.IsVideo())
         { // an audio or video file
           PlayFile(item);
@@ -6037,15 +5168,6 @@ void CApplication::Process()
   m_applicationMessenger.ProcessMessages();
   if (g_application.m_bStop) return; //we're done, everything has been unloaded
 
-  // check for memory unit changes
-#ifdef HAS_XBOX_HARDWARE
-  if (g_memoryUnitManager.Update())
-  { // changes have occured - update our shares
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REMOVED_MEDIA);
-    m_gWindowManager.SendThreadMessage(msg);
-  }
-#endif
-
   // check if we can free unused memory
 #ifndef _LINUX  
   g_audioManager.FreeUnused();
@@ -6075,18 +5197,6 @@ void CApplication::Process()
 
 void CApplication::ProcessSlow()
 {
-#ifdef HAS_XBOX_NETWORK
-  // update our network state
-  m_network.UpdateState();
-#endif
-
-#ifdef HAS_XBOX_HARDWARE
-  // check if we need 2 spin down the harddisk
-  CheckNetworkHDSpinDown();
-  if (!m_bNetworkSpinDown)
-    CheckHDSpindown();
-#endif
-
   // Check if we need to activate the screensaver (if enabled).
   if (g_guiSettings.GetString("screensaver.mode") != "None")
     CheckScreenSaver();
@@ -6108,9 +5218,9 @@ void CApplication::ProcessSlow()
 #endif
 
   // Check if we need to shutdown (if enabled).
-#ifdef __APPLE__  
+#ifdef __APPLE__
   if (g_guiSettings.GetInt("system.shutdowntime") && g_advancedSettings.m_fullScreen)
-#else                                                                                
+#else 
   if (g_guiSettings.GetInt("system.shutdowntime"))
 #endif
   {
@@ -6122,12 +5232,6 @@ void CApplication::ProcessSlow()
 
   //  check if we can unload any unreferenced dlls or sections
   CSectionLoader::UnloadDelayed();
-
-#ifdef _XBOX
-  // Xbox Autodetection - Send in X sec PingTime Interval
-  if (m_gWindowManager.GetActiveWindow() != WINDOW_LOGIN_SCREEN) // sorry jm ;D
-    CUtil::AutoDetection();
-#endif
 
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
@@ -6144,8 +5248,6 @@ void CApplication::ProcessSlow()
   // LED - LCD SwitchOn On Paused! m_bIsPaused=TRUE -> LED/LCD is ON!
   if(IsPaused() != m_bIsPaused)
   {
-    if(g_guiSettings.GetBool("system.ledenableonpaused"))
-      StartLEDControl(m_bIsPaused);
     if(g_guiSettings.GetBool("lcd.enableonpaused"))
       DimLCDOnPlayback(m_bIsPaused);
     m_bIsPaused = IsPaused();

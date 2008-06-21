@@ -717,6 +717,13 @@ extern "C"
     not_implement("msvcrt.dll fake function dll_findclose() called\n");
     return 0;
   }
+
+  void dll__security_error_handler(int code, void *data)
+  {
+    //NOTE: __security_error_handler has been removed in VS2005 and up
+    CLog::Log(LOGERROR, "security_error, code %i", code);
+  }
+
 #endif
 
   char* dll_fgets(char* pszString, int num ,FILE * stream)

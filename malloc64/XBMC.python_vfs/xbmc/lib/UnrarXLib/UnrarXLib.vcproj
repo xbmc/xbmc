@@ -4,52 +4,12 @@
 	Version="7.10"
 	Name="UnrarXLib"
 	ProjectGUID="{FE0A91C0-E30A-47CD-8A92-A508C9292452}"
-	Keyword="XboxProj">
+	Keyword="Win32Proj">
 	<Platforms>
-		<Platform
-			Name="Xbox"/>
 		<Platform
 			Name="Win32"/>
 	</Platforms>
 	<Configurations>
-		<Configuration
-			Name="Debug|Xbox"
-			OutputDirectory="Debug"
-			IntermediateDirectory="Debug"
-			ConfigurationType="4"
-			CharacterSet="2">
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="../../;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;..\..\..\guilib"
-				PreprocessorDefinitions="_DEBUG;_LIB;_XBOX"
-				StringPooling="TRUE"
-				MinimalRebuild="FALSE"
-				BasicRuntimeChecks="0"
-				RuntimeLibrary="1"
-				BufferSecurityCheck="TRUE"
-				EnableFunctionLevelLinking="TRUE"
-				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="rar.hpp"
-				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"
-				DisableSpecificWarnings="4800;4018;4146"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/$(ProjectName)d.lib"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="$(ConfigurationName)"
@@ -100,42 +60,6 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Profile|Xbox"
-			OutputDirectory="Profile"
-			IntermediateDirectory="Profile"
-			ConfigurationType="4"
-			CharacterSet="2">
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="3"
-				OmitFramePointers="TRUE"
-				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="../../;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;..\..\..\guilib"
-				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;_LIB"
-				StringPooling="TRUE"
-				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
-				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="rar.hpp"
-				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"
-				DisableSpecificWarnings="4800;4018;4146"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/$(ProjectName).lib"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-		</Configuration>
-		<Configuration
 			Name="Profile|Win32"
 			OutputDirectory="$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
@@ -183,43 +107,6 @@
 				Name="VCManagedWrapperGeneratorTool"/>
 			<Tool
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
-		</Configuration>
-		<Configuration
-			Name="Profile_FastCap|Xbox"
-			OutputDirectory="Profile_FastCap"
-			IntermediateDirectory="Profile_FastCap"
-			ConfigurationType="4"
-			CharacterSet="2">
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="3"
-				OmitFramePointers="TRUE"
-				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="../../;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;..\..\..\guilib"
-				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;FASTCAP;_LIB"
-				StringPooling="TRUE"
-				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
-				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="rar.hpp"
-				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"
-				DisableSpecificWarnings="4800;4018;4146"
-				FastCAP="TRUE"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/$(ProjectName).lib"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
 		</Configuration>
 		<Configuration
 			Name="Profile_FastCap|Win32"
@@ -272,42 +159,6 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Release|Xbox"
-			OutputDirectory="Release"
-			IntermediateDirectory="Release"
-			ConfigurationType="4"
-			CharacterSet="2">
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="3"
-				OmitFramePointers="TRUE"
-				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="../../;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;..\..\..\guilib"
-				PreprocessorDefinitions="NDEBUG;_XBOX;_LIB"
-				StringPooling="TRUE"
-				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
-				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="rar.hpp"
-				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="0"
-				DisableSpecificWarnings="4800;4018;4146"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/$(ProjectName).lib"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-		</Configuration>
-		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
@@ -356,41 +207,6 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Release_LTCG|Xbox"
-			OutputDirectory="Release_LTCG"
-			IntermediateDirectory="Release_LTCG"
-			ConfigurationType="4"
-			CharacterSet="2"
-			WholeProgramOptimization="TRUE">
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="3"
-				OmitFramePointers="TRUE"
-				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="../../;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;..\..\..\guilib"
-				PreprocessorDefinitions="NDEBUG;_XBOX;LTCG;_LIB"
-				StringPooling="TRUE"
-				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
-				EnableEnhancedInstructionSet="1"
-				PrecompiledHeaderThrough=""
-				PrecompiledHeaderFile=""
-				WarningLevel="3"
-				DebugInformationFormat="0"
-				DisableSpecificWarnings="4800;4018;4146"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/$(ProjectName).lib"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-		</Configuration>
-		<Configuration
 			Name="Release_LTCG|Win32"
 			OutputDirectory="$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
@@ -436,44 +252,6 @@
 				Name="VCManagedWrapperGeneratorTool"/>
 			<Tool
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
-		</Configuration>
-		<Configuration
-			Name="Debug (SDL)|Xbox"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="4"
-			CharacterSet="2">
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="../../;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;..\..\..\guilib"
-				PreprocessorDefinitions="_DEBUG;_LIB;"
-				StringPooling="TRUE"
-				MinimalRebuild="FALSE"
-				BasicRuntimeChecks="0"
-				RuntimeLibrary="1"
-				BufferSecurityCheck="TRUE"
-				EnableFunctionLevelLinking="TRUE"
-				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="rar.hpp"
-				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"
-				DisableSpecificWarnings="4800;4018;4146"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/$(ProjectName)d.lib"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug (SDL)|Win32"
@@ -526,42 +304,6 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Release (SDL)|Xbox"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="4"
-			CharacterSet="2">
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="3"
-				OmitFramePointers="TRUE"
-				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="../../;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;..\..\..\guilib"
-				PreprocessorDefinitions="NDEBUG;_XBOX;_LIB"
-				StringPooling="TRUE"
-				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
-				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="rar.hpp"
-				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="0"
-				DisableSpecificWarnings="4800;4018;4146"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/$(ProjectName).lib"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-		</Configuration>
-		<Configuration
 			Name="Release (SDL)|Win32"
 			OutputDirectory="$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
@@ -610,42 +352,6 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Release (Win32)|Xbox"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="4"
-			CharacterSet="2">
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="3"
-				OmitFramePointers="TRUE"
-				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="../../;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;..\..\..\guilib"
-				PreprocessorDefinitions="NDEBUG;_XBOX;_LIB"
-				StringPooling="TRUE"
-				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
-				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="rar.hpp"
-				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="0"
-				DisableSpecificWarnings="4800;4018;4146"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/$(ProjectName).lib"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-		</Configuration>
-		<Configuration
 			Name="Release (Win32)|Win32"
 			OutputDirectory="$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
@@ -692,44 +398,6 @@
 				Name="VCManagedWrapperGeneratorTool"/>
 			<Tool
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
-		</Configuration>
-		<Configuration
-			Name="Debug (Win32)|Xbox"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="4"
-			CharacterSet="2">
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="../../;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;..\..\..\guilib"
-				PreprocessorDefinitions="_DEBUG;_LIB;"
-				StringPooling="TRUE"
-				MinimalRebuild="FALSE"
-				BasicRuntimeChecks="0"
-				RuntimeLibrary="1"
-				BufferSecurityCheck="TRUE"
-				EnableFunctionLevelLinking="TRUE"
-				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="rar.hpp"
-				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"
-				DisableSpecificWarnings="4800;4018;4146"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/$(ProjectName)d.lib"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug (Win32)|Win32"

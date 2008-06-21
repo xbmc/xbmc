@@ -579,7 +579,7 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, "s|b", &cFilename, &bIsFatX)) return NULL;
 
     CStdString strFilename;
-    strFilename = CUtil::MakeLegalFileName(cFilename,bIsFatX);
+    strFilename = CUtil::MakeLegalFileName(cFilename);
     return Py_BuildValue("s", strFilename.c_str());
   }
 
@@ -819,7 +819,6 @@ namespace PYXBMC
     PyModule_AddIntConstant(pXbmcModule, "PLAYER_CORE_DVDPLAYER", EPC_DVDPLAYER);
     PyModule_AddIntConstant(pXbmcModule, "PLAYER_CORE_MPLAYER", EPC_MPLAYER);
     PyModule_AddIntConstant(pXbmcModule, "PLAYER_CORE_PAPLAYER", EPC_PAPLAYER);
-    PyModule_AddIntConstant(pXbmcModule, "PLAYER_CORE_MODPLAYER", EPC_MODPLAYER);
 
     // dvd state constants
     PyModule_AddIntConstant(pXbmcModule, "TRAY_OPEN", TRAY_OPEN);

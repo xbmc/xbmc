@@ -56,7 +56,6 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
 
   // hostname not found in cache.
   // do a DNS lookup
-#ifndef _XBOX
   {
     SOCKET sd;          /* Socket descriptor */
     struct sockaddr_in socket_address;
@@ -137,42 +136,6 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
 
     return true;
   }
-#else
-  CStdString suffix = g_guiSettings.GetString("network.dnssuffix");
-  CStdString fqdn;
-  if( suffix.length() > 0 && strHostName.Find(".") < 0)
-    fqdn = strHostName + "." + suffix;
-  else
-    fqdn = strHostName;
-
-  WSAEVENT hEvent = WSACreateEvent();
-  XNDNS* pDns = NULL;
-  INT err = XNetDnsLookup(fqdn.c_str(), hEvent, &pDns);
-  WaitForSingleObject( (HANDLE)hEvent, INFINITE);
-  if ( pDns && pDns->iStatus == 0 )
-  {
-    //DNS lookup succeeded
-
-    unsigned long ulHostIp;
-    memcpy(&ulHostIp, &(pDns->aina[0].s_addr), 4);
-
-    strIpAdres.Format("%d.%d.%d.%d", (ulHostIp & 0xFF), (ulHostIp & 0xFF00) >> 8, (ulHostIp & 0xFF0000) >> 16, (ulHostIp & 0xFF000000) >> 24 );
-
-    g_DNSCache.Add(fqdn, strIpAdres);
-
-    XNetDnsRelease(pDns);
-    WSACloseEvent(hEvent);
-    return true;
-  }
-  if (pDns)
-  {
-    CLog::Log(LOGERROR, "DNS lookup for %s failed: %u", strHostName.c_str(), pDns->iStatus);
-    XNetDnsRelease(pDns);
-  }
-  else
-    CLog::Log(LOGERROR, "DNS lookup for %s failed: %u", strHostName.c_str(), err);
-  WSACloseEvent(hEvent);
-#endif
   return false;
 }
 

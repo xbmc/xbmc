@@ -63,11 +63,10 @@ bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_INIT:
     {
-      CGUIDialog::OnMessage(message);
-
+      CGUIDialogBoxBase::OnMessage(message);
       FreeControls();
       CreateControls();
-      break;
+      return true;
     }
 
     case GUI_MSG_CLICKED:
@@ -224,10 +223,8 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
               else if (strcmpi(type, "music") == 0)
                 strMask = g_stSettings.m_musicExtensions;
               else if (strcmpi(type, "programs") == 0)
-#if defined(_XBOX)
-                strMask = ".xbe|.py";
-#elif defined(_WIN32_WINNT)
-                strMask = ".exe|.bat|.cmd";
+#if defined(_WIN32_WINNT)
+                strMask = ".exe|.bat|.cmd|.py";
 #else
                 strMask = "";
 #endif

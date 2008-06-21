@@ -453,44 +453,13 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   SScanSettings settings;
   m_database.GetScraperForPath(item->m_strPath,info,settings);
   CStdString nfoFile;
-  if (info.strContent.Equals("tvshows") && item->m_bIsFolder)
-  {
-    CUtil::AddFileToFolder(item->m_strPath,"tvshow.nfo",nfoFile);
-    if (!CFile::Exists(nfoFile))
-      nfoFile.Empty();
-  }
-  else
-    nfoFile = CVideoInfoScanner::GetnfoFile(item,settings.parent_name_root);
-  if ( !nfoFile.IsEmpty() )
-  {
-    CLog::Log(LOGDEBUG,"Found matching nfo file: %s", nfoFile.c_str());
-    CNfoFile nfoReader(info.strContent);
-    if ( nfoReader.Create(nfoFile) == S_OK)
-    {
-      if (nfoReader.m_strScraper == "NFO")
-      {
-        CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
-//        nfoReader.GetDetails(movieDetails); // will be loaded later
-        if (info.strContent.Equals("tvshows"))
-        {
-          info.strPath = nfoReader.m_strImDbNr;
-          IMDB.SetScraperInfo(info);
-        }
+  CVideoInfoScanner scanner;
+  
+  CVideoInfoScanner::NFOResult result = scanner.CheckForNFOFile(item,settings.parent_name_root,info,pDlgProgress,scrUrl);
+  if (result == CVideoInfoScanner::FULL_NFO)
         hasDetails = true;
-      }
-      else
-      {
-        scrUrl.ParseString(nfoReader.m_strImDbUrl);
-        scrUrl.strId = nfoReader.m_strImDbNr;
-        info.strPath = nfoReader.m_strScraper;
+  if (result == CVideoInfoScanner::URL_NFO)
         IMDB.SetScraperInfo(info);
-        CLog::Log(LOGDEBUG,"-- nfo scraper: %s", nfoReader.m_strScraper.c_str());
-        CLog::Log(LOGDEBUG,"-- nfo url: %s", scrUrl.GetFirstThumb().m_url.c_str());
-      }
-    }
-    else
-      CLog::Log(LOGERROR,"Unable to find an imdb url in nfo file: %s", nfoFile.c_str());
-  }
 
   CStdString movieName = item->GetLabel();
   if (item->m_bIsFolder) // always search on tvshow folder name on refresh
@@ -582,7 +551,6 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     {
       // 5. Download the movie information
       // show dialog that we're downloading the movie info
-      CVideoInfoScanner scanner;
       CFileItemList list;
       CStdString strPath=item->m_strPath;
       if (item->IsVideoDb())
@@ -1543,8 +1511,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     CStackDirectory stack;
     strXml = stack.GetFirstStackedFile(pItem->m_strPath) + ".xml";
   }
-  CStdString strCache = "Z:\\" + CUtil::GetFileName(strXml);
-  CUtil::GetFatXQualifiedPath(strCache);
+  CStdString strCache = CUtil::MakeLegalFileName("Z:\\" + CUtil::GetFileName(strXml));
   if (CFile::Exists(strXml))
   {
     bGotXml = true;
@@ -1759,4 +1726,5 @@ void CGUIWindowVideoBase::OnScan(const CStdString& strPath, const SScraperInfo& 
   if (pDialog)
     pDialog->StartScanning(strPath,info,settings,false);
 }
+
 

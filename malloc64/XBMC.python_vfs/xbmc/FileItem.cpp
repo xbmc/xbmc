@@ -1314,6 +1314,7 @@ void CFileItemList::AssignPointer(const CFileItemList& itemlist, bool append)
   m_sortDetails = itemlist.m_sortDetails;
   m_replaceListing = itemlist.m_replaceListing;
   m_content = itemlist.m_content;
+  m_mapProperties = itemlist.m_mapProperties;
 }
 
 CFileItem* CFileItemList::Get(int iItem)
@@ -2387,15 +2388,42 @@ void CFileItem::CacheVideoFanart() const
   if (CFile::Exists(cachedFanart))
     return;
   // We don't have a cached image, so let's see if the user has a local image they want to use
-  CStdString folderFanart(GetFolderThumb("fanart.png"));
-  if (!CFile::Exists(folderFanart))
+
+  CStdString localFanart;
+  if (m_bIsFolder)
   {
-    folderFanart = GetFolderThumb("fanart.jpg");
-    if (!CFile::Exists(folderFanart))
-      return;
+    localFanart = GetFolderThumb("fanart.png");
+    if (!CFile::Exists(localFanart))
+    {
+      localFanart = GetFolderThumb("fanart.jpg");
+      if (!CFile::Exists(localFanart))
+        return;
+    }
+  }
+  else
+  {
+    CStdString strPath(m_strPath);
+    if (IsVideoDb())
+     strPath = GetVideoInfoTag()->m_strFileNameAndPath;
+    
+    if (CUtil::IsStack(strPath))
+      localFanart = CStackDirectory::GetStackedTitlePath(strPath);
+    else
+      localFanart = strPath;
+     
+    CUtil::RemoveExtension(localFanart);
+    if (CFile::Exists(localFanart+"-fanart.jpg"))
+      localFanart = localFanart+"-fanart.jpg";
+    else
+    {
+      if (CFile::Exists(localFanart+"-fanart.png"))
+        localFanart = localFanart+"-fanart.png";
+      else
+        return;
+    }
   }
   CPicture pic;
-  pic.CacheImage(folderFanart, cachedFanart);
+  pic.CacheImage(localFanart, cachedFanart);
 }
 
 CStdString CFileItem::GetCachedVideoFanart() const
@@ -2419,16 +2447,7 @@ CStdString CFileItem::GetCachedProgramThumb() const
 {
   // get the locally cached thumb
   Crc32 crc;
-  if (IsOnDVD())
-  {
-    CStdString strDesc;
-    CUtil::GetXBEDescription(m_strPath,strDesc);
-    CStdString strCRC;
-    strCRC.Format("%s%u",strDesc.c_str(),CUtil::GetXbeID(m_strPath));
-    crc.ComputeFromLowerCase(strCRC);
-  }
-  else
-    crc.ComputeFromLowerCase(m_strPath);
+  crc.ComputeFromLowerCase(m_strPath);
   CStdString thumb;
   thumb.Format("%s\\%08x.tbn", g_settings.GetProgramsThumbFolder().c_str(), (unsigned __int32)crc);
   return _P(thumb);
@@ -2436,71 +2455,6 @@ CStdString CFileItem::GetCachedProgramThumb() const
 
 CStdString CFileItem::GetCachedGameSaveThumb() const
 {
-  CStdString extension;
-  CUtil::GetExtension(m_strPath,extension);
-  if (extension.Equals(".xbx")) // savemeta.xbx - cache thumb
-  {
-    Crc32 crc;
-    crc.ComputeFromLowerCase(m_strPath);
-    CStdString thumb;
-    thumb.Format("%s\\%08x.tbn", g_settings.GetGameSaveThumbFolder().c_str(),(unsigned __int32)crc);
-
-    thumb = _P(thumb);
-
-    if (!CFile::Exists(thumb))
-    {
-      CStdString strTitleImage, strParent, strParentSave, strParentTitle;
-      CUtil::GetDirectory(m_strPath,strTitleImage);
-      CUtil::GetParentPath(strTitleImage,strParent);
-      CUtil::AddFileToFolder(strTitleImage,"saveimage.xbx",strTitleImage);
-      CUtil::AddFileToFolder(strParent,"saveimage.xbx",strParentSave);
-      CUtil::AddFileToFolder(strParent,"titleimage.xbx",strParentTitle);
-      //CUtil::AddFileToFolder(strTitleImageCur,"titleimage.xbx",m_strPath);
-      if (CFile::Exists(strTitleImage))
-        CUtil::CacheXBEIcon(strTitleImage, thumb);
-      else if (CFile::Exists(strParentSave))
-        CUtil::CacheXBEIcon(strParentSave,thumb);
-      else if (CFile::Exists(strParentTitle))
-        CUtil::CacheXBEIcon(strParentTitle,thumb);
-      else
-        thumb = "";
-    }
-    return thumb;
-  }
-  else if (CDirectory::Exists(m_strPath))
-  {
-    // get the save game id
-    CStdString fullPath(m_strPath);
-    CUtil::RemoveSlashAtEnd(fullPath);
-    CStdString fileName(CUtil::GetFileName(fullPath));
-
-    CStdString thumb;
-    thumb.Format("%s\\%s.tbn", g_settings.GetGameSaveThumbFolder().c_str(), fileName.c_str());
-
-    thumb = _P(thumb);
-
-    CLog::Log(LOGDEBUG, "Thumb  (%s)",thumb.c_str());
-    if (!CFile::Exists(thumb))
-    {
-      CStdString titleimageXBX;
-      CStdString saveimageXBX;
-
-      CUtil::AddFileToFolder(m_strPath, "titleimage.xbx", titleimageXBX);
-      CUtil::AddFileToFolder(m_strPath,"saveimage.xbx",saveimageXBX);
-
-      /*if (CFile::Exists(saveimageXBX))
-      {
-        CUtil::CacheXBEIcon(saveimageXBX, thumb);
-        CLog::Log(LOGDEBUG, "saveimageXBX  (%s)",saveimageXBX.c_str());
-      }*/
-      if (CFile::Exists(titleimageXBX))
-      {
-        CLog::Log(LOGDEBUG, "titleimageXBX  (%s)",titleimageXBX.c_str());
-        CUtil::CacheXBEIcon(titleimageXBX, thumb);
-      }
-    }
-    return thumb;
-  }
   return "";
 }
 
@@ -2543,22 +2497,6 @@ void CFileItem::SetUserProgramThumb()
   { // cache
     CPicture pic;
     if (pic.DoCreateThumbnail(fileThumb, thumb))
-      SetThumbnailImage(thumb);
-  }
-  else if (IsXBE())
-  {
-    // 2. check for avalaunch_icon.jpg
-    CStdString directory;
-    CUtil::GetDirectory(m_strPath, directory);
-    CStdString avalaunchIcon;
-    CUtil::AddFileToFolder(directory, "avalaunch_icon.jpg", avalaunchIcon);
-    if (CFile::Exists(avalaunchIcon))
-    {
-      CPicture pic;
-      if (pic.DoCreateThumbnail(avalaunchIcon, thumb))
-        SetThumbnailImage(thumb);
-    }
-    else if (CUtil::CacheXBEIcon(m_strPath, thumb))
       SetThumbnailImage(thumb);
   }
   else if (m_bIsFolder)

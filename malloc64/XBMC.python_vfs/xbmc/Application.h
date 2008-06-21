@@ -80,9 +80,7 @@ public:
   virtual void FrameMove();
   virtual void Render();
   virtual void DoRender();
-#ifndef HAS_XBOX_D3D
   virtual void RenderNoPresent();
-#endif
   virtual HRESULT Create(HWND hWnd);
   virtual HRESULT Cleanup();
   void StartServices();
@@ -110,10 +108,7 @@ public:
   void StartEventServer();
   void StopEventServer();
   void RefreshEventServer();
-  void StartLEDControl(bool switchoff = false);
   void DimLCDOnPlayback(bool dim);
-  void PrintXBEToLCD(const char* xbePath);
-  void CheckDate();
   DWORD GetThreadId() const { return m_threadID; };
   void Stop();
   void RestartApp();
@@ -150,11 +145,6 @@ public:
   bool OnKey(CKey& key);
   bool OnAction(const CAction &action);
   void RenderMemoryStatus();
-#ifdef HAS_XBOX_HARDWARE
-  bool MustBlockHDSpinDown(bool bCheckThisForNormalSpinDown = true);
-  void CheckNetworkHDSpinDown(bool playbackStarted = false);
-  void CheckHDSpindown();
-#endif
   void CheckShutdown();
   void CheckDisplaySleep();
   void CheckScreenSaver();   // CB: SCREENSAVER PATCH
@@ -280,6 +270,8 @@ protected:
   int m_nextPlaylistItem;
 
   bool m_bPresentFrame;
+
+  char* m_logPath;
 
 #ifdef HAS_SDL
   int        m_frameCount;

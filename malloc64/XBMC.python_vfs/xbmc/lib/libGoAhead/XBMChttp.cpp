@@ -36,9 +36,6 @@
 #include "FileSystem/FactoryDirectory.h"
 #include "FileSystem/VirtualDirectory.h"
 #include "utils/UdpClient.h"
-#ifndef _LINUX
-#include "xbox/XKHDD.h"
-#endif
 #include "FileSystem/Directory.h"
 #include "MusicInfoTag.h"
 #include "PictureInfoTag.h"
@@ -775,38 +772,12 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcGetXBEID(int numParas, CStdString paras[])
 {
-  if (numParas==0) {
-    return SetResponse(openTag+"Error:Missing Parameter");
-  }
-  CStdString tmp;
-  if (CFile::Exists(paras[0].c_str()))
-  {
-    tmp.Format("%09x",CUtil::GetXbeID(paras[0]));
-    return SetResponse(openTag + tmp);
-  }
-  else
-  {
-     return SetResponse(openTag+"Error:xbe doesn't exist");
-  }
-
+  return SetResponse(openTag+"Error:Missing Parameter");
 }
 
 int CXbmcHttp::xbmcGetXBETitle(int numParas, CStdString paras[])
 {
-  CStdString xbeinfo;
-  if (numParas==0) {
-    return SetResponse(openTag+"Error:Missing Parameter");
-  }
-  CStdString tmp;
-  if (CUtil::GetXBEDescription(paras[0],xbeinfo))
-  {
-    tmp.Format("%s",xbeinfo);
-    return SetResponse(openTag + tmp);
-  }
-  else
-  {
-     return SetResponse(openTag+"Error:Failed to getxbetitle");
-  }
+  return SetResponse(openTag+"Error:Missing Parameter");
 }
 
 int CXbmcHttp::xbmcGetSources(int numParas, CStdString paras[])
@@ -3078,8 +3049,7 @@ CStdString CXbmcHttpShim::flushResult(int eid, webs_t wp, const CStdString &outp
 
 CStdString CXbmcHttpShim::xbmcExternalCall(char *command)
 {
-  if (m_pXbmcHttp)
-    if (m_pXbmcHttp->shuttingDown)
+  if (m_pXbmcHttp && m_pXbmcHttp->shuttingDown)
       return "";
   int open, close;
   CStdString parameter="", cmd=command, execute;
