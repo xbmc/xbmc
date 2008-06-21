@@ -341,12 +341,17 @@ CApplication::CApplication(void)
 
   m_bPresentFrame = false;
   m_bPlatformDirectories = false;
+
+  m_logPath = NULL;
 }
 
 CApplication::~CApplication(void)
 {
   delete m_itemCurrentFile;
   delete m_currentStack;
+
+  if (m_logPath)
+    delete[] m_logPath;
 
   if (m_frameMutex)
     SDL_DestroyMutex(m_frameMutex);
@@ -544,9 +549,9 @@ HRESULT CApplication::Create(HWND hWnd)
   }
   else
   {
-    char* logPath = new char[MAX_PATH];
-    snprintf(logPath, MAX_PATH, "%s/", strExecutablePath.c_str());
-    g_stSettings.m_logFolder = logPath;
+    m_logPath = new char[MAX_PATH];
+    snprintf(m_logPath, MAX_PATH, "%s/", strExecutablePath.c_str());
+    g_stSettings.m_logFolder = m_logPath;
   }
 #endif
   
