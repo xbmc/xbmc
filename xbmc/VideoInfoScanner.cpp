@@ -817,11 +817,6 @@ namespace VIDEO
       if (pItem->m_bIsFolder)
       {
         lResult=m_database.SetDetailsForTvShow(pItem->m_strPath, movieDetails);
-        pItem->CacheVideoFanart();
-        // get & save fanart image
-        if (!CFile::Exists(pItem->GetCachedVideoFanart()))
-          if (!movieDetails.m_fanart.DownloadImage(pItem->GetCachedVideoFanart()))
-            CLog::Log(LOGERROR, "Failed to download fanart %s to %s", movieDetails.m_fanart.GetImageURL().c_str(), pItem->GetCachedVideoFanart().c_str());
       }
       else
       {
@@ -835,6 +830,14 @@ namespace VIDEO
     {
       m_database.SetDetailsForMusicVideo(pItem->m_strPath, movieDetails);
     }
+    pItem->CacheVideoFanart();
+    // get & save fanart image
+    if (!CFile::Exists(pItem->GetCachedVideoFanart()))
+    {
+      if (!movieDetails.m_fanart.m_xml.IsEmpty() && !movieDetails.m_fanart.DownloadImage(pItem->GetCachedVideoFanart()))
+        CLog::Log(LOGERROR, "Failed to download fanart %s to %s", movieDetails.m_fanart.GetImageURL().c_str(), pItem->GetCachedVideoFanart().c_str());
+    }
+
     // get & save thumbnail
     CStdString strThumb = "";
     CStdString strImage = movieDetails.m_strPictureURL.GetFirstThumb().m_url;
