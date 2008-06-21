@@ -80,6 +80,8 @@ CScrobbler::~CScrobbler()
   WaitForSingleObject(m_hHttpMutex, INFINITE);
   ReleaseMutex(m_hHttpMutex);
   CloseHandle(m_hHttpMutex);
+  CloseHandle(m_hWorkerEvent);
+  CloseHandle(m_hWorkerThread);
   Sleep(0);
 }
 
