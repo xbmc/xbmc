@@ -55,6 +55,9 @@ CRssReader::~CRssReader()
   StopThread();
   for (unsigned int i = 0; i < m_vecTimeStamps.size(); i++)
     delete m_vecTimeStamps[i];
+
+  if (m_iconv != (iconv_t) -1)
+    iconv_close(m_iconv);
 }
 
 void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, const vector<int> &times, int spacesBetweenFeeds)
