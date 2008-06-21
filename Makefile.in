@@ -112,7 +112,7 @@ install-datas:
 	@find system -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*@ARCH@.*" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@# PM3
 	@find skin -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.png|.*\.gif" -exec cp '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %f                            \r"
-	@tools/XBMCTex/XBMCTex -input skin/Project\ Mayhem\ III/media -output $(prefix)/share/xbmc/skin/Project\ Mayhem\ III\media\Textures.xpr
+	@tools/XBMCTex/XBMCTex -input "\"skin/Project Mayhem III/media\"" -output "\"$(prefix)/share/xbmc/skin/Project Mayhem III\media\Textures.xpr\""
 
 uninstall:
 	@echo "Removing XBMC..."
