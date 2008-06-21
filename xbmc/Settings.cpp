@@ -1124,6 +1124,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "percentseekforwardbig", g_advancedSettings.m_videoPercentSeekForwardBig, 10, 0, 100);
     GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_videoPercentSeekBackwardBig, -10, -100, 0);
     GetInteger(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 1, 0, 255);
+    XMLUtils::GetBoolean(pRootElement, "fullscreenonmoviestart", g_advancedSettings.m_fullScreenOnMovieStart);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
@@ -1194,7 +1195,6 @@ void CSettings::LoadAdvancedSettings()
 #ifdef HAS_HAL
   XMLUtils::GetBoolean(pRootElement, "usehalmount", g_advancedSettings.m_useHalMount);
 #endif
-  XMLUtils::GetBoolean(pRootElement, "fullscreenonmoviestart", g_advancedSettings.m_fullScreenOnMovieStart);
   XMLUtils::GetBoolean(pRootElement, "usepcdvdrom", g_advancedSettings.m_usePCDVDROM);
   XMLUtils::GetBoolean(pRootElement, "nodvdrom", g_advancedSettings.m_noDVDROM);
   XMLUtils::GetBoolean(pRootElement, "usemultipaths", g_advancedSettings.m_useMultipaths);
