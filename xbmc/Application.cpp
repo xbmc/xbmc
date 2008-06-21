@@ -348,7 +348,7 @@ CApplication::~CApplication(void)
   delete m_itemCurrentFile;
   delete m_currentStack;
 
-    if (m_frameMutex)
+  if (m_frameMutex)
     SDL_DestroyMutex(m_frameMutex);
   
   if (m_frameCond)
