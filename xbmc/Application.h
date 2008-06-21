@@ -271,6 +271,8 @@ protected:
 
   bool m_bPresentFrame;
 
+  char* m_logPath;
+
 #ifdef HAS_SDL
   int        m_frameCount;
   SDL_mutex* m_frameMutex;
