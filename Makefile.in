@@ -99,6 +99,8 @@ install: all install-datas
 	@mkdir -p $(prefix)/bin
 	@cp tools/Linux/xbmc.sh $(prefix)/bin/xbmc
 	@chmod 755 $(prefix)/bin/xbmc
+	@echo "Copying support and legal files,,,"
+	@cp README.linux LICENSE.GPL *.txt xbmc-xrandr $(prefix)/share/xbmc/
 	@echo "Done!"
 	@echo "You can run XBMC with the command 'xbmc'"
 
