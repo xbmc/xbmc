@@ -26,6 +26,7 @@
 #include "ViewState.h"
 #include "Settings.h"
 #include "FileSystem/Directory.h"
+#include "Util.h"
 
 using namespace DIRECTORY;
 
@@ -73,7 +74,9 @@ VECSOURCES& CGUIViewStateWindowScripts::GetSources()
   else
     share.strName = "Scripts";
 
-  share.strPath = "Q:\\scripts";
+  share.strPath = _P("U:\\scripts");
+  if (!CDirectory::Exists(share.strPath))
+    share.strPath = _P("Q:\\scripts");
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   m_sources.push_back(share);
 
