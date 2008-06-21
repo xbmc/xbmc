@@ -2388,15 +2388,42 @@ void CFileItem::CacheVideoFanart() const
   if (CFile::Exists(cachedFanart))
     return;
   // We don't have a cached image, so let's see if the user has a local image they want to use
-  CStdString folderFanart(GetFolderThumb("fanart.png"));
-  if (!CFile::Exists(folderFanart))
+
+  CStdString localFanart;
+  if (m_bIsFolder)
   {
-    folderFanart = GetFolderThumb("fanart.jpg");
-    if (!CFile::Exists(folderFanart))
-      return;
+    localFanart = GetFolderThumb("fanart.png");
+    if (!CFile::Exists(localFanart))
+    {
+      localFanart = GetFolderThumb("fanart.jpg");
+      if (!CFile::Exists(localFanart))
+        return;
+    }
+  }
+  else
+  {
+    CStdString strPath(m_strPath);
+    if (IsVideoDb())
+     strPath = GetVideoInfoTag()->m_strFileNameAndPath;
+    
+    if (CUtil::IsStack(strPath))
+      localFanart = CStackDirectory::GetStackedTitlePath(strPath);
+    else
+      localFanart = strPath;
+     
+    CUtil::RemoveExtension(localFanart);
+    if (CFile::Exists(localFanart+"-fanart.jpg"))
+      localFanart = localFanart+"-fanart.jpg";
+    else
+    {
+      if (CFile::Exists(localFanart+"-fanart.png"))
+        localFanart = localFanart+"-fanart.png";
+      else
+        return;
+    }
   }
   CPicture pic;
-  pic.CacheImage(folderFanart, cachedFanart);
+  pic.CacheImage(localFanart, cachedFanart);
 }
 
 CStdString CFileItem::GetCachedVideoFanart() const
