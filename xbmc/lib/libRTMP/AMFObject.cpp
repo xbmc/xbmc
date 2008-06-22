@@ -19,11 +19,12 @@
  *
  */
 
+#include "stdafx.h"
 #ifdef _LINUX
   #include <arpa/inet.h>
+  #include "linux/PlatformInclude.h"
 #endif
 
-#include "linux/PlatformInclude.h"
 #include "AMFObject.h"
 #include "utils/log.h"
 #include "rtmp.h"
