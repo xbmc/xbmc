@@ -21,8 +21,6 @@
  *
  */
 
-#include "Python/Include/Python.h"
-
 #if !defined(_LINUX) && !defined(_WIN32PC)
 #define DATA_OBJECT(data) unsigned long pointer_##data
 #else
