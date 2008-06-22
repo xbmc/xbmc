@@ -2187,7 +2187,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       {
         const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
         if (viewState)
-          bReturn = (viewState->GetSortMethod() == (unsigned int)info.GetData1());
+          bReturn = ((unsigned int)viewState->GetSortMethod() == info.GetData1());
       }
       break;
     }
@@ -2198,7 +2198,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       {
         const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
         if (viewState)
-          bReturn = (viewState->GetDisplaySortOrder() == (unsigned int)info.GetData1());
+          bReturn = ((unsigned int)viewState->GetDisplaySortOrder() == info.GetData1());
       }
       break;
     }
