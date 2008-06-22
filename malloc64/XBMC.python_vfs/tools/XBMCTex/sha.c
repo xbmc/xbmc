@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdint.h>
 
 typedef unsigned long u32;
 typedef unsigned char u8;
@@ -16,41 +17,22 @@ __forceinline static u32 rol(u32 x, u8 n)
 
 static void bswapcpy(void* dst, const void* src, u32 n)
 {
-#ifdef _LINUX
-  __asm__ ( 
-    "mov %%ecx,%2\n\t"
-    "mov %%esi,%1\n\t"
-    "mov %%edi,%0\n\t"
-    "shr $2,%%ecx\n\t"
-    "jz  bswapcpy2\n"
-  "bswapcpy1:\n\t"
-    "mov %%eax,(%%esi)\n\t"
-    "bswap %%eax\n\t"
-    "mov (%%edi),%%eax\n\t"
-    "add %%esi,4\n\t"
-    "add %%edi,4\n\t"
-    "dec %%ecx\n\t"
-    "jnz bswapcpy1\n"
-  "bswapcpy2:" : : "r"(dst), "r"(src), "r"(n)
-  );
-#else
-	__asm {
-		mov ecx,n
-		mov esi,src
-		mov edi,dst
-		shr ecx,2
-		jz  bswapcpy_2
-bswapcpy_1:
-		mov eax,dword ptr [esi]
-		bswap eax
-		mov dword ptr [edi],eax
-		add esi,4
-		add edi,4
-		dec ecx
-		jnz bswapcpy_1
-bswapcpy_2:
+  uint32_t d, b0, b1, b2, b3;
+  uint32_t *nDst = (uint32_t *)dst;
+  uint32_t *nSrc = (uint32_t *)src;
+  n >>= 2;
+  while (n != 0)
+  {
+    d = *nSrc;
+    b0 = d >> 24;
+    b1 = (d >> 8) & 0x0000ff00;
+    b2 = (d << 8) & 0x00ff0000;
+    b3 = (d << 24);
+    *nDst = b3 | b2 | b1 | b0;
+    --n;
+    ++nSrc;
+    ++nDst;
   }
-#endif
 }
 
 void SHA1(const u8* buf, u32 len, u8 hash[20])
