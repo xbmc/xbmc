@@ -64,6 +64,7 @@ public:
   virtual void RenderNoPresent();
 #endif
   virtual HRESULT Create(HWND hWnd);
+  virtual HRESULT Cleanup();
   void StartServices();
   void StopServices();
   void StartIdleThread();
