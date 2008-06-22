@@ -103,6 +103,7 @@ public:
   void stringCharsetToUtf8(const CStdStringA& strSource, CStdStringA& strDest);
 
   void stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest);
+  void stringCharsetTo(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStringA& strDest);
 
   void stringCharsetToUtf8(CStdStringA& strSourceDest);
 
