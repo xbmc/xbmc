@@ -23,7 +23,7 @@
 #include "URL.h"
 #include "utils/RegExp.h"
 #include "Util.h"
-#include "File.h"
+#include "FileSystem/File.h"
 #ifndef _LINUX
 #include <sys\types.h>
 #include <sys\stat.h>
@@ -56,6 +56,7 @@ CURL::CURL(const CStdString& strURL)
   // first need 2 check if this is a protocol or just a normal drive & path
   if (!strURL.size()) return ;
   if (strURL.Equals("?", true)) return;
+#ifndef _LINUX
   if (strURL[1] == ':')
   {
     // form is drive:directoryandfile
@@ -64,6 +65,7 @@ CURL::CURL(const CStdString& strURL)
     SetFileName(strURL);
     return ;
   }
+#endif
 
   // form is format 1 or 2
   // format 1: protocol://[domain;][username:password]@hostname[:port]/directoryandfile

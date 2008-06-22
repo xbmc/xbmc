@@ -64,6 +64,7 @@ DWORD  GetFileSize(HANDLE hFile, LPDWORD lpFileSizeHigh);
 BOOL   GetFileSizeEx(HANDLE hFile, PLARGE_INTEGER lpFileSize);
 int    _stat64(const char *path, struct __stat64 *buffer);
 int    _stati64(const char *path,struct _stati64 *buffer);
+int _fstat64(int fd, struct __stat64 *buffer);
 
 DWORD  GetFileAttributes(LPCTSTR lpFileName);
 
