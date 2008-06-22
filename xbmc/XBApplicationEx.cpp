@@ -252,6 +252,8 @@ INT CXBApplicationEx::Run()
 #endif
 
   }
+  Destroy();
+
   CLog::Log(LOGNOTICE, "application stopped..." );
   return 0;
 }

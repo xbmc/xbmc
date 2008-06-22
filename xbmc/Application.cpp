@@ -3332,67 +3332,10 @@ bool CApplication::AnyButtonDown()
   return false;
 }
 
-void CApplication::Stop()
+HRESULT CApplication::Cleanup()
 {
   try
   {
-    if (m_pXbmcHttp)
-    {
-      if(g_stSettings.m_HttpApiBroadcastLevel>=1)
-        g_applicationMessenger.HttpApi("broadcastlevel; ShutDown;1");
-
-      m_pXbmcHttp->shuttingDown=true;
-      //Sleep(100);
-    }
-
-    CLog::Log(LOGNOTICE, "Storing total System Uptime");
-    g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
-
-    // Update the settings information (volume, uptime etc. need saving)
-    if (CFile::Exists(g_settings.GetSettingsFile()))
-    {
-      CLog::Log(LOGNOTICE, "Saving settings");
-      g_settings.Save();
-    }
-    else
-      CLog::Log(LOGNOTICE, "Not saving settings (settings.xml is not present)");
-
-    m_bStop = true;
-    CLog::Log(LOGNOTICE, "stop all");
-
-    StopServices();
-    //Sleep(5000);
-
-    if (m_pPlayer)
-    {
-      CLog::Log(LOGNOTICE, "stop mplayer");
-      delete m_pPlayer;
-      m_pPlayer = NULL;
-    }
-
-    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (musicScan && musicScan->IsDialogRunning())
-      musicScan->StopScanning();
-
-    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    if (videoScan && videoScan->IsDialogRunning())
-      videoScan->StopScanning();
-
-    CLog::Log(LOGNOTICE, "stop daap clients");
-#ifdef HAS_FILESSYTEM
-    g_DaapClient.Release();
-#endif
-    //g_lcd->StopThread();
-    CLog::Log(LOGNOTICE, "stop python");
-    g_applicationMessenger.Cleanup();
-    g_pythonParser.FreeResources();
-
-    CLog::Log(LOGNOTICE, "clean cached files!");
-    g_RarManager.ClearCache(true);
-
-    CLog::Log(LOGNOTICE, "unload skin");
-    UnloadSkin();
-
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST);
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST_EDITOR);
     m_gWindowManager.Delete(WINDOW_MUSIC_FILES);
@@ -3483,8 +3426,6 @@ void CApplication::Stop()
     // reset our d3d params before we destroy
     g_graphicsContext.SetD3DDevice(NULL);
     g_graphicsContext.SetD3DParameters(NULL);
-    CLog::Log(LOGNOTICE, "destroy");
-    Destroy();
 
 #ifdef _DEBUG
     //  Shutdown as much as possible of the
@@ -3502,7 +3443,87 @@ void CApplication::Stop()
     CKaiClient::RemoveInstance();
     CScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
+    CEventServer::RemoveInstance();
     g_infoManager.Clear();
+    g_infoManager.Clear();
+    DllLoaderContainer::Clear();
+    g_settings.Clear();
+    g_guiSettings.Clear();
+#endif
+
+#ifdef _CRTDBG_MAP_ALLOC
+    _CrtDumpMemoryLeaks();
+    while(1); // execution ends
+#endif
+    return S_OK;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "Exception in CApplication::Cleanup()");
+    return E_FAIL;
+  }
+}
+
+void CApplication::Stop()
+{
+  try
+  {
+    if (m_pXbmcHttp)
+    {
+      if(g_stSettings.m_HttpApiBroadcastLevel>=1)
+        g_applicationMessenger.HttpApi("broadcastlevel; ShutDown;1");
+
+      m_pXbmcHttp->shuttingDown=true;
+      //Sleep(100);
+    }
+
+    CLog::Log(LOGNOTICE, "Storing total System Uptime");
+    g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
+
+    // Update the settings information (volume, uptime etc. need saving)
+    if (CFile::Exists(g_settings.GetSettingsFile()))
+    {
+      CLog::Log(LOGNOTICE, "Saving settings");
+      g_settings.Save();
+    }
+    else
+      CLog::Log(LOGNOTICE, "Not saving settings (settings.xml is not present)");
+
+    m_bStop = true;
+    CLog::Log(LOGNOTICE, "stop all");
+
+    StopServices();
+    //Sleep(5000);
+
+    if (m_pPlayer)
+    {
+      CLog::Log(LOGNOTICE, "stop player");
+      delete m_pPlayer;
+      m_pPlayer = NULL;
+    }
+
+    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    if (musicScan && musicScan->IsDialogRunning())
+      musicScan->StopScanning();
+
+    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (videoScan && videoScan->IsDialogRunning())
+      videoScan->StopScanning();
+
+    CLog::Log(LOGNOTICE, "stop daap clients");
+    g_DaapClient.Release();
+    //g_lcd->StopThread();
+    g_applicationMessenger.Cleanup();
+
+    CLog::Log(LOGNOTICE, "clean cached files!");
+    g_RarManager.ClearCache(true);
+
+    CLog::Log(LOGNOTICE, "unload skin");
+    UnloadSkin();
+
+    CLog::Log(LOGNOTICE, "stop python");
+    g_pythonParser.FreeResources();
+
 #ifdef HAS_LCD
     if (g_lcd)
     {
@@ -3511,20 +3532,14 @@ void CApplication::Stop()
       g_lcd=NULL;
     }
 #endif
-    DllLoaderContainer::Clear();
-    g_settings.Clear();
-    g_guiSettings.Clear();
-#endif
-
     CLog::Log(LOGNOTICE, "stopped");
   }
   catch (...)
-  {}
+  {
+    CLog::Log(LOGERROR, "Exception in CApplication::Stop()");
+  }
 
-#ifdef _CRTDBG_MAP_ALLOC
-    _CrtDumpMemoryLeaks();
-    while(1); // execution ends
-#endif
+  Destroy();
 }
 
 bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
