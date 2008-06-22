@@ -1124,7 +1124,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "percentseekforwardbig", g_advancedSettings.m_videoPercentSeekForwardBig, 10, 0, 100);
     GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_videoPercentSeekBackwardBig, -10, -100, 0);
     GetInteger(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 1, 0, 255);
-    XMLUtils::GetBoolean(pRootElement, "fullscreenonmoviestart", g_advancedSettings.m_fullScreenOnMovieStart);
+    XMLUtils::GetBoolean(pElement, "fullscreenonmoviestart", g_advancedSettings.m_fullScreenOnMovieStart);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
