@@ -306,6 +306,14 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset,
   iconv_close(iconvString);
 }
 
+void CCharsetConverter::stringCharsetTo(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStringA& strDest)
+{
+  iconv_t iconvString;  
+  ICONV_PREPARE(iconvString);
+  convert(iconvString,4,g_langInfo.GetGuiCharSet(),strDestCharset,strSource,strDest);
+  iconv_close(iconvString);
+}
+
 void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDest)
 {
   convert(m_iconvWtoUtf8,sizeof(wchar_t),WCHAR_CHARSET,"UTF-8",strSource,strDest);
