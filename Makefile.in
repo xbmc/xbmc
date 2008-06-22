@@ -104,7 +104,7 @@ install: all install-datas
 	@echo "Done!"
 	@echo "You can run XBMC with the command 'xbmc'"
 
-install-datas:
+install-datas: XBMCTex
 	@echo "Creating target directories in $(prefix)/share/xbmc"
 	@find language media screensavers scripts skin sounds userdata visualisations system -type d -not -iregex ".*svn.*" -exec mkdir -p $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@echo "Copying system files to $(prefix)/share/xbmc"
