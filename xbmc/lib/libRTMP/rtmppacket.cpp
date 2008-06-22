@@ -19,6 +19,7 @@
  *
  */
 
+#include "stdafx.h"
 #ifdef _LINUX
 #include "linux/PlatformInclude.h"
 #endif
