@@ -1,7 +1,11 @@
-#include <stdlib.h>
+#include <string.h>
+#ifdef _LINUX
 #include <stdint.h>
+#else
+#include "stdint.h"
+#endif
 
-typedef unsigned long u32;
+typedef unsigned int u32;
 typedef unsigned char u8;
 
 #ifdef _LINUX
