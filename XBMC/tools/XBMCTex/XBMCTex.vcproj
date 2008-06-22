@@ -230,7 +230,7 @@
 				RelativePath="..\..\xbmc\lib\liblzo\lzo.lib">
 			</File>
 			<File
-				RelativePath=".\sha.obj">
+				RelativePath=".\sha.c">
 			</File>
 			<File
 				RelativePath=".\Surface.cpp">
@@ -263,6 +263,9 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\lib\liblzo\Lzoconf.h">
+			</File>
+			<File
+				RelativePath=".\stdint.h">
 			</File>
 			<File
 				RelativePath=".\Surface.h">
