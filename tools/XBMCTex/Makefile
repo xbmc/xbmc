@@ -20,13 +20,13 @@ TARGET = XBMCTex
 all: $(TARGET)
 	
 $(TARGET): $(OBJS)
-	g++ $(OBJS) $(LDFLAGS) $(LIBS) -o $(TARGET)
+	g++ -O3 $(OBJS) $(LDFLAGS) $(LIBS) -o $(TARGET)
 
 .cpp.o:
-	g++ $(DEFINES) $(INCLUDES) -c -o $@ $<
+	g++ -O3 $(DEFINES) $(INCLUDES) -c -o $@ $<
 
 .c.o:
-	gcc $(DEFINES) $(INCLUDES) -c -o $@ $<
+	gcc -O3 $(DEFINES) $(INCLUDES) -c -o $@ $<
 
 clean:
 	rm -f $(TARGET) *.o
