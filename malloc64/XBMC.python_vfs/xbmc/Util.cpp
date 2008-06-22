@@ -2132,9 +2132,9 @@ void CUtil::Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat)
   result->st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
   result->st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
 #else
-  result->_st_atime = (long)(stat->_st_atime & 0xFFFFFFFF);
-  result->_st_mtime = (long)(stat->_st_mtime & 0xFFFFFFFF);
-  result->_st_ctime = (long)(stat->_st_ctime & 0xFFFFFFFF);
+  result->_st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
+  result->_st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
+  result->_st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
 #endif  
 }
 
@@ -2153,9 +2153,9 @@ void CUtil::StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat)
   result->st_mtime = stat->st_mtime;
   result->st_ctime = stat->st_ctime;
 #else
-  result->_st_atime = stat->_st_atime;
-  result->_st_mtime = stat->_st_mtime;
-  result->_st_ctime = stat->_st_ctime;
+  result->st_atime = stat->_st_atime;
+  result->st_mtime = stat->_st_mtime;
+  result->st_ctime = stat->_st_ctime;
 #endif  
 }
 
@@ -2183,15 +2183,9 @@ void CUtil::Stat64ToStat(struct stat *result, struct __stat64 *stat)
     result->st_size = 0;
     CLog::Log(LOGWARNING, "WARNING: File is larger than 32bit stat can handle, file size will be reported as 0 bytes");
   }
-#ifndef _LINUX  
   result->st_atime = (time_t)stat->st_atime;
   result->st_mtime = (time_t)stat->st_mtime;
   result->st_ctime = (time_t)stat->st_ctime;
-#else
-  result->st_atime = (time_t)stat->_st_atime;
-  result->st_mtime = (time_t)stat->_st_mtime;
-  result->st_ctime = (time_t)stat->_st_ctime;
-#endif  
 }
 
 bool CUtil::CreateDirectoryEx(const CStdString& strPath)
