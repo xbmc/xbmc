@@ -47,7 +47,7 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
   if (!m_dll.Load()) return NULL;
 
   memset(&m_info, 0, sizeof(ImageInfo));
-  if (!m_dll.LoadImage(strFileName.c_str(), iMaxWidth, iMaxHeight, &m_info))
+  if (access(strFileName.c_str(), R_OK) != 0 || !m_dll.LoadImage(strFileName.c_str(), iMaxWidth, iMaxHeight, &m_info))
   {
     CLog::Log(LOGERROR, "PICTURE: Error loading image %s", strFileName.c_str());
     return NULL;
