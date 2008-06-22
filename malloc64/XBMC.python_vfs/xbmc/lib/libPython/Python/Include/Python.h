@@ -5,7 +5,7 @@
 /* Include nearly all Python header files */
 
 #include "patchlevel.h"
-#include "../pyconfig.h"
+#include "pyconfig.h"
 
 /* Cyclic gc is always enabled, starting with release 2.3a1.  Supply the
  * old symbol for the benefit of extension modules written before then
@@ -168,7 +168,7 @@ PyAPI_FUNC(int) _Py_Mangle(char *p, char *name, \
 #define PyDoc_STR(str) ""
 #endif
 
-#include "../XBPythonDll.h"
+#include "../../XBPythonDll.h"
 
 
 #endif /* !Py_PYTHON_H */
