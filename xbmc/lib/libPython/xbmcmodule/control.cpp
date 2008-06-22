@@ -300,8 +300,10 @@ namespace PYXBMC
     const FRECT animRect = { (float)self->dwPosX, (float)self->dwPosY, (float)self->dwWidth, (float)self->dwHeight };
     PyGUILock();
     if (self->pGUIControl)
+    {
       CGUIControlFactory::GetAnimations(pRoot, animRect, animations);
-    self->pGUIControl->SetAnimations(animations);
+      self->pGUIControl->SetAnimations(animations);
+    }
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
