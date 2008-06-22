@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0500;WINVER=0x0500;HAS_SDL;NOMINMAX;_USE_32BIT_TIME_T"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
@@ -132,7 +132,7 @@
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP"
 				PreprocessorDefinitions="_MSVC;WIN32;NDEBUG;_WINDOWS;_WIN32_WINNT=0x0500;WINVER=0x0500;HAS_SDL;NOMINMAX;_USE_32BIT_TIME_T"
 				StringPooling="false"
 				MinimalRebuild="false"
@@ -806,6 +806,14 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamRTMP.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamRTMP.h"
 						>
 					</File>
 					<File
@@ -5723,6 +5731,34 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cdrip\EncoderWav.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="libRTMP"
+				>
+				<File
+					RelativePath="..\..\xbmc\lib\libRTMP\AMFObject.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libRTMP\AMFObject.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libRTMP\rtmp.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libRTMP\rtmp.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libRTMP\rtmppacket.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libRTMP\rtmppacket.h"
 					>
 				</File>
 			</Filter>

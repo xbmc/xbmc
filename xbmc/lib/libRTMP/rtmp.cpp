@@ -19,6 +19,7 @@
  *
  */
 
+#include "stdafx.h"
 #include "PlatformInclude.h"
 #include "rtmp.h"
 #include "AMFObject.h"
