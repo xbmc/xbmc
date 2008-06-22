@@ -46,10 +46,12 @@
 		8863281F0E07B37200BB3DAB /* GUIViewStatePrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 886328190E07B37200BB3DAB /* GUIViewStatePrograms.cpp */; };
 		886328200E07B37200BB3DAB /* GUIViewStateScripts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8863281B0E07B37200BB3DAB /* GUIViewStateScripts.cpp */; };
 		886328230E07BE9E00BB3DAB /* GUIViewStateGameSaves.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 886328210E07BE9E00BB3DAB /* GUIViewStateGameSaves.cpp */; };
+		88632A330E0C44DE00BB3DAB /* RssFeed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88632A310E0C44DE00BB3DAB /* RssFeed.cpp */; };
 		8883CEA10DD817D1004E8B72 /* DVDOverlayCodecSSA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CE9E0DD817D1004E8B72 /* DVDOverlayCodecSSA.cpp */; };
 		8883CEA70DD81807004E8B72 /* DVDSubtitleParserSSA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CEA30DD81807004E8B72 /* DVDSubtitleParserSSA.cpp */; };
 		8883CEA80DD81807004E8B72 /* DVDSubtitlesLibass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CEA50DD81807004E8B72 /* DVDSubtitlesLibass.cpp */; };
 		889693370DF0B72500F1DA75 /* libbz2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 889693360DF0B72500F1DA75 /* libbz2.a */; };
+		889B4D8E0E0EF86C00FAD25E /* RSSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 889B4D8C0E0EF86C00FAD25E /* RSSDirectory.cpp */; };
 		88ACB01B0DCF40800083CFDF /* ASAPFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88ACB0190DCF40800083CFDF /* ASAPFileDirectory.cpp */; };
 		88ACB01F0DCF409E0083CFDF /* ASAPCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88ACB01C0DCF409E0083CFDF /* ASAPCodec.cpp */; };
 		88ACB0220DCF40D00083CFDF /* MusicInfoTagLoaderASAP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88ACB0200DCF40D00083CFDF /* MusicInfoTagLoaderASAP.cpp */; };
@@ -909,6 +911,8 @@
 		8863281C0E07B37200BB3DAB /* GUIViewStateScripts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStateScripts.h; sourceTree = "<group>"; };
 		886328210E07BE9E00BB3DAB /* GUIViewStateGameSaves.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStateGameSaves.cpp; sourceTree = "<group>"; };
 		886328220E07BE9E00BB3DAB /* GUIViewStateGameSaves.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStateGameSaves.h; sourceTree = "<group>"; };
+		88632A310E0C44DE00BB3DAB /* RssFeed.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RssFeed.cpp; sourceTree = "<group>"; };
+		88632A320E0C44DE00BB3DAB /* RssFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RssFeed.h; sourceTree = "<group>"; };
 		8883CE9E0DD817D1004E8B72 /* DVDOverlayCodecSSA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodecSSA.cpp; sourceTree = "<group>"; };
 		8883CE9F0DD817D1004E8B72 /* DVDOverlayCodecSSA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayCodecSSA.h; sourceTree = "<group>"; };
 		8883CEA00DD817D1004E8B72 /* DVDOverlaySSA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlaySSA.h; sourceTree = "<group>"; };
@@ -918,6 +922,8 @@
 		8883CEA50DD81807004E8B72 /* DVDSubtitlesLibass.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitlesLibass.cpp; sourceTree = "<group>"; };
 		8883CEA60DD81807004E8B72 /* DVDSubtitlesLibass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitlesLibass.h; sourceTree = "<group>"; };
 		889693360DF0B72500F1DA75 /* libbz2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbz2.a; path = /opt/local/lib/libbz2.a; sourceTree = "<absolute>"; };
+		889B4D8C0E0EF86C00FAD25E /* RSSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RSSDirectory.cpp; sourceTree = "<group>"; };
+		889B4D8D0E0EF86C00FAD25E /* RSSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSSDirectory.h; sourceTree = "<group>"; };
 		88ACB0190DCF40800083CFDF /* ASAPFileDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ASAPFileDirectory.cpp; sourceTree = "<group>"; };
 		88ACB01A0DCF40800083CFDF /* ASAPFileDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASAPFileDirectory.h; sourceTree = "<group>"; };
 		88ACB01C0DCF409E0083CFDF /* ASAPCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ASAPCodec.cpp; sourceTree = "<group>"; };
@@ -4363,6 +4369,8 @@
 		E38E16940D25F9FA00618676 /* FileSystem */ = {
 			isa = PBXGroup;
 			children = (
+				889B4D8C0E0EF86C00FAD25E /* RSSDirectory.cpp */,
+				889B4D8D0E0EF86C00FAD25E /* RSSDirectory.h */,
 				88ACB0190DCF40800083CFDF /* ASAPFileDirectory.cpp */,
 				88ACB01A0DCF40800083CFDF /* ASAPFileDirectory.h */,
 				880DBE530DC224A100E26B71 /* MusicFileDirectory.cpp */,
@@ -5842,6 +5850,8 @@
 		E38E1E220D25F9FD00618676 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				88632A310E0C44DE00BB3DAB /* RssFeed.cpp */,
+				88632A320E0C44DE00BB3DAB /* RssFeed.h */,
 				E36C29E70DA72486001F0C9D /* ScraperUrl.cpp */,
 				E36C29E80DA72486001F0C9D /* MusicArtistInfo.cpp */,
 				E36C29E90DA72486001F0C9D /* Fanart.cpp */,
@@ -6815,6 +6825,8 @@
 				8863281F0E07B37200BB3DAB /* GUIViewStatePrograms.cpp in Sources */,
 				886328200E07B37200BB3DAB /* GUIViewStateScripts.cpp in Sources */,
 				886328230E07BE9E00BB3DAB /* GUIViewStateGameSaves.cpp in Sources */,
+				88632A330E0C44DE00BB3DAB /* RssFeed.cpp in Sources */,
+				889B4D8E0E0EF86C00FAD25E /* RSSDirectory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
