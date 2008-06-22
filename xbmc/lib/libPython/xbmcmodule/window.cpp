@@ -173,7 +173,7 @@ namespace PYXBMC
       ((ControlButton*)pControl)->dwFocusedColor  = li.focusedColor;
       ((ControlButton*)pControl)->dwTextColor  = li.textColor;
       ((ControlButton*)pControl)->dwShadowColor   = li.shadowColor;
-      ((ControlButton*)pControl)->strFont = li.font->GetFontName();
+      if (li.font) ((ControlButton*)pControl)->strFont = li.font->GetFontName();
       ((ControlButton*)pControl)->dwAlign = li.align;
       break;
     case CGUIControl::GUICONTROL_CHECKMARK:
@@ -189,7 +189,7 @@ namespace PYXBMC
       ((ControlCheckMark*)pControl)->dwDisabledColor = li.disabledColor;
       //((ControlCheckMark*)pControl)->dwShadowColor = li.shadowColor;
       ((ControlCheckMark*)pControl)->dwTextColor  = li.textColor;
-      ((ControlCheckMark*)pControl)->strFont = li.font->GetFontName();
+      if (li.font) ((ControlCheckMark*)pControl)->strFont = li.font->GetFontName();
       ((ControlCheckMark*)pControl)->dwAlign = li.align;
       break;
     case CGUIControl::GUICONTROL_LABEL:
@@ -264,7 +264,7 @@ namespace PYXBMC
       ((ControlRadioButton*)pControl)->dwFocusedColor  = li.focusedColor;
       ((ControlRadioButton*)pControl)->dwTextColor  = li.textColor;
       ((ControlRadioButton*)pControl)->dwShadowColor   = li.shadowColor;
-      ((ControlRadioButton*)pControl)->strFont = li.font->GetFontName();
+      if (li.font) ((ControlRadioButton*)pControl)->strFont = li.font->GetFontName();
       ((ControlRadioButton*)pControl)->dwAlign = li.align;
       break;
     default:
