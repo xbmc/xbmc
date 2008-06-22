@@ -136,7 +136,7 @@ extern "C"
   void dll_flockfile(FILE *file);
   int dll_ftrylockfile(FILE *file);
   void dll_funlockfile(FILE *file);
-  int dll_fstat64(int fd, struct stat64 *buf);
+  int dll_fstat64(int fd, struct __stat64 *buf);
   int dll_fstatvfs64(int fd, struct statvfs64 *buf);
 
 #ifdef _LINUX

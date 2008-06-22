@@ -432,7 +432,7 @@ bool CFile::Exists(const CStdString& strFileName)
   return false;
 }
 
-int CFile::Stat(struct stat64 *buffer)
+int CFile::Stat(struct __stat64 *buffer)
 {
   return m_pFile->Stat(buffer);
 }

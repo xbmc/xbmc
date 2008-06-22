@@ -23,6 +23,11 @@
 #include "URL.h"
 #include "utils/RegExp.h"
 #include "Util.h"
+#include "File.h"
+#ifndef _LINUX
+#include <sys\types.h>
+#include <sys\stat.h>
+#endif
 
 CStdString URLEncodeInline(const CStdString& strData)
 {
@@ -51,7 +56,6 @@ CURL::CURL(const CStdString& strURL)
   // first need 2 check if this is a protocol or just a normal drive & path
   if (!strURL.size()) return ;
   if (strURL.Equals("?", true)) return;
-#ifndef _LINUX  
   if (strURL[1] == ':')
   {
     // form is drive:directoryandfile
@@ -60,7 +64,6 @@ CURL::CURL(const CStdString& strURL)
     SetFileName(strURL);
     return ;
   }
-#endif
 
   // form is format 1 or 2
   // format 1: protocol://[domain;][username:password]@hostname[:port]/directoryandfile
@@ -104,10 +107,14 @@ CURL::CURL(const CStdString& strURL)
       }
       iPos += extLen + 1;
       CStdString archiveName = strURL.Left(iPos);
-      struct stat s;
-      if (stat(_P(archiveName), &s) == 0)
+      struct __stat64 s;
+      if (XFILE::CFile::Stat(archiveName, &s) == 0)
       {
+#ifdef _LINUX
         if (!S_ISDIR(s.st_mode))
+#else
+        if (!(s.st_mode & S_IFDIR))
+#endif
         {
           CUtil::URLEncode(archiveName);
           CURL c((CStdString)"zip" + "://" + archiveName + '/' + strURL.Right(strURL.size() - iPos - 1));

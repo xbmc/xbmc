@@ -460,13 +460,13 @@ extern "C"
     return -1;
   }
 
-  int dll_fstat64(int fd, struct stat64 *buf)
+  int dll_fstat64(int fd, struct __stat64 *buf)
   {
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
       return pFile->Stat(buf);
     else if (IS_STD_DESCRIPTOR(fd))
-      return fstat64(fd, buf);
+      return _fstat64(fd, buf);
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
   }
@@ -564,8 +564,12 @@ extern "C"
     else if (!IS_STD_STREAM(stream))
     {
       // it might be something else than a file, let the operating system handle it
+#ifdef _LINUX
       flockfile(stream);
       return;
+#else
+      CLog::Log(LOGERROR, "%s: flockfile not available on non-linux platforms",  __FUNCTION__);
+#endif
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
   }
@@ -582,7 +586,11 @@ extern "C"
     else if (!IS_STD_STREAM(stream))
     {
       // it might be something else than a file, let the operating system handle it
+#ifdef _LINUX
       return ftrylockfile(stream);
+#else
+      CLog::Log(LOGERROR, "%s: ftrylockfile not available on non-linux platforms",  __FUNCTION__);
+#endif
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
@@ -599,8 +607,12 @@ extern "C"
     else if (!IS_STD_STREAM(stream))
     {
       // it might be something else than a file, let the operating system handle it
+#ifdef _LINUX
       funlockfile(stream);
       return;
+#else
+      CLog::Log(LOGERROR, "%s: funlockfile not available on non-linux platforms",  __FUNCTION__);
+#endif
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
   }
@@ -1436,6 +1448,7 @@ extern "C"
 
   int dll_fstat(int fd, struct stat* buffer)
   {
+    CLog::Log(LOGWARNING, "msvcrt.dll: dll_fstat called, but is poorly imlemented");
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
@@ -1465,6 +1478,7 @@ extern "C"
 
   int dll_fstati64(int fd, struct _stati64 *buffer)
   {
+    CLog::Log(LOGWARNING, "msvcrt.dll: dll_fstati64 called, but is poorly imlemented");
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
