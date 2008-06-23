@@ -2746,6 +2746,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\RssFeed.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\RssFeed.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\RssReader.cpp"
 					>
 				</File>
@@ -3743,6 +3751,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\RarManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\RSSDirectory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\RSSDirectory.h"
 					>
 				</File>
 				<File
