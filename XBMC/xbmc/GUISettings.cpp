@@ -425,7 +425,13 @@ CGUISettings::CGUISettings(void)
   AddString(11, "videolibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
   AddString(12, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
   AddString(13, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
-  
+
+  AddCategory(5, "pvrfrontend", 17000);
+  AddBool(1, "pvrfrontend.enabled", 17010, false);
+  //AddInt(2, "pvrfrontend.servertype", 17011, 
+  AddString(3, "pvrfrontend.serverip", 17012, "", BUTTON_CONTROL_IP_INPUT);
+
+
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
   AddString(2, "videoplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
@@ -457,7 +463,7 @@ CGUISettings::CGUISettings(void)
   AddString(11, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
 
   // Don't add the category - makes them hidden in the GUI
-  //AddCategory(5, "postprocessing", 14041);
+  AddCategory(5, "postprocessing", 14041);
   AddBool(2, "postprocessing.enable", 286, false);
   AddBool(3, "postprocessing.auto", 307, true); // only has effect if PostProcessing.Enable is on.
   AddBool(4, "postprocessing.verticaldeblocking", 308, false);

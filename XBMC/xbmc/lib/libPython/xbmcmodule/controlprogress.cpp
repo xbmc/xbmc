@@ -114,21 +114,21 @@ namespace PYXBMC
     return pControl->pGUIControl;
   }
 
-
   PyDoc_STRVAR(setPercent__doc__,
-    "setPercent(percent) -- Sets the pecertange for the progressbar to show.\n"
+    "setPercent(percent) -- Sets the percentage of the progressbar to show.\n"
     "\n"
-    "percent       : float - percentage of the bar.\n"
+    "percent       : float - percentage of the bar to show.\n"
+    "\n"
+    "*Note, valid range for percent is 0-100\n"
     "\n"
     "example:\n"
-    "  - self.progress.setValue(60)\n");
+    "  - self.progress.setPercent(60)\n");
 
   PyObject* ControlProgress_SetPercent(ControlProgress *self, PyObject *args)
   {
-    float *cPercent;
+    float fPercent = 0;
+    if (!PyArg_ParseTuple(args, "f", &fPercent)) return NULL;
 
-    if (!PyArg_ParseTuple(args, "f", &cPercent)) return NULL;
-    float fPercent = *cPercent;
     PyGUILock();
     if (self->pGUIControl)
     {

@@ -245,8 +245,10 @@
 #define WINDOW_MUSIC                      10005 // virtual window to return the music start window.
 #define WINDOW_VIDEOS                     10006
 #define WINDOW_SYSTEM_INFORMATION         10007
-#define WINDOW_SCREEN_CALIBRATION          10011
+#define WINDOW_EPG                        10008
+#define WINDOW_SCREEN_CALIBRATION         10011
 
+#define WINDOW_SETTINGS_MYTV              10010
 #define WINDOW_SETTINGS_MYPICTURES        10012
 #define WINDOW_SETTINGS_MYPROGRAMS        10013
 #define WINDOW_SETTINGS_MYWEATHER         10014
@@ -305,6 +307,7 @@
 #define WINDOW_DIALOG_BUSY                10138
 #define WINDOW_DIALOG_PICTURE_INFO        10139
 #define WINDOW_DIALOG_PLUGIN_SETTINGS     10140
+#define WINDOW_DIALOG_FULLSCREEN_INFO     10142
 
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501

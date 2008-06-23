@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "CMythDirectory.h"
+#include "TVDatabase.h"
 #include "CMythSession.h"
 #include "Util.h"
 #include "DllLibCMyth.h"
@@ -68,6 +69,8 @@ void CCMythDirectory::Release()
 
 bool CCMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
 {
+  CTVDatabase l_tvepgdb;
+  l_tvepgdb.Open();
   CURL url(base);
   CStdString strPath = url.GetFileName();
   std::vector<CStdString> tokens;

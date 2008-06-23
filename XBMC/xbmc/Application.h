@@ -64,6 +64,7 @@ public:
   virtual void RenderNoPresent();
 #endif
   virtual HRESULT Create(HWND hWnd);
+  virtual HRESULT Cleanup();
   void StartServices();
   void StopServices();
   void StartIdleThread();
@@ -87,6 +88,8 @@ public:
   void StartEventServer();
   void StopEventServer();
   void RefreshEventServer();
+  void StartPVRManager();
+  void StopPVRManager();
   void StartLEDControl(bool switchoff = false);
   void DimLCDOnPlayback(bool dim);
   void PrintXBEToLCD(const char* xbePath);
@@ -103,7 +106,7 @@ public:
   const CStdString& CurrentFile();
   CFileItem& CurrentFileItem();
   virtual bool OnMessage(CGUIMessage& message);
-  const EPLAYERCORES GetCurrentPlayer();
+  EPLAYERCORES GetCurrentPlayer();
   virtual void OnPlayBackEnded();
   virtual void OnPlayBackStarted();
   virtual void OnPlayBackStopped();

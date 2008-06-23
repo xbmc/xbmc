@@ -30,6 +30,7 @@
 #include "lib/libscrobbler/scrobbler.h"
 #include "Settings.h"
 #include "GUIWindowManager.h"
+#include "../utils/RssReader.h"
 
 // global network variable
 CNetwork g_network;
@@ -499,6 +500,8 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       g_application.StopEventServer();
       CScrobbler::GetInstance()->Term();
       // smb.Deinit(); if any file is open over samba this will break.
+
+      g_rssManager.Stop();
     }
     break;
   }

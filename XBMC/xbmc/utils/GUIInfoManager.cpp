@@ -590,6 +590,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("tvshowthumb")) ret = CONTAINER_TVSHOWTHUMB;
     else if (info.Equals("seasonthumb")) ret = CONTAINER_SEASONTHUMB;
     else if (info.Equals("folderpath")) ret = CONTAINER_FOLDERPATH;
+    else if (info.Equals("pluginname")) ret = CONTAINER_PLUGINNAME;
     else if (info.Equals("viewmode")) ret = CONTAINER_VIEWMODE;
     else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
     else if (info.Equals("onprevious")) ret = CONTAINER_ON_PREVIOUS;
@@ -634,6 +635,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     {
       int itemID = atoi(info.Mid(9, info.GetLength() - 10));
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_HAS_FOCUS : CONTAINER_HAS_FOCUS, id, itemID));
+    }
+    else if (info.Left(9).Equals("property("))
+    {
+      int compareString = ConditionalStringParameter(info.Mid(9, info.GetLength() - 10));
+      return AddMultiInfo(GUIInfo(CONTAINER_PROPERTY, id, compareString));
     }
     else if (info.Equals("showplot")) ret = CONTAINER_SHOWPLOT;
     if (id && (ret == CONTAINER_ON_NEXT || ret == CONTAINER_ON_PREVIOUS || ret == CONTAINER_NUM_PAGES ||
@@ -1117,6 +1123,20 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       {
         CURL url(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath);
         url.GetURLWithoutUserDetails(strLabel);
+      }
+      break;
+    }
+  case CONTAINER_PLUGINNAME:
+    {
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+      {
+        CURL url(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath);
+        if (url.GetProtocol().Equals("plugin"))
+        {
+          strLabel = url.GetFileName();
+          CUtil::RemoveSlashAtEnd(strLabel);
+        }
       }
       break;
     }
@@ -2249,6 +2269,21 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
   }
   else if (info.m_info >= MUSICPLAYER_TITLE && info.m_info <= MUSICPLAYER_DISC_NUMBER)
     return GetMusicPlaylistInfo(info);
+  else if (info.m_info == CONTAINER_PROPERTY)
+  {
+    CGUIWindow *window = NULL;
+    if (info.GetData1())
+    { // container specified
+      window = GetWindowWithCondition(contextWindow, 0);
+    }
+    else
+    { // no container specified - assume a mediawindow
+      window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    }
+    if (window)
+      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty(m_stringParameters[info.GetData2()]);
+  }
+
   return StringUtils::EmptyString;
 }
 
@@ -3356,7 +3391,7 @@ int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter)
 // workaround
 const CStdString &CorrectAllItemsSortHack(const CStdString &item)
 {
-  if (item.size() == 1 && item[0] == 0x01 || item.size() > 1 && ((unsigned char) item[1]) == 0xff)
+  if ((item.size() == 1 && item[0] == 0x01) || (item.size() > 1 && ((unsigned char) item[1]) == 0xff))
     return StringUtils::EmptyString;
   return item;
 }
@@ -3542,7 +3577,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       if(!strThumb.IsEmpty() && !CURL::IsFileOnly(strThumb) && !CUtil::IsHD(strThumb))
         strThumb = "";
 
-      if(strThumb.IsEmpty())
+      if(strThumb.IsEmpty() && !item->GetIconImage().IsEmpty())
       {
         strThumb = item->GetIconImage();
         strThumb.Insert(strThumb.Find("."), "Big");
@@ -3564,6 +3599,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
         CUtil::GetDirectory(item->m_strPath, path);
       CURL url(path);
       url.GetURLWithoutUserDetails(path);
+      CUtil::UrlDecode(path);
       return path;
      }
    case LISTITEM_FILENAME_AND_PATH:
@@ -3577,6 +3613,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
         path = item->m_strPath;
       CURL url(path);
       url.GetURLWithoutUserDetails(path);
+      CUtil::UrlDecode(path);
       return path;
     }
   case LISTITEM_PICTURE_PATH:
@@ -3876,7 +3913,8 @@ const MUSIC_INFO::CMusicInfoTag* CGUIInfoManager::GetCurrentSongTag() const
     return m_currentFile->GetMusicInfoTag(); 
 
   return NULL;
-};
+}
+
 const CVideoInfoTag* CGUIInfoManager::GetCurrentMovieTag() const
 { 
   if (m_currentFile->HasVideoInfoTag())

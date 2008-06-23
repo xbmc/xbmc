@@ -133,10 +133,15 @@ namespace DIRECTORY
     return true;
   }
 
-  CStdString CSmartPlaylistDirectory::GetPlaylistByName(const CStdString& name)
+  CStdString CSmartPlaylistDirectory::GetPlaylistByName(const CStdString& name, const CStdString& playlistType)
   {
     CFileItemList list;
-    if (CDirectory::GetDirectory("special://musicplaylists/", list, "*.xsp"))
+    bool filesExist = false;
+    if (playlistType == "songs" || playlistType == "albums")
+      filesExist = CDirectory::GetDirectory("special://musicplaylists/", list, "*.xsp");
+    else // all others are video
+      filesExist = CDirectory::GetDirectory("special://videoplaylists/", list, "*.xsp");
+    if (filesExist)
     {
       for (int i = 0; i < list.Size(); i++)
       {
@@ -155,5 +160,6 @@ namespace DIRECTORY
     return XFILE::CFile::Delete(strPath); 
   }
 }
+
 
 

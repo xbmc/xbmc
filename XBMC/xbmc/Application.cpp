@@ -73,6 +73,7 @@
 #include "ApplicationRenderer.h"
 #include "GUILargeTextureManager.h"
 #include "LastFmManager.h"
+#include "PVRManager.h"
 #include "SmartPlaylist.h"
 #include "FileSystem/RarManager.h"
 #include "PlayList.h"
@@ -131,6 +132,7 @@
 #include "GUIWindowPrograms.h"
 #include "GUIWindowPictures.h"
 #include "GUIWindowScripts.h"
+#include "GUIWindowEPG.h"
 #include "GUIWindowWeather.h"
 #include "GUIWindowGameSaves.h"
 #include "GUIWindowLoginScreen.h"
@@ -183,6 +185,7 @@
 #include "GUIDialogSmartPlaylistRule.h"
 #include "GUIDialogPictureInfo.h"
 #include "GUIDialogPluginSettings.h"
+#include "GUIDialogFullScreenInfo.h"
 
 using namespace std;
 using namespace XFILE;
@@ -1278,6 +1281,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowVideoFiles);          // window id = 6
   m_gWindowManager.Add(new CGUIWindowSettings);                 // window id = 4
   m_gWindowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
+  m_gWindowManager.Add(new CGUIWindowEPG);                      // window id = 8
   m_gWindowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
   m_gWindowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
   m_gWindowManager.Add(new CGUIWindowScripts);                  // window id = 20
@@ -1321,15 +1325,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogPictureInfo);      // window id = 139
   m_gWindowManager.Add(new CGUIDialogPluginSettings);      // window id = 140
 
-  CGUIDialogLockSettings* pDialog = NULL;
-  CStdString strPath;
-  RESOLUTION res2;
-  strPath = g_SkinInfo.GetSkinPath("LockSettings.xml", &res2);
-  if (CFile::Exists(strPath))
-    pDialog = new CGUIDialogLockSettings;
-
-  if (pDialog)
-    m_gWindowManager.Add(pDialog); // window id = 131
+  m_gWindowManager.Add(new CGUIDialogLockSettings); // window id = 131
 
   m_gWindowManager.Add(new CGUIDialogContentSettings);        // window id = 132
 
@@ -1507,7 +1503,7 @@ void CApplication::StartWebServer()
     m_pWebServer = new CWebServer();
     m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "Q:\\web", false);
     if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
-	  g_applicationMessenger.HttpApi("broadcastlevel; StartUp;1");
+      g_applicationMessenger.HttpApi("broadcastlevel; StartUp;1");
   }
 }
 
@@ -1752,6 +1748,24 @@ void CApplication::StopUPnPServer()
 #endif
 }
 
+void CApplication::StartPVRManager()
+{
+  if (g_guiSettings.GetBool("pvrfrontend.enabled"))
+  {
+    CLog::Log(LOGNOTICE, "starting pvr manager service");
+  }
+}
+
+void CApplication::StopPVRManager()
+{
+  if (CPVRManager::IsInstantiated())
+  {
+    CLog::Log(LOGNOTICE, "stopoing pvr manager service");
+    CPVRManager::GetInstance()->
+
+  }
+}
+
 void CApplication::StartLEDControl(bool switchoff)
 {
 #ifdef HAS_XBOX_HARDWARE
@@ -1862,12 +1876,12 @@ void CApplication::CheckDate()
   if ((CurTime.wYear > 2099) || (CurTime.wYear < 2001) )        // XBOX MS Dashboard also uses min/max DateYear 2001/2099 !!
   {
     CLog::Log(LOGNOTICE, "- The Date is Wrong: Setting New Date!");
-    NewTime.wYear		= 2004;	// 2004
-    NewTime.wMonth		= 1;	// January
-    NewTime.wDayOfWeek	= 1;	// Monday
-    NewTime.wDay		= 5;	// Monday 05.01.2004!!
-    NewTime.wHour		= 12;
-    NewTime.wMinute		= 0;
+    NewTime.wYear       = 2004; // 2004
+    NewTime.wMonth      = 1;  // January
+    NewTime.wDayOfWeek  = 1;  // Monday
+    NewTime.wDay        = 5;  // Monday 05.01.2004!!
+    NewTime.wHour       = 12;
+    NewTime.wMinute     = 0;
 
     FILETIME stNewTime, stCurTime;
     SystemTimeToFileTime(&NewTime, &stNewTime);
@@ -2050,6 +2064,16 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_gWindowManager.Initialize();
   g_audioManager.Initialize(CAudioContext::DEFAULT_DEVICE);
   g_audioManager.Load();
+
+  CGUIDialogFullScreenInfo* pDialog = NULL;
+  RESOLUTION res;
+  CStdString strPath = g_SkinInfo.GetSkinPath("DialogFullScreenInfo.xml", &res);
+  if (CFile::Exists(strPath))
+    pDialog = new CGUIDialogFullScreenInfo;
+   
+  if (pDialog)
+    m_gWindowManager.Add(pDialog); // window id = 142
+
   CLog::Log(LOGINFO, "  skin loaded...");
 
   if (bKaiConnected)
@@ -2100,6 +2124,9 @@ void CApplication::UnloadSkin()
   m_guiDialogMuteBug.OnMessage(msg);
   m_guiDialogMuteBug.ResetControlStates();
   m_guiDialogMuteBug.FreeResources(true);
+
+  // remove the skin-dependent window
+  m_gWindowManager.Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
 
   CGUIWindow::FlushReferenceCache(); // flush the cache
 
@@ -2455,18 +2482,18 @@ bool CApplication::OnKey(CKey& key)
       }
     }
     else
-	{
-	  if (key.GetFromHttpApi())
+    {
+    if (key.GetFromHttpApi())
       {
         if (key.GetButtonCode() != KEY_INVALID)
-		{
+        {
           action.wID = (WORD) key.GetButtonCode();
-		  g_buttonTranslator.GetAction(iWin, key, action);
-		}
+          g_buttonTranslator.GetAction(iWin, key, action);
+        }
       }
-	  else
+    else
         g_buttonTranslator.GetAction(iWin, key, action);
-	}
+    }
   }
   if (!key.IsAnalogButton())
     CLog::Log(LOGDEBUG, "%s: %i pressed, action is %i", __FUNCTION__, (int) key.GetButtonCode(), action.wID);
@@ -2484,7 +2511,7 @@ bool CApplication::OnAction(const CAction &action)
   {
     CStdString tmp;
     tmp.Format("%i",action.wID);
-	g_applicationMessenger.HttpApi("broadcastlevel; OnAction:"+tmp+";2");
+    g_applicationMessenger.HttpApi("broadcastlevel; OnAction:"+tmp+";2");
   }
 
   // special case for switching between GUI & fullscreen mode.
@@ -2562,7 +2589,7 @@ bool CApplication::OnAction(const CAction &action)
     return true;
   }
 
-  if (action.wID == ACTION_INCREASE_RATING || action.wID == ACTION_DECREASE_RATING && IsPlayingAudio())
+  if ((action.wID == ACTION_INCREASE_RATING || action.wID == ACTION_DECREASE_RATING) && IsPlayingAudio())
   {
     const CMusicInfoTag *tag = g_infoManager.GetCurrentSongTag();
     if (tag)
@@ -3138,15 +3165,16 @@ bool CApplication::ProcessMouse()
 void  CApplication::CheckForTitleChange()
 { 
   if (g_stSettings.m_HttpApiBroadcastLevel>=1)
+  {
     if (IsPlayingVideo())
     {
-	  const CVideoInfoTag* tagVal = g_infoManager.GetCurrentMovieTag();
+      const CVideoInfoTag* tagVal = g_infoManager.GetCurrentMovieTag();
       if (m_pXbmcHttp && tagVal && !(tagVal->m_strTitle.IsEmpty()))
       {
         CStdString msg=m_pXbmcHttp->GetOpenTag()+"MovieTitle:"+tagVal->m_strTitle+m_pXbmcHttp->GetCloseTag();
-	    if (m_prevMedia!=msg && g_stSettings.m_HttpApiBroadcastLevel>=1)
-  	    {
-		  g_applicationMessenger.HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
+        if (m_prevMedia!=msg && g_stSettings.m_HttpApiBroadcastLevel>=1)
+        {
+          g_applicationMessenger.HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
           m_prevMedia=msg;
         }
       }
@@ -3155,21 +3183,21 @@ void  CApplication::CheckForTitleChange()
     {
       const CMusicInfoTag* tagVal=g_infoManager.GetCurrentSongTag();
       if (m_pXbmcHttp && tagVal)
-	  {
-	    CStdString msg="";
-	    if (!tagVal->GetTitle().IsEmpty())
-		  msg=m_pXbmcHttp->GetOpenTag()+"AudioTitle:"+tagVal->GetTitle()+m_pXbmcHttp->GetCloseTag();
-	    if (!tagVal->GetArtist().IsEmpty())
-		  msg+=m_pXbmcHttp->GetOpenTag()+"AudioArtist:"+tagVal->GetArtist()+m_pXbmcHttp->GetCloseTag();
-	    if (m_prevMedia!=msg)
-	    {
-	      g_applicationMessenger.HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
-	      m_prevMedia=msg;
-	    }
+      {
+        CStdString msg="";
+        if (!tagVal->GetTitle().IsEmpty())
+          msg=m_pXbmcHttp->GetOpenTag()+"AudioTitle:"+tagVal->GetTitle()+m_pXbmcHttp->GetCloseTag();
+        if (!tagVal->GetArtist().IsEmpty())
+          msg+=m_pXbmcHttp->GetOpenTag()+"AudioArtist:"+tagVal->GetArtist()+m_pXbmcHttp->GetCloseTag();
+        if (m_prevMedia!=msg)
+        {
+          g_applicationMessenger.HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
+          m_prevMedia=msg;
+        }
       }
     }
+  }
 }
-
 
 bool CApplication::ProcessHTTPApiButtons()
 {
@@ -3325,67 +3353,10 @@ bool CApplication::AnyButtonDown()
   return false;
 }
 
-void CApplication::Stop()
+HRESULT CApplication::Cleanup()
 {
   try
   {
-    if (m_pXbmcHttp)
-    {
-	  if(g_stSettings.m_HttpApiBroadcastLevel>=1)
-	    g_applicationMessenger.HttpApi("broadcastlevel; ShutDown;1");
-	  m_pXbmcHttp->shuttingDown=true;
-     //Sleep(100);
-	}
-
-    CLog::Log(LOGNOTICE, "Storing total System Uptime");
-    g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
-
-    // Update the settings information (volume, uptime etc. need saving)
-    if (CFile::Exists(g_settings.GetSettingsFile()))
-    {
-      CLog::Log(LOGNOTICE, "Saving settings");
-      g_settings.Save();
-    }
-    else
-      CLog::Log(LOGNOTICE, "Not saving settings (settings.xml is not present)");
-
-    m_bStop = true;
-    CLog::Log(LOGNOTICE, "stop all");
-
-
-    StopServices();
-    //Sleep(5000);
-
-    if (m_pPlayer)
-    {
-      CLog::Log(LOGNOTICE, "stop mplayer");
-      delete m_pPlayer;
-      m_pPlayer = NULL;
-    }
-
-    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (musicScan && musicScan->IsDialogRunning())
-      musicScan->StopScanning();
-
-    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    if (videoScan && videoScan->IsDialogRunning())
-      videoScan->StopScanning();
-
-    CLog::Log(LOGNOTICE, "stop daap clients");
-#ifdef HAS_FILESSYTEM
-    g_DaapClient.Release();
-#endif
-    //g_lcd->StopThread();
-    CLog::Log(LOGNOTICE, "stop python");
-    g_applicationMessenger.Cleanup();
-    g_pythonParser.FreeResources();
-
-    CLog::Log(LOGNOTICE, "clean cached files!");
-    g_RarManager.ClearCache(true);
-
-    CLog::Log(LOGNOTICE, "unload skin");
-    UnloadSkin();
-
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST);
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST_EDITOR);
     m_gWindowManager.Delete(WINDOW_MUSIC_FILES);
@@ -3476,8 +3447,6 @@ void CApplication::Stop()
     // reset our d3d params before we destroy
     g_graphicsContext.SetD3DDevice(NULL);
     g_graphicsContext.SetD3DParameters(NULL);
-    CLog::Log(LOGNOTICE, "destroy");
-    Destroy();
 
 #ifdef _DEBUG
     //  Shutdown as much as possible of the
@@ -3495,7 +3464,92 @@ void CApplication::Stop()
     CKaiClient::RemoveInstance();
     CScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
+    CPVRManager::RemoveInstance();
+#ifdef HAS_EVENT_SERVER
+    CEventServer::RemoveInstance();
+#endif
     g_infoManager.Clear();
+    g_infoManager.Clear();
+    DllLoaderContainer::Clear();
+    g_settings.Clear();
+    g_guiSettings.Clear();
+#endif
+
+#ifdef _CRTDBG_MAP_ALLOC
+    _CrtDumpMemoryLeaks();
+    while(1); // execution ends
+#endif
+    return S_OK;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "Exception in CApplication::Cleanup()");
+    return E_FAIL;
+  }
+}
+
+void CApplication::Stop()
+{
+  try
+  {
+    if (m_pXbmcHttp)
+    {
+      if(g_stSettings.m_HttpApiBroadcastLevel>=1)
+        g_applicationMessenger.HttpApi("broadcastlevel; ShutDown;1");
+
+      m_pXbmcHttp->shuttingDown=true;
+      //Sleep(100);
+    }
+
+    CLog::Log(LOGNOTICE, "Storing total System Uptime");
+    g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
+
+    // Update the settings information (volume, uptime etc. need saving)
+    if (CFile::Exists(g_settings.GetSettingsFile()))
+    {
+      CLog::Log(LOGNOTICE, "Saving settings");
+      g_settings.Save();
+    }
+    else
+      CLog::Log(LOGNOTICE, "Not saving settings (settings.xml is not present)");
+
+    m_bStop = true;
+    CLog::Log(LOGNOTICE, "stop all");
+
+    StopServices();
+    //Sleep(5000);
+
+    if (m_pPlayer)
+    {
+      CLog::Log(LOGNOTICE, "stop player");
+      delete m_pPlayer;
+      m_pPlayer = NULL;
+    }
+
+    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    if (musicScan && musicScan->IsDialogRunning())
+      musicScan->StopScanning();
+
+    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (videoScan && videoScan->IsDialogRunning())
+      videoScan->StopScanning();
+
+#ifdef HAS_FILESYSTEM
+    CLog::Log(LOGNOTICE, "stop daap clients");
+    g_DaapClient.Release();
+#endif
+    //g_lcd->StopThread();
+    g_applicationMessenger.Cleanup();
+
+    CLog::Log(LOGNOTICE, "clean cached files!");
+    g_RarManager.ClearCache(true);
+
+    CLog::Log(LOGNOTICE, "unload skin");
+    UnloadSkin();
+
+    CLog::Log(LOGNOTICE, "stop python");
+    g_pythonParser.FreeResources();
+
 #ifdef HAS_LCD
     if (g_lcd)
     {
@@ -3504,20 +3558,14 @@ void CApplication::Stop()
       g_lcd=NULL;
     }
 #endif
-    DllLoaderContainer::Clear();
-    g_settings.Clear();
-    g_guiSettings.Clear();
-#endif
-
     CLog::Log(LOGNOTICE, "stopped");
   }
   catch (...)
-  {}
+  {
+    CLog::Log(LOGERROR, "Exception in CApplication::Stop()");
+  }
 
-#ifdef _CRTDBG_MAP_ALLOC
-    _CrtDumpMemoryLeaks();
-    while(1); // execution ends
-#endif
+  Destroy();
 }
 
 bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
@@ -3857,7 +3905,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       // if player didn't manange to switch to fullscreen by itself do it here
       if( options.fullscreen && g_renderManager.IsStarted()
        && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
-       SwitchToFullScreen();
+         SwitchToFullScreen();
     }
 #endif
 
@@ -3878,7 +3926,7 @@ void CApplication::OnPlayBackEnded()
   g_pythonParser.OnPlayBackEnded();
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
-	g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackEnded;1");
+    g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackEnded;1");
 
   CLog::Log(LOGDEBUG, "Playback has finished");
 
@@ -3901,7 +3949,7 @@ void CApplication::OnPlayBackStarted()
 
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
-	g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackStarted;1");
+    g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackStarted;1");
 
   CLog::Log(LOGDEBUG, "Playback has started");
 
@@ -3922,7 +3970,7 @@ void CApplication::OnQueueNextItem()
 
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
-	g_applicationMessenger.HttpApi("broadcastlevel; OnQueueNextItem;1");
+  g_applicationMessenger.HttpApi("broadcastlevel; OnQueueNextItem;1");
 
   CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
@@ -5251,7 +5299,7 @@ bool CApplication::SwitchToFullScreen()
   return false;
 }
 
-const EPLAYERCORES CApplication::GetCurrentPlayer()
+EPLAYERCORES CApplication::GetCurrentPlayer()
 {
   return m_eCurrentPlayer;
 }

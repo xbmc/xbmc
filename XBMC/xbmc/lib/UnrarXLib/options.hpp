@@ -42,7 +42,7 @@ class RAROptions
     uint WinSize;
     char TempPath[NM];
     char SFXModule[NM];
-    char ExtrPath[NM];
+    char ExtrPath[NM+16];
     wchar ExtrPathW[NM];
     char CommentFile[NM];
     char ArcPath[NM];

@@ -15,6 +15,7 @@ int ExtractLink(ComprDataIO &DataIO,Archive &Arc,char *DestName,uint &LinkCRC,bo
     {
       CreatePath(DestName,NULL,true);
       if (symlink(FileName,DestName)==-1)
+      {
         if (errno==EEXIST)
           Log(Arc.FileName,St(MSymLinkExists),DestName);
         else
@@ -22,6 +23,7 @@ int ExtractLink(ComprDataIO &DataIO,Archive &Arc,char *DestName,uint &LinkCRC,bo
           Log(Arc.FileName,St(MErrCreateLnk),DestName);
           ErrHandler.SetErrorCode(WARNING);
         }
+      }
     }
     int NameSize=Min(DataSize,strlen(FileName));
     LinkCRC=CRC(0xffffffff,FileName,NameSize);    return(1);

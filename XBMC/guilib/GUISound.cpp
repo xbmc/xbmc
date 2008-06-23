@@ -101,7 +101,7 @@ void CGUISound::Stop()
     m_soundBuffer->Stop();
 #endif
 
-    while(IsPlaying());
+    while(IsPlaying()) {}
   }
 }
 

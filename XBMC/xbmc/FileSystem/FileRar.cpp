@@ -162,6 +162,7 @@ bool CFileRar::Open(const CURL& url, bool bBinary)
   }
 
   if (i<items.Size())
+  {
     if (items[i]->m_idepth == 0x30) // stored
     {
       if (!OpenInArchive())
@@ -173,6 +174,7 @@ bool CFileRar::Open(const CURL& url, bool bBinary)
       // perform 'noidx' check
       CFileInfo* pFile = g_RarManager.GetFileInRar(m_strRarPath,m_strPathInRar);
       if (pFile)
+      {
         if (pFile->m_iIsSeekable == -1)
         {
           if (Seek(-1,SEEK_END) == -1)
@@ -182,9 +184,9 @@ bool CFileRar::Open(const CURL& url, bool bBinary)
           }
         }
         else
-         m_bSeekable = (pFile->m_iIsSeekable == 1);
-
-        return true;
+          m_bSeekable = (pFile->m_iIsSeekable == 1);
+      }
+      return true;
     }
     else 
     {
@@ -212,7 +214,7 @@ bool CFileRar::Open(const CURL& url, bool bBinary)
       m_bOpen = true;
       return true;
     }
-
+  }
   return false;
 }
 
@@ -679,3 +681,4 @@ bool CFileRar::OpenInArchive()
   
   return true;
 }
+

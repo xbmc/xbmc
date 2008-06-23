@@ -773,6 +773,15 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(585), SORT_ORDER_DESC);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("pvrfrontend.enabled"))
+    {
+      g_application.StopPVRManager();
+      if (g_guiSettings.GetBool("pvrfrontend.enabled"))
+      {
+        g_application.StartPVRManager();
+        /*g_application.m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());*/
+      }
+    }
   }
   // update our settings (turns controls on/off as appropriate)
   UpdateSettings();
@@ -1127,6 +1136,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videolibrary.enabled"));
+    }
+    else if (!strSetting.Equals("pvrfrontend.enabled")
+      && strSetting.Left(12).Equals("pvrfrontend."))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrfrontend.enabled"));
     }
   }
 }
