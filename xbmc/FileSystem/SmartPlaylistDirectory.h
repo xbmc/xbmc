@@ -34,6 +34,6 @@ namespace DIRECTORY
     virtual bool ContainsFiles(const CStdString& strPath);
     virtual bool Remove(const char *strPath);
 
-    static CStdString GetPlaylistByName(const CStdString& name);
+    static CStdString GetPlaylistByName(const CStdString& name, const CStdString& playlistType);
   };
 }
