@@ -2264,12 +2264,11 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
 
 CStdString CUtil::MakeLegalFileName(const CStdString &strFile)
 {
-  CURL url(strFile);
-  CStdString result = url.GetFileName();
+  CStdString strPath;
+  GetDirectory(strFile,strPath);
+  CStdString result = GetFileName(strFile);
 
   // just filter out some illegal characters on windows
-  result.Remove('\\');
-  result.Remove('/');
   result.Remove(':');
   result.Remove('*');
   result.Remove('?');
@@ -2278,9 +2277,7 @@ CStdString CUtil::MakeLegalFileName(const CStdString &strFile)
   result.Remove('>');
   result.Remove('|');
 
-  url.SetFileName(result);
-
-  url.GetURL(result);
+  result = strPath+result;
 
   return result;
 }
