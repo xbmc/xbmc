@@ -29,10 +29,6 @@
 
 #include "FileItem.h"
 
-class TiXmlElement;
-class TiXmlDocument;
-class CFileItem;
-
 /**
  * The purpose of this class is to describe an RSS feed
  */

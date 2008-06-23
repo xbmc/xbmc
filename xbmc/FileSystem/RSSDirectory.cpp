@@ -19,16 +19,12 @@
  *
  */
 
-#include "SDL/SDL.h"
-#include "linux/PlatformDefs.h"
-#include "Application.h"
+#include "stdafx.h"
 #include "RSSDirectory.h"
+#include "RssFeed.h"
 #include "Util.h"
-#include "log.h"
-#include "GUIDialogProgress.h"
-#include "GUIDialogOK.h"
 #include "DirectoryCache.h"
-#include "GUIWindowManager.h"
+#include "FileItem.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
