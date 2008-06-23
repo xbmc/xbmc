@@ -3443,7 +3443,6 @@ HRESULT CApplication::Cleanup()
     CKaiClient::RemoveInstance();
     CScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
-    CEventServer::RemoveInstance();
     g_infoManager.Clear();
     g_infoManager.Clear();
     DllLoaderContainer::Clear();
@@ -3511,7 +3510,6 @@ void CApplication::Stop()
       videoScan->StopScanning();
 
     CLog::Log(LOGNOTICE, "stop daap clients");
-    g_DaapClient.Release();
     //g_lcd->StopThread();
     g_applicationMessenger.Cleanup();
 
