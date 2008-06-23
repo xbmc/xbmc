@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -20,20 +19,23 @@
  *
  */
 
+#ifndef CRSSDIRECTORY_H_
+#define CRSSDIRECTORY_H_
 
-#include "IFileDirectory.h"
+#include "stdafx.h"
+#include "IDirectory.h"
 
-namespace DIRECTORY 
+#include "RssFeed.h"
+
+namespace DIRECTORY
 {
-  class CSmartPlaylistDirectory : public IFileDirectory
+  class CRSSDirectory : public IDirectory
   {
   public:
-    CSmartPlaylistDirectory();
-    ~CSmartPlaylistDirectory();
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
-    virtual bool ContainsFiles(const CStdString& strPath);
-    virtual bool Remove(const char *strPath);
-
-    static CStdString GetPlaylistByName(const CStdString& name, const CStdString& playlistType);
+    CRSSDirectory();
+    virtual ~CRSSDirectory();
+    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   };
 }
+
+#endif /*CRSSDIRECTORY_H_*/

@@ -1,8 +1,8 @@
 
 DEFINES = -DUSE_SDL -D_LINUX
-INCLUDES = -I. -I../../guilib -I../../xbmc -I../../xbmc/linux/
+INCLUDES = -I. -I../../guilib -I../../xbmc -I../../xbmc/linux/ -I../../xbmc/utils -I/opt/local/include
 LIBS = -lSDL -lSDL_image -llzo
-LDFLAGS =
+LDFLAGS = -L/opt/local/lib -lSDLmain -framework Foundation -framework Cocoa
 OBJS = \
 	AnimatedGif.o \
 	Bundler.o \
@@ -20,13 +20,13 @@ TARGET = XBMCTex
 all: $(TARGET)
 	
 $(TARGET): $(OBJS)
-	g++ -O3 $(OBJS) $(LDFLAGS) $(LIBS) -o $(TARGET)
+	g++ $(OBJS) $(LDFLAGS) $(LIBS) -o $(TARGET)
 
 .cpp.o:
-	g++ -O3 $(DEFINES) $(INCLUDES) -c -o $@ $<
+	g++ $(DEFINES) $(INCLUDES) -c -o $@ $<
 
 .c.o:
-	gcc -O3 $(DEFINES) $(INCLUDES) -c -o $@ $<
+	gcc $(DEFINES) $(INCLUDES) -c -o $@ $<
 
 clean:
 	rm -f $(TARGET) *.o

@@ -20,20 +20,32 @@
  *
  */
 
+#include "DVDInputStream.h"
+#include "rtmp.h"
 
-#include "IFileDirectory.h"
-
-namespace DIRECTORY 
+class CDVDInputStreamRTMP : public CDVDInputStream
 {
-  class CSmartPlaylistDirectory : public IFileDirectory
-  {
-  public:
-    CSmartPlaylistDirectory();
-    ~CSmartPlaylistDirectory();
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
-    virtual bool ContainsFiles(const CStdString& strPath);
-    virtual bool Remove(const char *strPath);
+public:
+  CDVDInputStreamRTMP();
+  virtual ~CDVDInputStreamRTMP();
+  virtual bool    Open(const char* strFile, const std::string &content);
+  virtual void    Close();
+  virtual int     Read(BYTE* buf, int buf_size);
+  virtual __int64 Seek(__int64 offset, int whence);
+  virtual bool    IsEOF();
+  virtual __int64 GetLength();
 
-    static CStdString GetPlaylistByName(const CStdString& name, const CStdString& playlistType);
-  };
-}
+  virtual bool    NextStream();
+
+protected:
+  bool   m_eof;
+  RTMP_LIB::CRTMP  m_rtmp;
+  unsigned int m_videoTS;
+  unsigned int m_audioTS;
+  unsigned int m_prevTagSize;
+  bool         m_bSentHeader;
+  char         *m_leftOver;
+  unsigned int m_leftOverSize;
+  unsigned int m_leftOverConsumed;
+};
+
