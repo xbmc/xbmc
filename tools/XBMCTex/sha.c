@@ -2,7 +2,7 @@
 #ifdef _LINUX
 #include <stdint.h>
 #else
-#include "stdint.h"
+#include "stdint_win.h"
 #endif
 
 typedef unsigned int u32;

@@ -265,7 +265,7 @@
 				RelativePath="..\..\xbmc\lib\liblzo\Lzoconf.h">
 			</File>
 			<File
-				RelativePath=".\stdint.h">
+				RelativePath=".\stdint_win.h">
 			</File>
 			<File
 				RelativePath=".\Surface.h">
