@@ -545,7 +545,13 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifdef _LINUX
   if (m_bPlatformDirectories)
   {
-    g_stSettings.m_logFolder = "/var/tmp/";
+    CStdString logDir = "/var/tmp/";
+    if (getenv("USER"))
+    {
+      logDir += getenv("USER");
+      logDir += "-";
+    }
+    g_stSettings.m_logFolder = logDir;
   }
   else
   {
