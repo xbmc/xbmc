@@ -1,6 +1,6 @@
 
 DEFINES = -DUSE_SDL -D_LINUX
-INCLUDES = -I. -I../../guilib -I../../xbmc -I../../xbmc/linux/
+INCLUDES = -I../../guilib -I../../xbmc -I../../xbmc/linux/
 LIBS = -lSDL -lSDL_image -llzo
 LDFLAGS =
 OBJS = \

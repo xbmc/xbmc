@@ -2,9 +2,8 @@
 #ifdef _LINUX
 #include <stdint.h>
 #else
-#include "stdint_win.h"
+#include "stdint.h"
 #endif
-#include <stdint.h>
 
 typedef unsigned int u32;
 typedef unsigned char u8;

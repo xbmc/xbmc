@@ -52,7 +52,7 @@
 #include <SDL/SDL_mutex.h>
 #endif
 
-#include "stdint.h"
+#include <stdint.h>
 
 #ifndef PRId64
 #ifdef _MSC_VER
