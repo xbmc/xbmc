@@ -32,9 +32,6 @@
 #ifdef HAS_TRAINER
 #include "utils/Trainer.h"
 #endif
-#ifdef HAS_KAI
-#include "utils/KaiClient.h"
-#endif
 #include "Autorun.h"
 #include "utils/LabelFormatter.h"
 #include "Autorun.h"

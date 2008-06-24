@@ -1012,10 +1012,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   if (pElement)
   {
     GetInteger(pElement, "systemtotaluptime", g_stSettings.m_iSystemTimeTotalUp, 0, 0, INT_MAX);
-#ifdef HAS_KAI
-    GetString(pElement, "kaiarenapass", g_stSettings.szOnlineArenaPassword, "");
-    GetString(pElement, "kaiarenadesc", g_stSettings.szOnlineArenaDescription, "");
-#endif
     GetInteger(pElement, "httpapibroadcastlevel", g_stSettings.m_HttpApiBroadcastLevel, 0, 0,5);
     GetInteger(pElement, "httpapibroadcastport", g_stSettings.m_HttpApiBroadcastPort, 8278, 1, 65535);
   }
@@ -1737,10 +1733,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   TiXmlElement generalNode("general");
   pNode = pRoot->InsertEndChild(generalNode);
   if (!pNode) return false;
-#ifdef HAS_KAI
-  SetString(pNode, "kaiarenapass", g_stSettings.szOnlineArenaPassword);
-  SetString(pNode, "kaiarenadesc", g_stSettings.szOnlineArenaDescription);
-#endif
   SetInteger(pNode, "systemtotaluptime", g_stSettings.m_iSystemTimeTotalUp);
   SetInteger(pNode, "httpapibroadcastport", g_stSettings.m_HttpApiBroadcastPort);
   SetInteger(pNode, "httpapibroadcastlevel", g_stSettings.m_HttpApiBroadcastLevel);
@@ -1819,9 +1811,6 @@ bool CSettings::LoadProfile(int index)
     CreateDirectory(g_settings.GetVideoThumbFolder().c_str(), NULL);
     CreateDirectory(g_settings.GetBookmarksThumbFolder().c_str(), NULL);
     CreateDirectory(g_settings.GetProgramsThumbFolder().c_str(), NULL);
-#ifdef HAS_KAI
-    CreateDirectory(g_settings.GetXLinkKaiThumbFolder().c_str(), NULL);
-#endif
     CreateDirectory(g_settings.GetPicturesThumbFolder().c_str(), NULL);
     CreateDirectory(_P("P:\\visualisations"),NULL);
     CLog::Log(LOGINFO, "  thumbnails folder:%s", g_settings.GetThumbnailsFolder().c_str());
@@ -2746,19 +2735,6 @@ CStdString CSettings::GetProfilesThumbFolder() const
   CStdString folder;
   CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Profiles"), folder);
 
-  return folder;
-}
-
-
-CStdString CSettings::GetXLinkKaiThumbFolder() const
-{
-  CStdString folder;
-#ifdef HAS_KAI
-  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\Programs\\XLinkKai"), folder);
-  else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Programs\\XlinkKai"), folder);
-#endif
   return folder;
 }
 

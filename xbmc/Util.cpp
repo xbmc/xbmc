@@ -75,9 +75,6 @@
 #include "MediaManager.h"
 #include "utils/Network.h"
 #include "GUIPassword.h"
-#ifdef HAS_KAI
-#include "utils/KaiClient.h"
-#endif
 #ifdef HAS_FTP_SERVER
 #include "lib/libfilezilla/xbfilezilla.h"
 #endif
@@ -2328,9 +2325,6 @@ const BUILT_IN commands[] = {
   { "EjectTray",                  false,  "Close or open the DVD tray" },
   { "AlarmClock",                 true,   "Prompt for a length of time and start an alarm clock" },
   { "CancelAlarm",                true,   "Cancels an alarm" },
-#ifdef HAS_KAI
-  { "KaiConnection",              false,  "Change kai connection status (connect/disconnect)" },
-#endif
   { "Action",                     true,   "Executes an action for the active window (same as in keymap)" },
   { "Notification",               true,   "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon." },
   { "PlayDVD",                    false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!" },
@@ -2938,30 +2932,6 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_alarmClock.stop(parameter);
   }
-#ifdef HAS_KAI
-  else if (execute.Equals("kaiconnection"))
-  {
-    if (CKaiClient::GetInstance())
-    {
-      if (!CKaiClient::GetInstance()->IsEngineConnected())
-      {
-        while (!CKaiClient::GetInstance()->IsEngineConnected())
-        {
-          CKaiClient::GetInstance()->Reattach();
-          Sleep(3000);
-        }
-      }
-      else
-      {
-        CKaiClient::GetInstance()->Detach();
-      }
-    }
-    else
-    {
-      CGUIDialogOK::ShowAndGetInput(15000, 0, 14073, 0);
-    }
-  }
-#endif
   else if (execute.Equals("playdvd"))
   {
     CAutorun::PlayDisc();
