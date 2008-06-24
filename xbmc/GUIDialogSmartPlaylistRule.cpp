@@ -39,7 +39,6 @@
 #define CONTROL_BROWSE          20
 
 using namespace std;
-using namespace PLAYLIST;
 
 CGUIDialogSmartPlaylistRule::CGUIDialogSmartPlaylistRule(void)
     : CGUIDialog(WINDOW_DIALOG_SMART_PLAYLIST_RULE, "SmartPlaylistRule.xml")
@@ -118,7 +117,6 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
       CFileItemList items2;
       videodatabase.GetGenresNav("videodb://3/1/",items2,VIDEODB_CONTENT_MUSICVIDEOS);
       items.Append(items2);
-      items2.ClearKeepPointer();
     }
     iLabel = 515;
   }

@@ -68,7 +68,7 @@ void CGUIFixedListContainer::Render()
 
   float focusedPosX = 0;
   float focusedPosY = 0;
-  CGUIListItem *focusedItem = NULL;
+  CGUIListItemPtr focusedItem;
   int current = offset;
   while (posX < m_posX + m_width && posY < m_posY + m_height && m_items.size())
   {
@@ -77,7 +77,7 @@ void CGUIFixedListContainer::Render()
     bool focused = (current == m_offset + m_cursor);
     if (current >= 0)
     {
-      CGUIListItem *item = m_items[current];
+      CGUIListItemPtr item = m_items[current];
       // render our item
       if (focused)
       {
@@ -86,7 +86,7 @@ void CGUIFixedListContainer::Render()
         focusedItem = item;
       }
       else
-        RenderItem(posX, posY, item, focused);
+        RenderItem(posX, posY, item.get(), focused);
     }
 
     // increment our position
@@ -99,7 +99,7 @@ void CGUIFixedListContainer::Render()
   }
   // and render the focused item last (for overlapping purposes)
   if (focusedItem)
-    RenderItem(focusedPosX, focusedPosY, focusedItem, true);
+    RenderItem(focusedPosX, focusedPosY, focusedItem.get(), true);
 
   g_graphicsContext.RestoreClipRegion();
 

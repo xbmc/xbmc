@@ -20,7 +20,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="../xbmc/;freetype2/include"
+				AdditionalIncludeDirectories="../xbmc/;freetype2/include;../xbmc/lib/boost"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				StringPooling="FALSE"
 				MinimalRebuild="TRUE"
@@ -64,7 +64,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="../xbmc/;freetype2/include"
+				AdditionalIncludeDirectories="../xbmc/;freetype2/include;../xbmc/lib/boost"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="2"

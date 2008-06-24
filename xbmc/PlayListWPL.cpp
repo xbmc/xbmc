@@ -94,7 +94,8 @@ bool CPlayListWPL::LoadData(std::istream& stream)
         strFileName = CUtil::SubstitutePath(strFileName);
       CUtil::GetQualifiedFilename(m_strBasePath, strFileName);
       CStdString strDescription = CUtil::GetFileName(strFileName);
-      CPlayListItem newItem(strDescription, strFileName);
+      CFileItemPtr newItem(new CFileItem(strDescription));
+      newItem->m_strPath = strFileName;
       Add(newItem);
     }
     pMediaElement = pMediaElement->NextSiblingElement();
@@ -126,8 +127,8 @@ void CPlayListWPL::Save(const CStdString& strFileName) const
   fprintf(fd, "        <seq>\n");
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
-    const CPlayListItem& item = m_vecItems[i];
-    fprintf(fd, "            <media src=%c%s%c/>", 34, item.GetFileName().c_str(), 34);
+    CFileItemPtr item = m_vecItems[i];
+    fprintf(fd, "            <media src=%c%s%c/>", 34, item->m_strPath.c_str(), 34);
   }
   fprintf(fd, "        </seq>\n");
   fprintf(fd, "    </body>\n");

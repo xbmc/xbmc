@@ -113,37 +113,37 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
 {
     NPT_String path = strPath.c_str();
     CMediaSource     share;
-    CFileItem* item;
+    CFileItemPtr item;
     vector<CStdString> paths;
     path.TrimRight("/");
 
     if (path == "virtualpath://upnproot") {
         // music
-        item = new CFileItem("virtualpath://upnpmusic/", true);
+        item.reset(new CFileItem("virtualpath://upnpmusic/", true));
         item->SetLabel("Music Files");
         item->SetLabelPreformated(true);
         items.Add(item);
 
         // video
-        item = new CFileItem("virtualpath://upnpvideo/", true);
+        item.reset(new CFileItem("virtualpath://upnpvideo/", true));
         item->SetLabel("Video Files");
         item->SetLabelPreformated(true);
         items.Add(item);
 
         // pictures
-        item = new CFileItem("virtualpath://upnppictures/", true);
+        item.reset(new CFileItem("virtualpath://upnppictures/", true));
         item->SetLabel("Picture Files");
         item->SetLabelPreformated(true);
         items.Add(item);
 
         // music library
-        item = new CFileItem("musicdb://", true);
+        item.reset(new CFileItem("musicdb://", true));
         item->SetLabel("Music Library");
         item->SetLabelPreformated(true);
         items.Add(item);
 
         // video library
-        item = new CFileItem("videodb://", true);
+        item.reset(new CFileItem("videodb://", true));
         item->SetLabel("Video Library");
         item->SetLabelPreformated(true);
         items.Add(item);
@@ -170,7 +170,7 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
                 NPT_String share_name = path + "/";
                 share_name += share.strName + "/";
                 if (GetMatchingSource((const char*)share_name, share, paths) && paths.size()) {
-                    item = new CFileItem((const char*)share_name, true);
+                    item.reset(new CFileItem((const char*)share_name, true));
                     item->SetLabel(share.strName);
                     item->SetLabelPreformated(true);
                     items.Add(item);

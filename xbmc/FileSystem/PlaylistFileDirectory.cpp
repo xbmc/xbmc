@@ -53,9 +53,8 @@ namespace DIRECTORY
       // convert playlist items to songs
       for (int i = 0; i < (int)playlist.size(); ++i)
       {
-        CFileItem *item = new CFileItem(playlist[i]);
+        CFileItemPtr item = playlist[i];
         item->m_iprogramCount = i;  // hack for playlist order
-        item->GetMusicInfoTag()->SetDuration(playlist[i].GetDuration());
         items.Add(item);
       }
     }

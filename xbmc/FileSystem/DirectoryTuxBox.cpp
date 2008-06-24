@@ -215,9 +215,9 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
       g_directoryCache.ClearDirectory(strRoot);
       for( int i = 0; i <items.Size(); i++ )
       {
-        CFileItem* pItem=items[i];
+        CFileItemPtr pItem=items[i];
         if (!pItem->IsParentFolder())
-          vecCacheItems.Add(new CFileItem( *pItem ));
+          vecCacheItems.Add(pItem);
         //Update Progressbar
         iProgressPercent=iProgressPercent+2;
         UpdateProgress(dlgProgress, strLine1, g_localizeStrings.Get(14005).c_str(), iProgressPercent, false);

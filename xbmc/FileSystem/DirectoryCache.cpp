@@ -52,14 +52,7 @@ bool CDirectoryCache::GetDirectory(const CStdString& strPath1, CFileItemList &it
     CDir* dir = *i;
     if (dir->m_strPath == strPath)
     {
-
-      for (int i = 0; i < (int) dir->m_Items->Size(); ++i)
-      {
-        CFileItem* pItem = new CFileItem();
-        (*pItem) = *(dir->m_Items->Get(i));
-        items.Add(pItem);
-      }
-
+      items.Append(*dir->m_Items);
       return true;
     }
     ++i;
@@ -125,7 +118,7 @@ bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
       bInCache = true;
       for (int i = 0; i < (int) dir->m_Items->Size(); ++i)
       {
-        CFileItem* pItem = dir->m_Items->Get(i);
+        CFileItemPtr pItem = dir->m_Items->Get(i);
         if ( strcmpi(pItem->m_strPath.c_str(), strFixedFile.c_str()) == 0 ) return true;
       }
     }

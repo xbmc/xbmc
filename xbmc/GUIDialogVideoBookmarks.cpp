@@ -180,7 +180,7 @@ void CGUIDialogVideoBookmarks::Update()
     else
       StringUtils::SecondsToTimeString((long)m_bookmarks[i].timeInSeconds, bookmarkTime, TIME_FORMAT_HH_MM_SS);
 
-    CFileItem *item = new CFileItem(bookmarkTime);
+    CFileItemPtr item(new CFileItem(bookmarkTime));
     item->SetThumbnailImage(m_bookmarks[i].thumbNailImage);
     m_vecItems->Add(item);
   }

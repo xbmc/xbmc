@@ -96,7 +96,7 @@ namespace PYXBMC
     pListItem->item->m_bIsFolder = bIsFolder;
 
     // call the directory class to add our item
-    bool bOk = DIRECTORY::CPluginDirectory::AddItem(handle, pListItem->item, iTotalItems);
+    bool bOk = DIRECTORY::CPluginDirectory::AddItem(handle, pListItem->item.get(), iTotalItems);
     return Py_BuildValue("b", bOk);
   }
 

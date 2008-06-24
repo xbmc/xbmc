@@ -77,7 +77,7 @@ bool CGUIDialogFileStacking::OnMessage(CGUIMessage& message)
         {
           CStdString label;
           label.Format("Part %i", i+1);
-          CFileItem *item = new CFileItem(label);
+          CFileItemPtr item(new CFileItem(label));
           m_stackItems->Add(item);
           CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), STACK_LIST, 0, 0, item);
           OnMessage(msg);
