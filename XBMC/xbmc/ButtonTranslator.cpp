@@ -706,14 +706,12 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("profiles")) wWindowID = WINDOW_SETTINGS_PROFILES;
   else if (strWindow.Equals("yesnodialog")) wWindowID = WINDOW_DIALOG_YES_NO;
   else if (strWindow.Equals("progressdialog")) wWindowID = WINDOW_DIALOG_PROGRESS;
-  else if (strWindow.Equals("invitedialog")) wWindowID = WINDOW_DIALOG_INVITE;
   else if (strWindow.Equals("virtualkeyboard")) wWindowID = WINDOW_DIALOG_KEYBOARD;
   else if (strWindow.Equals("volumebar")) wWindowID = WINDOW_DIALOG_VOLUME_BAR;
   else if (strWindow.Equals("submenu")) wWindowID = WINDOW_DIALOG_SUB_MENU;
   else if (strWindow.Equals("favourites")) wWindowID = WINDOW_DIALOG_FAVOURITES;
   else if (strWindow.Equals("contextmenu")) wWindowID = WINDOW_DIALOG_CONTEXT_MENU;
   else if (strWindow.Equals("infodialog")) wWindowID = WINDOW_DIALOG_KAI_TOAST;
-  else if (strWindow.Equals("hostdialog")) wWindowID = WINDOW_DIALOG_HOST;
   else if (strWindow.Equals("numericinput")) wWindowID = WINDOW_DIALOG_NUMERIC;
   else if (strWindow.Equals("gamepadinput")) wWindowID = WINDOW_DIALOG_GAMEPAD;
   else if (strWindow.Equals("shutdownmenu")) wWindowID = WINDOW_DIALOG_BUTTON_MENU;
@@ -744,7 +742,6 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("slideshow")) wWindowID = WINDOW_SLIDESHOW;
   else if (strWindow.Equals("filestackingdialog")) wWindowID = WINDOW_DIALOG_FILESTACKING;
   else if (strWindow.Equals("weather")) wWindowID = WINDOW_WEATHER;
-  else if (strWindow.Equals("xlinkkai")) wWindowID = WINDOW_BUDDIES;
   else if (strWindow.Equals("screensaver")) wWindowID = WINDOW_SCREENSAVER;
   else if (strWindow.Equals("videoosd")) wWindowID = WINDOW_OSD;
   else if (strWindow.Equals("videomenu")) wWindowID = WINDOW_VIDEO_MENU;
