@@ -1627,14 +1627,6 @@ bool CSettings::SaveAvpackSettings(TiXmlNode *io_pRoot) const
   SetString(pNode, "passthroughdevice", g_guiSettings.GetString("audiooutput.passthroughdevice"));
 #endif
 
-  TiXmlElement videooutputNode("videooutput");
-  pNode = io_pRoot->InsertEndChild(videooutputNode);
-  if (!pNode) return false;
-  SetInteger(pNode, "aspect", g_guiSettings.GetInt("videooutput.aspect"));
-  SetBoolean(pNode, "hd480p", g_guiSettings.GetBool("videooutput.hd480p"));
-  SetBoolean(pNode, "hd720p", g_guiSettings.GetBool("videooutput.hd720p"));
-  SetBoolean(pNode, "hd1080i", g_guiSettings.GetBool("videooutput.hd1080i"));
-
   TiXmlElement videoscreenNode("videoscreen");
   pNode = io_pRoot->InsertEndChild(videoscreenNode);
   if (!pNode) return false;
@@ -1644,8 +1636,6 @@ bool CSettings::SaveAvpackSettings(TiXmlNode *io_pRoot) const
   pNode = io_pRoot->InsertEndChild(videoplayerNode);
   if (!pNode) return false;
   SetInteger(pNode, "displayresolution", g_guiSettings.GetInt("videoplayer.displayresolution"));
-  SetInteger(pNode, "flicker", g_guiSettings.GetInt("videoplayer.flicker"));
-  SetBoolean(pNode, "soften", g_guiSettings.GetBool("videoplayer.soften"));
 
   return SaveCalibration(io_pRoot);
 }

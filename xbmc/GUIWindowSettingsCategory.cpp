@@ -308,24 +308,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
           g_audioConfig.Save();
         }
       }
-#ifndef __APPLE__
-      switch(g_guiSettings.GetInt("videooutput.aspect"))
-      {
-      case VIDEO_NORMAL:
-        g_videoConfig.SetNormal();
-        break;
-      case VIDEO_LETTERBOX:
-        g_videoConfig.SetLetterbox(true);
-        break;
-      case VIDEO_WIDESCREEN:
-        g_videoConfig.SetWidescreen(true);
-        break;
-      }
-      g_videoConfig.Set480p(g_guiSettings.GetBool("videooutput.hd480p"));
-      g_videoConfig.Set720p(g_guiSettings.GetBool("videooutput.hd720p"));
-      g_videoConfig.Set1080i(g_guiSettings.GetBool("videooutput.hd1080i"));
-#endif
-
       if (g_videoConfig.NeedsSave())
         g_videoConfig.Save();
 
