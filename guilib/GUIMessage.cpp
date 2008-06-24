@@ -45,14 +45,14 @@ CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD
   m_lpVoid = item;
 }
 
-CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CGUIListItemPtr item)
+CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, const CGUIListItemPtr &item)
 {
   m_dwMessage = dwMsg;
   m_dwSenderID = dwSenderID;
   m_dwControlID = dwControlID;
   m_dwParam1 = dwParam1;
   m_dwParam2 = dwParam2;
-  m_lpVoid = &item;
+  m_lpVoid = (void *)&item;
 }
 
 CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CVisualisation* vis)

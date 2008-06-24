@@ -146,7 +146,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
       }
       if (message.GetMessage() == GUI_MSG_LABEL_ADD && message.GetLPVOID())
       {
-        CGUIListItemPtr item((CGUIListItem*)message.GetLPVOID());
+        CGUIListItemPtr item = *(CGUIListItemPtr*)message.GetLPVOID();
         m_items.push_back(item);
         if (m_pageControl)
         {
