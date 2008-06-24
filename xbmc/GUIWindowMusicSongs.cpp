@@ -358,7 +358,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
   int iItems = m_vecItems->Size();
   if (iItems)
   {
-    CFileItem* pItem = m_vecItems->Get(0);
+    CFileItemPtr pItem = m_vecItems->Get(0);
     if (pItem->IsParentFolder()) iItems--;
   }
   CStdString items;
@@ -368,7 +368,9 @@ void CGUIWindowMusicSongs::UpdateButtons()
 
 void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : NULL;
+  CFileItemPtr item;
+  if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
+    item = m_vecItems->Get(itemNumber);
 
   if (item)
   {
@@ -379,7 +381,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     if (m_vecItems->IsVirtualDirectoryRoot())
     {
       // get the usual music shares, and anything for all media windows
-      CMediaSource *share = CGUIDialogContextMenu::GetShare("music", item);
+      CMediaSource *share = CGUIDialogContextMenu::GetShare("music", item.get());
       CGUIDialogContextMenu::GetContextButtons("music", share, buttons);
       // enable Rip CD an audio disc
       if (CDetectDVDMedia::IsDiscInDrive() && item->IsCDDA())
@@ -457,10 +459,12 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
 
 bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
-  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : NULL;
+  CFileItemPtr item;
+  if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
+    item = m_vecItems->Get(itemNumber);
   if ( m_vecItems->IsVirtualDirectoryRoot() && item)
   {
-    CMediaSource *share = CGUIDialogContextMenu::GetShare("music", item);
+    CMediaSource *share = CGUIDialogContextMenu::GetShare("music", item.get());
     if (CGUIDialogContextMenu::OnContextButton("music", share, button))
     {
       Update("");

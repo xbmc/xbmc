@@ -45,8 +45,6 @@
 #define CONTROL_CANCEL          21
 #define CONTROL_TYPE            22
 
-using namespace PLAYLIST;
-
 typedef struct
 {
   CGUIDialogSmartPlaylistEditor::PLAYLIST_TYPE type;
@@ -285,7 +283,7 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
   m_ruleLabels->Clear();
   for (unsigned int i = 0; i < m_playlist.m_playlistRules.size(); i++)
   {
-    CFileItem* item = new CFileItem("", false);
+    CFileItemPtr item(new CFileItem("", false));
     if (m_playlist.m_playlistRules[i].m_field == CSmartPlaylistRule::FIELD_NONE)
       item->SetLabel(g_localizeStrings.Get(21423));
     else

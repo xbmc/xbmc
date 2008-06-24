@@ -304,7 +304,7 @@ void CGUIMultiImage::LoadDirectory()
     dir.GetDirectory(realPath, items);
     for (int i=0; i < items.Size(); i++)
     {
-      CFileItem *pItem = items[i];
+      CFileItemPtr pItem = items[i];
       if (pItem->IsPicture())
         m_files.push_back(pItem->m_strPath);
     }

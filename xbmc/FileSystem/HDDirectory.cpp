@@ -107,7 +107,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
             g_charsetConverter.stringCharsetToUtf8(strLabel);
 #endif
 
-            CFileItem *pItem = new CFileItem(strLabel);
+            CFileItemPtr pItem(new CFileItem(strLabel));
             pItem->m_strPath = strRoot;
             pItem->m_strPath += wfd.cFileName;
 #ifndef _LINUX
@@ -122,9 +122,9 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 #ifdef _LINUX
             /* Checks if the file is hidden. If it is then we don't really need to add it */
             if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) || g_guiSettings.GetBool("filelists.showhidden"))
-              items.Add(new CFileItem(*pItem));
+              items.Add(pItem);
 #else
-            items.Add(new CFileItem(*pItem));
+            items.Add(pItem);
 #endif
           }
         }
@@ -134,7 +134,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 #ifndef _LINUX
           g_charsetConverter.stringCharsetToUtf8(strLabel);
 #endif
-          CFileItem *pItem = new CFileItem(strLabel);
+          CFileItemPtr pItem(new CFileItem(strLabel));
           pItem->m_strPath = strRoot;
           pItem->m_strPath += wfd.cFileName;
 #ifndef _LINUX
@@ -152,7 +152,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 #endif
           {
             vecCacheItems.Add(pItem);
-            items.Add(new CFileItem(*pItem));
+            items.Add(pItem);
           }
           else
             vecCacheItems.Add(pItem);

@@ -26,8 +26,9 @@
 #include "utils/CriticalSection.h"
 
 #include <vector>
+#include "boost/shared_ptr.hpp"
 
-class CFileItem;
+class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;
 
 class IBackgroundLoaderObserver
@@ -59,7 +60,7 @@ protected:
   virtual void OnLoaderFinish() {};
 
   CFileItemList *m_pVecItems;
-  std::vector<CFileItem *> m_vecItems; // FileItemList would delete the items and we only want to keep a reference.
+  std::vector<CFileItemPtr> m_vecItems; // FileItemList would delete the items and we only want to keep a reference.
   CCriticalSection m_lock;
 
   bool m_bStartCalled;

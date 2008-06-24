@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
       }
       else if (argv[i][0] != '-')
       {
-        CFileItem *pItem = new CFileItem(argv[i]);
+        CFileItemPtr pItem(new CFileItem(argv[i]));
         pItem->m_strPath = argv[i];
         playlist.Add(pItem);
       }

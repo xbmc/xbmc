@@ -12,8 +12,9 @@
 
 #include "FileSystem/VirtualDirectory.h"
 #include "includes.h"
+#include "boost/shared_ptr.hpp"
 
-class CFileItem;
+class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;
 
 class CXbmcWeb
@@ -26,7 +27,7 @@ public:
 	DWORD		GetNavigatorState();
 	void		SetNavigatorState(DWORD state);
 
-	void		AddItemToPlayList(const CFileItem* pItem);
+	void		AddItemToPlayList(const CFileItemPtr &pItem);
 
 	int			xbmcCommand( int eid, webs_t wp, int argc, char_t **argv);
 

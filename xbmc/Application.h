@@ -251,7 +251,7 @@ protected:
   CStopWatch m_navigationTimer;
   CStopWatch m_slowTimer;
 
-  CFileItem* m_itemCurrentFile;
+  CFileItemPtr m_itemCurrentFile;
   CFileItemList* m_currentStack;
   CStdString m_prevMedia;
   CSplash* m_splash;

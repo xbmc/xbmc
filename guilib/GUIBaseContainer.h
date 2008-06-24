@@ -28,6 +28,9 @@
 
 #include "GUIControl.h"
 #include "GUIListItemLayout.h"
+#include "boost/shared_ptr.hpp"
+
+typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
 
 enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_LIST,
@@ -86,7 +89,7 @@ public:
   void SetType(VIEW_TYPE type, const CStdString &label);
 
   virtual bool IsContainer() const { return true; };
-  CGUIListItem *GetListItem(int offset, unsigned int flag = 0) const;
+  CGUIListItemPtr GetListItem(int offset, unsigned int flag = 0) const;
 
   virtual bool GetCondition(int condition, int data) const;
   CStdString GetLabel(int info) const;
@@ -125,8 +128,8 @@ protected:
   ORIENTATION m_orientation;
   int m_itemsPerPage;
 
-  std::vector<CGUIListItem*> m_items;
-  typedef std::vector<CGUIListItem*> ::iterator iItems;
+  std::vector< CGUIListItemPtr > m_items;
+  typedef std::vector<CGUIListItemPtr> ::iterator iItems;
   CGUIListItem *m_lastItem;
 
   DWORD m_pageControl;
@@ -149,7 +152,7 @@ protected:
   CStdString m_label;
 
   bool m_staticContent;
-  std::vector<CGUIListItem*> m_staticItems;
+  std::vector<CGUIListItemPtr> m_staticItems;
   bool m_wasReset;  // true if we've received a Reset message until we've rendered once.  Allows
                     // us to make sure we don't tell the infomanager that we've been moving when
                     // the "movement" was simply due to the list being repopulated (thus cursor position

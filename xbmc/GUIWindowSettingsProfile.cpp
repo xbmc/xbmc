@@ -213,7 +213,7 @@ void CGUIWindowSettingsProfile::LoadList()
   for (UCHAR i = 0; i < g_settings.m_vecProfiles.size(); i++)
   {
     CProfile& profile = g_settings.m_vecProfiles.at(i);
-    CFileItem* item = new CFileItem(profile.getName());
+    CFileItemPtr item(new CFileItem(profile.getName()));
     item->m_strPath.Empty();
     item->SetLabel2(profile.getDate());
     item->SetThumbnailImage(profile.getThumb());
@@ -223,7 +223,7 @@ void CGUIWindowSettingsProfile::LoadList()
     m_vecListItems.push_back(item);
   }
   {
-    CFileItem* item = new CFileItem(g_localizeStrings.Get(20058));
+    CFileItemPtr item(new CFileItem(g_localizeStrings.Get(20058)));
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PROFILES, 0, 0, item);
     g_graphicsContext.SendMessage(msg);
     item->m_strPath.Empty();
@@ -244,12 +244,6 @@ void CGUIWindowSettingsProfile::ClearListItems()
 {
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PROFILES);
   g_graphicsContext.SendMessage(msg);
-
-  for (int i = 0;i < (int)m_vecListItems.size();++i)
-  {
-    CGUIListItem* pListItem = m_vecListItems[i];
-    delete pListItem;
-  }
 
   m_vecListItems.erase(m_vecListItems.begin(), m_vecListItems.end());
 }

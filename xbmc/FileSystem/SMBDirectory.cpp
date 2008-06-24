@@ -197,7 +197,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
       if (bIsDir)
       {
-        CFileItem *pItem = new CFileItem(strFile);
+        CFileItemPtr pItem(new CFileItem(strFile));
         pItem->m_strPath = strRoot;
 
         // needed for network / workgroup browsing
@@ -215,18 +215,18 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         pItem->m_bIsFolder = true;
         pItem->m_dateTime=localTime;
         vecCacheItems.Add(pItem);
-        if (!hidden) items.Add(new CFileItem(*pItem));
+        if (!hidden) items.Add(pItem);
       }
       else
       {
-        CFileItem *pItem = new CFileItem(strFile);
+        CFileItemPtr pItem(new CFileItem(strFile));
         pItem->m_strPath = strRoot + aDir.name;
         pItem->m_bIsFolder = false;
         pItem->m_dwSize = iSize;
         pItem->m_dateTime=localTime;
 
         vecCacheItems.Add(pItem);
-        if (!hidden && IsAllowed(aDir.name)) items.Add(new CFileItem(*pItem));
+        if (!hidden && IsAllowed(aDir.name)) items.Add(pItem);
       }
     }
   }

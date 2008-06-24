@@ -96,7 +96,7 @@ bool CGUIWindowScripts::Update(const CStdString &strDirectory)
 
       for (int i = 0; i < m_vecItems->Size(); i++)
       {
-        CFileItem* pItem = m_vecItems->Get(i);
+        CFileItemPtr pItem = m_vecItems->Get(i);
         if (pItem->m_strPath == filename)
         {
           char tstr[1024];
@@ -117,7 +117,7 @@ bool CGUIWindowScripts::Update(const CStdString &strDirectory)
 
 bool CGUIWindowScripts::OnPlayMedia(int iItem)
 {
-  CFileItem* pItem=m_vecItems->Get(iItem);
+  CFileItemPtr pItem=m_vecItems->Get(iItem);
   CStdString strPath = pItem->m_strPath;
 
 #ifdef HAS_PYTHON
@@ -177,7 +177,7 @@ bool CGUIWindowScripts::GetDirectory(const CStdString& strDirectory, CFileItemLi
   // flatten any folders
   for (int i = 0; i < items.Size(); i++)
   {
-    CFileItem *item = items[i];
+    CFileItemPtr item = items[i];
     if (item->m_bIsFolder && !item->IsParentFolder() && !item->m_bIsShareOrDrive && !item->GetLabel().Left(1).Equals("."))
     { // folder item - let's check for a default.py file, and flatten if we have one
       CStdString defaultPY;
