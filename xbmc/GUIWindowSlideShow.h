@@ -67,7 +67,7 @@ public:
   void ShowPrevious();
   void Select(const CStdString& strPicture);
   const CFileItemList &GetSlideShowContents();
-  const CFileItem *GetCurrentSlide();
+  const CFileItemPtr GetCurrentSlide();
   void RunSlideShow(const CStdString& strPath, bool bRecursive = false);
   void StartSlideShow();
   bool InSlideShow() const;

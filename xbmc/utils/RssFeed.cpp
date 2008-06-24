@@ -142,7 +142,7 @@ bool CRssFeed::ReadFeed() {
   for( child = channelXmlNode->FirstChildElement("item"); child; child = child->NextSiblingElement() ) 
   {
     // Create new item, 
-    item = new CFileItem();
+    CFileItemPtr item(new CFileItem());
 
     for( item_child = child->FirstChildElement(); item_child; item_child = item_child->NextSiblingElement() ) 
     {
@@ -299,8 +299,6 @@ bool CRssFeed::ReadFeed() {
       items.Add(item);
       LeaveCriticalSection(m_ItemVectorLock);
     }
-    else
-      delete item;
   }
 
   return true;

@@ -36,7 +36,7 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void Render();
   virtual bool HasListItems() const { return true; };
-  virtual CFileItem* GetCurrentListItem(int offset = 0);
+  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
   int GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
 
 protected:

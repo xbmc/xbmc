@@ -32,7 +32,7 @@ using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace PLAYLIST;
-
+/*
 CPlayListItem::CPlayListItem() : m_lDuration(0)
 {
   m_lStartOffset = 0;
@@ -133,7 +133,7 @@ const CMusicInfoTag* CPlayListItem::GetMusicTag() const
 const CVideoInfoTag* CPlayListItem::GetVideoTag() const
 {
   return GetVideoInfoTag();
-}
+}*/
 
 CPlayList::CPlayList(void)
 {
@@ -148,18 +148,18 @@ CPlayList::~CPlayList(void)
   Clear();
 }
 
-void CPlayList::Add(CPlayListItem& item, int iPosition, int iOrder)
+void CPlayList::Add(const CFileItemPtr &item, int iPosition, int iOrder)
 {
   int iOldSize = size();
   if (iPosition < 0 || iPosition >= iOldSize)
     iPosition = iOldSize;
   if (iOrder < 0 || iOrder >= iOldSize)
-    item.m_iprogramCount = iOldSize;
+    item->m_iprogramCount = iOldSize;
   else
-    item.m_iprogramCount = iOrder;
+    item->m_iprogramCount = iOrder;
 
   // increment the playable counter
-  item.ClearUnPlayable();
+  item->ClearProperty("unplayable");
   if (m_iPlayableItems < 0)
     m_iPlayableItems = 1;
   else
@@ -178,7 +178,7 @@ void CPlayList::Add(CPlayListItem& item, int iPosition, int iOrder)
   }
 }
 
-void CPlayList::Add(CPlayListItem& item)
+void CPlayList::Add(const CFileItemPtr &item)
 {
   Add(item, -1, -1);
 }
@@ -187,13 +187,6 @@ void CPlayList::Add(CPlayList& playlist)
 {
   for (int i = 0; i < (int)playlist.size(); i++)
     Add(playlist[i], -1, -1);
-}
-
-void CPlayList::Add(CFileItem *pItem)
-{
-  CPlayListItem playlistItem;
-  CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-  Add(playlistItem, -1, -1);
 }
 
 void CPlayList::Add(CFileItemList& items)
@@ -229,10 +222,7 @@ void CPlayList::Insert(CFileItemList& items, int iPosition /* = -1 */)
   }
   for (int i = 0; i < (int)items.Size(); i++)
   {
-    int iPos = iPosition + i;
-    CPlayListItem playlistItem;
-    CUtil::ConvertFileItemToPlayListItem(items[i], playlistItem);
-    Add(playlistItem, iPos, iPos);
+    Add(items[i], iPosition + i, iPosition + i);
   }
 }
 
@@ -248,11 +238,11 @@ void CPlayList::DecrementOrder(int iOrder)
   it = m_vecItems.begin();
   while (it != m_vecItems.end())
   {
-    CPlayListItem& item = *it;
-    if (item.m_iprogramCount > iOrder)
+    CFileItemPtr item = *it;
+    if (item->m_iprogramCount > iOrder)
     {
       //CLog::Log(LOGDEBUG,"%s fixing item at order %i", __FUNCTION__, item.m_iprogramCount);
-      item.m_iprogramCount--;
+      item->m_iprogramCount--;
     }
     ++it;
   }
@@ -267,11 +257,11 @@ void CPlayList::IncrementOrder(int iPosition, int iOrder)
   it = m_vecItems.begin() + iPosition;
   while (it != m_vecItems.end())
   {
-    CPlayListItem& item = *it;
-    if (item.m_iprogramCount >= iOrder)
+    CFileItemPtr item = *it;
+    if (item->m_iprogramCount >= iOrder)
     {
       //CLog::Log(LOGDEBUG,"%s fixing item at order %i", __FUNCTION__, item.m_iprogramCount);
-      item.m_iprogramCount++;
+      item->m_iprogramCount++;
     }
     ++it;
   }
@@ -287,22 +277,17 @@ void CPlayList::Clear()
 
 int CPlayList::size() const
 {
-  return m_vecItems.size();
+  return (int)m_vecItems.size();
 }
 
-const CPlayListItem& CPlayList::operator[] (int iItem) const
+const CFileItemPtr CPlayList::operator[] (int iItem) const
 {
   return m_vecItems[iItem];
 }
 
-CPlayListItem& CPlayList::operator[] (int iItem)
+CFileItemPtr CPlayList::operator[] (int iItem)
 {
   return m_vecItems[iItem];
-}
-
-bool CPlayListItem::IsUnPlayable() const
-{
-  return m_bUnPlayable;
 }
 
 void CPlayList::Shuffle(int iPosition)
@@ -330,9 +315,9 @@ void CPlayList::Shuffle(int iPosition)
 
 struct SSortPlayListItem
 {
-  static bool PlaylistSort(const CPlayListItem &left, const CPlayListItem &right)
+  static bool PlaylistSort(const CFileItemPtr &left, const CFileItemPtr &right)
   {
-    return (left.m_iprogramCount <= right.m_iprogramCount);
+    return (left->m_iprogramCount <= right->m_iprogramCount);
   }
 };
 
@@ -355,10 +340,10 @@ void CPlayList::Remove(const CStdString& strFileName)
   it = m_vecItems.begin();
   while (it != m_vecItems.end() )
   {
-    CPlayListItem& item = *it;
-    if (item.GetFileName() == strFileName)
+    CFileItemPtr item = *it;
+    if (item->m_strPath == strFileName)
     {
-      iOrder = item.m_iprogramCount;
+      iOrder = item->m_iprogramCount;
       it = m_vecItems.erase(it);
       //CLog::Log(LOGDEBUG,"PLAYLIST, removing item at order %i", iPos);
     }
@@ -372,7 +357,7 @@ int CPlayList::FindOrder(int iOrder)
 {
   for (int i = 0; i < size(); i++)
   {
-    if (m_vecItems[i].m_iprogramCount == iOrder)
+    if (m_vecItems[i]->m_iprogramCount == iOrder)
       return i;
   }
   return -1;
@@ -384,7 +369,7 @@ void CPlayList::Remove(int position)
   int iOrder = -1;
   if (position < (int)m_vecItems.size())
   {
-    iOrder = m_vecItems[position].m_iprogramCount;
+    iOrder = m_vecItems[position]->m_iprogramCount;
     m_vecItems.erase(m_vecItems.begin() + position);
   }
   DecrementOrder(iOrder);
@@ -399,10 +384,10 @@ int CPlayList::RemoveDVDItems()
   it = m_vecItems.begin();
   while (it != m_vecItems.end() )
   {
-    CPlayListItem& item = *it;
-    if ( item.IsCDDA() || item.IsOnDVD() )
+    CFileItemPtr item = *it;
+    if ( item->IsCDDA() || item->IsOnDVD() )
     {
-      vecFilenames.push_back( item.GetFileName() );
+      vecFilenames.push_back( item->m_strPath );
     }
     it++;
   }
@@ -441,23 +426,20 @@ bool CPlayList::Swap(int position1, int position2)
   {
     // swap the ordinals before swapping the items!
     //CLog::Log(LOGDEBUG,"PLAYLIST swapping items at orders (%i, %i)",m_vecItems[position1].m_iprogramCount,m_vecItems[position2].m_iprogramCount);
-    iOrder = m_vecItems[position1].m_iprogramCount;
-    m_vecItems[position1].m_iprogramCount = m_vecItems[position2].m_iprogramCount;
-    m_vecItems[position2].m_iprogramCount = iOrder;
+    std::swap(m_vecItems[position1]->m_iprogramCount, m_vecItems[position2]->m_iprogramCount);
   }
 
   // swap the items
-  CPlayListItem anItem = m_vecItems[position1];
-  m_vecItems[position1] = m_vecItems[position2];
-  m_vecItems[position2] = anItem;
+  std::swap(m_vecItems[position1], m_vecItems[position2]);
   return true;
 }
 
 void CPlayList::SetUnPlayable(int iItem)
 {
-  if (!m_vecItems[iItem].IsUnPlayable())
+  CFileItemPtr item = m_vecItems[iItem];
+  if (!item->GetPropertyBOOL("unplayable"))
   {
-    m_vecItems[iItem].SetUnPlayable();
+    item->SetProperty("unplayable", true);
     m_iPlayableItems--;
   }
 }
@@ -497,17 +479,18 @@ bool CPlayList::LoadData(const CStdString& strData)
 
 bool CPlayList::Expand(int position)
 {
-  auto_ptr<CPlayList> playlist (CPlayListFactory::Create(m_vecItems[position]));
+  CFileItemPtr item = m_vecItems[position];
+  auto_ptr<CPlayList> playlist (CPlayListFactory::Create(*item.get()));
   if ( NULL == playlist.get())
     return false;
 
-  if(!playlist->Load(m_vecItems[position].m_strPath))
+  if(!playlist->Load(item->m_strPath))
     return false;
 
   // remove any item that points back to itself
   for(int i = 0;i<playlist->size();i++)
   {
-    if( (*playlist)[i].m_strPath.Equals( m_vecItems[position].m_strPath ) )
+    if( (*playlist)[i]->m_strPath.Equals( item->m_strPath ) )
     {
       playlist->Remove(i);
       i--;
@@ -528,10 +511,10 @@ void CPlayList::UpdateItem(const CFileItem *item)
 
   for (ivecItems it = m_vecItems.begin(); it != m_vecItems.end(); ++it)
   {
-    CPlayListItem& playlistItem = *it;
-    if (playlistItem.GetFileName() == item->m_strPath)
+    CFileItemPtr playlistItem = *it;
+    if (playlistItem->m_strPath == item->m_strPath)
     {
-      CUtil::ConvertFileItemToPlayListItem(item, playlistItem);
+      *playlistItem = *item;
       break;
     }
   }

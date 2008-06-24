@@ -2,6 +2,7 @@
 
 #include "utils/UdpClient.h"
 #include "Key.h"
+#include "boost/shared_ptr.hpp"
 
 /******************************** Description *********************************/
 
@@ -15,6 +16,8 @@
 
 typedef char char_t;
 typedef struct websRec *webs_t;
+
+class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 
 class CXbmcHttpShim
 {
@@ -154,7 +157,7 @@ private:
   CStdString flushResult(int eid, webs_t wp, const CStdString &output);
   int displayDir(int numParas, CStdString paras[]);
   void SetCurrentMediaItem(CFileItem& newItem);
-  void AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CStdString mask, bool recursive);
+  void AddItemToPlayList(const CFileItemPtr &pItem, int playList, int sortMethod, CStdString mask, bool recursive);
   void LoadPlayListOld(const CStdString& strPlayList, int playList);
   bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoStart);
   void copyThumb(CStdString srcFn, CStdString destFn);

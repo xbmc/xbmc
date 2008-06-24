@@ -43,7 +43,7 @@ public:
   void GetItemList(CFileItemList &feedItems) 
   {
     for (int i = 0; i < items.Size(); i++) {
-      feedItems.Add(new CFileItem(*items[i]));
+      feedItems.Add(items[i]);
     }
   }
 

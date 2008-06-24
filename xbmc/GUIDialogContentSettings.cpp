@@ -384,7 +384,7 @@ void CGUIDialogContentSettings::FillListControl()
   m_vecItems->Clear();
   for (std::vector<SScraperInfo>::iterator iter=m_scrapers.find(m_info.strContent)->second.begin();iter!=m_scrapers.find(m_info.strContent)->second.end();++iter)
   {
-    CFileItem* item = new CFileItem(iter->strTitle);
+    CFileItemPtr item(new CFileItem(iter->strTitle));
     item->m_strPath = iter->strPath;
     if (m_info.strContent.Equals("albums"))
       item->SetThumbnailImage(_P("Q:\\system\\scrapers\\music\\"+iter->strThumb));
@@ -403,11 +403,11 @@ void CGUIDialogContentSettings::FillListControl()
   }
 }
 
-CFileItem* CGUIDialogContentSettings::GetCurrentListItem(int offset)
+CFileItemPtr CGUIDialogContentSettings::GetCurrentListItem(int offset)
 {
   int currentItem = -1;
   if( m_info.strContent.IsEmpty())
-    return NULL;
+    return CFileItemPtr();
   for (int i=0;i<m_vecItems->Size();++i )
   {
     if (m_vecItems->Get(i)->IsSelected())
@@ -416,7 +416,7 @@ CFileItem* CGUIDialogContentSettings::GetCurrentListItem(int offset)
       break;
     }
   }
-  if (currentItem == -1) return NULL;
+  if (currentItem == -1) return CFileItemPtr();
   int item = (currentItem + offset) % m_vecItems->Size();
   if (item < 0) item += m_vecItems->Size();
   return m_vecItems->Get(item);
