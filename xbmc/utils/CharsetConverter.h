@@ -68,7 +68,7 @@ public:
       size_t inBytes  = (strSource.length() + 1)*sizeof(strSource[0]);
       size_t outBytes = (strSource.length() + 1)*multiplier;
       const char *src = (const char*)strSource.c_str();
-      char       *dst = (char*)strDest.GetBuffer(inBytes);
+      char       *dst = (char*)strDest.GetBuffer(outBytes);
 
       if (iconv_const(type, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
       {
