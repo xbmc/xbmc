@@ -71,11 +71,11 @@ void CGUIWrappingListContainer::Render()
 
   float focusedPosX = 0;
   float focusedPosY = 0;
-  CGUIListItem *focusedItem = NULL;
+  CGUIListItemPtr focusedItem;
   int current = offset;
   while (posX < m_posX + m_width && posY < m_posY + m_height && m_items.size())
   {
-    CGUIListItem *item = m_items[CorrectOffset(current, 0)];
+    CGUIListItemPtr item = m_items[CorrectOffset(current, 0)];
     bool focused = (current == m_offset + m_cursor) && m_bHasFocus;
     // render our item
     if (focused)
@@ -85,7 +85,7 @@ void CGUIWrappingListContainer::Render()
       focusedItem = item;
     }
     else
-      RenderItem(posX, posY, item, focused);
+      RenderItem(posX, posY, item.get(), focused);
 
     // increment our position
     if (m_orientation == VERTICAL)
@@ -97,7 +97,7 @@ void CGUIWrappingListContainer::Render()
   }
   // render focused item last so it can overlap other items
   if (focusedItem)
-    RenderItem(focusedPosX, focusedPosY, focusedItem, true);
+    RenderItem(focusedPosX, focusedPosY, focusedItem.get(), true);
 
   g_graphicsContext.RestoreClipRegion();
 
@@ -198,9 +198,9 @@ void CGUIWrappingListContainer::ValidateOffset()
       for (unsigned int i = 0; i < numItems; i++)
       {
         if (m_items[i]->IsFileItem())
-          m_items.push_back(new CFileItem(*(CFileItem *)m_items[i]));
+          m_items.push_back(CFileItemPtr(new CFileItem(*(CFileItem *)m_items[i].get())));
         else
-          m_items.push_back(new CGUIListItem(*m_items[i]));
+          m_items.push_back(CGUIListItemPtr(new CGUIListItem(*m_items[i])));
         m_extraItems++;
       }
     }
@@ -280,11 +280,7 @@ void CGUIWrappingListContainer::ResetExtraItems()
 {
   // delete any extra items
   if (m_extraItems)
-  {
-    for (unsigned int i = m_items.size() - m_extraItems; i < m_items.size(); i++)
-      delete m_items[i];
     m_items.erase(m_items.begin() + m_items.size() - m_extraItems, m_items.end());
-  }
   m_extraItems = 0;
 }
 

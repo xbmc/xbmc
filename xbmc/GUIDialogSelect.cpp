@@ -129,20 +129,23 @@ void CGUIDialogSelect::Reset()
 
 void CGUIDialogSelect::Add(const CStdString& strLabel)
 {
-  //CGUIListItem* pItem = new CGUIListItem(strLabel);
-  CFileItem* pItem = new CFileItem(strLabel);
+  CFileItemPtr pItem(new CFileItem(strLabel));
   m_vecListInternal->Add(pItem);
 }
 
 void CGUIDialogSelect::Add(const CFileItemList& items)
 {
   for (int i=0;i<items.Size();++i)
-    Add(items[i]);
+  {
+    CFileItemPtr item = items[i];
+    Add(item.get());
+  }
 }
 
 void CGUIDialogSelect::Add(const CFileItem* pItem)
 {
-  m_vecListInternal->Add(new CFileItem(*pItem));
+  CFileItemPtr item(new CFileItem(*pItem));
+  m_vecListInternal->Add(item);
 }
 
 void CGUIDialogSelect::SetItems(CFileItemList* pList)

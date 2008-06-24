@@ -112,7 +112,10 @@ bool CGUIWindowGameSaves::OnMessage(CGUIMessage& message)
           m_guiState->GetSortMethodLabelMasks(labelMasks);
           CLabelFormatter formatter("", labelMasks.m_strLabel2File);
           for (int i=0;i<m_vecItems->Size();++i)
-            formatter.FormatLabel2(m_vecItems->Get(i));
+          {
+            CFileItemPtr item = m_vecItems->Get(i);
+            formatter.FormatLabel2(item.get());
+          }
           return true;
         }
         else
@@ -164,7 +167,7 @@ bool CGUIWindowGameSaves::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowGameSaves::OnPlayMedia(int iItem)
 {
-  CFileItem* pItem=m_vecItems->Get(iItem);
+  CFileItemPtr pItem=m_vecItems->Get(iItem);
   CStdString strPath = pItem->m_strPath;
   return true;
 }
@@ -193,7 +196,7 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
   CLabelFormatter formatter("", labelMasks.m_strLabel2File);
   for (int i = 0; i < items.Size(); i++)
   {
-    CFileItem *item = items[i];
+    CFileItemPtr item = items[i];
 
     if (!bProgressVisible && timeGetTime()-dwTick>1500 && m_dlgProgress)
     { // tag loading takes more then 1.5 secs, show a progress dialog
@@ -288,7 +291,7 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
         item->GetMusicInfoTag()->SetTitle(item->GetLabel());  // Note we set ID as the TITLE to save code makign a SORT ID and a ID varible to the FileItem
         item->SetLabel(strDescription);
         item->SetIconImage("defaultProgram.png");
-        formatter.FormatLabel2(item);
+        formatter.FormatLabel2(item.get());
         item->SetLabelPreformated(true);
       }
     }

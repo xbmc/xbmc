@@ -328,16 +328,15 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
       for (int i = 0; i < iSongsToAdd; i++)
       {
         pair<CStdString,CStdString> whereClause = GetWhereClauseWithHistory();
-        CFileItem *item = new CFileItem;
+        CFileItemPtr item(new CFileItem);
         long songID;
-        if (database.GetRandomSong(item, songID, whereClause.first))
+        if (database.GetRandomSong(item.get(), songID, whereClause.first))
         { // success
           Add(item);
           AddToHistory(1,songID);
         }
         else
         {
-          delete item;
           error = true;
           break;
         }
@@ -376,16 +375,15 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
       for (int i = 0; i < iVidsToAdd; i++)
       {
         pair<CStdString,CStdString> whereClause = GetWhereClauseWithHistory();
-        CFileItem *item = new CFileItem;
+        CFileItemPtr item(new CFileItem);
         long songID;
-        if (database.GetRandomMusicVideo(item, songID, whereClause.second))
+        if (database.GetRandomMusicVideo(item.get(), songID, whereClause.second))
         { // success
           Add(item);
           AddToHistory(2,songID);
         }
         else
         {
-          delete item;
           error = true;
           break;
         }
@@ -408,14 +406,12 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
   return true;
 }
 
-void CPartyModeManager::Add(CFileItem *pItem)
+void CPartyModeManager::Add(const CFileItemPtr &pItem)
 {
   int iPlaylist = m_bIsVideo ? PLAYLIST_VIDEO : PLAYLIST_MUSIC;
 
-  CPlayListItem playlistItem;
-  CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
-  playlist.Add(playlistItem);
+  playlist.Add(pItem);
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Adding randomly selected song at %i:[%s]", playlist.size() - 1, pItem->m_strPath.c_str());
   m_iMatchingSongsPicked++;
 }

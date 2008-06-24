@@ -28,6 +28,7 @@
 #include "pyutil.h"
 #include "listitem.h"
 #include "PlayList.h"
+#include "MusicInfoTag.h"
 
 using namespace std;
 using namespace PLAYLIST;
@@ -55,7 +56,7 @@ namespace PYXBMC
     self = (PlayListItem*)type->tp_alloc(type, 0);
     if (!self) return NULL;
 
-    self->item = new PLAYLIST::CPlayListItem();
+    self->item.reset(new CFileItem());
 
     return (PyObject*)self;
   }
@@ -71,7 +72,7 @@ namespace PYXBMC
 
   PyObject* PlayListItem_GetDescription(PlayListItem *self, PyObject *key)
   {
-    return Py_BuildValue("s", self->item->GetDescription().c_str());
+    return Py_BuildValue("s", self->item->GetLabel().c_str());
   }
 
   PyDoc_STRVAR(getDuration__doc__,
@@ -79,9 +80,9 @@ namespace PYXBMC
 
   PyObject* PlayListItem_GetDuration(PlayListItem *self, PyObject *key)
   {
-    if (self->item->GetDuration() == 0)
+    if (!self->item->HasMusicInfoTag())
       self->item->LoadMusicTag();
-    return Py_BuildValue("l", self->item->GetDuration());
+    return Py_BuildValue("l", self->item->GetMusicInfoTag()->GetDuration());
   }
 
   PyDoc_STRVAR(getFilename__doc__,
@@ -89,7 +90,7 @@ namespace PYXBMC
 
   PyObject* PlayListItem_GetFileName(PlayListItem *self, PyObject *key)
   {
-    return Py_BuildValue("s", self->item->GetFileName().c_str());
+    return Py_BuildValue("s", self->item->m_strPath.c_str());
   }
 
 /* PlayList Fucntions */
@@ -155,24 +156,21 @@ namespace PYXBMC
 
       // set m_strPath to the passed url
       pListItem->item->m_strPath = strUrl;
-      self->pPlayList->Add((CFileItem*)pListItem->item);
+      self->pPlayList->Add(pListItem->item);
     }
     else
     {
-      CPlayListItem Item;
-      CFileItem item(strUrl, false);
+      CFileItemPtr item(new CFileItem(strUrl, false));
 
-      Item.SetFileName(strUrl);
-        
       CStdString strDescription;
       if (pObjectListItem == NULL || !PyGetUnicodeString(strDescription, pObjectListItem))
-        Item.SetDescription(strUrl);
+        item->SetLabel(strUrl);
       else
-        Item.SetDescription(strDescription);
+        item->SetLabel(strDescription);
 
-      Item.SetDuration(iDuration);
+      item->GetMusicInfoTag()->SetDuration(iDuration);
 
-      self->pPlayList->Add(Item);
+      self->pPlayList->Add(item);
     }
 
     Py_INCREF(Py_None);
@@ -217,17 +215,11 @@ namespace PYXBMC
         // add each item of the playlist to the playlistplayer
         for (int i=0; i < (int)pPlayList->size(); ++i)
         {
-          const CPlayListItem& playListItem =(*pPlayList)[i];
-          CStdString strLabel=playListItem.GetDescription();
-          if (strLabel.size()==0)
-            strLabel=CUtil::GetFileName(playListItem.GetFileName());
+          CFileItemPtr playListItem =(*pPlayList)[i];
+          if (playListItem->GetLabel().IsEmpty())
+            playListItem->SetLabel(CUtil::GetFileName(playListItem->m_strPath));
 
-          CPlayListItem playlistItem;
-          playlistItem.SetFileName(playListItem.GetFileName());
-          playlistItem.SetDescription(strLabel);
-          playlistItem.SetDuration(playListItem.GetDuration());
-
-          self->pPlayList->Add(playlistItem);
+          self->pPlayList->Add(playListItem);
         }
       }
     }
@@ -328,10 +320,8 @@ namespace PYXBMC
     PlayListItem* item = (PlayListItem*)_PyObject_New(&PlayListItem_Type);
     //Py_INCREF(item);
 
-    item->item = new PLAYLIST::CPlayListItem();
-
     CPlayList* p = ((PlayList*)self)->pPlayList;
-    *item->item = (*p)[pos];
+    item->item = (*p)[pos];
 
     return (PyObject*)item;
   }

@@ -1100,22 +1100,22 @@ CFileItemList::~CFileItemList()
   Clear();
 }
 
-CFileItem* CFileItemList::operator[] (int iItem)
+CFileItemPtr CFileItemList::operator[] (int iItem)
 {
   return Get(iItem);
 }
 
-const CFileItem* CFileItemList::operator[] (int iItem) const
+const CFileItemPtr CFileItemList::operator[] (int iItem) const
 {
   return Get(iItem);
 }
 
-CFileItem* CFileItemList::operator[] (const CStdString& strPath)
+CFileItemPtr CFileItemList::operator[] (const CStdString& strPath)
 {
   return Get(strPath);
 }
 
-const CFileItem* CFileItemList::operator[] (const CStdString& strPath) const
+const CFileItemPtr CFileItemList::operator[] (const CStdString& strPath) const
 {
   return Get(strPath);
 }
@@ -1127,7 +1127,7 @@ void CFileItemList::SetFastLookup(bool fastLookup)
     m_map.clear();
     for (unsigned int i=0; i < m_items.size(); i++)
     {
-      CFileItem *pItem = m_items[i];
+      CFileItemPtr pItem = m_items[i];
       CStdString path(pItem->m_strPath); path.ToLower();
       m_map.insert(MAPFILEITEMSPAIR(path, pItem));
     }
@@ -1146,7 +1146,7 @@ bool CFileItemList::Contains(const CStdString& fileName) const
   // slow method...
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
-    const CFileItem *pItem = m_items[i];
+    const CFileItemPtr pItem = m_items[i];
     if (pItem->m_strPath.Equals(checkPath))
       return true;
   }
@@ -1155,19 +1155,7 @@ bool CFileItemList::Contains(const CStdString& fileName) const
 
 void CFileItemList::Clear()
 {
-  if (m_items.size())
-  {
-    IVECFILEITEMS i;
-    i = m_items.begin();
-    while (i != m_items.end())
-    {
-      CFileItem* pItem = *i;
-      delete pItem;
-      i = m_items.erase(i);
-    }
-    m_map.clear();
-  }
-
+  ClearItems();
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
   m_bCacheToDisc=false;
@@ -1176,26 +1164,13 @@ void CFileItemList::Clear()
   m_content.Empty();
 }
 
-void CFileItemList::ClearKeepPointer(bool itemsOnly)
+void CFileItemList::ClearItems()
 {
-  if (m_items.size())
-  {
-    m_items.clear();
-    m_map.clear();
-  }
-
-  if (itemsOnly)
-    return;
-
-  m_sortMethod=SORT_METHOD_NONE;
-  m_sortOrder=SORT_ORDER_NONE;
-  m_bCacheToDisc=false;
-  m_sortDetails.clear();
-  m_replaceListing = false;
-  m_content.Empty();
+  m_items.clear();
+  m_map.clear();
 }
 
-void CFileItemList::Add(CFileItem* pItem)
+void CFileItemList::Add(const CFileItemPtr &pItem)
 {
   m_items.push_back(pItem);
   if (m_fastLookup)
@@ -1205,7 +1180,7 @@ void CFileItemList::Add(CFileItem* pItem)
   }
 }
 
-void CFileItemList::AddFront(CFileItem* pItem, int itemPosition)
+void CFileItemList::AddFront(const CFileItemPtr &pItem, int itemPosition)
 {
   if (itemPosition >= 0)
   {
@@ -1226,7 +1201,7 @@ void CFileItemList::Remove(CFileItem* pItem)
 {
   for (IVECFILEITEMS it = m_items.begin(); it != m_items.end(); ++it)
   {
-    if (pItem == *it)
+    if (pItem == it->get())
     {
       m_items.erase(it);
       if (m_fastLookup)
@@ -1243,13 +1218,12 @@ void CFileItemList::Remove(int iItem)
 {
   if (iItem >= 0 && iItem < (int)Size())
   {
-    CFileItem* pItem = *(m_items.begin() + iItem);
+    CFileItemPtr pItem = *(m_items.begin() + iItem);
     if (m_fastLookup)
     {
       CStdString path(pItem->m_strPath); path.ToLower();
       m_map.erase(path);
     }
-    delete pItem;
     m_items.erase(m_items.begin() + iItem);
   }
 }
@@ -1257,27 +1231,14 @@ void CFileItemList::Remove(int iItem)
 void CFileItemList::Append(const CFileItemList& itemlist)
 {
   for (int i = 0; i < itemlist.Size(); ++i)
-  {
-    const CFileItem* pItem = itemlist[i];
-    CFileItem* pNewItem = new CFileItem(*pItem);
-    Add(pNewItem);
-  }
+    Add(itemlist[i]);
 }
 
-void CFileItemList::AppendPointer(const CFileItemList& itemlist)
-{
-  for (int i = 0; i < itemlist.Size(); ++i)
-  {
-    CFileItem* pItem = const_cast<CFileItem*>(itemlist[i]);
-    Add(pItem);
-  }
-}
-
-void CFileItemList::AssignPointer(const CFileItemList& itemlist, bool append)
+void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
 {
   if (!append)
     Clear();
-  AppendPointer(itemlist);
+  Append(itemlist);
   m_strPath = itemlist.m_strPath;
   m_sortDetails = itemlist.m_sortDetails;
   m_replaceListing = itemlist.m_replaceListing;
@@ -1285,23 +1246,23 @@ void CFileItemList::AssignPointer(const CFileItemList& itemlist, bool append)
   m_mapProperties = itemlist.m_mapProperties;
 }
 
-CFileItem* CFileItemList::Get(int iItem)
+CFileItemPtr CFileItemList::Get(int iItem)
 {
   if (iItem > -1)
     return m_items[iItem];
 
-  return NULL;
+  return CFileItemPtr();
 }
 
-const CFileItem* CFileItemList::Get(int iItem) const
+const CFileItemPtr CFileItemList::Get(int iItem) const
 {
   if (iItem > -1)
     return m_items[iItem];
 
-  return NULL;
+  return CFileItemPtr();
 }
 
-CFileItem* CFileItemList::Get(const CStdString& strPath)
+CFileItemPtr CFileItemList::Get(const CStdString& strPath)
 {
   CStdString pathToCheck(strPath); pathToCheck.ToLower();
   if (m_fastLookup)
@@ -1310,39 +1271,39 @@ CFileItem* CFileItemList::Get(const CStdString& strPath)
     if (it != m_map.end())
       return it->second;
 
-    return NULL;
+    return CFileItemPtr();
   }
   // slow method...
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
-    CFileItem *pItem = m_items[i];
+    CFileItemPtr pItem = m_items[i];
     if (pItem->m_strPath.Equals(pathToCheck))
       return pItem;
   }
 
-  return NULL;
+  return CFileItemPtr();
 }
 
-const CFileItem* CFileItemList::Get(const CStdString& strPath) const
+const CFileItemPtr CFileItemList::Get(const CStdString& strPath) const
 {
   CStdString pathToCheck(strPath); pathToCheck.ToLower();
   if (m_fastLookup)
   {
-    map<CStdString, CFileItem*>::const_iterator it=m_map.find(pathToCheck);
+    map<CStdString, CFileItemPtr>::const_iterator it=m_map.find(pathToCheck);
     if (it != m_map.end())
       return it->second;
 
-    return NULL;
+    return CFileItemPtr();
   }
   // slow method...
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
-    CFileItem *pItem = m_items[i];
+    CFileItemPtr pItem = m_items[i];
     if (pItem->m_strPath.Equals(pathToCheck))
       return pItem;
   }
 
-  return NULL;
+  return CFileItemPtr();
 }
 
 int CFileItemList::Size() const
@@ -1500,18 +1461,18 @@ void CFileItemList::Serialize(CArchive& ar)
 
     for (i; i < (int)m_items.size(); ++i)
     {
-      CFileItem* pItem = m_items[i];
+      CFileItemPtr pItem = m_items[i];
       ar << *pItem;
     }
   }
   else
   {
-    CFileItem* pParent=NULL;
+    CFileItemPtr pParent;
     if (!IsEmpty())
     {
-      CFileItem* pItem=m_items[0];
+      CFileItemPtr pItem=m_items[0];
       if (pItem->IsParentFolder())
-        pParent = new CFileItem(*pItem);
+        pParent.reset(new CFileItem(*pItem));
     }
 
     SetFastLookup(false);
@@ -1558,7 +1519,7 @@ void CFileItemList::Serialize(CArchive& ar)
 
     for (int i = 0; i < iSize; ++i)
     {
-      CFileItem* pItem = new CFileItem;
+      CFileItemPtr pItem(new CFileItem);
       ar >> *pItem;
       Add(pItem);
     }
@@ -1571,7 +1532,7 @@ void CFileItemList::FillInDefaultIcons()
 {
   for (int i = 0; i < (int)m_items.size(); ++i)
   {
-    CFileItem* pItem = m_items[i];
+    CFileItemPtr pItem = m_items[i];
     pItem->FillInDefaultIcon();
   }
 }
@@ -1583,7 +1544,7 @@ void CFileItemList::SetMusicThumbs()
 
   for (int i = 0; i < (int)m_items.size(); ++i)
   {
-    CFileItem* pItem = m_items[i];
+    CFileItemPtr pItem = m_items[i];
     pItem->SetMusicThumb();
   }
 
@@ -1595,7 +1556,7 @@ int CFileItemList::GetFolderCount() const
   int nFolderCount = 0;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
-    CFileItem* pItem = m_items[i];
+    CFileItemPtr pItem = m_items[i];
     if (pItem->m_bIsFolder)
       nFolderCount++;
   }
@@ -1608,7 +1569,7 @@ int CFileItemList::GetFileCount() const
   int nFileCount = 0;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
-    CFileItem* pItem = m_items[i];
+    CFileItemPtr pItem = m_items[i];
     if (!pItem->m_bIsFolder)
       nFileCount++;
   }
@@ -1621,7 +1582,7 @@ int CFileItemList::GetSelectedCount() const
   int count = 0;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
-    CFileItem* pItem = m_items[i];
+    CFileItemPtr pItem = m_items[i];
     if (pItem->IsSelected())
       count++;
   }
@@ -1636,7 +1597,7 @@ void CFileItemList::FilterCueItems()
   CStdStringArray itemstodelete;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
-    CFileItem *pItem = m_items[i];
+    CFileItemPtr pItem = m_items[i];
     if (!pItem->m_bIsFolder)
     { // see if it's a .CUE sheet
       if (pItem->IsCUESheet())
@@ -1745,10 +1706,9 @@ void CFileItemList::FilterCueItems()
   {
     for (int j = 0; j < (int)m_items.size(); j++)
     {
-      CFileItem *pItem = m_items[j];
+      CFileItemPtr pItem = m_items[j];
       if (stricmp(pItem->m_strPath.c_str(), itemstodelete[i].c_str()) == 0)
       { // delete this item
-        delete pItem;
         m_items.erase(m_items.begin() + j);
         break;
       }
@@ -1758,7 +1718,7 @@ void CFileItemList::FilterCueItems()
   for (int i = 0; i < (int)itemstoadd.size(); i++)
   {
     // now create the file item, and add to the item list.
-    CFileItem *pItem = new CFileItem(itemstoadd[i]);
+    CFileItemPtr pItem(new CFileItem(itemstoadd[i]));
     m_items.push_back(pItem);
   }
 }
@@ -1793,7 +1753,7 @@ void CFileItemList::Stack()
   bool isDVDFolder(false);
   for (int i = 0; i < Size(); ++i)
   {
-    CFileItem *item = Get(i);
+    CFileItemPtr item = Get(i);
     if (item->GetLabel().Equals("VIDEO_TS.IFO"))
     {
       isDVDFolder = true;
@@ -1890,7 +1850,7 @@ void CFileItemList::Stack()
   i = 0;
   while (i < Size())
   {
-    CFileItem *item = Get(i);
+    CFileItemPtr item = Get(i);
 
     // skip folders, nfo files, playlists, dvd images
     if (item->m_bIsFolder
@@ -1927,7 +1887,7 @@ void CFileItemList::Stack()
       int j = i + 1;
       while (j < Size())
       {
-        CFileItem *item2 = Get(j);
+        CFileItemPtr item2 = Get(j);
         CStdString fileName2, filePath2;
         CUtil::Split(item2->m_strPath, filePath2, fileName2);
         CStdString fileTitle2, volumeNumber2;
@@ -2059,7 +2019,7 @@ void CFileItemList::SetCachedVideoThumbs()
   // TODO: Investigate caching time to see if it speeds things up
   for (unsigned int i = 0; i < m_items.size(); ++i)
   {
-    CFileItem* pItem = m_items[i];
+    CFileItemPtr pItem = m_items[i];
     pItem->SetCachedVideoThumb();
   }
 }
@@ -2069,7 +2029,7 @@ void CFileItemList::SetCachedProgramThumbs()
   // TODO: Investigate caching time to see if it speeds things up
   for (unsigned int i = 0; i < m_items.size(); ++i)
   {
-    CFileItem* pItem = m_items[i];
+    CFileItemPtr pItem = m_items[i];
     pItem->SetCachedProgramThumb();
   }
 }
@@ -2079,7 +2039,7 @@ void CFileItemList::SetCachedMusicThumbs()
   // TODO: Investigate caching time to see if it speeds things up
   for (unsigned int i = 0; i < m_items.size(); ++i)
   {
-    CFileItem* pItem = m_items[i];
+    CFileItemPtr pItem = m_items[i];
     pItem->SetCachedMusicThumb();
   }
 }
@@ -2582,7 +2542,7 @@ void CFileItemList::SetProgramThumbs()
   // TODO: Is there a speed up if we cache the program thumbs first?
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
-    CFileItem *pItem = m_items[i];
+    CFileItemPtr pItem = m_items[i];
     if (pItem->IsParentFolder())
       continue;
     pItem->SetCachedProgramThumb();
@@ -2637,7 +2597,7 @@ void CFileItemList::SetCachedGameSavesThumbs()
   // TODO: Investigate caching time to see if it speeds things up
   for (unsigned int i = 0; i < m_items.size(); ++i)
   {
-    CFileItem* pItem = m_items[i];
+    CFileItemPtr pItem = m_items[i];
     pItem->SetCachedGameSavesThumb();
   }
 }
@@ -2648,7 +2608,7 @@ void CFileItemList::SetGameSavesThumbs()
   // TODO: Is there a speed up if we cache the program thumbs first?
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
-    CFileItem *pItem = m_items[i];
+    CFileItemPtr pItem = m_items[i];
     if (pItem->IsParentFolder())
       continue;
     pItem->SetCachedGameSavesThumb();  // was  pItem->SetCachedProgramThumb(); oringally
@@ -2658,13 +2618,13 @@ void CFileItemList::SetGameSavesThumbs()
 void CFileItemList::Swap(unsigned int item1, unsigned int item2)
 {
   if (item1 != item2 && item1 < m_items.size() && item2 < m_items.size())
-    swap(m_items[item1], m_items[item2]);
+    std::swap(m_items[item1], m_items[item2]);
 }
 
 void CFileItemList::UpdateItem(const CFileItem *item)
 {
   if (!item) return;
-  CFileItem *oldItem = Get(item->m_strPath);
+  CFileItemPtr oldItem = Get(item->m_strPath);
   if (oldItem)
     *oldItem = *item;
 }

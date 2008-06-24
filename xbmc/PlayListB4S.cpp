@@ -24,6 +24,7 @@
 #include "Util.h"
 #include "tinyXML/tinyxml.h"
 #include "Settings.h"
+#include "MusicInfoTag.h"
 
 using namespace XFILE;
 using namespace PLAYLIST;
@@ -97,7 +98,9 @@ bool CPlayListB4S::LoadData(std::istream& stream)
         if (CUtil::IsRemote(m_strBasePath) && g_advancedSettings.m_pathSubstitutions.size() > 0)
           strFileName = CUtil::SubstitutePath(strFileName);
         CUtil::GetQualifiedFilename(m_strBasePath, strFileName);
-        CPlayListItem newItem(strInfo, strFileName, lDuration);
+        CFileItemPtr newItem(new CFileItem(strInfo));
+        newItem->m_strPath = strFileName;
+        newItem->GetMusicInfoTag()->SetDuration(lDuration);
         Add(newItem);
       }
     }
@@ -124,10 +127,10 @@ void CPlayListB4S::Save(const CStdString& strFileName) const
   fprintf(fd, "  <playlist num_entries=%c%i%c label=%c%s%c>\n", 34, m_vecItems.size(), 34, 34, m_strPlayListName.c_str(), 34);
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
-    const CPlayListItem& item = m_vecItems[i];
-    fprintf(fd, "    <entry Playstring=%cfile:%s%c>\n", 34, item.GetFileName().c_str(), 34 );
-    fprintf(fd, "      <Name>%s</Name>\n", item.GetDescription().c_str());
-    fprintf(fd, "      <Length>%lu</Length>\n", item.GetDuration());
+    const CFileItemPtr item = m_vecItems[i];
+    fprintf(fd, "    <entry Playstring=%cfile:%s%c>\n", 34, item->m_strPath.c_str(), 34 );
+    fprintf(fd, "      <Name>%s</Name>\n", item->GetLabel().c_str());
+    fprintf(fd, "      <Length>%lu</Length>\n", item->GetMusicInfoTag()->GetDuration());
   }
   fprintf(fd, "  </playlist>\n");
   fprintf(fd, "</WinampXML>\n");

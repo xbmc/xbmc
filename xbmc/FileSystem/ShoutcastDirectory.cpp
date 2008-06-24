@@ -69,7 +69,7 @@ bool CShoutcastDirectory::ParseGenres(TiXmlElement *root, CFileItemList &items, 
     url.GetURL(path);
 
 
-    CFileItem* pItem = new CFileItem;
+    CFileItemPtr pItem(new CFileItem);
     pItem->m_bIsFolder = true;
     pItem->SetLabel(genre);
     pItem->GetMusicInfoTag()->SetGenre(genre);
@@ -124,7 +124,7 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
     url.SetOptions("?id=" + id);
     url.GetURL(path);
 
-    CFileItem* pItem = new CFileItem;
+    CFileItemPtr pItem(new CFileItem);
     pItem->m_bIsFolder = false;
     
     /* we highjack the music tag for this stuff, they will be used by */
@@ -278,9 +278,9 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   g_directoryCache.ClearDirectory(strRoot);
   for( int i = 0; i <items.Size(); i++ )
   {
-    CFileItem* pItem=items[i];
+    CFileItemPtr pItem=items[i];
     if (!pItem->IsParentFolder())
-      vecCacheItems.Add(new CFileItem( *pItem ));
+      vecCacheItems.Add(pItem);
   }
   g_directoryCache.SetDirectory(strRoot, vecCacheItems);
   if (dlgProgress) dlgProgress->Close();

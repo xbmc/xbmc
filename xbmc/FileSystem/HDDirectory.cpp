@@ -90,7 +90,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
           {
             CStdString strLabel=wfd.cFileName;
             g_charsetConverter.stringCharsetToUtf8(strLabel);
-            CFileItem *pItem = new CFileItem(strLabel);
+            CFileItemPtr pItem(new CFileItem(strLabel));
             pItem->m_strPath = strRoot;
             pItem->m_strPath += wfd.cFileName;
             g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
@@ -100,14 +100,14 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
             pItem->m_dateTime=localTime;
 
             vecCacheItems.Add(pItem);
-            items.Add(new CFileItem(*pItem));
+            items.Add(pItem);
           }
         }
         else
         {
           CStdString strLabel=wfd.cFileName;
           g_charsetConverter.stringCharsetToUtf8(strLabel);
-          CFileItem *pItem = new CFileItem(strLabel);
+          CFileItemPtr pItem(new CFileItem(strLabel));
           pItem->m_strPath = strRoot;
           pItem->m_strPath += wfd.cFileName;
           g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
@@ -119,7 +119,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
           if ( IsAllowed( wfd.cFileName) )
           {
             vecCacheItems.Add(pItem);
-            items.Add(new CFileItem(*pItem));
+            items.Add(pItem);
           }
           else
             vecCacheItems.Add(pItem);

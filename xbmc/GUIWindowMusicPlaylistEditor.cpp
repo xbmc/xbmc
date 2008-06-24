@@ -151,12 +151,12 @@ bool CGUIWindowMusicPlaylistEditor::GetDirectory(const CStdString &strDirectory,
   items.Clear();
   if (strDirectory.IsEmpty())
   { // root listing - list files:// and musicdb://
-    CFileItem *files = new CFileItem("files://", true);
+    CFileItemPtr files(new CFileItem("files://", true));
     files->SetLabel(g_localizeStrings.Get(744));
     files->SetLabelPreformated(true);
     files->m_bIsShareOrDrive = true;
     items.Add(files);
-    CFileItem *db = new CFileItem("musicdb://", true);
+    CFileItemPtr db(new CFileItem("musicdb://", true));
     db->SetLabel(g_localizeStrings.Get(14022));
     db->SetLabelPreformated(true);
     db->m_bIsShareOrDrive = true;
@@ -189,7 +189,7 @@ void CGUIWindowMusicPlaylistEditor::UpdateButtons()
   int iItems = m_vecItems->Size();
   if (iItems)
   {
-    CFileItem* pItem = m_vecItems->Get(0);
+    CFileItemPtr pItem = m_vecItems->Get(0);
     if (pItem->IsParentFolder()) iItems--;
   }
   CStdString items;
@@ -239,7 +239,7 @@ void CGUIWindowMusicPlaylistEditor::OnQueueItem(int iItem)
     return;
 
   // add this item to our playlist
-  CFileItem *item = m_vecItems->Get(iItem);
+  CFileItemPtr item = m_vecItems->Get(iItem);
   CFileItemList newItems;
   AddItemToPlayList(item, newItems);
   AppendToPlaylist(newItems);
@@ -323,7 +323,9 @@ void CGUIWindowMusicPlaylistEditor::OnMovePlaylistItem(int item, int direction)
 
 void CGUIWindowMusicPlaylistEditor::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : NULL;
+  CFileItemPtr item;
+  if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
+    item = m_vecItems->Get(itemNumber);
 
   if (GetFocusedControlID() == CONTROL_PLAYLIST)
   {
@@ -423,12 +425,10 @@ void CGUIWindowMusicPlaylistEditor::OnSavePlaylist()
   }
 }
 
-// NOTE: Destroys it's input argument
 void CGUIWindowMusicPlaylistEditor::AppendToPlaylist(CFileItemList &newItems)
 {
   OnRetrieveMusicInfo(newItems);
   FormatItemLabels(newItems, LABEL_MASKS(g_guiSettings.GetString("musicfiles.trackformat"), g_guiSettings.GetString("musicfiles.trackformatright"), "%L", ""));
-  m_playlist->AppendPointer(newItems);
-  newItems.ClearKeepPointer();
+  m_playlist->Append(newItems);
   UpdatePlaylist();
 }

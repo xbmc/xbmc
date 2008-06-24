@@ -110,7 +110,7 @@ bool CFatXFileSystem::GetDirectory(const CStdString &directory, CFileItemList &i
   { // replace our items with our nicer URL
     for (int i = 0; i < items.Size(); i++)
     {
-      CFileItem *item = items[i];
+      CFileItemPtr item = items[i];
       item->m_strPath.Format("mem%d://%s", m_unit, item->m_strPath.Mid(3).c_str());
       item->m_strPath.Replace("\\","/");
     }
