@@ -324,35 +324,10 @@ void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA 
   convert(m_iconvUtf16BEtoUtf8,4,"UTF-16BE","UTF-8",strSource,strDest);
 }
 
-void CCharsetConverter::utf16LEtoUTF8(const void *strSource,
+void CCharsetConverter::utf16LEtoUTF8(const CStdStringW& strSource,
                                       CStdStringA &strDest)
 {
-  if (m_iconvUtf16LEtoUtf8 == (iconv_t) - 1)
-    m_iconvUtf16LEtoUtf8 = iconv_open("UTF-8", "UTF-16LE");
-
-  if (m_iconvUtf16LEtoUtf8 != (iconv_t) - 1)
-  {
-    size_t inBytes = 2;
-    uint16_t *s = (uint16_t *)strSource;
-    while (*s != 0)
-    { 
-      s++;
-      inBytes += 2;
-    }
-    // UTF-8 is up to 4 bytes/character, or up to twice the length of UTF-16
-    size_t outBytes = inBytes * 2;
-
-    const char *src = (const char *)strSource;
-    char *dst = strDest.GetBuffer(outBytes);
-    if (iconv_const(m_iconvUtf16LEtoUtf8, &src, &inBytes, &dst, &outBytes) ==
-        (size_t)-1)
-    { // failed :(
-      strDest.clear();
-      strDest.ReleaseBuffer();
-      return;
-    }
-    strDest.ReleaseBuffer();
-  }
+  convert(m_iconvUtf16LEtoUtf8,4,"UTF16-LE","UTF-8",strSource,strDest);
 }
 
 void CCharsetConverter::ucs2ToUTF8(const CStdStringW& strSource, CStdStringA& strDest)
