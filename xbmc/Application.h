@@ -36,7 +36,6 @@ class CFileItemList;
 #include "GUIWindowPointer.h"   // Mouse pointer
 #include "Settings.h"
 
-#include "utils/Idle.h"
 #include "utils/DelayController.h"
 #include "cores/IPlayer.h"
 #include "cores/PlayerCoreFactory.h"
@@ -85,8 +84,6 @@ public:
   virtual HRESULT Cleanup();
   void StartServices();
   void StopServices();
-  void StartIdleThread();
-  void StopIdleThread();
   void StartWebServer();
   void StopWebServer();
   void StartFtpServer();
@@ -186,7 +183,6 @@ public:
   CGUIDialogMuteBug m_guiDialogMuteBug;
   CGUIWindowPointer m_guiPointer;
 
-  CIdleThread m_idleThread;
   MEDIA_DETECT::CAutorun m_Autorun;
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
   CDelayController m_ctrDpad;
