@@ -146,7 +146,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
       }
       if (message.GetMessage() == GUI_MSG_LABEL_ADD && message.GetLPVOID())
       {
-        CGUIListItem* item = (CGUIListItem*)message.GetLPVOID();
+        CGUIListItemPtr item((CGUIListItem*)message.GetLPVOID());
         m_items.push_back(item);
         if (m_pageControl)
         {
@@ -270,10 +270,11 @@ int CGUIBaseContainer::GetSelectedItem() const
   return CorrectOffset(m_offset, m_cursor);
 }
 
-CGUIListItem *CGUIBaseContainer::GetListItem(int offset, unsigned int flag) const
+CGUIListItemPtr CGUIBaseContainer::GetListItem(int offset, unsigned int flag) const
 {
   if (!m_items.size())
-    return NULL;
+    return CGUIListItemPtr();
+
   int item = GetSelectedItem() + offset;
   if (flag & INFOFLAG_LISTITEM_POSITION) // use offset from the first item displayed, taking into account scrolling
     item = CorrectOffset((int)(m_scrollOffset / m_layout->Size(m_orientation)), offset);
@@ -289,13 +290,13 @@ CGUIListItem *CGUIBaseContainer::GetListItem(int offset, unsigned int flag) cons
     if (item >= 0 && item < (int)m_items.size())
       return m_items[item];
   }
-  return NULL;
+  return CGUIListItemPtr();
 }
 
 CGUIListItemLayout *CGUIBaseContainer::GetFocusedLayout() const
 {
-  CGUIListItem *item = GetListItem(0);
-  if (item) return item->GetFocusedLayout();
+  CGUIListItemPtr item = GetListItem(0);
+  if (item.get()) return item->GetFocusedLayout();
   return NULL;
 }
 
@@ -370,7 +371,7 @@ bool CGUIBaseContainer::OnClick(DWORD actionID)
       int selected = GetSelectedItem();
       if (selected >= 0 && selected < (int)m_items.size())
       {
-        CFileItem *item = (CFileItem *)m_items[selected];
+        CFileItemPtr item = boost::static_pointer_cast<CFileItem>(m_items[selected]);
         // multiple action strings are concat'd together, separated with " , "
         vector<CStdString> actions;
         StringUtils::SplitString(item->m_strPath, " , ", actions);
@@ -407,7 +408,7 @@ CStdString CGUIBaseContainer::GetDescription() const
   int item = GetSelectedItem();
   if (item >= 0 && item < (int)m_items.size())
   {
-    CGUIListItem *pItem = m_items[item];
+    CGUIListItemPtr pItem = m_items[item];
     if (pItem->m_bIsFolder)
       strLabel.Format("[%s]", pItem->GetLabel().c_str());
     else
@@ -458,8 +459,6 @@ void CGUIBaseContainer::FreeResources()
   if (m_staticContent)
   { // free any static content
     Reset();
-    for (iItems it = m_staticItems.begin(); it != m_staticItems.end(); it++)
-      delete *it;
     m_staticItems.clear();
   }
   m_scrollSpeed = 0;
@@ -505,12 +504,12 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
     Reset();
     for (unsigned int i = 0; i < m_staticItems.size(); ++i)
     {
-      CFileItem *item = (CFileItem *)m_staticItems[i];
+      CFileItemPtr item = boost::static_pointer_cast<CFileItem>(m_staticItems[i]);
       // m_idepth is used to store the visibility condition
       if (!item->m_idepth || g_infoManager.GetBool(item->m_idepth, GetParentID()))
       {
         m_items.push_back(item);
-        if (item == lastItem)
+        if (item.get() == lastItem)
           m_lastItem = lastItem;
       }
     }
@@ -621,7 +620,7 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
     g_SkinInfo.ResolveIncludes(item);
     if (item->FirstChild())
     {
-      CFileItem *newItem = NULL;
+      CFileItemPtr newItem;
       // check whether we're using the more verbose method...
       TiXmlNode *click = item->FirstChild("onclick");
       if (click && click->FirstChild())
@@ -634,7 +633,7 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         const char *id = item->Attribute("id");
         int visibleCondition = 0;
         CGUIControlFactory::GetConditionalVisibility(item, visibleCondition);
-        newItem = new CFileItem(CGUIControlFactory::FilterLabel(label));
+        newItem.reset(new CFileItem(CGUIControlFactory::FilterLabel(label)));
         // multiple action strings are concat'd together, separated with " , "
         vector<CStdString> actions;
         CGUIControlFactory::GetMultipleString(item, "onclick", actions);
@@ -654,7 +653,7 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         const char *thumb = item->Attribute("thumb");
         const char *icon = item->Attribute("icon");
         const char *id = item->Attribute("id");
-        newItem = new CFileItem(label ? CGUIControlFactory::FilterLabel(label) : "");
+        newItem.reset(new CFileItem(label ? CGUIControlFactory::FilterLabel(label) : ""));
         newItem->m_strPath = item->FirstChild()->Value();
         if (label2) newItem->SetLabel2(CGUIControlFactory::FilterLabel(label2));
         if (thumb) newItem->SetThumbnailImage(thumb);
@@ -714,7 +713,7 @@ void CGUIBaseContainer::DumpTextureUse()
   CLog::Log(LOGDEBUG, "%s for container %lu", __FUNCTION__, GetID());
   for (unsigned int i = 0; i < m_items.size(); ++i)
   {
-    CGUIListItem *item = m_items[i];
+    CGUIListItemPtr item = m_items[i];
     if (item->GetFocusedLayout()) item->GetFocusedLayout()->DumpTextureUse();
     if (item->GetLayout()) item->GetLayout()->DumpTextureUse();
   }
@@ -801,7 +800,7 @@ CStdString CGUIBaseContainer::GetLabel(int info) const
   case CONTAINER_NUM_ITEMS:
     {
       unsigned int numItems = GetNumItems();
-      if (numItems && m_items[0]->IsFileItem() && ((CFileItem *)m_items[0])->IsParentFolder())
+      if (numItems && m_items[0]->IsFileItem() && (boost::static_pointer_cast<CFileItem>(m_items[0]))->IsParentFolder())
         label.Format("%u", numItems-1);
       else
         label.Format("%u", numItems);

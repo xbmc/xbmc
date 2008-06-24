@@ -37,14 +37,14 @@ public:
   bool NeedsUpdate() const { return m_needsUpdate; };
 
   virtual bool HasListItems() const { return true; };
-  virtual CFileItem* GetCurrentListItem(int offset = 0);
+  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 protected:
   virtual void OnInitWindow();
   bool DownloadThumbnail(const CStdString &thumbFile);
   void OnGetThumb();
   void SetRating(char rating);
 
-  CFileItem* m_song;
+  CFileItemPtr m_song;
   char m_startRating;
   bool m_cancelled;
   bool m_needsUpdate;

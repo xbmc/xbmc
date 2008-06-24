@@ -165,8 +165,9 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
           CLabelFormatter formatter("", labelMasks.m_strLabel2File);
           for (int i=0;i<m_vecItems->Size();++i)
           {
-            if (m_vecItems->Get(i)->IsShortCut())
-              formatter.FormatLabel2(m_vecItems->Get(i));
+            CFileItemPtr item = m_vecItems->Get(i);
+            if (item->IsShortCut())
+              formatter.FormatLabel2(item.get());
           }
           return true;
         }
@@ -192,11 +193,11 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
 {
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
     return;
-  CFileItem *item = m_vecItems->Get(itemNumber);
+  CFileItemPtr item = m_vecItems->Get(itemNumber);
   if ( m_vecItems->IsVirtualDirectoryRoot() )
   {
     // get the usual shares
-    CMediaSource *share = CGUIDialogContextMenu::GetShare("programs", item);
+    CMediaSource *share = CGUIDialogContextMenu::GetShare("programs", item.get());
     CGUIDialogContextMenu::GetContextButtons("programs", share, buttons);
   }
   else
@@ -251,11 +252,11 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
 
 bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
-  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : NULL;
+  CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
 
   if (item && m_vecItems->IsVirtualDirectoryRoot())
   {
-    CMediaSource *share = CGUIDialogContextMenu::GetShare("programs", item);
+    CMediaSource *share = CGUIDialogContextMenu::GetShare("programs", item.get());
     if (CGUIDialogContextMenu::OnContextButton("programs", share, button))
     {
       Update("");
@@ -427,7 +428,7 @@ bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
 bool CGUIWindowPrograms::OnPlayMedia(int iItem)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
-  CFileItem* pItem = m_vecItems->Get(iItem);
+  CFileItemPtr pItem = m_vecItems->Get(iItem);
 
   if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
   {
@@ -596,7 +597,7 @@ void CGUIWindowPrograms::PopulateTrainersList()
         for (int j=0;j<inArchives.Size();++j)
           if (dir.IsAllowed(inArchives[j]->m_strPath))
           {
-            CFileItem* item = new CFileItem(*inArchives[j]);
+            CFileItemPtr item(new CFileItem(*inArchives[j]));
             CStdString strPathInArchive = item->m_strPath;
             CUtil::CreateArchivePath(item->m_strPath, "rar", archives[i]->m_strPath, strPathInArchive,"");
             trainers.Add(item);
@@ -610,7 +611,10 @@ void CGUIWindowPrograms::PopulateTrainersList()
         CFileItemList zipTrainers;
         directory.GetDirectory(strZipPath,zipTrainers,".etm|.xbtf");
         for (int j=0;j<zipTrainers.Size();++j)
-          trainers.Add(new CFileItem(*zipTrainers[j]));
+        {
+          CFileItemPtr item(new CFileItem(*zipTrainers[j]));
+          trainers.Add(item);
+        }
       }
     }
     if (!m_dlgProgress)
@@ -680,9 +684,9 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
     CUtil::AddFileToFolder(strDirectory,"default.xbe",strPath);
     if (CFile::Exists(strPath)) // flatten dvd
     {
-      CFileItem item("default.xbe");
-      item.m_strPath = strPath;
-      items.Add(new CFileItem(item));
+      CFileItemPtr item(new CFileItem("default.xbe"));
+      item->m_strPath = strPath;
+      items.Add(item);
       items.m_strPath=strDirectory;
       bFlattened = true;
     }
@@ -701,7 +705,7 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
   for (int i = 0; i < items.Size(); i++)
   {
     CStdString shortcutPath;
-    CFileItem *item = items[i];
+    CFileItemPtr item = items[i];
     if (!bProgressVisible && timeGetTime()-dwTick>1500 && m_dlgProgress)
     { // tag loading takes more then 1.5 secs, show a progress dialog
       m_dlgProgress->SetHeading(189);
@@ -747,7 +751,7 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
           if (CFile::Stat(item->m_strPath,&stat) == 0)
             item->m_dwSize = stat.st_size;
 
-          formatter.FormatLabel2(item);
+          formatter.FormatLabel2(item.get());
           item->SetLabelPreformated(true);
         }
       }
@@ -760,7 +764,7 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
         continue;
       }
       // add to database if not already there
-      DWORD dwTitleID = item->IsOnDVD() ? 0 : m_database.GetProgramInfo(item);
+      DWORD dwTitleID = item->IsOnDVD() ? 0 : m_database.GetProgramInfo(item.get());
       if (!dwTitleID)
       {
         CStdString description;
@@ -769,7 +773,7 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
 
         dwTitleID = CUtil::GetXbeID(item->m_strPath);
         if (!item->IsOnDVD())
-          m_database.AddProgramInfo(item, dwTitleID);
+          m_database.AddProgramInfo(item.get(), dwTitleID);
       }
 
       // SetOverlayIcons()

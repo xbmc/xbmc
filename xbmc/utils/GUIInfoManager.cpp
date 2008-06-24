@@ -113,7 +113,7 @@ bool CGUIInfoManager::OnMessage(CGUIMessage &message)
   {
     if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetLPVOID())
     {
-      CFileItem *item = (CFileItem *)message.GetLPVOID();
+      CFileItemPtr item = *(CFileItemPtr*)message.GetLPVOID();
       if (m_currentFile->m_strPath.Equals(item->m_strPath))
         *m_currentFile = *item;
       return true;
@@ -895,7 +895,10 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS); // true for has list items
     if (window)
-      strLabel = GetItemLabel(window->GetCurrentListItem(), info);
+    {
+      CFileItemPtr item = window->GetCurrentListItem();
+      strLabel = GetItemLabel(item.get(), info);
+    }
 
     return strLabel;
   }
@@ -2058,7 +2061,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           const CGUIControl *control = window->GetControl(info.GetData1());
           if (control && control->IsContainer())
           {
-            CFileItem *item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(0);
+            CFileItemPtr item = boost::static_pointer_cast<CFileItem>(((CGUIBaseContainer *)control)->GetListItem(0));
             if (item && item->m_iprogramCount == info.GetData2())  // programcount used to store item id
               bReturn = true;
           }
@@ -2068,7 +2071,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
     case LISTITEM_ISSELECTED:
     case LISTITEM_ISPLAYING:
       {
-        CFileItem *item=NULL;
+        CFileItemPtr item;
         if (!info.GetData1())
         { // assumes a media window
           CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
@@ -2082,11 +2085,11 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           {
             const CGUIControl *control = window->GetControl(info.GetData1());
             if (control && control->IsContainer())
-              item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.GetData2());
+              item = boost::static_pointer_cast<CFileItem>(((CGUIBaseContainer *)control)->GetListItem(info.GetData2()));
           }
         }
         if (item)
-          bReturn = GetBool(condition, dwContextWindow, item);
+          bReturn = GetBool(condition, dwContextWindow, item.get());
       }
       break;
     case VIDEOPLAYER_CONTENT:
@@ -2184,7 +2187,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
   }
   if (info.m_info >= LISTITEM_START && info.m_info <= LISTITEM_END)
   {
-    CFileItem *item = NULL;
+    CFileItemPtr item;
     CGUIWindow *window = NULL;
 
     int data1 = info.GetData1();
@@ -2202,11 +2205,11 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
     {
       const CGUIControl *control = window->GetControl(data1);
       if (control && control->IsContainer())
-        item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.GetData2(), info.GetInfoFlag());
+        item = boost::static_pointer_cast<CFileItem>(((CGUIBaseContainer *)control)->GetListItem(info.GetData2(), info.GetInfoFlag()));
     }
 
     if (item) // If we got a valid item, do the lookup
-      return GetItemImage(item, info.m_info); // Image prioritizes images over labels (in the case of music item ratings for instance)
+      return GetItemImage(item.get(), info.m_info); // Image prioritizes images over labels (in the case of music item ratings for instance)
   }
   else if (info.m_info == PLAYER_TIME)
   {
@@ -2349,9 +2352,9 @@ CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
     if (window)
     {
-      CFileItem* item = window->GetCurrentListItem();
+      CFileItemPtr item = window->GetCurrentListItem();
       if (item)
-        return GetItemImage(item, info);
+        return GetItemImage(item.get(), info);
     }
   }
   return GetLabel(info, contextWindow);
@@ -2545,19 +2548,19 @@ const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info) cons
   }
   if (index < 0 || index >= playlist.size())
     return "";
-  PLAYLIST::CPlayListItem &playlistItem = playlist[index];
-  if (!playlistItem.GetMusicInfoTag()->Loaded())
+  CFileItemPtr playlistItem = playlist[index];
+  if (!playlistItem->GetMusicInfoTag()->Loaded())
   {
-    playlistItem.LoadMusicTag();
-    playlistItem.GetMusicInfoTag()->SetLoaded();
+    playlistItem->LoadMusicTag();
+    playlistItem->GetMusicInfoTag()->SetLoaded();
   }
   // try to set a thumbnail
-  if (!playlistItem.HasThumbnail())
+  if (!playlistItem->HasThumbnail())
   {
-    playlistItem.SetMusicThumb();
+    playlistItem->SetMusicThumb();
     // still no thumb? then just the set the default cover
-    if (!playlistItem.HasThumbnail())
-      playlistItem.SetThumbnailImage("defaultAlbumCover.png");
+    if (!playlistItem->HasThumbnail())
+      playlistItem->SetThumbnailImage("defaultAlbumCover.png");
   }
   if (info.m_info == MUSICPLAYER_PLAYLISTPOS)
   {
@@ -2566,8 +2569,8 @@ const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info) cons
     return strPosition;
   }
   else if (info.m_info == MUSICPLAYER_COVER)
-    return playlistItem.GetThumbnailImage();
-  return GetMusicTagLabel(info.m_info, &playlistItem);
+    return playlistItem->GetThumbnailImage();
+  return GetMusicTagLabel(info.m_info, playlistItem.get());
 }
 
 CStdString CGUIInfoManager::GetPlaylistLabel(int item) const

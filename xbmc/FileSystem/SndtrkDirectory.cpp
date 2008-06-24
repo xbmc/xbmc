@@ -62,7 +62,7 @@ bool CSndtrkDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
           else
             it->second=stInfo;
 
-          CFileItem *pItem = new CFileItem(stData.szName);
+          CFileItemPtr pItem(new CFileItem(stData.szName));
           pItem->m_strPath = strRoot;
           pItem->SetLabelPreformated(true);
           char tmpvar[4];
@@ -97,7 +97,7 @@ bool CSndtrkDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
                                    &dwSongLength, strSong, MAX_SONG_NAME ) )
       {
         // Add it to the list
-        CFileItem *pItem = new CFileItem(strSong);
+        CFileItemPtr pItem(new CFileItem(strSong));
         pItem->m_strPath = "E:\\TDATA\\fffe0000\\music\\";
         char tmpvar[16];
         *tmpvar = NULL;

@@ -61,9 +61,9 @@ bool CPictureInfoLoader::LoadItem(CFileItem* pItem)
   if (pItem->HasPictureInfoTag())
     return true;
 
-  CFileItem* mapItem=NULL;
   // first check the cached item
-  if ((mapItem=(*m_mapFileItems)[pItem->m_strPath])!=NULL && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasPictureInfoTag())
+  CFileItemPtr mapItem = (*m_mapFileItems)[pItem->m_strPath];
+  if (mapItem && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasPictureInfoTag())
   { // Query map if we previously cached the file on HD
     *pItem->GetPictureInfoTag() = *mapItem->GetPictureInfoTag();
     pItem->SetThumbnailImage(mapItem->GetThumbnailImage());

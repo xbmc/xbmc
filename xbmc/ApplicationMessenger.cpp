@@ -266,7 +266,9 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
           if (items.Size() > 0)
           {
             for (int i=0;i<items.Size();++i)
-              pSlideShow->Add(items[i]);
+            {
+              pSlideShow->Add(items[i].get());
+            }
             pSlideShow->Select(items[0]->m_strPath);
           }
         }
@@ -295,7 +297,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         if (items.Size() > 0)
         {
           for (int i=0;i<items.Size();++i)
-            pSlideShow->Add(items[i]);
+            pSlideShow->Add(items[i].get());
           pSlideShow->StartSlideShow(); //Start the slideshow!
         }
         if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER && g_guiSettings.GetBool("screensaver.slideshowshuffle"))
