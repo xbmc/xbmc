@@ -2499,8 +2499,6 @@
 		E38E1D880D25F9FD00618676 /* XTimeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTimeUtils.h; sourceTree = "<group>"; };
 		E38E1D8B0D25F9FD00618676 /* MediaManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MediaManager.cpp; sourceTree = "<group>"; };
 		E38E1D8C0D25F9FD00618676 /* MediaManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaManager.h; sourceTree = "<group>"; };
-		E38E1D8D0D25F9FD00618676 /* memutil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = memutil.cpp; sourceTree = "<group>"; };
-		E38E1D8E0D25F9FD00618676 /* memutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memutil.h; sourceTree = "<group>"; };
 		E38E1D8F0D25F9FD00618676 /* MusicDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicDatabase.cpp; sourceTree = "<group>"; };
 		E38E1D900D25F9FD00618676 /* MusicDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicDatabase.h; sourceTree = "<group>"; };
 		E38E1D910D25F9FD00618676 /* MusicInfoLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoLoader.cpp; sourceTree = "<group>"; };
@@ -3568,8 +3566,6 @@
 				E38E1D690D25F9FD00618676 /* linux */,
 				E38E1D8B0D25F9FD00618676 /* MediaManager.cpp */,
 				E38E1D8C0D25F9FD00618676 /* MediaManager.h */,
-				E38E1D8D0D25F9FD00618676 /* memutil.cpp */,
-				E38E1D8E0D25F9FD00618676 /* memutil.h */,
 				E38E1D8F0D25F9FD00618676 /* MusicDatabase.cpp */,
 				E38E1D900D25F9FD00618676 /* MusicDatabase.h */,
 				E38E1D910D25F9FD00618676 /* MusicInfoLoader.cpp */,
