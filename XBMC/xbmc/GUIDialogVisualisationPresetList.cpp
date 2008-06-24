@@ -131,7 +131,7 @@ void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation *pVisual
       m_vecPresets->Clear();
       for (int i = 0; i < numPresets; i++)
       {
-        CFileItem *pItem = new CFileItem(presets[i]);
+        CFileItemPtr pItem(new CFileItem(presets[i]));
         if (i == m_currentPreset)
           pItem->Select(true);
         pItem->RemoveExtension();

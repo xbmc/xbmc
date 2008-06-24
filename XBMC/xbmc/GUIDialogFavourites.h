@@ -35,7 +35,7 @@ public:
   virtual bool OnMessage(CGUIMessage &message);
   virtual void OnInitWindow();
 
-  virtual CFileItem *GetCurrentListItem(int offset = 0);
+  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 
   virtual bool HasListItems() const { return true; };
 

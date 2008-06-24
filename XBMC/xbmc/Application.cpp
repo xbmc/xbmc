@@ -299,6 +299,7 @@ void CBackgroundPlayer::Process()
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void)
     : m_ctrDpad(220, 220), m_bQuiet(false)
+    , m_itemCurrentFile(new CFileItem)
 {
   m_iPlaySpeed = 1;
 #ifdef HAS_WEB_SERVER
@@ -329,8 +330,6 @@ CApplication::CApplication(void)
 #ifdef HAS_KARAOKE
   m_pCdgParser = new CCdgParser();
 #endif
-
-  m_itemCurrentFile = new CFileItem;
   m_currentStack = new CFileItemList;
 
 #ifdef HAS_SDL
@@ -347,7 +346,6 @@ CApplication::CApplication(void)
 
 CApplication::~CApplication(void)
 {
-  delete m_itemCurrentFile;
   delete m_currentStack;
 
   if (m_logPath)
@@ -3935,7 +3933,7 @@ bool CApplication::PlayMediaSync(const CFileItem& item, int iPlaylist)
       {
         CLog::Log(LOGWARNING, "CApplication::PlayMedia called to play a playlist %s but no idea which playlist to use, playing first item", item.m_strPath.c_str());
         if(pPlayList->size())
-          return PlayFile((*pPlayList)[0], false);
+          return PlayFile(*(*pPlayList)[0], false);
       }
     }
   }
@@ -4913,14 +4911,14 @@ bool CApplication::OnMessage(CGUIMessage& message)
       // Update our infoManager with the new details etc.
       if (m_nextPlaylistItem >= 0)
       { // we've started a previously queued item
-        CPlayListItem &item = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist())[m_nextPlaylistItem];
+        CFileItemPtr item = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist())[m_nextPlaylistItem];
         // update the playlist manager
         WORD currentSong = g_playlistPlayer.GetCurrentSong();
         DWORD dwParam = ((currentSong & 0xffff) << 16) | (m_nextPlaylistItem & 0xffff);
-        CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, g_playlistPlayer.GetCurrentPlaylist(), dwParam, &item);
+        CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, g_playlistPlayer.GetCurrentPlaylist(), dwParam, item);
         m_gWindowManager.SendThreadMessage(msg);
         g_playlistPlayer.SetCurrentSong(m_nextPlaylistItem);
-        *m_itemCurrentFile = item;
+        *m_itemCurrentFile = *item;
       }
       g_infoManager.SetCurrentItem(*m_itemCurrentFile);
       CLastFmManager::GetInstance()->OnSongChange(*m_itemCurrentFile);
@@ -4973,9 +4971,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
         return true; // nothing to do
       }
       // ok, grab the next song
-      CFileItem item = playlist[iNext];
+      CFileItemPtr item = playlist[iNext];
       // ok - send the file to the player if it wants it
-      if (m_pPlayer && m_pPlayer->QueueNextFile(item))
+      if (m_pPlayer && m_pPlayer->QueueNextFile(*item))
       { // player wants the next file
         m_nextPlaylistItem = iNext;
       }

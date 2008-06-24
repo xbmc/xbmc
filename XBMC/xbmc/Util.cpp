@@ -2293,18 +2293,6 @@ char CUtil::GetDirectorySeperator(const CStdString &strFilename)
   return url.GetDirectorySeparator();
 }
 
-void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayListItem &playlistitem)
-{
-  *(CFileItem*)&playlistitem = *pItem;
-
-  if (pItem->HasMusicInfoTag())
-    playlistitem.SetDuration(pItem->GetMusicInfoTag()->GetDuration());
-  if (playlistitem.HasVideoInfoTag())
-    playlistitem.SetDuration(StringUtils::TimeStringToSeconds(pItem->GetVideoInfoTag()->m_strRuntime));
-  if (pItem->IsVideoDb())
-    playlistitem.m_strPath = pItem->GetVideoInfoTag()->m_strFileNameAndPath;
-}
-
 bool CUtil::IsUsingTTFSubtitles()
 {
   return CUtil::GetExtension(g_guiSettings.GetString("subtitles.font")).Equals(".ttf");
@@ -4119,7 +4107,7 @@ void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items,
     if (myItems[i]->m_bIsFolder)
       CUtil::GetRecursiveListing(myItems[i]->m_strPath,items,strMask,bUseFileDirectories);
     else if (!myItems[i]->IsRAR() && !myItems[i]->IsZIP())
-      items.Add(new CFileItem(*myItems[i]));
+      items.Add(myItems[i]);
   }
 }
 
@@ -4131,8 +4119,7 @@ void CUtil::GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& it
   {
     if (myItems[i]->m_bIsFolder && !myItems[i]->m_strPath.Equals(".."))
     {
-      CFileItem* pItem = new CFileItem(*myItems[i]);
-      item.Add(pItem);
+      item.Add(myItems[i]);
       CUtil::GetRecursiveDirsListing(myItems[i]->m_strPath,item);
     }
   }
@@ -4328,7 +4315,7 @@ void CUtil::GetSkinThemes(std::vector<CStdString>& vecTheme)
   // Search for Themes in the Current skin!
   for (int i = 0; i < items.Size(); ++i)
   {
-    CFileItem* pItem = items[i];
+    CFileItemPtr pItem = items[i];
     if (!pItem->m_bIsFolder)
     {
       CStdString strExtension;

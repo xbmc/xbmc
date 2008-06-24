@@ -318,7 +318,7 @@ bool CGUIWindowPictures::Update(const CStdString &strDirectory)
 bool CGUIWindowPictures::OnClick(int iItem)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return true;
-  CFileItem* pItem = m_vecItems->Get(iItem);
+  CFileItemPtr pItem = m_vecItems->Get(iItem);
 
   if (pItem->IsCBZ() || pItem->IsCBR())
   {
@@ -352,7 +352,7 @@ bool CGUIWindowPictures::OnClick(int iItem)
 bool CGUIWindowPictures::OnPlayMedia(int iItem)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
-  CFileItem* pItem = m_vecItems->Get(iItem);
+  CFileItemPtr pItem = m_vecItems->Get(iItem);
   CStdString strPicture = pItem->m_strPath;
 
   if (pItem->m_strPath == "add") // 'add source button' in empty root
@@ -380,10 +380,10 @@ bool CGUIWindowPictures::OnPlayMedia(int iItem)
   pSlideShow->Reset();
   for (int i = 0; i < (int)m_vecItems->Size();++i)
   {
-    CFileItem* pItem = m_vecItems->Get(i);
+    CFileItemPtr pItem = m_vecItems->Get(i);
     if (!pItem->m_bIsFolder && !(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)))
     {
-      pSlideShow->Add(pItem);
+      pSlideShow->Add(pItem.get());
     }
   }
   pSlideShow->Select(strPicture);
@@ -406,13 +406,13 @@ void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPicture, CF
   CFileItemList& vecItems = *pVecItems;
   for (int i = 0; i < (int)vecItems.Size();++i)
   {
-    CFileItem* pItem = vecItems[i];
+    CFileItemPtr pItem = vecItems[i];
     if (pItem->IsParentFolder())
       continue;
     if (pItem->m_bIsFolder)
       AddDir(pSlideShow, pItem->m_strPath);
     else if (!(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)) && !CUtil::GetFileName(pItem->m_strPath).Equals("folder.jpg"))
-      pSlideShow->Add(pItem);
+      pSlideShow->Add(pItem.get());
   }
   if (!strPicture.IsEmpty())
     pSlideShow->Select(strPicture);
@@ -429,11 +429,11 @@ void CGUIWindowPictures::AddDir(CGUIWindowSlideShow *pSlideShow, const CStdStrin
 
   for (int i = 0; i < (int)items.Size();++i)
   {
-    CFileItem* pItem = items[i];
+    CFileItemPtr pItem = items[i];
     if (pItem->m_bIsFolder)
       AddDir(pSlideShow, pItem->m_strPath);
     else if (!(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)))
-      pSlideShow->Add(pItem);
+      pSlideShow->Add(pItem.get());
   }
 }
 
@@ -480,10 +480,10 @@ void CGUIWindowPictures::OnSlideShow(const CStdString &strPicture)
   pSlideShow->Reset();
   for (int i = 0; i < (int)m_vecItems->Size();++i)
   {
-    CFileItem* pItem = m_vecItems->Get(i);
+    CFileItemPtr pItem = m_vecItems->Get(i);
     if (!pItem->m_bIsFolder && !(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)))
     {
-      pSlideShow->Add(pItem);
+      pSlideShow->Add(pItem.get());
     }
   }
   if (g_guiSettings.GetBool("slideshow.shuffle"))
@@ -504,14 +504,14 @@ void CGUIWindowPictures::OnRegenerateThumbs()
 
 void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  CFileItem *item = NULL;
+  CFileItemPtr item;
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
 
   if ( m_vecItems->IsVirtualDirectoryRoot() && item)
   {
     // get the usual shares
-    CMediaSource *share = CGUIDialogContextMenu::GetShare("pictures", item);
+    CMediaSource *share = CGUIDialogContextMenu::GetShare("pictures", item.get());
     CGUIDialogContextMenu::GetContextButtons("pictures", share, buttons);
   }
   else
@@ -542,10 +542,10 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
 
 bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
-  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : NULL;
+  CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
   if (m_vecItems->IsVirtualDirectoryRoot() && item)
   {
-    CMediaSource *share = CGUIDialogContextMenu::GetShare("pictures", item);
+    CMediaSource *share = CGUIDialogContextMenu::GetShare("pictures", item.get());
     if (CGUIDialogContextMenu::OnContextButton("pictures", share, button))
     {
       Update("");
@@ -650,9 +650,10 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
           CDirectory::GetDirectory(strPath, items, g_stSettings.m_pictureExtensions, false, false);
           for (int i=0;i<items.Size();++i)
           {
-            if (items[i]->m_bIsFolder)
+            CFileItemPtr item = items[i];
+            if (item->m_bIsFolder)
             {
-              OnItemLoaded(items[i]);
+              OnItemLoaded(item.get());
               pItem->SetThumbnailImage(items[i]->GetThumbnailImage());
               pItem->SetIconImage(items[i]->GetIconImage());
               return;
@@ -715,10 +716,10 @@ void CGUIWindowPictures::LoadPlayList(const CStdString& strPlayList)
     pSlideShow->Reset();
     for (int i = 0; i < (int)playlist.size(); ++i)
     {
-      CFileItem *pItem = new CFileItem(playlist[i].m_strPath, false);
+      CFileItemPtr pItem = playlist[i];
       //CLog::Log(LOGDEBUG,"-- playlist item: %s", pItem->m_strPath.c_str());
       if (pItem->IsPicture() && !(pItem->IsZIP() || pItem->IsRAR() || pItem->IsCBZ() || pItem->IsCBR()))
-        pSlideShow->Add(pItem);
+        pSlideShow->Add(pItem.get());
     }
 
     // start slideshow if there are items
@@ -730,13 +731,13 @@ void CGUIWindowPictures::LoadPlayList(const CStdString& strPlayList)
 
 void CGUIWindowPictures::OnInfo(int itemNumber)
 {
-  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : NULL;
+  CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
   if (!item || item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR())
     return;
   CGUIDialogPictureInfo *pictureInfo = (CGUIDialogPictureInfo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PICTURE_INFO);
   if (pictureInfo)
   {
-    pictureInfo->SetPicture(item);
+    pictureInfo->SetPicture(item.get());
     pictureInfo->DoModal();
   }
 }

@@ -95,7 +95,7 @@ void CGUIDialogFavourites::OnClick(int item)
     return;
 
   // grab our message, close the dialog, and send
-  CFileItem *pItem = (*m_favourites)[item];
+  CFileItemPtr pItem = (*m_favourites)[item];
   CStdString execute(pItem->m_strPath);
 
   Close();
@@ -200,10 +200,10 @@ void CGUIDialogFavourites::UpdateList()
   OnMessage(message);
 }
 
-CFileItem *CGUIDialogFavourites::GetCurrentListItem(int offset)
+CFileItemPtr CGUIDialogFavourites::GetCurrentListItem(int offset)
 {
   int currentItem = GetSelectedItem();
-  if (currentItem < 0 || !m_favourites->Size()) return NULL;
+  if (currentItem < 0 || !m_favourites->Size()) return CFileItemPtr();
 
   int item = (currentItem + offset) % m_favourites->Size();
   if (item < 0) item += m_favourites->Size();

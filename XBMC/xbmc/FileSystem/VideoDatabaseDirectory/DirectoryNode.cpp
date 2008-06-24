@@ -259,7 +259,7 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
 //  depending on the child node
 void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
 {
-  CFileItem* pItem=NULL;
+  CFileItemPtr pItem;
 
   // always hide "all" items
   if (g_advancedSettings.m_bVideoLibraryHideAllItems)
@@ -275,7 +275,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
   switch (pNode->GetChildType())
   {
     case NODE_TYPE_SEASONS:
-      pItem = new CFileItem(g_localizeStrings.Get(20366));  // "All Seasons"
+      pItem.reset(new CFileItem(g_localizeStrings.Get(20366)));  // "All Seasons"
       pItem->m_strPath = BuildPath() + "-1/";
       break;
     default:
