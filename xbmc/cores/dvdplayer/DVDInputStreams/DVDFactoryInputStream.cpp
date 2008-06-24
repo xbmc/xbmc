@@ -50,8 +50,8 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
        || file.substr(0, 6) == "tcp://")
     return new CDVDInputStreamFFmpeg();
   else if(file.substr(0, 7) == "myth://"
-       || file.substr(0, 7) == "cmyth://"
-       || file.substr(0, 7) == "gmyth://")
+       || file.substr(0, 8) == "cmyth://"
+       || file.substr(0, 8) == "gmyth://")
     return new CDVDInputStreamTV();
   else if(file.substr(0, 7) == "rtmp://")
 	return new CDVDInputStreamRTMP();
