@@ -144,9 +144,18 @@ VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote)
     if ( g_IR_Remote[i].hDevice )
     {
       // Read the input state
+      XINPUT_STATEEX backup[4];
+      memcpy(backup, g_InputStatesEx, sizeof(backup));
+      DWORD test = sizeof(backup);
       ZeroMemory( &g_InputStatesEx[i], sizeof(XINPUT_STATEEX) );
       if (ERROR_SUCCESS == XInputGetState( g_IR_Remote[i].hDevice, (XINPUT_STATE*) &g_InputStatesEx[i] ))
       {
+        // compare from backup to g_InputStatesEx;
+        for (int j = 0; j < 4; j++)
+        {
+          if (j != i && memcmp(&backup[j], &g_InputStatesEx[j], sizeof(XINPUT_STATEEX)) != 0)
+            CLog::Log(LOGFATAL, "Holy shit, batman, we're as corrupt as the Penguin!");
+        }
         if (g_prevPacketNumber[i] != g_InputStatesEx[i].dwPacketNumber)
         {
           // Got a fresh packet

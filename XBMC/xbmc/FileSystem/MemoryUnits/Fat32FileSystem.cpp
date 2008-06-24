@@ -206,7 +206,7 @@ bool CFat32FileSystem::GetDirectory(const CStdString &directory, CFileItemList &
   { // success - update our paths
     for (int i = 0; i < items.Size(); ++i)
     {
-      CFileItem *item = items[i];
+      CFileItemPtr item = items[i];
       if (directory.IsEmpty())
         item->m_strPath.Format("mem%d://%s", m_unit, item->GetLabel().c_str());
       else
@@ -300,7 +300,7 @@ bool CFat32FileSystem::GetDirectoryWithShortPaths(const CStdString &directory, C
         vfatSequence = 0;
         vfatName.Empty();
       }
-      CFileItem *item = new CFileItem(longPath);
+      CFileItemPtr item(new CFileItem(longPath));
       item->m_strPath = shortPath;
       item->m_bIsFolder = (de.attr & ATTR_DIRECTORY) == ATTR_DIRECTORY;
       // file size

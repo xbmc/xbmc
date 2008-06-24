@@ -70,7 +70,7 @@ bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems
   }
   
   CPluginDirectory *dir = globalHandles[handle];
-  CFileItem *pItem = new CFileItem(*item);
+  CFileItemPtr pItem(new CFileItem(*item));
   dir->m_listItems->Add(pItem);
   dir->m_totalItems = totalItems;
 
@@ -323,8 +323,8 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   removeHandle(handle);
 
   // append the items to the list
-  items.AssignPointer(*m_listItems, true); // true to keep the current items
-  m_listItems->ClearKeepPointer();
+  items.Assign(*m_listItems, true); // true to keep the current items
+  m_listItems->Clear();
   return success;
 }
 
@@ -385,7 +385,7 @@ bool CPluginDirectory::HasPlugins(const CStdString &type)
   {
     for (int i = 0; i < items.Size(); i++)
     {
-      CFileItem *item = items[i];
+      CFileItemPtr item = items[i];
       if (item->m_bIsFolder && !item->IsParentFolder() && !item->m_bIsShareOrDrive)
       {
         CStdString defaultPY;
@@ -414,7 +414,7 @@ bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList
   // flatten any folders - TODO: Assigning of thumbs
   for (int i = 0; i < items.Size(); i++)
   {
-    CFileItem* item = items[i];
+    CFileItemPtr item = items[i];
     item->SetThumbnailImage("");
     item->SetCachedProgramThumb();
     if (!item->HasThumbnail())

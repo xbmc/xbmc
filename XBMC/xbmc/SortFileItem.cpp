@@ -42,7 +42,7 @@ inline int StartsWithToken(const CStdString& strLabel)
 //    have to keep the parent folder item separate from all other items in order
 //    to guarantee correct sort order.
 //
-bool SSortFileItem::FileAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::FileAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
@@ -54,7 +54,7 @@ bool SSortFileItem::FileAscending(CFileItem *left, CFileItem *right)
   return left->m_lStartOffset <= right->m_lStartOffset; // useful for .cue's in my music
 }
 
-bool SSortFileItem::FileDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::FileDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
@@ -66,7 +66,7 @@ bool SSortFileItem::FileDescending(CFileItem *left, CFileItem *right)
   return left->m_lStartOffset >= right->m_lStartOffset;
 }
 
-bool SSortFileItem::SizeAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::SizeAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
@@ -77,7 +77,7 @@ bool SSortFileItem::SizeAscending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SizeDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::SizeDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
@@ -88,7 +88,7 @@ bool SSortFileItem::SizeDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::DateAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::DateAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
@@ -104,7 +104,7 @@ bool SSortFileItem::DateAscending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::DateDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::DateDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
@@ -120,7 +120,7 @@ bool SSortFileItem::DateDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::DriveTypeAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::DriveTypeAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
@@ -134,7 +134,7 @@ bool SSortFileItem::DriveTypeAscending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::DriveTypeDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::DriveTypeDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
@@ -148,7 +148,7 @@ bool SSortFileItem::DriveTypeDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::LabelAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::LabelAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special items
   if (left->IsParentFolder()) return true;
@@ -159,7 +159,7 @@ bool SSortFileItem::LabelAscending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::LabelDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::LabelDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special items
   if (left->IsParentFolder()) return true;
@@ -170,7 +170,7 @@ bool SSortFileItem::LabelDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::LabelAscendingNoThe(CFileItem *left, CFileItem *right)
+bool SSortFileItem::LabelAscendingNoThe(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special items
   if (left->IsParentFolder()) return true;
@@ -188,7 +188,7 @@ bool SSortFileItem::LabelAscendingNoThe(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::LabelDescendingNoThe(CFileItem *left, CFileItem *right)
+bool SSortFileItem::LabelDescendingNoThe(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special items
   if (left->IsParentFolder()) return true;
@@ -206,7 +206,7 @@ bool SSortFileItem::LabelDescendingNoThe(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongTrackNumAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::SongTrackNumAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special items
   if (left->IsParentFolder()) return true;
@@ -217,7 +217,7 @@ bool SSortFileItem::SongTrackNumAscending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongTrackNumDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::SongTrackNumDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special items
   if (left->IsParentFolder()) return true;
@@ -228,7 +228,7 @@ bool SSortFileItem::SongTrackNumDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::EpisodeNumAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::EpisodeNumAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special items
   if (left->IsParentFolder()) return true;
@@ -259,7 +259,7 @@ bool SSortFileItem::EpisodeNumAscending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::EpisodeNumDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::EpisodeNumDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special items
   if (left->IsParentFolder()) return true;
@@ -282,7 +282,7 @@ bool SSortFileItem::EpisodeNumDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongDurationAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::SongDurationAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special items
   if (left->IsParentFolder()) return true;
@@ -293,7 +293,7 @@ bool SSortFileItem::SongDurationAscending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongDurationDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::SongDurationDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special items
   if (left->IsParentFolder()) return true;
@@ -304,7 +304,7 @@ bool SSortFileItem::SongDurationDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongTitleAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::SongTitleAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special cases
   if (left->IsParentFolder()) return true;
@@ -319,7 +319,7 @@ bool SSortFileItem::SongTitleAscending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongTitleDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::SongTitleDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special cases
   if (left->IsParentFolder()) return true;
@@ -334,7 +334,7 @@ bool SSortFileItem::SongTitleDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::MovieTitleAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::MovieTitleAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special cases
   if (left->IsParentFolder()) return true;
@@ -349,7 +349,7 @@ bool SSortFileItem::MovieTitleAscending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::MovieTitleDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::MovieTitleDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special cases
   if (left->IsParentFolder()) return true;
@@ -364,7 +364,7 @@ bool SSortFileItem::MovieTitleDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongTitleAscendingNoThe(CFileItem *left, CFileItem *right)
+bool SSortFileItem::SongTitleAscendingNoThe(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special cases
   if (left->IsParentFolder()) return true;
@@ -382,7 +382,7 @@ bool SSortFileItem::SongTitleAscendingNoThe(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongTitleDescendingNoThe(CFileItem *left, CFileItem *right)
+bool SSortFileItem::SongTitleDescendingNoThe(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special cases
   if (left->IsParentFolder()) return true;
@@ -400,7 +400,7 @@ bool SSortFileItem::SongTitleDescendingNoThe(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongArtistAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::SongArtistAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special cases
   if (left->IsParentFolder()) return true;
@@ -477,7 +477,7 @@ bool SSortFileItem::SongArtistAscending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongArtistDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::SongArtistDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special cases
   if (left->IsParentFolder()) return true;
@@ -548,7 +548,7 @@ bool SSortFileItem::SongArtistDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongArtistAscendingNoThe(CFileItem *left, CFileItem *right)
+bool SSortFileItem::SongArtistAscendingNoThe(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special cases
   if (left->IsParentFolder()) return true;
@@ -626,7 +626,7 @@ bool SSortFileItem::SongArtistAscendingNoThe(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongArtistDescendingNoThe(CFileItem *left, CFileItem *right)
+bool SSortFileItem::SongArtistDescendingNoThe(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special cases
   if (left->IsParentFolder()) return true;
@@ -703,7 +703,7 @@ bool SSortFileItem::SongArtistDescendingNoThe(CFileItem *left, CFileItem *right)
   }
   return left->m_bIsFolder;}
 
-bool SSortFileItem::SongAlbumAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::SongAlbumAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special cases
   if (left->IsParentFolder()) return true;
@@ -759,7 +759,7 @@ bool SSortFileItem::SongAlbumAscending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongAlbumDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::SongAlbumDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special cases
   if (left->IsParentFolder()) return true;
@@ -815,7 +815,7 @@ bool SSortFileItem::SongAlbumDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongAlbumAscendingNoThe(CFileItem *left, CFileItem *right)
+bool SSortFileItem::SongAlbumAscendingNoThe(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special cases
   if (left->IsParentFolder()) return true;
@@ -878,7 +878,7 @@ bool SSortFileItem::SongAlbumAscendingNoThe(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongAlbumDescendingNoThe(CFileItem *left, CFileItem *right)
+bool SSortFileItem::SongAlbumDescendingNoThe(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special cases
   if (left->IsParentFolder()) return true;
@@ -941,7 +941,7 @@ bool SSortFileItem::SongAlbumDescendingNoThe(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::GenreAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::GenreAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special items
   if (left->IsParentFolder()) return true;
@@ -965,7 +965,7 @@ bool SSortFileItem::GenreAscending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::GenreDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::GenreDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special items
   if (left->IsParentFolder()) return true;
@@ -989,7 +989,7 @@ bool SSortFileItem::GenreDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::ProgramCountAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::ProgramCountAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
@@ -999,7 +999,7 @@ bool SSortFileItem::ProgramCountAscending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::ProgramCountDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::ProgramCountDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
@@ -1009,7 +1009,7 @@ bool SSortFileItem::ProgramCountDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::MovieYearAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::MovieYearAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
@@ -1031,7 +1031,7 @@ bool SSortFileItem::MovieYearAscending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::MovieYearDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::MovieYearDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
@@ -1053,7 +1053,7 @@ bool SSortFileItem::MovieYearDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::ProductionCodeAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::ProductionCodeAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
@@ -1065,7 +1065,7 @@ bool SSortFileItem::ProductionCodeAscending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::ProductionCodeDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::ProductionCodeDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
@@ -1077,7 +1077,7 @@ bool SSortFileItem::ProductionCodeDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::MovieRatingAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::MovieRatingAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
@@ -1091,7 +1091,7 @@ bool SSortFileItem::MovieRatingAscending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::MovieRatingDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::MovieRatingDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
@@ -1105,7 +1105,7 @@ bool SSortFileItem::MovieRatingDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::MPAARatingAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::MPAARatingAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
@@ -1119,7 +1119,7 @@ bool SSortFileItem::MPAARatingAscending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::MPAARatingDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::MPAARatingDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
@@ -1133,7 +1133,7 @@ bool SSortFileItem::MPAARatingDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongRatingAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::SongRatingAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
@@ -1147,7 +1147,7 @@ bool SSortFileItem::SongRatingAscending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::SongRatingDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::SongRatingDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
@@ -1162,7 +1162,7 @@ bool SSortFileItem::SongRatingDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::MovieRuntimeAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::MovieRuntimeAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special cases
   if (left->IsParentFolder()) return true;
@@ -1177,7 +1177,7 @@ bool SSortFileItem::MovieRuntimeAscending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::MovieRuntimeDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::MovieRuntimeDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special cases
   if (left->IsParentFolder()) return true;
@@ -1192,7 +1192,7 @@ bool SSortFileItem::MovieRuntimeDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::StudioAscending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::StudioAscending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special cases
   if (left->IsParentFolder()) return true;
@@ -1207,7 +1207,7 @@ bool SSortFileItem::StudioAscending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::StudioDescending(CFileItem *left, CFileItem *right)
+bool SSortFileItem::StudioDescending(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special cases
   if (left->IsParentFolder()) return true;
@@ -1222,7 +1222,7 @@ bool SSortFileItem::StudioDescending(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::StudioAscendingNoThe(CFileItem *left, CFileItem *right)
+bool SSortFileItem::StudioAscendingNoThe(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special cases
   if (left->IsParentFolder()) return true;
@@ -1240,7 +1240,7 @@ bool SSortFileItem::StudioAscendingNoThe(CFileItem *left, CFileItem *right)
   return left->m_bIsFolder;
 }
 
-bool SSortFileItem::StudioDescendingNoThe(CFileItem *left, CFileItem *right)
+bool SSortFileItem::StudioDescendingNoThe(const CFileItemPtr &left, const CFileItemPtr &right)
 {
   // special cases
   if (left->IsParentFolder()) return true;

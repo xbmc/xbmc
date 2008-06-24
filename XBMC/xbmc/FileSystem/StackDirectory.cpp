@@ -69,7 +69,7 @@ namespace DIRECTORY
 #endif
       // replace double comma's with single ones.
       file.Replace(",,", ",");
-      CFileItem *item = new CFileItem(file);
+      CFileItemPtr item(new CFileItem(file));
       //CUtil::AddFileToFolder(folder, file, item->m_strPath);
       item->m_strPath = file;
       item->m_bIsFolder = false;

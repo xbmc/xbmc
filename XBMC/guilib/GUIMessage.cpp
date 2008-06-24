@@ -35,7 +35,7 @@ CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD
   m_lpVoid = NULL;
 }
 
-CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CGUIListItem* item)
+CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CFileItemList *item)
 {
   m_dwMessage = dwMsg;
   m_dwSenderID = dwSenderID;
@@ -43,6 +43,16 @@ CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD
   m_dwParam1 = dwParam1;
   m_dwParam2 = dwParam2;
   m_lpVoid = item;
+}
+
+CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CGUIListItemPtr item)
+{
+  m_dwMessage = dwMsg;
+  m_dwSenderID = dwSenderID;
+  m_dwControlID = dwControlID;
+  m_dwParam1 = dwParam1;
+  m_dwParam2 = dwParam2;
+  m_lpVoid = &item;
 }
 
 CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CVisualisation* vis)
