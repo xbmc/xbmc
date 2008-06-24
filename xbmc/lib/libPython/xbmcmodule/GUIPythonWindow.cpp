@@ -92,6 +92,7 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
           if (pControl->iControlId == iControl)
           {
             inf->pObject = (PyObject*)pControl;
+            Py_INCREF(inf->pObject);
             break;
           }
           ++it;

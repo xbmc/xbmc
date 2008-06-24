@@ -328,7 +328,6 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   return success;
 }
 
-
 bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
 {
   CURL url(strPath);
@@ -529,6 +528,18 @@ void CPluginDirectory::SetContent(int handle, const CStdString &strContent)
 
   CPluginDirectory *dir = globalHandles[handle];
   dir->m_listItems->SetContent(strContent);
+}
+
+void CPluginDirectory::SetProperty(int handle, const CStdString &strProperty, const CStdString &strValue)
+{
+  if (handle < 0 || handle >= (int)globalHandles.size())
+  {
+    CLog::Log(LOGERROR, "%s called with an invalid handle.", __FUNCTION__);
+    return;
+  }
+
+  CPluginDirectory *dir = globalHandles[handle];
+  dir->m_listItems->SetProperty(strProperty, strValue);
 }
 
 void CPluginDirectory::LoadPluginStrings(const CURL &url)

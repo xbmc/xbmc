@@ -523,9 +523,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     }
 
     // turn off set artist image if not at artist listing.
-    if (dir.IsArtistDir(item->m_strPath) && !dir.IsAllItem(item->m_strPath) ||
-       (item->m_strPath.Left(14).Equals("videodb://3/4/") &&
-        item->m_strPath.size() > 14 && item->m_bIsFolder))
+    if ((dir.IsArtistDir(item->m_strPath) && !dir.IsAllItem(item->m_strPath)) ||
+        (item->m_strPath.Left(14).Equals("videodb://3/4/") && item->m_strPath.size() > 14 && item->m_bIsFolder))
     {
       buttons.Add(CONTEXT_BUTTON_SET_ARTIST_THUMB, 13359);
     }

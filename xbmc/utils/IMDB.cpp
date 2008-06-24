@@ -34,7 +34,6 @@
 #include "NfoFile.h"
 #include "GUIDialogProgress.h"
 #include "Settings.h"
-#include "FileSystem/Directory.h"
 
 using namespace HTML;
 
@@ -627,11 +626,3 @@ bool CIMDB::ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details
   return false;
 }
 
-void CIMDB::ClearCache()
-{
-  // wipe cache
-  CStdString strCachePath;
-  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers",strCachePath);
-  CUtil::WipeDir(strCachePath);
-  DIRECTORY::CDirectory::Create(strCachePath);
-}

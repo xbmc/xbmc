@@ -71,7 +71,7 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
     {
       int iControl = message.GetSenderId();
       int iAction = message.GetParam1();
-      if (iControl == CONTROL_PATH && iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+      if (iControl == CONTROL_PATH && (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK))
         OnPath(GetSelectedItem());
       else if (iControl == CONTROL_PATH_BROWSE)
         OnPathBrowse(GetSelectedItem());

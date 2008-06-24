@@ -64,6 +64,7 @@ public:
   virtual void RenderNoPresent();
 #endif
   virtual HRESULT Create(HWND hWnd);
+  virtual HRESULT Cleanup();
   void StartServices();
   void StopServices();
   void StartIdleThread();
@@ -103,7 +104,7 @@ public:
   const CStdString& CurrentFile();
   CFileItem& CurrentFileItem();
   virtual bool OnMessage(CGUIMessage& message);
-  const EPLAYERCORES GetCurrentPlayer();
+  EPLAYERCORES GetCurrentPlayer();
   virtual void OnPlayBackEnded();
   virtual void OnPlayBackStarted();
   virtual void OnPlayBackStopped();

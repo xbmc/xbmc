@@ -1501,7 +1501,7 @@ void CGUIWindowVideoNav::OnLinkMovieToTvShow(int itemnumber, bool bRemove)
     std::vector<long> ids;
     if (!m_database.GetLinksToTvShow(m_vecItems->Get(itemnumber)->GetVideoInfoTag()->m_iDbId,ids))
       return;
-    for (int i=0;i<list.Size();i)
+    for (int i=0;i<list.Size();)
     {
       unsigned int j;
       for (j=0;j<ids.size();++j)

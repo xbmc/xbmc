@@ -50,13 +50,12 @@ CRssReader::CRssReader() : CThread()
 
 CRssReader::~CRssReader()
 {
-	if (m_bIsRunning)
-  {
-    StopThread();
-    m_bIsRunning = false;
-  }
+  StopThread();
   for (unsigned int i = 0; i < m_vecTimeStamps.size(); i++)
     delete m_vecTimeStamps[i];
+
+  if (m_iconv != (iconv_t) -1)
+    iconv_close(m_iconv);
 }
 
 void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, const vector<int> &times, int spacesBetweenFeeds)
@@ -443,11 +442,15 @@ CRssManager::CRssManager()
 
 CRssManager::~CRssManager()
 {
+  Stop();
+}
+
+void CRssManager::Stop()
+{
   for (unsigned int i = 0; i < m_readers.size(); i++)
   {
     if (m_readers[i].reader)
     {
-      m_readers[i].reader->StopThread();
       delete m_readers[i].reader;
     }
   }

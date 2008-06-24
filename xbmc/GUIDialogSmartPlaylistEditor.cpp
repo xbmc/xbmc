@@ -90,7 +90,7 @@ bool CGUIDialogSmartPlaylistEditor::OnMessage(CGUIMessage& message)
     {
       int iControl = message.GetSenderId();
       int iAction = message.GetParam1();
-      if (iControl == CONTROL_RULE_LIST && iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+      if (iControl == CONTROL_RULE_LIST && (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK))
         OnRuleList(GetSelectedItem());
       else if (iControl == CONTROL_RULE_ADD)
         OnRuleAdd();
@@ -159,7 +159,7 @@ void CGUIDialogSmartPlaylistEditor::OnRuleList(int item)
 
 void CGUIDialogSmartPlaylistEditor::OnName()
 {
-  CGUIDialogKeyboard::ShowAndGetInput(m_playlist.m_playlistName, g_localizeStrings.Get(1022), false);
+  CGUIDialogKeyboard::ShowAndGetInput(m_playlist.m_playlistName, g_localizeStrings.Get(21381), false);
   UpdateButtons();
 }
 
@@ -267,7 +267,15 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
     CONTROL_ENABLE(CONTROL_MATCH)
   }
   // name
-  SET_CONTROL_LABEL(CONTROL_NAME, m_playlist.m_playlistName)
+  if (m_mode == "partyvideo" || m_mode == "partymusic")
+  {
+    SET_CONTROL_LABEL(CONTROL_NAME, g_localizeStrings.Get(16035))
+    CONTROL_DISABLE(CONTROL_NAME)
+  }
+  else
+  {
+    SET_CONTROL_LABEL(CONTROL_NAME, m_playlist.m_playlistName)
+  }
 
   int currentItem = GetSelectedItem();
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_RULE_LIST);

@@ -49,4 +49,4 @@ protected:
   CScraperUrl m_artistURL;
   bool m_bLoaded;
 };
-};
+}

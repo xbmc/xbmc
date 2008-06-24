@@ -32,7 +32,7 @@ const int CODEC_ID_MPEG1VIDEO = 1;
 enum MPEGProfile
 {
   MPEG_422_HL = 0x82,
-  MPEG_422_ML = 0x52,
+  MPEG_422_ML = 0x52
 };
 
 //Decoder specific flags used internal to decoder
@@ -549,9 +549,9 @@ int CDVDVideoCodecLibMpeg2::GuessAspect(const mpeg2_sequence_t * sequence,
       width != sequence->display_width || height != sequence->display_height)
     return 0;
 
-  for (pix_height = 1; height * pix_height < 480; pix_height <<= 1);
+  for (pix_height = 1; height * pix_height < 480; pix_height <<= 1) {}
   height *= pix_height;
-  for (pix_width = 1; width * pix_width <= 352; pix_width <<= 1);
+  for (pix_width = 1; width * pix_width <= 352; pix_width <<= 1) {}
   width *= pix_width;
 
   if (! (sequence->flags & SEQ_FLAG_MPEG2))

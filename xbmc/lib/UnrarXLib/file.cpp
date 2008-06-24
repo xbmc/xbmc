@@ -369,6 +369,7 @@ int File::Read(void *Data,int Size)
     {
       ErrorType=FILE_READERROR;
       if (AllowExceptions)
+      {
         if (IgnoreReadErrors)
         {
           ReadSize=0;
@@ -386,6 +387,7 @@ int File::Read(void *Data,int Size)
             continue;
           ErrHandler.ReadError(FileName);
         }
+      }
     }
     break;
   }

@@ -528,7 +528,7 @@ namespace PYXBMC
     if (!key || !value) return NULL;
 
     string uText;
-    if (value && !PyGetUnicodeString(uText, value, 1))
+    if (!PyGetUnicodeString(uText, value, 1))
       return NULL;
 
     PyGUILock();
@@ -578,9 +578,9 @@ namespace PYXBMC
     return Py_BuildValue("s", value.c_str());
   }
 
-  // addContextMenuItem() method
-  PyDoc_STRVAR(addContextMenuItem__doc__,
-  "addContextMenuItem([(label, action,)*]) -- Adds item(s) to the context menu for media lists.\n"
+  // addContextMenuItems() method
+  PyDoc_STRVAR(addContextMenuItems__doc__,
+  "addContextMenuItems([(label, action,)*]) -- Adds item(s) to the context menu for media lists.\n"
     "\n"
     "[(label, action,)*] : list - A list of tuples consisting of label and action pairs.\n"
     "  - label           : string or unicode - item's label.\n"
@@ -589,9 +589,9 @@ namespace PYXBMC
     "List of functions - http://xbmc.org/wiki/?title=List_of_Built_In_Functions \n"
     "\n"
     "example:\n"
-    "  - listitem.addContextMenuItem([('Theater Showtimes', 'XBMC.RunScript(q:\\\\scripts\\\\showtimes\\\\default.py,Iron Man)',)])\n");
+    "  - listitem.addContextMenuItems([('Theater Showtimes', 'XBMC.RunScript(q:\\\\scripts\\\\showtimes\\\\default.py,Iron Man)',)])\n");
 
-  PyObject* ListItem_AddContextMenuItem(ListItem *self, PyObject *args)
+  PyObject* ListItem_AddContextMenuItems(ListItem *self, PyObject *args)
   {
     if (!self->item) return NULL;
 
@@ -621,7 +621,7 @@ namespace PYXBMC
       if (!label || !action) return NULL;
 
       string uText;
-      if (label && !PyGetUnicodeString(uText, label, 1))
+      if (!PyGetUnicodeString(uText, label, 1))
         return NULL;
       PyGUILock();
 
@@ -651,7 +651,7 @@ namespace PYXBMC
     {"setInfo", (PyCFunction)ListItem_SetInfo, METH_KEYWORDS, setInfo__doc__},
     {"setProperty", (PyCFunction)ListItem_SetProperty, METH_KEYWORDS, setProperty__doc__},
     {"getProperty", (PyCFunction)ListItem_GetProperty, METH_KEYWORDS, getProperty__doc__},
-    {"addContextMenuItem", (PyCFunction)ListItem_AddContextMenuItem, METH_VARARGS, addContextMenuItem__doc__},
+    {"addContextMenuItems", (PyCFunction)ListItem_AddContextMenuItems, METH_VARARGS, addContextMenuItems__doc__},
     {NULL, NULL, 0, NULL}
   };
 

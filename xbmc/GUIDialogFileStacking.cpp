@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "GUIDialogFileStacking.h"
 #include "FileItem.h"
+#include "Settings.h" // for the ifdef
 
 #define STACK_LIST 450
 

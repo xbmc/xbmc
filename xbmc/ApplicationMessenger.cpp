@@ -144,6 +144,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 #ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
         XKHDD::SpindownHarddisk(); // Spindown the Harddisk
         XKUtils::XBOXPowerOff();
+        while(1){Sleep(0);}
 #endif
 #else
         // send the WM_CLOSE window message
@@ -165,6 +166,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 #ifdef _XBOX
 #ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
         XKUtils::XBOXPowerCycle();
+        while(1){Sleep(0);}
 #endif
 #else
         // send the WM_CLOSE window message
@@ -180,6 +182,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 #ifdef _XBOX
 #ifndef _DEBUG  // don't actually shut off if debug build, it hangs VS for a long time
         XKUtils::XBOXReset();
+        while(1){Sleep(0);}
 #endif
 #else
         // send the WM_CLOSE window message

@@ -533,10 +533,12 @@ char* UnixSlashToDos(char *SrcName,char *DestName,uint MaxLength)
   for (char *s=SrcName;*s!=0;s=charnext(s))
   {
     if (*s=='/')
+    {
       if (DestName==NULL)
         *s='\\';
       else
         DestName[s-SrcName]='\\';
+    }
   }
   return(DestName==NULL ? SrcName:DestName);
 }
@@ -545,6 +547,7 @@ char* UnixSlashToDos(char *SrcName,char *DestName,uint MaxLength)
 char* DosSlashToUnix(char *SrcName,char *DestName,uint MaxLength)
 {
   if (DestName!=NULL && DestName!=SrcName)
+  {
     if (strlen(SrcName)>=MaxLength)
     {
       *DestName=0;
@@ -552,13 +555,16 @@ char* DosSlashToUnix(char *SrcName,char *DestName,uint MaxLength)
     }
     else
       strcpy(DestName,SrcName);
+  }
   for (char *s=SrcName;*s!=0;s=charnext(s))
   {
     if (*s=='\\')
+    {
       if (DestName==NULL)
         *s='/';
       else
         DestName[s-SrcName]='/';
+    }
   }
   return(DestName==NULL ? SrcName:DestName);
 }

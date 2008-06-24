@@ -145,7 +145,7 @@ CFileItem::CFileItem(const CGenre& genre)
   GetMusicInfoTag()->SetGenre(genre.strGenre);
 }
 
-CFileItem::CFileItem(const CFileItem& item)
+CFileItem::CFileItem(const CFileItem& item): CGUIListItem()
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
@@ -1243,6 +1243,7 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   m_sortDetails = itemlist.m_sortDetails;
   m_replaceListing = itemlist.m_replaceListing;
   m_content = itemlist.m_content;
+  m_mapProperties = itemlist.m_mapProperties;
 }
 
 CFileItemPtr CFileItemList::Get(int iItem)
@@ -1737,91 +1738,95 @@ void CFileItemList::CleanFileNames()
 
 void CFileItemList::Stack()
 {
-  // TODO: Remove nfo files before this stage?  The old routine did, but I'm not sure
-  // the advantage of this (seems to me it's better just to ignore them for stacking
-  // purposes).
-  if (g_stSettings.m_iMyVideoStack != STACK_NONE)
-  {
-    // items needs to be sorted for stuff below to work properly
-    Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+  // stacking is disabled
+  if (g_stSettings.m_iMyVideoStack == STACK_NONE)
+    return;
 
-    // First stack any DVD folders by removing every dvd file other than
-    // the VIDEO_TS.IFO file.
-    bool isDVDFolder(false);
-    for (int i = 0; i < Size(); ++i)
+  // not allowed here
+  if (IsVirtualDirectoryRoot())
+    return;
+
+  // items needs to be sorted for stuff below to work properly
+  Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+
+  // stack folders
+  bool isDVDFolder(false);
+  for (int i = 0; i < Size(); ++i)
+  {
+    CFileItemPtr item = Get(i);
+    if (item->GetLabel().Equals("VIDEO_TS.IFO"))
     {
-      CFileItemPtr item = Get(i);
-      if (item->GetLabel().CompareNoCase("video_ts.ifo") == 0)
+      isDVDFolder = true;
+      break;
+    }
+    // combined the folder checks
+    if (item->m_bIsFolder)
+    { 
+      // only check known fast sources?
+      // xbms included because it supports file existance
+      // NOTES:
+      // 1. xbms would not have worked previously: item->m_strPath.Left(5).Equals("xbms", false)
+      // 2. rars and zips may be on slow sources? is this supposed to be allowed?
+      if( !item->IsRemote()
+        || item->IsSmb()
+        || item->m_strPath.Left(7).Equals("xbms://")
+        || CUtil::IsInRAR(item->m_strPath)
+        || CUtil::IsInZIP(item->m_strPath)
+        )
       {
-        isDVDFolder = true;
-        break;
-      }
-      if (item->m_bIsFolder)
-      { // we stack CD# folders down if they contain a single video file
+        // stack cd# folders if contains only a single video file
+        // NOTE: if we're doing this anyway, why not collapse *all* folders with just a single video file?
         CStdString folderName = item->GetLabel();
         if (folderName.Left(2).Equals("CD") && StringUtils::IsNaturalNumber(folderName.Mid(2)))
         {
           CFileItemList items;
           CDirectory::GetDirectory(item->m_strPath,items,g_stSettings.m_videoExtensions,true);
-          if (items.GetFileCount() == 1)  
-          { // only one file in the list, so replace our item with this one
-            for (int j = 0; j < items.Size(); j++)
+          // optimized to only traverse listing once by checking for filecount
+          // and recording last file item for later use
+          int nFiles = 0;
+          int index = -1;
+          for (int j = 0; j < items.Size(); j++)
+          {
+            if (!items[j]->m_bIsFolder)
             {
-              if (!items[j]->m_bIsFolder)
-              {
-                *item = *items[j];
-                break;
-              }
+              nFiles++;
+              index = j;
             }
+            if (nFiles > 1)
+              break;
+          }
+          if (nFiles == 1)
+          {
+            *item = *items[index];
           }
         }
-      }
-    }
-    if (isDVDFolder)
-    { // remove any other ifo files in this folder
-      // leave the vobs stacked.
-      const int num = Size() ? Size() - 1 : 0;  // Size will alter in this loop
-      for (int i = num; i; --i)
-      {
-        CFileItemPtr item = Get(i);
-        if (item->IsDVDFile(false, true) && item->GetLabel().CompareNoCase("video_ts.ifo"))
-        {
-          Remove(i);
-        }
-      }
-    }
-    // Stacking
-    for (int i = 0; i < Size(); ++i)
-    {
-      CFileItemPtr item = Get(i);
 
-      // ignore parent directories, playlists and the virtual root
-      if (item->IsPlayList() || item->IsParentFolder() || item->IsNFO() || IsVirtualDirectoryRoot() || item->IsDVDImage())
-        continue;
-
-      if( item->m_bIsFolder)
-      {
-        // check for any dvd directories, only on known fast types
-        // i'm adding xbms even thou it really isn't fast due to
-        // opening file to check for existance
-        if( !item->IsRemote()
-         || item->IsSmb()
-         || CUtil::IsInRAR(item->m_strPath)
-         || CUtil::IsInZIP(item->m_strPath)
-         || item->m_strPath.Left(5).Equals("xbms", false)
-         )
+        // check for dvd folders
+        else
         {
           CStdString path;
+          CStdString dvdPath;
           CUtil::AddFileToFolder(item->m_strPath, "VIDEO_TS.IFO", path);
           if (CFile::Exists(path))
+            dvdPath = path;
+          else
           {
+            CUtil::AddFileToFolder(item->m_strPath, "VIDEO_TS", dvdPath);
+            CUtil::AddFileToFolder(dvdPath, "VIDEO_TS.IFO", path);
+            dvdPath.Empty();
+            if (CFile::Exists(path))
+              dvdPath = path;
+          }
+          if (!dvdPath.IsEmpty())
+          {
+            // NOTE: should this be done for the CD# folders too?
             /* set the thumbnail based on folder */
             item->SetCachedVideoThumb();
             if (!item->HasThumbnail())
               item->SetUserVideoThumb();
 
             item->m_bIsFolder = false;
-            item->m_strPath = path;
+            item->m_strPath = dvdPath;
             item->SetLabel2("");
             item->SetLabelPreformated(true);
             m_sortMethod = SORT_METHOD_NONE; /* sorting is now broken */
@@ -1834,64 +1839,102 @@ void CFileItemList::Stack()
               item->SetThumbnailImage(thumb);
             else
               item->SetUserVideoThumb();
-
           }
-        }
-        continue;
-      }
-
-      CStdString fileName, filePath;
-      CUtil::Split(item->m_strPath, filePath, fileName);
-      CStdString fileTitle, volumeNumber;
-      //CLog::Log(LOGDEBUG,"Trying to stack: %s", item->GetLabel().c_str());
-      if (CUtil::GetVolumeFromFileName(item->GetLabel(), fileTitle, volumeNumber))
-      {
-        vector<int> stack;
-        stack.push_back(i);
-        __int64 size = item->m_dwSize;
-        for (int j = i + 1; j < Size(); ++j)
-        {
-          CFileItemPtr item2 = Get(j);
-          // ignore directories, nfo files and playlists
-          if (item2->IsPlayList() || item2->m_bIsFolder || item2->IsNFO())
-            continue;
-          CStdString fileName2, filePath2;
-          CUtil::Split(item2->m_strPath, filePath2, fileName2);
-          CStdString fileTitle2, volumeNumber2;
-          //if (CUtil::GetVolumeFromFileName(fileName2, fileTitle2, volumeNumber2))
-          if (CUtil::GetVolumeFromFileName(Get(j)->GetLabel(), fileTitle2, volumeNumber2))
-          {
-            if (fileTitle2.Equals(fileTitle, false))
-            {
-              //CLog::Log(LOGDEBUG,"  adding item: [%03i] %s", j, Get(j)->GetLabel().c_str());
-              stack.push_back(j);
-              size += item2->m_dwSize;
-            }
-          }
-        }
-        if (stack.size() > 1)
-        {
-          // have a stack, remove the items and add the stacked item
-          CStackDirectory dir;
-          // dont actually stack a multipart rar set, just remove all items but the first
-          CStdString stackPath;
-          if (Get(stack[0])->IsRAR())
-            stackPath = Get(stack[0])->m_strPath;
-          else
-            stackPath = dir.ConstructStackPath(*this, stack);
-          for (unsigned int j = stack.size() - 1; j > 0; --j)
-            Remove(stack[j]);
-          item->m_strPath = stackPath;
-          // item->m_bIsFolder = true;  // don't treat stacked files as folders
-          // the label may be in a different char set from the filename (eg over smb
-          // the label is converted from utf8, but the filename is not)
-          CUtil::GetVolumeFromFileName(item->GetLabel(), fileTitle, volumeNumber);
-          item->SetLabel(fileTitle);
-          item->m_dwSize = size;
-          //CLog::Log(LOGDEBUG,"  ** finalized stack: %s", fileTitle.c_str());
         }
       }
     }
+  }
+
+
+  // now stack the files, some of which may be from the previous stack iteration
+  i = 0;
+  while (i < Size())
+  {
+    CFileItemPtr item = Get(i);
+
+    // skip folders, nfo files, playlists, dvd images
+    if (item->m_bIsFolder
+      || item->IsParentFolder()
+      || item->IsNFO()
+      || item->IsPlayList() 
+      || item->IsDVDImage()
+      )
+    {
+      // increment index
+      i++;
+      continue;
+    }
+
+    if (isDVDFolder)
+    {
+      // remove any other ifo files in this folder
+      if (item->IsDVDFile(false, true) && !item->GetLabel().Equals("VIDEO_TS.IFO"))
+      {
+        Remove(i);
+        continue;
+      }
+    }
+
+    CStdString fileName, filePath;
+    CUtil::Split(item->m_strPath, filePath, fileName);
+    CStdString fileTitle, volumeNumber;
+    if (CUtil::GetVolumeFromFileName(item->GetLabel(), fileTitle, volumeNumber))
+    {
+      vector<int> stack;
+      stack.push_back(i);
+      __int64 size = item->m_dwSize;
+
+      int j = i + 1;
+      while (j < Size())
+      {
+        CFileItemPtr item2 = Get(j);
+        CStdString fileName2, filePath2;
+        CUtil::Split(item2->m_strPath, filePath2, fileName2);
+        CStdString fileTitle2, volumeNumber2;
+        if (CUtil::GetVolumeFromFileName(item2->GetLabel(), fileTitle2, volumeNumber2))
+        {
+          if (fileTitle2.Equals(fileTitle))
+          {
+            stack.push_back(j);
+            size += item2->m_dwSize;
+          }
+          else
+          {
+            break;
+          }
+        }
+
+        // increment index
+        j++;
+      }
+
+      if (stack.size() > 1)
+      {
+        // have a stack, remove the items and add the stacked item
+        CStackDirectory dir;
+        // dont actually stack a multipart rar set, just remove all items but the first
+        CStdString stackPath;
+        if (Get(stack[0])->IsRAR())
+          stackPath = Get(stack[0])->m_strPath;
+        else
+          stackPath = dir.ConstructStackPath(*this, stack);
+        item->m_strPath = stackPath;
+        // clean up list
+        for (unsigned int k = stack.size() - 1; k > 0; --k)
+        {
+          Remove(stack[k]);
+        }
+        // item->m_bIsFolder = true;  // don't treat stacked files as folders
+        // the label may be in a different char set from the filename (eg over smb
+        // the label is converted from utf8, but the filename is not)
+        CUtil::GetVolumeFromFileName(item->GetLabel(), fileTitle, volumeNumber);
+        item->SetLabel(fileTitle);
+        item->m_dwSize = size;
+      }
+    }
+
+    // increment index
+    i++;
   }
 }
 

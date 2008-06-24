@@ -80,7 +80,7 @@ bool CGUIDialogNumeric::OnAction(const CAction &action)
   else if (action.wID >= KEY_ASCII)
   { // input from the keyboard
     char ch = action.wID & 0xFF;
-    if (ch == 10) OnOK(); // enter
+    if (ch == 10 || ch == 13) OnOK(); // enter
     else if (ch == 8) OnBackSpace(); // backspace
     else if (ch == 27) OnCancel(); // escape
     else if (ch >= 48 && ch < 58)  // number
@@ -447,7 +447,7 @@ void CGUIDialogNumeric::OnNumber(unsigned int num)
     }
     else
       m_ip[m_block] = num;
-    if (m_ip[m_block] > 25 || m_ip[m_block] == 0 && num == 0)
+    if (m_ip[m_block] > 25 || (m_ip[m_block] == 0 && num == 0))
     {
       m_block++;
       if (m_block > 3) m_block = 0;

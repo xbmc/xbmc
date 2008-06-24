@@ -2557,18 +2557,19 @@ int CXbmcHttp::xbmcGetSystemInfoByName(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcSpinDownHardDisk(int numParas, CStdString paras[])
 {
-  if (numParas==1)
-	if (paras[0].ToLower()=="false")
+  if (numParas==1 && paras[0].ToLower()=="false")
+  {
 	  if (g_application.m_dwSpinDownTime!=0)
 	    return SetResponse(openTag+"OK:Not spun down");
 	  else
 	  {
 	    #ifdef HAS_XBOX_HARDWARE
-          XKHDD::SpindownHarddisk(false);
-        #endif
+        XKHDD::SpindownHarddisk(false);
+      #endif
         g_application.m_dwSpinDownTime = timeGetTime();
         return SetResponse(openTag+"OK");
 	  }
+  }
   if (g_application.m_dwSpinDownTime==0)
 	return SetResponse(openTag+"OK:Already spun down");
   if (m_gWindowManager.HasModalDialog())
@@ -3059,19 +3060,20 @@ bool CXbmcHttpShim::checkForFunctionTypeParas(CStdString &cmd, CStdString &paras
 CStdString CXbmcHttpShim::flushResult(int eid, webs_t wp, const CStdString &output)
 {
   if (output!="")
+  {
     if (eid==NO_EID && wp!=NULL)
       websWriteBlock(wp, (char_t *) output.c_str(), output.length()) ;
     else if (eid!=NO_EID)
       ejSetResult( eid, (char_t *)output.c_str());
     else
       return output;
+  }
   return "";
 }
 
 CStdString CXbmcHttpShim::xbmcExternalCall(char *command)
 {
-  if (m_pXbmcHttp)
-    if (m_pXbmcHttp->shuttingDown)
+  if (m_pXbmcHttp && m_pXbmcHttp->shuttingDown)
       return "";
   int open, close;
   CStdString parameter="", cmd=command, execute;
@@ -3110,8 +3112,7 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
   checkForFunctionTypeParas(cmd, paras);
   if (wp!=NULL)
   {
-    if (eid==NO_EID)
-	  if (m_pXbmcHttp)
+    if (eid==NO_EID && m_pXbmcHttp)
 	  {
 	    if (m_pXbmcHttp->incWebHeader)
           websHeader(wp);
@@ -3172,8 +3173,7 @@ int CXbmcHttpShim::xbmcCommand( int eid, webs_t wp, int argc, char_t **argv)
     websError(wp, 500, T("Error:Insufficient args"));
     return -1;
   }
-  else 
-	if (parameters < 2) 
+  else if (parameters < 2) 
 	  parameter = "";
   xbmcProcessCommand( eid, wp, command, parameter);
   return 0;
@@ -3185,8 +3185,7 @@ void CXbmcHttpShim::xbmcForm(webs_t wp, char_t *path, char_t *query)
 {
   char_t  *command, *parameter;
 
-  if (m_pXbmcHttp)
-    if (m_pXbmcHttp->shuttingDown)
+  if (m_pXbmcHttp && m_pXbmcHttp->shuttingDown)
       return;
   command = websGetVar(wp, WEB_COMMAND, ""); 
   parameter = websGetVar(wp, WEB_PARAMETER, "");

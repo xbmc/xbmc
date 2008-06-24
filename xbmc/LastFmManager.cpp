@@ -61,6 +61,8 @@ CLastFmManager::CLastFmManager()
 {
   m_hWorkerEvent = CreateEvent(NULL, false, false, NULL);
   m_RadioTrackQueue = new CPlayList;
+  m_bLastShuffleState = g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC);
+  m_LastRepeatState = g_playlistPlayer.GetRepeat(PLAYLIST_MUSIC);
 }
 
 CLastFmManager::~CLastFmManager()
@@ -604,7 +606,12 @@ void CLastFmManager::Process()
 
 void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
 {
-  if (bKillSession) m_RadioSession = "";
+  if (bKillSession) 
+  {
+	m_RadioSession = "";
+	g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, m_LastRepeatState);
+	g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, m_bLastShuffleState);
+  }
   if (m_ThreadHandle)
   {
     m_bStop = true;
@@ -625,6 +632,7 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
       }
     }
   }
+  
   SendUpdateMessage();
 }
 
