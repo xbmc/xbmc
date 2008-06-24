@@ -111,14 +111,14 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       CGUIDialog::OnMessage(message);
       m_bViewReview = true;
       CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_DISC);
-      g_graphicsContext.SendMessage(msg);
+      OnMessage(msg);
       for (int i = 0; i < 1000; ++i)
       {
         CStdString strItem;
         strItem.Format("DVD#%03i", i);
         CGUIMessage msg2(GUI_MSG_LABEL_ADD, GetID(), CONTROL_DISC);
         msg2.SetLabel(strItem);
-        g_graphicsContext.SendMessage(msg2);
+        OnMessage(msg2);
       }
 
       SET_CONTROL_HIDDEN(CONTROL_DISC);
@@ -163,7 +163,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
         iItem = iDVD;
 
         CGUIMessage msgSet(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_DISC, iItem, 0, NULL);
-        g_graphicsContext.SendMessage(msgSet);
+        OnMessage(msgSet);
       }*/
       Refresh();
 
@@ -230,7 +230,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       {
         int iItem = 0;
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
-        g_graphicsContext.SendMessage(msg);
+        OnMessage(msg);
         CStdString strItem = msg.GetLabel();
         if (strItem != "HD" && strItem != "share")
         {
@@ -258,7 +258,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
         if (ACTION_SELECT_ITEM == iAction)
         {
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
-          g_graphicsContext.SendMessage(msg);
+          OnMessage(msg);
           int iItem = msg.GetParam1();
           if (iItem < 0 || iItem >= m_castList->Size())
             break;
@@ -400,7 +400,7 @@ void CGUIWindowVideoInfo::Update()
   SetLabel(CONTROL_TEXTAREA, strTmp);
 
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_castList);
-  g_graphicsContext.SendMessage(msg);
+  OnMessage(msg);
 
   if (m_bViewReview)
   {
@@ -637,7 +637,7 @@ void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
 void CGUIWindowVideoInfo::ClearCastList()
 {
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
-  g_graphicsContext.SendMessage(msg);
+  OnMessage(msg);
   m_castList->Clear();
 }
 
