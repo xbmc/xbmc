@@ -229,7 +229,7 @@ class CGUIMessage
 public:
   CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1 = 0, DWORD dwParam2 = 0);
   CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CFileItemList* item);
-  CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CGUIListItemPtr item);
+  CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, const CGUIListItemPtr &item);
   CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CVisualisation* vis);
 //#ifdef HAS_KAI_VOICE
   CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CGUIList* vis);
