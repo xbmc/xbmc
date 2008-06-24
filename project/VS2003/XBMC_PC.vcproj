@@ -1872,9 +1872,6 @@
 					RelativePath="..\..\xbmc\utils\HttpHeader.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\Idle.cpp">
-				</File>
-				<File
 					RelativePath="..\..\xbmc\utils\IMDB.cpp">
 				</File>
 				<File
@@ -3486,9 +3483,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\FileSystem\IDirectory.h">
-			</File>
-			<File
-				RelativePath="..\..\xbmc\utils\Idle.h">
 			</File>
 			<File
 				RelativePath="..\..\xbmc\FileSystem\IFile.h">
