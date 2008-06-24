@@ -31,7 +31,6 @@
 #endif
 #include "lib/libscrobbler/scrobbler.h"
 #include "utils/Weather.h"
-#include "utils/FanController.h"
 #include "utils/Network.h"
 #include "SkinInfo.h"
 #include "Profile.h"

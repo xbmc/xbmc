@@ -1460,16 +1460,6 @@ HRESULT CApplication::Initialize()
   return S_OK;
 }
 
-void CApplication::StartIdleThread()
-{
-  m_idleThread.Create(false, 0x100);
-}
-
-void CApplication::StopIdleThread()
-{
-  m_idleThread.StopThread();
-}
-
 void CApplication::StartWebServer()
 {
 #ifdef HAS_WEB_SERVER    
