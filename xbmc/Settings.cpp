@@ -1059,15 +1059,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   // Advanced settings
   LoadAdvancedSettings();
 
-  // Override settings with avpack settings
-  if ( m_vecProfiles[m_iLastLoadedProfileIndex].useAvpackSettings())
-  {
-    CLog::Log(LOGNOTICE, "Per AV pack settings are on");
-    LoadAvpackXML();
-  }
-  else
-    CLog::Log(LOGNOTICE, "Per AV pack settings are off");
-
   return true;
 }
 
@@ -1479,167 +1470,6 @@ void CSettings::LoadAdvancedSettings()
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
 }
 
-bool CSettings::LoadAvpackXML()
-{
-  CStdString avpackSettingsXML;
-  avpackSettingsXML  = GetAvpackSettingsFile();
-  TiXmlDocument avpackXML;
-  if (!CFile::Exists(avpackSettingsXML))
-  {
-    CLog::Log(LOGERROR, "Error loading AV pack settings : %s not found !", avpackSettingsXML.c_str());
-    return false;
-  }
-
-  CLog::Log(LOGNOTICE, "%s found : loading %s",
-    g_videoConfig.GetAVPack().c_str(), avpackSettingsXML.c_str());
-
-  if (!avpackXML.LoadFile(avpackSettingsXML.c_str()))
-  {
-    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s",
-      avpackSettingsXML.c_str(), avpackXML.ErrorRow(), avpackXML.ErrorDesc());
-    return false;
-  }
-
-  TiXmlElement *pMainElement = avpackXML.RootElement();
-  if (!pMainElement || strcmpi(pMainElement->Value(),"settings") != 0)
-  {
-    CLog::Log(LOGERROR, "Error loading %s, no <settings> node", avpackSettingsXML.c_str());
-    return false;
-  }
-
-  TiXmlElement *pRoot = pMainElement->FirstChildElement(g_videoConfig.GetAVPack());
-  if (!pRoot)
-  {
-    CLog::Log(LOGERROR, "Error loading %s, no <%s> node",
-      avpackSettingsXML.c_str(), g_videoConfig.GetAVPack().c_str());
-    return false;
-  }
-
-  // Load guisettings
-  g_guiSettings.LoadXML(pRoot);
-
-  // Load calibration
-  return LoadCalibration(pRoot, avpackSettingsXML);
-}
-
-// Save the avpack settings in the current 'avpacksettings.xml' file
-bool CSettings::SaveAvpackXML() const
-{
-  CStdString avpackSettingsXML;
-  avpackSettingsXML  = GetAvpackSettingsFile();
-
-  CLog::Log(LOGNOTICE, "Saving %s settings in %s",
-    g_videoConfig.GetAVPack().c_str(), avpackSettingsXML.c_str());
-
-  // The file does not exist : Save defaults
-  if (!CFile::Exists(avpackSettingsXML))
-    return SaveNewAvpackXML();
-
-  // The file already exists :
-  // We need to preserve other avpack settings
-
-  // First load the previous settings
-  TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile(avpackSettingsXML))
-  {
-    CLog::Log(LOGERROR, "SaveAvpackSettings : Error loading %s, Line %d\n%s\nCreating new file.",
-      avpackSettingsXML.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-    return SaveNewAvpackXML();
-  }
-
-  // Get the main element
-  TiXmlElement *pMainElement = xmlDoc.RootElement();
-  if (!pMainElement || strcmpi(pMainElement->Value(),"settings") != 0)
-  {
-    CLog::Log(LOGERROR, "SaveAvpackSettings : Error loading %s, no <settings> node.\nCreating new file.",
-      avpackSettingsXML.c_str());
-    return SaveNewAvpackXML();
-  }
-
-  // Delete the plugged avpack root if it exists, then recreate it
-  // TODO : to support custom avpack settings, the two XMLs should
-  // be synchronized, not just overwrite the old one
-  TiXmlNode *pRoot = pMainElement->FirstChild(g_videoConfig.GetAVPack());
-  if (pRoot)
-    pMainElement->RemoveChild(pRoot);
-
-  TiXmlElement pluggedNode(g_videoConfig.GetAVPack());
-  pRoot = pMainElement->InsertEndChild(pluggedNode);
-  if (!pRoot) return false;
-
-  if (!SaveAvpackSettings(pRoot))
-    return false;
-
-  return xmlDoc.SaveFile(avpackSettingsXML);
-}
-
-// Create an 'avpacksettings.xml' file with in the current profile directory
-bool CSettings::SaveNewAvpackXML() const
-{
-  TiXmlDocument xmlDoc;
-  TiXmlElement xmlMainElement("settings");
-  TiXmlNode *pMain = xmlDoc.InsertEndChild(xmlMainElement);
-  if (!pMain) return false;
-
-  TiXmlElement pluggedNode(g_videoConfig.GetAVPack());
-  TiXmlNode *pRoot = pMain->InsertEndChild(pluggedNode);
-  if (!pRoot) return false;
-
-  if (!SaveAvpackSettings(pRoot))
-    return false;
-
-  return xmlDoc.SaveFile(GetAvpackSettingsFile());
-}
-
-// Save avpack settings in the provided xml node
-bool CSettings::SaveAvpackSettings(TiXmlNode *io_pRoot) const
-{
-  TiXmlElement programsNode("myprograms");
-  TiXmlNode *pNode = io_pRoot->InsertEndChild(programsNode);
-  if (!pNode) return false;
-  SetBoolean(pNode, "gameautoregion", g_guiSettings.GetBool("myprograms.gameautoregion"));
-  SetInteger(pNode, "ntscmode", g_guiSettings.GetInt("myprograms.ntscmode"));
-
-  // default video settings
-  TiXmlElement videoSettingsNode("defaultvideosettings");
-  pNode = io_pRoot->InsertEndChild(videoSettingsNode);
-  if (!pNode) return false;
-  SetInteger(pNode, "interlacemethod", g_stSettings.m_defaultVideoSettings.m_InterlaceMethod);
-  SetInteger(pNode, "filmgrain", g_stSettings.m_currentVideoSettings.m_FilmGrain);
-  SetInteger(pNode, "viewmode", g_stSettings.m_currentVideoSettings.m_ViewMode);
-  SetFloat(pNode, "zoomamount", g_stSettings.m_currentVideoSettings.m_CustomZoomAmount);
-  SetFloat(pNode, "pixelratio", g_stSettings.m_currentVideoSettings.m_CustomPixelRatio);
-  SetFloat(pNode, "volumeamplification", g_stSettings.m_currentVideoSettings.m_VolumeAmplification);
-  SetBoolean(pNode, "outputtoallspeakers", g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers);
-  SetBoolean(pNode, "showsubtitles", g_stSettings.m_currentVideoSettings.m_SubtitleOn);
-  SetInteger(pNode, "brightness", g_stSettings.m_currentVideoSettings.m_Brightness);
-  SetInteger(pNode, "contrast", g_stSettings.m_currentVideoSettings.m_Contrast);
-  SetInteger(pNode, "gamma", g_stSettings.m_currentVideoSettings.m_Gamma);
-
-  TiXmlElement audiooutputNode("audiooutput");
-  pNode = io_pRoot->InsertEndChild(audiooutputNode);
-  if (!pNode) return false;
-  SetInteger(pNode, "mode", g_guiSettings.GetInt("audiooutput.mode"));
-  SetBoolean(pNode, "ac3passthrough", g_guiSettings.GetBool("audiooutput.ac3passthrough"));
-  SetBoolean(pNode, "dtspassthrough", g_guiSettings.GetBool("audiooutput.dtspassthrough"));
-#ifdef _LINUX
-  SetString(pNode, "audiodevice", g_guiSettings.GetString("audiooutput.audiodevice"));
-  SetString(pNode, "passthroughdevice", g_guiSettings.GetString("audiooutput.passthroughdevice"));
-#endif
-
-  TiXmlElement videoscreenNode("videoscreen");
-  pNode = io_pRoot->InsertEndChild(videoscreenNode);
-  if (!pNode) return false;
-  SetInteger(pNode, "resolution", g_guiSettings.GetInt("videoscreen.resolution"));
-
-  TiXmlElement videoplayerNode("videoplayer");
-  pNode = io_pRoot->InsertEndChild(videoplayerNode);
-  if (!pNode) return false;
-  SetInteger(pNode, "displayresolution", g_guiSettings.GetInt("videoplayer.displayresolution"));
-
-  return SaveCalibration(io_pRoot);
-}
-
 bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 {
   TiXmlDocument xmlDoc;
@@ -1766,9 +1596,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   g_guiSettings.SaveXML(pRoot);
 
   SaveSkinSettings(pRoot);
-
-  if ( m_vecProfiles[m_iLastLoadedProfileIndex].useAvpackSettings())
-    SaveAvpackXML();
 
   // For mastercode
   SaveProfiles( PROFILES_FILE );
@@ -2009,9 +1836,6 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     XMLUtils::GetBoolean(pProfile, "lockprograms", bHas);
     profile.setProgramsLocked(bHas);
 
-    bHas = false;
-    XMLUtils::GetBoolean(pProfile, "useavpacksettings", bHas);
-    profile.setUseAvpackSettings(bHas);
     LockType iLockMode=LOCK_MODE_EVERYONE;
     XMLUtils::GetInt(pProfile,"lockmode",(int&)iLockMode);
     if (iLockMode > LOCK_MODE_QWERTY || iLockMode < LOCK_MODE_EVERYONE)
@@ -2052,7 +1876,6 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
     SetString(pNode,"directory",g_settings.m_vecProfiles[iProfile].getDirectory());
     SetString(pNode,"thumbnail",g_settings.m_vecProfiles[iProfile].getThumb());
     SetString(pNode,"lastdate",g_settings.m_vecProfiles[iProfile].getDate());
-    SetBoolean(pNode,"useavpacksettings",g_settings.m_vecProfiles[iProfile].useAvpackSettings());
 
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
     {
@@ -2839,12 +2662,3 @@ CStdString CSettings::GetSettingsFile() const
   return _P(settings);
 }
 
-CStdString CSettings::GetAvpackSettingsFile() const
-{
-  CStdString  strAvpackSettingsFile;
-  if (g_settings.m_iLastLoadedProfileIndex == 0)
-    strAvpackSettingsFile = "T:\\avpacksettings.xml";
-  else
-    strAvpackSettingsFile = "P:\\avpacksettings.xml";
-  return _P(strAvpackSettingsFile);
-}
