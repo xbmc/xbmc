@@ -211,15 +211,6 @@ CGUISettings::CGUISettings(void)
   AddInt(3, "programfiles.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
   AddBool(4, "programfiles.savefolderviews", 583, true);
 
-#ifdef HAS_KAI
-  AddCategory(1, "xlinkkai", 714);
-  AddBool(1, "xlinkkai.enabled", 14072, false);
-  AddBool(2, "xlinkkai.enablenotifications", 14008, true);
-  AddString(4, "xlinkkai.username", 709, "", BUTTON_CONTROL_INPUT, false, 709);
-  AddString(5, "xlinkkai.password", 710, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 710);
-  AddString(6, "xlinkkai.server", 14042, "", BUTTON_CONTROL_IP_INPUT);
-#endif
-
   // My Weather settings
   AddGroup(2, 8);
   AddCategory(2, "weather", 16000);

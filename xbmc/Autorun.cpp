@@ -27,9 +27,6 @@
 #include "GUIPassword.h"
 #include "PlayListPlayer.h"
 #include "FileSystem/StackDirectory.h"
-#ifdef HAS_KAI
-#include "utils/KaiClient.h"
-#endif
 #include "ProgramDatabase.h"
 #ifdef HAS_TRAINER
 #include "utils/Trainer.h"
