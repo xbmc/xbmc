@@ -2338,19 +2338,20 @@ void CApplication::RenderMemoryStatus()
 
     if (!m_bQuiet)
     {
-      CStdStringW wszText;
+      CStdString info;
       MEMORYSTATUS stat;
       GlobalMemoryStatus(&stat);
 #ifdef __APPLE__
       double dCPU = m_resourceCounter.GetCPUUsage();
-      wszText.Format(L"FreeMem %ju/%ju MB, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%", stat.dwAvailPhys/(1024*1024), stat.dwTotalPhys/(1024*1024), 
+      info.Format("FreeMem %ju/%ju MB, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%", stat.dwAvailPhys/(1024*1024), stat.dwTotalPhys/(1024*1024), 
                g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU);
 #elif !defined(_LINUX)
-      wszText.Format(L"FreeMem %d/%d Kb, FPS %2.1f, CPU %2.0f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), (1.0f - m_idleThread.GetRelativeUsage())*100);
+      CStdString strCores = g_cpuInfo.GetCoresUsageString();
+      info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s.", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str());
 #else
       double dCPU = m_resourceCounter.GetCPUUsage();
       CStdString strCores = g_cpuInfo.GetCoresUsageString();
-      wszText.Format(L"FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, 
+      info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, 
                g_infoManager.GetFPS(), strCores.c_str(), dCPU);
 #endif
 
@@ -2371,7 +2372,7 @@ void CApplication::RenderMemoryStatus()
       float y = yShift + 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
       
       // Disable this for now as it might still be responsible for some crashes.
-      CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, wszText);
+      CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, info);
 #endif
     }
   }
