@@ -1014,41 +1014,13 @@
 			<posy>525</posy>
 			<include>homemisc</include>
 			<control type="image">
-				<description>dvd-rom launch button</description>
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>35</width>
-				<height>35</height>
-				<texture>home-dvd.png</texture>
-				<visible>System.HasMediaDVD + System.KaiConnected</visible>
-			</control>
-			<control type="button" id="95">
-				<description>dvd-rom launch button</description>
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>35</width>
-				<height>35</height>
-				<label>-</label>
-				<texturefocus>home-dvd.gif</texturefocus>
-				<texturenofocus>-</texturenofocus>
-				<font>font12</font>
-				<textoffsetx>26</textoffsetx>
-				<visible>System.HasMediaDVD + System.KaiConnected</visible>
-				<include>homemisc</include>
-				<onclick>XBMC.PlayDVD()</onclick>
-				<onleft>96</onleft>
-				<onright>97</onright>
-				<onup>9001</onup>
-				<ondown>9001</ondown>
-			</control>
-			<control type="image">
 				<description>dvd-rom launch button 2</description>
 				<posx>35</posx>
 				<posy>0</posy>
 				<width>35</width>
 				<height>35</height>
 				<texture>home-dvd.png</texture>
-				<visible>System.HasMediaDVD + !System.KaiConnected</visible>
+				<visible>System.HasMediaDVD</visible>
 			</control>
 			<control type="button" id="96">
 				<description>dvd-rom launch button 2</description>
@@ -1061,38 +1033,13 @@
 				<texturenofocus>-</texturenofocus>
 				<font>font12</font>
 				<textoffsetx>26</textoffsetx>
-				<visible>System.HasMediaDVD + !System.KaiConnected</visible>
+				<visible>System.HasMediaDVD</visible>
 				<include>homemisc</include>
 				<onclick>XBMC.PlayDVD()</onclick>
 				<onleft>9001</onleft>
-				<onright>95</onright>
-				<onup>9001</onup>
-				<ondown>9001</ondown>
-			</control>
-			<control type="image">
-				<description>xlink kai conditional button</description>
-				<posx>35</posx>
-				<posy>0</posy>
-				<width>35</width>
-				<height>35</height>
-				<texture>home-kai.png</texture>
-				<visible>System.KaiConnected</visible>
-			</control>
-			<control type="button" id="97">
-				<description>xlink kai conditional button</description>
-				<posx>35</posx>
-				<posy>0</posy>
-				<width>35</width>
-				<height>35</height>
-				<label>-</label>
-				<texturefocus>home-kai.gif</texturefocus>
-				<texturenofocus>-</texturenofocus>
-				<onclick>ActivateWindow(XlinkKai)</onclick>
-				<onleft>95</onleft>
 				<onright>100</onright>
 				<onup>9001</onup>
 				<ondown>9001</ondown>
-				<visible>System.KaiConnected</visible>
 			</control>
 			<control type="image">
 				<description>favourites button</description>
@@ -1112,7 +1059,7 @@
 				<texturefocus>home-sub.gif</texturefocus>
 				<texturenofocus>-</texturenofocus>
 				<label>-</label>
-				<onleft>97</onleft>
+				<onleft>96</onleft>
 				<onright>98</onright>
 				<onup>9001</onup>
 				<ondown>9001</ondown>

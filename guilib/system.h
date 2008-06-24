@@ -54,7 +54,6 @@
 #undef HAS_TIME_SERVER
 #undef HAS_VISUALISATION
 #undef HAS_KARAOKE
-#undef HAS_KAI_VOICE
 #undef HAS_CREDITS
 #undef HAS_MODPLAYER
 #undef HAS_SYSINFO
@@ -72,7 +71,6 @@
 #define HAS_SHOUTCAST
 #define HAS_RAR
 #undef  HAS_LIRC
-#define HAS_KAI
 
 #ifndef _LINUX
 // additional includes and defines
@@ -127,7 +125,6 @@
 #define HAS_FILESYSTEM_DAAP
 #define HAS_PERFORMANCE_SAMPLE
 #define HAS_LINUX_NETWORK
-#undef HAS_KAI
 
 #include <unistd.h>
 #include <time.h>
@@ -173,8 +170,6 @@
 #undef HAS_SCREENSAVER // no screensavers
 #undef HAS_PERFORMANCE_SAMPLE // no performance sampling
 #undef HAS_LINUX_NETWORK
-#undef HAS_KAI
-#undef HAS_KAI_VOICE
 #undef HAS_TRAINER
 
 #include "../xbmc/win32/PlatformInclude.h"
