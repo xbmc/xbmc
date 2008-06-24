@@ -1014,7 +1014,7 @@
 			<posy>525</posy>
 			<include>homemisc</include>
 			<control type="image">
-				<description>dvd-rom launch button 2</description>
+				<description>dvd-rom launch button</description>
 				<posx>35</posx>
 				<posy>0</posy>
 				<width>35</width>
@@ -1023,7 +1023,7 @@
 				<visible>System.HasMediaDVD</visible>
 			</control>
 			<control type="button" id="96">
-				<description>dvd-rom launch button 2</description>
+				<description>dvd-rom launch button</description>
 				<posx>35</posx>
 				<posy>0</posy>
 				<width>35</width>

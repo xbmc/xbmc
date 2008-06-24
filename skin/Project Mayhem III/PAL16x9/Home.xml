@@ -1014,7 +1014,7 @@
 			<posy>525</posy>
 			<include>homemisc</include>
 			<control type="image">
-				<description>dvd-rom launch button 2</description>
+				<description>dvd-rom launch button</description>
 				<posx>28</posx>
 				<posy>0</posy>
 				<width>28</width>
@@ -1023,7 +1023,7 @@
 				<visible>System.HasMediaDVD</visible>
 			</control>
 			<control type="button" id="96">
-				<description>dvd-rom launch button 2</description>
+				<description>dvd-rom launch button</description>
 				<posx>28</posx>
 				<posy>0</posy>
 				<width>28</width>
@@ -1037,7 +1037,7 @@
 				<include>homemisc</include>
 				<onclick>XBMC.PlayDVD()</onclick>
 				<onleft>9001</onleft>
-				<onright>95</onright>
+				<onright>100</onright>
 				<onup>9001</onup>
 				<ondown>9001</ondown>
 			</control>
@@ -1059,7 +1059,7 @@
 				<texturefocus>home-sub.gif</texturefocus>
 				<texturenofocus>-</texturenofocus>
 				<label>-</label>
-				<onleft>97</onleft>
+				<onleft>96</onleft>
 				<onright>98</onright>
 				<onup>9001</onup>
 				<ondown>9001</ondown>
