@@ -4225,11 +4225,6 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
   return true;
 }
 
-float CUtil::CurrentCpuUsage()
-{
-  return (1.0f - g_application.m_idleThread.GetRelativeUsage())*100;
-}
-
 bool CUtil::SupportsFileOperations(const CStdString& strPath)
 {
   // currently only hd and smb support delete and rename
