@@ -373,14 +373,6 @@ CGUISettings::CGUISettings(void)
   AddString(7, "audiooutput.passthroughdevice", 546, "iec958", BUTTON_CONTROL_INPUT);
 #endif
 
-#ifndef __APPLE__
-  AddCategory(4, "videooutput", 21373);
-  AddInt(1, "videooutput.aspect", 21374, VIDEO_NORMAL, VIDEO_NORMAL, 1, VIDEO_WIDESCREEN, SPIN_CONTROL_TEXT);
-  AddBool(2,  "videooutput.hd480p", 21378, true);
-  AddBool(3,  "videooutput.hd720p", 21379, true);
-  AddBool(4,  "videooutput.hd1080i", 21380, true);
-#endif
-
   AddCategory(4, "masterlock", 12360);
   AddString(1, "masterlock.lockcode"       , 20100, "-", BUTTON_CONTROL_STANDARD);
   AddSeparator(2, "masterlock.sep1");
@@ -947,19 +939,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGINFO, "Using %s output", GetInt("audiooutput.mode") == AUDIO_ANALOG ? "analog" : "digital");
   CLog::Log(LOGINFO, "AC3 pass through is %s", GetBool("audiooutput.ac3passthrough") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "DTS pass through is %s", GetBool("audiooutput.dtspassthrough") ? "enabled" : "disabled");
-
-#ifndef __APPLE__
-  if (g_videoConfig.HasLetterbox())
-    SetInt("videooutput.aspect", VIDEO_LETTERBOX);
-  else if (g_videoConfig.HasWidescreen())
-    SetInt("videooutput.aspect", VIDEO_WIDESCREEN);
-  else
-    SetInt("videooutput.aspect", VIDEO_NORMAL);
-  
-  SetBool("videooutput.hd480p", g_videoConfig.Has480p());
-  SetBool("videooutput.hd720p", g_videoConfig.Has720p());
-  SetBool("videooutput.hd1080i", g_videoConfig.Has1080i());
-#endif
 
   g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)GetInt("videoscreen.resolution");
   g_videoConfig.SetVSyncMode((VSYNC)GetInt("videoscreen.vsync"));
