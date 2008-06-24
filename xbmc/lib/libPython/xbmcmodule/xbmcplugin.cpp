@@ -51,11 +51,11 @@ namespace PYXBMC
     "addDirectoryItem(handle, url, listitem [,isFolder, totalItems]) -- Callback function to pass directory contents back to XBMC.\n"
     " - Returns a bool for successful completion.\n"
     "\n"
-    "handle      : Integer - handle the plugin was started with.\n"
+    "handle      : integer - handle the plugin was started with.\n"
     "url         : string - url of the entry. would be plugin:// for another virtual directory\n"
     "listitem    : ListItem - item to add.\n"
     "isFolder    : [opt] bool - True=folder / False=not a folder(default).\n"
-    "totalItems  : [opt] Integer - Total number of items that will be passed.(used for progressbar)\n"
+    "totalItems  : [opt] integer - total number of items that will be passed.(used for progressbar)\n"
     "\n"
     "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
@@ -102,7 +102,7 @@ namespace PYXBMC
   PyDoc_STRVAR(endOfDirectory__doc__,
     "endOfDirectory(handle[, succeeded, updateListing]) -- Callback function to tell XBMC that the end of the directory listing in a virtualPythonFolder module is reached.\n"
     "\n"
-    "handle           : Integer - handle the plugin was started with.\n"
+    "handle           : integer - handle the plugin was started with.\n"
     "succeeded        : [opt] bool - True=script completed successfully(Default)/False=Script did not.\n"
     "updateListing    : [opt] bool - True=this folder should update the current listing/False=Folder is a subfolder(Default).\n"
     "\n"
@@ -142,8 +142,8 @@ namespace PYXBMC
   PyDoc_STRVAR(addSortMethod__doc__,
     "addSortMethod(handle, sortMethod) -- Adds a sorting method for the media list.\n"
     "\n"
-    "handle      : Integer - handle the plugin was started with.\n"
-    "sortMethod  : Integer - Number for sortmethod see FileItem.h.\n"
+    "handle      : integer - handle the plugin was started with.\n"
+    "sortMethod  : integer - number for sortmethod see FileItem.h.\n"
     "\n"
     "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
@@ -208,7 +208,7 @@ namespace PYXBMC
   PyDoc_STRVAR(setContent__doc__,
     "setContent(handle, content) -- Sets the plugins content.\n"
     "\n"
-    "handle      : Integer - handle the plugin was started with.\n"
+    "handle      : integer - handle the plugin was started with.\n"
     "content     : string - content type (eg. movies)\n"
     "\n"
     "*Note, You can use the above as keywords for arguments.\n"
@@ -244,7 +244,7 @@ namespace PYXBMC
   PyDoc_STRVAR(setPluginCategory__doc__,
     "setPluginCategory(handle, category) -- Sets the plugins name for skins to display.\n"
     "\n"
-    "handle      : Integer - handle the plugin was started with.\n"
+    "handle      : integer - handle the plugin was started with.\n"
     "category    : string or unicode - plugins sub category.\n"
     "\n"
     "*Note, You can use the above as keywords for arguments.\n"
@@ -280,6 +280,57 @@ namespace PYXBMC
     return Py_None;
   }
 
+  PyDoc_STRVAR(setPluginFanart__doc__,
+    "setPluginFanart(handle, image, color1, color2, color3) -- Sets the plugins fanart and color for skins to display.\n"
+    "\n"
+    "handle      : integer - handle the plugin was started with.\n"
+    "image       : [opt] string - path to fanart image.\n"
+    "color1      : [opt] hexstring - color1. (e.g. '0xFFFFFFFF')\n"
+    "color2      : [opt] hexstring - color2. (e.g. '0xFFFF3300')\n"
+    "color3      : [opt] hexstring - color3. (e.g. '0xFF000000')\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments.\n"
+    "\n"
+    "example:\n"
+    "  - xbmcplugin.setPluginFanart(int(sys.argv[1]), 'q:\\\\plugins\\\\Apple movie trailers II\\\\fanart.png', color2='0xFFFF3300')\n");
+
+  PyObject* XBMCPLUGIN_SetPluginFanart(PyTypeObject *type, PyObject *args, PyObject *kwds)
+  {
+    static char *keywords[] = { "handle", "image", "color1", "color2", "color3", NULL };
+    int handle = -1;
+    char *image = NULL;
+    char *color1 = NULL;
+    char *color2 = NULL;
+    char *color3 = NULL;
+    // parse arguments to constructor
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      "i|ssss",
+      keywords,
+      &handle,
+      &image,
+      &color1,
+      &color2,
+      &color3
+      ))
+    {
+      return NULL;
+    };
+
+    if (image)
+      DIRECTORY::CPluginDirectory::SetProperty(handle, "fanart_image", image);
+    if (color1)
+      DIRECTORY::CPluginDirectory::SetProperty(handle, "fanart_color1", color1);
+    if (color2)
+      DIRECTORY::CPluginDirectory::SetProperty(handle, "fanart_color2", color2);
+    if (color3)
+      DIRECTORY::CPluginDirectory::SetProperty(handle, "fanart_color3", color3);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   // define c functions to be used in python here
   PyMethodDef pluginMethods[] = {
     {"addDirectoryItem", (PyCFunction)XBMCPLUGIN_AddDirectoryItem, METH_VARARGS|METH_KEYWORDS, addDirectoryItem__doc__},
@@ -288,6 +339,7 @@ namespace PYXBMC
     {"getSetting", (PyCFunction)XBMCPLUGIN_GetSetting, METH_VARARGS|METH_KEYWORDS, getSetting__doc__},
     {"setContent", (PyCFunction)XBMCPLUGIN_SetContent, METH_VARARGS|METH_KEYWORDS, setContent__doc__},
     {"setPluginCategory", (PyCFunction)XBMCPLUGIN_SetPluginCategory, METH_VARARGS|METH_KEYWORDS, setPluginCategory__doc__},
+    {"setPluginFanart", (PyCFunction)XBMCPLUGIN_SetPluginFanart, METH_VARARGS|METH_KEYWORDS, setPluginFanart__doc__},
     {NULL, NULL, 0, NULL}
   };
 
