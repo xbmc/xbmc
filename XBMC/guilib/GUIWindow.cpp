@@ -1130,7 +1130,7 @@ bool CGUIWindow::HasAnimation(ANIMATION_TYPE animType)
 
   // Now check the controls to see if we have this animation
   for (unsigned int i = 0; i < m_vecControls.size(); i++)
-    if (m_vecControls[i]->GetAnimation(animType)) return true;
+    if (m_vecControls[i]->HasAnimation(animType)) return true;
   return false;
 }
 
