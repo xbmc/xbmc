@@ -91,20 +91,20 @@ bool CDirectoryHomeRun::GetDirectory(const CStdString& strPath, CFileItemList &i
     for(int i=0;i<count;i++)
     {
       CStdString device, ip;
-      CFileItem *item;
+      CFileItemPtr item;
       unsigned int ip_addr = result_list[i].ip_addr;
 
       device.Format("%x", result_list[i].device_id);
       ip.Format("%u.%u.%u.%u",
-		    (unsigned int)(ip_addr >> 24) & 0xFF, (unsigned int)(ip_addr >> 16) & 0xFF,
-		    (unsigned int)(ip_addr >> 8) & 0xFF, (unsigned int)(ip_addr >> 0) & 0xFF);
+            (unsigned int)(ip_addr >> 24) & 0xFF, (unsigned int)(ip_addr >> 16) & 0xFF,
+            (unsigned int)(ip_addr >> 8) & 0xFF, (unsigned int)(ip_addr >> 0) & 0xFF);
 
-      item = new CFileItem("hdhomerun://" + device + "/tuner0/", true);
+      item.reset(new CFileItem("hdhomerun://" + device + "/tuner0/", true));
       item->SetLabel(device + "-0 On " + ip);
       item->SetLabelPreformated(true);
       items.Add(item);
 
-      item = new CFileItem("hdhomerun://" + device + "/tuner1/", true);
+      item.reset(new CFileItem("hdhomerun://" + device + "/tuner1/", true));
       item->SetLabel(device + "-1 On " + ip);
       item->SetLabelPreformated(true);
       items.Add(item);
@@ -132,7 +132,7 @@ bool CDirectoryHomeRun::GetDirectory(const CStdString& strPath, CFileItemList &i
     else
       label.Format("Current Stream: Channel %s, SNR %d", status.channel, status.signal_to_noise_quality);
 
-    CFileItem* item = new CFileItem("hdhomerun://" + url.GetHostName() + "/" + url.GetFileName(), false);
+    CFileItemPtr item(new CFileItem("hdhomerun://" + url.GetHostName() + "/" + url.GetFileName(), false));
     CUtil::RemoveSlashAtEnd(item->m_strPath);
     item->SetLabel(label);
     item->SetLabelPreformated(true);

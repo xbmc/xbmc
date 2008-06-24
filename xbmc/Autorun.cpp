@@ -176,7 +176,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     // check root folders first, for normal structured dvd's
     for (int i = 0; i < vecItems.Size(); i++)
     {
-      CFileItem* pItem = vecItems[i];
+      CFileItemPtr pItem = vecItems[i];
 
       if (pItem->m_bIsFolder && pItem->m_strPath != "." && pItem->m_strPath != "..")
       {
@@ -243,7 +243,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
 
     for (int i = 0; i < tempItems.Size(); i++)
     {
-      CFileItem *pItem = tempItems[i];
+      CFileItemPtr pItem = tempItems[i];
       if (!pItem->m_bIsFolder && pItem->IsVideo())
       {
         bPlaying = true;
@@ -253,13 +253,10 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           CStackDirectory dir;
           CFileItemList items;
           dir.GetDirectory(pItem->m_strPath, items);
-          for (int i = 0; i < items.Size(); i++)
-          {
-            itemlist.Add(new CFileItem(*items[i]));
-          }
+          itemlist.Append(items);
         }
         else
-          itemlist.Add(new CFileItem(*pItem));
+          itemlist.Add(pItem);
       }
     }
     if (itemlist.Size())
@@ -284,7 +281,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   {
     for (int i = 0; i < vecItems.Size(); i++)
     {
-      CFileItem *pItem = vecItems[i];
+      CFileItemPtr pItem = vecItems[i];
       if (!pItem->m_bIsFolder && pItem->IsAudio())
       {
         nAddedToPlaylist++;
@@ -297,7 +294,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   {
     for (int i = 0; i < vecItems.Size(); i++)
     {
-      CFileItem *pItem = vecItems[i];
+      CFileItemPtr pItem = vecItems[i];
       if (!pItem->m_bIsFolder && pItem->IsPicture())
       {
         bPlaying = true;
@@ -314,7 +311,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   {
     for (int i = 0; i < vecItems.Size(); i++)
     {
-      CFileItem* pItem = vecItems[i];
+      CFileItemPtr  pItem = vecItems[i];
       if (pItem->m_bIsFolder)
       {
         if (pItem->m_strPath != "." && pItem->m_strPath != ".." )

@@ -71,7 +71,7 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
 
   for (unsigned int i = 0; i < rootItems.size(); ++i)
   {
-    CFileItem* pItem = new CFileItem(g_localizeStrings.Get(rootItems[i].second));
+    CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(rootItems[i].second)));
     CStdString strDir;
     strDir.Format("%i/", rootItems[i].first);
     pItem->m_strPath = BuildPath() + strDir;

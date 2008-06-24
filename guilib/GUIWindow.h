@@ -30,9 +30,10 @@
  */
 
 #include "GUIControl.h"
+#include "boost/shared_ptr.hpp"
 
 class CGUIControlGroup;
-class CFileItem;
+class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 
 #include "GUICallback.h"  // for GUIEvent
 
@@ -128,7 +129,7 @@ public:
   virtual bool IsModalDialog() const { return false; };
   virtual bool IsMediaWindow() const { return false; };
   virtual bool HasListItems() const { return false; };
-  virtual CFileItem *GetCurrentListItem(int offset = 0) { return NULL; };
+  virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return CFileItemPtr(); };
   virtual int GetViewContainerID() const { return 0; };
   void GetContainers(std::vector<CGUIControl *> &containers) const;
   virtual bool IsActive() const;

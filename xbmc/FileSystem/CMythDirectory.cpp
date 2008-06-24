@@ -125,7 +125,7 @@ bool CCMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
           path.Format("guide/%d/", num);
           url.SetFileName(path);
           url.GetURL(path);
-          CFileItem *item = new CFileItem(path, true);
+          CFileItemPtr item(new CFileItem(path, true));
           item->SetLabel(name);
           item->SetLabelPreformated(true);
           if(icon.length() > 0)
@@ -178,7 +178,7 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, int ChanNum, CF
       CStdString title;
       title.Format("%s - \"%s\"", starttime.GetAsLocalizedDateTime(), prog[i].title);
 
-      CFileItem *item = new CFileItem(title, false);
+      CFileItemPtr item(new CFileItem(title, false));
       item->SetLabel(title);
       item->m_dateTime = starttime;
       item->SetLabelPreformated(true);
@@ -250,7 +250,7 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
       path = CUtil::GetFileName(path);
       name = GetValue(m_dll->proginfo_title(program));
 
-      CFileItem *item = new CFileItem("", false);
+      CFileItemPtr item(new CFileItem("", false));
       m_session->UpdateItem(*item, program);
 
       url.SetFileName("recordings/" + path);
@@ -331,7 +331,7 @@ bool CCMythDirectory::GetChannelsDb(const CStdString& base, CFileItemList &items
         path.Format("channels/%d.ts", num);
         url.SetFileName(path);
         url.GetURL(path);
-        CFileItem *item = new CFileItem(path, false);
+        CFileItemPtr item(new CFileItem(path, false));
         item->SetLabel(name);
         item->SetLabelPreformated(true);
         if(icon.length() > 0)
@@ -403,7 +403,7 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
     num      = GetValue(m_dll->proginfo_chanstr (program));
     icon     = GetValue(m_dll->proginfo_chanicon(program));
 
-    CFileItem *item = new CFileItem("", false);
+    CFileItemPtr item(new CFileItem("", false));
     m_session->UpdateItem(*item, program);
     url.SetFileName("channels/" + num + ".ts");
     url.GetURL(item->m_strPath);
@@ -454,19 +454,19 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
 
   if(url.GetFileName().IsEmpty())
   {
-    CFileItem *item;
+    CFileItemPtr item;
 
-    item = new CFileItem(base + "/channels/", true);
+    item.reset(new CFileItem(base + "/channels/", true));
     item->SetLabel("Live Channels");
     item->SetLabelPreformated(true);
     items.Add(item);
 
-    item = new CFileItem(base + "/recordings/", true);
+    item.reset(new CFileItem(base + "/recordings/", true));
     item->SetLabel("Recordings");
     item->SetLabelPreformated(true);
     items.Add(item);
 
-    item = new CFileItem(base + "/guide/", true);
+    item.reset(new CFileItem(base + "/guide/", true));
     item->SetLabel("Guide");
     item->SetLabelPreformated(true);
     items.Add(item);

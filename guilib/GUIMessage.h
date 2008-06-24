@@ -210,8 +210,11 @@ do { \
  SendWindowMessage(msg); \
 } while(0);
 
+#include <boost/shared_ptr.hpp>
+
 // forwards
-class CGUIListItem;
+class CGUIListItem; typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
+class CFileItemList;
 class CVisualisation;
 //#ifdef HAS_KAI_VOICE
 class CGUIList;
@@ -225,7 +228,8 @@ class CGUIMessage
 {
 public:
   CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1 = 0, DWORD dwParam2 = 0);
-  CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CGUIListItem* item);
+  CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CFileItemList* item);
+  CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, const CGUIListItemPtr &item);
   CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CVisualisation* vis);
 //#ifdef HAS_KAI_VOICE
   CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CGUIList* vis);

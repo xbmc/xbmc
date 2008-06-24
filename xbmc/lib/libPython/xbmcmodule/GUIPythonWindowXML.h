@@ -42,16 +42,16 @@ public:
   void              WaitForActionEvent(DWORD timeout);
   void              PulseActionEvent();
   void              UpdateFileList();
-  void              AddItem(CFileItem * fileItem,int itemPosition);
+  void              AddItem(CFileItemPtr fileItem,int itemPosition);
   void              RemoveItem(int itemPosition);
   void              ClearList();
-  CFileItem*        GetListItem(int position);
+  CFileItemPtr      GetListItem(int position);
   int               GetListSize();
   int               GetCurrentListPosition();
   void              SetCurrentListPosition(int item);
   virtual bool      IsMediaWindow() const { return true; };
   virtual bool      HasListItems() const { return true; };
-  virtual CFileItem *GetCurrentListItem(int offset = 0);
+  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
   const CFileItemList& CurrentDirectory() const;
   int               GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
 

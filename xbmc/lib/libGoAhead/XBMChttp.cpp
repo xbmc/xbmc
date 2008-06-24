@@ -395,7 +395,7 @@ int CXbmcHttp::displayDir(int numParas, CStdString paras[])
   CStdString aLine="";
   for (int i=0; i<dirItems.Size(); ++i)
   {
-    CFileItem *itm = dirItems[i];
+    CFileItemPtr itm = dirItems[i];
     if (mask=="*" || mask=="/" || (mask =="" && itm->m_bIsFolder))
       if (!CUtil::HasSlashAtEnd(itm->m_strPath))
         aLine=closeTag+openTag + itm->m_strPath + "\\" ;
@@ -450,7 +450,7 @@ void CXbmcHttp::SetCurrentMediaItem(CFileItem& newItem)
   }
 }
 
-void CXbmcHttp::AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CStdString mask, bool recursive)
+void CXbmcHttp::AddItemToPlayList(const CFileItemPtr &pItem, int playList, int sortMethod, CStdString mask, bool recursive)
 //if playlist==-1 then use slideshow
 {
   if (pItem->m_bIsFolder)
@@ -476,10 +476,10 @@ void CXbmcHttp::AddItemToPlayList(const CFileItem* pItem, int playList, int sort
       CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
       if (!pSlideShow)
         return ;
-      pSlideShow->Add(pItem);
+      pSlideShow->Add(pItem.get());
     }
     else
-      g_playlistPlayer.Add(playList, (CFileItem*)pItem);
+      g_playlistPlayer.Add(playList, pItem);
   }
 }
 
@@ -500,9 +500,7 @@ void CXbmcHttp::LoadPlayListOld(const CStdString& strPlayList, int playList)
     
     // set current file item
     CPlayList& playlist = g_playlistPlayer.GetPlaylist(playList);
-    CFileItem item(playlist[0].GetDescription());
-    item.m_strPath = playlist[0].GetFileName();
-    SetCurrentMediaItem(item);
+    SetCurrentMediaItem(*playlist[0]);
   }
 }
 
@@ -524,12 +522,12 @@ bool CXbmcHttp::LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, 
     return false;
 
   // first item of the list, used to determine the intent
-  CPlayListItem playlistItem = playlist[0];
+  CFileItemPtr playlistItem = playlist[0];
 
   if ((playlist.size() == 1) && (autoStart))
   {
     // just 1 song? then play it (no need to have a playlist of 1 song)
-    g_application.getApplicationMessenger().MediaPlay(CFileItem(playlistItem).m_strPath);
+    g_application.getApplicationMessenger().MediaPlay(playlistItem->m_strPath);
     return true;
   }
 
@@ -742,7 +740,7 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
   CStdString strLine;
   for (int i = 0; i < items.Size(); ++i)
   {
-    CFileItem *item = items[i];
+    CFileItemPtr item = items[i];
     CStdString strLabel = item->GetLabel();
     strLabel.Replace(";",";;");
     CStdString strPath = item->m_strPath;
@@ -962,7 +960,7 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
 	    recursive=(paras[3]=="1");
     }
     strFileName=paras[0] ;
-    CFileItem *pItem = new CFileItem(strFileName);
+    CFileItemPtr pItem(new CFileItem(strFileName));
     pItem->m_strPath=strFileName.c_str();
     if (pItem->IsPlayList())
       changed=LoadPlayList(pItem->m_strPath, playList, false, false);
@@ -977,7 +975,6 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
         changed=true;
       }
     }
-    delete pItem;
     if (changed)
     {
       g_playlistPlayer.HasChanged();
@@ -1169,15 +1166,15 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
   if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW && pSlideShow)
   {
-    const CFileItem *slide = pSlideShow->GetCurrentSlide();
+    const CFileItemPtr slide = pSlideShow->GetCurrentSlide();
     output=openTag+"Filename:"+slide->m_strPath;
-	if (lastPlayingInfo!=output)
-	{
-	  changed=true;
-	  lastPlayingInfo=output;
-	}
+    if (lastPlayingInfo!=output)
+    {
+      changed=true;
+      lastPlayingInfo=output;
+    }
     if (justChange && !changed)
-	  return SetResponse(openTag+"Changed:False");
+      return SetResponse(openTag+"Changed:False");
     output+=closeTag+openTag+"Type:Picture" ;
     CStdString resolution = "0x0";
     if (slide && slide->HasPictureInfoTag() && slide->GetPictureInfoTag()->Loaded())
@@ -1524,9 +1521,9 @@ int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
   {
     if (numParas>1)
       mask=procMask(paras[1]);
-	if (numParas>2)
-	  recursive=paras[2]=="1";
-    CFileItem *pItem = new CFileItem(paras[0]);
+    if (numParas>2)
+      recursive=paras[2]=="1";
+    CFileItemPtr pItem(new CFileItem(paras[0]));
     pItem->m_strPath=paras[0].c_str();
     IDirectory *pDirectory = CFactoryDirectory::Create(pItem->m_strPath);
     if (mask!="")
@@ -1535,7 +1532,6 @@ int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
     pItem->m_bIsFolder=bResult;
     pItem->m_bIsShareOrDrive=false;
     AddItemToPlayList(pItem, -1, 0, mask, recursive); //add to slideshow
-    delete pItem;
     return SetResponse(openTag+"OK");
   }
 }
@@ -1745,23 +1741,26 @@ int CXbmcHttp::xbmcGetPlayListContents(int numParas, CStdString paras[])
   CPlayList& thePlayList = g_playlistPlayer.GetPlaylist(playList);
   if (thePlayList.size()==0)
     list=openTag+"[Empty]" ;
+  else if (g_application.IsPlayingAudio())
+  {
+    for (int i = 0; i < thePlayList.size(); i++)
+    {
+      CFileItemPtr item = thePlayList[i];
+      const CMusicInfoTag* tagVal = item->GetMusicInfoTag();
+      if (tagVal && tagVal->GetURL()!="")
+        list += closeTag+openTag + tagVal->GetURL();
+      else
+        list += closeTag+openTag + item->m_strPath;
+    }
+  }
   else
-    if (g_application.IsPlayingAudio())
-	{
-	  for (int i=0; i< thePlayList.size(); i++) {
-        const CPlayListItem& item=thePlayList[i];
-		const CMusicInfoTag* tagVal=item.GetMusicTag();
-	    if (tagVal && tagVal->GetURL()!="")
-          list += closeTag+openTag + tagVal->GetURL();
-		else
-          list += closeTag+openTag + item.GetFileName();
-      }
-	}
-	else
-	  for (int i=0; i< thePlayList.size(); i++) {
-        const CPlayListItem& item=thePlayList[i];
-        list += closeTag+openTag + item.GetFileName();
-      }
+  {
+    for (int i = 0; i < thePlayList.size(); i++)
+    {
+      CFileItemPtr item=thePlayList[i];
+      list += closeTag+openTag + item->m_strPath;
+    }
+  }
   return SetResponse(list) ;
 }
 
@@ -1815,7 +1814,7 @@ int CXbmcHttp::xbmcGetPlayListSong(int numParas, CStdString paras[])
     if (iSong!=-1){
       thePlayList=g_playlistPlayer.GetPlaylist( g_playlistPlayer.GetCurrentPlaylist() );
       if (thePlayList.size()>iSong) {
-        Filename=thePlayList[iSong].GetFileName();
+        Filename=thePlayList[iSong]->m_strPath;
         return SetResponse(openTag + Filename );
       }
     }
@@ -2337,9 +2336,9 @@ int CXbmcHttp::xbmcGetCurrentSlide()
     return SetResponse(openTag+"Error:Could not access slideshown");
   else
   {
-    const CFileItem *slide=pSlideShow->GetCurrentSlide();
+    const CFileItemPtr slide=pSlideShow->GetCurrentSlide();
     if (!slide)
-	    return SetResponse(openTag + "[None]");
+      return SetResponse(openTag + "[None]");
     return SetResponse(openTag + slide->m_strPath);
   }
 }

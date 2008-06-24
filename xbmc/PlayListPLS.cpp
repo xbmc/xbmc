@@ -25,6 +25,7 @@
 #include "Util.h"
 #include "FileSystem/File.h"
 #include "Settings.h"
+#include "MusicInfoTag.h"
 
 using namespace std;
 using namespace XFILE;
@@ -132,8 +133,8 @@ bool CPlayListPLS::Load(const CStdString &strFile)
           iMaxSize = idx;
           m_vecItems.resize(idx);
         }
-        if (m_vecItems[idx - 1].GetDescription().empty())
-          m_vecItems[idx - 1].SetDescription(CUtil::GetFileName(strValue));
+        if (m_vecItems[idx - 1]->GetLabel().empty())
+          m_vecItems[idx - 1]->SetLabel(CUtil::GetFileName(strValue));
         CFileItem item(strValue, false);
         if (bShoutCast && !item.IsAudio())
           strValue.Replace("http:", "shout:");
@@ -142,7 +143,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
          strValue = CUtil::SubstitutePath(strValue);
         CUtil::GetQualifiedFilename(m_strBasePath, strValue);
         g_charsetConverter.stringCharsetToUtf8(strValue);
-        m_vecItems[idx - 1].SetFileName(strValue);
+        m_vecItems[idx - 1]->m_strPath = strValue;
       }
       else if (strLeft.Left(5) == "title")
       {
@@ -152,7 +153,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
           m_vecItems.resize(idx);
         }
         g_charsetConverter.stringCharsetToUtf8(strValue);
-        m_vecItems[idx - 1].SetDescription(strValue);
+        m_vecItems[idx - 1]->SetLabel(strValue);
       }
       else if (strLeft.Left(6) == "length")
       {
@@ -161,7 +162,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
           iMaxSize = idx;
           m_vecItems.resize(idx);
         }
-        m_vecItems[idx - 1].SetDuration(atol(strValue.c_str()));
+        m_vecItems[idx - 1]->GetMusicInfoTag()->SetDuration(atol(strValue.c_str()));
       }
       else if (strLeft == "playlistname")
       {
@@ -177,7 +178,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
   ivecItems p = m_vecItems.begin();
   while ( p != m_vecItems.end())
   {
-    if (p->GetFileName().empty())
+    if ((*p)->m_strPath.empty())
     {
       p = m_vecItems.erase(p);
     }
@@ -207,14 +208,14 @@ void CPlayListPLS::Save(const CStdString& strFileName) const
 
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
-    const CPlayListItem& item = m_vecItems[i];
-    CStdString strFileName=item.GetFileName();
+    CFileItemPtr item = m_vecItems[i];
+    CStdString strFileName=item->m_strPath;
     g_charsetConverter.utf8ToStringCharset(strFileName);
-    CStdString strDescription=item.GetDescription();
+    CStdString strDescription=item->GetLabel();
     g_charsetConverter.utf8ToStringCharset(strDescription);
     fprintf(fd, "File%i=%s\n", i + 1, strFileName.c_str() );
     fprintf(fd, "Title%i=%s\n", i + 1, strDescription.c_str() );
-    fprintf(fd, "Length%i=%lu\n", i + 1, item.GetDuration() / 1000 );
+    fprintf(fd, "Length%i=%lu\n", i + 1, item->GetMusicInfoTag()->GetDuration() / 1000 );
   }
 
   fprintf(fd, "NumberOfEntries=%i\n", m_vecItems.size());
@@ -256,7 +257,8 @@ bool CPlayListASX::LoadAsxIniInfo(std::istream &stream)
       value += stream.get();
 
     CLog::Log(LOGINFO, "Adding element %s=%s", name.c_str(), value.c_str());
-    CPlayListItem newItem(value, value, 0);
+    CFileItemPtr newItem(new CFileItem(value));
+    newItem->m_strPath = value;
     Add(newItem);
   }
 
@@ -349,7 +351,8 @@ bool CPlayListASX::LoadData(std::istream& stream)
               title = value;
 
             CLog::Log(LOGINFO, "Adding element %s, %s", title.c_str(), value.c_str());
-            CPlayListItem newItem(title, value, 0);
+            CFileItemPtr newItem(new CFileItem(title));
+            newItem->m_strPath = value;
             Add(newItem);
           }
           pRef = pRef->NextSiblingElement("ref");
@@ -383,7 +386,8 @@ bool CPlayListRAM::LoadData(std::istream& stream)
     strMMS += stream.get();
   
   CLog::Log(LOGINFO, "Adding element %s", strMMS.c_str());
-  CPlayListItem newItem(strMMS, strMMS, 0);
+  CFileItemPtr newItem(new CFileItem(strMMS));
+  newItem->m_strPath = strMMS;
   Add(newItem);
   return true;
 }

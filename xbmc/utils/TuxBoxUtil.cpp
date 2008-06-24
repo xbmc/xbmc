@@ -211,7 +211,7 @@ bool CTuxBoxUtil::ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &
           {
             strItemPath = pIt->FirstChild()->Value();
             // add. bouquets to item list! 
-            CFileItem* pItem = new CFileItem;
+            CFileItemPtr pItem(new CFileItem);
             pItem->m_bIsFolder = true;
             pItem->SetLabel(strItemName);
             url.SetOptions("/"+strOptions+"&reference="+strItemPath);
@@ -292,7 +292,7 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
                   {
                     strItemPath = pIta->FirstChild()->Value();
                     // channel listing add. to item list!
-                    CFileItem* pbItem = new CFileItem;
+                    CFileItemPtr pbItem(new CFileItem);
                     pbItem->m_bIsFolder = false;
                     pbItem->SetLabel(strItemName);
                     pbItem->m_strPath = "tuxbox://"+url.GetUserName()+":"+url.GetPassWord()+"@"+url.GetHostName()+strPort+"/cgi-bin/zapTo?path="+strItemPath+".ts";  

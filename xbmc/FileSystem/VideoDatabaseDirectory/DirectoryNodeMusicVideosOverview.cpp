@@ -61,7 +61,7 @@ bool CDirectoryNodeMusicVideosOverview::GetContent(CFileItemList& items)
 
   for (int i = 0; i < (int)vecRoot.size(); ++i)
   {
-    CFileItem* pItem = new CFileItem(vecRoot[i]);
+    CFileItemPtr pItem(new CFileItem(vecRoot[i]));
     CStdString strDir;
     strDir.Format("%i/", i+1);
     pItem->m_strPath = BuildPath() + strDir;

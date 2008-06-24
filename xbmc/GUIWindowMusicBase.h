@@ -67,7 +67,7 @@ protected:
   
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void OnRetrieveMusicInfo(CFileItemList& items);
-  void AddItemToPlayList(const CFileItem* pItem, CFileItemList &queuedItems);
+  void AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems);
   virtual void OnScan(int iItem) {};
   void OnRipCD();
   virtual void OnPrepareFileItems(CFileItemList &items);

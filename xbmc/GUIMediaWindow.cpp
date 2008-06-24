@@ -97,11 +97,11 @@ void CGUIMediaWindow::OnWindowUnload()
   m_viewControl.Reset();
 }
 
-CFileItem *CGUIMediaWindow::GetCurrentListItem(int offset)
+CFileItemPtr CGUIMediaWindow::GetCurrentListItem(int offset)
 {
   int item = m_viewControl.GetSelectedItem();
   if (!m_vecItems->Size() || item < 0)
-    return NULL;
+    return CFileItemPtr();
   item = (item + offset) % m_vecItems->Size();
   if (item < 0) item += m_vecItems->Size();
   return m_vecItems->Get(item);
@@ -269,9 +269,9 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_ITEM && message.GetLPVOID())
       {
-        CFileItem *newItem = (CFileItem *)message.GetLPVOID();
+        CFileItemPtr newItem = *(CFileItemPtr*)message.GetLPVOID();
         if (IsActive())
-          m_vecItems->UpdateItem(newItem);
+          m_vecItems->UpdateItem(newItem.get());
         else  
         { // need to remove the disc cache
           CFileItemList items;
@@ -384,7 +384,7 @@ void CGUIMediaWindow::UpdateButtons()
   int iItems = m_vecItems->Size();
   if (iItems)
   {
-    CFileItem* pItem = m_vecItems->Get(0);
+    CFileItemPtr pItem = m_vecItems->Get(0);
     if (pItem->IsParentFolder()) iItems--;
   }
   CStdString items;
@@ -420,15 +420,15 @@ void CGUIMediaWindow::FormatItemLabels(CFileItemList &items, const LABEL_MASKS &
   CLabelFormatter folderFormatter(labelMasks.m_strLabelFolder, labelMasks.m_strLabel2Folder);
   for (int i=0; i<items.Size(); ++i)
   {
-    CFileItem* pItem=items[i];
+    CFileItemPtr pItem=items[i];
 
     if (pItem->IsLabelPreformated())
       continue;
 
     if (pItem->m_bIsFolder)
-      folderFormatter.FormatLabels(pItem);
+      folderFormatter.FormatLabels(pItem.get());
     else
-      fileFormatter.FormatLabels(pItem);
+      fileFormatter.FormatLabels(pItem.get());
   }
 
   if(items.GetSortMethod() == SORT_METHOD_LABEL_IGNORE_THE 
@@ -468,7 +468,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
 
   if (m_guiState.get() && !m_guiState->HideParentDirItems())
   {
-    CFileItem *pItem = new CFileItem("..");
+    CFileItemPtr pItem(new CFileItem(".."));
     pItem->m_strPath = strParentPath;
     pItem->m_bIsFolder = true;
     pItem->m_bIsShareOrDrive = false;
@@ -479,8 +479,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   CFileItemList cachedItems(strDirectory);
   if (!strDirectory.IsEmpty() && cachedItems.Load())
   {
-    items.AssignPointer(cachedItems, true); // true to keep any previous items (".." item)
-    cachedItems.ClearKeepPointer();
+    items.Assign(cachedItems, true); // true to keep any previous items (".." item)
   }
   else
   {
@@ -510,10 +509,10 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   CStdString strSelectedItem = "";
   if (iItem >= 0 && iItem < m_vecItems->Size())
   {
-    CFileItem* pItem = m_vecItems->Get(iItem);
+    CFileItemPtr pItem = m_vecItems->Get(iItem);
     if (!pItem->IsParentFolder())
     {
-      GetDirectoryHistoryString(pItem, strSelectedItem);
+      GetDirectoryHistoryString(pItem.get(), strSelectedItem);
     }
   }
 
@@ -553,7 +552,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   if (strDirectory.IsEmpty() && bOkay && (m_vecItems->Size() == 0 || !m_guiState->DisableAddSourceButtons())) // add 'add source button'
   {
     CStdString strLabel = g_localizeStrings.Get(1026);
-    CFileItem *pItem = new CFileItem(strLabel);
+    CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->m_strPath = "add";
     pItem->SetThumbnailImage("DefaultAddSource.png");
     pItem->SetLabel(strLabel);
@@ -586,13 +585,13 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   //int iSongInDirectory = -1;
   for (int i = 0; i < m_vecItems->Size(); ++i)
   {
-    CFileItem* pItem = m_vecItems->Get(i);
+    CFileItemPtr pItem = m_vecItems->Get(i);
 
     // Update selected item
     if (!bSelectedFound)
     {
       CStdString strHistory;
-      GetDirectoryHistoryString(pItem, strHistory);
+      GetDirectoryHistoryString(pItem.get(), strHistory);
       if (strHistory == strSelectedItem)
       {
         m_viewControl.SetSelectedItem(i);
@@ -635,7 +634,7 @@ void CGUIMediaWindow::OnFinalizeFileItems(CFileItemList &items)
 bool CGUIMediaWindow::OnClick(int iItem)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return true;
-  CFileItem* pItem = m_vecItems->Get(iItem);
+  CFileItemPtr pItem = m_vecItems->Get(iItem);
 
   if (pItem->IsParentFolder())
   {
@@ -648,7 +647,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     {
       const CStdString& strLockType=m_guiState->GetLockType();
       if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
-        if (!strLockType.IsEmpty() && !g_passwordManager.IsItemUnlocked(pItem, strLockType))
+        if (!strLockType.IsEmpty() && !g_passwordManager.IsItemUnlocked(pItem.get(), strLockType))
             return true;
 
       if (!HaveDiscOrConnection(pItem->m_strPath, pItem->m_iDriveType))
@@ -707,7 +706,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
         CFileItemList queueItems;
         for ( int i = 0; i < m_vecItems->Size(); i++ )
         {
-          CFileItem* item = m_vecItems->Get(i);
+          CFileItemPtr item = m_vecItems->Get(i);
 
           if (item->m_bIsFolder)
             continue;
@@ -721,7 +720,6 @@ bool CGUIMediaWindow::OnClick(int iItem)
           }
         }
         g_playlistPlayer.Add(iPlaylist, queueItems);
-        queueItems.ClearKeepPointer();
 
         // Save current window and directory to know where the selected item was
         if (m_guiState.get())
@@ -912,13 +910,13 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
     {
       for (int i = 0; i < (int)items.Size(); ++i)
       {
-        CFileItem* pItem = items[i];
+        CFileItemPtr pItem = items[i];
         while (CUtil::HasSlashAtEnd(pItem->m_strPath))
           pItem->m_strPath.Delete(pItem->m_strPath.size() - 1);
         if (pItem->m_strPath == strPath)
         {
           CStdString strHistory;
-          GetDirectoryHistoryString(pItem, strHistory);
+          GetDirectoryHistoryString(pItem.get(), strHistory);
           m_history.SetSelectedItem(strHistory, "");
           CUtil::AddSlashAtEnd(strPath);
           m_history.AddPathFront(strPath);
@@ -952,7 +950,7 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem)
   // not use the playlistplayer.
   g_playlistPlayer.Reset();
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
-  CFileItem* pItem=m_vecItems->Get(iItem);
+  CFileItemPtr pItem=m_vecItems->Get(iItem);
 
   bool bResult = false;
   if (pItem->IsInternetStream() || pItem->IsPlayList())
@@ -972,7 +970,7 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem)
 void CGUIMediaWindow::UpdateFileList()
 {
   int nItem = m_viewControl.GetSelectedItem();
-  CFileItem* pItem = m_vecItems->Get(nItem);
+  CFileItemPtr pItem = m_vecItems->Get(nItem);
   const CStdString& strSelected = pItem->m_strPath;
 
   FormatAndSort(*m_vecItems);
@@ -988,14 +986,14 @@ void CGUIMediaWindow::UpdateFileList()
     int nSong = g_playlistPlayer.GetCurrentSong();
     CFileItem playlistItem;
     if (nSong > -1 && iPlaylist > -1)
-      playlistItem=g_playlistPlayer.GetPlaylist(iPlaylist)[nSong];
+      playlistItem=*g_playlistPlayer.GetPlaylist(iPlaylist)[nSong];
 
     g_playlistPlayer.ClearPlaylist(iPlaylist);
     g_playlistPlayer.Reset();
 
     for (int i = 0; i < m_vecItems->Size(); i++)
     {
-      CFileItem* pItem = m_vecItems->Get(i);
+      CFileItemPtr pItem = m_vecItems->Get(i);
       if (pItem->m_bIsFolder)
         continue;
 
@@ -1124,7 +1122,7 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
 
 void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : NULL;
+  CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
 
   if (!item)
     return;
@@ -1161,7 +1159,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   // TODO: FAVOURITES Conditions on masterlock and localisation
   if (!item->IsParentFolder() && !item->m_strPath.Equals("add") && !item->m_strPath.Equals("newplaylist://") && !item->m_strPath.Left(19).Equals("newsmartplaylist://"))
   {
-    if (CFavourites::IsFavourite(item, GetID()))
+    if (CFavourites::IsFavourite(item.get(), GetID()))
       buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite
     else
       buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14076);     // Add To Favourites;
@@ -1176,8 +1174,11 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   switch (button)
   {
   case CONTEXT_BUTTON_ADD_FAVOURITE:
-    CFavourites::AddOrRemove(m_vecItems->Get(itemNumber), GetID());
-    return true;
+    {
+      CFileItemPtr item = m_vecItems->Get(itemNumber);
+      CFavourites::AddOrRemove(item.get(), GetID());
+      return true;
+    }
   case CONTEXT_BUTTON_PLUGIN_SETTINGS:
     {
       CURL url(m_vecItems->Get(itemNumber)->m_strPath);

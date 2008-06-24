@@ -240,7 +240,10 @@ void CMusicInfoScanner::FetchAlbumInfo(const CStdString& strDirectory)
     if (CUtil::HasSlashAtEnd(strDirectory)) // directory
       CDirectory::GetDirectory(strDirectory,items);
     else
-      items.Add(new CFileItem(strDirectory,false));
+    {
+      CFileItemPtr item(new CFileItem(strDirectory,false));
+      items.Add(item);
+    }
   }
   
   for (int i=0;i<items.Size();++i)
@@ -278,7 +281,10 @@ void CMusicInfoScanner::FetchArtistInfo(const CStdString& strDirectory)
     if (CUtil::HasSlashAtEnd(strDirectory)) // directory
       CDirectory::GetDirectory(strDirectory,items);
     else
-      items.Add(new CFileItem(strDirectory,false));
+    {
+      CFileItemPtr newItem(new CFileItem(strDirectory,false));
+      items.Add(newItem);
+    }
   }
 
   for (int i=0;i<items.Size();++i)
@@ -380,7 +386,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   // now scan the subfolders
   for (int i = 0; i < items.Size(); ++i)
   {
-    CFileItem *pItem = items[i];
+    CFileItemPtr pItem = items[i];
 
     if (m_bStop)
       break;
@@ -410,7 +416,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
   // for every file found, but skip folder
   for (int i = 0; i < items.Size(); ++i)
   {
-    CFileItem* pItem = items[i];
+    CFileItemPtr pItem = items[i];
     CStdString strExtension;
     CUtil::GetExtension(pItem->m_strPath, strExtension);
 
@@ -686,7 +692,7 @@ int CMusicInfoScanner::CountFiles(const CFileItemList &items, bool recursive)
   int count = 0;
   for (int i=0; i<items.Size(); ++i)
   {
-    const CFileItem* pItem=items[i];
+    const CFileItemPtr pItem=items[i];
 
     if (recursive && pItem->m_bIsFolder)
       count+=CountFilesRecursively(pItem->m_strPath);
@@ -707,7 +713,7 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, CStdString &hash)
   int count = 0;
   for (int i = 0; i < items.Size(); ++i)
   {
-    const CFileItem *pItem = items[i];
+    const CFileItemPtr pItem = items[i];
     MD5Update(&md5state, (unsigned char *)pItem->m_strPath.c_str(), (int)pItem->m_strPath.size());
     MD5Update(&md5state, (unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
     FILETIME time = pItem->m_dateTime;

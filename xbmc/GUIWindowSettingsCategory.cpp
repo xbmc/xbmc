@@ -2459,7 +2459,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
       int iSize = 0;
       for (int i = 0; i < items.Size(); ++i)
       {
-        CFileItem* pItem = items[i];
+        CFileItemPtr pItem = items[i];
         if (pItem->m_bIsFolder)
         {
           if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
@@ -2491,7 +2491,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
     directory.GetDirectory(strPath, items);
     for (int i = 0; i < items.Size(); ++i)
     {
-      CFileItem* pItem = items[i];
+      CFileItemPtr pItem = items[i];
       if (pItem->m_bIsFolder)
       {
         if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
@@ -2511,7 +2511,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
     {
       for (int i = 0; i < items.Size(); ++i)
       {
-        CFileItem* pItem = items[i];
+        CFileItemPtr pItem = items[i];
 
         if (!pItem->m_bIsFolder)
         {
@@ -2619,7 +2619,7 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
   vector<CStdString> vecSkins;
   for (int i = 0; i < items.Size(); ++i)
   {
-    CFileItem* pItem = items[i];
+    CFileItemPtr pItem = items[i];
     if (pItem->m_bIsFolder)
     {
       if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
@@ -2668,7 +2668,7 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
   int i;
   for (i = 0; i < items.Size(); ++i)
   {
-    CFileItem* pItem = items[i];
+    CFileItemPtr pItem = items[i];
     if (pItem->m_bIsFolder)
     {
       if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
@@ -2750,7 +2750,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
 
   for (int i = 0; i < items.Size(); ++i)
   {
-    CFileItem* pItem = items[i];
+    CFileItemPtr pItem = items[i];
     if (!pItem->m_bIsFolder)
     {
       CStdString strExtension;
@@ -3014,7 +3014,7 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   vector<CStdString> vecLanguage;
   for (int i = 0; i < items.Size(); ++i)
   {
-    CFileItem* pItem = items[i];
+    CFileItemPtr pItem = items[i];
     if (pItem->m_bIsFolder)
     {
       if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
@@ -3060,7 +3060,7 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   int i = 0;
   for (i = 0; i < items.Size(); ++i)
   {
-    CFileItem* pItem = items[i];
+    CFileItemPtr pItem = items[i];
     if (!pItem->m_bIsFolder)
     {
       CStdString strExtension;
@@ -3327,7 +3327,7 @@ void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting)
   // Search for Themes in the Current skin!
   for (int i = 0; i < items.Size(); ++i)
   {
-    CFileItem* pItem = items[i];
+    CFileItemPtr pItem = items[i];
     if (!pItem->m_bIsFolder && pItem->GetLabel().CompareNoCase("defaults.xml") != 0)
     { // not the default one
       CStdString strLabel = pItem->GetLabel();
