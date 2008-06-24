@@ -1920,9 +1920,6 @@
 					RelativePath="..\..\xbmc\MediaSource.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\memutil.cpp">
-				</File>
-				<File
 					RelativePath="..\..\xbmc\utils\MusicAlbumInfo.cpp">
 				</File>
 				<File
@@ -3528,9 +3525,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\MediaManager.h">
-			</File>
-			<File
-				RelativePath="..\..\xbmc\memutil.h">
 			</File>
 			<File
 				RelativePath="..\..\xbmc\utils\MusicAlbumInfo.h">
