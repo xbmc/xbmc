@@ -26,6 +26,7 @@
  */
 
 #include "lib/libPython/python/Python.h"
+#include "FileItem.h"
 
 #define PlayList_Check(op) PyObject_TypeCheck(op, &PlayList_Type)
 #define PlayList_CheckExact(op) ((op)->ob_type == &PlayList_Type)
@@ -39,7 +40,6 @@ extern "C" {
 namespace PLAYLIST
 {
   class CPlayList;
-  class CPlayListItem;
 }
 
 namespace PYXBMC
@@ -56,7 +56,7 @@ namespace PYXBMC
 
   typedef struct {
     PyObject_HEAD
-    PLAYLIST::CPlayListItem* item;
+    CFileItemPtr item;
   } PlayListItem;
 
   void initPlayList_Type();

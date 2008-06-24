@@ -55,7 +55,7 @@ bool CFavourites::Load(CFileItemList &items)
     const char *thumb = favourite->Attribute("thumb");
     if (name && favourite->FirstChild())
     {
-      CFileItem *item = new CFileItem(name);
+      CFileItemPtr item(new CFileItem(name));
       item->m_strPath = favourite->FirstChild()->Value();
       if (thumb) item->SetThumbnailImage(thumb);
       items.Add(item);
@@ -75,7 +75,7 @@ bool CFavourites::Save(const CFileItemList &items)
 
   for (int i = 0; i < items.Size(); i++)
   {
-    const CFileItem *item = items[i];
+    const CFileItemPtr item = items[i];
     TiXmlElement favNode("favourite");
     favNode.SetAttribute("name", item->GetLabel().c_str());
     if (item->HasThumbnail())
@@ -99,14 +99,14 @@ bool CFavourites::AddOrRemove(CFileItem *item, DWORD contextWindow)
 
   CStdString executePath(GetExecutePath(item, contextWindow));
 
-  CFileItem *match = items.Get(executePath);
+  CFileItemPtr match = items.Get(executePath);
   if (match)
   { // remove the item
-    items.Remove(match);
+    items.Remove(match.get());
   }
   else
   { // create our new favourite item
-    CFileItem *favourite = new CFileItem(item->GetLabel());
+    CFileItemPtr favourite(new CFileItem(item->GetLabel()));
     if (item->GetLabel().IsEmpty())
       favourite->SetLabel(CUtil::GetTitleFromPath(item->m_strPath, item->m_bIsFolder));
     favourite->SetThumbnailImage(item->GetThumbnailImage());

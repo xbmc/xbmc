@@ -83,7 +83,7 @@ void CGUIDialogAccessPoints::OnInitWindow()
 
   for (int i = 0; i < (int) m_aps.size(); i++)
   {
-      CFileItem *item = new CFileItem(m_aps[i].getEssId());
+      CFileItemPtr item(new CFileItem(m_aps[i].getEssId()));
 
       int q = m_aps[i].getQuality();
       if (q <= 20) item->SetThumbnailImage("ap-signal1.png");
@@ -99,7 +99,7 @@ void CGUIDialogAccessPoints::OnInitWindow()
       OnMessage(msg);
   }
 
-  CFileItem *item = new CFileItem(g_localizeStrings.Get(1047));
+  CFileItemPtr item(new CFileItem(g_localizeStrings.Get(1047)));
   CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_ACCESS_POINTS, 0, 0, item);
   OnMessage(msg);
 }

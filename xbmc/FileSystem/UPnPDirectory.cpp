@@ -114,7 +114,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             NPT_String name   = device->GetFriendlyName();
             NPT_String uuid = (*entry)->GetKey();
 
-            CFileItem *pItem = new CFileItem((const char*)name);
+            CFileItemPtr pItem(new CFileItem((const char*)name));
             pItem->m_strPath = (const char*) path + uuid;
             pItem->m_bIsFolder = true;
             pItem->SetThumbnailImage((const char*)device->GetIconUrl("image/jpeg"));
@@ -122,7 +122,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             if (!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += '/';
 
             vecCacheItems.Add(pItem);
-            items.Add(new CFileItem(*pItem));
+            items.Add(pItem);
 
             ++entry;
         }
@@ -220,7 +220,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
               }
             }
 
-            CFileItem *pItem = new CFileItem((const char*)(*entry)->m_Title);
+            CFileItemPtr pItem(new CFileItem((const char*)(*entry)->m_Title));
             pItem->SetLabelPreformated(true);
             pItem->m_bIsFolder = (*entry)->IsContainer();
 
@@ -308,7 +308,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
               pItem->SetThumbnailImage((const char*) (*entry)->m_Description.icon_uri);
 
             vecCacheItems.Add(pItem);
-            items.Add(new CFileItem(*pItem));
+            items.Add(pItem);
 
             ++entry;
         }

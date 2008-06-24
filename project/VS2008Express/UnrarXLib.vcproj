@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\guilib;..\..\xbmc"
+				AdditionalIncludeDirectories="..\..\guilib;..\..\xbmc;..\boost"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;XBMC;HAS_SDL;_USE_32BIT_TIME_T"
 				StringPooling="true"
 				MinimalRebuild="false"
@@ -114,7 +114,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="3"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\guilib;..\..\xbmc"
+				AdditionalIncludeDirectories="..\..\guilib;..\..\xbmc;..\boost"
 				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;XBMC;HAS_SDL;_USE_32BIT_TIME_T"
 				StringPooling="true"
 				RuntimeLibrary="0"
