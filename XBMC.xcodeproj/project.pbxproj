@@ -711,7 +711,6 @@
 		E38E22D30D25F9FE00618676 /* HTMLUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */; };
 		E38E22D40D25F9FE00618676 /* HTTP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E440D25F9FD00618676 /* HTTP.cpp */; };
 		E38E22D50D25F9FE00618676 /* HttpHeader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E460D25F9FD00618676 /* HttpHeader.cpp */; };
-		E38E22D60D25F9FE00618676 /* Idle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E480D25F9FD00618676 /* Idle.cpp */; };
 		E38E22D70D25F9FE00618676 /* IMDB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E4A0D25F9FD00618676 /* IMDB.cpp */; };
 		E38E22D80D25F9FE00618676 /* InfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E4C0D25F9FD00618676 /* InfoLoader.cpp */; };
 		E38E22DB0D25F9FE00618676 /* LabelFormatter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E530D25F9FD00618676 /* LabelFormatter.cpp */; };
@@ -2659,8 +2658,6 @@
 		E38E1E450D25F9FD00618676 /* HTTP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTP.h; sourceTree = "<group>"; };
 		E38E1E460D25F9FD00618676 /* HttpHeader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpHeader.cpp; sourceTree = "<group>"; };
 		E38E1E470D25F9FD00618676 /* HttpHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpHeader.h; sourceTree = "<group>"; };
-		E38E1E480D25F9FD00618676 /* Idle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Idle.cpp; sourceTree = "<group>"; };
-		E38E1E490D25F9FD00618676 /* Idle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Idle.h; sourceTree = "<group>"; };
 		E38E1E4A0D25F9FD00618676 /* IMDB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IMDB.cpp; sourceTree = "<group>"; };
 		E38E1E4B0D25F9FD00618676 /* IMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMDB.h; sourceTree = "<group>"; };
 		E38E1E4C0D25F9FD00618676 /* InfoLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InfoLoader.cpp; sourceTree = "<group>"; };
@@ -5895,8 +5892,6 @@
 				E38E1E450D25F9FD00618676 /* HTTP.h */,
 				E38E1E460D25F9FD00618676 /* HttpHeader.cpp */,
 				E38E1E470D25F9FD00618676 /* HttpHeader.h */,
-				E38E1E480D25F9FD00618676 /* Idle.cpp */,
-				E38E1E490D25F9FD00618676 /* Idle.h */,
 				E38E1E4A0D25F9FD00618676 /* IMDB.cpp */,
 				E38E1E4B0D25F9FD00618676 /* IMDB.h */,
 				E38E1E4C0D25F9FD00618676 /* InfoLoader.cpp */,
@@ -6671,7 +6666,6 @@
 				E38E22D30D25F9FE00618676 /* HTMLUtil.cpp in Sources */,
 				E38E22D40D25F9FE00618676 /* HTTP.cpp in Sources */,
 				E38E22D50D25F9FE00618676 /* HttpHeader.cpp in Sources */,
-				E38E22D60D25F9FE00618676 /* Idle.cpp in Sources */,
 				E38E22D70D25F9FE00618676 /* IMDB.cpp in Sources */,
 				E38E22D80D25F9FE00618676 /* InfoLoader.cpp in Sources */,
 				E38E22DB0D25F9FE00618676 /* LabelFormatter.cpp in Sources */,

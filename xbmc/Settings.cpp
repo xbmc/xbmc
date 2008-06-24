@@ -38,7 +38,6 @@
 #include "utils/Network.h"
 #include "FileSystem/MultiPathDirectory.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE enum
-#include "utils/FanController.h"
 #include "MediaManager.h"
 #include "XBVideoConfig.h"
 #include "DNSNameCache.h"
