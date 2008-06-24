@@ -119,7 +119,6 @@ class CGUIListItem;
 #define SYSTEM_BUILD_DATE           121
 #define SYSTEM_ETHERNET_LINK_ACTIVE 122
 #define SYSTEM_FPS                  123
-#define SYSTEM_KAI_CONNECTED        124
 #define SYSTEM_ALWAYS_TRUE          125   // useful for <visible fade="10" start="hidden">true</visible>, to fade in a control
 #define SYSTEM_ALWAYS_FALSE         126   // used for <visible fade="10">false</visible>, to fade out a control (ie not particularly useful!)
 #define SYSTEM_MEDIA_DVD            127
@@ -136,7 +135,6 @@ class CGUIListItem;
 #define SYSTEM_HASLOCKS             140
 #define SYSTEM_ISMASTER             141
 #define SYSTEM_TRAYOPEN             142
-#define SYSTEM_KAI_ENABLED          143
 #define SYSTEM_ALARM_POS            144
 #define SYSTEM_LOGGEDON             145
 #define SYSTEM_PROFILENAME          146
@@ -379,7 +377,6 @@ class CGUIListItem;
 #define SYSTEM_PLATFORM_LINUX       741
 #define SYSTEM_PLATFORM_WINDOWS     742
 
-#define XLINK_KAI_USERNAME          750
 #define SKIN_THEME                  800
 #define SKIN_COLOUR_THEME           801
 
