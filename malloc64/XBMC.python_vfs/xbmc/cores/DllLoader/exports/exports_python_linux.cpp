@@ -82,6 +82,8 @@ int xbp_dlclose(void *handle)
 
 void *xbp_dlsym(void *handle, const char *symbol)
 {
+  if (!strcmp(symbol, "initbinascii"))
+    CLog::Log(LOGDEBUG, "Hello, World!");
   LibraryLoader *pDll = (LibraryLoader*)handle;
   CLog::Log(LOGDEBUG,"%s - load symbol %s", __FUNCTION__, symbol);
   void *f = NULL;

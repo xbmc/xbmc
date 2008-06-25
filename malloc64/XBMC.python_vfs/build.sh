@@ -211,9 +211,9 @@ compile() {
       echo " Cleaning source directory."
       if (( VERBOSE ))
       then
-        make -C "${SOURCEDIR}" clean
+        make -C "${SOURCEDIR}" distclean
       else
-        make -C "${SOURCEDIR}" clean &> /dev/null
+        make -C "${SOURCEDIR}" distclean &> /dev/null
       fi
     else
       echo " Skipping source directory cleaning."

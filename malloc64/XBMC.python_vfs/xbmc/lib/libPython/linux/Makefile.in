@@ -2,11 +2,10 @@
 default: python24.zip python24-@ARCH@.so
 	cp python24.zip python24-@ARCH@.so  ../../../../system/python
 
-python24.zip:
-	(cd tmp2/lib/python2.4; mv lib-dynload/* .; zip -0 -r ../../../python24.zip *)
-	rm -rf tmp2
+python24.zip: python-lib
+	(cd python-lib/lib/python2.4; mv lib-dynload/* .; zip -0 -r ../../../python24.zip *)
 
-python24-@ARCH@.so : wrapper_python.o ../Python/libpython2.4.a wrapper_python.def ../../../cores/DllLoader/exports/wrapper.def ../../../cores/DllLoader/exports/wrapper.o ../Python/Makefile
+python24-@ARCH@.so : wrapper_python.o wrapper_python.def ../../../cores/DllLoader/exports/wrapper.def ../../../cores/DllLoader/exports/wrapper.o python24.zip
 	if [ \! -d tmp ]; then mkdir tmp; fi
 	(cd ./tmp; ar x ../../Python/libpython2.4.a)
 	gcc -shared -o $@ tmp/*.o `cat wrapper_python.def` wrapper_python.o `cat ../../../cores/DllLoader/exports/wrapper.def` ../../../cores/DllLoader/exports/wrapper.o
@@ -18,9 +17,11 @@ wrapper_python.o : wrapper_python.c
 wrapper_python.def : wrapper_python.c
 	(echo -n "-Wl"; grep PYTHON_WRAP wrapper_python.c | grep -v define | awk -F ')' '{print $$1}' | awk -F'(' '{print $$2}' | grep -v '^l*stat$$' | awk '{printf(",-wrap,%s",$$0);}') > wrapper_python.def
 
-../Python/libpython2.4.a:
-	$(MAKE) -C ../Python python libinstall sharedinstall
+python-lib:
+	$(MAKE) -C ../Python
+	$(MAKE) -C ../Python sharedinstall
+	$(MAKE) -C ../Python libinstall
 
 clean:
-	$(RM) *.so *.o *.def
-	if [ -e ../Python/Makefile ]; then $(MAKE) -C ../Python clean; fi
+	$(RM) -rf *.so *.o *.def python-lib python24.zip
+	$(MAKE) -C ../Python clean
