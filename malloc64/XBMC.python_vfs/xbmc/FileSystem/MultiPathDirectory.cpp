@@ -238,7 +238,7 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
   while (i + 1 < items.Size())
   {
     // there are no more folders left, so exit the loop
-    CFileItem* pItem1 = items.Get(i);
+    CFileItemPtr pItem1 = items.Get(i);
     if (!pItem1->m_bIsFolder)
       break;
 
@@ -249,7 +249,7 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
     int j = i + 1;
     do
     {
-      CFileItem* pItem2 = items.Get(j);
+      CFileItemPtr pItem2 = items.Get(j);
       if (!pItem2->GetLabel().Equals(pItem1->GetLabel()))
         break;
 

@@ -350,7 +350,6 @@ public:
   CStdString GetPicturesThumbFolder() const;
   CStdString GetProgramsThumbFolder() const;
   CStdString GetGameSaveThumbFolder() const;
-  CStdString GetXLinkKaiThumbFolder() const;
   CStdString GetProfilesThumbFolder() const;
   CStdString GetSourcesFile() const;
   CStdString GetSkinFolder() const;
@@ -359,7 +358,6 @@ public:
   CStdString GetVideoFanartFolder() const;
 
   CStdString GetSettingsFile() const;
-  CStdString GetAvpackSettingsFile() const;
 
   bool LoadUPnPXml(const CStdString& strSettingsFile);
   bool SaveUPnPXml(const CStdString& strSettingsFile) const;
@@ -406,12 +404,6 @@ protected:
   void LoadUserFolderLayout();
 
   void LoadRSSFeeds();
-
-  bool SaveAvpackXML() const;
-  bool SaveNewAvpackXML() const;
-  bool SaveAvpackSettings(TiXmlNode *io_pRoot) const;
-  bool LoadAvpackXML();
-
 };
 
 extern class CSettings g_settings;

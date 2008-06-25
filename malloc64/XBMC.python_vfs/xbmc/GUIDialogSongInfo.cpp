@@ -41,16 +41,15 @@ using namespace XFILE;
 
 CGUIDialogSongInfo::CGUIDialogSongInfo(void)
     : CGUIDialog(WINDOW_DIALOG_SONG_INFO, "DialogSongInfo.xml")
+    , m_song(new CFileItem)
 {
   m_cancelled = false;
   m_needsUpdate = false;
   m_startRating = -1;
-  m_song = new CFileItem;
 }
 
 CGUIDialogSongInfo::~CGUIDialogSongInfo(void)
 {
-  delete m_song;
 }
 
 bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
@@ -166,7 +165,7 @@ void CGUIDialogSongInfo::SetSong(CFileItem *item)
   *m_song = *item;
   m_song->LoadMusicTag();
   m_startRating = m_song->GetMusicInfoTag()->GetRating();
-  MUSIC_INFO::CMusicInfoLoader::LoadAdditionalTagInfo(m_song);
+  MUSIC_INFO::CMusicInfoLoader::LoadAdditionalTagInfo(m_song.get());
   // set artist thumb as well
   if (m_song->HasMusicInfoTag())
   {
@@ -178,7 +177,7 @@ void CGUIDialogSongInfo::SetSong(CFileItem *item)
   m_needsUpdate = false;
 }
 
-CFileItem* CGUIDialogSongInfo::GetCurrentListItem(int offset)
+CFileItemPtr CGUIDialogSongInfo::GetCurrentListItem(int offset)
 {
   return m_song;
 }
@@ -212,7 +211,7 @@ void CGUIDialogSongInfo::OnGetThumb()
   CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "allmusicThumb.jpg", thumbFromWeb);
   if (DownloadThumbnail(thumbFromWeb))
   {
-    CFileItem *item = new CFileItem("thumb://allmusic.com", false);
+    CFileItemPtr item(new CFileItem("thumb://allmusic.com", false));
     item->SetThumbnailImage(thumbFromWeb);
     item->SetLabel(g_localizeStrings.Get(20055));
     items.Add(item);
@@ -221,7 +220,7 @@ void CGUIDialogSongInfo::OnGetThumb()
   // Current thumb
   if (CFile::Exists(m_song->GetThumbnailImage()))
   {
-    CFileItem *item = new CFileItem("thumb://Current", false);
+    CFileItemPtr item(new CFileItem("thumb://Current", false));
     item->SetThumbnailImage(m_song->GetThumbnailImage());
     item->SetLabel(g_localizeStrings.Get(20016));
     items.Add(item);
@@ -241,7 +240,7 @@ void CGUIDialogSongInfo::OnGetThumb()
     CPicture pic;
     if (pic.DoCreateThumbnail(localThumb, cachedLocalThumb))
     {
-      CFileItem *item = new CFileItem("thumb://Local", false);
+      CFileItemPtr item(new CFileItem("thumb://Local", false));
       item->SetThumbnailImage(cachedLocalThumb);
       item->SetLabel(g_localizeStrings.Get(20017));
       items.Add(item);
@@ -251,7 +250,7 @@ void CGUIDialogSongInfo::OnGetThumb()
   { // no local thumb exists, so we are just using the allmusic.com thumb or cached thumb
     // which is probably the allmusic.com thumb.  These could be wrong, so allow the user
     // to delete the incorrect thumb
-    CFileItem *item = new CFileItem("thumb://None", false);
+    CFileItemPtr item(new CFileItem("thumb://None", false));
     item->SetThumbnailImage("defaultAlbumCover.png");
     item->SetLabel(g_localizeStrings.Get(20018));
     items.Add(item);

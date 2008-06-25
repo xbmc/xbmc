@@ -28,11 +28,6 @@ namespace XFILE
   class IFileCallback;
 }
 
-namespace PLAYLIST
-{
-  class CPlayListItem;
-}
-
 class CFileItem;
 class CFileItemList;
 
@@ -258,7 +253,6 @@ public:
 #endif
   static bool CreateDirectoryEx(const CStdString& strPath);
   static CStdString MakeLegalFileName(const CStdString &strFile);
-  static void ConvertFileItemToPlayListItem(const CFileItem *pItem, PLAYLIST::CPlayListItem &playlistitem);
   static void AddDirectorySeperator(CStdString& strPath);
   static char GetDirectorySeperator(const CStdString& strFile);
 
@@ -290,7 +284,6 @@ public:
 
   static double AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& strAlbum1, const CStdString& strArtistTemp1, const CStdString& strArtist1);
   static bool MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength);
-  static float CurrentCpuUsage();
   static bool SupportsFileOperations(const CStdString& strPath);
 
   static CStdString GetCachedMusicThumb(const CStdString &path);

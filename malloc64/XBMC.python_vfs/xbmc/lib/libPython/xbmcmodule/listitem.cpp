@@ -59,8 +59,10 @@ namespace PYXBMC
 
     // allocate new object
     self = (ListItem*)type->tp_alloc(type, 0);
-    if (!self) return NULL;
-      self->item = NULL;
+    if (!self)
+      return NULL;
+    
+    self->item.reset();
 
     // parse user input
     if (!PyArg_ParseTupleAndKeywords(
@@ -74,7 +76,7 @@ namespace PYXBMC
     }
 
     // create CFileItem
-    self->item = new CFileItem();
+    self->item.reset(new CFileItem());
     if (!self->item)
     {
       Py_DECREF( self );
@@ -109,7 +111,7 @@ namespace PYXBMC
     ListItem* self = (ListItem*)ListItem_Type.tp_alloc(&ListItem_Type, 0);
     if (!self) return NULL;
 
-    self->item = new CFileItem(strLabel);
+    self->item.reset(new CFileItem(strLabel));
     if (!self->item)
     {
       Py_DECREF( self );
@@ -121,7 +123,6 @@ namespace PYXBMC
 
   void ListItem_Dealloc(ListItem* self)
   {
-    if (self->item) delete self->item;
     self->ob_type->tp_free((PyObject*)self);
   }
 

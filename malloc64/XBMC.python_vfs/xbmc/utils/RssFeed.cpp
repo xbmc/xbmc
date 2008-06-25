@@ -21,12 +21,8 @@
 
 #include "stdafx.h"
 #include "RssFeed.h"
-#include "stdafx.h"
-#include "FileSystem/File.h"
 #include "Settings.h"
 #include "Util.h"
-#include "FileItem.h"
-#include "SingleLock.h"
 #include "HTTP.h"
 #include "tinyXML/tinyxml.h"
 
@@ -53,7 +49,9 @@ bool CRssFeed::Init(const CStdString& strURL) {
 time_t CRssFeed::ParseDate(const CStdString & strDate) {
   struct tm pubDate = {0};
   // TODO: Handle time zone
+#ifndef _WIN32 // TODO: Implement this on win32 (no strptime)
   strptime(strDate.c_str(), "%a, %d %b %Y %H:%M:%S", &pubDate);
+#endif
   // Check the difference between the time of last check and time of the item
   return mktime(&pubDate);
 }
@@ -144,7 +142,7 @@ bool CRssFeed::ReadFeed() {
   for( child = channelXmlNode->FirstChildElement("item"); child; child = child->NextSiblingElement() ) 
   {
     // Create new item, 
-    item = new CFileItem();
+    CFileItemPtr item(new CFileItem());
 
     for( item_child = child->FirstChildElement(); item_child; item_child = item_child->NextSiblingElement() ) 
     {
@@ -301,8 +299,6 @@ bool CRssFeed::ReadFeed() {
       items.Add(item);
       LeaveCriticalSection(m_ItemVectorLock);
     }
-    else
-      delete item;
   }
 
   return true;

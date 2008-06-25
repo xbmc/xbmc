@@ -36,7 +36,6 @@ class CFileItemList;
 #include "GUIWindowPointer.h"   // Mouse pointer
 #include "Settings.h"
 
-#include "utils/Idle.h"
 #include "utils/DelayController.h"
 #include "cores/IPlayer.h"
 #include "cores/PlayerCoreFactory.h"
@@ -85,12 +84,6 @@ public:
   virtual HRESULT Cleanup();
   void StartServices();
   void StopServices();
-  void StartIdleThread();
-  void StopIdleThread();
-#ifdef HAS_KAI
-  void StartKai();
-  void StopKai();
-#endif
   void StartWebServer();
   void StopWebServer();
   void StartFtpServer();
@@ -163,9 +156,6 @@ public:
   bool IsButtonDown(DWORD code);
   bool AnyButtonDown();
   bool ResetScreenSaverWindow();
-#ifdef HAS_KAI
-  void SetKaiNotification(const CStdString& aCaption, const CStdString& aDescription, CGUIImage* aIcon=NULL);
-#endif
   double GetTotalTime() const;
   double GetTime() const;
   float GetPercentage() const;
@@ -193,7 +183,6 @@ public:
   CGUIDialogMuteBug m_guiDialogMuteBug;
   CGUIWindowPointer m_guiPointer;
 
-  CIdleThread m_idleThread;
   MEDIA_DETECT::CAutorun m_Autorun;
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
   CDelayController m_ctrDpad;
@@ -251,7 +240,7 @@ protected:
   CStopWatch m_navigationTimer;
   CStopWatch m_slowTimer;
 
-  CFileItem* m_itemCurrentFile;
+  CFileItemPtr m_itemCurrentFile;
   CFileItemList* m_currentStack;
   CStdString m_prevMedia;
   CSplash* m_splash;

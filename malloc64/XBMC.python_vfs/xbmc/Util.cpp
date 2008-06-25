@@ -75,9 +75,6 @@
 #include "MediaManager.h"
 #include "utils/Network.h"
 #include "GUIPassword.h"
-#ifdef HAS_KAI
-#include "utils/KaiClient.h"
-#endif
 #ifdef HAS_FTP_SERVER
 #include "lib/libfilezilla/xbfilezilla.h"
 #endif
@@ -2255,12 +2252,11 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
 
 CStdString CUtil::MakeLegalFileName(const CStdString &strFile)
 {
-  CURL url(strFile);
-  CStdString result = url.GetFileName();
+  CStdString strPath;
+  GetDirectory(strFile,strPath);
+  CStdString result = GetFileName(strFile);
 
   // just filter out some illegal characters on windows
-  result.Remove('\\');
-  result.Remove('/');
   result.Remove(':');
   result.Remove('*');
   result.Remove('?');
@@ -2269,9 +2265,7 @@ CStdString CUtil::MakeLegalFileName(const CStdString &strFile)
   result.Remove('>');
   result.Remove('|');
 
-  url.SetFileName(result);
-
-  url.GetURL(result);
+  result = strPath+result;
 
   return result;
 }
@@ -2285,18 +2279,6 @@ char CUtil::GetDirectorySeperator(const CStdString &strFilename)
 {
   CURL url(strFilename);
   return url.GetDirectorySeparator();
-}
-
-void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayListItem &playlistitem)
-{
-  *(CFileItem*)&playlistitem = *pItem;
-
-  if (pItem->HasMusicInfoTag())
-    playlistitem.SetDuration(pItem->GetMusicInfoTag()->GetDuration());
-  if (playlistitem.HasVideoInfoTag())
-    playlistitem.SetDuration(StringUtils::TimeStringToSeconds(pItem->GetVideoInfoTag()->m_strRuntime));
-  if (pItem->IsVideoDb())
-    playlistitem.m_strPath = pItem->GetVideoInfoTag()->m_strFileNameAndPath;
 }
 
 bool CUtil::IsUsingTTFSubtitles()
@@ -2334,9 +2316,6 @@ const BUILT_IN commands[] = {
   { "EjectTray",                  false,  "Close or open the DVD tray" },
   { "AlarmClock",                 true,   "Prompt for a length of time and start an alarm clock" },
   { "CancelAlarm",                true,   "Cancels an alarm" },
-#ifdef HAS_KAI
-  { "KaiConnection",              false,  "Change kai connection status (connect/disconnect)" },
-#endif
   { "Action",                     true,   "Executes an action for the active window (same as in keymap)" },
   { "Notification",               true,   "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon." },
   { "PlayDVD",                    false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!" },
@@ -2944,30 +2923,6 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_alarmClock.stop(parameter);
   }
-#ifdef HAS_KAI
-  else if (execute.Equals("kaiconnection"))
-  {
-    if (CKaiClient::GetInstance())
-    {
-      if (!CKaiClient::GetInstance()->IsEngineConnected())
-      {
-        while (!CKaiClient::GetInstance()->IsEngineConnected())
-        {
-          CKaiClient::GetInstance()->Reattach();
-          Sleep(3000);
-        }
-      }
-      else
-      {
-        CKaiClient::GetInstance()->Detach();
-      }
-    }
-    else
-    {
-      CGUIDialogOK::ShowAndGetInput(15000, 0, 14073, 0);
-    }
-  }
-#endif
   else if (execute.Equals("playdvd"))
   {
     CAutorun::PlayDisc();
@@ -4113,7 +4068,7 @@ void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items,
     if (myItems[i]->m_bIsFolder)
       CUtil::GetRecursiveListing(myItems[i]->m_strPath,items,strMask,bUseFileDirectories);
     else if (!myItems[i]->IsRAR() && !myItems[i]->IsZIP())
-      items.Add(new CFileItem(*myItems[i]));
+      items.Add(myItems[i]);
   }
 }
 
@@ -4125,8 +4080,7 @@ void CUtil::GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& it
   {
     if (myItems[i]->m_bIsFolder && !myItems[i]->m_strPath.Equals(".."))
     {
-      CFileItem* pItem = new CFileItem(*myItems[i]);
-      item.Add(pItem);
+      item.Add(myItems[i]);
       CUtil::GetRecursiveDirsListing(myItems[i]->m_strPath,item);
     }
   }
@@ -4262,11 +4216,6 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
   return true;
 }
 
-float CUtil::CurrentCpuUsage()
-{
-  return (1.0f - g_application.m_idleThread.GetRelativeUsage())*100;
-}
-
 bool CUtil::SupportsFileOperations(const CStdString& strPath)
 {
   // currently only hd and smb support delete and rename
@@ -4322,7 +4271,7 @@ void CUtil::GetSkinThemes(std::vector<CStdString>& vecTheme)
   // Search for Themes in the Current skin!
   for (int i = 0; i < items.Size(); ++i)
   {
-    CFileItem* pItem = items[i];
+    CFileItemPtr pItem = items[i];
     if (!pItem->m_bIsFolder)
     {
       CStdString strExtension;

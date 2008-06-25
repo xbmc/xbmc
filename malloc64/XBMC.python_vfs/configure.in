@@ -76,6 +76,11 @@ if test "$host_vendor" = "apple" ; then
    AC_SUBST(INCLUDES, "-I/opt/local/include -I/opt/local/include/freetype2 -I/opt/local/include/mysql5 -I../xbmc -I../xbmc/lib -I../xbmc/osx -Ixbmc/lib -Ixbmc/osx -Ilib/libffmpeg-OSX/libavutil -I../xbmc/lib/libffmpeg-OSX -Ilib -Iosx -I.")
 fi
 
+# Checks for boost headers using g++ instead of gcc
+oldCC="$CC"
+CC="$CXX"
+AC_CHECK_HEADER([boost/shared_ptr.hpp], , AC_MSG_ERROR(== Could not find the boost library. Please see README.linux))
+CC="$oldCC"
 
 # Checks for libraries.
 if test "$use_gl" = "yes"; then
@@ -313,7 +318,7 @@ fi
 AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(SDL_DEFINES)
 AC_SUBST(LZO_INCLUDES)
-AC_CONFIG_FILES([Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh])
+AC_CONFIG_FILES([Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile])
 AC_CONFIG_COMMANDS_POST([pushd xbmc/lib/libPython/Python; ./configure --enable-ipv6 --enable-unicode=ucs4 --without-cxx --enable-shared --prefix=`pwd`/../linux/python-lib; sed -i "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h; cp pyconfig.h Include; popd])
 AC_OUTPUT
 

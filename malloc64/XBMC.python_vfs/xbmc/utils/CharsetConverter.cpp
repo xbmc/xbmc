@@ -324,35 +324,10 @@ void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA 
   convert(m_iconvUtf16BEtoUtf8,4,"UTF-16BE","UTF-8",strSource,strDest);
 }
 
-void CCharsetConverter::utf16LEtoUTF8(const void *strSource,
+void CCharsetConverter::utf16LEtoUTF8(const CStdStringW& strSource,
                                       CStdStringA &strDest)
 {
-  if (m_iconvUtf16LEtoUtf8 == (iconv_t) - 1)
-    m_iconvUtf16LEtoUtf8 = iconv_open("UTF-8", "UTF-16LE");
-
-  if (m_iconvUtf16LEtoUtf8 != (iconv_t) - 1)
-  {
-    size_t inBytes = 2;
-    uint16_t *s = (uint16_t *)strSource;
-    while (*s != 0)
-    { 
-      s++;
-      inBytes += 2;
-    }
-    // UTF-8 is up to 4 bytes/character, or up to twice the length of UTF-16
-    size_t outBytes = inBytes * 2;
-
-    const char *src = (const char *)strSource;
-    char *dst = strDest.GetBuffer(outBytes);
-    if (iconv_const(m_iconvUtf16LEtoUtf8, &src, &inBytes, &dst, &outBytes) ==
-        (size_t)-1)
-    { // failed :(
-      strDest.clear();
-      strDest.ReleaseBuffer();
-      return;
-    }
-    strDest.ReleaseBuffer();
-  }
+  convert(m_iconvUtf16LEtoUtf8,4,"UTF16-LE","UTF-8",strSource,strDest);
 }
 
 void CCharsetConverter::ucs2ToUTF8(const CStdStringW& strSource, CStdStringA& strDest)
@@ -360,41 +335,9 @@ void CCharsetConverter::ucs2ToUTF8(const CStdStringW& strSource, CStdStringA& st
   convert(m_iconvUcs2CharsetToUtf8,4,"UCS-2LE","UTF-8",strSource,strDest);
 }
 
-void CCharsetConverter::utf16LEtoW(const char* strSource, CStdStringW &strDest)
+void CCharsetConverter::utf16LEtoW(const CStdStringW& strSource, CStdStringW &strDest)
 {
-  if (m_iconvUtf16LEtoW == (iconv_t) - 1)
-    m_iconvUtf16LEtoW = iconv_open(WCHAR_CHARSET, "UTF-16LE");
-
-  if (m_iconvUtf16LEtoW != (iconv_t) - 1)
-  {
-    size_t inBytes = 2;
-    short* s = (short*) strSource;
-    while (*s != 0)
-    {
-      s++;
-      inBytes += 2;
-    }
-    size_t outBytes = (inBytes + 1)*sizeof(wchar_t);  // UTF-8 is up to 4 bytes/character  
-    char *dst = (char*) strDest.GetBuffer(outBytes);
-
-    if (iconv_const(m_iconvUtf16LEtoW, &strSource, &inBytes, &dst, &outBytes) == (size_t)-1)
-    {
-      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-      strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
-    }
-
-    if (iconv(m_iconvUtf16LEtoW, NULL, NULL, &dst, &outBytes) == (size_t)-1)
-    {
-      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
-      strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
-    }
-
-    strDest.ReleaseBuffer();
-  }
+  convert(m_iconvUtf16LEtoW,sizeof(wchar_t),"UTF-16LE",WCHAR_CHARSET,strSource,strDest);
 }
 
 void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest, bool swap)

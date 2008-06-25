@@ -93,7 +93,7 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
   CStdString path = BuildPath();
   for (unsigned int i = 0; i < vec.size(); ++i)
   {
-    CFileItem* pItem = new CFileItem(path + vec[i].first + "/", true);
+    CFileItemPtr pItem(new CFileItem(path + vec[i].first + "/", true));
     pItem->SetLabel(g_localizeStrings.Get(vec[i].second));
     pItem->SetLabelPreformated(true);
     pItem->SetCanQueue(false);

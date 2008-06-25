@@ -239,7 +239,7 @@ PyDoc_STRVAR(addItem__doc__,
 
     // create message
     CGUIMessage msg(GUI_MSG_LABEL_ADD, self->iParentId, self->iControlId);
-    msg.SetLPVOID(pListItem->item);
+    msg.SetLPVOID(&pListItem->item);
 
     // send message
     PyGUILock();

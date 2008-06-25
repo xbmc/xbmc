@@ -955,7 +955,7 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
 {
   Lock();
   m_windowResolution = res;
-  if (needsScaling)
+  if (needsScaling && m_Resolution != INVALID)
   {
     // calculate necessary scalings    
     float fFromWidth;

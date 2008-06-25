@@ -194,7 +194,7 @@ namespace PYXBMC
 
     // Tells the window to add the item to FileItem vector
     PyGUILock();
-    pwx->AddItem((CFileItem *)pListItem->item, itemPosition);
+    pwx->AddItem(pListItem->item, itemPosition);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -295,7 +295,7 @@ namespace PYXBMC
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
 
     PyGUILock();
-    CFileItem * fi = pwx->GetListItem(listPos);
+    CFileItemPtr fi = pwx->GetListItem(listPos);
 
     if (fi == NULL)
     {

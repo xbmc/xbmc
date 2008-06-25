@@ -2,7 +2,7 @@
 #ifdef _LINUX
 #include <stdint.h>
 #else
-#include "stdint.h"
+#include "stdint_win.h"
 #endif
 
 typedef unsigned int u32;
@@ -11,7 +11,7 @@ typedef unsigned char u8;
 #ifdef _LINUX
 #include <string.h>
 #define __forceinline inline
-#define __int64 __int64_t
+#define __int64 int64_t
 #endif
 
 __forceinline static u32 rol(u32 x, u8 n)

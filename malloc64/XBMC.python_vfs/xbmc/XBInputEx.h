@@ -22,11 +22,18 @@ extern "C"
 #endif
 
 
-
 typedef struct _XINPUT_STATEEX
 {
+#pragma pack( push, before_header )
+#pragma pack(1)
   DWORD dwPacketNumber;
-  XINPUT_IR_REMOTE IR_Remote;
+  union // added by JM to attempt to fix the memory corruption issues - XGetInputState() writes to an
+        // XINPUT_STATE pointer, so we pad this structure out so that it's at least sizeof(XINPUT_STATE)
+  {
+    XINPUT_GAMEPAD Gamepad;
+    XINPUT_IR_REMOTE IR_Remote;
+  };
+#pragma pack( pop, before_header )
 }
 XINPUT_STATEEX, *PXINPUT_STATEEX;
 

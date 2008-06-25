@@ -29,10 +29,6 @@
 
 #include "FileItem.h"
 
-class TiXmlElement;
-class TiXmlDocument;
-class CFileItem;
-
 /**
  * The purpose of this class is to describe an RSS feed
  */
@@ -47,7 +43,7 @@ public:
   void GetItemList(CFileItemList &feedItems) 
   {
     for (int i = 0; i < items.Size(); i++) {
-      feedItems.Add(new CFileItem(*items[i]));
+      feedItems.Add(items[i]);
     }
   }
 

@@ -308,24 +308,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
           g_audioConfig.Save();
         }
       }
-#ifndef __APPLE__
-      switch(g_guiSettings.GetInt("videooutput.aspect"))
-      {
-      case VIDEO_NORMAL:
-        g_videoConfig.SetNormal();
-        break;
-      case VIDEO_LETTERBOX:
-        g_videoConfig.SetLetterbox(true);
-        break;
-      case VIDEO_WIDESCREEN:
-        g_videoConfig.SetWidescreen(true);
-        break;
-      }
-      g_videoConfig.Set480p(g_guiSettings.GetBool("videooutput.hd480p"));
-      g_videoConfig.Set720p(g_guiSettings.GetBool("videooutput.hd720p"));
-      g_videoConfig.Set1080i(g_guiSettings.GetBool("videooutput.hd1080i"));
-#endif
-
       if (g_videoConfig.NeedsSave())
         g_videoConfig.Save();
 
@@ -988,13 +970,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("myprograms.gameautoregion"));
     }
-#ifdef HAS_KAI
-    else if (strSetting.Equals("xlinkkai.enablenotifications") || strSetting.Equals("xlinkkai.username") || strSetting.Equals("xlinkkai.password") || strSetting.Equals("xlinkkai.server"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("xlinkkai.enabled"));
-    }
-#endif
     else if (strSetting.Equals("masterlock.startuplock") || strSetting.Equals("masterlock.enableshutdown") || strSetting.Equals("masterlock.automastermode"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1588,15 +1563,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
       g_guiSettings.SetString("audiooutput.audiodevice", pControl->GetCurrentLabel());
-  }
-#endif
-#ifdef HAS_KAI
-  else if (strSetting.Equals("xlinkkai.enabled"))
-  {
-    if (g_guiSettings.GetBool("xlinkkai.enabled"))
-      g_application.StartKai();
-    else
-      g_application.StopKai();
   }
 #endif
 #ifdef HAS_LCD
@@ -2459,7 +2425,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
       int iSize = 0;
       for (int i = 0; i < items.Size(); ++i)
       {
-        CFileItem* pItem = items[i];
+        CFileItemPtr pItem = items[i];
         if (pItem->m_bIsFolder)
         {
           if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
@@ -2491,7 +2457,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
     directory.GetDirectory(strPath, items);
     for (int i = 0; i < items.Size(); ++i)
     {
-      CFileItem* pItem = items[i];
+      CFileItemPtr pItem = items[i];
       if (pItem->m_bIsFolder)
       {
         if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
@@ -2511,7 +2477,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
     {
       for (int i = 0; i < items.Size(); ++i)
       {
-        CFileItem* pItem = items[i];
+        CFileItemPtr pItem = items[i];
 
         if (!pItem->m_bIsFolder)
         {
@@ -2619,7 +2585,7 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
   vector<CStdString> vecSkins;
   for (int i = 0; i < items.Size(); ++i)
   {
-    CFileItem* pItem = items[i];
+    CFileItemPtr pItem = items[i];
     if (pItem->m_bIsFolder)
     {
       if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
@@ -2668,7 +2634,7 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
   int i;
   for (i = 0; i < items.Size(); ++i)
   {
-    CFileItem* pItem = items[i];
+    CFileItemPtr pItem = items[i];
     if (pItem->m_bIsFolder)
     {
       if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
@@ -2750,7 +2716,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
 
   for (int i = 0; i < items.Size(); ++i)
   {
-    CFileItem* pItem = items[i];
+    CFileItemPtr pItem = items[i];
     if (!pItem->m_bIsFolder)
     {
       CStdString strExtension;
@@ -3014,7 +2980,7 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   vector<CStdString> vecLanguage;
   for (int i = 0; i < items.Size(); ++i)
   {
-    CFileItem* pItem = items[i];
+    CFileItemPtr pItem = items[i];
     if (pItem->m_bIsFolder)
     {
       if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
@@ -3060,7 +3026,7 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   int i = 0;
   for (i = 0; i < items.Size(); ++i)
   {
-    CFileItem* pItem = items[i];
+    CFileItemPtr pItem = items[i];
     if (!pItem->m_bIsFolder)
     {
       CStdString strExtension;
@@ -3327,7 +3293,7 @@ void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting)
   // Search for Themes in the Current skin!
   for (int i = 0; i < items.Size(); ++i)
   {
-    CFileItem* pItem = items[i];
+    CFileItemPtr pItem = items[i];
     if (!pItem->m_bIsFolder && pItem->GetLabel().CompareNoCase("defaults.xml") != 0)
     { // not the default one
       CStdString strLabel = pItem->GetLabel();

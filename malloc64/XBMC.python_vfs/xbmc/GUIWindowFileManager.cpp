@@ -285,7 +285,7 @@ void CGUIWindowFileManager::OnSort(int iList)
   // always sort the list by label in ascending order
   for (int i = 0; i < m_vecItems[iList]->Size(); i++)
   {
-    CFileItem* pItem = m_vecItems[iList]->Get(i);
+    CFileItemPtr pItem = m_vecItems[iList]->Get(i);
     if (pItem->m_bIsFolder && !pItem->m_dwSize)
       pItem->SetLabel2("");
     else
@@ -395,7 +395,7 @@ void CGUIWindowFileManager::UpdateItemCounts()
     __int64 totalSize = 0;
     for (int j = 0; j < m_vecItems[i]->Size(); j++)
     {
-      CFileItem *item = m_vecItems[i]->Get(j);
+      CFileItemPtr item = m_vecItems[i]->Get(j);
       if (item->IsParentFolder()) continue;
       if (item->IsSelected())
       {
@@ -422,10 +422,10 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 
   if (iItem >= 0 && iItem < (int)m_vecItems[iList]->Size())
   {
-    CFileItem* pItem = m_vecItems[iList]->Get(iItem);
+    CFileItemPtr pItem = m_vecItems[iList]->Get(iItem);
     if (!pItem->IsParentFolder())
     {
-      GetDirectoryHistoryString(pItem, strSelectedItem);
+      GetDirectoryHistoryString(pItem.get(), strSelectedItem);
       m_history[iList].SetSelectedItem(strSelectedItem, m_Directory[iList]->m_strPath);
     }
   }
@@ -444,14 +444,13 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 
   ClearFileItems(iList);
 
-  m_vecItems[iList]->AppendPointer(items);
+  m_vecItems[iList]->Append(items);
   m_vecItems[iList]->m_strPath = items.m_strPath;
-  items.ClearKeepPointer();
 
   if (strDirectory.IsEmpty() && (m_vecItems[iList]->Size() == 0 || !g_guiSettings.GetBool("filelists.disableaddsourcebuttons")))
   { // add 'add source button'
     CStdString strLabel = g_localizeStrings.Get(1026);
-    CFileItem *pItem = new CFileItem(strLabel);
+    CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->m_strPath = "add";
     pItem->SetThumbnailImage("DefaultAddSource.png");
     pItem->SetLabel(strLabel);
@@ -462,7 +461,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   // if we have a .tbn file, use itself as the thumb
   for (int i = 0; i < (int)m_vecItems[iList]->Size(); i++)
   {
-    CFileItem *pItem = m_vecItems[iList]->Get(i);
+    CFileItemPtr pItem = m_vecItems[iList]->Get(i);
     CStdString strExtension;
     CUtil::GetExtension(pItem->m_strPath, strExtension);
     if (pItem->IsHD() && strExtension == ".tbn")
@@ -479,9 +478,9 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   strSelectedItem = m_history[iList].GetSelectedItem(m_Directory[iList]->m_strPath);
   for (int i = 0; i < m_vecItems[iList]->Size(); ++i)
   {
-    CFileItem* pItem = m_vecItems[iList]->Get(i);
+    CFileItemPtr pItem = m_vecItems[iList]->Get(i);
     CStdString strHistory;
-    GetDirectoryHistoryString(pItem, strHistory);
+    GetDirectoryHistoryString(pItem.get(), strHistory);
     if (strHistory == strSelectedItem)
     {
       item = i;
@@ -498,7 +497,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
   if ( iList < 0 || iList > 2) return ;
   if ( iItem < 0 || iItem >= m_vecItems[iList]->Size() ) return ;
 
-  CFileItem *pItem = m_vecItems[iList]->Get(iItem);
+  CFileItemPtr pItem = m_vecItems[iList]->Get(iItem);
   if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
   {
     if (CGUIDialogMediaSource::ShowAndAddMediaSource("files"))
@@ -516,7 +515,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
     int iDriveType = pItem->m_iDriveType;
     if ( pItem->m_bIsShareOrDrive )
     {
-      if ( !g_passwordManager.IsItemUnlocked( pItem, "files" ) )
+      if ( !g_passwordManager.IsItemUnlocked( pItem.get(), "files" ) )
       {
         Refresh();
         return ;
@@ -526,7 +525,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
         return ;
     }
     if (!Update(iList, strPath))
-      ShowShareErrorMessage(pItem);
+      ShowShareErrorMessage(pItem.get());
   }
   else if (pItem->IsZIP() || pItem->IsCBZ()) // mount zip archive
   {
@@ -542,7 +541,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
   }
   else
   {
-    OnStart(pItem);
+    OnStart(pItem.get());
     return ;
   }
   // UpdateButtons();
@@ -636,7 +635,7 @@ void CGUIWindowFileManager::UpdateControl(int iList, int item)
 
 void CGUIWindowFileManager::OnMark(int iList, int iItem)
 {
-  CFileItem* pItem = m_vecItems[iList]->Get(iItem);
+  CFileItemPtr pItem = m_vecItems[iList]->Get(iItem);
 
   if (!pItem->m_bIsShareOrDrive)
   {
@@ -795,7 +794,7 @@ bool CGUIWindowFileManager::DoProcessFolder(int iAction, const CStdString& strPa
   CDirectory::GetDirectory(strPath, items, "", false);
   for (int i = 0; i < items.Size(); i++)
   {
-    CFileItem* pItem = items[i];
+    CFileItemPtr pItem = items[i];
     pItem->Select(true);
     CLog::Log(LOGDEBUG,"  -- %s",pItem->m_strPath.c_str());
   }
@@ -813,7 +812,7 @@ bool CGUIWindowFileManager::DoProcess(int iAction, CFileItemList & items, const 
 {
   for (int iItem = 0; iItem < items.Size(); ++iItem)
   {
-    CFileItem* pItem = items[iItem];
+    CFileItemPtr pItem = items[iItem];
     if (pItem->IsSelected())
     {
       CStdString strNoSlash = pItem->m_strPath;
@@ -919,7 +918,7 @@ void CGUIWindowFileManager::OnRename(int iList)
   CStdString strFile;
   for (int i = 0; i < m_vecItems[iList]->Size();++i)
   {
-    CFileItem* pItem = m_vecItems[iList]->Get(i);
+    CFileItemPtr pItem = m_vecItems[iList]->Get(i);
     if (pItem->IsSelected())
     {
       strFile = pItem->m_strPath;
@@ -936,7 +935,7 @@ void CGUIWindowFileManager::OnSelectAll(int iList)
 {
   for (int i = 0; i < m_vecItems[iList]->Size();++i)
   {
-    CFileItem* pItem = m_vecItems[iList]->Get(i);
+    CFileItemPtr pItem = m_vecItems[iList]->Get(i);
     if (!pItem->IsParentFolder())
     {
       pItem->Select(true);
@@ -989,7 +988,7 @@ void CGUIWindowFileManager::OnNewFolder(int iList)
     //  select the new folder
     for (int i=0; i<m_vecItems[iList]->Size(); ++i)
     {
-      CFileItem* pItem=m_vecItems[iList]->Get(i);
+      CFileItemPtr pItem=m_vecItems[iList]->Get(i);
       CStdString strPath=pItem->m_strPath;
       if (CUtil::HasSlashAtEnd(strPath)) CUtil::RemoveSlashAtEnd(strPath);
       if (strPath==strNewPath)
@@ -1129,7 +1128,7 @@ bool CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirecto
       // yes
       if (!g_guiSettings.GetBool("filelists.hideparentdiritems"))
       {
-        CFileItem *pItem = new CFileItem("..");
+        CFileItemPtr pItem(new CFileItem(".."));
         pItem->m_strPath = strParentPath;
         pItem->m_bIsFolder = true;
         pItem->m_bIsShareOrDrive = false;
@@ -1144,7 +1143,7 @@ bool CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirecto
     // add parent path to the virtual directory
     if (!g_guiSettings.GetBool("filelists.hideparentdiritems"))
     {
-      CFileItem *pItem = new CFileItem("..");
+      CFileItemPtr pItem(new CFileItem(".."));
       pItem->m_strPath = "";
       pItem->m_bIsFolder = true;
       pItem->m_bIsShareOrDrive = false;
@@ -1157,7 +1156,7 @@ bool CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirecto
   if (strDirectory.IsEmpty() && items.Size() == 0)
   {
     CStdString strLabel = g_localizeStrings.Get(1026);
-    CFileItem *pItem = new CFileItem(strLabel);
+    CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->m_strPath = "add";
     pItem->SetThumbnailImage("settings-network-focus.png");
     pItem->SetLabel(strLabel);
@@ -1246,7 +1245,8 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     }
 
     // and do the popup menu
-    if (CGUIDialogContextMenu::SourcesMenu("files", m_vecItems[list]->Get(item), posX, posY))
+    CFileItemPtr pItem = m_vecItems[list]->Get(item);
+    if (CGUIDialogContextMenu::SourcesMenu("files", pItem.get(), posX, posY))
     {
       m_rootDir.SetSources(g_settings.m_fileSources);
       if (m_Directory[1 - list]->IsVirtualDirectoryRoot())
@@ -1255,7 +1255,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
         Refresh(list);
       return ;
     }
-    m_vecItems[list]->Get(item)->Select(false);
+    pItem->Select(false);
     return ;
   }
   // popup the context menu
@@ -1323,7 +1323,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
       //  Calculate folder size for each selected item
       for (int i=0; i<m_vecItems[list]->Size(); ++i)
       {
-        CFileItem* pItem=m_vecItems[list]->Get(i);
+        CFileItemPtr pItem=m_vecItems[list]->Get(i);
         if (pItem->m_bIsFolder && pItem->IsSelected())
         {
           __int64 folderSize = CalculateFolderSize(pItem->m_strPath, progress);
@@ -1427,7 +1427,7 @@ bool CGUIWindowFileManager::DeleteItem(const CFileItem *pItem)
   }
 
   // Create a temporary item list containing the file/folder for deletion
-  CFileItem *pItemTemp = new CFileItem(*pItem);
+  CFileItemPtr pItemTemp(new CFileItem(*pItem));
   pItemTemp->Select(true);
   CFileItemList items;
   items.Add(pItemTemp);
@@ -1466,7 +1466,7 @@ bool CGUIWindowFileManager::CopyItem(const CFileItem *pItem, const CStdString& s
   }
   else
   {
-    CFileItem *pItemTemp = new CFileItem(*pItem);
+    CFileItemPtr pItemTemp(new CFileItem(*pItem));
     pItemTemp->Select(true);
     items.Add(pItemTemp);
   }
@@ -1646,7 +1646,7 @@ bool CGUIWindowFileManager::MoveItem(const CFileItem *pItem, const CStdString& s
   }
   else
   {
-    CFileItem *pItemTemp = new CFileItem(*pItem);
+    CFileItemPtr pItemTemp(new CFileItem(*pItem));
     items.Add(pItemTemp);
   }
 

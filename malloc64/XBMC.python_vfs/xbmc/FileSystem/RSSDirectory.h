@@ -22,10 +22,7 @@
 #ifndef CRSSDIRECTORY_H_
 #define CRSSDIRECTORY_H_
 
-#include "stdafx.h"
 #include "IDirectory.h"
-
-#include "RssFeed.h"
 
 namespace DIRECTORY
 {

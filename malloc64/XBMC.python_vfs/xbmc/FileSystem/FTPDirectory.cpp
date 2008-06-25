@@ -81,7 +81,7 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       /* support for the utf8 extension in ftp client */
       g_charsetConverter.stringCharsetToUtf8(name);
 
-      CFileItem* pItem = new CFileItem(name);
+      CFileItemPtr pItem(new CFileItem(name));
       
       pItem->m_strPath = path + name;
       pItem->m_bIsFolder = (bool)(lp.flagtrycwd != 0);
@@ -96,13 +96,11 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       pItem->m_dateTime=lp.mtime;
 
       if( m_cacheDirectory )
-        vecCacheItems.Add(new CFileItem(*pItem));
+        vecCacheItems.Add(pItem);
 
       /* if file is ok by mask or a folder add it */
       if( pItem->m_bIsFolder || IsAllowed(name) )
         items.Add(pItem);
-      else
-        delete pItem;
     }
   }
 

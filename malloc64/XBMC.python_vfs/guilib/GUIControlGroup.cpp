@@ -317,6 +317,22 @@ bool CGUIControlGroup::IsAnimating(ANIMATION_TYPE animType)
   return false;
 }
 
+bool CGUIControlGroup::HasAnimation(ANIMATION_TYPE animType)
+{
+  if (CGUIControl::HasAnimation(animType))
+    return true;
+
+  if (IsVisible())
+  {
+    for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+    {
+      if ((*it)->HasAnimation(animType))
+        return true;
+    }
+  }
+  return false;
+}
+
 bool CGUIControlGroup::HitTest(const CPoint &point) const
 {
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)

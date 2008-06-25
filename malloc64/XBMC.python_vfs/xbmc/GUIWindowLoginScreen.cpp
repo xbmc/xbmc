@@ -31,7 +31,6 @@
 #endif
 #include "lib/libscrobbler/scrobbler.h"
 #include "utils/Weather.h"
-#include "utils/FanController.h"
 #include "utils/Network.h"
 #include "SkinInfo.h"
 #include "Profile.h"
@@ -137,10 +136,6 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
               m_gWindowManager.ActivateWindow(g_guiSettings.GetInt("lookandfeel.startupwindow"));
             }
 
-#ifdef HAS_KAI
-            if (iItem == 0)
-              g_application.StartKai();
-#endif
             return true;
           }
           else
@@ -213,18 +208,18 @@ void CGUIWindowLoginScreen::Update()
   m_vecItems->Clear();
   for (unsigned int i=0;i<g_settings.m_vecProfiles.size(); ++i)
   {
-    CFileItem item(g_settings.m_vecProfiles[i].getName());
+    CFileItemPtr item(new CFileItem(g_settings.m_vecProfiles[i].getName()));
     CStdString strLabel;
     if (g_settings.m_vecProfiles[i].getDate().IsEmpty())
       strLabel = g_localizeStrings.Get(20113);
     else
       strLabel.Format(g_localizeStrings.Get(20112),g_settings.m_vecProfiles[i].getDate());
-    item.SetLabel2(strLabel);
-    item.SetThumbnailImage(g_settings.m_vecProfiles[i].getThumb());
+    item->SetLabel2(strLabel);
+    item->SetThumbnailImage(g_settings.m_vecProfiles[i].getThumb());
     if (g_settings.m_vecProfiles[i].getThumb().IsEmpty() || g_settings.m_vecProfiles[i].getThumb().Equals("-"))
-      item.SetThumbnailImage("unknown-user.png");
-    item.SetLabelPreformated(true);
-    m_vecItems->Add(new CFileItem(item));
+      item->SetThumbnailImage("unknown-user.png");
+    item->SetLabelPreformated(true);
+    m_vecItems->Add(item);
   }
   m_viewControl.SetItems(*m_vecItems);
   if (g_settings.m_iLastUsedProfileIndex > -1)
@@ -302,10 +297,10 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   return (btnid > 0);
 }
 
-CFileItem* CGUIWindowLoginScreen::GetCurrentListItem(int offset)
+CFileItemPtr CGUIWindowLoginScreen::GetCurrentListItem(int offset)
 {
   int item = m_viewControl.GetSelectedItem();
-  if (item < 0 || !m_vecItems->Size()) return NULL;
+  if (item < 0 || !m_vecItems->Size()) return CFileItemPtr();
 
   item = (item + offset) % m_vecItems->Size();
   if (item < 0) item += m_vecItems->Size();

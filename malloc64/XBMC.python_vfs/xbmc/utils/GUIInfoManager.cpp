@@ -28,9 +28,6 @@
 #include "Application.h"
 #include "Util.h"
 #include "lib/libscrobbler/scrobbler.h"
-#ifdef HAS_KAI
-#include "KaiClient.h"
-#endif
 #include "Weather.h"
 #include "PlayListPlayer.h"
 #include "PartyModeManager.h"
@@ -115,7 +112,7 @@ bool CGUIInfoManager::OnMessage(CGUIMessage &message)
   {
     if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetLPVOID())
     {
-      CFileItem *item = (CFileItem *)message.GetLPVOID();
+      CFileItemPtr item = *(CFileItemPtr*)message.GetLPVOID();
       if (m_currentFile->m_strPath.Equals(item->m_strPath))
         *m_currentFile = *item;
       return true;
@@ -322,8 +319,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.builddate")) ret = SYSTEM_BUILD_DATE;
     else if (strTest.Equals("system.hasnetwork")) ret = SYSTEM_ETHERNET_LINK_ACTIVE;
     else if (strTest.Equals("system.fps")) ret = SYSTEM_FPS;
-    else if (strTest.Equals("system.kaiconnected")) ret = SYSTEM_KAI_CONNECTED;
-    else if (strTest.Equals("system.kaienabled")) ret = SYSTEM_KAI_ENABLED;
     else if (strTest.Equals("system.hasmediadvd")) ret = SYSTEM_MEDIA_DVD;
     else if (strTest.Equals("system.dvdready")) ret = SYSTEM_DVDREADY;
     else if (strTest.Equals("system.trayopen")) ret = SYSTEM_TRAYOPEN;
@@ -424,12 +419,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     CStdString str = strTest.Mid(8, strTest.GetLength() - 9);
     return AddMultiInfo(GUIInfo(bNegate ? -STRING_IS_EMPTY : STRING_IS_EMPTY, TranslateSingleString(str)));
   }
-#ifdef HAS_KAI
-  else if (strCategory.Equals("xlinkkai"))
-  {
-    if (strTest.Equals("xlinkkai.username")) ret = XLINK_KAI_USERNAME;
-  }
-#endif
   else if (strCategory.Equals("lcd"))
   {
     if (strTest.Equals("lcd.playicon")) ret = LCD_PLAY_ICON;
@@ -903,7 +892,10 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS); // true for has list items
     if (window)
-      strLabel = GetItemLabel(window->GetCurrentListItem(), info);
+    {
+      CFileItemPtr item = window->GetCurrentListItem();
+      strLabel = GetItemLabel(item.get(), info);
+    }
 
     return strLabel;
   }
@@ -1263,11 +1255,6 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
         strLabel.Format("%i", percent);
     }
     break;
-#ifdef HAS_KAI
-  case XLINK_KAI_USERNAME:
-    strLabel = g_guiSettings.GetString("xlinkkai.username");
-    break;
-#endif
   case LCD_PLAY_ICON:
     {
       int iPlaySpeed = g_application.GetPlaySpeed();
@@ -1575,11 +1562,7 @@ int CGUIInfoManager::GetInt(int info, DWORD contextWindow) const
         return ret;
       }
     case SYSTEM_CPU_USAGE:
-#ifdef _LINUX
       return g_cpuInfo.getUsedPercentage();
-#else
-      return 100 - ((int)(100.0f *g_application.m_idleThread.GetRelativeUsage()));
-#endif
   }
   return 0;
 }
@@ -1660,15 +1643,6 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     if (condition1 < 0) bReturn = !bReturn;
     CacheBool(condition1,dwContextWindow,bReturn,true);
   }
-  else if (condition == SYSTEM_KAI_CONNECTED)
-#ifndef HAS_KAI
-    bReturn = false;
-#endif
-#ifdef HAS_KAI
-    bReturn = g_application.getNetwork().IsAvailable(false) && g_guiSettings.GetBool("xlinkkai.enabled") && CKaiClient::GetInstance()->IsEngineConnected();
-  else if (condition == SYSTEM_KAI_ENABLED)
-    bReturn = g_application.getNetwork().IsAvailable(false) && g_guiSettings.GetBool("xlinkkai.enabled");
-#endif
   else if (condition == SYSTEM_PLATFORM_LINUX)
 #ifdef _LINUX
     bReturn = true;
@@ -2135,7 +2109,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           const CGUIControl *control = window->GetControl(info.GetData1());
           if (control && control->IsContainer())
           {
-            CFileItem *item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(0);
+            CFileItemPtr item = boost::static_pointer_cast<CFileItem>(((CGUIBaseContainer *)control)->GetListItem(0));
             if (item && item->m_iprogramCount == info.GetData2())  // programcount used to store item id
               bReturn = true;
           }
@@ -2145,7 +2119,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
     case LISTITEM_ISSELECTED:
     case LISTITEM_ISPLAYING:
       {
-        CFileItem *item=NULL;
+        CFileItemPtr item;
         if (!info.GetData1())
         { // assumes a media window
           CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
@@ -2159,11 +2133,11 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           {
             const CGUIControl *control = window->GetControl(info.GetData1());
             if (control && control->IsContainer())
-              item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.GetData2());
+              item = boost::static_pointer_cast<CFileItem>(((CGUIBaseContainer *)control)->GetListItem(info.GetData2()));
           }
         }
         if (item)
-          bReturn = GetBool(condition, dwContextWindow, item);
+          bReturn = GetBool(condition, dwContextWindow, item.get());
       }
       break;
     case VIDEOPLAYER_CONTENT:
@@ -2261,7 +2235,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
   }
   if (info.m_info >= LISTITEM_START && info.m_info <= LISTITEM_END)
   {
-    CFileItem *item = NULL;
+    CFileItemPtr item;
     CGUIWindow *window = NULL;
 
     int data1 = info.GetData1();
@@ -2279,11 +2253,11 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
     {
       const CGUIControl *control = window->GetControl(data1);
       if (control && control->IsContainer())
-        item = (CFileItem *)((CGUIBaseContainer *)control)->GetListItem(info.GetData2(), info.GetInfoFlag());
+        item = boost::static_pointer_cast<CFileItem>(((CGUIBaseContainer *)control)->GetListItem(info.GetData2(), info.GetInfoFlag()));
     }
 
     if (item) // If we got a valid item, do the lookup
-      return GetItemImage(item, info.m_info); // Image prioritizes images over labels (in the case of music item ratings for instance)
+      return GetItemImage(item.get(), info.m_info); // Image prioritizes images over labels (in the case of music item ratings for instance)
   }
   else if (info.m_info == PLAYER_TIME)
   {
@@ -2432,9 +2406,9 @@ CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
     if (window)
     {
-      CFileItem* item = window->GetCurrentListItem();
+      CFileItemPtr item = window->GetCurrentListItem();
       if (item)
-        return GetItemImage(item, info);
+        return GetItemImage(item.get(), info);
     }
   }
   return GetLabel(info, contextWindow);
@@ -2631,19 +2605,19 @@ const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info) cons
   }
   if (index < 0 || index >= playlist.size())
     return "";
-  PLAYLIST::CPlayListItem &playlistItem = playlist[index];
-  if (!playlistItem.GetMusicInfoTag()->Loaded())
+  CFileItemPtr playlistItem = playlist[index];
+  if (!playlistItem->GetMusicInfoTag()->Loaded())
   {
-    playlistItem.LoadMusicTag();
-    playlistItem.GetMusicInfoTag()->SetLoaded();
+    playlistItem->LoadMusicTag();
+    playlistItem->GetMusicInfoTag()->SetLoaded();
   }
   // try to set a thumbnail
-  if (!playlistItem.HasThumbnail())
+  if (!playlistItem->HasThumbnail())
   {
-    playlistItem.SetMusicThumb();
+    playlistItem->SetMusicThumb();
     // still no thumb? then just the set the default cover
-    if (!playlistItem.HasThumbnail())
-      playlistItem.SetThumbnailImage("defaultAlbumCover.png");
+    if (!playlistItem->HasThumbnail())
+      playlistItem->SetThumbnailImage("defaultAlbumCover.png");
   }
   if (info.m_info == MUSICPLAYER_PLAYLISTPOS)
   {
@@ -2652,8 +2626,8 @@ const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info) cons
     return strPosition;
   }
   else if (info.m_info == MUSICPLAYER_COVER)
-    return playlistItem.GetThumbnailImage();
-  return GetMusicTagLabel(info.m_info, &playlistItem);
+    return playlistItem->GetThumbnailImage();
+  return GetMusicTagLabel(info.m_info, playlistItem.get());
 }
 
 CStdString CGUIInfoManager::GetPlaylistLabel(int item) const
@@ -3241,12 +3215,10 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
       text.Format("%i%%", m_fanSpeed * 2);
       break;
     case SYSTEM_CPU_USAGE:
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(_WIN32)
       text.Format("%s %d%", g_localizeStrings.Get(13271).c_str(), g_cpuInfo.getUsedPercentage());
-#elif defined _LINUX
-      text.Format("%s %s", g_localizeStrings.Get(13271).c_str(), g_cpuInfo.GetCoresUsageString());
 #else
-      text.Format("%s %2.0f%%", g_localizeStrings.Get(13271).c_str(), (1.0f - g_application.m_idleThread.GetRelativeUsage())*100);
+      text.Format("%s %s", g_localizeStrings.Get(13271).c_str(), g_cpuInfo.GetCoresUsageString());
 #endif
       break;
   }

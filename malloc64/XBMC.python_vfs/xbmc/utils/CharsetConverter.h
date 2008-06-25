@@ -68,7 +68,7 @@ public:
       size_t inBytes  = (strSource.length() + 1)*sizeof(strSource[0]);
       size_t outBytes = (strSource.length() + 1)*multiplier;
       const char *src = (const char*)strSource.c_str();
-      char       *dst = (char*)strDest.GetBuffer(inBytes);
+      char       *dst = (char*)strDest.GetBuffer(outBytes);
 
       if (iconv_const(type, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
       {
@@ -92,7 +92,7 @@ public:
 
   void utf8ToW(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip=true);
 
-  void utf16LEtoW(const char* utf16String, CStdStringW &wString);
+  void utf16LEtoW(const CStdStringW& utf16String, CStdStringW &wString);
 
   void subtitleCharsetToW(const CStdStringA& strSource, CStdStringW& strDest);
 
@@ -115,7 +115,7 @@ public:
 
   void wToUTF8(const CStdStringW& strSource, CStdStringA &strDest);
   void utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest);
-  void utf16LEtoUTF8(const void *strSource, CStdStringA &strDest);
+  void utf16LEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest);
   void ucs2ToUTF8(const CStdStringW& strSource, CStdStringA& strDest);
 
   void utf32ToStringCharset(const unsigned long* strSource, CStdStringA& strDest);
