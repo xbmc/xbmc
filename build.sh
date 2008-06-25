@@ -6,6 +6,7 @@ error() {
   then
     echo
     echo -e "\n FAILED! Exiting. ($RET)"
+    LANG="${OLDLANG}"
     exit
   fi
 }
@@ -284,7 +285,7 @@ copy() {
   fi
   error
 
-  for I in credits language media screensavers scripts skin sounds system userdata visualisations web xbmc-xrandr xbmc.bin README.linux copying.txt Changelog.txt
+  for I in credits language media screensavers scripts skin sounds system userdata visualisations web xbmc-xrandr xbmc.bin README.linux copying.txt Changelog.txt LICENSE.GPL
   do
     printf "\r Copying %-16.16s" $I 
     if [[ "$I" == "skin" ]]
@@ -302,10 +303,10 @@ copy() {
           if (( VERBOSE )) 
           then
             mkdir -v "${BUILDDIR}/skin/Project Mayhem III/media"
-            cp "${SOURCEDIR}/skin/Project Mayhem III/media/Textures.xpr" "${BUILDDIR}/skin/Project Mayhem III/media"
+            tools/XBMCTex/XBMCTex -input "\"skin/Project Mayhem III/media/\"" -output "\"${BUILDDIR}/skin/Project Mayhem III/media/Textures.xpr\""
           else
             mkdir "${BUILDDIR}/skin/Project Mayhem III/media" &> /dev/null
-            cp "${SOURCEDIR}/skin/Project Mayhem III/media/Textures.xpr" "${BUILDDIR}/skin/Project Mayhem III/media" &> /dev/null
+            tools/XBMCTex/XBMCTex -input "\"skin/Project Mayhem III/media/\"" -output "\"${BUILDDIR}/skin/Project Mayhem III/media/Textures.xpr\"" &> /dev/null
           fi
         else
           if (( VERBOSE ))
@@ -483,6 +484,8 @@ BACKUPDIR="$SOURCEDIR/.backup"
 BUILDDIR="./BUILD"
 WEB=""
 CONFIGOPTS=""
+OLDLANG="${LANG}"
+LANG=""
 (( UPDATE=1 ))
 (( COMPILE=1 ))
 (( CLEAN=1 ))
@@ -670,6 +673,7 @@ else
   echo " Skipping XBMC file structure creation."
 fi
 
+LANG="${OLDLANG}"
 echo " All done!"
 
 if (( COMPILE && !CONFIRM))
