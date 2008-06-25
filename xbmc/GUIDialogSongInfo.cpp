@@ -204,7 +204,7 @@ void CGUIDialogSongInfo::OnGetThumb()
 {
   CFileItemList items;
 
-  
+
   // Grab the thumbnail from the web
   CStdString thumbFromWeb;
   /*

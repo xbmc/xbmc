@@ -108,7 +108,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
     NODE_TYPE NodeType=CVideoDatabaseDirectory::GetDirectoryChildType(items.m_strPath);
     CQueryParams params;
     CVideoDatabaseDirectory::GetQueryParams(items.m_strPath,params);
-    
+
     switch (NodeType)
     {
     case NODE_TYPE_MOVIES_OVERVIEW:
@@ -253,7 +253,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
           AddSortMethod(SORT_METHOD_ARTIST,557, LABEL_MASKS("%A - %T", "%Y"));
           AddSortMethod(SORT_METHOD_ALBUM,558, LABEL_MASKS("%B - %T", "%Y"));
         }
-        
+
         SetSortMethod(g_stSettings.m_viewStateVideoNavMusicVideos.m_sortMethod);
 
         SetViewAsControl(g_stSettings.m_viewStateVideoNavMusicVideos.m_viewMode);

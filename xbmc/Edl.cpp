@@ -97,13 +97,13 @@ bool CEdl::ReadEdl()
   CFile CutFile;
   double dCutStart, dCutEnd;
   bool tmpValid=false;
-      
+
   Reset();
   CUtil::ReplaceExtension(m_strMovie, ".edl", m_strEdlFilename);
   if ( CFile::Exists(m_strEdlFilename) && CutFile.Open(m_strEdlFilename) )
   {
     tmpValid=true;
-    while (tmpValid && CutFile.ReadString(m_szBuffer, 1023)) 
+    while (tmpValid && CutFile.ReadString(m_szBuffer, 1023))
     {
       if( sscanf( m_szBuffer, "%lf %lf %i", &dCutStart, &dCutEnd, (int*) &tmpCut.CutAction ) == 3)
       {
@@ -117,7 +117,7 @@ bool CEdl::ReadEdl()
           tmpValid=false;
       }
       else
-        tmpValid=false; 
+        tmpValid=false;
     }
     CutFile.Close();
   }
@@ -155,13 +155,13 @@ bool CEdl::ReadComskip()
         {
           if (sscanf(m_szBuffer, "%lf %lf", &dStartframe, &dEndframe) == 2)
           {
-            tmpCut.CutStart=(__int64)(dStartframe/iFramerate*1000); 
+            tmpCut.CutStart=(__int64)(dStartframe/iFramerate*1000);
             tmpCut.CutEnd=(__int64)(dEndframe/iFramerate*1000);
             tmpCut.CutAction=CUT;
             tmpValid=AddCutpoint(tmpCut);
           }
           else
-            tmpValid=false; 
+            tmpValid=false;
         }
       }
       else
@@ -203,7 +203,7 @@ bool CEdl::ReadVideoRedo()
         {
           if (sscanf( m_szBuffer+strlen(VRCUT), "%lf:%lf", &dStartframe, &dEndframe ) == 2)
           {
-            tmpCut.CutStart=(__int64)(dStartframe/10000); 
+            tmpCut.CutStart=(__int64)(dStartframe/10000);
             tmpCut.CutEnd=(__int64)(dEndframe/10000);
             tmpCut.CutAction=CUT;
             tmpValid=AddCutpoint(tmpCut);
@@ -211,7 +211,7 @@ bool CEdl::ReadVideoRedo()
         }
         else
         {
-          if (strncmp(m_szBuffer,VRSCENE,strlen(VRSCENE))==0) 
+          if (strncmp(m_szBuffer,VRSCENE,strlen(VRSCENE))==0)
           {
             if (sscanf(m_szBuffer+strlen(VRSCENE), " %i>%lf",&iScene, &dStartframe)==2)
               tmpValid=AddScene(tmpCut);
@@ -295,32 +295,32 @@ bool CEdl::AddCutpoint(const Cut& NewCut)
 {
   m_bCutpoints=false;
   std::vector<Cut>::iterator vitr;
-  
+
   if (NewCut.CutStart >= NewCut.CutEnd)
     return false;
 
   if (NewCut.CutStart < 0)
     return false;
- 
+
   if (InCutpoint(NewCut.CutStart) || InCutpoint(NewCut.CutEnd))
       return false;
- 
+
   // Always returns 0 at this point?
-  if (g_application.m_pPlayer->GetTotalTime() > 0 
-        && (NewCut.CutEnd > (g_application.m_pPlayer->GetTotalTime())*1000)) 
+  if (g_application.m_pPlayer->GetTotalTime() > 0
+        && (NewCut.CutEnd > (g_application.m_pPlayer->GetTotalTime())*1000))
 
   for(int i = 0; i < (int)m_vecCutlist.size(); i++ )
   {
     if ( NewCut.CutStart < m_vecCutlist[i].CutStart && NewCut.CutEnd > m_vecCutlist[i].CutEnd)
       return false;
   }
-  
+
   // Insert cutpoint in list.
   if (m_vecCutlist.empty() || m_vecCutlist.back().CutStart < NewCut.CutStart)
     m_vecCutlist.push_back(NewCut);
   else
   {
-    for (vitr=m_vecCutlist.begin(); vitr != m_vecCutlist.end(); ++vitr) 
+    for (vitr=m_vecCutlist.begin(); vitr != m_vecCutlist.end(); ++vitr)
     {
       if (vitr->CutStart > NewCut.CutStart)
       {
@@ -347,7 +347,7 @@ bool CEdl::AddScene(const Cut& NewCut)
   m_vecScenelist.push_back(NewCut.CutEnd); // Unsorted
 
   m_bScenes=true;
-  return true; 
+  return true;
 }
 
 void CEdl::SetMovie(const CStdString& strMovie)
@@ -367,7 +367,7 @@ bool CEdl::CacheEdl()
     {
       if ((m_vecCutlist[i].CutAction==CUT) || (m_vecCutlist[i].CutAction==MUTE))
       {
-        fprintf(pFile,"%.2f\t%.2f\t%i\n",((double)m_vecCutlist[i].CutStart)/1000, ((double)m_vecCutlist[i].CutEnd)/1000, m_vecCutlist[i].CutAction); 
+        fprintf(pFile,"%.2f\t%.2f\t%i\n",((double)m_vecCutlist[i].CutStart)/1000, ((double)m_vecCutlist[i].CutEnd)/1000, m_vecCutlist[i].CutAction);
       }
     }
     fclose(pFile);
@@ -403,7 +403,7 @@ __int64 CEdl::TotalCutTime()
 __int64 CEdl::RemoveCutTime(__int64 iTime)
 {
   __int64 iCutTime=0;
-  
+
   if (!HaveCutpoints())
     return iTime;
   for(int i = 0; i < (int)m_vecCutlist.size(); i++ )
@@ -412,7 +412,7 @@ __int64 CEdl::RemoveCutTime(__int64 iTime)
       iCutTime += m_vecCutlist[i].CutEnd - m_vecCutlist[i].CutStart;
   }
 
-  return iTime-iCutTime; 
+  return iTime-iCutTime;
 }
 
 __int64 CEdl::RestoreCutTime(__int64 iTime)
@@ -425,7 +425,7 @@ __int64 CEdl::RestoreCutTime(__int64 iTime)
       iTime += m_vecCutlist[i].CutEnd - m_vecCutlist[i].CutStart;
   }
 
-  return iTime; 
+  return iTime;
 }
 
 bool CEdl::HaveScenes()
@@ -447,7 +447,7 @@ char CEdl::GetEdlStatus()
   return cEdlStatus;
 }
 
-  
+
 bool CEdl::IsCached()
 {
   return m_bCached;
@@ -460,7 +460,7 @@ bool CEdl::InCutpoint(__int64 iAbsSeek, Cut *pCurCut)
     if (m_vecCutlist[i].CutStart <= iAbsSeek && m_vecCutlist[i].CutEnd >= iAbsSeek)
     {
       if (pCurCut)
-        *pCurCut=m_vecCutlist[i]; 
+        *pCurCut=m_vecCutlist[i];
       return true;
     }
     else
@@ -476,9 +476,9 @@ bool CEdl::SeekScene(bool bPlus, __int64 *iScenemarker)
 {
   if (!HaveCutpoints())
     return false;
-    
+
   // Need absolute time.
-  __int64 iCurSeek=RestoreCutTime(g_application.m_pPlayer->GetTime()); 
+  __int64 iCurSeek=RestoreCutTime(g_application.m_pPlayer->GetTime());
   __int64 iNextScene=-1;
   __int64 iDiff;
   Cut TmpCut;
@@ -512,12 +512,12 @@ bool CEdl::SeekScene(bool bPlus, __int64 *iScenemarker)
   // extra check for incutpoint, we cannot filter this out reliable earlier.
   if (InCutpoint(iNextScene, &TmpCut) && TmpCut.CutAction == CUT)
     return false;
-  
+
   // Make sure scene is in movie.
   if (iNextScene >= g_application.m_pPlayer->GetTotalTime()*1000+TotalCutTime())
     return false;
 
   *iScenemarker=iNextScene;
-   
+
   return (iNextScene != -1);
 }

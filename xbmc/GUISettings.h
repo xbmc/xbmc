@@ -46,7 +46,7 @@
 // Apple Remote options.
 #define APPLE_REMOTE_DISABLED  0
 #define APPLE_REMOTE_STANDARD  1
-#define APPLE_REMOTE_UNIVERSAL 2 
+#define APPLE_REMOTE_UNIVERSAL 2
 
 #endif
 

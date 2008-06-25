@@ -73,7 +73,7 @@ typedef struct tag_ExifInfo {
 
   bool  IsExif;
 } EXIFINFO;
-  
+
 struct ImageInfo
 {
   unsigned int width;

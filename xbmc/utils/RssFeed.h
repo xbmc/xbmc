@@ -32,7 +32,7 @@
 /**
  * The purpose of this class is to describe an RSS feed
  */
-class CRssFeed 
+class CRssFeed
 {
 public:
   CRssFeed();
@@ -40,35 +40,35 @@ public:
 
   bool Init(const CStdString& strURL);
 
-  void GetItemList(CFileItemList &feedItems) 
+  void GetItemList(CFileItemList &feedItems)
   {
     for (int i = 0; i < items.Size(); i++) {
       feedItems.Add(items[i]);
     }
   }
 
-  const CStdString& GetUrl() 
+  const CStdString& GetUrl()
   {
     return m_strURL;
   }
-  
+
   bool ReadFeed();
 
 private:
-  
+
   CStdString CleanDescription(const CStdString& strDescription);
   time_t ParseDate(const CStdString & strDate);
-  
+
   bool IsPathToMedia(const CStdString& strPath );
   bool IsPathToThumbnail(const CStdString& strPath );
 
   CFileItemList items;
-  
+
   // Lock that protects the feed vector
   CCriticalSection m_ItemVectorLock;
 
   CStdString m_strURL;
-  
+
   // Channel information
   CStdString m_strTitle;
   CStdString m_strAuthor;

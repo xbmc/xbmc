@@ -51,7 +51,7 @@ CURL::CURL(const CStdString& strURL)
   // first need 2 check if this is a protocol or just a normal drive & path
   if (!strURL.size()) return ;
   if (strURL.Equals("?", true)) return;
-#ifndef _LINUX  
+#ifndef _LINUX
   if (strURL[1] == ':')
   {
     // form is drive:directoryandfile
@@ -68,9 +68,9 @@ CURL::CURL(const CStdString& strURL)
 
   // decode protocol
   int iPos = strURL.Find("://");
-  if (iPos < 0)  
+  if (iPos < 0)
   {
-#ifndef _LINUX  
+#ifndef _LINUX
     // check for misconstructed protocols
     iPos = strURL.Find(":");
     if (iPos == strURL.GetLength() - 1)
@@ -88,8 +88,8 @@ CURL::CURL(const CStdString& strURL)
       /* set filename and update extension*/
       SetFileName(strURL);
       return ;
-    }    
-#endif    
+    }
+#endif
   }
   else
   {

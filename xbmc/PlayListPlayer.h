@@ -33,7 +33,7 @@ class CFileItemList;
 namespace PLAYLIST
 {
 /*!
- \ingroup windows 
+ \ingroup windows
  \brief Manages playlist playing.
  */
 enum REPEAT_STATE { REPEAT_NONE = 0, REPEAT_ONE, REPEAT_ALL };
@@ -64,7 +64,7 @@ public:
   void SetShuffle(int iPlaylist, bool bYesNo);
   bool IsShuffled(int iPlaylist);
   bool HasPlayedFirstFile();
-  
+
   void SetRepeat(int iPlaylist, REPEAT_STATE state);
   REPEAT_STATE GetRepeat(int iPlaylist);
 
@@ -91,7 +91,7 @@ protected:
 }
 
 /*!
- \ingroup windows 
+ \ingroup windows
  \brief Global instance of playlist player
  */
 extern PLAYLIST::CPlayListPlayer g_playlistPlayer;

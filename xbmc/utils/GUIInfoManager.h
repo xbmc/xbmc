@@ -1,6 +1,6 @@
 /*!
 \file GUIInfoManager.h
-\brief 
+\brief
 */
 
 #ifndef GUIINFOMANAGER_H_
@@ -60,7 +60,7 @@ class CGUIListItem;
 #define PLAYER_HAS_AUDIO              2
 #define PLAYER_HAS_VIDEO              3
 #define PLAYER_PLAYING                4
-#define PLAYER_PAUSED                 5 
+#define PLAYER_PAUSED                 5
 #define PLAYER_REWINDING              6
 #define PLAYER_REWINDING_2x           7
 #define PLAYER_REWINDING_4x           8
@@ -75,14 +75,14 @@ class CGUIListItem;
 #define PLAYER_FORWARDING_32x        17
 #define PLAYER_CAN_RECORD            18
 #define PLAYER_RECORDING             19
-#define PLAYER_CACHING               20 
+#define PLAYER_CACHING               20
 #define PLAYER_DISPLAY_AFTER_SEEK    21
 #define PLAYER_PROGRESS              22
 #define PLAYER_SEEKBAR               23
 #define PLAYER_SEEKTIME              24
 #define PLAYER_SEEKING               25
 #define PLAYER_SHOWTIME              26
-#define PLAYER_TIME                  27  
+#define PLAYER_TIME                  27
 #define PLAYER_TIME_REMAINING        28
 #define PLAYER_DURATION              29
 #define PLAYER_SHOWCODEC             30
@@ -503,7 +503,7 @@ private:
 
 /*!
  \ingroup strings
- \brief 
+ \brief
  */
 class CGUIInfoManager : public IMsgTargetCallback
 {
@@ -557,7 +557,7 @@ public:
   CStdString GetCurrentPlayTimeRemaining(TIME_FORMAT format) const;
   CStdString GetVersion();
   CStdString GetBuild();
-  
+
   bool GetDisplayAfterSeek() const;
   void SetDisplayAfterSeek(DWORD TimeOut = 2500);
   void SetSeeking(bool seeking) { m_playerSeeking = seeking; };
@@ -618,7 +618,7 @@ protected:
   std::vector<std::string> m_listitemProperties;
 
   CStdString m_currentMovieDuration;
-  
+
   // Current playing stuff
   CFileItem* m_currentFile;
   CStdString m_currentMovieThumb;
@@ -626,13 +626,13 @@ protected:
   unsigned int m_MusicBitrate;
   CFileItem* m_currentSlide;
   int i_SmartRequest;
- 
+
   // fan stuff
   DWORD m_lastSysHeatInfoTime;
   int m_fanSpeed;
   CTemperature m_gpuTemp;
   CTemperature m_cpuTemp;
-  
+
   //Fullscreen OSD Stuff
   DWORD m_AfterSeekTimeout;
   bool m_playerSeeking;
@@ -679,7 +679,7 @@ protected:
 
 /*!
  \ingroup strings
- \brief 
+ \brief
  */
 extern CGUIInfoManager g_infoManager;
 #endif

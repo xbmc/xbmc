@@ -110,24 +110,24 @@ struct partition
 
 /* NAME
  diag - find diagonal path
- 
+
    SYNOPSIS
  int diag(int xoff, int xlim, int yoff, int ylim, int minimal,
   struct partition *part);
- 
+
    DESCRIPTION
  Find the midpoint of the shortest edit script for a specified
  portion of the two strings.
- 
+
  Scan from the beginnings of the strings, and simultaneously from
  the ends, doing a breadth-first search through the space of
  edit-sequence.  When the two searches meet, we have found the
  midpoint of the shortest edit sequence.
- 
+
  If MINIMAL is nonzero, find the minimal edit script regardless
  of expense.  Otherwise, if the search is too expensive, use
  heuristics to stop the search and report a suboptimal answer.
- 
+
    RETURNS
  Set PART->(XMID,YMID) to the midpoint (XMID,YMID).  The diagonal
  number XMID - YMID equals the number of inserted characters
@@ -136,18 +136,18 @@ struct partition
  the total number of characters inserted or deleted (counting
  only characters before the midpoint), unless a heuristic is used
  to terminate the search prematurely.
- 
+
  Set PART->LEFT_MINIMAL to nonzero iff the minimal edit script
  for the left half of the partition is known; similarly for
  PART->RIGHT_MINIMAL.
- 
+
    CAVEAT
  This function assumes that the first characters of the specified
  portions of the two strings do not match, and likewise that the
  last characters do not match.  The caller must trim matching
  characters from the beginning and end of the portions it is
  going to specify.
- 
+
  If we return the "wrong" partitions, the worst this can do is
  cause suboptimal diff output.  It cannot cause incorrect diff
  output.  */
@@ -456,20 +456,20 @@ diag (int xoff, int xlim, int yoff, int ylim, int minimal, struct partition *par
 
 /* NAME
  compareseq - find edit sequence
- 
+
    SYNOPSIS
  void compareseq(int xoff, int xlim, int yoff, int ylim, int minimal);
- 
+
    DESCRIPTION
  Compare in detail contiguous subsequences of the two strings
  which are known, as a whole, to match each other.
- 
+
  The subsequence of string 0 is [XOFF, XLIM) and likewise for
  string 1.
- 
+
  Note that XLIM, YLIM are exclusive bounds.  All character
  numbers are origin-0.
- 
+
  If MINIMAL is nonzero, find a minimal difference no matter how
  expensive it is.  */
 
@@ -553,16 +553,16 @@ compareseq (int xoff, int xlim, int yoff, int ylim, int minimal)
 
 /* NAME
  fstrcmp - fuzzy string compare
- 
+
    SYNOPSIS
  double fstrcmp(const char *, const char *, double);
- 
+
    DESCRIPTION
  The fstrcmp function may be used to compare two string for
  similarity.  It is very useful in reducing "cascade" or
  "secondary" errors in compilers or other situations where
  symbol tables occur.
- 
+
    RETURNS
  double; 0 if the strings are entirly dissimilar, 1 if the
  strings are identical, and a number in between if they are
@@ -620,7 +620,7 @@ fstrcmp (const char *string1, const char *string2, double minimum)
   /* The result is
   ((number of chars in common) / (average length of the strings)).
      This is admittedly biased towards finding that the strings are
-     similar, however it does produce meaningful results.  */ 
+     similar, however it does produce meaningful results.  */
   return ((double)
           (string[0].data_length + string[1].data_length - string[1].edit_count - string[0].edit_count)
           / (string[0].data_length + string[1].data_length));

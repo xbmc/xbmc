@@ -38,7 +38,7 @@
 using namespace HTML;
 
 #ifndef __GNUC__
-#pragma warning (disable:4018) 
+#pragma warning (disable:4018)
 #endif
 
 //////////////////////////////////////////////////////////////////////
@@ -68,7 +68,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
 
   CStdString strHTML, strYear;
   CScraperUrl scrURL;
-  
+
   if (m_parser.HasFunction("CreateSearchUrl"))
   {
     GetURL(strMovie, scrURL, strYear);
@@ -77,7 +77,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   {
     if (!m_parser.HasFunction("FileNameScrape"))
       return false;
-    
+
     CScraperUrl scrURL("filenamescrape");
     scrURL.strTitle = strMovie;
     movielist.push_back(scrURL);
@@ -89,7 +89,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     CLog::Log(LOGERROR, "%s: Unable to retrieve web site",__FUNCTION__);
     return false;
   }
-  
+
   m_parser.m_param[0] = strHTML;
   m_parser.m_param[1] = scrURL.m_url[0].m_url;
   CStdString strXML = m_parser.Parse("GetSearchResults",&m_info.settings);
@@ -154,7 +154,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
           }
         }
       }
-      
+
       if (allowed)
         movielist.push_back(url);
     }
@@ -205,7 +205,7 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
     TiXmlHandle docHandle( &doc );
     TiXmlElement *movie = docHandle.FirstChild( "episodeguide" ).FirstChild( "episode" ).Element();
 
-    while (movie) 
+    while (movie)
     {
       TiXmlNode *title = movie->FirstChild("title");
       TiXmlElement *link = movie->FirstChildElement("url");
@@ -236,16 +236,16 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
   }
 
   // find minimum in each season
-  std::map<int,int> min; 
-  for (IMDB_EPISODELIST::iterator iter=temp.begin(); iter != temp.end(); ++iter ) 
-  { 
+  std::map<int,int> min;
+  for (IMDB_EPISODELIST::iterator iter=temp.begin(); iter != temp.end(); ++iter )
+  {
     if ((signed int) min.size() == (iter->first.first -1))
       min.insert(iter->first);
     else if (iter->first.second < min[iter->first.first])
       min[iter->first.first] = iter->first.second;
   }
   // correct episode numbers
-  for (IMDB_EPISODELIST::iterator iter=temp.begin(); iter != temp.end(); ++iter ) 
+  for (IMDB_EPISODELIST::iterator iter=temp.begin(); iter != temp.end(); ++iter )
   {
     int episode=iter->first.second - min[iter->first.first];
     if (min[iter->first.first] > 0)
@@ -310,14 +310,14 @@ bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetai
   {
     const char* szFunction = xurl->Attribute("function");
     if (szFunction)
-    {      
+    {
       CScraperUrl scrURL(xurl);
       InternalGetDetails(scrURL,movieDetails,szFunction);
     }
     xurl = xurl->NextSiblingElement("url");
   }
   TiXmlBase::SetCondenseWhiteSpace(true);
-  
+
   return ret;
 }
 
@@ -334,7 +334,7 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails)
 
   // set chaining to true here as this is called by our scrapers
   movieDetails.Load(details, true);
-  
+
   CHTMLUtil::RemoveTags(movieDetails.m_strPlot);
 
   return true;
@@ -407,7 +407,7 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
       char *pYear = reYear.GetReplaceString("\\2");
 
       if(pMovie)
-      {      
+      {
         strSearch1 = pMovie;
         free(pMovie);
       }
@@ -421,7 +421,7 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
     CRegExp reTags;
     reTags.RegComp("["SEP"](ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r5|se|svcd|swedish|unrated|ws|xvid|xxx|cd[1-9]|\\[.*\\])(["SEP"]|$)");
 
-    int i=0;  
+    int i=0;
     if ((i=reTags.RegFind(strSearch1.c_str())) >= 0) // new logic - select the crap then drop anything to the right of it
       strSearch2 = strSearch1.Mid(0, i);
     else
@@ -595,7 +595,7 @@ bool CIMDB::GetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& movieDetail
     return true;
   }
   else  // unthreaded
-    return InternalGetEpisodeList(url, movieDetails);  
+    return InternalGetEpisodeList(url, movieDetails);
 }
 
 void CIMDB::CloseThread()

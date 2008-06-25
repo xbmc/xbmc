@@ -94,7 +94,7 @@ protected:
   void ShowShareErrorMessage(CFileItem* pItem);
   void UpdateItemCounts();
 
-  // 
+  //
   bool bCheckShareConnectivity;
   CStdString strCheckSharePath;
 

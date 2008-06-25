@@ -69,13 +69,13 @@ class access_violation: public win32_exception
 {
 public:
     bool iswrite() const { return mIsWrite; };
-    Address address() const { return mBadAddress; };    
+    Address address() const { return mBadAddress; };
     virtual void writelog(const char *prefix) const;
 protected:
     friend void win32_exception::translate(unsigned code, EXCEPTION_POINTERS* info);
 private:
     bool mIsWrite;
     Address mBadAddress;
-    access_violation(const EXCEPTION_RECORD& info);    
+    access_violation(const EXCEPTION_RECORD& info);
 };
 #endif

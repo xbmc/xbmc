@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
     {
       if (strnicmp(argv[i], "-q", 2) == 0)
         g_application.SetQuiet(true);
-      
+
       else if (strnicmp(argv[i], "-fs", 3) == 0)
       {
         printf("Running in fullscreen mode...\n");
@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
       }
     }
   }
-  
+
   // if we're on a Mac or if XBMC_PLATFORM_MODE is set, enable platform
   // specific directories.
 #ifdef __APPLE__
@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
   ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, (DWORD) -1};
   g_application.getApplicationMessenger().SendMessage(tMsg, false);
 
-  try 
+  try
   {
     while (1)
     {

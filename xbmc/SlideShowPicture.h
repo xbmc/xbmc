@@ -75,7 +75,7 @@ public:
 
   void Move(float dX, float dY);
   float GetZoom() const { return m_fZoomAmount;};
-  
+
   bool m_bIsComic;
 private:
   void Process();

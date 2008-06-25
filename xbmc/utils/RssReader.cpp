@@ -63,7 +63,7 @@ CRssReader::~CRssReader()
 void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, const vector<int> &times, int spacesBetweenFeeds)
 {
   m_pObserver = aObserver;
-  m_spacesBetweenFeeds = spacesBetweenFeeds; 
+  m_spacesBetweenFeeds = spacesBetweenFeeds;
   m_vecUrls = aUrls;
   m_strFeed.resize(aUrls.size());
   m_strColors.resize(aUrls.size());
@@ -80,7 +80,7 @@ void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, co
 }
 
 void CRssReader::AddToQueue(int iAdd)
-{  
+{
   if (iAdd < (int)m_vecUrls.size())
     m_vecQueue.push_back(iAdd);
   if (!m_bIsRunning)
@@ -178,7 +178,7 @@ void CRssReader::getFeed(vector<DWORD> &text)
   {
     for (int j = 0; j < m_spacesBetweenFeeds; j++)
       text.push_back(L' ');
-    
+
     for (unsigned int j = 0; j < m_strFeed[i].size(); j++)
     {
       DWORD letter = m_strFeed[i][j] | ((m_strColors[i][j] - 48) << 16);
@@ -241,7 +241,7 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
           // This usually happens in right-to-left languages where they want to
           // specify in the RSS body that the text should be RTL.
           // <title>
-          //  <div dir="RTL">��� ����: ���� �� �����</div> 
+          //  <div dir="RTL">��� ����: ���� �� �����</div>
           // </title>
           if (htmlText.Equals("div") || htmlText.Equals("span"))
           {
@@ -291,7 +291,7 @@ void CRssReader::fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDe
   {
     flippedStrSource = strSource;
   }
-  
+
   if (m_iconv != (iconv_t) - 1)
   {
     const char* src = flippedStrSource.c_str();
@@ -345,7 +345,7 @@ bool CRssReader::Parse(LPSTR szBuffer, int iFeed)
   }
 
   CLog::Log(LOGDEBUG, "RSS feed encoding: %s", m_encoding.c_str());
-  
+
   m_iconv = iconv_open(WCHAR_CHARSET, m_encoding.c_str());
 
   if (g_charsetConverter.isBidiCharset(m_encoding))

@@ -56,7 +56,7 @@ public:
   bool CacheSkinImage(const CStdString &srcFile, const CStdString &destFile);
 
 protected:
-  
+
 private:
 #ifndef HAS_SDL
   struct VERTEX

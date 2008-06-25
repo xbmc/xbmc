@@ -33,12 +33,12 @@
 
 #include <vector>
 
-size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft, 
+size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft,
 		    char* * outbuf, size_t *outbytesleft);
 
 #ifdef __APPLE__
   #define WCHAR_CHARSET "UTF-32LE"
-  #define UTF8_SOURCE "UTF-8-MAC" 
+  #define UTF8_SOURCE "UTF-8-MAC"
 #elif defined(_XBOX) || defined(WIN32)
   #define WCHAR_CHARSET "UTF-16LE"
   #define UTF8_SOURCE "UTF-8"
@@ -63,7 +63,7 @@ public:
       type = iconv_open(strToCharset.c_str(), strFromCharset.c_str());
     }
 
-    if (type != (iconv_t) - 1)
+    if (type != (iconv_t) - 1 && strSource.length())
     {
       size_t inBytes  = (strSource.length() + 1)*sizeof(strSource[0]);
       size_t outBytes = (strSource.length() + 1)*multiplier;
@@ -146,7 +146,7 @@ private:
   iconv_t m_iconvUtf16LEtoUtf8;
   iconv_t m_iconvUtf8toW;
   iconv_t m_iconvUcs2CharsetToUtf8;
-  
+
   FriBidiCharSet m_stringFribidiCharset;
 
   CStdString EMPTY;

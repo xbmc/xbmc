@@ -56,7 +56,7 @@ public:
   bool IsProfileLockUnlocked(int iProfile, bool& bCanceled);
   bool IsMasterLockUnlocked(bool bPromptUser);
   bool IsMasterLockUnlocked(bool bPromptUser, bool& bCanceled);
-  
+
   void UpdateMasterLockRetryCount(bool bResetCount);
   bool GetSMBShareUserPassword();
   void SetSMBShare(const CStdString &strShare);

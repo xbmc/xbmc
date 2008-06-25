@@ -89,7 +89,7 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
       {
         CMediaSource share;
         share.FromNameAndPaths("video", m_name, GetPaths());
-        
+
         CGUIDialogContentSettings::ShowForDirectory(share.strPath,m_info,m_settings,m_bRunScan);
       }
       return true;
@@ -171,7 +171,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
 bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const CStdString&share)
 {
   VECSOURCES* pShares=NULL;
-  
+
   if (type.Equals("upnpmusic"))
     pShares = &g_settings.m_UPnPMusicSources;
   if (type.Equals("upnpvideo"))

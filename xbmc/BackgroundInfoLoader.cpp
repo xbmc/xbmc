@@ -113,7 +113,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
 
   if (items.Size() == 0)
     return;
-  
+
   EnterCriticalSection(m_lock);
 
   for (int nItem=0; nItem < items.Size(); nItem++)
@@ -134,7 +134,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
   m_nActiveThreads = nThreads;
   for (int i=0; i < nThreads; i++)
   {
-    CThread *pThread = new CThread(this); 
+    CThread *pThread = new CThread(this);
     pThread->Create();
 #ifndef _LINUX
     pThread->SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
@@ -142,7 +142,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
     pThread->SetName("Background Loader");
     m_workers.push_back(pThread);
   }
-      
+
   LeaveCriticalSection(m_lock);
 }
 

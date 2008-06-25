@@ -128,7 +128,7 @@ unsigned char ILCD::GetLCDCharsetCharacter( UINT _nCharacter, int _nCharset )
                                                             {0x1f, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x1f}, //        |_|
                                                           },
                                                           { // Medium Char                                    //   _
-                                                            {0x1f, 0x1f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, //    
+                                                            {0x1f, 0x1f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, //
                                                             {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1f, 0x1f}, //         _
                                                             {0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x1f, 0x1f}, //  |_     _
                                                             {0x1f, 0x1f, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18}, //   _      |
@@ -148,7 +148,7 @@ unsigned char ILCD::GetLCDCharsetCharacter( UINT _nCharacter, int _nCharset )
                                                             {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
                                                             {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
                                                           } };
-  if ( _nCharset == -1 ) 
+  if ( _nCharset == -1 )
     _nCharset = m_eCurrentCharset;
 
 
@@ -329,7 +329,7 @@ CStdString ILCD::GetBigDigit( UINT _nCharset, int _nDigit, UINT _nLine, UINT _nM
   // Set the current size, and value (base numer)
   nCurrentSize = 1;
   nCurrentValue = 10;
-  
+
   // Build the characters
   strDigits = "";
 
@@ -364,7 +364,7 @@ CStdString ILCD::GetBigDigit( UINT _nCharset, int _nDigit, UINT _nLine, UINT _nM
           break;
         }
       }
-        
+
     }
     // Add as partial string
     // Note that is it reversed, I.E. 'LSB' is added first

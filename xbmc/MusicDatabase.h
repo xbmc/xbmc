@@ -75,14 +75,14 @@ class CFileItemList;
 /*!
  \ingroup music
  \brief Class to store and read tag information
- 
+
  CMusicDatabase can be used to read and store
  tag information for faster access. It is based on
  sqlite (http://www.sqlite.org).
- 
+
  Here is the database layout:
   \image html musicdatabase.png
- 
+
  \sa CAlbum, CSong, VECSONGS, CMapSong, VECARTISTS, VECALBUMS, VECGENRES
  */
 class CMusicDatabase : public CDatabase
@@ -143,7 +143,7 @@ public:
   bool GetAlbumFromSong(long idSong, CAlbum &album);
   bool GetAlbumFromSong(const CSong &song, CAlbum &album);
 
-  bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
+  bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet,
                          const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult);
   bool GetTop100(const CStdString& strBaseDir, CFileItemList& items);
   bool GetTop100Albums(VECALBUMS& albums);
@@ -229,8 +229,8 @@ private:
   bool SearchAlbums(const CStdString& search, CFileItemList &albums);
   bool SearchSongs(const CStdString& strSearch, CFileItemList &songs);
   long GetSongIDFromPath(const CStdString &filePath);
-  
-    // Fields should be ordered as they 
+
+    // Fields should be ordered as they
   // appear in the songview
   enum _SongFields
   {
@@ -264,14 +264,14 @@ private:
     song_strThumb
   } SongFields;
 
-  // Fields should be ordered as they 
+  // Fields should be ordered as they
   // appear in the albumview
   enum _AlbumFields
   {
     album_idAlbum=0,
-    album_strAlbum, 
-    album_strExtraArtists, 
-    album_idArtist, 
+    album_strAlbum,
+    album_strExtraArtists,
+    album_idArtist,
     album_strExtraGenres,
     album_idGenre,
     album_strArtist,
@@ -289,7 +289,7 @@ private:
     album_iRating
   } AlbumFields;
 
-  enum _ArtistFields 
+  enum _ArtistFields
   {
     artist_idArtist=1, // not a typo - we have the primary key @ 0
     artist_strBorn,

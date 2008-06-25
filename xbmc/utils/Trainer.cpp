@@ -40,7 +40,7 @@ using namespace XFILE;
 #define XBTF_SELECTIONS_TEXT_OFFSET 0x0E // option labels
 #define XBTF_ID_LIST 0x12 // TitleID(s) trainer is meant for
 #define XBTF_SECTION 0x16 // section to patch the locations in memory our xbtf support functions end up
-#define XBTF_ENTRYPOINT 0x1A // entry point for xbtf file (really com).  
+#define XBTF_ENTRYPOINT 0x1A // entry point for xbtf file (really com).
 
 CTrainer::CTrainer()
 {
@@ -137,7 +137,7 @@ bool CTrainer::Load(const CStdString& strPath)
     m_iOptions = *((unsigned int*)(m_pData+ETM_SELECTIONS_OFFSET));
     m_pTrainerData = m_pData;
   }
-  
+
   if (iTextOffset > m_iSize)
   {
     CLog::Log(LOGINFO,"CTrainer::Load: Broken trainer %s",strPath.c_str());
@@ -145,7 +145,7 @@ bool CTrainer::Load(const CStdString& strPath)
   }
 
   m_iNumOptions = iTextOffset-m_iOptions;
-     
+
   char temp[85];
   unsigned int i;
   for (i=0;i<m_iNumOptions+2;++i)
@@ -165,7 +165,7 @@ bool CTrainer::Load(const CStdString& strPath)
   }
 
   m_iNumOptions = i-1;
- 
+
   m_strPath = strPath;
 #endif
   return true;
@@ -177,7 +177,7 @@ void CTrainer::GetTitleIds(unsigned int& title1, unsigned int& title2, unsigned 
   if (m_pData)
   {
     DWORD ID_List;
-    unsigned char* pList = m_pTrainerData+(m_bIsXBTF?XBTF_ID_LIST:ETM_ID_LIST); 
+    unsigned char* pList = m_pTrainerData+(m_bIsXBTF?XBTF_ID_LIST:ETM_ID_LIST);
     memcpy(&ID_List, pList, 4);
     memcpy(&title1,m_pTrainerData+ID_List,4);
     memcpy(&title2,m_pTrainerData+ID_List+4,4);

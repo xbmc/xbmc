@@ -70,7 +70,7 @@ protected:
 #ifndef HAS_SDL
       SAFE_RELEASE(m_texture);
 #elif defined (HAS_SDL_2D)
-      if (m_texture) 
+      if (m_texture)
          SDL_FreeSurface(m_texture);
 #else
       delete m_texture;

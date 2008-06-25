@@ -61,8 +61,8 @@
 #define VIDEO_SHOW_UNWATCHED 1
 #define VIDEO_SHOW_WATCHED 2
 
-/* FIXME: eventually the profile should dictate where t:\ is but for now it 
-   makes sense to leave all the profile settings in a user writeable location 
+/* FIXME: eventually the profile should dictate where t:\ is but for now it
+   makes sense to leave all the profile settings in a user writeable location
    like t:\ */
 #define PROFILES_FILE "t:\\profiles.xml"
 
@@ -221,7 +221,7 @@ public:
     bool m_bTuxBoxSendAllAPids;
 
     int m_curlclienttimeout;
-    
+
 #ifdef HAS_SDL
     bool m_fullScreen;
 #endif
@@ -361,7 +361,7 @@ public:
 
   bool LoadUPnPXml(const CStdString& strSettingsFile);
   bool SaveUPnPXml(const CStdString& strSettingsFile) const;
-  
+
   bool LoadProfiles(const CStdString& strSettingsFile);
   bool SaveProfiles(const CStdString& strSettingsFile) const;
 

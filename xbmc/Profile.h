@@ -60,7 +60,7 @@ public:
   void setWriteDatabases(bool bCan) { _bCanWrite = bCan; }
   void setSources(bool bHas) { _bSources = bHas; }
   void setWriteSources(bool bCan) { _bCanWriteSources = bCan; }
-  
+
   void setSettingsLocked(bool bLocked) { _bLockSettings = bLocked; }
   void setFilesLocked(bool bLocked) { _bLockFiles = bLocked; }
   void setMusicLocked(bool bLocked) { _bLockMusic = bLocked; }

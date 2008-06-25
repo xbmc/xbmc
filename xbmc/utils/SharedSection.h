@@ -35,11 +35,11 @@ public:
 
   inline void EnterShared();
   inline void LeaveShared();
-  
+
 private:
 
   CRITICAL_SECTION m_critSection;
-  
+
   CRITICAL_SECTION m_helperLock;
 
   HANDLE m_eventFree;

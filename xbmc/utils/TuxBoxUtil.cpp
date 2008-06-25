@@ -1069,7 +1069,7 @@ bool CTuxBoxUtil::BoxInfo(TiXmlElement *pRootElement)
 {
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
-  
+
   if(pRootElement)
   {
     CLog::Log(LOGDEBUG, "%s - BoxInfo", __FUNCTION__);
@@ -1158,7 +1158,7 @@ bool CTuxBoxUtil::ServiceEPG(TiXmlElement *pRootElement)
 {
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
-  
+
   if(pRootElement)
   {
     CLog::Log(LOGDEBUG, "%s - Service EPG", __FUNCTION__);
@@ -1364,7 +1364,7 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
     defaultPng = piconPath+"default.png";
     piconXML = "Q:\\userdata\\pictureicon\\picon.xml";
     TiXmlDocument piconDoc;
-    
+
     if (!CFile::Exists(piconXML))
     { 
       return defaultPng;

@@ -53,7 +53,7 @@ void CGUIDialogPictureInfo::OnInitWindow()
 
 bool CGUIDialogPictureInfo::OnAction(const CAction& action)
 {
-  switch (action.wID) 
+  switch (action.wID)
   {
     // if we're running from slideshow mode, drop the "next picture" and "previous picture" actions through.
     case ACTION_NEXT_PICTURE:

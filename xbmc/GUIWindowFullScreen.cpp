@@ -749,7 +749,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
 
       float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
       m_subsLayout->Update(subtitleText, maxWidth * 0.9f);
-      
+
       float textWidth, textHeight;
       m_subsLayout->GetTextExtent(textWidth, textHeight);
       float x = maxWidth * 0.5f + g_settings.m_ResInfo[res].Overscan.left;
@@ -804,7 +804,7 @@ void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
 void CGUIWindowFullScreen::SeekChapter(int iChapter)
 {
   g_application.m_pPlayer->SeekChapter(iChapter);
-  
+
   // Make sure gui items are visible.
   g_infoManager.SetDisplayAfterSeek();
 }
