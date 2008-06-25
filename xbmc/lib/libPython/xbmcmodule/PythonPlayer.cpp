@@ -34,6 +34,8 @@ CPythonPlayer::CPythonPlayer()
 CPythonPlayer::~CPythonPlayer(void)
 {
   g_pythonParser.UnregisterPythonPlayerCallBack(this);
+  if (pCallback)
+    Py_DECREF(pCallback);
 }
 
 void CPythonPlayer::OnPlayBackStarted()
@@ -56,6 +58,11 @@ void CPythonPlayer::OnPlayBackStopped()
 
 void CPythonPlayer::SetCallback(PyObject *object)
 {
+  Py_INCREF(object);
+
+  if (pCallback)
+    Py_DECREF(pCallback);
+  
   pCallback = object;
   g_pythonParser.RegisterPythonPlayerCallBack(this);
 }
