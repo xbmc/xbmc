@@ -108,7 +108,7 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
   char lDrives[128];
   GetLogicalDriveStrings(sizeof(lDrives)-1, lDrives);
   char *pch = lDrives;
-  while (*pch) 
+  while (*pch)
   {
     CMediaSource share;
     int iDrive = GetDriveType(pch);
@@ -117,8 +117,8 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
       share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
       //share.strName = g_localizeStrings.Get(218);
     }
-    else 
-    {     
+    else
+    {
       share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     }
     share.m_ignore = true;
@@ -248,7 +248,7 @@ bool CMediaManager::RemoveLocation(const CStdString& path)
   {
     if (m_locations[i].path == path)
     {
-      // prompt for sources, remove, cancel, 
+      // prompt for sources, remove, cancel,
       m_locations.erase(m_locations.begin()+i);
       return SaveSources();
     }

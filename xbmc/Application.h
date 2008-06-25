@@ -209,9 +209,9 @@ public:
   int GlobalIdleTime();
   void NewFrame();
   void SetQuiet(bool bQuiet);
-  void EnablePlatformDirectories(bool enable=true) 
-  { 
-    m_bPlatformDirectories = enable; 
+  void EnablePlatformDirectories(bool enable=true)
+  {
+    m_bPlatformDirectories = enable;
   }
 
 protected:
@@ -252,7 +252,7 @@ protected:
   bool m_bInitializing;
   bool m_playCountUpdated;
   bool m_bQuiet;
-  bool m_bPlatformDirectories;  
+  bool m_bPlatformDirectories;
 
   int m_iPlaySpeed;
   int m_currentStackPosition;
@@ -283,9 +283,9 @@ protected:
   bool ProcessRemote(float frameTime);
   bool ProcessGamepad(float frameTime);
   bool ProcessEventServer(float frameTime);
-  
+
   bool ProcessJoystickEvent(const std::string& joystickName, int button, bool isAxis, float fAmount);
-  
+
   void CheckForDebugButtonCombo();
   void StartFtpEmergencyRecoveryMode();
   float NavigationIdleTime();
@@ -310,7 +310,7 @@ protected:
 #ifdef _LINUX
   CLinuxResourceCounter m_resourceCounter;
 #endif
-  
+
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
 #endif

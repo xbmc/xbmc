@@ -75,12 +75,12 @@ public:
 
   // returns the relative cpu usage of this thread since last call
   float GetRelativeUsage();
-  
+
 protected:
   virtual void OnStartup(){};
   virtual void OnExit(){};
   virtual void OnException(){} // signal termination handler
-  virtual void Process(); 
+  virtual void Process();
 
 #ifdef _LINUX
   static void term_handler (int signum);

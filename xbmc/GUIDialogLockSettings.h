@@ -50,7 +50,7 @@ protected:
   bool m_bConditionalDetails;
   bool m_bGetUser;
   int m_iButtonLabel;
-  bool m_bLockMusic; 
+  bool m_bLockMusic;
   bool m_bLockVideo;
   bool m_bLockPictures;
   bool m_bLockPrograms;

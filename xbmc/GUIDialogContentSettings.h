@@ -24,7 +24,7 @@
 #include "GUIDialogSettings.h"
 #include "ScraperSettings.h"
 
-namespace VIDEO 
+namespace VIDEO
 {
   struct SScanSettings;
 }

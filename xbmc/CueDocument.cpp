@@ -130,7 +130,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
     else if (strLine.Left(5) == "TRACK")
     {
       int iTrackNumber = ExtractNumericInfo(strLine.c_str() + 5);
- 
+
       m_iTotalTracks++;
 
       CCueTrack track;
@@ -287,7 +287,7 @@ int CCueDocument::ExtractTimeFromIndex(const CStdString &index)
     numberTime.erase(0, 1);
   }
   numberTime.TrimLeft();
-  // split the resulting string 
+  // split the resulting string
   CStdStringArray time;
   StringUtils::SplitString(numberTime, ":", time);
   if (time.size() != 3)

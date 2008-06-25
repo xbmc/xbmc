@@ -31,7 +31,7 @@ using namespace XFILE;
 
 CPictureThumbLoader::CPictureThumbLoader()
 {
-  m_regenerateThumbs = false;  
+  m_regenerateThumbs = false;
 }
 
 CPictureThumbLoader::~CPictureThumbLoader()
@@ -43,12 +43,12 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
 {
   if (pItem->m_bIsShareOrDrive) return true;
   pItem->SetCachedPictureThumb();
-  
+
   if(pItem->HasThumbnail())
   {
     CStdString thumb(pItem->GetThumbnailImage());
 
-    // look for remote thumbs    
+    // look for remote thumbs
     if (!CURL::IsFileOnly(thumb) && !CUtil::IsHD(thumb))
     {
       CStdString cachedThumb(pItem->GetCachedPictureThumb());
