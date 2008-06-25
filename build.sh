@@ -14,7 +14,7 @@ error() {
 usage() {
   echo " build.sh by default checks that your source is up-to-date, updates it"
   echo "  if not, compile, and create a working build of XBMC in ./BUILD."
-  echo "  UserData and scripts dirs as well as 3rd party skins will be backed"
+  echo "  userdata and scripts dirs as well as 3rd party skins will be backed"
   echo "  up if existing."
   echo " Usage: build.sh [OPTIONS]"
   echo "  OPTIONS:"
@@ -319,13 +319,13 @@ copy() {
       done
     elif [[ "$I" == "userdata" ]]
     then
-      if [[ -e "$BACKUPDIR/UserData" ]]
+      if [[ -e "$BACKUPDIR/userdata" ]]
       then
         if (( VERBOSE ))
         then 
-          cp -vrf "$BACKUPDIR/UserData" "$BUILDDIR"
+          cp -vrf "$BACKUPDIR/userdata" "$BUILDDIR"
         else
-          cp -rf "$BACKUPDIR/UserData" "$BUILDDIR" &> /dev/null
+          cp -rf "$BACKUPDIR/userdata" "$BUILDDIR" &> /dev/null
         fi
       else
         if (( VERBOSE ))
