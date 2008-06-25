@@ -234,8 +234,7 @@ compile() {
       make ${MAKEFLAGS} -C "${SOURCEDIR}" 2>&1 | tee "${SOURCEDIR}/compile.log" | grep -E "Linking|Building|Compiling"
     fi
    
-    grep Error "${SOURCEDIR}/compile.log"
-    if [[ $? == "0" ]]
+    if [[ ${PIPESTATUS[0]} != "0" ]]
     then
       echo
       echo " Errors have occurred!"

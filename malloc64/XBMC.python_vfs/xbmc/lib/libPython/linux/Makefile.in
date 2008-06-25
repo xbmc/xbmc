@@ -1,5 +1,5 @@
 
-default: python24.zip python24-@ARCH@.so
+default: python24-@ARCH@.so
 	cp python24.zip python24-@ARCH@.so  ../../../../system/python
 
 python24.zip: python-lib
