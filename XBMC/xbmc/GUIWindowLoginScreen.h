@@ -50,5 +50,5 @@ protected:
   CFileItemList* m_vecItems;
 
   int m_iSelectedItem;
-  CStopWatch watch;  
+  CStopWatch watch;
 };

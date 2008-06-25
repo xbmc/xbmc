@@ -10,7 +10,7 @@
 
 namespace SOCKETS
 {
-  
+
 #ifdef _XBOX
 static char* inet_ntoa (struct in_addr in)
 {
@@ -30,7 +30,7 @@ typedef int SOCKET;
 #else
 typedef int socklen_t;
 #endif
-  
+
   // types of sockets
   enum SocketType
   {
@@ -50,8 +50,8 @@ typedef int socklen_t;
 
   public:
     CAddress()
-    { 
-      memset(&saddr, 0, sizeof(saddr)); 
+    {
+      memset(&saddr, 0, sizeof(saddr));
       saddr.sin_family = AF_INET;
       saddr.sin_addr.s_addr = htonl(INADDR_ANY);
       size = sizeof(sockaddr_in);
@@ -61,7 +61,7 @@ typedef int socklen_t;
     {
       SetAddress(address);
     }
-    
+
     void SetAddress(const char *address)
     {
       memset(&saddr, 0, sizeof(saddr));
@@ -74,7 +74,7 @@ typedef int socklen_t;
     {
       return inet_ntoa(saddr.sin_addr);
     }
-    
+
     unsigned long ULong()
     {
       return (unsigned long)saddr.sin_addr.s_addr;
@@ -129,15 +129,15 @@ typedef int socklen_t;
         m_Type = ST_UDP;
       }
     // I/O functions
-    virtual int SendTo(const CAddress& addr, const int bufferlength, 
+    virtual int SendTo(const CAddress& addr, const int bufferlength,
                        const void* buffer) = 0;
 
     // read datagrams, return no. of bytes read or -1 or error
     virtual int  Read(CAddress& addr, const int buffersize, void *buffer) = 0;
-    virtual bool Broadcast(const CAddress& addr, const int datasize, 
+    virtual bool Broadcast(const CAddress& addr, const int datasize,
                            const void* data) = 0;
   };
-  
+
   // Implementation specific classes
 
   /**********************************************************************/
@@ -175,7 +175,7 @@ typedef int socklen_t;
   class CSocketFactory
   {
   public:
-    static CUDPSocket* CreateUDPSocket();   
+    static CUDPSocket* CreateUDPSocket();
   };
 
   /**********************************************************************/

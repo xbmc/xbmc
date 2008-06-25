@@ -81,7 +81,7 @@ bool CShortcut::Create(const CStdString& szPath)
         m_strParameters = pChild->FirstChild()->Value();
       }
     }
-    
+
     if (strValue == "thumb")
     {
       if (pChild->FirstChild())

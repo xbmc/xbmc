@@ -113,7 +113,7 @@ bool CFavourites::AddOrRemove(CFileItem *item, DWORD contextWindow)
     favourite->m_strPath = executePath;
     items.Add(favourite);
   }
-  
+
   // and save our list again
   return Save(items);
 }

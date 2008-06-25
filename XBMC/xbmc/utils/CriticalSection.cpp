@@ -34,10 +34,10 @@ CCriticalSection::~CCriticalSection()
 }
 
 // The C API.
-void  InitializeCriticalSection(CCriticalSection* section)             { section->getCriticalSection().Initialize(); } 
+void  InitializeCriticalSection(CCriticalSection* section)             { section->getCriticalSection().Initialize(); }
 void  DeleteCriticalSection(CCriticalSection* section)                 { section->getCriticalSection().Destroy(); }
 BOOL  OwningCriticalSection(CCriticalSection* section)                 { return section->getCriticalSection().Owning(); }
-DWORD ExitCriticalSection(CCriticalSection* section)                   { return section->getCriticalSection().Exit(); } 
+DWORD ExitCriticalSection(CCriticalSection* section)                   { return section->getCriticalSection().Exit(); }
 void  RestoreCriticalSection(CCriticalSection* section, DWORD count)   { return section->getCriticalSection().Restore(count); }
 void  EnterCriticalSection(CCriticalSection* section)                  { section->getCriticalSection().Enter(); }
 void  LeaveCriticalSection(CCriticalSection* section)                  { section->getCriticalSection().Leave(); }

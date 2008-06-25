@@ -133,7 +133,7 @@ void CEventServer::Cleanup()
     free(m_pPacketBuffer);
     m_pPacketBuffer = NULL;
   }
-  
+
   map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
   while (iter != m_clients.end())
   {
@@ -271,9 +271,9 @@ void CEventServer::RefreshClients()
   {
     if (! (iter->second->Alive()))
     {
-      CLog::Log(LOGNOTICE, "ES: Client %s from %s timed out", iter->second->Name().c_str(), 
+      CLog::Log(LOGNOTICE, "ES: Client %s from %s timed out", iter->second->Name().c_str(),
                 iter->second->Address().Address());
-      delete iter->second;   
+      delete iter->second;
       m_clients.erase(iter);
       iter = m_clients.begin();
     }

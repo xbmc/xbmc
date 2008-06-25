@@ -34,7 +34,7 @@ inline int StartsWithToken(const CStdString& strLabel)
 {
   for (unsigned int i=0;i<g_advancedSettings.m_vecTokens.size();++i)
   {
-    if (g_advancedSettings.m_vecTokens[i].size() < strLabel.size() && 
+    if (g_advancedSettings.m_vecTokens[i].size() < strLabel.size() &&
         strnicmp(g_advancedSettings.m_vecTokens[i].c_str(), strLabel.c_str(), g_advancedSettings.m_vecTokens[i].size()) == 0)
       return g_advancedSettings.m_vecTokens[i].size();
   }
@@ -449,7 +449,7 @@ bool SSortFileItem::SongTitleAscendingNoThe(const CFileItemPtr &left, const CFil
     char *r = (char *)right->GetMusicInfoTag()->GetTitle().c_str();
     l += StartsWithToken(left->GetMusicInfoTag()->GetTitle());
     r += StartsWithToken(right->GetMusicInfoTag()->GetTitle());
-    
+
     return StringUtils::AlphaNumericCompare(l, r) < 0;
   }
   return left->m_bIsFolder;
@@ -470,7 +470,7 @@ bool SSortFileItem::SongTitleDescendingNoThe(const CFileItemPtr &left, const CFi
     char *r = (char *)right->GetMusicInfoTag()->GetTitle().c_str();
     l += StartsWithToken(left->GetMusicInfoTag()->GetTitle());
     r += StartsWithToken(right->GetMusicInfoTag()->GetTitle());
-    
+
     return StringUtils::AlphaNumericCompare(l, r) > 0;
   }
   return left->m_bIsFolder;
@@ -550,7 +550,7 @@ bool SSortFileItem::SongArtistAscending(const CFileItemPtr &left, const CFileIte
       lt = left->GetMusicInfoTag()->GetTrackAndDiskNumber();
     if (right->HasMusicInfoTag())
       rt = right->GetMusicInfoTag()->GetTrackAndDiskNumber();
-    
+
     return lt < rt;
   }
   return left->m_bIsFolder;
@@ -624,7 +624,7 @@ bool SSortFileItem::SongArtistDescending(const CFileItemPtr &left, const CFileIt
       lt = left->GetMusicInfoTag()->GetTrackAndDiskNumber();
     if (right->HasMusicInfoTag())
       rt = right->GetMusicInfoTag()->GetTrackAndDiskNumber();
-    
+
     return rt < lt;
   }
   return left->m_bIsFolder;
@@ -1391,7 +1391,7 @@ bool SSortFileItem::StudioAscendingNoThe(const CFileItemPtr &left, const CFileIt
     char *r = (char *)right->GetVideoInfoTag()->m_strStudio.c_str();
     l += StartsWithToken(left->GetVideoInfoTag()->m_strStudio);
     r += StartsWithToken(right->GetVideoInfoTag()->m_strStudio);
-    
+
     return StringUtils::AlphaNumericCompare(l, r) < 0;
   }
   return left->m_bIsFolder;
@@ -1412,7 +1412,7 @@ bool SSortFileItem::StudioDescendingNoThe(const CFileItemPtr &left, const CFileI
     char *r = (char *)right->GetVideoInfoTag()->m_strStudio.c_str();
     l += StartsWithToken(left->GetVideoInfoTag()->m_strStudio);
     r += StartsWithToken(right->GetVideoInfoTag()->m_strStudio);
-    
+
     return StringUtils::AlphaNumericCompare(l, r) > 0;
   }
   return left->m_bIsFolder;

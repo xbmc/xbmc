@@ -58,12 +58,12 @@ static void MakeTlsKeys()
 
 
 #define MS_VC_EXCEPTION 0x406d1388
-typedef struct tagTHREADNAME_INFO 
-{ 
-  DWORD dwType; // must be 0x1000 
-  LPCSTR szName; // pointer to name (in same addr space) 
-  DWORD dwThreadID; // thread ID (-1 caller thread) 
-  DWORD dwFlags; // reserved for future use, most be zero 
+typedef struct tagTHREADNAME_INFO
+{
+  DWORD dwType; // must be 0x1000
+  LPCSTR szName; // pointer to name (in same addr space)
+  DWORD dwThreadID; // thread ID (-1 caller thread)
+  DWORD dwFlags; // reserved for future use, most be zero
 } THREADNAME_INFO;
 
 CThread::CThread()
@@ -87,7 +87,7 @@ CThread::CThread()
 }
 
 CThread::CThread(IRunnable* pRunnable)
-{  
+{
   m_bStop = false;
 
   m_bAutoDelete = false;
@@ -166,18 +166,18 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   //sigaction (SIGSEGV, &action, NULL);
 #endif
 
-  
+
 #ifdef __APPLE__
   // Set the TLS.
   pthread_setspecific(tlsLocalThread, (void*)pThread);
 #endif
 
-  try 
+  try
   {
     pThread->OnStartup();
   }
 #ifndef _LINUX
-  catch (const win32_exception &e) 
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
     if( pThread->IsAutoDelete() )
@@ -206,18 +206,18 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
     pThread->Process();
   }
 #ifndef _LINUX
-  catch (const access_violation &e) 
+  catch (const access_violation &e)
   {
     e.writelog(__FUNCTION__);
   }
-  catch (const win32_exception &e) 
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
 #endif
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread process, attemping cleanup in OnExit", __FUNCTION__); 
+    CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread process, attemping cleanup in OnExit", __FUNCTION__);
   }
 
   try
@@ -225,18 +225,18 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
     pThread->OnExit();
   }
 #ifndef _LINUX
-  catch (const access_violation &e) 
+  catch (const access_violation &e)
   {
     e.writelog(__FUNCTION__);
   }
-  catch (const win32_exception &e) 
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
 #endif
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread exit", __FUNCTION__); 
+    CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread exit", __FUNCTION__);
   }
 
   if ( pThread->IsAutoDelete() )
@@ -269,7 +269,7 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
   m_bAutoDelete = bAutoDelete;
   m_bStop = false;
   ::ResetEvent(m_StopEvent);
- 
+
   m_ThreadHandle = (HANDLE)_beginthreadex(NULL, stacksize, (PBEGINTHREADEX_THREADFUNC)staticThread, (void*)this, 0, &m_ThreadId);
 
 }
@@ -327,19 +327,19 @@ bool CThread::SetPriority(const int iPriority)
 
 void CThread::SetName( LPCTSTR szThreadName )
 {
-  THREADNAME_INFO info; 
-  info.dwType = 0x1000; 
-  info.szName = szThreadName; 
+  THREADNAME_INFO info;
+  info.dwType = 0x1000;
+  info.szName = szThreadName;
   info.dwThreadID = m_ThreadId;
-  info.dwFlags = 0; 
+  info.dwFlags = 0;
 #ifndef _LINUX
-  try 
-  { 
-    RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (DWORD *)&info); 
-  } 
+  try
+  {
+    RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (DWORD *)&info);
+  }
   catch(...)
-  { 
-  }  
+  {
+  }
 #endif
 }
 
@@ -377,7 +377,7 @@ HANDLE CThread::ThreadHandle()
 void CThread::Process()
 {
   if(m_pRunnable)
-    m_pRunnable->Run(); 
+    m_pRunnable->Run();
 }
 
 float CThread::GetRelativeUsage()
@@ -401,7 +401,7 @@ float CThread::GetRelativeUsage()
 
     return m_fLastUsage;
   }
-  return 0.0f; 
+  return 0.0f;
 }
 
 DWORD CThread::WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds)

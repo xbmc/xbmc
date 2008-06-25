@@ -166,7 +166,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
     if (!reg.RegComp(strExpression.c_str()))
     {
       //std::cout << "error compiling regexp in scraper";
-      return; 
+      return;
     }
 
     bool bRepeat = false;
@@ -326,7 +326,7 @@ void CScraperParser::ParseNext(TiXmlElement* element)
       TiXmlElement* pChildReg = pReg->FirstChildElement("clear");
       if (pChildReg)
         ParseNext(pChildReg);
-    }  
+    }
 
     int iDest = 1;
     bool bAppend = false;
@@ -389,10 +389,10 @@ const CStdString CScraperParser::Parse(const CStdString& strTag, CScraperSetting
     m_settings = NULL;
   ParseNext(pChildStart);
   CStdString tmp = m_param[iResult-1];
-  
+
   const char* szClearBuffers = pChildElement->Attribute("clearbuffers");
   if (!szClearBuffers || stricmp(szClearBuffers,"no") != 0)
-    ClearBuffers(); 
+    ClearBuffers();
 
   return tmp;
 }
@@ -400,10 +400,10 @@ const CStdString CScraperParser::Parse(const CStdString& strTag, CScraperSetting
 bool CScraperParser::HasFunction(const CStdString& strTag)
 {
   TiXmlElement* pChildElement = m_pRootElement->FirstChildElement(strTag.c_str());
-  
-  if (!pChildElement) 
+
+  if (!pChildElement)
     return false;
-  
+
   return true;
 }
 

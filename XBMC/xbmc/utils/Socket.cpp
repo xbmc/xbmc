@@ -62,7 +62,7 @@ bool CPosixUDPSocket::Bind(CAddress& addr, int port, int range)
     CLog::Log(LOGWARNING, "UDP: Could not enable the address reuse options");
     CLog::Log(LOGWARNING, "UDP: %s", strerror(errno));
   }
-  
+
   // set the port
   m_addr = addr;
   m_iPort = port;
@@ -111,15 +111,15 @@ void CPosixUDPSocket::Close()
 
 int CPosixUDPSocket::Read(CAddress& addr, const int buffersize, void *buffer)
 {
-  return (int)recvfrom(m_iSock, (char*)buffer, (size_t)buffersize, 0, 
-                       (struct sockaddr*)&addr.saddr, &addr.size);  
+  return (int)recvfrom(m_iSock, (char*)buffer, (size_t)buffersize, 0,
+                       (struct sockaddr*)&addr.saddr, &addr.size);
 }
 
-int CPosixUDPSocket::SendTo(const CAddress& addr, const int buffersize, 
+int CPosixUDPSocket::SendTo(const CAddress& addr, const int buffersize,
                           const void *buffer)
 {
-  return (int)sendto(m_iSock, (const char *)buffer, (size_t)buffersize, 0, 
-                     (const struct sockaddr*)&addr.saddr, 
+  return (int)sendto(m_iSock, (const char *)buffer, (size_t)buffersize, 0,
+                     (const struct sockaddr*)&addr.saddr,
                      sizeof(addr.saddr));
 }
 
@@ -163,7 +163,7 @@ bool CSocketListener::Listen(int timeout)
 
   m_iReadyCount = 0;
   m_iCurrentSocket = 0;
-  
+
   FD_ZERO(&m_fdset);
   for (unsigned int i = 0 ; i<m_sockets.size() ; i++)
   {
@@ -211,10 +211,10 @@ CBaseSocket* CSocketListener::GetFirstReadySocket()
 {
   if (m_iReadyCount<=0)
     return NULL;
-  
+
   for (int i = 0 ; i < (int)m_sockets.size() ; i++)
   {
-    if (FD_ISSET((m_sockets[i])->Socket(), &m_fdset)) 
+    if (FD_ISSET((m_sockets[i])->Socket(), &m_fdset))
     {
       m_iCurrentSocket = i;
       return m_sockets[i];
@@ -227,10 +227,10 @@ CBaseSocket* CSocketListener::GetNextReadySocket()
 {
   if (m_iReadyCount<=0)
     return NULL;
-  
+
   for (int i = m_iCurrentSocket+1 ; i<(int)m_sockets.size() ; i++)
   {
-    if (FD_ISSET(m_sockets[i]->Socket(), &m_fdset)) 
+    if (FD_ISSET(m_sockets[i]->Socket(), &m_fdset))
     {
       m_iCurrentSocket = i;
       return m_sockets[i];

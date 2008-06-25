@@ -435,11 +435,11 @@ DWORD CDetectDVDMedia::GetTrayState()
     cdio_destroy(cdio);
   }
 
-  
+
 #endif // USING_CDIO78
 #endif // _LINUX
 #if defined(_WIN32PC)
- 
+
   char* dvdDevice = CCdIoSupport::GetDeviceFileName();
   if (strlen(dvdDevice) == 0)
     return DRIVE_NOT_READY;
@@ -448,7 +448,7 @@ DWORD CDetectDVDMedia::GetTrayState()
   CdIo_t* cdio = cdio_open(dvdDevice, DRIVER_UNKNOWN);
   if (cdio)
   {
-    int status = CWIN32Util::GetDriveStatus(CCdIoSupport::GetDeviceFileName()); 
+    int status = CWIN32Util::GetDriveStatus(CCdIoSupport::GetDeviceFileName());
     static int laststatus = -1;
 
     switch(status)
@@ -467,7 +467,7 @@ DWORD CDetectDVDMedia::GetTrayState()
 
     if(laststatus != status)
     {
-      laststatus = status;    
+      laststatus = status;
       return m_dwTrayState;
     }
     else

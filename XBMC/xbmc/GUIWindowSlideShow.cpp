@@ -320,7 +320,7 @@ void CGUIWindowSlideShow::Render()
     m_bLoadNextPic = false;
     // load using the background loader
     int maxWidth, maxHeight;
-    GetCheckedSize((float)g_settings.m_ResInfo[m_Resolution].iWidth * zoomamount[m_iZoomFactor - 1], 
+    GetCheckedSize((float)g_settings.m_ResInfo[m_Resolution].iWidth * zoomamount[m_iZoomFactor - 1],
                     (float)g_settings.m_ResInfo[m_Resolution].iHeight * zoomamount[m_iZoomFactor - 1],
                     maxWidth, maxHeight);
     m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, m_slides->Get(m_iCurrentSlide)->m_strPath, maxWidth, maxHeight);
@@ -363,7 +363,7 @@ void CGUIWindowSlideShow::Render()
     { // load the next image
       CLog::Log(LOGDEBUG, "Loading the next image %s", m_slides->Get(m_iNextSlide)->m_strPath.c_str());
       int maxWidth, maxHeight;
-      GetCheckedSize((float)g_settings.m_ResInfo[m_Resolution].iWidth * zoomamount[m_iZoomFactor - 1], 
+      GetCheckedSize((float)g_settings.m_ResInfo[m_Resolution].iWidth * zoomamount[m_iZoomFactor - 1],
                      (float)g_settings.m_ResInfo[m_Resolution].iHeight * zoomamount[m_iZoomFactor - 1],
                      maxWidth, maxHeight);
       m_pBackgroundLoader->LoadPic(1 - m_iCurrentPic, m_iNextSlide, m_slides->Get(m_iNextSlide)->m_strPath, maxWidth, maxHeight);

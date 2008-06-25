@@ -39,7 +39,7 @@ public:
                         LCD_MODE_NAVIGATION,
                         LCD_MODE_SCREENSAVER,
                         LCD_MODE_XBE_LAUNCH,
-                        LCD_MODE_MAX 
+                        LCD_MODE_MAX
                 };
   enum CUSTOM_CHARSET {
                         CUSTOM_CHARSET_DEFAULT = 0,

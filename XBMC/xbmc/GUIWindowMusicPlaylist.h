@@ -49,7 +49,7 @@ protected:
   void SavePlayList();
   void ClearPlayList();
   void MarkPlaying();
-  
+
   bool MoveCurrentPlayListItem(int iItem, int iAction, bool bUpdate = true);
 
   int m_movingFrom;
