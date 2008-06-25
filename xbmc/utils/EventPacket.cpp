@@ -55,10 +55,10 @@ bool CEventPacket::Parse(int datasize, const void *data)
 
   // get packet type
   m_eType = (PacketType)ntohs(*((uint16_t*)buf));
-  
+
   if (m_eType < (unsigned short)PT_HELO || m_eType >= (unsigned short)PT_LAST)
     return false;
-  
+
   // get packet sequence id
   buf += 2;
   m_iSeq  = ntohl(*((uint32_t*)buf));

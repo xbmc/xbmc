@@ -90,7 +90,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
   // run through looking for the [playlist] marker.
   // if we find another http stream, then load it.
   while (1)
-  {    
+  {
     if ( !file.ReadString(szLine, sizeof(szLine) ) )
     {
       file.Close();
@@ -380,11 +380,11 @@ bool CPlayListASX::LoadData(std::istream& stream)
 bool CPlayListRAM::LoadData(std::istream& stream)
 {
   CLog::Log(LOGINFO, "Parsing RAM");
-  
+
   CStdString strMMS;
   while( stream.peek() != '\n' && stream.peek() != '\r' )
     strMMS += stream.get();
-  
+
   CLog::Log(LOGINFO, "Adding element %s", strMMS.c_str());
   CFileItemPtr newItem(new CFileItem(strMMS));
   newItem->m_strPath = strMMS;

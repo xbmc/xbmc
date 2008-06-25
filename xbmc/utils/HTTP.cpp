@@ -42,7 +42,7 @@ using namespace std;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-/* 
+/*
  * HTTP Helper
  * by Bertrand Baudet <bertrand_baudet@yahoo.com>
  * (C) 2001, MPlayer team.
@@ -63,9 +63,9 @@ int base64_encode(const void *enc, int encLen, char *out, int outMax) {
   bits = 0;
   shift = 0;
 
-  while (outLen<outMax) 
+  while (outLen<outMax)
   {
-    if (encLen>0) 
+    if (encLen>0)
     {
       // Shift in byte
       bits <<= 8;
@@ -74,14 +74,14 @@ int base64_encode(const void *enc, int encLen, char *out, int outMax) {
       // Next byte
       encBuf++;
       encLen--;
-    } 
-    else if (shift>0) 
+    }
+    else if (shift>0)
     {
       // Pad last bits to 6 bits - will end next loop
       bits <<= 6 - shift;
       shift = 6;
-    } 
-    else 
+    }
+    else
     {
       // Terminate with Mime style '='
       *out = '=';
@@ -91,7 +91,7 @@ int base64_encode(const void *enc, int encLen, char *out, int outMax) {
     }
 
     // Encode 6 bit segments
-    while (shift>=6) 
+    while (shift>=6)
     {
       shift -= 6;
       *out = b64[ (bits >> shift) & 0x3F ];
@@ -326,7 +326,7 @@ bool CHTTP::IsInternet(bool checkDNS /* = true */)
   if (status != 302 && status != 200)
     return false;
   else
-    return true; 
+    return true;
 
   return false;
 }
@@ -454,7 +454,7 @@ bool CHTTP::Connect()
   m_socket.attach(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
 #else
   m_socket.attach(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
-  
+
   // set the socket to nonblocking
   int opts = fcntl((SOCKET) m_socket, F_GETFL);
   opts = (opts | O_NONBLOCK);
@@ -488,18 +488,18 @@ bool CHTTP::Connect()
     Close();
     return false;
   }
-  
-  
+
+
   while (!m_cancelled)
   {
     fd_set socks;
     FD_ZERO(&socks);
     FD_SET((SOCKET)m_socket, &socks);
-    
+
     struct timeval timeout;  /* Timeout for select */
     timeout.tv_sec = 0;
     timeout.tv_usec = 500000;
-    
+
     int writesocks = select((SOCKET)m_socket+1, (fd_set *) 0, &socks, (fd_set *) 0, &timeout);
     if (writesocks == -1 && errno != EINTR)
     {
@@ -512,7 +512,7 @@ bool CHTTP::Connect()
       break;
     }
   }
-  
+
   // Check if the socket connected
   int value = 0;
   socklen_t len = sizeof(value);
@@ -521,19 +521,19 @@ bool CHTTP::Connect()
     CLog::Log(LOGNOTICE, "HTTP: connect getsockopt failed: %s", strerror(errno));
     return false;
   }
-  
+
   if (value != 0)
   {
     CLog::Log(LOGNOTICE, "HTTP: socket connect failed (checked with getsockopt): %s", strerror(value));
     return false;
   }
-  
+
   if (m_cancelled)
   {
     return false;
   }
 #endif
-  
+
   return true;
 }
 
@@ -775,7 +775,7 @@ bool CHTTP::Recv(int iLen)
   if (iLen == -1)
     iLen = BUFSIZE;
 
-  if (!m_RecvBuffer) 
+  if (!m_RecvBuffer)
   {
     m_RecvBuffer = new char[BUFSIZE + 1];
     memset(m_RecvBuffer,0,BUFSIZE + 1);
@@ -823,18 +823,18 @@ bool CHTTP::Recv(int iLen)
 #else
 
     char *buf = &m_RecvBuffer[m_RecvBytes];
-    
+
     while (!m_cancelled)
     {
       n = -1;
-      
+
       fd_set socks;
       FD_ZERO(&socks);
       FD_SET((SOCKET)m_socket, &socks);
       struct timeval timeout;  /* Timeout for select */
       timeout.tv_sec = 5;
       timeout.tv_usec = 0;
-      
+
       int readsocks = select((SOCKET)m_socket+1, &socks, (fd_set *) 0, (fd_set *) 0, &timeout);
       if (readsocks == 0)
       {
@@ -847,7 +847,7 @@ bool CHTTP::Recv(int iLen)
       if (n >= 0 || (n == -1 && errno != EAGAIN && errno != EINPROGRESS))
         break;
     }
-    
+
     if (m_cancelled || n == -1)
       return false;
 #endif
@@ -856,7 +856,7 @@ bool CHTTP::Recv(int iLen)
     {
 #ifndef _LINUX
       shutdown(m_socket, SD_BOTH);
-#else      
+#else
       shutdown(m_socket, SHUT_RDWR);
 #endif
       WSASetLastError(0);
@@ -1092,7 +1092,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
       //Post redirect has to work for scrapers
       //CanHandle = !stricmp(verb, "GET");
       CanHandle = true;
-      break; 
+      break;
     case 303:
       // 303 See Other - perform GET on the new resource
       verb = "GET";
@@ -1251,8 +1251,8 @@ CStdString CHTTP::ConstructAuthorization(const CStdString &auth, const CStdStrin
 {
   //Basic authentication
   CStdString buff = username + ":" + password;
-  char *szEncode = (char*)alloca(buff.GetLength()*2); 
-  
+  char *szEncode = (char*)alloca(buff.GetLength()*2);
+
   int len = base64_encode(buff.c_str(), buff.GetLength(), szEncode, buff.GetLength()*2);
   if( len < 0 )
   {

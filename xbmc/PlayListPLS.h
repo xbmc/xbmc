@@ -36,7 +36,7 @@ public:
 class CPlayListASX : public CPlayList
 {
 public:
-  virtual bool LoadData(std::istream &stream);  
+  virtual bool LoadData(std::istream &stream);
 protected:
   bool LoadAsxIniInfo(std::istream &stream);
 };

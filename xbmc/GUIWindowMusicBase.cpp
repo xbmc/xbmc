@@ -147,7 +147,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         return false;
 
       // save current window, unless the current window is the music playlist window
-      if (GetID() != WINDOW_MUSIC_PLAYLIST && 
+      if (GetID() != WINDOW_MUSIC_PLAYLIST &&
          (DWORD) g_stSettings.m_iMyMusicStartWindow != GetID())
       {
         g_stSettings.m_iMyMusicStartWindow = GetID();
@@ -210,7 +210,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
             OnDeleteItem(iItem);
 
           // or be at the files window and have file deletion enabled
-          else if (GetID() == WINDOW_MUSIC_FILES && 
+          else if (GetID() == WINDOW_MUSIC_FILES &&
                    g_guiSettings.GetBool("filelists.allowfiledeletion"))
           {
             OnDeleteItem(iItem);
@@ -225,9 +225,9 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
           // if playback is paused or playback speed != 1, return
           if (g_application.IsPlayingAudio())
           {
-            if (g_application.m_pPlayer->IsPaused()) 
+            if (g_application.m_pPlayer->IsPaused())
               return false;
-            if (g_application.GetPlaySpeed() != 1) 
+            if (g_application.GetPlaySpeed() != 1)
               return false;
           }
 
@@ -260,7 +260,7 @@ void CGUIWindowMusicBase::OnInfoAll(int iItem, bool bCurrent)
 /// \param iItem Item in list/thumb control
 void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
 {
-  if ( iItem < 0 || iItem >= m_vecItems->Size() ) 
+  if ( iItem < 0 || iItem >= m_vecItems->Size() )
     return;
 
   CFileItemPtr item = m_vecItems->Get(iItem);
@@ -269,7 +269,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
 
 void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
 {
-  if (pItem->m_bIsFolder && pItem->IsParentFolder()) 
+  if (pItem->m_bIsFolder && pItem->IsParentFolder())
     return;
 
   if (pItem->IsVideoDb())
@@ -284,9 +284,9 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
   CAlbum album;
   CArtist artist;
   bool foundAlbum = false;
-  
+
   album.idAlbum = -1;
-  
+
   if (pItem->IsMusicDb())
   {
     CQueryParams params;
@@ -307,7 +307,7 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
         m_dlgProgress->SetLine(2, "");
         m_dlgProgress->StartModal();
         m_dlgProgress->Progress();
-        if (m_dlgProgress->IsCanceled()) 
+        if (m_dlgProgress->IsCanceled())
           return;
       }
 
@@ -330,7 +330,7 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
     {
       CFileItemPtr pItem = items[i];
       pItem->LoadMusicTag();
-      if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded() && 
+      if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded() &&
          !pItem->GetMusicInfoTag()->GetAlbum().IsEmpty())
       {
         // great, have a song - use it.
@@ -365,13 +365,13 @@ void CGUIWindowMusicBase::OnManualAlbumInfo()
 {
   CAlbum album;
   album.idAlbum = -1; // not in the db
-  if (!CGUIDialogKeyboard::ShowAndGetInput(album.strAlbum, g_localizeStrings.Get(16011), false)) 
+  if (!CGUIDialogKeyboard::ShowAndGetInput(album.strAlbum, g_localizeStrings.Get(16011), false))
     return;
 
   CStdString strNewArtist = "";
-  if (!CGUIDialogKeyboard::ShowAndGetInput(album.strArtist, g_localizeStrings.Get(16025), false)) 
+  if (!CGUIDialogKeyboard::ShowAndGetInput(album.strArtist, g_localizeStrings.Get(16025), false))
     return;
-  
+
   ShowAlbumInfo(album,"",true);
 }
 
@@ -774,7 +774,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
   CMusicInfoScanner scanner;
   CStdString strPath;
   long idAlbum = m_musicdatabase.GetAlbumByName(strAlbum,strArtist);
-  
+
   strPath.Format("musicdb://3/%d/",idAlbum);
   bool bCanceled;
   if (!scanner.DownloadAlbumInfo(strPath,strArtist,strAlbum,bCanceled,album,m_dlgProgress))
@@ -788,7 +788,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
   // Read the album information from the database if we are dealing with a DB album.
   if (idAlbum != -1)
     m_musicdatabase.GetAlbumInfo(idAlbum,album.GetAlbum(),&album.GetAlbum().songs);
-  
+
   album.SetLoaded(true);
   return true;
 }
@@ -844,7 +844,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
       buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347); //queue
 
       // allow a folder to be ad-hoc queued and played by the default player
-      if (item->m_bIsFolder || (item->IsPlayList() && 
+      if (item->m_bIsFolder || (item->IsPlayList() &&
          !g_advancedSettings.m_playlistAsFolders))
       {
         buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208); // Play
@@ -864,7 +864,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
       if (item->IsSmartPlayList() || m_vecItems->IsSmartPlayList())
         buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
       else if (item->IsPlayList() || m_vecItems->IsPlayList())
-        buttons.Add(CONTEXT_BUTTON_EDIT, 586);  
+        buttons.Add(CONTEXT_BUTTON_EDIT, 586);
     }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
@@ -907,7 +907,7 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR, playlist);
       return true;
     }
-    
+
   case CONTEXT_BUTTON_EDIT_SMART_PLAYLIST:
     {
       CStdString playlist = item->IsSmartPlayList() ? item->m_strPath : m_vecItems->m_strPath; // save path as activatewindow will destroy our items
@@ -938,7 +938,7 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_STOP_SCANNING:
-    { 
+    {
       CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
       if (scanner)
         scanner->StopScanning();
@@ -1196,7 +1196,7 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
       // really, this may not be enough as it is to reliably update this item.  eg think of various artists albums
       // that aren't tagged as such (and aren't yet scanned).  But we probably can't do anything better than this
       // in that case
-      if (album.strAlbum == tag->GetAlbum() && (album.strArtist == tag->GetAlbumArtist() || 
+      if (album.strAlbum == tag->GetAlbum() && (album.strArtist == tag->GetAlbumArtist() ||
                                                 album.strArtist == tag->GetArtist()))
       {
         g_infoManager.SetCurrentAlbumThumb(albumThumb);
@@ -1260,7 +1260,7 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
 
 void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 {
-  if (items.GetFolderCount()==items.Size() || items.IsMusicDb() || 
+  if (items.GetFolderCount()==items.Size() || items.IsMusicDb() ||
      (!g_guiSettings.GetBool("musicfiles.usetags") && !items.IsCDDA()))
   {
     return;

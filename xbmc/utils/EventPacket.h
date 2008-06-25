@@ -54,7 +54,7 @@ namespace EVENTPACKET
   /*     | -P1 payload               | -                                  */
   /*     -----------------------------                                    */
   /************************************************************************/
-   
+
   /************************************************************************
      The payload format for each packet type is decribed below each
      packet type.
@@ -65,7 +65,7 @@ namespace EVENTPACKET
             %c - single byte
             %i - network byte ordered short unsigned integer (2 bytes)
             %d - network byte ordered long unsigned integer  (4 bytes)
-            XX - binary data prefixed with %d size 
+            XX - binary data prefixed with %d size
                  (can span multiple packets with <raw>)
            raw - raw binary data
    ************************************************************************/
@@ -204,15 +204,15 @@ namespace EVENTPACKET
   class CEventPacket
   {
   public:
-    CEventPacket() 
+    CEventPacket()
     {
-      m_bValid = false; 
+      m_bValid = false;
       m_pPayload = NULL;
     }
 
-    CEventPacket(int datasize, const void* data) 
-    { 
-      m_bValid = false; 
+    CEventPacket(int datasize, const void* data)
+    {
+      m_bValid = false;
       m_pPayload = NULL;
       Parse(datasize, data);
     }

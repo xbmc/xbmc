@@ -71,7 +71,7 @@ void CGUIWindowSystemInfo::Render()
     SET_CONTROL_LABEL(3, g_infoManager.GetSystemHeatInfo(SYSTEM_GPU_TEMPERATURE));
     SET_CONTROL_LABEL(4, g_infoManager.GetSystemHeatInfo(SYSTEM_FAN_SPEED));
     CStdString tmpStr = g_localizeStrings.Get(158) +": ";
-    tmpStr += g_infoManager.GetLabel(SYSTEM_FREE_MEMORY); 
+    tmpStr += g_infoManager.GetLabel(SYSTEM_FREE_MEMORY);
     SET_CONTROL_LABEL(5, tmpStr);
     SET_CONTROL_LABEL(6, g_infoManager.GetLabel(NETWORK_IP_ADDRESS));
     SET_CONTROL_LABEL(7,g_infoManager.GetLabel(SYSTEM_SCREEN_RESOLUTION));

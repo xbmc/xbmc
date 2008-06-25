@@ -179,7 +179,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_noDVDROM = false;
   g_advancedSettings.m_cachePath = "Z:\\";
   g_advancedSettings.m_displayRemoteCodes = false;
-  
+
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+part[ _\\.-]*([0-9a-d]+)");
@@ -434,7 +434,7 @@ VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
     // this nasty block of code is needed as we have to
     // call getlocaldrives after localize strings has been loaded
     bool bAdded=false;
-    for (unsigned int i=0;i<g_settings.m_fileSources.size();++i) 
+    for (unsigned int i=0;i<g_settings.m_fileSources.size();++i)
     {
       if (g_settings.m_fileSources[i].m_ignore)
       {
@@ -1204,7 +1204,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "defaultsubmenu", g_advancedSettings.m_iTuxBoxDefaultSubMenu, 4, 1, 4);
     GetInteger(pElement, "defaultrootmenu", g_advancedSettings.m_iTuxBoxDefaultRootMenu, 0, 0, 4);
     GetInteger(pElement, "zapwaittime", g_advancedSettings.m_iTuxBoxZapWaitTime, 0, 0, 120);
-    
+
   }
 
   CStdString extraExtensions;
@@ -1943,7 +1943,7 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
   // create a new Element for UUID
   XMLUtils::SetString(pRoot, "UUID", g_settings.m_UPnPUUID);
   XMLUtils::SetString(pRoot, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
-  
+
   VECSOURCES* pShares[3];
   pShares[0] = &g_settings.m_UPnPMusicSources;
   pShares[1] = &g_settings.m_UPnPVideoSources;
@@ -1960,8 +1960,8 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
       xmlType = TiXmlElement("video");
     if (k==2)
       xmlType = TiXmlElement("pictures");
-    
-    TiXmlNode* pNode = pRoot->InsertEndChild(xmlType);  
+
+    TiXmlNode* pNode = pRoot->InsertEndChild(xmlType);
 
     for (unsigned int j=0;j<(*pShares)[k].size();++j)
     {
@@ -2156,7 +2156,7 @@ bool CSettings::SetSources(TiXmlNode *root, const char *section, const VECSOURCE
         SetString(&source, "thumbnail", share.m_strThumbnailImage);
 
       sectionNode->InsertEndChild(source);
-    } 
+    }
   }
   return true;
 }

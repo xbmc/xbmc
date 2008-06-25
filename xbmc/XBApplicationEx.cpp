@@ -159,7 +159,7 @@ INT CXBApplicationEx::Run()
   while (!m_bStop)
   {
 #ifdef HAS_PERFORMANCE_SAMPLE
-    CPerformanceSample sampleLoop("XBApplicationEx-loop");  
+    CPerformanceSample sampleLoop("XBApplicationEx-loop");
 #endif
 
     //-----------------------------------------
@@ -318,7 +318,7 @@ void CXBApplicationEx::ReadInput()
 
 #ifdef HAS_SDL
   //SDL_PumpEvents();
-  
+
   static RESOLUTION windowres = WINDOW;
 
   // Read the input from the mouse
@@ -332,11 +332,11 @@ void CXBApplicationEx::ReadInput()
     case SDL_QUIT:
       if (!g_application.m_bStop) g_application.getApplicationMessenger().Shutdown();
       break;
-      
+
     case SDL_VIDEORESIZE:
 #ifndef __APPLE__
       g_settings.m_ResInfo[WINDOW].iWidth = event.resize.w;
-      g_settings.m_ResInfo[WINDOW].iHeight = event.resize.h; 
+      g_settings.m_ResInfo[WINDOW].iHeight = event.resize.h;
       g_graphicsContext.ResetOverscan(g_settings.m_ResInfo[WINDOW]);
       g_graphicsContext.SetVideoResolution(windowres, FALSE, false);
       g_Mouse.SetResolution(g_settings.m_ResInfo[WINDOW].iWidth, g_settings.m_ResInfo[WINDOW].iHeight, 1, 1);

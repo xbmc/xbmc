@@ -28,12 +28,12 @@
 
 using namespace std;
 
-CRssFeed::CRssFeed() 
+CRssFeed::CRssFeed()
 {
-  
+
 }
 
-CRssFeed::~CRssFeed() 
+CRssFeed::~CRssFeed()
 {
 
 }
@@ -58,7 +58,7 @@ time_t CRssFeed::ParseDate(const CStdString & strDate) {
 
 CStdString CRssFeed::CleanDescription(const CStdString& strDescription) {
   CStdString description = strDescription;
-  
+
   while (description.Find("<") != -1)
   {
     int start = description.Find("<");
@@ -69,7 +69,7 @@ CStdString CRssFeed::CleanDescription(const CStdString& strDescription) {
       description.Delete(start, description.GetLength() - start);
   }
   description.Trim();
-  
+
   return description;
 }
 
@@ -91,16 +91,16 @@ bool CRssFeed::ReadFeed() {
   {
     CLog::Log(LOGERROR,"error parsing xml doc from <%s>. error: <%d>", m_strURL.c_str(), xmlDoc.ErrorId());
   }
-  
+
   TiXmlElement* rssXmlNode = xmlDoc.RootElement();
-  
+
   if (!rssXmlNode)
     return false;
 
   CStdString strMediaThumbnail ;
 
   TiXmlHandle docHandle( &xmlDoc );
-  TiXmlElement* channelXmlNode = docHandle.FirstChild( "rss" ).FirstChild( "channel" ).Element();  
+  TiXmlElement* channelXmlNode = docHandle.FirstChild( "rss" ).FirstChild( "channel" ).Element();
   if (channelXmlNode)
   {
     TiXmlElement* aNode = channelXmlNode->FirstChildElement("title");
@@ -110,27 +110,27 @@ bool CRssFeed::ReadFeed() {
     aNode = channelXmlNode->FirstChildElement("itunes:summary");
     if (aNode && !aNode->NoChildren())
       m_strDescription = aNode->FirstChild()->Value();
-    
+
     if (m_strDescription.IsEmpty())
     {
       aNode = channelXmlNode->FirstChildElement("description");
       if (aNode && !aNode->NoChildren())
         m_strDescription = aNode->FirstChild()->Value();
     }
-    
+
     // Get channel thumbnail
     TiXmlHandle chanHandle( channelXmlNode );
     aNode = chanHandle.FirstChild("image").FirstChild("url").Element();
     if (aNode && !aNode->NoChildren())
       strMediaThumbnail = aNode->FirstChild()->Value();
-    
+
     if (strMediaThumbnail.IsEmpty() || !IsPathToThumbnail(strMediaThumbnail))
     {
       aNode = chanHandle.FirstChild("itunes:image").Element();
       if (aNode && !aNode->NoChildren())
-        strMediaThumbnail = aNode->FirstChild()->Value();      
+        strMediaThumbnail = aNode->FirstChild()->Value();
     }
-        
+
   }
   else
     return false;
@@ -139,12 +139,12 @@ bool CRssFeed::ReadFeed() {
 
   TiXmlElement* child = NULL;
   TiXmlElement* item_child = NULL;
-  for( child = channelXmlNode->FirstChildElement("item"); child; child = child->NextSiblingElement() ) 
+  for( child = channelXmlNode->FirstChildElement("item"); child; child = child->NextSiblingElement() )
   {
-    // Create new item, 
+    // Create new item,
     CFileItemPtr item(new CFileItem());
 
-    for( item_child = child->FirstChildElement(); item_child; item_child = item_child->NextSiblingElement() ) 
+    for( item_child = child->FirstChildElement(); item_child; item_child = item_child->NextSiblingElement() )
     {
       if (strcmp(item_child->Value(), "title") == 0) {
         if (item_child->GetText()) {
@@ -179,14 +179,14 @@ bool CRssFeed::ReadFeed() {
         if (content_type) {
           item->SetContentType(content_type);
           CStdString strContentType(content_type);
-          if (url && item->m_strPath.IsEmpty() &&  
+          if (url && item->m_strPath.IsEmpty() &&
             (strContentType.Left(6).Equals("video/") ||
-             strContentType.Left(6).Equals("audio/") 
+             strContentType.Left(6).Equals("audio/")
             ))
             item->m_strPath = url;
         }
         const char * len = item_child->Attribute("length");
-        if (len)  
+        if (len)
           item->SetProperty("duration_ms", len);
       }
       else if(strcmp(item_child->Value(), "media:content") == 0) {
@@ -194,24 +194,24 @@ bool CRssFeed::ReadFeed() {
         if (url && item->m_strPath == "" && IsPathToMedia(url)) {
           item->m_strPath = url;
         }
-        
+
         const char * content_type = item_child->Attribute("type");
         if (content_type) {
           item->SetContentType(content_type);
           CStdString strContentType(content_type);
-          if (url && item->m_strPath.IsEmpty() &&  
+          if (url && item->m_strPath.IsEmpty() &&
             (strContentType.Left(6).Equals("video/") ||
-             strContentType.Left(6).Equals("audio/") 
+             strContentType.Left(6).Equals("audio/")
             ))
             item->m_strPath = url;
         }
 
         // Go over all child nodes of the media content and get the thumbnail
         TiXmlElement* media_content_child = item_child->FirstChildElement("media:thumbnail");
-        if(media_content_child && media_content_child->Value() && strcmp(media_content_child->Value(), "media:thumbnail") == 0) 
+        if(media_content_child && media_content_child->Value() && strcmp(media_content_child->Value(), "media:thumbnail") == 0)
         {
           const char * url = media_content_child->Attribute("url");
-          if (url && IsPathToThumbnail(url)) 
+          if (url && IsPathToThumbnail(url))
             item->SetThumbnailImage(url);
         }
       }
@@ -222,7 +222,7 @@ bool CRssFeed::ReadFeed() {
           }
         }
       }
-      else if(strcmp(item_child->Value(), "media:thumbnail") == 0 && IsPathToThumbnail(item_child->GetText())) 
+      else if(strcmp(item_child->Value(), "media:thumbnail") == 0 && IsPathToThumbnail(item_child->GetText()))
       {
         item->SetThumbnailImage(item_child->GetText());
       }
@@ -232,7 +232,7 @@ bool CRssFeed::ReadFeed() {
           item->SetThumbnailImage(url);
         }
       }
-      else if(strcmp(item_child->Value(), "itunes:image") == 0 && IsPathToThumbnail(item_child->GetText())) 
+      else if(strcmp(item_child->Value(), "itunes:image") == 0 && IsPathToThumbnail(item_child->GetText()))
       {
         item->SetThumbnailImage(item_child->GetText());
       }

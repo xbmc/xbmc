@@ -173,7 +173,7 @@ VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote)
           {
             g_eventsSinceFirstEvent[i]++;
           }
-          
+
 #ifdef REMOTE_DEBUG
               char szTmp[256];
                sprintf(szTmp, "pkt:%i cnt:%i region:%i wbuttons:%i firstEvent:%i sinceFirst:%i...",
@@ -195,25 +195,25 @@ VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote)
             else
               bIsRepeating = true;
           }
-          
+
           if (bSendMessage)
           {
             // Copy remote to local structure
             memcpy( &pIR_Remote[i], &g_InputStatesEx[i].IR_Remote, sizeof(XINPUT_IR_REMOTE) );
             pIR_Remote[i].hDevice = (HANDLE)1;
             pIR_Remote[i].bHeldDown = bIsRepeating;
-            
+
 #ifdef REMOTE_DEBUG
                   strcat(szTmp, "accepted\n");
-             
+
                  }
                  else
                  {
                   strcat(szTmp, "ignored\n");
 #endif
-            
+
           }
-#ifdef REMOTE_DEBUG 
+#ifdef REMOTE_DEBUG
                  CLog::Log(LOGERROR, "REMOTE: %s", szTmp);
 #endif
         }

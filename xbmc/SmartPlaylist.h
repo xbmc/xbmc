@@ -95,7 +95,7 @@ public:
                     PLAYLIST_FIELD,
                     SECONDS_FIELD
                   };
- 
+
   CStdString GetWhereClause(const CStdString& strType);
   void TranslateStrings(const char *field, const char *oper, const char *parameter);
   static DATABASE_FIELD TranslateField(const char *field);
