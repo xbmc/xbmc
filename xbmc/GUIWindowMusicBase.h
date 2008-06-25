@@ -36,9 +36,9 @@
 struct SScraperInfo;
 
 /*!
- \ingroup windows 
+ \ingroup windows
  \brief The base class for music windows
- 
+
  CGUIWindowMusicBase is the base class for
  all music windows.
  */
@@ -49,9 +49,9 @@ public:
   virtual ~CGUIWindowMusicBase(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction& action);
-  
+
   void OnInfo(CFileItem *pItem, bool bShowInfo = false);
-  
+
 protected:
   /*!
   \brief Will be called when an popup context menu has been asked for
@@ -64,7 +64,7 @@ protected:
   \brief Overwrite to update your gui buttons (visible, enable,...)
   */
   virtual void UpdateButtons();
-  
+
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void OnRetrieveMusicInfo(CFileItemList& items);
   void AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems);
@@ -93,7 +93,7 @@ protected:
   void OnRipTrack(int iItem);
   void OnSearch();
   virtual void LoadPlayList(const CStdString& strPlayList);
-  
+
   typedef std::vector <CFileItem*>::iterator ivecItems; ///< CFileItem* vector Iterator
   CGUIDialogProgress* m_dlgProgress; ///< Progress dialog
 

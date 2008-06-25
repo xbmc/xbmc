@@ -62,7 +62,7 @@ void CSharedSection::LeaveShared()
     m_sharedLock--;
     if (m_sharedLock == 0)
       SetEvent(m_eventFree);
-    
+
     LeaveCriticalSection(&m_helperLock);
   }
 }

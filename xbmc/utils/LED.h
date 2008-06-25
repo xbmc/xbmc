@@ -78,7 +78,7 @@ protected:
 
   void getRGBValues(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strWhiteA, const CStdString &strWhiteB, RGBVALUES* s_rgb);
   bool SetRGBStatus(const CStdString &strStatus);
-  
+
 public:
   ILEDSmartxxRGB();
   ~ILEDSmartxxRGB();
@@ -90,8 +90,8 @@ public:
   virtual bool Start();
   virtual void Stop();
   bool SetRGBState(const CStdString &strRGB1, const CStdString &strRGB2, const CStdString &strWhiteA, const CStdString &strWhiteB, const CStdString &strTransition, int iTranTime);
-  
-  //can used outsite to pass the values directly to the RGB port! 
+
+  //can used outsite to pass the values directly to the RGB port!
   //Don't forget to check if there is a SmartXX V3/OPX! -> CSysInfo::SmartXXModCHIP()
   bool SetRGBLed(int red, int green, int blue, int white);
 

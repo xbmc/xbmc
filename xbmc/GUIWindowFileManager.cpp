@@ -1670,7 +1670,7 @@ bool CGUIWindowFileManager::MoveItem(const CFileItem *pItem, const CStdString& s
   return true;
 }
 
-const CFileItem& CGUIWindowFileManager::CurrentDirectory(int indx) const 
-{ 
+const CFileItem& CGUIWindowFileManager::CurrentDirectory(int indx) const
+{
   return *m_Directory[indx];
 }

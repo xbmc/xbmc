@@ -40,7 +40,7 @@ public:
   CStdString Get(const CStdString& key);
 
   TiXmlElement* GetPluginRoot();
-protected: 
+protected:
   TiXmlDocument   m_userXmlDoc;
   TiXmlDocument   m_pluginXmlDoc;
 };
@@ -53,12 +53,12 @@ public:
   bool Load(const CURL& url);
   bool Save(void);
   static bool SettingsExist(const CStdString &strPath);
-  
+
   CPluginSettings& operator =(const CBasicSettings&);
-private: 
+private:
   CStdString      m_id;
   CURL            m_url;
-  CStdString      m_userFileName;  
+  CStdString      m_userFileName;
 };
 
 extern CPluginSettings g_currentPluginSettings;

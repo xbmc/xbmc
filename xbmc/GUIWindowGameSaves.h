@@ -31,7 +31,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
 
 protected:
-  
+
   //virtual bool Update(const CStdString &strDirectory);
   void GoParentFolder();
   virtual bool OnPlayMedia(int iItem);

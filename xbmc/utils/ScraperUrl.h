@@ -43,7 +43,7 @@ public:
     URL_TYPE_SEASON = 2
   };
 
-  struct SUrlEntry 
+  struct SUrlEntry
   {
     CStdString m_spoof;
     CStdString m_url;

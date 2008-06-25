@@ -28,7 +28,7 @@
 
 #include "StdString.h"
 
-class CTrainer 
+class CTrainer
 {
 public:
   CTrainer();
@@ -41,7 +41,7 @@ public:
   }
   void GetTitleIds(unsigned int& title1, unsigned int& title2, unsigned int& title3) const;
   void GetOptionLabels(std::vector<CStdString>& vecOptionLabels) const;
-  
+
   void SetOptions(unsigned char* options); // copies 100 entries!!!
   inline int GetNumberOfOptions() const
   {

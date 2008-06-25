@@ -112,7 +112,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
     default:
       {
         // this should never happen, but if it does, do nothing
-        return false; 
+        return false;
         break;
       }
     }
@@ -174,7 +174,7 @@ bool CGUIPassword::CheckStartUpLock()
 
         // PopUp OK and Display: MasterLock mode has changed but no no Mastercode has been set!
         CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-        if (!dlg) 
+        if (!dlg)
           return false;
 
         dlg->SetHeading( g_localizeStrings.Get(20076) );
@@ -232,8 +232,8 @@ bool CGUIPassword::IsProfileLockUnlocked(int iProfile, bool& bCanceled)
     return IsMasterLockUnlocked(true,bCanceled);
   else
   {
-    if (g_settings.m_vecProfiles[iProfileToCheck].getDate().IsEmpty() && 
-       (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || 
+    if (g_settings.m_vecProfiles[iProfileToCheck].getDate().IsEmpty() &&
+       (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE ||
         g_settings.m_vecProfiles[iProfileToCheck].getLockMode() == LOCK_MODE_EVERYONE))
     {
       if (CGUIDialogProfileSettings::ShowForProfile(iProfileToCheck,false))
@@ -287,7 +287,7 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser, bool& bCanceled)
 
   // user successfully entered mastercode
   UpdateMasterLockRetryCount(true);
-  if (g_guiSettings.GetBool("masterlock.automastermode") && 
+  if (g_guiSettings.GetBool("masterlock.automastermode") &&
       g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
   {
       LockSources(false);
@@ -355,7 +355,7 @@ bool CGUIPassword::CheckLock(LockType btnType, const CStdString& strPassword, in
 bool CGUIPassword::CheckLock(LockType btnType, const CStdString& strPassword, int iHeading, bool& bCanceled)
 {
   bCanceled = false;
-  if (btnType == LOCK_MODE_EVERYONE || strPassword.Equals("-")        || 
+  if (btnType == LOCK_MODE_EVERYONE || strPassword.Equals("-")        ||
       g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser)
     return true;
 

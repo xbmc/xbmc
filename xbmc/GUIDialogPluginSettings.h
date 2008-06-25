@@ -35,14 +35,14 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   static void ShowAndGetInput(CURL& url);
   static void ShowAndGetInput(SScraperInfo& info);
-    
+
 private:
   void CreateControls();
   void FreeControls();
   void EnableControls();
   void SetDefaults();
   bool GetCondition(const CStdString &condition, const int controlId);
-  
+
   bool SaveSettings(void);
   bool ShowVirtualKeyboard(int iControl);
   static CURL m_url;

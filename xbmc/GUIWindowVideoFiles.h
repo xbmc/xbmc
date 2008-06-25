@@ -50,7 +50,7 @@ protected:
   virtual void OnQueueItem(int iItem);
   virtual void OnAssignContent(int iItem, int iFound, SScraperInfo& info, VIDEO::SScanSettings& settings);
   virtual void OnUnAssignContent(int iItem);
-  
+
   virtual void LoadPlayList(const CStdString& strFileName);
   void PlayFolder(const CFileItem* pItem);
 };

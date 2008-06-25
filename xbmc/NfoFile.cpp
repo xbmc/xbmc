@@ -106,7 +106,7 @@ HRESULT CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& str
   CScraperParser m_parser;
   if (!m_parser.Load(strScraperPath))
     return E_FAIL;
-  if (m_parser.GetContent() != m_strContent && 
+  if (m_parser.GetContent() != m_strContent &&
       !(m_strContent.Equals("artists") && m_parser.GetContent().Equals("albums")))
       // artists are scraped by album content scrapers
   {

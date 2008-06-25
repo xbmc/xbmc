@@ -185,7 +185,7 @@ int StringUtils::AlphaNumericCompare(const char *left, const char *right)
 }
 
 int StringUtils::DateStringToYYYYMMDD(const CStdString &dateString)
-{  
+{
   CStdStringArray days;
   int splitCount = StringUtils::SplitString(dateString, "-", days);
   if (splitCount == 1)
@@ -199,7 +199,7 @@ int StringUtils::DateStringToYYYYMMDD(const CStdString &dateString)
 }
 
 long StringUtils::TimeStringToSeconds(const CStdString &timeString)
-{  
+{
   if(timeString.Right(4).Equals(" min"))
   {
     // this is imdb format of "XXX min"

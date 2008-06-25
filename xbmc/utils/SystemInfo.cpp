@@ -90,10 +90,10 @@ void CBackgroundSystemInfoLoader::GetInformation()
 #endif
 #ifdef HAS_XBOX_HARDWARE
   if (!callback->m_hddRequest)
-    callback->GetHDDInfo(callback->m_HDDModel, 
+    callback->GetHDDInfo(callback->m_HDDModel,
                           callback->m_HDDSerial,
                           callback->m_HDDFirmware,
-                          callback->m_HDDpw, 
+                          callback->m_HDDpw,
                           callback->m_HDDLockState);
   // don't check the DVD-ROM if we have already successfully retrieved its info, or it is specified
   // as not present in advancedsettings
@@ -157,9 +157,9 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
         return "Modchip lookup is disabled";
     else
     {
-        if (m_bRequestDone) 
+        if (m_bRequestDone)
           return m_XboxModChip;
-        else 
+        else
           return CInfoLoader::BusyInfo(dwInfo);
     }
     break;
@@ -248,7 +248,7 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
   }
 }
 DWORD CSysInfo::TimeToNextRefreshInMs()
-{ 
+{
   // request every 15 seconds
   return 15000;
 }
@@ -265,7 +265,7 @@ void CSysInfo::Reset()
   m_HDDFirmware="";
   m_HDDpw ="";
   m_HDDLockState = "";
-  m_DVDModel=""; 
+  m_DVDModel="";
   m_DVDFirmware="";
 #endif
   m_bInternetState = false;
@@ -625,7 +625,7 @@ bool CSysInfo::CheckBios(CStdString& strDetBiosNa)
             return true;
         }
         else
-        { 
+        {
           CLog::Log(LOGINFO, "- BIOS: This is not a 256KB Bios!");
           // 512k Bios MD5
           if ((MD5BufferNew(flash_copy,0,512)) == (MD5BufferNew(flash_copy,524288,512)))
@@ -822,9 +822,9 @@ bool CSysInfo::GetRefurbInfo(CStdString& rfi_FirstBootTime, CStdString& rfi_Powe
     return false;
 
   FileTimeToSystemTime((FILETIME*)&xri.FirstBootTime, &sys_time);
-  rfi_FirstBootTime.Format("%s %d-%d-%d %d:%02d", g_localizeStrings.Get(13173), 
-    sys_time.wMonth, 
-    sys_time.wDay, 
+  rfi_FirstBootTime.Format("%s %d-%d-%d %d:%02d", g_localizeStrings.Get(13173),
+    sys_time.wMonth,
+    sys_time.wDay,
     sys_time.wYear,
     sys_time.wHour,
     sys_time.wMinute);
@@ -847,7 +847,7 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
     ULARGE_INTEGER totalX, totalFreeX;
     ULARGE_INTEGER totalY, totalFreeY;
     ULARGE_INTEGER totalZ, totalFreeZ;
-    
+
     BOOL bC = GetDiskFreeSpaceEx("C:\\", NULL, &totalC, &totalFreeC);
     BOOL bE = GetDiskFreeSpaceEx("E:\\", NULL, &totalE, &totalFreeE);
     BOOL bF = GetDiskFreeSpaceEx("F:\\", NULL, &totalF, &totalFreeF);
@@ -855,7 +855,7 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
     BOOL bX = GetDiskFreeSpaceEx("X:\\", NULL, &totalX, &totalFreeX);
     BOOL bY = GetDiskFreeSpaceEx("Y:\\", NULL, &totalY, &totalFreeY);
     BOOL bZ = GetDiskFreeSpaceEx("Z:\\", NULL, &totalZ, &totalFreeZ);
-    
+
     total.QuadPart = (bC?totalC.QuadPart:0)+
       (bE?totalE.QuadPart:0)+
       (bF?totalF.QuadPart:0)+
@@ -870,7 +870,7 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
       (bX?totalFreeX.QuadPart:0)+
       (bY?totalFreeY.QuadPart:0)+
       (bZ?totalFreeZ.QuadPart:0);
-    
+
     iTotal = (int)(total.QuadPart/MB);
     iTotalFree = (int)(totalFree.QuadPart/MB);
     iTotalUsed = (int)((total.QuadPart - totalFree.QuadPart)/MB);
@@ -940,27 +940,27 @@ CStdString CSysInfo::GetMACAddress()
 
 CStdString CSysInfo::GetVideoEncoder()
 {
-#ifdef HAS_XBOX_HARDWARE  
+#ifdef HAS_XBOX_HARDWARE
   int iTemp;
   if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_CONNEXANT,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
-  { 
-    CLog::Log(LOGDEBUG, "Video Encoder: CONNEXANT");  
-    return g_localizeStrings.Get(13286)+" "+"CONNEXANT"; 
+  {
+    CLog::Log(LOGDEBUG, "Video Encoder: CONNEXANT");
+    return g_localizeStrings.Get(13286)+" "+"CONNEXANT";
   }
   if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_FOCUS,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
-  { 
+  {
     CLog::Log(LOGDEBUG, "Video Encoder: FOCUS");
-    return g_localizeStrings.Get(13286)+" "+"FOCUS";   
+    return g_localizeStrings.Get(13286)+" "+"FOCUS";
   }
   if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_XCALIBUR,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
-  { 
-    CLog::Log(LOGDEBUG, "Video Encoder: XCALIBUR");   
+  {
+    CLog::Log(LOGDEBUG, "Video Encoder: XCALIBUR");
     return g_localizeStrings.Get(13286)+" "+ "XCALIBUR";
   }
-  else 
-  {  
-    CLog::Log(LOGDEBUG, "Video Encoder: UNKNOWN");  
-    return g_localizeStrings.Get(13286)+" "+"UNKNOWN"; 
+  else
+  {
+    CLog::Log(LOGDEBUG, "Video Encoder: UNKNOWN");
+    return g_localizeStrings.Get(13286)+" "+"UNKNOWN";
   }
 #else
   return "GPU: " + g_graphicsContext.getScreenSurface()->GetGLRenderer();
@@ -974,7 +974,7 @@ CStdString CSysInfo::GetXBVerInfo()
   CStdString strXBOXVersion;
   if (GetXBOXVersionDetected(strXBOXVersion))
     strXBoxVer.Format("%s %s", g_localizeStrings.Get(13288), strXBOXVersion);
-  else 
+  else
     strXBoxVer.Format("%s %s", g_localizeStrings.Get(13288), g_localizeStrings.Get(13205)); // "Unknown"
   return strXBoxVer;
 #else
@@ -1214,7 +1214,7 @@ CStdString CSysInfo::MD5BufferNew(char *buffer,long PosizioneInizio,int KBytes)
 }
 
 CStdString CSysInfo::GetAVPackInfo()
-{  
+{
   //AV-Pack Detection PICReg(0x04)
   int cAVPack;
   HalReadSMBusValue(0x20,XKUtils::PIC16L_CMD_AV_PACK,0,(LPBYTE)&cAVPack);
@@ -1243,7 +1243,7 @@ CStdString CSysInfo::SmartXXModCHIP()
     return "SmartXX OPX";
   else if ( uSmartXX_ID == 8 ) // SmartXX V3
     return "SmartXX V3";
-  else 
+  else
     return "None";
 }
 
@@ -1338,11 +1338,11 @@ CStdString CSysInfo::GetUnits(int iFrontPort)
   bHeadSet = dwDeviceHeadPhone > 0 && dwDeviceHeadPhone == iFrontPort;
   bMic = dwDeviceMicroPhone > 0 && dwDeviceMicroPhone == iFrontPort;
   bIR = dwDeviceIRRemote > 0 && dwDeviceIRRemote == iFrontPort;
-  
+
   CStdString strReturn;
   if (iFrontPort==4) iFrontPort = 3;
   if (iFrontPort==8) iFrontPort = 4;
-  strReturn.Format("%s %i: %s%s%s%s%s%s%s%s%s%s%s%s%s",g_localizeStrings.Get(13169),iFrontPort, 
+  strReturn.Format("%s %i: %s%s%s%s%s%s%s%s%s%s%s%s%s",g_localizeStrings.Get(13169),iFrontPort,
     bPad ? g_localizeStrings.Get(13163):"", bPad && bKeyb ? ", ":"", bPad && bMem ? ", ":"", bPad && (bHeadSet || bMic) ? ", ":"",
     bKeyb ? g_localizeStrings.Get(13164):"", bKeyb && bMouse ? ", ":"",
     bMouse ? g_localizeStrings.Get(13165):"",bMouse && (bHeadSet || bMic) ? ", ":"",
@@ -1362,7 +1362,7 @@ CStdString CSysInfo::GetXBOXSerial(bool bLabel)
   CStdString strXBOXSerial;
   if (!bLabel)
     strXBOXSerial.Format("%s", serial);
-  else 
+  else
     strXBOXSerial.Format("%s %s",g_localizeStrings.Get(13289), serial);
   return strXBOXSerial;
 }
@@ -1391,12 +1391,12 @@ CStdString CSysInfo::GetXBProduceInfo()
     country = "Unknown";
     break;
   }
-  
+
   CLog::Log(LOGDEBUG, "- XBOX production info: Country: %s, LineNumber: %c, Week %c%c, Year 200%c", country, info[0x00], info[0x08], info[0x09],info[0x07]);
   CStdString strXBProDate;
   strXBProDate.Format("%s %s, %s 200%c, %s: %c%c %s: %c",
-    g_localizeStrings.Get(13290), 
-    country, 
+    g_localizeStrings.Get(13290),
+    country,
     g_localizeStrings.Get(201),
     info[0x07],
     g_localizeStrings.Get(20169),
@@ -1487,7 +1487,7 @@ CStdString CSysInfo::GetModChipInfo()
   // XBOX Modchip Type Detection
   CStdString ModChip = GetModCHIPDetected();
   CStdString SmartXX = SmartXXModCHIP();
-  
+
   // Check if it is a SmartXX
   if (!SmartXX.Equals("None"))
   {
@@ -1587,7 +1587,7 @@ CStdString CSysInfo::GetHddSpaceInfo(int drive, bool shortText)
 CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
 {
   int total, totalFree, totalUsed, percentFree, percentused;
-  CStdString strDrive; 
+  CStdString strDrive;
   bool bRet=false;
   percent = 0;
   CStdString strRet;
@@ -1770,7 +1770,7 @@ CStdString CSysInfo::GetSystemUpTime(bool bTotalUptime)
   CStdString strSystemUptime;
   CStdString strLabel;
   int iInputMinutes, iMinutes,iHours,iDays;
-  
+
   if(bTotalUptime)
   {
     //Total Uptime
@@ -1785,7 +1785,7 @@ CStdString CSysInfo::GetSystemUpTime(bool bTotalUptime)
   }
 
   SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
-  if (iDays > 0) 
+  if (iDays > 0)
   {
     strSystemUptime.Format("%s: %i %s, %i %s, %i %s",
       strLabel,
@@ -1796,14 +1796,14 @@ CStdString CSysInfo::GetSystemUpTime(bool bTotalUptime)
   else if (iDays == 0 && iHours >= 1 )
   {
     strSystemUptime.Format("%s: %i %s, %i %s",
-      strLabel, 
+      strLabel,
       iHours,g_localizeStrings.Get(12392),
       iMinutes, g_localizeStrings.Get(12391));
   }
   else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0)
   {
     strSystemUptime.Format("%s: %i %s",
-      strLabel, 
+      strLabel,
       iMinutes, g_localizeStrings.Get(12391));
   }
   return strSystemUptime;

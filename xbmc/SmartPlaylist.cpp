@@ -42,7 +42,7 @@ typedef struct
   int localizedString;
 } translateField;
 
-static const translateField fields[] = { { "none", CSmartPlaylistRule::FIELD_NONE, CSmartPlaylistRule::TEXT_FIELD, 231 }, 
+static const translateField fields[] = { { "none", CSmartPlaylistRule::FIELD_NONE, CSmartPlaylistRule::TEXT_FIELD, 231 },
                                          { "genre", CSmartPlaylistRule::FIELD_GENRE, CSmartPlaylistRule::BROWSEABLE_FIELD, 515 },
                                          { "album", CSmartPlaylistRule::FIELD_ALBUM, CSmartPlaylistRule::BROWSEABLE_FIELD, 558 },
                                          { "albumartist", CSmartPlaylistRule::FIELD_ALBUMARTIST, CSmartPlaylistRule::BROWSEABLE_FIELD, 566 },
@@ -579,7 +579,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_DATEADDED) result = "idshow";       // only used for order clauses
     return result;
   }
-  
+
   return "";
 }
 
@@ -615,7 +615,7 @@ TiXmlElement *CSmartPlaylist::OpenAndReadName(const CStdString &path)
     m_playlistType = "songs";
   if (m_playlistType == "video")
     m_playlistType = "musicvideos";
-  
+
   // load the playlist name
   TiXmlHandle name = ((TiXmlHandle)root->FirstChild("name")).FirstChild();
   if (name.Node())
