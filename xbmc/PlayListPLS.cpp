@@ -215,7 +215,7 @@ void CPlayListPLS::Save(const CStdString& strFileName) const
     g_charsetConverter.utf8ToStringCharset(strDescription);
     fprintf(fd, "File%i=%s\n", i + 1, strFileName.c_str() );
     fprintf(fd, "Title%i=%s\n", i + 1, strDescription.c_str() );
-    fprintf(fd, "Length%i=%lu\n", i + 1, item->GetMusicInfoTag()->GetDuration() / 1000 );
+    fprintf(fd, "Length%i=%u\n", i + 1, item->GetMusicInfoTag()->GetDuration() / 1000 );
   }
 
   fprintf(fd, "NumberOfEntries=%i\n", m_vecItems.size());
