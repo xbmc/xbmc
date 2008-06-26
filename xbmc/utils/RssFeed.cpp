@@ -135,8 +135,6 @@ bool CRssFeed::ReadFeed() {
   else
     return false;
 
-  CFileItem* item = NULL;
-
   TiXmlElement* child = NULL;
   TiXmlElement* item_child = NULL;
   for( child = channelXmlNode->FirstChildElement("item"); child; child = child->NextSiblingElement() )
