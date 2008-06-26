@@ -11,8 +11,10 @@ if [ $PLATFORM != "x86_64" ]; then
    PLATFORM="i486"
 fi
 
+make distclean
+
 autoreconf -vif &&
-./configure --with-mp4v2 &&
+./configure --with-mp4v2 --with-pic &&
 make &&
 
 echo wrapping libfaad &&
