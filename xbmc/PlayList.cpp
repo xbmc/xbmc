@@ -421,7 +421,6 @@ bool CPlayList::Swap(int position1, int position2)
     return false;
   }
 
-  int iOrder = -1;
   if (!IsShuffled())
   {
     // swap the ordinals before swapping the items!

@@ -283,9 +283,7 @@ void CBackgroundPlayer::Process()
 }
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
-CApplication::CApplication(void)
-    : m_ctrDpad(220, 220), m_bQuiet(false)
-    , m_itemCurrentFile(new CFileItem)
+CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CFileItem), m_bQuiet(false)
 {
   m_iPlaySpeed = 1;
 #ifdef HAS_WEB_SERVER
