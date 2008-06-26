@@ -16,7 +16,7 @@ all : compile
 .PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualizations screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients librtmp
 
 skin/Project\ Mayhem\ III/media/Textures.xpr:
-	 @tools/XBMCTex/XBMCTex -input "\"skin/Project Mayhem III/media\"" -output "\"$(prefix)/share/xbmc/skin/Project Mayhem III\media\Textures.xpr\""
+	 @tools/XBMCTex/XBMCTex -input "\"skin/Project Mayhem III/media\"" -output "\"skin/Project Mayhem III\media\Textures.xpr\""
 
 guilib: 
 	$(MAKE) -C guilib
