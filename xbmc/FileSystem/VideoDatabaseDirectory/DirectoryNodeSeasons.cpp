@@ -49,7 +49,7 @@ bool CDirectoryNodeSeasons::GetContent(CFileItemList& items)
   CollectQueryParams(params);
 
   bool bSuccess=videodatabase.GetSeasonsNav(BuildPath(), items, params.GetActorId(), params.GetDirectorId(), params.GetGenreId(), params.GetYear(), params.GetTvShowId());
-  if (items.Size() == 1 && g_guiSettings.GetBool("videolibrary.singleseason"))
+  if (items.GetObjectCount() == 1 && g_guiSettings.GetBool("videolibrary.singleseason"))
   {
     items.Clear();
     videodatabase.GetEpisodesNav(BuildPath()+"-1/",items,params.GetGenreId(),params.GetYear(),params.GetActorId(),params.GetDirectorId(),params.GetTvShowId());
