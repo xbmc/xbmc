@@ -432,7 +432,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
       playlist.Load(playlistFile);
       CStdString playlistQuery;
       // only playlists of same type will be part of the query
-      if (playlist.GetType().Equals(strType) || playlist.GetType().Equals("mixed") && (strType == "songs" || strType == "musicvideos") || playlist.GetType().IsEmpty())
+      if (playlist.GetType().Equals(strType) || (playlist.GetType().Equals("mixed") && (strType == "songs" || strType == "musicvideos")) || playlist.GetType().IsEmpty())
       {
         playlist.SetType(strType);
         playlistQuery = playlist.GetWhereClause(false);
