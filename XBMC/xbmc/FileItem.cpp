@@ -1615,6 +1615,17 @@ int CFileItemList::GetFolderCount() const
   return nFolderCount;
 }
 
+int CFileItemList::GetObjectCount() const
+{
+  CSingleLock lock(m_lock);
+
+  int numObjects = (int)m_items.size();
+  if (numObjects && m_items[0]->IsParentFolder())
+    numObjects--;
+
+  return numObjects;
+}
+
 int CFileItemList::GetFileCount() const
 {
   CSingleLock lock(m_lock);
