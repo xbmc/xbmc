@@ -2,11 +2,11 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: smuto-->
 <!--Email: smuto.promyk@gmail.com-->
-<!--Date of translation: 05/06/2008-->
+<!--Date of translation: 06/24/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 12748-->
+<!--Based on english strings version 13398-->
 <strings>
-  <string id="0">Gry i Programy</string>
+  <string id="0">Programy</string>
   <string id="1">Zdjęcia</string>
   <string id="2">Muzyka</string>
   <string id="3">Wideo</string>
@@ -14,7 +14,6 @@
   <string id="5">Ustawienia</string>
   <string id="7">Eksplorator</string>
   <string id="8">Pogoda</string>
-  <string id="9">xbox media center</string>
   <string id="11">Poniedziałek</string>
   <string id="12">Wtorek</string>
   <string id="13">Środa</string>
@@ -104,18 +103,12 @@
   <string id="167">Włącz serwer FTP</string>
   <string id="168">Włącz synchronizowanie czasu z Internetu</string>
   <string id="169">Tryb i format wyświetlania</string>
-  <string id="170">Album:</string>
-  <string id="171">Wykonawca:</string>
-  <string id="172">Data wydania:</string>
-  <string id="173">Ocena:</string>
-  <string id="174">Gatunek:</string>
-  <string id="175">Nastroje:</string>
-  <string id="176">Styl:</string>
-  <string id="177">Przegląd:</string>
-  <string id="178">Ścieżki:</string>
+  <string id="172">Data wydania</string>
+  <string id="175">Nastrój</string>
+  <string id="176">Styl</string>
   <string id="179">Utwór</string>
   <string id="180">Czas trwania</string>
-  <string id="181">Wybierz</string>
+  <string id="181">Wybierz album</string>
   <string id="182">Ścieżki</string>
   <string id="183">Przegląd</string>
   <string id="184">Odśwież</string>
@@ -133,13 +126,9 @@
   <string id="196">Wybierz film:</string>
   <string id="197">Oczekuję na dostęp</string>
   <string id="198">Wczytuję informacje o filmie...</string>
-  <string id="199">Reżyseria:</string>
-  <string id="200">Lista płac:</string>
-  <string id="201">Rok:</string>
-  <string id="202">O filmie:</string>
-  <string id="203">Krótki opis:</string>
-  <string id="204">Ocena:</string>
-  <string id="205">Głosy:</string>
+  <string id="202">O filmie</string>
+  <string id="203">Krótki opis</string>
+  <string id="205">Głosy</string>
   <string id="206">Obsada</string>
   <string id="207">Opis</string>
   <string id="208">Odtwarzaj</string>
@@ -290,32 +279,32 @@
   <string id="367">Sortuj: Ocena</string>
   <string id="368">IMDb</string>
   <string id="369">Tytuł</string>
-  <string id="370">Wichura</string>
-  <string id="371">Częściowo</string>
-  <string id="372">Głównie</string>
-  <string id="373">Słonecznie</string>
-  <string id="374">Pochmurnie</string>
-  <string id="375">Śnieg</string>
-  <string id="376">Deszcz</string>
-  <string id="377">Pogodnie</string>
-  <string id="378">Rano</string>
-  <string id="379">Wieczorem</string>
-  <string id="380">Opady</string>
-  <string id="381">Niewielkie</string>
-  <string id="382">Sporadyczne</string>
-  <string id="383">Wiatr</string>
-  <string id="384">Silny</string>
-  <string id="385">Spokojnie</string>
-  <string id="386">Bezchmurnie</string>
-  <string id="387">Pochmurnie</string>
-  <string id="388">Wcześnie</string>
+  <string id="370">wichura</string>
+  <string id="371">częściowo</string>
+  <string id="372">w większości</string>
+  <string id="373">słonecznie</string>
+  <string id="374">pochmurnie</string>
+  <string id="375">śnieg</string>
+  <string id="376">deszcz</string>
+  <string id="377">niewielki</string>
+  <string id="378">rano</string>
+  <string id="379">wieczorem</string>
+  <string id="380">opady</string>
+  <string id="381">niewielkie</string>
+  <string id="382">sporadyczne</string>
+  <string id="383">wiatr</string>
+  <string id="384">silny</string>
+  <string id="385">pogodnie</string>
+  <string id="386">bezchmurnie</string>
+  <string id="387">pochmurnie</string>
+  <string id="388">wcześnie</string>
   <string id="389">drobny</string>
   <string id="390">ulewa</string>
   <string id="391">mini. </string>
   <string id="392">średnie</string>
   <string id="393">maks.</string>
   <string id="394">mgła</string>
-  <string id="395">Zamglenie</string>
+  <string id="395">zamglenie</string>
   <string id="396">Wybierz miasto</string>
   <string id="397">Czas odświeżania</string>
   <string id="398">Jednostka temperatury</string>
@@ -344,16 +333,13 @@
   <string id="424">Zaznacz</string>
   <string id="425">Nie znaleziono informacji o albumie.</string>
   <string id="426">Nie znaleziono informacji CDDB.</string>
-  <string id="427">Dysk:</string>
+  <string id="427">Dysk</string>
   <string id="428">Proszę włożyć właściwy CD/DVD</string>
   <string id="429">Proszę włożyć następujący CD/DVD</string>
   <string id="430">Sortuj: DVD#</string>
   <string id="431">Bez pamięci podręcznej</string>
   <string id="432">Usuń tytuł z biblioteki</string>
   <string id="433">Jesteś pewny, że chcesz usunąć '%s'?</string>
-  <string id="435">Ścieżka</string>
-  <string id="436">Rok:</string>
-  <string id="437">Czas trwania:</string>
   <string id="438">Otwieram plik</string>
   <string id="439">Pamięć podręczna</string>
   <string id="440">Dysk twardy</string>
@@ -396,8 +382,6 @@
   <string id="480">Interfejs</string>
   <string id="481">Opcje dźwięku</string>
   <string id="482">O XBMC...</string>
-  <string id="483">Album</string>
-  <string id="484">Wykonawca</string>
   <string id="485">Kasuj Album</string>
   <string id="486">Powtarzaj</string>
   <string id="487">Powtórz raz</string>
@@ -406,7 +390,7 @@
   <string id="491">Użyj dużych ikon</string>
   <string id="492">Zmień rozmiar napisów</string>
   <string id="493">Zaawansowane ustawienia</string>
-  <string id="494">Rezerwa mocy (dB)</string>
+  <string id="494">Rezerwa mocy</string>
   <string id="495">Przeskaluj wideo do rozdzielczości interfejsu</string>
   <string id="496">Kalibracja</string>
   <string id="497">Ukryj rozszerzenia plików</string>
@@ -454,6 +438,9 @@
   <string id="542">Kafelki DVD</string>
   <string id="543">DVD</string>
   <string id="544">O mediach</string>
+  <string id="545">Urządzenie audio</string>
+  <string id="546">Bezpośrednie przejście dźwięku</string>
+  <string id="547">Biografia artysty niedostępna</string>
   <string id="550">Sortuj: %s</string>
   <string id="551">Nazwa</string>
   <string id="552">Data</string>
@@ -501,11 +488,11 @@
   <string id="603">Najwyższa</string>
   <string id="604">Stała szybkość transmisji bitów</string>
   <string id="605">Zgrywanie muzyki...</string>
-  <string id="606">Numer utworu:</string>
   <string id="607">Katalog dla zgrywanej muzyki:</string>
   <string id="608">Nie mogę zgrać CD lub utworu</string>
   <string id="609">Ścieżka do katalogu nie jest ustawiona</string>
   <string id="610">Zgraj utwór</string>
+  <string id="611">Wprowadź numer</string>
   <string id="620">Zgrywanie</string>
   <string id="621">Koder</string>
   <string id="622">Jakość</string>
@@ -542,7 +529,6 @@
   <string id="656">Przeglądaj w poszukiwaniu playlisty</string>
   <string id="657">Przeglądaj w poszukiwaniu katalogu</string>
   <string id="658">Informacje o utworze</string>
-  <string id="659">Komentarz:</string>
   <string id="660">Amplifikacja głośności</string>
   <string id="661">Wybierz katalog eksportu</string>
   <string id="700">Czyszczenie bazy danych</string>
@@ -1038,7 +1024,7 @@ dla tej wizualizacji</string>
   <string id="13406">Informacje o zdjęciu</string>
   <string id="13407">%s - zdefiniowane ustawienia</string>
   <string id="13408">(średnia ważona)</string>
-  <string id="13409">Top świat:</string>
+  <string id="13409">Top świat</string>
   <string id="13410">Podłączony do LastFM</string>
   <string id="13411">Minimalne obroty wentylatora</string>
   <string id="14000">Złącz części</string>
@@ -1374,7 +1360,7 @@ dla tej wizualizacji</string>
   <string id="20071">Chcesz wprowadzać źródła mediów zupełnie od nowa</string>
   <string id="20072">Upewnij się, czy w tym katalogu można zapisywać</string>
   <string id="20073">i czy nazwa jest prawidłowa</string>
-  <string id="20074">Ocena MPAA:</string>
+  <string id="20074">Ocena MPAA</string>
   <string id="20075">Wprowadź hasło główne</string>
   <string id="20076">Pytaj o hasło główne na starcie</string>
   <string id="20077">Ustawienia skóry</string>
@@ -1570,7 +1556,6 @@ dla tej wizualizacji</string>
   <string id="20373">Sezon</string>
   <string id="20374">Pobieram informacje o filmie</string>
   <string id="20375">Nieokreślono zawartości</string>
-  <string id="20376">Premiera:</string>
   <string id="20377">Odśwież informację o serialu</string>
   <string id="20378">Odświeżyć dane dla wszystkich odcinków?</string>
   <string id="20379">Katalog zawiera jeden serial</string>
@@ -1598,7 +1583,6 @@ dla tej wizualizacji</string>
   <string id="20401">Odtwarzaj teledysk</string>
   <string id="20402">Automatycznie pobieraj zdjęcie aktora</string>
   <string id="20403">Ustaw zdjęcie aktora</string>
-  <string id="20404">Dystrybutor:</string>
   <string id="20405">Odcinek - usuń zakładkę</string>
   <string id="20406">Odcinek - ustaw zakładkę</string>
   <string id="20407">Ustawienia scrapera</string>
@@ -1610,6 +1594,9 @@ dla tej wizualizacji</string>
   <string id="20413">Pobierz FanArt</string>
   <string id="20414">Fanart jako tło w trybie biblioteki</string>
   <string id="20415">Wyszukiwanie nowych pozycji</string>
+  <string id="20416">Premiera</string>
+  <string id="20417">Scenariusz</string>
+  <string id="20418">Wyczyść nazwę pliku</string>
   <string id="21330">Pokazuj ukryte pliki i foldery</string>
   <string id="21331">Klient TuxBox</string>
   <string id="21332">UWAGA: Urządzenie TuxBox jest w trybie nagrywania!</string>
@@ -1675,9 +1662,9 @@ dla tej wizualizacji</string>
   <string id="21411">nie w ostatnich</string>
   <string id="21420">Wartości do spełnienia</string>
   <string id="21421">Smart Playlist - kryteria</string>
-  <string id="21422">Dodawaj utwory, gdy</string>
+  <string id="21422">Dodawaj pozycje, gdy</string>
   <string id="21423">Nowe kryteria...</string>
-  <string id="21424">Utwory muszą spełniać</string>
+  <string id="21424">Pozycje muszą spełniać</string>
   <string id="21425">wszystkie kryteria</string>
   <string id="21426">przynajmniej jedno kryterium</string>
   <string id="21427">ogranicz do</string>
@@ -1687,12 +1674,14 @@ dla tej wizualizacji</string>
   <string id="21431">malejąco</string>
   <string id="21432">Edytuj playlistę (smart)</string>
   <string id="21433">Nazwa playlisty</string>
-  <string id="21434">Znajdź pasujące utwory</string>
+  <string id="21434">Znajdź pasujące pozycje</string>
   <string id="21435">Edytuj</string>
-  <string id="21436">%i utworów</string>
+  <string id="21436">%i pozycji</string>
   <string id="21437">Nowa playlista (smart)</string>
   <string id="21438">Dysk %c </string>
   <string id="21439">Edytuj kryteria dla Party Mode</string>
+  <string id="21441">Liczba oglądanych</string>
+  <string id="21442">Tytuł odcinka</string>
   <string id="21800">Nazwa pliku</string>
   <string id="21801">Lokalizacja</string>
   <string id="21802">Rozmiar</string>
@@ -1758,15 +1747,15 @@ dla tej wizualizacji</string>
   <string id="21889">Szukam artysty</string>
   <string id="21890">Wybierz artystę</string>
   <string id="21891">Info o artyście</string>
-  <string id="21892">Instrumenty:</string>
-  <string id="21893">Data urodzenia:</string>
-  <string id="21894">Data powstania:</string>
-  <string id="21895">Motywy:</string>
-  <string id="21896">Opuścił zespół:</string>
-  <string id="21897">Data śmierci:</string>
-  <string id="21898">Lata aktywności:</string>
-  <string id="21899">Identyfikator:</string>
-  <string id="21900">Data urodzenia/powstania:</string>
+  <string id="21892">Instrumenty</string>
+  <string id="21893">Data urodzenia</string>
+  <string id="21894">Data powstania</string>
+  <string id="21895">Motywy</string>
+  <string id="21896">Opuścił zespół</string>
+  <string id="21897">Data śmierci</string>
+  <string id="21898">Lata aktywności</string>
+  <string id="21899">Identyfikator</string>
+  <string id="21900">Data urodzenia/powstania</string>
   <string id="22000">Aktualizuj Bibliotekę na starcie</string>
   <string id="22001">Zawsze uaktualniaj Bibliotekę w tle</string>
   <string id="22002">- DNS Suffix</string>
