@@ -319,8 +319,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/
 
      PyAPI_FUNC(PyObject *) PyObject_CallFunction(PyObject *callable_object,
                                                  char *format, ...);
-     PyAPI_FUNC(PyObject *) PyObject_VaCallFunction(PyObject *callable_object,
-                                                 char *format, va_list va);
+
        /*
 	 Call a callable Python object, callable_object, with a
 	 variable number of C arguments. The C arguments are described
@@ -334,8 +333,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/
 
      PyAPI_FUNC(PyObject *) PyObject_CallMethod(PyObject *o, char *m,
                                                char *format, ...);
-     PyAPI_FUNC(PyObject *) PyObject_VaCallMethod(PyObject *o, char *m,
-                                               char *format, va_list va);
+
        /*
 	 Call the method named m of object o with a variable number of
 	 C arguments.  The C arguments are described by a mkvalue

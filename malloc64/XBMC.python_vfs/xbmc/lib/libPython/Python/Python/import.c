@@ -2234,8 +2234,6 @@ add_submodule(PyObject *mod, PyObject *submod, char *fullname, char *subname,
 static PyObject *
 import_submodule(PyObject *mod, char *subname, char *fullname)
 {
-if (!strcmp(subname, "binascii"))
-printf("Hello, World!\n");
 	PyObject *modules = PyImport_GetModuleDict();
 	PyObject *m = NULL;
 

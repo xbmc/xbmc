@@ -16,7 +16,7 @@ extern "C" {
 #define ALTSEP '\\'
 #else
 #define SEP '\\'
-#define ALTSEP 'None' //XBOX has no '/'
+#define ALTSEP '/'
 #define MAXPATHLEN 256
 #endif
 #define DELIM ';'
