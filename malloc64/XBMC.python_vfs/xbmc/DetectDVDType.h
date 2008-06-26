@@ -61,7 +61,7 @@ public:
 protected:
   void UpdateDvdrom();
   DWORD GetTrayState();
-  
+
 
   void DetectMediaType();
   void SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA, const CStdString& strDiscLabel );

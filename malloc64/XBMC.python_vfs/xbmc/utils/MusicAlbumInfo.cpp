@@ -112,7 +112,7 @@ bool CMusicAlbumInfo::Parse(const TiXmlElement* album, bool bChained)
   if (!m_album.Load(album))
     return false;
 
-  if (m_strTitle2.IsEmpty()) 
+  if (m_strTitle2.IsEmpty())
     m_strTitle2 = m_album.strAlbum;
 
   SetLoaded(true);
@@ -178,14 +178,14 @@ bool CMusicAlbumInfo::Load(CHTTP& http, const SScraperInfo& info, const CStdStri
   {
     const char* szFunction = xurl->Attribute("function");
     if (szFunction)
-    {      
+    {
       CScraperUrl scrURL(xurl);
       Load(http,info,szFunction,&scrURL);
     }
     xurl = xurl->NextSiblingElement("url");
   }
   TiXmlBase::SetCondenseWhiteSpace(true);
-  
+
   return ret;
 }
 

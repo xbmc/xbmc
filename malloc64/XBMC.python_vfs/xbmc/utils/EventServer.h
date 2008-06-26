@@ -60,7 +60,7 @@ namespace EVENTSERVER
     // start / stop server
     void StartServer();
     void StopServer();
-    
+
     // get events
     unsigned short GetButtonCode(std::string& strMapName, bool& isAxis, float& amount);
     bool GetMousePos(float &x, float &y);

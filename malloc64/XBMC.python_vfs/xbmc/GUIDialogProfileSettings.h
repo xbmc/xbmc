@@ -39,7 +39,7 @@ protected:
   virtual void SetupPage();
   virtual void CreateSettings();
   void OnSettingChanged(unsigned int setting);
-  
+
   bool m_bNeedSave;
   CStdString m_strName;
   CStdString m_strThumb;

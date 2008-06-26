@@ -164,7 +164,7 @@ public:
   static void RemoveExtension(CStdString& strFileName);
   static bool GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber);
   static void CleanFileName(CStdString& strFileName);
-  static const CStdString GetFileName(const CStdString& strFileNameAndPath);  
+  static const CStdString GetFileName(const CStdString& strFileNameAndPath);
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder = false);
   static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);
   static bool IsHD(const CStdString& strFileName);
@@ -224,7 +224,7 @@ public:
   static __int64 ToInt64(DWORD dwHigh, DWORD dwLow);
   static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
   static void AddSlashAtEnd(CStdString& strFolder);
-  static void RemoveSlashAtEnd(CStdString& strFolder);  
+  static void RemoveSlashAtEnd(CStdString& strFolder);
   static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   static void CreateArchivePath(CStdString& strUrlPath, const CStdString& strType, const CStdString& strArchivePath,
     const CStdString& strFilePathInArchive, const CStdString& strPwd="");
@@ -300,7 +300,7 @@ public:
   // # sudo visudo
   // and add a line at the end defining the user and allowed commands
   static bool SudoCommand(const CStdString &strCommand);
-  
+
   //
   // Forks to execute a shell command.
   //
@@ -308,7 +308,7 @@ public:
 #endif
 
 private:
-  
+
   static HANDLE m_hCurrentCpuUsage;
 };
 

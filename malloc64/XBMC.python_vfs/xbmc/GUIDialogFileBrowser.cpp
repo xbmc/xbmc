@@ -121,7 +121,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
           if (m_shares[iSource].strPath.Equals(m_selectedPath))
             bFool = false;
         }
-      
+
         if (bFool && !CDirectory::Exists(m_selectedPath))
           m_selectedPath.Empty();
       }
@@ -343,8 +343,8 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
 
   OnSort();
 
-  if (m_Directory->m_strPath.IsEmpty() && m_addNetworkShareEnabled && 
-     (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || 
+  if (m_Directory->m_strPath.IsEmpty() && m_addNetworkShareEnabled &&
+     (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE ||
      (g_settings.m_iLastLoadedProfileIndex == 0) || g_passwordManager.bMasterUser))
   { // we are in the virtual directory - add the "Add Network Location" item
     CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(1032)));
@@ -722,7 +722,7 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(CStdString &path, bool allowNetwork
       g_mediaManager.GetNetworkLocations(shares);
     }
   }
-  
+
   browser->SetSources(shares);
   browser->m_rootDir.SetMask("/");
   browser->m_rootDir.AllowNonLocalSources(false);  // don't allow plug n play shares
@@ -842,7 +842,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
         m_browsingForFolders = true;
         m_addNetworkShareEnabled = true;
         m_selectedPath = newPath;
-        DoModal();    
+        DoModal();
       }
     }
     else

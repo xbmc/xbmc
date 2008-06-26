@@ -310,7 +310,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
   }
 
   // Disable scan button if shoutcast
-  if (m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->IsShoutCast() || 
+  if (m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->IsShoutCast() ||
       m_vecItems->IsLastFM() || m_vecItems->IsMusicDb())
   {
     CONTROL_DISABLE(CONTROL_BTNSCAN);
@@ -355,14 +355,8 @@ void CGUIWindowMusicSongs::UpdateButtons()
   }
 
   // Update object count label
-  int iItems = m_vecItems->Size();
-  if (iItems)
-  {
-    CFileItemPtr pItem = m_vecItems->Get(0);
-    if (pItem->IsParentFolder()) iItems--;
-  }
   CStdString items;
-  items.Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
+  items.Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 }
 
@@ -375,7 +369,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
   if (item)
   {
     // are we in the playlists location?
-    bool inPlaylists = m_vecItems->m_strPath.Equals(CUtil::MusicPlaylistsLocation()) || 
+    bool inPlaylists = m_vecItems->m_strPath.Equals(CUtil::MusicPlaylistsLocation()) ||
                        m_vecItems->m_strPath.Equals("special://musicplaylists/");
 
     if (m_vecItems->IsVirtualDirectoryRoot())
@@ -400,7 +394,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       {
         if (item->IsAudio() && !item->IsLastFM() && !item->IsShoutCast())
           buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
-        else if (!item->IsParentFolder() && !item->IsLastFM() && !item->IsShoutCast() && 
+        else if (!item->IsParentFolder() && !item->IsLastFM() && !item->IsShoutCast() &&
                  !item->m_strPath.Left(3).Equals("new") && item->m_bIsFolder)
         {
 #if 0
@@ -420,7 +414,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       }
 
       // enable CDDB lookup if the current dir is CDDA
-      if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems->IsCDDA() && 
+      if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems->IsCDDA() &&
          (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         buttons.Add(CONTEXT_BUTTON_CDDB, 16002);
@@ -443,8 +437,8 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     {
       if (pScanDlg->IsScanning())
         buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop Scanning
-      else if (!inPlaylists && !m_vecItems->IsInternetStream()           && 
-               !item->IsLastFM() && !item->IsShoutCast()                 && 
+      else if (!inPlaylists && !m_vecItems->IsInternetStream()           &&
+               !item->IsLastFM() && !item->IsShoutCast()                 &&
                !item->m_strPath.Equals("add") && !item->IsParentFolder() &&
               (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {

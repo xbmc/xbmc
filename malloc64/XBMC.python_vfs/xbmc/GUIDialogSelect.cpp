@@ -91,7 +91,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
         if (ACTION_SELECT_ITEM == iAction || ACTION_MOUSE_LEFT_CLICK == iAction)
         {
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
-          g_graphicsContext.SendMessage(msg);            
+          g_graphicsContext.SendMessage(msg);
           m_iSelected = msg.GetParam1();
           if(m_iSelected >= 0 && m_iSelected < (int)m_vecList->Size())
           {

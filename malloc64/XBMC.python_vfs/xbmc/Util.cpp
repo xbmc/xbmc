@@ -105,7 +105,7 @@ void hack()
   // functions as unused
   MathUtils::round_int(0.0);
   MathUtils::truncate_int(0.0);
-  MathUtils::ceil_int(0.0);  
+  MathUtils::ceil_int(0.0);
 }
 
 using namespace DIRECTORY;
@@ -610,7 +610,7 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
     if (!CUtil::HasSlashAtEnd(strFile))
       strFile += '/';
   }
-  
+
   url.SetFileName(strFile);
   url.GetURL(strParent);
   return true;
@@ -739,10 +739,10 @@ void CUtil::GetHomePath(CStdString& strPath)
       // Move backwards to last /.
       for (int n=strlen(given_path)-1; given_path[n] != '/'; n--)
         given_path[n] = '\0';
-      
+
       // Assume local path inside application bundle.
       strcat(given_path, "../Resources/XBMC/");
-      
+
       // Convert to real path.
       char real_path[2*MAXPATHLEN];
       if (realpath(given_path, real_path) != NULL)
@@ -840,7 +840,7 @@ bool CUtil::IsOnDVD(const CStdString& strFile)
 }
 
 bool CUtil::IsOnLAN(const CStdString& strPath)
-{  
+{
   if(IsMultiPath(strPath))
     return CUtil::IsOnLAN(CMultiPathDirectory::GetFirstPath(strPath));
   if(IsStack(strPath))
@@ -877,7 +877,7 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
   if(address == INADDR_NONE)
   {
     // assume a hostname without dot's
-    // is local (smb netbios hostnames) 
+    // is local (smb netbios hostnames)
     if(host.find('.') == string::npos)
       return true;
   }
@@ -905,7 +905,7 @@ bool CUtil::IsMultiPath(const CStdString& strPath)
 
 bool CUtil::IsDVD(const CStdString& strFile)
 {
-  CStdString strFileLow = strFile; 
+  CStdString strFileLow = strFile;
   strFileLow.MakeLower();
 #if defined(_WIN32PC)
   if(GetDriveType(strFile.c_str()) == DRIVE_CDROM)
@@ -1640,15 +1640,15 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
     if (strResult.Find("//") < 0 )
       strResult += "\\";
     else
-#endif    
+#endif
       strResult += "/";
   }
   // Remove any slash at the start of the file
-#ifndef _LINUX  
+#ifndef _LINUX
   if (strFile.size() && strFile[0] == '/' || strFile[0] == '\\')
     strResult += strFile.Mid(1);
   else
-#endif  
+#endif
     strResult += _P(strFile);
   // re-add the stack:// protocol
   if (IsStack(strFolder))
@@ -1724,10 +1724,10 @@ void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CSt
   strPath = strFileNameAndPath.Left(i + 1);
   strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i - 1);
 }
-  
-void CUtil::CreateArchivePath(CStdString& strUrlPath, const CStdString& strType, 
+
+void CUtil::CreateArchivePath(CStdString& strUrlPath, const CStdString& strType,
                               const CStdString& strArchivePath,
-                              const CStdString& strFilePathInArchive, 
+                              const CStdString& strFilePathInArchive,
                               const CStdString& strPwd)
 {
   CStdString strBuffer;
@@ -1836,12 +1836,12 @@ void CUtil::InitGamma()
   g_graphicsContext.Get3DDevice()->GetGammaRamp(&oldramp);
 #elif defined(HAS_SDL_2D)
   SDL_GetGammaRamp(oldrampRed, oldrampGreen, oldrampBlue);
-#endif  
+#endif
 }
 void CUtil::RestoreBrightnessContrastGamma()
 {
   g_graphicsContext.Lock();
-#ifndef HAS_SDL  
+#ifndef HAS_SDL
   g_graphicsContext.Get3DDevice()->SetGammaRamp(GAMMA_RAMP_FLAG, &oldramp);
 #elif defined(HAS_SDL_2D)
   SDL_SetGammaRamp(oldrampRed, oldrampGreen, oldrampGreen);
@@ -1873,10 +1873,10 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
   Uint16 rampRed[256];
   Uint16 rampGreen[256];
   Uint16 rampBlue[256];
-#endif  
+#endif
 
   Gamma = 1.0f / Gamma;
-#ifndef HAS_SDL    
+#ifndef HAS_SDL
   for (int i = 0; i < 256; ++i)
   {
     float f = (powf((float)i / 255.f, Gamma) * Contrast + Brightness) * 255.f;
@@ -1888,11 +1888,11 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
     float f = (powf((float)i / 255.f, Gamma) * Contrast + Brightness) * 255.f;
     rampBlue[i] = rampGreen[i] = rampRed[i] = clamp(f);
   }
-#endif    
+#endif
 
   // set ramp next v sync
   g_graphicsContext.Lock();
-#ifndef HAS_SDL  
+#ifndef HAS_SDL
   g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? GAMMA_RAMP_FLAG : 0, &ramp);
 #elif defined(HAS_SDL_2D)
   SDL_SetGammaRamp(rampRed, rampGreen, rampBlue);
@@ -1932,19 +1932,19 @@ void CUtil::FlashScreen(bool bImmediate, bool bOn)
   g_graphicsContext.Lock();
   if (bOn)
   {
-#ifndef HAS_SDL  
+#ifndef HAS_SDL
     g_graphicsContext.Get3DDevice()->GetGammaRamp(&flashramp);
 #elif defined(HAS_SDL_2D)
-    SDL_GetGammaRamp(flashrampRed, flashrampGreen, flashrampBlue);    
-#endif    
+    SDL_GetGammaRamp(flashrampRed, flashrampGreen, flashrampBlue);
+#endif
     SetBrightnessContrastGamma(0.5f, 1.2f, 2.0f, bImmediate);
   }
   else
-#ifndef HAS_SDL  
+#ifndef HAS_SDL
     g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? GAMMA_RAMP_FLAG : 0, &flashramp);
 #elif defined(HAS_SDL_2D)
-    SDL_SetGammaRamp(flashrampRed, flashrampGreen, flashrampBlue);    
-#endif    
+    SDL_SetGammaRamp(flashrampRed, flashrampGreen, flashrampBlue);
+#endif
   g_graphicsContext.Unlock();
 }
 
@@ -1991,10 +1991,10 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
     }
 #else
 
-#endif    
+#endif
 
 #ifdef HAS_SDL_OPENGL
-    
+
     g_graphicsContext.BeginPaint();
     if (g_application.IsPlayingVideo())
     {
@@ -2016,7 +2016,7 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
       free(pixels);
     }
     g_graphicsContext.EndPaint();
-    
+
 #endif
 
 }
@@ -2102,8 +2102,8 @@ void CUtil::StatToStatI64(struct _stati64 *result, struct stat *stat)
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
   result->st_size = (__int64)stat->st_size;
-  
-#ifndef _LINUX  
+
+#ifndef _LINUX
   result->st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
   result->st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
   result->st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
@@ -2111,7 +2111,7 @@ void CUtil::StatToStatI64(struct _stati64 *result, struct stat *stat)
   result->_st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
   result->_st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
   result->_st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
-#endif  
+#endif
 }
 
 void CUtil::Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat)
@@ -2124,7 +2124,7 @@ void CUtil::Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat)
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
   result->st_size = stat->st_size;
-#ifndef _LINUX  
+#ifndef _LINUX
   result->st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
   result->st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
   result->st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
@@ -2132,7 +2132,7 @@ void CUtil::Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat)
   result->_st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
   result->_st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
   result->_st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
-#endif  
+#endif
 }
 
 void CUtil::StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat)
@@ -2145,7 +2145,7 @@ void CUtil::StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat)
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
   result->st_size = stat->st_size;
-#ifndef _LINUX  
+#ifndef _LINUX
   result->st_atime = stat->st_atime;
   result->st_mtime = stat->st_mtime;
   result->st_ctime = stat->st_ctime;
@@ -2153,7 +2153,7 @@ void CUtil::StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat)
   result->st_atime = stat->_st_atime;
   result->st_mtime = stat->_st_mtime;
   result->st_ctime = stat->_st_ctime;
-#endif  
+#endif
 }
 
 #ifndef _LINUX
@@ -2170,7 +2170,7 @@ void CUtil::Stat64ToStat(struct stat *result, struct __stat64 *stat)
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
   if (stat->st_size <= LONG_MAX)
-#ifndef _LINUX  
+#ifndef _LINUX
     result->st_size = (_off_t)stat->st_size;
 #else
     result->st_size = (off_t)stat->st_size;
@@ -2336,7 +2336,7 @@ const BUILT_IN commands[] = {
   { "System.LogOff",              false,  "Log off current user" },
   { "System.Exec",                true,   "Execute shell commands" },
   { "Resolution",                 true,   "Change XBMC's Resolution" },
-  { "SetFocus",                   true,   "Change current focus to a different control id" }, 
+  { "SetFocus",                   true,   "Change current focus to a different control id" },
   { "UpdateLibrary",              true,   "Update the selected library (music or video)" },
   { "PageDown",                   true,   "Send a page down event to the pagecontrol with given id" },
   { "PageUp",                     true,   "Send a page up event to the pagecontrol with given id" },
@@ -2523,7 +2523,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
       std::vector<CStdString> path;
       //split the path up to find the filename
-      StringUtils::SplitString(params[0],"\\",path); 
+      StringUtils::SplitString(params[0],"\\",path);
       argv[0] = path.size() > 0 ? (char*)path[path.size() - 1].c_str() : (char*)params[0].c_str();
 
       for(unsigned int i = 1; i < argc; i++)
@@ -2622,7 +2622,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         database.GetMusicVideoInfo("",*item.GetVideoInfoTag(),params.GetMVideoId());
       item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
     }
-    
+
     // restore to previous window if needed
     if( m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
         m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
@@ -2632,7 +2632,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     // reset screensaver
     g_application.ResetScreenSaver();
     g_application.ResetScreenSaverWindow();
-    
+
     // play media
     if (!g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
     {
@@ -3170,7 +3170,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("control.move"))
   {
-    CStdStringArray arSplit; 
+    CStdStringArray arSplit;
     StringUtils::SplitString(parameter,",", arSplit);
     if (arSplit.size() < 2)
       return -1;
@@ -3759,7 +3759,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
   FD_ZERO(&readfds);
   FD_SET(udp_server_socket, &readfds);
   life = select( 0,&readfds, NULL, NULL, &timeout );
-  
+
   unsigned int iLookUpCountMax = 2;
   unsigned int i=0;
   bool bUpdateShares=false;
@@ -3784,15 +3784,15 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
           v_xboxclients.client_info.clear();
           v_xboxclients.client_lookup_count.clear();
           v_xboxclients.client_informed.clear();
-          
-          // debug log, clients removed from our list 
+
+          // debug log, clients removed from our list
           CLog::Log(LOGDEBUG,"Autodetection: all Clients Removed! (mode LIFE 0)");
           bUpdateShares = true;
         }
-        else 
+        else
         {
           // check client lookup counter! Not reached the CountMax, Add +1!
-          if(v_xboxclients.client_lookup_count[i] < iLookUpCountMax ) 
+          if(v_xboxclients.client_lookup_count[i] < iLookUpCountMax )
             v_xboxclients.client_lookup_count[i] = v_xboxclients.client_lookup_count[i]+1;
           else
           {
@@ -3801,8 +3801,8 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
             v_xboxclients.client_info.erase(v_xboxclients.client_info.begin()+i);
             v_xboxclients.client_lookup_count.erase(v_xboxclients.client_lookup_count.begin()+i);
             v_xboxclients.client_informed.erase(v_xboxclients.client_informed.begin()+i);
-            
-            // debug log, clients removed from our list 
+
+            // debug log, clients removed from our list
             CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] Removed! (mode LIFE 0)",i );
             bUpdateShares = true;
           }
@@ -3822,7 +3822,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
     bFoundNewClient = false;
     bUpdateShares = false;
     // Receive ping request or Info
-    int iSockRet = recvfrom(udp_server_socket, sztmp, 512, 0,(struct sockaddr *) &cliAddr, &cliLen); 
+    int iSockRet = recvfrom(udp_server_socket, sztmp, 512, 0,(struct sockaddr *) &cliAddr, &cliLen);
     if (iSockRet != SOCKET_ERROR)
     {
       CStdString strTmp;
@@ -3832,9 +3832,9 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
         // we received a "ping" request, sending our informations
         strTmp.Format("%s;%s;%s;%d;%d\r\n\0",
           strNickName.c_str(),  // Our Nick-, Device Name!
-          strFTPUserName.c_str(), // User Name for our FTP Server 
-          strFTPPass.c_str(), // Password for our FTP Server 
-          iFTPPort, // FTP PORT Adress for our FTP Server 
+          strFTPUserName.c_str(), // User Name for our FTP Server
+          strFTPPass.c_str(), // Password for our FTP Server
+          iFTPPort, // FTP PORT Adress for our FTP Server
           0 ); // BOOSMODE, for our FTP Server!
         sendto(udp_server_socket,(char *)strTmp.c_str(),strlen((char *)strTmp.c_str())+1,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));
       }
@@ -3843,12 +3843,12 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
         //We received new client information, extracting information
         CStdString strInfo, strIP;
         strInfo.Format("%s",sztmp); //this is the client info
-        strIP.Format("%d.%d.%d.%d", 
+        strIP.Format("%d.%d.%d.%d",
 #ifndef _LINUX
           cliAddr.sin_addr.S_un.S_un_b.s_b1,
           cliAddr.sin_addr.S_un.S_un_b.s_b2,
           cliAddr.sin_addr.S_un.S_un_b.s_b3,
-          cliAddr.sin_addr.S_un.S_un_b.s_b4 
+          cliAddr.sin_addr.S_un.S_un_b.s_b4
 #else
           (int)((char *)(cliAddr.sin_addr.s_addr))[0],
           (int)((char *)(cliAddr.sin_addr.s_addr))[1],
@@ -3856,7 +3856,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
           (int)((char *)(cliAddr.sin_addr.s_addr))[3]
 #endif
         ); //this is the client IP
-        
+
         //Is this our Local IP ?
         if ( !strIP.Equals(strLocalIP) )
         {
@@ -3872,7 +3872,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
             bUpdateShares = true;
           }
           // our list is not empty, check if we allready have this client in our list!
-          else 
+          else
           {
             // this should be a new client or?
             // check list
@@ -3906,7 +3906,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
                   v_xboxclients.client_info[i]=strInfo;
                   v_xboxclients.client_lookup_count[i] = 0;
                 }
-                else 
+                else
                 {
                   // check client lookup counter! Not reached the CountMax, Add +1!
                   if(v_xboxclients.client_lookup_count[i] < iLookUpCountMax )
@@ -3918,9 +3918,9 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
                     v_xboxclients.client_info.erase(v_xboxclients.client_info.begin()+i);
                     v_xboxclients.client_lookup_count.erase(v_xboxclients.client_lookup_count.begin()+i);
                     v_xboxclients.client_informed.erase(v_xboxclients.client_informed.begin()+i);
-                    
-                    // debug log, clients removed from our list 
-                    CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] Removed! (mode LIFE 1)",i );  
+
+                    // debug log, clients removed from our list
+                    CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] Removed! (mode LIFE 1)",i );
 
                     // client is removed from our list, update our shares
                     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
@@ -3935,7 +3935,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
                 CLog::Log(LOGDEBUG,"----------------------------------------------------------------" );
                 CLog::Log(LOGDEBUG,"IP:%s Info:%s LookUpCount:%i Informed:%s",
                   v_xboxclients.client_ip[i].c_str(),
-                  v_xboxclients.client_info[i].c_str(), 
+                  v_xboxclients.client_info[i].c_str(),
                   v_xboxclients.client_lookup_count[i],
                   v_xboxclients.client_informed[i] ? "true":"false");
                 CLog::Log(LOGDEBUG,"----------------------------------------------------------------" );
@@ -4327,25 +4327,25 @@ CStdString CUtil::TranslatePath(const CStdString& path)
 #ifdef __APPLE__
     CStdString lowerPath = path;
     lowerPath.ToLower();
-    
+
     // Special mappings for OS X.
     if (path[0] == 'Q' || path[0] == 'q')
     {
       if (path.Equals("q:\\system\\profiles.xml", false))
       {
-        CStdString str = getenv("HOME");  
+        CStdString str = getenv("HOME");
         str.append("/Library/Application Support/XBMC/profiles.xml");
         return str;
       }
       else if (path.Equals("q:\\system\\mediasources.xml", false))
       {
-        CStdString str = getenv("HOME");  
+        CStdString str = getenv("HOME");
         str.append("/Library/Application Support/XBMC/mediasources.xml");
         return str;
       }
       else if (lowerPath.Find("q:\\plugins") == 0)
       {
-        CStdString str = getenv("HOME");  
+        CStdString str = getenv("HOME");
         str.append("/Library/Application Support/XBMC/Plugins");
         str.append(path.substr(10));
         str.Replace('\\', '/');
@@ -4353,7 +4353,7 @@ CStdString CUtil::TranslatePath(const CStdString& path)
       }
     }
 #endif
-    
+
     const char *p = CIoSupport::GetPartition(path[0]);
     if (p != NULL)
     {
@@ -4418,20 +4418,20 @@ CStdString CUtil::TranslatePathConvertCase(const CStdString& path)
                   break;
                }
             }
-          
-            // if we did not find any file that somewhat matches, just 
+
+            // if we did not find any file that somewhat matches, just
             // fallback but we know it's not gonna be a good ending
             if (de == NULL)
                result += "/" + tokens[i];
-          
-            closedir(dir); 
+
+            closedir(dir);
          }
          else
             // this is just fallback, we won't succeed anyway...
             result += "/" + tokens[i];
       }
    }
-  
+
    return result;
 #else
    return translatedPath;
@@ -4440,7 +4440,7 @@ CStdString CUtil::TranslatePathConvertCase(const CStdString& path)
 
 #ifdef _LINUX
 
-// 
+//
 // FIXME, this should be merged with the function below.
 //
 bool CUtil::Command(const CStdStringArray& arrArgs)
@@ -4449,7 +4449,7 @@ bool CUtil::Command(const CStdStringArray& arrArgs)
   for (size_t i=0; i<arrArgs.size(); i++)
     printf("%s ", arrArgs[i].c_str());
   printf("\n");
-  
+
   pid_t child = fork();
   int n = 0;
   if (child == 0)
@@ -4494,7 +4494,7 @@ bool CUtil::SudoCommand(const CStdString &strCommand)
       args[1] = (char *)"-S";
       for (size_t i=0; i<arrArgs.size(); i++)
       {
-        args[i+2] = (char *)arrArgs[i].c_str();  
+        args[i+2] = (char *)arrArgs[i].c_str();
       }
       execvp("/usr/bin/sudo", args);
     }

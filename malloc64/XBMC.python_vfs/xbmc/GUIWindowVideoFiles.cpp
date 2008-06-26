@@ -355,7 +355,7 @@ void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
       CFileItemPtr item = vecitems[i];
       if (!item->m_bIsFolder)
       {
-        if (item->IsVideo() && !item->IsNFO() && !item->IsPlayList() && 
+        if (item->IsVideo() && !item->IsNFO() && !item->IsPlayList() &&
             item->m_strPath.Find("-trailer.") == -1)
         {
           bFoundFile = true;
@@ -382,7 +382,7 @@ void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
           for (int i = 0; i < items.Size(); i++)
           {
             CFileItemPtr item = items[i];
-            if (!item->m_bIsFolder && item->IsVideo() && !item->IsNFO() && 
+            if (!item->m_bIsFolder && item->IsVideo() && !item->IsNFO() &&
                 !item->IsPlayList())
             {
               bFoundFile = true;
@@ -415,7 +415,7 @@ void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
   {
     item.RemoveExtension();
   }
-  
+
   item.SetCachedVideoThumb();
   if (!item.HasThumbnail() && pItem->GetProperty("HasAutoThumb") != "1") // inherit from the original item if it exists
     item.SetThumbnailImage(pItem->GetThumbnailImage());
@@ -491,10 +491,10 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& 
   }
   SScraperInfo info2 = info;
   SScanSettings settings2 = settings;
-  
+
   if (CGUIDialogContentSettings::Show(info2, settings2, bScan))
   {
-    if((info2.strContent.IsEmpty() || info2.strContent.Equals("None")) && 
+    if((info2.strContent.IsEmpty() || info2.strContent.Equals("None")) &&
       (!info.strContent.IsEmpty() && !info.strContent.Equals("None")))
     {
       OnUnAssignContent(iItem);
@@ -579,7 +579,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       // add scan button somewhere here
       if (pScanDlg && pScanDlg->IsScanning())
         buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
-      if (g_guiSettings.GetBool("videolibrary.enabled") && !item->IsDVD() && 
+      if (g_guiSettings.GetBool("videolibrary.enabled") && !item->IsDVD() &&
          (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
@@ -588,7 +588,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
         CVideoDatabase database;
         database.Open();
         SScraperInfo info;
-        
+
         if (share != 0 && database.GetScraperForPath(share->strPath,info))
         {
           if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
@@ -646,9 +646,9 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
         else
         {
           // single file
-          if ((info.strContent.Equals("movies") && (iFound > 0 || 
-               m_database.HasMovieInfo(item->m_strPath)))      || 
-               m_database.HasEpisodeInfo(item->m_strPath)      || 
+          if ((info.strContent.Equals("movies") && (iFound > 0 ||
+               m_database.HasMovieInfo(item->m_strPath)))      ||
+               m_database.HasEpisodeInfo(item->m_strPath)      ||
                info.strContent.Equals("musicvideos"))
           {
             buttons.Add(CONTEXT_BUTTON_INFO, infoString);
@@ -664,7 +664,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       }
       if (!item->IsParentFolder())
       {
-        if ((m_vecItems->m_strPath.Equals("special://videoplaylists/")) || 
+        if ((m_vecItems->m_strPath.Equals("special://videoplaylists/")) ||
              g_guiSettings.GetBool("filelists.allowfiledeletion"))
         { // video playlists or file operations are allowed
           if (!item->IsReadOnly())

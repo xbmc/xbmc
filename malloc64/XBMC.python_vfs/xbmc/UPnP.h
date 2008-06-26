@@ -61,7 +61,7 @@ private:
     PLT_UPnP*                   m_UPnP;
     CDeviceHostReferenceHolder* m_ServerHolder;
     CRendererReferenceHolder*   m_RendererHolder;
-    CCtrlPointReferenceHolder*  m_CtrlPointHolder;    
+    CCtrlPointReferenceHolder*  m_CtrlPointHolder;
 
 
     static CUPnP* upnp;

@@ -79,7 +79,7 @@ private:
   virtual void OnExit();
 
   IRssObserver* m_pObserver;
-  
+
   std::vector<CStdStringW> m_strFeed;
   std::vector<CStdStringW> m_strColors;
   std::vector<SYSTEMTIME *> m_vecTimeStamps;

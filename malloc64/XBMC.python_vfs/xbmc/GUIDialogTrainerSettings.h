@@ -42,7 +42,7 @@ protected:
   void OnSettingChanged(unsigned int setting);
 
   void AddBool(unsigned int id, const CStdString& strLabel, unsigned char* on);
-  
+
   std::vector<CStdString> m_vecOptions;
   int m_iTrainer;
   int m_iOldTrainer;

@@ -6,6 +6,7 @@ error() {
   then
     echo
     echo -e "\n FAILED! Exiting. ($RET)"
+    LANG="${OLDLANG}"
     exit
   fi
 }
@@ -13,7 +14,7 @@ error() {
 usage() {
   echo " build.sh by default checks that your source is up-to-date, updates it"
   echo "  if not, compile, and create a working build of XBMC in ./BUILD."
-  echo "  UserData and scripts dirs as well as 3rd party skins will be backed"
+  echo "  userdata and scripts dirs as well as 3rd party skins will be backed"
   echo "  up if existing."
   echo " Usage: build.sh [OPTIONS]"
   echo "  OPTIONS:"
@@ -284,7 +285,7 @@ copy() {
   fi
   error
 
-  for I in credits language media screensavers scripts skin sounds system userdata visualisations web xbmc-xrandr xbmc.bin README.linux copying.txt Changelog.txt
+  for I in credits language media screensavers scripts skin sounds system userdata visualisations web xbmc-xrandr xbmc.bin README.linux copying.txt Changelog.txt LICENSE.GPL
   do
     printf "\r Copying %-16.16s" $I 
     if [[ "$I" == "skin" ]]
@@ -302,10 +303,10 @@ copy() {
           if (( VERBOSE )) 
           then
             mkdir -v "${BUILDDIR}/skin/Project Mayhem III/media"
-            cp "${SOURCEDIR}/skin/Project Mayhem III/media/Textures.xpr" "${BUILDDIR}/skin/Project Mayhem III/media"
+            tools/XBMCTex/XBMCTex -input "\"skin/Project Mayhem III/media/\"" -output "\"${BUILDDIR}/skin/Project Mayhem III/media/Textures.xpr\""
           else
             mkdir "${BUILDDIR}/skin/Project Mayhem III/media" &> /dev/null
-            cp "${SOURCEDIR}/skin/Project Mayhem III/media/Textures.xpr" "${BUILDDIR}/skin/Project Mayhem III/media" &> /dev/null
+            tools/XBMCTex/XBMCTex -input "\"skin/Project Mayhem III/media/\"" -output "\"${BUILDDIR}/skin/Project Mayhem III/media/Textures.xpr\"" &> /dev/null
           fi
         else
           if (( VERBOSE ))
@@ -318,13 +319,13 @@ copy() {
       done
     elif [[ "$I" == "userdata" ]]
     then
-      if [[ -e "$BACKUPDIR/UserData" ]]
+      if [[ -e "$BACKUPDIR/userdata" ]]
       then
         if (( VERBOSE ))
         then 
-          cp -vrf "$BACKUPDIR/UserData" "$BUILDDIR"
+          cp -vrf "$BACKUPDIR/userdata" "$BUILDDIR"
         else
-          cp -rf "$BACKUPDIR/UserData" "$BUILDDIR" &> /dev/null
+          cp -rf "$BACKUPDIR/userdata" "$BUILDDIR" &> /dev/null
         fi
       else
         if (( VERBOSE ))
@@ -494,6 +495,8 @@ BACKUPDIR="$SOURCEDIR/.backup"
 BUILDDIR="./BUILD"
 WEB=""
 CONFIGOPTS=""
+OLDLANG="${LANG}"
+LANG=""
 (( UPDATE=1 ))
 (( COMPILE=1 ))
 (( CLEAN=1 ))
@@ -681,6 +684,7 @@ else
   echo " Skipping XBMC file structure creation."
 fi
 
+LANG="${OLDLANG}"
 echo " All done!"
 
 if (( COMPILE && !CONFIRM))

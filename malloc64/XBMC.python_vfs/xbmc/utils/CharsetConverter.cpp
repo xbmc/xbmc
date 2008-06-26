@@ -27,7 +27,7 @@ using namespace std;
 #define ICONV_PREPARE(iconv) iconv=(iconv_t)-1
 #define ICONV_SAFE_CLOSE(iconv) if (iconv!=(iconv_t)-1) { iconv_close(iconv); iconv=(iconv_t)-1; }
 
-size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft, 
+size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft,
 		    char* * outbuf, size_t *outbytesleft)
 {
 #if defined(_LINUX) || defined(__APPLE__)
@@ -203,7 +203,7 @@ void CCharsetConverter::reset(void)
 void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wString, bool bVisualBiDiFlip/*=true*/)
 {
   CStdStringA strFlipped;
-  
+
   // Try to flip hebrew/arabic characters, if any
   if (bVisualBiDiFlip)
   {
@@ -300,7 +300,7 @@ void CCharsetConverter::stringCharsetToUtf8(CStdStringA& strSourceDest)
 
 void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest)
 {
-  iconv_t iconvString;  
+  iconv_t iconvString;
   ICONV_PREPARE(iconvString);
   convert(iconvString,4,strSourceCharset,"UTF-8",strSource,strDest);
   iconv_close(iconvString);
@@ -308,7 +308,7 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset,
 
 void CCharsetConverter::stringCharsetTo(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStringA& strDest)
 {
-  iconv_t iconvString;  
+  iconv_t iconvString;
   ICONV_PREPARE(iconvString);
   convert(iconvString,4,g_langInfo.GetGuiCharSet(),strDestCharset,strSource,strDest);
   iconv_close(iconvString);
@@ -327,7 +327,7 @@ void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA 
 void CCharsetConverter::utf16LEtoUTF8(const CStdStringW& strSource,
                                       CStdStringA &strDest)
 {
-  convert(m_iconvUtf16LEtoUtf8,4,"UTF16-LE","UTF-8",strSource,strDest);
+  convert(m_iconvUtf16LEtoUtf8,4,"UTF-16LE","UTF-8",strSource,strDest);
 }
 
 void CCharsetConverter::ucs2ToUTF8(const CStdStringW& strSource, CStdStringA& strDest)

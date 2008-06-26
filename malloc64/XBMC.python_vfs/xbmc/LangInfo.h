@@ -39,7 +39,7 @@ public:
   bool ForceUnicodeFont() { return m_currentRegion->m_forceUnicodeFont; }
 
   const CStdString& GetDateFormat(bool bLongDate=false) const;
-  
+
   typedef enum _MERIDIEM_SYMBOL
   {
     MERIDIEM_SYMBOL_PM=0,
@@ -64,7 +64,7 @@ public:
 
   const CStdString& GetTempUnitString();
   CLangInfo::TEMP_UNIT GetTempUnit();
-  
+
 
   typedef enum _SPEED_UNIT
   {

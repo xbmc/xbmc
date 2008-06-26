@@ -79,7 +79,7 @@ bool CButtonTranslator::Load()
       pWindow = pWindow->NextSibling();
     }
   }
-  
+
 #ifdef HAS_LIRC
   if (!LoadLircMap())
     return false;
@@ -126,14 +126,14 @@ bool CButtonTranslator::LoadLircMap()
     }
     pRemote = pRemote->NextSibling();
   }
-  
+
   return true;
 }
 
 void CButtonTranslator::MapRemote(TiXmlNode *pRemote, const char* szDevice)
 {
   lircButtonMap buttons;
-  
+
   TiXmlElement *pButton = pRemote->FirstChildElement();
   while (pButton)
   {
@@ -141,9 +141,9 @@ void CButtonTranslator::MapRemote(TiXmlNode *pRemote, const char* szDevice)
       buttons[pButton->FirstChild()->Value()] = pButton->Value();
     pButton = pButton->NextSiblingElement();
   }
-  
+
   lircRemotesMap[szDevice] = buttons;
-} 
+}
 
 WORD CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const char *szButton)
 {
@@ -155,9 +155,9 @@ WORD CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const ch
   // Find the button
   lircButtonMap::iterator it2 = (*it).second.find(szButton);
   if (it2 == (*it).second.end())
-    return 0;  
+    return 0;
 
-  // Convert the button to code  
+  // Convert the button to code
   return TranslateRemoteString((*it2).second.c_str());
 }
 #endif
@@ -196,7 +196,7 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
     {
       if ((pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS) && id>=0 && id<=256)
       {
-        if (strcmpi(szType, "button")==0) 
+        if (strcmpi(szType, "button")==0)
         {
           buttonMap[id] = string(szAction);
         }
@@ -251,10 +251,10 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
     pButton = pButton->NextSiblingElement();
   }
   vector<string>::iterator it = joynames.begin();
-  while (it!=joynames.end()) 
+  while (it!=joynames.end())
   {
     m_joystickButtonMap[*it][wWindowID] = buttonMap;
-    m_joystickAxisMap[*it][wWindowID] = axisMap;      
+    m_joystickAxisMap[*it][wWindowID] = axisMap;
     CLog::Log(LOGNOTICE, "Found Joystick map for %s", it->c_str());
     it++;
   }
@@ -270,7 +270,7 @@ bool CButtonTranslator::TranslateJoystickString(WORD wWindow, const char* szDevi
   map<string, JoystickMap> *jmap;
 
   fullrange = false;
-  
+
   if (axis)
   {
     jmap = &m_joystickAxisMap;
@@ -498,7 +498,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
   }
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
   if ((pDevice = pWindow->FirstChild("joystick")) != NULL)
-  { 
+  {
     // map joystick actions
     while (pDevice)
     {
@@ -766,7 +766,7 @@ WORD CButtonTranslator::TranslateGamepadButton(TiXmlElement *pButton)
   const char *szButton = pButton->Value();
   return TranslateGamepadString(szButton);
 }
-  
+
 WORD CButtonTranslator::TranslateGamepadString(const char *szButton)
 {
   if (!szButton) return 0;
@@ -893,14 +893,14 @@ WORD CButtonTranslator::TranslateKeyboardString(const char *szButton)
   if (strlen(szButton) == 1)
   { // single character
     wButtonCode = (WORD)toupper(szButton[0]) | KEY_VKEY;
-    // FIXME It is a printable character, printable should be ASCII not VKEY! Till now it works, but how (long)? 
+    // FIXME It is a printable character, printable should be ASCII not VKEY! Till now it works, but how (long)?
     // FIXME support unicode: additional parameter necessary since unicode can not be embedded into key/action-ID.
   }
   else
   { // for keys such as return etc. etc.
     CStdString strKey = szButton;
     strKey.ToLower();
-    
+
     if (strKey.Equals("return")) wButtonCode = 0xF00D;
     else if (strKey.Equals("enter")) wButtonCode = 0xF06C;
     else if (strKey.Equals("escape")) wButtonCode = 0xF01B;
@@ -990,7 +990,7 @@ WORD CButtonTranslator::TranslateKeyboardString(const char *szButton)
     else if (strKey.Equals("prev_track")) wButtonCode = 0xF0B1;
     else if (strKey.Equals("next_track")) wButtonCode = 0xF0B0;
     else
-      CLog::Log(LOGERROR, "Keyboard Translator: Can't find button %s", strKey.c_str());      
+      CLog::Log(LOGERROR, "Keyboard Translator: Can't find button %s", strKey.c_str());
   }
   return wButtonCode;
 }
@@ -998,7 +998,7 @@ WORD CButtonTranslator::TranslateKeyboardString(const char *szButton)
 WORD CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
 {
   const char *szButton = pButton->Value();
-  
+
   if (!szButton) return 0;
   CStdString strKey = szButton;
   if (strKey.Equals("key"))

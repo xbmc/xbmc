@@ -73,7 +73,7 @@ CURL::CURL(const CStdString& strURL)
 
   // decode protocol
   int iPos = strURL.Find("://");
-  if (iPos < 0)  
+  if (iPos < 0)
   {
     // This is an ugly hack that needs some work.
     // example: filename /foo/bar.zip/alice.rar/bob.avi

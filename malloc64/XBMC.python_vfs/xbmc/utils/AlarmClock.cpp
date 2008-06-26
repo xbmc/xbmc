@@ -82,7 +82,7 @@ void CAlarmClock::stop(const CStdString& strName)
     return;
 
   SAlarmClockEvent& event = iter->second;
-  
+
   CStdString strAlarmClock;
   if (event.m_strCommand.Equals("xbmc.shutdown") || event.m_strCommand.Equals("xbmc.shutdown()"))
     strAlarmClock = g_localizeStrings.Get(20144);
@@ -92,7 +92,7 @@ void CAlarmClock::stop(const CStdString& strName)
   CStdString strMessage;
   if( iter->second.watch.GetElapsedSeconds() > iter->second.m_fSecs )
     strMessage = g_localizeStrings.Get(13211);
-  else 
+  else
   {
     float remaining = static_cast<float>(iter->second.m_fSecs-iter->second.watch.GetElapsedSeconds());
     CStdString strStarted = g_localizeStrings.Get(13212);
@@ -114,7 +114,7 @@ void CAlarmClock::Process()
     CStdString strLast = "";
     for (std::map<CStdString,SAlarmClockEvent>::iterator iter=m_event.begin();iter != m_event.end(); ++iter)
       if (iter->second.watch.GetElapsedSeconds() >= iter->second.m_fSecs)
-      {    
+      {
         stop(iter->first);
         iter = m_event.find(strLast);
       }
