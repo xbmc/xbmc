@@ -327,7 +327,7 @@ void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA 
 void CCharsetConverter::utf16LEtoUTF8(const CStdStringW& strSource,
                                       CStdStringA &strDest)
 {
-  convert(m_iconvUtf16LEtoUtf8,4,"UTF16-LE","UTF-8",strSource,strDest);
+  convert(m_iconvUtf16LEtoUtf8,4,"UTF-16LE","UTF-8",strSource,strDest);
 }
 
 void CCharsetConverter::ucs2ToUTF8(const CStdStringW& strSource, CStdStringA& strDest)
