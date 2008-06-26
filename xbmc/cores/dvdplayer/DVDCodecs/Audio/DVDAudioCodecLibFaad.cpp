@@ -88,7 +88,7 @@ bool CDVDAudioCodecLibFaad::SyncStream()
       // sync found, update our buffer if needed
       if (p != m_InputBuffer)
       {
-        CLog::Log(LOGINFO, "CDVDAudioCodecLibFaad::SyncStream(), stream synced at offset %d", p - m_InputBuffer);
+        CLog::Log(LOGINFO, "CDVDAudioCodecLibFaad::SyncStream(), stream synced at offset %ld", p - m_InputBuffer);
         memmove(m_InputBuffer, p, m_InputBufferSize);
       }
       return true;
