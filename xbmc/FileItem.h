@@ -329,6 +329,7 @@ public:
   int GetFolderCount() const;
   int GetFileCount() const;
   int GetSelectedCount() const;
+  int GetObjectCount() const;
   void FilterCueItems();
   void RemoveExtensions();
   void CleanFileNames();
