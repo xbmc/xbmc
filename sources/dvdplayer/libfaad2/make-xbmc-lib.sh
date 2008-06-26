@@ -11,9 +11,6 @@ if [ $PLATFORM != "x86_64" ]; then
    PLATFORM="i486"
 fi
 
-echo $PLATFORM
-exit 1
-
 autoreconf -vif &&
 ./configure --with-mp4v2 &&
 make &&
