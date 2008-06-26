@@ -46,7 +46,11 @@
 
 #define CXIMAGE_SUPPORT_JBG 0		// GPL'd see ../jbig/copying.txt & ../jbig/patents.htm
 
+#ifdef _WIN32
+#define CXIMAGE_SUPPORT_MNG 1
+#else
 #define CXIMAGE_SUPPORT_MNG 0
+#endif
 #define CXIMAGE_SUPPORT_SKA 1
 #define CXIMAGE_SUPPORT_RAW 1
 
