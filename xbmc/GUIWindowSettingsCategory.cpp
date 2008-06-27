@@ -1265,11 +1265,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.useexternaldvdplayer"));
     }
-    else if (strSetting.Equals("cddaripper.path") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("pictures.screenshotpath")
-#ifdef HAS_TRAINER
-             || strSetting.Equals("myprograms.trainerpath")
-#endif
-            )
+    else if (strSetting.Equals("cddaripper.path") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("pictures.screenshotpath"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
@@ -1888,7 +1884,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_pictureSources, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
   }
-  else if (strSetting.Equals("myprograms.trainerpath") || strSetting.Equals("pictures.screenshotpath") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("subtitles.custompath"))
+  else if (strSetting.Equals("pictures.screenshotpath") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("subtitles.custompath"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = g_guiSettings.GetString(strSetting,false);
@@ -1896,10 +1892,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_mediaManager.GetLocalDrives(shares);
     UpdateSettings();
     bool bWriteOnly = true;
-#ifdef HAS_TRAINER
-    if (strSetting.Equals("myprograms.trainerpath"))
-      bWriteOnly = false;
-#endif
 
     if (strSetting.Equals("subtitles.custompath"))
     {
@@ -1909,18 +1901,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path, bWriteOnly))
     {
       pSettingString->SetData(path);
-
-#ifdef HAS_TRAINER
-      if (strSetting.Equals("myprograms.trainerpath"))
-      {
-        if (CGUIDialogYesNo::ShowAndGetInput(12012,20135,20022,20022))
-        {
-          CGUIWindowPrograms* pWindow = (CGUIWindowPrograms*)m_gWindowManager.GetWindow(WINDOW_PROGRAMS);
-          if (pWindow)
-            pWindow->PopulateTrainersList();
-        }
-      }
-#endif
     }
   }
   else if (strSetting.Left(22).Equals("MusicPlayer.ReplayGain"))

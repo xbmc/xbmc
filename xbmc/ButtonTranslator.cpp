@@ -725,7 +725,6 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("osdvideosettings")) wWindowID = WINDOW_DIALOG_VIDEO_OSD_SETTINGS;
   else if (strWindow.Equals("osdaudiosettings")) wWindowID = WINDOW_DIALOG_AUDIO_OSD_SETTINGS;
   else if (strWindow.Equals("videobookmarks")) wWindowID = WINDOW_DIALOG_VIDEO_BOOKMARKS;
-  else if (strWindow.Equals("trainersettings")) wWindowID = WINDOW_DIALOG_TRAINER_SETTINGS;
   else if (strWindow.Equals("profilesettings")) wWindowID = WINDOW_DIALOG_PROFILE_SETTINGS;
   else if (strWindow.Equals("locksettings")) wWindowID = WINDOW_DIALOG_LOCK_SETTINGS;
   else if (strWindow.Equals("contentsettings")) wWindowID = WINDOW_DIALOG_CONTENT_SETTINGS;
