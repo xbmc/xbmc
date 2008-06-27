@@ -71,7 +71,6 @@
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogVideoScan.h"
 #include "utils/fstrcmp.h"
-#include "utils/Trainer.h"
 #include "MediaManager.h"
 #include "utils/Network.h"
 #include "GUIPassword.h"
@@ -691,20 +690,6 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
     }
   }
 }
-
-#ifdef HAS_TRAINER
-bool CUtil::InstallTrainer(CTrainer& trainer)
-{
-  bool Found = false;
-  return Found;
-}
-
-bool CUtil::RemoveTrainer()
-{
-  bool Found = false;
-  return Found;
-}
-#endif
 
 void CUtil::RunShortcut(const char* szShortcutPath)
 {

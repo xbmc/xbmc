@@ -66,7 +66,6 @@
 #undef HAS_SECTIONS
 #undef HAS_CDDA_RIPPER
 #define HAS_PYTHON
-#define HAS_TRAINER
 #define HAS_AUDIO
 #define HAS_SHOUTCAST
 #define HAS_RAR
@@ -93,7 +92,6 @@
 #include "../config.h"
 #endif
 #define HAS_PYTHON
-#undef  HAS_TRAINER
 #define HAS_WEB_SERVER
 #define HAS_EVENT_SERVER
 #define HAS_UPNP
@@ -170,7 +168,6 @@
 #undef HAS_SCREENSAVER // no screensavers
 #undef HAS_PERFORMANCE_SAMPLE // no performance sampling
 #undef HAS_LINUX_NETWORK
-#undef HAS_TRAINER
 
 #include "../xbmc/win32/PlatformInclude.h"
 #endif

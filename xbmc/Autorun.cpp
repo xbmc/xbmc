@@ -28,9 +28,6 @@
 #include "PlayListPlayer.h"
 #include "FileSystem/StackDirectory.h"
 #include "ProgramDatabase.h"
-#ifdef HAS_TRAINER
-#include "utils/Trainer.h"
-#endif
 #include "GUIDialogYesNo.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"

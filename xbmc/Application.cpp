@@ -145,9 +145,6 @@
 #include "GUIDialogMusicOSD.h"
 #include "GUIDialogVisualisationSettings.h"
 #include "GUIDialogVisualisationPresetList.h"
-#ifdef HAS_TRAINER
-#include "GUIDialogTrainerSettings.h"
-#endif
 #include "GUIWindowScriptsInfo.h"
 #include "GUIDialogNetworkSetup.h"
 #include "GUIDialogMediaSource.h"
@@ -1308,9 +1305,6 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogAudioSubtitleSettings);     // window id = 124
   m_gWindowManager.Add(new CGUIDialogVideoBookmarks);      // window id = 125
   // Don't add the filebrowser dialog - it's created and added when it's needed
-#ifdef HAS_TRAINER
-  m_gWindowManager.Add(new CGUIDialogTrainerSettings);  // window id = 127
-#endif
   m_gWindowManager.Add(new CGUIDialogNetworkSetup);  // window id = 128
   m_gWindowManager.Add(new CGUIDialogMediaSource);   // window id = 129
   m_gWindowManager.Add(new CGUIDialogProfileSettings); // window id = 130
@@ -3544,7 +3538,6 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_DIALOG_FILESTACKING);
     m_gWindowManager.Delete(WINDOW_DIALOG_KEYBOARD);
     m_gWindowManager.Delete(WINDOW_FULLSCREEN_VIDEO);
-    m_gWindowManager.Delete(WINDOW_DIALOG_TRAINER_SETTINGS);
     m_gWindowManager.Delete(WINDOW_DIALOG_PROFILE_SETTINGS);
     m_gWindowManager.Delete(WINDOW_DIALOG_LOCK_SETTINGS);
     m_gWindowManager.Delete(WINDOW_DIALOG_NETWORK_SETUP);
