@@ -742,7 +742,7 @@ then
 		# debug builds.
 		OPT="-g -Wall -Wstrict-prototypes"
 	    else
-		OPT="-g -O3 -Wall -Wstrict-prototypes"
+		OPT="-g -O0 -Wall -Wstrict-prototypes"
 	    fi
 	    ;;
 	*)
