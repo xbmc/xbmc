@@ -31,28 +31,6 @@ namespace XFILE
 class CFileItem;
 class CFileItemList;
 
-#ifdef HAS_TRAINER
-class CTrainer;
-#endif
-
-// for 'cherry' patching
-typedef enum
-{
-  COUNTRY_NULL = 0,
-  COUNTRY_USA,
-  COUNTRY_JAP,
-  COUNTRY_EUR
-} F_COUNTRY;
-
-typedef enum
-{
-  VIDEO_NULL = 0,
-  VIDEO_NTSCM,
-  VIDEO_NTSCJ,
-  VIDEO_PAL50,
-  VIDEO_PAL60
-} F_VIDEO;
-
 struct sortstringbyname
 {
   bool operator()(const CStdString& strItem1, const CStdString& strItem2)
@@ -173,10 +151,6 @@ public:
   static int ExecBuiltIn(const CStdString& execString);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
-#ifdef HAS_TRAINER
-  static bool InstallTrainer(CTrainer& trainer);
-  static bool RemoveTrainer();
-#endif
   static void RunShortcut(const char* szPath);
   static void GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath);
   static void GetHomePath(CStdString& strPath);
