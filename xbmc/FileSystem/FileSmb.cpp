@@ -540,15 +540,9 @@ int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
   buffer->st_gid = tmpBuffer.st_gid;
   buffer->st_rdev = tmpBuffer.st_rdev;
   buffer->st_size = tmpBuffer.st_size;
-#ifndef _LINUX
   buffer->st_atime = tmpBuffer.st_atime;
   buffer->st_mtime = tmpBuffer.st_mtime;
   buffer->st_ctime = tmpBuffer.st_ctime;
-#else
-  buffer->_st_atime = tmpBuffer.st_atime;
-  buffer->_st_mtime = tmpBuffer.st_mtime;
-  buffer->_st_ctime = tmpBuffer.st_ctime;
-#endif
 
   return iResult;
 }

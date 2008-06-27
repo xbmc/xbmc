@@ -1,8 +1,6 @@
 #ifndef Py_CONFIG_H
 #define Py_CONFIG_H
-#ifdef __APPLE__
-#error You should not be including this header! 
-#endif
+
 /* pyconfig.h.  NOT Generated automatically by configure.
 
 This is a manually maintained version used for the Watcom,
@@ -29,10 +27,7 @@ MS_CORE_DLL.
 
 */
 
-#ifndef _LINUX
 #include <io.h>
-#endif
-
 #define HAVE_SYS_UTIME_H
 #define HAVE_HYPOT
 #define HAVE_TEMPNAM
@@ -47,9 +42,6 @@ MS_CORE_DLL.
 #define WORD_BIT 32
 #define PREFIX ""
 #define EXEC_PREFIX ""
-
-#define PYTHONPATH "Q:\\system\\python" // XBOX
-#define Py_NO_ENABLE_SHARED
 
 #define MS_WIN32 /* only support win32 and greater. */
 #define MS_WINDOWS
@@ -225,22 +217,6 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 /*  All windows compilers that use this header support __declspec */
 #define HAVE_DECLSPEC_DLL
 
-/* For an MSVC DLL, we can nominate the .lib files used by extensions */
-#ifdef MS_COREDLL
-#	ifndef Py_BUILD_CORE /* not building the core - must be an ext */
-#		if defined(_MSC_VER)
-			/* So MSVC users need not specify the .lib file in
-			their Makefile (other compilers are generally
-			taken care of by distutils.) */
-#			ifdef _DEBUG
-//#				pragma comment(lib,"python24_d.lib")
-#			else
-//#				pragma comment(lib,"python24.lib")
-#			endif /* _DEBUG */
-#		endif /* _MSC_VER */
-#	endif /* Py_BUILD_CORE */
-#endif /* MS_COREDLL */
-
 #if defined(MS_WIN64)
 /* maintain "win32" sys.platform for backward compatibility of Python code,
    the Win64 API should be close enough to the Win32 API to make this
@@ -266,11 +242,6 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 #	define SIZEOF_FPOS_T 8
 #	define SIZEOF_HKEY 4
 #endif
-
-#ifdef _DEBUG
-// XBOX # define Py_DEBUG
-#endif
-
 
 #ifdef MS_WIN32
 
@@ -380,7 +351,7 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 /* #define HAVE_ALTZONE */
 
 /* Define if you have the putenv function.  */
-#undef HAVE_PUTENV
+#define HAVE_PUTENV
 
 /* Define if your compiler supports function prototypes */
 #define HAVE_PROTOTYPES
@@ -415,7 +386,7 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 
 /* Define to indicate that the Python Unicode representation can be passed
    as-is to Win32 Wide API.  */
-#undef Py_WIN_WIDE_FILENAMES
+#define Py_WIN_WIDE_FILENAMES
 #endif
 
 /* Use Python's own small-block memory-allocator. */
@@ -570,4 +541,9 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 
 /* Define if you have the thread library (-lthread).  */
 /* #undef HAVE_LIBTHREAD */
+
+/* WinSock does not use a bitmask in select, and uses
+   socket handles greater than FD_SETSIZE */
+#define Py_SOCKET_FD_CAN_BE_GE_FD_SETSIZE
+
 #endif /* !Py_CONFIG_H */

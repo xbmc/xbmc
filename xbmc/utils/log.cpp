@@ -254,3 +254,38 @@ void _VerifyGLState(const char* szfile, const char* szfunction, int lineno){
 //  abort();
 #endif
 }
+
+void LogGraphicsInfo()
+{
+#ifdef HAS_SDL_OPENGL
+  const GLubyte *s;
+
+  s = glGetString(GL_VENDOR);
+  if (s)
+    CLog::Log(LOGINFO, "GL_VENDOR = %s", s);
+  else
+    CLog::Log(LOGINFO, "GL_VENDOR = NULL");
+
+  s = glGetString(GL_RENDERER);
+  if (s)
+    CLog::Log(LOGINFO, "GL_RENDERER = %s", s);
+  else
+    CLog::Log(LOGINFO, "GL_RENDERER = NULL");
+
+  s = glGetString(GL_VERSION);
+  if (s)
+    CLog::Log(LOGINFO, "GL_VERSION = %s", s);
+  else
+    CLog::Log(LOGINFO, "GL_VERSION = NULL");
+
+  s = glGetString(GL_EXTENSIONS);
+  if (s)
+    CLog::Log(LOGINFO, "GL_EXTENSIONS = %s", s);
+  else
+    CLog::Log(LOGINFO, "GL_EXTENSIONS = NULL");
+#else /* !HAS_SDL_OPENGL */
+  CLog::Log(LOGINFO,
+            "Please define LogGraphicsInfo for your chosen graphics libary");
+#endif /* !HAS_SDL_OPENGL */
+}
+

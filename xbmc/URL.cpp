@@ -23,6 +23,11 @@
 #include "URL.h"
 #include "utils/RegExp.h"
 #include "Util.h"
+#include "FileSystem/File.h"
+#ifndef _LINUX
+#include <sys\types.h>
+#include <sys\stat.h>
+#endif
 
 CStdString URLEncodeInline(const CStdString& strData)
 {
@@ -70,26 +75,56 @@ CURL::CURL(const CStdString& strURL)
   int iPos = strURL.Find("://");
   if (iPos < 0)
   {
+    // This is an ugly hack that needs some work.
+    // example: filename /foo/bar.zip/alice.rar/bob.avi
+    // This should turn into zip://rar:///foo/bar.zip/alice.rar/bob.avi
+    iPos = 0;
+    while (1)
+    {
+      iPos = strURL.Find(".zip/", iPos);
+      int extLen = 3;
+      if (iPos < 0)
+      {
 #ifndef _LINUX
-    // check for misconstructed protocols
-    iPos = strURL.Find(":");
-    if (iPos == strURL.GetLength() - 1)
-    {
-      m_strProtocol = strURL.Left(iPos);
-      iPos += 1;
-    }
-    else
-    {
-      //CLog::Log(LOGDEBUG, "%s - Url has no protocol %s, empty CURL created", __FUNCTION__, strURL.c_str());
-      return;
-    }
+        // check for misconstructed protocols
+        iPos = strURL.Find(":");
+        if (iPos == strURL.GetLength() - 1)
+        {
+          m_strProtocol = strURL.Left(iPos);
+          iPos += 1;
+          break;
+        }
+        else
+        {
+          //CLog::Log(LOGDEBUG, "%s - Url has no protocol %s, empty CURL created", __FUNCTION__, strURL.c_str());
+          return;
+        }
 #else
-    {
-      /* set filename and update extension*/
-      SetFileName(strURL);
-      return ;
-    }
+        {
+          /* set filename and update extension*/
+          SetFileName(strURL);
+          return ;
+        }
 #endif
+      }
+      iPos += extLen + 1;
+      CStdString archiveName = strURL.Left(iPos);
+      struct __stat64 s;
+      if (XFILE::CFile::Stat(archiveName, &s) == 0)
+      {
+#ifdef _LINUX
+        if (!S_ISDIR(s.st_mode))
+#else
+        if (!(s.st_mode & S_IFDIR))
+#endif
+        {
+          CUtil::URLEncode(archiveName);
+          CURL c((CStdString)"zip" + "://" + archiveName + '/' + strURL.Right(strURL.size() - iPos - 1));
+          *this = c;
+          return;
+        }
+      }
+    }
   }
   else
   {
