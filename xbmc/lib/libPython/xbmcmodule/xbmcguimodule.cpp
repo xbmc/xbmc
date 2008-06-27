@@ -20,12 +20,9 @@
  */
 
 #include "stdafx.h"
-#ifndef _LINUX
-#include "lib/libPython/python/Python.h"
-#include "lib/libPython/python/structmember.h"
-#else
-#include <python2.4/Python.h>
-#include <python2.4/structmember.h>
+#include "lib/libPython/Python/Include/Python.h"
+#include "lib/libPython/Python/Include/structmember.h"
+#ifdef _LINUX
 #include "../XBPythonDll.h"
 #endif
 #include "control.h"

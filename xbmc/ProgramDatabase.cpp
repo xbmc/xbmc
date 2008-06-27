@@ -528,7 +528,7 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
     __int64 iSize=0;
     if (bIsShare || !item->IsDefaultXBE())
     {
-      __stat64 stat;
+      struct __stat64 stat;
       if (CFile::Stat(item->m_strPath,&stat) == 0)
         iSize = stat.st_size;
     }

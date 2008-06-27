@@ -23,10 +23,8 @@
 #include "PlayListPlayer.h"
 #include "Util.h"
 #include "pyplaylist.h"
-#ifndef _LINUX
-#include "lib/libPython/python/structmember.h"
-#else
-#include <python2.4/structmember.h>
+#include "lib/libPython/Python/Include/structmember.h"
+#ifdef _LINUX
 #include "../XBPythonDll.h"
 #endif
 #include "../../../PlayListFactory.h"

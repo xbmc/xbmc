@@ -67,7 +67,7 @@ bool CZipManager::HasMultipleEntries(const CStdString& strPath)
 bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& items)
 {
   CURL url(strPath);
-  __stat64 m_StatData;
+  struct __stat64 m_StatData;
 
   CStdString strFile = url.GetHostName();
  
@@ -79,13 +79,9 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
 #ifndef _LINUX
       CLog::Log(LOGDEBUG,"statdata: %i, new: %i",it2->second,m_StatData.st_mtime);
 #else
-      CLog::Log(LOGDEBUG,"statdata: %llu new: %llu",it2->second,m_StatData._st_mtime);
+      CLog::Log(LOGDEBUG,"statdata: %llu new: %llu",it2->second,m_StatData.st_mtime);
 #endif
-#ifndef _LINUX
       if (m_StatData.st_mtime == it2->second)
-#else
-      if (m_StatData._st_mtime == it2->second)
-#endif
       {
         items = it->second;
         return true;
@@ -113,11 +109,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
   }
   // push date for update detection
   CFile::Stat(strFile,&m_StatData);
-#ifndef _LINUX
   mZipDate.insert(std::make_pair<CStdString,__int64>(strFile,m_StatData.st_mtime));
-#else
-  mZipDate.insert(std::make_pair<CStdString,__int64>(strFile,m_StatData._st_mtime));
-#endif
   
   // now list'em
   mFile.Seek(0,SEEK_SET);
