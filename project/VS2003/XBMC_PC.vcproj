@@ -1929,6 +1929,12 @@
 					RelativePath="..\..\xbmc\utils\MusicInfoScraper.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\Mutex.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\Mutex.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\NfoFile.cpp">
 				</File>
 				<File
@@ -2011,9 +2017,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\ThumbnailCache.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\Trainer.cpp">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\TuxBoxUtil.cpp">
@@ -2235,12 +2238,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogSubMenu.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogTrainerSettings.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogTrainerSettings.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogVideoBookmarks.cpp">
