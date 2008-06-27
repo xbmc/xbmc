@@ -23,6 +23,8 @@
 #ifndef __EMU_FILE_WRAPPER_H__
 #define __EMU_FILE_WRAPPER_H__
 
+class CMutex;
+
 #if defined(_LINUX) && !defined(__APPLE__)
 #define _file _fileno
 #endif
