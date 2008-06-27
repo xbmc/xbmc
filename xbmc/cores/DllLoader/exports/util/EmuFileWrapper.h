@@ -35,6 +35,7 @@ typedef struct stEmuFileObject
   bool    used;
   FILE    file_emu;
   XFILE::CFile*  file_xbmc;
+  CMutex *file_lock;
 } EmuFileObject;
   
 class CEmuFileWrapper
@@ -51,6 +52,9 @@ public:
   EmuFileObject* RegisterFileObject(XFILE::CFile* pFile);
   void UnRegisterFileObjectByDescriptor(int fd);
   void UnRegisterFileObjectByStream(FILE* stream);
+  void LockFileObjectByDescriptor(int fd);
+  bool TryLockFileObjectByDescriptor(int fd);
+  void UnlockFileObjectByDescriptor(int fd);
   EmuFileObject* GetFileObjectByDescriptor(int fd);  
   EmuFileObject* GetFileObjectByStream(FILE* stream);  
   XFILE::CFile* GetFileXbmcByDescriptor(int fd);

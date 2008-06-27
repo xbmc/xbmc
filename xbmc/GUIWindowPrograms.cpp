@@ -656,7 +656,7 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
         if (!cut.m_strLabel.IsEmpty())
         {
           item->SetLabel(cut.m_strLabel);
-          __stat64 stat;
+          struct __stat64 stat;
           if (CFile::Stat(item->m_strPath,&stat) == 0)
             item->m_dwSize = stat.st_size;
 

@@ -22,11 +22,7 @@
 #ifndef XBPYTHREAD_H_
 #define XBPYTHREAD_H_
 
-#ifndef _LINUX
-#include "python/Python.h"
-#else
-#include <python2.4/Python.h>
-#endif
+#include "Python/Include/Python.h"
 #include "utils/Thread.h"
 
 class XBPython;
