@@ -27,6 +27,8 @@
 #include <sys/stat.h>
 #ifdef _LINUX
 #include <sys/ioctl.h>
+#else
+#include <io.h>
 #endif
 
 using namespace XFILE;
@@ -97,7 +99,15 @@ bool CFileHD::Exists(const CURL& url)
 
 int CFileHD::Stat(struct __stat64* buffer)
 {
-  return _fstat64((*m_hFile).fd, buffer);
+  int fd;
+#ifdef _LINUX
+  fd = m_hFile->fd;
+#else
+  fd = _open_osfhandle((intptr_t)((HANDLE)m_hFile), 0);
+  if (fd == -1)
+    CLog::Log(LOGERROR, "Stat: fd == -1");
+#endif
+  return _fstat64(fd, buffer);
 }
 
 int CFileHD::Stat(const CURL& url, struct __stat64* buffer)

@@ -217,22 +217,6 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 /*  All windows compilers that use this header support __declspec */
 #define HAVE_DECLSPEC_DLL
 
-/* For an MSVC DLL, we can nominate the .lib files used by extensions */
-#ifdef MS_COREDLL
-#	ifndef Py_BUILD_CORE /* not building the core - must be an ext */
-#		if defined(_MSC_VER)
-			/* So MSVC users need not specify the .lib file in
-			their Makefile (other compilers are generally
-			taken care of by distutils.) */
-#			ifdef _DEBUG
-#				pragma comment(lib,"python24_d.lib")
-#			else
-#				pragma comment(lib,"python24.lib")
-#			endif /* _DEBUG */
-#		endif /* _MSC_VER */
-#	endif /* Py_BUILD_CORE */
-#endif /* MS_COREDLL */
-
 #if defined(MS_WIN64)
 /* maintain "win32" sys.platform for backward compatibility of Python code,
    the Win64 API should be close enough to the Win32 API to make this
@@ -258,11 +242,6 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 #	define SIZEOF_FPOS_T 8
 #	define SIZEOF_HKEY 4
 #endif
-
-#ifdef _DEBUG
-#	define Py_DEBUG
-#endif
-
 
 #ifdef MS_WIN32
 
