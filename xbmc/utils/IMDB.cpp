@@ -57,7 +57,7 @@ CIMDB::~CIMDB()
 {
 }
 
-bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movielist)
+bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movielist, const CStdString& strFunction, CScraperUrl* pUrl)
 {
   // load our scraper xml
   if (!m_parser.Load("Q:\\system\\scrapers\\video\\"+m_info.strPath))
@@ -66,33 +66,43 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   movielist.clear();
   CScraperParser::ClearCache();
 
-  CStdString strHTML, strYear;
+  CStdString strYear;
   CScraperUrl scrURL;
 
-  if (m_parser.HasFunction("CreateSearchUrl"))
+  if (!pUrl)
   {
-    GetURL(strMovie, scrURL, strYear);
-  }
-  else if (m_info.strContent.Equals("musicvideos"))
-  {
+    if (m_parser.HasFunction("CreateSearchUrl"))
+    {
+      GetURL(strMovie, scrURL, strYear);
+    }
+    else if (m_info.strContent.Equals("musicvideos"))
+    {
     if (!m_parser.HasFunction("FileNameScrape"))
-      return false;
+       return false;
 
-    CScraperUrl scrURL("filenamescrape");
-    scrURL.strTitle = strMovie;
-    movielist.push_back(scrURL);
-    return true;
+      CScraperUrl scrURL("filenamescrape");
+      scrURL.strTitle = strMovie;
+      movielist.push_back(scrURL);
+      return true;
+    }
   }
-
-  if (!CScraperUrl::Get(scrURL.m_url[0], strHTML, m_http) || strHTML.size() == 0)
+  else
+    scrURL = *pUrl;  
+  
+  std::vector<CStdString> strHTML;
+  for (unsigned int i=0;i<scrURL.m_url.size();++i)
   {
-    CLog::Log(LOGERROR, "%s: Unable to retrieve web site",__FUNCTION__);
-    return false;
+    CStdString strCurrHTML;
+    if (!CScraperUrl::Get(scrURL.m_url[i],strCurrHTML,m_http) || strCurrHTML.size() == 0)
+      return false;
+    strHTML.push_back(strCurrHTML);
   }
 
-  m_parser.m_param[0] = strHTML;
-  m_parser.m_param[1] = scrURL.m_url[0].m_url;
-  CStdString strXML = m_parser.Parse("GetSearchResults",&m_info.settings);
+  // now grab our details using the scraper
+  for (unsigned int i=0;i<strHTML.size();++i)
+    m_parser.m_param[i] = strHTML[i];
+  m_parser.m_param[strHTML.size()] = scrURL.m_url[0].m_url;
+  CStdString strXML = m_parser.Parse(strFunction,&m_info.settings);
   if (strXML.IsEmpty())
   {
     CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
@@ -110,7 +120,21 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
     return false;
   }
+ 
   TiXmlHandle docHandle( &doc );
+
+  TiXmlElement* xurl = doc.RootElement()->FirstChildElement("url");
+  while (xurl && xurl->FirstChild())
+  {
+    const char* szFunction = xurl->Attribute("function");
+    if (szFunction)
+    {
+      CScraperUrl scrURL(xurl);
+      InternalFindMovie(strMovie,movielist,szFunction,&scrURL);
+    }
+    xurl = xurl->NextSiblingElement("url");
+  }
+
   TiXmlElement *movie = docHandle.FirstChild( "results" ).FirstChild( "entity" ).Element();
   if (!movie)
     return false;
