@@ -415,7 +415,8 @@ void XBPython::Process()
   if (bStartup)
   {
     bStartup = false;
-    evalFile("Q:\\scripts\\autoexec.py");
+    if (evalFile("U:\\scripts\\autoexec.py") < 0)
+      evalFile("Q:\\scripts\\autoexec.py");
   }
 
   if (bLogin)
