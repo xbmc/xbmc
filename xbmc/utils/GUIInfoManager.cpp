@@ -39,10 +39,6 @@
 #include "utils/LCD.h"
 #endif
 #include "GUIPassword.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "FanController.h"
-#include "xbox/XKHDD.h"
-#endif
 #include "SystemInfo.h"
 #include "GUIButtonScroller.h"
 #include "GUIInfoManager.h"
@@ -59,9 +55,6 @@
 #include "TuxBoxUtil.h"
 
 // stuff for current song
-#if defined(HAS_FILESYSTEM) && defined(HAS_XBOX_HARDWARE)
-#include "FileSystem/SndtrkDirectory.h"
-#endif
 #include "musicInfoTagLoaderFactory.h"
 #include "MusicInfoLoader.h"
 #include "LabelFormatter.h"
@@ -336,7 +329,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.screenheight")) ret = SYSTEM_SCREEN_HEIGHT;
     else if (strTest.Equals("system.currentwindow")) ret = SYSTEM_CURRENT_WINDOW;
     else if (strTest.Equals("system.currentcontrol")) ret = SYSTEM_CURRENT_CONTROL;
-    else if (strTest.Equals("system.xboxnickname")) ret = SYSTEM_XBOX_NICKNAME;
     else if (strTest.Equals("system.dvdlabel")) ret = SYSTEM_DVD_LABEL;
     else if (strTest.Equals("system.haslocks")) ret = SYSTEM_HASLOCKS;
     else if (strTest.Equals("system.hasloginscreen")) ret = SYSTEM_HAS_LOGINSCREEN;
@@ -345,41 +337,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.loggedon")) ret = SYSTEM_LOGGEDON;
     else if (strTest.Equals("system.hasdrivef")) ret = SYSTEM_HAS_DRIVE_F;
     else if (strTest.Equals("system.hasdriveg")) ret = SYSTEM_HAS_DRIVE_G;
-    else if (strTest.Equals("system.hddtemperature")) ret = SYSTEM_HDD_TEMPERATURE;
-    else if (strTest.Equals("system.hddinfomodel")) ret = SYSTEM_HDD_MODEL;
-    else if (strTest.Equals("system.hddinfofirmware")) ret = SYSTEM_HDD_FIRMWARE;
-    else if (strTest.Equals("system.hddinfoserial")) ret = SYSTEM_HDD_SERIAL;
-    else if (strTest.Equals("system.hddinfopw")) ret = SYSTEM_HDD_PASSWORD;
-    else if (strTest.Equals("system.hddinfolockstate")) ret = SYSTEM_HDD_LOCKSTATE;
-    else if (strTest.Equals("system.hddlockkey")) ret = SYSTEM_HDD_LOCKKEY;
-    else if (strTest.Equals("system.hddbootdate")) ret = SYSTEM_HDD_BOOTDATE;
-    else if (strTest.Equals("system.hddcyclecount")) ret = SYSTEM_HDD_CYCLECOUNT;
-    else if (strTest.Equals("system.dvdinfomodel")) ret = SYSTEM_DVD_MODEL;
-    else if (strTest.Equals("system.dvdinfofirmware")) ret = SYSTEM_DVD_FIRMWARE;
-    else if (strTest.Equals("system.mplayerversion")) ret = SYSTEM_MPLAYER_VERSION;
     else if (strTest.Equals("system.kernelversion")) ret = SYSTEM_KERNEL_VERSION;
     else if (strTest.Equals("system.uptime")) ret = SYSTEM_UPTIME;
     else if (strTest.Equals("system.totaluptime")) ret = SYSTEM_TOTALUPTIME;
     else if (strTest.Equals("system.cpufrequency")) ret = SYSTEM_CPUFREQUENCY;
-    else if (strTest.Equals("system.xboxversion")) ret = SYSTEM_XBOX_VERSION;
-    else if (strTest.Equals("system.avpackinfo")) ret = SYSTEM_AV_PACK_INFO;
     else if (strTest.Equals("system.screenresolution")) ret = SYSTEM_SCREEN_RESOLUTION;
     else if (strTest.Equals("system.videoencoderinfo")) ret = SYSTEM_VIDEO_ENCODER_INFO;
-    else if (strTest.Equals("system.xboxproduceinfo")) ret = SYSTEM_XBOX_PRODUCE_INFO;
-    else if (strTest.Equals("system.xboxserial")) ret = SYSTEM_XBOX_SERIAL;
-    else if (strTest.Equals("system.xberegion")) ret = SYSTEM_XBE_REGION;
-    else if (strTest.Equals("system.dvdzone")) ret = SYSTEM_DVD_ZONE;
-    else if (strTest.Equals("system.bios")) ret = SYSTEM_XBOX_BIOS;
-    else if (strTest.Equals("system.modchip")) ret = SYSTEM_XBOX_MODCHIP;
-    else if (strTest.Left(22).Equals("system.controllerport("))
-    {
-      int i_ControllerPort = atoi((strTest.Mid(22, strTest.GetLength() - 23).c_str()));
-      if (i_ControllerPort == 1) ret = SYSTEM_CONTROLLER_PORT_1;
-      else if (i_ControllerPort == 2) ret = SYSTEM_CONTROLLER_PORT_2;
-      else if (i_ControllerPort == 3) ret = SYSTEM_CONTROLLER_PORT_3;
-      else if (i_ControllerPort == 4)ret = SYSTEM_CONTROLLER_PORT_4;
-      else ret = SYSTEM_CONTROLLER_PORT_1;
-    }
     else if (strTest.Left(16).Equals("system.idletime("))
     {
       int time = atoi((strTest.Mid(16, strTest.GetLength() - 17).c_str()));
@@ -393,7 +356,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.alarmpos")) ret = SYSTEM_ALARM_POS;
     else if (strTest.Equals("system.profilename")) ret = SYSTEM_PROFILENAME;
     else if (strTest.Equals("system.profilethumb")) ret = SYSTEM_PROFILETHUMB;
-    else if (strTest.Equals("system.launchxbe")) ret = SYSTEM_LAUNCHING_XBE;
     else if (strTest.Equals("system.progressbar")) ret = SYSTEM_PROGRESS_BAR;
     else if (strTest.Equals("system.platform.linux")) ret = SYSTEM_PLATFORM_LINUX;
     else if (strTest.Equals("system.platform.xbox")) ret = SYSTEM_PLATFORM_XBOX;
@@ -914,9 +876,6 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case SYSTEM_DATE:
     strLabel = GetDate();
     break;
-  case SYSTEM_LAUNCHING_XBE:
-    strLabel = m_launchingXBE;
-    break;
   case LCD_DATE:
     strLabel = GetDate(true);
     break;
@@ -1046,12 +1005,6 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     return g_sysinfo.GetHddSpaceInfo(info, true);
     break;
 
-#ifdef HAS_XBOX_HARDWARE
-  case SYSTEM_DVD_TRAY_STATE:
-    return g_sysinfo.GetTrayState();
-    break;
-#endif
-
   case SYSTEM_CPU_TEMPERATURE:
   case SYSTEM_GPU_TEMPERATURE:
   case SYSTEM_FAN_SPEED:
@@ -1062,29 +1015,6 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     return GetSystemHeatInfo(info);
     break;
 
-#ifdef HAS_XBOX_HARDWARE
-  case LCD_HDD_TEMPERATURE:
-  case SYSTEM_HDD_MODEL:
-  case SYSTEM_HDD_SERIAL:
-  case SYSTEM_HDD_FIRMWARE:
-  case SYSTEM_HDD_PASSWORD:
-  case SYSTEM_HDD_LOCKSTATE:
-  case SYSTEM_DVD_MODEL:
-  case SYSTEM_DVD_FIRMWARE:
-  case SYSTEM_HDD_TEMPERATURE:
-  case SYSTEM_XBOX_MODCHIP:
-  case SYSTEM_AV_PACK_INFO:
-  case SYSTEM_XBOX_SERIAL:
-  case SYSTEM_XBE_REGION:
-  case SYSTEM_DVD_ZONE:
-  case SYSTEM_XBOX_PRODUCE_INFO:
-  case SYSTEM_XBOX_BIOS:
-  case SYSTEM_HDD_LOCKKEY:
-  case SYSTEM_HDD_CYCLECOUNT:
-  case SYSTEM_HDD_BOOTDATE:
-  case SYSTEM_MPLAYER_VERSION:
-#endif
-  case SYSTEM_XBOX_VERSION:
   case SYSTEM_VIDEO_ENCODER_INFO:
   case NETWORK_MAC_ADDRESS:
   case SYSTEM_KERNEL_VERSION:
@@ -1102,20 +1032,6 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode,GetFPS());
     return strLabel;
     break;
-#ifdef HAS_XBOX_HARDWARE
-  case SYSTEM_CONTROLLER_PORT_1:
-    return g_sysinfo.GetUnits(1);
-    break;
-  case SYSTEM_CONTROLLER_PORT_2:
-    return g_sysinfo.GetUnits(2);
-    break;
-  case SYSTEM_CONTROLLER_PORT_3:
-    return g_sysinfo.GetUnits(3);
-    break;
-  case SYSTEM_CONTROLLER_PORT_4:
-    return g_sysinfo.GetUnits(4);
-    break;
-#endif
 
   case CONTAINER_FOLDERPATH:
     {
@@ -1366,45 +1282,14 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case NETWORK_DHCP_ADDRESS:
     {
       CStdString dhcpserver;
-#ifdef HAS_XBOX_HARDWARE
-      dhcpserver.Format("%s: %s", g_localizeStrings.Get(20308), g_application.getNetwork().m_networkinfo.dhcpserver);
-#endif
       return dhcpserver;
     }
     break;
-#ifdef HAS_XBOX_HARDWARE
-  case NETWORK_IS_DHCP:
-    {
-      CStdString dhcp;
-      CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
-      if(g_application.getNetwork().m_networkinfo.DHCP)
-        dhcp.Format("%s %s", g_localizeStrings.Get(146), g_localizeStrings.Get(148)); // is dhcp ip
-      else
-        dhcp.Format("%s %s", g_localizeStrings.Get(146), g_localizeStrings.Get(147)); // is fixed ip
-     return dhcp;
-    }
-    break;
-#endif
   case NETWORK_LINK_STATE:
     {
       CStdString linkStatus = g_localizeStrings.Get(151);
       linkStatus += " ";
-#ifdef HAS_XBOX_HARDWARE
-      DWORD dwnetstatus = XNetGetEthernetLinkStatus();
-      if (dwnetstatus & XNET_ETHERNET_LINK_ACTIVE)
-      {
-        if (dwnetstatus & XNET_ETHERNET_LINK_100MBPS)
-          linkStatus += "100mbps ";
-        if (dwnetstatus & XNET_ETHERNET_LINK_10MBPS)
-          linkStatus += "10mbps ";
-        if (dwnetstatus & XNET_ETHERNET_LINK_FULL_DUPLEX)
-          linkStatus += g_localizeStrings.Get(153);
-        if (dwnetstatus & XNET_ETHERNET_LINK_HALF_DUPLEX)
-          linkStatus += g_localizeStrings.Get(152);
-      }
-      else
-        linkStatus += g_localizeStrings.Get(159);
-#elif defined(HAS_LINUX_NETWORK)
+#if defined(HAS_LINUX_NETWORK)
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface && iface->IsConnected())
         linkStatus += g_localizeStrings.Get(15207);
@@ -1530,16 +1415,6 @@ int CGUIInfoManager::GetInt(int info, DWORD contextWindow) const
         if (bar && bar->IsDialogRunning())
           return bar->GetPercentage();
       }
-#ifdef HAS_XBOX_HARDWARE
-    case SYSTEM_HDD_TEMPERATURE:
-      return atoi(g_sysinfo.GetInfo(LCD_HDD_TEMPERATURE));
-    case SYSTEM_CPU_TEMPERATURE:
-      return atoi(CFanController::Instance()->GetCPUTemp().ToString());
-    case SYSTEM_GPU_TEMPERATURE:
-      return atoi(CFanController::Instance()->GetGPUTemp().ToString());
-    case SYSTEM_FAN_SPEED:
-      return CFanController::Instance()->GetFanSpeed() * 2;
-#endif
     case SYSTEM_FREE_SPACE:
     case SYSTEM_FREE_SPACE_C:
     case SYSTEM_FREE_SPACE_E:
@@ -1593,11 +1468,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   else if (condition == SYSTEM_ALWAYS_FALSE)
     bReturn = false;
   else if (condition == SYSTEM_ETHERNET_LINK_ACTIVE)
-#ifdef HAS_XBOX_NETWORK
-    bReturn = (XNetGetEthernetLinkStatus() & XNET_ETHERNET_LINK_ACTIVE);
-#else
     bReturn = true;
-#endif
   else if (condition > SYSTEM_IDLE_TIME_START && condition <= SYSTEM_IDLE_TIME_FINISH)
     bReturn = (g_application.GlobalIdleTime() >= condition - SYSTEM_IDLE_TIME_START);
   else if (condition == WINDOW_IS_MEDIA)
@@ -1656,21 +1527,11 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     bReturn = false;
 #endif
   else if (condition == SYSTEM_PLATFORM_XBOX)
-#ifdef HAS_XBOX_HARDWARE
-    bReturn = true;
-#else
     bReturn = false;
-#endif
   else if (condition == SYSTEM_PLATFORM_LINUX)
     bReturn = false;
   else if (condition == SYSTEM_PLATFORM_WINDOWS)
 #ifdef WIN32
-    bReturn = true;
-#else
-    bReturn = false;
-#endif
-  else if (condition == SYSTEM_PLATFORM_XBOX)
-#ifdef HAS_XBOX_HARDWARE
     bReturn = true;
 #else
     bReturn = false;
@@ -3043,13 +2904,6 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
     if (!tag.GetTitle().size())
     {
       // No title in tag, show filename only
-#if defined(HAS_FILESYSTEM) && defined(HAS_XBOX_HARDWARE)
-      CSndtrkDirectory dir;
-      char NameOfSong[64];
-      if (dir.FindTrackName(m_currentFile->m_strPath, NameOfSong))
-        tag.SetTitle(NameOfSong);
-      else
-#endif
         tag.SetTitle( CUtil::GetTitleFromPath(m_currentFile->m_strPath) );
     }
   } // if (tag.Loaded())
@@ -3173,11 +3027,7 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
   if (timeGetTime() - m_lastSysHeatInfoTime >= 1000)
   { // update our variables
     m_lastSysHeatInfoTime = timeGetTime();
-#ifdef HAS_XBOX_HARDWARE
-    m_fanSpeed = CFanController::Instance()->GetFanSpeed();
-    m_gpuTemp = CFanController::Instance()->GetGPUTemp();
-    m_cpuTemp = CFanController::Instance()->GetCPUTemp();
-#elif defined(_LINUX)
+#if defined(_LINUX)
     m_cpuTemp = g_cpuInfo.getTemperature();
 #endif
   }
