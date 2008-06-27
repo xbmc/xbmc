@@ -168,7 +168,7 @@ PyAPI_FUNC(int) _Py_Mangle(char *p, char *name, \
 #define PyDoc_STR(str) ""
 #endif
 
-#ifdef _WIN32 || _WIN64
+#if defined(_WIN32) || defined(_WIN64)
 #include "../../XBPythonDll.h"
 #endif
 
