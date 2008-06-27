@@ -20,10 +20,8 @@
  */
 
 #include "stdafx.h"
-#ifndef _LINUX
-#include "lib/libPython/python/Python.h"
-#else
-#include <python2.4/Python.h>
+#include "lib/libPython/Python/Include/Python.h"
+#ifdef _LINUX
 #include "../XBPythonDll.h"
 #endif
 #include "GUITextBox.h"

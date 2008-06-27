@@ -252,6 +252,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
 
   if (fd == -1)
   {
+if (errno == 20)
     CLog::Log(LOGWARNING,"%s, error %d opening file <%s>, flags:%x, mode:%x. ", __FUNCTION__, errno, lpFileName, flags, mode);
     return INVALID_HANDLE_VALUE;
   }
@@ -633,28 +634,20 @@ BOOL FlushFileBuffers( HANDLE hFile ) {
   return (fsync(hFile->fd) == 0);
 }
 
+int _fstat64(int fd, struct __stat64 *buffer)
+{
+  if (buffer == NULL)
+    return -1;
+
+  return fstat64(fd, buffer);
+}
+
 int _stat64(   const char *path,   struct __stat64 *buffer ) {
 
   if (buffer == NULL || path == NULL)
     return -1;
 
-  struct stat64 buf;
-  if ( stat64(path, &buf) != 0 )
-    return -1;
-
-  buffer->st_dev = buf.st_dev;
-  buffer->st_ino = buf.st_ino;
-  buffer->st_mode = buf.st_mode;
-  buffer->st_nlink = buf.st_nlink;
-  buffer->st_uid = buf.st_uid;
-  buffer->st_gid = buf.st_gid;
-  buffer->st_rdev = buf.st_rdev;
-  buffer->st_size = buf.st_size;
-  buffer->_st_atime = buf.st_atime;
-  buffer->_st_mtime = buf.st_mtime;
-  buffer->_st_ctime = buf.st_ctime;
-
-  return 0;
+  return stat64(path, buffer);
 }
 
 DWORD  GetFileSize(HANDLE hFile, LPDWORD lpFileSizeHigh)

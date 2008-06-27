@@ -166,27 +166,10 @@ BOOL   FindClose(HANDLE hFindFile) {
 }
 
 int _stat64(   const char *path,   struct __stat64 *buffer ) {
-
   if (buffer == NULL || path == NULL)
     return -1;
 
-  struct stat64 buf;
-  if ( stat64(path, &buf) != 0 )
-    return -1;
-
-  buffer->st_dev = buf.st_dev;
-  buffer->st_ino = buf.st_ino;
-  buffer->st_mode = buf.st_mode;
-  buffer->st_nlink = buf.st_nlink;
-  buffer->st_uid = buf.st_uid;
-  buffer->st_gid = buf.st_gid;
-  buffer->st_rdev = buf.st_rdev;
-  buffer->st_size = buf.st_size;
-  buffer->_st_atime = buf.st_atime;
-  buffer->_st_mtime = buf.st_mtime;
-  buffer->_st_ctime = buf.st_ctime;
-
-  return 0;
+  return stat64(path, buffer);
 }
 
 DWORD  GetFileAttributes(LPCTSTR lpFileName)

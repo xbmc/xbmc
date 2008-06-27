@@ -50,7 +50,7 @@ static void MakeTlsKeys()
 #define xbp_cw_dir (char* )pthread_getspecific(tWorkingDir)
 
 #else
-__thread char xbp_cw_dir[MAX_PATH] = "Q:\\python";
+__thread char xbp_cw_dir[MAX_PATH] = "";
 #endif
 
 extern "C"

@@ -11,8 +11,12 @@ all : compile
 	$(MAKE) xbmc.bin
 	$(MAKE) xbmc-xrandr
 	$(MAKE) XBMCTex
+	$(MAKE) skin/Project\ Mayhem\ III/media/Textures.xpr
 
 .PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualizations screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients librtmp
+
+skin/Project\ Mayhem\ III/media/Textures.xpr:
+	 @tools/XBMCTex/XBMCTex -input "\"skin/Project Mayhem III/media\"" -output "\"skin/Project Mayhem III\media\Textures.xpr\""
 
 guilib: 
 	$(MAKE) -C guilib
@@ -116,7 +120,6 @@ install-datas: XBMCTex
 	@find system -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*@ARCH@.*" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@# PM3
 	@find skin -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.png|.*\.gif" -exec cp '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %f                            \r"
-	@tools/XBMCTex/XBMCTex -input "\"skin/Project Mayhem III/media\"" -output "\"$(prefix)/share/xbmc/skin/Project Mayhem III\media\Textures.xpr\""
 
 uninstall:
 	@echo "Removing XBMC..."

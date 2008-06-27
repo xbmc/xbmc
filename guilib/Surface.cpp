@@ -394,6 +394,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   int temp;
   GetGLVersion(temp, temp);
 #endif
+  LogGraphicsInfo();
 }
 #endif
 

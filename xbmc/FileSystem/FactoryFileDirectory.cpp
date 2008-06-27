@@ -157,7 +157,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
       if (token.Left(4).CompareNoCase("part") == 0) // only list '.part01.rar'
       {
         // need this crap to avoid making mistakes - yeyh for the new rar naming scheme :/
-        __stat64 stat;
+        struct __stat64 stat;
         int digits = token.size()-4;
         CStdString strNumber, strFormat;
         strFormat.Format("part%%0%ii",digits);
