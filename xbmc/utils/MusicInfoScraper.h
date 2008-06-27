@@ -25,6 +25,7 @@
 #include "MusicArtistInfo.h"
 #include "HTTP.h"
 #include "ScraperSettings.h"
+#include "Thread.h"
 
 namespace MUSIC_GRABBER
 {
