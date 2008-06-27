@@ -101,7 +101,7 @@ int CFileHD::Stat(struct __stat64* buffer)
 {
   int fd;
 #ifdef _LINUX
-  fd = m_hFile->fd;
+  fd = (*m_hFile).fd;
 #else
   fd = _open_osfhandle((intptr_t)((HANDLE)m_hFile), 0);
   if (fd == -1)
