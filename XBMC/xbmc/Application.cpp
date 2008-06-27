@@ -129,7 +129,6 @@
 #include "GUIWindowPictures.h"
 #include "GUIWindowScripts.h"
 #include "GUIWindowWeather.h"
-#include "GUIWindowGameSaves.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowVisualisation.h"
 #include "GUIWindowSystemInfo.h"
@@ -1284,7 +1283,6 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowVideoPlaylist);            // window id = 28
   m_gWindowManager.Add(new CGUIWindowLoginScreen);            // window id = 29
   m_gWindowManager.Add(new CGUIWindowSettingsProfile);          // window id = 34
-  m_gWindowManager.Add(new CGUIWindowGameSaves);               // window id = 35
   m_gWindowManager.Add(new CGUIDialogYesNo);              // window id = 100
   m_gWindowManager.Add(new CGUIDialogProgress);           // window id = 101
   m_gWindowManager.Add(new CGUIDialogKeyboard);           // window id = 103
@@ -3575,7 +3573,6 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_PROGRAMS);
     m_gWindowManager.Delete(WINDOW_PICTURES);
     m_gWindowManager.Delete(WINDOW_SCRIPTS);
-    m_gWindowManager.Delete(WINDOW_GAMESAVES);
     m_gWindowManager.Delete(WINDOW_WEATHER);
 
     m_gWindowManager.Delete(WINDOW_SETTINGS_MYPICTURES);

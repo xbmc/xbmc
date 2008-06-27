@@ -45,7 +45,6 @@
 		8863281E0E07B37200BB3DAB /* GUIViewStatePictures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 886328170E07B37200BB3DAB /* GUIViewStatePictures.cpp */; };
 		8863281F0E07B37200BB3DAB /* GUIViewStatePrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 886328190E07B37200BB3DAB /* GUIViewStatePrograms.cpp */; };
 		886328200E07B37200BB3DAB /* GUIViewStateScripts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8863281B0E07B37200BB3DAB /* GUIViewStateScripts.cpp */; };
-		886328230E07BE9E00BB3DAB /* GUIViewStateGameSaves.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 886328210E07BE9E00BB3DAB /* GUIViewStateGameSaves.cpp */; };
 		88632A330E0C44DE00BB3DAB /* RssFeed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88632A310E0C44DE00BB3DAB /* RssFeed.cpp */; };
 		8883CEA10DD817D1004E8B72 /* DVDOverlayCodecSSA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CE9E0DD817D1004E8B72 /* DVDOverlayCodecSSA.cpp */; };
 		8883CEA70DD81807004E8B72 /* DVDSubtitleParserSSA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CEA30DD81807004E8B72 /* DVDSubtitleParserSSA.cpp */; };
@@ -457,7 +456,6 @@
 		E38E20AC0D25F9FD00618676 /* GUIViewStateVideo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17FF0D25F9FA00618676 /* GUIViewStateVideo.cpp */; };
 		E38E20AE0D25F9FD00618676 /* GUIWindowFileManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18030D25F9FA00618676 /* GUIWindowFileManager.cpp */; };
 		E38E20AF0D25F9FD00618676 /* GUIWindowFullScreen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18050D25F9FA00618676 /* GUIWindowFullScreen.cpp */; };
-		E38E20B00D25F9FD00618676 /* GUIWindowGameSaves.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18070D25F9FA00618676 /* GUIWindowGameSaves.cpp */; };
 		E38E20B10D25F9FD00618676 /* GUIWindowHome.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18090D25F9FA00618676 /* GUIWindowHome.cpp */; };
 		E38E20B20D25F9FD00618676 /* GUIWindowLoginScreen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E180B0D25F9FA00618676 /* GUIWindowLoginScreen.cpp */; };
 		E38E20B30D25F9FD00618676 /* GUIWindowMusicBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E180D0D25F9FA00618676 /* GUIWindowMusicBase.cpp */; };
@@ -908,8 +906,6 @@
 		8863281A0E07B37200BB3DAB /* GUIViewStatePrograms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStatePrograms.h; sourceTree = "<group>"; };
 		8863281B0E07B37200BB3DAB /* GUIViewStateScripts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStateScripts.cpp; sourceTree = "<group>"; };
 		8863281C0E07B37200BB3DAB /* GUIViewStateScripts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStateScripts.h; sourceTree = "<group>"; };
-		886328210E07BE9E00BB3DAB /* GUIViewStateGameSaves.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStateGameSaves.cpp; sourceTree = "<group>"; };
-		886328220E07BE9E00BB3DAB /* GUIViewStateGameSaves.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStateGameSaves.h; sourceTree = "<group>"; };
 		88632A310E0C44DE00BB3DAB /* RssFeed.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RssFeed.cpp; sourceTree = "<group>"; };
 		88632A320E0C44DE00BB3DAB /* RssFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RssFeed.h; sourceTree = "<group>"; };
 		8883CE9E0DD817D1004E8B72 /* DVDOverlayCodecSSA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodecSSA.cpp; sourceTree = "<group>"; };
@@ -1875,8 +1871,6 @@
 		E38E18040D25F9FA00618676 /* GUIWindowFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowFileManager.h; sourceTree = "<group>"; };
 		E38E18050D25F9FA00618676 /* GUIWindowFullScreen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowFullScreen.cpp; sourceTree = "<group>"; };
 		E38E18060D25F9FA00618676 /* GUIWindowFullScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowFullScreen.h; sourceTree = "<group>"; };
-		E38E18070D25F9FA00618676 /* GUIWindowGameSaves.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowGameSaves.cpp; sourceTree = "<group>"; };
-		E38E18080D25F9FA00618676 /* GUIWindowGameSaves.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowGameSaves.h; sourceTree = "<group>"; };
 		E38E18090D25F9FA00618676 /* GUIWindowHome.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowHome.cpp; sourceTree = "<group>"; };
 		E38E180A0D25F9FA00618676 /* GUIWindowHome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowHome.h; sourceTree = "<group>"; };
 		E38E180B0D25F9FA00618676 /* GUIWindowLoginScreen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowLoginScreen.cpp; sourceTree = "<group>"; };
@@ -3305,8 +3299,6 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
-				886328210E07BE9E00BB3DAB /* GUIViewStateGameSaves.cpp */,
-				886328220E07BE9E00BB3DAB /* GUIViewStateGameSaves.h */,
 				886328150E07B37200BB3DAB /* GUIDialogFullScreenInfo.cpp */,
 				886328160E07B37200BB3DAB /* GUIDialogFullScreenInfo.h */,
 				886328170E07B37200BB3DAB /* GUIViewStatePictures.cpp */,
@@ -3481,8 +3473,6 @@
 				E38E18040D25F9FA00618676 /* GUIWindowFileManager.h */,
 				E38E18050D25F9FA00618676 /* GUIWindowFullScreen.cpp */,
 				E38E18060D25F9FA00618676 /* GUIWindowFullScreen.h */,
-				E38E18070D25F9FA00618676 /* GUIWindowGameSaves.cpp */,
-				E38E18080D25F9FA00618676 /* GUIWindowGameSaves.h */,
 				E38E18090D25F9FA00618676 /* GUIWindowHome.cpp */,
 				E38E180A0D25F9FA00618676 /* GUIWindowHome.h */,
 				E38E180B0D25F9FA00618676 /* GUIWindowLoginScreen.cpp */,
@@ -6412,7 +6402,6 @@
 				E38E20AC0D25F9FD00618676 /* GUIViewStateVideo.cpp in Sources */,
 				E38E20AE0D25F9FD00618676 /* GUIWindowFileManager.cpp in Sources */,
 				E38E20AF0D25F9FD00618676 /* GUIWindowFullScreen.cpp in Sources */,
-				E38E20B00D25F9FD00618676 /* GUIWindowGameSaves.cpp in Sources */,
 				E38E20B10D25F9FD00618676 /* GUIWindowHome.cpp in Sources */,
 				E38E20B20D25F9FD00618676 /* GUIWindowLoginScreen.cpp in Sources */,
 				E38E20B30D25F9FD00618676 /* GUIWindowMusicBase.cpp in Sources */,
@@ -6814,7 +6803,6 @@
 				8863281E0E07B37200BB3DAB /* GUIViewStatePictures.cpp in Sources */,
 				8863281F0E07B37200BB3DAB /* GUIViewStatePrograms.cpp in Sources */,
 				886328200E07B37200BB3DAB /* GUIViewStateScripts.cpp in Sources */,
-				886328230E07BE9E00BB3DAB /* GUIViewStateGameSaves.cpp in Sources */,
 				88632A330E0C44DE00BB3DAB /* RssFeed.cpp in Sources */,
 				889B4D8E0E0EF86C00FAD25E /* RSSDirectory.cpp in Sources */,
 			);
