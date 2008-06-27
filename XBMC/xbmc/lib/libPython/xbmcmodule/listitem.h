@@ -1,7 +1,3 @@
-#ifndef _LINUX
-#else
-#include <python2.4/Python.h>
-#endif
 #pragma once
 
 /*
@@ -25,7 +21,7 @@
  *
  */
  
-#include "lib/libPython/python/Python.h"
+#include "lib/libPython/Python/Include/Python.h"
 #include "FileItem.h"
 
 #define ListItem_Check(op) PyObject_TypeCheck(op, &ListItem_Type)

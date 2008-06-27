@@ -52,7 +52,7 @@
 #include <SDL/SDL_mutex.h>
 #endif
 
-#include "stdint.h"
+#include <stdint.h>
 
 #ifndef PRId64
 #ifdef _MSC_VER
@@ -290,19 +290,7 @@ typedef int (*LPTHREAD_START_ROUTINE)(void *);
 #define _O_WRONLY O_WRONLY
 #define _off_t off_t
 
-struct __stat64 {
-  dev_t        st_dev;
-  ino_t         st_ino;
-  mode_t      st_mode;
-  nlink_t        st_nlink;
-  uid_t          st_uid;
-  gid_t          st_gid;
-  dev_t       st_rdev;
-  __int64 st_size;
-  __time64_t _st_atime;
-  __time64_t _st_mtime;
-  __time64_t _st_ctime;
-};
+#define __stat64 stat64
 
 struct _stati64 {
   dev_t st_dev;

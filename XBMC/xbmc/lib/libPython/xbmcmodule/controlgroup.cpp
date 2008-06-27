@@ -20,11 +20,7 @@
  */
 
 #include "stdafx.h"
-#ifndef _LINUX
-#include "lib/libPython/python/Python.h"
-#else
-#include <python2.4/Python.h>
-#endif
+#include "lib/libPython/Python/Include/Python.h"
 #include "GUIControlGroup.h"
 #include "GUIFontManager.h"
 #include "control.h"

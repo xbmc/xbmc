@@ -283,11 +283,7 @@ int CFileZip::Stat(const CURL& url, struct __stat64* buffer)
     return -1;
 
   buffer->st_gid = 0;
-#ifndef _LINUX
   buffer->st_atime = buffer->st_ctime = mZipItem.mod_time;
-#else
-  buffer->_st_atime = buffer->_st_ctime = mZipItem.mod_time;
-#endif
   buffer->st_size = mZipItem.usize;
   return -1;
 }

@@ -91,12 +91,12 @@ SITEPATH=
 TESTPATH=
 
 # Path components for machine- or system-dependent modules and shared libraries
-MACHDEPPATH=:plat-$(MACHDEP)
+MACHDEPPATH=;plat-$(MACHDEP)
 EXTRAMACHDEPPATH=
 
 # Path component for the Tkinter-related modules
 # The TKPATH variable is always enabled, to save you the effort.
-TKPATH=:lib-tk
+TKPATH=;lib-tk
 
 COREPYTHONPATH=$(DESTPATH)$(SITEPATH)$(TESTPATH)$(MACHDEPPATH)$(EXTRAMACHDEPPATH)$(TKPATH)
 PYTHONPATH=$(COREPYTHONPATH)
