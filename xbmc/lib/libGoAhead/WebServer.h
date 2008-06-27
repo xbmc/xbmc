@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include "utils/Thread.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
