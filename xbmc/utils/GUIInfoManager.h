@@ -104,7 +104,6 @@ class CGUIListItem;
 
 #define SYSTEM_PROGRESS_BAR         107
 #define SYSTEM_LANGUAGE             108
-#define SYSTEM_LAUNCHING_XBE        109
 #define SYSTEM_TIME                 110
 #define SYSTEM_DATE                 111
 #define SYSTEM_CPU_TEMPERATURE      112
@@ -129,7 +128,6 @@ class CGUIListItem;
 #define SYSTEM_SCREEN_HEIGHT        134
 #define SYSTEM_CURRENT_WINDOW       135
 #define SYSTEM_CURRENT_CONTROL      136
-#define SYSTEM_XBOX_NICKNAME        137
 #define SYSTEM_DVD_LABEL            138
 #define SYSTEM_HAS_DRIVE_F          139
 #define SYSTEM_HASLOCKS             140
@@ -309,29 +307,12 @@ class CGUIListItem;
 #define SYSTEM_USED_MEMORY          647
 #define SYSTEM_FREE_MEMORY          648
 #define SYSTEM_FREE_MEMORY_PERCENT  649
-#define SYSTEM_DVD_MODEL            650
-#define SYSTEM_DVD_FIRMWARE         651
-#define SYSTEM_HDD_BOOTDATE         652
-#define SYSTEM_HDD_CYCLECOUNT       653
 #define SYSTEM_UPTIME               654
 #define SYSTEM_TOTALUPTIME          655
 #define SYSTEM_CPUFREQUENCY         656
-#define SYSTEM_XBOX_VERSION         657
-#define SYSTEM_AV_PACK_INFO         658
 #define SYSTEM_SCREEN_RESOLUTION    659
 #define SYSTEM_VIDEO_ENCODER_INFO   660
-#define SYSTEM_XBOX_SERIAL          661
-#define SYSTEM_CONTROLLER_PORT_1    662
-#define SYSTEM_CONTROLLER_PORT_2    663
-#define SYSTEM_CONTROLLER_PORT_3    664
-#define SYSTEM_CONTROLLER_PORT_4    665
-#define SYSTEM_MPLAYER_VERSION      666
 #define SYSTEM_KERNEL_VERSION       667
-#define SYSTEM_XBE_REGION           668
-#define SYSTEM_DVD_ZONE             669
-#define SYSTEM_XBOX_PRODUCE_INFO    670
-#define SYSTEM_XBOX_BIOS            671
-#define SYSTEM_XBOX_MODCHIP         672
 #define SYSTEM_USED_SPACE_X         673
 #define SYSTEM_FREE_SPACE_X         674
 #define SYSTEM_USED_SPACE_Y         675
@@ -585,7 +566,6 @@ public:
   // Called from tuxbox service thread to update current status
   void UpdateFromTuxBox();
 
-  void SetLaunchingXBEName(const CStdString &name) { m_launchingXBE = name; };
   void SetContainerMoving(int id, int direction) { m_containerMoves[id] = direction; };
 
 protected:
@@ -625,7 +605,6 @@ protected:
   unsigned int m_lastMusicBitrateTime;
   unsigned int m_MusicBitrate;
   CFileItem* m_currentSlide;
-  int i_SmartRequest;
 
   // fan stuff
   DWORD m_lastSysHeatInfoTime;
@@ -644,8 +623,6 @@ protected:
   float m_fps;
   unsigned int m_frameCounter;
   unsigned int m_lastFPSTime;
-
-  CStdString m_launchingXBE;
 
   std::map<int, int> m_containerMoves;  // direction of list moving
   int m_nextWindowID;
