@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: jutski (->7/2006) Mikko70 (1/2007->)-->
-<!--Date of translation: 27/5/2008-->
-<!--Finnish strings based on English strings version 13245-->
+<!--Translator: jutski (->7/2006) Mika Pirinen (1/2007->)-->
+<!--Date of translation: 27/6/2008-->
+<!--Finnish strings based on English strings version 13794-->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -773,25 +773,25 @@
   <string id="10005">Musiikki</string>
   <string id="10006">Videot</string>
   <string id="10007">Järjestelmän tiedot</string>
-  <string id="10008">Asetukset-&gt;Yleiset</string>
-  <string id="10009">Asetukset-&gt;Näyttö</string>
-  <string id="10010">Asetukset-&gt;Ulkoasu-&gt;Käyttöliittymän kalibrointi</string>
-  <string id="10011">Asetukset-&gt;Videot-&gt;Kuvaruudun kalibrointi</string>
-  <string id="10012">Asetukset-&gt;Kuvat</string>
-  <string id="10013">Asetukset-&gt;Ohjelmat</string>
-  <string id="10014">Asetukset-&gt;Sää</string>
-  <string id="10015">Asetukset-&gt;Musiikki</string>
-  <string id="10016">Asetukset-&gt;Järjestelmä</string>
-  <string id="10017">Asetukset-&gt;Videot</string>
-  <string id="10018">Asetukset-&gt;Verkko</string>
-  <string id="10019">Asetukset-&gt;Ulkoasu</string>
+  <string id="10008">Asetukset - Yleiset</string>
+  <string id="10009">Asetukset - Näyttö</string>
+  <string id="10010">Asetukset - Ulkoasu - Käyttöliittymän kalibrointi</string>
+  <string id="10011">Asetukset - Videot - Kuvaruudun kalibrointi</string>
+  <string id="10012">Asetukset - Kuvat</string>
+  <string id="10013">Asetukset - Ohjelmat</string>
+  <string id="10014">Asetukset - Sää</string>
+  <string id="10015">Asetukset - Musiikki</string>
+  <string id="10016">Asetukset - Järjestelmä</string>
+  <string id="10017">Asetukset - Videot</string>
+  <string id="10018">Asetukset - Verkko</string>
+  <string id="10019">Asetukset - Ulkoasu</string>
   <string id="10020">Skriptit</string>
   <string id="10021"></string>
   <string id="10022"></string>
   <string id="10023"></string>
   <string id="10025"></string>
   <string id="10028">Videot/Soittolista</string>
-  <string id="10034">Asetukset-&gt;Profiilit</string>
+  <string id="10034">Asetukset - Profiilit</string>
   
   <string id="10100">Kyllä/ei -dialogi</string>
   <string id="10101">Tila-dialogi</string>
@@ -1704,6 +1704,8 @@
   <string id="20415">Hae uusien sisältö</string>
   <string id="20416">Ensimmäinen esitys</string>
   <string id="20417">Käsikirjoittaja</string>
+  <string id="20418">Siivoa tiedostonimet</string>
+
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
@@ -1747,11 +1749,11 @@
   <string id="21383">Vierityspalkit käytössä</string>
   <string id="21384">Videokirjastossa piilota katsotut</string> 
   <string id="21385">Avaa</string> 
-  <string id="21386">Äänekkyyden asetukset</string>
+  <string id="21386">Äänekkyyden säädöt</string>
   <string id="21387">Nopea</string>
   <string id="21388">Hiljainen</string>
   <string id="21389">Omavalintainen tausta käytössä</string>
-  <string id="21390">Sähkönkulutuksen asetukset</string>
+  <string id="21390">Energiatehokkuuden säädöt</string>
   <string id="21391">Normaalitila</string>
   <string id="21392">Tehonsäästötila</string>
   <string id="21393">Normaali valmiustila</string>
@@ -1888,3 +1890,4 @@
   <!-- strings 31000 thru 31999 reserved for skins -->
 
 </strings>
+ 	  	 

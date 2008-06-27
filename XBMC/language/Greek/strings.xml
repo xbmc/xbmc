@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 06/06/2008-->
+<!--Date of translation: 06/27/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 13245-->
+<!--Based on english strings version 13794-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -588,7 +588,7 @@
   <string id="732">Σώσε &amp; Εφαρμογή</string>
   <string id="733">Συνθηματικό Διακομιστή Web</string>
   <string id="734">Χωρίς Συνθηματικό</string>
-  <string id="735">- Σετ Χαρακτήρων</string>
+  <string id="735">- Κωδικοποίηση Χαρακτήρων</string>
   <string id="736">- Στυλ</string>
   <string id="737">- Χρώμα</string>
   <string id="738">Κανονικά</string>
@@ -642,7 +642,7 @@
   <string id="1001">Αδυναμία σύνδεσης</string>
   <string id="1002">Το ΧΒMC είναι ανίκανο να συνδεθεί στο δίκτυο.</string>
   <string id="1003">Αυτό μπορεί να συμβαίνει διότι το δίκτυο δεν είναι συνδεμένο.</string>
-  <string id="1004">Θέλετε να το προσθέσετε;</string>
+  <string id="1004">Θέλετε οπωσδήποτε να το προσθέσετε;</string>
   <string id="1005">Εισάγεται όνομα για τον Κοινόχρηστο πόρο</string>
   <string id="1006">Διεύθυνση IP</string>
   <string id="1007">Προσθήκη Τοποθεσίας Δικτύου</string>
@@ -670,7 +670,7 @@
   <string id="1029">Εισαγωγή νέας ετικέτας</string>
   <string id="1030">Αναζήτηση εικόνας</string>
   <string id="1031">Αναζήτηση φακέλου εικόνων</string>
-  <string id="1032"> Προσθήκη Τοποθεσίας Δικτύου...</string>
+  <string id="1032">Προσθήκη Τοποθεσίας Δικτύου...</string>
   <string id="1033">Αναζήτηση Αρχείου</string>
   <string id="1034">Yπόμενού</string>
   <string id="1035">Ενεργοποίηση πλήκτρων Yπόμενού</string>
@@ -753,25 +753,25 @@
   <string id="10005">Μουσική</string>
   <string id="10006">Βίντεο</string>
   <string id="10007">Πληροφορίες συστήματος</string>
-  <string id="10008">Ρυθμίσεις-&gt;Γενικά</string>
-  <string id="10009">Ρυθμίσεις-&gt;Οθόνη</string>
-  <string id="10010">Ρυθμίσεις-&gt;Αισθητικά-&gt;Βαθμονόμηση GUI</string>
-  <string id="10011">Ρυθμίσεις-&gt;Βίντεο-&gt;Βαθμονόμιση Οθόνης</string>
-  <string id="10012">Ρυθμίσεις-&gt;φωτογραφίες</string>
-  <string id="10013">Ρυθμίσεις-&gt;Προγράμματα</string>
-  <string id="10014">Ρυθμίσεις-&gt;Καιρός</string>
-  <string id="10015">Ρυθμίσεις-&gt;Μουσική</string>
-  <string id="10016">Ρυθμίσεις-&gt;Σύστημα</string>
-  <string id="10017">Ρυθμίσεις-&gt;Βίντεο</string>
-  <string id="10018">Ρυθμίσεις-&gt;Δίκτυο</string>
-  <string id="10019">Ρυθμίσεις-&gt;Αισθητικά</string>
+  <string id="10008">Ρυθμίσεις - Γενικά</string>
+  <string id="10009">Ρυθμίσεις - Οθόνη</string>
+  <string id="10010">Ρυθμίσεις - Αισθητικά - Βαθμονόμηση GUI</string>
+  <string id="10011">Ρυθμίσεις - Βίντεο - Βαθμονόμιση Οθόνης</string>
+  <string id="10012">Ρυθμίσεις - Φωτογραφίες</string>
+  <string id="10013">Ρυθμίσεις - Προγράμματα</string>
+  <string id="10014">Ρυθμίσεις - Καιρός</string>
+  <string id="10015">Ρυθμίσεις - Μουσική</string>
+  <string id="10016">Ρυθμίσεις - Σύστημα</string>
+  <string id="10017">Ρυθμίσεις - Βίντεο</string>
+  <string id="10018">Ρυθμίσεις - Δίκτυο</string>
+  <string id="10019">Ρυθμίσεις - Αισθητικά</string>
   <string id="10020">Scripts</string>
   <string id="10021">Βίντεο/Είδος</string>
   <string id="10022">Βίντεο/Ηθοποιός</string>
   <string id="10023">Βίντεο/Έτος</string>
   <string id="10025">Βίντεο/Τίτλος</string>
   <string id="10028">Βίντεο/Λίστα Αναπαραγωγής</string>
-  <string id="10034">Ρυθμίσεις-&gt;Προφίλ</string>
+  <string id="10034">Ρυθμίσεις - Προφίλ</string>
   <string id="10100">Ναι/Όχι  διάλογος</string>
   <string id="10101">Διάλογος διαδικασίας</string>
   <string id="10500">Μουσική/Λίστα Αναπαραγωγής</string>
@@ -1385,7 +1385,7 @@
   <string id="20054">Καταχωρημένη Γενική Διαχείριση</string>
   <string id="20055">Μικρογραφία Allmusic.com</string>
   <string id="20056">Πηγή Μικρογραφίας</string>
-  <string id="20057"> Απομάκρυνση Μικρογραφίας</string>
+  <string id="20057">Απομάκρυνση Μικρογραφίας</string>
   <string id="20058">Προσθέστε προφίλ...</string>
   <string id="20059">Πληροφορίες Ερωτήματος</string>
   <string id="20060">Πληροφορίες Πολυμέσων</string>
@@ -1617,10 +1617,10 @@
   <string id="20384">Σύνδεσμος την Τηλεοπτική σειρά</string>
   <string id="20385">Αφαίρεση Συνδέσμου από την Τηλεοπτική σειρά</string>
   <string id="20386">Πρόσφατες εισαχθέντες Ταινίες</string>
-  <string id="20387">Πρόσφατα  εισαχθέντα Επεισόδια</string>
+  <string id="20387">Πρόσφατα εισαχθέντα Επεισόδια</string>
   <string id="20388">Στούντιο</string>
   <string id="20389">Μουσικά Βίντεο</string>
-  <string id="20390">Πρόσφατα  εισαχθέντα Μουσικά Βίντεο</string>
+  <string id="20390">Πρόσφατα εισαχθέντα Μουσικά Βίντεο</string>
   <string id="20391">Μουσικό Βίντεο</string>
   <string id="20392">Αφαίρεση Μουσικού Βίντεο από τη βιβλιοθήκη</string>
   <string id="20393">Πληροφορίες Μουσικού Βίντεο</string>
@@ -1648,6 +1648,7 @@
   <string id="20415">Έλεγχος για νέα περιεχόμενα</string>
   <string id="20416">Πρώτη ανάρτηση</string>
   <string id="20417">Σεναριογράφος</string>
+  <string id="20418">Εκκαθάριση Ονομάτων Αρχείων</string>
   <string id="21330">Προβολή κρυφών αρχείων και φακέλων</string>
   <string id="21331">Πελάτης TuxBox</string>
   <string id="21332">ΠΡΟΣΟΧΗ: Η συσκευή TuxBox βρίσκεται σε Recording-Mode!</string>
@@ -1813,3 +1814,4 @@
   <string id="22003">Ενεργοποίηση Επεξεργασίας των Καταλόγων διανομής</string>
   <string id="29999">Αυτόματο Φίλτρο Flicker</string>
 </strings>
+ 	  	 
