@@ -364,6 +364,7 @@ void XBPython::Finalize()
     DllLoaderContainer::ReleaseModule(m_pDll);
 #endif    
     m_hModule = NULL;
+    mainThreadState = NULL;
 
     m_bInitialized = false;
   }
@@ -396,14 +397,6 @@ void XBPython::FreeResources()
     }
 
     LeaveCriticalSection(&m_critSection );
-
-    // shut down the interpreter
-    PyEval_AcquireLock();
-    PyThreadState_Swap(mainThreadState);
-    Py_Finalize();
-    // free_arenas();
-    mainThreadState = NULL;
-    g_sectionLoader.UnloadDLL(PYTHON_DLL);
   }
 
   CloseHandle(m_hEvent);
