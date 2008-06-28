@@ -2838,10 +2838,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\Trainer.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\utils\TuxBoxUtil.cpp"
 					>
 				</File>
@@ -3131,14 +3127,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogSubMenu.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogTrainerSettings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogTrainerSettings.h"
 					>
 				</File>
 				<File
@@ -4976,10 +4964,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\ThumbnailCache.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\utils\Trainer.h"
 				>
 			</File>
 			<File
