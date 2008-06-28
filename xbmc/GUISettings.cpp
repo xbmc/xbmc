@@ -616,13 +616,7 @@ CGUISettings::CGUISettings(void)
 
 CGUISettings::~CGUISettings(void)
 {
-  std::map<CStdString,CSetting*>::iterator it = settingsMap.begin();
-  std::map<CStdString,CSetting*>::iterator it_end = settingsMap.end();
-  while (it != it_end)
-  {
-    CSetting *pSetting = (*it).second;
-    delete pSetting;
-  }
+  Clear();
 }
 
 void CGUISettings::AddGroup(DWORD dwGroupID, DWORD dwLabelID)
