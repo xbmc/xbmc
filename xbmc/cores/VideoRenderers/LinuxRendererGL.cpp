@@ -2341,34 +2341,45 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
   for (int f = FIELD_FULL; f<=FIELD_EVEN ; f++)
   {
     int divfactor = (f==FIELD_FULL)?1:2;
+    static unsigned long np2x = 0, np2y = 0;
+    np2x = NP2(im.width);
+    np2y = NP2((im.height / divfactor));
+
     glBindTexture(m_textureTarget, fields[f][0]);
     if (m_renderMethod & RENDER_SW)
     {
       // require Power Of Two textures?
       if (m_renderMethod & RENDER_POT)
       {
-        static unsigned long np2x = 0, np2y = 0;
-        np2x = NP2(im.width);
-        np2y = NP2((im.height / divfactor));
-        CLog::Log(LOGNOTICE, "GL: Creating power of two texture of size %ld x %ld", np2x, np2y);
+        CLog::Log(LOGNOTICE, "GL: Creating RGB power of two texture of size %ld x %ld", np2x, np2y);
         glTexImage2D(m_textureTarget, 0, GL_RGBA, np2x, np2y, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
         im.texcoord_x = ((float)im.width / (float)np2x);
         im.texcoord_y = ((float)im.height / (float)divfactor / (float)np2y);
       }
       else
       {
-        CLog::Log(LOGDEBUG, "GL: Creating NPOT texture of size %d x %d", im.width, im.height);
+        CLog::Log(LOGDEBUG, "GL: Creating RGB NPOT texture of size %d x %d", im.width, im.height);
         glTexImage2D(m_textureTarget, 0, GL_RGBA, im.width, im.height/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
       }
     }
     else
     {
-      CLog::Log(LOGDEBUG, "GL: Creating Y NPOT texture of size %d x %d", im.width, im.height);
-      
-      if (IsSoftwareUpscaling())
-        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, m_upscalingWidth, m_upscalingHeight/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+      // require Power Of Two textures?
+      if (m_renderMethod & RENDER_POT)
+      {
+        CLog::Log(LOGNOTICE, "GL: Creating Y power of two texture of size %ld x %ld", np2x, np2y);
+        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, np2x, np2y, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+        im.texcoord_x = ((float)im.width / (float)np2x);
+        im.texcoord_y = ((float)im.height / (float)divfactor / (float)np2y);
+      }
       else
-        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width, im.height/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+      {
+        CLog::Log(LOGDEBUG, "GL: Creating Y NPOT texture of size %d x %d", im.width, im.height);
+        if (IsSoftwareUpscaling())
+          glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, m_upscalingWidth, m_upscalingHeight/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+        else
+          glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width, im.height/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+      }
     }
 
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -2379,14 +2390,23 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 
     if (!(m_renderMethod & RENDER_SW))
     {
-      CLog::Log(LOGDEBUG, "GL: Creating U NPOT texture of size %d x %d", im.width/2, im.height/2/divfactor);
       glBindTexture(m_textureTarget, fields[f][1]);
-      
-      if (IsSoftwareUpscaling())
-        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, m_upscalingWidth/2, m_upscalingHeight/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+
+      // require Power Of Two textures?
+      if (m_renderMethod & RENDER_POT)
+      {
+        CLog::Log(LOGNOTICE, "GL: Creating U power of two texture of size %ld x %ld", np2x/2, np2y/2);
+        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, np2x/2, np2y/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+      }
       else
-        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-      
+      {
+        CLog::Log(LOGDEBUG, "GL: Creating U NPOT texture of size %d x %d", im.width/2, im.height/2/divfactor);
+        if (IsSoftwareUpscaling())
+          glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, m_upscalingWidth/2, m_upscalingHeight/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+        else
+          glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+      }
+
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -2395,12 +2415,19 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 
       CLog::Log(LOGDEBUG, "GL: Creating V NPOT texture of size %d x %d", im.width/2, im.height/2/divfactor);
       glBindTexture(m_textureTarget, fields[f][2]);
-      
-      if (IsSoftwareUpscaling())
-        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, m_upscalingWidth/2, m_upscalingHeight/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+
+      if (m_renderMethod & RENDER_POT)
+      {
+        CLog::Log(LOGNOTICE, "GL: Creating V power of two texture of size %ld x %ld", np2x/2, np2y/2);
+        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, np2x/2, np2y/2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+      }
       else
-        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-  
+      {
+        if (IsSoftwareUpscaling())
+          glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, m_upscalingWidth/2, m_upscalingHeight/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+        else
+          glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, im.width/2, im.height/2/divfactor, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+      }
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
