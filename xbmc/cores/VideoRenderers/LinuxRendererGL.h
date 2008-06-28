@@ -83,7 +83,7 @@ enum RenderMethod
   RENDER_GLSL=0x01,
   RENDER_ARB=0x02,
   RENDER_SW=0x04,
-  RENDER_POT=0x16
+  RENDER_POT=0x10
 };
 
 enum RenderQuality
