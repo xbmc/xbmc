@@ -1315,6 +1315,7 @@ void CSettings::LoadAdvancedSettings()
     TiXmlNode* pStackRegExp = pVideoStacking->FirstChild("regexp");
     if (iAction == 0)
       g_advancedSettings.m_videoStackRegExps.clear();
+    int i = 0;
     while (pStackRegExp)
     {
       if (pStackRegExp->FirstChild())
@@ -1322,7 +1323,7 @@ void CSettings::LoadAdvancedSettings()
         CStdString regExp = pStackRegExp->FirstChild()->Value();
         regExp.MakeLower();
         if (iAction == 2)
-          g_advancedSettings.m_videoStackRegExps.insert(g_advancedSettings.m_videoStackRegExps.begin(), 1, regExp);
+          g_advancedSettings.m_videoStackRegExps.insert(g_advancedSettings.m_videoStackRegExps.begin() + i++, 1, regExp);
         else
           g_advancedSettings.m_videoStackRegExps.push_back(regExp);
       }
@@ -1352,6 +1353,7 @@ void CSettings::LoadAdvancedSettings()
     if (iAction == 0)
         g_advancedSettings.m_tvshowStackRegExps.clear();
     TiXmlNode* pStackRegExp = pTVStacking->FirstChild("regexp");
+    int i = 0;
     while (pStackRegExp)
     {
       if (pStackRegExp->FirstChild())
@@ -1359,7 +1361,7 @@ void CSettings::LoadAdvancedSettings()
         CStdString regExp = pStackRegExp->FirstChild()->Value();
         regExp.MakeLower();
         if (iAction == 2)
-          g_advancedSettings.m_tvshowStackRegExps.insert(g_advancedSettings.m_tvshowStackRegExps.begin(), 1, regExp);
+          g_advancedSettings.m_tvshowStackRegExps.insert(g_advancedSettings.m_tvshowStackRegExps.begin() + i++, 1, regExp);
         else
           g_advancedSettings.m_tvshowStackRegExps.push_back(regExp);
       }
