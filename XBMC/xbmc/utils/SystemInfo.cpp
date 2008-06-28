@@ -39,7 +39,7 @@ void CBackgroundSystemInfoLoader::GetInformation()
   callback->m_systemuptime = callback->GetSystemUpTime(false);
   callback->m_systemtotaluptime = callback->GetSystemUpTime(true);
   callback->m_InternetState = callback->GetInternetState();
-#ifdef _LINUX
+#if defined (_LINUX) || defined(_WIN32PC)
   callback->m_videoencoder    = callback->GetVideoEncoder();
   callback->m_xboxversion     = callback->GetXBVerInfo();
   callback->m_cpufrequency    = callback->GetCPUFreqInfo();
@@ -165,7 +165,7 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
 
 double CSysInfo::GetCPUFrequency()
 {
-#if defined (_LINUX)
+#if defined (_LINUX) || defined(_WIN32PC)
   return double (g_cpuInfo.getCPUFrequency());
 #else
   return 0;
@@ -207,6 +207,22 @@ CStdString CSysInfo::GetKernelVersion()
 
   return "";
 #else
+  OSVERSIONINFOEX osvi;
+  osvi.dwOSVersionInfoSize = sizeof(osvi);
+  if (GetVersionEx((OSVERSIONINFO *)&osvi))
+  {
+    if ( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0 )
+    {
+      if( osvi.wProductType == VER_NT_WORKSTATION )
+        return "Windows Vista ";
+      else 
+        return "Windows Server 2008 ";
+    }
+    else if ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1 )
+    {
+         return "Windows XP ";
+    }
+  }
   return "";
 #endif
 }
@@ -215,7 +231,7 @@ CStdString CSysInfo::GetCPUFreqInfo()
 {
   CStdString strCPUFreq;
   double CPUFreq = GetCPUFrequency();
-  strCPUFreq.Format("%s %4.2fMHz", g_localizeStrings.Get(13284), CPUFreq);
+  strCPUFreq.Format("%s %4.2fGHz", g_localizeStrings.Get(13284), CPUFreq);
   return strCPUFreq;
 }
 
