@@ -327,6 +327,9 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       m_movieItem->SetProperty("watchedepisodes", m_movieItem->GetVideoInfoTag()->m_playCount);
       m_movieItem->SetProperty("unwatchedepisodes", m_movieItem->GetVideoInfoTag()->m_iEpisode - m_movieItem->GetVideoInfoTag()->m_playCount);
       m_movieItem->GetVideoInfoTag()->m_playCount = (m_movieItem->GetVideoInfoTag()->m_iEpisode == m_movieItem->GetVideoInfoTag()->m_playCount) ? 1 : 0;
+      m_movieItem->CacheVideoFanart();
+      if (CFile::Exists(m_movieItem->GetCachedVideoFanart()))
+        m_movieItem->SetProperty("fanart_image",m_movieItem->GetCachedVideoFanart());
     }
     else if (m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
     {
