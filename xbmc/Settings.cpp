@@ -1297,27 +1297,59 @@ void CSettings::LoadAdvancedSettings()
   TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("moviestacking");
   if (pVideoStacking)
   {
+    int iAction = 0; // overwrite
+    // for backward compatibility
     const char* szAppend = pVideoStacking->Attribute("append");
-    if ((szAppend && stricmp(szAppend,"yes") != 0) || !szAppend)
-      g_advancedSettings.m_videoStackRegExps.clear();
+    if ((szAppend && stricmp(szAppend, "yes") == 0))
+      iAction = 1;
+    // action takes precedence if both attributes exist
+    const char* szAction = pVideoStacking->Attribute("action");
+    if (szAction)
+    {
+      iAction = 0; // overwrite
+      if (stricmp(szAction, "append") == 0)
+        iAction = 1; // append
+      else if (stricmp(szAction, "prepend") == 0)
+        iAction = 2; // prepend
+    }
     TiXmlNode* pStackRegExp = pVideoStacking->FirstChild("regexp");
+    if (iAction == 0)
+      g_advancedSettings.m_videoStackRegExps.clear();
     while (pStackRegExp)
     {
       if (pStackRegExp->FirstChild())
       {
         CStdString regExp = pStackRegExp->FirstChild()->Value();
         regExp.MakeLower();
-        g_advancedSettings.m_videoStackRegExps.push_back(regExp);
+        if (iAction == 2)
+          g_advancedSettings.m_videoStackRegExps.insert(g_advancedSettings.m_videoStackRegExps.begin(), 1, regExp);
+        else
+          g_advancedSettings.m_videoStackRegExps.push_back(regExp);
       }
       pStackRegExp = pStackRegExp->NextSibling("regexp");
     }
+
   }
   //tv stacking regexps
   TiXmlElement* pTVStacking = pRootElement->FirstChildElement("tvshowmatching");
   if (pTVStacking)
   {
+    int iAction = 0; // overwrite
+    // for backward compatibility
     const char* szAppend = pTVStacking->Attribute("append");
-    if ((szAppend && stricmp(szAppend,"yes") != 0) || !szAppend)
+    if ((szAppend && stricmp(szAppend, "yes") == 0))
+      iAction = 1;
+    // action takes precedence if both attributes exist
+    const char* szAction = pTVStacking->Attribute("action");
+    if (szAction)
+    {
+      iAction = 0; // overwrite
+      if (stricmp(szAction, "append") == 0)
+        iAction = 1; // append
+      else if (stricmp(szAction, "prepend") == 0)
+        iAction = 2; // prepend
+    }
+    if (iAction == 0)
         g_advancedSettings.m_tvshowStackRegExps.clear();
     TiXmlNode* pStackRegExp = pTVStacking->FirstChild("regexp");
     while (pStackRegExp)
@@ -1326,7 +1358,10 @@ void CSettings::LoadAdvancedSettings()
       {
         CStdString regExp = pStackRegExp->FirstChild()->Value();
         regExp.MakeLower();
-        g_advancedSettings.m_tvshowStackRegExps.push_back(regExp);
+        if (iAction == 2)
+          g_advancedSettings.m_tvshowStackRegExps.insert(g_advancedSettings.m_tvshowStackRegExps.begin(), 1, regExp);
+        else
+          g_advancedSettings.m_tvshowStackRegExps.push_back(regExp);
       }
       pStackRegExp = pStackRegExp->NextSibling("regexp");
     }
