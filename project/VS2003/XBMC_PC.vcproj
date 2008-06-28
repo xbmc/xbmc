@@ -3632,9 +3632,6 @@
 				RelativePath="..\..\xbmc\ThumbnailCache.h">
 			</File>
 			<File
-				RelativePath="..\..\xbmc\utils\Trainer.h">
-			</File>
-			<File
 				RelativePath="..\..\xbmc\utils\UdpClient.h">
 			</File>
 			<File
