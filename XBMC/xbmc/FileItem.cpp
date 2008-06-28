@@ -1820,7 +1820,8 @@ void CFileItemList::Stack()
 
   // stack folders
   bool isDVDFolder(false);
-  for (int i = 0; i < Size(); ++i)
+  int i = 0;
+  for (i = 0; i < Size(); ++i)
   {
     CFileItemPtr item = Get(i);
     if (item->GetLabel().Equals("VIDEO_TS.IFO"))
@@ -1916,7 +1917,7 @@ void CFileItemList::Stack()
 
 
   // now stack the files, some of which may be from the previous stack iteration
-  int i = 0;
+  i = 0;
   while (i < Size())
   {
     CFileItemPtr item = Get(i);
