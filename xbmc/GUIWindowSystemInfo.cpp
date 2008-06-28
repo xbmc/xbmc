@@ -92,8 +92,6 @@ void CGUIWindowSystemInfo::Render()
     SET_CONTROL_LABEL(5, g_infoManager.GetLabel(SYSTEM_HDD_PASSWORD));
     SET_CONTROL_LABEL(6, g_infoManager.GetLabel(SYSTEM_HDD_LOCKSTATE));
     SET_CONTROL_LABEL(7, g_infoManager.GetLabel(SYSTEM_HDD_LOCKKEY));
-    SET_CONTROL_LABEL(8, g_infoManager.GetLabel(SYSTEM_HDD_BOOTDATE));
-    SET_CONTROL_LABEL(9, g_infoManager.GetLabel(SYSTEM_HDD_CYCLECOUNT));
     SET_CONTROL_LABEL(10, g_infoManager.GetLabel(SYSTEM_HDD_TEMPERATURE));
     #endif
   }
@@ -101,11 +99,7 @@ void CGUIWindowSystemInfo::Render()
   {
     SetLabelDummy();
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20157));
-#ifdef HAS_SYSINFO
-    SET_CONTROL_LABEL(2, g_infoManager.GetLabel(SYSTEM_DVD_MODEL));
-    SET_CONTROL_LABEL(3, g_infoManager.GetLabel(SYSTEM_DVD_FIRMWARE));
-    SET_CONTROL_LABEL(4, g_infoManager.GetLabel(SYSTEM_DVD_ZONE));
-#endif
+    // note: No info on SDL platforms for dvd as yet
   }
   else if(iControl == CONTROL_BT_STORAGE)
   {
@@ -149,8 +143,6 @@ void CGUIWindowSystemInfo::Render()
 #ifdef HAS_SYSINFO
     SET_CONTROL_LABEL(2,g_infoManager.GetLabel(SYSTEM_VIDEO_ENCODER_INFO));
     SET_CONTROL_LABEL(3,g_infoManager.GetLabel(SYSTEM_SCREEN_RESOLUTION));
-    SET_CONTROL_LABEL(4,g_infoManager.GetLabel(SYSTEM_AV_PACK_INFO));
-    SET_CONTROL_LABEL(5,g_infoManager.GetLabel(SYSTEM_XBE_REGION));
 #endif
   }
   else if(iControl == CONTROL_BT_HARDWARE)
@@ -158,16 +150,7 @@ void CGUIWindowSystemInfo::Render()
     SetLabelDummy();
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20160));
 #ifdef HAS_SYSINFO
-    SET_CONTROL_LABEL(2, g_infoManager.GetLabel(SYSTEM_XBOX_VERSION));
-    SET_CONTROL_LABEL(3, g_infoManager.GetLabel(SYSTEM_XBOX_SERIAL));
     SET_CONTROL_LABEL(4, g_infoManager.GetLabel(SYSTEM_CPUFREQUENCY));
-    SET_CONTROL_LABEL(5, g_infoManager.GetLabel(SYSTEM_XBOX_BIOS));
-    SET_CONTROL_LABEL(6, g_infoManager.GetLabel(SYSTEM_XBOX_MODCHIP));
-    SET_CONTROL_LABEL(7, g_infoManager.GetLabel(SYSTEM_XBOX_PRODUCE_INFO));
-    SET_CONTROL_LABEL(8, g_infoManager.GetLabel(SYSTEM_CONTROLLER_PORT_1));
-    SET_CONTROL_LABEL(9, g_infoManager.GetLabel(SYSTEM_CONTROLLER_PORT_2));
-    SET_CONTROL_LABEL(10, g_infoManager.GetLabel(SYSTEM_CONTROLLER_PORT_3));
-    SET_CONTROL_LABEL(11, g_infoManager.GetLabel(SYSTEM_CONTROLLER_PORT_4));
 #endif
   }
   SET_CONTROL_LABEL(50, g_infoManager.GetTime(TIME_FORMAT_HH_MM_SS) + " | " + g_infoManager.GetDate());
