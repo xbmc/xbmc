@@ -84,12 +84,22 @@ CCPUInfo::CCPUInfo(void)
   char rgValue [128];
   HKEY hKey;
   DWORD dwSize=128;
+  DWORD dwMHz=0;
   LONG ret = RegOpenKeyEx(HKEY_LOCAL_MACHINE,"HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0",0, KEY_READ, &hKey);
   ret = RegQueryValueEx(hKey,"ProcessorNameString", NULL, NULL, (LPBYTE)rgValue, &dwSize);
   if(ret == 0)
     m_cpuModel = rgValue;
   else
     m_cpuModel = "Unknown";
+
+  dwSize = sizeof(dwMHz);
+  ret = RegQueryValueEx(hKey,"~MHz", NULL, NULL, (LPBYTE)&dwMHz, &dwSize);
+  if(ret == 0)
+  {
+    m_cpuFreq = float(dwMHz)/1000;
+  }
+  else
+    m_cpuFreq = 0.0;
 
   RegCloseKey(hKey);
 
