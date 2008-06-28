@@ -2396,6 +2396,11 @@ void CFileItem::SetUserVideoThumb()
 /// and cache that image as our fanart.
 void CFileItem::CacheVideoFanart() const
 {
+  if (IsVideoDb())
+  {
+    CFileItem dbItem(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath, m_bIsFolder);
+    return dbItem.CacheVideoFanart();
+  }
   CStdString cachedFanart(GetCachedVideoFanart());
   // First check for an already cached fanart image
   if (CFile::Exists(cachedFanart))
@@ -2414,15 +2419,11 @@ void CFileItem::CacheVideoFanart() const
     }
   }
   else
-  {
-    CStdString strPath(m_strPath);
-    if (IsVideoDb())
-     strPath = GetVideoInfoTag()->m_strFileNameAndPath;
-    
-    if (CUtil::IsStack(strPath))
-      localFanart = CStackDirectory::GetStackedTitlePath(strPath);
+  {    
+    if (CUtil::IsStack(m_strPath))
+      localFanart = CStackDirectory::GetStackedTitlePath(m_strPath);
     else
-      localFanart = strPath;
+      localFanart = m_strPath;
      
     CUtil::RemoveExtension(localFanart);
     if (CFile::Exists(localFanart+"-fanart.jpg"))
@@ -2442,6 +2443,8 @@ void CFileItem::CacheVideoFanart() const
 CStdString CFileItem::GetCachedVideoFanart() const
 {
   // get the locally cached thumb
+  if (IsVideoDb())
+    return CFileItem::GetCachedVideoFanart(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath);
   return CFileItem::GetCachedVideoFanart(m_strPath);
 }
 
