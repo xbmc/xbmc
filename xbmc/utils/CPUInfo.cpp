@@ -206,7 +206,11 @@ int CCPUInfo::getUsedPercentage()
   systemTicks -= m_systemTicks;
   idleTicks -= m_idleTicks;
 
+#ifdef _WIN32PC
+  int result = (int) ((userTicks + systemTicks - idleTicks) * 100 / (userTicks + systemTicks));
+#else
   int result = (int) ((userTicks + niceTicks + systemTicks) * 100 / (userTicks + niceTicks + systemTicks + idleTicks));
+#endif
 
   m_userTicks += userTicks;
   m_niceTicks += niceTicks;
