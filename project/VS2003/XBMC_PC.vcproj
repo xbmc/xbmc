@@ -146,7 +146,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089"
-				AdditionalDependencies="opengl32.lib winmm.lib ws2_32.lib Mpr.lib"
+				AdditionalDependencies="SDL.lib SDL_image.lib DSound.lib opengl32.lib winmm.lib ws2_32.lib Mpr.lib glew32.lib glu32.lib"
 				OutputFile="$(OutDir)/../../../XBMC.exe"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
@@ -211,7 +211,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="FALSE"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089"
-				AdditionalDependencies="opengl32.lib winmm.lib ws2_32.lib Mpr.lib"
+				AdditionalDependencies="SDL.lib SDL_image.lib opengl32.lib DSound.lib glew32.lib glu32.lib winmm.lib ws2_32.lib Mpr.lib"
 				OutputFile="$(OutDir)/XBMC.exe"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
