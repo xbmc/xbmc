@@ -305,14 +305,15 @@ void CGUILabelControl::SetLabel(const string &strLabel)
     m_infoLabel.SetLabel(ShortenPath(strLabel), "");
   else // parse the label for info tags
     m_infoLabel.SetLabel(strLabel, "");
-  SetWidthControl(m_ScrollInsteadOfTruncate);
+  m_ScrollInfo.Reset();
   if (m_iCursorPos > (int)strLabel.size())
     m_iCursorPos = strLabel.size();
 }
 
-void CGUILabelControl::SetWidthControl(bool bScroll)
+void CGUILabelControl::SetWidthControl(bool bScroll, int scrollSpeed)
 {
   m_ScrollInsteadOfTruncate = bScroll;
+  m_ScrollInfo.SetSpeed(scrollSpeed);
   m_ScrollInfo.Reset();
 }
 

@@ -1756,35 +1756,37 @@ int CXbmcHttp::xbmcSetCurrentPlayList(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcGetPlayListContents(int numParas, CStdString paras[])
 {
-  CStdString list="";
-  int playList;
+  // options = showindex
+  // <li>index;path
 
-  if (numParas<1) 
-    playList=g_playlistPlayer.GetCurrentPlaylist();
-  else
-    playList=atoi(paras[0]);
+  CStdString list="";
+  int playList = g_playlistPlayer.GetCurrentPlaylist();
+  bool bShowIndex = false;
+  for (int i = 0; i < numParas; ++i)
+  {
+    if (paras[i].Equals("showindex"))
+      bShowIndex = true;
+    else if (StringUtils::IsNaturalNumber(paras[i]))
+      playList = atoi(paras[i]);
+  }
   CPlayList& thePlayList = g_playlistPlayer.GetPlaylist(playList);
   if (thePlayList.size()==0)
     list=openTag+"[Empty]" ;
-  else if (g_application.IsPlayingAudio())
-	{
-	  for (int i = 0; i < thePlayList.size(); i++)
-    {
-      CFileItemPtr item = thePlayList[i];
-		  const CMusicInfoTag* tagVal = item->GetMusicInfoTag();
-	    if (tagVal && tagVal->GetURL()!="")
-        list += closeTag+openTag + tagVal->GetURL();
-		  else
-        list += closeTag+openTag + item->m_strPath;
-    }
-	}
-	else
+  bool bIsMusic = (playList == PLAYLIST_MUSIC);
+  for (int i = 0; i < thePlayList.size(); i++)
   {
-	  for (int i = 0; i < thePlayList.size(); i++)
-    {
-      CFileItemPtr item=thePlayList[i];
-      list += closeTag+openTag + item->m_strPath;
-    }
+    CFileItemPtr item = thePlayList[i];
+    const CMusicInfoTag* tagVal = NULL;
+    if (bIsMusic)
+      tagVal = item->GetMusicInfoTag();
+    CStdString strInfo;
+    if (bShowIndex)
+      strInfo.Format("%i;", i);
+    if (tagVal && tagVal->GetURL()!="")
+      strInfo += tagVal->GetURL();
+    else
+      strInfo += item->m_strPath;
+    list += closeTag + openTag + strInfo;
   }
   return SetResponse(list) ;
 }
@@ -1872,12 +1874,16 @@ int CXbmcHttp::xbmcPlayListPrev()
 
 int CXbmcHttp::xbmcRemoveFromPlayList(int numParas, CStdString paras[])
 {
-  if (numParas>0)
+  if (numParas > 0)
   {
-    if (numParas==1)
-      g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).Remove(paras[0]) ;
+    int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
+    CStdString strItem = paras[0];
+    if (numParas > 1)
+      iPlaylist = atoi(paras[1]);
+    if (StringUtils::IsNaturalNumber(strItem))
+      g_playlistPlayer.GetPlaylist(iPlaylist).Remove(atoi(strItem));
     else
-      g_playlistPlayer.GetPlaylist(atoi(paras[1])).Remove(paras[0]) ;
+      g_playlistPlayer.GetPlaylist(iPlaylist).Remove(strItem);
     return SetResponse(openTag+"OK");
   }
   else

@@ -105,7 +105,7 @@ public:
 
   static CStdString     GetLocalizedField(DATABASE_FIELD field);
   static CStdString     GetLocalizedOperator(SEARCH_OPERATOR oper);
-  static std::vector<DATABASE_FIELD> GetFields(const CStdString &type);
+  static std::vector<DATABASE_FIELD> GetFields(const CStdString &type, bool sortOrders = false);
   static FIELD_TYPE     GetFieldType(DATABASE_FIELD field);
 
   CStdString            GetLocalizedRule();

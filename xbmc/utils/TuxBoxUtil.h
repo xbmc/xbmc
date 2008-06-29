@@ -21,6 +21,8 @@
  *
  */
 
+#include "Thread.h"
+
 class CURL;
 class TiXmlElement;
 class CFileItemList;

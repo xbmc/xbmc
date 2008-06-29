@@ -24,6 +24,7 @@
 #include "cores/iplayer.h"
 #include "DllMPlayer.h"
 #include "Edl.h"
+#include "utils/Thread.h"
 
 class CMPlayer : public IPlayer, public CThread
 {

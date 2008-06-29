@@ -62,6 +62,17 @@ bool CDirectoryCache::GetDirectory(const CStdString& strPath1, CFileItemList &it
 
 void CDirectoryCache::SetDirectory(const CStdString& strPath1, const CFileItemList &items)
 {
+  // caches the given directory using a copy of the items, rather than the items
+  // themselves.  The reason we do this is because there is often some further
+  // processing on the items (stacking, transparent rars/zips for instance) that
+  // alters the URL of the items.  If we shared the pointers, we'd have problems
+  // as the URLs in the cache would have changed, so things such as
+  // CDirectoryCache::FileExists() would fail for files that really do exist (just their
+  // URL's have been altered).  This is called from CFile::Exists() which causes
+  // all sorts of hassles.
+  // IDEALLY, any further processing on the item would actually create a new item 
+  // instead of altering it, but we can't really enforce that in an easy way, so
+  // this is the best solution for now.
   CSingleLock lock (m_cs);
 
   CStdString strPath = strPath1;
@@ -73,7 +84,12 @@ void CDirectoryCache::SetDirectory(const CStdString& strPath1, const CFileItemLi
   dir->m_Items = new CFileItemList;
   dir->m_strPath = strPath;
   dir->m_Items->SetFastLookup(true);
-  dir->m_Items->Append(items);
+  // make a copy of each item
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CFileItemPtr newItem(new CFileItem(*items[i]));
+    dir->m_Items->Add(newItem);
+  }
   g_directoryCache.m_vecCache.push_back(dir);
 }
 

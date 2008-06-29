@@ -130,7 +130,7 @@ void CPlayListB4S::Save(const CStdString& strFileName) const
     const CFileItemPtr item = m_vecItems[i];
     fprintf(fd, "    <entry Playstring=%cfile:%s%c>\n", 34, item->m_strPath.c_str(), 34 );
     fprintf(fd, "      <Name>%s</Name>\n", item->GetLabel().c_str());
-    fprintf(fd, "      <Length>%lu</Length>\n", item->GetMusicInfoTag()->GetDuration());
+    fprintf(fd, "      <Length>%u</Length>\n", item->GetMusicInfoTag()->GetDuration());
   }
   fprintf(fd, "  </playlist>\n");
   fprintf(fd, "</WinampXML>\n");
