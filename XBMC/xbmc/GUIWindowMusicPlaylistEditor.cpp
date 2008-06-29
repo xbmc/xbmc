@@ -186,14 +186,8 @@ void CGUIWindowMusicPlaylistEditor::UpdateButtons()
   CGUIWindowMusicBase::UpdateButtons();
 
   // Update object count label
-  int iItems = m_vecItems->Size();
-  if (iItems)
-  {
-    CFileItemPtr pItem = m_vecItems->Get(0);
-    if (pItem->IsParentFolder()) iItems--;
-  }
   CStdString items;
-  items.Format("%i %s", iItems, g_localizeStrings.Get(127).c_str()); // " 14 Objects"
+  items.Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str()); // " 14 Objects"
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 }
 

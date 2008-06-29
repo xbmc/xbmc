@@ -51,7 +51,7 @@ public:
   virtual ~CIMDB();
 
   bool LoadDLL();
-  bool InternalFindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist);
+  bool InternalFindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, const CStdString& strFunction="GetSearchResults", CScraperUrl* pUrl=NULL);
   bool InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetails, const CStdString& strFunction="GetDetails");
   bool InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& details);
   bool ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails);

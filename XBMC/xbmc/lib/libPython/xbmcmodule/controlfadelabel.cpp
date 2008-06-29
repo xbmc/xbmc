@@ -111,6 +111,7 @@ namespace PYXBMC
       (float)pControl->dwHeight,
       label, 
       true,
+      CScrollInfo::defaultSpeed,
       0);
 
     CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);

@@ -596,7 +596,9 @@ CGUISettings::CGUISettings(void)
 }
 
 CGUISettings::~CGUISettings(void)
-{}
+{
+  Clear();
+}
 
 void CGUISettings::AddGroup(DWORD dwGroupID, DWORD dwLabelID)
 {

@@ -16,7 +16,18 @@
 class CScrollInfo
 {
 public:
-  CScrollInfo(unsigned int wait = 50, float pos = 0, float speed = 1.0f, const CStdStringW &scrollSuffix = L" | ") { initialWait = wait; initialPos = pos; pixelSpeed = speed; suffix = scrollSuffix; Reset(); };
+  CScrollInfo(unsigned int wait = 50, float pos = 0, int speed = defaultSpeed, const CStdStringW &scrollSuffix = L" | ")
+  { 
+    initialWait = wait;
+    initialPos = pos;
+    SetSpeed(speed);
+    suffix = scrollSuffix;
+    Reset();
+  };
+  void SetSpeed(int speed)
+  {
+    pixelSpeed = speed * 0.001f;
+  }
   void Reset()
   {
     waitTime = initialWait;
@@ -25,7 +36,21 @@ public:
     // to the left of the text rendering's left edge.  Thus, a negative
     // value will mean the text starts to the right
     pixelPos = -initialPos;
+    // privates:
+    m_averageFrameTime = 1000.f / defaultSpeed;
+    m_lastFrameTime = 0;
   }
+  DWORD GetCurrentChar(const std::vector<DWORD> &text) const
+  {
+    assert(text.size());
+    if (characterPos < text.size())
+      return text[characterPos];
+    else if (characterPos < text.size() + suffix.size())
+      return suffix[characterPos - text.size()];
+    return text[0];
+  }
+  float GetPixelsPerFrame();
+
   float pixelPos;
   float pixelSpeed;
   unsigned int waitTime;
@@ -33,6 +58,11 @@ public:
   unsigned int initialWait;
   float initialPos;
   CStdStringW suffix;
+
+  static const int defaultSpeed = 60;
+private:
+  float m_averageFrameTime;
+  DWORD m_lastFrameTime;
 };
 
 /*!
