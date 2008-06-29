@@ -176,9 +176,11 @@ CSmartPlaylistRule::FIELD_TYPE CSmartPlaylistRule::GetFieldType(DATABASE_FIELD f
   return TEXT_FIELD;
 }
 
-vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const CStdString &type)
+vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const CStdString &type, bool sortOrders)
 {
   vector<DATABASE_FIELD> fields;
+  if (sortOrders)
+    fields.push_back(FIELD_NONE);
   if (type == "songs")
   {
     fields.push_back(FIELD_GENRE);
@@ -281,7 +283,10 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_PLOT);
 //    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
   }
-  fields.push_back(FIELD_PLAYLIST);
+  if (sortOrders)
+    fields.push_back(FIELD_RANDOM);
+  else
+    fields.push_back(FIELD_PLAYLIST);
   return fields;
 }
 
