@@ -303,6 +303,23 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
   {
     CONTROL_DESELECT(CONTROL_ORDER_DIRECTION);
   }
+
+  // sort out the order fields
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_ORDER_FIELD);
+    OnMessage(msg);
+  }
+  std::vector<CSmartPlaylistRule::DATABASE_FIELD> fields = CSmartPlaylistRule::GetFields(m_playlist.GetType(), true);
+  for (unsigned int i = 0; i < fields.size(); i++)
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_ORDER_FIELD, fields[i]);
+    msg.SetLabel(CSmartPlaylistRule::GetLocalizedField(fields[i]));
+    OnMessage(msg);
+  }
+  {
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_ORDER_FIELD, m_playlist.m_orderField);
+    OnMessage(msg);
+  }
 }
 
 void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
@@ -341,17 +358,7 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_LIMIT, m_playlist.m_limit);
     OnMessage(msg);
   }
-  // and the order by spinner
-  for (int field = CSmartPlaylistRule::FIELD_NONE; field <= CSmartPlaylistRule::FIELD_RANDOM; field++)
-  {
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_ORDER_FIELD, field);
-    msg.SetLabel(CSmartPlaylistRule::GetLocalizedField((CSmartPlaylistRule::DATABASE_FIELD)field));
-    OnMessage(msg);
-  }
-  {
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_ORDER_FIELD, m_playlist.m_orderField);
-    OnMessage(msg);
-  }
+
   std::vector<PLAYLIST_TYPE> allowedTypes;
   if (m_mode.Equals("partymusic"))
   {

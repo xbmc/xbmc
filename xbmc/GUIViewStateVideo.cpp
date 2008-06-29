@@ -427,6 +427,10 @@ CGUIViewStateVideoMovies::CGUIViewStateVideoMovies(const CFileItemList& items) :
     AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
   AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
   AddSortMethod(SORT_METHOD_VIDEO_YEAR,562, LABEL_MASKS("%T", "%Y"));
+
+  if (items.IsSmartPlayList())
+    AddSortMethod(SORT_METHOD_PLAYLIST_ORDER, 559, LABEL_MASKS("%T", "%R"));
+
   SetSortMethod(g_stSettings.m_viewStateVideoNavTitles.m_sortMethod);
 
   SetViewAsControl(g_stSettings.m_viewStateVideoNavTitles.m_viewMode);
@@ -457,6 +461,9 @@ CGUIViewStateVideoMusicVideos::CGUIViewStateVideoMusicVideos(const CFileItemList
     AddSortMethod(SORT_METHOD_ARTIST,557, LABEL_MASKS("%A - %T", "%Y"));
     AddSortMethod(SORT_METHOD_ALBUM,558, LABEL_MASKS("%B - %T", "%Y"));
   }
+
+  if (items.IsSmartPlayList())
+    AddSortMethod(SORT_METHOD_PLAYLIST_ORDER, 559, LABEL_MASKS("%A - %T", "%Y"));
   
   SetSortMethod(g_stSettings.m_viewStateVideoNavMusicVideos.m_sortMethod);
 
@@ -479,6 +486,10 @@ CGUIViewStateVideoTVShows::CGUIViewStateVideoTVShows(const CFileItemList& items)
     AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%L", "%M", "%L", "%M"));  // Filename, Duration | Foldername, empty
 
   AddSortMethod(SORT_METHOD_VIDEO_YEAR,562,LABEL_MASKS("%L","%Y","%L","%Y"));
+
+  if (items.IsSmartPlayList())
+    AddSortMethod(SORT_METHOD_PLAYLIST_ORDER, 559, LABEL_MASKS("%L", "%M", "%L", "%M"));
+
   SetSortMethod(g_stSettings.m_viewStateVideoNavTvShows.m_sortMethod);
 
   SetViewAsControl(g_stSettings.m_viewStateVideoNavTvShows.m_viewMode);
@@ -512,6 +523,9 @@ CGUIViewStateVideoEpisodes::CGUIViewStateVideoEpisodes(const CFileItemList& item
     AddSortMethod(SORT_METHOD_PRODUCTIONCODE,20368,LABEL_MASKS("%Z - %H. %T","%P"));
     AddSortMethod(SORT_METHOD_DATE,552,LABEL_MASKS("%Z - %H. %T","%J"));
   }
+
+  if (items.IsSmartPlayList())
+    AddSortMethod(SORT_METHOD_PLAYLIST_ORDER, 559, LABEL_MASKS("%Z - %H. %T", "%R"));
 
   SetSortMethod(g_stSettings.m_viewStateVideoNavEpisodes.m_sortMethod);
 
