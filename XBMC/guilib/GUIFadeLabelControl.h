@@ -65,5 +65,6 @@ protected:
   CGUITextLayout m_textLayout;
   CAnimation *m_fadeAnim;
   DWORD m_renderTime;
+  unsigned int m_scrollSpeed;
 };
 #endif
