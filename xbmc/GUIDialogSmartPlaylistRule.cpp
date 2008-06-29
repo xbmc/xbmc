@@ -270,15 +270,6 @@ void CGUIDialogSmartPlaylistRule::OnOperator()
 
 void CGUIDialogSmartPlaylistRule::UpdateButtons()
 {
-/*  if (m_rule.m_parameter.size() == 0)
-  {
-    CONTROL_DISABLE(CONTROL_OK)
-  }
-  else
-  {
-    CONTROL_ENABLE(CONTROL_OK)
-  }*/
-
   // update the field control
   CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_FIELD, m_rule.m_field);
   OnMessage(msg);
