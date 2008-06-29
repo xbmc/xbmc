@@ -1751,7 +1751,7 @@ int CXbmcHttp::xbmcGetPlayListContents(int numParas, CStdString paras[])
   for (int i = 0; i < thePlayList.size(); i++)
   {
     CFileItemPtr item = thePlayList[i];
-    const CMusicInfoTag* tagVal;
+    const CMusicInfoTag* tagVal = NULL;
     if (bIsMusic)
       tagVal = item->GetMusicInfoTag();
     CStdString strInfo;
