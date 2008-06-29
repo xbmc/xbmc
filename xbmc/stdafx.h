@@ -54,11 +54,9 @@
 // guilib internal
 #include "LocalizeStrings.h"
 
-#include "utils/Thread.h"
 #include "utils/CriticalSection.h"
 #include "utils/SingleLock.h"
 #include "utils/Event.h"
-#include "utils/Mutex.h"
 #include "utils/Archive.h"
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"

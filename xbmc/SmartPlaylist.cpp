@@ -176,9 +176,11 @@ CSmartPlaylistRule::FIELD_TYPE CSmartPlaylistRule::GetFieldType(DATABASE_FIELD f
   return TEXT_FIELD;
 }
 
-vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const CStdString &type)
+vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const CStdString &type, bool sortOrders)
 {
   vector<DATABASE_FIELD> fields;
+  if (sortOrders)
+    fields.push_back(FIELD_NONE);
   if (type == "songs")
   {
     fields.push_back(FIELD_GENRE);
@@ -281,7 +283,10 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_PLOT);
 //    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
   }
-  fields.push_back(FIELD_PLAYLIST);
+  if (sortOrders)
+    fields.push_back(FIELD_RANDOM);
+  else
+    fields.push_back(FIELD_PLAYLIST);
   return fields;
 }
 
@@ -432,7 +437,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
       playlist.Load(playlistFile);
       CStdString playlistQuery;
       // only playlists of same type will be part of the query
-      if (playlist.GetType().Equals(strType) || playlist.GetType().Equals("mixed") && (strType == "songs" || strType == "musicvideos") || playlist.GetType().IsEmpty())
+      if (playlist.GetType().Equals(strType) || (playlist.GetType().Equals("mixed") && (strType == "songs" || strType == "musicvideos")) || playlist.GetType().IsEmpty())
       {
         playlist.SetType(strType);
         playlistQuery = playlist.GetWhereClause(false);
@@ -651,13 +656,16 @@ bool CSmartPlaylist::Load(const CStdString &path)
     const char *field = rule->Attribute("field");
     const char *oper = rule->Attribute("operator");
     TiXmlNode *parameter = rule->FirstChild();
-    if (field && oper && parameter)
+    if (field && oper)
     { // valid rule
       CStdString utf8Parameter;
-      if (encoding.IsEmpty()) // utf8
-        utf8Parameter = parameter->Value();
-      else
-        g_charsetConverter.stringCharsetToUtf8(encoding, parameter->Value(), utf8Parameter);
+      if (parameter)
+      {
+        if (encoding.IsEmpty()) // utf8
+          utf8Parameter = parameter->Value();
+        else
+          g_charsetConverter.stringCharsetToUtf8(encoding, parameter->Value(), utf8Parameter);
+      }
       CSmartPlaylistRule rule;
       rule.TranslateStrings(field, oper, utf8Parameter.c_str());
       m_playlistRules.push_back(rule);

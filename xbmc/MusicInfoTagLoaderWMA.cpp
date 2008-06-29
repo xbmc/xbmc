@@ -140,20 +140,26 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
     {
       iOffset += 24;
       int nTitleSize = pData[iOffset + 0] + pData[iOffset + 1] * 0x100;
-      //int nAuthorSize = pData[iOffset + 2] + pData[iOffset + 3] * 0x100;
+      int nAuthorSize = pData[iOffset + 2] + pData[iOffset + 3] * 0x100;
       //int nCopyrightSize = pData[iOffset + 4] + pData[iOffset + 5] * 0x100;
       //int nCommentsSize = pData[iOffset + 6] + pData[iOffset + 7] * 0x100;
 
       iOffset += 10;
 
-      // TODO: UTF-8 Do we need to "fixString" these strings at all?
-      CStdString utf8String = "";
-      g_charsetConverter.wToUTF8((LPWSTR)(pData.get() + iOffset), utf8String);
-      tag.SetTitle(utf8String);
-
-      utf8String = "";
-      g_charsetConverter.wToUTF8((LPWSTR)(pData.get() + iOffset + nTitleSize), utf8String);
-      tag.SetArtist(utf8String);
+      CStdString utf8String;
+      if (nTitleSize)
+      {
+        // TODO: UTF-8 Do we need to "fixString" these strings at all?
+        g_charsetConverter.wToUTF8((LPWSTR)(pData.get()+iOffset), utf8String);
+        tag.SetTitle(utf8String);
+      }
+      
+      if (nAuthorSize)
+      {
+        utf8String = "";
+        g_charsetConverter.wToUTF8((LPWSTR)(pData.get() + iOffset + nTitleSize), utf8String);
+        tag.SetArtist(utf8String);
+      }
 
       //General(ZT("Copyright"))=(LPWSTR)(pData.get()+iOffset+(nTitleSize+nAuthorSize));
       //General(ZT("Comments"))=(LPWSTR)(pData.get()+iOffset+(nTitleSize+nAuthorSize+nCopyrightSize));
