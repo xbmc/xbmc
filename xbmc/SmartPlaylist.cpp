@@ -656,13 +656,16 @@ bool CSmartPlaylist::Load(const CStdString &path)
     const char *field = rule->Attribute("field");
     const char *oper = rule->Attribute("operator");
     TiXmlNode *parameter = rule->FirstChild();
-    if (field && oper && parameter)
+    if (field && oper)
     { // valid rule
       CStdString utf8Parameter;
-      if (encoding.IsEmpty()) // utf8
-        utf8Parameter = parameter->Value();
-      else
-        g_charsetConverter.stringCharsetToUtf8(encoding, parameter->Value(), utf8Parameter);
+      if (parameter)
+      {
+        if (encoding.IsEmpty()) // utf8
+          utf8Parameter = parameter->Value();
+        else
+          g_charsetConverter.stringCharsetToUtf8(encoding, parameter->Value(), utf8Parameter);
+      }
       CSmartPlaylistRule rule;
       rule.TranslateStrings(field, oper, utf8Parameter.c_str());
       m_playlistRules.push_back(rule);
