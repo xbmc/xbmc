@@ -1,3 +1,5 @@
+#if !defined(_POWERPC) && !defined(_POWERPC64)
+
 #ifndef __APPLE__
 #define FUNCTION(name)			\
 	.globl name;			\
@@ -80,3 +82,4 @@
   FUNCTION(PyObject_RichCompare)
   FUNCTION(PyFloat_FromDouble)
 
+#endif
