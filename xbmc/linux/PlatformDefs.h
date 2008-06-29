@@ -39,6 +39,7 @@
 #include <string.h>
 #ifdef __APPLE__
 #include <sys/sysctl.h>
+#include <mach/mach.h>
 #else
 #include <sys/sysinfo.h>
 #endif
