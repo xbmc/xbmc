@@ -107,7 +107,6 @@ bool CPlayListPLS::Load(const CStdString &strFile)
       return false;
   }
 
-  int iMaxSize = 0;
   while (file.ReadString(szLine, sizeof(szLine) ) )
   {
     strLine = szLine;
@@ -129,10 +128,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
       else if (strLeft.Left(4) == "file")
       {
         vector <int>::size_type idx = atoi(strLeft.c_str() + 4);
-        if (idx > m_vecItems.size()) {
-          iMaxSize = idx;
-          m_vecItems.resize(idx);
-        }
+        Resize(idx);
         if (m_vecItems[idx - 1]->GetLabel().empty())
           m_vecItems[idx - 1]->SetLabel(CUtil::GetFileName(strValue));
         CFileItem item(strValue, false);
@@ -140,7 +136,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
           strValue.Replace("http:", "shout:");
 
         if (CUtil::IsRemote(m_strBasePath) && g_advancedSettings.m_pathSubstitutions.size() > 0)
-         strValue = CUtil::SubstitutePath(strValue);
+          strValue = CUtil::SubstitutePath(strValue);
         CUtil::GetQualifiedFilename(m_strBasePath, strValue);
         g_charsetConverter.stringCharsetToUtf8(strValue);
         m_vecItems[idx - 1]->m_strPath = strValue;
@@ -148,20 +144,14 @@ bool CPlayListPLS::Load(const CStdString &strFile)
       else if (strLeft.Left(5) == "title")
       {
         vector <int>::size_type idx = atoi(strLeft.c_str() + 5);
-        if (idx > m_vecItems.size()) {
-          iMaxSize = idx;
-          m_vecItems.resize(idx);
-        }
+        Resize(idx);
         g_charsetConverter.stringCharsetToUtf8(strValue);
         m_vecItems[idx - 1]->SetLabel(strValue);
       }
       else if (strLeft.Left(6) == "length")
       {
         vector <int>::size_type idx = atoi(strLeft.c_str() + 6);
-        if (idx > m_vecItems.size()) {
-          iMaxSize = idx;
-          m_vecItems.resize(idx);
-        }
+        Resize(idx);
         m_vecItems[idx - 1]->GetMusicInfoTag()->SetDuration(atol(strValue.c_str()));
       }
       else if (strLeft == "playlistname")
@@ -172,7 +162,6 @@ bool CPlayListPLS::Load(const CStdString &strFile)
     }
   }
   file.Close();
-  m_vecItems.resize(iMaxSize);
 
   // check for missing entries
   ivecItems p = m_vecItems.begin();
@@ -184,7 +173,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
     }
     else
     {
-       ++p;
+      ++p;
     }
   }
 
@@ -202,7 +191,7 @@ void CPlayListPLS::Save(const CStdString& strFileName) const
   if (!fd)
   {
     CLog::Log(LOGERROR, "Could not save PLS playlist: [%s]", strPlaylist.c_str());
-    return ;
+    return;
   }
   fprintf(fd, "%s\n", START_PLAYLIST_MARKER);
   CStdString strPlayListName=m_strPlayListName;
@@ -393,4 +382,13 @@ bool CPlayListRAM::LoadData(std::istream& stream)
   newItem->m_strPath = strMMS;
   Add(newItem);
   return true;
+}
+
+void CPlayListPLS::Resize(vector <int>::size_type newSize)
+{
+  while (m_vecItems.size() < newSize)
+  {
+    CFileItemPtr fileItem(new CFileItem());
+    m_vecItems.push_back(fileItem);
+  }
 }
