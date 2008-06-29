@@ -31,6 +31,7 @@ public:
   virtual ~CPlayListPLS(void);
   virtual bool Load(const CStdString& strFileName);
   virtual void Save(const CStdString& strFileName) const;
+  virtual void Resize(std::vector<int>::size_type newSize);
 };
 
 class CPlayListASX : public CPlayList
