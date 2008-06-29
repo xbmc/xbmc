@@ -24,9 +24,10 @@
 #include "utils/CharsetConverter.h"
 #include <limits>
 
-CGUIListLabel::CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool alwaysScroll)
+CGUIListLabel::CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool alwaysScroll, int scrollSpeed)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
     , m_textLayout(labelInfo.font, false)
+    , m_scrollInfo(50, 0, scrollSpeed)
 {
   m_selected = false;
   m_scrolling = m_alwaysScroll = alwaysScroll;

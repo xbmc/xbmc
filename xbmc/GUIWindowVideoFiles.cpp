@@ -629,14 +629,9 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
               buttons.Add(CONTEXT_BUTTON_INFO, infoString);
           }
           else
-          { // scraper found - allow to add to library, scan for new content, or set different type of content
+          { // scraper found - allow movie information, scan for new content, or set different type of content
             if (!info.strContent.Equals("musicvideos"))
               buttons.Add(CONTEXT_BUTTON_INFO, infoString);
-            else
-            {
-              if (!item->IsPlayList())
-                buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
-            }
             if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
               if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
                 buttons.Add(CONTEXT_BUTTON_SCAN, 13349);

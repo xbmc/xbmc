@@ -43,7 +43,7 @@ class CGUIListItemLayout
   class CListLabel : public CListBase
   {
   public:
-    CListLabel(float posX, float posY, float width, float height, int visibleCondition, const CLabelInfo &label, bool alwyasScroll, const CGUIInfoLabel &content, const std::vector<CAnimation> &animations);
+    CListLabel(float posX, float posY, float width, float height, int visibleCondition, const CLabelInfo &label, bool alwyasScroll, int scrollSpeed, const CGUIInfoLabel &content, const std::vector<CAnimation> &animations);
     virtual ~CListLabel();
 
     CGUIListLabel m_label;

@@ -32,108 +32,6 @@ using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace PLAYLIST;
-/*
-CPlayListItem::CPlayListItem() : m_lDuration(0)
-{
-  m_lStartOffset = 0;
-  m_lEndOffset = 0;
-  m_bUnPlayable = false;
-	m_iprogramCount = 0;
-}
-
-CPlayListItem::CPlayListItem(const CStdString& strDescription, const CStdString& strFileName, long lDuration, long lStartOffset, long lEndOffset)
-{
-  m_strLabel = strDescription;
-  m_strPath = strFileName;
-  m_lDuration = lDuration;
-  m_lStartOffset = lStartOffset;
-  m_lEndOffset = lEndOffset;
-  m_bUnPlayable = false;
-	m_iprogramCount = 0;
-}
-
-CPlayListItem::~CPlayListItem()
-{}
-
-void CPlayListItem::SetFileName(const CStdString& strFileName)
-{
-  m_strPath = strFileName;
-}
-
-const CStdString& CPlayListItem::GetFileName() const
-{
-  return m_strPath;
-}
-
-void CPlayListItem::SetDescription(const CStdString& strDescription)
-{
-  m_strLabel = strDescription;
-}
-
-const CStdString& CPlayListItem::GetDescription() const
-{
-  return m_strLabel;
-}
-
-void CPlayListItem::SetDuration(long lDuration)
-{
-  m_lDuration = lDuration;
-}
-
-long CPlayListItem::GetDuration() const
-{
-  return m_lDuration;
-}
-
-void CPlayListItem::SetStartOffset(long lStartOffset)
-{
-  m_lStartOffset = lStartOffset;
-}
-
-long CPlayListItem::GetStartOffset() const
-{
-  return m_lStartOffset;
-}
-
-void CPlayListItem::SetEndOffset(long lEndOffset)
-{
-  m_lEndOffset = lEndOffset;
-}
-
-long CPlayListItem::GetEndOffset() const
-{
-  return m_lEndOffset;
-}
-
-void CPlayListItem::SetMusicTag(const CMusicInfoTag &tag)
-{
-  *GetMusicInfoTag() = tag;
-}
-
-void CPlayListItem::SetVideoTag(const CVideoInfoTag &tag)
-{
-  *GetVideoInfoTag() = tag;
-}
-
-bool CPlayListItem::LoadMusicTag()
-{
-  if (CFileItem::LoadMusicTag())
-  {
-    SetDuration(GetMusicInfoTag()->GetDuration());
-    return true;
-  }
-  return false;
-}
-
-const CMusicInfoTag* CPlayListItem::GetMusicTag() const
-{
-  return GetMusicInfoTag();
-}
-
-const CVideoInfoTag* CPlayListItem::GetVideoTag() const
-{
-  return GetVideoInfoTag();
-}*/
 
 CPlayList::CPlayList(void)
 {
@@ -157,6 +55,10 @@ void CPlayList::Add(const CFileItemPtr &item, int iPosition, int iOrder)
     item->m_iprogramCount = iOldSize;
 	else
 		item->m_iprogramCount = iOrder;
+
+  // videodb files are not supported by the filesystem as yet
+  if (item->IsVideoDb())
+    item->m_strPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
 
   // increment the playable counter
   item->ClearProperty("unplayable");
@@ -421,7 +323,6 @@ bool CPlayList::Swap(int position1, int position2)
     return false;
   }
 
-  int iOrder = -1;
   if (!IsShuffled())
   {
     // swap the ordinals before swapping the items!

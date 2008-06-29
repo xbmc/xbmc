@@ -33,6 +33,25 @@
 			<align>left</align>
 			<label>10506</label>
 			<font>special13</font>
+			<visible>IsEmpty(Container.PluginName)</visible>
+		</control>
+		<control type="label">
+			<description>description label</description>
+			<posx>207</posx>
+			<posy>43</posy>
+			<align>left</align>
+			<info>Container.PluginName</info>
+			<font>special13</font>
+			<visible>!IsEmpty(Container.PluginName)</visible>
+		</control>
+		<control type="label">
+			<description>Category Label</description>
+			<posx>670</posx>
+			<posy>43</posy>
+			<align>right</align>
+            <info>Container.Property(PluginCategory)</info>
+			<font>special13</font>
+			<visible>!IsEmpty(Container.Property(PluginCategory))</visible>
 		</control>
 		<include>contentpanel</include>
 		<control type="label" id="12">

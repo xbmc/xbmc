@@ -555,7 +555,7 @@ bool CFileItem::IsInternetStream() const
       strProtocol == "http" || /*strProtocol == "ftp" ||*/
       strProtocol == "rtsp" || strProtocol == "rtp" ||
       strProtocol == "udp"  || strProtocol == "lastfm" ||
-      strProtocol == "https")
+      strProtocol == "https" || strProtocol == "rtmp")
     return true;
 
   return false;
@@ -1564,6 +1564,15 @@ int CFileItemList::GetFolderCount() const
   return nFolderCount;
 }
 
+int CFileItemList::GetObjectCount() const
+{
+  int numObjects = (int)m_items.size();
+  if (numObjects && m_items[0]->IsParentFolder())
+    numObjects--;
+
+  return numObjects;
+}
+
 int CFileItemList::GetFileCount() const
 {
   int nFileCount = 0;
@@ -1751,7 +1760,8 @@ void CFileItemList::Stack()
 
   // stack folders
   bool isDVDFolder(false);
-  for (int i = 0; i < Size(); ++i)
+  int i = 0;
+  for (i = 0; i < Size(); ++i)
   {
     CFileItemPtr item = Get(i);
     if (item->GetLabel().Equals("VIDEO_TS.IFO"))
@@ -2324,25 +2334,55 @@ void CFileItem::SetUserVideoThumb()
 /// and cache that image as our fanart.
 void CFileItem::CacheVideoFanart() const
 {
+  if (IsVideoDb())
+  {
+    CFileItem dbItem(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath, m_bIsFolder);
+    return dbItem.CacheVideoFanart();
+  }
   CStdString cachedFanart(GetCachedVideoFanart());
   // First check for an already cached fanart image
   if (CFile::Exists(cachedFanart))
     return;
   // We don't have a cached image, so let's see if the user has a local image they want to use
-  CStdString folderFanart(GetFolderThumb("fanart.png"));
-  if (!CFile::Exists(folderFanart))
+
+  CStdString localFanart;
+  if (m_bIsFolder)
   {
-    folderFanart = GetFolderThumb("fanart.jpg");
-    if (!CFile::Exists(folderFanart))
-      return;
+    localFanart = GetFolderThumb("fanart.png");
+    if (!CFile::Exists(localFanart))
+    {
+      localFanart = GetFolderThumb("fanart.jpg");
+      if (!CFile::Exists(localFanart))
+        return;
+    }
+  }
+  else
+  {    
+    if (CUtil::IsStack(m_strPath))
+      localFanart = CStackDirectory::GetStackedTitlePath(m_strPath);
+    else
+      localFanart = m_strPath;
+     
+    CUtil::RemoveExtension(localFanart);
+    if (CFile::Exists(localFanart+"-fanart.jpg"))
+      localFanart = localFanart+"-fanart.jpg";
+    else
+    {
+      if (CFile::Exists(localFanart+"-fanart.png"))
+        localFanart = localFanart+"-fanart.png";
+      else
+        return;
+    }
   }
   CPicture pic;
-  pic.CacheImage(folderFanart, cachedFanart);
+  pic.CacheImage(localFanart, cachedFanart);
 }
 
 CStdString CFileItem::GetCachedVideoFanart() const
 {
   // get the locally cached thumb
+  if (IsVideoDb())
+    return CFileItem::GetCachedVideoFanart(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath);
   return CFileItem::GetCachedVideoFanart(m_strPath);
 }
 

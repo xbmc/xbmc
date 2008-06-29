@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<scraper content="movies" name="FilmAffinity.es" thumb="filmaffinity.gif">
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<scraper content="movies" name="FilmAffinity.es (Spanish)" thumb="filmaffinity.gif">
   <NfoUrl dest="3">
     <RegExp dest="3" input="$$1" output="&lt;url&gt;http://www.filmaffinity.com/es/film\1.html/&lt;/url&gt;">
       <expression noclean="1">filmaffinity.com/es/film([0-9]*)</expression>
     </RegExp>
   </NfoUrl>
-  <CreateSearchUrl dest="3">
+  <CreateSearchUrl dest="3" SearchStringEncoding="iso-8859-1">
       <RegExp dest="3" input="$$1" output="&lt;url&gt;http://www.filmaffinity.com/es/search.php?stext=\1&amp;amp;stype=title&lt;/url&gt;">
         <expression noclean="1"></expression>
       </RegExp>
@@ -89,7 +89,7 @@
         <RegExp input="$$1" output="\1" dest="9">
           <expression noclean="1">&lt;b&gt;PA.S&lt;/b&gt;&lt;/td&gt;(.*)&lt;b&gt;DIRECTOR&lt;/b&gt;</expression>
         </RegExp>
-        <expression repeat="yes">alt="([^"]+)</expression>
+        <expression repeat="yes">title="([^"]+)</expression>
       </RegExp>
       <RegExp input="$$9" output="\1&lt;/tagline&gt;" dest="5+">
         <RegExp input="$$1" output="\1" dest="9">
