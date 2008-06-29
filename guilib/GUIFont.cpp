@@ -45,19 +45,10 @@ float CScrollInfo::GetPixelsPerFrame()
   DWORD currentTime = timeGetTime();
   float delta = m_lastFrameTime ? (float)(currentTime - m_lastFrameTime) : m_averageFrameTime;
   m_lastFrameTime = currentTime;
-  // do an exponential moving average
+  // do an exponential moving average of the frame time
   m_averageFrameTime = m_averageFrameTime + (delta - m_averageFrameTime) * alphaEMA;
-/*    if(scrollInfo.numframes<20)
-  {
-    scrollInfo.numframes++;
-    scrollInfo.m_avgDiff=(scrollInfo.m_avgDiff*(scrollInfo.numframes-1)+diff)/scrollInfo.numframes;
-  }
-  else
-  {
-    if((diff-scrollInfo.m_avgDiff)/scrollInfo.m_avgDiff<0.05 && (diff-scrollInfo.m_avgDiff)/scrollInfo.m_avgDiff>-0.05)
-scrollInfo.m_avgDiff=(diff-scrollInfo.m_avgDiff)*(1/500.0)+scrollInfo.m_avgDiff;
-  }*/
-  return pixelSpeed * m_averageFrameTime; // pixelSpeed = pixels per ms
+  // and multiply by pixel speed (per ms) to get number of pixels to move this frame
+  return pixelSpeed * m_averageFrameTime;
 }
 
 CGUIFont::CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, DWORD shadowColor, float lineSpacing, CGUIFontTTF *font)
