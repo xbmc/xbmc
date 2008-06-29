@@ -24,45 +24,6 @@
 
 namespace PLAYLIST
 {
-/*  class CPlayListItem : public CFileItem
-  {
-  public:
-    CPlayListItem();
-    CPlayListItem(const CStdString& strDescription, const CStdString& strFileName, long lDuration = 0, long lStartOffset = 0, long lEndOffset = 0);
-
-    virtual ~CPlayListItem();
-
-    void SetFileName(const CStdString& strFileName);
-    const CStdString& GetFileName() const;
-
-    void SetDescription(const CStdString& strDescription);
-    const CStdString& GetDescription() const;
-
-    void SetDuration(long lDuration);
-    long GetDuration() const;
-
-    void SetStartOffset(long lStartOffset);
-    long GetStartOffset() const;
-
-    void SetEndOffset(long lEndOffset);
-    long GetEndOffset() const;
-
-    virtual bool LoadMusicTag();
-
-    void SetMusicTag(const MUSIC_INFO::CMusicInfoTag &tag);
-    void SetVideoTag(const CVideoInfoTag &tag);
-    const MUSIC_INFO::CMusicInfoTag* GetMusicTag() const;
-    const CVideoInfoTag* GetVideoTag() const;
-
-    bool IsUnPlayable() const;
-    void SetUnPlayable() { m_bUnPlayable = true; };
-    void ClearUnPlayable() { m_bUnPlayable = false; };
-
-  protected:
-    long m_lDuration;
-    bool m_bUnPlayable;
-  };*/
-
 class CPlayList
 {
 public:
