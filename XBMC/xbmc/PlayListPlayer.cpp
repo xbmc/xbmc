@@ -49,9 +49,7 @@ CPlayListPlayer::CPlayListPlayer(void)
 
 CPlayListPlayer::~CPlayListPlayer(void)
 {
-  m_PlaylistMusic->Clear();
-  m_PlaylistVideo->Clear();
-  m_PlaylistEmpty->Clear();
+  Clear();
   delete m_PlaylistMusic;
   delete m_PlaylistVideo;
   delete m_PlaylistEmpty;
@@ -539,4 +537,20 @@ void CPlayListPlayer::Add(int iPlaylist, CFileItemList& items)
   list.Add(items);
 	if (list.IsShuffled())
 		ReShuffle(iPlaylist, iSize);
+}
+
+void CPlayListPlayer::Clear()
+{
+  if (m_PlaylistMusic)
+  {
+    m_PlaylistMusic->Clear();
+  }
+  if (m_PlaylistVideo)
+  {
+    m_PlaylistVideo->Clear();
+  }
+  if (m_PlaylistEmpty)
+  {
+    m_PlaylistEmpty->Clear();
+  }
 }

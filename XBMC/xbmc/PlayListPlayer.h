@@ -61,6 +61,7 @@ public:
   int RemoveDVDItems();
   void Reset();
   void ClearPlaylist(int iPlaylist);
+  void Clear();
   void SetShuffle(int iPlaylist, bool bYesNo);
   bool IsShuffled(int iPlaylist);
   bool HasPlayedFirstFile();
