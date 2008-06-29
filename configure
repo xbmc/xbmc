@@ -682,6 +682,7 @@ EGREP
 ALLOCA
 LIBOBJS
 POW_LIB
+ARCH_DEFINES
 ARCH
 DEBUG_FLAGS
 SDL_DEFINES
@@ -6469,6 +6470,78 @@ fi
 
 fi
 
+if test "$host_cpu" = "powerpc" ; then
+
+{ echo "$as_me:$LINENO: checking for main in -lpython2.4" >&5
+echo $ECHO_N "checking for main in -lpython2.4... $ECHO_C" >&6; }
+if test "${ac_cv_lib_python2_4_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpython2.4  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_python2_4_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_python2_4_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_python2_4_main" >&5
+echo "${ECHO_T}$ac_cv_lib_python2_4_main" >&6; }
+if test $ac_cv_lib_python2_4_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBPYTHON2_4 1
+_ACEOF
+
+  LIBS="-lpython2.4 $LIBS"
+
+else
+  { { echo "$as_me:$LINENO: error: == Could not find a required library. Please see README.linux" >&5
+echo "$as_me: error: == Could not find a required library. Please see README.linux" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+fi
+
 # Checks for header files.
 
 
@@ -9841,11 +9914,13 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <stdio.h>
+#include <sys/types.h> /* for off_t */
+     #include <stdio.h>
 int
 main ()
 {
-return fseeko (stdin, 0, 0) && (fseeko) (stdin, 0, 0);
+int (*fp) (FILE *, off_t, int) = fseeko;
+     return fseeko (stdin, 0, 0) && fp (stdin, 0, 0);
   ;
   return 0;
 }
@@ -9885,11 +9960,13 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #define _LARGEFILE_SOURCE 1
-#include <stdio.h>
+#include <sys/types.h> /* for off_t */
+     #include <stdio.h>
 int
 main ()
 {
-return fseeko (stdin, 0, 0) && (fseeko) (stdin, 0, 0);
+int (*fp) (FILE *, off_t, int) = fseeko;
+     return fseeko (stdin, 0, 0) && fp (stdin, 0, 0);
   ;
   return 0;
 }
@@ -13031,6 +13108,16 @@ case $host in
     i386-apple-darwin9.2.2)
        ARCH="x86-osx"
        ;;
+    powerpc-*-linux-gnu)
+       ARCH="powerpc-linux"
+       ARCH_DEFINES="-D_POWERPC"
+
+       ;;
+    powerpc64-*-linux-gnu)
+       ARCH="powerpc64-linux"
+       ARCH_DEFINES="-D_POWERPC64"
+
+       ;;
     *)
        { { echo "$as_me:$LINENO: error: ==unsupported host" >&5
 echo "$as_me: error: ==unsupported host" >&2;}
@@ -13760,6 +13847,7 @@ EGREP!$EGREP$ac_delim
 ALLOCA!$ALLOCA$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
 POW_LIB!$POW_LIB$ac_delim
+ARCH_DEFINES!$ARCH_DEFINES$ac_delim
 ARCH!$ARCH$ac_delim
 DEBUG_FLAGS!$DEBUG_FLAGS$ac_delim
 SDL_DEFINES!$SDL_DEFINES$ac_delim
@@ -13767,7 +13855,7 @@ LZO_INCLUDES!$LZO_INCLUDES$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 71; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 72; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
