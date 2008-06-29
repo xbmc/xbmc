@@ -36,6 +36,30 @@ namespace MathUtils {
 #define ROUND roundf
 #endif
 
+float CScrollInfo::GetPixelsPerFrame()
+{
+  static const float alphaEMA = 0.01f;
+
+  if (0 == pixelSpeed)
+    return 0; // not scrolling
+  DWORD currentTime = timeGetTime();
+  float delta = m_lastFrameTime ? (float)(currentTime - m_lastFrameTime) : m_averageFrameTime;
+  m_lastFrameTime = currentTime;
+  // do an exponential moving average
+  m_averageFrameTime = m_averageFrameTime + (delta - m_averageFrameTime) * alphaEMA;
+/*    if(scrollInfo.numframes<20)
+  {
+    scrollInfo.numframes++;
+    scrollInfo.m_avgDiff=(scrollInfo.m_avgDiff*(scrollInfo.numframes-1)+diff)/scrollInfo.numframes;
+  }
+  else
+  {
+    if((diff-scrollInfo.m_avgDiff)/scrollInfo.m_avgDiff<0.05 && (diff-scrollInfo.m_avgDiff)/scrollInfo.m_avgDiff>-0.05)
+scrollInfo.m_avgDiff=(diff-scrollInfo.m_avgDiff)*(1/500.0)+scrollInfo.m_avgDiff;
+  }*/
+  return pixelSpeed * m_averageFrameTime; // pixelSpeed = pixels per ms
+}
+
 CGUIFont::CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, DWORD shadowColor, float lineSpacing, CGUIFontTTF *font)
 {
   m_strFontName = strFontName;
@@ -105,29 +129,31 @@ void CGUIFont::DrawScrollingText(float x, float y, const std::vector<DWORD> &col
   //   We scroll on a per-pixel basis up until we have scrolled the first character outside
   //   of our viewport, whereby we cycle the string around, and reset the scroll position.
   //
-  //   m_PixelScroll is the amount in pixels to move the string by.
-  //   m_CharacterScroll is the amount in characters to rotate the string by.
+  //   pixelPos is the amount in pixels to move the string by.
+  //   characterPos is the amount in characters to rotate the string by.
   //
   if (!scrollInfo.waitTime)
   {
-    // First update our m_PixelScroll...
-    DWORD ch;
-    if (scrollInfo.characterPos < text.size())
-      ch = text[scrollInfo.characterPos];
-    else if (scrollInfo.characterPos < text.size() + scrollInfo.suffix.size())
-      ch = scrollInfo.suffix[scrollInfo.characterPos - text.size()];
+    // move along by the appropriate scroll amount
+    float scrollAmount = scrollInfo.GetPixelsPerFrame() * g_graphicsContext.GetGUIScaleX();
+    // we want to move scrollAmount, grab the next character
+    float charWidth = GetCharWidth(scrollInfo.GetCurrentChar(text));
+    if (scrollInfo.pixelPos + scrollAmount < charWidth)
+      scrollInfo.pixelPos += scrollAmount;  // within the current character
     else
-      ch = text[0];
-    float charWidth = GetCharWidth(ch);
-    float scrollAmount = scrollInfo.pixelSpeed * g_graphicsContext.GetGUIScaleX();
-    if (scrollInfo.pixelPos < charWidth - scrollAmount)
-      scrollInfo.pixelPos += scrollAmount;
-    else
-    {
-      scrollInfo.pixelPos -= (charWidth - scrollAmount);
-      scrollInfo.characterPos++;
-      if (scrollInfo.characterPos >= text.size() + scrollInfo.suffix.size())
-        scrollInfo.Reset();
+    { // past the current character, decrement scrollAmount by the charWidth and move to the next character
+      while (scrollInfo.pixelPos + scrollAmount > charWidth)
+      {
+        scrollAmount -= (charWidth - scrollInfo.pixelPos);
+        scrollInfo.pixelPos = 0;
+        scrollInfo.characterPos++;
+        if (scrollInfo.characterPos >= text.size() + scrollInfo.suffix.size())
+        {
+          scrollInfo.Reset();
+          break;
+        }
+        charWidth = GetCharWidth(scrollInfo.GetCurrentChar(text));
+      }
     }
   }
   else
