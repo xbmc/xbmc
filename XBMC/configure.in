@@ -282,7 +282,7 @@ case $host in
     x86_64-*-linux-gnu)
        ARCH="x86_64-linux"
        ;;
-    i386-apple-darwin9.2.2)
+    i386-apple-darwin*)
        ARCH="x86-osx"
        ;;
     powerpc-*-linux-gnu)
@@ -331,7 +331,7 @@ AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(SDL_DEFINES)
 AC_SUBST(LZO_INCLUDES)
 AC_CONFIG_FILES([Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile])
-AC_CONFIG_COMMANDS_POST([pushd xbmc/lib/libPython/Python; ./configure --enable-ipv6 --enable-unicode=ucs4 --without-cxx --enable-shared --prefix=`pwd`/../linux/python-lib; sed -i "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h; cp pyconfig.h Include; popd])
+AC_CONFIG_COMMANDS_POST([pushd xbmc/lib/libPython/Python; ./configure --enable-ipv6 --enable-unicode=ucs4 --without-cxx --enable-shared --prefix=`pwd`/../linux/python-lib MACOSX_DEPLOYMENT_TARGET=10.5; sed -i bak -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h; cp pyconfig.h Include; popd])
 AC_OUTPUT
 
 final_message="$final_message\n  prefix:\t$prefix\n$dashes"
