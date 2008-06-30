@@ -1,9 +1,0 @@
-LoadTool('gcc-generic', env, gcc_cross_prefix='arm-linux')
-
-## change exec suffix
-env['PROGSUFFIX'] = '.gpe'
-
-### Neptune System Files
-env['NPT_SYSTEM_SOURCES']={'System/StdC':'*.cpp', 'System/Bsd':'*.cpp', 'System/Posix':'*.cpp'}
-env['NPT_EXTRA_LIBS']=['pthread']
-
