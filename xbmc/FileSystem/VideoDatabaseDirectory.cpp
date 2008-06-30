@@ -51,12 +51,13 @@ bool CVideoDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
   bool bResult = pNode->GetChilds(items);
   for (int i=0;i<items.Size();++i)
   {
-    if (items[i]->m_bIsFolder && !items[i]->HasThumbnail())
+    CFileItemPtr item = items[i];
+    if (item->m_bIsFolder && !item->HasThumbnail())
     {
-      CStdString strImage = GetIcon(items[i]->m_strPath);
-      if (g_TextureManager.Load(strImage))
+      CStdString strImage = GetIcon(item->m_strPath);
+      if (!strImage.IsEmpty() && g_TextureManager.Load(strImage))
       {
-        items[i]->SetThumbnailImage(strImage);
+        item->SetThumbnailImage(strImage);
         g_TextureManager.ReleaseTexture(strImage);
       }
     }
