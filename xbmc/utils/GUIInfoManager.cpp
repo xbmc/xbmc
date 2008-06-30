@@ -360,6 +360,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.platform.linux")) ret = SYSTEM_PLATFORM_LINUX;
     else if (strTest.Equals("system.platform.xbox")) ret = SYSTEM_PLATFORM_XBOX;
     else if (strTest.Equals("system.platform.windows")) ret = SYSTEM_PLATFORM_WINDOWS;
+    else if (strTest.Equals("system.platform.osx")) ret = SYSTEM_PLATFORM_OSX;
     else if (strTest.Left(15).Equals("system.getbool("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_GET_BOOL : SYSTEM_GET_BOOL, ConditionalStringParameter(strTest.Mid(15,strTest.size()-16)), 0));
     else if (strTest.Left(17).Equals("system.coreusage("))
@@ -1515,27 +1516,25 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     CacheBool(condition1,dwContextWindow,bReturn,true);
   }
   else if (condition == SYSTEM_PLATFORM_LINUX)
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
     bReturn = true;
 #else
     bReturn = false;
 #endif
   else if (condition == SYSTEM_PLATFORM_WINDOWS)
 #ifdef WIN32
+    bReturn = true;
+#else
+    bReturn = false;
+#endif
+  else if (condition == SYSTEM_PLATFORM_OSX)
+#ifdef __APPLE__
     bReturn = true;
 #else
     bReturn = false;
 #endif
   else if (condition == SYSTEM_PLATFORM_XBOX)
     bReturn = false;
-  else if (condition == SYSTEM_PLATFORM_LINUX)
-    bReturn = false;
-  else if (condition == SYSTEM_PLATFORM_WINDOWS)
-#ifdef WIN32
-    bReturn = true;
-#else
-    bReturn = false;
-#endif
   else if (condition == SYSTEM_MEDIA_DVD)
   {
     // we must: 1.  Check tray state.
