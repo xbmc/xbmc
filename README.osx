@@ -43,7 +43,8 @@ Install MacPorts (http://www.macports.org/). Then install the following
 packages from the Terminal window:
 
 	$ sudo port install glew freetype fribidi libcdio lzo python24 libsdl libsdl_image 
-	$ sudo port install libsdl_mixer mysql5-devel pcre samba3 fontconfig libmad portaudio
+	$ sudo port install libsdl_mixer mysql5-devel pcre samba3 fontconfig libmad portaudio bzip2 jam
+	$ sudo port install boost
 
 -----------------------------------------------------------------------------
 3.1 Fix two MacPorts package default install locations with sym links
