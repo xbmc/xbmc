@@ -27,6 +27,7 @@
 #include "TextureManager.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace XFILE;
@@ -205,21 +206,33 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
   return true;
 }
 
-CStdString CVideoDatabaseDirectory::GetIcon(const CStdString& strDirectory)
+CStdString CVideoDatabaseDirectory::GetIcon(const CStdString &strDirectory)
 {
   switch (GetDirectoryChildType(strDirectory))
   {
   case NODE_TYPE_TITLE_MOVIES:
     if (strDirectory.Equals("videodb://1/2/"))
+    {
+      if (g_stSettings.m_bMyVideoNavFlatten)
+        return "DefaultMovies.png";
       return "DefaultMovieTitle.png";
+    }
     return "";
   case NODE_TYPE_TITLE_TVSHOWS:
     if (strDirectory.Equals("videodb://2/2/"))
+    {
+      if (g_stSettings.m_bMyVideoNavFlatten)
+        return "DefaultTvshows.png";
       return "DefaultTvshowTitle.png";
+    }
     return "";
   case NODE_TYPE_TITLE_MUSICVIDEOS:
     if (strDirectory.Equals("videodb://3/2/"))
+    {
+      if (g_stSettings.m_bMyVideoNavFlatten)
+        return "DefaultMusicVideos.png";
       return "DefaultMusicVideoTitle.png";
+    }
     return "";
   case NODE_TYPE_ACTOR: // Actor
     return "DefaultActor.png";
