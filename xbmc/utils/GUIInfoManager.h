@@ -357,6 +357,7 @@ class CGUIListItem;
 #define SYSTEM_PLATFORM_XBOX        740
 #define SYSTEM_PLATFORM_LINUX       741
 #define SYSTEM_PLATFORM_WINDOWS     742
+#define SYSTEM_PLATFORM_OSX         743
 
 #define SKIN_THEME                  800
 #define SKIN_COLOUR_THEME           801
