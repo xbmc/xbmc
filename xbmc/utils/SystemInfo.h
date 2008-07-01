@@ -60,7 +60,7 @@ class CSysInfo : public CInfoLoader
     CStdString GetCPUFreqInfo();
     CStdString GetXBVerInfo();
     CStdString GetMACAddress();
-    bool GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
+    const bool GetDiskSpace(const CStdString drive, int &iTotal, int &iTotalFree, int &iTotalUsed, int &iPercentFree, int &iPercentUsed);
     CStdString GetHddSpaceInfo(int& percent, int drive, bool shortText=false);
     CStdString GetHddSpaceInfo(int drive, bool shortText=false);
     CStdString GetInternetState();
