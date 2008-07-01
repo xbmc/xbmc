@@ -196,7 +196,7 @@ int CWebServer::initWebs()
 	#ifdef USER_MANAGEMENT_SUPPORT
 		umOpen();
 		basicSetProductDir(m_szRootWeb);
-		umRestore("umconfig.txt"); // only change this if done in the go-ahead source too
+		umRestore((char*)"umconfig.txt"); // only change this if done in the go-ahead source too
 	#endif
 
   // set callbacks for spyce parser
@@ -210,7 +210,7 @@ int CWebServer::initWebs()
 	websSetIpaddr((char*)m_szLocalAddress);
 	websSetHost((char*)m_szLocalAddress);
 	websSetDefaultDir(m_szRootWeb);
-	websSetDefaultPage(T("default.asp"));
+	websSetDefaultPage(T((char*)"default.asp"));
 
 	/* 
 	 * Open the web server on the given port. If that port is taken, try
@@ -227,19 +227,19 @@ int CWebServer::initWebs()
 	 *	with the longest path handler examined first. Here we define the security 
 	 *	handler, forms handler and the default web page handler.
 	 */
-	websUrlHandlerDefine(T(""), NULL, 0, websSecurityHandler, WEBS_HANDLER_FIRST);
-	websUrlHandlerDefine(T("/goform"), NULL, 0, websFormHandler, 0);
-	websUrlHandlerDefine(T("/xbmcCmds"), NULL, 0, websFormHandler, 0);
-	websUrlHandlerDefine(T(""), NULL, 0, websDefaultHandler, WEBS_HANDLER_LAST); 
+	websUrlHandlerDefine(T((char*)""), NULL, 0, websSecurityHandler, WEBS_HANDLER_FIRST);
+	websUrlHandlerDefine(T((char*)"/goform"), NULL, 0, websFormHandler, 0);
+	websUrlHandlerDefine(T((char*)"/xbmcCmds"), NULL, 0, websFormHandler, 0);
+	websUrlHandlerDefine(T((char*)""), NULL, 0, websDefaultHandler, WEBS_HANDLER_LAST); 
 
 	/*
 	 *	Now define two test procedures. Replace these with your application
 	 *	relevant ASP script procedures and form functions.
 	 */
-	websAspDefine(T("aspTest"), aspTest);
-	websFormDefine(T("formTest"), formTest);
-	websFormDefine(T("xbmcForm"), XbmcWebsForm);
-	websFormDefine(T("xbmcHttp"), XbmcHttpCommand);
+	websAspDefine(T((char*)"aspTest"), aspTest);
+	websFormDefine(T((char*)"formTest"), formTest);
+	websFormDefine(T((char*)"xbmcForm"), XbmcWebsForm);
+	websFormDefine(T((char*)"xbmcHttp"), XbmcHttpCommand);
 
 	//Create the Form handlers for the User Management pages
 	#ifdef USER_MANAGEMENT_SUPPORT
@@ -247,21 +247,21 @@ int CWebServer::initWebs()
 	#endif
 
 	// asp commands for xbmc
-	websAspDefine(T("xbmcCommand"), XbmcWebsAspCommand);
-  websAspDefine(T("xbmcAPI"), XbmcAPIAspCommand);
+	websAspDefine(T((char*)"xbmcCommand"), XbmcWebsAspCommand);
+  websAspDefine(T((char*)"xbmcAPI"), XbmcAPIAspCommand);
 
 	// asp command for xbmc Configuration
-	websAspDefine(T("xbmcCfgBookmarkSize"), XbmcWebsAspConfigBookmarkSize);
-	websAspDefine(T("xbmcCfgGetBookmark"), XbmcWebsAspConfigGetBookmark);
-	websAspDefine(T("xbmcCfgAddBookmark"), XbmcWebsAspConfigAddBookmark);
-	websAspDefine(T("xbmcCfgSaveBookmark"), XbmcWebsAspConfigSaveBookmark);
-	websAspDefine(T("xbmcCfgRemoveBookmark"), XbmcWebsAspConfigRemoveBookmark);
-	websAspDefine(T("xbmcCfgSaveConfiguration"), XbmcWebsAspConfigSaveConfiguration);
-	websAspDefine(T("xbmcCfgGetOption"), XbmcWebsAspConfigGetOption);
-	websAspDefine(T("xbmcCfgSetOption"), XbmcWebsAspConfigSetOption);
+	websAspDefine(T((char*)"xbmcCfgBookmarkSize"), XbmcWebsAspConfigBookmarkSize);
+	websAspDefine(T((char*)"xbmcCfgGetBookmark"), XbmcWebsAspConfigGetBookmark);
+	websAspDefine(T((char*)"xbmcCfgAddBookmark"), XbmcWebsAspConfigAddBookmark);
+	websAspDefine(T((char*)"xbmcCfgSaveBookmark"), XbmcWebsAspConfigSaveBookmark);
+	websAspDefine(T((char*)"xbmcCfgRemoveBookmark"), XbmcWebsAspConfigRemoveBookmark);
+	websAspDefine(T((char*)"xbmcCfgSaveConfiguration"), XbmcWebsAspConfigSaveConfiguration);
+	websAspDefine(T((char*)"xbmcCfgGetOption"), XbmcWebsAspConfigGetOption);
+	websAspDefine(T((char*)"xbmcCfgSetOption"), XbmcWebsAspConfigSetOption);
 
 	// Create a handler for the default home page
-	websUrlHandlerDefine(T("/"), NULL, 0, websHomePageHandler, 0); 
+	websUrlHandlerDefine(T((char*)"/"), NULL, 0, websHomePageHandler, 0); 
 
   CLog::Log(LOGNOTICE, "Webserver: Started");
 	return 0;
@@ -348,17 +348,17 @@ void CWebServer::SetPassword(const char* strPassword)
   if (strPassword && strlen(strPassword) > 0)
   {  
     // create group
-    umAddGroup(WEBSERVER_UM_GROUP, PRIV_READ | PRIV_WRITE | PRIV_ADMIN, AM_BASIC, false, false);
+    umAddGroup((char*)WEBSERVER_UM_GROUP, PRIV_READ | PRIV_WRITE | PRIV_ADMIN, AM_BASIC, false, false);
     
     // greate user
-    umAddUser("xbox", (char_t*)strPassword, WEBSERVER_UM_GROUP, false, false);
+    umAddUser((char*)"xbox", (char_t*)strPassword, (char*)WEBSERVER_UM_GROUP, false, false);
     
     // create access limit
-    umAddAccessLimit("/", AM_BASIC, 0, WEBSERVER_UM_GROUP);
+    umAddAccessLimit((char*)"/", AM_BASIC, 0, (char*)WEBSERVER_UM_GROUP);
   }
 
   // save new information in database
-  umCommit("umconfig.txt");
+  umCommit((char*)"umconfig.txt");
   umClose();
 }
 
@@ -366,12 +366,12 @@ char* CWebServer::GetPassword()
 {
   // wait until the webserver is ready
   if( WaitForSingleObject(m_hEvent, 5000) != WAIT_OBJECT_0 ) 
-    return "";
+    return (char*)"";
 
-  char* pPass = "";
+  char* pPass = (char*)"";
   
   umOpen();
-  if (umUserExists("xbox")) pPass = umGetUserPassword("xbox");
+  if (umUserExists((char*)"xbox")) pPass = umGetUserPassword((char*)"xbox");
   
   umClose();
   
@@ -451,10 +451,10 @@ static int websHomePageHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
 
 		sort(vecFiles.begin(), vecFiles.end());
 
-		websWrite(wp, "%s", "<title>Directory listing for /</title>\n");
-		websWrite(wp, "%s", "<h2>Directory listing for /</h2>\n");
-		websWrite(wp, "%s", "<hr>\n");
-		websWrite(wp, "%s", "<ul>\n");
+		websWrite(wp, (char*)"%s", (char*)"<title>Directory listing for /</title>\n");
+		websWrite(wp, (char*)"%s", (char*)"<h2>Directory listing for /</h2>\n");
+		websWrite(wp, (char*)"%s", (char*)"<hr>\n");
+		websWrite(wp, (char*)"%s", (char*)"<ul>\n");
 		 
 		vector<string>::iterator it = vecFiles.begin();
 		while (it != vecFiles.end())
@@ -464,11 +464,11 @@ static int websHomePageHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
 			w += "'>";
 			w += *it;
 			w += "</a>\n";
-			websWrite(wp, "%s", w.c_str());
+			websWrite(wp, (char*)"%s", (char*)w.c_str());
 			++it;
 		}
 		
-		websWrite(wp, "%s", "</ul></hr>\n");
+		websWrite(wp, (char*)"%s", (char*)"</ul></hr>\n");
 		websDone(wp, 200);
 		return 1;
 	}
@@ -500,11 +500,11 @@ int aspTest(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char_t	*name, *address;
 
-	if (ejArgs(argc, argv, T("%s %s"), &name, &address) < 2) {
-		websError(wp, 400, T("Insufficient args\n"));
+	if (ejArgs(argc, argv, T((char*)"%s %s"), &name, &address) < 2) {
+		websError(wp, 400, T((char*)"Insufficient args\n"));
 		return -1;
 	}
-	return websWrite(wp, T("Name: %s, Address %s"), name, address);
+	return websWrite(wp, T((char*)"Name: %s, Address %s"), name, address);
 }
 
 /* Test form for posted data (in-memory CGI). This will be called when the
@@ -514,11 +514,11 @@ void formTest(webs_t wp, char_t *path, char_t *query)
 {
 	char_t	*name, *address;
 
-	name = websGetVar(wp, T("name"), T("Joe Smith")); 
-	address = websGetVar(wp, T("address"), T("1212 Milky Way Ave.")); 
+	name = websGetVar(wp, T((char*)"name"), T((char*)"Joe Smith")); 
+	address = websGetVar(wp, T((char*)"address"), T((char*)"1212 Milky Way Ave.")); 
 
 	websHeader(wp);
-	websWrite(wp, T("<body><h2>Name: %s, Address: %s</h2>\n"), name, address);
+	websWrite(wp, T((char*)"<body><h2>Name: %s, Address: %s</h2>\n"), name, address);
 	websFooter(wp);
 	websDone(wp, 200);
 }
