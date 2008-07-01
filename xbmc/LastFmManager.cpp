@@ -40,6 +40,7 @@
 #include "GUIDialogOK.h"
 #include "Settings.h"
 #include "PlayList.h"
+#include "Crc32.h"
 
 #include <sstream>
 

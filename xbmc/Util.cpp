@@ -95,6 +95,7 @@
 #include "GUIDialogKeyboard.h"
 #include "FileSystem/File.h"
 #include "PlayList.h"
+#include "Crc32.h"
 
 using namespace std;
 
