@@ -65,7 +65,7 @@ namespace PYXBMC
 
     self->iWindowId = -1;
 
-    if (!PyArg_ParseTuple(args, "|i", &self->iWindowId)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"|i", &self->iWindowId)) return NULL;
 
     // create new GUIWindow
     if (!Window_CreateNewWindow((Window*)self, true))
@@ -107,7 +107,7 @@ namespace PYXBMC
 
     // get lines, last 2 lines are optional.
     string utf8Line[4];
-    if (!PyArg_ParseTuple(args, "OO|OO", &unicodeLine[0], &unicodeLine[1], &unicodeLine[2], &unicodeLine[3]))  return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"OO|OO", &unicodeLine[0], &unicodeLine[1], &unicodeLine[2], &unicodeLine[3]))  return NULL;
 
     for (int i = 0; i < 4; i++)
     {
@@ -123,7 +123,7 @@ namespace PYXBMC
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, ACTIVE_WINDOW};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
-    return Py_BuildValue("b", pDialog->IsConfirmed());
+    return Py_BuildValue((char*)"b", pDialog->IsConfirmed());
   }
 
   PyDoc_STRVAR(browse__doc__,
@@ -161,7 +161,7 @@ namespace PYXBMC
     string utf8Line[3];
     char *cDefault = NULL;
     for (int i = 0; i < 3; i++) unicodeLine[i] = NULL;
-    if (!PyArg_ParseTuple(args, "iOO|Obbs", &browsetype , &unicodeLine[0], &unicodeLine[1], &unicodeLine[2], &useThumbs, &useFileDirectories, &cDefault))  return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"iOO|Obbs", &browsetype , &unicodeLine[0], &unicodeLine[1], &unicodeLine[2], &useThumbs, &useFileDirectories, &cDefault))  return NULL;
     for (int i = 0; i < 3; i++)
     {
       if (unicodeLine[i] && !PyGetUnicodeString(utf8Line[i], unicodeLine[i], i+1))
@@ -180,7 +180,7 @@ namespace PYXBMC
       CGUIDialogFileBrowser::ShowAndGetImage(*shares, utf8Line[0], value);
     else
       CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, utf8Line[0], value, browsetype != 0);
-    return Py_BuildValue("s", value.c_str());
+    return Py_BuildValue((char*)"s", value.c_str());
   }
 
   PyDoc_STRVAR(numeric__doc__,
@@ -211,7 +211,7 @@ namespace PYXBMC
     char *cDefault = NULL;
     SYSTEMTIME timedate;
     GetLocalTime(&timedate);
-    if (!PyArg_ParseTuple(args, "iO|s", &inputtype, &heading, &cDefault))  return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"iO|s", &inputtype, &heading, &cDefault))  return NULL;
 
     CStdString utf8Heading;
     if (heading && PyGetUnicodeString(utf8Heading, heading, 1))
@@ -254,7 +254,7 @@ namespace PYXBMC
         CGUIDialogNumeric::ShowAndGetNumber(value, utf8Heading);
       }
     }
-    return Py_BuildValue("s", value.c_str());
+    return Py_BuildValue((char*)"s", value.c_str());
   }
 
   PyDoc_STRVAR(yesno__doc__,
@@ -283,7 +283,7 @@ namespace PYXBMC
 
     // get lines, last 4 lines are optional.
     string utf8Line[6];
-    if (!PyArg_ParseTuple(args, "OO|OOOO", &unicodeLine[0], &unicodeLine[1], &unicodeLine[2], &unicodeLine[3],&unicodeLine[4],&unicodeLine[5]))  return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"OO|OOOO", &unicodeLine[0], &unicodeLine[1], &unicodeLine[2], &unicodeLine[3],&unicodeLine[4],&unicodeLine[5]))  return NULL;
 
     for (int i = 0; i < 6; ++i)
     {
@@ -303,7 +303,7 @@ namespace PYXBMC
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, ACTIVE_WINDOW};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
-    return Py_BuildValue("b", pDialog->IsConfirmed());
+    return Py_BuildValue((char*)"b", pDialog->IsConfirmed());
   }
 
   PyDoc_STRVAR(select__doc__,
@@ -324,7 +324,7 @@ namespace PYXBMC
     PyObject *heading = NULL;
     PyObject *list = NULL;
 
-    if (!PyArg_ParseTuple(args, "OO", &heading, &list))  return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"OO", &heading, &list))  return NULL;
     if (!PyList_Check(list)) return NULL;
 
     CGUIDialogSelect* pDialog= (CGUIDialogSelect*)m_gWindowManager.GetWindow(dWindow);
@@ -348,7 +348,7 @@ namespace PYXBMC
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, ACTIVE_WINDOW};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
-    return Py_BuildValue("i", pDialog->GetSelectedLabel());
+    return Py_BuildValue((char*)"i", pDialog->GetSelectedLabel());
   }
 
 /*****************************************************************
@@ -375,7 +375,7 @@ namespace PYXBMC
     for (int i = 0; i < 4; i++) unicodeLine[i] = NULL;
 
     // get lines, last 3 lines are optional.
-    if (!PyArg_ParseTuple(args, "O|OOO", &unicodeLine[0], &unicodeLine[1], &unicodeLine[2], &unicodeLine[3]))  return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O|OOO", &unicodeLine[0], &unicodeLine[1], &unicodeLine[2], &unicodeLine[3]))  return NULL;
 
     string utf8Line[4];
     for (int i = 0; i < 4; i++)
@@ -416,7 +416,7 @@ namespace PYXBMC
     int percentage = 0;
     PyObject *unicodeLine[3];
     for (int i = 0; i < 3; i++)  unicodeLine[i] = NULL;
-    if (!PyArg_ParseTuple(args, "i|OOO", &percentage,&unicodeLine[0], &unicodeLine[1], &unicodeLine[2]))  return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"i|OOO", &percentage,&unicodeLine[0], &unicodeLine[1], &unicodeLine[2]))  return NULL;
 
     string utf8Line[3];
     for (int i = 0; i < 3; i++)
@@ -461,7 +461,7 @@ namespace PYXBMC
 
     canceled = pDialog->IsCanceled();
 
-    return Py_BuildValue("b", canceled);
+    return Py_BuildValue((char*)"b", canceled);
   }
 
   PyDoc_STRVAR(close__doc__,
@@ -496,20 +496,20 @@ namespace PYXBMC
 
   /* xbmc Dialog functions for use in python */
   PyMethodDef Dialog_methods[] = {
-    {"yesno", (PyCFunction)Dialog_YesNo, METH_VARARGS, yesno__doc__},
-    {"select", (PyCFunction)Dialog_Select, METH_VARARGS, select__doc__},
-    {"ok", (PyCFunction)Dialog_OK, METH_VARARGS, ok__doc__},
-    {"browse", (PyCFunction)Dialog_Browse, METH_VARARGS, browse__doc__},
-    {"numeric", (PyCFunction)Dialog_Numeric, METH_VARARGS, numeric__doc__},
+    {(char*)"yesno", (PyCFunction)Dialog_YesNo, METH_VARARGS, yesno__doc__},
+    {(char*)"select", (PyCFunction)Dialog_Select, METH_VARARGS, select__doc__},
+    {(char*)"ok", (PyCFunction)Dialog_OK, METH_VARARGS, ok__doc__},
+    {(char*)"browse", (PyCFunction)Dialog_Browse, METH_VARARGS, browse__doc__},
+    {(char*)"numeric", (PyCFunction)Dialog_Numeric, METH_VARARGS, numeric__doc__},
     {NULL, NULL, 0, NULL}
   };
 
   /* xbmc progress Dialog functions for use in python */
   PyMethodDef DialogProgress_methods[] = {
-    {"create", (PyCFunction)Dialog_ProgressCreate, METH_VARARGS, create__doc__},
-    {"update", (PyCFunction)Dialog_ProgressUpdate, METH_VARARGS, update__doc__},
-    {"close", (PyCFunction)Dialog_ProgressClose, METH_VARARGS, close__doc__},
-    {"iscanceled", (PyCFunction)Dialog_ProgressIsCanceled, METH_VARARGS, isCanceled__doc__},
+    {(char*)"create", (PyCFunction)Dialog_ProgressCreate, METH_VARARGS, create__doc__},
+    {(char*)"update", (PyCFunction)Dialog_ProgressUpdate, METH_VARARGS, update__doc__},
+    {(char*)"close", (PyCFunction)Dialog_ProgressClose, METH_VARARGS, close__doc__},
+    {(char*)"iscanceled", (PyCFunction)Dialog_ProgressIsCanceled, METH_VARARGS, isCanceled__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -536,7 +536,7 @@ namespace PYXBMC
   {
     PyInitializeTypeObject(&WindowDialog_Type);
 
-    WindowDialog_Type.tp_name = "xbmcgui.WindowDialog";
+    WindowDialog_Type.tp_name = (char*)"xbmcgui.WindowDialog";
     WindowDialog_Type.tp_basicsize = sizeof(WindowDialog);
     WindowDialog_Type.tp_dealloc = (destructor)Window_Dealloc;
     WindowDialog_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
@@ -552,7 +552,7 @@ namespace PYXBMC
   {
     PyInitializeTypeObject(&DialogProgress_Type);
 
-    DialogProgress_Type.tp_name = "xbmcgui.DialogProgress";
+    DialogProgress_Type.tp_name = (char*)"xbmcgui.DialogProgress";
     DialogProgress_Type.tp_basicsize = sizeof(DialogProgress);
     DialogProgress_Type.tp_dealloc = (destructor)Dialog_ProgressDealloc;
     DialogProgress_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
@@ -569,7 +569,7 @@ namespace PYXBMC
   {
     PyInitializeTypeObject(&Dialog_Type);
 
-    Dialog_Type.tp_name = "xbmcgui.Dialog";
+    Dialog_Type.tp_name = (char*)"xbmcgui.Dialog";
     Dialog_Type.tp_basicsize = sizeof(Dialog);
     Dialog_Type.tp_dealloc = 0;
     Dialog_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;

@@ -64,7 +64,7 @@ namespace PYXBMC
     std::string strXMLname, strFallbackPath;
     std::string strDefault = "Default";
 
-    if (!PyArg_ParseTuple(args, "OO|Ob", &pyOXMLname, &pyOname, &pyDName, &bForceDefaultSkin )) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"OO|Ob", &pyOXMLname, &pyOname, &pyDName, &bForceDefaultSkin )) return NULL;
     PyGetUnicodeString(strXMLname, pyOXMLname);
     PyGetUnicodeString(strFallbackPath, pyOname);
     if (pyDName)  PyGetUnicodeString(strDefault, pyDName);
@@ -151,7 +151,7 @@ namespace PYXBMC
   {
     PyInitializeTypeObject(&WindowXMLDialog_Type);
 
-    WindowXMLDialog_Type.tp_name = "xbmcgui.WindowXMLDialog";
+    WindowXMLDialog_Type.tp_name = (char*)"xbmcgui.WindowXMLDialog";
     WindowXMLDialog_Type.tp_basicsize = sizeof(WindowXMLDialog);
     WindowXMLDialog_Type.tp_dealloc = (destructor)Window_Dealloc;
     WindowXMLDialog_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;

@@ -49,7 +49,7 @@ namespace PYXBMC
   PyObject* ListItem_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
     ListItem *self;
-    static char *keywords[] = { "label", "label2",
+    static const char *keywords[] = { "label", "label2",
       "iconImage", "thumbnailImage", NULL };
 
     PyObject* label = NULL;
@@ -66,10 +66,14 @@ namespace PYXBMC
 
     // parse user input
     if (!PyArg_ParseTupleAndKeywords(
-      args, kwds,
-      "|OOss", keywords,
-      &label, &label2,
-      &cIconImage, &cThumbnailImage))
+      args,
+      kwds,
+      (char*)"|OOss",
+      (char**)keywords,
+      &label,
+      &label2,
+      &cIconImage,
+      &cThumbnailImage))
     {
       Py_DECREF( self );
       return NULL;
@@ -140,7 +144,7 @@ namespace PYXBMC
     const char *cLabel = self->item->GetLabel().c_str();
     PyGUIUnlock();
 
-    return Py_BuildValue("s", cLabel);
+    return Py_BuildValue((char*)"s", cLabel);
   }
 
   PyDoc_STRVAR(getLabel2__doc__,
@@ -157,7 +161,7 @@ namespace PYXBMC
     const char *cLabel = self->item->GetLabel2().c_str();
     PyGUIUnlock();
 
-    return Py_BuildValue("s", cLabel);
+    return Py_BuildValue((char*)"s", cLabel);
   }
 
   PyDoc_STRVAR(setLabel__doc__,
@@ -173,7 +177,7 @@ namespace PYXBMC
     if (!self->item) return NULL;
     PyObject* unicodeLine = NULL;
 
-    if (!PyArg_ParseTuple(args, "O", &unicodeLine)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &unicodeLine)) return NULL;
 
     string utf8Line;
     if (unicodeLine && !PyGetUnicodeString(utf8Line, unicodeLine, 1))
@@ -200,7 +204,7 @@ namespace PYXBMC
     PyObject* unicodeLine = NULL;
     if (!self->item) return NULL;
 
-    if (!PyArg_ParseTuple(args, "O", &unicodeLine)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &unicodeLine)) return NULL;
 
     string utf8Line;
     if (unicodeLine && !PyGetUnicodeString(utf8Line, unicodeLine, 1))
@@ -227,7 +231,7 @@ namespace PYXBMC
     char *cLine = NULL;
     if (!self->item) return NULL;
 
-    if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
     // set label
     PyGUILock();
@@ -251,7 +255,7 @@ namespace PYXBMC
     char *cLine = NULL;
     if (!self->item) return NULL;
 
-    if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
     // set label
     PyGUILock();
@@ -275,7 +279,7 @@ namespace PYXBMC
     if (!self->item) return NULL;
 
     bool bOnOff = false;
-    if (!PyArg_ParseTuple(args, "b", &bOnOff)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"b", &bOnOff)) return NULL;
 
     PyGUILock();
     self->item->Select(bOnOff);
@@ -299,7 +303,7 @@ namespace PYXBMC
     bool bOnOff = self->item->IsSelected();
     PyGUIUnlock();
 
-    return Py_BuildValue("b", bOnOff);
+    return Py_BuildValue((char*)"b", bOnOff);
   }
 
   PyDoc_STRVAR(setInfo__doc__,
@@ -320,14 +324,14 @@ namespace PYXBMC
 
   PyObject* ListItem_SetInfo(ListItem *self, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = { "type", "infoLabels", NULL };
+    static const char *keywords[] = { "type", "infoLabels", NULL };
     char *cType = NULL;
     PyObject *pInfoLabels = NULL;
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "sO",
-      keywords,
+      (char*)"sO",
+      (char**)keywords,
       &cType,
       &pInfoLabels))
     {
@@ -386,7 +390,7 @@ namespace PYXBMC
             PyObject *pRole = NULL;
             if (PyObject_TypeCheck(pTuple, &PyTuple_Type))
             {
-              if (!PyArg_ParseTuple(pTuple, "O|O", &pActor, &pRole)) continue;
+              if (!PyArg_ParseTuple(pTuple, (char*)"O|O", &pActor, &pRole)) continue;
             }
             else
               pActor = pTuple;
@@ -514,15 +518,15 @@ namespace PYXBMC
   {
     if (!self->item) return NULL;
 
-    static char *keywords[] = { "key", "value", NULL };
+    static const char *keywords[] = { "key", "value", NULL };
     char *key = NULL;
     PyObject *value = NULL;
 
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "sO",
-      keywords,
+      (char*)"sO",
+      (char**)keywords,
       &key,
       &value))
     {
@@ -559,14 +563,14 @@ namespace PYXBMC
   {
     if (!self->item) return NULL;
 
-    static char *keywords[] = { "key", NULL };
+    static const char *keywords[] = { "key", NULL };
     char *key = NULL;
 
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "s",
-      keywords,
+      (char*)"s",
+      (char**)keywords,
       &key))
     {
       return NULL;
@@ -578,7 +582,7 @@ namespace PYXBMC
     string value = self->item->GetProperty(lowerKey.ToLower());
     PyGUIUnlock();
 
-    return Py_BuildValue("s", value.c_str());
+    return Py_BuildValue((char*)"s", value.c_str());
   }
 
   // addContextMenuItems() method
@@ -599,7 +603,7 @@ namespace PYXBMC
     if (!self->item) return NULL;
 
     PyObject *pList = NULL;
-    if (!PyArg_ParseTuple(args, "O", &pList) || pList == NULL || !PyObject_TypeCheck(pList, &PyList_Type))
+    if (!PyArg_ParseTuple(args, (char*)"O", &pList) || pList == NULL || !PyObject_TypeCheck(pList, &PyList_Type))
     {
       PyErr_SetString(PyExc_TypeError, "Object should be of type List");
       return NULL;
@@ -616,7 +620,7 @@ namespace PYXBMC
       }
       PyObject *label = NULL;
       char *action = NULL;
-      if (!PyArg_ParseTuple(pTuple, "Os", &label, &action))
+      if (!PyArg_ParseTuple(pTuple, (char*)"Os", &label, &action))
       {
         PyErr_SetString(PyExc_TypeError, "Error unpacking tuple found in list");
         return NULL;
@@ -643,18 +647,18 @@ namespace PYXBMC
   }
 
   PyMethodDef ListItem_methods[] = {
-    {"getLabel" , (PyCFunction)ListItem_GetLabel, METH_VARARGS, getLabel__doc__},
-    {"setLabel" , (PyCFunction)ListItem_SetLabel, METH_VARARGS, setLabel__doc__},
-    {"getLabel2", (PyCFunction)ListItem_GetLabel2, METH_VARARGS, getLabel2__doc__},
-    {"setLabel2", (PyCFunction)ListItem_SetLabel2, METH_VARARGS, setLabel2__doc__},
-    {"setIconImage", (PyCFunction)ListItem_SetIconImage, METH_VARARGS, setIconImage__doc__},
-    {"setThumbnailImage", (PyCFunction)ListItem_SetThumbnailImage, METH_VARARGS, setThumbnailImage__doc__},
-    {"select", (PyCFunction)ListItem_Select, METH_VARARGS, select__doc__},
-    {"isSelected", (PyCFunction)ListItem_IsSelected, METH_VARARGS, isSelected__doc__},
-    {"setInfo", (PyCFunction)ListItem_SetInfo, METH_KEYWORDS, setInfo__doc__},
-    {"setProperty", (PyCFunction)ListItem_SetProperty, METH_KEYWORDS, setProperty__doc__},
-    {"getProperty", (PyCFunction)ListItem_GetProperty, METH_KEYWORDS, getProperty__doc__},
-    {"addContextMenuItems", (PyCFunction)ListItem_AddContextMenuItems, METH_VARARGS, addContextMenuItems__doc__},
+    {(char*)"getLabel" , (PyCFunction)ListItem_GetLabel, METH_VARARGS, getLabel__doc__},
+    {(char*)"setLabel" , (PyCFunction)ListItem_SetLabel, METH_VARARGS, setLabel__doc__},
+    {(char*)"getLabel2", (PyCFunction)ListItem_GetLabel2, METH_VARARGS, getLabel2__doc__},
+    {(char*)"setLabel2", (PyCFunction)ListItem_SetLabel2, METH_VARARGS, setLabel2__doc__},
+    {(char*)"setIconImage", (PyCFunction)ListItem_SetIconImage, METH_VARARGS, setIconImage__doc__},
+    {(char*)"setThumbnailImage", (PyCFunction)ListItem_SetThumbnailImage, METH_VARARGS, setThumbnailImage__doc__},
+    {(char*)"select", (PyCFunction)ListItem_Select, METH_VARARGS, select__doc__},
+    {(char*)"isSelected", (PyCFunction)ListItem_IsSelected, METH_VARARGS, isSelected__doc__},
+    {(char*)"setInfo", (PyCFunction)ListItem_SetInfo, METH_KEYWORDS, setInfo__doc__},
+    {(char*)"setProperty", (PyCFunction)ListItem_SetProperty, METH_KEYWORDS, setProperty__doc__},
+    {(char*)"getProperty", (PyCFunction)ListItem_GetProperty, METH_KEYWORDS, getProperty__doc__},
+    {(char*)"addContextMenuItems", (PyCFunction)ListItem_AddContextMenuItems, METH_VARARGS, addContextMenuItems__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -685,7 +689,7 @@ namespace PYXBMC
   {
     PyInitializeTypeObject(&ListItem_Type);
 
-    ListItem_Type.tp_name = "xbmcgui.ListItem";
+    ListItem_Type.tp_name = (char*)"xbmcgui.ListItem";
     ListItem_Type.tp_basicsize = sizeof(ListItem);
     ListItem_Type.tp_dealloc = (destructor)ListItem_Dealloc;
     ListItem_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;

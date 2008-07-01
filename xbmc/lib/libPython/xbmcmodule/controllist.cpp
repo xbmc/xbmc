@@ -48,7 +48,7 @@ namespace PYXBMC
 
   PyObject* ControlList_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = {
+    static const char *keywords[] = {
       "x", "y", "width", "height", "font",
       "textColor", "buttonTexture", "buttonFocusTexture",
       // maintain order of above items for backward compatibility
@@ -94,8 +94,8 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "llll|ssssslllllll",//s",
-      keywords,
+      (char*)"llll|ssssslllllll",//s",
+      (char**)keywords,
       &self->dwPosX,
       &self->dwPosY,
       &self->dwWidth,
@@ -131,9 +131,9 @@ namespace PYXBMC
     //if (cShadowColor) sscanf( cShadowColor, "%x", &self->dwShadowColor );
 
     self->strTextureButton = cTextureButton ? cTextureButton :
-      PyGetDefaultImage("listcontrol", "texturenofocus", "list-nofocus.png");
+      PyGetDefaultImage((char*)"listcontrol", (char*)"texturenofocus", (char*)"list-nofocus.png");
     self->strTextureButtonFocus = cTextureButtonFocus ? cTextureButtonFocus :
-      PyGetDefaultImage("listcontrol", "texturefocus", "list-focus.png");
+      PyGetDefaultImage((char*)"listcontrol", (char*)"texturefocus", (char*)"list-focus.png");
 
     // default values for spin control
     self->pControlSpin->dwPosX = self->dwWidth - 35;
@@ -219,7 +219,7 @@ PyDoc_STRVAR(addItem__doc__,
 
     ListItem* pListItem = NULL;
 
-    if (!PyArg_ParseTuple(args, "O", &pObject))  return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pObject))  return NULL;
     if (ListItem_CheckExact(pObject))
     {
       // object is a listitem
@@ -266,7 +266,7 @@ PyDoc_STRVAR(addItem__doc__,
   {
     long itemIndex;
 
-    if (!PyArg_ParseTuple(args, "l", &itemIndex)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"l", &itemIndex)) return NULL;
 
     // create message
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, self->iParentId, self->iControlId, itemIndex);
@@ -342,7 +342,7 @@ PyDoc_STRVAR(addItem__doc__,
 
   PyObject* ControlList_SetImageDimensions(ControlList *self, PyObject *args)
   {
-    if (!PyArg_ParseTuple(args, "ll", &self->dwImageWidth, &self->dwImageHeight))
+    if (!PyArg_ParseTuple(args, (char*)"ll", &self->dwImageWidth, &self->dwImageHeight))
     {
       return NULL;
     }
@@ -371,7 +371,7 @@ PyDoc_STRVAR(addItem__doc__,
 
   PyObject* ControlList_SetItemHeight(ControlList *self, PyObject *args)
   {
-    if (!PyArg_ParseTuple(args, "l", &self->dwItemHeight)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"l", &self->dwItemHeight)) return NULL;
 
     /*
     PyGUILock();
@@ -400,7 +400,7 @@ PyDoc_STRVAR(addItem__doc__,
   {
     bool isOn = true;
 
-    if (!PyArg_ParseTuple(args, "b", &isOn)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"b", &isOn)) return NULL;
 
     /*
     PyGUILock();
@@ -426,7 +426,7 @@ PyDoc_STRVAR(addItem__doc__,
 
   PyObject* ControlList_SetSpace(ControlList *self, PyObject *args)
   {
-    if (!PyArg_ParseTuple(args, "l", &self->dwSpace)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"l", &self->dwSpace)) return NULL;
 
     /*
     PyGUILock();
@@ -467,7 +467,7 @@ PyDoc_STRVAR(addItem__doc__,
     }
     PyGUIUnlock();
 
-    return Py_BuildValue("l", pos);
+    return Py_BuildValue((char*)"l", pos);
   }
 
   // getSelectedItem() method
@@ -510,7 +510,7 @@ PyDoc_STRVAR(addItem__doc__,
 
   PyObject* ControlList_Size(ControlList *self)
   {
-    return Py_BuildValue("l", self->vecItems.size());
+    return Py_BuildValue((char*)"l", self->vecItems.size());
   }
 
   // getListItem() method
@@ -527,7 +527,7 @@ PyDoc_STRVAR(addItem__doc__,
   PyObject* ControlList_GetListItem(ControlList *self, PyObject *args)
   {
     int iPos = -1;
-    if (!PyArg_ParseTuple(args, "i", &iPos)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"i", &iPos)) return NULL;
 
     if (iPos < 0 || iPos >= (int)self->vecItems.size())
     {
@@ -550,7 +550,7 @@ PyDoc_STRVAR(addItem__doc__,
 
   PyObject* ControlList_GetItemHeight(ControlList *self)
 	{
-		return Py_BuildValue("l", self->dwItemHeight);
+		return Py_BuildValue((char*)"l", self->dwItemHeight);
 	}
 
   // getSpace() Method
@@ -562,24 +562,24 @@ PyDoc_STRVAR(addItem__doc__,
 
   PyObject* ControlList_GetSpace(ControlList *self)
 	{
-		return Py_BuildValue("l", self->dwSpace);
+		return Py_BuildValue((char*)"l", self->dwSpace);
 	}
 
   PyMethodDef ControlList_methods[] = {
-    {"addItem", (PyCFunction)ControlList_AddItem, METH_VARARGS, addItem__doc__},
-    {"selectItem", (PyCFunction)ControlList_SelectItem, METH_VARARGS,  selectItem},
-    {"reset", (PyCFunction)ControlList_Reset, METH_VARARGS, reset__doc__},
-    {"getSpinControl", (PyCFunction)ControlList_GetSpinControl, METH_VARARGS, getSpinControl__doc__},
-    {"getSelectedPosition", (PyCFunction)ControlList_GetSelectedPosition, METH_VARARGS, getSelectedPosition__doc__},
-    {"getSelectedItem", (PyCFunction)ControlList_GetSelectedItem, METH_VARARGS, getSelectedItem__doc__},
-    {"setImageDimensions", (PyCFunction)ControlList_SetImageDimensions, METH_VARARGS, setImageDimensions__doc__},
-    {"setItemHeight", (PyCFunction)ControlList_SetItemHeight, METH_VARARGS, setItemHeight__doc__},
-    {"setSpace", (PyCFunction)ControlList_SetSpace, METH_VARARGS, setSpace__doc__},
-    {"setPageControlVisible", (PyCFunction)ControlList_SetPageControlVisible, METH_VARARGS, setPageControlVisible__doc__},
-    {"size", (PyCFunction)ControlList_Size, METH_VARARGS, size__doc__},
-    {"getItemHeight", (PyCFunction)ControlList_GetItemHeight, METH_VARARGS, getItemHeight__doc__},
-    {"getSpace", (PyCFunction)ControlList_GetSpace, METH_VARARGS, getSpace__doc__},
-    {"getListItem", (PyCFunction)ControlList_GetListItem, METH_VARARGS, getListItem__doc__},
+    {(char*)"addItem", (PyCFunction)ControlList_AddItem, METH_VARARGS, addItem__doc__},
+    {(char*)"selectItem", (PyCFunction)ControlList_SelectItem, METH_VARARGS,  selectItem},
+    {(char*)"reset", (PyCFunction)ControlList_Reset, METH_VARARGS, reset__doc__},
+    {(char*)"getSpinControl", (PyCFunction)ControlList_GetSpinControl, METH_VARARGS, getSpinControl__doc__},
+    {(char*)"getSelectedPosition", (PyCFunction)ControlList_GetSelectedPosition, METH_VARARGS, getSelectedPosition__doc__},
+    {(char*)"getSelectedItem", (PyCFunction)ControlList_GetSelectedItem, METH_VARARGS, getSelectedItem__doc__},
+    {(char*)"setImageDimensions", (PyCFunction)ControlList_SetImageDimensions, METH_VARARGS, setImageDimensions__doc__},
+    {(char*)"setItemHeight", (PyCFunction)ControlList_SetItemHeight, METH_VARARGS, setItemHeight__doc__},
+    {(char*)"setSpace", (PyCFunction)ControlList_SetSpace, METH_VARARGS, setSpace__doc__},
+    {(char*)"setPageControlVisible", (PyCFunction)ControlList_SetPageControlVisible, METH_VARARGS, setPageControlVisible__doc__},
+    {(char*)"size", (PyCFunction)ControlList_Size, METH_VARARGS, size__doc__},
+    {(char*)"getItemHeight", (PyCFunction)ControlList_GetItemHeight, METH_VARARGS, getItemHeight__doc__},
+    {(char*)"getSpace", (PyCFunction)ControlList_GetSpace, METH_VARARGS, getSpace__doc__},
+    {(char*)"getListItem", (PyCFunction)ControlList_GetListItem, METH_VARARGS, getListItem__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -630,7 +630,7 @@ PyDoc_STRVAR(addItem__doc__,
   {
     PyInitializeTypeObject(&ControlList_Type);
 
-    ControlList_Type.tp_name = "xbmcgui.ControlList";
+    ControlList_Type.tp_name = (char*)"xbmcgui.ControlList";
     ControlList_Type.tp_basicsize = sizeof(ControlList);
     ControlList_Type.tp_dealloc = (destructor)ControlList_Dealloc;
     ControlList_Type.tp_compare = 0;
