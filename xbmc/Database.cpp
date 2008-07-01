@@ -23,6 +23,7 @@
 #include "Database.h"
 #include "Util.h"
 #include "Settings.h"
+#include "Crc32.h"
 
 using namespace AUTOPTR;
 using namespace dbiplus;
