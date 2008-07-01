@@ -109,7 +109,7 @@ public:
   static LARGE_INTEGER GetDriveSize();
 
   static DWORD   GetTrayState();
-  static HRESULT EjectTray();
+  static HRESULT EjectTray( const bool bEject=true, const char cDriveLetter= NULL );
   static HRESULT CloseTray();
 
   static void AllocReadBuffer();
