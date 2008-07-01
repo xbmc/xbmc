@@ -102,50 +102,65 @@ CSysInfo::~CSysInfo()
 {
 }
 
-const bool CSysInfo::GetDiskSpace(const CStdString drive, int &iTotal, int &iTotalFree, int &iTotalUsed, int &iPercentFree, int &iPercentUsed)
+bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed)
 {
-  bool bRet= false;
-  ULARGE_INTEGER ULTotal= { 0 };
-  ULARGE_INTEGER ULTotalFree= { 0 };
-  
-  if( !drive.IsEmpty() && !drive.Equals("*") ) 
-  { 
-    bRet= ( 0 != GetDiskFreeSpaceEx( ( drive + ":\\" ), NULL, &ULTotal, &ULTotalFree) );
-  }
-  else 
+  CStdString driveName = drive + ":\\";
+  ULARGE_INTEGER total, totalFree, totalUsed;
+
+  if (drive.IsEmpty() || drive.Equals("*")) //All Drives
   {
-    char* pcBuffer= NULL;
-    DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
-    if( dwStrLength != 0 )
-    {
-      dwStrLength+= 1;
-      pcBuffer= new char [dwStrLength];
-      GetLogicalDriveStrings( dwStrLength, pcBuffer );
-      int iPos= 0;
-      do {
-        //CLog::Log(LOGDEBUG, "%s: Checking Drive Letter: %s ", __FUNCTION__, pcBuffer + iPos );
-        if( DRIVE_FIXED == GetDriveType( pcBuffer + iPos  ) &&
-            GetDiskFreeSpaceEx( ( pcBuffer + iPos ), NULL, &ULTotal, &ULTotalFree ) )
-        {
-          //CLog::Log(LOGDEBUG, "%s Drive Letter OK: %s ", __FUNCTION__, pcBuffer + iPos );
-          ULTotal.QuadPart+= ULTotal.QuadPart;
-          ULTotalFree.QuadPart+= ULTotalFree.QuadPart;
-        }
-        iPos += (strlen( pcBuffer + iPos) + 1 );
-      }while( strlen( pcBuffer + iPos ) > 0 );
-    }
-    free( pcBuffer );
-    bRet= ( ULTotal.QuadPart || ULTotalFree.QuadPart );
-  }
-  if( bRet )
-  {
-    iTotal = (int)( ULTotal.QuadPart / MB );
-    iTotalFree = (int)( ULTotalFree.QuadPart / MB );
-    iTotalUsed = iTotal - iTotalFree;
-    iPercentUsed = (int)( 100.0f * ( ULTotal.QuadPart - ULTotalFree.QuadPart ) / ULTotal.QuadPart + 0.5f );
+    ULARGE_INTEGER totalC, totalFreeC;
+    ULARGE_INTEGER totalE, totalFreeE;
+    ULARGE_INTEGER totalF, totalFreeF;
+    ULARGE_INTEGER totalG, totalFreeG;
+    ULARGE_INTEGER totalX, totalFreeX;
+    ULARGE_INTEGER totalY, totalFreeY;
+    ULARGE_INTEGER totalZ, totalFreeZ;
+
+    BOOL bC = GetDiskFreeSpaceEx("C:\\", NULL, &totalC, &totalFreeC);
+    BOOL bE = GetDiskFreeSpaceEx("E:\\", NULL, &totalE, &totalFreeE);
+    BOOL bF = GetDiskFreeSpaceEx("F:\\", NULL, &totalF, &totalFreeF);
+    BOOL bG = GetDiskFreeSpaceEx("G:\\", NULL, &totalG, &totalFreeG);
+    BOOL bX = GetDiskFreeSpaceEx("X:\\", NULL, &totalX, &totalFreeX);
+    BOOL bY = GetDiskFreeSpaceEx("Y:\\", NULL, &totalY, &totalFreeY);
+    BOOL bZ = GetDiskFreeSpaceEx("Z:\\", NULL, &totalZ, &totalFreeZ);
+
+    total.QuadPart = (bC?totalC.QuadPart:0)+
+      (bE?totalE.QuadPart:0)+
+      (bF?totalF.QuadPart:0)+
+      (bG?totalG.QuadPart:0)+
+      (bX?totalX.QuadPart:0)+
+      (bY?totalY.QuadPart:0)+
+      (bZ?totalZ.QuadPart:0);
+    totalFree.QuadPart = (bC?totalFreeC.QuadPart:0)+
+      (bE?totalFreeE.QuadPart:0)+
+      (bF?totalFreeF.QuadPart:0)+
+      (bG?totalFreeG.QuadPart:0)+
+      (bX?totalFreeX.QuadPart:0)+
+      (bY?totalFreeY.QuadPart:0)+
+      (bZ?totalFreeZ.QuadPart:0);
+
+    iTotal = (int)(total.QuadPart/MB);
+    iTotalFree = (int)(totalFree.QuadPart/MB);
+    iTotalUsed = (int)((total.QuadPart - totalFree.QuadPart)/MB);
+
+    totalUsed.QuadPart = total.QuadPart - totalFree.QuadPart;
+    iPercentUsed = (int)(100.0f * totalUsed.QuadPart/total.QuadPart + 0.5f);
     iPercentFree = 100 - iPercentUsed;
+    return true;
   }
-  return bRet;
+  else if ( GetDiskFreeSpaceEx(driveName.c_str(), NULL, &total, &totalFree))
+  {
+    iTotal = (int)(total.QuadPart/MB);
+    iTotalFree = (int)(totalFree.QuadPart/MB);
+    iTotalUsed = (int)((total.QuadPart - totalFree.QuadPart)/MB);
+
+    totalUsed.QuadPart = total.QuadPart - totalFree.QuadPart;
+    iPercentUsed = (int)(100.0f * totalUsed.QuadPart/total.QuadPart + 0.5f);
+    iPercentFree = 100 - iPercentUsed;
+    return true;
+  }
+  return false;
 }
 
 double CSysInfo::GetCPUFrequency()
