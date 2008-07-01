@@ -28,6 +28,7 @@
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "Settings.h"
+#include "Crc32.h"
 
 using namespace std;
 using namespace XFILE;

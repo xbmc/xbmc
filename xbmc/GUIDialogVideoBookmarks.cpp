@@ -33,6 +33,7 @@
 #include "ViewState.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "Crc32.h"
 
 using namespace std;
 
