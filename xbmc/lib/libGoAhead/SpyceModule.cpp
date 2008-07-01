@@ -48,13 +48,13 @@ namespace WEBS_SPYCE
 			PyObject* pModule = PyImport_Import(pName);
 			Py_XDECREF(pName);
 
-			if(!pModule) websError(wp, 500, "%s", "Corrupted Spyce installation");
+			if(!pModule) websError(wp, 500, (char*)"%s", (char*)"Corrupted Spyce installation");
 			else
 			{
 				PyObject* pDict = PyModule_GetDict(pModule);
 				Py_XDECREF(pModule);
 				spyFunc = PyDict_GetItemString(pDict, "ParseFile");
-				if(!spyFunc) websError(wp, 500, "%s", "Corrupted Spyce installation");
+				if(!spyFunc) websError(wp, 500, (char*)"%s", (char*)"Corrupted Spyce installation");
 				
 				else spyInitialized = true;
 			}
@@ -109,7 +109,7 @@ namespace WEBS_SPYCE
 		PyDict_SetItemString(pEnv, "HTTP_USER_AGENT", pHTTP_USER_AGENT);
 		PyDict_SetItemString(pEnv, "HTTP_CONNECTION", pHTTP_CONNECTION);
 
-		PyObject* pResult = PyObject_CallFunction(spyFunc, "sO", lpath, pEnv);
+		PyObject* pResult = PyObject_CallFunction(spyFunc, (char*)"sO", lpath, pEnv);
 
 		Py_XDECREF(pREQUEST_METHOD);
 		Py_XDECREF(pCONTENT_LENGTH);
@@ -122,7 +122,7 @@ namespace WEBS_SPYCE
 
 		Py_XDECREF(pEnv);
 
-		if(!pResult) websError(wp, 500, "%s", "Corrupted Spyce installation");
+		if(!pResult) websError(wp, 500, (char*)"%s", (char*)"Corrupted Spyce installation");
 		else
 		{
 			char* cResult = PyString_AsString(pResult);

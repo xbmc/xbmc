@@ -315,7 +315,7 @@ namespace PYXBMC
 
     self->iWindowId = -1;
 
-    if (!PyArg_ParseTuple(args, "|i", &self->iWindowId)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"|i", &self->iWindowId)) return NULL;
 
     // create new GUIWindow
     if (!Window_CreateNewWindow(self, false))
@@ -452,7 +452,7 @@ namespace PYXBMC
   PyObject* Window_OnAction(Window *self, PyObject *args)
   {
     Action* action;
-    if (!PyArg_ParseTuple(args, "O", &action)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &action)) return NULL;
 
     if(action->id == ACTION_PREVIOUS_MENU)
     {
@@ -512,7 +512,7 @@ namespace PYXBMC
     CGUIWindow* pWindow = NULL;
     Control* pControl;
 
-    if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pControl)) return NULL;
     // type checking, object should be of type Control
     if(!Control_Check(pControl))
     {
@@ -629,7 +629,7 @@ namespace PYXBMC
   PyObject* Window_GetControl(Window *self, PyObject *args)
   {
     int iControlId;
-    if (!PyArg_ParseTuple(args, "i", &iControlId)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"i", &iControlId)) return NULL;
 
     return (PyObject*)Window_GetControlById(self, iControlId);
   }
@@ -647,7 +647,7 @@ namespace PYXBMC
     if (PyWindowIsNull(pWindow)) return NULL;
 
     Control* pControl;
-    if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pControl)) return NULL;
     // type checking, object should be of type Control
     if(!Control_Check(pControl))
     {
@@ -683,7 +683,7 @@ namespace PYXBMC
     if (PyWindowIsNull(pWindow)) return NULL;
 
     int iControlId;
-    if (!PyArg_ParseTuple(args, "i", &iControlId)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"i", &iControlId)) return NULL;
 
     if(!pWindow->GetControl(iControlId))
     {
@@ -765,7 +765,7 @@ namespace PYXBMC
     if (PyWindowIsNull(pWindow)) return NULL;
 
     Control* pControl;
-    if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pControl)) return NULL;
     // type checking, object should be of type Control
     if(!Control_Check(pControl))
     {
@@ -863,7 +863,7 @@ namespace PYXBMC
   PyObject* Window_SetCoordinateResolution(Window *self, PyObject *args)
   {
     long res;
-    if (!PyArg_ParseTuple(args, "l", &res)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"l", &res)) return NULL;
 
     if (res < HDTV_1080i || res > AUTORES)
     {
@@ -881,22 +881,22 @@ namespace PYXBMC
   }
 
   PyMethodDef Window_methods[] = {
-    //{"load", (PyCFunction)Window_Load, METH_VARARGS, ""},
-    {"onAction", (PyCFunction)Window_OnAction, METH_VARARGS, onAction__doc__},
-    {"doModal", (PyCFunction)Window_DoModal, METH_VARARGS, doModal__doc__},
-    {"show", (PyCFunction)Window_Show, METH_VARARGS, show__doc__},
-    {"close", (PyCFunction)Window_Close, METH_VARARGS, close__doc__},
-    {"addControl", (PyCFunction)Window_AddControl, METH_VARARGS, addControl__doc__},
-    {"getControl", (PyCFunction)Window_GetControl, METH_VARARGS, getControl__doc__},
-    {"removeControl", (PyCFunction)Window_RemoveControl, METH_VARARGS, removeControl__doc__},
-    {"setFocus", (PyCFunction)Window_SetFocus, METH_VARARGS, setFocus__doc__},
-    {"setFocusId", (PyCFunction)Window_SetFocusId, METH_VARARGS, setFocusId__doc__},
-    {"getFocus", (PyCFunction)Window_GetFocus, METH_VARARGS, getFocus__doc__},
-    {"getFocusId", (PyCFunction)Window_GetFocusId, METH_VARARGS, getFocusId__doc__},
-    {"getHeight", (PyCFunction)Window_GetHeight, METH_VARARGS, getHeight__doc__},
-    {"getWidth", (PyCFunction)Window_GetWidth, METH_VARARGS, getWidth__doc__},
-    {"getResolution", (PyCFunction)Window_GetResolution, METH_VARARGS, getResolution__doc__},
-    {"setCoordinateResolution", (PyCFunction)Window_SetCoordinateResolution, METH_VARARGS, setCoordinateResolution__doc__},
+    //{(char*)"load", (PyCFunction)Window_Load, METH_VARARGS, ""},
+    {(char*)"onAction", (PyCFunction)Window_OnAction, METH_VARARGS, onAction__doc__},
+    {(char*)"doModal", (PyCFunction)Window_DoModal, METH_VARARGS, doModal__doc__},
+    {(char*)"show", (PyCFunction)Window_Show, METH_VARARGS, show__doc__},
+    {(char*)"close", (PyCFunction)Window_Close, METH_VARARGS, close__doc__},
+    {(char*)"addControl", (PyCFunction)Window_AddControl, METH_VARARGS, addControl__doc__},
+    {(char*)"getControl", (PyCFunction)Window_GetControl, METH_VARARGS, getControl__doc__},
+    {(char*)"removeControl", (PyCFunction)Window_RemoveControl, METH_VARARGS, removeControl__doc__},
+    {(char*)"setFocus", (PyCFunction)Window_SetFocus, METH_VARARGS, setFocus__doc__},
+    {(char*)"setFocusId", (PyCFunction)Window_SetFocusId, METH_VARARGS, setFocusId__doc__},
+    {(char*)"getFocus", (PyCFunction)Window_GetFocus, METH_VARARGS, getFocus__doc__},
+    {(char*)"getFocusId", (PyCFunction)Window_GetFocusId, METH_VARARGS, getFocusId__doc__},
+    {(char*)"getHeight", (PyCFunction)Window_GetHeight, METH_VARARGS, getHeight__doc__},
+    {(char*)"getWidth", (PyCFunction)Window_GetWidth, METH_VARARGS, getWidth__doc__},
+    {(char*)"getResolution", (PyCFunction)Window_GetResolution, METH_VARARGS, getResolution__doc__},
+    {(char*)"setCoordinateResolution", (PyCFunction)Window_SetCoordinateResolution, METH_VARARGS, setCoordinateResolution__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -926,7 +926,7 @@ namespace PYXBMC
   {
     PyInitializeTypeObject(&Window_Type);
 
-    Window_Type.tp_name = "xbmcgui.Window";
+    Window_Type.tp_name = (char*)"xbmcgui.Window";
     Window_Type.tp_basicsize = sizeof(Window);
     Window_Type.tp_dealloc = (destructor)Window_Dealloc;
     Window_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;

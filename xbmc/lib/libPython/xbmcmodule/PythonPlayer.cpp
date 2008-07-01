@@ -68,7 +68,7 @@ void CPythonPlayer::SetCallback(PyObject *object)
  */
 int Py_XBMC_Event_OnPlayBackStarted(void* playerObject)
 {
-  if (playerObject != NULL) PyObject_CallMethod((PyObject*)playerObject, "onPlayBackStarted", NULL);
+  if (playerObject != NULL) PyObject_CallMethod((PyObject*)playerObject, (char*)"onPlayBackStarted", NULL);
   Py_DECREF((PyObject*)playerObject);  
   return 0;
 }
@@ -78,7 +78,7 @@ int Py_XBMC_Event_OnPlayBackStarted(void* playerObject)
  */
 int Py_XBMC_Event_OnPlayBackEnded(void* playerObject)
 {
-  if (playerObject != NULL) PyObject_CallMethod((PyObject*)playerObject, "onPlayBackEnded", NULL);
+  if (playerObject != NULL) PyObject_CallMethod((PyObject*)playerObject, (char*)"onPlayBackEnded", NULL);
   Py_DECREF((PyObject*)playerObject);
   return 0;
 }
@@ -88,7 +88,7 @@ int Py_XBMC_Event_OnPlayBackEnded(void* playerObject)
  */
 int Py_XBMC_Event_OnPlayBackStopped(void* playerObject)
 {
-  if (playerObject != NULL) PyObject_CallMethod((PyObject*)playerObject, "onPlayBackStopped", NULL );
+  if (playerObject != NULL) PyObject_CallMethod((PyObject*)playerObject, (char*)"onPlayBackStopped", NULL );
   Py_DECREF((PyObject*)playerObject);
   return 0;
 }

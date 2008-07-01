@@ -49,7 +49,7 @@ namespace PYXBMC
     PyObject *args,
     PyObject *kwds )
   {
-    static char *keywords[] = {
+    static const char *keywords[] = {
       "x", "y", "width", "height", "label",
       "focusTexture", "noFocusTexture",
       "textXOffset", "textYOffset", "alignment",
@@ -87,8 +87,8 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "llllO|sslllssslss",
-      keywords,
+      (char*)"llllO|sslllssslss",
+      (char**)keywords,
       &self->dwPosX,
       &self->dwPosY,
       &self->dwWidth,
@@ -120,10 +120,10 @@ namespace PYXBMC
     // if texture is supplied use it, else get default ones
     self->strTextureFocus = cTextureFocus ?
       cTextureFocus :
-      PyGetDefaultImage("button", "texturefocus", "button-focus.png");
+      PyGetDefaultImage((char*)"button", (char*)"texturefocus", (char*)"button-focus.png");
     self->strTextureNoFocus = cTextureNoFocus ?
       cTextureNoFocus :
-      PyGetDefaultImage("button", "texturenofocus", "button-nofocus.jpg");
+      PyGetDefaultImage((char*)"button", (char*)"texturenofocus", (char*)"button-nofocus.jpg");
 
     if (cFont) self->strFont = cFont;
     if (cTextColor) sscanf( cTextColor, "%x", &self->dwTextColor );
@@ -188,7 +188,7 @@ namespace PYXBMC
   {
     char *cDisabledColor = NULL;
 
-    if (!PyArg_ParseTuple(args, "s", &cDisabledColor))  return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cDisabledColor))  return NULL;
 
     // ControlButton *pControl = (ControlButton*)self;
 
@@ -225,7 +225,7 @@ namespace PYXBMC
 
   PyObject* ControlButton_SetLabel(ControlButton *self, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = {
+    static const char *keywords[] = {
       "label",
       "font",
       "textColor",
@@ -245,8 +245,8 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "|OsssssO",
-      keywords,
+      (char*)"|OsssssO",
+      (char**)keywords,
       &pObjectText,
       &cFont,
       &cTextColor,
@@ -280,8 +280,8 @@ namespace PYXBMC
   }
 
   PyMethodDef ControlButton_methods[] = {
-    {"setLabel", (PyCFunction)ControlButton_SetLabel, METH_KEYWORDS, setLabel__doc__},
-    {"setDisabledColor", (PyCFunction)ControlButton_SetDisabledColor, METH_VARARGS, setDisabledColor__doc__},
+    {(char*)"setLabel", (PyCFunction)ControlButton_SetLabel, METH_KEYWORDS, setLabel__doc__},
+    {(char*)"setDisabledColor", (PyCFunction)ControlButton_SetDisabledColor, METH_VARARGS, setDisabledColor__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -330,7 +330,7 @@ namespace PYXBMC
   {
     PyInitializeTypeObject(&ControlButton_Type);
 
-    ControlButton_Type.tp_name = "xbmcgui.ControlButton";
+    ControlButton_Type.tp_name = (char*)"xbmcgui.ControlButton";
     ControlButton_Type.tp_basicsize = sizeof(ControlButton);
     ControlButton_Type.tp_dealloc = (destructor)ControlButton_Dealloc;
     ControlButton_Type.tp_compare = 0;
