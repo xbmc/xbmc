@@ -360,7 +360,11 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
     CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_access",nErr);
 
   // always use 16 bit samples
+#if defined(_POWERPC) || defined(_POWERPC64)
+  nErr = snd_pcm_hw_params_set_format(m_pStream[num], hw_params, SND_PCM_FORMAT_S16_BE);
+#else
   nErr = snd_pcm_hw_params_set_format(m_pStream[num], hw_params, SND_PCM_FORMAT_S16_LE);
+#endif
     CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_format",nErr);
 
   nErr = snd_pcm_hw_params_set_rate_near(m_pStream[num], hw_params, &m_SampleRateOutput, NULL);
