@@ -548,7 +548,7 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
     }
     items.Append(tempItems);
   }
-  
+
   tempItems.Clear();
   m_database.GetMusicVideoGenresByName(strSearch, tempItems);
   if (tempItems.Size())
@@ -784,7 +784,8 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
   }
 
   CFileItemPtr pItem = m_vecItems->Get(iItem);
-  DeleteItem(pItem.get());
+  if (!DeleteItem(pItem.get()))
+    return;
 
   CStdString strDeletePath;
   if (pItem->m_bIsFolder)
@@ -804,10 +805,9 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
   DisplayEmptyDatabaseMessage(!m_database.HasContent());
   Update( m_vecItems->m_strPath );
   m_viewControl.SetSelectedItem(iItem);
-  return;
 }
 
-void CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
+bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
 {
   VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty())
@@ -818,7 +818,8 @@ void CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
     iType = VIDEODB_CONTENT_MUSICVIDEOS;
 
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-  if (!pDialog) return;
+  if (!pDialog)
+    return false;
   if (iType == VIDEODB_CONTENT_MOVIES)
     pDialog->SetHeading(432);
   if (iType == VIDEODB_CONTENT_EPISODES)
@@ -833,14 +834,16 @@ void CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
   pDialog->SetLine(1, "");
   pDialog->SetLine(2, "");;
   pDialog->DoModal();
-  if (!pDialog->IsConfirmed()) return;
+  if (!pDialog->IsConfirmed())
+    return false;
 
   CStdString path;
   CVideoDatabase database;
   database.Open();
 
   database.GetFilePathById(pItem->GetVideoInfoTag()->m_iDbId, path, iType);
-  if (path.IsEmpty()) return;
+  if (path.IsEmpty()) 
+    return false;
   if (iType == VIDEODB_CONTENT_MOVIES)
     database.DeleteMovie(path);
   if (iType == VIDEODB_CONTENT_EPISODES)
@@ -862,6 +865,8 @@ void CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
   // delete the cached thumb for this item (it will regenerate if it is a user thumb)
   CStdString thumb(pItem->GetCachedVideoThumb());
   CFile::Delete(thumb);
+
+  return true;
 }
 
 void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
@@ -1511,7 +1516,7 @@ void CGUIWindowVideoNav::OnLinkMovieToTvShow(int itemnumber, bool bRemove)
   else
   {
     m_database.GetTvShowsNav("videodb://2/2",list);
-   
+
     // remove already linked shows
     std::vector<long> ids;
     if (!m_database.GetLinksToTvShow(m_vecItems->Get(itemnumber)->GetVideoInfoTag()->m_iDbId,ids))
@@ -1528,7 +1533,7 @@ void CGUIWindowVideoNav::OnLinkMovieToTvShow(int itemnumber, bool bRemove)
         i++;
       else
         list.Remove(i);
-    }  
+    }
   }
   int iSelectedLabel = 0;
   if (list.Size() > 1)
