@@ -140,7 +140,11 @@ void XBPyThread::Process()
   strcpy(sourcedir, source);
 
   char *p = strrchr(sourcedir, PATH_SEPARATOR_CHAR);
-  *p = DELIM;
+#ifdef _LINUX  
+  *p = ':';
+#else
+  *p = ';';
+#endif
   *++p = 0;
 
   strcpy(path, sourcedir);
@@ -149,7 +153,7 @@ void XBPyThread::Process()
   strcat(path, dll_getenv("PYTHONPATH"));
 #else
 #ifdef __APPLE__
-  strcat(path, _P("Q:\\system\\python\\python24.zlib:"));
+  strcat(path, _P("Q:\\system\\python\\python24.zip:"));
   strcat(path, _P("Q:\\system\\python\\lib-osx"));
 #else
   strcat(path, Py_GetPath());
@@ -162,10 +166,9 @@ void XBPyThread::Process()
     PySys_SetArgv(argc, argv);
   }
   PySys_SetPath(path);
-
-#if DELIM != ';'
+#ifdef _LINUX
   // Replace the : at the end with ; so it will be EXACTLY like the xbox version
-  strcpy(strrchr(sourcedir, DELIM), ";");
+  strcpy(strrchr(sourcedir, ':'), ";");
 #endif  
   xbp_chdir(sourcedir); // XXX, there is a ';' at the end
 
