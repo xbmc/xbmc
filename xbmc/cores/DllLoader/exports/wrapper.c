@@ -77,10 +77,12 @@ char * dll_fgets (char* pszString, int num , FILE * stream);
 int dll_getc (FILE * stream);
 int dll_ungetc (int c, FILE * stream);
 int dll_ioctl(int d, unsigned long int request, va_list va);
+int dll_stat(const char *path, struct _stat *buffer);
 void dll_flockfile(FILE *file);
 int dll_ftrylockfile(FILE *file);
 void dll_funlockfile(FILE *file);
 int dll_fstat64(int fd, struct stat64 *buf);
+int dll_fstat(int fd, struct _stat *buf);
 int dll_fstatvfs64(int fd, struct statvfs64 *buf);
 FILE* dll_popen(const char *command, const char *mode);
 
@@ -308,6 +310,11 @@ int __wrap_ioctl(int d, unsigned long int request, ...)
     res = dll_ioctl(d, request, va);
     va_end(va);
     return res;
+} 
+
+int __wrap_stat(const char *path, struct _stat *buffer)
+{
+  return dll_stat(path, buffer);
 }
 
 void __wrap_flockfile(FILE *file)
@@ -333,5 +340,10 @@ int __wrap___fxstat64(int ver, int fd, struct stat64 *buf)
 int __wrap_fstatvfs64(int fd, struct statvfs64 *buf)
 {
   return dll_fstatvfs64(fd, buf);
+}
+
+int __wrap_fstat(int fd, struct _stat *buf)
+{
+  return dll_fstat(fd, buf);
 }
 
