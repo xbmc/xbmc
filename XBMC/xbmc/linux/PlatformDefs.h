@@ -127,10 +127,16 @@ typedef void* HINSTANCE;
 typedef void* HMODULE;
 
 #ifdef __APPLE__
+#include <AvailabilityMacros.h>
 typedef int64_t   off64_t;
 typedef off_t     __off_t;
 typedef off64_t   __off64_t;
 #include <sched.h>
+#if (MAC_OS_X_VERSION_MAX_ALLOWED <= 1040)
+#define MAC_TIGER
+#else
+#define MAC_LEOPARD
+#endif
 #endif
 
 typedef unsigned int  DWORD;
@@ -291,7 +297,14 @@ typedef int (*LPTHREAD_START_ROUTINE)(void *);
 #define _O_WRONLY O_WRONLY
 #define _off_t off_t
 
+#ifdef MAC_TIGER
+#define __stat64 stat
+#define stat64 stat
+#define statfs64 statfs
+#define fstat64 fstat
+#else
 #define __stat64 stat64
+#endif
 
 struct _stati64 {
   dev_t st_dev;
