@@ -240,7 +240,7 @@
 #define F_OK	0
 #endif /* WIN || CE */
 
-#if (defined (LINUX) && !defined (_STRUCT_TIMEVAL))
+#if (defined (LINUX) && !defined (_STRUCT_TIMEVAL) && !defined(_TIMEVAL))
 struct timeval
 {
 	time_t	tv_sec;		/* Seconds.  */
