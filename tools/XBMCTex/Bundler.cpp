@@ -42,7 +42,6 @@ int CBundler::WriteBundle(const char* Filename, int NoProtect)
 	memcpy(buf, &XPRHeader, sizeof(XPR_FILE_HEADER));
 	buf += sizeof(XPR_FILE_HEADER);
 
-	int j = 0;
 	for (std::list<FileHeader_t>::iterator i = FileHeaders.begin(); i != FileHeaders.end(); ++i)
 	{
 		i->Offset += headerSize;
@@ -77,7 +76,7 @@ bool CBundler::AddFile(const char* Filename, int nBuffers, const void** Buffers,
 	FileHeader_t Header;
 
 	memset(Header.Name, 0, sizeof(Header.Name));
-	for (int i = 0; i < sizeof(Header.Name) && Filename[i]; ++i)
+	for (int i = 0; i < (int)sizeof(Header.Name) && Filename[i]; ++i)
 		Header.Name[i] = tolower(Filename[i]);
 	Header.Name[sizeof(Header.Name)-1] = 0;
 

@@ -23,8 +23,9 @@ LPTSTR GetCommandLine() {
   // after calling GetCommandLine()
   getline(&cmdline, &cmdlinelen, fp);
   fclose(fp);
-  fp == NULL;
-  for (i = 0; i < cmdlinelen; i++) {
+  fp = NULL;
+
+  for (i = 0; i < (int)cmdlinelen; i++) {
     if (cmdline[i] == 0x00) {
       if (cmdline[i + 1] == 0x00)
         break;
