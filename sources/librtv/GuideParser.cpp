@@ -144,6 +144,10 @@
 #define FILEPOS fpos_t
 #endif
 
+#ifdef __APPLE__
+#include <AvailabilityMacros.h>
+#endif
+
 #ifdef __unix__
 typedef unsigned char BYTE;
 typedef unsigned long long DWORD64;
@@ -158,7 +162,9 @@ typedef unsigned short WORD;
 #endif
 
 extern int _daylight;
+#if defined(__APPLE__) && (MAC_OS_X_VERSION_MAX_ALLOWED > 1040) 
 extern long _timezone;
+#endif
 extern char *_tzname[2];
 
 #define SHOWSTRUCTURESIZES  1           // this is for debugging...
@@ -438,8 +444,14 @@ char * UnixTimeToString(time_t t)
     
     MoveMemory(szTimeZone,_tzname[0],1);		
     strcat(szTimeZone,"T");
-    
+   
+#if (MAC_OS_X_VERSION_MAX_ALLOWED <= 1040)
+    struct timezone tz;
+    gettimeofday(NULL, &tz);
+    tzbias = tz.tz_minuteswest;
+#else
     tzbias = _timezone;
+#endif
     
     UnixTimeToSystemTime(t - tzbias, &st);
     sprintf(sbuf, "%d-%.2d-%.2d %.2d:%.2d:%.2d",
