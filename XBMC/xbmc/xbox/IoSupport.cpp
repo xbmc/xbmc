@@ -47,9 +47,20 @@
 #ifdef __APPLE__
 #include <sys/param.h>
 #include <mach-o/dyld.h>
+#include <IOKit/IOKitLib.h>
+#include <IOKit/IOBSD.h>
+#include <IOKit/storage/IOCDTypes.h>
+#include <IOKit/storage/IODVDTypes.h>
+#include <IOKit/storage/IOMedia.h>
+#include <IOKit/storage/IOCDMedia.h>
+#include <IOKit/storage/IODVDMedia.h>
+#include <IOKit/storage/IOCDMediaBSDClient.h>
+#include <IOKit/storage/IODVDMediaBSDClient.h>
+#include <IOKit/storage/IOStorageDeviceCharacteristics.h>
 #endif
 #include "../FileSystem/cdioSupport.h"
 #include "../DetectDVDType.h"
+#include "iso9660.h"
 
 using namespace MEDIA_DETECT;
 
@@ -281,10 +292,18 @@ HRESULT CIoSupport::EjectTray( const bool bEject, const char cDriveLetter )
 #endif
 #ifdef __APPLE__
   char* dvdDevice = CCdIoSupport::GetDeviceFileName();
-  CdIo_t* cdio = cdio_open(dvdDevice, DRIVER_OSX);
-  if (cdio)
+  m_isoReader.Reset();
+  int nRetries=2;
+  while (nRetries-- > 0)
   {
-    cdio_eject_media(&cdio);
+    CdIo_t* cdio = cdio_open(dvdDevice, DRIVER_UNKNOWN);
+    if (cdio)
+    {
+      cdio_eject_media(&cdio);
+      cdio_destroy(cdio);
+    }
+    else 
+      break;
   }
 #elif defined(_LINUX)
   char* dvdDevice = CCdIoSupport::GetDeviceFileName();
@@ -416,7 +435,22 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
   DWORD dwSectorSize = 2048;
 
 #ifdef __APPLE__
-  // FIXME
+  dk_cd_read_t cd_read;
+  memset( &cd_read, 0, sizeof(cd_read) );
+  
+  cd_read.sectorArea  = kCDSectorAreaUser;
+  cd_read.buffer      = lpczBuffer;
+  
+  cd_read.sectorType  = kCDSectorTypeMode1;
+  cd_read.offset      = dwSector * kCDSectorSizeMode1;
+  
+  cd_read.bufferLength = 2048;
+  
+  if( ioctl(hDevice->fd, DKIOCCDREAD, &cd_read ) == -1 )
+  {
+    return -1;
+  }
+  return 2048;
 #elif defined(_LINUX)
   if (hDevice->m_bCDROM)
   {    
@@ -477,7 +511,22 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
 {
 #ifdef HAS_DVD_DRIVE
 #ifdef __APPLE__
-  // FIXME.
+  dk_cd_read_t cd_read;
+  
+  memset( &cd_read, 0, sizeof(cd_read) );
+  
+  cd_read.sectorArea = kCDSectorAreaUser;
+  cd_read.buffer = lpczBuffer;
+  
+  cd_read.offset       = dwSector * kCDSectorSizeMode2Form2;
+  cd_read.sectorType   = kCDSectorTypeMode2Form2;
+  cd_read.bufferLength = kCDSectorSizeMode2Form2;
+
+  if( ioctl( hDevice->fd, DKIOCCDREAD, &cd_read ) == -1 )
+  {
+    return -1;
+  }
+  return MODE2_DATA_SIZE;
 #elif defined(_LINUX)
   if (hDevice->m_bCDROM)
   {    
