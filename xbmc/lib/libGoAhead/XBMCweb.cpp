@@ -384,9 +384,9 @@ int CXbmcWeb::xbmcNavigatorState( int eid, webs_t wp, char_t *parameter)
       if((DWORD)xbmcNavigator[cmd].xbmcAppStateCode == navigatorState)
       {
         if( eid != NO_EID) {
-          ejSetResult( eid, xbmcNavigator[cmd].xbmcNavigateParameter);
+          ejSetResult( eid, (char*)xbmcNavigator[cmd].xbmcNavigateParameter);
         } else {
-          cnt = websWrite(wp, xbmcNavigator[cmd].xbmcNavigateParameter);
+          cnt = websWrite(wp, (char*)xbmcNavigator[cmd].xbmcNavigateParameter);
         }
       }
       cmd++;
@@ -415,7 +415,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 
   // by default the answer to any question is 0
   if( eid != NO_EID) {
-    ejSetResult( eid, "0");
+    ejSetResult( eid, (char*)"0");
   }
 
   // if we are in an interface that supports media catalogs
@@ -428,7 +428,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
     (state == WEB_NAV_MUSICPLAYLIST) ||
     (state == WEB_NAV_VIDEOPLAYLIST))
   {
-    CHAR *output = "error";
+    const char* output = "error";
 
     // get total items in current state
     if (navigatorState == WEB_NAV_MUSICPLAYLIST)
@@ -469,7 +469,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
         }
       }
       websHeader(wp); wroteHeader = TRUE;
-      cnt = websWrite(wp, output);
+      cnt = websWrite(wp, (char*)output);
       websFooter(wp); wroteFooter = TRUE;
       return cnt;
     }
@@ -517,9 +517,9 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
         } 
       }
       if( eid != NO_EID) {
-        ejSetResult( eid, output);
+        ejSetResult( eid, (char*)output);
       } else {
-        cnt = websWrite(wp, output);
+        cnt = websWrite(wp, (char*)output);
       }
       return cnt;
     }
@@ -545,7 +545,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
         itoa(items, buffer, 10);
         ejSetResult( eid, buffer);
       } else {
-        cnt = websWrite(wp, "%i", items);
+        cnt = websWrite(wp, (char*)"%i", (char*)items);
       }
       return cnt;
     }
@@ -614,9 +614,9 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
         else
         {
           if( eid != NO_EID) {
-            ejSetResult( eid, XBMC_NONE);
+            ejSetResult( eid, (char*)XBMC_NONE);
           } else {
-            cnt = websWrite(wp, XBMC_NONE);
+            cnt = websWrite(wp, (char*)XBMC_NONE);
           }
         }
       }
@@ -634,9 +634,9 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
           }
         } else {
           if( eid != NO_EID) {
-            ejSetResult( eid, XBMC_NONE);
+            ejSetResult( eid, (char*)XBMC_NONE);
           } else {
-            cnt = websWrite(wp, XBMC_NONE);
+            cnt = websWrite(wp, (char*)XBMC_NONE);
           }
         }
       }
@@ -909,12 +909,12 @@ int CXbmcWeb::xbmcCommand( int eid, webs_t wp, int argc, char_t **argv)
 {
   char_t	*command, *parameter;
 
-  int parameters = ejArgs(argc, argv, T("%s %s"), &command, &parameter);
+  int parameters = ejArgs(argc, argv, T((char*)"%s %s"), &command, &parameter);
   if (parameters < 1) {
-    websError(wp, 500, T("Insufficient args\n"));
+    websError(wp, 500, T((char*)"Insufficient args\n"));
     return -1;
   }
-  else if (parameters < 2) parameter = "";
+  else if (parameters < 2) parameter = (char*)"";
 
   return xbmcProcessCommand( eid, wp, command, parameter);
 }
@@ -930,8 +930,8 @@ void CXbmcWeb::xbmcForm(webs_t wp, char_t *path, char_t *query)
 {
   char_t	*command, *parameter, *next_page;
 
-  command = websGetVar(wp, WEB_COMMAND, XBMC_NONE); 
-  parameter = websGetVar(wp, WEB_PARAMETER, XBMC_NONE);
+  command = websGetVar(wp, (char*)WEB_COMMAND, (char*)XBMC_NONE); 
+  parameter = websGetVar(wp, (char*)WEB_PARAMETER, (char*)XBMC_NONE);
 
   // do the command
   wroteHeader = false;
@@ -939,8 +939,8 @@ void CXbmcWeb::xbmcForm(webs_t wp, char_t *path, char_t *query)
   xbmcProcessCommand( NO_EID, wp, command, parameter);
 
   // if we do want to redirect
-  if( websTestVar(wp, WEB_NEXT_PAGE)) {
-    next_page = websGetVar(wp, WEB_NEXT_PAGE, XBMC_NONE); 
+  if( websTestVar(wp, (char*)WEB_NEXT_PAGE)) {
+    next_page = websGetVar(wp, (char*)WEB_NEXT_PAGE, (char*)XBMC_NONE); 
     // redirect to another web page
     websRedirect(wp, next_page);
     return;
