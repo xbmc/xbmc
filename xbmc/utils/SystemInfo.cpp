@@ -105,8 +105,8 @@ CSysInfo::~CSysInfo()
 bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed)
 {
   bool bRet= false;
-  ULARGE_INTEGER ULTotal= { 0 };
-  ULARGE_INTEGER ULTotalFree= { 0 };
+  ULARGE_INTEGER ULTotal= { { 0 } };
+  ULARGE_INTEGER ULTotalFree= { { 0 } };
 
   if( !drive.IsEmpty() && !drive.Equals("*") ) 
   { 
@@ -114,8 +114,8 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
   }
   else 
   {
-    ULARGE_INTEGER ULTotalTmp= { 0 };
-    ULARGE_INTEGER ULTotalFreeTmp= { 0 };
+    ULARGE_INTEGER ULTotalTmp= { { 0 } };
+    ULARGE_INTEGER ULTotalFreeTmp= { { 0 } };
 #ifdef _WIN32PC 
     char* pcBuffer= NULL;
     DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
