@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cstdlib>
+#include <ctype.h>
+#include <cstdio>
 #include <list>
 #include "xbox.h"
 
