@@ -38,6 +38,12 @@
 #pragma const_seg("PY_RDATA")
 #endif
 
+#ifdef __APPLE__
+#define PY_PATH_SEP ':'
+#else
+#define PY_PATH_SEP ';'
+#endif
+
 extern "C"
 {
   int xbp_chdir(const char *dirname);
@@ -140,11 +146,7 @@ void XBPyThread::Process()
   strcpy(sourcedir, source);
 
   char *p = strrchr(sourcedir, PATH_SEPARATOR_CHAR);
-#ifdef _LINUX  
-  *p = ':';
-#else
-  *p = ';';
-#endif
+  *p = PY_PATH_SEP;
   *++p = 0;
 
   strcpy(path, sourcedir);
@@ -168,7 +170,7 @@ void XBPyThread::Process()
   PySys_SetPath(path);
 #ifdef _LINUX
   // Replace the : at the end with ; so it will be EXACTLY like the xbox version
-  strcpy(strrchr(sourcedir, ':'), ";");
+  strcpy(strrchr(sourcedir, PY_PATH_SEP), ";");
 #endif  
   xbp_chdir(sourcedir); // XXX, there is a ';' at the end
 
