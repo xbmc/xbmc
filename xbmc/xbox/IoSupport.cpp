@@ -60,7 +60,7 @@
 #endif
 #include "../FileSystem/cdioSupport.h"
 #include "../DetectDVDType.h"
-#include "iso9660.h"
+#include "FileSystem/iso9660.h"
 
 using namespace MEDIA_DETECT;
 
