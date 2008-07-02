@@ -99,7 +99,7 @@ static XPRFile_t XPRFile;
 enum XPR_FLAGS
 {
 	XPRFLAG_PALETTE = 0x00000001,
-	XPRFLAG_ANIM =    0x00000002,
+	XPRFLAG_ANIM =    0x00000002
 };
 
 #undef CheckHR
