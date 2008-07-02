@@ -36,7 +36,9 @@
 #else
 #include <windows.h>
 #endif
+
 #include <vector>
+#include <cstdio>
 
 #pragma pack(1)
 
