@@ -62,7 +62,7 @@ private:
  *	function to an XBMC ir remote command.
  */ 
 typedef struct {
-	char_t	*xbmcRemoteParameter;				
+	const char_t	*xbmcRemoteParameter;				
 	int		xbmcIRCode;
 } xbmcRemoteControlHandlerType;
 
@@ -71,7 +71,7 @@ typedef struct {
  *	to an XBMC application state.
  */ 
 typedef struct {
-	char_t	*xbmcNavigateParameter;				
+	const char_t	*xbmcNavigateParameter;				
 	int		xbmcAppStateCode;
 } xbmcNavigationHandlerType;
 
