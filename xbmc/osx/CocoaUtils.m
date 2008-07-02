@@ -7,6 +7,9 @@
 //
 #import <Cocoa/Cocoa.h>
 #import <OpenGL/OpenGL.h>
+#if (MAC_OS_X_VERSION_MAX_ALLOWED <= 1040)
+#import <OpenGL/gl.h>
+#endif
 #include <CoreFoundation/CoreFoundation.h>
 #include <unistd.h>
 #include <fcntl.h>
