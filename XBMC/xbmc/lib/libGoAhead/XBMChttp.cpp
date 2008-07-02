@@ -3146,14 +3146,14 @@ int CXbmcHttpShim::xbmcCommand( int eid, webs_t wp, int argc, char_t **argv)
   if (m_pXbmcHttp && m_pXbmcHttp->shuttingDown)
     return -1;
 
-  int parameters = ejArgs(argc, argv, T("%s %s"), &command, &parameter);
+  int parameters = ejArgs(argc, argv, T((char*)"%s %s"), &command, &parameter);
   if (parameters < 1) 
   {
-    websError(wp, 500, T("Error:Insufficient args"));
+    websError(wp, 500, T((char*)"Error:Insufficient args"));
     return -1;
   }
   else if (parameters < 2) 
-	  parameter = "";
+	  parameter = (char*)"";
   xbmcProcessCommand( eid, wp, command, parameter);
   return 0;
 }
@@ -3166,8 +3166,8 @@ void CXbmcHttpShim::xbmcForm(webs_t wp, char_t *path, char_t *query)
 
   if (m_pXbmcHttp && m_pXbmcHttp->shuttingDown)
     return;
-  command = websGetVar(wp, WEB_COMMAND, ""); 
-  parameter = websGetVar(wp, WEB_PARAMETER, "");
+  command = websGetVar(wp, (char*)WEB_COMMAND, (char*)""); 
+  parameter = websGetVar(wp, (char*)WEB_PARAMETER, (char*)"");
 
   // do the command
 

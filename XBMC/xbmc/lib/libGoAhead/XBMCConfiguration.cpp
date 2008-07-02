@@ -65,9 +65,9 @@ int CXbmcConfiguration::BookmarkSize( int eid, webs_t wp, CStdString& response, 
 	char_t *type = NULL;
 
 	// asp function is called within a script, get arguments
-	if (ejArgs(argc, argv, T("%s"),&type) < 1)
+	if (ejArgs(argc, argv, T((char*)"%s"),&type) < 1)
 	{
-           if (eid!=-1) websError(wp, 500, T("Insufficient args\n"));
+           if (eid!=-1) websError(wp, 500, T((char*)"Insufficient args\n"));
               else response="<li>Error:Insufficient args";
 		return -1;
 	}
@@ -89,7 +89,7 @@ int CXbmcConfiguration::BookmarkSize( int eid, webs_t wp, CStdString& response, 
     return 0;
   }
 
-  if (eid!=-1) websError(wp, 500, T("Bookmark type does not exist\n")); 
+  if (eid!=-1) websError(wp, 500, T((char*)"Bookmark type does not exist\n")); 
   else response="<li>Error:Bookmark type does not exist";
   return -1;
 
@@ -141,8 +141,8 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
 	char_t	*parameter, *type, *id = NULL;
 
 	// asp function is called within a script, get arguments
-	if (ejArgs(argc, argv, T("%s %s %s"), &type, &parameter, &id) < 3) {
-          if (eid!=-1) websError(wp, 500, T("Insufficient args\n"));
+	if (ejArgs(argc, argv, T((char*)"%s %s %s"), &type, &parameter, &id) < 3) {
+          if (eid!=-1) websError(wp, 500, T((char*)"Insufficient args\n"));
             else response="<li>Error:Insufficient args";
 		return -1;
 	}
@@ -151,7 +151,7 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
   try { nr = atoi(id); }
   catch (...)
   {
-    if (eid!=-1) websError(wp, 500, T("Id is not a number\n"));
+    if (eid!=-1) websError(wp, 500, T((char*)"Id is not a number\n"));
       else response="<li>Error:Id is not a number";
     return -1;
   }
@@ -159,7 +159,7 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
   VECSOURCES* pShares = g_settings.GetSourcesFromType(type);
   if (!pShares)
   {
-    if (eid!=-1) websError(wp, 500, T("Bookmark type does not exist\n"));
+    if (eid!=-1) websError(wp, 500, T((char*)"Bookmark type does not exist\n"));
       else response="<li>Error:Bookmark type does not exist";
     return -1;
   }
@@ -190,13 +190,13 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
     }
     else
     {
-      if (eid!=-1) websError(wp, 500, T("Parameter not known\n")); 
+      if (eid!=-1) websError(wp, 500, T((char*)"Parameter not known\n")); 
         else response="<li>Error:Parameter not known";
     }
     return 0;
   }
 
-  if (eid!=-1) websError(wp, 500, T("Position not found\n"));
+  if (eid!=-1) websError(wp, 500, T((char*)"Position not found\n"));
     else response="<li>Error:Position not found";
   return -1;
 
@@ -289,11 +289,11 @@ int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, CStdString& response, i
   int numParas;
 
   // asp function is called within a script, get arguments
-  numParas=ejArgs(argc, argv, T("%s %s %s %s %s"), &type, &name, &path, &thumbnail, &position);
+  numParas=ejArgs(argc, argv, T((char*)"%s %s %s %s %s"), &type, &name, &path, &thumbnail, &position);
   if ( numParas< 3) 
   {
     if (eid!=-1)
-       websError(wp, 500, T("Insufficient args\n use: function(command, type, name, path, [thumbnail], [position])"));
+       websError(wp, 500, T((char*)"Insufficient args\n use: function(command, type, name, path, [thumbnail], [position])"));
     else
        response="<li>Error:Insufficient args, use: function(command, type, name, path, [thumbnail], [position])";
     return -1;
@@ -392,8 +392,8 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
 	char_t	*type, *name, *path, *position = NULL;
 
 	// asp function is called within a script, get arguments
-	if (ejArgs(argc, argv, T("%s %s %s %s"), &type, &name, &path, &position) < 4) {
-        if (eid!=-1) websError(wp, 500, T("Insufficient args\n use: function(command, type, name, path, postion)"));
+	if (ejArgs(argc, argv, T((char*)"%s %s %s %s"), &type, &name, &path, &position) < 4) {
+        if (eid!=-1) websError(wp, 500, T((char*)"Insufficient args\n use: function(command, type, name, path, postion)"));
           else response="<li>Error:Insufficient args, use: function(command, type, name, path, postion)";
 		return -1;
 	}
@@ -402,7 +402,7 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
 	try { nr = atoi(position); }
 	catch (...)
 	{
-          if (eid!=-1) websError(wp, 500, T("Id is not a number\n"));
+          if (eid!=-1) websError(wp, 500, T((char*)"Id is not a number\n"));
               else response="<li>Error:Id is not a number";
 	  return -1;
 	}
@@ -416,7 +416,7 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
     return 0;
   }
   
-  if (eid!=-1) websError(wp, 500, T("Position not found\n"));
+  if (eid!=-1) websError(wp, 500, T((char*)"Position not found\n"));
     else response="<li>Error:Position not found";
   return -1;
 
@@ -472,9 +472,9 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
 	char_t	*type, *position = NULL;
 
 	// asp function is called within a script, get arguments
-	if (ejArgs(argc, argv, T("%s %s"), &type, &position) < 2) {
+	if (ejArgs(argc, argv, T((char*)"%s %s"), &type, &position) < 2) {
           if(eid!=-1)
-            websError(wp, 500, T("Insufficient args\n use: function(type, position)"));
+            websError(wp, 500, T((char*)"Insufficient args\n use: function(type, position)"));
           else
             response="<li>Error:Insufficient args, use: function(type, position)";
 	  return -1;
@@ -484,7 +484,7 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
 	try { nr = atoi(position); }
 	catch (...)
 	{
-          if (eid!=-1) websError(wp, 500, T("Id is not a number\n"));
+          if (eid!=-1) websError(wp, 500, T((char*)"Id is not a number\n"));
             else response="<li>Error:position is not a number";
   	  return -1;
 	}
@@ -494,7 +494,7 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
   if (g_settings.DeleteSource(type,share.strName,share.strPath))
     return 0;
 
-  if (eid!=-1) websError(wp, 500, T("Position not found\n"));
+  if (eid!=-1) websError(wp, 500, T((char*)"Position not found\n"));
     else response="<li>Error:Position not found";
   return -1;
   /*
@@ -544,15 +544,15 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
  */
 int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
-  if (eid!=-1) websError(wp, 500, T("Deprecated\n"));
+  if (eid!=-1) websError(wp, 500, T((char*)"Deprecated\n"));
     else response="<li>Error:Functino is deprecated";
   return -1;
 
   char_t	*filename = NULL;
 
 	// asp function is called within a script, get arguments
-	if (ejArgs(argc, argv, T("%s"), &filename) < 1) {
-           if (eid!=-1) websError(wp, 500, T("Insufficient args\n use: function(filename)"));
+	if (ejArgs(argc, argv, T((char*)"%s"), &filename) < 1) {
+           if (eid!=-1) websError(wp, 500, T((char*)"Insufficient args\n use: function(filename)"));
               else response="<li>Error:Insufficient args, use: function(filename)";
   	   return -1;
 	}
@@ -560,7 +560,7 @@ int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& respo
 	// load xboxmediacenter.xml, write a messages if file could not be loaded
 	if (Load() == -1) 
 	{
-          if (eid!=-1) websError(wp, 500, T("Could not load XboxMediaCenter.xml\n"));
+          if (eid!=-1) websError(wp, 500, T((char*)"Could not load XboxMediaCenter.xml\n"));
               else response="<li>Error:Could not load XboxMediaCenter.xml";
           return -1;
 	}
@@ -575,7 +575,7 @@ int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& respo
 
   if (!xbmcCfg.SaveFile(strPath))
 	{
-          if (eid!=-1) websError(wp, 500, T("Could not save to file\n"));
+          if (eid!=-1) websError(wp, 500, T((char*)"Could not save to file\n"));
             else response="<li>Error:Could not save to file";
  	  return -1;
 	}
@@ -588,7 +588,7 @@ int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& respo
  */
 int CXbmcConfiguration::GetOption( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
-  if (eid!=-1) websError(wp, 500, T("Deprecated\n"));
+  if (eid!=-1) websError(wp, 500, T((char*)"Deprecated\n"));
     else response="<li>Error:Functino is deprecated";
 return -1;
 
@@ -664,7 +664,7 @@ return -1;
  */
 int CXbmcConfiguration::SetOption( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
-  if (eid!=-1) websError(wp, 500, T("Deprecated\n"));
+  if (eid!=-1) websError(wp, 500, T((char*)"Deprecated\n"));
     else response="<li>Error:Functino is deprecated";
 
   return -1;
