@@ -77,7 +77,7 @@ DWORD BytesPerPixelFromFormat(XB_D3DFORMAT format)
   case XB_D3DFMT_P8:
     return 1;
   default:
-    ;
+    break;
   }
   return 0;
 }
