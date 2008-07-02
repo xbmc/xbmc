@@ -1,28 +1,31 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
-**
+** Copyright (C) 2003-2005 M. Bakker, Nero AG, http://www.nero.com
+**  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-**
+** 
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-**
+** 
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software
+** along with this program; if not, write to the Free Software 
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 **
 ** Any non-GPL usage of this software or parts of this software is strictly
 ** forbidden.
 **
-** Commercial non-GPL licensing of this software is possible.
-** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
+** The "appropriate copyright message" mentioned in section 2c of the GPLv2
+** must read: "Code from FAAD2 is copyright (c) Nero AG, www.nero.com"
 **
-** $Id: mp4ffint.h,v 1.15 2004/01/14 20:50:22 menno Exp $
+** Commercial non-GPL licensing of this software is possible.
+** For more info contact Nero AG through Mpeg4AAClicense@nero.com.
+**
+** $Id: mp4ffint.h,v 1.22 2007/11/01 12:33:29 menno Exp $
 **/
 
 #ifndef MP4FF_INTERNAL_H
@@ -33,13 +36,54 @@ extern "C" {
 #endif /* __cplusplus */
 
 #include "mp4ff_int_types.h"
+#include <stdlib.h>
 
-
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(_WIN32_WCE)
 #define ITUNES_DRM
+
+static __inline uint32_t GetDWLE( void const * _p )
+{
+    uint8_t * p = (uint8_t *)_p;
+    return ( ((uint32_t)p[3] << 24) | ((uint32_t)p[2] << 16)
+              | ((uint32_t)p[1] << 8) | p[0] );
+}
+static __inline uint32_t U32_AT( void const * _p )
+{
+    uint8_t * p = (uint8_t *)_p;
+    return ( ((uint32_t)p[0] << 24) | ((uint32_t)p[1] << 16)
+              | ((uint32_t)p[2] << 8) | p[3] );
+}
+static __inline uint64_t U64_AT( void const * _p )
+{
+    uint8_t * p = (uint8_t *)_p;
+    return ( ((uint64_t)p[0] << 56) | ((uint64_t)p[1] << 48)
+              | ((uint64_t)p[2] << 40) | ((uint64_t)p[3] << 32)
+              | ((uint64_t)p[4] << 24) | ((uint64_t)p[5] << 16)
+              | ((uint64_t)p[6] << 8) | p[7] );
+}
+
+#ifdef WORDS_BIGENDIAN
+#   define VLC_FOURCC( a, b, c, d ) \
+        ( ((uint32_t)d) | ( ((uint32_t)c) << 8 ) \
+           | ( ((uint32_t)b) << 16 ) | ( ((uint32_t)a) << 24 ) )
+#   define VLC_TWOCC( a, b ) \
+        ( (uint16_t)(b) | ( (uint16_t)(a) << 8 ) )
+
+#else
+#   define VLC_FOURCC( a, b, c, d ) \
+        ( ((uint32_t)a) | ( ((uint32_t)b) << 8 ) \
+           | ( ((uint32_t)c) << 16 ) | ( ((uint32_t)d) << 24 ) )
+#   define VLC_TWOCC( a, b ) \
+        ( (uint16_t)(a) | ( (uint16_t)(b) << 8 ) )
 #endif
 
+#define FOURCC_user VLC_FOURCC( 'u', 's', 'e', 'r' )
+#define FOURCC_key  VLC_FOURCC( 'k', 'e', 'y', ' ' )
+#define FOURCC_iviv VLC_FOURCC( 'i', 'v', 'i', 'v' )
+#define FOURCC_name VLC_FOURCC( 'n', 'a', 'm', 'e' )
+#define FOURCC_priv VLC_FOURCC( 'p', 'r', 'i', 'v' )
 
+#endif
 #define MAX_TRACKS 1024
 #define TRACK_UNKNOWN 0
 #define TRACK_AUDIO   1
@@ -76,6 +120,8 @@ extern "C" {
 #define ATOM_FRMA 152
 #define ATOM_IVIV 153
 #define ATOM_PRIV 154
+#define ATOM_USER 155
+#define ATOM_KEY  156
 
 #define ATOM_UNKNOWN 255
 #define ATOM_FREE ATOM_UNKNOWN
@@ -109,11 +155,14 @@ extern "C" {
 #define ATOM_SCHI 25
 
 #ifdef HAVE_CONFIG_H
-#include "../../config.h"
+#include "../../config.h"   
 #endif
 
-#ifndef _WIN32
+#if !(defined(_WIN32) || defined(_WIN32_WCE))
 #define stricmp strcasecmp
+#else
+#define stricmp _stricmp
+#define strdup _strdup
 #endif
 
 /* file callback structure */
@@ -122,7 +171,7 @@ typedef struct
     uint32_t (*read)(void *user_data, void *buffer, uint32_t length);
     uint32_t (*write)(void *udata, void *buffer, uint32_t length);
     uint32_t (*seek)(void *user_data, uint64_t position);
-	uint32_t (*truncate)(void *user_data);
+    uint32_t (*truncate)(void *user_data);
     void *user_data;
 } mp4ff_callback_t;
 
@@ -148,45 +197,45 @@ typedef struct
     int32_t channelCount;
     int32_t sampleSize;
     uint16_t sampleRate;
-	int32_t audioType;
+    int32_t audioType;
 
     /* stsd */
     int32_t stsd_entry_count;
 
     /* stsz */
-	int32_t stsz_sample_size;
-	int32_t stsz_sample_count;
+    int32_t stsz_sample_size;
+    int32_t stsz_sample_count;
     int32_t *stsz_table;
 
     /* stts */
-	int32_t stts_entry_count;
+    int32_t stts_entry_count;
     int32_t *stts_sample_count;
     int32_t *stts_sample_delta;
 
     /* stsc */
-	int32_t stsc_entry_count;
+    int32_t stsc_entry_count;
     int32_t *stsc_first_chunk;
     int32_t *stsc_samples_per_chunk;
     int32_t *stsc_sample_desc_index;
 
     /* stsc */
-	int32_t stco_entry_count;
+    int32_t stco_entry_count;
     int32_t *stco_chunk_offset;
 
-	/* ctts */
-	int32_t ctts_entry_count;
-	int32_t *ctts_sample_count;
-	int32_t *ctts_sample_offset;
+    /* ctts */
+    int32_t ctts_entry_count;
+    int32_t *ctts_sample_count;
+    int32_t *ctts_sample_offset;
 
     /* esde */
     uint8_t *decoderConfig;
     int32_t decoderConfigLen;
 
-	uint32_t maxBitrate;
-	uint32_t avgBitrate;
-	
-	uint32_t timeScale;
-	uint64_t duration;
+    uint32_t maxBitrate;
+    uint32_t avgBitrate;
+
+    uint32_t timeScale;
+    uint64_t duration;
 
 #ifdef ITUNES_DRM
     /* drms */
@@ -199,7 +248,7 @@ typedef struct
 typedef struct
 {
     /* stream to read from */
-	mp4ff_callback_t *stream;
+    mp4ff_callback_t *stream;
     int64_t current_position;
 
     int32_t moov_read;
@@ -301,9 +350,9 @@ mp4ff_t *mp4ff_open_read(mp4ff_callback_t *f);
 mp4ff_t *mp4ff_open_edit(mp4ff_callback_t *f);
 #endif
 void mp4ff_close(mp4ff_t *ff);
-void mp4ff_track_add(mp4ff_t *f);
-int32_t parse_sub_atoms(mp4ff_t *f, const uint64_t total_size);
-int32_t parse_atoms(mp4ff_t *f);
+//void mp4ff_track_add(mp4ff_t *f);
+int32_t parse_sub_atoms(mp4ff_t *f, const uint64_t total_size,int meta_only);
+int32_t parse_atoms(mp4ff_t *f,int meta_only);
 
 int32_t mp4ff_get_sample_duration(const mp4ff_t *f, const int32_t track, const int32_t sample);
 int64_t mp4ff_get_sample_position(const mp4ff_t *f, const int32_t track, const int32_t sample);

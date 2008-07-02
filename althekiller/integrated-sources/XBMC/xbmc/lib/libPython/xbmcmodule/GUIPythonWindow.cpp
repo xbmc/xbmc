@@ -110,6 +110,7 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
           if (pControl->iControlId == iControl)
           {
             inf->pObject = (PyObject*)pControl;
+            Py_INCREF(inf->pObject);
             break;
           }
           ++it;
@@ -217,7 +218,7 @@ int Py_XBMC_Event_OnControl(void* arg)
   if (arg != NULL)
   {
     PyXBMCAction* action = (PyXBMCAction*)arg;
-    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, "onControl", "(O)", action->pObject);
+    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onControl", (char*)"(O)", action->pObject);
     if (ret) {
        Py_DECREF(ret);
     }
@@ -236,7 +237,7 @@ int Py_XBMC_Event_OnAction(void* arg)
     PyXBMCAction* action = (PyXBMCAction*)arg;
     Action *pAction= (Action *)action->pObject;
 
-    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, "onAction", "(O)", pAction);
+    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onAction", (char*)"(O)", pAction);
     if (ret) {
       Py_DECREF(ret);
     }

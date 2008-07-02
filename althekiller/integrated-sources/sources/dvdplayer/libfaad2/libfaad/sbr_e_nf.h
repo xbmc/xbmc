@@ -1,6 +1,6 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
+** Copyright (C) 2003-2005 M. Bakker, Nero AG, http://www.nero.com
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -19,10 +19,13 @@
 ** Any non-GPL usage of this software or parts of this software is strictly
 ** forbidden.
 **
-** Commercial non-GPL licensing of this software is possible.
-** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
+** The "appropriate copyright message" mentioned in section 2c of the GPLv2
+** must read: "Code from FAAD2 is copyright (c) Nero AG, www.nero.com"
 **
-** $Id: sbr_e_nf.h,v 1.9 2004/01/05 14:05:12 menno Exp $
+** Commercial non-GPL licensing of this software is possible.
+** For more info contact Nero AG through Mpeg4AAClicense@nero.com.
+**
+** $Id: sbr_e_nf.h,v 1.18 2007/11/01 12:33:35 menno Exp $
 **/
 
 #ifndef __SBR_E_NF_H__
@@ -33,23 +36,12 @@ extern "C" {
 #endif
 
 
-#ifndef FIXED_POINT
-#define P2_TABLE_OFFSET 35
-#define P2_TABLE_MAX 91
-#else
-#define P2Q_TABLE_OFFSET 24
-#define P2Q_TABLE_MAX 7
-#define P2_TABLE_OFFSET 0
-#define P2_TABLE_MAX 31
-#endif
-#define P2_TABLE_RCP_OFFSET 12
-#define P2_TABLE_RCP_MAX 21
-
-
 void extract_envelope_data(sbr_info *sbr, uint8_t ch);
 void extract_noise_floor_data(sbr_info *sbr, uint8_t ch);
+#ifndef FIXED_POINT
 void envelope_noise_dequantisation(sbr_info *sbr, uint8_t ch);
 void unmap_envelope_noise(sbr_info *sbr);
+#endif
 
 #ifdef __cplusplus
 }

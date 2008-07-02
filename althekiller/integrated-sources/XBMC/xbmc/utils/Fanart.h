@@ -38,11 +38,11 @@
 /// In order to provide an interface between the fanart data and the XBMC database, all data
 /// is stored internally it its own form, as well as packed into an XML formatted CStdString
 /// stored in the member variable m_xml.
-/// Information on multiple fanarts for a given show is stored, but XBMC only cares about the 
+/// Information on multiple fanarts for a given show is stored, but XBMC only cares about the
 /// very first fanart stored.  These interfaces provide a means to access the data in that first
 /// fanart record, as well as to set which fanart is the first record.  Externally, all XBMC needs
 /// to care about is getting and setting that first record.  Everything else is maintained internally
-/// by CFanart.  This point is key to using the interface properly.   
+/// by CFanart.  This point is key to using the interface properly.
 class CFanart
 {
 public:
@@ -85,7 +85,7 @@ public:
   bool DownloadThumb(unsigned int index, const CStdString &strDestination) const;
   ///
   /// Downloads the primary fanart full resolution image
-  /// 
+  ///
   /// This interface ONLY downloads the primary image because there should not be a reason to download any other
   /// \param strDestination: CStdString full path and filename indicating where to store the image
   /// \return A boolean indicating success of failure of the download
@@ -106,8 +106,8 @@ private:
   ///
   /// Parse various color formats as returned by the sites scraped into a format we recognize
   ///
-  /// Supported Formats: 
-  ///  
+  /// Supported Formats:
+  ///
   /// * The TVDB RGB Int Triplets, pipe seperate with leading/trailing pipes "|68,69,59|69,70,58|78,78,68|"
   /// * XBMC ARGB Hexadecimal string comma seperated "FFFFFFFF,DDDDDDDD,AAAAAAAA"
   ///

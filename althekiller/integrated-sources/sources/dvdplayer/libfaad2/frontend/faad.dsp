@@ -108,27 +108,19 @@ SOURCE=.\audio.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\faad.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\common\faad\getopt.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\common\mp4v2\mp4.h
+SOURCE=..\common\mp4ff\mp4ff.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\common\mp4v2\mpeg4ip.h
+SOURCE=..\common\mp4ff\mp4ff_int_types.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\common\mp4v2\systems.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\mp4v2\win32_ver.h
+SOURCE=..\include\neaacdec.h
 # End Source File
 # End Group
 # End Target

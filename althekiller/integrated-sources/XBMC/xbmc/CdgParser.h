@@ -119,7 +119,7 @@ protected:
 //////////////////////
 #define TEX_COLOR DWORD  //Texture color format is A8R8G8B8
 
-#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW | D3DFVF_TEX1) 
+#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW | D3DFVF_TEX1)
 //Message strings:
 #define KARAOKE 13327
 #define NOT_FOUND 13328

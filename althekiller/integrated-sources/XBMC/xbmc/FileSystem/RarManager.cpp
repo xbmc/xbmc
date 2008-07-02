@@ -208,7 +208,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
     pFile->m_iUsed = 1;
   }
   CUtil::AddFileToFolder(strDir,CUtil::GetFileName(strPathInRar),pFile->m_strCachedPath); // GetFileName
-  CUtil::GetFatXQualifiedPath(pFile->m_strCachedPath);
+  pFile->m_strCachedPath = CUtil::MakeLegalFileName(pFile->m_strCachedPath);
   pFile->m_bAutoDel = (bOptions & EXFILE_AUTODELETE) != 0;
   pFile->m_iOffset = iOffset;
   strPathInCache = pFile->m_strCachedPath;
@@ -244,7 +244,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
   else
     pFileList = it->second.first;
 
-	CFileItem* pFileItem = NULL;
+	CFileItemPtr pFileItem;
   vector<CStdString> vec;
   std::set<CStdString> dirSet;
   CUtil::Tokenize(strPathInRar,vec,"/");
@@ -291,7 +291,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
       if (dirSet.find(vec[iDepth]) == dirSet.end())
       {
         dirSet.insert(vec[iDepth]);
-        pFileItem = new CFileItem(vec[iDepth]);
+        pFileItem.reset(new CFileItem(vec[iDepth]));
         pFileItem->m_strPath = vec[iDepth];
         pFileItem->m_strPath += '/';
         pFileItem->m_bIsFolder = true;
@@ -305,9 +305,9 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
       if (vec.size() == iDepth+1 || !bMask)
       {
         if (vec.size() == 0)
-          pFileItem = new CFileItem(strName);
+          pFileItem.reset(new CFileItem(strName));
         else
-          pFileItem = new CFileItem(vec[iDepth]);
+          pFileItem.reset(new CFileItem(vec[iDepth]));
         pFileItem->m_strPath = strName.c_str()+strPathInRar.size();
         pFileItem->m_dwSize = pIterator->item.UnpSize;
         pFileItem->m_idepth = pIterator->item.Method;
@@ -318,7 +318,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
     if (pFileItem)
       vecpItems.Add(pFileItem);
 
-    pFileItem = NULL;
+    pFileItem.reset();
 	}
   return vecpItems.Size() > 0; 
 #else

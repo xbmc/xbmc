@@ -84,6 +84,7 @@ extern "C"
   intptr_t dll_findfirst(const char *file, struct _finddata_t *data);
   int dll_findnext(intptr_t f, _finddata_t* data);
   int dll_findclose(intptr_t handle);
+  void dll__security_error_handler(int code, void *data);
 #endif
   char * dll_fgets (char* pszString, int num , FILE * stream);
   int dll_fgetc (FILE* stream);
@@ -132,6 +133,11 @@ extern "C"
   char*** dll___p__environ();
   FILE* dll_freopen(const char *path, const char *mode, FILE *stream);
   int dll_fscanf(FILE *stream, const char *format , ...);
+  void dll_flockfile(FILE *file);
+  int dll_ftrylockfile(FILE *file);
+  void dll_funlockfile(FILE *file);
+  int dll_fstat64(int fd, struct __stat64 *buf);
+  int dll_fstatvfs64(int fd, struct statvfs64 *buf);
 
 #ifdef _LINUX
   int * __cdecl dll_errno(void);

@@ -195,7 +195,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
 bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
 {
   CGUIDialog::OnMessage(message);
-  
+
 
   switch ( message.GetMessage() )
   {

@@ -93,6 +93,26 @@ Export export_user32[] =
   { "GetIconInfo",                -1, dllGetIconInfo,                NULL },
 #ifdef _WIN32PC
   { "DrawTextA",                  -1, DrawTextA,                     NULL },
+  { "GetClientRect",              -1, GetClientRect,                 NULL },
+  { "GetWindowTextA",             -1, GetWindowTextA,                NULL },
+  { "GetWindowTextLengthA",       -1, GetWindowTextLengthA,          NULL },
+  { "EnumWindows",                -1, EnumWindows,                   NULL },
+  { "CloseClipboard",             -1, CloseClipboard,                NULL },
+  { "GetClipboardData",           -1, GetClipboardData,              NULL },
+  { "GetClipboardFormatNameA",    -1, GetClipboardFormatNameA,       NULL },
+  { "EnumClipboardFormats",       -1, EnumClipboardFormats,          NULL },
+  { "OpenClipboard",              -1, OpenClipboard,                 NULL },
+  { "InvalidateRect",             -1, InvalidateRect,                NULL },
+  { "EndPaint",                   -1, EndPaint,                      NULL },
+  { "BeginPaint",                 -1, BeginPaint,                    NULL },
+  { "DefWindowProcA",             -1, DefWindowProcA,                NULL },
+  { "SetForegroundWindow",        -1, SetForegroundWindow,           NULL },
+  { "CreateWindowExA",            -1, CreateWindowExA,               NULL },
+  { "RegisterClassA",             -1, RegisterClassA,                NULL },
+  { "LoadIconA",                  -1, LoadIconA,                     NULL },
+  { "DispatchMessageA",           -1, DispatchMessageA,              NULL },
+  { "TranslateMessage",           -1, TranslateMessage,              NULL },
+  { "GetMessageA",                -1, GetMessageA,                   NULL },
 #endif
   { NULL, NULL, NULL, NULL }
 };
@@ -168,6 +188,9 @@ Export export_gdi32[] =
   { "SetBrushOrgEx",              -1, SetBrushOrgEx,                 NULL },
   { "CreateDIBPatternBrushPt",    -1, CreateDIBPatternBrushPt,       NULL },
   { "CreateDIBSection",           -1, CreateDIBSection,              NULL },
+  { "CreateDCA",                  -1, CreateDCA,                     NULL },
+  { "GetSystemPaletteEntries",    -1, GetSystemPaletteEntries,       NULL },
+  { "SetDIBColorTable",           -1, SetDIBColorTable,              NULL },
 #endif
   { NULL, NULL, NULL, NULL }
 };

@@ -1376,7 +1376,7 @@ void RunCredits()
         rendertime = 0;
         n = 0;
         QueryPerformanceCounter(&start2);
-      }      
+      }
       CGUITextLayout::DrawText(g_fontManager.GetFont("font13"), 50, 30, 0xffffffff, 0, FPS, 0);
 #endif
 

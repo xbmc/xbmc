@@ -220,7 +220,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-void CGUIPythonWindowXML::AddItem(CFileItem * fileItem, int itemPosition)
+void CGUIPythonWindowXML::AddItem(CFileItemPtr fileItem, int itemPosition)
 {
   if (itemPosition == INT_MAX || itemPosition > m_vecItems->Size())
   {
@@ -260,16 +260,16 @@ void CGUIPythonWindowXML::SetCurrentListPosition(int item)
   m_viewControl.SetSelectedItem(item);
 }
 
-CFileItem * CGUIPythonWindowXML::GetListItem(int position)
+CFileItemPtr CGUIPythonWindowXML::GetListItem(int position)
 { 
-  if (position < 0 || position >= m_vecItems->Size()) return NULL;
+  if (position < 0 || position >= m_vecItems->Size()) return CFileItemPtr();
   return m_vecItems->Get(position);
 }
 
-CFileItem *CGUIPythonWindowXML::GetCurrentListItem(int offset)
+CFileItemPtr CGUIPythonWindowXML::GetCurrentListItem(int offset)
 {
   int item = m_viewControl.GetSelectedItem();
-  if (item < 0 || !m_vecItems->Size()) return NULL;
+  if (item < 0 || !m_vecItems->Size()) return CFileItemPtr();
 
   item = (item + offset) % m_vecItems->Size();
   if (item < 0) item += m_vecItems->Size();
@@ -326,7 +326,7 @@ int Py_XBMC_Event_OnClick(void* arg)
   if (arg != NULL)
   {
     PyXBMCAction* action = (PyXBMCAction*)arg;
-    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, "onClick", "(i)", action->controlId);
+    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onClick", (char*)"(i)", action->controlId);
     if (ret)
     {
 	    Py_DECREF(ret);
@@ -341,7 +341,7 @@ int Py_XBMC_Event_OnFocus(void* arg)
   if (arg != NULL)
   {
     PyXBMCAction* action = (PyXBMCAction*)arg;
-    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, "onFocus", "(i)", action->controlId);
+    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onFocus", (char*)"(i)", action->controlId);
     if (ret)
     {
       Py_DECREF(ret);
@@ -357,7 +357,7 @@ int Py_XBMC_Event_OnInit(void* arg)
   if (arg != NULL)
   {
     PyXBMCAction* action = (PyXBMCAction*)arg;
-    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, "onInit", "()"); //, "O", &self);
+    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onInit", (char*)"()"); //, (char*)"O", &self);
     if (ret)
     {
       Py_DECREF(ret);
@@ -406,7 +406,7 @@ void CGUIPythonWindowXML::SortItems(CFileItemList &items)
 void CGUIPythonWindowXML::UpdateFileList()
 {
   int nItem = m_viewControl.GetSelectedItem();
-  CFileItem* pItem = m_vecItems->Get(nItem);
+  CFileItemPtr pItem = m_vecItems->Get(nItem);
   const CStdString& strSelected = pItem->m_strPath;
 
   FormatAndSort(*m_vecItems);
@@ -460,14 +460,8 @@ void CGUIPythonWindowXML::UpdateButtons()
     SET_CONTROL_LABEL(CONTROL_BTNSORTBY, sortLabel);
   }
 
-  int iItems = m_vecItems->Size();
-  if (iItems)
-  {
-    CFileItem* pItem = m_vecItems->Get(0);
-    if (pItem->IsParentFolder()) iItems--;
-  }
   CStdString items;
-  items.Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
+  items.Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 }
 

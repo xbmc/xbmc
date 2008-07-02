@@ -77,16 +77,15 @@ using namespace XFILE;
 
 CGUIWindowVideoInfo::CGUIWindowVideoInfo(void)
     : CGUIDialog(WINDOW_VIDEO_INFO, "DialogVideoInfo.xml")
+    , m_movieItem(new CFileItem)
 {
   m_bRefreshAll = true;
   m_bRefresh = false;
-  m_movieItem = new CFileItem;
   m_castList = new CFileItemList;
 }
 
 CGUIWindowVideoInfo::~CGUIWindowVideoInfo(void)
 {
-  delete m_movieItem;
   delete m_castList;
 }
 
@@ -108,17 +107,18 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 
       m_bRefresh = false;
       m_bRefreshAll = true;
+      
       CGUIDialog::OnMessage(message);
       m_bViewReview = true;
       CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_DISC);
-      g_graphicsContext.SendMessage(msg);
+      OnMessage(msg);
       for (int i = 0; i < 1000; ++i)
       {
         CStdString strItem;
         strItem.Format("DVD#%03i", i);
         CGUIMessage msg2(GUI_MSG_LABEL_ADD, GetID(), CONTROL_DISC);
         msg2.SetLabel(strItem);
-        g_graphicsContext.SendMessage(msg2);
+        OnMessage(msg2);
       }
 
       SET_CONTROL_HIDDEN(CONTROL_DISC);
@@ -163,7 +163,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
         iItem = iDVD;
 
         CGUIMessage msgSet(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_DISC, iItem, 0, NULL);
-        g_graphicsContext.SendMessage(msgSet);
+        OnMessage(msgSet);
       }*/
       Refresh();
 
@@ -230,7 +230,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       {
         int iItem = 0;
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
-        g_graphicsContext.SendMessage(msg);
+        OnMessage(msg);
         CStdString strItem = msg.GetLabel();
         if (strItem != "HD" && strItem != "share")
         {
@@ -258,7 +258,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
         if (ACTION_SELECT_ITEM == iAction)
         {
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
-          g_graphicsContext.SendMessage(msg);
+          OnMessage(msg);
           int iItem = msg.GetParam1();
           if (iItem < 0 || iItem >= m_castList->Size())
             break;
@@ -282,6 +282,65 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
 {
   *m_movieItem = *item;
+  // setup cast list + determine type.  We need to do this here as it makes
+  // sure that content type (among other things) is set correctly for the
+  // old fixed id labels that we have floating around (they may be using
+  // content type to determine visibility, so we'll set the wrong label)
+  ClearCastList();
+  if (!m_movieItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
+  { // music video
+    CStdStringArray artists;
+    StringUtils::SplitString(m_movieItem->GetVideoInfoTag()->m_strArtist, g_advancedSettings.m_videoItemSeparator, artists);
+    for (std::vector<CStdString>::const_iterator it = artists.begin(); it != artists.end(); ++it)
+    {
+      CFileItemPtr item(new CFileItem(*it));
+      if (CFile::Exists(item->GetCachedArtistThumb()))
+        item->SetThumbnailImage(item->GetCachedArtistThumb());
+      item->SetIconImage("DefaultArtist.png");
+      m_castList->Add(item);
+}
+    m_castList->SetContent("musicvideos");
+  }
+  else
+  { // movie/show/episode
+    for (CVideoInfoTag::iCast it = m_movieItem->GetVideoInfoTag()->m_cast.begin(); it != m_movieItem->GetVideoInfoTag()->m_cast.end(); ++it)
+    {
+      CStdString character;
+      if (it->strRole.IsEmpty())
+        character = it->strName;
+      else
+        character.Format("%s %s %s", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
+      CFileItemPtr item(new CFileItem(it->strName));
+      if (CFile::Exists(item->GetCachedActorThumb()))
+        item->SetThumbnailImage(item->GetCachedActorThumb());
+      item->SetIconImage("DefaultActor.png");
+      item->SetLabel(character);
+      m_castList->Add(item);
+    }
+    // determine type:
+    if (m_movieItem->m_bIsFolder)
+    {
+      m_castList->SetContent("tvshows");
+      // special case stuff for shows (not currently retrieved from the library in filemode (ref: GetTvShowInfo vs GetTVShowsByWhere)
+      m_movieItem->m_dateTime.SetFromDateString(m_movieItem->GetVideoInfoTag()->m_strPremiered);
+      m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
+      m_movieItem->SetProperty("watchedepisodes", m_movieItem->GetVideoInfoTag()->m_playCount);
+      m_movieItem->SetProperty("unwatchedepisodes", m_movieItem->GetVideoInfoTag()->m_iEpisode - m_movieItem->GetVideoInfoTag()->m_playCount);
+      m_movieItem->GetVideoInfoTag()->m_playCount = (m_movieItem->GetVideoInfoTag()->m_iEpisode == m_movieItem->GetVideoInfoTag()->m_playCount) ? 1 : 0;
+      m_movieItem->CacheVideoFanart();
+      if (CFile::Exists(m_movieItem->GetCachedVideoFanart()))
+        m_movieItem->SetProperty("fanart_image",m_movieItem->GetCachedVideoFanart());
+    }
+    else if (m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
+    {
+      m_castList->SetContent("episodes");
+      // special case stuff for episodes (not currently retrieved from the library in filemode (ref: GetEpisodeInfo vs GetEpisodesByWhere)
+      m_movieItem->m_dateTime.SetFromDateString(m_movieItem->GetVideoInfoTag()->m_strFirstAired);
+      m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
+    }
+    else
+      m_castList->SetContent("movies");
+  }
 }
 
 void CGUIWindowVideoInfo::Update()
@@ -323,7 +382,7 @@ void CGUIWindowVideoInfo::Update()
   if (m_movieItem->GetVideoInfoTag()->m_iYear)
     strYear.Format("%i", m_movieItem->GetVideoInfoTag()->m_iYear);
   else  
-    strYear = g_infoManager.GetItemLabel(m_movieItem,LISTITEM_PREMIERED);
+    strYear = g_infoManager.GetItemLabel(m_movieItem.get(),LISTITEM_PREMIERED);
   SetLabel(CONTROL_YEAR, strYear);
 
   CStdString strRating_And_Votes;
@@ -343,48 +402,8 @@ void CGUIWindowVideoInfo::Update()
   strTmp.Trim();
   SetLabel(CONTROL_TEXTAREA, strTmp);
 
-  // setup cast list + determine type
-  ClearCastList();
-  if (!m_movieItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
-  { // music video
-    CStdStringArray artists;
-    StringUtils::SplitString(m_movieItem->GetVideoInfoTag()->m_strArtist, g_advancedSettings.m_videoItemSeparator, artists);
-    for (std::vector<CStdString>::const_iterator it = artists.begin(); it != artists.end(); ++it)
-    {
-      CFileItem *item = new CFileItem(*it);
-      if (CFile::Exists(item->GetCachedArtistThumb()))
-        item->SetThumbnailImage(item->GetCachedArtistThumb());
-      item->SetIconImage("DefaultArtist.png");
-      m_castList->Add(item);
-    }
-    m_castList->SetContent("musicvideos");
-  }
-  else
-  { // movie/show/episode
-    for (CVideoInfoTag::iCast it = m_movieItem->GetVideoInfoTag()->m_cast.begin(); it != m_movieItem->GetVideoInfoTag()->m_cast.end(); ++it)
-    {
-      CStdString character;
-      if (it->strRole.IsEmpty())
-        character = it->strName;
-      else
-        character.Format("%s %s %s", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
-      CFileItem *item = new CFileItem(it->strName);
-      if (CFile::Exists(item->GetCachedActorThumb()))
-        item->SetThumbnailImage(item->GetCachedActorThumb());
-      item->SetIconImage("DefaultActor.png");
-      item->SetLabel(character);
-      m_castList->Add(item);
-    }
-    // determine type:
-    if (m_movieItem->m_bIsFolder)
-      m_castList->SetContent("tvshows");
-    else if (m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
-      m_castList->SetContent("episodes");
-    else
-      m_castList->SetContent("movies");
-  }
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_castList);
-  g_graphicsContext.SendMessage(msg);
+  OnMessage(msg);
 
   if (m_bViewReview)
   {
@@ -410,7 +429,7 @@ void CGUIWindowVideoInfo::Update()
 
   // Check for resumability
   CGUIWindowVideoFiles *window = (CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
-  if (window && window->GetResumeItemOffset(m_movieItem) > 0)
+  if (window && window->GetResumeItemOffset(m_movieItem.get()) > 0)
   {
     CONTROL_ENABLE(CONTROL_BTN_RESUME);
   }
@@ -511,7 +530,7 @@ void CGUIWindowVideoInfo::OnSearch(CStdString& strSearch)
 
     for (int i = 0; i < (int)items.Size(); i++)
     {
-      CFileItem* pItem = items[i];
+      CFileItemPtr pItem = items[i];
       pDlgSelect->Add(pItem->GetLabel());
     }
 
@@ -549,7 +568,7 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
   {
     CStdString strItem;
     strItem.Format("[%s] %s (%i)", g_localizeStrings.Get(20338), movies[i].m_strTitle, movies[i].m_iYear);  // Movie
-    CFileItem *pItem = new CFileItem(strItem);
+    CFileItemPtr pItem(new CFileItem(strItem));
     *pItem->GetVideoInfoTag() = movies[i];
     pItem->m_strPath = movies[i].m_strFileNameAndPath;
     items.Add(pItem);
@@ -560,7 +579,7 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
   {
     CStdString strItem;
     strItem.Format("[%s] %s", g_localizeStrings.Get(20364), movies[i].m_strTitle);  // Movie
-    CFileItem *pItem = new CFileItem(strItem);
+    CFileItemPtr pItem(new CFileItem(strItem));
     *pItem->GetVideoInfoTag() = movies[i];
     pItem->m_strPath.Format("videodb://1/%u",movies[i].m_iDbId);
     items.Add(pItem);
@@ -571,7 +590,7 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
   {
     CStdString strItem;
     strItem.Format("[%s] %s", g_localizeStrings.Get(20359), movies[i].m_strTitle);  // Movie
-    CFileItem *pItem = new CFileItem(strItem);
+    CFileItemPtr pItem(new CFileItem(strItem));
     *pItem->GetVideoInfoTag() = movies[i];
     pItem->m_strPath = movies[i].m_strFileNameAndPath;
     items.Add(pItem);
@@ -583,7 +602,7 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
   {
     CStdString strItem;
     strItem.Format("[%s] %s", g_localizeStrings.Get(20391), mvids[i]->GetVideoInfoTag()->m_strTitle);  // Movie
-    CFileItem *pItem = new CFileItem(strItem);
+    CFileItemPtr pItem(new CFileItem(strItem));
     *pItem->GetVideoInfoTag() = *mvids[i]->GetVideoInfoTag();
     pItem->m_strPath = mvids[i]->GetVideoInfoTag()->m_strFileNameAndPath;
     items.Add(pItem);
@@ -621,7 +640,7 @@ void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
 void CGUIWindowVideoInfo::ClearCastList()
 {
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
-  g_graphicsContext.SendMessage(msg);
+  OnMessage(msg);
   m_castList->Clear();
 }
 
@@ -639,13 +658,6 @@ void CGUIWindowVideoInfo::Play(bool resume)
       movie.m_lStartOffset = STARTOFFSET_RESUME;
     pWindow->PlayMovie(&movie);
   }
-}
-
-void CGUIWindowVideoInfo::OnInitWindow()
-{
-  CGUIDialog::OnInitWindow();
-  // disable button with id 10 as we don't have support for it yet!
-//  CONTROL_DISABLE(10);
 }
 
 // Get Thumb from user choice.
@@ -676,7 +688,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
     {
       CStdString strItemPath;
       strItemPath.Format("thumb://IMDb%i",i++);
-      CFileItem *item = new CFileItem(strItemPath, false);
+      CFileItemPtr item(new CFileItem(strItemPath, false));
       item->SetThumbnailImage(thumbFromWeb);
       CStdString strLabel;
       item->SetLabel(g_localizeStrings.Get(20015));
@@ -685,7 +697,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
   }
   if (CFile::Exists(m_movieItem->GetThumbnailImage()))
   {
-    CFileItem *item = new CFileItem("thumb://Current", false);
+    CFileItemPtr item(new CFileItem("thumb://Current", false));
     item->SetThumbnailImage(m_movieItem->GetThumbnailImage());
     item->SetLabel(g_localizeStrings.Get(20016));
     items.Add(item);
@@ -698,7 +710,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
     CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "localthumb.jpg", cachedLocalThumb);
     CPicture pic;
     pic.DoCreateThumbnail(localThumb, cachedLocalThumb);
-    CFileItem *item = new CFileItem("thumb://Local", false);
+    CFileItemPtr item(new CFileItem("thumb://Local", false));
     item->SetThumbnailImage(cachedLocalThumb);
     item->SetLabel(g_localizeStrings.Get(20017));
     items.Add(item);
@@ -707,7 +719,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
   { // no local thumb exists, so we are just using the IMDb thumb or cached thumb
     // which is probably the IMDb thumb.  These could be wrong, so allow the user
     // to delete the incorrect thumb
-    CFileItem *item = new CFileItem("thumb://None", false);
+    CFileItemPtr item(new CFileItem("thumb://None", false));
     item->SetThumbnailImage("defaultVideoBig.png");
     item->SetLabel(g_localizeStrings.Get(20018));
     items.Add(item);
@@ -781,7 +793,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
     {
       CStdString strItemPath;
       strItemPath.Format("thumb://FANART_%i",i);
-      CFileItem *item = new CFileItem(strItemPath, false);
+      CFileItemPtr item(new CFileItem(strItemPath, false));
       item->SetThumbnailImage(thumbFromWeb);
       CStdString strLabel;
       item->SetLabel(g_localizeStrings.Get(20015));
@@ -791,7 +803,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
       CLog::Log(LOGDEBUG, "Unable to download fanart thumb #%d", i);
   }
 
-  CFileItem *itemNone = new CFileItem("thumb://None", false);
+  CFileItemPtr itemNone(new CFileItem("thumb://None", false));
   itemNone->SetThumbnailImage("defaultVideoBig.png");
   itemNone->SetLabel(g_localizeStrings.Get(20018));
   items.Add(itemNone);

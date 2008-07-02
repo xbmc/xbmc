@@ -21,23 +21,24 @@
  */
 
 #include "IMsgTargetCallback.h"
+#include <boost/shared_ptr.hpp>
 
 #define PLAYLIST_NONE    -1
 #define PLAYLIST_MUSIC   0
 #define PLAYLIST_VIDEO   1
 
+class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;
 
 namespace PLAYLIST
 {
 /*!
- \ingroup windows 
+ \ingroup windows
  \brief Manages playlist playing.
  */
 enum REPEAT_STATE { REPEAT_NONE = 0, REPEAT_ONE, REPEAT_ALL };
 
 class CPlayList;
-class CPlayListItem;
 
 class CPlayListPlayer : public IMsgTargetCallback
 {
@@ -60,17 +61,17 @@ public:
   int RemoveDVDItems();
   void Reset();
   void ClearPlaylist(int iPlaylist);
+  void Clear();
   void SetShuffle(int iPlaylist, bool bYesNo);
   bool IsShuffled(int iPlaylist);
   bool HasPlayedFirstFile();
-  
+
   void SetRepeat(int iPlaylist, REPEAT_STATE state);
   REPEAT_STATE GetRepeat(int iPlaylist);
 
   // add items via the playlist player
-  void Add(int iPlaylist, CPlayListItem& item);
   void Add(int iPlaylist, CPlayList& playlist);
-  void Add(int iPlaylist, CFileItem *pItem);
+  void Add(int iPlaylist, const CFileItemPtr &pItem);
   void Add(int iPlaylist, CFileItemList& items);
 
 protected:
@@ -91,7 +92,7 @@ protected:
 }
 
 /*!
- \ingroup windows 
+ \ingroup windows
  \brief Global instance of playlist player
  */
 extern PLAYLIST::CPlayListPlayer g_playlistPlayer;

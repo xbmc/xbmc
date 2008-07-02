@@ -23,11 +23,9 @@
 
 #include "DynamicDll.h"
 
-#ifndef _XBOX
  #ifdef LoadImage
   #undef LoadImage
  #endif
-#endif
 
 #ifdef _LINUX
 typedef struct tagRGBQUAD {
@@ -75,7 +73,7 @@ typedef struct tag_ExifInfo {
 
   bool  IsExif;
 } EXIFINFO;
-  
+
 struct ImageInfo
 {
   unsigned int width;

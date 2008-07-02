@@ -76,11 +76,11 @@ bool CCDDADirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     CStdString strLabel;
     strLabel.Format("Track %02.2i", i);
 
-    CFileItem* pItem = new CFileItem(strLabel);
+    CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->m_bIsFolder = false;
     pItem->m_strPath.Format("cdda://local/%02.2i.cdda", i);
 
-    __stat64 s64;
+    struct __stat64 s64;
     if (CFile::Stat(pItem->m_strPath, &s64) == 0)
       pItem->m_dwSize = s64.st_size;
 

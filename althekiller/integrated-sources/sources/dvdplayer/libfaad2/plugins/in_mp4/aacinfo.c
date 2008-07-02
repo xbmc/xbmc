@@ -22,7 +22,7 @@
 ** Commercial non-GPL licensing of this software is possible.
 ** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
 **
-** $Id: aacinfo.c,v 1.5 2003/07/29 08:20:14 menno Exp $
+** $Id: aacinfo.c,v 1.6 2004/10/18 19:25:00 menno Exp $
 **/
 
 #define WIN32_LEAN_AND_MEAN
@@ -30,6 +30,7 @@
 #include <malloc.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include "aacinfo.h"
 #include "utils.h"
 

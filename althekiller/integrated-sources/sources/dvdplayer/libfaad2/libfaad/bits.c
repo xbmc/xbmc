@@ -1,6 +1,6 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
+** Copyright (C) 2003-2005 M. Bakker, Nero AG, http://www.nero.com
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -19,17 +19,19 @@
 ** Any non-GPL usage of this software or parts of this software is strictly
 ** forbidden.
 **
-** Commercial non-GPL licensing of this software is possible.
-** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
+** The "appropriate copyright message" mentioned in section 2c of the GPLv2
+** must read: "Code from FAAD2 is copyright (c) Nero AG, www.nero.com"
 **
-** $Id: bits.c,v 1.36 2004/01/28 19:17:24 menno Exp $
+** Commercial non-GPL licensing of this software is possible.
+** For more info contact Nero AG through Mpeg4AAClicense@nero.com.
+**
+** $Id: bits.c,v 1.44 2007/11/01 12:33:29 menno Exp $
 **/
 
 #include "common.h"
 #include "structs.h"
 
 #include <stdlib.h>
-#include <string.h>
 #include "bits.h"
 
 /* initialize buffer, call once before first getbits or showbits */
@@ -40,25 +42,38 @@ void faad_initbits(bitfile *ld, const void *_buffer, const uint32_t buffer_size)
     if (ld == NULL)
         return;
 
-    memset(ld, 0, sizeof(bitfile));
+    // useless
+    //memset(ld, 0, sizeof(bitfile));
 
     if (buffer_size == 0 || _buffer == NULL)
     {
         ld->error = 1;
-        ld->no_more_reading = 1;
         return;
     }
 
-    ld->buffer = faad_malloc((buffer_size+12)*sizeof(uint8_t));
-    memset(ld->buffer, 0, (buffer_size+12)*sizeof(uint8_t));
-    memcpy(ld->buffer, _buffer, buffer_size*sizeof(uint8_t));
+    ld->buffer = _buffer;
 
     ld->buffer_size = buffer_size;
+    ld->bytes_left  = buffer_size;
 
-    tmp = getdword((uint32_t*)ld->buffer);
+    if (ld->bytes_left >= 4)
+    {
+        tmp = getdword((uint32_t*)ld->buffer);
+        ld->bytes_left -= 4;
+    } else {
+        tmp = getdword_n((uint32_t*)ld->buffer, ld->bytes_left);
+        ld->bytes_left = 0;
+    }
     ld->bufa = tmp;
 
-    tmp = getdword((uint32_t*)ld->buffer + 1);
+    if (ld->bytes_left >= 4)
+    {
+        tmp = getdword((uint32_t*)ld->buffer + 1);
+        ld->bytes_left -= 4;
+    } else {
+        tmp = getdword_n((uint32_t*)ld->buffer + 1, ld->bytes_left);
+        ld->bytes_left = 0;
+    }
     ld->bufb = tmp;
 
     ld->start = (uint32_t*)ld->buffer;
@@ -66,21 +81,12 @@ void faad_initbits(bitfile *ld, const void *_buffer, const uint32_t buffer_size)
 
     ld->bits_left = 32;
 
-    ld->bytes_used = 0;
-    ld->no_more_reading = 0;
     ld->error = 0;
 }
 
 void faad_endbits(bitfile *ld)
 {
-    if (ld)
-    {
-        if (ld->buffer)
-        {
-            faad_free(ld->buffer);
-            ld->buffer = NULL;
-        }
-    }
+    // void
 }
 
 uint32_t faad_get_processed_bits(bitfile *ld)
@@ -90,12 +96,12 @@ uint32_t faad_get_processed_bits(bitfile *ld)
 
 uint8_t faad_byte_align(bitfile *ld)
 {
-    uint8_t remainder = (uint8_t)((32 - ld->bits_left) % 8);
+    int remainder = (32 - ld->bits_left) & 0x7;
 
     if (remainder)
     {
         faad_flushbits(ld, 8 - remainder);
-        return (8 - remainder);
+        return (uint8_t)(8 - remainder);
     }
     return 0;
 }
@@ -105,20 +111,22 @@ void faad_flushbits_ex(bitfile *ld, uint32_t bits)
     uint32_t tmp;
 
     ld->bufa = ld->bufb;
-    if (ld->no_more_reading == 0)
+    if (ld->bytes_left >= 4)
     {
         tmp = getdword(ld->tail);
-        ld->tail++;
+        ld->bytes_left -= 4;
     } else {
-        tmp = 0;
+        tmp = getdword_n(ld->tail, ld->bytes_left);
+        ld->bytes_left = 0;
     }
     ld->bufb = tmp;
+    ld->tail++;
     ld->bits_left += (32 - bits);
-    ld->bytes_used += 4;
-    if (ld->bytes_used == ld->buffer_size)
-        ld->no_more_reading = 1;
-    if (ld->bytes_used > ld->buffer_size)
-        ld->error = 1;
+    //ld->bytes_left -= 4;
+//    if (ld->bytes_left == 0)
+//        ld->no_more_reading = 1;
+//    if (ld->bytes_left < 0)
+//        ld->error = 1;
 }
 
 /* rewind to beginning */
@@ -126,30 +134,79 @@ void faad_rewindbits(bitfile *ld)
 {
     uint32_t tmp;
 
-    tmp = ld->start[0];
-#ifndef ARCH_IS_BIG_ENDIAN
-    BSWAP(tmp);
-#endif
+    ld->bytes_left = ld->buffer_size;
+
+    if (ld->bytes_left >= 4)
+    {
+        tmp = getdword((uint32_t*)&ld->start[0]);
+        ld->bytes_left -= 4;
+    } else {
+        tmp = getdword_n((uint32_t*)&ld->start[0], ld->bytes_left);
+        ld->bytes_left = 0;
+    }
     ld->bufa = tmp;
 
-    tmp = ld->start[1];
-#ifndef ARCH_IS_BIG_ENDIAN
-    BSWAP(tmp);
-#endif
+    if (ld->bytes_left >= 4)
+    {
+        tmp = getdword((uint32_t*)&ld->start[1]);
+        ld->bytes_left -= 4;
+    } else {
+        tmp = getdword_n((uint32_t*)&ld->start[1], ld->bytes_left);
+        ld->bytes_left = 0;
+    }
     ld->bufb = tmp;
+
     ld->bits_left = 32;
     ld->tail = &ld->start[2];
-    ld->bytes_used = 0;
-    ld->no_more_reading = 0;
+}
+
+/* reset to a certain point */
+void faad_resetbits(bitfile *ld, int bits)
+{
+    uint32_t tmp;
+    int words = bits >> 5;
+    int remainder = bits & 0x1F;
+
+    ld->bytes_left = ld->buffer_size - words*4;
+
+    if (ld->bytes_left >= 4)
+    {
+        tmp = getdword(&ld->start[words]);
+        ld->bytes_left -= 4;
+    } else {
+        tmp = getdword_n(&ld->start[words], ld->bytes_left);
+        ld->bytes_left = 0;
+    }
+    ld->bufa = tmp;
+
+    if (ld->bytes_left >= 4)
+    {
+        tmp = getdword(&ld->start[words+1]);
+        ld->bytes_left -= 4;
+    } else {
+        tmp = getdword_n(&ld->start[words+1], ld->bytes_left);
+        ld->bytes_left = 0;
+    }
+    ld->bufb = tmp;
+
+    ld->bits_left = 32 - remainder;
+    ld->tail = &ld->start[words+2];
+
+    /* recheck for reading too many bytes */
+    ld->error = 0;
+//    if (ld->bytes_left == 0)
+//        ld->no_more_reading = 1;
+//    if (ld->bytes_left < 0)
+//        ld->error = 1;
 }
 
 uint8_t *faad_getbitbuffer(bitfile *ld, uint32_t bits
                        DEBUGDEC)
 {
-    uint16_t i;
-    uint8_t temp;
-    uint16_t bytes = (uint16_t)bits / 8;
-    uint8_t remainder = (uint8_t)bits % 8;
+    int i;
+    unsigned int temp;
+    int bytes = bits >> 3;
+    int remainder = bits & 0x7;
 
     uint8_t *buffer = (uint8_t*)faad_malloc((bytes+1)*sizeof(uint8_t));
 
@@ -160,9 +217,9 @@ uint8_t *faad_getbitbuffer(bitfile *ld, uint32_t bits
 
     if (remainder)
     {
-        temp = (uint8_t)faad_getbits(ld, remainder DEBUGVAR(print,var,dbg)) << (8-remainder);
+        temp = faad_getbits(ld, remainder DEBUGVAR(print,var,dbg)) << (8-remainder);
 
-        buffer[bytes] = temp;
+        buffer[bytes] = (uint8_t)temp;
     }
 
     return buffer;
@@ -207,7 +264,8 @@ void faad_initbits_rev(bitfile *ld, void *buffer,
     if (ld->bits_left == 0)
         ld->bits_left = 32;
 
-    ld->bytes_used = 0;
-    ld->no_more_reading = 0;
+    ld->bytes_left = ld->buffer_size;
     ld->error = 0;
 }
+
+/* EOF */

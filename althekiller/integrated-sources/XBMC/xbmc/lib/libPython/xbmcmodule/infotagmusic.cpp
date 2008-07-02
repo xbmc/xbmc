@@ -64,7 +64,7 @@ namespace PYXBMC
 
   PyObject* InfoTagMusic_GetURL(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue("s", self->infoTag.GetURL().c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.GetURL().c_str());
   }
 
   // InfoTagMusic_GetTitle
@@ -73,7 +73,7 @@ namespace PYXBMC
 
   PyObject* InfoTagMusic_GetTitle(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue("s", self->infoTag.GetTitle().c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.GetTitle().c_str());
   }
 
   // InfoTagMusic_GetArtist
@@ -82,7 +82,7 @@ namespace PYXBMC
 
   PyObject* InfoTagMusic_GetArtist(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue("s", self->infoTag.GetArtist().c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.GetArtist().c_str());
   }
 
   // InfoTagMusic_GetAlbum
@@ -91,7 +91,7 @@ namespace PYXBMC
 
   PyObject* InfoTagMusic_GetAlbum(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue("s", self->infoTag.GetAlbum().c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.GetAlbum().c_str());
   }
 
   // InfoTagMusic_GetGenre
@@ -100,7 +100,7 @@ namespace PYXBMC
 
   PyObject* InfoTagMusic_GetGenre(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue("s", self->infoTag.GetGenre().c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.GetGenre().c_str());
   }
 
   // InfoTagMusic_GetDuration
@@ -109,7 +109,7 @@ namespace PYXBMC
 
   PyObject* InfoTagMusic_GetDuration(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue("i", self->infoTag.GetDuration());
+    return Py_BuildValue((char*)"i", self->infoTag.GetDuration());
   }
 
   // InfoTagMusic_GetTrack
@@ -118,7 +118,7 @@ namespace PYXBMC
 
   PyObject* InfoTagMusic_GetTrack(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue("s", self->infoTag.GetTrackNumber());
+    return Py_BuildValue((char*)"s", self->infoTag.GetTrackNumber());
   }
 
   // InfoTagMusic_GetDisc
@@ -127,7 +127,7 @@ namespace PYXBMC
 
   PyObject* InfoTagMusic_GetDisc(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue("s", self->infoTag.GetDiscNumber());
+    return Py_BuildValue((char*)"s", self->infoTag.GetDiscNumber());
   }
 
   // InfoTagMusic_ReleaseDate
@@ -136,19 +136,19 @@ namespace PYXBMC
 
   PyObject* InfoTagMusic_GetReleaseDate(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue("s", "");
+    return Py_BuildValue((char*)"s", "");
   }
 
   PyMethodDef InfoTagMusic_methods[] = {
-    {"getURL", (PyCFunction)InfoTagMusic_GetURL, METH_VARARGS, getURL__doc__},
-    {"getTitle", (PyCFunction)InfoTagMusic_GetTitle, METH_VARARGS, getTitle__doc__},
-    {"getAlbum", (PyCFunction)InfoTagMusic_GetAlbum, METH_VARARGS, getAlbum__doc__},
-    {"getArtist", (PyCFunction)InfoTagMusic_GetArtist, METH_VARARGS, getArtist__doc__},
-    {"getGenre", (PyCFunction)InfoTagMusic_GetGenre, METH_VARARGS, getGenre__doc__},
-    {"getDuration", (PyCFunction)InfoTagMusic_GetDuration, METH_VARARGS, getDuration__doc__},
-    {"getTrack", (PyCFunction)InfoTagMusic_GetTrack, METH_VARARGS, getTrack__doc__},
-    {"getDisc", (PyCFunction)InfoTagMusic_GetDisc, METH_VARARGS, getDisc__doc__},
-    {"getReleaseDate", (PyCFunction)InfoTagMusic_GetReleaseDate, METH_VARARGS, getReleaseDate__doc__},
+    {(char*)"getURL", (PyCFunction)InfoTagMusic_GetURL, METH_VARARGS, getURL__doc__},
+    {(char*)"getTitle", (PyCFunction)InfoTagMusic_GetTitle, METH_VARARGS, getTitle__doc__},
+    {(char*)"getAlbum", (PyCFunction)InfoTagMusic_GetAlbum, METH_VARARGS, getAlbum__doc__},
+    {(char*)"getArtist", (PyCFunction)InfoTagMusic_GetArtist, METH_VARARGS, getArtist__doc__},
+    {(char*)"getGenre", (PyCFunction)InfoTagMusic_GetGenre, METH_VARARGS, getGenre__doc__},
+    {(char*)"getDuration", (PyCFunction)InfoTagMusic_GetDuration, METH_VARARGS, getDuration__doc__},
+    {(char*)"getTrack", (PyCFunction)InfoTagMusic_GetTrack, METH_VARARGS, getTrack__doc__},
+    {(char*)"getDisc", (PyCFunction)InfoTagMusic_GetDisc, METH_VARARGS, getDisc__doc__},
+    {(char*)"getReleaseDate", (PyCFunction)InfoTagMusic_GetReleaseDate, METH_VARARGS, getReleaseDate__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -171,7 +171,7 @@ namespace PYXBMC
   {
     PyInitializeTypeObject(&InfoTagMusic_Type);
 
-    InfoTagMusic_Type.tp_name = "xbmc.InfoTagMusic";
+    InfoTagMusic_Type.tp_name = (char*)"xbmc.InfoTagMusic";
     InfoTagMusic_Type.tp_basicsize = sizeof(InfoTagMusic);
     InfoTagMusic_Type.tp_dealloc = (destructor)InfoTagMusic_Dealloc;
     InfoTagMusic_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;

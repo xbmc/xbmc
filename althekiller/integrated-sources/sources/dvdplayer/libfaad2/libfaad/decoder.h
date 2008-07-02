@@ -1,6 +1,6 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
+** Copyright (C) 2003-2005 M. Bakker, Nero AG, http://www.nero.com
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -19,10 +19,13 @@
 ** Any non-GPL usage of this software or parts of this software is strictly
 ** forbidden.
 **
-** Commercial non-GPL licensing of this software is possible.
-** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
+** The "appropriate copyright message" mentioned in section 2c of the GPLv2
+** must read: "Code from FAAD2 is copyright (c) Nero AG, www.nero.com"
 **
-** $Id: decoder.h,v 1.35 2004/01/05 14:05:11 menno Exp $
+** Commercial non-GPL licensing of this software is possible.
+** For more info contact Nero AG through Mpeg4AAClicense@nero.com.
+**
+** $Id: decoder.h,v 1.48 2007/11/01 12:33:30 menno Exp $
 **/
 
 #ifndef __DECODER_H__
@@ -34,21 +37,14 @@ extern "C" {
 
 #ifdef _WIN32
   #pragma pack(push, 8)
-  #ifndef FAADAPI
-    #define FAADAPI __cdecl
+  #ifndef NEAACDECAPI
+    #define NEAACDECAPI __cdecl
   #endif
 #else
-  #ifndef FAADAPI
-    #define FAADAPI
+  #ifndef NEAACDECAPI
+    #define NEAACDECAPI
   #endif
 #endif
-
-#include "bits.h"
-#include "syntax.h"
-#include "drc.h"
-#include "specrec.h"
-#include "filtbank.h"
-#include "ic_predict.h"
 
 
 /* library output formats */
@@ -56,6 +52,7 @@ extern "C" {
 #define FAAD_FMT_24BIT  2
 #define FAAD_FMT_32BIT  3
 #define FAAD_FMT_FLOAT  4
+#define FAAD_FMT_FIXED  FAAD_FMT_FLOAT
 #define FAAD_FMT_DOUBLE 5
 
 #define LC_DEC_CAP            (1<<0)
@@ -76,41 +73,46 @@ extern "C" {
 #define LFE_CHANNEL          (9)
 #define UNKNOWN_CHANNEL      (0)
 
-int8_t* FAADAPI faacDecGetErrorMessage(uint8_t errcode);
+char* NEAACDECAPI NeAACDecGetErrorMessage(uint8_t errcode);
 
-uint32_t FAADAPI faacDecGetCapabilities(void);
+uint32_t NEAACDECAPI NeAACDecGetCapabilities(void);
 
-faacDecHandle FAADAPI faacDecOpen(void);
+NeAACDecHandle NEAACDECAPI NeAACDecOpen(void);
 
-faacDecConfigurationPtr FAADAPI faacDecGetCurrentConfiguration(faacDecHandle hDecoder);
+NeAACDecConfigurationPtr NEAACDECAPI NeAACDecGetCurrentConfiguration(NeAACDecHandle hDecoder);
 
-uint8_t FAADAPI faacDecSetConfiguration(faacDecHandle hDecoder,
-                                    faacDecConfigurationPtr config);
+uint8_t NEAACDECAPI NeAACDecSetConfiguration(NeAACDecHandle hDecoder,
+                                             NeAACDecConfigurationPtr config);
 
 /* Init the library based on info from the AAC file (ADTS/ADIF) */
-int32_t FAADAPI faacDecInit(faacDecHandle hDecoder,
-                            uint8_t *buffer,
-                            uint32_t buffer_size,
-                            uint32_t *samplerate,
-                            uint8_t *channels);
+int32_t NEAACDECAPI NeAACDecInit(NeAACDecHandle hDecoder,
+                                 uint8_t *buffer,
+                                 uint32_t buffer_size,
+                                 uint32_t *samplerate,
+                                 uint8_t *channels);
 
 /* Init the library using a DecoderSpecificInfo */
-int8_t FAADAPI faacDecInit2(faacDecHandle hDecoder, uint8_t *pBuffer,
-                         uint32_t SizeOfDecoderSpecificInfo,
-                         uint32_t *samplerate, uint8_t *channels);
+int8_t NEAACDECAPI NeAACDecInit2(NeAACDecHandle hDecoder, uint8_t *pBuffer,
+                                 uint32_t SizeOfDecoderSpecificInfo,
+                                 uint32_t *samplerate, uint8_t *channels);
 
 /* Init the library for DRM */
-int8_t FAADAPI faacDecInitDRM(faacDecHandle hDecoder, uint32_t samplerate,
-                              uint8_t channels);
+int8_t NEAACDECAPI NeAACDecInitDRM(NeAACDecHandle *hDecoder, uint32_t samplerate,
+                                   uint8_t channels);
 
-void FAADAPI faacDecClose(faacDecHandle hDecoder);
+void NEAACDECAPI NeAACDecClose(NeAACDecHandle hDecoder);
 
-void FAADAPI faacDecPostSeekReset(faacDecHandle hDecoder, int32_t frame);
+void NEAACDECAPI NeAACDecPostSeekReset(NeAACDecHandle hDecoder, int32_t frame);
 
-void* FAADAPI faacDecDecode(faacDecHandle hDecoder,
-                            faacDecFrameInfo *hInfo,
-                            uint8_t *buffer,
-                            uint32_t buffer_size);
+void* NEAACDECAPI NeAACDecDecode(NeAACDecHandle hDecoder,
+                                 NeAACDecFrameInfo *hInfo,
+                                 uint8_t *buffer,
+                                 uint32_t buffer_size);
+
+void* NEAACDECAPI NeAACDecDecode2(NeAACDecHandle hDecoder,
+                                  NeAACDecFrameInfo *hInfo,
+                                  uint8_t *buffer, uint32_t buffer_size,
+                                  void **sample_buffer, uint32_t sample_buffer_size);
 
 #ifdef _WIN32
   #pragma pack(pop)

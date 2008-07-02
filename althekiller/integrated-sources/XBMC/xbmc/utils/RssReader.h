@@ -79,7 +79,7 @@ private:
   virtual void OnExit();
 
   IRssObserver* m_pObserver;
-  
+
   std::vector<CStdStringW> m_strFeed;
   std::vector<CStdStringW> m_strColors;
   std::vector<SYSTEMTIME *> m_vecTimeStamps;
@@ -100,6 +100,8 @@ class CRssManager
 public:
   CRssManager();
   ~CRssManager();
+
+  void Stop();
 
   bool GetReader(DWORD controlID, DWORD windowID, IRssObserver* observer, CRssReader *&reader);
 

@@ -16,7 +16,7 @@
 ** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 **
-** $Id: faad2.cpp,v 1.2 2004/01/05 14:05:12 menno Exp $
+** $Id: faad2.cpp,v 1.3 2004/08/20 08:30:53 menno Exp $
 **/
 #include "faad2.h"
 #include <mpeg4_audio_config.h>
@@ -237,7 +237,7 @@ static int aac_decode (codec_data_t *ptr,
       aac->m_vft->audio_configure(aac->m_ifptr,
                   aac->m_freq,
                   aac->m_chans,
-                  AUDIO_S16SYS,
+                  (audio_format_t)AUDIO_S16SYS,
                   aac->m_output_frame_size);
       uint8_t *now = aac->m_vft->audio_get_buffer(aac->m_ifptr);
       aac->m_audio_inited = 1;

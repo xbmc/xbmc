@@ -66,7 +66,7 @@ public:
   virtual void Process();
 private:
   std::map<CStdString,SAlarmClockEvent> m_event;
-  
+
   bool m_bIsRunning;
 };
 

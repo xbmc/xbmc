@@ -53,7 +53,7 @@ void CGUIDialogPictureInfo::OnInitWindow()
 
 bool CGUIDialogPictureInfo::OnAction(const CAction& action)
 {
-  switch (action.wID) 
+  switch (action.wID)
   {
     // if we're running from slideshow mode, drop the "next picture" and "previous picture" actions through.
     case ACTION_NEXT_PICTURE:
@@ -89,7 +89,7 @@ void CGUIDialogPictureInfo::UpdatePictureInfo()
     CStdString picInfo = g_infoManager.GetLabel(info);
     if (!picInfo.IsEmpty())
     {
-      CFileItem *item = new CFileItem(g_localizeStrings.Get(SLIDE_STRING_BASE + info));
+      CFileItemPtr item(new CFileItem(g_localizeStrings.Get(SLIDE_STRING_BASE + info)));
       item->SetLabel2(picInfo);
       m_pictureInfo->Add(item);
       CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PICTURE_INFO, 0, 0, item);

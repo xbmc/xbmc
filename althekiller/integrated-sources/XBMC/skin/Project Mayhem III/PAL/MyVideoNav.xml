@@ -44,7 +44,7 @@
 			<align>left</align>
 			<label>$LOCALIZE[20314]</label>
 			<font>special13</font>
-			<visible>IsEmpty(Container.TVShowThumb) + !container.content(tvshows) + !container.content(movies) + !container.content(musicvideos)</visible>
+			<visible>IsEmpty(Container.PluginName) + IsEmpty(Container.TVShowThumb) + !container.content(tvshows) + !container.content(movies) + !container.content(musicvideos)</visible>
 		</control>
 		<control type="label">
 			<description>description label</description>
@@ -53,7 +53,7 @@
 			<align>left</align>
 			<label>$LOCALIZE[20314] - $LOCALIZE[20343]</label>
 			<font>special13</font>
-			<visible>container.content(tvshows)</visible>
+			<visible>IsEmpty(Container.PluginName) + container.content(tvshows)</visible>
 		</control>
 		<control type="label">
 			<description>description label</description>
@@ -62,7 +62,7 @@
 			<align>left</align>
 			<label>$LOCALIZE[20314] - $LOCALIZE[342]</label>
 			<font>special13</font>
-			<visible>container.content(movies)</visible>
+			<visible>IsEmpty(Container.PluginName) + container.content(movies)</visible>
 		</control>
 		<control type="label">
 			<description>description label</description>
@@ -71,7 +71,25 @@
 			<align>left</align>
 			<label>$LOCALIZE[20314] - $LOCALIZE[20389]</label>
 			<font>special13</font>
-			<visible>container.content(musicvideos)</visible>
+			<visible>IsEmpty(Container.PluginName) + container.content(musicvideos)</visible>
+		</control>
+		<control type="label">
+			<description>description label</description>
+			<posx>207</posx>
+			<posy>43</posy>
+			<align>left</align>
+			<info>Container.PluginName</info>
+			<font>special13</font>
+			<visible>!IsEmpty(Container.PluginName)</visible>
+		</control>
+		<control type="label">
+			<description>Category Label</description>
+			<posx>670</posx>
+			<posy>43</posy>
+			<align>right</align>
+            <info>Container.Property(PluginCategory)</info>
+			<font>special13</font>
+			<visible>!IsEmpty(Container.Property(PluginCategory))</visible>
 		</control>
 		<include>contentpanel</include>
 		<control type="image" id="1000">

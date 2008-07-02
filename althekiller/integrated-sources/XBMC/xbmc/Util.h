@@ -23,46 +23,13 @@
 #include <math.h>
 #include "MediaSource.h"
 
-#ifdef HAS_XBOX_HARDWARE
-#include "xbox/custom_launch_params.h"
-#else
-typedef void CUSTOM_LAUNCH_DATA;
-#endif
-
 namespace XFILE
 {
   class IFileCallback;
 }
 
-namespace PLAYLIST
-{
-  class CPlayListItem;
-}
-
 class CFileItem;
 class CFileItemList;
-
-#ifdef HAS_TRAINER
-class CTrainer;
-#endif
-
-// for 'cherry' patching
-typedef enum
-{
-  COUNTRY_NULL = 0,
-  COUNTRY_USA,
-  COUNTRY_JAP,
-  COUNTRY_EUR
-} F_COUNTRY;
-
-typedef enum
-{
-  VIDEO_NULL = 0,
-  VIDEO_NTSCM,
-  VIDEO_NTSCJ,
-  VIDEO_PAL50,
-  VIDEO_PAL60
-} F_VIDEO;
 
 struct sortstringbyname
 {
@@ -76,12 +43,6 @@ struct sortstringbyname
   }
 };
 
-#ifdef HAS_XBOX_HARDWARE
-#define _P(x) x
-#define PTH_IC(x) (x)
-#define PATH_SEPARATOR_CHAR '\\'
-#define PATH_SEPARATOR_STRING "\\"
-#else
 #define PTH_IC(x) CUtil::TranslatePathConvertCase(x)
 #define _P(x) CUtil::TranslatePath(x)
 #ifdef _WIN32PC
@@ -90,7 +51,6 @@ struct sortstringbyname
 #else
 #define PATH_SEPARATOR_CHAR '/'
 #define PATH_SEPARATOR_STRING "/"
-#endif
 #endif
 
 struct XBOXDETECTION
@@ -182,7 +142,7 @@ public:
   static void RemoveExtension(CStdString& strFileName);
   static bool GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber);
   static void CleanFileName(CStdString& strFileName);
-  static const CStdString GetFileName(const CStdString& strFileNameAndPath);  
+  static const CStdString GetFileName(const CStdString& strFileNameAndPath);
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder = false);
   static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);
   static bool IsHD(const CStdString& strFileName);
@@ -191,14 +151,7 @@ public:
   static int ExecBuiltIn(const CStdString& execString);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
-#ifdef HAS_TRAINER
-  static bool InstallTrainer(CTrainer& trainer);
-  static bool RemoveTrainer();
-#endif
-  static bool PatchCountryVideo(F_COUNTRY Country, F_VIDEO Video);
   static void RunShortcut(const char* szPath);
-  static void RunXBE(const char* szPath, char* szParameters = NULL, F_VIDEO ForceVideo=VIDEO_NULL, F_COUNTRY ForceCountry=COUNTRY_NULL, CUSTOM_LAUNCH_DATA* pData=NULL);
-  static void LaunchXbe(const char* szPath, const char* szXbe, const char* szParameters, F_VIDEO ForceVideo=VIDEO_NULL, F_COUNTRY ForceCountry=COUNTRY_NULL, CUSTOM_LAUNCH_DATA* pData=NULL); 
   static void GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath);
   static void GetHomePath(CStdString& strPath);
   static void ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension, CStdString& strChangedFile);
@@ -215,6 +168,7 @@ public:
   static bool IsInRAR(const CStdString& strFile);
   static bool IsZIP(const CStdString& strFile);
   static bool IsInZIP(const CStdString& strFile);
+  static bool IsInArchive(const CStdString& strFile);
   static bool IsCDDA(const CStdString& strFile);
   static bool IsMemCard(const CStdString& strFile);
   static bool IsTuxBox(const CStdString& strFile);
@@ -223,17 +177,11 @@ public:
   static int GetDVDIfoTitle(const CStdString& strPathFile);
   static void UrlDecode(CStdString& strURLData);
   static void URLEncode(CStdString& strURLData);
-  static bool CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIcon);
-  static bool GetXBEDescription(const CStdString& strFileName, CStdString& strDescription);
-  static bool SetXBEDescription(const CStdString& strFileName, const CStdString& strDescription);
-  static DWORD GetXbeID( const CStdString& strFilePath);
   static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
   static void CreateShortcuts(CFileItemList &items);
   static void CreateShortcut(CFileItem* pItem);
   static void GetArtistDatabase(const CStdString& strFileName, CStdString& strArtistDBS);
   static void GetGenreDatabase(const CStdString& strFileName, CStdString& strGenreDBS);
-  static void GetFatXQualifiedPath(CStdString& strFileNameAndPath);
-  static void ShortenFileName(CStdString& strFileNameAndPath);
   static bool IsISO9660(const CStdString& strFile);
   static bool IsSmb(const CStdString& strFile);
   static bool IsDAAP(const CStdString& strFile);
@@ -243,7 +191,6 @@ public:
   static void RemoveTempFiles();
   static void DeleteGUISettings();
 
-  static void RemoveIllegalChars( CStdString& strText);
   static void CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback = NULL);
   static bool CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, const CStdString& strRarPath, const CStdString& strCompare, const CStdString& strExtExt="");
   static void ClearSubtitles();
@@ -251,10 +198,10 @@ public:
   static __int64 ToInt64(DWORD dwHigh, DWORD dwLow);
   static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
   static void AddSlashAtEnd(CStdString& strFolder);
-  static void RemoveSlashAtEnd(CStdString& strFolder);  
+  static void RemoveSlashAtEnd(CStdString& strFolder);
   static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   static void CreateArchivePath(CStdString& strUrlPath, const CStdString& strType, const CStdString& strArchivePath,
-    const CStdString& strFilePathInArchive, const CStdString& strCachePath = "Z:\\", const CStdString strPwd="");
+    const CStdString& strFilePathInArchive, const CStdString& strPwd="");
   static bool ThumbExists(const CStdString& strFileName, bool bAddCache = false);
   static bool ThumbCached(const CStdString& strFileName);
   static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);
@@ -279,8 +226,7 @@ public:
   static void Stat64ToStat(struct stat *result, struct __stat64 *stat);
 #endif
   static bool CreateDirectoryEx(const CStdString& strPath);
-  static CStdString MakeLegalFileName(const CStdString &strFile, bool isFATX);
-  static void ConvertFileItemToPlayListItem(const CFileItem *pItem, PLAYLIST::CPlayListItem &playlistitem);
+  static CStdString MakeLegalFileName(const CStdString &strFile);
   static void AddDirectorySeperator(CStdString& strPath);
   static char GetDirectorySeperator(const CStdString& strFile);
 
@@ -301,8 +247,6 @@ public:
   static bool IsFTP(const CStdString& strFile);
   static bool GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &iUserMax );
   static bool SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFtpUserPassword);
-  static bool SetXBOXNickName(CStdString strXboxNickNameIn, CStdString &strXboxNickNameOut);
-  static bool GetXBOXNickName(CStdString &strXboxNickNameOut);
   static bool AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort);
   static bool AutoDetection();
   static void AutoDetectionGetSource(VECSOURCES &share);
@@ -311,21 +255,14 @@ public:
   static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);
   static void WipeDir(const CStdString& strPath);
   static void ForceForwardSlashes(CStdString& strPath);
-  static bool PWMControl(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strWhiteA, const CStdString &strWhiteB, const CStdString &strTransition, int iTrTime);
-  static bool RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath);
-  static void RemoveKernelPatch();
-  static bool LookForKernelPatch();
 
   static double AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& strAlbum1, const CStdString& strArtistTemp1, const CStdString& strArtist1);
   static bool MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength);
-  static float CurrentCpuUsage();
   static bool SupportsFileOperations(const CStdString& strPath);
 
   static CStdString GetCachedMusicThumb(const CStdString &path);
   static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &artist);
   static void ClearFileItemCache();
-
-  static void BootToDash();
 
   static CStdString TranslatePath(const CStdString& path);
   static CStdString TranslatePathConvertCase(const CStdString& path);
@@ -337,7 +274,7 @@ public:
   // # sudo visudo
   // and add a line at the end defining the user and allowed commands
   static bool SudoCommand(const CStdString &strCommand);
-  
+
   //
   // Forks to execute a shell command.
   //
@@ -345,7 +282,7 @@ public:
 #endif
 
 private:
-  
+
   static HANDLE m_hCurrentCpuUsage;
 };
 

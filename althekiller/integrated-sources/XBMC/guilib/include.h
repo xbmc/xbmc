@@ -38,15 +38,6 @@
 #include <queue>
 #include <stdio.h>
 #include "StdString.h"
-#ifdef _XBOX
-#ifdef _DEBUG
-#define _CRTDBG_MAP_ALLOC
-#include <FStream>
-#include <stdlib.h>
-#include <crtdbg.h>
-#define new new( _NORMAL_BLOCK, __FILE__, __LINE__)
-#endif
-#endif
 #include "utils/log.h"
 
 // guilib internal
@@ -59,14 +50,6 @@
 #ifndef __APPLE__
 #include <sys/sysinfo.h>
 #endif
-#endif
-
-#ifdef _XBOX
- #ifdef QueryPerformanceFrequency
-  #undef QueryPerformanceFrequency
- #endif
- WINBASEAPI BOOL WINAPI QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency);
- #define QueryPerformanceFrequency(a) QueryPerformanceFrequencyXbox(a)
 #endif
 
 #define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }

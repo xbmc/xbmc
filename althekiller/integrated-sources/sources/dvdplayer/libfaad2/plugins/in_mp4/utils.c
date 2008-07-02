@@ -22,13 +22,15 @@
 ** Commercial non-GPL licensing of this software is possible.
 ** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
 **
-** $Id: utils.c,v 1.6 2003/07/29 08:20:14 menno Exp $
+** $Id: utils.c,v 1.9 2004/10/18 19:25:00 menno Exp $
 **/
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <mp4.h>
-#include <faad.h>
+#include <malloc.h>
+//#include <mp4.h>
+#include <mp4ff.h>
+#include <neaacdec.h>
 #include "utils.h"
 
 int StringComp(char const *str1, char const *str2, unsigned long len)
@@ -47,34 +49,28 @@ int StringComp(char const *str1, char const *str2, unsigned long len)
     return c1 - c2;
 }
 
-int GetAACTrack(MP4FileHandle infile)
+int GetAACTrack(mp4ff_t *infile)
 {
     /* find AAC track */
     int i, rc;
-	int numTracks = MP4GetNumberOfTracks(infile, NULL, 0);
+    int numTracks = mp4ff_total_tracks(infile);
 
-	for (i = 0; i < numTracks; i++)
+    for (i = 0; i < numTracks; i++)
     {
-        MP4TrackId trackId = MP4FindTrackId(infile, i, NULL, 0);
-        const char* trackType = MP4GetTrackType(infile, trackId);
+        unsigned char *buff = NULL;
+        int buff_size = 0;
+        mp4AudioSpecificConfig mp4ASC;
 
-        if (!strcmp(trackType, MP4_AUDIO_TRACK_TYPE))
+        mp4ff_get_decoder_config(infile, i, &buff, &buff_size);
+
+        if (buff)
         {
-            unsigned char *buff = NULL;
-            int buff_size = 0;
-            mp4AudioSpecificConfig mp4ASC;
+            rc = NeAACDecAudioSpecificConfig(buff, buff_size, &mp4ASC);
+            free(buff);
 
-            MP4GetTrackESConfiguration(infile, trackId, &buff, &buff_size);
-
-            if (buff)
-            {
-                rc = AudioSpecificConfig(buff, buff_size, &mp4ASC);
-                free(buff);
-
-                if (rc < 0)
-                    return -1;
-                return trackId;
-            }
+            if (rc < 0)
+                continue;
+            return i;
         }
     }
 
@@ -82,6 +78,7 @@ int GetAACTrack(MP4FileHandle infile)
     return -1;
 }
 
+#if 0
 int GetAudioTrack(MP4FileHandle infile)
 {
     /* find AAC track */
@@ -123,6 +120,7 @@ int GetVideoTrack(MP4FileHandle infile)
     /* can't decode this */
     return -1;
 }
+#endif
 
 LPTSTR PathFindFileName(LPCTSTR pPath)
 {

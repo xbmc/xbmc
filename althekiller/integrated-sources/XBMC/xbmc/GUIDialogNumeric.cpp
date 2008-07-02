@@ -79,7 +79,7 @@ bool CGUIDialogNumeric::OnAction(const CAction &action)
   }
   else if (action.wID >= KEY_ASCII) // FIXME make it KEY_UNICODE
   { // input from the keyboard
-    if (action.unicode == 10) OnOK(); // enter
+    if (action.unicode == 10 || action.unicode == 13) OnOK(); // enter
     else if (action.unicode == 8) OnBackSpace(); // backspace
     else if (action.unicode == 27) OnCancel(); // escape
     else if (action.unicode >= 48 && action.unicode < 58)  // number

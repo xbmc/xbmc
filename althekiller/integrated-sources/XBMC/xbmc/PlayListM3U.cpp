@@ -29,6 +29,7 @@
 #endif
 
 #include "Settings.h"
+#include "MusicInfoTag.h"
 
 using namespace PLAYLIST;
 using namespace XFILE;
@@ -117,7 +118,9 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
 
         // Get the full path file name and add it to the the play list
         CUtil::GetQualifiedFilename(m_strBasePath, strFileName);
-        CPlayListItem newItem(strInfo, strFileName, lDuration);
+        CFileItemPtr newItem(new CFileItem(strInfo));
+        newItem->m_strPath = strFileName;
+        newItem->GetMusicInfoTag()->SetDuration(lDuration);
         Add(newItem);
 
         // Reset the values just in case there part of the file have the extended marker
@@ -135,11 +138,8 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
 void CPlayListM3U::Save(const CStdString& strFileName) const
 {
   if (!m_vecItems.size()) return ;
-  CStdString strPlaylist = strFileName;
-  // force HD saved playlists into fatx compliance
-  if (CUtil::IsHD(strPlaylist))
-    CUtil::GetFatXQualifiedPath(strPlaylist);
-    CFile file;
+  CStdString strPlaylist = CUtil::MakeLegalFileName(strFileName);
+  CFile file;
   if (!file.OpenForWrite(strPlaylist,false,true))
   {
     CLog::Log(LOGERROR, "Could not save M3U playlist: [%s]", strPlaylist.c_str());
@@ -150,12 +150,12 @@ void CPlayListM3U::Save(const CStdString& strFileName) const
   file.Write(strLine.c_str(),strLine.size());
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
-    const CPlayListItem& item = m_vecItems[i];
-    CStdString strDescription=item.GetDescription();
+    CFileItemPtr item = m_vecItems[i];
+    CStdString strDescription=item->GetLabel();
     g_charsetConverter.utf8ToStringCharset(strDescription);
-    strLine.Format( "%s:%i,%s\n", M3U_INFO_MARKER, item.GetDuration() / 1000, strDescription.c_str() );
+    strLine.Format( "%s:%i,%s\n", M3U_INFO_MARKER, item->GetMusicInfoTag()->GetDuration() / 1000, strDescription.c_str() );
     file.Write(strLine.c_str(),strLine.size());
-    CStdString strFileName=item.GetFileName();
+    CStdString strFileName=item->m_strPath;
     g_charsetConverter.utf8ToStringCharset(strFileName);
     strLine.Format("%s\n",strFileName.c_str());
     file.Write(strLine.c_str(),strLine.size());

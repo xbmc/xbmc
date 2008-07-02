@@ -25,8 +25,8 @@
 
 using namespace std;
 
-CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool scrollOut, DWORD timeToDelayAtEnd)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height), m_scrollInfo(50, labelInfo.offsetX)
+CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool scrollOut, int scrollSpeed, DWORD timeToDelayAtEnd)
+    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height), m_scrollInfo(50, labelInfo.offsetX, scrollSpeed)
     , m_textLayout(labelInfo.font, false)
 {
   m_label = labelInfo;
@@ -38,6 +38,7 @@ CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, 
     m_fadeAnim->ApplyAnimation();
   m_renderTime = 0;
   m_lastLabel = -1;
+  m_scrollSpeed = scrollSpeed;  // save it for later
 }
 
 CGUIFadeLabelControl::~CGUIFadeLabelControl(void)
@@ -128,7 +129,7 @@ void CGUIFadeLabelControl::Render()
   if (m_fadeAnim->GetState() == ANIM_STATE_APPLIED)
     m_fadeAnim->ResetAnimation();
 
-  m_scrollInfo.pixelSpeed = (m_fadeAnim->GetProcess() == ANIM_PROCESS_NONE) ? 1.0f : 0.0f;
+  m_scrollInfo.SetSpeed((m_fadeAnim->GetProcess() == ANIM_PROCESS_NONE) ? m_scrollSpeed : 0);
 
   if (!m_scrollOut && m_shortText)
   {

@@ -33,6 +33,25 @@
 			<align>left</align>
 			<label>10506</label>
 			<font>special13</font>
+			<visible>IsEmpty(Container.PluginName)</visible>
+		</control>
+		<control type="label">
+			<description>description label</description>
+			<posx>207</posx>
+			<posy>43</posy>
+			<align>left</align>
+			<info>Container.PluginName</info>
+			<font>special13</font>
+			<visible>!IsEmpty(Container.PluginName)</visible>
+		</control>
+		<control type="label">
+			<description>Category Label</description>
+			<posx>670</posx>
+			<posy>43</posy>
+			<align>right</align>
+            <info>Container.Property(PluginCategory)</info>
+			<font>special13</font>
+			<visible>!IsEmpty(Container.Property(PluginCategory))</visible>
 		</control>
 		<include>contentpanel</include>
 		<control type="label" id="12">
@@ -87,44 +106,13 @@
 				<onleft>50</onleft>
 				<onright>50</onright>
 				<onup>3</onup>
-				<ondown>99</ondown>
-			</control>
-			<control type="button" id="99">
-				<description>online gaming button</description>
-				<posx>0</posx>
-				<posy>111</posy>
-				<label>998</label>
-				<onclick>ActivateWindow(XLinkKai)</onclick>
-				<onleft>50</onleft>
-				<onright>50</onright>
-				<onup>98</onup>
 				<ondown>20</ondown>
-				<visible>System.KaiEnabled</visible>
-			</control>
-			<control type="image">
-				<description>Kai disconnected icon</description>
-				<posx>130</posx>
-				<posy>118</posy>
-				<width>19</width>
-				<height>19</height>
-				<texture>Kai_disconnected.png</texture>
-				<visible>System.Platform.XBOX + !System.KaiConnected + System.KaiEnabled</visible>
-			</control>
-			<control type="image">
-				<description>Kai connected icon</description>
-				<posx>130</posx>
-				<posy>118</posy>
-				<width>19</width>
-				<height>19</height>
-				<texture>Kai_connected.png</texture>
-				<visible>System.Platform.XBOX + System.KaiConnected</visible>
 			</control>
 			<control type="group">
 				<description>LastFM Love Hate Stuff</description>
 				<posx>0</posx>
-				<posy>148</posy>
+				<posy>111</posy>
 				<visible>LastFM.RadioPlaying</visible>
-				<animation effect="slide" start="0,0" end="0,-37" time="0" condition="!System.KaiEnabled">conditional</animation>
 				<control type="image">
 					<description>Unfocus Background</description>
 					<posx>0</posx>
@@ -168,7 +156,7 @@
 					<animation effect="zoom" start="100" end="120" center="auto" time="100">focus</animation>
 					<onleft>50</onleft>
 					<onright>21</onright>
-					<onup>99</onup>
+					<onup>98</onup>
 					<ondown>2</ondown>
 				</control>
 				<control type="button" id="21">
@@ -185,7 +173,7 @@
 					<animation effect="zoom" start="100" end="120" center="auto" time="100">focus</animation>
 					<onleft>20</onleft>
 					<onright>50</onright>
-					<onup>99</onup>
+					<onup>98</onup>
 					<ondown>2</ondown>
 				</control>
 			</control>

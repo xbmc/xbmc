@@ -262,14 +262,14 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
 //  depending on the child node
 void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
 {
-  CFileItem* pItem=NULL;
+  CFileItemPtr pItem;
 
   // always hide "all" items
   if (g_advancedSettings.m_bMusicLibraryHideAllItems)
     return;
 
   // no need for "all" item when only one item
-  if (items.Size() == 1 || (items.Size() == 2 && items[0]->IsParentFolder()))
+  if (items.GetObjectCount() <= 1)
     return;
 
   switch (GetChildType())
@@ -282,14 +282,14 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
 
   /* no need for all genres
   case NODE_TYPE_GENRE:
-    pItem = new CFileItem(g_localizeStrings.Get(15105));  // "All Genres"
+    pItem.reset(new CFileItem(g_localizeStrings.Get(15105)));  // "All Genres"
     pItem->m_strPath = BuildPath() + "-1/";
     break;
   */
 
   case NODE_TYPE_ARTIST:
     if (GetType() == NODE_TYPE_OVERVIEW) return;
-    pItem = new CFileItem(g_localizeStrings.Get(15103));  // "All Artists"
+    pItem.reset(new CFileItem(g_localizeStrings.Get(15103)));  // "All Artists"
     pItem->m_strPath = BuildPath() + "-1/";
     break;
 
@@ -301,7 +301,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
   case NODE_TYPE_ALBUM_COMPILATIONS:
   case NODE_TYPE_ALBUM_TOP100:
   case NODE_TYPE_YEAR_ALBUM:
-    pItem = new CFileItem(g_localizeStrings.Get(15102));  // "All Albums"
+    pItem.reset(new CFileItem(g_localizeStrings.Get(15102)));  // "All Albums"
     pItem->m_strPath = BuildPath() + "-1/";
     break;
 

@@ -1,6 +1,6 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
+** Copyright (C) 2003-2005 M. Bakker, Nero AG, http://www.nero.com
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -19,10 +19,13 @@
 ** Any non-GPL usage of this software or parts of this software is strictly
 ** forbidden.
 **
-** Commercial non-GPL licensing of this software is possible.
-** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
+** The "appropriate copyright message" mentioned in section 2c of the GPLv2
+** must read: "Code from FAAD2 is copyright (c) Nero AG, www.nero.com"
 **
-** $Id: mdct.h,v 1.22 2004/01/05 14:05:12 menno Exp $
+** Commercial non-GPL licensing of this software is possible.
+** For more info contact Nero AG through Mpeg4AAClicense@nero.com.
+**
+** $Id: mdct.h,v 1.30 2007/11/01 12:33:31 menno Exp $
 **/
 
 #ifndef __MDCT_H__
@@ -36,9 +39,6 @@ extern "C" {
 mdct_info *faad_mdct_init(uint16_t N);
 void faad_mdct_end(mdct_info *mdct);
 void faad_imdct(mdct_info *mdct, real_t *X_in, real_t *X_out);
-#ifdef USE_SSE
-void faad_imdct_sse(mdct_info *mdct, real_t *X_in, real_t *X_out);
-#endif
 void faad_mdct(mdct_info *mdct, real_t *X_in, real_t *X_out);
 
 

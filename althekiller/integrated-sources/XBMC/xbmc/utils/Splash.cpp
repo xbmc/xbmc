@@ -48,7 +48,7 @@ void CSplash::Show()
 {
   g_graphicsContext.Lock();
   g_graphicsContext.Clear();
-  
+
   g_graphicsContext.SetCameraPosition(CPoint(0, 0));
   float w = g_graphicsContext.GetWidth() * 0.5f;
   float h = g_graphicsContext.GetHeight() * 0.5f;
@@ -67,8 +67,8 @@ void CSplash::Show()
     newRamp.blue[i] = (int)((float)oldRamp.red[i] * fade);
   }
   g_graphicsContext.Get3DDevice()->SetGammaRamp(GAMMA_RAMP_FLAG, &newRamp);
-#endif 
-  
+#endif
+
   //render splash image
 #if !defined(HAS_XBOX_D3D) && !defined(HAS_SDL)
   g_graphicsContext.Get3DDevice()->BeginScene();
@@ -86,7 +86,7 @@ void CSplash::Show()
   g_graphicsContext.Get3DDevice()->EndScene();
 #endif
   g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-#elif defined(HAS_SDL_2D) 
+#elif defined(HAS_SDL_2D)
   SDL_Flip(g_graphicsContext.getScreenSurface()->SDL());
 #elif defined(HAS_SDL_OPENGL)
   g_graphicsContext.Flip();
@@ -101,7 +101,7 @@ void CSplash::Hide()
   // fade out
   for (float fadeout = fade - 0.01f; fadeout >= 0.f; fadeout -= 0.01f)
   {
-#ifndef HAS_SDL  
+#ifndef HAS_SDL
     for (int i = 0; i < 256; i++)
     {
       newRamp.red[i] = (int)((float)oldRamp.red[i] * fadeout);
@@ -112,7 +112,7 @@ void CSplash::Hide()
     g_graphicsContext.Get3DDevice()->SetGammaRamp(GAMMA_RAMP_FLAG, &newRamp);
 #endif
   }
-  
+
   //restore original gamma ramp
 #ifndef HAS_SDL
   g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
@@ -132,7 +132,7 @@ void CSplash::Process()
     if (fade <= 1.f)
     {
       Sleep(10);
-#ifndef HAS_SDL      
+#ifndef HAS_SDL
       for (int i = 0; i < 256; i++)
       {
         newRamp.red[i] = (int)((float)oldRamp.red[i] * fade);
@@ -142,7 +142,7 @@ void CSplash::Process()
       g_graphicsContext.Lock();
       g_graphicsContext.Get3DDevice()->SetGammaRamp(GAMMA_RAMP_FLAG, &newRamp);
       g_graphicsContext.Unlock();
-#endif      
+#endif
       fade += 0.01f;
     }
     else

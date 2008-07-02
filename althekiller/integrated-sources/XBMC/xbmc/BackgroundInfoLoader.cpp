@@ -23,13 +23,8 @@
 #include "BackgroundInfoLoader.h"
 #include "FileItem.h"
 
-#ifdef _XBOX
-#define ITEMS_PER_THREAD 10
-#define MAX_THREAD_COUNT 2
-#else
 #define ITEMS_PER_THREAD 5
 #define MAX_THREAD_COUNT 5
-#endif
 
 CBackgroundInfoLoader::CBackgroundInfoLoader(int nThreads)
 {
@@ -71,8 +66,8 @@ void CBackgroundInfoLoader::Run()
       while (!m_bStop)
       {
         CSingleLock lock(m_lock);
-        CFileItem *pItem = NULL;
-        std::vector<CFileItem*>::iterator iter = m_vecItems.begin();
+        CFileItemPtr pItem;
+        std::vector<CFileItemPtr>::iterator iter = m_vecItems.begin();
         if (iter != m_vecItems.end())
         {
           pItem = *iter;
@@ -89,8 +84,8 @@ void CBackgroundInfoLoader::Run()
         lock.Leave();
         try
         {
-          if (!m_bStop && LoadItem(pItem) && m_pObserver)
-            m_pObserver->OnItemLoaded(pItem);
+          if (!m_bStop && LoadItem(pItem.get()) && m_pObserver)
+            m_pObserver->OnItemLoaded(pItem.get());
         }
         catch (...)
         {
@@ -118,7 +113,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
 
   if (items.Size() == 0)
     return;
-  
+
   EnterCriticalSection(m_lock);
 
   for (int nItem=0; nItem < items.Size(); nItem++)
@@ -139,7 +134,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
   m_nActiveThreads = nThreads;
   for (int i=0; i < nThreads; i++)
   {
-    CThread *pThread = new CThread(this); 
+    CThread *pThread = new CThread(this);
     pThread->Create();
 #ifndef _LINUX
     pThread->SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
@@ -147,7 +142,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
     pThread->SetName("Background Loader");
     m_workers.push_back(pThread);
   }
-      
+
   LeaveCriticalSection(m_lock);
 }
 

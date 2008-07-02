@@ -40,9 +40,9 @@ public:
   void AddToDatabase(int iItem);
   static void OnScan(const CStdString& strPath, const SScraperInfo& info, const VIDEO::SScanSettings& settings);
   virtual void OnInfo(CFileItem* pItem, const SScraperInfo& info);
-  static void MarkUnWatched(CFileItem* pItem);
-  static void MarkWatched(CFileItem* pItem);
-  static void UpdateVideoTitle(CFileItem* pItem);
+  static void MarkUnWatched(const CFileItemPtr &pItem);
+  static void MarkWatched(const CFileItemPtr &pItem);
+  static void UpdateVideoTitle(const CFileItem* pItem);
 
 private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
@@ -75,7 +75,7 @@ protected:
   void OnManualIMDB();
   bool CheckMovie(const CStdString& strFileName);
 
-  void AddItemToPlayList(const CFileItem* pItem, CFileItemList &queuedItems);
+  void AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems);
   void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
 
   void OnSearch();

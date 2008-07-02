@@ -94,7 +94,8 @@ bool CPlayListWPL::LoadData(std::istream& stream)
         strFileName = CUtil::SubstitutePath(strFileName);
       CUtil::GetQualifiedFilename(m_strBasePath, strFileName);
       CStdString strDescription = CUtil::GetFileName(strFileName);
-      CPlayListItem newItem(strDescription, strFileName);
+      CFileItemPtr newItem(new CFileItem(strDescription));
+      newItem->m_strPath = strFileName;
       Add(newItem);
     }
     pMediaElement = pMediaElement->NextSiblingElement();
@@ -105,10 +106,7 @@ bool CPlayListWPL::LoadData(std::istream& stream)
 void CPlayListWPL::Save(const CStdString& strFileName) const
 {
   if (!m_vecItems.size()) return ;
-  CStdString strPlaylist = strFileName;
-  // force HD saved playlists into fatx compliance
-  if (CUtil::IsHD(strPlaylist))
-    CUtil::GetFatXQualifiedPath(strPlaylist);
+  CStdString strPlaylist = CUtil::MakeLegalFileName(strFileName);
   FILE *fd = fopen(strPlaylist.c_str(), "w+");
   if (!fd)
   {
@@ -126,8 +124,8 @@ void CPlayListWPL::Save(const CStdString& strFileName) const
   fprintf(fd, "        <seq>\n");
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
-    const CPlayListItem& item = m_vecItems[i];
-    fprintf(fd, "            <media src=%c%s%c/>", 34, item.GetFileName().c_str(), 34);
+    CFileItemPtr item = m_vecItems[i];
+    fprintf(fd, "            <media src=%c%s%c/>", 34, item->m_strPath.c_str(), 34);
   }
   fprintf(fd, "        </seq>\n");
   fprintf(fd, "    </body>\n");

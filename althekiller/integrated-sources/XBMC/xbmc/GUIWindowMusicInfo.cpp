@@ -55,15 +55,14 @@ using namespace XFILE;
 
 CGUIWindowMusicInfo::CGUIWindowMusicInfo(void)
     : CGUIDialog(WINDOW_MUSIC_INFO, "DialogAlbumInfo.xml")
+    , m_albumItem(new CFileItem)
 {
   m_bRefresh = false;
-  m_albumItem = new CFileItem;
   m_albumSongs = new CFileItemList;
 }
 
 CGUIWindowMusicInfo::~CGUIWindowMusicInfo(void)
 {
-  delete m_albumItem;
   delete m_albumSongs;
 }
 
@@ -122,7 +121,8 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
           int iItem = msg.GetParam1();
           if (iItem < 0 || iItem >= (int)m_albumSongs->Size())
             break;
-          OnSearch(m_albumSongs->Get(iItem));
+          CFileItemPtr item = m_albumSongs->Get(iItem);
+          OnSearch(item.get());
           return true;
         }
       }
@@ -202,7 +202,7 @@ void CGUIWindowMusicInfo::SetSongs(const VECSONGS &songs)
   for (unsigned int i = 0; i < songs.size(); i++)
   {
     const CSong& song = songs[i];
-    CFileItem *item = new CFileItem(song);
+    CFileItemPtr item(new CFileItem(song));
     m_albumSongs->Add(item);
   }
 }
@@ -215,19 +215,19 @@ void CGUIWindowMusicInfo::SetDiscography()
 
   for (unsigned int i=0;i<m_artist.discography.size();++i)
   {
-    CFileItem item(m_artist.discography[i].first);
-    item.SetLabel2(m_artist.discography[i].second);
-    long idAlbum = database.GetAlbumByName(item.GetLabel(),m_artist.strArtist);
+    CFileItemPtr item(new CFileItem(m_artist.discography[i].first));
+    item->SetLabel2(m_artist.discography[i].second);
+    long idAlbum = database.GetAlbumByName(item->GetLabel(),m_artist.strArtist);
     CStdString strThumb;
     if (idAlbum != -1) // we need this slight stupidity to get correct case for the album name
       database.GetAlbumThumb(idAlbum,strThumb);
 
     if (!strThumb.IsEmpty() && CFile::Exists(strThumb))
-      item.SetThumbnailImage(strThumb);
+      item->SetThumbnailImage(strThumb);
     else
-      item.SetThumbnailImage("defaultAlbumCover.png");
+      item->SetThumbnailImage("defaultAlbumCover.png");
 
-    m_albumSongs->Add(new CFileItem(item));
+    m_albumSongs->Add(item);
   }
 }
 
@@ -443,7 +443,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
     {
       CStdString strThumb;
       strThumb.Format("thumb://Remote%i",i);
-      CFileItem *item = new CFileItem(strThumb, false);
+      CFileItemPtr item(new CFileItem(strThumb, false));
       strThumb.Format("%s%i.tbn",thumbFromWeb,i);
       item->SetThumbnailImage(strThumb);
       item->SetLabel(g_localizeStrings.Get(20055));
@@ -454,7 +454,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
   // Current thumb
   if (CFile::Exists(m_albumItem->GetThumbnailImage()))
   {
-    CFileItem *item = new CFileItem("thumb://Current", false);
+    CFileItemPtr item(new CFileItem("thumb://Current", false));
     item->SetThumbnailImage(m_albumItem->GetThumbnailImage());
     item->SetLabel(g_localizeStrings.Get(20016));
     items.Add(item);
@@ -479,14 +479,14 @@ void CGUIWindowMusicInfo::OnGetThumb()
     CPicture pic;
     if (pic.DoCreateThumbnail(localThumb, cachedLocalThumb))
     {
-      CFileItem *item = new CFileItem("thumb://Local", false);
+      CFileItemPtr item(new CFileItem("thumb://Local", false));
       item->SetThumbnailImage(cachedLocalThumb);
       item->SetLabel(g_localizeStrings.Get(20017));
       items.Add(item);
     }
   }
   
-  CFileItem *item = new CFileItem("thumb://None", false);
+  CFileItemPtr item(new CFileItem("thumb://None", false));
   if (m_bArtistInfo)
     item->SetThumbnailImage("defaultArtistBig.png");
   else
@@ -554,7 +554,7 @@ void CGUIWindowMusicInfo::OnSearch(const CFileItem* pItem)
   }
 }
 
-CFileItem* CGUIWindowMusicInfo::GetCurrentListItem(int offset)
+CFileItemPtr CGUIWindowMusicInfo::GetCurrentListItem(int offset)
 { 
   return m_albumItem; 
 }

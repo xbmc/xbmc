@@ -1,6 +1,6 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
+** Copyright (C) 2003-2005 M. Bakker, Nero AG, http://www.nero.com
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -19,10 +19,13 @@
 ** Any non-GPL usage of this software or parts of this software is strictly
 ** forbidden.
 **
-** Commercial non-GPL licensing of this software is possible.
-** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
+** The "appropriate copyright message" mentioned in section 2c of the GPLv2
+** must read: "Code from FAAD2 is copyright (c) Nero AG, www.nero.com"
 **
-** $Id: lt_predict.c,v 1.20 2004/01/05 14:05:12 menno Exp $
+** Commercial non-GPL licensing of this software is possible.
+** For more info contact Nero AG through Mpeg4AAClicense@nero.com.
+**
+** $Id: lt_predict.c,v 1.27 2007/11/01 12:33:31 menno Exp $
 **/
 
 
@@ -52,9 +55,6 @@ uint8_t is_ltp_ot(uint8_t object_type)
 #endif
 #ifdef LD_DEC
         || (object_type == LD)
-#endif
-#ifdef SCALABLE_DEC
-        || (object_type == 6) /* TODO */
 #endif
         )
     {
@@ -120,7 +120,7 @@ void lt_prediction(ic_stream *ics, ltp_info *ltp, real_t *spec,
                 if (ltp->long_used[sfb])
                 {
                     uint16_t low  = ics->swb_offset[sfb];
-                    uint16_t high = ics->swb_offset[sfb+1];
+                    uint16_t high = min(ics->swb_offset[sfb+1], ics->swb_offset_max);
 
                     for (bin = low; bin < high; bin++)
                     {

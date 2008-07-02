@@ -23,7 +23,9 @@
 #include "GUIViewState.h"
 #include "GUIViewStateMusic.h"
 #include "GUIViewStateVideo.h"
-#include "GUIViewStatePicturesProgramsScripts.h"
+#include "GUIViewStatePictures.h"
+#include "GUIViewStatePrograms.h"
+#include "GUIViewStateScripts.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
 #include "URL.h"
@@ -104,9 +106,6 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId==WINDOW_SCRIPTS)
     return new CGUIViewStateWindowScripts(items);
 
-  if (windowId==WINDOW_GAMESAVES)
-    return new CGUIViewStateWindowGameSaves(items);
-
   if (windowId==WINDOW_PICTURES)
     return new CGUIViewStateWindowPictures(items);
 
@@ -148,9 +147,9 @@ SORT_ORDER CGUIViewState::GetDisplaySortOrder() const
 SORT_ORDER CGUIViewState::SetNextSortOrder()
 {
   if (m_sortOrder==SORT_ORDER_ASC)
-    m_sortOrder=SORT_ORDER_DESC;
+    SetSortOrder(SORT_ORDER_DESC);
   else
-    m_sortOrder=SORT_ORDER_ASC;
+    SetSortOrder(SORT_ORDER_ASC);
 
   SaveViewState();
 
@@ -347,6 +346,14 @@ CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIVie
   SetViewAsControl(DEFAULT_VIEW_LIST);
 
   SetSortOrder(SORT_ORDER_ASC);
+}
+
+void CGUIViewState::SetSortOrder(SORT_ORDER sortOrder)
+{
+  if (GetSortMethod() == SORT_METHOD_NONE)
+    m_sortOrder = SORT_ORDER_NONE;
+  else
+    m_sortOrder = sortOrder;
 }
 
 void CGUIViewState::LoadViewState(const CStdString &path, int windowID)

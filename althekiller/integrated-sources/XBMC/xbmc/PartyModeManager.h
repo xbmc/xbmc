@@ -20,7 +20,9 @@
  *
  */
 
-class CFileItem;
+#include <boost/shared_ptr.hpp>
+
+class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;
 namespace PLAYLIST
 {
@@ -58,7 +60,7 @@ private:
   void Process();
   bool AddRandomSongs(int iSongs = 0);
   bool AddInitialSongs(std::vector<std::pair<int,long> > &songIDs);
-  void Add(CFileItem *pItem);
+  void Add(const CFileItemPtr &pItem);
   bool ReapSongs();
   bool MovePlaying();
   void SendUpdateMessage();

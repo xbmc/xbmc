@@ -529,7 +529,7 @@ static uint32_t modify_moov(mp4ff_t * f,const mp4ff_metadata_t * data,void ** ou
 	{
 		udta_offset = mp4ff_position(f);
 		udta_size = mp4ff_read_int32(f);
-		if (find_atom_v2(f,udta_offset+8,udta_size-8,"meta",4,"ilst")<2)
+		if (!find_atom_v2(f,udta_offset+8,udta_size-8,"meta",4,"ilst"))
 		{
 			membuffer * buf;
 			void * new_meta_buffer;
@@ -606,7 +606,7 @@ int32_t mp4ff_meta_update(mp4ff_callback_t *f,const mp4ff_metadata_t * data)
     ff->stream = f;
 	mp4ff_set_position(ff,0);
 
-    parse_atoms(ff);
+    parse_atoms(ff,1);
 
 
 	if (!modify_moov(ff,data,&new_moov_data,&new_moov_size))

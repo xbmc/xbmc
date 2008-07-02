@@ -1,9 +1,12 @@
 To compile under Linux.
 ----------------------
 just run :
- - autoreconf -vif
-then run configure with options you want.
-run ./configure --help for more informations.
+
+autoreconf -vif
+./configure --with-mp4v2
+make
+sudo make install
+
 
 about the xmms plugin.
 ---------------------

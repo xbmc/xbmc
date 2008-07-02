@@ -26,17 +26,8 @@
 #include "Util.h"
 #include "GUIPassword.h"
 #include "PlayListPlayer.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "xbox/xbeheader.h"
-#endif
 #include "FileSystem/StackDirectory.h"
-#ifdef HAS_KAI
-#include "utils/KaiClient.h"
-#endif
 #include "ProgramDatabase.h"
-#ifdef HAS_TRAINER
-#include "utils/Trainer.h"
-#endif
 #include "GUIDialogYesNo.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
@@ -95,78 +86,8 @@ void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying )
   }
 }
 
-void CAutorun::ExecuteXBE(const CStdString &xbeFile)
-{
-#ifdef HAS_XBOX_HARDWARE
-  int iRegion;
-  if (g_guiSettings.GetBool("myprograms.gameautoregion"))
-  {
-    CXBE xbe;
-    iRegion = xbe.ExtractGameRegion(xbeFile);
-    if (iRegion < 1 || iRegion > 7)
-      iRegion = 0;
-    iRegion = xbe.FilterRegion(iRegion);
-  }
-  else
-    iRegion = 0;
-
-#ifdef HAS_TRAINER
-  CProgramDatabase database;
-  database.Open();
-  DWORD dwTitleId = CUtil::GetXbeID(xbeFile);
-  CStdString strTrainer = database.GetActiveTrainer(dwTitleId);
-  if (strTrainer != "")
-  {
-      bool bContinue=false;
-      if (CKaiClient::GetInstance()->IsEngineConnected())
-      {
-        CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-        pDialog->SetHeading(714);
-        pDialog->SetLine(0,"Use trainer or KAI?");
-        pDialog->SetLine(1, "Yes for trainer");
-        pDialog->SetLine(2, "No for KAI");
-        pDialog->DoModal();
-        if (pDialog->IsConfirmed())
-        {
-          while (CKaiClient::GetInstance()->GetCurrentVector().size() > 1)
-            CKaiClient::GetInstance()->ExitVector();
-        }
-        else
-          bContinue = true;
-      }
-      if (!bContinue)
-      {
-        CTrainer trainer;
-        if (trainer.Load(strTrainer))
-        {
-          database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
-          CUtil::InstallTrainer(trainer);
-        }
-      }
-  }
-  database.Close();
-#endif
-  CUtil::RunXBE(xbeFile.c_str(), NULL,F_VIDEO(iRegion));
-#endif
-}
-
 void CAutorun::RunXboxCd(bool bypassSettings)
 {
-#ifdef HAS_XBOX_HARDWARE
-  if ( CFile::Exists("D:\\default.xbe") )
-  {
-    if (!g_guiSettings.GetBool("autorun.xbox") && !bypassSettings)
-      return;
-
-    if (!g_passwordManager.IsMasterLockUnlocked(false))
-      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked())
-        return;
-
-    ExecuteXBE("D:\\default.xbe");
-    return;
-  }
-#endif
-
   if ( !g_guiSettings.GetBool("autorun.dvd") && !g_guiSettings.GetBool("autorun.vcd") && !g_guiSettings.GetBool("autorun.video") && !g_guiSettings.GetBool("autorun.music") && !g_guiSettings.GetBool("autorun.pictures") )
     return ;
 
@@ -249,7 +170,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     // check root folders first, for normal structured dvd's
     for (int i = 0; i < vecItems.Size(); i++)
     {
-      CFileItem* pItem = vecItems[i];
+      CFileItemPtr pItem = vecItems[i];
 
       if (pItem->m_bIsFolder && pItem->m_strPath != "." && pItem->m_strPath != "..")
       {
@@ -316,7 +237,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
 
     for (int i = 0; i < tempItems.Size(); i++)
     {
-      CFileItem *pItem = tempItems[i];
+      CFileItemPtr pItem = tempItems[i];
       if (!pItem->m_bIsFolder && pItem->IsVideo())
       {
         bPlaying = true;
@@ -326,13 +247,10 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           CStackDirectory dir;
           CFileItemList items;
           dir.GetDirectory(pItem->m_strPath, items);
-          for (int i = 0; i < items.Size(); i++)
-          {
-            itemlist.Add(new CFileItem(*items[i]));
-          }
+          itemlist.Append(items);
         }
         else
-          itemlist.Add(new CFileItem(*pItem));
+          itemlist.Add(pItem);
       }
     }
     if (itemlist.Size())
@@ -357,7 +275,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   {
     for (int i = 0; i < vecItems.Size(); i++)
     {
-      CFileItem *pItem = vecItems[i];
+      CFileItemPtr pItem = vecItems[i];
       if (!pItem->m_bIsFolder && pItem->IsAudio())
       {
         nAddedToPlaylist++;
@@ -370,7 +288,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   {
     for (int i = 0; i < vecItems.Size(); i++)
     {
-      CFileItem *pItem = vecItems[i];
+      CFileItemPtr pItem = vecItems[i];
       if (!pItem->m_bIsFolder && pItem->IsPicture())
       {
         bPlaying = true;
@@ -387,7 +305,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   {
     for (int i = 0; i < vecItems.Size(); i++)
     {
-      CFileItem* pItem = vecItems[i];
+      CFileItemPtr  pItem = vecItems[i];
       if (pItem->m_bIsFolder)
       {
         if (pItem->m_strPath != "." && pItem->m_strPath != ".." )

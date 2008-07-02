@@ -317,7 +317,7 @@ void CLabelFormatter::AssembleMask(unsigned int label, const CStdString& mask)
   int findStart = -1;
   while ((findStart = reg.RegFind(work.c_str())) >= 0)
   { // we've found a match for a pre/postfixed string
-    // send anything 
+    // send anything
     SplitMask(label, work.Left(findStart) + reg.GetReplaceString("\\1"));
     m_dynamicContent[label].push_back(CMaskString(reg.GetReplaceString("\\2"), *reg.GetReplaceString("\\4"), reg.GetReplaceString("\\5")));
     work = work.Mid(findStart + reg.GetFindLen());

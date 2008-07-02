@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h" 
+#include "stdafx.h"
 // WindowsShortcut.cpp: implementation of the CWindowsShortcut class.
 //
 //////////////////////////////////////////////////////////////////////
@@ -43,7 +43,7 @@ static char THIS_FILE[] = __FILE__;
 #define FLAG_ICON               0x40
 
 #define VOLUME_LOCAL        1
-#define VOLUME_NETWORK      2 
+#define VOLUME_NETWORK      2
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////

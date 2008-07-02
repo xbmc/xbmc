@@ -43,8 +43,8 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem"
-				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0500;WINVER=0x0500;HAS_SDL;NOMINMAX;_USE_32BIT_TIME_T"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;HAS_SDL;NOMINMAX;_USE_32BIT_TIME_T"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="0"
@@ -132,8 +132,8 @@
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem"
-				PreprocessorDefinitions="_MSVC;WIN32;NDEBUG;_WINDOWS;_WIN32_WINNT=0x0500;WINVER=0x0500;HAS_SDL;NOMINMAX;_USE_32BIT_TIME_T"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;HAS_SDL;NOMINMAX;_USE_32BIT_TIME_T"
 				StringPooling="false"
 				MinimalRebuild="false"
 				ExceptionHandling="0"
@@ -202,6 +202,10 @@
 		<Filter
 			Name="win32"
 			>
+			<File
+				RelativePath="..\..\xbmc\win32\ntddcdrm.h"
+				>
+			</File>
 			<File
 				RelativePath="..\..\xbmc\win32\PlatformDefs.h"
 				>
@@ -802,6 +806,14 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamRTMP.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamRTMP.h"
 						>
 					</File>
 					<File
@@ -2594,10 +2606,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\Idle.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\utils\IMDB.cpp"
 					>
 				</File>
@@ -2694,10 +2702,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\memutil.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\utils\MusicAlbumInfo.cpp"
 					>
 				</File>
@@ -2711,6 +2715,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\MusicInfoScraper.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\Mutex.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\Mutex.h"
 					>
 				</File>
 				<File
@@ -2731,6 +2743,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\RegExp.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\RssFeed.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\RssFeed.h"
 					>
 				</File>
 				<File
@@ -2818,10 +2838,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\Trainer.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\utils\TuxBoxUtil.cpp"
 					>
 				</File>
@@ -2863,10 +2879,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\XBAudioConfig.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\XBTimeZone.cpp"
 					>
 				</File>
 				<File
@@ -3002,6 +3014,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIDialogFullScreenInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogFullScreenInfo.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIDialogGamepad.cpp"
 					>
 				</File>
@@ -3110,14 +3130,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogTrainerSettings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogTrainerSettings.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\GUIDialogVideoBookmarks.cpp"
 					>
 				</File>
@@ -3178,11 +3190,27 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIViewStatePicturesProgramsScripts.cpp"
+					RelativePath="..\..\xbmc\GUIViewStatePictures.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIViewStatePicturesProgramsScripts.h"
+					RelativePath="..\..\xbmc\GUIViewStatePictures.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStatePrograms.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStatePrograms.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateScripts.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateScripts.h"
 					>
 				</File>
 				<File
@@ -3191,14 +3219,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowFullScreen.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowGameSaves.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowGameSaves.h"
 					>
 				</File>
 				<File
@@ -3703,6 +3723,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\RarManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\RSSDirectory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\RSSDirectory.h"
 					>
 				</File>
 				<File
@@ -4731,10 +4759,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\utils\Idle.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\xbmc\FileSystem\IFile.h"
 				>
 			</File>
@@ -4776,10 +4800,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\MediaManager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\memutil.h"
 				>
 			</File>
 			<File
@@ -4944,10 +4964,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\ThumbnailCache.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\utils\Trainer.h"
 				>
 			</File>
 			<File
@@ -5229,307 +5245,299 @@
 					Name="python"
 					>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\abstract.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\abstract.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\bitset.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\bitset.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\boolobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\boolobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\bufferobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\bufferobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\cellobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\cellobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\ceval.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\ceval.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\classobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\classobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\cobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\cobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\codecs.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\codecs.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\compile.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\compile.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\complexobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\complexobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\cStringIO.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\cStringIO.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\datetime.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\datetime.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\defines.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\descrobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\descrobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\dictobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\dictobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\enumobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\enumobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\errcode.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\errcode.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\eval.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\eval.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\fileobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\fileobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\floatobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\floatobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\frameobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\frameobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\funcobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\funcobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\genobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\genobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\graminit.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\graminit.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\grammar.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\grammar.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\import.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\import.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\intobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\intobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\intrcheck.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\intrcheck.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\iterobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\iterobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\listobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\listobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\longintrepr.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\longintrepr.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\longobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\longobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\marshal.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\marshal.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\metagrammar.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\metagrammar.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\methodobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\methodobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\modsupport.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\modsupport.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\moduleobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\moduleobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\node.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\node.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\object.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\object.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\objimpl.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\objimpl.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\opcode.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\opcode.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\osdefs.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\osdefs.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\parsetok.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\parsetok.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\patchlevel.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\patchlevel.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\pgen.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\pgen.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\pgenheaders.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\pgenheaders.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\py_curses.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\py_curses.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\pydebug.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\pyconfig.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\pyerrors.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\pydebug.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\pyfpe.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\pyerrors.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\pygetopt.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\pyfpe.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\pymactoolbox.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\pygetopt.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\pymem.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\pymactoolbox.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\pyport.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\pymem.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\pystate.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\pyport.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\pystrtod.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\pystate.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\Python.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\pystrtod.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\pythonrun.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\Python.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\pythread.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\pythonrun.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\rangeobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\pythread.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\setobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\rangeobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\sliceobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\setobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\stringobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\sliceobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\structmember.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\stringobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\structseq.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\structmember.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\symtable.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\structseq.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\sysmodule.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\symtable.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\timefuncs.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\sysmodule.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\token.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\timefuncs.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\traceback.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\token.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\tupleobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\traceback.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\ucnhash.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\tupleobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\unicodeobject.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\ucnhash.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\unicodeobject.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\lib\libPython\python\weakrefobject.h"
+						RelativePath="..\..\xbmc\lib\libPython\Python\Include\weakrefobject.h"
 						>
 					</File>
 				</Filter>
@@ -5691,6 +5699,34 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cdrip\EncoderWav.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="libRTMP"
+				>
+				<File
+					RelativePath="..\..\xbmc\lib\libRTMP\AMFObject.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libRTMP\AMFObject.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libRTMP\rtmp.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libRTMP\rtmp.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libRTMP\rtmppacket.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libRTMP\rtmppacket.h"
 					>
 				</File>
 			</Filter>

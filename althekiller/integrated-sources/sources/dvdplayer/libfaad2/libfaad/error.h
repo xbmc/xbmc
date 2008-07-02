@@ -1,6 +1,6 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
+** Copyright (C) 2003-2005 M. Bakker, Nero AG, http://www.nero.com
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -19,10 +19,13 @@
 ** Any non-GPL usage of this software or parts of this software is strictly
 ** forbidden.
 **
-** Commercial non-GPL licensing of this software is possible.
-** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
+** The "appropriate copyright message" mentioned in section 2c of the GPLv2
+** must read: "Code from FAAD2 is copyright (c) Nero AG, www.nero.com"
 **
-** $Id: error.h,v 1.16 2004/01/28 19:17:25 menno Exp $
+** Commercial non-GPL licensing of this software is possible.
+** For more info contact Nero AG through Mpeg4AAClicense@nero.com.
+**
+** $Id: error.h,v 1.26 2007/11/01 12:33:30 menno Exp $
 **/
 
 #ifndef __ERROR_H__
@@ -32,8 +35,8 @@
 extern "C" {
 #endif
 
-#define NUM_ERROR_MESSAGES 26
-extern int8_t *err_msg[];
+#define NUM_ERROR_MESSAGES 33
+extern char *err_msg[];
 
 #ifdef __cplusplus
 }

@@ -21,10 +21,9 @@
 
 // python.h should always be included first before any other includes
 #include "stdafx.h"
-#ifndef _LINUX
-#include "python/Python.h"
-#else
-#include <python2.4/Python.h>
+#include "Python/Include/Python.h"
+#include "Python/Include/osdefs.h"
+#ifdef _LINUX
 #include "XBPythonDll.h"
 #endif
 #include "Util.h"
@@ -139,12 +138,14 @@ void XBPyThread::Process()
   // get path from script file name and add python path's
   // this is used for python so it will search modules from script path first
   strcpy(sourcedir, source);
-  
-#ifndef _LINUX
-  strcpy(strrchr(sourcedir, PATH_SEPARATOR_CHAR), ";");
+
+  char *p = strrchr(sourcedir, PATH_SEPARATOR_CHAR);
+#ifdef _LINUX  
+  *p = ':';
 #else
-  strcpy(strrchr(sourcedir, PATH_SEPARATOR_CHAR), ":");
+  *p = ';';
 #endif
+  *++p = 0;
 
   strcpy(path, sourcedir);
 
@@ -152,7 +153,7 @@ void XBPyThread::Process()
   strcat(path, dll_getenv("PYTHONPATH"));
 #else
 #ifdef __APPLE__
-  strcat(path, _P("Q:\\system\\python\\python24.zlib:"));
+  strcat(path, _P("Q:\\system\\python\\python24.zip:"));
   strcat(path, _P("Q:\\system\\python\\lib-osx"));
 #else
   strcat(path, Py_GetPath());
@@ -165,7 +166,6 @@ void XBPyThread::Process()
     PySys_SetArgv(argc, argv);
   }
   PySys_SetPath(path);
-
 #ifdef _LINUX
   // Replace the : at the end with ; so it will be EXACTLY like the xbox version
   strcpy(strrchr(sourcedir, ':'), ";");

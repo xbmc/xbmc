@@ -49,7 +49,7 @@ F90=df.exe
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
-LIB32=xilink6.exe -lib
+LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
 # ADD LIB32 /nologo
 
@@ -74,7 +74,7 @@ F90=df.exe
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
-LIB32=xilink6.exe -lib
+LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
 # ADD LIB32 /nologo
 
@@ -106,6 +106,10 @@ SOURCE=.\decoder.c
 # Begin Source File
 
 SOURCE=.\drc.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\drm_dec.c
 # End Source File
 # Begin Source File
 
@@ -154,6 +158,14 @@ SOURCE=.\output.c
 # Begin Source File
 
 SOURCE=.\pns.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\ps_dec.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\ps_syntax.c
 # End Source File
 # Begin Source File
 
@@ -309,11 +321,11 @@ SOURCE=.\decoder.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\dither.h
+SOURCE=.\drc.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\drc.h
+SOURCE=.\drm_dec.h
 # End Source File
 # Begin Source File
 
@@ -361,6 +373,10 @@ SOURCE=.\mdct.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\mdct_tab.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\mp4.h
 # End Source File
 # Begin Source File
@@ -374,6 +390,14 @@ SOURCE=.\output.h
 # Begin Source File
 
 SOURCE=.\pns.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ps_dec.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ps_tables.h
 # End Source File
 # Begin Source File
 

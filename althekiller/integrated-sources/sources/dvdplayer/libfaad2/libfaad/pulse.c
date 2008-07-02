@@ -1,6 +1,6 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
+** Copyright (C) 2003-2005 M. Bakker, Nero AG, http://www.nero.com
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -19,12 +19,14 @@
 ** Any non-GPL usage of this software or parts of this software is strictly
 ** forbidden.
 **
-** Commercial non-GPL licensing of this software is possible.
-** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
+** The "appropriate copyright message" mentioned in section 2c of the GPLv2
+** must read: "Code from FAAD2 is copyright (c) Nero AG, www.nero.com"
 **
-** $Id: pulse.c,v 1.14 2004/01/05 14:05:12 menno Exp $
+** Commercial non-GPL licensing of this software is possible.
+** For more info contact Nero AG through Mpeg4AAClicense@nero.com.
+**
+** $Id: pulse.c,v 1.21 2007/11/01 12:33:34 menno Exp $
 **/
-
 #include "common.h"
 #include "structs.h"
 
@@ -37,9 +39,10 @@ uint8_t pulse_decode(ic_stream *ics, int16_t *spec_data, uint16_t framelen)
     uint16_t k;
     pulse_info *pul = &(ics->pul);
 
-    k = ics->swb_offset[pul->pulse_start_sfb];
+    k = min(ics->swb_offset[pul->pulse_start_sfb], ics->swb_offset_max);
 
-    for(i = 0; i <= pul->number_pulse; i++) {
+    for (i = 0; i <= pul->number_pulse; i++)
+    {
         k += pul->pulse_offset[i];
 
         if (k >= framelen)

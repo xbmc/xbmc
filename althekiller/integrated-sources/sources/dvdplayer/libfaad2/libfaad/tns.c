@@ -1,6 +1,6 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
+** Copyright (C) 2003-2005 M. Bakker, Nero AG, http://www.nero.com
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -19,10 +19,13 @@
 ** Any non-GPL usage of this software or parts of this software is strictly
 ** forbidden.
 **
-** Commercial non-GPL licensing of this software is possible.
-** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
+** The "appropriate copyright message" mentioned in section 2c of the GPLv2
+** must read: "Code from FAAD2 is copyright (c) Nero AG, www.nero.com"
 **
-** $Id: tns.c,v 1.29 2004/01/05 14:05:12 menno Exp $
+** Commercial non-GPL licensing of this software is possible.
+** For more info contact Nero AG through Mpeg4AAClicense@nero.com.
+**
+** $Id: tns.c,v 1.40 2007/11/01 12:33:40 menno Exp $
 **/
 
 #include "common.h"
@@ -106,11 +109,11 @@ void tns_decode_frame(ic_stream *ics, tns_info *tns, uint8_t sr_index,
 
             start = min(bottom, max_tns_sfb(sr_index, object_type, (ics->window_sequence == EIGHT_SHORT_SEQUENCE)));
             start = min(start, ics->max_sfb);
-            start = ics->swb_offset[start];
+            start = min(ics->swb_offset[start], ics->swb_offset_max);
 
             end = min(top, max_tns_sfb(sr_index, object_type, (ics->window_sequence == EIGHT_SHORT_SEQUENCE)));
             end = min(end, ics->max_sfb);
-            end = ics->swb_offset[end];
+            end = min(ics->swb_offset[end], ics->swb_offset_max);
 
             size = end - start;
             if (size <= 0)
@@ -160,11 +163,11 @@ void tns_encode_frame(ic_stream *ics, tns_info *tns, uint8_t sr_index,
 
             start = min(bottom, max_tns_sfb(sr_index, object_type, (ics->window_sequence == EIGHT_SHORT_SEQUENCE)));
             start = min(start, ics->max_sfb);
-            start = ics->swb_offset[start];
+            start = min(ics->swb_offset[start], ics->swb_offset_max);
 
             end = min(top, max_tns_sfb(sr_index, object_type, (ics->window_sequence == EIGHT_SHORT_SEQUENCE)));
             end = min(end, ics->max_sfb);
-            end = ics->swb_offset[end];
+            end = min(ics->swb_offset[end], ics->swb_offset_max);
 
             size = end - start;
             if (size <= 0)
@@ -239,24 +242,32 @@ static void tns_ar_filter(real_t *spectrum, uint16_t size, int8_t inc, real_t *l
 
     uint8_t j;
     uint16_t i;
-    real_t y, state[TNS_MAX_ORDER];
-
-    for (i = 0; i < order; i++)
-        state[i] = 0;
+    real_t y;
+    /* state is stored as a double ringbuffer */
+    real_t state[2*TNS_MAX_ORDER] = {0};
+    int8_t state_index = 0;
 
     for (i = 0; i < size; i++)
     {
         y = *spectrum;
 
         for (j = 0; j < order; j++)
-            y -= MUL_C(state[j], lpc[j+1]);
+            y -= MUL_C(state[state_index+j], lpc[j+1]);
 
-        for (j = order-1; j > 0; j--)
-            state[j] = state[j-1];
+        /* double ringbuffer state */
+        state_index--;
+        if (state_index < 0)
+            state_index = order-1;
+        state[state_index] = state[state_index + order] = y;
 
-        state[0] = y;
         *spectrum = y;
         spectrum += inc;
+
+//#define TNS_PRINT
+#ifdef TNS_PRINT
+        //printf("%d\n", y);
+        printf("0x%.8X\n", y);
+#endif
     }
 }
 
@@ -274,22 +285,24 @@ static void tns_ma_filter(real_t *spectrum, uint16_t size, int8_t inc, real_t *l
 
     uint8_t j;
     uint16_t i;
-    real_t y, state[TNS_MAX_ORDER];
-
-    for (i = 0; i < order; i++)
-        state[i] = REAL_CONST(0.0);
+    real_t y;
+    /* state is stored as a double ringbuffer */
+    real_t state[2*TNS_MAX_ORDER] = {0};
+    int8_t state_index = 0;
 
     for (i = 0; i < size; i++)
     {
         y = *spectrum;
 
         for (j = 0; j < order; j++)
-            y += MUL_C(state[j], lpc[j+1]);
+            y += MUL_C(state[state_index+j], lpc[j+1]);
 
-        for (j = order-1; j > 0; j--)
-            state[j] = state[j-1];
+        /* double ringbuffer state */
+        state_index--;
+        if (state_index < 0)
+            state_index = order-1;
+        state[state_index] = state[state_index + order] = *spectrum;
 
-        state[0] = *spectrum;
         *spectrum = y;
         spectrum += inc;
     }

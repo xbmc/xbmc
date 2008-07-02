@@ -62,7 +62,9 @@ void CScraperUrl::Clear()
 
 bool CScraperUrl::Parse()
 {
-  return ParseString(m_xml);
+  CStdString strToParse = m_xml;
+  m_xml.Empty();
+  return ParseString(strToParse);
 }
 
 bool CScraperUrl::ParseElement(const TiXmlElement* element)
@@ -73,12 +75,12 @@ bool CScraperUrl::ParseElement(const TiXmlElement* element)
 	stream << *element;
 	m_xml += stream.str();
 	bool bHasChilds = false;
-	if (element->FirstChildElement("thumb")) 
+	if (element->FirstChildElement("thumb"))
 	{
 		element = element->FirstChildElement("thumb");
 		bHasChilds = true;
 	}
-	else if (element->FirstChildElement("url")) 
+	else if (element->FirstChildElement("url"))
 	{
 		element = element->FirstChildElement("url");
 		bHasChilds = true;
@@ -132,11 +134,11 @@ bool CScraperUrl::ParseString(CStdString strUrl)
 {
   if (strUrl.IsEmpty())
     return false;
-  
+
   // ok, now parse the xml file
   if (strUrl.Find("encoding=\"utf-8\"") < 0)
     g_charsetConverter.stringCharsetToUtf8(strUrl);
-  
+
   TiXmlDocument doc;
   doc.Parse(strUrl.c_str(),0,TIXML_ENCODING_UTF8);
   m_xml += strUrl;
@@ -213,7 +215,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, CHTTP& http)
     if (!http.Post(strUrl, strOptions, strHTML))
       return false;
   }
-  else 
+  else
     if (!http.Get(scrURL.m_url, strHTML))
       return false;
 
@@ -225,7 +227,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, CHTTP& http)
     if (iSize)
     {
       strHTML.clear();
-      strHTML.append(strBuffer.c_str(),strBuffer.data()+iSize);      
+      strHTML.append(strBuffer.c_str(),strBuffer.data()+iSize);
     }
   }
 
@@ -284,7 +286,7 @@ bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
     {
       ParseElement(link);
       link = link->NextSiblingElement("url");
-    } 
+    }
   }
   else
     return false;

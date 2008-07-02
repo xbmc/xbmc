@@ -64,7 +64,7 @@ public:
 // just result in undefined behavior and can be difficult to track down.
 //
 // Just call it 'VerifyGLState()' after a sequence of GL calls
-// 
+//
 // if _DEBUG and HAS_SDL_OPENGL are defined, the function checks
 // for GL errors and prints the current state of the various matrices;
 // if not it's just an empty inline stub, and thus won't affect performance
@@ -76,3 +76,6 @@ void _VerifyGLState(const char* szfile, const char* szfunction, int lineno);
 #else
 #define VerifyGLState()
 #endif
+
+void LogGraphicsInfo();
+

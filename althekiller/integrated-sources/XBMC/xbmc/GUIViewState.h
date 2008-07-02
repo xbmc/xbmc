@@ -72,7 +72,7 @@ protected:
 
   void AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, LABEL_MASKS labelmasks);
   void SetSortMethod(SORT_METHOD sortMethod);
-  void SetSortOrder(SORT_ORDER sortOrder) { m_sortOrder=sortOrder; }
+  void SetSortOrder(SORT_ORDER sortOrder);
   const CFileItemList& m_items;
 
   static VECSOURCES m_sources;

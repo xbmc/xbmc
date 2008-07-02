@@ -30,11 +30,7 @@
 
 using namespace std;
 
-#ifdef _XBOX
-const char MEDIA_SOURCES_XML[] = { "Q:\\system\\mediasources.xml" };
-#else
 const char MEDIA_SOURCES_XML[] = { "P:\\mediasources.xml" };
-#endif
 
 class CMediaManager g_mediaManager;
 
@@ -108,29 +104,9 @@ bool CMediaManager::SaveSources()
 
 void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
 {
-#if defined(_WIN32PC)
-  char lDrives[128];
-  GetLogicalDriveStrings(sizeof(lDrives)-1, lDrives);
-  char *pch = lDrives;
-  while (*pch) 
-  {
-    CMediaSource share;
-    int iDrive = GetDriveType(pch);
-    if(iDrive == DRIVE_CDROM)
-    {
-      share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
-      //share.strName = g_localizeStrings.Get(218);
-    }
-    else 
-    {     
-      share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-    }
-    share.m_ignore = true;
-    share.strName.Format(g_localizeStrings.Get(21438),pch[0]);
-    share.strPath.Format("%s", _P(pch));
-    localDrives.push_back(share);
-    pch = &pch[strlen(pch) + 1];
-  }
+
+#ifdef _WIN32PC
+  CMediaSource share;
   if (includeQ)
   {
     CMediaSource share;
@@ -139,6 +115,64 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
     share.m_ignore = true;
     localDrives.push_back(share) ;
   }
+
+  char* pcBuffer= NULL;
+  DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
+  if( dwStrLength != 0 )
+  {
+    dwStrLength+= 1; 
+    pcBuffer= new char [dwStrLength];
+    GetLogicalDriveStrings( dwStrLength, pcBuffer );
+    
+    UINT uDriveType; 
+    int iPos= 0, nResult; 
+    char cVolumeName[100];
+    do{
+      cVolumeName[0]= '\0';
+      nResult= GetVolumeInformation( pcBuffer + iPos, cVolumeName, 100, 0, 0, 0, NULL, 25);
+      uDriveType= GetDriveType( pcBuffer + iPos  );
+      share.strPath= share.strName= "";
+      
+      bool bUseDCD= false; // just for testing
+      if( uDriveType > DRIVE_UNKNOWN && uDriveType == DRIVE_FIXED || uDriveType == DRIVE_REMOTE ||
+          uDriveType == DRIVE_CDROM || uDriveType == DRIVE_REMOVABLE )
+      {
+        share.strPath= pcBuffer + iPos;
+        if( cVolumeName[0] != '\0' ) share.strName= cVolumeName;
+        if( uDriveType == DRIVE_CDROM && nResult)
+        {
+          share.strName.Format( "%s - %s (%s)", 
+            g_localizeStrings.Get(218), share.strName, share.strPath );
+          share.m_iDriveType= CMediaSource::SOURCE_TYPE_LOCAL;
+          bUseDCD= true;
+        }
+        else 
+        {
+          // Lets show it, like Windows explorer do... TODO: sorting should depend on driver letter
+          share.strName.Format( "%s (%s)", 
+            ( uDriveType == DRIVE_CDROM )   ? g_localizeStrings.Get(218)  :
+            ( uDriveType == DRIVE_REMOVABLE && 
+              share.strName.IsEmpty() )     ? g_localizeStrings.Get(437)  :
+            ( uDriveType == DRIVE_UNKNOWN ) ? g_localizeStrings.Get(13205): share.strName, share.strPath );
+        }
+        share.strName.Replace(":\\",":");
+        share.m_ignore= true;
+        if( !bUseDCD )
+        {
+          share.m_iDriveType= ( 
+           ( uDriveType == DRIVE_FIXED  )    ? CMediaSource::SOURCE_TYPE_LOCAL :
+           ( uDriveType == DRIVE_REMOTE )    ? CMediaSource::SOURCE_TYPE_REMOTE :
+           ( uDriveType == DRIVE_CDROM  )    ? CMediaSource::SOURCE_TYPE_DVD :
+           ( uDriveType == DRIVE_REMOVABLE ) ? CMediaSource::SOURCE_TYPE_REMOVABLE :
+             CMediaSource::SOURCE_TYPE_UNKNOWN );
+        }
+
+        localDrives.push_back(share);
+      }
+      iPos += (strlen( pcBuffer + iPos) + 1 );
+    } while( strlen( pcBuffer + iPos ) > 0 );
+  }
+  free( pcBuffer );
 #else
 #ifndef _LINUX
   // Local shares
@@ -252,7 +286,7 @@ bool CMediaManager::RemoveLocation(const CStdString& path)
   {
     if (m_locations[i].path == path)
     {
-      // prompt for sources, remove, cancel, 
+      // prompt for sources, remove, cancel,
       m_locations.erase(m_locations.begin()+i);
       return SaveSources();
     }

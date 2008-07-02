@@ -24,45 +24,6 @@
 
 namespace PLAYLIST
 {
-  class CPlayListItem : public CFileItem
-  {
-  public:
-    CPlayListItem();
-    CPlayListItem(const CStdString& strDescription, const CStdString& strFileName, long lDuration = 0, long lStartOffset = 0, long lEndOffset = 0);
-
-    virtual ~CPlayListItem();
-
-    void SetFileName(const CStdString& strFileName);
-    const CStdString& GetFileName() const;
-
-    void SetDescription(const CStdString& strDescription);
-    const CStdString& GetDescription() const;
-
-    void SetDuration(long lDuration);
-    long GetDuration() const;
-
-    void SetStartOffset(long lStartOffset);
-    long GetStartOffset() const;
-
-    void SetEndOffset(long lEndOffset);
-    long GetEndOffset() const;
-
-    virtual bool LoadMusicTag();
-
-    void SetMusicTag(const MUSIC_INFO::CMusicInfoTag &tag);
-    void SetVideoTag(const CVideoInfoTag &tag);
-    const MUSIC_INFO::CMusicInfoTag* GetMusicTag() const;
-    const CVideoInfoTag* GetVideoTag() const;
-
-    bool IsUnPlayable() const;
-    void SetUnPlayable() { m_bUnPlayable = true; };
-    void ClearUnPlayable() { m_bUnPlayable = false; };
-
-  protected:
-    long m_lDuration;
-    bool m_bUnPlayable;
-  };
-
 class CPlayList
 {
 public:
@@ -73,9 +34,8 @@ public:
   virtual bool LoadData(const CStdString& strData);
   virtual void Save(const CStdString& strFileName) const {};
 
-  void Add(CPlayListItem& item);
   void Add(CPlayList& playlist);
-  void Add(CFileItem *pItem);
+  void Add(const CFileItemPtr &pItem);
   void Add(CFileItemList& items);
 
   // for Party Mode
@@ -92,8 +52,8 @@ public:
   int size() const;
   int RemoveDVDItems();
 
-  const CPlayListItem& operator[] (int iItem) const;
-  CPlayListItem& operator[] (int iItem);
+  const CFileItemPtr operator[] (int iItem) const;
+  CFileItemPtr operator[] (int iItem);
 
   // why are these virtual functions? there is no derived child class
   void Shuffle(int iPosition = 0);
@@ -114,11 +74,13 @@ protected:
   int m_iPlayableItems;
   bool m_bShuffled;
   bool m_bWasPlayed;
-  std::vector <CPlayListItem> m_vecItems;
-  typedef std::vector <CPlayListItem>::iterator ivecItems;
+
+//  CFileItemList m_vecItems;
+  std::vector <CFileItemPtr> m_vecItems;
+  typedef std::vector <CFileItemPtr>::iterator ivecItems;
 
 private:
-  void Add(CPlayListItem& item, int iPosition, int iOrderOffset);
+  void Add(const CFileItemPtr& item, int iPosition, int iOrderOffset);
   void DecrementOrder(int iOrder);
   void IncrementOrder(int iPosition, int iOrder);
 };

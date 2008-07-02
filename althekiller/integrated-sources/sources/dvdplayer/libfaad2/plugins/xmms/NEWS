@@ -1,3 +1,8 @@
+22 Aout 2004
+------------
+modification du system de compilation, passage de libmp4v2 a libmp4ff
+en static, libfaad en dynamique.
+
 1 Decembre 2003
 ---------------
 merge du plugin aac et du plugin mp4. modification des script du projet faad

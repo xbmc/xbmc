@@ -39,7 +39,8 @@ public:
     SOURCE_TYPE_DVD          = 2,
     SOURCE_TYPE_VIRTUAL_DVD  = 3,
     SOURCE_TYPE_REMOTE       = 4,
-    SOURCE_TYPE_VPATH        = 5
+    SOURCE_TYPE_VPATH        = 5,
+    SOURCE_TYPE_REMOVABLE    = 6
   };
   CMediaSource() { m_iDriveType=SOURCE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; m_iHasLock=0; m_ignore=false; };
   virtual ~CMediaSource() {};

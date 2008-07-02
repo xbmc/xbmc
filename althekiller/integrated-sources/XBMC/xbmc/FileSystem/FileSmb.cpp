@@ -103,16 +103,6 @@ void CSMB::Init()
   CSingleLock(*this);
   if (!m_context)
   {
-#ifdef _XBOX
-    set_xbox_interface(g_network.m_networkinfo.ip, g_network.m_networkinfo.subnet);
-
-    // set log function
-    set_log_callback(xb_smbc_log);
-
-    // set workgroup for samba, after smbc_init it can be freed();
-    xb_setSambaWorkgroup((char*)g_guiSettings.GetString("smb.workgroup").c_str());
-#endif
-
     // setup our context
     m_context = smbc_new_context();
     m_context->debug = g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0;
@@ -550,15 +540,9 @@ int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
   buffer->st_gid = tmpBuffer.st_gid;
   buffer->st_rdev = tmpBuffer.st_rdev;
   buffer->st_size = tmpBuffer.st_size;
-#ifndef _LINUX
   buffer->st_atime = tmpBuffer.st_atime;
   buffer->st_mtime = tmpBuffer.st_mtime;
   buffer->st_ctime = tmpBuffer.st_ctime;
-#else
-  buffer->_st_atime = tmpBuffer.st_atime;
-  buffer->_st_mtime = tmpBuffer.st_mtime;
-  buffer->_st_ctime = tmpBuffer.st_ctime;
-#endif
 
   return iResult;
 }

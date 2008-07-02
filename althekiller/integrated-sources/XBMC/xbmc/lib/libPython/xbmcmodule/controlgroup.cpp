@@ -20,11 +20,7 @@
  */
 
 #include "stdafx.h"
-#ifndef _LINUX
-#include "lib/libPython/python/Python.h"
-#else
-#include <python2.4/Python.h>
-#endif
+#include "lib/libPython/Python/Include/Python.h"
 #include "GUIControlGroup.h"
 #include "GUIFontManager.h"
 #include "control.h"
@@ -45,7 +41,7 @@ extern "C"
   {
     PyObject * ControlGroup_New (PyTypeObject *type, PyObject *args, PyObject *kwds)
     {
-      static char *keywords[] = {
+      static const char *keywords[] = {
         "x", "y", "width", "height", NULL
       };
 
@@ -57,9 +53,14 @@ extern "C"
         return NULL;
       }
 
-      ret = PyArg_ParseTupleAndKeywords (args, kwds, "llll", keywords,
-                                         &self->dwPosX, &self->dwPosY,
-                                         &self->dwWidth, &self->dwHeight);
+      ret = PyArg_ParseTupleAndKeywords (args,
+                                         kwds,
+                                         (char*)"llll",
+                                         (char**)keywords,
+                                         &self->dwPosX,
+                                         &self->dwPosY,
+                                         &self->dwWidth,
+                                         &self->dwHeight);
       if (!ret) {
         Py_DECREF (self);
         return NULL;
@@ -120,7 +121,7 @@ extern "C"
     {
       PyInitializeTypeObject (&ControlGroup_Type);
 
-      ControlGroup_Type.tp_name = "xbmcgui.ControlGroup";
+      ControlGroup_Type.tp_name = (char*)"xbmcgui.ControlGroup";
       ControlGroup_Type.tp_basicsize = sizeof (ControlGroup);
       ControlGroup_Type.tp_dealloc = (destructor) ControlGroup_Dealloc;
       ControlGroup_Type.tp_compare = 0;

@@ -21,10 +21,6 @@
  */
 #include "DllImageLib.h"
 
-#ifdef _XBOX
-#define RESAMPLE_CACHED_IMAGES
-#endif
-
 class CPicture
 {
 public:
@@ -60,7 +56,7 @@ public:
   bool CacheSkinImage(const CStdString &srcFile, const CStdString &destFile);
 
 protected:
-  
+
 private:
 #ifndef HAS_SDL
   struct VERTEX

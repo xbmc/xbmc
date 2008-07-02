@@ -1,6 +1,6 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
+** Copyright (C) 2003-2005 M. Bakker, Nero AG, http://www.nero.com
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -19,10 +19,13 @@
 ** Any non-GPL usage of this software or parts of this software is strictly
 ** forbidden.
 **
-** Commercial non-GPL licensing of this software is possible.
-** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
+** The "appropriate copyright message" mentioned in section 2c of the GPLv2
+** must read: "Code from FAAD2 is copyright (c) Nero AG, www.nero.com"
 **
-** $Id: pns.h,v 1.19 2004/01/05 14:05:12 menno Exp $
+** Commercial non-GPL licensing of this software is possible.
+** For more info contact Nero AG through Mpeg4AAClicense@nero.com.
+**
+** $Id: pns.h,v 1.27 2007/11/01 12:33:33 menno Exp $
 **/
 
 #ifndef __PNS_H__
@@ -32,15 +35,14 @@
 extern "C" {
 #endif
 
-#include "common.h"
-
 #include "syntax.h"
 
 #define NOISE_OFFSET 90
 
 void pns_decode(ic_stream *ics_left, ic_stream *ics_right,
                 real_t *spec_left, real_t *spec_right, uint16_t frame_len,
-                uint8_t channel_pair, uint8_t object_type);
+                uint8_t channel_pair, uint8_t object_type,
+                /* RNG states */ uint32_t *__r1, uint32_t *__r2);
 
 static INLINE uint8_t is_noise(ic_stream *ics, uint8_t group, uint8_t sfb)
 {
