@@ -1185,10 +1185,7 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   if (clear)
   {
-    glClearColor(m_clearColour&0xff000000,
-                 m_clearColour&0x00ff0000,
-                 m_clearColour&0x0000ff00,
-                 0);
+    glClearColor(m_clearColour, m_clearColour, m_clearColour, 0);
     glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(0,0,0,0);
     if (alpha<255)
@@ -1303,7 +1300,7 @@ unsigned int CLinuxRendererGL::PreInit()
   m_iOSDTextureHeight[1] = 0;
 
   // setup the background colour
-  m_clearColour = 0 ; //(g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
+  m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;
 
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load())
     CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
