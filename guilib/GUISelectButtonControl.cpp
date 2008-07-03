@@ -60,6 +60,11 @@ CGUISelectButtonControl::~CGUISelectButtonControl(void)
 
 void CGUISelectButtonControl::Render()
 {
+  if (m_bInvalidated)
+  {
+    m_imgBackground.SetWidth(m_width);
+    m_imgBackground.SetHeight(m_height);
+  }
   // Are we in selection mode
   if (m_bShowSelect)
   {
@@ -284,14 +289,6 @@ void CGUISelectButtonControl::AllocResources()
   posX = m_posX + 8;
   m_imgLeft.SetPosition(posX, posY);
   m_imgLeftFocus.SetPosition(posX, posY);
-}
-
-void CGUISelectButtonControl::Update()
-{
-  CGUIButtonControl::Update();
-
-  m_imgBackground.SetWidth(m_width);
-  m_imgBackground.SetHeight(m_height);
 }
 
 void CGUISelectButtonControl::OnLeft()

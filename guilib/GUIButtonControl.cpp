@@ -50,6 +50,14 @@ CGUIButtonControl::~CGUIButtonControl(void)
 
 void CGUIButtonControl::Render()
 {
+  if (m_bInvalidated)
+  {
+    m_imgFocus.SetWidth(m_width);
+    m_imgFocus.SetHeight(m_height);
+
+    m_imgNoFocus.SetWidth(m_width);
+    m_imgNoFocus.SetHeight(m_height);
+  }
   m_dwFrameCounter++;
 
   if (m_bTabButton)
@@ -183,8 +191,10 @@ void CGUIButtonControl::AllocResources()
   m_dwFocusCounter = 0;
   m_imgFocus.AllocResources();
   m_imgNoFocus.AllocResources();
-  m_width = m_imgFocus.GetWidth();
-  m_height = m_imgFocus.GetHeight();
+  if (!m_width)
+    m_width = m_imgFocus.GetWidth();
+  if (!m_height)
+    m_height = m_imgFocus.GetHeight();
 }
 
 void CGUIButtonControl::FreeResources()
@@ -209,17 +219,6 @@ void CGUIButtonControl::SetLabel(const string &label)
 void CGUIButtonControl::SetLabel2(const string &label2)
 { // NOTE: No fallback for buttons at this point
   m_info2.SetLabel(label2, "");
-}
-
-void CGUIButtonControl::Update()
-{
-  CGUIControl::Update();
-
-  m_imgFocus.SetWidth(m_width);
-  m_imgFocus.SetHeight(m_height);
-
-  m_imgNoFocus.SetWidth(m_width);
-  m_imgNoFocus.SetHeight(m_height);
 }
 
 void CGUIButtonControl::SetPosition(float posX, float posY)
@@ -333,7 +332,7 @@ void CGUIButtonControl::SetSelected(bool bSelected)
   if (m_bSelected != bSelected)
   {
     m_bSelected = bSelected;
-    m_bInvalidated = true;
+    SetInvalid();
   }
 }
 

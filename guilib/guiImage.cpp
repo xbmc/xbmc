@@ -873,7 +873,7 @@ void CGUIImage::SetAspectRatio(const CAspectRatio &aspect)
   if (m_aspect != aspect)
   {
     m_aspect = aspect;
-    Update();
+    SetInvalid();
   }
 }
 

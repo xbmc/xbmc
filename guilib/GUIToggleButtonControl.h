@@ -59,7 +59,7 @@ public:
 
 protected:
   virtual void OnClick();
-  virtual void Update();
+  virtual void SetInvalid();
   CGUIButtonControl m_selectButton;
   int m_toggleSelect;
 };
