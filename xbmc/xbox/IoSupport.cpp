@@ -37,6 +37,7 @@
 #include "ntddcdrm.h"
 #endif
 #ifdef _LINUX
+#include <linux/limits.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
