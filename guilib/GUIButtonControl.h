@@ -67,7 +67,6 @@ public:
   void SetTabButton(bool bIsTabButton = TRUE) { m_bTabButton = bIsTabButton; };
   void SetSelected(bool bSelected);
   void Flicker(bool bFlicker = TRUE);
-  virtual void Update();
   virtual CStdString GetDescription() const;
   void SetAlpha(unsigned char alpha);
 

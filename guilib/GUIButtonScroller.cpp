@@ -244,13 +244,11 @@ void CGUIButtonScroller::AllocResources()
   {
     m_iNumSlots = m_vecButtons.size();
     m_iDefaultSlot = (int)((float)m_iXMLDefaultSlot / ((float)m_iXMLNumSlots - 1) * ((float)m_iNumSlots - 1));
-    Update();
   }
   else
   {
     m_iNumSlots = m_iXMLNumSlots;
     m_iDefaultSlot = m_iXMLDefaultSlot;
-    Update();
   }
   SetActiveButton(0);
 }
@@ -272,6 +270,23 @@ void CGUIButtonScroller::DynamicResourceAlloc(bool bOnOff)
 
 void CGUIButtonScroller::Render()
 {
+  if (m_bInvalidated)
+  {
+    if (m_bHorizontal)
+    {
+      m_width = m_iNumSlots * (m_imgFocus.GetWidth() + m_buttonGap) - m_buttonGap;
+      m_height = m_imgFocus.GetHeight();
+      m_posX = m_xmlPosX + (m_xmlWidth - m_width) * 0.5f;
+      m_posY = m_xmlPosY;
+    }
+    else
+    {
+      m_width = m_imgFocus.GetWidth();
+      m_height = m_iNumSlots * (m_imgFocus.GetHeight() + m_buttonGap) - m_buttonGap;
+      m_posX = m_xmlPosX;
+      m_posY = m_xmlPosY + (m_xmlHeight - m_height) * 0.5f;
+    }
+  }
   float posX = m_posX;
   float posY = m_posY;
   // set our viewport
@@ -735,24 +750,6 @@ int CGUIButtonScroller::GetActiveButton() const
   for (int i = 0; i < m_iCurrentSlot; i++)
     if (GetNext(iCurrentItem) != -1) iCurrentItem = GetNext(iCurrentItem);
   return iCurrentItem;
-}
-
-void CGUIButtonScroller::Update()
-{
-  if (m_bHorizontal)
-  {
-    m_width = m_iNumSlots * (m_imgFocus.GetWidth() + m_buttonGap) - m_buttonGap;
-    m_height = m_imgFocus.GetHeight();
-    m_posX = m_xmlPosX + (m_xmlWidth - m_width) * 0.5f;
-    m_posY = m_xmlPosY;
-  }
-  else
-  {
-    m_width = m_imgFocus.GetWidth();
-    m_height = m_iNumSlots * (m_imgFocus.GetHeight() + m_buttonGap) - m_buttonGap;
-    m_posX = m_xmlPosX;
-    m_posY = m_xmlPosY + (m_xmlHeight - m_height) * 0.5f;
-  }
 }
 
 void CGUIButtonScroller::GetScrollZone(float &fStartAlpha, float &fEndAlpha)
