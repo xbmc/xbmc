@@ -42,6 +42,7 @@
 #include "Util.h"
 #include "FileSystem/File.h"
 #include "Settings.h"
+#include "TextureManager.h"
 
 // include for constants
 #include "pyutil.h"
@@ -705,6 +706,46 @@ namespace PYXBMC
     return Py_BuildValue((char*)"s", result.c_str());
   }
 
+  // skinHasImage function
+  PyDoc_STRVAR(skinHasImage__doc__,
+    "skinHasImage(image) -- Returns True if the image file exists in the skin.\n"
+    "\n"
+    "image          : string - image filename\n"
+    "\n"
+    "*Note, If the media resides in a subfolder include it. (eg. home-myfiles\\\\home-myfiles2.png)\n"
+    "\n"
+    "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "\n"
+    "example:\n"
+    "  - exists = xbmc.skinHasImage('ButtonFocusedTexture.png')\n");
+
+  PyObject* XBMC_SkinHasImage(PyObject *self, PyObject *args, PyObject *kwds)
+  {
+    static const char *keywords[] = { "image", NULL };
+    char *image = NULL;
+    // parse arguments to constructor
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"s",
+      (char**)keywords,
+      &image
+      ))
+    {
+      return NULL;
+    };
+
+    bool exists = false;
+    if (g_TextureManager.Load(image))
+    {
+      g_TextureManager.ReleaseTexture(image);
+      exists = true;
+    }
+
+    return Py_BuildValue((char*)"b", exists);
+  }
+
   // define c functions to be used in python here
   PyMethodDef xbmcMethods[] = {
     {(char*)"output", (PyCFunction)XBMC_Output, METH_VARARGS, output__doc__},
@@ -741,6 +782,8 @@ namespace PYXBMC
 
     {(char*)"getRegion", (PyCFunction)XBMC_GetRegion, METH_VARARGS|METH_KEYWORDS, getRegion__doc__},
     {(char*)"getSupportedMedia", (PyCFunction)XBMC_GetSupportedMedia, METH_VARARGS|METH_KEYWORDS, getSupportedMedia__doc__},
+
+    {(char*)"skinHasImage", (PyCFunction)XBMC_SkinHasImage, METH_VARARGS|METH_KEYWORDS, skinHasImage__doc__},
     {NULL, NULL, 0, NULL}
   };
 
