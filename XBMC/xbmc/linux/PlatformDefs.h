@@ -42,7 +42,6 @@
 #include <mach/mach.h>
 #else
 #include <sys/sysinfo.h>
-#include <linux/limits.h>
 #endif
 #include <sys/time.h>
 #include <time.h>
