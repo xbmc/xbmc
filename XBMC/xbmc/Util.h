@@ -19,8 +19,9 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include <vector>
+#include <climits>
 #include <math.h>
+#include <vector>
 #include "MediaSource.h"
 
 namespace XFILE
