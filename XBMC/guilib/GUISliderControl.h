@@ -73,7 +73,6 @@ public:
   void SetFormatString(const char *format) { if (format) m_formatString = format; };
   virtual void SetColorDiffuse(const CGUIInfoColor &color);
 protected:
-  virtual void Update() ;
   virtual void Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point);
 

@@ -376,7 +376,7 @@ void CGUIControl::SetPosition(float posX, float posY)
     m_hitRect += CPoint(posX - m_posX, posY - m_posY);
     m_posX = posX;
     m_posY = posY;
-    Update();
+    SetInvalid();
   }
 }
 
@@ -428,7 +428,7 @@ void CGUIControl::SetWidth(float width)
   {
     m_width = width;
     m_hitRect.x2 = m_hitRect.x1 + width;
-    Update();
+    SetInvalid();
   }
 }
 
@@ -438,7 +438,7 @@ void CGUIControl::SetHeight(float height)
   {
     m_height = height;
     m_hitRect.y2 = m_hitRect.y1 + height;
-    Update();
+    SetInvalid();
   }
 }
 
@@ -453,7 +453,7 @@ void CGUIControl::SetVisible(bool bVisible)
   {
     m_visible = bVisible;
     m_visibleFromSkinCondition = bVisible;
-    m_bInvalidated = true;
+    SetInvalid();
   }*/
 }
 

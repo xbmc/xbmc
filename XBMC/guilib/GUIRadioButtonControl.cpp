@@ -102,12 +102,6 @@ void CGUIRadioButtonControl::DynamicResourceAlloc(bool bOnOff)
   m_imgRadioNoFocus.DynamicResourceAlloc(bOnOff);
 }
 
-void CGUIRadioButtonControl::Update()
-{
-  CGUIButtonControl::Update();
-
-}
-
 void CGUIRadioButtonControl::SetPosition(float posX, float posY)
 {
   CGUIButtonControl::SetPosition(posX, posY);

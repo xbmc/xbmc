@@ -81,7 +81,6 @@ protected:
   void DoUp();
   void DoDown();
   void RenderItem(float &posX, float &posY, int &iOffset, bool bText);
-  void Update();
   void GetScrollZone(float &fStartAlpha, float &fEndAlpha);
 private:
   // saved variables from the xml (as this control is user editable...)

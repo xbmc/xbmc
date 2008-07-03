@@ -170,7 +170,7 @@ public:
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
   virtual void SetInitialVisibility();
   virtual void SetEnabled(bool bEnable);
-  virtual void Update() { m_bInvalidated = true; };
+  virtual void SetInvalid() { m_bInvalidated = true; };
   virtual void SetPulseOnSelect(bool pulse) { m_pulseOnSelect = pulse; };
   virtual CStdString GetDescription() const { return ""; };
 
@@ -194,18 +194,16 @@ public:
   enum GUICONTROLTYPES {
     GUICONTROL_UNKNOWN,
     GUICONTROL_BUTTON,
-    GUICONTROL_CONDITIONAL_BUTTON,
     GUICONTROL_CHECKMARK,
     GUICONTROL_FADELABEL,
     GUICONTROL_IMAGE,
+    GUICONTROL_BORDEREDIMAGE,
     GUICONTROL_LARGE_IMAGE,
     GUICONTROL_LABEL,
     GUICONTROL_LIST,
     GUICONTROL_LISTEX,
-    GUICONTROL_MBUTTON,
     GUICONTROL_PROGRESS,
     GUICONTROL_RADIO,
-    GUICONTROL_RAM,
     GUICONTROL_RSS,
     GUICONTROL_SELECTBUTTON,
     GUICONTROL_SLIDER,
@@ -227,6 +225,8 @@ public:
     GUICONTROL_GROUP,
     GUICONTROL_GROUPLIST,
     GUICONTROL_SCROLLBAR,
+    GUICONTROL_LISTLABEL,
+    GUICONTROL_MULTISELECT,
     GUICONTAINER_LIST,
     GUICONTAINER_WRAPLIST,
     GUICONTAINER_FIXEDLIST,
