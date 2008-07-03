@@ -420,7 +420,7 @@ void CGUIBaseContainer::SetFocus(bool bOnOff)
 {
   if (bOnOff != HasFocus())
   {
-    Update();
+    SetInvalid();
     m_lastItem = NULL;
   }
   CGUIControl::SetFocus(bOnOff);

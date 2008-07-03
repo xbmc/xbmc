@@ -49,7 +49,6 @@ void CGUISpinControlEx::AllocResources()
     m_label.offsetX = -m_label.offsetX;
   CGUISpinControl::AllocResources();
   m_buttonControl.AllocResources();
-  SetPosition(GetXPosition(), GetYPosition());
   if (m_height == 0)
     m_height = GetSpinHeight();
 }
@@ -72,6 +71,9 @@ void CGUISpinControlEx::Render()
   m_buttonControl.SetFocus(HasFocus());
   m_buttonControl.SetPulseOnSelect(m_pulseOnSelect);
   m_buttonControl.Render();
+  if (m_bInvalidated)
+    SetPosition(GetXPosition(), GetYPosition());
+
   CGUISpinControl::Render();
 }
 

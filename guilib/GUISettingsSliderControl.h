@@ -66,7 +66,6 @@ public:
   virtual CStdString GetDescription() const;
   virtual bool HitTest(const CPoint &point) const { return m_buttonControl.HitTest(point); };
 protected:
-  virtual void Update() ;
   CGUIButtonControl m_buttonControl;
   CGUITextLayout m_textLayout;
 };

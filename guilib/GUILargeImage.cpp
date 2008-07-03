@@ -68,8 +68,8 @@ void CGUILargeImage::AllocResources()
     return;
   if (m_vecTextures.size())
     FreeTextures();
-  // don't call CGUIControl::AllocTextures(), as this resets m_hasRendered, which we don't want
-  m_bInvalidated = true;
+  // don't call CGUIControl::AllocResources(), as this resets m_hasRendered, which we don't want
+  SetInvalid();
   m_bAllocated = true;
 
   // first check our textureManager for bundled files

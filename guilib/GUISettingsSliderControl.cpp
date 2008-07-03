@@ -88,11 +88,6 @@ void CGUISettingsSliderControl::AllocResources()
   m_buttonControl.AllocResources();
 }
 
-void CGUISettingsSliderControl::Update()
-{
-  CGUISliderControl::Update();
-}
-
 void CGUISettingsSliderControl::SetPosition(float posX, float posY)
 {
   m_buttonControl.SetPosition(posX, posY);
