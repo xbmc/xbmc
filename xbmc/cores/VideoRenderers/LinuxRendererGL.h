@@ -256,7 +256,7 @@ protected:
 //  */
 
   // clear colour for "black" bars
-  DWORD m_clearColour;
+  float m_clearColour;
 
   // software scale libraries (fallback if required gl version is not available)
   DllAvUtil   m_dllAvUtil;
