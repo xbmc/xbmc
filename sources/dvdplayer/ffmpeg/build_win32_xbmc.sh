@@ -1,10 +1,7 @@
-./configure --extra-cflags="-D_XBOX -mno-cygwin -mms-bitfields" --extra-ldflags="-Wl,--add-stdcall-alias" --extra-libs="" \
---arch=i686 \
---cpu=pentium3 \
+./configure --extra-cflags="-D_XBOX" \
 --enable-shared \
 --enable-memalign-hack \
 --enable-gpl \
---enable-mmx \
 --enable-w32threads \
 --enable-postproc \
 --enable-swscale \
@@ -18,6 +15,7 @@
 --disable-muxers \
 --disable-encoders \
 --disable-ipv6 \
---disable-debug \
+--disable-debug && 
  
-&& make -j3 && strip lib*/*.dll
+make -j3 && 
+strip lib*/*.dll
