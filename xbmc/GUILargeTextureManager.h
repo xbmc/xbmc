@@ -38,9 +38,7 @@ public:
 
   virtual void Process();
 
-#ifndef HAS_SDL
-  LPDIRECT3DTEXTURE8 GetImage(const CStdString &path, int &width, int &height, int &orientation, bool firstRequest);
-#elif defined (HAS_SDL_2D)
+#ifdef HAS_SDL_2D
   SDL_Surface * GetImage(const CStdString &path, int &width, int &height, int &orientation, bool firstRequest);
 #else
   CGLTexture  * GetImage(const CStdString &path, int &width, int &height, int &orientation, bool firstRequest);
@@ -67,14 +65,8 @@ protected:
     virtual ~CLargeTexture()
     {
       assert(m_refCount == 0);
-#ifndef HAS_SDL
-      SAFE_RELEASE(m_texture);
-#elif defined (HAS_SDL_2D)
       if (m_texture)
-         SDL_FreeSurface(m_texture);
-#else
-      delete m_texture;
-#endif
+        SDL_FreeSurface(m_texture);
       m_texture = NULL;
     };
 
@@ -104,13 +96,7 @@ protected:
       return false;
     };
 
-#ifndef HAS_SDL
-    void SetTexture(LPDIRECT3DTEXTURE8 texture, int width, int height, int orientation)
-#elif defined (HAS_SDL_2D)
     void SetTexture(SDL_Surface * texture, int width, int height, int orientation)
-#else
-    void SetTexture(CGLTexture * texture, int width, int height, int orientation)
-#endif
     {
       assert(m_texture == NULL);
       m_texture = texture;
@@ -119,13 +105,7 @@ protected:
       m_orientation = orientation;
     };
 
-#ifndef HAS_SDL
-    LPDIRECT3DTEXTURE8 GetTexture() const { return m_texture; };
-#elif defined (HAS_SDL_2D)
     SDL_Surface * GetTexture() const { return m_texture; };
-#else
-    CGLTexture * GetTexture() const { return m_texture; };
-#endif
     int GetWidth() const { return m_width; };
     int GetHeight() const { return m_height; };
     int GetOrientation() const { return m_orientation; };
@@ -136,13 +116,7 @@ protected:
 
     unsigned int m_refCount;
     CStdString m_path;
-#ifndef HAS_SDL
-    LPDIRECT3DTEXTURE8 m_texture;
-#elif defined (HAS_SDL_2D)
     SDL_Surface * m_texture;
-#else
-    CGLTexture * m_texture;
-#endif
     int m_width;
     int m_height;
     int m_orientation;
