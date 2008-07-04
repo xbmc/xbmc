@@ -45,7 +45,7 @@ public:
   CGUIControlFactory(void);
   virtual ~CGUIControlFactory(void);
   static CStdString GetType(const TiXmlElement *pControlNode);
-  CGUIControl* Create(DWORD dwParentId, const FRECT &rect, TiXmlElement* pControlNode);
+  CGUIControl* Create(DWORD dwParentId, const FRECT &rect, TiXmlElement* pControlNode, bool insideContainer = false);
   void ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value);
   static bool GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CGUIImage::CAspectRatio &aspectRatio);

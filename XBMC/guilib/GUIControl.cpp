@@ -52,6 +52,7 @@ CGUIControl::CGUIControl()
   m_bAllocated=false;
   m_parentControl = NULL;
   m_hasCamera = false;
+  m_pushedUpdates = false;
 }
 
 CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
@@ -81,6 +82,7 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float 
   m_hasRendered = false;
   m_parentControl = NULL;
   m_hasCamera = false;
+  m_pushedUpdates = false;
 }
 
 

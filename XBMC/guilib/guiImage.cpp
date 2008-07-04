@@ -106,10 +106,21 @@ void CGUIImage::UpdateVisibility(const CGUIListItem *item)
 
   // check for conditional information before we free and
   // alloc as this does free and allocation as well
-  if (!m_image.file.IsConstant())
-    SetFileName(m_image.file.GetLabel(m_dwParentID, true));
+  if (!m_pushedUpdates)
+    UpdateInfo(item);
 
   AllocateOnDemand();
+}
+
+void CGUIImage::UpdateInfo(const CGUIListItem *item)
+{
+  if (m_image.file.IsConstant())
+    return; // nothing to do
+
+  if (item)
+    SetFileName(m_image.file.GetItemLabel(item, true));
+  else
+    SetFileName(m_image.file.GetLabel(m_dwParentID, true));
 }
 
 void CGUIImage::AllocateOnDemand()

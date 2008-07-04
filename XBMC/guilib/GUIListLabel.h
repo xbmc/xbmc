@@ -37,11 +37,13 @@ class CGUIListLabel :
       public CGUIControl
 {
 public:
-  CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool alwaysScroll, int scrollSpeed);
+  CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoLabel &label, bool alwaysScroll, int scrollSpeed);
   virtual ~CGUIListLabel(void);
 
   virtual void Render();
   virtual bool CanFocus() const { return false; };
+  virtual void UpdateInfo(const CGUIListItem *item = NULL);
+  virtual void SetFocus(bool focus);
 
   const CRect &GetRenderRect() const { return m_renderRect; };
   void SetRenderRect(const CRect &rect) { m_renderRect = rect; };
@@ -54,6 +56,7 @@ public:
 protected:
   CLabelInfo  m_label;
   CGUITextLayout m_textLayout;
+  CGUIInfoLabel  m_info;
   float       m_textWidth;
 
   bool        m_scrolling;
