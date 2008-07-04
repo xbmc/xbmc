@@ -137,6 +137,7 @@ public:
   virtual bool IsDynamicallyAllocated() { return m_bDynamicResourceAlloc; };
   virtual bool CanFocus() const;
   virtual bool IsAllocated() const;
+  virtual void UpdateInfo(const CGUIListItem *item = NULL);
 
   void PythonSetColorKey(DWORD dwColorKey);
   virtual void SetFileName(const CStdString& strFileName);
