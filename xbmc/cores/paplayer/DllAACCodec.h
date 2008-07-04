@@ -22,7 +22,7 @@
  */
 
 #include "DynamicDll.h"
-#include "aac/AACCodec.h"
+#include "AACCodec/AACCodec.h"
 
 class DllAACCodecInterface
 {
@@ -42,6 +42,10 @@ class DllAACCodec : public DllDynamic, DllAACCodecInterface
   DECLARE_DLL_WRAPPER(DllAACCodec, Q:\\system\\players\\paplayer\\AACCodec-osx.so)
 #elif !defined(_LINUX)
   DECLARE_DLL_WRAPPER(DllAACCodec, Q:\\system\\players\\paplayer\\aaccodec.dll)
+#elif defined(_POWERPC)
+  DECLARE_DLL_WRAPPER(DllAACCodec, Q:\\system\\players\\paplayer\\AACCodec-powerpc-linux.so)
+#elif defined(_POWERPC64)
+  DECLARE_DLL_WRAPPER(DllAACCodec, Q:\\system\\players\\paplayer\\AACCodec-powerpc64-linux.so)
 #else
   DECLARE_DLL_WRAPPER(DllAACCodec, Q:\\system\\players\\paplayer\\AACCodec-i486-linux.so)
 #endif
