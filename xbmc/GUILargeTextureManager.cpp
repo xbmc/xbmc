@@ -123,6 +123,7 @@ CGLTexture * CGUILargeTextureManager::GetImage(const CStdString &path, int &widt
 #else
       if (image->GetTexture())
         return new CGLTexture(image->GetTexture(), false);
+      return NULL;
 #endif
     }
   }
