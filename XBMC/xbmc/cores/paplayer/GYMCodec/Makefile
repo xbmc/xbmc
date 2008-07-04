@@ -1,0 +1,14 @@
+CFLAGS=-D_LINUX -fPIC -I../../../linux -I../../../ -I../../../../guilib/
+OBJS=gym_play.cpp psg.o XBMCGYM.o ym2612.o
+
+gensapu-i486-linux.so: $(OBJS)
+	g++ -shared -o $@ *.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o && cp $@ ../../../../system/players/paplayer/
+
+clean:
+	$(RM) *.o *.so
+
+%o : %c
+	gcc -O2 $(CFLAGS) -c $< -o $@
+
+%o : %cpp
+	g++ -O2 $(CFLAGS) -c $< -o $@
