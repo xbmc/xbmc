@@ -1,0 +1,17 @@
+* look at possible overflow/precision issues in integer port
+
+* redo all bit allocation if previous frame had zero_snr_offsets
+* make dynrng work in dual-channel streams
+
+* implement A/52a downmix extensions
+* reduce size of delay buffer by 50%
+* include float->s16 conversion in liba52 API ?
+* include up/downsampling 44100<->48000 in liba52 API ?
+* include audio dithering in liba52 API ?
+* API extensions might be at a different level (base vs. extended)
+
+* use restrict pointers where appropriate
+* avoid overflows, including reading the a52 stream !!!
+* faster bitstream parsing ?
+* make dither code faster (generate dither table in advance ?)
+* SIMD optimizations
