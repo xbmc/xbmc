@@ -1,0 +1,289 @@
+/***************************************************************************
+                          psiddrv.a65  -  C64 Sid Player
+                             -------------------
+    begin                : 
+    copyright            : (C) 2000 by Dag Lem
+    email                : resid@nimrod.no
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+/***************************************************************************
+ * Modified by Simon White <sidplay2@email.com> for use in the sidplayer
+ * SIDPlay2.
+ *
+ * Build with:
+ * xa -R -G psiddrv.a65 -o psiddrv.o65
+ * od -v -An -w8 -tx1 psiddrv.o65 | sed -re 's/[[:alnum:]]+/0x&,/g' > psiddrv.bin
+ ***************************************************************************/
+/***************************************************************************
+ *  $Log: psiddrv.a65,v $
+ *  Revision 1.33  2004/05/31 19:25:45  s_a_white
+ *  Removed cli as nolonger necessary (plp later does same job).
+ *
+ *  Revision 1.32  2004/05/31 08:42:41  s_a_white
+ *  Move setting of inits bank register to after I/O accesses, as it can
+ *  be switched out should init lie underneath it.
+ *
+ *  Revision 1.31  2004/03/20 16:15:56  s_a_white
+ *  Use a kernel call to reset the hardware.  This covers everything including
+ *  newly emulated stuff like serial ports.
+ *
+ *  Revision 1.30  2004/03/19 22:10:53  s_a_white
+ *  Prevent pending VIC/CIA irqs on entry to sys for PSIDs.  Those tunes do
+ *  not have proper inits and expect us to do some house keeping.
+ *
+ *  Revision 1.29  2004/03/19 00:16:40  s_a_white
+ *  Removed redundant register clears.  Locations are already 0 on exiting the
+ *  delay loop.
+ *
+ *  Revision 1.28  2004/03/01 00:46:12  s_a_white
+ *  Change video/RSID test order as can fail depending on bankswitch value.
+ *
+ *  Revision 1.27  2004/02/29 14:50:52  s_a_white
+ *  For RSID tunes played at the wrong speed use the compatibility raster instead.
+ *
+ *  Revision 1.26  2004/02/18 20:17:52  s_a_white
+ *  Set default processor status register flag before calling init.
+ *
+ *  Revision 1.25  2004/02/16 23:47:28  s_a_white
+ *  Nolonger hide the presence of BRK/NMI for PSID tunes in real c64 mode.
+ *  Throw an exception instead as these tunes are broke and need fixing.
+ *
+ *  Revision 1.24  2004/02/16 21:44:34  s_a_white
+ *  Due to various tune breakages leave the default raster line as 0 for
+ *  PSID tunes (use proper default for RSIDs only).
+ *
+ *  Revision 1.23  2004/02/11 21:00:31  s_a_white
+ *  For RSID tunes loop interrupt handler through to the real C64 one ($ea31).
+ *
+ *  Revision 1.22  2004/02/08 21:30:28  s_a_white
+ *  Default VIC raster line should be 311
+ *
+ *  Revision 1.21  2004/01/30 19:50:08  s_a_white
+ *  Newer gnu sed dosen't like /w so use posix equivalent.
+ *
+ *  Revision 1.20  2004/01/08 09:12:53  s_a_white
+ *  Support the TOD frequency divider.
+ *
+ *  Revision 1.19  2003/05/28 22:21:32  s_a_white
+ *  Restored irqret to correct position as speed problems were the result
+ *  of sidtune.
+ *
+ *  Revision 1.18  2003/05/04 06:38:37  s_a_white
+ *  For RSID tunes handle the presence of a VIC during the random delay
+ *  period.
+ *
+ *  Revision 1.17  2003/01/15 08:08:56  s_a_white
+ *  Basic restart hooked into via stop vector (only way compatible with real c64).
+ *  VIC raster interrupt set to first visible scan line and initial presence of its IRQ
+ *  randomised.
+ *
+ *  Revision 1.16  2002/12/13 22:04:54  s_a_white
+ *  Nolonger CLI after returning from INIT for RSID tunes.  Since the tunes are
+ *  more complicated rely on the init to do the right thing.
+ *
+ *  Revision 1.15  2002/11/20 21:43:08  s_a_white
+ *  Enable the VIC screen and therefore DMA.
+ *
+ *  Revision 1.14  2002/11/19 22:53:23  s_a_white
+ *  Sidplay1 modes modified to make them nolonger require the psid driver.
+ *
+ *  Revision 1.13  2002/11/01 17:36:01  s_a_white
+ *  Frame based support for old sidplay1 modes.
+ *
+ *  Revision 1.12  2002/10/20 08:59:14  s_a_white
+ *  Prevent some PSID tunes being handled like RSID ones.
+ *
+ *  Revision 1.11  2002/10/02 19:42:59  s_a_white
+ *  RSID support.
+ *
+ *  Revision 1.10  2002/09/21 22:32:18  s_a_white
+ *  Prevent some of the real c64 only tunes abusing play != 0.  Some busy
+ *  looping ones may still get away with it...
+ *
+ *  Revision 1.9  2002/09/12 20:39:47  s_a_white
+ *  Added support for simulating the random delay before the user loads a
+ *  program on a real C64.
+ *
+ *  Revision 1.8  2002/03/12 18:45:37  s_a_white
+ *  Added PHP to push stack as sidplay1 compatibility IRQ now behaves like
+ *  JSR.
+ *
+ *  Revision 1.7  2002/02/17 12:35:35  s_a_white
+ *  BRK handler clean up and better sidplay2 optimisation usage.
+ *
+ *  Revision 1.6  2002/02/05 08:48:58  s_a_white
+ *  Small fix for psid specific rips and real irq handlers (A reg now zeroed).
+ *
+ *  Revision 1.5  2002/02/04 23:50:48  s_a_white
+ *  Improved compatibilty with older sidplay1 modes.
+ *
+ *  Revision 1.4  2001/12/17 23:43:29  s_a_white
+ *  Fix for real C64 tunes where BRK handler is run.
+ *
+ *  Revision 1.3  2001/10/02 18:05:27  s_a_white
+ *  Fix for real C64 tunes which correctly handle BRK.
+ *
+ *  Revision 1.2  2001/09/01 11:12:22  s_a_white
+ *  Fixes sidplay1 environment modes.
+ *
+ *  Revision 1.1  2001/07/27 12:12:23  s_a_white
+ *  Initial release.
+ *
+ ***************************************************************************/
+
+            ; entry address
+coldvec     .word cold
+
+            ; initial user interrupt vectors
+irqusr      .word irqret
+            ; These should never run
+brkusr      .word exception
+nmiusr      .word exception
+
+            ; redirect basic restart vector
+            ; to finish the init sequence
+            ; (hooks in via stop function)
+stopusr     .word setiomap
+
+playnum     .byte 0
+speed       .byte 0
+initvec     .word 0
+playvec     .word 0
+rndwait     .word 0
+initiomap   .byte 0
+playiomap   .byte 0
+video       .byte 0
+clock       .byte 0
+flags       .byte 0
+
+            ; init/play PSID
+play        jmp (playvec)
+init        jmp (initvec)
+
+            ; cold start
+cold        sei
+
+            ; setup hardware
+doinit      ldy $02a6
+            lda video
+            sta $02a6
+            pha
+            jsr $ff84
+            pla
+            sty $02a6
+
+            ; set VICII raster to line 311 for RSIDs
+            ldx #$9b
+            ldy #$37
+
+            ; we should use the proper values for
+            ; the default raster, however if the tune
+            ; is playing at the wrong speed (e.g.
+            ; PAL at NTSC) use the compatibility
+            ; raster instead to try make it work
+            eor clock
+            ora initiomap
+            beq vicinit
+
+            ; set VICII raster to line 0 for PSIDs
+            ; (compatibility raster)
+            ldx #$1b
+            ldy #$00
+vicinit     stx $d011
+            sty $d012
+
+            ; If play address, override default irq vector so
+            ; we reach are routine to handle play routine
+            lda playiomap
+            beq random
+            lda #<irqjob
+            sta $0314
+
+            ; simulate time before user loads tune
+random      ldx rndwait
+            ldy rndwait+1
+            inx
+            iny
+wait        dex
+            bne wait
+            dey
+            bne wait
+
+            ; 0 indicates VIC timing (PSIDs only)
+            ; else it's from CIA
+            lda speed
+            bne ciaclear
+
+            ; disable CIA 1 timer A interrupt but
+            ; leave timer running for random numbers
+            lda #$7f
+            sta $dc0d
+
+            ; clear any pending irqs
+            lda $d019
+            sta $d019
+
+            ; enable VICII raster interrupt
+            lda #$81
+            sta $d01a
+
+            ; clear any pending irqs
+ciaclear    lda $dc0d
+
+            ; set I/O map and call song init routine
+            lda initiomap
+            bne setbank
+            ; Only release interrupt mask for real
+            ; C64 tunes (initiomap = 0) thus
+            ; providing a more realistic environment
+            lda #$37
+setbank     sta $01
+
+setregs     lda flags
+            pha
+            lda playnum
+            plp
+            jsr init
+setiomap    lda initiomap
+            beq idle
+            lda playiomap
+            beq run
+            lda #$37
+            sta $01
+run         cli
+idle        jmp idle
+
+irqjob      lda $01
+            pha
+            lda playiomap
+            sta $01
+            lda #0
+            jsr play
+            pla
+            sta $01
+            lda $d019
+            sta $d019
+
+            ; IRQ Exit (code from Kernel ROM)
+irqret      lda initiomap
+            bne irqret2
+            jmp $ea31
+irqret2     lda $dc0d
+            pla
+            tay
+            pla
+            tax
+            pla
+            rti
+
+            ; HLT
+exception   .byte $02
+
+.end
