@@ -309,6 +309,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\guilib\GUIListGroup.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\guilib\GUIListItem.cpp"
 				>
 			</File>
@@ -652,6 +656,10 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\GUIListExItem.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\GUIListGroup.h"
 				>
 			</File>
 			<File
