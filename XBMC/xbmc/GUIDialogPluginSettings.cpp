@@ -504,11 +504,18 @@ bool CGUIDialogPluginSettings::GetCondition(const CStdString &condition, const i
 {
   if (condition.IsEmpty()) return true;
 
-  vector<CStdString> conditionVec;
-  CUtil::Tokenize(condition, conditionVec, "+");
-  
   bool bCondition = true;
-  
+  bool bCompare = true;
+  vector<CStdString> conditionVec;
+  if (condition.Find("+") >= 0)
+    CUtil::Tokenize(condition, conditionVec, "+");
+  else
+  {
+    bCondition = false;
+    bCompare = false;
+    CUtil::Tokenize(condition, conditionVec, "|");
+  }
+
   for (unsigned int i = 0; i < conditionVec.size(); i++)
   {
     vector<CStdString> condVec;
@@ -532,13 +539,25 @@ bool CGUIDialogPluginSettings::GetCondition(const CStdString &condition, const i
         break;
     }
     if (condVec[0].Equals("eq"))
-      bCondition &= value.Equals(condVec[2]);
+      if (bCompare)
+        bCondition &= value.Equals(condVec[2]);
+      else
+        bCondition |= value.Equals(condVec[2]);
     else if (condVec[0].Equals("!eq"))
-      bCondition &= !value.Equals(condVec[2]);
+      if (bCompare)
+        bCondition &= !value.Equals(condVec[2]);
+      else
+        bCondition |= !value.Equals(condVec[2]);
     else if (condVec[0].Equals("gt"))
-      bCondition &= (atoi(value) > atoi(condVec[2]));
+      if (bCompare)
+        bCondition &= (atoi(value) > atoi(condVec[2]));
+      else
+        bCondition |= (atoi(value) > atoi(condVec[2]));
     else if (condVec[0].Equals("lt"))
-      bCondition &= (atoi(value) < atoi(condVec[2]));
+      if (bCompare)
+        bCondition &= (atoi(value) < atoi(condVec[2]));
+      else
+        bCondition |= (atoi(value) < atoi(condVec[2]));
   }
   return bCondition;
 }
