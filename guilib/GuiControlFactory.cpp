@@ -690,6 +690,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   CPoint camera;
   bool   hasCamera = false;
   int scrollSpeed = CScrollInfo::defaultSpeed;
+  bool resetOnLabelChange = true;
 
   /////////////////////////////////////////////////////////////////////////////
   // Read control properties from XML
@@ -993,6 +994,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 
   XMLUtils::GetBoolean(pControlNode, "usecontrolcoords", useControlCoords);
   XMLUtils::GetBoolean(pControlNode, "renderfocusedlast", renderFocusedLast);
+  XMLUtils::GetBoolean(pControlNode, "resetonlabelchange", resetOnLabelChange);
 
   // view type
   VIEW_TYPE viewType = VIEW_TYPE_NONE;
@@ -1103,7 +1105,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUIFadeLabelControl(
       dwParentId, id, posX, posY, width, height,
-      labelInfo, scrollOut, scrollSpeed, timeToPauseAtEnd);
+      labelInfo, scrollOut, scrollSpeed, timeToPauseAtEnd, resetOnLabelChange);
 
     ((CGUIFadeLabelControl *)control)->SetInfo(infoLabels);
   }
