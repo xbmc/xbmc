@@ -1,0 +1,7 @@
+Known Problems:
+
+If you are having unresolved symbol problems when linking against the
+libsidplay2 libraries then you need to update Libtool.  Libtool versions
+1.4b and greater are the only ones that use the installed .la files and
+correctly support C++.  The .la files contain all the library dependencies
+required by libsidplay2.

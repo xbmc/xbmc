@@ -1,0 +1,14 @@
+This library contains various things deemed usefull to all players, and
+currently every player seems to be re-inventing.
+
+Support so far is:
+
+INI file reader.
+MD5 key creation.
+Song length database parser.
+Sid filter file parser.
+
+Coming soon:
+
+Playlist parser (load and save).
+STIL parser.
