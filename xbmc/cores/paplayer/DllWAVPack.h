@@ -22,7 +22,7 @@
  */
 
 #include "DynamicDll.h"
-#include "wavpack/wavpack.h"
+#include "WavPackCodec/wavpack.h"
 
 class DllWavPackInterface
 {
@@ -68,10 +68,14 @@ public:
 
 class DllWavPack : public DllDynamic, DllWavPackInterface
 {
-#ifdef _LINUX
-  DECLARE_DLL_WRAPPER(DllWavPack, Q:\\system\\players\\paplayer\\wavpack-i486-linux.so)
-#else
+#ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllWavPack, Q:\\system\\players\\paplayer\\WAVPack.dll)
+#elif defined _POWERPC
+  DECLARE_DLL_WRAPPER(DllWavPack, Q:\\system\\players\\paplayer\\wavpack-powerpc-linux.so)
+#elif defined _POWERPC64
+  DECLARE_DLL_WRAPPER(DllWavPack, Q:\\system\\players\\paplayer\\wavpack-powerpc64-linux.so)
+#else
+  DECLARE_DLL_WRAPPER(DllWavPack, Q:\\system\\players\\paplayer\\wavpack-i486-linux.so)
 #endif
   DEFINE_METHOD6(WavpackContext*, WavpackOpenFileInputEx, (stream_reader* p1, void* p2, void* p3, char* p4, int p5, int p6))
   DEFINE_METHOD4(WavpackContext*, WavpackOpenFileInput, (const char* p1, char* p2, int p3, int p4))
