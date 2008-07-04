@@ -2,7 +2,7 @@ CFLAGS=-D_LINUX -fPIC -DPACK -DUNPACK -DSEEKING -DTAGS -DVER3 -DUSE_FSTREAMS
 OBJS=bits.o extra1.o extra2.o float.o md5.o metadata.o pack.o unpack.o unpack3.o utils.o words.o wputils.o
 
 wavpack-i486-linux.so: $(OBJS)
-	gcc -fPIC -shared -o $@ $(OBJS) `cat ../../../XBMC/xbmc/cores/DllLoader/exports/wrapper.def` ../../../XBMC/xbmc/cores/DllLoader/exports/wrapper.o
+	gcc -fPIC -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o && cp $@ ../../../../system/players/paplayer/
 
 clean:
 	$(RM) $(OBJS) *.so
