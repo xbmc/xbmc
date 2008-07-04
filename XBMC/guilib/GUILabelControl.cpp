@@ -402,4 +402,7 @@ void CGUILabelControl::SetHighlight(unsigned int start, unsigned int end)
   m_endHighlight = end;
 }
 
-
+CStdString CGUILabelControl::GetDescription() const
+{
+  return m_infoLabel.GetLabel(m_dwParentID);
+}
