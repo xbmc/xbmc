@@ -60,6 +60,7 @@ CGUIListGroup::CGUIListGroup(const CGUIListGroup &right)
 
 CGUIListGroup::~CGUIListGroup(void)
 {
+  FreeResources();
 }
 
 void CGUIListGroup::AddControl(CGUIControl *control)
