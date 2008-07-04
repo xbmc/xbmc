@@ -121,7 +121,8 @@ CGLTexture * CGUILargeTextureManager::GetImage(const CStdString &path, int &widt
 #ifdef HAS_SDL_2D
       return image->GetTexture();
 #else
-      return new CGLTexture(image->GetTexture(), false);
+      if (image->GetTexture())
+        return new CGLTexture(image->GetTexture(), false);
 #endif
     }
   }
