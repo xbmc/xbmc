@@ -47,17 +47,6 @@ void CGUILargeTextureManager::Process()
   // lock item list
   CSingleLock lock(m_listSection);
   m_running = true;
-  Surface::CSurface* pBuffer = new Surface::CSurface(256, 256, false, g_graphicsContext.getScreenSurface(), g_graphicsContext.getScreenSurface(), NULL, false, false, false);
-  if (!pBuffer || (!pBuffer->IsValid()))
-  {
-    CLog::Log(LOGERROR, "GL: Could not create surface for Large Texture Manager");
-  }
-  else
-  {
-#ifdef HAS_SDL_GL
-    g_graphicsContext.ValidateSurface(pBuffer);
-#endif
-  }
   while (m_queued.size() && !m_bStop)
   { // load the top item in the queue
     // take a copy of the details required for the load, as
@@ -66,21 +55,11 @@ void CGUILargeTextureManager::Process()
     CStdString path = image->GetPath();
     lock.Leave();
     // load the image using our image lib
-#ifndef HAS_SDL
-    LPDIRECT3DTEXTURE8 texture = NULL;
-#elif defined (HAS_SDL_2D)
     SDL_Surface * texture = NULL;
-#else
-    CGLTexture * texture = NULL;
-#endif
     CPicture pic;
     CFileItem file(path, false);
     if (file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ())) // ignore non-pictures
-#ifndef HAS_SDL_OPENGL
       texture = pic.Load(path, std::min(g_graphicsContext.GetWidth(), 1024), std::min(g_graphicsContext.GetHeight(), 720));
-#else
-      texture = new CGLTexture(pic.Load(path, std::min(g_graphicsContext.GetWidth(), 1024), std::min(g_graphicsContext.GetHeight(), 720)));
-#endif
     // and add to our allocated list
     lock.Enter();
     if (m_queued.size() && m_queued[0]->GetPath() == path)
@@ -94,23 +73,12 @@ void CGUILargeTextureManager::Process()
     }
     else
     { // no need for the texture any more
-#ifndef HAS_SDL
-      SAFE_RELEASE(texture);
-#elif defined (HAS_SDL_2D)
       SDL_FreeSurface(texture);
-#else
-      delete texture;
-#endif
       texture = NULL;
     }
     lock.Leave();
     Sleep(1);
     lock.Enter();
-  }
-  if (pBuffer)
-  {
-    delete pBuffer;
-    pBuffer = NULL;
   }
   m_running = false;
 }
@@ -132,9 +100,7 @@ void CGUILargeTextureManager::CleanupUnusedImages()
 
 // if available, increment reference count, and return the image.
 // else, add to the queue list if appropriate.
-#ifndef HAS_SDL
-LPDIRECT3DTEXTURE8 CGUILargeTextureManager::GetImage(const CStdString &path, int &width, int &height, int &orientation, bool firstRequest)
-#elif defined (HAS_SDL_2D)
+#ifdef HAS_SDL_2D
 SDL_Surface * CGUILargeTextureManager::GetImage(const CStdString &path, int &width, int &height, int &orientation, bool firstRequest)
 #else
 CGLTexture * CGUILargeTextureManager::GetImage(const CStdString &path, int &width, int &height, int &orientation, bool firstRequest)
@@ -152,7 +118,11 @@ CGLTexture * CGUILargeTextureManager::GetImage(const CStdString &path, int &widt
       width = image->GetWidth();
       height = image->GetHeight();
       orientation = image->GetOrientation();
+#ifdef HAS_SDL_2D
       return image->GetTexture();
+#else
+      return new CGLTexture(image->GetTexture(), false);
+#endif
     }
   }
   if (firstRequest)
