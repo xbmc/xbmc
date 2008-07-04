@@ -150,7 +150,8 @@ void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, bool focused)
   if (condition)
     m_condition = g_infoManager.TranslateString(condition);
   TiXmlElement *child = layout->FirstChildElement("control");
-  FRECT rect = { 0, 0, m_width, m_height };
+  m_group.SetWidth(m_width);
+  m_group.SetHeight(m_height);
   while (child)
   {
     LoadControl(child, &m_group);
