@@ -184,6 +184,10 @@ public:
   virtual void ResetAnimation(ANIMATION_TYPE type);
   virtual void ResetAnimations();
 
+  // push information updates
+  virtual void UpdateInfo(const CGUIListItem *item = NULL) {};
+  virtual void SetPushUpdates(bool pushUpdates) { m_pushedUpdates = pushUpdates; };
+
   virtual bool IsGroup() const { return false; };
   virtual bool IsContainer() const { return false; };
   virtual bool GetCondition(int condition, int data) const { return false; };
@@ -201,6 +205,7 @@ public:
     GUICONTROL_LARGE_IMAGE,
     GUICONTROL_LABEL,
     GUICONTROL_LIST,
+    GUICONTROL_LISTGROUP,
     GUICONTROL_LISTEX,
     GUICONTROL_PROGRESS,
     GUICONTROL_RADIO,
@@ -280,6 +285,8 @@ protected:
   // enable/disable state
   int m_enableCondition;
   bool m_enabled;
+
+  bool m_pushedUpdates;
 
   // animation effects
   std::vector<CAnimation> m_animations;

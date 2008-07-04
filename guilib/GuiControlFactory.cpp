@@ -56,6 +56,8 @@
 #include "GUIPanelContainer.h"
 #include "GUILargeImage.h"
 #include "GUIMultiSelectText.h"
+#include "GUIListLabel.h"
+#include "GUIListGroup.h"
 #include "utils/GUIInfoManager.h"
 #include "utils/CharsetConverter.h"
 #include "ButtonTranslator.h"
@@ -536,7 +538,7 @@ CStdString CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
   return type;
 }
 
-CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiXmlElement* pControlNode)
+CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiXmlElement* pControlNode, bool insideContainer)
 {
   // resolve any <include> tag's in this control
   g_SkinInfo.ResolveIncludes(pControlNode);
@@ -639,8 +641,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   bool bWrapAround = true;
   bool bSmoothScrolling = true;
   CGUIImage::CAspectRatio aspect;
-  if (strType == "thumbnailpanel")  // default for thumbpanel is keep
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  if (strType == "thumbnailpanel" || insideContainer)  // default for thumbpanel and inside containers is keep
     aspect.ratio = CGUIImage::CAspectRatio::AR_KEEP;
+#endif
 
   int iVisibleCondition = 0;
   bool allowHiddenFocus = false;
@@ -1050,10 +1054,17 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   CGUIControl *control = NULL;
   if (strType == "group")
   {
-    control = new CGUIControlGroup(
-      dwParentId, id, posX, posY, width, height);
-    ((CGUIControlGroup *)control)->SetDefaultControl(defaultControl);
-    ((CGUIControlGroup *)control)->SetRenderFocusedLast(renderFocusedLast);
+    if (insideContainer)
+    {
+      control = new CGUIListGroup(dwParentId, id, posX, posY, width, height);
+    }
+    else
+    {
+      control = new CGUIControlGroup(
+        dwParentId, id, posX, posY, width, height);
+      ((CGUIControlGroup *)control)->SetDefaultControl(defaultControl);
+      ((CGUIControlGroup *)control)->SetRenderFocusedLast(renderFocusedLast);
+    }
   }
   else if (strType == "grouplist")
   {
@@ -1063,12 +1074,19 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   }
   else if (strType == "label")
   {
-    control = new CGUILabelControl(
-      dwParentId, id, posX, posY, width, height,
-      labelInfo, wrapMultiLine, bHasPath);
-    if (infoLabels.size())
-      ((CGUILabelControl *)control)->SetInfo(infoLabels[0]);
-    ((CGUILabelControl *)control)->SetWidthControl(bScrollLabel, scrollSpeed);
+    const CGUIInfoLabel &content = (infoLabels.size()) ? infoLabels[0] : CGUIInfoLabel("");
+    if (insideContainer)
+    { // inside lists we use CGUIListLabel
+      control = new CGUIListLabel(dwParentId, id, posX, posY, width, height, labelInfo, content, bScrollLabel, scrollSpeed);
+    }
+    else
+    {
+      control = new CGUILabelControl(
+        dwParentId, id, posX, posY, width, height,
+        labelInfo, wrapMultiLine, bHasPath);
+      ((CGUILabelControl *)control)->SetInfo(content);
+      ((CGUILabelControl *)control)->SetWidthControl(bScrollLabel, scrollSpeed);
+    }
   }
   else if (strType == "edit")
   {
@@ -1236,6 +1254,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     else
       control = new CGUIBorderedImage(
         dwParentId, id, posX, posY, width, height, texture, borderTexture, borderSize, dwColorKey);
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+    if (insideContainer && texture.file.IsConstant())
+      aspect.ratio = CGUIImage::CAspectRatio::AR_STRETCH;
+#endif
     ((CGUIImage *)control)->SetAspectRatio(aspect);
   }
   else if (strType == "largeimage")
