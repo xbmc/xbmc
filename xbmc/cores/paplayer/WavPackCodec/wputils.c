@@ -876,7 +876,7 @@ int WavpackGetTagItem (WavpackContext *wpc, const char *item, char *value, int s
 // wvc file). A return value of NULL indicates that memory could not be
 // allocated for the context.
 
-WavpackContext *WavpackOpenFileOutput (blockout blockout, void *wv_id, void *wvc_id)
+WavpackContext *WavpackOpenFileOutput (blockout_f blockout, void *wv_id, void *wvc_id)
 {
     WavpackContext *wpc = malloc (sizeof (WavpackContext));
 
