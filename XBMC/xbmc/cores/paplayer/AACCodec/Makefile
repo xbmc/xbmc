@@ -4,11 +4,13 @@ CFLAGS=-D_LINUX -fPIC -Ialac_decoder -Ilibfaad -Imp4ff -Ilibfaad/include
 
 DIRS=alac_decoder libfaad mp4ff
 
+all: compile AACCodec-i486-linux.so
+
 AACCodec-osx.so: compile AACCodec.o utils.o
 	$(CC) -shared -bundle -flat_namespace -undefined suppress -o $@ *.o alac_decoder/*.o libfaad/*.o mp4ff/*.o
 
 AACCodec-i486-linux.so: compile AACCodec.o utils.o
-	$(CC) -shared -o $@ *.o alac_decoder/*.o libfaad/*.o mp4ff/*.o `cat ../../../XBMC/xbmc/cores/DllLoader/exports/wrapper.def` ../../../XBMC/xbmc/cores/DllLoader/exports/wrapper.o
+	$(CC) -shared -o $@ *.o alac_decoder/*.o libfaad/*.o mp4ff/*.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o && cp $@ ../../../../system/players/paplayer
 
 compile:
 	$(MAKE) -C alac_decoder

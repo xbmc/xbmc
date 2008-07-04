@@ -9,6 +9,7 @@
 #endif
 #else
 #define AACAPI
+#include <inttypes.h>
 #define __int8 char
 #define __int32 long
 #define __int64 long long
@@ -49,7 +50,8 @@ typedef enum AAC_OBJECT_TYPE
   AAC_HE=5, /* High Efficiency (SBR) */
   AAC_ER_LC=17, /* Error Resilient Low Complexity */
   AAC_ER_LTP=19, /* Error Resilient Long Term Prediction */
-  AAC_LD=23 /* Low Delay */
+  AAC_LD=23, /* Low Delay */
+  ALAC=24 /* ALAC codec */
 } AAC_OBJECT_TYPE;
 
 /* info about a file */
