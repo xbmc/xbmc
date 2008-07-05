@@ -26,6 +26,16 @@
 #include "Util.h"
 #include "log.h"
 
+// undefine if you want to build without the wlan stuff
+// might be needed for VS2003
+#define HAS_WIN32_WLAN_API
+
+#ifdef HAS_WIN32_WLAN_API
+#include "Wlanapi.h"
+#pragma comment (lib,"Wlanapi.lib")
+#endif
+
+
 using namespace std;
 
 CNetworkInterfaceWin32::CNetworkInterfaceWin32(CNetworkWin32* network, IP_ADAPTER_INFO adapter)
@@ -42,6 +52,8 @@ CNetworkInterfaceWin32::~CNetworkInterfaceWin32(void)
 
 CStdString& CNetworkInterfaceWin32::GetName(void)
 {
+  if (!g_charsetConverter.isValidUtf8(m_adaptername)) 
+    g_charsetConverter.stringCharsetToUtf8(m_adaptername);
   return m_adaptername;
 }
 
@@ -89,24 +101,48 @@ CStdString CNetworkInterfaceWin32::GetCurrentNetmask(void)
 
 CStdString CNetworkInterfaceWin32::GetCurrentWirelessEssId(void)
 {
-   CStdString result = "";
+  CStdString result = "";
 
-#ifdef _LINUX
-   char essid[IW_ESSID_MAX_SIZE + 1];
-   memset(&essid, 0, sizeof(essid));
+#ifdef HAS_WIN32_WLAN_API
+  if(IsWireless())
+  {
+    HANDLE hClientHdl = NULL;
+	  DWORD dwVersion = 0;
+    DWORD dwret = 0;
+    PWLAN_CONNECTION_ATTRIBUTES pAttributes;
+    DWORD dwSize = 0;
 
-   struct iwreq wrq;
-   strcpy(wrq.ifr_name,  m_interfaceName.c_str());
-   wrq.u.essid.pointer = (caddr_t) essid;
-   wrq.u.essid.length = IW_ESSID_MAX_SIZE;
-   wrq.u.essid.flags = 0;
-   if (ioctl(m_network->GetSocket(), SIOCGIWESSID, &wrq) >= 0)
-   {
-      result = essid;
-   }
+    if(WlanOpenHandle(1,NULL,&dwVersion, &hClientHdl) == ERROR_SUCCESS)
+    {
+      PWLAN_INTERFACE_INFO_LIST ppInterfaceList;
+      if(WlanEnumInterfaces(hClientHdl,NULL, &ppInterfaceList ) == ERROR_SUCCESS)
+      {
+        for(int i=0; i<ppInterfaceList->dwNumberOfItems;i++)
+        {
+          GUID guid = ppInterfaceList->InterfaceInfo[i].InterfaceGuid;
+          WCHAR wcguid[64];
+          StringFromGUID2(guid, (LPOLESTR)&wcguid, 64);
+          CStdStringW strGuid = wcguid;
+          CStdStringW strAdaptername = m_adapter.AdapterName;
+          if( strGuid == strAdaptername)
+          {
+            if(WlanQueryInterface(hClientHdl,&ppInterfaceList->InterfaceInfo[i].InterfaceGuid,wlan_intf_opcode_current_connection, NULL, &dwSize, (PVOID*)&pAttributes, NULL ) == ERROR_SUCCESS)
+            {
+              result = (char*)pAttributes->wlanAssociationAttributes.dot11Ssid.ucSSID;
+              WlanFreeMemory((PVOID*)&pAttributes);
+            }
+            else
+              OutputDebugString("Can't query wlan interface\n");
+          }
+        }
+      }
+      WlanCloseHandle(&hClientHdl, NULL);
+    }
+    else
+      OutputDebugString("Can't open wlan handle\n");
+  }
 #endif
-
-   return result;
+  return result;
 }
 
 CStdString CNetworkInterfaceWin32::GetCurrentDefaultGateway(void)
@@ -417,87 +453,111 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceWin32::GetAccessPoints(void)
 
 void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
 {
-   ipAddress = "0.0.0.0";
-   networkMask = "0.0.0.0";
-   defaultGateway = "0.0.0.0";
-   essId = "";
-   key = "";
-   encryptionMode = ENC_NONE;
-   assignment = NETWORK_DISABLED;
+  ipAddress = "0.0.0.0";
+  networkMask = "0.0.0.0";
+  defaultGateway = "0.0.0.0";
+  essId = "";
+  key = "";
+  encryptionMode = ENC_NONE;
+  assignment = NETWORK_DISABLED;
 
-#ifdef _LINUX
-   FILE* fp = fopen("/etc/network/interfaces", "r");
-   if (!fp)
-   {
-      // TODO
+
+  PIP_ADAPTER_INFO adapterInfo;
+  PIP_ADAPTER_INFO adapter = NULL;
+
+  ULONG ulOutBufLen = sizeof (IP_ADAPTER_INFO);
+
+  adapterInfo = (IP_ADAPTER_INFO *) malloc(sizeof (IP_ADAPTER_INFO));
+  if (adapterInfo == NULL) 
+    return;
+
+  if (GetAdaptersInfo(adapterInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW) 
+  {
+    free(adapterInfo);
+    adapterInfo = (IP_ADAPTER_INFO *) malloc(ulOutBufLen);
+    if (adapterInfo == NULL) 
+    {
+      OutputDebugString("Error allocating memory needed to call GetAdaptersinfo\n");
       return;
-   }
+    }
+  }
 
-   char* line = NULL;
-   size_t linel = 0;
-   CStdString s;
-   bool foundInterface = false;
-
-   while (getdelim(&line, &linel, '\n', fp) > 0)
-   {
-      vector<CStdString> tokens;
-
-      s = line;
-      s.TrimLeft(" \t").TrimRight(" \n");
-
-      // skip comments
-      if (s.length() == 0 || s.GetAt(0) == '#')
-         continue;
-
-      // look for "iface <interface name> inet"
-      CUtil::Tokenize(s, tokens, " ");
-      if (!foundInterface &&
-          tokens.size() >=3 &&
-          tokens[0].Equals("iface") &&
-          tokens[1].Equals(GetName()) &&
-          tokens[2].Equals("inet"))
+  if ((GetAdaptersInfo(adapterInfo, &ulOutBufLen)) == NO_ERROR) 
+  {
+    adapter = adapterInfo;
+    while (adapter) 
+    {
+      if(m_adapter.Index == adapter->Index)
       {
-         if (tokens[3].Equals("dhcp"))
-         {
-            assignment = NETWORK_DHCP;
-            foundInterface = true;
-         }
-         if (tokens[3].Equals("static"))
-         {
-            assignment = NETWORK_STATIC;
-            foundInterface = true;
-         }
-      }
+        ipAddress = adapter->IpAddressList.IpAddress.String;
+        networkMask = adapter->IpAddressList.IpMask.String;
+        defaultGateway = adapter->GatewayList.IpAddress.String;
+        if (adapter->DhcpEnabled) 
+          assignment = NETWORK_DHCP;
+        else
+          assignment = NETWORK_STATIC;
 
-      if (foundInterface && tokens.size() == 2)
+      }
+      adapter = adapter->Next;
+    }
+  }
+  free(adapterInfo);
+
+#ifdef HAS_WIN32_WLAN_API
+  if(IsWireless())
+  {
+    HANDLE hClientHdl = NULL;
+	  DWORD dwVersion = 0;
+    DWORD dwret = 0;
+    PWLAN_CONNECTION_ATTRIBUTES pAttributes;
+    DWORD dwSize = 0;
+
+    if(WlanOpenHandle(1,NULL,&dwVersion, &hClientHdl) == ERROR_SUCCESS)
+    {
+      PWLAN_INTERFACE_INFO_LIST ppInterfaceList;
+      if(WlanEnumInterfaces(hClientHdl,NULL, &ppInterfaceList ) == ERROR_SUCCESS)
       {
-         if (tokens[0].Equals("address")) ipAddress = tokens[1];
-         else if (tokens[0].Equals("netmask")) networkMask = tokens[1];
-         else if (tokens[0].Equals("gateway")) defaultGateway = tokens[1];
-         else if (tokens[0].Equals("wireless-essid")) essId = tokens[1];
-         else if (tokens[0].Equals("wireless-key"))
-         {
-            key = tokens[1];
-            if (key.length() > 2 && key[0] == 's' && key[1] == ':')
-               key.erase(0, 2);
-            encryptionMode = ENC_WEP;
-         }
-         else if (tokens[0].Equals("wpa-ssid")) essId = tokens[1];
-         else if (tokens[0].Equals("wpa-proto") && tokens[1].Equals("WPA")) encryptionMode = ENC_WPA;
-         else if (tokens[0].Equals("wpa-proto") && tokens[1].Equals("WPA2")) encryptionMode = ENC_WPA2;
-         else if (tokens[0].Equals("wpa-psk")) key = tokens[1];
-         else if (tokens[0].Equals("auto") || tokens[0].Equals("iface") || tokens[0].Equals("mapping")) break;
+        for(int i=0; i<ppInterfaceList->dwNumberOfItems;i++)
+        {
+          GUID guid = ppInterfaceList->InterfaceInfo[i].InterfaceGuid;
+          WCHAR wcguid[64];
+          StringFromGUID2(guid, (LPOLESTR)&wcguid, 64);
+          CStdStringW strGuid = wcguid;
+          CStdStringW strAdaptername = m_adapter.AdapterName;
+          if( strGuid == strAdaptername)
+          {
+            if(WlanQueryInterface(hClientHdl,&ppInterfaceList->InterfaceInfo[i].InterfaceGuid,wlan_intf_opcode_current_connection, NULL, &dwSize, (PVOID*)&pAttributes, NULL ) == ERROR_SUCCESS)
+            {
+              essId = (char*)pAttributes->wlanAssociationAttributes.dot11Ssid.ucSSID;
+              if(pAttributes->wlanSecurityAttributes.bSecurityEnabled)
+              {
+                switch(pAttributes->wlanSecurityAttributes.dot11AuthAlgorithm)
+                {
+                case DOT11_AUTH_ALGO_80211_SHARED_KEY:
+                  encryptionMode = ENC_WEP;
+                  break;
+                case DOT11_AUTH_ALGO_WPA:
+                case DOT11_AUTH_ALGO_WPA_PSK:
+                  encryptionMode = ENC_WPA;
+                  break;
+                case DOT11_AUTH_ALGO_RSNA:
+                case DOT11_AUTH_ALGO_RSNA_PSK:
+                  encryptionMode = ENC_WPA2;
+                }
+              }
+              WlanFreeMemory((PVOID*)&pAttributes);
+            }
+            else
+              OutputDebugString("Can't query wlan interface\n");
+          }
+        }
       }
-   }
-
-   if (line)
-     free(line);
-
-   // Fallback in case wpa-proto is not set
-   if (key != "" && encryptionMode == ENC_NONE)
-      encryptionMode = ENC_WPA;
-
-   fclose(fp);
+      WlanCloseHandle(&hClientHdl, NULL);
+    }
+    else
+      OutputDebugString("Can't open wlan handle\n");
+  }
+  // Todo: get the key (WlanGetProfile, CryptUnprotectData?)
 #endif
 }
 

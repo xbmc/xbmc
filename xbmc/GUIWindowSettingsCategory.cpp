@@ -3511,7 +3511,7 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
   return;
 #endif
 
-#ifdef HAS_LINUX_NETWORK
+#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
    NetworkAssignment iAssignment;
    CStdString sIPAddress;
    CStdString sNetworkMask;
