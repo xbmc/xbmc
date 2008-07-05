@@ -28,7 +28,7 @@
 
 // undefine if you want to build without the wlan stuff
 // might be needed for VS2003
-#define HAS_WIN32_WLAN_API
+//#define HAS_WIN32_WLAN_API
 
 #ifdef HAS_WIN32_WLAN_API
 #include "Wlanapi.h"
