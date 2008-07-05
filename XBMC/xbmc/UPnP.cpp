@@ -1334,7 +1334,7 @@ CUPnP::StartServer()
 {
     if (!m_ServerHolder->m_Device.IsNull()) return;
 
-#ifdef HAS_LINUX_NETWORK
+#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
     NPT_String ip;
     if (g_application.getNetwork().GetFirstConnectedInterface())
     {
@@ -1413,7 +1413,7 @@ void CUPnP::StartRenderer()
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
     g_settings.LoadUPnPXml(filename);
 
-#ifdef _LINUX
+#if defined(_LINUX) || defined(HAS_WIN32_NETWORK)
     NPT_String ip;
     if (g_application.getNetwork().GetFirstConnectedInterface())
     {

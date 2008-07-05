@@ -1224,7 +1224,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case NETWORK_IP_ADDRESS:
     {
       CStdString ip;
-#ifdef HAS_LINUX_NETWORK
+#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
         ip.Format("%s: %s", g_localizeStrings.Get(150).c_str(), iface->GetCurrentIPAddress().c_str());
@@ -1237,7 +1237,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case NETWORK_SUBNET_ADDRESS:
     {
       CStdString subnet;
-#ifdef HAS_LINUX_NETWORK
+#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
         subnet.Format("%s: %s", g_localizeStrings.Get(13159), iface->GetCurrentNetmask().c_str());
@@ -1250,7 +1250,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case NETWORK_GATEWAY_ADDRESS:
     {
       CStdString gateway;
-#ifdef HAS_LINUX_NETWORK
+#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
         gateway.Format("%s: %s", g_localizeStrings.Get(13160), iface->GetCurrentDefaultGateway().c_str());
@@ -1263,7 +1263,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case NETWORK_DNS1_ADDRESS:
     {
       CStdString dns;
-#ifdef HAS_LINUX_NETWORK
+#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       std::vector<CStdString> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 1)
           dns.Format("%s: %s", g_localizeStrings.Get(13161), nss[0].c_str());
@@ -1276,7 +1276,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case NETWORK_DNS2_ADDRESS:
     {
       CStdString dns;
-#ifdef HAS_LINUX_NETWORK
+#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       std::vector<CStdString> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 2)
           dns.Format("%s: %s", g_localizeStrings.Get(20307), nss[1].c_str());
@@ -1296,7 +1296,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     {
       CStdString linkStatus = g_localizeStrings.Get(151);
       linkStatus += " ";
-#if defined(HAS_LINUX_NETWORK)
+#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface && iface->IsConnected())
         linkStatus += g_localizeStrings.Get(15207);
