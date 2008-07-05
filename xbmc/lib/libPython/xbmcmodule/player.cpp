@@ -114,14 +114,6 @@ namespace PYXBMC
       }
       g_application.getApplicationMessenger().PlayListPlayerPlay(g_playlistPlayer.GetCurrentSong());
     }
-    else if(PlayList_Check(pObject))
-    {
-      // play a python playlist (a playlist from playlistplayer.cpp)
-      PlayList* pPlayList = (PlayList*)pObject;
-      self->iPlayList = pPlayList->iPlayList;
-      g_playlistPlayer.SetCurrentPlaylist(pPlayList->iPlayList);
-      g_application.getApplicationMessenger().PlayListPlayerPlay();
-    }
     else if (PyString_Check(pObject) && pObjectListItem != NULL && ListItem_CheckExact(pObjectListItem))
     {
       // an optional listitem was passed
@@ -136,15 +128,15 @@ namespace PYXBMC
     else if (PyString_Check(pObject))
     {
       CFileItem item(PyString_AsString(pObject), false);
-      if (item.IsPlayList())
-      {
-        PyErr_SetString(PyExc_ValueError, "Only python playlists are supported (see xbmc.PlayList)");
-        return NULL;
-      }
-      else
-      {
-        g_application.getApplicationMessenger().MediaPlay(item.m_strPath);
-      }
+      g_application.getApplicationMessenger().MediaPlay(item.m_strPath);
+    }
+    else if (PlayList_Check(pObject))
+    {
+      // play a python playlist (a playlist from playlistplayer.cpp)
+      PlayList* pPlayList = (PlayList*)pObject;
+      self->iPlayList = pPlayList->iPlayList;
+      g_playlistPlayer.SetCurrentPlaylist(pPlayList->iPlayList);
+      g_application.getApplicationMessenger().PlayListPlayerPlay();
     }
 
     Py_INCREF(Py_None);
