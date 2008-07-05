@@ -43,7 +43,7 @@ extern "C"
 }
 
 
-  int __declspec(dllexport) DLL_LoadXWAV(const char* szFileName)
+  long __declspec(dllexport) DLL_LoadXWAV(const char* szFileName)
   { 
     ADPCMInfo* info = (ADPCMInfo*)malloc(sizeof(ADPCMInfo));
     info->f = fopen(szFileName,"rb");
@@ -65,7 +65,7 @@ extern "C"
     info->szInputBuffer = (char*)malloc(XBOX_ADPCM_SRCSIZE*info->fmt.wChannels*4);
     info->szStartOfBuf = info->szBuf+XBOX_ADPCM_DSTSIZE*info->fmt.wChannels*4;
     info->bufLen = XBOX_ADPCM_DSTSIZE*info->fmt.wChannels*4;
-    return (int)info;
+    return (long)info;
   }
 
   void __declspec(dllexport) DLL_FreeXWAV(int info)

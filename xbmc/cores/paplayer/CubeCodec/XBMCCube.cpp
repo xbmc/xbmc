@@ -66,7 +66,7 @@ extern "C"
     return 4096*cubefile->NCH*(16/8);
   }
 
-  int __declspec(dllexport) DLL_LoadADX(const char* szFileName, int* sampleRate, int* sampleSize, int* channels)
+  long __declspec(dllexport) DLL_LoadADX(const char* szFileName, int* sampleRate, int* sampleSize, int* channels)
   {
     ADXSong* result = new ADXSong;
 
@@ -84,7 +84,7 @@ extern "C"
     *sampleSize = 16;
     *channels = result->cubefile.NCH;
     result->m_iDataStart = ftell(result->cubefile.ch[0].infile);
-    return (int)result;
+    return (long)result;
   }
 
   void __declspec(dllexport) DLL_FreeADX(int adx)

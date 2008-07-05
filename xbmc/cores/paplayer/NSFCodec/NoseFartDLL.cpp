@@ -9,12 +9,12 @@ extern "C"
 #include "src/version.h"
 #include "src/machine/nsf.h"
 
-  int __declspec(dllexport) DLL_LoadNSF(const char* szFileName)
+  long __declspec(dllexport) DLL_LoadNSF(const char* szFileName)
   {
     nsf_init();
     log_init();
     nsf_t* result = nsf_load(const_cast<char*>(szFileName),NULL,0);
-    return (int)result;
+    return (long)result;
   }
 
   void __declspec(dllexport) DLL_FreeNSF(int nsf)
@@ -23,14 +23,14 @@ extern "C"
     nsf_free(&pNsf);
   }
 
-  int __declspec(dllexport) DLL_GetTitle(int nsf)
+  long __declspec(dllexport) DLL_GetTitle(int nsf)
   {
-    return (int)((nsf_t*)nsf)->song_name;
+    return (long)((nsf_t*)nsf)->song_name;
   }
   
-  int __declspec(dllexport) DLL_GetArtist(int nsf)
+  long __declspec(dllexport) DLL_GetArtist(int nsf)
   {
-    return (int)((nsf_t*)nsf)->artist_name;
+    return (long)((nsf_t*)nsf)->artist_name;
   }
   
   int __declspec(dllexport) DLL_StartPlayback(int nsf, int track)
