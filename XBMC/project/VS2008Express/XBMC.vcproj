@@ -140,7 +140,7 @@
 				RuntimeLibrary="0"
 				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="false"
-				EnableEnhancedInstructionSet="2"
+				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
