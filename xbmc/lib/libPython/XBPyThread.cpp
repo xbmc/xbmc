@@ -38,11 +38,7 @@
 #pragma const_seg("PY_RDATA")
 #endif
 
-#ifdef __APPLE__
-#define PY_PATH_SEP ':'
-#else
-#define PY_PATH_SEP ';'
-#endif
+#define PY_PATH_SEP DELIM
 
 extern "C"
 {
@@ -155,7 +151,7 @@ void XBPyThread::Process()
   strcat(path, dll_getenv("PYTHONPATH"));
 #else
 #ifdef __APPLE__
-  strcat(path, _P("Q:\\system\\python\\python24.zip:"));
+  strcat(path, _P("Q:\\system\\python\\python24.zip;"));
   strcat(path, _P("Q:\\system\\python\\lib-osx"));
 #else
   strcat(path, Py_GetPath());
