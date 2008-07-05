@@ -168,8 +168,10 @@ public:
   void CheckMusicPlaylist();
 
   CApplicationMessenger& getApplicationMessenger();
-#ifdef HAS_LINUX_NETWORK
+#if defined(HAS_LINUX_NETWORK)
   CNetworkLinux& getNetwork();
+#elif defined(HAS_WIN32_NETWORK)
+  CNetworkWin32& getNetwork();
 #else
   CNetwork& getNetwork();
 #endif
@@ -299,8 +301,10 @@ protected:
   CProfile* InitDirectoriesWin32();
 
   CApplicationMessenger m_applicationMessenger;
-#ifdef HAS_LINUX_NETWORK
+#if defined(HAS_LINUX_NETWORK)
   CNetworkLinux m_network;
+#elif defined(HAS_WIN32_NETWORK)
+  CNetworkWin32 m_network;
 #else
   CNetwork    m_network;
 #endif
