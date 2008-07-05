@@ -67,7 +67,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089"
-				AdditionalDependencies="opengl32.lib winmm.lib ws2_32.lib Mpr.lib"
+				AdditionalDependencies="opengl32.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib Wlanapi.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
@@ -160,7 +160,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="false"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089"
-				AdditionalDependencies="opengl32.lib winmm.lib ws2_32.lib Mpr.lib"
+				AdditionalDependencies="opengl32.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
@@ -202,6 +202,14 @@
 		<Filter
 			Name="win32"
 			>
+			<File
+				RelativePath="..\..\xbmc\win32\NetworkWin32.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\NetworkWin32.h"
+				>
+			</File>
 			<File
 				RelativePath="..\..\xbmc\win32\ntddcdrm.h"
 				>
@@ -4378,11 +4386,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\xbox\Network.cpp"
+					RelativePath="..\..\xbmc\utils\Network.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\xbox\Network.h"
+					RelativePath="..\..\xbmc\utils\Network.h"
 					>
 				</File>
 				<File
