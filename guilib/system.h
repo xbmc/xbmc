@@ -163,6 +163,7 @@
 #define HAS_CCXSTREAM
 #define HAS_EVENT_SERVER
 #define HAS_SHOUTCAST
+#define HAS_WIN32_NETWORK
 
 #undef HAS_SDL_AUDIO   // use dsound for audio on win32
 #undef HAS_SCREENSAVER // no screensavers
