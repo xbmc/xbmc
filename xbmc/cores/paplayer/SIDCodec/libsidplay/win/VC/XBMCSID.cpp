@@ -26,7 +26,7 @@ extern "C"
       return 0;
     }
 
-    int __declspec(dllexport) DLL_LoadSID(const char* szFileName)
+    long __declspec(dllexport) DLL_LoadSID(const char* szFileName)
     {
       WaitForSingleObject(hMutex,INFINITE);
       SSid* result = new SSid;
@@ -35,7 +35,7 @@ extern "C"
       result->config.sidEmulation = NULL;
       
       ReleaseMutex(hMutex);
-      return (int)result;
+      return (long)result;
     }
 
     void __declspec(dllexport) DLL_StartPlayback(int sid, int track)

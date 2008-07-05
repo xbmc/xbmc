@@ -29,13 +29,13 @@ extern "C"
     return 1;
   }
 
-  int __declspec(dllexport) DLL_LoadMID(const char* szFileName)
+  long __declspec(dllexport) DLL_LoadMID(const char* szFileName)
   {
     TimiditySong* result = new TimiditySong;
     result->song = Timidity_LoadSong(const_cast<char*>(szFileName));
     result->szStartOfBuf = result->szBuf+1024*4;
     result->iStartSample = -1024;
-    return (int)result;
+    return (long)result;
   }
 
   void __declspec(dllexport) DLL_FreeMID(int mid)

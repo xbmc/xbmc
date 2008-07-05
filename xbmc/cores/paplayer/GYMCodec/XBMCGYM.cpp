@@ -108,7 +108,7 @@ extern "C"
   {
   }
 
-  int __declspec(dllexport) DLL_LoadGYM(const char *szFileName)
+  long __declspec(dllexport) DLL_LoadGYM(const char *szFileName)
   {    
     GYMSong* result = new GYMSong;
     FILE* f = fopen(szFileName,"rb");
@@ -155,7 +155,7 @@ extern "C"
       Start_Play_GYM(48000);
       result->YM2612 = YM2612;
       result->PSG = PSG;
-      iResult = (int)result;
+      iResult = (long)result;
     }
 
     ReleaseMutex(hMutex);
@@ -201,20 +201,20 @@ extern "C"
     ReleaseMutex(hMutex);
   }
 
-  int __declspec(dllexport) DLL_GetArtist(int gym)
+  long __declspec(dllexport) DLL_GetArtist(int gym)
   {
     GYMSong* song = (GYMSong*)gym;
     if (song->gymTag)
-      return (int)song->gymTag->game_publisher;
+      return (long)song->gymTag->game_publisher;
     
     return 0;
   }
   
-  int __declspec(dllexport) DLL_GetTitle(int gym)
+  long __declspec(dllexport) DLL_GetTitle(int gym)
   {
     GYMSong* song = (GYMSong*)gym;
     if (song->gymTag)
-      return (int)song->gymTag->song_title;
+      return (long)song->gymTag->song_title;
     
     return 0;
   }
