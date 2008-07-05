@@ -1512,6 +1512,7 @@ int CXbmcHttp::xbmcSlideshowSelect(int numParas, CStdString paras[])
   }
 }
 
+/*
 int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
 //filename (;mask)
 {
@@ -1538,6 +1539,34 @@ int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
     AddItemToPlayList(pItem, -1, 0, mask, recursive); //add to slideshow
     return SetResponse(openTag+"OK");
   }
+}
+*/
+
+int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
+//filename;mask;recursive=1
+{
+  CStdString mask="";
+  bool recursive=true;
+  if (numParas<1)
+    return SetResponse(openTag+"Error:Missing parameter");
+  if (numParas>1)
+    mask=procMask(paras[1]);
+  if (numParas>2)
+    recursive=paras[2]=="1";
+  CFileItemPtr pItem(new CFileItem(paras[0]));
+  pItem->m_bIsShareOrDrive=false;
+  pItem->m_strPath=paras[0].c_str();
+  // if its not a picture type, test to see if its a folder
+  if (!pItem->IsPicture())
+  {
+    IDirectory *pDirectory = CFactoryDirectory::Create(pItem->m_strPath);
+    if (!pDirectory)
+      return SetResponse(openTag+"Error");  
+    bool bResult=pDirectory->Exists(pItem->m_strPath);
+    pItem->m_bIsFolder=bResult;
+  }
+  AddItemToPlayList(pItem, -1, 0, mask, recursive); //add to slideshow
+  return SetResponse(openTag+"OK");
 }
 
 int CXbmcHttp::xbmcSetPlaySpeed(int numParas, CStdString paras[])
