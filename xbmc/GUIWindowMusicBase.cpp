@@ -264,17 +264,24 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
     return;
 
   CFileItemPtr item = m_vecItems->Get(iItem);
+
+  if (item->IsVideoDb())
+  { // music video
+    OnContextButton(iItem, CONTEXT_BUTTON_INFO);
+    return;
+  }
+
   OnInfo(item.get(), bShowInfo);
 }
 
 void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
 {
-  if (pItem->m_bIsFolder && pItem->IsParentFolder())
-    return;
+  if (pItem->IsParentFolder())
+    return; // nothing to do
 
-  if (pItem->IsVideoDb())
-  {
-    OnContextButton(m_viewControl.GetSelectedItem(), CONTEXT_BUTTON_INFO); // nasty but it is the same item i promise :)
+  if (!pItem->m_bIsFolder)
+  { // song lookup
+    ShowSongInfo(pItem);
     return;
   }
 
@@ -287,30 +294,18 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
 
   album.idAlbum = -1;
 
+  // we have a folder
   if (pItem->IsMusicDb())
   {
     CQueryParams params;
     CDirectoryNode::GetDatabaseInfo(pItem->m_strPath, params);
     if (params.GetAlbumId() == -1)
-    {
+    { // artist lookup
       artist.idArtist = params.GetArtistId();
       artist.strArtist = pItem->GetMusicInfoTag()->GetArtist();
     }
     else
-    {
-      // show dialog box indicating we're searching the album name
-      if (m_dlgProgress && bShowInfo)
-      {
-        m_dlgProgress->SetHeading(185);
-        m_dlgProgress->SetLine(0, 501);
-        m_dlgProgress->SetLine(1, "");
-        m_dlgProgress->SetLine(2, "");
-        m_dlgProgress->StartModal();
-        m_dlgProgress->Progress();
-        if (m_dlgProgress->IsCanceled())
-          return;
-      }
-
+    { // album lookup
       album.idAlbum = params.GetAlbumId();
       album.strAlbum = pItem->GetMusicInfoTag()->GetAlbum();
       album.strArtist = pItem->GetMusicInfoTag()->GetArtist();
@@ -321,10 +316,22 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
     }
   }
   else
-  { // lookup is done on a folder - find the albums in the folder
+  { // from filemode, so find the albums in the folder
     CFileItemList items;
     GetDirectory(strPath, items);
 
+    // show dialog box indicating we're searching the album name
+    if (m_dlgProgress && bShowInfo)
+    {
+      m_dlgProgress->SetHeading(185);
+      m_dlgProgress->SetLine(0, 501);
+      m_dlgProgress->SetLine(1, "");
+      m_dlgProgress->SetLine(2, "");
+      m_dlgProgress->StartModal();
+      m_dlgProgress->Progress();
+      if (m_dlgProgress->IsCanceled())
+        return;
+    }
     // check the first song we find in the folder, and grab it's album info
     for (int i = 0; i < items.Size() && !foundAlbum; i++)
     {
@@ -349,11 +356,14 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
     if (!foundAlbum)
     {
       CLog::Log(LOGINFO, "%s called on a folder containing no songs with tag info - nothing can be done", __FUNCTION__);
-      if (m_dlgProgress && bShowInfo) m_dlgProgress->Close();
+      if (m_dlgProgress && bShowInfo)
+        m_dlgProgress->Close();
+      return;
     }
-  }
 
-  if (m_dlgProgress && bShowInfo) m_dlgProgress->Close();
+    if (m_dlgProgress && bShowInfo)
+      m_dlgProgress->Close();
+  }
 
   if (album.idAlbum == -1 && foundAlbum == false)
     ShowArtistInfo(artist, pItem->m_strPath, false, bShowInfo);
