@@ -1086,12 +1086,14 @@ void CGUIWindowSettingsCategory::UpdateSettings()
        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
        if (pControl) pControl->SetEnabled(enabled);
     }
-#ifdef HAS_LINUX_NETWORK
+#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
     else if (strSetting.Equals("network.assignment"))
     {
       CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
-      if (pControl1)
+#ifdef HAS_LINUX_NETWORK    
+      if (pControl1)  
          pControl1->SetEnabled(geteuid() == 0);
+#endif
     }
     else if (strSetting.Equals("network.essid") || strSetting.Equals("network.enc") || strSetting.Equals("network.key"))
     {
@@ -1101,7 +1103,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CNetworkInterface* iface = g_application.getNetwork().GetInterfaceByName(ifaceName);
       bool bIsWireless = iface->IsWireless();
 
+#ifdef HAS_LINUX_NETWORK
       bool enabled = bIsWireless && (geteuid() == 0);
+#else
+      bool enabled = bIsWireless;
+#endif
       CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
       if (pControl1)
          enabled &= (pControl1->GetValue() != NETWORK_DISABLED);
@@ -3455,7 +3461,7 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
 
-#ifdef HAS_LINUX_NETWORK
+#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK) 
   // query list of interfaces
   vector<CStdString> vecInterfaces;
   std::vector<CNetworkInterface*>& ifaces = g_application.getNetwork().GetInterfaceList();

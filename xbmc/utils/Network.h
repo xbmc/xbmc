@@ -74,7 +74,7 @@ public:
    virtual void SetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode) = 0;
 };
 
-#ifdef HAS_LINUX_NETWORK
+
 
 class CNetwork
 {
@@ -110,9 +110,9 @@ public:
 
    static int ParseHex(char *str, unsigned char *addr);
 };
-
+#ifdef HAS_LINUX_NETWORK
 #include "linux/NetworkLinux.h"
 #else
-#include "xbox/Network.h"
+#include "win32/NetworkWin32.h"
 #endif
 #endif
