@@ -146,7 +146,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089"
-				AdditionalDependencies="SDL.lib SDL_image.lib DSound.lib opengl32.lib winmm.lib ws2_32.lib Mpr.lib glew32.lib glu32.lib"
+				AdditionalDependencies="SDL.lib SDL_image.lib DSound.lib opengl32.lib winmm.lib ws2_32.lib Mpr.lib glew32.lib glu32.lib Iphlpapi.lib"
 				OutputFile="$(OutDir)/../../../XBMC.exe"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
@@ -211,7 +211,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="FALSE"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089"
-				AdditionalDependencies="SDL.lib SDL_image.lib opengl32.lib DSound.lib glew32.lib glu32.lib winmm.lib ws2_32.lib Mpr.lib"
+				AdditionalDependencies="SDL.lib SDL_image.lib opengl32.lib DSound.lib glew32.lib glu32.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib"
 				OutputFile="$(OutDir)/XBMC.exe"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
@@ -249,6 +249,12 @@
 		<Filter
 			Name="win32"
 			Filter="">
+			<File
+				RelativePath="..\..\xbmc\win32\NetworkWin32.cpp">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\NetworkWin32.h">
+			</File>
 			<File
 				RelativePath="..\..\xbmc\win32\PlatformDefs.h">
 			</File>
@@ -3182,10 +3188,10 @@
 					RelativePath="..\..\xbmc\xbox\IoSupport.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\xbox\Network.cpp">
+					RelativePath="..\..\xbmc\utils\Network.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\xbox\Network.h">
+					RelativePath="..\..\xbmc\utils\Network.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\xbox\XKGeneral.cpp">
