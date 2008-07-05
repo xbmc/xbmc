@@ -1662,6 +1662,16 @@
 		E3FFF02F0D470BD8003D79C3 /* libavformat-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		88E384580E1EF65E0028AFC0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 882630940E1B6FAD00DC9524 /* build python */;
+			remoteInfo = "build python";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		6E65F6620E1BF31200B73755 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -2647,7 +2657,6 @@
 		E38E17AB0D25F9FA00618676 /* GUIDialogFileStacking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogFileStacking.h; sourceTree = "<group>"; };
 		E38E17AC0D25F9FA00618676 /* GUIDialogGamepad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogGamepad.cpp; sourceTree = "<group>"; };
 		E38E17AD0D25F9FA00618676 /* GUIDialogGamepad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogGamepad.h; sourceTree = "<group>"; };
-		E38E17AF0D25F9FA00618676 /* GUIDialogHost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogHost.h; sourceTree = "<group>"; };
 		E38E17B40D25F9FA00618676 /* GUIDialogKeyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogKeyboard.cpp; sourceTree = "<group>"; };
 		E38E17B50D25F9FA00618676 /* GUIDialogKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogKeyboard.h; sourceTree = "<group>"; };
 		E38E17B60D25F9FA00618676 /* GUIDialogLockSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogLockSettings.cpp; sourceTree = "<group>"; };
@@ -2722,7 +2731,6 @@
 		E38E17FC0D25F9FA00618676 /* GUIViewStateMusic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStateMusic.h; sourceTree = "<group>"; };
 		E38E17FF0D25F9FA00618676 /* GUIViewStateVideo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStateVideo.cpp; sourceTree = "<group>"; };
 		E38E18000D25F9FA00618676 /* GUIViewStateVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStateVideo.h; sourceTree = "<group>"; };
-		E38E18020D25F9FA00618676 /* GUIWindowBuddies.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowBuddies.h; sourceTree = "<group>"; };
 		E38E18030D25F9FA00618676 /* GUIWindowFileManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowFileManager.cpp; sourceTree = "<group>"; };
 		E38E18040D25F9FA00618676 /* GUIWindowFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowFileManager.h; sourceTree = "<group>"; };
 		E38E18050D25F9FA00618676 /* GUIWindowFullScreen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowFullScreen.cpp; sourceTree = "<group>"; };
@@ -2803,7 +2811,6 @@
 		E38E18590D25F9FA00618676 /* LangInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LangInfo.h; sourceTree = "<group>"; };
 		E38E185A0D25F9FA00618676 /* LastFmManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LastFmManager.cpp; sourceTree = "<group>"; };
 		E38E185B0D25F9FA00618676 /* LastFmManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFmManager.h; sourceTree = "<group>"; };
-		E38E185E0D25F9FA00618676 /* XBFileZilla.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBFileZilla.h; sourceTree = "<group>"; };
 		E38E18620D25F9FA00618676 /* bytesex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bytesex.h; sourceTree = "<group>"; };
 		E38E18630D25F9FA00618676 /* bytesex_asm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bytesex_asm.h; sourceTree = "<group>"; };
 		E38E18640D25F9FA00618676 /* cd_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cd_types.h; sourceTree = "<group>"; };
@@ -2905,36 +2912,6 @@
 		E38E1A2D0D25F9FB00618676 /* rip_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rip_manager.h; sourceTree = "<group>"; };
 		E38E1A2E0D25F9FB00618676 /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		E38E1A2F0D25F9FB00618676 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
-		E38E1A360D25F9FB00618676 /* arch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = arch.h; sourceTree = "<group>"; };
-		E38E1A370D25F9FB00618676 /* cb_search.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cb_search.h; sourceTree = "<group>"; };
-		E38E1A380D25F9FB00618676 /* cb_search_sse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cb_search_sse.h; sourceTree = "<group>"; };
-		E38E1A390D25F9FB00618676 /* filters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = filters.h; sourceTree = "<group>"; };
-		E38E1A3A0D25F9FB00618676 /* filters_sse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = filters_sse.h; sourceTree = "<group>"; };
-		E38E1A3B0D25F9FB00618676 /* fixed_arm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fixed_arm.h; sourceTree = "<group>"; };
-		E38E1A3C0D25F9FB00618676 /* fixed_debug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fixed_debug.h; sourceTree = "<group>"; };
-		E38E1A3D0D25F9FB00618676 /* fixed_generic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fixed_generic.h; sourceTree = "<group>"; };
-		E38E1A3F0D25F9FB00618676 /* lpc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lpc.h; sourceTree = "<group>"; };
-		E38E1A400D25F9FB00618676 /* lsp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lsp.h; sourceTree = "<group>"; };
-		E38E1A410D25F9FB00618676 /* ltp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ltp.h; sourceTree = "<group>"; };
-		E38E1A420D25F9FB00618676 /* ltp_sse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ltp_sse.h; sourceTree = "<group>"; };
-		E38E1A430D25F9FB00618676 /* math_approx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = math_approx.h; sourceTree = "<group>"; };
-		E38E1A440D25F9FB00618676 /* misc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = misc.h; sourceTree = "<group>"; };
-		E38E1A450D25F9FB00618676 /* modes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modes.h; sourceTree = "<group>"; };
-		E38E1A460D25F9FB00618676 /* nb_celp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nb_celp.h; sourceTree = "<group>"; };
-		E38E1A470D25F9FB00618676 /* quant_lsp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = quant_lsp.h; sourceTree = "<group>"; };
-		E38E1A480D25F9FB00618676 /* sb_celp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sb_celp.h; sourceTree = "<group>"; };
-		E38E1A490D25F9FB00618676 /* smallft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = smallft.h; sourceTree = "<group>"; };
-		E38E1A4A0D25F9FB00618676 /* speex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = speex.h; sourceTree = "<group>"; };
-		E38E1A4B0D25F9FB00618676 /* speex_bits.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = speex_bits.h; sourceTree = "<group>"; };
-		E38E1A4C0D25F9FB00618676 /* speex_callbacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = speex_callbacks.h; sourceTree = "<group>"; };
-		E38E1A4D0D25F9FB00618676 /* speex_echo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = speex_echo.h; sourceTree = "<group>"; };
-		E38E1A4E0D25F9FB00618676 /* speex_header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = speex_header.h; sourceTree = "<group>"; };
-		E38E1A4F0D25F9FB00618676 /* speex_jitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = speex_jitter.h; sourceTree = "<group>"; };
-		E38E1A500D25F9FB00618676 /* speex_preprocess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = speex_preprocess.h; sourceTree = "<group>"; };
-		E38E1A510D25F9FB00618676 /* speex_stereo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = speex_stereo.h; sourceTree = "<group>"; };
-		E38E1A520D25F9FB00618676 /* stack_alloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stack_alloc.h; sourceTree = "<group>"; };
-		E38E1A530D25F9FB00618676 /* vbr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vbr.h; sourceTree = "<group>"; };
-		E38E1A540D25F9FB00618676 /* vq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vq.h; sourceTree = "<group>"; };
 		E38E1AB60D25F9FB00618676 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		E38E1AB70D25F9FB00618676 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		E38E1AB80D25F9FB00618676 /* SConstruct */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SConstruct; sourceTree = "<group>"; };
@@ -4232,7 +4209,6 @@
 				E38E17AB0D25F9FA00618676 /* GUIDialogFileStacking.h */,
 				E38E17AC0D25F9FA00618676 /* GUIDialogGamepad.cpp */,
 				E38E17AD0D25F9FA00618676 /* GUIDialogGamepad.h */,
-				E38E17AF0D25F9FA00618676 /* GUIDialogHost.h */,
 				E38E17B40D25F9FA00618676 /* GUIDialogKeyboard.cpp */,
 				E38E17B50D25F9FA00618676 /* GUIDialogKeyboard.h */,
 				E38E17B60D25F9FA00618676 /* GUIDialogLockSettings.cpp */,
@@ -4307,7 +4283,6 @@
 				E38E17FC0D25F9FA00618676 /* GUIViewStateMusic.h */,
 				E38E17FF0D25F9FA00618676 /* GUIViewStateVideo.cpp */,
 				E38E18000D25F9FA00618676 /* GUIViewStateVideo.h */,
-				E38E18020D25F9FA00618676 /* GUIWindowBuddies.h */,
 				E38E18030D25F9FA00618676 /* GUIWindowFileManager.cpp */,
 				E38E18040D25F9FA00618676 /* GUIWindowFileManager.h */,
 				E38E18050D25F9FA00618676 /* GUIWindowFullScreen.cpp */,
@@ -5474,7 +5449,6 @@
 				815EE62B0E176F75009FBE3C /* rtmp.cpp */,
 				815EE62C0E176F75009FBE3C /* rtmppacket.cpp */,
 				810C9F690D67BDE20095F5DD /* libcmyth */,
-				E38E185D0D25F9FA00618676 /* filezilla */,
 				E38E18610D25F9FA00618676 /* libcdio */,
 				E38E187C0D25F9FA00618676 /* libCDRip */,
 				E38E18820D25F9FA00618676 /* libexif */,
@@ -5486,7 +5460,6 @@
 				E38E1A130D25F9FB00618676 /* libRTV */,
 				E38E1A210D25F9FB00618676 /* libscrobbler */,
 				E38E1A270D25F9FB00618676 /* libshout */,
-				E38E1A350D25F9FB00618676 /* libSpeex */,
 				E38E1A550D25F9FB00618676 /* libUPnP */,
 				E38E1C780D25F9FC00618676 /* libXBMS */,
 				E38E1C840D25F9FC00618676 /* libXDAAP */,
@@ -5495,14 +5468,6 @@
 				E38E1D650D25F9FC00618676 /* zlib */,
 			);
 			path = lib;
-			sourceTree = "<group>";
-		};
-		E38E185D0D25F9FA00618676 /* filezilla */ = {
-			isa = PBXGroup;
-			children = (
-				E38E185E0D25F9FA00618676 /* XBFileZilla.h */,
-			);
-			path = filezilla;
 			sourceTree = "<group>";
 		};
 		E38E18610D25F9FA00618676 /* libcdio */ = {
@@ -5739,43 +5704,6 @@
 				E38E1A2F0D25F9FB00618676 /* util.h */,
 			);
 			path = libshout;
-			sourceTree = "<group>";
-		};
-		E38E1A350D25F9FB00618676 /* libSpeex */ = {
-			isa = PBXGroup;
-			children = (
-				E38E1A360D25F9FB00618676 /* arch.h */,
-				E38E1A370D25F9FB00618676 /* cb_search.h */,
-				E38E1A380D25F9FB00618676 /* cb_search_sse.h */,
-				E38E1A390D25F9FB00618676 /* filters.h */,
-				E38E1A3A0D25F9FB00618676 /* filters_sse.h */,
-				E38E1A3B0D25F9FB00618676 /* fixed_arm.h */,
-				E38E1A3C0D25F9FB00618676 /* fixed_debug.h */,
-				E38E1A3D0D25F9FB00618676 /* fixed_generic.h */,
-				E38E1A3F0D25F9FB00618676 /* lpc.h */,
-				E38E1A400D25F9FB00618676 /* lsp.h */,
-				E38E1A410D25F9FB00618676 /* ltp.h */,
-				E38E1A420D25F9FB00618676 /* ltp_sse.h */,
-				E38E1A430D25F9FB00618676 /* math_approx.h */,
-				E38E1A440D25F9FB00618676 /* misc.h */,
-				E38E1A450D25F9FB00618676 /* modes.h */,
-				E38E1A460D25F9FB00618676 /* nb_celp.h */,
-				E38E1A470D25F9FB00618676 /* quant_lsp.h */,
-				E38E1A480D25F9FB00618676 /* sb_celp.h */,
-				E38E1A490D25F9FB00618676 /* smallft.h */,
-				E38E1A4A0D25F9FB00618676 /* speex.h */,
-				E38E1A4B0D25F9FB00618676 /* speex_bits.h */,
-				E38E1A4C0D25F9FB00618676 /* speex_callbacks.h */,
-				E38E1A4D0D25F9FB00618676 /* speex_echo.h */,
-				E38E1A4E0D25F9FB00618676 /* speex_header.h */,
-				E38E1A4F0D25F9FB00618676 /* speex_jitter.h */,
-				E38E1A500D25F9FB00618676 /* speex_preprocess.h */,
-				E38E1A510D25F9FB00618676 /* speex_stereo.h */,
-				E38E1A520D25F9FB00618676 /* stack_alloc.h */,
-				E38E1A530D25F9FB00618676 /* vbr.h */,
-				E38E1A540D25F9FB00618676 /* vq.h */,
-			);
-			path = libSpeex;
 			sourceTree = "<group>";
 		};
 		E38E1A550D25F9FB00618676 /* libUPnP */ = {
@@ -6776,6 +6704,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				88E384590E1EF65E0028AFC0 /* PBXTargetDependency */,
 			);
 			name = XBMC;
 			productInstallPath = "$(HOME)/bin";
@@ -6814,7 +6743,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd xbmc/lib/libPython/Python\n\nautoconf\n./configure --enable-ipv6 --enable-unicode=ucs4 --without-cxx --enable-shared  MACOSX_DEPLOYMENT_TARGET=10.5\nsed -i bak -e \"s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/\" pyconfig.h\n\n/usr/bin/make clean\n/usr/bin/make -j2\n\nmkdir tmp > /dev/null 2>&1\ncd tmp\nar x ../libpython2.4.a\ncd ..\n\n#create python24-osx.so\ngcc -bundle -flat_namespace -undefined suppress -shared -o python24-osx.so tmp/*.o\n\n/bin/rm -rf tmp\n\n# create python24.zip\nzip -r ../../../../system/python/python24.zip Lib Tools Mac -i \\*.py -i \\*.pyc -i \\*.pyo\n\n#wrap the .so with xbmc extensions\ncd ../../../../tools/Mach5/\n./mach5.rb ../../xbmc/lib/libPython/Python/python24-osx.so\n./mach5.rb output.so libpython\n\ncp output.so ../../system/python/python24-osx.so\n\nexit 0";
+			shellScript = "\n#dont run this script if we already have lib-python (comment out the following line in order to re-create it)\nif [ -e system/python/python24.zip -a -e system/python/python24-osx.so ]; then exit 0; fi\n\ncd xbmc/lib/libPython/Python\n\nautoconf\n./configure --enable-ipv6 --enable-unicode=ucs4 --without-cxx --enable-shared  MACOSX_DEPLOYMENT_TARGET=10.5\nsed -i bak -e \"s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/\" pyconfig.h\n\n/usr/bin/make clean\n/usr/bin/make -j2\n\nmkdir tmp > /dev/null 2>&1\ncd tmp\nar x ../libpython2.4.a\ncd ..\n\n#create python24-osx.so\ngcc -bundle -flat_namespace -undefined suppress -shared -o python24-osx.so tmp/*.o\n\n/bin/rm -rf tmp\n\n# create python24.zip\ncd Lib\n/bin/rm -f ../../../../../system/python/python24.zip \nzip -r -0 ../../../../../system/python/python24.zip . -i \\*.py -i \\*.pyc -i \\*.pyo\ncd ..\n\n#wrap the .so with xbmc extensions\ncd ../../../../tools/Mach5/\n./mach5.rb ../../xbmc/lib/libPython/Python/python24-osx.so\n./mach5.rb output.so libpython\n\ncp output.so ../../system/python/python24-osx.so\n\nexit 0";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -8383,6 +8312,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		88E384590E1EF65E0028AFC0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 882630940E1B6FAD00DC9524 /* build python */;
+			targetProxy = 88E384580E1EF65E0028AFC0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
 		1DEB924808733DCA0010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -8394,6 +8331,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					Py_UNICODE_WIDE,
 					_DEBUG,
 					_LINUX,
 					_REENTRANT,
@@ -8470,6 +8408,8 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					Py_UNICODE_WIDE,
+					_DEBUG,
 					_LINUX,
 					_REENTRANT,
 					_FILE_DEFINED,
@@ -8624,6 +8564,7 @@
 					"_FILE_OFFSET_BITS=64",
 					_LARGEFILE64_SOURCE,
 					HAS_SDL_JOYSTICK,
+					Py_UNICODE_WIDE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GENERATE_PROFILING_CODE = NO;
@@ -8706,6 +8647,7 @@
 					"_FILE_OFFSET_BITS=64",
 					_LARGEFILE64_SOURCE,
 					HAS_SDL_JOYSTICK,
+					Py_UNICODE_WIDE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
@@ -8818,6 +8760,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					Py_UNICODE_WIDE,
 					_DEBUG,
 					_LINUX,
 					_REENTRANT,
@@ -8913,6 +8856,7 @@
 					"_FILE_OFFSET_BITS=64",
 					_LARGEFILE64_SOURCE,
 					HAS_SDL_JOYSTICK,
+					Py_UNICODE_WIDE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GENERATE_PROFILING_CODE = NO;
@@ -9025,6 +8969,8 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					Py_UNICODE_WIDE,
+					_DEBUG,
 					_LINUX,
 					_REENTRANT,
 					_FILE_DEFINED,
@@ -9115,6 +9061,7 @@
 					"_FILE_OFFSET_BITS=64",
 					_LARGEFILE64_SOURCE,
 					HAS_SDL_JOYSTICK,
+					Py_UNICODE_WIDE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
