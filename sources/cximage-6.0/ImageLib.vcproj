@@ -155,7 +155,7 @@
 				RuntimeLibrary="2"
 				BufferSecurityCheck="FALSE"
 				EnableFunctionLevelLinking="TRUE"
-				EnableEnhancedInstructionSet="2"
+				EnableEnhancedInstructionSet="1"
 				PrecompiledHeaderFile=".\Release/CxImageCrtDll.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
