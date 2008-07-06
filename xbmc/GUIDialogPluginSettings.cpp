@@ -537,26 +537,35 @@ bool CGUIDialogPluginSettings::GetCondition(const CStdString &condition, const i
       default:
         break;
     }
+
     if (condVec[0].Equals("eq"))
+    {
       if (bCompare)
         bCondition &= value.Equals(condVec[2]);
       else
         bCondition |= value.Equals(condVec[2]);
+    }
     else if (condVec[0].Equals("!eq"))
+    {
       if (bCompare)
         bCondition &= !value.Equals(condVec[2]);
       else
         bCondition |= !value.Equals(condVec[2]);
+    }
     else if (condVec[0].Equals("gt"))
+    {
       if (bCompare)
         bCondition &= (atoi(value) > atoi(condVec[2]));
       else
         bCondition |= (atoi(value) > atoi(condVec[2]));
+    }
     else if (condVec[0].Equals("lt"))
+    {
       if (bCompare)
         bCondition &= (atoi(value) < atoi(condVec[2]));
       else
         bCondition |= (atoi(value) < atoi(condVec[2]));
+    }
   }
   return bCondition;
 }
