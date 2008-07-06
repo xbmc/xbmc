@@ -87,7 +87,7 @@ bool CMultiPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
 
     CFileItemList tempItems;
     CLog::Log(LOGDEBUG,"Getting Directory (%s)", vecPaths[i].c_str());
-    if (CDirectory::GetDirectory(vecPaths[i], tempItems, m_strFileMask))
+    if (CDirectory::GetDirectory(vecPaths[i], tempItems, m_strFileMask, m_useFileDirectories, m_allowPrompting, m_cacheDirectory))
       items.Append(tempItems);
     else
     {
