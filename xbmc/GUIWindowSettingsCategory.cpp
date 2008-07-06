@@ -704,6 +704,15 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13119), VS_SCALINGMETHOD_SINC_SOFTWARE);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("videolibrary.flattentvshows"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(20420), 0); // Never
+      pControl->AddLabel(g_localizeStrings.Get(20421), 1); // One Season
+      pControl->AddLabel(g_localizeStrings.Get(20422), 2); // Always
+      pControl->SetValue(pSettingInt->GetData());
+    }
 #ifdef __APPLE__
     else if (strSetting.Equals("videoscreen.displayblanking"))
     {
@@ -2199,6 +2208,11 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting.Equals("lookandfeel.skinzoom"))
   {
     g_fontManager.ReloadTTFFonts();
+  }
+  else if (strSetting.Equals("videolibrary.flattentvshows") ||
+           strSetting.Equals("videolibrary.removeduplicates"))
+  {
+    CUtil::DeleteVideoDatabaseDirectoryCache();
   }
 
   UpdateSettings();
