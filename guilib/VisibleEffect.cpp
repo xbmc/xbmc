@@ -257,7 +257,10 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const FRECT &rect) : CAnimEff
   float startPosX = rect.left;
   float startPosY = rect.top;
   float endPosX = rect.left;
-  float endPosY = rect.right;
+  float endPosY = rect.top;
+
+  float width = (rect.right) ? rect.right : 0.001f;
+  float height = (rect.bottom) ? rect.bottom : 0.001f;
 
   const char *start = node->Attribute("start");
   if (start)
@@ -281,8 +284,8 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const FRECT &rect) : CAnimEff
       g_SkinInfo.ResolveConstant(params[1], startPosY);
       g_SkinInfo.ResolveConstant(params[2], m_startX);
       g_SkinInfo.ResolveConstant(params[3], m_startY);
-      m_startX *= 100.0f / rect.right;
-      m_startY *= 100.0f / rect.bottom;
+      m_startX *= 100.0f / width;
+      m_startY *= 100.0f / height;
     }
   }
   const char *end = node->Attribute("end");
@@ -307,8 +310,8 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const FRECT &rect) : CAnimEff
       g_SkinInfo.ResolveConstant(params[1], endPosY);
       g_SkinInfo.ResolveConstant(params[2], m_endX);
       g_SkinInfo.ResolveConstant(params[3], m_endY);
-      m_endX *= 100.0f / rect.right;
-      m_endY *= 100.0f / rect.bottom;
+      m_endX *= 100.0f / width;
+      m_endY *= 100.0f / height;
     }
   }
   const char *centerPos = node->Attribute("center");
