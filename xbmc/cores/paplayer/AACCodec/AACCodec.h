@@ -10,9 +10,19 @@
 #else
 #define AACAPI
 #include <inttypes.h>
+
+#if !defined(__int8)
 #define __int8 char
+#endif
+
+#if !defined(__int32)
 #define __int32 long
+#endif
+
+#if !defined(__int64)
 #define __int64 long long
+#endif
+
 typedef long LONG_PTR;
 typedef unsigned char BYTE;
 #include <string.h>

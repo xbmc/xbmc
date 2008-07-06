@@ -38,6 +38,10 @@ typedef off_t     __off_t;
 typedef off64_t   __off64_t;
 #endif
 
+#ifdef _LINUX
+#define _stat stat
+#endif
+
 void* dllmalloc(size_t );
 void* dllcalloc( size_t , size_t );
 void* dllrealloc(void*, size_t);
