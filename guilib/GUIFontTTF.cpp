@@ -60,6 +60,8 @@ namespace MathUtils {
 #define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x)) - 0.5f
 #endif
 
+#define TEXT_RENDER_LIMIT 1024
+
 #define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
 
@@ -142,6 +144,8 @@ CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
   memset(m_charquick, 0, sizeof(m_charquick));
   m_strFileName = strFileName;
   m_referenceCount = 0;
+
+  m_numCharactersRendered = 0;
 }
 
 CGUIFontTTF::~CGUIFontTTF(void)
@@ -666,6 +670,8 @@ void CGUIFontTTF::End()
 #endif
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
+
+  m_numCharactersRendered = 0;
 }
 
 void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor)
@@ -702,7 +708,15 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
   float y4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
   float z4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
 
+  m_numCharactersRendered++;
+
 #ifdef HAS_XBOX_D3D
+  if (m_numCharactersRendered >= TEXT_RENDER_LIMIT)
+  { // we're pushing the (undocumented) limits of xbox here
+    m_pD3DDevice->End();
+    m_pD3DDevice->Begin(D3DPT_QUADLIST);
+    m_numCharactersRendered = 1;
+  }
   m_pD3DDevice->SetVertexDataColor( D3DVSDE_DIFFUSE, dwColor);
 
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y1);
