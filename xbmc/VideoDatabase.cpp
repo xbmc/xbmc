@@ -4075,6 +4075,7 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE cType /* =
         CStdString strFanArt = pItem->GetProperty("fanart_image");
 
         int j = i + 1;
+        bool bStacked = false;
         while (j < items.Size())
         {
           CFileItemPtr jItem = items.Get(j);
@@ -4082,6 +4083,8 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE cType /* =
           // matching title? append information
           if (jItem->GetVideoInfoTag()->m_strTitle.Equals(strTitle))
           {
+            bStacked = true;
+
             // increment episode counts
             pItem->GetVideoInfoTag()->m_iEpisode += jItem->GetVideoInfoTag()->m_iEpisode;
             pItem->IncrementProperty("watchedepisodes", jItem->GetPropertyInt("watchedepisodes"));
@@ -4099,10 +4102,13 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE cType /* =
             break;
         }
         // update playcount and fanart
-        pItem->GetVideoInfoTag()->m_playCount = (pItem->GetVideoInfoTag()->m_iEpisode == pItem->GetPropertyInt("watchedepisodes")) ? 1 : 0;
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
-        if (!strFanArt.IsEmpty())
-          pItem->SetProperty("fanart_image", strFanArt);
+        if (bStacked)
+        {
+          pItem->GetVideoInfoTag()->m_playCount = (pItem->GetVideoInfoTag()->m_iEpisode == pItem->GetPropertyInt("watchedepisodes")) ? 1 : 0;
+          pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
+          if (!strFanArt.IsEmpty())
+            pItem->SetProperty("fanart_image", strFanArt);
+        }
         // increment i to j which is the next item
         i = j;
       }
