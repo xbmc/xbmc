@@ -74,16 +74,15 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
     {
       if (item != m_lastItem || !HasFocus())
       {
-        item->GetFocusedLayout()->ResetScrolling();
-        item->GetFocusedLayout()->SetFocus(0);
+        item->GetFocusedLayout()->SetFocusedItem(0);
       }
       if (item != m_lastItem && HasFocus())
       {
         item->GetFocusedLayout()->ResetAnimation(ANIM_TYPE_UNFOCUS);      
         unsigned int subItem = 1;
         if (m_lastItem && m_lastItem->GetFocusedLayout())
-          subItem = m_lastItem->GetFocusedLayout()->GetFocus();
-        item->GetFocusedLayout()->SetFocus(subItem ? subItem : 1);
+          subItem = m_lastItem->GetFocusedLayout()->GetFocusedItem();
+        item->GetFocusedLayout()->SetFocusedItem(subItem ? subItem : 1);
       }
       item->GetFocusedLayout()->Render(item, m_dwParentID, m_renderTime);
     }
@@ -92,7 +91,7 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
   else
   {
     if (item->GetFocusedLayout())
-      item->GetFocusedLayout()->SetFocus(0);  // focus is not set
+      item->GetFocusedLayout()->SetFocusedItem(0);  // focus is not set
     if (!item->GetLayout())
     {
       CGUIListItemLayout *layout = new CGUIListItemLayout(*m_layout);
@@ -388,7 +387,7 @@ bool CGUIBaseContainer::OnClick(DWORD actionID)
     // grab the currently focused subitem (if applicable)
     CGUIListItemLayout *focusedLayout = GetFocusedLayout();
     if (focusedLayout)
-      subItem = focusedLayout->GetFocus();
+      subItem = focusedLayout->GetFocusedItem();
   }
   // Don't know what to do, so send to our parent window.
   CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), actionID, subItem);
@@ -420,7 +419,7 @@ void CGUIBaseContainer::SetFocus(bool bOnOff)
 {
   if (bOnOff != HasFocus())
   {
-    Update();
+    SetInvalid();
     m_lastItem = NULL;
   }
   CGUIControl::SetFocus(bOnOff);
@@ -736,7 +735,7 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const
   case CONTAINER_SUBITEM:
     {
       CGUIListItemLayout *layout = GetFocusedLayout();
-      return layout ? (layout->GetFocus() == (unsigned int)data) : false;
+      return layout ? (layout->GetFocusedItem() == (unsigned int)data) : false;
     }
   default:
     return false;

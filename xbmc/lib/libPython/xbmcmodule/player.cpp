@@ -56,7 +56,7 @@ namespace PYXBMC
     self = (Player*)type->tp_alloc(type, 0);
     if (!self) return NULL;
 
-    if (!PyArg_ParseTuple(args, "|i", &playerCore)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"|i", &playerCore)) return NULL;
 
     self->iPlayList = PLAYLIST_MUSIC;
     self->pPlayer = new CPythonPlayer();
@@ -100,7 +100,7 @@ namespace PYXBMC
     PyObject *pObject = NULL;
     PyObject *pObjectListItem = NULL;
 
-    if (!PyArg_ParseTuple(args, "|OO", &pObject, &pObjectListItem)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"|OO", &pObject, &pObjectListItem)) return NULL;
 
     // force a playercore before playing
     g_application.m_eForcedNextPlayer = self->playerCore;
@@ -113,14 +113,6 @@ namespace PYXBMC
         g_playlistPlayer.SetCurrentPlaylist(self->iPlayList);
       }
       g_application.getApplicationMessenger().PlayListPlayerPlay(g_playlistPlayer.GetCurrentSong());
-    }
-    else if(PlayList_Check(pObject))
-    {
-      // play a python playlist (a playlist from playlistplayer.cpp)
-      PlayList* pPlayList = (PlayList*)pObject;
-      self->iPlayList = pPlayList->iPlayList;
-      g_playlistPlayer.SetCurrentPlaylist(pPlayList->iPlayList);
-      g_application.getApplicationMessenger().PlayListPlayerPlay();
     }
     else if (PyString_Check(pObject) && pObjectListItem != NULL && ListItem_CheckExact(pObjectListItem))
     {
@@ -136,15 +128,15 @@ namespace PYXBMC
     else if (PyString_Check(pObject))
     {
       CFileItem item(PyString_AsString(pObject), false);
-      if (item.IsPlayList())
-      {
-        PyErr_SetString(PyExc_ValueError, "Only python playlists are supported (see xbmc.PlayList)");
-        return NULL;
-      }
-      else
-      {
-        g_application.getApplicationMessenger().MediaPlay(item.m_strPath);
-      }
+      g_application.getApplicationMessenger().MediaPlay(item.m_strPath);
+    }
+    else if (PlayList_Check(pObject))
+    {
+      // play a python playlist (a playlist from playlistplayer.cpp)
+      PlayList* pPlayList = (PlayList*)pObject;
+      self->iPlayList = pPlayList->iPlayList;
+      g_playlistPlayer.SetCurrentPlaylist(pPlayList->iPlayList);
+      g_application.getApplicationMessenger().PlayListPlayerPlay();
     }
 
     Py_INCREF(Py_None);
@@ -212,7 +204,7 @@ namespace PYXBMC
   PyObject* Player_PlaySelected(Player *self, PyObject *args)
   {
     int iItem;
-    if (!PyArg_ParseTuple(args, "i", &iItem)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"i", &iItem)) return NULL;
 
     // force a playercore before playing
     g_application.m_eForcedNextPlayer = self->playerCore;
@@ -273,7 +265,7 @@ namespace PYXBMC
 
   PyObject* Player_IsPlaying(PyObject *self, PyObject *args)
   {
-    return Py_BuildValue("b", g_application.IsPlaying());
+    return Py_BuildValue((char*)"b", g_application.IsPlaying());
   }
 
   // Player_IsPlayingAudio
@@ -282,7 +274,7 @@ namespace PYXBMC
 
   PyObject* Player_IsPlayingAudio(PyObject *self, PyObject *args)
   {
-    return Py_BuildValue("b", g_application.IsPlayingAudio());
+    return Py_BuildValue((char*)"b", g_application.IsPlayingAudio());
   }
 
   // Player_IsPlayingVideo
@@ -291,7 +283,7 @@ namespace PYXBMC
 
   PyObject* Player_IsPlayingVideo(PyObject *self, PyObject *args)
   {
-    return Py_BuildValue("b", g_application.IsPlayingVideo());
+    return Py_BuildValue((char*)"b", g_application.IsPlayingVideo());
   }
 
   // Player_GetPlayingFile
@@ -308,7 +300,7 @@ namespace PYXBMC
       PyErr_SetString(PyExc_Exception, "XBMC is not playing any file");
       return NULL;
     }
-    return Py_BuildValue("s", g_application.CurrentFile().c_str());
+    return Py_BuildValue((char*)"s", g_application.CurrentFile().c_str());
   }
 
   // Player_GetVideoInfoTag
@@ -396,7 +388,7 @@ namespace PYXBMC
     }
 
         dTime = g_application.GetTime();
-    return Py_BuildValue("d", dTime);
+    return Py_BuildValue((char*)"d", dTime);
   }
 
   // Player_SeekTime
@@ -418,7 +410,7 @@ namespace PYXBMC
       return NULL;
     }
 
-    if (!PyArg_ParseTuple(args, "d", &pTime)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"d", &pTime)) return NULL;
 
         g_application.SeekTime( pTime );
 
@@ -427,24 +419,24 @@ namespace PYXBMC
   }
 
   PyMethodDef Player_methods[] = {
-    {"play", (PyCFunction)Player_Play, METH_VARARGS, play__doc__},
-    {"stop", (PyCFunction)pyPlayer_Stop, METH_VARARGS, stop__doc__},
-    {"pause", (PyCFunction)Player_Pause, METH_VARARGS, pause__doc__},
-    {"playnext", (PyCFunction)Player_PlayNext, METH_VARARGS, playnext__doc__},
-    {"playprevious", (PyCFunction)Player_PlayPrevious, METH_VARARGS, playprevious__doc__},
-    {"playselected", (PyCFunction)Player_PlaySelected, METH_VARARGS, playselected__doc__},
-    {"onPlayBackStarted", (PyCFunction)Player_OnPlayBackStarted, METH_VARARGS, onPlayBackStarted__doc__},
-    {"onPlayBackEnded", (PyCFunction)Player_OnPlayBackEnded, METH_VARARGS, onPlayBackEnded__doc__},
-    {"onPlayBackStopped", (PyCFunction)Player_OnPlayBackStopped, METH_VARARGS, onPlayBackStopped__doc__},
-    {"isPlaying", (PyCFunction)Player_IsPlaying, METH_VARARGS, isPlaying__doc__},
-    {"isPlayingAudio", (PyCFunction)Player_IsPlayingAudio, METH_VARARGS, isPlayingAudio__doc__},
-    {"isPlayingVideo", (PyCFunction)Player_IsPlayingVideo, METH_VARARGS, isPlayingVideo__doc__},
-    {"getPlayingFile", (PyCFunction)Player_GetPlayingFile, METH_VARARGS, getPlayingFile__doc__},
-    {"getMusicInfoTag", (PyCFunction)Player_GetMusicInfoTag, METH_VARARGS, getMusicInfoTag__doc__},
-    {"getVideoInfoTag", (PyCFunction)Player_GetVideoInfoTag, METH_VARARGS, getVideoInfoTag__doc__},
-    {"getTotalTime", (PyCFunction)Player_GetTotalTime, METH_NOARGS, getTotalTime__doc__},
-    {"getTime", (PyCFunction)Player_GetTime, METH_NOARGS, getTime__doc__},
-    {"seekTime", (PyCFunction)Player_SeekTime, METH_VARARGS, seekTime__doc__},
+    {(char*)"play", (PyCFunction)Player_Play, METH_VARARGS, play__doc__},
+    {(char*)"stop", (PyCFunction)pyPlayer_Stop, METH_VARARGS, stop__doc__},
+    {(char*)"pause", (PyCFunction)Player_Pause, METH_VARARGS, pause__doc__},
+    {(char*)"playnext", (PyCFunction)Player_PlayNext, METH_VARARGS, playnext__doc__},
+    {(char*)"playprevious", (PyCFunction)Player_PlayPrevious, METH_VARARGS, playprevious__doc__},
+    {(char*)"playselected", (PyCFunction)Player_PlaySelected, METH_VARARGS, playselected__doc__},
+    {(char*)"onPlayBackStarted", (PyCFunction)Player_OnPlayBackStarted, METH_VARARGS, onPlayBackStarted__doc__},
+    {(char*)"onPlayBackEnded", (PyCFunction)Player_OnPlayBackEnded, METH_VARARGS, onPlayBackEnded__doc__},
+    {(char*)"onPlayBackStopped", (PyCFunction)Player_OnPlayBackStopped, METH_VARARGS, onPlayBackStopped__doc__},
+    {(char*)"isPlaying", (PyCFunction)Player_IsPlaying, METH_VARARGS, isPlaying__doc__},
+    {(char*)"isPlayingAudio", (PyCFunction)Player_IsPlayingAudio, METH_VARARGS, isPlayingAudio__doc__},
+    {(char*)"isPlayingVideo", (PyCFunction)Player_IsPlayingVideo, METH_VARARGS, isPlayingVideo__doc__},
+    {(char*)"getPlayingFile", (PyCFunction)Player_GetPlayingFile, METH_VARARGS, getPlayingFile__doc__},
+    {(char*)"getMusicInfoTag", (PyCFunction)Player_GetMusicInfoTag, METH_VARARGS, getMusicInfoTag__doc__},
+    {(char*)"getVideoInfoTag", (PyCFunction)Player_GetVideoInfoTag, METH_VARARGS, getVideoInfoTag__doc__},
+    {(char*)"getTotalTime", (PyCFunction)Player_GetTotalTime, METH_NOARGS, getTotalTime__doc__},
+    {(char*)"getTime", (PyCFunction)Player_GetTime, METH_NOARGS, getTime__doc__},
+    {(char*)"seekTime", (PyCFunction)Player_SeekTime, METH_VARARGS, seekTime__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -473,7 +465,7 @@ namespace PYXBMC
   {
     PyInitializeTypeObject(&Player_Type);
 
-    Player_Type.tp_name = "xbmc.Player";
+    Player_Type.tp_name = (char*)"xbmc.Player";
     Player_Type.tp_basicsize = sizeof(Player);
     Player_Type.tp_dealloc = (destructor)Player_Dealloc;
     Player_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;

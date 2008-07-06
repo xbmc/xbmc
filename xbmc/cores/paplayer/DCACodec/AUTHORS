@@ -1,0 +1,31 @@
+Gildas Bazin <gbazin@videolan.org> implementation of the
+DTS Coherent Acoustics decoder and current maintainer of libdts.
+
+Other libdts contributors include:
+        Sam Hocevar <sam@zoy.org> - build system improvements and debian package
+
+While the libdts part of the source code was mostly written from scratch, this
+project was started from the a52dec code base so the original credits for
+a52dec are preserved:
+
+Aaron Holtzman <aholtzma@ess.engr.uvic.ca> started the project and
+made the initial working implementation.
+
+Michel Lespinasse <walken@zoy.org> did major changes for speed and
+conformance and is the current maintainer.
+
+Other contributors include:
+	Gildas Bazin <gbazin@netcourrier.com> - mingw32 port
+	Billy Biggs <vektor@div8.net> - most of liba52.txt
+	Jeroen Dobbelaere <jeroen.dobbelaere@acunia.com> - fixed point version
+	Eduard Hasenleithner <eduardh@aon.at> - gcc 3.0 fixes
+	Håkan Hjort <d95hjort@dtek.chalmers.se> - Solaris output, mlib code
+	Charles M. Hannum <root@ihack.net> - fixes
+	Chris Hodges <hodges@stradis.com> - made the library reentrant
+	Michael Holzt <kju@flummi.de> - OSS output.c and misc errata
+	Angelos Keromytis <angelos@dsl.cis.upenn.edu> - OpenBSD fixes
+	David I. Lehn <dlehn@vt.edu> - API cleanup suggestion
+	Don Mahurin <dmahurin@dma.org> - stdin support for extract_a52
+	Jim Miller <jmiller@heli.engr.sgi.com> - IRIX output.c
+	Takefumi Sayo <stake@niagara.shiojiri.ne.jp> - FreeBSD tweak
+	Shoji Tokunaga <toku@mac.com> - aif file output

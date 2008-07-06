@@ -492,4 +492,7 @@ private:
   void SplitPath(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   void InvalidatePathHash(const CStdString& strPath);
   void DeleteThumbForItem(const CStdString& strPath, bool bFolder);
+
+  bool GetStackedTvShowList(long idShow, CStdString& strIn);
+  void Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE cType = VIDEODB_CONTENT_TVSHOWS);
 };

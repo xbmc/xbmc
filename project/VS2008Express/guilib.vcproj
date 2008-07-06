@@ -118,7 +118,7 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;HAS_SDL;_MSVC;NOMINMAX;_USE_32BIT_TIME_T"
 				MinimalRebuild="false"
 				RuntimeLibrary="0"
-				EnableEnhancedInstructionSet="2"
+				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="include.h"
 				WarningLevel="3"
@@ -306,6 +306,10 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\GUIListExItem.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\GUIListGroup.cpp"
 				>
 			</File>
 			<File
@@ -652,6 +656,10 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\GUIListExItem.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\GUIListGroup.h"
 				>
 			</File>
 			<File

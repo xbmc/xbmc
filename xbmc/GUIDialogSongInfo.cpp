@@ -148,6 +148,7 @@ void CGUIDialogSongInfo::OnInitWindow()
   {
     CONTROL_ENABLE(CONTROL_ALBUMINFO)
   }
+  CGUIDialog::OnInitWindow();
 }
 
 void CGUIDialogSongInfo::SetRating(char rating)

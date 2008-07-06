@@ -106,10 +106,21 @@ void CGUIImage::UpdateVisibility(const CGUIListItem *item)
 
   // check for conditional information before we free and
   // alloc as this does free and allocation as well
-  if (!m_image.file.IsConstant())
-    SetFileName(m_image.file.GetLabel(m_dwParentID, true));
+  if (!m_pushedUpdates)
+    UpdateInfo(item);
 
   AllocateOnDemand();
+}
+
+void CGUIImage::UpdateInfo(const CGUIListItem *item)
+{
+  if (m_image.file.IsConstant())
+    return; // nothing to do
+
+  if (item)
+    SetFileName(m_image.file.GetItemLabel(item, true));
+  else
+    SetFileName(m_image.file.GetLabel(m_dwParentID, true));
 }
 
 void CGUIImage::AllocateOnDemand()
@@ -873,7 +884,7 @@ void CGUIImage::SetAspectRatio(const CAspectRatio &aspect)
   if (m_aspect != aspect)
   {
     m_aspect = aspect;
-    Update();
+    SetInvalid();
   }
 }
 
@@ -882,9 +893,12 @@ void CGUIImage::PythonSetColorKey(DWORD dwColorKey)
   m_dwColorKey = dwColorKey;
 }
 
-void CGUIImage::SetFileName(const CStdString& strFileName)
+void CGUIImage::SetFileName(const CStdString& strFileName, bool setConstant)
 {
   CStdString strTransFileName = _P(strFileName);
+  if (setConstant)
+    m_image.file.SetLabel(strTransFileName, "");
+
   if (m_strFileName.Equals(strTransFileName)) return;
   // Don't completely free resources here - we may be just changing
   // filenames mid-animation

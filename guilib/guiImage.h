@@ -137,9 +137,10 @@ public:
   virtual bool IsDynamicallyAllocated() { return m_bDynamicResourceAlloc; };
   virtual bool CanFocus() const;
   virtual bool IsAllocated() const;
+  virtual void UpdateInfo(const CGUIListItem *item = NULL);
 
   void PythonSetColorKey(DWORD dwColorKey);
-  virtual void SetFileName(const CStdString& strFileName);
+  virtual void SetFileName(const CStdString& strFileName, bool setConstant = false);
   virtual void SetAspectRatio(const CAspectRatio &aspect);
   void SetAspectRatio(CAspectRatio::ASPECT_RATIO ratio) { CAspectRatio aspect(ratio); SetAspectRatio(aspect); };
   void SetAlpha(unsigned char alpha);

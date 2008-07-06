@@ -326,7 +326,7 @@ int Py_XBMC_Event_OnClick(void* arg)
   if (arg != NULL)
   {
     PyXBMCAction* action = (PyXBMCAction*)arg;
-    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, "onClick", "(i)", action->controlId);
+    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onClick", (char*)"(i)", action->controlId);
     if (ret)
     {
 	    Py_DECREF(ret);
@@ -341,7 +341,7 @@ int Py_XBMC_Event_OnFocus(void* arg)
   if (arg != NULL)
   {
     PyXBMCAction* action = (PyXBMCAction*)arg;
-    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, "onFocus", "(i)", action->controlId);
+    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onFocus", (char*)"(i)", action->controlId);
     if (ret)
     {
       Py_DECREF(ret);
@@ -357,7 +357,7 @@ int Py_XBMC_Event_OnInit(void* arg)
   if (arg != NULL)
   {
     PyXBMCAction* action = (PyXBMCAction*)arg;
-    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, "onInit", "()"); //, "O", &self);
+    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onInit", (char*)"()"); //, (char*)"O", &self);
     if (ret)
     {
       Py_DECREF(ret);

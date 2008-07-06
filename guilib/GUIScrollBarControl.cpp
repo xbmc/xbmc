@@ -132,7 +132,7 @@ void CGUIScrollBar::Move(int numSteps)
   if (m_offset < 0) m_offset = 0;
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetParentID(), GetID(), GUI_MSG_PAGE_CHANGE, m_offset);
   SendWindowMessage(message);
-  Update();
+  SetInvalid();
 }
 
 void CGUIScrollBar::SetRange(int pageSize, int numItems)
@@ -140,13 +140,13 @@ void CGUIScrollBar::SetRange(int pageSize, int numItems)
   m_pageSize = pageSize;
   m_numItems = numItems;
   m_offset = 0;
-  Update();
+  SetInvalid();
 }
 
 void CGUIScrollBar::SetValue(int value)
 {
   m_offset = value;
-  Update();
+  SetInvalid();
 }
 
 void CGUIScrollBar::FreeResources()
@@ -259,7 +259,7 @@ void CGUIScrollBar::SetFromPosition(const CPoint &point)
   m_offset = (int)(floor(fPercent * m_numItems + 0.5f));
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetParentID(), GetID(), GUI_MSG_PAGE_CHANGE, m_offset);
   SendWindowMessage(message);
-  Update();
+  SetInvalid();
 }
 
 bool CGUIScrollBar::OnMouseClick(DWORD dwButton, const CPoint &point)

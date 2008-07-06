@@ -726,7 +726,7 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(CStdString &path, bool allowNetwork
   browser->SetSources(shares);
   browser->m_rootDir.SetMask("/");
   browser->m_rootDir.AllowNonLocalSources(false);  // don't allow plug n play shares
-  browser->m_browsingForFolders = true;
+  browser->m_browsingForFolders = 1;
   browser->m_addNetworkShareEnabled = allowNetworkShares;
   browser->m_selectedPath = "";
   browser->DoModal();
@@ -839,7 +839,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
         // re-open our dialog
         SetSources(shares);
         m_rootDir.SetMask("/");
-        m_browsingForFolders = true;
+        m_browsingForFolders = 1;
         m_addNetworkShareEnabled = true;
         m_selectedPath = newPath;
         DoModal();
@@ -868,7 +868,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
       m_rootDir.SetSources(m_shares);
       m_rootDir.SetMask("/");
 
-      m_browsingForFolders = true;
+      m_browsingForFolders = 1;
       m_addNetworkShareEnabled = true;
       m_selectedPath = "";
 

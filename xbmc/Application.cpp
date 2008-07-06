@@ -211,6 +211,7 @@
 #endif
 
 #include "cores/dlgcache.h"
+#include "lib/libcdio/logging.h"
 
 using namespace std;
 using namespace XFILE;
@@ -1191,6 +1192,9 @@ CProfile* CApplication::InitDirectoriesWin32()
 
 HRESULT CApplication::Initialize()
 {
+  // turn off cdio logging
+  cdio_loglevel_default = CDIO_LOG_ERROR;
+
   CLog::Log(LOGINFO, "creating subdirectories");
 
   //CLog::Log(LOGINFO, "userdata folder: %s", g_stSettings.m_userDataFolder.c_str());
@@ -1464,7 +1468,7 @@ void CApplication::StartWebServer()
     }
 #endif
     CSectionLoader::Load("LIBHTTP");
-#ifdef HAS_LINUX_NETWORK
+#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
     if (m_network.GetFirstConnectedInterface())
     {
        m_pWebServer = new CWebServer();
@@ -5723,8 +5727,13 @@ CApplicationMessenger& CApplication::getApplicationMessenger()
    return m_applicationMessenger;
 }
 
-#ifdef HAS_LINUX_NETWORK
+#if defined(HAS_LINUX_NETWORK)
 CNetworkLinux& CApplication::getNetwork()
+{
+  return m_network;
+}
+#elif defined(HAS_WIN32_NETWORK)
+CNetworkWin32& CApplication::getNetwork()
 {
   return m_network;
 }

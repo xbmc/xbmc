@@ -45,7 +45,7 @@ namespace PYXBMC
 {
   PyObject* ControlImage_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = {
+    static const char *keywords[] = {
       "x", "y", "width", "height", "filename", "colorKey", "aspectRatio", "colorDiffuse", NULL };
     ControlImage *self;
     char *cImage = NULL;
@@ -61,7 +61,8 @@ namespace PYXBMC
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
       args, kwds,
-      "lllls|sls", keywords,
+      (char*)"lllls|sls",
+      (char**)keywords,
       &self->dwPosX,
       &self->dwPosY,
       &self->dwWidth,
@@ -121,7 +122,7 @@ namespace PYXBMC
     char *cImage = NULL;
     char *cColorKey = NULL;
 
-    if (!PyArg_ParseTuple(args, "s|s", &cImage, &cColorKey)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s|s", &cImage, &cColorKey)) return NULL;
 
     self->strFileName = cImage;
     if (cColorKey) sscanf(cColorKey, "%x", &self->strColorKey);
@@ -150,7 +151,7 @@ namespace PYXBMC
   {
     char *cColorDiffuse = NULL;
 
-    if (!PyArg_ParseTuple(args, "s", &cColorDiffuse)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cColorDiffuse)) return NULL;
 
     if (cColorDiffuse) sscanf(cColorDiffuse, "%x", &self->strColorDiffuse);
     else self->strColorDiffuse = 0;
@@ -166,8 +167,8 @@ namespace PYXBMC
 
 
   PyMethodDef ControlImage_methods[] = {
-    {"setImage", (PyCFunction)ControlImage_SetImage, METH_VARARGS, setImage__doc__},
-    {"setColorDiffuse", (PyCFunction)ControlImage_SetColorDiffuse, METH_VARARGS, setColorDiffuse__doc__},
+    {(char*)"setImage", (PyCFunction)ControlImage_SetImage, METH_VARARGS, setImage__doc__},
+    {(char*)"setColorDiffuse", (PyCFunction)ControlImage_SetColorDiffuse, METH_VARARGS, setColorDiffuse__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -207,7 +208,7 @@ namespace PYXBMC
   {
     PyInitializeTypeObject(&ControlImage_Type);
 
-    ControlImage_Type.tp_name = "xbmcgui.ControlImage";
+    ControlImage_Type.tp_name = (char*)"xbmcgui.ControlImage";
     ControlImage_Type.tp_basicsize = sizeof(ControlImage);
     ControlImage_Type.tp_dealloc = (destructor)ControlImage_Dealloc;
     ControlImage_Type.tp_compare = 0;

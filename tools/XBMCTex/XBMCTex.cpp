@@ -9,6 +9,7 @@
 #include "Surface.h"
 
 #ifdef _LINUX
+#include <linux/limits.h>
 #include <string.h>
 #include "XFileUtils.h"
 #include "PlatformDefs.h"
@@ -98,7 +99,7 @@ static XPRFile_t XPRFile;
 enum XPR_FLAGS
 {
 	XPRFLAG_PALETTE = 0x00000001,
-	XPRFLAG_ANIM =    0x00000002,
+	XPRFLAG_ANIM =    0x00000002
 };
 
 #undef CheckHR
@@ -367,8 +368,6 @@ void ConvertFile(const char* Dir, const char* Filename)
 		printf("P8       %4dx%-4d (%5.2f%% waste)\n", srcSurface.Width(), srcSurface.Height(), Waste);
 		TRACE0(" Selected Format: P8\n");
 
-    if (strcmp(OutFilename, "music-bg.png") == 0)
-      int breakhere = 1;
 		WriteXPR(OutFilename, tempSurface, XB_D3DFMT_P8, pal);
 		return;
   }
@@ -673,7 +672,7 @@ int main(int argc, char* argv[])
 
 	SetCurrentDirectory(HomeDir);
 	DWORD attr = GetFileAttributes(OutputFilename);
-	if (attr != -1 && (attr & FILE_ATTRIBUTE_DIRECTORY))
+	if (attr != (DWORD)-1 && (attr & FILE_ATTRIBUTE_DIRECTORY))
 	{
 		SetCurrentDirectory(OutputFilename);
 		OutputFilename = "Textures.xpr";

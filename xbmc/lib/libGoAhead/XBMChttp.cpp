@@ -460,6 +460,8 @@ void CXbmcHttp::AddItemToPlayList(const CFileItemPtr &pItem, int playList, int s
     CStdString strDirectory=pItem->m_strPath;
     CFileItemList items;
     IDirectory *pDirectory = CFactoryDirectory::Create(strDirectory);
+    if (!pDirectory)
+      return;
     if (mask!="")
       pDirectory->SetMask(mask);
     pDirectory->GetDirectory(strDirectory, items);
@@ -679,7 +681,7 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
 	//	When I added this function, it was meant to behave more like Xbmc internally.
 	//	This code emulates the CVirtualDirectory class which does not allow arbitrary
 	//	fetching of directories. (nor does ActivateWindow for that matter.)
-	//	You can still use the older "getDirectory" command which is unnounded and will
+	//	You can still use the older "getDirectory" command which is unbounded and will
 	//	fetch any old folder.
 
   // special locations
@@ -1510,6 +1512,7 @@ int CXbmcHttp::xbmcSlideshowSelect(int numParas, CStdString paras[])
   }
 }
 
+/*
 int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
 //filename (;mask)
 {
@@ -1526,6 +1529,8 @@ int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
     CFileItemPtr pItem(new CFileItem(paras[0]));
     pItem->m_strPath=paras[0].c_str();
     IDirectory *pDirectory = CFactoryDirectory::Create(pItem->m_strPath);
+    if (!pDirectory)
+      return SetResponse(openTag+"Error");  
     if (mask!="")
       pDirectory->SetMask(mask);
     bool bResult=pDirectory->Exists(pItem->m_strPath);
@@ -1534,6 +1539,34 @@ int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
     AddItemToPlayList(pItem, -1, 0, mask, recursive); //add to slideshow
     return SetResponse(openTag+"OK");
   }
+}
+*/
+
+int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
+//filename;mask;recursive=1
+{
+  CStdString mask="";
+  bool recursive=true;
+  if (numParas<1)
+    return SetResponse(openTag+"Error:Missing parameter");
+  if (numParas>1)
+    mask=procMask(paras[1]);
+  if (numParas>2)
+    recursive=paras[2]=="1";
+  CFileItemPtr pItem(new CFileItem(paras[0]));
+  pItem->m_bIsShareOrDrive=false;
+  pItem->m_strPath=paras[0].c_str();
+  // if its not a picture type, test to see if its a folder
+  if (!pItem->IsPicture())
+  {
+    IDirectory *pDirectory = CFactoryDirectory::Create(pItem->m_strPath);
+    if (!pDirectory)
+      return SetResponse(openTag+"Error");  
+    bool bResult=pDirectory->Exists(pItem->m_strPath);
+    pItem->m_bIsFolder=bResult;
+  }
+  AddItemToPlayList(pItem, -1, 0, mask, recursive); //add to slideshow
+  return SetResponse(openTag+"OK");
 }
 
 int CXbmcHttp::xbmcSetPlaySpeed(int numParas, CStdString paras[])
@@ -3146,14 +3179,14 @@ int CXbmcHttpShim::xbmcCommand( int eid, webs_t wp, int argc, char_t **argv)
   if (m_pXbmcHttp && m_pXbmcHttp->shuttingDown)
     return -1;
 
-  int parameters = ejArgs(argc, argv, T("%s %s"), &command, &parameter);
+  int parameters = ejArgs(argc, argv, T((char*)"%s %s"), &command, &parameter);
   if (parameters < 1) 
   {
-    websError(wp, 500, T("Error:Insufficient args"));
+    websError(wp, 500, T((char*)"Error:Insufficient args"));
     return -1;
   }
   else if (parameters < 2) 
-	  parameter = "";
+	  parameter = (char*)"";
   xbmcProcessCommand( eid, wp, command, parameter);
   return 0;
 }
@@ -3166,8 +3199,8 @@ void CXbmcHttpShim::xbmcForm(webs_t wp, char_t *path, char_t *query)
 
   if (m_pXbmcHttp && m_pXbmcHttp->shuttingDown)
     return;
-  command = websGetVar(wp, WEB_COMMAND, ""); 
-  parameter = websGetVar(wp, WEB_PARAMETER, "");
+  command = websGetVar(wp, (char*)WEB_COMMAND, (char*)""); 
+  parameter = websGetVar(wp, (char*)WEB_PARAMETER, (char*)"");
 
   // do the command
 

@@ -83,7 +83,7 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
 
     CFileItemList tempItems;
     CLog::Log(LOGDEBUG,"Getting Directory (%s)", share.vecPaths[i].c_str());
-    if (CDirectory::GetDirectory(share.vecPaths[i], tempItems, m_strFileMask))
+    if (CDirectory::GetDirectory(share.vecPaths[i], tempItems, m_strFileMask, m_useFileDirectories, m_allowPrompting, m_cacheDirectory))
       items.Append(tempItems);
     else
     {

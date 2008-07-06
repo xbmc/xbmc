@@ -94,8 +94,6 @@ Section "XBMC" SecXBMC
   File /r /x *.so "${xbmc_root}\Xbmc\credits\*.*"
   SetOutPath "$INSTDIR\media"
   File /r /x *.so "${xbmc_root}\Xbmc\media\*.*"
-  SetOutPath "$INSTDIR\scripts"
-  File /nonfatal /r /x *.so "${xbmc_root}\Xbmc\scripts\*.*"
   SetOutPath "$INSTDIR\sounds"
   File /r /x *.so "${xbmc_root}\Xbmc\sounds\*.*"
   SetOutPath "$INSTDIR\system"

@@ -128,7 +128,7 @@ namespace PYXBMC
 
   PyObject* Action_GetId(Action* self, PyObject* args)
   {
-    return Py_BuildValue("l", self->id);
+    return Py_BuildValue((char*)"l", self->id);
   }
 
   // getButtonCode() Method
@@ -138,7 +138,7 @@ namespace PYXBMC
 
   PyObject* Action_GetButtonCode(Action* self, PyObject* args)
   {
-    return Py_BuildValue("l", self->buttonCode);
+    return Py_BuildValue((char*)"l", self->buttonCode);
   }
 
   PyDoc_STRVAR(getAmount1__doc__,
@@ -151,19 +151,19 @@ namespace PYXBMC
 
   PyObject* Action_GetAmount1(Action* self, PyObject* args)
   {
-    return Py_BuildValue("f", self->fAmount1);
+    return Py_BuildValue((char*)"f", self->fAmount1);
   }
 
   PyObject* Action_GetAmount2(Action* self, PyObject* args)
   {
-    return Py_BuildValue("f", self->fAmount2);
+    return Py_BuildValue((char*)"f", self->fAmount2);
   }
 
   PyMethodDef Action_methods[] = {
-    {"getId", (PyCFunction)Action_GetId, METH_VARARGS, getId__doc__},
-    {"getButtonCode", (PyCFunction)Action_GetButtonCode, METH_VARARGS, getButtonCode__doc__},
-    {"getAmount1", (PyCFunction)Action_GetAmount1, METH_VARARGS, getAmount1__doc__},
-    {"getAmount2", (PyCFunction)Action_GetAmount2, METH_VARARGS, getAmount2__doc__},
+    {(char*)"getId", (PyCFunction)Action_GetId, METH_VARARGS, getId__doc__},
+    {(char*)"getButtonCode", (PyCFunction)Action_GetButtonCode, METH_VARARGS, getButtonCode__doc__},
+    {(char*)"getAmount1", (PyCFunction)Action_GetAmount1, METH_VARARGS, getAmount1__doc__},
+    {(char*)"getAmount2", (PyCFunction)Action_GetAmount2, METH_VARARGS, getAmount2__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -189,7 +189,7 @@ namespace PYXBMC
   {
     PyInitializeTypeObject(&Action_Type);
 
-    Action_Type.tp_name = "xbmcgui.Action";
+    Action_Type.tp_name = (char*)"xbmcgui.Action";
     Action_Type.tp_basicsize = sizeof(Action);
     Action_Type.tp_dealloc = (destructor)Action_Dealloc;
     //Action_Type.tp_compare = Action_Compare;

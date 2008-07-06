@@ -52,6 +52,10 @@ CGUISliderControl::~CGUISliderControl(void)
 
 void CGUISliderControl::Render()
 {
+  if (m_bInvalidated)
+  {
+    m_guiBackground.SetPosition( GetXPosition(), GetYPosition());
+  }
   float fRange, fPos, fPercent;
 
   if (!IsDisabled())
@@ -300,11 +304,6 @@ void CGUISliderControl::AllocResources()
   m_guiBackground.AllocResources();
   m_guiMid.AllocResources();
   m_guiMidFocus.AllocResources();
-}
-
-void CGUISliderControl::Update()
-{
-  m_guiBackground.SetPosition( GetXPosition(), GetYPosition());
 }
 
 bool CGUISliderControl::HitTest(const CPoint &point) const

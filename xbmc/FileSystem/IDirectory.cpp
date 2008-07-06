@@ -31,6 +31,7 @@ IDirectory::IDirectory(void)
   m_strFileMask = "";
   m_allowPrompting = false;
   m_cacheDirectory = false;
+  m_useFileDirectories = false;
 }
 
 IDirectory::~IDirectory(void)
@@ -115,5 +116,15 @@ void IDirectory::SetAllowPrompting(bool allowPrompting)
 void IDirectory::SetCacheDirectory(bool cacheDirectory)
 {
   m_cacheDirectory = cacheDirectory;
+}
+
+/*!
+ \brief Set whether the directory should allow file directories.
+ \param useFileDirectories Set true to enable file directories (default is true).
+ */
+
+void IDirectory::SetUseFileDirectories(bool useFileDirectories)
+{
+  m_useFileDirectories = useFileDirectories;
 }
 

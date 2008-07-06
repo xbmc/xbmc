@@ -704,6 +704,15 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13119), VS_SCALINGMETHOD_SINC_SOFTWARE);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("videolibrary.flattentvshows"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(20420), 0); // Never
+      pControl->AddLabel(g_localizeStrings.Get(20421), 1); // One Season
+      pControl->AddLabel(g_localizeStrings.Get(20422), 2); // Always
+      pControl->SetValue(pSettingInt->GetData());
+    }
 #ifdef __APPLE__
     else if (strSetting.Equals("videoscreen.displayblanking"))
     {
@@ -1086,12 +1095,14 @@ void CGUIWindowSettingsCategory::UpdateSettings()
        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
        if (pControl) pControl->SetEnabled(enabled);
     }
-#ifdef HAS_LINUX_NETWORK
+#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
     else if (strSetting.Equals("network.assignment"))
     {
       CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
-      if (pControl1)
+#ifdef HAS_LINUX_NETWORK    
+      if (pControl1)  
          pControl1->SetEnabled(geteuid() == 0);
+#endif
     }
     else if (strSetting.Equals("network.essid") || strSetting.Equals("network.enc") || strSetting.Equals("network.key"))
     {
@@ -1101,7 +1112,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CNetworkInterface* iface = g_application.getNetwork().GetInterfaceByName(ifaceName);
       bool bIsWireless = iface->IsWireless();
 
+#ifdef HAS_LINUX_NETWORK
       bool enabled = bIsWireless && (geteuid() == 0);
+#else
+      bool enabled = bIsWireless;
+#endif
       CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
       if (pControl1)
          enabled &= (pControl1->GetValue() != NETWORK_DISABLED);
@@ -2193,6 +2208,11 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting.Equals("lookandfeel.skinzoom"))
   {
     g_fontManager.ReloadTTFFonts();
+  }
+  else if (strSetting.Equals("videolibrary.flattentvshows") ||
+           strSetting.Equals("videolibrary.removeduplicates"))
+  {
+    CUtil::DeleteVideoDatabaseDirectoryCache();
   }
 
   UpdateSettings();
@@ -3455,7 +3475,7 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
 
-#ifdef HAS_LINUX_NETWORK
+#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK) 
   // query list of interfaces
   vector<CStdString> vecInterfaces;
   std::vector<CNetworkInterface*>& ifaces = g_application.getNetwork().GetInterfaceList();
@@ -3505,7 +3525,7 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
   return;
 #endif
 
-#ifdef HAS_LINUX_NETWORK
+#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
    NetworkAssignment iAssignment;
    CStdString sIPAddress;
    CStdString sNetworkMask;
