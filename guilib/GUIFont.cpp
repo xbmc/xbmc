@@ -30,6 +30,18 @@ namespace MathUtils {
 }
 #define ROUND(x) (float)(MathUtils::round_int(x))
 
+void CScrollInfo::SetSpeed(int speed)
+{
+  if (speed == defaultSpeed)
+  {
+    // HACK: workaround for PAL vs NTSC speeds on xbox
+    if (g_graphicsContext.GetVideoResolution() == PAL_4x3 ||
+        g_graphicsContext.GetVideoResolution() == PAL_16x9)
+      speed = 50;
+  }
+  pixelSpeed = speed * 0.001f;
+}
+
 float CScrollInfo::GetPixelsPerFrame()
 {
   static const float alphaEMA = 0.01f;
@@ -84,7 +96,7 @@ void CGUIFont::DrawText( float x, float y, const vector<DWORD> &colors, DWORD sh
     renderColors.push_back(g_graphicsContext.MergeAlpha(colors[i] ? colors[i] : m_textColor));
   if (!shadowColor) shadowColor = m_shadowColor;
   if (shadowColor)
-    m_font->DrawTextInternal(x + 1, y + 1, g_graphicsContext.MergeAlpha(shadowColor), text, alignment, maxPixelWidth);
+    m_font->DrawTextInternal(x , y , g_graphicsContext.MergeAlpha(shadowColor), text, alignment, maxPixelWidth);
   m_font->DrawTextInternal( x, y, renderColors, text, alignment, maxPixelWidth );
 
   if (clip)

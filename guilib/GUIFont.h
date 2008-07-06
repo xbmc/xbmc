@@ -24,10 +24,7 @@ public:
     suffix = scrollSuffix;
     Reset();
   };
-  void SetSpeed(int speed)
-  {
-    pixelSpeed = speed * 0.001f;
-  }
+  void SetSpeed(int speed);
   void Reset()
   {
     waitTime = initialWait;
