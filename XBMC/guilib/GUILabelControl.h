@@ -46,6 +46,7 @@ public:
   bool IsConstant() const;
   bool IsEmpty() const;
 
+  const CStdString GetFallback() const { return m_fallback; };
 private:
   void Parse(const CStdString &label);
 

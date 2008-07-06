@@ -198,6 +198,12 @@ public:
   static void PrepareSubtitleFonts();
   static __int64 ToInt64(DWORD dwHigh, DWORD dwLow);
   static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
+  static CStdString AddFileToFolder(const CStdString &strFolder, const CStdString &strFile)
+  {
+    CStdString result;
+    AddFileToFolder(strFolder, strFile, result);
+    return result;
+  }
   static void AddSlashAtEnd(CStdString& strFolder);
   static void RemoveSlashAtEnd(CStdString& strFolder);
   static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
