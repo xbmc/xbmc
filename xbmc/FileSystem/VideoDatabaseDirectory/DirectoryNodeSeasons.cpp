@@ -48,9 +48,10 @@ bool CDirectoryNodeSeasons::GetContent(CFileItemList& items)
   CQueryParams params;
   CollectQueryParams(params);
 
+  int iFlatten = g_guiSettings.GetInt("videolibrary.flattentvshows");
   bool bSuccess=videodatabase.GetSeasonsNav(BuildPath(), items, params.GetActorId(), params.GetDirectorId(), params.GetGenreId(), params.GetYear(), params.GetTvShowId());
-  if (items.GetObjectCount() == 1 && g_guiSettings.GetBool("videolibrary.singleseason"))
-  {
+  if ((items.GetObjectCount() == 1 && iFlatten == 1) || iFlatten == 2)
+  { // flatten if one season or flatten always
     items.Clear();
     bSuccess=videodatabase.GetEpisodesNav(BuildPath()+"-1/",items,params.GetGenreId(),params.GetYear(),params.GetActorId(),params.GetDirectorId(),params.GetTvShowId());
     items.m_strPath = BuildPath()+"-1/";
