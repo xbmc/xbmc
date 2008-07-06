@@ -152,8 +152,10 @@ int CGUILargeImage::GetOrientation() const
   return (int)orient_table[8 * m_image.orientation + m_orientation];
 }
 
-void CGUILargeImage::SetFileName(const CStdString& strFileName)
+void CGUILargeImage::SetFileName(const CStdString& strFileName, bool setConstant)
 {
+  if (setConstant)
+    m_image.file.SetLabel(strFileName, "");
   // no fallback is required - it's handled at rendertime
   if (m_strFileName.Equals(strFileName)) return;
   // Don't completely free resources here - we may be just changing
