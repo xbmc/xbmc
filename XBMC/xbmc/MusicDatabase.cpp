@@ -947,7 +947,7 @@ bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &arti
     {
       CStdString path;
       path.Format("musicdb://2/%ld/", m_pDS->fv(0).get_asLong());
-      CFileItem* pItem = new CFileItem(path, true);
+      CFileItemPtr pItem(new CFileItem(path, true));
       CStdString label;
       label.Format("[%s] %s", artistLabel.c_str(), m_pDS->fv(1).get_asString());
       pItem->SetLabel(label);
@@ -1214,8 +1214,8 @@ bool CMusicDatabase::GetTop100(const CStdString& strBaseDir, CFileItemList& item
     items.Reserve(iRowsFound);
     while (!m_pDS->eof())
     {
-      CFileItem *item = new CFileItem;
-      GetFileItemFromDataset(item, strBaseDir);
+      CFileItemPtr item(new CFileItem);
+      GetFileItemFromDataset(item.get(), strBaseDir);
       items.Add(item);
       m_pDS->next();
     }
@@ -1296,8 +1296,8 @@ bool CMusicDatabase::GetTop100AlbumSongs(const CStdString& strBaseDir, CFileItem
     items.Reserve(iRowsFound);
     while (!m_pDS->eof())
     {
-      CFileItem *item = new CFileItem;
-      GetFileItemFromDataset(item, strBaseDir);
+      CFileItemPtr item(new CFileItem);
+      GetFileItemFromDataset(item.get(), strBaseDir);
       items.Add(item);
       m_pDS->next();
     }
@@ -1371,8 +1371,8 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, C
     items.Reserve(iRowsFound);
     while (!m_pDS->eof())
     {
-      CFileItem *item = new CFileItem;
-      GetFileItemFromDataset(item, strBaseDir);
+      CFileItemPtr item(new CFileItem);
+      GetFileItemFromDataset(item.get(), strBaseDir);
       items.Add(item);
       m_pDS->next();
     }
@@ -1448,8 +1448,8 @@ bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const CStdString& strBaseDir, CF
     items.Reserve(iRowsFound);
     while (!m_pDS->eof())
     {
-      CFileItem *item = new CFileItem;
-      GetFileItemFromDataset(item, strBaseDir);
+      CFileItemPtr item(new CFileItem);
+      GetFileItemFromDataset(item.get(), strBaseDir);
       items.Add(item);
       m_pDS->next();
     }
@@ -1571,8 +1571,8 @@ bool CMusicDatabase::SearchSongs(const CStdString& search, CFileItemList &items)
     CStdString songLabel = g_localizeStrings.Get(179); // Song
     while (!m_pDS->eof())
     {
-      CFileItem* item = new CFileItem;
-      GetFileItemFromDataset(item, "musicdb://4/");
+      CFileItemPtr item(new CFileItem);
+      GetFileItemFromDataset(item.get(), "musicdb://4/");
       items.Add(item);
       m_pDS->next();
     }
@@ -1609,7 +1609,7 @@ bool CMusicDatabase::SearchAlbums(const CStdString& search, CFileItemList &album
       CAlbum album = GetAlbumFromDataset(m_pDS.get());
       CStdString path;
       path.Format("musicdb://3/%ld/", album.idAlbum);
-      CFileItem* pItem = new CFileItem(path, album);
+      CFileItemPtr pItem(new CFileItem(path, album));
       CStdString label;
       label.Format("[%s] %s", albumLabel.c_str(), album.strAlbum);
       pItem->SetLabel(label);
@@ -2447,7 +2447,7 @@ bool CMusicDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
     // get data from returned rows
     while (!m_pDS->eof())
     {
-      CFileItem* pItem=new CFileItem(m_pDS->fv("strGenre").get_asString());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv("strGenre").get_asString()));
       pItem->GetMusicInfoTag()->SetGenre(m_pDS->fv("strGenre").get_asString());
       CStdString strDir;
       strDir.Format("%ld/", m_pDS->fv("idGenre").get_asLong());
@@ -2493,7 +2493,7 @@ bool CMusicDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
     // get data from returned rows
     while (!m_pDS->eof())
     {
-      CFileItem* pItem=new CFileItem(m_pDS->fv("iYear").get_asString());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv("iYear").get_asString()));
       SYSTEMTIME stTime;
       stTime.wYear = (WORD)m_pDS->fv("iYear").get_asLong();
       pItem->GetMusicInfoTag()->SetReleaseDate(stTime);
@@ -2642,7 +2642,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
     while (!m_pDS->eof())
     {
       CStdString strArtist = m_pDS->fv("strArtist").get_asString();
-      CFileItem* pItem=new CFileItem(strArtist);
+      CFileItemPtr pItem(new CFileItem(strArtist));
       pItem->GetMusicInfoTag()->SetArtist(strArtist);
       CStdString strDir;
       long idArtist = m_pDS->fv("idArtist").get_asLong();
@@ -2837,7 +2837,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdStrin
       CStdString strDir;
       long idAlbum = m_pDS->fv("idAlbum").get_asLong();
       strDir.Format("%s%ld/", baseDir.c_str(), idAlbum);
-      CFileItem* pItem=new CFileItem(strDir, GetAlbumFromDataset(m_pDS.get()));
+      CFileItemPtr pItem(new CFileItem(strDir, GetAlbumFromDataset(m_pDS.get())));
       items.Add(pItem);
 
       m_pDS->next();
@@ -2880,8 +2880,8 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString
     int count = 0;
     while (!m_pDS->eof())
     {
-      CFileItem *item = new CFileItem;
-      GetFileItemFromDataset(item, baseDir);
+      CFileItemPtr item(new CFileItem);
+      GetFileItemFromDataset(item.get(), baseDir);
       // HACK for sorting by database returned order
       item->m_iprogramCount = ++count;
       items.Add(item);
@@ -2999,8 +2999,8 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
           // get songs from returned subtable
           while (!m_pDS->eof())
           {
-            CFileItem *item = new CFileItem;
-            GetFileItemFromDataset(item, strBaseDir);
+            CFileItemPtr item(new CFileItem);
+            GetFileItemFromDataset(item.get(), strBaseDir);
             items.Add(item);
             iSONGS++;
             m_pDS->next();
@@ -3039,8 +3039,8 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
 
     while (!m_pDS->eof())
     {
-      CFileItem *item = new CFileItem;
-      GetFileItemFromDataset(item, strBaseDir);
+      CFileItemPtr item(new CFileItem);
+      GetFileItemFromDataset(item.get(), strBaseDir);
       items.Add(item);
 
       m_pDS->next();
@@ -3330,9 +3330,10 @@ bool CMusicDatabase::GetArtistPath(long idArtist, CStdString &basePath)
     if (NULL == m_pDS.get()) return false;
 
     // find all albums from this artist, and all the paths to the songs from those albums
-    CStdString strSQL=FormatSQL("select distinct strPath from album join song on album.idAlbum = song.idAlbum join path on song.idPath = path.idPath "
+    CStdString strSQL=FormatSQL("select strPath from album join song on album.idAlbum = song.idAlbum join path on song.idPath = path.idPath "
                                 "where album.idAlbum in (select idAlbum from album where album.idArtist=%ld) "
-                                "or album.idAlbum in (select idAlbum from exartistalbum where exartistalbum.idArtist = %ld)", idArtist, idArtist);
+                                "or album.idAlbum in (select idAlbum from exartistalbum where exartistalbum.idArtist = %ld) "
+                                "group by song.idPath", idArtist, idArtist);
 
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
@@ -3591,7 +3592,7 @@ bool CMusicDatabase::GetVariousArtistsAlbums(const CStdString& strBaseDir, CFile
     {
       CStdString strDir;
       strDir.Format("%s%ld/", strBaseDir.c_str(), m_pDS->fv("idAlbum").get_asLong());
-      CFileItem* pItem=new CFileItem(strDir, GetAlbumFromDataset(m_pDS.get()));
+      CFileItemPtr pItem(new CFileItem(strDir, GetAlbumFromDataset(m_pDS.get())));
       items.Add(pItem);
 
       m_pDS->next();
@@ -3638,8 +3639,8 @@ bool CMusicDatabase::GetVariousArtistsAlbumsSongs(const CStdString& strBaseDir, 
     // get data from returned rows
     while (!m_pDS->eof())
     {
-      CFileItem *item = new CFileItem;
-      GetFileItemFromDataset(item, strBaseDir);
+      CFileItemPtr item(new CFileItem);
+      GetFileItemFromDataset(item.get(), strBaseDir);
       items.Add(item);
 
       m_pDS->next();

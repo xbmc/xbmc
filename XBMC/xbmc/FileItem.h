@@ -33,6 +33,7 @@
 #include "GUIPassword.h"
 
 #include <vector>
+#include "boost/shared_ptr.hpp"
 
 namespace MUSIC_INFO
 {
@@ -254,36 +255,42 @@ private:
 };
 
 /*!
+  \brief A shared pointer to CFileItem
+  \sa CFileItem
+  */
+typedef boost::shared_ptr<CFileItem> CFileItemPtr;
+
+/*!
   \brief A vector of pointer to CFileItem
   \sa CFileItem
   */
-typedef std::vector<CFileItem*> VECFILEITEMS;
+typedef std::vector< CFileItemPtr > VECFILEITEMS;
 
 /*!
   \brief Iterator for VECFILEITEMS
   \sa CFileItemList
   */
-typedef std::vector<CFileItem*>::iterator IVECFILEITEMS;
+typedef std::vector< CFileItemPtr >::iterator IVECFILEITEMS;
 
 /*!
   \brief A map of pointers to CFileItem
   \sa CFileItem
   */
-typedef std::map<CStdString, CFileItem*> MAPFILEITEMS;
+typedef std::map<CStdString, CFileItemPtr > MAPFILEITEMS;
 
 /*!
   \brief Iterator for MAPFILEITEMS
   \sa MAPFILEITEMS
   */
-typedef std::map<CStdString, CFileItem*>::iterator IMAPFILEITEMS;
+typedef std::map<CStdString, CFileItemPtr >::iterator IMAPFILEITEMS;
 
 /*!
   \brief Pair for MAPFILEITEMS
   \sa MAPFILEITEMS
   */
-typedef std::pair<CStdString, CFileItem*> MAPFILEITEMSPAIR;
+typedef std::pair<CStdString, CFileItemPtr > MAPFILEITEMSPAIR;
 
-typedef bool (*FILEITEMLISTCOMPARISONFUNC) (CFileItem* pItem1, CFileItem* pItem2);
+typedef bool (*FILEITEMLISTCOMPARISONFUNC) (const CFileItemPtr &pItem1, const CFileItemPtr &pItem2);
 /*!
   \brief Represents a list of files
   \sa CFileItemList, CFileItem
@@ -295,25 +302,24 @@ public:
   CFileItemList(const CStdString& strPath);
   virtual ~CFileItemList();
   virtual void Serialize(CArchive& ar);
-  CFileItem* operator[] (int iItem);
-  const CFileItem* operator[] (int iItem) const;
-  CFileItem* operator[] (const CStdString& strPath);
-  const CFileItem* operator[] (const CStdString& strPath) const;
+  CFileItemPtr operator[] (int iItem);
+  const CFileItemPtr operator[] (int iItem) const;
+  CFileItemPtr operator[] (const CStdString& strPath);
+  const CFileItemPtr operator[] (const CStdString& strPath) const;
   void Clear();
-  void ClearKeepPointer(bool itemsOnly = false);
-  void Add(CFileItem* pItem);
-  void AddFront(CFileItem* pItem, int itemPosition);
+  void ClearItems();
+  void Add(const CFileItemPtr &pItem);
+  void AddFront(const CFileItemPtr &pItem, int itemPosition);
   void Remove(CFileItem* pItem);
   void Remove(int iItem);
-  CFileItem* Get(int iItem);
-  const CFileItem* Get(int iItem) const;
-  CFileItem* Get(const CStdString& strPath);
-  const CFileItem* Get(const CStdString& strPath) const;
+  CFileItemPtr Get(int iItem);
+  const CFileItemPtr Get(int iItem) const;
+  CFileItemPtr Get(const CStdString& strPath);
+  const CFileItemPtr Get(const CStdString& strPath) const;
   int Size() const;
   bool IsEmpty() const;
   void Append(const CFileItemList& itemlist);
-  void AppendPointer(const CFileItemList& itemlist);
-  void AssignPointer(const CFileItemList& itemlist, bool append = false);
+  void Assign(const CFileItemList& itemlist, bool append = false);
   void Reserve(int iCount);
   void Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder);
   void Randomize();
@@ -322,6 +328,7 @@ public:
   int GetFolderCount() const;
   int GetFileCount() const;
   int GetSelectedCount() const;
+  int GetObjectCount() const;
   void FilterCueItems();
   void RemoveExtensions();
   void CleanFileNames();

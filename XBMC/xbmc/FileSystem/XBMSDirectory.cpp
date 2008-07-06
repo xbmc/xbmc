@@ -188,7 +188,7 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
 
     CStdString strLabel=filename;
     g_charsetConverter.stringCharsetToUtf8(strLabel);
-    CFileItem* pItem = new CFileItem(strLabel);
+    CFileItemPtr pItem(new CFileItem(strLabel));
 
     char* pstrSizeStart = strstr(fileinfo, "<SIZE>");
     char* pstrSizeEnd = strstr(fileinfo, "</SIZE>");
@@ -231,7 +231,7 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
 
     if ( bIsDirectory || IsAllowed( filename) )
     {
-      items.Add(new CFileItem(*pItem));
+      items.Add(pItem);
     }
 
     vecCacheItems.Add(pItem);
@@ -290,7 +290,7 @@ static void DiscoveryCallback(const char *addr, const char *port, const char *ve
 
   // Add to items
   g_charsetConverter.stringCharsetToUtf8(itemName);
-  CFileItem* pItem = new CFileItem(itemName);
+  CFileItemPtr pItem(new CFileItem(itemName));
   pItem->m_strPath = strPath;
   g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
   pItem->m_bIsFolder = true;

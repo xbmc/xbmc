@@ -179,6 +179,7 @@ public:
 
   virtual void QueueAnimation(ANIMATION_TYPE anim);
   virtual bool IsAnimating(ANIMATION_TYPE anim);
+  virtual bool HasAnimation(ANIMATION_TYPE anim);
   CAnimation *GetAnimation(ANIMATION_TYPE type, bool checkConditions = true);
   virtual void ResetAnimation(ANIMATION_TYPE type);
   virtual void ResetAnimations();
@@ -226,10 +227,12 @@ public:
     GUICONTROL_GROUP,
     GUICONTROL_GROUPLIST,
     GUICONTROL_SCROLLBAR,
+    GUICONTROL_GRIDITEM,
     GUICONTAINER_LIST,
     GUICONTAINER_WRAPLIST,
     GUICONTAINER_FIXEDLIST,
-    GUICONTAINER_PANEL
+    GUICONTAINER_PANEL,
+    GUICONTAINER_EPGGRID
   };
   GUICONTROLTYPES GetControlType() const { return ControlType; }
 

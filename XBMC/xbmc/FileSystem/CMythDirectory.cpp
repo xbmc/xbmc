@@ -69,8 +69,6 @@ void CCMythDirectory::Release()
 
 bool CCMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
 {
-  CTVDatabase l_tvepgdb;
-  l_tvepgdb.Open();
   CURL url(base);
   CStdString strPath = url.GetFileName();
   std::vector<CStdString> tokens;
@@ -128,7 +126,7 @@ bool CCMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
           path.Format("guide/%d/", num);
           url.SetFileName(path);
           url.GetURL(path);
-          CFileItem *item = new CFileItem(path, true);
+          CFileItemPtr item(new CFileItem(path, true));
           item->SetLabel(name);
           item->SetLabelPreformated(true);
           if(icon.length() > 0)
@@ -159,7 +157,7 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, int ChanNum, CF
   time_t now;
   time(&now);
   // this sets how many seconds of EPG from now we should grabb
-  time_t end = now + (1 * 24 * 60 * 60);
+  time_t end = now + (1 * 24 * 60 * 60); /* 1 day */
 
   cmyth_program_t *prog = NULL;
 
@@ -168,8 +166,15 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, int ChanNum, CF
   if (count <= 0)
     return false;
 
+  CTVDatabase tvdb;
+  tvdb.Open();
+
   for (int i = 0; i < count; i++)
   {
+    int proglength = prog[i].endtime - prog[i].starttime; // seconds
+    tvdb.FillEPG("mythtv", "dvb-t", prog[i].callsign, prog[i].channum, prog[i].title, prog[i].subtitle, prog[i].description, 
+      prog[i].programid, prog[i].seriesid, prog[i].starttime, proglength, prog[i].starttime, prog[i].category);
+
     if (prog[i].channum == ChanNum)
     {
       CStdString path;
@@ -181,7 +186,7 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, int ChanNum, CF
       CStdString title;
       title.Format("%s - \"%s\"", starttime.GetAsLocalizedDateTime(), prog[i].title);
 
-      CFileItem *item = new CFileItem(title, false);
+      CFileItemPtr item(new CFileItem(title, false));
       item->SetLabel(title);
       item->m_dateTime = starttime;
       item->SetLabelPreformated(true);
@@ -253,7 +258,7 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
       path = CUtil::GetFileName(path);
       name = GetValue(m_dll->proginfo_title(program));
 
-      CFileItem *item = new CFileItem("", false);
+      CFileItemPtr item(new CFileItem("", false));
       m_session->UpdateItem(*item, program);
 
       url.SetFileName("recordings/" + path);
@@ -334,7 +339,7 @@ bool CCMythDirectory::GetChannelsDb(const CStdString& base, CFileItemList &items
         path.Format("channels/%d.ts", num);
         url.SetFileName(path);
         url.GetURL(path);
-        CFileItem *item = new CFileItem(path, false);
+        CFileItemPtr item(new CFileItem(path, false));
         item->SetLabel(name);
         item->SetLabelPreformated(true);
         if(icon.length() > 0)
@@ -385,7 +390,10 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
       }
 
       if(j == channels.size())
+      {
         channels.push_back(program);
+      }
+
 
       program = m_dll->recorder_get_next_proginfo(recorder, program, BROWSE_DIRECTION_UP);
       if(!program)
@@ -393,11 +401,12 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
 
       currchan = m_dll->proginfo_chan_id(program);
     }
+    
     m_dll->ref_release(recorder);
   }
 
   CURL url(base);
-
+  
   for(unsigned i=0;i<channels.size();i++)
   {
     cmyth_proginfo_t program = channels[i];
@@ -406,7 +415,7 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
     num      = GetValue(m_dll->proginfo_chanstr (program));
     icon     = GetValue(m_dll->proginfo_chanicon(program));
 
-    CFileItem *item = new CFileItem("", false);
+    CFileItemPtr item(new CFileItem("", false));
     m_session->UpdateItem(*item, program);
     url.SetFileName("channels/" + num + ".ts");
     url.GetURL(item->m_strPath);
@@ -457,19 +466,19 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
 
   if(url.GetFileName().IsEmpty())
   {
-    CFileItem *item;
+    CFileItemPtr item;
 
-    item = new CFileItem(base + "/channels/", true);
+    item.reset(new CFileItem(base + "/channels/", true));
     item->SetLabel("Live Channels");
     item->SetLabelPreformated(true);
     items.Add(item);
 
-    item = new CFileItem(base + "/recordings/", true);
+    item.reset(new CFileItem(base + "/recordings/", true));
     item->SetLabel("Recordings");
     item->SetLabelPreformated(true);
     items.Add(item);
 
-    item = new CFileItem(base + "/guide/", true);
+    item.reset(new CFileItem(base + "/guide/", true));
     item->SetLabel("Guide");
     item->SetLabelPreformated(true);
     items.Add(item);

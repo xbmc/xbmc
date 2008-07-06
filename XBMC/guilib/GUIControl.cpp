@@ -604,6 +604,11 @@ CAnimation *CGUIControl::GetAnimation(ANIMATION_TYPE type, bool checkConditions 
   return NULL;
 }
 
+bool CGUIControl::HasAnimation(ANIMATION_TYPE type)
+{
+  return (NULL != GetAnimation(type, true));
+}
+
 void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState)
 {
   // Make sure control is hidden or visible at the appropriate times

@@ -56,7 +56,6 @@ namespace DIRECTORY
       success = db.GetTvShowsByWhere("videodb://2/2/", whereOrder, items);
       items.SetContent("tvshows");
       db.Close();
-      return success;
     }
     else if (playlist.GetType().Equals("episodes"))
     {
@@ -66,7 +65,6 @@ namespace DIRECTORY
       success = db.GetEpisodesByWhere("videodb://2/2/", whereOrder, items);
       items.SetContent("episodes");
       db.Close();
-      return success;
     }
     else if (playlist.GetType().Equals("movies"))
     {
@@ -76,7 +74,6 @@ namespace DIRECTORY
       success = db.GetMoviesByWhere("videodb://1/2/", whereOrder, items);
       items.SetContent("movies");
       db.Close();
-      return success;
     }
     else if (playlist.GetType().Equals("albums"))
     {
@@ -86,7 +83,6 @@ namespace DIRECTORY
       success = db.GetAlbumsByWhere("musicdb://3/", whereOrder, items);
       items.SetContent("albums");
       db.Close();
-      return success;
     }
     if (playlist.GetType().Equals("songs") || playlist.GetType().Equals("mixed") || playlist.GetType().IsEmpty())
     {
@@ -119,6 +115,12 @@ namespace DIRECTORY
       items.SetContent("musicvideos");
       playlist.SetType(type);
     }
+    // go through and set the playlist order
+    for (int i = 0; i < items.Size(); i++)
+    {
+      CFileItemPtr item = items[i];
+      item->m_iprogramCount = i;  // hack for playlist order
+    }
     if (playlist.GetType().Equals("mixed"))
       return success || success2;
     else if (playlist.GetType().Equals("musicvideos"))
@@ -145,7 +147,7 @@ namespace DIRECTORY
     {
       for (int i = 0; i < list.Size(); i++)
       {
-        CFileItem *item = list[i];
+        CFileItemPtr item = list[i];
         if (item->GetLabel().CompareNoCase(name) == 0)
         { // found :)
           return item->m_strPath;

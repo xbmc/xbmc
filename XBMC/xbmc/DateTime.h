@@ -154,6 +154,7 @@ public:
   void GetAsTimeStamp(FILETIME& time) const;
 
   CStdString GetAsDBDate() const;
+  CStdString GetAsDBDateTime() const;
   CStdString GetAsLocalizedDate(bool longDate=false) const;
   CStdString GetAsLocalizedTime(const CStdString &format, bool withSeconds=true) const;
   CStdString GetAsLocalizedDateTime(bool longDate=false, bool withSeconds=true) const;

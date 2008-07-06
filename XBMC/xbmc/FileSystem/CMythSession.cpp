@@ -116,6 +116,16 @@ CStdString CCMythSession::GetValue(char *str)
   return result;
 }
 
+int CCMythSession::GetValue(int integer)
+{
+  int result;
+  if(integer)
+  {
+    result = integer;
+  }
+  return result;
+}
+
 bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
 {
   if(!info)

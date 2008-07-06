@@ -44,7 +44,7 @@ public:
   void RefreshThumb();
 
   virtual bool HasListItems() const { return true; };
-  virtual CFileItem *GetCurrentListItem(int offset = 0);
+  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
   const CFileItemList& CurrentDirectory() const { return *m_albumSongs; };
 protected:
   virtual void OnInitWindow();
@@ -62,6 +62,6 @@ protected:
   bool m_bRefresh;
   bool m_hasUpdatedThumb;
   bool m_bArtistInfo;
-  CFileItem*     m_albumItem;
+  CFileItemPtr   m_albumItem;
   CFileItemList* m_albumSongs;
 };

@@ -19,7 +19,7 @@
 	</GetSettings>
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="&lt;url cache=&quot;\1.xml&quot;&gt;http://www.thetvdb.com/api/1D62F2F90030C444/series/\1/all/en.zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="3">
-			<expression>http://thetvdb.com/\?tab=series&amp;id=([0-9]+)</expression>
+			<expression>http://(?:www\.)?thetvdb.com/(?:index\.php)?\?tab=series&amp;id=([0-9]+)</expression>
 		</RegExp>
 	</NfoUrl>
 	<EpisodeGuideUrl dest="3">

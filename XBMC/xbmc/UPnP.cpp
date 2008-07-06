@@ -264,7 +264,7 @@ private:
                                  bool            with_count = false,
                                  NPT_SocketInfo* info = NULL);
 
-    PLT_MediaObject* Build(CFileItem*      item, 
+    PLT_MediaObject* Build(CFileItemPtr    item, 
                            bool            with_count = false, 
                            NPT_SocketInfo* info = NULL,
                            const char*     parent_id = NULL);
@@ -601,7 +601,7 @@ failure:
 |   CUPnPServer::Build
 +---------------------------------------------------------------------*/
 PLT_MediaObject* 
-CUPnPServer::Build(CFileItem*      item, 
+CUPnPServer::Build(CFileItemPtr    item, 
                    bool            with_count /* = true */, 
                    NPT_SocketInfo* info /* = NULL */,
                    const char*     parent_id /* = NULL */)
@@ -685,7 +685,7 @@ CUPnPServer::Build(CFileItem*      item,
       }
 
       //not a virtual path directory, new system
-      object = BuildObject(item, file_path, with_count, info);
+      object = BuildObject(item.get(), file_path, with_count, info);
       if(!object)
         return NULL;
 
@@ -701,7 +701,7 @@ CUPnPServer::Build(CFileItem*      item,
         if (!CUPnPVirtualPathDirectory::FindSourcePath(share_name, file_path, true)) goto failure;
         
         // this is not a virtual directory
-        object = BuildObject(item, file_path, with_count, info);
+        object = BuildObject(item.get(), file_path, with_count, info);
         if (!object) goto failure;
 
         // override object id & change the class if it's an item
@@ -851,7 +851,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
     CMediaSource                         share;
     CUPnPVirtualPathDirectory      dir;
     vector<CStdString>             paths;
-    CFileItem*                     item = NULL;
+    CFileItemPtr                   item;
 
     if (id == "0") {
         id = "virtualpath://upnproot/";
@@ -861,31 +861,31 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
         id.TrimRight("/");
         if (id == "virtualpath://upnproot") {
             id += "/";
-            item = new CFileItem((const char*)id, true);
+            item.reset(new CFileItem((const char*)id, true));
             item->SetLabel("Root");
             item->SetLabelPreformated(true);
             object = Build(item, true, info);
         } else if (id == "virtualpath://upnpmusic") {
             id += "/";
-            item = new CFileItem((const char*)id, true);
+            item.reset(new CFileItem((const char*)id, true));
             item->SetLabel("Music Files");
             item->SetLabelPreformated(true);
             object = Build(item, true, info);
         } else if (id == "virtualpath://upnpvideo") {
             id += "/";
-            item = new CFileItem((const char*)id, true);
+            item.reset(new CFileItem((const char*)id, true));
             item->SetLabel("Video Files");
             item->SetLabelPreformated(true);
             object = Build(item, true, info);
         } else if (id == "virtualpath://upnppictures") {
             id += "/";
-            item = new CFileItem((const char*)id, true);
+            item.reset(new CFileItem((const char*)id, true));
             item->SetLabel("Picture Files");
             item->SetLabelPreformated(true);
             object = Build(item, true, info);
         } else if (dir.GetMatchingSource((const char*)id, share, paths)) {
             id += "/";
-            item = new CFileItem((const char*)id, true);
+            item.reset(new CFileItem((const char*)id, true));
             item->SetLabel(share.strName);
             item->SetLabelPreformated(true);
             object = Build(item, true, info);
@@ -900,7 +900,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
             NPT_DirectoryEntryInfo entry_info;
             NPT_CHECK(NPT_DirectoryEntry::GetInfo(file_path, entry_info));
 
-            item = new CFileItem((const char*)id, (entry_info.type==NPT_DIRECTORY_TYPE)?true:false);
+            item.reset(new CFileItem((const char*)id, (entry_info.type==NPT_DIRECTORY_TYPE)?true:false));
             item->SetLabel((const char*)file_path.SubString(parent_path.GetLength()+1));
             item->SetLabelPreformated(true);
 
@@ -914,9 +914,9 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
         }
     } else {
         if( CDirectory::Exists((const char*)id) ) {
-            item = new CFileItem((const char*)id, true);
+            item.reset(new CFileItem((const char*)id, true));
         } else {
-            item = new CFileItem((const char*)id, false);            
+            item.reset(new CFileItem((const char*)id, false));            
         }
         CStdString parent;
         if(!CUtil::GetParentPath((const char*)id, parent))
@@ -925,7 +925,6 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
         object = Build(item, true, info, parent.c_str());
     }
 
-    delete item;
     if (object.IsNull()) return NPT_FAILURE;
 
     NPT_String filter;
@@ -1100,16 +1099,16 @@ CUPnPServer::OnSearch(PLT_ActionReference& action,
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }
-      itemsall.AppendPointer(items);
-      items.ClearKeepPointer();
+      itemsall.Append(items);
+      items.Clear();
 
       // TODO - set proper base url for this
       if(!database.GetEpisodesNav("videodb://2/0", items)) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }
-      itemsall.AppendPointer(items);
-      items.ClearKeepPointer();
+      itemsall.Append(items);
+      items.Clear();
 
       return BuildResponse(action, itemsall, info, NULL);
   }

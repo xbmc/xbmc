@@ -1407,7 +1407,7 @@ void CVideoDatabase::GetMusicVideosByArtist(const CStdString& strArtist, CFileIt
     while (!m_pDS->eof())
     {
       CVideoInfoTag tag = GetDetailsForMusicVideo(m_pDS);
-      CFileItem* pItem = new CFileItem(tag);
+      CFileItemPtr pItem(new CFileItem(tag));
       pItem->SetLabel(tag.m_strArtist);
       items.Add(pItem);
       m_pDS->next();
@@ -3278,7 +3278,7 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
 
       for (it=mapGenres.begin();it != mapGenres.end();++it)
       {
-        CFileItem* pItem=new CFileItem(it->second.first);
+        CFileItemPtr pItem(new CFileItem(it->second.first));
         CStdString strDir;
         strDir.Format("%ld/", it->first);
         pItem->m_strPath=strBaseDir + strDir;
@@ -3290,15 +3290,13 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
           pItem->SetLabelPreformated(true);
           items.Add(pItem);
         }
-        else
-          delete pItem;
       }
     }
     else
     {
       while (!m_pDS->eof())
       {
-        CFileItem* pItem=new CFileItem(m_pDS->fv("genre.strgenre").get_asString());
+        CFileItemPtr pItem(new CFileItem(m_pDS->fv("genre.strgenre").get_asString()));
         CStdString strDir;
         strDir.Format("%ld/", m_pDS->fv("genre.idgenre").get_asLong());
         pItem->m_strPath=strBaseDir + strDir;
@@ -3378,7 +3376,7 @@ bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& 
 
       for (it=mapStudios.begin();it != mapStudios.end();++it)
       {
-        CFileItem* pItem=new CFileItem(it->second.first);
+        CFileItemPtr pItem(new CFileItem(it->second.first));
         CStdString strDir;
         strDir.Format("%ld/", it->first);
         pItem->m_strPath=strBaseDir + strDir;
@@ -3389,15 +3387,13 @@ bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& 
           pItem->SetLabelPreformated(true);
           items.Add(pItem);
         }
-        else
-          delete pItem;
       }
     }
     else
     {
       while (!m_pDS->eof())
       {
-        CFileItem* pItem=new CFileItem(m_pDS->fv("studio.strstudio").get_asString());
+        CFileItemPtr pItem(new CFileItem(m_pDS->fv("studio.strstudio").get_asString()));
         CStdString strDir;
         strDir.Format("%ld/", m_pDS->fv("studio.idstudio").get_asLong());
         pItem->m_strPath=strBaseDir + strDir;
@@ -3437,7 +3433,7 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
   { // set thumbs - ideally this should be in the normal thumb setting routines
     for (int i = 0; i < items.Size(); i++)
     {
-      CFileItem *pItem = items[i];
+      CFileItemPtr pItem = items[i];
       if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
       {
         if (CFile::Exists(pItem->GetCachedArtistThumb()))
@@ -3537,7 +3533,7 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
 
       for (it=mapActors.begin();it != mapActors.end();++it)
       {
-        CFileItem* pItem=new CFileItem(it->second.name);
+        CFileItemPtr pItem(new CFileItem(it->second.name));
         CStdString strDir;
         strDir.Format("%ld/", it->first);
         pItem->m_strPath=strBaseDir + strDir;
@@ -3551,7 +3547,7 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
     {
       while (!m_pDS->eof())
       {
-        CFileItem* pItem=new CFileItem(m_pDS->fv(1).get_asString());
+        CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()));
         CStdString strDir;
         strDir.Format("%ld/", m_pDS->fv(0).get_asLong());
         pItem->m_strPath=strBaseDir + strDir;
@@ -3662,7 +3658,7 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
       {
         if (it->first == 0)
           continue;
-        CFileItem* pItem=new CFileItem(it->second.first);
+        CFileItemPtr pItem(new CFileItem(it->second.first));
         CStdString strDir;
         strDir.Format("%ld/", it->first);
         pItem->m_strPath=strBaseDir + strDir;
@@ -3695,7 +3691,7 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
           m_pDS->next();
           continue;
         }
-        CFileItem* pItem=new CFileItem(strLabel);
+        CFileItemPtr pItem(new CFileItem(strLabel));
         CStdString strDir;
         strDir.Format("%ld/", lYear);
         pItem->m_strPath=strBaseDir + strDir;
@@ -3706,8 +3702,6 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
             pItem->GetVideoInfoTag()->m_playCount = m_pDS->fv(1).get_asInteger();
           items.Add(pItem);
         }
-        else
-          delete pItem;
         m_pDS->next();
       }
       m_pDS->close();
@@ -3800,7 +3794,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
           strLabel = g_localizeStrings.Get(20381);
         else
           strLabel.Format(g_localizeStrings.Get(20358),lSeason);
-        CFileItem* pItem=new CFileItem(strLabel);
+        CFileItemPtr pItem(new CFileItem(strLabel));
         CStdString strDir;
         strDir.Format("%ld/", it->first);
         pItem->m_strPath=strBaseDir + strDir;
@@ -3829,7 +3823,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
           strLabel = g_localizeStrings.Get(20381);
         else
           strLabel.Format(g_localizeStrings.Get(20358),lSeason);
-        CFileItem* pItem=new CFileItem(strLabel);
+        CFileItemPtr pItem(new CFileItem(strLabel));
         CStdString strDir;
         strDir.Format("%ld/", lSeason);
         pItem->m_strPath=strBaseDir + strDir;
@@ -3915,7 +3909,7 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdSt
           g_passwordManager.bMasterUser                                   ||
           g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath, g_settings.m_videoSources))
       {
-        CFileItem* pItem=new CFileItem(movie);
+        CFileItemPtr pItem(new CFileItem(movie));
         pItem->m_strPath.Format("%s%ld", strBaseDir.c_str(), lMovieId);
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_playCount > 0);
         items.Add(pItem);
@@ -3984,7 +3978,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
       CVideoInfoTag movie = GetDetailsForTvShow(m_pDS, false);
       if (!g_advancedSettings.m_bVideoLibraryHideEmptySeries || movie.m_iEpisode > 0)
       {
-        CFileItem* pItem=new CFileItem(movie);
+        CFileItemPtr pItem(new CFileItem(movie));
         pItem->m_strPath.Format("%s%ld/", strBaseDir.c_str(), lShowId);
         pItem->m_dateTime.SetFromDateString(movie.m_strPremiered);
         pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
@@ -3992,6 +3986,9 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
         pItem->SetProperty("unwatchedepisodes", movie.m_iEpisode - movie.m_playCount);
         pItem->GetVideoInfoTag()->m_playCount = (movie.m_iEpisode == movie.m_playCount) ? 1 : 0;
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,pItem->GetVideoInfoTag()->m_playCount > 0);
+        pItem->CacheVideoFanart();
+        if (CFile::Exists(pItem->GetCachedVideoFanart()))
+          pItem->SetProperty("fanart_image",pItem->GetCachedVideoFanart());
         items.Add(pItem);
       }
       m_pDS->next();
@@ -4071,7 +4068,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
       long lShowId = m_pDS->fv("idShow").get_asLong();
 
       CVideoInfoTag movie = GetDetailsForEpisode(m_pDS);
-      CFileItem* pItem=new CFileItem(movie);
+      CFileItemPtr pItem(new CFileItem(movie));
       if (appendFullShowPath)
         pItem->m_strPath.Format("%s%ld/%ld/%ld",strBaseDir.c_str(), lShowId, movie.m_iSeason,lEpisodeId);
       else
@@ -4364,7 +4361,7 @@ void CVideoDatabase::GetMovieGenresByName(const CStdString& strSearch, CFileItem
           continue;
         }
 
-      CFileItem* pItem=new CFileItem(m_pDS->fv("genre.strGenre").get_asString());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv("genre.strGenre").get_asString()));
       CStdString strDir;
       strDir.Format("%ld/", m_pDS->fv("genre.idGenre").get_asLong());
       pItem->m_strPath="videodb://1/1/"+ strDir;
@@ -4404,7 +4401,7 @@ void CVideoDatabase::GetTvShowGenresByName(const CStdString& strSearch, CFileIte
           continue;
         }
 
-      CFileItem* pItem=new CFileItem(m_pDS->fv("genre.strGenre").get_asString());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv("genre.strGenre").get_asString()));
       CStdString strDir;
       strDir.Format("%ld/", m_pDS->fv("genre.idGenre").get_asLong());
       pItem->m_strPath="videodb://2/1/"+ strDir;
@@ -4444,7 +4441,7 @@ void CVideoDatabase::GetMovieActorsByName(const CStdString& strSearch, CFileItem
           continue;
         }
 
-      CFileItem* pItem=new CFileItem(m_pDS->fv("actors.strActor").get_asString());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv("actors.strActor").get_asString()));
       CStdString strDir;
       strDir.Format("%ld/", m_pDS->fv("actors.idActor").get_asLong());
       pItem->m_strPath="videodb://1/4/"+ strDir;
@@ -4484,7 +4481,7 @@ void CVideoDatabase::GetTvShowsActorsByName(const CStdString& strSearch, CFileIt
           continue;
         }
 
-      CFileItem* pItem=new CFileItem(m_pDS->fv("actors.strActor").get_asString());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv("actors.strActor").get_asString()));
       CStdString strDir;
       strDir.Format("%ld/", m_pDS->fv("actors.idActor").get_asLong());
       pItem->m_strPath="videodb://2/4/"+ strDir;
@@ -4527,7 +4524,7 @@ void CVideoDatabase::GetMusicVideoArtistsByName(const CStdString& strSearch, CFi
           continue;
         }
 
-      CFileItem* pItem=new CFileItem(m_pDS->fv("actors.strActor").get_asString());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv("actors.strActor").get_asString()));
       CStdString strDir;
       strDir.Format("%ld/", m_pDS->fv("actors.idActor").get_asLong());
       pItem->m_strPath="videodb://3/4/"+ strDir;
@@ -4568,7 +4565,7 @@ void CVideoDatabase::GetMusicVideoGenresByName(const CStdString& strSearch, CFil
           continue;
         }
 
-      CFileItem* pItem=new CFileItem(m_pDS->fv("genre.strGenre").get_asString());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv("genre.strGenre").get_asString()));
       CStdString strDir;
       strDir.Format("%ld/", m_pDS->fv("genre.idGenre").get_asLong());
       pItem->m_strPath="videodb://3/1/"+ strDir;
@@ -4624,7 +4621,7 @@ void CVideoDatabase::GetMusicVideoAlbumsByName(const CStdString& strSearch, CFil
           continue;
         }
 
-      CFileItem* pItem=new CFileItem(m_pDS->fv(0).get_asString());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv(0).get_asString()));
       CStdString strDir;
       strDir.Format("%ld", m_pDS->fv(1).get_asLong());
       pItem->m_strPath="videodb://3/2/"+ strDir;
@@ -4664,7 +4661,7 @@ void CVideoDatabase::GetMusicVideosByAlbum(const CStdString& strSearch, CFileIte
           continue;
         }
 
-      CFileItem* pItem=new CFileItem(m_pDS->fv(1).get_asString()+" - "+m_pDS->fv(2).get_asString());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()+" - "+m_pDS->fv(2).get_asString()));
       CStdString strDir;
       strDir.Format("3/2/%ld",m_pDS->fv("musicvideo.idmvideo").get_asLong());
       
@@ -4718,7 +4715,7 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const CStd
       if (!checkLocks || g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser ||
           g_passwordManager.IsDatabasePathUnlocked(musicvideo.m_strPath,g_settings.m_videoSources))
       {
-        CFileItem *item = new CFileItem(musicvideo);
+        CFileItemPtr item(new CFileItem(musicvideo));
         item->m_strPath.Format("%s%ld",baseDir,lMVideoId);
         item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,musicvideo.m_playCount > 0);
         items.Add(item);
@@ -4883,7 +4880,7 @@ void CVideoDatabase::GetMoviesByName(const CStdString& strSearch, CFileItemList&
           continue;
         }
 
-      CFileItem* pItem=new CFileItem(m_pDS->fv(1).get_asString());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()));
       CStdString strDir;
       strDir.Format("1/2/%ld",m_pDS->fv("movie.idMovie").get_asLong());
       
@@ -4924,7 +4921,7 @@ void CVideoDatabase::GetTvShowsByName(const CStdString& strSearch, CFileItemList
           continue;
         }
 
-      CFileItem* pItem=new CFileItem(m_pDS->fv(1).get_asString());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()));
       CStdString strDir;
       strDir.Format("2/2/%ld/", m_pDS->fv("tvshow.idshow").get_asLong());
       
@@ -4965,7 +4962,7 @@ void CVideoDatabase::GetEpisodesByName(const CStdString& strSearch, CFileItemLis
           continue;
         }
 
-      CFileItem* pItem=new CFileItem(m_pDS->fv(1).get_asString()+" ("+m_pDS->fv(4).get_asString()+")");
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()+" ("+m_pDS->fv(4).get_asString()+")"));
       pItem->m_strPath.Format("videodb://2/2/%ld/%ld/%ld",m_pDS->fv("tvshowlinkepisode.idshow").get_asLong(),m_pDS->fv(2).get_asLong(),m_pDS->fv(0).get_asLong());
       pItem->m_bIsFolder=false;
       items.Add(pItem);
@@ -5007,7 +5004,7 @@ void CVideoDatabase::GetMusicVideosByName(const CStdString& strSearch, CFileItem
           continue;
         }
 
-      CFileItem* pItem=new CFileItem(m_pDS->fv(1).get_asString());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()));
       CStdString strDir;
       strDir.Format("3/2/%ld",m_pDS->fv("musicvideo.idmvideo").get_asLong());
       
@@ -5054,7 +5051,7 @@ void CVideoDatabase::GetEpisodesByPlot(const CStdString& strSearch, CFileItemLis
           continue;
         }
 
-      CFileItem* pItem=new CFileItem(m_pDS->fv(1).get_asString()+" ("+m_pDS->fv(4).get_asString()+")");
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()+" ("+m_pDS->fv(4).get_asString()+")"));
       pItem->m_strPath.Format("videodb://2/2/%ld/%ld/%ld",m_pDS->fv("tvshowlinkepisode.idshow").get_asLong(),m_pDS->fv(2).get_asLong(),m_pDS->fv(0).get_asLong());
       pItem->m_bIsFolder=false;
       items.Add(pItem);
@@ -5095,7 +5092,7 @@ void CVideoDatabase::GetMovieDirectorsByName(const CStdString& strSearch, CFileI
 
       CStdString strDir;
       strDir.Format("%ld/", m_pDS->fv("directorlinkmovie.idDirector").get_asLong());
-      CFileItem* pItem=new CFileItem(m_pDS->fv("actors.strActor").get_asString());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv("actors.strActor").get_asString()));
       
       pItem->m_strPath="videodb://1/5/"+ strDir;
       pItem->m_bIsFolder=true;
@@ -5137,7 +5134,7 @@ void CVideoDatabase::GetTvShowsDirectorsByName(const CStdString& strSearch, CFil
 
       CStdString strDir;
       strDir.Format("%ld/", m_pDS->fv("directorlinktvshow.idDirector").get_asLong());
-      CFileItem* pItem=new CFileItem(m_pDS->fv("actors.strActor").get_asString());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv("actors.strActor").get_asString()));
       
       pItem->m_strPath="videodb://2/5/"+ strDir;
       pItem->m_bIsFolder=true;
@@ -5179,7 +5176,7 @@ void CVideoDatabase::GetMusicVideoDirectorsByName(const CStdString& strSearch, C
 
       CStdString strDir;
       strDir.Format("%ld/", m_pDS->fv("directorlinkmusicvideo.idDirector").get_asLong());
-      CFileItem* pItem=new CFileItem(m_pDS->fv("actors.strActor").get_asString());
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv("actors.strActor").get_asString()));
       
       pItem->m_strPath="videodb://3/5/"+ strDir;
       pItem->m_bIsFolder=true;

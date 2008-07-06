@@ -403,6 +403,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("videofiles")) wWindowID = WINDOW_VIDEO_FILES;
   else if (strWindow.Equals("videolibrary")) wWindowID = WINDOW_VIDEO_NAV;
   else if (strWindow.Equals("videoplaylist")) wWindowID = WINDOW_VIDEO_PLAYLIST;
+  else if (strWindow.Equals("tvguide")) wWindowID = WINDOW_EPG;
   else if (strWindow.Equals("systeminfo")) wWindowID = WINDOW_SYSTEM_INFORMATION;
   else if (strWindow.Equals("guicalibration")) wWindowID = WINDOW_SCREEN_CALIBRATION;
   else if (strWindow.Equals("screencalibration")) wWindowID = WINDOW_SCREEN_CALIBRATION;

@@ -514,8 +514,11 @@ void CGUIWindowManager::DeInitialize()
   for (map<DWORD, CGUIWindow *>::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
   {
     CGUIWindow* pWindow = (*it).second;
-    CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
-    pWindow->OnMessage(msg);
+    if (IsWindowActive(it->first))
+    {
+      CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
+      pWindow->OnMessage(msg);
+    }
     pWindow->ResetControlStates();
     pWindow->FreeResources(true);
   }

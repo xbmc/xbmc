@@ -814,6 +814,17 @@ CStdString CDateTime::GetAsDBDate() const
   return date;
 }
 
+CStdString CDateTime::GetAsDBDateTime() const
+{
+  SYSTEMTIME st;
+  GetAsSystemTime(st);
+
+  CStdString date;
+  date.Format("%04i-%02i-%02i %02i:%02i:%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+
+  return date;
+}
+
 void CDateTime::SetFromDBDate(const CStdString &date)
 {
   // assumes format:

@@ -20,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32;../../xbmc/cores/dvdplayer"
+				AdditionalIncludeDirectories="../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32;../../xbmc/cores/dvdplayer;../../xbmc/lib/boost;..\..\xbmc\lib\libRTMP"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_WIN32_WINNT=0x0500;WINVER=0x0500"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="0"
@@ -74,7 +74,7 @@
 				Optimization="0"
 				InlineFunctionExpansion="0"
 				OmitFramePointers="FALSE"
-				AdditionalIncludeDirectories="../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32;../../xbmc/cores/dvdplayer"
+				AdditionalIncludeDirectories="../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32;../../xbmc/cores/dvdplayer;../../xbmc/lib/boost;..\..\xbmc\lib\libRTMP"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_WIN32_WINNT=0x0500;WINVER=0x0500"
 				StringPooling="FALSE"
 				MinimalRebuild="TRUE"
@@ -521,6 +521,12 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamRTMP.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamRTMP.h">
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamTV.cpp">
@@ -1799,7 +1805,19 @@
 					RelativePath="..\..\xbmc\Profile.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\PVRManager.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PVRManager.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\RegExp.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\RssFeed.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\RssFeed.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\RssReader.cpp">
@@ -1938,6 +1956,12 @@
 					RelativePath="..\..\xbmc\Song.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\TVDatabase.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\TVDatabase.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\VideoDatabase.cpp">
 				</File>
 				<File
@@ -1997,6 +2021,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogFileStacking.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogFullScreenInfo.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogFullScreenInfo.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogGamepad.cpp">
@@ -2138,16 +2168,28 @@
 					RelativePath="..\..\xbmc\GUIMediaWindow.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIViewStatePicturesProgramsScripts.cpp">
+					RelativePath="..\..\xbmc\GUIViewStateGameSaves.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIViewStatePicturesProgramsScripts.h">
+					RelativePath="..\..\xbmc\GUIViewStateGameSaves.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIWindowBuddies.cpp">
+					RelativePath="..\..\xbmc\GUIViewStatePictures.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIWindowFileManager.cpp">
+					RelativePath="..\..\xbmc\GUIViewStatePictures.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStatePrograms.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStatePrograms.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateScripts.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateScripts.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowFullScreen.cpp">
@@ -2468,6 +2510,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\RarManager.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\RSSDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\RSSDirectory.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\ShoutcastDirectory.cpp">
@@ -3062,6 +3110,9 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\GUIWindowBuddies.h">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\GUIWindowEPG.h">
 			</File>
 			<File
 				RelativePath="..\..\xbmc\GUIWindowFileManager.h">
@@ -3869,6 +3920,27 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\lib\libscrobbler\scrobbler.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="libRTMP">
+				<File
+					RelativePath="..\..\xbmc\lib\libRTMP\AMFObject.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libRTMP\AMFObject.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libRTMP\rtmp.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libRTMP\rtmp.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libRTMP\rtmppacket.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libRTMP\rtmppacket.h">
 				</File>
 			</Filter>
 		</Filter>

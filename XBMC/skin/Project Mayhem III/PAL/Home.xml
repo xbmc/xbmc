@@ -675,6 +675,31 @@
 					<hitrect x="45" y="15" w="220" h="40" />
 					<label>0</label>
 					<font>special13</font>
+					<onclick>ActivateWindow(MyTVEPG)</onclick>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>9</onup>
+					<ondown>5</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
+				<control type="image">
+					<posx>50</posx>
+					<posy>72</posy>
+					<width>22</width>
+					<height>22</height>
+					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="2">
+					<description>My Programs normal push button</description>
+					<posx>54</posx>
+					<posy>28</posy>
+					<width>14</width>
+					<height>13</height>
+					<hitrect x="45" y="15" w="220" h="40" />
+					<label>0</label>
+					<font>special13</font>
 					<onclick>ActivateWindow(MyPrograms)</onclick>
 					<onleft>98</onleft>
 					<onright>96</onright>
@@ -861,6 +886,24 @@
 					<width>22</width>
 					<height>22</height>
 					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="8">
+					<description>My TV Guide normal push button</description>
+					<posx>54</posx>
+					<posy>0</posy>
+					<width>14</width>
+					<height>13</height>
+					<hitrect x="45" y="0" w="220" h="40" />
+					<label>4</label>
+					<font>special13</font>
+					<onclick>ActivateWindow(MyTVGuide)</onclick>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>9</onup>
+					<ondown>5</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
 				</control>
 				<control type="button" id="5">
 					<description>My Videos normal push button</description>

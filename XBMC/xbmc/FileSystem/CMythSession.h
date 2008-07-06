@@ -20,6 +20,8 @@
  *
  */
 
+#include "utils/Thread.h"
+
 typedef struct cmyth_ringbuf   *cmyth_ringbuf_t;
 typedef struct cmyth_conn      *cmyth_conn_t;
 typedef struct cmyth_recorder  *cmyth_recorder_t;
@@ -60,6 +62,7 @@ public:
 
   CDateTime        GetValue(cmyth_timestamp_t t);
   CStdString       GetValue(char* str);
+  int              GetValue(int integer);
 private:
   CCMythSession(const CURL& url);
   ~CCMythSession();
