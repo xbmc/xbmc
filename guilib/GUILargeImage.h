@@ -46,7 +46,7 @@ public:
   virtual void SetAspectRatio(const CAspectRatio &aspect);
 
 protected:
-  virtual void SetFileName(const CStdString &strFileName);
+  virtual void SetFileName(const CStdString &strFileName, bool setConstant = false);
   virtual void AllocateOnDemand();
   virtual void FreeTextures();
   virtual int GetOrientation() const;
