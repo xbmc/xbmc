@@ -1100,20 +1100,6 @@ do_pad(int pad)
 		fprintf(stderr, "  ");
 }
 
-static void
-dump(node *n, int pad, int depth)
-{
-	int i;
-	if (depth == 0)
-	    return;
-	do_pad(pad);
-	fprintf(stderr, "%d: %s\n", TYPE(n), STR(n));
-	if (depth > 0)
-	    depth--;
-	for (i = 0; i < NCH(n); ++i)
-		dump(CHILD(n, i), pad + 1, depth);
-}
-
 static int
 com_init(struct compiling *c, const char *filename)
 {

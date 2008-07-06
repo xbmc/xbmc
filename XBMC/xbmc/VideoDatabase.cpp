@@ -4108,10 +4108,11 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE cType /* =
       }
     }
     break;
-  }
-  // stack other types later
 
-  return;
+    // stack other types later
+    default:
+      break;
+  }
 }
 
 bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idYear, long idActor, long idDirector, long idShow, long idSeason)

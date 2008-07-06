@@ -38,7 +38,6 @@ struct seek_list
     __int64 offset;
 };
 
-extern struct alac_file;
 extern struct alac_file *create_alac(int samplesize, int numchannels);
 extern void alac_set_info(struct alac_file *alac, char *inputbuffer);
 extern void decode_frame(struct alac_file *alac, unsigned char *inbuffer,void *outbuffer, int *outputsize);
@@ -505,7 +504,7 @@ int GetMetaDataFreeFormString(state* st, const char* name, char** value)
   do {
     char *pName=NULL;
 
-    if (mp4ff_meta_get_by_index(st->mp4file, i, (char**)&pName, &pValue))
+    if (mp4ff_meta_get_by_index(st->mp4file, i, (char**)&pName, (char**)&pValue))
     {
       if (strcmp(name, pName)==0)
       {
