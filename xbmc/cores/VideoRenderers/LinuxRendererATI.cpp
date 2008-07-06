@@ -186,9 +186,9 @@ void CLinuxRendererATI::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   if (clear)
   {
-    glClearColor(m_clearColour&0xff000000,
-		 m_clearColour&0x00ff0000,
-		 m_clearColour&0x0000ff00,
+    glClearColor((int)m_clearColour&0xff000000,
+		 (int)m_clearColour&0x00ff0000,
+		 (int)m_clearColour&0x0000ff00,
 		 0);
     glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(0,0,0,0);

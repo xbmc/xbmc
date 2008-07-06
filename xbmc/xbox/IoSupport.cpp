@@ -36,14 +36,12 @@
 #ifdef _WIN32PC
 #include "ntddcdrm.h"
 #endif
-#ifdef _LINUX
+#if defined (_LINUX) && !defined(__APPLE__)
 #include <linux/limits.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
-#ifndef __APPLE__
 #include <linux/cdrom.h>
-#endif
 #endif
 #ifdef __APPLE__
 #include <sys/param.h>
