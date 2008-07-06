@@ -24,6 +24,7 @@
 #include "Picture.h"
 #include "GUISettings.h"
 #include "FileItem.h"
+#include "Util.h"
 
 CGUILargeTextureManager g_largeTextureManager;
 
@@ -57,8 +58,16 @@ void CGUILargeTextureManager::Process()
     LPDIRECT3DTEXTURE8 texture = NULL;
     CPicture pic;
     CFileItem file(path, false);
-    if (file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ())) // ignore non-pictures
-      texture = pic.Load(path, min(g_graphicsContext.GetWidth(), 1024), min(g_graphicsContext.GetHeight(), 720));
+    if (file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ())) // ignore non-picture
+    { // check for filename only (i.e. lookup in skin/media/)
+      CStdString loadPath;
+      if (path.FindOneOf("/\\") == CStdString::npos)
+      {
+        loadPath = CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
+        loadPath = CUtil::AddFileToFolder(loadPath, path);
+      }
+      texture = pic.Load(loadPath, min(g_graphicsContext.GetWidth(), 1024), min(g_graphicsContext.GetHeight(), 720));
+    }
     // and add to our allocated list
     lock.Enter();
     if (m_queued.size() && m_queued[0]->GetPath() == path)

@@ -731,8 +731,11 @@ void CGUIImage::PythonSetColorKey(DWORD dwColorKey)
   m_dwColorKey = dwColorKey;
 }
 
-void CGUIImage::SetFileName(const CStdString& strFileName)
+void CGUIImage::SetFileName(const CStdString& strFileName, bool setConstant)
 {
+  if (setConstant)
+    m_image.file.SetLabel(strFileName, "");
+
   if (m_strFileName.Equals(strFileName)) return;
   // Don't completely free resources here - we may be just changing
   // filenames mid-animation
