@@ -3718,6 +3718,41 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
   return false;
 }
 
+bool CVideoDatabase::GetStackedTvShowList(long idShow, CStdString& strIn)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    // look for duplicate show titles and stack them into a list
+    if (idShow == -1)
+      return false;
+    CStdString strSQL = FormatSQL("select idShow from tvshow where c00 like (select c00 from tvshow where idShow=%u) order by idShow", idShow);
+    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRows = m_pDS->num_rows();
+    if (iRows == 0) return false; // this should never happen!
+    if (iRows > 1)
+    { // more than one show, so stack them up
+      strIn = "IN (";
+      while (!m_pDS->eof())
+      {
+        strIn += FormatSQL("%u,", m_pDS->fv(0).get_asLong());
+        m_pDS->next();
+      }
+      strIn[strIn.GetLength() - 1] = ')'; // replace last , with )
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
 bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& items, long idActor, long idDirector, long idGenre, long idYear, long idShow)
 {
   try
@@ -3725,8 +3760,12 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
+    CStdString strIn = FormatSQL("= %u", idShow);
+    if (g_guiSettings.GetBool("videolibrary.removeduplicates"))
+      GetStackedTvShowList(idShow, strIn);
+
     CStdString strSQL = FormatSQL("select episode.c%02d,path.strPath,tvshow.c%02d,count(1),count(episode.c%02d) from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idEpisode = episode.idEpisode ", VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_TV_TITLE, VIDEODB_ID_EPISODE_PLAYCOUNT);
-    CStdString joins = FormatSQL(" join tvshowlinkpath on tvshowlinkpath.idShow = tvshow.idShow join path on path.idPath = tvshowlinkpath.idPath where tvshow.idShow=%u ", idShow);
+    CStdString joins = FormatSQL(" join tvshowlinkpath on tvshowlinkpath.idShow = tvshow.idShow join path on path.idPath = tvshowlinkpath.idPath where tvshow.idShow %s ", strIn.c_str());
     CStdString extraJoins, extraWhere;
     if (idActor != -1)
     {
@@ -3849,7 +3888,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
       m_pDS->close();
     }
     // now add any linked movies
-    CStdString where = FormatSQL("join movielinktvshow on movielinktvshow.idMovie=movieview.idMovie where movielinktvshow.idShow=%u", idShow);
+    CStdString where = FormatSQL("join movielinktvshow on movielinktvshow.idMovie=movieview.idMovie where movielinktvshow.idShow %s", strIn.c_str());
     GetMoviesByWhere("videodb://1/2/", where, items);
     return true;
   }
@@ -4005,6 +4044,8 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
 
     CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d",
               timeGetTime() - time);
+    if (g_guiSettings.GetBool("videolibrary.removeduplicates"))
+      Stack(items);
 
     // cleanup
     m_pDS->close();
@@ -4017,10 +4058,68 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
   return false;
 }
 
+void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE cType /* = VIDEODB_CONTENT_TVSHOWS */)
+{
+  switch (cType)
+  {
+    case VIDEODB_CONTENT_TVSHOWS:
+    {
+      // sort by Title
+      items.Sort(SORT_METHOD_VIDEO_TITLE, SORT_ORDER_ASC);
+
+      int i = 0;
+      while (i < items.Size())
+      {
+        CFileItemPtr pItem = items.Get(i);
+        CStdString strTitle = pItem->GetVideoInfoTag()->m_strTitle;
+        CStdString strFanArt = pItem->GetProperty("fanart_image");
+
+        int j = i + 1;
+        while (j < items.Size())
+        {
+          CFileItemPtr jItem = items.Get(j);
+
+          // matching title? append information
+          if (jItem->GetVideoInfoTag()->m_strTitle.Equals(strTitle))
+          {
+            // increment episode counts
+            pItem->GetVideoInfoTag()->m_iEpisode += jItem->GetVideoInfoTag()->m_iEpisode;
+            pItem->IncrementProperty("watchedepisodes", jItem->GetPropertyInt("watchedepisodes"));
+            pItem->IncrementProperty("unwatchedepisodes", jItem->GetPropertyInt("unwatchedepisodes"));
+
+            // check for fanart if not already set
+            if (strFanArt.IsEmpty())
+              strFanArt = jItem->GetProperty("fanart_image");
+
+            // remove duplicate entry
+            items.Remove(j);
+          }
+          // no match? exit loop
+          else
+            break;
+        }
+        // update playcount and fanart
+        pItem->GetVideoInfoTag()->m_playCount = (pItem->GetVideoInfoTag()->m_iEpisode == pItem->GetPropertyInt("watchedepisodes")) ? 1 : 0;
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
+        if (!strFanArt.IsEmpty())
+          pItem->SetProperty("fanart_image", strFanArt);
+        // increment i to j which is the next item
+        i = j;
+      }
+    }
+    break;
+  }
+  // stack other types later
+
+  return;
+}
 
 bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idYear, long idActor, long idDirector, long idShow, long idSeason)
 {
-  CStdString where = FormatSQL("where idShow=%u",idShow);
+  CStdString strIn = FormatSQL("= %u", idShow);
+  if (g_guiSettings.GetBool("videolibrary.removeduplicates"))
+    GetStackedTvShowList(idShow, strIn);
+  CStdString where = FormatSQL("where idShow %s",strIn.c_str());
   if (idGenre != -1)
     where = FormatSQL("join genrelinktvshow on genrelinktvshow.idShow=episodeview.idShow where episodeview.idShow=%u and genrelinktvshow.idgenre=%u",idShow,idGenre);
   else if (idDirector != -1)
