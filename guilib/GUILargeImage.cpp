@@ -30,7 +30,7 @@
 CGUILargeImage::CGUILargeImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture)
 : CGUIImage(dwParentID, dwControlId, posX, posY, width, height, texture, 0), m_fallbackImage(dwParentID, dwControlId, posX, posY, width, height, texture)
 {
-  m_fallbackImage.SetFileName(m_image.file.GetLabel(m_dwParentID, true));
+  m_fallbackImage.SetFileName(texture.file.GetFallback(), true);  // true to set it constant
   ControlType = GUICONTROL_LARGE_IMAGE;
   m_usingBundledTexture = false;
 }
@@ -92,15 +92,16 @@ void CGUILargeImage::AllocResources()
     if (!texture)
       return;
 
+#ifdef HAS_XBOX_D3D
+    m_linearTexture = true;
+#else
+    m_linearTexture = false;
+#endif
     m_usingBundledTexture = false;
     m_vecTextures.push_back(texture);
   }
 
-#ifdef HAS_XBOX_D3D
-  m_linearTexture = true;
-#else
-  m_linearTexture = false;
-#endif
+
 
   CalculateSize();
 

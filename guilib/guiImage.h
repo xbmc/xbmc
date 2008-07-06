@@ -126,7 +126,7 @@ public:
   virtual bool IsAllocated() const;
 
   void PythonSetColorKey(DWORD dwColorKey);
-  virtual void SetFileName(const CStdString& strFileName);
+  virtual void SetFileName(const CStdString& strFileName, bool setConstant = false);
   virtual void SetAspectRatio(const CAspectRatio &aspect);
   void SetAspectRatio(CAspectRatio::ASPECT_RATIO ratio) { CAspectRatio aspect(ratio); SetAspectRatio(aspect); };
   void SetAlpha(unsigned char alpha);
