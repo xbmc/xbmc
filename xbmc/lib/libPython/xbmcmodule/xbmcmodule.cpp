@@ -739,7 +739,10 @@ namespace PYXBMC
     bool exists = false;
     if (g_TextureManager.Load(image))
     {
-      g_TextureManager.ReleaseTexture(image);
+      // NOTE: Ideally we'd release the texture resource here, but we can't reliably do that without first
+      //       requesting all the texture images and then asking for a release.
+      //       The better fix is a g_TextureManager.CanLoad(strImage) or something similar.
+      //g_TextureManager.ReleaseTexture(image);
       exists = true;
     }
 
