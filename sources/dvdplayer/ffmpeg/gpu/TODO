@@ -1,0 +1,17 @@
+
+x gpu utility functions(transfering, setup, etc.) 
+x add code to h264.c to call out to gpu functions(decode_slicegpu)
+x uploading reference pictures to a texture
+x 1-frame motion compensation shaders
+x code to compare cpu and gpu results
+x 4x4 AC/DC IDCT
+8x8 AC/DC IDCT
+multiple-frame motion compensation shaders
+test and time cpu and gpu motion compensation implementations
+residual decoding on GPU
+chroma motion compensation
+picture reconstruction
+test and time cpu and gpu for entire process
+I-blocks in B/P slices ?
+SI/SP ?
+MRT implementation of motion compensation(XBOX GPU paper) ?

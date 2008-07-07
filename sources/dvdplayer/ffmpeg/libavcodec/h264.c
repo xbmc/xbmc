@@ -25,6 +25,7 @@
  * @author Michael Niedermayer <michaelni@gmx.at>
  */
 
+
 #include "dsputil.h"
 #include "avcodec.h"
 #include "mpegvideo.h"
@@ -33,6 +34,7 @@
 #include "h264_parser.h"
 #include "golomb.h"
 #include "rectangle.h"
+#include "../gpu/h264gpu.h"
 
 #include "cabac.h"
 #ifdef ARCH_X86
@@ -42,12 +44,17 @@
 //#undef NDEBUG
 #include <assert.h>
 
+DCTELEM testing[16] = {5, 11, 8, 10, 
+			9, 8, 4, 12, 
+			1, 13, 11, 4,                                            
+			19, 6, 14, 7};
+
+
 /**
  * Value of Picture.reference when Picture is not a reference picture, but
  * is held for delayed output.
  */
 #define DELAYED_PIC_REF 4
-
 static VLC coeff_token_vlc[4];
 static VLC chroma_dc_coeff_token_vlc;
 
@@ -2186,7 +2193,7 @@ static av_cold void common_init(H264Context *h){
 
 static av_cold int decode_init(AVCodecContext *avctx){
     H264Context *h= avctx->priv_data;
-    MpegEncContext * const s = &h->s;
+    MpegEncContext * s = &h->s;
 
     MPV_decode_defaults(s);
 
@@ -2244,7 +2251,7 @@ static int frame_start(H264Context *h){
         h->block_offset[24+20+i]= 4*((scan8[i] - scan8[0])&7) + 8*s->uvlinesize*((scan8[i] - scan8[0])>>3);
     }
 
-    /* can't be in alloc_tables because linesize isn't known there.
+    /* can't be inal loc_tables because linesize isn't known there.
      * FIXME: redo bipred weight to not require extra buffer? */
     for(i = 0; i < s->avctx->thread_count; i++)
         if(!h->thread_context[i]->s.obmc_scratchpad)
@@ -2605,9 +2612,27 @@ static av_always_inline void hl_decode_mb_internal(H264Context *h, int simple){
                       s->me.qpel_put, s->dsp.put_h264_chroma_pixels_tab,
                       s->me.qpel_avg, s->dsp.avg_h264_chroma_pixels_tab,
                       s->dsp.weight_h264_pixels_tab, s->dsp.biweight_h264_pixels_tab);
+
+	    //RUDD GPU 
+	    //for testing vs. the GPU. do mo comp again and store the result in a separate buffer
+	    if(s->avctx->mo_comp_test){
+	      //RUDD TODO: fix this
+	      uint8_t *mo_y, *mo_cb, *mo_cr;
+	      mo_y  = h->mo_comp->data[0] + (mb_y * 16* s->linesize  ) + mb_x * 16;
+	      mo_cb = h->mo_comp->data[1] + (mb_y * 8 * s->uvlinesize) + mb_x * 8;
+	      mo_cr = h->mo_comp->data[2] + (mb_y * 8 * s->uvlinesize) + mb_x * 8;
+#if 1
+	      hl_motion(h, mo_y, mo_cb, mo_cr,
+			s->me.qpel_put, s->dsp.put_h264_chroma_pixels_tab,
+			s->me.qpel_avg, s->dsp.avg_h264_chroma_pixels_tab,
+			s->dsp.weight_h264_pixels_tab, s->dsp.biweight_h264_pixels_tab);
+#endif
+	    }
+	     
+	    
         }
-
-
+	
+	
         if(!IS_INTRA4x4(mb_type)){
             if(is_h264){
                 if(IS_INTRA16x16(mb_type)){
@@ -4032,6 +4057,14 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
             av_reduce(&s->avctx->time_base.num, &s->avctx->time_base.den,
                       s->avctx->time_base.num, s->avctx->time_base.den, 1<<30);
         }
+
+    //RUDD GPU INIT
+    gpu_init(h);
+    //RUDD TEST 
+    h->luma_residual = av_mallocz(s->height*s->linesize*sizeof(short));
+    h->mo_comp = av_mallocz(sizeof(Picture));
+    alloc_picture(s, h->mo_comp, 0);
+ 
     }
 
     h->frame_num= get_bits(&s->gb, h->sps.log2_max_frame_num);
@@ -6800,11 +6833,11 @@ static void filter_mb( H264Context *h, int mb_x, int mb_y, uint8_t *img_y, uint8
     }
 }
 
-static int decode_slice(struct AVCodecContext *avctx, H264Context *h){
-    MpegEncContext * const s = &h->s;
-    const int part_mask= s->partitioned_frame ? (AC_END|AC_ERROR) : 0x7F;
 
-    s->mb_skip_run= -1;
+static int decode_slice(struct AVCodecContext *avctx, H264Context *h){
+  MpegEncContext * const s = &h->s;
+  const int part_mask= s->partitioned_frame ? (AC_END|AC_ERROR) : 0x7F;
+  s->mb_skip_run= -1;
 
     if( h->pps.cabac ) {
         int i;
@@ -6865,7 +6898,8 @@ static int decode_slice(struct AVCodecContext *avctx, H264Context *h){
             }
 
             if( eos || s->mb_y >= s->mb_height ) {
-                tprintf(s->avctx, "slice end %d %d\n", get_bits_count(&s->gb), s->gb.size_in_bits);
+              tprintf(s->avctx, "slice end %d %d\n", get_bits_count(&s->gb), s->gb.size_in_bits);
+              //gpu_cmp_motion(h);
                 ff_er_add_slice(s, s->resync_mb_x, s->resync_mb_y, s->mb_x-1, s->mb_y, (AC_END|DC_END|MV_END)&part_mask);
                 return 0;
             }
@@ -6991,6 +7025,7 @@ static void copy_context_to_mb(H264mb *dst, H264Context *src)
     dst->topright_samples_available     = src->topright_samples_available;
     
     memcpy(dst->mb,                       src->mb,                       sizeof(src->mb));
+    memcpy(dst->gpu_mb,                   src->mb,                       sizeof(src->mb));
     memcpy(dst->intra4x4_pred_mode_cache, src->intra4x4_pred_mode_cache, sizeof(src->intra4x4_pred_mode_cache));
     memcpy(dst->non_zero_count_cache,     src->non_zero_count_cache,     sizeof(src->non_zero_count_cache));
     
@@ -7154,6 +7189,135 @@ static int decode_slice2(struct AVCodecContext *avctx, H264Context *h){
     ff_er_add_slice(s, s->resync_mb_x, s->resync_mb_y, s->mb_x-1, s->mb_y, (AC_END|DC_END|MV_END)&part_mask);
     return 0;
 }
+//RUDD TEMP
+void gpu_cmp_motion(H264Context *h);
+
+//RUDD GPU
+static int decode_slice_gpu(struct AVCodecContext *avctx, H264Context *h){
+  MpegEncContext * const s = &h->s;
+  GPUH264Context * const g = &h->gpu;
+  const int part_mask= s->partitioned_frame ? (AC_END|AC_ERROR) : 0x7F;
+  H264mb* blockStore = h->gpu.block_buffer;
+  int i, ret, eos, decoded = 0; //amount of blocks CABAC decoded
+  //RUDD DEBUG
+  av_log(s->avctx, AV_LOG_INFO, "\tMB_Height :%d - MB_Width: %d - total MBs: %d\n", 
+	 s->mb_height, s->mb_width, s->mb_width*s->mb_height);
+  
+  av_log(s->avctx, AV_LOG_INFO, "\tBeginning GPU assisted decode\n");
+  g->start = 0;
+  
+  //RUDD only bothering with CABAC branch for now. should be essentially teh same
+  // for CAVLC
+  if(h->pps.cabac) {
+    s->mb_skip_run= -1;
+
+    /* realign */
+    align_get_bits( &s->gb );
+
+    /* init cabac */
+    ff_init_cabac_states( &h->cabac);
+    ff_init_cabac_decoder( &h->cabac,
+			   s->gb.buffer + get_bits_count(&s->gb)/8,
+			   ( s->gb.size_in_bits - get_bits_count(&s->gb) + 7)/8);
+    /* calculate pre-state */
+    for( i= 0; i < 460; i++ ) {
+      int pre;
+	if( h->slice_type == FF_I_TYPE )
+	  pre = av_clip( ((cabac_context_init_I[i][0] * s->qscale) >>4 ) + cabac_context_init_I[i][1], 1, 126 );
+	else
+	  pre = av_clip( ((cabac_context_init_PB[h->cabac_init_idc][i][0] * s->qscale) >>4 ) + cabac_context_init_PB[h->cabac_init_idc][i][1], 1, 126 );
+	
+	if( pre <= 63 )
+	  h->cabac_state[i] = 2 * ( 63 - pre ) + 0;
+	else
+	  h->cabac_state[i] = 2 * ( pre - 64 ) + 1;
+    }
+    
+    h->todecode = 0;
+    while(1) {
+      //cabac as normal
+      ret = decode_mb_cabac(h);	
+      
+      if(FRAME_MBAFF) {
+	//I suppose I'll have to figure out MBAFF at some point
+	av_log(s->avctx, AV_LOG_ERROR, "MBAFF not supported in gpu mode\n");
+	return -1;
+      }
+      
+      eos = get_cabac_terminate( &h->cabac );
+      
+      if( ret < 0 || h->cabac.bytestream > h->cabac.bytestream_end + 2) {
+	av_log(h->s.avctx, AV_LOG_ERROR, "error while decoding MB %d %d, bytestream (%td)\n", s->mb_x, s->mb_y, h->cabac.bytestream_end - h->cabac.bytestream);
+	ff_er_add_slice(s, s->resync_mb_x, s->resync_mb_y, s->mb_x, s->mb_y, (AC_ERROR|DC_ERROR|MV_ERROR)&part_mask);
+	decoded = -1;
+	break;
+      }
+      
+      copy_context_to_mb(blockStore + decoded, h);
+      
+      if( ++s->mb_x >= s->mb_width ) {
+	s->mb_x = 0;
+	ff_draw_horiz_band(s, 16*s->mb_y, 16);
+	++s->mb_y;
+      }
+      
+      if( eos || s->mb_y >= s->mb_height )
+	break;
+      
+      decoded++;
+    }
+    
+    if(decoded < 0) {
+      av_log(s->avctx, AV_LOG_ERROR, "Decoding error in GPU mode\n");
+      return -1;
+    }
+
+    g->end = decoded;
+#if 1
+    // Do motion compensation first(Obviously I hope to not
+    // have the cpu sitll do mocomp :) )
+    int j=0;
+    if(h->slice_type != FF_I_TYPE)
+      {
+        START_TIMER;
+        for(j=0; j < 1; j++)
+          {
+            for(i=0; i < decoded; i++) {
+              copy_mb_to_context(h, blockStore + i);
+              hl_decode_mb(h);
+            }
+            STOP_TIMER("CPU decode");
+          }
+      }
+    else
+      {
+        for(i=0; i < decoded; i++) {
+          copy_mb_to_context(h, blockStore + i);
+          hl_decode_mb(h);
+        }
+      }
+
+#endif
+    
+    if(h->slice_type == FF_I_TYPE) {
+      av_log(s->avctx, AV_LOG_INFO, "\tI Slice detected. Not passing to GPU\n");
+      //RUDD TODO decode on cpu
+    }
+    else {
+      //RUDD TODO SI|SP slices?
+      av_log(s->avctx, AV_LOG_INFO, "\tnon-I Slice detected. Passing to GPU\n");
+      gpu_motion(h);
+    } 
+    tprintf(s->avctx, "slice end %d %d\n", get_bits_count(&s->gb), s->gb.size_in_bits);
+    ff_er_add_slice(s, s->resync_mb_x, s->resync_mb_y, s->mb_x-1, s->mb_y, (AC_END|DC_END|MV_END)&part_mask); 
+    return 0;
+  }
+  else
+    av_log(s->avctx, AV_LOG_ERROR, "\tCAVLC not supported in gpu mode\n");
+  
+  return -1 ;
+}
+
 
 static int decode_unregistered_user_data(H264Context *h, int size){
     MpegEncContext * const s = &h->s;
@@ -7638,6 +7802,10 @@ static void execute_decode_slices(H264Context *h, int context_count){
     AVCodecContext * const avctx= s->avctx;
     H264Context *hx;
     int i;
+
+    //RUDD GPU let's give the GPU a try
+    if(avctx->gpu)
+      decode_slice_gpu(avctx, h);
 
     if(context_count == 1) {
 	if(avctx->thread_count > 1 && h->pps.cabac)

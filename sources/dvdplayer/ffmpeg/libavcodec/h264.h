@@ -33,9 +33,9 @@
 #include "mpegvideo.h"
 #include "h264pred.h"
 
+
 #define interlaced_dct interlaced_dct_is_a_bad_name
 #define mb_intra mb_intra_is_not_initialized_see_mb_type
-
 #define LUMA_DC_BLOCK_INDEX   25
 #define CHROMA_DC_BLOCK_INDEX 26
 
@@ -182,10 +182,35 @@ typedef struct H264mb {
     int left_mb_xy[2];
 
     unsigned int sub_mb_type[4];
-
+ 
+  //RUDD GPU ugly hack, but the idct algos are in-place sadly
+    DCTELEM gpu_mb[16*24];
     DCTELEM mb[16*24];
 } H264mb;
 
+/**
+ * GPUH264Context
+ */
+
+typedef struct GPUH264Context{
+
+  H264mb* block_buffer;
+  int start, end; //Set of blocks for GPU to decode
+
+  //3D Texture represeneting the decoded picture buffer
+  uint32_t dpb_tex;
+  uint16_t dpb_free; //bitmap for free slots in the dpb
+  uint16_t fb, cur_tex;
+
+  short* lum_residual, *cr_residual, *cb_residual;
+  
+  //for testing purposes
+  Picture mo_comp;
+
+  uint32_t shaders[6];
+
+  int init;
+} GPUH264Context;
 
 /**
  * H264Context
@@ -450,6 +475,12 @@ typedef struct H264Context{
     int phaze;
     int todecode;
     H264mb *blocks[2];
+
+  GPUH264Context gpu;
+
+  /* For testing GPU assisted h264 */
+  Picture* mo_comp; //Motion compensated picture
+  short* luma_residual; 
 
 }H264Context;
 

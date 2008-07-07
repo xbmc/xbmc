@@ -19,6 +19,10 @@ OBJS = allcodecs.o \
        resample2.o \
        simple_idct.o \
        utils.o \
+       ../gpu/gpu_utils.o \
+       ../gpu/gpu_test.o \
+       ../gpu/h264gpu.o \
+
 
 
 HEADERS = avcodec.h opt.h

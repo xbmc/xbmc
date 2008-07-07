@@ -31,7 +31,7 @@
 
 #define LIBAVCODEC_VERSION_MAJOR 51
 #define LIBAVCODEC_VERSION_MINOR 57
-#define LIBAVCODEC_VERSION_MICRO  2
+#define LIBAVCODEC_VERSION_MICRO  4
 
 #define LIBAVCODEC_VERSION_INT  AV_VERSION_INT(LIBAVCODEC_VERSION_MAJOR, \
                                                LIBAVCODEC_VERSION_MINOR, \
@@ -2208,6 +2208,10 @@ typedef struct AVCodecContext {
      * - decoding: Set by user.
      */
     float drc_scale;
+  
+  //RUDD GPU 264. Values for testing gpu based h.264
+  int mo_comp_test, dct_test, frame_test, gpu;
+  
 } AVCodecContext;
 
 /**
