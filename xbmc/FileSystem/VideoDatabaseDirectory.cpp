@@ -60,7 +60,9 @@ bool CVideoDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
       if (!strImage.IsEmpty() && g_TextureManager.Load(strImage))
       {
         item->SetThumbnailImage(strImage);
-        g_TextureManager.ReleaseTexture(strImage);
+        // NOTE: Ideally we'd release the texture resource here, but we can't reliably do that without first
+        //       requesting all the texture images and then asking for a release.
+        //       The better fix is a g_TextureManager.CanLoad(strImage) or something similar.
       }
     }
   }
