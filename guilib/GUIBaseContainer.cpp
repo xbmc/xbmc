@@ -516,11 +516,17 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
 
 void CGUIBaseContainer::CalculateLayout()
 {
+  CGUIListItemLayout *oldFocusedLayout = m_focusedLayout;
+  CGUIListItemLayout *oldLayout = m_layout;
   GetCurrentLayouts();
 
   // calculate the number of items to display
   assert(m_focusedLayout && m_layout);
   if (!m_focusedLayout || !m_layout) return;
+
+  if (oldLayout == m_layout && oldFocusedLayout == m_focusedLayout)
+    return; // nothing has changed, so don't update stuff
+
   m_itemsPerPage = (int)((Size() - m_focusedLayout->Size(m_orientation)) / m_layout->Size(m_orientation)) + 1;
 
   // ensure that the scroll offset is a multiple of our size
