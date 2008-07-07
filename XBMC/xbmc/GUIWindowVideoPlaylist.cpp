@@ -316,7 +316,7 @@ bool CGUIWindowVideoPlaylist::OnPlayMedia(int iItem)
     g_partyModeManager.Play(iItem);
   else
   {
-    CFileItem* pItem = m_vecItems->Get(iItem);
+    CFileItemPtr pItem = m_vecItems->Get(iItem);
     CStdString strPath = pItem->m_strPath;
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
     g_playlistPlayer.Play( iItem );
@@ -367,23 +367,13 @@ void CGUIWindowVideoPlaylist::SavePlayList()
     // need 2 rename it
     CStdString strPath, strFolder;
     CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "video", strFolder);
-    CUtil::RemoveIllegalChars( strNewFileName );
+    strNewFileName = CUtil::MakeLegalFileName(strNewFileName);
     strNewFileName += ".m3u";
     CUtil::AddFileToFolder(strFolder, strNewFileName, strPath);
 
     CPlayListM3U playlist;
-    for (int i = 0; i < m_vecItems->Size(); ++i)
-    {
-      CFileItem* pItem = m_vecItems->Get(i);
-      CPlayListItem newItem;
-      newItem.SetFileName(pItem->m_strPath);
-      newItem.SetDescription(pItem->GetLabel());
-      if (pItem->HasVideoInfoTag())
-        newItem.SetDuration(StringUtils::TimeStringToSeconds(pItem->GetVideoInfoTag()->m_strRuntime));
-      else
-        newItem.SetDuration(0);
-      playlist.Add(newItem);
-    }
+    playlist.Add(*m_vecItems);
+
     CLog::Log(LOGDEBUG, "Saving video playlist: [%s]", strPath.c_str());
     playlist.Save(strPath);
   }

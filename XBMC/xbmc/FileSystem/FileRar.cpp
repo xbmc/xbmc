@@ -170,6 +170,7 @@ bool CFileRar::Open(const CURL& url, bool bBinary)
   }
 
   if (i<items.Size())
+  {
     if (items[i]->m_idepth == 0x30) // stored
     {
       if (!OpenInArchive())
@@ -181,6 +182,7 @@ bool CFileRar::Open(const CURL& url, bool bBinary)
       // perform 'noidx' check
       CFileInfo* pFile = g_RarManager.GetFileInRar(m_strRarPath,m_strPathInRar);
       if (pFile)
+      {
         if (pFile->m_iIsSeekable == -1)
         {
           if (Seek(-1,SEEK_END) == -1)
@@ -190,20 +192,12 @@ bool CFileRar::Open(const CURL& url, bool bBinary)
           }
         }
         else
-         m_bSeekable = (pFile->m_iIsSeekable == 1);
-
-        return true;
+          m_bSeekable = (pFile->m_iIsSeekable == 1);
+      }
+      return true;
     }
     else 
     {
-#ifdef HAS_XBOX_HARDWARE
-      if (items[i]->m_dwSize > ((__int64)4)*1024*1024*1024) // 4 gig limit of fat-x
-      {
-        CGUIDialogOK::ShowAndGetInput(257,21395,-1,-1);
-        CLog::Log(LOGERROR,"CFileRar::Open: Can't cache files bigger than 4GB due to fat-x limits.");
-        return false;
-      }
-#endif
       m_bUseFile = true;
       CStdString strPathInCache;
       
@@ -222,7 +216,7 @@ bool CFileRar::Open(const CURL& url, bool bBinary)
       m_bOpen = true;
       return true;
     }
-
+  }
   return false;
 }
 

@@ -41,24 +41,12 @@
 #include "StdString.h"
 #include "StringUtils.h"
 
-#ifdef _XBOX
-#if defined(_DEBUG) && defined(_MEMTRACKING)
-#define _CRTDBG_MAP_ALLOC
-#include <FStream>
-#include <stdlib.h>
-#include <crtdbg.h>
-#define new new( _NORMAL_BLOCK, __FILE__, __LINE__)
-#endif
-#endif
-
 // guilib internal
 #include "LocalizeStrings.h"
 
-#include "utils/Thread.h"
 #include "utils/CriticalSection.h"
 #include "utils/SingleLock.h"
 #include "utils/Event.h"
-#include "utils/Mutex.h"
 #include "utils/Archive.h"
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
@@ -66,21 +54,12 @@
 
 #include "SectionLoader.h"
 #include "ApplicationMessenger.h"
-#include "Crc32.h"
 #include "AutoPtrHandle.h"
 
 // Often used
 #include "GUIUserMessages.h"
 
-#ifdef _XBOX
-#ifdef QueryPerformanceFrequency
-#undef QueryPerformanceFrequency
-#endif
-WINBASEAPI BOOL WINAPI QueryPerformanceFrequencyXbox(LARGE_INTEGER *lpFrequency);
-#define QueryPerformanceFrequency(a) QueryPerformanceFrequencyXbox(a)
-#else
 #undef GetFreeSpace
-#endif
 
 #define SAFE_DELETE(p)       { delete (p);     (p)=NULL; }
 #define SAFE_DELETE_ARRAY(p) { delete[] (p);   (p)=NULL; }

@@ -31,6 +31,21 @@
 
 using namespace std;
 
+#ifdef _LINUX
+#define ROUND_TO_PIXEL(x) x
+#else
+namespace MathUtils {
+  inline int round_int (double x);
+}
+
+#if defined(HAS_SDL_OPENGL)
+#define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
+#else
+#define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x)) - 0.5f
+#endif
+
+#endif // _LINUX
+
 #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
 
 CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, DWORD dwColorKey)
@@ -142,12 +157,6 @@ void CGUIImage::Render()
     LPDIRECT3DDEVICE8 p3DDevice = g_graphicsContext.Get3DDevice();
     // Set state to render the image
 #ifdef ALLOW_TEXTURE_COMPRESSION
-#ifdef HAS_XBOX_D3D
-    if (!m_linearTexture)
-      p3DDevice->SetPalette( 0, m_pPalette);
-    if (m_diffusePalette)
-      p3DDevice->SetPalette( 1, m_diffusePalette);
-#endif
 #endif
     p3DDevice->SetTexture( 0, m_vecTextures[m_iCurrentImage] );
     p3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
@@ -187,10 +196,6 @@ void CGUIImage::Render()
     p3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
     p3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
     p3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
-
-#ifdef HAS_XBOX_D3D
-    p3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE);
-#endif
 
     p3DDevice->SetVertexShader( D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX2 );
 #endif
@@ -257,10 +262,6 @@ void CGUIImage::Render()
     }
 #endif
 
-#ifdef HAS_XBOX_D3D
-    p3DDevice->Begin(D3DPT_QUADLIST);
-#endif
-
     // TODO: The diffuse coloring applies to all vertices, which will
     //       look weird for stuff with borders, as will the -ve height/width
     //       for flipping
@@ -289,27 +290,6 @@ void CGUIImage::Render()
       if (m_image.border.bottom)
         Render(m_fX + m_fNW - m_image.border.right, m_fY + m_fNH - m_image.border.bottom, m_fX + m_fNW, m_fY + m_fNH, uRight, vBottom, m_fU, m_fV); 
     } 
-#ifdef ALLOW_TEXTURE_COMPRESSION
-#ifdef HAS_XBOX_D3D
-    p3DDevice->End();
-    if (g_graphicsContext.RectIsAngled(m_fX, m_fY, m_fX + m_fNW, m_fY + m_fNH))
-    {
-      p3DDevice->SetRenderState( D3DRS_MULTISAMPLEANTIALIAS, FALSE );
-      p3DDevice->SetRenderState( D3DRS_EDGEANTIALIAS, TRUE );
-      p3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_WIREFRAME );
-      p3DDevice->Begin(D3DPT_QUADLIST);
-      Render(m_fX, m_fY, m_fX + m_fNW, m_fY + m_fNH, 0, 0, m_fU, m_fV);
-      p3DDevice->End();
-      p3DDevice->SetRenderState( D3DRS_MULTISAMPLEANTIALIAS, TRUE );
-      p3DDevice->SetRenderState( D3DRS_EDGEANTIALIAS, FALSE );
-      p3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-    }
-    if (!m_linearTexture)
-      p3DDevice->SetPalette( 0, NULL);
-    if (m_diffusePalette)
-      p3DDevice->SetPalette( 1, NULL);
-#endif
-#endif
 
 #ifdef HAS_SDL_OPENGL      
     glEnd();
@@ -357,76 +337,25 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
 
   if (vertex.IsEmpty())
     return; // nothing to render
-  /*
-  float x1 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1) + 0.5f);// - 0.5f;
-  float y1 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1) + 0.5f);// - 0.5f;
-  float x2 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1) + 0.5f);// - 0.5f;
-  float y2 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1) + 0.5f);// - 0.5f;
-  float x3 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2) + 0.5f);// - 0.5f;
-  float y3 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2) + 0.5f);// - 0.5f;
-  float x4 = floor(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2) + 0.5f);// - 0.5f;
-  float y4 = floor(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2) + 0.5f);// - 0.5f;
-  */
 
-  float x1 = g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1);
-  float y1 = g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1);
-  float x2 = g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1);
-  float y2 = g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1);
-  float x3 = g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2);
-  float y3 = g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2);
-  float x4 = g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2);
-  float y4 = g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2);
+  float x1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1));
+  float y1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
+  float x2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1));
+  float y2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
+  float x3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2));
+  float y3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
+  float x4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2));
+  float y4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
 
-  float z1 = g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1);
-  float z2 = g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1);
-  float z3 = g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2);
-  float z4 = g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2);
+  float z1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
+  float z2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
+  float z3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
+  float z4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
 
   if (y3 == y1) y3 += 1.0f; if (x3 == x1) x3 += 1.0f;
   if (y4 == y2) y4 += 1.0f; if (x4 == x2) x4 += 1.0f;
 
-#ifdef HAS_XBOX_D3D
-  D3DCOLOR color = m_diffuseColor;
-  if (m_alpha[0] != 0xFF) color = MIX_ALPHA(m_alpha[0],m_diffuseColor);
-  p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y1);
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, diffuse.x1, diffuse.y1);
-  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y1, z1, 1 );
-
-  color = m_diffuseColor;
-  if (m_alpha[1] != 0xFF) color = MIX_ALPHA(m_alpha[1],m_diffuseColor);
-  p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  if (textureOrientation & 4)
-    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y2);
-  else
-    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x2, texture.y1);
-  if (m_image.orientation & 4)
-    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, diffuse.x1, diffuse.y2);
-  else
-    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, diffuse.x2, diffuse.y1);
-  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y2, z2, 1 );
-
-  color =  m_diffuseColor;
-  if (m_alpha[2] != 0xFF) color = MIX_ALPHA(m_alpha[2], m_diffuseColor);
-  p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x2, texture.y2);
-  p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, diffuse.x2, diffuse.y2);
-  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x3, y3, z3, 1 );
-
-  color =  m_diffuseColor;
-  if (m_alpha[3] != 0xFF) color = MIX_ALPHA(m_alpha[3], m_diffuseColor);
-  p3DDevice->SetVertexDataColor(D3DVSDE_DIFFUSE, g_graphicsContext.MergeAlpha(color));
-  if (textureOrientation & 4)
-    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x2, texture.y1);
-  else
-    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y2);
-  if (m_image.orientation & 4)
-    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, diffuse.x2, diffuse.y1);
-  else
-    p3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, diffuse.x1, diffuse.y2);
-  p3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, z4, 1 );
-
-#elif !defined(HAS_SDL)
+#if !defined(HAS_SDL)
   struct CUSTOMVERTEX {
       FLOAT x, y, z;
       DWORD color;
@@ -669,9 +598,7 @@ void CGUIImage::AllocResources()
 
     pTexture = g_TextureManager.GetTexture(m_strFileName, i, m_iTextureWidth, m_iTextureHeight, m_pPalette, m_linearTexture);
 
-#ifndef HAS_XBOX_D3D
     m_linearTexture = false;
-#endif
     m_vecTextures.push_back(pTexture);
 #ifdef HAS_SDL_2D
     m_vecCachedTextures.push_back(CCachedTexture());
@@ -696,14 +623,6 @@ void CGUIImage::LoadDiffuseImage()
 
     if (m_diffuseTexture)
     { // calculate scaling for the texcoords (vs texcoords of main texture)
-#ifdef HAS_XBOX_D3D
-      if (linearTexture)
-      {
-        m_diffuseScaleU = float(width) / m_fU;
-        m_diffuseScaleV = float(height) / m_fV;
-      }
-      else
-#endif
       {
 #ifndef HAS_SDL      
         D3DSURFACE_DESC desc;

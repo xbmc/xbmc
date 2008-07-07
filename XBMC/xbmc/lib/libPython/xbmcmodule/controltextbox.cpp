@@ -20,10 +20,8 @@
  */
 
 #include "stdafx.h"
-#ifndef _LINUX
-#include "lib/libPython/python/Python.h"
-#else
-#include <python2.4/Python.h>
+#include "lib/libPython/Python/Include/Python.h"
+#ifdef _LINUX
 #include "../XBPythonDll.h"
 #endif
 #include "GUITextBox.h"
@@ -50,7 +48,7 @@ namespace PYXBMC
 
   PyObject* ControlTextBox_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = { "x", "y", "width", "height", "font", "textColor", NULL };
+    static const char *keywords[] = { "x", "y", "width", "height", "font", "textColor", NULL };
     ControlTextBox *self;
     char *cFont = NULL;
     char *cTextColor = NULL;
@@ -66,8 +64,8 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "llll|ss",
-      keywords,
+      (char*)"llll|ss",
+      (char**)keywords,
       &self->dwPosX,
       &self->dwPosY,
       &self->dwWidth,
@@ -144,7 +142,7 @@ namespace PYXBMC
   {
     PyObject *pObjectText;
     string strText;
-    if (!PyArg_ParseTuple(args, "O", &pObjectText))	return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText))	return NULL;
     if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     // create message
@@ -201,9 +199,9 @@ namespace PYXBMC
   }
 
   PyMethodDef ControlTextBox_methods[] = {
-    {"setText", (PyCFunction)ControlTextBox_SetText, METH_VARARGS, setText__doc__},
-    {"reset", (PyCFunction)ControlTextBox_Reset, METH_VARARGS, reset__doc__},
-    {"getSpinControl", (PyCFunction)ControlTextBox_GetSpinControl, METH_VARARGS, getSpinControl__doc__},
+    {(char*)"setText", (PyCFunction)ControlTextBox_SetText, METH_VARARGS, setText__doc__},
+    {(char*)"reset", (PyCFunction)ControlTextBox_Reset, METH_VARARGS, reset__doc__},
+    {(char*)"getSpinControl", (PyCFunction)ControlTextBox_GetSpinControl, METH_VARARGS, getSpinControl__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -240,7 +238,7 @@ namespace PYXBMC
   {
     PyInitializeTypeObject(&ControlTextBox_Type);
 
-    ControlTextBox_Type.tp_name = "xbmcgui.ControlTextBox";
+    ControlTextBox_Type.tp_name = (char*)"xbmcgui.ControlTextBox";
     ControlTextBox_Type.tp_basicsize = sizeof(ControlTextBox);
     ControlTextBox_Type.tp_dealloc = (destructor)ControlTextBox_Dealloc;
     ControlTextBox_Type.tp_compare = 0;

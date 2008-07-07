@@ -66,7 +66,7 @@ bool CScraperSettings::LoadSettingsXML(const CStdString& strScraper, const CStdS
 
   if (!url && strFunction.Equals("GetSettings")) // entry point
     m_pluginXmlDoc.Clear();
-    
+
   std::vector<CStdString> strHTML;
   if (url)
   {
@@ -94,7 +94,7 @@ bool CScraperSettings::LoadSettingsXML(const CStdString& strScraper, const CStdS
   // set the charset of the xml, and we made use of that
   if (strXML.Find("encoding=\"utf-8\"") < 0)
     g_charsetConverter.stringCharsetToUtf8(strXML);
-  
+
   // ok, now parse the xml file
   TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
@@ -127,7 +127,7 @@ bool CScraperSettings::LoadSettingsXML(const CStdString& strScraper, const CStdS
   {
     const char* szFunction = xurl->Attribute("function");
     if (szFunction)
-    {      
+    {
       CScraperUrl scrURL(xurl);
       LoadSettingsXML(strScraper,szFunction,&scrURL);
     }

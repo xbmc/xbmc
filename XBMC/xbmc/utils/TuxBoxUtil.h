@@ -21,6 +21,8 @@
  *
  */
 
+#include "Thread.h"
+
 class CURL;
 class TiXmlElement;
 class CFileItemList;
@@ -141,7 +143,7 @@ class CTuxBoxUtil
 
     CTuxBoxUtil(void);
     virtual ~CTuxBoxUtil(void);
-    
+
     bool GetZapUrl(const CStdString& strPath, CFileItem &items);
     bool ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString strFilter, CStdString strChild);
     bool ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString strFilter, CStdString strChild);
@@ -168,7 +170,7 @@ class CTuxBoxService : public CThread
 public:
   CTuxBoxService();
   ~CTuxBoxService();
-    
+
   bool Start();
   void Stop();
   bool IsRunning();

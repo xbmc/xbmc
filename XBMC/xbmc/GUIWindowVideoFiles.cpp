@@ -170,10 +170,6 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         if (g_stSettings.m_iMyVideoStack > STACK_SIMPLE)
           g_stSettings.m_iMyVideoStack = STACK_NONE;
 
-        if (g_stSettings.m_iMyVideoStack != STACK_NONE)
-          g_stSettings.m_bMyVideoCleanTitles = true;
-        else
-          g_stSettings.m_bMyVideoCleanTitles = false;
         g_settings.Save();
         UpdateButtons();
         Update( m_vecItems->m_strPath );
@@ -193,7 +189,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         int iItem = m_viewControl.GetSelectedItem();
         int iAction = message.GetParam1();
 
-        const CFileItem* pItem = m_vecItems->Get(iItem);
+        const CFileItemPtr pItem = m_vecItems->Get(iItem);
 
         // use play button to add folders of items to temp playlist
         if (iAction == ACTION_PLAYER_PLAY && pItem->m_bIsFolder && !pItem->IsParentFolder())
@@ -280,17 +276,14 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
 void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIWindowVideoBase::OnPrepareFileItems(items);
-  if (g_stSettings.m_bMyVideoCleanTitles && 
-    ((g_stSettings.m_iMyVideoStack & STACK_UNAVAILABLE) != STACK_UNAVAILABLE))
-  {
+  if (g_guiSettings.GetBool("myvideos.cleanfilenames"))
     items.CleanFileNames();
   }
-}
 
 bool CGUIWindowVideoFiles::OnClick(int iItem)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return true;
-  CFileItem* pItem = m_vecItems->Get(iItem);
+  CFileItemPtr pItem = m_vecItems->Get(iItem);
   CStdString strExtension;
   CUtil::GetExtension(pItem->m_strPath, strExtension);
 
@@ -300,7 +293,7 @@ bool CGUIWindowVideoFiles::OnClick(int iItem)
     info.strPath = "imdb.xml";
     info.strContent = "movies";
     info.strTitle = "IMDb";
-    OnInfo(m_vecItems->Get(iItem),info);
+    OnInfo(pItem.get(),info);
     return true;
   }
 
@@ -310,7 +303,7 @@ bool CGUIWindowVideoFiles::OnClick(int iItem)
 bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
-  CFileItem* pItem = m_vecItems->Get(iItem);
+  CFileItemPtr pItem = m_vecItems->Get(iItem);
 
   if (pItem->IsDVD())
     return CAutorun::PlayDisc();
@@ -329,7 +322,7 @@ bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
   }
   else
   {
-    AddFileToDatabase(pItem);
+    AddFileToDatabase(pItem.get());
 
     return CGUIWindowVideoBase::OnPlayMedia(iItem);
   }
@@ -359,10 +352,10 @@ void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
     bool bFoundFile(false);
     for (int i = 0; i < (int)vecitems.Size(); ++i)
     {
-      CFileItem *item = vecitems[i];
+      CFileItemPtr item = vecitems[i];
       if (!item->m_bIsFolder)
       {
-        if (item->IsVideo() && !item->IsNFO() && !item->IsPlayList() && 
+        if (item->IsVideo() && !item->IsNFO() && !item->IsPlayList() &&
             item->m_strPath.Find("-trailer.") == -1)
         {
           bFoundFile = true;
@@ -388,8 +381,8 @@ void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
           GetStackedDirectory(item->m_strPath, items);
           for (int i = 0; i < items.Size(); i++)
           {
-            CFileItem *item = items[i];
-            if (!item->m_bIsFolder && item->IsVideo() && !item->IsNFO() && 
+            CFileItemPtr item = items[i];
+            if (!item->m_bIsFolder && item->IsVideo() && !item->IsNFO() &&
                 !item->IsPlayList())
             {
               bFoundFile = true;
@@ -422,7 +415,7 @@ void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
   {
     item.RemoveExtension();
   }
-  
+
   item.SetCachedVideoThumb();
   if (!item.HasThumbnail() && pItem->GetProperty("HasAutoThumb") != "1") // inherit from the original item if it exists
     item.SetThumbnailImage(pItem->GetThumbnailImage());
@@ -490,30 +483,31 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& 
   if (!g_guiSettings.GetBool("videolibrary.enabled"))
     return;
 
+  CFileItemPtr item = m_vecItems->Get(iItem);
   bool bScan=false;
   if (iFound == 0)
   {
-    m_database.GetScraperForPath(m_vecItems->Get(iItem)->m_strPath,info, settings,iFound);
+    m_database.GetScraperForPath(item->m_strPath,info, settings,iFound);
   }
   SScraperInfo info2 = info;
   SScanSettings settings2 = settings;
-  
+
   if (CGUIDialogContentSettings::Show(info2, settings2, bScan))
   {
-    if((info2.strContent.IsEmpty() || info2.strContent.Equals("None")) && 
+    if((info2.strContent.IsEmpty() || info2.strContent.Equals("None")) &&
       (!info.strContent.IsEmpty() && !info.strContent.Equals("None")))
     {
       OnUnAssignContent(iItem);
     }
 
     m_database.Open();
-    m_database.SetScraperForPath(m_vecItems->Get(iItem)->m_strPath,info2,settings2);
+    m_database.SetScraperForPath(item->m_strPath,info2,settings2);
     m_database.Close();
 
     if (bScan)
     {
-      GetScraperForItem(m_vecItems->Get(iItem),info2,settings2);
-      OnScan(m_vecItems->Get(iItem)->m_strPath,info2,settings2);
+      GetScraperForItem(item.get(),info2,settings2);
+      OnScan(item->m_strPath,info2,settings2);
     }
   }
 }
@@ -568,7 +562,9 @@ void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)
 
 void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : NULL;
+  CFileItemPtr item;
+  if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
+    item = m_vecItems->Get(itemNumber);
 
   CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (item)
@@ -577,13 +573,13 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     if (m_vecItems->IsVirtualDirectoryRoot())
     {
       // get the usual shares, and anything for all media windows
-      CMediaSource *share = CGUIDialogContextMenu::GetShare("video", item);
+      CMediaSource *share = CGUIDialogContextMenu::GetShare("video", item.get());
       CGUIDialogContextMenu::GetContextButtons("video", share, buttons);
       CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
       // add scan button somewhere here
       if (pScanDlg && pScanDlg->IsScanning())
         buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
-      if (g_guiSettings.GetBool("videolibrary.enabled") && !item->IsDVD() && 
+      if (g_guiSettings.GetBool("videolibrary.enabled") && !item->IsDVD() &&
          (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
@@ -592,7 +588,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
         CVideoDatabase database;
         database.Open();
         SScraperInfo info;
-        
+
         if (share != 0 && database.GetScraperForPath(share->strPath,info))
         {
           if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
@@ -612,7 +608,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       {
         SScraperInfo info;
         VIDEO::SScanSettings settings;
-        int iFound = GetScraperForItem(item, info, settings);
+        int iFound = GetScraperForItem(item.get(), info, settings);
 
         int infoString = 13346;
         if (info.strContent.Equals("tvshows"))
@@ -634,14 +630,9 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
               buttons.Add(CONTEXT_BUTTON_INFO, infoString);
           }
           else
-          { // scraper found - allow to add to library, scan for new content, or set different type of content
+          { // scraper found - allow movie information, scan for new content, or set different type of content
             if (!info.strContent.Equals("musicvideos"))
               buttons.Add(CONTEXT_BUTTON_INFO, infoString);
-            else
-            {
-              if (!item->IsPlayList())
-                buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
-            }
             if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
               if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
                 buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
@@ -650,9 +641,9 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
         else
         {
           // single file
-          if ((info.strContent.Equals("movies") && (iFound > 0 || 
-               m_database.HasMovieInfo(item->m_strPath)))      || 
-               m_database.HasEpisodeInfo(item->m_strPath)      || 
+          if ((info.strContent.Equals("movies") && (iFound > 0 ||
+               m_database.HasMovieInfo(item->m_strPath)))      ||
+               m_database.HasEpisodeInfo(item->m_strPath)      ||
                info.strContent.Equals("musicvideos"))
           {
             buttons.Add(CONTEXT_BUTTON_INFO, infoString);
@@ -668,7 +659,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       }
       if (!item->IsParentFolder())
       {
-        if ((m_vecItems->m_strPath.Equals("special://videoplaylists/")) || 
+        if ((m_vecItems->m_strPath.Equals("special://videoplaylists/")) ||
              g_guiSettings.GetBool("filelists.allowfiledeletion"))
         { // video playlists or file operations are allowed
           if (!item->IsReadOnly())
@@ -695,10 +686,12 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
 
 bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
-  CFileItem *item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : NULL;
+  CFileItemPtr item;
+  if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
+    item = m_vecItems->Get(itemNumber);
   if ( m_vecItems->IsVirtualDirectoryRoot() && item)
   {
-    CMediaSource *share = CGUIDialogContextMenu::GetShare("video", item);
+    CMediaSource *share = CGUIDialogContextMenu::GetShare("video", item.get());
     if (CGUIDialogContextMenu::OnContextButton("video", share, button))
     {
       if (button == CONTEXT_BUTTON_REMOVE_SOURCE)

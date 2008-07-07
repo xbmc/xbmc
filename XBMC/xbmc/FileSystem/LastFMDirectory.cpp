@@ -122,7 +122,7 @@ void CLastFMDirectory::AddEntry(int iString, CStdString strPath, CStdString strI
   strPath.Replace("%type%", m_objtype);
   strPath.Replace("%request%", m_objrequest);
 
-  CFileItem *pItem = new CFileItem;
+  CFileItemPtr pItem(new CFileItem);
   pItem->SetLabel(strLabel);
   pItem->m_strPath = strPath;
   pItem->m_bIsFolder = bFolder;
@@ -141,7 +141,7 @@ void CLastFMDirectory::AddListEntry(const char *name, const char *artist, const 
 {
   CStdString strName;
   CStdString strCount;
-  CFileItem *pItem = new CFileItem;
+  CFileItemPtr pItem(new CFileItem);
   CMusicInfoTag* musicinfotag = pItem->GetMusicInfoTag();
   musicinfotag->SetTitle(name);
 
@@ -201,7 +201,7 @@ void CLastFMDirectory::AddListEntry(const char *name, const char *artist, const 
 
   // icons? would probably take too long to retrieve them all
   items.Add(pItem);
-  m_vecCachedItems->Add(new CFileItem(*pItem));
+  m_vecCachedItems->Add(pItem);
 }
 
 bool CLastFMDirectory::ParseArtistList(CStdString url, CFileItemList &items)

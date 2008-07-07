@@ -61,14 +61,10 @@
 #define VIDEO_SHOW_UNWATCHED 1
 #define VIDEO_SHOW_WATCHED 2
 
-#ifdef _XBOX
-#define PROFILES_FILE "q:\\system\\profiles.xml"
-#else
-/* FIXME: eventaully the profile should dictate where t:\ is but for now it 
-   makes sense to leave all the profile settings in a user writeable location 
+/* FIXME: eventually the profile should dictate where t:\ is but for now it
+   makes sense to leave all the profile settings in a user writeable location
    like t:\ */
 #define PROFILES_FILE "t:\\profiles.xml"
-#endif
 
 class CSkinString
 {
@@ -170,6 +166,10 @@ public:
     int m_busyDialogDelay;
     int m_logLevel;
     CStdString m_cddbAddress;
+#ifdef HAS_HAL
+    bool m_useHalMount;
+#endif
+    bool m_fullScreenOnMovieStart;
     bool m_usePCDVDROM;
     bool m_noDVDROM;
     CStdString m_cachePath;
@@ -221,7 +221,7 @@ public:
     bool m_bTuxBoxSendAllAPids;
 
     int m_curlclienttimeout;
-    
+
 #ifdef HAS_SDL
     bool m_fullScreen;
 #endif
@@ -278,7 +278,6 @@ public:
     int m_iVideoStartWindow;
 
     int m_iMyVideoStack;
-    bool m_bMyVideoCleanTitles;
     char m_szMyVideoCleanTokens[256];
     char m_szMyVideoCleanSeparators[32];
 
@@ -351,7 +350,6 @@ public:
   CStdString GetPicturesThumbFolder() const;
   CStdString GetProgramsThumbFolder() const;
   CStdString GetGameSaveThumbFolder() const;
-  CStdString GetXLinkKaiThumbFolder() const;
   CStdString GetProfilesThumbFolder() const;
   CStdString GetSourcesFile() const;
   CStdString GetSkinFolder() const;
@@ -360,11 +358,10 @@ public:
   CStdString GetVideoFanartFolder() const;
 
   CStdString GetSettingsFile() const;
-  CStdString GetAvpackSettingsFile() const;
 
   bool LoadUPnPXml(const CStdString& strSettingsFile);
   bool SaveUPnPXml(const CStdString& strSettingsFile) const;
-  
+
   bool LoadProfiles(const CStdString& strSettingsFile);
   bool SaveProfiles(const CStdString& strSettingsFile) const;
 
@@ -407,12 +404,6 @@ protected:
   void LoadUserFolderLayout();
 
   void LoadRSSFeeds();
-
-  bool SaveAvpackXML() const;
-  bool SaveNewAvpackXML() const;
-  bool SaveAvpackSettings(TiXmlNode *io_pRoot) const;
-  bool LoadAvpackXML();
-
 };
 
 extern class CSettings g_settings;

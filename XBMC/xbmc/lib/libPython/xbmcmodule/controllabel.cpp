@@ -20,10 +20,8 @@
  */
 
 #include "stdafx.h"
-#ifndef _LINUX
-#include "lib/libPython/python/Python.h"
-#else
-#include <python2.4/Python.h>
+#include "lib/libPython/Python/Include/Python.h"
+#ifdef _LINUX
 #include "../XBPythonDll.h"
 #endif
 #include "GUILabelControl.h"
@@ -48,7 +46,7 @@ namespace PYXBMC
 {
   PyObject* ControlLabel_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = {
+    static const char *keywords[] = {
       "x", "y", "width", "height", "label", "font", "textColor",
       "disabledColor", "alignment", "hasPath", "angle", NULL };
 
@@ -74,8 +72,8 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "llllO|ssslbl",
-      keywords,
+      (char*)"llllO|ssslbl",
+      (char**)keywords,
       &self->dwPosX,
       &self->dwPosY,
       &self->dwWidth,
@@ -149,7 +147,7 @@ namespace PYXBMC
   {
     PyObject *pObjectText;
 
-    if (!PyArg_ParseTuple(args, "O", &pObjectText))	return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText))	return NULL;
     if (!PyGetUnicodeString(self->strText, pObjectText, 1)) return NULL;
 
     ControlLabel *pControl = (ControlLabel*)self;
@@ -179,12 +177,12 @@ namespace PYXBMC
     const char *cLabel = self->strText.c_str();
     PyGUIUnlock();
 
-    return Py_BuildValue("s", cLabel);
+    return Py_BuildValue((char*)"s", cLabel);
   }
 
   PyMethodDef ControlLabel_methods[] = {
-    {"setLabel", (PyCFunction)ControlLabel_SetLabel, METH_VARARGS, setLabel__doc__},
-    {"getLabel", (PyCFunction)ControlLabel_GetLabel, METH_VARARGS, getLabel__doc__},
+    {(char*)"setLabel", (PyCFunction)ControlLabel_SetLabel, METH_VARARGS, setLabel__doc__},
+    {(char*)"getLabel", (PyCFunction)ControlLabel_GetLabel, METH_VARARGS, getLabel__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -228,7 +226,7 @@ namespace PYXBMC
   {
     PyInitializeTypeObject(&ControlLabel_Type);
 
-    ControlLabel_Type.tp_name = "xbmcgui.ControlLabel";
+    ControlLabel_Type.tp_name = (char*)"xbmcgui.ControlLabel";
     ControlLabel_Type.tp_basicsize = sizeof(ControlLabel);
     ControlLabel_Type.tp_dealloc = (destructor)ControlLabel_Dealloc;
     ControlLabel_Type.tp_compare = 0;

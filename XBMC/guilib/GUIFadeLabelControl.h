@@ -40,7 +40,7 @@
 class CGUIFadeLabelControl : public CGUIControl
 {
 public:
-  CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool scrollOut, DWORD timeToDelayAtEnd);
+  CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool scrollOut, int scrollSpeed, DWORD timeToDelayAtEnd);
   virtual ~CGUIFadeLabelControl(void);
   virtual void DoRender(DWORD currentTime);
   virtual void Render();
@@ -65,5 +65,6 @@ protected:
   CGUITextLayout m_textLayout;
   CAnimation *m_fadeAnim;
   DWORD m_renderTime;
+  unsigned int m_scrollSpeed;
 };
 #endif

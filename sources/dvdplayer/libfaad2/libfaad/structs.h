@@ -1,6 +1,6 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
+** Copyright (C) 2003-2005 M. Bakker, Nero AG, http://www.nero.com
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -19,10 +19,13 @@
 ** Any non-GPL usage of this software or parts of this software is strictly
 ** forbidden.
 **
-** Commercial non-GPL licensing of this software is possible.
-** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
+** The "appropriate copyright message" mentioned in section 2c of the GPLv2
+** must read: "Code from FAAD2 is copyright (c) Nero AG, www.nero.com"
 **
-** $Id: structs.h,v 1.31 2004/01/29 11:31:11 menno Exp $
+** Commercial non-GPL licensing of this software is possible.
+** For more info contact Nero AG through Mpeg4AAClicense@nero.com.
+**
+** $Id: structs.h,v 1.46 2007/11/01 12:33:40 menno Exp $
 **/
 
 #ifndef __STRUCTS_H__
@@ -76,9 +79,6 @@ typedef struct
     mdct_info *mdct2048;
 #ifdef PROFILE
     int64_t cycles;
-#endif
-#ifdef USE_SSE
-    void (*if_func)(void *a, uint8_t b, uint8_t c, uint8_t d, real_t *e, real_t *f, uint8_t g, uint16_t h);
 #endif
 } fb_info;
 
@@ -182,6 +182,7 @@ typedef struct
     program_config pce[16];
 } adif_header;
 
+#ifdef LTP_DEC
 typedef struct
 {
     uint8_t last_band;
@@ -194,7 +195,9 @@ typedef struct
     uint8_t short_lag_present[8];
     uint8_t short_lag[8];
 } ltp_info;
+#endif
 
+#ifdef MAIN_DEC
 typedef struct
 {
     uint8_t limit;
@@ -202,6 +205,7 @@ typedef struct
     uint8_t predictor_reset_group_number;
     uint8_t prediction_used[MAX_SFB];
 } pred_info;
+#endif
 
 typedef struct
 {
@@ -246,6 +250,7 @@ typedef struct
     uint8_t scale_factor_grouping;
     uint16_t sect_sfb_offset[8][15*8];
     uint16_t swb_offset[52];
+    uint16_t swb_offset_max;
 
     uint8_t sect_cb[8][15*8];
     uint16_t sect_start[8][15*8];
@@ -260,6 +265,7 @@ typedef struct
     uint8_t ms_used[MAX_WINDOW_GROUPS][MAX_SFB];
 
     uint8_t noise_used;
+    uint8_t is_used;
 
     uint8_t pulse_data_present;
     uint8_t tns_data_present;
@@ -268,9 +274,13 @@ typedef struct
 
     pulse_info pul;
     tns_info tns;
+#ifdef MAIN_DEC
     pred_info pred;
+#endif
+#ifdef LTP_DEC
     ltp_info ltp;
     ltp_info ltp2;
+#endif
 #ifdef SSR_DEC
     ssr_info ssr;
 #endif
@@ -292,8 +302,6 @@ typedef struct
 
 typedef struct
 {
-    uint8_t ele_id;
-
     uint8_t channel;
     int16_t paired_channel;
 
@@ -307,59 +315,63 @@ typedef struct
 typedef struct mp4AudioSpecificConfig
 {
     /* Audio Specific Info */
-    uint8_t objectTypeIndex;
-    uint8_t samplingFrequencyIndex;
-    uint32_t samplingFrequency;
-    uint8_t channelsConfiguration;
+    /*uint8_t*/ unsigned char objectTypeIndex;
+    /*uint8_t*/ unsigned char samplingFrequencyIndex;
+    /*uint32_t*/ unsigned long samplingFrequency;
+    /*uint8_t*/ unsigned char channelsConfiguration;
 
     /* GA Specific Info */
-    uint8_t frameLengthFlag;
-    uint8_t dependsOnCoreCoder;
-    uint16_t coreCoderDelay;
-    uint8_t extensionFlag;
-    uint8_t aacSectionDataResilienceFlag;
-    uint8_t aacScalefactorDataResilienceFlag;
-    uint8_t aacSpectralDataResilienceFlag;
-    uint8_t epConfig;
+    /*uint8_t*/ unsigned char frameLengthFlag;
+    /*uint8_t*/ unsigned char dependsOnCoreCoder;
+    /*uint16_t*/ unsigned short coreCoderDelay;
+    /*uint8_t*/ unsigned char extensionFlag;
+    /*uint8_t*/ unsigned char aacSectionDataResilienceFlag;
+    /*uint8_t*/ unsigned char aacScalefactorDataResilienceFlag;
+    /*uint8_t*/ unsigned char aacSpectralDataResilienceFlag;
+    /*uint8_t*/ unsigned char epConfig;
 
-    int8_t sbr_present_flag;
-    int8_t forceUpSampling;
+    /*uint8_t*/ char sbr_present_flag;
+    /*uint8_t*/ char forceUpSampling;
+    /*uint8_t*/ char downSampledSBR;
 } mp4AudioSpecificConfig;
 
-typedef struct faacDecConfiguration
+typedef struct NeAACDecConfiguration
 {
-    uint8_t defObjectType;
-    uint32_t defSampleRate;
-    uint8_t outputFormat;
-    uint8_t downMatrix;
-    uint8_t useOldADTSFormat;
-    uint8_t dontUpSampleImplicitSBR;
-} faacDecConfiguration, *faacDecConfigurationPtr;
+    /*uint8_t*/ unsigned char defObjectType;
+    /*uint32_t*/ unsigned long defSampleRate;
+    /*uint8_t*/ unsigned char outputFormat;
+    /*uint8_t*/ unsigned char downMatrix;
+    /*uint8_t*/ unsigned char useOldADTSFormat;
+    /*uint8_t*/ unsigned char dontUpSampleImplicitSBR;
+} NeAACDecConfiguration, *NeAACDecConfigurationPtr;
 
-typedef struct faacDecFrameInfo
+typedef struct NeAACDecFrameInfo
 {
-    uint32_t bytesconsumed;
-    uint32_t samples;
-    uint8_t channels;
-    uint8_t error;
-    uint32_t samplerate;
+    /*uint32_t*/ unsigned long bytesconsumed;
+    /*uint32_t*/ unsigned long samples;
+    /*uint8_t*/ unsigned char channels;
+    /*uint8_t*/ unsigned char error;
+    /*uint32_t*/ unsigned long samplerate;
 
     /* SBR: 0: off, 1: on; normal, 2: on; downsampled */
-    uint8_t sbr;
+    /*uint8_t*/ unsigned char sbr;
 
     /* MPEG-4 ObjectType */
-    uint8_t object_type;
+    /*uint8_t*/ unsigned char object_type;
 
     /* AAC header type; MP4 will be signalled as RAW also */
-    uint8_t header_type;
+    /*uint8_t*/ unsigned char header_type;
 
     /* multichannel configuration */
-    uint8_t num_front_channels;
-    uint8_t num_side_channels;
-    uint8_t num_back_channels;
-    uint8_t num_lfe_channels;
-    uint8_t channel_position[MAX_CHANNELS];
-} faacDecFrameInfo;
+    /*uint8_t*/ unsigned char num_front_channels;
+    /*uint8_t*/ unsigned char num_side_channels;
+    /*uint8_t*/ unsigned char num_back_channels;
+    /*uint8_t*/ unsigned char num_lfe_channels;
+    /*uint8_t*/ unsigned char channel_position[MAX_CHANNELS];
+
+    /* PS: 0: off, 1: on */
+    /*uint8_t*/ unsigned char ps;
+} NeAACDecFrameInfo;
 
 typedef struct
 {
@@ -379,6 +391,7 @@ typedef struct
     uint32_t frame;
 
     uint8_t downMatrix;
+    uint8_t upMatrix;
     uint8_t first_syn_ele;
     uint8_t has_lfe;
     /* number of channels in current frame */
@@ -415,16 +428,15 @@ typedef struct
 #ifdef SBR_DEC
     int8_t sbr_present_flag;
     int8_t forceUpSampling;
+    int8_t downSampledSBR;
     /* determines whether SBR data is allocated for the gives element */
     uint8_t sbr_alloced[MAX_SYNTAX_ELEMENTS];
 
     sbr_info *sbr[MAX_SYNTAX_ELEMENTS];
-#ifdef DRM
-    int8_t lcstereo_flag;
-#endif
 #endif
 #if (defined(PS_DEC) || defined(DRM_PS))
     uint8_t ps_used[MAX_SYNTAX_ELEMENTS];
+    uint8_t ps_used_global;
 #endif
 
 #ifdef SSR_DEC
@@ -440,6 +452,14 @@ typedef struct
     int16_t *lt_pred_stat[MAX_CHANNELS];
 #endif
 
+#ifdef DRM
+    uint8_t error_state;
+#endif
+
+    /* RNG states */
+    uint32_t __r1;
+    uint32_t __r2;
+
     /* Program Config Element */
     uint8_t pce_set;
     program_config pce;
@@ -447,11 +467,7 @@ typedef struct
     uint8_t internal_channel[MAX_CHANNELS];
 
     /* Configuration data */
-    faacDecConfiguration config;
-
-#ifdef USE_SSE
-    void (*apply_sf_func)(void *a, void *b, void *c, uint16_t d);
-#endif
+    NeAACDecConfiguration config;
 
 #ifdef PROFILE
     int64_t cycles;
@@ -460,7 +476,8 @@ typedef struct
     int64_t scalefac_cycles;
     int64_t requant_cycles;
 #endif
-} faacDecStruct, *faacDecHandle;
+	const unsigned char *cmes;
+} NeAACDecStruct, *NeAACDecHandle;
 
 
 

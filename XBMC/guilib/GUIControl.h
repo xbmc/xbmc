@@ -179,8 +179,10 @@ public:
 
   virtual void QueueAnimation(ANIMATION_TYPE anim);
   virtual bool IsAnimating(ANIMATION_TYPE anim);
+  virtual bool HasAnimation(ANIMATION_TYPE anim);
   CAnimation *GetAnimation(ANIMATION_TYPE type, bool checkConditions = true);
   virtual void ResetAnimation(ANIMATION_TYPE type);
+  virtual void ResetAnimations();
 
   virtual bool IsGroup() const { return false; };
   virtual bool IsContainer() const { return false; };

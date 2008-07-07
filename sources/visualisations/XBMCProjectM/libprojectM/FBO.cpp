@@ -141,6 +141,8 @@ RenderTarget::RenderTarget(int texsize, int width, int height) : useFBO(false) {
 	  
 	  GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
 	  if (status == GL_FRAMEBUFFER_COMPLETE_EXT) {
+            // Rebind default since projectM_resetGL will be called soon
+            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	    return;
 	  }	
 	}

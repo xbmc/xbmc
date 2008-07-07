@@ -36,7 +36,8 @@
 #include "DVDClock.h" // for DVD_TIME_BASE
 #include "utils/Win32Exception.h"
 #include "Settings.h"
-#include "FileSystem/IFile.h"
+#include "FileSystem/File.h"
+#include "Util.h"
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {
@@ -650,8 +651,8 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
               {
                 stream->duration = duration;
                 duration = m_dllAvUtil.av_rescale_rnd(stream->duration, stream->time_base.num * AV_TIME_BASE, stream->time_base.den, AV_ROUND_NEAR_INF);
-                if(m_pFormatContext->duration == (int64_t)AV_NOPTS_VALUE && m_pFormatContext->file_size > 0
-                || m_pFormatContext->duration != (int64_t)AV_NOPTS_VALUE && duration > m_pFormatContext->duration)
+                if ((m_pFormatContext->duration == (int64_t)AV_NOPTS_VALUE && m_pFormatContext->file_size > 0)
+                ||  (m_pFormatContext->duration != (int64_t)AV_NOPTS_VALUE && duration > m_pFormatContext->duration))
                   m_pFormatContext->duration = duration;
               }
           }
@@ -885,6 +886,23 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         m_streams[iId] = st;
         if(pStream->codec)
           st->identifier = pStream->codec->sub_id;
+        break;
+      }
+    case CODEC_TYPE_ATTACHMENT:
+      { //mkv attachments. Only bothering with fonts for now.
+        if(pStream->codec->codec_id == CODEC_ID_TTF)
+        {
+          XFILE::CFile file;
+          std::string fileName = "Z:\\";
+          fileName = _P(fileName + pStream->filename);
+          if(file.OpenForWrite(fileName) && pStream->codec->extradata)
+          {
+            file.Write(pStream->codec->extradata, pStream->codec->extradata_size);
+            file.Close();
+          }
+        }
+        m_streams[iId] = new CDemuxStream();
+        m_streams[iId]->type = STREAM_NONE;
         break;
       }
     default:

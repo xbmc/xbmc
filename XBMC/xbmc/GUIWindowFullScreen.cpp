@@ -34,6 +34,7 @@
 #include "GUIFontManager.h"
 #include "GUITextLayout.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogFullScreenInfo.h"
 #include "Settings.h"
 #include "FileItem.h"
 
@@ -246,6 +247,17 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     return true;
     break;
 
+  case ACTION_SHOW_INFO:
+    {
+      CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
+      if (pDialog)
+      {
+        pDialog->DoModal();
+        return true;
+      }
+      break;
+    }
+
   case ACTION_NEXT_SUBTITLE:
     {
       if (g_application.m_pPlayer->GetSubtitleCount() == 1)
@@ -404,19 +416,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       m_bShowCurrentTime = false;
       g_infoManager.SetDisplayAfterSeek(0); // Make sure display after seek is off.
 
-#ifdef HAS_XBOX_HARDWARE
-      //  Disable nav sounds if spindown is active as they are loaded
-      //  from HDD all the time.
-      if (
-        !g_application.CurrentFileItem().IsHD() &&
-        (g_guiSettings.GetInt("harddisk.remoteplayspindown") || g_guiSettings.GetInt("harddisk.spindowntime"))
-      )
-      {
-        if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-          g_audioManager.Enable(false);
-      }
-#endif
-
       // setup the brightness, contrast and resolution
       CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, false);
 
@@ -468,6 +467,8 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       CGUIWindow::OnMessage(message);
 
       CGUIDialog *pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
+      if (pDialog) pDialog->Close(true);
+      pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
       if (pDialog) pDialog->Close(true);
 
       FreeResources(true);
@@ -532,12 +533,10 @@ void CGUIWindowFullScreen::Render()
 #ifdef HAS_VIDEO_PLAYBACK
   g_renderManager.RenderUpdate(true);
 #endif
-#ifndef HAS_XBOX_HARDWARE
   // win32 video rendering uses this path all the time (it doesn't render from the player directly)
   // so at this point we should renderfullscreen info as well.
   if (NeedRenderFullScreen())
     RenderFullScreen();
-#endif
 }
 
 bool CGUIWindowFullScreen::NeedRenderFullScreen()
@@ -657,15 +656,6 @@ void CGUIWindowFullScreen::RenderFullScreen()
     {
       CStdString strStatus;
       strStatus.Format("%ix%i %s", g_settings.m_ResInfo[iResolution].iWidth, g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].strMode);
-#ifdef HAS_XBOX_HARDWARE
-      if (g_guiSettings.GetBool("videoplayer.soften"))
-        strStatus += "  |  Soften";
-      else
-        strStatus += "  |  No Soften";
-      CStdString strFilter;
-      strFilter.Format("  |  Flicker Filter: %i", g_guiSettings.GetInt("videoplayer.flicker"));
-      strStatus += strFilter;
-#endif
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strStatus);
       OnMessage(msg);
@@ -759,7 +749,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
 
       float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
       m_subsLayout->Update(subtitleText, maxWidth * 0.9f);
-      
+
       float textWidth, textHeight;
       m_subsLayout->GetTextExtent(textWidth, textHeight);
       float x = maxWidth * 0.5f + g_settings.m_ResInfo[res].Overscan.left;
@@ -814,7 +804,7 @@ void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
 void CGUIWindowFullScreen::SeekChapter(int iChapter)
 {
   g_application.m_pPlayer->SeekChapter(iChapter);
-  
+
   // Make sure gui items are visible.
   g_infoManager.SetDisplayAfterSeek();
 }

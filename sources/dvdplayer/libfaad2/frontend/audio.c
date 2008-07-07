@@ -1,28 +1,31 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
-**
+** Copyright (C) 2003-2005 M. Bakker, Nero AG, http://www.nero.com
+**  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-**
+** 
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-**
+** 
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software
+** along with this program; if not, write to the Free Software 
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 **
 ** Any non-GPL usage of this software or parts of this software is strictly
 ** forbidden.
 **
-** Commercial non-GPL licensing of this software is possible.
-** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
+** The "appropriate copyright message" mentioned in section 2c of the GPLv2
+** must read: "Code from FAAD2 is copyright (c) Nero AG, www.nero.com"
 **
-** $Id: audio.c,v 1.21 2004/01/05 14:05:11 menno Exp $
+** Commercial non-GPL licensing of this software is possible.
+** For more info contact Nero AG through Mpeg4AAClicense@nero.com.
+**
+** $Id: audio.c,v 1.28 2007/11/01 12:33:29 menno Exp $
 **/
 
 #ifdef _WIN32
@@ -32,7 +35,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <math.h>
-#include <faad.h>
+#include <neaacdec.h>
 #include "audio.h"
 
 
@@ -72,7 +75,9 @@ audio_file *open_audio_file(char *infile, int samplerate, int channels,
         setmode(fileno(stdout), O_BINARY);
 #endif
         aufile->sndfile = stdout;
+        aufile->toStdio = 1;
     } else {
+        aufile->toStdio = 0;
         aufile->sndfile = fopen(infile, "wb");
     }
 
@@ -125,7 +130,8 @@ void close_audio_file(audio_file *aufile)
             write_wav_header(aufile);
     }
 
-    fclose(aufile->sndfile);
+    if (aufile->toStdio == 0)
+        fclose(aufile->sndfile);
 
     if (aufile) free(aufile);
 }

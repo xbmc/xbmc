@@ -23,9 +23,6 @@
 #include "DetectDVDType.h"
 #include "FileSystem/cdioSupport.h"
 #include "FileSystem/iso9660.h"
-#ifdef HAS_UNDOCUMENTED
-#include "xbox/Undocumented.h"
-#endif
 #ifdef _LINUX
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -100,7 +97,7 @@ void CDetectDVDMedia::Process()
   {
     UpdateDvdrom();
     m_bStartup = false;
-    Sleep(1000);
+    Sleep(2000);
     if ( m_bAutorun )
     {
       Sleep(1500); // Media in drive, wait 1.5s more to be sure the device is ready for playback
@@ -167,11 +164,6 @@ VOID CDetectDVDMedia::UpdateDvdrom()
         }
         break;
 
-      case DRIVE_READY:
-        // drive is ready
-        //m_DriveState = DRIVE_READY;
-        return ;
-        break;
       case DRIVE_CLOSED_NO_MEDIA:
         {
           // nothing in there...
@@ -189,22 +181,29 @@ VOID CDetectDVDMedia::UpdateDvdrom()
           return ;
         }
         break;
+      case DRIVE_READY:
+#ifndef __APPLE__
+        return ;
+#endif
       case DRIVE_CLOSED_MEDIA_PRESENT:
         {
-          m_DriveState = DRIVE_CLOSED_MEDIA_PRESENT;
-          // drive has been closed and is ready
-          OutputDebugString("Drive closed media present, remounting...\n");
-          CIoSupport::Dismount("Cdrom0");
-          CIoSupport::RemapDriveLetter('D', "Cdrom0");
-          // Detect ISO9660(mode1/mode2) or CDDA filesystem
-          DetectMediaType();
-          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
-          waitLock.Leave();
-          m_gWindowManager.SendThreadMessage( msg );
-          // Tell the application object that a new Cd is inserted
-          // So autorun can be started.
-          if ( !m_bStartup )
-            m_bAutorun = true;
+          if ( m_DriveState != DRIVE_CLOSED_MEDIA_PRESENT)
+          {
+            m_DriveState = DRIVE_CLOSED_MEDIA_PRESENT;
+            // drive has been closed and is ready
+            OutputDebugString("Drive closed media present, remounting...\n");
+            CIoSupport::Dismount("Cdrom0");
+            CIoSupport::RemapDriveLetter('D', "Cdrom0");
+            // Detect ISO9660(mode1/mode2) or CDDA filesystem
+            DetectMediaType();
+            CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
+            waitLock.Leave();
+            m_gWindowManager.SendThreadMessage( msg );
+            // Tell the application object that a new Cd is inserted
+            // So autorun can be started.
+            if ( !m_bStartup )
+              m_bAutorun = true;
+          }
           return ;
         }
         break;
@@ -286,7 +285,6 @@ void CDetectDVDMedia::DetectMediaType()
     }
   }
 #endif
-
   CLog::Log(LOGINFO, "Using protocol %s", strNewUrl.c_str());
 
   if (m_pCdInfo->IsValidFs())
@@ -329,14 +327,9 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
   if (CFile::Exists(strCache))
     CFile::Delete(strCache);
 
-  // find and cache disc thumbnail, and update label to xbe label if applicable
+  // find and cache disc thumbnail
   if ((g_advancedSettings.m_usePCDVDROM || IsDiscInDrive()) && !bCDDA)
   {
-    // update disk label to xbe label if we have that info
-    if (CFile::Exists("D:\\default.xbe"))
-      CUtil::GetXBEDescription("D:\\default.xbe", m_diskLabel);
-
-    // and get the thumb
     CStdString strThumb;
     CStdStringArray thumbs;
     StringUtils::SplitString(g_advancedSettings.m_dvdThumbs, "|", thumbs);
@@ -442,12 +435,13 @@ DWORD CDetectDVDMedia::GetTrayState()
     laststatus = status;
     cdio_destroy(cdio);
   }
+  else
+    return DRIVE_NOT_READY;  
 
-  
 #endif // USING_CDIO78
 #endif // _LINUX
 #if defined(_WIN32PC)
- 
+
   char* dvdDevice = CCdIoSupport::GetDeviceFileName();
   if (strlen(dvdDevice) == 0)
     return DRIVE_NOT_READY;
@@ -456,7 +450,7 @@ DWORD CDetectDVDMedia::GetTrayState()
   CdIo_t* cdio = cdio_open(dvdDevice, DRIVER_UNKNOWN);
   if (cdio)
   {
-    int status = CWIN32Util::GetDriveStatus(CCdIoSupport::GetDeviceFileName()); 
+    int status = CWIN32Util::GetDriveStatus(CCdIoSupport::GetDeviceFileName());
     static int laststatus = -1;
 
     switch(status)
@@ -475,7 +469,7 @@ DWORD CDetectDVDMedia::GetTrayState()
 
     if(laststatus != status)
     {
-      laststatus = status;    
+      laststatus = status;
       return m_dwTrayState;
     }
     else

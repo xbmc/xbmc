@@ -47,9 +47,20 @@
 #ifdef __APPLE__
 #include <sys/param.h>
 #include <mach-o/dyld.h>
+#include <IOKit/IOKitLib.h>
+#include <IOKit/IOBSD.h>
+#include <IOKit/storage/IOCDTypes.h>
+#include <IOKit/storage/IODVDTypes.h>
+#include <IOKit/storage/IOMedia.h>
+#include <IOKit/storage/IOCDMedia.h>
+#include <IOKit/storage/IODVDMedia.h>
+#include <IOKit/storage/IOCDMediaBSDClient.h>
+#include <IOKit/storage/IODVDMediaBSDClient.h>
+#include <IOKit/storage/IOStorageDeviceCharacteristics.h>
 #endif
 #include "../FileSystem/cdioSupport.h"
 #include "../DetectDVDType.h"
+#include "FileSystem/iso9660.h"
 
 using namespace MEDIA_DETECT;
 
@@ -255,17 +266,44 @@ void CIoSupport::GetDrive(const char* szPartition, char* cDriveLetter)
   *cDriveLetter = 0;
 }
 
-HRESULT CIoSupport::EjectTray()
+HRESULT CIoSupport::EjectTray( const bool bEject, const char cDriveLetter )
 {
+#ifdef _WIN32PC
+  BOOL bRet= FALSE;
+  if( cDriveLetter )
+  {
+    CStdString strVolFormat; strVolFormat.Format( _T("\\\\.\\%c:" ), cDriveLetter);
+    HANDLE hDrive= CreateFile( strVolFormat, GENERIC_READ, FILE_SHARE_READ, 
+                               NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    CStdString strRootFormat; strRootFormat.Format( _T("%c:\\"), cDriveLetter);
+    if( ( hDrive != INVALID_HANDLE_VALUE || GetLastError() == NO_ERROR) && 
+        ( GetDriveType( strRootFormat ) == DRIVE_CDROM ) )
+    {
+      DWORD dwDummy;
+      bRet= DeviceIoControl( hDrive, ( bEject ? IOCTL_STORAGE_EJECT_MEDIA : IOCTL_STORAGE_LOAD_MEDIA), 
+                                      NULL, 0, NULL, 0, &dwDummy, NULL);
+      CloseHandle( hDrive );
+    }
+  }
+  return bRet? S_OK : S_FALSE;
+#endif
 #ifdef _XBOX
   HalWriteSMBusValue(0x20, 0x0C, FALSE, 0);  // eject tray
 #endif
 #ifdef __APPLE__
   char* dvdDevice = CCdIoSupport::GetDeviceFileName();
-  CdIo_t* cdio = cdio_open(dvdDevice, DRIVER_OSX);
-  if (cdio)
+  m_isoReader.Reset();
+  int nRetries=2;
+  while (nRetries-- > 0)
   {
-    cdio_eject_media(&cdio);
+    CdIo_t* cdio = cdio_open(dvdDevice, DRIVER_UNKNOWN);
+    if (cdio)
+    {
+      cdio_eject_media(&cdio);
+      cdio_destroy(cdio);
+    }
+    else 
+      break;
   }
 #elif defined(_LINUX)
   char* dvdDevice = CCdIoSupport::GetDeviceFileName();
@@ -397,7 +435,22 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
   DWORD dwSectorSize = 2048;
 
 #ifdef __APPLE__
-  // FIXME
+  dk_cd_read_t cd_read;
+  memset( &cd_read, 0, sizeof(cd_read) );
+  
+  cd_read.sectorArea  = kCDSectorAreaUser;
+  cd_read.buffer      = lpczBuffer;
+  
+  cd_read.sectorType  = kCDSectorTypeMode1;
+  cd_read.offset      = dwSector * kCDSectorSizeMode1;
+  
+  cd_read.bufferLength = 2048;
+  
+  if( ioctl(hDevice->fd, DKIOCCDREAD, &cd_read ) == -1 )
+  {
+    return -1;
+  }
+  return 2048;
 #elif defined(_LINUX)
   if (hDevice->m_bCDROM)
   {    
@@ -458,7 +511,22 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
 {
 #ifdef HAS_DVD_DRIVE
 #ifdef __APPLE__
-  // FIXME.
+  dk_cd_read_t cd_read;
+  
+  memset( &cd_read, 0, sizeof(cd_read) );
+  
+  cd_read.sectorArea = kCDSectorAreaUser;
+  cd_read.buffer = lpczBuffer;
+  
+  cd_read.offset       = dwSector * kCDSectorSizeMode2Form2;
+  cd_read.sectorType   = kCDSectorTypeMode2Form2;
+  cd_read.bufferLength = kCDSectorSizeMode2Form2;
+
+  if( ioctl( hDevice->fd, DKIOCCDREAD, &cd_read ) == -1 )
+  {
+    return -1;
+  }
+  return MODE2_DATA_SIZE;
 #elif defined(_LINUX)
   if (hDevice->m_bCDROM)
   {    

@@ -26,6 +26,7 @@
 #include "MusicDatabase.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
+#include "Crc32.h"
 
 using namespace std;
 using namespace XFILE;

@@ -1,28 +1,31 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
-**
+** Copyright (C) 2003-2005 M. Bakker, Nero AG, http://www.nero.com
+**  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-**
+** 
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-**
+** 
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software
+** along with this program; if not, write to the Free Software 
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 **
 ** Any non-GPL usage of this software or parts of this software is strictly
 ** forbidden.
 **
-** Commercial non-GPL licensing of this software is possible.
-** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
+** The "appropriate copyright message" mentioned in section 2c of the GPLv2
+** must read: "Code from FAAD2 is copyright (c) Nero AG, www.nero.com"
 **
-** $Id: mp4meta.c,v 1.13 2004/01/11 15:52:18 menno Exp $
+** Commercial non-GPL licensing of this software is possible.
+** For more info contact Nero AG through Mpeg4AAClicense@nero.com.
+**
+** $Id: mp4meta.c,v 1.19 2007/11/01 12:33:29 menno Exp $
 **/
 
 #ifdef USE_TAGGING
@@ -31,6 +34,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "mp4ffint.h"
+
+
 
 static int32_t mp4ff_tag_add_field(mp4ff_metadata_t *tags, const char *item, const char *value)
 {
@@ -298,6 +303,8 @@ int32_t mp4ff_parse_metadata(mp4ff_t *f, const int32_t size)
     while (sumsize < size)
     {
         subsize = mp4ff_atom_read_header(f, &atom_type, &header_size);
+        if (subsize == 0)
+            break;
         mp4ff_parse_tag(f, atom_type, (uint32_t)(subsize-header_size));
         sumsize += subsize;
     }
@@ -391,9 +398,19 @@ int32_t mp4ff_meta_get_track(const mp4ff_t *f, char **value)
     return mp4ff_meta_find_by_name(f, "track", value);
 }
 
+int32_t mp4ff_meta_get_totaltracks(const mp4ff_t *f, char **value)
+{
+    return mp4ff_meta_find_by_name(f, "totaltracks", value);
+}
+
 int32_t mp4ff_meta_get_disc(const mp4ff_t *f, char **value)
 {
     return mp4ff_meta_find_by_name(f, "disc", value);
+}
+
+int32_t mp4ff_meta_get_totaldiscs(const mp4ff_t *f, char **value)
+{
+    return mp4ff_meta_find_by_name(f, "totaldiscs", value);
 }
 
 int32_t mp4ff_meta_get_compilation(const mp4ff_t *f, char **value)

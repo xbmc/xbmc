@@ -543,6 +543,12 @@ void CGUIControl::ResetAnimation(ANIMATION_TYPE type)
   }
 }
 
+void CGUIControl::ResetAnimations()
+{
+  for (unsigned int i = 0; i < m_animations.size(); i++)
+    m_animations[i].ResetAnimation();
+}
+
 void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
 {
   // rule out the animations we shouldn't perform
@@ -598,6 +604,11 @@ CAnimation *CGUIControl::GetAnimation(ANIMATION_TYPE type, bool checkConditions 
     }
   }
   return NULL;
+}
+
+bool CGUIControl::HasAnimation(ANIMATION_TYPE type)
+{
+  return (NULL != GetAnimation(type, true));
 }
 
 void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState)

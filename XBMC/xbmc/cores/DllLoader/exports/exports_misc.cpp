@@ -91,6 +91,29 @@ Export export_user32[] =
   { "GetSysColor",                -1, dllGetSysColor,                NULL },
   { "RegisterClipboardFormatA",   -1, dllRegisterClipboardFormatA,   NULL },
   { "GetIconInfo",                -1, dllGetIconInfo,                NULL },
+#ifdef _WIN32PC
+  { "DrawTextA",                  -1, DrawTextA,                     NULL },
+  { "GetClientRect",              -1, GetClientRect,                 NULL },
+  { "GetWindowTextA",             -1, GetWindowTextA,                NULL },
+  { "GetWindowTextLengthA",       -1, GetWindowTextLengthA,          NULL },
+  { "EnumWindows",                -1, EnumWindows,                   NULL },
+  { "CloseClipboard",             -1, CloseClipboard,                NULL },
+  { "GetClipboardData",           -1, GetClipboardData,              NULL },
+  { "GetClipboardFormatNameA",    -1, GetClipboardFormatNameA,       NULL },
+  { "EnumClipboardFormats",       -1, EnumClipboardFormats,          NULL },
+  { "OpenClipboard",              -1, OpenClipboard,                 NULL },
+  { "InvalidateRect",             -1, InvalidateRect,                NULL },
+  { "EndPaint",                   -1, EndPaint,                      NULL },
+  { "BeginPaint",                 -1, BeginPaint,                    NULL },
+  { "DefWindowProcA",             -1, DefWindowProcA,                NULL },
+  { "SetForegroundWindow",        -1, SetForegroundWindow,           NULL },
+  { "CreateWindowExA",            -1, CreateWindowExA,               NULL },
+  { "RegisterClassA",             -1, RegisterClassA,                NULL },
+  { "LoadIconA",                  -1, LoadIconA,                     NULL },
+  { "DispatchMessageA",           -1, DispatchMessageA,              NULL },
+  { "TranslateMessage",           -1, TranslateMessage,              NULL },
+  { "GetMessageA",                -1, GetMessageA,                   NULL },
+#endif
   { NULL, NULL, NULL, NULL }
 };
 
@@ -147,6 +170,28 @@ Export export_gdi32[] =
   { "RestoreDC",                  -1, dllRestoreDC,                  NULL },
   { "GetObjectA",                 -1, dllGetObjectA,                 NULL },
   { "CombineRgn",                 -1, dllCombineRgn,                 NULL },
+#ifdef _WIN32PC
+  { "SelectPalette",              -1, SelectPalette,                 NULL },
+  { "StretchBlt",                 -1, StretchBlt,                    NULL },
+  { "CreateFontIndirectA",        -1, CreateFontIndirectA,           NULL },
+  { "CreateRectRgn",              -1, CreateRectRgn,                 NULL },
+  { "SetWinMetaFileBits",         -1, SetWinMetaFileBits,            NULL },
+  { "DeleteEnhMetaFile",          -1, DeleteEnhMetaFile,             NULL }, 
+  { "GetEnhMetaFileHeader",       -1, GetEnhMetaFileHeader,          NULL },
+  { "SetEnhMetaFileBits",         -1, SetEnhMetaFileBits,            NULL },
+  { "GetDIBits",                  -1, GetDIBits,                     NULL },
+  { "PlayEnhMetaFile",            -1, PlayEnhMetaFile,               NULL },
+  { "RealizePalette",             -1, RealizePalette,                NULL },
+  { "GetEnhMetaFilePaletteEntries", -1, GetEnhMetaFilePaletteEntries,NULL },
+  { "CreateCompatibleBitmap",     -1, CreateCompatibleBitmap,        NULL },
+  { "PatBlt",                     -1, PatBlt,                        NULL },
+  { "SetBrushOrgEx",              -1, SetBrushOrgEx,                 NULL },
+  { "CreateDIBPatternBrushPt",    -1, CreateDIBPatternBrushPt,       NULL },
+  { "CreateDIBSection",           -1, CreateDIBSection,              NULL },
+  { "CreateDCA",                  -1, CreateDCA,                     NULL },
+  { "GetSystemPaletteEntries",    -1, GetSystemPaletteEntries,       NULL },
+  { "SetDIBColorTable",           -1, SetDIBColorTable,              NULL },
+#endif
   { NULL, NULL, NULL, NULL }
 };
 

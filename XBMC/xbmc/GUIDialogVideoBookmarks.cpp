@@ -33,6 +33,7 @@
 #include "ViewState.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "Crc32.h"
 
 using namespace std;
 
@@ -140,7 +141,7 @@ void CGUIDialogVideoBookmarks::Update()
   /* push in the resume mark first */
   if( videoDatabase.GetResumeBookMark(g_application.CurrentFile(), resumemark) )
     m_bookmarks.insert(m_bookmarks.begin(), resumemark);
-  
+
   if (g_application.CurrentFileItem().HasVideoInfoTag() && g_application.CurrentFileItem().GetVideoInfoTag()->m_iEpisode > -1)
   {
     vector<CVideoInfoTag> episodes;
@@ -180,7 +181,7 @@ void CGUIDialogVideoBookmarks::Update()
     else
       StringUtils::SecondsToTimeString((long)m_bookmarks[i].timeInSeconds, bookmarkTime, TIME_FORMAT_HH_MM_SS);
 
-    CFileItem *item = new CFileItem(bookmarkTime);
+    CFileItemPtr item(new CFileItem(bookmarkTime));
     item->SetThumbnailImage(m_bookmarks[i].thumbNailImage);
     m_vecItems->Add(item);
   }
@@ -265,8 +266,8 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
     texture->Release();
   }
 #elif defined(HAS_SDL)
-  SDL_Surface *texture = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32, 
-                                              0x00ff0000, 0x0000ff00, 0x000000ff, 
+  SDL_Surface *texture = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32,
+                                              0x00ff0000, 0x0000ff00, 0x000000ff,
                                               0xff000000);
   if (texture)
   {
@@ -276,10 +277,10 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
 #endif
     Crc32 crc;
     crc.ComputeFromLowerCase(g_application.CurrentFile());
-    bookmark.thumbNailImage.Format("%s//%08x_%i.jpg", g_settings.GetBookmarksThumbFolder().c_str(), 
+    bookmark.thumbNailImage.Format("%s//%08x_%i.jpg", g_settings.GetBookmarksThumbFolder().c_str(),
                                    (unsigned __int32) crc, m_vecItems->Size() + 1);
     CPicture pic;
-    if (!pic.CreateThumbnailFromSurface((BYTE *)texture->pixels, width, height, texture->pitch, 
+    if (!pic.CreateThumbnailFromSurface((BYTE *)texture->pixels, width, height, texture->pitch,
                                         bookmark.thumbNailImage))
       bookmark.thumbNailImage.Empty();
     SDL_UnlockSurface(texture);

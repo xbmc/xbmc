@@ -1,13 +1,13 @@
-INCLUDES=-I. -I.. -I../../xbmc/linux -I../../xbmc -I../../guilib
-
+INCLUDES=-I. -I.. -I../../../XBMC/xbmc/linux -I../../../XBMC/xbmc -I../../../XBMC/guilib
 SRCS=Main.cpp
-
 LIB=ProjectM.vis
-SDL_DEFINES=-DHAS_SDL_OPENGL -DHAS_SDL
-CFLAGS=-O3
+CFLAGS=-O3 -g
 
-include ../../Makefile.include
+default: vis
 
-vis:
-	$(MAKE)
-	$(CXX) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared -O3 -o $(LIB) $(OBJS)
+include ../../../XBMC/Makefile.include
+
+vis: Main.o
+	(unset CC; unset CXX; cd libprojectM; cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .;)
+	$(MAKE) -C libprojectM
+	$(CXX) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared $(CFLAGS) -o $(LIB) $(OBJS) `cat ../../../XBMC/xbmc/cores/DllLoader/exports/wrapper.def` ../../../XBMC/xbmc/cores/DllLoader/exports/wrapper.o

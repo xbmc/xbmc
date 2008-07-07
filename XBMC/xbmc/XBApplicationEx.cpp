@@ -78,15 +78,6 @@ CXBApplicationEx::CXBApplicationEx()
   m_d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
   m_d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 #endif
-
-  // Specify number and type of input devices this app will be using. By
-  // default, you can use 0 and NULL, which triggers XInputDevices() to
-  // pre-alloc the default number and types of devices. To use chat or
-  // other devices, override these variables in your derived class.
-#ifdef HAS_XBOX_HARDWARE
-  m_dwNumInputDeviceTypes = 0;
-  m_InputDeviceTypes = NULL;
-#endif
 }
 
 
@@ -168,7 +159,7 @@ INT CXBApplicationEx::Run()
   while (!m_bStop)
   {
 #ifdef HAS_PERFORMANCE_SAMPLE
-    CPerformanceSample sampleLoop("XBApplicationEx-loop");  
+    CPerformanceSample sampleLoop("XBApplicationEx-loop");
 #endif
 
     //-----------------------------------------
@@ -327,7 +318,7 @@ void CXBApplicationEx::ReadInput()
 
 #ifdef HAS_SDL
   //SDL_PumpEvents();
-  
+
   static RESOLUTION windowres = WINDOW;
 
   // Read the input from the mouse
@@ -341,11 +332,11 @@ void CXBApplicationEx::ReadInput()
     case SDL_QUIT:
       if (!g_application.m_bStop) g_application.getApplicationMessenger().Shutdown();
       break;
-      
+
     case SDL_VIDEORESIZE:
 #ifndef __APPLE__
       g_settings.m_ResInfo[WINDOW].iWidth = event.resize.w;
-      g_settings.m_ResInfo[WINDOW].iHeight = event.resize.h; 
+      g_settings.m_ResInfo[WINDOW].iHeight = event.resize.h;
       g_graphicsContext.ResetOverscan(g_settings.m_ResInfo[WINDOW]);
       g_graphicsContext.SetVideoResolution(windowres, FALSE, false);
       g_Mouse.SetResolution(g_settings.m_ResInfo[WINDOW].iWidth, g_settings.m_ResInfo[WINDOW].iHeight, 1, 1);

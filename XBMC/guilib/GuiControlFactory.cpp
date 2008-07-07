@@ -685,6 +685,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   CRect hitRect;
   CPoint camera;
   bool   hasCamera = false;
+  int scrollSpeed = CScrollInfo::defaultSpeed;
 
   /////////////////////////////////////////////////////////////////////////////
   // Read control properties from XML
@@ -1040,6 +1041,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     g_SkinInfo.ResolveConstant(cam->Attribute("y"), camera.y);
   }
 
+  XMLUtils::GetInt(pControlNode, "scrollspeed", scrollSpeed);
+
   /////////////////////////////////////////////////////////////////////////////
   // Instantiate a new control using the properties gathered above
   //
@@ -1065,7 +1068,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       labelInfo, wrapMultiLine, bHasPath);
     if (infoLabels.size())
       ((CGUILabelControl *)control)->SetInfo(infoLabels[0]);
-    ((CGUILabelControl *)control)->SetWidthControl(bScrollLabel);
+    ((CGUILabelControl *)control)->SetWidthControl(bScrollLabel, scrollSpeed);
   }
   else if (strType == "edit")
   {
@@ -1082,7 +1085,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUIFadeLabelControl(
       dwParentId, id, posX, posY, width, height,
-      labelInfo, scrollOut, timeToPauseAtEnd);
+      labelInfo, scrollOut, scrollSpeed, timeToPauseAtEnd);
 
     ((CGUIFadeLabelControl *)control)->SetInfo(infoLabels);
   }
@@ -1090,7 +1093,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUIRSSControl(
       dwParentId, id, posX, posY, width, height,
-      labelInfo, textColor3, labelInfo2.textColor, strRSSTags);
+      labelInfo, textColor3, labelInfo2.textColor, strRSSTags, scrollSpeed);
 
     std::map<int, std::pair<std::vector<int>,std::vector<string> > >::iterator iter=g_settings.m_mapRssUrls.find(iUrlSet);
     if (iter != g_settings.m_mapRssUrls.end())

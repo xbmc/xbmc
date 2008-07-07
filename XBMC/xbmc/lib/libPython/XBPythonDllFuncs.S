@@ -1,3 +1,5 @@
+#if !defined(_POWERPC) && !defined(_POWERPC64)
+
 #ifndef __APPLE__
 #define FUNCTION(name)			\
 	.globl name;			\
@@ -48,7 +50,7 @@
   FUNCTION(PyLong_AsLong)
   FUNCTION(PyLong_AsLongLong)
   FUNCTION(PyErr_Format)
-#if !defined(_LINUX) || defined(__APPLE__)
+#if !defined(_LINUX) 
   FUNCTION(PyUnicodeUCS2_AsUnicode)
 #else
   FUNCTION(PyUnicodeUCS4_AsUnicode)
@@ -80,3 +82,4 @@
   FUNCTION(PyObject_RichCompare)
   FUNCTION(PyFloat_FromDouble)
 
+#endif

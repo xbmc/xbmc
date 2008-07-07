@@ -139,7 +139,7 @@ bool CArtist::Save(TiXmlNode *node, const CStdString &tag, const CStdString& str
   TiXmlNode *artist = node->InsertEndChild(artistElement);
 
   if (!artist) return false;
-  
+
   XMLUtils::SetString(artist,       "name", strArtist);
   CStdStringArray array;
   StringUtils::SplitString(strGenre, g_advancedSettings.m_musicItemSeparator,array);

@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="../guilib/;../xbmc/;freetype2/include"
+				AdditionalIncludeDirectories="../xbmc/;freetype2/include;../xbmc/lib/boost"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				StringPooling="FALSE"
 				MinimalRebuild="TRUE"
@@ -65,7 +65,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="../guilib/;../xbmc/;freetype2/include"
+				AdditionalIncludeDirectories="../xbmc/;freetype2/include;../xbmc/lib/boost"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="2"
@@ -108,7 +108,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="../guilib/;../xbmc/Win32;../xbmc/;freetype2/include"
+				AdditionalIncludeDirectories="../guilib;../xbmc/Win32;../xbmc/;freetype2/include;../xbmc/lib/boost"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;HAS_SDL;_MSVC;NOMINMAX"
 				StringPooling="FALSE"
 				MinimalRebuild="TRUE"
@@ -125,7 +125,6 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="SDL.lib SDL_image.lib opengl32.lib DSound.lib glew32.lib glu32.lib"
 				OutputFile="$(OutDir)/guilib.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -156,7 +155,7 @@
 				Name="VCCLCompilerTool"
 				GlobalOptimizations="TRUE"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="../guilib/;../xbmc/win32;../xbmc;freetype2\include"
+				AdditionalIncludeDirectories="../guilib;../xbmc/win32;../xbmc;freetype2\include;../xbmc/lib/boost"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;HAS_SDL;_MSVC;NOMINMAX"
 				MinimalRebuild="FALSE"
 				RuntimeLibrary="0"
@@ -170,7 +169,6 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="SDL.lib SDL_image.lib opengl32.lib DSound.lib glew32.lib glu32.lib"
 				OutputFile="$(OutDir)/guilib.lib"
 				AdditionalLibraryDirectories=""
 				IgnoreAllDefaultLibraries="FALSE"
@@ -402,9 +400,6 @@
 			</File>
 			<File
 				RelativePath=".\LocalizeStrings.cpp">
-			</File>
-			<File
-				RelativePath=".\PackedTexture.cpp">
 			</File>
 			<File
 				RelativePath=".\Shader.cpp">
@@ -650,9 +645,6 @@
 			</File>
 			<File
 				RelativePath=".\LocalizeStrings.h">
-			</File>
-			<File
-				RelativePath=".\PackedTexture.h">
 			</File>
 			<File
 				RelativePath=".\Shader.h">

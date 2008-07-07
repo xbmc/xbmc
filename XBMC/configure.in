@@ -76,6 +76,11 @@ if test "$host_vendor" = "apple" ; then
    AC_SUBST(INCLUDES, "-I/opt/local/include -I/opt/local/include/freetype2 -I/opt/local/include/mysql5 -I../xbmc -I../xbmc/lib -I../xbmc/osx -Ixbmc/lib -Ixbmc/osx -Ilib/libffmpeg-OSX/libavutil -I../xbmc/lib/libffmpeg-OSX -Ilib -Iosx -I.")
 fi
 
+# Checks for boost headers using g++ instead of gcc
+oldCC="$CC"
+CC="$CXX"
+AC_CHECK_HEADER([boost/shared_ptr.hpp], , AC_MSG_ERROR(== Could not find the boost library. Please see README.linux))
+CC="$oldCC"
 
 # Checks for libraries.
 if test "$use_gl" = "yes"; then
@@ -143,6 +148,10 @@ AC_CHECK_LIB([hal], [main],LZO_INCLUDES="$LZO_INCLUDES -DDBUS_API_SUBJECT_TO_CHA
                           , AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
 AC_CHECK_LIB([dbus-1], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
 AC_CHECK_LIB([hal-storage], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
+fi
+
+if test "$host_cpu" = "powerpc" ; then
+  AC_CHECK_LIB([python2.4], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
 fi
 
 # Checks for header files.
@@ -273,23 +282,21 @@ case $host in
     x86_64-*-linux-gnu)
        ARCH="x86_64-linux"
        ;;
-    i386-apple-darwin9.2.2)
+    i386-apple-darwin*)
        ARCH="x86-osx"
+       ;;
+    powerpc-*-linux-gnu)
+       ARCH="powerpc-linux"
+       AC_SUBST(ARCH_DEFINES, "-D_POWERPC")
+       ;;
+    powerpc64-*-linux-gnu)
+       ARCH="powerpc64-linux"
+       AC_SUBST(ARCH_DEFINES, "-D_POWERPC64")
        ;;
     *)
        AC_MSG_ERROR(==unsupported host)
 esac
 AC_SUBST([ARCH])
-
-# check for where libpython is
-if test "$host_vendor" != "apple" ; then
-AC_CHECK_FILE(/usr/lib/python2.4/config/libpython2.4-pic.a,
-    AC_SUBST(python_lib_a,/usr/lib/python2.4/config/libpython2.4-pic.a),
-    AC_CHECK_FILE(/usr/lib/python2.4/config/libpython2.4.a,
-       AC_SUBST(python_lib_a,/usr/lib/python2.4/config/libpython2.4.a),
-       AC_MSG_ERROR(==Can not find libPython anywhere))
-    )
-fi
 
 if test "$use_halmount" = "yes"; then
   final_message="$final_message\n  Automount:\tYes"
@@ -314,12 +321,17 @@ fi
 
 if test -x "/usr/bin/svnversion"; then
   SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$(svnversion -n .)\"'"
+else
+  if test -n $SVN_REV -a $SVN_REV != "" ; then 
+    SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$SVN_REV\"'"
+  fi
 fi
 
 AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(SDL_DEFINES)
 AC_SUBST(LZO_INCLUDES)
-AC_CONFIG_FILES([Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh])
+AC_CONFIG_FILES([Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile])
+AC_CONFIG_COMMANDS_POST([pushd xbmc/lib/libPython/Python; ./configure --enable-ipv6 --enable-unicode=ucs4 --without-cxx --enable-shared --prefix=`pwd`/../linux/python-lib MACOSX_DEPLOYMENT_TARGET=10.5; sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h; cp pyconfig.h Include; popd])
 AC_OUTPUT
 
 final_message="$final_message\n  prefix:\t$prefix\n$dashes"

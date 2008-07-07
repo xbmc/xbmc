@@ -1,0 +1,110 @@
+[preset00]
+fRating=2.000000
+fGammaAdj=1.000000
+fDecay=0.975000
+fVideoEchoZoom=0.999993
+fVideoEchoAlpha=0.500000
+nVideoEchoOrientation=3
+nWaveMode=0
+bAdditiveWaves=0
+bWaveDots=0
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=0
+bTexWrap=0
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=1.741913
+fWaveScale=0.502368
+fWaveSmoothing=0.360000
+fWaveParam=-0.280000
+fModWaveAlphaStart=0.750000
+fModWaveAlphaEnd=0.950000
+fWarpAnimSpeed=1.000000
+fWarpScale=1.000000
+fZoomExponent=1.000000
+fShader=0.000000
+zoom=0.942044
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000000
+dy=0.000000
+warp=1.000000
+sx=1.000000
+sy=1.000000
+wave_r=0.000000
+wave_g=0.000000
+wave_b=0.000000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.005000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=0.920000
+ib_size=0.004000
+ib_r=0.400000
+ib_g=0.400000
+ib_b=0.000000
+ib_a=1.000000
+nMotionVectorsX=12.000000
+nMotionVectorsY=9.000000
+mv_l=0.900000
+mv_r=1.000000
+mv_g=1.000000
+mv_b=1.000000
+mv_a=0.000000
+per_frame_1=warp=0;
+per_frame_2=old_bass_flop=bass_flop;
+per_frame_3=old_treb_flop=treb_flop;
+per_frame_4=old_mid_flop=mid_flop;
+per_frame_5=chaos=.9+.1*sin(beat);
+per_frame_6=entropy=if(bnot(entropy),2,if(equal(pulse,-3.14),1+rand(3),entropy));
+per_frame_7=bass_thresh = above(bass_att,bass_thresh)*2 + (1-above(bass_att,bass_thresh))*((bass_thresh-1.3)*chaos+1.3);
+per_frame_8=bass_flop=abs(bass_flop-equal(bass_thresh,2));
+per_frame_9=treb_thresh=above(treb_att,treb_thresh)*2 + (1-above(treb_att,treb_thresh))*((treb_thresh-1.3)*chaos+1.3);
+per_frame_10=treb_flop=abs(treb_flop-equal(treb_thresh,2));
+per_frame_11=mid_thresh=above(mid_att,mid_thresh)*2 + (1-above(mid_att,mid_thresh))*((mid_thresh-1.3)*chaos+1.3);
+per_frame_12=mid_flop=abs(mid_flop-equal(mid_thresh,2));
+per_frame_13=bass_changed=bnot(equal(old_bass_flop,bass_flop));
+per_frame_14=mid_changed=bnot(equal(old_mid_flop,mid_flop));
+per_frame_15=treb_changed=bnot(equal(old_treb_flop,treb_flop));
+per_frame_16=bass_residual = bass_changed*sin(pulse*.1*entropy) + bnot(bass_changed)*bass_residual;
+per_frame_17=treb_residual = treb_changed*sin(pulse*.1*entropy) + bnot(treb_changed)*treb_residual;
+per_frame_18=mid_residual = mid_changed*sin(pulse*.1*entropy) + bnot(mid_changed)*mid_residual;
+per_frame_19=pulse=if(above(abs(pulse),3.14),-3.14,pulse+(bass_thresh+mid_thresh+treb_thresh)*.052);
+per_frame_20=beat=if(above(abs(beat),3.14),-3.14,beat+(bass+treb+mid)*.01);
+per_frame_21=q1=mid_residual;
+per_frame_22=q2=bass_residual;
+per_frame_23=q3=treb_residual;
+per_frame_24=q4=sin(pulse);
+per_frame_25=q5=sin(beat);
+per_frame_26=mv_r=mv_r+.5*bass_residual;
+per_frame_27=mv_g=mv_g+.5*mid_residual;
+per_frame_28=mv_b=mv_b+.5*treb_residual;
+per_frame_29=mv_a=1.1-(ob_a+ib_a)*chaos*.5;
+per_frame_30=mv_x=abs(beat*10)*entropy;
+per_frame_31=mv_y=abs(pulse*10)*entropy;
+per_frame_32=mv_l=entropy*(q4-q5);
+per_frame_33=wave_r=0.8+0.2*bass_flop*mv_g;
+per_frame_34=wave_g=0.3+0.3*mid_flop*mv_b;
+per_frame_35=wave_b=0.4+0.3*0.1*treb_flop*mv_r;
+per_frame_36=ob_r=0.1 + 0.1*sin(time*1.143)+0.2*mv_g;
+per_frame_37=ob_g=0.3 + 0.3*sin(time*0.897)+0.3*mv_b;
+per_frame_38=ob_b=0.2+0.5*mv_r;
+per_frame_39=treb_effect = max(max(treb, treb_att)-1.2,0);
+per_frame_40=mid_effect = max(max(mid,mid_att)-1.2,0);
+per_frame_41=ib_r = 1 - ob_b;
+per_frame_42=ib_g = 1- mv_g;
+per_frame_43=ib_b = 0.5*mv_b + 0.5*ob_b;
+per_frame_44=ib_a = if(above(treb_effect,0), if(above(mid_effect,0),1,0),0);
+per_pixel_1=bass_effect = max(max(bass,bass_att)-1.18,0);
+per_pixel_2=grid=rad*10%(above(q1,q4)+above(q2,q5)+above(q3,q4)) + (sqrt(2)-rad)*10%(above(q1,q5)+above(q2,q4)+above(q3,q5))*q1;
+per_pixel_3=rot=if(grid,.12*cos(rad*3.14+x*q1*3.14+y*q2*3.14)*(q5+q4),0);
+per_pixel_4=zoom=zoom-bnot(grid)*atan2(x*q3*3.14,y*q5*3.14)*.14*(x*2-1)+0.12*bass_effect;
+per_pixel_5=sx=sx+.2*q1*sin(x*1.6)*-grid;
+per_pixel_6=sy=sy+.2*q2*sin(y*1.6)*(1-grid);

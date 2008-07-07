@@ -253,7 +253,6 @@ extern "C" void* dll_beginthread();
 extern "C" void* clock();
 extern "C" void* _hypot();
 extern "C" void* asctime();
-// extern "C" void* __security_error_handler();
 extern "C" void* __CppXcptFilter();
 extern "C" void* _tzset();
 extern "C" void* _tzname();
@@ -275,6 +274,20 @@ extern "C" void* _aligned_malloc();
 extern "C" void* _aligned_free();
 extern "C" void* _aligned_realloc();
 extern "C" void* _callnewh();
+#if defined(_WIN32) && !defined(HAS_XBOX_HARDWARE)
+extern "C" void* _cabs();
+extern "C" void* _mbsnbicmp();
+extern "C" void* ldiv();
+extern "C" void* _mbsnbcpy();
+extern "C" void* _mbslen();
+extern "C" void* tmpnam();
+extern "C" void* _CItanh();
+extern "C" void* tmpfile();
+extern "C" void* _unlink();
+extern "C" void* _setmode();
+extern "C" void* dll__security_error_handler();
+extern "C" void* _getch();
+#endif
 #endif
 
 // tracker functions
@@ -522,6 +535,7 @@ Export export_msvcr71[] =
   { "_ftime",                     -1, (void*)_ftime,                        NULL },
   { "_iob",                       -1, (void*)_iob,                          NULL },
   { "_isctype",                   -1, (void*)_isctype,                      NULL },
+  { "_ftol",                      -1, (void*)_ftol,                         NULL },
 #endif
   { "_lseeki64",                  -1, (void*)dll_lseeki64,                  NULL },
   { "_open",                      -1, (void*)dll_open,                      (void*)track_open },
@@ -736,7 +750,6 @@ Export export_msvcr71[] =
   { "_endthread",                 -1, (void*)_endthread,                    NULL },
   { "_hypot",                     -1, (void*)_hypot,                        NULL },
   { "_except_handler3",           -1, (void*)_except_handler3,              NULL },
-  //{ "__security_error_handler",   -1, (void*)__security_error_handler,      NULL },
   { "__CppXcptFilter",            -1, (void*)__CppXcptFilter,               NULL },
   { "_tzset",                     -1, (void*)_tzset,                        NULL },
   { "_tzname",                    -1, (void*)&_tzname,                      NULL },
@@ -780,6 +793,20 @@ Export export_msvcr71[] =
   { "_aligned_free",              -1, (void*)_aligned_free,                 NULL },
   { "_aligned_realloc",           -1, (void*)_aligned_realloc,              NULL },
   { "_callnewh",                  -1, (void*)_callnewh,                     NULL },
+#endif
+#if defined(_WIN32) && !defined(HAS_XBOX_HARDWARE)
+  { "_cabs",                      -1, (void*)_cabs,                         NULL },
+  { "_mbsnbicmp",                 -1, (void*)_mbsnbicmp,                    NULL },
+  { "ldiv",                       -1, (void*)ldiv,                          NULL },
+  { "_mbsnbcpy",                  -1, (void*)_mbsnbcpy,                     NULL },
+  { "_mbslen",                    -1, (void*)_mbslen,                       NULL },
+  { "tmpnam",                     -1, (void*)tmpnam,                        NULL },
+  { "_CItanh",                    -1, (void*)_CItanh,                       NULL },
+  { "tmpfile",                    -1, (void*)tmpfile,                       NULL },
+  { "_unlink",                    -1, (void*)_unlink,                       NULL },
+  { "_setmode",                   -1, (void*)_setmode,                      NULL },
+  { "__security_error_handler",   -1, (void*)dll__security_error_handler,   NULL },
+  { "_getch",                     -1, (void*)_getch,                        NULL },
 #endif
   { NULL,                         -1, (void*)NULL,                          NULL }
 };

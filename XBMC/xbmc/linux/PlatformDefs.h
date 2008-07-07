@@ -39,6 +39,7 @@
 #include <string.h>
 #ifdef __APPLE__
 #include <sys/sysctl.h>
+#include <mach/mach.h>
 #else
 #include <sys/sysinfo.h>
 #endif
@@ -52,7 +53,7 @@
 #include <SDL/SDL_mutex.h>
 #endif
 
-#include "stdint.h"
+#include <stdint.h>
 
 #ifndef PRId64
 #ifdef _MSC_VER
@@ -126,10 +127,16 @@ typedef void* HINSTANCE;
 typedef void* HMODULE;
 
 #ifdef __APPLE__
+#include <AvailabilityMacros.h>
 typedef int64_t   off64_t;
 typedef off_t     __off_t;
 typedef off64_t   __off64_t;
 #include <sched.h>
+#if (MAC_OS_X_VERSION_MAX_ALLOWED <= 1040)
+#define MAC_TIGER
+#else
+#define MAC_LEOPARD
+#endif
 #endif
 
 typedef unsigned int  DWORD;
@@ -290,19 +297,14 @@ typedef int (*LPTHREAD_START_ROUTINE)(void *);
 #define _O_WRONLY O_WRONLY
 #define _off_t off_t
 
-struct __stat64 {
-  dev_t        st_dev;
-  ino_t         st_ino;
-  mode_t      st_mode;
-  nlink_t        st_nlink;
-  uid_t          st_uid;
-  gid_t          st_gid;
-  dev_t       st_rdev;
-  __int64 st_size;
-  __time64_t _st_atime;
-  __time64_t _st_mtime;
-  __time64_t _st_ctime;
-};
+#ifdef MAC_TIGER
+#define __stat64 stat
+#define stat64 stat
+#define statfs64 statfs
+#define fstat64 fstat
+#else
+#define __stat64 stat64
+#endif
 
 struct _stati64 {
   dev_t st_dev;

@@ -121,20 +121,21 @@ CHalManager::CHalManager()
 // Shutdown the connection and free the context
 CHalManager::~CHalManager()
 {
-#ifdef HAL_HANDLEMOUNT
-// Unmount all media XBMC have mounted
-  for (unsigned int i = 0; i < m_Volumes.size(); i++)
+  if (g_advancedSettings.m_useHalMount)
   {
-    if (m_Volumes[i].MountedByXBMC && m_Volumes[i].Mounted)
+// Unmount all media XBMC have mounted
+    for (unsigned int i = 0; i < m_Volumes.size(); i++)
     {
-      CLog::Log(LOGNOTICE, "HAL: Unmounts %s", m_Volumes[i].FriendlyName.c_str());
-      CStdString uMountCmd;
-      uMountCmd.Format("pumount -l %s", m_Volumes[i].DevID.c_str());
-      CLog::Log(LOGDEBUG, "HAL: %s", uMountCmd.c_str());
-      system(uMountCmd.c_str());
+      if (m_Volumes[i].MountedByXBMC && m_Volumes[i].Mounted)
+      {
+        CLog::Log(LOGNOTICE, "HAL: Unmounts %s", m_Volumes[i].FriendlyName.c_str());
+        CStdString uMountCmd;
+        uMountCmd.Format("pumount -l %s", m_Volumes[i].DevID.c_str());
+        CLog::Log(LOGDEBUG, "HAL: %s", uMountCmd.c_str());
+        system(uMountCmd.c_str());
+      }
     }
   }
-#endif
 
   if (m_Context != NULL)
     libhal_ctx_shutdown(m_Context, NULL);
@@ -309,6 +310,7 @@ std::vector<CStorageDevice> CHalManager::DeviceFromDriveUdi(const char *udi)
   int  Type;
   int  n;
 
+  AllVolumes = NULL;
   tempDrive = libhal_drive_from_udi(g_HalManager.m_Context, udi);
 
   if (tempDrive)
@@ -495,65 +497,66 @@ void CHalManager::ParseDevice(const char *udi)
     CStorageDevice dev(udi);
     if (!DeviceFromVolumeUdi(udi, &dev))
       return;
-#ifdef HAL_HANDLEMOUNT
+    if (g_advancedSettings.m_useHalMount)
+    {
 /* Here it can be checked if the device isn't mounted and then mount */
 //TODO Have mountpoints be other than in /media/*
-    if (!dev.Mounted && dev.HotPlugged && dev.Approved)
-    {
-      char **capability;
-      capability =libhal_device_get_property_strlist (m_Context, udi, "info.capabilities", NULL);
-      if (strcmp(capability[0], "volume") == 0 && strcmp(capability[1], "block") == 0)
+      if (!dev.Mounted && dev.HotPlugged && dev.Approved)
       {
-        CLog::Log(LOGNOTICE, "HAL: Trying to mount %s", dev.FriendlyName.c_str());
-        CStdString MountCmd;
-        if (dev.Label.size() > 0)
+        char **capability;
+        capability =libhal_device_get_property_strlist (m_Context, udi, "info.capabilities", NULL);
+        if (strcmp(capability[0], "volume") == 0 && strcmp(capability[1], "block") == 0)
         {
-          // pmount /dev/sdxy "USB DISK"
-          CStdString MountPoint;
-          MountPoint.Format("/media/%s", dev.Label.c_str());
-          struct stat St;
-          if (stat("/media", &St) != 0)
-            return; //If /media doesn't exist something is wrong.
-          while(stat (MountPoint.c_str(), &St) == 0 && S_ISDIR (St.st_mode))
+          CLog::Log(LOGNOTICE, "HAL: Trying to mount %s", dev.FriendlyName.c_str());
+          CStdString MountCmd;
+          if (dev.Label.size() > 0)
           {
-            CLog::Log(LOGDEBUG, "HAL: Proposed Mountpoint already existed");
-            MountPoint.append("_");
+            // pmount /dev/sdxy "USB DISK"
+            CStdString MountPoint;
+            MountPoint.Format("/media/%s", dev.Label.c_str());
+            struct stat St;
+            if (stat("/media", &St) != 0)
+              return; //If /media doesn't exist something is wrong.
+            while(stat (MountPoint.c_str(), &St) == 0 && S_ISDIR (St.st_mode))
+            {
+              CLog::Log(LOGDEBUG, "HAL: Proposed Mountpoint already existed");
+              MountPoint.append("_");
+            }
+            MountCmd.Format("pmount %s \"%s\"", dev.DevID.c_str(), dev.Label.c_str());
           }
-          MountCmd.Format("pmount %s \"%s\"", dev.DevID.c_str(), dev.Label.c_str());
-        }
-        else
-        {
-          CStdString MountPoint;
-          MountPoint.Format("/media/%s", StorageTypeToString(dev.Type));
-          int Nbr = 0;
-          struct stat St;
-          if (stat("/media", &St) != 0)
-            return; //If /media doesn't exist something is wrong.
-          while(stat (MountPoint.c_str(), &St) == 0 && S_ISDIR (St.st_mode))
+          else
           {
-            CLog::Log(LOGDEBUG, "HAL: Proposed Mountpoint already existed");
-            Nbr++;
-            MountPoint.Format("/media/%s%i", StorageTypeToString(dev.Type), Nbr);
+            CStdString MountPoint;
+            MountPoint.Format("/media/%s", StorageTypeToString(dev.Type));
+            int Nbr = 0;
+            struct stat St;
+            if (stat("/media", &St) != 0)
+              return; //If /media doesn't exist something is wrong.
+            while(stat (MountPoint.c_str(), &St) == 0 && S_ISDIR (St.st_mode))
+            {
+              CLog::Log(LOGDEBUG, "HAL: Proposed Mountpoint already existed");
+              Nbr++;
+              MountPoint.Format("/media/%s%i", StorageTypeToString(dev.Type), Nbr);
+            }
+            MountCmd.Format("pmount -w %s \"%s\"", dev.DevID.c_str(), MountPoint.c_str());
           }
-          MountCmd.Format("pmount -w %s \"%s\"", dev.DevID.c_str(), MountPoint.c_str());
-        }
-        CLog::Log(LOGDEBUG, "HAL: %s", MountCmd.c_str());
-        system(MountCmd.c_str());
-        // Reload some needed things.
-        if (!DeviceFromVolumeUdi(udi, &dev))
-          return;
+          CLog::Log(LOGDEBUG, "HAL: %s", MountCmd.c_str());
+          system(MountCmd.c_str());
+          // Reload some needed things.
+          if (!DeviceFromVolumeUdi(udi, &dev))
+            return;
 
-        if (dev.Mounted)
-        {
-          dev.MountedByXBMC = true;
-          CLog::Log(LOGINFO, "HAL: mounted %s on %s", dev.FriendlyName.c_str(), dev.MountPoint.c_str());
-          if (m_Notifications)
-            g_application.m_guiDialogKaiToast.QueueNotification("Mounted removable harddrive", dev.FriendlyName.c_str());
+          if (dev.Mounted)
+          {
+            dev.MountedByXBMC = true;
+            CLog::Log(LOGINFO, "HAL: mounted %s on %s", dev.FriendlyName.c_str(), dev.MountPoint.c_str());
+            if (m_Notifications)
+              g_application.m_guiDialogKaiToast.QueueNotification("Mounted removable harddrive", dev.FriendlyName.c_str());
+          }
         }
+        libhal_free_string_array(capability);
       }
-      libhal_free_string_array(capability);
     }
-#endif
     int update = -1;
     for (unsigned int i = 0; i < m_Volumes.size(); i++)
     {
@@ -571,11 +574,12 @@ void CHalManager::ParseDevice(const char *udi)
     else
     {
       CLog::Log(LOGDEBUG, "HAL: Update - %s | %s", CHalManager::StorageTypeToString(dev.Type),  dev.toString().c_str());
-#ifdef HAL_HANDLEMOUNT
+      if (g_advancedSettings.m_useHalMount)
+      {
 // If the device was mounted by XBMC before and it is still mounted then it mounted by XBMC still.
-      if (dev.Mounted == m_Volumes[update].Mounted)
-        dev.MountedByXBMC = m_Volumes[update].MountedByXBMC;
-#endif
+        if (dev.Mounted == m_Volumes[update].Mounted)
+          dev.MountedByXBMC = m_Volumes[update].MountedByXBMC;
+      }
       m_Volumes[update] = dev;
     }
     CLinuxFileSystem::AddDevice(dev);
@@ -603,8 +607,8 @@ bool CHalManager::RemoveDevice(const char *udi)
     {
       CLog::Log(LOGNOTICE, "HAL: Removed - %s | %s", CHalManager::StorageTypeToString(m_Volumes[i].Type), m_Volumes[i].toString().c_str());
       CLinuxFileSystem::RemoveDevice(m_Volumes[i].UUID.c_str());
-#ifdef HAL_HANDLEMOUNT
-      if (m_Volumes[i].Mounted)
+
+      if (m_Volumes[i].Mounted && g_advancedSettings.m_useHalMount)
       {
         CLog::Log(LOGNOTICE, "HAL: Detected unsafe storage removal %s", m_Volumes[i].FriendlyName.c_str());
         CStdString uMountCmd;
@@ -614,7 +618,6 @@ bool CHalManager::RemoveDevice(const char *udi)
         if (m_Notifications)
           g_application.m_guiDialogKaiToast.QueueNotification("Unsafe device removal", m_Volumes[i].FriendlyName.c_str());
       }
-#endif
       m_Volumes.erase(m_Volumes.begin() + i);
       return true;
     }

@@ -212,14 +212,14 @@ bool CMusicArtistInfo::Load(CHTTP& http, const SScraperInfo& info, const CStdStr
   {
     const char* szFunction = xurl->Attribute("function");
     if (szFunction)
-    {      
+    {
       CScraperUrl scrURL(xurl);
       Load(http,info,szFunction,&scrURL);
     }
     xurl = xurl->NextSiblingElement("url");
   }
   TiXmlBase::SetCondenseWhiteSpace(true);
-  
+
   return ret;
 }
 

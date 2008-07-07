@@ -40,15 +40,17 @@ public:
   virtual int Decode(BYTE* pData, int iSize);
   virtual int GetData(BYTE** dst);
   virtual void Reset();
-  virtual int GetChannels();
-  virtual int GetSampleRate();
-  virtual int GetBitsPerSample();
+  virtual int GetChannels()      { return m_iOutputChannels; }
+  virtual int GetSampleRate()    { return m_iSourceSampleRate; }
+  virtual int GetBufferSize()    { return m_inputSize; }
+  virtual int GetBitsPerSample() { return 16; }
   virtual const char* GetName() { return "liba52"; }
 
 protected:
-  virtual void SetDefault();
+  void SetDefault();
+  void SetupChannels(int flags);
 
-  void SetupChannels();
+  int ParseFrame(BYTE* data, int size, BYTE** frame, int* framesize);
 
   a52_state_t* m_pState;
 
@@ -58,14 +60,18 @@ protected:
   int m_iSourceSampleRate;
   int m_iSourceFlags;
   int m_iSourceBitrate;
+  int m_iSourceChannels;
 
+  int m_iOutputFlags;
   int m_iOutputChannels;
   unsigned int m_iOutputMapping;
+
   DllLiba52 m_dll;
 
-  int m_decodedDataSize;
-  BYTE* m_pInputBuffer;
+  BYTE m_decodedData[131072] XBMC_ALIGN_INT; // could be a bit to big
+  int  m_decodedSize;
 
-  int16_t m_decodedData[131072/2] XBMC_ALIGN_INT; // could be a bit to big
   BYTE m_inputBuffer[4096] XBMC_ALIGN_INT;
+  int  m_inputSize;
 };
+

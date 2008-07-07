@@ -1,7 +1,3 @@
-#ifndef _LINUX
-#else
-#include <python2.4/Python.h>
-#endif
 #pragma once
 
 /*
@@ -25,7 +21,8 @@
  *
  */
  
-#include "lib/libPython/python/Python.h"
+#include "lib/libPython/Python/Include/Python.h"
+#include "FileItem.h"
 
 #define ListItem_Check(op) PyObject_TypeCheck(op, &ListItem_Type)
 #define ListItem_CheckExact(op) ((op)->ob_type == &ListItem_Type)
@@ -40,7 +37,7 @@ namespace PYXBMC
 
   typedef struct {
     PyObject_HEAD
-    CFileItem* item;
+    CFileItemPtr item;
   } ListItem;
 
   extern ListItem* ListItem_FromString(std::string strLabel);

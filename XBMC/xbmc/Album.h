@@ -46,7 +46,7 @@ public:
     strAlbum.Empty();
     strArtist.Empty();
     strGenre.Empty();
-    thumbURL.Clear();;  
+    thumbURL.Clear();
     strMoods.Empty();
     strStyles.Empty();
     strThemes.Empty();
@@ -66,7 +66,7 @@ public:
   CStdString strAlbum;
   CStdString strArtist;
   CStdString strGenre;
-  CScraperUrl thumbURL;  
+  CScraperUrl thumbURL;
   CStdString strMoods;
   CStdString strStyles;
   CStdString strThemes;

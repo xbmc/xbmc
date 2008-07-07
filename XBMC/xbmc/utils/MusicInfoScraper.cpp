@@ -168,7 +168,7 @@ void CMusicInfoScraper::FindAlbuminfo()
     }
     album = album->NextSiblingElement();
   }
-  
+
   if (m_vecAlbums.size()>0)
     m_bSuccessfull=true;
 
@@ -253,7 +253,7 @@ void CMusicInfoScraper::FindArtistinfo()
     }
     artist = artist->NextSiblingElement();
   }
-  
+
   if (m_vecArtists.size()>0)
     m_bSuccessfull=true;
 

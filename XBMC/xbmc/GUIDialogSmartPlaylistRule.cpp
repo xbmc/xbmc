@@ -39,7 +39,6 @@
 #define CONTROL_BROWSE          20
 
 using namespace std;
-using namespace PLAYLIST;
 
 CGUIDialogSmartPlaylistRule::CGUIDialogSmartPlaylistRule(void)
     : CGUIDialog(WINDOW_DIALOG_SMART_PLAYLIST_RULE, "SmartPlaylistRule.xml")
@@ -106,7 +105,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   else if (m_type.Equals("episodes"))
     type = VIDEODB_CONTENT_EPISODES;
 
-  int iLabel;
+  int iLabel = 0;
   if (m_rule.m_field == CSmartPlaylistRule::FIELD_GENRE)
   {
     if (m_type.Equals("tvshows") || m_type.Equals("episodes") || m_type.Equals("movies"))
@@ -118,7 +117,6 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
       CFileItemList items2;
       videodatabase.GetGenresNav("videodb://3/1/",items2,VIDEODB_CONTENT_MUSICVIDEOS);
       items.Append(items2);
-      items2.ClearKeepPointer();
     }
     iLabel = 515;
   }
@@ -171,6 +169,9 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   { // TODO: Add browseability in here.
     assert(false);
   }
+
+  // sort the items
+  items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 
   CGUIDialogSelect* pDialog = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
   pDialog->Reset();
@@ -272,15 +273,6 @@ void CGUIDialogSmartPlaylistRule::OnOperator()
 
 void CGUIDialogSmartPlaylistRule::UpdateButtons()
 {
-  if (m_rule.m_parameter.size() == 0)
-  {
-    CONTROL_DISABLE(CONTROL_OK)
-  }
-  else
-  {
-    CONTROL_ENABLE(CONTROL_OK)
-  }
-
   // update the field control
   CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_FIELD, m_rule.m_field);
   OnMessage(msg);

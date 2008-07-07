@@ -110,11 +110,7 @@ void CGUILargeImage::AllocResources()
     m_vecTextures.push_back(texture);
   }
 
-#ifdef HAS_XBOX_D3D
-  m_linearTexture = true;
-#else
   m_linearTexture = false;
-#endif
 
   CalculateSize();
 

@@ -22,18 +22,19 @@
 ** Commercial non-GPL licensing of this software is possible.
 ** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
 **
-** $Id: utils.h,v 1.3 2003/07/29 08:20:14 menno Exp $
+** $Id: utils.h,v 1.4 2004/09/03 19:38:32 menno Exp $
 **/
 
 #ifndef UTILS_INCLUDED
 #define UTILS_INCLUDED
 
-#include <mp4.h>
+//#include <mp4.h>
+#include <mp4ff.h>
 
 LPTSTR PathFindFileName(LPCTSTR pPath);
-int GetVideoTrack(MP4FileHandle infile);
-int GetAudioTrack(MP4FileHandle infile);
-int GetAACTrack(MP4FileHandle infile);
+//int GetVideoTrack(MP4FileHandle infile);
+//int GetAudioTrack(MP4FileHandle infile);
+int GetAACTrack(mp4ff_t *infile);
 int StringComp(char const *str1, char const *str2, unsigned long len);
 char *convert3in4to3in3(void *sample_buffer, int samples);
 

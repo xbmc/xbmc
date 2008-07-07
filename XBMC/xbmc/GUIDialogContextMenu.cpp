@@ -276,7 +276,7 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CMediaSour
       bool maxRetryExceeded = false;
       if (g_guiSettings.GetInt("masterlock.maxretries") != 0)
         maxRetryExceeded = (share->m_iBadPwdCount >= g_guiSettings.GetInt("masterlock.maxretries"));
-  
+
       if (maxRetryExceeded)
         buttons.Add(CONTEXT_BUTTON_RESET_LOCK, 12334);
       else
@@ -317,14 +317,14 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CMediaSource
       return false;
 
     return CGUIDialogMediaSource::ShowAndEditMediaSource(type, *share);
-    
+
   case CONTEXT_BUTTON_REMOVE_SOURCE:
     if (g_settings.m_iLastLoadedProfileIndex == 0)
     {
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return false;
     }
-    else 
+    else
     {
       if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsMasterLockUnlocked(false))
         return false;
@@ -407,10 +407,14 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CMediaSource
     return CAutorun::PlayDisc();
 
   case CONTEXT_BUTTON_EJECT_DISC:
+#ifdef _WIN32PC
+    if( share->strPath[0] ) CIoSupport::EjectTray( true, share->strPath[0] ); // TODO: detect tray state
+#else
     if (CIoSupport::GetTrayState() == TRAY_OPEN || CIoSupport::GetTrayState() == DRIVE_OPEN)
       CIoSupport::CloseTray();
     else
       CIoSupport::EjectTray();
+#endif
     return true;
 
   case CONTEXT_BUTTON_ADD_LOCK:

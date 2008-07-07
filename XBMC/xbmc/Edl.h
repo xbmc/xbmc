@@ -32,12 +32,12 @@ public:
   CEdl();
   virtual ~CEdl(void);
 
-  typedef enum 
+  typedef enum
   {
     CUT = 0,
     MUTE = 1,
     SCENE = 2
-  } Action;  
+  } Action;
 
   struct Cut
   {
@@ -52,7 +52,7 @@ public:
   bool ReadVideoRedo();
   bool ReadBeyondTV();
   void Reset();
-  
+
   bool AddCutpoint(const Cut& NewCut);
   bool AddScene(const Cut& NewCut);
 

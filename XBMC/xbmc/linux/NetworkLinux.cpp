@@ -80,7 +80,7 @@ bool CNetworkInterfaceLinux::IsEnabled()
    if (ioctl(m_network->GetSocket(), SIOCGIFFLAGS, &ifr) < 0)
       return false;
 
-   return (ifr.ifr_flags & IFF_UP == IFF_UP);
+   return ((ifr.ifr_flags & IFF_UP) == IFF_UP);
 }
 
 bool CNetworkInterfaceLinux::IsConnected()

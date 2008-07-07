@@ -136,7 +136,7 @@ void CXbmcWeb::SetNavigatorState(DWORD state)
   navigatorState = state;
 }
 
-void CXbmcWeb::AddItemToPlayList(const CFileItem* pItem)
+void CXbmcWeb::AddItemToPlayList(const CFileItemPtr &pItem)
 {
   if (pItem->m_bIsFolder)
   {
@@ -182,17 +182,14 @@ void CXbmcWeb::AddItemToPlayList(const CFileItem* pItem)
   else
   {
     //selected item is a file, add it to playlist
-    PLAYLIST::CPlayListItem playlistItem;
-    CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
-
     switch(GetNavigatorState())
     {
     case WEB_NAV_VIDEOS:
-      g_playlistPlayer.Add(PLAYLIST_VIDEO, playlistItem);
+      g_playlistPlayer.Add(PLAYLIST_VIDEO, pItem);
       break;
 
     case WEB_NAV_MUSIC:
-      g_playlistPlayer.Add(PLAYLIST_MUSIC, playlistItem);
+      g_playlistPlayer.Add(PLAYLIST_MUSIC, pItem);
       break;
     }
   }
@@ -387,9 +384,9 @@ int CXbmcWeb::xbmcNavigatorState( int eid, webs_t wp, char_t *parameter)
       if((DWORD)xbmcNavigator[cmd].xbmcAppStateCode == navigatorState)
       {
         if( eid != NO_EID) {
-          ejSetResult( eid, xbmcNavigator[cmd].xbmcNavigateParameter);
+          ejSetResult( eid, (char*)xbmcNavigator[cmd].xbmcNavigateParameter);
         } else {
-          cnt = websWrite(wp, xbmcNavigator[cmd].xbmcNavigateParameter);
+          cnt = websWrite(wp, (char*)xbmcNavigator[cmd].xbmcNavigateParameter);
         }
       }
       cmd++;
@@ -418,7 +415,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 
   // by default the answer to any question is 0
   if( eid != NO_EID) {
-    ejSetResult( eid, "0");
+    ejSetResult( eid, (char*)"0");
   }
 
   // if we are in an interface that supports media catalogs
@@ -431,7 +428,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
     (state == WEB_NAV_MUSICPLAYLIST) ||
     (state == WEB_NAV_VIDEOPLAYLIST))
   {
-    CHAR *output = "error";
+    const char* output = "error";
 
     // get total items in current state
     if (navigatorState == WEB_NAV_MUSICPLAYLIST)
@@ -449,7 +446,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
         // we want to know the name from an item in the music playlist
         if (selectionNumber <= g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size())
         {
-          strcpy(buffer, g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC )[selectionNumber].GetDescription());
+          strcpy(buffer, g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC )[selectionNumber]->GetLabel());
           output = buffer;
         }
       }
@@ -458,7 +455,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
         // we want to know the name from an item in the video playlist
         if (selectionNumber <= g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO ).size())
         {
-          strcpy(buffer, g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO )[selectionNumber].GetDescription());
+          strcpy(buffer, g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO )[selectionNumber]->GetLabel());
           output = buffer;
         }
       }
@@ -466,13 +463,13 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
       {
         if( selectionNumber >= 0 && selectionNumber < iItemCount)
         {
-          CFileItem *itm = webDirItems->Get(selectionNumber);
+          CFileItemPtr itm = webDirItems->Get(selectionNumber);
           strcpy(buffer, itm->m_strPath);
           output = buffer;
         }
       }
       websHeader(wp); wroteHeader = TRUE;
-      cnt = websWrite(wp, output);
+      cnt = websWrite(wp, (char*)output);
       websFooter(wp); wroteFooter = TRUE;
       return cnt;
     }
@@ -494,7 +491,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
       else
       {
         if( selectionNumber >= 0 && selectionNumber < iItemCount) {
-          CFileItem *itm = webDirItems->Get(selectionNumber);
+          CFileItemPtr itm = webDirItems->Get(selectionNumber);
           if (itm->m_bIsFolder || itm->IsRAR() || itm->IsZIP())
           {
             output = XBMC_CMD_DIRECTORY;
@@ -520,9 +517,9 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
         } 
       }
       if( eid != NO_EID) {
-        ejSetResult( eid, output);
+        ejSetResult( eid, (char*)output);
       } else {
-        cnt = websWrite(wp, output);
+        cnt = websWrite(wp, (char*)output);
       }
       return cnt;
     }
@@ -548,7 +545,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
         itoa(items, buffer, 10);
         ejSetResult( eid, buffer);
       } else {
-        cnt = websWrite(wp, "%i", items);
+        cnt = websWrite(wp, (char*)"%i", (char*)items);
       }
       return cnt;
     }
@@ -561,14 +558,14 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
       {
         // we want the first music item form the music playlist
         if(catalogItemCounter < g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size()) {
-          name = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC )[catalogItemCounter].GetDescription();
+          name = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC )[catalogItemCounter]->GetLabel();
         }
       }
       else if (navigatorState == WEB_NAV_VIDEOPLAYLIST)
       {
         // we want the first video item form the video playlist
         if(catalogItemCounter < g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO ).size()) {
-          name = g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO )[catalogItemCounter].GetDescription();
+          name = g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO )[catalogItemCounter]->GetLabel();
         }
       }
       else
@@ -596,7 +593,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
         {
           // we want the next item in the music playlist
           ++catalogItemCounter;
-          name = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC )[catalogItemCounter].GetDescription();
+          name = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC )[catalogItemCounter]->GetLabel();
           if( eid != NO_EID) {
             ejSetResult( eid, (char_t *)name.c_str());
           } else {
@@ -607,7 +604,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
         {
           // we want the next item in the video playlist
           ++catalogItemCounter;
-          name = g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO )[catalogItemCounter].GetDescription();
+          name = g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO )[catalogItemCounter]->GetLabel();
           if( eid != NO_EID) {
             ejSetResult( eid, (char_t *)name.c_str());
           } else {
@@ -617,9 +614,9 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
         else
         {
           if( eid != NO_EID) {
-            ejSetResult( eid, XBMC_NONE);
+            ejSetResult( eid, (char*)XBMC_NONE);
           } else {
-            cnt = websWrite(wp, XBMC_NONE);
+            cnt = websWrite(wp, (char*)XBMC_NONE);
           }
         }
       }
@@ -637,9 +634,9 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
           }
         } else {
           if( eid != NO_EID) {
-            ejSetResult( eid, XBMC_NONE);
+            ejSetResult( eid, (char*)XBMC_NONE);
           } else {
-            cnt = websWrite(wp, XBMC_NONE);
+            cnt = websWrite(wp, (char*)XBMC_NONE);
           }
         }
       }
@@ -659,7 +656,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
         if (strAction == XBMC_CAT_QUE)
         {
           // attempt to enque the selected directory or file
-          CFileItem *itm = webDirItems->Get(selectionNumber);
+          CFileItemPtr itm = webDirItems->Get(selectionNumber);
           AddItemToPlayList(itm);
           g_playlistPlayer.HasChanged();
         }
@@ -675,19 +672,15 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
         }
         else
         {
-          CFileItem *itm;
+          CFileItemPtr itm;
           if (navigatorState == WEB_NAV_MUSICPLAYLIST)
           {
-            CPlayListItem plItem = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC)[selectionNumber];
-            itm = new CFileItem(plItem.GetDescription());
-            itm->m_strPath = plItem.GetFileName();
+            itm = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC)[selectionNumber];
             itm->m_bIsFolder = false;
           }
           else if (navigatorState == WEB_NAV_VIDEOPLAYLIST)
           {
-            CPlayListItem plItem = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO)[selectionNumber];
-            itm = new CFileItem(plItem.GetDescription());
-            itm->m_strPath = plItem.GetFileName();
+            itm = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO)[selectionNumber];
             itm->m_bIsFolder = false;
           }
           else itm = webDirItems->Get(selectionNumber);
@@ -741,7 +734,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
               if ( bParentExists )
               {
                 // yes
-                CFileItem *pItem = new CFileItem("..");
+                CFileItemPtr pItem(new CFileItem(".."));
                 pItem->m_strPath=strParentPath;
                 pItem->m_bIsFolder=true;
                 pItem->m_bIsShareOrDrive=false;
@@ -752,7 +745,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
             {
               // yes, this is the root of a share
               // add parent path to the virtual directory
-              CFileItem *pItem = new CFileItem("..");
+              CFileItemPtr pItem(new CFileItem(".."));
               pItem->m_strPath="";
               pItem->m_bIsShareOrDrive=false;
               pItem->m_bIsFolder=true;
@@ -793,16 +786,9 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
                   // add each item of the playlist to the playlistplayer
                   for (int i=0; i < (int)pPlayList->size(); ++i)
                   {
-                    const CPlayListItem& playListItem =(*pPlayList)[i];
-                    CStdString strLabel=playListItem.GetDescription();
-                    if (strLabel.size()==0) 
-                      strLabel=CUtil::GetFileName(playListItem.GetFileName());
-
-                    CPlayListItem playlistItem;
-                    playlistItem.SetFileName(playListItem.GetFileName());
-                    playlistItem.SetDescription(strLabel);
-                    playlistItem.SetDuration(playListItem.GetDuration());
-
+                    CFileItemPtr playlistItem =(*pPlayList)[i];
+                    if (playlistItem->GetLabel().IsEmpty())
+                      playlistItem->SetLabel(CUtil::GetFileName(playlistItem->m_strPath));
                     playlist.Add(playlistItem);
                   }
 
@@ -812,9 +798,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
                   g_application.getApplicationMessenger().PlayListPlayerPlay();
 
                   // set current file item
-                  CFileItem item(playlist[0].GetDescription());
-                  item.m_strPath = playlist[0].GetFileName();
-                  SetCurrentMediaItem(item);
+                  SetCurrentMediaItem(*playlist[0]);
                 }
               }
               else
@@ -833,10 +817,6 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
               }
             }
           }
-          // delete temporary CFileItem used for playlists
-          if (navigatorState == WEB_NAV_MUSICPLAYLIST ||
-            navigatorState == WEB_NAV_VIDEOPLAYLIST)
-            delete itm;
         }
       }
       return 0;
@@ -929,12 +909,12 @@ int CXbmcWeb::xbmcCommand( int eid, webs_t wp, int argc, char_t **argv)
 {
   char_t	*command, *parameter;
 
-  int parameters = ejArgs(argc, argv, T("%s %s"), &command, &parameter);
+  int parameters = ejArgs(argc, argv, T((char*)"%s %s"), &command, &parameter);
   if (parameters < 1) {
-    websError(wp, 500, T("Insufficient args\n"));
+    websError(wp, 500, T((char*)"Insufficient args\n"));
     return -1;
   }
-  else if (parameters < 2) parameter = "";
+  else if (parameters < 2) parameter = (char*)"";
 
   return xbmcProcessCommand( eid, wp, command, parameter);
 }
@@ -950,8 +930,8 @@ void CXbmcWeb::xbmcForm(webs_t wp, char_t *path, char_t *query)
 {
   char_t	*command, *parameter, *next_page;
 
-  command = websGetVar(wp, WEB_COMMAND, XBMC_NONE); 
-  parameter = websGetVar(wp, WEB_PARAMETER, XBMC_NONE);
+  command = websGetVar(wp, (char*)WEB_COMMAND, (char*)XBMC_NONE); 
+  parameter = websGetVar(wp, (char*)WEB_PARAMETER, (char*)XBMC_NONE);
 
   // do the command
   wroteHeader = false;
@@ -959,8 +939,8 @@ void CXbmcWeb::xbmcForm(webs_t wp, char_t *path, char_t *query)
   xbmcProcessCommand( NO_EID, wp, command, parameter);
 
   // if we do want to redirect
-  if( websTestVar(wp, WEB_NEXT_PAGE)) {
-    next_page = websGetVar(wp, WEB_NEXT_PAGE, XBMC_NONE); 
+  if( websTestVar(wp, (char*)WEB_NEXT_PAGE)) {
+    next_page = websGetVar(wp, (char*)WEB_NEXT_PAGE, (char*)XBMC_NONE); 
     // redirect to another web page
     websRedirect(wp, next_page);
     return;

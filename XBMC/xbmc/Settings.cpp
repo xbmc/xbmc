@@ -38,7 +38,6 @@
 #include "utils/Network.h"
 #include "FileSystem/MultiPathDirectory.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE enum
-#include "utils/FanController.h"
 #include "MediaManager.h"
 #include "XBVideoConfig.h"
 #include "DNSNameCache.h"
@@ -46,9 +45,6 @@
 #include "GUIDialogYesNo.h"
 #include "FileSystem/Directory.h"
 #include "FileItem.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "utils/MemoryUnitManager.h"
-#endif
 #ifdef _WIN32PC
 #include "win32/WIN32Util.h"
 #endif
@@ -84,7 +80,6 @@ CSettings::CSettings(void)
 
   g_stSettings.m_iMyVideoStack = STACK_NONE;
 
-  g_stSettings.m_bMyVideoCleanTitles = false;
   strcpy(g_stSettings.m_szMyVideoCleanTokens, "divx|xvid|3ivx|ac3|ac351|dts|mp3|wma|m4a|mp4|aac|ogg|scr|ts|sharereactor|dvd|dvdrip|hd-dvd|remux|dtshd|ddplus|blue-ray");
   strcpy(g_stSettings.m_szMyVideoCleanSeparators, "- _.[({+");
 
@@ -115,8 +110,8 @@ CSettings::CSettings(void)
   g_stSettings.m_fPixelRatio = 1.0f;
 
   g_stSettings.m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u|.dng|.nef";
-  g_stSettings.m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adplug|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2";
-  g_stSettings.m_videoExtensions = ".m4v|.3gp|.nsv|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp";
+  g_stSettings.m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adplug|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2|.oga";
+  g_stSettings.m_videoExtensions = ".m4v|.3gp|.nsv|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp|.m2t|.m2ts|.evo|.ogv";
   // internal music extensions
   g_stSettings.m_musicExtensions += "|.sidstream|.oggstream|.nsfstream|.asapstream|.cdda";
 
@@ -170,15 +165,21 @@ CSettings::CSettings(void)
   g_advancedSettings.m_autoDetectPingTime = 30;
   g_advancedSettings.m_playCountMinimumPercent = 90.0f;
 
-  g_advancedSettings.m_songInfoDuration = 2;
+  g_advancedSettings.m_songInfoDuration = 10;
   g_advancedSettings.m_busyDialogDelay = 2000;
   g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG;
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
+#if defined(HAS_HAL) && defined(HAL_MOUNT)
+  g_advancedSettings.m_useHalMount = true;
+#elif defined(HAS_HAL)
+  g_advancedSettings.m_useHalMount = false;
+#endif
+  g_advancedSettings.m_fullScreenOnMovieStart = true;
   g_advancedSettings.m_usePCDVDROM = false;
   g_advancedSettings.m_noDVDROM = false;
   g_advancedSettings.m_cachePath = "Z:\\";
   g_advancedSettings.m_displayRemoteCodes = false;
-  
+
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+part[ _\\.-]*([0-9a-d]+)");
@@ -191,7 +192,7 @@ CSettings::CSettings(void)
   // foo_[s01]_[e01]
   g_advancedSettings.m_tvshowStackRegExps.push_back("\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$");
   // foo.1x09*
-  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\._ -\\[]([0-9]+)x([0-9]+)([^\\\\/]*)$");
+  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\._ \\[-]([0-9]+)x([0-9]+)([^\\\\/]*)$");
   // foo.s01.e01, foo.s01_e01, S01E02 foo
   g_advancedSettings.m_tvshowStackRegExps.push_back("[Ss]([0-9]+)[\\.-]?[Ee]([0-9]+)([^\\\\/]*)$");
   // foo.103*
@@ -282,19 +283,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   bXboxMediacenter = bSettings = false;
 
   CStdString strMnt = GetProfileUserDataFolder();
-#ifdef _XBOX
-  char szDevicePath[1024];
-  if (GetProfileUserDataFolder().Left(2).Equals("Q:"))
-  {
-    CUtil::GetHomePath(strMnt);
-    strMnt += GetProfileUserDataFolder().substr(2);
-  }
-  CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath);
-  strcat(szDevicePath,strMnt.c_str()+2);
-  CIoSupport::RemapDriveLetter('P', szDevicePath);
-#else
   CIoSupport::RemapDriveLetter('P', (char*) strMnt.c_str());
-#endif  
   CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
   CStdString strFile=GetSettingsFile();
   if (!LoadSettings(strFile))
@@ -445,7 +434,7 @@ VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
     // this nasty block of code is needed as we have to
     // call getlocaldrives after localize strings has been loaded
     bool bAdded=false;
-    for (unsigned int i=0;i<g_settings.m_fileSources.size();++i) 
+    for (unsigned int i=0;i<g_settings.m_fileSources.size();++i)
     {
       if (g_settings.m_fileSources[i].m_ignore)
       {
@@ -978,7 +967,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "startwindow", g_stSettings.m_iVideoStartWindow, WINDOW_VIDEO_FILES, WINDOW_VIDEO_FILES, WINDOW_VIDEO_NAV);
     GetInteger(pElement, "stackvideomode", g_stSettings.m_iMyVideoStack, STACK_NONE, STACK_NONE, STACK_SIMPLE);
 
-    XMLUtils::GetBoolean(pElement, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
     GetString(pElement, "cleantokens", g_stSettings.m_szMyVideoCleanTokens, g_stSettings.m_szMyVideoCleanTokens);
     GetString(pElement, "cleanseparators", g_stSettings.m_szMyVideoCleanSeparators, g_stSettings.m_szMyVideoCleanSeparators);
 
@@ -1023,10 +1011,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   if (pElement)
   {
     GetInteger(pElement, "systemtotaluptime", g_stSettings.m_iSystemTimeTotalUp, 0, 0, INT_MAX);
-#ifdef HAS_KAI
-    GetString(pElement, "kaiarenapass", g_stSettings.szOnlineArenaPassword, "");
-    GetString(pElement, "kaiarenadesc", g_stSettings.szOnlineArenaDescription, "");
-#endif
     GetInteger(pElement, "httpapibroadcastlevel", g_stSettings.m_HttpApiBroadcastLevel, 0, 0,5);
     GetInteger(pElement, "httpapibroadcastport", g_stSettings.m_HttpApiBroadcastPort, 8278, 1, 65535);
   }
@@ -1060,9 +1044,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     {
       CStdString setting;
       setting.Format("karaoke%i", i);
-#ifndef HAS_XBOX_AUDIO
 #define XVOICE_MASK_PARAM_DISABLED (-1.0f)
-#endif
       GetFloat(pElement, setting + "energy", g_stSettings.m_karaokeVoiceMask[i].energy, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
       GetFloat(pElement, setting + "pitch", g_stSettings.m_karaokeVoiceMask[i].pitch, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
       GetFloat(pElement, setting + "whisper", g_stSettings.m_karaokeVoiceMask[i].whisper, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
@@ -1076,15 +1058,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 
   // Advanced settings
   LoadAdvancedSettings();
-
-  // Override settings with avpack settings
-  if ( m_vecProfiles[m_iLastLoadedProfileIndex].useAvpackSettings())
-  {
-    CLog::Log(LOGNOTICE, "Per AV pack settings are on");
-    LoadAvpackXML();
-  }
-  else
-    CLog::Log(LOGNOTICE, "Per AV pack settings are off");
 
   return true;
 }
@@ -1137,6 +1110,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "percentseekforwardbig", g_advancedSettings.m_videoPercentSeekForwardBig, 10, 0, 100);
     GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_videoPercentSeekBackwardBig, -10, -100, 0);
     GetInteger(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 1, 0, 255);
+    XMLUtils::GetBoolean(pElement, "fullscreenonmoviestart", g_advancedSettings.m_fullScreenOnMovieStart);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
@@ -1204,13 +1178,15 @@ void CSettings::LoadAdvancedSettings()
       setting->SetAdvanced();
   }
   GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress, "freedb.freedb.org");
-
+#ifdef HAS_HAL
+  XMLUtils::GetBoolean(pRootElement, "usehalmount", g_advancedSettings.m_useHalMount);
+#endif
   XMLUtils::GetBoolean(pRootElement, "usepcdvdrom", g_advancedSettings.m_usePCDVDROM);
   XMLUtils::GetBoolean(pRootElement, "nodvdrom", g_advancedSettings.m_noDVDROM);
   XMLUtils::GetBoolean(pRootElement, "usemultipaths", g_advancedSettings.m_useMultipaths);
   XMLUtils::GetBoolean(pRootElement, "disablemodchipdetection", g_advancedSettings.m_DisableModChipDetection);
 
-  GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 2, 1, 15);
+  GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 10, 1, 15);
   GetInteger(pRootElement, "busydialogdelay", g_advancedSettings.m_busyDialogDelay, 2000, 0, 5000);
   GetInteger(pRootElement, "playlistretries", g_advancedSettings.m_playlistRetries, 100, -1, 5000);
 
@@ -1228,7 +1204,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "defaultsubmenu", g_advancedSettings.m_iTuxBoxDefaultSubMenu, 4, 1, 4);
     GetInteger(pElement, "defaultrootmenu", g_advancedSettings.m_iTuxBoxDefaultRootMenu, 0, 0, 4);
     GetInteger(pElement, "zapwaittime", g_advancedSettings.m_iTuxBoxZapWaitTime, 0, 0, 120);
-    
+
   }
 
   CStdString extraExtensions;
@@ -1321,36 +1297,73 @@ void CSettings::LoadAdvancedSettings()
   TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("moviestacking");
   if (pVideoStacking)
   {
+    int iAction = 0; // overwrite
+    // for backward compatibility
     const char* szAppend = pVideoStacking->Attribute("append");
-    if ((szAppend && stricmp(szAppend,"yes") != 0) || !szAppend)
-      g_advancedSettings.m_videoStackRegExps.clear();
+    if ((szAppend && stricmp(szAppend, "yes") == 0))
+      iAction = 1;
+    // action takes precedence if both attributes exist
+    const char* szAction = pVideoStacking->Attribute("action");
+    if (szAction)
+    {
+      iAction = 0; // overwrite
+      if (stricmp(szAction, "append") == 0)
+        iAction = 1; // append
+      else if (stricmp(szAction, "prepend") == 0)
+        iAction = 2; // prepend
+    }
     TiXmlNode* pStackRegExp = pVideoStacking->FirstChild("regexp");
+    if (iAction == 0)
+      g_advancedSettings.m_videoStackRegExps.clear();
+    int i = 0;
     while (pStackRegExp)
     {
       if (pStackRegExp->FirstChild())
       {
         CStdString regExp = pStackRegExp->FirstChild()->Value();
         regExp.MakeLower();
-        g_advancedSettings.m_videoStackRegExps.push_back(regExp);
+        if (iAction == 2)
+          g_advancedSettings.m_videoStackRegExps.insert(g_advancedSettings.m_videoStackRegExps.begin() + i++, 1, regExp);
+        else
+          g_advancedSettings.m_videoStackRegExps.push_back(regExp);
       }
       pStackRegExp = pStackRegExp->NextSibling("regexp");
     }
+
   }
   //tv stacking regexps
   TiXmlElement* pTVStacking = pRootElement->FirstChildElement("tvshowmatching");
   if (pTVStacking)
   {
+    int iAction = 0; // overwrite
+    // for backward compatibility
     const char* szAppend = pTVStacking->Attribute("append");
-    if ((szAppend && stricmp(szAppend,"yes") != 0) || !szAppend)
+    if ((szAppend && stricmp(szAppend, "yes") == 0))
+      iAction = 1;
+    // action takes precedence if both attributes exist
+    const char* szAction = pTVStacking->Attribute("action");
+    if (szAction)
+    {
+      iAction = 0; // overwrite
+      if (stricmp(szAction, "append") == 0)
+        iAction = 1; // append
+      else if (stricmp(szAction, "prepend") == 0)
+        iAction = 2; // prepend
+    }
+    if (iAction == 0)
         g_advancedSettings.m_tvshowStackRegExps.clear();
     TiXmlNode* pStackRegExp = pTVStacking->FirstChild("regexp");
+    int i = 0;
     while (pStackRegExp)
     {
       if (pStackRegExp->FirstChild())
       {
         CStdString regExp = pStackRegExp->FirstChild()->Value();
         regExp.MakeLower();
-        g_advancedSettings.m_tvshowStackRegExps.push_back(regExp);
+        if (iAction == 2)
+          g_advancedSettings.m_tvshowStackRegExps.insert(g_advancedSettings.m_tvshowStackRegExps.begin() + i++, 1, regExp);
+        else
+          g_advancedSettings.m_tvshowStackRegExps.push_back(regExp);
       }
       pStackRegExp = pStackRegExp->NextSibling("regexp");
     }
@@ -1494,181 +1507,6 @@ void CSettings::LoadAdvancedSettings()
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
 }
 
-bool CSettings::LoadAvpackXML()
-{
-  CStdString avpackSettingsXML;
-  avpackSettingsXML  = GetAvpackSettingsFile();
-  TiXmlDocument avpackXML;
-  if (!CFile::Exists(avpackSettingsXML))
-  {
-    CLog::Log(LOGERROR, "Error loading AV pack settings : %s not found !", avpackSettingsXML.c_str());
-    return false;
-  }
-
-  CLog::Log(LOGNOTICE, "%s found : loading %s",
-    g_videoConfig.GetAVPack().c_str(), avpackSettingsXML.c_str());
-
-  if (!avpackXML.LoadFile(avpackSettingsXML.c_str()))
-  {
-    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s",
-      avpackSettingsXML.c_str(), avpackXML.ErrorRow(), avpackXML.ErrorDesc());
-    return false;
-  }
-
-  TiXmlElement *pMainElement = avpackXML.RootElement();
-  if (!pMainElement || strcmpi(pMainElement->Value(),"settings") != 0)
-  {
-    CLog::Log(LOGERROR, "Error loading %s, no <settings> node", avpackSettingsXML.c_str());
-    return false;
-  }
-
-  TiXmlElement *pRoot = pMainElement->FirstChildElement(g_videoConfig.GetAVPack());
-  if (!pRoot)
-  {
-    CLog::Log(LOGERROR, "Error loading %s, no <%s> node",
-      avpackSettingsXML.c_str(), g_videoConfig.GetAVPack().c_str());
-    return false;
-  }
-
-  // Load guisettings
-  g_guiSettings.LoadXML(pRoot);
-
-  // Load calibration
-  return LoadCalibration(pRoot, avpackSettingsXML);
-}
-
-// Save the avpack settings in the current 'avpacksettings.xml' file
-bool CSettings::SaveAvpackXML() const
-{
-  CStdString avpackSettingsXML;
-  avpackSettingsXML  = GetAvpackSettingsFile();
-
-  CLog::Log(LOGNOTICE, "Saving %s settings in %s",
-    g_videoConfig.GetAVPack().c_str(), avpackSettingsXML.c_str());
-
-  // The file does not exist : Save defaults
-  if (!CFile::Exists(avpackSettingsXML))
-    return SaveNewAvpackXML();
-
-  // The file already exists :
-  // We need to preserve other avpack settings
-
-  // First load the previous settings
-  TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile(avpackSettingsXML))
-  {
-    CLog::Log(LOGERROR, "SaveAvpackSettings : Error loading %s, Line %d\n%s\nCreating new file.",
-      avpackSettingsXML.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-    return SaveNewAvpackXML();
-  }
-
-  // Get the main element
-  TiXmlElement *pMainElement = xmlDoc.RootElement();
-  if (!pMainElement || strcmpi(pMainElement->Value(),"settings") != 0)
-  {
-    CLog::Log(LOGERROR, "SaveAvpackSettings : Error loading %s, no <settings> node.\nCreating new file.",
-      avpackSettingsXML.c_str());
-    return SaveNewAvpackXML();
-  }
-
-  // Delete the plugged avpack root if it exists, then recreate it
-  // TODO : to support custom avpack settings, the two XMLs should
-  // be synchronized, not just overwrite the old one
-  TiXmlNode *pRoot = pMainElement->FirstChild(g_videoConfig.GetAVPack());
-  if (pRoot)
-    pMainElement->RemoveChild(pRoot);
-
-  TiXmlElement pluggedNode(g_videoConfig.GetAVPack());
-  pRoot = pMainElement->InsertEndChild(pluggedNode);
-  if (!pRoot) return false;
-
-  if (!SaveAvpackSettings(pRoot))
-    return false;
-
-  return xmlDoc.SaveFile(avpackSettingsXML);
-}
-
-// Create an 'avpacksettings.xml' file with in the current profile directory
-bool CSettings::SaveNewAvpackXML() const
-{
-  TiXmlDocument xmlDoc;
-  TiXmlElement xmlMainElement("settings");
-  TiXmlNode *pMain = xmlDoc.InsertEndChild(xmlMainElement);
-  if (!pMain) return false;
-
-  TiXmlElement pluggedNode(g_videoConfig.GetAVPack());
-  TiXmlNode *pRoot = pMain->InsertEndChild(pluggedNode);
-  if (!pRoot) return false;
-
-  if (!SaveAvpackSettings(pRoot))
-    return false;
-
-  return xmlDoc.SaveFile(GetAvpackSettingsFile());
-}
-
-// Save avpack settings in the provided xml node
-bool CSettings::SaveAvpackSettings(TiXmlNode *io_pRoot) const
-{
-  TiXmlElement programsNode("myprograms");
-  TiXmlNode *pNode = io_pRoot->InsertEndChild(programsNode);
-  if (!pNode) return false;
-  SetBoolean(pNode, "gameautoregion", g_guiSettings.GetBool("myprograms.gameautoregion"));
-  SetInteger(pNode, "ntscmode", g_guiSettings.GetInt("myprograms.ntscmode"));
-
-  // default video settings
-  TiXmlElement videoSettingsNode("defaultvideosettings");
-  pNode = io_pRoot->InsertEndChild(videoSettingsNode);
-  if (!pNode) return false;
-  SetInteger(pNode, "interlacemethod", g_stSettings.m_defaultVideoSettings.m_InterlaceMethod);
-  SetInteger(pNode, "filmgrain", g_stSettings.m_currentVideoSettings.m_FilmGrain);
-  SetInteger(pNode, "viewmode", g_stSettings.m_currentVideoSettings.m_ViewMode);
-  SetFloat(pNode, "zoomamount", g_stSettings.m_currentVideoSettings.m_CustomZoomAmount);
-  SetFloat(pNode, "pixelratio", g_stSettings.m_currentVideoSettings.m_CustomPixelRatio);
-  SetFloat(pNode, "volumeamplification", g_stSettings.m_currentVideoSettings.m_VolumeAmplification);
-  SetBoolean(pNode, "outputtoallspeakers", g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers);
-  SetBoolean(pNode, "showsubtitles", g_stSettings.m_currentVideoSettings.m_SubtitleOn);
-  SetInteger(pNode, "brightness", g_stSettings.m_currentVideoSettings.m_Brightness);
-  SetInteger(pNode, "contrast", g_stSettings.m_currentVideoSettings.m_Contrast);
-  SetInteger(pNode, "gamma", g_stSettings.m_currentVideoSettings.m_Gamma);
-
-  TiXmlElement audiooutputNode("audiooutput");
-  pNode = io_pRoot->InsertEndChild(audiooutputNode);
-  if (!pNode) return false;
-  SetInteger(pNode, "mode", g_guiSettings.GetInt("audiooutput.mode"));
-  SetBoolean(pNode, "ac3passthrough", g_guiSettings.GetBool("audiooutput.ac3passthrough"));
-  SetBoolean(pNode, "dtspassthrough", g_guiSettings.GetBool("audiooutput.dtspassthrough"));
-#ifdef _LINUX
-  SetString(pNode, "audiodevice", g_guiSettings.GetString("audiooutput.audiodevice"));
-  SetString(pNode, "passthroughdevice", g_guiSettings.GetString("audiooutput.passthroughdevice"));
-#endif
-
-  TiXmlElement videooutputNode("videooutput");
-  pNode = io_pRoot->InsertEndChild(videooutputNode);
-  if (!pNode) return false;
-  SetInteger(pNode, "aspect", g_guiSettings.GetInt("videooutput.aspect"));
-  SetBoolean(pNode, "hd480p", g_guiSettings.GetBool("videooutput.hd480p"));
-  SetBoolean(pNode, "hd720p", g_guiSettings.GetBool("videooutput.hd720p"));
-  SetBoolean(pNode, "hd1080i", g_guiSettings.GetBool("videooutput.hd1080i"));
-
-  TiXmlElement videoscreenNode("videoscreen");
-  pNode = io_pRoot->InsertEndChild(videoscreenNode);
-  if (!pNode) return false;
-#ifdef HAS_XBOX_HARDWARE
-  SetInteger(pNode, "flickerfilter", g_guiSettings.GetInt("videoscreen.flickerfilter"));
-  SetBoolean(pNode, "soften", g_guiSettings.GetBool("videoscreen.soften"));
-#endif
-  SetInteger(pNode, "resolution", g_guiSettings.GetInt("videoscreen.resolution"));
-
-  TiXmlElement videoplayerNode("videoplayer");
-  pNode = io_pRoot->InsertEndChild(videoplayerNode);
-  if (!pNode) return false;
-  SetInteger(pNode, "displayresolution", g_guiSettings.GetInt("videoplayer.displayresolution"));
-  SetInteger(pNode, "flicker", g_guiSettings.GetInt("videoplayer.flicker"));
-  SetBoolean(pNode, "soften", g_guiSettings.GetBool("videoplayer.soften"));
-
-  return SaveCalibration(io_pRoot);
-}
-
 bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 {
   TiXmlDocument xmlDoc;
@@ -1707,9 +1545,11 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   if (!pNode) return false;
 
   SetInteger(pNode, "startwindow", g_stSettings.m_iVideoStartWindow);
-  SetInteger(pNode, "stackvideomode", g_stSettings.m_iMyVideoStack);
 
-  SetBoolean(pNode, "cleantitles", g_stSettings.m_bMyVideoCleanTitles);
+  int iStack = g_stSettings.m_iMyVideoStack;  // make sure we only save this without the temporary flag
+  iStack &= ~STACK_UNAVAILABLE;
+  SetInteger(pNode, "stackvideomode", iStack);
+
   SetString(pNode, "cleantokens", g_stSettings.m_szMyVideoCleanTokens);
   SetString(pNode, "cleanseparators", g_stSettings.m_szMyVideoCleanSeparators);
   SetString(pNode, "defaultlibview", g_settings.m_defaultVideoLibSource);
@@ -1749,10 +1589,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   TiXmlElement generalNode("general");
   pNode = pRoot->InsertEndChild(generalNode);
   if (!pNode) return false;
-#ifdef HAS_KAI
-  SetString(pNode, "kaiarenapass", g_stSettings.szOnlineArenaPassword);
-  SetString(pNode, "kaiarenadesc", g_stSettings.szOnlineArenaDescription);
-#endif
   SetInteger(pNode, "systemtotaluptime", g_stSettings.m_iSystemTimeTotalUp);
   SetInteger(pNode, "httpapibroadcastport", g_stSettings.m_HttpApiBroadcastPort);
   SetInteger(pNode, "httpapibroadcastlevel", g_stSettings.m_HttpApiBroadcastLevel);
@@ -1798,9 +1634,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 
   SaveSkinSettings(pRoot);
 
-  if ( m_vecProfiles[m_iLastLoadedProfileIndex].useAvpackSettings())
-    SaveAvpackXML();
-
   // For mastercode
   SaveProfiles( PROFILES_FILE );
 
@@ -1831,9 +1664,6 @@ bool CSettings::LoadProfile(int index)
     CreateDirectory(g_settings.GetVideoThumbFolder().c_str(), NULL);
     CreateDirectory(g_settings.GetBookmarksThumbFolder().c_str(), NULL);
     CreateDirectory(g_settings.GetProgramsThumbFolder().c_str(), NULL);
-#ifdef HAS_KAI
-    CreateDirectory(g_settings.GetXLinkKaiThumbFolder().c_str(), NULL);
-#endif
     CreateDirectory(g_settings.GetPicturesThumbFolder().c_str(), NULL);
     CreateDirectory(_P("P:\\visualisations"),NULL);
     CLog::Log(LOGINFO, "  thumbnails folder:%s", g_settings.GetThumbnailsFolder().c_str());
@@ -1886,20 +1716,6 @@ bool CSettings::LoadProfile(int index)
       if (doc.LoadFile(GetUserDataFolder()+"\\guisettings.xml"))
         g_guiSettings.LoadMasterLock(doc.RootElement());
     }
-
-#ifdef HAS_XBOX_HARDWARE
-    if (g_guiSettings.GetBool("system.autotemperature"))
-    {
-      CLog::Log(LOGNOTICE, "start fancontroller");
-      CFanController::Instance()->Start(g_guiSettings.GetInt("system.targettemperature"), g_guiSettings.GetInt("system.minfanspeed"));
-    }
-    else if (g_guiSettings.GetBool("system.fanspeedcontrol"))
-    {
-      CLog::Log(LOGNOTICE, "setting fanspeed");
-      CFanController::Instance()->SetFanSpeed(g_guiSettings.GetInt("system.fanspeed"));
-    }
-    g_application.StartLEDControl(false);
-#endif
 
     // to set labels - shares are reloaded
     CDetectDVDMedia::UpdateState();
@@ -2057,9 +1873,6 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     XMLUtils::GetBoolean(pProfile, "lockprograms", bHas);
     profile.setProgramsLocked(bHas);
 
-    bHas = false;
-    XMLUtils::GetBoolean(pProfile, "useavpacksettings", bHas);
-    profile.setUseAvpackSettings(bHas);
     LockType iLockMode=LOCK_MODE_EVERYONE;
     XMLUtils::GetInt(pProfile,"lockmode",(int&)iLockMode);
     if (iLockMode > LOCK_MODE_QWERTY || iLockMode < LOCK_MODE_EVERYONE)
@@ -2100,7 +1913,6 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
     SetString(pNode,"directory",g_settings.m_vecProfiles[iProfile].getDirectory());
     SetString(pNode,"thumbnail",g_settings.m_vecProfiles[iProfile].getThumb());
     SetString(pNode,"lastdate",g_settings.m_vecProfiles[iProfile].getDate());
-    SetBoolean(pNode,"useavpacksettings",g_settings.m_vecProfiles[iProfile].useAvpackSettings());
 
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
     {
@@ -2168,7 +1980,7 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
   // create a new Element for UUID
   XMLUtils::SetString(pRoot, "UUID", g_settings.m_UPnPUUID);
   XMLUtils::SetString(pRoot, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
-  
+
   VECSOURCES* pShares[3];
   pShares[0] = &g_settings.m_UPnPMusicSources;
   pShares[1] = &g_settings.m_UPnPVideoSources;
@@ -2185,8 +1997,8 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
       xmlType = TiXmlElement("video");
     if (k==2)
       xmlType = TiXmlElement("pictures");
-    
-    TiXmlNode* pNode = pRoot->InsertEndChild(xmlType);  
+
+    TiXmlNode* pNode = pRoot->InsertEndChild(xmlType);
 
     for (unsigned int j=0;j<(*pShares)[k].size();++j)
     {
@@ -2381,7 +2193,7 @@ bool CSettings::SetSources(TiXmlNode *root, const char *section, const VECSOURCE
         SetString(&source, "thumbnail", share.m_strThumbnailImage);
 
       sectionNode->InsertEndChild(source);
-    } 
+    }
   }
   return true;
 }
@@ -2775,19 +2587,6 @@ CStdString CSettings::GetProfilesThumbFolder() const
   return folder;
 }
 
-
-CStdString CSettings::GetXLinkKaiThumbFolder() const
-{
-  CStdString folder;
-#ifdef HAS_KAI
-  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\Programs\\XLinkKai"), folder);
-  else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Programs\\XlinkKai"), folder);
-#endif
-  return folder;
-}
-
 CStdString CSettings::GetSourcesFile() const
 {
   CStdString folder;
@@ -2900,12 +2699,3 @@ CStdString CSettings::GetSettingsFile() const
   return _P(settings);
 }
 
-CStdString CSettings::GetAvpackSettingsFile() const
-{
-  CStdString  strAvpackSettingsFile;
-  if (g_settings.m_iLastLoadedProfileIndex == 0)
-    strAvpackSettingsFile = "T:\\avpacksettings.xml";
-  else
-    strAvpackSettingsFile = "P:\\avpacksettings.xml";
-  return _P(strAvpackSettingsFile);
-}

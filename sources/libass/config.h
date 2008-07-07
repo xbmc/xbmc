@@ -8,13 +8,13 @@
 /* #undef HAVE_DOPRNT */
 
 /* use enca */
-#define HAVE_ENCA 1
+/* #undef HAVE_ENCA */
 
 /* Define to 1 if you have the <enca.h> header file. */
 /* #undef HAVE_ENCA_H */
 
 /* found fontconfig via pkg-config */
-/* #undef HAVE_FONTCONFIG 1 */
+#define HAVE_FONTCONFIG 1
 
 /* found freetype2 via pkg-config */
 #define HAVE_FREETYPE 1
@@ -26,7 +26,7 @@
 #define HAVE_INTTYPES_H 1
 
 /* use libpng */
-/* #undef HAVE_LIBPNG */
+#define HAVE_LIBPNG 1
 
 /* Define to 1 if your system has a GNU libc compatible `malloc' function, and
    to 0 otherwise. */
@@ -102,7 +102,7 @@
 
 /* Define to 1 if `lstat' dereferences a symlink specified with a trailing
    slash. */
-/* #undef LSTAT_FOLLOWS_SLASHED_SYMLINK */
+#define LSTAT_FOLLOWS_SLASHED_SYMLINK 1
 
 /* Name of package */
 #define PACKAGE "libass"

@@ -7,7 +7,8 @@ CC=@CC@
 CFLAGS+=@DEBUG_FLAGS@
 CFLAGS+=@LZO_INCLUDES@
 INCLUDES+=@INCLUDES@
-DEFINES+=-D_LINUX -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 @SDL_DEFINES@ -DINSTALL_PATH="\"@prefix@/share/xbmc\""
+DEFINES+=-D_LINUX -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 @SDL_DEFINES@ -DINSTALL_PATH="\"@prefix@/share/xbmc\"" @ARCH_DEFINES@
+ARCH=@ARCH@
 
 .cpp.o:
 	rm -f ${<:.cpp=.o}
@@ -39,9 +40,9 @@ clean:
 
 distclean: clean
 	@echo "Removing all object file (.o)"
-	@find . -name "*.o" -exec echo 'Removing "{}"' \; -exec rm "{}" \;
+	@find . -name "*.o" -exec echo 'Removing "{}"' \; -exec rm -f "{}" \;
 	@echo "Removing all object file (.depend)"
-	@find . -name "*.depend" -exec echo 'Removing "{}"' \; -exec rm "{}" \;
+	@find . -name "*.depend" -exec echo 'Removing "{}"' \; -exec rm -f "{}" \;
 	@echo "Done."
 
 depend: $(PCH) $(SRCS)

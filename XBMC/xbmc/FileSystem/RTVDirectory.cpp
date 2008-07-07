@@ -84,7 +84,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       // the best workaround I could come up with.
       for (int i = 0; i < numRTV; i++)
       {
-        CFileItem* pItem = new CFileItem(rtv[i].friendlyName);
+        CFileItemPtr pItem(new CFileItem(rtv[i].friendlyName));
         // This will keep the /Video or / and allow one to set up an auto ReplayTV
         // share of either type--simple file listing or ReplayGuide listing.
         pItem->m_strPath = strRoot + rtv[i].hostname;
@@ -255,7 +255,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
         if ( bIsFolder || IsAllowed( szPath) )
         {
-          CFileItem* pItem = new CFileItem(szName);
+          CFileItemPtr pItem(new CFileItem(szName));
           pItem->m_dateTime=dtDateTime;
           pItem->m_strPath = strRoot + szPath;
           // Hack to show duration of show in minutes as KB in XMBC because
@@ -309,7 +309,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           // video buffer and XBMC may cause problems if it tries to play it)
           if (strstr(p, ".mpg") && !strstr(p, "circular"))
           {
-            CFileItem* pItem = new CFileItem(p);
+            CFileItemPtr pItem(new CFileItem(p));
             pItem->m_strPath = strRoot + p;
             pItem->m_bIsFolder = false;
             // The list returned by the RTV doesn't include file sizes, unfortunately

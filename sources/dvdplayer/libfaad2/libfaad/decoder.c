@@ -1,28 +1,31 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
-**
+** Copyright (C) 2003-2005 M. Bakker, Nero AG, http://www.nero.com
+**  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-**
+** 
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-**
+** 
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software
+** along with this program; if not, write to the Free Software 
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 **
 ** Any non-GPL usage of this software or parts of this software is strictly
 ** forbidden.
 **
-** Commercial non-GPL licensing of this software is possible.
-** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
+** The "appropriate copyright message" mentioned in section 2c of the GPLv2
+** must read: "Code from FAAD2 is copyright (c) Nero AG, www.nero.com"
 **
-** $Id: decoder.c,v 1.94 2004/02/04 20:07:24 menno Exp $
+** Commercial non-GPL licensing of this software is possible.
+** For more info contact Nero AG through Mpeg4AAClicense@nero.com.
+**
+** $Id: decoder.c,v 1.111 2007/11/01 12:33:30 menno Exp $
 **/
 
 #include "common.h"
@@ -50,14 +53,21 @@
 uint16_t dbg_count;
 #endif
 
-int8_t* FAADAPI faacDecGetErrorMessage(uint8_t errcode)
+/* static function declarations */
+static void* aac_frame_decode(NeAACDecHandle hDecoder, NeAACDecFrameInfo *hInfo,
+                              uint8_t *buffer, uint32_t buffer_size,
+                              void **sample_buffer, uint32_t sample_buffer_size);
+static void create_channel_config(NeAACDecHandle hDecoder, NeAACDecFrameInfo *hInfo);
+
+
+char* NEAACDECAPI NeAACDecGetErrorMessage(uint8_t errcode)
 {
     if (errcode >= NUM_ERROR_MESSAGES)
         return NULL;
     return err_msg[errcode];
 }
 
-uint32_t FAADAPI faacDecGetCapabilities(void)
+uint32_t NEAACDECAPI NeAACDecGetCapabilities(void)
 {
     uint32_t cap = 0;
 
@@ -83,16 +93,18 @@ uint32_t FAADAPI faacDecGetCapabilities(void)
     return cap;
 }
 
-faacDecHandle FAADAPI faacDecOpen(void)
+const unsigned char mes[] = { 0x67,0x20,0x61,0x20,0x20,0x20,0x6f,0x20,0x72,0x20,0x65,0x20,0x6e,0x20,0x20,0x20,0x74,0x20,0x68,0x20,0x67,0x20,0x69,0x20,0x72,0x20,0x79,0x20,0x70,0x20,0x6f,0x20,0x63 };
+NeAACDecHandle NEAACDECAPI NeAACDecOpen(void)
 {
     uint8_t i;
-    faacDecHandle hDecoder = NULL;
+    NeAACDecHandle hDecoder = NULL;
 
-    if ((hDecoder = (faacDecHandle)faad_malloc(sizeof(faacDecStruct))) == NULL)
+    if ((hDecoder = (NeAACDecHandle)faad_malloc(sizeof(NeAACDecStruct))) == NULL)
         return NULL;
 
-    memset(hDecoder, 0, sizeof(faacDecStruct));
+    memset(hDecoder, 0, sizeof(NeAACDecStruct));
 
+    hDecoder->cmes = mes;
     hDecoder->config.outputFormat  = FAAD_FMT_16BIT;
     hDecoder->config.defObjectType = MAIN;
     hDecoder->config.defSampleRate = 44100; /* Default: 44.1kHz */
@@ -108,6 +120,9 @@ faacDecHandle FAADAPI faacDecOpen(void)
 
     hDecoder->frame = 0;
     hDecoder->sample_buffer = NULL;
+
+    hDecoder->__r1 = 1;
+    hDecoder->__r2 = 1;
 
     for (i = 0; i < MAX_CHANNELS; i++)
     {
@@ -136,23 +151,14 @@ faacDecHandle FAADAPI faacDecOpen(void)
 
     hDecoder->drc = drc_init(REAL_CONST(1.0), REAL_CONST(1.0));
 
-#ifdef USE_SSE
-    if (cpu_has_sse())
-    {
-        hDecoder->apply_sf_func = apply_scalefactors_sse;
-    } else {
-        hDecoder->apply_sf_func = apply_scalefactors;
-    }
-#endif
-
     return hDecoder;
 }
 
-faacDecConfigurationPtr FAADAPI faacDecGetCurrentConfiguration(faacDecHandle hDecoder)
+NeAACDecConfigurationPtr NEAACDECAPI NeAACDecGetCurrentConfiguration(NeAACDecHandle hDecoder)
 {
     if (hDecoder)
     {
-        faacDecConfigurationPtr config = &(hDecoder->config);
+        NeAACDecConfigurationPtr config = &(hDecoder->config);
 
         return config;
     }
@@ -160,8 +166,8 @@ faacDecConfigurationPtr FAADAPI faacDecGetCurrentConfiguration(faacDecHandle hDe
     return NULL;
 }
 
-uint8_t FAADAPI faacDecSetConfiguration(faacDecHandle hDecoder,
-                                    faacDecConfigurationPtr config)
+uint8_t NEAACDECAPI NeAACDecSetConfiguration(NeAACDecHandle hDecoder,
+                                             NeAACDecConfigurationPtr config)
 {
     if (hDecoder && config)
     {
@@ -176,12 +182,18 @@ uint8_t FAADAPI faacDecSetConfiguration(faacDecHandle hDecoder,
         hDecoder->config.defSampleRate = config->defSampleRate;
 
         /* check output format */
-        if ((config->outputFormat < 1) || (config->outputFormat > 9))
+#ifdef FIXED_POINT
+        if ((config->outputFormat < 1) || (config->outputFormat > 4))
             return 0;
+#else
+        if ((config->outputFormat < 1) || (config->outputFormat > 5))
+            return 0;
+#endif
         hDecoder->config.outputFormat = config->outputFormat;
 
         if (config->downMatrix > 1)
-            hDecoder->config.downMatrix = config->downMatrix;
+            return 0;
+        hDecoder->config.downMatrix = config->downMatrix;
 
         /* OK */
         return 1;
@@ -190,14 +202,16 @@ uint8_t FAADAPI faacDecSetConfiguration(faacDecHandle hDecoder,
     return 0;
 }
 
-int32_t FAADAPI faacDecInit(faacDecHandle hDecoder, uint8_t *buffer,
-                            uint32_t buffer_size,
-                            uint32_t *samplerate, uint8_t *channels)
+
+int32_t NEAACDECAPI NeAACDecInit(NeAACDecHandle hDecoder, uint8_t *buffer,
+                                 uint32_t buffer_size,
+                                 uint32_t *samplerate, uint8_t *channels)
 {
     uint32_t bits = 0;
     bitfile ld;
     adif_header adif;
     adts_header adts;
+
 
     if ((hDecoder == NULL) || (samplerate == NULL) || (channels == NULL))
         return -1;
@@ -253,6 +267,16 @@ int32_t FAADAPI faacDecInit(faacDecHandle hDecoder, uint8_t *buffer,
         }
         faad_endbits(&ld);
     }
+
+#if (defined(PS_DEC) || defined(DRM_PS))
+    /* check if we have a mono file */
+    if (*channels == 1)
+    {
+        /* upMatrix to 2 channels for implicit signalling of PS */
+        *channels = 2;
+    }
+#endif
+
     hDecoder->channelConfiguration = *channels;
 
 #ifdef SBR_DEC
@@ -261,6 +285,8 @@ int32_t FAADAPI faacDecInit(faacDecHandle hDecoder, uint8_t *buffer,
     {
         *samplerate *= 2;
         hDecoder->forceUpSampling = 1;
+    } else if (*samplerate > 24000 && !(hDecoder->config.dontUpSampleImplicitSBR)) {
+        hDecoder->downSampledSBR = 1;
     }
 #endif
 
@@ -284,9 +310,9 @@ int32_t FAADAPI faacDecInit(faacDecHandle hDecoder, uint8_t *buffer,
 }
 
 /* Init the library using a DecoderSpecificInfo */
-int8_t FAADAPI faacDecInit2(faacDecHandle hDecoder, uint8_t *pBuffer,
-                            uint32_t SizeOfDecoderSpecificInfo,
-                            uint32_t *samplerate, uint8_t *channels)
+int8_t NEAACDECAPI NeAACDecInit2(NeAACDecHandle hDecoder, uint8_t *pBuffer,
+                                 uint32_t SizeOfDecoderSpecificInfo,
+                                 uint32_t *samplerate, uint8_t *channels)
 {
     int8_t rc;
     mp4AudioSpecificConfig mp4ASC;
@@ -316,6 +342,14 @@ int8_t FAADAPI faacDecInit2(faacDecHandle hDecoder, uint8_t *pBuffer,
         *channels = hDecoder->pce.channels;
         hDecoder->pce_set = 1;
     }
+#if (defined(PS_DEC) || defined(DRM_PS))
+    /* check if we have a mono file */
+    if (*channels == 1)
+    {
+        /* upMatrix to 2 channels for implicit signalling of PS */
+        *channels = 2;
+    }
+#endif
     hDecoder->sf_index = mp4ASC.samplingFrequencyIndex;
     hDecoder->object_type = mp4ASC.objectTypeIndex;
 #ifdef ERROR_RESILIENCE
@@ -325,13 +359,14 @@ int8_t FAADAPI faacDecInit2(faacDecHandle hDecoder, uint8_t *pBuffer,
 #endif
 #ifdef SBR_DEC
     hDecoder->sbr_present_flag = mp4ASC.sbr_present_flag;
+    hDecoder->downSampledSBR = mp4ASC.downSampledSBR;
     if (hDecoder->config.dontUpSampleImplicitSBR == 0)
         hDecoder->forceUpSampling = mp4ASC.forceUpSampling;
     else
         hDecoder->forceUpSampling = 0;
 
     /* AAC core decoder samplerate is 2 times as low */
-    if (hDecoder->sbr_present_flag == 1 || hDecoder->forceUpSampling == 1)
+    if (((hDecoder->sbr_present_flag == 1)&&(!hDecoder->downSampledSBR)) || hDecoder->forceUpSampling == 1)
     {
         hDecoder->sf_index = get_sr_index(mp4ASC.samplingFrequency / 2);
     }
@@ -366,100 +401,48 @@ int8_t FAADAPI faacDecInit2(faacDecHandle hDecoder, uint8_t *pBuffer,
 }
 
 #ifdef DRM
-int8_t FAADAPI faacDecInitDRM(faacDecHandle hDecoder, uint32_t samplerate,
-                              uint8_t channels)
+int8_t NEAACDECAPI NeAACDecInitDRM(NeAACDecHandle *hDecoder, uint32_t samplerate,
+                                   uint8_t channels)
 {
-    uint8_t i;
-
     if (hDecoder == NULL)
         return 1; /* error */
 
-    /* Special object type defined for DRM */
-    hDecoder->config.defObjectType = DRM_ER_LC;
+    NeAACDecClose(*hDecoder);
 
-    hDecoder->config.defSampleRate = samplerate;
+    *hDecoder = NeAACDecOpen();
+
+    /* Special object type defined for DRM */
+    (*hDecoder)->config.defObjectType = DRM_ER_LC;
+
+    (*hDecoder)->config.defSampleRate = samplerate;
 #ifdef ERROR_RESILIENCE // This shoudl always be defined for DRM
-    hDecoder->aacSectionDataResilienceFlag = 1; /* VCB11 */
-    hDecoder->aacScalefactorDataResilienceFlag = 0; /* no RVLC */
-    hDecoder->aacSpectralDataResilienceFlag = 1; /* HCR */
+    (*hDecoder)->aacSectionDataResilienceFlag = 1; /* VCB11 */
+    (*hDecoder)->aacScalefactorDataResilienceFlag = 0; /* no RVLC */
+    (*hDecoder)->aacSpectralDataResilienceFlag = 1; /* HCR */
 #endif
-    hDecoder->frameLength = 960;
-    hDecoder->sf_index = get_sr_index(hDecoder->config.defSampleRate);
-    hDecoder->object_type = hDecoder->config.defObjectType;
+    (*hDecoder)->frameLength = 960;
+    (*hDecoder)->sf_index = get_sr_index((*hDecoder)->config.defSampleRate);
+    (*hDecoder)->object_type = (*hDecoder)->config.defObjectType;
 
     if ((channels == DRMCH_STEREO) || (channels == DRMCH_SBR_STEREO))
-        hDecoder->channelConfiguration = 2;
+        (*hDecoder)->channelConfiguration = 2;
     else
-        hDecoder->channelConfiguration = 1;
+        (*hDecoder)->channelConfiguration = 1;
 
 #ifdef SBR_DEC
-    if (channels == DRMCH_SBR_LC_STEREO)
-        hDecoder->lcstereo_flag = 1;
-    else
-        hDecoder->lcstereo_flag = 0;
-
     if ((channels == DRMCH_MONO) || (channels == DRMCH_STEREO))
-        hDecoder->sbr_present_flag = 0;
+        (*hDecoder)->sbr_present_flag = 0;
     else
-        hDecoder->sbr_present_flag = 1;
-
-    /* Reset sbr for new initialization */
-    sbrDecodeEnd(hDecoder->sbr[0]);
-    hDecoder->sbr[0] = NULL;
+        (*hDecoder)->sbr_present_flag = 1;
 #endif
 
-    if (hDecoder->fb) filter_bank_end(hDecoder->fb);
-    hDecoder->fb = NULL;
-
-    /* Take care of buffers */
-    if (hDecoder->sample_buffer) faad_free(hDecoder->sample_buffer);
-    hDecoder->sample_buffer = NULL;
-    hDecoder->alloced_channels = 0;
-
-    for (i = 0; i < MAX_CHANNELS; i++)
-    {
-        hDecoder->window_shape_prev[i] = 0;
-
-        if (hDecoder->time_out[i]) faad_free(hDecoder->time_out[i]);
-        hDecoder->time_out[i] = NULL;
-        if (hDecoder->fb_intermed[i]) faad_free(hDecoder->fb_intermed[i]);
-        hDecoder->fb_intermed[i] = NULL;
-#ifdef SSR_DEC
-        if (hDecoder->ssr_overlap[i]) faad_free(hDecoder->ssr_overlap[i]);
-        hDecoder->ssr_overlap[i] = NULL;
-        if (hDecoder->prev_fmd[i]) faad_free(hDecoder->prev_fmd[i]);
-        hDecoder->prev_fmd[i] = NULL;
-#endif
-#ifdef MAIN_DEC
-        if (hDecoder->pred_stat[i]) faad_free(hDecoder->pred_stat[i]);
-        hDecoder->pred_stat[i] = NULL;
-#endif
-#ifdef LTP_DEC
-        hDecoder->ltp_lag[i] = 0;
-        if (hDecoder->lt_pred_stat[i]) faad_free(hDecoder->lt_pred_stat[i]);
-        hDecoder->lt_pred_stat[i] = NULL;
-#endif
-    }
-
-    for (i = 0; i < MAX_SYNTAX_ELEMENTS; i++)
-    {
-#ifdef SBR_DEC
-        if (hDecoder->sbr[i])
-            sbrDecodeEnd(hDecoder->sbr[i]);
-
-        hDecoder->sbr_alloced[i] = 0;
-#endif
-        hDecoder->element_alloced[i] = 0;
-        hDecoder->element_output_channels[i] = 0;
-    }
-
-    hDecoder->fb = filter_bank_init(hDecoder->frameLength);
+    (*hDecoder)->fb = filter_bank_init((*hDecoder)->frameLength);
 
     return 0;
 }
 #endif
 
-void FAADAPI faacDecClose(faacDecHandle hDecoder)
+void NEAACDECAPI NeAACDecClose(NeAACDecHandle hDecoder)
 {
     uint8_t i;
 
@@ -512,7 +495,7 @@ void FAADAPI faacDecClose(faacDecHandle hDecoder)
     if (hDecoder) faad_free(hDecoder);
 }
 
-void FAADAPI faacDecPostSeekReset(faacDecHandle hDecoder, int32_t frame)
+void NEAACDECAPI NeAACDecPostSeekReset(NeAACDecHandle hDecoder, int32_t frame)
 {
     if (hDecoder)
     {
@@ -523,7 +506,7 @@ void FAADAPI faacDecPostSeekReset(faacDecHandle hDecoder, int32_t frame)
     }
 }
 
-static void create_channel_config(faacDecHandle hDecoder, faacDecFrameInfo *hInfo)
+static void create_channel_config(NeAACDecHandle hDecoder, NeAACDecFrameInfo *hInfo)
 {
     hInfo->num_front_channels = 0;
     hInfo->num_side_channels = 0;
@@ -553,8 +536,14 @@ static void create_channel_config(faacDecHandle hDecoder, faacDecFrameInfo *hInf
         chdir = hInfo->num_front_channels;
         if (chdir & 1)
         {
+#if (defined(PS_DEC) || defined(DRM_PS))
+            /* When PS is enabled output is always stereo */
+            hInfo->channel_position[chpos++] = FRONT_CHANNEL_LEFT;
+            hInfo->channel_position[chpos++] = FRONT_CHANNEL_RIGHT;
+#else
             hInfo->channel_position[chpos++] = FRONT_CHANNEL_CENTER;
             chdir--;
+#endif
         }
         for (i = 0; i < chdir; i += 2)
         {
@@ -593,8 +582,15 @@ static void create_channel_config(faacDecHandle hDecoder, faacDecFrameInfo *hInf
         switch (hDecoder->channelConfiguration)
         {
         case 1:
+#if (defined(PS_DEC) || defined(DRM_PS))
+            /* When PS is enabled output is always stereo */
+            hInfo->num_front_channels = 2;
+            hInfo->channel_position[0] = FRONT_CHANNEL_LEFT;
+            hInfo->channel_position[1] = FRONT_CHANNEL_RIGHT;
+#else
             hInfo->num_front_channels = 1;
             hInfo->channel_position[0] = FRONT_CHANNEL_CENTER;
+#endif
             break;
         case 2:
             hInfo->num_front_channels = 2;
@@ -728,13 +724,47 @@ static void create_channel_config(faacDecHandle hDecoder, faacDecFrameInfo *hInf
     }
 }
 
-void* FAADAPI faacDecDecode(faacDecHandle hDecoder,
-                            faacDecFrameInfo *hInfo,
-                            uint8_t *buffer, uint32_t buffer_size)
+void* NEAACDECAPI NeAACDecDecode(NeAACDecHandle hDecoder,
+                                 NeAACDecFrameInfo *hInfo,
+                                 uint8_t *buffer, uint32_t buffer_size)
 {
+    return aac_frame_decode(hDecoder, hInfo, buffer, buffer_size, NULL, 0);
+}
+
+void* NEAACDECAPI NeAACDecDecode2(NeAACDecHandle hDecoder,
+                                  NeAACDecFrameInfo *hInfo,
+                                  uint8_t *buffer, uint32_t buffer_size,
+                                  void **sample_buffer, uint32_t sample_buffer_size)
+{
+    if ((sample_buffer == NULL) || (sample_buffer_size == 0))
+    {
+        hInfo->error = 27;
+        return NULL;
+    }
+
+    return aac_frame_decode(hDecoder, hInfo, buffer, buffer_size,
+        sample_buffer, sample_buffer_size);
+}
+
+#ifdef DRM
+
+#define ERROR_STATE_INIT 6
+
+static void conceal_output(NeAACDecHandle hDecoder, uint16_t frame_len,
+                           uint8_t out_ch, void *sample_buffer)
+{
+    return;
+}
+#endif
+
+static void* aac_frame_decode(NeAACDecHandle hDecoder, NeAACDecFrameInfo *hInfo,
+                              uint8_t *buffer, uint32_t buffer_size,
+                              void **sample_buffer2, uint32_t sample_buffer_size)
+{
+    uint16_t i;
     uint8_t channels = 0;
     uint8_t output_channels = 0;
-    bitfile ld;
+    bitfile ld = {0};
     uint32_t bitsconsumed;
     uint16_t frame_len;
     void *sample_buffer;
@@ -749,27 +779,76 @@ void* FAADAPI faacDecDecode(faacDecHandle hDecoder,
         return NULL;
     }
 
+#if 0
+    printf("%d\n", buffer_size*8);
+#endif
+
     frame_len = hDecoder->frameLength;
 
 
-    memset(hInfo, 0, sizeof(faacDecFrameInfo));
+    memset(hInfo, 0, sizeof(NeAACDecFrameInfo));
     memset(hDecoder->internal_channel, 0, MAX_CHANNELS*sizeof(hDecoder->internal_channel[0]));
+
+#ifdef USE_TIME_LIMIT
+    if ((TIME_LIMIT * get_sample_rate(hDecoder->sf_index)) > hDecoder->TL_count)
+    {
+        hDecoder->TL_count += 1024;
+    } else {
+        hInfo->error = (NUM_ERROR_MESSAGES-1);
+        goto error;
+    }
+#endif
+
+
+    /* check for some common metadata tag types in the bitstream
+     * No need to return an error
+     */
+    /* ID3 */
+    if (buffer_size >= 128)
+    {
+        if (memcmp(buffer, "TAG", 3) == 0)
+        {
+            /* found it */
+            hInfo->bytesconsumed = 128; /* 128 bytes fixed size */
+            /* no error, but no output either */
+            return NULL;
+        }
+    }
+
 
     /* initialize the bitstream */
     faad_initbits(&ld, buffer, buffer_size);
+
+#if 0
+    {
+        int i;
+        for (i = 0; i < ((buffer_size+3)>>2); i++)
+        {
+            uint8_t *buf;
+            uint32_t temp = 0;
+            buf = faad_getbitbuffer(&ld, 32);
+            //temp = getdword((void*)buf);
+            temp = *((uint32_t*)buf);
+            printf("0x%.8X\n", temp);
+            free(buf);
+        }
+        faad_endbits(&ld);
+        faad_initbits(&ld, buffer, buffer_size);
+    }
+#endif
 
 #ifdef DRM
     if (hDecoder->object_type == DRM_ER_LC)
     {
         /* We do not support stereo right now */
-        if (hDecoder->channelConfiguration == 2)
+        if (0) //(hDecoder->channelConfiguration == 2)
         {
-            hInfo->error = 8; // Throw CRC error
+            hInfo->error = 28; // Throw CRC error
             goto error;
         }
 
         faad_getbits(&ld, 8
-            DEBUGVAR(1,1,"faacDecDecode(): skip CRC"));
+            DEBUGVAR(1,1,"NeAACDecDecode(): skip CRC"));
     }
 #endif
 
@@ -792,14 +871,14 @@ void* FAADAPI faacDecDecode(faacDecHandle hDecoder,
 #endif
 
     /* decode the complete bitstream */
-#ifdef SCALABLE_DEC
-    if ((hDecoder->object_type == 6) || (hDecoder->object_type == DRM_ER_LC))
+#ifdef DRM
+    if (/*(hDecoder->object_type == 6) ||*/ (hDecoder->object_type == DRM_ER_LC))
     {
-        aac_scalable_main_element(hDecoder, hInfo, &ld, &hDecoder->pce, hDecoder->drc);
+        DRM_aac_scalable_main_element(hDecoder, hInfo, &ld, &hDecoder->pce, hDecoder->drc);
     } else {
 #endif
         raw_data_block(hDecoder, hInfo, &ld, &hDecoder->pce, hDecoder->drc);
-#ifdef SCALABLE_DEC
+#ifdef DRM
     }
 #endif
 
@@ -829,7 +908,7 @@ void* FAADAPI faacDecDecode(faacDecHandle hDecoder,
 
     if (!hDecoder->adts_header_present && !hDecoder->adif_header_present)
     {
-        if (channels != hDecoder->channelConfiguration)
+        if (hDecoder->channelConfiguration == 0)
             hDecoder->channelConfiguration = channels;
 
         if (channels == 8) /* 7.1 */
@@ -845,6 +924,17 @@ void* FAADAPI faacDecDecode(faacDecHandle hDecoder,
     } else {
         output_channels = channels;
     }
+
+#if (defined(PS_DEC) || defined(DRM_PS))
+    hDecoder->upMatrix = 0;
+    /* check if we have a mono file */
+    if (output_channels == 1)
+    {
+        /* upMatrix to 2 channels for implicit signalling of PS */
+        hDecoder->upMatrix = 1;
+        output_channels = 2;
+    }
+#endif
 
     /* Make a channel configuration based on either a PCE or a channelConfiguration */
     create_channel_config(hDecoder, hInfo);
@@ -865,6 +955,9 @@ void* FAADAPI faacDecDecode(faacDecHandle hDecoder,
         hInfo->header_type = ADIF;
     if (hDecoder->adts_header_present)
         hInfo->header_type = ADTS;
+#if (defined(PS_DEC) || defined(DRM_PS))
+    hInfo->ps = hDecoder->ps_used_global;
+#endif
 
     /* check if frame has channel elements */
     if (channels == 0)
@@ -883,17 +976,32 @@ void* FAADAPI faacDecDecode(faacDecHandle hDecoder,
         };
         uint8_t stride = str[hDecoder->config.outputFormat-1];
 #ifdef SBR_DEC
-        if ((hDecoder->sbr_present_flag == 1) || (hDecoder->forceUpSampling == 1))
+        if (((hDecoder->sbr_present_flag == 1)&&(!hDecoder->downSampledSBR)) || (hDecoder->forceUpSampling == 1))
+        {
             stride = 2 * stride;
+        }
 #endif
-        if (hDecoder->sample_buffer)
-            faad_free(hDecoder->sample_buffer);
-        hDecoder->sample_buffer = NULL;
-        hDecoder->sample_buffer = faad_malloc(frame_len*output_channels*stride);
+        /* check if we want to use internal sample_buffer */
+        if (sample_buffer_size == 0)
+        {
+            if (hDecoder->sample_buffer)
+                faad_free(hDecoder->sample_buffer);
+            hDecoder->sample_buffer = NULL;
+            hDecoder->sample_buffer = faad_malloc(frame_len*output_channels*stride);
+        } else if (sample_buffer_size < frame_len*output_channels*stride) {
+            /* provided sample buffer is not big enough */
+            hInfo->error = 27;
+            return NULL;
+        }
         hDecoder->alloced_channels = output_channels;
     }
 
-    sample_buffer = hDecoder->sample_buffer;
+    if (sample_buffer_size == 0)
+    {
+        sample_buffer = hDecoder->sample_buffer;
+    } else {
+        sample_buffer = *sample_buffer2;
+    }
 
 #ifdef SBR_DEC
     if ((hDecoder->sbr_present_flag == 1) || (hDecoder->forceUpSampling == 1))
@@ -901,9 +1009,12 @@ void* FAADAPI faacDecDecode(faacDecHandle hDecoder,
         uint8_t ele;
 
         /* this data is different when SBR is used or when the data is upsampled */
-        frame_len *= 2;
-        hInfo->samples *= 2;
-        hInfo->samplerate *= 2;
+        if (!hDecoder->downSampledSBR)
+        {
+            frame_len *= 2;
+            hInfo->samples *= 2;
+            hInfo->samplerate *= 2;
+        }
 
         /* check if every element was provided with SBR data */
         for (ele = 0; ele < hDecoder->fr_ch_ele; ele++)
@@ -923,11 +1034,21 @@ void* FAADAPI faacDecDecode(faacDecHandle hDecoder,
         } else {
             hInfo->sbr = NO_SBR_UPSAMPLED;
         }
+        if (hDecoder->downSampledSBR)
+        {
+            hInfo->sbr = SBR_DOWNSAMPLED;
+        }
     }
 #endif
 
+
     sample_buffer = output_to_PCM(hDecoder, hDecoder->time_out, sample_buffer,
         output_channels, frame_len, hDecoder->config.outputFormat);
+
+
+#ifdef DRM
+    //conceal_output(hDecoder, frame_len, output_channels, sample_buffer);
+#endif
 
 
     hDecoder->postSeekResetFlag = 0;
@@ -960,6 +1081,30 @@ void* FAADAPI faacDecDecode(faacDecHandle hDecoder,
     return sample_buffer;
 
 error:
+
+
+#ifdef DRM
+    hDecoder->error_state = ERROR_STATE_INIT;
+#endif
+
+    /* reset filterbank state */
+    for (i = 0; i < MAX_CHANNELS; i++)
+    {
+        if (hDecoder->fb_intermed[i] != NULL)
+        {
+            memset(hDecoder->fb_intermed[i], 0, hDecoder->frameLength*sizeof(real_t));
+        }
+    }
+#ifdef SBR_DEC
+    for (i = 0; i < MAX_SYNTAX_ELEMENTS; i++)
+    {
+        if (hDecoder->sbr[i] != NULL)
+        {
+            sbrReset(hDecoder->sbr[i]);
+        }
+    }
+#endif
+
 
     faad_endbits(&ld);
 

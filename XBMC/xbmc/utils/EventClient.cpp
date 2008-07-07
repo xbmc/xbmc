@@ -44,7 +44,7 @@ using namespace std;
 void CEventButtonState::Load()
 {
   if ( (m_iKeyCode == 0) )
-  { 
+  {
     if ( (m_mapName.length() > 0) && (m_buttonName.length() > 0) )
     {
       if ( m_mapName.compare("KB") == 0 ) // standard keyboard map
@@ -63,7 +63,7 @@ void CEventButtonState::Load()
       {
         m_iKeyCode = g_buttonTranslator.TranslateUniversalRemoteString( m_buttonName.c_str() );
       }
-      else if ( (m_mapName.length() > 3) && 
+      else if ( (m_mapName.length() > 3) &&
                 (m_mapName.compare(0, 2, "LI:") == 0) ) // starts with LI: ?
       {
 #ifdef HAS_LIRC
@@ -84,7 +84,7 @@ void CEventButtonState::Load()
   }
   else
   {
-    if (m_mapName.length() > 3 && 
+    if (m_mapName.length() > 3 &&
         (m_mapName.compare(0, 2, "JS") == 0) )
     {
       m_joystickName = m_mapName.substr(2);  // <num>:joyname
@@ -306,7 +306,7 @@ bool CEventClient::OnPacketBYE(CEventPacket *packet)
   m_bGreeted = false;
   FreePacketQueues();
   m_currentButton.Reset();
-  
+
   return true;
 }
 
@@ -347,7 +347,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
   {
     CSingleLock lock(m_critSection);
     m_buttonQueue.push (
-      new CEventButtonState( (flags & PTB_USE_NAME) ? 0 : 
+      new CEventButtonState( (flags & PTB_USE_NAME) ? 0 :
                              ( (flags & PTB_VKEY) ? (bcode|KEY_VKEY) : bcode ),
                              map,
                              button,
@@ -494,7 +494,7 @@ bool CEventClient::OnPacketLOG(CEventPacket *packet)
   if (!ParseString(payload, psize, logmsg))
     return false;
 
-  CLog::Log((int)ltype, logmsg.c_str());
+  CLog::Log((int)ltype, "%s", logmsg.c_str());
   return true;
 }
 
@@ -621,7 +621,7 @@ unsigned short CEventClient::GetButtonCode(std::string& joystickName, bool& isAx
     joystickName = m_currentButton.JoystickName();
     isAxis = m_currentButton.Axis();
     amount = m_currentButton.Amount();
-    
+
     if ( ! m_currentButton.Repeat() )
       m_currentButton.Reset();
     else
@@ -640,10 +640,10 @@ bool CEventClient::GetMousePos(float& x, float& y)
   CSingleLock lock(m_critSection);
   if (m_bMouseMoved)
   {
-    x = (float)((m_iMouseX / 65535.0f) * 
+    x = (float)((m_iMouseX / 65535.0f) *
                 (g_graphicsContext.GetViewWindow().right
                  -g_graphicsContext.GetViewWindow().left));
-    y = (float)((m_iMouseY / 65535.0f) * 
+    y = (float)((m_iMouseY / 65535.0f) *
                 (g_graphicsContext.GetViewWindow().bottom
                  -g_graphicsContext.GetViewWindow().top));
     m_bMouseMoved = false;

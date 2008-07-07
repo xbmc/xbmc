@@ -1,6 +1,6 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
+** Copyright (C) 2003-2005 M. Bakker, Nero AG, http://www.nero.com
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -19,10 +19,13 @@
 ** Any non-GPL usage of this software or parts of this software is strictly
 ** forbidden.
 **
-** Commercial non-GPL licensing of this software is possible.
-** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
+** The "appropriate copyright message" mentioned in section 2c of the GPLv2
+** must read: "Code from FAAD2 is copyright (c) Nero AG, www.nero.com"
 **
-** $Id: cfft.h,v 1.16 2004/01/05 14:05:11 menno Exp $
+** Commercial non-GPL licensing of this software is possible.
+** For more info contact Nero AG through Mpeg4AAClicense@nero.com.
+**
+** $Id: cfft.h,v 1.24 2007/11/01 12:33:29 menno Exp $
 **/
 
 #ifndef __CFFT_H__
@@ -45,10 +48,6 @@ void cfftf(cfft_info *cfft, complex_t *c);
 void cfftb(cfft_info *cfft, complex_t *c);
 cfft_info *cffti(uint16_t n);
 void cfftu(cfft_info *cfft);
-
-#ifdef USE_SSE
-void cfftb_sse(cfft_info *cfft, complex_t *c);
-#endif
 
 
 #ifdef __cplusplus

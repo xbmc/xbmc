@@ -94,7 +94,7 @@ private:
 
   char* m_RecvBuffer;
   int m_RecvBytes;
-  
+
   bool m_cancelled;
 };
 

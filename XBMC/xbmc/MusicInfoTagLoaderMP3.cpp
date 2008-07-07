@@ -181,7 +181,7 @@ int CMusicInfoTagLoaderMP3::IsMp3FrameHeader(unsigned long head)
   const long freqs[9] = { 44100, 48000, 32000,
                           22050, 24000, 16000 ,
                           11025 , 12000 , 8000 };
-  
+
  const int tabsel_123[2][3][16] = {
   { {128,32,64,96,128,160,192,224,256,288,320,352,384,416,448,},
     {128,32,48,56, 64, 80, 96,112,128,160,192,224,256,320,384,},
@@ -213,9 +213,9 @@ int CMusicInfoTagLoaderMP3::IsMp3FrameHeader(unsigned long head)
     return 0;
 
   int srate = 0;
-  if(!((head >> 20) &  1)) 
+  if(!((head >> 20) &  1))
     srate = 6 + ((head>>10)&0x3);
-  else 
+  else
     srate = ((head>>10)&0x3) + ((1-((head >> 19) &  1)) * 3);
 
   int framesize = tabsel_123[1 - ((head >> 19) &  1)][(4-((head>>17)&3))-1][((head>>12)&0xf)]*144000/(freqs[srate]<<(1 - ((head >> 19) &  1)))+((head>>9)&0x1);
@@ -370,9 +370,9 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
     }*/
 
     if (
-      (i == firstValidFrameLocation) || 
+      (i == firstValidFrameLocation) ||
       (
-        (firstValidFrameLocation == -1) && 
+        (firstValidFrameLocation == -1) &&
         (IsMp3FrameHeader(mpegheader))
       )
     )
@@ -537,7 +537,7 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
         frame_count = BYTES2INT(vbri[14], vbri[14 + 1],
                                 vbri[14 + 2], vbri[14 + 3]);
         nMp3DataSize = BYTES2INT(vbri[10], vbri[10 + 1], vbri[10 + 2], vbri[10 + 3]);
-        int iSeekOffsets = ((vbri[18] & 0xFF) << 8) | (vbri[19] & 0xFF) + 1;
+        int iSeekOffsets = (((vbri[18] & 0xFF) << 8) | (vbri[19] & 0xFF)) + 1;
         float *offset = new float[iSeekOffsets + 1];
         int iScaleFactor = ((vbri[20] & 0xFF) << 8) | (vbri[21] & 0xFF);
         int iOffsetSize = ((vbri[22] & 0xFF) << 8) | (vbri[23] & 0xFF);

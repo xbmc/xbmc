@@ -24,7 +24,7 @@
 #include "GUIDialogSettings.h"
 #include "ScraperSettings.h"
 
-namespace VIDEO 
+namespace VIDEO
 {
   struct SScanSettings;
 }
@@ -41,7 +41,7 @@ public:
   static bool Show(SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan, int iLabel=-1);
   static bool ShowForDirectory(const CStdString& strDirectory, SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan);
   virtual bool HasListItems() const { return true; };
-  virtual CFileItem* GetCurrentListItem(int offset = 0);
+  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 protected:
   virtual void OnCancel();
   virtual void OnWindowLoaded();

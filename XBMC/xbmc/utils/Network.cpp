@@ -110,10 +110,6 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 #ifdef HAS_FTP_SERVER
       g_application.StartFtpServer();
 #endif
-#ifdef HAS_KAI
-      if (m_gWindowManager.GetActiveWindow() != WINDOW_LOGIN_SCREEN)
-        g_application.StartKai();
-#endif
 #ifdef HAS_UPNP
       g_application.StartUPnP();
 #endif
@@ -134,9 +130,6 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 #endif
 #ifdef HAS_FTP_SERVER
       g_application.StopFtpServer();
-#endif
-#ifdef HAS_KAI
-      g_application.StopKai();
 #endif
 #ifndef HAS_UPNP
       g_application.StopUPnP();

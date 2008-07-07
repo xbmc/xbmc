@@ -80,7 +80,7 @@ GUIBITMAPINFOHEADER;
  \ingroup textures
  \brief 
  */
-#if defined(HAS_XBOX_D3D) || defined(_LINUX)
+#if defined(_LINUX)
 typedef struct tagBITMAPINFO
 {
   GUIBITMAPINFOHEADER bmiHeader;
@@ -129,7 +129,7 @@ public:
 
   inline char& Pixel (int x, int y) { return Raster[y*BytesPerRow + x];}
 
-#if !defined(_XBOX) && !defined(_LINUX)
+#if !defined(_LINUX)
   // Windows GDI Specific function to paint the image on a DC:
   int GDIPaint (HDC hdc, int xDest, int yDest);
 #endif

@@ -46,15 +46,18 @@ void CmdExtract::DoExtract(CommandData *Cmd)
     ErrHandler.SetErrorCode(WARNING);
   }
 #ifndef GUI
-  else
-        if (!Cmd->DisableDone)
-      if (*Cmd->Command=='I')
-        mprintf(St(MDone));
+  else if (!Cmd->DisableDone)
+  {
+    if (*Cmd->Command=='I')
+      mprintf(St(MDone));
+    else
+    {
+      if (ErrHandler.GetErrorCount()==0)
+        mprintf(St(MExtrAllOk));
       else
-        if (ErrHandler.GetErrorCount()==0)
-          mprintf(St(MExtrAllOk));
-        else
-          mprintf(St(MExtrTotalErr),ErrHandler.GetErrorCount());
+        mprintf(St(MExtrTotalErr),ErrHandler.GetErrorCount());
+    }
+  }
 #endif
 }
 
@@ -143,12 +146,14 @@ EXTRACT_ARC_CODE CmdExtract::ExtractArchive(CommandData *Cmd)
     int Size=Arc.ReadHeader();
     bool Repeat=false;
     if (!ExtractCurrentFile(Cmd,Arc,Size,Repeat))
+    {
       if (Repeat)
       {
         return(EXTRACT_ARC_REPEAT);
       }
       else
         break;
+    }
   }
   return(EXTRACT_ARC_NEXT);
 }
@@ -164,6 +169,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
   char Command=*Cmd->Command;
 
 	if (HeaderSize<=0)
+  {
 		if (DataIO.UnpVolume)
 		{
 //#ifdef NOVOLUME
@@ -179,6 +185,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
 		}
 		else
 			return(false);
+  }
 	int HeadType=Arc.GetHeaderType();
 	if (HeadType!=FILE_HEAD)
 	{
@@ -198,6 +205,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
 #endif
 		}
 		if (HeadType==ENDARC_HEAD)
+    {
 			if (Arc.EndArcHead.Flags & EARC_NEXT_VOLUME)
 			{
 #ifndef NOVOLUME
@@ -213,14 +221,14 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
 			}
 			else
 				return(false);
+    }
 		Arc.SeekToNext();
 		return(true);
 	}
 	PrevExtracted=false;
 
 	if (SignatureFound ||
-			!Cmd->Recurse && MatchedArgs>=(int)Cmd->FileArgs->ItemsCount() &&
-			AllMatchesExact)
+		 (!Cmd->Recurse && MatchedArgs>=(int)Cmd->FileArgs->ItemsCount() && AllMatchesExact))
 		return(false);
 
 	// char ArcFileName[NM];
@@ -570,6 +578,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
     File CurFile;
 
     if (!IsLink(Arc.NewLhd.FileAttr))
+    {
       if (Arc.IsArcDir())
       {
         if (!ExtrFile || Command=='P' || Command=='E' || Cmd->ExclPath==EXCL_SKIPWHOLEPATH)
@@ -685,8 +694,8 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
           }
         }
       }
-
-      if (!ExtrFile && Arc.Solid)
+    }
+    if (!ExtrFile && Arc.Solid)
     {
       SkipSolid=true;
       TestMode=true;
@@ -706,9 +715,11 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
       FileCount++;
 #ifndef GUI
       if (Command!='I')
+      {
         if (SkipSolid)
           mprintf(St(MExtrSkipFile),(char*) ArcFileName);
         else
+        {
           switch(Cmd->Test ? 'T':Command)
           {
             case 'T':
@@ -724,6 +735,8 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
               mprintf(St(MExtrFile),DestFileName);
               break;
           }
+        }
+      }
       if (!Cmd->DisablePercentage)
         mprintf("     ");
 #endif
@@ -748,22 +761,23 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
 		CurFile.SetAllowDelete(!Cmd->KeepBroken);
 
   		bool LinkCreateMode=!Cmd->Test && !SkipSolid;
-		if (ExtractLink(DataIO,Arc,DestFileName,DataIO.UnpFileCRC,LinkCreateMode))
+		  if (ExtractLink(DataIO,Arc,DestFileName,DataIO.UnpFileCRC,LinkCreateMode))
         PrevExtracted=LinkCreateMode;
-      else
-        if ((Arc.NewLhd.Flags & LHD_SPLIT_BEFORE)==0)
-          if (Arc.NewLhd.Method==0x30)
-            UnstoreFile(DataIO,Arc.NewLhd.FullUnpSize);
-          else
-          {
-            Unp->SetDestSize(Arc.NewLhd.FullUnpSize);
+      else if ((Arc.NewLhd.Flags & LHD_SPLIT_BEFORE)==0)
+      {
+        if (Arc.NewLhd.Method==0x30)
+          UnstoreFile(DataIO,Arc.NewLhd.FullUnpSize);
+        else
+        {
+          Unp->SetDestSize(Arc.NewLhd.FullUnpSize);
 #ifndef SFX_MODULE				
-			if (Arc.NewLhd.UnpVer<=15)
-				Unp->DoUnpack(15,FileCount>1 && Arc.Solid);
-			else
+			    if (Arc.NewLhd.UnpVer<=15)
+		  		  Unp->DoUnpack(15,FileCount>1 && Arc.Solid);
+  	  		else
 #endif
-			Unp->DoUnpack(Arc.NewLhd.UnpVer,(Arc.NewLhd.Flags & LHD_SOLID));
-			}
+  			    Unp->DoUnpack(Arc.NewLhd.UnpVer,(Arc.NewLhd.Flags & LHD_SOLID));
+			  }
+      }
 
       if (DataIO.UnpackToMemorySize > -1)
         if (WaitForSingleObject(DataIO.hQuit,1) == WAIT_OBJECT_0)
@@ -839,11 +853,12 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
 	if (DataIO.NextVolumeMissing || !Arc.IsOpened())
 		return(false);
 	if (!ExtrFile)
+  {
 		if (!Arc.Solid)
 			Arc.SeekToNext();
-		else
-			if (!SkipSolid)
-				return(false);
+		else if (!SkipSolid)
+		  return(false);
+  }
 	return(true);
 }
 

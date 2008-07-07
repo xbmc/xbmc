@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include"
+				AdditionalIncludeDirectories="..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;HAS_SDL;_MSVC;NOMINMAX;_USE_32BIT_TIME_T"
 				StringPooling="false"
 				MinimalRebuild="true"
@@ -114,7 +114,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\..\xbmc\win32;..\..\xbmc;..\..\guilib\freetype2\include"
+				AdditionalIncludeDirectories="..\..\xbmc\win32;..\..\xbmc;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;HAS_SDL;_MSVC;NOMINMAX;_USE_32BIT_TIME_T"
 				MinimalRebuild="false"
 				RuntimeLibrary="0"
@@ -469,10 +469,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\PackedTexture.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\Shader.cpp"
 				>
 			</File>
@@ -796,10 +792,6 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\LocalizeStrings.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\PackedTexture.h"
 				>
 			</File>
 			<File

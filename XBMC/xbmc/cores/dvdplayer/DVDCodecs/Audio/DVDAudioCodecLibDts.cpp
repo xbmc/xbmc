@@ -22,9 +22,11 @@
 #include "stdafx.h"
 #include "DVDAudioCodecLibDts.h"
 #include "AudioContext.h"
-#include "../../DVDStreamInfo.h"
+#include "DVDStreamInfo.h"
 
-inline int16_t convert(register int32_t i)
+#define HEADER_SIZE 14
+
+static inline int16_t convert(int32_t i)
 {
 #ifdef LIBDTS_FIXED
     i >>= 15;
@@ -189,11 +191,7 @@ void CDVDAudioCodecLibDts::convert2s16_multi(convert_t * _f, int16_t * s16, int 
 CDVDAudioCodecLibDts::CDVDAudioCodecLibDts() : CDVDAudioCodec()
 {
   m_pState = NULL;
-  m_iSourceChannels = 0;
-  m_iSourceSampleRate = 0;
-  m_iSourceBitrate = 0;
-  m_iDecodedDataSize = 0;
-  m_iInputBufferSize = 0;
+  SetDefault();
 }
 
 CDVDAudioCodecLibDts::~CDVDAudioCodecLibDts()
@@ -207,7 +205,6 @@ bool CDVDAudioCodecLibDts::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
 
   SetDefault();
-
   
   m_pState = m_dll.dts_init(0);
   if (!m_pState)
@@ -254,128 +251,168 @@ int CDVDAudioCodecLibDts::GetNrOfChannels(int iFlags)
   return iChannels;
 }
 
-#define DTS_HEADER_SIZE 14
-int CDVDAudioCodecLibDts::Decode(BYTE* pData, int iSize)
+void CDVDAudioCodecLibDts::SetupChannels(int flags)
 {
-  level_t level = 1.0f;
-  sample_t bias = 384;
-  
-  int iFrameLen = 0;
-  bool bError = false;
-  
-  int iBytesToCopy = iSize;
-  int iBytesFree = sizeof(m_inputBuffer) - m_iInputBufferSize;
-  if (iBytesToCopy > iBytesFree) iBytesToCopy = iBytesFree;
-  
-  m_iDecodedDataSize = 0;
-  
-  memcpy(m_inputBuffer + m_iInputBufferSize, pData, iBytesToCopy);
-  m_iInputBufferSize += iBytesToCopy;
-  BYTE* pInput = m_inputBuffer;
-  
-  while (m_iInputBufferSize > DTS_HEADER_SIZE)
+  m_iSourceFlags    = flags;
+  m_iSourceChannels = GetNrOfChannels(flags);
+  if (g_audioContext.IsPassthroughActive() == false)
+    m_iOutputChannels = 2;
+  else
+    m_iOutputChannels = m_iSourceChannels;
+
+  if (m_iOutputChannels == 1) 
+    m_iOutputFlags = DTS_MONO;
+  else if (m_iOutputChannels == 2)
+    m_iOutputFlags = DTS_STEREO;
+  else
   {
-    bError = false;
-    
-    // look for sync
-    if (m_iFrameSize <= 0)
+    m_iOutputFlags  = m_iSourceFlags;
+    m_iOutputFlags |=DTS_ADJUST_LEVEL;
+  }
+}
+
+int CDVDAudioCodecLibDts::ParseFrame(BYTE* data, int size, BYTE** frame, int* framesize)
+{
+  int flags, len, framelen;
+  BYTE* orig = data;
+
+  *frame     = NULL;
+  *framesize = 0;
+
+  if(m_inputSize == 0 && size > HEADER_SIZE)
+  {
+    // try to sync directly in packet
+    m_iFrameSize = m_dll.dts_syncinfo(m_pState, data, &flags, &m_iSourceSampleRate, &m_iSourceBitrate, &framelen);
+
+    if(m_iFrameSize > 0)
     {
-      m_iFrameSize = m_dll.dts_syncinfo(m_pState, pInput, &m_iFlags, &m_iSourceSampleRate, &m_iSourceBitrate, &iFrameLen);
-      if (m_iFrameSize <= 0)
+
+      if(m_iSourceFlags != flags)
+        SetupChannels(flags);
+
+      if(size >= m_iFrameSize)
       {
-        // no sync found, shift one byte
-        m_iInputBufferSize--;
-        pInput++;
+        *frame     = data;
+        *framesize = m_iFrameSize;
+        return m_iFrameSize;
       }
       else
       {
-        // Now that we've synced, get the number of channels.
-        m_iOutputChannels = GetNrOfChannels(m_iFlags);
-        // If we're not passing through, stay on 2-channel mixdown.
-        if (g_audioContext.IsPassthroughActive() == false)
-          m_iOutputChannels = 2;
-      }
-    }
-    
-    if (m_iFrameSize > 0)
-    {
-      if (m_iSourceChannels == 0) m_iSourceChannels = GetNrOfChannels(m_iFlags);
-
-      if ((m_iInputBufferSize) >= m_iFrameSize)
-      {
-        // we have the entire frame, decode it
-        int iFlags = m_iFlags;
-        if (m_iOutputChannels == 1)      iFlags = DTS_MONO;
-        else if (m_iOutputChannels == 2) iFlags = DTS_STEREO;
-        else
-        {
-          m_iOutputChannels = m_iSourceChannels;
-          iFlags |= DTS_ADJUST_LEVEL;
-        }
-
-        m_dll.dts_frame(m_pState, pInput, &iFlags, &level, bias);
-
-        //m_dll.dts_dynrng(m_pState, NULL, NULL);
-        
-        int iNrOfBlocks = m_dll.dts_blocks_num(m_pState);
-        
-        short* pDecodedData = (short*)(m_decodedData + m_iDecodedDataSize);
-        
-        for (int i = 0; i < iNrOfBlocks; i++)
-        {
-          if (m_dll.dts_block(m_pState) != 0)
-          {
-            // error, start syncing again
-            CLog::Log(LOGERROR, "CDVDAudioCodecLibDts::Decode : dts_block != 0");
-            bError = true;
-            break;
-          }
-          pDecodedData += i * 256 * m_iOutputChannels;
-          convert2s16_multi(m_fSamples, pDecodedData, iFlags & (DTS_CHANNEL_MASK | DTS_LFE));
-        }
-        
-        // need to check if there is enough data in the output buffer for the next run
-        
-        if (!bError)
-        {
-          m_iDecodedDataSize += iNrOfBlocks * m_iOutputChannels * 256 * sizeof(short);
-          
-          pInput += m_iFrameSize;
-          m_iInputBufferSize -= m_iFrameSize;
-        }
-        m_iFrameSize = 0;        
-      }
-      else
-      {
-        // found header, but we do not have enough data for a frame.
-        memmove(m_inputBuffer, pInput, m_iInputBufferSize);
-        break;
+        m_inputSize = size;
+        memcpy(m_inputBuffer, data, m_inputSize);
+        return m_inputSize;
       }
     }
   }
+
+  // attempt to fill up to 7 bytes
+  if(m_inputSize < HEADER_SIZE) 
+  {
+    len = HEADER_SIZE-m_inputSize;
+    if(len > size)
+      len = size;
+    memcpy(m_inputBuffer+m_inputSize, data, len);
+    m_inputSize += len;
+    data        += len;
+    size        -= len;
+  }
+
+  if(m_inputSize < HEADER_SIZE) 
+    return data - orig;
+
+  // attempt to sync by shifting bytes
+  while(true)
+  {
+    m_iFrameSize = m_dll.dts_syncinfo(m_pState, m_inputBuffer, &flags, &m_iSourceSampleRate, &m_iSourceBitrate, &framelen);
+    if(m_iFrameSize > 0)
+      break;
+
+    if(size == 0)
+      return data - orig;
+
+    memmove(m_inputBuffer, m_inputBuffer+1, HEADER_SIZE-1);
+    m_inputBuffer[HEADER_SIZE-1] = data[0];
+    data++;
+    size--;
+  }
+
+  if(m_iSourceFlags != flags)
+    SetupChannels(flags);
+
+  len = m_iFrameSize-m_inputSize;
+  if(len > size)
+    len = size;
+
+  memcpy(m_inputBuffer+m_inputSize, data, len);
+  m_inputSize += len;
+  data        += len;
+  size        -= len;
+
+  if(m_inputSize >= m_iFrameSize)
+  {
+    *frame     = m_inputBuffer;
+    *framesize = m_iFrameSize;
+    m_inputSize = 0;
+  }
+
+  return data - orig;
+}
+
+int CDVDAudioCodecLibDts::Decode(BYTE* pData, int iSize)
+{
+  int len, framesize;
+  BYTE* frame;
+
+  m_decodedSize = 0;
+
+  len = ParseFrame(pData, iSize, &frame, &framesize);
+  if(!frame)
+    return len;
   
-  return iBytesToCopy;
+  level_t  level = 1.0f;
+  sample_t bias  = 384;
+  int      flags = m_iOutputFlags;
+  
+  m_dll.dts_frame(m_pState, frame, &flags, &level, bias);
+
+  //m_dll.dts_dynrng(m_pState, NULL, NULL);
+        
+  int blocks = m_dll.dts_blocks_num(m_pState);
+  for (int i = 0; i < blocks; i++)
+  {
+    if (m_dll.dts_block(m_pState) != 0)
+    {
+      CLog::Log(LOGERROR, "CDVDAudioCodecLibDts::Decode : dts_block != 0");
+      break;
+    }
+    convert2s16_multi(m_fSamples, (int16_t*)(m_decodedData + m_decodedSize), flags & (DTS_CHANNEL_MASK | DTS_LFE));
+    m_decodedSize += 2 * 256 * m_iOutputChannels;
+  }
+        
+  return len;
 }
 
 int CDVDAudioCodecLibDts::GetData(BYTE** dst)
 {
   *dst = m_decodedData;
-  return m_iDecodedDataSize;
+  return m_decodedSize;
 }
 
 void CDVDAudioCodecLibDts::SetDefault()
 {
-  m_iInputBufferSize = 0;
   m_iFrameSize = 0;
+  m_iSourceFlags = 0;
   m_iSourceChannels = 0;
   m_iSourceSampleRate = 0;
   m_iSourceBitrate = 0;
-  m_iDecodedDataSize = 0;
+  m_iOutputChannels = 0;
+  m_iOutputFlags = 0;
+  m_decodedSize = 0;
+  m_inputSize = 0;
 }
 
 void CDVDAudioCodecLibDts::Reset()
 {
-  return;
   if (m_pState) m_dll.dts_free(m_pState);
 
   SetDefault();
@@ -383,3 +420,4 @@ void CDVDAudioCodecLibDts::Reset()
   m_pState = m_dll.dts_init(0);
   m_fSamples = m_dll.dts_samples(m_pState);
 }
+

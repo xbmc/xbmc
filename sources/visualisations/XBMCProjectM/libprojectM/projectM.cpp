@@ -422,6 +422,13 @@ void projectM::projectM_init ( int gx, int gy, int fps, int texsize, int width, 
 	assert(pcm());
 	beatDetect = new BeatDetect ( _pcm );
 
+        this->renderer = new Renderer(width, height, gx, gy, texsize,
+                                      beatDetect, settings().presetURL,
+                                      settings().titleFontURL,
+                                      settings().menuFontURL);
+
+        running = true;
+
 	initPresetTools();
 	if ( presetInputs.fps > 0 )
 		mspf= ( int ) ( 1000.0/ ( float ) presetInputs.fps );
@@ -431,10 +438,6 @@ void projectM::projectM_init ( int gx, int gy, int fps, int texsize, int width, 
 	this->presetInputs.gy = gy;
 	this->presetInputs2.gx = gx;
 	this->presetInputs2.gy = gy;
-
-	this->renderer = new Renderer ( width, height, gx, gy, texsize,  beatDetect, settings().presetURL, settings().titleFontURL, settings().menuFontURL );
-
-	running = true;
 
 #ifdef USE_THREADS
 	pthread_mutex_init(&mutex, NULL);
@@ -749,7 +752,10 @@ int projectM::initPresetTools()
 
 	// Load idle preset
 	//std::cerr << "[projectM] Allocating idle preset..." << std::endl;
-	m_activePreset = IdlePreset::allocate ( presetInputs, presetOutputs );
+	if (m_presetChooser->empty())
+                m_activePreset = IdlePreset::allocate ( presetInputs, presetOutputs );
+        else
+                switchPreset(m_activePreset, presetInputs, presetOutputs);
 
 	// Case where no valid presets exist in directory. Could also mean 
 	// playlist initialization was deferred

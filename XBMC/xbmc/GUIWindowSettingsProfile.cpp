@@ -102,9 +102,6 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, m_gWindowManager.GetActiveWindow(), iCtrlID);
     g_graphicsContext.SendMessage(msg2);
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
-#ifdef HAS_XBOX_NETWORK
-    g_network.Deinitialize();
-#endif
     bool bOldMaster = g_passwordManager.bMasterUser;
     g_passwordManager.bMasterUser = true;
     g_settings.LoadProfile(iItem);
@@ -113,13 +110,6 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     g_settings.SaveProfiles(PROFILES_FILE); // to set last loaded
 
     g_passwordManager.bMasterUser = bOldMaster;
-#ifdef HAS_XBOX_NETWORK
-    g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
-      g_guiSettings.GetString("network.ipaddress").c_str(),
-      g_guiSettings.GetString("network.subnet").c_str(),
-      g_guiSettings.GetString("network.gateway").c_str(),
-      g_guiSettings.GetString("network.dns").c_str());
-#endif
     CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
     OnMessage(msg3);
     CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, m_gWindowManager.GetActiveWindow(), iCtrlID, msg2.GetParam1(), msg2.GetParam2());
@@ -223,7 +213,7 @@ void CGUIWindowSettingsProfile::LoadList()
   for (UCHAR i = 0; i < g_settings.m_vecProfiles.size(); i++)
   {
     CProfile& profile = g_settings.m_vecProfiles.at(i);
-    CFileItem* item = new CFileItem(profile.getName());
+    CFileItemPtr item(new CFileItem(profile.getName()));
     item->m_strPath.Empty();
     item->SetLabel2(profile.getDate());
     item->SetThumbnailImage(profile.getThumb());
@@ -233,7 +223,7 @@ void CGUIWindowSettingsProfile::LoadList()
     m_vecListItems.push_back(item);
   }
   {
-    CFileItem* item = new CFileItem(g_localizeStrings.Get(20058));
+    CFileItemPtr item(new CFileItem(g_localizeStrings.Get(20058)));
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PROFILES, 0, 0, item);
     g_graphicsContext.SendMessage(msg);
     item->m_strPath.Empty();
@@ -254,12 +244,6 @@ void CGUIWindowSettingsProfile::ClearListItems()
 {
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PROFILES);
   g_graphicsContext.SendMessage(msg);
-
-  for (int i = 0;i < (int)m_vecListItems.size();++i)
-  {
-    CGUIListItem* pListItem = m_vecListItems[i];
-    delete pListItem;
-  }
 
   m_vecListItems.erase(m_vecListItems.begin(), m_vecListItems.end());
 }

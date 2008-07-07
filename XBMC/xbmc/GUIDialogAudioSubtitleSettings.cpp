@@ -227,9 +227,6 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
         g_stSettings.m_currentVideoSettings.m_AudioStream = -1 - m_audioStream;
         // call monkeyh1's code here...
         //bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL) && g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers;
-#if defined(HAS_VIDEO_PLAYBACK) && defined(HAS_XBOX_HARDWARE)
-        xbox_audio_switch_channel(m_audioStream, bAudioOnAllSpeakers);
-#endif
         return;
       }
     }
@@ -395,7 +392,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
   }
   else if (setting.id == AUDIO_SETTINGS_MAKE_DEFAULT)
   {
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].settingsLocked() && 
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].settingsLocked() &&
         g_settings.m_vecProfiles[0].getLockMode() != ::LOCK_MODE_EVERYONE)
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;

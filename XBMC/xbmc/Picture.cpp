@@ -73,7 +73,7 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
     if (SDL_LockSurface(pTexture) == 0)
     {
       DWORD destPitch = pTexture->pitch;
-      DWORD srcPitch = ((m_info.width + 1)* 3 / 4) * 4; 
+      DWORD srcPitch = ((m_info.width + 1)* 3 / 4) * 4;
       BYTE *pixels = (BYTE *)pTexture->pixels;
 #endif
       for (unsigned int y = 0; y < m_info.height; y++)
@@ -89,7 +89,7 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
           *dst++ = (m_info.alpha) ? *alpha++ : 0xff;  // alpha
         }
       }
-  
+
 #ifndef HAS_SDL
       pTexture->UnlockRect( 0 );
 #else

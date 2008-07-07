@@ -67,7 +67,7 @@ namespace VIDEO
 #define VIDEODB_TYPE_BOOL 4
 #define VIDEODB_TYPE_COUNT 5
 
-typedef enum 
+typedef enum
 {
   VIDEODB_CONTENT_MOVIES = 1,
   VIDEODB_CONTENT_TVSHOWS = 2,
@@ -105,7 +105,7 @@ const struct SDbTableOffsets
 {
   int type;
   size_t offset;
-} DbMovieOffsets[] = 
+} DbMovieOffsets[] =
 {
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strTitle) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPlot) },
@@ -147,7 +147,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_TV_MAX
 } VIDEODB_TV_IDS;
 
-const struct SDbTableOffsets DbTvShowOffsets[] = 
+const struct SDbTableOffsets DbTvShowOffsets[] =
 {
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strTitle) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPlot) },
@@ -187,7 +187,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_EPISODE_MAX
 } VIDEODB_EPISODE_IDS;
 
-const struct SDbTableOffsets DbEpisodeOffsets[] = 
+const struct SDbTableOffsets DbEpisodeOffsets[] =
 {
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strTitle) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPlot) },
@@ -227,7 +227,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_MUSICVIDEO_MAX
 } VIDEODB_MUSICVIDEO_IDS;
 
-const struct SDbTableOffsets DbMusicVideoOffsets[] = 
+const struct SDbTableOffsets DbMusicVideoOffsets[] =
 {
   { VIDEODB_TYPE_STRING, my_offsetof(class CVideoInfoTag,m_strTitle) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
@@ -286,7 +286,7 @@ public:
     int numEpisodes;
     int numWatched;
   };
-      
+
   CVideoDatabase(void);
   virtual ~CVideoDatabase(void);
 
@@ -304,7 +304,7 @@ public:
   bool HasTvShowInfo(const CStdString& strFilenameAndPath);
   bool HasEpisodeInfo(const CStdString& strFilenameAndPath);
   bool HasMusicVideoInfo(const CStdString& strFilenameAndPath);
-  
+
   void GetFilePathById(long id, CStdString &filePath, VIDEODB_CONTENT_TYPE iType);
   bool GetGenreById(long id, CStdString& strGenre);
 
@@ -396,7 +396,7 @@ public:
   bool IsLinkedToTvshow(long idMovie);
   bool GetLinksToTvShow(long idMovie, std::vector<long>& ids);
 
-  bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
+  bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet,
                          const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult);
 
   // general browsing
@@ -421,7 +421,7 @@ public:
   bool HasContent(VIDEODB_CONTENT_TYPE type);
 
   void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL, const std::vector<long>* paths=NULL);
-  
+
   long AddFile(const CStdString& strFileName);
   void ExportToXML(const CStdString &xmlFile, bool singleFiles = false);
   void ImportFromXML(const CStdString &xmlFile);

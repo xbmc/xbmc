@@ -23,9 +23,6 @@
 #include "utils/BitstreamStats.h"
 #include "PlayerCoreFactory.h"
 #include "dvdplayer/DVDPlayer.h"
-#ifdef HAS_MODPLAYER
-#include "modplayer.h"
-#endif
 #include "paplayer/paplayer.h"
 #include "paplayer/DVDPlayerCodec.h"
 #include "GUIDialogContextMenu.h"
@@ -67,15 +64,8 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const EPLAYERCORES eCore, IPlayerCallb
 {
   switch( eCore )
   {
+    case EPC_MPLAYER:
     case EPC_DVDPLAYER: return new CDVDPlayer(callback);
-#ifdef HAS_MPLAYER
-    case EPC_MPLAYER: return new CMPlayer(callback);
-#else
-    case EPC_MPLAYER: return new CDVDPlayer(callback);
-#endif
-#ifdef HAS_MODPLAYER
-    case EPC_MODPLAYER: return new ModPlayer(callback);
-#endif
     case EPC_PAPLAYER: return new PAPlayer(callback); // added by dataratt
 
     default:
@@ -88,9 +78,7 @@ EPLAYERCORES CPlayerCoreFactory::GetPlayerCore(const CStdString& strCore)
   CStdString strCoreLower = strCore;
   strCoreLower.ToLower();
 
-  if (strCoreLower == "dvdplayer") return EPC_DVDPLAYER;
-  if (strCoreLower == "mplayer") return EPC_MPLAYER;
-  if (strCoreLower == "mod") return EPC_MODPLAYER;
+  if (strCoreLower == "dvdplayer" || strCoreLower == "mplayer") return EPC_DVDPLAYER;
   if (strCoreLower == "paplayer" ) return EPC_PAPLAYER;
   return EPC_NONE;
 }
@@ -100,8 +88,6 @@ CStdString CPlayerCoreFactory::GetPlayerName(const EPLAYERCORES eCore)
   switch( eCore )
   {
     case EPC_DVDPLAYER: return "DVDPlayer";
-    case EPC_MPLAYER: return "MPlayer";
-    case EPC_MODPLAYER: return "MODPlayer";
     case EPC_PAPLAYER: return "PAPlayer";
     default: return "";
   }
@@ -109,9 +95,7 @@ CStdString CPlayerCoreFactory::GetPlayerName(const EPLAYERCORES eCore)
 
 void CPlayerCoreFactory::GetPlayers( VECPLAYERCORES &vecCores )
 {
-  vecCores.push_back(EPC_MPLAYER);
   vecCores.push_back(EPC_DVDPLAYER);
-  vecCores.push_back(EPC_MODPLAYER);
   vecCores.push_back(EPC_PAPLAYER);
 }
 
@@ -145,13 +129,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   }
 #endif
 
-  // force flv files to default to mplayer due to weak http streaming in dvdplayer
-  if (url.GetFileType() == "flv" )
-  {
-    vecCores.push_back(EPC_MPLAYER);
-  }
-  
-  // dvdplayer can play standard rtsp streams, mplayer can't
+  // dvdplayer can play standard rtsp streams
   if (url.GetProtocol().Equals("rtsp") 
   && !url.GetFileType().Equals("rm") 
   && !url.GetFileType().Equals("ra"))
@@ -161,22 +139,17 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   {
     CStdString content = item.GetContentType();
 
-    if (content == "video/x-flv" // mplayer fails on these
+    if (content == "video/x-flv"
      || content == "video/flv")
       vecCores.push_back(EPC_DVDPLAYER);
-    else if (content == "audio/aacp") // mplayer has no support for AAC+         
+    else if (content == "audio/aacp")
       vecCores.push_back(EPC_DVDPLAYER);
     else if (content == "application/octet-stream")
     {
-      //unknown contenttype, send mp2 to pap, mplayer fails
+      //unknown contenttype, send mp2 to pap
       if( url.GetFileType() == "mp2")
         vecCores.push_back(EPC_PAPLAYER);
     }
-
-    // allways add mplayer as a high prio player for internet streams
-#ifdef HAS_MPLAYER
-    vecCores.push_back(EPC_MPLAYER);
-#endif
   }
 
   if (((item.IsDVD()) || item.IsDVDFile() || item.IsDVDImage()))
@@ -208,11 +181,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
       else if( ( url.GetFileType().Equals("ac3") && g_audioConfig.GetAC3Enabled() )
         ||  ( url.GetFileType().Equals("dts") && g_audioConfig.GetDTSEnabled() ) ) 
       {
-#ifdef HAS_MPLAYER
-        vecCores.push_back(EPC_MPLAYER);
-#else
         vecCores.push_back(EPC_DVDPLAYER);
-#endif
       }
       else
       {
@@ -220,13 +189,6 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
       }
     }
   }
-
-#ifdef HAS_MODPLAYER
-  if( ModPlayer::IsSupportedFormat(url.GetFileType()) || (url.GetFileType() == "xm") || (url.GetFileType() == "mod") || (url.GetFileType() == "s3m") || (url.GetFileType() == "it") )
-  {
-    vecCores.push_back(EPC_MODPLAYER);
-  }
-#endif
 
   //Add all normal players last so you can force them, should you want to
   if ( item.IsAudio() )

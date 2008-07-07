@@ -225,8 +225,8 @@ void CryptData::SetCryptKeys(char *Password,byte *Salt,bool Encrypt,bool OldOnly
   bool Cached=false;
   for (unsigned int I=0;I<sizeof(Cache)/sizeof(Cache[0]);I++)
     if (strcmp(Cache[I].Password,Password)==0 &&
-        (Salt==NULL && !Cache[I].SaltPresent || Salt!=NULL &&
-        Cache[I].SaltPresent && memcmp(Cache[I].Salt,Salt,SALT_SIZE)==0))
+       ((Salt==NULL && !Cache[I].SaltPresent) || 
+        (Salt!=NULL && Cache[I].SaltPresent && memcmp(Cache[I].Salt,Salt,SALT_SIZE)==0)))
     {
       memcpy(AESKey,Cache[I].AESKey,sizeof(AESKey));
       memcpy(AESInit,Cache[I].AESInit,sizeof(AESInit));

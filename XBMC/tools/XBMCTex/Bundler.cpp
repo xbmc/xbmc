@@ -1,20 +1,19 @@
-#include "StdAfx.h"
 #include "Bundler.h"
-#include "../../xbmc/lib/liblzo/lzo1x.h"
+
+#ifdef _LINUX
+#include <lzo1x.h>
+#else
+#include "../../xbmc/lib/liblzo/LZO1X.H"
+#endif
 
 // alignment of file blocks - should be a multiple of the sector size of the disk and a power of 2
 // HDD sector = 512 bytes, DVD/CD sector = 2048 bytes
 // XBMC supports caching of texures on the HDD for DVD loads, so this can be 512
+#undef ALIGN
 #define ALIGN (512)
 
 bool CBundler::StartBundle()
 {
-	Data = (BYTE*)VirtualAlloc(0, 512 * 1024 * 1024, MEM_RESERVE, PAGE_NOACCESS);
-	if (!Data)
-	{
-		printf("Memory allocation failure: %08x\n", GetLastError());
-		return false;
-	}
 	DataSize = 0;
 	FileHeaders.clear();
 
@@ -26,56 +25,58 @@ bool CBundler::StartBundle()
 int CBundler::WriteBundle(const char* Filename, int NoProtect)
 {
 	// calc data offset
-	DWORD Offset = sizeof(XPR_FILE_HEADER) + FileHeaders.size() * sizeof(FileHeader_t);
+	DWORD headerSize = sizeof(XPR_FILE_HEADER) + FileHeaders.size() * sizeof(FileHeader_t);
 
 	// setup header
 	XPRHeader.dwMagic = XPR_MAGIC_HEADER_VALUE | ((2+(NoProtect << 7)) << 24); // version 2
-	XPRHeader.dwHeaderSize = Offset;
+	XPRHeader.dwHeaderSize = headerSize;
 
-	Offset = (Offset + (ALIGN-1)) & ~(ALIGN-1);
-	XPRHeader.dwTotalSize = Offset + DataSize;
+	headerSize = (headerSize + (ALIGN-1)) & ~(ALIGN-1);
+	XPRHeader.dwTotalSize = headerSize + DataSize;
 
-	// buffer data
-	if (!VirtualAlloc(Data+DataSize, Offset, MEM_COMMIT, PAGE_READWRITE))
-		return -1;
-	BYTE* buf = Data+DataSize;
+	// create our header in memory
+  BYTE *headerBuf = (BYTE *)malloc(headerSize);
+  if (!headerBuf) return -1;
+
+  BYTE* buf = headerBuf;
 	memcpy(buf, &XPRHeader, sizeof(XPR_FILE_HEADER));
 	buf += sizeof(XPR_FILE_HEADER);
 
-	int j = 0;
 	for (std::list<FileHeader_t>::iterator i = FileHeaders.begin(); i != FileHeaders.end(); ++i)
 	{
-		i->Offset += Offset;
+		i->Offset += headerSize;
 		memcpy(buf, &(*i), sizeof(FileHeader_t));
 		buf += sizeof(FileHeader_t);
 	}
+  memset(buf, 0, headerBuf + headerSize - buf);
 
 	// write file
-	HANDLE hFile = CreateFile(Filename, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_NO_BUFFERING, 0);
-	if (hFile == INVALID_HANDLE_VALUE)
-		return -1;
-	if (SetFilePointer(hFile, DataSize + Offset, 0, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
-		return -1;
-	if (!SetEndOfFile(hFile))
-		return -1;
-	SetFilePointer(hFile, 0, 0, FILE_BEGIN);
-	DWORD n;
-	if (!WriteFile(hFile, Data+DataSize, Offset, &n, NULL) || n != Offset)
-		return -1;
-	if (!WriteFile(hFile, Data, DataSize, &n, NULL) || n != DataSize)
-		return -1;
-	CloseHandle(hFile);
-	VirtualFree(Data, 0, MEM_RELEASE);
+  FILE *file = fopen(Filename, "wb");
+  if (!file)
+    return -1;
 
-	return DataSize + Offset;
+  size_t n = fwrite(headerBuf, 1, headerSize, file);
+  if (n != headerSize)
+    return -1;
+
+  n = fwrite(Data, 1, DataSize, file);
+  if (n != DataSize)
+    return -1;
+
+  fclose(file);
+
+  free(Data);
+  free(headerBuf);
+
+	return DataSize + headerSize;
 }
 
 bool CBundler::AddFile(const char* Filename, int nBuffers, const void** Buffers, DWORD* Sizes)
 {
 	FileHeader_t Header;
-	
+
 	memset(Header.Name, 0, sizeof(Header.Name));
-	for (int i = 0; i < sizeof(Header.Name) && Filename[i]; ++i)
+	for (int i = 0; i < (int)sizeof(Header.Name) && Filename[i]; ++i)
 		Header.Name[i] = tolower(Filename[i]);
 	Header.Name[sizeof(Header.Name)-1] = 0;
 
@@ -84,7 +85,10 @@ bool CBundler::AddFile(const char* Filename, int nBuffers, const void** Buffers,
 	for (int i = 0; i < nBuffers; ++i)
 		Header.UnpackedSize += Sizes[i];
 
-	BYTE* buf = (BYTE*)VirtualAlloc(0, Header.UnpackedSize, MEM_COMMIT, PAGE_READWRITE);
+  // allocate enough memory for the total unpacked size
+  BYTE* buf = (BYTE*)malloc(Header.UnpackedSize);
+  if (!buf) return false; // failure to allocate memory
+
 	BYTE* p = buf;
 	for (int i = 0; i < nBuffers; ++i)
 	{
@@ -92,24 +96,38 @@ bool CBundler::AddFile(const char* Filename, int nBuffers, const void** Buffers,
 		p += Sizes[i];
 	}
 
-	VirtualAlloc(Data+DataSize, Header.UnpackedSize, MEM_COMMIT, PAGE_READWRITE);
+  // grab a temporary buffer for unpacking into
+  BYTE *compressedBuf = (BYTE*)malloc(Header.UnpackedSize);
+  if (!compressedBuf) return false;
 
-	lzo_voidp tmp = VirtualAlloc(0, LZO1X_999_MEM_COMPRESS, MEM_COMMIT, PAGE_READWRITE);
-	if (lzo1x_999_compress(buf, Header.UnpackedSize, Data+DataSize, (lzo_uint*)&Header.PackedSize, tmp) != LZO_E_OK)
+  // and a working buffer for lzo
+  lzo_voidp workingBuf = malloc(LZO1X_999_MEM_COMPRESS);
+  if (!workingBuf) return false;
+
+	if (lzo1x_999_compress(buf, Header.UnpackedSize, compressedBuf, (lzo_uint*)&Header.PackedSize, workingBuf) != LZO_E_OK)
 	{
 		printf("Compression failure\n");
-		VirtualFree(buf, 0, MEM_RELEASE);
-		VirtualFree(tmp, 0, MEM_RELEASE);
+    free(buf);
+    free(compressedBuf);
+    free(workingBuf);
 		return false;
 	}
-	VirtualFree(tmp, 0, MEM_RELEASE);
+  free(workingBuf);
 
 	lzo_uint s;
-	lzo1x_optimize(Data+DataSize, Header.PackedSize, buf, &s, NULL);
+	lzo1x_optimize(compressedBuf, Header.PackedSize, buf, &s, NULL);
 
-	VirtualFree(buf, 0, MEM_RELEASE);
+  free(buf);
 
-	DataSize += (Header.PackedSize + (ALIGN-1)) & ~(ALIGN-1);
+  // now increase the size of our buffer
+  DWORD ExtraNeeded = (Header.PackedSize + (ALIGN-1)) & ~(ALIGN-1);
+
+  // reallocate our data dump
+  Data = (BYTE*)realloc(Data, DataSize + ExtraNeeded);
+
+  memcpy(Data + DataSize, compressedBuf, Header.PackedSize);
+  memset(Data + DataSize + Header.PackedSize, 0, ExtraNeeded - Header.PackedSize);
+	DataSize += ExtraNeeded;
 	FileHeaders.push_back(Header);
 	return true;
 }

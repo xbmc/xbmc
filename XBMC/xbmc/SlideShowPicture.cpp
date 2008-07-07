@@ -191,10 +191,6 @@ void CSlideShowPic::UpdateTexture(SDL_Surface *pTexture, int iWidth, int iHeight
   CSingleLock lock(m_textureAccess);
   if (m_pImage)
   {
-#ifdef HAS_XBOX_D3D
-    while (m_pImage->IsBusy())
-      Sleep(1);
-#endif
 #ifndef HAS_SDL
     m_pImage->Release();
 #elif defined(HAS_SDL_OPENGL)
@@ -651,26 +647,15 @@ void CSlideShowPic::Render(float *x, float *y, SDL_Surface *pTexture, DWORD dwCo
 
   for (int i = 0; i < 4; i++)
   {
-#ifdef HAS_XBOX_D3D
-    vertex[i].p = D3DXVECTOR4( x[i], y[i], 0, 0 );
-#else
     vertex[i].p = D3DXVECTOR4( x[i], y[i], 0, 1.0f);
-#endif
     vertex[i].tu = 0;
     vertex[i].tv = 0;
     vertex[i].col = dwColor;
   }
-#ifdef HAS_XBOX_D3D
-  vertex[1].tu = m_fWidth;
-  vertex[2].tu = m_fWidth;
-  vertex[2].tv = m_fHeight;
-  vertex[3].tv = m_fHeight;
-#else
   vertex[1].tu = 1.0f;
   vertex[2].tu = 1.0f;
   vertex[2].tv = 1.0f;
   vertex[3].tv = 1.0f;
-#endif
 
   // Set state to render the image
   if (pTexture) g_graphicsContext.Get3DDevice()->SetTexture( 0, pTexture );
@@ -694,18 +679,10 @@ void CSlideShowPic::Render(float *x, float *y, SDL_Surface *pTexture, DWORD dwCo
   g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
   g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
   g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-#ifdef HAS_XBOX_D3D
-  g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_YUVENABLE, FALSE);
-#else
   g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
-#endif
   g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_VERTEX );
   // Render the image
-#ifdef HAS_XBOX_D3D
-  g_graphicsContext.Get3DDevice()->DrawPrimitiveUP( D3DPT_QUADLIST, 1, vertex, sizeof(VERTEX) );
-#else
   g_graphicsContext.Get3DDevice()->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX) );
-#endif
   if (pTexture) g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);
 
 #elif defined(HAS_SDL_OPENGL)
@@ -715,10 +692,10 @@ void CSlideShowPic::Render(float *x, float *y, SDL_Surface *pTexture, DWORD dwCo
     pTexture->LoadToGPU();
     glBindTexture(GL_TEXTURE_2D, pTexture->id);
     glEnable(GL_TEXTURE_2D);
-    
+
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);          // Turn Blending On
-       
+
     // diffuse coloring
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
     glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
@@ -730,7 +707,7 @@ void CSlideShowPic::Render(float *x, float *y, SDL_Surface *pTexture, DWORD dwCo
   else
     glDisable(GL_TEXTURE_2D);
   glPolygonMode(GL_FRONT_AND_BACK, fillmode);
-  
+
   glBegin(GL_QUADS);
   float u1 = 0, u2 = 1, v1 = 0, v2 = 1;
   if (pTexture)
@@ -738,26 +715,26 @@ void CSlideShowPic::Render(float *x, float *y, SDL_Surface *pTexture, DWORD dwCo
     u2 = (float)pTexture->imageWidth / pTexture->textureWidth;
     v2 = (float)pTexture->imageHeight / pTexture->textureHeight;
   }
-  
-  glColor4ub((GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24)); 
+
+  glColor4ub((GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24));
   glTexCoord2f(u1, v1);
   glVertex3f(x[0], y[0], 0);
-  
+
   // Bottom-left vertex (corner)
-  glColor4ub((GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24)); 
+  glColor4ub((GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24));
   glTexCoord2f(u2, v1);
   glVertex3f(x[1], y[1], 0);
-  
+
   // Bottom-right vertex (corner)
-  glColor4ub((GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24)); 
+  glColor4ub((GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24));
   glTexCoord2f(u2, v2);
   glVertex3f(x[2], y[2], 0);
-  
+
   // Top-right vertex (corner)
-  glColor4ub((GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24)); 
+  glColor4ub((GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24));
   glTexCoord2f(u1, v2);
   glVertex3f(x[3], y[3], 0);
-    
+
   glEnd();
   g_graphicsContext.EndPaint();
 #else

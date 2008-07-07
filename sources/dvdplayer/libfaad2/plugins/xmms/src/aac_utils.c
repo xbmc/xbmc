@@ -5,6 +5,7 @@
 #include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 
 #define ADTS_HEADER_SIZE        8
@@ -20,7 +21,7 @@ int	getAacInfo(FILE *fd)
   unsigned char	header[ADTS_HEADER_SIZE];
   unsigned int	id;
   unsigned long	originPosition;
-  
+
   originPosition = ftell(fd);
   if(fread(header, 1, ADTS_HEADER_SIZE, fd) != ADTS_HEADER_SIZE){
     fseek(fd, originPosition, SEEK_SET);
@@ -96,7 +97,7 @@ void	checkADTSForSeeking(FILE *fd,
     }
     if(fseek(fd, frameLength-ADTS_HEADER_SIZE, SEEK_CUR)==-1){
       break;
-    } 
+    }
   }
   (*seekTableLength) = seconds;
   fseek(fd, originPosition, SEEK_SET);

@@ -63,11 +63,10 @@ bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_INIT:
     {
-      CGUIDialog::OnMessage(message);
-
+      CGUIDialogBoxBase::OnMessage(message);
       FreeControls();
       CreateControls();
-      break;
+      return true;
     }
 
     case GUI_MSG_CLICKED:
@@ -176,7 +175,7 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
           ((CGUIButtonControl*) control)->SetLabel2(value);
         }
         else if (strcmpi(type, "video") == 0 || strcmpi(type, "music") == 0 ||
-          strcmpi(type, "pictures") == 0 || strcmpi(type, "programs") == 0 || 
+          strcmpi(type, "pictures") == 0 || strcmpi(type, "programs") == 0 ||
           strcmpi(type, "folder") == 0 || strcmpi(type, "files") == 0)
         {
           // setup the shares
@@ -195,7 +194,7 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
             localShares.insert(localShares.end(), networkShares.begin(), networkShares.end());
             shares = &localShares;
           }
-          
+
           if (strcmpi(type, "folder") == 0)
           {
             // get any options
@@ -224,7 +223,11 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
               else if (strcmpi(type, "music") == 0)
                 strMask = g_stSettings.m_musicExtensions;
               else if (strcmpi(type, "programs") == 0)
-                strMask = ".xbe|.py";
+#if defined(_WIN32_WINNT)
+                strMask = ".exe|.bat|.cmd|.py";
+#else
+                strMask = "";
+#endif
             }
 
             // get any options
@@ -441,7 +444,7 @@ void CGUIDialogPluginSettings::CreateControls()
       int iItem = 0;
       for (int i = 0; i < items.Size(); ++i)
       {
-        CFileItem* pItem = items[i];
+        CFileItemPtr pItem = items[i];
         if ((mask.Equals("/") && pItem->m_bIsFolder) || !pItem->m_bIsFolder)
         {
           ((CGUISpinControlEx *)pControl)->AddLabel(pItem->GetLabel(), iItem);

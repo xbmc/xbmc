@@ -91,6 +91,7 @@ bool Archive::IsSignature(byte *D)
 {
   bool Valid=false;
   if (D[0]==0x52)
+  {
 #ifndef SFX_MODULE
     if (D[1]==0x45 && D[2]==0x7e && D[3]==0x5e)
     {
@@ -99,11 +100,14 @@ bool Archive::IsSignature(byte *D)
     }
     else
 #endif
+    {
       if (D[1]==0x61 && D[2]==0x72 && D[3]==0x21 && D[4]==0x1a && D[5]==0x07 && D[6]==0x00)
       {
         OldFormat=false;
         Valid=true;
       }
+    }
+  }
   return(Valid);
 }
 
@@ -198,13 +202,13 @@ bool Archive::IsArchive(bool EnableBroken)
         if (SubHead.CmpName(SUBHEAD_TYPE_CMT))
           MainComment=true;
         if ((SubHead.Flags & LHD_SPLIT_BEFORE) ||
-            Volume && (NewMhd.Flags & MHD_FIRSTVOLUME)==0)
+            (Volume && (NewMhd.Flags & MHD_FIRSTVOLUME)==0))
           NotFirstVolume=true;
       }
       else
       {
-        if (HeaderType==FILE_HEAD && ((NewLhd.Flags & LHD_SPLIT_BEFORE)!=0 ||
-            Volume && NewLhd.UnpVer>=29 && (NewMhd.Flags & MHD_FIRSTVOLUME)==0))
+        if ((HeaderType==FILE_HEAD && ((NewLhd.Flags & LHD_SPLIT_BEFORE)!=0)) ||
+            (Volume && NewLhd.UnpVer>=29 && (NewMhd.Flags & MHD_FIRSTVOLUME)==0))
           NotFirstVolume=true;
         break;
       }

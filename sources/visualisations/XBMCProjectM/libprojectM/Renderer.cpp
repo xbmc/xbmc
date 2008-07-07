@@ -440,7 +440,7 @@ void Renderer::reset(int w, int h)
 	
 	glClearColor( 0, 0, 0, 0 );
 	
-	glViewport( 0, 0, w, h );
+//	glViewport( 0, 0, w, h );
 	
 	glMatrixMode(GL_TEXTURE);
 	glLoadIdentity();

@@ -1,14 +1,26 @@
 #!/bin/bash 
+# Requires libtool
 
 if [ "$XBMC_ROOT" == "" ]; then
    echo you must define XBMC_ROOT to the root source folder
    exit 1
 fi
 
-echo wrapping libfaad
-gcc -shared -fpic --soname,libfaad-i486-linux.so -o libfaad-i486-linux.so -rdynamic libfaad/*.o -Wl`sed 's/[(\*]/ /g' $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.c | grep -v bash | awk '/__wrap/ {out=out","$2} END {print out}' | sed 's/__wrap_/-wrap,/g'`
+PLATFORM=`uname -m`
+if [ $PLATFORM != "x86_64" ]; then
+   PLATFORM="i486"
+fi
 
-echo copying lib
-cp -v libfaad-i486-linux.so $XBMC_ROOT/system/players/dvdplayer
+make distclean
+
+autoreconf -vif &&
+./configure --with-mp4v2 --with-pic &&
+make &&
+
+echo wrapping libfaad &&
+gcc -shared -fpic --soname,libfaad-$PLATFORM-linux.so -o libfaad-$PLATFORM-linux.so -rdynamic libfaad/*.o `cat $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.def` &&
+
+echo copying lib &&
+cp -v libfaad-$PLATFORM-linux.so $XBMC_ROOT/system/players/dvdplayer
 
 

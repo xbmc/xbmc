@@ -159,7 +159,6 @@ int _dvdcss_open ( dvdcss_t dvdcss )
     /* If device is not "X:", we are actually opening a file. */
     dvdcss->b_file = !psz_device[0] || psz_device[1] != ':' || psz_device[2];
 #endif	// _XBOX
-    dvdcss->b_file = 0;
     /* Initialize readv temporary buffer */
     dvdcss->p_readv_buffer   = NULL;
     dvdcss->i_readv_buf_size = 0;

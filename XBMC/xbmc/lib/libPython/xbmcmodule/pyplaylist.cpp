@@ -23,16 +23,15 @@
 #include "PlayListPlayer.h"
 #include "Util.h"
 #include "pyplaylist.h"
-#ifndef _LINUX
-#include "lib/libPython/python/structmember.h"
-#else
-#include <python2.4/structmember.h>
+#include "lib/libPython/Python/Include/structmember.h"
+#ifdef _LINUX
 #include "../XBPythonDll.h"
 #endif
 #include "../../../PlayListFactory.h"
 #include "pyutil.h"
 #include "listitem.h"
 #include "PlayList.h"
+#include "MusicInfoTag.h"
 
 using namespace std;
 using namespace PLAYLIST;
@@ -60,14 +59,13 @@ namespace PYXBMC
     self = (PlayListItem*)type->tp_alloc(type, 0);
     if (!self) return NULL;
 
-    self->item = new PLAYLIST::CPlayListItem();
+    self->item.reset(new CFileItem());
 
     return (PyObject*)self;
   }
 
   void PlayListItem_Dealloc(PlayListItem* self)
   {
-    if (self->item) delete self->item;
     self->ob_type->tp_free((PyObject*)self);
   }
 
@@ -76,7 +74,7 @@ namespace PYXBMC
 
   PyObject* PlayListItem_GetDescription(PlayListItem *self, PyObject *key)
   {
-    return Py_BuildValue("s", self->item->GetDescription().c_str());
+    return Py_BuildValue((char*)"s", self->item->GetLabel().c_str());
   }
 
   PyDoc_STRVAR(getDuration__doc__,
@@ -84,9 +82,9 @@ namespace PYXBMC
 
   PyObject* PlayListItem_GetDuration(PlayListItem *self, PyObject *key)
   {
-    if (self->item->GetDuration() == 0)
+    if (!self->item->HasMusicInfoTag())
       self->item->LoadMusicTag();
-    return Py_BuildValue("l", self->item->GetDuration());
+    return Py_BuildValue((char*)"l", self->item->GetMusicInfoTag()->GetDuration());
   }
 
   PyDoc_STRVAR(getFilename__doc__,
@@ -94,7 +92,7 @@ namespace PYXBMC
 
   PyObject* PlayListItem_GetFileName(PlayListItem *self, PyObject *key)
   {
-    return Py_BuildValue("s", self->item->GetFileName().c_str());
+    return Py_BuildValue((char*)"s", self->item->m_strPath.c_str());
   }
 
 /* PlayList Fucntions */
@@ -103,7 +101,7 @@ namespace PYXBMC
   {
     int iNr;
     PlayList *self;
-    if (!PyArg_ParseTuple(args, "i", &iNr))	return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"i", &iNr))	return NULL;
 
     self = (PlayList*)type->tp_alloc(type, 0);
     if (!self) return NULL;
@@ -147,7 +145,7 @@ namespace PYXBMC
     PyObject *pObjectUrl = NULL;
     PyObject *pObjectListItem = NULL;
 
-    if (!PyArg_ParseTuple(args, "O|Ol", &pObjectUrl, &pObjectListItem, &iDuration)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O|Ol", &pObjectUrl, &pObjectListItem, &iDuration)) return NULL;
 
     CStdString strUrl = "";
     if (!PyGetUnicodeString(strUrl, pObjectUrl)) return NULL;
@@ -160,22 +158,21 @@ namespace PYXBMC
 
       // set m_strPath to the passed url
       pListItem->item->m_strPath = strUrl;
-      self->pPlayList->Add((CFileItem*)pListItem->item);
+      self->pPlayList->Add(pListItem->item);
     }
     else
     {
-      CPlayListItem Item;
-      Item.SetFileName(strUrl);
-        
+      CFileItemPtr item(new CFileItem(strUrl, false));
+
       CStdString strDescription;
       if (pObjectListItem == NULL || !PyGetUnicodeString(strDescription, pObjectListItem))
-        Item.SetDescription(strUrl);
+        item->SetLabel(strUrl);
       else
-        Item.SetDescription(strDescription);
+        item->SetLabel(strDescription);
 
-      Item.SetDuration(iDuration);
+      item->GetMusicInfoTag()->SetDuration(iDuration);
 
-      self->pPlayList->Add(Item);
+      self->pPlayList->Add(item);
     }
 
     Py_INCREF(Py_None);
@@ -193,7 +190,7 @@ namespace PYXBMC
   {
     char* cFileName = NULL;
 
-    if (!PyArg_ParseTuple(args, "s", &cFileName))	return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cFileName))	return NULL;
 
     CFileItem item(cFileName);
     item.m_strPath=cFileName;
@@ -211,7 +208,7 @@ namespace PYXBMC
         if (!pPlayList->Load(item.m_strPath))
         {
           //hmmm unable to load playlist?
-          return Py_BuildValue("b", false);
+          return Py_BuildValue((char*)"b", false);
         }
 
         // clear current playlist
@@ -220,17 +217,11 @@ namespace PYXBMC
         // add each item of the playlist to the playlistplayer
         for (int i=0; i < (int)pPlayList->size(); ++i)
         {
-          const CPlayListItem& playListItem =(*pPlayList)[i];
-          CStdString strLabel=playListItem.GetDescription();
-          if (strLabel.size()==0)
-            strLabel=CUtil::GetFileName(playListItem.GetFileName());
+          CFileItemPtr playListItem =(*pPlayList)[i];
+          if (playListItem->GetLabel().IsEmpty())
+            playListItem->SetLabel(CUtil::GetFileName(playListItem->m_strPath));
 
-          CPlayListItem playlistItem;
-          playlistItem.SetFileName(playListItem.GetFileName());
-          playlistItem.SetDescription(strLabel);
-          playlistItem.SetDuration(playListItem.GetDuration());
-
-          self->pPlayList->Add(playlistItem);
+          self->pPlayList->Add(playListItem);
         }
       }
     }
@@ -251,7 +242,7 @@ namespace PYXBMC
   PyObject* PlayList_Remove(PlayList *self, PyObject *args)
   {
     char *cFileName = NULL;
-    if (!PyArg_ParseTuple(args, "s", &cFileName))	return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cFileName))	return NULL;
 
     self->pPlayList->Remove(cFileName);
 
@@ -294,7 +285,7 @@ namespace PYXBMC
 
   PyObject* PlayList_Size(PlayList *self, PyObject *key)
   {
-    return Py_BuildValue("i", self->pPlayList->size());
+    return Py_BuildValue((char*)"i", self->pPlayList->size());
   }
 
   int PlayList_Length(PyObject *self)
@@ -331,10 +322,8 @@ namespace PYXBMC
     PlayListItem* item = (PlayListItem*)_PyObject_New(&PlayListItem_Type);
     //Py_INCREF(item);
 
-    item->item = new PLAYLIST::CPlayListItem();
-
     CPlayList* p = ((PlayList*)self)->pPlayList;
-    *item->item = (*p)[pos];
+    item->item = (*p)[pos];
 
     return (PyObject*)item;
   }
@@ -344,13 +333,13 @@ namespace PYXBMC
 
   PyObject* PlayList_GetPosition(PlayList *self, PyObject *key)
   {
-    return Py_BuildValue("i", g_playlistPlayer.GetCurrentSong());
+    return Py_BuildValue((char*)"i", g_playlistPlayer.GetCurrentSong());
   }
 
   PyMethodDef PlayListItem_methods[] = {
-    {"getdescription", (PyCFunction)PlayListItem_GetDescription, METH_VARARGS, getDescription__doc__},
-    {"getduration", (PyCFunction)PlayListItem_GetDuration, METH_VARARGS, getDuration__doc__},
-    {"getfilename", (PyCFunction)PlayListItem_GetFileName, METH_VARARGS, getFilename__doc__},
+    {(char*)"getdescription", (PyCFunction)PlayListItem_GetDescription, METH_VARARGS, getDescription__doc__},
+    {(char*)"getduration", (PyCFunction)PlayListItem_GetDuration, METH_VARARGS, getDuration__doc__},
+    {(char*)"getfilename", (PyCFunction)PlayListItem_GetFileName, METH_VARARGS, getFilename__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -368,14 +357,14 @@ namespace PYXBMC
   };
 
   PyMethodDef PlayList_methods[] = {
-    {"add", (PyCFunction)PlayList_Add, METH_VARARGS, add__doc__},
-    {"load", (PyCFunction)PlayList_Load, METH_VARARGS, load__doc__},
-    {"remove", (PyCFunction)PlayList_Remove, METH_VARARGS, remove__doc__},
-    {"clear", (PyCFunction)PlayList_Clear, METH_VARARGS, clear__doc__},
-    {"size", (PyCFunction)PlayList_Size, METH_VARARGS, size__doc__},
-    {"shuffle", (PyCFunction)PlayList_Shuffle, METH_VARARGS, shuffle__doc__},
-    {"unshuffle", (PyCFunction)PlayList_UnShuffle, METH_VARARGS, unshuffle__doc__},
-    {"getposition", (PyCFunction)PlayList_GetPosition, METH_VARARGS, getposition__doc__},
+    {(char*)"add", (PyCFunction)PlayList_Add, METH_VARARGS, add__doc__},
+    {(char*)"load", (PyCFunction)PlayList_Load, METH_VARARGS, load__doc__},
+    {(char*)"remove", (PyCFunction)PlayList_Remove, METH_VARARGS, remove__doc__},
+    {(char*)"clear", (PyCFunction)PlayList_Clear, METH_VARARGS, clear__doc__},
+    {(char*)"size", (PyCFunction)PlayList_Size, METH_VARARGS, size__doc__},
+    {(char*)"shuffle", (PyCFunction)PlayList_Shuffle, METH_VARARGS, shuffle__doc__},
+    {(char*)"unshuffle", (PyCFunction)PlayList_UnShuffle, METH_VARARGS, unshuffle__doc__},
+    {(char*)"getposition", (PyCFunction)PlayList_GetPosition, METH_VARARGS, getposition__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -410,7 +399,7 @@ namespace PYXBMC
   {
     PyInitializeTypeObject(&PlayListItem_Type);
 
-    PlayListItem_Type.tp_name = "xbmc.PlayListItem";
+    PlayListItem_Type.tp_name = (char*)"xbmc.PlayListItem";
     PlayListItem_Type.tp_basicsize = sizeof(PlayListItem);
     PlayListItem_Type.tp_dealloc = (destructor)PlayListItem_Dealloc;
     PlayListItem_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
@@ -426,7 +415,7 @@ namespace PYXBMC
   {
     PyInitializeTypeObject(&PlayList_Type);
 
-    PlayList_Type.tp_name = "xbmc.PlayList";
+    PlayList_Type.tp_name = (char*)"xbmc.PlayList";
     PlayList_Type.tp_basicsize = sizeof(PlayList);
     PlayList_Type.tp_dealloc = (destructor)PlayList_Dealloc;
     PlayList_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;

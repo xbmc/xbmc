@@ -20,12 +20,9 @@
  */
 
 #include "stdafx.h"
-#ifndef _LINUX
-#include "lib/libPython/python/Python.h"
-#include "lib/libPython/python/structmember.h"
-#else
-#include <python2.4/Python.h>
-#include <python2.4/structmember.h>
+#include "lib/libPython/Python/Include/Python.h"
+#include "lib/libPython/Python/Include/structmember.h"
+#ifdef _LINUX
 #include "../XBPythonDll.h"
 #endif
 #include "control.h"
@@ -93,7 +90,7 @@ namespace PYXBMC
     PyGUILock();
     DWORD dwId = m_gWindowManager.GetActiveWindow();
     PyGUIUnlock();
-    return Py_BuildValue("l", dwId);
+    return Py_BuildValue((char*)"l", dwId);
   }
 
   // getCurrentWindowDialogId() method
@@ -108,15 +105,15 @@ namespace PYXBMC
     PyGUILock();
     DWORD dwId = m_gWindowManager.GetTopMostModalDialogID();
     PyGUIUnlock();
-    return Py_BuildValue("l", dwId);
+    return Py_BuildValue((char*)"l", dwId);
   }
 
   // define c functions to be used in python here
   PyMethodDef xbmcGuiMethods[] = {
-    {"lock", (PyCFunction)XBMCGUI_Lock, METH_VARARGS, lock__doc__},
-    {"unlock", (PyCFunction)XBMCGUI_Unlock, METH_VARARGS, unlock__doc__},
-    {"getCurrentWindowId", (PyCFunction)XBMCGUI_GetCurrentWindowId, METH_VARARGS, getCurrentWindowId__doc__},
-    {"getCurrentWindowDialogId", (PyCFunction)XBMCGUI_GetCurrentWindowDialogId, METH_VARARGS, getCurrentWindowDialogId__doc__},
+    {(char*)"lock", (PyCFunction)XBMCGUI_Lock, METH_VARARGS, lock__doc__},
+    {(char*)"unlock", (PyCFunction)XBMCGUI_Unlock, METH_VARARGS, unlock__doc__},
+    {(char*)"getCurrentWindowId", (PyCFunction)XBMCGUI_GetCurrentWindowId, METH_VARARGS, getCurrentWindowId__doc__},
+    {(char*)"getCurrentWindowDialogId", (PyCFunction)XBMCGUI_GetCurrentWindowDialogId, METH_VARARGS, getCurrentWindowDialogId__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -224,47 +221,47 @@ namespace PYXBMC
     Py_INCREF(&Action_Type);
     Py_INCREF(&ControlRadioButton_Type);
 
-    pXbmcGuiModule = Py_InitModule3("xbmcgui", xbmcGuiMethods, xbmcgui_module_documentation);
+    pXbmcGuiModule = Py_InitModule3((char*)"xbmcgui", xbmcGuiMethods, xbmcgui_module_documentation);
 
     if (pXbmcGuiModule == NULL) return;
 
-    PyModule_AddObject(pXbmcGuiModule, "Window", (PyObject*)&Window_Type);
-    PyModule_AddObject(pXbmcGuiModule, "WindowDialog", (PyObject*)&WindowDialog_Type);
-    PyModule_AddObject(pXbmcGuiModule, "WindowXML", (PyObject*)&WindowXML_Type);
-    PyModule_AddObject(pXbmcGuiModule, "WindowXMLDialog", (PyObject*)&WindowXMLDialog_Type);
-    PyModule_AddObject(pXbmcGuiModule, "ListItem", (PyObject*)&ListItem_Type);
-    //PyModule_AddObject(pXbmcGuiModule, "Control", (PyObject*)&Control_Type);
-    //PyModule_AddObject(pXbmcGuiModule, "ControlSpin", (PyObject*)&ControlSpin_Type);
-    PyModule_AddObject(pXbmcGuiModule, "ControlLabel", (PyObject*)&ControlLabel_Type);
-    PyModule_AddObject(pXbmcGuiModule, "ControlFadeLabel", (PyObject*)&ControlFadeLabel_Type);
-    PyModule_AddObject(pXbmcGuiModule, "ControlTextBox", (PyObject*)&ControlTextBox_Type);
-    PyModule_AddObject(pXbmcGuiModule, "ControlButton", (PyObject*)&ControlButton_Type);
-    PyModule_AddObject(pXbmcGuiModule, "ControlCheckMark", (PyObject*)&ControlCheckMark_Type);
-    PyModule_AddObject(pXbmcGuiModule, "ControlList", (PyObject*)&ControlList_Type);
-    PyModule_AddObject(pXbmcGuiModule, "ControlImage", (PyObject*)&  ControlImage_Type);
-    PyModule_AddObject(pXbmcGuiModule, "ControlProgress", (PyObject*)& ControlProgress_Type);
-    PyModule_AddObject(pXbmcGuiModule, "ControlGroup", (PyObject*)& ControlGroup_Type);
-    PyModule_AddObject(pXbmcGuiModule, "Dialog", (PyObject *)&Dialog_Type);
-    PyModule_AddObject(pXbmcGuiModule, "DialogProgress", (PyObject *)&DialogProgress_Type);
-    PyModule_AddObject(pXbmcGuiModule, "Action", (PyObject *)&Action_Type);
-    PyModule_AddObject(pXbmcGuiModule, "ControlRadioButton", (PyObject*)&ControlRadioButton_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"Window", (PyObject*)&Window_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"WindowDialog", (PyObject*)&WindowDialog_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"WindowXML", (PyObject*)&WindowXML_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"WindowXMLDialog", (PyObject*)&WindowXMLDialog_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"ListItem", (PyObject*)&ListItem_Type);
+    //PyModule_AddObject(pXbmcGuiModule, (char*)"Control", (PyObject*)&Control_Type);
+    //PyModule_AddObject(pXbmcGuiModule, (char*)"ControlSpin", (PyObject*)&ControlSpin_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"ControlLabel", (PyObject*)&ControlLabel_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"ControlFadeLabel", (PyObject*)&ControlFadeLabel_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"ControlTextBox", (PyObject*)&ControlTextBox_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"ControlButton", (PyObject*)&ControlButton_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"ControlCheckMark", (PyObject*)&ControlCheckMark_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"ControlList", (PyObject*)&ControlList_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"ControlImage", (PyObject*)&  ControlImage_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"ControlProgress", (PyObject*)& ControlProgress_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"ControlGroup", (PyObject*)& ControlGroup_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"Dialog", (PyObject *)&Dialog_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"DialogProgress", (PyObject *)&DialogProgress_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"Action", (PyObject *)&Action_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"ControlRadioButton", (PyObject*)&ControlRadioButton_Type);
 
-    PyModule_AddStringConstant(pXbmcGuiModule, "__author__",    PY_XBMC_AUTHOR);
-    PyModule_AddStringConstant(pXbmcGuiModule, "__date__",      "14 July 2006");
-    PyModule_AddStringConstant(pXbmcGuiModule, "__version__",    "1.2");
-    PyModule_AddStringConstant(pXbmcGuiModule, "__credits__",    PY_XBMC_CREDITS);
-    PyModule_AddStringConstant(pXbmcGuiModule, "__platform__",  PY_XBMC_PLATFORM);
+    PyModule_AddStringConstant(pXbmcGuiModule, (char*)"__author__", (char*)PY_XBMC_AUTHOR);
+    PyModule_AddStringConstant(pXbmcGuiModule, (char*)"__date__", (char*)"14 July 2006");
+    PyModule_AddStringConstant(pXbmcGuiModule, (char*)"__version__", (char*)"1.2");
+    PyModule_AddStringConstant(pXbmcGuiModule, (char*)"__credits__", (char*)PY_XBMC_CREDITS);
+    PyModule_AddStringConstant(pXbmcGuiModule, (char*)"__platform__", (char*)PY_XBMC_PLATFORM);
 
     // icon overlay constants
-    PyModule_AddIntConstant(pXbmcGuiModule, "ICON_OVERLAY_NONE", CGUIListItem::ICON_OVERLAY_NONE);
-    PyModule_AddIntConstant(pXbmcGuiModule, "ICON_OVERLAY_RAR", CGUIListItem::ICON_OVERLAY_RAR);
-    PyModule_AddIntConstant(pXbmcGuiModule, "ICON_OVERLAY_ZIP", CGUIListItem::ICON_OVERLAY_ZIP);
-    PyModule_AddIntConstant(pXbmcGuiModule, "ICON_OVERLAY_LOCKED", CGUIListItem::ICON_OVERLAY_LOCKED);
-    PyModule_AddIntConstant(pXbmcGuiModule, "ICON_OVERLAY_HAS_TRAINER", CGUIListItem::ICON_OVERLAY_HAS_TRAINER);
-    PyModule_AddIntConstant(pXbmcGuiModule, "ICON_OVERLAY_TRAINED", CGUIListItem::ICON_OVERLAY_TRAINED);
-    PyModule_AddIntConstant(pXbmcGuiModule, "ICON_OVERLAY_UNWATCHED", CGUIListItem::ICON_OVERLAY_UNWATCHED);
-    PyModule_AddIntConstant(pXbmcGuiModule, "ICON_OVERLAY_WATCHED", CGUIListItem::ICON_OVERLAY_WATCHED);
-    PyModule_AddIntConstant(pXbmcGuiModule, "ICON_OVERLAY_HD", CGUIListItem::ICON_OVERLAY_HD);
+    PyModule_AddIntConstant(pXbmcGuiModule, (char*)"ICON_OVERLAY_NONE", CGUIListItem::ICON_OVERLAY_NONE);
+    PyModule_AddIntConstant(pXbmcGuiModule, (char*)"ICON_OVERLAY_RAR", CGUIListItem::ICON_OVERLAY_RAR);
+    PyModule_AddIntConstant(pXbmcGuiModule, (char*)"ICON_OVERLAY_ZIP", CGUIListItem::ICON_OVERLAY_ZIP);
+    PyModule_AddIntConstant(pXbmcGuiModule, (char*)"ICON_OVERLAY_LOCKED", CGUIListItem::ICON_OVERLAY_LOCKED);
+    PyModule_AddIntConstant(pXbmcGuiModule, (char*)"ICON_OVERLAY_HAS_TRAINER", CGUIListItem::ICON_OVERLAY_HAS_TRAINER);
+    PyModule_AddIntConstant(pXbmcGuiModule, (char*)"ICON_OVERLAY_TRAINED", CGUIListItem::ICON_OVERLAY_TRAINED);
+    PyModule_AddIntConstant(pXbmcGuiModule, (char*)"ICON_OVERLAY_UNWATCHED", CGUIListItem::ICON_OVERLAY_UNWATCHED);
+    PyModule_AddIntConstant(pXbmcGuiModule, (char*)"ICON_OVERLAY_WATCHED", CGUIListItem::ICON_OVERLAY_WATCHED);
+    PyModule_AddIntConstant(pXbmcGuiModule, (char*)"ICON_OVERLAY_HD", CGUIListItem::ICON_OVERLAY_HD);
   }
 }
 

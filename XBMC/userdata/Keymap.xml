@@ -439,6 +439,40 @@
   </FullscreenVideo>
 
 
+  <FullscreenInfo>
+    <remote>
+      <title>CodecInfo</title>
+      <info>Close</info>
+   </remote>
+
+    <gamepad>
+      <B>Close</B>
+      <black>CodecInfo</black>
+      <white>Close</white>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
+    </gamepad>
+
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <button id="2">Close</button>
+      <button id="3">CodecInfo</button>
+      <button id="6">Close</button>
+      <axis id="3" limit="0">AnalogRewind</axis>
+      <axis id="6" limit="0">AnalogFastForward</axis>
+    </joystick>
+
+    <keyboard>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <period>StepForward</period>
+      <backspace>Close</backspace>
+      <t>Close</t>
+      <i>CodecInfo</i>
+    </keyboard>
+  </FullscreenInfo>
+
   <PlayerControls>
     <gamepad>
       <back>Close</back>

@@ -33,12 +33,12 @@
 
 #include <vector>
 
-size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft, 
+size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft,
 		    char* * outbuf, size_t *outbytesleft);
 
 #ifdef __APPLE__
   #define WCHAR_CHARSET "UTF-32LE"
-  #define UTF8_SOURCE "UTF-8-MAC" 
+  #define UTF8_SOURCE "UTF-8-MAC"
 #elif defined(_XBOX) || defined(WIN32)
   #define WCHAR_CHARSET "UTF-16LE"
   #define UTF8_SOURCE "UTF-8"
@@ -55,10 +55,44 @@ public:
   void reset();
 
   void clear();
+  template<class INPUT,class OUTPUT>
+  void convert(iconv_t& type, int multiplier, const CStdString& strFromCharset, const CStdString& strToCharset, const INPUT& strSource,  OUTPUT& strDest)
+  {
+    if (type == (iconv_t) - 1)
+    {
+      type = iconv_open(strToCharset.c_str(), strFromCharset.c_str());
+    }
+
+    if (type != (iconv_t) - 1 && strSource.length())
+    {
+      size_t inBytes  = (strSource.length() + 1)*sizeof(strSource[0]);
+      size_t outBytes = (strSource.length() + 1)*multiplier;
+      const char *src = (const char*)strSource.c_str();
+      char       *dst = (char*)strDest.GetBuffer(outBytes);
+
+      if (iconv_const(type, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
+      {
+        CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+        strDest.ReleaseBuffer();
+        strDest = strSource;
+        return;
+      }
+
+      if (iconv_const(type, NULL, NULL, &dst, &outBytes) == (size_t)-1)
+      {
+        CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
+        strDest.ReleaseBuffer();
+        strDest = strSource;
+        return;
+      }
+
+      strDest.ReleaseBuffer();
+    }
+  }
 
   void utf8ToW(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip=true);
 
-  void utf16LEtoW(const char* utf16String, CStdStringW &wString);
+  void utf16LEtoW(const CStdStringW& utf16String, CStdStringW &wString);
 
   void subtitleCharsetToW(const CStdStringA& strSource, CStdStringW& strDest);
 
@@ -69,6 +103,7 @@ public:
   void stringCharsetToUtf8(const CStdStringA& strSource, CStdStringA& strDest);
 
   void stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest);
+  void stringCharsetTo(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStringA& strDest);
 
   void stringCharsetToUtf8(CStdStringA& strSourceDest);
 
@@ -80,7 +115,7 @@ public:
 
   void wToUTF8(const CStdStringW& strSource, CStdStringA &strDest);
   void utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest);
-  void utf16LEtoUTF8(const void *strSource, CStdStringA &strDest);
+  void utf16LEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest);
   void ucs2ToUTF8(const CStdStringW& strSource, CStdStringA& strDest);
 
   void utf32ToStringCharset(const unsigned long* strSource, CStdStringA& strDest);
@@ -111,7 +146,7 @@ private:
   iconv_t m_iconvUtf16LEtoUtf8;
   iconv_t m_iconvUtf8toW;
   iconv_t m_iconvUcs2CharsetToUtf8;
-  
+
   FriBidiCharSet m_stringFribidiCharset;
 
   CStdString EMPTY;

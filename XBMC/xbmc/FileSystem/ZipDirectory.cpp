@@ -128,7 +128,7 @@ namespace DIRECTORY
           continue;
       }
 
-      CFileItem* pFileItem = new CFileItem;
+      CFileItemPtr pFileItem(new CFileItem);
       pFileItem->SetLabel(pathTokens[baseTokens.size()]);
       if (bIsFolder)
         pFileItem->m_dwSize = 0;

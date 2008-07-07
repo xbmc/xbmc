@@ -1,6 +1,6 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
+** Copyright (C) 2003-2005 M. Bakker, Nero AG, http://www.nero.com
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -19,10 +19,13 @@
 ** Any non-GPL usage of this software or parts of this software is strictly
 ** forbidden.
 **
-** Commercial non-GPL licensing of this software is possible.
-** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
+** The "appropriate copyright message" mentioned in section 2c of the GPLv2
+** must read: "Code from FAAD2 is copyright (c) Nero AG, www.nero.com"
 **
-** $Id: is.c,v 1.20 2004/01/16 20:20:32 menno Exp $
+** Commercial non-GPL licensing of this software is possible.
+** For more info contact Nero AG through Mpeg4AAClicense@nero.com.
+**
+** $Id: is.c,v 1.28 2007/11/01 12:33:31 menno Exp $
 **/
 
 #include "common.h"
@@ -66,12 +69,14 @@ void is_decode(ic_stream *ics, ic_stream *icsr, real_t *l_spec, real_t *r_spec,
             {
                 if (is_intensity(icsr, g, sfb))
                 {
+#ifdef MAIN_DEC
                     /* For scalefactor bands coded in intensity stereo the
                        corresponding predictors in the right channel are
                        switched to "off".
                      */
                     ics->pred.prediction_used[sfb] = 0;
                     icsr->pred.prediction_used[sfb] = 0;
+#endif
 
 #ifndef FIXED_POINT
                     scale = (real_t)pow(0.5, (0.25*icsr->scale_factors[g][sfb]));
@@ -82,7 +87,7 @@ void is_decode(ic_stream *ics, ic_stream *icsr, real_t *l_spec, real_t *r_spec,
 
                     /* Scale from left to right channel,
                        do not touch left channel */
-                    for (i = icsr->swb_offset[sfb]; i < icsr->swb_offset[sfb+1]; i++)
+                    for (i = icsr->swb_offset[sfb]; i < min(icsr->swb_offset[sfb+1], ics->swb_offset_max); i++)
                     {
 #ifndef FIXED_POINT
                         r_spec[(group*nshort)+i] = MUL_R(l_spec[(group*nshort)+i], scale);

@@ -263,7 +263,8 @@ void HandleDrag(HWND hwnd, HDROP hDrop)
 
 		if (ext = strrchr(szFile, '.'))
 		{
-			if (stricmp(ext, ".aac") == 0 || stricmp(ext, ".mp4") == 0)
+			if (stricmp(ext, ".aac") == 0 || stricmp(ext, ".mp4") == 0 ||
+                stricmp(ext, ".m4a") == 0 || stricmp(ext, ".m4p") == 0)
 			{
 				flag = 1;
 				decthread_addfile(szFile);

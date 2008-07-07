@@ -22,7 +22,7 @@
 ** Commercial non-GPL licensing of this software is possible.
 ** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
 **
-** $Id: aac2mp4.cpp,v 1.2 2003/07/29 08:20:14 menno Exp $
+** $Id: aac2mp4.cpp,v 1.4 2004/08/19 18:35:11 menno Exp $
 **/
 
 #include <mpeg4ip.h>
@@ -40,7 +40,7 @@ int covert_aac_to_mp4(char *inputFileName, char *mp4FileName)
     const char *type;
     MP4TrackId createdTrackId = MP4_INVALID_TRACK_ID;
 
-    mp4File = MP4Create(mp4FileName, 0, 0, 0);
+    mp4File = MP4Create(mp4FileName, 0, 0);
     if (mp4File)
     {
         MP4SetTimeScale(mp4File, Mp4TimeScale);
@@ -70,7 +70,7 @@ int covert_aac_to_mp4(char *inputFileName, char *mp4FileName)
     if (!strcmp(type, MP4_AUDIO_TRACK_TYPE))
     {
         allMpeg4Streams &=
-            (MP4GetTrackAudioType(mp4File, createdTrackId)
+            (MP4GetTrackEsdsObjectTypeId(mp4File, createdTrackId)
             == MP4_MPEG4_AUDIO_TYPE);
     }
 

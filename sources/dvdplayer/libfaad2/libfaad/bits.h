@@ -1,6 +1,6 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
+** Copyright (C) 2003-2005 M. Bakker, Nero AG, http://www.nero.com
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -19,10 +19,13 @@
 ** Any non-GPL usage of this software or parts of this software is strictly
 ** forbidden.
 **
-** Commercial non-GPL licensing of this software is possible.
-** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
+** The "appropriate copyright message" mentioned in section 2c of the GPLv2
+** must read: "Code from FAAD2 is copyright (c) Nero AG, www.nero.com"
 **
-** $Id: bits.h,v 1.36 2004/02/04 20:07:24 menno Exp $
+** Commercial non-GPL licensing of this software is possible.
+** For more info contact Nero AG through Mpeg4AAClicense@nero.com.
+**
+** $Id: bits.h,v 1.45 2007/11/01 12:33:29 menno Exp $
 **/
 
 #ifndef __BITS_H__
@@ -37,8 +40,10 @@ extern "C" {
 #include <stdio.h>
 #endif
 
-#define BYTE_NUMBIT 8
-#define bit2byte(a) ((a+7)/BYTE_NUMBIT)
+#define BYTE_NUMBIT     8
+#define BYTE_NUMBIT_LD  3
+//#define bit2byte(a) ((a+7)/BYTE_NUMBIT)
+#define bit2byte(a) ((a+7)>>BYTE_NUMBIT_LD)
 
 typedef struct _bitfile
 {
@@ -47,25 +52,16 @@ typedef struct _bitfile
     uint32_t bufb;
     uint32_t bits_left;
     uint32_t buffer_size; /* size of the buffer in bytes */
-    uint32_t bytes_used;
-    uint8_t no_more_reading;
+    uint32_t bytes_left;
     uint8_t error;
     uint32_t *tail;
     uint32_t *start;
-    void *buffer;
+    const void *buffer;
 } bitfile;
 
 
-#if defined (_WIN32) && !defined(_WIN32_WCE)
-#define BSWAP(a) __asm mov eax,a __asm bswap eax __asm mov a, eax
-#elif defined(LINUX) || defined(DJGPP)
-#define BSWAP(a) __asm__ ( "bswapl %0\n" : "=r" (a) : "0" (a) )
-#else
-#define BSWAP(a) \
-    ((a) = ( ((a)&0xff)<<24) | (((a)&0xff00)<<8) | (((a)>>8)&0xff00) | (((a)>>24)&0xff))
-#endif
-
-static uint32_t bitmask[] = {
+#if 0
+static uint32_t const bitmask[] = {
     0x0, 0x1, 0x3, 0x7, 0xF, 0x1F, 0x3F, 0x7F, 0xFF, 0x1FF,
     0x3FF, 0x7FF, 0xFFF, 0x1FFF, 0x3FFF, 0x7FFF, 0xFFFF,
     0x1FFFF, 0x3FFFF, 0x7FFFF, 0xFFFFF, 0x1FFFFF, 0x3FFFFF,
@@ -74,6 +70,7 @@ static uint32_t bitmask[] = {
     /* added bitmask 32, correct?!?!?! */
     , 0xFFFFFFFF
 };
+#endif
 
 void faad_initbits(bitfile *ld, const void *buffer, const uint32_t buffer_size);
 void faad_endbits(bitfile *ld);
@@ -83,6 +80,7 @@ uint8_t faad_byte_align(bitfile *ld);
 uint32_t faad_get_processed_bits(bitfile *ld);
 void faad_flushbits_ex(bitfile *ld, uint32_t bits);
 void faad_rewindbits(bitfile *ld);
+void faad_resetbits(bitfile *ld, int bits);
 uint8_t *faad_getbitbuffer(bitfile *ld, uint32_t bits
                        DEBUGDEC);
 #ifdef DRM
@@ -93,7 +91,6 @@ uint32_t faad_origbitbuffer_size(bitfile *ld);
 /* circumvent memory alignment errors on ARM */
 static INLINE uint32_t getdword(void *mem)
 {
-#ifdef ARM
     uint32_t tmp;
 #ifndef ARCH_IS_BIG_ENDIAN
     ((uint8_t*)&tmp)[0] = ((uint8_t*)mem)[3];
@@ -108,25 +105,52 @@ static INLINE uint32_t getdword(void *mem)
 #endif
 
     return tmp;
-#else
-    uint32_t tmp;
-    tmp = *(uint32_t*)mem;
+}
+
+/* reads only n bytes from the stream instead of the standard 4 */
+static /*INLINE*/ uint32_t getdword_n(void *mem, int n)
+{
+    uint32_t tmp = 0;
 #ifndef ARCH_IS_BIG_ENDIAN
-    BSWAP(tmp);
+    switch (n)
+    {
+    case 3:
+        ((uint8_t*)&tmp)[1] = ((uint8_t*)mem)[2];
+    case 2:
+        ((uint8_t*)&tmp)[2] = ((uint8_t*)mem)[1];
+    case 1:
+        ((uint8_t*)&tmp)[3] = ((uint8_t*)mem)[0];
+    default:
+        break;
+    }
+#else
+    switch (n)
+    {
+    case 3:
+        ((uint8_t*)&tmp)[2] = ((uint8_t*)mem)[2];
+    case 2:
+        ((uint8_t*)&tmp)[1] = ((uint8_t*)mem)[1];
+    case 1:
+        ((uint8_t*)&tmp)[0] = ((uint8_t*)mem)[0];
+    default:
+        break;
+    }
 #endif
+
     return tmp;
-#endif
 }
 
 static INLINE uint32_t faad_showbits(bitfile *ld, uint32_t bits)
 {
     if (bits <= ld->bits_left)
     {
-        return (ld->bufa >> (ld->bits_left - bits)) & bitmask[bits];
+        //return (ld->bufa >> (ld->bits_left - bits)) & bitmask[bits];
+        return (ld->bufa << (32 - ld->bits_left)) >> (32 - bits);
     }
 
     bits -= ld->bits_left;
-    return ((ld->bufa & bitmask[ld->bits_left]) << bits) | (ld->bufb >> (32 - bits));
+    //return ((ld->bufa & bitmask[ld->bits_left]) << bits) | (ld->bufb >> (32 - bits));
+    return ((ld->bufa & ((1<<ld->bits_left)-1)) << bits) | (ld->bufb >> (32 - bits));
 }
 
 static INLINE void faad_flushbits(bitfile *ld, uint32_t bits)
@@ -144,11 +168,11 @@ static INLINE void faad_flushbits(bitfile *ld, uint32_t bits)
 }
 
 /* return next n bits (right adjusted) */
-static INLINE uint32_t faad_getbits(bitfile *ld, uint32_t n DEBUGDEC)
+static /*INLINE*/ uint32_t faad_getbits(bitfile *ld, uint32_t n DEBUGDEC)
 {
     uint32_t ret;
 
-    if (ld->no_more_reading || n == 0)
+    if (n == 0)
         return 0;
 
     ret = faad_showbits(ld, n);
@@ -230,21 +254,22 @@ static INLINE void faad_flushbits_rev(bitfile *ld, uint32_t bits)
         ld->start--;
         ld->bits_left += (32 - bits);
 
-        ld->bytes_used += 4;
-        if (ld->bytes_used == ld->buffer_size)
-            ld->no_more_reading = 1;
-        if (ld->bytes_used > ld->buffer_size)
+        if (ld->bytes_left < 4)
+        {
             ld->error = 1;
+            ld->bytes_left = 0;
+        } else {
+            ld->bytes_left -= 4;
+        }
+//        if (ld->bytes_left == 0)
+//            ld->no_more_reading = 1;
     }
 }
 
-static INLINE uint32_t faad_getbits_rev(bitfile *ld, uint32_t n
+static /*INLINE*/ uint32_t faad_getbits_rev(bitfile *ld, uint32_t n
                                         DEBUGDEC)
 {
     uint32_t ret;
-
-    if (ld->no_more_reading)
-        return 0;
 
     if (n == 0)
         return 0;
@@ -261,28 +286,73 @@ static INLINE uint32_t faad_getbits_rev(bitfile *ld, uint32_t n
 }
 
 #ifdef DRM
+/* CRC lookup table for G8 polynome in DRM standard */
+static const uint8_t crc_table_G8[256] = {
+    0x0, 0x1d, 0x3a, 0x27, 0x74, 0x69, 0x4e, 0x53,
+    0xe8, 0xf5, 0xd2, 0xcf, 0x9c, 0x81, 0xa6, 0xbb,
+    0xcd, 0xd0, 0xf7, 0xea, 0xb9, 0xa4, 0x83, 0x9e,
+    0x25, 0x38, 0x1f, 0x2, 0x51, 0x4c, 0x6b, 0x76,
+    0x87, 0x9a, 0xbd, 0xa0, 0xf3, 0xee, 0xc9, 0xd4,
+    0x6f, 0x72, 0x55, 0x48, 0x1b, 0x6, 0x21, 0x3c,
+    0x4a, 0x57, 0x70, 0x6d, 0x3e, 0x23, 0x4, 0x19,
+    0xa2, 0xbf, 0x98, 0x85, 0xd6, 0xcb, 0xec, 0xf1,
+    0x13, 0xe, 0x29, 0x34, 0x67, 0x7a, 0x5d, 0x40,
+    0xfb, 0xe6, 0xc1, 0xdc, 0x8f, 0x92, 0xb5, 0xa8,
+    0xde, 0xc3, 0xe4, 0xf9, 0xaa, 0xb7, 0x90, 0x8d,
+    0x36, 0x2b, 0xc, 0x11, 0x42, 0x5f, 0x78, 0x65,
+    0x94, 0x89, 0xae, 0xb3, 0xe0, 0xfd, 0xda, 0xc7,
+    0x7c, 0x61, 0x46, 0x5b, 0x8, 0x15, 0x32, 0x2f,
+    0x59, 0x44, 0x63, 0x7e, 0x2d, 0x30, 0x17, 0xa,
+    0xb1, 0xac, 0x8b, 0x96, 0xc5, 0xd8, 0xff, 0xe2,
+    0x26, 0x3b, 0x1c, 0x1, 0x52, 0x4f, 0x68, 0x75,
+    0xce, 0xd3, 0xf4, 0xe9, 0xba, 0xa7, 0x80, 0x9d,
+    0xeb, 0xf6, 0xd1, 0xcc, 0x9f, 0x82, 0xa5, 0xb8,
+    0x3, 0x1e, 0x39, 0x24, 0x77, 0x6a, 0x4d, 0x50,
+    0xa1, 0xbc, 0x9b, 0x86, 0xd5, 0xc8, 0xef, 0xf2,
+    0x49, 0x54, 0x73, 0x6e, 0x3d, 0x20, 0x7, 0x1a,
+    0x6c, 0x71, 0x56, 0x4b, 0x18, 0x5, 0x22, 0x3f,
+    0x84, 0x99, 0xbe, 0xa3, 0xf0, 0xed, 0xca, 0xd7,
+    0x35, 0x28, 0xf, 0x12, 0x41, 0x5c, 0x7b, 0x66,
+    0xdd, 0xc0, 0xe7, 0xfa, 0xa9, 0xb4, 0x93, 0x8e,
+    0xf8, 0xe5, 0xc2, 0xdf, 0x8c, 0x91, 0xb6, 0xab,
+    0x10, 0xd, 0x2a, 0x37, 0x64, 0x79, 0x5e, 0x43,
+    0xb2, 0xaf, 0x88, 0x95, 0xc6, 0xdb, 0xfc, 0xe1,
+    0x5a, 0x47, 0x60, 0x7d, 0x2e, 0x33, 0x14, 0x9,
+    0x7f, 0x62, 0x45, 0x58, 0xb, 0x16, 0x31, 0x2c,
+    0x97, 0x8a, 0xad, 0xb0, 0xe3, 0xfe, 0xd9, 0xc4,
+};
+
 static uint8_t faad_check_CRC(bitfile *ld, uint16_t len)
 {
-    uint8_t CRC;
-    uint16_t r=255;  /* Initialize to all ones */
+    int bytes, rem;
+    unsigned int CRC;
+    unsigned int r=255;  /* Initialize to all ones */
 
     /* CRC polynome used x^8 + x^4 + x^3 + x^2 +1 */
 #define GPOLY 0435
 
     faad_rewindbits(ld);
 
-    CRC = (uint8_t) ~faad_getbits(ld, 8
-        DEBUGVAR(1,999,"faad_check_CRC(): CRC"));          /* CRC is stored inverted */
+    CRC = (unsigned int) ~faad_getbits(ld, 8
+        DEBUGVAR(1,999,"faad_check_CRC(): CRC")) & 0xFF;          /* CRC is stored inverted */
 
-    for (; len>0; len--)
+    bytes = len >> 3;
+    rem = len & 0x7;
+
+    for (; bytes > 0; bytes--)
+    {
+        r = crc_table_G8[( r ^ faad_getbits(ld, 8 DEBUGVAR(1,998,"")) ) & 0xFF];
+    }
+    for (; rem > 0; rem--)
     {
         r = ( (r << 1) ^ (( ( faad_get1bit(ld
             DEBUGVAR(1,998,""))  & 1) ^ ((r >> 7) & 1)) * GPOLY )) & 0xFF;
     }
 
     if (r != CRC)
+  //  if (0)
     {
-        return 8;
+        return 28;
     } else {
         return 0;
     }
@@ -317,7 +387,7 @@ typedef struct
     /* bit input */
     uint32_t bufa;
     uint32_t bufb;
-    int8_t len; 
+    int8_t len;
 } bits_t;
 
 
@@ -331,7 +401,7 @@ static INLINE uint32_t showbits_hcr(bits_t *ld, uint8_t bits)
         if (ld->len >= bits)
             return ((ld->bufa >> (ld->len - bits)) & (0xFFFFFFFF >> (32 - bits)));
         else
-            return ((ld->bufa << (bits - ld->len)) & (0xFFFFFFFF >> (32 - bits)));        
+            return ((ld->bufa << (bits - ld->len)) & (0xFFFFFFFF >> (32 - bits)));
     } else {
         if ((ld->len - bits) < 32)
         {

@@ -51,15 +51,9 @@
 #ifdef HAS_FILESYSTEM_RTV
 #include "RTVDirectory.h"
 #endif
-#ifdef HAS_XBOX_HARDWARE
-#include "SndtrkDirectory.h"
-#endif
 #ifdef HAS_FILESYSTEM_DAAP
 #include "DAAPDirectory.h"
 #endif
-#endif
-#ifdef HAS_XBOX_HARDWARE
-#include "MemUnitDirectory.h"
 #endif
 #ifdef HAS_UPNP
 #include "UPnPDirectory.h"
@@ -72,6 +66,7 @@
 #include "CMythDirectory.h"
 #include "FileItem.h"
 #include "URL.h"
+#include "RSSDirectory.h"
 
 using namespace DIRECTORY;
 
@@ -98,9 +93,6 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #endif
 #ifdef HAS_FILESYSTEM
   if (strProtocol == "iso9660") return new CISO9660Directory();
-#ifdef HAS_XBOX_HARDWARE
-  if (strProtocol == "soundtrack") return new CSndtrkDirectory();
-#endif
 #endif
   if (strProtocol == "plugin") return new CPluginDirectory();
   if (strProtocol == "zip") return new CZipDirectory();
@@ -115,9 +107,6 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if (strProtocol == "videodb") return new CVideoDatabaseDirectory();
   if (strProtocol == "filereader") 
     return CFactoryDirectory::Create(url.GetFileName());
-#ifdef HAS_XBOX_HARDWARE
-  if (strProtocol.Left(3) == "mem") return new CMemUnitDirectory();
-#endif
 
   if( g_application.getNetwork().IsAvailable() )
   {
@@ -147,6 +136,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "hdhomerun") return new CDirectoryHomeRun();
     if (strProtocol == "myth") return new CCMythDirectory();
     if (strProtocol == "cmyth") return new CCMythDirectory();
+    if (strProtocol == "rss") return new CRSSDirectory();
   }
 
  return NULL;

@@ -1,4 +1,2 @@
-ton install the mp4/aac plugin run :
- - autoreconf -vfs && configure
-and install as root with :
- - make install-strip
+the installation of this plugin is provide by the faad2 package.
+add to configure time the option '--with-xmms' and the plugin will be build

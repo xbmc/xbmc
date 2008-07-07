@@ -23,6 +23,7 @@
 #include "IDirectory.h"
 #include "utils/HTTP.h"
 #include "tinyXML/tinyxml.h"
+#include "utils/Thread.h"
 
 class CFileItemList;
 class CGUIDialogProgress;

@@ -1,6 +1,6 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
+** Copyright (C) 2003-2005 M. Bakker, Nero AG, http://www.nero.com
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -19,10 +19,13 @@
 ** Any non-GPL usage of this software or parts of this software is strictly
 ** forbidden.
 **
-** Commercial non-GPL licensing of this software is possible.
-** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
+** The "appropriate copyright message" mentioned in section 2c of the GPLv2
+** must read: "Code from FAAD2 is copyright (c) Nero AG, www.nero.com"
 **
-** $Id: sbr_huff.c,v 1.13 2004/01/05 14:05:12 menno Exp $
+** Commercial non-GPL licensing of this software is possible.
+** For more info contact Nero AG through Mpeg4AAClicense@nero.com.
+**
+** $Id: sbr_huff.c,v 1.21 2007/11/01 12:33:35 menno Exp $
 **/
 
 #include "common.h"
@@ -190,7 +193,6 @@ static const int8_t f_huffman_env_bal_3_0dB[24][2] = {
     { -57, -56 },    {  22,  23 },    { -55, -54 },    { -53, -52 }
 };
 
-
 static const int8_t t_huffman_noise_3_0dB[62][2] = {
     { -64,   1 },    { -63,   2 },    { -65,   3 },    { -66,   4 },
     { -62,   5 },    { -67,   6 },    {   7,   8 },    { -61, -68 },
@@ -227,7 +229,7 @@ static INLINE int16_t sbr_huff_dec(bitfile *ld, sbr_huff_tab t_huff)
 
     while (index >= 0)
     {
-        bit = (uint8_t)faad_getbits(ld, 1);
+        bit = (uint8_t)faad_get1bit(ld);
         index = t_huff[index][bit];
     }
 

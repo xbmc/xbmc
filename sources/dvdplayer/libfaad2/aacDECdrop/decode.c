@@ -16,13 +16,14 @@
 ** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 **
-** $Id: decode.c,v 1.15 2004/02/06 10:23:27 menno Exp $
-** $Id: decode.c,v 1.15 2004/02/06 10:23:27 menno Exp $
+** $Id: decode.c,v 1.16 2004/04/03 19:08:37 menno Exp $
+** $Id: decode.c,v 1.16 2004/04/03 19:08:37 menno Exp $
 **/
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#define off_t __int64
 #else
 #include <time.h>
 #endif
@@ -30,8 +31,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <faad.h>
-#include <mp4.h>
+#include <neaacdec.h>
+#include <mp4ff.h>
 
 #include "audio.h"
 #include "decode.h"
@@ -78,7 +79,7 @@
         bytesconsumed = 0; \
     }
 
-/* update buffer indices after faacDecDecode */
+/* update buffer indices after NeAACDecDecode */
 #define UPDATE_BUFF_IDX(frame) \
     bytesconsumed += frame.bytesconsumed; \
     buffer_index += frame.bytesconsumed; \
@@ -144,7 +145,7 @@ char *file_ext[] =
 #define SPEAKER_TOP_BACK_RIGHT         0x20000
 #define SPEAKER_RESERVED               0x80000000
 
-long aacChannelConfig2wavexChannelMask(faacDecFrameInfo *hInfo)
+long aacChannelConfig2wavexChannelMask(NeAACDecFrameInfo *hInfo)
 {
     if (hInfo->channels == 6 && hInfo->num_lfe_channels)
     {
@@ -167,9 +168,9 @@ int decodeAACfile(char *sndfile, int def_srate, aac_dec_opt *opt)
 
     audio_file *aufile;
 
-    faacDecHandle hDecoder;
-    faacDecFrameInfo frameInfo;
-    faacDecConfigurationPtr config;
+    NeAACDecHandle hDecoder;
+    NeAACDecFrameInfo frameInfo;
+    NeAACDecConfigurationPtr config;
 
     int first_time = 1;
 
@@ -192,25 +193,25 @@ int decodeAACfile(char *sndfile, int def_srate, aac_dec_opt *opt)
         UPDATE_BUFF_SKIP(tagsize)
     }
 
-    hDecoder = faacDecOpen();
+    hDecoder = NeAACDecOpen();
 
     /* Set the default object type and samplerate */
     /* This is useful for RAW AAC files */
-    config = faacDecGetCurrentConfiguration(hDecoder);
+    config = NeAACDecGetCurrentConfiguration(hDecoder);
     if (def_srate)
         config->defSampleRate = def_srate;
     config->defObjectType = opt->object_type;
     config->outputFormat = opt->output_format;
 
-    faacDecSetConfiguration(hDecoder, config);
+    NeAACDecSetConfiguration(hDecoder, config);
 
-    if ((bytesconsumed = faacDecInit(hDecoder, buffer, bytes_in_buffer,
+    if ((bytesconsumed = NeAACDecInit(hDecoder, buffer, bytes_in_buffer,
         &samplerate, &channels)) < 0)
     {
         /* If some error initializing occured, skip the file */
         error_handler("Error initializing decoder library.\n");
         END_BUFF
-        faacDecClose(hDecoder);
+        NeAACDecClose(hDecoder);
         fclose(infile);
         return 1;
     }
@@ -221,7 +222,7 @@ int decodeAACfile(char *sndfile, int def_srate, aac_dec_opt *opt)
         /* update buffer */
         UPDATE_BUFF_READ
 
-        sample_buffer = faacDecDecode(hDecoder, &frameInfo, buffer, bytes_in_buffer);
+        sample_buffer = NeAACDecDecode(hDecoder, &frameInfo, buffer, bytes_in_buffer);
 
         /* update buffer indices */
         UPDATE_BUFF_IDX(frameInfo)
@@ -229,7 +230,7 @@ int decodeAACfile(char *sndfile, int def_srate, aac_dec_opt *opt)
         if (frameInfo.error > 0)
         {
             error_handler("Error: %s\n",
-            faacDecGetErrorMessage(frameInfo.error));
+            NeAACDecGetErrorMessage(frameInfo.error));
         }
 
         opt->progress_update((long)fileread, buffer_index);
@@ -244,7 +245,7 @@ int decodeAACfile(char *sndfile, int def_srate, aac_dec_opt *opt)
                 {
                     error_handler("\nCan't access %s\n", "WAVE OUT");
                     END_BUFF
-                    faacDecClose(hDecoder);
+                    NeAACDecClose(hDecoder);
                     fclose(infile);
                     return (0);
                 }
@@ -257,7 +258,7 @@ int decodeAACfile(char *sndfile, int def_srate, aac_dec_opt *opt)
                 if (aufile == NULL)
                 {
                     END_BUFF
-                    faacDecClose(hDecoder);
+                    NeAACDecClose(hDecoder);
                     fclose(infile);
                     return 0;
                 }
@@ -281,7 +282,7 @@ int decodeAACfile(char *sndfile, int def_srate, aac_dec_opt *opt)
 
     } while (sample_buffer != NULL);
 
-    faacDecClose(hDecoder);
+    NeAACDecClose(hDecoder);
 
     fclose(infile);
 
@@ -298,34 +299,28 @@ int decodeAACfile(char *sndfile, int def_srate, aac_dec_opt *opt)
     return frameInfo.error;
 }
 
-int GetAACTrack(MP4FileHandle infile)
+int GetAACTrack(mp4ff_t *infile)
 {
     /* find AAC track */
     int i, rc;
-    int numTracks = MP4GetNumberOfTracks(infile, NULL, /* subType */ 0);
+    int numTracks = mp4ff_total_tracks(infile);
 
     for (i = 0; i < numTracks; i++)
     {
-        MP4TrackId trackId = MP4FindTrackId(infile, i, NULL, /* subType */ 0);
-        const char* trackType = MP4GetTrackType(infile, trackId);
+        unsigned char *buff = NULL;
+        int buff_size = 0;
+        mp4AudioSpecificConfig mp4ASC;
 
-        if (!strcmp(trackType, MP4_AUDIO_TRACK_TYPE))
+        mp4ff_get_decoder_config(infile, i, &buff, &buff_size);
+
+        if (buff)
         {
-            unsigned char *buff = NULL;
-            int buff_size = 0;
-            mp4AudioSpecificConfig mp4ASC;
+            rc = NeAACDecAudioSpecificConfig(buff, buff_size, &mp4ASC);
+            free(buff);
 
-            MP4GetTrackESConfiguration(infile, trackId, &buff, &buff_size);
-
-            if (buff)
-            {
-                rc = AudioSpecificConfig(buff, buff_size, &mp4ASC);
-                free(buff);
-
-                if (rc < 0)
-                    return -1;
-                return trackId;
-            }
+            if (rc < 0)
+                continue;
+            return i;
         }
     }
 
@@ -339,6 +334,16 @@ unsigned long srates[] =
     12000, 11025, 8000
 };
 
+uint32_t read_callback(void *user_data, void *buffer, uint32_t length)
+{
+    return fread(buffer, 1, length, (FILE*)user_data);
+}
+
+uint32_t seek_callback(void *user_data, uint64_t position)
+{
+    return fseek((FILE*)user_data, position, SEEK_SET);
+}
+
 int decodeMP4file(char *sndfile, aac_dec_opt *opt)
 {
     int track;
@@ -346,22 +351,29 @@ int decodeMP4file(char *sndfile, aac_dec_opt *opt)
     unsigned char channels;
     void *sample_buffer;
 
-    MP4FileHandle infile;
-    MP4SampleId sampleId, numSamples;
+    mp4ff_t *infile;
+    FILE *mp4File;
+    int sampleId, numSamples;
 
     audio_file *aufile;
 
-    faacDecHandle hDecoder;
-    faacDecFrameInfo frameInfo;
+    NeAACDecHandle hDecoder;
+    NeAACDecFrameInfo frameInfo;
 
     unsigned char *buffer;
     int buffer_size;
 
     int first_time = 1;
 
-    hDecoder = faacDecOpen();
+    /* initialise the callback structure */
+    mp4ff_callback_t *mp4cb = malloc(sizeof(mp4ff_callback_t));
 
-    infile = MP4Read(opt->filename, 0);
+    mp4File = fopen(opt->filename, "rb");
+    mp4cb->read = read_callback;
+    mp4cb->seek = seek_callback;
+    mp4cb->user_data = mp4File;
+
+    infile = mp4ff_open_read(mp4cb);
     if (!infile)
     {
         /* unable to open file */
@@ -372,28 +384,34 @@ int decodeMP4file(char *sndfile, aac_dec_opt *opt)
     if ((track = GetAACTrack(infile)) < 0)
     {
         error_handler("Unable to find correct AAC sound track in the MP4 file.\n");
-        MP4Close(infile);
+        mp4ff_close(infile);
+        free(mp4cb);
+        fclose(mp4File);
         return 1;
     }
 
     buffer = NULL;
     buffer_size = 0;
-    MP4GetTrackESConfiguration(infile, track, &buffer, &buffer_size);
+    mp4ff_get_decoder_config(infile, track, &buffer, &buffer_size);
 
-    if(faacDecInit2(hDecoder, buffer, buffer_size, &samplerate, &channels) < 0)
+    hDecoder = NeAACDecOpen();
+
+    if(NeAACDecInit2(hDecoder, buffer, buffer_size, &samplerate, &channels) < 0)
     {
         /* If some error initializing occured, skip the file */
         error_handler("Error initializing decoder library.\n");
-        faacDecClose(hDecoder);
-        MP4Close(infile);
+        NeAACDecClose(hDecoder);
+        mp4ff_close(infile);
+        free(mp4cb);
+        fclose(mp4File);
         return 1;
     }
     if (buffer)
         free(buffer);
 
-    numSamples = MP4GetTrackNumberOfSamples(infile, track);
+    numSamples = mp4ff_num_samples(infile, track);
 
-    for (sampleId = 1; sampleId <= numSamples; sampleId++)
+    for (sampleId = 0; sampleId < numSamples; sampleId++)
     {
         int rc;
 
@@ -401,16 +419,18 @@ int decodeMP4file(char *sndfile, aac_dec_opt *opt)
         buffer = NULL;
         buffer_size = 0;
 
-        rc = MP4ReadSample(infile, track, sampleId, &buffer, &buffer_size, NULL, NULL, NULL, NULL);
+        rc = mp4ff_read_sample(infile, track, sampleId, &buffer, &buffer_size);
         if (rc == 0)
         {
             error_handler("Reading from MP4 file failed.\n");
-            faacDecClose(hDecoder);
-            MP4Close(infile);
+            NeAACDecClose(hDecoder);
+            mp4ff_close(infile);
+            free(mp4cb);
+            fclose(mp4File);
             return 1;
         }
 
-        sample_buffer = faacDecDecode(hDecoder, &frameInfo, buffer, buffer_size);
+        sample_buffer = NeAACDecDecode(hDecoder, &frameInfo, buffer, buffer_size);
 
         if (buffer)
             free(buffer);
@@ -426,8 +446,10 @@ int decodeMP4file(char *sndfile, aac_dec_opt *opt)
                                 frameInfo.channels) < 0)
                 {
                     error_handler("\nCan't access %s\n", "WAVE OUT");
-                    faacDecClose(hDecoder);
-                    MP4Close(infile);
+                    NeAACDecClose(hDecoder);
+                    mp4ff_close(infile);
+                    free(mp4cb);
+                    fclose(mp4File);
                     return (0);
                 }
             }
@@ -438,8 +460,10 @@ int decodeMP4file(char *sndfile, aac_dec_opt *opt)
 
                 if (aufile == NULL)
                 {
-                    faacDecClose(hDecoder);
-                    MP4Close(infile);
+                    NeAACDecClose(hDecoder);
+                    mp4ff_close(infile);
+                    free(mp4cb);
+                    fclose(mp4File);
                     return 0;
                 }
             }
@@ -457,7 +481,7 @@ int decodeMP4file(char *sndfile, aac_dec_opt *opt)
         if (frameInfo.error > 0)
         {
             error_handler("Error: %s\n",
-            faacDecGetErrorMessage(frameInfo.error));
+            NeAACDecGetErrorMessage(frameInfo.error));
             break;
         }
         if(stop_decoding)
@@ -465,10 +489,12 @@ int decodeMP4file(char *sndfile, aac_dec_opt *opt)
     }
 
 
-    faacDecClose(hDecoder);
+    NeAACDecClose(hDecoder);
 
 
-    MP4Close(infile);
+    mp4ff_close(infile);
+    free(mp4cb);
+    fclose(mp4File);
 
     if(opt->decode_mode == 0)
         WIN_Audio_close();
@@ -505,24 +531,27 @@ int aac_decode(aac_dec_opt *opt)
     int mp4file = 0;
     char *fnp;
     char audioFileName[MAX_PATH];
-    MP4FileHandle infile;
+    unsigned char header[8];
+    FILE *hMP4File;
 
 
     /* point to the specified file name */
     strcpy(audioFileName, opt->filename);
-
     fnp = (char *)strrchr(audioFileName,'.');
-
     if (fnp)
         fnp[0] = '\0';
-
     strcat(audioFileName, file_ext[opt->file_type]);
 
-    mp4file = 1;
-    infile = MP4Read(audioFileName, 0);
-    if (!infile)
-        mp4file = 0;
-    if (infile) MP4Close(infile);
+    mp4file = 0;
+    hMP4File = fopen(opt->filename, "rb");
+    if (!hMP4File)
+    {
+        return 1;
+    }
+    fread(header, 1, 8, hMP4File);
+    fclose(hMP4File);
+    if (header[4] == 'f' && header[5] == 't' && header[6] == 'y' && header[7] == 'p')
+        mp4file = 1;
 
     if (mp4file)
     {

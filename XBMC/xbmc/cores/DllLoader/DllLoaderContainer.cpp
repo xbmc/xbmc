@@ -30,6 +30,7 @@
 #include "DllLoader.h"
 #include "dll_tracker.h" // for python unload hack
 #include "FileSystem/File.h"
+#include "Util.h"
 
 #define ENV_PATH "Q:\\system\\;Q:\\system\\players\\mplayer\\;Q:\\system\\players\\dvdplayer\\;Q:\\system\\players\\paplayer\\;Q:\\system\\python\\"
 
@@ -172,10 +173,19 @@ LibraryLoader* DllLoaderContainer::LoadModule(const char* sName, const char* sCu
 
 LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCurrentDir, bool bLoadSymbols)
 {
+  if (CUtil::IsInArchive(sName))
+  {
+    CURL url(sName);
+    CStdString newName = "Z:/";
+    newName += url.GetFileName();
+    CFile::Cache(sName, newName);
+    return FindModule(newName, sCurrentDir, bLoadSymbols);
+  }
+
 #ifndef _LINUX
   if (strlen(sName) > 1 && sName[1] == ':')
 #else
-  if (strlen(sName) > 1 && (sName[1] == ':' || sName[0] == '/') || strcmp(sName, "xbmc.so") == 0)
+  if (strlen(sName) > 1 && (sName[1] == ':' || sName[0] == '/' || strcmp(sName, "xbmc.so") == 0))
 #endif
   { //  Has a path, just try to load
     return LoadDll(sName, bLoadSymbols);

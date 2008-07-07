@@ -36,9 +36,6 @@
 #include "FileSystem/FactoryDirectory.h"
 #include "FileSystem/VirtualDirectory.h"
 #include "utils/UdpClient.h"
-#ifndef _LINUX
-#include "xbox/XKHDD.h"
-#endif
 #include "FileSystem/Directory.h"
 #include "MusicInfoTag.h"
 #include "PictureInfoTag.h"
@@ -398,7 +395,7 @@ int CXbmcHttp::displayDir(int numParas, CStdString paras[])
   CStdString aLine="";
   for (int i=0; i<dirItems.Size(); ++i)
   {
-    CFileItem *itm = dirItems[i];
+    CFileItemPtr itm = dirItems[i];
     if (mask=="*" || mask=="/" || (mask =="" && itm->m_bIsFolder))
       if (!CUtil::HasSlashAtEnd(itm->m_strPath))
         aLine=closeTag+openTag + itm->m_strPath + "\\" ;
@@ -453,7 +450,7 @@ void CXbmcHttp::SetCurrentMediaItem(CFileItem& newItem)
   }
 }
 
-void CXbmcHttp::AddItemToPlayList(const CFileItem* pItem, int playList, int sortMethod, CStdString mask, bool recursive)
+void CXbmcHttp::AddItemToPlayList(const CFileItemPtr &pItem, int playList, int sortMethod, CStdString mask, bool recursive)
 //if playlist==-1 then use slideshow
 {
   if (pItem->m_bIsFolder)
@@ -479,10 +476,10 @@ void CXbmcHttp::AddItemToPlayList(const CFileItem* pItem, int playList, int sort
       CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
       if (!pSlideShow)
         return ;
-      pSlideShow->Add(pItem);
+      pSlideShow->Add(pItem.get());
     }
     else
-      g_playlistPlayer.Add(playList, (CFileItem*)pItem);
+      g_playlistPlayer.Add(playList, pItem);
   }
 }
 
@@ -503,9 +500,7 @@ void CXbmcHttp::LoadPlayListOld(const CStdString& strPlayList, int playList)
     
     // set current file item
     CPlayList& playlist = g_playlistPlayer.GetPlaylist(playList);
-    CFileItem item(playlist[0].GetDescription());
-    item.m_strPath = playlist[0].GetFileName();
-    SetCurrentMediaItem(item);
+    SetCurrentMediaItem(*playlist[0]);
   }
 }
 
@@ -527,12 +522,12 @@ bool CXbmcHttp::LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, 
     return false;
 
   // first item of the list, used to determine the intent
-  CPlayListItem playlistItem = playlist[0];
+  CFileItemPtr playlistItem = playlist[0];
 
   if ((playlist.size() == 1) && (autoStart))
   {
     // just 1 song? then play it (no need to have a playlist of 1 song)
-    g_application.getApplicationMessenger().MediaPlay(CFileItem(playlistItem).m_strPath);
+    g_application.getApplicationMessenger().MediaPlay(playlistItem->m_strPath);
     return true;
   }
 
@@ -745,7 +740,7 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
   CStdString strLine;
   for (int i = 0; i < items.Size(); ++i)
   {
-    CFileItem *item = items[i];
+    CFileItemPtr item = items[i];
     CStdString strLabel = item->GetLabel();
     strLabel.Replace(";",";;");
     CStdString strPath = item->m_strPath;
@@ -775,38 +770,12 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcGetXBEID(int numParas, CStdString paras[])
 {
-  if (numParas==0) {
-    return SetResponse(openTag+"Error:Missing Parameter");
-  }
-  CStdString tmp;
-  if (CFile::Exists(paras[0].c_str()))
-  {
-    tmp.Format("%09x",CUtil::GetXbeID(paras[0]));
-    return SetResponse(openTag + tmp);
-  }
-  else
-  {
-     return SetResponse(openTag+"Error:xbe doesn't exist");
-  }
-
+  return SetResponse(openTag+"Error:Missing Parameter");
 }
 
 int CXbmcHttp::xbmcGetXBETitle(int numParas, CStdString paras[])
 {
-  CStdString xbeinfo;
-  if (numParas==0) {
-    return SetResponse(openTag+"Error:Missing Parameter");
-  }
-  CStdString tmp;
-  if (CUtil::GetXBEDescription(paras[0],xbeinfo))
-  {
-    tmp.Format("%s",xbeinfo);
-    return SetResponse(openTag + tmp);
-  }
-  else
-  {
-     return SetResponse(openTag+"Error:Failed to getxbetitle");
-  }
+  return SetResponse(openTag+"Error:Missing Parameter");
 }
 
 int CXbmcHttp::xbmcGetSources(int numParas, CStdString paras[])
@@ -991,7 +960,7 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
 	    recursive=(paras[3]=="1");
     }
     strFileName=paras[0] ;
-    CFileItem *pItem = new CFileItem(strFileName);
+    CFileItemPtr pItem(new CFileItem(strFileName));
     pItem->m_strPath=strFileName.c_str();
     if (pItem->IsPlayList())
       changed=LoadPlayList(pItem->m_strPath, playList, false, false);
@@ -1006,7 +975,6 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
         changed=true;
       }
     }
-    delete pItem;
     if (changed)
     {
       g_playlistPlayer.HasChanged();
@@ -1198,15 +1166,15 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
   if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW && pSlideShow)
   {
-    const CFileItem *slide = pSlideShow->GetCurrentSlide();
+    const CFileItemPtr slide = pSlideShow->GetCurrentSlide();
     output=openTag+"Filename:"+slide->m_strPath;
-	if (lastPlayingInfo!=output)
-	{
-	  changed=true;
-	  lastPlayingInfo=output;
-	}
+    if (lastPlayingInfo!=output)
+    {
+      changed=true;
+      lastPlayingInfo=output;
+    }
     if (justChange && !changed)
-	  return SetResponse(openTag+"Changed:False");
+      return SetResponse(openTag+"Changed:False");
     output+=closeTag+openTag+"Type:Picture" ;
     CStdString resolution = "0x0";
     if (slide && slide->HasPictureInfoTag() && slide->GetPictureInfoTag()->Loaded())
@@ -1553,9 +1521,9 @@ int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
   {
     if (numParas>1)
       mask=procMask(paras[1]);
-	if (numParas>2)
-	  recursive=paras[2]=="1";
-    CFileItem *pItem = new CFileItem(paras[0]);
+    if (numParas>2)
+      recursive=paras[2]=="1";
+    CFileItemPtr pItem(new CFileItem(paras[0]));
     pItem->m_strPath=paras[0].c_str();
     IDirectory *pDirectory = CFactoryDirectory::Create(pItem->m_strPath);
     if (mask!="")
@@ -1564,7 +1532,6 @@ int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
     pItem->m_bIsFolder=bResult;
     pItem->m_bIsShareOrDrive=false;
     AddItemToPlayList(pItem, -1, 0, mask, recursive); //add to slideshow
-    delete pItem;
     return SetResponse(openTag+"OK");
   }
 }
@@ -1764,33 +1731,38 @@ int CXbmcHttp::xbmcSetCurrentPlayList(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcGetPlayListContents(int numParas, CStdString paras[])
 {
-  CStdString list="";
-  int playList;
+  // options = showindex
+  // <li>index;path
 
-  if (numParas<1) 
-    playList=g_playlistPlayer.GetCurrentPlaylist();
-  else
-    playList=atoi(paras[0]);
+  CStdString list="";
+  int playList = g_playlistPlayer.GetCurrentPlaylist();
+  bool bShowIndex = false;
+  for (int i = 0; i < numParas; ++i)
+  {
+    if (paras[i].Equals("showindex"))
+      bShowIndex = true;
+    else if (StringUtils::IsNaturalNumber(paras[i]))
+      playList = atoi(paras[i]);
+  }
   CPlayList& thePlayList = g_playlistPlayer.GetPlaylist(playList);
   if (thePlayList.size()==0)
     list=openTag+"[Empty]" ;
-  else
-    if (g_application.IsPlayingAudio())
-	{
-	  for (int i=0; i< thePlayList.size(); i++) {
-        const CPlayListItem& item=thePlayList[i];
-		const CMusicInfoTag* tagVal=item.GetMusicTag();
-	    if (tagVal && tagVal->GetURL()!="")
-          list += closeTag+openTag + tagVal->GetURL();
-		else
-          list += closeTag+openTag + item.GetFileName();
-      }
-	}
-	else
-	  for (int i=0; i< thePlayList.size(); i++) {
-        const CPlayListItem& item=thePlayList[i];
-        list += closeTag+openTag + item.GetFileName();
-      }
+  bool bIsMusic = (playList == PLAYLIST_MUSIC);
+  for (int i = 0; i < thePlayList.size(); i++)
+  {
+    CFileItemPtr item = thePlayList[i];
+    const CMusicInfoTag* tagVal = NULL;
+    if (bIsMusic)
+      tagVal = item->GetMusicInfoTag();
+    CStdString strInfo;
+    if (bShowIndex)
+      strInfo.Format("%i;", i);
+    if (tagVal && tagVal->GetURL()!="")
+      strInfo += tagVal->GetURL();
+    else
+      strInfo += item->m_strPath;
+    list += closeTag + openTag + strInfo;
+  }
   return SetResponse(list) ;
 }
 
@@ -1844,7 +1816,7 @@ int CXbmcHttp::xbmcGetPlayListSong(int numParas, CStdString paras[])
     if (iSong!=-1){
       thePlayList=g_playlistPlayer.GetPlaylist( g_playlistPlayer.GetCurrentPlaylist() );
       if (thePlayList.size()>iSong) {
-        Filename=thePlayList[iSong].GetFileName();
+        Filename=thePlayList[iSong]->m_strPath;
         return SetResponse(openTag + Filename );
       }
     }
@@ -1877,12 +1849,16 @@ int CXbmcHttp::xbmcPlayListPrev()
 
 int CXbmcHttp::xbmcRemoveFromPlayList(int numParas, CStdString paras[])
 {
-  if (numParas>0)
+  if (numParas > 0)
   {
-    if (numParas==1)
-      g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).Remove(paras[0]) ;
+    int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
+    CStdString strItem = paras[0];
+    if (numParas > 1)
+      iPlaylist = atoi(paras[1]);
+    if (StringUtils::IsNaturalNumber(strItem))
+      g_playlistPlayer.GetPlaylist(iPlaylist).Remove(atoi(strItem));
     else
-      g_playlistPlayer.GetPlaylist(atoi(paras[1])).Remove(paras[0]) ;
+      g_playlistPlayer.GetPlaylist(iPlaylist).Remove(strItem);
     return SetResponse(openTag+"OK");
   }
   else
@@ -2366,9 +2342,9 @@ int CXbmcHttp::xbmcGetCurrentSlide()
     return SetResponse(openTag+"Error:Could not access slideshown");
   else
   {
-    const CFileItem *slide=pSlideShow->GetCurrentSlide();
+    const CFileItemPtr slide=pSlideShow->GetCurrentSlide();
     if (!slide)
-	    return SetResponse(openTag + "[None]");
+      return SetResponse(openTag + "[None]");
     return SetResponse(openTag + slide->m_strPath);
   }
 }
@@ -2562,18 +2538,19 @@ int CXbmcHttp::xbmcGetSystemInfoByName(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcSpinDownHardDisk(int numParas, CStdString paras[])
 {
-  if (numParas==1)
-	if (paras[0].ToLower()=="false")
+  if (numParas==1 && paras[0].ToLower()=="false")
+  {
 	  if (g_application.m_dwSpinDownTime!=0)
 	    return SetResponse(openTag+"OK:Not spun down");
 	  else
 	  {
 	    #ifdef HAS_XBOX_HARDWARE
-          XKHDD::SpindownHarddisk(false);
-        #endif
+        XKHDD::SpindownHarddisk(false);
+      #endif
         g_application.m_dwSpinDownTime = timeGetTime();
         return SetResponse(openTag+"OK");
 	  }
+  }
   if (g_application.m_dwSpinDownTime==0)
 	return SetResponse(openTag+"OK:Already spun down");
   if (m_gWindowManager.HasModalDialog())
@@ -3064,19 +3041,20 @@ bool CXbmcHttpShim::checkForFunctionTypeParas(CStdString &cmd, CStdString &paras
 CStdString CXbmcHttpShim::flushResult(int eid, webs_t wp, const CStdString &output)
 {
   if (output!="")
+  {
     if (eid==NO_EID && wp!=NULL)
       websWriteBlock(wp, (char_t *) output.c_str(), output.length()) ;
     else if (eid!=NO_EID)
       ejSetResult( eid, (char_t *)output.c_str());
     else
       return output;
+  }
   return "";
 }
 
 CStdString CXbmcHttpShim::xbmcExternalCall(char *command)
 {
-  if (m_pXbmcHttp)
-    if (m_pXbmcHttp->shuttingDown)
+  if (m_pXbmcHttp && m_pXbmcHttp->shuttingDown)
       return "";
   int open, close;
   CStdString parameter="", cmd=command, execute;
@@ -3104,9 +3082,8 @@ CStdString CXbmcHttpShim::xbmcExternalCall(char *command)
 /* Parse an XBMC HTTP API command */
 CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *parameter)
 {
-  if (m_pXbmcHttp)
-    if (m_pXbmcHttp->shuttingDown)
-      return "";
+  if (m_pXbmcHttp && m_pXbmcHttp->shuttingDown)
+    return "";
   CStdString cmd=command, paras=parameter, response="[No response yet]", retVal;
   bool legalCmd=true;
   //CLog::Log(LOGDEBUG, "XBMCHTTPShim: Received command %s (%s)", cmd.c_str(), paras.c_str());
@@ -3115,8 +3092,7 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
   checkForFunctionTypeParas(cmd, paras);
   if (wp!=NULL)
   {
-    if (eid==NO_EID)
-	  if (m_pXbmcHttp)
+	  if (eid==NO_EID && m_pXbmcHttp)
 	  {
 	    if (m_pXbmcHttp->incWebHeader)
           websHeader(wp);
@@ -3167,19 +3143,17 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
 int CXbmcHttpShim::xbmcCommand( int eid, webs_t wp, int argc, char_t **argv)
 {
   char_t	*command, *parameter;
-  if (m_pXbmcHttp)
-    if (m_pXbmcHttp->shuttingDown)
-      return -1;
+  if (m_pXbmcHttp && m_pXbmcHttp->shuttingDown)
+    return -1;
 
-  int parameters = ejArgs(argc, argv, T("%s %s"), &command, &parameter);
+  int parameters = ejArgs(argc, argv, T((char*)"%s %s"), &command, &parameter);
   if (parameters < 1) 
   {
-    websError(wp, 500, T("Error:Insufficient args"));
+    websError(wp, 500, T((char*)"Error:Insufficient args"));
     return -1;
   }
-  else 
-	if (parameters < 2) 
-	  parameter = "";
+  else if (parameters < 2) 
+	  parameter = (char*)"";
   xbmcProcessCommand( eid, wp, command, parameter);
   return 0;
 }
@@ -3190,11 +3164,10 @@ void CXbmcHttpShim::xbmcForm(webs_t wp, char_t *path, char_t *query)
 {
   char_t  *command, *parameter;
 
-  if (m_pXbmcHttp)
-    if (m_pXbmcHttp->shuttingDown)
-      return;
-  command = websGetVar(wp, WEB_COMMAND, ""); 
-  parameter = websGetVar(wp, WEB_PARAMETER, "");
+  if (m_pXbmcHttp && m_pXbmcHttp->shuttingDown)
+    return;
+  command = websGetVar(wp, (char*)WEB_COMMAND, (char*)""); 
+  parameter = websGetVar(wp, (char*)WEB_PARAMETER, (char*)"");
 
   // do the command
 

@@ -29,7 +29,9 @@ typedef __int16 int16_t;
 typedef __int32 int32_t;
 #endif
 
-static inline __int16 convert(int32_t i)
+#define HEADER_SIZE 7
+
+static inline int16_t convert(int32_t i)
 {
 #ifdef LIBA52_FIXED
     i >>= 15;
@@ -47,7 +49,7 @@ static inline __int16 convert(int32_t i)
  */
 static int resample_int16(sample_t * in, int16_t *out, int32_t channel_map)
 {
-    unsigned long i; 
+    unsigned long i;
     int16_t *p = out;
     for (i = 0; i != 256; i++) {
 	unsigned long map = channel_map;
@@ -67,11 +69,7 @@ static int resample_int16(sample_t * in, int16_t *out, int32_t channel_map)
 CDVDAudioCodecLiba52::CDVDAudioCodecLiba52() : CDVDAudioCodec()
 {
   m_pState = NULL;
-  m_iSourceFlags = 0;
-  m_iSourceSampleRate = 0;
-  m_iSourceBitrate = 0;
-  m_decodedDataSize = 0;
-  m_pInputBuffer = NULL;
+  SetDefault();
 }
 
 CDVDAudioCodecLiba52::~CDVDAudioCodecLiba52()
@@ -81,7 +79,8 @@ CDVDAudioCodecLiba52::~CDVDAudioCodecLiba52()
 
 bool CDVDAudioCodecLiba52::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  if (!m_dll.Load()) return false;
+  if (!m_dll.Load())
+    return false;
 
   SetDefault();
   
@@ -107,8 +106,9 @@ void CDVDAudioCodecLiba52::Dispose()
   m_pState = NULL;
 }
 
-void CDVDAudioCodecLiba52::SetupChannels()
+void CDVDAudioCodecLiba52::SetupChannels(int flags)
 {
+  m_iSourceFlags = flags;
   // setup channel map for how to translate to linear format
   // standard windows format
   if(m_iSourceFlags & A52_LFE)
@@ -138,12 +138,6 @@ void CDVDAudioCodecLiba52::SetupChannels()
     }
   }
   
-#if defined(__APPLE__) || defined(_WIN32PC)
-  // If we're not passing through, go to 2-channel mixdown.
-  if (g_audioContext.IsPassthroughActive() == false)
-    m_iOutputMapping = 0x21;
-#endif
-
   int channels = 0;
   unsigned int m = m_iOutputMapping<<4;
   while(m>>=4) channels++;  
@@ -152,143 +146,177 @@ void CDVDAudioCodecLiba52::SetupChannels()
   if(channels == 5 || channels == 3)
     channels = 6;
 
-  if(m_iOutputChannels > 0 && m_iOutputChannels != channels)
+  if(m_iSourceChannels > 0 && m_iSourceChannels != channels)
     CLog::Log(LOGINFO, "%s - Number of channels changed in stream from %d to %d, data might be truncated", __FUNCTION__, m_iOutputChannels, channels);
 
-  m_iOutputChannels = channels;
+  m_iSourceChannels = channels;
 
   // make sure map contains enough channels
-  for(int i=0;i<m_iOutputChannels;i++)
+  for(int i=0;i<m_iSourceChannels;i++)
   {
     if((m_iOutputMapping & (0xf<<(i*4))) == 0)
       m_iOutputMapping |= 0xf<<(i*4);
   }
   // and nothing more
-  m_iOutputMapping &= ~(0xffffffff<<(m_iOutputChannels*4));
+  m_iOutputMapping &= ~(0xffffffff<<(m_iSourceChannels*4));
+
+
+  m_iOutputChannels = m_iSourceChannels;
+  m_iOutputFlags    = m_iSourceFlags;
+
+  /* adjust level should always be set, to keep samples in proper range */
+  /* after any downmixing has been done */
+#ifndef __APPLE__
+  m_iOutputFlags |= A52_ADJUST_LEVEL;
+#endif
+
+#if defined(__APPLE__) || defined(_WIN32PC)
+  // If we're not passing through, go to 2-channel mixdown.
+  if (g_audioContext.IsPassthroughActive() == false)
+  {
+    m_iOutputChannels = 2;
+    m_iOutputMapping = 0x21;
+    m_iOutputFlags = A52_STEREO;
+  }
+#endif
+}
+
+int CDVDAudioCodecLiba52::ParseFrame(BYTE* data, int size, BYTE** frame, int* framesize)
+{
+  int flags, len;
+  BYTE* orig = data;
+
+  *frame     = NULL;
+  *framesize = 0;
+
+  if(m_inputSize == 0 && size > HEADER_SIZE)
+  {
+    // try to sync directly in packet
+    m_iFrameSize = m_dll.a52_syncinfo(data, &flags, &m_iSourceSampleRate, &m_iSourceBitrate);
+
+    if(m_iFrameSize > 0)
+    {
+
+      if(m_iSourceFlags != flags)
+        SetupChannels(flags);
+
+      if(size >= m_iFrameSize)
+      {
+        *frame     = data;
+        *framesize = m_iFrameSize;
+        return m_iFrameSize;
+      }
+      else
+      {
+        m_inputSize = size;
+        memcpy(m_inputBuffer, data, m_inputSize);
+        return m_inputSize;
+      }
+    }
+  }
+
+  // attempt to fill up to 7 bytes
+  if(m_inputSize < HEADER_SIZE) 
+  {
+    len = HEADER_SIZE-m_inputSize;
+    if(len > size)
+      len = size;
+    memcpy(m_inputBuffer+m_inputSize, data, len);
+    m_inputSize += len;
+    data        += len;
+    size        -= len;
+  }
+
+  if(m_inputSize < HEADER_SIZE) 
+    return data - orig;
+
+  // attempt to sync by shifting bytes
+  while(true)
+  {
+    m_iFrameSize = m_dll.a52_syncinfo(m_inputBuffer, &flags, &m_iSourceSampleRate, &m_iSourceBitrate);
+    if(m_iFrameSize > 0)
+      break;
+
+    if(size == 0)
+      return data - orig;
+
+    memmove(m_inputBuffer, m_inputBuffer+1, HEADER_SIZE-1);
+    m_inputBuffer[HEADER_SIZE-1] = data[0];
+    data++;
+    size--;
+  }
+
+  if(m_iSourceFlags != flags)
+    SetupChannels(flags);
+
+  len = m_iFrameSize-m_inputSize;
+  if(len > size)
+    len = size;
+
+  memcpy(m_inputBuffer+m_inputSize, data, len);
+  m_inputSize += len;
+  data        += len;
+  size        -= len;
+
+  if(m_inputSize >= m_iFrameSize)
+  {
+    *frame     = m_inputBuffer;
+    *framesize = m_iFrameSize;
+    m_inputSize = 0;
+  }
+
+  return data - orig;
 }
 
 int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
 {
-  int iLen = 0;
-  m_decodedDataSize = 0;
-  BYTE* pOldDataPointer = pData;
-  while (iSize > 0)
-  {
-    if (m_iFrameSize == 0)
-    {
-      // no header seen : find one. We need at least 7 bytes to parse it
-      int i = 0;
-      while (i <= (iSize - 7))
-      {
-        // it's possible that m_inputBuffer already contains 6 bits from our previous run
-        // so use m_pInputBuffer to copy the rest of the data. We must rest it after a52_syncinfo though!!
-        for (int u = 0; u < 7; u++) m_pInputBuffer[u] = pData[u];
+  int len, framesize;
+  BYTE* frame;
 
-        int flags;
-        iLen = m_dll.a52_syncinfo(m_inputBuffer, &flags, &m_iSourceSampleRate, &m_iSourceBitrate);
-        if (iLen > 0)
-        {
-          if(flags != m_iSourceFlags)
-          {
-            m_iSourceFlags = flags;
-            SetupChannels();
-          }
-          m_iFrameSize = iLen;
-          pData += 7;
-          m_pInputBuffer += 7;
-          iSize -= 7;
-          break;
-        }
+  m_decodedSize = 0;
 
-        // reset the buffer pointer if needed
-        if ((m_pInputBuffer - m_inputBuffer) > 0) m_pInputBuffer = m_inputBuffer;
+  len = ParseFrame(pData, iSize, &frame, &framesize);
+  if(!frame)
+    return len;
 
-        // no sync found, shift one byte
-        i++;
-        pData++;
-        //m_pInputBuffer++;
-        iSize--;
-      }
-      if (m_iFrameSize == 0 && iSize < 7)
-      {
-        // we are at the end of our stream and don't have enough data for our header anymore.
-        // copy it to our buffer for later use;
-        for (int i = 0; i < iSize; i++) m_pInputBuffer[i] = pData[i];
-        m_pInputBuffer += iSize;
-        pData += iSize;
-        iSize = 0;
-        break;
-      }
-    }
-    else if (m_pInputBuffer - m_inputBuffer < m_iFrameSize)
-    {
-      // we are working on a frame that is m_iFrameSize big, but we don't have all data yet
-      // just copy more data to it
-      iLen = m_iFrameSize - (m_pInputBuffer - m_inputBuffer);
-      if (iSize < iLen) iLen = iSize;
-      memcpy(m_pInputBuffer, pData, iLen);
-      m_pInputBuffer += iLen;
-      pData += iLen;
-      iSize -= iLen;
-    }
-    else
-    {
-      // we have a frame to decode
+  level_t level = 1.0f;
+  sample_t bias = 384;
+  int     flags = m_iOutputFlags;
 
-      
-      float fLevel = 1.0f;      
-      int iFlags = m_iSourceFlags;
-      
-#if defined(__APPLE__) || defined(_WIN32PC)
-      // If we're not passing through, go to 2-channel mixdown.
-      if (g_audioContext.IsPassthroughActive() == false)
-        iFlags = A52_STEREO;
-#endif
+  m_dll.a52_frame(m_pState, frame, &flags, &level, bias);
+
+  //m_dll.a52_dynrng(m_pState, NULL, NULL);
   
-      /* adjust level should always be set, to keep samples in proper range */
-      /* after any downmixing has been done */
-#ifndef __APPLE__
-      iFlags |= A52_ADJUST_LEVEL;
-#endif
-      m_dll.a52_frame(m_pState, m_inputBuffer, &iFlags, &fLevel, 384);
-
-      // [a52_dynrng (state, ...); this is only optional]
-      for (int i = 0; i < 6; i++)
-      {
-        if (m_dll.a52_block(m_pState) != 0)
-        {
-          CLog::Log(LOGERROR, "CDVDAudioCodecLiba52::Decode - a52_block failed");
-          m_pInputBuffer = m_inputBuffer;
-          m_iFrameSize = 0;
-          m_decodedDataSize = 0;
-          return -1;
-        }
-        m_decodedDataSize += 2*resample_int16(m_fSamples, (int16_t*)(m_decodedData + m_decodedDataSize/2), m_iOutputMapping);
-      }
-
-      m_pInputBuffer = m_inputBuffer;
-      m_iFrameSize = 0;      
-      return (pData - pOldDataPointer);
+  for (int i = 0; i < 6; i++)
+  {
+    if (m_dll.a52_block(m_pState) != 0)
+    {
+      CLog::Log(LOGERROR, "CDVDAudioCodecLiba52::Decode - a52_block failed");
+      break;
     }
+    m_decodedSize += 2*resample_int16(m_fSamples, (int16_t*)(m_decodedData + m_decodedSize), m_iOutputMapping);
   }
-  return (pData - pOldDataPointer);
+  return len;
 }
 
 
 int CDVDAudioCodecLiba52::GetData(BYTE** dst)
 {
   *dst = (BYTE*)m_decodedData;
-  return m_decodedDataSize;
+  return m_decodedSize;
 }
 
 void CDVDAudioCodecLiba52::SetDefault()
 {
-  m_pInputBuffer = m_inputBuffer;
   m_iFrameSize = 0;
   m_iSourceFlags = 0;
+  m_iSourceChannels = 0;
   m_iSourceSampleRate = 0;
   m_iSourceBitrate = 0;
-  m_decodedDataSize = 0;
+  m_iOutputChannels = 0;
+  m_iOutputFlags = 0;
+  m_decodedSize = 0;
+  m_inputSize = 0;
 }
 
 void CDVDAudioCodecLiba52::Reset()
@@ -301,17 +329,3 @@ void CDVDAudioCodecLiba52::Reset()
   m_fSamples = m_dll.a52_samples(m_pState);
 }
 
-int CDVDAudioCodecLiba52::GetChannels()
-{
-  return m_iOutputChannels;
-}
-
-int CDVDAudioCodecLiba52::GetSampleRate()
-{
-  return m_iSourceSampleRate;
-}
-
-int CDVDAudioCodecLiba52::GetBitsPerSample()
-{
-  return 16;
-}

@@ -80,6 +80,35 @@ CCPUInfo::CCPUInfo(void)
     core.m_id = i;
     m_cores[core.m_id] = core;
   }
+#elif defined(_WIN32PC)
+  char rgValue [128];
+  HKEY hKey;
+  DWORD dwSize=128;
+  DWORD dwMHz=0;
+  LONG ret = RegOpenKeyEx(HKEY_LOCAL_MACHINE,"HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0",0, KEY_READ, &hKey);
+  ret = RegQueryValueEx(hKey,"ProcessorNameString", NULL, NULL, (LPBYTE)rgValue, &dwSize);
+  if(ret == 0)
+    m_cpuModel = rgValue;
+  else
+    m_cpuModel = "Unknown";
+
+  dwSize = sizeof(dwMHz);
+  ret = RegQueryValueEx(hKey,"~MHz", NULL, NULL, (LPBYTE)&dwMHz, &dwSize);
+  if(ret == 0)
+  {
+    m_cpuFreq = float(dwMHz)/1000;
+  }
+  else
+    m_cpuFreq = 0.0;
+
+  RegCloseKey(hKey);
+
+  SYSTEM_INFO siSysInfo;
+  GetSystemInfo(&siSysInfo); 
+  m_cpuCount = siSysInfo.dwNumberOfProcessors;
+
+  CoreInfo core;
+  m_cores[0] = core;
 
 #else
   m_fProcStat = fopen("/proc/stat", "r");
@@ -187,7 +216,11 @@ int CCPUInfo::getUsedPercentage()
   systemTicks -= m_systemTicks;
   idleTicks -= m_idleTicks;
 
+#ifdef _WIN32PC
+  int result = (int) ((userTicks + systemTicks - idleTicks) * 100 / (userTicks + systemTicks));
+#else
   int result = (int) ((userTicks + niceTicks + systemTicks) * 100 / (userTicks + niceTicks + systemTicks + idleTicks));
+#endif
 
   m_userTicks += userTicks;
   m_niceTicks += niceTicks;
@@ -247,6 +280,38 @@ const CoreInfo &CCPUInfo::GetCoreInfo(int nCoreId)
 bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
     unsigned long long& system, unsigned long long& idle)
 {
+
+#ifdef _WIN32PC
+  FILETIME idleTime;
+  FILETIME kernelTime;
+  FILETIME userTime;
+  ULARGE_INTEGER ulTime;
+  unsigned long long coreUser, coreSystem, coreIdle;
+  GetSystemTimes( &idleTime, &kernelTime, &userTime );
+  ulTime.HighPart = userTime.dwHighDateTime;
+  ulTime.LowPart = userTime.dwLowDateTime;
+  user = coreUser = ulTime.QuadPart;
+
+  ulTime.HighPart = kernelTime.dwHighDateTime;
+  ulTime.LowPart = kernelTime.dwLowDateTime;
+  system = coreSystem = ulTime.QuadPart;
+
+  ulTime.HighPart = idleTime.dwHighDateTime;
+  ulTime.LowPart = idleTime.dwLowDateTime;
+  idle = coreIdle = ulTime.QuadPart;
+
+  nice = 0;
+
+  coreUser -= m_cores[0].m_user;
+  coreSystem -= m_cores[0].m_system;
+  coreIdle -= m_cores[0].m_idle;
+  m_cores[0].m_fPct = ((double)(coreUser + coreSystem - coreIdle) * 100.0) / (double)(coreUser + coreSystem);
+  m_cores[0].m_user += coreUser;
+  m_cores[0].m_system += coreSystem;
+  m_cores[0].m_idle += coreIdle;
+  gettimeofday(&m_cores[0].m_lastSample, NULL);
+
+#else
   if (m_fProcStat == NULL)
     return false;
 
@@ -278,6 +343,7 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
       gettimeofday(&iter->second.m_lastSample, NULL);
     }
   }
+#endif
 
   m_lastReadTime = time(NULL);
   return true;

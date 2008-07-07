@@ -40,6 +40,7 @@ enum CodecID;
 #define DECODE_FLAG_RESYNC  2
 #define DECODE_FLAG_ERROR   4
 #define DECODE_FLAG_ABORT   8
+#define DECODE_FLAG_TIMEOUT 16
 
 typedef struct stDVDAudioFrame
 {

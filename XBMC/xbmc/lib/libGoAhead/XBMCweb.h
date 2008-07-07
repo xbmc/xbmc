@@ -12,8 +12,9 @@
 
 #include "FileSystem/VirtualDirectory.h"
 #include "includes.h"
+#include "boost/shared_ptr.hpp"
 
-class CFileItem;
+class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;
 
 class CXbmcWeb
@@ -26,7 +27,7 @@ public:
 	DWORD		GetNavigatorState();
 	void		SetNavigatorState(DWORD state);
 
-	void		AddItemToPlayList(const CFileItem* pItem);
+	void		AddItemToPlayList(const CFileItemPtr &pItem);
 
 	int			xbmcCommand( int eid, webs_t wp, int argc, char_t **argv);
 
@@ -61,7 +62,7 @@ private:
  *	function to an XBMC ir remote command.
  */ 
 typedef struct {
-	char_t	*xbmcRemoteParameter;				
+	const char_t	*xbmcRemoteParameter;				
 	int		xbmcIRCode;
 } xbmcRemoteControlHandlerType;
 
@@ -70,7 +71,7 @@ typedef struct {
  *	to an XBMC application state.
  */ 
 typedef struct {
-	char_t	*xbmcNavigateParameter;				
+	const char_t	*xbmcNavigateParameter;				
 	int		xbmcAppStateCode;
 } xbmcNavigationHandlerType;
 

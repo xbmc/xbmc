@@ -40,9 +40,9 @@ CGUIListItemLayout::CListBase::~CListBase()
 {
 }
 
-CGUIListItemLayout::CListLabel::CListLabel(float posX, float posY, float width, float height, int visibleCondition, const CLabelInfo &label, bool alwaysScroll, const CGUIInfoLabel &content, const vector<CAnimation> &animations)
+CGUIListItemLayout::CListLabel::CListLabel(float posX, float posY, float width, float height, int visibleCondition, const CLabelInfo &label, bool alwaysScroll, int scrollSpeed, const CGUIInfoLabel &content, const vector<CAnimation> &animations)
 : CGUIListItemLayout::CListBase(),
-  m_label(0, 0, posX, posY, width, height, label, alwaysScroll)
+  m_label(0, 0, posX, posY, width, height, label, alwaysScroll, scrollSpeed)
 {
   m_type = LIST_LABEL;
   m_label.SetAnimations(animations);
@@ -418,14 +418,16 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
   CGUIControlFactory::GetConditionalVisibility(child, visibleCondition);
   XMLUtils::GetFloat(child, "angle", label.angle); label.angle *= -1;
   bool scroll(false);
+  int scrollSpeed = CScrollInfo::defaultSpeed;
   XMLUtils::GetBoolean(child, "scroll", scroll);
+  XMLUtils::GetInt(child, "scrollspeed", scrollSpeed);
   CGUIControlFactory::GetTexture(child, "bordertexture", borderImage);
   CStdString borderStr;
   if (XMLUtils::GetString(child, "bordersize", borderStr))
     CGUIControlFactory::GetRectFromString(borderStr, borderSize);
   if (type == "label")
   { // info label
-    return new CListLabel(posX, posY, width, height, visibleCondition, label, scroll, infoLabel, animations);
+    return new CListLabel(posX, posY, width, height, visibleCondition, label, scroll, scrollSpeed, infoLabel, animations);
   }
   else if (type == "multiselect")
   {
@@ -448,6 +450,7 @@ CGUIListItemLayout::CListBase *CGUIListItemLayout::CreateItem(TiXmlElement *chil
 void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, bool focused)
 {
   m_focused = focused;
+  g_SkinInfo.ResolveIncludes(layout);
   g_SkinInfo.ResolveConstant(layout->Attribute("width"), m_width);
   g_SkinInfo.ResolveConstant(layout->Attribute("height"), m_height);
   const char *condition = layout->Attribute("condition");
@@ -482,10 +485,10 @@ void CGUIListItemLayout::CreateListControlLayouts(float width, float height, boo
   CListImage *image = new CListImage(8, 0, iconWidth, texHeight, 0, CImage(""), border, borderRect, CGUIImage::CAspectRatio(CGUIImage::CAspectRatio::AR_KEEP), 0xffffffff, CGUIInfoLabel("$INFO[ListItem.Icon]"), blankAnims);
   m_controls.push_back(image);
   float x = iconWidth + labelInfo.offsetX + 10;
-  CListLabel *label = new CListLabel(x, labelInfo.offsetY, width - x - 18, height, 0, labelInfo, false, CGUIInfoLabel("$INFO[ListItem.Label]"), blankAnims);
+  CListLabel *label = new CListLabel(x, labelInfo.offsetY, width - x - 18, height, 0, labelInfo, false, CScrollInfo::defaultSpeed, CGUIInfoLabel("$INFO[ListItem.Label]"), blankAnims);
   m_controls.push_back(label);
   x = labelInfo2.offsetX ? labelInfo2.offsetX : m_width - 16;
-  label = new CListLabel(x, labelInfo2.offsetY, x - iconWidth - 20, height, 0, labelInfo2, false, CGUIInfoLabel("$INFO[ListItem.Label2]"), blankAnims);
+  label = new CListLabel(x, labelInfo2.offsetY, x - iconWidth - 20, height, 0, labelInfo2, false, CScrollInfo::defaultSpeed, CGUIInfoLabel("$INFO[ListItem.Label2]"), blankAnims);
   m_controls.push_back(label);
 }
 
@@ -517,7 +520,7 @@ void CGUIListItemLayout::CreateThumbnailPanelLayouts(float width, float height, 
   m_controls.push_back(overlay);
   // label
   if (hideLabels) return;
-  CListLabel *label = new CListLabel(width*0.5f, texHeight, width, height, 0, labelInfo, false, CGUIInfoLabel("$INFO[ListItem.Label]"), blankAnims);
+  CListLabel *label = new CListLabel(width*0.5f, texHeight, width, height, 0, labelInfo, false, CScrollInfo::defaultSpeed, CGUIInfoLabel("$INFO[ListItem.Label]"), blankAnims);
   m_controls.push_back(label);
 }
 //#endif

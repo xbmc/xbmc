@@ -1013,7 +1013,7 @@ int CommandData::IsProcessFile(FileHeader &NewLhd,bool *ExactMatch,int MatchType
 void CommandData::ProcessCommand()
 {
 #ifndef SFX_MODULE
-  if (Command[1] && strchr("FUADPXETK",*Command)!=NULL || *ArcName==0)
+  if ((Command[1] && (strchr("FUADPXETK",*Command)!=NULL)) || *ArcName==0)
     OutHelp();
 
 #ifdef _UNIX

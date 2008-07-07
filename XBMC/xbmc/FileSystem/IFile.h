@@ -32,6 +32,7 @@
 #include "URL.h"
 
 #include <stdio.h>
+#include <errno.h>
 
 #define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
 
@@ -50,7 +51,7 @@ public:
   virtual bool OpenForWrite(const CURL& url, bool bBinary = true, bool bOverWrite = false) { return false; };
   virtual bool Exists(const CURL& url) = 0;
   virtual int Stat(const CURL& url, struct __stat64* buffer) = 0;
-
+  virtual int Stat(struct __stat64* buffer)  { errno = ENOENT; return -1; }
   virtual unsigned int Read(void* lpBuf, __int64 uiBufSize) = 0;
   virtual int Write(const void* lpBuf, __int64 uiBufSize) { return -1;};
   virtual bool ReadString(char *szLine, int iLineLength)

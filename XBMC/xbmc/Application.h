@@ -36,7 +36,6 @@ class CFileItemList;
 #include "GUIWindowPointer.h"   // Mouse pointer
 #include "Settings.h"
 
-#include "utils/Idle.h"
 #include "utils/DelayController.h"
 #include "cores/IPlayer.h"
 #include "cores/PlayerCoreFactory.h"
@@ -80,19 +79,11 @@ public:
   virtual void FrameMove();
   virtual void Render();
   virtual void DoRender();
-#ifndef HAS_XBOX_D3D
   virtual void RenderNoPresent();
-#endif
   virtual HRESULT Create(HWND hWnd);
   virtual HRESULT Cleanup();
   void StartServices();
   void StopServices();
-  void StartIdleThread();
-  void StopIdleThread();
-#ifdef HAS_KAI
-  void StartKai();
-  void StopKai();
-#endif
   void StartWebServer();
   void StopWebServer();
   void StartFtpServer();
@@ -110,10 +101,7 @@ public:
   void StartEventServer();
   void StopEventServer();
   void RefreshEventServer();
-  void StartLEDControl(bool switchoff = false);
   void DimLCDOnPlayback(bool dim);
-  void PrintXBEToLCD(const char* xbePath);
-  void CheckDate();
   DWORD GetThreadId() const { return m_threadID; };
   void Stop();
   void RestartApp();
@@ -126,7 +114,7 @@ public:
   const CStdString& CurrentFile();
   CFileItem& CurrentFileItem();
   virtual bool OnMessage(CGUIMessage& message);
-  const EPLAYERCORES GetCurrentPlayer();
+  EPLAYERCORES GetCurrentPlayer();
   virtual void OnPlayBackEnded();
   virtual void OnPlayBackStarted();
   virtual void OnPlayBackStopped();
@@ -150,11 +138,6 @@ public:
   bool OnKey(CKey& key);
   bool OnAction(const CAction &action);
   void RenderMemoryStatus();
-#ifdef HAS_XBOX_HARDWARE
-  bool MustBlockHDSpinDown(bool bCheckThisForNormalSpinDown = true);
-  void CheckNetworkHDSpinDown(bool playbackStarted = false);
-  void CheckHDSpindown();
-#endif
   void CheckShutdown();
   void CheckDisplaySleep();
   void CheckScreenSaver();   // CB: SCREENSAVER PATCH
@@ -173,9 +156,6 @@ public:
   bool IsButtonDown(DWORD code);
   bool AnyButtonDown();
   bool ResetScreenSaverWindow();
-#ifdef HAS_KAI
-  void SetKaiNotification(const CStdString& aCaption, const CStdString& aDescription, CGUIImage* aIcon=NULL);
-#endif
   double GetTotalTime() const;
   double GetTime() const;
   float GetPercentage() const;
@@ -203,7 +183,6 @@ public:
   CGUIDialogMuteBug m_guiDialogMuteBug;
   CGUIWindowPointer m_guiPointer;
 
-  CIdleThread m_idleThread;
   MEDIA_DETECT::CAutorun m_Autorun;
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
   CDelayController m_ctrDpad;
@@ -230,9 +209,9 @@ public:
   int GlobalIdleTime();
   void NewFrame();
   void SetQuiet(bool bQuiet);
-  void EnablePlatformDirectories(bool enable=true) 
-  { 
-    m_bPlatformDirectories = enable; 
+  void EnablePlatformDirectories(bool enable=true)
+  {
+    m_bPlatformDirectories = enable;
   }
 
 protected:
@@ -261,7 +240,7 @@ protected:
   CStopWatch m_navigationTimer;
   CStopWatch m_slowTimer;
 
-  CFileItem* m_itemCurrentFile;
+  CFileItemPtr m_itemCurrentFile;
   CFileItemList* m_currentStack;
   CStdString m_prevMedia;
   CSplash* m_splash;
@@ -273,13 +252,15 @@ protected:
   bool m_bInitializing;
   bool m_playCountUpdated;
   bool m_bQuiet;
-  bool m_bPlatformDirectories;  
+  bool m_bPlatformDirectories;
 
   int m_iPlaySpeed;
   int m_currentStackPosition;
   int m_nextPlaylistItem;
 
   bool m_bPresentFrame;
+
+  char* m_logPath;
 
 #ifdef HAS_SDL
   int        m_frameCount;
@@ -302,9 +283,9 @@ protected:
   bool ProcessRemote(float frameTime);
   bool ProcessGamepad(float frameTime);
   bool ProcessEventServer(float frameTime);
-  
+
   bool ProcessJoystickEvent(const std::string& joystickName, int button, bool isAxis, float fAmount);
-  
+
   void CheckForDebugButtonCombo();
   void StartFtpEmergencyRecoveryMode();
   float NavigationIdleTime();
@@ -329,7 +310,7 @@ protected:
 #ifdef _LINUX
   CLinuxResourceCounter m_resourceCounter;
 #endif
-  
+
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
 #endif

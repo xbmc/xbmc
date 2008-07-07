@@ -187,7 +187,8 @@ void CGUIWindowSlideShow::FreeResources()
 
 void CGUIWindowSlideShow::Add(const CFileItem *picture)
 {
-  m_slides->Add(new CFileItem(*picture));
+  CFileItemPtr item(new CFileItem(*picture));
+  m_slides->Add(item);
 }
 
 void CGUIWindowSlideShow::ShowNext()
@@ -218,7 +219,7 @@ void CGUIWindowSlideShow::Select(const CStdString& strPicture)
 {
   for (int i = 0; i < m_slides->Size(); ++i)
   {
-    const CFileItem *item = m_slides->Get(i);
+    const CFileItemPtr item = m_slides->Get(i);
     if (item->m_strPath == strPicture)
     {
       m_iCurrentSlide = i;
@@ -235,11 +236,11 @@ const CFileItemList &CGUIWindowSlideShow::GetSlideShowContents()
   return *m_slides;
 }
 
-const CFileItem *CGUIWindowSlideShow::GetCurrentSlide()
+const CFileItemPtr CGUIWindowSlideShow::GetCurrentSlide()
 {
   if (m_iCurrentSlide >= 0 && m_iCurrentSlide < m_slides->Size())
     return m_slides->Get(m_iCurrentSlide);
-  return NULL;
+  return CFileItemPtr();
 }
 
 bool CGUIWindowSlideShow::InSlideShow() const
@@ -319,7 +320,7 @@ void CGUIWindowSlideShow::Render()
     m_bLoadNextPic = false;
     // load using the background loader
     int maxWidth, maxHeight;
-    GetCheckedSize((float)g_settings.m_ResInfo[m_Resolution].iWidth * zoomamount[m_iZoomFactor - 1], 
+    GetCheckedSize((float)g_settings.m_ResInfo[m_Resolution].iWidth * zoomamount[m_iZoomFactor - 1],
                     (float)g_settings.m_ResInfo[m_Resolution].iHeight * zoomamount[m_iZoomFactor - 1],
                     maxWidth, maxHeight);
     m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, m_slides->Get(m_iCurrentSlide)->m_strPath, maxWidth, maxHeight);
@@ -362,7 +363,7 @@ void CGUIWindowSlideShow::Render()
     { // load the next image
       CLog::Log(LOGDEBUG, "Loading the next image %s", m_slides->Get(m_iNextSlide)->m_strPath.c_str());
       int maxWidth, maxHeight;
-      GetCheckedSize((float)g_settings.m_ResInfo[m_Resolution].iWidth * zoomamount[m_iZoomFactor - 1], 
+      GetCheckedSize((float)g_settings.m_ResInfo[m_Resolution].iWidth * zoomamount[m_iZoomFactor - 1],
                      (float)g_settings.m_ResInfo[m_Resolution].iHeight * zoomamount[m_iZoomFactor - 1],
                      maxWidth, maxHeight);
       m_pBackgroundLoader->LoadPic(1 - m_iCurrentPic, m_iNextSlide, m_slides->Get(m_iNextSlide)->m_strPath, maxWidth, maxHeight);
@@ -553,9 +554,6 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
         m_ImageLib.Unload();
       }
       m_gWindowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
-      // set screen filters to video filters so that we
-      // get sharper images
-      g_graphicsContext.SetScreenFilters(false);
       FreeResources();
     }
     break;
@@ -582,9 +580,6 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
         m_ImageLib.Load();
       }
       m_gWindowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
-      // set screen filters to video filters so that we
-      // get sharper images
-      g_graphicsContext.SetScreenFilters(true);
 
       // turn off slideshow if we only have 1 image
       if (m_slides->Size() <= 1)
@@ -770,13 +765,14 @@ void CGUIWindowSlideShow::AddItems(const CStdString &strPath, bool bRecursive)
   // need to go into all subdirs
   for (int i = 0; i < items.Size(); i++)
   {
-    if (items[i]->m_bIsFolder && bRecursive)
+    CFileItemPtr item = items[i];
+    if (item->m_bIsFolder && bRecursive)
     {
-      AddItems(items[i]->m_strPath, bRecursive);
+      AddItems(item->m_strPath, bRecursive);
     }
     else
     { // add to the slideshow
-      Add(items[i]);
+      Add(item.get());
     }
   }
 }

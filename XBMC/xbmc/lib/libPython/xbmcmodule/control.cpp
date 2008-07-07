@@ -83,7 +83,7 @@ namespace PYXBMC
 
   PyObject* Control_GetId(Control* self, PyObject* args)
   {
-    return Py_BuildValue("i", self->iControlId);
+    return Py_BuildValue((char*)"i", self->iControlId);
   }
 
   // getPosition() Method
@@ -95,7 +95,7 @@ namespace PYXBMC
 
   PyObject* Control_GetPosition(Control* self, PyObject* args)
   {
-    return Py_BuildValue("(ll)", self->dwPosX, self->dwPosY);
+    return Py_BuildValue((char*)"(ll)", self->dwPosX, self->dwPosY);
   }
 
   // getHeight() Method
@@ -107,7 +107,7 @@ namespace PYXBMC
 
   PyObject* Control_GetHeight(Control* self, PyObject* args)
   {
-    return Py_BuildValue("l", self->dwHeight);
+    return Py_BuildValue((char*)"l", self->dwHeight);
   }
 
   // getWidth() Method
@@ -119,7 +119,7 @@ namespace PYXBMC
 
   PyObject* Control_GetWidth(Control* self, PyObject* args)
   {
-    return Py_BuildValue("l", self->dwWidth);
+    return Py_BuildValue((char*)"l", self->dwWidth);
   }
 
   // setEnabled() Method
@@ -134,7 +134,7 @@ namespace PYXBMC
   PyObject* Control_SetEnabled(Control* self, PyObject* args)
   {
     bool enabled;
-    if (!PyArg_ParseTuple(args, "b", &enabled)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"b", &enabled)) return NULL;
 
     PyGUILock();
     if (self->pGUIControl)   self->pGUIControl->SetEnabled(enabled);
@@ -156,7 +156,7 @@ namespace PYXBMC
   PyObject* Control_SetVisible(Control* self, PyObject* args)
   {
     bool visible;
-    if (!PyArg_ParseTuple(args, "b", &visible)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"b", &visible)) return NULL;
 
     PyGUILock();
     if (self->pGUIControl)
@@ -187,7 +187,7 @@ namespace PYXBMC
     char *cVisible = NULL;
     bool bHidden = false;
 
-    if (!PyArg_ParseTuple(args, "s|b", &cVisible, &bHidden)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s|b", &cVisible, &bHidden)) return NULL;
 
     int ret = g_infoManager.TranslateString(cVisible);
 
@@ -216,7 +216,7 @@ namespace PYXBMC
   {
     char *cEnable = NULL;
 
-    if (!PyArg_ParseTuple(args, "s", &cEnable)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cEnable)) return NULL;
 
     int ret = g_infoManager.TranslateString(cEnable);
 
@@ -245,7 +245,7 @@ namespace PYXBMC
   PyObject* Control_SetAnimations(Control* self, PyObject* args)
   {
     PyObject *pList = NULL;
-    if (!PyArg_ParseTuple(args, "O", &pList) || pList == NULL || !PyObject_TypeCheck(pList, &PyList_Type))
+    if (!PyArg_ParseTuple(args, (char*)"O", &pList) || pList == NULL || !PyObject_TypeCheck(pList, &PyList_Type))
     {
       PyErr_SetString(PyExc_TypeError, "Object should be of type List");
       return NULL;
@@ -271,7 +271,7 @@ namespace PYXBMC
         PyErr_SetString(PyExc_TypeError, "List must only contain tuples");
         return NULL;
       }
-      if (!PyArg_ParseTuple(pTuple, "ss", &cEvent, &cAttr))
+      if (!PyArg_ParseTuple(pTuple, (char*)"ss", &cEvent, &cAttr))
       {
         PyErr_SetString(PyExc_TypeError, "Error unpacking tuple found in list");
         return NULL;
@@ -300,8 +300,10 @@ namespace PYXBMC
     const FRECT animRect = { (float)self->dwPosX, (float)self->dwPosY, (float)self->dwWidth, (float)self->dwHeight };
     PyGUILock();
     if (self->pGUIControl)
+    {
       CGUIControlFactory::GetAnimations(pRoot, animRect, animations);
-    self->pGUIControl->SetAnimations(animations);
+      self->pGUIControl->SetAnimations(animations);
+    }
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -322,7 +324,7 @@ namespace PYXBMC
 
   PyObject* Control_SetPosition(Control* self, PyObject* args)
   {
-    if (!PyArg_ParseTuple(args, "ll", &self->dwPosX, &self->dwPosY)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"ll", &self->dwPosX, &self->dwPosY)) return NULL;
 
     PyGUILock();
     if (self->pGUIControl) self->pGUIControl->SetPosition((float)self->dwPosX, (float)self->dwPosY);
@@ -343,7 +345,7 @@ namespace PYXBMC
 
   PyObject* Control_SetWidth(Control* self, PyObject* args)
   {
-    if (!PyArg_ParseTuple(args, "l", &self->dwWidth)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"l", &self->dwWidth)) return NULL;
 
     PyGUILock();
     if (self->pGUIControl) self->pGUIControl->SetWidth((float)self->dwWidth);
@@ -364,7 +366,7 @@ namespace PYXBMC
 
   PyObject* Control_SetHeight(Control* self, PyObject* args)
   {
-    if (!PyArg_ParseTuple(args, "l", &self->dwHeight)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"l", &self->dwHeight)) return NULL;
 
     PyGUILock();
     if (self->pGUIControl) self->pGUIControl->SetHeight((float)self->dwHeight);
@@ -399,7 +401,7 @@ namespace PYXBMC
     Control* pLeftControl = NULL;
     Control* pRightControl = NULL;
 
-    if (!PyArg_ParseTuple(args, "OOOO", &pUpControl, &pDownControl, &pLeftControl, &pRightControl)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"OOOO", &pUpControl, &pDownControl, &pLeftControl, &pRightControl)) return NULL;
 
     // type checking, objects should be of type Control
     if(!(Control_Check(pUpControl) &&  Control_Check(pDownControl) &&
@@ -445,7 +447,7 @@ namespace PYXBMC
   PyObject* Control_ControlUp(Control* self, PyObject* args)
   {
     Control* pControl;
-    if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pControl)) return NULL;
     // type checking, object should be of type Control
     if(!Control_Check(pControl))
     {
@@ -485,7 +487,7 @@ namespace PYXBMC
   PyObject* Control_ControlDown(Control* self, PyObject* args)
   {
     Control* pControl;
-    if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pControl)) return NULL;
     // type checking, object should be of type Control
     if (!Control_Check(pControl))
     {
@@ -525,7 +527,7 @@ namespace PYXBMC
   PyObject* Control_ControlLeft(Control* self, PyObject* args)
   {
     Control* pControl;
-    if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pControl)) return NULL;
     // type checking, object should be of type Control
     if (!Control_Check(pControl))
     {
@@ -568,7 +570,7 @@ namespace PYXBMC
   PyObject* Control_ControlRight(Control* self, PyObject* args)
   {
     Control* pControl;
-    if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pControl)) return NULL;
     // type checking, object should be of type Control
     if (!Control_Check(pControl))
     {
@@ -592,23 +594,23 @@ namespace PYXBMC
   }
 
   PyMethodDef Control_methods[] = {
-    {"getId", (PyCFunction)Control_GetId, METH_VARARGS, getId__doc__},
-    {"getPosition", (PyCFunction)Control_GetPosition, METH_VARARGS, getPosition__doc__},
-    {"getHeight", (PyCFunction)Control_GetHeight, METH_VARARGS, getHeight__doc__},
-    {"getWidth", (PyCFunction)Control_GetWidth, METH_VARARGS, getWidth__doc__},
-    {"setEnabled", (PyCFunction)Control_SetEnabled, METH_VARARGS, setEnabled__doc__},
-    {"setEnableCondition", (PyCFunction)Control_SetEnableCondition, METH_VARARGS, setEnableCondition__doc__},
-    {"setVisible", (PyCFunction)Control_SetVisible, METH_VARARGS, setVisible__doc__},
-    {"setVisibleCondition", (PyCFunction)Control_SetVisibleCondition, METH_VARARGS, setVisibleCondition__doc__},
-    {"setAnimations", (PyCFunction)Control_SetAnimations, METH_VARARGS, setAnimations__doc__},
-    {"setPosition", (PyCFunction)Control_SetPosition, METH_VARARGS, setPosition__doc__},
-    {"setWidth", (PyCFunction)Control_SetWidth, METH_VARARGS, setWidth__doc__},
-    {"setHeight", (PyCFunction)Control_SetHeight, METH_VARARGS, setHeight__doc__},
-    {"setNavigation", (PyCFunction)Control_SetNavigation, METH_VARARGS, setNavigation__doc__},
-    {"controlUp", (PyCFunction)Control_ControlUp, METH_VARARGS, controlUp__doc__},
-    {"controlDown", (PyCFunction)Control_ControlDown, METH_VARARGS, controlDown__doc__},
-    {"controlLeft", (PyCFunction)Control_ControlLeft, METH_VARARGS, controlLeft__doc__},
-    {"controlRight", (PyCFunction)Control_ControlRight, METH_VARARGS, controlRight__doc__},
+    {(char*)"getId", (PyCFunction)Control_GetId, METH_VARARGS, getId__doc__},
+    {(char*)"getPosition", (PyCFunction)Control_GetPosition, METH_VARARGS, getPosition__doc__},
+    {(char*)"getHeight", (PyCFunction)Control_GetHeight, METH_VARARGS, getHeight__doc__},
+    {(char*)"getWidth", (PyCFunction)Control_GetWidth, METH_VARARGS, getWidth__doc__},
+    {(char*)"setEnabled", (PyCFunction)Control_SetEnabled, METH_VARARGS, setEnabled__doc__},
+    {(char*)"setEnableCondition", (PyCFunction)Control_SetEnableCondition, METH_VARARGS, setEnableCondition__doc__},
+    {(char*)"setVisible", (PyCFunction)Control_SetVisible, METH_VARARGS, setVisible__doc__},
+    {(char*)"setVisibleCondition", (PyCFunction)Control_SetVisibleCondition, METH_VARARGS, setVisibleCondition__doc__},
+    {(char*)"setAnimations", (PyCFunction)Control_SetAnimations, METH_VARARGS, setAnimations__doc__},
+    {(char*)"setPosition", (PyCFunction)Control_SetPosition, METH_VARARGS, setPosition__doc__},
+    {(char*)"setWidth", (PyCFunction)Control_SetWidth, METH_VARARGS, setWidth__doc__},
+    {(char*)"setHeight", (PyCFunction)Control_SetHeight, METH_VARARGS, setHeight__doc__},
+    {(char*)"setNavigation", (PyCFunction)Control_SetNavigation, METH_VARARGS, setNavigation__doc__},
+    {(char*)"controlUp", (PyCFunction)Control_ControlUp, METH_VARARGS, controlUp__doc__},
+    {(char*)"controlDown", (PyCFunction)Control_ControlDown, METH_VARARGS, controlDown__doc__},
+    {(char*)"controlLeft", (PyCFunction)Control_ControlLeft, METH_VARARGS, controlLeft__doc__},
+    {(char*)"controlRight", (PyCFunction)Control_ControlRight, METH_VARARGS, controlRight__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -631,7 +633,7 @@ namespace PYXBMC
   {
     PyInitializeTypeObject(&Control_Type);
 
-    Control_Type.tp_name = "xbmcgui.Control";
+    Control_Type.tp_name = (char*)"xbmcgui.Control";
     Control_Type.tp_basicsize = sizeof(Control);
     Control_Type.tp_dealloc = 0;
     Control_Type.tp_compare = Control_Compare;

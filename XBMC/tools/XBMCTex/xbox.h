@@ -1,8 +1,26 @@
 // Some XBox specific stuff
 
+#pragma once
+
+#ifdef _LINUX
+#include "PlatformDefs.h"
+typedef struct tagPALETTEENTRY { 
+    BYTE peRed; 
+    BYTE peGreen; 
+    BYTE peBlue; 
+    BYTE peFlags; 
+} PALETTEENTRY; 
+#else
+typedef unsigned long DWORD;
+typedef unsigned int UINT;
+typedef int BOOL;
+typedef const void* LPCVOID;
+typedef void* LPVOID;
+typedef unsigned char BYTE;
+#endif 
+
 struct D3DTexture 
 {
-
 	DWORD Common;
 	DWORD Data;
 	DWORD Lock;
@@ -128,6 +146,16 @@ struct XPR_FILE_HEADER
 
 DWORD BytesPerPixelFromFormat(XB_D3DFORMAT format);
 BOOL IsSwizzledFormat(XB_D3DFORMAT format);
-DWORD SetTextureHeader(UINT Width, UINT Height, UINT Levels, UINT Usage, XB_D3DFORMAT Format, D3DPOOL Pool, D3DTexture *pTexture, UINT Data, UINT Pitch);
-VOID SwizzleRect(LPCVOID pSource, DWORD Pitch, LPCRECT pRect, LPVOID pDest, DWORD Width, DWORD Height, CONST LPPOINT pPoint, DWORD BytesPerPixel);
-HRESULT CompressRect(LPVOID pDestBuf, XB_D3DFORMAT DestFormat, DWORD DestPitch, DWORD Width, DWORD Height, LPVOID pSrcData, XB_D3DFORMAT SrcFormat, DWORD SrcPitch, FLOAT AlphaRef, DWORD Flags);
+void SetTextureHeader(UINT Width, UINT Height, UINT Levels, UINT Usage, XB_D3DFORMAT Format, D3DTexture *pTexture, UINT Data, UINT Pitch);
+void SwizzleRect(LPCVOID pSource, DWORD Pitch, LPVOID pDest, DWORD Width, DWORD Height, DWORD BytesPerPixel);
+
+DWORD inline PadPow2(DWORD x) 
+{
+  --x;
+  x |= x >> 1;
+  x |= x >> 2;
+  x |= x >> 4;
+  x |= x >> 8;
+  x |= x >> 16;
+  return ++x;
+}

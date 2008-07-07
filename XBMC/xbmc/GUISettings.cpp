@@ -22,14 +22,8 @@
 #include "stdafx.h"
 #include "GUISettings.h"
 #include "GUIDialogFileBrowser.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "utils/FanController.h"
-#endif
 #include "XBAudioConfig.h"
 #include "XBVideoConfig.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "XBTimeZone.h"
-#endif
 #ifdef HAS_XFONT
 #include <xfont.h>
 #endif
@@ -210,35 +204,12 @@ CGUISettings::CGUISettings(void)
 
   // Programs settings
   AddGroup(1, 0);
-#ifdef HAS_XBOX_HARDWARE
-  AddCategory(1, "myprograms", 16000);
-  AddBool(1, "myprograms.autoffpatch", 29999, false);
-  AddSeparator(2,"myprograms.sep1");
-  AddBool(3, "myprograms.gameautoregion",511,false);
-  AddInt(4, "myprograms.ntscmode", 16110, 0, 0, 1, 3, SPIN_CONTROL_TEXT);
-#ifdef HAS_TRAINER
-  AddSeparator(5,"myprograms.sep2");
-  AddString(6, "myprograms.trainerpath", 20003, "select folder", BUTTON_CONTROL_PATH_INPUT, false, 657);
-#endif
-  AddSeparator(7,"myprograms.sep3");
-  AddBool(8, "myprograms.usedashpath", 13007, true);
-  AddString(9, "myprograms.dashboard", 13006, "C:\\xboxdash.xbe", BUTTON_CONTROL_PATH_INPUT, false, 655);
-#endif
 
   AddCategory(1,"programfiles",744);
   AddInt(1, "programfiles.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
   AddInt(2, "programfiles.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
   AddInt(3, "programfiles.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
   AddBool(4, "programfiles.savefolderviews", 583, true);
-
-#ifdef HAS_KAI
-  AddCategory(1, "xlinkkai", 714);
-  AddBool(1, "xlinkkai.enabled", 14072, false);
-  AddBool(2, "xlinkkai.enablenotifications", 14008, true);
-  AddString(4, "xlinkkai.username", 709, "", BUTTON_CONTROL_INPUT, false, 709);
-  AddString(5, "xlinkkai.password", 710, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 710);
-  AddString(6, "xlinkkai.server", 14042, "", BUTTON_CONTROL_IP_INPUT);
-#endif
 
   // My Weather settings
   AddGroup(2, 8);
@@ -323,6 +294,7 @@ CGUISettings::CGUISettings(void)
   AddInt(4, "cddaripper.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
   AddInt(5, "cddaripper.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
 
+#ifdef HAS_KARAOKE
   AddCategory(3, "karaoke", 13327);
   AddBool(1, "karaoke.enabled", 13323, false);
   AddBool(2, "karaoke.voiceenabled", 13361, false);
@@ -331,6 +303,7 @@ CGUISettings::CGUISettings(void)
   AddString(5, "karaoke.port1voicemask", 13383, "None", SPIN_CONTROL_TEXT);
   AddString(6, "karaoke.port2voicemask", 13384, "None", SPIN_CONTROL_TEXT);
   AddString(7, "karaoke.port3voicemask", 13385, "None", SPIN_CONTROL_TEXT);
+#endif
 
   // System settings
   AddGroup(4, 13000);
@@ -344,28 +317,11 @@ CGUISettings::CGUISettings(void)
 #ifdef HAS_HAL
   AddInt(3, "system.shutdownstate", 13008, 0, 0, 1, 4, SPIN_CONTROL_TEXT);
 #endif
-#ifdef HAS_XBOX_HARDWARE
-  AddSeparator(3, "system.sep2");
-  AddInt(4, "system.ledcolour", 13339, LED_COLOUR_NO_CHANGE, LED_COLOUR_NO_CHANGE, 1, LED_COLOUR_OFF, SPIN_CONTROL_TEXT);
-  AddInt(5, "system.leddisableonplayback", 13345, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
-  AddBool(6, "system.ledenableonpaused", 20313, true);
-  AddSeparator(7, "system.sep3");
-  AddBool(8, "system.fanspeedcontrol", 13302, false);
-  AddInt(9, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 5, 50, SPIN_CONTROL_TEXT);
-  AddSeparator(10, "system.sep4");
-  AddBool(11, "system.autotemperature", 13301, false);
-  AddInt(12, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
-  AddInt(13, "system.minfanspeed", 13411, 1, 1, 1, 50, SPIN_CONTROL_TEXT);
-#endif
 
 #ifdef HAS_LCD
   AddCategory(4, "lcd", 448);
 #ifdef _LINUX
   AddInt(2, "lcd.type", 4501, LCD_TYPE_NONE, LCD_TYPE_NONE, 1, LCD_TYPE_LCDPROC, SPIN_CONTROL_TEXT);
-#endif
-#ifdef _XBOX
-  AddInt(2, "lcd.type", 4501, LCD_TYPE_NONE, LCD_TYPE_NONE, 1, LCD_TYPE_VFD, SPIN_CONTROL_TEXT);
-  AddInt(3, "lcd.modchip", 471, MODCHIP_SMARTXX, MODCHIP_SMARTXX, 1, MODCHIP_XECUTER3, SPIN_CONTROL_TEXT);
 #endif
   AddInt(4, "lcd.backlight", 463, 80, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   AddInt(5, "lcd.contrast", 465, 100, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
@@ -380,27 +336,14 @@ CGUISettings::CGUISettings(void)
   AddBool(2, "appleremote.alwayson", 13602, false);
   AddInt(3, "appleremote.sequencetime", 13603, 500, 50, 50, 1000, SPIN_CONTROL_INT_PLUS, MASK_MS, TEXT_OFF);
 #endif
-  
+
   AddCategory(4, "autorun", 447);
   AddBool(1, "autorun.dvd", 240, true);
   AddBool(2, "autorun.vcd", 241, true);
   AddBool(3, "autorun.cdda", 242, true);
-#ifdef HAS_XBOX_HARDWARE
-  AddBool(4, "autorun.xbox", 243, true);
-#endif
   AddBool(5, "autorun.video", 244, true);
   AddBool(6, "autorun.music", 245, true);
   AddBool(7, "autorun.pictures", 246, true);
-
-#ifdef HAS_XBOX_HARDWARE
-  AddCategory(4, "harddisk", 440);
-  AddInt(1, "harddisk.spindowntime", 229, 0, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF); // Minutes
-  AddInt(2, "harddisk.remoteplayspindown", 13001, 0, 0, 1, 3, SPIN_CONTROL_TEXT); // off, music, video, both
-  AddInt(0, "harddisk.remoteplayspindownminduration", 13004, 20, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_MINS); // Minutes
-  AddInt(0, "harddisk.remoteplayspindowndelay", 13003, 20, 5, 5, 300, SPIN_CONTROL_INT_PLUS, MASK_SECS); // seconds
-  AddInt(3, "harddisk.aamlevel", 21386, AAM_FAST, AAM_FAST, 1, AAM_QUIET, SPIN_CONTROL_TEXT);
-  AddInt(4, "harddisk.apmlevel", 21390, APM_HIPOWER, APM_HIPOWER, 1, APM_LOPOWER_STANDBY, SPIN_CONTROL_TEXT);
-#endif
 
   AddCategory(4, "cache", 439);
   AddInt(1, "cache.harddisk", 14025, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
@@ -430,14 +373,6 @@ CGUISettings::CGUISettings(void)
   AddString(7, "audiooutput.passthroughdevice", 546, "iec958", BUTTON_CONTROL_INPUT);
 #endif
 
-#ifndef __APPLE__
-  AddCategory(4, "videooutput", 21373);
-  AddInt(1, "videooutput.aspect", 21374, VIDEO_NORMAL, VIDEO_NORMAL, 1, VIDEO_WIDESCREEN, SPIN_CONTROL_TEXT);
-  AddBool(2,  "videooutput.hd480p", 21378, true);
-  AddBool(3,  "videooutput.hd720p", 21379, true);
-  AddBool(4,  "videooutput.hd1080i", 21380, true);
-#endif
-
   AddCategory(4, "masterlock", 12360);
   AddString(1, "masterlock.lockcode"       , 20100, "-", BUTTON_CONTROL_STANDARD);
   AddSeparator(2, "masterlock.sep1");
@@ -455,11 +390,13 @@ CGUISettings::CGUISettings(void)
   AddBool(1, "myvideos.treatstackasfile", 20051, true);
   AddBool(2, "myvideos.autoresume",12017, false);
   AddBool(3, "myvideos.autothumb",12024, false);
-  AddSeparator(4, "myvideos.sep1");
+  AddBool(4, "myvideos.cleanfilenames", 20418, false);
+  AddSeparator(5, "myvideos.sep1");
   AddInt(5, "myvideos.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
   AddInt(6, "myvideos.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
   AddInt(7, "myvideos.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
   AddBool(8, "myvideos.savefolderviews", 583, true);
+
   AddCategory(5, "videolibrary", 14022);
 
   AddBool(1, "videolibrary.enabled", 418, true);
@@ -470,37 +407,31 @@ CGUISettings::CGUISettings(void)
   AddBool(6, "videolibrary.singleseason", 20412, true);
   AddSeparator(7, "videolibrary.sep1");
   AddBool(8, "videolibrary.updateonstartup", 22000, false);
-  AddBool(9, "videolibrary.backgroundupdate", 22001, false);    
-  AddSeparator(10, "videolibrary.sep2");  
+  AddBool(9, "videolibrary.backgroundupdate", 22001, false);
+  AddSeparator(10, "videolibrary.sep2");
   AddString(11, "videolibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
   AddString(12, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
   AddString(13, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
-  
+
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
   AddString(2, "videoplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(3, "videoplayer.sep1");
-#ifndef __APPLE__
+#ifndef HAS_SDL
   AddInt(4, "videoplayer.rendermethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADERV2, SPIN_CONTROL_TEXT);
 #endif
   AddInt(5, "videoplayer.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(6, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
-  
+
+#ifdef HAS_SDL
   AddSeparator(7, "videoplayer.sep1.5");
   AddInt(8, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
   AddInt(9, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_SINC_SOFTWARE, SPIN_CONTROL_TEXT);
-  
-#ifdef HAS_XBOX_HARDWARE
-  AddInt(7, "videoplayer.flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
-  AddBool(8, "videoplayer.soften", 215, false);
 #endif
+
   AddSeparator(10, "videoplayer.sep2");
   AddString(11, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(12, "videoplayer.sep3");
-#ifdef HAS_XBOX_HARDWARE
-  AddBool(13, "videoplayer.useexternaldvdplayer", 20001, false);
-  AddString(14, "videoplayer.externaldvdplayer", 20002, "",  BUTTON_CONTROL_PATH_INPUT, true, 655);
-#endif
   AddInt(15, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(16, "videoplayer.dvdautomenu", 21882, false);
   AddBool(17, "videoplayer.editdecision", 22003, false);
@@ -509,7 +440,7 @@ CGUISettings::CGUISettings(void)
   AddString(1, "subtitles.font", 288, "Arial.ttf", SPIN_CONTROL_TEXT);
   AddInt(2, "subtitles.height", 289, 28, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
   AddInt(3, "subtitles.style", 736, FONT_STYLE_BOLD, FONT_STYLE_NORMAL, 1, FONT_STYLE_BOLD_ITALICS, SPIN_CONTROL_TEXT);
-  AddInt(4, "subtitles.color", 737, SUBTITLE_COLOR_START, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
+  AddInt(4, "subtitles.color", 737, SUBTITLE_COLOR_START + 1, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
   AddString(5, "subtitles.charset", 735, "DEFAULT", SPIN_CONTROL_TEXT);
   AddBool(6, "subtitles.flipbidicharset", 13304, false);
   AddSeparator(7, "subtitles.sep1");
@@ -550,7 +481,7 @@ CGUISettings::CGUISettings(void)
   AddString(15, "network.httpproxyport", 707, "8080", BUTTON_CONTROL_INPUT, false, 707);
   AddSeparator(16, "network.sep2");
   AddBool(17, "network.enableinternet", 14054, true);
-  
+
   // hidden proxy authentication details
   AddString(0, "network.httpproxyusername", 706, "", BUTTON_CONTROL_INPUT);
   AddString(0, "network.httpproxypassword", 706, "", BUTTON_CONTROL_INPUT);
@@ -573,15 +504,6 @@ CGUISettings::CGUISettings(void)
 #endif
 #endif
 
-#ifdef _XBOX
-  AddCategory(6,"autodetect",           1250  );
-  AddBool(1,    "autodetect.onoff",     1251, true);
-  AddBool(2,    "autodetect.popupinfo", 1254, true);
-  AddString(3,  "autodetect.nickname",  1252, "XBMC-NickName",BUTTON_CONTROL_INPUT, false, 1252);
-  AddSeparator(4, "autodetect.sep1");
-  AddBool(5,    "autodetect.senduserpw",1255, true); // can be in advanced.xml! default:true
-#endif
-
   AddCategory(6, "smb", 1200);
   AddString(1, "smb.username",    1203,   "", BUTTON_CONTROL_INPUT, true, 1203);
   AddString(2, "smb.password",    1204,   "", BUTTON_CONTROL_HIDDEN_INPUT, true, 1204);
@@ -595,7 +517,7 @@ CGUISettings::CGUISettings(void)
   AddBool(1,    "upnp.client", 20111, false);
   AddBool(2, "upnp.renderer", 21881, false);
   AddSeparator(3,"upnp.sep1");
-  AddBool(4, "upnp.server", 21360, false);  
+  AddBool(4, "upnp.server", 21360, false);
   AddString(5, "upnp.musicshares", 21361, "", BUTTON_CONTROL_STANDARD);
   AddString(6, "upnp.videoshares", 21362, "", BUTTON_CONTROL_STANDARD);
   AddString(7, "upnp.pictureshares", 21363, "", BUTTON_CONTROL_STANDARD);
@@ -608,10 +530,8 @@ CGUISettings::CGUISettings(void)
   AddInt(3,   "remoteevents.portrange",       793, 10, 1, 1, 100, SPIN_CONTROL_INT);
   AddInt(4,   "remoteevents.maxclients",      797, 20, 1, 1, 100, SPIN_CONTROL_INT);
   AddSeparator(5,"remoteevents.sep1");
-#ifndef _XBOX
   AddBool(6,  "remoteevents.allinterfaces",   794, false);
   AddSeparator(7,"remoteevents.sep2");
-#endif
   AddInt(8,   "remoteevents.initialdelay",    795, 750, 5, 5, 10000, SPIN_CONTROL_INT);
   AddInt(9,   "remoteevents.continuousdelay", 796, 25, 5, 5, 10000, SPIN_CONTROL_INT);
 #endif
@@ -641,10 +561,6 @@ CGUISettings::CGUISettings(void)
   AddString(5, "locale.time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
   AddString(6, "locale.date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
 #endif
-#ifdef HAS_XBOX_HARDWARE
-  AddInt(7, "locale.timezone", 14074, 0, 0, 1, g_timezone.GetNumberOfTimeZones(), SPIN_CONTROL_TEXT);
-  AddBool(8, "locale.usedst", 14075, false);
-#endif
 #if defined(_LINUX) && !defined(__APPLE__)
   AddString(8, "locale.timezone", 14081, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
   AddString(7, "locale.timezonecountry", 14080, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
@@ -658,22 +574,19 @@ CGUISettings::CGUISettings(void)
   AddCategory(7, "videoscreen", 131);
   AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddString(2, "videoscreen.testresolution",13109,"", BUTTON_CONTROL_STANDARD);
-  
+
 #ifdef __APPLE__
   AddInt(3, "videoscreen.displayblanking", 13130, BLANKING_DISABLED, BLANKING_DISABLED, 1, BLANKING_ALL_DISPLAYS, SPIN_CONTROL_TEXT);
 #endif
-  
+
   AddString(3, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
-#ifdef HAS_XBOX_HARDWARE
-  AddInt(4, "videoscreen.flickerfilter", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
-  AddBool(5, "videoscreen.soften", 215, false);
-#endif
-#ifdef __APPLE__
-  // Default to vsync always on!
-  AddInt(6, "videoscreen.vsync", 13105, 2, 0, 1, 3, SPIN_CONTROL_TEXT);
-#else
-  AddInt(6, "videoscreen.vsync", 13105, 3, 0, 1, 3, SPIN_CONTROL_TEXT);
-#endif
+  AddInt(6, "videoscreen.vsync", 13105,
+#ifdef _LINUX
+         VSYNC_DISABLED,
+#else /* _LINUX */
+         VSYNC_ALWAYS,
+#endif /* _LINUX */
+         VSYNC_DISABLED, 1, VSYNC_ALWAYS, SPIN_CONTROL_TEXT);
 
   AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, false);
@@ -702,7 +615,9 @@ CGUISettings::CGUISettings(void)
 }
 
 CGUISettings::~CGUISettings(void)
-{}
+{
+  Clear();
+}
 
 void CGUISettings::AddGroup(DWORD dwGroupID, DWORD dwLabelID)
 {
@@ -1027,24 +942,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGINFO, "AC3 pass through is %s", GetBool("audiooutput.ac3passthrough") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "DTS pass through is %s", GetBool("audiooutput.dtspassthrough") ? "enabled" : "disabled");
 
-#ifndef __APPLE__
-  if (g_videoConfig.HasLetterbox())
-    SetInt("videooutput.aspect", VIDEO_LETTERBOX);
-  else if (g_videoConfig.HasWidescreen())
-    SetInt("videooutput.aspect", VIDEO_WIDESCREEN);
-  else
-    SetInt("videooutput.aspect", VIDEO_NORMAL);
-  
-  SetBool("videooutput.hd480p", g_videoConfig.Has480p());
-  SetBool("videooutput.hd720p", g_videoConfig.Has720p());
-  SetBool("videooutput.hd1080i", g_videoConfig.Has1080i());
-#endif
-
-#ifdef HAS_XBOX_HARDWARE
-  SetInt("locale.timezone", g_timezone.GetTimeZoneIndex());
-  SetBool("locale.usedst", g_timezone.GetDST());
-#endif
-
   g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)GetInt("videoscreen.resolution");
   g_videoConfig.SetVSyncMode((VSYNC)GetInt("videoscreen.vsync"));
   CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);
@@ -1054,11 +951,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   )
   {
-#ifdef _XBOX
-    RESOLUTION newRes = g_videoConfig.GetBestMode();
-#else
     RESOLUTION newRes = g_videoConfig.GetSafeMode();
-#endif
     if (g_guiSettings.m_LookAndFeelResolution == AUTORES)
     {
       //"videoscreen.resolution" will stay at AUTORES, m_LookAndFeelResolution will be the real mode
@@ -1071,14 +964,14 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
       SetInt("videoscreen.resolution", newRes);
     }
   }
-  
+
   // Move replaygain settings into our struct
   m_replayGain.iPreAmp = GetInt("musicplayer.replaygainpreamp");
   m_replayGain.iNoGainPreAmp = GetInt("musicplayer.replaygainnogainpreamp");
   m_replayGain.iType = GetInt("musicplayer.replaygaintype");
   m_replayGain.bAvoidClipping = GetBool("musicplayer.replaygainavoidclipping");
 
-#if defined(_LINUX) && !defined(__APPLE__)  
+#if defined(_LINUX) && !defined(__APPLE__)
   CStdString timezone = GetString("locale.timezone");
   if(timezone == "0" || timezone.IsEmpty())
   {
@@ -1086,7 +979,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     SetString("locale.timezone", timezone);
   }
   g_timezone.SetTimezone(timezone);
-#endif  
+#endif
 }
 
 void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool advanced /* = false */)

@@ -79,7 +79,7 @@ bool CGUIDialogNumeric::OnAction(const CAction &action)
   }
   else if (action.wID >= KEY_ASCII) // FIXME make it KEY_UNICODE
   { // input from the keyboard
-    if (action.unicode == 10) OnOK(); // enter
+    if (action.unicode == 10 || action.unicode == 13) OnOK(); // enter
     else if (action.unicode == 8) OnBackSpace(); // backspace
     else if (action.unicode == 27) OnCancel(); // escape
     else if (action.unicode >= 48 && action.unicode < 58)  // number
@@ -446,7 +446,7 @@ void CGUIDialogNumeric::OnNumber(unsigned int num)
     }
     else
       m_ip[m_block] = num;
-    if (m_ip[m_block] > 25 || m_ip[m_block] == 0 && num == 0)
+    if (m_ip[m_block] > 25 || (m_ip[m_block] == 0 && num == 0))
     {
       m_block++;
       if (m_block > 3) m_block = 0;

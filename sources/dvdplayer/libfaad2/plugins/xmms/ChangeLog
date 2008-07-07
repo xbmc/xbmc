@@ -1,3 +1,6 @@
+22 August 2004:
+	* move from libmp4v2 to libmp4ff
+
 1 December 2003:
 	* remove aac plug and merge the aac part with the mp4 part
 	  so now 2 plugins in one :)
