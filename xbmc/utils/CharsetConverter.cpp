@@ -24,6 +24,8 @@
 
 using namespace std;
 
+#define UTF8_DEST_MULTIPLIER	6
+
 #define ICONV_PREPARE(iconv) iconv=(iconv_t)-1
 #define ICONV_SAFE_CLOSE(iconv) if (iconv!=(iconv_t)-1) { iconv_close(iconv); iconv=(iconv_t)-1; }
 
@@ -289,7 +291,7 @@ void CCharsetConverter::utf8ToStringCharset(CStdStringA& strSourceDest)
 
 void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdStringA& strDest)
 {
-  convert(m_iconvStringCharsetToUtf8,4,g_langInfo.GetGuiCharSet(),"UTF-8",strSource,strDest);
+  convert(m_iconvStringCharsetToUtf8,UTF8_DEST_MULTIPLIER,g_langInfo.GetGuiCharSet(),"UTF-8",strSource,strDest);
 }
 
 void CCharsetConverter::stringCharsetToUtf8(CStdStringA& strSourceDest)
@@ -302,7 +304,7 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset,
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  convert(iconvString,4,strSourceCharset,"UTF-8",strSource,strDest);
+  convert(iconvString,UTF8_DEST_MULTIPLIER,strSourceCharset,"UTF-8",strSource,strDest);
   iconv_close(iconvString);
 }
 
@@ -310,29 +312,29 @@ void CCharsetConverter::stringCharsetTo(const CStdStringA& strDestCharset, const
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  convert(iconvString,4,g_langInfo.GetGuiCharSet(),strDestCharset,strSource,strDest);
+  convert(iconvString,UTF8_DEST_MULTIPLIER,g_langInfo.GetGuiCharSet(),strDestCharset,strSource,strDest);
   iconv_close(iconvString);
 }
 
 void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDest)
 {
-  convert(m_iconvWtoUtf8,sizeof(wchar_t),WCHAR_CHARSET,"UTF-8",strSource,strDest);
+  convert(m_iconvWtoUtf8,UTF8_DEST_MULTIPLIER,WCHAR_CHARSET,"UTF-8",strSource,strDest);
 }
 
 void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest)
 {
-  convert(m_iconvUtf16BEtoUtf8,4,"UTF-16BE","UTF-8",strSource,strDest);
+  convert(m_iconvUtf16BEtoUtf8,UTF8_DEST_MULTIPLIER,"UTF-16BE","UTF-8",strSource,strDest);
 }
 
 void CCharsetConverter::utf16LEtoUTF8(const CStdStringW& strSource,
                                       CStdStringA &strDest)
 {
-  convert(m_iconvUtf16LEtoUtf8,4,"UTF-16LE","UTF-8",strSource,strDest);
+  convert(m_iconvUtf16LEtoUtf8,UTF8_DEST_MULTIPLIER,"UTF-16LE","UTF-8",strSource,strDest);
 }
 
 void CCharsetConverter::ucs2ToUTF8(const CStdStringW& strSource, CStdStringA& strDest)
 {
-  convert(m_iconvUcs2CharsetToUtf8,4,"UCS-2LE","UTF-8",strSource,strDest);
+  convert(m_iconvUcs2CharsetToUtf8,UTF8_DEST_MULTIPLIER,"UCS-2LE","UTF-8",strSource,strDest);
 }
 
 void CCharsetConverter::utf16LEtoW(const CStdStringW& strSource, CStdStringW &strDest)
