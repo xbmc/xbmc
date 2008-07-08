@@ -237,6 +237,9 @@ namespace PYXBMC
       new(&((ControlProgress*)pControl)->strTextureOverlay) string();     
       break;
     case CGUIControl::GUICONTAINER_LIST:
+    case CGUIControl::GUICONTAINER_WRAPLIST:
+    case CGUIControl::GUICONTAINER_FIXEDLIST:
+    case CGUIControl::GUICONTAINER_PANEL:
       pControl = (Control*)ControlList_Type.tp_alloc(&ControlList_Type, 0);
       new(&((ControlList*)pControl)->strFont) string();    
       new(&((ControlList*)pControl)->strTextureButton) string();    
