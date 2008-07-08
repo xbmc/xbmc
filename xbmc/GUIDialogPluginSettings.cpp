@@ -337,7 +337,7 @@ void CGUIDialogPluginSettings::CreateControls()
   SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, m_strHeading);
 
   // Create our base path, used for type "fileenum" settings
-  CStdString basepath = "Q:\\plugins\\";
+  CStdString basepath = "U:\\plugins\\";
   CUtil::AddFileToFolder(basepath, m_url.GetHostName(), basepath);
   CUtil::AddFileToFolder(basepath, m_url.GetFileName(), basepath);
   // Replace the / at end, GetFileName() leaves a / at the end
