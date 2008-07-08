@@ -187,33 +187,53 @@ BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags)
 YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags)
   : BaseYUV2RGBGLSLShader(flags)
 {
-  string target = "";
-  if (rect)
-    target="Rect";
-  string shaderf = 
-    "uniform sampler2D"+target+" ytex;\n"
-    "uniform sampler2D"+target+" utex;\n"
-    "uniform sampler2D"+target+" vtex;\n"
+  string shaderf;
+  
+  if (rect) 
+  {
+    shaderf += "#extension GL_ARB_texture_rectangle : enable\n"
+               "#define texture2D texture2DRect\n"
+               "#define sampler2D sampler2DRect\n";
+  }
+
+  // ati breaks down with sampler2DRect, but it seem to work without it
+  if(rect && strstr((const char*)glGetString(GL_VENDOR), "ATI") != NULL)
+  {
+    shaderf += "#define idY 2\n";
+    shaderf += "#define idU 0\n";
+    shaderf += "#define idV 1\n";
+  }
+  else
+  {
+    shaderf += "#define idY 0\n";
+    shaderf += "#define idU 1\n";
+    shaderf += "#define idV 2\n";
+  }
+
+  shaderf += 
+    "uniform sampler2D ytex;\n"
+    "uniform sampler2D utex;\n"
+    "uniform sampler2D vtex;\n"
     "void main()\n"
     "{\n"
     "vec4 yuv, rgb;\n"
     "mat4 yuvmat = " + BuildYUVMatrix();
-  
+
   if (!(flags & CONF_FLAGS_YUV_FULLRANGE))
   {
     shaderf +=
-      "yuv.rgba = vec4(((texture2D"+target+"(ytex, gl_TexCoord[0].xy).r - 16.0/256.0) * 1.164383562),\n"
-      "                ((texture2D"+target+"(utex, gl_TexCoord[1].xy).r - 16.0/256.0) * 1.138392857 - 0.5),\n"
-      "                ((texture2D"+target+"(vtex, gl_TexCoord[2].xy).r - 16.0/256.0) * 1.138392857 - 0.5),\n"
+      "yuv.rgba = vec4(((texture2D(ytex, gl_TexCoord[idY].xy).r - 16.0/256.0) * 1.164383562),\n"
+      "                ((texture2D(utex, gl_TexCoord[idU].xy).r - 16.0/256.0) * 1.138392857 - 0.5),\n"
+      "                ((texture2D(vtex, gl_TexCoord[idV].xy).r - 16.0/256.0) * 1.138392857 - 0.5),\n"
       "                0.0);\n";
   }
   else
   {
     shaderf +=
-      "yuv.rgba = vec4(texture2D"+target+"(ytex, gl_TexCoord[0].xy).r,\n"
-      "                0.436 * (texture2D"+target+"(utex, gl_TexCoord[1].xy).r * 2.0 - 1.0),\n"
-      "                0.615 * (texture2D"+target+"(vtex, gl_TexCoord[2].xy).r * 2.0 - 1.0),\n"
-      "                vec4(0.0,      0.0,     0.0,     0.0) ); \n";
+      "yuv.rgba = vec4((texture2D(ytex, gl_TexCoord[idY].xy).r),\n"
+      "                (texture2D(utex, gl_TexCoord[idU].xy).r - 0.5),\n"
+      "                (texture2D(vtex, gl_TexCoord[idV].xy).r - 0.5),\n"
+      "                0.0);\n";
   }
   shaderf +=
     "rgb = yuvmat * yuv;\n"
@@ -250,42 +270,65 @@ bool YUV2RGBProgressiveShader::OnEnabled()
 YUV2RGBBobShader::YUV2RGBBobShader(bool rect, unsigned flags)
   : BaseYUV2RGBGLSLShader(flags)
 {
-  string target = "";
-  if (rect)
-    target="Rect";
-  string shaderf = 
-    "uniform sampler2D"+target+" ytex;"
-    "uniform sampler2D"+target+" utex;"
-    "uniform sampler2D"+target+" vtex;"
+  string shaderf;
+  if (rect) 
+  {
+    shaderf += "#extension GL_ARB_texture_rectangle : enable\n"
+               "#define texture2D texture2DRect\n"
+               "#define sampler2D sampler2DRect\n";
+  }
+
+  // ati breaks down with sampler2DRect, but it seem to work without it
+  if(rect && strstr((const char*)glGetString(GL_VENDOR), "ATI") != NULL)
+  {
+    shaderf += "#define idY 2\n";
+    shaderf += "#define idU 0\n";
+    shaderf += "#define idV 1\n";
+  }
+  else
+  {
+    shaderf += "#define idY 0\n";
+    shaderf += "#define idU 1\n";
+    shaderf += "#define idV 2\n";
+  }
+
+
+  shaderf += 
+    "uniform sampler2D ytex;"
+    "uniform sampler2D utex;"
+    "uniform sampler2D vtex;"
     "uniform float stepX, stepY;"
     "uniform int field;"
     "void main()"
     "{"
     "vec4 yuv, rgb;"
     "vec2 offsetY, offsetUV;"
-    "float temp1 = mod(gl_TexCoord[0].y, 2*stepY);"
+    "float temp1 = mod(gl_TexCoord[idY].y, 2*stepY);"
 
-    "offsetY  = gl_TexCoord[0].xy ;"
-    "offsetUV = gl_TexCoord[1].xy ;"
+    "offsetY  = gl_TexCoord[idY].xy ;"
+    "offsetUV = gl_TexCoord[idU].xy ;"
     "offsetY.y  -= (temp1 - stepY/2 + float(field)*stepY);"
     "offsetUV.y -= (temp1 - stepY/2 + float(field)*stepY)/2;"
     "mat4 yuvmat = " + BuildYUVMatrix() +
-    "yuv = vec4(texture2D"+target+"(ytex, offsetY).r,"
-    "           texture2D"+target+"(utex, offsetUV).r,"
-    "           texture2D"+target+"(vtex, offsetUV).r,"
+    "yuv = vec4(texture2D(ytex, offsetY).r,"
+    "           texture2D(utex, offsetUV).r,"
+    "           texture2D(vtex, offsetUV).r,"
     "           0.0);";
     if (!(flags & CONF_FLAGS_YUV_FULLRANGE))
     {
       shaderf +=
-        "yuv.rgba = vec4( (yuv.r - 16.0/256.0) * 1.164383562,"
-        "           (yuv.g - 16.0/256.0) * 1.138392857 - 0.5, "
-        "           (yuv.b - 16.0/256.0) * 1.138392857 - 0.5;";
+        "yuv.rgba = vec4( (yuv.r - 16.0/256.0) * 1.164383562"
+        "               , (yuv.g - 16.0/256.0) * 1.138392857 - 0.5"
+        "               , (yuv.b - 16.0/256.0) * 1.138392857 - 0.5"
+        "               , 0);";
     }
     else
     {
       shaderf +=
-        "yuv.gba = vec3(0.436 * (yuv.g * 2.0 - 1.0),"
-        "           0.615 * (yuv.b * 2.0 - 1.0), 0);";        
+        "yuv.rgba = vec4( yuv.r"
+        "               , yuv.g - 0.5"
+        "               , yuv.b - 0.5"
+        "               , 0);";
     }
     shaderf +=
       "rgb = yuvmat * yuv;"
