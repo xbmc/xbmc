@@ -276,7 +276,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   CUtil::AddFileToFolder(url.GetFileName(), "default.py", fileName);
 
   // path is Q:\plugins\<path from here>
-  CStdString pathToScript = _P("Q:\\plugins\\");
+  CStdString pathToScript = _P("U:\\plugins\\");
   CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
   CUtil::AddFileToFolder(pathToScript, fileName, pathToScript);
 #ifdef _WIN32
@@ -353,7 +353,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   CUtil::AddFileToFolder(url.GetFileName(), "default.py", fileName);
 
   // path is Q:\plugins\<path from here>
-  CStdString pathToScript = _P("Q:\\plugins\\");
+  CStdString pathToScript = _P("U:\\plugins\\");
   CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
   CUtil::AddFileToFolder(pathToScript, fileName, pathToScript);
 #ifdef _WIN32
@@ -389,7 +389,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
 
 bool CPluginDirectory::HasPlugins(const CStdString &type)
 {
-  CStdString path = _P("Q:\\plugins\\");
+  CStdString path = _P("U:\\plugins\\");
   CUtil::AddFileToFolder(path, type, path);
   CFileItemList items;
   if (CDirectory::GetDirectory(path, items, "/", false))
@@ -412,14 +412,14 @@ bool CPluginDirectory::HasPlugins(const CStdString &type)
 bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList &items)
 {
   // retrieve our folder
-  CStdString pluginsFolder = _P("Q:\\plugins");
+  CStdString pluginsFolder = _P("U:\\plugins");
   CUtil::AddFileToFolder(pluginsFolder, type, pluginsFolder);
   CUtil::AddSlashAtEnd(pluginsFolder);
 
   if (!CDirectory::GetDirectory(pluginsFolder, items, "*.py", false))
     return false;
 
-  items.m_strPath.Replace(_P("Q:\\plugins\\"), "plugin://");
+  items.m_strPath.Replace(_P("U:\\plugins\\"), "plugin://");
   items.m_strPath.Replace("\\", "/");
 
   // flatten any folders - TODO: Assigning of thumbs
@@ -444,7 +444,7 @@ bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList
         item->SetThumbnailImage(item->GetCachedProgramThumb());
       }
     }
-    item->m_strPath.Replace(_P("Q:\\plugins\\"), "plugin://");
+    item->m_strPath.Replace(_P("U:\\plugins\\"), "plugin://");
     item->m_strPath.Replace("\\", "/");
   }
   return true;
@@ -556,7 +556,7 @@ void CPluginDirectory::SetProperty(int handle, const CStdString &strProperty, co
 void CPluginDirectory::LoadPluginStrings(const CURL &url)
 {
   // Path where the plugin resides
-  CStdString pathToPlugin = "Q:\\plugins\\";
+  CStdString pathToPlugin = "U:\\plugins\\";
   CUtil::AddFileToFolder(pathToPlugin, url.GetHostName(), pathToPlugin);
   CUtil::AddFileToFolder(pathToPlugin, url.GetFileName(), pathToPlugin);
 
