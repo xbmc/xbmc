@@ -31,6 +31,9 @@
 #include "Application.h"
 #include "FileItem.h"
 #include "PlayListPlayer.h"
+#ifdef _LINUX
+#include <sys/resource.h>
+#endif
 
 
 CApplication g_application;
@@ -38,6 +41,11 @@ CApplication g_application;
 int main(int argc, char* argv[])
 {
   CFileItemList playlist;
+#if defined(_LINUX) && defined(DEBUG)
+  struct rlimit rlim;
+  rlim.rlim_cur = rlim.rlim_max = RLIM_INFINITY;
+  setrlimit(RLIMIT_CORE, &rlim);
+#endif
   if (argc > 1)
   {
     for (int i=1; i<argc;i++)
