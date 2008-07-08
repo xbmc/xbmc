@@ -97,6 +97,8 @@ public:
   int GetChapter();
 
 
+  bool Aborted();
+
   AVFormatContext* m_pFormatContext;
 
 protected:
@@ -126,6 +128,7 @@ protected:
   bool     m_bMatroska;
   int      m_speed;
   unsigned m_program;
+  DWORD    m_timeout;
 
   CDVDInputStream* m_pInput;
 };
