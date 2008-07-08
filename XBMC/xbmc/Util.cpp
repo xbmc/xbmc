@@ -4329,7 +4329,7 @@ CStdString CUtil::TranslatePath(const CStdString& path)
         str.append("/Library/Application Support/XBMC/mediasources.xml");
         return str;
       }
-      else if (lowerPath.Find("q:\\plugins") == 0)
+      else if (lowerPath.Find("u:\\plugins") == 0)
       {
         CStdString str = getenv("HOME");
         str.append("/Library/Application Support/XBMC/Plugins");
