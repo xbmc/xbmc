@@ -786,7 +786,7 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
   else
   {
     strPath = m_vecItems->Get(iItem)->m_strPath;
-    strPath.Replace("plugin://music/","Q:\\plugins\\music\\");
+    strPath.Replace("plugin://music/","U:\\plugins\\music\\");
     strPath.Replace("/","\\");
     picturePath = strPath;
     CFileItem item(strPath,true);

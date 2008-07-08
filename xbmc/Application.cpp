@@ -1008,6 +1008,15 @@ CProfile* CApplication::InitDirectoriesLinux()
     xbmcDir = _P("u:\\system");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
+    xbmcDir = _P("u:\\plugins");
+    CreateDirectory(xbmcDir.c_str(), NULL);
+    xbmcDir = _P("u:\\plugins\\video");
+    CreateDirectory(xbmcDir.c_str(), NULL);
+    xbmcDir = _P("u:\\plugins\\music");
+    CreateDirectory(xbmcDir.c_str(), NULL);
+    xbmcDir = _P("u:\\plugins\\pictures");
+    CreateDirectory(xbmcDir.c_str(), NULL);
+    
     xbmcDir = _P("u:\\scripts");
     CreateDirectory(xbmcDir.c_str(), NULL);
     xbmcDir = _P("u:\\scripts\\My Scripts"); // FIXME: both scripts should be in 1 directory
@@ -1025,7 +1034,7 @@ CProfile* CApplication::InitDirectoriesLinux()
   {
     CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
     CIoSupport::RemapDriveLetter('T', _P("Q:\\userdata"));
-    CIoSupport::RemapDriveLetter('U', "/dev/null");
+    CIoSupport::RemapDriveLetter('U', _P("Q:\\"));
   }
 
   g_settings.m_vecProfiles.clear();
