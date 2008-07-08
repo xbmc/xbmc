@@ -119,7 +119,7 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
         if (inf->pObject)
         {
           // currently we only accept messages from a button or controllist with a select action
-          if ((ControlList_CheckExact(inf->pObject) && (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_MOUSE_LEFT_CLICK))||
+          if ((ControlList_CheckExact(inf->pObject) && (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_MOUSE_LEFT_CLICK)) ||
             ControlButton_CheckExact(inf->pObject) || ControlRadioButton_CheckExact(inf->pObject) ||
             ControlCheckMark_CheckExact(inf->pObject))
           {
