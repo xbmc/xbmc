@@ -2192,6 +2192,15 @@
 					RelativePath="..\..\xbmc\GUIViewStateScripts.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIWindowBuddies.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowEPG.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowFileManager.cpp">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIWindowFullScreen.cpp">
 				</File>
 				<File
