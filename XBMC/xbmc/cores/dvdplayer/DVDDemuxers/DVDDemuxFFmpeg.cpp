@@ -114,7 +114,7 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 static __declspec(thread) CDVDDemuxFFmpeg* g_demuxer = 0;
 #else
 static TLS g_tls;
-#define g_demuxer (*((CDVDDemuxFFmpeg**)g_tls.Get())))
+#define g_demuxer (*((CDVDDemuxFFmpeg**)g_tls.Get()))
 #endif
 
 static int interrupt_cb(void)
