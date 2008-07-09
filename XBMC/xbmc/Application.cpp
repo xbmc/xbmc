@@ -586,7 +586,7 @@ HRESULT CApplication::Create(HWND hWnd)
 #elif defined(__APPLE__)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Mac OS X.  Built on %s", __DATE__);
 #elif defined(_WIN32)
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Windows.  Built on %s (compiler %i)", __DATE__, _MSC_VER);
+  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: %s.  Built on %s (compiler %i)",g_sysinfo.GetKernelVersion().c_str(), __DATE__, _MSC_VER);
 #endif
   CLog::Log(LOGNOTICE, "Q is mapped to: %s", strExecutablePath.c_str());
   char szXBEFileName[1024];
