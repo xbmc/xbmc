@@ -180,7 +180,7 @@ bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
   return false;
 }
 
-#ifndef __GNUC__
+#ifdef _XBOX
 #pragma const_seg("LC_RDATA")
 #pragma comment(linker, "/merge:LC_RDATA=LCODE")
 #endif
