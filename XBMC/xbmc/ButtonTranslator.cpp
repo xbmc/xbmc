@@ -92,11 +92,18 @@ bool CButtonTranslator::Load()
 #ifdef HAS_LIRC
 bool CButtonTranslator::LoadLircMap()
 {
+#ifdef _LINUX
+#define REMOTEMAP "Lircmap.xml"
+#define REMOTEMAPTAG "lircmap"
+#else
+#define REMOTEMAP "IRSSmap.xml"
+#define REMOTEMAPTAG "irssmap"
+#endif
   // load our xml file, and fill up our mapping tables
   TiXmlDocument xmlDoc;
 
   // Load the config file
-  CStdString lircmapPath = g_settings.GetUserDataItem("Lircmap.xml");
+  CStdString lircmapPath = g_settings.GetUserDataItem(REMOTEMAP);
   CLog::Log(LOGINFO, "Loading %s", lircmapPath.c_str());
   if (!xmlDoc.LoadFile(lircmapPath))
   {
@@ -107,9 +114,9 @@ bool CButtonTranslator::LoadLircMap()
   lircRemotesMap.clear();
   TiXmlElement* pRoot = xmlDoc.RootElement();
   CStdString strValue = pRoot->Value();
-  if (strValue != "lircmap")
+  if (strValue != REMOTEMAPTAG)
   {
-    g_LoadErrorStr.Format("%sl Doesn't contain <lircmap>", lircmapPath.c_str());
+    g_LoadErrorStr.Format("%sl Doesn't contain <%s>", lircmapPath.c_str(), REMOTEMAPTAG);
     return false;
   }
 

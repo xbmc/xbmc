@@ -108,7 +108,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="../guilib;../xbmc/Win32;../xbmc/;freetype2/include;../xbmc/lib/boost"
+				AdditionalIncludeDirectories="../guilib;../xbmc/Win32;../xbmc/;freetype2/include;../xbmc/lib/boost;../xbmc/utils"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;HAS_SDL;_MSVC;NOMINMAX"
 				StringPooling="FALSE"
 				MinimalRebuild="TRUE"
@@ -155,7 +155,7 @@
 				Name="VCCLCompilerTool"
 				GlobalOptimizations="TRUE"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="../guilib;../xbmc/win32;../xbmc;freetype2\include;../xbmc/lib/boost"
+				AdditionalIncludeDirectories="../guilib;../xbmc/win32;../xbmc;freetype2\include;../xbmc/lib/boost;../xbmc/utils"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;HAS_SDL;_MSVC;NOMINMAX"
 				MinimalRebuild="FALSE"
 				RuntimeLibrary="0"
@@ -758,6 +758,22 @@
 			<File
 				RelativePath=".\common\SDLMouse.h">
 			</File>
+			<Filter
+				Name="IRServerSuite"
+				Filter="">
+				<File
+					RelativePath=".\common\IRServerSuite\IRServerSuite.cpp">
+				</File>
+				<File
+					RelativePath=".\common\IRServerSuite\IRServerSuite.h">
+				</File>
+				<File
+					RelativePath=".\common\IRServerSuite\IrssMessage.cpp">
+				</File>
+				<File
+					RelativePath=".\common\IRServerSuite\IrssMessage.h">
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt">
