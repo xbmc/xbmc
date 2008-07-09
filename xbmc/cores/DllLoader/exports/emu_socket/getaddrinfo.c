@@ -68,12 +68,12 @@ extern struct mphostent* __stdcall dllgethostbyname(const char* name);
 
 extern struct mphostent* __stdcall dllgethostbyaddr(const char* addr, int len, int type);
 #define gethostbyaddr(addr, len, type) dllgethostbyaddr(addr, len, type)
-#endif
 
 extern struct servent* __stdcall dllgetservbyname(const char* name, const char* proto);
 #define getservbyname(name, proto) dllgetservbyname(name, proto)
 
 #define hostent mphostent
+#endif
 
 #ifndef HAVE_U_INT32_T
 #include "bittypes.h"

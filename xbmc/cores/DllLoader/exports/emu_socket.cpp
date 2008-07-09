@@ -545,13 +545,14 @@ extern "C"
     return _inetaddress;
   }
 
+#ifdef _XBOX
+
   static struct mphostent hba_hostent;
   static char* hba_cAliases[]= { NULL, NULL }; // only one NULL is needed acutally
   static char* hba_dwlist1[] = {NULL, NULL, NULL};
   static DWORD hba_dwList2[] = {0, 0, 0};
   static char hba_hostname[128];
 
-#ifdef _XBOX
   struct mphostent* __stdcall dllgethostbyaddr(const char* addr, int len, int type)
   {
     CLog::Log(LOGWARNING, "Untested function dllgethostbyaddr called!");
