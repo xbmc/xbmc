@@ -4148,7 +4148,15 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
   CStdString parent, grandParent;
   CUtil::GetParentPath(strBaseDir,parent);
   CUtil::GetParentPath(parent,grandParent);
-  return GetEpisodesByWhere(grandParent, where, items); 
+  
+  bool ret = GetEpisodesByWhere(grandParent, where, items);
+
+  if (idSeason == -1)
+  { // add any linked movies
+    CStdString where = FormatSQL("join movielinktvshow on movielinktvshow.idMovie=movieview.idMovie where movielinktvshow.idShow %s", strIn.c_str());
+    GetMoviesByWhere("videodb://1/2/", where, items);
+  }
+  return ret;
 }
 
 bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items, bool appendFullShowPath /* = true */)
