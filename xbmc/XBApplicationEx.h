@@ -21,7 +21,9 @@
 #endif
 #endif
 #include "common/Keyboard.h"
-#ifdef HAS_LIRC
+#ifdef HAS_IRSERVERSUITE
+#include "common/IRServerSuite/IRServerSuite.h"
+#elif defined(HAS_LIRC)
 #include "common/LIRC.h"
 #endif
 
