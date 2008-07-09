@@ -309,6 +309,7 @@ void CGUIImage::Render()
       glDisable(GL_TEXTURE_2D);
       glActiveTextureARB(GL_TEXTURE0_ARB);
     }
+    glDisable(GL_TEXTURE_2D);
 #endif
 
 #ifndef HAS_SDL
