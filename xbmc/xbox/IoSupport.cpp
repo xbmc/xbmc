@@ -91,6 +91,7 @@ stDriveMapping driveMapping[] =
     {'Q', new char[MAX_PATH], 0},
     {'T', new char[MAX_PATH], 0},
     {'Z', new char[MAX_PATH], 0},
+    {'U', new char[MAX_PATH], 0}
   };
 
 #else
