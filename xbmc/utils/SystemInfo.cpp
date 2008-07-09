@@ -212,22 +212,61 @@ CStdString CSysInfo::GetKernelVersion()
   return "";
 #else
   OSVERSIONINFOEX osvi;
+  SYSTEM_INFO si;
+
+  ZeroMemory(&si, sizeof(SYSTEM_INFO));
+  ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
+
+  GetSystemInfo(&si);
+
   osvi.dwOSVersionInfoSize = sizeof(osvi);
+  CStdString strKernel = "Windows ";
+
   if (GetVersionEx((OSVERSIONINFO *)&osvi))
   {
     if ( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0 )
     {
       if( osvi.wProductType == VER_NT_WORKSTATION )
-        return "Windows Vista ";
-      else 
-        return "Windows Server 2008 ";
+        strKernel.append("Vista");
+      else
+        strKernel.append("Server 2008");
+
+      if ( si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64 )
+        strKernel.append(", 64-bit");
+      else if (si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_INTEL )
+        strKernel.append(", 32-bit");
+
+    }
+    else if ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2 )
+    {
+      if( osvi.wProductType == VER_NT_WORKSTATION && si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64)
+      {
+        strKernel.append("XP Professional x64 Edition");
+      }
     }
     else if ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1 )
     {
-         return "Windows XP ";
+      strKernel.append("XP ");
+      if( osvi.wSuiteMask & VER_SUITE_PERSONAL )
+        strKernel.append("Home Edition" );
+      else 
+        strKernel.append("Professional" );
     }
+    else if ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 0 )
+    {
+      strKernel.append("2000");
+    }
+
+    if( _tcslen(osvi.szCSDVersion) > 0 )
+    {
+      strKernel.append(" ");
+      strKernel.append(osvi.szCSDVersion);
+    }
+    CStdString strBuild;
+    strBuild.Format(" build %d",osvi.dwBuildNumber);
+    strKernel += strBuild;
   }
-  return "";
+  return strKernel;
 #endif
 }
 
