@@ -1159,6 +1159,7 @@ CProfile* CApplication::InitDirectoriesWin32()
     CopyUserDataIfNeeded(strPath, "Keymap.xml");
     CopyUserDataIfNeeded(strPath, "RssFeeds.xml");
     CopyUserDataIfNeeded(strPath, "favourites.xml");
+    CopyUserDataIfNeeded(strPath, "IRSSmap.xml");
   }
   else
   {
