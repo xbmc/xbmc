@@ -32,10 +32,7 @@
 
 #include "IFile.h"
 
-extern "C"
-{
-#include "lib/libRTV/interface.h"
-}
+typedef struct rtv_data * RTVD;
 
 namespace XFILE
 {
