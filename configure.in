@@ -73,7 +73,7 @@ if test "$host_vendor" = "apple" ; then
    AC_SUBST(CFLAGS, "-L/System/Library/Frameworks/OpenGL.framework/Libraries -L/opt/local/lib -L/opt/local/lib/mysql5/mysql -I/opt/local/include")
    AC_SUBST(CXXFLAGS, "-L/System/Library/Frameworks/OpenGL.framework/Libraries -L/opt/local/lib -L/opt/local/lib/mysql5/mysql -I/opt/local/include")
    AC_SUBST(LDFLAGS, "-L/System/Library/Frameworks/OpenGL.framework/Libraries -L/opt/local/lib -L/opt/local/lib/mysql5/mysql")
-   AC_SUBST(INCLUDES, "-I/opt/local/include -I/opt/local/include/freetype2 -I/opt/local/include/mysql5 -I../xbmc -I../xbmc/lib -I../xbmc/osx -Ixbmc/lib -Ixbmc/osx -Ilib/libffmpeg-OSX/libavutil -I../xbmc/lib/libffmpeg-OSX -Ilib -Iosx -I.")
+   AC_SUBST(INCLUDES, "-I/opt/local/include -I/opt/local/include/freetype2 -I/opt/local/include/mysql5 -I\$(abs_top_srcdir)/xbmc -I\$(abs_top_srcdir)/xbmc/lib -I\$(abs_top_srcdir)/xbmc/osx -I\$(abs_top_srcdir)/xbmc/lib/libffmpeg-OSX/libavutil -I\$(abs_top_srcdir)/xbmc/lib/libffmpeg-OSX -I.")
 fi
 
 # Checks for boost headers using g++ instead of gcc
