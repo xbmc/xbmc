@@ -3340,7 +3340,7 @@ if test "$host_vendor" = "apple" ; then
 
    LDFLAGS="-L/System/Library/Frameworks/OpenGL.framework/Libraries -L/opt/local/lib -L/opt/local/lib/mysql5/mysql"
 
-   INCLUDES="-I/opt/local/include -I/opt/local/include/freetype2 -I/opt/local/include/mysql5 -I../xbmc -I../xbmc/lib -I../xbmc/osx -Ixbmc/lib -Ixbmc/osx -Ilib/libffmpeg-OSX/libavutil -I../xbmc/lib/libffmpeg-OSX -Ilib -Iosx -I."
+   INCLUDES="-I/opt/local/include -I/opt/local/include/freetype2 -I/opt/local/include/mysql5 -I\$(abs_top_srcdir)/xbmc -I\$(abs_top_srcdir)/xbmc/lib -I\$(abs_top_srcdir)/xbmc/osx -I\$(abs_top_srcdir)/xbmc/lib/libffmpeg-OSX/libavutil -I\$(abs_top_srcdir)/xbmc/lib/libffmpeg-OSX -I."
 
 fi
 
@@ -9914,13 +9914,11 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <sys/types.h> /* for off_t */
-     #include <stdio.h>
+#include <stdio.h>
 int
 main ()
 {
-int (*fp) (FILE *, off_t, int) = fseeko;
-     return fseeko (stdin, 0, 0) && fp (stdin, 0, 0);
+return fseeko (stdin, 0, 0) && (fseeko) (stdin, 0, 0);
   ;
   return 0;
 }
@@ -9960,13 +9958,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #define _LARGEFILE_SOURCE 1
-#include <sys/types.h> /* for off_t */
-     #include <stdio.h>
+#include <stdio.h>
 int
 main ()
 {
-int (*fp) (FILE *, off_t, int) = fseeko;
-     return fseeko (stdin, 0, 0) && fp (stdin, 0, 0);
+return fseeko (stdin, 0, 0) && (fseeko) (stdin, 0, 0);
   ;
   return 0;
 }
