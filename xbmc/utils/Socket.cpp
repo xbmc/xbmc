@@ -28,7 +28,7 @@
 using namespace SOCKETS;
 using namespace std;
 
-#if defined (_XBOX) || defined (_WIN32)
+#ifdef WINSOCK_VERSION
 #define close closesocket
 #endif
 
@@ -52,7 +52,7 @@ bool CPosixUDPSocket::Bind(CAddress& addr, int port, int range)
   }
 
   // make sure we can reuse the address
-#if defined (_XBOX) || defined (_WIN32)
+#ifdef WINSOCK_VERSION
   const char yes=1;
 #else
   int yes = 1;
@@ -149,7 +149,7 @@ void CSocketListener::AddSocket(CBaseSocket *sock)
   {
     m_sockets.push_back(sock);
     FD_SET(sock->Socket(), &m_fdset);
-#ifndef _XBOX
+#ifndef WINSOCK_VERSION
     if (sock->Socket() > m_iMaxSockets)
       m_iMaxSockets = sock->Socket();
 #endif
