@@ -110,7 +110,7 @@ XBMCTex:
 install-bin: all # developement convenience target
 	sudo cp xbmc.bin $(prefix)/share/xbmc
 
-install: all install-datas
+install: all install-datas install-web
 	@echo "Copying XBMC binary to $(prefix)/share/xbmc/xbmc.bin"
 	@cp xbmc.bin $(prefix)/share/xbmc/xbmc.bin
 	@mkdir -p $(prefix)/bin
@@ -131,6 +131,10 @@ install-datas: XBMCTex
 	@find system -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*@ARCH@.*" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@# PM3
 	@find skin -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.png|.*\.gif" -exec cp '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %f                            \r"
+
+install-web:
+	@mkdir -p $(prefix)/share/xbmc/web
+	@unrar x -o+ web/Project_Mayem_III_webserver_v1.0.rar $(prefix)/share/xbmc/web
 
 uninstall:
 	@echo "Removing XBMC..."
