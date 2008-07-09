@@ -1,6 +1,7 @@
 AR=ar
 ARFLAGS=rus
 RM=rm -f
+abs_top_srcdir=@abs_top_srcdir@
 prefix=@prefix@
 CXX=@CXX@
 CC=@CC@
