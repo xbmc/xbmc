@@ -470,20 +470,20 @@
 				<font>special13</font>
 			</control>
 			<control type="label">
-				<description>CPU temp Label</description>
+				<description>GPU Make Label</description>
 				<width>255</width>
 				<posx>230</posx>
 				<posy>57</posy>
-				<label>$INFO[System.CPUTemperature]</label>
+				<label>$INFO[System.videoencoderinfo]</label>
 				<align>right</align>
 				<font>font10</font>
 			</control>
 			<control type="label">
-				<description>GPU temp Label</description>
+				<description>CPU Speed Label</description>
 				<width>255</width>
 				<posx>230</posx>
 				<posy>77</posy>
-				<label>$INFO[System.GPUTemperature]</label>
+				<label>$INFO[System.cpufrequency]</label>
 				<align>right</align>
 				<font>font10</font>
 			</control>
