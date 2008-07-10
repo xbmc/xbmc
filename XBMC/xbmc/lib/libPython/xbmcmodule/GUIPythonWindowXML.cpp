@@ -42,17 +42,14 @@ using namespace std;
 #define CONTROL_VIEW_START      50
 #define CONTROL_VIEW_END        59
 
-
 using namespace PYXBMC;
 
 CGUIPythonWindowXML::CGUIPythonWindowXML(DWORD dwId, CStdString strXML, CStdString strFallBackPath)
-: CGUIWindow(dwId, strXML)
+: CGUIMediaWindow(dwId, strXML)
 {
   pCallbackWindow = NULL;
   m_actionEvent = CreateEvent(NULL, true, false, NULL);
   m_loadOnDemand = false;
-  m_vecItems = new CFileItemList;
-  m_guiState.reset(CGUIViewState::GetViewState(GetID(), *m_vecItems));
   m_coordsRes = PAL_4x3;
   m_fallbackPath = strFallBackPath;
 }
@@ -60,13 +57,13 @@ CGUIPythonWindowXML::CGUIPythonWindowXML(DWORD dwId, CStdString strXML, CStdStri
 CGUIPythonWindowXML::~CGUIPythonWindowXML(void)
 {
   CloseHandle(m_actionEvent);
-  delete m_vecItems;
 }
+
 void CGUIPythonWindowXML::Update()
 {
 }
-
 bool CGUIPythonWindowXML::OnAction(const CAction &action)
+
 {
   // do the base class window first, and the call to python after this
   bool ret = CGUIWindow::OnAction(action);
@@ -83,21 +80,20 @@ bool CGUIPythonWindowXML::OnAction(const CAction &action)
   return ret;
 }
 
-void CGUIPythonWindowXML::OnWindowLoaded()
+bool CGUIPythonWindowXML::OnClick(int iItem) {
+  // Hook Over calling  CGUIMediaWindow::OnClick(iItem) results in it trying to PLAY the file item
+  // which if its not media is BAD and 99 out of 100 times undesireable.
+  return false;
+}
+
+// SetupShares();
+/* 
+ CGUIMediaWindow::OnWindowLoaded() calls SetupShares() so override it
+and just call UpdateButtons();
+*/
+void CGUIPythonWindowXML::SetupShares()
 {
-  CGUIWindow::OnWindowLoaded();
-  m_viewControl.Reset();
-  m_viewControl.SetParentWindow(GetID());
-  vector<CGUIControl *> controls;
-  GetContainers(controls);
-  for (ciControls it = controls.begin(); it != controls.end(); it++)
-  {
-    CGUIControl *control = *it;
-    if (control->GetID() >= CONTROL_VIEW_START && control->GetID() <= CONTROL_VIEW_END)
-      m_viewControl.AddView(control);
-  }
-  m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
-  UpdateButtons();
+    UpdateButtons();
 }
 
 bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
@@ -150,17 +146,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
     {
       int iControl=message.GetSenderId();
       // Handle Sort/View internally. Scripters shouldn't use ID 2, 3 or 4.
-
-      if (iControl == CONTROL_BTNVIEWASICONS)
-      {
-        if (m_guiState.get())
-        {
-          m_guiState->SaveViewAsControl(m_viewControl.GetNextViewMode());
-        }
-        UpdateButtons();
-        return true;
-      }
-      else if (iControl == CONTROL_BTNSORTASC) // sort asc
+      if (iControl == CONTROL_BTNSORTASC) // sort asc
       {
         CLog::Log(LOGINFO, "WindowXML: Internal asc/dsc button not implemented");
         /*if (m_guiState.get())
@@ -200,24 +186,9 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
       }
     }
     break;
-
-    case GUI_MSG_CHANGE_VIEW_MODE:
-    {
-      int viewMode = 0;
-      if (message.GetParam1())  // we have an id
-        viewMode = m_viewControl.GetViewModeByID(message.GetParam1());
-      else if (message.GetParam2())
-        viewMode = m_viewControl.GetNextViewMode((int)message.GetParam2());
-
-      if (m_guiState.get())
-        m_guiState->SaveViewAsControl(viewMode);
-      UpdateButtons();
-      return true;
-    }
-    break;
   }
 
-  return CGUIWindow::OnMessage(message);
+  return CGUIMediaWindow::OnMessage(message);
 }
 
 void CGUIPythonWindowXML::AddItem(CFileItemPtr fileItem, int itemPosition)
@@ -266,21 +237,10 @@ CFileItemPtr CGUIPythonWindowXML::GetListItem(int position)
   return m_vecItems->Get(position);
 }
 
-CFileItemPtr CGUIPythonWindowXML::GetCurrentListItem(int offset)
-{
-  int item = m_viewControl.GetSelectedItem();
-  if (item < 0 || !m_vecItems->Size()) return CFileItemPtr();
-
-  item = (item + offset) % m_vecItems->Size();
-  if (item < 0) item += m_vecItems->Size();
-  return m_vecItems->Get(item);
-}
-
-
 void CGUIPythonWindowXML::ClearList()
 {
-  m_viewControl.Clear();
-  m_vecItems->Clear();
+  ClearFileItems();
+
   m_viewControl.SetItems(*m_vecItems);
   UpdateButtons();
 }
@@ -354,104 +314,6 @@ int Py_XBMC_Event_OnInit(void* arg)
   return 0;
 }
 
-/// Functions Below here are speceifc for the 'MediaWindow' Like stuff (such as Sort and View)
-
-// \brief Prepares and adds the fileitems list/thumb panel
-void CGUIPythonWindowXML::FormatAndSort(CFileItemList &items)
-{
-  FormatItemLabels();
-  SortItems(items);
-}
-
-// \brief Formats item labels based on the formatting provided by guiViewState
-void CGUIPythonWindowXML::FormatItemLabels()
-{
-  // NOTE: this function doesn't do anything.  What it should do, I have no idea.
-  if (!m_guiState.get())
-    return;
-
-  LABEL_MASKS labelMasks;
-  m_guiState->GetSortMethodLabelMasks(labelMasks);
-}
-// \brief Sorts Fileitems based on the sort method and sort oder provided by guiViewState
-void CGUIPythonWindowXML::SortItems(CFileItemList &items)
-{
-  auto_ptr<CGUIViewState> guiState(CGUIViewState::GetViewState(GetID(), items));
-
-  if (guiState.get())
-  {
-    items.Sort(guiState->GetSortMethod(), guiState->GetDisplaySortOrder());
-
-    // Should these items be saved to the hdd
-    if (items.GetCacheToDisc())
-      items.Save();
-  }
-}
-// \brief Synchonize the fileitems with the playlistplayer
-// It recreated the playlist of the playlistplayer based
-// on the fileitems of the window
-void CGUIPythonWindowXML::UpdateFileList()
-{
-  int nItem = m_viewControl.GetSelectedItem();
-  CFileItemPtr pItem = m_vecItems->Get(nItem);
-  const CStdString& strSelected = pItem->m_strPath;
-
-  FormatAndSort(*m_vecItems);
-  UpdateButtons();
-
-  m_viewControl.SetItems(*m_vecItems);
-  m_viewControl.SetSelectedItem(strSelected);
-}
-
-// \brief Updates the states (enable, disable, visible...)
-// of the controls defined by this window
-// Override this function in a derived class to add new controls
-void CGUIPythonWindowXML::UpdateButtons()
-{
-  if (m_guiState.get())
-  {
-    // Update sorting controls
-    if (m_guiState->GetDisplaySortOrder()==SORT_ORDER_NONE)
-    {
-      CONTROL_DISABLE(CONTROL_BTNSORTASC);
-    }
-    else
-    {
-      CONTROL_ENABLE(CONTROL_BTNSORTASC);
-      if (m_guiState->GetDisplaySortOrder()==SORT_ORDER_ASC)
-      {
-        CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CONTROL_BTNSORTASC);
-        g_graphicsContext.SendMessage(msg);
-      }
-      else
-      {
-        CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CONTROL_BTNSORTASC);
-        g_graphicsContext.SendMessage(msg);
-      }
-    }
-
-    // Update list/thumb control
-    m_viewControl.SetCurrentView(m_guiState->GetViewAsControl());
-
-    // Update sort by button
-    if (m_guiState->GetSortMethod()==SORT_METHOD_NONE)
-    {
-      CONTROL_DISABLE(CONTROL_BTNSORTBY);
-    }
-    else
-    {
-      CONTROL_ENABLE(CONTROL_BTNSORTBY);
-    }
-    CStdString sortLabel;
-    sortLabel.Format(g_localizeStrings.Get(550).c_str(), g_localizeStrings.Get(m_guiState->GetSortMethodLabel()).c_str());
-    SET_CONTROL_LABEL(CONTROL_BTNSORTBY, sortLabel);
-  }
-
-  CStdString items;
-  items.Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
-  SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
-}
-
 void CGUIPythonWindowXML::OnInitWindow()
 {
   // Update list/thumb control
@@ -461,14 +323,14 @@ void CGUIPythonWindowXML::OnInitWindow()
   CGUIWindow::OnInitWindow();
 }
 
-CGUIControl *CGUIPythonWindowXML::GetFirstFocusableControl(int id)
+void CGUIPythonWindowXML::SetCallbackWindow(PyObject *object)
 {
-  if (m_viewControl.HasControl(id))
-    id = m_viewControl.GetCurrentControl();
-  return CGUIWindow::GetFirstFocusableControl(id);
+  pCallbackWindow = object;
 }
 
-const CFileItemList& CGUIPythonWindowXML::CurrentDirectory() const 
-{ 
-  return *m_vecItems;
+void CGUIPythonWindowXML::GetContextButtons(int itemNumber, CContextButtons &buttons) 
+{
+  // maybe on day we can make an easy way to do this context menu 
+  // with out this method overriding the MediaWindow version, it will display 'Add to Favorites'
 }
+
