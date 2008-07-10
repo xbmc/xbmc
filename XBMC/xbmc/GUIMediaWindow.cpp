@@ -459,7 +459,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
 
   CLog::Log(LOGDEBUG,"CGUIMediaWindow::GetDirectory (%s)", strDirectory.c_str());
   CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
-  if (strDirectory.Equals("") || strDirectory.Equals("?")) return false;
+  
   if (m_guiState.get() && !m_guiState->HideParentDirItems())
   {
     CFileItemPtr pItem(new CFileItem(".."));
