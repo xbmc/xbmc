@@ -689,7 +689,5 @@ bool CScrobbler::ShouldSubmit()
 CStdString CScrobbler::GetTempFileName()
 {
   CStdString strFileName = g_settings.GetProfileUserDataFolder();
-  strFileName+="\\Scrobbler.tmp";
-
-  return strFileName;
+  return CUtil::AddFileToFolder(strFileName, "Scrobbler.tmp");
 }
