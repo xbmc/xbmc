@@ -52,6 +52,8 @@ static int64_t (*_glXSwapBuffersMscOML)(Display* dpy, GLXDrawable drawable, int6
 bool CSurface::b_glewInit = 0;
 std::string CSurface::s_glVendor = "";
 std::string CSurface::s_glRenderer = "";
+int         CSurface::s_glMajVer = 0;
+int         CSurface::s_glMinVer = 0;
 
 #include "GraphicContext.h"
 
@@ -81,8 +83,6 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_pShared = shared;
   m_bVSync = false;
   m_iVSyncMode = 0;
-  m_iGLMajVer = 0;
-  m_iGLMinVer = 0;
 
 #ifdef __APPLE__
   m_glContext = 0;
@@ -287,12 +287,6 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
       else
       {
         b_glewInit = true;
-        if (s_glVendor.length()==0)
-        {
-          s_glVendor = (const char*)glGetString(GL_VENDOR);
-          s_glRenderer = (const char*)glGetString(GL_RENDERER);
-          CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
-        }
       }
     }
     m_bOK = true;
@@ -353,12 +347,6 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
       else
       {
         b_glewInit = true;
-        if (s_glVendor.length()==0)
-        {
-          s_glVendor = (const char*)glGetString(GL_VENDOR);
-          s_glRenderer = (const char*)glGetString(GL_RENDERER);
-          CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
-        }
       }
     }
 
@@ -819,16 +807,24 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight)
   return false;
 }
 
-#ifdef HAS_SDL_OPENGL
+
 void CSurface::GetGLVersion(int& maj, int& min)
 {
-  if (m_iGLMajVer==0)
+#ifdef HAS_SDL_OPENGL
+  if (s_glMajVer==0)
   {
     const char* ver = (const char*)glGetString(GL_VERSION);
     if (ver != 0)
-      sscanf(ver, "%d.%d", &m_iGLMajVer, &m_iGLMinVer);
+      sscanf(ver, "%d.%d", &s_glMajVer, &s_glMinVer);
   }
-  maj = m_iGLMajVer;
-  min = m_iGLMinVer;
-}
+
+  if (s_glVendor.length()==0)
+  {
+    s_glVendor   = (const char*)glGetString(GL_VENDOR);
+    s_glRenderer = (const char*)glGetString(GL_RENDERER);
+  }
 #endif
+  maj = s_glMajVer;
+  min = s_glMinVer;
+}
+

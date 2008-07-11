@@ -1456,12 +1456,8 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   }
   
   // determine whether GPU supports NPOT textures
-  CSurface *screen = g_graphicsContext.getScreenSurface();
-  int maj, min;
-  screen->GetGLVersion(maj, min);
   if (!glewIsSupported("GL_ARB_texture_non_power_of_two"))
   {
-    CLog::Log(LOGNOTICE, "GL: OpenGL version %d.%d detected", maj, min);
     if (!glewIsSupported("GL_ARB_texture_rectangle"))
     {
       CLog::Log(LOGNOTICE, "GL: GL_ARB_texture_rectangle not supported and OpenGL version is not 2.x");
@@ -1469,15 +1465,10 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
       m_renderMethod |= RENDER_POT;
     }
     else
-    {
       CLog::Log(LOGNOTICE, "GL: NPOT textures are supported through GL_ARB_texture_rectangle extension");
-    }
   }
   else
-  {
-    CLog::Log(LOGNOTICE, "GL: OpenGL version %d.%d detected", maj, min);
     CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
-  }
 }
 
 void CLinuxRendererGL::UnInit()
