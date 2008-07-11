@@ -7,6 +7,18 @@
 	objects = {
 
 /* Begin PBXAggregateTarget section */
+		6E2FACBA0E26DF7A00DF79EA /* XBMC.app */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 6E2FACC10E26DFA300DF79EA /* Build configuration list for PBXAggregateTarget "XBMC.app" */;
+			buildPhases = (
+				6E2FACC70E26E22400DF79EA /* ShellScript */,
+			);
+			dependencies = (
+				6E2FACC40E26E08100DF79EA /* PBXTargetDependency */,
+			);
+			name = XBMC.app;
+			productName = XBMC.app;
+		};
 		882630940E1B6FAD00DC9524 /* build python */ = {
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 8826309C0E1B6FE100DC9524 /* Build configuration list for PBXAggregateTarget "build python" */;
@@ -1665,6 +1677,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		6E2FACC30E26E08100DF79EA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DD76F740486A8DE00D96B5E;
+			remoteInfo = XBMC;
+		};
 		88E384580E1EF65E0028AFC0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
@@ -1697,6 +1716,7 @@
 
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		6E2FACD20E26E92800DF79EA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = xbmc/osx/Info.plist; sourceTree = "<group>"; };
 		6E65F6660E1BF31200B73755 /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E65F66A0E1BF51500B73755 /* libxdaap-i486-osx-tiger.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libxdaap-i486-osx-tiger.a"; path = "xbmc/lib/libXDAAP/libxdaap-i486-osx-tiger.a"; sourceTree = "<group>"; };
 		6E65F66C0E1BF57400B73755 /* avcodec-51-i486-osx-tiger.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "avcodec-51-i486-osx-tiger.a"; path = "xbmc/lib/libffmpeg-OSX/avcodec-51-i486-osx-tiger.a"; sourceTree = "<group>"; };
@@ -3710,6 +3730,7 @@
 		08FB7794FE84155DC02AAC07 /* XBMC */ = {
 			isa = PBXGroup;
 			children = (
+				6E2FACD20E26E92800DF79EA /* Info.plist */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6859E96029091FE04C91782 /* Documentation */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
@@ -6733,11 +6754,26 @@
 				8DD76F740486A8DE00D96B5E /* XBMC */,
 				882630940E1B6FAD00DC9524 /* build python */,
 				6E65F32C0E1BF31200B73755 /* XBMC (Tiger) */,
+				6E2FACBA0E26DF7A00DF79EA /* XBMC.app */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		6E2FACC70E26E22400DF79EA /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/build/Debug/XBMC",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mkdir -p \"$TARGET_BUILD_DIR/XBMC.app\"\nmkdir -p \"$TARGET_BUILD_DIR/XBMC.app/Contents/Resources/English.lproj\"\nmkdir -p \"$TARGET_BUILD_DIR/XBMC.app/Contents/Frameworks\"\nmkdir -p \"$TARGET_BUILD_DIR/XBMC.app/Contents/MacOS\"\n\ncp \"$TARGET_BUILD_DIR/XBMC\" \"$TARGET_BUILD_DIR/XBMC.app/Contents/MacOS/\"\ncp \"$SRCROOT/media/xbmc.icns\" \"$TARGET_BUILD_DIR/XBMC.app/Contents/Resources/\"\ncp \"$SRCROOT/xbmc/osx/Info.plist\" \"$TARGET_BUILD_DIR/XBMC.app/Contents/\"\n\n\nfor a in $(otool -L \"$TARGET_BUILD_DIR/XBMC.app/Contents/MacOS/XBMC\"  | grep opt | awk ' { print $1 } ') ; do cp \"$a\" \"$TARGET_BUILD_DIR/XBMC.app/Contents/Frameworks\"; install_name_tool -change \"$a\" @executable_path/../Frameworks/$(basename $a) \"$TARGET_BUILD_DIR/XBMC.app/Contents/MacOS/XBMC\" ; done";
+		};
 		882630930E1B6FAD00DC9524 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -8321,6 +8357,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		6E2FACC40E26E08100DF79EA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8DD76F740486A8DE00D96B5E /* XBMC */;
+			targetProxy = 6E2FACC30E26E08100DF79EA /* PBXContainerItemProxy */;
+		};
 		88E384590E1EF65E0028AFC0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 882630940E1B6FAD00DC9524 /* build python */;
@@ -8554,6 +8595,41 @@
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 			};
 			name = Release;
+		};
+		6E2FACBB0E26DF7A00DF79EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = XBMC.app;
+			};
+			name = Debug;
+		};
+		6E2FACBC0E26DF7A00DF79EA /* Debug (Tiger) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = XBMC.app;
+			};
+			name = "Debug (Tiger)";
+		};
+		6E2FACBD0E26DF7A00DF79EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = XBMC.app;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		6E2FACBE0E26DF7A00DF79EA /* Release (Tiger) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = XBMC.app;
+			};
+			name = "Release (Tiger)";
 		};
 		6E65F6640E1BF31200B73755 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -9178,6 +9254,17 @@
 				6E65F6850E1BFBD800B73755 /* Debug (Tiger) */,
 				1DEB924D08733DCA0010E9CD /* Release */,
 				6E65F6890E1BFBDF00B73755 /* Release (Tiger) */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6E2FACC10E26DFA300DF79EA /* Build configuration list for PBXAggregateTarget "XBMC.app" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6E2FACBB0E26DF7A00DF79EA /* Debug */,
+				6E2FACBC0E26DF7A00DF79EA /* Debug (Tiger) */,
+				6E2FACBD0E26DF7A00DF79EA /* Release */,
+				6E2FACBE0E26DF7A00DF79EA /* Release (Tiger) */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
