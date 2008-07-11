@@ -211,7 +211,7 @@ void CDVDInputStreamNavigator::Close()
 
 int CDVDInputStreamNavigator::Read(BYTE* buf, int buf_size)
 {
-  if (!m_dvdnav || m_bEOF) return -1;
+  if (!m_dvdnav || m_bEOF) return 0;
   if (buf_size < DVD_VIDEO_BLOCKSIZE)
   {
     CLog::Log(LOGERROR, "CDVDInputStreamNavigator: buffer size is to small, %d bytes, should be 2048 bytes", buf_size);
