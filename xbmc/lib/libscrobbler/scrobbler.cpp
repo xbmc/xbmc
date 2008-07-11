@@ -97,8 +97,6 @@ void CScrobbler::RemoveInstance()
 {
   if (m_pInstance)
   {
-    m_pInstance->m_bCloseThread = true;
-    SetEvent(m_pInstance->m_hWorkerEvent);
     m_pInstance->Term();
     delete m_pInstance;
     m_pInstance=NULL;
