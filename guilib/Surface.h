@@ -83,11 +83,10 @@ public:
   bool MakePBuffer();
   bool MakePixmap();
 #endif
-  std::string& GetGLVendor() { return s_glVendor; }
-  std::string& GetGLRenderer() { return s_glRenderer; }
-#ifdef HAS_SDL_OPENGL
-  void GetGLVersion(int& maj, int&min);
-#endif
+
+  static std::string& GetGLVendor() { return s_glVendor; }
+  static std::string& GetGLRenderer() { return s_glRenderer; }
+  static void         GetGLVersion(int& maj, int&min);
 
   // SDL_Surface always there - just sometimes not in use (HAS_GLX)
   SDL_Surface* SDL() {return m_SDLSurface;}
@@ -101,8 +100,6 @@ public:
   bool m_bOK;
   bool m_bVSync;
   int m_iVSyncMode;
-  int m_iGLMajVer;
-  int m_iGLMinVer;
   short int m_iRedSize;
   short int m_iGreenSize;
   short int m_iBlueSize;
@@ -121,6 +118,8 @@ public:
   static bool b_glewInit;
   static std::string s_glVendor;
   static std::string s_glRenderer;
+  static int         s_glMajVer;
+  static int         s_glMinVer;
 
   SDL_Surface* m_SDLSurface;
 };
