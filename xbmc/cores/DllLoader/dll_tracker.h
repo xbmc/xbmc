@@ -93,7 +93,7 @@ public:
   VAllocList virtualList;
 };
 
-typedef std::list<DllTrackInfo*> TrackedDllList;
+class TrackedDllList : public std::list<DllTrackInfo*>, public CCriticalSection {};
 typedef std::list<DllTrackInfo*>::iterator TrackedDllsIter;
 
 #ifdef _cplusplus
