@@ -1659,7 +1659,12 @@ cmyth_proginfo_get_from_basename(cmyth_conn_t control, const char* basename)
 		return NULL;
 	}
 
-	if(control->conn_version >= 32) {
+	/*
+	 * mythbackend doesn't support spaces in basenames
+	 * when doing QUERY_RECORDING.  If there are spaces, fallback
+	 * to enumerating all recordings
+	 */
+	if(control->conn_version >= 32 && strchr(basename, ' ') == NULL) {
 		pthread_mutex_lock(&mutex);
 
 		snprintf(msg, sizeof(msg), "QUERY_RECORDING BASENAME %s",
