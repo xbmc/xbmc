@@ -298,6 +298,9 @@ void CGUIPythonWindowXML::PulseActionEvent()
 
 void CGUIPythonWindowXML::AllocResources(bool forceLoad /*= FALSE */)
 {
+  // Load language strings temporarily
+  LoadScriptStrings(m_fallbackPath);
+
   m_backupMediaDir = g_graphicsContext.GetMediaDir();
   CStdString tmpDir;
   CUtil::GetDirectory(m_xmlFile, tmpDir);
@@ -312,6 +315,14 @@ void CGUIPythonWindowXML::AllocResources(bool forceLoad /*= FALSE */)
   }
   CGUIWindow::AllocResources(forceLoad);
   g_graphicsContext.SetMediaDir(m_backupMediaDir);
+}
+
+void CGUIPythonWindowXML::FreeResources(bool forceUnLoad /*= FALSE */)
+{
+  // Unload temporary language strings
+  ClearScriptStrings();
+
+  CGUIWindow::FreeResources(forceUnLoad);
 }
 
 void CGUIPythonWindowXML::Render()
@@ -484,4 +495,26 @@ CGUIControl *CGUIPythonWindowXML::GetFirstFocusableControl(int id)
 const CFileItemList& CGUIPythonWindowXML::CurrentDirectory() const 
 { 
   return *m_vecItems;
+}
+
+void CGUIPythonWindowXML::LoadScriptStrings(const CStdString &strPath)
+{
+  // Path where the language strings reside
+  CStdString pathToLanguageFile = strPath;
+  CStdString pathToFallbackLanguageFile = strPath;
+  CUtil::AddFileToFolder(pathToLanguageFile, "language", pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "language", pathToFallbackLanguageFile);
+  CUtil::AddFileToFolder(pathToLanguageFile, g_guiSettings.GetString("locale.language"), pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "english", pathToFallbackLanguageFile);
+  CUtil::AddFileToFolder(pathToLanguageFile, "strings.xml", pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "strings.xml", pathToFallbackLanguageFile);
+
+  // Load language strings temporarily
+  g_localizeStringsTemp.Load(pathToLanguageFile, pathToFallbackLanguageFile);
+}
+
+void CGUIPythonWindowXML::ClearScriptStrings()
+{
+  // Unload temporary language strings
+  g_localizeStringsTemp.Clear();
 }

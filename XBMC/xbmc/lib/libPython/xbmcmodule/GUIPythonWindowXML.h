@@ -38,6 +38,7 @@ public:
   virtual bool      OnMessage(CGUIMessage& message);
   virtual bool      OnAction(const CAction &action);
   virtual void      AllocResources(bool forceLoad = false);
+  virtual void      FreeResources(bool forceUnLoad = false);
   virtual void      Render();
   void              WaitForActionEvent(DWORD timeout);
   void              PulseActionEvent();
@@ -54,6 +55,8 @@ public:
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
   const CFileItemList& CurrentDirectory() const;
   int               GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
+  static void       LoadScriptStrings(const CStdString &strPath);
+  static void       ClearScriptStrings();
 
 protected:
   CGUIControl      *GetFirstFocusableControl(int id);
