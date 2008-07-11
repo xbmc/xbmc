@@ -1448,7 +1448,6 @@ extern "C"
 
   int dll_fstat(int fd, struct stat* buffer)
   {
-    CLog::Log(LOGWARNING, "msvcrt.dll: dll_fstat called, but is poorly imlemented");
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
@@ -1478,7 +1477,6 @@ extern "C"
 
   int dll_fstati64(int fd, struct _stati64 *buffer)
   {
-    CLog::Log(LOGWARNING, "msvcrt.dll: dll_fstati64 called, but is poorly imlemented");
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
