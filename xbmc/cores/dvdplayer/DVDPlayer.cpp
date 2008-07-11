@@ -818,7 +818,10 @@ void CDVDPlayer::Process()
 
         // stream is holding back data untill demuxer has flushed
         if(pStream->IsHeld())
+        {
           pStream->SkipHold();
+          continue;
+        }
 
         // stills will be skipped
         if(m_dvd.state == DVDSTATE_STILL)
@@ -835,10 +838,8 @@ void CDVDPlayer::Process()
             }
           }
           Sleep(100);
+          continue;
         }
-
-        // we don't consider dvd's ended untill navigator tells us so
-        continue;
       }
 
       // if we are caching, start playing it agian
