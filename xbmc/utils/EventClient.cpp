@@ -351,8 +351,8 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
                              ( (flags & PTB_VKEY) ? (bcode|KEY_VKEY) : bcode ),
                              map,
                              button,
-                             (float)amount/65535.0f*2.0-1.0,
-                             (flags & PTB_AXIS),
+                             (float)amount/65535.0f*2.0f-1.0f,
+                             (flags & PTB_AXIS) == PTB_AXIS,
                              false /* queued buttons cannot be repeated */ )
       );
   }
@@ -365,7 +365,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
         ( (flags & PTB_VKEY) ? (bcode|KEY_VKEY) : bcode );         // not name, use vkey?
       m_currentButton.m_mapName    = map;
       m_currentButton.m_buttonName = button;
-      m_currentButton.m_fAmount    = (flags & PTB_USE_AMOUNT) ? (amount/65535.0f*2.0-1.0) : 1.0f;
+      m_currentButton.m_fAmount    = (flags & PTB_USE_AMOUNT) ? (amount/65535.0f*2.0f-1.0f) : 1.0f;
       m_currentButton.m_bRepeat    = (flags & PTB_NO_REPEAT)  ? false : true;
       m_currentButton.m_bAxis      = (flags & PTB_AXIS)       ? true : false;
       m_currentButton.SetActive();
