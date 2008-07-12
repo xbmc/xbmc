@@ -717,7 +717,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
  
-    glOrtho(0.0f, m_iScreenWidth, m_iScreenHeight, 0.0f, -1.0f, 1.0f);
+    glOrtho(0.0f, m_iScreenWidth-1, m_iScreenHeight-1, 0.0f, -1.0f, 1.0f);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity(); 
@@ -1218,7 +1218,7 @@ CSurface* CGraphicContext::InitializeSurface()
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
  
-  glOrtho(0.0f, m_iScreenWidth, m_iScreenHeight, 0.0f, -1.0f, 1.0f);
+  glOrtho(0.0f, m_iScreenWidth-1, m_iScreenHeight-1, 0.0f, -1.0f, 1.0f);
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity(); 
