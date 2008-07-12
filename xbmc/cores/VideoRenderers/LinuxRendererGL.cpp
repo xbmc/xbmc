@@ -2464,12 +2464,12 @@ void CLinuxRendererGL::TextureCallback(DWORD dwContext)
 
 bool CLinuxRendererGL::SupportsBrightness()
 {
-  return (bool)glewIsSupported("GL_ARB_imaging");
+  return glewIsSupported("GL_ARB_imaging") == GL_TRUE;
 }
 
 bool CLinuxRendererGL::SupportsContrast()
 {
-  return (bool)glewIsSupported("GL_ARB_imaging");
+  return glewIsSupported("GL_ARB_imaging") == GL_TRUE;
 }
 
 bool CLinuxRendererGL::SupportsGamma()
