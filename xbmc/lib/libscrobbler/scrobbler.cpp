@@ -77,6 +77,7 @@ CScrobbler::~CScrobbler()
 {
   m_bCloseThread = true;
   SetEvent(m_hWorkerEvent);
+  WaitForSingleObject(m_hWorkerThread, INFINITE);
   WaitForSingleObject(m_hHttpMutex, INFINITE);
   ReleaseMutex(m_hHttpMutex);
   CloseHandle(m_hHttpMutex);
