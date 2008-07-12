@@ -241,6 +241,7 @@ public:
   DWORD GetControlId() const ;
   DWORD GetMessage() const;
   void* GetLPVOID() const;
+  CGUIListItemPtr GetItem() const;
   DWORD GetParam1() const;
   DWORD GetParam2() const;
   DWORD GetSenderId() const;
@@ -262,5 +263,6 @@ private:
   void* m_lpVoid;
   DWORD m_dwParam1;
   DWORD m_dwParam2;
+  CGUIListItemPtr m_item;
 };
 #endif

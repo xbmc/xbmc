@@ -267,12 +267,12 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         Update(m_vecItems->m_strPath);
         m_viewControl.SetSelectedItem(iItem);
       }
-      else if (message.GetParam1()==GUI_MSG_UPDATE_ITEM && message.GetLPVOID())
+      else if (message.GetParam1()==GUI_MSG_UPDATE_ITEM && message.GetItem())
       {
-        CFileItemPtr newItem = *(CFileItemPtr*)message.GetLPVOID();
+        CFileItemPtr newItem = boost::static_pointer_cast<CFileItem>(message.GetItem());
         if (IsActive())
           m_vecItems->UpdateItem(newItem.get());
-        else
+        else if (newItem)
         { // need to remove the disc cache
           CFileItemList items;
           CUtil::GetDirectory(newItem->m_strPath, items.m_strPath);

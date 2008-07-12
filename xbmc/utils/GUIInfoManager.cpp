@@ -103,10 +103,10 @@ bool CGUIInfoManager::OnMessage(CGUIMessage &message)
 {
   if (message.GetMessage() == GUI_MSG_NOTIFY_ALL)
   {
-    if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetLPVOID())
+    if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetItem())
     {
-      CFileItemPtr item = *(CFileItemPtr*)message.GetLPVOID();
-      if (m_currentFile->m_strPath.Equals(item->m_strPath))
+      CFileItemPtr item = boost::static_pointer_cast<CFileItem>(message.GetItem());
+      if (item && m_currentFile->m_strPath.Equals(item->m_strPath))
         *m_currentFile = *item;
       return true;
     }
