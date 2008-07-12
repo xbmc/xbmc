@@ -34,5 +34,6 @@ namespace DIRECTORY
     static CStdString GetStackedTitlePath(const CStdString &strPath);
     static CStdString GetFirstStackedFile(const CStdString &strPath);
     CStdString ConstructStackPath(const CFileItemList& items, const std::vector<int> &stack);
+    bool ConstructStackPath(const std::vector<CStdString> &paths, CStdString &stackedPath);
   };
 }
