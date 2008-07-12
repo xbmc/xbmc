@@ -52,7 +52,7 @@ CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD
   m_dwControlID = dwControlID;
   m_dwParam1 = dwParam1;
   m_dwParam2 = dwParam2;
-  m_lpVoid = (void *)&item;
+  m_item = item;
 }
 
 CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CVisualisation* vis)
@@ -101,6 +101,11 @@ void* CGUIMessage::GetLPVOID() const
   return m_lpVoid;
 }
 
+CGUIListItemPtr CGUIMessage::GetItem() const
+{
+  return m_item;
+}
+
 DWORD CGUIMessage::GetParam1() const
 {
   return m_dwParam1;
@@ -129,6 +134,7 @@ const CGUIMessage& CGUIMessage::operator = (const CGUIMessage& msg)
   m_strLabel = msg.m_strLabel;
   m_dwSenderID = msg.m_dwSenderID;
   m_strParam = msg.m_strParam;
+  m_item = msg.m_item;
   return *this;
 }
 
