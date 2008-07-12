@@ -2319,6 +2319,29 @@ void CVideoDatabase::GetDetailsFromDB(auto_ptr<Dataset> &pDS, int min, int max, 
 DWORD movieTime = 0;
 DWORD castTime = 0;
 
+CVideoInfoTag CVideoDatabase::GetDetailsByTypeAndId(VIDEODB_CONTENT_TYPE type, long id)
+{
+  CVideoInfoTag details;
+  details.Reset();
+
+  switch (type)
+  {
+    case VIDEODB_CONTENT_MOVIES:
+      GetMovieInfo("", details, id);
+      break;
+    case VIDEODB_CONTENT_TVSHOWS:
+      GetTvShowInfo("", details, id);
+      break;
+    case VIDEODB_CONTENT_EPISODES:
+      GetEpisodeInfo("", details, id);
+      break;
+    case VIDEODB_CONTENT_MUSICVIDEOS:
+      GetMusicVideoInfo("", details, id);
+  }
+
+  return details;
+}
+
 CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
 {
   CVideoInfoTag details;
@@ -3074,6 +3097,41 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
   return true;
 }
 
+int CVideoDatabase::GetPlayCount(VIDEODB_CONTENT_TYPE type, long id)
+{
+  try
+  {
+    // error!
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS.get()) return -1;
+
+    CStdString strSQL;
+    if (type == VIDEODB_CONTENT_MOVIES)
+      strSQL.Format("select c%02d from movie WHERE idMovie=%u", VIDEODB_ID_PLAYCOUNT, id);
+    else if (type == VIDEODB_CONTENT_EPISODES)
+      strSQL.Format("select c%02d from episode WHERE idEpisode=%u", VIDEODB_ID_EPISODE_PLAYCOUNT, id);
+    else if (type == VIDEODB_CONTENT_MUSICVIDEOS)
+      strSQL.Format("select c%02d from musicvideo WHERE idMVideo=%u", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT, id);
+    else
+      return -1;
+
+    int count = -1;
+    if (m_pDS->query(strSQL.c_str()))
+    {
+      // there should only ever be one row returned
+      if (m_pDS->num_rows() == 1)
+        count = m_pDS->fv(0).get_asInteger();
+      m_pDS->close();
+    }
+    return count;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return -1;
+}
+
 void CVideoDatabase::MarkAsWatched(const CFileItem &item)
 {
   // first grab the type of video and it's id
@@ -3107,16 +3165,21 @@ void CVideoDatabase::MarkAsWatched(const CFileItem &item)
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    CStdString strSQL;
-    // TODO: PLAYCOUNT make this actually a playcount.
-    if (type == VIDEODB_CONTENT_MOVIES)
-      strSQL.Format("UPDATE movie set c%02d=1 WHERE idMovie=%u", VIDEODB_ID_PLAYCOUNT, id);
-    else if (type == VIDEODB_CONTENT_EPISODES)
-      strSQL.Format("UPDATE episode set c%02d=1 WHERE idEpisode=%u", VIDEODB_ID_EPISODE_PLAYCOUNT, id);
-    else if (type == VIDEODB_CONTENT_MUSICVIDEOS)
-      strSQL.Format("UPDATE musicvideo set c%02d=1 WHERE idMVideo=%u", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT, id);
 
-    m_pDS->exec(strSQL.c_str());
+    int count = GetPlayCount(type, id);
+    // hmm... what should be done upon an error getting the playcount?
+    if (count > -1)
+    {
+      count++;
+      CStdString strSQL;
+      if (type == VIDEODB_CONTENT_MOVIES)
+        strSQL.Format("UPDATE movie set c%02d=%i WHERE idMovie=%u", VIDEODB_ID_PLAYCOUNT, count, id);
+      else if (type == VIDEODB_CONTENT_EPISODES)
+        strSQL.Format("UPDATE episode set c%02d=%i WHERE idEpisode=%u", VIDEODB_ID_EPISODE_PLAYCOUNT, count, id);
+      else if (type == VIDEODB_CONTENT_MUSICVIDEOS)
+        strSQL.Format("UPDATE musicvideo set c%02d=%i WHERE idMVideo=%u", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT, count, id);
+      m_pDS->exec(strSQL.c_str());
+    }
   }
   catch (...)
   {
@@ -3136,11 +3199,11 @@ void CVideoDatabase::MarkAsUnWatched(const CFileItem &item)
 
     CStdString strSQL;
     if (item.GetVideoInfoTag()->m_iSeason > -1 && !item.m_bIsFolder) // episode
-      strSQL = FormatSQL("UPDATE episode set c%02d=NULL WHERE idEpisode=%u", VIDEODB_ID_EPISODE_PLAYCOUNT, item.GetVideoInfoTag()->m_iDbId);
+      strSQL = FormatSQL("UPDATE episode set c%02d=0 WHERE idEpisode=%u", VIDEODB_ID_EPISODE_PLAYCOUNT, item.GetVideoInfoTag()->m_iDbId);
     else if (!item.GetVideoInfoTag()->m_strArtist.IsEmpty())
-      strSQL = FormatSQL("UPDATE musicvideo set c%02d=NULL WHERE idMVideo=%u", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT, item.GetVideoInfoTag()->m_iDbId);
+      strSQL = FormatSQL("UPDATE musicvideo set c%02d=0 WHERE idMVideo=%u", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT, item.GetVideoInfoTag()->m_iDbId);
     else
-      strSQL = FormatSQL("UPDATE movie set c%02d=NULL WHERE idMovie=%u", VIDEODB_ID_PLAYCOUNT, item.GetVideoInfoTag()->m_iDbId);
+      strSQL = FormatSQL("UPDATE movie set c%02d=0 WHERE idMovie=%u", VIDEODB_ID_PLAYCOUNT, item.GetVideoInfoTag()->m_iDbId);
 
     m_pDS->exec(strSQL.c_str());
   }
@@ -4058,9 +4121,9 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
   return false;
 }
 
-void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE cType /* = VIDEODB_CONTENT_TVSHOWS */)
+void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type /* = VIDEODB_CONTENT_TVSHOWS */)
 {
-  switch (cType)
+  switch (type)
   {
     case VIDEODB_CONTENT_TVSHOWS:
     {
