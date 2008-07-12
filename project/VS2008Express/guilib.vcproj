@@ -69,7 +69,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="SDL.lib SDL_image.lib opengl32.lib DSound.lib glew32.lib glu32.lib"
 				OutputFile="$(OutDir)\guilib.lib"
 			/>
 			<Tool
@@ -137,7 +136,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="SDL.lib SDL_image.lib opengl32.lib DSound.lib glew32.lib glu32.lib"
 				OutputFile="$(OutDir)\guilib.lib"
 				AdditionalLibraryDirectories=""
 				IgnoreAllDefaultLibraries="false"
