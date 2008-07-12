@@ -52,6 +52,7 @@ CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD
   m_dwControlID = dwControlID;
   m_dwParam1 = dwParam1;
   m_dwParam2 = dwParam2;
+  m_lpVoid = NULL;
   m_item = item;
 }
 
