@@ -26,7 +26,7 @@ using namespace std;
 static CXbmcWeb* pXbmcWeb;
 static CXbmcConfiguration* pXbmcWebConfig;
 
-#ifndef __GNUC__
+#ifdef _XBOX
 #pragma code_seg("WEB_TEXT")
 #pragma data_seg("WEB_DATA")
 #pragma bss_seg("WEB_BSS")

@@ -326,6 +326,9 @@
 				RelativePath=".\GUIListExItem.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIListGroup.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIListItem.cpp">
 			</File>
 			<File
@@ -551,6 +554,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIListExItem.h">
+			</File>
+			<File
+				RelativePath=".\GUIListGroup.h">
 			</File>
 			<File
 				RelativePath=".\GUIListItem.h">

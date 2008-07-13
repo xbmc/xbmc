@@ -1,4 +1,4 @@
-#ifndef __GNUC__
+#ifdef _XBOX
 #pragma comment(linker, "/merge:RTV_TEXT=LIBRTV")
 #pragma comment(linker, "/merge:RTV_DATA=LIBRTV")
 #pragma comment(linker, "/merge:RTV_BSS=LIBRTV")

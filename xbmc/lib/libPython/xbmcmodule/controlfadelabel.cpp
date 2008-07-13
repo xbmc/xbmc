@@ -112,7 +112,8 @@ namespace PYXBMC
       label, 
       true,
       CScrollInfo::defaultSpeed,
-      0);
+      0,
+      true);
 
     CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
     pControl->pGUIControl->OnMessage(msg);

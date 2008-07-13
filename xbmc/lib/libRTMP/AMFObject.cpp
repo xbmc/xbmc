@@ -77,7 +77,7 @@ double RTMP_LIB::AMFObjectProperty::GetNumber() const
 
 bool RTMP_LIB::AMFObjectProperty::GetBoolean() const
 {
-  return (bool)m_dNumVal;
+  return m_dNumVal != 0;
 }
 
 const std::string &RTMP_LIB::AMFObjectProperty::GetString() const

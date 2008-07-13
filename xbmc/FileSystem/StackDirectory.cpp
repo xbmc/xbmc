@@ -137,5 +137,28 @@ namespace DIRECTORY
     }
     return stackedPath;
   }
+
+  bool CStackDirectory::ConstructStackPath(const vector<CStdString> &paths, CStdString& stackedPath)
+  {
+    if (paths.size() < 2)
+      return false;
+    stackedPath = "stack://";
+    CStdString folder, file;
+    CUtil::Split(paths[0], folder, file);
+    stackedPath += folder;
+    // double escape any occurence of commas
+    file.Replace(",", ",,");
+    stackedPath += file;
+    for (unsigned int i = 1; i < paths.size(); ++i)
+    {
+      stackedPath += " , ";
+      file = paths[i];
+      
+      // double escape any occurence of commas
+      file.Replace(",", ",,");
+      stackedPath += file;
+    }
+    return true;
+  }
 }
 

@@ -64,7 +64,6 @@
 
 #include "SectionLoader.h"
 #include "ApplicationMessenger.h"
-#include "Crc32.h"
 #include "AutoPtrHandle.h"
 
 // Often used

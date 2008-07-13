@@ -2444,7 +2444,17 @@ bool CApplication::OnKey(CKey& key)
     // current active window isnt the fullscreen window
     // just use corresponding section from keymap.xml
     // to map key->action
-    if (key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_DIALOG_NUMERIC || iWin == WINDOW_BUDDIES) )
+
+    // first determine if we should use keyboard input directly
+    bool useKeyboard = key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_DIALOG_NUMERIC);
+    CGUIWindow *window = m_gWindowManager.GetWindow(iWin);
+    if (window)
+    {
+      CGUIControl *control = window->GetFocusedControl();
+      if (control && control->GetControlType() == CGUIControl::GUICONTROL_EDIT)
+        useKeyboard = true;
+    }
+    if (useKeyboard)
     {
       if (key.GetFromHttpApi())
       {
@@ -2458,20 +2468,23 @@ bool CApplication::OnKey(CKey& key)
         else
           action.wID = (WORD)g_Keyboard.GetKey() | KEY_VKEY;
       }
+#ifdef HAS_SDL
+      g_Keyboard.Reset();
+#endif
+      if (OnAction(action))
+        return true;
+      // failed to handle the keyboard action, drop down through to standard action
     }
-    else
-    {
     if (key.GetFromHttpApi())
+    {
+      if (key.GetButtonCode() != KEY_INVALID)
       {
-        if (key.GetButtonCode() != KEY_INVALID)
-        {
-          action.wID = (WORD) key.GetButtonCode();
-          g_buttonTranslator.GetAction(iWin, key, action);
-        }
-      }
-    else
+        action.wID = (WORD) key.GetButtonCode();
         g_buttonTranslator.GetAction(iWin, key, action);
+      }
     }
+    else
+      g_buttonTranslator.GetAction(iWin, key, action);
   }
   if (!key.IsAnalogButton())
     CLog::Log(LOGDEBUG, "%s: %i pressed, action is %i", __FUNCTION__, (int) key.GetButtonCode(), action.wID);

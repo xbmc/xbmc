@@ -373,6 +373,7 @@ class CGUIListItem;
 #define SYSTEM_PLATFORM_XBOX        740
 #define SYSTEM_PLATFORM_LINUX       741
 #define SYSTEM_PLATFORM_WINDOWS     742
+#define SYSTEM_PLATFORM_OSX         743
 
 #define XLINK_KAI_USERNAME          750
 #define SKIN_THEME                  800
@@ -396,6 +397,7 @@ class CGUIListItem;
 #define SYSTEM_IDLE_TIME_START      20000
 #define SYSTEM_IDLE_TIME_FINISH     21000 // 1000 seconds
 
+#define CONTROL_GET_LABEL           29996
 #define CONTROL_IS_ENABLED          29997
 #define CONTROL_IS_VISIBLE          29998
 #define CONTROL_GROUP_HAS_FOCUS     29999

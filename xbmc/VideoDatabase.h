@@ -458,6 +458,8 @@ protected:
 
   void AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details, std::vector<long>& vecDirectors, std::vector<long>& vecGenres, std::vector<long>& vecStudios);
 
+  int GetPlayCount(VIDEODB_CONTENT_TYPE type, long id);
+  CVideoInfoTag GetDetailsByTypeAndId(VIDEODB_CONTENT_TYPE type, long id);
   CVideoInfoTag GetDetailsForMovie(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);
   CVideoInfoTag GetDetailsForTvShow(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);
   CVideoInfoTag GetDetailsForEpisode(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);
@@ -475,4 +477,7 @@ private:
   void SplitPath(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   void InvalidatePathHash(const CStdString& strPath);
   void DeleteThumbForItem(const CStdString& strPath, bool bFolder);
+
+  bool GetStackedTvShowList(long idShow, CStdString& strIn);
+  void Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type = VIDEODB_CONTENT_TVSHOWS);
 };

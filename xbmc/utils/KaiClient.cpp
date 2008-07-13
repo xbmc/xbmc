@@ -23,6 +23,7 @@
 #include "KaiClient.h"
 #include "KaiRequestList.h"
 #include "GUISettings.h"
+#include "Crc32.h"
 #ifdef HAS_KAI_VOICE
 #include "dsstdfx.h"
 #endif
