@@ -662,6 +662,15 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->AddLabel(g_localizeStrings.Get(12382), FRAME_RATE_USE_PAL60); // "Play NTSC videos in PAL60"
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("videolibrary.flattentvshows"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(20420), 0); // Never
+      pControl->AddLabel(g_localizeStrings.Get(20421), 1); // One Season
+      pControl->AddLabel(g_localizeStrings.Get(20422), 2); // Always
+      pControl->SetValue(pSettingInt->GetData());
+    }
     else if (strSetting.Equals("system.ledcolour"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -1983,6 +1992,16 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     ClearFolderViews(pSettingControl->GetSetting(), WINDOW_PICTURES);
   }
+/* TODO:TTF_FONTS - xbox doesn't support this yet
+  else if (strSetting.Equals("lookandfeel.skinzoom"))
+  {
+    g_fontManager.ReloadTTFFonts();
+  }*/
+  else if (strSetting.Equals("videolibrary.flattentvshows") ||
+           strSetting.Equals("videolibrary.removeduplicates"))
+  {
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+  }
   UpdateSettings();
 }
 
@@ -2832,12 +2851,12 @@ void CGUIWindowSettingsCategory::FillInFTPServerUser(CSetting *pSetting)
     pControl->SetValue(iDefaultFtpUser);
     CUtil::GetFTPServerUserName(iDefaultFtpUser, strFtpUser1, iUserMax);
     g_guiSettings.SetString("servers.ftpserveruser", strFtpUser1.c_str());
-    pControl->Update();
+    pControl->SetInvalid();
   }
   else { //Set "None" if there is no FTP User found!
     pControl->AddLabel(g_localizeStrings.Get(231).c_str(), 0);
     pControl->SetValue(0);
-    pControl->Update();
+    pControl->SetInvalid();
   }
 #endif
 }

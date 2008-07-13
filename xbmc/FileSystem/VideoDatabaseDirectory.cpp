@@ -27,6 +27,8 @@
 #include "TextureManager.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
+#include "Settings.h"
+#include "Crc32.h"
 
 using namespace std;
 using namespace XFILE;
@@ -51,13 +53,16 @@ bool CVideoDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
   bool bResult = pNode->GetChilds(items);
   for (int i=0;i<items.Size();++i)
   {
-    if (items[i]->m_bIsFolder && !items[i]->HasThumbnail())
+    CFileItemPtr item = items[i];
+    if (item->m_bIsFolder && !item->HasThumbnail())
     {
-      CStdString strImage = GetIcon(items[i]->m_strPath);
-      if (g_TextureManager.Load(strImage))
+      CStdString strImage = GetIcon(item->m_strPath);
+      if (!strImage.IsEmpty() && g_TextureManager.Load(strImage))
       {
-        items[i]->SetThumbnailImage(strImage);
-        g_TextureManager.ReleaseTexture(strImage);
+        item->SetThumbnailImage(strImage);
+        // NOTE: Ideally we'd release the texture resource here, but we can't reliably do that without first
+        //       requesting all the texture images and then asking for a release.
+        //       The better fix is a g_TextureManager.CanLoad(strImage) or something similar.
       }
     }
   }
@@ -204,21 +209,33 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
   return true;
 }
 
-CStdString CVideoDatabaseDirectory::GetIcon(const CStdString& strDirectory)
+CStdString CVideoDatabaseDirectory::GetIcon(const CStdString &strDirectory)
 {
   switch (GetDirectoryChildType(strDirectory))
   {
   case NODE_TYPE_TITLE_MOVIES:
     if (strDirectory.Equals("videodb://1/2/"))
+    {
+      if (g_stSettings.m_bMyVideoNavFlatten)
+        return "DefaultMovies.png";
       return "DefaultMovieTitle.png";
+    }
     return "";
   case NODE_TYPE_TITLE_TVSHOWS:
     if (strDirectory.Equals("videodb://2/2/"))
+    {
+      if (g_stSettings.m_bMyVideoNavFlatten)
+        return "DefaultTvshows.png";
       return "DefaultTvshowTitle.png";
+    }
     return "";
   case NODE_TYPE_TITLE_MUSICVIDEOS:
     if (strDirectory.Equals("videodb://3/2/"))
+    {
+      if (g_stSettings.m_bMyVideoNavFlatten)
+        return "DefaultMusicVideos.png";
       return "DefaultMusicVideoTitle.png";
+    }
     return "";
   case NODE_TYPE_ACTOR: // Actor
     return "DefaultActor.png";

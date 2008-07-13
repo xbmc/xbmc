@@ -183,9 +183,9 @@ CGUIInfoLabel::CInfoPortion::CInfoPortion(int info, const CStdString &prefix, co
   m_info = info;
   m_prefix = prefix;
   m_postfix = postfix;
-  // filter our prefix and postfix for comma's and $$
-  m_prefix.Replace("$COMMA", ","); m_prefix.Replace("$$", "$");
-  m_postfix.Replace("$COMMA", ","); m_postfix.Replace("$$", "$");
+  // filter our prefix and postfix for comma's
+  m_prefix.Replace("$COMMA", ",");
+  m_postfix.Replace("$COMMA", ",");
   m_prefix.Replace("$LBRACKET", "["); m_prefix.Replace("$RBRACKET", "]");
   m_postfix.Replace("$LBRACKET", "["); m_postfix.Replace("$RBRACKET", "]");
 }
@@ -402,4 +402,7 @@ void CGUILabelControl::SetHighlight(unsigned int start, unsigned int end)
   m_endHighlight = end;
 }
 
-
+CStdString CGUILabelControl::GetDescription() const
+{
+  return m_infoLabel.GetLabel(m_dwParentID);
+}

@@ -60,7 +60,6 @@ public:
   bool IsSelected() const { return m_bSelected; };
 
 protected:
-  virtual void Update();
   CGUIImage m_imgRadioFocus;
   CGUIImage m_imgRadioNoFocus;
   float m_radioPosX;

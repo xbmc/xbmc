@@ -100,8 +100,8 @@ CSettings::CSettings(void)
   g_stSettings.m_fPixelRatio = 1.0f;
 
   g_stSettings.m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u";
-  g_stSettings.m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adplug|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2";
-  g_stSettings.m_videoExtensions = ".m4v|.3gp|.nsv|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp|.m2t|.m2ts|.evo";
+  g_stSettings.m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adplug|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2|.oga";
+  g_stSettings.m_videoExtensions = ".m4v|.3gp|.nsv|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp|.m2t|.m2ts|.evo|.ogv";
   // internal music extensions
   g_stSettings.m_musicExtensions += "|.sidstream|.oggstream|.nsfstream|.asapstream|.cdda";
 
@@ -155,7 +155,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_autoDetectPingTime = 30;
   g_advancedSettings.m_playCountMinimumPercent = 90.0f;
 
-  g_advancedSettings.m_songInfoDuration = 2;
+  g_advancedSettings.m_songInfoDuration = 10;
   g_advancedSettings.m_busyDialogDelay = 2000;
   g_advancedSettings.m_logLevel = LOG_LEVEL_NORMAL;
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
@@ -1136,7 +1136,7 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement, "usemultipaths", g_advancedSettings.m_useMultipaths);
   XMLUtils::GetBoolean(pRootElement, "disablemodchipdetection", g_advancedSettings.m_DisableModChipDetection);
 
-  GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 2, 1, 15);
+  GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 10, 1, 15);
   GetInteger(pRootElement, "busydialogdelay", g_advancedSettings.m_busyDialogDelay, 2000, 0, 5000);
   GetInteger(pRootElement, "playlistretries", g_advancedSettings.m_playlistRetries, 100, -1, 5000);
 

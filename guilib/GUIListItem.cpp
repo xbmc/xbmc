@@ -321,6 +321,13 @@ void CGUIListItem::SetProperty(const CStdString &strKey, int nVal)
   SetProperty(strKey, strVal);
 }
 
+void CGUIListItem::IncrementProperty(const CStdString &strKey, int nVal)
+{
+  int i = GetPropertyInt(strKey);
+  i += nVal;
+  SetProperty(strKey, i);
+}
+
 void CGUIListItem::SetProperty(const CStdString &strKey, bool bVal)
 {
   SetProperty(strKey, bVal?"1":"0");
@@ -331,6 +338,13 @@ void CGUIListItem::SetProperty(const CStdString &strKey, double dVal)
   CStdString strVal;
   strVal.Format("%f",dVal);
   SetProperty(strKey, strVal);
+}
+
+void CGUIListItem::IncrementProperty(const CStdString &strKey, double dVal)
+{
+  double d = GetPropertyDouble(strKey);
+  d += dVal;
+  SetProperty(strKey, d);
 }
 
 bool CGUIListItem::GetPropertyBOOL(const CStdString &strKey) const

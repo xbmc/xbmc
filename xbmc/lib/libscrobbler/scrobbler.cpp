@@ -77,6 +77,7 @@ CScrobbler::~CScrobbler()
 {
   m_bCloseThread = true;
   SetEvent(m_hWorkerEvent);
+  WaitForSingleObject(m_hWorkerThread, INFINITE);
   WaitForSingleObject(m_hHttpMutex, INFINITE);
   CloseHandle(m_hHttpMutex);
   CloseHandle(m_hWorkerEvent);
@@ -688,7 +689,5 @@ bool CScrobbler::ShouldSubmit()
 CStdString CScrobbler::GetTempFileName()
 {
   CStdString strFileName = g_settings.GetProfileUserDataFolder();
-  strFileName+="\\Scrobbler.tmp";
-
-  return strFileName;
+  return CUtil::AddFileToFolder(strFileName, "Scrobbler.tmp");
 }

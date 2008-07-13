@@ -67,7 +67,6 @@ public:
   void SetLimits(float x1, float y1, float x2, float y2);
 
 protected:
-  virtual void Update() ;
   void SetAlpha(unsigned char alpha);
   void UpdateSpeed(int nDirection);
   void Resize(float x, float y);

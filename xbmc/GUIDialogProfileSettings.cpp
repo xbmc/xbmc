@@ -194,7 +194,7 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
       CPicture pic;
       pic.DoCreateThumbnail(strThumb, m_strThumb);
       pImage->SetFileName("foo.bmp");
-      pImage->Update();
+      pImage->SetInvalid();
       pImage->SetFileName(m_strThumb);
     }
   }
