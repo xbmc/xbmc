@@ -5,6 +5,6 @@ SRCS=DVDAudioCodecFFmpeg.cpp DVDAudioCodecLiba52.cpp DVDAudioCodecLibDts.cpp DVD
 LIB=dvdcodecs_audio.a
 
 include ../../../../../Makefile.include
--include Makefile.depend
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 
 CFLAGS+=-DHAVE_MMX

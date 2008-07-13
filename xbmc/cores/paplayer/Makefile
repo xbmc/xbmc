@@ -7,4 +7,4 @@ SRCS=AACcodec.cpp AC3CDDACodec.cpp AC3Codec.cpp ADPCMCodec.cpp AdplugCodec.cpp A
 LIB=paplayer.a
 
 include ../../../Makefile.include
--include Makefile.depend
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

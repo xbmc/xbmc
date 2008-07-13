@@ -7,7 +7,7 @@ OBJS=wrapper.o wrapper.def
 LIB=exports.a
 
 include ../../../../Makefile.include
--include Makefile.depend
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 
 wrapper.o : wrapper.c
 	gcc -fPIC -c -g -D_LINUX -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -D__USE_FILE_OFFSET64 $(INCLUDES) $< -o $@

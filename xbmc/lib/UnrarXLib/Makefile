@@ -7,4 +7,4 @@ SRCS=archive.cpp arcread.cpp cmddata.cpp consio.cpp crc.cpp crypt.cpp encname.cp
 LIB=UnrarXLib.a
 
 include ../../../Makefile.include
--include Makefile.depend
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

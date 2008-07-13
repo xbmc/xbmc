@@ -5,4 +5,4 @@ SRCS=SDLMouse.cpp Mouse.cpp SDLKeyboard.cpp LIRC.cpp SDLJoystick.cpp Keyboard.cp
 LIB=gui_common.a
 
 include ../../Makefile.include
--include Makefile.depend
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

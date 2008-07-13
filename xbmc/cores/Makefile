@@ -5,4 +5,4 @@ SRCS=DummyVideoPlayer.cpp PlayerCoreFactory.cpp ssrc.cpp dlgcache.cpp
 LIB=cores.a
 
 include ../../Makefile.include
--include Makefile.depend
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
