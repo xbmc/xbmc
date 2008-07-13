@@ -37,8 +37,10 @@ public:
   static CStdString CWIN32Util::GetLocalPath(const CStdString &strPath);
   static char CWIN32Util::FirstDriveFromMask (ULONG unitmask);
   static int CWIN32Util::GetDriveStatus(const CStdString &strPath);
+  static void UpdateDriveMask();
+  static CStdString GetChangedDrive();
 
 private:
-
+  static DWORD dwDriveMask;
 
 };
