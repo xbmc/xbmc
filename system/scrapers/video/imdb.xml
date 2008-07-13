@@ -92,7 +92,7 @@
 				<expression repeat="yes">&quot;/company/[^/]*/&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-				<expression>Plot (?:Outline|Summary):&lt;/h5&gt;\W([^&lt;]*)</expression>
+				<expression>Plot:&lt;/h5&gt;\W([^[&lt;||]*) </expression>
 			</RegExp>
 			<RegExp input="$$2" output="&lt;url function=&quot;GetMoviePlot&quot;&gt;http://$INFO[url]/title/\1/plotsummary&lt;/url&gt;" dest="5+">
 				<expression></expression>
