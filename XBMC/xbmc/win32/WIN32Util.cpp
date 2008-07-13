@@ -220,8 +220,10 @@ CStdString CWIN32Util::GetChangedDrive()
   CStdString strDrive;
   DWORD dwDriveMask2 = GetLogicalDrives();
   DWORD dwDriveMaskResult = dwDriveMask ^ dwDriveMask2;
+  if(dwDriveMaskResult == 0)
+    return "";
   dwDriveMask = dwDriveMask2;
-  strDrive.Format("%c:\\",FirstDriveFromMask(dwDriveMaskResult));
+  strDrive.Format("%c:",FirstDriveFromMask(dwDriveMaskResult));
   return strDrive;
 }
 

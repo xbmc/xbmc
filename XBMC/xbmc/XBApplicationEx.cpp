@@ -346,8 +346,9 @@ void CXBApplicationEx::ReadInput()
         {
           CMediaSource share;
           CStdString strDrive = CWIN32Util::GetChangedDrive();
+          if(strDrive == "")
+            break;
           share.strName.Format("%s (%s)", g_localizeStrings.Get(437), strDrive);
-          share.strName.Replace(":\\",":");
           share.strPath = strDrive;
           share.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
           g_settings.AddShare("files",share);
@@ -357,9 +358,10 @@ void CXBApplicationEx::ReadInput()
         if (event.syswm.msg->wParam == DBT_DEVICEREMOVECOMPLETE)
         {     
           CStdString strDrive = CWIN32Util::GetChangedDrive();
+          if(strDrive == "")
+            break;
           CStdString strName;
           strName.Format("%s (%s)", g_localizeStrings.Get(437), strDrive);
-          strName.Replace(":\\",":");
           g_settings.DeleteSource("files",strName,strDrive);
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
           m_gWindowManager.SendThreadMessage( msg );
