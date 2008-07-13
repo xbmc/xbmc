@@ -6,4 +6,4 @@ SRCS=DVDFactoryInputStream.cpp DVDInputStream.cpp DVDInputStreamFile.cpp DVDInpu
 LIB=dvdinputstream.a
 
 include ../../../../Makefile.include
--include Makefile.depend
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

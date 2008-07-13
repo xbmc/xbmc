@@ -5,4 +5,4 @@ SRCS=DirectoryNodeActor.cpp DirectoryNode.cpp DirectoryNodeDirector.cpp Director
 LIB=videodatabasedirectory.a
 
 include ../../../Makefile.include
--include Makefile.depend
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

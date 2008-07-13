@@ -5,4 +5,4 @@ SRCS=IoSupport.cpp XKGeneral.cpp
 LIB=xbox.a
 
 include ../../Makefile.include
--include Makefile.depend
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
