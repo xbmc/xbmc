@@ -114,7 +114,6 @@ public:
   virtual void SetColorDiffuse(const CGUIInfoColor &color);
 
 protected:
-  virtual void Update();
   bool m_bShowSelect;
   CGUIImage m_imgBackground;
   CGUIImage m_imgLeft;

@@ -111,10 +111,10 @@ bool CGUIInfoManager::OnMessage(CGUIMessage &message)
 {
   if (message.GetMessage() == GUI_MSG_NOTIFY_ALL)
   {
-    if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetLPVOID())
+    if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetItem())
     {
-      CFileItemPtr item = *(CFileItemPtr*)message.GetLPVOID();
-      if (m_currentFile->m_strPath.Equals(item->m_strPath))
+      CFileItemPtr item = boost::static_pointer_cast<CFileItem>(message.GetItem());
+      if (item && m_currentFile->m_strPath.Equals(item->m_strPath))
         *m_currentFile = *item;
       return true;
     }
@@ -401,6 +401,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.platform.linux")) ret = SYSTEM_PLATFORM_LINUX;
     else if (strTest.Equals("system.platform.xbox")) ret = SYSTEM_PLATFORM_XBOX;
     else if (strTest.Equals("system.platform.windows")) ret = SYSTEM_PLATFORM_WINDOWS;
+    else if (strTest.Equals("system.platform.osx")) ret = SYSTEM_PLATFORM_OSX;
     else if (strTest.Left(15).Equals("system.getbool("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_GET_BOOL : SYSTEM_GET_BOOL, ConditionalStringParameter(strTest.Mid(15,strTest.size()-16)), 0));
   }
@@ -770,6 +771,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     int controlID = atoi(strTest.Mid(18, strTest.GetLength() - 19).c_str());
     if (controlID)
       return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_IS_ENABLED : CONTROL_IS_ENABLED, controlID, 0));
+  }
+  else if (strTest.Left(17).Equals("control.getlabel("))
+  {
+    int controlID = atoi(strTest.Mid(17, strTest.GetLength() - 18).c_str());
+    if (controlID)
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_GET_LABEL : CONTROL_GET_LABEL, controlID, 0));
   }
   else if (strTest.Left(13).Equals("controlgroup("))
   {
@@ -1617,9 +1624,19 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   else if (condition == SYSTEM_KAI_ENABLED)
     bReturn = g_network.IsAvailable(false) && g_guiSettings.GetBool("xlinkkai.enabled");
   else if (condition == SYSTEM_PLATFORM_LINUX)
+#if defined(_LINUX) && !defined(__APPLE__)
+    bReturn = true;
+#else
     bReturn = false;
+#endif
   else if (condition == SYSTEM_PLATFORM_WINDOWS)
 #ifdef WIN32
+    bReturn = true;
+#else
+    bReturn = false;
+#endif
+  else if (condition == SYSTEM_PLATFORM_OSX)
+#ifdef __APPLE__
     bReturn = true;
 #else
     bReturn = false;
@@ -2285,6 +2302,16 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
     }
     if (window)
       return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty(m_stringParameters[info.GetData2()]);
+  }
+  else if (info.m_info == CONTROL_GET_LABEL)
+  {
+    CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
+    if (window)
+    {
+      const CGUIControl *control = window->GetControl(info.GetData1());
+      if (control)
+        return control->GetDescription();
+    }
   }
 
   return StringUtils::EmptyString;

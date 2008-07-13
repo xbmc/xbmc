@@ -48,6 +48,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
     pDirectory->SetMask(strMask);
     pDirectory->SetAllowPrompting(allowPrompting);
     pDirectory->SetCacheDirectory(cacheDirectory);
+    pDirectory->SetUseFileDirectories(bUseFileDirectories);
 
     items.m_strPath=strPath;
 

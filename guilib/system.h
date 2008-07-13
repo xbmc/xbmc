@@ -21,6 +21,8 @@
  *
  */
 
+#define HAS_KAI
+
 #ifdef _XBOX
 #include <xtl.h>
 #include <xvoice.h>

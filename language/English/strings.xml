@@ -359,7 +359,7 @@
   <string id="434"></string>
   <string id="435"></string>
   <string id="436"></string>
-  <string id="437"></string>
+  <string id="437">Removable Disk</string>
   <string id="438">Opening file</string>
   <string id="439">Cache</string>
   <string id="440">Harddisk</string>
@@ -1696,13 +1696,18 @@
   <string id="20409">Downloading TV Show information</string>
   <string id="20410">Trailer</string>
   <string id="20411">Flatten</string>
-  <string id="20412">Flatten TV Show if only a single season</string>
+  <string id="20412">Flatten TV Shows</string>
   <string id="20413">Get FanArt</string>
   <string id="20414">Show Fanart in Video Library</string>
   <string id="20415">Scanning for new content</string>
   <string id="20416">First Aired</string>
   <string id="20417">Writer</string>
   <string id="20418">Clean filenames</string>
+  <string id="20419">Stack Duplicate TV Shows</string>
+  <string id="20420">Never</string>
+  <string id="20421">If Only One Season</string>
+  <string id="20422">Always</string>
+  
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -1884,4 +1889,5 @@
 
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
+  <!-- strings 32000 thru 32999 reserved for scripts -->
 </strings>

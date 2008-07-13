@@ -19,7 +19,7 @@
  *
  */
 
-#ifndef __GNUC__
+#ifdef _XBOX
 #pragma comment(linker, "/merge:PY_TEXT=PYTHON")
 #pragma comment(linker, "/merge:PY_DATA=PY_RW")
 #pragma comment(linker, "/merge:PY_BSS=PY_RW")

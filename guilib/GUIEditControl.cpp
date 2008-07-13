@@ -31,23 +31,38 @@ CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId,
     : CGUILabelControl(dwParentID, dwControlId, posX, posY, width, height, labelInfo, false, false)
 {
   ControlType = GUICONTROL_EDIT;
+#ifdef HAS_KAI
   m_pObserver = NULL;
+#endif
   m_originalPosX = posX;
+  m_originalWidth = width;
   SetLabel(strLabel);
-  ShowCursor(true);
+  ShowCursor(false);
 }
 
 CGUIEditControl::~CGUIEditControl(void)
-{}
+{
+}
 
+#ifdef HAS_KAI
 void CGUIEditControl::SetObserver(IEditControlObserver* aObserver)
 {
   m_pObserver = aObserver;
 }
 
-void CGUIEditControl::OnKeyPress(const CAction &action) // FIXME TESTME: NEW/CHANGED parameter and NOT tested CAN'T do it/DON'T know where (window 2700)/how exactly
+void CGUIEditControl::OnKeyPress(const CAction &action)
 {
-  CStdString label(m_infoLabel.GetLabel(m_dwParentID));
+  OnAction(action);
+}
+#endif
+
+bool CGUIEditControl::OnAction(const CAction &action)
+{
+  CStdStringW label;
+  g_charsetConverter.utf8ToW(m_infoLabel.GetLabel(m_dwParentID), label);
+
+  ValidateCursor((int)label.length());
+
   if (action.wID >= KEY_VKEY && action.wID < KEY_ASCII)
   {
     // input from the keyboard (vkey, not ascii)
@@ -56,20 +71,21 @@ void CGUIEditControl::OnKeyPress(const CAction &action) // FIXME TESTME: NEW/CHA
     {
       // left
       m_iCursorPos--;
+      SetInvalid();
+      return true;
     }
     if (b == 0x27 && m_iCursorPos < (int)label.length())
     {
       // right
       m_iCursorPos++;
+      SetInvalid();
+      return true;
     }
   }
   else if (action.wID >= KEY_ASCII)
   {
     // input from the keyboard
-    // NOTE: The below code is from the unicode keyboard patch which isn't in trunk fully yet.
-    //       I have included it as this class will eventually need it anyway.  Ideally it should
-    //       be using action.unicode if/when the unicode keyboard patch is merged to trunk.
-    switch (action.wID) 
+    switch (action.wID & 0xFF) // TODO: Trunk doesn't have the unicode stuff
     {
     case 27:
       { // escape
@@ -80,6 +96,7 @@ void CGUIEditControl::OnKeyPress(const CAction &action) // FIXME TESTME: NEW/CHA
     case 10:
       {
         // enter
+#ifdef HAS_KAI
         if (m_pObserver)
         {
           CStdString strLineOfText = label;
@@ -87,6 +104,7 @@ void CGUIEditControl::OnKeyPress(const CAction &action) // FIXME TESTME: NEW/CHA
           m_iCursorPos = 0;
           m_pObserver->OnEditTextComplete(strLineOfText);
         }
+#endif
         break;
       }
     case 8:
@@ -101,67 +119,69 @@ void CGUIEditControl::OnKeyPress(const CAction &action) // FIXME TESTME: NEW/CHA
       }
     default:
       {
-        // use character input // FIXME TESTME: NEW/CHANGED and NOT tested CAN'T do it/DON'T know where/how exactly (conversion from utf8 to WCHAR and back) 
-        CStdStringW wStrLabel;
-        g_charsetConverter.utf8ToW(label, wStrLabel);
-        wStrLabel.insert( wStrLabel.begin() + m_iCursorPos, (WCHAR)action.wID);
-        g_charsetConverter.wToUTF8(wStrLabel, label);
+        label.insert( label.begin() + m_iCursorPos, (WCHAR)action.wID & 0xFF);
         m_iCursorPos++;
         break;
       }
     }
+    CStdString utf8Label;
+    g_charsetConverter.wToUTF8(label, utf8Label);
+    SetLabel(utf8Label);
+    SetInvalid();
+    return true;
   }
-  SetLabel(label);
-  RecalcLabelPosition();
+  return CGUILabelControl::OnAction(action);  // TODO:EDIT - based off labelcontrol
 }
 
 void CGUIEditControl::RecalcLabelPosition()
 {
-  float maxWidth = m_width - 8;
+  if (!m_label.font) return;
 
-  float fTextWidth, fTextHeight;
+  // ensure that our cursor is within our width
+  CStdStringW label;
+  g_charsetConverter.utf8ToW(m_infoLabel.GetLabel(m_dwParentID), label);
+  ValidateCursor((int)label.length());
 
-  // this is possibly not quite correct (utf8 issues)
-  CStdString strTempLabel = m_infoLabel.GetLabel(m_dwParentID);
-  CStdString strTempPart = strTempLabel.Mid(0, m_iCursorPos);
-
-  m_textLayout.Update(strTempPart);
-  m_textLayout.GetTextExtent(fTextWidth, fTextHeight);
-
+  float beforeCursorWidth = m_textLayout.GetTextWidth(label.Left(m_iCursorPos));
+  float afterCursorWidth = m_textLayout.GetTextWidth(label.Left(m_iCursorPos) + L'|');
+  
   // if skinner forgot to set height :p
   if (m_height == 0)
   {
-    // store font height
-    m_height = fTextHeight;
+    m_height = 2*m_label.font->GetTextHeight(1);
   }
 
   // if text accumulated is greater than width allowed
-  if (fTextWidth > maxWidth)
+  if (m_posX + afterCursorWidth > m_originalPosX + m_originalWidth)  // off screen to the right
   {
     // move the position of the label to the left (outside of the viewport)
-    m_posX = (m_originalPosX + maxWidth) - fTextWidth;
+    m_posX = (m_originalPosX + m_originalWidth) - afterCursorWidth;
   }
-  else
+  else if (m_posX + beforeCursorWidth < m_originalPosX) // offscreen to the left
   {
     // otherwise use original position
-    m_posX = m_originalPosX;
+    m_posX = m_originalPosX - beforeCursorWidth;
   }
+  m_width = m_textLayout.GetTextWidth(label) + m_height*2;   // ensure it's plenty long enough :)
 }
 
 void CGUIEditControl::Render()
 {
-  // we can only perform view port operations if we have an area to display
-  if (m_height > 0 && m_width > 0)
+  ShowCursor(HasFocus());
+  if (m_bInvalidated)
+    RecalcLabelPosition();
+
+  if (g_graphicsContext.SetClipRegion(m_originalPosX, m_posY, m_originalWidth, m_height))
   {
-    if (g_graphicsContext.SetClipRegion(m_originalPosX, m_posY, m_width, m_height))
-    {
-      CGUILabelControl::Render();
-      g_graphicsContext.RestoreClipRegion();
-    }
-  }
-  else
-  {
-    // use default rendering until we have recalculated label position
     CGUILabelControl::Render();
+    g_graphicsContext.RestoreClipRegion();
   }
+}
+
+void CGUIEditControl::ValidateCursor(int maxLength)
+{
+  if (m_iCursorPos > maxLength)
+    m_iCursorPos = maxLength;
+  if (m_iCursorPos < 0)
+    m_iCursorPos = 0;
 }

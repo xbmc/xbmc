@@ -48,6 +48,14 @@ CGUIMoverControl::~CGUIMoverControl(void)
 
 void CGUIMoverControl::Render()
 {
+  if (m_bInvalidated)
+  {
+    m_imgFocus.SetWidth(m_width);
+    m_imgFocus.SetHeight(m_height);
+
+    m_imgNoFocus.SetWidth(m_width);
+    m_imgNoFocus.SetHeight(m_height);
+  }
   if (HasFocus())
   {
     DWORD dwAlphaCounter = m_dwFrameCounter + 2;
@@ -192,17 +200,6 @@ void CGUIMoverControl::DynamicResourceAlloc(bool bOnOff)
   CGUIControl::DynamicResourceAlloc(bOnOff);
   m_imgFocus.DynamicResourceAlloc(bOnOff);
   m_imgNoFocus.DynamicResourceAlloc(bOnOff);
-}
-
-void CGUIMoverControl::Update()
-{
-  CGUIControl::Update();
-
-  m_imgFocus.SetWidth(m_width);
-  m_imgFocus.SetHeight(m_height);
-
-  m_imgNoFocus.SetWidth(m_width);
-  m_imgNoFocus.SetHeight(m_height);
 }
 
 void CGUIMoverControl::Move(int iX, int iY)

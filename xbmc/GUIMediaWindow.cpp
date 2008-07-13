@@ -267,12 +267,12 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         Update(m_vecItems->m_strPath);
         m_viewControl.SetSelectedItem(iItem);        
       }
-      else if (message.GetParam1()==GUI_MSG_UPDATE_ITEM && message.GetLPVOID())
+      else if (message.GetParam1()==GUI_MSG_UPDATE_ITEM && message.GetItem())
       {
-        CFileItemPtr newItem = *(CFileItemPtr*)message.GetLPVOID();
+        CFileItemPtr newItem = boost::static_pointer_cast<CFileItem>(message.GetItem());
         if (IsActive())
           m_vecItems->UpdateItem(newItem.get());
-        else  
+        else if (newItem)
         { // need to remove the disc cache
           CFileItemList items;
           CUtil::GetDirectory(newItem->m_strPath, items.m_strPath);
@@ -460,20 +460,11 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   CLog::Log(LOGDEBUG,"CGUIMediaWindow::GetDirectory (%s)", strDirectory.c_str());
   CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
   
-  if (m_guiState.get() && !m_guiState->HideParentDirItems())
-  {
-    CFileItemPtr pItem(new CFileItem(".."));
-    pItem->m_strPath = strParentPath;
-    pItem->m_bIsFolder = true;
-    pItem->m_bIsShareOrDrive = false;
-    items.Add(pItem);
-  }
-
   // see if we can load a previously cached folder
   CFileItemList cachedItems(strDirectory);
   if (!strDirectory.IsEmpty() && cachedItems.Load())
   {
-    items.Assign(cachedItems, true); // true to keep any previous items (".." item)
+    items.Assign(cachedItems);
   }
   else
   {
@@ -490,6 +481,16 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
     if (items.GetReplaceListing())
       m_history.RemoveParentPath();
   }
+
+  if (m_guiState.get() && !m_guiState->HideParentDirItems() && !items.m_strPath.IsEmpty())
+  {
+    CFileItemPtr pItem(new CFileItem(".."));
+    pItem->m_strPath = strParentPath;
+    pItem->m_bIsFolder = true;
+    pItem->m_bIsShareOrDrive = false;
+    items.AddFront(pItem, 0);
+  }
+
   return true;
 }
 

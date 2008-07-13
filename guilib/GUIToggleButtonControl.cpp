@@ -95,10 +95,10 @@ void CGUIToggleButtonControl::DynamicResourceAlloc(bool bOnOff)
   m_selectButton.DynamicResourceAlloc(bOnOff);
 }
 
-void CGUIToggleButtonControl::Update()
+void CGUIToggleButtonControl::SetInvalid()
 {
-  CGUIButtonControl::Update();
-  m_selectButton.Update();
+  CGUIButtonControl::SetInvalid();
+  m_selectButton.SetInvalid();
 }
 
 void CGUIToggleButtonControl::SetPosition(float posX, float posY)
