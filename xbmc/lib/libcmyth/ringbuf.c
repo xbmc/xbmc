@@ -391,7 +391,7 @@ cmyth_ringbuf_request_block(cmyth_recorder_t rec, unsigned long len)
  *
  * Failure: an int containing -errno
  */
-int cmyth_ringbuf_read (cmyth_recorder_t rec, char *buf, unsigned long len)
+int cmyth_ringbuf_read(cmyth_recorder_t rec, char *buf, unsigned long len)
 {
 	int err, count;
 	int ret, req, nfds;
