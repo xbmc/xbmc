@@ -1134,7 +1134,7 @@ CProfile* CApplication::InitDirectoriesWin32()
   SetEnvironmentVariable("XBMC_HOME", strExecutablePath.c_str());
 
   CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
-  CIoSupport::RemapDriveLetter('U', _P("Q:\\"));
+  CIoSupport::RemapDriveLetter('U', _P("Q:"));
 
   if (m_bPlatformDirectories)
   {
