@@ -183,6 +183,7 @@ struct cmyth_file {
 	unsigned long long file_start;	/**< file start offest */
 	unsigned long long file_length;	/**< file length */
 	unsigned long long file_pos;	/**< current file position */
+	unsigned long long file_req;	/**< current file position requested */
 	cmyth_conn_t file_control;	/**< master backend connection */
 };
 
