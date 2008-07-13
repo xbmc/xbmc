@@ -1107,8 +1107,8 @@ int cmyth_livetv_keep_recording(cmyth_recorder_t rec, cmyth_database_t db, int k
 	if(cmyth_mysql_query_param_long(query,autoexpire) < 0
 	 || cmyth_mysql_query_param_str(query,recgroup) < 0
 	 || cmyth_mysql_query_param_long(query,prog->proginfo_chanId) < 0
-	 || cmyth_mysql_query_param_str(query,timestamp) < 0
-   ) {
+	 || cmyth_mysql_query_param_str(query,timestamp) < 0) 
+	{
 		cmyth_dbg(CMYTH_DBG_ERROR,"%s, binding of query parameters failed! Maybe we're out of memory?\n", __FUNCTION__);
 		ref_release(query);
 		ref_release(prog);
