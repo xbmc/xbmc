@@ -1409,9 +1409,9 @@ cmyth_recorder_spawn_chain_livetv(cmyth_recorder_t rec, char* channame)
 			"QUERY_RECORDER %d[]:[]SPAWN_LIVETV[]:[]live-%s-%s[]:[]%d[]:[]%s",
 			 rec->rec_id, myhostname, datestr, 0, channame);
 	else
-	snprintf(msg, sizeof(msg),
-		"QUERY_RECORDER %d[]:[]SPAWN_LIVETV[]:[]live-%s-%s[]:[]%d",
-		 rec->rec_id, myhostname, datestr, 0);
+		snprintf(msg, sizeof(msg),
+			"QUERY_RECORDER %d[]:[]SPAWN_LIVETV[]:[]live-%s-%s[]:[]%d",
+			 rec->rec_id, myhostname, datestr, 0);
 
 	if ((err=cmyth_send_message(rec->rec_conn, msg)) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
