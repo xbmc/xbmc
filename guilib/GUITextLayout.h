@@ -58,6 +58,7 @@ public:
   void RenderScrolling(float x, float y, float angle, DWORD color, DWORD shadowColor, DWORD alignment, float maxWidth, CScrollInfo &scrollInfo);
   void RenderOutline(float x, float y, DWORD color, DWORD outlineColor, DWORD outlineWidth, DWORD alignment, float maxWidth);
   void GetTextExtent(float &width, float &height);
+  float GetTextWidth(const CStdStringW &text) const;
   bool Update(const CStdString &text, float maxWidth = 0);
 
   unsigned int GetTextLength() const;
@@ -66,6 +67,7 @@ public:
 
   void SetWrap(bool bWrap=true);
   void SetMaxHeight(float fHeight);
+
 
   static void DrawText(CGUIFont *font, float x, float y, DWORD color, DWORD shadowColor, const CStdString &text, DWORD align);
   static void DrawOutlineText(CGUIFont *font, float x, float y, DWORD color, DWORD outlineColor, DWORD outlineWidth, const CStdString &text);
@@ -88,7 +90,8 @@ protected:
 
   CStdString m_lastText;
 private:
-  static void AppendToUTF32(const CStdString &text, DWORD colStyle, std::vector<DWORD> &utf32);
+  static void AppendToUTF32(const CStdString &utf8, DWORD colStyle, std::vector<DWORD> &utf32);
+  static void AppendToUTF32(const CStdStringW &utf16, DWORD colStyle, std::vector<DWORD> &utf32);
   static void DrawOutlineText(CGUIFont *font, float x, float y, const std::vector<DWORD> &colors, DWORD outlineColor, DWORD outlineWidth, const std::vector<DWORD> &text, DWORD align, float maxWidth);
 };
 
