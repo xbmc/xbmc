@@ -3197,13 +3197,14 @@ void CVideoDatabase::MarkAsUnWatched(const CFileItem &item)
 
     if (!item.HasVideoInfoTag() || item.GetVideoInfoTag()->m_iDbId < 0) return; // not in the db, or at least we don't have the info for it
 
+    // NOTE: We clear to NULL here as then the episode counting works much more nicely
     CStdString strSQL;
     if (item.GetVideoInfoTag()->m_iSeason > -1 && !item.m_bIsFolder) // episode
-      strSQL = FormatSQL("UPDATE episode set c%02d=0 WHERE idEpisode=%u", VIDEODB_ID_EPISODE_PLAYCOUNT, item.GetVideoInfoTag()->m_iDbId);
+      strSQL = FormatSQL("UPDATE episode set c%02d=NULL WHERE idEpisode=%u", VIDEODB_ID_EPISODE_PLAYCOUNT, item.GetVideoInfoTag()->m_iDbId);
     else if (!item.GetVideoInfoTag()->m_strArtist.IsEmpty())
-      strSQL = FormatSQL("UPDATE musicvideo set c%02d=0 WHERE idMVideo=%u", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT, item.GetVideoInfoTag()->m_iDbId);
+      strSQL = FormatSQL("UPDATE musicvideo set c%02d=NULL WHERE idMVideo=%u", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT, item.GetVideoInfoTag()->m_iDbId);
     else
-      strSQL = FormatSQL("UPDATE movie set c%02d=0 WHERE idMovie=%u", VIDEODB_ID_PLAYCOUNT, item.GetVideoInfoTag()->m_iDbId);
+      strSQL = FormatSQL("UPDATE movie set c%02d=NULL WHERE idMovie=%u", VIDEODB_ID_PLAYCOUNT, item.GetVideoInfoTag()->m_iDbId);
 
     m_pDS->exec(strSQL.c_str());
   }
