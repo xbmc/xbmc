@@ -21,61 +21,14 @@
  *
  */
 
-#include "GUIBorderedImage.h"
-#include "GUIListLabel.h"
-#include "GUIMultiSelectText.h"
+#include "GUIListGroup.h"
+#include "guiImage.h"
 
 class CGUIListItem;
 class CFileItem;
 
 class CGUIListItemLayout
 {
-  class CListBase
-  {
-  public:
-    CListBase();
-    virtual ~CListBase();
-
-    enum LIST_TYPE { LIST_LABEL, LIST_SELECT_LABEL, LIST_IMAGE, LIST_TEXTURE };
-    LIST_TYPE m_type;
-  };
-
-  class CListLabel : public CListBase
-  {
-  public:
-    CListLabel(float posX, float posY, float width, float height, int visibleCondition, const CLabelInfo &label, bool alwyasScroll, int scrollSpeed, const CGUIInfoLabel &content, const std::vector<CAnimation> &animations);
-    virtual ~CListLabel();
-
-    CGUIListLabel m_label;
-    CGUIInfoLabel m_info;
-  };
-
-  class CListSelectLabel : public CListBase
-  {
-  public:
-    CListSelectLabel(float posX, float posY, float width, float height, int visibleCondition, const CImage &imageFocus, const CImage &imageNoFocus, const CLabelInfo &label, const CGUIInfoLabel &content, const std::vector<CAnimation> &animations);
-    virtual ~CListSelectLabel();
-
-    CGUIMultiSelectTextControl m_label;
-    CGUIInfoLabel m_info;
-  };
-
-  class CListTexture : public CListBase
-  {
-  public:
-    CListTexture(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, const CImage &borderImage, const FRECT &borderSize, const CGUIImage::CAspectRatio &aspect, const CGUIInfoColor &colorDiffuse, const std::vector<CAnimation> &animations);
-    virtual ~CListTexture();
-    CGUIBorderedImage m_image;
-  };
-
-  class CListImage: public CListTexture
-  {
-  public:
-    CListImage(float posX, float posY, float width, float height, int visibleCondition, const CImage &image, const CImage &borderImage, const FRECT &borderSize, const CGUIImage::CAspectRatio &aspect, const CGUIInfoColor &colorDiffuse, const CGUIInfoLabel &content, const std::vector<CAnimation> &animations);
-    virtual ~CListImage();
-    CGUIInfoLabel m_info;
-  };
-
 public:
   CGUIListItemLayout();
   CGUIListItemLayout(const CGUIListItemLayout &from);
@@ -83,9 +36,8 @@ public:
   void LoadLayout(TiXmlElement *layout, bool focused);
   void Render(CGUIListItem *item, DWORD parentID, DWORD time = 0);
   float Size(ORIENTATION orientation) const;
-  unsigned int GetFocus() const;
-  void SetFocus(unsigned int focus);
-  void ResetScrolling();
+  unsigned int GetFocusedItem() const;
+  void SetFocusedItem(unsigned int focus);
   bool IsAnimating(ANIMATION_TYPE animType);
   void ResetAnimation(ANIMATION_TYPE animType);
   void SetInvalid() { m_invalidated = true; };
@@ -104,14 +56,11 @@ public:
   virtual void DumpTextureUse();
 #endif
 protected:
-  CListBase *CreateItem(TiXmlElement *child);
-  void UpdateItem(CListBase *control, CFileItem *item, DWORD parentID);
-  void RenderLabel(CListLabel *label, bool selected, bool scroll);
-  void Update(CFileItem *item, DWORD parentID);
+  void LoadControl(TiXmlElement *child, CGUIControlGroup *group);
+  void Update(CFileItem *item);
 
-  std::vector<CListBase*> m_controls;
-  typedef std::vector<CListBase*>::iterator iControls;
-  typedef std::vector<CListBase*>::const_iterator ciControls;
+  CGUIListGroup m_group;
+
   float m_width;
   float m_height;
   bool m_focused;

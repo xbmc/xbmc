@@ -54,6 +54,7 @@ extern "C" inline bool tracker_memory_free(DllTrackInfo* pInfo, void* data_addr)
     // We, have to search every map for this memory pointer.
     // Yes, it's slow todo, but if we are freeing already freed pointers when unloading a dll
     // xbmc will crash.
+    CSingleLock locktd(g_trackedDlls);
     for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
     {
       // try to free the pointer from this list, and break if success

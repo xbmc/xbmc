@@ -27,6 +27,14 @@ CGUIBorderedImage::CGUIBorderedImage(DWORD dwParentID, DWORD dwControlId, float 
      m_borderImage(dwParentID, dwControlId, posX, posY, width, height, borderTexture, dwColorKey)
 {
   memcpy(&m_borderSize, &borderSize, sizeof(FRECT));
+  ControlType = GUICONTROL_BORDEREDIMAGE;
+}
+
+CGUIBorderedImage::CGUIBorderedImage(const CGUIBorderedImage &right)
+: CGUIImage(right), m_borderImage(right.m_borderImage)
+{
+  memcpy(&m_borderSize, &right.m_borderSize, sizeof(FRECT));
+  ControlType = GUICONTROL_BORDEREDIMAGE;
 }
 
 CGUIBorderedImage::~CGUIBorderedImage(void)

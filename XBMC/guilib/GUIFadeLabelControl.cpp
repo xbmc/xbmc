@@ -25,7 +25,7 @@
 
 using namespace std;
 
-CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool scrollOut, int scrollSpeed, DWORD timeToDelayAtEnd)
+CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool scrollOut, int scrollSpeed, DWORD timeToDelayAtEnd, bool resetOnLabelChange)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height), m_scrollInfo(50, labelInfo.offsetX, scrollSpeed)
     , m_textLayout(labelInfo.font, false)
 {
@@ -39,6 +39,7 @@ CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, 
   m_renderTime = 0;
   m_lastLabel = -1;
   m_scrollSpeed = scrollSpeed;  // save it for later
+  m_resetOnLabelChange = resetOnLabelChange;
 }
 
 CGUIFadeLabelControl::~CGUIFadeLabelControl(void)
@@ -85,6 +86,11 @@ void CGUIFadeLabelControl::Render()
       numSpaces += (unsigned int)((m_width - width) / spaceWidth) + 1;
     m_shortText = width + m_label.offsetX < m_width;
     m_scrollInfo.suffix.assign(numSpaces, L' ');
+    if (m_resetOnLabelChange)
+    {
+      m_scrollInfo.Reset();
+      m_fadeAnim->ResetAnimation();
+    }
   }
   if (m_currentLabel != m_lastLabel)
   { // new label - reset scrolling

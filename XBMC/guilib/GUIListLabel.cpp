@@ -24,7 +24,7 @@
 #include "utils/CharsetConverter.h"
 #include <limits>
 
-CGUIListLabel::CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool alwaysScroll, int scrollSpeed)
+CGUIListLabel::CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoLabel &info, bool alwaysScroll, int scrollSpeed)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
     , m_textLayout(labelInfo.font, false)
     , m_scrollInfo(50, 0, scrollSpeed)
@@ -32,6 +32,8 @@ CGUIListLabel::CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, fl
   m_selected = false;
   m_scrolling = m_alwaysScroll = alwaysScroll;
   m_label = labelInfo;
+  m_info = info;
+  ControlType = GUICONTROL_LISTLABEL;
 }
 
 CGUIListLabel::~CGUIListLabel(void)
@@ -50,8 +52,18 @@ void CGUIListLabel::SetSelected(bool selected)
   m_selected = selected;
 }
 
+void CGUIListLabel::SetFocus(bool focus)
+{
+  CGUIControl::SetFocus(focus);
+  if (!focus)
+    SetScrolling(false);
+}
+
 void CGUIListLabel::Render()
 {
+  if (!m_pushedUpdates)
+    UpdateInfo();
+
   DWORD color = m_selected ? m_label.selectedColor : m_label.textColor;
   bool needsToScroll = (m_renderRect.Width() + 0.5f < m_textWidth); // 0.5f to deal with floating point rounding issues
   if (m_scrolling && needsToScroll)
@@ -74,6 +86,17 @@ void CGUIListLabel::Render()
     m_textLayout.Render(posX, m_renderRect.y1, m_label.angle, color, m_label.shadowColor, align, m_renderRect.Width());
   }
   CGUIControl::Render();
+}
+
+void CGUIListLabel::UpdateInfo(const CGUIListItem *item)
+{
+  if (m_info.IsConstant())
+    return; // nothing to do
+
+  if (item)
+    SetLabel(m_info.GetItemLabel(item));
+  else
+    SetLabel(m_info.GetLabel(m_dwParentID, true));
 }
 
 void CGUIListLabel::SetLabel(const CStdString &label)

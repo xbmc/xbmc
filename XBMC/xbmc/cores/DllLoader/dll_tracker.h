@@ -92,7 +92,7 @@ typedef struct _DllTrackInfo
   VAllocList virtualList;
 } DllTrackInfo;
 
-typedef std::list<DllTrackInfo*> TrackedDllList;
+class TrackedDllList : public std::list<DllTrackInfo*>, public CCriticalSection {};
 typedef std::list<DllTrackInfo*>::iterator TrackedDllsIter;
 
 #ifdef _cplusplus

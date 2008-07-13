@@ -26,6 +26,7 @@
 #include "xbox/xbeheader.h"
 #include "GUIWindowFileManager.h"
 #include "FileItem.h"
+#include "Crc32.h"
 
 using namespace XFILE;
 

@@ -26,8 +26,8 @@
 #include "dll_tracker_file.h"
 #include "dll_tracker_critical_section.h"
 #include "dll_tracker_socket.h"
-
 #include "DllLoader.h"
+#include "../../utils/SingleLock.h"
 
 #ifdef _cplusplus
 extern "C"
@@ -42,11 +42,13 @@ void tracker_dll_add(DllLoader* pDll)
   trackInfo->pDll = pDll;
   trackInfo->lMinAddr = 0;
   trackInfo->lMaxAddr = 0;
+  CSingleLock locktd(g_trackedDlls);
   g_trackedDlls.push_back(trackInfo);
 }
 
 void tracker_dll_free(DllLoader* pDll)
 {
+  CSingleLock locktd(g_trackedDlls);
   for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end();)
   {
     // NOTE: This code assumes that the same dll pointer can be in more than one
@@ -83,6 +85,7 @@ void tracker_dll_free(DllLoader* pDll)
 
 void tracker_dll_set_addr(DllLoader* pDll, uintptr_t min, uintptr_t max)
 {
+  CSingleLock locktd(g_trackedDlls);
   for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
   {
     if ((*it)->pDll == pDll)
@@ -104,6 +107,7 @@ char* tracker_getdllname(uintptr_t caller)
 
 DllTrackInfo* tracker_get_dlltrackinfo(uintptr_t caller)
 {
+  CSingleLock locktd(g_trackedDlls);
   for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
   {
     if (caller >= (*it)->lMinAddr && caller <= (*it)->lMaxAddr)
@@ -128,6 +132,7 @@ DllTrackInfo* tracker_get_dlltrackinfo(uintptr_t caller)
 
 DllTrackInfo* tracker_get_dlltrackinfo_byobject(DllLoader* pDll)
 {
+  CSingleLock locktd(g_trackedDlls);
   for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
   {
     if ((*it)->pDll == pDll)
@@ -140,6 +145,7 @@ DllTrackInfo* tracker_get_dlltrackinfo_byobject(DllLoader* pDll)
 
 void tracker_dll_data_track(DllLoader* pDll, uintptr_t addr)
 {
+  CSingleLock locktd(g_trackedDlls);
   for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
   {
     if (pDll == (*it)->pDll)

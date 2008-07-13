@@ -71,9 +71,11 @@ public:
   void SetMask(const CStdString& strMask);
   void SetAllowPrompting(bool allowPrompting);
   void SetCacheDirectory(bool cacheDirectory);
+  void SetUseFileDirectories(bool useFileDirectories);
 protected:
   CStdString m_strFileMask;  ///< Holds the file mask specified by SetMask()
   bool m_allowPrompting;    ///< If true, the directory handlers may prompt the user
-  bool m_cacheDirectory;    ///< If true (default) the directory is cached by g_directoryCache.
+  bool m_cacheDirectory;    ///< If true the directory is cached by g_directoryCache (defaults to false)
+  bool m_useFileDirectories; ///< If true the directory may allow file directories (defaults to false)
 };
 }

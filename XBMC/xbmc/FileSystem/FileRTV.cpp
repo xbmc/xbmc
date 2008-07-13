@@ -28,6 +28,11 @@
 #include "URL.h"
 
 #include <sys/stat.h>
+extern "C"
+{
+#include "lib/libRTV/interface.h"
+}
+
 
 using namespace XFILE;
 
