@@ -5,4 +5,4 @@ DIRS=VideoShaders
 LIB=VideoRenderer.a
 
 include ../../../Makefile.include
--include Makefile.depend
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

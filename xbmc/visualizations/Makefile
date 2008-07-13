@@ -5,4 +5,4 @@ SRCS=fft.cpp Visualisation.cpp VisualisationFactory.cpp
 LIB=visualizations.a
 
 include ../../Makefile.include
--include Makefile.depend
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

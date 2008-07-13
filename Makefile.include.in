@@ -12,12 +12,20 @@ DEFINES+=-D_LINUX -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFF
 ARCH=@ARCH@
 
 .cpp.o:
-	rm -f ${<:.cpp=.o}
-	$(CXX) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cpp=.o}
+	@rm -f ${<:.cpp=.o}
+	$(CXX) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cpp=.o}
+	@cp $*.d $*.P; \
+	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
+	  rm -f $*.d
 
 .c.o:
-	rm -f ${<:.c=.o}
-	$(CC) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.c=.o}
+	@rm -f ${<:.c=.o}
+	$(CC) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.c=.o}
+	@cp $*.d $*.P; \
+	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
+	  rm -f $*.d
 
 .S.o:
 	rm -f ${<:.S=.o}
@@ -28,7 +36,7 @@ ARCH=@ARCH@
 
 OBJS+=$(patsubst %.cpp,%.o,$(patsubst %.S,%.o,$(SRCS)))
 
-.PHONY : lib pch clean depend
+.PHONY : lib pch clean 
 
 lib: $(OBJS)
 
@@ -36,16 +44,12 @@ pch: $(PCH:.h=.h.gch)
 	for d in $(DIRS); do (cd $$d; $(MAKE) pch ); done
 
 clean: 
-	$(RM) $(OBJS) $(LIB) $(PCH:.h=.h.gch)
+	$(RM) $(OBJS) $(LIB) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
 	for d in $(DIRS); do (cd $$d; $(MAKE) clean ); done
 
 distclean: clean
-	@echo "Removing all object file (.o)"
+	@echo "Removing all object files (.o)"
 	@find . -name "*.o" -exec echo 'Removing "{}"' \; -exec rm -f "{}" \;
-	@echo "Removing all object file (.depend)"
-	@find . -name "*.depend" -exec echo 'Removing "{}"' \; -exec rm -f "{}" \;
+	@echo "Removing all dependency files (.P)"
+	@find . -name "*.P" -exec echo 'Removing "{}"' \; -exec rm -f "{}" \;
 	@echo "Done."
-
-depend: $(PCH) $(SRCS)
-	-$(CXX) -MM $(DEFINES) $(INCLUDES) $(SRCS) > Makefile.depend
-	-for d in $(DIRS); do (cd $$d; $(MAKE) depend ); done

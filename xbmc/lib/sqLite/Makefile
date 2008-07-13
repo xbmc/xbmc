@@ -3,4 +3,4 @@ SRCS=dataset.cpp qry_dat.cpp sqlitedataset.cpp
 LIB=sqllite.a
 
 include ../../../Makefile.include
--include Makefile.depend
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

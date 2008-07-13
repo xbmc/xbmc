@@ -7,7 +7,4 @@ LIB=linux.a
 
 include ../../Makefile.include
 
--include Makefile.depend
-
-x: NetworkLinux.o
-	g++ -o x NetworkLinux.o
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

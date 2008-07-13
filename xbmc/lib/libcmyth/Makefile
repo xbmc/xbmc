@@ -5,7 +5,7 @@ SRCSC=bookmark.c commbreak.c connection.c event.c file.c freespace.c keyframe.c 
 LIB=libcmyth.a
 
 include ../../../Makefile.include
--include Makefile.depend
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 
 OBJSC+=$(SRCSC:.c=.o)
 OBJS=$(OBJSC)

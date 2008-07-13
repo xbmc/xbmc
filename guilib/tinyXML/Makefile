@@ -3,4 +3,4 @@ OBJS=tinyxmlerror.o  tinyxmlparser.o tinystr.o  tinyxml.o
 LIB=tinyxml.a
 
 include ../../Makefile.include
--include Makefile.depend
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

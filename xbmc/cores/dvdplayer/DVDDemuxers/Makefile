@@ -6,4 +6,4 @@ SRCS=DVDDemux.cpp DVDDemuxFFmpeg.cpp DVDDemuxShoutcast.cpp DVDDemuxUtils.cpp DVD
 LIB=dvddemuxers.a
 
 include ../../../../Makefile.include
--include Makefile.depend
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
