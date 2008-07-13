@@ -621,63 +621,25 @@ int
 cmyth_livetv_chain_get_block(cmyth_recorder_t rec, char *buf,
 															unsigned long len)
 {
-	struct timeval tv;
-	fd_set fds;
-
-	cmyth_dbg(CMYTH_DBG_DEBUG, "%s [%s:%d]: (trace) {\n", __FUNCTION__,
-				__FILE__, __LINE__);
-
-	if (rec == NULL)
+	if (!rec) {
+		cmyth_dbg(CMYTH_DBG_ERROR, "%s: no connection\n",
+			  __FUNCTION__);
 		return -EINVAL;
-
-	tv.tv_sec = 10;
-	tv.tv_usec = 0;
-	FD_ZERO(&fds);
-	FD_SET(rec->rec_livetv_file->file_data->conn_fd, &fds);
-	if (select((int)rec->rec_livetv_file->file_data->conn_fd+1,
-		   NULL, &fds, NULL, &tv) == 0) {
-		rec->rec_livetv_file->file_data->conn_hang = 1;
-		cmyth_dbg(CMYTH_DBG_DEBUG, "%s [%s:%d]: (trace) }\n",
-					__FUNCTION__, __FILE__, __LINE__);
-		return 0;
-	} else {
-		rec->rec_livetv_file->file_data->conn_hang = 0;
 	}
-	cmyth_dbg(CMYTH_DBG_DEBUG, "%s [%s:%d]: (trace) }\n",
-				__FUNCTION__, __FILE__, __LINE__);
-	return recv(rec->rec_livetv_file->file_data->conn_fd, buf, len, 0);
+
+  return cmyth_file_get_block(rec->rec_livetv_file, buf, len);
 }
 
 static int
 cmyth_livetv_chain_select(cmyth_recorder_t rec, struct timeval *timeout)
 {
-	fd_set fds;
-	int ret;
-	cmyth_socket_t fd;
-
-	cmyth_dbg(CMYTH_DBG_DEBUG, "%s [%s:%d]: (trace) {\n", __FUNCTION__,
-				__FILE__, __LINE__);
-
-	if (rec == NULL)
+	if (!rec) {
+		cmyth_dbg(CMYTH_DBG_ERROR, "%s: no connection\n",
+			  __FUNCTION__);
 		return -EINVAL;
+	}
 
-
-	fd = rec->rec_livetv_file->file_data->conn_fd;
-
-	FD_ZERO(&fds);
-	FD_SET(fd, &fds);
-
-	ret = select((int)fd+1, &fds, NULL, NULL, timeout);
-
-	if (ret == 0)
-		rec->rec_livetv_file->file_data->conn_hang = 1;
-	else
-		rec->rec_livetv_file->file_data->conn_hang = 0;
-
-	cmyth_dbg(CMYTH_DBG_DEBUG, "%s [%s:%d]: (trace) }\n",
-				__FUNCTION__, __FILE__, __LINE__);
-
-	return ret;
+  return cmyth_file_select(rec->rec_livetv_file, timeout);
 }
 
 
@@ -781,10 +743,7 @@ cmyth_livetv_chain_switch_last(cmyth_recorder_t rec)
 static int
 cmyth_livetv_chain_request_block(cmyth_recorder_t rec, unsigned long len)
 {
-	int err, count;
-	int r, retry;
-	long c, ret;
-	char msg[256];
+	int ret, retry;
 
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s [%s:%d]: (trace) {\n", __FUNCTION__,
 				__FILE__, __LINE__);
@@ -797,34 +756,10 @@ cmyth_livetv_chain_request_block(cmyth_recorder_t rec, unsigned long len)
 
 	pthread_mutex_lock(&mutex);
 
-	if(len > (unsigned int)rec->rec_conn->conn_tcp_rcvbuf)
-		len = (unsigned int)rec->rec_conn->conn_tcp_rcvbuf;
-
 	do {
 		retry = 0;
-		snprintf(msg, sizeof(msg),
-		 	"QUERY_FILETRANSFER %ld[]:[]REQUEST_BLOCK[]:[]%ld",
-		 	rec->rec_livetv_file->file_id, len);
-
-		if ((err = cmyth_send_message(rec->rec_conn, msg)) < 0) {
-			cmyth_dbg(CMYTH_DBG_ERROR,
-			  	"%s: cmyth_send_message() failed (%d)\n",
-			  	__FUNCTION__, err);
-			ret = err;
-			goto out;
-		}
-
-		count = cmyth_rcv_length(rec->rec_conn);
-		if ((r=cmyth_rcv_long(rec->rec_conn, &err, &c, count)) < 0) {
-			cmyth_dbg(CMYTH_DBG_ERROR,
-			  	"%s: cmyth_rcv_length() failed (%d)\n",
-			  	__FUNCTION__, r);
-			ret = err;
-			goto out;
-		}
-
-
-		if(c == 0) { /* We've gotten to the end, need to progress in the chain */
+		ret = cmyth_file_request_block(rec->rec_livetv_file, len);
+		if (ret == 0) { /* We've gotten to the end, need to progress in the chain */
 			/* Switch if there are files left in the chain */
 			PRINTF("**SSDEBUG:(cmyth_livetv_request_block): %s\n",
 			"reached end of stream must dooSwitcheroo");
@@ -833,18 +768,6 @@ cmyth_livetv_chain_request_block(cmyth_recorder_t rec, unsigned long len)
 	}
 	while (retry);
 
-	if(rec->rec_ring) {
-		rec->rec_ring->file_pos += c;
-		if(rec->rec_ring->file_pos > rec->rec_ring->file_length)
-			rec->rec_ring->file_length = rec->rec_ring->file_pos;
-	} else {
-		rec->rec_livetv_file->file_pos += c;
-		if(rec->rec_livetv_file->file_pos > rec->rec_livetv_file->file_length)
-			rec->rec_livetv_file->file_length = rec->rec_livetv_file->file_pos;
-	}
-	ret = c;
-
-    out:
 	pthread_mutex_unlock(&mutex);
 
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s [%s:%d]: (trace) }\n",
@@ -855,21 +778,30 @@ cmyth_livetv_chain_request_block(cmyth_recorder_t rec, unsigned long len)
 
 int cmyth_livetv_chain_read(cmyth_recorder_t rec, char *buf, unsigned long len)
 {
-	int ret;
+	int ret, retry;
 
-	cmyth_dbg(CMYTH_DBG_DEBUG, "%s [%s:%d]: (trace) {\n", __FUNCTION__,
-				__FILE__, __LINE__);
+	cmyth_dbg(CMYTH_DBG_DEBUG, "%s [%s:%d]: (trace) {\n", 
+        __FUNCTION__,	__FILE__, __LINE__);
 
-	if (rec == NULL)
+	if (rec == NULL) {
+		cmyth_dbg(CMYTH_DBG_ERROR, "%s: no connection\n",
+			  __FUNCTION__);
 		return -EINVAL;
-
-retry:
-	ret = cmyth_file_read(rec->rec_livetv_file, buf, len);	
-	if (ret == 0) {
-		/* eof, switch to next file */
-		if(cmyth_livetv_chain_switch(rec, 1))
-			goto retry;
 	}
+
+	do {
+		retry = 0;
+		ret = cmyth_file_read(rec->rec_livetv_file, buf, len);	
+		if (ret == 0) {
+			/* eof, switch to next file */
+			PRINTF("**SSDEBUG:(cmyth_livetv_chain_read): %s\n",
+			"reached end of stream must dooSwitcheroo");
+			retry = cmyth_livetv_chain_switch(rec, 1);
+		}
+	} while(retry);
+
+	cmyth_dbg(CMYTH_DBG_DEBUG, "%s [%s:%d]: (trace) }\n",
+				__FUNCTION__, __FILE__, __LINE__);
 
 	return ret;
 }
@@ -898,11 +830,6 @@ retry:
 static long long
 cmyth_livetv_chain_seek(cmyth_recorder_t rec, long long offset, int whence)
 {
-	char msg[128];
-	int err;
-	int count;
-	long long c,p;
-	long r;
 	long long ret;
 	cmyth_file_t fp;
 	int cur, ct;
@@ -910,116 +837,73 @@ cmyth_livetv_chain_seek(cmyth_recorder_t rec, long long offset, int whence)
 	if (rec == NULL)
 		return -EINVAL;
 
-		fp = rec->rec_livetv_file;
+	ct  = rec->rec_livetv_chain->chain_ct;
 
-		if ((offset == 0) && (whence == SEEK_CUR))
-			return fp->file_pos;
+	if (whence == SEEK_END) {
 
-    if (whence == SEEK_END) {
-      /* HACK, since the below code doesn't support anything *
-       * but relative seeks, we convert stuff to relative    */
-      whence = SEEK_CUR;
-			c = 0;
-
-      ct = rec->rec_livetv_chain->chain_ct;
-      do {
-        cur = rec->rec_livetv_chain->chain_current;
-        c  += rec->rec_livetv_chain->chain_files[cur]->file_length;
-        cur++;
-      } while(cur < ct);
-      c -= fp->file_pos;
-      offset = c - offset;
-    }
-
-		pthread_mutex_lock(&mutex);
-
-	/* Loop in case we need to jump forward or back in the chain */
-	do {
-		snprintf(msg, sizeof(msg),
-		 	"QUERY_FILETRANSFER %ld[]:[]SEEK[]:[]%ld[]:[]%ld[]:[]%d[]:[]%ld[]:[]%ld",
-		 	rec->rec_livetv_file->file_id,
-		 	(long)(offset >> 32),
-		 	(long)(offset & 0xffffffff),
-		 	whence,
-		 	(long)(fp->file_pos >> 32),
-		 	(long)(fp->file_pos & 0xffffffff));
-	
-		PRINTF("** SSDEBUG: offset %lld issuing seek command: %s\n", offset, msg);
-
-		if ((err = cmyth_send_message(rec->rec_conn, msg)) < 0) {
-			cmyth_dbg(CMYTH_DBG_ERROR,
-			  	"%s: cmyth_send_message() failed (%d)\n",
-			  	__FUNCTION__, err);
-			ret = err;
-			goto out;
+		offset -= rec->rec_livetv_file->file_req;
+		for (cur = rec->rec_livetv_chain->chain_current; cur < ct; cur++) {
+			offset += rec->rec_livetv_chain->chain_files[cur]->file_length;
 		}
 
-		count = cmyth_rcv_length(rec->rec_conn);
-		if ((r=cmyth_rcv_long_long(rec->rec_conn, &err, &c, count)) < 0) {
-			cmyth_dbg(CMYTH_DBG_ERROR,
-			  	"%s: cmyth_rcv_length() failed (%d)\n",
-			  	__FUNCTION__, r);
-			ret = err;
-			goto out;
-		}
+		cur = rec->rec_livetv_chain->chain_current;
+		fp  = rec->rec_livetv_chain->chain_files[cur];
+		whence = SEEK_CUR;
+	}
 
-		PRINTF("** SSDEBUG: new pos %lld after seek command\n", c);
+	if (whence == SEEK_SET) {
 
-		/* Check if the seek failed. If so, see if we can go to */
-		/* the previous or next file depending on the direction */
-		/* we're seeking in */
-
-		if(c == -1) {
-			cur = rec->rec_livetv_chain->chain_current;
-			ct = rec->rec_livetv_chain->chain_ct;
-			if(offset < 0) { /* Seeking back */
-				if(cur > 0)
-					cmyth_livetv_chain_switch(rec, -1);
-				else
-					break;
-			}
-			else { /* Seeking forward */
-				if(cur < ct - 1)
-					cmyth_livetv_chain_switch(rec, 1);
-				else
-					break;
-			}
-			fp = rec->rec_livetv_file;
-			p = fp->file_pos;
-			p += offset;
-#if 0
-			printf("** SSDEBUG: offest %lld file position %lld after switch diff %lld\n", 
-							offset, fp->file_pos, p);
-			if(p < 0) { /* Re-synch the file position */
-				printf("** SSDEBUG: offest %lld exceeds file position %lld\n", 
-							offset, fp->file_pos);
-				offset = fp->file_pos;
-				whence = SEEK_SET;
-			}
-#endif
-		}
-		else {
-			switch (whence) {
-				case SEEK_SET:
-					fp->file_pos = offset;
+		for (cur = 0; cur < ct; cur++) {
+    			fp = rec->rec_livetv_chain->chain_files[cur];
+			if (offset < (long long)fp->file_length)
 				break;
-				case SEEK_CUR:
-					fp->file_pos += offset;
-				break;
-				case SEEK_END:
-					fp->file_pos = fp->file_length - offset;
-				break;
-			}
-
-			if(fp->file_pos > fp->file_length)
-				fp->file_length = fp->file_pos;
-
+			offset -= fp->file_length;
 		}
-	} while(c == -1);
+	}
 
-	ret = fp->file_pos;
+	if (whence == SEEK_CUR) {
 
-    out:
+	if (offset == 0) {
+		cur     = rec->rec_livetv_chain->chain_current;
+		offset += rec->rec_livetv_chain->chain_files[cur]->file_req;
+		for (; cur > 0; cur--) {
+			offset += rec->rec_livetv_chain->chain_files[cur-1]->file_length;
+		}
+		return offset;
+	}
+
+	offset += fp->file_req;
+
+	while (offset > (long long)fp->file_length) {
+		cur++;
+		offset -= fp->file_length;
+		if(cur == ct)
+			return -1;
+		fp = rec->rec_livetv_chain->chain_files[cur];
+	}
+
+	while (offset < 0) {
+		cur--;
+		if(cur < 0)
+			return -1;
+		fp = rec->rec_livetv_chain->chain_files[cur];
+		offset += fp->file_length;
+	}
+
+	offset -= fp->file_req;
+  }
+
+	pthread_mutex_lock(&mutex);
+
+	ret = cmyth_file_seek(fp, offset, whence);
+
+	PRINTF("** SSDEBUG: new pos %lld after seek command\n", ret);
+
+	cur -= rec->rec_livetv_chain->chain_current;
+	if (ret >= 0 && cur) {
+		cmyth_livetv_chain_switch(rec, cur);
+	}
+
 	pthread_mutex_unlock(&mutex);
 
 	return ret;
