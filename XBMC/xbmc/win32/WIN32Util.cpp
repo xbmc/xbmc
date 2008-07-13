@@ -28,6 +28,8 @@
 using namespace std;
 using namespace MEDIA_DETECT;
 
+DWORD CWIN32Util::dwDriveMask = 0;
+
 
 
 CWIN32Util::CWIN32Util(void)
@@ -202,3 +204,25 @@ char CWIN32Util::FirstDriveFromMask (ULONG unitmask)
     }
     return (i + 'A');
 }
+
+
+// Workaround to get the added and removed drives
+// Seems to be that the lParam in SDL is empty
+// MS way: http://msdn.microsoft.com/en-us/library/aa363215(VS.85).aspx
+
+void CWIN32Util::UpdateDriveMask()
+{
+  dwDriveMask = GetLogicalDrives();
+}
+
+CStdString CWIN32Util::GetChangedDrive()
+{
+  CStdString strDrive;
+  DWORD dwDriveMask2 = GetLogicalDrives();
+  DWORD dwDriveMaskResult = dwDriveMask ^ dwDriveMask2;
+  dwDriveMask = dwDriveMask2;
+  strDrive.Format("%c:\\",FirstDriveFromMask(dwDriveMaskResult));
+  return strDrive;
+}
+
+// End Workaround

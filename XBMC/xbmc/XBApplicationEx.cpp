@@ -21,6 +21,12 @@
 #define MEASURE_FUNCTION
 #endif
 #include "GUIFontManager.h"
+#ifdef _WIN32PC
+#include <dbt.h>
+#include "SDL/SDL_syswm.h"
+#include "GUIWindowManager.h"
+#include "WIN32Util.h"
+#endif
 
 
 //-----------------------------------------------------------------------------
@@ -153,6 +159,10 @@ INT CXBApplicationEx::Run()
 
 #ifndef _DEBUG
   const BYTE MAX_EXCEPTION_COUNT = 10;
+#endif
+
+#ifdef _WIN32PC
+  SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 #endif
 
   // Run the game loop, animating and rendering frames
@@ -329,6 +339,35 @@ void CXBApplicationEx::ReadInput()
   {
     switch(event.type)
     {
+#ifdef _WIN32PC
+    case SDL_SYSWMEVENT:
+      {
+        if (event.syswm.msg->wParam == DBT_DEVICEARRIVAL)
+        {
+          CMediaSource share;
+          CStdString strDrive = CWIN32Util::GetChangedDrive();
+          share.strName.Format("%s (%s)", g_localizeStrings.Get(437), strDrive);
+          share.strName.Replace(":\\",":");
+          share.strPath = strDrive;
+          share.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
+          g_settings.AddShare("files",share);
+          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
+          m_gWindowManager.SendThreadMessage( msg );
+        }
+        if (event.syswm.msg->wParam == DBT_DEVICEREMOVECOMPLETE)
+        {     
+          CStdString strDrive = CWIN32Util::GetChangedDrive();
+          CStdString strName;
+          strName.Format("%s (%s)", g_localizeStrings.Get(437), strDrive);
+          strName.Replace(":\\",":");
+          g_settings.DeleteSource("files",strName,strDrive);
+          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
+          m_gWindowManager.SendThreadMessage( msg );
+        }
+      }
+      break;
+#endif
+
     case SDL_QUIT:
       if (!g_application.m_bStop) g_application.getApplicationMessenger().Shutdown();
       break;
