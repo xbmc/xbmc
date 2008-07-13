@@ -7,4 +7,4 @@ SRCS=DVDAudio.cpp DVDClock.cpp DVDDemuxSPU.cpp DVDMessage.cpp DVDMessageQueue.cp
 LIB=dvdplayer.a
 
 include ../../../Makefile.include
--include Makefile.depend
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

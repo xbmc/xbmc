@@ -5,4 +5,4 @@ OBJS=CDDARipper.o CDDAReader.o Encoder.o EncoderLame.o EncoderVorbis.o EncoderWa
 LIB=cdrip.a
 
 include ../../Makefile.include
--include Makefile.depend
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

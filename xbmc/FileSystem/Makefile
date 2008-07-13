@@ -8,4 +8,4 @@ INCLUDES+=-I../lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core -I../lib/libU
 LIB=filesystem.a
 
 include ../../Makefile.include
--include Makefile.depend
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
