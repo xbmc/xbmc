@@ -95,7 +95,7 @@ extern "C"
   int dll_fputc (int character, FILE * stream);
   int dll_putcchar (int character);
   int dll_fputs (const char * szLine , FILE* stream);
-  int dll_fseek ( FILE * stream , long offset , int origin );
+  int dll_fseek ( FILE * stream , off64_t offset , int origin );
   int dll_ungetc (int c, FILE * stream);
   long dll_ftell ( FILE * stream );
   long dll_tell ( int fd );
