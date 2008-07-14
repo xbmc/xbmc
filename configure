@@ -13162,6 +13162,7 @@ ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/l
 
 
 
+
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -14260,6 +14261,7 @@ ac_clean_files=$ac_clean_files_save
 
 pushd xbmc/lib/libPython/Python; ./configure --enable-ipv6 --enable-unicode=ucs4 --without-cxx --enable-shared --prefix=`pwd`/../linux/python-lib MACOSX_DEPLOYMENT_TARGET=10.5; sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h; cp pyconfig.h Include; popd
 pushd xbmc/cores/paplayer/MPCCodec; ./configure; popd
+pushd xbmc/cores/paplayer/MP3Codec/libmad-0.15.1b; ./configure; popd
 
 # configure is writing to config.log, and then calls config.status.
 # config.status does its own redirection, appending to config.log.
