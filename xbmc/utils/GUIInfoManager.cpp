@@ -1797,291 +1797,298 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
 {
   bool bReturn = false;
   int condition = abs(info.m_info);
-  switch (condition)
+
+  if (condition >= LISTITEM_START && condition <= LISTITEM_END)
   {
-    case SKIN_BOOL:
-      {
-        bReturn = g_settings.GetSkinBool(info.GetData1());
-      }
-      break;
-    case SKIN_STRING:
-      {
-        if (info.GetData2())
-          bReturn = g_settings.GetSkinString(info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
+    // TODO: We currently don't use the item that is passed in to here, as these
+    //       conditions only come from Container(id).ListItem(offset).* at this point.
+    CGUIListItemPtr item;
+    CGUIWindow *window = NULL;
+    int data1 = info.GetData1();
+    if (!data1) // No container specified, so we lookup the current view container
+    {
+      window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
+      if (window && window->IsMediaWindow())
+        data1 = ((CGUIMediaWindow*)(window))->GetViewContainerID();
+    }
+
+    if (!window) // If we don't have a window already (from lookup above), get one
+      window = GetWindowWithCondition(dwContextWindow, 0);
+
+    if (window)
+    {
+      const CGUIControl *control = window->GetControl(data1);
+      if (control && control->IsContainer())
+        item = ((CGUIBaseContainer *)control)->GetListItem(info.GetData2(), info.GetInfoFlag());
+    }
+
+    if (item) // If we got a valid item, do the lookup
+      bReturn = GetItemBool(item.get(), condition); // Image prioritizes images over labels (in the case of music item ratings for instance)
+  }
+  else
+  {
+    switch (condition)
+    {
+      case SKIN_BOOL:
+        {
+          bReturn = g_settings.GetSkinBool(info.GetData1());
+        }
+        break;
+      case SKIN_STRING:
+        {
+          if (info.GetData2())
+            bReturn = g_settings.GetSkinString(info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
+          else
+            bReturn = !g_settings.GetSkinString(info.GetData1()).IsEmpty();
+        }
+        break;
+      case STRING_IS_EMPTY:
+        // note: Get*Image() falls back to Get*Label(), so this should cover all of them
+        if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+          bReturn = GetItemImage((CFileItem *)item, info.GetData1()).IsEmpty();
         else
-          bReturn = !g_settings.GetSkinString(info.GetData1()).IsEmpty();
-      }
-      break;
-    case STRING_IS_EMPTY:
-      // note: Get*Image() falls back to Get*Label(), so this should cover all of them
-      if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
-        bReturn = GetItemImage((CFileItem *)item, info.GetData1()).IsEmpty();
-      else
-        bReturn = GetImage(info.GetData1(), dwContextWindow).IsEmpty();
-      break;
-    case CONTROL_GROUP_HAS_FOCUS:
-      {
-        CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
-        if (window)
-          bReturn = window->ControlGroupHasFocus(info.GetData1(), info.GetData2());
-      }
-      break;
-    case CONTROL_IS_VISIBLE:
-      {
-        CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
-        if (window)
+          bReturn = GetImage(info.GetData1(), dwContextWindow).IsEmpty();
+        break;
+      case CONTROL_GROUP_HAS_FOCUS:
         {
-          // Note: This'll only work for unique id's
-          const CGUIControl *control = window->GetControl(info.GetData1());
-          if (control)
-            bReturn = control->IsVisible();
-        }
-      }
-      break;
-    case CONTROL_IS_ENABLED:
-      {
-        CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
-        if (window)
-        {
-          // Note: This'll only work for unique id's
-          const CGUIControl *control = window->GetControl(info.GetData1());
-          if (control)
-            bReturn = !control->IsDisabled();
-        }
-      }
-      break;
-    case CONTROL_HAS_FOCUS:
-      {
-        CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
-        if (window)
-          bReturn = (window->GetFocusedControlID() == (int)info.GetData1());
-      }
-      break;
-    case BUTTON_SCROLLER_HAS_ICON:
-      {
-        CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
-        if (window)
-        {
-          CGUIControl *pControl = window->GetFocusedControl();
-          if (pControl && pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTONBAR)
-            bReturn = ((CGUIButtonScroller *)pControl)->GetActiveButtonID() == (int)info.GetData1();
-        }
-      }
-      break;
-    case WINDOW_NEXT:
-      if (info.GetData1())
-        bReturn = ((int)info.GetData1() == m_nextWindowID);
-      else
-      {
-        CGUIWindow *window = m_gWindowManager.GetWindow(m_nextWindowID);
-        if (window && CUtil::GetFileName(window->GetXMLFile()).Equals(m_stringParameters[info.GetData2()]))
-          bReturn = true;
-      }
-      break;
-    case WINDOW_PREVIOUS:
-      if (info.GetData1())
-        bReturn = ((int)info.GetData1() == m_prevWindowID);
-      else
-      {
-        CGUIWindow *window = m_gWindowManager.GetWindow(m_prevWindowID);
-        if (window && CUtil::GetFileName(window->GetXMLFile()).Equals(m_stringParameters[info.GetData2()]))
-          bReturn = true;
-      }
-      break;
-    case WINDOW_IS_VISIBLE:
-      if (info.GetData1())
-        bReturn = m_gWindowManager.IsWindowVisible(info.GetData1());
-      else
-        bReturn = m_gWindowManager.IsWindowVisible(m_stringParameters[info.GetData2()]);
-      break;
-    case WINDOW_IS_TOPMOST:
-      if (info.GetData1())
-        bReturn = m_gWindowManager.IsWindowTopMost(info.GetData1());
-      else
-        bReturn = m_gWindowManager.IsWindowTopMost(m_stringParameters[info.GetData2()]);
-      break;
-    case WINDOW_IS_ACTIVE:
-      if (info.GetData1())
-        bReturn = m_gWindowManager.IsWindowActive(info.GetData1());
-      else
-        bReturn = m_gWindowManager.IsWindowActive(m_stringParameters[info.GetData2()]);
-      break;
-    case SYSTEM_HAS_ALARM:
-      bReturn = g_alarmClock.hasAlarm(m_stringParameters[info.GetData1()]);
-      break;
-    case SYSTEM_GET_BOOL:
-      bReturn = g_guiSettings.GetBool(m_stringParameters[info.GetData1()]);
-      break;
-    case SYSTEM_HAS_CORE_ID:
-      bReturn = g_cpuInfo.HasCoreId(info.GetData1());
-      break;
-    case CONTAINER_ON_NEXT:
-    case CONTAINER_ON_PREVIOUS:
-      {
-        map<int,int>::const_iterator it = m_containerMoves.find(info.GetData1());
-        if (it != m_containerMoves.end())
-          bReturn = condition == CONTAINER_ON_NEXT ? it->second > 0 : it->second < 0;
-      }
-      break;
-    case CONTAINER_CONTENT:
-      {
-        CStdString content;
-        CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
-        if (window)
-        {
-          if (window->GetID() == WINDOW_MUSIC_INFO)
-            content = ((CGUIWindowMusicInfo *)window)->CurrentDirectory().GetContent();
-          else if (window->GetID() == WINDOW_VIDEO_INFO)
-            content = ((CGUIWindowVideoInfo *)window)->CurrentDirectory().GetContent();
-        }
-        if (content.IsEmpty())
-        {
-          window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-          if (window)
-            content = ((CGUIMediaWindow *)window)->CurrentDirectory().GetContent();
-        }
-        bReturn = m_stringParameters[info.GetData1()].Equals(content);
-      }
-      break;
-    case CONTAINER_ROW:
-    case CONTAINER_COLUMN:
-    case CONTAINER_POSITION:
-    case CONTAINER_HAS_NEXT:
-    case CONTAINER_HAS_PREVIOUS:
-    case CONTAINER_SUBITEM:
-      {
-        const CGUIControl *control = NULL;
-        if (info.GetData1())
-        { // container specified
           CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
           if (window)
-            control = window->GetControl(info.GetData1());
+            bReturn = window->ControlGroupHasFocus(info.GetData1(), info.GetData2());
         }
-        else
-        { // no container specified - assume a mediawindow
-          CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-          if (window)
-            control = window->GetControl(window->GetViewContainerID());
-        }
-        if (control)
-          bReturn = control->GetCondition(condition, info.GetData2());
-      }
-      break;
-    case CONTAINER_HAS_FOCUS:
-      { // grab our container
-        CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
-        if (window)
+        break;
+      case CONTROL_IS_VISIBLE:
         {
-          const CGUIControl *control = window->GetControl(info.GetData1());
-          if (control && control->IsContainer())
+          CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
+          if (window)
           {
-            CFileItemPtr item = boost::static_pointer_cast<CFileItem>(((CGUIBaseContainer *)control)->GetListItem(0));
-            if (item && item->m_iprogramCount == info.GetData2())  // programcount used to store item id
-              bReturn = true;
+            // Note: This'll only work for unique id's
+            const CGUIControl *control = window->GetControl(info.GetData1());
+            if (control)
+              bReturn = control->IsVisible();
           }
         }
         break;
-      }
-    case LISTITEM_ISSELECTED:
-    case LISTITEM_ISPLAYING:
-      {
-        CFileItemPtr item;
-        if (!info.GetData1())
-        { // assumes a media window
-          CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
+      case CONTROL_IS_ENABLED:
+        {
+          CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
           if (window)
-            item = window->GetCurrentListItem(info.GetData2());
+          {
+            // Note: This'll only work for unique id's
+            const CGUIControl *control = window->GetControl(info.GetData1());
+            if (control)
+              bReturn = !control->IsDisabled();
+          }
         }
+        break;
+      case CONTROL_HAS_FOCUS:
+        {
+          CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
+          if (window)
+            bReturn = (window->GetFocusedControlID() == (int)info.GetData1());
+        }
+        break;
+      case BUTTON_SCROLLER_HAS_ICON:
+        {
+          CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
+          if (window)
+          {
+            CGUIControl *pControl = window->GetFocusedControl();
+            if (pControl && pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTONBAR)
+              bReturn = ((CGUIButtonScroller *)pControl)->GetActiveButtonID() == (int)info.GetData1();
+          }
+        }
+        break;
+      case WINDOW_NEXT:
+        if (info.GetData1())
+          bReturn = ((int)info.GetData1() == m_nextWindowID);
         else
         {
+          CGUIWindow *window = m_gWindowManager.GetWindow(m_nextWindowID);
+          if (window && CUtil::GetFileName(window->GetXMLFile()).Equals(m_stringParameters[info.GetData2()]))
+            bReturn = true;
+        }
+        break;
+      case WINDOW_PREVIOUS:
+        if (info.GetData1())
+          bReturn = ((int)info.GetData1() == m_prevWindowID);
+        else
+        {
+          CGUIWindow *window = m_gWindowManager.GetWindow(m_prevWindowID);
+          if (window && CUtil::GetFileName(window->GetXMLFile()).Equals(m_stringParameters[info.GetData2()]))
+            bReturn = true;
+        }
+        break;
+      case WINDOW_IS_VISIBLE:
+        if (info.GetData1())
+          bReturn = m_gWindowManager.IsWindowVisible(info.GetData1());
+        else
+          bReturn = m_gWindowManager.IsWindowVisible(m_stringParameters[info.GetData2()]);
+        break;
+      case WINDOW_IS_TOPMOST:
+        if (info.GetData1())
+          bReturn = m_gWindowManager.IsWindowTopMost(info.GetData1());
+        else
+          bReturn = m_gWindowManager.IsWindowTopMost(m_stringParameters[info.GetData2()]);
+        break;
+      case WINDOW_IS_ACTIVE:
+        if (info.GetData1())
+          bReturn = m_gWindowManager.IsWindowActive(info.GetData1());
+        else
+          bReturn = m_gWindowManager.IsWindowActive(m_stringParameters[info.GetData2()]);
+        break;
+      case SYSTEM_HAS_ALARM:
+        bReturn = g_alarmClock.hasAlarm(m_stringParameters[info.GetData1()]);
+        break;
+      case SYSTEM_GET_BOOL:
+        bReturn = g_guiSettings.GetBool(m_stringParameters[info.GetData1()]);
+        break;
+      case SYSTEM_HAS_CORE_ID:
+        bReturn = g_cpuInfo.HasCoreId(info.GetData1());
+        break;
+      case CONTAINER_ON_NEXT:
+      case CONTAINER_ON_PREVIOUS:
+        {
+          map<int,int>::const_iterator it = m_containerMoves.find(info.GetData1());
+          if (it != m_containerMoves.end())
+            bReturn = condition == CONTAINER_ON_NEXT ? it->second > 0 : it->second < 0;
+        }
+        break;
+      case CONTAINER_CONTENT:
+        {
+          CStdString content;
+          CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
+          if (window)
+          {
+            if (window->GetID() == WINDOW_MUSIC_INFO)
+              content = ((CGUIWindowMusicInfo *)window)->CurrentDirectory().GetContent();
+            else if (window->GetID() == WINDOW_VIDEO_INFO)
+              content = ((CGUIWindowVideoInfo *)window)->CurrentDirectory().GetContent();
+          }
+          if (content.IsEmpty())
+          {
+            window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+            if (window)
+              content = ((CGUIMediaWindow *)window)->CurrentDirectory().GetContent();
+          }
+          bReturn = m_stringParameters[info.GetData1()].Equals(content);
+        }
+        break;
+      case CONTAINER_ROW:
+      case CONTAINER_COLUMN:
+      case CONTAINER_POSITION:
+      case CONTAINER_HAS_NEXT:
+      case CONTAINER_HAS_PREVIOUS:
+      case CONTAINER_SUBITEM:
+        {
+          const CGUIControl *control = NULL;
+          if (info.GetData1())
+          { // container specified
+            CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
+            if (window)
+              control = window->GetControl(info.GetData1());
+          }
+          else
+          { // no container specified - assume a mediawindow
+            CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+            if (window)
+              control = window->GetControl(window->GetViewContainerID());
+          }
+          if (control)
+            bReturn = control->GetCondition(condition, info.GetData2());
+        }
+        break;
+      case CONTAINER_HAS_FOCUS:
+        { // grab our container
           CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
           if (window)
           {
             const CGUIControl *control = window->GetControl(info.GetData1());
             if (control && control->IsContainer())
-              item = boost::static_pointer_cast<CFileItem>(((CGUIBaseContainer *)control)->GetListItem(info.GetData2()));
+            {
+              CFileItemPtr item = boost::static_pointer_cast<CFileItem>(((CGUIBaseContainer *)control)->GetListItem(0));
+              if (item && item->m_iprogramCount == info.GetData2())  // programcount used to store item id
+                bReturn = true;
+            }
           }
+          break;
         }
-        if (item)
-          bReturn = GetBool(condition, dwContextWindow, item.get());
-      }
-      break;
-    case VIDEOPLAYER_CONTENT:
-      {
-        CStdString strContent="movies";
-        if (!m_currentFile->HasVideoInfoTag())
-          strContent = "files";
-        if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_iSeason > -1) // episode
-          strContent = "episodes";
-        if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strArtist.IsEmpty())
-          strContent = "musicvideos";
-        if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_strStatus == "livetv")
-          strContent = "livetv";
-        bReturn = m_stringParameters[info.GetData1()].Equals(strContent);
-      }
-      break;
-    case CONTAINER_SORT_METHOD:
-    {
-      CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-      if (window)
-      {
-        const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
-        if (viewState)
-          bReturn = ((unsigned int)viewState->GetSortMethod() == info.GetData1());
-      }
-      break;
-    }
-    case CONTAINER_SORT_DIRECTION:
-    {
-      CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-      if (window)
-      {
-        const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
-        if (viewState)
-          bReturn = ((unsigned int)viewState->GetDisplaySortOrder() == info.GetData1());
-      }
-      break;
-    }
-    case SYSTEM_DATE:
-      {
-        CDateTime date = CDateTime::GetCurrentDateTime();
-        int currentDate = date.GetMonth()*100+date.GetDay();
-        int startDate = info.GetData1();
-        int stopDate = info.GetData2();
-
-        if (stopDate < startDate)
-          bReturn = currentDate >= startDate || currentDate < stopDate;
-        else
-          bReturn = currentDate >= startDate && currentDate < stopDate;
-      }
-      break;
-    case SYSTEM_TIME:
-      {
-        CDateTime time=CDateTime::GetCurrentDateTime();
-        int currentTime = time.GetMinuteOfDay();
-        int startTime = info.GetData1();
-        int stopTime = info.GetData2();
-
-        if (stopTime < startTime)
-          bReturn = currentTime >= startTime || currentTime < stopTime;
-        else
-          bReturn = currentTime >= startTime && currentTime < stopTime;
-      }
-      break;
-    case MUSICPLAYER_EXISTS:
-      {
-        int index = info.GetData2();
-        if (info.GetData1() == 1)
-        { // relative index
-          if (g_playlistPlayer.GetCurrentPlaylist() != PLAYLIST_MUSIC)
-            return false;
-          index += g_playlistPlayer.GetCurrentSong();
+      case VIDEOPLAYER_CONTENT:
+        {
+          CStdString strContent="movies";
+          if (!m_currentFile->HasVideoInfoTag())
+            strContent = "files";
+          if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_iSeason > -1) // episode
+            strContent = "episodes";
+          if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strArtist.IsEmpty())
+            strContent = "musicvideos";
+          if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_strStatus == "livetv")
+            strContent = "livetv";
+          bReturn = m_stringParameters[info.GetData1()].Equals(strContent);
         }
-        if (index >= 0 && index < g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size())
-          return true;
-        return false;
+        break;
+      case CONTAINER_SORT_METHOD:
+      {
+        CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+        if (window)
+        {
+          const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
+          if (viewState)
+            bReturn = ((unsigned int)viewState->GetSortMethod() == info.GetData1());
+        }
+        break;
       }
-      break;
+      case CONTAINER_SORT_DIRECTION:
+      {
+        CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+        if (window)
+        {
+          const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
+          if (viewState)
+            bReturn = ((unsigned int)viewState->GetDisplaySortOrder() == info.GetData1());
+        }
+        break;
+      }
+      case SYSTEM_DATE:
+        {
+          CDateTime date = CDateTime::GetCurrentDateTime();
+          int currentDate = date.GetMonth()*100+date.GetDay();
+          int startDate = info.GetData1();
+          int stopDate = info.GetData2();
+
+          if (stopDate < startDate)
+            bReturn = currentDate >= startDate || currentDate < stopDate;
+          else
+            bReturn = currentDate >= startDate && currentDate < stopDate;
+        }
+        break;
+      case SYSTEM_TIME:
+        {
+          CDateTime time=CDateTime::GetCurrentDateTime();
+          int currentTime = time.GetMinuteOfDay();
+          int startTime = info.GetData1();
+          int stopTime = info.GetData2();
+
+          if (stopTime < startTime)
+            bReturn = currentTime >= startTime || currentTime < stopTime;
+          else
+            bReturn = currentTime >= startTime && currentTime < stopTime;
+        }
+        break;
+      case MUSICPLAYER_EXISTS:
+        {
+          int index = info.GetData2();
+          if (info.GetData1() == 1)
+          { // relative index
+            if (g_playlistPlayer.GetCurrentPlaylist() != PLAYLIST_MUSIC)
+              return false;
+            index += g_playlistPlayer.GetCurrentSong();
+          }
+          if (index >= 0 && index < g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size())
+            return true;
+          return false;
+        }
+        break;
+    }
   }
   return (info.m_info < 0) ? !bReturn : bReturn;
 }
