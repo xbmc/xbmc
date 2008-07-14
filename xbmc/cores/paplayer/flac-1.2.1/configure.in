@@ -1,0 +1,390 @@
+#  FLAC - Free Lossless Audio Codec
+#  Copyright (C) 2001,2002,2003,2004,2005,2006,2007  Josh Coalson
+#
+#  This file is part the FLAC project.  FLAC is comprised of several
+#  components distributed under difference licenses.  The codec libraries
+#  are distributed under Xiph.Org's BSD-like license (see the file
+#  COPYING.Xiph in this distribution).  All other programs, libraries, and
+#  plugins are distributed under the GPL (see COPYING.GPL).  The documentation
+#  is distributed under the Gnu FDL (see COPYING.FDL).  Each file in the
+#  FLAC distribution contains at the top the terms under which it may be
+#  distributed.
+#
+#  Since this particular file is relevant to all components of FLAC,
+#  it may be distributed under the Xiph.Org license, which is the least
+#  restrictive of those mentioned above.  See the file COPYING.Xiph in this
+#  distribution.
+
+# NOTE that for many of the AM_CONDITIONALs we use the prefix FLaC__
+# instead of FLAC__ since autoconf triggers off 'AC_' in strings
+
+AC_INIT(src/flac/main.c)
+AM_INIT_AUTOMAKE(flac, 1.2.1)
+
+# Don't automagically regenerate autoconf/automake generated files unless
+# explicitly requested.  Eases autobuilding -mdz
+AM_MAINTAINER_MODE
+
+# We need two libtools, one that builds both shared and static, and
+# one that builds only static.  This is because the resulting libtool
+# does not allow us to choose which to build at runtime.
+AM_PROG_LIBTOOL
+sed -e 's/^build_old_libs=yes/build_old_libs=no/' libtool > libtool-disable-static
+chmod +x libtool-disable-static
+
+AC_SUBST(ACLOCAL_AMFLAGS, "-I m4")
+
+AM_PROG_AS
+AC_PROG_CXX
+AC_PROG_MAKE_SET
+
+AC_SYS_LARGEFILE
+AC_FUNC_FSEEKO
+
+AC_CHECK_SIZEOF(void*,0)
+
+#@@@ new name is AC_CONFIG_HEADERS
+AM_CONFIG_HEADER(config.h)
+
+AC_C_BIGENDIAN
+
+AC_CHECK_TYPES(socklen_t, [], [])
+
+dnl check for getopt in standard library
+dnl AC_CHECK_FUNCS(getopt_long , , [LIBOBJS="$LIBOBJS getopt.o getopt1.o"] )
+AC_CHECK_FUNCS(getopt_long, [], [])
+
+case "$host_cpu" in
+	i*86)
+		cpu_ia32=true
+		AC_DEFINE(FLAC__CPU_IA32)
+		AH_TEMPLATE(FLAC__CPU_IA32, [define if building for ia32/i386])
+		;;
+	powerpc)
+		cpu_ppc=true
+		AC_DEFINE(FLAC__CPU_PPC)
+		AH_TEMPLATE(FLAC__CPU_PPC, [define if building for PowerPC])
+		;;
+	sparc)
+		cpu_sparc=true
+		AC_DEFINE(FLAC__CPU_SPARC)
+		AH_TEMPLATE(FLAC__CPU_SPARC, [define if building for SPARC])
+		;;
+esac
+AM_CONDITIONAL(FLaC__CPU_IA32, test "x$cpu_ia32" = xtrue)
+AM_CONDITIONAL(FLaC__CPU_PPC, test "x$cpu_ppc" = xtrue)
+AM_CONDITIONAL(FLaC__CPU_SPARC, test "x$cpu_sparc" = xtrue)
+
+case "$host" in
+	i386-*-openbsd3.[[0-3]]) OBJ_FORMAT=aoutb ;;
+	*-*-cygwin|*mingw*) OBJ_FORMAT=win32 ;;
+	*-*-darwin*) OBJ_FORMAT=macho ;;
+	*) OBJ_FORMAT=elf ;;
+esac
+AC_SUBST(OBJ_FORMAT)
+
+# only needed because of ntohl() usage, can get rid of after that's gone:
+case "$host" in
+	*-*-cygwin|*mingw*) MINGW_WINSOCK_LIBS=-lwsock32 ;;
+	*) MINGW_WINSOCK_LIBS= ;;
+esac
+AC_SUBST(MINGW_WINSOCK_LIBS)
+
+case "$host" in
+	*-pc-linux-gnu)
+		sys_linux=true
+		AC_DEFINE(FLAC__SYS_LINUX)
+		AH_TEMPLATE(FLAC__SYS_LINUX, [define if building for Linux])
+		;;
+	*-*-darwin*)
+		sys_darwin=true
+		AC_DEFINE(FLAC__SYS_DARWIN)
+		AH_TEMPLATE(FLAC__SYS_DARWIN, [define if building for Darwin / MacOS X])
+		;;
+esac
+AM_CONDITIONAL(FLaC__SYS_DARWIN, test "x$sys_darwin" = xtrue)
+AM_CONDITIONAL(FLaC__SYS_LINUX, test "x$sys_linux" = xtrue)
+
+if test "x$cpu_ia32" = xtrue ; then
+AC_DEFINE(FLAC__ALIGN_MALLOC_DATA)
+AH_TEMPLATE(FLAC__ALIGN_MALLOC_DATA, [define to align allocated memory on 32-byte boundaries])
+fi
+
+AC_ARG_ENABLE(asm-optimizations, AC_HELP_STRING([--disable-asm-optimizations], [Don't use any assembly optimization routines]), asm_opt=no, asm_opt=yes)
+AM_CONDITIONAL(FLaC__NO_ASM, test "x$asm_opt" = xno)
+if test "x$asm_opt" = xno ; then
+AC_DEFINE(FLAC__NO_ASM)
+AH_TEMPLATE(FLAC__NO_ASM, [define to disable use of assembly code])
+fi
+
+AC_ARG_ENABLE(debug,
+AC_HELP_STRING([--enable-debug], [Turn on debugging]),
+[case "${enableval}" in
+	yes) debug=true ;;
+	no)  debug=false ;;
+	*) AC_MSG_ERROR(bad value ${enableval} for --enable-debug) ;;
+esac],[debug=false])
+AM_CONDITIONAL(DEBUG, test "x$debug" = xtrue)
+
+AC_ARG_ENABLE(sse,
+AC_HELP_STRING([--enable-sse], [Enable SSE support by asserting that the OS supports SSE instructions]),
+[case "${enableval}" in
+	yes) sse_os=true ;;
+	no)  sse_os=false ;;
+	*) AC_MSG_ERROR(bad value ${enableval} for --enable-sse) ;;
+esac],[sse_os=false])
+AM_CONDITIONAL(FLaC__SSE_OS, test "x$sse_os" = xtrue)
+if test "x$sse_os" = xtrue ; then
+AC_DEFINE(FLAC__SSE_OS)
+AH_TEMPLATE(FLAC__SSE_OS, [define if your operating system supports SSE instructions])
+fi
+
+AC_ARG_ENABLE(3dnow,
+AC_HELP_STRING([--disable-3dnow], [Disable 3DNOW! optimizations]),
+[case "${enableval}" in
+	yes) use_3dnow=true ;;
+	no)  use_3dnow=false ;;
+	*) AC_MSG_ERROR(bad value ${enableval} for --enable-3dnow) ;;
+esac],[use_3dnow=true])
+AM_CONDITIONAL(FLaC__USE_3DNOW, test "x$use_3dnow" = xtrue)
+if test "x$use_3dnow" = xtrue ; then
+AC_DEFINE(FLAC__USE_3DNOW)
+AH_TEMPLATE(FLAC__USE_3DNOW, [define to enable use of 3Dnow! instructions])
+fi
+
+AC_ARG_ENABLE(altivec,
+AC_HELP_STRING([--disable-altivec], [Disable Altivec optimizations]),
+[case "${enableval}" in
+	yes) use_altivec=true ;;
+	no)  use_altivec=false ;;
+	*) AC_MSG_ERROR(bad value ${enableval} for --enable-altivec) ;;
+esac],[use_altivec=true])
+AM_CONDITIONAL(FLaC__USE_ALTIVEC, test "x$use_altivec" = xtrue)
+if test "x$use_altivec" = xtrue ; then
+AC_DEFINE(FLAC__USE_ALTIVEC)
+AH_TEMPLATE(FLAC__USE_ALTIVEC, [define to enable use of Altivec instructions])
+fi
+
+AC_ARG_ENABLE(thorough-tests,
+AC_HELP_STRING([--disable-thorough-tests], [Disable thorough (long) testing, do only basic tests]),
+[case "${enableval}" in
+	yes) thorough_tests=true ;;
+	no)  thorough_tests=false ;;
+	*) AC_MSG_ERROR(bad value ${enableval} for --enable-thorough-tests) ;;
+esac],[thorough_tests=true])
+AC_ARG_ENABLE(exhaustive-tests,
+AC_HELP_STRING([--enable-exhaustive-tests], [Enable exhaustive testing (VERY long)]),
+[case "${enableval}" in
+	yes) exhaustive_tests=true ;;
+	no)  exhaustive_tests=false ;;
+	*) AC_MSG_ERROR(bad value ${enableval} for --enable-exhaustive-tests) ;;
+esac],[exhaustive_tests=false])
+if test "x$thorough_tests" = xfalse ; then
+FLAC__TEST_LEVEL=0
+elif test "x$exhaustive_tests" = xfalse ; then
+FLAC__TEST_LEVEL=1
+else
+FLAC__TEST_LEVEL=2
+fi
+AC_SUBST(FLAC__TEST_LEVEL)
+
+AC_ARG_ENABLE(valgrind-testing,
+AC_HELP_STRING([--enable-valgrind-testing], [Run all tests inside Valgrind]),
+[case "${enableval}" in
+	yes) FLAC__TEST_WITH_VALGRIND=yes ;;
+	no)  FLAC__TEST_WITH_VALGRIND=no ;;
+	*) AC_MSG_ERROR(bad value ${enableval} for --enable-valgrind-testing) ;;
+esac],[FLAC__TEST_WITH_VALGRIND=no])
+AC_SUBST(FLAC__TEST_WITH_VALGRIND)
+
+AC_ARG_ENABLE(doxygen-docs,
+AC_HELP_STRING([--disable-doxygen-docs], [Disable API documentation building via Doxygen]),
+[case "${enableval}" in
+	yes) enable_doxygen_docs=true ;;
+	no)  enable_doxygen_docs=false ;;
+	*) AC_MSG_ERROR(bad value ${enableval} for --enable-doxygen-docs) ;;
+esac],[enable_doxygen_docs=true])
+if test "x$enable_doxygen_docs" != xfalse ; then
+	AC_CHECK_PROGS(DOXYGEN, doxygen)
+fi
+AM_CONDITIONAL(FLaC__HAS_DOXYGEN, test -n "$DOXYGEN")
+
+AC_ARG_ENABLE(local-xmms-plugin,
+AC_HELP_STRING([--enable-local-xmms-plugin], [Install XMMS plugin to ~/.xmms/Plugins instead of system location]),
+[case "${enableval}" in
+	yes) install_xmms_plugin_locally=true ;;
+	no)  install_xmms_plugin_locally=false ;;
+	*) AC_MSG_ERROR(bad value ${enableval} for --enable-local-xmms-plugin) ;;
+esac],[install_xmms_plugin_locally=false])
+AM_CONDITIONAL(FLaC__INSTALL_XMMS_PLUGIN_LOCALLY, test "x$install_xmms_plugin_locally" = xtrue)
+
+AC_ARG_ENABLE(xmms-plugin,
+AC_HELP_STRING([--disable-xmms-plugin], [Do not build XMMS plugin]),
+[case "${enableval}" in
+	yes) enable_xmms_plugin=true ;;
+	no)  enable_xmms_plugin=false ;;
+	*) AC_MSG_ERROR(bad value ${enableval} for --enable-xmms-plugin) ;;
+esac],[enable_xmms_plugin=true])
+if test "x$enable_xmms_plugin" != xfalse ; then
+	AM_PATH_XMMS(0.9.5.1, , AC_MSG_WARN([*** XMMS >= 0.9.5.1 not installed - XMMS support will not be built]))
+fi
+AM_CONDITIONAL(FLaC__HAS_XMMS, test -n "$XMMS_INPUT_PLUGIN_DIR")
+
+dnl build FLAC++ or not
+AC_ARG_ENABLE([cpplibs],
+AC_HELP_STRING([--disable-cpplibs], [Do not build libFLAC++]),
+[case "${enableval}" in
+	yes) disable_cpplibs=false ;;
+	no)  disable_cpplibs=true ;;
+	*)   AC_MSG_ERROR(bad value ${enableval} for --enable-cpplibs) ;;
+esac], [disable_cpplibs=false])
+AM_CONDITIONAL(FLaC__WITH_CPPLIBS, [test "x$disable_cpplibs" != xtrue])
+
+dnl check for ogg library
+AC_ARG_ENABLE([ogg],
+	AC_HELP_STRING([--disable-ogg], [Disable ogg support (default: test for libogg)]),
+	[ want_ogg=$enableval ], [ want_ogg=yes ] )
+
+if test "x$want_ogg" != "xno"; then
+	XIPH_PATH_OGG(have_ogg=yes, AC_MSG_WARN([*** Ogg development enviroment not installed - Ogg support will not be built]))
+fi
+ 
+AM_CONDITIONAL(FLaC__HAS_OGG, [test "x$have_ogg" = xyes])
+if test "x$have_ogg" = xyes ; then
+AC_DEFINE(FLAC__HAS_OGG)
+AH_TEMPLATE(FLAC__HAS_OGG, [define if you have the ogg library])
+fi
+
+dnl check for i18n(internationalization); these are from libiconv/gettext
+AM_ICONV
+AM_LANGINFO_CODESET
+
+AC_CHECK_PROGS(DOCBOOK_TO_MAN, docbook-to-man docbook2man)
+AM_CONDITIONAL(FLaC__HAS_DOCBOOK_TO_MAN, test -n "$DOCBOOK_TO_MAN")
+if test -n "$DOCBOOK_TO_MAN" ; then
+AC_DEFINE(FLAC__HAS_DOCBOOK_TO_MAN)
+AH_TEMPLATE(FLAC__HAS_DOCBOOK_TO_MAN, [define if you have docbook-to-man or docbook2man])
+fi
+
+# only matters for x86
+AC_CHECK_PROGS(NASM, nasm)
+AM_CONDITIONAL(FLaC__HAS_NASM, test -n "$NASM")
+if test -n "$NASM" ; then
+AC_DEFINE(FLAC__HAS_NASM)
+AH_TEMPLATE(FLAC__HAS_NASM, [define if you are compiling for x86 and have the NASM assembler])
+fi
+
+# only matters for PowerPC
+AC_CHECK_PROGS(AS, as, as)
+AC_CHECK_PROGS(GAS, gas, gas)
+
+# try -v (apple as) and --version (gas) at the same time
+test "$AS" = "as" && as --version -v < /dev/null 2>&1 | grep Apple >/dev/null || AS=gas
+
+AM_CONDITIONAL(FLaC__HAS_AS, test "$AS" = "as")
+AM_CONDITIONAL(FLaC__HAS_GAS, test "$AS" = "gas")
+if test "$AS" = "as" ; then
+AC_DEFINE(FLAC__HAS_AS)
+AH_TEMPLATE(FLAC__HAS_AS, [define if you are compiling for PowerPC and have the 'as' assembler])
+fi
+if test "$AS" = "gas" ; then
+# funniest. macro. ever.
+AC_DEFINE(FLAC__HAS_GAS)
+AH_TEMPLATE(FLAC__HAS_GAS, [define if you are compiling for PowerPC and have the 'gas' assembler])
+fi
+
+CPPFLAGS='-I$(top_builddir) -I$(srcdir)/include -I$(top_srcdir)/include'" $CPPFLAGS"
+if test "x$debug" = xtrue; then
+	CPPFLAGS="-DDEBUG $CPPFLAGS"
+	CFLAGS="-g $CFLAGS"
+else
+	CPPFLAGS="-DNDEBUG $CPPFLAGS"
+	if test "x$GCC" = xyes; then
+		CPPFLAGS="-DFLaC__INLINE=__inline__ $CPPFLAGS"
+		CFLAGS="-O3 -funroll-loops -finline-functions -Wall -W -Winline $CFLAGS"
+	fi
+fi
+
+#@@@
+AM_CONDITIONAL(FLaC__HAS_AS__TEMPORARILY_DISABLED, test "yes" = "no")
+AM_CONDITIONAL(FLaC__HAS_GAS__TEMPORARILY_DISABLED, test "yes" = "no")
+
+AC_CONFIG_FILES([ \
+	Makefile \
+	src/Makefile \
+	src/libFLAC/Makefile \
+	src/libFLAC/flac.pc \
+	src/libFLAC/ia32/Makefile \
+	src/libFLAC/ppc/Makefile \
+	src/libFLAC/ppc/as/Makefile \
+	src/libFLAC/ppc/gas/Makefile \
+	src/libFLAC/include/Makefile \
+	src/libFLAC/include/private/Makefile \
+	src/libFLAC/include/protected/Makefile \
+	src/libFLAC++/Makefile \
+	src/libFLAC++/flac++.pc \
+	src/flac/Makefile \
+	src/metaflac/Makefile \
+	src/monkeys_audio_utilities/Makefile \
+	src/monkeys_audio_utilities/flac_mac/Makefile \
+	src/monkeys_audio_utilities/flac_ren/Makefile \
+	src/plugin_common/Makefile \
+	src/plugin_winamp2/Makefile \
+	src/plugin_winamp2/include/Makefile \
+	src/plugin_winamp2/include/winamp2/Makefile \
+	src/plugin_xmms/Makefile \
+	src/share/Makefile \
+	src/share/getopt/Makefile \
+	src/share/grabbag/Makefile \
+	src/share/replaygain_analysis/Makefile \
+	src/share/replaygain_synthesis/Makefile \
+	src/share/replaygain_synthesis/include/Makefile \
+	src/share/replaygain_synthesis/include/private/Makefile \
+	src/share/utf8/Makefile \
+	src/test_grabbag/Makefile \
+	src/test_grabbag/cuesheet/Makefile \
+	src/test_grabbag/picture/Makefile \
+	src/test_libs_common/Makefile \
+	src/test_libFLAC/Makefile \
+	src/test_libFLAC++/Makefile \
+	src/test_seeking/Makefile \
+	src/test_streams/Makefile \
+	examples/Makefile \
+	examples/c/Makefile \
+	examples/c/decode/Makefile \
+	examples/c/decode/file/Makefile \
+	examples/c/encode/Makefile \
+	examples/c/encode/file/Makefile \
+	examples/cpp/Makefile \
+	examples/cpp/decode/Makefile \
+	examples/cpp/decode/file/Makefile \
+	examples/cpp/encode/Makefile \
+	examples/cpp/encode/file/Makefile \
+	include/Makefile \
+	include/FLAC/Makefile \
+	include/FLAC++/Makefile \
+	include/share/Makefile \
+	include/share/grabbag/Makefile \
+	include/test_libs_common/Makefile \
+	doc/Makefile \
+	doc/html/Makefile \
+	doc/html/images/Makefile \
+	doc/html/images/hw/Makefile \
+	doc/html/ru/Makefile \
+	m4/Makefile \
+	man/Makefile \
+	test/Makefile \
+	test/cuesheets/Makefile \
+	test/flac-to-flac-metadata-test-files/Makefile \
+	test/metaflac-test-files/Makefile \
+	test/pictures/Makefile \
+	build/Makefile \
+	obj/Makefile \
+	obj/debug/Makefile \
+	obj/debug/bin/Makefile \
+	obj/debug/lib/Makefile \
+	obj/release/Makefile \
+	obj/release/bin/Makefile \
+	obj/release/lib/Makefile \
+])
+AC_OUTPUT
