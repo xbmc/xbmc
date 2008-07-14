@@ -22,7 +22,7 @@
  */
 
 #include "DynamicDll.h"
-#include "flac/stream_decoder.h"
+#include "flac-1.2.1/include/FLAC/stream_decoder.h"
 
 class DllLibFlacInterface
 {
