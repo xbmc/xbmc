@@ -1,0 +1,12 @@
+Here are several small example programs that use the libraries in different
+ways.
+
+The "c" directory has programs that are all in C and use libFLAC.
+
+The "cpp" directory has analogous programs that are all in C++ and use libFLAC++. 
+
+The programs are:
+c/decode/file/ - example_c_decode_file - Simple FLAC file decoder using libFLAC
+c/encode/file/ - example_c_encode_file - Simple FLAC file encoder using libFLAC
+cpp/decode/file/ - example_cpp_decode_file - Simple FLAC file decoder using libFLAC++
+cpp/encode/file/ - example_cpp_encode_file - Simple FLAC file encoder using libFLAC++
