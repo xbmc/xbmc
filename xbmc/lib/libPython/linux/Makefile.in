@@ -6,7 +6,7 @@ else
 LIB=python24-@ARCH@.so
 endif
 
-default: $(LIB)
+default: $(LIB) python24.zip
 	cp $^  ../../../../system/python
 
 python24.zip: python-lib
