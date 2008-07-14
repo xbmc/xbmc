@@ -314,7 +314,7 @@ CGUISettings::CGUISettings(void)
 #ifdef __APPLE__
   AddInt(3, "system.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
 #endif
-#ifdef HAS_HAL
+#if defined(HAS_HAL) || defined(_WIN32PC)
   AddInt(3, "system.shutdownstate", 13008, 0, 0, 1, 4, SPIN_CONTROL_TEXT);
 #endif
 

@@ -24,6 +24,7 @@
 #include "GUISettings.h"
 #include "../Util.h"
 #include "FileSystem/cdioSupport.h"
+#include "PowrProf.h"
 
 using namespace std;
 using namespace MEDIA_DETECT;
@@ -228,3 +229,30 @@ CStdString CWIN32Util::GetChangedDrive()
 }
 
 // End Workaround
+
+bool CWIN32Util::PowerManagement(PowerState State)
+{
+  switch (State)
+  {
+  case POWERSTATE_HIBERNATE:
+    CLog::Log(LOGINFO, "Asking Windows to hibernate...");
+    return SetSuspendState(true,true,false);
+    break;
+  case POWERSTATE_SUSPEND:
+    CLog::Log(LOGINFO, "Asking Windows to suspend...");
+    return SetSuspendState(false,true,false);
+    break;
+  case POWERSTATE_SHUTDOWN:
+    CLog::Log(LOGINFO, "Shutdown Windows...");
+    return InitiateSystemShutdown(NULL, NULL,0,true,false);
+    break;
+  case POWERSTATE_REBOOT:
+    CLog::Log(LOGINFO, "Rebooting Windows...");
+    return InitiateSystemShutdown(NULL, NULL,0,true,true);
+    break;
+  default:
+    CLog::Log(LOGERROR, "Unknown PowerState called.");
+    return false;
+    break;
+  }
+}
