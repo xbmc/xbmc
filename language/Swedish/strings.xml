@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 05/18/2008-->
+<!--Date of translation: 07/14/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 13794-->
+<!--Based on english strings version 14051-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -352,7 +352,7 @@
   <string id="433">Är du säker på att ta bort '%s'?</string>
   <string id="435"></string>
   <string id="436"></string>
-  <string id="437"></string>
+  <string id="437">Flyttbar disk</string>
   <string id="438">Öppnar fil</string>
   <string id="439">Buffert</string>
   <string id="440">Hårddisk</string>
@@ -1604,13 +1604,17 @@ den här visualiseringen</string>
   <string id="20409">Hämtar TV-serieinformation</string>
   <string id="20410">Trailer</string>
   <string id="20411">Lägg ihop</string>
-  <string id="20412">Lägg ihop TV-serie om endast ett avsnitt</string>
+  <string id="20412">Lägg ihop TV-serie</string>
   <string id="20413">Hämta Fan-konst</string>
   <string id="20414">Visa Fan-konst i videobibliotek</string>
   <string id="20415">Skannar efter nytt innehåll</string>
   <string id="20416">Först sänt</string>
   <string id="20417">Författare</string>
   <string id="20418">Rensa filnamn</string>
+  <string id="20419">Lägg ihop likadana TV-serier</string>
+  <string id="20420">Aldrig</string>
+  <string id="20421">Om endast en säsong</string>
+  <string id="20422">Alltid</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
