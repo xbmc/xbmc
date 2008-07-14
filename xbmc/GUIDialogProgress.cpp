@@ -44,8 +44,12 @@ CGUIDialogProgress::~CGUIDialogProgress(void)
 
 }
 
-void CGUIDialogProgress::StartModal()
+void CGUIDialogProgress::DoModal(int iWindowID)
 {
+  // NOTE: This is pretty much identical to CGUIDialog::DoModal() other than the fact that
+  //       we only run for the opening animation.  The app then calls Progress() progressively
+  //       as and when it needs to.  If the main render routine is running, then the dialog
+  //       will stay on screen until a Close() is called.
   CSingleLock lock(g_graphicsContext);
 
   CLog::DebugLog("DialogProgress::StartModal called %s", m_bRunning ? "(already running)!" : "");
@@ -77,6 +81,11 @@ void CGUIDialogProgress::StartModal()
     if (!m_hasRendered)
       break;
   }
+}
+
+void CGUIDialogProgress::StartModal()
+{
+  DoModalThreadSafe();
 }
 
 void CGUIDialogProgress::Progress()
