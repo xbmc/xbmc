@@ -951,12 +951,12 @@ extern "C"
     return EOF;
   }
 
-  int dll_fseek(FILE* stream, long offset, int origin)
+  int dll_fseek(FILE* stream, off64_t offset, int origin)
   {
     int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
     if (fd >= 0)
     {
-      if (dll_lseek(fd, offset, origin) != -1)
+      if (dll_lseeki64(fd, offset, origin) != -1)
       {
         return 0;
       }
@@ -966,7 +966,7 @@ extern "C"
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
-      return fseek(stream, offset, origin);
+      return fseeko64(stream, offset, origin);
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
