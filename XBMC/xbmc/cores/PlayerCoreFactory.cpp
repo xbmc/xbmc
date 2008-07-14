@@ -135,6 +135,10 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   && !url.GetFileType().Equals("ra"))
     vecCores.push_back(EPC_DVDPLAYER);
 
+  // only dvdplayer can handle these normally
+  if (url.GetFileType().Equals("sdp"))
+    vecCores.push_back(EPC_DVDPLAYER);
+
   if ( item.IsInternetStream() )
   {
     CStdString content = item.GetContentType();
@@ -143,6 +147,8 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
      || content == "video/flv")
       vecCores.push_back(EPC_DVDPLAYER);
     else if (content == "audio/aacp")
+      vecCores.push_back(EPC_DVDPLAYER);
+    else if (content == "application/sdp")
       vecCores.push_back(EPC_DVDPLAYER);
     else if (content == "application/octet-stream")
     {
