@@ -33,6 +33,12 @@
 #define PRId64 "lld"
 #endif
 #endif
+#ifndef off64_t
+#define off64_t off_t
+#endif
+#ifndef fseeko64
+#define fseeko64 fseek
+#endif
 #endif
 
 #endif //__PLATFORM_DEFS_H__
