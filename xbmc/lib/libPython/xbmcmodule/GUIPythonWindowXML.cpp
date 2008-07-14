@@ -98,18 +98,20 @@ void CGUIPythonWindowXML::SetupShares()
 
 bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
 {
+  // TODO: We shouldn't be dropping down to CGUIWindow in any of this ideally.
+  //       We have to make up our minds about what python should be doing and
+  //       what this side of things should be doing
   switch (message.GetMessage())
   {
     case GUI_MSG_WINDOW_DEINIT:
     {
-      m_gWindowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
+      return CGUIWindow::OnMessage(message);
     }
     break;
 
     case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
-      m_gWindowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
       PyXBMCAction* inf = new PyXBMCAction;
       inf->pObject = NULL;
       // create a new call and set it in the python queue
