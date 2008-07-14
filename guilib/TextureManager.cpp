@@ -334,6 +334,13 @@ CGUITextureManager::CGUITextureManager(void)
     m_iNextPreload[bundle] = m_PreLoadNames[bundle].end();
   // we set the theme bundle to be the first bundle (thus prioritising it
   m_TexBundle[0].SetThemeBundle(true);
+
+#if defined(HAS_SDL) && defined(_WIN32)
+  // Hack for SDL library that keeps loading and unloading these
+  LoadLibraryEx("zlib1.dll", NULL, 0);
+  LoadLibraryEx("libpng12.dll", NULL, 0);
+#endif
+
 }
 
 CGUITextureManager::~CGUITextureManager(void)
