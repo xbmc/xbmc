@@ -179,6 +179,7 @@ target_alias = @target_alias@
 AUTOMAKE_OPTIONS = foreign
 SUBDIRS = src include
 all: all-recursive
+	make -f Makefile.xbmc_linux
 
 .SUFFIXES:
 am--refresh:
@@ -531,6 +532,7 @@ maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-recursive
+	make -f Makefile.xbmc_linux clean
 
 clean-am: clean-generic clean-libtool mostlyclean-am
 
