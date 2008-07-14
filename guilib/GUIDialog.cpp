@@ -26,6 +26,7 @@
 #include "GUIAudioManager.h"
 #include "utils/SingleLock.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 
 CGUIDialog::CGUIDialog(DWORD dwID, const CStdString &xmlFile)
     : CGUIWindow(dwID, xmlFile)
@@ -170,6 +171,13 @@ void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */)
   {
     m_gWindowManager.Process();
   }
+}
+
+void CGUIDialog::DoModalThreadSafe()
+{
+  // we make sure we're threadsafe by sending via the application messenger
+  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, GetID(), m_gWindowManager.GetActiveWindow()};
+  g_applicationMessenger.SendMessage(tMsg, true);
 }
 
 void CGUIDialog::Show()

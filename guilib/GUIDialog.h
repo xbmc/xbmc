@@ -44,6 +44,7 @@ public:
   virtual void Render();
 
   void DoModal(int iWindowID = WINDOW_INVALID); // modal
+  void DoModalThreadSafe(); // threadsafe version of DoModal
   void Show(); // modeless
 
   virtual void Close(bool forceClose = false);
