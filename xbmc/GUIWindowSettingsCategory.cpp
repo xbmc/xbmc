@@ -71,7 +71,7 @@
 #include "CPortAudio.h"
 #include "XBMCHelper.h"
 #endif
-#ifdef HAS_LINUX_NETWORK
+#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
 #include "GUIDialogAccessPoints.h"
 #endif
 #include "FileSystem/Directory.h"
@@ -79,6 +79,10 @@
 
 #include "FileItem.h"
 #include "GUIToggleButtonControl.h"
+
+#ifdef _WIN32PC
+#include "WIN32Util.h"
+#endif
 
 using namespace std;
 using namespace DIRECTORY;
@@ -732,7 +736,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->SetValue(pSettingInt->GetData());
     }
 #endif
-#ifdef HAS_HAL
+#if defined(HAS_HAL) || defined(_WIN32PC)
     else if (strSetting.Equals("system.shutdownstate"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
