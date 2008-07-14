@@ -1,0 +1,191 @@
+/*
+ * Copyright (c)  2005,2006,2007  Josh Coalson
+ * Permission is granted to copy, distribute and/or modify this document
+ * under the terms of the GNU Free Documentation License, Version 1.1
+ * or any later version published by the Free Software Foundation;
+ * with no invariant sections.
+ * A copy of the license can be found at http://www.gnu.org/copyleft/fdl.html
+ */
+
+body
+{
+	background-color: #99CC99;
+	color: black;
+	margin: 0px;
+	padding: 0px;
+}
+
+div
+{
+	background-color: #99CC99;
+	margin: 0px;
+	padding: 0px;
+}
+
+div.logo
+{
+	background-color: black;
+	padding: 1px;
+	text-align: center;
+}
+
+div.navbar
+{
+	border-width: 2px 0px 2px 0px;
+	border-style: solid;
+	border-color: black;
+	background-color: #D3D4C5;
+	padding: 3px;
+	text-align: center;
+}
+
+div.langbar
+{
+	border-width: 0px 0px 2px 0px;
+	border-style: solid;
+	border-color: black;
+	background-color: #EEEED4;
+	padding: 3px;
+	text-align: center;
+}
+
+div.above_nav
+{
+	height: 25px;
+}
+
+div.below_nav
+{
+	height: 25px;
+}
+
+div.body_with_sidebar
+{
+/*	text-align: left; */
+}
+
+div.box
+{
+	text-align: left;
+	margin: 0px 8px 0px 8px;
+	background-color: #EEEED4;
+}
+
+div.box_title
+{
+	border-width: 1px 0px 0px 0px;
+	border-style: solid;
+	border-color: black;
+	background-color: #D3D4C5;
+	padding: 3px;
+	font-family: lucida, verdana, helvetica, arial, sans-serif;
+	font-weight: bold;
+	font-size: 150%;
+}
+
+div.box_header
+{
+	border-width: 1px 0px 0px 0px;
+	border-style: solid;
+	border-color: black;
+	background-color: #EEEED4;
+	padding: 3px;
+}
+
+div.box_footer
+{
+	border-width: 0px 0px 1px 0px;
+	border-style: solid;
+	border-color: black;
+	background-color: #EEEED4;
+	padding: 3px;
+}
+
+div.box_body
+{
+	background-color: #EEEED4;
+	padding: 0px 3px 0px 3px;
+	font-family: lucida, verdana, helvetica, arial, sans-serif;
+	font-weight: normal;
+	font-size: 100%;
+}
+
+div.smallbox
+{
+	text-align: left;
+	margin: 0px 8px 0px 0px;
+	background-color: #EEEED4;
+}
+
+div.smallbox_title
+{
+	text-align: center;
+	border-width: 1px 0px 0px 0px;
+	border-style: solid;
+	border-color: black;
+	background-color: #D3D4C5;
+	padding: 3px;
+	font-family: lucida, verdana, helvetica, arial, sans-serif;
+	font-weight: bold;
+	font-size: 100%;
+}
+
+div.smallbox_header
+{
+	border-width: 1px 0px 0px 0px;
+	border-style: solid;
+	border-color: black;
+	background-color: #EEEED4;
+	padding: 3px;
+}
+
+div.smallbox_footer
+{
+	border-width: 0px 0px 1px 0px;
+	border-style: solid;
+	border-color: black;
+	background-color: #EEEED4;
+	padding: 3px;
+}
+
+div.smallbox_body
+{
+	background-color: #EEEED4;
+	padding: 0px 3px 0px 3px;
+	font-family: lucida, verdana, helvetica, arial, sans-serif;
+	font-weight: normal;
+	font-size: 80%;
+}
+
+div.copyright
+{
+	text-align: left;
+	margin: 10px;
+}
+
+span.commandname
+{
+	font-family: monospace;
+	font-weight: bold;
+}
+
+span.command
+{
+	font-family: monospace;
+	font-weight: bold;
+}
+
+span.argument
+{
+	font-family: monospace;
+}
+
+span.code
+{
+	font-family: monospace;
+}
+
+a:link    {color:#336699; background-color:transparent}
+a:visited {color:#336699; background-color:transparent}
+a:active  {color:#336699; background-color:transparent}
+a:hover   {color:#336699; background-color:transparent}
