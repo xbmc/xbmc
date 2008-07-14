@@ -1034,7 +1034,7 @@ CProfile* CApplication::InitDirectoriesLinux()
   {
     CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
     CIoSupport::RemapDriveLetter('T', _P("Q:\\userdata"));
-    CIoSupport::RemapDriveLetter('U', _P("Q:\\"));
+    CIoSupport::RemapDriveLetter('U', _P("Q:"));
   }
 
   g_settings.m_vecProfiles.clear();
