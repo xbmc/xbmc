@@ -204,7 +204,7 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
             if (CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, ((CGUIButtonControl*) control)->GetLabel(), value, bWriteOnly))
               ((CGUIButtonControl*) control)->SetLabel2(value);
           }
-          else if (strcmpi(type, "picture") == 0)
+          else if (strcmpi(type, "pictures") == 0)
           {
             if (CGUIDialogFileBrowser::ShowAndGetImage(*shares, ((CGUIButtonControl*) control)->GetLabel(), value))
               ((CGUIButtonControl*) control)->SetLabel2(value);
