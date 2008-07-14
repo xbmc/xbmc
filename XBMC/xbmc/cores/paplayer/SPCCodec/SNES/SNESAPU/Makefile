@@ -7,7 +7,7 @@ ASFLAGS=-Xvc -DLINUX -O1 -f elf
 DIRS=alac_decoder libfaad mp4ff
 
 SNESAPU-i486-linux.so: $(OBJS)
-	$(CC) -shared -o $@ $(OBJS) `cat ../../../../../XBMC/xbmc/cores/DllLoader/exports/wrapper.def` ../../../../../XBMC/xbmc/cores/DllLoader/exports/wrapper.o
+	$(CC) -shared -o $@ $(OBJS) `cat ../../../../DllLoader/exports/wrapper.def` ../../../../DllLoader/exports/wrapper.o && cp $@ ../../../../../../system/players/paplayer/
 
 clean:
 	$(RM) $(OBJS) *.so
