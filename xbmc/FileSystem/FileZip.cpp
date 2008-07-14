@@ -275,6 +275,26 @@ bool CFileZip::Exists(const CURL& url)
   return false;
 }
 
+int CFileZip::Stat(struct __stat64 *buffer)
+{
+  int ret;
+  struct tm tm;
+
+  ret = mFile.Stat(buffer);
+  tm.tm_sec = (mZipItem.mod_time & 0x1F) << 1;
+  tm.tm_min = (mZipItem.mod_time & 0x7E0) >> 5;
+  tm.tm_hour = (mZipItem.mod_time & 0xF800) >> 11;
+  tm.tm_mday = (mZipItem.mod_date & 0x1F);
+  tm.tm_mon = (mZipItem.mod_date & 0x1E0) >> 5;
+  tm.tm_year = (mZipItem.mod_date & 0xFE00) >> 9;
+  buffer->st_atime = buffer->st_ctime = buffer->st_mtime = mktime(&tm);
+
+  buffer->st_size = mZipItem.usize;
+  buffer->st_dev = (buffer->st_dev << 16) ^ (buffer->st_ino << 16);
+  buffer->st_ino ^= mZipItem.crc32;
+  return ret;
+}
+
 int CFileZip::Stat(const CURL& url, struct __stat64* buffer)
 { 
   CStdString strPath;
@@ -285,7 +305,7 @@ int CFileZip::Stat(const CURL& url, struct __stat64* buffer)
   buffer->st_gid = 0;
   buffer->st_atime = buffer->st_ctime = mZipItem.mod_time;
   buffer->st_size = mZipItem.usize;
-  return -1;
+  return 0;
 }
 
 unsigned int CFileZip::Read(void* lpBuf, __int64 uiBufSize)
