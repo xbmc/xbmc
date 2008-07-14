@@ -31,7 +31,8 @@ public:
   CGUIDialogProgress(void);
   virtual ~CGUIDialogProgress(void);
 
-  void StartModal();
+  virtual void DoModal(int iWindowID = WINDOW_INVALID);  ///< Override that just starts the window up.  Needs Close() to close it
+  void StartModal();  ///< Thread safe routine wrapping DoModal()
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   virtual void OnWindowLoaded();

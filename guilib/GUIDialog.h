@@ -43,7 +43,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
 
-  void DoModal(int iWindowID = WINDOW_INVALID); // modal
+  virtual void DoModal(int iWindowID = WINDOW_INVALID); // modal
   void DoModalThreadSafe(); // threadsafe version of DoModal
   void Show(); // modeless
 
