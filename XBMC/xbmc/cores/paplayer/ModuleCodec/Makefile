@@ -89,7 +89,7 @@ endif
 
 all: config-if-necessary make-outdirs
 	@$(MAKE) -f $(MAKEFILE) --no-print-directory $(ALL_TARGETS)
-	$(call ECHO,DUMB has been built. Run $(APOST)make install$(APOST) to install it.)
+	@$(MAKE) -C vc6/dumb
 
 install: config-if-necessary
 	@$(MAKE) -f $(MAKEFILE) --no-print-directory $(ALL_TARGETS:%=install-%)
