@@ -333,6 +333,7 @@ AC_SUBST(LZO_INCLUDES)
 AC_CONFIG_FILES([Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile])
 AC_CONFIG_COMMANDS_POST([pushd xbmc/lib/libPython/Python; ./configure --enable-ipv6 --enable-unicode=ucs4 --without-cxx --enable-shared --prefix=`pwd`/../linux/python-lib MACOSX_DEPLOYMENT_TARGET=10.5; sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h; cp pyconfig.h Include; popd])
 AC_CONFIG_COMMANDS_POST([pushd xbmc/cores/paplayer/MPCCodec; ./configure; popd])
+AC_CONFIG_COMMANDS_POST([pushd xbmc/cores/paplayer/MP3Codec/libmad-0.15.1b; ./configure; popd])
 AC_OUTPUT
 
 final_message="$final_message\n  prefix:\t$prefix\n$dashes"
