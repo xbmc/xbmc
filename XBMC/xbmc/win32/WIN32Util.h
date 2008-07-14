@@ -23,6 +23,14 @@
 
 #include "URL.h"
 
+enum PowerState
+{
+  POWERSTATE_SHUTDOWN  = 1,
+  POWERSTATE_HIBERNATE = 2,
+  POWERSTATE_SUSPEND   = 3,
+  POWERSTATE_REBOOT    = 4
+};
+
 class CWIN32Util
 {
 public:
@@ -39,6 +47,7 @@ public:
   static int CWIN32Util::GetDriveStatus(const CStdString &strPath);
   static void UpdateDriveMask();
   static CStdString GetChangedDrive();
+  static bool PowerManagement(PowerState State);
 
 private:
   static DWORD dwDriveMask;

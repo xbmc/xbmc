@@ -41,6 +41,10 @@
 #ifdef HAS_HAL
 #include "linux/HalManager.h"
 #endif
+#ifdef _WIN32PC
+#include "WIN32Util.h"
+#define CHalManager CWIN32Util
+#endif
 
 using namespace std;
 
@@ -141,7 +145,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
   {
     case TMSG_SHUTDOWN:
       {
-#ifdef HAS_HAL
+#if defined(HAS_HAL) || defined(_WIN32PC)
         int ShutdownState = g_guiSettings.GetInt("system.shutdownstate");
 #else
         g_application.Stop();
@@ -150,6 +154,10 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 #ifndef HAS_SDL
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
+#endif
+#ifdef _WIN32PC
+        if (ShutdownState) // If we have a setting for powerstate mode
+          CWIN32Util::PowerManagement((PowerState)ShutdownState);
 #endif
 #else
         // exit the application
@@ -184,6 +192,9 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif
+#ifdef _WIN32PC
+        CWIN32Util::PowerManagement(POWERSTATE_REBOOT);
+#endif
 #else
         // exit the application
 #ifdef HAS_HAL
@@ -202,6 +213,9 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 #ifndef HAS_SDL
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
+#endif
+#ifdef _WIN32PC
+        CWIN32Util::PowerManagement(POWERSTATE_REBOOT);
 #endif
 #else
         // exit the application
