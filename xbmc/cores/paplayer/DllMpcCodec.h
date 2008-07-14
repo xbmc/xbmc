@@ -23,9 +23,9 @@
 
 #include "DynamicDll.h"
 
-#include "mpc/config_win32.h"
-#include "mpc/reader.h"
-#include "mpc/streaminfo.h"
+#include "MPCCodec/include/mpcdec/config_win32.h"
+#include "MPCCodec/include/mpcdec/reader.h"
+#include "MPCCodec/include/mpcdec/streaminfo.h"
 
 struct mpc_decoder;
 
