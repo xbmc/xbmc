@@ -951,7 +951,7 @@ extern "C"
     return EOF;
   }
 
-  int dll_fseek(FILE* stream, off64_t offset, int origin)
+  int dll_fseek64(FILE* stream, off64_t offset, int origin)
   {
     int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
     if (fd >= 0)
@@ -970,6 +970,11 @@ extern "C"
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
+  }
+
+  int dll_fseek(FILE *stream, long offset, int origin)
+  {
+    return dll_fseek64(stream, offset, origin);
   }
 
   int dll_ungetc(int c, FILE* stream)
