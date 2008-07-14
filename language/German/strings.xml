@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
 <!--Email: scape@xboxmediacenter.com-->
@@ -353,7 +353,7 @@
   <string id="434"></string>
   <string id="435">Titel</string>
   <string id="436">Jahr:</string>
-  <string id="437">Dauer:</string>
+  <string id="437">Wechsellaufwerk</string>
   <string id="438">Öffne Datei</string>
   <string id="439">Cache</string>
   <string id="440">Festplatte</string>
