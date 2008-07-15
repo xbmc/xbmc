@@ -37,6 +37,7 @@ typedef struct textureParameters {
 
 void initGPU(int width, int height);
 GLuint initGPGPU(int width, int height);
+void adjustMatrices(int width, int height);
 void deinitGPGPU();
 GLuint createTexture(int width, int height, int depth, textureParameters tp);
 void transferTo2DTexture(int width, int height,  textureParameters tp, GLuint tex,
@@ -45,12 +46,13 @@ void transferTo3Dtexture(int width, int height, int depth, textureParameters tp,
 			 GLuint tex, GLenum type, void *data, int stride);
 void transferFromTexture(textureParameters tp, GLuint tex, GLenum type, void *data);
 GLuint createGLSLProgram(const char* vertFile,const char* fragFile);
+void setupUniformInt(GLuint prog, int in, char* param);
 int checkFramebufferStatus();
 void checkGLErrors (const char *label);
 void printProgramInfoLog(GLuint obj);
 void printShaderInfoLog(GLuint obj);
-void printVector (const float *p, const int N);
-void printMatrix (const float *p, const int stride, const int height);
+void printVector (const uint8_t *p, const int N);
+void printMatrix (const uint8_t *p, const int stride, const int height);
 char *textFileRead(const char *fn) ;
 int textFileWrite(char *fn, char *s);
 #endif /* GPU_UTILS_H */

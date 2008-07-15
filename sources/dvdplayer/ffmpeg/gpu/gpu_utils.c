@@ -4,6 +4,8 @@
 
 #include "gpu_utils.h"
 
+static int verbose = 0;
+
 int screenWidth = 1280, screenHeight = 768;
 float textureWidth = 800, textureHeight = 600, textureDepth = 0;
 
@@ -57,7 +59,10 @@ GLuint initGPGPU(int width, int height)
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
   glLoadIdentity();
-  glOrtho(0.0, width, height, 0.0, -1.0, 1.0);
+  // TODO: Flipping the camera so I don't have ot look at upside pictures
+  // (I know i'm going to forget about this and it's gonna bite me
+  // in the ass.
+  glOrtho(0.0, width, 0.0, height, -1.0, 1.0);
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
   glLoadIdentity();
@@ -66,6 +71,16 @@ GLuint initGPGPU(int width, int height)
   glEnable(GL_BLEND);
   glBlendFunc(GL_ONE, GL_ONE);
   checkGLErrors("initGPGPU, Initializing and saving matrices");
+}
+
+void adjustMatrices(int width, int height)
+{
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glOrtho(0.0, width, 0.0, height, -1.0, 1.0);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glViewport(0, 0, width, height);
 }
 
 // Deinitialized GPU for GPGPU computations
@@ -106,7 +121,7 @@ GLuint createTexture(int width, int height, int depth, textureParameters tp)
   }
   else
   {
-    glTexImage2D(tp.texTarget,0,tp.texInternalFormat,width,height,0,tp.texFormat,GL_FLOAT,0);
+    glTexImage2D(tp.texTarget,0,tp.texInternalFormat,width,height,0,tp.texFormat,GL_UNSIGNED_BYTE,0);
   }
 
   // check if that worked
@@ -163,7 +178,8 @@ GLuint createGLSLProgram(const char* vertFile,const char* fragFile)
   const char* fs = fragSrc;
 
   //RUDD DEBUG
-  printf("%s\n", fs);
+  if(verbose)
+    printf("%s\n", fs);
 
   glShaderSourceARB(vert, 1, &vs, NULL);
   glShaderSourceARB(frag, 1, &fs, NULL);
@@ -178,15 +194,21 @@ GLuint createGLSLProgram(const char* vertFile,const char* fragFile)
   glLinkProgramARB(prog);
   glUseProgramObjectARB(prog);
 
-  printShaderInfoLog(vert);
-  printShaderInfoLog(frag);
+  //  printShaderInfoLog(vert);
+  //  printShaderInfoLog(frag);
   printProgramInfoLog(prog);
 
   checkGLErrors("Shader setup");
 
   return prog;
 }
-
+void setupUniformInt(GLuint prog, int in, char* param)
+{
+  GLuint inParam;
+  inParam = glGetUniformLocation(prog, param);
+  glUniform1i(inParam, in);
+}
+  
 /**
     Error handling functions. Thanks to Dominik Göddeke of
     www.mathematik.uni-dortmund.de/~goeddeke/gpgpu for this
@@ -289,15 +311,15 @@ void printShaderInfoLog(GLuint obj) {
 /**
  * Prints out given vector for debugging purposes.
  */
-void printVector (const float *p, const int N) {
+void printVector (const uint8_t *p, const int N) {
   int i;
   printf("printVector: \t");
   for (i=0; i<N; i++) 
-    printf("  %f ",p[i]);
+    printf("  %d ",p[i]);
   printf("\n");
 }
 
-void printMatrix (const float *p, const int stride, const int height)
+void printMatrix (const uint8_t *p, const int stride, const int height)
 {
   int i, j;
   printf("printMatrix: \t");
@@ -305,7 +327,7 @@ void printMatrix (const float *p, const int stride, const int height)
   {
     for(j=0; j<stride; j++)
     {
-      printf(" %f ", p[j+i*stride]);
+      printf(" %d ", p[j+i*stride]);
     }
     printf("\n");
   }

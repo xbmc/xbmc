@@ -18,7 +18,8 @@ static char* shaderfiles[6][2] = { {"shaders/fullpel.vert", "shaders/fullpel.fra
 				   {"shaders/qpel2.vert", "shaders/qpel2.frag"},
 				   {"shaders/qpel3.vert", "shaders/qpel3.frag"} };
 
-static GLuint testList;
+// TODO: Move this into GPUContext
+static GLuint dispList;
 
 //Utility functions for the DPB bitmap
 /**
@@ -58,16 +59,18 @@ void gpu_init(H264Context *h)
 {
   GPUH264Context * const g = &h->gpu;
   MpegEncContext * const s = &h->s;
+  int pic_width = 16*s->mb_width, pic_height = 16*s->mb_height;
   int i;
   tp_3d.texTarget		= GL_TEXTURE_3D;
   tp_3d.texInternalFormat       = GL_LUMINANCE8;
-  tp_3d.texFormat		   = GL_LUMINANCE;
+  tp_3d.texFormat	        = GL_LUMINANCE;
 
   if(g->init) {
       printf("gpu_init called twice (Why?)\n");
       return;
     }
-  screenWidth = 1920, screenHeight = 1080;
+  //screenWidth = 1920, screenHeight = 1088;
+  screenWidth = pic_width, screenHeight = pic_height;
   printf("Initializing GPU Context\n");
   initGPU(screenWidth, screenHeight);
   initGPGPU(screenWidth, screenHeight);
@@ -75,7 +78,7 @@ void gpu_init(H264Context *h)
 
   //RUDD TEMP DPB is fixed at 64 for now
   //Nearest Power of 2?
-  g->dpb_tex = createTexture(2048, 2048, 16, tp_3d); 
+  g->dpb_tex = createTexture(screenWidth, screenHeight, 16, tp_3d); 
   g->dpb_free = ~0x0;
 
   //RUDD TEST for comparison
@@ -88,19 +91,6 @@ void gpu_init(H264Context *h)
   g->init = 1;
 
   setup_shaders(g);
-}
-
-void debug_list()
-{
-  int i;
-  //  START_TIMER;
-  for(i = 0; i < 1; i++)
-    {
-      glCallList(testList);
-      glFlush();
-      glFinish();
-      //      STOP_TIMER("debug list");
-    }
 }
 
 void upload_references(H264Context *h)
@@ -124,8 +114,8 @@ void upload_references(H264Context *h)
       {
         int pic_width = 16*s->mb_width, pic_height = 16*s->mb_height;
         int z, j;
-        printf("Picture: %8x(Type: %d) at index %d is not resident\n",
-               pic, pic->pict_type, i);
+        printf("Picture: %8x(Type: %d)(res: %dx%x) at index %d is not resident\n",
+               pic, pic_width, pic_height,  pic->pict_type, i);
         z = alloc_dpb(g);
         transferTo3DTexture(pic_width, pic_height, z, tp_3d, g->dpb_tex,
                             GL_UNSIGNED_BYTE, pic->data[0], s->linesize);
@@ -142,22 +132,27 @@ void draw_mbs()
 {
   H264Context *h = g_h;
   GPUH264Context * const g = &h->gpu;
-
+  MpegEncContext * const s = &h->s;
+  int pic_width = 16*s->mb_width, pic_height = 16*s->mb_height;
+  
   glClearColor(0,0,0,0);
   glClear(GL_COLOR_BUFFER_BIT);
 
   GLuint refParam;
   int i;
-  for(i = 0; i < 1; i++)
+  for(i = 0; i < 6; i++)
   {
     //g->shaders[i] = createGLSLProgram("shaders/base.vert", "shaders/fullpel.frag");
     g->shaders[i] = createGLSLProgram(shaderfiles[i][0], shaderfiles[i][1]);
     refParam = glGetUniformLocation(g->shaders[i], "dpb");
+    setupUniformInt(g->shaders[i], pic_width, "tex_width");
+    setupUniformInt(g->shaders[i], pic_height, "tex_height");
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(tp_3d.texTarget, g->dpb_tex);
     glUniform1i(refParam, 1);
     checkGLErrors("Uniform setup");
-    render_mbs();
+    glCallList(dispList);
+    glFinish();
   }
 }
 
@@ -167,9 +162,8 @@ void gpu_motion(H264Context *h)
   printf("What is the size of a picture: %d\n", sizeof(Picture));
   upload_references(h);
   g_h = h;
-  testList = glGenLists(1);
-  //render_mbs();
-  //glutDisplayFunc(debug_list);
+  dispList = glGenLists(1);
+  render_mbs();
   glutDisplayFunc(draw_mbs);
   glutMainLoop();
 }
@@ -187,17 +181,11 @@ void render_one_block(int x, int y, int mv_x, int mv_y, int xPix, int yPix,
   x += x_off;
   y -= y_off;
 
-  // Motion Vector is stored      in texcoord 0
-  glMultiTexCoord3i(GL_TEXTURE0, mv_x, mv_y, ref);
+  // Motion Vector and ref frame is stored in texcoord 0
+  glTexCoord3i(mv_x, mv_y, dpb_pos);
   glVertex2f(x, y);
-
-  glMultiTexCoord3i(GL_TEXTURE0, mv_x, mv_y, ref);
   glVertex2f(x, y+yPix);
-
-  glMultiTexCoord3i(GL_TEXTURE0, mv_x, mv_y, ref);
   glVertex2f(x+xPix, y+yPix);
-
-  glMultiTexCoord3i(GL_TEXTURE0, mv_x, mv_y, ref);
   glVertex2f(x+xPix, y);
  
 }
@@ -213,7 +201,7 @@ void render_mbs()
   int dpb_pos = s->current_picture.gpu_dpb;
   printf("Attempting to motion compensate %d blocks\n", (g->end-g->start+1));
 
-  //glNewList(testList, GL_COMPILE)
+  glNewList(dispList, GL_COMPILE);
   for(l=0; l < lists; l++)
   {
     glBegin(GL_QUADS);
@@ -341,6 +329,5 @@ void render_mbs()
     }
   }
   glEnd();
-  glFlush();
-
+  glEndList();
 }

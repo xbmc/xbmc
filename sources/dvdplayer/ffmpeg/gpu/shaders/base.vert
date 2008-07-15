@@ -1,10 +1,8 @@
 //Basic vertex shader
-
-#define TEXWIDTH 512.0
-#define TEXHEIGHT 2048.0
+uniform int tex_width, tex_height;
 void main()
 {    
-     vec4 scale = vec4(TEXWIDTH, TEXHEIGHT, 1, 0);
-     gl_TexCoord[0] = gl_Vertex/scale;
-     gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
+  // vec4 scale = vec4(tex_width, tex_height, 1, 1);
+  gl_TexCoord[0] = gl_Vertex;
+  gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
 }
