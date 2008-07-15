@@ -79,7 +79,6 @@ public:
   float GetSpinHeight() const { return m_imgspinUp.GetHeight(); };
   void SetFloatInterval(float fInterval);
   void SetShowRange(bool bOnoff) ;
-  void SetBuddyControlID(DWORD dwBuddyControlID);
   void SetShowOnePage(bool showOnePage) { m_showOnePage = showOnePage; };
   void Clear();
   virtual CStdString GetDescription() const;
