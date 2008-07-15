@@ -238,19 +238,19 @@ bool CWIN32Util::PowerManagement(PowerState State)
   {
   case POWERSTATE_HIBERNATE:
     CLog::Log(LOGINFO, "Asking Windows to hibernate...");
-    return SetSuspendState(true,true,false);
+    return SetSuspendState(true,true,false) == TRUE;
     break;
   case POWERSTATE_SUSPEND:
     CLog::Log(LOGINFO, "Asking Windows to suspend...");
-    return SetSuspendState(false,true,false);
+    return SetSuspendState(false,true,false) == TRUE;
     break;
   case POWERSTATE_SHUTDOWN:
     CLog::Log(LOGINFO, "Shutdown Windows...");
-    return InitiateSystemShutdown(NULL, NULL,0,true,false);
+    return InitiateSystemShutdown(NULL, NULL,0,true,false) == TRUE;
     break;
   case POWERSTATE_REBOOT:
     CLog::Log(LOGINFO, "Rebooting Windows...");
-    return InitiateSystemShutdown(NULL, NULL,0,true,true);
+    return InitiateSystemShutdown(NULL, NULL,0,true,true) == TRUE;
     break;
   default:
     CLog::Log(LOGERROR, "Unknown PowerState called.");
