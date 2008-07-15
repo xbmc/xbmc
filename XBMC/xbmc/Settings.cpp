@@ -1185,6 +1185,9 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement, "nodvdrom", g_advancedSettings.m_noDVDROM);
   XMLUtils::GetBoolean(pRootElement, "usemultipaths", g_advancedSettings.m_useMultipaths);
   XMLUtils::GetBoolean(pRootElement, "disablemodchipdetection", g_advancedSettings.m_DisableModChipDetection);
+#ifdef HAS_SDL
+  XMLUtils::GetBoolean(pRootElement, "fullscreen", g_advancedSettings.m_fullScreen);
+#endif
 
   GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 10, 1, 15);
   GetInteger(pRootElement, "busydialogdelay", g_advancedSettings.m_busyDialogDelay, 2000, 0, 5000);
