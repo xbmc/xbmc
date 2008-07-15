@@ -12,3 +12,7 @@ clean:
 	$(MAKE) -C libmad-0.15.1b clean
 	$(RM) MADCodec/MadMp3Decoder.o
 	$(RM) MADCodec-i486-linux.so
+
+distclean: clean
+	$(MAKE) -C libmad-0.15.1b distclean
+
