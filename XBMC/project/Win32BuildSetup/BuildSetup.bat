@@ -138,6 +138,7 @@ rem	CONFIG START
   Echo FileZilla Server.xml>>exclude.txt
   Echo asound.conf>>exclude.txt
   Echo voicemasks.xml>>exclude.txt
+  Echo Lircmap.xml>>exclude.txt
 
   xcopy %EXE% BUILD_WIN32\Xbmc > NUL
   xcopy ..\..\userdata BUILD_WIN32\Xbmc\userdata /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
@@ -155,6 +156,7 @@ rem	CONFIG START
   xcopy ..\..\system BUILD_WIN32\Xbmc\system /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\media BUILD_WIN32\Xbmc\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\sounds BUILD_WIN32\Xbmc\sounds /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  tools\Unrar\unrar.exe x "..\..\web\Project_Mayem_III_webserver_v1.0.rar" *.* BUILD_WIN32\Xbmc\web\ > NUL
   
   IF EXIST config.ini FOR /F "tokens=* DELIMS=" %%a IN ('FINDSTR/R "=" config.ini') DO SET %%a
   
