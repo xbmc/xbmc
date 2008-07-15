@@ -803,8 +803,11 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
       format.Rmask = 0x00ff0000; format.Rshift = 16;
       format.Gmask = 0x0000ff00; format.Gshift = 8;
       format.Bmask = 0x000000ff; format.Bshift = 0;
-      
+#ifdef HAS_SDL_OPENGL
+      pTexture = SDL_ConvertSurface(original, &format, SDL_SWSURFACE);
+#else
       pTexture = SDL_ConvertSurface(original, &format, SDL_HWSURFACE);
+#endif
       SDL_FreeSurface(original);
       if (!pTexture)
       {
