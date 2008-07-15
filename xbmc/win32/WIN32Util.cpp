@@ -256,19 +256,19 @@ bool CWIN32Util::PowerManagement(PowerState State)
   {
   case POWERSTATE_HIBERNATE:
     CLog::Log(LOGINFO, "Asking Windows to hibernate...");
-    return SUCCEEDED(SetSuspendState(true,true,false));
+    return SetSuspendState(true,true,false) == TRUE;
     break;
   case POWERSTATE_SUSPEND:
     CLog::Log(LOGINFO, "Asking Windows to suspend...");
-    return SUCCEEDED(SetSuspendState(false,true,false));
+    return SetSuspendState(false,true,false) == TRUE;
     break;
   case POWERSTATE_SHUTDOWN:
     CLog::Log(LOGINFO, "Shutdown Windows...");
-    return SUCCEEDED(ExitWindowsEx(EWX_SHUTDOWN | EWX_FORCE, SHTDN_REASON_MAJOR_OPERATINGSYSTEM | SHTDN_REASON_MINOR_UPGRADE | SHTDN_REASON_FLAG_PLANNED));
+    return ExitWindowsEx(EWX_SHUTDOWN | EWX_FORCE, SHTDN_REASON_MAJOR_OPERATINGSYSTEM | SHTDN_REASON_MINOR_UPGRADE | SHTDN_REASON_FLAG_PLANNED) == TRUE;
     break;
   case POWERSTATE_REBOOT:
     CLog::Log(LOGINFO, "Rebooting Windows...");
-    return SUCCEEDED(ExitWindowsEx(EWX_REBOOT | EWX_FORCE, SHTDN_REASON_MAJOR_OPERATINGSYSTEM | SHTDN_REASON_MINOR_UPGRADE | SHTDN_REASON_FLAG_PLANNED));
+    return ExitWindowsEx(EWX_REBOOT | EWX_FORCE, SHTDN_REASON_MAJOR_OPERATINGSYSTEM | SHTDN_REASON_MINOR_UPGRADE | SHTDN_REASON_FLAG_PLANNED) == TRUE;
     break;
   default:
     CLog::Log(LOGERROR, "Unknown PowerState called.");
