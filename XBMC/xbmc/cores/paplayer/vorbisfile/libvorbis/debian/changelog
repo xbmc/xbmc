@@ -1,0 +1,86 @@
+libvorbis (1.0.0-1) unstable; urgency=low
+
+  * New upstream.
+  * Split libvorbis package into libvorbis libvorbisenc libvorbisfile due to
+    shared object major versions going out of sync.
+
+ -- Christopher L Cheney <ccheney@debian.org>  Fri, 19 Jul 2002 09:00:00 -0500
+
+libvorbis (1.0rc3-1) unstable; urgency=low
+
+  * New upstream. (Closes: #121995, #123472)
+  * added autotools target (config.* updater) to rules
+
+ -- Christopher L Cheney <ccheney@debian.org>  Mon, 24 Dec 2001 11:00:00 -0600
+
+libvorbis (1.0rc2-1) unstable; urgency=low
+
+  * New upstream.
+
+ -- Christopher L Cheney <ccheney@debian.org>  Sun, 12 Aug 2001 22:00:00 -0500
+
+libvorbis (1.0rc1-1) unstable; urgency=low
+
+  * New upstream. (Closes: #84977, #95330)
+  * Upstream says lame at fault. See bug details. (Closes: #98010)
+  * Fixed versioned depends.
+  * Changed clean method to distclean.
+
+ -- Christopher L Cheney <ccheney@debian.org>  Sun, 17 Jun 2001 20:00:00 -0500
+
+libvorbis (1.0beta4-1) unstable; urgency=low
+
+  * New upstream.
+  * Appears to be fixed, can't reproduce bug (closes: #78848)
+
+ -- Christopher L Cheney <ccheney@debian.org>  Mon, 26 Feb 2001 08:00:00 -0600
+
+libvorbis (1.0beta3-3) unstable; urgency=low
+
+  * Fixed Build-Depends libogg-dev version dependency.
+  * Fixed Sections.
+  * Updated to Standards-Version to 3.5.1.0
+
+ -- Christopher L Cheney <ccheney@debian.org>  Sat, 17 Feb 2001 18:14:53 -0600
+
+libvorbis (1.0beta3-2) unstable; urgency=low
+
+  * Added dependency for libogg-dev (closes: #78262)
+  * Added dependency for libogg-dev (closes: #81432)
+  * Corrected development library package name (closes: #82464)
+
+ -- Christopher L Cheney <ccheney@debian.org>  Sat,  3 Feb 2001 13:29:30 -0600
+
+libvorbis (1.0beta3-1) unstable; urgency=low
+
+  * New Maintainer.
+  * Upstream source was reorganized.
+  * Package split according to the upstream reorganization.
+
+ -- Christopher L Cheney <ccheney@debian.org>  Tue, 31 Oct 2000 15:08:22 -0600
+
+vorbis (1.0beta2-1) unstable; urgency=low
+
+  * New upstream version. Closes: #67326, #68416
+  * Changed xmms-vorbis to Architechture: any.  Closes: #67395
+  * Added Build-deps. Closes: #66628
+  * Moved vorbize to vorbis-tools along with oggenc and vorbiscomment
+
+ -- Michael Beattie <mjb@debian.org>  Wed,  9 Aug 2000 00:30:15 +1200
+
+vorbis (1.0beta1-1) unstable; urgency=low
+
+  * First Beta, Ready for debian release.
+
+ -- Michael Beattie <mickyb@es.co.nz>  Fri, 30 Jun 2000 19:26:59 +1200
+
+vorbis (0.0-1) unstable; urgency=low
+
+  * Initial Release.
+  * Initial package, not placed in archive.
+
+ -- Michael Beattie <mickyb@es.co.nz>  Mon, 26 Jun 2000 18:59:56 +1200
+
+Local variables:
+mode: debian-changelog
+End:

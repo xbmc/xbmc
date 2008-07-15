@@ -1,0 +1,70 @@
+<html>
+
+<head>
+<title>Vorbisfile - function - ov_time_seek</title>
+<link rel=stylesheet href="style.css" type="text/css">
+</head>
+
+<body bgcolor=white text=black link="#5555ff" alink="#5555ff" vlink="#5555ff">
+<table border=0 width=100%>
+<tr>
+<td><p class=tiny>Vorbisfile documentation</p></td>
+<td align=right><p class=tiny>libVorbisfile version 1.65 - 20020702</p></td>
+</tr>
+</table>
+
+<h1>ov_time_seek</h1>
+
+<p><i>declared in "vorbis/vorbisfile.h";</i></p>
+
+<p>For seekable
+streams, this seeks to the given time. For implementing seeking in a player,
+this is the only function generally needed. This also updates everything needed within the
+decoder, so you can immediately call <a href="ov_read.html">ov_read()</a> and get data from
+the newly seeked to position.  This function does not work for unseekable streams.
+
+<br><br>
+<table border=0 color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td>
+<pre><b>
+int ov_time_seek(<a href="OggVorbis_File.html">OggVorbis_File</a> *vf, double s);
+</b></pre>
+	</td>
+</tr>
+</table>
+
+<h3>Parameters</h3>
+<dl>
+<dt><i>vf</i></dt>
+<dd>Pointer to our already opened and initialized OggVorbis_File structure.</dd>
+<dt><i>ms</i></dt>
+<dd>Location to seek to within the file, specified in seconds.</dd>
+</dl>
+
+
+<h3>Return Values</h3>
+<blockquote>
+<li>
+0 for success</li>
+
+<li>
+Nonzero for failure</li>
+</blockquote>
+
+
+<br><br>
+<hr noshade>
+<table border=0 width=100%>
+<tr valign=top>
+<td><p class=tiny>copyright &copy; 2002 Xiph.org</p></td>
+<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/vorbis/">Ogg Vorbis</a></p></td>
+</tr><tr>
+<td><p class=tiny>Vorbisfile documentation</p></td>
+<td align=right><p class=tiny>libVorbisfile version 1.65 - 20020702</p></td>
+</tr>
+</table>
+
+</body>
+
+</html>

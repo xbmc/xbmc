@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ogg_dynamic", "ogg_dynamic.vcproj", "{5AA64B10-B78A-488D-8EF1-F097DAD3A71B}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ogg_static", "ogg_static.vcproj", "{F8FFE6EA-A8BE-408E-AD77-AA9942D207CB}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{5AA64B10-B78A-488D-8EF1-F097DAD3A71B}.Debug.ActiveCfg = Debug|Win32
+		{5AA64B10-B78A-488D-8EF1-F097DAD3A71B}.Debug.Build.0 = Debug|Win32
+		{5AA64B10-B78A-488D-8EF1-F097DAD3A71B}.Release.ActiveCfg = Release|Win32
+		{5AA64B10-B78A-488D-8EF1-F097DAD3A71B}.Release.Build.0 = Release|Win32
+		{F8FFE6EA-A8BE-408E-AD77-AA9942D207CB}.Debug.ActiveCfg = Debug|Win32
+		{F8FFE6EA-A8BE-408E-AD77-AA9942D207CB}.Debug.Build.0 = Debug|Win32
+		{F8FFE6EA-A8BE-408E-AD77-AA9942D207CB}.Release.ActiveCfg = Release|Win32
+		{F8FFE6EA-A8BE-408E-AD77-AA9942D207CB}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

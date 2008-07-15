@@ -1,0 +1,13 @@
+debian/tmp/usr/include/vorbis/codec.h
+debian/tmp/usr/include/vorbis/vorbisenc.h
+debian/tmp/usr/include/vorbis/vorbisfile.h
+debian/tmp/usr/lib/libvorbis.a
+debian/tmp/usr/lib/libvorbis.la
+debian/tmp/usr/lib/libvorbis.so
+debian/tmp/usr/lib/libvorbisenc.a
+debian/tmp/usr/lib/libvorbisenc.la
+debian/tmp/usr/lib/libvorbisenc.so
+debian/tmp/usr/lib/libvorbisfile.a
+debian/tmp/usr/lib/libvorbisfile.la
+debian/tmp/usr/lib/libvorbisfile.so
+debian/tmp/usr/share/aclocal/vorbis.m4
