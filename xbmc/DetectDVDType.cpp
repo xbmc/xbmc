@@ -78,10 +78,6 @@ void CDetectDVDMedia::OnStartup()
 
 void CDetectDVDMedia::Process()
 {
-  if (g_advancedSettings.m_usePCDVDROM)
-  {
-    m_DriveState = DRIVE_CLOSED_MEDIA_PRESENT;
-  }
 
 // for apple - currently disable this check since cdio will return null if no media is loaded
 #ifndef __APPLE__
@@ -93,7 +89,7 @@ void CDetectDVDMedia::Process()
     cdio_destroy(p_cdio);
 #endif
 
-  while (( !m_bStop ) && (!g_advancedSettings.m_usePCDVDROM))
+  while (( !m_bStop ))
   {
     UpdateDvdrom();
     m_bStartup = false;
@@ -328,7 +324,7 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
     CFile::Delete(strCache);
 
   // find and cache disc thumbnail
-  if ((g_advancedSettings.m_usePCDVDROM || IsDiscInDrive()) && !bCDDA)
+  if (IsDiscInDrive() && !bCDDA)
   {
     CStdString strThumb;
     CStdStringArray thumbs;
@@ -556,31 +552,6 @@ bool CDetectDVDMedia::IsDiscInDrive()
   if ( m_DriveState != DRIVE_CLOSED_MEDIA_PRESENT )
   {
     bResult = false;
-  }
-
-  if (g_advancedSettings.m_usePCDVDROM)
-  {
-    // allow the application to poll once every five seconds
-    if ((clock() - m_LastPoll) > 5000)
-    {
-      // only poll if we're not playing media from the drive
-      if (!(g_application.IsPlaying() && g_application.CurrentFileItem().IsOnDVD()))
-      {
-        CLog::Log(LOGINFO, "Polling PC-DVDROM...");
-
-        m_isoReader.Reset();
-
-        CIoSupport::Dismount("Cdrom0");
-        if (CIoSupport::RemapDriveLetter('D', "Cdrom0") == S_OK)
-        {
-          if (m_pInstance)
-          {
-            m_pInstance->DetectMediaType();
-          }
-        }
-      }
-      m_LastPoll = clock();
-    }
   }
 
   return bResult;

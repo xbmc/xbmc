@@ -344,19 +344,7 @@ HRESULT CIoSupport::CloseTray()
 
 DWORD CIoSupport::GetTrayState()
 {
-#ifdef _XBOX
-  DWORD dwTrayState, dwTrayCount;
-  if (g_advancedSettings.m_usePCDVDROM)
-  {
-    dwTrayState = TRAY_CLOSED_MEDIA_PRESENT;
-  }
-  else
-  {
-    HalReadSMCTrayState(&dwTrayState, &dwTrayCount);
-  }
-
-  return dwTrayState;
-#elif defined(_LINUX) || defined(_WIN32PC)
+#if defined(_LINUX) || defined(_WIN32PC)
   return MEDIA_DETECT::CDetectDVDMedia::DriveReady();
 #else
   return DRIVE_NOT_READY;
