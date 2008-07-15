@@ -180,14 +180,15 @@
 				<onleft>50</onleft>
 				<onright>50</onright>
 				<onup>10</onup>
-				<ondown>8</ondown>
+				<ondown>888</ondown>
 				<visible>Skin.HasSetting(watched_filtering_toggle)</visible>
 			</control>
-			<control type="button" id="8">
+			<control type="button" id="888">
 				<description>Search</description>
 				<posx>0</posx>
 				<posy>148</posy>
 				<label>137</label>
+				<onclick>Container.Refresh(videodb://2/1)</onclick>
 				<onleft>50</onleft>
 				<onright>50</onright>
 				<onup>14</onup>
@@ -201,7 +202,7 @@
 				<label>587</label>
 				<onleft>50</onleft>
 				<onright>50</onright>
-				<onup>8</onup>
+				<onup>888</onup>
 				<ondown>16</ondown>
 			</control>
 			<control type="radiobutton" id="16">

@@ -143,8 +143,6 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
               m_gWindowManager.ActivateWindow(g_guiSettings.GetInt("lookandfeel.startupwindow"));
             }
 
-            if (iItem == 0)
-              g_application.StartKai();
             return true;
           }
           else
