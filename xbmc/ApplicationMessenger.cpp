@@ -156,10 +156,14 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif
 #ifdef _WIN32PC
+        bool bStop = true;
         if (ShutdownState) // If we have a setting for powerstate mode
-          CWIN32Util::PowerManagement((PowerState)ShutdownState);
-        else
+          bStop = CWIN32Util::PowerManagement((PowerState)ShutdownState);
+
+        if (bStop && (ShutdownState == POWERSTATE_SHUTDOWN || ShutdownState == POWERSTATE_REBOOT || ShutdownState == 0))
+        {
           g_application.Stop();
+        }
 #endif
 #else
         // exit the application
