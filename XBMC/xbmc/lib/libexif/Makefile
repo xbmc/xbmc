@@ -3,7 +3,7 @@ OBJS=libexif.o ExifParse.o IptcParse.o JpegParse.o
 CFLAGS=-D_LINUX -D_DLL -fPIC -O2
 
 libexif-i486-linux.so: $(OBJS)
-	$(CC) -shared -o $@ *.o `cat ../../XBMC/xbmc/cores/DllLoader/exports/wrapper.def` ../../XBMC/xbmc/cores/DllLoader/exports/wrapper.o
+	$(CC) -shared -o $@ *.o `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o && cp $@ ../../../system/
 
 clean:
 	$(RM) $(OBJS) *.so

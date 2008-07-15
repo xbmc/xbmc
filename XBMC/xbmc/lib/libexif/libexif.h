@@ -6,7 +6,11 @@ extern "C" {
 #endif
 
 #ifdef _DLL
+#ifdef WIN32
 #define EXIF_EXPORT __declspec(dllexport)
+#else
+#define EXIF_EXPORT
+#endif
 #else
 #define EXIF_EXPORT
 #endif
