@@ -240,9 +240,6 @@
 				RelativePath=".\GUIColorManager.cpp">
 			</File>
 			<File
-				RelativePath=".\GUIConsoleControl.cpp">
-			</File>
-			<File
 				RelativePath=".\GUIControl.cpp">
 			</File>
 			<File
@@ -285,25 +282,13 @@
 				RelativePath=".\GUIInfoColor.cpp">
 			</File>
 			<File
-				RelativePath=".\GUIItem.cpp">
-			</File>
-			<File
 				RelativePath=".\GUILabelControl.cpp">
 			</File>
 			<File
 				RelativePath=".\GUILargeImage.cpp">
 			</File>
 			<File
-				RelativePath=".\GUIList.cpp">
-			</File>
-			<File
 				RelativePath=".\GUIListContainer.cpp">
-			</File>
-			<File
-				RelativePath=".\GUIListControlEx.cpp">
-			</File>
-			<File
-				RelativePath=".\GUIListExItem.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIListGroup.cpp">
@@ -479,9 +464,6 @@
 				RelativePath=".\GUIColorManager.h">
 			</File>
 			<File
-				RelativePath=".\GUIConsoleControl.h">
-			</File>
-			<File
 				RelativePath=".\GUIControl.h">
 			</File>
 			<File
@@ -524,25 +506,13 @@
 				RelativePath=".\GUIInfoColor.h">
 			</File>
 			<File
-				RelativePath=".\GUIItem.h">
-			</File>
-			<File
 				RelativePath=".\GUILabelControl.h">
 			</File>
 			<File
 				RelativePath=".\GUILargeImage.h">
 			</File>
 			<File
-				RelativePath=".\GUIList.h">
-			</File>
-			<File
 				RelativePath=".\GUIListContainer.h">
-			</File>
-			<File
-				RelativePath=".\GUIListControlEx.h">
-			</File>
-			<File
-				RelativePath=".\GUIListExItem.h">
 			</File>
 			<File
 				RelativePath=".\GUIListGroup.h">

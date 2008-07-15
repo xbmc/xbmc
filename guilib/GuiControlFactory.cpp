@@ -26,8 +26,6 @@
 #include "GUIRadioButtonControl.h"
 #include "GUISpinControl.h"
 #include "GUIRSSControl.h"
-#include "GUIConsoleControl.h"
-#include "GUIListControlEx.h"
 #include "guiImage.h"
 #include "GUIBorderedImage.h"
 #include "GUILabelControl.h"
@@ -594,7 +592,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   CImage textureRadioFocus, textureRadioNoFocus;
   CImage imageNoFocus, imageFocus;
   DWORD dwColorKey = 0;
-  CStdString strSuffix = "";
   FRECT borderSize = { 0, 0, 0, 0};
 
   float controlOffsetX = 0;
@@ -604,9 +601,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   float sliderWidth = 150, sliderHeight = 16;
   float textureWidthBig = 128;
   float textureHeightBig = 128;
-#ifdef HAS_KAI
-  DWORD dwBuddyControlID = 0;
-#endif
   float textureHeight = 30;
   float textureWidth = 80;
   float itemWidthBig = 150;
@@ -910,8 +904,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetFloat(pControlNode, "rangemax", rMax);
   GetColor(pControlNode, "colorkey", dwColorKey);
 
-  XMLUtils::GetString(pControlNode, "suffix", strSuffix);
-
   GetFloat(pControlNode, "itemwidth", itemWidth);
   GetFloat(pControlNode, "itemheight", itemHeight);
   GetFloat(pControlNode, "spacebetweenitems", spaceBetweenItems);
@@ -1124,12 +1116,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     else
       CLog::Log(LOGERROR,"invalid rss url set referenced in skin");
   }
-  else if (strType == "console")
-  {
-    control = new CGUIConsoleControl(
-      dwParentId, id, posX, posY, width, height,
-      labelInfo, labelInfo.textColor, labelInfo2.textColor, textColor3, labelInfo.selectedColor);
-  }
   else if (strType == "button")
   {
     control = new CGUIButtonControl(
@@ -1339,22 +1325,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     return pControl;
   }
 #endif
-  else if (strType == "listcontrolex")
-  {
-    control = new CGUIListControlEx(
-      dwParentId, id, posX, posY, width, height,
-      spinWidth, spinHeight,
-      textureUp, textureDown,
-      textureUpFocus, textureDownFocus,
-      spinInfo, spinPosX, spinPosY,
-      labelInfo, labelInfo2,
-      textureNoFocus, textureFocus);
-
-    ((CGUIListControlEx*)control)->SetScrollySuffix(strSuffix);
-    ((CGUIListControlEx*)control)->SetImageDimensions(itemWidth, itemHeight);
-    ((CGUIListControlEx*)control)->SetItemHeight(textureHeight);
-    ((CGUIListControlEx*)control)->SetSpaceBetweenItems(spaceBetweenItems);
-  }
   else if (strType == "textbox")
   {
     control = new CGUITextBox(
