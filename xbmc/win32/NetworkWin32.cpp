@@ -28,11 +28,13 @@
 
 // undefine if you want to build without the wlan stuff
 // might be needed for VS2003
-//#define HAS_WIN32_WLAN_API
+#if _MSC_VER > 1400
+#define HAS_WIN32_WLAN_API
 
 #ifdef HAS_WIN32_WLAN_API
 #include "Wlanapi.h"
 #pragma comment (lib,"Wlanapi.lib")
+#endif
 #endif
 
 
@@ -563,102 +565,27 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, CStdStri
 
 void CNetworkInterfaceWin32::SetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
 {
-#ifdef _LINUX
-   FILE* fr = fopen("/etc/network/interfaces", "r");
-   if (!fr)
-   {
-      // TODO
-      return;
-   }
+  if(IsWireless())
+  {
+  }
+  else
+  {
+    /*if(assignment == NETWORK_STATIC)
+    {
+      DWORD dwRet = 0;
+      ULONG NTEContext = 0;  
+      ULONG NTEInstance;  
 
-   FILE* fw = fopen("/tmp/interfaces.temp", "w");
-   if (!fw)
-   {
-      // TODO
-      return;
-   }
-
-   char* line = NULL;
-   size_t linel = 0;
-   CStdString s;
-   bool foundInterface = false;
-   bool dataWritten = false;
-
-   while (getdelim(&line, &linel, '\n', fr) > 0)
-   {
-      vector<CStdString> tokens;
-
-      s = line;
-      s.TrimLeft(" \t").TrimRight(" \n");
-
-      // skip comments
-      if (!foundInterface && (s.length() == 0 || s.GetAt(0) == '#'))
+      if((dwRet = AddIPAddress(inet_addr(ipAddress.c_str()), inet_addr(networkMask.c_str()), m_adapter.Index, &NTEContext, &NTEInstance)) == NO_ERROR)
       {
-        fprintf(fw, "%s", line);
-        continue;
+        if((dwRet = DeleteIPAddress(m_adapter.IpAddressList.Context)) != NO_ERROR)
+          CLog::Log(LOGERROR, "Unable to delete IP entry: %s, Error code: %d",m_adapter.IpAddressList.IpAddress.String, dwRet);
       }
+      else
+        CLog::Log(LOGERROR, "Unable to add IP entry: %s, Error code: %d", ipAddress.c_str(),dwRet);
+    }*/
+  }
 
-      // look for "iface <interface name> inet"
-      CUtil::Tokenize(s, tokens, " ");
-      if (tokens.size() == 2 &&
-          tokens[0].Equals("auto") &&
-          tokens[1].Equals(GetName()))
-      {
-         continue;
-      }
-      else if (!foundInterface &&
-          tokens.size() == 4 &&
-          tokens[0].Equals("iface") &&
-          tokens[1].Equals(GetName()) &&
-          tokens[2].Equals("inet"))
-      {
-         foundInterface = true;
-         WriteSettings(fw, assignment, ipAddress, networkMask, defaultGateway, essId, key, encryptionMode);
-         dataWritten = true;
-      }
-      else if (foundInterface &&
-               tokens.size() == 4 &&
-               tokens[0].Equals("iface"))
-      {
-        foundInterface = false;
-        fprintf(fw, "%s", line);
-      }
-      else if (!foundInterface)
-      {
-        fprintf(fw, "%s", line);
-      }
-   }
-
-   if (line)
-     free(line);
-
-   if (!dataWritten && assignment != NETWORK_DISABLED)
-   {
-      fprintf(fw, "\n");
-      WriteSettings(fw, assignment, ipAddress, networkMask, defaultGateway, essId, key, encryptionMode);
-   }
-
-   fclose(fr);
-   fclose(fw);
-
-   // Rename the file
-   if (rename("/tmp/interfaces.temp", "/etc/network/interfaces") < 0)
-   {
-      // TODO
-      return;
-   }
-
-   CLog::Log(LOGINFO, "Stopping interface %s", GetName().c_str());
-   std::string cmd = "/sbin/ifdown " + GetName();
-   system(cmd.c_str());
-
-   if (assignment != NETWORK_DISABLED)
-   {
-      CLog::Log(LOGINFO, "Starting interface %s", GetName().c_str());
-      cmd = "/sbin/ifup " + GetName();
-      system(cmd.c_str());
-   }
-#endif
 }
 
 void CNetworkInterfaceWin32::WriteSettings(FILE* fw, NetworkAssignment assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
