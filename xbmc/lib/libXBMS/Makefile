@@ -13,10 +13,10 @@ OBJS := ccbuffer.o ccutil.o ccxclient.o ccxclientconnxbox.o ccxdiscover.o ccxenc
 	rm -f ${<:.c=.o}
 	$(CC) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.c=.o}
 
-libxbms.a: $(OBJS)
-	$(AR) $(ARFLAGS) libxbms.a $(OBJS)
+libxbms-i486-linux.a: $(OBJS)
+	$(AR) $(ARFLAGS) libxbms-i486-linux.a $(OBJS)
 
 all: libxbms.a
 
 clean:
-	$(RM) $(OBJS) libxbms.a
+	$(RM) $(OBJS) libxbms-i486-linux.a
