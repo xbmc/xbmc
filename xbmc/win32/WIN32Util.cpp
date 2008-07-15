@@ -232,6 +232,8 @@ CStdString CWIN32Util::GetChangedDrive()
 
 bool CWIN32Util::PowerManagement(PowerState State)
 {
+// SetSuspendState not available in vs2003
+#if _MSC_VER > 1400
   switch (State)
   {
   case POWERSTATE_HIBERNATE:
@@ -255,4 +257,7 @@ bool CWIN32Util::PowerManagement(PowerState State)
     return false;
     break;
   }
+#else
+  return false;
+#endif
 }
