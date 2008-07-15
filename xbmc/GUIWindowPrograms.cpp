@@ -29,7 +29,6 @@
 #include "GUIDialogMediaSource.h"
 #include "xbox/xbeheader.h"
 #include "utils/Trainer.h"
-#include "utils/KaiClient.h"
 #include "utils/LabelFormatter.h"
 #include "Autorun.h"
 #include "Profile.h"
@@ -461,22 +460,11 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
   CStdString strTrainer = m_database.GetActiveTrainer(dwTitleId);
   if (strTrainer != "")
   {
-    bool bContinue=false;
-    if (CKaiClient::GetInstance()->IsEngineConnected())
+    CTrainer trainer;
+    if (trainer.Load(strTrainer))
     {
-      if (CGUIDialogYesNo::ShowAndGetInput(20023,20020,20021,20022,714,12013))
-        CKaiClient::GetInstance()->EnterVector(CStdString(""),CStdString(""));
-      else
-        bContinue = true;
-    }
-    if (!bContinue)
-    {
-      CTrainer trainer;
-      if (trainer.Load(strTrainer))
-      {
-        m_database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
-        CUtil::InstallTrainer(trainer);
-      }
+      m_database.GetTrainerOptions(strTrainer,dwTitleId,trainer.GetOptions(),trainer.GetNumberOfOptions());
+      CUtil::InstallTrainer(trainer);
     }
   }
 
