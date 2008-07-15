@@ -22,24 +22,13 @@
  */
 
 #include "GUIWindow.h"
+#include "TVDatabase.h"
 #include "GUIEPGGridContainer.h"
 #include "PVRManager.h"
-#include "TVDatabase.h"
 
 #include <vector>
 
 class CFileItem;
-
-struct EPGRow
-{
-  VECTVSHOWS  shows;
-  CStdString  channelName;
-  int         channelNum;
-  bool        freeToView;
-};
-
-typedef std::vector<EPGRow> EPGGrid;
-
 
 class CGUIWindowEPG : public CGUIWindow
 {
@@ -53,6 +42,7 @@ public:
 protected:
   virtual void OnInitWindow();
   void UpdateGridData();
+  void UpdateGridItems();
   void Refresh();
 
   void GetEPG(int offset);
@@ -64,8 +54,12 @@ private:
   int m_daysToDisplay;
   int m_curDaysOffset;
   int m_numChannels;
+  
+  // save control state on window exit
+  int m_iLastControl;
+  int m_iSelectedItem;
 
   CTVDatabase m_tvDB;
   EPGGrid m_gridData;
-  /*CGUIEPGGridContainer m_gridControls;*/
+  CGUIEPGGridContainer *m_gridItems;
 };

@@ -26,8 +26,11 @@
 #include "GUISettings.h"
 #include "GUIWindowManager.h"
 
-#define CONTROL_EPGGRID           2
 #define CONTROL_LABELEMPTY        10
+#define CONTROL_EPGGRID           20
+#define LABEL_CHANNELNAME         30  /* 70 available */
+#define CONTROL_GRIDITEMS         100 /* ?? available */
+/* Need to allocate enough IDs for extreme numbers of channels & shows */
 
 CGUIWindowEPG::CGUIWindowEPG(void) 
     : CGUIWindow(WINDOW_EPG, "MyTVGuide.xml")
@@ -52,13 +55,14 @@ bool CGUIWindowEPG::OnAction(const CAction &action)
 
 bool CGUIWindowEPG::OnMessage(CGUIMessage& message)
 {
+
   return CGUIWindow::OnMessage(message);
 }
 
 void CGUIWindowEPG::OnInitWindow()
 {
   UpdateGridData();
-  //UpdateGridItems();
+  UpdateGridItems();
   CGUIWindow::OnInitWindow();
 }
 
@@ -67,6 +71,11 @@ void CGUIWindowEPG::UpdateGridData()
   GetEPG(0);
 }
 
+void CGUIWindowEPG::UpdateGridItems()
+{
+  m_gridItems = (CGUIEPGGridContainer*)GetControl(CONTROL_EPGGRID);
+  m_gridItems->UpdateItems(m_gridData);
+}
 void CGUIWindowEPG::GetEPG(int offset)
 {
   VECTVCHANNELS channels;
@@ -76,12 +85,18 @@ void CGUIWindowEPG::GetEPG(int offset)
   m_tvDB.Close();
 
   m_curDaysOffset = 0;
-  m_daysToDisplay = 2;
+  m_daysToDisplay = 1;
 
   m_numChannels = (int)channels.size();
   if (m_numChannels > 0)
   {
-    m_bDisplayEmptyDatabaseMessage = false;
+    // start with an empty datastore
+    itEPGRow it = m_gridData.begin();
+    for ( ; it != m_gridData.end(); it++)
+    {
+      if (it->shows.size())
+        it->shows.empty();
+    }
     DWORD tick(timeGetTime());
     m_tvDB.Open();
     m_tvDB.BeginTransaction();
@@ -94,13 +109,14 @@ void CGUIWindowEPG::GetEPG(int offset)
       curRow.channelNum  = channels[i]->GetPropertyInt("ChannelNum");
 
       if(!m_tvDB.GetShowsByChannel(channels[i]->GetLabel(), curRow.shows, m_curDaysOffset, m_daysToDisplay))
-        return; /* couldn't grab data */
+        return; /* debug log: couldn't grab data */
       items += (int)curRow.shows.size();
       m_gridData.push_back(curRow);
     }
     m_tvDB.CommitTransaction();
     m_tvDB.Close();
-    CLog::Log(LOGINFO, "%s completed successfully in %u ms, returning %u items", __FUNCTION__, timeGetTime()-tick, items);
+    CLog::Log(LOGDEBUG, "%s completed successfully in %u ms, returning %u items", __FUNCTION__, timeGetTime()-tick, items);
+    m_bDisplayEmptyDatabaseMessage = false;
   }
   else
   {
@@ -124,5 +140,6 @@ void CGUIWindowEPG::Render()
   {
     SET_CONTROL_LABEL(CONTROL_LABELEMPTY,"")
   }
+
   CGUIWindow::Render();
 }

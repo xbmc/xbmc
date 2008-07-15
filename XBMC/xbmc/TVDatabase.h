@@ -49,6 +49,18 @@
 typedef VECFILEITEMS  VECTVSHOWS;
 typedef VECFILEITEMS  VECTVCHANNELS;
 
+struct EPGRow
+{
+  VECTVSHOWS shows;
+  CStdString channelName;
+  int        channelNum;
+  bool       freeToView;
+};
+
+typedef VECTVSHOWS::const_iterator itEPGShow;
+typedef std::vector<struct EPGRow> EPGGrid;
+typedef std::vector<struct EPGRow>::const_iterator itEPGRow;
+
 //****************************************************************************/
 class CTVDatabase : public CDatabase
 {

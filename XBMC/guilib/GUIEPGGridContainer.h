@@ -21,37 +21,87 @@
  *
  */
 
-#include "GUIBaseContainer.h"
+#include "GUIControl.h"
+#include "GUIEPGGridItemLayout.h"
 #include "GUIEPGGridItem.h"
 #include "TVDatabase.h"
+//#include "GUIWindowEPG.h"
 
-class CGUIEPGGridContainer : public CGUIBaseContainer
+class CGUIEPGGridContainer : public CGUIControl
 {
 public:
-  CGUIEPGGridContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime);
+  CGUIEPGGridContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, int scrollTime);
   virtual ~CGUIEPGGridContainer(void);
 
-  virtual void Render();
-  virtual bool OnAction(const CAction &action);
-  virtual bool OnMessage(CGUIMessage& message);
+  bool OnAction(const CAction &action);
+  bool OnMessage(CGUIMessage& message);
 
-  const int GetNumChannels()   { return m_numChannels;   }
+  const int GetNumChannels()   { return m_numChannels; }
+  void UpdateItems(EPGGrid &gridData);
+
+  virtual CStdString GetDescription() const;
+  virtual void SaveStates(std::vector<CControlState> &states);
+  int GetSelectedItem() const;
+
+  virtual void DoRender(DWORD currentTime);
+  void Render();
+  void LoadLayout(TiXmlElement *layout);
+  void LoadContent(TiXmlElement *content);
+
+  /*void LoadData(const */
   
- /* virtual bool HasNextPage() const;
-  virtual bool HasPreviousPage() const;*/
-  
+  virtual bool IsContainer() const { return true; };
+
 protected:
-  //virtual void Scroll(int amount);
+  bool OnClick(DWORD actionID);
+  bool SelectItemFromPoint(const CPoint &point);
+  void RenderItem(float posX, float posY, CGUIEPGGridItem *item, bool focused);
+  void Scroll(int amount);
   void SetCursor(int cursor);
+  bool MoveDown(bool wrapAround);
+  bool MoveUp(bool wrapAround);
   bool MoveLeft(bool wrapAround);
   bool MoveRight(bool wrapAround);
-  virtual bool MoveUp(bool wrapAround);
-  virtual bool MoveDown(bool wrapAround);
-  //virtual void ValidateOffset();
-  //virtual void SelectItem(int item);
-  //void CalculateLayout();
+  //virtual void MoveToItem(int item);
+  virtual void ValidateOffset();
+  virtual int CorrectOffset(int offset, int cursor) const;
+  virtual void UpdateLayout(bool refreshAllItems = false);
+  virtual void CalculateLayout();
+  //virtual void SelectItem(int item) {};
+  //virtual void Reset();
+  unsigned int GetNumItems() const { return m_gridItems.size(); };
 
-private:
+  void MoveToRow(int row);
+  void FreeMemory(int keepStart, int keepEnd);
+  void GetCurrentLayouts();
+
+  CGUIEPGGridItemLayout *GetFocusedLayout() const;
+  int m_offset;
+  int m_cursor;
+  float m_analogScrollCount;
+
   int m_numChannels;
-  std::vector<CGUIEPGGridItem> m_epgItems;
+  int m_channelsPerPage;
+
+  std::vector< std::vector< CGUIEPGGridItem* > > m_gridItems;
+  typedef std::vector< std::vector< CGUIEPGGridItem* > >::iterator itChannels;
+  typedef std::vector< CGUIEPGGridItem* >::iterator itShows;
+  CGUIEPGGridItem *m_lastItem;
+
+  DWORD m_renderTime;
+
+  CGUIEPGGridItemLayout *m_layout;
+  CGUIEPGGridItemLayout *m_focusedLayout;
+
+  EPGGrid *m_pGridData;
+  
+  void ScrollToOffset(int offset);
+  DWORD m_scrollLastTime;
+  int   m_scrollTime;
+  float m_scrollSpeed;
+  float m_scrollOffset;
+  bool  m_wrapAround;
+
+  CStdString m_label;
+  bool m_wasReset;
 };

@@ -24,26 +24,14 @@
 #include "guiImage.h"
 #include "GUIEPGGridItemLayout.h"
 
-CGUIEPGGridItem::CGUIEPGGridItem(const CGUIEPGGridItem& item)
+CGUIEPGGridItem::CGUIEPGGridItem(void)
 {
-  *this = item;
-  SetInvalid();
+
 }
 
 CGUIEPGGridItem::~CGUIEPGGridItem(void)
 {
-  FreeMemory();
-}
-
-void CGUIEPGGridItem::SetLabel(const CStdString& strLabel)
-{
-  m_strLabel = strLabel;
-  SetInvalid();
-}
-
-const CStdString& CGUIEPGGridItem::GetLabel() const
-{
-  return m_strLabel;
+  
 }
 
 void CGUIEPGGridItem::SetOverlayImage(GUIEPGGridItemOverlay icon, bool bOnOff)
@@ -68,134 +56,70 @@ CStdString CGUIEPGGridItem::GetOverlayImage() const
   }
 }
 
-void CGUIEPGGridItem::Select(bool bOnOff)
+void CGUIEPGGridItem::SetLabel(const CStdString& strLabel)
 {
-  m_bSelected = bOnOff;
+  m_strLabel = strLabel;
+  SetInvalid();
 }
 
-bool CGUIEPGGridItem::HasOverlay() const
+const CStdString& CGUIEPGGridItem::GetLabel() const
 {
-  return (m_overlayIcon != CGUIEPGGridItem::ICON_OVERLAY_NONE);
+  return m_strLabel;
 }
 
-bool CGUIEPGGridItem::IsSelected() const
+void CGUIEPGGridItem::SetShortDesc(const CStdString& strShortDesc)
 {
-  return m_bSelected;
+  m_pShortDesc = strShortDesc;
+  SetInvalid();
 }
 
-void CGUIEPGGridItem::FreeMemory()
+const CStdString& CGUIEPGGridItem::GetShortDesc() const
 {
-  if (m_layout)
-  {
-    delete m_layout;
-    m_layout = NULL;
-  }
-  if (m_focusedLayout)
-  {
-    delete m_focusedLayout;
-    m_focusedLayout = NULL;
-  }
+  return m_pShortDesc;
 }
+
+void CGUIEPGGridItem::SetStartTime(const CStdString& startTime)
+{
+  m_pStartTime.SetFromDBDateTime(startTime);
+  SetInvalid();
+}
+
+const CDateTime& CGUIEPGGridItem::GetStartTime() const
+{
+  return m_pStartTime;
+}
+
+void CGUIEPGGridItem::SetDuration(const int& duration)
+{
+  m_pDuration = duration;
+  SetInvalid();
+}
+
+const int& CGUIEPGGridItem::GetDuration() const
+{
+  return m_pDuration;
+}
+
 void CGUIEPGGridItem::SetLayout(CGUIEPGGridItemLayout *layout)
 {
   if (m_layout)
     delete m_layout;
-  m_layout = layout;
+  m_gridlayout = layout;
 }
 
 CGUIEPGGridItemLayout *CGUIEPGGridItem::GetLayout()
 {
-  return m_layout;
+  return m_gridlayout;
 }
 
 void CGUIEPGGridItem::SetFocusedLayout(CGUIEPGGridItemLayout *layout)
 {
-  if (m_focusedLayout)
-    delete m_focusedLayout;
-  m_focusedLayout = layout;
+  if (m_focusedGridLayout)
+    delete m_focusedGridLayout;
+  m_focusedGridLayout = layout;
 }
 
 CGUIEPGGridItemLayout *CGUIEPGGridItem::GetFocusedLayout()
 {
-  return m_focusedLayout;
-}
-
-void CGUIEPGGridItem::SetInvalid()
-{
-  if (m_layout) m_layout->SetInvalid();
-  if (m_focusedLayout) m_focusedLayout->SetInvalid();
-}
-
-void CGUIEPGGridItem::SetProperty(const CStdString &strKey, const char *strValue)
-{
-  m_mapProperties[strKey] = strValue;
-}
-
-void CGUIEPGGridItem::SetProperty(const CStdString &strKey, const CStdString &strValue)
-{
-  m_mapProperties[strKey] = strValue;
-}
-
-CStdString CGUIEPGGridItem::GetProperty(const CStdString &strKey) const
-{
-  std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(strKey);
-  if (iter == m_mapProperties.end())
-    return "";
-
-  return iter->second;
-}
-
-bool CGUIEPGGridItem::HasProperty(const CStdString &strKey) const
-{
-  std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(strKey);
-  if (iter == m_mapProperties.end())
-    return false;
-
-  return true;
-}
-
-void CGUIEPGGridItem::ClearProperty(const CStdString &strKey)
-{
-  std::map<CStdString,CStdString,icompare>::iterator iter = m_mapProperties.find(strKey);
-  if (iter != m_mapProperties.end())
-    m_mapProperties.erase(iter);
-}
-
-void CGUIEPGGridItem::ClearProperties()
-{
-  m_mapProperties.clear();
-}
-
-void CGUIEPGGridItem::SetProperty(const CStdString &strKey, int nVal)
-{
-  CStdString strVal;
-  strVal.Format("%d",nVal);
-  SetProperty(strKey, strVal);
-}
-
-void CGUIEPGGridItem::SetProperty(const CStdString &strKey, bool bVal)
-{
-  SetProperty(strKey, bVal?"1":"0");
-}
-
-void CGUIEPGGridItem::SetProperty(const CStdString &strKey, double dVal)
-{
-  CStdString strVal;
-  strVal.Format("%f",dVal);
-  SetProperty(strKey, strVal);
-}
-
-bool CGUIEPGGridItem::GetPropertyBOOL(const CStdString &strKey) const
-{
-  return GetProperty(strKey) == "1";
-}
-
-int CGUIEPGGridItem::GetPropertyInt(const CStdString &strKey) const
-{
-  return atoi(GetProperty(strKey).c_str()) ;
-}
-
-double CGUIEPGGridItem::GetPropertyDouble(const CStdString &strKey) const
-{
-  return atof(GetProperty(strKey).c_str()) ;
+  return m_focusedGridLayout;
 }

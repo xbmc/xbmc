@@ -34,10 +34,87 @@
 			<label>10512</label>
 			<font>special13</font>
 		</control>
-		<control type="group" id="9000">
-			<posx>20</posx>
+		<control type="label" id="10">
+			<description>No Info Scanned Label</description>
+			<posx>190</posx>
+			<posy>200</posy>
+			<width>485</width>
+			<height>150</height>
+			<font>Special13</font>
+			<label>-</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<include>contentpanelslide</include>
+		</control>
+		<control type="epggrid" id="20">
+			<description>EPG Grid</description>
+			<posx>30</posx>
 			<posy>100</posy>
-			<include>buttonpanelslide</include>
+			<width>660</width>
+			<height>425</height>
+			<onleft>20</onleft>
+			<onright>20</onright>
+			<onup>20</onup>
+			<ondown>20</ondown>
+			<pagecontrol>20</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<include>contentpanelslide</include>
+			<itemlayout height="29">
+				<control type="image">
+					<width>0</width>
+					<height>0</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<visible>Control.HasFocus(20)</visible>
+					<texture>list-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>5r</posx>
+					<posy>3r</posy>
+					<width>22</width>
+					<height>22</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>0</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="29">
+				<control type="image">
+					<width>0</width>
+					<height>0</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<visible>Control.HasFocus(20)</visible>
+					<texture>list-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>5r</posx>
+					<posy>3r</posy>
+					<width>22</width>
+					<height>22</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>3</posy>
+					<width>0</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
 		</control>
 		<include>windowswitchtransition</include>
 	</controls>

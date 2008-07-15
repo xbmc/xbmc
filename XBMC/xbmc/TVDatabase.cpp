@@ -605,8 +605,10 @@ bool CTVDatabase::GetShowsByChannel(const CStdString &channel, VECTVSHOWS &shows
       CFileItemPtr pItem(new CFileItem(m_pDS->fv("Title").get_asString()));
       pItem->SetProperty("ShortDesc", m_pDS->fv("ShortDesc").get_asString());
       pItem->SetProperty("LongDesc", m_pDS->fv("LongDesc").get_asString());
+      /*pItem->SetProperty("Category", m_pDS->fv("LongDesc").get_asString());*/
       pItem->SetProperty("ChannelId", channelId);
       pItem->m_dateTime.SetFromDBDateTime(m_pDS->fv("StartTime").get_asString());
+      pItem->SetProperty("Duration", m_pDS->fv("Duration").get_asInteger());
       shows.push_back(pItem);
       m_pDS->next();
     }

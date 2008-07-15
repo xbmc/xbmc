@@ -30,42 +30,45 @@
  */
 
 #include "StdString.h"
+#include "datetime.h"
+#include "GUIListItem.h"
 
 #include <map>
 #include <string>
 
 //  Forward
 class CGUIEPGGridItemLayout;
+class CGUIListItem;
 
 /*!
  \ingroup controls
  \brief 
  */
-class CGUIEPGGridItem
+class CGUIEPGGridItem : public CGUIListItem
 {
 public:
   enum GUIEPGGridItemOverlay { ICON_OVERLAY_NONE = 0,
                                ICON_OVERLAY_RECORDING,
                                ICON_OVERLAY_AUTOWATCH};
   CGUIEPGGridItem(void);
-  CGUIEPGGridItem(const CGUIEPGGridItem& item);
   virtual ~CGUIEPGGridItem(void);
 
   const CGUIEPGGridItem& operator =(const CGUIEPGGridItem& item);
 
-  virtual void SetLabel(const CStdString& strLabel);
+  void SetLabel(const CStdString& strLabel);
   const CStdString& GetLabel() const;
 
-  void SetGridItemBG(const CStdString& strImage);
-  const CStdString& GetGridItemBG() const;
+  void SetShortDesc(const CStdString& strShortDesc);
+  const CStdString& GetShortDesc() const;
+
+  void SetStartTime(const CStdString& startTime);
+  const CDateTime& GetStartTime() const;
+
+  void SetDuration(const int& duration);
+  const int& GetDuration() const;
 
   void SetOverlayImage(GUIEPGGridItemOverlay icon, bool bOnOff=false);
   CStdString GetOverlayImage() const;
-
-  void Select(bool bOnOff);
-  bool IsSelected() const;
-  
-  bool HasOverlay() const;
 
   void SetLayout(CGUIEPGGridItemLayout *layout);
   CGUIEPGGridItemLayout *GetLayout();
@@ -73,40 +76,15 @@ public:
   void SetFocusedLayout(CGUIEPGGridItemLayout *layout);
   CGUIEPGGridItemLayout *GetFocusedLayout();
 
-  void FreeMemory();
-  void SetInvalid();
-
-  void SetProperty(const CStdString &strKey, const char *strValue);
-  void SetProperty(const CStdString &strKey, const CStdString &strValue);
-  void SetProperty(const CStdString &strKey, int nVal);
-  void SetProperty(const CStdString &strKey, bool bVal);
-  void SetProperty(const CStdString &strKey, double dVal);
-  void ClearProperties();
-
-  bool       HasProperty(const CStdString &strKey) const;
-  void       ClearProperty(const CStdString &strKey);
-
-  CStdString GetProperty(const CStdString &strKey) const;
-  bool       GetPropertyBOOL(const CStdString &strKey) const;
-  int        GetPropertyInt(const CStdString &strKey) const;
-  double     GetPropertyDouble(const CStdString &strKey) const;
-
 protected:
-  CStdString m_strLabel;      // programme title
   GUIEPGGridItemOverlay m_overlayIcon; // type of overlay icon
-  
-  CGUIEPGGridItemLayout *m_layout;
-  CGUIEPGGridItemLayout *m_focusedLayout;
-  bool m_bSelected;
+  CGUIEPGGridItemLayout *m_gridlayout;
+  CGUIEPGGridItemLayout *m_focusedGridLayout;
 
-  struct icompare
-  {
-    bool operator()(const CStdString &s1, const CStdString &s2) const
-    {
-      return s1.CompareNoCase(s2) < 0;
-    }
-  };
-
-  std::map<CStdString, CStdString, icompare> m_mapProperties;
+  CStdString m_pCategory;
+  CStdString m_pShortDesc;
+  CStdString m_pLongDesc;
+  CDateTime  m_pStartTime;
+  int        m_pDuration;
 };
 #endif
