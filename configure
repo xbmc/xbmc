@@ -13164,6 +13164,8 @@ ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/l
 
 
 
+
+
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -14264,6 +14266,8 @@ pushd xbmc/lib/libPython/Python; ./configure --enable-ipv6 --enable-unicode=ucs4
 pushd xbmc/cores/paplayer/MPCCodec; ./configure; popd
 pushd xbmc/cores/paplayer/MP3Codec/libmad-0.15.1b; ./configure CFLAGS="-O3 -fPIC" CXXFLAGS="-O3 -fPIC"; popd
 pushd xbmc/cores/paplayer/flac-1.2.1; ./configure; popd
+pushd xbmc/cores/paplayer/vorbisfile/libvorbis; ./configure; popd
+pushd xbmc/cores/paplayer/vorbisfile/ogg; ./configure; popd
 
 # configure is writing to config.log, and then calls config.status.
 # config.status does its own redirection, appending to config.log.

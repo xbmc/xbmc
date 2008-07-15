@@ -1,0 +1,547 @@
+<HTML><HEAD><TITLE>xiph.org: Ogg Vorbis documentation</TITLE>
+<BODY bgcolor="#ffffff" text="#202020" link="#006666" vlink="#000000">
+<nobr><img src="white-ogg.png"><img src="vorbisword2.png"></nobr><p>
+
+<h1><font color=#000070>
+Ogg Vorbis I format specification: codec setup and packet decode
+</font></h1>
+
+<em>Last update to this document: July 18, 2002</em><br>
+
+<h1>Overview</h1>
+
+This document serves as the top-level reference document for the
+bit-by-bit decode specification of Vorbis I.  This document assumes a
+high-level understanding of the Vorbis decode process, which is
+provided in the document <a href="vorbis-spec-intro.html">Ogg Vorbis I
+format specification: introduction and description</a>.  <a
+href="vorbis-spec-bitpack.html">Ogg Vorbis I format specification:
+bitpacking convention</a> covers reading and writing bit fields from
+and to bitstream packets.<p>
+
+<h1>Header decode and decode setup</h1>
+
+A Vorbis bitstream begins with three header packets. The header
+packets are, in order, the identification header, the comments header,
+and the setup header. All are required for decode compliance.  An
+end-of-packet condition during decoding the first or third header
+packet renders the stream undecodable.  End-of-packet decoding the
+comment header is a non-fatal error condition.<p>
+
+<h2>Common header decode</h2>
+
+Each header packet begins with the same header fields
+
+<pre>
+  1) [packet_type] : 8 bit value
+  2) 0x76, 0x6f, 0x72, 0x62, 0x69, 0x73: the characters 'v','o','r','b','i','s' as six octets
+</pre>
+
+Decode continues according to packet type; the identification header
+is type 1, the comment header type 3 and the setup header type 5
+(these types are all odd as a packet with a leading single bit of '0'
+is an audio packet).  The packets must occur in the order of
+identification, comment, setup.
+
+<h2>Identification Header</h2>
+
+The identification header is a short header of only a few fields used
+to declare the stream definitively as Vorbis, and provide a few externally
+relevant pieces of information about the audio stream. The
+identification header is coded as follows:<p>
+
+<pre>
+ 1) [vorbis_version] = read 32 bits as unsigned integer
+ 2) [audio_channels] = read 8 bit integer as unsigned
+ 3) [audio_sample_rate] = read 32 bits as unsigned integer
+ 4) [bitrate_maximum] = read 32 bits as signed integer
+ 5) [bitrate_nominal] = read 32 bits as signed integer
+ 6) [bitrate_lower] = read 32 bits as signed integer
+ 7) [blocksize_0] = 2 exponent (read 4 bits as unsigned integer)
+ 8) [blocksize_1] = 2 exponent (read 4 bits as unsigned integer)
+ 9) [framing_flag] = read one bit
+</pre>
+
+<tt>[vorbis_version]</tt> is to read '0' in order to be compatible
+with this document.  Both <tt>[audio_channels]</tt> and
+<tt>[audio_rate]</tt> must read greater than zero.  Allowed final
+blocksize values are 64, 128, 256, 512, 1024, 2048, 4096 and 8192 in
+Vorbis I.  <tt>[blocksize_0]</tt> must be less than or equal to
+<tt>[blocksize_1]</tt>.  The framing bit must be nonzero.  Failure to
+meet any of these conditions renders a stream undecodable.<p>
+
+The bitrate fields above are used only as hints. The nominal bitrate
+field especially may be considerably off in purely VBR streams.  The
+fields are meaningful only when greater than zero.<p>
+<ul><li>All three fields set to the same value implies a fixed rate, or tightly bounded, nearly fixed-rate bitstream
+    <li>Only nominal set implies a VBR or ABR stream that averages the nominal bitrate
+    <li>Upper and or lower set implies a VBR bitstream that obeys the bitrate limits
+    <li>None set indicates the encoder does not care to speculate.
+</ul>
+
+
+<h2>Comment Header</h2>
+
+Comment header decode and data specification is covered in <a
+href="v-comment.html">Ogg Vorbis I format specification: comment field
+and header specification</a>.
+
+<h2>Setup Header</h2>
+
+Vorbis codec setup is configurable to an extreme degree:<p>
+
+<img src="components.png"><p>
+
+The setup header contains the bulk of the codec setup information
+needed for decode.  The setup header contains, in order, the lists of
+codebook configurations, time-domain transform configurations
+(placeholders in Vorbis I), floor configurations, residue
+configurations, channel mapping configurations and mode
+configurations. It finishes with a framing bit of '1'.  Header decode
+proceeds in the following order:<p>
+
+<h3>codebooks</h3>
+
+<ol>
+<li><tt>[vorbis_codebook_count]</tt> = read eight bits as unsigned integer and add one
+<li>Decode <tt>[vorbis_codebook_count]</tt> codebooks in order as defined
+in <a href="vorbis-spec-codebook.html">the codebook specification
+document</a>.  Save each configuration, in order, in an array of
+codebook configurations <tt>[vorbis_codebook_configurations]</tt>.
+</ol>
+
+<h3>time domain transforms</h3>
+
+These hooks are placeholders in Vorbis I.  Nevertheless, the
+configuration placeholder values must be read to maintain bitstream
+sync.<p>
+
+<ol>
+<li><tt>[vorbis_time_count]</tt> = read 6 bits as unsigned integer and add one
+<li>read <tt>[vorbis_time_count]</tt> 16 bit values; each value should be zero.  If any other values is nonzero, this is an error condition and the stream is undecodable.
+</ol>
+
+<h3>floors</h3>
+
+Vorbis uses two floor types; header decode is handed to the decode
+abstraction of the appropriate type.
+
+<ol>
+<li><tt>[vorbis_floor_count]</tt> = read 6 bits as unsigned integer and add one
+<li>For each of <tt>[vorbis_floor_count]</tt> floor numbers:
+  <ol>
+  <li>read the floor type; vector <tt>[vorbis_floor_types]</tt> element <tt>[i]</tt> = read 16 bits as unsigned integer
+  <li>If the floor type is zero, decode the floor configuration as defined in <a href="vorbis-spec-floor0.html">the floor type 0 specification document</a>; save this configuration in slot <tt>[i]</tt> of the floor configuration array <tt>[vorbis_floor_configurations]</tt>.
+  <li>If the floor type is one, decode the floor configuration as defined in <a href="vorbis-spec-floor1.html">the floor type 1 specification document</a>; save this configuration in slot <tt>[i]</tt> of the floor configuration array <tt>[vorbis_floor_configurations]</tt>.
+  <li>If the the floor type is greater than one, this stream is undecodable; ERROR CONDITION
+  </ol>
+</ol>
+
+<h3>residues</h3>
+
+Vorbis uses three residue types; header decode of each type is identical.
+
+<ol>
+<li><tt>[vorbis_residue_count]</tt> = read 6 bits as unsigned integer and add one
+<li>For each of <tt>[vorbis_residue_count]</tt> residue numbers:
+  <ol>
+  <li>read the residue type; vector <tt>[vorbis_residue_types]</tt> element <tt>[i]</tt> = read 16 bits as unsigned integer
+  <li>If the residue type is zero, one or two, decode the residue configuration as defined in <a href="vorbis-spec-res.html">the residue specification document</a>; save this configuration in slot <tt>[i]</tt> of the residue configuration array <tt>[vorbis_residue_configurations]</tt>.
+  <li>If the the residue type is greater than two, this stream is undecodable; ERROR CONDITION
+  </ol>
+</ol>
+
+<h3>mappings</h3>
+
+Mappings are used to set up specific pipelines for encoding
+multichannel audio with varying channel mapping applications. Vorbis I
+uses a single mapping type (0), with implicit PCM channel mappings.<p>
+
+<ol>
+<li><tt>[vorbis_mapping_count]</tt> = read 6 bits as unsigned integer and add one<p>
+<li>For each <tt>[i]</tt> of <tt>[vorbis_mapping_count]</tt> mapping numbers:<p>
+  <ol>
+  <li>read the mapping type: 16 bits as unsigned integer.  There's no reason to save the mapping type in Vorbis I.<p>
+  <li>If the mapping type is nonzero, the stream is undecodable<p>
+  <li>If the mapping type is zero:<p>
+     <ol> <li>read 1 bit as a boolean flag<p>
+             <ol><li>if set, <tt>[vorbis_mapping_submaps]</tt> = read 4 bits as unsigned integer and add one<p>
+                 <li>if unset, <tt>[vorbis_mapping_submaps]</tt> = 1<p>
+             </ol>
+          <li>read 1 bit as a boolean flag; if set, square polar channel mapping is in use:<p>
+              <ol><li><tt>[vorbis_mapping_coupling_steps]</tt>= read 8 bits as unsigned integer and add one<p>
+                  <li>for <tt>[j]</tt> each of <tt>[vorbis_mapping_coupling_steps]</tt> steps:<p>
+                      <ol>
+                      <li>vector <tt>[vorbis_mapping_magnitude]</tt> element <tt>[j]</tt>= read <a href="helper.html#ilog">ilog</a>([audio_channels]) bits as unsigned integer<p>
+                      <li>vector <tt>[vorbis_mapping_angle]</tt> element <tt>[j]</tt>= read <a href="helper.html#ilog">ilog</a>([audio_channels]) bits as unsigned integer<p>
+                      <li>the numbers read in the above two steps are channel numbers representing the channel to treat as magnitude and the channel to treat as angle, respectively.  If any of angle channel equals magnitude channel, magnitude channel is greater than <tt>[audio_channels]</tt>-1, or angle channel is greater than <tt>[audio_channels]</tt>-1, the stream is undecodable.<p>
+                      </ol>
+               </ol>
+           <li>read 2 bits (reserved field); if the value is nonzero, the stream is undecodable<p>
+           <li>if <tt>[vorbis_mapping_submaps]</tt> is greater than one, we read channel multiplex settings.  For each <tt>[j]</tt> of <tt>[audio_channels]</tt> channels:<p>
+               <ol><li>vector <tt>[vorbis_mapping_mux]</tt> element <tt>[j]</tt> = read 4 bits as unsigned integer<p>
+                   <li>if the value is greater than the highest numbered submap, this in an error condition rendering the stream undecodable<p>
+               </ol>
+           <li>for each submap <tt>[j]</tt> of <tt>[vorbis_mapping_submaps]</tt> submaps, read the floor and residue numbers for use in decoding that submap:
+              <ol><li>read and discard 8 bits (the unused time configuration placeholder)<p>
+                  <li>read 8 bits as unsigned integer for the floor number; save in vector <tt>[vorbis_mapping_submap_floor]</tt> element <tt>[j]</tt><p>
+                  <li>verify the floor number is not greater than the highest number floor configured for the bitstream.  If it is, the bitstream is undecodable<p>
+                  <li>read 8 bits as unsigned integer for the residue number; save in vector <tt>[vorbis_mapping_submap_residue]</tt> element <tt>[j]</tt><p>
+                  <li>verify the residue number is not greater than the highest number residue configured for the bitstream.  If it is, the bitstream is undecodable<p>
+              </ol>
+
+
+           <li>save this mapping configuration in slot <tt>[i]</tt> of the mapping configuration array <tt>[vorbis_mapping_configurations]</tt>.
+
+     </ol>
+  </ol>
+</ol>
+
+<h3>modes</h3>
+
+<ol>
+<li><tt>[vorbis_mode_count]</tt> = read 6 bits as unsigned integer and add one<p.
+<li>For each of <tt>[vorbis_mode_count]</tt> mode numbers:<p>
+  <ol>
+  <li><tt>[vorbis_mode_blockflag]</tt> = read 1 bit<p>
+  <li><tt>[vorbis_mode_windowtype]</tt> = read 16 bits as unsigned integer<p>
+  <li><tt>[vorbis_mode_transformtype]</tt> = read 16 bits as unsigned integer<p>
+  <li><tt>[vorbis_mode_mapping]</tt> = read 8 bits as unsigned integer<p>
+  <li>verify ranges; zero is the only legal value in Vorbis I for <tt>[vorbis_mode_windowtype]</tt> and <tt>[vorbis_mode_transformtype]</tt>.  <tt>[vorbis_mode_mapping]</tt> must not be greater than the highest number mapping in use.  Any illegal values render the stream undecodable.<p>
+  <li>save this mode configuration in slot <tt>[i]</tt> of the mode configuration array <tt>[vorbis_mode_configurations]</tt>.<p>
+
+  </ol>
+  <li>read 1 bit as a framing flag.  If unset, a framing error occurred and the stream is not decodable.
+
+</ol><p>
+
+After reading mode descriptions, setup header decode is complete.<p>
+
+<h1>Audio packet decode and synthesis</h1>
+
+Following the three header packets, all packets in a Vorbis I stream
+are audio.  The first step of audio packet decode is to read and
+verify the packet type; <em>a non-audio packet when audio is expected
+indicates stream corruption or a non-compliant stream. The decoder
+must ignore the packet and not attempt decoding it to audio</em>.
+
+<h2>packet type, mode and window decode</h2>
+
+<ol>
+<li>read 1 bit <tt>[packet_type]</tt>; check that packet type is 0 (audio)<p>
+<li>read <a href="helper.html#ilog">ilog</a>([vorbis_mode_count]-1) bits <tt>[mode_number]</tt><p>
+<li>decode blocksize <tt>[n]</tt> is equal to <tt>[blocksize_0]</tt> if  <tt>[vorbis_mode_blockflag]</tt> is 0, else <tt>[n]</tt> is equal to <tt>[blocksize_1]</tt><p.
+<li>perform window selection and setup; this window is used later by the inverse MDCT:<p>
+   <ol><li>if this is a long window (the <tt>[vorbis_mode_blockflag]</tt> flag of this mode is set):<p>
+       <ol>
+         <li>read 1 bit for <tt>[previous_window_flag]</tt><p>
+         <li>read 1 bit for <tt>[next_window_flag]</tt><p>
+
+         <li>if <tt>[previous_window_flag]</tt> is not set, the left half
+         of the window will be a hybrid window for lapping with a
+         short block.  See <a href="vorbis-spec-intro.html#window">the
+         'Window' subheading of the specification introduction
+         document</a> for an illustration of overlapping dissimilar
+         windows. Else, the left half window will have normal long
+         shape.<p>
+
+         <li>if <tt>[next_window_flag]</tt> is not set, the right half of
+         the window will be a hybrid window for lapping with a short
+         block.  See <a href="vorbis-spec-intro.html#window">the
+         'Window' subheading of the specification introduction
+         document</a> for an illustration of overlapping dissimilar
+         windows. Else, the left right window will have normal long
+         shape.<p>
+       </ol>
+       <li> if this is a short window, the window is always the same 
+       short-window shape.<p>
+
+  </ol>
+</ol>
+
+Vorbis windows all use the slope function y=sin(2*PI*sin^2(x/n)),
+but dissimilar lapping requirements can affect overall shape.  Window
+generation proceeds as follows:<p>
+
+<ol>
+<li> <tt>[window_center]</tt> = <tt>[n]</tt> / 2
+<li> <tt>[left_window_start]</tt>
+<li> if (<tt>[vorbis_mode_blockflag]</tt> is set and <tt>[previous_window_flag]</tt> is not set) then 
+    <ol><li><tt>[left_window_start]</tt> = <tt>[n]</tt>/4 - <tt>[blocksize_0]</tt>/4
+        <li><tt>[left_window_end]</tt> = <tt>[n]</tt>/4 + <tt>[blocksize_0]</tt>/4
+        <li><tt>[left_n]</tt> = <tt>[blocksize_0]</tt>/2
+    </ol>
+    else
+    <ol><li><tt>[left_window_start]</tt> = 0
+        <li><tt>[left_window_end]</tt> = <tt>[window_center]</tt>
+        <li><tt>[left_n]</tt> = <tt>[n]</tt>/2
+    </ol>
+
+<li> if (<tt>[vorbis_mode_blockflag]</tt> is set and <tt>[next_window_flag]</tt> is not set) then 
+    <ol><li><tt>[right_window_start]</tt> = <tt>[n]*3</tt>/4 - <tt>[blocksize_0]</tt>/4
+        <li><tt>[right_window_end]</tt> = <tt>[n]*3</tt>/4 + <tt>[blocksize_0]</tt>/4
+        <li><tt>[right_n]</tt> = <tt>[blocksize_0]</tt>/2
+    </ol>
+    else
+    <ol><li><tt>[right_window_start]</tt> = <tt>[window_center]</tt>
+        <li><tt>[right_window_end]</tt> = <tt>[n]</tt>
+        <li><tt>[right_n]</tt> = <tt>[n]</tt>/2
+    </ol>
+<li> window from range 0 ... <tt>[left_window_start]</tt>-1 inclusive is zero
+
+<li> for <tt>[i]</tt> in range <tt>[left_window_start]</tt> ... <tt>[left_window_end]</tt>-1, window(<tt>[i]</tt>) = sin(2*PI*sin^2((<tt>[i]</tt>-<tt>[left_window_start]</tt>+.5)/<tt>[left_n]</tt>*PI/2))
+
+
+<li> window from range <tt>[left_window_end]</tt> ... <tt>[right_window_start]</tt>-1 inclusive is one
+
+<li> for <tt>[i]</tt> in range <tt>[right_window_start]</tt> ... <tt>[right_window_end]</tt>-1, window(<tt>[i]</tt>) = sin(2*PI*sin^2((<tt>[i]</tt>-<tt>[right_window_start]</tt>+.5)/<tt>[right_n]</tt>*PI/2.+PI/2.))
+
+<li> window from range <tt>[rigth_window_start]</tt> ... <tt>[n]</tt>-1 is zero
+
+</ol><p>
+
+An end-of-packet condition up to this point should be considered an
+error that discards this packet from the stream.  An end of packet
+condition past this point is to be considered a possible nominal
+occurrence.<p>
+
+
+<h2>floor curve decode</h2>
+
+From this point on, we assume out decode context is using mode number
+<tt>[mode_number]</tt> from configuration array
+<tt>[vorbis_mode_configurations]</tt> and the map number
+<tt>[vorbis_mode_mapping]</tt> (specified by the current mode) taken
+from the mapping configuration array
+<tt>[vorbis_mapping_configurations]</tt>.<p>
+
+Floor curves are decoded one-by-one in channel order.<p>
+
+For each floor <tt>[i]</tt> of <tt>[audio_channels]</tt>
+  <ol><li><tt>[submap_number]</tt> = element <tt>[i]</tt> of vector [vorbis_mapping_mux] <p>
+
+      <li><tt>[floor_number]</tt> = element <tt>[submap_number]</tt> of vector [vorbis_submap_floor]<p>
+      <li>if the floor type of this floor (vector <tt>[vorbis_floor_types]</tt> element <tt>[floor_number]</tt>) is zero then decode the floor for channel <tt>[i]</tt> according to the <a href="vorbis-spec-floor0.html#decode">floor 0 decode algorithm</a><p>
+      <li>if the type of this floor is one then decode the floor for channel <tt>[i]</tt> according to the <a href="vorbis-spec-floor1.html#decode">floor 1 decode algorithm</a><p>
+      <li>save the needed decoded floor information for channel for later synthesis<p>
+      <li>if the decoded floor returned 'unused', set vector <tt>[no_residue]</tt> element <tt>[i]</tt> to true, else set vector <tt>[no_residue]</tt> element <tt>[i]</tt> to false<p>
+</ol>
+
+An end-of-packet condition during floor decode shall result in packet
+decode zeroing all channel output vectors and skipping to the
+add/overlap output stage.<p>
+
+<h2>nonzero vector propagate</h2>
+
+A possible result of floor decode is that a specific vector is marked
+'unused' which indicates that that final output vector is all-zero
+values (and the floor is zero).  The residue for that vector is not
+coded in the stream, save for one complication.  If some vectors are
+used and some are not, channel coupling could result in mixing a
+zeroed and nonzeroed vector to produce two nonzeroed vectors.<p>
+
+for each <tt>[i]</tt> from 0 ... <tt>[vorbis_mapping_coupling_steps]</tt>-1
+
+<ol><li>if either <tt>[no_residue]</tt> entry for channel
+(<tt>[vorbis_mapping_magnitude]</tt> element <tt>[i]</tt>) or (channel
+<tt>[vorbis_mapping_angle]</tt> element <tt>[i]</tt>) are set to false, then both
+must be set to false.  Note that an 'unused' floor has no decoded floor
+information; it is important that this is remembered at floor curve
+synthesis time.
+</ol>
+
+<h2>residue decode</h2>
+
+Unlike floors, which are decoded in channel order, the residue vectors
+are decoded in submap order.<p>
+
+for each submap <tt>[i]</tt> in order from 0 ... <tt>[vorbis_mapping_submaps]</tt>-1<p>
+<ol><li><tt>[ch]</tt> = 0<p>
+    <li>for each channel <tt>[j]</tt> in order from 0 ... <tt>[audio_channels]</tt><p>
+        <ol><li>if channel <tt>[j]</tt> is in submap <tt>[i]</tt> (vector <tt>[vorbis_mapping_mux]</tt> element <tt>[j]</tt> is equal to <tt>[i]</tt>)<p>
+	    <ol><li>if vector <tt>[no_residue]</tt> element <tt>[j]</tt> is true<p>
+                <ol><li>vector <tt>[do_not_decode_flag]</tt> element <tt>[channels_in_bundle]</tt> is set<p>
+		</ol>else<ol><li>vector <tt>[do_not_decode_flag]</tt> element <tt>[channels_in_bundle]</tt> is unset<p>
+                </ol>
+                <li>increment <tt>[ch]</tt><p>
+             </ol>
+         </ol>
+     <li><tt>[residue_number]</tt> = vector <tt>[vorbis_mapping_submap_residue]</tt> element <tt>[i]</tt><p>
+
+     <li><tt>[residue_type]</tt> = vector <tt>[vorbis_residue_types]</tt> element <tt>[residue_number]</tt><p>
+     <li>decode <tt>[ch]</tt> vectors using residue <tt>[residue_number]</tt>, according to type <tt>[residue_type]</tt>, also passing vector <tt>[do_not_decode_flag]</tt> to indicate which vectors in the bundle should not be decoded. Correct per-vector decode length is <tt>[n]</tt>/2.<p>
+           
+    <li><tt>[ch]</tt> = 0<p>
+    <li>for each channel <tt>[j]</tt> in order from 0 ... <tt>[audio_channels]</tt><p>
+        <ol><li>if channel <tt>[j]</tt> is in submap <tt>[i]</tt> (vector <tt>[vorbis_mapping_mux]</tt> element <tt>[j]</tt> is equal to <tt>[i]</tt>)<p>
+	    <ol><li>residue vector for channel <tt>[j]</tt> is set to decoded residue vector <tt>[ch]</tt><p>
+	        <li>increment <tt>[ch]</tt>
+            </ol>
+         </ol>
+</ol>
+
+<h2>inverse coupling</h2>
+
+for each <tt>[i]</tt> from <tt>[vorbis_mapping_coupling_steps]</tt>-1 descending to 0
+
+<ol>
+
+<li><tt>[magnitude_vector]</tt> = the residue vector for channel
+(vector <tt>[vorbis_mapping_magnitude]</tt> element <tt>[i]</tt>)
+
+<li><tt>[angle_vector]</tt> = the residue vector for channel (vector
+<tt>[vorbis_mapping_angle]</tt> element <tt>[i]</tt>)
+
+<li>for each scalar value <tt>[M]</tt> in vector <tt>[magnitude_vector]</tt> and the corresponding scalar value <tt>[A]</tt> in vector <tt>[angle_vector]</tt>:
+   <ol><li>if (<tt>[M]</tt> is greater than zero)
+       <ol><li>if (<tt>[A]</tt> is greater than zero)
+           <ol>
+               <li><tt>[new_M]</tt> = <tt>[M]</tt>
+               <li><tt>[new_A]</tt> = <tt>[M]</tt>-<tt>[A]</tt>
+           </ol>
+           else
+           <ol>
+               <li><tt>[new_A]</tt> = <tt>[M]</tt>
+               <li><tt>[new_M]</tt> = <tt>[M]</tt>+<tt>[A]</tt>
+           </ol>
+        </ol>
+        else
+        <ol><li>if (<tt>[A]</tt> is greater than zero)
+           <ol>
+               <li><tt>[new_M]</tt> = <tt>[M]</tt>
+               <li><tt>[new_A]</tt> = <tt>[M]</tt>+<tt>[A]</tt>
+           </ol>
+           else
+           <ol>
+               <li><tt>[new_A]</tt> = <tt>[M]</tt>
+               <li><tt>[new_M]</tt> = <tt>[M]</tt>-<tt>[A]</tt>
+           </ol>
+        </ol><p>
+
+	<li>set scalar value <tt>[M]</tt> in vector <tt>[magnitude_vector]</tt> to <tt>[new_M]</tt>
+	<li>set scalar value <tt>[A]</tt> in vector <tt>[angle_vector]</tt> to <tt>[new_A]</tt>
+    </ol>
+</ol>
+
+<h2>dot product</h2>
+
+For each channel, synthesize the floor curve from the decoded floor
+information, according to packet type. Note that the vector synthesis
+length for floor computation is <tt>[n]</tt>/2.<p>
+
+For each channel, multiply each element of the floor curve by each
+element of that channel's residue vector.  The result is the dot
+product the floor and residue vectors for each channel; the produced
+vectors are the length <tt>[n]</tt>/2 audio spectrum for each
+channel.<p>
+
+One point is worth mentioning about this dot product; a common mistake
+in a fixed point implementation might be to assume that a 32 bit
+fixed-point representation for floor and residue and direct
+multiplication of the vectors is sufficient for acceptable spectral
+depth in all cases because it happens to mostly work with the current
+Xiph.Org reference encoder. <p>
+
+However, floor vector values can span ~140dB (~24 bits unsigned), and
+the audio spectrum vector should represent a minimum of 120dB (~21
+bits with sign), even when output is to a 16 bit PCM device.  For the
+residue vector to represent full scale if the floor is nailed to
+-140dB, it must be able to span 0 to +140dB.  For the residue vector
+to reach full scale if the floor is nailed at 0dB, it must be able to
+represent -140dB to +0dB.  Thus, in order to handle full range
+dynamics, a residue vector may span -140dB to +140dB entirely within
+spec.  A 280dB range is approximately 48 bits with sign; thus the
+residue vector must be able to represent a 48 bit range and the dot
+product must be able to handle an effective 48 bit times 24 bit
+multiplication.  This range may be achieved using large (64 bit or
+larger) integers, or implementing a movable binary point
+representation.<p>
+
+<h2>inverse MDCT</h2>
+
+Convert the audio spectrum vector of each channel back into time
+domain PCM audio via an inverse Modified Discrete Cosine Transform
+(MDCT).  A detailed description of the MDCT is available in the paper
+<a
+href="http://www.iocon.com/resource/docs/ps/eusipco_corrected.ps">_The
+use of multirate filter banks for coding of high quality digital
+audio_</a>, by T. Sporer, K. Brandenburg and B. Edler.  The window
+function used for the MDCT is the window determined earlier.<p>
+
+<h2>overlap_add</h2>
+
+Windowed MDCT output is overlapped and added with the right hand data
+of the previous window such that the 3/4 point of the previous window
+is aligned with the 1/4 point of the current window (as illustrated in
+<a href="vorbis-spec-intro.html#window">the 'Window' portion of the
+specification introduction document</a>.  The overlapped portion
+produced from overlapping the previous and current frame data is
+finished data to be returned by the decoder.  This data spans from the
+center of the previous window to the center of the current window.  In
+the case of same-sized windows, the amount of data to return is
+one-half block consisting of and only of the overlapped portions. When
+overlapping a short and long window, much of the returned range is not
+actually overlap.  This does not damage transform orthogonality.  Pay
+attention however to returning the correct data range; the amount of
+data to be returned is:<p>
+<tt>window_blocksize(previous_window)/4+window_blocksize(current_window)/4</tt>
+from the center (element windowsize/2) of the previous window to the
+center (element windowsize/2-1, inclusive) of the current window.<p>
+
+Data is not returned from the first frame; it must be used to 'prime'
+the decode engine.  The encoder accounts for this priming when
+calculating PCM offsets; after the first frame, the proper PCM output
+offset is '0' (as no data has been returned yet).<p>
+
+<h2>output channel order</h2>
+
+Vorbis I specifies only a channel mapping type 0.  In mapping type 0,
+channel mapping is implicitly defined as follows for standard audio
+applications:<p>
+
+<dl>
+<dt>one channel:<dd> the stream is monophonic
+<dt>two channels:<dd> the stream is stereo.  channel order: left, right
+<dt>three channels:<dd> the stream is a 1d-surround encoding.  channel order: left, center, right
+<dt>four channels:<dd> the stream is quadraphonic surround.  channel order: front left, front right, rear left, rear right
+<dt>five channels:<dd> the stream is five-channel surround.  channel order: front left, front center, front right, rear left, rear right
+<dt>six channels:<dd> the stream is 5,1 surround.  channel order: front left, front center, front right, rear left, rear right, LFE
+<dt>greater than six channels:<dd> channel use and order is defined by the application
+</dl>
+
+Applications using Vorbis for dedicated purposes may define channel
+mapping as seen fit.  Future channel mappings (such as three and four
+channel <a href="http://www.ambisonic.net">Ambisonics</a>) will make
+use of channel mappings other than mapping 0.<p>
+
+<hr>
+<a href="http://www.xiph.org/">
+<img src="white-xifish.png" align=left border=0>
+</a>
+<font size=-2 color=#505050>
+
+Ogg is a <a href="http://www.xiph.org">Xiph.org Foundation</a> effort
+to protect essential tenets of Internet multimedia from corporate
+hostage-taking; Open Source is the net's greatest tool to keep
+everyone honest. See <a href="http://www.xiph.org/about.html">About
+the Xiph.org Foundation</a> for details.
+<p>
+
+Ogg Vorbis is the first Ogg audio CODEC.  Anyone may freely use and
+distribute the Ogg and Vorbis specification, whether in a private,
+public or corporate capacity.  However, the Xiph.org Foundation and
+the Ogg project (xiph.org) reserve the right to set the Ogg Vorbis
+specification and certify specification compliance.<p>
+
+Xiph.org's Vorbis software CODEC implementation is distributed under a
+BSD-like license.  This does not restrict third parties from
+distributing independent implementations of Vorbis software under
+other licenses.<p>
+
+Ogg, Vorbis, Xiph.org Foundation and their logos are trademarks (tm)
+of the <a href="http://www.xiph.org/">Xiph.org Foundation</a>.  These
+pages are copyright (C) 1994-2002 Xiph.org Foundation. All rights
+reserved.<p>
+
+</body>
+

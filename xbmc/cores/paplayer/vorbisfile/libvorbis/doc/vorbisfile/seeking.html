@@ -1,0 +1,74 @@
+<html>
+
+<head>
+<title>Vorbisfile - Seeking</title>
+<link rel=stylesheet href="style.css" type="text/css">
+</head>
+
+<body bgcolor=white text=black link="#5555ff" alink="#5555ff" vlink="#5555ff">
+<table border=0 width=100%>
+<tr>
+<td><p class=tiny>Vorbisfile documentation</p></td>
+<td align=right><p class=tiny>libVorbisfile version 1.65 - 20020702</p></td>
+</tr>
+</table>
+
+<h1>Seeking</h1>
+<p>Seeking functions allow you to specify a specific point in the stream to begin or continue decoding.
+<p>
+All libvorbisfile seeking routines are declared in "vorbis/vorbisfile.h".
+
+<p>Certain seeking functions are best suited to different situations.
+When speed is important and exact positioning isn't required,
+page-level seeking should be used.  Note also that Vorbis files do not
+necessarily start at a sample number or time offset of zero.  Do not
+be surprised if a file begins at a positive offset of several minutes
+or hours, such as would happen if a large stream (such as a concert
+recording) is chopped into multiple separate files.  Requesting to
+seek to a position before the beginning of such a file will seek to
+the position where audio begins.<p>
+
+</ul>
+
+<table border=1 color=black width=50% cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td><b>function</b></td>
+	<td><b>purpose</b></td>
+</tr>
+<tr valign=top>
+	<td><a href="ov_raw_seek.html">ov_raw_seek</a></td>
+	<td>This function seeks to a position specified in the compressed bitstream, specified in bytes.</td>
+</tr>
+<tr valign=top>
+	<td><a href="ov_pcm_seek.html">ov_pcm_seek</a></td>
+	<td>This function seeks to a specific audio sample number, specified in pcm samples.</td>
+</tr>
+<tr valign=top>
+	<td><a href="ov_pcm_seek_page.html">ov_pcm_seek_page</a></td>
+	<td>This function seeks to the closest page preceding the specified audio sample number, specified in pcm samples.</td>
+</tr>
+<tr valign=top>
+	<td><a href="ov_time_seek.html">ov_time_seek</a></td>
+	<td>This function seeks to the specific time location in the bitstream, specified in seconds </td>
+</tr>
+<tr valign=top>
+	<td><a href="ov_time_seek_page.html">ov_time_seek_page</a></td>
+	<td>This function seeks to the closest page preceding the specified time position in the bitstream</td>
+</tr>
+</table>
+
+<br><br>
+<hr noshade>
+<table border=0 width=100%>
+<tr valign=top>
+<td><p class=tiny>copyright &copy; 2002 Xiph.org</p></td>
+<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/vorbis/">Ogg Vorbis</a></p></td>
+</tr><tr>
+<td><p class=tiny>Vorbisfile documentation</p></td>
+<td align=right><p class=tiny>libVorbisfile version 1.65 - 20020702</p></td>
+</tr>
+</table>
+
+</body>
+
+</html>
