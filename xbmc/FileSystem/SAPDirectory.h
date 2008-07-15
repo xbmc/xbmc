@@ -94,6 +94,8 @@ public:
   CSAPSessions();
   ~CSAPSessions();
 
+  void StopThread();
+
 protected:
   friend class DIRECTORY::CSAPDirectory;
   friend class XFILE::CSAPFile;
@@ -116,7 +118,7 @@ protected:
 private:
   void Process();
   bool ParseAnnounce(char* data, int len);
-
+  SOCKET m_socket;
 };
 
 extern CSAPSessions g_sapsessions;

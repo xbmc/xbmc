@@ -264,6 +264,19 @@ CSAPSessions::~CSAPSessions()
   StopThread();
 }
 
+void CSAPSessions::StopThread()
+{
+  if(m_socket != INVALID_SOCKET)
+  {
+    if(shutdown(m_socket, SD_BOTH) == SOCKET_ERROR)
+      CLog::Log(LOGERROR, "s - failed to shutdown socket");
+#ifdef WINSOCK_VERSION
+    closesocket(m_socket);
+#endif
+  }
+  CThread::StopThread();
+}
+
 bool CSAPSessions::ParseAnnounce(char* data, int len)
 {
   CSingleLock lock(m_section);
@@ -342,47 +355,47 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
 void CSAPSessions::Process()
 {
   struct ip_mreq mreq;
-  SOCKET sock;
 
-  sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-  if(sock == INVALID_SOCKET)
+  m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+  if(m_socket == INVALID_SOCKET)
     return;
 
   unsigned long nonblocking = 1;
-  ioctlsocket(sock, FIONBIO, &nonblocking);
+  ioctlsocket(m_socket, FIONBIO, &nonblocking);
 
   const char one = 1;
-  setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one));
+  setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one));
 
   /* bind to SAP port */
   struct sockaddr_in addr;
   addr.sin_family           = AF_INET;
   addr.sin_addr.S_un.S_addr = INADDR_ANY;
   addr.sin_port             = htons(SAP_PORT);
-  if(bind(sock, (const sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR) {
-    closesocket(sock);
+  if(bind(m_socket, (const sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR) {
+    closesocket(m_socket);
+    m_socket = INVALID_SOCKET;
     return;
   }
 
   /* subscribe to all SAP multicast addresses */
   mreq.imr_multiaddr.S_un.S_addr = inet_addr(SAP_V4_GLOBAL_ADDRESS);
   mreq.imr_interface.S_un.S_addr = INADDR_ANY;
-  setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
+  setsockopt(m_socket, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 
   mreq.imr_multiaddr.S_un.S_addr = inet_addr(SAP_V4_ORG_ADDRESS);
   mreq.imr_interface.S_un.S_addr = INADDR_ANY;
-  setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
+  setsockopt(m_socket, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 
   mreq.imr_multiaddr.S_un.S_addr = inet_addr(SAP_V4_LOCAL_ADDRESS);
   mreq.imr_interface.S_un.S_addr = INADDR_ANY;
-  setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
+  setsockopt(m_socket, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 
   mreq.imr_multiaddr.S_un.S_addr = inet_addr(SAP_V4_LINK_ADDRESS);
   mreq.imr_interface.S_un.S_addr = INADDR_ANY;
-  setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
+  setsockopt(m_socket, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 
   /* start listening for announces */
-  struct fd_set  readfds;
+  struct fd_set  readfds, expfds;
   struct timeval timeout;
   int count;
 
@@ -394,21 +407,22 @@ void CSAPSessions::Process()
     timeout.tv_usec = 0;
 
     FD_ZERO(&readfds);
-    FD_SET(sock, &readfds);
+    FD_ZERO(&expfds);
+    FD_SET(m_socket, &readfds);
+    FD_SET(m_socket, &expfds);
 
-    count = select(0, &readfds, NULL, NULL, &timeout);
+    count = select(0, &readfds, NULL, &expfds, &timeout);
     if(count == SOCKET_ERROR) {
-      closesocket(sock);
-      return;
+      CLog::Log(LOGERROR, "%s - select returned error", __FUNCTION__);
+      break;
     }
 
-
-    if(FD_ISSET(sock, &readfds)) {
-      count = recv(sock, data, sizeof(data), 0);
+    if(FD_ISSET(m_socket, &readfds)) {
+      count = recv(m_socket, data, sizeof(data), 0);
   
       if(count == SOCKET_ERROR) {
-        closesocket(sock);
-        return;
+        CLog::Log(LOGERROR, "%s - recv returned error", __FUNCTION__);
+        break;
       }
       /* data must be string terminated for parsers */
       data[count] = '\0';
@@ -417,7 +431,8 @@ void CSAPSessions::Process()
 
   }
 
-  closesocket(sock);
+  closesocket(m_socket);
+  m_socket = INVALID_SOCKET;
 }
 
 namespace DIRECTORY
