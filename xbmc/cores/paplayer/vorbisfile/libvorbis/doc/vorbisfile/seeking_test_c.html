@@ -1,0 +1,83 @@
+<html>
+
+<head>
+<title>vorbisfile - seeking_test.c</title>
+<link rel=stylesheet href="style.css" type="text/css">
+</head>
+
+<body bgcolor=white text=black link="#5555ff" alink="#5555ff" vlink="#5555ff">
+<table border=0 width=100%>
+<tr>
+<td><p class=tiny>vorbisfile documentation</p></td>
+<td align=right><p class=tiny>vorbisfile version 1.25 - 20000615</p></td>
+</tr>
+</table>
+
+<h1>seeking_test.c</h1>
+
+<p>
+The example program source:
+
+<br><br>
+<table border=0 width=100% color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td>
+<pre><b>
+
+#include <stdlib.h>
+#include <stdio.h>
+#include "vorbis/codec.h"
+#include "vorbis/vorbisfile.h"
+#include "../lib/misc.h"
+
+int main(){
+  OggVorbis_File ov;
+  int i;
+
+  /* open the file/pipe on stdin */
+  if(ov_open(stdin,&ov,NULL,-1)==-1){
+    printf("Could not open input as an OggVorbis file.\n\n");
+    exit(1);
+  }
+  
+  /* print details about each logical bitstream in the input */
+  if(ov_seekable(&ov)){
+    double length=ov_time_total(&ov,-1);
+    printf("testing seeking to random places in %g seconds....\n",length);
+    for(i=0;i<100;i++){
+      double val=(double)rand()/RAND_MAX*length;
+      ov_time_seek(&ov,val);
+      printf("\r\t%d [%gs]...     ",i,val);
+      fflush(stdout);
+    }
+    
+    printf("\r                                   \nOK.\n\n");
+  }else{
+    printf("Standard input was not seekable.\n");
+  }
+
+  ov_clear(&ov);
+  return 0;
+}
+
+</b></pre>
+	</td>
+</tr>
+</table>
+
+
+<br><br>
+<hr noshade>
+<table border=0 width=100%>
+<tr valign=top>
+<td><p class=tiny>copyright &copy; 2000 vorbis team</p></td>
+<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/vorbis/index.html">Ogg Vorbis</a><br><a href="mailto:team@vorbis.org">team@vorbis.org</a></p></td>
+</tr><tr>
+<td><p class=tiny>vorbisfile documentation</p></td>
+<td align=right><p class=tiny>vorbisfile version 1.25 - 20000615</p></td>
+</tr>
+</table>
+
+</body>
+
+</html>

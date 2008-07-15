@@ -1,0 +1,102 @@
+<html>
+
+<head>
+<title>vorbis - datatype - vorbis_info</title>
+<link rel=stylesheet href="style.css" type="text/css">
+</head>
+
+<body bgcolor=white text=black link="#5555ff" alink="#5555ff" vlink="#5555ff">
+<table border=0 width=100%>
+<tr>
+<td><p class=tiny>vorbisfile documentation</p></td>
+<td align=right><p class=tiny>vorbisfile version 1.25 - 20000615</p></td>
+</tr>
+</table>
+
+<h1>vorbis_info</h1>
+
+<p><i>declared in "vorbis/codec.h"</i></p>
+
+<p>
+The vorbis_info structure contains information about a vorbis bitstream.  Most of the information in this struct is more complex and in-depth than we need when using basic API calls.
+
+<p>
+
+<table border=0 width=100% color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td>
+<pre><b>typedef struct vorbis_info{
+  int version;
+  int channels;
+  long rate;
+  
+  long bitrate_upper;
+  long bitrate_nominal;
+  long bitrate_lower;
+
+  long blocksizes[2];
+
+  int        modes;
+  int        maps;
+  int        times;
+  int        floors;
+  int        residues;
+  int        books;
+  int        psys;     /* encode only */
+
+  vorbis_info_mode    *mode_param[64];
+  int                  map_type[64];
+  vorbis_info_mapping *map_param[64];
+  int                  time_type[64];
+  vorbis_info_time    *time_param[64];
+  int                  floor_type[64];
+  vorbis_info_floor   *floor_param[64];
+  int                  residue_type[64];
+  vorbis_info_residue *residue_param[64];
+  static_codebook     *book_param[256];
+  vorbis_info_psy     *psy_param[64]; /* encode only */
+  
+  /* for block long/sort tuning; encode only */
+  int        envelopesa;
+  double     preecho_thresh;
+  double     preecho_clamp;
+
+} vorbis_info;</b></pre>
+	</td>
+</tr>
+</table>
+
+<h3>Relevant Struct Members</h3>
+<dl>
+<dt><i>version</i></dt>
+<dd>Vorbis encoder version used to create this bitstream.</dd>
+<dt><i>channels</i></dt>
+<dd>Int signifying number of channels in bitstream.</dd>
+<dt><i>rate</i></dt>
+<dd>Sampling rate of the bitstream.</dd>
+<dt><i>bitrate_upper</i></dt>
+<dd>Specifies the upper limit in a VBR bitstream.  If the value matches the bitrate_nominal and bitrate_lower parameters, the stream is fixed bitrate.  May be unset if no limit exists.</dd>
+<dt><i>bitrate_nominal</i></dt>
+<dd>Specifies the average bitrate for a VBR bitstream.  May be unset.  If the bitrate_upper and bitrate_lower parameters match, the stream is fixed bitrate.</dd>
+<dt><i>bitrate_lower</i></dt>
+<dd>Specifies the lower limit in a VBR bitstream.  If the value matches the bitrate_nominal and bitrate_upper parameters, the stream is fixed bitrate.  May be unset if no limit exists.</dd>
+<dt><i>blocksizes[2]</i></dt>
+<dd>Contains the sizes of the long and short blocks for this particular bitstream.  These are variable and can be set by the encoder.  Vorbis only supports two sizes, long and short.</dd>
+</dl>
+
+
+<br><br>
+<hr noshade>
+<table border=0 width=100%>
+<tr valign=top>
+<td><p class=tiny>copyright &copy; 2000 vorbis team</p></td>
+<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/vorbis/index.html">Ogg Vorbis</a><br><a href="mailto:team@vorbis.org">team@vorbis.org</a></p></td>
+</tr><tr>
+<td><p class=tiny>vorbisfile documentation</p></td>
+<td align=right><p class=tiny>vorbisfile version 1.25 - 20000615</p></td>
+</tr>
+</table>
+
+</body>
+
+</html>
