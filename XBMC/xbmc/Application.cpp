@@ -1221,7 +1221,6 @@ HRESULT CApplication::Initialize()
   //     Music/
   //       temp/
   //     0 .. F/
-  //     XLinkKai/
 
   CreateDirectory(g_settings.GetUserDataFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetProfileUserDataFolder().c_str(), NULL);

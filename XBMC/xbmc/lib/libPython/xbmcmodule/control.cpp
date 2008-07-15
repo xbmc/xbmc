@@ -180,7 +180,7 @@ namespace PYXBMC
     "List of Conditions - http://www.xboxmediacenter.com/wiki/index.php?title=List_of_Boolean_Conditions \n"
     "\n"
     "example:\n"
-    "  - self.button.setVisibleCondition('[System.KaiEnabled + !Skin.String(KAI)]', True)\n");
+    "  - self.button.setVisibleCondition('[Control.IsVisible(41) + !Control.IsVisible(12)]', True)\n");
 
   PyObject* Control_SetVisibleCondition(Control* self, PyObject* args)
   {

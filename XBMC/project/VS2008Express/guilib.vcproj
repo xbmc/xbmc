@@ -219,10 +219,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\GUIConsoleControl.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\GUIControl.cpp"
 				>
 			</File>
@@ -279,10 +275,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\GUIItem.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\GUILabelControl.cpp"
 				>
 			</File>
@@ -291,19 +283,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\GUIList.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\GUIListContainer.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\GUIListControlEx.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\GUIListExItem.cpp"
 				>
 			</File>
 			<File
@@ -569,10 +549,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\GUIConsoleControl.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\GUIControl.h"
 				>
 			</File>
@@ -629,10 +605,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\GUIItem.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\GUILabelControl.h"
 				>
 			</File>
@@ -641,19 +613,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\GUIList.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\GUIListContainer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\GUIListControlEx.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\GUIListExItem.h"
 				>
 			</File>
 			<File
