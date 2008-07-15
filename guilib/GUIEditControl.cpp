@@ -31,9 +31,6 @@ CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId,
     : CGUILabelControl(dwParentID, dwControlId, posX, posY, width, height, labelInfo, false, false)
 {
   ControlType = GUICONTROL_EDIT;
-#ifdef HAS_KAI
-  m_pObserver = NULL;
-#endif
   m_originalPosX = posX;
   m_originalWidth = width;
   SetLabel(strLabel);
@@ -43,18 +40,6 @@ CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId,
 CGUIEditControl::~CGUIEditControl(void)
 {
 }
-
-#ifdef HAS_KAI
-void CGUIEditControl::SetObserver(IEditControlObserver* aObserver)
-{
-  m_pObserver = aObserver;
-}
-
-void CGUIEditControl::OnKeyPress(const CAction &action)
-{
-  OnAction(action);
-}
-#endif
 
 bool CGUIEditControl::OnAction(const CAction &action)
 {
@@ -96,15 +81,6 @@ bool CGUIEditControl::OnAction(const CAction &action)
     case 10:
       {
         // enter
-#ifdef HAS_KAI
-        if (m_pObserver)
-        {
-          CStdString strLineOfText = label;
-          label.clear();
-          m_iCursorPos = 0;
-          m_pObserver->OnEditTextComplete(strLineOfText);
-        }
-#endif
         break;
       }
     case 8:

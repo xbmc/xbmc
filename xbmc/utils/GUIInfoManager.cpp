@@ -29,7 +29,6 @@
 #include "Util.h"
 #include "lib/libscrobbler/scrobbler.h"
 #include "utils/TuxBoxUtil.h"
-#include "KaiClient.h"
 #include "Weather.h"
 #include "PlayListPlayer.h"
 #include "PartyModeManager.h"
@@ -320,8 +319,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.builddate")) ret = SYSTEM_BUILD_DATE;
     else if (strTest.Equals("system.hasnetwork")) ret = SYSTEM_ETHERNET_LINK_ACTIVE;
     else if (strTest.Equals("system.fps")) ret = SYSTEM_FPS;
-    else if (strTest.Equals("system.kaiconnected")) ret = SYSTEM_KAI_CONNECTED;
-    else if (strTest.Equals("system.kaienabled")) ret = SYSTEM_KAI_ENABLED;
     else if (strTest.Equals("system.hasmediadvd")) ret = SYSTEM_MEDIA_DVD;
     else if (strTest.Equals("system.dvdready")) ret = SYSTEM_DVDREADY;
     else if (strTest.Equals("system.trayopen")) ret = SYSTEM_TRAYOPEN;
@@ -418,10 +415,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     CStdString str = strTest.Mid(8, strTest.GetLength() - 9);
     return AddMultiInfo(GUIInfo(bNegate ? -STRING_IS_EMPTY : STRING_IS_EMPTY, TranslateSingleString(str)));
-  }
-  else if (strCategory.Equals("xlinkkai"))
-  {
-    if (strTest.Equals("xlinkkai.username")) ret = XLINK_KAI_USERNAME;
   }
   else if (strCategory.Equals("lcd"))
   {
@@ -1270,9 +1263,6 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
         strLabel.Format("%i", percent);
     }
     break;
-  case XLINK_KAI_USERNAME:
-    strLabel = g_guiSettings.GetString("xlinkkai.username");
-    break;
   case LCD_PLAY_ICON:
     {
       int iPlaySpeed = g_application.GetPlaySpeed();
@@ -1619,10 +1609,6 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     if (condition1 < 0) bReturn = !bReturn;
     CacheBool(condition1,dwContextWindow,bReturn,true);
   }
-  else if (condition == SYSTEM_KAI_CONNECTED)
-    bReturn = g_network.IsAvailable(false) && g_guiSettings.GetBool("xlinkkai.enabled") && CKaiClient::GetInstance()->IsEngineConnected();
-  else if (condition == SYSTEM_KAI_ENABLED)
-    bReturn = g_network.IsAvailable(false) && g_guiSettings.GetBool("xlinkkai.enabled");
   else if (condition == SYSTEM_PLATFORM_LINUX)
 #if defined(_LINUX) && !defined(__APPLE__)
     bReturn = true;

@@ -279,7 +279,7 @@ void CMemoryUnitManager::Notify(unsigned long port, unsigned long slot, bool suc
   portSlot.Format(g_localizeStrings.Get(20139).c_str(), port, slot);
 
   if (success)
-    g_application.SetKaiNotification(g_localizeStrings.Get(20137), portSlot, NULL);
+    g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20137), portSlot);
   else
-    g_application.SetKaiNotification(g_localizeStrings.Get(20138), portSlot, NULL);
+    g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20138), portSlot);
 }

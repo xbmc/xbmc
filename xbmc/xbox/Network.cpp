@@ -482,8 +482,6 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       g_application.StartTimeServer();
       g_application.StartWebServer();
       g_application.StartFtpServer();      
-      if (m_gWindowManager.GetActiveWindow() != WINDOW_LOGIN_SCREEN)
-        g_application.StartKai();
       g_application.StartUPnP();
       g_application.StartEventServer();
       CScrobbler::GetInstance()->Init();
@@ -495,7 +493,6 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       g_application.StopTimeServer();
       g_application.StopWebServer();
       g_application.StopFtpServer();
-      g_application.StopKai();   
       g_application.StopUPnP();
       g_application.StopEventServer();
       CScrobbler::GetInstance()->Term();
