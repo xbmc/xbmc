@@ -47,7 +47,7 @@ bool CButtonTranslator::Load()
   keymapPath = _P("Q:\\system\\keymap.xml");
   bool success = LoadKeymap(keymapPath);
   keymapPath = g_settings.GetUserDataItem("Keymap.xml");
-  success = LoadKeymap(keymapPath);
+  success |= LoadKeymap(keymapPath);
 
   if (!success)
   {
