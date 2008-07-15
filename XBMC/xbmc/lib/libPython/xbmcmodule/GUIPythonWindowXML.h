@@ -49,8 +49,8 @@ public:
   void              SetCurrentListPosition(int item);
   void              SetCallbackWindow(PyObject *object);
   virtual bool      OnClick(int iItem);
-  static void       LoadScriptStrings(const CStdString &strPath);
-  static void       ClearScriptStrings();
+  void              LoadScriptStrings(const CStdString &strPath);
+  void              ClearScriptStrings();
 
 protected:
   virtual void     GetContextButtons(int itemNumber, CContextButtons &buttons);
