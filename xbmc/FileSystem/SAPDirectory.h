@@ -1,8 +1,7 @@
 #pragma once
 /*
 * SAP-Announcement Support for XBMC
-* Copyright (c) 2004 Forza (Chris Barnett)
-* Portions Copyright (c) by the authors of libOpenDAAP
+* Copyright (c) 2008 elupus (Joakim Plate)
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -40,13 +39,23 @@ namespace SDP
     std::vector<std::string> attributes;
   };
 
+  struct sdp_desc_origin
+  {
+    std::string username;
+    int         sessionid;
+    int         sessionver;
+    std::string nettype;
+    std::string addrtype;
+    std::string address;
+  };
+
   struct sdp_desc
   {
-    std::string version;
-    std::string origin;
-    std::string name;
-    std::string title;
-    std::string bandwidth;
+    std::string     version;
+    std::string     origin;
+    std::string     name;
+    std::string     title;
+    std::string     bandwidth;
 
     std::vector<std::string>    attributes;
     std::vector<sdp_desc_time>  times;
@@ -66,13 +75,17 @@ namespace SDP
     std::string origin;
     std::string payload_type;
   };
-  int parse_sap(const char* data, int len, struct sap_desc *h);
-  int parse_sdp(const char* data, int len, struct sdp_desc *sdp);
+  int parse_sap(const char* data, struct sap_desc *h);
+  int parse_sdp(const char* data, struct sdp_desc *sdp);
+  int parse_sdp_origin(const char* data, struct sdp_desc_origin *o);
 }
 
-namespace DIRECTORY
-{
 
+
+
+
+namespace XFILE     { class CSAPFile; }
+namespace DIRECTORY { class CSAPDirectory; }
 
 class CSAPSessions
   : CThread
@@ -82,8 +95,8 @@ public:
   ~CSAPSessions();
 
 protected:
-  friend class CSAPDirectory;
-  friend class CSAPFile;
+  friend class DIRECTORY::CSAPDirectory;
+  friend class XFILE::CSAPFile;
 
   struct CSession
   {
@@ -93,6 +106,8 @@ protected:
     std::string payload_origin;
     std::string payload_type;
     std::string payload;
+
+    std::string path;
   };
 
   std::vector<CSession> m_sessions;
@@ -104,19 +119,20 @@ private:
 
 };
 
-
-class CSAPDirectory
-  : public IDirectory
-{
-public:
-  CSAPDirectory(void);
-  virtual ~CSAPDirectory(void);
-  virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-};
-
-
-
 extern CSAPSessions g_sapsessions;
 
+
+
+namespace DIRECTORY
+{
+
+  class CSAPDirectory
+    : public IDirectory
+  {
+  public:
+    CSAPDirectory(void);
+    virtual ~CSAPDirectory(void);
+    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+  };
 
 }
