@@ -508,7 +508,7 @@ namespace PYXBMC
     "\"|\" as an OR operator, \"!\" as a NOT operator, and \"[\" and \"]\" to bracket expressions.\n"
     "\n"
     "example:\n"
-    "  - visible = xbmc.getCondVisibility('[System.KaiEnabled + !Skin.String(KAI)]')\n");
+    "  - visible = xbmc.getCondVisibility('[Control.IsVisible(41) + !Control.IsVisible(12)]')\n");
 
   PyObject* XBMC_GetCondVisibility(PyObject *self, PyObject *args)
   {
