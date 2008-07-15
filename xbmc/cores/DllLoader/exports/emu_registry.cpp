@@ -651,12 +651,8 @@ LONG WINAPI dllRegQueryInfoKeyA( HKEY hkey, LPSTR class_, LPDWORD class_len, LPD
                                 LPDWORD values, LPDWORD max_value, LPDWORD max_data,
                                 LPDWORD security, FILETIME *modif )
 {
-#ifdef _WIN32PC
-  return RegQueryInfoKeyA(hkey, class_, class_len, reserved, subkeys, max_subkey, max_class, values, max_value, max_data, security, modif);
-#else
   not_implement("advapi32.dll fake function RegQueryInfoKeyA called\n"); //warning
   return 1;
-#endif
 }
 
 /*LONG WINAPI dllRegQueryValueExA (HKEY hKey, LPCTSTR lpValueName, LPDWORD lpReserved,
