@@ -6,4 +6,10 @@ vorbisfile-i486-linux.so:
 clean:
 	make -C libvorbis clean
 	make -C ogg clean
-	rm vorbisfile-i486-linux.so
+	rm -f vorbisfile-i486-linux.so
+
+distclean:
+	make -C libvorbis distclean
+	make -C ogg distclean
+	rm -f vorbisfile-i486-linux.so
+
