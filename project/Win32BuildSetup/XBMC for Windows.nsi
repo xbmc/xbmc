@@ -104,6 +104,8 @@ Section "XBMC" SecXBMC
   File "${xbmc_root}\Xbmc\visualisations\*_win32.vis"
   SetOutPath "$INSTDIR\visualisations\projectM"
   File /nonfatal /r "${xbmc_root}\Xbmc\visualisations\projectM\*.*"
+  SetOutPath "$INSTDIR\web"
+  File /r "${xbmc_root}\Xbmc\web\*.*"
 
   ;Store installation folder
   WriteRegStr HKCU "Software\XBMC" "" $INSTDIR
