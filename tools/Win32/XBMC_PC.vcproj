@@ -1247,16 +1247,7 @@
 				RelativePath="..\..\xbmc\ApplicationRenderer.h">
 			</File>
 			<File
-				RelativePath="..\..\xbmc\ArenaItem.cpp">
-			</File>
-			<File
-				RelativePath="..\..\xbmc\BuddyItem.cpp">
-			</File>
-			<File
 				RelativePath="..\..\xbmc\CueDocument.cpp">
-			</File>
-			<File
-				RelativePath="..\..\xbmc\KaiItem.cpp">
 			</File>
 			<Filter
 				Name="Settings"
@@ -1736,15 +1727,6 @@
 					RelativePath="..\..\xbmc\utils\InfoLoader.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\KaiClient.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\KaiRequestList.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\KaiVector.cpp">
-				</File>
-				<File
 					RelativePath="..\..\xbmc\utils\LabelFormatter.cpp">
 				</File>
 				<File
@@ -2020,12 +2002,6 @@
 					RelativePath="..\..\xbmc\GUIDialogGamepad.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogHost.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogInvite.cpp">
-				</File>
-				<File
 					RelativePath="..\..\xbmc\GUIDialogKaiToast.cpp">
 				</File>
 				<File
@@ -2178,9 +2154,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIViewStateScripts.h">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowBuddies.cpp">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowFileManager.cpp">
@@ -2944,9 +2917,6 @@
 				RelativePath="..\..\xbmc\utils\Archive.h">
 			</File>
 			<File
-				RelativePath="..\..\xbmc\ArenaItem.h">
-			</File>
-			<File
 				RelativePath="..\..\xbmc\AutoPtrHandle.h">
 			</File>
 			<File
@@ -2954,9 +2924,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\AutoSwitch.h">
-			</File>
-			<File
-				RelativePath="..\..\xbmc\BuddyItem.h">
 			</File>
 			<File
 				RelativePath="..\..\xbmc\BusyIndicator.h">
@@ -3103,9 +3070,6 @@
 				RelativePath="..\..\xbmc\GUIUserMessages.h">
 			</File>
 			<File
-				RelativePath="..\..\xbmc\GUIWindowBuddies.h">
-			</File>
-			<File
 				RelativePath="..\..\xbmc\GUIWindowFileManager.h">
 			</File>
 			<File
@@ -3233,21 +3197,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\FileSystem\iso9660.h">
-			</File>
-			<File
-				RelativePath="..\..\xbmc\utils\KaiClient.h">
-			</File>
-			<File
-				RelativePath="..\..\xbmc\KaiItem.h">
-			</File>
-			<File
-				RelativePath="..\..\xbmc\utils\KaiRequestList.h">
-			</File>
-			<File
-				RelativePath="..\..\xbmc\KaiVector.h">
-			</File>
-			<File
-				RelativePath="..\..\xbmc\utils\KaiVoice.h">
 			</File>
 			<File
 				RelativePath="..\..\xbmc\LangCodeExpander.h">
