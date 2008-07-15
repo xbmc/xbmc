@@ -307,6 +307,7 @@ Section "Uninstall"
   RMDir /r "$INSTDIR\system"
   RMDir /r "$INSTDIR\userdata"
   RMDir /r "$INSTDIR\visualisations"
+  RMDir /r "$INSTDIR\web"
 
   Delete "$INSTDIR\Uninstall.exe"
 
