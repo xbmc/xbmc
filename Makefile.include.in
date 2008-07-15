@@ -53,3 +53,4 @@ distclean: clean
 	@echo "Removing all dependency files (.P)"
 	@find . -name "*.P" -exec echo 'Removing "{}"' \; -exec rm -f "{}" \;
 	@echo "Done."
+	for d in $(DIRS); do (cd $$d; $(MAKE) distclean ); done
