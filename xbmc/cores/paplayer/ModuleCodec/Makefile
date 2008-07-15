@@ -353,7 +353,7 @@ veryclean: clean
 	$(call DELETE,$(ALLEGRO_EXAMPLES_EXE))
 
 distclean: veryclean
-	$(call DELETE,make/config.txt)
+#	$(call DELETE,make/config.txt)
 	$(call DELETE,$(DUMBASK_EXE))
 
 
