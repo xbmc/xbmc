@@ -1,7 +1,6 @@
 /*
 * SAP-Announcement Support for XBMC
-* Copyright (c) 2004 Forza (Chris Barnett)
-* Portions Copyright (c) by the authors of libOpenDAAP
+* Copyright (c) 2008 elupus (Joakim Plate)
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -23,6 +22,8 @@
 #include "Util.h"
 #include "FileItem.h"
 #include <Ws2tcpip.h>
+
+CSAPSessions g_sapsessions;
 
 namespace SDP
 {
@@ -108,80 +109,101 @@ namespace SDP
     return data - data_orig;
   }
 
-  static int parse_sdp_line(const char* data, int len, std::string& type, std::string& value)
+  static int parse_sdp_line(const char* data, std::string& type, std::string& value)
   {
-    int l = 0;
-    int len2 = len;
-
-    l = strspn(data, "\n\r ");
-    data += l;
-    len  -= l;
+    const char* data2 = data;
+    int l;
 
     l = strcspn(data, "=\n\r");
     type.assign(data, l);
-    data += l+1;
-    len  -= l+1;
+    data += l;
+    if(*data == '=')
+      data++;
 
     l = strcspn(data, "\n\r");
     value.assign(data, l);
-    data += l+1;
-    len  -= l+1;
-
-    l = strspn(data, "\n\r ");
     data += l;
-    len  -= l;
+    data += strspn(data, "\n\r");
 
-    return len2 - len;
+    return data - data2;
   }
 
-  static int parse_sdp_type(const char** data, int* len, std::string type, std::string& value)
+  static int parse_sdp_type(const char** data, std::string type, std::string& value)
   {
     std::string type2;
     const char* data2 = *data;
-    int         len2  = *len;
-    int l;
 
-    while(len2 > 0) {
-      l = parse_sdp_line(data2, len2, type2, value);
-      data2 += l;
-      len2  -= l;
+    while(*data2 != 0) {
+      data2 += parse_sdp_line(data2, type2, value);
       if(type2 == type) {
         *data = data2;
-        *len  = len2;
         return 1;
       }
     }
     return 0;
   }
-
-  static int parse_sdp(const char* data, int len, struct sdp_desc* sdp)
+  
+  int parse_sdp_token(const char* data, std::string &value)
   {
+    int l;
+    l = strcspn(data, " \n\r");
+    value.assign(data, l);
+    if(data[l] == '\0')
+      return l;
+    else
+      return l+1;
+  }
+
+  int parse_sdp_token(const char* data, int &value)
+  {
+    int l;
+    std::string str;
+    l = parse_sdp_token(data, str);
+    value = atoi(str.c_str());
+    return l;
+  }
+
+  int parse_sdp_origin(const char* data, struct sdp_desc_origin *o)
+  {
+    const char *data2 = data;
+    data += parse_sdp_token(data, o->username);
+    data += parse_sdp_token(data, o->sessionid);
+    data += parse_sdp_token(data, o->sessionver);
+    data += parse_sdp_token(data, o->nettype);
+    data += parse_sdp_token(data, o->addrtype);
+    data += parse_sdp_token(data, o->address);
+    return data - data2;
+  }
+
+  int parse_sdp(const char* data, struct sdp_desc* sdp)
+  {
+    const char *data2 = data;
     std::string value;
 
     // SESSION DESCRIPTION  
-    if(parse_sdp_type(&data, &len, "v", value)) {
+    if(parse_sdp_type(&data, "v", value)) {
       sdp->version = value;
     } else
       return 0;
 
-    if(parse_sdp_type(&data, &len, "o", value)) {
+    if(parse_sdp_type(&data, "o", value)) {
       sdp->origin = value;
     } else
       return 0;
 
-    if(parse_sdp_type(&data, &len, "s", value)) {
+    if(parse_sdp_type(&data, "s", value)) {
       sdp->name = value;
     } else
       return 0;
 
-    if(parse_sdp_type(&data, &len, "i", value))
+    if(parse_sdp_type(&data, "i", value))
       sdp->title = value;
 
-    if(parse_sdp_type(&data, &len, "b", value))
+    if(parse_sdp_type(&data, "b", value))
       sdp->bandwidth = value;
 
     while(true) {
-      if(parse_sdp_type(&data, &len, "a", value))
+      if(parse_sdp_type(&data, "a", value))
         sdp->attributes.push_back(value);
       else
         break;
@@ -190,12 +212,12 @@ namespace SDP
     // TIME DESCRIPTIONS
     while(true) {
       sdp_desc_time time;
-      if(parse_sdp_type(&data, &len, "t", value))
+      if(parse_sdp_type(&data, "t", value))
         time.active = value;
       else
         break;
 
-      if(parse_sdp_type(&data, &len, "r", value))
+      if(parse_sdp_type(&data, "r", value))
         time.repeat = value;
 
       sdp->times.push_back(time);
@@ -204,19 +226,19 @@ namespace SDP
     // MEDIA DESCRIPTIONS
     while(true) {
       sdp_desc_media media;
-      if(parse_sdp_type(&data, &len, "m", value))
+      if(parse_sdp_type(&data, "m", value))
         media.name = value;
       else
         break;
 
-      if(parse_sdp_type(&data, &len, "i", value))
+      if(parse_sdp_type(&data, "i", value))
         media.title = value;
 
-      if(parse_sdp_type(&data, &len, "c", value))
+      if(parse_sdp_type(&data, "c", value))
         media.connection = value;
 
       while(true) {
-        if(parse_sdp_type(&data, &len, "a", value))
+        if(parse_sdp_type(&data, "a", value))
           media.attributes.push_back(value);
         else
           break;
@@ -225,18 +247,12 @@ namespace SDP
       sdp->media.push_back(media);
     }
 
-    return 1;
+    return data - data2;
   }
 }
 
 
 using namespace SDP;
-
-namespace DIRECTORY
-{
-
-static CSAPSessions g_sapsessions;
-
 
 
 CSAPSessions::CSAPSessions()
@@ -255,18 +271,27 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
   struct sap_desc header;
   int size = parse_sap(data, len, &header);
   if(size < 0)
+  {
+    CLog::Log(LOGERROR, "%s - failed to parse sap announcment", __FUNCTION__);
     return false;
+  }
 
   // we only want sdp payloads
-  if(header.payload_type != "application/sdp")
+  if(header.payload_type != "application/sdp") 
+  {
+    CLog::Log(LOGERROR, "%s - unknown payload type '%s'", __FUNCTION__, header.payload_type.c_str());
     return false;
+  }
 
   data += size;
   len  -= size;
 
   sdp_desc desc;
-  if(parse_sdp(data, len, &desc) < 0)
+  if(parse_sdp(data, &desc) < 0)
+  {
+    CLog::Log(LOGERROR, "%s - failed to parse sdp [ --->\n%s\n<--- ]", __FUNCTION__, data);
     return false;
+  }
 
   // check if we can find this session in our cache
   for(std::vector<CSession>::iterator it = m_sessions.begin(); it != m_sessions.end(); it++)
@@ -290,8 +315,20 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
   if(header.msgtype == 1)
     return true;
 
+  sdp_desc_origin origin;
+  if(parse_sdp_origin(desc.origin.c_str(), &origin) < 0)
+  {
+    CLog::Log(LOGERROR, "%s - failed to parse origin '%'", __FUNCTION__, desc.origin.c_str());
+    return false;
+  }
+
   // add a new session to our buffer
+  CStdString path, user;
+  user = origin.username;
+  CUtil::URLEncode(user);
+  path.Format("sap://%s@%s/%s/%s/0x%x.sdp", user, origin.address, origin.nettype, origin.addrtype, origin.sessionid);
   CSession session;
+  session.path           = path;
   session.origin         = header.origin;
   session.msgid          = header.msgid;
   session.payload_type   = header.payload_type;
@@ -373,7 +410,8 @@ void CSAPSessions::Process()
         closesocket(sock);
         return;
       }
-
+      /* data must be string terminated for parsers */
+      data[count] = '\0';
       ParseAnnounce(data, count);
     }
 
@@ -382,56 +420,65 @@ void CSAPSessions::Process()
   closesocket(sock);
 }
 
-CSAPDirectory::CSAPDirectory(void)
+namespace DIRECTORY
 {
-}
 
-
-
-CSAPDirectory::~CSAPDirectory(void)
-{  
-}
-
-bool CSAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
-{
-  if(strPath != "sap://")
-    return false;
-
-  CSingleLock lock(g_sapsessions.m_section);
-
-  if(g_sapsessions.ThreadHandle() == NULL)
-    g_sapsessions.Create();
-
-  // check if we can find this session in our cache
-  for(std::vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); it++)
+  CSAPDirectory::CSAPDirectory(void)
   {
-
-    if(it->payload_type != "application/sdp")
-    {
-      CLog::Log(LOGDEBUG, "%s - unknown sdp payload type [%s]", __FUNCTION__, it->payload_type);
-      continue;
-    }
-    struct sdp_desc desc;
-    if(!parse_sdp(it->payload.c_str(), it->payload.length(), &desc))
-    {
-      CLog::Log(LOGDEBUG, "%s - invalid sdp payload [ --->\n%s\n<--- ]", __FUNCTION__, it->payload);
-      continue;
-    }
-
-
-    CFileItemPtr item(new CFileItem());
-
-    if(desc.title.length() > 0)
-      item->SetLabel(desc.title);
-    else
-      item->SetLabel(desc.name);
-
-    item->m_strPath.Format("sap://%s/%x.sdp", it->origin, it->msgid);
-    items.Add(item);
   }
 
-  return true;
-}
+
+
+  CSAPDirectory::~CSAPDirectory(void)
+  {  
+  }
+
+  bool CSAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+  {
+    if(strPath != "sap://")
+      return false;
+
+    CSingleLock lock(g_sapsessions.m_section);
+
+    if(g_sapsessions.ThreadHandle() == NULL)
+      g_sapsessions.Create();
+
+    // check if we can find this session in our cache
+    for(std::vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); it++)
+    {
+
+      if(it->payload_type != "application/sdp")
+      {
+        CLog::Log(LOGDEBUG, "%s - unknown sdp payload type [%s]", __FUNCTION__, it->payload_type);
+        continue;
+      }
+      struct sdp_desc desc;
+      if(parse_sdp(it->payload.c_str(), &desc) <= 0)
+      {
+        CLog::Log(LOGDEBUG, "%s - invalid sdp payload [ --->\n%s\n<--- ]", __FUNCTION__, it->payload);
+        continue;
+      }
+
+      struct sdp_desc_origin origin;
+      if(parse_sdp_origin(desc.origin.c_str(), &origin) <= 0)
+      {
+        CLog::Log(LOGDEBUG, "%s - invalid sdp origin [ --->\n%s\n<--- ]", __FUNCTION__, desc.origin.c_str());
+        continue;
+      }
+
+      CFileItemPtr item(new CFileItem());
+
+      if(desc.title.length() > 0)
+        item->SetLabel(desc.title);
+      else
+        item->SetLabel(desc.name);
+
+      item->m_strPath = it->path;
+      items.Add(item);
+    }
+
+    return true;
+  }
 
 
 }
