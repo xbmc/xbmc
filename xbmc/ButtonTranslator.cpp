@@ -39,26 +39,55 @@ CButtonTranslator::~CButtonTranslator()
 
 bool CButtonTranslator::Load()
 {
-  // load our xml file, and fill up our mapping tables
-  TiXmlDocument xmlDoc;
+  translatorMap.clear();
 
   // Load the config file
   CStdString keymapPath;
   //CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Keymap.xml", keymapPath);
+  keymapPath = _P("Q:\\system\\keymap.xml");
+  bool success = LoadKeymap(keymapPath);
   keymapPath = g_settings.GetUserDataItem("Keymap.xml");
-  CLog::Log(LOGINFO, "Loading %s", keymapPath.c_str());
-  if (!xmlDoc.LoadFile(keymapPath))
+  success = LoadKeymap(keymapPath);
+
+  if (!success)
   {
-    g_LoadErrorStr.Format("%s, Line %d\n%s", keymapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    g_LoadErrorStr.Format("Error loading keymap: %s", keymapPath.c_str());
     return false;
   }
 
-  translatorMap.clear();
+#ifdef HAS_LIRC
+#ifdef _LINUX
+#define REMOTEMAP "Lircmap.xml"
+#else
+#define REMOTEMAP "IRSSmap.xml"
+#endif
+  CStdString lircmapPath = CUtil::AddFileToFolder(_P("Q:\\system"), REMOTEMAP);
+  success = LoadLircMap(lircmapPath);
+  lircmapPath = g_settings.GetUserDataItem(REMOTEMAP);
+  success |= LoadLircMap(lircmapPath);
+  if (!success)
+    return false;
+#endif
+
+  // Done!
+  return true;
+}
+
+bool CButtonTranslator::LoadKeymap(const CStdString &keymapPath)
+{
+  TiXmlDocument xmlDoc;
+
+  CLog::Log(LOGINFO, "Loading %s", keymapPath.c_str());
+  if (!xmlDoc.LoadFile(keymapPath))
+  {
+    CLog::Log(LOGERROR, "Error loading keymap: %s, Line %d\n%s", keymapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    return false;
+  }
   TiXmlElement* pRoot = xmlDoc.RootElement();
   CStdString strValue = pRoot->Value();
   if ( strValue != "keymap")
   {
-    g_LoadErrorStr.Format("%sl Doesn't contain <keymap>", keymapPath.c_str());
+    CLog::Log(LOGERROR, "%s Doesn't contain <keymap>", keymapPath.c_str());
     return false;
   }
   // run through our window groups
@@ -80,35 +109,26 @@ bool CButtonTranslator::Load()
     }
   }
 
-#ifdef HAS_LIRC
-  if (!LoadLircMap())
-    return false;
-#endif
-
-  // Done!
   return true;
 }
 
 #ifdef HAS_LIRC
-bool CButtonTranslator::LoadLircMap()
+bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
 {
 #ifdef _LINUX
-#define REMOTEMAP "Lircmap.xml"
 #define REMOTEMAPTAG "lircmap"
 #else
-#define REMOTEMAP "IRSSmap.xml"
 #define REMOTEMAPTAG "irssmap"
 #endif
   // load our xml file, and fill up our mapping tables
   TiXmlDocument xmlDoc;
 
   // Load the config file
-  CStdString lircmapPath = g_settings.GetUserDataItem(REMOTEMAP);
   CLog::Log(LOGINFO, "Loading %s", lircmapPath.c_str());
   if (!xmlDoc.LoadFile(lircmapPath))
   {
     g_LoadErrorStr.Format("%s, Line %d\n%s", lircmapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-    return true; // This is so people who don't have the file won't fail, just warn
+    return false; // This is so people who don't have the file won't fail, just warn
   }
 
   lircRemotesMap.clear();
@@ -140,6 +160,12 @@ bool CButtonTranslator::LoadLircMap()
 void CButtonTranslator::MapRemote(TiXmlNode *pRemote, const char* szDevice)
 {
   lircButtonMap buttons;
+  std::map<CStdString, lircButtonMap>::iterator it = lircRemotesMap.find(szDevice);
+  if (it != lircRemotesMap.end())
+  {
+    buttons = it->second;
+    lircRemotesMap.erase(it);
+  }
 
   TiXmlElement *pButton = pRemote->FirstChildElement();
   while (pButton)
@@ -458,6 +484,12 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
 {
   if (!pWindow || wWindowID == WINDOW_INVALID) return;
   buttonMap map;
+  std::map<WORD, buttonMap>::iterator it = translatorMap.find(wWindowID);
+  if (it != translatorMap.end())
+  {
+    map = it->second;
+    translatorMap.erase(it);
+  }
   TiXmlNode* pDevice;
   if ((pDevice = pWindow->FirstChild("gamepad")) != NULL)
   { // map gamepad actions
