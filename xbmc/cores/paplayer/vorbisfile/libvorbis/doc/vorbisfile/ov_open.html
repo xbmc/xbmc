@@ -1,0 +1,115 @@
+<html>
+
+<head>
+<title>Vorbisfile - function - ov_open</title>
+<link rel=stylesheet href="style.css" type="text/css">
+</head>
+
+<body bgcolor=white text=black link="#5555ff" alink="#5555ff" vlink="#5555ff">
+<table border=0 width=100%>
+<tr>
+<td><p class=tiny>Vorbisfile documentation</p></td>
+<td align=right><p class=tiny>libVorbisfile version 1.65 - 20020702</p></td>
+</tr>
+</table>
+
+<h1>ov_open</h1>
+
+<p><i>declared in "vorbis/vorbisfile.h";</i></p>
+
+<p>This is the main function used to open and initialize an OggVorbis_File
+structure. It sets up all the related decoding structure.
+<p>The first argument must be a file pointer to an already opened file
+or pipe (it need not be seekable--though this obviously restricts what
+can be done with the bitstream). <tt>vf</tt> should be a pointer to the
+OggVorbis_File structure--this is used for ALL the externally visible libvorbisfile
+functions. Once this has been called, the same <a href="OggVorbis_File.html">OggVorbis_File</a>
+struct should be passed to all the libvorbisfile functions.
+<p>Also, you should be aware that ov_open(), once successful, takes complete possession of the file resource.  After you have opened a file using ov_open(), you MUST close it using <a href="ov_clear.html">ov_clear()</a>, not fclose() or any other function.
+<p>
+It is often useful to call <tt>ov_open()</tt>
+simply to determine whether a given file is a vorbis bitstream. If the
+<tt>ov_open()</tt>
+call fails, then the file is not recognizable as such. 
+When you use <tt>ov_open()
+</tt>for
+this, you should <tt>fclose()</tt> the file pointer if, and only if, the
+<tt>ov_open()</tt>
+call fails. If it succeeds, you must call <a href="ov_clear.html">ov_clear()</a> to clear
+the decoder's buffers and close the file for you.<p>
+
+(Note that <a href="ov_test.html">ov_test()</a> provides a less expensive way to test a file for Vorbisness.)<p>
+
+<br><br>
+<table border=0 color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td>
+<pre><b>
+int ov_open(FILE *f,<a href="OggVorbis_File.html">OggVorbis_File</a> *vf,char *initial,long ibytes);
+</b></pre>
+	</td>
+</tr>
+</table>
+
+<h3>Parameters</h3>
+<dl>
+<dt><i>f</i></dt>
+<dd>File pointer to an already opened file
+or pipe (it need not be seekable--though this obviously restricts what
+can be done with the bitstream).</dd>
+<dt><i>vf</i></dt>
+<dd>A pointer to the OggVorbis_File structure--this is used for ALL the externally visible libvorbisfile
+functions. Once this has been called, the same <tt>OggVorbis_File</tt>
+struct should be passed to all the libvorbisfile functions.</dd>
+<dt><i>initial</i></dt>
+<dd>Typically set to NULL.  This parameter is useful if some data has already been
+read from the file and the stream is not seekable. It is used in conjunction with <tt>ibytes</tt>.  In this case, <tt>initial</tt>
+should be a pointer to a buffer containing the data read.</dd>
+<dt><i>ibytes</i></dt>
+<dd>Typically set to 0.  This parameter is useful if some data has already been
+read from the file and the stream is not seekable. In this case, <tt>ibytes</tt>
+should contain the length (in bytes) of the buffer.  Used together with <tt>initial</tt></dd>
+</dl>
+
+
+<h3>Return Values</h3>
+<blockquote>
+<li>0 indicates success</li>
+
+<li>less than zero for failure:</li>
+<ul>
+<li>OV_EREAD - A read from media returned an error.</li>
+<li>OV_ENOTVORBIS - Bitstream is not Vorbis data.</li>
+<li>OV_EVERSION - Vorbis version mismatch.</li>
+<li>OV_EBADHEADER - Invalid Vorbis bitstream header.</li>
+<li>OV_EFAULT - Internal logic fault; indicates a bug or heap/stack corruption.</li>
+</ul>
+</blockquote>
+<p>
+
+<h3>Notes</h3>
+<p>If your decoder is threaded, it is recommended that you NOT call
+<tt>ov_open()</tt>
+in the main control thread--instead, call <tt>ov_open()</tt> IN your decode/playback
+thread. This is important because <tt>ov_open()</tt> may be a fairly time-consuming
+call, given that the full structure of the file is determined at this point,
+which may require reading large parts of the file under certain circumstances
+(determining all the logical bitstreams in one physical bitstream, for
+example).  See <a href="threads.html">Thread Safety</a> for other information on using libvorbisfile with threads.
+
+
+<br><br>
+<hr noshade>
+<table border=0 width=100%>
+<tr valign=top>
+<td><p class=tiny>copyright &copy; 2002 Xiph.org</p></td>
+<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/vorbis/">Ogg Vorbis</a></p></td>
+</tr><tr>
+<td><p class=tiny>Vorbisfile documentation</p></td>
+<td align=right><p class=tiny>libVorbisfile version 1.65 - 20020702</p></td>
+</tr>
+</table>
+
+</body>
+
+</html>

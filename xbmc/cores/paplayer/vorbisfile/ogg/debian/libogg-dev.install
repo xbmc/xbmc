@@ -1,0 +1,7 @@
+debian/tmp/usr/include/ogg/config_types.h
+debian/tmp/usr/include/ogg/ogg.h
+debian/tmp/usr/include/ogg/os_types.h
+debian/tmp/usr/lib/libogg.a
+debian/tmp/usr/lib/libogg.la
+debian/tmp/usr/lib/libogg.so
+debian/tmp/usr/share/aclocal/ogg.m4

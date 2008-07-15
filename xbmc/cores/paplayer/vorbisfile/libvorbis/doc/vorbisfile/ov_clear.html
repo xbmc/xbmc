@@ -1,0 +1,64 @@
+<html>
+
+<head>
+<title>Vorbisfile - function - ov_clear</title>
+<link rel=stylesheet href="style.css" type="text/css">
+</head>
+
+<body bgcolor=white text=black link="#5555ff" alink="#5555ff" vlink="#5555ff">
+<table border=0 width=100%>
+<tr>
+<td><p class=tiny>Vorbisfile documentation</p></td>
+<td align=right><p class=tiny>libVorbisfile version 1.65 - 20020702</p></td>
+</tr>
+</table>
+
+<h1>ov_clear</h1>
+
+<p><i>declared in "vorbis/vorbisfile.h";</i></p>
+
+<p> After a bitstream has been opened using <a href="ov_open.html">ov_open()</a>/<a href="ov_open_callbacks.html">ov_open_callbacks()</a> and decoding is complete, the application must call <tt>ov_clear()</tt> to clear
+the decoder's buffers and close the file.<p>
+
+<tt>ov_clear()</tt> must also be called after a successful call to <a href="ov_test.html">ov_test()</a> or <a href="ov_test_callbacks.html">ov_test_callbacks()</a>.<p>
+
+<br><br>
+<table border=0 color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td>
+<pre><b>
+int ov_clear(OggVorbis_File *vf);
+</b></pre>
+	</td>
+</tr>
+</table>
+
+<h3>Parameters</h3>
+<dl>
+<dt><i>vf</i></dt>
+<dd>A pointer to the OggVorbis_File structure--this is used for ALL the externally visible libvorbisfile
+functions.  After <tt>ov_clear</tt> has been called, the structure is deallocated and can no longer be used.</dd>
+</dl>
+
+
+<h3>Return Values</h3>
+<blockquote>
+<li>0 for success</li>
+</blockquote>
+
+
+<br><br>
+<hr noshade>
+<table border=0 width=100%>
+<tr valign=top>
+<td><p class=tiny>copyright &copy; 2002 Xiph.org</p></td>
+<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/vorbis/">Ogg Vorbis</a></p></td>
+</tr><tr>
+<td><p class=tiny>Vorbisfile documentation</p></td>
+<td align=right><p class=tiny>libVorbisfile version 1.65 - 20020702</p></td>
+</tr>
+</table>
+
+</body>
+
+</html>
