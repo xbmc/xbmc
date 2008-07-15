@@ -5,6 +5,8 @@ RM = rm -f
 CXX=g++
 CC=gcc
 
+DEFINES += -D_LINUX
+
 OBJS := ccbuffer.o ccutil.o ccxclient.o ccxclientconnxbox.o ccxdiscover.o ccxencode.o ccxmltrans.o
 
 .c.o:
