@@ -43,3 +43,7 @@ python-lib:
 clean:
 	$(RM) -rf *.so *.o *.def python-lib python24.zip
 	$(MAKE) -C ../Python clean
+
+distclean: clean
+	$(MAKE) -C ../Python distclean
+
