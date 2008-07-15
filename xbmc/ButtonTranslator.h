@@ -88,8 +88,9 @@ private:
   void MapWindowActions(TiXmlNode *pWindow, WORD wWindowID);
   void MapAction(WORD wButtonCode, const char *szAction, buttonMap &map);
 
+  bool LoadKeymap(const CStdString &keymapPath);
 #ifdef HAS_LIRC
-  bool LoadLircMap();
+  bool LoadLircMap(const CStdString &lircmapPath);
   void MapRemote(TiXmlNode *pRemote, const char* szDevice);
   typedef std::map<CStdString, CStdString> lircButtonMap;
   std::map<CStdString, lircButtonMap> lircRemotesMap;
