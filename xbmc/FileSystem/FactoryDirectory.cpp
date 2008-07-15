@@ -58,6 +58,9 @@
 #ifdef HAS_UPNP
 #include "UPnPDirectory.h"
 #endif
+#ifdef HAS_FILESYSTEM_SAP
+#include "SAPDirectory.h"
+#endif
 #include "../utils/Network.h"
 #include "ZipDirectory.h"
 #include "RarDirectory.h"
@@ -137,6 +140,9 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "myth") return new CCMythDirectory();
     if (strProtocol == "cmyth") return new CCMythDirectory();
     if (strProtocol == "rss") return new CRSSDirectory();
+#ifdef HAS_FILESYSTEM_SAP
+    if (strProtocol == "sap") return new CSAPDirectory();
+#endif
   }
 
  return NULL;

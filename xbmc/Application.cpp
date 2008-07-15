@@ -58,6 +58,9 @@
 #include "FileSystem/StackDirectory.h"
 #include "FileSystem/DllLibCurl.h"
 #include "FileSystem/CMythSession.h"
+#ifdef HAS_FILESYSTEM_SAP
+#include "FileSystem/SAPDirectory.h"
+#endif
 #include "utils/TuxBoxUtil.h"
 #include "utils/SystemInfo.h"
 #include "ApplicationRenderer.h"
@@ -3720,6 +3723,11 @@ void CApplication::Stop()
     CLog::Log(LOGNOTICE, "stop daap clients");
     g_DaapClient.Release();
 #endif
+#ifdef HAS_FILESYSTEM_SAP
+    CLog::Log(LOGNOTICE, "stop sap announcement listener");
+    g_sapsessions.StopThread();
+#endif
+
     m_applicationMessenger.Cleanup();
 
     CLog::Log(LOGNOTICE, "clean cached files!");

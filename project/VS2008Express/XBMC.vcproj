@@ -3750,6 +3750,22 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\SAPDirectory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SAPDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SAPFile.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SAPFile.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\ShoutcastDirectory.cpp"
 					>
 				</File>

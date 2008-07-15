@@ -45,6 +45,9 @@
 #include "FileDAAP.h"
 #endif
 #endif
+#ifdef HAS_FILESYSTEM_SAP
+#include "SAPFile.h"
+#endif
 #ifdef HAS_MMS
 #include "FileMMS.h"
 #endif
@@ -125,6 +128,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
     else if (strProtocol == "myth") return new CCMythFile();
     else if (strProtocol == "cmyth") return new CCMythFile();
+#ifdef HAS_FILESYSTEM_SAP
+    else if (strProtocol == "sap") return new CSAPFile();
+#endif
   }
 
   return NULL;
