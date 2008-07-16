@@ -44,7 +44,7 @@ bool CButtonTranslator::Load()
   // Load the config file
   CStdString keymapPath;
   //CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Keymap.xml", keymapPath);
-  keymapPath = _P("Q:\\system\\keymap.xml");
+  keymapPath = _P("Q:\\system\\Keymap.xml");
   bool success = LoadKeymap(keymapPath);
   keymapPath = g_settings.GetUserDataItem("Keymap.xml");
   success |= LoadKeymap(keymapPath);
