@@ -1,4 +1,4 @@
 all:
-	make -C SNES/SNESAPU
+	($MAKE) -C SNES/SNESAPU
 clean:
-	make -C SNES/SNESAPU clean
+	($MAKE) -C SNES/SNESAPU clean
