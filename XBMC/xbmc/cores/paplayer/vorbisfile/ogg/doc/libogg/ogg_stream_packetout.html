@@ -1,0 +1,71 @@
+<html>
+
+<head>
+<title>libogg - function - ogg_stream_packetout</title>
+<link rel=stylesheet href="style.css" type="text/css">
+</head>
+
+<body bgcolor=white text=black link="#5555ff" alink="#5555ff" vlink="#5555ff">
+<table border=0 width=100%>
+<tr>
+<td><p class=tiny>libogg documentation</p></td>
+<td align=right><p class=tiny>libogg release 1.1.3 - 20040927</p></td>
+</tr>
+</table>
+
+<h1>ogg_stream_packetout</h1>
+
+<p><i>declared in "ogg/ogg.h";</i></p>
+
+<p>This function assembles a raw data packet for output to the codec decoding engine. The data is already in the stream and broken into packet segments. Each successive call returns the next complete packet built from those segments.</p>
+<p>In a typical decoding situation, this should be used after calling <a href="ogg_stream_pagein.html">ogg_stream_pagein()</a> to submit a page of data to the bitstream. If the function returns 0, more data is needed and another page should be submitted. A non-zero return value indicates successful return of a packet.</p>
+
+<br><br>
+<table border=0 color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td>
+<pre><b>
+int ogg_stream_packetout(ogg_stream_state *os,ogg_packet *op);
+</b></pre>
+	</td>
+</tr>
+</table>
+
+<h3>Parameters</h3>
+<dl>
+<dt><i>os</i></dt>
+<dd>Pointer to a previously declared <a
+href="ogg_stream_state.html">ogg_stream_state</a> struct.  Before this function is called, an <a href="ogg_page.html">ogg_page</a> should be submitted to the stream using <a href="ogg_stream_pagein.html">ogg_stream_pagein()</a>.</dd>
+<dt><i>op</i></dt>
+<dd>Pointer to the packet to be filled in with pointers to the new data. 
+This will typically be submitted to a codec for decode after this 
+function is called.</dd>
+</dl>
+
+
+<h3>Return Values</h3>
+<blockquote>
+<ul>
+<li>-1 if we are out of sync and there is a gap in the data. Usually this will not be a fatal error. <i>op</i> contains a the first packet decodable after the hole.</li>
+<li>0 if there is insufficient data available to complete a packet. <i>op</i> has not been updated.
+<li>1 if a packet was assembled normally. <i>op</i> contains the next packet from the stream.</li>
+</ul>
+</blockquote>
+
+<br><br>
+
+<hr noshade>
+
+<table border=0 width=100%>
+<tr valign=top>
+<td><p class=tiny>copyright &copy; 2004 xiph.org</p></td>
+<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/vorbis/index.html">Ogg Vorbis</a><br><a href="mailto:team@xiph.org">team@xiph.org</a></p></td>
+</tr><tr>
+<td><p class=tiny>libogg documentation</p></td>
+<td align=right><p class=tiny>libogg release 1.1.3 - 20040927</p></td>
+</tr>
+</table>
+
+</body>
+
+</html>
