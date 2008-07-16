@@ -1,6 +1,10 @@
-#include <mpcdec/mpcdec.h>
+
+#ifdef _LINUX
+#define __declspec(x)
+#endif
 
 extern "C" {
+#include "mpcdec/mpcdec.h"
   bool __declspec(dllexport) Open(mpc_decoder **decoder, mpc_reader *reader, mpc_streaminfo *info, double *timeinseconds)
   {
     if (!reader || !decoder || !info) return false;
@@ -41,7 +45,9 @@ extern "C" {
     // free the memory of our decoder
     if (decoder)
     {
+#ifdef USE_SEEK_TABLES
       mpc_decoder_free(decoder);
+#endif
       delete decoder;
     }
   };
