@@ -1,4 +1,4 @@
 all:
-	make -C StSoundLibrary
+	($MAKE) -C StSoundLibrary
 clean:
-	make -C StSoundLibrary clean
+	($MAKE) -C StSoundLibrary clean
