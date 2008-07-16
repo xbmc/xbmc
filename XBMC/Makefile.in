@@ -98,7 +98,9 @@ papcodecs: dllloader linux
 	$(MAKE) -C xbmc/cores/paplayer/DCACodec
 	$(MAKE) -C xbmc/cores/paplayer/flac-1.2.1
 	$(MAKE) -C xbmc/cores/paplayer/GYMCodec
-	$(MAKE) -C xbmc/cores/paplayer/MACDll
+	if test $(ARCH) != "x86_64-linux"; then \
+		$(MAKE) -C xbmc/cores/paplayer/MACDll; \
+	fi
 	$(MAKE) -C xbmc/cores/paplayer/MIDCodec
 	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
 	$(MAKE) -C xbmc/cores/paplayer/MPCCodec
