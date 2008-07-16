@@ -32,9 +32,9 @@ cores:
 	$(MAKE) -C xbmc/cores
 paplayer: 
 	$(MAKE) -C xbmc/cores/paplayer
-dllloader: 
+dllloader: dllloader
 	$(MAKE) -C xbmc/cores/DllLoader
-exports: 
+exports:
 	$(MAKE) -C xbmc/cores/DllLoader/exports
 	$(MAKE) -C xbmc/cores/DllLoader/exports/util
 xbox: 
@@ -57,7 +57,7 @@ libscrobbler:
 	$(MAKE) -C xbmc/lib/libscrobbler
 unrarxlib: 
 	$(MAKE) -C xbmc/lib/UnrarXLib
-libpython: 
+libpython: dllloader
 	$(MAKE) -C xbmc/lib/libPython
 	$(MAKE) -C xbmc/lib/libPython/xbmcmodule
 	$(MAKE) -C xbmc/lib/libPython/linux
@@ -78,19 +78,19 @@ dvdplayer:
 	$(MAKE) -C xbmc/cores/VideoRenderers/VideoShaders 
 cdrip:
 	$(MAKE) -C xbmc/cdrip
-libcmyth: 
+libcmyth: dllloader 
 	$(MAKE) -C xbmc/lib/libcmyth
 eventclients:
 	$(MAKE) -C tools/EventClients
-librtmp: 
+librtmp: dllloader
 	$(MAKE) -C xbmc/lib/libRTMP
-libxbms:
+libxbms: dllloader
 	$(MAKE) -C xbmc/lib/libXBMS
-libexif:
+libexif: dllloader
 	$(MAKE) -C xbmc/lib/libexif
-librtv:
+librtv: dllloader
 	$(MAKE) -C xbmc/lib/libRTV
-papcodecs:
+papcodecs: dllloader
 	$(MAKE) -C xbmc/cores/paplayer/AACCodec
 	$(MAKE) -C xbmc/cores/paplayer/AC3Codec
 	$(MAKE) -C xbmc/cores/paplayer/ADPCMCodec
