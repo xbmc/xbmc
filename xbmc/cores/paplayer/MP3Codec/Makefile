@@ -5,7 +5,7 @@ MADCodec-i486-linux.so: libmad-compile MADCodec/MadMp3Decoder.o
 libmad-compile:
 	$(MAKE) -C libmad-0.15.1b
 	
-MADCodec/MadMp3Decoder.o: MADCodec/MadMp3Decoder.cpp
+MADCodec/MadMp3Decoder.o: MADCodec/MadMp3Decoder.cpp libmad-compile
 	g++ -o $@ -c $< -Ilibmad-0.15.1b -D_LINUX -fPIC -O3
 
 clean:
