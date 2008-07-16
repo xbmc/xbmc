@@ -234,7 +234,7 @@ target_alias = @target_alias@
 
 AUTOMAKE_OPTIONS = foreign 1.7
 
-SUBDIRS = doc include m4 man src examples test build obj
+SUBDIRS = doc include m4 man src build obj
 
 DISTCLEANFILES = libtool-disable-static
 
@@ -277,7 +277,7 @@ all: config.h
 	$(MAKE) libFLAC-i486-linux.so
 
 libFLAC-i486-linux.so: 
-	gcc -shared -fpic -o $@ -rdynamic src/libFLAC/*.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o && cp $@ ../../../../system/players/paplayer/
+	gcc -shared -fpic -o $@ -rdynamic src/libFLAC/*.o src/libFLAC/ia32/*.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o && cp $@ ../../../../system/players/paplayer/
 
 .SUFFIXES:
 
