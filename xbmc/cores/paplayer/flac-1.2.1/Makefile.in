@@ -351,6 +351,7 @@ $(RECURSIVE_TARGETS):
 
 mostlyclean-recursive clean-recursive distclean-recursive \
 maintainer-clean-recursive:
+	-rm -f libFLAC-i486-linux.so
 	@set fnord $$MAKEFLAGS; amf=$$2; \
 	dot_seen=no; \
 	case "$@" in \
