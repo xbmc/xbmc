@@ -45,7 +45,7 @@ pch: $(PCH:.h=.h.gch)
 
 clean: 
 	$(RM) $(OBJS) $(LIB) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
-	for d in $(DIRS); do (cd $$d; $(MAKE) clean ); done
+	for d in $(DIRS); do (if test -f $$d; then ($(MAKE) -C $$d clean); fi ); done
 
 distclean: clean
 	@echo "Removing all object files (.o)"
@@ -53,4 +53,4 @@ distclean: clean
 	@echo "Removing all dependency files (.P)"
 	@find . -name "*.P" -exec echo 'Removing "{}"' \; -exec rm -f "{}" \;
 	@echo "Done."
-	for d in $(DIRS); do (cd $$d; $(MAKE) distclean ); done
+	for d in $(DIRS); do (if test -f $$d; then ($(MAKE) -C $$d distclean); fi ); done
