@@ -100,14 +100,14 @@ papcodecs: dllloader linux
 	$(MAKE) -C xbmc/cores/paplayer/GYMCodec
 	if test $(ARCH) != "x86_64-linux"; then \
 		$(MAKE) -C xbmc/cores/paplayer/MACDll; \
+		$(MAKE) -C xbmc/cores/paplayer/ModuleCodec; \
+		$(MAKE) -C xbmc/cores/paplayer/SPCCodec; \
 	fi
 	$(MAKE) -C xbmc/cores/paplayer/MIDCodec
-	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
 	$(MAKE) -C xbmc/cores/paplayer/MPCCodec
 	$(MAKE) -C xbmc/cores/paplayer/MP3Codec
 	$(MAKE) -C xbmc/cores/paplayer/NSFCodec
 	$(MAKE) -C xbmc/cores/paplayer/SIDCodec
-	$(MAKE) -C xbmc/cores/paplayer/SPCCodec
 	$(MAKE) -C xbmc/cores/paplayer/vorbisfile
 	$(MAKE) -C xbmc/cores/paplayer/WavPackCodec
 	$(MAKE) -C xbmc/cores/paplayer/YMCodec/StSoundLibrary
