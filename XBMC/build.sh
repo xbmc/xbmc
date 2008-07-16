@@ -197,16 +197,8 @@ config() {
 }
 
 compile() {
-  if (( CONFIGURE )) 
-  then
-    config
-  fi
   if (( COMPILE ))
   then
-    if ! [[ -e "$SOURCEDIR/Makefile" ]]
-    then
-      config
-    fi
     if (( CLEAN ))
     then
       echo " Cleaning source directory."
@@ -218,6 +210,17 @@ compile() {
       fi
     else
       echo " Skipping source directory cleaning."
+    fi
+  fi
+  if (( CONFIGURE )) 
+  then
+    config
+  fi
+  if (( COMPILE ))
+  then
+    if ! [[ -e "$SOURCEDIR/Makefile" ]]
+    then
+      config
     fi
     echo " Compiling source."
     if [[ $MAKEFLAGS = "" ]]
@@ -494,7 +497,7 @@ BACKUPDIR="$SOURCEDIR/.backup"
 # See ./build.sh --help
 BUILDDIR="./BUILD"
 WEB=""
-CONFIGOPTS=""
+CONFIGOPTS="-C"
 OLDLANG="${LANG}"
 LANG=""
 (( UPDATE=1 ))
