@@ -179,7 +179,7 @@ target_alias = @target_alias@
 AUTOMAKE_OPTIONS = foreign
 SUBDIRS = src include
 all: all-recursive
-	make -f Makefile.xbmc_linux
+	($MAKE) -f Makefile.xbmc_linux
 
 .SUFFIXES:
 am--refresh:
