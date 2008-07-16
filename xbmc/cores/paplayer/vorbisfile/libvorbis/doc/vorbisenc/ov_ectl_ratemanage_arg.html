@@ -1,0 +1,92 @@
+<html>
+
+<head>
+<title>vorbis - datatype - ov_ectl_ratemanage_arg</title>
+<link rel=stylesheet href="style.css" type="text/css">
+</head>
+
+<body bgcolor=white text=black link="#5555ff" alink="#5555ff" vlink="#5555ff">
+<table border=0 width=100%>
+<tr>
+<td><p class=tiny>libvorbisenc documentation</p></td>
+<td align=right><p class=tiny>libvorbisenc release 1.1 - 20040709</p></td>
+</tr>
+</table>
+
+<h1>ov_ectl_ratemanage_arg</h1>
+
+<p><i>declared in "vorbis/vorbisenc.h"</i></p>
+
+<p>
+
+The ov_ectl_ratemanage_arg structure is used with <a
+href="vorbis_encode_ctl.html">vorbis_encode_ctl()</a> and the OV_ECTL_RATEMANAGE_GET,
+OV_ECTL_RATEMANAGE_SET, OV_ECTL_RATEMANAGE_AVG,
+OV_ECTL_RATEMANAGE_HARD calls in order to query and modify specifics
+of the encoder's bitrate management configuration.  Note that this is
+a deprecated interface; please use vorbis_encode_ctl() with the <a
+href="ov_ectl_ratemanage2_arg.html">ov_ectl_ratemanage2_arg</a> struct
+and OV_ECTL_RATEMANAGE2_GET and OV_ECTL_RATEMANAGE2_SET calls in new
+code.
+
+<p>
+
+<table border=0 width=100% color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td>
+<pre><b>struct ovectl_ratemanage_arg {
+  int    management_active;
+
+  long   bitrate_hard_min;
+  long   bitrate_hard_max;
+  double bitrate_hard_window;
+
+  long   bitrate_av_lo;
+  long   bitrate_av_hi;
+  double bitrate_av_window;
+  double bitrate_av_window_center;
+};</b></pre>
+	</td>
+</tr>
+</table>
+
+<h3>Relevant Struct Members</h3>
+<dl>
+
+<dt><i>management_active</i></dt>
+<dd>nonzero if bitrate management is active</dd>
+
+<dt><i>bitrate_hard_min</i></dt>
+<dd>hard lower limit (in kilobits per second) below which the stream bitrate will never be allowed for any given bitrate_hard_window seconds of time.</dd>
+<dt><i>bitrate_hard_max</i></dt>
+<dd>hard upper limit (in kilobits per second) above which the stream bitrate will never be allowed for any given bitrate_hard_window seconds of time.</dd>
+<dt><i>bitrate_hard_window</i></dt>
+<dd>the window period (in seconds) used to regulate the hard bitrate minimum and maximum</dd>
+
+<dt><i>bitrate_av_lo</i></dt>
+<dd>soft lower limit (in kilobits per second) below which the average bitrate tracker will start nudging the bitrate higher.</dd>
+<dt><i>bitrate_av_hi</i></dt>
+<dd>soft upper limit (in kilobits per second) above which the average bitrate tracker will start nudging the bitrate lower.</dd>
+<dt><i>bitrate_av_window</i></dt>
+<dd>the window period (in seconds) used to regulate the average bitrate minimum and maximum.</dd>
+<dt><i>bitrate_av_window_center</i></dt>
+<dd>Regulates the relative centering of the average and hard windows; in libvorbis 1.0 and 1.0.1, the hard window regulation overlapped but followed the average window regulation.  In libvorbis 1.1 a bit-reservoir interface replaces the old windowing interface; the older windowing interface is simulated and this field has no effect.</dd>
+
+</dl>
+
+
+<br><br>
+<hr noshade>
+<table border=0 width=100%>
+<tr valign=top>
+<td><p class=tiny>copyright &copy; 2004 vorbis team</p></td>
+<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/vorbis/index.html">Ogg Vorbis</a><br><a href="mailto:team@vorbis.org">team@vorbis.org</a></p></td>
+</tr><tr>
+<td><p class=tiny>vorbisfile documentation</p></td>
+<td align=right><p class=tiny>libvorbisenc release 1.1 - 20040709</p></td>
+</tr>
+</table>
+
+</body>
+
+</html>

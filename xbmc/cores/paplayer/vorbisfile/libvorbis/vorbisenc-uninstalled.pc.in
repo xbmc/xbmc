@@ -1,0 +1,14 @@
+# vorbisenc uninstalled pkg-config file
+
+prefix=
+exec_prefix=
+libdir=${pcfiledir}/lib
+includedir=${pcfiledir}/include
+
+Name: vorbisenc
+Description: vorbisenc is a library that provides a convenient API for setting up an encoding environment using libvorbis (uninstalled)
+Version: @VERSION@
+Requires: vorbis
+Conflicts:
+Libs: ${libdir}/libvorbisenc.la
+Cflags: -I${includedir}
