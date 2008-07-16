@@ -25,7 +25,6 @@
 #include "GUIEPGGridItemLayout.h"
 #include "GUIEPGGridItem.h"
 #include "TVDatabase.h"
-//#include "GUIWindowEPG.h"
 
 class CGUIEPGGridContainer : public CGUIControl
 {
@@ -33,22 +32,32 @@ public:
   CGUIEPGGridContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, int scrollTime);
   virtual ~CGUIEPGGridContainer(void);
 
-  bool OnAction(const CAction &action);
-  bool OnMessage(CGUIMessage& message);
+  virtual bool OnAction(const CAction &action);
+  virtual void OnDown();
+  virtual void OnUp();
+  virtual void OnLeft();
+  virtual void OnRight();
+  virtual bool OnMouseOver(const CPoint &point);
+  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseDoubleClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseWheel(char wheel, const CPoint &point);
+  virtual bool OnMessage(CGUIMessage& message);
+  virtual void SetFocus(bool bOnOff);
+  virtual void AllocResources();
+  virtual void FreeResources();
+  virtual void UpdateVisibility(const CGUIListItem *item = NULL);
+
 
   const int GetNumChannels()   { return m_numChannels; }
   void UpdateItems(EPGGrid &gridData);
 
-  virtual CStdString GetDescription() const;
-  virtual void SaveStates(std::vector<CControlState> &states);
+  CStdString GetDescription() const;
   int GetSelectedItem() const;
 
-  virtual void DoRender(DWORD currentTime);
+  void DoRender(DWORD currentTime);
   void Render();
   void LoadLayout(TiXmlElement *layout);
   void LoadContent(TiXmlElement *content);
-
-  /*void LoadData(const */
   
   virtual bool IsContainer() const { return true; };
 
@@ -62,20 +71,20 @@ protected:
   bool MoveUp(bool wrapAround);
   bool MoveLeft(bool wrapAround);
   bool MoveRight(bool wrapAround);
-  //virtual void MoveToItem(int item);
-  virtual void ValidateOffset();
-  virtual int CorrectOffset(int offset, int cursor) const;
-  virtual void UpdateLayout(bool refreshAllItems = false);
-  virtual void CalculateLayout();
-  //virtual void SelectItem(int item) {};
-  //virtual void Reset();
+  //void MoveToItem(int item);
+  void ValidateOffset();
+  int CorrectOffset(int offset, int cursor) const;
+  void UpdateLayout(bool refreshAllItems = false);
+  void CalculateLayout();
+  //void SelectItem(int item) {};
+  //void Reset();
   unsigned int GetNumItems() const { return m_gridItems.size(); };
 
   void MoveToRow(int row);
   void FreeMemory(int keepStart, int keepEnd);
   void GetCurrentLayouts();
 
-  CGUIEPGGridItemLayout *GetFocusedLayout() const;
+  CGUIListItemLayout *GetFocusedLayout() const;
   int m_offset;
   int m_cursor;
   float m_analogScrollCount;
@@ -90,8 +99,11 @@ protected:
 
   DWORD m_renderTime;
 
-  CGUIEPGGridItemLayout *m_layout;
-  CGUIEPGGridItemLayout *m_focusedLayout;
+  CGUIListItemLayout m_gridLayout;
+  CGUIListItemLayout m_focusedGridLayout;
+
+  CGUIListItemLayout *m_layout;
+  CGUIListItemLayout *m_focusedLayout;
 
   EPGGrid *m_pGridData;
   

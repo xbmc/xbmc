@@ -100,26 +100,26 @@ const int& CGUIEPGGridItem::GetDuration() const
   return m_pDuration;
 }
 
-void CGUIEPGGridItem::SetLayout(CGUIEPGGridItemLayout *layout)
+void CGUIEPGGridItem::SetLayout(CGUIListItemLayout *layout)
 {
   if (m_layout)
     delete m_layout;
-  m_gridlayout = layout;
+  m_layout = layout;
 }
 
-CGUIEPGGridItemLayout *CGUIEPGGridItem::GetLayout()
+CGUIListItemLayout *CGUIEPGGridItem::GetLayout()
 {
-  return m_gridlayout;
+  return m_layout;
 }
 
-void CGUIEPGGridItem::SetFocusedLayout(CGUIEPGGridItemLayout *layout)
+void CGUIEPGGridItem::SetFocusedLayout(CGUIListItemLayout *layout)
 {
-  if (m_focusedGridLayout)
-    delete m_focusedGridLayout;
-  m_focusedGridLayout = layout;
+  if (m_focusedLayout)
+    delete m_focusedLayout;
+  m_focusedLayout = layout;
 }
 
-CGUIEPGGridItemLayout *CGUIEPGGridItem::GetFocusedLayout()
+CGUIListItemLayout *CGUIEPGGridItem::GetFocusedLayout()
 {
-  return m_focusedGridLayout;
+  return m_focusedLayout;
 }

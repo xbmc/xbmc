@@ -24,6 +24,7 @@
 #include "GUIWindow.h"
 #include "TVDatabase.h"
 #include "GUIEPGGridContainer.h"
+#include "GUIDialogProgress.h"
 #include "PVRManager.h"
 
 #include <vector>
@@ -50,16 +51,13 @@ protected:
   void DisplayEmptyDatabaseMessage(bool bDisplay);
   bool m_bDisplayEmptyDatabaseMessage;
 
-private:
+  CGUIDialogProgress* m_dlgProgress;
+
   int m_daysToDisplay;
   int m_curDaysOffset;
   int m_numChannels;
-  
-  // save control state on window exit
-  int m_iLastControl;
-  int m_iSelectedItem;
 
-  CTVDatabase m_tvDB;
+  CTVDatabase m_database;
   EPGGrid m_gridData;
   CGUIEPGGridContainer *m_gridItems;
 };

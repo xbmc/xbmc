@@ -21,7 +21,6 @@
 
 #include "stdafx.h"
 #include "GUIWindowEPG.h"
-#include "GUIImage.h"
 #include "PVRManager.h"
 #include "GUISettings.h"
 #include "GUIWindowManager.h"
@@ -55,7 +54,22 @@ bool CGUIWindowEPG::OnAction(const CAction &action)
 
 bool CGUIWindowEPG::OnMessage(CGUIMessage& message)
 {
+  switch ( message.GetMessage() )
+  {
+  case GUI_MSG_WINDOW_DEINIT:
+    {
+      m_database.Close();
+    }
+    break;
 
+  case GUI_MSG_WINDOW_INIT:
+    {
+      m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      m_database.Open();
+      return CGUIWindow::OnMessage(message);
+    }
+    break;
+  }
   return CGUIWindow::OnMessage(message);
 }
 
@@ -80,9 +94,9 @@ void CGUIWindowEPG::GetEPG(int offset)
 {
   VECTVCHANNELS channels;
 
-  m_tvDB.Open();
-  m_tvDB.GetAllChannels(false, channels);
-  m_tvDB.Close();
+  m_database.Open();
+  m_database.GetAllChannels(false, channels);
+  m_database.Close();
 
   m_curDaysOffset = 0;
   m_daysToDisplay = 1;
@@ -98,8 +112,8 @@ void CGUIWindowEPG::GetEPG(int offset)
         it->shows.empty();
     }
     DWORD tick(timeGetTime());
-    m_tvDB.Open();
-    m_tvDB.BeginTransaction();
+    m_database.Open();
+    m_database.BeginTransaction();
 
     int items = 0;
     for (int i = 0; i < m_numChannels; i++)
@@ -108,13 +122,13 @@ void CGUIWindowEPG::GetEPG(int offset)
       curRow.channelName = channels[i]->GetLabel();
       curRow.channelNum  = channels[i]->GetPropertyInt("ChannelNum");
 
-      if(!m_tvDB.GetShowsByChannel(channels[i]->GetLabel(), curRow.shows, m_curDaysOffset, m_daysToDisplay))
+      if(!m_database.GetShowsByChannel(channels[i]->GetLabel(), curRow.shows, m_curDaysOffset, m_daysToDisplay))
         return; /* debug log: couldn't grab data */
       items += (int)curRow.shows.size();
       m_gridData.push_back(curRow);
     }
-    m_tvDB.CommitTransaction();
-    m_tvDB.Close();
+    m_database.CommitTransaction();
+    m_database.Close();
     CLog::Log(LOGDEBUG, "%s completed successfully in %u ms, returning %u items", __FUNCTION__, timeGetTime()-tick, items);
     m_bDisplayEmptyDatabaseMessage = false;
   }

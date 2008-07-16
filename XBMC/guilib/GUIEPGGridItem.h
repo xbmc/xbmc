@@ -37,7 +37,7 @@
 #include <string>
 
 //  Forward
-class CGUIEPGGridItemLayout;
+class CGUIListItemLayout;
 class CGUIListItem;
 
 /*!
@@ -70,16 +70,14 @@ public:
   void SetOverlayImage(GUIEPGGridItemOverlay icon, bool bOnOff=false);
   CStdString GetOverlayImage() const;
 
-  void SetLayout(CGUIEPGGridItemLayout *layout);
-  CGUIEPGGridItemLayout *GetLayout();
+  void SetLayout(CGUIListItemLayout *layout);
+  CGUIListItemLayout *GetLayout();
 
-  void SetFocusedLayout(CGUIEPGGridItemLayout *layout);
-  CGUIEPGGridItemLayout *GetFocusedLayout();
+  void SetFocusedLayout(CGUIListItemLayout *layout);
+  CGUIListItemLayout *GetFocusedLayout();
 
 protected:
   GUIEPGGridItemOverlay m_overlayIcon; // type of overlay icon
-  CGUIEPGGridItemLayout *m_gridlayout;
-  CGUIEPGGridItemLayout *m_focusedGridLayout;
 
   CStdString m_pCategory;
   CStdString m_pShortDesc;
