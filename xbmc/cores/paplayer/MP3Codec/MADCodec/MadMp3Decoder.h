@@ -7,7 +7,7 @@
 #define __cdecl
 #endif
 
-#include <mad.h>
+#include "mad.h"
 #include "dec_if.h"
 
 enum madx_sig {
