@@ -1,0 +1,37 @@
+GO
+
+>_44c9s_s noninterleaved
+haux 44c9_s/resaux_0.vqd _44c9_s_short 0,16,2 10
+
+>_44c9_s noninterleaved
+haux 44c9_s/resaux_1.vqd _44c9_s_long 0,64,2 10
+	
+
+#     0   1   2   4   8  16  32  71 157   +      
+#         1   2   3   4   8  16  71 157   +
+
+#     0   1   2   3   4   5   6   7   8   9
+# 1                       .   .   .   .   .
+# 2                       .   .   .   .   .
+# 4       .   .   .   .                   .
+ 
+:_p1_0 44c9_s/res_part1_pass2.vqd, 4, nonseq cull, 0 +- 1
+:_p2_0 44c9_s/res_part2_pass2.vqd, 4, nonseq cull, 0 +- 1 2
+:_p3_0 44c9_s/res_part3_pass2.vqd, 2, nonseq cull, 0 +- 1 2 3 4
+:_p4_0 44c9_s/res_part4_pass2.vqd, 2, nonseq cull, 0 +- 1 2 3 4 5 6 7 8
+
+:_p5_0 44c9_s/res_part5_pass0.vqd, 4, nonseq cull, 0 +- 11
+:_p5_1 44c9_s/res_part5_pass1.vqd, 2, nonseq cull, 0 +- 1 2 3 4 5 
+
+:_p6_0 44c9_s/res_part6_pass0.vqd, 2, nonseq cull, 0 +- 5 10 15 20 25 30
+:_p6_1 44c9_s/res_part6_pass1.vqd, 2, nonseq cull, 0 +- 1 2 
+
+:_p7_0 44c9_s/res_part7_pass0.vqd, 2, nonseq, 0 +- 11 22 33 44 55 66
+:_p7_1 44c9_s/res_part7_pass1.vqd, 2, nonseq cull, 0 +- 1 2 3 4 5
+
+:_p8_0 44c9_s/res_part8_pass0.vqd, 2, nonseq, 0 +- 21 42 63 84 105 126 147
+:_p8_1 44c9_s/res_part8_pass1.vqd, 2, nonseq cull, 0 +- 1 2 3 4 5 6 7 8 9 10
+
+:_p9_0 44c9_s/res_part9_pass0.vqd, 2, nonseq, 0 +- 931 1862 2793 3724 4655 5586 6517 7448 8379
+:_p9_1 44c9_s/res_part9_pass1.vqd, 2, nonseq, 0 +- 49 98 147 196 245 294 343 392 441
+:_p9_2 44c9_s/res_part9_pass2.vqd, 1, nonseq, 0 +- 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 

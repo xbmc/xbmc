@@ -1,0 +1,257 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+                "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+
+]>
+
+<section id="vorbis-spec-floor0">
+<sectioninfo>
+<releaseinfo>
+  $Id: 06-floor0.xml 10424 2005-11-23 08:44:18Z xiphmont $
+</releaseinfo>
+</sectioninfo>  
+<title>Floor type 0 setup and decode</title>
+
+
+<section>
+<title>Overview</title>
+
+<para>
+Vorbis floor type zero uses Line Spectral Pair (LSP, also alternately
+known as Line Spectral Frequency or LSF) representation to encode a
+smooth spectral envelope curve as the frequency response of the LSP
+filter.  This representation is equivalent to a traditional all-pole
+infinite impulse response filter as would be used in linear predictive
+coding; LSP representation may be converted to LPC representation and
+vice-versa.</para>
+
+</section>
+
+<section>
+<title>Floor 0 format</title>
+
+<para>
+Floor zero configuration consists of six integer fields and a list of
+VQ codebooks for use in coding/decoding the LSP filter coefficient
+values used by each frame. </para>
+
+<section><title>header decode</title>
+
+<para>
+Configuration information for instances of floor zero decodes from the
+codec setup header (third packet).  configuration decode proceeds as
+follows:</para>
+
+<screen>
+  1) [floor0_order] = read an unsigned integer of 8 bits
+  2) [floor0_rate] = read an unsigned integer of 16 bits
+  3) [floor0_bark_map_size] = read an unsigned integer of 16 bits
+  4) [floor0_amplitude_bits] = read an unsigned integer of six bits
+  5) [floor0_amplitude_offset] = read an unsigned integer of eight bits
+  6) [floor0_number_of_books] = read an unsigned integer of four bits and add 1
+  7) if any of [floor0_order], [floor0_rate], [floor0_bark_map_size], [floor0_amplitude_bits],
+     [floor0_amplitude_offset] or [floor0_number_of_books] are less than zero, the stream is not decodable
+  8) array [floor0_book_list] = read a list of [floor0_number_of_books] unsigned integers of eight bits each;
+</screen>
+
+<para>
+An end-of-packet condition during any of these bitstream reads renders
+this stream undecodable.  In addition, any element of the array
+<varname>[floor0_book_list]</varname> that is greater than the maximum codebook
+number for this bitstream is an error condition that also renders the
+stream undecodable.</para>
+
+</section>
+
+<section id="vorbis-spec-floor0-decode">
+<title>packet decode</title>
+
+<para>
+Extracting a floor0 curve from an audio packet consists of first
+decoding the curve amplitude and <varname>[floor0_order]</varname> LSP
+coefficient values from the bitstream, and then computing the floor
+curve, which is defined as the frequency response of the decoded LSP
+filter.</para>
+
+<para>
+Packet decode proceeds as follows:</para>
+<screen>
+  1) [amplitude] = read an unsigned integer of [floor0_amplitude_bits] bits
+  2) if ( [amplitude] is greater than zero ) {
+       3) [coefficients] is an empty, zero length vector
+       4) [booknumber] = read an unsigned integer of <link linkend="vorbis-spec-ilog">ilog</link>( [floor0_number_of_books] ) bits
+       5) if ( [booknumber] is greater than the highest number decode codebook ) then packet is undecodable
+       6) [last] = zero;
+       7) vector [temp_vector] = read vector from bitstream using codebook number [floor0_book_list] element [booknumber] in VQ context.
+       8) add the scalar value [last] to each scalar in vector [temp_vector]
+       9) [last] = the value of the last scalar in vector [temp_vector]
+      10) concatenate [temp_vector] onto the end of the [coefficients] vector
+      11) if (length of vector [coefficients] is less than [floor0_order], continue at step 6
+
+     }
+
+ 12) done.
+ 
+</screen>
+
+<para>
+Take note of the following properties of decode:
+<itemizedlist>
+ <listitem><simpara>An <varname>[amplitude]</varname> value of zero must result in a return code that indicates this channel is unused in this frame (the output of the channel will be all-zeroes in synthesis).  Several later stages of decode don't occur for an unused channel.</simpara></listitem>
+ <listitem><simpara>An end-of-packet condition during decode should be considered a
+nominal occruence; if end-of-packet is reached during any read
+operation above, floor decode is to return 'unused' status as if the
+<varname>[amplitude]</varname> value had read zero at the beginning of decode.</simpara></listitem>
+
+ <listitem><simpara>The book number used for decode
+can, in fact, be stored in the bitstream in <link linkend="vorbis-spec-ilog">ilog</link>( <varname>[floor0_number_of_books]</varname> -
+1 ) bits.  Nevertheless, the above specification is correct and values
+greater than the maximum possible book value are reserved.</simpara></listitem>
+
+ <listitem><simpara>The number of scalars read into the vector <varname>[coefficients]</varname>
+may be greater than <varname>[floor0_order]</varname>, the number actually
+required for curve computation.  For example, if the VQ codebook used
+for the floor currently being decoded has a
+<varname>[codebook_dimensions]</varname> value of three and
+<varname>[floor0_order]</varname> is ten, the only way to fill all the needed
+scalars in <varname>[coefficients]</varname> is to to read a total of twelve
+scalars as four vectors of three scalars each.  This is not an error
+condition, and care must be taken not to allow a buffer overflow in
+decode. The extra values are not used and may be ignored or discarded.</simpara></listitem>
+</itemizedlist>
+</para>
+
+</section>
+
+<section id="vorbis-spec-floor0-synth">
+<title>curve computation</title>
+
+<para>
+Given an <varname>[amplitude]</varname> integer and <varname>[coefficients]</varname>
+vector from packet decode as well as the [floor0_order],
+[floor0_rate], [floor0_bark_map_size], [floor0_amplitude_bits] and
+[floor0_amplitude_offset] values from floor setup, and an output
+vector size <varname>[n]</varname> specified by the decode process, we compute a
+floor output vector.</para>
+
+<para>
+If the value <varname>[amplitude]</varname> is zero, the return value is a
+length <varname>[n]</varname> vector with all-zero scalars.  Otherwise, begin by
+assuming the following definitions for the given vector to be
+synthesized:</para>
+
+<informalequation>
+ <mediaobject>
+  <textobject><phrase>[lsp map equation]</phrase></textobject>
+  <textobject role="tex"><phrase>
+   <![CDATA[
+   \begin{math}
+     \mathrm{map}_i = \left\{
+       \begin{array}{ll}
+          \min (  
+            \mathtt{floor0\_bark\_map\_size} - 1,
+            foobar
+          ) & \textrm{for } i \in [0,n-1] \\
+          -1 & \textrm{for } i = n
+        \end{array}
+      \right.
+    \end {math}
+    
+    where
+    
+    \begin{math}
+    foobar = 
+      \left\lfloor
+        \mathrm{bark}\left(\frac{\mathtt{floor0\_rate} \cdot i}{2n}\right) \cdot \frac{\mathtt{floor0\_bark\_map\_size}} {\mathrm{bark}(.5 \cdot \mathtt{floor0\_rate})} 
+      \right\rfloor
+    \end{math}
+                  
+    and
+                
+    \begin{math}
+      \mathrm{bark}(x) = 13.1 \arctan (.00074x) + 2.24 \arctan (.0000000185x^2 + .0001x)
+    \end{math}
+    ]]>
+   </phrase></textobject>
+  <imageobject><imagedata  fileref="lspmap.png"/></imageobject>
+ </mediaobject>
+</informalequation>
+
+<para>
+The above is used to synthesize the LSP curve on a Bark-scale frequency
+axis, then map the result to a linear-scale frequency axis.
+Similarly, the below calculation synthesizes the output LSP curve <varname>[output]</varname> on a log
+(dB) amplitude scale, mapping it to linear amplitude in the last step:</para>
+
+<orderedlist>
+ <listitem><simpara> <varname>[i]</varname> = 0 </simpara></listitem>
+ <listitem><para>if ( <varname>[floor0_order]</varname> is odd ) {
+  <orderedlist>
+   <listitem><para>calculate <varname>[p]</varname> and <varname>[q]</varname> according to:
+        <informalequation>
+         <mediaobject>
+          <textobject><phrase>[equation for odd lsp]</phrase></textobject>
+	  <textobject role="tex"><phrase>
+	   <![CDATA[
+           \begin{eqnarray*}
+             p & = & (1 - \cos^2\omega)\prod_{j=0}^{(\mathtt{order}-3)/2} 4 (\cos c_{2j+1} - \cos \omega)^2 \\
+             q & = & \frac{1}{4} \prod_{j=0}^{(\mathtt{order}-1)/2} 4 (\cos c_{2j+1} - \cos \omega)^2
+           \end{eqnarray*}
+	   ]]>
+          </phrase></textobject>
+	  <imageobject><imagedata fileref="oddlsp.png"/></imageobject>
+	 </mediaobject>
+        </informalequation>
+   </para></listitem>
+  </orderedlist>
+  } else <varname>[floor0_order]</varname> is even {
+  <orderedlist>
+   <listitem><para>calculate <varname>[p]</varname> and <varname>[q]</varname> according to:
+        <informalequation>
+         <mediaobject>
+	  <textobject><phrase>[equation for even lsp]</phrase></textobject>
+	  <textobject role="tex"><phrase>
+	   <![CDATA[
+           \begin{eqnarray*}
+             p & = & \frac{(1 - \cos^2\omega)}{2} \prod_{j=0}^{(\mathtt{order}-2)/2} 4 (\cos c_{2j} - \cos \omega)^2 \\
+             q & = & \frac{(1 + \cos^2\omega)}{2} \prod_{j=0}^{(\mathtt{order}-2)/2} 4 (\cos c_{2j} - \cos \omega)^2
+           \end{eqnarray*}
+	   ]]>
+          </phrase></textobject>
+	  <imageobject><imagedata fileref="evenlsp.png"/></imageobject>
+	 </mediaobject>
+        </informalequation>
+   </para></listitem>
+  </orderedlist> 
+  }
+ </para></listitem>
+ <listitem><para>calculate <varname>[linear_floor_value]</varname> according to:
+     <informalequation>
+      <mediaobject>
+       <textobject><phrase>[expression for floorval]</phrase></textobject>
+       <textobject role="tex"><phrase>
+	 <![CDATA[
+         \begin{math}
+           \exp \left( .11512925 \left(\frac{\mathtt{amplitude} \cdot \mathtt{floor0\_amplitute\_offset}}{(2^{\mathtt{floor0\_amplitude\_bits}}-1)\sqrt{p+q}}
+                  - \mathtt{floor0\_amplitude\_offset} \right) \right)
+         \end{math}
+	 ]]>
+       </phrase></textobject>
+       <imageobject><imagedata fileref="floorval.png"/></imageobject>
+      </mediaobject>
+     </informalequation>
+ </para></listitem>
+ <listitem><simpara><varname>[iteration_condition]</varname> = map element <varname>[i]</varname></simpara></listitem>
+ <listitem><simpara><varname>[output]</varname> element <varname>[i]</varname> = <varname>[linear_floor_value]</varname></simpara></listitem>
+ <listitem><simpara>increment <varname>[i]</varname></simpara></listitem>
+ <listitem><simpara>if ( map element <varname>[i]</varname> is equal to <varname>[iteration_condition]</varname> ) continue at step 5</simpara></listitem>
+ <listitem><simpara>if ( <varname>[i]</varname> is less than <varname>[n]</varname> ) continue at step 2</simpara></listitem>
+ <listitem><simpara>done</simpara></listitem>
+</orderedlist>
+
+</section>
+
+</section>
+
+</section>
+

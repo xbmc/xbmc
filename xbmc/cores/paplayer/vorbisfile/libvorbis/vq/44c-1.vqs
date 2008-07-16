@@ -1,0 +1,63 @@
+GO
+
+>_44cn1s_s noninterleaved
+haux 44c-1_s/resaux_0.vqd _44cn1_s_short 0,16,2 9
+
+>_44cn1_s noninterleaved
+haux 44c-1_s/resaux_1.vqd _44cn1_s_long 0,64,2 9
+	
+#     0   1   2   2   4   8  16  32   +      
+#         0   0  99   4   8  16  32   +
+
+#     0   1   2   3   4   5   6   7   8
+# 1                           .   .   .
+# 2                           .   .   .
+# 4       .   .   .   .   .           .
+ 
+:_p1_0 44c-1_s/res_part1_pass2.vqd, 8, nonseq cull, 0 +- 1
+:_p2_0 44c-1_s/res_part2_pass2.vqd, 4, nonseq cull, 0 +- 1 2
+:_p3_0 44c-1_s/res_part3_pass2.vqd, 2, nonseq cull, 0 +- 1 2 3 4
+:_p4_0 44c-1_s/res_part4_pass2.vqd, 2, nonseq cull, 0 +- 1 2 3 4
+:_p5_0 44c-1_s/res_part5_pass2.vqd, 2, nonseq cull, 0 +- 1 2 3 4 5 6 7 8
+
+:_p6_0 44c-1_s/res_part6_pass0.vqd, 4, nonseq cull, 0 +- 11
+:_p6_1 44c-1_s/res_part6_pass1.vqd, 2, nonseq cull, 0 +- 1 2 3 4 5 
+
+:_p7_0 44c-1_s/res_part7_pass0.vqd, 2, nonseq cull, 0 +- 5 10 15 20 25 30
+:_p7_1 44c-1_s/res_part7_pass1.vqd, 2, nonseq cull, 0 +- 1 2 
+
+:_p8_0 44c-1_s/res_part8_pass0.vqd, 4, nonseq, 0 +- 221 442
+:_p8_1 44c-1_s/res_part8_pass1.vqd, 2, nonseq, 0 +- 17 34 51 68 85 102 
+:_p8_2 44c-1_s/res_part8_pass2.vqd, 2, nonseq, 0 +- 1 2 3 4 5 6 7 8
+
+
+>_44cn1s_sm noninterleaved
+haux 44c-1_sm/resaux_0.vqd _44cn1_sm_short 0,16,2 9
+
+>_44cn1_sm noninterleaved
+haux 44c-1_sm/resaux_1.vqd _44cn1_sm_long 0,64,2 9
+	
+#     0   1   2   2   4   8  16  32   +      
+#         0   0  99   4   8  16  32   +
+
+#     0   1   2   3   4   5   6   7   8
+# 1                           .   .   .
+# 2                           .   .   .
+# 4       .   .   .   .   .           .
+ 
+:_p1_0 44c-1_sm/res_part1_pass2.vqd, 8, nonseq cull, 0 +- 1
+:_p2_0 44c-1_sm/res_part2_pass2.vqd, 4, nonseq cull, 0 +- 1 2
+:_p3_0 44c-1_sm/res_part3_pass2.vqd, 2, nonseq cull, 0 +- 1 2 3 4
+:_p4_0 44c-1_sm/res_part4_pass2.vqd, 2, nonseq cull, 0 +- 1 2 3 4
+:_p5_0 44c-1_sm/res_part5_pass2.vqd, 2, nonseq cull, 0 +- 1 2 3 4 5 6 7 8
+
+:_p6_0 44c-1_sm/res_part6_pass0.vqd, 4, nonseq cull, 0 +- 11
+:_p6_1 44c-1_sm/res_part6_pass1.vqd, 2, nonseq cull, 0 +- 1 2 3 4 5 
+
+:_p7_0 44c-1_sm/res_part7_pass0.vqd, 2, nonseq cull, 0 +- 5 10 15 20 25 30
+:_p7_1 44c-1_sm/res_part7_pass1.vqd, 2, nonseq cull, 0 +- 1 2 
+
+:_p8_0 44c-1_sm/res_part8_pass0.vqd, 2, nonseq, 0 +- 221 442 663 884
+:_p8_1 44c-1_sm/res_part8_pass1.vqd, 2, nonseq, 0 +- 17 34 51 68 85 102 
+:_p8_2 44c-1_sm/res_part8_pass2.vqd, 2, nonseq, 0 +- 1 2 3 4 5 6 7 8
+

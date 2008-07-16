@@ -1,0 +1,10 @@
+GO
+>floor_11
+=8-11c0_s 8-11c1_s
+
+build line_256x4_class0 0-256
+build line_256x4_0sub0  0-4
+build line_256x4_0sub1  4-10
+build line_256x4_0sub2  10-25
+build line_256x4_0sub3  25-64
+
