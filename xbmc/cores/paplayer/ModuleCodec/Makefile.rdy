@@ -204,12 +204,12 @@ LIBDIR := lib/$(PLATFORM)
 OBJDIR_BASE := obj/$(PLATFORM)
 
 make-outdirs:
-	-$(call MKDIR,lib)
-	-$(call MKDIR,lib/$(PLATFORM))
-	-$(call MKDIR,obj)
-	-$(call MKDIR,obj/$(PLATFORM))
-	-$(call MKDIR,obj/$(PLATFORM)/debug)
-	-$(call MKDIR,obj/$(PLATFORM)/release)
+	-test -d lib || $(call MKDIR,lib)
+	-test -d lib/$(PLATFORM) || $(call MKDIR,lib/$(PLATFORM))
+	-test -d obj || $(call MKDIR,obj)
+	-test -d obj/$(PLATFORM) || $(call MKDIR,obj/$(PLATFORM))
+	-test -d obj/$(PLATFORM)/debug || $(call MKDIR,obj/$(PLATFORM)/debug)
+	-test -d obj/$(PLATFORM)/release || $(call MKDIR,obj/$(PLATFORM)/release)
 
 
 ifdef USE_ICC
