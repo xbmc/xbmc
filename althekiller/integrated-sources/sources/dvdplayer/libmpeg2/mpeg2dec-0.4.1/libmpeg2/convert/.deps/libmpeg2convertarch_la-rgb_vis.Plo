@@ -1,4 +1,0 @@
-libmpeg2convertarch_la-rgb_vis.lo libmpeg2convertarch_la-rgb_vis.o:  \
- rgb_vis.c ../../include/config.h
-
-../../include/config.h:

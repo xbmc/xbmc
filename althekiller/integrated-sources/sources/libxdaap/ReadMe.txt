@@ -1,1 +1,0 @@
-This library is based mainly on the libOpenDAAP library by David Hammerton (http://craz.net/programs/itunes/libopendaap.html)

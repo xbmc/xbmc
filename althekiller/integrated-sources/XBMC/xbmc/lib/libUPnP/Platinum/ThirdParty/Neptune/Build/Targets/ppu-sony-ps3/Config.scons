@@ -1,8 +1,0 @@
-LoadTool('gcc-generic', env, gcc_cross_prefix='ppu-lv2')
-
-## add a post processing step for execuables
-env['NPT_EXECUTABLE_POST_PROCESSOR'] = Action('make_fself $TARGET ${TARGET.base}.self')
-
-### Neptune System Files
-env['NPT_SYSTEM_SOURCES']={'Source/System/StdC':'*.cpp', 'Source/System/Bsd':'NptBsdSockets.cpp', 'Source/System/PS3':'*.cpp', 'Source/System/Null':'NptNullNetwork.cpp'}
-env['NPT_EXTRA_LIBS']=['net']

@@ -1,3 +1,0 @@
-audio_out_win.o audio_out_win.o: audio_out_win.c ../config.h
-
-../config.h:

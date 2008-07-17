@@ -1,7 +1,0 @@
-This is a tentative TODO file which will probably get much longer before
-it gets much shorter.
-
-- Recognizing (and overriding) debug options in the smb.conf file
-- Support for 'name=value' parameters in the PAM config
-- Compliant handling of unrecognized PAM parameters (i.e., fail on error)
-- 
