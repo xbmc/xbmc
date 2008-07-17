@@ -866,6 +866,11 @@ void CDVDPlayer::Process()
 
       // any demuxer supporting non blocking reads, should return empty packates
       CLog::Log(LOGINFO, "%s - eof reading from demuxer", __FUNCTION__);
+
+      // ignore this for dvd's, to allow continuation on errors
+      if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+        continue;
+
       break;
     }
 
@@ -2329,8 +2334,6 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 
         m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NAV);
         m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
-
-        return NAVRESULT_HOLD;
       }
       break;
     case DVDNAV_CELL_CHANGE:
