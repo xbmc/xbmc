@@ -221,7 +221,7 @@ target_alias = @target_alias@
 
 @FLaC__HAS_XMMS_TRUE@XMMS_DIRS = plugin_common plugin_xmms
 
-@FLaC__WITH_CPPLIBS_TRUE@CPPLIBS_DIRS = libFLAC++ test_libFLAC++
+@FLaC__WITH_CPPLIBS_TRUE@CPPLIBS_DIRS = libFLAC++ 
 
 SUBDIRS = \
 	libFLAC \
@@ -231,11 +231,6 @@ SUBDIRS = \
 	monkeys_audio_utilities \
 	$(XMMS_DIRS) \
 	plugin_winamp2 \
-	test_grabbag \
-	test_libs_common \
-	test_libFLAC \
-	test_seeking \
-	test_streams \
 	$(CPPLIBS_DIRS)
 
 
@@ -256,9 +251,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
 	check-recursive installcheck-recursive
 DIST_COMMON = $(srcdir)/Makefile.in Makefile.am
 DIST_SUBDIRS = libFLAC share flac metaflac monkeys_audio_utilities \
-	plugin_common plugin_xmms plugin_winamp2 test_grabbag \
-	test_libs_common test_libFLAC test_seeking test_streams \
-	libFLAC++ test_libFLAC++
+	plugin_common plugin_xmms plugin_winamp2 
 all: all-recursive
 
 .SUFFIXES:

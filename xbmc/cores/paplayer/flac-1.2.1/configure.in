@@ -341,43 +341,13 @@ AC_CONFIG_FILES([ \
 	src/share/replaygain_synthesis/include/Makefile \
 	src/share/replaygain_synthesis/include/private/Makefile \
 	src/share/utf8/Makefile \
-	src/test_grabbag/Makefile \
-	src/test_grabbag/cuesheet/Makefile \
-	src/test_grabbag/picture/Makefile \
-	src/test_libs_common/Makefile \
-	src/test_libFLAC/Makefile \
-	src/test_libFLAC++/Makefile \
-	src/test_seeking/Makefile \
-	src/test_streams/Makefile \
-	examples/Makefile \
-	examples/c/Makefile \
-	examples/c/decode/Makefile \
-	examples/c/decode/file/Makefile \
-	examples/c/encode/Makefile \
-	examples/c/encode/file/Makefile \
-	examples/cpp/Makefile \
-	examples/cpp/decode/Makefile \
-	examples/cpp/decode/file/Makefile \
-	examples/cpp/encode/Makefile \
-	examples/cpp/encode/file/Makefile \
 	include/Makefile \
 	include/FLAC/Makefile \
 	include/FLAC++/Makefile \
 	include/share/Makefile \
 	include/share/grabbag/Makefile \
 	include/test_libs_common/Makefile \
-	doc/Makefile \
-	doc/html/Makefile \
-	doc/html/images/Makefile \
-	doc/html/images/hw/Makefile \
-	doc/html/ru/Makefile \
 	m4/Makefile \
-	man/Makefile \
-	test/Makefile \
-	test/cuesheets/Makefile \
-	test/flac-to-flac-metadata-test-files/Makefile \
-	test/metaflac-test-files/Makefile \
-	test/pictures/Makefile \
 	build/Makefile \
 	obj/Makefile \
 	obj/debug/Makefile \
