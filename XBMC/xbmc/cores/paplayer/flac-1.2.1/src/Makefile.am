@@ -31,11 +31,6 @@ SUBDIRS = \
 	monkeys_audio_utilities \
 	$(XMMS_DIRS) \
 	plugin_winamp2 \
-	test_grabbag \
-	test_libs_common \
-	test_libFLAC \
-	test_seeking \
-	test_streams \
 	$(CPPLIBS_DIRS)
 
 EXTRA_DIST = \
