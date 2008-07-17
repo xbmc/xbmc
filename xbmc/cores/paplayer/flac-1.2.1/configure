@@ -24086,7 +24086,7 @@ else
 fi
 
 
-ac_config_files="$ac_config_files Makefile src/Makefile src/libFLAC/Makefile src/libFLAC/flac.pc src/libFLAC/ia32/Makefile src/libFLAC/ppc/Makefile src/libFLAC/ppc/as/Makefile src/libFLAC/ppc/gas/Makefile src/libFLAC/include/Makefile src/libFLAC/include/private/Makefile src/libFLAC/include/protected/Makefile src/libFLAC++/Makefile src/libFLAC++/flac++.pc src/flac/Makefile src/metaflac/Makefile src/monkeys_audio_utilities/Makefile src/monkeys_audio_utilities/flac_mac/Makefile src/monkeys_audio_utilities/flac_ren/Makefile src/plugin_common/Makefile src/plugin_winamp2/Makefile src/plugin_winamp2/include/Makefile src/plugin_winamp2/include/winamp2/Makefile src/plugin_xmms/Makefile src/share/Makefile src/share/getopt/Makefile src/share/grabbag/Makefile src/share/replaygain_analysis/Makefile src/share/replaygain_synthesis/Makefile src/share/replaygain_synthesis/include/Makefile src/share/replaygain_synthesis/include/private/Makefile src/share/utf8/Makefile src/test_grabbag/Makefile src/test_grabbag/cuesheet/Makefile src/test_grabbag/picture/Makefile src/test_libs_common/Makefile src/test_libFLAC/Makefile src/test_libFLAC++/Makefile src/test_seeking/Makefile src/test_streams/Makefile examples/Makefile examples/c/Makefile examples/c/decode/Makefile examples/c/decode/file/Makefile examples/c/encode/Makefile examples/c/encode/file/Makefile examples/cpp/Makefile examples/cpp/decode/Makefile examples/cpp/decode/file/Makefile examples/cpp/encode/Makefile examples/cpp/encode/file/Makefile include/Makefile include/FLAC/Makefile include/FLAC++/Makefile include/share/Makefile include/share/grabbag/Makefile include/test_libs_common/Makefile doc/Makefile doc/html/Makefile doc/html/images/Makefile doc/html/images/hw/Makefile doc/html/ru/Makefile m4/Makefile man/Makefile test/Makefile test/cuesheets/Makefile test/flac-to-flac-metadata-test-files/Makefile test/metaflac-test-files/Makefile test/pictures/Makefile build/Makefile obj/Makefile obj/debug/Makefile obj/debug/bin/Makefile obj/debug/lib/Makefile obj/release/Makefile obj/release/bin/Makefile obj/release/lib/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile src/libFLAC/Makefile src/libFLAC/flac.pc src/libFLAC/ia32/Makefile src/libFLAC/ppc/Makefile src/libFLAC/ppc/as/Makefile src/libFLAC/ppc/gas/Makefile src/libFLAC/include/Makefile src/libFLAC/include/private/Makefile src/libFLAC/include/protected/Makefile src/libFLAC++/Makefile src/libFLAC++/flac++.pc src/flac/Makefile src/metaflac/Makefile src/monkeys_audio_utilities/Makefile src/monkeys_audio_utilities/flac_mac/Makefile src/monkeys_audio_utilities/flac_ren/Makefile src/plugin_common/Makefile src/plugin_winamp2/Makefile src/plugin_winamp2/include/Makefile src/plugin_winamp2/include/winamp2/Makefile src/plugin_xmms/Makefile src/share/Makefile src/share/getopt/Makefile src/share/grabbag/Makefile src/share/replaygain_analysis/Makefile src/share/replaygain_synthesis/Makefile src/share/replaygain_synthesis/include/Makefile src/share/replaygain_synthesis/include/private/Makefile src/share/utf8/Makefile include/Makefile include/FLAC/Makefile include/FLAC++/Makefile include/share/Makefile include/share/grabbag/Makefile include/test_libs_common/Makefile m4/Makefile build/Makefile obj/Makefile obj/debug/Makefile obj/debug/bin/Makefile obj/debug/lib/Makefile obj/release/Makefile obj/release/bin/Makefile obj/release/lib/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -24865,43 +24865,13 @@ do
     "src/share/replaygain_synthesis/include/Makefile") CONFIG_FILES="$CONFIG_FILES src/share/replaygain_synthesis/include/Makefile" ;;
     "src/share/replaygain_synthesis/include/private/Makefile") CONFIG_FILES="$CONFIG_FILES src/share/replaygain_synthesis/include/private/Makefile" ;;
     "src/share/utf8/Makefile") CONFIG_FILES="$CONFIG_FILES src/share/utf8/Makefile" ;;
-    "src/test_grabbag/Makefile") CONFIG_FILES="$CONFIG_FILES src/test_grabbag/Makefile" ;;
-    "src/test_grabbag/cuesheet/Makefile") CONFIG_FILES="$CONFIG_FILES src/test_grabbag/cuesheet/Makefile" ;;
-    "src/test_grabbag/picture/Makefile") CONFIG_FILES="$CONFIG_FILES src/test_grabbag/picture/Makefile" ;;
-    "src/test_libs_common/Makefile") CONFIG_FILES="$CONFIG_FILES src/test_libs_common/Makefile" ;;
-    "src/test_libFLAC/Makefile") CONFIG_FILES="$CONFIG_FILES src/test_libFLAC/Makefile" ;;
-    "src/test_libFLAC++/Makefile") CONFIG_FILES="$CONFIG_FILES src/test_libFLAC++/Makefile" ;;
-    "src/test_seeking/Makefile") CONFIG_FILES="$CONFIG_FILES src/test_seeking/Makefile" ;;
-    "src/test_streams/Makefile") CONFIG_FILES="$CONFIG_FILES src/test_streams/Makefile" ;;
-    "examples/Makefile") CONFIG_FILES="$CONFIG_FILES examples/Makefile" ;;
-    "examples/c/Makefile") CONFIG_FILES="$CONFIG_FILES examples/c/Makefile" ;;
-    "examples/c/decode/Makefile") CONFIG_FILES="$CONFIG_FILES examples/c/decode/Makefile" ;;
-    "examples/c/decode/file/Makefile") CONFIG_FILES="$CONFIG_FILES examples/c/decode/file/Makefile" ;;
-    "examples/c/encode/Makefile") CONFIG_FILES="$CONFIG_FILES examples/c/encode/Makefile" ;;
-    "examples/c/encode/file/Makefile") CONFIG_FILES="$CONFIG_FILES examples/c/encode/file/Makefile" ;;
-    "examples/cpp/Makefile") CONFIG_FILES="$CONFIG_FILES examples/cpp/Makefile" ;;
-    "examples/cpp/decode/Makefile") CONFIG_FILES="$CONFIG_FILES examples/cpp/decode/Makefile" ;;
-    "examples/cpp/decode/file/Makefile") CONFIG_FILES="$CONFIG_FILES examples/cpp/decode/file/Makefile" ;;
-    "examples/cpp/encode/Makefile") CONFIG_FILES="$CONFIG_FILES examples/cpp/encode/Makefile" ;;
-    "examples/cpp/encode/file/Makefile") CONFIG_FILES="$CONFIG_FILES examples/cpp/encode/file/Makefile" ;;
     "include/Makefile") CONFIG_FILES="$CONFIG_FILES include/Makefile" ;;
     "include/FLAC/Makefile") CONFIG_FILES="$CONFIG_FILES include/FLAC/Makefile" ;;
     "include/FLAC++/Makefile") CONFIG_FILES="$CONFIG_FILES include/FLAC++/Makefile" ;;
     "include/share/Makefile") CONFIG_FILES="$CONFIG_FILES include/share/Makefile" ;;
     "include/share/grabbag/Makefile") CONFIG_FILES="$CONFIG_FILES include/share/grabbag/Makefile" ;;
     "include/test_libs_common/Makefile") CONFIG_FILES="$CONFIG_FILES include/test_libs_common/Makefile" ;;
-    "doc/Makefile") CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
-    "doc/html/Makefile") CONFIG_FILES="$CONFIG_FILES doc/html/Makefile" ;;
-    "doc/html/images/Makefile") CONFIG_FILES="$CONFIG_FILES doc/html/images/Makefile" ;;
-    "doc/html/images/hw/Makefile") CONFIG_FILES="$CONFIG_FILES doc/html/images/hw/Makefile" ;;
-    "doc/html/ru/Makefile") CONFIG_FILES="$CONFIG_FILES doc/html/ru/Makefile" ;;
     "m4/Makefile") CONFIG_FILES="$CONFIG_FILES m4/Makefile" ;;
-    "man/Makefile") CONFIG_FILES="$CONFIG_FILES man/Makefile" ;;
-    "test/Makefile") CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
-    "test/cuesheets/Makefile") CONFIG_FILES="$CONFIG_FILES test/cuesheets/Makefile" ;;
-    "test/flac-to-flac-metadata-test-files/Makefile") CONFIG_FILES="$CONFIG_FILES test/flac-to-flac-metadata-test-files/Makefile" ;;
-    "test/metaflac-test-files/Makefile") CONFIG_FILES="$CONFIG_FILES test/metaflac-test-files/Makefile" ;;
-    "test/pictures/Makefile") CONFIG_FILES="$CONFIG_FILES test/pictures/Makefile" ;;
     "build/Makefile") CONFIG_FILES="$CONFIG_FILES build/Makefile" ;;
     "obj/Makefile") CONFIG_FILES="$CONFIG_FILES obj/Makefile" ;;
     "obj/debug/Makefile") CONFIG_FILES="$CONFIG_FILES obj/debug/Makefile" ;;
