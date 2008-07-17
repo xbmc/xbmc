@@ -83,9 +83,20 @@ void CGUIDialogProgress::DoModal(int iWindowID)
   }
 }
 
-void CGUIDialogProgress::StartModal()
+void CGUIDialogProgress::StartModal(bool threadSafe /* = false */)
 {
-  DoModalThreadSafe();
+  // NOTE: There is currently an issue starting this threadsafe from the
+  //       video playback threads. It's probably due to the app thread
+  //       waiting on something in the player so it never gets to actually
+  //       send the threadmessage in DoModalThreadSafe() but this has yet
+  //       to be verified.
+  //       The workaround currently is to start all progressdialogs NOT
+  //       threadsafe, other than the python calls which are deliberately
+  //       threadsafe.
+  if (threadSafe)
+    DoModalThreadSafe();
+  else
+    DoModal();
 }
 
 void CGUIDialogProgress::Progress()
