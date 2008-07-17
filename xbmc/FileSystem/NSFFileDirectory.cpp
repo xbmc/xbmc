@@ -29,7 +29,7 @@ using namespace DIRECTORY;
 
 CNSFFileDirectory::CNSFFileDirectory(void)
 {
-  m_strExt = "nfsstream";
+  m_strExt = "nsfstream";
 }
 
 CNSFFileDirectory::~CNSFFileDirectory(void)
