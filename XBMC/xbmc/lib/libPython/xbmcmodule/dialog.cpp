@@ -381,7 +381,7 @@ namespace PYXBMC
     for (int i = 1; i < 4; i++)
       pDialog->SetLine(i - 1,utf8Line[i]);
 
-    pDialog->StartModal();
+    pDialog->StartModal(true);    // NOTE: See the comment in CGUIDialogProgress::StartModal()
 
     Py_INCREF(Py_None);
     return Py_None;
