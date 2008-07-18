@@ -1,0 +1,81 @@
+[preset00]
+fRating=3.000000
+fGammaAdj=1.850000
+fDecay=0.973000
+fVideoEchoZoom=2.000000
+fVideoEchoAlpha=0.000000
+nVideoEchoOrientation=0
+nWaveMode=2
+bAdditiveWaves=0
+bWaveDots=0
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=1
+bTexWrap=1
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=1.396647
+fWaveScale=0.883471
+fWaveSmoothing=0.520000
+fWaveParam=0.000000
+fModWaveAlphaStart=0.750000
+fModWaveAlphaEnd=0.950000
+fWarpAnimSpeed=1.000000
+fWarpScale=2.853000
+fZoomExponent=1.000000
+fShader=0.000000
+zoom=1.064000
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000000
+dy=0.000000
+warp=0.000000
+sx=1.000000
+sy=1.000000
+wave_r=0.500000
+wave_g=0.500000
+wave_b=0.500000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.010000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=0.000000
+ib_size=0.010000
+ib_r=0.250000
+ib_g=0.250000
+ib_b=0.250000
+ib_a=0.000000
+nMotionVectorsX=12.000000
+nMotionVectorsY=9.000000
+mv_l=0.900000
+mv_r=1.000000
+mv_g=1.000000
+mv_b=1.000000
+mv_a=0.000000
+per_frame_1=wave_r = wave_r + 0.45*( 0.6*sin(1.517*time) + 0.4*mid_effect );
+per_frame_2=wave_b = wave_b + 0.45*( 0.6*sin(1.088*time) + 0.4*bass_effect );
+per_frame_3=wave_g = wave_g + 0.45*( 0.6*sin(1.037*time) + 0.4*treb_effect );
+per_frame_4=zoom = zoom + 0.013*( 0.60*sin(0.339*time) + 0.40*sin(0.276*time) );
+per_frame_5=rot = rot + 0.020*( 0.60*sin(0.381*time) + 0.40*sin(0.579*time) );
+per_frame_6=decay = decay - 0.01*below(frame%5,1);
+per_frame_7=volume = 0.3*(bass+mid+att);
+per_frame_8=beatrate = equal(beatrate,0) + (1-equal(beatrate,0))*(below(volume,0.01) + (1-below(volume,0.01))*beatrate);
+per_frame_9=lastbeat = lastbeat + equal(lastbeat,0)*time;
+per_frame_10=meanbass_att = 0.1*(meanbass_att*9 + bass_att);
+per_frame_11=peakbass_att = max(bass_att,peakbass_att);
+per_frame_12=beat = above(volume,0.8)*below(peakbass_att - bass_att, 0.05*peakbass_att)*above(time - lastbeat, 0.1 + 0.5*(beatrate - 0.1));
+per_frame_13=beatrate = max(if(beat,if(below(time-lastbeat,2*beatrate),0.1*(beatrate*9 + time - lastbeat),beatrate),beatrate),0.1);
+per_frame_14=peakbass_att = beat*bass_att + (1-beat)*peakbass_att*(above(time - lastbeat, 2*beatrate)*0.95 + (1-above(time - lastbeat, 2*beatrate))*0.995);
+per_frame_15=lastbeat = beat*time + (1-beat)*lastbeat;
+per_frame_16=peakbass_att = max(peakbass_att,1.1*meanbass_att);
+per_frame_17=effect = if(beat,effect+rand(5)+1,effect);
+per_frame_18=effect = if(above(effect,5),effect-6,effect);
+per_frame_19=q1 = effect+2;
+per_frame_20=monitor = q1;
+per_pixel_1=zoom=zoom+0.04*sin(ang*int(q1)+time*2.6);
