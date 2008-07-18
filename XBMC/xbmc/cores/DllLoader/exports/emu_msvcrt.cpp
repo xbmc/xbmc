@@ -966,7 +966,11 @@ extern "C"
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
+#ifndef __APPLE__
       return fseeko64(stream, offset, origin);
+#else
+      return fseek(stream, offset, origin);
+#endif
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
