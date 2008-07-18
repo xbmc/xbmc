@@ -29,31 +29,36 @@
  *
  */
 
-#include "GUILabelControl.h"
+#include "GUIButtonControl.h"
 
 /*!
  \ingroup controls
  \brief 
  */
 
-class CGUIEditControl : public CGUILabelControl
+class CGUIEditControl : public CGUIButtonControl
 {
 public:
   CGUIEditControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY,
-                  float width, float height, const CLabelInfo& labelInfo, const std::string& strLabel);
+                  float width, float height, const CImage &textureFocus, const CImage &textureNoFocus,
+                  const CLabelInfo& labelInfo, const CStdString &text);
 
   virtual ~CGUIEditControl(void);
 
   virtual bool OnAction(const CAction &action);
-  virtual void Render();
+  virtual void OnClick();
 
-  virtual bool CanFocus() const { return true; }; // TODO:EDIT only needed because we're based on labelcontrol
-
+  void SetText(const CStdString &strLabel);
 protected:
+  virtual void RenderText();
   void RecalcLabelPosition();
-  void ValidateCursor(int maxLength);
+  void ValidateCursor();
 
-  float m_originalPosX;
-  float m_originalWidth;
+  CStdStringW m_text;
+  float m_textOffset;
+  float m_textWidth;
+
+  unsigned int m_cursorPos;
+  unsigned int m_cursorBlink;
 };
 #endif
