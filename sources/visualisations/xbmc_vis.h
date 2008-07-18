@@ -7,7 +7,9 @@
 #else
 #ifdef _LINUX
 #include "../xbmc/linux/PlatformInclude.h"
+#ifndef __APPLE__
 #include <sys/sysinfo.h>
+#endif
 #else
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN

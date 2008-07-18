@@ -65,16 +65,9 @@ int maxSamples=512;
 int texsize=1024;
 //int gx=32,gy=24;
 int gx=40,gy=30;
-int wvw=640,wvh=480;
-int fvw=1280,fvh=960;
-int g_Width=0, g_Height=0;
-int g_PosX=0, g_PosY=0;
-int fps=200, fullscreen=0;
+int fps=200;
 char *disp;
-
 char g_visName[512];
-void* g_device;
-float g_fWaveform[2][512];
 char **g_presets=NULL;
 int g_numPresets = 0;
 
@@ -94,7 +87,11 @@ int alphasort(const void* lhs, const void* rhs)
 #endif
 
 // check for a valid preset extension
+#ifdef __APPLE__
+int check_valid_extension(struct dirent* ent) 
+#else
 int check_valid_extension(const struct dirent* ent) 
+#endif
 {
   const char* ext = 0;
   
@@ -145,14 +142,17 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   configPM.aspectCorrection = true;
   configPM.easterEgg = 0.0;
   configPM.shuffleEnabled = true;
-
+  configPM.windowLeft = iPosX;
+  configPM.windowBottom = iPosY;
   // workaround: projectM crashes without configFile and 
   // fstream won't create it
-  FILE *f = fopen(configFile.c_str(), "r");
-  if (f)
-    fclose(f);
-  else
+  //FILE *f = fopen(configFile.c_str(), "r");
+  //if (f)
+  //  fclose(f);
+  //else
+  //
   {
+    FILE *f;
     f = fopen(configFile.c_str(), "w");
     if (f)
       fclose(f);
@@ -167,11 +167,6 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   VisSetting setting(VisSetting::CHECK, "Shuffle Mode");
   setting.current = globalPM->isShuffleEnabled();
   m_vecSettings.push_back(setting);
-
-  g_Width = iWidth;
-  g_Height = iHeight;
-  g_PosX = iPosX;
-  g_PosY = iPosY;
 }
 
 //-- Start --------------------------------------------------------------------
@@ -219,45 +214,7 @@ extern "C" void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqD
 //-----------------------------------------------------------------------------
 extern "C" void Render()
 {
-  glClearColor(0,0,0,0);
-
-  glMatrixMode(GL_TEXTURE);
-  glPushMatrix();
-
-  glMatrixMode(GL_PROJECTION);
-  glPushMatrix();
-
-  glMatrixMode(GL_MODELVIEW);
-  glPushMatrix();
-
-  // get current viewport since projectM modifies and does not reset
-  GLint params[4];
-  glGetIntegerv(GL_VIEWPORT, params);
-
-  globalPM->projectM_resetGL(params[2], params[3]);
-
-  glDisable(GL_DEPTH_TEST);
-  glClearColor(0.0, 0.0, 0.0, 0.0);
   globalPM->renderFrame();
-
-  glMatrixMode(GL_MODELVIEW);
-  glPopMatrix();
-
-  glMatrixMode(GL_PROJECTION);
-  glPopMatrix();
-
-  glMatrixMode(GL_TEXTURE);
-  glPopMatrix();
-  
-  glEnable(GL_BLEND);          // Turn Blending On
-  glDisable(GL_DEPTH_TEST);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-  glEnable(GL_TEXTURE_2D);
-
-  // reset viewport to what we got it
-  glMatrixMode(GL_MODELVIEW);
-  glViewport(params[0], params[1], params[2], params[3]);
-
 }
 
 //-- GetInfo ------------------------------------------------------------------
