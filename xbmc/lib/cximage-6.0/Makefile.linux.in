@@ -1,4 +1,4 @@
-DIRS=CxImage raw jbig tiff zlib
+DIRS=raw jbig tiff zlib
 LIBS=zlib/libz.a CxImage/cximage.a jbig/jbig.a tiff/tiff.a raw/raw.a
 ARCH=@ARCH@
 LIB=../../../system/ImageLib-$(ARCH).so
@@ -19,6 +19,7 @@ compile:
 
 clean:
 	-for d in $(DIRS); do (cd $$d; $(MAKE) clean ); done
+	$(MAKE) -C CxImage -fMakefile.linux clean
 	rm -f $(LIB)
 
 distclean:
