@@ -1,13 +1,16 @@
 DIRS=CxImage raw jbig tiff zlib
+LIBS=zlib/libz.a CxImage/cximage.a jbig/jbig.a tiff/tiff.a raw/raw.a
 ARCH=@ARCH@
+LIB=../../../system/ImageLib-$(ARCH).so
 
-ImageLib-$(ARCH).so: compile
-	gcc -shared -o ../../../system/ImageLib-$(ARCH).so -lpng -ljasper -ljpeg zlib/libz.a \
-		CxImage/*.o jbig/*.o tiff/*.o raw/*.o \
+$(LIB): ${LIBS}
+	gcc -shared -o $(LIB) -lpng -ljasper -ljpeg ${LIBS} \
 		`cat ../../cores/DllLoader/exports/wrapper.def` \
 		../../cores/DllLoader/exports/wrapper.o
 
-compile: zlib
+${LIBS}: compile 
+
+compile:
 	$(MAKE) -C CxImage -fMakefile.linux
 	$(MAKE) -C jbig
 	$(MAKE) -C raw
@@ -16,8 +19,10 @@ compile: zlib
 
 clean:
 	-for d in $(DIRS); do (cd $$d; $(MAKE) clean ); done
-	rm ../../../system/ImageLib-$(ARCH).so
+	rm -f $(LIB)
 
-distclean: clean
+distclean:
 	-for d in $(DIRS); do (cd $$d; $(MAKE) distclean ); done
-	rm ../../../system/ImageLib-$(ARCH).so
+	rm -f $(LIB)
+
+.PHONY: compile clean distclean
