@@ -316,6 +316,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   newviewport[2] = newRight - newLeft;
   newviewport[3] = newBottom - newTop;
   glScissor(newviewport[0], newviewport[1], newviewport[2], newviewport[3]);
+  glViewport(newviewport[0], newviewport[1], newviewport[2], newviewport[3]);
   VerifyGLState();
 #endif
 
@@ -338,6 +339,7 @@ void CGraphicContext::RestoreViewPort()
   GLVALIDATE;
   GLint* oldviewport = (GLint*)m_viewStack.top();
   glScissor(oldviewport[0], oldviewport[1], oldviewport[2], oldviewport[3]);
+  glViewport(oldviewport[0], oldviewport[1], oldviewport[2], oldviewport[3]);
   VerifyGLState();
 #endif  
 
@@ -945,6 +947,15 @@ void CGraphicContext::CaptureStateBlock()
     m_stateBlock = 0xffffffff;
   }
 #endif  
+#ifdef HAS_SDL_OPENGL
+  glMatrixMode(GL_PROJECTION);
+  glPushMatrix();
+  glMatrixMode(GL_TEXTURE);
+  glPushMatrix();
+  glMatrixMode(GL_MODELVIEW);
+  glPushMatrix();
+  glDisable(GL_SCISSOR_TEST); // fixes FBO corruption on Macs
+#endif
 }
 
 void CGraphicContext::ApplyStateBlock()
@@ -954,6 +965,19 @@ void CGraphicContext::ApplyStateBlock()
   {
     Get3DDevice()->ApplyStateBlock(m_stateBlock);
   }
+#endif
+#ifdef HAS_SDL_OPENGL
+  glMatrixMode(GL_PROJECTION);
+  glPopMatrix();
+  glMatrixMode(GL_TEXTURE);
+  glPopMatrix();
+  glMatrixMode(GL_MODELVIEW);
+  glPopMatrix();
+  if (glActiveTextureARB)
+    glActiveTextureARB(GL_TEXTURE0_ARB);
+  glEnable(GL_TEXTURE_2D);
+  glEnable(GL_BLEND);
+  glEnable(GL_SCISSOR_TEST);
 #endif
 }
 
