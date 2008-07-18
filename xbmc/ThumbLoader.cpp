@@ -151,7 +151,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     }  
   }
 
-  if (!pItem->m_bIsFolder)
+  if (!pItem->HasProperty("fanart_image"))
   {
     pItem->CacheVideoFanart();
     if (CFile::Exists(pItem->GetCachedVideoFanart()))
