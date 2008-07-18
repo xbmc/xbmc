@@ -1,0 +1,43 @@
+22 August 2004:
+	* move from libmp4v2 to libmp4ff
+
+1 December 2003:
+	* remove aac plug and merge the aac part with the mp4 part
+	  so now 2 plugins in one :)
+
+4 juillet 2003:
+	* package the plugin for faad2
+	* upgrade code to libfaad2-2.0 API
+	* version 0.5
+
+15 juin 2003:
+	* better configuration code
+	  (choose automaticaly at compile time)
+	* installation must be set by root
+	* version 0.4
+
+15 mai 2003:
+	* update configure script to be better
+	* version 0.3
+
+01 Novembre 2002:
+	* check automake/autoconf/libtool for plugin, now 'make install' work
+	* handle seeking
+	* configuration box created (thanks glade !)
+	* handle aac informations
+	* modification to a better infobox (thanks angain glade !)
+	* version 0.2 ready to public :)
+
+25 Aout 2002:
+	* gtk-1.2.x info file with some 'static' useful ID3 info
+	* title show in xmms correctly
+	* version 0.1 ready to public :)
+
+20 Aout 2002:
+	* everything...
+	* work with faad2lib-1.1, id3lib-3.8.0 (glibc-2.2.5, gcc-2.95.3)
+	  i think the minimum required but need testing...
+	* playlist working
+	* handle id3tag, the plugin work :)
+	* new maintener : ciberfred
+	
