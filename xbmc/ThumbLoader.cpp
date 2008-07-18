@@ -151,10 +151,12 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     }  
   }
 
-  pItem->CacheVideoFanart();
-  if (CFile::Exists(pItem->GetCachedVideoFanart()))
-    pItem->SetProperty("fanart_image",pItem->GetCachedVideoFanart());
-                          
+  if (!pItem->m_bIsFolder)
+  {
+    pItem->CacheVideoFanart();
+    if (CFile::Exists(pItem->GetCachedVideoFanart()))
+      pItem->SetProperty("fanart_image",pItem->GetCachedVideoFanart());
+  }                          
 
 //  if (pItem->IsVideo() && !pItem->IsInternetStream())
 //    CDVDPlayer::GetFileMetaData(pItem->m_strPath, pItem);
