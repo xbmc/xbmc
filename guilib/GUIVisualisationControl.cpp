@@ -103,12 +103,12 @@ void CGUIVisualisationControl::FreeVisualisation()
   if (m_pVisualisation)
   {
     OutputDebugString("Visualisation::Stop()\n");
+    g_graphicsContext.CaptureStateBlock();
     m_pVisualisation->Stop();
+    g_graphicsContext.ApplyStateBlock();
 
     OutputDebugString("delete Visualisation()\n");
     delete m_pVisualisation;
-
-    g_graphicsContext.ApplyStateBlock();
     
     /* we released the global vis spot */
     m_globalvis = false;
@@ -151,7 +151,7 @@ void CGUIVisualisationControl::LoadVisualisation()
   m_pVisualisation = factory.LoadVisualisation(strVisz);
   if (m_pVisualisation)
   {
-    g_graphicsContext.ApplyStateBlock();
+    g_graphicsContext.CaptureStateBlock();
     float x = g_graphicsContext.ScaleFinalXCoord(GetXPosition(), GetYPosition());
     float y = g_graphicsContext.ScaleFinalYCoord(GetXPosition(), GetYPosition());
     float w = g_graphicsContext.ScaleFinalXCoord(GetXPosition() + GetWidth(), GetYPosition() + GetHeight()) - x;
@@ -162,6 +162,8 @@ void CGUIVisualisationControl::LoadVisualisation()
     if (y + h > g_graphicsContext.GetHeight()) h = g_graphicsContext.GetHeight() - y;
 
     m_pVisualisation->Create((int)(x+0.5f), (int)(y+0.5f), (int)(w+0.5f), (int)(h+0.5f));
+    g_graphicsContext.ApplyStateBlock();
+    VerifyGLState();
     if (g_application.m_pPlayer)
       g_application.m_pPlayer->RegisterAudioCallback(this);
 
@@ -232,7 +234,7 @@ void CGUIVisualisationControl::Render()
       g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
       try
       {
-        g_graphicsContext.ApplyStateBlock();
+        g_graphicsContext.CaptureStateBlock();
         m_pVisualisation->Render();
         g_graphicsContext.ApplyStateBlock();
       }
