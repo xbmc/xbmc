@@ -1,4 +1,3 @@
-CC=gcc
 CFLAGS=-fPIC -DXBMC -D_LINUX
 OBJS=dcr.o libdcr.o
 
@@ -6,8 +5,9 @@ OBJS=dcr.o libdcr.o
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 raw.a: $(OBJS)
+	$(AR) rc $@ $(OBJS)
 
 clean:
-	$(RM) $(OBJS)
+	$(RM) $(OBJS) raw.a
 
 include ../Makefile.include
