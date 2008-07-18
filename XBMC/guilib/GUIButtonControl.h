@@ -79,6 +79,7 @@ public:
 
 protected:
   void OnFocus();
+  virtual void RenderText();
 
   CGUIImage m_imgFocus;
   CGUIImage m_imgNoFocus;

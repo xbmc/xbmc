@@ -84,6 +84,12 @@ void CGUIButtonControl::Render()
   m_imgFocus.Render();
   m_imgNoFocus.Render();
 
+  RenderText();
+  CGUIControl::Render();
+}
+
+void CGUIButtonControl::RenderText()
+{
   m_textLayout.Update(m_info.GetLabel(m_dwParentID));
 
   float fPosX = m_posX + m_label.offsetX;
@@ -125,7 +131,6 @@ void CGUIButtonControl::Render()
     else
       m_textLayout2.Render( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, dwAlign, width);
   }
-  CGUIControl::Render();
 }
 
 bool CGUIButtonControl::OnAction(const CAction &action)
