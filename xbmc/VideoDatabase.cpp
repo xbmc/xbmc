@@ -4018,10 +4018,6 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdSt
         CFileItemPtr pItem(new CFileItem(movie));
         pItem->m_strPath.Format("%s%ld", strBaseDir.c_str(), lMovieId);
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_playCount > 0);
-        pItem->CacheVideoFanart();
-        if (CFile::Exists(pItem->GetCachedVideoFanart()))
-          pItem->SetProperty("fanart_image",pItem->GetCachedVideoFanart());
-
         items.Add(pItem);
       }
       m_pDS->next();
