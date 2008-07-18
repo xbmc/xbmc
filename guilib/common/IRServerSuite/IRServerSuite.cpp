@@ -32,6 +32,7 @@ CRemoteControl g_RemoteControl;
 
 CRemoteControl::CRemoteControl()
 {
+  m_socket = INVALID_SOCKET;
   m_bInitialized = false;
   m_isConnecting = false;
   Reset();
@@ -44,7 +45,8 @@ CRemoteControl::~CRemoteControl()
 
 void CRemoteControl::Close()
 {
-  if (m_socket)
+  m_isConnecting = false;
+  if (m_socket != INVALID_SOCKET)
   {
     if (m_bInitialized)
     {
@@ -54,6 +56,7 @@ void CRemoteControl::Close()
     }
     shutdown(m_socket, SD_BOTH);
     closesocket(m_socket);
+    m_socket = INVALID_SOCKET;
   }
 }
 
@@ -95,11 +98,17 @@ bool CRemoteControl::Connect()
 
   if (connect(m_socket, (SOCKADDR *)&target, sizeof(target)) == SOCKET_ERROR)
   {
+    Close();
     return false; //Couldn't connect, irss not available
   }
 
   u_long iMode = 1; //non-blocking
-  ioctlsocket(m_socket, FIONBIO, &iMode);
+  if (ioctlsocket(m_socket, FIONBIO, &iMode) == SOCKET_ERROR)
+  {
+    CLog::Log(LOGERROR, "IRServerSuite: failed to set socket to non-blocking.");
+    Close();
+    return false;
+  }
 
   //register
   CIrssMessage mess(IRSSMT_RegisterClient, IRSSMF_Request);
@@ -136,7 +145,7 @@ bool CRemoteControl::SendPacket(CIrssMessage& message)
 
 void CRemoteControl::Update()
 {
-  if (!m_bInitialized && !m_isConnecting)
+  if ((!m_bInitialized && !m_isConnecting) || (m_socket == INVALID_SOCKET))
   {
     return;
   }
@@ -328,7 +337,10 @@ int CRemoteControl::ReadN(char *buffer, int n)
     }
     if (nBytes < 0)
     {
-      CLog::Log(LOGERROR, "%s, IRServerSuite recv error %d", __FUNCTION__, GetLastError());
+      if (!m_isConnecting)
+      {
+        CLog::Log(LOGERROR, "%s, IRServerSuite recv error %d", __FUNCTION__, GetLastError());
+      }
       Close();
       return -1;
     }
@@ -376,7 +388,7 @@ bool CRemoteControl::ReadPacket(CIrssMessage &message)
   {
     char sizebuf[4];
     int iRead = ReadN(&sizebuf[0], 4);
-    if (iRead == 0) return false; //nothing to read
+    if (iRead <= 0) return false; //nothing to read
     if (iRead != 4)
     {
       CLog::Log(LOGERROR, "IRServerSuite: failed to read packetsize.");
