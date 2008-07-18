@@ -14281,7 +14281,7 @@ pushd xbmc/cores/dvdplayer/Codecs/ffmpeg && ./configure --extra-cflags="-D_XBOX"
 pushd xbmc/cores/dvdplayer/Codecs/libdts && ./configure --disable-oss --disable-solaris-adio --disable-al-audio --disable-win CFLAGS="-fPIC" && popd
 pushd xbmc/cores/dvdplayer/Codecs/libDVDCSS && ./configure --enable-static --disable-shared --with-pic && popd
 pushd xbmc/cores/dvdplayer/Codecs/libdvdnav && ./configure --enable-static --disable-shared --with-pic && popd
-pushd xbmc/cores/dvdplayer/Codecs/libfaad2 && autoreconf -vif; ./configure --with-pic --with-mp4v2 && popd
+pushd xbmc/cores/dvdplayer/Codecs/libfaad2 && autoreconf -v -i -f; ./configure --with-pic --with-mp4v2 && popd
 pushd xbmc/cores/dvdplayer/Codecs/libmad && ./configure && popd
 pushd xbmc/lib/cximage-6.0/zlib && CFLAGS=-fPIC ./configure && popd
 
