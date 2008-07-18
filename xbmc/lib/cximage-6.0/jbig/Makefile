@@ -1,4 +1,3 @@
-CC=gcc
 CFLAGS=-fPIC -D_LINUX
 OBJS=jbig.o jbig_tab.o 
 
@@ -6,8 +5,11 @@ OBJS=jbig.o jbig_tab.o
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 jbig.a: $(OBJS)
+	$(AR) rc $@ $(OBJS)
 
 clean:
-	$(RM) $(OBJS)
+	$(RM) $(OBJS) cximage.a
+
+distclean: clean
 
 include ../Makefile.include
