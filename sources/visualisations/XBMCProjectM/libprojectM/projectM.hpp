@@ -141,6 +141,8 @@ public:
 	int textureSize;
 	int windowWidth;
 	int windowHeight;
+	int windowLeft;
+	int windowBottom;
 	std::string presetURL;
 	std::string titleFontURL;
 	std::string menuFontURL;		
@@ -265,7 +267,7 @@ private:
   
   void switchPreset(std::auto_ptr<Preset> & targetPreset, PresetInputs & inputs, PresetOutputs & outputs);
   void readConfig(const std::string & configFile);
-  void projectM_init(int gx, int gy, int fps, int texsize, int width, int height);
+  void projectM_init(int gx, int gy, int fps, int texsize, int width, int height, int xpos, int ypos);
   void projectM_reset();
 
   void projectM_initengine();

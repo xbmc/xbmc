@@ -149,6 +149,8 @@ bool projectM::writeConfig(const std::string & configFile, const Settings & sett
 	config.add("Aspect Correction", settings.aspectCorrection);
 	config.add("Easter Egg Parameter", settings.easterEgg);
 	config.add("Shuffle Enabled", settings.shuffleEnabled);
+	config.add("Window Left", settings.windowLeft);
+	config.add("Window Bottom", settings.windowBottom);
 	
 	std::fstream file(configFile.c_str());	
 	if (file) {
@@ -171,6 +173,8 @@ void projectM::readConfig (const std::string & configFile )
 	_settings.fps = config.read<int> ( "FPS", 35 );
 	_settings.windowWidth  = config.read<int> ( "Window Width", 512 );
 	_settings.windowHeight = config.read<int> ( "Window Height", 512 );
+	_settings.windowLeft  = config.read<int> ( "Window Left", 0 );
+	_settings.windowBottom = config.read<int> ( "Window Bottom", 0 );
 	_settings.smoothPresetDuration =  config.read<int> 
 			( "Smooth Preset Duration", config.read<int>("Smooth Transition Duration", 10));
 	_settings.presetDuration = config.read<int> ( "Preset Duration", 15 );
@@ -216,7 +220,8 @@ void projectM::readConfig (const std::string & configFile )
 	
 	
 	 projectM_init ( _settings.meshX, _settings.meshY, _settings.fps,
-			 _settings.textureSize, _settings.windowWidth,_settings.windowHeight);
+			 _settings.textureSize, _settings.windowWidth,_settings.windowHeight,
+			 _settings.windowLeft, _settings.windowBottom);
 
 	
 	 _settings.beatSensitivity = beatDetect->beat_sensitivity = config.read<float> ( "Hard Cut Sensitivity", 10.0 );
@@ -422,7 +427,7 @@ void projectM::projectM_reset()
 	projectM_resetengine();
 }
 
-void projectM::projectM_init ( int gx, int gy, int fps, int texsize, int width, int height )
+void projectM::projectM_init ( int gx, int gy, int fps, int texsize, int width, int height, int xpos, int ypos )
 {
 
 	/** Initialise engine variables */
@@ -462,7 +467,7 @@ void projectM::projectM_init ( int gx, int gy, int fps, int texsize, int width, 
 	this->presetInputs2.gx = gx;
 	this->presetInputs2.gy = gy;
 
-	this->renderer = new Renderer ( width, height, gx, gy, texsize,  beatDetect, settings().presetURL, settings().titleFontURL, settings().menuFontURL );
+	this->renderer = new Renderer ( width, height, gx, gy, texsize,  beatDetect, settings().presetURL, settings().titleFontURL, settings().menuFontURL, xpos, ypos);
 	
 	running = true;
 

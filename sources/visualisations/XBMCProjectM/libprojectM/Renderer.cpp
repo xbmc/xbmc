@@ -11,7 +11,7 @@
 
 class Preset;
 
-Renderer::Renderer(int width, int height, int gx, int gy, int texsize, BeatDetect *beatDetect, std::string _presetURL, std::string _titlefontURL, std::string _menufontURL): title_fontURL(_titlefontURL), menu_fontURL(_menufontURL), presetURL(_presetURL), m_presetName("None"), vw(width), vh(height), gx(gx), gy(gy), texsize(texsize)
+Renderer::Renderer(int width, int height, int gx, int gy, int texsize, BeatDetect *beatDetect, std::string _presetURL, std::string _titlefontURL, std::string _menufontURL, int xpos, int ypos): title_fontURL(_titlefontURL), menu_fontURL(_menufontURL), presetURL(_presetURL), m_presetName("None"), vw(width), vh(height), gx(gx), gy(gy), texsize(texsize), vx(xpos), vy(ypos)
 {
 	int x; int y;
 	
@@ -217,7 +217,7 @@ void Renderer::RenderFrame(PresetOutputs *presetOutputs, PresetInputs *presetInp
 	}
 	else 
 #endif
-	glViewport( 0, 0, this->vw, this->vh );
+	glViewport( vx, vy, this->vw + vx, this->vh + vy );
 	
 	
 	
