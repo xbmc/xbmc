@@ -1,0 +1,85 @@
+[preset00]
+fRating=2.000000
+fGammaAdj=1.980000
+fDecay=1.000000
+fVideoEchoZoom=1.006596
+fVideoEchoAlpha=0.000000
+nVideoEchoOrientation=0
+nWaveMode=1
+bAdditiveWaves=0
+bWaveDots=0
+bWaveThick=1
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=0
+bTexWrap=0
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=4.099998
+fWaveScale=1.199252
+fWaveSmoothing=0.630000
+fWaveParam=0.300000
+fModWaveAlphaStart=0.710000
+fModWaveAlphaEnd=1.300000
+fWarpAnimSpeed=1.000000
+fWarpScale=1.331000
+fZoomExponent=1.000000
+fShader=0.000000
+zoom=1.000000
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000000
+dy=0.000000
+warp=0.010000
+sx=1.000000
+sy=1.000000
+wave_r=0.650000
+wave_g=0.650000
+wave_b=0.650000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.005000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=1.000000
+ib_size=0.005000
+ib_r=0.250000
+ib_g=0.250000
+ib_b=0.250000
+ib_a=1.000000
+nMotionVectorsX=64.000000
+nMotionVectorsY=48.000000
+mv_dx=0.000000
+mv_dy=0.000000
+mv_l=0.500000
+mv_r=0.350000
+mv_g=0.350000
+mv_b=0.350000
+mv_a=0.000000
+per_frame_1=warp=0;
+per_frame_2=q8 =oldq8+ 0.0003*(pow(1+1.2*bass+0.4*bass_att+0.1*treb+0.1*treb_att+0.1*mid+0.1*mid_att,6)/fps);
+per_frame_3=oldq8 = q8;
+per_frame_4=wave_r = 0.5+0.5*sin(1.123*q8);
+per_frame_5=wave_g = 0.5+0.5*sin(q8*1.576);
+per_frame_6=wave_b = 0.5+0.5*cos(q8*1.465);
+per_frame_7=ib_a =0.2*bass;
+per_frame_8=y_pos = (sin(q8)/2 + 0.5 - (sin(q8)/2 + 0.5)* q1);
+per_frame_9=x_pos = (sin(q8/3)/2 + 0.5 - (sin(q8/3)/2 +0.5)*q2);
+per_frame_10=q3 = y_pos;
+per_frame_11=q4 = x_pos;
+per_pixel_1=effect1 = dx+0.001*sin((y*2-1)*96)+0.01*sin((y*2-1)*128);
+per_pixel_2=effect2 = dx+0.008*sin((y*2-1)*48)+0.008*sin((y*2-1)*64);
+per_pixel_3=box_effect = if(above(y,q3),if(below(y,(q3+q1)), if(above(x,q4),if(below(x,(q4+q2)),effect1,effect2),effect2),effect2),effect2);
+per_pixel_4=dx= box_effect;
+per_pixel_5=effect3 = dy+0.001*cos((x*2-1)*128)+0.01*cos((x*2-1)*96);
+per_pixel_6=effect4 = dy+0.008*cos((x*2-1)*64)+0.008*cos((x*2-1)*48);
+per_pixel_7=box_effect2= if(above(y,q3),if(below(y,(q3+q1)), if(above(x,q4),if(below(x,(q4+q2)),effect3,effect4),effect4),effect4),effect4);
+per_pixel_8=dy= box_effect2;
+per_frame_init_1=q8=0;
+per_frame_init_2=q1 = 0.005*rand(60)+0.2;
+per_frame_init_3=q2 = 0.005*rand(60)+0.2;
