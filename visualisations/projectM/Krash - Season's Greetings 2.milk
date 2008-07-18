@@ -1,0 +1,116 @@
+[preset00]
+fRating=2.000000
+fGammaAdj=2.000000
+fDecay=0.940000
+fVideoEchoZoom=1.000000
+fVideoEchoAlpha=0.500000
+nVideoEchoOrientation=0
+nWaveMode=6
+bAdditiveWaves=0
+bWaveDots=0
+bWaveThick=1
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=0
+bTexWrap=0
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=1.000000
+fWaveScale=0.042592
+fWaveSmoothing=0.750000
+fWaveParam=-1.000000
+fModWaveAlphaStart=0.750000
+fModWaveAlphaEnd=0.950000
+fWarpAnimSpeed=1.000000
+fWarpScale=1.000000
+fZoomExponent=1.000000
+fShader=0.000000
+zoom=1.000000
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000000
+dy=0.000000
+warp=1.000000
+sx=1.000000
+sy=1.000000
+wave_r=0.500000
+wave_g=0.500000
+wave_b=0.500000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.000000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=0.000000
+ib_size=0.000000
+ib_r=0.000000
+ib_g=0.000000
+ib_b=0.000000
+ib_a=0.000000
+nMotionVectorsX=1.000000
+nMotionVectorsY=1.000000
+mv_dx=-0.500000
+mv_dy=-0.500000
+mv_l=2.000000
+mv_r=1.000000
+mv_g=1.000000
+mv_b=1.000000
+mv_a=1.000000
+per_frame_1=warp=0;
+per_frame_2=q1 = (bass_att + mid_att + treb_att) /3;
+per_frame_3=q2 = time + 5*(bass + mid + treb);
+per_frame_4=bass_thresh = above(bass_att,bass_thresh)*2 + (1-above(bass_att,bass_thresh))*((bass_thresh-1.4)*0.95+1.4);
+per_frame_5=treb_thresh = above(treb_att,treb_thresh)*2 + (1-above(treb_att,treb_thresh))*((treb_thresh-1.5)*0.85+1.2);
+per_frame_6=bass_on = above(bass_thresh,1.9);
+per_frame_7=treb_on = above(treb_thresh,1.9);
+per_frame_8=swapcolour = bass_on - treb_on;
+per_frame_9=red_aim = if(equal(swapcolour,1),0,if(equal(swapcolour,0),0,0));
+per_frame_10=green_aim = if(equal(swapcolour,1),0.4,if(equal(swapcolour,0),0.3,0.2));
+per_frame_11=blue_aim = if(equal(swapcolour,1),0.3,if(equal(swapcolour,0),0.2,0));
+per_frame_12=red = red + (red_aim - red)*0.5;
+per_frame_13=green = green + (green_aim - green)*0.5;
+per_frame_14=blue = blue + (blue_aim - blue)*0.5;
+per_frame_15=vol = 0.167*(bass+mid);
+per_frame_16=xamptarg = if(equal(frame%15,0),min(0.5*vol*bass_att,0.5),xamptarg);
+per_frame_17=xamp = xamp + 0.5*(xamptarg-xamp);
+per_frame_18=xdir = if(above(abs(xpos),xamp),-sign(xpos),if(below(abs(xspeed),0.1),2*above(xpos,0)-1,xdir));
+per_frame_19=xspeed = xspeed + xdir*xamp - xpos - xspeed*0.055*below(abs(xpos),xamp);
+per_frame_20=xpos = xpos + 0.001*xspeed;
+per_frame_21=mv_dx = 0.2*xpos - 0.5;
+per_frame_22=yamptarg = if(equal(frame%15,0),min(0.3*vol*treb_att,0.5),yamptarg);
+per_frame_23=yamp = yamp + 0.5*(yamptarg-yamp);
+per_frame_24=ydir = if(above(abs(ypos),yamp),-sign(ypos),if(below(abs(yspeed),0.1),2*above(ypos,0)-1,ydir));
+per_frame_25=yspeed = yspeed + ydir*yamp - ypos - yspeed*0.055*below(abs(ypos),yamp);
+per_frame_26=ypos = ypos + 0.001*yspeed;
+per_frame_27=mv_dy = 1.5*ypos - 0.5;
+per_frame_28=mv_r = 0.75 + 0.25*(0.6*sin(1.346*time) + 0.4*sin(0.832*time));
+per_frame_29=mv_g = 0.25 + 0.25*(0.6*sin(0.912*time) + 0.4*sin(0.327*time));
+per_frame_30=mv_b = 0.5 + 0.25*(0.6*sin(1.247*time) + 0.4*sin(0.721*time));
+per_frame_31=mv_l = -(1.5*ypos + 0.5)*15;
+per_frame_32=beatrate = equal(beatrate,0) + (1-equal(beatrate,0))*(below(2*vol,0.01) + (1-below(2*vol,0.01))*beatrate);
+per_frame_33=lastbeat = lastbeat + equal(lastbeat,0)*time;
+per_frame_34=meanbass_att = 0.1*(meanbass_att*9 + bass_att);
+per_frame_35=peakbass_att = max(bass_att,peakbass_att);
+per_frame_36=beat = above(2*vol,0.8)*below(peakbass_att - bass_att, 0.05*peakbass_att)*above(time - lastbeat, 0.1 + 0.5*(beatrate - 0.1));
+per_frame_37=beatrate = max(if(beat,if(below(time-lastbeat,2*beatrate),0.1*(beatrate*9 + time - lastbeat),beatrate),beatrate),0.1);
+per_frame_38=peakbass_att = beat*bass_att + (1-beat)*peakbass_att*(above(time - lastbeat, 2*beatrate)*0.95 + (1-above(time - lastbeat, 2*beatrate))*0.995);
+per_frame_39=lastbeat = beat*time + (1-beat)*lastbeat;
+per_frame_40=peakbass_att = max(peakbass_att,1.1*meanbass_att);
+per_frame_41=wasbeat = if(beat,time+0.2,wasbeat);
+per_frame_42=decoration = above(wasbeat,time)*equal(frame%2,0);
+per_frame_43=wave_r = if(decoration,1,red);
+per_frame_44=wave_g = if(decoration,0.5,green);
+per_frame_45=wave_b = if(decoration,0.1,blue);
+per_frame_46=wave_y = if(decoration,0.2 + 0.01*rand(50),wave_y);
+per_frame_47=wave_x = if(decoration,0.5 + 0.1*(1-wave_y)*sin(50*time),wave_x);
+per_frame_48=wave_mode = if(decoration,0,6);
+per_frame_49=wave_mystery = if(decoration,-0.48,-1);
+per_frame_50=monitor = beat;
+per_pixel_1=dx = if(above(x,0.5),if(below(y,0.9),above(rand(20),1)*0.02*pow(y+0.15,2),0.005),dx);
+per_pixel_2=dx = if(below(x,0.5),if(below(y,0.9),above(rand(20),1)*-0.02*pow(y+0.15,2),-0.005),dx);
+per_pixel_3=dy = -0.02*(abs(x-0.5));
