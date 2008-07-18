@@ -24,6 +24,7 @@ clean:
 
 distclean:
 	-for d in $(DIRS); do (cd $$d; $(MAKE) distclean ); done
+	$(MAKE) -C CxImage -fMakefile.linux distclean
 	rm -f $(LIB)
 
 .PHONY: compile clean distclean
