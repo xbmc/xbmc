@@ -48,7 +48,7 @@ while i < nargs:
 # print rev
 
 try:
-  old = openi("%s/Changelog.txt" % (dir))
+  old = open("%s/Changelog.txt" % (dir))
 except:
   old = None
 
