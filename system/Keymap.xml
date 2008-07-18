@@ -1128,14 +1128,6 @@
   </VirtualKeyboard>
 
 
-  <XlinkKai>
-    <gamepad>
-      <righttrigger>NextPicture</righttrigger> <!-- Next Tab -->
-      <lefttrigger>PreviousPicture</lefttrigger> <!-- Previous Tab -->
-    </gamepad>
-  </XlinkKai>
-
-
   <ContextMenu>
     <gamepad>
       <white>Close</white>
@@ -1546,26 +1538,7 @@
       <back>PreviousMenu</back>
     </remote>
   </ProfileSettings>
-  <TrainerSettings>
-    <gamepad>
-      <start>Close</start>
-      <B>PreviousMenu</B>
-      <back>PreviousMenu</back>
-    </gamepad>
 
-    <joystick name="Microsoft Xbox Controller S">
-      <altname>Mad Catz MicroCON</altname>
-      <altname>Logitech Xbox Cordless Controller</altname>
-      <button id="9">Close</button>
-      <button id="2">PreviousMenu</button>
-      <button id="17">PreviousMenu</button>
-    </joystick>
-
-    <remote>
-      <menu>Close</menu>
-      <back>PreviousMenu</back>
-    </remote>
-  </TrainerSettings>
   <PictureInfo>
     <gamepad>
       <dpadleft>PreviousPicture</dpadleft>
