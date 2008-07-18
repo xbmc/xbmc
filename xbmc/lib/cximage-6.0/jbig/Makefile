@@ -8,7 +8,7 @@ jbig.a: $(OBJS)
 	$(AR) rc $@ $(OBJS)
 
 clean:
-	$(RM) $(OBJS) cximage.a
+	$(RM) $(OBJS) jbig.a
 
 distclean: clean
 

@@ -8,7 +8,7 @@ tiff.a: $(OBJS)
 	$(AR) rc $@ $(OBJS)
 
 clean:
-	$(RM) $(OBJS) png.a
+	$(RM) $(OBJS) tiff.a
 
 distclean: clean
 
