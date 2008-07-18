@@ -64,3 +64,9 @@
 #define SAFE_DELETE(p)       { delete (p);     (p)=NULL; }
 #define SAFE_DELETE_ARRAY(p) { delete[] (p);   (p)=NULL; }
 #define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
+
+#if defined(_MSC_VER) && _MSC_VER < 1500 //vs2008 and up already has strnlen, libsmb needs this function
+extern "C" {
+  size_t strnlen(const char *s, size_t n);
+}
+#endif
