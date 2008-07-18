@@ -52,7 +52,6 @@
 		6E65F33E0E1BF31200B73755 /* GUIButtonScroller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13CD0D25F9F900618676 /* GUIButtonScroller.cpp */; };
 		6E65F33F0E1BF31200B73755 /* GUICheckMarkControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13D00D25F9F900618676 /* GUICheckMarkControl.cpp */; };
 		6E65F3400E1BF31200B73755 /* GUIColorManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13D20D25F9F900618676 /* GUIColorManager.cpp */; };
-		6E65F3410E1BF31200B73755 /* GUIConsoleControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13D40D25F9F900618676 /* GUIConsoleControl.cpp */; };
 		6E65F3420E1BF31200B73755 /* GUIControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13D60D25F9F900618676 /* GUIControl.cpp */; };
 		6E65F3430E1BF31200B73755 /* GuiControlFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13D80D25F9F900618676 /* GuiControlFactory.cpp */; };
 		6E65F3440E1BF31200B73755 /* GUIControlGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13DA0D25F9F900618676 /* GUIControlGroup.cpp */; };
@@ -66,13 +65,9 @@
 		6E65F34C0E1BF31200B73755 /* GUIFontTTF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13EA0D25F9F900618676 /* GUIFontTTF.cpp */; };
 		6E65F34D0E1BF31200B73755 /* guiImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13EC0D25F9F900618676 /* guiImage.cpp */; };
 		6E65F34E0E1BF31200B73755 /* GUIIncludes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13EE0D25F9F900618676 /* GUIIncludes.cpp */; };
-		6E65F34F0E1BF31200B73755 /* GUIItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13F00D25F9F900618676 /* GUIItem.cpp */; };
 		6E65F3500E1BF31200B73755 /* GUILabelControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13F20D25F9F900618676 /* GUILabelControl.cpp */; };
 		6E65F3510E1BF31200B73755 /* GUILargeImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13F40D25F9F900618676 /* GUILargeImage.cpp */; };
-		6E65F3520E1BF31200B73755 /* GUIList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13F80D25F9F900618676 /* GUIList.cpp */; };
 		6E65F3530E1BF31200B73755 /* GUIListContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13FA0D25F9F900618676 /* GUIListContainer.cpp */; };
-		6E65F3540E1BF31200B73755 /* GUIListControlEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13FC0D25F9F900618676 /* GUIListControlEx.cpp */; };
-		6E65F3550E1BF31200B73755 /* GUIListExItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13FE0D25F9F900618676 /* GUIListExItem.cpp */; };
 		6E65F3560E1BF31200B73755 /* GUIListItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14000D25F9F900618676 /* GUIListItem.cpp */; };
 		6E65F3570E1BF31200B73755 /* GUIListItemLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14020D25F9F900618676 /* GUIListItemLayout.cpp */; };
 		6E65F3580E1BF31200B73755 /* GUIListLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14040D25F9F900618676 /* GUIListLabel.cpp */; };
@@ -955,7 +950,6 @@
 		E38E1EF10D25F9FD00618676 /* GUIButtonScroller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13CD0D25F9F900618676 /* GUIButtonScroller.cpp */; };
 		E38E1EF20D25F9FD00618676 /* GUICheckMarkControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13D00D25F9F900618676 /* GUICheckMarkControl.cpp */; };
 		E38E1EF30D25F9FD00618676 /* GUIColorManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13D20D25F9F900618676 /* GUIColorManager.cpp */; };
-		E38E1EF40D25F9FD00618676 /* GUIConsoleControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13D40D25F9F900618676 /* GUIConsoleControl.cpp */; };
 		E38E1EF50D25F9FD00618676 /* GUIControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13D60D25F9F900618676 /* GUIControl.cpp */; };
 		E38E1EF60D25F9FD00618676 /* GuiControlFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13D80D25F9F900618676 /* GuiControlFactory.cpp */; };
 		E38E1EF70D25F9FD00618676 /* GUIControlGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13DA0D25F9F900618676 /* GUIControlGroup.cpp */; };
@@ -969,13 +963,9 @@
 		E38E1EFF0D25F9FD00618676 /* GUIFontTTF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13EA0D25F9F900618676 /* GUIFontTTF.cpp */; };
 		E38E1F000D25F9FD00618676 /* guiImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13EC0D25F9F900618676 /* guiImage.cpp */; };
 		E38E1F010D25F9FD00618676 /* GUIIncludes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13EE0D25F9F900618676 /* GUIIncludes.cpp */; };
-		E38E1F020D25F9FD00618676 /* GUIItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13F00D25F9F900618676 /* GUIItem.cpp */; };
 		E38E1F030D25F9FD00618676 /* GUILabelControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13F20D25F9F900618676 /* GUILabelControl.cpp */; };
 		E38E1F040D25F9FD00618676 /* GUILargeImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13F40D25F9F900618676 /* GUILargeImage.cpp */; };
-		E38E1F050D25F9FD00618676 /* GUIList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13F80D25F9F900618676 /* GUIList.cpp */; };
 		E38E1F060D25F9FD00618676 /* GUIListContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13FA0D25F9F900618676 /* GUIListContainer.cpp */; };
-		E38E1F070D25F9FD00618676 /* GUIListControlEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13FC0D25F9F900618676 /* GUIListControlEx.cpp */; };
-		E38E1F080D25F9FD00618676 /* GUIListExItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13FE0D25F9F900618676 /* GUIListExItem.cpp */; };
 		E38E1F090D25F9FD00618676 /* GUIListItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14000D25F9F900618676 /* GUIListItem.cpp */; };
 		E38E1F0A0D25F9FD00618676 /* GUIListItemLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14020D25F9F900618676 /* GUIListItemLayout.cpp */; };
 		E38E1F0B0D25F9FD00618676 /* GUIListLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14040D25F9F900618676 /* GUIListLabel.cpp */; };
@@ -1915,8 +1905,6 @@
 		E38E13D10D25F9F900618676 /* GUICheckMarkControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUICheckMarkControl.h; sourceTree = "<group>"; };
 		E38E13D20D25F9F900618676 /* GUIColorManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIColorManager.cpp; sourceTree = "<group>"; };
 		E38E13D30D25F9F900618676 /* GUIColorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIColorManager.h; sourceTree = "<group>"; };
-		E38E13D40D25F9F900618676 /* GUIConsoleControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIConsoleControl.cpp; sourceTree = "<group>"; };
-		E38E13D50D25F9F900618676 /* GUIConsoleControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIConsoleControl.h; sourceTree = "<group>"; };
 		E38E13D60D25F9F900618676 /* GUIControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIControl.cpp; sourceTree = "<group>"; };
 		E38E13D70D25F9F900618676 /* GUIControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIControl.h; sourceTree = "<group>"; };
 		E38E13D80D25F9F900618676 /* GuiControlFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GuiControlFactory.cpp; sourceTree = "<group>"; };
@@ -1943,22 +1931,13 @@
 		E38E13ED0D25F9F900618676 /* guiImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiImage.h; sourceTree = "<group>"; };
 		E38E13EE0D25F9F900618676 /* GUIIncludes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIIncludes.cpp; sourceTree = "<group>"; };
 		E38E13EF0D25F9F900618676 /* GUIIncludes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIIncludes.h; sourceTree = "<group>"; };
-		E38E13F00D25F9F900618676 /* GUIItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIItem.cpp; sourceTree = "<group>"; };
-		E38E13F10D25F9F900618676 /* GUIItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIItem.h; sourceTree = "<group>"; };
 		E38E13F20D25F9F900618676 /* GUILabelControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUILabelControl.cpp; sourceTree = "<group>"; };
 		E38E13F30D25F9F900618676 /* GUILabelControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUILabelControl.h; sourceTree = "<group>"; };
 		E38E13F40D25F9F900618676 /* GUILargeImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUILargeImage.cpp; sourceTree = "<group>"; };
 		E38E13F50D25F9F900618676 /* GUILargeImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUILargeImage.h; sourceTree = "<group>"; };
-		E38E13F60D25F9F900618676 /* guilib.vcproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = guilib.vcproj; sourceTree = "<group>"; };
 		E38E13F70D25F9F900618676 /* guilib_win32.vcproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = guilib_win32.vcproj; sourceTree = "<group>"; };
-		E38E13F80D25F9F900618676 /* GUIList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIList.cpp; sourceTree = "<group>"; };
-		E38E13F90D25F9F900618676 /* GUIList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIList.h; sourceTree = "<group>"; };
 		E38E13FA0D25F9F900618676 /* GUIListContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIListContainer.cpp; sourceTree = "<group>"; };
 		E38E13FB0D25F9F900618676 /* GUIListContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIListContainer.h; sourceTree = "<group>"; };
-		E38E13FC0D25F9F900618676 /* GUIListControlEx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIListControlEx.cpp; sourceTree = "<group>"; };
-		E38E13FD0D25F9F900618676 /* GUIListControlEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIListControlEx.h; sourceTree = "<group>"; };
-		E38E13FE0D25F9F900618676 /* GUIListExItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIListExItem.cpp; sourceTree = "<group>"; };
-		E38E13FF0D25F9F900618676 /* GUIListExItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIListExItem.h; sourceTree = "<group>"; };
 		E38E14000D25F9F900618676 /* GUIListItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIListItem.cpp; sourceTree = "<group>"; };
 		E38E14010D25F9F900618676 /* GUIListItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIListItem.h; sourceTree = "<group>"; };
 		E38E14020D25F9F900618676 /* GUIListItemLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIListItemLayout.cpp; sourceTree = "<group>"; };
@@ -3928,8 +3907,6 @@
 				E38E13D10D25F9F900618676 /* GUICheckMarkControl.h */,
 				E38E13D20D25F9F900618676 /* GUIColorManager.cpp */,
 				E38E13D30D25F9F900618676 /* GUIColorManager.h */,
-				E38E13D40D25F9F900618676 /* GUIConsoleControl.cpp */,
-				E38E13D50D25F9F900618676 /* GUIConsoleControl.h */,
 				E38E13D60D25F9F900618676 /* GUIControl.cpp */,
 				E38E13D70D25F9F900618676 /* GUIControl.h */,
 				E38E13D80D25F9F900618676 /* GuiControlFactory.cpp */,
@@ -3956,22 +3933,13 @@
 				E38E13ED0D25F9F900618676 /* guiImage.h */,
 				E38E13EE0D25F9F900618676 /* GUIIncludes.cpp */,
 				E38E13EF0D25F9F900618676 /* GUIIncludes.h */,
-				E38E13F00D25F9F900618676 /* GUIItem.cpp */,
-				E38E13F10D25F9F900618676 /* GUIItem.h */,
 				E38E13F20D25F9F900618676 /* GUILabelControl.cpp */,
 				E38E13F30D25F9F900618676 /* GUILabelControl.h */,
 				E38E13F40D25F9F900618676 /* GUILargeImage.cpp */,
 				E38E13F50D25F9F900618676 /* GUILargeImage.h */,
-				E38E13F60D25F9F900618676 /* guilib.vcproj */,
 				E38E13F70D25F9F900618676 /* guilib_win32.vcproj */,
-				E38E13F80D25F9F900618676 /* GUIList.cpp */,
-				E38E13F90D25F9F900618676 /* GUIList.h */,
 				E38E13FA0D25F9F900618676 /* GUIListContainer.cpp */,
 				E38E13FB0D25F9F900618676 /* GUIListContainer.h */,
-				E38E13FC0D25F9F900618676 /* GUIListControlEx.cpp */,
-				E38E13FD0D25F9F900618676 /* GUIListControlEx.h */,
-				E38E13FE0D25F9F900618676 /* GUIListExItem.cpp */,
-				E38E13FF0D25F9F900618676 /* GUIListExItem.h */,
 				E38E14000D25F9F900618676 /* GUIListItem.cpp */,
 				E38E14010D25F9F900618676 /* GUIListItem.h */,
 				E38E14020D25F9F900618676 /* GUIListItemLayout.cpp */,
@@ -6772,7 +6740,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "mkdir -p \"$TARGET_BUILD_DIR/XBMC.app\"\nmkdir -p \"$TARGET_BUILD_DIR/XBMC.app/Contents/Resources/English.lproj\"\nmkdir -p \"$TARGET_BUILD_DIR/XBMC.app/Contents/Frameworks\"\nmkdir -p \"$TARGET_BUILD_DIR/XBMC.app/Contents/MacOS\"\n\ncp \"$TARGET_BUILD_DIR/XBMC\" \"$TARGET_BUILD_DIR/XBMC.app/Contents/MacOS/\"\ncp \"$SRCROOT/media/xbmc.icns\" \"$TARGET_BUILD_DIR/XBMC.app/Contents/Resources/\"\ncp \"$SRCROOT/xbmc/osx/Info.plist\" \"$TARGET_BUILD_DIR/XBMC.app/Contents/\"\n\n\nfor a in $(otool -L \"$TARGET_BUILD_DIR/XBMC.app/Contents/MacOS/XBMC\"  | grep opt | awk ' { print $1 } ') ; do cp \"$a\" \"$TARGET_BUILD_DIR/XBMC.app/Contents/Frameworks\"; install_name_tool -change \"$a\" @executable_path/../Frameworks/$(basename $a) \"$TARGET_BUILD_DIR/XBMC.app/Contents/MacOS/XBMC\" ; done";
+			shellScript = "mkdir -p \"$TARGET_BUILD_DIR/XBMC.app\"\nmkdir -p \"$TARGET_BUILD_DIR/XBMC.app/Contents/Resources/English.lproj\"\nmkdir -p \"$TARGET_BUILD_DIR/XBMC.app/Contents/Frameworks\"\nmkdir -p \"$TARGET_BUILD_DIR/XBMC.app/Contents/MacOS\"\n\ncp -f \"$TARGET_BUILD_DIR/XBMC\" \"$TARGET_BUILD_DIR/XBMC.app/Contents/MacOS/\"\ncp -f \"$SRCROOT/media/xbmc.icns\" \"$TARGET_BUILD_DIR/XBMC.app/Contents/Resources/\"\ncp -f \"$SRCROOT/xbmc/osx/Info.plist\" \"$TARGET_BUILD_DIR/XBMC.app/Contents/\"\n\n# Copy all of XBMC's dynamic dependencies and rename their locations to inside the Framework\nfor a in $(otool -L \"$TARGET_BUILD_DIR/XBMC.app/Contents/MacOS/XBMC\"  | grep opt | awk ' { print $1 } ') ; do \n\techo \"Processing $a\"\n\tcp -f \"$a\" \"$TARGET_BUILD_DIR/XBMC.app/Contents/Frameworks\"\n\tchmod u+w \"$TARGET_BUILD_DIR/XBMC.app/Contents/Frameworks/$(basename $a)\"\n\tinstall_name_tool -change \"$a\" @executable_path/../Frameworks/$(basename $a) \"$TARGET_BUILD_DIR/XBMC.app/Contents/MacOS/XBMC\"\ndone\n\nREWIND=\"1\"\n\n# Copy all the dynamic dependencies and rename their locations to inside the Framework\n\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in \"$TARGET_BUILD_DIR/XBMC.app/Contents/Frameworks/\"*dylib ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/XBMC.app/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/XBMC.app/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/XBMC.app/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/XBMC.app/Contents/Frameworks/$(basename $b)\"\n\t\tdone \n\tdone\ndone";
 		};
 		882630930E1B6FAD00DC9524 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -6813,7 +6781,6 @@
 				6E65F33E0E1BF31200B73755 /* GUIButtonScroller.cpp in Sources */,
 				6E65F33F0E1BF31200B73755 /* GUICheckMarkControl.cpp in Sources */,
 				6E65F3400E1BF31200B73755 /* GUIColorManager.cpp in Sources */,
-				6E65F3410E1BF31200B73755 /* GUIConsoleControl.cpp in Sources */,
 				6E65F3420E1BF31200B73755 /* GUIControl.cpp in Sources */,
 				6E65F3430E1BF31200B73755 /* GuiControlFactory.cpp in Sources */,
 				6E65F3440E1BF31200B73755 /* GUIControlGroup.cpp in Sources */,
@@ -6827,13 +6794,9 @@
 				6E65F34C0E1BF31200B73755 /* GUIFontTTF.cpp in Sources */,
 				6E65F34D0E1BF31200B73755 /* guiImage.cpp in Sources */,
 				6E65F34E0E1BF31200B73755 /* GUIIncludes.cpp in Sources */,
-				6E65F34F0E1BF31200B73755 /* GUIItem.cpp in Sources */,
 				6E65F3500E1BF31200B73755 /* GUILabelControl.cpp in Sources */,
 				6E65F3510E1BF31200B73755 /* GUILargeImage.cpp in Sources */,
-				6E65F3520E1BF31200B73755 /* GUIList.cpp in Sources */,
 				6E65F3530E1BF31200B73755 /* GUIListContainer.cpp in Sources */,
-				6E65F3540E1BF31200B73755 /* GUIListControlEx.cpp in Sources */,
-				6E65F3550E1BF31200B73755 /* GUIListExItem.cpp in Sources */,
 				6E65F3560E1BF31200B73755 /* GUIListItem.cpp in Sources */,
 				6E65F3570E1BF31200B73755 /* GUIListItemLayout.cpp in Sources */,
 				6E65F3580E1BF31200B73755 /* GUIListLabel.cpp in Sources */,
@@ -7595,7 +7558,6 @@
 				E38E1EF10D25F9FD00618676 /* GUIButtonScroller.cpp in Sources */,
 				E38E1EF20D25F9FD00618676 /* GUICheckMarkControl.cpp in Sources */,
 				E38E1EF30D25F9FD00618676 /* GUIColorManager.cpp in Sources */,
-				E38E1EF40D25F9FD00618676 /* GUIConsoleControl.cpp in Sources */,
 				E38E1EF50D25F9FD00618676 /* GUIControl.cpp in Sources */,
 				E38E1EF60D25F9FD00618676 /* GuiControlFactory.cpp in Sources */,
 				E38E1EF70D25F9FD00618676 /* GUIControlGroup.cpp in Sources */,
@@ -7609,13 +7571,9 @@
 				E38E1EFF0D25F9FD00618676 /* GUIFontTTF.cpp in Sources */,
 				E38E1F000D25F9FD00618676 /* guiImage.cpp in Sources */,
 				E38E1F010D25F9FD00618676 /* GUIIncludes.cpp in Sources */,
-				E38E1F020D25F9FD00618676 /* GUIItem.cpp in Sources */,
 				E38E1F030D25F9FD00618676 /* GUILabelControl.cpp in Sources */,
 				E38E1F040D25F9FD00618676 /* GUILargeImage.cpp in Sources */,
-				E38E1F050D25F9FD00618676 /* GUIList.cpp in Sources */,
 				E38E1F060D25F9FD00618676 /* GUIListContainer.cpp in Sources */,
-				E38E1F070D25F9FD00618676 /* GUIListControlEx.cpp in Sources */,
-				E38E1F080D25F9FD00618676 /* GUIListExItem.cpp in Sources */,
 				E38E1F090D25F9FD00618676 /* GUIListItem.cpp in Sources */,
 				E38E1F0A0D25F9FD00618676 /* GUIListItemLayout.cpp in Sources */,
 				E38E1F0B0D25F9FD00618676 /* GUIListLabel.cpp in Sources */,
