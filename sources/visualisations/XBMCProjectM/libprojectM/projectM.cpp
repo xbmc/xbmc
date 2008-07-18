@@ -25,6 +25,7 @@
 #include "compare.h"
 #ifdef WIN32
 #include "win32-dirent.h"
+#define CMAKE_INSTALL_PREFIX  ""
 #endif
 
 #include "timer.h"
@@ -153,7 +154,7 @@ bool projectM::writeConfig(const std::string & configFile, const Settings & sett
 	config.add("Window Bottom", settings.windowBottom);
 	
 	std::fstream file(configFile.c_str());	
-	if (file) {
+	if (file.is_open()) {
 		file << config;
 		return true;
 	} else
@@ -784,7 +785,10 @@ int projectM::initPresetTools()
 
 	// Load idle preset
 	//std::cerr << "[projectM] Allocating idle preset..." << std::endl;
-	m_activePreset = IdlePreset::allocate ( presetInputs, presetOutputs );
+	if (m_presetChooser->empty())
+                m_activePreset = IdlePreset::allocate ( presetInputs, presetOutputs );
+        else
+                switchPreset(m_activePreset, presetInputs, presetOutputs);
 
 	// Case where no valid presets exist in directory. Could also mean 
 	// playlist initialization was deferred

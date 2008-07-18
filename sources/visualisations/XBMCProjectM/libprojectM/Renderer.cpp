@@ -498,7 +498,7 @@ void Renderer::reset(int w, int h)
 	glEnable( GL_LINE_SMOOTH );
 	
 	
-	glEnable(GL_POINT_SMOOTH);
+//	glEnable(GL_POINT_SMOOTH);
 	glClear(GL_COLOR_BUFFER_BIT);
 	
 #ifndef USE_GLES1
