@@ -1,0 +1,17 @@
+#! /bin/sh
+
+case $OSTYPE in
+	darwin*)
+	LIBTOOLIZE=glibtoolize
+	;;
+	*)
+	LIBTOOLIZE=libtoolize
+	;;
+esac
+
+aclocal -I .                   && \
+autoheader                     && \
+$LIBTOOLIZE --automake --copy   && \
+automake --add-missing --copy  && \
+autoconf                       && \
+echo "Ready to run ./configure"

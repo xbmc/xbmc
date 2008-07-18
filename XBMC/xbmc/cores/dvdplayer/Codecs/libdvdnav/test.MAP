@@ -1,0 +1,404 @@
+Archive member included because of file (symbol)
+
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(dllmain.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../dllcrt2.o (DllMain@12)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(gccmain.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../dllcrt2.o (__main)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(pseudo-reloc.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../dllcrt2.o (_pei386_runtime_relocator)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(pseudo-reloc-list.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(pseudo-reloc.o) (__RUNTIME_PSEUDO_RELOC_LIST__)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/crtbegin.o (__w32_sharedptr_initialize)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(_ctors.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(gccmain.o) (__CTOR_LIST__)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(_eprintf.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o) (__eprintf)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00036.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../dllcrt2.o (__dllonexit)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00560.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../dllcrt2.o (fflush)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00575.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../dllcrt2.o (free)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00152.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../dllcrt2.o (_errno)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00626.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../dllcrt2.o (malloc)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00533.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o) (abort)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00233.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(_eprintf.o) (_imp___iob)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00569.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(_eprintf.o) (fprintf)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxh.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00036.o) (_head_libmsvcrt_a)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxt.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxh.o) (_libmsvcrt_a_iname)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00220.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o) (_imp__GetAtomNameA@12)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00175.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o) (_imp__FindAtomA@4)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00001.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o) (_imp__AddAtomA@4)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbh.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00220.o) (_head_libkernel32_a)
+c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbt.o)
+                              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbh.o) (_libkernel32_a_iname)
+
+Allocating common symbols
+Common symbol       size              file
+
+__DTOR_LIST__       0x10              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(_ctors.o)
+__w32_sharedptr_terminate
+                    0x10              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o)
+__w32_sharedptr     0x10              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o)
+__CTOR_LIST__       0x10              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(_ctors.o)
+__w32_sharedptr_unexpected
+                    0x10              c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+                0x10000000                __image_base__ = 0x10000000
+                0x00000000                __dll__ = 0x0
+                0x00001000                __section_alignment__ = 0x1000
+                0x00000200                __file_alignment__ = 0x200
+                0x00000004                __major_os_version__ = 0x4
+                0x00000000                __minor_os_version__ = 0x0
+                0x00000001                __major_image_version__ = 0x1
+                0x00000000                __minor_image_version__ = 0x0
+                0x00000004                __major_subsystem_version__ = 0x4
+                0x00000000                __minor_subsystem_version__ = 0x0
+                0x00000003                __subsystem__ = 0x3
+                0x00200000                __size_of_stack_reserve__ = 0x200000
+                0x00001000                __size_of_stack_commit__ = 0x1000
+                0x00100000                __size_of_heap_reserve__ = 0x100000
+                0x00001000                __size_of_heap_commit__ = 0x1000
+                0x00000000                __loader_flags__ = 0x0
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../dllcrt2.o
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/crtbegin.o
+LOAD conftest.o
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libstdc++.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingwex.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libuser32.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libadvapi32.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libshell32.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmoldname.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingwex.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a
+LOAD c:/mingw/bin/../lib/gcc/mingw32/3.4.2/crtend.o
+
+.text           0x10001000      0x800
+ *(.init)
+ *(.text)
+ .text          0x10001000      0x1c0 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../dllcrt2.o
+                0x10001160                atexit
+                0x10001190                _onexit
+                0x10001000                DllMainCRTStartup@12
+ .text          0x100011c0       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/crtbegin.o
+                0x100011c0                __do_sjlj_init
+ .text          0x100011d0       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(dllmain.o)
+                0x100011d0                DllMain@12
+ .text          0x100011e0      0x110 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(gccmain.o)
+                0x10001280                __main
+                0x100011e0                __do_global_dtors
+                0x10001220                __do_global_ctors
+ .text          0x100012f0       0x30 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(pseudo-reloc.o)
+                0x100012f0                _pei386_runtime_relocator
+ .text          0x10001320      0x2f0 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o)
+                0x100013d0                __w32_sharedptr_initialize
+ .text          0x10001610       0x50 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(_eprintf.o)
+                0x10001610                __eprintf
+ .text          0x10001660        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00036.o)
+                0x10001660                __dllonexit
+ *fill*         0x10001668        0x8 00
+ .text          0x10001670        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00560.o)
+                0x10001670                fflush
+ *fill*         0x10001678        0x8 00
+ .text          0x10001680        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00575.o)
+                0x10001680                free
+ *fill*         0x10001688        0x8 00
+ .text          0x10001690        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00152.o)
+                0x10001690                _errno
+ *fill*         0x10001698        0x8 00
+ .text          0x100016a0        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00626.o)
+                0x100016a0                malloc
+ *fill*         0x100016a8        0x8 00
+ .text          0x100016b0        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00533.o)
+                0x100016b0                abort
+ *fill*         0x100016b8        0x8 00
+ .text          0x100016c0        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00569.o)
+                0x100016c0                fprintf
+ *fill*         0x100016c8        0x8 00
+ .text          0x100016d0        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00220.o)
+                0x100016d0                GetAtomNameA@12
+ *fill*         0x100016d8        0x8 00
+ .text          0x100016e0        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00175.o)
+                0x100016e0                FindAtomA@4
+ *fill*         0x100016e8        0x8 00
+ .text          0x100016f0        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00001.o)
+                0x100016f0                AddAtomA@4
+ *fill*         0x100016f8        0x8 00
+ .text          0x10001700       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/crtend.o
+ *(SORT(.text$*))
+ *(.glue_7t)
+ *(.glue_7)
+                0x10001710                ___CTOR_LIST__ = .
+                0x10001710                __CTOR_LIST__ = .
+                0x10001710        0x4 LONG 0xffffffff
+ *(EXCLUDE_FILE(*crtend.o) .ctors)
+ *(.ctor)
+ *(SORT(.ctors.*))
+ *crtend.o(.ctors)
+ .ctors         0x10001714        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/crtend.o
+                0x10001718        0x4 LONG 0x0
+                0x1000171c                ___DTOR_LIST__ = .
+                0x1000171c                __DTOR_LIST__ = .
+                0x1000171c        0x4 LONG 0xffffffff
+ *(EXCLUDE_FILE(*crtend.o) .dtors)
+ *(.dtor)
+ *(SORT(.dtors.*))
+ *crtend.o(.dtors)
+                0x10001720        0x4 LONG 0x0
+ *(.fini)
+ *(.gcc_exc)
+                0x10001724                PROVIDE (etext, .)
+ *(.gcc_except_table)
+
+.data           0x10002000      0x200
+                0x10002000                __data_start__ = .
+ *(.data)
+ .data          0x10002000       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(gccmain.o)
+ .data          0x10002010       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o)
+ *(.data2)
+ *(SORT(.data$*))
+                0x10002020                __data_end__ = .
+ *(.data_cygwin_nocopy)
+
+.rdata          0x10003000      0x200
+ *(.rdata)
+ .rdata         0x10003000       0xe0 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o)
+ *(SORT(.rdata$*))
+ *(.eh_frame)
+                0x100030e0                ___RUNTIME_PSEUDO_RELOC_LIST__ = .
+                0x100030e0                __RUNTIME_PSEUDO_RELOC_LIST__ = .
+ *(.rdata_runtime_pseudo_reloc)
+                0x100030e0                ___RUNTIME_PSEUDO_RELOC_LIST_END__ = .
+                0x100030e0                __RUNTIME_PSEUDO_RELOC_LIST_END__ = .
+
+.pdata
+ *(.pdata)
+
+.bss            0x10004000       0xb0
+                0x10004000                __bss_start__ = .
+ *(.bss)
+ .bss           0x10004000       0x20 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../dllcrt2.o
+ .bss           0x10004020       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(gccmain.o)
+ .bss           0x10004030       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmingw32.a(pseudo-reloc-list.o)
+ .bss           0x10004040       0x20 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o)
+ *(COMMON)
+ COMMON         0x10004060       0x30 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(w32-shared-ptr.o)
+                0x10004060                __w32_sharedptr_terminate
+                0x10004070                __w32_sharedptr
+                0x10004080                __w32_sharedptr_unexpected
+ COMMON         0x10004090       0x20 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/libgcc.a(_ctors.o)
+                0x100040b0                __bss_end__ = .
+
+.edata          0x10005000      0x200
+ *(.edata)
+ .edata         0x10005000       0x2e dll stuff
+
+/DISCARD/
+ *(.debug$S)
+ *(.debug$T)
+ *(.debug$F)
+ *(.drectve)
+
+.idata          0x10006000      0x200
+ SORT(*)(.idata$2)
+ .idata$2       0x10006000       0x14 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbh.o)
+                0x10006000                _head_libkernel32_a
+ .idata$2       0x10006014       0x14 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxh.o)
+                0x10006014                _head_libmsvcrt_a
+ SORT(*)(.idata$3)
+                0x10006028        0x4 LONG 0x0
+                0x1000602c        0x4 LONG 0x0
+                0x10006030        0x4 LONG 0x0
+                0x10006034        0x4 LONG 0x0
+                0x10006038        0x4 LONG 0x0
+ SORT(*)(.idata$4)
+ .idata$4       0x1000603c        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbh.o)
+ .idata$4       0x10006040        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00001.o)
+ .idata$4       0x10006044        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00175.o)
+ .idata$4       0x10006048        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00220.o)
+ .idata$4       0x1000604c        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbt.o)
+ .idata$4       0x10006050        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxh.o)
+ .idata$4       0x10006054        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00036.o)
+ .idata$4       0x10006058        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00152.o)
+ .idata$4       0x1000605c        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00233.o)
+ .idata$4       0x10006060        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00533.o)
+ .idata$4       0x10006064        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00560.o)
+ .idata$4       0x10006068        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00569.o)
+ .idata$4       0x1000606c        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00575.o)
+ .idata$4       0x10006070        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00626.o)
+ .idata$4       0x10006074        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxt.o)
+ SORT(*)(.idata$5)
+ .idata$5       0x10006078        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbh.o)
+ .idata$5       0x1000607c        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00001.o)
+                0x1000607c                _imp__AddAtomA@4
+ .idata$5       0x10006080        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00175.o)
+                0x10006080                _imp__FindAtomA@4
+ .idata$5       0x10006084        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00220.o)
+                0x10006084                _imp__GetAtomNameA@12
+ .idata$5       0x10006088        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbt.o)
+ .idata$5       0x1000608c        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxh.o)
+ .idata$5       0x10006090        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00036.o)
+                0x10006090                _imp____dllonexit
+ .idata$5       0x10006094        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00152.o)
+                0x10006094                _imp___errno
+ .idata$5       0x10006098        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00233.o)
+                0x10006098                _imp___iob
+ .idata$5       0x1000609c        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00533.o)
+                0x1000609c                _imp__abort
+ .idata$5       0x100060a0        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00560.o)
+                0x100060a0                _imp__fflush
+ .idata$5       0x100060a4        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00569.o)
+                0x100060a4                _imp__fprintf
+ .idata$5       0x100060a8        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00575.o)
+                0x100060a8                _imp__free
+ .idata$5       0x100060ac        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00626.o)
+                0x100060ac                _imp__malloc
+ .idata$5       0x100060b0        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxt.o)
+ SORT(*)(.idata$6)
+ .idata$6       0x100060b4        0xc c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00001.o)
+ .idata$6       0x100060c0        0xc c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00175.o)
+ .idata$6       0x100060cc       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00220.o)
+ .idata$6       0x100060dc        0xe c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00036.o)
+ *fill*         0x100060ea        0x2 00
+ .idata$6       0x100060ec        0xa c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00152.o)
+ *fill*         0x100060f6        0x2 00
+ .idata$6       0x100060f8        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00233.o)
+ .idata$6       0x10006100        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00533.o)
+ .idata$6       0x10006108        0xa c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00560.o)
+ *fill*         0x10006112        0x2 00
+ .idata$6       0x10006114        0xa c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00569.o)
+ *fill*         0x1000611e        0x2 00
+ .idata$6       0x10006120        0x8 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00575.o)
+ .idata$6       0x10006128        0xa c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00626.o)
+ SORT(*)(.idata$7)
+ *fill*         0x10006132        0x2 00
+ .idata$7       0x10006134        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00001.o)
+ .idata$7       0x10006138        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00175.o)
+ .idata$7       0x1000613c        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbs00220.o)
+ .idata$7       0x10006140       0x10 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libkernel32.a(dchbt.o)
+                0x10006140                _libkernel32_a_iname
+ .idata$7       0x10006150        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00036.o)
+ .idata$7       0x10006154        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00152.o)
+ .idata$7       0x10006158        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00233.o)
+ .idata$7       0x1000615c        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00533.o)
+ .idata$7       0x10006160        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00560.o)
+ .idata$7       0x10006164        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00569.o)
+ .idata$7       0x10006168        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00575.o)
+ .idata$7       0x1000616c        0x4 c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxs00626.o)
+ .idata$7       0x10006170        0xc c:/mingw/bin/../lib/gcc/mingw32/3.4.2/../../../libmsvcrt.a(dkxt.o)
+                0x10006170                _libmsvcrt_a_iname
+
+.CRT            0x10007000        0x0
+                0x10007000                ___crt_xc_start__ = .
+ *(SORT(.CRT$XC*))
+                0x10007000                ___crt_xc_end__ = .
+                0x10007000                ___crt_xi_start__ = .
+ *(SORT(.CRT$XI*))
+                0x10007000                ___crt_xi_end__ = .
+                0x10007000                ___crt_xl_start__ = .
+ *(SORT(.CRT$XL*))
+                0x10007000                ___crt_xp_start__ = .
+ *(SORT(.CRT$XP*))
+                0x10007000                ___crt_xp_end__ = .
+                0x10007000                ___crt_xt_start__ = .
+ *(SORT(.CRT$XT*))
+                0x10007000                ___crt_xt_end__ = .
+
+.tls            0x10007000        0x0
+                0x10007000                ___tls_start__ = .
+ *(.tls)
+ *(.tls$)
+ *(SORT(.tls$*))
+                0x10007000                ___tls_end__ = .
+
+.endjunk        0x10007000        0x0
+                0x10007000                PROVIDE (end, .)
+                0x10007000                PROVIDE (_end, .)
+                0x10007000                __end__ = .
+
+.rsrc
+ *(.rsrc)
+ *(SORT(.rsrc$*))
+
+.reloc          0x10007000      0x200
+ *(.reloc)
+ .reloc         0x10007000       0xc0 dll stuff
+
+.stab           0x10008000      0x200
+ *(.stab)
+ .stab          0x10008000      0x15c conftest.o
+
+.stabstr        0x10009000      0x600
+ *(.stabstr)
+ .stabstr       0x10009000      0x587 conftest.o
+
+.debug_aranges
+ *(.debug_aranges)
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info
+ *(.debug_info)
+ *(.gnu.linkonce.wi.*)
+
+.debug_abbrev
+ *(.debug_abbrev)
+
+.debug_line
+ *(.debug_line)
+
+.debug_frame
+ *(.debug_frame)
+
+.debug_str
+ *(.debug_str)
+
+.debug_loc
+ *(.debug_loc)
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+
+.debug_ranges
+ *(.debug_ranges)
+OUTPUT(a.exe pei-i386)
+LOAD dll stuff

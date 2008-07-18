@@ -1,0 +1,9 @@
+EXPORTS
+	dts_block @ 1
+	dts_blocks_num @ 2
+	dts_dynrng @ 3
+	dts_frame @ 4
+	dts_free @ 5
+	dts_init @ 6
+	dts_samples @ 7
+	dts_syncinfo @ 8

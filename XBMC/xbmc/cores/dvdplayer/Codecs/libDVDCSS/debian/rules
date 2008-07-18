@@ -1,0 +1,86 @@
+#!/usr/bin/make -f
+# debian/rules for libdvdcss - uses debhelper.
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+build: build-stamp
+build-stamp:
+	dh_testdir
+
+	touch configure.ac \
+	&& touch aclocal.m4 \
+	&& touch configure \
+	&& touch config.h.in \
+	&& touch `find . -name Makefile.in`
+
+	./configure --prefix=/usr --mandir=$${prefix}/share/man \
+		--infodir=$${prefix}/share/info
+
+	$(MAKE)
+
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp
+
+	-$(MAKE) distclean
+
+	dh_clean
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+
+	$(MAKE) install DESTDIR=`pwd`/debian/libdvdcss2/
+
+	ln -s libdvdcss2 debian/libdvdcss2-dev/usr/share/doc/libdvdcss2-dev
+	mv debian/libdvdcss2/usr/lib/*.so debian/libdvdcss2/usr/lib/*a \
+		debian/libdvdcss2-dev/usr/lib/
+	mv debian/libdvdcss2/usr/include debian/libdvdcss2-dev/usr/
+
+	cp -r doc/html debian/libdvdcss2/usr/share/doc/libdvdcss2/
+	cp doc/latex/refman.ps \
+	   debian/libdvdcss2/usr/share/doc/libdvdcss2/libdvdcss.ps
+
+# Build architecture-independent files here.
+binary-indep: build install
+# We have nothing to do by default.
+
+# Build architecture-dependent files here.
+binary-arch: build install
+#	dh_testversion
+	dh_testdir
+	dh_testroot
+#	dh_installdebconf	
+	dh_installdocs AUTHORS NEWS README
+#	dh_installexamples
+#	dh_installmenu
+#	dh_installemacsen
+#	dh_installpam
+#	dh_installinit
+#	dh_installcron
+#	dh_installman
+#	dh_installinfo
+#	dh_undocumented
+	dh_installchangelogs ChangeLog
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_makeshlibs
+	dh_installdeb
+#	dh_perl
+
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install
+
