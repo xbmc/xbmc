@@ -144,7 +144,7 @@ int scandir(
 	int(*compar)(const void*, const void*)
 ) {
 	int entries = 0;
-	int max_entries = 512; // assume 2*512 = 1024 entries (used for allocation)
+	int max_entries = 1024; // assume 2*512 = 1024 entries (used for allocation)
 	DIR* d;
 	
 	*namelist = 0;
