@@ -257,6 +257,7 @@ using namespace SDP;
 
 CSAPSessions::CSAPSessions()
 {
+  m_socket = INVALID_SOCKET;
 }
 
 CSAPSessions::~CSAPSessions()
