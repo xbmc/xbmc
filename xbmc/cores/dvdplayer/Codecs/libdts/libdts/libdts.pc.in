@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libdts
+Description: A decoding library for DTS Coherent Acoustics streams.
+Version: @VERSION@
+Libs: -L${libdir} -ldts
+Cflags: -I${includedir}/@PACKAGE@
