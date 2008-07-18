@@ -1,0 +1,93 @@
+[preset00]
+fRating=2.000000
+fGammaAdj=2.000000
+fDecay=0.960000
+fVideoEchoZoom=0.999900
+fVideoEchoAlpha=0.500000
+nVideoEchoOrientation=3
+nWaveMode=0
+bAdditiveWaves=0
+bWaveDots=0
+bWaveThick=0
+bModWaveAlphaByVolume=1
+bMaximizeWaveColor=0
+bTexWrap=0
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=100.000000
+fWaveScale=25.080072
+fWaveSmoothing=0.750000
+fWaveParam=-1.000000
+fModWaveAlphaStart=0.750000
+fModWaveAlphaEnd=0.950000
+fWarpAnimSpeed=1.000000
+fWarpScale=1.000000
+fZoomExponent=1.008100
+fShader=0.300000
+zoom=0.122270
+rot=0.240000
+cx=2.000000
+cy=-1.000000
+dx=0.000000
+dy=0.000000
+warp=0.010000
+sx=1.000000
+sy=1.000000
+wave_r=0.000000
+wave_g=0.000000
+wave_b=0.000000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.005000
+ob_r=1.000000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=0.100000
+ib_size=0.003000
+ib_r=0.000000
+ib_g=0.000000
+ib_b=1.000000
+ib_a=0.600000
+nMotionVectorsX=64.000000
+nMotionVectorsY=48.000000
+mv_dx=0.000000
+mv_dy=0.000000
+mv_l=0.050000
+mv_r=0.000000
+mv_g=0.700000
+mv_b=1.000000
+mv_a=1.000000
+per_frame_1=// sensor - alpha
+per_frame_2=le=1.4*bass_att+.1*bass+.5*treb;
+per_frame_3=pulse=band(above(le,th),above(le-th,block));
+per_frame_4=block=le-th;
+per_frame_5=th=if(above(le,th),le+114/(le+10)-7.407,
+per_frame_6=th+th*.07/(th-12)+below(th,2.7)*.1*(2.7-th));
+per_frame_7=th=if(above(th,5.2),4,th);
+per_frame_8=
+per_frame_9=q1=.12*th;
+per_frame_10=ccl=if(pulse,ccl+1,ccl);
+per_frame_11=q2=ccl;
+per_frame_12=
+per_frame_13=ob_r=ob_r + time*sin(bass);
+per_frame_14=ob_b=ob_b + time*sin(treb+1);
+per_frame_15=ob_g=ob_g + time*sin(mid/1.5);
+per_frame_16=zoomexp = q1;
+per_frame_17=myb = cos(time)  + abs(cos(time));
+per_frame_18=myg = abs(sin(time)) ;
+per_frame_19=myr = (-1 * cos(time))  + abs(-1 * cos(time)) + 0.2 * (cos(sin(time))+(abs(cos(sin(time)))+cos(sin(time))));
+per_frame_20=avg = .9*avg+.1*le;
+per_frame_21=wave_r = if(below(avg,1.8),myr,0);
+per_frame_22=wave_b = if(below(avg,1.8),myb,0);
+per_frame_23=wave_g = if(below(avg,1.8),myg,0);
+per_frame_24=monitor = avg;
+per_pixel_1=grid=sign(pow(sin(ang*(q2)+x*y*q1)*2,1+q2%4)) -.5;
+per_pixel_2=snee=.5*sin(q2*q1);
+per_pixel_3=rot=bnot(grid%((q2%10)+2))*above(x,.5+snee)*above(y,.5-snee);
+per_pixel_4=sx=sx-sin((q2+.5)*x)*band(rot,snee)*.003;
+per_pixel_5=sy=sy-cos((q2+3.4)*y)*band(rot,snee)*.003;
+per_pixel_6=zoom=1+.1*sin((q1-q2)*3)+.2*cos(1.6*sin(time)+rad*6.28*q1)*below(x,.5+snee)*below(y,.5-snee);
