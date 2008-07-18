@@ -9914,11 +9914,13 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <stdio.h>
+#include <sys/types.h> /* for off_t */
+     #include <stdio.h>
 int
 main ()
 {
-return fseeko (stdin, 0, 0) && (fseeko) (stdin, 0, 0);
+int (*fp) (FILE *, off_t, int) = fseeko;
+     return fseeko (stdin, 0, 0) && fp (stdin, 0, 0);
   ;
   return 0;
 }
@@ -9958,11 +9960,13 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #define _LARGEFILE_SOURCE 1
-#include <stdio.h>
+#include <sys/types.h> /* for off_t */
+     #include <stdio.h>
 int
 main ()
 {
-return fseeko (stdin, 0, 0) && (fseeko) (stdin, 0, 0);
+int (*fp) (FILE *, off_t, int) = fseeko;
+     return fseeko (stdin, 0, 0) && fp (stdin, 0, 0);
   ;
   return 0;
 }
@@ -14268,7 +14272,7 @@ ac_clean_files=$ac_clean_files_save
 pushd xbmc/lib/libPython/Python; ./configure --enable-ipv6 --enable-unicode=ucs4 --without-cxx --enable-shared --prefix=`pwd`/../linux/python-lib MACOSX_DEPLOYMENT_TARGET=10.5; sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h; cp pyconfig.h Include; popd
 pushd xbmc/cores/paplayer/MPCCodec; ./configure; popd
 pushd xbmc/cores/paplayer/MP3Codec/libmad-0.15.1b; ./configure CFLAGS="-O3 -fPIC" CXXFLAGS="-O3 -fPIC"; popd
-pushd xbmc/cores/paplayer/flac-1.2.1; ./configure -C --with-pic --disable-asm-optimization CC="$CC" CXX="$CXX"; popd
+pushd xbmc/cores/paplayer/flac-1.2.1; ./configure -C --with-pic --disable-asm-optimizations CC="$CC" CXX="$CXX"; popd
 pushd xbmc/cores/paplayer/vorbisfile/libvorbis; ./configure; popd
 pushd xbmc/cores/paplayer/vorbisfile/ogg; ./configure; popd
 pushd xbmc/cores/dvdplayer/Codecs/ffmpeg && ./configure --extra-cflags="-D_XBOX"  --enable-shared --enable-postproc --enable-gpl --disable-static --disable-vhook --enable-swscale --enable-protocol=http --disable-altivec --disable-ipv6 --enable-pthreads --disable-debug && popd
