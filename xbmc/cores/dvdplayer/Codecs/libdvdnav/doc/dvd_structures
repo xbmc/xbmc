@@ -1,0 +1,107 @@
+This is some rather basic information on the organizational structures of
+a DVD. I collected this info over time from various sources, the most
+valuable being an article in the German c't computer magazine.
+Some of the info might be wrong according to the DVD standard (which I do
+not know), but they are practically proven in libdvdnav.
+
+						Michael Roitzsch
+
+
+0. storage structure
+   - sector
+       * smallest addressable unit on disc
+       * data is stored on disc with a Reed-Solomon error correction
+   - file
+       * the storage entity in the underlying filesystem (usually UDF)
+       * on DVD-Video, files are stored consecutively
+1. MPEG stream structure
+   - blocks
+       * a file system driver (usually UDF) is needed to map the VOBS-local
+	 block numbers to global disc sectors
+   - GOP (group of pictures)
+       * contains multiple sectors
+       * smallest self-contained MPEG unit
+   - VOBU (video object unit)
+       * contains multiple GOPs + audio and SPU blocks + NAV packet
+       * smallest unit in seek and resume operations, always starts with a
+         NAV packet used for menu button highlight and command information
+         and to detect PTS discontinuities
+   - ILVU (interleaved video unit)
+       * contains multiple VOBUs (ususally only one)
+       * blocking multiple VOBUs of multiple interleaved MPEG streams for
+         multiangle features
+   - VOB (video object)
+       * contains multiple ILVUs (usually quite a lot)
+       * each NAV packet has a CellID, so VOBs are divided into stream Cells
+	 which do not necessarily correspond to the navigation Cells below
+   - VOBS (video object set)
+       * contains multiple VOBs (addressed by VOB_ID)
+       * a VOBS is the storage analogy to the playback domains below,
+	 therefore, a VMGM_VOBS, a VTSM_VOBS and a VTS_VOBS exist
+       * all block addressing is done within the scope of the VOBS
+2. navigational structure - logical playback control
+   - Cell
+       * smallest unit which is layed out in sequence
+       * points to a first and last VOBU (by sector)
+       * also points to the corresponding CellID and VOB_ID
+       * smallest unit to execute VM commands (cell_post commands)
+       * smallest unit accesible by VM commands (apart from LinkRSM)
+   - PG (program)
+       * points to a Cell
+       * usually the mapping between PG and Cells is 1:1, but not always
+	 (multiple Cells inside one PG can occur when special VM commands
+	 have to be executed in the middle of a PG, for example to switch
+	 SPU channels or to provide a branching target for special
+	 features that need access to parts of the movie)
+       * unit for user skip operations
+       * libdvdnav's default unit for seeking
+   - PGC (program chain)
+       * contains multiple programs and cells
+       * logical playback chain
+       * VM commands at start and stop (PGC_pre and PGC_post commands)
+       * might be used for seeking (see dvdnav_set_PGC_positioning())
+3. title structure - high level navigation
+   - PTT (part of title track)
+       * points to a PG in a PGC
+       * usually what you select in a "chapter menu" are parts
+       * usually the mapping between PTT and PG is 1:1, but not always
+	 (this is similar to the distinction between track and index marks
+	 on audio CDs: PTT = track mark, PG = index mark)
+   - TT (title track)
+       * contains multiple PTTs
+       * logical partitioning of the content
+         (multiple episodes of a TV series on one DVD: one TT per episode)
+       * the display of DVD players show title and part number
+   - VTS (video title set)
+       * contains multiple TTs with a local numbering (to emphasize the
+	 local scope of the number, these are also called VTS_TT)
+       * high level partitioning of the content (movie / bonus material)
+       * video, audio and spu attributes are common inside a whole VTS
+4. domain structure - bringing it all together
+   - FP (first play)
+       * one special PGC in the VMGM domain run on start of the disc
+   - VMGM (video manager menu) - files video_ts.{vob,ifo,bup}
+       * the menu which allows you to select between title sets
+       * corresponds to the VMGM_VOBS (video_ts.vob) and
+	 the VMGI (video_ts.ifo)
+       * contains sets of PGCs, differentiated by language
+       * contains a global table of TTs each pointing to a VTS and a local VTS_TT
+       * contains parental management information
+       * contains attribute lists for the VTS'es
+       * contains text data (?)
+       * contains a Cell and a VOBU lists with local sector info (for seeking)
+   - VTSM (video title set menu) - files vts_<vtsN>_0.{vob,ifo,bup}
+       * the menu which allows you to select between the TTs of a VTS
+       * corresponds to the VTSM_VOBS (vts_<vtsN>_0.vob) and
+	 the VTSI (vts_<vtsN>_0.ifo)
+       * contains sets of PGCs, differentiated by language
+       * contains a Cell and a VOBU lists with local sector info (for seeking)
+   - VTS (video title set) - files vts_<vtsN>_[1-x].vob, vts_<vtsN>_0.{ifo,bup}
+       * regular playback domain
+       * corresponds to the VTS_VOBS (vts_<vtsN>_[1-x].vob) and
+	 the VTSI (vts_<vtsN>_0.ifo)
+       * contains one VTS with its VTS_TTs and PGCs
+       * contains a time map (for time-based seeking)
+       * contains a Cell and a VOBU lists with local sector info (for seeking)
+   - STOP
+       * 'nuff said

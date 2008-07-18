@@ -1,0 +1,191 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(中华人民共和国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_CONFIG DIALOGEX 0, 0, 242, 93
+STYLE DS_SETFONT | DS_MODALFRAME | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Configuration"
+FONT 9, "宋体", 400, 0, 0x86
+BEGIN
+    CONTROL         "Slider1",IDC_PRIORITY,"msctls_trackbar32",TBS_VERT | 
+                    TBS_NOTICKS | WS_TABSTOP,13,15,18,46
+    CONTROL         "16 位",IDC_16BITS,"Button",BS_AUTORADIOBUTTON,77,18,37,
+                    10
+    CONTROL         "16 位高频抖动",IDC_16BITS_DITHERED,"Button",
+                    BS_AUTORADIOBUTTON | WS_DISABLED,77,29,64,10
+    CONTROL         "24 位",IDC_24BITS,"Button",BS_AUTORADIOBUTTON,77,40,37,
+                    10
+    CONTROL         "32 位",IDC_32BITS,"Button",BS_AUTORADIOBUTTON,77,51,37,
+                    10
+    CONTROL         "向下混频到立体声",IDC_DOWNMIX,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,152,13,80,10
+    CONTROL         "支持 AAC 格式",IDC_USEFORAAC,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,152,26,68,10
+    CONTROL         "显示可变比特率",IDC_VBR,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,152,39,72,10
+    CONTROL         "显示错误信息",IDC_ERROR,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,152,52,64,10
+    DEFPUSHBUTTON   "确定",IDOK,185,72,50,14
+    PUSHBUTTON      "取消",IDCANCEL,127,72,50,14
+    GROUPBOX        "优先级",IDC_STATIC,7,7,57,58
+    LTEXT           "高",IDC_STATIC,34,18,25,8
+    LTEXT           "标准",IDC_STATIC,34,35,23,8
+    LTEXT           "低",IDC_STATIC,34,52,24,8
+    GROUPBOX        "解析度",IDC_STATIC,71,7,73,58
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_CONFIG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 235
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 86
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // 中文(中华人民共和国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 荷兰语(荷兰) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NLD)
+#ifdef _WIN32
+LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_CONFIG DIALOGEX 0, 0, 233, 93
+STYLE DS_SETFONT | DS_MODALFRAME | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Configuration"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    CONTROL         "Slider1",IDC_PRIORITY,"msctls_trackbar32",TBS_VERT | 
+                    TBS_NOTICKS | WS_TABSTOP,13,15,18,46
+    CONTROL         "16 bits",IDC_16BITS,"Button",BS_AUTORADIOBUTTON,77,18,
+                    37,10
+    CONTROL         "16 bits dithered",IDC_16BITS_DITHERED,"Button",
+                    BS_AUTORADIOBUTTON | WS_DISABLED,77,29,64,10
+    CONTROL         "24 bits",IDC_24BITS,"Button",BS_AUTORADIOBUTTON,77,40,
+                    37,10
+    CONTROL         "32 bits",IDC_32BITS,"Button",BS_AUTORADIOBUTTON,77,51,
+                    37,10
+    CONTROL         "Downmix to stereo",IDC_DOWNMIX,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,152,13,74,10
+    CONTROL         "Use for AAC",IDC_USEFORAAC,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,152,26,55,10
+    CONTROL         "VBR Display",IDC_VBR,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,152,39,55,10
+    CONTROL         "Show errors",IDC_ERROR,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,152,52,53,10
+    DEFPUSHBUTTON   "OK",IDOK,176,72,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,115,72,50,14
+    GROUPBOX        "Priority",IDC_STATIC,7,7,57,58
+    LTEXT           "Highest",IDC_STATIC,34,18,25,8
+    LTEXT           "Normal",IDC_STATIC,34,35,23,8
+    LTEXT           "Lowest",IDC_STATIC,34,52,24,8
+    GROUPBOX        "Resolution",IDC_STATIC,71,7,73,58
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_CONFIG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 226
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 86
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // 荷兰语(荷兰) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
