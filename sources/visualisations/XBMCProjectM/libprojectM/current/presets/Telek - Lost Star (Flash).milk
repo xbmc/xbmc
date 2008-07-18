@@ -1,0 +1,98 @@
+[preset00]
+fRating=2.000000
+fGammaAdj=1.000000
+fDecay=0.959000
+fVideoEchoZoom=1.006596
+fVideoEchoAlpha=0.000000
+nVideoEchoOrientation=3
+nWaveMode=0
+bAdditiveWaves=1
+bWaveDots=0
+bWaveThick=0
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=1
+bTexWrap=0
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=4.099998
+fWaveScale=1.886994
+fWaveSmoothing=0.630000
+fWaveParam=-0.500000
+fModWaveAlphaStart=0.710000
+fModWaveAlphaEnd=1.300000
+fWarpAnimSpeed=1.000000
+fWarpScale=1.331000
+fZoomExponent=1.000000
+fShader=0.000000
+zoom=0.999514
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000000
+dy=0.000000
+warp=0.010000
+sx=1.000000
+sy=1.000000
+wave_r=0.650000
+wave_g=0.650000
+wave_b=0.650000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.005000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.500000
+ob_a=0.000000
+ib_size=0.003500
+ib_r=0.000000
+ib_g=0.000000
+ib_b=0.000000
+ib_a=0.000000
+nMotionVectorsX=38.399994
+nMotionVectorsY=24.000004
+mv_dx=0.000000
+mv_dy=0.000002
+mv_l=5.000000
+mv_r=0.000000
+mv_g=0.000000
+mv_b=0.700000
+mv_a=0.000000
+per_frame_1=high_bass = above(bass_att,1.5);
+per_frame_2=high_treb = above(treb, 2);
+per_frame_3=
+per_frame_4=wave_b = if(high_treb,0,1);
+per_frame_5=
+per_frame_6=mv_rr = if(high_bass,.5 ,mv_rr*.9);
+per_frame_7=mv_r = mv_rr;
+per_frame_8=mv_b = if(high_treb*high_bass,0,1);
+per_frame_9=
+per_frame_10=mv_g = if(high_treb*high_bass,0,.1*sin(time*.302)+.1);
+per_frame_11=mv_a = if(above(bass_att,1.5),.6,mv_a);
+per_frame_12=mv_x = bits *3;
+per_frame_13=mv_y = mv_x *.8;
+per_frame_14=
+per_frame_15=
+per_frame_16=w_dx = (above((w_y*bits)%2,0)*.01-.005)*sin(time);
+per_frame_17=w_dy = (above((w_x*bits)%2,0)*.01-.005)*cos(time);
+per_frame_18=
+per_frame_19=w_x = w_x+w_dx;
+per_frame_20=w_y = w_y +w_dy;
+per_frame_21=monitor = bits;
+per_frame_22=q1 = bits;
+per_frame_23=w_x = if(above(abs(w_x-.5),.5),rand(10)/10,w_x);
+per_frame_24=w_y = if(above(abs(w_y-.5),.5),rand(10)/10,w_y);
+per_frame_25=
+per_frame_26=wave_x = w_x;
+per_frame_27=wave_y = w_y;
+per_frame_28=
+per_frame_29=
+per_pixel_1=dx = above(y,0.9)*0.01;
+per_pixel_2=dy = dx*.15*sin(x*10+time);
+per_pixel_3=// q1 is number of bits
+per_pixel_4=dx = (above((y*q1)%2,0)*.01-.005)*sin(time);
+per_pixel_5=dy = (above((x*q1)%2,0)*.01-.005)*cos(time);
+per_frame_init_1=bits = rand(7)+7;
