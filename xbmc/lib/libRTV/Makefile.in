@@ -5,8 +5,8 @@ OBJS=crypt.o guideclient.o GuideParser.o httpclient.o httpfsclient.o interface.o
 %.o : %.cpp
 	g++ -c $< -D_LINUX
 
-librtv-i486-linux.a : $(OBJS)
+librtv-@ARCH@.a : $(OBJS)
 	ar rs $@  $(OBJS)
 
 clean:
-	$(RM) $(OBJS) librtv-i486-linux.a
+	$(RM) $(OBJS) librtv-@ARCH@.a
