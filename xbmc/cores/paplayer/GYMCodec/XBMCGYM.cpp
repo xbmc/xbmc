@@ -79,28 +79,29 @@ extern "C"
   int __declspec(dllexport) DLL_Init()
   {
     if (!hMutex)
+    {
       hMutex = CreateMutex(NULL,true,NULL);
+      YM2612_Enable = true;
+      YM2612_Improv = true;
 
-    YM2612_Enable = true;
-		YM2612_Improv = true;
+      Chan_Enable[0] = true;
+      Chan_Enable[1] = true;
+      Chan_Enable[2] = true;
+      Chan_Enable[3] = true;
+      Chan_Enable[4] = true;
+      Chan_Enable[5] = true;
+      DAC_Enable = true;
 
-		Chan_Enable[0] = true;
-		Chan_Enable[1] = true;
-		Chan_Enable[2] = true;
-		Chan_Enable[3] = true;
-		Chan_Enable[4] = true;
-		Chan_Enable[5] = true;
-		DAC_Enable = true;
+      PSG_Enable = true;
+      PSG_Improv = true;
 
-		PSG_Enable = true;
-		PSG_Improv = true;
+      PSG_Chan_Enable[0] = true;
+      PSG_Chan_Enable[1] = true;
+      PSG_Chan_Enable[2] = true;
+      PSG_Chan_Enable[3] = true;
 
-		PSG_Chan_Enable[0] = true;
-		PSG_Chan_Enable[1] = true;
-		PSG_Chan_Enable[2] = true;
-		PSG_Chan_Enable[3] = true;
-
-    ReleaseMutex(hMutex);
+      ReleaseMutex(hMutex);
+    }
     return (int) ceil(48000/60.0) << 2;
   }
 
@@ -152,13 +153,13 @@ extern "C"
       }
 
       
-      Start_Play_GYM(48000);
       result->YM2612 = YM2612;
       result->PSG = PSG;
+      Start_Play_GYM(48000);
       iResult = (long)result;
+      ReleaseMutex(hMutex);
     }
 
-    ReleaseMutex(hMutex);
     return (int)iResult;
   }
 
