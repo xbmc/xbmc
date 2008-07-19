@@ -27,7 +27,7 @@
 extern "C"
 {
 #endif
-  #include "../../../lib/libass/ass.h"
+  #include "../../../lib/libass/libass/ass.h"
 #ifdef __cplusplus
 }
 #endif
