@@ -38,10 +38,12 @@ public:
 
 class DllStSound : public DllDynamic, DllStSoundInterface
 {
-#ifdef _LINUX
-  DECLARE_DLL_WRAPPER(DllStSound, q:\\system\\players\\paplayer\\stsoundlibrary-i486-linux.so)
-#else
+#ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllStSound, q:\\system\\players\\paplayer\\stsoundlibrary.dll)
+#elif defined(__x86_64__)
+  DECLARE_DLL_WRAPPER(DllStSound, q:\\system\\players\\paplayer\\stsoundlibrary-x86_64-linux.so)
+#else
+  DECLARE_DLL_WRAPPER(DllStSound, q:\\system\\players\\paplayer\\stsoundlibrary-i486-linux.so)
 #endif
   DEFINE_METHOD1(int, LoadYM, (const char* p1))
   DEFINE_METHOD1(void, FreeYM, (int p1))
