@@ -1,7 +1,7 @@
 CFLAGS=-D_LINUX -fPIC -Iinclude -Ivc++
 OBJS=libdts/downmix.o libdts/parse.o libdts/bitstream.o
 
-dcacodec-i486-linux.so: $(OBJS)
+dcacodec-@ARCH@.so: $(OBJS)
 	gcc -fPIC -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o && cp $@ ../../../../system/players/paplayer/
 
 clean:
