@@ -1,0 +1,21 @@
+AR = ar
+ARFLAGS = rus
+RM = rm -f
+
+CXX=g++
+CC=gcc
+
+DEFINES := -D_LINUX 
+OBJS := daap.o debug.o dmap_generics.o global.o httpClient.o ioloop.o libXDAAP.o threadpool.o Authentication/hasher.o Authentication/md5.o
+
+.c.o:
+	rm -f ${<:.c=.o}
+	$(CC) -mmacosx-version-min=10.4 -I/Developer/SDKs/MacOSX10.4u.sdk/usr/include/ -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.c=.o}
+
+libxdaap-i486-osx-tiger.a: $(OBJS)
+	$(AR) $(ARFLAGS) libxdaap-i486-osx-tiger.a $(OBJS)
+
+all: libxdaap-i486-osx-tiger.a
+
+clean:
+	$(RM) $(OBJS) libxdaap-i486-osx-tiger.a
