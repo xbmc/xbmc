@@ -324,16 +324,11 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
 
   m_bPresentFrame = false;
   m_bPlatformDirectories = false;
-
-  m_logPath = NULL;
 }
 
 CApplication::~CApplication(void)
 {
   delete m_currentStack;
-
-  if (m_logPath)
-    delete[] m_logPath;
 
   if (m_frameMutex)
     SDL_DestroyMutex(m_frameMutex);
@@ -519,34 +514,9 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifndef HAS_SDL
   HRESULT hr = S_OK;
 #endif
-  // map Q to home drive of xbe to load the config file
-  static CStdString strExecutablePath;
-  CUtil::GetHomePath(strExecutablePath);
-
-  // Check logpath...needs to be done before the first log to be meaningful.
-#ifdef _LINUX
-  if (m_bPlatformDirectories)
-  {
-    CStdString logDir = "/var/tmp/";
-    if (getenv("USER"))
-    {
-      logDir += getenv("USER");
-      logDir += "-";
-    }
-    g_stSettings.m_logFolder = logDir;
-  }
-  else
-  {
-    m_logPath = new char[MAX_PATH];
-    snprintf(m_logPath, MAX_PATH, "%s/", strExecutablePath.c_str());
-    g_stSettings.m_logFolder = m_logPath;
-  }
-#endif
 
   // Grab a handle to our thread to be used later in identifying the render thread.
   m_threadID = GetCurrentThreadId();
-
-  init_emu_environ();
 
 #ifndef _LINUX
   //floating point precision to 24 bits (faster performance)
@@ -557,8 +527,6 @@ HRESULT CApplication::Create(HWND hWnd)
    * can now be caught using c++ try catch */
   win32_exception::install_handler();
 #endif
-
-  CStdString strLogFile, strLogFileOld;
 
   CProfile *profile;
 
@@ -579,9 +547,6 @@ HRESULT CApplication::Create(HWND hWnd)
     g_settings.m_vecProfiles.push_back(*profile);
     delete profile;
   }
-#ifndef _WIN32PC
-  InitDirectories();
-#endif
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 #if defined(_LINUX) && !defined(__APPLE__)
@@ -591,12 +556,15 @@ HRESULT CApplication::Create(HWND hWnd)
 #elif defined(_WIN32)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: %s.  Built on %s (compiler %i)",g_sysinfo.GetKernelVersion().c_str(), __DATE__, _MSC_VER);
 #endif
-  CLog::Log(LOGNOTICE, "Q is mapped to: %s", strExecutablePath.c_str());
+  CLog::Log(LOGNOTICE, "Q is mapped to: %s", _P("Q:").c_str());
   char szXBEFileName[1024];
   CIoSupport::GetXbePath(szXBEFileName);
   CLog::Log(LOGNOTICE, "The executeable running is: %s", szXBEFileName);
-  CLog::Log(LOGNOTICE, "Log File is located: %s", strLogFile.c_str());
+  CLog::Log(LOGNOTICE, "Log File is located: %s", g_stSettings.m_logFolder.c_str());
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
+
+  CStdString strExecutablePath;
+  CUtil::GetHomePath(strExecutablePath);
 
   // if we are running from DVD our UserData location will be TDATA
   if (CUtil::IsDVD(strExecutablePath))
@@ -616,6 +584,10 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifdef HAS_XRANDR
   g_xrandr.LoadCustomModeLinesToAllOutputs();
 #endif
+
+  // Init our DllLoaders emu env
+  init_emu_environ();
+
 
 #ifndef HAS_SDL
   CLog::Log(LOGNOTICE, "Setup DirectX");
@@ -925,20 +897,6 @@ HRESULT CApplication::Create(HWND hWnd)
   return CXBApplicationEx::Create(hWnd);
 }
 
-void CApplication::InitDirectories()
-{
-  if (m_bPlatformDirectories)
-    return;
-
-  CStdString strMnt = g_settings.GetUserDataFolder();
-  if (g_settings.GetUserDataFolder().Left(2).Equals("Q:"))
-  {
-    CUtil::GetHomePath(strMnt);
-    strMnt += g_settings.GetUserDataFolder().substr(2);
-  }
-  CIoSupport::RemapDriveLetter('T',(char*) strMnt.c_str());
-}
-
 CProfile* CApplication::InitDirectoriesLinux()
 {
 /*
@@ -978,6 +936,23 @@ CProfile* CApplication::InitDirectoriesLinux()
   else
   {
     userHome = "/root";
+  }
+
+  if (m_bPlatformDirectories)
+  {
+    CStdString logDir = "/var/tmp/";
+    if (getenv("USER"))
+    {
+      logDir += getenv("USER");
+      logDir += "-";
+    }
+    g_stSettings.m_logFolder = logDir;
+  }
+  else
+  {
+    CStdString logDir = strExecutablePath;
+    CUtil::AddDirectorySeperator(logDir);
+    g_stSettings.m_logFolder = logDir;
   }
 
   if (m_bPlatformDirectories)
@@ -1113,6 +1088,7 @@ CProfile* CApplication::InitDirectoriesOSX()
   }
   else
   {
+    CIoSupport::RemapDriveLetter('T', _P("Q:\\userdata").c_str());
     if (g_settings.m_vecProfiles.size()==0)
     {
       profile = new CProfile;
