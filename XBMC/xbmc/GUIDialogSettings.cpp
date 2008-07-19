@@ -105,7 +105,7 @@ void CGUIDialogSettings::SetupPage()
     const CGUIControl *pGap = GetControl(CONTROL_GAP);
     if (!pArea || !pGap)
       return;
-    Remove(CONTROL_AREA);
+    Remove(pArea);
     group = new CGUIControlGroupList(GetID(), CONTROL_GROUP_LIST, pArea->GetXPosition(), pArea->GetYPosition(),
                                      pArea->GetWidth(), pArea->GetHeight(), pGap->GetHeight() - m_pOriginalSettingsButton->GetHeight(),
                                      0, VERTICAL, false);

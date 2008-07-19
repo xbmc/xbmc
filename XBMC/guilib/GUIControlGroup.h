@@ -69,8 +69,9 @@ public:
   CGUIControl *GetFirstFocusableControl(int id);
   void GetContainers(std::vector<CGUIControl *> &containers) const;
 
-  virtual void AddControl(CGUIControl *control);
-  virtual bool RemoveControl(int id);
+  virtual void AddControl(CGUIControl *control, int position = -1);
+  bool InsertControl(CGUIControl *control, const CGUIControl *insertPoint);
+  virtual bool RemoveControl(const CGUIControl *control);
   virtual void ClearAll();
   void SetDefaultControl(DWORD id) { m_defaultControl = id; };
   void SetRenderFocusedLast(bool renderLast) { m_renderFocusedLast = renderLast; };
