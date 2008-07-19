@@ -41,6 +41,8 @@ class DllGensApu : public DllDynamic, DllGensApuInterface
 {
 #ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllGensApu, q:\\system\\players\\paplayer\\gensapu.dll)
+#elif defined(__x86_64__)
+  DECLARE_DLL_WRAPPER(DllGensApu, q:\\system\\players\\paplayer\\gensapu-x86_64-linux.so)
 #else
   DECLARE_DLL_WRAPPER(DllGensApu, q:\\system\\players\\paplayer\\gensapu-i486-linux.so)
 #endif
