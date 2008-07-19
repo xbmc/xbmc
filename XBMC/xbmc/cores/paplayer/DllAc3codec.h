@@ -54,7 +54,9 @@ public:
 
 class DllAc3Codec : public DllDynamic, DllAc3CodecInterface
 {
-#ifdef _LINUX
+#ifdef __x86_64__
+  DECLARE_DLL_WRAPPER(DllAc3Codec, Q:\\system\\players\\paplayer\\ac3codec-x86_64-linux.so)
+#elif defined (_LINUX)
   DECLARE_DLL_WRAPPER(DllAc3Codec, Q:\\system\\players\\paplayer\\ac3codec-i486-linux.so)
 #else
   DECLARE_DLL_WRAPPER(DllAc3Codec, Q:\\system\\players\\paplayer\\AC3Codec.dll)
