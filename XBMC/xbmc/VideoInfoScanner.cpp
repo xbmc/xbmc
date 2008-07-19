@@ -809,6 +809,7 @@ namespace VIDEO
 
   long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CVideoInfoTag &movieDetails, long idShow, bool bApplyToDir, CGUIDialogProgress* pDialog /* == NULL */)
   {
+    CLog::Log(LOGDEBUG,"Adding new item to %s:%s", content.c_str(), pItem->m_strPath.c_str());
     long lResult=-1;
     // add to all movies in the stacked set
     if (content.Equals("movies"))

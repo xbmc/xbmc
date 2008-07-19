@@ -62,7 +62,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
   strExtension.MakeLower();
 
 #ifdef HAS_FILESYSTEM
-  if (strExtension.Equals(".ogg") && CFile::Exists(strPath))
+  if ((strExtension.Equals(".ogg") || strExtension.Equals(".oga")) && CFile::Exists(strPath))
   {
     IFileDirectory* pDir=new COGGFileDirectory;
     //  Has the ogg file more than one bitstream?

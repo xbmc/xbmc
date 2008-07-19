@@ -28,7 +28,7 @@
 using namespace SOCKETS;
 using namespace std;
 
-#ifdef _XBOX
+#ifdef WINSOCK_VERSION
 #define close closesocket
 #endif
 
@@ -52,7 +52,7 @@ bool CPosixUDPSocket::Bind(CAddress& addr, int port, int range)
   }
 
   // make sure we can reuse the address
-#ifdef _XBOX
+#ifdef WINSOCK_VERSION
   const char yes=1;
 #else
   int yes = 1;
@@ -62,7 +62,7 @@ bool CPosixUDPSocket::Bind(CAddress& addr, int port, int range)
     CLog::Log(LOGWARNING, "UDP: Could not enable the address reuse options");
     CLog::Log(LOGWARNING, "UDP: %s", strerror(errno));
   }
-  
+
   // set the port
   m_addr = addr;
   m_iPort = port;
@@ -76,10 +76,11 @@ bool CPosixUDPSocket::Bind(CAddress& addr, int port, int range)
       CLog::Log(LOGWARNING, "UDP: Error binding socket on port %d", m_iPort);
       CLog::Log(LOGWARNING, "UDP: %s", strerror(errno));
       m_iPort++;
+      m_addr.saddr.sin_port = htons(m_iPort);
     }
     else
     {
-      CLog::Log(LOGNOTICE, "UDP: Listening on port %d", port);
+      CLog::Log(LOGNOTICE, "UDP: Listening on port %d", m_iPort);
       SetBound();
       SetReady();
       break;
@@ -110,15 +111,15 @@ void CPosixUDPSocket::Close()
 
 int CPosixUDPSocket::Read(CAddress& addr, const int buffersize, void *buffer)
 {
-  return (int)recvfrom(m_iSock, (char*)buffer, (size_t)buffersize, 0, 
-                       (struct sockaddr*)&addr.saddr, &addr.size);  
+  return (int)recvfrom(m_iSock, (char*)buffer, (size_t)buffersize, 0,
+                       (struct sockaddr*)&addr.saddr, &addr.size);
 }
 
-int CPosixUDPSocket::SendTo(const CAddress& addr, const int buffersize, 
+int CPosixUDPSocket::SendTo(const CAddress& addr, const int buffersize,
                           const void *buffer)
 {
-  return (int)sendto(m_iSock, (const char *)buffer, (size_t)buffersize, 0, 
-                     (const struct sockaddr*)&addr.saddr, 
+  return (int)sendto(m_iSock, (const char *)buffer, (size_t)buffersize, 0,
+                     (const struct sockaddr*)&addr.saddr,
                      sizeof(addr.saddr));
 }
 
@@ -128,10 +129,7 @@ int CPosixUDPSocket::SendTo(const CAddress& addr, const int buffersize,
 
 CUDPSocket* CSocketFactory::CreateUDPSocket()
 {
-#if defined(_LINUX) || defined (_XBOX)
   return new CPosixUDPSocket();
-#endif
-  return NULL;
 }
 
 /**********************************************************************/
@@ -151,7 +149,7 @@ void CSocketListener::AddSocket(CBaseSocket *sock)
   {
     m_sockets.push_back(sock);
     FD_SET(sock->Socket(), &m_fdset);
-#ifndef _XBOX
+#ifndef WINSOCK_VERSION
     if (sock->Socket() > m_iMaxSockets)
       m_iMaxSockets = sock->Socket();
 #endif
@@ -165,7 +163,7 @@ bool CSocketListener::Listen(int timeout)
 
   m_iReadyCount = 0;
   m_iCurrentSocket = 0;
-  
+
   FD_ZERO(&m_fdset);
   for (unsigned int i = 0 ; i<m_sockets.size() ; i++)
   {
@@ -213,10 +211,10 @@ CBaseSocket* CSocketListener::GetFirstReadySocket()
 {
   if (m_iReadyCount<=0)
     return NULL;
-  
+
   for (int i = 0 ; i < (int)m_sockets.size() ; i++)
   {
-    if (FD_ISSET((m_sockets[i])->Socket(), &m_fdset)) 
+    if (FD_ISSET((m_sockets[i])->Socket(), &m_fdset))
     {
       m_iCurrentSocket = i;
       return m_sockets[i];
@@ -229,10 +227,10 @@ CBaseSocket* CSocketListener::GetNextReadySocket()
 {
   if (m_iReadyCount<=0)
     return NULL;
-  
+
   for (int i = m_iCurrentSocket+1 ; i<(int)m_sockets.size() ; i++)
   {
-    if (FD_ISSET(m_sockets[i]->Socket(), &m_fdset)) 
+    if (FD_ISSET(m_sockets[i]->Socket(), &m_fdset))
     {
       m_iCurrentSocket = i;
       return m_sockets[i];

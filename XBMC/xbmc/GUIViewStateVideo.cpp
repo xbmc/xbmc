@@ -343,7 +343,7 @@ VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
     CMediaSource share;
     share.strName=item->GetLabel();
     share.strPath = item->m_strPath;
-    share.m_strThumbnailImage="defaultFolderBig.png";
+    share.m_strThumbnailImage= item->HasThumbnail() ? item->GetThumbnailImage() : "defaultFolderBig.png";
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     m_sources.push_back(share);
   }

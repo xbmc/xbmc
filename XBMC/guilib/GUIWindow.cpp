@@ -810,6 +810,11 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl = *i;
+    if (pControl->GetControlType() == 39)
+    {
+      int i = 0;
+
+    }
     if (pControl->HasVisibleID(message.GetControlId()))
     {
       if (pControl->OnMessage(message))

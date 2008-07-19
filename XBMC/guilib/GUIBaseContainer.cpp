@@ -74,16 +74,15 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
     {
       if (item != m_lastItem || !HasFocus())
       {
-        item->GetFocusedLayout()->ResetScrolling();
-        item->GetFocusedLayout()->SetFocus(0);
+        item->GetFocusedLayout()->SetFocusedItem(0);
       }
       if (item != m_lastItem && HasFocus())
       {
         item->GetFocusedLayout()->ResetAnimation(ANIM_TYPE_UNFOCUS);      
         unsigned int subItem = 1;
         if (m_lastItem && m_lastItem->GetFocusedLayout())
-          subItem = m_lastItem->GetFocusedLayout()->GetFocus();
-        item->GetFocusedLayout()->SetFocus(subItem ? subItem : 1);
+          subItem = m_lastItem->GetFocusedLayout()->GetFocusedItem();
+        item->GetFocusedLayout()->SetFocusedItem(subItem ? subItem : 1);
       }
       item->GetFocusedLayout()->Render(item, m_dwParentID, m_renderTime);
     }
@@ -92,7 +91,7 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
   else
   {
     if (item->GetFocusedLayout())
-      item->GetFocusedLayout()->SetFocus(0);  // focus is not set
+      item->GetFocusedLayout()->SetFocusedItem(0);  // focus is not set
     if (!item->GetLayout())
     {
       CGUIListItemLayout *layout = new CGUIListItemLayout(*m_layout);
@@ -144,9 +143,9 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
         SelectItem(message.GetParam1());
         return true;
       }
-      if (message.GetMessage() == GUI_MSG_LABEL_ADD && message.GetLPVOID())
+      if (message.GetMessage() == GUI_MSG_LABEL_ADD && message.GetItem())
       {
-        CGUIListItemPtr item = *(CGUIListItemPtr*)message.GetLPVOID();
+        CGUIListItemPtr item = message.GetItem();
         m_items.push_back(item);
         if (m_pageControl)
         {
@@ -274,7 +273,6 @@ CGUIListItemPtr CGUIBaseContainer::GetListItem(int offset, unsigned int flag) co
 {
   if (!m_items.size())
     return CGUIListItemPtr();
-
   int item = GetSelectedItem() + offset;
   if (flag & INFOFLAG_LISTITEM_POSITION) // use offset from the first item displayed, taking into account scrolling
     item = CorrectOffset((int)(m_scrollOffset / m_layout->Size(m_orientation)), offset);
@@ -389,7 +387,7 @@ bool CGUIBaseContainer::OnClick(DWORD actionID)
     // grab the currently focused subitem (if applicable)
     CGUIListItemLayout *focusedLayout = GetFocusedLayout();
     if (focusedLayout)
-      subItem = focusedLayout->GetFocus();
+      subItem = focusedLayout->GetFocusedItem();
   }
   // Don't know what to do, so send to our parent window.
   CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), actionID, subItem);
@@ -421,7 +419,7 @@ void CGUIBaseContainer::SetFocus(bool bOnOff)
 {
   if (bOnOff != HasFocus())
   {
-    Update();
+    SetInvalid();
     m_lastItem = NULL;
   }
   CGUIControl::SetFocus(bOnOff);
@@ -518,11 +516,17 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
 
 void CGUIBaseContainer::CalculateLayout()
 {
+  CGUIListItemLayout *oldFocusedLayout = m_focusedLayout;
+  CGUIListItemLayout *oldLayout = m_layout;
   GetCurrentLayouts();
 
   // calculate the number of items to display
   assert(m_focusedLayout && m_layout);
   if (!m_focusedLayout || !m_layout) return;
+
+  if (oldLayout == m_layout && oldFocusedLayout == m_focusedLayout)
+    return; // nothing has changed, so don't update stuff
+
   m_itemsPerPage = (int)((Size() - m_focusedLayout->Size(m_orientation)) / m_layout->Size(m_orientation)) + 1;
 
   // ensure that the scroll offset is a multiple of our size
@@ -710,7 +714,7 @@ bool CGUIBaseContainer::InsideLayout(const CGUIListItemLayout *layout, const CPo
 #ifdef _DEBUG
 void CGUIBaseContainer::DumpTextureUse()
 {
-  CLog::Log(LOGDEBUG, "%s for container %lu", __FUNCTION__, GetID());
+  CLog::Log(LOGDEBUG, "%s for container %u", __FUNCTION__, GetID());
   for (unsigned int i = 0; i < m_items.size(); ++i)
   {
     CGUIListItemPtr item = m_items[i];
@@ -737,7 +741,7 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const
   case CONTAINER_SUBITEM:
     {
       CGUIListItemLayout *layout = GetFocusedLayout();
-      return layout ? (layout->GetFocus() == (unsigned int)data) : false;
+      return layout ? (layout->GetFocusedItem() == (unsigned int)data) : false;
     }
   default:
     return false;

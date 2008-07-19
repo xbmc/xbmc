@@ -46,6 +46,7 @@ public:
   bool IsConstant() const;
   bool IsEmpty() const;
 
+  const CStdString GetFallback() const { return m_fallback; };
 private:
   void Parse(const CStdString &label);
 
@@ -75,6 +76,7 @@ public:
   virtual void Render();
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
+  virtual CStdString GetDescription() const;
 
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   void SetLabel(const std::string &strLabel);

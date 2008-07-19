@@ -65,8 +65,8 @@ void CGUIMultiSelectTextControl::DoRender(DWORD currentTime)
 void CGUIMultiSelectTextControl::Render()
 {
   // update our information text
-  if (!m_info.IsEmpty())
-    UpdateText(m_info.GetLabel(m_dwParentID));
+  if (!m_pushedUpdates)
+    UpdateInfo();
 
   // check our selected item is in range
   unsigned int numSelectable = GetNumSelectable();
@@ -137,6 +137,17 @@ void CGUIMultiSelectTextControl::Render()
     g_graphicsContext.RestoreClipRegion();
 
   CGUIControl::Render();
+}
+
+void CGUIMultiSelectTextControl::UpdateInfo(const CGUIListItem *item)
+{
+  if (m_info.IsEmpty())
+    return; // nothing to do
+
+  if (item)
+    UpdateText(m_info.GetItemLabel(item));
+  else
+    UpdateText(m_info.GetLabel(m_dwParentID));
 }
 
 bool CGUIMultiSelectTextControl::OnAction(const CAction &action)

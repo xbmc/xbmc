@@ -170,6 +170,9 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     assert(false);
   }
 
+  // sort the items
+  items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+
   CGUIDialogSelect* pDialog = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
   pDialog->Reset();
   pDialog->SetItems(&items);

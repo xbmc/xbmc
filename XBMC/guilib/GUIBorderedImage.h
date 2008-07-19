@@ -30,6 +30,7 @@ class CGUIBorderedImage : public CGUIImage
 {
 public:
   CGUIBorderedImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, const CImage& borderTexture, const FRECT &borderSize, DWORD dwColorKey = 0);
+  CGUIBorderedImage(const CGUIBorderedImage &right);
   virtual ~CGUIBorderedImage(void);
 
   virtual void Render();

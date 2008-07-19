@@ -31,6 +31,9 @@
 #define Window_Check(op) PyObject_TypeCheck(op, &Window_Type)
 #define Window_CheckExact(op) ((op)->ob_type == &Window_Type)
 
+#define WindowXML_Check(op) PyObject_TypeCheck(op, &WindowXML_Type)
+#define WindowXML_CheckExact(op) ((op)->ob_type == &WindowXML_Type)
+
 #define WindowDialog_Check(op) PyObject_TypeCheck(op, &WindowDialog_Type)
 #define WindowDialog_CheckExact(op) ((op)->ob_type == &WindowDialog_Type)
 

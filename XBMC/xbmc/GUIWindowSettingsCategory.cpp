@@ -662,6 +662,15 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->AddLabel(g_localizeStrings.Get(12382), FRAME_RATE_USE_PAL60); // "Play NTSC videos in PAL60"
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("videolibrary.flattentvshows"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(20420), 0); // Never
+      pControl->AddLabel(g_localizeStrings.Get(20421), 1); // One Season
+      pControl->AddLabel(g_localizeStrings.Get(20422), 2); // Always
+      pControl->SetValue(pSettingInt->GetData());
+    }
     else if (strSetting.Equals("system.ledcolour"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -808,11 +817,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     { // set visibility based on our other setting...
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("myprograms.gameautoregion"));
-    }
-    else if (strSetting.Equals("xlinkkai.enablenotifications") || strSetting.Equals("xlinkkai.username") || strSetting.Equals("xlinkkai.password") || strSetting.Equals("xlinkkai.server"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("xlinkkai.enabled"));
     }
     else if (strSetting.Equals("masterlock.startuplock") || strSetting.Equals("masterlock.enableshutdown") || strSetting.Equals("masterlock.automastermode"))
     {
@@ -1356,13 +1360,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_guiSettings.m_replayGain.iPreAmp = g_guiSettings.GetInt("musicplayer.replaygainpreamp");
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
-  }
-  else if (strSetting.Equals("xlinkkai.enabled"))
-  {
-    if (g_guiSettings.GetBool("xlinkkai.enabled"))
-      g_application.StartKai();
-    else
-      g_application.StopKai();
   }
 #ifdef HAS_LCD
   else if (strSetting.Equals("lcd.type"))
@@ -1997,6 +1994,16 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting.Equals("pictures.savefolderviews"))
   {
     ClearFolderViews(pSettingControl->GetSetting(), WINDOW_PICTURES);
+  }
+/* TODO:TTF_FONTS - xbox doesn't support this yet
+  else if (strSetting.Equals("lookandfeel.skinzoom"))
+  {
+    g_fontManager.ReloadTTFFonts();
+  }*/
+  else if (strSetting.Equals("videolibrary.flattentvshows") ||
+           strSetting.Equals("videolibrary.removeduplicates"))
+  {
+    CUtil::DeleteVideoDatabaseDirectoryCache();
   }
   UpdateSettings();
 }
@@ -2847,12 +2854,12 @@ void CGUIWindowSettingsCategory::FillInFTPServerUser(CSetting *pSetting)
     pControl->SetValue(iDefaultFtpUser);
     CUtil::GetFTPServerUserName(iDefaultFtpUser, strFtpUser1, iUserMax);
     g_guiSettings.SetString("servers.ftpserveruser", strFtpUser1.c_str());
-    pControl->Update();
+    pControl->SetInvalid();
   }
   else { //Set "None" if there is no FTP User found!
     pControl->AddLabel(g_localizeStrings.Get(231).c_str(), 0);
     pControl->SetValue(0);
-    pControl->Update();
+    pControl->SetInvalid();
   }
 #endif
 }

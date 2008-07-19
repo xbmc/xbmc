@@ -212,7 +212,7 @@ void CDVDInputStreamNavigator::Close()
 
 int CDVDInputStreamNavigator::Read(BYTE* buf, int buf_size)
 {
-  if (!m_dvdnav || m_bEOF) return -1;
+  if (!m_dvdnav || m_bEOF) return 0;
   if (buf_size < DVD_VIDEO_BLOCKSIZE)
   {
     CLog::Log(LOGERROR, "CDVDInputStreamNavigator: buffer size is to small, %d bytes, should be 2048 bytes", buf_size);
@@ -319,6 +319,10 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         // A length of 0xff means an indefinite still which has to be skipped
         // indirectly by some user interaction.
         iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_STILL_FRAME);
+
+        /* if user didn't care for action, just skip it */
+        if(iNavresult == NAVRESULT_NOP)
+          SkipStill();
       }
       break;
 
@@ -338,10 +342,10 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         }
         else
           iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_WAIT);
-        
+
         /* if user didn't care for action, just skip it */
         if(iNavresult == NAVRESULT_NOP)
-          SkipWait();          
+          SkipWait();
       }
       break;
 

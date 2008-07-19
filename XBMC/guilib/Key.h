@@ -272,13 +272,11 @@
 
 #define WINDOW_DIALOG_YES_NO              10100
 #define WINDOW_DIALOG_PROGRESS            10101
-#define WINDOW_DIALOG_INVITE              10102
 #define WINDOW_DIALOG_KEYBOARD            10103
 #define WINDOW_DIALOG_VOLUME_BAR          10104
 #define WINDOW_DIALOG_SUB_MENU            10105
 #define WINDOW_DIALOG_CONTEXT_MENU        10106
 #define WINDOW_DIALOG_KAI_TOAST           10107
-#define WINDOW_DIALOG_HOST                10108
 #define WINDOW_DIALOG_NUMERIC             10109
 #define WINDOW_DIALOG_GAMEPAD             10110
 #define WINDOW_DIALOG_BUTTON_MENU         10111

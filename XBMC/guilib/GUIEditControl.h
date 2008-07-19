@@ -36,13 +36,6 @@
  \brief 
  */
 
-class IEditControlObserver
-{
-public:
-  virtual void OnEditTextComplete(CStdString& strLineOfText) = 0;
-  virtual ~IEditControlObserver() {}
-};
-
 class CGUIEditControl : public CGUILabelControl
 {
 public:
@@ -51,15 +44,16 @@ public:
 
   virtual ~CGUIEditControl(void);
 
-  virtual void SetObserver(IEditControlObserver* aObserver);
-  virtual void OnKeyPress(const CAction &action); // FIXME TESTME: NEW/CHANGED parameter and NOT tested CAN'T do it/DON'T know where (window 2700)/how exactly 
+  virtual bool OnAction(const CAction &action);
   virtual void Render();
+
+  virtual bool CanFocus() const { return true; }; // TODO:EDIT only needed because we're based on labelcontrol
 
 protected:
   void RecalcLabelPosition();
+  void ValidateCursor(int maxLength);
 
-protected:
-  IEditControlObserver* m_pObserver;
   float m_originalPosX;
+  float m_originalWidth;
 };
 #endif

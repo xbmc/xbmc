@@ -42,7 +42,6 @@
 #include "GUILabelControl.h"  // needed for CInfoLabel
 #include "guiImage.h"
 #endif
-#include "utils/KaiClient.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
 #include "utils/FanController.h"
@@ -77,6 +76,7 @@
 #include "SmartPlaylist.h"
 #include "FileSystem/RarManager.h"
 #include "PlayList.h"
+#include "utils/DownloadQueueManager.h"
 
 #ifdef HAS_FILESYSTEM
 #include "FileSystem/FileDAAP.h"
@@ -140,7 +140,6 @@
 #include "GUIWindowSystemInfo.h"
 #include "GUIWindowScreensaver.h"
 #include "GUIWindowSlideShow.h"
-#include "GUIWindowBuddies.h"
 #include "GUIWindowStartup.h"
 #include "GUIWindowFullScreen.h"
 #include "GUIWindowOSD.h"
@@ -151,8 +150,6 @@
 #include "GUIDialogMusicOSD.h"
 #include "GUIDialogVisualisationSettings.h"
 #include "GUIDialogVisualisationPresetList.h"
-#include "GUIDialogInvite.h"
-#include "GUIDialogHost.h"
 #include "GUIDialogTrainerSettings.h"
 #include "GUIWindowScriptsInfo.h"
 #include "GUIDialogNetworkSetup.h"
@@ -204,9 +201,6 @@ using namespace EVENTSERVER;
 
 #ifdef HAS_LCD
 #pragma comment (lib,"xbmc/lib/libXenium/XeniumSPIg.lib")
-#endif
-#ifdef HAS_KAI_VOICE
-#pragma comment (lib,"xbmc/lib/libSpeex/libSpeex.lib")
 #endif
 
 #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
@@ -1206,7 +1200,6 @@ HRESULT CApplication::Initialize()
   //     Music/
   //       temp/
   //     0 .. F/
-  //     XLinkKai/
 
   CreateDirectory(g_settings.GetUserDataFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetProfileUserDataFolder().c_str(), NULL);
@@ -1222,7 +1215,6 @@ HRESULT CApplication::Initialize()
   CreateDirectory(g_settings.GetBookmarksThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetProgramsThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetGameSaveThumbFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetXLinkKaiThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetPicturesThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetProfilesThumbFolder().c_str(),NULL);
   CreateDirectory(g_settings.GetVideoFanartFolder().c_str(),NULL);
@@ -1291,14 +1283,12 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowGameSaves);               // window id = 35
   m_gWindowManager.Add(new CGUIDialogYesNo);              // window id = 100
   m_gWindowManager.Add(new CGUIDialogProgress);           // window id = 101
-  m_gWindowManager.Add(new CGUIDialogInvite);             // window id = 102
   m_gWindowManager.Add(new CGUIDialogKeyboard);           // window id = 103
   m_gWindowManager.Add(&m_guiDialogVolumeBar);          // window id = 104
   m_gWindowManager.Add(&m_guiDialogSeekBar);            // window id = 115
   m_gWindowManager.Add(new CGUIDialogSubMenu);            // window id = 105
   m_gWindowManager.Add(new CGUIDialogContextMenu);        // window id = 106
   m_gWindowManager.Add(&m_guiDialogKaiToast);           // window id = 107
-  m_gWindowManager.Add(new CGUIDialogHost);               // window id = 108
   m_gWindowManager.Add(new CGUIDialogNumeric);            // window id = 109
   m_gWindowManager.Add(new CGUIDialogGamepad);            // window id = 110
   m_gWindowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
@@ -1348,7 +1338,6 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowVideoOverlay);       // window id = 2904
   m_gWindowManager.Add(new CGUIWindowScreensaver);        // window id = 2900 Screensaver
   m_gWindowManager.Add(new CGUIWindowWeather);            // window id = 2600 WEATHER
-  m_gWindowManager.Add(new CGUIWindowBuddies);            // window id = 2700 BUDDIES
   m_gWindowManager.Add(new CGUIWindowStartup);            // startup window (id 2999)
 
   /* window id's 3000 - 3100 are reserved for python */
@@ -1607,29 +1596,6 @@ void CApplication::StopTimeServer()
     CSectionLoader::Unload("SNTP");
   }
 #endif
-}
-
-void CApplication::StartKai()
-{
-  if (g_guiSettings.GetBool("xlinkkai.enabled"))
-  {
-    CGUIWindowBuddies *pKai = (CGUIWindowBuddies*)m_gWindowManager.GetWindow(WINDOW_BUDDIES);
-    if (pKai)
-    {
-      CLog::Log(LOGNOTICE, "starting kai");
-      CKaiClient::GetInstance()->SetObserver(pKai);
-    }
-  }
-}
-
-void CApplication::StopKai()
-{
-  if (CKaiClient::IsInstantiated())
-  {
-    CLog::Log(LOGNOTICE, "stopping kai");
-    CKaiClient::GetInstance()->RemoveObserver();
-    CKaiClient::RemoveInstance();
-  }
 }
 
 void CApplication::StartUPnP()
@@ -1971,22 +1937,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   vector<DWORD> currentModelessWindows;
   m_gWindowManager.GetActiveModelessWindows(currentModelessWindows);
 
-  //  When the app is started the instance of the
-  //  kai client should not be created until the
-  //  skin is loaded the first time, but we must
-  //  disconnect from the engine when the skin is
-  //  changed
-  bool bKaiConnected = false;
-  if (!m_bInitializing && g_guiSettings.GetBool("xlinkkai.enabled"))
-  {
-    bKaiConnected = CKaiClient::GetInstance()->IsEngineConnected();
-    if (bKaiConnected)
-    {
-      CLog::Log(LOGINFO, " Disconnecting Kai...");
-      CKaiClient::GetInstance()->RemoveObserver();
-    }
-  }
-
   CLog::Log(LOGINFO, "  delete old skin...");
   UnloadSkin();
 
@@ -2073,15 +2023,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     m_gWindowManager.Add(pDialog); // window id = 142
 
   CLog::Log(LOGINFO, "  skin loaded...");
-
-  if (bKaiConnected)
-  {
-    CLog::Log(LOGINFO, " Reconnecting Kai...");
-
-    CGUIWindowBuddies *pKai = (CGUIWindowBuddies *)m_gWindowManager.GetWindow(WINDOW_BUDDIES);
-    CKaiClient::GetInstance()->SetObserver(pKai);
-    Sleep(3000);  //  The client need some time to "resync"
-  }
 
   // leave the graphics lock
   lock.Leave();
@@ -2464,7 +2405,17 @@ bool CApplication::OnKey(CKey& key)
     // current active window isnt the fullscreen window
     // just use corresponding section from keymap.xml
     // to map key->action
-    if (key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_DIALOG_NUMERIC || iWin == WINDOW_BUDDIES) )
+
+    // first determine if we should use keyboard input directly
+    bool useKeyboard = key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_DIALOG_NUMERIC);
+    CGUIWindow *window = m_gWindowManager.GetWindow(iWin);
+    if (window)
+    {
+      CGUIControl *control = window->GetFocusedControl();
+      if (control && control->GetControlType() == CGUIControl::GUICONTROL_EDIT)
+        useKeyboard = true;
+    }
+    if (useKeyboard)
     {
       if (key.GetFromHttpApi())
       {
@@ -2478,20 +2429,23 @@ bool CApplication::OnKey(CKey& key)
         else
           action.wID = (WORD)g_Keyboard.GetKey() | KEY_VKEY;
       }
+#ifdef HAS_SDL
+      g_Keyboard.Reset();
+#endif
+      if (OnAction(action))
+        return true;
+      // failed to handle the keyboard action, drop down through to standard action
     }
-    else
-    {
     if (key.GetFromHttpApi())
+    {
+      if (key.GetButtonCode() != KEY_INVALID)
       {
-        if (key.GetButtonCode() != KEY_INVALID)
-        {
-          action.wID = (WORD) key.GetButtonCode();
-          g_buttonTranslator.GetAction(iWin, key, action);
-        }
-      }
-    else
+        action.wID = (WORD) key.GetButtonCode();
         g_buttonTranslator.GetAction(iWin, key, action);
+      }
     }
+    else
+      g_buttonTranslator.GetAction(iWin, key, action);
   }
   if (!key.IsAnalogButton())
     CLog::Log(LOGDEBUG, "%s: %i pressed, action is %i", __FUNCTION__, (int) key.GetButtonCode(), action.wID);
@@ -2780,18 +2734,6 @@ bool CApplication::OnAction(const CAction &action)
   return false;
 }
 
-void CApplication::SetKaiNotification(const CStdString& aCaption, const CStdString& aDescription, CGUIImage* aIcon/*=NULL*/)
-{
-  // queue toast notification
-  if (g_guiSettings.GetBool("xlinkkai.enablenotifications"))
-  {
-    if (aIcon==NULL)
-      m_guiDialogKaiToast.QueueNotification(aCaption, aDescription);
-    else
-      m_guiDialogKaiToast.QueueNotification(aIcon->GetFileName(), aCaption, aDescription);
-  }
-}
-
 void CApplication::UpdateLCD()
 {
 #ifdef HAS_LCD
@@ -2828,11 +2770,6 @@ void CApplication::FrameMove()
   m_frameTime.StartZero();
   // never set a frametime less than 2 fps to avoid problems when debuggin and on breaks
   if( frameTime > 0.5 ) frameTime = 0.5;
-
-  if (g_guiSettings.GetBool("xlinkkai.enabled"))
-  {
-    CKaiClient::GetInstance()->DoWork();
-  }
 
   // check if there are notifications to display
   if (m_guiDialogKaiToast.DoWork())
@@ -3382,8 +3319,6 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_DIALOG_SELECT);
     m_gWindowManager.Delete(WINDOW_DIALOG_OK);
     m_gWindowManager.Delete(WINDOW_DIALOG_FILESTACKING);
-    m_gWindowManager.Delete(WINDOW_DIALOG_INVITE);
-    m_gWindowManager.Delete(WINDOW_DIALOG_HOST);
     m_gWindowManager.Delete(WINDOW_DIALOG_KEYBOARD);
     m_gWindowManager.Delete(WINDOW_FULLSCREEN_VIDEO);
     m_gWindowManager.Delete(WINDOW_DIALOG_TRAINER_SETTINGS);
@@ -3459,7 +3394,6 @@ HRESULT CApplication::Cleanup()
     g_charsetConverter.clear();
     g_directoryCache.Clear();
     g_buttonTranslator.Clear();
-    CKaiClient::RemoveInstance();
     CScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
     CPVRManager::RemoveInstance();

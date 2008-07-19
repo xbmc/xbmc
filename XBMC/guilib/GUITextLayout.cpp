@@ -437,6 +437,15 @@ void CGUITextLayout::GetFirstText(vector<DWORD> &text) const
     text = m_lines[0].m_text;
 }
 
+float CGUITextLayout::GetTextWidth(const CStdStringW &text) const
+{
+  // NOTE: Assumes a single line of text
+  if (!m_font) return 0;
+  vector<DWORD> utf32;
+  AppendToUTF32(text, m_font->GetStyle(), utf32);
+  return m_font->GetTextWidth(utf32);
+}
+
 void CGUITextLayout::DrawText(CGUIFont *font, float x, float y, DWORD color, DWORD shadowColor, const CStdString &text, DWORD align)
 {
   if (!font) return;
@@ -471,7 +480,15 @@ void CGUITextLayout::DrawOutlineText(CGUIFont *font, float x, float y, const vec
   font->DrawText(x, y, colors, 0, text, align, maxWidth);
 }
 
-void CGUITextLayout::AppendToUTF32(const CStdString &text, DWORD colStyle, vector<DWORD> &utf32)
+void CGUITextLayout::AppendToUTF32(const CStdStringW &utf16, DWORD colStyle, vector<DWORD> &utf32)
+{
+  // NOTE: Assumes a single link of text
+  utf32.reserve(utf32.size() + utf16.size());
+  for (unsigned int i = 0; i < utf16.size(); i++)
+    utf32.push_back(utf16[i] | colStyle);
+}
+
+void CGUITextLayout::AppendToUTF32(const CStdString &utf8, DWORD colStyle, vector<DWORD> &utf32)
 {
   // convert text to utf32
 #ifdef WORK_AROUND_NEEDED_FOR_LINE_BREAKS
@@ -479,7 +496,7 @@ void CGUITextLayout::AppendToUTF32(const CStdString &text, DWORD colStyle, vecto
   //       expression of the \n in utf8 (we just use character code 10) or it might be something
   //       more sinister.  For now, we use the workaround below.
   CStdStringW utf16;
-  g_charsetConverter.utf8ToUTF16(text, utf16);
+  g_charsetConverter.utf8ToUTF16(utf8, utf16);
   utf16.Replace(L"\r", L"");
   utf32.reserve(utf32.size() + utf16.size());
   for (unsigned int i = 0; i < utf16.size(); i++)
@@ -487,15 +504,13 @@ void CGUITextLayout::AppendToUTF32(const CStdString &text, DWORD colStyle, vecto
 #else
   // workaround - break into \n separated, and re-assemble
   CStdStringArray multiLines;
-  StringUtils::SplitString(text, "\n", multiLines);
+  StringUtils::SplitString(utf8, "\n", multiLines);
   for (unsigned int i = 0; i < multiLines.size(); i++)
   {
     CStdStringW utf16;
     g_charsetConverter.utf8ToW(multiLines[i], utf16);
     utf16.Replace(L"\r", L"");  // filter out '\r'
-    utf32.reserve(utf32.size() + utf16.size() + 1);
-    for (unsigned int j = 0; j < utf16.size(); j++)
-      utf32.push_back(utf16[j] | colStyle);
+    AppendToUTF32(utf16, colStyle, utf32);
     if (i < multiLines.size() - 1)
       utf32.push_back(L'\n');
   }

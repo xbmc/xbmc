@@ -140,6 +140,8 @@ protected:
 
   CStdString m_strFileName;
 
+  DWORD m_numCharactersRendered;
+
 private:
   int m_referenceCount;
 };

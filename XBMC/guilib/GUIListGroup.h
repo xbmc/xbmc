@@ -1,5 +1,5 @@
 /*!
-\file GUILargeImage.h
+\file GUIListGroup.h
 \brief 
 */
 
@@ -26,33 +26,35 @@
  *
  */
 
-#include "guiImage.h"
+#include "GUIControlGroup.h"
 
 /*!
  \ingroup controls
- \brief 
+ \brief a group of controls within a list/panel container
  */
-
-class CGUILargeImage : public CGUIImage
+class CGUIListGroup : public CGUIControlGroup
 {
 public:
-  CGUILargeImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture);
-  virtual ~CGUILargeImage(void);
+  CGUIListGroup(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
+  CGUIListGroup(const CGUIListGroup &right);
+  virtual ~CGUIListGroup(void);
 
-  virtual void PreAllocResources();
-  virtual void AllocResources();
-  virtual void FreeResources();
+  virtual void AddControl(CGUIControl *control);
+
   virtual void Render();
-  virtual void SetAspectRatio(const CAspectRatio &aspect);
+  virtual void ResetAnimation(ANIMATION_TYPE type);
+  virtual void UpdateVisibility(const CGUIListItem *item = NULL);
+  virtual void UpdateInfo(const CGUIListItem *item);
+
+  void SetWidth(float width);
+  void SetFocusedItem(unsigned int subfocus);
+  unsigned int GetFocusedItem() const;
+  bool MoveLeft();
+  bool MoveRight();
+  void SetState(bool selected, bool focused);
+  void SelectItemFromPoint(const CPoint &point);
 
 protected:
-  virtual void SetFileName(const CStdString &strFileName, bool setConstant = false);
-  virtual void AllocateOnDemand();
-  virtual void FreeTextures();
-  virtual int GetOrientation() const;
-
-  bool m_usingBundledTexture;
-  int m_orientation;
-  CGUIImage m_fallbackImage;
+  const CGUIListItem *m_item;
 };
 

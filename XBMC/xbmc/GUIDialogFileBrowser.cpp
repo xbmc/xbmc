@@ -541,7 +541,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURC
     browser->m_vecItems->Add(item);
   }
   browser->SetHeading(heading);
-  browser->DoModal();
+  browser->DoModalThreadSafe();
   bool confirmed(browser->IsConfirmed());
   if (confirmed)
   {
@@ -609,7 +609,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const VECSOURCES &shares, const CStdS
   browser->m_rootDir.SetMask(strMask);
   browser->m_selectedPath = path;
   browser->m_addNetworkShareEnabled = false;
-  browser->DoModal();
+  browser->DoModalThreadSafe();
   bool confirmed(browser->IsConfirmed());
   if (confirmed)
     path = browser->m_selectedPath;
@@ -652,7 +652,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const CStdString &directory, const CS
   browser->m_rootDir.SetMask(strMask);
   browser->m_selectedPath = directory;
   browser->m_addNetworkShareEnabled = false;
-  browser->DoModal();
+  browser->DoModalThreadSafe();
   bool confirmed(browser->IsConfirmed());
   if (confirmed)
     path = browser->m_selectedPath;
@@ -725,10 +725,10 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(CStdString &path, bool allowNetwork
   browser->SetSources(shares);
   browser->m_rootDir.SetMask("/");
   browser->m_rootDir.AllowNonLocalSources(false);  // don't allow plug n play shares
-  browser->m_browsingForFolders = true;
+  browser->m_browsingForFolders = 1;
   browser->m_addNetworkShareEnabled = allowNetworkShares;
   browser->m_selectedPath = "";
-  browser->DoModal();
+  browser->DoModalThreadSafe();
   bool confirmed = browser->IsConfirmed();
   if (confirmed)
     path = browser->m_selectedPath;
@@ -838,7 +838,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
         // re-open our dialog
         SetSources(shares);
         m_rootDir.SetMask("/");
-        m_browsingForFolders = true;
+        m_browsingForFolders = 1;
         m_addNetworkShareEnabled = true;
         m_selectedPath = newPath;
         DoModal();    
@@ -867,7 +867,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
       m_rootDir.SetSources(m_shares);
       m_rootDir.SetMask("/");
 
-      m_browsingForFolders = true;
+      m_browsingForFolders = 1;
       m_addNetworkShareEnabled = true;
       m_selectedPath = "";
 

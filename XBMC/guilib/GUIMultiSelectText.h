@@ -47,6 +47,7 @@ public:
   virtual bool HitTest(const CPoint &point) const;
   virtual bool OnMouseOver(const CPoint &point);
   virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
+  virtual void UpdateInfo(const CGUIListItem *item = NULL);
 
   virtual CStdString GetDescription() const;
   virtual bool CanFocus() const;

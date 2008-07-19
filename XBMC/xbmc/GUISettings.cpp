@@ -221,13 +221,6 @@ CGUISettings::CGUISettings(void)
   AddInt(3, "programfiles.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
   AddBool(4, "programfiles.savefolderviews", 583, true);
 
-  AddCategory(1, "xlinkkai", 714);
-  AddBool(1, "xlinkkai.enabled", 14072, false);
-  AddBool(2, "xlinkkai.enablenotifications", 14008, true);
-  AddString(4, "xlinkkai.username", 709, "", BUTTON_CONTROL_INPUT, false, 709);
-  AddString(5, "xlinkkai.password", 710, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 710);
-  AddString(6, "xlinkkai.server", 14042, "", BUTTON_CONTROL_IP_INPUT);
-
   // My Weather settings
   AddGroup(2, 8);
   AddCategory(2, "weather", 16000);
@@ -417,7 +410,8 @@ CGUISettings::CGUISettings(void)
   AddBool(3, "videolibrary.hideplots", 20369, false);
   AddBool(4, "videolibrary.seasonthumbs", 20382, true);
   AddBool(5, "videolibrary.actorthumbs", 20402, false);
-  AddBool(6, "videolibrary.singleseason", 20412, true);
+  AddInt(6, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
+  AddBool(7, "videolibrary.removeduplicates", 20419, true);
   AddSeparator(7, "videolibrary.sep1");
   AddBool(8, "videolibrary.updateonstartup", 22000, false);
   AddBool(9, "videolibrary.backgroundupdate", 22001, false);    
@@ -454,7 +448,7 @@ CGUISettings::CGUISettings(void)
   AddString(1, "subtitles.font", 288, "Arial.ttf", SPIN_CONTROL_TEXT);
   AddInt(2, "subtitles.height", 289, 28, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
   AddInt(3, "subtitles.style", 736, FONT_STYLE_BOLD, FONT_STYLE_NORMAL, 1, FONT_STYLE_BOLD_ITALICS, SPIN_CONTROL_TEXT);
-  AddInt(4, "subtitles.color", 737, SUBTITLE_COLOR_START, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
+  AddInt(4, "subtitles.color", 737, SUBTITLE_COLOR_START + 1, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
   AddString(5, "subtitles.charset", 735, "DEFAULT", SPIN_CONTROL_TEXT);
   AddBool(6, "subtitles.flipbidicharset", 13304, false);
   AddSeparator(7, "subtitles.sep1");

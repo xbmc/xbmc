@@ -69,8 +69,6 @@ public:
   void StopServices();
   void StartIdleThread();
   void StopIdleThread();
-  void StartKai();
-  void StopKai();
   void StartWebServer();
   void StopWebServer();
   void StartFtpServer();
@@ -148,7 +146,6 @@ public:
   bool IsButtonDown(DWORD code);
   bool AnyButtonDown();
   bool ResetScreenSaverWindow();
-  void SetKaiNotification(const CStdString& aCaption, const CStdString& aDescription, CGUIImage* aIcon=NULL);
   double GetTotalTime() const;
   double GetTime() const;
   float GetPercentage() const;

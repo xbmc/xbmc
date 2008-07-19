@@ -413,12 +413,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\ApplicationRenderer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\ArenaItem.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\BuddyItem.cpp">
-			</File>
-			<File
 				RelativePath=".\xbmc\Credits.cpp">
 			</File>
 			<File
@@ -432,9 +426,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\EventServer.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\KaiItem.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\Socket.cpp">
@@ -938,15 +929,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\utils\InfoLoader.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\utils\KaiClient.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\utils\KaiRequestList.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\KaiVector.cpp">
-				</File>
-				<File
 					RelativePath=".\xbmc\utils\LabelFormatter.cpp">
 				</File>
 				<File
@@ -1228,12 +1210,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIDialogGamepad.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\GUIDialogHost.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIDialogInvite.cpp">
-				</File>
-				<File
 					RelativePath=".\xbmc\GUIDialogKaiToast.cpp">
 				</File>
 				<File
@@ -1386,9 +1362,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIViewStateScripts.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowBuddies.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowFileManager.cpp">
@@ -2492,19 +2465,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\xbox\IoSupport.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\xbox\MediaPacketQueue.cpp">
-				</File>
-				<File
 					RelativePath=".\xbmc\xbox\Network.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\xbox\Network.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\xbox\VoiceCommunicator.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\xbox\VoiceManager.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\xbox\xbeheader.cpp">
@@ -2574,9 +2538,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\utils\Archive.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\ArenaItem.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\Artist.h">
 			</File>
 			<File
@@ -2599,9 +2560,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\AutoSwitch.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\BuddyItem.h">
 			</File>
 			<File
 				RelativePath=".\BusyIndicator.h">
@@ -2751,12 +2709,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\GUIDialogGamepad.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\GUIDialogHost.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIDialogInvite.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\GUIDialogKaiToast.h">
 			</File>
 			<File
@@ -2800,9 +2752,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\GuiUserMessages.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowBuddies.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowFileManager.h">
@@ -2949,21 +2898,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\ISO9660Directory.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\utils\KaiClient.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\KaiItem.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\utils\KaiRequestList.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\KaiVector.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\utils\KaiVoice.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\cores\mplayer\keycodes.h">
 			</File>
 			<File
@@ -2983,9 +2917,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\MediaManager.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\xbox\MediaPacketQueue.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MemoryUnitManager.h">
@@ -3166,12 +3097,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\VirtualDirectory.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\xbox\VoiceCommunicator.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\xbox\VoiceManager.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\Weather.h">

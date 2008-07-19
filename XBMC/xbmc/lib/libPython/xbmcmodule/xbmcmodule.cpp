@@ -286,7 +286,7 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, "i", &iString)) return NULL;
 
     CStdStringW unicodeLabel;
-    if (iString >= 30000 && iString <= 30999)
+    if (iString >= 30000 && iString <= 32999)
       g_charsetConverter.utf8ToW(g_localizeStringsTemp.Get(iString), unicodeLabel);
     else
       g_charsetConverter.utf8ToW(g_localizeStrings.Get(iString), unicodeLabel);
@@ -503,7 +503,7 @@ namespace PYXBMC
     "\"|\" as an OR operator, \"!\" as a NOT operator, and \"[\" and \"]\" to bracket expressions.\n"
     "\n"
     "example:\n"
-    "  - visible = xbmc.getCondVisibility('[System.KaiEnabled + !Skin.String(KAI)]')\n");
+    "  - visible = xbmc.getCondVisibility('[Control.IsVisible(41) + !Control.IsVisible(12)]')\n");
 
   PyObject* XBMC_GetCondVisibility(PyObject *self, PyObject *args)
   {
@@ -737,7 +737,10 @@ namespace PYXBMC
     bool exists = false;
     if (g_TextureManager.Load(image))
     {
-      g_TextureManager.ReleaseTexture(image);
+      // NOTE: Ideally we'd release the texture resource here, but we can't reliably do that without first
+      //       requesting all the texture images and then asking for a release.
+      //       The better fix is a g_TextureManager.CanLoad(strImage) or something similar.
+      //g_TextureManager.ReleaseTexture(image);
       exists = true;
     }
 

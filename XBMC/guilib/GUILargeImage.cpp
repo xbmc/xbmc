@@ -30,7 +30,7 @@
 CGUILargeImage::CGUILargeImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture)
 : CGUIImage(dwParentID, dwControlId, posX, posY, width, height, texture, 0), m_fallbackImage(dwParentID, dwControlId, posX, posY, width, height, texture)
 {
-  m_fallbackImage.SetFileName(m_image.file.GetLabel(m_dwParentID, true));
+  m_fallbackImage.SetFileName(texture.file.GetFallback(), true);  // true to set it constant
   ControlType = GUICONTROL_LARGE_IMAGE;
   m_usingBundledTexture = false;
 }
@@ -68,8 +68,8 @@ void CGUILargeImage::AllocResources()
     return;
   if (m_vecTextures.size())
     FreeTextures();
-  // don't call CGUIControl::AllocTextures(), as this resets m_hasRendered, which we don't want
-  m_bInvalidated = true;
+  // don't call CGUIControl::AllocResources(), as this resets m_hasRendered, which we don't want
+  SetInvalid();
   m_bAllocated = true;
 
   // first check our textureManager for bundled files
@@ -92,15 +92,16 @@ void CGUILargeImage::AllocResources()
     if (!texture)
       return;
 
+#ifdef HAS_XBOX_D3D
+    m_linearTexture = true;
+#else
+    m_linearTexture = false;
+#endif
     m_usingBundledTexture = false;
     m_vecTextures.push_back(texture);
   }
 
-#ifdef HAS_XBOX_D3D
-  m_linearTexture = true;
-#else
-  m_linearTexture = false;
-#endif
+
 
   CalculateSize();
 
@@ -151,8 +152,10 @@ int CGUILargeImage::GetOrientation() const
   return (int)orient_table[8 * m_image.orientation + m_orientation];
 }
 
-void CGUILargeImage::SetFileName(const CStdString& strFileName)
+void CGUILargeImage::SetFileName(const CStdString& strFileName, bool setConstant)
 {
+  if (setConstant)
+    m_image.file.SetLabel(strFileName, "");
   // no fallback is required - it's handled at rendertime
   if (m_strFileName.Equals(strFileName)) return;
   // Don't completely free resources here - we may be just changing

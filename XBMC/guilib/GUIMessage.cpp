@@ -52,7 +52,8 @@ CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD
   m_dwControlID = dwControlID;
   m_dwParam1 = dwParam1;
   m_dwParam2 = dwParam2;
-  m_lpVoid = (void *)&item;
+  m_lpVoid = NULL;
+  m_item = item;
 }
 
 CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CVisualisation* vis)
@@ -64,18 +65,6 @@ CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD
   m_dwParam2 = dwParam2;
   m_lpVoid = vis;
 }
-
-//#ifdef HAS_KAI_VOICE
-CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CGUIList* list)
-{
-  m_dwMessage = dwMsg;
-  m_dwSenderID = dwSenderID;
-  m_dwControlID = dwControlID;
-  m_dwParam1 = dwParam1;
-  m_dwParam2 = dwParam2;
-  m_lpVoid = list;
-}
-//#endif
 
 CGUIMessage::CGUIMessage(const CGUIMessage& msg)
 {
@@ -99,6 +88,11 @@ DWORD CGUIMessage::GetMessage() const
 void* CGUIMessage::GetLPVOID() const
 {
   return m_lpVoid;
+}
+
+CGUIListItemPtr CGUIMessage::GetItem() const
+{
+  return m_item;
 }
 
 DWORD CGUIMessage::GetParam1() const
@@ -129,6 +123,7 @@ const CGUIMessage& CGUIMessage::operator = (const CGUIMessage& msg)
   m_strLabel = msg.m_strLabel;
   m_dwSenderID = msg.m_dwSenderID;
   m_strParam = msg.m_strParam;
+  m_item = msg.m_item;
   return *this;
 }
 
