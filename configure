@@ -13158,7 +13158,51 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile xbmc/cores/dvdplayer/Codecs/Makefile xbmc/lib/cximage-6.0/Makefile.linux xbmc/cores/paplayer/MIDCodec/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/DCACodec/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/Makefile.xbmc_linux xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libass/Makefile.xbmc_linux"
+ac_config_files="$ac_config_files Makefile Makefile.include"
+
+ac_config_files="$ac_config_files xbmc/lib/libPython/linux/Makefile"
+
+ac_config_files="$ac_config_files xbmc/lib/libUPnP/Makefile"
+
+ac_config_files="$ac_config_files tools/Linux/xbmc.sh"
+
+ac_config_files="$ac_config_files tools/XBMCTex/Makefile"
+
+ac_config_files="$ac_config_files xbmc/cores/dvdplayer/Codecs/Makefile"
+
+ac_config_files="$ac_config_files xbmc/lib/cximage-6.0/Makefile.linux"
+
+ac_config_files="$ac_config_files xbmc/cores/paplayer/MIDCodec/Makefile"
+
+ac_config_files="$ac_config_files xbmc/cores/paplayer/AC3Codec/Makefile"
+
+ac_config_files="$ac_config_files xbmc/cores/paplayer/ADPCMCodec/Makefile"
+
+ac_config_files="$ac_config_files xbmc/cores/paplayer/DCACodec/Makefile"
+
+ac_config_files="$ac_config_files xbmc/cores/paplayer/GYMCodec/Makefile"
+
+ac_config_files="$ac_config_files xbmc/cores/paplayer/MP3Codec/Makefile"
+
+ac_config_files="$ac_config_files xbmc/cores/paplayer/MPCCodec/Makefile.xbmc_linux"
+
+ac_config_files="$ac_config_files xbmc/cores/paplayer/NSFCodec/Makefile"
+
+ac_config_files="$ac_config_files xbmc/cores/paplayer/SIDCodec/Makefile"
+
+ac_config_files="$ac_config_files xbmc/cores/paplayer/WavPackCodec/Makefile"
+
+ac_config_files="$ac_config_files xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile"
+
+ac_config_files="$ac_config_files xbmc/lib/libXBMS/Makefile"
+
+ac_config_files="$ac_config_files xbmc/lib/libRTV/Makefile"
+
+ac_config_files="$ac_config_files xbmc/lib/libexif/Makefile"
+
+ac_config_files="$ac_config_files xbmc/lib/libXDAAP/Makefile"
+
+ac_config_files="$ac_config_files xbmc/lib/libass/Makefile.xbmc_linux"
 
 
 
