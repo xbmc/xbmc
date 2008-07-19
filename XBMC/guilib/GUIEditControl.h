@@ -41,18 +41,22 @@ class CGUIEditControl : public CGUIButtonControl
 public:
   CGUIEditControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY,
                   float width, float height, const CImage &textureFocus, const CImage &textureNoFocus,
-                  const CLabelInfo& labelInfo, const CStdString &text);
+                  const CLabelInfo& labelInfo, const std::string &text);
+  CGUIEditControl(const CGUIButtonControl &button);
 
   virtual ~CGUIEditControl(void);
 
   virtual bool OnAction(const CAction &action);
   virtual void OnClick();
 
-  void SetText(const CStdString &strLabel);
+  virtual void SetLabel(const std::string &text);
+  virtual CStdString GetDescription() const;
+
 protected:
   virtual void RenderText();
   void RecalcLabelPosition();
   void ValidateCursor();
+  void OnTextChanged();
 
   CStdStringW m_text;
   float m_textOffset;
