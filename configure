@@ -13099,7 +13099,7 @@ else
 fi
 
 case $host in
-    i*86-*-linux-gnu)
+    i*86*-linux-gnu)
        ARCH="i486-linux"
        ;;
     x86_64-*-linux-gnu)
