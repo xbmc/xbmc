@@ -40,10 +40,12 @@ public:
 
 class DllNosefart : public DllDynamic, DllNosefartInterface
 {
-#ifdef _LINUX
-  DECLARE_DLL_WRAPPER(DllNosefart, q:\\system\\players\\paplayer\\nosefart-i486-linux.so)
-#else
+#ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllNosefart, q:\\system\\players\\paplayer\\nosefart.dll)
+#elif defined(__x86_64__)
+  DECLARE_DLL_WRAPPER(DllNosefart, q:\\system\\players\\paplayer\\nosefart-x86_64-linux.so)
+#else
+  DECLARE_DLL_WRAPPER(DllNosefart, q:\\system\\players\\paplayer\\nosefart-i486-linux.so)
 #endif
   DEFINE_METHOD1(int, LoadNSF, (const char* p1))
   DEFINE_METHOD1(void, FreeNSF, (int p1))
