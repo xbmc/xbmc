@@ -48,6 +48,8 @@ class DllMPCCodec : public DllDynamic, DllMPCCodecInterface
   DECLARE_DLL_WRAPPER(DllMPCCodec, Q:\\system\\players\\paplayer\\libmpcdec-osx.so)
 #elif !defined _LINUX
   DECLARE_DLL_WRAPPER(DllMPCCodec, Q:\\system\\players\\PAPlayer\\libmpcdec.dll)
+#elif defined(__x86_64__)
+  DECLARE_DLL_WRAPPER(DllMPCCodec, Q:\\system\\players\\paplayer\\libmpcdec-x86_64-linux.so)
 #else
   DECLARE_DLL_WRAPPER(DllMPCCodec, Q:\\system\\players\\paplayer\\libmpcdec-i486-linux.so)
 #endif
