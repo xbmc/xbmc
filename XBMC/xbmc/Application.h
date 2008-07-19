@@ -262,8 +262,6 @@ protected:
 
   bool m_bPresentFrame;
 
-  char* m_logPath;
-
 #ifdef HAS_SDL
   int        m_frameCount;
   SDL_mutex* m_frameMutex;
@@ -295,7 +293,6 @@ protected:
 
   void SaveCurrentFileSettings();
 
-  void InitDirectories();
   CProfile* InitDirectoriesLinux();
   CProfile* InitDirectoriesOSX();
   CProfile* InitDirectoriesWin32();
