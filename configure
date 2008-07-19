@@ -13204,6 +13204,8 @@ ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/l
 
 
 
+
+
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -14318,7 +14320,33 @@ _ACEOF
 chmod +x $CONFIG_STATUS
 ac_clean_files=$ac_clean_files_save
 
-xbmc/lib/libPython/Python
+
+if [ -d xbmc/lib/libPython/Python ]; then
+  pushd xbmc/lib/libPython/Python
+
+  ./configure \
+    --enable-ipv6 \
+    --enable-unicode=ucs4 \
+    --without-cxx \
+    --enable-shared \
+    --prefix=`pwd`/../linux/python-lib MACOSX_DEPLOYMENT_TARGET=10.5 &&
+  sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h &&
+  cp pyconfig.h Include
+
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libPython/Python failed to configure" >&5
+echo "$as_me: error: Submodule xbmc/lib/libPython/Python failed to configure" >&2;}
+   { (exit 1); exit 1; }; }
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libPython/Python doesn't exist" >&5
+echo "$as_me: error: Submodule xbmc/lib/libPython/Python doesn't exist" >&2;}
+   { (exit 1); exit 1; }; }
+fi;
+
 
 if [ -d xbmc/cores/paplayer/MPCCodec ]; then
   pushd xbmc/cores/paplayer/MPCCodec
