@@ -1,7 +1,7 @@
 CFLAGS=-D_LINUX -fPIC -O2
 OBJS=timiditydll.o common.o controls.o filter.o instrum.o mix.o output.o playmidi.o readmidi.o resample.o sdl_a.o sdl_c.o tables.o timidity.o
 
-timidity-i486-linux.so: $(OBJS)
+timidity-@ARCH@.so: $(OBJS)
 	g++ -shared -o $@ *.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o && cp $@ ../../../../system/players/paplayer
 
 clean:
