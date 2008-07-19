@@ -37,6 +37,8 @@ class DllLibExif : public DllDynamic, DllLibExifInterface
   DECLARE_DLL_WRAPPER(DllLibExif, Q:\\system\\libexif-osx.so)
 #elif !defined(_LINUX)
   DECLARE_DLL_WRAPPER(DllLibExif, Q:\\system\\libexif.dll)
+#elif defined(__x86_64__)
+  DECLARE_DLL_WRAPPER(DllLibExif, Q:\\system\\libexif-x86_64-linux.so)
 #else
   DECLARE_DLL_WRAPPER(DllLibExif, Q:\\system\\libexif-i486-linux.so)
 #endif
