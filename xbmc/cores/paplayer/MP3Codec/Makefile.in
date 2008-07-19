@@ -1,5 +1,6 @@
+compile: MADCodec-i486-linux.so
 
-MADCodec-i486-linux.so: libmad-compile MADCodec/MadMp3Decoder.o
+MADCodec-@ARCH@.so: libmad-compile MADCodec/MadMp3Decoder.o
 	gcc -shared -o $@  MADCodec/MadMp3Decoder.o libmad-0.15.1b/.libs/libmad.a `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o -fPIC -O3 && cp $@ ../../../../system/players/paplayer/
 
 libmad-compile:
