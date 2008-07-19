@@ -74,6 +74,8 @@ class DllWavPack : public DllDynamic, DllWavPackInterface
   DECLARE_DLL_WRAPPER(DllWavPack, Q:\\system\\players\\paplayer\\wavpack-powerpc-linux.so)
 #elif defined _POWERPC64
   DECLARE_DLL_WRAPPER(DllWavPack, Q:\\system\\players\\paplayer\\wavpack-powerpc64-linux.so)
+#elif defined(__x86_64__)
+  DECLARE_DLL_WRAPPER(DllWavPack, Q:\\system\\players\\paplayer\\wavpack-x86_64-linux.so)
 #else
   DECLARE_DLL_WRAPPER(DllWavPack, Q:\\system\\players\\paplayer\\wavpack-i486-linux.so)
 #endif
