@@ -12,10 +12,10 @@ OBJS := daap.o debug.o dmap_generics.o global.o httpClient.o ioloop.o libXDAAP.o
 	rm -f ${<:.c=.o}
 	$(CC) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.c=.o}
 
-libxdaap-i486-linux.a: $(OBJS)
-	$(AR) $(ARFLAGS) libxdaap-i486-linux.a $(OBJS)
+libxdaap-@ARCH@.a: $(OBJS)
+	$(AR) $(ARFLAGS) $@ $(OBJS)
 
-all: libxdaap-i486-linux.a
+all: libxdaap-@ARCH@.a
 
 clean:
-	$(RM) $(OBJS) libxdaap-i486-linux.a
+	$(RM) $(OBJS) libxdaap-@ARCH@.a
