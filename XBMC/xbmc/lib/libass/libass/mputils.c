@@ -10,7 +10,7 @@
 #include <assert.h>
 
 #ifdef HAVE_ENCA
-#include <../../enca-1.9/lib/enca.h>
+#include <enca.h>
 #endif
 
 void my_mp_msg(int lvl, char *lvl_str, char *fmt, ...) {

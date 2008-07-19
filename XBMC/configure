@@ -13158,7 +13158,8 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile xbmc/cores/dvdplayer/Codecs/Makefile xbmc/lib/cximage-6.0/Makefile.linux xbmc/cores/paplayer/MIDCodec/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/DCACodec/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/Makefile.xbmc_linux xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile"
+ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile xbmc/cores/dvdplayer/Codecs/Makefile xbmc/lib/cximage-6.0/Makefile.linux xbmc/cores/paplayer/MIDCodec/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/DCACodec/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/Makefile.xbmc_linux xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libass/Makefile.xbmc_linux"
+
 
 
 
@@ -13749,6 +13750,7 @@ do
     "xbmc/lib/libRTV/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libRTV/Makefile" ;;
     "xbmc/lib/libexif/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libexif/Makefile" ;;
     "xbmc/lib/libXDAAP/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libXDAAP/Makefile" ;;
+    "xbmc/lib/libass/Makefile.xbmc_linux") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libass/Makefile.xbmc_linux" ;;
 
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
@@ -14299,6 +14301,7 @@ pushd xbmc/cores/dvdplayer/Codecs/libdvdnav && ./configure --enable-static --dis
 pushd xbmc/cores/dvdplayer/Codecs/libfaad2 && autoreconf -v -i -f && ./configure --with-pic --with-mp4v2 && popd
 pushd xbmc/cores/dvdplayer/Codecs/libmad && ./configure && popd
 pushd xbmc/lib/cximage-6.0/zlib && CFLAGS=-fPIC ./configure && popd
+pushd xbmc/lib/libass/ && CFLAGS=-fPIC ./configure && popd
 
 # configure is writing to config.log, and then calls config.status.
 # config.status does its own redirection, appending to config.log.
