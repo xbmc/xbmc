@@ -24,7 +24,7 @@
 #include "DllLibass.h"
 
 extern "C"{
-  #include "../../../lib/libass/ass.h"
+  #include "../../../lib/libass/libass/ass.h"
 }
 
 /** Wrapper for Libass **/
