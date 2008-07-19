@@ -41,6 +41,8 @@ class DllADPCM : public DllDynamic, DllADPCMInterface
 {
 #ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllADPCM, q:\\system\\players\\paplayer\\adpcm.dll)
+#elif defined (__x86_64__)
+  DECLARE_DLL_WRAPPER(DllADPCM, q:\\system\\players\\paplayer\\adpcm-x86_64-linux.so)
 #else
   DECLARE_DLL_WRAPPER(DllADPCM, q:\\system\\players\\paplayer\\adpcm-i486-linux.so)
 #endif
