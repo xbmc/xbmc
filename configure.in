@@ -372,7 +372,7 @@ fi;
 ])
 ])
 
-AC_CONFIG_COMMANDS_POST([xbmc/lib/libPython/Python], [
+XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
   ./configure \
     --enable-ipv6 \
     --enable-unicode=ucs4 \
