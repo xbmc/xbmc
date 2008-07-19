@@ -28,16 +28,25 @@ using namespace std;
 
 CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY,
                                  float width, float height, const CImage &textureFocus, const CImage &textureNoFocus,
-                                 const CLabelInfo& labelInfo, const CStdString &text)
+                                 const CLabelInfo& labelInfo, const std::string &text)
     : CGUIButtonControl(dwParentID, dwControlId, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
 {
   ControlType = GUICONTROL_EDIT;
-  m_label = labelInfo;
   m_textOffset = 0;
   m_textWidth = width;
   m_cursorPos = 0;
   m_cursorBlink = 0;
-  SetText(text);
+  SetLabel(text);
+}
+
+CGUIEditControl::CGUIEditControl(const CGUIButtonControl &button)
+    : CGUIButtonControl(button)
+{
+  ControlType = GUICONTROL_EDIT;
+  m_textOffset = 0;
+  m_textWidth = GetWidth();
+  m_cursorPos = 0;
+  m_cursorBlink = 0;
 }
 
 CGUIEditControl::~CGUIEditControl(void)
@@ -55,19 +64,19 @@ bool CGUIEditControl::OnAction(const CAction &action)
     if (b == 0x25 && m_cursorPos > 0)
     { // left
       m_cursorPos--;
-      SetInvalid();
+      OnTextChanged();
       return true;
     }
     if (b == 0x27 && m_cursorPos < m_text.length())
     { // right
       m_cursorPos++;
-      SetInvalid();
+      OnTextChanged();
       return true;
     }
     if (b == 0x2e && m_cursorPos < m_text.length())
     { // delete
       m_text.erase(m_cursorPos, 1);
-      SetInvalid();
+      OnTextChanged();
       return true;
     }
   }
@@ -76,12 +85,6 @@ bool CGUIEditControl::OnAction(const CAction &action)
     // input from the keyboard
     switch (action.unicode) 
     {
-    case 27:
-      { // escape
-        m_text.clear();
-        m_cursorPos = 0;
-        break;
-      }
     case 10:
     case 13:
       {
@@ -90,7 +93,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
       }
     case 8:
       {
-        // backspace or delete??
+        // backspace
         if (m_cursorPos)
           m_text.erase(--m_cursorPos, 1);
         break;
@@ -102,7 +105,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
         break;
       }
     }
-    SetInvalid();
+    OnTextChanged();
     return true;
   }
   return CGUIButtonControl::OnAction(action);
@@ -116,7 +119,7 @@ void CGUIEditControl::OnClick()
   if (CGUIDialogKeyboard::ShowAndGetInput(utf8, true))
   {
     g_charsetConverter.utf8ToW(utf8, m_text);
-    SetInvalid();
+    OnTextChanged();
   }
 }
 
@@ -190,7 +193,13 @@ void CGUIEditControl::RenderText()
       posY += m_height*0.5f;
 
     m_textLayout.SetText(text);
-    m_textLayout.Render(posX + m_textOffset, posY, m_label.angle, m_label.textColor, m_label.shadowColor, align, m_textWidth);
+
+    if (IsDisabled())
+      m_textLayout.Render(posX + m_textOffset, posY, m_label.angle, m_label.disabledColor, m_label.shadowColor, align, m_textWidth, true);
+    else if (HasFocus() && m_label.focusedColor)
+      m_textLayout.Render(posX + m_textOffset, posY, m_label.angle, m_label.focusedColor, m_label.shadowColor, align, m_textWidth);
+    else
+      m_textLayout.Render(posX + m_textOffset, posY, m_label.angle, m_label.textColor, m_label.shadowColor, align, m_textWidth);
 
     g_graphicsContext.RestoreClipRegion();
   }
@@ -202,7 +211,20 @@ void CGUIEditControl::ValidateCursor()
     m_cursorPos = m_text.size();
 }
 
-void CGUIEditControl::SetText(const CStdString &strLabel)
+void CGUIEditControl::OnTextChanged()
 {
-  g_charsetConverter.utf8ToW(strLabel, m_text);
+  SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
+  SetInvalid();
+}
+
+void CGUIEditControl::SetLabel(const std::string &text)
+{
+  g_charsetConverter.utf8ToW(text, m_text);
+}
+
+CStdString CGUIEditControl::GetDescription() const
+{
+  CStdString text;
+  g_charsetConverter.wToUTF8(m_text, text);
+  return text;
 }
