@@ -330,29 +330,30 @@ fi
 AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(SDL_DEFINES)
 AC_SUBST(LZO_INCLUDES)
-AC_CONFIG_FILES([Makefile Makefile.include])
-AC_CONFIG_FILES([xbmc/lib/libPython/linux/Makefile])
-AC_CONFIG_FILES([xbmc/lib/libUPnP/Makefile])
-AC_CONFIG_FILES([tools/Linux/xbmc.sh])
-AC_CONFIG_FILES([tools/XBMCTex/Makefile])
-AC_CONFIG_FILES([xbmc/cores/dvdplayer/Codecs/Makefile])
-AC_CONFIG_FILES([xbmc/lib/cximage-6.0/Makefile.linux])
-AC_CONFIG_FILES([xbmc/cores/paplayer/MIDCodec/Makefile])
-AC_CONFIG_FILES([xbmc/cores/paplayer/AC3Codec/Makefile])
-AC_CONFIG_FILES([xbmc/cores/paplayer/ADPCMCodec/Makefile])
-AC_CONFIG_FILES([xbmc/cores/paplayer/DCACodec/Makefile])
-AC_CONFIG_FILES([xbmc/cores/paplayer/GYMCodec/Makefile])
-AC_CONFIG_FILES([xbmc/cores/paplayer/MP3Codec/Makefile])
-AC_CONFIG_FILES([xbmc/cores/paplayer/MPCCodec/Makefile.xbmc_linux])
-AC_CONFIG_FILES([xbmc/cores/paplayer/NSFCodec/Makefile])
-AC_CONFIG_FILES([xbmc/cores/paplayer/SIDCodec/Makefile])
-AC_CONFIG_FILES([xbmc/cores/paplayer/WavPackCodec/Makefile])
-AC_CONFIG_FILES([xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile])
-AC_CONFIG_FILES([xbmc/lib/libXBMS/Makefile])
-AC_CONFIG_FILES([xbmc/lib/libRTV/Makefile])
-AC_CONFIG_FILES([xbmc/lib/libexif/Makefile])
-AC_CONFIG_FILES([xbmc/lib/libXDAAP/Makefile])
-AC_CONFIG_FILES([xbmc/lib/libass/Makefile.xbmc_linux])
+AC_CONFIG_FILES([Makefile Makefile.include]
+                [xbmc/lib/libPython/linux/Makefile]
+                [xbmc/lib/libUPnP/Makefile]
+                [tools/Linux/xbmc.sh]
+                [tools/XBMCTex/Makefile]
+                [xbmc/cores/dvdplayer/Codecs/Makefile]
+                [xbmc/lib/cximage-6.0/Makefile.linux]
+                [xbmc/cores/paplayer/MIDCodec/Makefile]
+                [xbmc/cores/paplayer/AC3Codec/Makefile]
+                [xbmc/cores/paplayer/ADPCMCodec/Makefile]
+                [xbmc/cores/paplayer/DCACodec/Makefile]
+                [xbmc/cores/paplayer/GYMCodec/Makefile]
+                [xbmc/cores/paplayer/MP3Codec/Makefile]
+                [xbmc/cores/paplayer/MPCCodec/Makefile.xbmc_linux]
+                [xbmc/cores/paplayer/NSFCodec/Makefile]
+                [xbmc/cores/paplayer/SIDCodec/Makefile]
+                [xbmc/cores/paplayer/WavPackCodec/Makefile]
+                [xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile]
+                [xbmc/lib/libXBMS/Makefile]
+                [xbmc/lib/libRTV/Makefile]
+                [xbmc/lib/libexif/Makefile]
+                [xbmc/lib/libXDAAP/Makefile]
+                [xbmc/lib/libass/Makefile.xbmc_linux]
+)
 
 AC_DEFUN([XB_CONFIG_MODULE],[
 AC_CONFIG_COMMANDS_POST([
