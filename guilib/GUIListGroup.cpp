@@ -63,7 +63,7 @@ CGUIListGroup::~CGUIListGroup(void)
   FreeResources();
 }
 
-void CGUIListGroup::AddControl(CGUIControl *control)
+void CGUIListGroup::AddControl(CGUIControl *control, int position /*= -1*/)
 {
   if (control)
   {
@@ -75,7 +75,7 @@ void CGUIListGroup::AddControl(CGUIControl *control)
       CLog::Log(LOGWARNING, "Trying to add unsupported control type %d", control->GetControlType());
     control->SetPushUpdates(true);
   }
-  CGUIControlGroup::AddControl(control);
+  CGUIControlGroup::AddControl(control, position);
 }
 
 void CGUIListGroup::Render()
