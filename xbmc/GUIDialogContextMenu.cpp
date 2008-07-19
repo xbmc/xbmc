@@ -96,7 +96,7 @@ void CGUIDialogContextMenu::ClearButtons()
     if (pControl)
     {
       // remove the control from our list
-      Remove(BUTTON_TEMPLATE + i);
+      Remove(pControl);
       // kill the button
       pControl->FreeResources();
       delete pControl;

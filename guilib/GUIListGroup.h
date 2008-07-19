@@ -39,7 +39,7 @@ public:
   CGUIListGroup(const CGUIListGroup &right);
   virtual ~CGUIListGroup(void);
 
-  virtual void AddControl(CGUIControl *control);
+  virtual void AddControl(CGUIControl *control, int position = -1);
 
   virtual void Render();
   virtual void ResetAnimation(ANIMATION_TYPE type);
