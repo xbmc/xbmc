@@ -72,7 +72,7 @@ private:
   void UpdateLabel();
   void ResetShiftAndSymbols();
 
-  void Character(char wch);
+  void Character(WCHAR wch);
   void Backspace();
 
   CStdStringW m_strEdit;

@@ -235,7 +235,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
     TiXmlElement *pButton = pDevice->FirstChildElement();
     while (pButton)
     {
-      WORD wButtonCode = TranslateKeyboardString(pButton->Value());
+      WORD wButtonCode = TranslateKeyboardButton(pButton);
       if (pButton->FirstChild())
         MapAction(wButtonCode, pButton->FirstChild()->Value(), map);
       pButton = pButton->NextSiblingElement();
@@ -604,11 +604,12 @@ WORD CButtonTranslator::TranslateUniversalRemoteString(const char *szButton)
 
 WORD CButtonTranslator::TranslateKeyboardString(const char *szButton)
 {
-  if (!szButton) return 0;
   WORD wButtonCode = 0;
   if (strlen(szButton) == 1)
   { // single character
     wButtonCode = (WORD)toupper(szButton[0]) | KEY_VKEY;
+    // FIXME It is a printable character, printable should be ASCII not VKEY! Till now it works, but how (long)?
+    // FIXME support unicode: additional parameter necessary since unicode can not be embedded into key/action-ID.
   }
   else
   { // for keys such as return etc. etc.
@@ -686,6 +687,27 @@ WORD CButtonTranslator::TranslateKeyboardString(const char *szButton)
     else CLog::Log(LOGERROR, "Keyboard Translator: Can't find button %s", strKey.c_str());
   }
   return wButtonCode;
+}
+
+WORD CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
+{
+  const char *szButton = pButton->Value();
+
+  if (!szButton) return 0;
+  CStdString strKey = szButton;
+  if (strKey.Equals("key"))
+  {
+    int id = 0;
+    if (pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS)
+      return id;
+    else
+      CLog::Log(LOGERROR, "Keyboard Translator: `key' button has no id");
+  }
+  else
+  {
+    return TranslateKeyboardString(szButton);
+  }
+  return 0;
 }
 
 void CButtonTranslator::Clear()

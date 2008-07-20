@@ -158,9 +158,10 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
   }
   else if (action.wID >= KEY_ASCII)
   { // input from the keyboard
-    char ch = action.wID & 0xFF;
-    switch (ch)
+    //char ch = action.wID & 0xFF;
+    switch (action.unicode)
     {
+    case 13:  // enter
     case 10:  // enter
       OnOK();
       break;
@@ -171,7 +172,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
       Close();
       break;
     default:  //use character input
-      Character(ch);
+      Character(action.unicode);
       break;
     }
     return true;
@@ -182,6 +183,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
 bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
 {
   CGUIDialog::OnMessage(message);
+
 
   switch ( message.GetMessage() )
   {
@@ -252,11 +254,11 @@ CStdString CGUIDialogKeyboard::GetText() const
   return utf8String;
 }
 
-void CGUIDialogKeyboard::Character(char ch)
+void CGUIDialogKeyboard::Character(WCHAR ch)
 {
   if (!ch) return;
   // TODO: May have to make this routine take a WCHAR for the symbols?
-  m_strEdit.Insert(GetCursorPos(), WCHAR(ch));
+  m_strEdit.Insert(GetCursorPos(), ch);
   UpdateLabel();
   MoveCursor(1);
 }
@@ -626,8 +628,8 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CSt
     MD5Final(md5pword, &md5state);
     XKGeneral::BytesToHexStr(md5pword, 16, md5pword2);
     if (strPassword.Equals(md5pword2))
-      return 0;		// user entered correct password
-    else return 1;	// user must have entered an incorrect password
+      return 0;     // user entered correct password
+    else return 1;  // user must have entered an incorrect password
   }
   else
   {

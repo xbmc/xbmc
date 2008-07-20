@@ -15,11 +15,7 @@
 #endif
 #include "IWindowManagerCallback.h"
 #include "common/Mouse.h"
-#ifdef _XBOX
-#include "common/XBoxKeyboard.h"
-#else
-#include "common/DirectInputKeyboard.h"
-#endif
+#include "common/Keyboard.h"
 //-----------------------------------------------------------------------------
 // Global access to common members
 //-----------------------------------------------------------------------------

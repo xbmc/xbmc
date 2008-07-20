@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "GUIWindowSettingsCategory.h"
 #include "Application.h"
+#include "KeyboardLayoutConfiguration.h"
 #include "FileSystem/HDDirectory.h"
 #include "Util.h"
 #include "GUILabelControl.h"
@@ -202,6 +203,11 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         }
 
         g_charsetConverter.reset();
+
+        CStdString strKeyboardLayoutConfigurationPath;
+        strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", m_strNewLanguage.c_str());
+        CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
+        g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
 
         CStdString strLanguagePath;
         strLanguagePath.Format("Q:\\language\\%s\\strings.xml", m_strNewLanguage.c_str());

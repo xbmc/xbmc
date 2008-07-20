@@ -1727,6 +1727,12 @@
 					RelativePath="..\..\xbmc\utils\InfoLoader.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\KeyboardLayoutConfiguration.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\KeyboardLayoutConfiguration.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\LabelFormatter.cpp">
 				</File>
 				<File
