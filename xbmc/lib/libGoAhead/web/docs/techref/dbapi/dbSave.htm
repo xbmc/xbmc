@@ -1,0 +1,18 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>dbSave -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%">dbSave</TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR> <H2><B>Synopsis</B></H2><P>	Dump the contents of a database to file.</P><H2><B>Prototype</B></H2><PRE> #include &quot;emfdb.h&quot;
+
+ int dbSave(int did, char_t * filename, int flags);</PRE><H2><B>Parameters</B></H2><p><TABLE WIDTH="57%" BORDER="0"><TR><TD WIDTH="15%">did</TD><TD WIDTH="85%">database Identifier</TD></TR><TR><TD WIDTH="15%">filename</TD><TD WIDTH="85%">name of the file to write to</TD></TR><TR><TD WIDTH="15%">flags</TD><TD WIDTH="85%">unused, provided for compatibility with earlier versions</TD></TR></TABLE><H2><B>Description</B></H2><P>Write the contents of the database (i.e.,  ALL tables) to a text file.</P><H2><B>Return Value</B></H2><P>	dbSave returns 0 if successful, or -1 if an  error.</P><H2><B>Example</B></H2><PRE>int nCheck = dbSave(0, T(&quot;config.txt&quot;), 0);</PRE><H2><B>See Also</B></H2><P>	<A HREF="dbOpen.htm">dbOpen</A>(), <A HREF="dbLoad.htm">dbLoad</A>()</P><H2>&nbsp;</H2><BLOCKQUOTE>&nbsp;</BLOCKQUOTE><td></tr></table>
+</body>
+</html>

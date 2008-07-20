@@ -1,0 +1,47 @@
+<html>
+<head>
+<title>Active Server Pages -- GoAhead WebServer</title>
+<link rel="stylesheet" href="../style/normal_ws.css">
+</head>
+
+<body>
+<TABLE WIDTH="535" BORDER="0" HEIGHT="60"><TR BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TD><H1>Active Server Pages</H1><P> Active Server Pages (ASP) is a standard developed by Microsoft to serve 
+web pages with dynamic content. An ASP document has an &quot;.asp&quot; 
+extension and uses embedded scripting to insert dynamic data into the page 
+before it is sent to the user's browser. The GoAhead WebServer supports an open scripting 
+architecture where scripting engines can be selected at run-time.  Individual pages can use multiple scripting engines if required.</P><P>To create an ASP script field in an ASP document, use the 
+<STRONG>&lt;%</STRONG>
+and <STRONG>%&gt;</STRONG> ASP delimiters. For example, the following 
+JavaScript will output "Hello World" in place of the ASP delimited field:</P><P>
+<PRE>&lt;h1&gt;Today is &lt;% write("Hello World"); %&gt;&lt;/h1&gt;</PRE><P></P><H3> Scripting Execution</H3><P>When a user's browser&nbsp; requests an ASP document, the 
+default URL handler determines if the page is an ASP document by examining the 
+document's file extension. An  &quot;.asp&quot; extension indicates that ASP 
+processing is required. The document is read from the file system or ROM store 
+in a one-pass operation. Text before the ASP delimiters is copied directly to 
+the requesting browser. If ASP delimiters are found, the text between the 
+delimiters is passed to the relevant scripting engine for execution. The 
+resulting text is immediately passed back to the browser and the process 
+continues until the end of the document. This may differ a little to the 
+processing provided by other ASP implementations. Some systems buffer all ASP 
+output and permit scripted iteration over HTML tags. This is not supported as it 
+requires complete in-memory storage of the entire ASP document before returning to 
+the browser. </P><H3>Scripting Engine Selection</H3><P>To specify the scripting engine, use the 
+&quot;language=&quot; specifier at the beginning of the ASP script. The language 
+selection is <I>sticky</I>, meaning the language will remain 
+the default language until another &quot;language=&quot; keyword is encountered 
+at the start of an ASP script later in the page. For example:
+<P>
+<PRE>
+&lt;% language=javascript write("Query String: " + QUERY_STRING) %&gt;
+&lt;% write(&quot;JavaScript is still the selected language&quot;): %&gt;
+
+</PRE><P></P><P>If no &quot;language=&quot; is specified, the default 
+language is JavaScript. You should always specify the language in the 
+&lt;HEAD&gt;&lt;/HEAD&gt; section of your page for good practice.</P><H2> See Also</H2><P>
+<A HREF="ejs.htm">JavaScript</A>, 
+<A HREF="goforms.htm">GoForms</A>™,
+<A HREF="../docs/techref/wsapi/websSecurityHandler.htm">websSecurityHandler</A>, 
+<A HREF="../docs/techref/wsapi/websUrlHandlerDefine.htm">websUrlHandlerDefine</A> </P></TD></TR></TABLE><h1>&nbsp;        
+</h1>
+</body>
+</html>

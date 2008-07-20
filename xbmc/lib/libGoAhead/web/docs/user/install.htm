@@ -1,0 +1,63 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>Installing WebServer</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../style/normal_ws.css">
+</head>
+
+<body bgcolor="#FFFFFF">
+<TABLE WIDTH="550" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD>
+
+
+<h1>Installing  GoAhead WebServer 
+</h1><P>WebServer 2.1 contains everything needed to compile and run the GoAhead WebServer under WindRiver VxWorks, Windows 95, 98, 2000, NT, CE, LynxOS, LINUX and eCos. </P><P>Before trying to build the GoAhead WebServer, ensure that you have the latest version from GoAhead by checking <A HREF="http://www.goahead.com/webserver" TARGET="new">http://www.goahead.com/webserver</A>. Each supported platform has an operating system subdirectory, which includes a Makefile for building, and a main program for invoking and initializing the GoAhead WebServer.</P><P>To build and run WebServer, change to the relevant operating system directory and use &quot;make&quot; to initiate the build. Some of the make or batch files may need to be modified for the configuration of your system or the target system. See <A HREF="configure.htm">Configuring the GoAhead WebServer</A> for more information.</P><H3>VxWorks</H3><PRE>      cd VXWORKS
+      setpath 
+      make</PRE><P>The above commands build for an x86 platform. If you are  building for a Power PC 604 platform, use &quot;ppcpath&quot; and &quot;make -f Makefile.ppc&quot; instead. For other platforms, modify setpath.bat to set the PATH environment variable for your development environment and target device.  Modify the compiler flags and options in Makefile to build for your specific target device.  </P><P>Load webs.o onto the target system and use standard VxWorks procedures to load the program into memory and execute it (load module and task spawn).</P><P>To terminate WebServer on VxWorks so that it can be   restarted without being reloaded, send a SIGTERM or SIGKILL signal to the WebServer task by using the &quot;kill&quot; API with signal numbers 15 or 9 respectively.  Never use the taskDelete or td APIs when  you plan on restarting WebServer.</P><H3>Windows NT</H3><PRE>         cd WIN
+         nmake /f webs.mak
+         webs</PRE><P>To stop the web server, right click on the taskbar icon for the GoAhead WebServer 
+  and select "Close".</P><H3>Windows 95, 98, and 2000</H3><PRE>         cd WIN
+         setpath ( NOTE: Users of Visual Studio 6.0 may not 
+                         need to use this command to set 
+                         their environment path. )
+         nmake /f webs.mak
+         webs</PRE><BLOCKQUOTE><P>Modify setpath.bat to set PATH environment variable for your development environment.</P><P>To stop WebServer, right click on the taskbar icon for the
+GoAhead WebServer and select &quot;Close&quot;.</P></BLOCKQUOTE><P><FONT FACE="Arial"><B>For users of Microsoft Visual Studio:</B></FONT></P><BLOCKQUOTE><OL><LI><FONT FACE="Arial">Open MS C++.</FONT></LI><LI><FONT FACE="Arial">Open the provided workspace and select File|Open Workspace.</FONT></LI><LI><FONT FACE="Arial">Navigate to the directory where you unzipped the WebServer files (i.e., E:\webserver\win\webs.dsw).</FONT></LI><LI><FONT FACE="Arial">Click the 'Open' button.</FONT></LI><LI><FONT FACE="Arial">Select 'build webs.exe' from the Build Menu. </FONT></LI><LI> The following should appear in the bottom window:<BR><BR><P>--------------------Configuration: webs - Win32<BR>Debug-------------------------------<BR>webs.exe - 0 errors(s), 0 warning(s)</P></LI><LI><BLOCKQUOTE><P></P></BLOCKQUOTE><OL START="7"><LI>From the Build Menu, select  'Execute webs.exe' . The  'GoAhead WebServer' button should now appear on the taskbar. </LI><LI>Follow the instructions provided in &quot;<A HREF="running.htm">Accessing the WebServer Home Page</A>&quot;. </LI><LI>If SSL support is required, these additional steps are necessary:</LI></OL><BLOCKQUOTE><OL><LI TYPE="a">Add the webSSL.c file to the list of program files.</LI><LI>Add WEBS.SSL_SUPPORT to the preprocessor definitions of the project settings.</LI><LI>Add the include path of the RSA package to the additional include directories.</LI><LI>Add the library path of the RSA package to the additional library paths.</LI><LI>Add the RSA library file name to the library modules. </LI></OL><BLOCKQUOTE><P>&nbsp;</P></BLOCKQUOTE></BLOCKQUOTE></LI></OL></BLOCKQUOTE><P><B>Note for users of Microsoft Visual C++:</B></P><BLOCKQUOTE><P>If you see the following Setup Environment Variables message after
+installing Visual C++, use  the Visual C++  instructions provided below <B>BEFORE</B> building and running GoAhead
+WebServer. </P><P><B>Setup Environment Variables message:</B></P><BLOCKQUOTE><P>&quot;For your convenience, the environment variables required to
+  run build tools from a command prompt are saved in the VCVARS32.BAT file in your BIN
+  directory.&quot;</P></BLOCKQUOTE><P><B>Visual C++ Instructions:</B></P><P>1. Copy the VCVARS32.BAT file to your root directory (usually C:\).<BR>
+2. Add the file's path name to your AUTOEXEC.BAT file.<BR>
+3. Reboot your System.</P></BLOCKQUOTE><H3>Windows CE</H3><P>Either of two different methods may be used  to  build  the Windows CE WebServer: </P><BLOCKQUOTE><P>Using build.bat:</P><OL><LI>In the WebServer build.bat file (CE/build.bat), ensure that the &quot;set PATH&quot; statement is correct, and  that both the include and library files paths are correct.</LI><LI>Ensure that all compiler flags are set correctly.<BR><BR><B>Note</B>: You can get the correct flag settings for each processor from within Visual C++. Set your project to build against the target SDK. Access the compiler settings  from the menu bar. Choose Project, Settings, and  the C/C++ tab.  The textbox labeled &quot;Preprocessor definitions&quot; lists the compiler settings. </LI><LI>Run the build.bat file. </LI><LI>Load webs.exe and your web pages on to your CE device
+  using your normal procedures to transfer files  to the device. The default location for the
+  web pages is in the \web directory. This can be modified in main.c. Using precompiled and
+  linked pages (see WEBS_PAGE_ROM and WebCompiler below) makes it easy to load the
+  application and its pages to the system in one step. </LI></OL></BLOCKQUOTE><BLOCKQUOTE><P>Using Microsoft's C++  Visual Studio:  </P></BLOCKQUOTE><OL><OL><LI>In Microsoft Visual C++, Visual Studio, open the workspace webs.dsw in
+  the CE subdirectory.</LI><LI>Set the include and library paths properly for your device. <BR>Be sure
+  the symbolic constants CE, UEMF, WEBS, and UNICODE are defined. </LI><LI>Use the build facilities of
+  Visual Studio to generate webs.exe. </LI><LI>Load webs.exe and your web pages on to your CE device
+  using your normal procedures to transfer files  to the device. The default location for the
+  web pages is in the \web directory. This can be modified in main.c. Using precompiled and
+  linked pages (see WEBS_PAGE_ROM and WebCompiler below) make it easy to load the
+  application and its pages to the system in one step. </LI></OL></OL><BLOCKQUOTE><P><B>Note:</B> By default,  user management and digest access are not added when WebServer compiles. If these features are desired, set the proper flags in the build.bat file.</P></BLOCKQUOTE><H3>UNIX (SCO OpenServer V)</H3><PRE>          CD SCOV5
+          make
+          su            ;# As super user
+          webs</PRE><H3>LINUX</H3><PRE>          CD LINUX
+          make
+          su            ;# As super user
+          ./webs</PRE><H3>LYNX</H3><PRE>          CD LYNX
+          make
+          su            ;# As super user
+          ./webs</PRE><H3>eCos</H3><PRE>          CD ECOS          
+          make
+          su            ;# As super user
+          webs</PRE><H3>QNX</H3><PRE>          CD QNX4
+          make
+          su            ;# As super user
+          webs
+</PRE><H2>SSL Installation</H2><P>For SSL  installation information, refer to <A HREF="RSA.htm">Incorporation RSA Security into WebServer 2.1</A> in the Getting Started Guide. </P><OL></OL><H2>User Management</H2><P>The user management and access limit configuration is stored in a file called umconfig.txt. This file is created when the user management configuration is saved by exercising the &quot;SaveUserManagement&quot; GoForm through the savecfg.asp web page.  The umconfig.txt file is not provided in this distribution.</P><P>In order to provide the out-of the-box user management forms in a web-site, the following files may be included:</P><TABLE WIDTH="96%" BORDER="1"><TR><TD><B>File</B></TD><TD><B>Calls GoForm</B></TD><TD><B>Description</B></TD></TR><TR><TD>adduser.asp</TD><TD>AddUser</TD><TD>Add a user</TD></TR><TR><TD>deluser.asp</TD><TD>DeleteUser</TD><TD>Delete a user</TD></TR><TR><TD>addgroup.asp</TD><TD>AddGroup</TD><TD>Add a user group</TD></TR><TR><TD>delgroup.asp</TD><TD>DeleteGroup</TD><TD>Delete a user group</TD></TR><TR><TD>addlimit.asp</TD><TD>AddAccessLimit</TD><TD>Add a URL Access Limit</TD></TR><TR><TD>dellimit.asp</TD><TD>DeleteAccessLimit</TD><TD>Delete a URL Access Limit			
+
+savecfg</TD></TR><TR><TD>savecfg.asp</TD><TD>SaveUserManagement</TD><TD>Save the user configuration to the umconfig.txt file.</TD></TR><TR><TD>loadcfg.asp</TD><TD>LoadUserManagement</TD><TD>Load the user configuration from the umconfig.txt file.</TD></TR></TABLE><P>The GoForms described above can be found in the source file, &quot;umui.c&quot;.  This source file is compiled into the webs executable by default.</P><H2>Standard CGI Implementation</H2><P>The cgitest.c file is a sample CGI program that creates and HTML page that displays the CGI environment variables. This source-code module is stand-alone, meaning that no other source files are required to generate an executable (with the exception of &quot;stdio.h&quot;).</P><P>&nbsp;</P></TD></TR><TR BORDERCOLOR="#FFFFFF"><TD>&nbsp;</TD></TR></TABLE>
+
+</body>
+</html>

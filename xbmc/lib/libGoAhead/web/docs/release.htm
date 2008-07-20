@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML><HEAD><TITLE>GoAhead WebServer 2.11 Release Notes</TITLE>
+<style>
+<!--
+BODY {FONT-FAMILY: Arial, Helvetica, sans-serif; FONT-SIZE: 9pt}
+P {COLOR: #333333; FONT-FAMILY: Arial, Helvetica, sans-serif; FONT-SIZE: 9pt; MARGIN-LEFT: 10px}
+H1 {COLOR: #0066cc; FONT-FAMILY: Arial, Helvetica, sans-serif; FONT-SIZE: 14pt; FONT-WEIGHT: bold; MARGIN-LEFT: 10px}
+H2 {COLOR: #0066cc; FONT-FAMILY: Arial, Helvetica, sans-serif; FONT-SIZE: 12pt; FONT-WEIGHT: bold; MARGIN-LEFT: 10px}
+H3 {COLOR: #0066cc; FONT-FAMILY: Arial, Helvetica, sans-serif; FONT-SIZE: 10pt; FONT-WEIGHT: bold; MARGIN-LEFT: 10px}
+PRE {BACKGROUND-COLOR: #eeeeee; COLOR: #0a0a8c; FONT-FAMILY: "Courier New", Courier, mono; FONT-SIZE: 9pt; LINE-HEIGHT: normal; MARGIN-LEFT: 10px; PADDING-BOTTOM: 5px; PADDING-LEFT: 20px; PADDING-RIGHT: 20px; PADDING-TOP: 5px}
+TD {COLOR: #333333; FONT-FAMILY: Arial, Helvetica, sans-serif; FONT-SIZE: 9pt}
+TABLE {MARGIN-LEFT: 10px}
+OL {COLOR: #333333; FONT-FAMILY: Arial, Helvetica, sans-serif; FONT-SIZE: 9pt; MARGIN-LEFT: 40px}
+UL {COLOR: #333333; FONT-FAMILY: Arial, Helvetica, sans-serif; FONT-SIZE: 9pt; MARGIN-LEFT: 30px}
+H4 {COLOR: #0066cc; FONT-FAMILY: Arial, Helvetica, sans-serif; FONT-SIZE: 9pt; FONT-WEIGHT: bold; MARGIN-LEFT: 10px}
+-->
+</style>
+</HEAD>
+<BODY bgColor=#ffffff>
+ 
+<H1> GoAhead® WebServer 2.1.1-HP Release Notes </H1>
+      
+<P><B>Release Date:</B> 03/02/2001<BR>
+  <B>File: </B>release.htm<BR>
+  <B>Part Number:</B> 1-53-03</P>
+      <H2>1. What's New in This Release?<A name=what></A> </H2>
+      
+<BLOCKQUOTE> 
+  <UL>
+    <LI><a href="#bugs">Bug Fixes </a></LI>
+    <LI><A HREF="#novell">Support for Novell Netware </A> </LI>
+  </UL>
+</BLOCKQUOTE>
+<h2><font face="Arial, Helvetica, sans-serif">2. Bug Fixes for Version 2.1.1<a 
+name=bugs></a></font> </h2>
+<BLOCKQUOTE> 
+  <p><b> Intermittent Access Error for CGI Scripts (BUG01937)</b></p>
+  <blockquote> 
+    <p><b>Summary</b>:<br>
+      Pages were occasionally replaced with the message, &quot;Access Error: Data 
+      follows when trying to obtain CGI generated no output&quot;. </p>
+    <p><b>Fix</b>:<br>
+      On multiple CPU systems, it is possible for a CGI application to exit before 
+      its output is flushed to disk. The change for this release locates the code 
+      that collects the output from the CGI application in a separate routine. 
+      In addition to calling that routine from within the CGI application processing 
+      loop, it is also called in a brief loop after the CGI application has exited. 
+      This extra loop runs for only up to one second while the collected output 
+      remains empty. If, after 1 second, the output remains empty, the original 
+      course of action is followed (&quot;Access Error&quot; is reported).</p>
+  </blockquote>
+  <p><br>
+    <b>CPU Utilization Hangs at 100% on a Socket Disconnect (BUG01865)</b></p>
+  <blockquote> 
+    <p><b>Summary:</b><br>
+      This error occurs whenever a user terminates a request before the server 
+      has had ample time to service it. This can be simulated by quickly hitting 
+      the refresh button on the browser twice in a row, causing the first request 
+      to be terminated. The server then enters into a tight loop that utilizes 
+      all of its time.</p>
+    <p><b>Fix:</b><br>
+      Always close the socket prior to a disconnect.</p>
+  </blockquote>
+  <p><br>
+    <b>Security Features can be Bypassed by Adding an Extra Slash in the URL (BUG01518)</b></p>
+  <blockquote> 
+    <p><b>Summary</b>:<br>
+      By adding an extra slash in a URL, password prompting is bypassed, allowing 
+      unrestricted access to secured pages. </p>
+    <p><b>Fix</b>:<br>
+      Remove multiple adjacent occurrences of slashes in the URL before passing 
+      it to the security handler.</p>
+  </blockquote>
+  <p><br>
+    <b>Call to websSetVar causes a crash (BUG01938)</b></p>
+  <blockquote> 
+    <p><b>Summary</b>:<br>
+      Whenever a request is not completed while being processed by websGetInput(), 
+      a call to websDone is made, followed by an attempt to process the partial 
+      request data.</p>
+    <p><b>Fix</b>:<br>
+      Return immediately after closing the socket.</p>
+  </blockquote>
+  <p><br>
+    <b>Remove stray semicolon in emfdb.c (BUG01820)</b></p>
+  <blockquote>
+    <p><b>Summary and Fix</b>:<br>
+      A stray semicolon was removed from this file.</p>
+  </blockquote>
+</BLOCKQUOTE>
+<h2><font face="Arial, Helvetica, sans-serif">3. Novell Netware Support<a 
+name=novell></a></font> </h2>
+<blockquote> 
+  <p> With the addition of Novell Netware in this 2.11 release, WebServer now 
+    supports these platforms:</p>
+  <UL>
+    <LI>LINUX</LI>
+    <LI> LynxOS</LI>
+    <LI><b><font face="Arial, Helvetica, sans-serif">Novell Netware </font>4.2, 
+      5.1</b></LI>
+    <LI>UNIX - SCO OpenServer 3.2V5.0.0</LI>
+    <LI>VxWorks 5.3.1</LI>
+    <LI>Windows 2000</LI>
+    <LI>Windows 98</LI>
+    <LI>Windows 95 </LI>
+    <LI>Windows NT</LI>
+    <LI>Windows CE</LI>
+  </UL>
+  <h3>To make a Novell Netware target file (webs.nlm):<font face="Arial"><strong> 
+    </strong></font></h3>
+</blockquote>
+<blockquote>
+  <PRE>
+cd NW
+wmake webs.nlm
+load &lt;path&gt; \webs.nlm
+webs</PRE>
+  <p><b>Note:</b> This makefile lacks a valid default rule. In addition, an environment 
+    variable (QMKVER) controls the amount of debug information that is compiled 
+    and linked into the nlm file. If this variable is set to &quot;P&quot;, it 
+    produces a production version. All other settings (or the omission of the 
+    variable) results in a debug version.</p>
+  <p> For other platforms supported by WebServer, please refer to your WebServer 
+    2.1 documentation for appropriate instructions. </p>
+  </blockquote>
+<h2>4. Copyright Information </h2>
+<blockquote> 
+  <H3>Trademarks </H3>
+  <p>GoAhead and GoAhead WebServer are registered trademarks of GoAhead Software. 
+    All other brand or product names are the trademarks or registered trademarks 
+    of their respective holders. </p>
+  <H3>Copyright </H3>
+  <p>Copyright © 2000, 2001 GoAhead Software, Inc. All rights reserved. </p>
+  <p>Product and technical information in this document is subject to change without 
+    notice and does not represent a commitment on the part of GoAhead Software, 
+    Inc. </p>
+  <H3>Copy Restrictions </H3>
+  <p>The software described in this document may be used and copied only in accordance 
+    with the terms of the accompanying license agreement. </p>
+  <p>GoAhead Software, Inc. <BR>
+    10900 NE 8th Street<BR>
+    Suite 750 <BR>
+    Bellevue, WA 98004 <BR>
+    +1 ( 425) 453-1900 <BR>
+    www.goahead.com <BR>
+    info@goahead.com </p>
+  <p>1-53-03</p>
+</blockquote>
+<P>&nbsp;</P><P>&nbsp;</P><P>&nbsp;</P><P>&nbsp;</P><P>&nbsp;</P><P>&nbsp;</P><P>&nbsp;</P><P>&nbsp;</P><P>&nbsp; </P> 
+</BODY></HTML>

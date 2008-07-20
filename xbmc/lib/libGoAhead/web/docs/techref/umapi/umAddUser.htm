@@ -1,0 +1,28 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>umAddUser -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<TABLE WIDTH="550" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD>
+
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%">umAddUser</TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR> <H2><B>Synopsis</B></H2><P>	Add a user to the user database.</P><H2><B>Prototype</B></H2><PRE>
+ #include &quot;um.h&quot; 
+
+
+ int umAddUser (char_t * user,
+     char_t * password,
+     char_t * group,
+     int prot,
+     int enable)</PRE><H2><B>Parameters</B></H2><p><TABLE WIDTH="75%" BORDER="0"><TR><TD HEIGHT="16" WIDTH="20%">user</TD><TD HEIGHT="16" WIDTH="76%">user ID</TD></TR><TR><TD WIDTH="20%">password </TD><TD WIDTH="76%">password</TD></TR><TR><TD WIDTH="20%">group</TD><TD WIDTH="76%">user group</TD></TR><TR><TD WIDTH="20%">prot </TD><TD WIDTH="76%">delete protection; TRUE if protected</TD></TR><TR><TD WIDTH="20%">disabled</TD><TD WIDTH="76%">TRUE if user is disabled; FALSE if user is enabled</TD></TR></TABLE><H2><B>Description</B></H2><P>	User is  added. The password, which is passed to this function in clear text,  is XOR  encrypted before persisting.</P><H2><B>Return Value</B></H2><P>	0 if successful or  -1 on error.</P><H2><B>Example</B></H2><PRE>nCheck = AddUser(T(&quot;misterripley&quot;), 
+     T(&quot;talented&quot;), 
+     T(&quot;admin&quot;),  
+     FALSE,  TRUE);
+	</PRE><H2><B>See Als</B>o</H2><P>	<A HREF="umDeleteUser.htm">umDeleteUser</A>()</P><H2>&nbsp;</H2><P>&nbsp;</P></TD></TR><TR BORDERCOLOR="#FFFFFF"><TD>&nbsp;</TD></TR></TABLE>
+</body>
+</html>

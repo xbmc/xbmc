@@ -1,0 +1,18 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>dbWriteStr -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%">dbWriteStr</TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR> <H2><B>Synopsis</B></H2><P>Updates string values to the designated cell.</P><H2><B>Prototype</B></H2><PRE> #include &quot;emfdb.h&quot;
+
+ int dbWriteStr(int did, char_t* table, char_t* column, 
+     int row, char_t* s); </PRE><H2><B>Parameters</B></H2><p><TABLE WIDTH="67%" BORDER="0"><TR><TD>did</TD><TD>database id returned when the database was created</TD></TR><TR><TD>table</TD><TD>table name in the database</TD></TR><TR><TD>column</TD><TD>column name in the table</TD></TR><TR><TD>row</TD><TD>row number in the column</TD></TR><TR><TD>s</TD><TD>string value to be written to the cell</TD></TR></TABLE><H2><B>Description</B></H2><P>Write a string to the database.</P><P>Note: The database will automatically insert a backslash in front of any double quote character written to a database cell. This may result in the value returned by dbRead to be different from the value written with dbWrite. </P><H2><B>Return Value</B></H2><P>dbWriteStr returns 0 on successful write, or  -1 if otherwise. </P><H2><B>Example</B></H2><PRE>dbWriteStr(dbid, TABLE, T(&quot;description&quot;), row, T(&quot;Foosball Master&quot;)) </PRE><H1><B>See Also</B></H1><P><A HREF="dbWriteStr.htm">dbWriteStr</A>, <A HREF="dbWriteInt.htm">dbWriteInt</A> </P><P>&nbsp;</P></td></tr></table>
+</body>
+</html>
