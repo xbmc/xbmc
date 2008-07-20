@@ -4,7 +4,8 @@ ARCH=@ARCH@
 LIB=../../../system/ImageLib-$(ARCH).so
 
 $(LIB): ${LIBS}
-	gcc -shared -o $(LIB) -lpng -ljasper -ljpeg ${LIBS} \
+	gcc -shared -o $(LIB) -Wl,--whole-archive -lpng -ljasper -ljpeg \
+		${LIBS} -Wl,--no-whole-archive \
 		`cat ../../cores/DllLoader/exports/wrapper.def` \
 		../../cores/DllLoader/exports/wrapper.o
 
