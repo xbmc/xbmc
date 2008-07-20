@@ -32,18 +32,16 @@ Source/MACLib/Old/AntiPredictorExtraHigh.o \
 Source/MACLib/Old/AntiPredictorHigh.o \
 Source/MACLib/Old/AntiPredictorFast.o \
 Source/MACLib/Old/UnBitArrayOld.o \
-Source/MACLib/Old/AntiPredictorNormal.o
+Source/MACLib/Old/AntiPredictorNormal.o \
+Source/MACDll/MACDll.o
 
-CFLAGS=-ISource/Shared -ISource/MACLib -ISource/Console -s -O3 -pedantic -D__GNUC_IA32__ -DBUILD_CROSS_PLATFORM
+CFLAGS +=-ISource/Shared -ISource/MACLib -ISource/Console -s -O3 -pedantic -D__GNUC_IA32__ -DBUILD_CROSS_PLATFORM -D_LINUX
 
-MACDll-i486-linux.so: $(OBJS)
-	gcc -fPIC -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o && cp $@ ../../../../system/players/paplayer
+LIB=../../../../system/players/paplayer/MACDll-i486-linux.so
 
-clean:
-	$(RM) $(OBJS) *.so
+include ../../../../Makefile.include
 
-%o : %c
-	gcc $(CFLAGS) -O2 -fPIC -c $< -o $@
+lib: $(LIB)
 
-%o : %cpp
-	g++ $(CFLAGS) -O2 -fPIC -c $< -o $@
+$(LIB): $(OBJS)
+	gcc -fPIC -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o

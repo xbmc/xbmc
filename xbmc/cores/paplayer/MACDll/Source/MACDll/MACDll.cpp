@@ -1,6 +1,6 @@
 #include "MACDll.h"
 #include "resource.h"
-#ifndef __linux__
+#ifndef _LINUX
 #include "WinFileIO.h"
 #include "APEInfoDialog.h"
 #include "WAVInfoDialog.h"
@@ -20,7 +20,7 @@ int __stdcall GetVersionNumber()
 	return MAC_VERSION_NUMBER;
 }
 
-#ifndef __linux__
+#ifndef _LINUX 
 int __stdcall GetInterfaceCompatibility(int nVersion, BOOL bDisplayWarningsOnFailure, HWND hwndParent)
 {
 	int nRetVal = 0;

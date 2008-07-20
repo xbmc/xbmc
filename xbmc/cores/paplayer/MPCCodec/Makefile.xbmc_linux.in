@@ -1,11 +1,11 @@
-#
-# To build, first do ./configure and then make. The create the XBMC so by calling this makefile.
-#
-libmpcdec-@ARCH@.so: src/xbmc_interface.o
-	$(CC) -shared -o $@ src/.libs/*.o src/xbmc_interface.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o && cp $@ ../../../../system/players/paplayer/
+OBJS = src/xbmc_interface.o
+CFLAGS += -Iinclude -D_LINUX
 
-src/xbmc_interface.o: src/xbmc_interface.cpp
-	$(CC) -c -D_LINUX -Iinclude -O2 -fPIC -o $@ $<
+LIB=../../../../system/players/paplayer/libmpcdev-@ARCH@.so
 
-clean:
-	$(RM) *.so
+include ../../../../Makefile.include
+
+lib: $(LIB)
+
+$(LIB): $(OBJS)
+	$(CC) -shared -o $@ src/.libs/*.o src/xbmc_interface.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
