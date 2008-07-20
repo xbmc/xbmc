@@ -46,6 +46,8 @@ packages from the Terminal window:
 	$ sudo port install libsdl_mixer mysql5-devel pcre samba3 fontconfig libmad portaudio bzip2 jam
 	$ sudo port install boost
 
+You will need to use samba3 version 3.0.28a so follow the below instructions to setup MacPorts.
+
 If you're having problems linking due to a versioning of a library, see:
 http://journal.bitshaker.com/articles/2007/10/20/install-old-versions-of-ports-using-macports/
 
