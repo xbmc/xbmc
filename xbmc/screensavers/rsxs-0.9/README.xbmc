@@ -1,0 +1,10 @@
+Run configure:
+
+1. compile the stuff
+sudo apt-get install libxt-dev libxmu-dev
+./configure --without-xscreensaver --disable-sound
+make
+
+2. create the shared library for each screensaver. for example to create plasma:
+cd src/plasma
+make -f Makefile.xbmc

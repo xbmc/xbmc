@@ -13001,7 +13001,13 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile xbmc/cores/dvdplayer/Codecs/Makefile xbmc/lib/cximage-6.0/Makefile.linux xbmc/cores/paplayer/MIDCodec/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/DCACodec/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/Makefile.xbmc_linux xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libass/Makefile.xbmc_linux"
+ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile xbmc/cores/dvdplayer/Codecs/Makefile xbmc/lib/cximage-6.0/Makefile.linux xbmc/cores/paplayer/MIDCodec/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/DCACodec/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/Makefile.xbmc_linux xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libass/Makefile.xbmc_linux"
+
+
+
+
+
+
 
 
 
@@ -13611,6 +13617,7 @@ do
     "xbmc/cores/dvdplayer/Codecs/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/Codecs/Makefile" ;;
     "xbmc/lib/cximage-6.0/Makefile.linux") CONFIG_FILES="$CONFIG_FILES xbmc/lib/cximage-6.0/Makefile.linux" ;;
     "xbmc/cores/paplayer/MIDCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/MIDCodec/Makefile" ;;
+    "xbmc/cores/paplayer/AACCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/AACCodec/Makefile" ;;
     "xbmc/cores/paplayer/AC3Codec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/AC3Codec/Makefile" ;;
     "xbmc/cores/paplayer/ADPCMCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/ADPCMCodec/Makefile" ;;
     "xbmc/cores/paplayer/DCACodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/DCACodec/Makefile" ;;
@@ -14253,7 +14260,7 @@ fi;
 
 if [ -d xbmc/cores/paplayer/vorbisfile/libvorbis ]; then
   pushd xbmc/cores/paplayer/vorbisfile/libvorbis
-  ./configure && popd
+  ./configure
   if [ $? -ne 0 ]; then
     popd
     { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/libvorbis failed to configure" >&5
@@ -14463,6 +14470,42 @@ echo "$as_me: error: Submodule xbmc/lib/libass failed to configure" >&2;}
 else
   { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libass doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/lib/libass doesn't exist" >&2;}
+   { (exit 1); exit 1; }; }
+fi;
+
+
+if [ -d xbmc/visualizations/XBMCProjectM ]; then
+  pushd xbmc/visualizations/XBMCProjectM
+  cd libprojectM; CC="" CXX="" cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .;
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/XBMCProjectM failed to configure" >&5
+echo "$as_me: error: Submodule xbmc/visualizations/XBMCProjectM failed to configure" >&2;}
+   { (exit 1); exit 1; }; }
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/XBMCProjectM doesn't exist" >&5
+echo "$as_me: error: Submodule xbmc/visualizations/XBMCProjectM doesn't exist" >&2;}
+   { (exit 1); exit 1; }; }
+fi;
+
+
+if [ -d xbmc/screensavers/rsxs-0.9/ ]; then
+  pushd xbmc/screensavers/rsxs-0.9/
+  ./configure --without-xscreensaver --disable-sound --disable-cyclone --disable-euphoria --disable-fieldlines --disable-flocks --disable-flux --disable-helios --disable-hyperspace --disable-lattice --disable-skyrocket
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/screensavers/rsxs-0.9/ failed to configure" >&5
+echo "$as_me: error: Submodule xbmc/screensavers/rsxs-0.9/ failed to configure" >&2;}
+   { (exit 1); exit 1; }; }
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/screensavers/rsxs-0.9/ doesn't exist" >&5
+echo "$as_me: error: Submodule xbmc/screensavers/rsxs-0.9/ doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
 fi;
 

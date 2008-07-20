@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<screensaver name="hyperspace" _label="Really Slick Hyperspace">
+	<command arg="-root" />
+
+	<number id="stars"
+		type="spinbutton"
+		arg="-stars %"
+		_label="Stars"
+		low="0"
+		high="10000"
+		default="1000"
+	/>
+	<number id="starsize"
+		type="slider"
+		arg="-starsize %"
+		_label="Star size"
+		_low-label="Tiny"
+		_high-label="Huge"
+		low="1.0"
+		high="100.0"
+		default="10.0"
+	/>
+	<number id="speed"
+		type="slider"
+		arg="-speed %"
+		_label="Speed"
+		_low-label="Slow"
+		_high-label="Fast"
+		low="1.0"
+		high="100.0"
+		default="10.0"
+	/>
+	<number id="resolution"
+		type="slider"
+		arg="-resolution %"
+		_label="Resolution"
+		_low-label="Low"
+		_high-label="High"
+		low="4"
+		high="20"
+		default="10"
+	/>
+	<number id="depth"
+		type="slider"
+		arg="-depth %"
+		_low-label="Shallow"
+		_high-label="Deep"
+		low="1"
+		high="10"
+		default="5"
+	/>
+	<number id="fov"
+		type="slider"
+		arg="-fov %"
+		_label="Camera"
+		_low-label="Zoomed"
+		_high-label="Wide-angle"
+		low="10.0"
+		high="150.0"
+		default="90.0"
+	/>
+	<boolean id="shaders"
+		_label="GL shaders"
+		arg-unset="-no-shaders"
+	/>
+
+	<_description>
+This is a real number cruncher of a screensaver. Computers are getting much
+more powerful these days, and my old savers don't bring them to their knees
+like they use to. This one does. Of course, you can still turn the settings way
+down if you have a pathetic, old computer.
+	-- Terry Welsh, Really Slick Screensavers (http://www.reallyslick.com/)
+
+This version by Michael Chapman &lt;foonly@users.sourceforge.net&gt;.
+	</_description>
+</screensaver>
