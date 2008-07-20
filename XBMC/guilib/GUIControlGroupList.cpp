@@ -197,53 +197,72 @@ void CGUIControlGroupList::ValidateOffset()
   if (m_offset < 0) m_offset = 0;
 }
 
-void CGUIControlGroupList::AddControl(CGUIControl *control)
+void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*/)
 {
   // NOTE: We override control navigation here, but we don't override the <onleft> etc. builtins
   //       if specified.
+  if (position < 0 || position > (int)m_children.size()) // add at the end
+    position = (int)m_children.size();
+
   if (control)
   { // set the navigation of items so that they form a list
+    DWORD beforeID = (m_orientation == VERTICAL) ? GetControlIdUp() : GetControlIdLeft();
+    DWORD afterID = (m_orientation == VERTICAL) ? GetControlIdDown() : GetControlIdRight();
+    if (m_children.size())
+    {
+      // we're inserting at the given position, so grab the items above and below and alter
+      // their navigation accordingly
+      CGUIControl *before = NULL;
+      CGUIControl *after = NULL;
+      if (position == 0)
+      { // inserting at the beginning
+        after = m_children[0];
+        if (afterID == GetID()) // we're wrapping around bottom->top, so we have to update the last item
+          before = m_children[m_children.size() - 1];
+        if (beforeID == GetID())   // we're wrapping around top->bottom
+          beforeID = m_children[m_children.size() - 1]->GetID();
+        afterID = after->GetID();
+      }
+      else if (position == (int)m_children.size())
+      { // inserting at the end
+        before = m_children[m_children.size() - 1];
+        if (beforeID == GetID())   // we're wrapping around top->bottom, so we have to update the first item
+          after = m_children[0];
+        if (afterID == GetID()) // we're wrapping around bottom->top
+          afterID = m_children[0]->GetID();
+        beforeID = before->GetID();
+      }
+      else
+      { // inserting somewhere in the middle
+        before = m_children[position - 1];
+        after = m_children[position];
+        beforeID = before->GetID();
+        afterID = after->GetID();
+      }
+      if (m_orientation == VERTICAL)
+      {
+        if (before) // update the DOWN action to point to us
+          before->SetNavigation(before->GetControlIdUp(), control->GetID(), GetControlIdLeft(), GetControlIdRight());
+        if (after) // update the UP action to point to us
+          after->SetNavigation(control->GetID(), after->GetControlIdDown(), GetControlIdLeft(), GetControlIdRight());
+      }
+      else
+      {
+        if (before) // update the RIGHT action to point to us
+          before->SetNavigation(GetControlIdUp(), GetControlIdDown(), before->GetControlIdLeft(), control->GetID());
+        if (after) // update the LEFT action to point to us
+          after->SetNavigation(GetControlIdUp(), GetControlIdDown(), control->GetID(), after->GetControlIdRight());
+      }
+    }
+    // now the control's nav
     if (m_orientation == VERTICAL)
-    {
-      DWORD upID = GetControlIdUp();
-      DWORD downID = GetControlIdDown();
-      if (m_children.size())
-      {
-        CGUIControl *top = m_children[0];
-        if (downID == GetID())
-          downID = top->GetID();
-        if (upID == GetID())
-          top->SetNavigation(control->GetID(), top->GetControlIdDown(), GetControlIdLeft(), GetControlIdRight());
-        CGUIControl *prev = m_children[m_children.size() - 1];
-        upID = prev->GetID();
-        prev->SetNavigation(prev->GetControlIdUp(), control->GetID(), GetControlIdLeft(), GetControlIdRight());
-      }
-      control->SetNavigation(upID, downID, GetControlIdLeft(), GetControlIdRight());
-    }
+      control->SetNavigation(beforeID, afterID, GetControlIdLeft(), GetControlIdRight());
     else
-    {
+      control->SetNavigation(GetControlIdUp(), GetControlIdDown(), beforeID, afterID);
 
-      DWORD leftID = GetControlIdLeft();
-      DWORD rightID = GetControlIdRight();
-      if (m_children.size())
-      {
-        CGUIControl *left = m_children[0];
-        if (rightID == GetID())
-          rightID = left->GetID();
-        if (leftID == GetID())
-          left->SetNavigation(GetControlIdUp(), GetControlIdDown(), control->GetID(), left->GetControlIdRight());
-        CGUIControl *prev = m_children[m_children.size() - 1];
-        leftID = prev->GetID();
-        prev->SetNavigation(GetControlIdUp(), GetControlIdDown(), prev->GetControlIdLeft(), control->GetID());
-      }
-      control->SetNavigation(GetControlIdUp(), GetControlIdDown(), leftID, rightID);
-    }
-    // old versions of the grouplist used to set the positions of all controls
-    // directly.  The new version (with <usecontrolcoords>true</usecontrolcoords>)
-    // allows offsets to be set via the posx, posy coordinates.
     if (!m_useControlPositions)
       control->SetPosition(0,0);
-    CGUIControlGroup::AddControl(control);
+    CGUIControlGroup::AddControl(control, position);
   }
 }
 

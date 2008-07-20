@@ -907,35 +907,32 @@ void CGUIWindow::Add(CGUIControl* pControl)
 void CGUIWindow::Insert(CGUIControl *control, const CGUIControl *insertPoint)
 {
   // get the insertion point
-  ivecControls i = m_vecControls.begin();
-  while (i != m_vecControls.end())
+  for (unsigned int i = 0; i < m_vecControls.size(); i++)
   {
-    if (*i == insertPoint)
-      break;
-    i++;
+    CGUIControl *child = m_vecControls[i];
+    if (child->IsGroup() && ((CGUIControlGroup *)child)->InsertControl(control, insertPoint))
+      return;
+    else if (child == insertPoint)
+    {
+      m_vecControls.insert(m_vecControls.begin() + i, control);
+      return;
+    }
   }
-  m_vecControls.insert(i, control);
 }
 
 // Note: This routine doesn't delete the control.  It just removes it from the control list
-bool CGUIWindow::Remove(DWORD dwId)
+bool CGUIWindow::Remove(const CGUIControl *control)
 {
-  ivecControls i = m_vecControls.begin();
-  while (i != m_vecControls.end())
+  for (ivecControls i = m_vecControls.begin(); i != m_vecControls.end(); i++)
   {
     CGUIControl* pControl = *i;
-    if (pControl->IsGroup())
-    {
-      CGUIControlGroup *group = (CGUIControlGroup *)pControl;
-      if (group->RemoveControl(dwId))
-        return true;
-    }
-    if (pControl->GetID() == dwId)
+    if (pControl->IsGroup() && ((CGUIControlGroup *)pControl)->RemoveControl(control))
+      return true;
+    if (pControl == control)
     {
       m_vecControls.erase(i);
       return true;
     }
-    ++i;
   }
   return false;
 }

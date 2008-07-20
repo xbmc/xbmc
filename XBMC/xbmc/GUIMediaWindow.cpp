@@ -264,6 +264,11 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       else if (message.GetParam1()==GUI_MSG_UPDATE && IsActive())
       {
         int iItem = m_viewControl.GetSelectedItem();
+        if (message.GetStringParam().size())
+        {
+          m_vecItems->m_strPath = message.GetStringParam();
+          SetHistoryForPath(m_vecItems->m_strPath);
+        }
         Update(m_vecItems->m_strPath);
         m_viewControl.SetSelectedItem(iItem);        
       }
