@@ -277,7 +277,9 @@ AM_CXXFLAGS = -Wall -funroll-loops
 AM_ETAGSFLAGS = --extra=fq
 rs_plasma_SOURCES = $(COMMON) plasma.cc plasma.hh
 rs_plasma_LDADD = $(LIBMISC) $(X_LIBS) $(OPENGL_LIBS)
-all: all-am
+all: all-am plasma.o
+	g++ -shared -o Plasma.xbs ../common.o plasma.o ../../lib/libmisc.a -lXmu
+	cp Plasma.xbs ../../../../../screensavers/
 
 .SUFFIXES:
 .SUFFIXES: .cc .o .obj

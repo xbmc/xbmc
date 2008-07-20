@@ -495,7 +495,7 @@
 
 /* If using the C implementation of alloca, define if you know the
    direction of stack growth for your system; otherwise it will be
-   automatically deduced at run-time.
+   automatically deduced at runtime.
 	STACK_DIRECTION > 0 => grows toward higher addresses
 	STACK_DIRECTION < 0 => grows toward lower addresses
 	STACK_DIRECTION = 0 => direction of growth unknown */
@@ -548,6 +548,9 @@
 #ifndef _POSIX_PTHREAD_SEMANTICS
 # undef _POSIX_PTHREAD_SEMANTICS
 #endif
+#ifndef _TANDEM_SOURCE
+# undef _TANDEM_SOURCE
+#endif
 
 /* Define to rpl_ if the getopt replacement functions and variables should be
    used. */
@@ -587,7 +590,7 @@
 /* Define to empty if the C compiler doesn't support this keyword. */
 #undef signed
 
-/* Define to `unsigned' if <sys/types.h> does not define. */
+/* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef size_t
 
 /* Define to rpl_strcasecmp always. */
