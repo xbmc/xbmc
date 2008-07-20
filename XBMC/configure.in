@@ -337,6 +337,7 @@ AC_CONFIG_FILES([Makefile Makefile.include]
                 [xbmc/lib/libass/Makefile.xbmc_linux]
 		[xbmc/lib/libhdhomerun/Makefile]
 		[xbmc/lib/libGoAhead/Makefile]
+		[xbmc/lib/libshout/Makefile]
 )
 
 AC_DEFUN([XB_CONFIG_MODULE],[
