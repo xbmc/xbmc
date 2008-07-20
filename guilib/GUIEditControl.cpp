@@ -23,6 +23,7 @@
 #include "GUIEditControl.h"
 #include "utils/CharsetConverter.h"
 #include "GUIDialogKeyboard.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 
@@ -36,6 +37,7 @@ CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId, float posX
   m_textWidth = width;
   m_cursorPos = 0;
   m_cursorBlink = 0;
+  m_inputHeading = 0;
   SetLabel(text);
 }
 
@@ -51,6 +53,16 @@ CGUIEditControl::CGUIEditControl(const CGUIButtonControl &button)
 
 CGUIEditControl::~CGUIEditControl(void)
 {
+}
+
+bool CGUIEditControl::OnMessage(CGUIMessage &message)
+{
+  if (message.GetMessage() == GUI_MSG_LABEL_ADD)
+  {
+    SetInputHeading((int)message.GetParam1());
+    return true;
+  }
+  return CGUIButtonControl::OnMessage(message);
 }
 
 bool CGUIEditControl::OnAction(const CAction &action)
@@ -116,11 +128,17 @@ void CGUIEditControl::OnClick()
   // we received a click - it's not from the keyboard, so pop up the virtual keyboard
   CStdString utf8;
   g_charsetConverter.wToUTF8(m_text, utf8);
-  if (CGUIDialogKeyboard::ShowAndGetInput(utf8, true))
+  CStdString heading = g_localizeStrings.Get(m_inputHeading ? m_inputHeading : 16028);
+  if (CGUIDialogKeyboard::ShowAndGetInput(utf8, heading, true))
   {
     g_charsetConverter.utf8ToW(utf8, m_text);
     OnTextChanged();
   }
+}
+
+void CGUIEditControl::SetInputHeading(int heading)
+{
+  m_inputHeading = heading;
 }
 
 void CGUIEditControl::RecalcLabelPosition()
@@ -220,6 +238,7 @@ void CGUIEditControl::OnTextChanged()
 void CGUIEditControl::SetLabel(const std::string &text)
 {
   g_charsetConverter.utf8ToW(text, m_text);
+  m_cursorPos = m_text.size();
 }
 
 CStdString CGUIEditControl::GetDescription() const
