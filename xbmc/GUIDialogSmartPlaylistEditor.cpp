@@ -344,6 +344,10 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
     }
   }
 #endif
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_NAME, 16012);
+    OnMessage(msg);
+  }
   // setup the match spinner
   {
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_MATCH, 0);
