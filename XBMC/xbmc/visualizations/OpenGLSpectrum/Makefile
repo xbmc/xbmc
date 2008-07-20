@@ -7,6 +7,7 @@ DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
 
 include ../../../Makefile.include
 
+lib: $(OBJS) vis
+
 vis:
-	$(MAKE)
 	$(CXX) -fpic -shared -g -o $(LIB) $(OBJS) && cp $(LIB) ../../../visualisations
