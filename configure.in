@@ -373,7 +373,7 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/flac-1.2.1], [
     CC="$CC" \
     CXX="$CXX"
 ])
-XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/libvorbis], [./configure && popd])
+XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/libvorbis], [./configure])
 XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/ogg], [./configure])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
   ./configure --extra-cflags="-D_XBOX" \
@@ -420,6 +420,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmad], [./configure])
 XB_CONFIG_MODULE([xbmc/lib/cximage-6.0/zlib], [CFLAGS=-fPIC ./configure])
 XB_CONFIG_MODULE([xbmc/lib/libass], [CFLAGS=-fPIC ./configure])
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM],[cd libprojectM; CC="" CXX="" cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .;])
+XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [./configure --without-xscreensaver --disable-sound --disable-cyclone --disable-euphoria --disable-fieldlines --disable-flocks --disable-flux --disable-helios --disable-hyperspace --disable-lattice --disable-skyrocket])
 
 AC_OUTPUT
 
