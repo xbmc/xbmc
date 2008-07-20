@@ -22,7 +22,7 @@
  */
 
 #include "DynamicDll.h"
-#include "lib/libid3tag/metadata.h"
+#include "lib/libid3tag/libid3tag/metadata.h"
 
 class DllLibID3TagInterface
 {
