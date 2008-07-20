@@ -1,30 +1,15 @@
-CC=gcc
-OBJS=alac.o demux.o stream.o
-CFLAGS=-D_LINUX -fPIC -Ialac_decoder -Ilibfaad -Imp4ff -Ilibfaad/include
+OBJS += AACCodec.o utils.o
+CFLAGS +=-D_LINUX -fPIC -Ialac_decoder -I../../dvdplayer/Codecs/libfaad2/libfaad -I../../dvdplayer/Codecs/libfaad2/commmon/mp4ff -I../../dvdplayer/Codecs/libfaad2/libfaad/include -O2
 
-DIRS=alac_decoder libfaad mp4ff
+DIRS=alac_decoder
 
-all: compile AACCodec-@ARCH@.so
+LIB=../../../../system/player/paplayer/AACCodec-@ARCH@.so
+
+include ../../../../Makefile.include
 
 AACCodec-osx.so: compile AACCodec.o utils.o
 	$(CC) -shared -bundle -flat_namespace -undefined suppress -o $@ *.o alac_decoder/*.o libfaad/*.o mp4ff/*.o
 
-AACCodec-i486-linux.so: compile AACCodec.o utils.o
-	$(CC) -shared -o $@ *.o alac_decoder/*.o libfaad/*.o mp4ff/*.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o && cp $@ ../../../../system/players/paplayer
-
-AACCodec-x86_64-linux.so: compile AACCodec.o utils.o
-	$(CC) -shared -o $@ *.o alac_decoder/*.o libfaad/*.o mp4ff/*.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o && cp $@ ../../../../system/players/paplayer
-
-compile:
-	$(MAKE) -C alac_decoder
-	$(MAKE) -C libfaad
-	$(MAKE) -C mp4ff
-
-clean:
-	for d in $(DIRS); do (cd $$d; $(MAKE) clean ); done
-	$(RM) *.o *.so
-
-%o : %c
-	$(CC) -c -o $@ $< $(CFLAGS)
-
-include Makefile.include
+$(LIB): $(OBJS)
+	make -C alac_decoder
+	$(CC) -shared -o $@ *.o alac_decoder/*.o ../../dvdplayer/Codecs/libfaad2/libfaad/.libs/*.o ../../dvdplayer/Codecs/libfaad2/common/mp4ff/.libs/*.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
