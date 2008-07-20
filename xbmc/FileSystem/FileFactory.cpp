@@ -48,9 +48,7 @@
 #ifdef HAS_FILESYSTEM_SAP
 #include "SAPFile.h"
 #endif
-#ifdef HAS_MMS
 #include "FileMMS.h"
-#endif
 #include "FileZip.h"
 #include "FileRar.h"
 #include "FileMusicDatabase.h"
@@ -101,11 +99,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
          ||  strProtocol == "ftpx"
          ||  strProtocol == "ftps") return new CFileCurl();
     else if (strProtocol == "upnp") return new CFileCurl();
-#ifndef HAS_MMS
-    else if (strProtocol == "mms") return new CFileCurl();
-#else
     else if (strProtocol == "mms") return new CFileMMS();
-#endif
     else if (strProtocol == "shout") return new CFileShoutcast();
     else if (strProtocol == "lastfm") return new CFileLastFM();
     else if (strProtocol == "tuxbox") return new CFileTuxBox();
