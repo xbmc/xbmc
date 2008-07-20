@@ -21,6 +21,7 @@
 
 #include "include.h"
 #include "GraphicContext.h"
+#include "GUIFontManager.h"
 #include "GUIMessage.h"
 #include "IMsgSenderCallback.h"
 #include "Settings.h"
@@ -464,6 +465,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   if ((g_settings.m_ResInfo[m_Resolution].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[m_Resolution].iHeight != g_settings.m_ResInfo[res].iHeight))
   { // set the mouse resolution
     g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
+    if (m_Resolution != INVALID)
+      g_fontManager.ReloadTTFFonts();
   }
 
   SetFullScreenViewWindow(res);
