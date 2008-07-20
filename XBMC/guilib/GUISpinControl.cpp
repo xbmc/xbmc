@@ -52,6 +52,7 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, float posX
   m_iTypedPos = 0;
   strcpy(m_szTyped, "");
   ControlType = GUICONTROL_SPIN;
+  m_currentItem = 0;
   m_numItems = 10;
   m_itemsPerPage = 10;
   m_showOnePage = true;
@@ -91,7 +92,6 @@ bool CGUISpinControl::OnAction(const CAction &action)
       switch (m_iType)
       {
       case SPIN_CONTROL_TYPE_INT:
-      case SPIN_CONTROL_TYPE_PAGE:
         {
           if (iValue < m_iStart || iValue > m_iEnd)
           {
@@ -226,11 +226,7 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
     case GUI_MSG_ITEM_SELECT:
       if (SPIN_CONTROL_TYPE_PAGE == m_iType)
       {
-        // the page number...
-        int offset = message.GetParam1() / m_itemsPerPage + 1;
-        if ((int)message.GetParam1() >= m_numItems - m_itemsPerPage)
-          offset = m_iEnd;
-        SetValue(offset);
+        m_currentItem = message.GetParam1();
         return true;
       }
       SetValue( message.GetParam1());
@@ -244,9 +240,6 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
       {
         m_itemsPerPage = message.GetParam1();
         m_numItems = message.GetParam2();
-        int numPages = (m_numItems + m_itemsPerPage - 1) / m_itemsPerPage;
-        SetRange(1, numPages);
-        m_iValue = 1;
         return true;
       }
       {
@@ -365,7 +358,12 @@ void CGUISpinControl::Render()
   }
   else if (m_iType == SPIN_CONTROL_TYPE_PAGE)
   {
-    text.Format("%i/%i", m_iValue, m_iEnd);
+    // work out number of pages and current page
+    int numPages = (m_numItems + m_itemsPerPage - 1) / m_itemsPerPage;
+    int currentPage = m_currentItem / m_itemsPerPage + 1;
+    if (m_currentItem >= m_numItems - m_itemsPerPage)
+      currentPage = numPages;
+    text.Format("%i/%i", currentPage, numPages);
   }
   else if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
   {
@@ -551,8 +549,9 @@ bool CGUISpinControl::CanMoveUp(bool bTestReverse)
 
   switch (m_iType)
   {
-  case SPIN_CONTROL_TYPE_INT:
   case SPIN_CONTROL_TYPE_PAGE:
+    return m_currentItem > 0;
+  case SPIN_CONTROL_TYPE_INT:
     {
       if (m_iValue - 1 >= m_iStart)
         return true;
@@ -585,8 +584,9 @@ bool CGUISpinControl::CanMoveDown(bool bTestReverse)
   if (bTestReverse && m_bReverse) return CanMoveUp(false);
   switch (m_iType)
   {
-  case SPIN_CONTROL_TYPE_INT:
   case SPIN_CONTROL_TYPE_PAGE:
+    return m_currentItem < m_numItems;
+  case SPIN_CONTROL_TYPE_INT:
     {
       if (m_iValue + 1 <= m_iEnd)
         return true;
@@ -629,13 +629,7 @@ void CGUISpinControl::PageUp()
     }
     break;
   case SPIN_CONTROL_TYPE_PAGE:
-    {
-      if (m_iValue - 10 >= m_iStart)
-        m_iValue -= 10;
-      else
-        m_iValue = m_iStart;
-      SendPageChange();
-    }
+    ChangePage(-10);
     break;
   case SPIN_CONTROL_TYPE_TEXT:
     {
@@ -668,13 +662,7 @@ void CGUISpinControl::PageDown()
     }
     break;
   case SPIN_CONTROL_TYPE_PAGE:
-    {
-      if (m_iValue + 10 <= m_iEnd)
-        m_iValue += 10;
-      else
-        m_iValue = m_iEnd;
-      SendPageChange();
-    }
+    ChangePage(10);
     break;
   case SPIN_CONTROL_TYPE_TEXT:
     {
@@ -709,14 +697,7 @@ void CGUISpinControl::MoveUp(bool bTestReverse)
     break;
 
   case SPIN_CONTROL_TYPE_PAGE:
-    {
-      if (m_iValue - 1 >= m_iStart)
-        m_iValue--;
-      else if (m_iValue == m_iStart)
-        m_iValue = m_iEnd;
-      SendPageChange();
-      return ;
-    }
+    ChangePage(-1);
     break;
 
   case SPIN_CONTROL_TYPE_FLOAT:
@@ -767,13 +748,7 @@ void CGUISpinControl::MoveDown(bool bTestReverse)
     break;
 
   case SPIN_CONTROL_TYPE_PAGE:
-    {
-      if (m_iValue + 1 <= m_iEnd)
-        m_iValue++;
-      else if (m_iValue == m_iEnd)
-        m_iValue = m_iStart;
-      SendPageChange();
-    }
+    ChangePage(1);
     break;
 
   case SPIN_CONTROL_TYPE_FLOAT:
@@ -820,8 +795,9 @@ int CGUISpinControl::GetMinimum() const
 {
   switch (m_iType)
   {
-  case SPIN_CONTROL_TYPE_INT:
   case SPIN_CONTROL_TYPE_PAGE:
+    return 0;
+  case SPIN_CONTROL_TYPE_INT:
     return m_iStart;
     break;
 
@@ -840,8 +816,9 @@ int CGUISpinControl::GetMaximum() const
 {
   switch (m_iType)
   {
-  case SPIN_CONTROL_TYPE_INT:
   case SPIN_CONTROL_TYPE_PAGE:
+    return m_numItems;
+  case SPIN_CONTROL_TYPE_INT:
     return m_iEnd;
     break;
 
@@ -925,9 +902,14 @@ bool CGUISpinControl::IsFocusedOnUp() const
   return (m_iSelect == SPIN_BUTTON_UP);
 }
 
-void CGUISpinControl::SendPageChange()
+void CGUISpinControl::ChangePage(int amount)
 {
-  CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetParentID(), GetID(), GUI_MSG_PAGE_CHANGE, (m_iValue - 1) * m_itemsPerPage);
+  m_currentItem += amount * m_itemsPerPage;
+  if (m_currentItem >= m_numItems)
+    m_currentItem = m_numItems - 1;
+  if (m_currentItem < 0)
+    m_currentItem = 0;
+  CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetParentID(), GetID(), GUI_MSG_PAGE_CHANGE, m_currentItem);
   SendWindowMessage(message);
 }
 

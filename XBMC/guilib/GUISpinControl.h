@@ -93,7 +93,7 @@ protected:
   bool CanMoveUp(bool bTestReverse = true);
   void MoveUp(bool bTestReverse = true);
   void MoveDown(bool bTestReverse = true);
-  void SendPageChange();
+  void ChangePage(int amount);
   int m_iStart;
   int m_iEnd;
   float m_fStart;
@@ -116,6 +116,7 @@ protected:
   char m_szTyped[10];
   int m_iTypedPos;
 
+  int m_currentItem;
   int m_itemsPerPage;
   int m_numItems;
   bool m_showOnePage;
