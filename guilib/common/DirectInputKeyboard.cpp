@@ -25,9 +25,9 @@
 
 #define KEY_DELAY_TIME 120 // ms
 
-CKeyboard g_Keyboard; // global
+#define FRAME_DELAY 8
 
-CKeyboard::CKeyboard()
+CLowLevelKeyboard::CLowLevelKeyboard()
 {
   ZeroMemory(m_keystate, sizeof(BYTE) * 256);
   m_keyboard = NULL;
@@ -35,17 +35,18 @@ CKeyboard::CKeyboard()
   m_bShift = false;
   m_bCtrl = false;
   m_bAlt = false;
+  m_bRAlt = false;
   m_cAscii = '\0';
   m_bInitialized = false;
 }
 
-CKeyboard::~CKeyboard()
+CLowLevelKeyboard::~CLowLevelKeyboard()
 {
   if (m_keyboard)
     m_keyboard->Release();
 }
 
-void CKeyboard::Initialize(HWND hWnd)
+void CLowLevelKeyboard::Initialize(HWND hWnd)
 {
   if (m_bInitialized)
     return;
@@ -67,12 +68,13 @@ void CKeyboard::Initialize(HWND hWnd)
   Acquire();
 }
 
-void CKeyboard::Update()
+void CLowLevelKeyboard::Update()
 {
   m_cAscii = 0;
   m_bShift = false;
   m_bCtrl = false;
   m_bAlt = false;
+  m_bRAlt = false;
   m_VKey = 0;
 
   ZeroMemory(m_keystate, sizeof(BYTE)* 256);
@@ -89,6 +91,8 @@ void CKeyboard::Update()
       m_bShift = true;
     if (KeyDown(DIK_LALT) || KeyDown(DIK_RALT))
       m_bAlt = true;
+    if (KeyDown(DIK_RALT))
+      m_bRAlt = true;
     if (KeyDown(DIK_CAPSLOCK))
       m_bShift = !m_bShift;
 
@@ -134,10 +138,10 @@ void CKeyboard::Update()
     else if (KeyDown(DIK_ESCAPE)) m_VKey = 0x1B;
     else if (KeyDown(DIK_TAB)) m_VKey = 0x09;
     else if (KeyDown(DIK_SPACE)) m_VKey = 0x20;
-    else if (KeyDown(DIK_LEFT)) m_VKey = 0x25;
-    else if (KeyDown(DIK_RIGHT)) m_VKey = 0x27;
-    else if (KeyDown(DIK_UP)) m_VKey = 0x26;
-    else if (KeyDown(DIK_DOWN)) m_VKey = 0x28;
+    else if (KeyDown(DIK_LEFT)) m_VKey = 0x25; // alias for DIK_LEFTARROW
+    else if (KeyDown(DIK_RIGHT)) m_VKey = 0x27; // alias for DIK_RIGHTARROW
+    else if (KeyDown(DIK_UP)) m_VKey = 0x26; // alias for DIK_UPARROW
+    else if (KeyDown(DIK_DOWN)) m_VKey = 0x28; // alias for DIK_DOWNARROW
     else if (KeyDown(DIK_INSERT)) m_VKey = 0x2D;
     else if (KeyDown(DIK_DELETE)) m_VKey = 0x2E;
     else if (KeyDown(DIK_HOME)) m_VKey = 0x24;
@@ -154,6 +158,7 @@ void CKeyboard::Update()
     else if (KeyDown(DIK_F10)) m_VKey = 0x79;
     else if (KeyDown(DIK_F11)) m_VKey = 0x7a;
     else if (KeyDown(DIK_F12)) m_VKey = 0x7b;
+
     else if (KeyDown(DIK_NUMPAD0)) m_VKey = 0x60;
     else if (KeyDown(DIK_NUMPAD1)) m_VKey = 0x61;
     else if (KeyDown(DIK_NUMPAD2)) m_VKey = 0x62;
@@ -164,24 +169,24 @@ void CKeyboard::Update()
     else if (KeyDown(DIK_NUMPAD7)) m_VKey = 0x67;
     else if (KeyDown(DIK_NUMPAD8)) m_VKey = 0x68;
     else if (KeyDown(DIK_NUMPAD9)) m_VKey = 0x69;
-    else if (KeyDown(DIK_NUMPADSTAR)) m_VKey = 0x6a;
-    else if (KeyDown(DIK_NUMPADPLUS)) m_VKey = 0x6b;
-    else if (KeyDown(DIK_NUMPADMINUS)) m_VKey = 0x6d;
-    else if (KeyDown(DIK_NUMPADPERIOD)) m_VKey = 0x6e;
+    else if (KeyDown(DIK_NUMPADSTAR)) m_VKey = 0x6a; // alias for DIK_MULTIPLY
+    else if (KeyDown(DIK_NUMPADPLUS)) m_VKey = 0x6b; // alias for DIK_ADD
+    else if (KeyDown(DIK_NUMPADMINUS)) m_VKey = 0x6d; // alias for DIK_SUBTRACT
+    else if (KeyDown(DIK_NUMPADPERIOD)) m_VKey = 0x6e; // alias for DIK_DECIMAL
     else if (KeyDown(DIK_NUMPADSLASH)) m_VKey = 0x6f;
-    else if (KeyDown(DIK_PGUP)) m_VKey = 0x21;
-    else if (KeyDown(DIK_PGDN)) m_VKey = 0x22;
+    else if (KeyDown(DIK_PGUP)) m_VKey = 0x21; // alias for DIK_PRIOR
+    else if (KeyDown(DIK_PGDN)) m_VKey = 0x22; // alias for DIK_NEXT
     else if (KeyDown(DIK_SYSRQ)) m_VKey = 0x2a;
-    else if (KeyDown(DIK_BACKSPACE)) m_VKey = 0x08;
+    else if (KeyDown(DIK_BACKSPACE)) m_VKey = 0x08; // alias for DIK_BACK
     else if (KeyDown(DIK_APPS)) m_VKey = 0x5d;
     else if (KeyDown(DIK_PAUSE)) m_VKey = 0x13;
     else if (KeyDown(DIK_CAPSLOCK)) m_VKey = 0x20; // ???
     else if (KeyDown(DIK_NUMLOCK)) m_VKey = 0x90;
     else if (KeyDown(DIK_SCROLL)) m_VKey = 0x91;
-    else if (KeyDown(DIK_SEMICOLON)) { m_VKey = 0xba; m_cAscii = m_bShift ? ':' : ';'; }
+    else if (KeyDown(DIK_SEMICOLON)) { m_VKey = 0xba; m_cAscii = m_bShift ? ':' : ';'; } // DIK_COLON handled, too
     else if (KeyDown(DIK_EQUALS)) { m_VKey = 0xbb; m_cAscii = m_bShift ? '+' : '='; }
     else if (KeyDown(DIK_COMMA)) { m_VKey = 0xbc; m_cAscii = m_bShift ? '<' : ','; }
-    else if (KeyDown(DIK_MINUS)) { m_VKey = 0xbd; m_cAscii = m_bShift ? '_' : '-'; }
+    else if (KeyDown(DIK_MINUS)) { m_VKey = 0xbd; m_cAscii = m_bShift ? '_' : '-'; } // DIK_UNDERLINE handled, too
     else if (KeyDown(DIK_PERIOD)) { m_VKey = 0xbe; m_cAscii = m_bShift ? '>' : '.'; }
     else if (KeyDown(DIK_DIVIDE)) { m_VKey = 0xbf; m_cAscii = m_bShift ? '?' : '/'; }
     else if (KeyDown(DIK_SLASH)) { m_VKey = 0xbf; m_cAscii = m_bShift ? '?' : '/'; }
@@ -194,11 +199,13 @@ void CKeyboard::Update()
     else if (KeyDown(DIK_RSHIFT)) m_VKey = 0xa1;
     else if (KeyDown(DIK_LCONTROL)) m_VKey = 0xa2;
     else if (KeyDown(DIK_RCONTROL)) m_VKey = 0xa3;
-    else if (KeyDown(DIK_LALT)) m_VKey = 0xa4;
-    else if (KeyDown(DIK_RALT)) m_VKey = 0xa5;
+    else if (KeyDown(DIK_LALT)) m_VKey = 0xa4; // alias for DIK_LMENU
+    else if (KeyDown(DIK_RALT)) m_VKey = 0xa5; // alias for DIK_RMENU
     else if (KeyDown(DIK_LWIN)) m_VKey = 0x5b;
     else if (KeyDown(DIK_RWIN)) m_VKey = 0x5c;
+
     // TODO: Add more keys (eg NEC ones)
+
 //    else if (KeyDown(DIK_UNDERLINE)) { m_VKey = 0xbd; m_cAscii = '_'; }
 //    else if (KeyDown(DIK_COLON)) { m_VKey = 0xba; m_cAscii = ':'; }
 
@@ -217,7 +224,7 @@ void CKeyboard::Update()
   }  
 }
 
-void CKeyboard::Acquire()
+void CLowLevelKeyboard::Acquire()
 {
   if (m_keyboard)
     m_keyboard->Acquire();
