@@ -46,12 +46,14 @@ public:
 
   virtual ~CGUIEditControl(void);
 
+  virtual bool OnMessage(CGUIMessage &message);
   virtual bool OnAction(const CAction &action);
   virtual void OnClick();
 
   virtual void SetLabel(const std::string &text);
   virtual CStdString GetDescription() const;
 
+  void SetInputHeading(int heading);
 protected:
   virtual void RenderText();
   void RecalcLabelPosition();
@@ -64,5 +66,7 @@ protected:
 
   unsigned int m_cursorPos;
   unsigned int m_cursorBlink;
+
+  int m_inputHeading;
 };
 #endif

@@ -278,7 +278,7 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
   }
   else
   {
-    SET_CONTROL_LABEL(CONTROL_NAME, m_playlist.m_playlistName)
+  SET_CONTROL_LABEL(CONTROL_NAME, m_playlist.m_playlistName)
   }
 
   int currentItem = GetSelectedItem();
@@ -344,6 +344,10 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
     }
   }
 #endif
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_NAME, 16012);
+    OnMessage(msg);
+  }
   // setup the match spinner
   {
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_MATCH, 0);
