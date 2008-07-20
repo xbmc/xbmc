@@ -1,10 +1,11 @@
-CFLAGS=-D_LINUX -fPIC -I../../include
+CFLAGS +=-D_LINUX -fPIC -I../../include
+OBJS=DumbDLL.o
 
-dumb-i486-linux.so: DumbDLL.o
-	g++ -shared -o $@ *.o ../../lib/unix/libdumb.a `cat ../../../../DllLoader/exports/wrapper.def` ../../../../DllLoader/exports/wrapper.o && cp $@ ../../../../../../system/players/paplayer/
+LIB=../../../../../../system/players/paplayer/dumb-i486-linux.so
 
-clean:
-	$(RM) *.o *.so
+include ../../../../../../Makefile.include
 
-DumbDLL.o : DumbDLL.cpp
-	g++ -c -o $@ $< $(CFLAGS)
+lib: $(LIB)
+
+$(LIB): $(OBJS)
+	g++ -shared -o $@ *.o ../../lib/unix/libdumb.a `cat ../../../../DllLoader/exports/wrapper.def` ../../../../DllLoader/exports/wrapper.o

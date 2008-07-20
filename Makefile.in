@@ -113,7 +113,7 @@ papcodecs: dllloader linux dvdcodecs
 	if test $(ARCH) != "x86_64-linux"; then \
 		$(MAKE) -C xbmc/cores/paplayer/MACDll; \
 		$(MAKE) -C xbmc/cores/paplayer/ModuleCodec; \
-		$(MAKE) -C xbmc/cores/paplayer/SPCCodec; \
+		$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU; \
 	fi
 	$(MAKE) -C xbmc/cores/paplayer/MIDCodec
 	$(MAKE) -C xbmc/cores/paplayer/MPCCodec

@@ -54,6 +54,7 @@
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
+	printf("check file %s\n",strFileType.c_str());
   if (strFileType.Equals("mp3") || strFileType.Equals("mp2"))
     return new MP3Codec();
   else if (strFileType.Equals("ape") || strFileType.Equals("mac"))
