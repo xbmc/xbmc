@@ -120,6 +120,17 @@ public:
   DWORD GetStyle() const { return m_style; };
 
   static SHORT RemapGlyph(SHORT letter);
+  
+  CGUIFontTTF* GetFont() const
+  {
+     return m_font;
+  }
+  
+  void SetFont(CGUIFontTTF* font)
+  {
+     m_font = font;
+  }
+  
 protected:
   CStdString m_strFontName;
   DWORD m_style;

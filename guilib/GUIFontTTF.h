@@ -77,6 +77,7 @@ public:
   void End();
 
   const CStdString& GetFileName() const { return m_strFileName; };
+  void CopyReferenceCountFrom(CGUIFontTTF& ttf) { m_referenceCount = ttf.m_referenceCount; }
   
 protected:
   void AddReference();

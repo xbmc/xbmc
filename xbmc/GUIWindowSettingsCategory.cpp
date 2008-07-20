@@ -1986,11 +1986,11 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     ClearFolderViews(pSettingControl->GetSetting(), WINDOW_PICTURES);
   }
-/* TODO:TTF_FONTS - xbox doesn't support this yet
+
   else if (strSetting.Equals("lookandfeel.skinzoom"))
   {
     g_fontManager.ReloadTTFFonts();
-  }*/
+  }
   else if (strSetting.Equals("videolibrary.flattentvshows") ||
            strSetting.Equals("videolibrary.removeduplicates"))
   {
