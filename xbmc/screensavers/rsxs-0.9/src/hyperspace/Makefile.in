@@ -306,6 +306,8 @@ rs_hyperspace_LDADD = $(LIBMISC) $(X_LIBS) $(OPENGL_LIBS) $(IMAGE_LIBS)
 hyperspacedatadir = $(pkgdatadir)/hyperspace
 dist_hyperspacedata_DATA = nebula.png
 all: all-am
+	g++ -shared -o Hyperspace.xbs ../common.o ../color.o ../pngimage.o *.o ../implicit.o ../../lib/libmisc.a -lXmu
+	cp Hyperspace.xbs *.png ../../../../../screensavers/
 
 .SUFFIXES:
 .SUFFIXES: .cc .o .obj

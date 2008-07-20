@@ -297,6 +297,8 @@ dist_latticedata_DATA = brass.png chrome.png circuits.png crystal.png \
 	doughnuts.png ghostly.png industrial1.png industrial2.png shiny.png
 
 all: all-am
+	g++ -shared -o Lattice.xbs ../common.o ../color.o ../pngimage.o *.o ../../lib/libmisc.a -lXmu
+	cp Lattice.xbs *.png ../../../../../screensavers/
 
 .SUFFIXES:
 .SUFFIXES: .cc .o .obj

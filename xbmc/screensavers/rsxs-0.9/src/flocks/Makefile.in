@@ -283,6 +283,9 @@ rs_flocks_SOURCES = $(COMMON) $(COLOR) $(VECTOR) bug.cc bug.hh flocks.cc \
 
 rs_flocks_LDADD = $(LIBMISC) $(X_LIBS) $(OPENGL_LIBS)
 all: all-am
+all: all-am
+	g++ -shared -o Flocks.xbs ../common.o ../color.o ../pngimage.o *.o ../../lib/libmisc.a -lXmu
+	cp Flocks.xbs ../../../../../screensavers/
 
 .SUFFIXES:
 .SUFFIXES: .cc .o .obj

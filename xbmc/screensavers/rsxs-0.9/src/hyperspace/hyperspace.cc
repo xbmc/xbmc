@@ -374,3 +374,32 @@ void Hack::buttonPress(unsigned int) {}
 void Hack::buttonRelease(unsigned int) {}
 void Hack::pointerEnter() {}
 void Hack::pointerLeave() {}
+
+#define _LINUX
+#include "../../../xbmc_scr.h"
+
+extern "C" {
+
+void Create(void* pd3dDevice, int iWidth, int iHeight, const char * szScreensaver, float pixelRatio)
+{
+  Common::width = iWidth;
+  Common::height = iHeight;
+  Common::aspectRatio = float(Common::width) / float(Common::height);
+}
+
+void Start()
+{
+  Hack::start();
+}
+
+void Render()
+{
+  Hack::tick();
+}
+
+void Stop()
+{
+  Hack::stop();
+}
+
+}
