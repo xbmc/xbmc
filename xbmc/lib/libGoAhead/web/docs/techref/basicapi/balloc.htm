@@ -1,0 +1,52 @@
+<html>
+
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>balloc - basic</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+
+<table border="0" width="100%" cellspacing="0" cellpadding="0" CLASS="apiTitle">
+  <tr>
+    <td class="titleLeft" align=left width="33%"><b>balloc</b></td><td class="titleCenter" align=center width="33%"><b>basic</b></td><td class="titleRight" align=right width="33%"><b>EMF</b></td></tr>
+</table><hr>
+
+<h2>Synopsis</h2><p>Allocate a dynamic block of memory.</p><h2>Prototypes</h2><pre>
+ #include &quot;uemf.h&quot;
+
+ void *<b>balloc</b>(B_ARGS_DEC, int size);
+</pre><h2>Parameters</h2><table width="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <tr>
+    <td VALIGN="TOP" width="14%">B_ARGS_DEC</td><td width="86%">Caller's source file name and line number. Really two arguments. 
+    </td></tr>
+  <tr>
+    <td VALIGN="TOP" width="14%">size</td><td width="86%">Size of the block to allocate.</td></tr>
+</table><h2>Description</h2><p>The balloc procedure creates and allocates a block of dynamic memory for use 
+  by the caller. When finished, you should use <a href="bfree.htm">bfree</a> to 
+  release the block. Balloc is a very efficient memory allocation that uses binary 
+  queues to store blocks of memory. It does not do block coalescing, nor does 
+  it attempt to eliminate fragmentation. Once released by bfree, memory is not 
+  actually freed to the operating system, but is kept on the relevant binary queue 
+  for future use by the application. Use B_L as the first argument to bfree to 
+  provide the source file name and line number arguments.</p><p>The goal of the balloc memory allocator is to provide guaranteed, rapid allocation. 
+  By calling <a href="bopen.htm">bopen</a> with the application memory requirements, 
+  memory can be defined or allocated upfront and subsequent calls to balloc are 
+  more likely to succeed. Balloc is not perfect. You can still get free memory 
+  on one class queue while memory requests for a large size cannot be satisfied. 
+  However, in practice, many embedded applications tend to allocate memory in 
+  a pattern and the balloc memory allocator works well in such environments. The 
+  memory usage of the GoAhead WebServer has been optimized to allocate from the 
+  fixed pool defined by bopen, and it should be very predictable in its requirements. 
+  The bstats procedure may be used to print out current memory statistics include 
+  per file usage information.</p><h2>Return Value</h2><p>Pointer to the allocated buffer. If memory cannot be provided, NULL is
+returned.</p><h2>Example</h2><pre>
+buf = balloc(B_L, 1024);
+gstrncpy(buf, &quot;Hello World&quot;, sizeof(buf));
+bfree(B_L, buf);
+</pre><h2>Stability Classification</h2><p>Stable.</p><h2></h2><h2></h2><h2>See Also</h2><p><a href="bopen.htm">bopen</a>, <a href="bfree.htm">bfree</a></p></td></tr></table>
+
+</body>
+</html>

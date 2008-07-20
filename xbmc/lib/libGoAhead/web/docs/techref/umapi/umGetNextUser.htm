@@ -1,0 +1,22 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>umGetNextUser -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<TABLE WIDTH="550" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD>
+
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%">umGetNextUser</TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR><H2>Synopsis</H2><P>	Returns the next user ID listed   in the user table after the given user ID.</P><H2>Prototype</H2><PRE>
+ #include &quot;um.h&quot;
+
+ char_t *umGetNextUser(char_t * lastUser);</PRE><H2>Parameters</H2><P><TABLE WIDTH="76%" BORDER="0"><TR><TD WIDTH="15%">lastUser</TD><TD WIDTH="85%">user ID  returned from the previous call to this function</TD></TR></TABLE><H2>Description</H2><P>	The returned string is a pointer to the data stored in the user table.</P><H2>Return Value</H2><P>	umGetNextUser returns a pointer to the user ID, or  a NULL on error.</P><H2>Example</H2><PRE>char_t	*userid = umGetFirstUser();
+while (userid) {
+	userid = umGetNextUser(userid);
+}</PRE><H2>See Also</H2><P>	<A HREF="umGetFirstUser.htm">umGetFirstUser</A>()</P><P></P><BLOCKQUOTE>&nbsp;</BLOCKQUOTE></TD></TR></TABLE>
+</body>
+</html>

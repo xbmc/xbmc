@@ -1,0 +1,58 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websFormDefine -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websFormDefine</b></TD><td class="titleCenter" align=center width="33%"><b> 
+GoAhead WebServer API</b></TD><td class="titleRight" align=right width="33%"><B> 
+GoAhead EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p>Create a <A HREF="../../../over/goforms.htm">GoForm</A>™ 
+procedure.</p><h2>Prototype</h2><pre> #include &quot;webs.h&quot;
+ 
+ int <b>websFormDefine</b>(char_t *urlPrefix, 
+    void (*formHandler)(webs_t wp, char_t *path, char_t *query)); </pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" WIDTH="9%">wp <TD WIDTH="91%"> Web server connection handle. 
+<TR> <TD VALIGN="TOP" WIDTH="9%">urlPrefix <TD WIDTH="91%">URL prefix to use when 
+matching URLs for this handler. <TR> <TD VALIGN="TOP" WIDTH="9%">formHandler <TD WIDTH="91%">URL 
+handler procedure.</TD></TR></table><h2>Description</h2><P>The websFormDefine 
+procedure is used to create a <A href="../../../over/goforms.htm">GoForm</A>™ procedure.</P><P>It 
+establishes the nominated <EM>formHandler </EM>procedure as the handler for all 
+URLs that begin with &quot;/goform/ <EM>urlPrefix&quot;. </EM> The GoForm processor</P><P>GoForms 
+provide a standard Common Gateway Interface (CGI) implemented as an in-memory 
+forms processor. </P><P>GoForms procedures run in-memory without creating a new 
+process for each browser connection. By sharing the address space with the GoAhead 
+WebServer, GoForms procedures can directly access the full request context.</P><P>The 
+GoForm handler also automatically decodes and parses all POST and query data for 
+easy access. A convenient API (see <A href="websGetVar.htm" >websGetVar</A>) permits 
+easy access to CGI variables. In addition to POST and query data, the <A href="websExpand.htm" >standard 
+CGI variables</A> are also defined.</P><P>GoForm procedures can access the URL 
+path via the <i>path</i> parameter which holds URL segment after the host name 
+and port number. The full POST data or query string is passed in the <i>query</i> 
+variable from conform to the following prototype:</P><pre> void myForm(webs_t wp, char_t *path, char_t *query){ websHeader(wp); 
+websWrite(wp, &quot;Name %s&quot;, websGetVar(wp, &quot;name&quot;, &quot;&quot;)); 
+websWrite(wp, &quot;Age %s&quot;, websGetVar(wp, &quot;age&quot;, &quot;&quot;)); 
+websFooter(wp); 
+websDone(wp, 200); 
+} </pre><P>The GoForm procedure is responsible for writing the HTTP header and 
+HTML document contents back to the user's browser. <A href="websHeader.htm" >websHeader</A> 
+creates a standard HTTP header with initial HTML tags. <A href="websFooter.htm" >websFooter</A> 
+closes the document with a closing HTML tag. Inside the GoForm procedure, <A href="websGetVar.htm" >websGetVar</A>, 
+<A href="websRedirect.htm" >websRedirect</A>, <A href="websWrite.htm" >websWrite</A>, 
+and <A href="websWriteBlock.htm" >websWriteBlock</A> are some of the most useful 
+API calls. </P><h2>Return Value</h2><p> Returns 0 if the GoForm procedure is successfully 
+defined, otherwise -1 is returned.</p><h2>Example</h2><pre> void myForm(webs_t 
+wp, char_t *path, char_t *query) { websHeader(wp); websWrite(wp, &quot;Name is 
+%s, Address %s&quot;, websGetVar(wp, &quot;name&quot;, &quot;&quot;)); websDone(wp, 
+200); websFooter(wp); } websFormDefine(&quot;myForm&quot;, myForm); </pre><h2>Stability 
+Classification</h2><p>Stable.</p><h2>See Also</h2><p> <A href="../../../over/asp.htm">Active 
+Server Pages</A>, <A href="../../../over/ejs.htm">JavaScript</A>, <A href="../../../over/urlhandles.htm" >URL 
+Handlers</A>, <A href="websDone.htm">websDone</A>, <A href="websFooter.htm">websFooter</A>, 
+<A href="websGetVar.htm">websGetVar</A>, <A href="websHeader.htm">websHeader</A>, 
+<A href="websSecurityHandler.htm" >websSecurityHandler</A>, <A href="websUrlHandlerDefine.htm" >websUrlHandlerDefine</A>, 
+<A href="websWrite.htm">websWrite</A></p></td></tr></table>
+</body>
+</html>

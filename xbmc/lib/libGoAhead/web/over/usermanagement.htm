@@ -1,0 +1,53 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>WebServer Architecture</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../style/normal_ws.css">
+</head>
+
+<body bgcolor="#FFFFFF">
+<TABLE WIDTH="550" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD>
+<h1>User Management</h1><p> In   password protected sites,  multiple user ids with  multiple levels of security may be necessary. In  WebServer 2.1, these include:
+</p><BLOCKQUOTE><UL><LI>User IDs</LI><LI>User Groups</LI><LI>URL Access Limits
+</LI></UL></BLOCKQUOTE><P>A <B>User ID</B> contains   these data elements:
+</P><OL><OL><LI>User Name</LI><LI>User Password
+</LI><LI>User Group (determines access rights of user)
+</LI><LI>Protect</LI><LI>Enabled  </LI></OL></OL><P><B>User Groups</B> contain these data elements:
+</P><OL><OL><LI>Group Name (i.e., administrator, user, guest)
+</LI><LI>Privileges (none, read files,  administrate users)
+</LI><LI>Protect </LI><LI>Enabled
+</LI></OL></OL><P>URL Access Limits are used when certain directories or URL pages on the web site have exceptionally secure access limits.  If a directory has an access limit associated with it, its contents default to the directories access limit. </P><P><B>URL Access Limits</B> have the following data elements:
+</P><BLOCKQUOTE><OL><LI>URL name (name of the web page or directory)
+</LI><LI>Access Method (one of NONE, FULL, BASIC, or DIGEST)</LI><LI>Encryption Required
+</LI><LI>User Group (currently limited to one user group for simplicity)
+
+</LI></OL></BLOCKQUOTE><P>Users having  administration privileges can  manage the following Users IDs and Access Limits:</P><BLOCKQUOTE><OL><LI>
+
+Add User
+</LI><LI>Delete User
+</LI><LI>Change Password
+</LI><LI>Change User Class
+</LI><LI>Add User Group
+</LI><LI>Delete User Group
+</LI><LI>Change Privileges
+</LI><LI>Add Access Limit
+</LI><LI>Delete Access Limit
+</LI><LI>Change Privilege
+</LI><LI>Change User Group
+</LI></OL></BLOCKQUOTE><H4>
+
+ User Management  Page Access
+
+</H4><P>Whenever a browser    requests a page,   WebServer   checks to see if there is an AccessLimit assigned to  the requested page.  Access Limits are usually stored in support files contained in the same directory as the requested page. If   no user group is assigned to the access limit, then the default privilege takes effect with WebServer taking  the following actions:
+
+</P><BLOCKQUOTE><UL><LI>If the  default Privilege is "none", WebServer responds with the &quot;File not Found&quot; header.
+</LI><LI>If the default Privilege is not "none", WebServer returns the  page.</LI></UL></BLOCKQUOTE><P>If  a user group is assigned to the access limit, then WebServer:</P><OL><OL><LI>Sends an Authenticate response header (DAA if enabled).
+</LI><LI>Waits for the receipt of Authorization Request Header from the client.</LI><LI>Compares the user id and password with those stored  in the registered context.
+</LI><LI>Sends the page to the client if the user is authorized.
+
+
+
+</LI></OL></OL><H4>&nbsp;</H4></td></tr></table>
+</body>
+</html>

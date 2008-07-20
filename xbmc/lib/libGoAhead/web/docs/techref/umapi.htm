@@ -1,0 +1,42 @@
+<html>
+<head>
+<title>WebServer User Management APIs</title>
+<LINK REL="stylesheet" HREF="../../style/normal_ws.css" TYPE="text/css">
+</head>
+
+<body>
+<h1>The GoAhead WebServer User Management APIs</h1><TABLE WIDTH="50%" BORDER="0"><TR valign=top><TD WIDTH="47%"><A HREF="umapi/umAccessLimitExists.htm">umAccessLimitExists</A>
+<BR><A HREF="umapi/umAddAccessLimit.htm">umAddAccessLimit</A>	
+<BR><A HREF="umapi/umAddGroup.htm">umAddGroup</A>
+<BR><A HREF="umapi/umAddUser.htm">umAddUser</A>	
+<BR><A HREF="umapi/umClose.htm">umClose</A>	
+<BR><A HREF="umapi/umCommit.htm">umCommit</A>	
+<BR><A HREF="umapi/umDeleteAccessLimit.htm">umDeleteAccessLimit</A>	
+<BR><A HREF="umapi/umDeleteGroup.htm">umDeleteGroup</A>
+<BR><A HREF="umapi/umDeleteUser.htm">umDeleteUser</A>	
+<BR><A HREF="umapi/umGetAccessLimit.htm">umGetAccessLimit</A><BR><A HREF="umapi/umGetAccessLimitGroup.htm">umGetAccessLimitGroup</A>
+<BR><A HREF="umapi/umGetAccessLimitMethod.htm">umGetAccessLimitMethod</A>
+<BR><A HREF="umapi/umGetAccessLimitSecure.htm">umGetAccessLimitSecure</A>
+<BR><A HREF="umapi/umGetAccessMethodForURL.htm">umGetAccessMethodForURL</A>
+<BR><A HREF="umapi/umGetFirstAccessLimit.htm">umGetFirstAccessLimit</A><BR><A HREF="umapi/umGetFirstGroup.htm">umGetFirstGroup</A><BR><A HREF="umapi/umGetFirstUser.htm">umGetFirstUser</A><BR><A HREF="umapi/umGetGroupAccessMethod.htm">umGetGroupAccessMethod</A>
+<BR><A HREF="umapi/umGetGroupEnabled.htm">umGetGroupEnabled</A>	
+<BR><A HREF="umapi/umGetGroupPrivilege.htm">umGetGroupPrivilege</A>	
+<BR></TD><TD WIDTH="53%"><A HREF="umapi/umGetNextAccessLimit.htm">umGetNextAccessLimit</A><BR><A HREF="umapi/umGetNextGroup.htm">umGetNextGroup</A><BR><A HREF="umapi/umGetNextUser.htm">umGetNextUser<BR></A><A HREF="umapi/umGetUserEnabled.htm">umGetUserEnabled</A>	
+<BR><A HREF="umapi/umGetUserGroup.htm">umGetUserGroup</A>	<BR><A HREF="umapi/umGetUserPassword.htm">umGetUserPassword</A>	
+<BR><A HREF="umapi/umGroupExists.htm">umGroupExists</A>	
+<BR><A HREF="umapi/umOpen.htm">umOpen</A>	
+<BR><A HREF="umapi/umRestore.htm">umRestore</A>	
+<BR><A HREF="umapi/umSetAccessLimitGroup.htm">umSetAccessLimitGroup</A>
+<BR><A HREF="umapi/umSetAccessLimitMethod.htm">umSetAccessLimitMethod</A>
+<BR><A HREF="umapi/umSetAccessLimitSecure.htm">umSetAccessLimitSecure</A>
+<BR><A HREF="umapi/umSetGroupAccessMethod.htm">umSetGroupAccessMethod</A>
+<BR><A HREF="umapi/umSetGroupEnabled.htm">umSetGroupEnabled</A>	
+<BR><A HREF="umapi/umSetGroupPrivilege.htm">umSetGroupPrivilege</A>	
+<BR><A HREF="umapi/umSetUserEnabled.htm">umSetUserEnabled</A>	
+<BR><A HREF="umapi/umSetUserGroup.htm">umSetUserGroup</A>	
+<BR><A HREF="umapi/umSetUserPassword.htm">umSetUserPassword</A>	
+<BR><A HREF="umapi/umUserExists.htm">umUserExists</A>	
+<BR><A HREF="umapi/umUserCanAccessURL.htm">umUserCanAccessURL</A>
+</TD></TR></TABLE><H3>User Management API Return Codes</H3><TABLE WIDTH="68%" BORDER="0"><TR><TD WIDTH="42%">UM_OK	(0):	 		</TD><TD WIDTH="58%">No error condition. </TD></TR><TR><TD WIDTH="42%" HEIGHT="20">UM_ERR_GENERAL (-1):</TD><TD WIDTH="58%" HEIGHT="20">A general error occurred in the User Management function.</TD></TR><TR><TD WIDTH="42%">UM_ERR_NOT_FOUND (-2):</TD><TD WIDTH="58%">The specified data item was not found.</TD></TR><TR><TD WIDTH="42%">UM_ERR_PROTECTED (-3):</TD><TD WIDTH="58%">The data item could not be deleted because it was protected.</TD></TR><TR><TD WIDTH="42%">UM_ERR_DUPLICATE (-4):</TD><TD WIDTH="58%">The data item could not be added because one already exists with the same name.</TD></TR><TR><TD WIDTH="42%">UM_ERR_IN_USE (-5):		</TD><TD WIDTH="58%">The data item could not be deleted because it is in active use.</TD></TR></TABLE><P><B>Notes:</B></P><P>UM_ERR_DUPLICATE   pertains only  to the various umAdd&lt;object&gt; functions.<BR>UM_ERR_PROTECTED and UM_ERR_IN_USE   pertain only  to the various umDelete&lt;object&gt; functions.</P>
+</body>
+</html>

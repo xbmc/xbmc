@@ -35,14 +35,14 @@
 extern "C" {
 #endif
 
-#include	"wsIntrn.h"
+#include	"src/wsIntrn.h"
 
 #ifdef WEBS_SSL_SUPPORT
-#include	"websSSL.h"
+#include	"src/websSSL.h"
 #endif
 
 #ifdef USER_MANAGEMENT_SUPPORT
-#include	"um.h"
+#include	"src/um.h"
 	void		formDefineUserMgmt(void);
 #endif
 
