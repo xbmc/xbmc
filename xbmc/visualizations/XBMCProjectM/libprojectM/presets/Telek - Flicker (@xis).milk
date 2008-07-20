@@ -1,0 +1,128 @@
+[preset00]
+fRating=2.000000
+fGammaAdj=1.000001
+fDecay=1.000000
+fVideoEchoZoom=1.000000
+fVideoEchoAlpha=0.000000
+nVideoEchoOrientation=0
+nWaveMode=3
+bAdditiveWaves=1
+bWaveDots=0
+bWaveThick=1
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=0
+bTexWrap=0
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=4.099998
+fWaveScale=0.387300
+fWaveSmoothing=0.630000
+fWaveParam=1.000000
+fModWaveAlphaStart=0.710000
+fModWaveAlphaEnd=1.300000
+fWarpAnimSpeed=1.000000
+fWarpScale=1.000000
+fZoomExponent=1.000000
+fShader=0.000000
+zoom=1.000000
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000000
+dy=0.000000
+warp=0.001000
+sx=1.000000
+sy=1.000000
+wave_r=0.650000
+wave_g=0.650000
+wave_b=0.650000
+wave_x=0.460000
+wave_y=0.005000
+ob_size=0.005000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=0.060000
+ib_size=0.500000
+ib_r=1.000000
+ib_g=1.000000
+ib_b=1.000000
+ib_a=0.000000
+nMotionVectorsX=38.399994
+nMotionVectorsY=15.647999
+mv_dx=0.000000
+mv_dy=0.000000
+mv_l=0.500000
+mv_r=1.000000
+mv_g=1.000000
+mv_b=0.000000
+mv_a=0.000000
+per_frame_1=//virtual
+per_frame_2=vnum_increment = 2/fps;
+per_frame_3=vtarget = vtarget + if(above(bass*bass_att,4.5), if(below(vtarget,vnum+1),1,0),0);
+per_frame_4=vnum = vnum + if(below(vnum,vtarget-vnum_increment*.5), vnum_increment,0);
+per_frame_5=monitor = vnum;
+per_frame_6=
+per_frame_7=vang = vnum*3.14159265358979323*.25;
+per_frame_8=q1=vang;
+per_frame_9=q2 = vnum_increment;
+per_frame_10=q3 = vnum;
+per_frame_11=q4=vtarget;
+per_frame_12=//vx = (x-.5)*cos(vang) - (y-.5)*sin(vang)+.5;
+per_frame_13=//vy = (x-.5)*sin(vang) +(y-.5)*cos(vang)+.5;
+per_frame_14=
+per_frame_15=bass_x = max(bass_x*.7+max(bass_att-.9,0)*.3,0);    //decaying bass max
+per_frame_16=wave_vx = ((frame%3-1)*bass_x* above(vnum,vtarget-vnum_increment*.5) +1)*wave_x;    //spreads flame
+per_frame_17=wave_vy=wave_y;
+per_frame_18=
+per_frame_19=wave_x = -(wave_vx-.5)*cos(vang) + (wave_vy-.5)*sin(vang)+.5;
+per_frame_20=wave_y = -(wave_vx-.5)*sin(vang) - (wave_vy-.5)*cos(vang)+.5;
+per_frame_21=//end virtual
+per_frame_22=wave_r = above(vnum,vtarget-vnum_increment*.5);
+per_frame_23=//wave_g = below(bass*bass_att,3.5);
+per_frame_24=decay = 3000000+57.75;                                      // Magic 'flame' decay
+per_frame_25=//wave_mystery = sin(time*.2)*.05+1;
+per_frame_26=
+per_frame_27=ob_a = max(sqr(sqr(sin(time*1)*.25+.25)),if(below(vnum,vtarget-.1),.2,0));     // 'ad-lib decay' to black - no ugly artefacts
+per_frame_28=// ^4 to get it up there quick -> min time with decay on.
+per_frame_29=
+per_frame_30=ob_a = ob_a*(1-bass_x);                         // just so we don't get rid of the wide impressive
+per_frame_31=// flames so quickly
+per_frame_32=
+per_frame_33=//ob_a=0;
+per_frame_34=//monitor = ob_a;
+per_frame_35=
+per_frame_36=//Other decays to try:
+per_frame_37=//300000 +  42.53, 90.63, 43.00   These are all fairly similar, but all are stable (equiv to decay  0.990 -> 1 in terms of speed of fade)
+per_frame_38=//3000000 + 57.75 <<<  =:-)
+per_frame_39=
+per_pixel_1=rot = below(q3, q4-q2*.5)*q2*.8*(1-0*(rad));
+per_pixel_2=
+per_pixel_3=//virtual axes
+per_pixel_4=vang=q1;
+per_pixel_5=vx = (x-.5)*cos(vang) - (y-.5)*sin(vang)+.5;
+per_pixel_6=vy = (x-.5)*sin(vang) +(y-.5)*cos(vang)+.5;
+per_pixel_7=vy=1-vy;
+per_pixel_8=
+per_pixel_9=dvy = (vx+.08*sin(rand(100)))*2%2*-.01-.005;
+per_pixel_10=dvy = -.0025*((1-vy)*10+rand(5));    //wobble, and faster at top - accelerating like real flames
+per_pixel_11=
+per_pixel_12=dvx = rand(20)*.0001*sin(rand(2)-.5);                       //flicker
+per_pixel_13=dvx = dvx*sqr(vy);                                                                //dampens top
+per_pixel_14=//dvx = dvx*(1-x/2);                                                        //slows sides
+per_pixel_15=dvx = dvx*-.2*(rand(10)-5);                                         //random damper
+per_pixel_16=dvx = dvx -(vx-.5)*.04*(.8-sqr(vy));                                 //drift towards centre
+per_pixel_17=dvx = dvx + cos(sqr(vy-.5)*10-time*1.1)*sqr(1-(vy))*.01; //add flutter at top
+per_pixel_18=
+per_pixel_19=//de-virtualise
+per_pixel_20=dx = dvx*cos(vang) - dvy*sin(vang);
+per_pixel_21=dy = -dvx*sin(vang) - dvy*cos(vang);
+per_pixel_22=
+per_pixel_23=// Telek - 09/11/2002
+per_frame_init_1=bass_x = 1;
+per_frame_init_2=vtarget=4.000000;
+per_frame_init_3=vnum = 4.000000;
