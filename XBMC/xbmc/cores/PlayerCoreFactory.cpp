@@ -122,12 +122,10 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     vecCores.push_back(EPC_PAPLAYER);
   }
    
-#ifdef HAS_MMS
   if (url.GetProtocol().Equals("mms"))
   {
     vecCores.push_back(EPC_DVDPLAYER);    
   }
-#endif
 
   // dvdplayer can play standard rtsp streams
   if (url.GetProtocol().Equals("rtsp") 

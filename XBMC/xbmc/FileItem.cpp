@@ -1032,13 +1032,6 @@ const CStdString& CFileItem::GetContentType() const
       m_ref.Trim();
     }
 
-#ifdef HAS_MMS
-    if (m_strPath.Left(6).Equals("mms://"))
-    {
-      m_ref = "audio/x-ms-wma";
-    }
-#endif
-
     // if it's still empty set to an unknown type
     if( m_ref.IsEmpty() )
       m_ref = "application/octet-stream";
