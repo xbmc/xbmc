@@ -3,7 +3,7 @@ INCLUDES=-I. -I../ -I../linux -I../../guilib -I../utils
 SRCS=fft.cpp Visualisation.cpp VisualisationFactory.cpp
 
 LIB=visualizations.a
-DIRS=OpenGLSpectrum WaveForm
+DIRS=OpenGLSpectrum WaveForm XBMCProjectM
 
 include ../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

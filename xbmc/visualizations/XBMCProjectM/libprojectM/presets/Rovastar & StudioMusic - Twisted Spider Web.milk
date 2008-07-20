@@ -1,0 +1,77 @@
+[preset00]
+fRating=3.000000
+fGammaAdj=2.000000
+fDecay=0.990000
+fVideoEchoZoom=1.001799
+fVideoEchoAlpha=0.500000
+nVideoEchoOrientation=1
+nWaveMode=5
+bAdditiveWaves=1
+bWaveDots=1
+bWaveThick=0
+bModWaveAlphaByVolume=1
+bMaximizeWaveColor=1
+bTexWrap=1
+bDarkenCenter=1
+bRedBlueStereo=0
+bBrighten=0
+bDarken=1
+bSolarize=0
+bInvert=0
+fWaveAlpha=0.995648
+fWaveScale=0.995868
+fWaveSmoothing=0.837000
+fWaveParam=0.000000
+fModWaveAlphaStart=0.750000
+fModWaveAlphaEnd=0.950000
+fWarpAnimSpeed=1.000000
+fWarpScale=10.784599
+fZoomExponent=1.001700
+fShader=0.000000
+zoom=1.009989
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.500000
+dy=0.500000
+warp=1.000000
+sx=0.999900
+sy=1.000000
+wave_r=0.500000
+wave_g=0.499900
+wave_b=0.500000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.010000
+ob_r=0.500000
+ob_g=0.500000
+ob_b=0.500000
+ob_a=0.950000
+ib_size=0.010000
+ib_r=0.500000
+ib_g=0.500000
+ib_b=0.500000
+ib_a=0.950000
+nMotionVectorsX=64.000000
+nMotionVectorsY=1.000000
+mv_dx=0.000000
+mv_dy=0.000000
+mv_l=0.900000
+mv_r=1.000000
+mv_g=1.000000
+mv_b=1.000000
+mv_a=0.000000
+per_frame_1=bass_effect = max(max(bass,bass_att)-1.2,0);
+per_frame_2=treb_effect = max(max(treb,treb_att)-1.2,0);
+per_frame_3=warp = 0.25 + bass_att*1.25;
+per_frame_4=ib_r= ib_r-+ 0.5*( sin(time*0.391));
+per_frame_5=ib_g= ib_g + 0.5*( sin(time*1.527) );
+per_frame_6=ib_b= ib_b - 0.5*( sin(time*1.843) );
+per_frame_7=ob_r = 1 - ib_r;
+per_frame_8=ob_g = 1 - ib_g;
+per_frame_9=ob_b = 1 - ib_b;
+per_frame_10=ob_size = if(above(bass_effect,0), 0.001+0.0065*bass_effect,0.001);
+per_frame_11=ib_size = if(above(treb_effect,0), 0.001+0.0065*treb_effect,0.001);
+per_frame_12=zoom=1.35+0.2*sin(time);
+per_pixel_1=rot = rot + 1 + log(sqrt(2)-rad);
+per_pixel_2=zoom=zoom-0.5*rad +0.1*sin(rad);

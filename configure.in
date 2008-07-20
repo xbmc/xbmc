@@ -319,6 +319,7 @@ AC_CONFIG_FILES([Makefile Makefile.include]
                 [xbmc/cores/dvdplayer/Codecs/Makefile]
                 [xbmc/lib/cximage-6.0/Makefile.linux]
                 [xbmc/cores/paplayer/MIDCodec/Makefile]
+		[xbmc/cores/paplayer/AACCodec/Makefile]
                 [xbmc/cores/paplayer/AC3Codec/Makefile]
                 [xbmc/cores/paplayer/ADPCMCodec/Makefile]
                 [xbmc/cores/paplayer/DCACodec/Makefile]
@@ -418,6 +419,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libfaad2], [
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmad], [./configure])
 XB_CONFIG_MODULE([xbmc/lib/cximage-6.0/zlib], [CFLAGS=-fPIC ./configure])
 XB_CONFIG_MODULE([xbmc/lib/libass], [CFLAGS=-fPIC ./configure])
+XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM],[cd libprojectM; CC="" CXX="" cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .;])
 
 AC_OUTPUT
 
