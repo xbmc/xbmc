@@ -31,6 +31,7 @@
 #include "Settings.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
+#include "GUIFontManager.h"
 
 using namespace std;
 
@@ -130,6 +131,8 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 #ifdef HAS_VIDEO_PLAYBACK
       g_renderManager.Update(false);
 #endif
+      // and reload our fonts
+      g_fontManager.ReloadTTFFonts();
     }
     break;
 
