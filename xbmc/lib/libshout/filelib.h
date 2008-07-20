@@ -17,8 +17,10 @@
 #ifndef __FILELIB_H__
 #define __FILELIB_H__
 
+#ifdef __cplusplus
 extern "C"
 {
+#endif
 
 #include "srtypes.h"
 #if WIN32
@@ -91,6 +93,8 @@ void filelib_shutdown();
 error_code filelib_remove(char *filename);
 error_code filelib_write_cue(TRACK_INFO* ti, int secs);
 
+#ifdef __cplusplus
 }
+#endif
 
 #endif //FILELIB
