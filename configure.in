@@ -335,6 +335,7 @@ AC_CONFIG_FILES([Makefile Makefile.include]
                 [xbmc/lib/libexif/Makefile]
                 [xbmc/lib/libXDAAP/Makefile]
                 [xbmc/lib/libass/Makefile.xbmc_linux]
+		[xbmc/lib/libhdhomerun/Makefile]
 )
 
 AC_DEFUN([XB_CONFIG_MODULE],[

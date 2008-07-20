@@ -1,0 +1,50 @@
+
+OBJS += hdhomerun_pkt.o
+OBJS += hdhomerun_discover.o
+OBJS += hdhomerun_control.o
+OBJS += hdhomerun_channelscan.o
+OBJS += hdhomerun_video.o
+OBJS += hdhomerun_device.o
+
+SRCS := $(OBJS:.o=.c)
+
+CFLAGS += -Wall -O2 -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes -Wpointer-arith -fPIC
+CPPFLAGS += -Wall -O2 -fPIC
+
+LIBS += -lws2_32
+DEFINES += -D__MINGW__
+
+all : hdhomerun_so
+	
+%.o : %.c
+	gcc $(CFLAGS) $(DEFINES) -c -o $@ $<
+
+%.o : %.cpp
+	g++ $(CPPFLAGS) $(DEFINES) -c -o $@ $<
+
+hdhomerun_dll : $(OBJS)
+	gcc $(OBJS) $(LIBS) -Wl,--out-implib,hdhomerun.lib -shared -o hdhomerun.dll
+	strip hdhomerun.dll
+
+hdhomerun_so : $(OBJS)
+	gcc $(OBJS) -shared -o hdhomerun-@ARCH@.so `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
+	strip hdhomerun-@ARCH@.so
+	cp hdhomerun-@ARCH@.so ../../../system
+
+hdhomerun_config hdhomerun_config.exe : $(OBJS) hdhomerun_config.o
+	gcc $(OBJS) hdhomerun_config.o $(LIBS) -lpthreadGC -liphlpapi -o $@
+	strip $@
+
+hdhomerun_mythconfig : $(LIBSRCS) hdhomerun_mythconfig.o
+	gcc $(OBJS) hdhomerun_config.o $(LIBS) -lpthreadGC -liphlpapi -lmysqlclient -o $@
+	strip $@
+
+clean :
+	rm -f hdhomerun_config
+	rm -f hdhomerun_config.exe
+	rm -f hdhomerun_mythconfig
+	rm -f *.o
+	rm -f hdhomerun-@ARCH@.so
+	rm -f hdhomerun.dll
+
+distclean: clean
