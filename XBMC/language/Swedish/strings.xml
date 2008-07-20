@@ -48,6 +48,8 @@
   <string id="110">Skapa miniatyrbilder</string>
   <string id="111">Genvägar</string>
   <string id="112">PAUSAD</string>
+  <string id="113"></string>
+  <string id="114"></string>
   <string id="115">Kopiera</string>
   <string id="116">Flytta</string>
   <string id="117">Radera</string>
@@ -338,6 +340,9 @@
   <string id="416">Inte tillgänglig</string>
   <string id="417">Vy: Stora ikoner</string>
   <string id="418">Aktivera bibliotek</string>
+  <string id="419"></string>
+  <string id="420"></string>
+  <string id="421"></string>
   <string id="422">Radera albuminfo</string>
   <string id="423">Radera CDDB-info</string>
   <string id="424">Välj</string>
@@ -350,6 +355,7 @@
   <string id="431">Ingen buffert</string>
   <string id="432">Radera filmen från biblioteket</string>
   <string id="433">Är du säker på att ta bort '%s'?</string>
+  <string id="434"></string>
   <string id="435"></string>
   <string id="436"></string>
   <string id="437">Flyttbar disk</string>
@@ -595,12 +601,16 @@
   <string id="746">Byt tillbaka till fil-vyn</string>
   <string id="747">Fel vid laddning av bilden</string>
   <string id="748">Ändra sökväg</string>
+  <string id="749"></string>
   <string id="750">Är du säker?</string>
   <string id="751">Ta bort källa</string>
+  <string id="752"></string>
+  <string id="753"></string>
   <string id="754">Lägg till programlänk</string>
   <string id="755">Ändra programsökväg</string>
   <string id="756">Ändra programnamn</string>
   <string id="757">Ändra sökvägsdjup</string>
+  <string id="758"></string>
   <string id="759">Vy: Stor lista</string>
   <string id="760">Gul</string>
   <string id="761">Vit</string>
@@ -632,6 +642,7 @@
   <string id="1002">XBMC kunde inte ansluta till nätverksplatsen.</string>
   <string id="1003">Detta kan bero på att inte nätverket är anslutet.</string>
   <string id="1004">Vill du lägga till det i alla fall?</string>
+  <string id="1005"></string>
   <string id="1006">IP adress</string>
   <string id="1007">Lägg till nätverksplats</string>
   <string id="1008">Protokoll</string>
@@ -707,6 +718,7 @@
   <string id="1250">Autodetektering</string>
   <string id="1251">Autodetektera system</string>
   <string id="1252">Smeknamn</string>
+  <string id="1253"></string>
   <string id="1254">Popup meddelande</string>
   <string id="1255">Skicka FTP användare och lösenord</string>
   <string id="1256">Ping intervall (sek)</string>
@@ -721,6 +733,7 @@
   <string id="1403">Sol</string>
   <string id="1404">Tunga</string>
   <string id="1405">i</string>
+  <string id="1406"></string>
   <string id="1407">närområdet</string>
   <string id="1408">Is</string>
   <string id="1409">Flingor</string>
@@ -752,6 +765,10 @@
   <string id="10018">Inställningar - Nätverk</string>
   <string id="10019">Inställningar - Utseende</string>
   <string id="10020">Skript</string>
+  <string id="10021"></string>
+  <string id="10022"></string>
+  <string id="10023"></string>
+  <string id="10025"></string>
   <string id="10028">Filmer/Spellista</string>
   <string id="10034">Inställningar - Profiler</string>
   <string id="10100">Ja/Nej-dialog</string>
@@ -768,8 +785,16 @@
   <string id="10509">Nätverksspel</string>
   <string id="10510">Tillägg</string>
   <string id="10511">System info</string>
+  <string id="10512"></string>
+  <string id="10513"></string>
+  <string id="10514"></string>
+  <string id="10515"></string>
   <string id="10516">Musik - Bibliotek</string>
   <string id="10517">Musik - Spelas nu</string>
+  <string id="10518"></string>
+  <string id="10519"></string>
+  <string id="10520"></string>
+  <string id="10521"></string>
   <string id="10522">Filmer - Spelas nu</string>
   <string id="10523">Albuminfo</string>
   <string id="10524">Filminfo</string>
@@ -780,6 +805,7 @@
   <string id="12004">Skript/Info</string>
   <string id="12005">Fullskärmsvideo</string>
   <string id="12006">Ljud visualisering</string>
+  <string id="12007"></string>
   <string id="12008">Filstapel-dialog</string>
   <string id="12009">Tvinga återuppbyggnad av index...</string>
   <string id="12010">Återgå till Musik</string>
@@ -852,6 +878,7 @@
   <string id="12384">24 timmars klocka</string>
   <string id="12385">Dag/Månad</string>
   <string id="12386">Månad/Dag</string>
+  <string id="12387"></string>
   <string id="12390">Driftstid</string>
   <string id="12391">minuter</string>
   <string id="12392">timmar</string>
@@ -1016,10 +1043,8 @@
   <string id="13386">Använd tidsbaserad sökning</string>
   <string id="13387">Mall för spårnamn</string>
   <string id="13388">Förinställningar</string>
-  <string id="13389">Det finns inga förinställningar för
-den här visualiseringen</string>
-  <string id="13390">Det finns inga inställningar för
-den här visualiseringen</string>
+  <string id="13389">Det finns inga förinställningar för den här visualiseringen</string>
+  <string id="13390">Det finns inga inställningar för den här visualiseringen</string>
   <string id="13391">Mata ut/Mata in</string>
   <string id="13392">Använd fullskärmsvisualisering vid musik</string>
   <string id="13393">Beräkna storlek</string>
@@ -1322,6 +1347,7 @@ den här visualiseringen</string>
   <string id="20007">Inspelningar</string>
   <string id="20008">Skärmdumpar</string>
   <string id="20009">Använd XBMC</string>
+  <string id="20010"></string>
   <string id="20011">Musikspellistor</string>
   <string id="20012">Filmspellistor</string>
   <string id="20013">Vill du starta spelet?</string>
@@ -1333,6 +1359,7 @@ den här visualiseringen</string>
   <string id="20019">Välj miniatyrbild</string>
   <string id="20020">Kan inte använda både KAI och hjälpprogram</string>
   <string id="20021">Välj vilken du vill använda</string>
+  <string id="20022"></string>
   <string id="20023">Konflikt</string>
   <string id="20024">Skanna nya</string>
   <string id="20025">Skanna alla</string>
@@ -1355,6 +1382,7 @@ den här visualiseringen</string>
   <string id="20053">Lämnade huvudläge</string>
   <string id="20054">Gick in i huvudläge</string>
   <string id="20055">Allmusic.com miniatyr</string>
+  <string id="20056"></string>
   <string id="20057">Ta bort miniatyrbild</string>
   <string id="20058">Lägg till profil...</string>
   <string id="20059">Efterfråga info för alla album</string>
@@ -1482,6 +1510,7 @@ den här visualiseringen</string>
   <string id="20182">Mellanslag</string>
   <string id="20183">Ladda om skal</string>
   <string id="20184">Vrid som angivet i EXIF information</string>
+  <string id="20185"></string>
   <string id="20186">Var god vänta</string>
   <string id="20187">Tar backup av EEPROM</string>
   <string id="20188">Tar backup av BIOS</string>
@@ -1499,6 +1528,12 @@ den här visualiseringen</string>
   <string id="20250">Festa på! (filmer)</string>
   <string id="20251">Blandar drinkar (filmer)</string>
   <string id="20252">Fyller glasen (filmer)</string>
+  <string id="20300"></string>
+  <string id="20301"></string>
+  <string id="20302"></string>
+  <string id="20303"></string>
+  <string id="20304"></string>
+  <string id="20305"></string>
   <string id="20306">Okänd. Lägg till MD5 från XBMC.log till BiosIDs.ini</string>
   <string id="20307">Sekundär DNS</string>
   <string id="20308">DHCP server:</string>
@@ -1522,6 +1557,7 @@ den här visualiseringen</string>
   <string id="20326">Detta kommer att återställa kalibreringsvärden för %s</string>
   <string id="20327">till dess usprungliga värden.</string>
   <string id="20328">Bläddra efter destination</string>
+  <string id="20329"></string>
   <string id="20330">Använd mappnamn för sökningar</string>
   <string id="20331">Fil</string>
   <string id="20332">Använd fil- eller mapp-namn i förfrågningar?</string>
@@ -1742,6 +1778,7 @@ den här visualiseringen</string>
   <string id="21866">Kategori</string>
   <string id="21867">Upphovsman</string>
   <string id="21868">Upphovmanstitel</string>
+  <string id="21869">Om</string>
   <string id="21870">Källa</string>
   <string id="21871">Upphovsrättsnotering</string>
   <string id="21872">Objektsnamn</string>
