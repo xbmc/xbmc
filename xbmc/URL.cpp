@@ -515,17 +515,14 @@ void CURL::GetURLWithoutFilename(CStdString& strURL) const
     strURL += m_strDomain;
     strURL += ";";
   }
-  if (m_strUserName != "" && m_strPassword != "")
-  {
-    strURL += URLEncodeInline(m_strUserName);
-    strURL += ":";
-    strURL += URLEncodeInline(m_strPassword);
-    strURL += "@";
-  }
   else if (m_strUserName != "")
   {
     strURL += URLEncodeInline(m_strUserName);
-    strURL += ":";
+    if (m_strPassword != "")
+    {
+      strURL += ":";
+      strURL += URLEncodeInline(m_strPassword);
+    }
     strURL += "@";
   }
   else if (m_strDomain != "")

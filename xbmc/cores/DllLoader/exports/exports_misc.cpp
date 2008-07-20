@@ -166,13 +166,19 @@ Export export_iconvx[] =
 extern "C" void* inflate();
 extern "C" void* inflateEnd();
 extern "C" void* inflateInit2_();
+extern "C" void* inflateInit_();
+extern "C" void* inflateSync();
 extern "C" void* inflateReset();
+extern "C" void* uncompress();
 
 Export export_zlib[] =
 {
   { "inflate",       -1, inflate,        NULL },
   { "inflateEnd",    -1, inflateEnd,     NULL },
   { "inflateInit2_", -1, inflateInit2_,  NULL },
+  { "inflateInit_",  -1, inflateInit_,   NULL },
+  { "inflateSync",   -1, inflateSync,    NULL },
+  { "uncompress",    -1, uncompress,     NULL },
   { "inflateReset",  -1, inflateReset,   NULL },
   { NULL, NULL, NULL, NULL }
 };

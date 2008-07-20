@@ -42,7 +42,7 @@ public:
   virtual bool CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const;
   virtual void UnfocusFromPoint(const CPoint &point);
 
-  virtual void AddControl(CGUIControl *control);
+  virtual void AddControl(CGUIControl *control, int position = -1);
   virtual void ClearAll();
 
   virtual bool GetCondition(int condition, int data) const;

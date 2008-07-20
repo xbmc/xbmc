@@ -39,26 +39,41 @@ CButtonTranslator::~CButtonTranslator()
 
 bool CButtonTranslator::Load()
 {
-  // load our xml file, and fill up our mapping tables
-  TiXmlDocument xmlDoc;
+  translatorMap.clear();
 
   // Load the config file
   CStdString keymapPath;
   //CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Keymap.xml", keymapPath);
+  keymapPath = "Q:\\system\\Keymap.xml";
+  bool success = LoadKeymap(keymapPath);
   keymapPath = g_settings.GetUserDataItem("Keymap.xml");
-  CLog::Log(LOGINFO, "Loading %s", keymapPath.c_str());
-  if (!xmlDoc.LoadFile(keymapPath))
+  success |= LoadKeymap(keymapPath);
+
+  if (!success)
   {
-    g_LoadErrorStr.Format("%s, Line %d\n%s", keymapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    g_LoadErrorStr.Format("Error loading keymap: %s", keymapPath.c_str());
     return false;
   }
 
-  translatorMap.clear();
+  // Done!
+  return true;
+}
+
+bool CButtonTranslator::LoadKeymap(const CStdString &keymapPath)
+{
+  TiXmlDocument xmlDoc;
+
+  CLog::Log(LOGINFO, "Loading %s", keymapPath.c_str());
+  if (!xmlDoc.LoadFile(keymapPath))
+  {
+    CLog::Log(LOGERROR, "Error loading keymap: %s, Line %d\n%s", keymapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    return false;
+  }
   TiXmlElement* pRoot = xmlDoc.RootElement();
   CStdString strValue = pRoot->Value();
   if ( strValue != "keymap")
   {
-    g_LoadErrorStr.Format("%sl Doesn't contain <keymap>", keymapPath.c_str());
+    CLog::Log(LOGERROR, "%s Doesn't contain <keymap>", keymapPath.c_str());
     return false;
   }
   // run through our window groups
@@ -79,7 +94,6 @@ bool CButtonTranslator::Load()
       pWindow = pWindow->NextSibling();
     }
   }
-  // Done!
   return true;
 }
 
@@ -176,6 +190,12 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
 {
   if (!pWindow || wWindowID == WINDOW_INVALID) return;
   buttonMap map;
+  std::map<WORD, buttonMap>::iterator it = translatorMap.find(wWindowID);
+  if (it != translatorMap.end())
+  {
+    map = it->second;
+    translatorMap.erase(it);
+  }
   TiXmlNode* pDevice;
   if ((pDevice = pWindow->FirstChild("gamepad")) != NULL)
   { // map gamepad actions
