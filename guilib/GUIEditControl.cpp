@@ -100,8 +100,12 @@ bool CGUIEditControl::OnAction(const CAction &action)
     case 10:
     case 13:
       {
-        // enter
+        // enter - ignore
         break;
+      }
+    case 27:
+      { // escape - fallthrough to default action
+        return CGUIButtonControl::OnAction(action);
       }
     case 8:
       {
