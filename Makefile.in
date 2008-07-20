@@ -102,7 +102,7 @@ libshout:
 	$(MAKE) -C xbmc/lib/libshout
 libid3tag: dllloader
 	$(MAKE) -C xbmc/lib/libid3tag
-papcodecs: dllloader linux
+papcodecs: dllloader linux dvdcodecs
 	$(MAKE) -C xbmc/cores/paplayer/AACCodec
 	$(MAKE) -C xbmc/cores/paplayer/AC3Codec
 	$(MAKE) -C xbmc/cores/paplayer/ADPCMCodec
