@@ -325,6 +325,8 @@ dist_skyrocketdata_DATA = cloud.png earth-far.png earth-light.png \
 	earth-near.png moon.png smoke1.png smoke2.png smoke3.png \
 	smoke4.png smoke5.png $(am__append_1)
 all: all-am
+	g++ -shared -o Skyrocket.xbs ../common.o ../color.o ../pngimage.o *.o ../../lib/libmisc.a -lXmu
+	cp Skyrocket.xbs *.png ../../../../../screensavers/
 
 .SUFFIXES:
 .SUFFIXES: .cc .o .obj

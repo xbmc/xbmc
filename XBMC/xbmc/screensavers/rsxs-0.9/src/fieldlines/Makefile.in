@@ -283,6 +283,8 @@ rs_fieldlines_SOURCES = $(COMMON) $(COLOR) $(VECTOR) fieldlines.cc \
 
 rs_fieldlines_LDADD = $(LIBMISC) $(X_LIBS) $(OPENGL_LIBS)
 all: all-am
+	g++ -shared -o Fieldlines.xbs ../common.o ../color.o *.o ../../lib/libmisc.a -lXmu
+	cp Fieldlines.xbs ../../../../../screensavers/
 
 .SUFFIXES:
 .SUFFIXES: .cc .o .obj

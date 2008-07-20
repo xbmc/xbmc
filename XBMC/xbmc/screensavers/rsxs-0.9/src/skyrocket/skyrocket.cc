@@ -851,3 +851,32 @@ void Hack::pointerLeave() {
 	_mouseInWindow = false;
 	_mouseIdleTime = 0.0f;
 }
+
+#define _LINUX
+#include "../../../xbmc_scr.h"
+
+extern "C" {
+
+void Create(void* pd3dDevice, int iWidth, int iHeight, const char * szScreensaver, float pixelRatio)
+{
+  Common::width = iWidth;
+  Common::height = iHeight;
+  Common::aspectRatio = float(Common::width) / float(Common::height);
+}
+
+void Start()
+{
+  Hack::start();
+}
+
+void Render()
+{
+  Hack::tick();
+}
+
+void Stop()
+{
+  Hack::stop();
+}
+
+}

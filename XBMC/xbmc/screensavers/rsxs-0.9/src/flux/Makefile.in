@@ -281,6 +281,8 @@ AM_ETAGSFLAGS = --extra=fq
 rs_flux_SOURCES = $(COMMON) $(COLOR) $(VECTOR) flux.cc flux.hh trail.cc trail.hh
 rs_flux_LDADD = $(LIBMISC) $(X_LIBS) $(OPENGL_LIBS)
 all: all-am
+	g++ -shared -o Flux.xbs ../common.o ../color.o ../pngimage.o *.o ../../lib/libmisc.a -lXmu
+	cp Flux.xbs ../../../../../screensavers/
 
 .SUFFIXES:
 .SUFFIXES: .cc .o .obj

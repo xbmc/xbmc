@@ -298,6 +298,8 @@ rs_helios_LDADD = $(LIBMISC) $(X_LIBS) $(OPENGL_LIBS) $(IMAGE_LIBS)
 heliosdatadir = $(pkgdatadir)/helios
 dist_heliosdata_DATA = spheremap.png
 all: all-am
+	g++ -shared -o Helios.xbs ../common.o ../color.o ../pngimage.o *.o ../../lib/libmisc.a -lXmu
+	cp Helios.xbs *.png ../../../../../screensavers/
 
 .SUFFIXES:
 .SUFFIXES: .cc .o .obj
