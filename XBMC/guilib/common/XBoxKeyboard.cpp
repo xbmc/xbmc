@@ -22,8 +22,6 @@
 #include "../include.h"
 #include "XBoxKeyboard.h"
 
-CKeyboard g_Keyboard; // global
-
 static DWORD anKeyboardBitmapTable[4*2] =
   {
     1 << 0, 1 << 1, 1 << 2, 1 << 3,
@@ -31,21 +29,22 @@ static DWORD anKeyboardBitmapTable[4*2] =
   };
 
 
-CKeyboard::CKeyboard()
+CLowLevelKeyboard::CLowLevelKeyboard()
 {
   ZeroMemory(&m_CurrentKeyStroke, sizeof XINPUT_DEBUG_KEYSTROKE);
   m_dwKeyboardPort = 0;
   m_bShift = false;
   m_bCtrl = false;
   m_bAlt = false;
+  m_bRAlt = false;
   m_cAscii = '\0';
   m_bInitialized = false;
 }
 
-CKeyboard::~CKeyboard()
+CLowLevelKeyboard::~CLowLevelKeyboard()
 {}
 
-void CKeyboard::Initialize(HWND hWnd)
+void CLowLevelKeyboard::Initialize(HWND hWnd)
 
 {
   // Check that we are not already initialized and then initialize if necessary
@@ -94,7 +93,7 @@ void CKeyboard::Initialize(HWND hWnd)
   }
 }
 
-void CKeyboard::Update()
+void CLowLevelKeyboard::Update()
 {
   // Check if keyboard or keyboards were removed or attached.
   DWORD dwInsertions, dwRemovals;

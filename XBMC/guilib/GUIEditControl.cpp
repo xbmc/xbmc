@@ -83,7 +83,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
   else if (action.wID >= KEY_ASCII)
   {
     // input from the keyboard
-    switch (action.wID & 0xFF) // TODO: Trunk doesn't have the unicode stuff
+    switch (action.unicode) 
     {
     case 10:
     case 13:
@@ -100,7 +100,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
       }
     default:
       {
-        m_text.insert(m_text.begin() + m_cursorPos, (WCHAR)action.wID & 0xFF);
+        m_text.insert(m_text.begin() + m_cursorPos, (WCHAR)action.unicode);
         m_cursorPos++;
         break;
       }
