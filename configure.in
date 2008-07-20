@@ -338,6 +338,7 @@ AC_CONFIG_FILES([Makefile Makefile.include]
 		[xbmc/lib/libhdhomerun/Makefile]
 		[xbmc/lib/libGoAhead/Makefile]
 		[xbmc/lib/libshout/Makefile]
+		[xbmc/lib/libid3tag/Makefile]
 )
 
 AC_DEFUN([XB_CONFIG_MODULE],[
@@ -422,6 +423,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libfaad2], [
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmad], [./configure])
 XB_CONFIG_MODULE([xbmc/lib/cximage-6.0/zlib], [CFLAGS=-fPIC ./configure])
 XB_CONFIG_MODULE([xbmc/lib/libass], [CFLAGS=-fPIC ./configure])
+XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[CFLAGS=-O3 ./configure])
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM],[cd libprojectM; CC="" CXX="" cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .;])
 XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [./configure --without-xscreensaver --disable-sound --disable-cyclone --disable-euphoria --disable-fieldlines --disable-flocks --disable-flux --disable-helios --disable-hyperspace --disable-lattice --disable-skyrocket])
 
