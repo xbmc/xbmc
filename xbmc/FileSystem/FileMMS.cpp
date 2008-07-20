@@ -100,7 +100,7 @@ void CFileMMS::send_command(int s, int command, uint32_t switches, uint32_t extr
 
 	if (send(s, cmd.buf, len8 * 8 + 48, 0) != (len8 * 8 + 48))
 	{
-		printf("MSGT_NETWORK,MSGL_ERR,MSGTR_MPDEMUX_MMST_WriteError");
+		CLog::Log(LOGERROR, "MMS: write error");
 	}
 }
 
@@ -147,7 +147,7 @@ void CFileMMS::get_answer(int s)
 		len = recv(s, data, MMS_BUF_SIZE, 0);
 		if (!len)
 		{
-			printf("MSGT_NETWORK,MSGL_ERR,MSGTR_MPDEMUX_MMST_EOFAlert");
+            CLog::Log(LOGERROR, "MMS: eof reached");
 			return;
 		}
 
@@ -177,7 +177,6 @@ int CFileMMS::get_data(int s, char *buf, size_t count)
 
 		if (len != 0)
 		{
-			printf("MSGT_NETWORK,MSGL_INFO,[%d/%d]\n", total, count);
 			fflush(stdout);
 		}
 	}
