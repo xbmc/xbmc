@@ -56,7 +56,7 @@ public:
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetPosition(float posX, float posY);
   virtual void SetColorDiffuse(const CGUIInfoColor &color);
-  void SetLabel(const std::string & aLabel);
+  virtual void SetLabel(const std::string & aLabel);
   void SetLabel2(const std::string & aLabel2);
   void SetClickActions(const std::vector<CStdString>& clickActions) { m_clickActions = clickActions; };
   const std::vector<CStdString> &GetClickActions() const { return m_clickActions; };
@@ -64,9 +64,7 @@ public:
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   virtual CStdString GetLabel() const { return GetDescription(); };
   virtual CStdString GetLabel2() const;
-  void SetTabButton(bool bIsTabButton = TRUE) { m_bTabButton = bIsTabButton; };
   void SetSelected(bool bSelected);
-  void Flicker(bool bFlicker = TRUE);
   virtual CStdString GetDescription() const;
   void SetAlpha(unsigned char alpha);
 
@@ -81,12 +79,11 @@ public:
 
 protected:
   void OnFocus();
+  virtual void RenderText();
 
   CGUIImage m_imgFocus;
   CGUIImage m_imgNoFocus;
   DWORD m_dwFocusCounter;
-  DWORD m_dwFlickerCounter;
-  DWORD m_dwFrameCounter;
   unsigned char m_alpha;
 
   CGUIInfoLabel  m_info;
@@ -97,7 +94,6 @@ protected:
 
   std::vector<CStdString> m_clickActions;
   std::vector<CStdString> m_focusActions;
-  bool m_bTabButton;
 
   bool m_bSelected;
 };
