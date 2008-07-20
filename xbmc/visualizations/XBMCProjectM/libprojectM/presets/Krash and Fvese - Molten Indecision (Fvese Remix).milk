@@ -1,0 +1,107 @@
+[preset00]
+fRating=3.000000
+fGammaAdj=2.000000
+fDecay=1.000000
+fVideoEchoZoom=1.000000
+fVideoEchoAlpha=0.000000
+nVideoEchoOrientation=0
+nWaveMode=5
+bAdditiveWaves=0
+bWaveDots=0
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=0
+bTexWrap=1
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=1.000000
+fWaveScale=6.000000
+fWaveSmoothing=0.000000
+fWaveParam=-0.000000
+fModWaveAlphaStart=0.750000
+fModWaveAlphaEnd=0.950000
+fWarpAnimSpeed=1.000000
+fWarpScale=1.000000
+fZoomExponent=1.000000
+fShader=1.000000
+zoom=1.000000
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000000
+dy=0.000000
+warp=1.000000
+sx=1.000000
+sy=1.000000
+wave_r=0.500000
+wave_g=0.500000
+wave_b=0.500000
+wave_x=0.950000
+wave_y=0.500000
+ob_size=0.010000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=0.800000
+ib_size=0.005000
+ib_r=0.000000
+ib_g=0.000000
+ib_b=0.000000
+ib_a=0.060000
+nMotionVectorsX=12.000000
+nMotionVectorsY=9.000000
+mv_r=1.000000
+mv_g=1.000000
+mv_b=1.000000
+mv_a=0.000000
+per_frame_1=warp=0;
+per_frame_2=dx=-0.0005;
+per_frame_3=dy=-0.0005;
+per_frame_4=drip1grav = if(above(drip1y,1.2),0.001*(1+rand(10)),drip1grav) + equal(drip1grav,0)*0.05;
+per_frame_5=drip1x = if(above(drip1y,1.2),0.01*rand(100),drip1x);
+per_frame_6=drip1y = if(above(drip1y,1.2),0,drip1y);
+per_frame_7=drip2grav = if(above(drip2y,1.2),0.001*(1+rand(10)),drip2grav) + equal(drip2grav,0)*0.06;
+per_frame_8=drip2x = if(above(drip2y,1.2),0.01*rand(100),drip2x);
+per_frame_9=drip2y = if(above(drip2y,1.2),0,drip2y);
+per_frame_10=drip3grav = if(above(drip3y,1.2),0.001*(1+rand(10)),drip3grav) + equal(drip3grav,0)*0.07;
+per_frame_11=drip3x = if(above(drip3y,1.2),0.01*rand(100),drip3x);
+per_frame_12=drip3y = if(above(drip3y,1.2),0,drip3y);
+per_frame_13=drip4grav = if(above(drip4y,1.2),0.001*(1+rand(10)),drip4grav) + equal(drip4grav,0)*0.08;
+per_frame_14=drip4x = if(above(drip4y,1.2),0.01*rand(100),drip4x);
+per_frame_15=drip4y = if(above(drip4y,1.2),0,drip4y);
+per_frame_16=drip1y = 0.001 + drip1y + drip1grav;
+per_frame_17=drip2y = 0.001 + drip2y + drip2grav;
+per_frame_18=drip3y = 0.001 + drip3y + drip3grav;
+per_frame_19=drip4y = 0.001 + drip4y + drip4grav;
+per_frame_20=q1 = if(equal(frame%4,0),drip1x,if(equal(frame%4,1),drip2x,if(equal(frame%4,2),drip3x,drip4x)));
+per_frame_21=q2 = if(equal(frame%4,0),drip1y,if(equal(frame%4,1),drip2y,if(equal(frame%4,2),drip3y,drip4y)));
+per_frame_22=wave_r = wave_r + 0.350*( 0.60*sin(0.980*time) + 0.40*sin(1.047*time) );
+per_frame_23=wave_g = wave_g + 0.350*( 0.60*sin(0.835*time) + 0.40*sin(1.081*time) );
+per_frame_24=wave_b = wave_b + 0.350*( 0.60*sin(0.814*time) + 0.40*sin(1.011*time) );
+per_frame_25=vol = (bass+mid+att)/6;
+per_frame_26=xamptarg = if(equal(frame%15,0),min(0.5*vol*bass_att,0.5),xamptarg);
+per_frame_27=xamp = xamp + 0.5*(xamptarg-xamp);
+per_frame_28=xdir = if(above(abs(xpos),xamp),-sign(xpos),if(below(abs(xspeed),0.1),2*above(xpos,0)-1,xdir));
+per_frame_29=xspeed = xspeed + xdir*xamp - xpos - xspeed*0.055*below(abs(xpos),xamp);
+per_frame_30=xpos = xpos + 0.001*xspeed;
+per_frame_31=wave_x = xpos + 0.5;
+per_frame_32=yamptarg = if(equal(frame%15,0),min(0.3*vol*treb_att,0.5),yamptarg);
+per_frame_33=yamp = yamp + 0.5*(yamptarg-yamp);
+per_frame_34=ydir = if(above(abs(ypos),yamp),-sign(ypos),if(below(abs(yspeed),0.1),2*above(ypos,0)-1,ydir));
+per_frame_35=yspeed = yspeed + ydir*yamp - ypos - yspeed*0.055*below(abs(ypos),yamp);
+per_frame_36=ypos = ypos + 0.001*yspeed;
+per_frame_37=wave_y = ypos + 0.5;
+per_frame_38=rot = rot + 0.01*( 0.60*sin(0.381*time) + 0.40*sin(0.479*time) );
+per_frame_39=cx = cx + 0.410*( 0.60*sin(0.374*time) + 0.40*sin(0.294*time) );
+per_frame_40=cy = cy + 0.410*( 0.60*sin(0.393*time) + 0.40*sin(0.223*time) );
+per_frame_41=dy = dy + 0.002*( 0.60*sin(0.284*time) + 0.40*sin(0.247*time) );
+per_frame_42=wave_mystery = wave_mystery + 0.15*( 0.60*sin(0.629*time) + 0.40*sin(1.826*time) );
+per_frame_43=warp = warp*vol+treb_att;
+per_frame_44=dy = dy + above(bass_att,1.2)*bass_att*0.003;
+per_frame_45=ob_a = ob_a - 2*vol;
+per_pixel_1=dy = dy + if(below(abs(q1-x),0.01),if(below(y,q2),max(0.02-abs(q1-x),0),0.001),0.001);
+per_pixel_2=zoom=zoom+0.07*sin(rad*9*time*2.5);
+per_pixel_3=rot=if(below(rad,bass_factor),sin(time*.3+ang*8+rad*7.5)*.063,rot);

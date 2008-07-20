@@ -1,0 +1,96 @@
+New for version 1.1
+------------------------------------------------------
+* general performance improvements and improved video card compatability
+* multi-threading during smooth preset switching
+* pulse audio support
+* Qt4 GUI implemented for playlist management and preset editing (jack / pulseaudio only)
+
+New for versoin 1.01
+------------------------------------------------------
+* Bugfixes
+
+New for version 1.00
+------------------------------------------------------
+This release includes months of refactoring. The code changes are immense. The list below does not even begin to explain the amount of upheaval that has occured.
+	
+*Smooth Preset Switching
+
+*OpenGL Framebuffer Objects (sharper rendering)
+
+*PerPixel Warp effect added
+
+*Custom Shape Texturing via Images (imageURL property)
+
+*Serious Parser/Evaluator improvements for better .milk Compatability
+
+*projectM-engine can render to a texture instead of the framebuffer (see projectM-test/projectM-test-texture.cpp)
+
+*projectM-engine, projectM-xmms, projectM-jack, and projectM-test build system converted to CMake
+
+*3D Song title animation
+
+*New Configuration File (more options, more flexible)
+
+New for version 0.99
+------------------------------------------------------
+*config file now saved at ~/.projectM/config
+
+*internal rendering coordinate spaces corrected. (basically, I made some stupid decisions a long time ago, and just fixed them now)
+
+*xmms plugins close properly via window decorations
+
+*mouse cursor hidden in xmms-projectM during fullscreen
+	
+*menus should resize relative to the screen size now
+	
+*Fixed numerous compilation bugs 
+
+*when the player changes to a new song, libprojectM will zoom in the title for a few seconds, then blend the title into the vis (ala milkdrop), if the player support sending the title to libprojectM (only xmms-projectM now)
+	
+
+New for version 0.98
+------------------------------------------------------
+*projectM has been refactored into a shared library called libprojectM.
+    -Now compiles as C++ (even though 99% of the code is C)
+	
+*libvisual-projectM now supports libvisual 0.4.0
+	
+*Preset library updated (~150 new, ~25 removed)
+	
+*Improved Rendering Engine
+    -rewrote per pixel mathematics
+    -fixed waveforms 0, 1, and 4
+    -fixed Order of drawing (Vectors, Custom Shapes, Custom Waves, Waveform, Borders)
+    -fixed custom shape rotation and texture parameter bugs
+    -added support for the bDarkenCenter feature
+    -added pbuffer support (however, you can't use it yet)
+    -improved motion vectors when using pbuffers
+	
+*Improved .milk Parser
+     -corrected behavior of frame, wave, and shape init_eqns
+     -fixed bug with multiple equations on one line
+
+*Menu/Help/Display System Improvements
+    -Replaced GLF with FTGL (TrueType) fonts.
+    -Added the solarize, brighten, darken, and invert filters to the post-processing menu
+    -(F4) new Rendering stats display
+    -(F5) Framerate display fixed
+   
+*New Framerate limiter
+	
+*n0dalus contributed some autotools patches.
+	
+*Chris Byrne of Monstavision contributed:
+         -3 Memory Leak fixes!
+         -Performance improvements during PCM input
+	 -Preset index code rewritten to allow presets to be added while projectM is running 
+	 
+*Hai Zaar helped us clean up the autotools stuff
+         -Presets/fonts will be stored in $DATADIR/projectM/fonts and /presets
+         -The config file will be stored in $SYSCONFDIR/projectM
+         -By default DATADIR is $PREFIX/share and SYSCONFDIR is $PREFIX/etc
+             so we reccomend you run configure like so:
+	          
+	     ./configure --sysconfdir=/etc
+
+	
