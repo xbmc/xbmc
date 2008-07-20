@@ -40,34 +40,6 @@
 		<textcolor>white</textcolor>
 		<disabledcolor>disabled</disabledcolor>
 	</default>
-	<default type="listcontrol">
-		<posx>190</posx>
-		<posy>100</posy>
-		<width>485</width>
-		<height>425</height>
-		<spinwidth>18</spinwidth>
-		<spinheight>16</spinheight>
-		<spinposx>450</spinposx>
-		<spinposy>445</spinposy>
-		<spincolor>white</spincolor>
-		<spinfont>font10</spinfont>
-		<textureup>scroll-up.png</textureup>
-		<texturedown>scroll-down.png</texturedown>
-		<textureupfocus>scroll-up-focus.png</textureupfocus>
-		<texturedownfocus>scroll-down-focus.png</texturedownfocus>
-		<texturefocus>list-focus.png</texturefocus>
-		<texturenofocus>list-nofocus.png</texturenofocus>
-		<image>icon-folder.png</image>
-		<textureheight>26</textureheight>
-		<font>font13</font>
-		<selectedcolor>green</selectedcolor>
-		<textcolor2>60ffffff</textcolor2>
-		<textcolor>white</textcolor>
-		<suffix>|</suffix>
-		<textxoff>3</textxoff>
-		<textxoff2>0</textxoff2>
-		<aligny>center</aligny>
-	</default>
 	<default type="fadelabel">
 		<posx>55</posx>
 		<posy>530</posy>
