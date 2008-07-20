@@ -241,6 +241,8 @@ void CGUIEditControl::OnTextChanged()
 
 void CGUIEditControl::SetLabel(const std::string &text)
 {
+  // make sure we empty out our text (incase the passed in text is empty)
+  m_text.Empty();
   g_charsetConverter.utf8ToW(text, m_text);
   m_cursorPos = m_text.size();
 }
