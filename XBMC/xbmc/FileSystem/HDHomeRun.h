@@ -44,10 +44,12 @@ public:
 
 class DllHdHomeRun : public DllDynamic, public DllHdHomeRunInterface
 {
-#ifdef _LINUX
-  DECLARE_DLL_WRAPPER(DllHdHomeRun, Q:\\system\\hdhomerun-i486-linux.so)
-#else
+#ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllHdHomeRun, Q:\\system\\hdhomerun.dll)
+#elif defined(__x86_64__)
+  DECLARE_DLL_WRAPPER(DllHdHomeRun, Q:\\system\\hdhomerun-x86_64-linux.so)
+#else
+  DECLARE_DLL_WRAPPER(DllHdHomeRun, Q:\\system\\hdhomerun-i486-linux.so)
 #endif
   DEFINE_METHOD3(int, discover_find_devices, (uint32_t p1, struct hdhomerun_discover_device_t p2[], int p3))
   DEFINE_METHOD1(struct hdhomerun_device_t*, device_create_from_str, (const char* p1))
