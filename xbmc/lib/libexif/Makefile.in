@@ -1,15 +1,9 @@
-CC=gcc
-OBJS=libexif.o ExifParse.o IptcParse.o JpegParse.o
-CFLAGS=-D_LINUX -D_DLL -fPIC -O2
+OBJS +=libexif.o ExifParse.o IptcParse.o JpegParse.o libexif-@ARCH@.so
+CFLAGS +=-D_LINUX -D_DLL -fPIC -O2
 
-libexif-@ARCH@.so: $(OBJS)
+include ../../../Makefile.include
+
+lib: libexif-@ARCH@.so
+
+libexif-@ARCH@.so:
 	$(CC) -shared -o $@ *.o `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o && cp $@ ../../../system/
-
-clean:
-	$(RM) $(OBJS) *.so
-
-%o : %cpp
-	g++ -c -o $@ $< $(CFLAGS)
-
-%o : %c
-	$(CC) -c -o $@ $< $(CFLAGS)
