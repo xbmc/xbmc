@@ -100,6 +100,8 @@ libhdhomerun:
 	$(MAKE) -C xbmc/lib/libhdhomerun
 libshout:
 	$(MAKE) -C xbmc/lib/libshout
+libid3tag: dllloader
+	$(MAKE) -C xbmc/lib/libid3tag
 papcodecs: dllloader linux
 	$(MAKE) -C xbmc/cores/paplayer/AACCodec
 	$(MAKE) -C xbmc/cores/paplayer/AC3Codec

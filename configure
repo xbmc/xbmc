@@ -13001,7 +13001,10 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile xbmc/cores/dvdplayer/Codecs/Makefile xbmc/lib/cximage-6.0/Makefile.linux xbmc/cores/paplayer/MIDCodec/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/DCACodec/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/Makefile.xbmc_linux xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libass/Makefile.xbmc_linux xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile"
+ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile xbmc/cores/dvdplayer/Codecs/Makefile xbmc/lib/cximage-6.0/Makefile.linux xbmc/cores/paplayer/MIDCodec/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/DCACodec/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/Makefile.xbmc_linux xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libass/Makefile.xbmc_linux xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile"
+
+
+
 
 
 
@@ -13636,6 +13639,7 @@ do
     "xbmc/lib/libhdhomerun/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libhdhomerun/Makefile" ;;
     "xbmc/lib/libGoAhead/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libGoAhead/Makefile" ;;
     "xbmc/lib/libshout/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libshout/Makefile" ;;
+    "xbmc/lib/libid3tag/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libid3tag/Makefile" ;;
 
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
@@ -14473,6 +14477,24 @@ echo "$as_me: error: Submodule xbmc/lib/libass failed to configure" >&2;}
 else
   { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libass doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/lib/libass doesn't exist" >&2;}
+   { (exit 1); exit 1; }; }
+fi;
+
+
+if [ -d xbmc/lib/libid3tag/libid3tag ]; then
+  pushd xbmc/lib/libid3tag/libid3tag
+  CFLAGS=-O3 ./configure
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libid3tag/libid3tag failed to configure" >&5
+echo "$as_me: error: Submodule xbmc/lib/libid3tag/libid3tag failed to configure" >&2;}
+   { (exit 1); exit 1; }; }
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libid3tag/libid3tag doesn't exist" >&5
+echo "$as_me: error: Submodule xbmc/lib/libid3tag/libid3tag doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
 fi;
 
