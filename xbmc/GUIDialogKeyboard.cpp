@@ -252,8 +252,9 @@ bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
   return true;
 }
 
-void CGUIDialogKeyboard::SetText(CStdString& aTextString)
+void CGUIDialogKeyboard::SetText(const CStdString& aTextString)
 {
+  m_strEdit.Empty();
   g_charsetConverter.utf8ToW(aTextString, m_strEdit);
   UpdateLabel();
   MoveCursor(m_strEdit.size());
