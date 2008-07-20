@@ -284,6 +284,9 @@ rs_cyclone_SOURCES = $(COMMON) $(COLOR) $(VECTOR) blend.cc blend.hh cyclone.cc \
 
 rs_cyclone_LDADD = $(LIBMISC) $(X_LIBS) $(OPENGL_LIBS)
 all: all-am
+	g++ -shared -o Cyclone.xbs ../common.o ../color.o *.o ../../lib/libmisc.a -lXmu
+	cp Cyclone.xbs ../../../../../screensavers/
+	
 
 .SUFFIXES:
 .SUFFIXES: .cc .o .obj

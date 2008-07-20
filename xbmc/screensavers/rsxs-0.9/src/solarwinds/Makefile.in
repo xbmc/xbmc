@@ -283,6 +283,8 @@ rs_solarwinds_SOURCES = $(COMMON) $(COLOR) $(VECTOR) solarwinds.cc \
 
 rs_solarwinds_LDADD = $(LIBMISC) $(X_LIBS) $(OPENGL_LIBS)
 all: all-am
+	g++ -shared -o Solarwinds.xbs ../common.o ../color.o *.o ../../lib/libmisc.a -lXmu
+	cp Solarwinds.xbs ../../../../../screensavers/
 
 .SUFFIXES:
 .SUFFIXES: .cc .o .obj
