@@ -468,11 +468,12 @@ void CButtonTranslator::MapAction(WORD wButtonCode, const char *szAction, button
   // have a valid action, and a valid button - map it.
   // check to see if we've already got this (button,action) pair defined
   buttonMap::iterator it = map.find(wButtonCode);
-  if (it == map.end() || (*it).second.wID != wAction)
+  if (it == map.end() || (*it).second.wID != wAction || (*it).second.strID != szAction)
   {
-    //char szTmp[128];
-    //sprintf(szTmp,"  action:%i button:%i\n", wAction,wButtonCode);
-    //OutputDebugString(szTmp);
+    // NOTE: This multimap is only being used as a normal map at this point (no support
+    //       for multiple actions per key)
+    if (it != map.end())
+      map.erase(it);
     CButtonAction button;
     button.wID = wAction;
     button.strID = szAction;
