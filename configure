@@ -13055,9 +13055,6 @@ ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/l
 
 
 
-
-
-
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -14223,24 +14220,6 @@ echo "$as_me: error: Submodule xbmc/cores/paplayer/MPCCodec doesn't exist" >&2;}
 fi;
 
 
-if [ -d xbmc/cores/paplayer/MP3Codec/libmad-0.15.1b ]; then
-  pushd xbmc/cores/paplayer/MP3Codec/libmad-0.15.1b
-  ./configure CFLAGS="-O3 -fPIC" CXXFLAGS="-O3 -fPIC"
-  if [ $? -ne 0 ]; then
-    popd
-    { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/MP3Codec/libmad-0.15.1b failed to configure" >&5
-echo "$as_me: error: Submodule xbmc/cores/paplayer/MP3Codec/libmad-0.15.1b failed to configure" >&2;}
-   { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/MP3Codec/libmad-0.15.1b doesn't exist" >&5
-echo "$as_me: error: Submodule xbmc/cores/paplayer/MP3Codec/libmad-0.15.1b doesn't exist" >&2;}
-   { (exit 1); exit 1; }; }
-fi;
-
-
 if [ -d xbmc/cores/paplayer/flac-1.2.1 ]; then
   pushd xbmc/cores/paplayer/flac-1.2.1
 
@@ -14315,7 +14294,11 @@ if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
     --disable-altivec \
     --disable-ipv6 \
     --enable-pthreads \
-    --disable-debug
+    --disable-debug \
+    --disable-muxers \
+    --disable-encoders \
+    --disable-ffplay \
+    --disable-ffserver
 
   if [ $? -ne 0 ]; then
     popd

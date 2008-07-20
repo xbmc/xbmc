@@ -369,7 +369,6 @@ XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
   cp pyconfig.h Include
 ])
 XB_CONFIG_MODULE([xbmc/cores/paplayer/MPCCodec], [./configure])
-XB_CONFIG_MODULE([xbmc/cores/paplayer/MP3Codec/libmad-0.15.1b], [./configure CFLAGS="-O3 -fPIC" CXXFLAGS="-O3 -fPIC"])
 XB_CONFIG_MODULE([xbmc/cores/paplayer/flac-1.2.1], [
   ./configure -C \
     --with-pic \
@@ -391,7 +390,11 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
     --disable-altivec \
     --disable-ipv6 \
     --enable-pthreads \
-    --disable-debug
+    --disable-debug \
+    --disable-muxers \
+    --disable-encoders \
+    --disable-ffplay \
+    --disable-ffserver
 ])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdts], [
   ./configure \
