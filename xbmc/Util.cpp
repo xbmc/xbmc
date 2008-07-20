@@ -4289,6 +4289,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   { // NOTE: These messages require a media window, thus they're sent to the current activewindow.
     //       This shouldn't stop a dialog intercepting it though.
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE);
+    message.SetStringParam(strParameterCaseIntact);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.nextviewmode"))

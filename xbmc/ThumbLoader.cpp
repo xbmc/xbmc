@@ -63,6 +63,12 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     }  
   }
 
+  if (!pItem->HasProperty("fanart_image"))
+  {
+    pItem->CacheVideoFanart();
+    if (CFile::Exists(pItem->GetCachedVideoFanart()))
+      pItem->SetProperty("fanart_image",pItem->GetCachedVideoFanart());
+  }                          
   return true;
 }
 

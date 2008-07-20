@@ -802,7 +802,7 @@ namespace PYXBMC
 
     PyGUILock();
 
-    pWindow->Remove(pControl->iControlId);
+    pWindow->Remove(pControl->pGUIControl);
     pControl->pGUIControl->FreeResources();
     delete pControl->pGUIControl;
 
