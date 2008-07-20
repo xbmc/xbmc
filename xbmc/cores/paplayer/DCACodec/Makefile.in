@@ -1,14 +1,8 @@
-CFLAGS=-D_LINUX -fPIC -Iinclude -Ivc++
-OBJS=libdts/downmix.o libdts/parse.o libdts/bitstream.o
+include ../../../../Makefile.include
 
-dcacodec-@ARCH@.so: $(OBJS)
-	gcc -fPIC -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o && cp $@ ../../../../system/players/paplayer/
+LIB=../../../../system/players/paplayer/dcacodec-@ARCH@.so
 
-clean:
-	$(RM) $(OBJS) *.so
+lib: $(LIB)
 
-%o : %c
-	gcc $(CFLAGS) -O2 -fPIC -c $< -o $@
-
-%o : %cpp
-	g++ $(CFLAGS) -O2 -fPIC -c $< -o $@
+$(LIB):
+	gcc -fPIC -shared -o $@ ../../dvdplayer/Codecs/libdts/libdts/*_pic*.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
