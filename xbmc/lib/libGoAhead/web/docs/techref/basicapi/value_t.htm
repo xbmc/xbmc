@@ -1,0 +1,78 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>value_t -- basic</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+ <table width="550"> <tr><td>
+ 
+<table border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle">
+<tr>
+	<td class="titleLeft" align=left width="33%"><b> value_t</b></td><td class="titleCenter" align=center width="33%"><b> basic</b></td><td class="titleRight" align=right width="33%"><B> EMF</B></td></tr>
+</table><hr>
+<h2>Synopsis</h2><p>Structure used to store all possible data types.</p><h2>Prototype</h2><pre>
+ #include &quot;uemf.h&quot;
+
+ typedef struct {
+
+    union {
+        char    bool;
+        char    byteint;
+        short   shortint;
+        char    percent;
+        long    integer;
+        long    hex;
+        long    octal;
+        long    big[2];
+        double  floating;
+        char_t  *string;
+        char    *bytes;
+        char_t  *errmsg;
+        void    *symbol;
+    } value;
+
+    value_type_t    type;
+
+    unsigned int    valid;
+    unsigned int    allocated;      /* String was balloced */
+
+} value_t;
+
+
+typedef enum {
+    undefined   = 0,
+    byteint     = 1,
+    shortint    = 2,
+    integer     = 3,
+    hex         = 4,
+    percent     = 5,
+    octal       = 6,
+    big         = 7,
+    bool        = 8,
+    floating    = 9,
+    string      = 10,
+    bytes       = 11,
+    symbol      = 12,
+    errmsg      = 13
+} value_type_t;
+
+</pre><h2>Description</h2><p> The value_t type is used heavily in the GoAhead EMF database API. </p><H2>Example</H2><PRE>
+/********************************************/
+/*
+ *	Initialize a boolean value.
+ */
+
+value_t valueBool(int value)
+{
+    value_t	v = VALUE_VALID;
+
+    v.type = bool;
+    v.value.bool = (char) value;
+    return v;
+}
+</PRE><h2>Stability Classification</h2><p>Stable.</p><h2></h2><h2></h2><h2></h2><h2></h2><h2>See Also</h2><p>
+<A HREF="valueFree.htm">valueFree</A></p></td></tr></table> 
+</body>
+</html>

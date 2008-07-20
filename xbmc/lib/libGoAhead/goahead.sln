@@ -1,0 +1,36 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "goahead", "goahead.vcproj", "{F6117C48-1AAD-4784-A5C0-BC87E1EE9F4E}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Debug (Win32) = Debug (Win32)
+		Profile = Profile
+		Profile_FastCap = Profile_FastCap
+		Release = Release
+		Release (Win32) = Release (Win32)
+		Release_LTCG = Release_LTCG
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{F6117C48-1AAD-4784-A5C0-BC87E1EE9F4E}.Debug.ActiveCfg = Debug|Xbox
+		{F6117C48-1AAD-4784-A5C0-BC87E1EE9F4E}.Debug.Build.0 = Debug|Xbox
+		{F6117C48-1AAD-4784-A5C0-BC87E1EE9F4E}.Debug (Win32).ActiveCfg = Debug|Win32
+		{F6117C48-1AAD-4784-A5C0-BC87E1EE9F4E}.Debug (Win32).Build.0 = Debug|Win32
+		{F6117C48-1AAD-4784-A5C0-BC87E1EE9F4E}.Profile.ActiveCfg = Profile|Xbox
+		{F6117C48-1AAD-4784-A5C0-BC87E1EE9F4E}.Profile.Build.0 = Profile|Xbox
+		{F6117C48-1AAD-4784-A5C0-BC87E1EE9F4E}.Profile_FastCap.ActiveCfg = Profile_FastCap|Xbox
+		{F6117C48-1AAD-4784-A5C0-BC87E1EE9F4E}.Profile_FastCap.Build.0 = Profile_FastCap|Xbox
+		{F6117C48-1AAD-4784-A5C0-BC87E1EE9F4E}.Release.ActiveCfg = Release|Xbox
+		{F6117C48-1AAD-4784-A5C0-BC87E1EE9F4E}.Release.Build.0 = Release|Xbox
+		{F6117C48-1AAD-4784-A5C0-BC87E1EE9F4E}.Release (Win32).ActiveCfg = Release|Win32
+		{F6117C48-1AAD-4784-A5C0-BC87E1EE9F4E}.Release (Win32).Build.0 = Release|Win32
+		{F6117C48-1AAD-4784-A5C0-BC87E1EE9F4E}.Release_LTCG.ActiveCfg = Release_LTCG|Xbox
+		{F6117C48-1AAD-4784-A5C0-BC87E1EE9F4E}.Release_LTCG.Build.0 = Release_LTCG|Xbox
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

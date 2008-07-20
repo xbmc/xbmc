@@ -1,0 +1,34 @@
+<HTML>
+<HEAD>
+<TITLE>Incorporating RSA Security</TITLE>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../style/normal_ws.css">
+</head>
+
+<BODY BGCOLOR="#FFFFFF">
+<TABLE WIDTH="550" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD>
+<H1>Incorporating RSA Security  into WebServer 2.1
+</H1><P> <A HREF="http://rsasecurity.com/" TARGET="new">RSA Security Inc.</A> is a company that specializes in providing e-security solutions.  The RSA developer toolkit called, <B>BSAFE SSL-C</B> is a C language interface to an implementation of the SSL protocol.  This toolkit also includes patented encryption algorithms used in SSL and can be purchased directly through RSA Security Inc.  GoAhead Software does not support the BSAFE toolkit, however, WebServer 2.1 does provide an interface to this toolkit through a file called <B>webSSL.c</B>.</P><P>Once the BSAFE SSL-C toolkit has been installed, the following changes to the platform-specific make file  are required:</P><P>1. Add the BSAFE SSL-C include path to the C compiler switches.<BR>2. Define the symbol, WEBS_SSL_SUPPORT  in your C compiler switches.<BR>3. Add the websSSL.c file to the list of objects to include in the executable.<BR>4. Add the BSAFE SSL-C library in the list of libraries to link.</P><P>According to the four requirements listed above, the following changes must be made to the Linux-platform make file:</P><PRE># Create the include path:
+SSLINC = /RSASSL/library/include</PRE><PRE># Create the SSL switches
+SSLSW	= -DWEBS_SSL_SUPPORT -I$(SSLINC)</PRE>
+<PRE># Create the SSL library link
+SSLLIB = /RSASSL/library/lib/libsslc.a</PRE><PRE># Create the SSL patch file
+SSLPATCHFILE = ../websSSL.c</PRE><PRE># Create the C Flags
+CFLAGS = -DWEBS -DUEMF -DOS=&quot;LINUX&quot; -DLINUX $(UMSW) $(DASW) $(SSLSW) </PRE><PRE># Create the Link Flags
+LDFLAGS = $(SSLLIB)</PRE><PRE># Dependency definition for the libwebs.a module archive
+DEPEND_FILES	= ../asp.o ../balloc.o ../base64.o ../cgi.o ../default.o  \
+		  ../ejlex.o ../ejparse.o ../form.o \
+		  ../h.o ../handler.o ../mime.o ../misc.o ../page.o  \
+		  ../ringq.o ../rom.o \
+		  ../sock.o ../sockGen.o $(SSLPATCHFILE) \
+		  ../security.o ../sym.o ../uemf.o ../url.o ../value.o \
+		  ../md5c.o ../um.o ../umui.o ../websda.o ../emfdb.o \
+		  ../webrom.o ../webs.o ../websuemf.o main.o</PRE>
+<PRE># Dependency definition for websSSL.c
+../websSSL.o:  ../websSSL.c ../websSSL.h ../wsIntrn.h ../uemf.h</PRE>
+
+<P>The websSSL.C patch file requires that a support file, <B>server.pem</B>, be located in the run-directory of the WebServer executable.  An example of server.pem  is included with the BSAFE toolkit.  This file contains certificate information used by SSL.</P><P>&nbsp; 
+
+</P></TD></TR></TABLE>
+</BODY>
+</HTML>
