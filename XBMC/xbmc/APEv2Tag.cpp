@@ -49,6 +49,7 @@ bool CAPEv2Tag::ReadTag(const char* filename, bool checkID3Tag)
 
   int chars = 256;
   char buffer[256];
+  buffer[0] = '\0';
   if (tag->GetFieldString(L"Title", buffer, &chars, TRUE) != -1)
     m_strTitle = buffer;
   chars = 256;
@@ -106,6 +107,7 @@ void CAPEv2Tag::GetReplayGainFromTag(IAPETag *tag)
   if (!tag) return;
   char buffer[16];
   int chars = 16;
+  buffer[0] = '\0';
 
   //  foobar2000 saves gain info as lowercase key items
   if (tag->GetFieldString(L"replaygain_track_gain", buffer, &chars, TRUE) != -1)
