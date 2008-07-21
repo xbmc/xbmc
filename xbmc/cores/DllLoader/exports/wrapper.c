@@ -91,6 +91,7 @@ int dll_fstat64(int fd, struct stat64 *buf);
 int dll_fstat(int fd, struct _stat *buf);
 int dll_fstatvfs64(int fd, struct statvfs64 *buf);
 FILE* dll_popen(const char *command, const char *mode);
+int dll_setvbuf(FILE *stream, char *buf, int type, size_t size);
 
 FILE *__wrap_popen(const char *command, const char *mode)
 {
@@ -363,3 +364,7 @@ int __wrap_fstat(int fd, struct _stat *buf)
   return dll_fstat(fd, buf);
 }
 
+int __wrap_setvbuf(FILE *stream, char *buf, int type, size_t size)
+{
+   return dll_setvbuf(stream, buf, type, size);
+}
