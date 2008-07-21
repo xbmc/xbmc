@@ -1,9 +1,9 @@
 CFLAGS +=-D_LINUX -fPIC
 OBJS=Depacker.o digidrum.o XBMCYM.o Ym2149Ex.o Ymload.o YmMusic.o YmUserInterface.o LZH/LZHXLIB.o
 
-LIB=../../../../system/players/paplayer/stsoundlibrary-@ARCH@.so
+LIB=../../../../../system/players/paplayer/stsoundlibrary-@ARCH@.so
 
-include ../../../../Makefile.include
+include ../../../../../Makefile.include
 
 lib: $(LIB)
 
