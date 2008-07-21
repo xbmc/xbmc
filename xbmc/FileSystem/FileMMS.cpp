@@ -36,7 +36,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef _LINUX
 #include <unistd.h>
+#endif
 #include <errno.h>
 #include "stdafx.h"
 #include "FileMMS.h"
@@ -98,7 +100,7 @@ void CFileMMS::send_command(int s, int command, uint32_t switches, uint32_t extr
   if (length & 7)
     memset(&cmd.buf[48 + length], 0, 8 - (length & 7));
 
-  if (send(s, cmd.buf, len8 * 8 + 48, 0) != (len8 * 8 + 48))
+  if (send(s, (const char *)cmd.buf, len8 * 8 + 48, 0) != (len8 * 8 + 48))
   {
     CLog::Log(LOGERROR, "MMS: write error");
   }
@@ -118,7 +120,7 @@ void CFileMMS::string_utf16(char *dest, const char *src, int len)
     ip = (char*) src;
     op = dest;
 
-    iconv(url_conv, &ip, &len1, &op, &len2);
+    iconv(url_conv, (const char **)&ip, &len1, &op, &len2);
   }
   else
   {
@@ -470,7 +472,7 @@ int CFileMMS::streaming_start(char* hostname, int port, char* path)
   }
 
   /* fill socket structure */
-  bcopy((char *) hp->h_addr, (char *) &sa.sin_addr, hp->h_length);
+  memmove(hp->h_addr, &sa.sin_addr, hp->h_length);
   sa.sin_family = hp->h_addrtype;
   sa.sin_port = htons(port);
 
@@ -681,7 +683,7 @@ __int64 CFileMMS::Seek(__int64 iFilePosition, int iWhence)
 
 void CFileMMS::Close()
 {
-  close(s);
+  closesocket(s);
   s = -1;
 }
 
