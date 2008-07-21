@@ -133,7 +133,7 @@ CWin32DirectSound::CWin32DirectSound(IAudioCallback* pCallback, int iChannels, u
   if ( res != DS_OK ) 
     CLog::Log(LOGERROR, __FUNCTION__" - cannot set primary buffer format (%s), using standard setting (bad quality)", dserr2str(res));
 
-  CLog::Log(LOGERROR, __FUNCTION__" - primary sound buffer created");
+  CLog::Log(LOGDEBUG, __FUNCTION__" - primary sound buffer created");
 
   // now create the stream buffer
   res = IDirectSound_CreateSoundBuffer(m_pDSound, &dsbdesc, &m_pBuffer, NULL);
@@ -162,7 +162,7 @@ CWin32DirectSound::CWin32DirectSound(IAudioCallback* pCallback, int iChannels, u
       return;
     }
   }
-  CLog::Log(LOGERROR, __FUNCTION__" - secondary sound (stream)buffer created");
+  CLog::Log(LOGDEBUG, __FUNCTION__" - secondary sound (stream)buffer created");
 
   
   m_pBuffer->Stop();
