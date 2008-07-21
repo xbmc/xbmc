@@ -116,7 +116,7 @@ bool CMultiPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
 
 bool CMultiPathDirectory::Exists(const char* strPath)
 {
-  CLog::Log(LOGDEBUG,"Testing Existance (%s)", strPath);
+  CLog::Log(LOGDEBUG,"Testing Existence (%s)", strPath);
 
   vector<CStdString> vecPaths;
   if (!GetPaths(strPath, vecPaths))
@@ -124,7 +124,7 @@ bool CMultiPathDirectory::Exists(const char* strPath)
 
   for (unsigned int i = 0; i < vecPaths.size(); ++i)
   {
-    CLog::Log(LOGDEBUG,"Testing Existance (%s)", vecPaths[i].c_str());
+    CLog::Log(LOGDEBUG,"Testing Existence (%s)", vecPaths[i].c_str());
     if (CDirectory::Exists(vecPaths[i]))
       return true;
   }
