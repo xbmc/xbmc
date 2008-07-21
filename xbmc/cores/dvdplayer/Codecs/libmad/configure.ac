@@ -140,7 +140,7 @@ then
     case "$optimize" in
 	-O|"-O "*)
 	    optimize="-O"
-	    optimize="$optimize -fforce-mem"
+	    #optimize="$optimize -fforce-mem"
 	    optimize="$optimize -fforce-addr"
 	    : #x optimize="$optimize -finline-functions"
 	    : #- optimize="$optimize -fstrength-reduce"
