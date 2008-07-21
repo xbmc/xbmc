@@ -1,5 +1,7 @@
 CC=gcc
 CFLAGS=-D_LINUX -D_DLL -fPIC -O2
 
-libass-@ARCH@.so:
+libass-@ARCH@.so: all
 	cp libass/.libs/libass.so.1.0.0 ../../../system/players/dvdplayer/$@
+
+include Makefile
