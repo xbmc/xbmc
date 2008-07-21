@@ -23,7 +23,11 @@
  */
 
 #include "IFile.h"
+#ifndef _LINUX
+#include "lib/libiconv/iconv.h"
+#else
 #include <iconv.h>
+#endif
 #include <inttypes.h>
 
 #define MMS_BUF_SIZE 102400
