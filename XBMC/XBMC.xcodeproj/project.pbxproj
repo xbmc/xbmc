@@ -33,6 +33,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		6E32A0AD0E353A37008872A4 /* FileMMS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E32A0AC0E353A37008872A4 /* FileMMS.cpp */; };
+		6E32A0AE0E353A37008872A4 /* FileMMS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E32A0AC0E353A37008872A4 /* FileMMS.cpp */; };
 		6E65F32E0E1BF31200B73755 /* ActionManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E138A0D25F9F900618676 /* ActionManager.cpp */; };
 		6E65F32F0E1BF31200B73755 /* AnimatedGif.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E138C0D25F9F900618676 /* AnimatedGif.cpp */; };
 		6E65F3300E1BF31200B73755 /* AudioContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E138E0D25F9F900618676 /* AudioContext.cpp */; };
@@ -1707,6 +1709,7 @@
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		6E2FACD20E26E92800DF79EA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = xbmc/osx/Info.plist; sourceTree = "<group>"; };
+		6E32A0AC0E353A37008872A4 /* FileMMS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileMMS.cpp; sourceTree = "<group>"; };
 		6E65F6660E1BF31200B73755 /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E65F66A0E1BF51500B73755 /* libxdaap-i486-osx-tiger.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libxdaap-i486-osx-tiger.a"; path = "xbmc/lib/libXDAAP/libxdaap-i486-osx-tiger.a"; sourceTree = "<group>"; };
 		6E65F66C0E1BF57400B73755 /* avcodec-51-i486-osx-tiger.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "avcodec-51-i486-osx-tiger.a"; path = "xbmc/lib/libffmpeg-OSX/avcodec-51-i486-osx-tiger.a"; sourceTree = "<group>"; };
@@ -5163,6 +5166,7 @@
 		E38E16940D25F9FA00618676 /* FileSystem */ = {
 			isa = PBXGroup;
 			children = (
+				6E32A0AC0E353A37008872A4 /* FileMMS.cpp */,
 				889B4D8C0E0EF86C00FAD25E /* RSSDirectory.cpp */,
 				889B4D8D0E0EF86C00FAD25E /* RSSDirectory.h */,
 				88ACB0190DCF40800083CFDF /* ASAPFileDirectory.cpp */,
@@ -7532,6 +7536,7 @@
 				6E65F6320E1BF31200B73755 /* rtmppacket.cpp in Sources */,
 				6E65F6330E1BF31200B73755 /* DVDInputStreamRTMP.cpp in Sources */,
 				88E384650E20D6EF0028AFC0 /* GUIListGroup.cpp in Sources */,
+				6E32A0AE0E353A37008872A4 /* FileMMS.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8309,6 +8314,7 @@
 				815EE62F0E176F75009FBE3C /* rtmppacket.cpp in Sources */,
 				815EE6350E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp in Sources */,
 				88E384640E20D6EF0028AFC0 /* GUIListGroup.cpp in Sources */,
+				6E32A0AD0E353A37008872A4 /* FileMMS.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
