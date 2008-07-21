@@ -256,67 +256,82 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
   CStdString strTestString;
   CRegExp reg;
 
-  //CLog::Log(LOGNOTICE, "GetVolumeFromFileName : 1 : " + strFileName);
-
+  CLog::Log(LOGDEBUG, "GetVolumeFromFileName:[%s]", strFileNameLower.c_str());
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
     CStdString strRegExp = regexps[i];
     if (!reg.RegComp(strRegExp.c_str()))
     { // invalid regexp - complain in logs
-      CLog::Log(LOGERROR, "Invalid RegExp: %s.", regexps[i].c_str());
+      CLog::Log(LOGERROR, "Invalid RegExp:[%s]", regexps[i].c_str());
       continue;
     }
+    CLog::Log(LOGDEBUG, "Regexp:[%s]", regexps[i].c_str());
+
     int iFoundToken = reg.RegFind(strFileNameLower.c_str());
     if (iFoundToken >= 0)
-    { // found this token
+    {
       int iRegLength = reg.GetFindLen();
       int iCount = reg.GetSubCount();
-      //CLog::Log(LOGNOTICE, "GetVolumeFromFileName : 2 : " + strFileName + " : " + strRegExp + " : iRegLength=%i : iCount=%i", iRegLength, iCount);
-      if( 1 == iCount )
+
+      /*
+      reg.DumpOvector(LOGDEBUG);
+      CLog::Log(LOGDEBUG, "Subcount=%i", iCount);
+      for (int j = 0; j <= iCount; j++)
       {
-        char *pReplace = reg.GetReplaceString("\\1");
-
-        if (pReplace)
-        {
-          strVolumeNumber = pReplace;
-          free(pReplace);
-
-          // remove the extension (if any).  We do this on the base filename, as the regexp
-          // match may include some of the extension (eg the "." in particular).
-
-          // the extension will then be added back on at the end - there is no reason
-          // to clean it off here. It will be cleaned off during the display routine, if
-          // the settings to hide extensions are turned on.
-          CStdString strFileNoExt = strFileNameTemp;
-          RemoveExtension(strFileNoExt);
-          CStdString strFileExt = strFileNameTemp.Right(strFileNameTemp.length() - strFileNoExt.length());
-          CStdString strFileRight = strFileNoExt.Mid(iFoundToken + iRegLength);
-          strFileTitle = strFileName.Left(iFoundToken) + strFileRight + strFileExt;
-          //CLog::Log(LOGNOTICE, "GetVolumeFromFileName : 3 : " + strFileName + " : " + strVolumeNumber + " : " + strFileTitle + " : " + strFileExt + " : " + strFileRight + " : " + strFileTitle);
-          return true;
-        }
-
+        CStdString str = reg.GetMatch(j);
+        CLog::Log(LOGDEBUG, "Sub(%i):[%s]", j, str.c_str());
       }
-      else if( iCount > 1 )
+      */
+
+      // simple regexp, only the volume is captured
+      if (iCount == 1)
       {
-        //Second Sub value contains the stacking
-        strVolumeNumber = strFileName.Mid(iFoundToken + reg.GetSubStart(2), reg.GetSubLenght(2));
+        strVolumeNumber = reg.GetMatch(1);
+        if (strVolumeNumber.IsEmpty()) return false;
 
-        strFileTitle = strFileName.Left(iFoundToken);
-
-        //First Sub value contains prefix
-        strFileTitle += strFileName.Mid(iFoundToken + reg.GetSubStart(1), reg.GetSubLenght(1));
-
-        //Third Sub value contains suffix
-        strFileTitle += strFileName.Mid(iFoundToken + reg.GetSubStart(3), reg.GetSubLenght(3));
-        strFileTitle += strFileNameTemp.Mid(iFoundToken + iRegLength);
-        //CLog::Log(LOGNOTICE, "GetVolumeFromFileName : 4 : " + strFileName + " : " + strVolumeNumber + " : " + strFileTitle);
+        // Remove the extension (if any).  We do this on the base filename, as the regexp
+        // match may include some of the extension (eg the "." in particular).
+        // The extension will then be added back on at the end - there is no reason
+        // to clean it off here. It will be cleaned off during the display routine, if
+        // the settings to hide extensions are turned on.
+        CStdString strFileNoExt = strFileNameTemp;
+        RemoveExtension(strFileNoExt);
+        CStdString strFileExt = strFileNameTemp.Right(strFileNameTemp.length() - strFileNoExt.length());
+        CStdString strFileRight = strFileNoExt.Mid(iFoundToken + iRegLength);
+        strFileTitle = strFileName.Left(iFoundToken) + strFileRight + strFileExt;
+        
         return true;
       }
 
+      // advanced regexp with prefix (1), volume (2), and suffix (3)
+      else if (iCount == 3)
+      {
+        // second subpatten contains the stacking volume
+        strVolumeNumber = reg.GetMatch(2);
+        if (strVolumeNumber.IsEmpty()) return false;
+
+        // everything before the regexp match
+        strFileTitle = strFileName.Left(iFoundToken);
+
+        // first subpattern contains prefix
+        strFileTitle += reg.GetMatch(1);
+
+        // third subpattern contains suffix
+        strFileTitle += reg.GetMatch(3);
+
+        // everything after the regexp match
+        strFileTitle += strFileNameTemp.Mid(iFoundToken + iRegLength);
+
+        return true;
+      }
+
+      // unknown regexp format
+      else
+      {
+        CLog::Log(LOGERROR, "Incorrect movie stacking regexp format:[%s]", regexps[i]);
+      }
     }
   }
-  //CLog::Log(LOGNOTICE, "GetVolumeFromFileName : 5 : " + strFileName);
   return false;
 }
 
