@@ -98,7 +98,8 @@ extern "C"
   int dll_fseek ( FILE * stream , long offset , int origin );
   int dll_fseek64(FILE *stream, off64_t offset, int origin);
   int dll_ungetc (int c, FILE * stream);
-  long dll_ftell ( FILE * stream );
+  long dll_ftell(FILE *stream);
+  off64_t dll_ftell64(FILE *stream);
   long dll_tell ( int fd );
   __int64 dll_telli64 ( int fd );
   size_t dll_fwrite ( const void * buffer, size_t size, size_t count, FILE * stream );
