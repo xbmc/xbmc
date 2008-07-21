@@ -47,6 +47,8 @@
 #include <X11/Xmu/StdCmap.h>  /* for XmuLookupStandardColormap */
 #endif
 #include <vroot.hh>
+#include <ctime>
+
 #define MAX_DELAY 10000
 #define MIN_DELAY  1000
 
