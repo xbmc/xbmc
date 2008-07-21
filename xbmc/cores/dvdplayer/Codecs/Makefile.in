@@ -54,7 +54,7 @@ libDVDCSS-$(ARCH).so: libDVDCSS
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ libDVDCSS/src/*.o -Wl`sed 's/[(\*]/ /g' $(WRAPPER:.o=.c) | grep -v bash | awk '/__wrap/ {out=out","$$2} END {print out}' | sed 's/__wrap_/-wrap,/g'`
 
 libdvdnav-$(ARCH).so: libDVDCSS libdvdnav
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ libDVDCSS/src/*.o libdvdnav/src/*.o libdvdnav/src/vm/*.o -Wl`sed 's/[(\*]/ /g' $(WRAPPER:.o=.c) | grep -v bash | awk '/__wrap/ {out=out","$$2} END {print out}' | sed 's/__wrap_/-wrap,/g'`
+	$(CC) -o $@ $(LDFLAGS) --soname,$@ libDVDCSS/src/*.o libdvdnav/src/*.o libdvdnav/src/vm/*.o libdvdnav/src/dvdread/*.o -Wl`sed 's/[(\*]/ /g' $(WRAPPER:.o=.c) | grep -v bash | awk '/__wrap/ {out=out","$$2} END {print out}' | sed 's/__wrap_/-wrap,/g'`
 
 libfaad-$(ARCH).so: libfaad2
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ libfaad2/libfaad/*.o \
