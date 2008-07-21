@@ -1036,7 +1036,7 @@ extern "C"
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
 #ifdef _WIN32
-      return _ftelli64(stream);
+      return (off64_t)_ftelli64(stream);
 #elif defined(__APPLE__)
       return ftello(stream);
 #else
