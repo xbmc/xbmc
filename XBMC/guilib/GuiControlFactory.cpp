@@ -33,7 +33,6 @@
 #include "GUIFadeLabelControl.h"
 #include "GUICheckMarkControl.h"
 #include "GUIToggleButtonControl.h"
-#include "GUIEPGGridItem.h"
 #include "GUITextBox.h"
 #include "GUIVideoControl.h"
 #include "GUIProgressControl.h"
@@ -680,7 +679,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 
   int focusPosition = 0;
   int scrollTime = 200;
-  int minutesPerPage = 0;
+  int timeBlocks = 0;
   bool useControlCoords = false;
   bool renderFocusedLast = false;
 
@@ -965,7 +964,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetAspectRatio(pControlNode, "aspectratio", aspect);
   XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
   XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
-  XMLUtils::GetInt(pControlNode, "minutesperpage", minutesPerPage);
+  XMLUtils::GetInt(pControlNode, "timeblocks", timeBlocks);
 
   CGUIInfoLabel texturePath;
   GetInfoLabel(pControlNode,"imagepath", texturePath);
@@ -1275,7 +1274,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   }
   else if (strType == "epggrid")
   {
-    control = new CGUIEPGGridContainer(dwParentId, id, posX, posY, width, height, scrollTime, minutesPerPage);
+    control = new CGUIEPGGridContainer(dwParentId, id, posX, posY, width, height, scrollTime, timeBlocks);
     ((CGUIEPGGridContainer *)control)->LoadLayout(pControlNode);
     //((CGUIEPGGridContainer *)control)->LoadContent(pControlNode);
   }

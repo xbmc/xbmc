@@ -46,7 +46,7 @@ protected:
   void UpdateGridItems();
   void Refresh();
 
-  void GetEPG(int offset);
+  void GetEPG();
 
   void DisplayEmptyDatabaseMessage(bool bDisplay);
   bool m_bDisplayEmptyDatabaseMessage;
@@ -56,6 +56,7 @@ protected:
   int m_daysToDisplay;
   int m_curDaysOffset;
   int m_numChannels;
+  bool m_favouritesOnly;
 
   CTVDatabase m_database;
   EPGGrid m_gridData;

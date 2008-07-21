@@ -82,7 +82,7 @@ void CGUIWindowEPG::OnInitWindow()
 
 void CGUIWindowEPG::UpdateGridData()
 {
-  GetEPG(0);
+  GetEPG();
 }
 
 void CGUIWindowEPG::UpdateGridItems()
@@ -90,7 +90,7 @@ void CGUIWindowEPG::UpdateGridItems()
   m_gridItems = (CGUIEPGGridContainer*)GetControl(CONTROL_EPGGRID);
   m_gridItems->UpdateItems(m_gridData);
 }
-void CGUIWindowEPG::GetEPG(int offset)
+void CGUIWindowEPG::GetEPG()
 {
   VECTVCHANNELS channels;
 
@@ -98,9 +98,7 @@ void CGUIWindowEPG::GetEPG(int offset)
   m_database.GetAllChannels(false, channels);
   m_database.Close();
 
-  m_curDaysOffset = 0;
   m_daysToDisplay = 1;
-
   m_numChannels = (int)channels.size();
   if (m_numChannels > 0)
   {
@@ -111,6 +109,7 @@ void CGUIWindowEPG::GetEPG(int offset)
       if (it->shows.size())
         it->shows.empty();
     }
+    m_gridData.clear();
     DWORD tick(timeGetTime());
     m_database.Open();
     m_database.BeginTransaction();
@@ -124,6 +123,7 @@ void CGUIWindowEPG::GetEPG(int offset)
 
       if(!m_database.GetShowsByChannel(channels[i]->GetLabel(), curRow.shows, m_curDaysOffset, m_daysToDisplay))
         return; /* debug log: couldn't grab data */
+
       items += (int)curRow.shows.size();
       m_gridData.push_back(curRow);
     }

@@ -100,6 +100,8 @@ protected:
   long GetCategoryId(const CStdString &category);
   long GetProgrammeId(const CStdString &programme);
 
+  //CFileItem CTVDatabase::GetProgramme();
+
   /*TVChannel GetDetailsForChannel(std::auto_ptr<dbiplus::Dataset> &pDS);*/
 
   void AddToLinkTable(const char *table, const char *firstField, long firstID, const char *secondField, long secondID);
