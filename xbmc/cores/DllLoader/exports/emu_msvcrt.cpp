@@ -57,6 +57,10 @@ using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
 
+#if defined(_MSC_VER) && _MSC_VER < 1500
+extern "C" __int64 __cdecl _ftelli64(FILE *);
+#endif
+
 struct SDirData
 {
   DIRECTORY::IDirectory* Directory;
