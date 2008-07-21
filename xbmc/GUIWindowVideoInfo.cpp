@@ -327,9 +327,9 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       m_movieItem->SetProperty("watchedepisodes", m_movieItem->GetVideoInfoTag()->m_playCount);
       m_movieItem->SetProperty("unwatchedepisodes", m_movieItem->GetVideoInfoTag()->m_iEpisode - m_movieItem->GetVideoInfoTag()->m_playCount);
       m_movieItem->GetVideoInfoTag()->m_playCount = (m_movieItem->GetVideoInfoTag()->m_iEpisode == m_movieItem->GetVideoInfoTag()->m_playCount) ? 1 : 0;
-      m_movieItem->CacheVideoFanart();
-      if (CFile::Exists(m_movieItem->GetCachedVideoFanart()))
-        m_movieItem->SetProperty("fanart_image",m_movieItem->GetCachedVideoFanart());
+      m_movieItem->CacheFanart();
+      if (CFile::Exists(m_movieItem->GetCachedFanart()))
+        m_movieItem->SetProperty("fanart_image",m_movieItem->GetCachedFanart());
     }
     else if (m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
     {
@@ -815,7 +815,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
   CFileItem item(*m_movieItem->GetVideoInfoTag());
-  CStdString cachedThumb(item.GetCachedVideoFanart());
+  CStdString cachedThumb(item.GetCachedFanart());
 
   if (result.Mid(0,15) == "thumb://FANART_")
   {
