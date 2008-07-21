@@ -1031,7 +1031,7 @@ extern "C"
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
-#ifndef _LINUX
+#ifdef _WIN32
       return _ftelli64(stream);
 #else
       return ftello64(stream);
