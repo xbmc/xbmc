@@ -21,6 +21,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="..\zlib\win32"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;MNG_SUPPORT_DISPLAY;MNG_SUPPORT_READ;MNG_SUPPORT_WRITE;MNG_ACCESS_CHUNKS;MNG_STORE_CHUNKS;_CRT_SECURE_NO_DEPRECATE;MNG_ERROR_TELLTALE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -70,6 +71,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\zlib\win32"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;MNG_SUPPORT_DISPLAY;MNG_SUPPORT_READ;MNG_SUPPORT_WRITE;MNG_ACCESS_CHUNKS;MNG_STORE_CHUNKS;UNICODE;_CRT_SECURE_NO_DEPRECATE;MNG_ERROR_TELLTALE"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -118,6 +120,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="..\zlib\win32"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;MNG_SUPPORT_DISPLAY;MNG_SUPPORT_READ;MNG_SUPPORT_WRITE;MNG_ACCESS_CHUNKS;MNG_STORE_CHUNKS;UNICODE;_CRT_SECURE_NO_DEPRECATE;MNG_ERROR_TELLTALE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -166,6 +169,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\zlib\win32"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;MNG_SUPPORT_DISPLAY;MNG_SUPPORT_READ;MNG_SUPPORT_WRITE;MNG_ACCESS_CHUNKS;MNG_STORE_CHUNKS;_CRT_SECURE_NO_DEPRECATE;MNG_ERROR_TELLTALE"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"

@@ -23,6 +23,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\zlib\win32"
 				PreprocessorDefinitions="_WINDOWS;WIN32;NDEBUG;UNICODE;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -70,6 +71,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="..\zlib\win32"
 				PreprocessorDefinitions="_WINDOWS;WIN32;_DEBUG;UNICODE;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="3"
 				PrecompiledHeaderFile=".\Unicode_Debug/zlib.pch"
@@ -115,6 +117,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="..\zlib\win32"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="3"
 				PrecompiledHeaderFile=".\Debug/zlib.pch"
@@ -162,6 +165,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\zlib\win32"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
