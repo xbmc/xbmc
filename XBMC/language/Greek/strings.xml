@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 06/27/2008-->
+<!--Date of translation: 07/15/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 13794-->
+<!--Based on english strings version 14051-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -357,6 +357,8 @@
   <string id="431">Δεν υπάρχει ελεύθερη Λανθάνουσα Μνήμη</string>
   <string id="432">Διαγραφή ταινίας από την βιβλιοθήκη</string>
   <string id="433">Να διαγραφεί '%s';</string>
+  <string id="434">
+  </string>
   <string id="435">Κομμάτι</string>
   <string id="436">Έτος</string>
   <string id="437">Διάρκεια</string>
@@ -943,7 +945,7 @@
   <string id="13253">Ακύρωση μετακίνησης</string>
   <string id="13270">Υλικό</string>
   <string id="13271">Ταχύτητα CPU</string>
-  <string id="13274">Το Χbox συνδέθηκε, αλλά δεν υπάρχει DNS.</string>
+  <string id="13274">Το Χbox συνδέθηκε, αλλά η  DNS δεν είναι διαθέσιμη.</string>
   <string id="13275">Σκληρός Δίσκος</string>
   <string id="13276">DVD-ROM</string>
   <string id="13277">Μέσα αποθήκευσης</string>
@@ -1649,6 +1651,10 @@
   <string id="20416">Πρώτη ανάρτηση</string>
   <string id="20417">Σεναριογράφος</string>
   <string id="20418">Εκκαθάριση Ονομάτων Αρχείων</string>
+  <string id="20419">Στοίβαγμα διπλών Τηλεοπτικών Σειρών</string>
+  <string id="20420">Πότε</string>
+  <string id="20421">αν είναι Ίδιας Περιόδου</string>
+  <string id="20422">Πάντα</string>
   <string id="21330">Προβολή κρυφών αρχείων και φακέλων</string>
   <string id="21331">Πελάτης TuxBox</string>
   <string id="21332">ΠΡΟΣΟΧΗ: Η συσκευή TuxBox βρίσκεται σε Recording-Mode!</string>
@@ -1814,4 +1820,3 @@
   <string id="22003">Ενεργοποίηση Επεξεργασίας των Καταλόγων διανομής</string>
   <string id="29999">Αυτόματο Φίλτρο Flicker</string>
 </strings>
- 	  	 
