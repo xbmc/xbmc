@@ -61,7 +61,8 @@ bool CButtonTranslator::Load()
 #else
 #define REMOTEMAP "IRSSmap.xml"
 #endif
-  CStdString lircmapPath = CUtil::AddFileToFolder(_P("Q:\\system"), REMOTEMAP);
+  CStdString lircmapPath;
+  CUtil::AddFileToFolder(_P("Q:\\system"), REMOTEMAP, lircmapPath);
   success = LoadLircMap(lircmapPath);
   lircmapPath = g_settings.GetUserDataItem(REMOTEMAP);
   success |= LoadLircMap(lircmapPath);
