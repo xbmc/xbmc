@@ -4094,9 +4094,9 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
         pItem->SetProperty("unwatchedepisodes", movie.m_iEpisode - movie.m_playCount);
         pItem->GetVideoInfoTag()->m_playCount = (movie.m_iEpisode == movie.m_playCount) ? 1 : 0;
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,pItem->GetVideoInfoTag()->m_playCount > 0);
-        pItem->CacheVideoFanart();
-        if (CFile::Exists(pItem->GetCachedVideoFanart()))
-          pItem->SetProperty("fanart_image",pItem->GetCachedVideoFanart());
+        pItem->CacheFanart();
+        if (CFile::Exists(pItem->GetCachedFanart()))
+          pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
         items.Add(pItem);
       }
       m_pDS->next();
@@ -6144,7 +6144,7 @@ void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder)
   CFileItem item(strPath,bFolder);
   XFILE::CFile::Delete(item.GetCachedVideoThumb());
   if (bFolder)
-    XFILE::CFile::Delete(item.GetCachedVideoFanart());
+    XFILE::CFile::Delete(item.GetCachedFanart());
     
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)

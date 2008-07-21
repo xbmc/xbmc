@@ -153,9 +153,9 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
   if (!pItem->HasProperty("fanart_image"))
   {
-    pItem->CacheVideoFanart();
-    if (CFile::Exists(pItem->GetCachedVideoFanart()))
-      pItem->SetProperty("fanart_image",pItem->GetCachedVideoFanart());
+    pItem->CacheFanart();
+    if (CFile::Exists(pItem->GetCachedFanart()))
+      pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
   }                          
 
 //  if (pItem->IsVideo() && !pItem->IsInternetStream())
