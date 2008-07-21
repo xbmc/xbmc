@@ -110,17 +110,18 @@ void CFileMMS::string_utf16(char *dest, const char *src, int len)
 {
   int i;
   size_t len1, len2;
-  char *ip, *op;
+  const char *ip;
+  char *op;
 
   if (url_conv != (iconv_t) (-1))
   {
     memset(dest, 0, 1000);
     len1 = len;
     len2 = 1000;
-    ip = (char*) src;
+    ip = src;
     op = dest;
 
-    iconv(url_conv, (const char **)&ip, &len1, &op, &len2);
+    iconv_const(url_conv, &ip, &len1, &op, &len2);
   }
   else
   {
