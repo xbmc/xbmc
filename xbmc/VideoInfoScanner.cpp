@@ -834,12 +834,12 @@ namespace VIDEO
     {
       m_database.SetDetailsForMusicVideo(pItem->m_strPath, movieDetails);
     }
-    pItem->CacheVideoFanart();
+    pItem->CacheFanart();
     // get & save fanart image
-    if (!CFile::Exists(pItem->GetCachedVideoFanart()))
+    if (!CFile::Exists(pItem->GetCachedFanart()))
     {
-      if (!movieDetails.m_fanart.m_xml.IsEmpty() && !movieDetails.m_fanart.DownloadImage(pItem->GetCachedVideoFanart()))
-        CLog::Log(LOGERROR, "Failed to download fanart %s to %s", movieDetails.m_fanart.GetImageURL().c_str(), pItem->GetCachedVideoFanart().c_str());
+      if (!movieDetails.m_fanart.m_xml.IsEmpty() && !movieDetails.m_fanart.DownloadImage(pItem->GetCachedFanart()))
+        CLog::Log(LOGERROR, "Failed to download fanart %s to %s", movieDetails.m_fanart.GetImageURL().c_str(), pItem->GetCachedFanart().c_str());
     }
 
     // get & save thumbnail
