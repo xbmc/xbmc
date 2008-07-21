@@ -140,6 +140,7 @@ extern "C"
   void dll_funlockfile(FILE *file);
   int dll_fstat64(int fd, struct __stat64 *buf);
   int dll_fstatvfs64(int fd, struct statvfs64 *buf);
+  int dll_setvbuf(FILE *stream, char *buf, int type, size_t size);
 
 #ifdef _LINUX
   int * __cdecl dll_errno(void);

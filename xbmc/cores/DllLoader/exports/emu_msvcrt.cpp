@@ -1033,6 +1033,8 @@ extern "C"
       // let the operating system handle it
 #ifdef _WIN32
       return _ftelli64(stream);
+#elif defined(__APPLE__)
+      return ftello(stream);
 #else
       return ftello64(stream);
 #endif
@@ -1769,9 +1771,14 @@ extern "C"
 	return -1;
 #endif
   }
-
 #endif
 
+  int dll_setvbuf(FILE *stream, char *buf, int type, size_t size)
+  {
+    CLog::Log(LOGWARNING, "%s - May not be implemented correctly",
+              __FUNCTION__);
+    return 0;
+  }
 }
 
 
