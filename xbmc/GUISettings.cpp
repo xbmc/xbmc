@@ -474,7 +474,9 @@ CGUISettings::CGUISettings(void)
   AddString(8, "network.essid", 776, "0.0.0.0", BUTTON_CONTROL_STANDARD);
   AddInt(9, "network.enc", 778, ENC_NONE, ENC_NONE, 1, ENC_WPA2, SPIN_CONTROL_TEXT);
   AddString(10, "network.key", 777, "0.0.0.0", BUTTON_CONTROL_INPUT);
+#ifndef _WIN32PC
   AddString(11, "network.save", 779, "", BUTTON_CONTROL_STANDARD);
+#endif
   AddSeparator(12, "network.sep1");
 #endif
   AddBool(13, "network.usehttpproxy", 708, false);
