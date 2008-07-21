@@ -753,7 +753,7 @@ HRESULT CApplication::Create(HWND hWnd)
 #endif
 
   CStdString strHomePath = "Q:";
-  CLog::Log(LOGINFO, "Checking skinpath existance, and existence of keymap.xml:%s...", (strHomePath + "\\skin").c_str());
+  CLog::Log(LOGINFO, "Checking skinpath existence, and existence of keymap.xml:%s...", (strHomePath + "\\skin").c_str());
   CStdString keymapPath;
 
   keymapPath = g_settings.GetUserDataItem("Keymap.xml");

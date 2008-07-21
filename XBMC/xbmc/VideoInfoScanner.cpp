@@ -1016,7 +1016,7 @@ namespace VIDEO
       else
         CUtil::ReplaceExtension(item->m_strPath, ".nfo", nfoFile);
 
-      // test file existance
+      // test file existence
       if (!nfoFile.IsEmpty() && !CFile::Exists(nfoFile))
         nfoFile.Empty();
 
