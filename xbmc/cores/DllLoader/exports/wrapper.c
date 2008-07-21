@@ -70,7 +70,8 @@ int dll_fputs (const char * szLine , FILE* stream);
 int dll_putc(int c, FILE *stream);
 int dll_fseek ( FILE * stream , long offset , int origin );
 int dll_fseek64(FILE *stream, off64_t offset, int origin);
-long dll_ftell ( FILE * stream );
+long dll_ftell(FILE *stream);
+off64_t ftell64(FILE *stream);
 void dll_rewind(FILE* stream);
 int dll_fgetpos(FILE* stream, fpos_t* pos);
 int dll_fsetpos(FILE* stream, const fpos_t* pos);
@@ -240,6 +241,11 @@ int __wrap_fseeko64(FILE *stream, off64_t offset, int whence)
 long __wrap_ftell(FILE *stream)
 {
   return dll_ftell(stream);
+}
+
+off64_t __wrap_ftello64(FILE *stream)
+{
+  return dll_ftell64(stream);
 }
 
 void __wrap_rewind(FILE *stream)

@@ -1015,18 +1015,27 @@ extern "C"
     return EOF;
   }
 
-  long dll_ftell(FILE * stream)
+  long dll_ftell(FILE *stream)
+  {
+    return (long)dll_ftell64(stream);
+  }
+
+  off64_t dll_ftell64(FILE *stream)
   {
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
     if (pFile != NULL)
     {
-       return (long)pFile->GetPosition();
+       return (off64_t)pFile->GetPosition();
     }
     else if (!IS_STD_STREAM(stream))
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
-      return ftell(stream);
+#ifndef _LINUX
+      return _ftelli64(stream);
+#else
+      return ftello64(stream);
+#endif
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
