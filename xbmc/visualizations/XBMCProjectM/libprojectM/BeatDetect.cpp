@@ -36,6 +36,10 @@
 #include <cmath>
 #include "BeatDetect.hpp"
 
+#ifdef _WIN32PC
+#define DLLEXPORT
+#endif
+
 DLLEXPORT BeatDetect::BeatDetect(PCM *pcm) {
   int x,y; 
 
