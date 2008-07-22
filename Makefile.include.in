@@ -19,9 +19,25 @@ ARCH=@ARCH@
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
 	  rm -f $*.d
 
+.cc.o:
+	@rm -f ${<:.cc=.o}
+	$(CXX) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cc=.o}
+	@cp $*.d $*.P; \
+	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
+	  rm -f $*.d
+
 .c.o:
 	@rm -f ${<:.c=.o}
 	$(CC) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.c=.o}
+	@cp $*.d $*.P; \
+	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
+	  rm -f $*.d
+
+.C.o:
+	@rm -f ${<:.C=.o}
+	$(CC) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.C=.o}
 	@cp $*.d $*.P; \
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
