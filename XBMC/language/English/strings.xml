@@ -461,8 +461,9 @@
   <string id="543">DVD</string>
   <string id="544">Media Info</string>
   <string id="545">Audio Output Device</string>
-  <string id="546">Passthrough-utgångsenhet</string>
+  <string id="546">Passthrough Output Device</string>
   <string id="547">No biography for this artist</string>
+
   <string id="550">Sort by: %s</string>
   <string id="551">Name</string>
   <string id="552">Date</string>
