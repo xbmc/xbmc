@@ -30,6 +30,7 @@
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "GUIListContainer.h"
 #include "GUIPanelContainer.h"
+#include "GUIEditControl.h"
 #endif
 
 #include "SkinInfo.h"
@@ -1323,3 +1324,21 @@ void CGUIWindow::DumpTextureUse()
   }
 }
 #endif
+
+void CGUIWindow::ChangeButtonToEdit(int id)
+{
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  CGUIControl *name = (CGUIControl *)GetControl(id);
+  if (name && name->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
+  { // change it to an edit control
+    CGUIEditControl *edit = new CGUIEditControl(*(const CGUIButtonControl *)name);
+    if (edit)
+    {
+      Insert(edit, name);
+      Remove(name);
+      name->FreeResources();
+      delete name;
+    }
+  }
+#endif
+}
