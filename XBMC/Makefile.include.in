@@ -50,7 +50,9 @@ ARCH=@ARCH@
 %.h.gch : %.h
 	$(CXX) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@
 
-OBJS+=$(patsubst %.cpp,%.o,$(patsubst %.S,%.o,$(SRCS)))
+OBJS+=$(filter %.o,$(SRCS:.cpp=.o))
+OBJS+=$(filter %.o,$(SRCS:.c=.o))
+OBJS+=$(filter %.o,$(SRCS:.S=.o))
 
 .PHONY : lib pch clean 
 
