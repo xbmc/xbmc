@@ -244,6 +244,7 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
   CGUIMessage reset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_OPERATOR);
   OnMessage(reset);
 
+  CONTROL_ENABLE(CONTROL_VALUE);
   CONTROL_DISABLE(CONTROL_BROWSE);
   switch (CSmartPlaylistRule::GetFieldType(m_rule.m_field))
   {
@@ -282,6 +283,12 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_EQUALS);
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL);
     break;
+
+  case CSmartPlaylistRule::BOOLEAN_FIELD:
+    CONTROL_DISABLE(CONTROL_VALUE);
+    AddOperatorLabel(CSmartPlaylistRule::OPERATOR_TRUE);
+    AddOperatorLabel(CSmartPlaylistRule::OPERATOR_FALSE);
+    break;
   }
 
   // check our operator is valid, and update if not
@@ -293,8 +300,9 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
 
   // update the parameter edit control appropriately
   SET_CONTROL_LABEL(CONTROL_VALUE, m_rule.m_parameter);
-  CGUIEditControl::INPUT_TYPE type;
-  switch (CSmartPlaylistRule::GetFieldType(m_rule.m_field))
+  CGUIEditControl::INPUT_TYPE type = CGUIEditControl::INPUT_TYPE_TEXT;
+  CSmartPlaylistRule::FIELD_TYPE fieldType = CSmartPlaylistRule::GetFieldType(m_rule.m_field);
+  switch (fieldType)
   {
   case CSmartPlaylistRule::TEXT_FIELD:
   case CSmartPlaylistRule::BROWSEABLE_FIELD:
@@ -312,6 +320,7 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
     type = CGUIEditControl::INPUT_TYPE_SECONDS;
     break;
   case CSmartPlaylistRule::NUMERIC_FIELD:
+  case CSmartPlaylistRule::BOOLEAN_FIELD:
     type = CGUIEditControl::INPUT_TYPE_NUMBER;
     break;
   }

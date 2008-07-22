@@ -81,6 +81,7 @@ static const translateField fields[] = { { "none", CSmartPlaylistRule::FIELD_NON
                                          { "styles", CSmartPlaylistRule::FIELD_STYLES, CSmartPlaylistRule::TEXT_FIELD, 176 },
                                          { "type", CSmartPlaylistRule::FIELD_ALBUMTYPE, CSmartPlaylistRule::TEXT_FIELD, 564 },
                                          { "label", CSmartPlaylistRule::FIELD_LABEL, CSmartPlaylistRule::TEXT_FIELD, 21899 },
+                                         { "hastrailer", CSmartPlaylistRule::FIELD_HASTRAILER, CSmartPlaylistRule::BOOLEAN_FIELD, 20423 },
                                          { "random", CSmartPlaylistRule::FIELD_RANDOM, CSmartPlaylistRule::TEXT_FIELD, 590 },
                                          { "playlist", CSmartPlaylistRule::FIELD_PLAYLIST, CSmartPlaylistRule::PLAYLIST_FIELD, 559 }
                                        };
@@ -105,7 +106,9 @@ static const operatorField operators[] = { { "contains", CSmartPlaylistRule::OPE
                                            { "after", CSmartPlaylistRule::OPERATOR_AFTER, 21408 },
                                            { "before", CSmartPlaylistRule::OPERATOR_BEFORE, 21409 },
                                            { "inthelast", CSmartPlaylistRule::OPERATOR_IN_THE_LAST, 21410 },
-                                           { "notinthelast", CSmartPlaylistRule::OPERATOR_NOT_IN_THE_LAST, 21411 }
+                                           { "notinthelast", CSmartPlaylistRule::OPERATOR_NOT_IN_THE_LAST, 21411 },
+                                           { "true", CSmartPlaylistRule::OPERATOR_TRUE, 20122 },
+                                           { "false", CSmartPlaylistRule::OPERATOR_FALSE, 20424 }
                                          };
 
 #define NUM_OPERATORS sizeof(operators) / sizeof(operatorField)
@@ -266,6 +269,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_MPAA);
     fields.push_back(FIELD_TOP250);
     fields.push_back(FIELD_STUDIO);
+    fields.push_back(FIELD_HASTRAILER);
 //    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
   }
   else if (type == "musicvideos")
@@ -339,6 +343,10 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
   case OPERATOR_LESS_THAN:
   case OPERATOR_NOT_IN_THE_LAST:
     operatorString = " < '%s'"; break;
+  case OPERATOR_TRUE:
+    operatorString = " = 1"; break;
+  case OPERATOR_FALSE:
+    negate = " NOT "; operatorString = " = 0"; break;
   default:
     break;
   }
@@ -396,6 +404,8 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
       query = "idmovie" + negate + " in (select idmovie from writerlinkmovie join actors on actors.idactor=writerlinkmovie.idwriter where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_STUDIO)
       query = "idmovie" + negate + " in (select idmovie from studiolinkmovie join studio on studio.idstudio=studiolinkmovie.idstudio where studio.strStudio" + parameter + ")";
+    else if (m_field == FIELD_HASTRAILER)
+      query = negate + GetDatabaseField(m_field, strType) + "!= ''";
   }
   else if (strType == "musicvideos")
   {
@@ -521,6 +531,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_MPAA) result.Format("c%02d", VIDEODB_ID_MPAA);
     else if (field == FIELD_TOP250) result.Format("c%02d", VIDEODB_ID_TOP250);
     else if (field == FIELD_STUDIO) result = "never_use_this";   // join required
+    else if (field == FIELD_HASTRAILER) result.Format("c%02d", VIDEODB_ID_TRAILER);
     else if (field == FIELD_RANDOM) result = "random()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) result = "idshow";       // only used for order clauses
     return result;
