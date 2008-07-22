@@ -1,5 +1,5 @@
 OBJS = src/xbmc_interface.o
-CFLAGS += -Iinclude -D_LINUX
+CFLAGS += -Iinclude -D_LINUX -fPIC
 
 LIB=../../../../system/players/paplayer/libmpcdev-@ARCH@.so
 

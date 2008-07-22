@@ -1,7 +1,7 @@
 INCLUDES=-I. -I.. -I../../linux -I../../ -I../../../guilib -I../../../visualisations
 SRCS=Main.cpp
 LIB=ProjectM.vis
-CFLAGS=-O3 -g
+CFLAGS=-O3 -g -fPIC
 
 default: vis
 DIRS=libprojectM
