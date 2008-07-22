@@ -1,7 +1,7 @@
 include ../../../../Makefile.include
 
 OBJS = MADCodec/MadMp3Decoder.o
-CXFLAGS += -D_LINUX -fPIC -O3
+CFLAGS += -D_LINUX -fPIC -O3
 
 LIB=../../../../system/players/paplayer/MADCodec-@ARCH@.so
 

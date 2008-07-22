@@ -9764,13 +9764,11 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <sys/types.h> /* for off_t */
-     #include <stdio.h>
+#include <stdio.h>
 int
 main ()
 {
-int (*fp) (FILE *, off_t, int) = fseeko;
-     return fseeko (stdin, 0, 0) && fp (stdin, 0, 0);
+return fseeko (stdin, 0, 0) && (fseeko) (stdin, 0, 0);
   ;
   return 0;
 }
@@ -9810,13 +9808,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #define _LARGEFILE_SOURCE 1
-#include <sys/types.h> /* for off_t */
-     #include <stdio.h>
+#include <stdio.h>
 int
 main ()
 {
-int (*fp) (FILE *, off_t, int) = fseeko;
-     return fseeko (stdin, 0, 0) && fp (stdin, 0, 0);
+return fseeko (stdin, 0, 0) && (fseeko) (stdin, 0, 0);
   ;
   return 0;
 }
@@ -14412,7 +14408,7 @@ fi;
 
 if [ -d xbmc/cores/dvdplayer/Codecs/libmad ]; then
   pushd xbmc/cores/dvdplayer/Codecs/libmad
-  ./configure
+  ./configure --with-pic
   if [ $? -ne 0 ]; then
     popd
     { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libmad failed to configure" >&5
@@ -14502,7 +14498,7 @@ fi;
 
 if [ -d xbmc/screensavers/rsxs-0.9/ ]; then
   pushd xbmc/screensavers/rsxs-0.9/
-  ./configure --without-xscreensaver --disable-sound --disable-cyclone --disable-euphoria --disable-fieldlines --disable-flocks --disable-flux --disable-helios --disable-hyperspace --disable-lattice --disable-skyrocket
+  CFLAGS=-fPIC CXXFLAGS=-fPIC ./configure --without-xscreensaver --disable-sound --disable-cyclone --disable-euphoria --disable-fieldlines --disable-flocks --disable-flux --disable-helios --disable-hyperspace --disable-lattice --disable-skyrocket
   if [ $? -ne 0 ]; then
     popd
     { { echo "$as_me:$LINENO: error: Submodule xbmc/screensavers/rsxs-0.9/ failed to configure" >&5
