@@ -1,10 +1,12 @@
-OBJS=crypt.o guideclient.o GuideParser.o httpclient.o httpfsclient.o interface.o md5.o netclient.o rtv.o sleep.o librtv-@ARCH@.a
+OBJS=crypt.o guideclient.o GuideParser.o httpclient.o httpfsclient.o interface.o md5.o netclient.o rtv.o sleep.o
 
 CFLAGS += -D_LINUX -D__unix__
 
 include ../../../Makefile.include
 
-lib: librtv-@ARCH@.a
+LIB= librtv-@ARCH@.a
 
-librtv-@ARCH@.a : $(OBJS)
+lib: $(LIB)
+
+$(LIB) : $(OBJS)
 	ar rs $@  $(OBJS)
