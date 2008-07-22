@@ -189,6 +189,7 @@ protected:
 
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   bool LoadReferences();
+  void ChangeButtonToEdit(int id);
   static CStdString CacheFilename;
 //#endif
 
