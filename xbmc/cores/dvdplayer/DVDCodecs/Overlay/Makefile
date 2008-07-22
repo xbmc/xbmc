@@ -1,10 +1,12 @@
 INCLUDES=-I. -I../../ -I../../../../ -I../../../../linux -I../../../../../guilib
 
-SRCS=DVDOverlayCodecCC.cpp DVDOverlayCodecFFmpeg.cpp DVDOverlayCodecText.cpp DVDOverlayCodecSSA.cpp
+SRCS=	DVDOverlayCodecCC.cpp \
+	DVDOverlayCodecFFmpeg.cpp \
+	DVDOverlayCodecText.cpp \
+	DVDOverlayCodecSSA.cpp \
+	libspucc/cc_decoder.c \
 
-LIB=dvdcodecs_overlay.a
+LIB=	Overlay.a
 
-dvdcodecs_overlay.a : libspucc/cc_decoder.o DVDOverlayCodecCC.o DVDOverlayCodecFFmpeg.o DVDOverlayCodecText.o DVDOverlayCodecSSA.o
+include ../../Makefile.include
 
-include ../../../../../Makefile.include
--include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
