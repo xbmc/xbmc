@@ -54,7 +54,7 @@ OBJS+=$(filter %.o,$(SRCS:.cpp=.o))
 OBJS+=$(filter %.o,$(SRCS:.c=.o))
 OBJS+=$(filter %.o,$(SRCS:.S=.o))
 
-.PHONY : lib pch clean 
+.PHONY : lib pch clean distclean distclean_evil
 
 lib: $(OBJS)
 
@@ -65,10 +65,16 @@ clean:
 	$(RM) $(OBJS) $(LIB) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
 	for d in $(DIRS); do (if test -f $$d/Makefile; then ($(MAKE) -C $$d clean); fi ); done
 
-distclean: clean
+distclean_evil:
 	@echo "Removing all object files (.o)"
 	@find . -name "*.o" -exec echo 'Removing "{}"' \; -exec rm -f "{}" \;
+	@echo "Removing all precompiled header files (.h.gch)"
+	@find . -name "*.h.gch" -exec echo 'Removing "{}"' \; -exec rm -f "{}" \;
 	@echo "Removing all dependency files (.P)"
 	@find . -name "*.P" -exec echo 'Removing "{}"' \; -exec rm -f "{}" \;
 	@echo "Done."
+
+distclean: distclean_evil
+	$(RM) $(OBJS) $(LIB) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
 	for d in $(DIRS); do (if test -f $$d/Makefile; then ($(MAKE) -C $$d distclean); fi ); done
+
