@@ -285,8 +285,16 @@ void Renderer::Interpolation(PresetOutputs *presetOutputs, PresetInputs *presetI
 	
 	int size = presetInputs->gy;
 
+#ifdef _WIN32PC
+  char buf[1024];
+  sprintf(buf, "%s: gy = %d\n", __FUNCTION__,size);
+  OutputDebugString( buf );
+  float p[30*2][2];
+  float t[30*2][2];
+#else
 	float p[size*2][2];      
 	float t[size*2][2];
+#endif
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -562,9 +570,16 @@ void Renderer::draw_custom_waves(PresetOutputs *presetOutputs)
 			// printf("mid inner loop\n");
 			(*pos)->evalPerPointEqns();
 			
-		
+#ifdef _WIN32PC
+      char buf[1024];
+      sprintf(buf, "%s: samples = %d\n", __FUNCTION__,(*pos)->samples);
+      OutputDebugString( buf );
+      float colors[512][4];
+			float points[512][2];
+#else
 			float colors[(*pos)->samples][4];
 			float points[(*pos)->samples][2];
+#endif
 
 			for(x=0;x< (*pos)->samples;x++)
 			{
@@ -656,10 +671,19 @@ void Renderer::draw_shapes(PresetOutputs *presetOutputs)
 				glEnableClientState(GL_VERTEX_ARRAY);
 				glEnableClientState(GL_COLOR_ARRAY);	 
 				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-											
+
+#ifdef _WIN32PC
+        char buf[1024];
+        sprintf(buf, "%s: sides = %d\n", __FUNCTION__,(*pos)->sides);
+        OutputDebugString( buf );
+        float colors[10+2][4];
+				float tex[10+2][2];
+				float points[10+2][2];
+#else
 				float colors[(*pos)->sides+2][4];
 				float tex[(*pos)->sides+2][2];
 				float points[(*pos)->sides+2][2];			
+#endif
 										
 				//Define the center point of the shape
 				colors[0][0] = (*pos)->r;
@@ -717,9 +741,14 @@ void Renderer::draw_shapes(PresetOutputs *presetOutputs)
 			  glEnableClientState(GL_VERTEX_ARRAY);
 			  glEnableClientState(GL_COLOR_ARRAY);	 
 			  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-			  
+
+#ifdef _WIN32PC
+        float colors[10+2][4];				
+			  float points[10+2][2];
+#else
 			  float colors[(*pos)->sides+2][4];				
 			  float points[(*pos)->sides+2][2];			
+#endif
 			  
 			  //Define the center point of the shape
 			  colors[0][0]=(*pos)->r;
@@ -755,8 +784,12 @@ void Renderer::draw_shapes(PresetOutputs *presetOutputs)
 
 			glEnableClientState(GL_VERTEX_ARRAY);
 			glDisableClientState(GL_COLOR_ARRAY);	 
-			
+
+#ifdef _WIN32PC
+      float points[10+1][2];
+#else
 			float points[(*pos)->sides+1][2];
+#endif
 
 			glColor4f( (*pos)->border_r, (*pos)->border_g, (*pos)->border_b, (*pos)->border_a);
 			
@@ -1214,7 +1247,14 @@ void Renderer::draw_motion_vectors(PresetOutputs *presetOutputs)
 	  {
 	int size = numx * numy;
 
+#ifdef _WIN32PC
+  char buf[1024];
+  sprintf(buf, "%s: point size = %d\n", __FUNCTION__,size);
+  OutputDebugString( buf );
+  float points[1024][2];
+#else
 	float points[size][2];
+#endif
 	
 
        
