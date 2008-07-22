@@ -29,9 +29,6 @@
 #include "GUISettings.h"
 #include "Settings.h"
 #include "FileItem.h"
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-#include "GUIEditControl.h"
-#endif
 
 #define CONTROL_HEADING         2
 #define CONTROL_RULE_LIST       10
@@ -329,23 +326,9 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
 void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
 {
   CGUIDialog::OnWindowLoaded();
-
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  CGUIControl *name = (CGUIControl *)GetControl(CONTROL_NAME);
-  if (name && name->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
-  { // change it to an edit control
-    CGUIEditControl *edit = new CGUIEditControl(*(const CGUIButtonControl *)name);
-    if (edit)
-    {
-      Insert(edit, name);
-      Remove(name);
-      name->FreeResources();
-      delete name;
-    }
-  }
-#endif
+  ChangeButtonToEdit(CONTROL_NAME);
   {
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_NAME, 16012);
+    CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), CONTROL_NAME, 0, 16012);
     OnMessage(msg);
   }
   // setup the match spinner
