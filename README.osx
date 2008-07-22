@@ -48,7 +48,24 @@ packages from the Terminal window:
 
 You will need to use samba3 version 3.0.28a so follow the below instructions to setup MacPorts.
 
-If you're having problems linking due to a versioning of a library, see:
+First you can check the version needed by clicking on the button's revision here
+http://trac.macports.org/log/trunk/dports/net/samba3/Portfile
+
+We will install the revision 34870 (version 3.0.28a)
+
+Edit /opt/local/etc/macports/sources.conf and add before rsync.macports.org line
+"file:///Users/Shared/dports" (without quotes)
+
+	$ sudo mkdir /Users/Shared/dport
+	$ cd /Users/Shared/dports
+	$ svn co --revision 34870 http://svn.macports.org/repository/macports/trunk/dports/net/samba3 net/samba3
+	$ portindex /Users/Shared/dports
+	$ port list samba3 (in order to check if the new samba3 is listed)
+	$ sudo port uninstall samba3
+	$ sudo port install samba3@3.0.28a
+
+
+If you're having more problems linking due to a versioning of a library, see:
 http://journal.bitshaker.com/articles/2007/10/20/install-old-versions-of-ports-using-macports/
 
 -----------------------------------------------------------------------------
