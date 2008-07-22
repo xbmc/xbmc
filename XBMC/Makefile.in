@@ -24,14 +24,6 @@ DIRS=	guilib \
 	xbmc/lib/libGoAhead \
 	xbmc/lib/libUPnP \
 	xbmc/cores/dvdplayer \
-	xbmc/cores/dvdplayer/DVDSubtitles \
-	xbmc/cores/dvdplayer/DVDInputStreams \
-	xbmc/cores/dvdplayer/DVDCodecs \
-	xbmc/cores/dvdplayer/DVDCodecs/Audio \
-	xbmc/cores/dvdplayer/DVDCodecs/Video \
-	xbmc/cores/dvdplayer/DVDCodecs/Overlay \
-	xbmc/cores/dvdplayer/DVDCodecs/Overlay/libspucc \
-	xbmc/cores/dvdplayer/DVDDemuxers \
 	xbmc/cores/VideoRenderers \
 	xbmc/cores/VideoRenderers/VideoShaders \
 	xbmc/cdrip \
@@ -130,13 +122,6 @@ libupnp:
 	$(MAKE) -C xbmc/lib/libUPnP
 dvdplayer:
 	$(MAKE) -C xbmc/cores/dvdplayer
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDSubtitles
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDInputStreams
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Audio
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Video
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Overlay
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDDemuxers
 	$(MAKE) -C xbmc/cores/VideoRenderers 
 	$(MAKE) -C xbmc/cores/VideoRenderers/VideoShaders 
 dvdcodecs: dllloader
@@ -191,8 +176,8 @@ imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0 -f Makefile.linux ARCH=$(ARCH)
 compile: guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualizations screensavers utils common tinyxml sqllite libscrobbler libgoahead unrarxlib libpython dvdplayer libupnp cdrip libcmyth librtmp libxbms libexif librtv libxdaap libass libhdhomerun libshout libid3tag papcodecs dvdcodecs imagelib
 
-xbmc.bin: $(wildcard xbmc/*.o xbmc/settings/*.o guilib/*.o guilib/tinyXML/*.o guilib/common/*.o xbmc/FileSystem/*.o xbmc/FileSystem/VideoDatabaseDirectory/*.o xbmc/FileSystem/MusicDatabaseDirectory/*.o xbmc/visualizations/*.o xbmc/screensavers/*.o xbmc/cores/*.o xbmc/cores/paplayer/*.o xbmc/linux/*.o xbmc/lib/sqLite/*.o xbmc/lib/libscrobbler/*.o xbmc/lib/libPython/*.o xbmc/lib/libPython/xbmcmodule/*.o xbmc/xbox/*.o xbmc/cores/DllLoader/*.o xbmc/cores/DllLoader/exports/*.o xbmc/cores/DllLoader/exports/util/*.o xbmc/utils/*.o xbmc/lib/UnrarXLib/*.o xbmc/cores/dvdplayer/*.o xbmc/cores/dvdplayer/DVDSubtitles/*.o xbmc/cores/dvdplayer/DVDInputStreams/*.o xbmc/cores/dvdplayer/DVDCodecs/*.o xbmc/cores/dvdplayer/DVDCodecs/Audio/*.o xbmc/cores/dvdplayer/DVDCodecs/Video/*.o xbmc/cores/dvdplayer/DVDCodecs/Overlay/*.o xbmc/cores/dvdplayer/DVDDemuxers/*.o xbmc/cores/dvdplayer/DVDCodecs/Overlay/libspucc/*.o xbmc/cores/VideoRenderers/*.o xbmc/cores/VideoRenderers/VideoShaders/*.o xbmc/cdrip/*.o xbmc/lib/libcmyth/*.o xbmc/lib/libRTMP/*.o) xbmc/lib/libXBMS/libxbms-@ARCH@.a xbmc/lib/libUPnP/libupnp-@ARCH@.a 
-	g++ $(DEBUG_FLAGS) -o xbmc.bin xbmc/*.o xbmc/settings/*.o xbmc/cdrip/*.o guilib/*.o guilib/tinyXML/*.o guilib/common/*.o xbmc/FileSystem/*.o xbmc/FileSystem/VideoDatabaseDirectory/*.o xbmc/FileSystem/MusicDatabaseDirectory/*.o xbmc/visualizations/*.o xbmc/screensavers/*.o xbmc/cores/*.o xbmc/cores/paplayer/*.o xbmc/linux/*.o xbmc/lib/sqLite/*.o xbmc/lib/libscrobbler/*.o xbmc/lib/libPython/*.o xbmc/lib/libPython/xbmcmodule/*.o xbmc/xbox/*.o xbmc/cores/DllLoader/*.o xbmc/cores/DllLoader/exports/*.o xbmc/cores/DllLoader/exports/util/*.o xbmc/utils/*.o xbmc/lib/UnrarXLib/*.o xbmc/cores/dvdplayer/*.o xbmc/cores/dvdplayer/DVDSubtitles/*.o xbmc/cores/dvdplayer/DVDInputStreams/*.o xbmc/cores/dvdplayer/DVDCodecs/*.o xbmc/cores/dvdplayer/DVDCodecs/Audio/*.o xbmc/cores/dvdplayer/DVDCodecs/Video/*.o xbmc/cores/dvdplayer/DVDCodecs/Overlay/*.o xbmc/cores/dvdplayer/DVDDemuxers/*.o xbmc/cores/dvdplayer/DVDCodecs/Overlay/libspucc/*.o xbmc/cores/VideoRenderers/*.o xbmc/cores/VideoRenderers/VideoShaders/*.o xbmc/lib/libcmyth/*.o xbmc/lib/libRTMP/*.o xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a xbmc/lib/libXBMS/libxbms-@ARCH@.a xbmc/lib/libUPnP/libupnp-@ARCH@.a xbmc/lib/libshout/libshout-@ARCH@.a xbmc/lib/libRTV/librtv-@ARCH@.a xbmc/lib/libXDAAP/libxdaap-@ARCH@.a xbmc/lib/libcdio/libcdio-@ARCH@.a xbmc/lib/libsmb/libsmbclient-@ARCH@.a $(LIBS) -rdynamic
+xbmc.bin: $(wildcard xbmc/*.o xbmc/settings/*.o guilib/*.o guilib/tinyXML/*.o guilib/common/*.o xbmc/FileSystem/*.o xbmc/FileSystem/VideoDatabaseDirectory/*.o xbmc/FileSystem/MusicDatabaseDirectory/*.o xbmc/visualizations/*.o xbmc/screensavers/*.o xbmc/cores/*.o xbmc/cores/paplayer/*.o xbmc/linux/*.o xbmc/lib/sqLite/*.o xbmc/lib/libscrobbler/*.o xbmc/lib/libPython/*.o xbmc/lib/libPython/xbmcmodule/*.o xbmc/xbox/*.o xbmc/cores/DllLoader/*.o xbmc/cores/DllLoader/exports/*.o xbmc/cores/DllLoader/exports/util/*.o xbmc/utils/*.o xbmc/lib/UnrarXLib/*.o xbmc/cores/dvdplayer/DVDPlayer.a xbmc/cores/VideoRenderers/*.o xbmc/cores/VideoRenderers/VideoShaders/*.o xbmc/cdrip/*.o xbmc/lib/libcmyth/*.o xbmc/lib/libRTMP/*.o) xbmc/lib/libXBMS/libxbms-@ARCH@.a xbmc/lib/libUPnP/libupnp-@ARCH@.a 
+	g++ $(DEBUG_FLAGS) -o xbmc.bin xbmc/*.o xbmc/settings/*.o xbmc/cdrip/*.o guilib/*.o guilib/tinyXML/*.o guilib/common/*.o xbmc/FileSystem/*.o xbmc/FileSystem/VideoDatabaseDirectory/*.o xbmc/FileSystem/MusicDatabaseDirectory/*.o xbmc/visualizations/*.o xbmc/screensavers/*.o xbmc/cores/*.o xbmc/cores/paplayer/*.o xbmc/linux/*.o xbmc/lib/sqLite/*.o xbmc/lib/libscrobbler/*.o xbmc/lib/libPython/*.o xbmc/lib/libPython/xbmcmodule/*.o xbmc/xbox/*.o xbmc/cores/DllLoader/*.o xbmc/cores/DllLoader/exports/*.o xbmc/cores/DllLoader/exports/util/*.o xbmc/utils/*.o xbmc/lib/UnrarXLib/*.o xbmc/cores/dvdplayer/DVDPlayer.a xbmc/cores/VideoRenderers/*.o xbmc/cores/VideoRenderers/VideoShaders/*.o xbmc/lib/libcmyth/*.o xbmc/lib/libRTMP/*.o xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a xbmc/lib/libXBMS/libxbms-@ARCH@.a xbmc/lib/libUPnP/libupnp-@ARCH@.a xbmc/lib/libshout/libshout-@ARCH@.a xbmc/lib/libRTV/librtv-@ARCH@.a xbmc/lib/libXDAAP/libxdaap-@ARCH@.a xbmc/lib/libcdio/libcdio-@ARCH@.a xbmc/lib/libsmb/libsmbclient-@ARCH@.a $(LIBS) -rdynamic
 
 xbmc-xrandr: xbmc-xrandr.c
 	gcc -g -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 
