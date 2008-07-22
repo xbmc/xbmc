@@ -68,6 +68,7 @@ public:
                         FIELD_STYLES,
                         FIELD_ALBUMTYPE,
                         FIELD_LABEL,
+                        FIELD_HASTRAILER,
                         FIELD_PLAYLIST,
                         FIELD_RANDOM
                       };
@@ -85,6 +86,8 @@ public:
                          OPERATOR_BEFORE,
                          OPERATOR_IN_THE_LAST,
                          OPERATOR_NOT_IN_THE_LAST,
+                         OPERATOR_TRUE,
+                         OPERATOR_FALSE,
                          OPERATOR_END
                        };
 
@@ -93,7 +96,8 @@ public:
                     NUMERIC_FIELD,
                     DATE_FIELD,
                     PLAYLIST_FIELD,
-                    SECONDS_FIELD
+                    SECONDS_FIELD,
+                    BOOLEAN_FIELD
                   };
 
   CStdString GetWhereClause(const CStdString& strType);
