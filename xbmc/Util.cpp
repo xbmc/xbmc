@@ -328,7 +328,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
       // unknown regexp format
       else
       {
-        CLog::Log(LOGERROR, "Incorrect movie stacking regexp format:[%s]", regexps[i]);
+        CLog::Log(LOGERROR, "Incorrect movie stacking regexp format:[%s]", regexps[i].c_str());
       }
     }
   }
