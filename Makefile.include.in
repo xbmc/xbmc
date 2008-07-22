@@ -76,5 +76,5 @@ distclean_evil:
 
 distclean: distclean_evil
 	$(RM) $(OBJS) $(LIB) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
-	for d in $(DIRS); do (if test -f $$d/Makefile; then ($(MAKE) -C $$d distclean); fi ); done
+	for d in $(DIRS); do (if test -f $$d/Makefile; then ($(MAKE) -C $$d distclean || $(MAKE) -C $$d clean); fi ); done
 
