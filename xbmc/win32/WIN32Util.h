@@ -48,6 +48,7 @@ public:
   static void UpdateDriveMask();
   static CStdString GetChangedDrive();
   static bool PowerManagement(PowerState State);
+  static bool XBMCShellExecute(const CStdString &strPath, bool bWaitForScriptExit=false);
 
 private:
   static DWORD dwDriveMask;
