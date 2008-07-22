@@ -591,6 +591,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   CImage textureAltFocus, textureAltNoFocus;
   CImage textureRadioFocus, textureRadioNoFocus;
   CImage imageNoFocus, imageFocus;
+  CImage texturePath;
   DWORD dwColorKey = 0;
   FRECT borderSize = { 0, 0, 0, 0};
 
@@ -962,8 +963,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
   XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
 
-  CGUIInfoLabel texturePath;
-  GetInfoLabel(pControlNode,"imagepath", texturePath);
+  GetTexture(pControlNode, "imagepath", texturePath);
   XMLUtils::GetDWORD(pControlNode,"timeperimage", timePerImage);
   XMLUtils::GetDWORD(pControlNode,"fadetime", fadeTime);
   XMLUtils::GetDWORD(pControlNode,"pauseatend", timeToPauseAtEnd);
