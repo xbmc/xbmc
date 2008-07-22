@@ -553,3 +553,4 @@ void CPlayListPlayer::Clear()
     m_PlaylistEmpty->Clear();
   }
 }
+

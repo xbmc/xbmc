@@ -1342,3 +1342,4 @@ void CGUIWindow::ChangeButtonToEdit(int id)
   }
 #endif
 }
+
