@@ -29,12 +29,12 @@
 using namespace std;
 using namespace DIRECTORY;
 
-CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CGUIInfoLabel& texturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd)
+CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_texturePath = texturePath;
-  if (m_texturePath.IsConstant())
-    m_currentPath = m_texturePath.GetLabel(WINDOW_INVALID);
+  if (m_texturePath.file.IsConstant())
+    m_currentPath = m_texturePath.file.GetLabel(WINDOW_INVALID);
   m_currentImage = 0;
   m_timePerImage = timePerImage;
   m_timeToPauseAtEnd = timeToPauseAtEnd;
@@ -67,9 +67,9 @@ void CGUIMultiImage::UpdateVisibility(const CGUIListItem *item)
 
   // check for conditional information before we
   // alloc as this can free our resources
-  if (!m_texturePath.IsConstant())
+  if (!m_texturePath.file.IsConstant())
   {
-    CStdString texturePath(m_texturePath.GetLabel(m_dwParentID));
+    CStdString texturePath(m_texturePath.file.GetLabel(m_dwParentID));
     if (texturePath != m_currentPath && !texturePath.IsEmpty())
     {
       m_currentPath = texturePath;
@@ -173,7 +173,7 @@ bool CGUIMultiImage::OnMessage(CGUIMessage &message)
 {
   if (message.GetMessage() == GUI_MSG_REFRESH_THUMBS)
   {
-    if (!m_texturePath.IsConstant())
+    if (!m_texturePath.file.IsConstant())
       FreeResources();
     return true;
   }
@@ -199,7 +199,9 @@ void CGUIMultiImage::AllocResources()
 
   for (unsigned int i=0; i < m_files.size(); i++)
   {
-    CGUIImage *pImage = new CGUIImage(GetParentID(), GetID(), m_posX, m_posY, m_width, m_height, m_files[i]);
+    CImage image(m_texturePath);
+    image.file = m_files[i];
+    CGUIImage *pImage = new CGUIImage(GetParentID(), GetID(), m_posX, m_posY, m_width, m_height, image);
     if (pImage)
       m_images.push_back(pImage);
   }
