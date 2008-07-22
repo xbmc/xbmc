@@ -39,6 +39,13 @@
 class CGUIEditControl : public CGUIButtonControl
 {
 public:
+  enum INPUT_TYPE {
+                    INPUT_TYPE_TEXT = 0,
+                    INPUT_TYPE_NUMBER,
+                    INPUT_TYPE_SECONDS,
+                    INPUT_TYPE_DATE
+                  };
+
   CGUIEditControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY,
                   float width, float height, const CImage &textureFocus, const CImage &textureNoFocus,
                   const CLabelInfo& labelInfo, const std::string &text);
@@ -53,7 +60,7 @@ public:
   virtual void SetLabel(const std::string &text);
   virtual CStdString GetDescription() const;
 
-  void SetInputHeading(int heading);
+  void SetInputType(INPUT_TYPE type, int heading);
 protected:
   virtual void RenderText();
   void RecalcLabelPosition();
@@ -68,5 +75,6 @@ protected:
   unsigned int m_cursorBlink;
 
   int m_inputHeading;
+  INPUT_TYPE m_inputType;
 };
 #endif

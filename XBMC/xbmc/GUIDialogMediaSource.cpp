@@ -357,8 +357,9 @@ void CGUIDialogMediaSource::OnPath(int item)
 
 void CGUIDialogMediaSource::OnName()
 {
-  CGUIDialogKeyboard::ShowAndGetInput(m_name, g_localizeStrings.Get(1022), false);
-  UpdateButtons();
+  const CGUIControl *control = GetControl(CONTROL_NAME);
+  if (control)
+    m_name = control->GetDescription();
 }
 
 void CGUIDialogMediaSource::OnOK()
@@ -432,6 +433,10 @@ void CGUIDialogMediaSource::UpdateButtons()
   }
   // name
   SET_CONTROL_LABEL(CONTROL_NAME, m_name)
+  {
+    CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), CONTROL_NAME, 0, 1022);
+    OnMessage(msg);
+  }
 
   if (m_hasMultiPath)
   {
@@ -524,6 +529,7 @@ void CGUIDialogMediaSource::SetTypeOfMedia(const CStdString &type, bool editNotA
 void CGUIDialogMediaSource::OnWindowLoaded()
 {
   CGUIDialog::OnWindowLoaded();
+  ChangeButtonToEdit(CONTROL_NAME);
   // disable the spincontrol
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   const CGUIControl *control = GetControl(CONTROL_PATH);

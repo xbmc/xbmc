@@ -23,7 +23,9 @@
 #include "GUIEditControl.h"
 #include "utils/CharsetConverter.h"
 #include "GUIDialogKeyboard.h"
+#include "GUIDialogNumeric.h"
 #include "LocalizeStrings.h"
+#include "DateTime.h"
 
 using namespace std;
 
@@ -38,6 +40,7 @@ CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId, float posX
   m_cursorPos = 0;
   m_cursorBlink = 0;
   m_inputHeading = 0;
+  m_inputType = INPUT_TYPE_TEXT;
   SetLabel(text);
 }
 
@@ -57,9 +60,9 @@ CGUIEditControl::~CGUIEditControl(void)
 
 bool CGUIEditControl::OnMessage(CGUIMessage &message)
 {
-  if (message.GetMessage() == GUI_MSG_LABEL_ADD)
+  if (message.GetMessage() == GUI_MSG_SET_TYPE)
   {
-    SetInputHeading((int)message.GetParam1());
+    SetInputType((INPUT_TYPE)message.GetParam1(), (int)message.GetParam2());
     return true;
   }
   return CGUIButtonControl::OnMessage(message);
@@ -132,17 +135,49 @@ void CGUIEditControl::OnClick()
   // we received a click - it's not from the keyboard, so pop up the virtual keyboard
   CStdString utf8;
   g_charsetConverter.wToUTF8(m_text, utf8);
+  bool textChanged = false;
   CStdString heading = g_localizeStrings.Get(m_inputHeading ? m_inputHeading : 16028);
-  if (CGUIDialogKeyboard::ShowAndGetInput(utf8, heading, true))
+  switch (m_inputType)
+  {
+    case INPUT_TYPE_NUMBER:
+      textChanged = CGUIDialogNumeric::ShowAndGetNumber(utf8, heading);
+      break;
+    case INPUT_TYPE_SECONDS:
+      textChanged = CGUIDialogNumeric::ShowAndGetSeconds(utf8, g_localizeStrings.Get(21420));
+      break;
+    case INPUT_TYPE_DATE:
+    {
+      CDateTime dateTime;
+      dateTime.SetFromDBDate(utf8);
+      if (dateTime < CDateTime(2000,1, 1, 0, 0, 0))
+        dateTime = CDateTime(2000, 1, 1, 0, 0, 0);
+      SYSTEMTIME date;
+      dateTime.GetAsSystemTime(date);
+      if (CGUIDialogNumeric::ShowAndGetDate(date, g_localizeStrings.Get(21420)))
+      {
+        dateTime = CDateTime(date);
+        utf8 = dateTime.GetAsDBDate();
+        textChanged = true;
+      }
+      break;
+    }
+    case INPUT_TYPE_TEXT:
+    default:
+      textChanged = CGUIDialogKeyboard::ShowAndGetInput(utf8, heading, true);
+      break;
+  }
+  if (textChanged)
   {
     g_charsetConverter.utf8ToW(utf8, m_text);
     OnTextChanged();
   }
 }
 
-void CGUIEditControl::SetInputHeading(int heading)
+void CGUIEditControl::SetInputType(CGUIEditControl::INPUT_TYPE type, int heading)
 {
+  m_inputType = type;
   m_inputHeading = heading;
+  // TODO: Verify the current input string?
 }
 
 void CGUIEditControl::RecalcLabelPosition()
@@ -241,10 +276,14 @@ void CGUIEditControl::OnTextChanged()
 
 void CGUIEditControl::SetLabel(const std::string &text)
 {
-  // make sure we empty out our text (incase the passed in text is empty)
-  m_text.Empty();
-  g_charsetConverter.utf8ToW(text, m_text);
-  m_cursorPos = m_text.size();
+  CStdStringW newText;
+  g_charsetConverter.utf8ToW(text, newText);
+  if (newText != m_text)
+  {
+    m_text = newText;
+    m_cursorPos = m_text.size();
+    SetInvalid();
+  }
 }
 
 CStdString CGUIEditControl::GetDescription() const
