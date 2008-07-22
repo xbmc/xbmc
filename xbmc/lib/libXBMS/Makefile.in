@@ -1,22 +1,10 @@
-AR = ar
-ARFLAGS = rus
-RM = rm -f
+CFLAGS += -D_LINUX
 
-CXX=g++
-CC=gcc
-
-DEFINES += -D_LINUX
+LIB=libxbms-@ARCH@.a
 
 OBJS := ccbuffer.o ccutil.o ccxclient.o ccxclientconnxbox.o ccxdiscover.o ccxencode.o ccxmltrans.o
 
-.c.o:
-	rm -f ${<:.c=.o}
-	$(CC) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.c=.o}
+lib: $(LIB)
 
-libxbms-@ARCH@.a: $(OBJS)
+$(LIB): $(OBJS)
 	$(AR) $(ARFLAGS) $@ $(OBJS)
-
-all: libxbms-@ARCH@.a
-
-clean:
-	$(RM) $(OBJS) libxbms-@ARCH@.a

@@ -27,9 +27,8 @@ hdhomerun_dll : $(OBJS)
 	strip hdhomerun.dll
 
 hdhomerun_so : $(OBJS)
-	gcc $(OBJS) -shared -o hdhomerun-@ARCH@.so `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
-	strip hdhomerun-@ARCH@.so
-	cp hdhomerun-@ARCH@.so ../../../system
+	gcc $(OBJS) -shared -o ../../../system/hdhomerun-@ARCH@.so `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
+	strip ../../../system/hdhomerun-@ARCH@.so
 
 hdhomerun_config hdhomerun_config.exe : $(OBJS) hdhomerun_config.o
 	gcc $(OBJS) hdhomerun_config.o $(LIBS) -lpthreadGC -liphlpapi -o $@
@@ -44,7 +43,7 @@ clean :
 	rm -f hdhomerun_config.exe
 	rm -f hdhomerun_mythconfig
 	rm -f *.o
-	rm -f hdhomerun-@ARCH@.so
+	rm -f ../../../system/hdhomerun-@ARCH@.so
 	rm -f hdhomerun.dll
 
 distclean: clean
