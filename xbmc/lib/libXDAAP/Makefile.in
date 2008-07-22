@@ -1,21 +1,11 @@
-AR = ar
-ARFLAGS = rus
-RM = rm -f
+CFLAGS += -D_LINUX 
+OBJS += daap.o debug.o dmap_generics.o global.o httpClient.o ioloop.o libXDAAP.o threadpool.o Authentication/hasher.o Authentication/md5.o
 
-CXX=g++
-CC=gcc
+include ../../../Makefile.include
 
-DEFINES := -D_LINUX 
-OBJS := daap.o debug.o dmap_generics.o global.o httpClient.o ioloop.o libXDAAP.o threadpool.o Authentication/hasher.o Authentication/md5.o
+LIB=libxdaap-@ARCH@.a
 
-.c.o:
-	rm -f ${<:.c=.o}
-	$(CC) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.c=.o}
+lib: $(LIB)
 
 libxdaap-@ARCH@.a: $(OBJS)
 	$(AR) $(ARFLAGS) $@ $(OBJS)
-
-all: libxdaap-@ARCH@.a
-
-clean:
-	$(RM) $(OBJS) libxdaap-@ARCH@.a

@@ -4,7 +4,9 @@ include ../../../Makefile.include
 
 CFLAGS += -D__UNIX__ -DXBMC 
 
-lib: libshout-@ARCH@.a
+LIB=libshout-@ARCH@.a
 
-libshout-@ARCH@.a : $(OBJS)
+lib: $(LIB)
+
+$(LIB) : $(OBJS)
 	ar rs $@  $(OBJS)
