@@ -26,6 +26,8 @@
 #include "FileSystem/cdioSupport.h"
 #include "PowrProf.h"
 
+extern HWND g_hWnd;
+
 using namespace std;
 using namespace MEDIA_DETECT;
 
@@ -278,4 +280,32 @@ bool CWIN32Util::PowerManagement(PowerState State)
 #else
   return false;
 #endif
+}
+
+bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScriptExit)
+{
+  bool ret;
+  SHELLEXECUTEINFO ShExecInfo = {0};
+  ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+  ShExecInfo.fMask = NULL;
+  ShExecInfo.hwnd = NULL;
+  ShExecInfo.lpVerb = NULL;
+  ShExecInfo.lpFile = strPath.c_str();		
+  ShExecInfo.lpParameters = "";	
+  ShExecInfo.lpDirectory = NULL;
+  ShExecInfo.nShow = SW_SHOW;
+  ShExecInfo.hInstApp = NULL;	
+  if(bWaitForScriptExit)
+  {
+    ShowWindow(g_hWnd,SW_MINIMIZE);
+    ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+    ret = ShellExecuteEx(&ShExecInfo);
+    WaitForSingleObject(ShExecInfo.hProcess,INFINITE);
+    CloseHandle(ShExecInfo.hProcess);
+    ShowWindow(g_hWnd,SW_RESTORE);
+  }
+  else
+    ret = ShellExecuteEx(&ShExecInfo);
+
+  return ret;
 }
