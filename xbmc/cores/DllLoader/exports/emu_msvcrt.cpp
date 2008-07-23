@@ -58,7 +58,10 @@ using namespace XFILE;
 using namespace DIRECTORY;
 
 #if defined(_MSC_VER) && _MSC_VER < 1500
-extern "C" __int64 __cdecl _ftelli64(FILE *);
+extern "C" {
+  __int64 __cdecl _ftelli64(FILE *);
+  int __cdecl _fseeki64(FILE *, __int64, int);
+}
 #endif
 
 struct SDirData
@@ -970,10 +973,10 @@ extern "C"
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
-#ifndef __APPLE__
-      return fseeko64(stream, offset, origin);
-#else
+#if __APPLE__
       return fseek(stream, offset, origin);
+#else
+      return fseeko64(stream, offset, origin);
 #endif
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
@@ -1035,9 +1038,7 @@ extern "C"
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
-#ifdef _WIN32
-      return (off64_t)_ftelli64(stream);
-#elif defined(__APPLE__)
+#if defined(__APPLE__)
       return ftello(stream);
 #else
       return ftello64(stream);
