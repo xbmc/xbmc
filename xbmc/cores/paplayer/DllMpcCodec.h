@@ -44,15 +44,7 @@ public:
 
 class DllMPCCodec : public DllDynamic, DllMPCCodecInterface
 {
-#ifdef __APPLE__
-  DECLARE_DLL_WRAPPER(DllMPCCodec, Q:\\system\\players\\paplayer\\libmpcdec-osx.so)
-#elif !defined _LINUX
-  DECLARE_DLL_WRAPPER(DllMPCCodec, Q:\\system\\players\\PAPlayer\\libmpcdec.dll)
-#elif defined(__x86_64__)
-  DECLARE_DLL_WRAPPER(DllMPCCodec, Q:\\system\\players\\paplayer\\libmpcdec-x86_64-linux.so)
-#else
-  DECLARE_DLL_WRAPPER(DllMPCCodec, Q:\\system\\players\\paplayer\\libmpcdec-i486-linux.so)
-#endif
+  DECLARE_DLL_WRAPPER(DllMPCCodec, DLL_PATH_MPC_CODEC)
   DEFINE_METHOD4(bool, Open, (mpc_decoder **p1, mpc_reader *p2, mpc_streaminfo *p3, double *p4))
   DEFINE_METHOD1(void, Close, (mpc_decoder *p1))
   DEFINE_METHOD3(int, Read, (mpc_decoder *p1, float *p2, int p3))

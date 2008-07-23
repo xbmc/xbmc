@@ -113,6 +113,7 @@ public:
 #else
 class DllAvCodec : public DllDynamic, DllAvCodecInterface
 {
+  DECLARE_DLL_WRAPPER(DllAvCodec, DLL_PATH_LIBAVCODEC)
 #ifndef _LINUX
   DECLARE_DLL_WRAPPER(DllAvCodec, Q:\\system\\players\\dvdplayer\\avcodec-51.dll)
   DEFINE_FUNC_ALIGNED1(void, __cdecl, avcodec_flush_buffers, AVCodecContext*)
@@ -124,15 +125,6 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_FUNC_ALIGNED1(AVCodecParserContext*, __cdecl, av_parser_init, int)
   DEFINE_FUNC_ALIGNED8(int, __cdecl, av_parser_parse, AVCodecParserContext*,AVCodecContext*, uint8_t**, int*, const uint8_t*, int, int64_t, int64_t)
 #else
-#ifdef __APPLE__
-  DECLARE_DLL_WRAPPER(DllAvCodec, Q:\\system\\players\\dvdplayer\\avcodec-51-osx.so)
-#elif !defined(_LINUX)
-  DECLARE_DLL_WRAPPER(DllAvFormat, Q:\\system\\players\\dvdplayer\\avcodec-51.dll)
-#elif defined(__x86_64__)
-  DECLARE_DLL_WRAPPER(DllAvCodec, Q:\\system\\players\\dvdplayer\\avcodec-51-x86_64-linux.so)
-#else
-  DECLARE_DLL_WRAPPER(DllAvCodec, Q:\\system\\players\\dvdplayer\\avcodec-51-i486-linux.so)
-#endif
   DEFINE_METHOD1(void, avcodec_flush_buffers, (AVCodecContext* p1))
   DEFINE_METHOD2(int, avcodec_open_dont_call, (AVCodecContext* p1, AVCodec *p2))
   DEFINE_METHOD5(int, avcodec_decode_video, (AVCodecContext* p1, AVFrame *p2, int *p3, uint8_t *p4, int p5))

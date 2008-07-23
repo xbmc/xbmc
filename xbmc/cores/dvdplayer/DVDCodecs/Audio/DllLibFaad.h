@@ -41,15 +41,7 @@ public:
 
 class DllLibFaad : public DllDynamic, DllLibFaadInterface
 {
-#ifdef __APPLE__
-  DECLARE_DLL_WRAPPER(DllLibFaad, Q:\\system\\players\\dvdplayer\\libfaad-osx.so)
-#elif !defined(_LINUX)
-  DECLARE_DLL_WRAPPER(DllLibFaad, Q:\\system\\players\\dvdplayer\\libfaad.dll)
-#elif defined(__x86_64__)
-  DECLARE_DLL_WRAPPER(DllLibFaad, Q:\\system\\players\\dvdplayer\\libfaad-x86_64-linux.so)
-#else
-  DECLARE_DLL_WRAPPER(DllLibFaad, Q:\\system\\players\\dvdplayer\\libfaad-i486-linux.so)
-#endif
+  DECLARE_DLL_WRAPPER(DllLibFaad, DLL_PATH_LIBFAAD)
   DEFINE_METHOD0(NeAACDecHandle, NeAACDecOpen)
   DEFINE_METHOD1(NeAACDecConfigurationPtr, NeAACDecGetCurrentConfiguration, (NeAACDecHandle p1))
   DEFINE_METHOD2(unsigned char, NeAACDecSetConfiguration, (NeAACDecHandle p1, NeAACDecConfigurationPtr p2))

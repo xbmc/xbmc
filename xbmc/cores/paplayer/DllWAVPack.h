@@ -68,17 +68,7 @@ public:
 
 class DllWavPack : public DllDynamic, DllWavPackInterface
 {
-#ifndef _LINUX
-  DECLARE_DLL_WRAPPER(DllWavPack, Q:\\system\\players\\paplayer\\WAVPack.dll)
-#elif defined _POWERPC
-  DECLARE_DLL_WRAPPER(DllWavPack, Q:\\system\\players\\paplayer\\wavpack-powerpc-linux.so)
-#elif defined _POWERPC64
-  DECLARE_DLL_WRAPPER(DllWavPack, Q:\\system\\players\\paplayer\\wavpack-powerpc64-linux.so)
-#elif defined(__x86_64__)
-  DECLARE_DLL_WRAPPER(DllWavPack, Q:\\system\\players\\paplayer\\wavpack-x86_64-linux.so)
-#else
-  DECLARE_DLL_WRAPPER(DllWavPack, Q:\\system\\players\\paplayer\\wavpack-i486-linux.so)
-#endif
+  DECLARE_DLL_WRAPPER(DllWavPack, DLL_PATH_WAVPACK_CODEC)
   DEFINE_METHOD6(WavpackContext*, WavpackOpenFileInputEx, (stream_reader* p1, void* p2, void* p3, char* p4, int p5, int p6))
   DEFINE_METHOD4(WavpackContext*, WavpackOpenFileInput, (const char* p1, char* p2, int p3, int p4))
   DEFINE_METHOD1(int, WavpackGetVersion, (WavpackContext* p1))

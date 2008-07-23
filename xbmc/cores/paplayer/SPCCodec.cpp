@@ -26,6 +26,7 @@
 #include "MusicInfoTagLoaderSPC.h"
 #include "MusicInfoTag.h"
 #include "FileSystem/File.h"
+#include "DynamicDll.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -53,11 +54,7 @@ SPCCodec::~SPCCodec()
 
 bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-#ifdef _LINUX
-  m_loader = new SoLoader("Q:\\system\\players\\paplayer\\SNESAPU-i486-linux.so");
-#else
-  m_loader = new DllLoader("Q:\\system\\players\\paplayer\\snesapu.dll");
-#endif
+  m_loader = new SoLoader(DLL_PATH_SPC_CODEC);
   if (!m_loader)
     return false;
   if (!m_loader->Load())

@@ -56,13 +56,7 @@ public:
 
 class DllLibDts : public DllDynamic, DllLibDtsInterface
 {
-#ifdef __APPLE__
-  DECLARE_DLL_WRAPPER(DllLibDts, Q:\\system\\players\\dvdplayer\\libdts-osx.so)
-#elif !defined(_LINUX)
-  DECLARE_DLL_WRAPPER(DllLibDts, Q:\\system\\players\\dvdplayer\\libdts.dll)
-#else
-  DECLARE_DLL_WRAPPER(DllLibDts, Q:\\system\\players\\dvdplayer\\libdts-i486-linux.so)
-#endif
+  DECLARE_DLL_WRAPPER(DllLibDts, DLL_PATH_LIBDTS)
   DEFINE_METHOD1(dts_state_t *, dts_init, (uint32_t p1))
   DEFINE_METHOD6(int, dts_syncinfo, (dts_state_t *p1, uint8_t * p2, int * p3, int * p4, int * p5, int *p6))
   DEFINE_METHOD5(int, dts_frame, (dts_state_t * p1, uint8_t * p2, int * p3, level_t * p4, sample_t p5))

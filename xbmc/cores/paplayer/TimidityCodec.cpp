@@ -42,11 +42,7 @@ TimidityCodec::~TimidityCodec()
 
 bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-#ifdef _LINUX
-  m_loader = new SoLoader("Q:\\system\\players\\paplayer\\timidity-i486-linux.so");
-#else
-  m_loader = new DllLoader("Q:\\system\\players\\paplayer\\timidity.dll");
-#endif
+  m_loader = new SoLoader(DLL_PATH_MID_CODEC);
   if (!m_loader)
     return false;
   if (!m_loader->Load())

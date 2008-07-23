@@ -39,13 +39,7 @@ public:
 
 class DllADPCM : public DllDynamic, DllADPCMInterface
 {
-#ifndef _LINUX
-  DECLARE_DLL_WRAPPER(DllADPCM, q:\\system\\players\\paplayer\\adpcm.dll)
-#elif defined (__x86_64__)
-  DECLARE_DLL_WRAPPER(DllADPCM, q:\\system\\players\\paplayer\\adpcm-x86_64-linux.so)
-#else
-  DECLARE_DLL_WRAPPER(DllADPCM, q:\\system\\players\\paplayer\\adpcm-i486-linux.so)
-#endif
+  DECLARE_DLL_WRAPPER(DllADPCM, DLL_PATH_ADPCM_CODEC)
   DEFINE_METHOD1(int, LoadXWAV, (const char* p1))
   DEFINE_METHOD1(void, FreeXWAV, (int p1))
   DEFINE_METHOD3(long, FillBuffer, (int p1, char* p2, int p3))
