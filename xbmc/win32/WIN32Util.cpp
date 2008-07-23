@@ -284,14 +284,35 @@ bool CWIN32Util::PowerManagement(PowerState State)
 
 bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScriptExit)
 {
+  CStdString strCommand = strPath;
+  CStdString strExe = strPath;
+  CStdString strParams;
+  strCommand.Trim();
+  if (strCommand.IsEmpty())
+  {
+    return false;
+  }
+  int iIndex = -1;
+  char split = ' ';
+  if (strCommand[0] == '\"')
+  {
+    split = '\"';
+  }
+  iIndex = strCommand.Find(split, 1);
+  if (iIndex != -1)
+  {
+    strExe = strCommand.substr(0, iIndex + 1);
+    strParams = strCommand.substr(iIndex + 1);
+  }
+
   bool ret;
   SHELLEXECUTEINFO ShExecInfo = {0};
   ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
   ShExecInfo.fMask = NULL;
   ShExecInfo.hwnd = NULL;
   ShExecInfo.lpVerb = NULL;
-  ShExecInfo.lpFile = strPath.c_str();		
-  ShExecInfo.lpParameters = "";	
+  ShExecInfo.lpFile = strExe.c_str();		
+  ShExecInfo.lpParameters = strParams.c_str();	
   ShExecInfo.lpDirectory = NULL;
   ShExecInfo.nShow = SW_SHOW;
   ShExecInfo.hInstApp = NULL;	
@@ -299,13 +320,13 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
   {
     ShowWindow(g_hWnd,SW_MINIMIZE);
     ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
-    ret = ShellExecuteEx(&ShExecInfo);
+    ret = ShellExecuteEx(&ShExecInfo) == TRUE;
     WaitForSingleObject(ShExecInfo.hProcess,INFINITE);
     CloseHandle(ShExecInfo.hProcess);
     ShowWindow(g_hWnd,SW_RESTORE);
   }
   else
-    ret = ShellExecuteEx(&ShExecInfo);
+    ret = ShellExecuteEx(&ShExecInfo) == TRUE;
 
   return ret;
 }
