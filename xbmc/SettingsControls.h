@@ -21,7 +21,7 @@
  */
 
 #include "GUISpinControlEx.h"
-#include "GUIButtonControl.h"
+#include "GUIEditControl.h"
 #include "GUIRadioButtonControl.h"
 
 class CSetting;
@@ -72,8 +72,19 @@ public:
   virtual bool OnClick();
   virtual void Update();
 private:
-  bool IsValidIPAddress(const CStdString &strIP);
   CGUIButtonControl *m_pButton;
+};
+
+class CEditSettingControl : public CBaseSettingControl
+{
+public:
+  CEditSettingControl(CGUIEditControl* pButton, DWORD dwID, CSetting *pSetting);
+  virtual ~CEditSettingControl();
+  virtual bool OnClick();
+  virtual void Update();
+private:
+  bool IsValidIPAddress(const CStdString &strIP);
+  CGUIEditControl *m_pEdit;
 };
 
 class CSeparatorSettingControl : public CBaseSettingControl
