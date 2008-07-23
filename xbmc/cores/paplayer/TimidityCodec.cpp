@@ -42,7 +42,11 @@ TimidityCodec::~TimidityCodec()
 
 bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
+#ifdef _LINUX
   m_loader = new SoLoader(DLL_PATH_MID_CODEC);
+#else
+  m_loader = new DllLoader(DLL_PATH_MID_CODEC);
+#endif
   if (!m_loader)
     return false;
   if (!m_loader->Load())

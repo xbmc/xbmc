@@ -54,7 +54,11 @@ SPCCodec::~SPCCodec()
 
 bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
+#ifdef _LINUX
   m_loader = new SoLoader(DLL_PATH_SPC_CODEC);
+#else
+  m_loader = new DllLoader(DLL_PATH_SPC_CODEC);
+#endif
   if (!m_loader)
     return false;
   if (!m_loader->Load())
