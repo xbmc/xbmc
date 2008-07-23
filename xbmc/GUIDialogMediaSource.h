@@ -49,7 +49,6 @@ protected:
   void OnPath(int item);
   void OnPathAdd();
   void OnPathRemove(int item);
-  void OnName();
   void OnOK();
   void OnCancel();
   void UpdateButtons();
