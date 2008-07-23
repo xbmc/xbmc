@@ -193,8 +193,39 @@ void CButtonSettingControl::Update()
   m_pButton->SetLabel2(strText);
 }
 
+CEditSettingControl::CEditSettingControl(CGUIEditControl *pEdit, DWORD dwID, CSetting *pSetting)
+    : CBaseSettingControl(dwID, pSetting)
+{
+  m_pEdit = pEdit;
+  m_pEdit->SetID(dwID);
+  int heading = ((CSettingString *)m_pSetting)->m_iHeadingString;
+  if (heading < 0) heading = 0;
+  if (pSetting->GetControlType() == EDIT_CONTROL_HIDDEN_INPUT)
+    m_pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_PASSWORD, heading);
+  else if (pSetting->GetControlType() == EDIT_CONTROL_IP_INPUT)
+    m_pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_IPADDRESS, heading);
+  else
+    m_pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_TEXT, heading);
+  Update();
+}
 
-bool CButtonSettingControl::IsValidIPAddress(const CStdString &strIP)
+CEditSettingControl::~CEditSettingControl()
+{
+}
+
+bool CEditSettingControl::OnClick()
+{
+  // update our string
+  ((CSettingString *)m_pSetting)->SetData(m_pEdit->GetLabel2());
+  return true;
+}
+
+void CEditSettingControl::Update()
+{
+  m_pEdit->SetLabel2(((CSettingString *)m_pSetting)->GetData());
+}
+
+bool CEditSettingControl::IsValidIPAddress(const CStdString &strIP)
 {
   const char* s = strIP.c_str();
   bool legalFormat = true;

@@ -94,6 +94,7 @@ protected:
   CGUIRadioButtonControl *m_pOriginalRadioButton;
   CGUIButtonControl *m_pOriginalCategoryButton;
   CGUIButtonControl *m_pOriginalButton;
+  CGUIEditControl *m_pOriginalEdit;
   CGUIImage *m_pOriginalImage;
   // Network settings
   int m_iNetworkAssignment;
