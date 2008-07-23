@@ -36,11 +36,7 @@ public:
 
 class DllWMA : public DllDynamic, DllWMAInterface
 {
-#ifdef _LINUX
-  DECLARE_DLL_WRAPPER(DllWMA, q:\\system\\players\\paplayer\\wma-i486-linux.so)
-#else
-  DECLARE_DLL_WRAPPER(DllWMA, q:\\system\\players\\paplayer\\ffwma.dll)
-#endif
+  DECLARE_DLL_WRAPPER(DllWMA, DLL_PATH_WMA_CODEC)
   DEFINE_METHOD0(int, Init)
   DEFINE_METHOD5(void*, LoadFile, (const char* p1, long long* p2, int *p3, int* p4, int *p5))
   DEFINE_METHOD1(void, UnloadFile, (void* p1))

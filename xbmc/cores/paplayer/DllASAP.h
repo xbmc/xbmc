@@ -48,11 +48,7 @@ public:
 
 class DllASAP : public DllDynamic, DllASAPInterface
 {
-#ifdef _LINUX
-  DECLARE_DLL_WRAPPER(DllASAP, q:\\system\\players\\paplayer\\xbmc_asap-i486-linux.so)
-#else
-  DECLARE_DLL_WRAPPER(DllASAP, q:\\system\\players\\paplayer\\xbmc_asap.dll)
-#endif
+  DECLARE_DLL_WRAPPER(DllASAP, DLL_PATH_ASAP_CODEC)
   DEFINE_METHOD1(int, asapGetSongs, (const char *p1))
   DEFINE_METHOD3(abool, asapGetInfo, (const char *p1, int p2, ASAP_SongInfo *p3))
   DEFINE_METHOD4(abool, asapLoad, (const char *p1, int p2, int *p3, int *p4))

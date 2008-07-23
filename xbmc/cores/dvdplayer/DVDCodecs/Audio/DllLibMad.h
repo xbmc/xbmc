@@ -40,15 +40,7 @@ public:
 
 class DllLibMad : public DllDynamic, DllLibMadInterface
 {
-#ifndef _LINUX
-  DECLARE_DLL_WRAPPER(DllLibMad, Q:\\system\\players\\dvdplayer\\libmad.dll)
-#elif defined(__APPLE__)
-  DECLARE_DLL_WRAPPER(DllLibMad, Q:\\system\\players\\dvdplayer\\libmad-osx.so)
-#elif defined(__x86_64__)
-  DECLARE_DLL_WRAPPER(DllLibMad, Q:\\system\\players\\dvdplayer\\libmad-x86_64-linux.so)
-#else
-  DECLARE_DLL_WRAPPER(DllLibMad, Q:\\system\\players\\dvdplayer\\libmad-i486-linux.so)
-#endif
+  DECLARE_DLL_WRAPPER(DllLibMad, DLL_PATH_LIBMAD)
   DEFINE_METHOD1(void, mad_synth_init, (struct mad_synth * p1))
   DEFINE_METHOD1(void, mad_stream_init, (struct mad_stream * p1))
   DEFINE_METHOD1(void, mad_frame_init, (struct mad_frame * p1))

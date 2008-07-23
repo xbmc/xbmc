@@ -62,14 +62,7 @@ public:
 
 class DllVorbisfile : public DllDynamic, DllVorbisfileInterface
 {
-#ifdef __APPLE__
-  DECLARE_DLL_WRAPPER(DllVorbisfile, Q:\\system\\players\\paplayer\\vorbisfile-osx.so)
-#elif !defined(_LINUX)
-  DECLARE_DLL_WRAPPER(DllVorbisfile, Q:\\system\\players\\PAPlayer\\vorbisfile.dll)
-#else
-  DECLARE_DLL_WRAPPER(DllVorbisfile, Q:\\system\\players\\paplayer\\vorbisfile-i486-linux.so)
-#endif
-
+  DECLARE_DLL_WRAPPER(DllVorbisfile, DLL_PATH_OGG_CODEC)
   DEFINE_METHOD1(int, ov_clear, (OggVorbis_File *p1))
   DEFINE_METHOD4(int, ov_open, (FILE *p1,OggVorbis_File *p2,char *p3,long p4))
   DEFINE_METHOD5(int, ov_open_callbacks, (void *p1, OggVorbis_File *p2, char *p3, long p4, ov_callbacks p5))

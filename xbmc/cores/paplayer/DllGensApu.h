@@ -39,13 +39,7 @@ public:
 
 class DllGensApu : public DllDynamic, DllGensApuInterface
 {
-#ifndef _LINUX
-  DECLARE_DLL_WRAPPER(DllGensApu, q:\\system\\players\\paplayer\\gensapu.dll)
-#elif defined(__x86_64__)
-  DECLARE_DLL_WRAPPER(DllGensApu, q:\\system\\players\\paplayer\\gensapu-x86_64-linux.so)
-#else
-  DECLARE_DLL_WRAPPER(DllGensApu, q:\\system\\players\\paplayer\\gensapu-i486-linux.so)
-#endif
+  DECLARE_DLL_WRAPPER(DllGensApu, DLL_PATH_GYM_CODEC)
   DEFINE_METHOD0(int, Init)
   DEFINE_METHOD1(int, LoadGYM, (const char* p1))
   DEFINE_METHOD1(void, FreeGYM, (int p1))
