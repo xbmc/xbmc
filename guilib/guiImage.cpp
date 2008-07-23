@@ -1108,3 +1108,16 @@ void CGUIImage::OrientateTexture(CRect &rect, int orientation)
   }
 }
 
+void CGUIImage::SetWidth(float width)
+{
+  if (width < m_image.border.left + m_image.border.right)
+    width = m_image.border.left + m_image.border.right;
+  CGUIControl::SetWidth(width);
+}
+
+void CGUIImage::SetHeight(float height)
+{
+  if (height < m_image.border.top + m_image.border.bottom)
+    height = m_image.border.top + m_image.border.bottom;
+  CGUIControl::SetHeight(height);
+}
