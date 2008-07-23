@@ -36,10 +36,13 @@
 //
 //  classname: name of the wrapper class to construct
 //  dllname: file including path of the dll to wrap
-//
+
 #define DECLARE_DLL_WRAPPER(classname, dllname) \
+XDECLARE_DLL_WRAPPER(classname,dllname)
+
+#define XDECLARE_DLL_WRAPPER(classname, dllname) \
 public: \
-  classname () : DllDynamic( #dllname ) {}
+  classname () : DllDynamic( dllname ) {}
 
 ///////////////////////////////////////////////////////////
 //
