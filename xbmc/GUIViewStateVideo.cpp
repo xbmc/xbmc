@@ -52,6 +52,15 @@ int CGUIViewStateWindowVideo::GetPlaylist()
   return PLAYLIST_VIDEO;
 }
 
+void CGUIViewStateWindowVideo::SaveViewToDb(const CStdString &path, int windowID, CViewState *viewState)
+{
+  // Note that myvideos.savefolderviews only seems to apply to files view
+  // (see CGUIWindowSettingsCategory::ClearFolderViews), so that's all we
+  // check for here.
+  if (windowID != WINDOW_VIDEO_FILES || g_guiSettings.GetBool("myvideos.savefolderviews"))
+    CGUIViewState::SaveViewToDb(path, windowID, viewState);
+}
+
 CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
   if (items.IsVirtualDirectoryRoot())
@@ -302,28 +311,28 @@ void CGUIViewStateWindowVideoNav::SaveViewState()
   switch (NodeType)
   {
   case NODE_TYPE_ACTOR:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavActors);
+    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_stSettings.m_viewStateVideoNavActors);
     break;
   case NODE_TYPE_YEAR:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavYears);
+    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_stSettings.m_viewStateVideoNavYears);
     break;
   case NODE_TYPE_GENRE:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavGenres);
+    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_stSettings.m_viewStateVideoNavGenres);
     break;
   case NODE_TYPE_TITLE_MOVIES:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavTitles);
+    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_stSettings.m_viewStateVideoNavTitles);
     break;
   case NODE_TYPE_EPISODES:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavEpisodes);
+    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_stSettings.m_viewStateVideoNavEpisodes);
     break;
   case NODE_TYPE_TITLE_TVSHOWS:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavTvShows);
+    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_stSettings.m_viewStateVideoNavTvShows);
     break;
   case NODE_TYPE_SEASONS:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavSeasons);
+    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_stSettings.m_viewStateVideoNavSeasons);
     break;
   case NODE_TYPE_TITLE_MUSICVIDEOS:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavMusicVideos);
+    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_stSettings.m_viewStateVideoNavMusicVideos);
   default:
     SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV);
     break;
@@ -440,7 +449,7 @@ CGUIViewStateVideoMovies::CGUIViewStateVideoMovies(const CFileItemList& items) :
 
 void CGUIViewStateVideoMovies::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavTitles);
+  SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_stSettings.m_viewStateVideoNavTitles);
 }
 
 
@@ -474,7 +483,7 @@ CGUIViewStateVideoMusicVideos::CGUIViewStateVideoMusicVideos(const CFileItemList
 
 void CGUIViewStateVideoMusicVideos::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavMusicVideos);
+  SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_stSettings.m_viewStateVideoNavMusicVideos);
 }
 
 
@@ -499,7 +508,7 @@ CGUIViewStateVideoTVShows::CGUIViewStateVideoTVShows(const CFileItemList& items)
 
 void CGUIViewStateVideoTVShows::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavTvShows);
+  SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_stSettings.m_viewStateVideoNavTvShows);
 }
 
 
@@ -536,6 +545,6 @@ CGUIViewStateVideoEpisodes::CGUIViewStateVideoEpisodes(const CFileItemList& item
 
 void CGUIViewStateVideoEpisodes::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavEpisodes);
+  SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_stSettings.m_viewStateVideoNavEpisodes);
 }
 

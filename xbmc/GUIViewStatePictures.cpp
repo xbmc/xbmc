@@ -57,7 +57,8 @@ CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& it
 
 void CGUIViewStateWindowPictures::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_PICTURES);
+  if (g_guiSettings.GetBool("pictures.savefolderviews"))
+    SaveViewToDb(m_items.m_strPath, WINDOW_PICTURES);
 }
 
 CStdString CGUIViewStateWindowPictures::GetLockType()
