@@ -313,10 +313,7 @@ bool SSortFileItem::EpisodeNumAscending(const CFileItemPtr &left, const CFileIte
     // check filename as there can be duplicates now
     CURL l(lTag->m_strFileNameAndPath);
     CURL r(rTag->m_strFileNameAndPath);
-    return (StringUtils::AlphaNumericCompare(l.GetFileName(), r.GetFileName()) > 0);
-    int result = l.GetFileNameWithoutPath().CompareNoCase(r.GetFileNameWithoutPath());
-    if (result < 0) return true;
-    if (result > 0) return false;
+    return (StringUtils::AlphaNumericCompare(l.GetFileName(), r.GetFileName()) < 0);
   }
   return left->m_bIsFolder;
 }
@@ -352,10 +349,7 @@ bool SSortFileItem::EpisodeNumDescending(const CFileItemPtr &left, const CFileIt
     // check filename as there can be duplicates now
     CURL l(lTag->m_strFileNameAndPath);
     CURL r(rTag->m_strFileNameAndPath);
-    return (StringUtils::AlphaNumericCompare(l.GetFileName(), r.GetFileName()) > 0);
-    int result = l.GetFileNameWithoutPath().CompareNoCase(r.GetFileNameWithoutPath());
-    if (result < 0) return true;
-    if (result > 0) return false;
+    return (StringUtils::AlphaNumericCompare(l.GetFileName(), r.GetFileName()) < 0);
   }
   return left->m_bIsFolder;
 }
