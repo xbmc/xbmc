@@ -3491,7 +3491,7 @@ void CGUIWindowSettingsCategory::ClearFolderViews(CSetting *pSetting, int window
     CViewDatabase db;
     if (db.Open())
     {
-      db.ClearViewStates(WINDOW_MUSIC_FILES);
+      db.ClearViewStates(windowID);
       db.Close();
     }
   }

@@ -49,7 +49,8 @@ CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& it
 
 void CGUIViewStateWindowPrograms::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_PROGRAMS);
+  if (g_guiSettings.GetBool("programfiles.savefolderviews"))
+    SaveViewToDb(m_items.m_strPath, WINDOW_PROGRAMS);
 }
 
 CStdString CGUIViewStateWindowPrograms::GetLockType()
