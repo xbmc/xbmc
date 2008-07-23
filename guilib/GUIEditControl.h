@@ -43,7 +43,9 @@ public:
                     INPUT_TYPE_TEXT = 0,
                     INPUT_TYPE_NUMBER,
                     INPUT_TYPE_SECONDS,
-                    INPUT_TYPE_DATE
+                    INPUT_TYPE_DATE,
+                    INPUT_TYPE_IPADDRESS,
+                    INPUT_TYPE_PASSWORD,
                   };
 
   CGUIEditControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY,
@@ -58,18 +60,24 @@ public:
   virtual void OnClick();
 
   virtual void SetLabel(const std::string &text);
-  virtual CStdString GetDescription() const;
+  virtual void SetLabel2(const std::string &text);
+
+  virtual CStdString GetLabel2() const;
 
   void SetInputType(INPUT_TYPE type, int heading);
 protected:
   virtual void RenderText();
+  CStdStringW GetDisplayedText() const;
   void RecalcLabelPosition();
   void ValidateCursor();
   void OnTextChanged();
 
-  CStdStringW m_text;
+  CStdStringW m_text2;
+  CStdString  m_text;
   float m_textOffset;
   float m_textWidth;
+
+  static const spaceWidth = 5;
 
   unsigned int m_cursorPos;
   unsigned int m_cursorBlink;

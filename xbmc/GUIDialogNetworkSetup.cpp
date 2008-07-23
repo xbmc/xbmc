@@ -26,6 +26,7 @@
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIWindowManager.h"
+#include "GUIEditControl.h"
 #include "Util.h"
 #include "URL.h"
 
@@ -74,15 +75,15 @@ bool CGUIDialogNetworkSetup::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_SERVER_BROWSE)
         OnServerBrowse();
       else if (iControl == CONTROL_SERVER_ADDRESS)
-        OnServerAddress();
+        OnEditChanged(iControl, m_server);
       else if (iControl == CONTROL_REMOTE_PATH)
-        OnPath();
+        OnEditChanged(iControl, m_path);
       else if (iControl == CONTROL_PORT_NUMBER)
-        OnPort();
+        OnEditChanged(iControl, m_port);
       else if (iControl == CONTROL_USERNAME)
-        OnUserName();
+        OnEditChanged(iControl, m_username);
       else if (iControl == CONTROL_PASSWORD)
-        OnPassword();
+        OnEditChanged(iControl, m_password);
       else if (iControl == CONTROL_OK)
         OnOK();
       else if (iControl == CONTROL_CANCEL)
@@ -109,6 +110,13 @@ bool CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(CStdString &path)
 
 void CGUIDialogNetworkSetup::OnInitWindow()
 {
+  // replace our buttons with edits
+  ChangeButtonToEdit(CONTROL_SERVER_ADDRESS);
+  ChangeButtonToEdit(CONTROL_REMOTE_PATH);
+  ChangeButtonToEdit(CONTROL_USERNAME);
+  ChangeButtonToEdit(CONTROL_PORT_NUMBER);
+  ChangeButtonToEdit(CONTROL_PASSWORD);
+
   CGUIDialog::OnInitWindow();
   // Add our protocols
   CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(CONTROL_PROTOCOL);
@@ -150,39 +158,6 @@ void CGUIDialogNetworkSetup::OnServerBrowse()
   }
 }
 
-void CGUIDialogNetworkSetup::OnServerAddress()
-{
-  if (m_protocol == NET_PROTOCOL_XBMSP || m_protocol == NET_PROTOCOL_DAAP)
-    CGUIDialogNumeric::ShowAndGetIPAddress(m_server, g_localizeStrings.Get(1016));
-  else
-    CGUIDialogKeyboard::ShowAndGetInput(m_server, g_localizeStrings.Get(1016), false);
-  UpdateButtons();
-}
-
-void CGUIDialogNetworkSetup::OnPath()
-{
-  CGUIDialogKeyboard::ShowAndGetInput(m_path, g_localizeStrings.Get(1017), false);
-  UpdateButtons();
-}
-
-void CGUIDialogNetworkSetup::OnPort()
-{
-  CGUIDialogNumeric::ShowAndGetNumber(m_port, g_localizeStrings.Get(1018));
-  UpdateButtons();
-}
-
-void CGUIDialogNetworkSetup::OnUserName()
-{
-  CGUIDialogKeyboard::ShowAndGetInput(m_username, g_localizeStrings.Get(1019), false);
-  UpdateButtons();
-}
-
-void CGUIDialogNetworkSetup::OnPassword()
-{
-  CGUIDialogKeyboard::ShowAndGetNewPassword(m_password,g_localizeStrings.Get(12326),true);
-  UpdateButtons();
-}
-
 void CGUIDialogNetworkSetup::OnOK()
 {
   m_confirmed = true;
@@ -216,7 +191,8 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
 
 void CGUIDialogNetworkSetup::UpdateButtons()
 {
-  // Button labels
+  // Address label
+  SET_CONTROL_LABEL2(CONTROL_SERVER_ADDRESS, m_server);
   if (m_protocol == NET_PROTOCOL_SMB)
   {
     SET_CONTROL_LABEL(CONTROL_SERVER_ADDRESS, 1010);  // Server name
@@ -225,6 +201,13 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   {
     SET_CONTROL_LABEL(CONTROL_SERVER_ADDRESS, 1009);  // Server Address
   }
+  if (m_protocol == NET_PROTOCOL_XBMSP || m_protocol == NET_PROTOCOL_DAAP)
+    SendMessage(GUI_MSG_SET_TYPE, CONTROL_SERVER_ADDRESS, CGUIEditControl::INPUT_TYPE_IPADDRESS, 1016);
+  else
+    SendMessage(GUI_MSG_SET_TYPE, CONTROL_SERVER_ADDRESS, CGUIEditControl::INPUT_TYPE_TEXT, 1016);
+  // remote path
+  SET_CONTROL_LABEL2(CONTROL_REMOTE_PATH, m_path);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_REMOTE_PATH, m_protocol != NET_PROTOCOL_DAAP && m_protocol != NET_PROTOCOL_UPNP && m_protocol != NET_PROTOCOL_TUXBOX);
   if (m_protocol == NET_PROTOCOL_FTP)
   {
     SET_CONTROL_LABEL(CONTROL_REMOTE_PATH, 1011);  // Remote Path
@@ -233,53 +216,28 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   {
     SET_CONTROL_LABEL(CONTROL_REMOTE_PATH, 1012);  // Shared Folder
   }
-  // server
-  CGUIButtonControl *server = (CGUIButtonControl *)GetControl(CONTROL_SERVER_ADDRESS);
-  if (server)
-  {
-    server->SetLabel2(m_server);
-  }
+  SendMessage(GUI_MSG_SET_TYPE, CONTROL_REMOTE_PATH, CGUIEditControl::INPUT_TYPE_TEXT, 1017);
+
+  // username
+  SET_CONTROL_LABEL2(CONTROL_USERNAME, m_username);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_USERNAME, m_protocol != NET_PROTOCOL_DAAP && m_protocol != NET_PROTOCOL_UPNP);
+  SendMessage(GUI_MSG_SET_TYPE, CONTROL_USERNAME, CGUIEditControl::INPUT_TYPE_TEXT, 1019);
+
+  // port
+  SET_CONTROL_LABEL2(CONTROL_PORT_NUMBER, m_port);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_PORT_NUMBER, m_protocol == NET_PROTOCOL_XBMSP || m_protocol == NET_PROTOCOL_FTP || m_protocol == NET_PROTOCOL_TUXBOX);
+  SendMessage(GUI_MSG_SET_TYPE, CONTROL_PORT_NUMBER, CGUIEditControl::INPUT_TYPE_NUMBER, 1018);
+
+  // password
+  SET_CONTROL_LABEL2(CONTROL_PASSWORD, m_password);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_PASSWORD, m_protocol != NET_PROTOCOL_DAAP && m_protocol != NET_PROTOCOL_UPNP);
+  SendMessage(GUI_MSG_SET_TYPE, CONTROL_PASSWORD, CGUIEditControl::INPUT_TYPE_PASSWORD, 12326);
+
   // TODO: FIX BETTER DAAP SUPPORT
   // server browse should be disabled if we are in FTP
-  if (m_server.IsEmpty() && (m_protocol == NET_PROTOCOL_FTP || m_protocol == NET_PROTOCOL_DAAP || m_protocol == NET_PROTOCOL_TUXBOX))
-  {
-    CONTROL_DISABLE(CONTROL_SERVER_BROWSE);
-  }
-  else
-  {
-    CONTROL_ENABLE(CONTROL_SERVER_BROWSE);
-  }
-  // remote path
-  CGUIButtonControl *path = (CGUIButtonControl *)GetControl(CONTROL_REMOTE_PATH);
-  if (path)
-  {
-     path->SetLabel2(m_path);
-     path->SetEnabled(m_protocol != NET_PROTOCOL_DAAP && m_protocol != NET_PROTOCOL_UPNP && m_protocol != NET_PROTOCOL_TUXBOX);
-  }
-  // port
-  CGUIButtonControl *port = (CGUIButtonControl *)GetControl(CONTROL_PORT_NUMBER);
-  if (port)
-  {
-    port->SetEnabled(m_protocol == NET_PROTOCOL_XBMSP || m_protocol == NET_PROTOCOL_FTP || m_protocol == NET_PROTOCOL_TUXBOX);
-    port->SetLabel2(m_port);
-  }
-  // username
-  CGUIButtonControl *username = (CGUIButtonControl *)GetControl(CONTROL_USERNAME);
-  if (username)
-  {
-    username->SetEnabled(m_protocol != NET_PROTOCOL_DAAP && m_protocol != NET_PROTOCOL_UPNP);
-    username->SetLabel2(m_username);
-
-  }
-  // password
-  CGUIButtonControl *password = (CGUIButtonControl *)GetControl(CONTROL_PASSWORD);
-  if (password)
-  {
-    CStdString asterix;
-    asterix.append(m_password.size(), '*');
-    password->SetLabel2(asterix);
-    password->SetEnabled(m_protocol != NET_PROTOCOL_DAAP && m_protocol != NET_PROTOCOL_UPNP);
-  }
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_SERVER_BROWSE, !m_server.IsEmpty() || !(m_protocol == NET_PROTOCOL_FTP ||
+                                                                              m_protocol == NET_PROTOCOL_DAAP ||
+                                                                              m_protocol == NET_PROTOCOL_TUXBOX));
 }
 
 CStdString CGUIDialogNetworkSetup::ConstructPath() const

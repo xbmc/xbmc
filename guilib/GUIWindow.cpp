@@ -1314,6 +1314,19 @@ void CGUIWindow::GetContainers(vector<CGUIControl *> &containers) const
   }
 }
 
+void CGUIWindow::OnEditChanged(int id, CStdString &text)
+{
+  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), id);
+  OnMessage(msg);
+  text = msg.GetLabel();
+}
+
+bool CGUIWindow::SendMessage(DWORD message, DWORD id, DWORD param1 /* = 0*/, DWORD param2 /* = 0*/)
+{
+  CGUIMessage msg(message, GetID(), id, param1, param2);
+  return OnMessage(msg);
+}
+
 #ifdef _DEBUG
 void CGUIWindow::DumpTextureUse()
 {
@@ -1325,7 +1338,7 @@ void CGUIWindow::DumpTextureUse()
 }
 #endif
 
-void CGUIWindow::ChangeButtonToEdit(int id)
+void CGUIWindow::ChangeButtonToEdit(int id, bool singleLabel /* = false*/)
 {
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   CGUIControl *name = (CGUIControl *)GetControl(id);
@@ -1334,6 +1347,8 @@ void CGUIWindow::ChangeButtonToEdit(int id)
     CGUIEditControl *edit = new CGUIEditControl(*(const CGUIButtonControl *)name);
     if (edit)
     {
+      if (singleLabel)
+        edit->SetLabel("");
       Insert(edit, name);
       Remove(name);
       name->FreeResources();
