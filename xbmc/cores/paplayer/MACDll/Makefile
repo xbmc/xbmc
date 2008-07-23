@@ -35,7 +35,7 @@ Source/MACLib/Old/UnBitArrayOld.o \
 Source/MACLib/Old/AntiPredictorNormal.o \
 Source/MACDll/MACDll.o
 
-CFLAGS +=-ISource/Shared -ISource/MACLib -ISource/Console -s -O3 -pedantic -D__GNUC_IA32__ -DBUILD_CROSS_PLATFORM -D_LINUX
+CFLAGS +=-ISource/Shared -DPIC -fPIC -ISource/MACLib -ISource/Console -s -O3 -pedantic -D__GNUC_IA32__ -DBUILD_CROSS_PLATFORM -D_LINUX
 
 LIB=../../../../system/players/paplayer/MACDll-i486-linux.so
 
