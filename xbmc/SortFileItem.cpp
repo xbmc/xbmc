@@ -279,10 +279,14 @@ bool SSortFileItem::EpisodeNumAscending(const CFileItemPtr &left, const CFileIte
   // sanity
   RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
 
-  // special items
+  // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  // only if they're both folders or both files do we do the full comparison
+
+  const CVideoInfoTag *lTag = left->GetVideoInfoTag();
+  const CVideoInfoTag *rTag = right->GetVideoInfoTag();
+
+  // episode number
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
     // we calculate an offset number based on the episode's
@@ -295,15 +299,24 @@ bool SSortFileItem::EpisodeNumAscending(const CFileItemPtr &left, const CFileIte
     // or if a season has > 2^16-1 episodes strange things will happen (overflow)
     unsigned int il;
     unsigned int ir;
-    if (left->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
-      il = (left->GetVideoInfoTag()->m_iSpecialSortSeason<<24)+(left->GetVideoInfoTag()->m_iSpecialSortEpisode<<8)-(128-left->GetVideoInfoTag()->m_iEpisode);
+    if (lTag->m_iSpecialSortEpisode > 0)
+      il = (lTag->m_iSpecialSortSeason<<24)+(lTag->m_iSpecialSortEpisode<<8)-(128-lTag->m_iEpisode);
     else
-      il = (left->GetVideoInfoTag()->m_iSeason<<24)+(left->GetVideoInfoTag()->m_iEpisode<<8);
-    if (right->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
-      ir = (right->GetVideoInfoTag()->m_iSpecialSortSeason<<24)+(right->GetVideoInfoTag()->m_iSpecialSortEpisode<<8)-(128-right->GetVideoInfoTag()->m_iEpisode);
+      il = (lTag->m_iSeason<<24)+(lTag->m_iEpisode<<8);
+    if (rTag->m_iSpecialSortEpisode > 0)
+      ir = (rTag->m_iSpecialSortSeason<<24)+(rTag->m_iSpecialSortEpisode<<8)-(128-rTag->m_iEpisode);
     else
-      ir = (right->GetVideoInfoTag()->m_iSeason<<24)+(right->GetVideoInfoTag()->m_iEpisode<<8);
-    return il < ir;
+      ir = (rTag->m_iSeason<<24)+(rTag->m_iEpisode<<8);
+    if (il < ir) return true;
+    if (ir < il) return false;
+
+    // check filename as there can be duplicates now
+    CURL l(lTag->m_strFileNameAndPath);
+    CURL r(rTag->m_strFileNameAndPath);
+    return (StringUtils::AlphaNumericCompare(l.GetFileName(), r.GetFileName()) > 0);
+    int result = l.GetFileNameWithoutPath().CompareNoCase(r.GetFileNameWithoutPath());
+    if (result < 0) return true;
+    if (result > 0) return false;
   }
   return left->m_bIsFolder;
 }
@@ -313,23 +326,36 @@ bool SSortFileItem::EpisodeNumDescending(const CFileItemPtr &left, const CFileIt
   // sanity
   RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
 
-  // special items
+  // ignore the ".." item - that should always be on top
   if (left->IsParentFolder()) return true;
   if (right->IsParentFolder()) return false;
-  // only if they're both folders or both files do we do the full comparison
+
+  const CVideoInfoTag *lTag = left->GetVideoInfoTag();
+  const CVideoInfoTag *rTag = right->GetVideoInfoTag();
+
+  // episode
   if (left->m_bIsFolder == right->m_bIsFolder)
   {
     unsigned int il;
     unsigned int ir;
-    if (left->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
-      il = (left->GetVideoInfoTag()->m_iSpecialSortSeason<<24)+(left->GetVideoInfoTag()->m_iSpecialSortEpisode<<8)-(128-left->GetVideoInfoTag()->m_iEpisode);
+    if (lTag->m_iSpecialSortEpisode > 0)
+      il = (lTag->m_iSpecialSortSeason<<24)+(lTag->m_iSpecialSortEpisode<<8)-(128-lTag->m_iEpisode);
     else
-      il = (left->GetVideoInfoTag()->m_iSeason<<24)+(left->GetVideoInfoTag()->m_iEpisode<<8);
-    if (right->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
-      ir = (right->GetVideoInfoTag()->m_iSpecialSortSeason<<24)+(right->GetVideoInfoTag()->m_iSpecialSortEpisode<<8)-(128-right->GetVideoInfoTag()->m_iEpisode);
+      il = (lTag->m_iSeason<<24)+(lTag->m_iEpisode<<8);
+    if (rTag->m_iSpecialSortEpisode > 0)
+      ir = (rTag->m_iSpecialSortSeason<<24)+(rTag->m_iSpecialSortEpisode<<8)-(128-rTag->m_iEpisode);
     else
-      ir = (right->GetVideoInfoTag()->m_iSeason<<24)+(right->GetVideoInfoTag()->m_iEpisode<<8);
-    return il > ir;
+      ir = (rTag->m_iSeason<<24)+(rTag->m_iEpisode<<8);
+    if (il > ir) return true;
+    if (ir > il) return false;
+
+    // check filename as there can be duplicates now
+    CURL l(lTag->m_strFileNameAndPath);
+    CURL r(rTag->m_strFileNameAndPath);
+    return (StringUtils::AlphaNumericCompare(l.GetFileName(), r.GetFileName()) > 0);
+    int result = l.GetFileNameWithoutPath().CompareNoCase(r.GetFileNameWithoutPath());
+    if (result < 0) return true;
+    if (result > 0) return false;
   }
   return left->m_bIsFolder;
 }
