@@ -106,6 +106,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
     // input from the keyboard
     switch (action.unicode) 
     {
+    case '\t':
     case 10:
     case 13:
       {
