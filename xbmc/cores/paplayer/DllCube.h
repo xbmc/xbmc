@@ -39,11 +39,7 @@ public:
 
 class DllCube : public DllDynamic, DllCubeInterface
 {
-#ifndef _LINUX
-  DECLARE_DLL_WRAPPER(DllCube, q:\\system\\players\\paplayer\\cube.dll)
-#else
-  DECLARE_DLL_WRAPPER(DllCube, q:\\system\\players\\paplayer\\cube-i486-linux.so)
-#endif
+  DECLARE_DLL_WRAPPER(DllCube, DLL_PATH_CUBE_CODEC)
   DEFINE_METHOD0(int, Init)
   DEFINE_METHOD4(int, LoadADX, (const char* p1, int* p2, int* p3, int* p4 ))
   DEFINE_METHOD1(void, FreeADX, (int p1))

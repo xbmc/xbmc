@@ -39,11 +39,7 @@ public:
 
 class DllAdplug : public DllDynamic, DllAdplugInterface
 {
-#ifdef _LINUX
-  DECLARE_DLL_WRAPPER(DllAdplug, q:\\system\\players\\paplayer\\adplug-i486-linux.so)
-#else
-  DECLARE_DLL_WRAPPER(DllAdplug, q:\\system\\players\\paplayer\\adplug.dll)
-#endif
+  DECLARE_DLL_WRAPPER(DllAdplug, DLL_PATH_ADPLUG_CODEC)
   DEFINE_METHOD0(int, Init)
   DEFINE_METHOD1(int, LoadADL, (const char* p1))
   DEFINE_METHOD1(void, FreeADL, (int p1))

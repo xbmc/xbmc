@@ -38,17 +38,7 @@ public:
 
 class DllAACCodec : public DllDynamic, DllAACCodecInterface
 {
-#ifdef __APPLE__
-  DECLARE_DLL_WRAPPER(DllAACCodec, Q:\\system\\players\\paplayer\\AACCodec-osx.so)
-#elif !defined(_LINUX)
-  DECLARE_DLL_WRAPPER(DllAACCodec, Q:\\system\\players\\paplayer\\aaccodec.dll)
-#elif defined(_POWERPC)
-  DECLARE_DLL_WRAPPER(DllAACCodec, Q:\\system\\players\\paplayer\\AACCodec-powerpc-linux.so)
-#elif defined(_POWERPC64)
-  DECLARE_DLL_WRAPPER(DllAACCodec, Q:\\system\\players\\paplayer\\AACCodec-powerpc64-linux.so)
-#else
-  DECLARE_DLL_WRAPPER(DllAACCodec, Q:\\system\\players\\paplayer\\AACCodec-i486-linux.so)
-#endif
+  DECLARE_DLL_WRAPPER(DllAACCodec, DLL_PATH_AAC_CODEC)
   DEFINE_METHOD2(AACHandle, AACOpen, (const char *p1, AACIOCallbacks p2))
   DEFINE_METHOD3(int, AACRead, (AACHandle p1, BYTE* p2, int p3))
   DEFINE_METHOD2(int, AACSeek, (AACHandle p1, int p2))
