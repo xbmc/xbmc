@@ -68,7 +68,7 @@ bool CGUIEditControl::OnMessage(CGUIMessage &message)
   }
   else if (message.GetMessage() == GUI_MSG_ITEM_SELECTED)
   {
-    message.SetStringParam(GetLabel2());
+    message.SetLabel(GetLabel2());
     return true;
   }
   return CGUIButtonControl::OnMessage(message);
