@@ -238,15 +238,7 @@ public:
 
 class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
 {
-#ifdef __APPLE__
-  DECLARE_DLL_WRAPPER(DllAvUtilBase, Q:\\system\\players\\dvdplayer\\avutil-51-osx.so)
-#elif !defined(_LINUX)
-  DECLARE_DLL_WRAPPER(DllAvUtilBase, Q:\\system\\players\\dvdplayer\\avutil-49.dll)
-#elif defined(__x86_64__)
-  DECLARE_DLL_WRAPPER(DllAvUtilBase, Q:\\system\\players\\dvdplayer\\avutil-51-x86_64-linux.so)
-#else
-  DECLARE_DLL_WRAPPER(DllAvUtilBase, Q:\\system\\players\\dvdplayer\\avutil-51-i486-linux.so)
-#endif
+  DECLARE_DLL_WRAPPER(DllAvUtilBase, DLL_PATH_LIBAVUTIL)
 
   LOAD_SYMBOLS()
 

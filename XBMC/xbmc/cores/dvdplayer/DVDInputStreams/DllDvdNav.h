@@ -101,15 +101,7 @@ public:
 
 class DllDvdNav : public DllDynamic, DllDvdNavInterface
 {
-#ifdef __APPLE__
-  DECLARE_DLL_WRAPPER(DllDvdNav, Q:\\system\\players\\dvdplayer\\libdvdnav-osx.so)
-#elif !defined(_LINUX)
-  DECLARE_DLL_WRAPPER(DllDvdNav, Q:\\system\\players\\dvdplayer\\libdvdnav.dll)
-#elif defined(__x86_64__)
-  DECLARE_DLL_WRAPPER(DllDvdNav, Q:\\system\\players\\dvdplayer\\libdvdnav-x86_64-linux.so)
-#else
-  DECLARE_DLL_WRAPPER(DllDvdNav, Q:\\system\\players\\dvdplayer\\libdvdnav-i486-linux.so)
-#endif
+  DECLARE_DLL_WRAPPER(DllDvdNav, DLL_PATH_LIBDVDNAV)
 
   DEFINE_METHOD2(dvdnav_status_t, dvdnav_open, (dvdnav_t **p1, const char *p2))
   DEFINE_METHOD1(dvdnav_status_t, dvdnav_close, (dvdnav_t *p1))
