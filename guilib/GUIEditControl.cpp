@@ -173,12 +173,13 @@ void CGUIEditControl::OnClick()
       break;
     case INPUT_TYPE_TEXT:
     default:
-      textChanged = CGUIDialogKeyboard::ShowAndGetInput(utf8, heading, true);
+      textChanged = CGUIDialogKeyboard::ShowAndGetInput(utf8, heading, true, m_inputType == INPUT_TYPE_PASSWORD);
       break;
   }
   if (textChanged)
   {
     g_charsetConverter.utf8ToW(utf8, m_text2);
+    m_cursorPos = m_text2.size();
     OnTextChanged();
   }
 }
