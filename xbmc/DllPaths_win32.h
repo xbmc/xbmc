@@ -6,6 +6,7 @@
 #define DLL_PATH_LIBEXIF       "Q:\\system\\libexif.dll"
 #define DLL_PATH_LIBID3TAG     "Q:\\system\\libid3tag.dll"
 #define DLL_PATH_LIBCMYTH      "Q:\\system\\libcmyth.dll"
+#define DLL_PATH_LIBHDHOMERUN  "Q:\\system\\hdhomerun.dll"
 #define DLL_PATH_LIBCURL       "Q:\\system\\libcurl.dll"
 
 /* paplayer */
@@ -38,10 +39,12 @@
 #define DLL_PATH_LIBFAAD       "Q:\\system\\players\\dvdplayer\\libfaad.dll"
 #define DLL_PATH_LIBMAD        "Q:\\system\\players\\dvdplayer\\libmad.dll"
 #define DLL_PATH_LIBMPEG2      "Q:\\system\\players\\dvdplayer\\libmpeg2.dll"
+#define DLL_PATH_LIBDVDNAV     "Q:\\system\\players\\dvdplayer\\libdvdnav.dll"
 
 /* ffmpeg */
 #define DLL_PATH_LIBAVCODEC    "Q:\\system\\players\\dvdplayer\\avcodec-51.dll"
 #define DLL_PATH_LIBAVFORMAT   "Q:\\system\\players\\dvdplayer\\avformat-52.dll"
+#define DLL_PATH_LIBAVUTIL     "Q:\\system\\players\\dvdplayer\\avutil-49.so"
 #define DLL_PATH_LIBPOSTPROC   "Q:\\system\\players\\dvdplayer\\postproc-51.dll"
 #define DLL_PATH_LIBSWSCALE    "Q:\\system\\players\\dvdplayer\\swscale-0.5.0.dll"
 

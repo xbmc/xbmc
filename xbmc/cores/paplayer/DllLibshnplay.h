@@ -46,7 +46,7 @@ public:
 
 class DllLibShnPlay : public DllDynamic, DllLibShnPlayInterface
 {
-  DECLARE_DLL_WRAPPER(DllLibShnPlay, Q:\\system\\players\\PAPlayer\\libshnplay.dll)
+  DECLARE_DLL_WRAPPER(DllLibShnPlay, "Q:\\system\\players\\PAPlayer\\libshnplay.dll")
   DEFINE_METHOD3(int, OpenStream, (ShnPlay ** p1, ShnPlayStream * p2, unsigned int p3))
   DEFINE_METHOD1(int, Close, (ShnPlay * p1))
   DEFINE_METHOD2(int, GetInfo, (ShnPlay * p1, ShnPlayInfo * p2))
