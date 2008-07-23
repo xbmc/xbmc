@@ -176,6 +176,8 @@ void CWeather::GetInteger(const TiXmlElement* pRootElement, const CStdString& st
 
 void CWeather::LocalizeOverviewToken(char *szToken, bool bAppendSpace)
 {
+  // NOTE: This routine is case-sensitive.  Reason is std::less<CStdString> uses a case-sensitive
+  //       < operator.  Thus, some tokens may have to be duplicated in strings.xml (see drizzle vs Drizzle).
   CStdString strLocStr = "";
   CStdString token = szToken;
   if (!token.IsEmpty())

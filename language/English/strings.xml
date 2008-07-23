@@ -774,6 +774,8 @@
   <string id="1412">windy</string>
   <string id="1413">drizzle</string>
   <string id="1414">T-Storm</string>
+  <string id="1415">Drizzle</string>
+  <string id="1416">Foggy</string>
 
   <!-- strings through to 1450 reserved for weather translation -->
 
