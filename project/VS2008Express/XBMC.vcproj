@@ -1450,6 +1450,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\DllPaths.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\DllPaths_win32.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\DllLoader\LibraryLoader.cpp"
 					>
 				</File>
@@ -3522,10 +3530,12 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\FileMMS.cpp">
+					RelativePath="..\..\xbmc\FileSystem\FileMMS.cpp"
+					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\FileMMS.h">
+					RelativePath="..\..\xbmc\FileSystem\FileMMS.h"
+					>
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\FileMusicDatabase.cpp"
