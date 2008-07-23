@@ -69,7 +69,7 @@ bool CGUIDialogSmartPlaylistRule::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_CANCEL)
         OnCancel();
       else if (iControl == CONTROL_VALUE)
-        OnValue();
+        OnEditChanged(iControl, m_rule.m_parameter);
       else if (iControl == CONTROL_OPERATOR)
         OnOperator();
       else if (iControl == CONTROL_FIELD)
@@ -206,13 +206,6 @@ void CGUIDialogSmartPlaylistRule::OnCancel()
   Close();
 }
 
-void CGUIDialogSmartPlaylistRule::OnValue()
-{
-  const CGUIControl *control = GetControl(CONTROL_VALUE);
-  if (control)
-    m_rule.m_parameter = control->GetDescription();
-}
-
 void CGUIDialogSmartPlaylistRule::OnField()
 {
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_FIELD);
@@ -234,15 +227,13 @@ void CGUIDialogSmartPlaylistRule::OnOperator()
 void CGUIDialogSmartPlaylistRule::UpdateButtons()
 {
   // update the field control
-  CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_FIELD, m_rule.m_field);
-  OnMessage(msg);
+  SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_FIELD, m_rule.m_field);
   CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_FIELD);
   OnMessage(msg2);
   m_rule.m_field = (CSmartPlaylistRule::DATABASE_FIELD)msg2.GetParam1();
 
   // and now update the operator set
-  CGUIMessage reset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_OPERATOR);
-  OnMessage(reset);
+  SendMessage(GUI_MSG_LABEL_RESET, CONTROL_OPERATOR);
 
   CONTROL_ENABLE(CONTROL_VALUE);
   CONTROL_DISABLE(CONTROL_BROWSE);
@@ -292,14 +283,13 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
   }
 
   // check our operator is valid, and update if not
-  CGUIMessage select(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_OPERATOR, m_rule.m_operator);
-  OnMessage(select);
+  SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_OPERATOR, m_rule.m_operator);
   CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_OPERATOR);
   OnMessage(selected);
   m_rule.m_operator = (CSmartPlaylistRule::SEARCH_OPERATOR)selected.GetParam1();
 
   // update the parameter edit control appropriately
-  SET_CONTROL_LABEL(CONTROL_VALUE, m_rule.m_parameter);
+  SET_CONTROL_LABEL2(CONTROL_VALUE, m_rule.m_parameter);
   CGUIEditControl::INPUT_TYPE type = CGUIEditControl::INPUT_TYPE_TEXT;
   CSmartPlaylistRule::FIELD_TYPE fieldType = CSmartPlaylistRule::GetFieldType(m_rule.m_field);
   switch (fieldType)
@@ -324,10 +314,7 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
     type = CGUIEditControl::INPUT_TYPE_NUMBER;
     break;
   }
-  {
-    CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), CONTROL_VALUE, (DWORD)type, 21420);
-    OnMessage(msg);
-  }
+  SendMessage(GUI_MSG_SET_TYPE, CONTROL_VALUE, (DWORD)type, 21420);
 }
 
 void CGUIDialogSmartPlaylistRule::AddOperatorLabel(CSmartPlaylistRule::SEARCH_OPERATOR op)
@@ -339,7 +326,7 @@ void CGUIDialogSmartPlaylistRule::AddOperatorLabel(CSmartPlaylistRule::SEARCH_OP
 
 void CGUIDialogSmartPlaylistRule::OnInitWindow()
 {
-  ChangeButtonToEdit(CONTROL_VALUE);
+  ChangeButtonToEdit(CONTROL_VALUE, true); // true for single label
   CGUIDialog::OnInitWindow();
   // add the fields to the field spincontrol
   vector<CSmartPlaylistRule::DATABASE_FIELD> fields = CSmartPlaylistRule::GetFields(m_type);
