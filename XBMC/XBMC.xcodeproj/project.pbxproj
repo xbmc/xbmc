@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 44;
+	objectVersion = 42;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -1885,7 +1885,6 @@
 		E38E13BA0D25F9F900618676 /* ftglyph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ftglyph.h; sourceTree = "<group>"; };
 		E38E13BB0D25F9F900618676 /* ftimage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ftimage.h; sourceTree = "<group>"; };
 		E38E13BC0D25F9F900618676 /* ftmoderr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ftmoderr.h; sourceTree = "<group>"; };
-		E38E13BD0D25F9F900618676 /* ftsynth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ftsynth.h; sourceTree = "<group>"; };
 		E38E13BE0D25F9F900618676 /* ftsystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ftsystem.h; sourceTree = "<group>"; };
 		E38E13BF0D25F9F900618676 /* fttypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fttypes.h; sourceTree = "<group>"; };
 		E38E13C00D25F9F900618676 /* ft2build.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ft2build.h; sourceTree = "<group>"; };
@@ -2006,8 +2005,6 @@
 		E38E143E0D25F9F900618676 /* Key.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Key.h; sourceTree = "<group>"; };
 		E38E143F0D25F9F900618676 /* LocalizeStrings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LocalizeStrings.cpp; sourceTree = "<group>"; };
 		E38E14400D25F9F900618676 /* LocalizeStrings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalizeStrings.h; sourceTree = "<group>"; };
-		E38E14440D25F9F900618676 /* PackedTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PackedTexture.h; sourceTree = "<group>"; };
-		E38E14450D25F9F900618676 /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
 		E38E14460D25F9F900618676 /* Shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Shader.cpp; sourceTree = "<group>"; };
 		E38E14470D25F9F900618676 /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = "<group>"; };
 		E38E14480D25F9F900618676 /* SkinInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinInfo.cpp; sourceTree = "<group>"; };
@@ -2158,7 +2155,6 @@
 		E38E15160D25F9F900618676 /* DVDAudioCodecPcm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecPcm.h; sourceTree = "<group>"; };
 		E38E15180D25F9F900618676 /* a52.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = a52.h; sourceTree = "<group>"; };
 		E38E151A0D25F9F900618676 /* dts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dts.h; sourceTree = "<group>"; };
-		E38E151C0D25F9F900618676 /* faad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = faad.h; sourceTree = "<group>"; };
 		E38E151E0D25F9F900618676 /* mad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mad.h; sourceTree = "<group>"; };
 		E38E15210D25F9F900618676 /* DVDCodecs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDCodecs.h; sourceTree = "<group>"; };
 		E38E15220D25F9F900618676 /* DVDCodecUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDCodecUtils.cpp; sourceTree = "<group>"; };
@@ -2266,7 +2262,6 @@
 		E38E15A80D25F9FA00618676 /* DllSwScale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllSwScale.h; sourceTree = "<group>"; };
 		E38E15B50D25F9FA00618676 /* IAudioCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAudioCallback.h; sourceTree = "<group>"; };
 		E38E15B60D25F9FA00618676 /* IPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPlayer.h; sourceTree = "<group>"; };
-		E38E15D40D25F9FA00618676 /* AACCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AACCodec.h; sourceTree = "<group>"; };
 		E38E15D50D25F9FA00618676 /* AACcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AACcodec.cpp; sourceTree = "<group>"; };
 		E38E15D60D25F9FA00618676 /* AACcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AACcodec.h; sourceTree = "<group>"; };
 		E38E15D70D25F9FA00618676 /* AC3CDDACodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AC3CDDACodec.cpp; sourceTree = "<group>"; };
@@ -2315,10 +2310,6 @@
 		E38E16020D25F9FA00618676 /* DTSCDDACodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTSCDDACodec.h; sourceTree = "<group>"; };
 		E38E16030D25F9FA00618676 /* DTSCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DTSCodec.cpp; sourceTree = "<group>"; };
 		E38E16040D25F9FA00618676 /* DTSCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTSCodec.h; sourceTree = "<group>"; };
-		E38E16060D25F9FA00618676 /* export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = export.h; sourceTree = "<group>"; };
-		E38E16070D25F9FA00618676 /* format.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = format.h; sourceTree = "<group>"; };
-		E38E16080D25F9FA00618676 /* ordinals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ordinals.h; sourceTree = "<group>"; };
-		E38E16090D25F9FA00618676 /* stream_decoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_decoder.h; sourceTree = "<group>"; };
 		E38E160A0D25F9FA00618676 /* FLACcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FLACcodec.cpp; sourceTree = "<group>"; };
 		E38E160B0D25F9FA00618676 /* FLACcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLACcodec.h; sourceTree = "<group>"; };
 		E38E160C0D25F9FA00618676 /* GYMCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GYMCodec.cpp; sourceTree = "<group>"; };
@@ -2328,9 +2319,6 @@
 		E38E16120D25F9FA00618676 /* ModuleCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModuleCodec.h; sourceTree = "<group>"; };
 		E38E16130D25F9FA00618676 /* MP3codec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MP3codec.cpp; sourceTree = "<group>"; };
 		E38E16140D25F9FA00618676 /* MP3codec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MP3codec.h; sourceTree = "<group>"; };
-		E38E16160D25F9FA00618676 /* config_win32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config_win32.h; sourceTree = "<group>"; };
-		E38E16170D25F9FA00618676 /* reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = reader.h; sourceTree = "<group>"; };
-		E38E16180D25F9FA00618676 /* streaminfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = streaminfo.h; sourceTree = "<group>"; };
 		E38E16190D25F9FA00618676 /* MPCcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MPCcodec.cpp; sourceTree = "<group>"; };
 		E38E161A0D25F9FA00618676 /* MPCcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPCcodec.h; sourceTree = "<group>"; };
 		E38E161B0D25F9FA00618676 /* NSFCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NSFCodec.cpp; sourceTree = "<group>"; };
@@ -2360,7 +2348,6 @@
 		E38E16380D25F9FA00618676 /* TimidityCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimidityCodec.h; sourceTree = "<group>"; };
 		E38E16390D25F9FA00618676 /* WAVcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WAVcodec.cpp; sourceTree = "<group>"; };
 		E38E163A0D25F9FA00618676 /* WAVcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WAVcodec.h; sourceTree = "<group>"; };
-		E38E163C0D25F9FA00618676 /* wavpack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wavpack.h; sourceTree = "<group>"; };
 		E38E163D0D25F9FA00618676 /* WAVPackcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WAVPackcodec.cpp; sourceTree = "<group>"; };
 		E38E163E0D25F9FA00618676 /* WAVPackcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WAVPackcodec.h; sourceTree = "<group>"; };
 		E38E163F0D25F9FA00618676 /* WMACodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WMACodec.cpp; sourceTree = "<group>"; };
@@ -2417,7 +2404,6 @@
 		E38E16910D25F9FA00618676 /* Favourites.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Favourites.h; sourceTree = "<group>"; };
 		E38E16920D25F9FA00618676 /* FileItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileItem.cpp; sourceTree = "<group>"; };
 		E38E16930D25F9FA00618676 /* FileItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileItem.h; sourceTree = "<group>"; };
-		E38E16960D25F9FA00618676 /* BufferedFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BufferedFile.h; sourceTree = "<group>"; };
 		E38E16970D25F9FA00618676 /* CacheMemBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CacheMemBuffer.cpp; sourceTree = "<group>"; };
 		E38E16980D25F9FA00618676 /* CacheMemBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CacheMemBuffer.h; sourceTree = "<group>"; };
 		E38E16990D25F9FA00618676 /* CacheStrategy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CacheStrategy.cpp; sourceTree = "<group>"; };
@@ -2502,11 +2488,6 @@
 		E38E16F40D25F9FA00618676 /* ISO9660Directory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISO9660Directory.h; sourceTree = "<group>"; };
 		E38E16F50D25F9FA00618676 /* LastFMDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LastFMDirectory.cpp; sourceTree = "<group>"; };
 		E38E16F60D25F9FA00618676 /* LastFMDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFMDirectory.h; sourceTree = "<group>"; };
-		E38E16FD0D25F9FA00618676 /* Fat32Device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Fat32Device.h; sourceTree = "<group>"; };
-		E38E16FF0D25F9FA00618676 /* Fat32FileSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Fat32FileSystem.h; sourceTree = "<group>"; };
-		E38E17010D25F9FA00618676 /* FatXDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FatXDevice.h; sourceTree = "<group>"; };
-		E38E17040D25F9FA00618676 /* IDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDevice.h; sourceTree = "<group>"; };
-		E38E17050D25F9FA00618676 /* IFileSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFileSystem.h; sourceTree = "<group>"; };
 		E38E17080D25F9FA00618676 /* MultiPathDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MultiPathDirectory.cpp; sourceTree = "<group>"; };
 		E38E17090D25F9FA00618676 /* MultiPathDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiPathDirectory.h; sourceTree = "<group>"; };
 		E38E170B0D25F9FA00618676 /* DirectoryNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNode.cpp; sourceTree = "<group>"; };
@@ -2582,7 +2563,6 @@
 		E38E17530D25F9FA00618676 /* SmartPlaylistDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SmartPlaylistDirectory.cpp; sourceTree = "<group>"; };
 		E38E17540D25F9FA00618676 /* SmartPlaylistDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmartPlaylistDirectory.h; sourceTree = "<group>"; };
 		E38E17560D25F9FA00618676 /* SMBDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMBDirectory.h; sourceTree = "<group>"; };
-		E38E17580D25F9FA00618676 /* SndtrkDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SndtrkDirectory.h; sourceTree = "<group>"; };
 		E38E17590D25F9FA00618676 /* StackDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StackDirectory.cpp; sourceTree = "<group>"; };
 		E38E175A0D25F9FA00618676 /* StackDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StackDirectory.h; sourceTree = "<group>"; };
 		E38E175B0D25F9FA00618676 /* UPnPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UPnPDirectory.cpp; sourceTree = "<group>"; };
@@ -2705,7 +2685,6 @@
 		E38E17DB0D25F9FA00618676 /* GUIDialogSongInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSongInfo.h; sourceTree = "<group>"; };
 		E38E17DC0D25F9FA00618676 /* GUIDialogSubMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSubMenu.cpp; sourceTree = "<group>"; };
 		E38E17DD0D25F9FA00618676 /* GUIDialogSubMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSubMenu.h; sourceTree = "<group>"; };
-		E38E17DF0D25F9FA00618676 /* GUIDialogTrainerSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogTrainerSettings.h; sourceTree = "<group>"; };
 		E38E17E00D25F9FA00618676 /* GUIDialogVideoBookmarks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogVideoBookmarks.cpp; sourceTree = "<group>"; };
 		E38E17E10D25F9FA00618676 /* GUIDialogVideoBookmarks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogVideoBookmarks.h; sourceTree = "<group>"; };
 		E38E17E20D25F9FA00618676 /* GUIDialogVideoScan.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogVideoScan.cpp; sourceTree = "<group>"; };
@@ -2843,23 +2822,11 @@
 		E38E18800D25F9FA00618676 /* cdripxlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cdripxlib.h; sourceTree = "<group>"; };
 		E38E18810D25F9FA00618676 /* ICDAudioCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICDAudioCallback.h; sourceTree = "<group>"; };
 		E38E18830D25F9FA00618676 /* libexif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libexif.h; sourceTree = "<group>"; };
-		E38E194D0D25F9FB00618676 /* ej.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ej.h; sourceTree = "<group>"; };
-		E38E194E0D25F9FB00618676 /* ejIntrn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ejIntrn.h; sourceTree = "<group>"; };
-		E38E194F0D25F9FB00618676 /* emfdb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emfdb.h; sourceTree = "<group>"; };
 		E38E19530D25F9FB00618676 /* includes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = includes.h; sourceTree = "<group>"; };
-		E38E19580D25F9FB00618676 /* license.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = license.txt; sourceTree = "<group>"; };
-		E38E195B0D25F9FB00618676 /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = "<group>"; };
-		E38E195C0D25F9FB00618676 /* socketutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = socketutil.h; sourceTree = "<group>"; };
 		E38E195D0D25F9FB00618676 /* SpyceModule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpyceModule.cpp; sourceTree = "<group>"; };
 		E38E195E0D25F9FB00618676 /* SpyceModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpyceModule.h; sourceTree = "<group>"; };
-		E38E195F0D25F9FB00618676 /* uemf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uemf.h; sourceTree = "<group>"; };
-		E38E19600D25F9FB00618676 /* um.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = um.h; sourceTree = "<group>"; };
-		E38E19610D25F9FB00618676 /* webs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = webs.h; sourceTree = "<group>"; };
-		E38E19620D25F9FB00618676 /* websda.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = websda.h; sourceTree = "<group>"; };
 		E38E19630D25F9FB00618676 /* WebServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WebServer.cpp; sourceTree = "<group>"; };
 		E38E19640D25F9FB00618676 /* WebServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebServer.h; sourceTree = "<group>"; };
-		E38E19650D25F9FB00618676 /* websSSL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = websSSL.h; sourceTree = "<group>"; };
-		E38E19660D25F9FB00618676 /* wsIntrn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wsIntrn.h; sourceTree = "<group>"; };
 		E38E19670D25F9FB00618676 /* XBMCConfiguration.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCConfiguration.cpp; sourceTree = "<group>"; };
 		E38E19680D25F9FB00618676 /* XBMCConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCConfiguration.h; sourceTree = "<group>"; };
 		E38E19690D25F9FB00618676 /* XBMChttp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMChttp.cpp; sourceTree = "<group>"; };
@@ -2874,8 +2841,6 @@
 		E38E19730D25F9FB00618676 /* hdhomerun_os.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_os.h; sourceTree = "<group>"; };
 		E38E19740D25F9FB00618676 /* hdhomerun_pkt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_pkt.h; sourceTree = "<group>"; };
 		E38E19750D25F9FB00618676 /* hdhomerun_video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_video.h; sourceTree = "<group>"; };
-		E38E197B0D25F9FB00618676 /* id3tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = id3tag.h; sourceTree = "<group>"; };
-		E38E197C0D25F9FB00618676 /* metadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = metadata.h; sourceTree = "<group>"; };
 		E38E19800D25F9FB00618676 /* LZO1X.H */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LZO1X.H; sourceTree = "<group>"; };
 		E38E19810D25F9FB00618676 /* LZOCONF.H */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LZOCONF.H; sourceTree = "<group>"; };
 		E38E19DC0D25F9FB00618676 /* action.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = action.h; sourceTree = "<group>"; };
@@ -2916,8 +2881,6 @@
 		E38E1A260D25F9FB00618676 /* scrobbler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scrobbler.h; sourceTree = "<group>"; };
 		E38E1A280D25F9FB00618676 /* filelib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = filelib.h; sourceTree = "<group>"; };
 		E38E1A2D0D25F9FB00618676 /* rip_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rip_manager.h; sourceTree = "<group>"; };
-		E38E1A2E0D25F9FB00618676 /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
-		E38E1A2F0D25F9FB00618676 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
 		E38E1AB60D25F9FB00618676 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		E38E1AB70D25F9FB00618676 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		E38E1AB80D25F9FB00618676 /* SConstruct */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SConstruct; sourceTree = "<group>"; };
@@ -3010,7 +2973,6 @@
 		E38E1B1A0D25F9FB00618676 /* PltMediaServerSCPDs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaServerSCPDs.cpp; sourceTree = "<group>"; };
 		E38E1B1B0D25F9FB00618676 /* PltSyncMediaBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltSyncMediaBrowser.cpp; sourceTree = "<group>"; };
 		E38E1B1C0D25F9FB00618676 /* PltSyncMediaBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltSyncMediaBrowser.h; sourceTree = "<group>"; };
-		E38E1B1D0D25F9FB00618676 /* X_MS_MediaReceiverRegistrar.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = X_MS_MediaReceiverRegistrar.xml; sourceTree = "<group>"; };
 		E38E1B250D25F9FB00618676 /* PltLightSample.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltLightSample.cpp; sourceTree = "<group>"; };
 		E38E1B260D25F9FB00618676 /* PltLightSample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltLightSample.h; sourceTree = "<group>"; };
 		E38E1B2E0D25F9FB00618676 /* SsdpProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SsdpProxy.h; sourceTree = "<group>"; };
@@ -3238,7 +3200,6 @@
 		E38E1D780D25F9FD00618676 /* PlatformDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformDefs.h; sourceTree = "<group>"; };
 		E38E1D790D25F9FD00618676 /* PlatformInclude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformInclude.h; sourceTree = "<group>"; };
 		E38E1D7A0D25F9FD00618676 /* XEventUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XEventUtils.cpp; sourceTree = "<group>"; };
-		E38E1D7B0D25F9FD00618676 /* XEventUtils.cpp.orig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = XEventUtils.cpp.orig; sourceTree = "<group>"; };
 		E38E1D7C0D25F9FD00618676 /* XEventUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XEventUtils.h; sourceTree = "<group>"; };
 		E38E1D7D0D25F9FD00618676 /* XFileUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XFileUtils.cpp; sourceTree = "<group>"; };
 		E38E1D7E0D25F9FD00618676 /* XFileUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XFileUtils.h; sourceTree = "<group>"; };
@@ -3399,9 +3360,7 @@
 		E38E1E340D25F9FD00618676 /* DownloadQueueManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadQueueManager.h; sourceTree = "<group>"; };
 		E38E1E350D25F9FD00618676 /* Event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Event.cpp; sourceTree = "<group>"; };
 		E38E1E360D25F9FD00618676 /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
-		E38E1E380D25F9FD00618676 /* FanController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FanController.h; sourceTree = "<group>"; };
 		E38E1E390D25F9FD00618676 /* FastDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FastDelegate.h; sourceTree = "<group>"; };
-		E38E1E3B0D25F9FD00618676 /* FilterFlickerPatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterFlickerPatch.h; sourceTree = "<group>"; };
 		E38E1E3C0D25F9FD00618676 /* fstrcmp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fstrcmp.cpp; sourceTree = "<group>"; };
 		E38E1E3D0D25F9FD00618676 /* fstrcmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fstrcmp.h; sourceTree = "<group>"; };
 		E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIInfoManager.cpp; sourceTree = "<group>"; };
@@ -3422,13 +3381,11 @@
 		E38E1E540D25F9FD00618676 /* LabelFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LabelFormatter.h; sourceTree = "<group>"; };
 		E38E1E550D25F9FD00618676 /* LCD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LCD.cpp; sourceTree = "<group>"; };
 		E38E1E560D25F9FD00618676 /* LCD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LCD.h; sourceTree = "<group>"; };
-		E38E1E5A0D25F9FD00618676 /* LED.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LED.h; sourceTree = "<group>"; };
 		E38E1E5B0D25F9FD00618676 /* log.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = log.cpp; sourceTree = "<group>"; };
 		E38E1E5C0D25F9FD00618676 /* log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = log.h; sourceTree = "<group>"; };
 		E38E1E5F0D25F9FD00618676 /* md5.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = md5.c; sourceTree = "<group>"; };
 		E38E1E600D25F9FD00618676 /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = "<group>"; };
 		E38E1E620D25F9FD00618676 /* MediaMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaMonitor.h; sourceTree = "<group>"; };
-		E38E1E640D25F9FD00618676 /* MemoryUnitManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoryUnitManager.h; sourceTree = "<group>"; };
 		E38E1E650D25F9FD00618676 /* MusicAlbumInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicAlbumInfo.cpp; sourceTree = "<group>"; };
 		E38E1E660D25F9FD00618676 /* MusicAlbumInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicAlbumInfo.h; sourceTree = "<group>"; };
 		E38E1E670D25F9FD00618676 /* MusicInfoScraper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoScraper.cpp; sourceTree = "<group>"; };
@@ -3494,29 +3451,12 @@
 		E38E1EAA0D25F9FD00618676 /* XBAudioConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBAudioConfig.h; sourceTree = "<group>"; };
 		E38E1EAC0D25F9FD00618676 /* XBInputEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBInputEx.h; sourceTree = "<group>"; };
 		E38E1EAD0D25F9FD00618676 /* XBIRRemote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBIRRemote.h; sourceTree = "<group>"; };
-		E38E1EAF0D25F9FD00618676 /* custom_launch_params.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = custom_launch_params.h; sourceTree = "<group>"; };
 		E38E1EB00D25F9FD00618676 /* IoSupport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IoSupport.cpp; sourceTree = "<group>"; };
 		E38E1EB10D25F9FD00618676 /* IoSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IoSupport.h; sourceTree = "<group>"; };
-		E38E1EB50D25F9FD00618676 /* MediaPacketQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaPacketQueue.h; sourceTree = "<group>"; };
 		E38E1EB70D25F9FD00618676 /* Network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Network.h; sourceTree = "<group>"; };
-		E38E1EB80D25F9FD00618676 /* ntddcdrm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ntddcdrm.h; sourceTree = "<group>"; };
-		E38E1EB90D25F9FD00618676 /* ntddstor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ntddstor.h; sourceTree = "<group>"; };
-		E38E1EBA0D25F9FD00618676 /* Undocumented.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Undocumented.h; sourceTree = "<group>"; };
-		E38E1EBC0D25F9FD00618676 /* VoiceCommunicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VoiceCommunicator.h; sourceTree = "<group>"; };
-		E38E1EBE0D25F9FD00618676 /* VoiceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VoiceManager.h; sourceTree = "<group>"; };
-		E38E1EC00D25F9FD00618676 /* xbeheader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbeheader.h; sourceTree = "<group>"; };
-		E38E1EC20D25F9FD00618676 /* XKCRC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XKCRC.h; sourceTree = "<group>"; };
-		E38E1EC40D25F9FD00618676 /* XKEEPROM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XKEEPROM.h; sourceTree = "<group>"; };
-		E38E1EC50D25F9FD00618676 /* XKExports.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XKExports.h; sourceTree = "<group>"; };
-		E38E1EC60D25F9FD00618676 /* XKflash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XKflash.h; sourceTree = "<group>"; };
 		E38E1EC70D25F9FD00618676 /* XKGeneral.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XKGeneral.cpp; sourceTree = "<group>"; };
 		E38E1EC80D25F9FD00618676 /* XKGeneral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XKGeneral.h; sourceTree = "<group>"; };
-		E38E1ECA0D25F9FD00618676 /* XKHDD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XKHDD.h; sourceTree = "<group>"; };
-		E38E1ECC0D25F9FD00618676 /* XKRC4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XKRC4.h; sourceTree = "<group>"; };
-		E38E1ECE0D25F9FD00618676 /* XKSHA1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XKSHA1.h; sourceTree = "<group>"; };
-		E38E1ED00D25F9FD00618676 /* XKUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XKUtils.h; sourceTree = "<group>"; };
 		E38E1ED10D25F9FD00618676 /* XboxMediaCenter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XboxMediaCenter.cpp; sourceTree = "<group>"; };
-		E38E1ED30D25F9FD00618676 /* XBTimeZone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBTimeZone.h; sourceTree = "<group>"; };
 		E38E1ED40D25F9FD00618676 /* XBVideoConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBVideoConfig.cpp; sourceTree = "<group>"; };
 		E38E1ED50D25F9FD00618676 /* XBVideoConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBVideoConfig.h; sourceTree = "<group>"; };
 		E38E238B0D2626E600618676 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
@@ -3582,8 +3522,8 @@
 		E3B53E7A0D97B08100021A96 /* DVDSubtitleParserMicroDVD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitleParserMicroDVD.cpp; sourceTree = "<group>"; };
 		E3B53E7B0D97B08100021A96 /* DVDSubtitleParserMicroDVD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserMicroDVD.h; sourceTree = "<group>"; };
 		E3BBB7980D7EA78A00CAAFD3 /* CMythSession.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CMythSession.cpp; sourceTree = "<group>"; };
-		E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.0.0.1.dylib; path = ../../../../../opt/local/lib/libpcre.0.0.1.dylib; sourceTree = SOURCE_ROOT; };
-		E3D547950D723EFD00F36320 /* libsmbclient.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsmbclient.dylib; path = ../../../../../opt/local/lib/samba3/libsmbclient.dylib; sourceTree = SOURCE_ROOT; };
+		E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.0.0.1.dylib; path = /opt/local/lib/libpcre.0.0.1.dylib; sourceTree = "<absolute>"; };
+		E3D547950D723EFD00F36320 /* libsmbclient.dylib */ = {isa = PBXFileReference; lastKnownFileType = file; name = libsmbclient.dylib; path = /opt/local/lib/samba3/libsmbclient.dylib; sourceTree = "<absolute>"; };
 		E3D87AE90D3182F4000CF031 /* XCriticalSection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XCriticalSection.cpp; sourceTree = "<group>"; };
 		E3D87AEA0D3182F4000CF031 /* XCriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XCriticalSection.h; sourceTree = "<group>"; };
 		E3DAAF8A0D6E1B0500F17647 /* FileSmb.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileSmb.cpp; sourceTree = "<group>"; };
@@ -3733,54 +3673,14 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				6E65F67F0E1BF6D200B73755 /* libGoAhead-i486-osx-tiger.a */,
-				6E65F66C0E1BF57400B73755 /* avcodec-51-i486-osx-tiger.a */,
-				6E65F66E0E1BF58300B73755 /* avformat-51-i486-osx-tiger.a */,
-				6E65F6700E1BF58900B73755 /* avutil-51-i486-osx-tiger.a */,
-				6E65F6720E1BF59800B73755 /* postproc-51-i486-osx-tiger.a */,
-				6E65F6740E1BF5A100B73755 /* swscale-51-i486-osx-tiger.a */,
-				6E65F66A0E1BF51500B73755 /* libxdaap-i486-osx-tiger.a */,
-				6E65F6760E1BF5B600B73755 /* librtv-i486-osx-tiger.a */,
-				6E65F6780E1BF5C900B73755 /* libshout-i486-osx-tiger.a */,
-				6E65F67C0E1BF5FD00B73755 /* libcdio-i486-osx-tiger.a */,
-				6E65F67A0E1BF5DD00B73755 /* libxdaap-i486-osx-tiger.a */,
-				889693360DF0B72500F1DA75 /* libbz2.a */,
-				88ECB6EB0DE07C56003396A7 /* libmysqlclient.a */,
-				88ECB6E90DE07BEE003396A7 /* libogg.a */,
-				88ECB6E60DE07BA6003396A7 /* libfontconfig.a */,
-				88ECB6670DE01550003396A7 /* libcdio-osx.a */,
+				F57E1ED30E36E96B00700C9D /* dylibs */,
+				F57E1ED20E36E8FD00700C9D /* static libs */,
 				88ECB6580DE013C4003396A7 /* DiskArbitration.framework */,
-				8806941E0DCF67A500836761 /* libSDL_image.dylib */,
-				E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */,
-				E3D547950D723EFD00F36320 /* libsmbclient.dylib */,
-				810CA0190D68A6820095F5DD /* libSDLmain.a */,
-				810CA0050D683DEF0095F5DD /* libSDL.dylib */,
-				810CA0080D683DEF0095F5DD /* libSDL_mixer.dylib */,
-				E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */,
-				E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */,
-				E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */,
-				E30B3E8E0D5D59290030A311 /* libShout-osx.a */,
-				E34486730D4DD18B0020377B /* libswscale-osx.a */,
-				E34486740D4DD18B0020377B /* libpostproc-osx.a */,
-				E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */,
-				E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */,
-				E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */,
 				E35EF3230D380E1E00DB5CD5 /* Carbon.framework */,
 				E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */,
 				E33466A50D2E5103005A65EC /* IOKit.framework */,
-				E38F12E90D2A17B30035C331 /* libGoAhead-osx.a */,
-				E38F12E70D2A178F0035C331 /* libportaudio-osx.a */,
-				E38E256C0D263A1C00618676 /* librtv-osx.a */,
-				E38E25680D2639F100618676 /* libxdaap-osx.a */,
-				E38E25410D2636F300618676 /* libstdc++.6.dylib */,
 				E38E25330D26365C00618676 /* AppKit.framework */,
 				E38E25340D26365C00618676 /* ApplicationServices.framework */,
-				E38E24230D26317D00618676 /* libfreetype.dylib */,
-				E38E24240D26317D00618676 /* libfribidi.dylib */,
-				E38E24250D26317D00618676 /* libGLEW.dylib */,
-				E38E24260D26317D00618676 /* libiconv.dylib */,
-				E38E24270D26317D00618676 /* liblzo.dylib */,
-				E38E24290D26317D00618676 /* libz.dylib */,
 				E38E238B0D2626E600618676 /* AudioToolbox.framework */,
 				E38E238C0D2626E600618676 /* AudioUnit.framework */,
 				E38E238D0D2626E600618676 /* Cocoa.framework */,
@@ -4008,8 +3908,6 @@
 				E38E143E0D25F9F900618676 /* Key.h */,
 				E38E143F0D25F9F900618676 /* LocalizeStrings.cpp */,
 				E38E14400D25F9F900618676 /* LocalizeStrings.h */,
-				E38E14440D25F9F900618676 /* PackedTexture.h */,
-				E38E14450D25F9F900618676 /* ReadMe.txt */,
 				E38E14460D25F9F900618676 /* Shader.cpp */,
 				E38E14470D25F9F900618676 /* Shader.h */,
 				E38E14480D25F9F900618676 /* SkinInfo.cpp */,
@@ -4079,7 +3977,6 @@
 				E38E13BA0D25F9F900618676 /* ftglyph.h */,
 				E38E13BB0D25F9F900618676 /* ftimage.h */,
 				E38E13BC0D25F9F900618676 /* ftmoderr.h */,
-				E38E13BD0D25F9F900618676 /* ftsynth.h */,
 				E38E13BE0D25F9F900618676 /* ftsystem.h */,
 				E38E13BF0D25F9F900618676 /* fttypes.h */,
 			);
@@ -4249,7 +4146,6 @@
 				E38E17DB0D25F9FA00618676 /* GUIDialogSongInfo.h */,
 				E38E17DC0D25F9FA00618676 /* GUIDialogSubMenu.cpp */,
 				E38E17DD0D25F9FA00618676 /* GUIDialogSubMenu.h */,
-				E38E17DF0D25F9FA00618676 /* GUIDialogTrainerSettings.h */,
 				E38E17E00D25F9FA00618676 /* GUIDialogVideoBookmarks.cpp */,
 				E38E17E10D25F9FA00618676 /* GUIDialogVideoBookmarks.h */,
 				E38E17E20D25F9FA00618676 /* GUIDialogVideoScan.cpp */,
@@ -4505,7 +4401,6 @@
 				E38E1EAD0D25F9FD00618676 /* XBIRRemote.h */,
 				E38E1EAE0D25F9FD00618676 /* xbox */,
 				E38E1ED10D25F9FD00618676 /* XboxMediaCenter.cpp */,
-				E38E1ED30D25F9FD00618676 /* XBTimeZone.h */,
 				E38E1ED40D25F9FD00618676 /* XBVideoConfig.cpp */,
 				E38E1ED50D25F9FD00618676 /* XBVideoConfig.h */,
 			);
@@ -4789,7 +4684,6 @@
 		E38E151B0D25F9F900618676 /* libfaad */ = {
 			isa = PBXGroup;
 			children = (
-				E38E151C0D25F9F900618676 /* faad.h */,
 			);
 			path = libfaad;
 			sourceTree = "<group>";
@@ -5065,7 +4959,6 @@
 		E38E15D30D25F9FA00618676 /* aac */ = {
 			isa = PBXGroup;
 			children = (
-				E38E15D40D25F9FA00618676 /* AACCodec.h */,
 			);
 			path = aac;
 			sourceTree = "<group>";
@@ -5073,10 +4966,6 @@
 		E38E16050D25F9FA00618676 /* flac */ = {
 			isa = PBXGroup;
 			children = (
-				E38E16060D25F9FA00618676 /* export.h */,
-				E38E16070D25F9FA00618676 /* format.h */,
-				E38E16080D25F9FA00618676 /* ordinals.h */,
-				E38E16090D25F9FA00618676 /* stream_decoder.h */,
 			);
 			path = flac;
 			sourceTree = "<group>";
@@ -5084,9 +4973,6 @@
 		E38E16150D25F9FA00618676 /* mpc */ = {
 			isa = PBXGroup;
 			children = (
-				E38E16160D25F9FA00618676 /* config_win32.h */,
-				E38E16170D25F9FA00618676 /* reader.h */,
-				E38E16180D25F9FA00618676 /* streaminfo.h */,
 			);
 			path = mpc;
 			sourceTree = "<group>";
@@ -5123,7 +5009,6 @@
 		E38E163B0D25F9FA00618676 /* wavpack */ = {
 			isa = PBXGroup;
 			children = (
-				E38E163C0D25F9FA00618676 /* wavpack.h */,
 			);
 			path = wavpack;
 			sourceTree = "<group>";
@@ -5181,7 +5066,6 @@
 				810C9FA70D67D1FB0095F5DD /* CMythFile.cpp */,
 				810C9FA80D67D1FB0095F5DD /* CMythFile.h */,
 				E38F12C10D29FF200035C331 /* FileShoutcast.cpp */,
-				E38E16960D25F9FA00618676 /* BufferedFile.h */,
 				E38E16970D25F9FA00618676 /* CacheMemBuffer.cpp */,
 				E38E16980D25F9FA00618676 /* CacheMemBuffer.h */,
 				E38E16990D25F9FA00618676 /* CacheStrategy.cpp */,
@@ -5295,7 +5179,6 @@
 				E38E17530D25F9FA00618676 /* SmartPlaylistDirectory.cpp */,
 				E38E17540D25F9FA00618676 /* SmartPlaylistDirectory.h */,
 				E38E17560D25F9FA00618676 /* SMBDirectory.h */,
-				E38E17580D25F9FA00618676 /* SndtrkDirectory.h */,
 				E38E17590D25F9FA00618676 /* StackDirectory.cpp */,
 				E38E175A0D25F9FA00618676 /* StackDirectory.h */,
 				E38E175B0D25F9FA00618676 /* UPnPDirectory.cpp */,
@@ -5336,11 +5219,6 @@
 		E38E16F90D25F9FA00618676 /* MemoryUnits */ = {
 			isa = PBXGroup;
 			children = (
-				E38E16FD0D25F9FA00618676 /* Fat32Device.h */,
-				E38E16FF0D25F9FA00618676 /* Fat32FileSystem.h */,
-				E38E17010D25F9FA00618676 /* FatXDevice.h */,
-				E38E17040D25F9FA00618676 /* IDevice.h */,
-				E38E17050D25F9FA00618676 /* IFileSystem.h */,
 			);
 			path = MemoryUnits;
 			sourceTree = "<group>";
@@ -5519,23 +5397,11 @@
 		E38E194C0D25F9FB00618676 /* libGoAhead */ = {
 			isa = PBXGroup;
 			children = (
-				E38E194D0D25F9FB00618676 /* ej.h */,
-				E38E194E0D25F9FB00618676 /* ejIntrn.h */,
-				E38E194F0D25F9FB00618676 /* emfdb.h */,
 				E38E19530D25F9FB00618676 /* includes.h */,
-				E38E19580D25F9FB00618676 /* license.txt */,
-				E38E195B0D25F9FB00618676 /* md5.h */,
-				E38E195C0D25F9FB00618676 /* socketutil.h */,
 				E38E195D0D25F9FB00618676 /* SpyceModule.cpp */,
 				E38E195E0D25F9FB00618676 /* SpyceModule.h */,
-				E38E195F0D25F9FB00618676 /* uemf.h */,
-				E38E19600D25F9FB00618676 /* um.h */,
-				E38E19610D25F9FB00618676 /* webs.h */,
-				E38E19620D25F9FB00618676 /* websda.h */,
 				E38E19630D25F9FB00618676 /* WebServer.cpp */,
 				E38E19640D25F9FB00618676 /* WebServer.h */,
-				E38E19650D25F9FB00618676 /* websSSL.h */,
-				E38E19660D25F9FB00618676 /* wsIntrn.h */,
 				E38E19670D25F9FB00618676 /* XBMCConfiguration.cpp */,
 				E38E19680D25F9FB00618676 /* XBMCConfiguration.h */,
 				E38E19690D25F9FB00618676 /* XBMChttp.cpp */,
@@ -5564,8 +5430,6 @@
 		E38E197A0D25F9FB00618676 /* libid3tag */ = {
 			isa = PBXGroup;
 			children = (
-				E38E197B0D25F9FB00618676 /* id3tag.h */,
-				E38E197C0D25F9FB00618676 /* metadata.h */,
 			);
 			path = libid3tag;
 			sourceTree = "<group>";
@@ -5699,8 +5563,6 @@
 			children = (
 				E38E1A280D25F9FB00618676 /* filelib.h */,
 				E38E1A2D0D25F9FB00618676 /* rip_manager.h */,
-				E38E1A2E0D25F9FB00618676 /* types.h */,
-				E38E1A2F0D25F9FB00618676 /* util.h */,
 			);
 			path = libshout;
 			sourceTree = "<group>";
@@ -5877,7 +5739,6 @@
 				E38E1B1A0D25F9FB00618676 /* PltMediaServerSCPDs.cpp */,
 				E38E1B1B0D25F9FB00618676 /* PltSyncMediaBrowser.cpp */,
 				E38E1B1C0D25F9FB00618676 /* PltSyncMediaBrowser.h */,
-				E38E1B1D0D25F9FB00618676 /* X_MS_MediaReceiverRegistrar.xml */,
 			);
 			path = MediaServer;
 			sourceTree = "<group>";
@@ -6477,7 +6338,6 @@
 				E38E1D780D25F9FD00618676 /* PlatformDefs.h */,
 				E38E1D790D25F9FD00618676 /* PlatformInclude.h */,
 				E38E1D7A0D25F9FD00618676 /* XEventUtils.cpp */,
-				E38E1D7B0D25F9FD00618676 /* XEventUtils.cpp.orig */,
 				E38E1D7C0D25F9FD00618676 /* XEventUtils.h */,
 				E38E1D7D0D25F9FD00618676 /* XFileUtils.cpp */,
 				E38E1D7E0D25F9FD00618676 /* XFileUtils.h */,
@@ -6553,9 +6413,7 @@
 				E38E1E340D25F9FD00618676 /* DownloadQueueManager.h */,
 				E38E1E350D25F9FD00618676 /* Event.cpp */,
 				E38E1E360D25F9FD00618676 /* Event.h */,
-				E38E1E380D25F9FD00618676 /* FanController.h */,
 				E38E1E390D25F9FD00618676 /* FastDelegate.h */,
-				E38E1E3B0D25F9FD00618676 /* FilterFlickerPatch.h */,
 				E38E1E3C0D25F9FD00618676 /* fstrcmp.cpp */,
 				E38E1E3D0D25F9FD00618676 /* fstrcmp.h */,
 				E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */,
@@ -6576,13 +6434,11 @@
 				E38E1E540D25F9FD00618676 /* LabelFormatter.h */,
 				E38E1E550D25F9FD00618676 /* LCD.cpp */,
 				E38E1E560D25F9FD00618676 /* LCD.h */,
-				E38E1E5A0D25F9FD00618676 /* LED.h */,
 				E38E1E5B0D25F9FD00618676 /* log.cpp */,
 				E38E1E5C0D25F9FD00618676 /* log.h */,
 				E38E1E5F0D25F9FD00618676 /* md5.c */,
 				E38E1E600D25F9FD00618676 /* md5.h */,
 				E38E1E620D25F9FD00618676 /* MediaMonitor.h */,
-				E38E1E640D25F9FD00618676 /* MemoryUnitManager.h */,
 				E38E1E650D25F9FD00618676 /* MusicAlbumInfo.cpp */,
 				E38E1E660D25F9FD00618676 /* MusicAlbumInfo.h */,
 				E38E1E670D25F9FD00618676 /* MusicInfoScraper.cpp */,
@@ -6646,29 +6502,69 @@
 		E38E1EAE0D25F9FD00618676 /* xbox */ = {
 			isa = PBXGroup;
 			children = (
-				E38E1EAF0D25F9FD00618676 /* custom_launch_params.h */,
 				E38E1EB00D25F9FD00618676 /* IoSupport.cpp */,
 				E38E1EB10D25F9FD00618676 /* IoSupport.h */,
-				E38E1EB50D25F9FD00618676 /* MediaPacketQueue.h */,
 				E38E1EB70D25F9FD00618676 /* Network.h */,
-				E38E1EB80D25F9FD00618676 /* ntddcdrm.h */,
-				E38E1EB90D25F9FD00618676 /* ntddstor.h */,
-				E38E1EBA0D25F9FD00618676 /* Undocumented.h */,
-				E38E1EBC0D25F9FD00618676 /* VoiceCommunicator.h */,
-				E38E1EBE0D25F9FD00618676 /* VoiceManager.h */,
-				E38E1EC00D25F9FD00618676 /* xbeheader.h */,
-				E38E1EC20D25F9FD00618676 /* XKCRC.h */,
-				E38E1EC40D25F9FD00618676 /* XKEEPROM.h */,
-				E38E1EC50D25F9FD00618676 /* XKExports.h */,
-				E38E1EC60D25F9FD00618676 /* XKflash.h */,
 				E38E1EC70D25F9FD00618676 /* XKGeneral.cpp */,
 				E38E1EC80D25F9FD00618676 /* XKGeneral.h */,
-				E38E1ECA0D25F9FD00618676 /* XKHDD.h */,
-				E38E1ECC0D25F9FD00618676 /* XKRC4.h */,
-				E38E1ECE0D25F9FD00618676 /* XKSHA1.h */,
-				E38E1ED00D25F9FD00618676 /* XKUtils.h */,
 			);
 			path = xbox;
+			sourceTree = "<group>";
+		};
+		F57E1ED20E36E8FD00700C9D /* static libs */ = {
+			isa = PBXGroup;
+			children = (
+				E30B3E8E0D5D59290030A311 /* libShout-osx.a */,
+				E34486730D4DD18B0020377B /* libswscale-osx.a */,
+				E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */,
+				E34486740D4DD18B0020377B /* libpostproc-osx.a */,
+				E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */,
+				E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */,
+				810CA0190D68A6820095F5DD /* libSDLmain.a */,
+				889693360DF0B72500F1DA75 /* libbz2.a */,
+				88ECB6EB0DE07C56003396A7 /* libmysqlclient.a */,
+				88ECB6E90DE07BEE003396A7 /* libogg.a */,
+				88ECB6E60DE07BA6003396A7 /* libfontconfig.a */,
+				88ECB6670DE01550003396A7 /* libcdio-osx.a */,
+				E38F12E90D2A17B30035C331 /* libGoAhead-osx.a */,
+				E38F12E70D2A178F0035C331 /* libportaudio-osx.a */,
+				E38E256C0D263A1C00618676 /* librtv-osx.a */,
+				E38E25680D2639F100618676 /* libxdaap-osx.a */,
+				6E65F67F0E1BF6D200B73755 /* libGoAhead-i486-osx-tiger.a */,
+				6E65F66C0E1BF57400B73755 /* avcodec-51-i486-osx-tiger.a */,
+				6E65F66E0E1BF58300B73755 /* avformat-51-i486-osx-tiger.a */,
+				6E65F6700E1BF58900B73755 /* avutil-51-i486-osx-tiger.a */,
+				6E65F6720E1BF59800B73755 /* postproc-51-i486-osx-tiger.a */,
+				6E65F6740E1BF5A100B73755 /* swscale-51-i486-osx-tiger.a */,
+				6E65F66A0E1BF51500B73755 /* libxdaap-i486-osx-tiger.a */,
+				6E65F6760E1BF5B600B73755 /* librtv-i486-osx-tiger.a */,
+				6E65F6780E1BF5C900B73755 /* libshout-i486-osx-tiger.a */,
+				6E65F67C0E1BF5FD00B73755 /* libcdio-i486-osx-tiger.a */,
+				6E65F67A0E1BF5DD00B73755 /* libxdaap-i486-osx-tiger.a */,
+			);
+			name = "static libs";
+			sourceTree = "<group>";
+		};
+		F57E1ED30E36E96B00700C9D /* dylibs */ = {
+			isa = PBXGroup;
+			children = (
+				E38E24230D26317D00618676 /* libfreetype.dylib */,
+				E38E24240D26317D00618676 /* libfribidi.dylib */,
+				E38E24250D26317D00618676 /* libGLEW.dylib */,
+				E38E24260D26317D00618676 /* libiconv.dylib */,
+				E38E24270D26317D00618676 /* liblzo.dylib */,
+				E38E24290D26317D00618676 /* libz.dylib */,
+				8806941E0DCF67A500836761 /* libSDL_image.dylib */,
+				E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */,
+				E3D547950D723EFD00F36320 /* libsmbclient.dylib */,
+				810CA0050D683DEF0095F5DD /* libSDL.dylib */,
+				810CA0080D683DEF0095F5DD /* libSDL_mixer.dylib */,
+				E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */,
+				E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */,
+				E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */,
+				E38E25410D2636F300618676 /* libstdc++.6.dylib */,
+			);
+			name = dylibs;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -6717,7 +6613,7 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 1DEB924B08733DCA0010E9CD /* Build configuration list for PBXProject "XBMC" */;
-			compatibilityVersion = "Xcode 3.0";
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 08FB7794FE84155DC02AAC07 /* XBMC */;
 			projectDirPath = "";
@@ -8340,8 +8236,8 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					Py_UNICODE_WIDE,
@@ -8361,7 +8257,6 @@
 					"xbmc/lib/libffmpeg-OSX",
 					xbmc/utils/,
 					xbmc/lib/,
-					/Library/Frameworks/Python.framework/Versions/2.4/Headers/,
 					xbmc/lib/libportaudio,
 					xbmc/cores,
 					xbmc/cores/dvdplayer,
@@ -8371,45 +8266,70 @@
 					guilib,
 					/opt/local/include,
 					/opt/local/include/freetype2/,
-					"/opt/local/include/mysql5-devel",
+					/opt/local/include/mysql5,
 					/usr/X11R6/include/,
 				);
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/guilib/freetype2\"",
-					"\"$(SRCROOT)/xbmc/lib/filezilla\"",
-					"\"$(SRCROOT)/xbmc/lib/libcdio\"",
-					"\"$(SRCROOT)/xbmc/lib/libCDRip\"",
-					"\"$(SRCROOT)/xbmc/lib/libfribidi\"",
-					"\"$(SRCROOT)/xbmc/lib/libGoAhead\"",
-					"\"$(SRCROOT)/xbmc/lib/libiconv\"",
-					"\"$(SRCROOT)/xbmc/lib/liblzo\"",
-					"\"$(SRCROOT)/xbmc/lib/libPython/linux/tmp\"",
-					"\"$(SRCROOT)/xbmc/lib/libRTV\"",
-					"\"$(SRCROOT)/xbmc/lib/libshout\"",
-					"\"$(SRCROOT)/xbmc/lib/libSpeex\"",
-					"\"$(SRCROOT)/xbmc/lib/libUPnP\"",
-					"\"$(SRCROOT)/xbmc/lib/libXBMS\"",
-					"\"$(SRCROOT)/xbmc/lib/libXDAAP\"",
-					"\"$(SRCROOT)/xbmc/lib/libXenium\"",
-					"\"$(SRCROOT)/xbmc/lib/mikxbox\"",
-					"\"$(SRCROOT)/xbmc/lib/sqLite\"",
-					"\"$(SRCROOT)/xbmc/lib/zlib\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_17)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_18)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_19)",
 					/opt/local/lib,
-					"\"$(SRCROOT)/xbmc/lib/libportaudio\"",
-					"\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_20)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_21)",
 					/opt/local/lib/mysql5/mysql,
 					"/opt/local/lib/mysql5-devel/mysql",
 					/opt/local/lib/samba3,
-					"\"$(SRCROOT)/../../../../../Source/samba-3.0.28/source/bin\"",
-					"\"$(SRCROOT)/system/python\"",
-					"\"$(SRCROOT)/xbmc/lib/libPython/linux\"",
-					"\"$(SRCROOT)/xbmc/lib/libcdio-osx\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_22)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_23)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_24)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_25)",
 				);
-				OTHER_LDFLAGS = "-header-pad_max_install_names";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/guilib/freetype2\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/xbmc/lib/libRTV\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11 = "\"$(SRCROOT)/xbmc/lib/libshout\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\"$(SRCROOT)/xbmc/lib/libSpeex\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13 = "\"$(SRCROOT)/xbmc/lib/libUPnP\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15 = "\"$(SRCROOT)/xbmc/lib/libXDAAP\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16 = "\"$(SRCROOT)/xbmc/lib/libXenium\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_17 = "\"$(SRCROOT)/xbmc/lib/mikxbox\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_18 = "\"$(SRCROOT)/xbmc/lib/sqLite\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_19 = "\"$(SRCROOT)/xbmc/lib/zlib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/xbmc/lib/filezilla\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_20 = "\"$(SRCROOT)/xbmc/lib/libportaudio\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_21 = "\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_22 = "\"$(SRCROOT)/../../../../../Source/samba-3.0.28/source/bin\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_23 = "\"$(SRCROOT)/system/python\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_24 = "\"$(SRCROOT)/xbmc/lib/libPython/linux\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_25 = "\"$(SRCROOT)/xbmc/lib/libcdio-osx\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/xbmc/lib/libcdio\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/xbmc/lib/libCDRip\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/xbmc/lib/libfribidi\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/xbmc/lib/libGoAhead\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/xbmc/lib/libiconv\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\"$(SRCROOT)/xbmc/lib/liblzo\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9 = "\"$(SRCROOT)/xbmc/lib/libPython/linux/tmp\"";
+				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PRODUCT_NAME = XBMC;
-				ZERO_LINK = YES;
+				ZERO_LINK = NO;
 			};
 			name = Debug;
 		};
@@ -8419,7 +8339,8 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_MODEL_TUNING = G5;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					Py_UNICODE_WIDE,
 					_DEBUG,
@@ -8437,8 +8358,6 @@
 					"xbmc/lib/libffmpeg-OSX",
 					xbmc/utils/,
 					xbmc/lib/,
-					/Library/Frameworks/Python.framework/Versions/2.4/Headers/,
-					xbmc/lib/libportaudio,
 					xbmc/cores,
 					xbmc/cores/dvdplayer,
 					xbmc/cores/ffmpeg,
@@ -8447,50 +8366,77 @@
 					guilib,
 					/opt/local/include,
 					/opt/local/include/freetype2/,
-					"/opt/local/include/mysql5-devel",
+					/opt/local/include/mysql5,
 					/usr/X11R6/include/,
 				);
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/guilib/freetype2\"",
-					"\"$(SRCROOT)/xbmc/lib/filezilla\"",
-					"\"$(SRCROOT)/xbmc/lib/libcdio\"",
-					"\"$(SRCROOT)/xbmc/lib/libCDRip\"",
-					"\"$(SRCROOT)/xbmc/lib/libfribidi\"",
-					"\"$(SRCROOT)/xbmc/lib/libGoAhead\"",
-					"\"$(SRCROOT)/xbmc/lib/libiconv\"",
-					"\"$(SRCROOT)/xbmc/lib/liblzo\"",
-					"\"$(SRCROOT)/xbmc/lib/libPython/linux/tmp\"",
-					"\"$(SRCROOT)/xbmc/lib/libRTV\"",
-					"\"$(SRCROOT)/xbmc/lib/libshout\"",
-					"\"$(SRCROOT)/xbmc/lib/libSpeex\"",
-					"\"$(SRCROOT)/xbmc/lib/libUPnP\"",
-					"\"$(SRCROOT)/xbmc/lib/libXBMS\"",
-					"\"$(SRCROOT)/xbmc/lib/libXDAAP\"",
-					"\"$(SRCROOT)/xbmc/lib/libXenium\"",
-					"\"$(SRCROOT)/xbmc/lib/mikxbox\"",
-					"\"$(SRCROOT)/xbmc/lib/sqLite\"",
-					"\"$(SRCROOT)/xbmc/lib/zlib\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_17)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_18)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_19)",
 					/opt/local/lib,
-					"\"$(SRCROOT)/xbmc/lib/libportaudio\"",
-					"\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_20)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_21)",
 					/opt/local/lib/mysql5/mysql,
 					"/opt/local/lib/mysql5-devel/mysql",
 					/opt/local/lib/samba3,
-					"\"$(SRCROOT)/../../../../../Source/samba-3.0.28/source/bin\"",
-					"\"$(SRCROOT)/system/python\"",
-					"\"$(SRCROOT)/xbmc/lib/libPython/linux\"",
-					"\"$(SRCROOT)/xbmc/lib/libcdio-osx\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_22)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_23)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_24)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_25)",
 				);
-				OTHER_LDFLAGS = "-header-pad_max_install_names";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/guilib/freetype2\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/xbmc/lib/libRTV\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11 = "\"$(SRCROOT)/xbmc/lib/libshout\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\"$(SRCROOT)/xbmc/lib/libSpeex\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13 = "\"$(SRCROOT)/xbmc/lib/libUPnP\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15 = "\"$(SRCROOT)/xbmc/lib/libXDAAP\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16 = "\"$(SRCROOT)/xbmc/lib/libXenium\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_17 = "\"$(SRCROOT)/xbmc/lib/mikxbox\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_18 = "\"$(SRCROOT)/xbmc/lib/sqLite\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_19 = "\"$(SRCROOT)/xbmc/lib/zlib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/xbmc/lib/filezilla\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_20 = "\"$(SRCROOT)/xbmc/lib/libportaudio\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_21 = "\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_22 = "\"$(SRCROOT)/../../../../../Source/samba-3.0.28/source/bin\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_23 = "\"$(SRCROOT)/system/python\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_24 = "\"$(SRCROOT)/xbmc/lib/libPython/linux\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_25 = "\"$(SRCROOT)/xbmc/lib/libcdio-osx\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/xbmc/lib/libcdio\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/xbmc/lib/libCDRip\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/xbmc/lib/libfribidi\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/xbmc/lib/libGoAhead\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/xbmc/lib/libiconv\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\"$(SRCROOT)/xbmc/lib/liblzo\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9 = "\"$(SRCROOT)/xbmc/lib/libPython/linux/tmp\"";
+				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PRODUCT_NAME = XBMC;
+				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
 		1DEB924C08733DCA0010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = i386;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					_DEBUG,
 					_LINUX,
@@ -8518,9 +8464,10 @@
 					/opt/local/include/freetype2/,
 					/usr/X11R6/include/,
 				);
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "xbmc/lib/libSDL-OSX";
 				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				VALID_ARCHS = "ppc i386";
 			};
 			name = Debug;
 		};
@@ -8556,7 +8503,8 @@
 				);
 				LIBRARY_SEARCH_PATHS = "xbmc/lib/libSDL-OSX";
 				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				VALID_ARCHS = "ppc i386";
 			};
 			name = Release;
 		};
@@ -8638,45 +8586,76 @@
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\\\"$(SRCROOT)/guilib/freetype2\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/filezilla\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libcdio\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libCDRip\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libfribidi\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libGoAhead\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libiconv\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/liblzo\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libPython/linux/tmp\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libRTV\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libshout\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libSpeex\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libUPnP\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libXBMS\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libXDAAP\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libXenium\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/mikxbox\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/sqLite\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/zlib\\\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_17)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_18)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_19)",
 					/opt/local/lib,
-					"\\\"$(SRCROOT)/xbmc/lib/libportaudio\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\\\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_20)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_21)",
 					/opt/local/lib/mysql5/mysql,
 					"/opt/local/lib/mysql5-devel/mysql",
 					/opt/local/lib/samba3,
-					"\\\"$(SRCROOT)/../../../../../Source/samba-3.0.28/source/bin\\\"",
-					"\\\"$(SRCROOT)/system/python\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libPython/linux\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libcdio-osx\\\"",
-					"\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\"",
-					"\"$(SRCROOT)/xbmc/lib/libXDAAP\"",
-					"\"$(SRCROOT)/xbmc/lib/libRTV\"",
-					"\"$(SRCROOT)/xbmc/lib/libshout\"",
-					"\"$(SRCROOT)/xbmc/lib/libcdio\"",
-					"\"$(SRCROOT)/xbmc/lib/libGoAhead\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_22)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_23)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_24)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_25)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_26)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_27)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_28)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_29)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_30)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_31)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\\\"$(SRCROOT)/guilib/freetype2\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\\\"$(SRCROOT)/xbmc/lib/libRTV\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11 = "\\\"$(SRCROOT)/xbmc/lib/libshout\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\\\"$(SRCROOT)/xbmc/lib/libSpeex\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13 = "\\\"$(SRCROOT)/xbmc/lib/libUPnP\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14 = "\\\"$(SRCROOT)/xbmc/lib/libXBMS\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15 = "\\\"$(SRCROOT)/xbmc/lib/libXDAAP\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16 = "\\\"$(SRCROOT)/xbmc/lib/libXenium\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_17 = "\\\"$(SRCROOT)/xbmc/lib/mikxbox\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_18 = "\\\"$(SRCROOT)/xbmc/lib/sqLite\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_19 = "\\\"$(SRCROOT)/xbmc/lib/zlib\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\\\"$(SRCROOT)/xbmc/lib/filezilla\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_20 = "\\\"$(SRCROOT)/xbmc/lib/libportaudio\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_21 = "\\\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_22 = "\\\"$(SRCROOT)/../../../../../Source/samba-3.0.28/source/bin\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_23 = "\\\"$(SRCROOT)/system/python\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_24 = "\\\"$(SRCROOT)/xbmc/lib/libPython/linux\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_25 = "\\\"$(SRCROOT)/xbmc/lib/libcdio-osx\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_26 = "\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_27 = "\"$(SRCROOT)/xbmc/lib/libXDAAP\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_28 = "\"$(SRCROOT)/xbmc/lib/libRTV\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_29 = "\"$(SRCROOT)/xbmc/lib/libshout\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\\\"$(SRCROOT)/xbmc/lib/libcdio\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_30 = "\"$(SRCROOT)/xbmc/lib/libcdio\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_31 = "\"$(SRCROOT)/xbmc/lib/libGoAhead\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\\\"$(SRCROOT)/xbmc/lib/libCDRip\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\\\"$(SRCROOT)/xbmc/lib/libfribidi\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\\\"$(SRCROOT)/xbmc/lib/libGoAhead\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\\\"$(SRCROOT)/xbmc/lib/libiconv\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\\\"$(SRCROOT)/xbmc/lib/liblzo\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9 = "\\\"$(SRCROOT)/xbmc/lib/libPython/linux/tmp\\\"";
 				OTHER_LDFLAGS = "-header-pad_max_install_names";
 				PRODUCT_NAME = XBMC;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				ZERO_LINK = YES;
 			};
 			name = Debug;
@@ -8720,51 +8699,83 @@
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\\\"$(SRCROOT)/guilib/freetype2\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/filezilla\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libcdio\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libCDRip\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libfribidi\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libGoAhead\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libiconv\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/liblzo\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libPython/linux/tmp\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libRTV\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libshout\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libSpeex\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libUPnP\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libXBMS\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libXDAAP\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libXenium\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/mikxbox\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/sqLite\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/zlib\\\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_17)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_18)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_19)",
 					/opt/local/lib,
-					"\\\"$(SRCROOT)/xbmc/lib/libportaudio\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\\\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_20)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_21)",
 					/opt/local/lib/mysql5/mysql,
 					"/opt/local/lib/mysql5-devel/mysql",
 					/opt/local/lib/samba3,
-					"\\\"$(SRCROOT)/../../../../../Source/samba-3.0.28/source/bin\\\"",
-					"\\\"$(SRCROOT)/system/python\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libPython/linux\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libcdio-osx\\\"",
-					"\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\"",
-					"\"$(SRCROOT)/xbmc/lib/libXDAAP\"",
-					"\"$(SRCROOT)/xbmc/lib/libRTV\"",
-					"\"$(SRCROOT)/xbmc/lib/libshout\"",
-					"\"$(SRCROOT)/xbmc/lib/libcdio\"",
-					"\"$(SRCROOT)/xbmc/lib/libGoAhead\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_22)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_23)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_24)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_25)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_26)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_27)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_28)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_29)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_30)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_31)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\\\"$(SRCROOT)/guilib/freetype2\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\\\"$(SRCROOT)/xbmc/lib/libRTV\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11 = "\\\"$(SRCROOT)/xbmc/lib/libshout\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\\\"$(SRCROOT)/xbmc/lib/libSpeex\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13 = "\\\"$(SRCROOT)/xbmc/lib/libUPnP\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14 = "\\\"$(SRCROOT)/xbmc/lib/libXBMS\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15 = "\\\"$(SRCROOT)/xbmc/lib/libXDAAP\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16 = "\\\"$(SRCROOT)/xbmc/lib/libXenium\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_17 = "\\\"$(SRCROOT)/xbmc/lib/mikxbox\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_18 = "\\\"$(SRCROOT)/xbmc/lib/sqLite\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_19 = "\\\"$(SRCROOT)/xbmc/lib/zlib\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\\\"$(SRCROOT)/xbmc/lib/filezilla\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_20 = "\\\"$(SRCROOT)/xbmc/lib/libportaudio\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_21 = "\\\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_22 = "\\\"$(SRCROOT)/../../../../../Source/samba-3.0.28/source/bin\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_23 = "\\\"$(SRCROOT)/system/python\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_24 = "\\\"$(SRCROOT)/xbmc/lib/libPython/linux\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_25 = "\\\"$(SRCROOT)/xbmc/lib/libcdio-osx\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_26 = "\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_27 = "\"$(SRCROOT)/xbmc/lib/libXDAAP\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_28 = "\"$(SRCROOT)/xbmc/lib/libRTV\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_29 = "\"$(SRCROOT)/xbmc/lib/libshout\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\\\"$(SRCROOT)/xbmc/lib/libcdio\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_30 = "\"$(SRCROOT)/xbmc/lib/libcdio\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_31 = "\"$(SRCROOT)/xbmc/lib/libGoAhead\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\\\"$(SRCROOT)/xbmc/lib/libCDRip\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\\\"$(SRCROOT)/xbmc/lib/libfribidi\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\\\"$(SRCROOT)/xbmc/lib/libGoAhead\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\\\"$(SRCROOT)/xbmc/lib/libiconv\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\\\"$(SRCROOT)/xbmc/lib/liblzo\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9 = "\\\"$(SRCROOT)/xbmc/lib/libPython/linux/tmp\\\"";
 				OTHER_LDFLAGS = "-header-pad_max_install_names";
 				PRODUCT_NAME = XBMC;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = Release;
 		};
 		6E65F6850E1BFBD800B73755 /* Debug (Tiger) */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = i386;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					_DEBUG,
 					_LINUX,
@@ -8794,7 +8805,8 @@
 				);
 				LIBRARY_SEARCH_PATHS = "";
 				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				VALID_ARCHS = "ppc i386";
 			};
 			name = "Debug (Tiger)";
 		};
@@ -8804,8 +8816,8 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					Py_UNICODE_WIDE,
@@ -8841,39 +8853,64 @@
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/guilib/freetype2\"",
-					"\"$(SRCROOT)/xbmc/lib/filezilla\"",
-					"\"$(SRCROOT)/xbmc/lib/libcdio\"",
-					"\"$(SRCROOT)/xbmc/lib/libCDRip\"",
-					"\"$(SRCROOT)/xbmc/lib/libfribidi\"",
-					"\"$(SRCROOT)/xbmc/lib/libGoAhead\"",
-					"\"$(SRCROOT)/xbmc/lib/libiconv\"",
-					"\"$(SRCROOT)/xbmc/lib/liblzo\"",
-					"\"$(SRCROOT)/xbmc/lib/libPython/linux/tmp\"",
-					"\"$(SRCROOT)/xbmc/lib/libRTV\"",
-					"\"$(SRCROOT)/xbmc/lib/libshout\"",
-					"\"$(SRCROOT)/xbmc/lib/libSpeex\"",
-					"\"$(SRCROOT)/xbmc/lib/libUPnP\"",
-					"\"$(SRCROOT)/xbmc/lib/libXBMS\"",
-					"\"$(SRCROOT)/xbmc/lib/libXDAAP\"",
-					"\"$(SRCROOT)/xbmc/lib/libXenium\"",
-					"\"$(SRCROOT)/xbmc/lib/mikxbox\"",
-					"\"$(SRCROOT)/xbmc/lib/sqLite\"",
-					"\"$(SRCROOT)/xbmc/lib/zlib\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_17)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_18)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_19)",
 					/opt/local/lib,
-					"\"$(SRCROOT)/xbmc/lib/libportaudio\"",
-					"\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_20)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_21)",
 					/opt/local/lib/mysql5/mysql,
 					"/opt/local/lib/mysql5-devel/mysql",
 					/opt/local/lib/samba3,
-					"\"$(SRCROOT)/../../../../../Source/samba-3.0.28/source/bin\"",
-					"\"$(SRCROOT)/system/python\"",
-					"\"$(SRCROOT)/xbmc/lib/libPython/linux\"",
-					"\"$(SRCROOT)/xbmc/lib/libcdio-osx\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_22)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_23)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_24)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_25)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/guilib/freetype2\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/xbmc/lib/libRTV\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11 = "\"$(SRCROOT)/xbmc/lib/libshout\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\"$(SRCROOT)/xbmc/lib/libSpeex\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13 = "\"$(SRCROOT)/xbmc/lib/libUPnP\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15 = "\"$(SRCROOT)/xbmc/lib/libXDAAP\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16 = "\"$(SRCROOT)/xbmc/lib/libXenium\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_17 = "\"$(SRCROOT)/xbmc/lib/mikxbox\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_18 = "\"$(SRCROOT)/xbmc/lib/sqLite\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_19 = "\"$(SRCROOT)/xbmc/lib/zlib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/xbmc/lib/filezilla\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_20 = "\"$(SRCROOT)/xbmc/lib/libportaudio\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_21 = "\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_22 = "\"$(SRCROOT)/../../../../../Source/samba-3.0.28/source/bin\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_23 = "\"$(SRCROOT)/system/python\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_24 = "\"$(SRCROOT)/xbmc/lib/libPython/linux\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_25 = "\"$(SRCROOT)/xbmc/lib/libcdio-osx\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/xbmc/lib/libcdio\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/xbmc/lib/libCDRip\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/xbmc/lib/libfribidi\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/xbmc/lib/libGoAhead\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/xbmc/lib/libiconv\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\"$(SRCROOT)/xbmc/lib/liblzo\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9 = "\"$(SRCROOT)/xbmc/lib/libPython/linux/tmp\"";
 				OTHER_LDFLAGS = "-header-pad_max_install_names";
 				PRODUCT_NAME = XBMC;
-				ZERO_LINK = YES;
+				ZERO_LINK = NO;
 			};
 			name = "Debug (Tiger)";
 		};
@@ -8930,45 +8967,76 @@
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\\\"$(SRCROOT)/guilib/freetype2\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/filezilla\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libcdio\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libCDRip\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libfribidi\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libGoAhead\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libiconv\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/liblzo\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libPython/linux/tmp\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libRTV\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libshout\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libSpeex\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libUPnP\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libXBMS\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libXDAAP\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libXenium\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/mikxbox\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/sqLite\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/zlib\\\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_17)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_18)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_19)",
 					/opt/local/lib,
-					"\\\"$(SRCROOT)/xbmc/lib/libportaudio\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\\\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_20)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_21)",
 					/opt/local/lib/mysql5/mysql,
 					"/opt/local/lib/mysql5-devel/mysql",
 					/opt/local/lib/samba3,
-					"\\\"$(SRCROOT)/../../../../../Source/samba-3.0.28/source/bin\\\"",
-					"\\\"$(SRCROOT)/system/python\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libPython/linux\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libcdio-osx\\\"",
-					"\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\"",
-					"\"$(SRCROOT)/xbmc/lib/libXDAAP\"",
-					"\"$(SRCROOT)/xbmc/lib/libRTV\"",
-					"\"$(SRCROOT)/xbmc/lib/libshout\"",
-					"\"$(SRCROOT)/xbmc/lib/libcdio\"",
-					"\"$(SRCROOT)/xbmc/lib/libGoAhead\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_22)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_23)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_24)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_25)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_26)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_27)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_28)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_29)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_30)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_31)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\\\"$(SRCROOT)/guilib/freetype2\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\\\"$(SRCROOT)/xbmc/lib/libRTV\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11 = "\\\"$(SRCROOT)/xbmc/lib/libshout\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\\\"$(SRCROOT)/xbmc/lib/libSpeex\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13 = "\\\"$(SRCROOT)/xbmc/lib/libUPnP\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14 = "\\\"$(SRCROOT)/xbmc/lib/libXBMS\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15 = "\\\"$(SRCROOT)/xbmc/lib/libXDAAP\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16 = "\\\"$(SRCROOT)/xbmc/lib/libXenium\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_17 = "\\\"$(SRCROOT)/xbmc/lib/mikxbox\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_18 = "\\\"$(SRCROOT)/xbmc/lib/sqLite\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_19 = "\\\"$(SRCROOT)/xbmc/lib/zlib\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\\\"$(SRCROOT)/xbmc/lib/filezilla\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_20 = "\\\"$(SRCROOT)/xbmc/lib/libportaudio\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_21 = "\\\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_22 = "\\\"$(SRCROOT)/../../../../../Source/samba-3.0.28/source/bin\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_23 = "\\\"$(SRCROOT)/system/python\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_24 = "\\\"$(SRCROOT)/xbmc/lib/libPython/linux\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_25 = "\\\"$(SRCROOT)/xbmc/lib/libcdio-osx\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_26 = "\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_27 = "\"$(SRCROOT)/xbmc/lib/libXDAAP\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_28 = "\"$(SRCROOT)/xbmc/lib/libRTV\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_29 = "\"$(SRCROOT)/xbmc/lib/libshout\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\\\"$(SRCROOT)/xbmc/lib/libcdio\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_30 = "\"$(SRCROOT)/xbmc/lib/libcdio\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_31 = "\"$(SRCROOT)/xbmc/lib/libGoAhead\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\\\"$(SRCROOT)/xbmc/lib/libCDRip\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\\\"$(SRCROOT)/xbmc/lib/libfribidi\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\\\"$(SRCROOT)/xbmc/lib/libGoAhead\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\\\"$(SRCROOT)/xbmc/lib/libiconv\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\\\"$(SRCROOT)/xbmc/lib/liblzo\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9 = "\\\"$(SRCROOT)/xbmc/lib/libPython/linux/tmp\\\"";
 				OTHER_LDFLAGS = "-header-pad_max_install_names";
 				PRODUCT_NAME = XBMC;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				ZERO_LINK = YES;
 			};
 			name = "Debug (Tiger)";
@@ -9005,7 +9073,8 @@
 				);
 				LIBRARY_SEARCH_PATHS = "xbmc/lib/libSDL-OSX";
 				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				VALID_ARCHS = "ppc i386";
 			};
 			name = "Release (Tiger)";
 		};
@@ -9015,7 +9084,8 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_MODEL_TUNING = G5;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					Py_UNICODE_WIDE,
 					_DEBUG,
@@ -9049,38 +9119,64 @@
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/guilib/freetype2\"",
-					"\"$(SRCROOT)/xbmc/lib/filezilla\"",
-					"\"$(SRCROOT)/xbmc/lib/libcdio\"",
-					"\"$(SRCROOT)/xbmc/lib/libCDRip\"",
-					"\"$(SRCROOT)/xbmc/lib/libfribidi\"",
-					"\"$(SRCROOT)/xbmc/lib/libGoAhead\"",
-					"\"$(SRCROOT)/xbmc/lib/libiconv\"",
-					"\"$(SRCROOT)/xbmc/lib/liblzo\"",
-					"\"$(SRCROOT)/xbmc/lib/libPython/linux/tmp\"",
-					"\"$(SRCROOT)/xbmc/lib/libRTV\"",
-					"\"$(SRCROOT)/xbmc/lib/libshout\"",
-					"\"$(SRCROOT)/xbmc/lib/libSpeex\"",
-					"\"$(SRCROOT)/xbmc/lib/libUPnP\"",
-					"\"$(SRCROOT)/xbmc/lib/libXBMS\"",
-					"\"$(SRCROOT)/xbmc/lib/libXDAAP\"",
-					"\"$(SRCROOT)/xbmc/lib/libXenium\"",
-					"\"$(SRCROOT)/xbmc/lib/mikxbox\"",
-					"\"$(SRCROOT)/xbmc/lib/sqLite\"",
-					"\"$(SRCROOT)/xbmc/lib/zlib\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_17)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_18)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_19)",
 					/opt/local/lib,
-					"\"$(SRCROOT)/xbmc/lib/libportaudio\"",
-					"\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_20)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_21)",
 					/opt/local/lib/mysql5/mysql,
 					"/opt/local/lib/mysql5-devel/mysql",
 					/opt/local/lib/samba3,
-					"\"$(SRCROOT)/../../../../../Source/samba-3.0.28/source/bin\"",
-					"\"$(SRCROOT)/system/python\"",
-					"\"$(SRCROOT)/xbmc/lib/libPython/linux\"",
-					"\"$(SRCROOT)/xbmc/lib/libcdio-osx\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_22)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_23)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_24)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_25)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/guilib/freetype2\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/xbmc/lib/libRTV\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11 = "\"$(SRCROOT)/xbmc/lib/libshout\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\"$(SRCROOT)/xbmc/lib/libSpeex\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13 = "\"$(SRCROOT)/xbmc/lib/libUPnP\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15 = "\"$(SRCROOT)/xbmc/lib/libXDAAP\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16 = "\"$(SRCROOT)/xbmc/lib/libXenium\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_17 = "\"$(SRCROOT)/xbmc/lib/mikxbox\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_18 = "\"$(SRCROOT)/xbmc/lib/sqLite\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_19 = "\"$(SRCROOT)/xbmc/lib/zlib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/xbmc/lib/filezilla\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_20 = "\"$(SRCROOT)/xbmc/lib/libportaudio\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_21 = "\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_22 = "\"$(SRCROOT)/../../../../../Source/samba-3.0.28/source/bin\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_23 = "\"$(SRCROOT)/system/python\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_24 = "\"$(SRCROOT)/xbmc/lib/libPython/linux\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_25 = "\"$(SRCROOT)/xbmc/lib/libcdio-osx\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/xbmc/lib/libcdio\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/xbmc/lib/libCDRip\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/xbmc/lib/libfribidi\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/xbmc/lib/libGoAhead\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/xbmc/lib/libiconv\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\"$(SRCROOT)/xbmc/lib/liblzo\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9 = "\"$(SRCROOT)/xbmc/lib/libPython/linux/tmp\"";
 				OTHER_LDFLAGS = "-header-pad_max_install_names";
 				PRODUCT_NAME = XBMC;
+				ZERO_LINK = NO;
 			};
 			name = "Release (Tiger)";
 		};
@@ -9134,45 +9230,76 @@
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\\\"$(SRCROOT)/guilib/freetype2\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/filezilla\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libcdio\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libCDRip\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libfribidi\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libGoAhead\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libiconv\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/liblzo\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libPython/linux/tmp\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libRTV\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libshout\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libSpeex\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libUPnP\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libXBMS\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libXDAAP\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libXenium\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/mikxbox\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/sqLite\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/zlib\\\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_17)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_18)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_19)",
 					/opt/local/lib,
-					"\\\"$(SRCROOT)/xbmc/lib/libportaudio\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\\\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_20)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_21)",
 					/opt/local/lib/mysql5/mysql,
 					"/opt/local/lib/mysql5-devel/mysql",
 					/opt/local/lib/samba3,
-					"\\\"$(SRCROOT)/../../../../../Source/samba-3.0.28/source/bin\\\"",
-					"\\\"$(SRCROOT)/system/python\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libPython/linux\\\"",
-					"\\\"$(SRCROOT)/xbmc/lib/libcdio-osx\\\"",
-					"\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\"",
-					"\"$(SRCROOT)/xbmc/lib/libXDAAP\"",
-					"\"$(SRCROOT)/xbmc/lib/libRTV\"",
-					"\"$(SRCROOT)/xbmc/lib/libshout\"",
-					"\"$(SRCROOT)/xbmc/lib/libcdio\"",
-					"\"$(SRCROOT)/xbmc/lib/libGoAhead\"",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_22)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_23)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_24)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_25)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_26)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_27)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_28)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_29)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_30)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_31)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\\\"$(SRCROOT)/guilib/freetype2\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\\\"$(SRCROOT)/xbmc/lib/libRTV\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11 = "\\\"$(SRCROOT)/xbmc/lib/libshout\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\\\"$(SRCROOT)/xbmc/lib/libSpeex\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13 = "\\\"$(SRCROOT)/xbmc/lib/libUPnP\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14 = "\\\"$(SRCROOT)/xbmc/lib/libXBMS\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15 = "\\\"$(SRCROOT)/xbmc/lib/libXDAAP\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16 = "\\\"$(SRCROOT)/xbmc/lib/libXenium\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_17 = "\\\"$(SRCROOT)/xbmc/lib/mikxbox\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_18 = "\\\"$(SRCROOT)/xbmc/lib/sqLite\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_19 = "\\\"$(SRCROOT)/xbmc/lib/zlib\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\\\"$(SRCROOT)/xbmc/lib/filezilla\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_20 = "\\\"$(SRCROOT)/xbmc/lib/libportaudio\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_21 = "\\\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_22 = "\\\"$(SRCROOT)/../../../../../Source/samba-3.0.28/source/bin\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_23 = "\\\"$(SRCROOT)/system/python\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_24 = "\\\"$(SRCROOT)/xbmc/lib/libPython/linux\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_25 = "\\\"$(SRCROOT)/xbmc/lib/libcdio-osx\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_26 = "\"$(SRCROOT)/xbmc/lib/libffmpeg-OSX\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_27 = "\"$(SRCROOT)/xbmc/lib/libXDAAP\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_28 = "\"$(SRCROOT)/xbmc/lib/libRTV\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_29 = "\"$(SRCROOT)/xbmc/lib/libshout\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\\\"$(SRCROOT)/xbmc/lib/libcdio\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_30 = "\"$(SRCROOT)/xbmc/lib/libcdio\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_31 = "\"$(SRCROOT)/xbmc/lib/libGoAhead\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\\\"$(SRCROOT)/xbmc/lib/libCDRip\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\\\"$(SRCROOT)/xbmc/lib/libfribidi\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\\\"$(SRCROOT)/xbmc/lib/libGoAhead\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\\\"$(SRCROOT)/xbmc/lib/libiconv\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\\\"$(SRCROOT)/xbmc/lib/liblzo\\\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9 = "\\\"$(SRCROOT)/xbmc/lib/libPython/linux/tmp\\\"";
 				OTHER_LDFLAGS = "-header-pad_max_install_names";
 				PRODUCT_NAME = XBMC;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = "Release (Tiger)";
 		};

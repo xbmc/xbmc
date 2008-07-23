@@ -34,39 +34,68 @@ command.
    $ svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/linuxport/XBMC
 
 -----------------------------------------------------------------------------
-3. Installing the required MacPorts packages
+3.0 Installing the required MacPorts packages
 -----------------------------------------------------------------------------
 
-Install Xcode 3.0. You can download it from Apple's site after registration (http://developer.apple.com/tools/download).
+Install Xcode 3.0. You can download it from Apple's site after registration at
+(http://developer.apple.com/tools/download).
 
-Install MacPorts (http://www.macports.org/). Then install the following
-packages from the Terminal window:
+Since the XBMC OSX build is moving to 10.4 sdk refs, it is important to make sure that any 
+referenced dylibs are also built using 10.4 sdk refs. The best way to ensure this is 
+to remove the existing MacPorts install and re-install MacPorts.
 
-	$ sudo port install glew freetype fribidi libcdio lzo python24 libsdl libsdl_image 
-	$ sudo port install libsdl_mixer mysql5-devel pcre samba3 fontconfig libmad portaudio bzip2 jam
-	$ sudo port install boost
+To completly a previous install of  MacPorts, enter the following from a terminal windows:
 
-You will need to use samba3 version 3.0.28a so follow the below instructions to setup MacPorts.
+	$ sudo rm -rf \
+		/opt/local \
+		/etc/manpaths.d/macports \
+		/etc/paths.d/macports \
+		/Applications/DarwinPorts \
+		/Applications/MacPorts \
+		/Library/LaunchDaemons/org.macports.* \
+		/Library/Receipts/DarwinPorts*.pkg \
+		/Library/Receipts/MacPorts*.pkg \
+		/Library/StartupItems/DarwinPortsStartup \
+		/Library/Tcl/darwinports1.0 \
+		/Library/Tcl/macports1.0
 
-First you can check the version needed by clicking on the button's revision here
-http://trac.macports.org/log/trunk/dports/net/samba3/Portfile
+Install MacPorts (http://www.macports.org/) again, then install the following packages 
+from the Terminal window:
 
-We will install the revision 34870 (version 3.0.28a)
+	$ sudo port install lzo +darwin_8
+	$ sudo port install glew +darwin_8
+	$ sudo port install pcre +darwin_8
+	$ sudo port install zlib +darwin_8
+	$ sudo port install bzip2 +darwin_8
+	$ sudo port install jam +darwin_8
+	$ sudo port install boost +darwin_8
+	$ sudo port install libogg +darwin_8
+	$ sudo port install libmad +darwin_8
+	$ sudo port install mysql5 +darwin_8
+	$ sudo port install fribidi +darwin_8
+	$ sudo port install libiconv +darwin_8
+	$ sudo port install freetype +darwin_8
+	$ sudo port install readline +darwin_8
+	$ sudo port install fontconfig +darwin_8
+	$ sudo port install libsdl +darwin_8
+	$ sudo port install libsdl_image +darwin_8
+	$ sudo port install libsdl_mixer +darwin_8
 
-Edit /opt/local/etc/macports/sources.conf and add before rsync.macports.org line
-"file:///Users/Shared/dports" (without quotes)
+You will need to use samba3 version 3.0.28a so follow these instructions to setup 
+MacPorts for a local dport repository:
+ (http://journal.bitshaker.com/articles/2007/10/20/install-old-versions-of-ports-using-macports/)
+
+We will install the revision 34870 (version 3.0.28a). Edit /opt/local/etc/macports/sources.conf
+ and add "file:///Users/Shared/dports" BEFORE "rsync.macports.org". Then:
 
 	$ sudo mkdir /Users/Shared/dport
 	$ cd /Users/Shared/dports
 	$ svn co --revision 34870 http://svn.macports.org/repository/macports/trunk/dports/net/samba3 net/samba3
-	$ portindex /Users/Shared/dports
+	$ sudo portindex /Users/Shared/dports
 	$ port list samba3 (in order to check if the new samba3 is listed)
-	$ sudo port uninstall samba3
-	$ sudo port install samba3@3.0.28a
-
-
-If you're having more problems linking due to a versioning of a library, see:
-http://journal.bitshaker.com/articles/2007/10/20/install-old-versions-of-ports-using-macports/
+	$ sudo port uninstall samba3 (if installed)
+	$ sudo port clean samba3
+	$ sudo port install samba3@3.0.28a +darwin_8
 
 -----------------------------------------------------------------------------
 3.1 Fix two MacPorts package default install locations with sym links
