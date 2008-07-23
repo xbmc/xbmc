@@ -34,12 +34,13 @@
 #endif
 #endif
 #ifndef off64_t
-#define off64_t off_t
+#define off64_t long long
 #endif
-#ifndef fseeko64
-#define fseeko64 fseek
-#endif
-#endif
+
+#define ftello64 _ftelli64
+#define fseeko64 _fseeki64
+
+#endif // _WIN32
 
 #endif //__PLATFORM_DEFS_H__
 
