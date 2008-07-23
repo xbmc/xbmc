@@ -289,7 +289,7 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(3, "cddaripper", 620);
   AddString(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 657);
-  AddString(2, "cddaripper.trackformat", 13307, "[%N. ]%T - %A", BUTTON_CONTROL_INPUT, false, 16016);
+  AddString(2, "cddaripper.trackformat", 13307, "[%N. ]%T - %A", EDIT_CONTROL_INPUT, false, 16016);
   AddInt(3, "cddaripper.encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
   AddInt(4, "cddaripper.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
   AddInt(5, "cddaripper.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
@@ -480,7 +480,7 @@ CGUISettings::CGUISettings(void)
   AddSeparator(12, "network.sep1");
 #endif
   AddBool(13, "network.usehttpproxy", 708, false);
-  AddString(14, "network.httpproxyserver", 706, "", BUTTON_CONTROL_IP_INPUT);
+  AddString(14, "network.httpproxyserver", 706, "", EDIT_CONTROL_IP_INPUT);
   AddString(15, "network.httpproxyport", 707, "8080", BUTTON_CONTROL_INPUT, false, 707);
   AddSeparator(16, "network.sep2");
   AddBool(17, "network.enableinternet", 14054, true);
@@ -508,8 +508,8 @@ CGUISettings::CGUISettings(void)
 #endif
 
   AddCategory(6, "smb", 1200);
-  AddString(1, "smb.username",    1203,   "", BUTTON_CONTROL_INPUT, true, 1203);
-  AddString(2, "smb.password",    1204,   "", BUTTON_CONTROL_HIDDEN_INPUT, true, 1204);
+  AddString(1, "smb.username",    1203,   "", EDIT_CONTROL_INPUT, true, 1203);
+  AddString(2, "smb.password",    1204,   "", EDIT_CONTROL_HIDDEN_INPUT, true, 1204);
   AddString(3, "smb.winsserver",  1207,   "",  BUTTON_CONTROL_IP_INPUT);
   AddString(4, "smb.workgroup",   1202,   "WORKGROUP", BUTTON_CONTROL_INPUT, false, 1202);
 #ifdef _LINUX

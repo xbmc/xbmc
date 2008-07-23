@@ -104,6 +104,7 @@ using namespace DIRECTORY;
 #define CONTROL_DEFAULT_SPIN            9
 #define CONTROL_DEFAULT_CATEGORY_BUTTON 10
 #define CONTROL_DEFAULT_SEPARATOR       11
+#define CONTROL_DEFAULT_EDIT            12
 #define CONTROL_START_BUTTONS           30
 #define CONTROL_START_CONTROL           50
 
@@ -336,10 +337,14 @@ void CGUIWindowSettingsCategory::SetupControls()
   m_pOriginalImage = (CGUIImage *)GetControl(CONTROL_DEFAULT_SEPARATOR);
   if (!m_pOriginalCategoryButton || !m_pOriginalSpin || !m_pOriginalRadioButton || !m_pOriginalButton)
     return ;
+  m_pOriginalEdit = (CGUIEditControl *)GetControl(CONTROL_DEFAULT_EDIT);
+  if (!m_pOriginalEdit)
+    m_pOriginalEdit = new CGUIEditControl(*m_pOriginalButton);
   m_pOriginalSpin->SetVisible(false);
   m_pOriginalRadioButton->SetVisible(false);
   m_pOriginalButton->SetVisible(false);
   m_pOriginalCategoryButton->SetVisible(false);
+  m_pOriginalEdit->SetVisible(false);
   if (m_pOriginalImage) m_pOriginalImage->SetVisible(false);
   // setup our control groups...
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
@@ -1073,7 +1078,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("servers.webserverpassword"))
     { // Fill in a blank pass if we don't have it
-      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
+      CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
       if (((CSettingString *)pSettingControl->GetSetting())->GetData().size() == 0 && pControl)
       {
         pControl->SetLabel2(g_localizeStrings.Get(734));
@@ -2259,10 +2264,8 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int
 {
   CBaseSettingControl *pSettingControl = NULL;
   CGUIControl *pControl = NULL;
-  CGUIControl *baseControl = NULL;
   if (pSetting->GetControlType() == CHECKMARK_CONTROL)
   {
-    baseControl = m_pOriginalRadioButton;
     pControl = new CGUIRadioButtonControl(*m_pOriginalRadioButton);
     if (!pControl) return ;
     ((CGUIRadioButtonControl *)pControl)->SetLabel(g_localizeStrings.Get(pSetting->GetLabel()));
@@ -2271,7 +2274,6 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int
   }
   else if (pSetting->GetControlType() == SPIN_CONTROL_FLOAT || pSetting->GetControlType() == SPIN_CONTROL_INT_PLUS || pSetting->GetControlType() == SPIN_CONTROL_TEXT || pSetting->GetControlType() == SPIN_CONTROL_INT)
   {
-    baseControl = m_pOriginalSpin;
     pControl = new CGUISpinControlEx(*m_pOriginalSpin);
     if (!pControl) return ;
     pControl->SetWidth(width);
@@ -2280,15 +2282,24 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int
   }
   else if (pSetting->GetControlType() == SEPARATOR_CONTROL && m_pOriginalImage)
   {
-    baseControl = m_pOriginalImage;
     pControl = new CGUIImage(*m_pOriginalImage);
     if (!pControl) return;
     pControl->SetWidth(width);
     pSettingControl = new CSeparatorSettingControl((CGUIImage *)pControl, iControlID, pSetting);
   }
+  else if (pSetting->GetControlType() == EDIT_CONTROL_INPUT ||
+           pSetting->GetControlType() == EDIT_CONTROL_HIDDEN_INPUT ||
+           pSetting->GetControlType() == EDIT_CONTROL_IP_INPUT)
+  {
+    pControl = new CGUIEditControl(*m_pOriginalEdit);
+    if (!pControl) return ;
+    ((CGUIEditControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y);
+    ((CGUIEditControl *)pControl)->SetLabel(g_localizeStrings.Get(pSetting->GetLabel()));
+    pControl->SetWidth(width);
+    pSettingControl = new CEditSettingControl((CGUIEditControl *)pControl, iControlID, pSetting);
+  }
   else if (pSetting->GetControlType() != SEPARATOR_CONTROL) // button control
   {
-    baseControl = m_pOriginalButton;
     pControl = new CGUIButtonControl(*m_pOriginalButton);
     if (!pControl) return ;
     ((CGUIButtonControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y);
