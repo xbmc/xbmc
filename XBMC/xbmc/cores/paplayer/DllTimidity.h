@@ -39,11 +39,7 @@ public:
 
 class DllTimidity : public DllDynamic, DllTimidityInterface
 {
-#ifdef _LINUX
-  DECLARE_DLL_WRAPPER(DllTimidity, q:\\system\\players\\paplayer\\timidity.dll)
-#else
-  DECLARE_DLL_WRAPPER(DllTimidity, q:\\system\\players\\paplayer\\timidity-i486-linux.so)
-#endif
+  DECLARE_DLL_WRAPPER(DllTimidity, DLL_PATH_MID_CODEC)
   DEFINE_METHOD0(int, Init)
   DEFINE_METHOD1(int, LoadMID, (const char* p1))
   DEFINE_METHOD1(void, FreeMID, (int p1))

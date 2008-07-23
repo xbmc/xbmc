@@ -33,15 +33,7 @@ public:
 
 class DllLibExif : public DllDynamic, DllLibExifInterface
 {
-#if defined(__APPLE__)
-  DECLARE_DLL_WRAPPER(DllLibExif, Q:\\system\\libexif-osx.so)
-#elif !defined(_LINUX)
-  DECLARE_DLL_WRAPPER(DllLibExif, Q:\\system\\libexif.dll)
-#elif defined(__x86_64__)
-  DECLARE_DLL_WRAPPER(DllLibExif, Q:\\system\\libexif-x86_64-linux.so)
-#else
-  DECLARE_DLL_WRAPPER(DllLibExif, Q:\\system\\libexif-i486-linux.so)
-#endif
+  DECLARE_DLL_WRAPPER(DllLibExif, DLL_PATH_LIBEXIF)
   DEFINE_METHOD3(bool, process_jpeg, (const char *p1, ExifInfo_t *p2, IPTCInfo_t *p3))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(process_jpeg)

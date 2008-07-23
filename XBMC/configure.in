@@ -339,6 +339,7 @@ AC_CONFIG_FILES([Makefile Makefile.include]
 		[xbmc/lib/libGoAhead/Makefile]
 		[xbmc/lib/libshout/Makefile]
 		[xbmc/lib/libid3tag/Makefile]
+		[xbmc/DllPaths_generated.h]
 )
 
 AC_DEFUN([XB_CONFIG_MODULE],[

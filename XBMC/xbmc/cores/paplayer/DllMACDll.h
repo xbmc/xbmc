@@ -95,13 +95,7 @@ public:
 
 class DllMACDll : public DllDynamic, DllMACDllInterface
 {
-#ifdef __APPLE__
-  DECLARE_DLL_WRAPPER(DllMACDll, Q:\\system\\players\\paplayer\\MACDll-osx.so)
-#elif defined(_LINUX)
-  DECLARE_DLL_WRAPPER(DllMACDll, Q:\\system\\players\\paplayer\\MACDll-i486-linux.so)
-#else
-  DECLARE_DLL_WRAPPER(DllMACDll, Q:\\system\\players\\paplayer\\MACDll.dll)
-#endif
+  DECLARE_DLL_WRAPPER(DllMACDll, DLL_PATH_APE_CODEC)
   DEFINE_METHOD_LINKAGE0(int, __stdcall, GetVersionNumber)
   DEFINE_METHOD_LINKAGE2(int, __stdcall, Seek, (APE_DECOMPRESS_HANDLE p1, int p2))
   DEFINE_METHOD_LINKAGE1(void, __stdcall, Destroy, (APE_DECOMPRESS_HANDLE p1))

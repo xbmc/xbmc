@@ -119,18 +119,7 @@ public:
 
 class DllLibID3Tag : public DllDynamic, DllLibID3TagInterface
 {
-#ifdef __APPLE__
-  DECLARE_DLL_WRAPPER(DllLibID3Tag, Q:\\system\\libid3tag-osx.so)
-#elif !defined(_LINUX)
-  DECLARE_DLL_WRAPPER(DllLibID3Tag, Q:\\system\\libid3tag.dll)
-#elif defined(__x86_64__)
-  DECLARE_DLL_WRAPPER(DllLibID3Tag, Q:\\system\\libid3tag-x86_64-linux.so)
-#elif defined(_POWERPC)
-  DECLARE_DLL_WRAPPER(DllLibID3Tag, Q:\\system\\libid3tag-powerpc-linux.so)
-#else
-  DECLARE_DLL_WRAPPER(DllLibID3Tag, Q:\\system\\libid3tag-i486-linux.so)
-#endif
-
+  DECLARE_DLL_WRAPPER(DllLibID3Tag, DLL_PATH_LIBID3TAG)
   DEFINE_METHOD2(struct id3_file*, id3_file_open, (char const* p1, enum id3_file_mode p2))
   DEFINE_METHOD2(struct id3_file*, id3_file_fdopen, (int p1, enum id3_file_mode p2))
   DEFINE_METHOD1(int, id3_file_close, (struct id3_file* p1))
