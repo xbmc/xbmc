@@ -151,6 +151,7 @@ RenderTarget::RenderTarget(int texsize, int width, int height) : useFBO(false) {
       
     }
 
+   this->useFBO=false;
 #else
    this->useFBO=false;
 #endif
