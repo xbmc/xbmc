@@ -77,7 +77,7 @@ protected:
   float m_textOffset;
   float m_textWidth;
 
-  static const spaceWidth = 5;
+  static const int spaceWidth = 5;
 
   unsigned int m_cursorPos;
   unsigned int m_cursorBlink;
