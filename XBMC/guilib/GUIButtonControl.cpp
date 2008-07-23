@@ -152,6 +152,11 @@ bool CGUIButtonControl::OnMessage(CGUIMessage& message)
       SetLabel(message.GetLabel());
       return true;
     }
+    if (message.GetMessage() == GUI_MSG_LABEL2_SET)
+    {
+      SetLabel2(message.GetLabel());
+      return true;
+    }
     if (message.GetMessage() == GUI_MSG_SELECTED)
     {
       m_bSelected = true;

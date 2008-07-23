@@ -163,6 +163,17 @@ do { \
 
 /*!
  \ingroup winmsg
+ \brief Set the second label of the current control
+ */
+#define SET_CONTROL_LABEL2(dwControlID,label) \
+do { \
+ CGUIMessage msg(GUI_MSG_LABEL2_SET, GetID(), dwControlID); \
+ msg.SetLabel(label); \
+ OnMessage(msg); \
+} while(0);
+
+/*!
+ \ingroup winmsg
  \brief 
  */
 #define SET_CONTROL_HIDDEN(dwControlID) \

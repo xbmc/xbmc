@@ -37,7 +37,6 @@ public:
   static bool EditRule(CSmartPlaylistRule &rule, const CStdString& type="songs");
 
 protected:
-  void OnValue();
   void OnField();
   void OnOperator();
   void OnOK();

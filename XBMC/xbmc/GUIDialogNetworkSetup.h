@@ -48,11 +48,6 @@ public:
 protected:
   void OnProtocolChange();
   void OnServerBrowse();
-  void OnServerAddress();
-  void OnPath();
-  void OnPort();
-  void OnUserName();
-  void OnPassword();
   void OnOK();
   void OnCancel();
   void UpdateButtons();
