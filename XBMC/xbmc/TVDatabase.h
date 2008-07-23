@@ -76,7 +76,7 @@ public:
                const CDateTime &progStartTime, const int &progDuration, const CDateTime &progAirDate, const CStdString &category);
 
   void GetAllChannels(bool freeToAirOnly, VECTVCHANNELS &channels);
-  bool GetShowsByChannel(const CStdString &channel, VECTVSHOWS &shows, const int &curDaysOffset, const int &daysToDisplay);
+  bool GetShowsByChannel(const CStdString &channel, VECTVSHOWS &shows, const CDateTime &start, const CDateTime &end);
 
   // per-channel video settings
   bool GetChannelSettings(const CStdString &channel, CVideoSettings &settings);
@@ -84,6 +84,8 @@ public:
   // per-programme video settings
   bool GetProgrammeSettings(const CStdString &programme, CVideoSettings &settings);
   void SetProgrammeSettings(const CStdString &programme, const CVideoSettings &settings);
+  
+  CDateTime GetDataEnd();
 
   void EraseChannelSettings();
 
@@ -100,11 +102,9 @@ protected:
   long GetCategoryId(const CStdString &category);
   long GetProgrammeId(const CStdString &programme);
 
-  //CFileItem CTVDatabase::GetProgramme();
-
-  /*TVChannel GetDetailsForChannel(std::auto_ptr<dbiplus::Dataset> &pDS);*/
-
   void AddToLinkTable(const char *table, const char *firstField, long firstID, const char *secondField, long secondID);
+
+  CDateTime m_dataEnd; // schedule data exists up to this date
 
 private:
   virtual bool CreateTables();

@@ -28,7 +28,8 @@
 #define CONTROL_LABELEMPTY        10
 #define CONTROL_EPGGRID           20
 #define LABEL_CHANNELNAME         30  /* 70 available */
-#define CONTROL_GRIDITEMS         100 /* ?? available */
+#define LABEL_RULER			          110
+
 /* Need to allocate enough IDs for extreme numbers of channels & shows */
 
 CGUIWindowEPG::CGUIWindowEPG(void) 
@@ -88,7 +89,7 @@ void CGUIWindowEPG::UpdateGridData()
 void CGUIWindowEPG::UpdateGridItems()
 {
   m_gridItems = (CGUIEPGGridContainer*)GetControl(CONTROL_EPGGRID);
-  m_gridItems->UpdateItems(m_gridData);
+  m_gridItems->UpdateItems(m_gridData, m_gridStart, m_gridEnd);
 }
 void CGUIWindowEPG::GetEPG()
 {
@@ -98,7 +99,32 @@ void CGUIWindowEPG::GetEPG()
   m_database.GetAllChannels(false, channels);
   m_database.Close();
 
-  m_daysToDisplay = 1;
+  m_daysToDisplay = 1; /// from settings
+
+  CDateTimeSpan offset;
+  CDateTime now;
+
+  now = CDateTime::GetCurrentDateTime();
+  offset.SetDateTimeSpan(0, 0, 0, (now.GetMinute() % 30) * 60 + now.GetSecond()); // back to last half-hour
+  now -= offset; // tidy up dataStart time
+
+  m_gridStart = now;
+
+  // check that this date exists in schedules
+  // otherwise show no data message
+
+  offset.SetDateTimeSpan(m_curDaysOffset, 0, 0, 0);
+  m_gridStart = now + offset;
+ 
+  offset.SetDateTimeSpan(m_daysToDisplay, 0, 0, 0);
+  m_gridEnd = m_gridStart + offset;
+  m_dataEnd = m_database.GetDataEnd();
+
+  if (m_dataEnd < m_gridEnd)
+  {
+    m_gridEnd = m_dataEnd;
+  }
+
   m_numChannels = (int)channels.size();
   if (m_numChannels > 0)
   {
@@ -110,7 +136,9 @@ void CGUIWindowEPG::GetEPG()
         it->shows.empty();
     }
     m_gridData.clear();
+
     DWORD tick(timeGetTime());
+
     m_database.Open();
     m_database.BeginTransaction();
 
@@ -121,20 +149,29 @@ void CGUIWindowEPG::GetEPG()
       curRow.channelName = channels[i]->GetLabel();
       curRow.channelNum  = channels[i]->GetPropertyInt("ChannelNum");
 
-      if(!m_database.GetShowsByChannel(channels[i]->GetLabel(), curRow.shows, m_curDaysOffset, m_daysToDisplay))
-        return; /* debug log: couldn't grab data */
+      if(!m_database.GetShowsByChannel(channels[i]->GetLabel(), curRow.shows, m_gridStart, m_gridEnd))
+        continue;
 
       items += (int)curRow.shows.size();
       m_gridData.push_back(curRow);
     }
     m_database.CommitTransaction();
     m_database.Close();
-    CLog::Log(LOGDEBUG, "%s completed successfully in %u ms, returning %u items", __FUNCTION__, timeGetTime()-tick, items);
-    m_bDisplayEmptyDatabaseMessage = false;
+
+    if (items > 0)
+    {
+      CLog::Log(LOGDEBUG, "%s returned %u items in %u ms", __FUNCTION__, timeGetTime()-tick, items);
+      m_bDisplayEmptyDatabaseMessage = false;
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "%s failed, (%s)", __FUNCTION__, "No EPG Data found!");
+      m_bDisplayEmptyDatabaseMessage = true;
+    }
   }
   else
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, "No Channels found!");
+    CLog::Log(LOGERROR, "%s failed, (%s)", __FUNCTION__, "No Channels found!");
     m_bDisplayEmptyDatabaseMessage = true;
   }
 }

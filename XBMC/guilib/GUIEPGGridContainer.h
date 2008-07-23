@@ -39,8 +39,8 @@ public:
   virtual void OnRight();
   virtual bool OnMessage(CGUIMessage& message);
 
-  const int GetNumChannels()   { return m_numChannels; }
-  void UpdateItems(EPGGrid &gridData);
+  const int GetNumChannels()   { return m_channels; }
+  void UpdateItems(EPGGrid &gridData, const CDateTime &dataStart, const CDateTime &dataEnd);
 
   CStdString GetDescription() const;
   int GetSelectedItem() const;
@@ -56,6 +56,7 @@ protected:
   bool OnClick(DWORD actionID);
   bool SelectItemFromPoint(const CPoint &point);
   void RenderItem(float posX, float posY, CGUIListItem  *item, bool focused);
+  void RenderRuler();
   void Scroll(int amount);
   void SetChannel(int cursor);
   bool MoveDown(bool wrapAround);
@@ -67,23 +68,35 @@ protected:
   void UpdateLayout(bool refreshAllItems = false);
   void CalculateLayout();
 
+  //int  GetItemAbove(int channel, int item);
+  //int  GetItemBelow(int channel, int item);
+  //int  GetItemLeft (int channel, int item);
+  //int  GetItemRight(int channel, int item);
+  int  GetBlock(const int &item, const int &channel);
+  int  GetItem(const int &channel);
+  int  GetClosestItem(const int &channel);
+
   void MoveToRow(int row);
   void FreeMemory(int keepStart, int keepEnd);
   void GetCurrentLayouts();
 
   CGUIListItemLayout *GetFocusedLayout() const;
+  
+  int m_item;
+  int m_channels;
+  int m_channelsPerPage;
+  int m_channel;
   int m_chanOffset;
-  int m_itemOffset;
-  int m_curChannel;
-  int m_curItem;
+  int m_blocks;
+  int m_blocksPerPage;
+  int m_block;
+  int m_blockOffset; 
+
   float m_analogScrollCount;
   bool  m_favouritesOnly;
-  int m_numChannels;
-  int m_channelsPerPage;
-  int m_numTimeBlocks;
-  
-  std::vector< std::vector< int > > m_gridIndex; //todo clear
-  std::vector< std::vector< CGUIListItemPtr > > m_gridItems; //todo clear
+
+  std::vector< std::vector< int > > m_gridIndex;
+  std::vector< std::vector< CGUIListItemPtr > > m_gridItems;
   typedef std::vector< std::vector< CGUIListItemPtr > >::iterator itChannels;
   typedef std::vector< CGUIListItemPtr >::iterator itShows;
   CGUIListItem *m_lastItem;
@@ -92,12 +105,9 @@ protected:
 
   CGUIListItemLayout *m_layout;
   CGUIListItemLayout *m_focusedLayout;
-
-  std::map<CGUIListItem*, CGUIListItemLayout*> m_itemLayouts; //matches individual items with their layouts
-
-  EPGGrid *m_pGridData;
   
-  void ScrollToOffset(int offset);
+  void ScrollToBlockOffset(int offset);
+  void ScrollToChannelOffset(int offset);
   DWORD m_scrollLastTime;
   int   m_scrollTime;
   float m_scrollSpeed;

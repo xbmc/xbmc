@@ -22,6 +22,7 @@
  */
 
 #include "GUIWindow.h"
+#include "DateTime.h"
 #include "TVDatabase.h"
 #include "GUIEPGGridContainer.h"
 #include "GUIDialogProgress.h"
@@ -55,6 +56,9 @@ protected:
 
   int m_daysToDisplay;
   int m_curDaysOffset;
+  CDateTime m_gridStart;
+  CDateTime m_gridEnd;
+  CDateTime m_dataEnd; // schedule data exists in the db up to this date
   int m_numChannels;
   bool m_favouritesOnly;
 
