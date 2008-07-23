@@ -1052,11 +1052,11 @@ HRESULT CApplication::Create(HWND hWnd)
 
   CStdString strHomePath = "Q:";
   CLog::Log(LOGINFO, "Checking skinpath existance, and existence of keymap.xml:%s...", (strHomePath + "\\skin").c_str());
-  CStdString keymapPath;
 
-  keymapPath = "Q:\\system\\Keymap.xml";
+  CStdString systemKeymapPath = "Q:\\system\\Keymap.xml";
+  CStdString userKeymapPath = g_settings.GetUserDataItem("Keymap.xml");
 #ifdef _XBOX
-  if (access(strHomePath + "\\skin", 0) || access(keymapPath.c_str(), 0))
+  if (access(strHomePath + "\\skin", 0) || (access(systemKeymapPath.c_str(), 0) && access(userKeymapPath.c_str(), 0)))
   {
     g_LoadErrorStr = "Unable to find skin or Keymap.xml.  Make sure you have System/Keymap.xml and Skin/ folder";
     FatalErrorHandler(true, false, true);
