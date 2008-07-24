@@ -258,20 +258,20 @@ reallyclean:
 	@echo " This will delete ALL unversioned files in"; \
 	 echo " your XBMC source tree. If you aren't sure"; \
 	 echo " you want to do this, answer anything but"; \
-	 echo " Y (case sensitive) to the following."; \
+	 echo " 'Y' (case sensitive) to the following."; \
 	 echo " DISCLAIMER: Team XBMC is NOT responsible"; \
 	 echo " for ANYTHING lost if you execute this command!"; \
 	 echo -n " Damnserious? (Y/*) "; \
 	 read -n1 PROMPT; \
 	 if [[ "$$PROMPT" = "Y" ]]; then \
-		SVNV=$$(svnversion -n); _IFS=$$IFS; IFS=$$'\t\n'; \
+		SVNV=$$(svnversion -n | cut -d':' -f7-); _IFS=$$IFS; IFS=$$'\t\n'; \
 		for i in `svn st --no-ignore | grep ^[I\?] | cut -d' ' -f7-`; \
 			do echo "  Deleting $$i"; \
 			rm -rf "$$i"; \
 		done; \
 		IFS=$$_IFS; \
 		echo " Recovering any missing files."; \
-		svn up -r $${SVNV/M/} | awk '{print "  "$$0}'; \
+		svn up -r $${SVNV/M/} | cut -d' ' -f7- | awk '{print "  "$$0}'; \
 		echo " Done."; \
 		echo " The following files may need reverted (svn revert <file>)"; \
 		svn st | grep ^M | cut -d' ' -f7- | awk '{print "  "$$0}'; \
