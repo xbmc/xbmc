@@ -380,22 +380,25 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/flac-1.2.1], [
 XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/libvorbis], [./configure])
 XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/ogg], [./configure])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
-  ./configure --extra-cflags="-D_XBOX" \
-    --enable-shared \
-    --enable-postproc \
-    --enable-gpl \
+  ./configure \
+    --extra-cflags="-D_XBOX" \
     --disable-static \
-    --disable-vhook \
-    --enable-swscale \
-    --enable-protocol=http \
     --disable-altivec \
+    --disable-vhook \
     --disable-ipv6 \
-    --enable-pthreads \
     --disable-debug \
     --disable-muxers \
     --disable-encoders \
+    --disable-devices \
     --disable-ffplay \
-    --disable-ffserver
+    --disable-ffserver \
+    --disable-ffmpeg \
+    --enable-shared \
+    --enable-postproc \
+    --enable-gpl \
+    --enable-swscale \
+    --enable-protocol=http \
+    --enable-pthreads \
 ])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdts], [
   ./configure \
