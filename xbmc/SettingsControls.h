@@ -35,7 +35,8 @@ public:
   virtual void Update() {};
   DWORD GetID() { return m_dwID; };
   CSetting* GetSetting() { return m_pSetting; };
-
+  virtual bool NeedsUpdate() { return false; };   ///< Returns true if the control needs an update
+  virtual void Reset() {}; ///< Resets the NeedsUpdate() state
 protected:
   DWORD m_dwID;
   CSetting* m_pSetting;
@@ -82,9 +83,12 @@ public:
   virtual ~CEditSettingControl();
   virtual bool OnClick();
   virtual void Update();
+  virtual bool NeedsUpdate() { return m_needsUpdate; };
+  virtual void Reset() { m_needsUpdate = false; };
 private:
   bool IsValidIPAddress(const CStdString &strIP);
   CGUIEditControl *m_pEdit;
+  bool m_needsUpdate;
 };
 
 class CSeparatorSettingControl : public CBaseSettingControl

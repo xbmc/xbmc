@@ -76,9 +76,11 @@ protected:
   void CreateSettings();
   void UpdateSettings();
   void UpdateRealTimeSettings();
+  void CheckForUpdates();
   void FreeSettingsControls();
   virtual void FreeControls();
   virtual void OnClick(CBaseSettingControl *pSettingControl);
+  virtual void OnSettingChanged(CBaseSettingControl *pSettingControl);
   void AddSetting(CSetting *pSetting, float width, int &iControlID);
   CBaseSettingControl* GetSetting(const CStdString &strSetting);
 
