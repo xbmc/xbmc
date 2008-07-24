@@ -261,6 +261,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_UpdateApplication = 0;
 
   m_bAbortRequest = false;
+  m_bPlayingNewFile = false;
   m_errorCount = 0;
   m_playSpeed = DVD_PLAYSPEED_NORMAL;
   m_caching = false;
@@ -306,7 +307,11 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     // if playing a file close it first
     // this has to be changed so we won't have to close it.
     if(ThreadHandle())
+    {
+      m_bPlayingNewFile = true;
       CloseFile();
+      m_bPlayingNewFile = false;
+    }
 
     m_bAbortRequest = false;
     SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
@@ -1395,8 +1400,8 @@ void CDVDPlayer::OnExit()
     // N.B. We need to call this if we aborted too, otherwise the application
     // doesn't know that we're done with the full screen view and video playing!
     //
-    //if (!m_bAbortRequest)
-    m_callback.OnPlayBackEnded();
+    //if (m_bPlayingNewFile == false)
+      m_callback.OnPlayBackEnded();
 
     m_messenger.End();
 

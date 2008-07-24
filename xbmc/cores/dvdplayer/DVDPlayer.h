@@ -268,6 +268,7 @@ protected:
   double m_UpdateApplication;
 
   bool m_bAbortRequest;
+  bool m_bPlayingNewFile;
 
   std::string m_filename; // holds the actual filename
   std::string m_content;  // hold a hint to what content file contains (mime type)
