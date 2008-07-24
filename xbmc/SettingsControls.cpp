@@ -196,6 +196,7 @@ void CButtonSettingControl::Update()
 CEditSettingControl::CEditSettingControl(CGUIEditControl *pEdit, DWORD dwID, CSetting *pSetting)
     : CBaseSettingControl(dwID, pSetting)
 {
+  m_needsUpdate = false;
   m_pEdit = pEdit;
   m_pEdit->SetID(dwID);
   int heading = ((CSettingString *)m_pSetting)->m_iHeadingString;
@@ -217,7 +218,9 @@ bool CEditSettingControl::OnClick()
 {
   // update our string
   ((CSettingString *)m_pSetting)->SetData(m_pEdit->GetLabel2());
-  return true;
+  // we update on exit only
+  m_needsUpdate = true;
+  return false;
 }
 
 void CEditSettingControl::Update()
