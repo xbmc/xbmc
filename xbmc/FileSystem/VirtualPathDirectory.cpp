@@ -177,7 +177,7 @@ bool CVirtualPathDirectory::GetMatchingSource(const CStdString &strPath, CMediaS
   int iIndex = CUtil::GetMatchingSource(strSource, *VECSOURCES, bIsSourceName);
   if (!bIsSourceName)
     return false;
-  if (iIndex < 0)
+  if (iIndex < 0 || iIndex >= (int)VECSOURCES->size())
     return false;
 
   share = (*VECSOURCES)[iIndex];
