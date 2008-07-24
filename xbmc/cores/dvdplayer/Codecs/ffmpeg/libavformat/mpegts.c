@@ -617,6 +617,13 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
 
         /* now create ffmpeg stream */
         switch(stream_type) {
+        case STREAM_TYPE_AUDIO_HDMV_DTS:
+        case STREAM_TYPE_AUDIO_HDMV_DTS_HD:
+        case STREAM_TYPE_AUDIO_HDMV_DTS_HD_MASTER:
+        case STREAM_TYPE_AUDIO_HDMV_AC3_TRUE_HD:
+        case STREAM_TYPE_AUDIO_HDMV_AC3_PLUS:
+            if(!has_hdmv_descr)
+                break;
         case STREAM_TYPE_AUDIO_MPEG1:
         case STREAM_TYPE_AUDIO_MPEG2:
         case STREAM_TYPE_VIDEO_MPEG1:
@@ -627,10 +634,7 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
         case STREAM_TYPE_AUDIO_AAC:
         case STREAM_TYPE_AUDIO_AC3:
         case STREAM_TYPE_AUDIO_DTS:
-        case STREAM_TYPE_AUDIO_HDMV_DTS:
         case STREAM_TYPE_SUBTITLE_DVB:
-            if(stream_type == STREAM_TYPE_AUDIO_HDMV_DTS && !has_hdmv_descr)
-                break;
             if(ts->pids[pid] && ts->pids[pid]->type == MPEGTS_PES){
                 pes= ts->pids[pid]->u.pes_filter.opaque;
                 st= pes->st;
@@ -968,11 +972,15 @@ static AVStream* new_pes_av_stream(PESContext *pes, uint32_t code)
         codec_id = CODEC_ID_AAC;
         break;
     case STREAM_TYPE_AUDIO_AC3:
+    case STREAM_TYPE_AUDIO_HDMV_AC3_TRUE_HD:
+    case STREAM_TYPE_AUDIO_HDMV_AC3_PLUS:
         codec_type = CODEC_TYPE_AUDIO;
         codec_id = CODEC_ID_AC3;
         break;
     case STREAM_TYPE_AUDIO_DTS:
     case STREAM_TYPE_AUDIO_HDMV_DTS:
+    case STREAM_TYPE_AUDIO_HDMV_DTS_HD:
+    case STREAM_TYPE_AUDIO_HDMV_DTS_HD_MASTER:
         codec_type = CODEC_TYPE_AUDIO;
         codec_id = CODEC_ID_DTS;
         break;
