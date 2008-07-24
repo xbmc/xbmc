@@ -20,27 +20,27 @@ LIBS= avutil-51-$(ARCH).so \
 #			liba52-$(ARCH).so \
 			libmpeg2-$(ARCH).so \
 
-.PHONY: $(DIRS:ffmpeg=ffmpeg/*)
+.PHONY: $(DIRS)
 
 codecs: $(WRAPPER) $(LIBS)
 	cp $(LIBS) $(SYSDIR)
 
-avutil-51-$(ARCH).so: ffmpeg/libavutil
+avutil-51-$(ARCH).so: ffmpeg/libavutil/libavutil.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libavutil/*.o
 
-avcodec-51-$(ARCH).so: ffmpeg/libavcodec
+avcodec-51-$(ARCH).so: ffmpeg/libavcodec/libavcodec.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ /usr/lib/libfaac.a ffmpeg/libavcodec/*.o \
 		ffmpeg/libavcodec/i386/*.o `cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
-avformat-51-$(ARCH).so: ffmpeg/libavformat
+avformat-51-$(ARCH).so: ffmpeg/libavformat/libavformat.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libavformat/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
-swscale-51-$(ARCH).so: ffmpeg/libswscale
+swscale-51-$(ARCH).so: ffmpeg/libswscale/libswscale.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libswscale/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
-postproc-51-$(ARCH).so: ffmpeg/libpostproc
+postproc-51-$(ARCH).so: ffmpeg/libswscale/libpostproc.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libpostproc/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
@@ -63,19 +63,12 @@ libfaad-$(ARCH).so: libfaad2
 libmad-$(ARCH).so: libmad
 	cp libmad/.libs/libmad.so libmad-$(ARCH).so
 
-ffmpeg/libavutil:
-	$(MAKE) -C $@
-
-ffmpeg/libavcodec: ffmpeg/libavutil
-	$(MAKE) -C $@
-
-ffmpeg/libavformat: ffmpeg/libavcodec
-	$(MAKE) -C $@
-
-ffmpeg/libpostproc: ffmpeg/libavutil
-	$(MAKE) -C $@
-
-ffmpeg/libswscale: ffmpeg/libavutil
+ffmpeg/libavutil/libavutil.so     : ffmpeg;
+ffmpeg/libavformat/libavformat.so : ffmpeg;
+ffmpeg/libavcodec/libavcodec.so   : ffmpeg;
+ffmpeg/libswscale/libswscale.so   : ffmpeg;
+ffmpeg/libpostproc/libpostproc.so : ffmpeg;
+ffmpeg:
 	$(MAKE) -C $@
 
 libdts:
