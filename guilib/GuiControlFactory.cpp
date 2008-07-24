@@ -1001,7 +1001,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     viewType = VIEW_TYPE_LIST;
     viewLabel = g_localizeStrings.Get(535);
   }
-  else if (strType == "wraplist")
+  else
   {
     viewType = VIEW_TYPE_WRAP;
     viewLabel = g_localizeStrings.Get(541);
