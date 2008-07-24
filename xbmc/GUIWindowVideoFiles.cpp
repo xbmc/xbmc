@@ -120,7 +120,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
           if (iIndex > -1)
           {
             bool bDoStuff = true;
-            if (shares[iIndex].m_iHasLock == 2)
+            if (iIndex < shares.size() && shares[iIndex].m_iHasLock == 2)
             {
               CFileItem item(shares[iIndex]);
               if (!g_passwordManager.IsItemUnlocked(&item,"video"))

@@ -553,7 +553,7 @@ CStdString CGUIDialogContextMenu::GetDefaultShareNameByType(const CStdString &st
 
   bool bIsSourceName(false);
   int iIndex = CUtil::GetMatchingSource(strDefault, *pShares, bIsSourceName);
-  if (iIndex < 0)
+  if (iIndex < 0 || iIndex >= (int)pShares->size())
     return "";
 
   return pShares->at(iIndex).strName;
