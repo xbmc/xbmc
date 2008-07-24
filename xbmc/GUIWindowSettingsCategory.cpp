@@ -179,6 +179,9 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < (DWORD) (CONTROL_START_BUTTONS + m_vecSections.size()) &&
           focusedControl - CONTROL_START_BUTTONS != (DWORD) m_iSection)
       {
+        // changing section, check for updates
+        CheckForUpdates();
+
         if (m_vecSections[focusedControl-CONTROL_START_BUTTONS]->m_strCategory == "masterlock")
         {
           if (!g_passwordManager.IsMasterLockUnlocked(true))
@@ -316,6 +319,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       if (g_videoConfig.NeedsSave())
         g_videoConfig.Save();
 
+      CheckForUpdates();
       CheckNetworkSettings();
       CGUIWindow::OnMessage(message);
       FreeControls();
@@ -1389,9 +1393,33 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     }
   }
 
-  // if OnClick() returns false, the setting hasn't changed
-  if (!pSettingControl->OnClick()) // call the control to do it's thing
+  // if OnClick() returns false, the setting hasn't changed or doesn't
+  // require immediate update
+  if (!pSettingControl->OnClick())
+  {
+    UpdateSettings();
     return;
+  }
+
+  OnSettingChanged(pSettingControl);
+}
+
+void CGUIWindowSettingsCategory::CheckForUpdates()
+{
+  for (unsigned int i = 0; i < m_vecSettings.size(); i++)
+  {
+    CBaseSettingControl *pSettingControl = m_vecSettings[i];
+    if (pSettingControl->NeedsUpdate())
+    {
+      OnSettingChanged(pSettingControl);
+      pSettingControl->Reset();
+    }
+  }
+}
+
+void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingControl)
+{
+  CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
 
   if (strSetting.Equals("videoscreen.testresolution"))
   {
