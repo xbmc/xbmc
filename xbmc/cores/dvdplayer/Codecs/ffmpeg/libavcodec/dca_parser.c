@@ -32,8 +32,6 @@
 typedef struct DCAParseContext {
     ParseContext pc;
     uint32_t lastmarker;
-    int size;
-    int framesize;
 } DCAParseContext;
 
 #define IS_MARKER(state, i, buf, buf_size) \
@@ -73,13 +71,10 @@ static int dca_find_frame_end(DCAParseContext * pc1, const uint8_t * buf,
     }
     if (start_found) {
         for (; i < buf_size; i++) {
-            pc1->size++;
             state = (state << 8) | buf[i];
-            if (state == pc1->lastmarker && IS_MARKER(state, i, buf, buf_size) && (!pc1->framesize || pc1->framesize == pc1->size)) {
+            if (state == pc1->lastmarker && IS_MARKER(state, i, buf, buf_size)) {
                 pc->frame_start_found = 0;
                 pc->state = -1;
-                pc1->framesize = pc1->size;
-                pc1->size = 0;
                 return i - 3;
             }
         }
