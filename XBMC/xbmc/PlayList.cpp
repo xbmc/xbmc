@@ -184,11 +184,23 @@ int CPlayList::size() const
 
 const CFileItemPtr CPlayList::operator[] (int iItem) const
 {
+  if (iItem < 0 || iItem >= size())
+  {
+    assert(false);
+    CLog::Log(LOGERROR, "Error trying to retrieve an item that's out of range");
+    return CFileItemPtr();
+  }
   return m_vecItems[iItem];
 }
 
 CFileItemPtr CPlayList::operator[] (int iItem)
 {
+  if (iItem < 0 || iItem >= size())
+  {
+    assert(false);
+    CLog::Log(LOGERROR, "Error trying to retrieve an item that's out of range");
+    return CFileItemPtr();
+  }
   return m_vecItems[iItem];
 }
 
