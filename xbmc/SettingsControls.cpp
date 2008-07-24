@@ -147,27 +147,7 @@ CButtonSettingControl::~CButtonSettingControl()
 
 bool CButtonSettingControl::OnClick()
 {
-  // grab the onscreen keyboard
-  CStdString keyboardInput(((CSettingString *)m_pSetting)->GetData());
-  CStdString heading;
-  if (((CSettingString *)m_pSetting)->m_iHeadingString > 0)
-    heading = g_localizeStrings.Get(((CSettingString *)m_pSetting)->m_iHeadingString);
-  if (m_pSetting->GetControlType() == BUTTON_CONTROL_INPUT)
-  {
-    if (!CGUIDialogKeyboard::ShowAndGetInput(keyboardInput, heading, ((CSettingString *)m_pSetting)->m_bAllowEmpty))
-      return false;
-  }
-  if (m_pSetting->GetControlType() == BUTTON_CONTROL_HIDDEN_INPUT)
-  {
-    if (!CGUIDialogKeyboard::ShowAndGetNewPassword(keyboardInput, heading, ((CSettingString *)m_pSetting)->m_bAllowEmpty))
-      return false;
-  }
-  if (m_pSetting->GetControlType() == BUTTON_CONTROL_IP_INPUT)
-  {
-    if (!CGUIDialogNumeric::ShowAndGetIPAddress(keyboardInput, g_localizeStrings.Get(14068)))
-      return false;
-  }
-  ((CSettingString *)m_pSetting)->SetData(keyboardInput);
+  // this is pretty much a no-op as all click action is done in the calling class
   Update();
   return true;
 }
@@ -177,13 +157,6 @@ void CButtonSettingControl::Update()
   if (m_pSetting->GetControlType() == BUTTON_CONTROL_STANDARD)
     return ;
   CStdString strText = ((CSettingString *)m_pSetting)->GetData();
-  if (m_pSetting->GetControlType() == BUTTON_CONTROL_HIDDEN_INPUT)
-  {
-    int iNumChars = strText.size();
-    strText.Empty();
-    for (int i = 0; i < iNumChars; i++)
-      strText += '*';
-  }
   if (m_pSetting->GetControlType() == BUTTON_CONTROL_PATH_INPUT)
   {
     CStdString shortPath;
@@ -205,6 +178,8 @@ CEditSettingControl::CEditSettingControl(CGUIEditControl *pEdit, DWORD dwID, CSe
     m_pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_PASSWORD, heading);
   else if (pSetting->GetControlType() == EDIT_CONTROL_IP_INPUT)
     m_pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_IPADDRESS, heading);
+  else if (pSetting->GetControlType() == EDIT_CONTROL_NUMBER_INPUT)
+    m_pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_NUMBER, heading);
   else
     m_pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_TEXT, heading);
   Update();
