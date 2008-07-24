@@ -1392,7 +1392,11 @@ void CDVDPlayer::OnExit()
     m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NONE);
 
     // if we didn't stop playing, advance to the next item in xbmc's playlist
-    if (!m_bAbortRequest) m_callback.OnPlayBackEnded();
+    // N.B. We need to call this if we aborted too, otherwise the application
+    // doesn't know that we're done with the full screen view and video playing!
+    //
+    //if (!m_bAbortRequest)
+    m_callback.OnPlayBackEnded();
 
     m_messenger.End();
 
