@@ -102,7 +102,7 @@ int CPlayListPlayer::GetNextSong()
   if (RepeatedOne(m_iCurrentPlayList))
   {
     // otherwise immediately abort playback
-    if (playlist[m_iCurrentSong]->GetPropertyBOOL("unplayable"))
+    if (m_iCurrentSong >= 0 && m_iCurrentSong < playlist.size() && playlist[m_iCurrentSong]->GetPropertyBOOL("unplayable"))
     {
       CLog::Log(LOGERROR,"Playlist Player: RepeatOne stuck on unplayable item: %i, path [%s]", m_iCurrentSong, playlist[m_iCurrentSong]->m_strPath.c_str());
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
@@ -424,19 +424,20 @@ void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo)
   {
     // save the order value of the current song so we can use it find its new location later
     int iOrder = -1;
-    if (m_iCurrentSong >= 0)
-      iOrder = GetPlaylist(iPlaylist)[m_iCurrentSong]->m_iprogramCount;
+    CPlayList &playlist = GetPlaylist(iPlaylist);
+    if (m_iCurrentSong >= 0 && m_iCurrentSong < playlist.size())
+      iOrder = playlist[m_iCurrentSong]->m_iprogramCount;
 
     // shuffle or unshuffle as necessary
     if (bYesNo)
-      GetPlaylist(iPlaylist).Shuffle();
+      playlist.Shuffle();
     else
-      GetPlaylist(iPlaylist).UnShuffle();
+      playlist.UnShuffle();
 
     // find the previous order value and fix the current song marker
     if (iOrder >= 0)
     {
-      int iIndex = GetPlaylist(iPlaylist).FindOrder(iOrder);
+      int iIndex = playlist.FindOrder(iOrder);
       if (iIndex >= 0)
         m_iCurrentSong = iIndex;
       // if iIndex < 0, something unexpected happened
