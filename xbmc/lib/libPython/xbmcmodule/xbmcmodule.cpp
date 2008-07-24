@@ -291,7 +291,9 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"i", &iString)) return NULL;
 
     CStdStringW unicodeLabel;
-    if (iString >= 30000 && iString <= 32999)
+    if (iString >= 30000 && iString <= 30999)
+      g_charsetConverter.utf8ToW(g_localizeStringsTemp.Get(iString), unicodeLabel);
+    else if (iString >= 32000 && iString <= 32999)
       g_charsetConverter.utf8ToW(g_localizeStringsTemp.Get(iString), unicodeLabel);
     else
       g_charsetConverter.utf8ToW(g_localizeStrings.Get(iString), unicodeLabel);
