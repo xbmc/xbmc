@@ -125,16 +125,14 @@
 #define SPIN_CONTROL_INT            3
 #define SPIN_CONTROL_INT_PLUS       4
 #define SPIN_CONTROL_TEXT           5
-#define BUTTON_CONTROL_INPUT        6
-#define BUTTON_CONTROL_HIDDEN_INPUT 7
-#define BUTTON_CONTROL_STANDARD     8
-#define BUTTON_CONTROL_IP_INPUT     9
-#define BUTTON_CONTROL_MISC_INPUT  10
-#define BUTTON_CONTROL_PATH_INPUT  11
-#define SEPARATOR_CONTROL          12
-#define EDIT_CONTROL_INPUT         13
-#define EDIT_CONTROL_HIDDEN_INPUT  14
-#define EDIT_CONTROL_IP_INPUT      15
+#define EDIT_CONTROL_INPUT          6
+#define EDIT_CONTROL_HIDDEN_INPUT   7
+#define EDIT_CONTROL_NUMBER_INPUT   8
+#define EDIT_CONTROL_IP_INPUT       9
+#define BUTTON_CONTROL_STANDARD    10
+#define BUTTON_CONTROL_MISC_INPUT  11
+#define BUTTON_CONTROL_PATH_INPUT  12
+#define SEPARATOR_CONTROL          13
 
 #define REPLAY_GAIN_NONE 0
 #define REPLAY_GAIN_ALBUM 1
@@ -349,7 +347,7 @@ public:
 
   void AddHex(int iOrder, const char *strSetting, int iLabel, int fSetting, int iMin, int iStep, int iMax, int iControlType, const char *strFormat = NULL);
 
-  void AddString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType = BUTTON_CONTROL_INPUT, bool bAllowEmpty = false, int iHeadingString = -1);
+  void AddString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType = EDIT_CONTROL_INPUT, bool bAllowEmpty = false, int iHeadingString = -1);
   const CStdString &GetString(const char *strSetting, bool bPrompt=true) const;
   void SetString(const char *strSetting, const char *strData);
 
