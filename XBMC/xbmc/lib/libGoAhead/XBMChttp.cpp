@@ -713,7 +713,7 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
     VECSOURCES VECSOURCES = *pShares;
     bool bIsShareName = false;
     int iIndex = CUtil::GetMatchingSource(strLocation, VECSOURCES, bIsShareName);
-    if (iIndex < 0)
+    if (iIndex < 0 || iIndex >= (int)VECSOURCES.size())
     {
       CStdString strError = "Error: invalid location, " + strLocation;
       return SetResponse(openTag+strError);

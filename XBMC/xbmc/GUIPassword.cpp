@@ -527,7 +527,7 @@ bool CGUIPassword::IsDatabasePathUnlocked(const CStdString& strPath, VECSOURCES&
   bool bName = false;
   int iIndex = CUtil::GetMatchingSource(strPath, vecSources, bName);
 
-  if (iIndex > -1)
+  if (iIndex > -1 && iIndex < (int)vecSources.size())
     if (vecSources[iIndex].m_iHasLock < 2)
       return true;
 
