@@ -32,8 +32,8 @@ AC_ARG_WITH(xmms,[  --with-xmms             compile XMMS-1 plugin],
 AC_ARG_WITH(drm,[  --with-drm              compile libfaad with DRM support],
 	     WITHDRM=$withval, WITHDRM=no)
 
-dnl AC_ARG_WITH(mpeg4ip, [  --with-mpeg4ip          compile mpeg4ip plugin],
-dnl		     WITHMPEG4IP=$withval, WITHMPEG4IP=no)
+AC_ARG_WITH(mpeg4ip, [  --with-mpeg4ip          compile mpeg4ip plugin],
+		     WITHMPEG4IP=$withval, WITHMPEG4IP=no)
 
 dnl Checks for header files required for mp4.h
 AC_HEADER_STDC
@@ -159,7 +159,7 @@ AC_CONFIG_FILES(common/mp4ff/Makefile)
 AC_CONFIG_FILES(plugins/Makefile)
 AC_CONFIG_FILES(plugins/xmms/Makefile)
 AC_CONFIG_FILES(plugins/xmms/src/Makefile)
-dnl AC_CONFIG_FILES(plugins/mpeg4ip/Makefile)
+AC_CONFIG_FILES(plugins/mpeg4ip/Makefile)
 AC_CONFIG_FILES(faad2.spec)
 AC_CONFIG_FILES(frontend/Makefile)
 AC_CONFIG_FILES(Makefile)
