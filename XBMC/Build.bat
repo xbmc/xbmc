@@ -26,7 +26,7 @@ rem	CONFIG START
 
   set OPTS_EXE=project\VS2003\XBMC_PC.sln /build "Release (SDL) Win32"
 	set CLEAN_EXE=project\VS2003\XBMC_PC.sln /clean "Release (SDL) Win32"
-	set EXE= "project\VS2003\Release (SDL)\XBMC.exe"
+	set EXE= "XBMC.exe"
 	
 	set RAR="%ProgramFiles%\Winrar\rar.exe"
 	set RAR_ROOT=rar.exe
