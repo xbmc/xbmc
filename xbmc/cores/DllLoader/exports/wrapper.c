@@ -74,6 +74,7 @@ long dll_ftell(FILE *stream);
 off64_t ftell64(FILE *stream);
 void dll_rewind(FILE* stream);
 int dll_fgetpos(FILE* stream, fpos_t* pos);
+int dll_fgetpos64(FILE *stream, fpos64_t *pos);
 int dll_fsetpos(FILE* stream, const fpos_t* pos);
 int dll_fprintf(FILE* stream , const char * format, ...);
 int dllprintf(const char *format, ...);
@@ -257,6 +258,11 @@ void __wrap_rewind(FILE *stream)
 int __wrap_fgetpos(FILE *stream, fpos_t *pos)
 {
   return dll_fgetpos(stream, pos);
+}
+
+int __wrap_fgetpos64(FILE *stream, fpos64_t *pos)
+{
+  return dll_fgetpos64(stream, pos);
 }
 
 int __wrap_fsetpos(FILE *stream, fpos_t *pos)
