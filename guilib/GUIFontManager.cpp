@@ -156,6 +156,8 @@ void GUIFontManager::ReloadTTFFonts(void)
     aspect *= g_graphicsContext.GetGUIScaleY() / g_graphicsContext.GetGUIScaleX();
     float newSize = (float) iSize / g_graphicsContext.GetGUIScaleY();
 
+    CStdString TTFfontName;
+    TTFfontName.Format("%s_%f_%f", strFilename, newSize, aspect);
     CGUIFontTTF* pFontFile = GetFontFile(TTFfontName); 
     if (!pFontFile)
     {
