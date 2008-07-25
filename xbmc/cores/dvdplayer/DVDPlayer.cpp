@@ -1400,7 +1400,7 @@ void CDVDPlayer::OnExit()
     // N.B. We need to call this if we aborted too, otherwise the application
     // doesn't know that we're done with the full screen view and video playing!
     //
-    //if (m_bPlayingNewFile == false)
+    if (m_bPlayingNewFile == false)
       m_callback.OnPlayBackEnded();
 
     m_messenger.End();
