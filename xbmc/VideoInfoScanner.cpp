@@ -42,7 +42,7 @@ using namespace std;
 using namespace DIRECTORY;
 using namespace XFILE;
 
-namespace VIDEO 
+namespace VIDEO
 {
 
   CVideoInfoScanner::CVideoInfoScanner()
@@ -80,7 +80,7 @@ namespace VIDEO
 
       // Create the thread to count all files to be scanned
       SetPriority(THREAD_PRIORITY_IDLE);
-      CThread fileCountReader(this);    
+      CThread fileCountReader(this);
       if (m_pObserver)
         fileCountReader.Create();
 
@@ -297,7 +297,7 @@ namespace VIDEO
         bSkip = true;
       }
     }
-    
+
     if (!m_info.settings.GetPluginRoot() && m_info.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
     {
       CScraperParser parser;
@@ -354,7 +354,7 @@ namespace VIDEO
     CIMDB IMDB;
     IMDB.SetScraperInfo(info);
     CRegExp regExSample;
-    
+
     if (!regExSample.RegComp(REGEXSAMPLEFILE))
     {
       CLog::Log(LOGERROR, "Unable to compile RegExp for Sample file");
@@ -413,7 +413,7 @@ namespace VIDEO
       // Discard all possible sample files defined by regExSample
       if (regExSample.RegFind(CUtil::GetFileName(pItem->m_strPath)) > -1)
         continue;
- 
+
       if (info2.strContent.Equals("movies") || info2.strContent.Equals("musicvideos"))
       {
         if (m_pObserver)
@@ -524,7 +524,7 @@ namespace VIDEO
             pDlgProgress->SetLine(0, pItem->GetLabel());
             pDlgProgress->SetLine(2,"");
             pDlgProgress->Progress();
-            if (pDlgProgress->IsCanceled()) 
+            if (pDlgProgress->IsCanceled())
             {
               pDlgProgress->Close();
               m_database.RollbackTransaction();
@@ -676,7 +676,7 @@ namespace VIDEO
   {
     CFileItemList items;
     CRegExp regExSample;
-    
+
     if (!regExSample.RegComp(REGEXSAMPLEFILE))
     {
       CLog::Log(LOGERROR, "Unable to compile RegExp for Sample file");
@@ -770,9 +770,9 @@ namespace VIDEO
 
             char *remainder = reg.GetReplaceString("\\3");
             int offset = 0;
-            
+
             // we want "long circuit" OR below so that both offsets are evaluated
-            while (((regexp2pos = reg2.RegFind(remainder + offset)) > -1) | ((regexppos = reg.RegFind(remainder + offset)) > -1)) 
+            while (((regexp2pos = reg2.RegFind(remainder + offset)) > -1) | ((regexppos = reg.RegFind(remainder + offset)) > -1))
             {
               if (((regexppos <= regexp2pos) && regexppos != -1) ||
                  (regexppos >= 0 && regexp2pos == -1))
@@ -787,7 +787,7 @@ namespace VIDEO
                 episodeList.push_back(myEpisode);
                 remainder = reg.GetReplaceString("\\3");
                 offset = 0;
-              } 
+              }
               else if (((regexp2pos < regexppos) && regexp2pos != -1) ||
                        (regexp2pos >= 0 && regexppos == -1))
               {
@@ -1083,7 +1083,7 @@ namespace VIDEO
           return items[numNFO]->m_strPath;
       }
     }
-    
+
     return nfoFile;
   }
 
@@ -1148,22 +1148,21 @@ namespace VIDEO
   {
     // Create a hash based on the filenames, filesize and filedate.  Also count the number of files
     if (0 == items.Size()) return 0;
-    MD5_CTX md5state;
     unsigned char md5hash[16];
     char md5HexString[33];
-    MD5Init(&md5state);
+    XBMC::MD5 md5state;
     int count = 0;
     for (int i = 0; i < items.Size(); ++i)
     {
       const CFileItemPtr pItem = items[i];
-      MD5Update(&md5state, (unsigned char *)pItem->m_strPath.c_str(), (int)pItem->m_strPath.size());
-      MD5Update(&md5state, (unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
+      md5state.append(pItem->m_strPath);
+      md5state.append((unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
       FILETIME time = pItem->m_dateTime;
-      MD5Update(&md5state, (unsigned char *)&time, sizeof(FILETIME));
+      md5state.append((unsigned char *)&time, sizeof(FILETIME));
       if (pItem->IsVideo() && !pItem->IsPlayList() && !pItem->IsNFO())
         count++;
     }
-    MD5Final(md5hash, &md5state);
+    md5state.getDigest(md5hash);
     XKGeneral::BytesToHexStr(md5hash, 16, md5HexString);
     hash = md5HexString;
     return count;
@@ -1243,7 +1242,7 @@ namespace VIDEO
           nfoReader.GetDetails(movieDetails);
           if (m_pObserver)
             m_pObserver->OnSetTitle(movieDetails.m_strTitle);
-          
+
           AddMovieAndGetThumb(pItem, info.strContent, movieDetails, -1, bGrabAny, pDlgProgress);
           if (info.strContent.Equals("tvshows"))
           {
