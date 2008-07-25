@@ -692,9 +692,9 @@ void CSurface::Flip()
   if (m_bOK && m_bDoublebuffer)
   {
 #ifdef HAS_GLX
+    glFinish();
     if (m_iVSyncMode == 4)
     {
-      glFinish();
       unsigned int vCount;
       if(_glXGetVideoSyncSGI(&vCount) == 0)
         _glXWaitVideoSyncSGI(2, (vCount+1)%2, &vCount);
