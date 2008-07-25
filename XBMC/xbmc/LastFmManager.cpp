@@ -229,7 +229,7 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
   CStdString url;
   CStdString html;
   url.Format("http://" + m_RadioBaseUrl + m_RadioBasePath + "/adjust.php?session=%s&url=%s&debug=%i", m_RadioSession, strUrl, 0);
-  if (!http.Get(url, html)) 
+  if (!http.Get(url, html))
   {
     CLog::Log(LOGERROR, "Connect to Last.fm to change station failed.");
     CloseProgressDialog();
@@ -280,7 +280,7 @@ bool CLastFmManager::RequestRadioTracks()
   url.Format("http://" + m_RadioBaseUrl + m_RadioBasePath + "/xspf.php?sk=%s&discovery=0&desktop=", m_RadioSession);
   {
     CHTTP http;
-    if (!http.Get(url, html)) 
+    if (!http.Get(url, html))
     {
       m_RadioSession.empty();
       CLog::Log(LOGERROR, "LastFmManager: Connect to Last.fm to request tracks failed.");
@@ -367,7 +367,7 @@ bool CLastFmManager::RequestRadioTracks()
         newItem->GetMusicInfoTag()->SetAlbum(child->Value());
       }
     }
-   
+
     pElement = pTrackElement->FirstChildElement("duration");
     if (pElement)
     {
@@ -472,7 +472,7 @@ void CLastFmManager::AddToPlaylist(const int nrTracks)
         CSingleLock lock2(m_lockPlaylist);
         playlist.Add(item);
       }
-      else 
+      else
       {
         break;
       }
@@ -496,7 +496,7 @@ void CLastFmManager::OnSongChange(CFileItem& newSong)
       MovePlaying();
       Update();
       SendUpdateMessage();
-      
+
       CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(timeGetTime() - start));
     }
   }
@@ -609,7 +609,7 @@ void CLastFmManager::Process()
 
 void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
 {
-  if (bKillSession) 
+  if (bKillSession)
   {
 	m_RadioSession = "";
 	g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, m_LastRepeatState);
@@ -635,20 +635,19 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
       }
     }
   }
-  
+
   SendUpdateMessage();
 }
 
 void CLastFmManager::CreateMD5Hash(const CStdString& bufferToHash, CStdString& hash)
 {
-  MD5_CTX md5state;
   unsigned char md5pword[16];
-  MD5Init(&md5state);
-  MD5Update(&md5state, (unsigned char *)bufferToHash.c_str(), (int)bufferToHash.size());
-  MD5Final(md5pword, &md5state);
+  XBMC::MD5 md5state;
+  md5state.append(bufferToHash);
+  md5state.getDigest(md5pword);
   char tmp[33];
   strncpy(tmp, "\0", sizeof(tmp));
-  for (int j = 0;j < 16;j++) 
+  for (int j = 0;j < 16;j++)
   {
     char a[3];
     sprintf(a, "%02x", md5pword[j]);
@@ -690,7 +689,7 @@ bool CLastFmManager::CallXmlRpc(const CStdString& action, const CStdString& arti
     CLog::Log(LOGERROR, "Last.fm CallXmlRpc no tracktitle provided.");
     return false;
   }
-  
+
   char ti[20];
   time_t rawtime;
   time ( &rawtime );
@@ -806,7 +805,7 @@ bool CLastFmManager::Love(bool askConfirmation)
           g_application.m_guiDialogKaiToast.QueueNotification("", g_localizeStrings.Get(15200), strMessage, 7000);
           return true;
         }
-        else 
+        else
         {
           strMessage.Format(g_localizeStrings.Get(15290), strTitle);
           g_application.m_guiDialogKaiToast.QueueNotification("", g_localizeStrings.Get(15200), strMessage, 7000);
@@ -839,7 +838,7 @@ bool CLastFmManager::Ban(bool askConfirmation)
           g_application.m_guiDialogKaiToast.QueueNotification("", g_localizeStrings.Get(15200), strMessage, 7000);
           return true;
         }
-        else 
+        else
         {
           strMessage.Format(g_localizeStrings.Get(15292), strTitle);
           g_application.m_guiDialogKaiToast.QueueNotification("", g_localizeStrings.Get(15200), strMessage, 7000);
@@ -858,10 +857,10 @@ bool CLastFmManager::Love(const CMusicInfoTag& musicinfotag)
     CLog::Log(LOGERROR, "LastFmManager Love, lastfm is not enabled.");
     return false;
   }
-  
+
   CStdString strTitle = musicinfotag.GetTitle();
   CStdString strArtist = musicinfotag.GetArtist();
-  
+
   CStdString strFilePath;
   if (m_CurrentSong.CurrentSong && !m_CurrentSong.CurrentSong->IsLastFM())
   {
@@ -899,7 +898,7 @@ bool CLastFmManager::Ban(const CMusicInfoTag& musicinfotag)
     CLog::Log(LOGERROR, "LastFmManager Ban, radio is not active");
     return false;
   }
-  
+
   if (CallXmlRpc("banTrack", musicinfotag.GetArtist(), musicinfotag.GetTitle()))
   {
     //we banned this track so skip to the next track
@@ -972,7 +971,7 @@ bool CLastFmManager::Unban(const CMusicInfoTag& musicinfotag, bool askConfirmati
     CLog::Log(LOGERROR, "LastFmManager Unban, lasfm is not enabled");
     return false;
   }
-  
+
   CStdString strTitle = musicinfotag.GetTitle();
   CStdString strArtist = musicinfotag.GetArtist();
 
@@ -999,7 +998,7 @@ bool CLastFmManager::Unban(const CMusicInfoTag& musicinfotag, bool askConfirmati
 bool CLastFmManager::IsLastFmEnabled()
 {
   return (
-    !g_guiSettings.GetString("lastfm.username").IsEmpty() && 
+    !g_guiSettings.GetString("lastfm.username").IsEmpty() &&
     !g_guiSettings.GetString("lastfm.password").IsEmpty()
   );
 }
@@ -1010,11 +1009,11 @@ bool CLastFmManager::CanLove()
     m_CurrentSong.CurrentSong &&
     !m_CurrentSong.IsLoved &&
     IsLastFmEnabled() &&
-    (m_CurrentSong.CurrentSong->IsLastFM() || 
+    (m_CurrentSong.CurrentSong->IsLastFM() ||
     (
-      m_CurrentSong.CurrentSong->HasMusicInfoTag() && 
+      m_CurrentSong.CurrentSong->HasMusicInfoTag() &&
       m_CurrentSong.CurrentSong->GetMusicInfoTag()->Loaded() &&
-      !m_CurrentSong.CurrentSong->GetMusicInfoTag()->GetArtist().IsEmpty() && 
+      !m_CurrentSong.CurrentSong->GetMusicInfoTag()->GetArtist().IsEmpty() &&
       !m_CurrentSong.CurrentSong->GetMusicInfoTag()->GetTitle().IsEmpty()
     ))
   );
@@ -1028,7 +1027,7 @@ bool CLastFmManager::CanBan()
 bool CLastFmManager::CanScrobble(const CFileItem &fileitem)
 {
   return (
-    (!fileitem.IsInternetStream() && g_guiSettings.GetBool("lastfm.enable")) || 
+    (!fileitem.IsInternetStream() && g_guiSettings.GetBool("lastfm.enable")) ||
     (fileitem.IsLastFM() && g_guiSettings.GetBool("lastfm.recordtoprofile"))
   );
 }
