@@ -33,9 +33,11 @@
 #define PRId64 "lld"
 #endif
 #endif
-#ifndef off64_t
-#define off64_t long long
-#endif
+
+typedef __int64 off64_t;
+typedef __int64 fpos64_t;
+typedef __int64 __off64_t;
+typedef long    __off_t;
 
 #define ftello64 _ftelli64
 #define fseeko64 _fseeki64
