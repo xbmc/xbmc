@@ -1,35 +1,18 @@
-DIRS=	guilib \
+DIRS=	\
+	guilib \
+	guilib/common \
+	guilib/tinyXML \
+	tools/EventClients \
+	tools/XBMCTex \
 	xbmc \
-	xbmc/FileSystem \
-	xbmc/FileSystem/MusicDatabaseDirectory \
-	xbmc/FileSystem/VideoDatabaseDirectory \
+	xbmc/cdrip \
 	xbmc/cores \
-	xbmc/cores/paplayer \
 	xbmc/cores/DllLoader \
 	xbmc/cores/DllLoader/exports \
 	xbmc/cores/DllLoader/exports/util \
-	xbmc/xbox \
-	xbmc/linux \
-	xbmc/visualizations \
-	xbmc/screensavers \
-	xbmc/utils \
-	guilib/common \
-	guilib/tinyXML \
-	xbmc/lib/sqLite \
-	xbmc/lib/libPython \
-	xbmc/lib/libPython/xbmcmodule \
-	xbmc/lib/libPython/linux \
-	xbmc/lib/libscrobbler \
-	xbmc/lib/UnrarXLib \
-	xbmc/lib/libGoAhead \
-	xbmc/lib/libUPnP \
 	xbmc/cores/dvdplayer \
-	xbmc/cores/VideoRenderers \
-	xbmc/cores/VideoRenderers/VideoShaders \
-	xbmc/cdrip \
-	xbmc/lib/libcmyth \
-	tools/EventClients \
-	xbmc/lib/libRTMP \
+	xbmc/cores/dvdplayer/Codecs \
+	xbmc/cores/paplayer \
 	xbmc/cores/paplayer/AC3Codec \
 	xbmc/cores/paplayer/ADPCMCodec \
 	xbmc/cores/paplayer/AACCodec \
@@ -48,12 +31,29 @@ DIRS=	guilib \
 	xbmc/cores/paplayer/flac-1.2.1/ \
 	xbmc/cores/paplayer/MACDll \
 	xbmc/cores/paplayer/vorbisfile \
-	tools/XBMCTex \
-	xbmc/cores/dvdplayer/Codecs \
+	xbmc/cores/VideoRenderers \
+	xbmc/cores/VideoRenderers/VideoShaders \
+	xbmc/FileSystem \
+	xbmc/FileSystem/MusicDatabaseDirectory \
+	xbmc/FileSystem/VideoDatabaseDirectory \
 	xbmc/lib/cximage-6.0 \
-	xbmc/lib/libXDAAP \
 	xbmc/lib/libass \
-
+	xbmc/lib/libcmyth \
+	xbmc/lib/libGoAhead \
+	xbmc/lib/libPython \
+	xbmc/lib/libPython/linux \
+	xbmc/lib/libPython/xbmcmodule \
+	xbmc/lib/libRTMP \
+	xbmc/lib/libscrobbler \
+	xbmc/lib/libUPnP \
+	xbmc/lib/libXDAAP \
+	xbmc/lib/sqLite \
+	xbmc/lib/UnrarXLib \
+	xbmc/linux \
+	xbmc/screensavers \
+	xbmc/utils \
+	xbmc/visualizations \
+	xbmc/xbox \
 
 LIBS=@LIBS@
 DEBUG_FLAGS=@DEBUG_FLAGS@
@@ -172,43 +172,44 @@ imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0 -f Makefile.linux ARCH=$(ARCH)
 compile: guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualizations screensavers utils common tinyxml sqllite libscrobbler libgoahead unrarxlib libpython dvdplayer libupnp cdrip libcmyth librtmp libxbms libexif librtv libxdaap libass libhdhomerun libshout libid3tag papcodecs dvdcodecs imagelib
 
-LIBS+=	xbmc/*.o \
-	xbmc/settings/*.o \
-	xbmc/cdrip/*.o \
+LIBS+=	\
 	guilib/*.o \
-	guilib/tinyXML/*.o \
 	guilib/common/*.o \
-	xbmc/FileSystem/*.o \
-	xbmc/FileSystem/VideoDatabaseDirectory/*.o \
-	xbmc/FileSystem/MusicDatabaseDirectory/*.o \
-	xbmc/visualizations/*.o \
-	xbmc/screensavers/*.o \
+	guilib/tinyXML/*.o \
+	xbmc/*.o \
+	xbmc/cdrip/*.o \
 	xbmc/cores/*.o \
-	xbmc/cores/paplayer/*.o \
-	xbmc/linux/*.o \
-	xbmc/lib/sqLite/*.o \
-	xbmc/lib/libscrobbler/*.o \
-	xbmc/lib/libPython/*.o \
-	xbmc/lib/libPython/xbmcmodule/*.o \
-	xbmc/xbox/*.o \
 	xbmc/cores/DllLoader/*.o \
 	xbmc/cores/DllLoader/exports/*.o \
 	xbmc/cores/DllLoader/exports/util/*.o \
-	xbmc/utils/*.o \
-	xbmc/lib/UnrarXLib/*.o \
 	xbmc/cores/dvdplayer/DVDPlayer.a \
+	xbmc/cores/paplayer/*.o \
 	xbmc/cores/VideoRenderers/*.o \
 	xbmc/cores/VideoRenderers/VideoShaders/*.o \
-	xbmc/lib/libcmyth/*.o \
-	xbmc/lib/libRTMP/*.o \
-	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
-	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
-	xbmc/lib/libUPnP/libupnp-@ARCH@.a \
-	xbmc/lib/libshout/libshout-@ARCH@.a \
-	xbmc/lib/libRTV/librtv-@ARCH@.a \
-	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
+	xbmc/FileSystem/*.o \
+	xbmc/FileSystem/MusicDatabaseDirectory/*.o \
+	xbmc/FileSystem/VideoDatabaseDirectory/*.o \
 	xbmc/lib/libcdio/libcdio-@ARCH@.a \
+	xbmc/lib/libcmyth/*.o \
+	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
+	xbmc/lib/libPython/*.o \
+	xbmc/lib/libPython/xbmcmodule/*.o \
+	xbmc/lib/libRTMP/*.o \
+	xbmc/lib/libRTV/librtv-@ARCH@.a \
+	xbmc/lib/libscrobbler/*.o \
+	xbmc/lib/libshout/libshout-@ARCH@.a \
 	xbmc/lib/libsmb/libsmbclient-@ARCH@.a \
+	xbmc/lib/libUPnP/libupnp-@ARCH@.a \
+	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
+	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
+	xbmc/lib/sqLite/*.o \
+	xbmc/lib/UnrarXLib/*.o \
+	xbmc/linux/*.o \
+	xbmc/screensavers/*.o \
+	xbmc/settings/*.o \
+	xbmc/utils/*.o \
+	xbmc/visualizations/*.o \
+	xbmc/xbox/*.o \
 
 
 xbmc.bin: compile $(wildcard $(OBJS) @(LIBS))
