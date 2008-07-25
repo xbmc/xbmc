@@ -1,0 +1,64 @@
+
+ARCH=@ARCH@
+SO=ImageLib-$(ARCH).so
+ARCHIVE=$(SO:.so=.a)
+SYSDIR=../../../system
+LIB=$(SYSDIR)/$(SO)
+DIRS=CxImage raw jbig tiff zlib
+LIBS=CxImage/cximage.a raw/raw.a jbig/jbig.a tiff/tiff.a zlib/libz.a
+
+ifeq ($(ARCH), x86-osx)
+DIRS+=jasper jpeg
+LIBS+=jasper/jasper.a jpeg/jpeg.a
+endif
+
+.PHONY: compile
+
+$(LIB): $(LIBS)
+ifeq ($(ARCH), x86-osx)
+	gcc -bundle -flat_namespace -undefined suppress -shared -o ImageLib-osx.so \
+		CxImage/*.o jasper/*/*.o jbig/*.o jpeg/*.o png/*.o raw/*.o tiff/*.o
+else 
+	gcc -shared -o $(LIB) -Wl,--whole-archive -lpng -ljasper -ljpeg \
+		$(LIBS) -Wl,--no-whole-archive \
+		`cat ../../cores/DllLoader/exports/wrapper.def` \
+		../../cores/DllLoader/exports/wrapper.o
+endif
+
+$(LIBS): compile 
+
+CxImage/cximage.a:
+	$(MAKE) -C CxImage ARCH=$(ARCH)
+
+jbig/jbig.a:
+	$(MAKE) -C jbig
+
+raw/raw.a:
+	$(MAKE) -C raw
+
+zlib/libz.a:
+	$(MAKE) -C zlib
+
+jasper/jasper.a:
+	$(MAKE) -C jasper
+
+jpeg/jpeg.a:
+	$(MAKE) -C jpeg
+
+tiff/tiff.a:
+ifeq ($(ARCH), x86-osx)
+	$(MAKE) -C tiff -fMakefile.osx
+else
+	$(MAKE) -C tiff
+endif
+
+clean:
+	for d in $(DIRS); do (cd $$d; $(MAKE) clean ); done
+	rm -f $(LIB)
+
+distclean:
+	-for d in $(DIRS); do (cd $$d; $(MAKE) distclean ); done
+	rm -f $(LIB)
+
+-include Makefile.include
+

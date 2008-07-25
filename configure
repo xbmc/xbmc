@@ -10056,11 +10056,13 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <stdio.h>
+#include <sys/types.h> /* for off_t */
+     #include <stdio.h>
 int
 main ()
 {
-return fseeko (stdin, 0, 0) && (fseeko) (stdin, 0, 0);
+int (*fp) (FILE *, off_t, int) = fseeko;
+     return fseeko (stdin, 0, 0) && fp (stdin, 0, 0);
   ;
   return 0;
 }
@@ -10100,11 +10102,13 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #define _LARGEFILE_SOURCE 1
-#include <stdio.h>
+#include <sys/types.h> /* for off_t */
+     #include <stdio.h>
 int
 main ()
 {
-return fseeko (stdin, 0, 0) && (fseeko) (stdin, 0, 0);
+int (*fp) (FILE *, off_t, int) = fseeko;
+     return fseeko (stdin, 0, 0) && fp (stdin, 0, 0);
   ;
   return 0;
 }
@@ -13289,7 +13293,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile xbmc/cores/dvdplayer/Codecs/Makefile xbmc/lib/cximage-6.0/Makefile.linux xbmc/cores/paplayer/MIDCodec/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/DCACodec/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/Makefile.xbmc_linux xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libass/Makefile.xbmc_linux xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/DllPaths_generated.h"
+ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile xbmc/cores/dvdplayer/Codecs/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/cores/paplayer/MIDCodec/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/DCACodec/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/Makefile.xbmc_linux xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libass/Makefile.xbmc_linux xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/DllPaths_generated.h"
 
 
 
@@ -13903,7 +13907,7 @@ do
     "tools/Linux/xbmc.sh") CONFIG_FILES="$CONFIG_FILES tools/Linux/xbmc.sh" ;;
     "tools/XBMCTex/Makefile") CONFIG_FILES="$CONFIG_FILES tools/XBMCTex/Makefile" ;;
     "xbmc/cores/dvdplayer/Codecs/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/Codecs/Makefile" ;;
-    "xbmc/lib/cximage-6.0/Makefile.linux") CONFIG_FILES="$CONFIG_FILES xbmc/lib/cximage-6.0/Makefile.linux" ;;
+    "xbmc/lib/cximage-6.0/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/cximage-6.0/Makefile" ;;
     "xbmc/cores/paplayer/MIDCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/MIDCodec/Makefile" ;;
     "xbmc/cores/paplayer/AACCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/AACCodec/Makefile" ;;
     "xbmc/cores/paplayer/AC3Codec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/AC3Codec/Makefile" ;;
@@ -14757,7 +14761,7 @@ fi;
 
 if [ -d xbmc/lib/libid3tag/libid3tag ]; then
   pushd xbmc/lib/libid3tag/libid3tag
-  CFLAGS=-O3 ./configure
+  CFLAGS=-O3 ./configure --disable-static --with-pic
   if [ $? -ne 0 ]; then
     popd
     { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libid3tag/libid3tag failed to configure" >&5
