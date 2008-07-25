@@ -1247,8 +1247,22 @@ extern "C"
     va_end(va);
     return res;
   }
-
+  
   int dll_fgetpos(FILE* stream, fpos_t* pos)
+  {
+    fpos64_t tmpPos;
+    int ret;
+
+    ret = dll_fgetpos64(stream, &tmpPos);
+#if !defined(_LINUX) || defined(__APPLE__)
+    *pos = (fpos_t)tmpPos;
+#else
+    pos->__pos = (off_t)tmpPos.__pos;
+#endif
+    return ret;
+  }
+
+  int dll_fgetpos64(FILE *stream, fpos64_t *pos)
   {
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
     if (pFile != NULL)

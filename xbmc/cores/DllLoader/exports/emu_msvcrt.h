@@ -108,6 +108,7 @@ extern "C"
   int dll_vfprintf(FILE *stream, const char *format, va_list va);
   int dll_fprintf(FILE* stream , const char * format, ...);
   int dll_fgetpos(FILE* stream, fpos_t* pos);
+  int dll_fgetpos64(FILE *stream, fpos64_t *pos);
   int dll_fsetpos(FILE* stream, const fpos_t* pos);
   int dll_fileno(FILE* stream);
   void dll_rewind(FILE* stream);
