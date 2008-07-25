@@ -161,10 +161,10 @@ void CMusicInfoScanner::Process()
           m_pObserver->OnDirectoryChanged(it->strArtist+" - "+it->strAlbum);
           m_pObserver->OnSetProgress(iCurrentItem++, m_albumsToScan.size());
         }
-        
+
         CMusicAlbumInfo albumInfo;
         bool bCanceled;
-        DownloadAlbumInfo(it->strGenre,it->strArtist,it->strAlbum, bCanceled, albumInfo); // genre field holds path - see fetchalbuminfo() 
+        DownloadAlbumInfo(it->strGenre,it->strArtist,it->strAlbum, bCanceled, albumInfo); // genre field holds path - see fetchalbuminfo()
 
         if (m_bStop)
           break;
@@ -230,7 +230,7 @@ void CMusicInfoScanner::FetchAlbumInfo(const CStdString& strDirectory)
 
   CFileItemList items;
   if (strDirectory.IsEmpty())
-  { 
+  {
     m_musicDatabase.Open();
     m_musicDatabase.GetAlbumsNav("musicdb://3/",items,-1,-1);
     m_musicDatabase.Close();
@@ -245,7 +245,7 @@ void CMusicInfoScanner::FetchAlbumInfo(const CStdString& strDirectory)
       items.Add(item);
     }
   }
-  
+
   for (int i=0;i<items.Size();++i)
   {
     if (CMusicDatabaseDirectory::IsAllItem(items[i]->m_strPath) || items[i]->IsParentFolder())
@@ -271,7 +271,7 @@ void CMusicInfoScanner::FetchArtistInfo(const CStdString& strDirectory)
   CFileItemList items;
 
   if (strDirectory.IsEmpty())
-  { 
+  {
     m_musicDatabase.Open();
     m_musicDatabase.GetArtistsNav("musicdb://2/",items,-1,false);
     m_musicDatabase.Close();
@@ -493,7 +493,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       long iAlbum = m_musicDatabase.GetAlbumByName(song.strAlbum,song.strArtist);
       CStdString strPath;
       strPath.Format("musicdb://3/%u/",iAlbum);
-      
+
       CMusicAlbumInfo albumInfo;
       bool bCanceled;
       if (find(m_albumsScanned.begin(),m_albumsScanned.end(),iAlbum) == m_albumsScanned.end())
@@ -706,22 +706,21 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, CStdString &hash)
 {
   // Create a hash based on the filenames, filesize and filedate.  Also count the number of files
   if (0 == items.Size()) return 0;
-  MD5_CTX md5state;
   unsigned char md5hash[16];
   char md5HexString[33];
-  MD5Init(&md5state);
+  XBMC::MD5 md5state;
   int count = 0;
   for (int i = 0; i < items.Size(); ++i)
   {
     const CFileItemPtr pItem = items[i];
-    MD5Update(&md5state, (unsigned char *)pItem->m_strPath.c_str(), (int)pItem->m_strPath.size());
-    MD5Update(&md5state, (unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
+    md5state.append(pItem->m_strPath);
+    md5state.append((unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
     FILETIME time = pItem->m_dateTime;
-    MD5Update(&md5state, (unsigned char *)&time, sizeof(FILETIME));
+    md5state.append((unsigned char *)&time, sizeof(FILETIME));
     if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
       count++;
   }
-  MD5Final(md5hash, &md5state);
+  md5state.getDigest(md5hash);
   XKGeneral::BytesToHexStr(md5hash, 16, md5HexString);
   hash = md5HexString;
   return count;
@@ -778,7 +777,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
       }
       else
       {
-        CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
+        CScraperUrl scrUrl(nfoReader.m_strImDbUrl);
         CMusicAlbumInfo album("nfo",scrUrl);
         scraper.GetAlbums().push_back(album);
       }
@@ -851,7 +850,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
       if (relevance < THRESHOLD)
       {
         m_musicDatabase.Close();
-        return false; 
+        return false;
       }
    }
 
@@ -862,9 +861,9 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
       pDlg->DoModal();
 
       // and wait till user selects one
-      if (pDlg->GetSelectedLabel() < 0) 
+      if (pDlg->GetSelectedLabel() < 0)
       { // none chosen
-        if (!pDlg->IsButtonPressed()) 
+        if (!pDlg->IsButtonPressed())
         {
           bCanceled = true;
           return false;
@@ -952,7 +951,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   if (m_pObserver)
   {
     m_pObserver->OnStateChanged(DOWNLOADING_ARTIST_INFO);
-    m_pObserver->OnDirectoryChanged(strArtist);  
+    m_pObserver->OnDirectoryChanged(strArtist);
   }
 
   CMusicInfoScraper scraper(info);
@@ -977,7 +976,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
       }
       else
       {
-        CScraperUrl scrUrl(nfoReader.m_strImDbUrl); 
+        CScraperUrl scrUrl(nfoReader.m_strImDbUrl);
         CMusicArtistInfo artist("nfo",scrUrl);
         scraper.GetArtists().push_back(artist);
       }
@@ -1030,7 +1029,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
         pDlg->DoModal();
 
         // and wait till user selects one
-        if (pDlg->GetSelectedLabel() < 0) 
+        if (pDlg->GetSelectedLabel() < 0)
         { // none chosen
           if (!pDlg->IsButtonPressed()) return false;
           // manual button pressed
@@ -1048,7 +1047,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
         iSelectedArtist = pDlg->GetSelectedItem().m_idepth;
       }
     }
-    
+
     scraper.LoadArtistinfo(iSelectedArtist);
 
     while (!scraper.Completed())
@@ -1081,7 +1080,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
     if (!XFILE::CFile::Exists(thumb))
       CScraperUrl::DownloadThumbnail(thumb,artist.thumbURL.m_url[0]);
   }
-   
+
   m_musicDatabase.Close();
   return true;
 }
