@@ -426,7 +426,6 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvdnav], [
     CFLAGS=-D_XBOX
 ])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libfaad2], [
-  autoreconf -v -i -f && 
   ./configure \
     --with-pic \
     --with-mp4v2
