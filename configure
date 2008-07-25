@@ -14686,7 +14686,6 @@ fi;
 if [ -d xbmc/cores/dvdplayer/Codecs/libfaad2 ]; then
   pushd xbmc/cores/dvdplayer/Codecs/libfaad2
 
-  autoreconf -v -i -f &&
   ./configure \
     --with-pic \
     --with-mp4v2
