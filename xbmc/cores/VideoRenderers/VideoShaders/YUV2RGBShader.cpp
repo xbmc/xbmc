@@ -23,6 +23,7 @@
 #include "include.h"
 #include "../RenderFlags.h"
 #include "YUV2RGBShader.h"
+#include "Settings.h"
 #include <string>
 #include <sstream>
 
@@ -197,7 +198,7 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags)
   }
 
   // ati breaks down with sampler2DRect, but it seem to work without it
-  if(rect && strstr((const char*)glGetString(GL_VENDOR), "ATI") != NULL)
+  if(rect && g_advancedSettings.m_GLRectangleHack)
   {
     shaderf += "#define idY 2\n";
     shaderf += "#define idU 0\n";
@@ -279,7 +280,7 @@ YUV2RGBBobShader::YUV2RGBBobShader(bool rect, unsigned flags)
   }
 
   // ati breaks down with sampler2DRect, but it seem to work without it
-  if(rect && strstr((const char*)glGetString(GL_VENDOR), "ATI") != NULL)
+  if(rect && g_advancedSettings.m_GLRectangleHack)
   {
     shaderf += "#define idY 2\n";
     shaderf += "#define idU 0\n";

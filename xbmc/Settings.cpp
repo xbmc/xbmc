@@ -245,6 +245,7 @@ CSettings::CSettings(void)
 #endif
 
   g_advancedSettings.m_playlistRetries = 100;
+  g_advancedSettings.m_GLRectangleHack = false;
 }
 
 CSettings::~CSettings(void)
@@ -1191,6 +1192,7 @@ void CSettings::LoadAdvancedSettings()
   GetInteger(pRootElement, "playlistretries", g_advancedSettings.m_playlistRetries, 100, -1, 5000);
 
   XMLUtils::GetBoolean(pRootElement,"rootovershoot",g_advancedSettings.m_bUseEvilB);
+  XMLUtils::GetBoolean(pRootElement,"glrectanglehack", g_advancedSettings.m_GLRectangleHack);
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");
