@@ -225,6 +225,7 @@ public:
     bool m_fullScreen;
 #endif
     int m_playlistRetries;
+    bool m_GLRectangleHack;
   };
 
   struct stSettings
