@@ -955,6 +955,10 @@ void CGraphicContext::CaptureStateBlock()
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
   glDisable(GL_SCISSOR_TEST); // fixes FBO corruption on Macs
+  if (glActiveTextureARB)
+    glActiveTextureARB(GL_TEXTURE0_ARB);
+  glDisable(GL_TEXTURE_2D);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 #endif
 }
 
@@ -976,6 +980,7 @@ void CGraphicContext::ApplyStateBlock()
   if (glActiveTextureARB)
     glActiveTextureARB(GL_TEXTURE0_ARB);
   glEnable(GL_TEXTURE_2D);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   glEnable(GL_BLEND);
   glEnable(GL_SCISSOR_TEST);
 #endif
