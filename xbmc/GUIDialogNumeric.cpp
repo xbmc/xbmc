@@ -680,12 +680,11 @@ bool CGUIDialogNumeric::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
     return false;
   }
 
-  MD5_CTX md5state;
   unsigned char md5pword[16];
   char md5pword2[33];
-  MD5Init(&md5state);
-  MD5Update(&md5state, (unsigned char *)strInput.c_str(), (int)strInput.size());
-  MD5Final(md5pword, &md5state);
+  XBMC::MD5 md5state;
+  md5state.append(strInput.c_str());
+  md5state.getDigest(md5pword);
   XKGeneral::BytesToHexStr(md5pword, 16, md5pword2);
 
   if (!bVerifyInput)

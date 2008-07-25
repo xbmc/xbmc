@@ -15,7 +15,7 @@
     along with libscrobbler; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  Copyright © 2003 Russell Garrett (russ-scrobbler@garrett.co.uk)
+  Copyright ï¿½ 2003 Russell Garrett (russ-scrobbler@garrett.co.uk)
 */
 #include "stdafx.h"
 #include "scrobbler.h"
@@ -53,7 +53,7 @@ CScrobbler::CScrobbler()
   m_bAuthWarningDone=false;
   m_bBadPassWarningDone=false;
   m_bReHandShaking=false;
-  m_strClientId = CLIENT_ID; 
+  m_strClientId = CLIENT_ID;
   m_strClientVer = CLIENT_VERSION;
   m_bCloseThread = false;
   m_Interval = m_LastConnect = m_SongStartTime = 0;
@@ -139,14 +139,13 @@ void CScrobbler::SetPassword(const CStdString& strPass)
 {
   if (strPass.IsEmpty())
     return;
-  MD5_CTX md5state;
+  XBMC::MD5 md5state;
   unsigned char md5pword[16];
-  MD5Init(&md5state);
-  MD5Update(&md5state, (unsigned char *)strPass.c_str(), (int)strPass.size());
-  MD5Final(md5pword, &md5state);
+  md5state.append(strPass);
+  md5state.getDigest(md5pword);
   char tmp[33];
   strncpy(tmp, "\0", sizeof(tmp));
-  for (int j = 0;j < 16;j++) 
+  for (int j = 0;j < 16;j++)
   {
     char a[3];
     sprintf(a, "%02x", md5pword[j]);
@@ -238,12 +237,12 @@ int CScrobbler::AddSong(const CMusicInfoTag& tag)
 
   time_t now;
   time (&now);
-  if ((m_Interval + m_LastConnect) < now) 
+  if ((m_Interval + m_LastConnect) < now)
   {
     DoSubmit();
     return 1;
-  } 
-  else 
+  }
+  else
   {
     CStdString strMsg;
     strMsg.Format("Not submitting, caching for %i more seconds. Cache is %i entries.", (int)(m_Interval + m_LastConnect - now), m_iSongNum);
@@ -255,7 +254,7 @@ int CScrobbler::AddSong(const CMusicInfoTag& tag)
 void CScrobbler::DoHandshake()
 {
   m_bReadyToSubmit = false;
-  time_t now; 
+  time_t now;
   time (&now);
   m_LastConnect = now;
   m_strHsString = "http://post.audioscrobbler.com/?hs=true&p=1.1&c=" + m_strClientId + "&v=" + m_strClientVer + "&u=" + m_strUserName;
@@ -289,22 +288,22 @@ void CScrobbler::HandleHandshake(char *handshake)
   // Doesn't take into account multiple-packet returns (not that I've seen one yet)...
 
   // Ian says: strtok() is not re-entrant, but since it's only being called
-  //  in only one function at a time, it's ok so far. 
+  //  in only one function at a time, it's ok so far.
 
   char seps[] = " \n\r";
   char *response = strtok(handshake, seps);
-  if (!response) 
+  if (!response)
   {
     StatusUpdate(S_HANDSHAKE_INVALID_RESPONSE,"Handshake failed: Response invalid");
     return;
   }
-  do 
+  do
   {
-    if (stricmp("UPTODATE", response) == 0) 
+    if (stricmp("UPTODATE", response) == 0)
     {
       StatusUpdate(S_HANDSHAKE_UP_TO_DATE,"Handshaking: Client up to date.");
-    } 
-    else if (stricmp("UPDATE", response) == 0) 
+    }
+    else if (stricmp("UPDATE", response) == 0)
     {
       char *updateurl = strtok(NULL, seps);
       if (!updateurl)
@@ -312,13 +311,13 @@ void CScrobbler::HandleHandshake(char *handshake)
       string msg = "Handshaking: Please update your client at: ";
       msg += updateurl;
       StatusUpdate(S_HANDSHAKE_OLD_CLIENT,msg.c_str());
-    } 
-    else if (stricmp("BADUSER", response) == 0) 
+    }
+    else if (stricmp("BADUSER", response) == 0)
     {
       StatusUpdate(S_HANDSHAKE_BAD_USERNAME,"Handshake failed: Bad username");
       return;
-    } 
-    else 
+    }
+    else
     {
       break;
     }
@@ -340,7 +339,7 @@ void CScrobbler::HandleHandshake(char *handshake)
 
 void CScrobbler::HandleSubmit(char *data)
 {
-  //  submit returned 
+  //  submit returned
   m_bSubmitInProgress = false; //- this should already have been cancelled by the header callback
 
   StatusUpdate(S_DEBUG,data);
@@ -348,12 +347,12 @@ void CScrobbler::HandleSubmit(char *data)
   // Doesn't take into account multiple-packet returns (not that I've seen one yet)...
   char seps[] = " \n\r";
   char * response = strtok(data, seps);
-  if (!response) 
+  if (!response)
   {
     StatusUpdate(S_SUBMIT_INVALID_RESPONSE,"Submission failed: Response invalid");
     return;
   }
-  if (stricmp("OK", response) == 0) 
+  if (stricmp("OK", response) == 0)
   {
     StatusUpdate(S_SUBMIT_SUCCESS,"Submission succeeded.");
 
@@ -361,36 +360,36 @@ void CScrobbler::HandleSubmit(char *data)
 
     ClearCache();
     char *inttext = strtok(NULL, seps);
-    if (inttext && (stricmp("INTERVAL", inttext) == 0)) 
+    if (inttext && (stricmp("INTERVAL", inttext) == 0))
     {
       m_Interval = atoi(strtok(NULL, seps));
       CStdString strBuf;
       strBuf.Format("Submit interval set to %i seconds.", m_Interval);
       StatusUpdate(S_SUBMIT_INTERVAL, strBuf);
     }
-  } 
-  else if (stricmp("BADPASS", response) == 0) 
+  }
+  else if (stricmp("BADPASS", response) == 0)
   {
     StatusUpdate(S_SUBMIT_BAD_PASSWORD,"Submission failed: bad password.");
-  } 
-  else if (stricmp("FAILED", response) == 0) 
+  }
+  else if (stricmp("FAILED", response) == 0)
   {
     CStdString strBuf;
     strBuf.Format("Submission failed: %s", strtok(NULL, "\n"));
     StatusUpdate(S_SUBMIT_FAILED, strBuf);
     char *inttext = strtok(NULL, seps);
-    if (inttext && (stricmp("INTERVAL", inttext) == 0)) 
+    if (inttext && (stricmp("INTERVAL", inttext) == 0))
     {
       m_Interval = atoi(strtok(NULL, seps));
       strBuf.Format("Submit interval set to %i seconds.", m_Interval);
       StatusUpdate(S_SUBMIT_INTERVAL, strBuf);
     }
-  } 
-  else if (stricmp("BADAUTH",response) == 0) 
+  }
+  else if (stricmp("BADAUTH",response) == 0)
   {
     StatusUpdate(S_SUBMIT_BADAUTH,"Submission failed: bad authorization.");
     char *inttext = strtok(NULL, seps);
-    if (inttext && (stricmp("INTERVAL", inttext) == 0)) 
+    if (inttext && (stricmp("INTERVAL", inttext) == 0))
     {
       m_Interval = atoi(strtok(NULL, seps));
       CStdString strBuf;
@@ -400,8 +399,8 @@ void CScrobbler::HandleSubmit(char *data)
     //re-handshake
     m_bReHandShaking = true;
     DoHandshake();
-  } 
-  else 
+  }
+  else
   {
     CStdString strBuf;
     strBuf.Format("Submission failed: %s", strtok(NULL, "\n"));
@@ -409,7 +408,7 @@ void CScrobbler::HandleSubmit(char *data)
   }
 }
 
-void CScrobbler::SetInterval(int in) 
+void CScrobbler::SetInterval(int in)
 {
   m_Interval = in;
   CStdString ret;
@@ -417,17 +416,17 @@ void CScrobbler::SetInterval(int in)
   StatusUpdate(S_SUBMIT_INTERVAL, ret);
 }
 
-void CScrobbler::GenSessionKey() 
+void CScrobbler::GenSessionKey()
 {
   CStdString clear = m_strPassword + m_strChallenge;
-  MD5_CTX md5state;
   unsigned char md5pword[16];
-  MD5Init(&md5state);
-  MD5Update(&md5state, (unsigned char *)clear.c_str(), (int)clear.length());
-  MD5Final(md5pword, &md5state);
+  XBMC::MD5 md5state;
+  md5state.append(clear);
+  md5state.getDigest(md5pword);
+
   char key[33];
   strncpy(key, "\0", sizeof(key));
-  for (int j = 0;j < 16;j++) 
+  for (int j = 0;j < 16;j++)
   {
     char a[3];
     sprintf(a, "%02x", md5pword[j]);
@@ -437,8 +436,8 @@ void CScrobbler::GenSessionKey()
   m_strSessionKey = key;
 }
 
-int CScrobbler::LoadCache() 
-{ 
+int CScrobbler::LoadCache()
+{
   StatusUpdate(S_SUBMITTING,"load cache");
 
   int iNumEntries=0;
@@ -455,11 +454,11 @@ int CScrobbler::LoadCache()
     SetCache(strCache, iNumEntries);
     return 1;
   }
-  return 0; 
+  return 0;
 }
 
 int CScrobbler::SaveCache(const CStdString& strCache, int iNumEntries)
-{ 
+{
   if (iNumEntries<=0)
     return 0;
 
@@ -473,7 +472,7 @@ int CScrobbler::SaveCache(const CStdString& strCache, int iNumEntries)
     file.Close();
     return 1;
   }
-  return 0; 
+  return 0;
 }
 
 void CScrobbler::StatusUpdate(ScrobbleStatus status, const CStdString& strText)
@@ -555,7 +554,7 @@ void CScrobbler::WorkerThread()
     CHTTP http;
     CStdString strHtml;
     bool bSuccess;
-    if (!m_bReadyToSubmit) 
+    if (!m_bReadyToSubmit)
     {
       bSuccess=http.Get(m_strHsString, strHtml);
       if (bSuccess)
@@ -566,8 +565,8 @@ void CScrobbler::WorkerThread()
         if (m_bReHandShaking)
           m_bReHandShaking = false;
       }
-    } 
-    else 
+    }
+    else
     {
       bSuccess=http.Post(m_strSubmitUrl, m_strSubmit, strHtml);
       if (bSuccess)
@@ -591,7 +590,7 @@ void CScrobbler::WorkerThread()
 
     ReleaseMutex(m_hHttpMutex);
     // OK, if this was a handshake, it failed since m_bReadyToSubmit isn't true. Submissions get cached.
-    while (!m_bReadyToSubmit && !m_bCloseThread) 
+    while (!m_bReadyToSubmit && !m_bCloseThread)
     {
       StatusUpdate(S_HANDHAKE_NOTREADY,"Unable to handshake: sleeping...");
       Sleep(HS_FAIL_WAIT);
