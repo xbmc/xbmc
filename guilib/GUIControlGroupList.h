@@ -47,6 +47,8 @@ public:
 
   virtual bool GetCondition(int condition, int data) const;
 protected:
+  bool IsFirstFocusableControl(const CGUIControl *control) const;
+  bool IsLastFocusableControl(const CGUIControl *control) const;
   void ValidateOffset();
   inline float Size(const CGUIControl *control) const;
   inline float Size() const;
