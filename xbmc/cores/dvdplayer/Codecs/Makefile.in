@@ -6,7 +6,7 @@ LDFLAGS=-shared -fPIC -rdynamic
 ARCH=@ARCH@
 SYSDIR=../../../../system/players/dvdplayer
 WRAPPER=../../DllLoader/exports/wrapper.o
-DIRS=ffmpeg libDVDCSS libdts libdvdnav libmad #liba52 libmpeg2
+DIRS=ffmpeg libDVDCSS libdts libdvdnav libfaad2 libmad #liba52 libmpeg2
 LIBS= avutil-51-$(ARCH).so \
 			avcodec-51-$(ARCH).so \
 			avformat-51-$(ARCH).so \
@@ -56,9 +56,9 @@ libDVDCSS-$(ARCH).so: libDVDCSS
 libdvdnav-$(ARCH).so: libDVDCSS libdvdnav
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ libDVDCSS/src/*.o libdvdnav/src/*.o libdvdnav/src/vm/*.o libdvdnav/src/dvdread/*.o -Wl`sed 's/[(\*]/ /g' $(WRAPPER:.o=.c) | grep -v bash | awk '/__wrap/ {out=out","$$2} END {print out}' | sed 's/__wrap_/-wrap,/g'`
 
-libfaad-$(ARCH).so:
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ -Wl,--whole-archive,-Bstatic -lfaad \
-		-Wl,-Bdynamic,--no-whole-archive `cat $(WRAPPER:.o=.def)` $(WRAPPER)
+libfaad-$(ARCH).so: libfaad2
+	$(CC) -o $@ $(LDFLAGS) --soname,$@ libfaad2/libfaad/*.o \
+		`cat $(WRAPPER:.o=.def)`
 
 libmad-$(ARCH).so: libmad
 	cp libmad/.libs/libmad.so libmad-$(ARCH).so
@@ -78,6 +78,9 @@ libDVDCSS:
 	$(MAKE) -C $@
 
 libdvdnav:
+	$(MAKE) -C $@
+
+libfaad2:
 	$(MAKE) -C $@
 
 libmad:
