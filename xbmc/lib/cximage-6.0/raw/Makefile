@@ -1,11 +1,11 @@
 CFLAGS=-fPIC -DXBMC -D_LINUX
 OBJS=dcr.o libdcr.o
 
-%o : %c
-	$(CC) -c -o $@ $< $(CFLAGS)
-
 raw.a: $(OBJS)
 	$(AR) rc $@ $(OBJS)
+
+%o : %c
+	$(CC) -c -o $@ $< $(CFLAGS)
 
 clean:
 	$(RM) $(OBJS) raw.a
