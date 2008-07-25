@@ -38,6 +38,7 @@
 #include <pthread.h>
 #include <string.h>
 #ifdef __APPLE__
+#include <stdio.h>
 #include <sys/sysctl.h>
 #include <mach/mach.h>
 #else
@@ -131,6 +132,7 @@ typedef void* HMODULE;
 typedef int64_t   off64_t;
 typedef off_t     __off_t;
 typedef off64_t   __off64_t;
+typedef fpos_t fpos64_t;
 #include <sched.h>
 #if (MAC_OS_X_VERSION_MAX_ALLOWED <= 1040)
 #define MAC_TIGER
