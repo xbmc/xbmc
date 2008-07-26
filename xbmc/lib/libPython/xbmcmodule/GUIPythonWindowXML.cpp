@@ -30,7 +30,7 @@
 #include "Util.h"
 #include "GUIWindowManager.h"
 #include "FileItem.h"
-#include "File.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 
