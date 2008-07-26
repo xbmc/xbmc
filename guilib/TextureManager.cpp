@@ -9,6 +9,7 @@
 #include "StringUtils.h"
 #include "utils/CharsetConverter.h"
 #include "../xbmc/Util.h"
+#include "../xbmc/FileSystem/File.h"
 
 #ifdef HAS_SDL
 #define MAX_PICTURE_WIDTH  4096
@@ -1057,18 +1058,49 @@ DWORD CGUITextureManager::GetMemoryUsage() const
   return memUsage;
 }
 
+void CGUITextureManager::SetTexturePath(const CStdString &texturePath)
+{
+  m_texturePaths.clear();
+  AddTexturePath(texturePath);
+}
+
+void CGUITextureManager::AddTexturePath(const CStdString &texturePath)
+{
+  if (!texturePath.IsEmpty())
+    m_texturePaths.push_back(texturePath);
+}
+
+void CGUITextureManager::RemoveTexturePath(const CStdString &texturePath)
+{
+  for (vector<CStdString>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
+  {
+    if (*it == texturePath)
+    {
+      m_texturePaths.erase(it);
+      return;
+    }
+  }
+}
+
 CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName)
 {
-  CStdString path;
 #ifndef _LINUX  
   if (textureName.c_str()[1] == ':')
 #else
   if (textureName.c_str()[0] == '/')
 #endif  
-    path = textureName;
+    return _P(textureName); // texture includes the full path
   else
-    path.Format("%s\\media\\%s", g_graphicsContext.GetMediaDir().c_str(), textureName.c_str());
-  return _P(path);
+  { // texture doesn't include the full path, so check all fallbacks
+    for (vector<CStdString>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
+    {
+      CStdString path;
+      path.Format("%s\\media\\%s", _P(it->c_str()), textureName.c_str());
+      if (XFILE::CFile::Exists(path))
+        return path;
+    }
+  }
+  return "";
 }
 
 void CGUITextureManager::GetBundledTexturesFromPath(const CStdString& texturePath, std::vector<CStdString> &items)

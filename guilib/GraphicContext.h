@@ -163,7 +163,7 @@ public:
   void setMessageSender(IMsgSenderCallback* pCallback);
   DWORD GetNewID();
   const CStdString& GetMediaDir() const { return m_strMediaDir; }
-  void SetMediaDir(const CStdString& strMediaDir) { m_strMediaDir = strMediaDir; }
+  void SetMediaDir(const CStdString& strMediaDir);
   bool IsWidescreen() const { return m_bWidescreen; }
   bool SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious = false);
   void RestoreViewPort();
