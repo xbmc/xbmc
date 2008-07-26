@@ -64,8 +64,7 @@ void CGUILargeTextureManager::Process()
       CStdString loadPath(path);
       if ((size_t)path.FindOneOf("/\\") == CStdString::npos)
       {
-        loadPath = CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
-        loadPath = CUtil::AddFileToFolder(loadPath, path);
+        loadPath = g_TextureManager.GetTexturePath(path);
       }
       texture = pic.Load(loadPath, std::min(g_graphicsContext.GetWidth(), 1024), std::min(g_graphicsContext.GetHeight(), 720));
     }
