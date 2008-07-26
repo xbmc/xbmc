@@ -1,0 +1,19 @@
+ARCH=@ARCH@
+CFLAGS +=-D_LINUX -fPIC -I../../include
+DIRS=../../
+OBJS=DumbDLL.o
+SYSDIR=../../../../../../system/players/paplayer
+SO=dumb-$(ARCH).so
+LIB=$(SYSDIR)/$(SO)
+
+.PHONY: compile
+
+$(LIB): $(OBJS) ../../lib/unix/libdumb.a
+	$(CXX) -shared -o $@ $(OBJS) -Wl,--whole-archive ../../lib/unix/libdumb.a \
+		-Wl,--no-whole-archive `cat ../../../../DllLoader/exports/wrapper.def` \
+		../../../../DllLoader/exports/wrapper.o
+
+../../lib/unix/libdumb.a: compile
+	$(MAKE) -C ../..
+
+include ../../../../../../Makefile.include
