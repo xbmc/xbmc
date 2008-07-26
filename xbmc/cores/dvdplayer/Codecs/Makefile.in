@@ -101,10 +101,10 @@ libmad:
 	$(MAKE) -C $@
 
 clean:
-	rm -f *.so
+	rm -f $(addprefix $(SYSDIR)/, $(LIBS))
 	for i in $(DIRS); do $(MAKE) -C "$$i" clean; done
 
 distclean:
-	rm -f *.so
+	rm -f $(addprefix $(SYSDIR)/, $(LIBS))
 	for i in $(DIRS); do $(MAKE) -C "$$i" distclean; done
 
