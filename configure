@@ -14541,7 +14541,7 @@ fi;
 
 if [ -d xbmc/cores/paplayer/vorbisfile/libvorbis ]; then
   pushd xbmc/cores/paplayer/vorbisfile/libvorbis
-  ./configure
+  ./configure --with-pic
   if [ $? -ne 0 ]; then
     popd
     { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/libvorbis failed to configure" >&5
@@ -14559,7 +14559,7 @@ fi;
 
 if [ -d xbmc/cores/paplayer/vorbisfile/ogg ]; then
   pushd xbmc/cores/paplayer/vorbisfile/ogg
-  ./configure
+  ./configure --with-pic
   if [ $? -ne 0 ]; then
     popd
     { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/ogg failed to configure" >&5
