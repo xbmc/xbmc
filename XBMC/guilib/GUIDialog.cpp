@@ -40,14 +40,10 @@ CGUIDialog::CGUIDialog(DWORD dwID, const CStdString &xmlFile)
 CGUIDialog::~CGUIDialog(void)
 {}
 
-bool CGUIDialog::Load(const CStdString& strFileName, bool bContainsPath)
+void CGUIDialog::OnWindowLoaded()
 {
-  m_renderOrder = 1;
-  if (!CGUIWindow::Load(strFileName, bContainsPath))
-  {
-    return false;
-  }
-
+  CGUIWindow::OnWindowLoaded();
+  
   // Clip labels to extents
   if (m_vecControls.size())
   {
@@ -68,8 +64,6 @@ bool CGUIDialog::Load(const CStdString& strFileName, bool bContainsPath)
       }
     }
   }
-
-  return true;
 }
 
 bool CGUIDialog::OnAction(const CAction &action)

@@ -45,12 +45,20 @@ public:
   void ClearSkinStrings();
   const CStdString& Get(DWORD dwCode) const;
   void Clear();
+  DWORD LoadBlock(const CStdString &id, const CStdString &path, const CStdString &fallbackPath);
+  void ClearBlock(const CStdString &id);
 protected:
-  bool LoadXML(const CStdString &filename, CStdString &encoding, CStdString &error);
+  void Clear(DWORD start, DWORD end);
+  bool LoadXML(const CStdString &filename, CStdString &encoding, CStdString &error, DWORD offset = 0);
   CStdString ToUTF8(const CStdString &encoding, const CStdString &str);
   std::map<DWORD, CStdString> m_strings;
   typedef std::map<DWORD, CStdString>::const_iterator ciStrings;
   typedef std::map<DWORD, CStdString>::iterator       iStrings;
+
+  static const DWORD block_start = 0xf0000000;
+  static const DWORD block_size = 1024;
+  std::map<CStdString, DWORD> m_blocks;
+  typedef std::map<CStdString, DWORD>::iterator iBlocks;
 };
 
 /*!
