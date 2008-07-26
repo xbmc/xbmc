@@ -443,8 +443,6 @@ CGUISettings::CGUISettings(void)
   AddInt(3, "subtitles.style", 736, FONT_STYLE_BOLD, FONT_STYLE_NORMAL, 1, FONT_STYLE_BOLD_ITALICS, SPIN_CONTROL_TEXT);
   AddInt(4, "subtitles.color", 737, SUBTITLE_COLOR_START + 1, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
   AddString(5, "subtitles.charset", 735, "DEFAULT", SPIN_CONTROL_TEXT);
-  AddBool(6, "subtitles.flipbidicharset", 13304, false);
-  AddBool(7, "subtitles.arabicshaping", 13362, false);
   AddSeparator(7, "subtitles.sep1");
   AddBool(9, "subtitles.searchrars", 13249, false);
   AddSeparator(10,"subtitles.sep2");
