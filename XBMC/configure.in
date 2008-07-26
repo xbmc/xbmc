@@ -387,8 +387,8 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/flac-1.2.1], [
     CXX="$CXX" && \
     sed -ie s/__DECLARE__XBMC__ARCH__/$ARCH/ Makefile
 ])
-XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/libvorbis], [./configure])
-XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/ogg], [./configure])
+XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/libvorbis], [./configure --with-pic])
+XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/ogg], [./configure --with-pic])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
   ./configure \
     --extra-cflags="-D_XBOX" \
