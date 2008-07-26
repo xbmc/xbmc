@@ -13293,7 +13293,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile xbmc/cores/dvdplayer/Codecs/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/cores/paplayer/MIDCodec/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile xbmc/cores/paplayer/DCACodec/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/Makefile.xbmc_linux xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libass/Makefile.xbmc_linux xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/DllPaths_generated.h"
+ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile xbmc/cores/dvdplayer/Codecs/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/cores/paplayer/MIDCodec/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile xbmc/cores/paplayer/DCACodec/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/Makefile.xbmc_linux xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/DllPaths_generated.h"
 
 
 
@@ -13927,7 +13927,7 @@ do
     "xbmc/lib/libRTV/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libRTV/Makefile" ;;
     "xbmc/lib/libexif/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libexif/Makefile" ;;
     "xbmc/lib/libXDAAP/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libXDAAP/Makefile" ;;
-    "xbmc/lib/libass/Makefile.xbmc_linux") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libass/Makefile.xbmc_linux" ;;
+    "xbmc/lib/libass/xbmc/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libass/xbmc/Makefile" ;;
     "xbmc/lib/libhdhomerun/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libhdhomerun/Makefile" ;;
     "xbmc/lib/libGoAhead/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libGoAhead/Makefile" ;;
     "xbmc/lib/libshout/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libshout/Makefile" ;;
