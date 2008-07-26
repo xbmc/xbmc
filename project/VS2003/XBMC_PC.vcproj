@@ -4187,12 +4187,6 @@
 				Name="libScrobbler"
 				Filter="">
 				<File
-					RelativePath="..\..\xbmc\lib\libscrobbler\md5.c">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\lib\libscrobbler\md5.h">
-				</File>
-				<File
 					RelativePath="..\..\xbmc\lib\libscrobbler\scrobbler.cpp">
 				</File>
 				<File
