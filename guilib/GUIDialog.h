@@ -47,7 +47,6 @@ public:
   void Show(); // modeless
 
   virtual void Close(bool forceClose = false);
-  virtual bool Load(const CStdString& strFileName, bool bContainsPath = false);
   virtual bool IsDialogRunning() const { return m_bRunning; };
   virtual bool IsDialog() const { return true;};
   virtual bool IsModalDialog() const { return m_bModal; };
@@ -58,6 +57,7 @@ public:
 protected:
   virtual bool RenderAnimation(DWORD time);
   virtual void SetDefaults();
+  virtual void OnWindowLoaded();
 
   friend class CApplicationMessenger;
   void DoModal_Internal(int iWindowID = WINDOW_INVALID); // modal
