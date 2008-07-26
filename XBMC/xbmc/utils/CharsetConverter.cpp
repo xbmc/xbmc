@@ -21,6 +21,8 @@
 
 #include "stdafx.h"
 #include "Util.h"
+#include "ArabicShaping.h"
+#include "GUISettings.h"
 
 using namespace std;
 
@@ -251,6 +253,15 @@ void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdSt
     FriBidiChar* visual = (FriBidiChar*) malloc((sourceLen + 1) * sizeof(FriBidiChar));
     // Convert from the selected charset to Unicode
     int len = fribidi_charset_to_unicode(fribidiCharset, (char*) lines[i].c_str(), sourceLen, logical);
+
+    if (g_guiSettings.GetBool("subtitles.arabicshaping"))
+    {
+      // Shape Arabic Text
+      FriBidiChar *shaped_text = shape_arabic(logical, len);
+      for (int i=0; i<len; i++)
+         logical[i] = shaped_text[i];
+      free(shaped_text);
+    }
 
     if (fribidi_log2vis(logical, len, &base, visual, NULL, NULL, NULL))
     {
