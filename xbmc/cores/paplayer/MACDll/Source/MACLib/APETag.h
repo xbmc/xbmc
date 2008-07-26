@@ -1,6 +1,13 @@
 #ifndef APE_APETAG_H
 #define APE_APETAG_H
 
+class IAPETag
+{
+public:
+    virtual ~IAPETag() {}
+    virtual int GetFieldString(const str_utf16 * pFieldName, str_ansi * pBuffer, int * pBufferCharacters, BOOL bUTF8Encode = FALSE)=0;
+};
+
 class CIO;
 
 /*****************************************************************************************
@@ -206,7 +213,7 @@ private:
 /*****************************************************************************************
 CAPETag class
 *****************************************************************************************/
-class CAPETag
+class CAPETag : public IAPETag
 {
 public:
 
@@ -234,7 +241,7 @@ public:
     // gets the value of a field (returns -1 and an empty buffer if the field doesn't exist)
     int GetFieldBinary(const str_utf16 * pFieldName, void * pBuffer, int * pBufferBytes);
     int GetFieldString(const str_utf16 * pFieldName, str_utf16 * pBuffer, int * pBufferCharacters);
-    int GetFieldString(const str_utf16 * pFieldName, str_ansi * pBuffer, int * pBufferCharacters, BOOL bUTF8Encode = FALSE);
+    virtual int GetFieldString(const str_utf16 * pFieldName, str_ansi * pBuffer, int * pBufferCharacters, BOOL bUTF8Encode = FALSE);
 
     // remove a specific field
     int RemoveField(const str_utf16 * pFieldName);
