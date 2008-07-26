@@ -381,7 +381,7 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/flac-1.2.1], [
   ./configure -C \
     --with-pic \
     --disable-asm-optimizations \
-    --disable-xbmx-plugin \
+    --disable-xmms-plugin \
     --disable-cpplibs \
     CC="$CC" \
     CXX="$CXX" && \
