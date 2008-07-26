@@ -99,7 +99,7 @@ __MD5Transform ( uint32_t        state [4],
     CopyToLittleEndian (tempBuffer, in, 16);
     x = tempBuffer;
 #else
-    if ( (unsigned int)in & 3 ) {
+    if ( (unsigned long)in & 3 ) {
         memcpy ( tempBuffer, in, 64 );
         x = tempBuffer;
     } 

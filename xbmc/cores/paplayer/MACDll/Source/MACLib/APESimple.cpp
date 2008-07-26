@@ -291,14 +291,14 @@ int DecompressCore(const str_utf16 * pInputFilename, const str_utf16 * pOutputFi
         if (spAPEDecompress == NULL || nFunctionRetVal != ERROR_SUCCESS) throw(nFunctionRetVal);
 
         // get the input format
-        THROW_ON_ERROR(spAPEDecompress->GetInfo(APE_INFO_WAVEFORMATEX, (int) &wfeInput))
+        THROW_ON_ERROR(spAPEDecompress->GetInfo(APE_INFO_WAVEFORMATEX, (long) &wfeInput))
 
         // allocate space for the header
         spTempBuffer.Assign(new unsigned char [spAPEDecompress->GetInfo(APE_INFO_WAV_HEADER_BYTES)], TRUE);
         if (spTempBuffer == NULL) throw(ERROR_INSUFFICIENT_MEMORY);
 
         // get the header
-        THROW_ON_ERROR(spAPEDecompress->GetInfo(APE_INFO_WAV_HEADER_DATA, (int) spTempBuffer.GetPtr(), spAPEDecompress->GetInfo(APE_INFO_WAV_HEADER_BYTES)));
+        THROW_ON_ERROR(spAPEDecompress->GetInfo(APE_INFO_WAV_HEADER_DATA, (long) spTempBuffer.GetPtr(), spAPEDecompress->GetInfo(APE_INFO_WAV_HEADER_BYTES)));
 
         // initialize the output
         if (nOutputMode == UNMAC_DECODER_OUTPUT_WAV)
@@ -370,7 +370,7 @@ int DecompressCore(const str_utf16 * pInputFilename, const str_utf16 * pOutputFi
             {
                 spTempBuffer.Assign(new unsigned char[spAPEDecompress->GetInfo(APE_INFO_WAV_TERMINATING_BYTES)], TRUE);
                 if (spTempBuffer == NULL) throw(ERROR_INSUFFICIENT_MEMORY);
-                THROW_ON_ERROR(spAPEDecompress->GetInfo(APE_INFO_WAV_TERMINATING_DATA, (int) spTempBuffer.GetPtr(), spAPEDecompress->GetInfo(APE_INFO_WAV_TERMINATING_BYTES)))
+                THROW_ON_ERROR(spAPEDecompress->GetInfo(APE_INFO_WAV_TERMINATING_DATA, (long) spTempBuffer.GetPtr(), spAPEDecompress->GetInfo(APE_INFO_WAV_TERMINATING_BYTES)))
         
                 unsigned int nBytesToWrite = spAPEDecompress->GetInfo(APE_INFO_WAV_TERMINATING_BYTES);
                 unsigned int nBytesWritten = 0;
@@ -392,7 +392,7 @@ int DecompressCore(const str_utf16 * pInputFilename, const str_utf16 * pOutputFi
                 spTempBuffer.Assign(new unsigned char[nTerminatingBytes], TRUE);
                 if (spTempBuffer == NULL) throw(ERROR_INSUFFICIENT_MEMORY);
                 
-                THROW_ON_ERROR(spAPEDecompress->GetInfo(APE_INFO_WAV_TERMINATING_DATA, (int) spTempBuffer.GetPtr(), nTerminatingBytes))
+                THROW_ON_ERROR(spAPEDecompress->GetInfo(APE_INFO_WAV_TERMINATING_DATA, (long) spTempBuffer.GetPtr(), nTerminatingBytes))
 
                 if (bHasTag)
                 {
