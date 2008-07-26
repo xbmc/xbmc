@@ -31,7 +31,7 @@
 #ifdef HAS_XBOX_HARDWARE
 #include <xtl.h>
 #endif
-#include "../../../XBMC/visualisations/xbmc_vis.h"
+#include "../../../visualisations/xbmc_vis.h"
 #include <math.h>
 #ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>
