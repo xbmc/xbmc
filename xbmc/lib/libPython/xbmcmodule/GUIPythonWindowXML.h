@@ -73,7 +73,6 @@ protected:
   bool             m_bRunning;
   CStdString       m_scriptPath;
   CStdString       m_mediaDir;
-  CStdString       m_backupMediaDir;
   CGUIViewControl  m_viewControl;
   std::auto_ptr<CGUIViewState> m_guiState;
   CFileItemList*    m_vecItems;
