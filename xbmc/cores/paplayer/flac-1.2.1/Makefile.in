@@ -272,12 +272,20 @@ DIST_COMMON = README $(srcdir)/Makefile.in $(srcdir)/configure AUTHORS \
 	config.sub configure.in depcomp install-sh ltmain.sh missing \
 	mkinstalldirs
 DIST_SUBDIRS = $(SUBDIRS)
+
+XBMC_ARCH=__DECLARE__XBMC__ARCH__
+XBMC_SYSDIR=../../../../system/players/paplayer
+XBMC_SO=libFLAC-$(XBMC_ARCH).so
+XBMC_LIB=$(XBMC_SYSDIR)/$(XBMC_SO)
+
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
-	$(MAKE) libFLAC-i486-linux.so
+	$(MAKE) $(XBMC_LIB)
 
-libFLAC-i486-linux.so: 
-	gcc -shared -fpic -o $@ -rdynamic src/libFLAC/*.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o && cp $@ ../../../../system/players/paplayer/
+$(XBMC_LIB): src/libFLAC/.libs/libFLAC.a 
+	gcc -shared -fpic -o $@ -rdynamic \
+		-Wl,--whole-archive src/libFLAC/.libs/libFLAC.a -Wl,--no-whole-archive \
+		`cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
 
 .SUFFIXES:
 
@@ -606,12 +614,15 @@ maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-recursive
+	rm -f $(XBMC_LIB)
 
 clean-am: clean-generic clean-libtool mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -f Makefile
+	rm -f $(XBMC_LIB)
+
 distclean-am: clean-am distclean-generic distclean-hdr distclean-libtool \
 	distclean-tags
 
