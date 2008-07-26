@@ -2666,7 +2666,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\md5.c"
+					RelativePath="..\..\xbmc\utils\md5.cpp"
 					>
 					<FileConfiguration
 						Name="Debug (SDL)|Win32"
