@@ -14,21 +14,26 @@ CPPFLAGS += -Wall -O2 -fPIC
 LIBS += -lws2_32
 DEFINES += -D__MINGW__
 
-all : hdhomerun_so
-	
+ARCH=@ARCH@
+SYSDIR=../../../system
+SO=hdhomerun-$(ARCH).so
+LIB=$(SYSDIR)/$(SO)
+
+all: $(LIB)
+
 %.o : %.c
-	gcc $(CFLAGS) $(DEFINES) -c -o $@ $<
+	$(CC) $(CFLAGS) $(DEFINES) -c -o $@ $<
 
 %.o : %.cpp
-	g++ $(CPPFLAGS) $(DEFINES) -c -o $@ $<
+	$(CXX) $(CPPFLAGS) $(DEFINES) -c -o $@ $<
 
+$(LIB): $(OBJS)
+	$(CC) $(OBJS) -shared -o $@ `cat ../../cores/DllLoader/exports/wrapper.def` \
+		../../cores/DllLoader/exports/wrapper.o && strip $@
+	
 hdhomerun_dll : $(OBJS)
 	gcc $(OBJS) $(LIBS) -Wl,--out-implib,hdhomerun.lib -shared -o hdhomerun.dll
 	strip hdhomerun.dll
-
-hdhomerun_so : $(OBJS)
-	gcc $(OBJS) -shared -o ../../../system/hdhomerun-@ARCH@.so `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
-	strip ../../../system/hdhomerun-@ARCH@.so
 
 hdhomerun_config hdhomerun_config.exe : $(OBJS) hdhomerun_config.o
 	gcc $(OBJS) hdhomerun_config.o $(LIBS) -lpthreadGC -liphlpapi -o $@
@@ -43,7 +48,7 @@ clean :
 	rm -f hdhomerun_config.exe
 	rm -f hdhomerun_mythconfig
 	rm -f *.o
-	rm -f ../../../system/hdhomerun-@ARCH@.so
 	rm -f hdhomerun.dll
+	rm -f $(LIB)
 
 distclean: clean

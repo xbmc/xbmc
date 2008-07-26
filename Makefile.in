@@ -41,6 +41,7 @@ DIRS=	\
 	xbmc/lib/libcmyth \
 	xbmc/lib/libexif \
 	xbmc/lib/libGoAhead \
+	xbmc/lib/libhdhomerun \
 	xbmc/lib/libPython \
 	xbmc/lib/libPython/linux \
 	xbmc/lib/libPython/xbmcmodule \
