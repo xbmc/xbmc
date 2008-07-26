@@ -1,0 +1,22 @@
+OBJS = ../src/xbmc_interface.o
+CFLAGS += -Iinclude -D_LINUX -fPIC
+DIRS= ..
+
+ARCH=@ARCH@
+SYSDIR=../../../../../system/players/paplayer
+SO=libmpcdev-$(ARCH).so
+LIB=$(SYSDIR)/$(SO)
+
+.PHONY: compile
+
+$(LIB): $(OBJS) ../src/.libs/libmpcdec.a
+	$(CC) -shared -o $@ -Wl,--whole-archive ../src/.libs/libmpcdec.a \
+		-Wl,--no-whole-archive ../src/xbmc_interface.o \
+		`cat ../../../DllLoader/exports/wrapper.def` \
+		../../../DllLoader/exports/wrapper.o
+
+../src/.libs/libmpcdec.a: compile
+	$(MAKE) -C ..
+
+include ../../../../../Makefile.include
+
