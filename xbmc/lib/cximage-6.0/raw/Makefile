@@ -10,4 +10,6 @@ raw.a: $(OBJS)
 clean:
 	$(RM) $(OBJS) raw.a
 
+distclean: clean
+
 include ../Makefile.include
