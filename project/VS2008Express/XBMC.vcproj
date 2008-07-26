@@ -2462,6 +2462,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\ArabicShaping.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\ArabicShaping.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\Archive.cpp"
 					>
 				</File>
