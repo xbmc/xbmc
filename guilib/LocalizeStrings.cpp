@@ -54,12 +54,7 @@ void CLocalizeStrings::ClearSkinStrings()
   // clear the skin strings
   unsigned int skin_strings_start = 31000;
   unsigned int skin_strings_end = 31999;
-  for (unsigned int str = skin_strings_start; str < skin_strings_end; str++)
-  {
-    iStrings it = m_strings.find(str);
-    if (it != m_strings.end())
-      m_strings.erase(it);
-  }
+  Clear(31000, 31999);
 }
 
 bool CLocalizeStrings::LoadSkinStrings(const CStdString& path, const CStdString& fallbackPath)
@@ -80,7 +75,7 @@ bool CLocalizeStrings::LoadSkinStrings(const CStdString& path, const CStdString&
   return true;
 }
 
-bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding, CStdString &error)
+bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding, CStdString &error, DWORD offset /* = 0 */)
 {
   TiXmlDocument xmlDoc;
   if (!xmlDoc.LoadFile(PTH_IC(filename.c_str())))
@@ -108,7 +103,7 @@ bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding,
     const char* attrId=pChild->Attribute("id");
     if (attrId && !pChild->NoChildren())
     {
-      DWORD dwID = atoi(attrId);
+      DWORD dwID = atoi(attrId) + offset;
       if (m_strings.find(dwID) == m_strings.end())
         m_strings[dwID] = ToUTF8(encoding, pChild->FirstChild()->Value());
     }
@@ -180,4 +175,56 @@ const CStdString& CLocalizeStrings::Get(DWORD dwCode) const
 void CLocalizeStrings::Clear()
 {
   m_strings.clear();
+}
+
+void CLocalizeStrings::Clear(DWORD start, DWORD end)
+{
+  iStrings it = m_strings.begin();
+  while (it != m_strings.end())
+  {
+    if (it->first >= start && it->first <= end)
+      m_strings.erase(it++);
+    else
+      ++it;
+  }
+}
+
+DWORD CLocalizeStrings::LoadBlock(const CStdString &id, const CStdString &path, const CStdString &fallbackPath)
+{
+  iBlocks it = m_blocks.find(id);
+  if (it != m_blocks.end())
+    return it->second;  // already loaded
+
+  // grab a new block
+  DWORD offset = block_start + m_blocks.size()*block_size;
+  m_blocks.insert(make_pair(id, offset));
+
+  // load the strings
+  CStdString encoding, error;
+  bool success = LoadXML(path, encoding, error, offset);
+  if (!success)
+  {
+    if (path == fallbackPath) // no fallback, nothing to do
+      return 0;
+  }
+
+  // load the fallback
+  if (path != fallbackPath)
+    success |= LoadXML(fallbackPath, encoding, error, offset);
+
+  return success ? offset : 0;
+}
+
+void CLocalizeStrings::ClearBlock(const CStdString &id)
+{
+  iBlocks it = m_blocks.find(id);
+  if (it == m_blocks.end())
+  {
+    CLog::Log(LOGERROR, "%s: Trying to clear non existent block %s", __FUNCTION__, id.c_str());
+    return; // doesn't exist
+  }
+  
+  // clear our block
+  Clear(it->second, it->second + block_size);
+  m_blocks.erase(it);
 }

@@ -55,10 +55,11 @@ public:
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
   const CFileItemList& CurrentDirectory() const;
   int               GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
-  static void       LoadScriptStrings(const CStdString &strPath);
-  static void       ClearScriptStrings();
 
 protected:
+  virtual bool     LoadXML(const CStdString &strPath, const CStdString &strPathLower);
+  int              LoadScriptStrings();
+  void             ClearScriptStrings();
   CGUIControl      *GetFirstFocusableControl(int id);
   virtual void     UpdateButtons();
   virtual void     FormatAndSort(CFileItemList &items);
@@ -70,7 +71,8 @@ protected:
   PyObject*        pCallbackWindow;
   HANDLE           m_actionEvent;
   bool             m_bRunning;
-  CStdString       m_fallbackPath;
+  CStdString       m_scriptPath;
+  CStdString       m_mediaDir;
   CStdString       m_backupMediaDir;
   CGUIViewControl  m_viewControl;
   std::auto_ptr<CGUIViewState> m_guiState;
