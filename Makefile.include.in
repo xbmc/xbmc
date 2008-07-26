@@ -63,7 +63,7 @@ pch: $(PCH:.h=.h.gch)
 	for d in $(DIRS); do (cd $$d; $(MAKE) pch ); done
 
 clean: 
-	$(RM) $(OBJS) $(LIB) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
+	$(RM) $(OBJS) $(LIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
 	for d in $(DIRS); do (if test -f $$d/Makefile; then ($(MAKE) -C $$d clean); fi ); done
 
 distclean_evil:
@@ -75,7 +75,7 @@ distclean_evil:
 	@find . -name "*.P" -exec echo 'Removing "{}"' \; -exec rm -f "{}" \;
 	@echo "Done."
 
-distclean: distclean_evil
-	$(RM) $(OBJS) $(LIB) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
+distclean:
+	$(RM) $(OBJS) $(LIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
 	for d in $(DIRS); do (if test -f $$d/Makefile; then ($(MAKE) -C $$d distclean || $(MAKE) -C $$d clean); fi ); done
 

@@ -14761,7 +14761,7 @@ fi;
 
 if [ -d xbmc/lib/libid3tag/libid3tag ]; then
   pushd xbmc/lib/libid3tag/libid3tag
-  CFLAGS=-O3 ./configure --disable-static --with-pic
+  CFLAGS=-O3 ./configure --disable-static --disable-debugging --with-pic
   if [ $? -ne 0 ]; then
     popd
     { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libid3tag/libid3tag failed to configure" >&5
