@@ -450,7 +450,7 @@ void CGUIPythonWindowXML::SortItems(CFileItemList &items)
     items.Sort(guiState->GetSortMethod(), guiState->GetDisplaySortOrder());
 
     // Should these items be saved to the hdd
-    if (items.GetCacheToDisc())
+    if (items.CacheToDiscAlways())
       items.Save();
   }
 }
