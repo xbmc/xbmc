@@ -39,6 +39,7 @@ DIRS=	\
 	xbmc/lib/cximage-6.0 \
 	xbmc/lib/libass \
 	xbmc/lib/libcmyth \
+	xbmc/lib/libexif \
 	xbmc/lib/libGoAhead \
 	xbmc/lib/libPython \
 	xbmc/lib/libPython/linux \

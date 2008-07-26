@@ -1,11 +1,13 @@
 OBJS +=libexif.o ExifParse.o IptcParse.o JpegParse.o
 CFLAGS +=-D_LINUX -D_DLL -fPIC -O2
 
+ARCH=@ARCH@
+SYSDIR=../../../system
+SO=libexif-$(ARCH).so
+LIB=../../../system/$(SO)
+
+$(LIB): $(OBJS)
+	$(CC) -shared -o $@ $(OBJS) \
+		`cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
+
 include ../../../Makefile.include
-
-LIB=../../../system/libexif-@ARCH@.so
-
-lib: $(LIB)
-
-$(LIB):
-	$(CC) -shared -o $@ *.o `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
