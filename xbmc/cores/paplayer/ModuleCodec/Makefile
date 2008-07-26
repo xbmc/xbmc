@@ -89,7 +89,6 @@ endif
 
 all: config-if-necessary make-outdirs
 	@$(MAKE) -f $(MAKEFILE) --no-print-directory $(ALL_TARGETS)
-	@$(MAKE) -C vc6/dumb
 
 install: config-if-necessary
 	@$(MAKE) -f $(MAKEFILE) --no-print-directory $(ALL_TARGETS:%=install-%)
@@ -345,6 +344,7 @@ clean:
 	$(call DELETE,$(OBJDIR_BASE)/release/*.o)
 	$(call DELETE,$(OBJDIR_BASE)/debug/*.o)
 	$(call DELETE,examples/*.o)
+	rm -rf lib obj
 
 veryclean: clean
 	$(call DELETE,$(CORE_LIB_FILE))
