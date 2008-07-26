@@ -301,14 +301,11 @@ void CGUIPythonWindowXML::AllocResources(bool forceLoad /*= FALSE */)
 {
   CStdString tmpDir;
   CUtil::GetDirectory(m_xmlFile, tmpDir);
-  m_mediaDir = m_scriptPath;
-  if (!tmpDir.IsEmpty())  // TODO: This needs cleaning up - what is needed and what isn't?
-  {
-    CStdString fallbackMediaPath;
-    CUtil::GetParentPath(tmpDir, fallbackMediaPath);
-    CUtil::RemoveSlashAtEnd(fallbackMediaPath);
-    m_mediaDir = fallbackMediaPath;
-  }
+  CStdString fallbackMediaPath;
+  CUtil::GetParentPath(tmpDir, fallbackMediaPath);
+  CUtil::RemoveSlashAtEnd(fallbackMediaPath);
+  m_mediaDir = fallbackMediaPath;
+
   //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: %s", fallbackMediaPath.c_str());
   g_TextureManager.AddTexturePath(m_mediaDir);
   CGUIWindow::AllocResources(forceLoad);
