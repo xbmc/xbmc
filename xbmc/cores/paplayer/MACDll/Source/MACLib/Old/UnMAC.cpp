@@ -78,7 +78,7 @@ int CUnMAC::Initialize(IAPEDecompress *pAPEDecompress)
     // set the initialized flag to TRUE
     m_bInitialized = TRUE;
     
-    m_pAPEDecompress->GetInfo(APE_INFO_WAVEFORMATEX, (int) &m_wfeInput);
+    m_pAPEDecompress->GetInfo(APE_INFO_WAVEFORMATEX, (long) &m_wfeInput);
 
     // return a successful value
     return ERROR_SUCCESS;
@@ -197,7 +197,7 @@ int CUnMAC::DecompressFrameOld(unsigned char *pOutputData, int32 FrameIndex, int
     {
         m_pAPEDecompressCore->GenerateDecodedArrays(nBlocks, nSpecialCodes, FrameIndex, CPULoadBalancingFactor);
 
-        WAVEFORMATEX WaveFormatEx; m_pAPEDecompress->GetInfo(APE_INFO_WAVEFORMATEX, (int) &WaveFormatEx);
+        WAVEFORMATEX WaveFormatEx; m_pAPEDecompress->GetInfo(APE_INFO_WAVEFORMATEX, (long) &WaveFormatEx);
         m_pPrepare->UnprepareOld(m_pAPEDecompressCore->GetDataX(), m_pAPEDecompressCore->GetDataY(), nBlocks, &WaveFormatEx, 
             pOutputData, (unsigned int *) &CRC, (int *) &nSpecialCodes, m_pAPEDecompress->GetInfo(APE_INFO_FILE_VERSION));
     }
@@ -205,7 +205,7 @@ int CUnMAC::DecompressFrameOld(unsigned char *pOutputData, int32 FrameIndex, int
     {
         m_pAPEDecompressCore->GenerateDecodedArrays(nBlocks, nSpecialCodes, FrameIndex, CPULoadBalancingFactor);
         
-        WAVEFORMATEX WaveFormatEx; m_pAPEDecompress->GetInfo(APE_INFO_WAVEFORMATEX, (int) &WaveFormatEx);
+        WAVEFORMATEX WaveFormatEx; m_pAPEDecompress->GetInfo(APE_INFO_WAVEFORMATEX, (long) &WaveFormatEx);
         m_pPrepare->UnprepareOld(m_pAPEDecompressCore->GetDataX(), NULL, nBlocks, &WaveFormatEx, 
             pOutputData, (unsigned int *) &CRC, (int *) &nSpecialCodes, m_pAPEDecompress->GetInfo(APE_INFO_FILE_VERSION));
     }

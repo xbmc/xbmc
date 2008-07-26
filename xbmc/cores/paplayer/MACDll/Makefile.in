@@ -37,11 +37,13 @@ Source/MACDll/MACDll.o
 
 CFLAGS +=-ISource/Shared -DPIC -fPIC -ISource/MACLib -ISource/Console -s -O3 -pedantic -D__GNUC_IA32__ -DBUILD_CROSS_PLATFORM -D_LINUX
 
-LIB=../../../../system/players/paplayer/MACDll-i486-linux.so
-
-include ../../../../Makefile.include
-
-lib: $(LIB)
+ARCH=@ARCH@
+SYSDIR=../../../../system/players/paplayer/
+SO=MACDll-$(ARCH).so
+LIB=$(SYSDIR)/$(SO)
 
 $(LIB): $(OBJS)
-	gcc -fPIC -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+	$(CC) -fPIC -shared -o $@ $(OBJS) \
+		`cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+
+include ../../../../Makefile.include
