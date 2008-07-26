@@ -46,8 +46,6 @@ CRssReader::CRssReader() : CThread()
   m_pObserver = NULL;
   m_spacesBetweenFeeds = 0;
   m_bIsRunning = false;
-  m_iconv = (iconv_t) -1;
-  m_shouldFlip = false;
 }
 
 CRssReader::~CRssReader()
@@ -55,9 +53,6 @@ CRssReader::~CRssReader()
   StopThread();
   for (unsigned int i = 0; i < m_vecTimeStamps.size(); i++)
     delete m_vecTimeStamps[i];
-
-  if (m_iconv != (iconv_t) -1)
-    iconv_close(m_iconv);
 }
 
 void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, const vector<int> &times, int spacesBetweenFeeds)
@@ -245,7 +240,6 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
           // </title>
           if (htmlText.Equals("div") || htmlText.Equals("span"))
           {
-            m_shouldFlip = true;
             htmlText = childNode->FirstChild()->FirstChild()->Value();
           }
 
@@ -282,57 +276,17 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
 void CRssReader::fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDest)
 {
   CStdString flippedStrSource;
+  CStdString strSourceUtf8;
 
-  if (m_shouldFlip)
-  {
-    g_charsetConverter.logicalToVisualBiDi(strSource, flippedStrSource, m_encoding, FRIBIDI_TYPE_RTL);
-  }
-  else
-  {
-    flippedStrSource = strSource;
-  }
-
-  if (m_iconv != (iconv_t) - 1)
-  {
-    const char* src = flippedStrSource.c_str();
-    size_t inBytes = flippedStrSource.length() + 1;
-
-    wchar_t outBuf[1024];
-    char* dst = (char*) &outBuf[0];
-    size_t outBytes=1024;
-    size_t originalOutBytes = outBytes;
-
-    iconv(m_iconv, NULL, &inBytes, NULL, &outBytes);
-
-    if (iconv_const(m_iconv, &src, &inBytes, &dst, &outBytes) == (size_t) -1)
-    {
-      // For some reason it failed (maybe wrong charset?). Nothing to do but
-      // return the original..
-      strDest = flippedStrSource;
-      return;
-    }
-
-    outBuf[(originalOutBytes - outBytes) / 2] = '\0';
-    strDest = outBuf;
-  }
-  else
-  {
-    strDest = flippedStrSource;
-    return;
-  }
+  g_charsetConverter.stringCharsetToUtf8(m_encoding, strSource, strSourceUtf8);
+  g_charsetConverter.logicalToVisualBiDi(strSourceUtf8, flippedStrSource, FRIBIDI_CHAR_SET_UTF8, FRIBIDI_TYPE_RTL);
+  g_charsetConverter.utf8ToW(flippedStrSource, strDest, false);
 }
 
 bool CRssReader::Parse(LPSTR szBuffer, int iFeed)
 {
   m_xml.Clear();
   m_xml.Parse((LPCSTR)szBuffer, 0, TIXML_ENCODING_LEGACY);
-
-  if (m_iconv != (iconv_t) -1)
-  {
-    iconv_close(m_iconv);
-      m_iconv = (iconv_t) -1;
-    m_shouldFlip = false;
-  }
 
   m_encoding = "UTF-8";
   if (m_xml.RootElement())
@@ -345,13 +299,6 @@ bool CRssReader::Parse(LPSTR szBuffer, int iFeed)
   }
 
   CLog::Log(LOGDEBUG, "RSS feed encoding: %s", m_encoding.c_str());
-
-  m_iconv = iconv_open(WCHAR_CHARSET, m_encoding.c_str());
-
-  if (g_charsetConverter.isBidiCharset(m_encoding))
-  {
-    m_shouldFlip = true;
-  }
 
   return Parse(iFeed);
 }
