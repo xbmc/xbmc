@@ -24,7 +24,7 @@ DIRS=	\
 	xbmc/cores/paplayer/GYMCodec \
 	xbmc/cores/paplayer/DCACodec \
 	xbmc/cores/paplayer/YMCodec/StSoundLibrary \
-	xbmc/cores/paplayer/ModuleCodec \
+	xbmc/cores/paplayer/ModuleCodec/vc6/dumb \
 	xbmc/cores/paplayer/MPCCodec \
 	xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU\
 	xbmc/cores/paplayer/MP3Codec \
