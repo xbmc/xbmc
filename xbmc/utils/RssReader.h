@@ -32,11 +32,6 @@
 
 #include "StdString.h"
 #include "Thread.h"
-#ifndef _LINUX
-#include "../lib/libiconv/iconv.h"
-#else
-#include <iconv.h>
-#endif
 
 #include <vector>
 #include <list>
@@ -90,8 +85,6 @@ private:
   std::vector<std::string> m_vecUrls;
   std::vector<int> m_vecQueue;
   bool m_bIsRunning;
-  iconv_t m_iconv;
-  bool m_shouldFlip;
   CStdString m_encoding;
 };
 
