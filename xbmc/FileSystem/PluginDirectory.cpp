@@ -543,6 +543,7 @@ void CPluginDirectory::SetContent(int handle, const CStdString &strContent)
 
 void CPluginDirectory::SetProperty(int handle, const CStdString &strProperty, const CStdString &strValue)
 {
+  CSingleLock lock(m_handleLock);
   if (handle < 0 || handle >= (int)globalHandles.size())
   {
     CLog::Log(LOGERROR, "%s called with an invalid handle.", __FUNCTION__);
@@ -551,6 +552,19 @@ void CPluginDirectory::SetProperty(int handle, const CStdString &strProperty, co
 
   CPluginDirectory *dir = globalHandles[handle];
   dir->m_listItems->SetProperty(strProperty, strValue);
+}
+
+void CPluginDirectory::SetCacheToDisc(int handle, bool cacheToDisc)
+{
+  CSingleLock lock(m_handleLock);
+  if (handle < 0 || handle >= (int)globalHandles.size())
+  {
+    CLog::Log(LOGERROR, "%s called with an invalid handle.", __FUNCTION__);
+    return;
+  }
+
+  CPluginDirectory *dir = globalHandles[handle];
+  dir->m_listItems->SetCacheToDisc(cacheToDisc ? CFileItemList::CACHE_IF_SLOW : CFileItemList::CACHE_NEVER);
 }
 
 void CPluginDirectory::LoadPluginStrings(const CURL &url)

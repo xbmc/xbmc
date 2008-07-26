@@ -247,7 +247,7 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
     {
       AddQueuingFolder(items);
       if (CanCache())
-        items.SetCacheToDisc(true);
+        items.SetCacheToDisc(CFileItemList::CACHE_ALWAYS);
     }
     else
       items.Clear();

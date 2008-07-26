@@ -359,7 +359,7 @@ namespace PYXBMC
       return NULL;
     };
 
-    DIRECTORY::CPluginDirectory::SetProperty(handle, "donotcachetodisc", "1");
+    DIRECTORY::CPluginDirectory::SetCacheToDisc(handle, false);
 
     Py_INCREF(Py_None);
     return Py_None;
