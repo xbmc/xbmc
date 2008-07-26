@@ -8,3 +8,6 @@ lib: $(LIB)
 
 $(LIB): $(OBJS)
 	$(AR) $(ARFLAGS) $@ $(OBJS)
+
+include ../../../Makefile.include
+
