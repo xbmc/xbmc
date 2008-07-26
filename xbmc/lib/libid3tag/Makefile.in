@@ -1,11 +1,19 @@
-include ../../../Makefile.include
-
-LIB=../../../system/libid3tag-@ARCH@.so
 
 DIRS=libid3tag
+SYSDIR=../../../system
+SO=libid3tag-@ARCH@.so
+LIB=$(SYSDIR)/$(SO)
+CLEAN_FILES=libid3tag/compat.c libid3tag/frametype.c
 
-lib: $(LIB)
+.PHONY: compile
 
-$(LIB):
+$(LIB): libid3tag/.libs/libid3tag.so
+	$(CXX) -shared -fPIC -O3 -o $@ libid3tag/.libs/*.o \
+		`cat ../../cores/DllLoader/exports/wrapper.def` \
+		../../cores/DllLoader/exports/wrapper.o
+
+libid3tag/.libs/libid3tag.so: compile
 	$(MAKE) -C libid3tag
-	g++ -shared -o $@ libid3tag/.libs/*.o `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o -fPIC -O3
+
+include ../../../Makefile.include
+
