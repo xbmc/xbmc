@@ -22,6 +22,7 @@
  *
  */
 
+#include "stdafx.h"
 #include <malloc.h>
 #include "ArabicShaping.h"
 
