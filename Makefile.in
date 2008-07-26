@@ -160,11 +160,11 @@ papcodecs: dllloader linux dvdcodecs
 	$(MAKE) -C xbmc/cores/paplayer/DCACodec
 	$(MAKE) -C xbmc/cores/paplayer/flac-1.2.1
 	$(MAKE) -C xbmc/cores/paplayer/GYMCodec
-	if test $(ARCH) != "x86_64-linux"; then \
-		$(MAKE) -C xbmc/cores/paplayer/MACDll; \
-		$(MAKE) -C xbmc/cores/paplayer/ModuleCodec; \
-		$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU; \
-	fi
+ifneq ($(ARCH), x86_64-linux)
+	$(MAKE) -C xbmc/cores/paplayer/MACDll
+	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
+	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU	
+endif
 	$(MAKE) -C xbmc/cores/paplayer/MIDCodec
 	$(MAKE) -C xbmc/cores/paplayer/MPCCodec
 	$(MAKE) -C xbmc/cores/paplayer/MP3Codec
@@ -271,7 +271,7 @@ reallyclean:
 	 echo -n " Damnserious? (Y/*) "; \
 	 read -n1 PROMPT; \
 	 if [[ "$$PROMPT" = "Y" ]]; then \
-		SVNV=$$(svnversion -n | cut -d':' -f7-); _IFS=$$IFS; IFS=$$'\t\n'; \
+		SVNV=$$(svnversion -n | cut -d':' -f1); _IFS=$$IFS; IFS=$$'\t\n'; \
 		for i in `svn st --no-ignore | grep ^[I\?] | cut -d' ' -f7-`; \
 			do echo "  Deleting $$i"; \
 			rm -rf "$$i"; \
