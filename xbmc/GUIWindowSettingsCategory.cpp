@@ -1112,8 +1112,8 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("network.assignment"))
     {
       CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
-#ifdef HAS_LINUX_NETWORK    
-      if (pControl1)  
+#ifdef HAS_LINUX_NETWORK
+      if (pControl1)
          pControl1->SetEnabled(geteuid() == 0);
 #endif
     }
@@ -3531,7 +3531,7 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
 
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK) 
+#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
   // query list of interfaces
   vector<CStdString> vecInterfaces;
   std::vector<CNetworkInterface*>& ifaces = g_application.getNetwork().GetInterfaceList();
