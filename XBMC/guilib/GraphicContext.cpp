@@ -27,6 +27,7 @@
 #include "Settings.h"
 #include "GUISettings.h"
 #include "XBVideoConfig.h"
+#include "TextureManager.h"
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/Application.h"
 
@@ -1505,4 +1506,10 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
   }
   glXWaitX();
 #endif
+}
+
+void CGraphicContext::SetMediaDir(const CStdString &strMediaDir)
+{
+  g_TextureManager.SetTexturePath(strMediaDir);
+  m_strMediaDir = strMediaDir;
 }
