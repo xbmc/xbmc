@@ -1,0 +1,31 @@
+ARCH=@ARCH@
+DIRS=ogg libvorbis
+SYSDIR=../../../../system/players/paplayer
+SO=vorbisfile-$(ARCH).so
+LIB=$(SYSDIR)/$(SO)
+LIBS=libvorbis/lib/.libs/libvorbis.a ogg/src/.libs/libogg.a
+
+.PHONY: compile
+
+$(LIB): $(LIBS)
+	gcc -shared -o $@ -Wl,--whole-archive ogg/src/.libs/libogg.a \
+		libvorbis/lib/.libs/libvorbis.a -Wl,--no-whole-archive \
+		`cat ../../DllLoader/exports/wrapper.def` \
+		../../DllLoader/exports/wrapper.o
+
+$(LIBS): compile
+
+libvorbis/lib/.libs/libvorbis.a:
+	$(MAKE) -C libvorbis
+
+ogg/src/.libs/libogg.a:
+	$(MAKE) -C ogg
+
+clean:
+	for d in $(DIRS); do $(MAKE) -C $$d clean; done
+	rm -f $(LIB)
+
+distclean:
+	for d in $(DIRS); do $(MAKE) -C $$d distclean; done
+	rm -f $(LIB)
+
