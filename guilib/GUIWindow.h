@@ -55,6 +55,7 @@ class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 // forward
 class TiXmlNode;
 class TiXmlElement;
+class TiXmlDocument;
 
 class COrigin
 {
@@ -82,8 +83,8 @@ public:
   virtual ~CGUIWindow(void);
 
   bool Initialize();  // loads the window
-  virtual bool Load(const CStdString& strFileName, bool bContainsPath = false);
-  virtual bool Load(TiXmlElement* pRootElement);
+  bool Load(const CStdString& strFileName, bool bContainsPath = false);
+  
   virtual void SetPosition(float posX, float posY);
   void CenterWindow();
   virtual void Render();
@@ -160,6 +161,9 @@ public:
 #endif
 
 protected:
+  virtual bool LoadXML(const CStdString& strPath, const CStdString &strLowerPath);  ///< Loads from the given file
+  bool Load(TiXmlDocument &xmlDoc);                 ///< Loads from the given XML document
+
   virtual void SetDefaults();
   virtual void OnWindowUnload() {}
   virtual void OnWindowLoaded();

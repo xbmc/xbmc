@@ -30,6 +30,7 @@
 #include "Util.h"
 #include "GUIWindowManager.h"
 #include "FileItem.h"
+#include "File.h"
 
 using namespace std;
 
@@ -54,7 +55,7 @@ CGUIPythonWindowXML::CGUIPythonWindowXML(DWORD dwId, CStdString strXML, CStdStri
   m_vecItems = new CFileItemList;
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), *m_vecItems));
   m_coordsRes = PAL_4x3;
-  m_fallbackPath = strFallBackPath;
+  m_scriptPath = strFallBackPath;
 }
 
 CGUIPythonWindowXML::~CGUIPythonWindowXML(void)
@@ -298,23 +299,65 @@ void CGUIPythonWindowXML::PulseActionEvent()
 
 void CGUIPythonWindowXML::AllocResources(bool forceLoad /*= FALSE */)
 {
-  // Load language strings temporarily
-  LoadScriptStrings(m_fallbackPath);
-
   m_backupMediaDir = g_graphicsContext.GetMediaDir();
   CStdString tmpDir;
   CUtil::GetDirectory(m_xmlFile, tmpDir);
+  m_mediaDir = m_scriptPath;
   if (!tmpDir.IsEmpty())
   {
     CStdString fallbackMediaPath;
     CUtil::GetParentPath(tmpDir, fallbackMediaPath);
     CUtil::RemoveSlashAtEnd(fallbackMediaPath);
     g_graphicsContext.SetMediaDir(fallbackMediaPath);
-    m_fallbackPath = fallbackMediaPath;
+    m_mediaDir = fallbackMediaPath;
     //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: %s", fallbackMediaPath.c_str());
   }
   CGUIWindow::AllocResources(forceLoad);
   g_graphicsContext.SetMediaDir(m_backupMediaDir);
+}
+
+bool CGUIPythonWindowXML::LoadXML(const CStdString &strPath, const CStdString &strLowerPath)
+{
+  // load our window
+  XFILE::CFile file;
+  if (!file.Open(strPath) && !file.Open(CStdString(strPath).ToLower()) && !file.Open(strLowerPath))
+  {
+    // fail - can't load the file
+    CLog::Log(LOGERROR, "%s: Unable to load skin file %s", __FUNCTION__, strPath.c_str());
+    return false;
+  }
+  // load the strings in
+  int offset = LoadScriptStrings();
+
+  CStdString xml;
+  char *buffer = new char[(unsigned int)file.GetLength()];
+  if (buffer && file.Read(buffer, file.GetLength()))
+  { 
+    xml = buffer;
+    if (offset)
+    {
+      // replace the occurences of PYTHON### with offset+###
+      // not particularly efficient, but it works
+      int pos = xml.Find("PYTHON");
+      while (pos != CStdString::npos)
+      {
+        CStdString num = xml.Mid(pos + 6, 4);
+        int number = atol(num.c_str());
+        CStdString oldNumber, newNumber;
+        oldNumber.Format("PYTHON%d", number);
+        newNumber.Format("%lu", offset + number);
+        xml.Replace(oldNumber, newNumber);
+        pos = xml.Find("PYTHON", pos + 6);
+      }
+    }
+    delete[] buffer;
+  }
+
+  TiXmlDocument xmlDoc;
+  if (!xmlDoc.Parse(xml.c_str()))
+    return false;
+
+  return Load(xmlDoc);
 }
 
 void CGUIPythonWindowXML::FreeResources(bool forceUnLoad /*= FALSE */)
@@ -327,7 +370,7 @@ void CGUIPythonWindowXML::FreeResources(bool forceUnLoad /*= FALSE */)
 
 void CGUIPythonWindowXML::Render()
 {
-  g_graphicsContext.SetMediaDir(m_fallbackPath);
+  g_graphicsContext.SetMediaDir(m_mediaDir);
   CGUIWindow::Render();
   g_graphicsContext.SetMediaDir(m_backupMediaDir);
 }
@@ -497,11 +540,11 @@ const CFileItemList& CGUIPythonWindowXML::CurrentDirectory() const
   return *m_vecItems;
 }
 
-void CGUIPythonWindowXML::LoadScriptStrings(const CStdString &strPath)
+int CGUIPythonWindowXML::LoadScriptStrings()
 {
   // Path where the language strings reside
-  CStdString pathToLanguageFile = strPath;
-  CStdString pathToFallbackLanguageFile = strPath;
+  CStdString pathToLanguageFile = m_scriptPath;
+  CStdString pathToFallbackLanguageFile = m_scriptPath;
   CUtil::AddFileToFolder(pathToLanguageFile, "language", pathToLanguageFile);
   CUtil::AddFileToFolder(pathToFallbackLanguageFile, "language", pathToFallbackLanguageFile);
   CUtil::AddFileToFolder(pathToLanguageFile, g_guiSettings.GetString("locale.language"), pathToLanguageFile);
@@ -509,12 +552,12 @@ void CGUIPythonWindowXML::LoadScriptStrings(const CStdString &strPath)
   CUtil::AddFileToFolder(pathToLanguageFile, "strings.xml", pathToLanguageFile);
   CUtil::AddFileToFolder(pathToFallbackLanguageFile, "strings.xml", pathToFallbackLanguageFile);
 
-  // Load language strings temporarily
-  g_localizeStringsTemp.Load(pathToLanguageFile, pathToFallbackLanguageFile);
+  // allocate a bunch of strings 
+  return g_localizeStrings.LoadBlock(m_scriptPath, pathToLanguageFile, pathToFallbackLanguageFile);
 }
 
 void CGUIPythonWindowXML::ClearScriptStrings()
 {
   // Unload temporary language strings
-  g_localizeStringsTemp.Clear();
+  g_localizeStrings.ClearBlock(m_scriptPath);
 }
