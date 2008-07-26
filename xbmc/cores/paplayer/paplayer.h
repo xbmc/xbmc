@@ -89,7 +89,7 @@ public:
   virtual int GetCacheLevel() const; 
   virtual int GetTotalTime();
   __int64 GetTotalTime64();
-  virtual int GetBitrate();
+  virtual int GetAudioBitrate();
   virtual int GetChannels();
   virtual int GetBitsPerSample();
   virtual int GetSampleRate();
