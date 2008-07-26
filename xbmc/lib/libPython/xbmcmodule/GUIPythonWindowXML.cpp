@@ -299,21 +299,20 @@ void CGUIPythonWindowXML::PulseActionEvent()
 
 void CGUIPythonWindowXML::AllocResources(bool forceLoad /*= FALSE */)
 {
-  m_backupMediaDir = g_graphicsContext.GetMediaDir();
   CStdString tmpDir;
   CUtil::GetDirectory(m_xmlFile, tmpDir);
   m_mediaDir = m_scriptPath;
-  if (!tmpDir.IsEmpty())
+  if (!tmpDir.IsEmpty())  // TODO: This needs cleaning up - what is needed and what isn't?
   {
     CStdString fallbackMediaPath;
     CUtil::GetParentPath(tmpDir, fallbackMediaPath);
     CUtil::RemoveSlashAtEnd(fallbackMediaPath);
-    g_graphicsContext.SetMediaDir(fallbackMediaPath);
     m_mediaDir = fallbackMediaPath;
-    //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: %s", fallbackMediaPath.c_str());
   }
+  //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: %s", fallbackMediaPath.c_str());
+  g_TextureManager.AddTexturePath(m_mediaDir);
   CGUIWindow::AllocResources(forceLoad);
-  g_graphicsContext.SetMediaDir(m_backupMediaDir);
+  g_TextureManager.RemoveTexturePath(m_mediaDir);
 }
 
 bool CGUIPythonWindowXML::LoadXML(const CStdString &strPath, const CStdString &strLowerPath)
@@ -370,9 +369,9 @@ void CGUIPythonWindowXML::FreeResources(bool forceUnLoad /*= FALSE */)
 
 void CGUIPythonWindowXML::Render()
 {
-  g_graphicsContext.SetMediaDir(m_mediaDir);
+  g_TextureManager.AddTexturePath(m_mediaDir);
   CGUIWindow::Render();
-  g_graphicsContext.SetMediaDir(m_backupMediaDir);
+  g_TextureManager.RemoveTexturePath(m_mediaDir);
 }
 
 int Py_XBMC_Event_OnClick(void* arg)
