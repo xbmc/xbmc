@@ -1,11 +1,15 @@
 CFLAGS=-D_LINUX -fPIC -Iinclude -Ivc++
 OBJS=liba52/bit_allocate.o liba52/bitstream.o liba52/downmix.o liba52/imdct.o liba52/parse.o
+SYSDIR=../../../../system/players/paplayer
+SO=ac3codec-@ARCH@.so
+LIB=$(SYSDIR)/$(SO)
 
-ac3codec-@ARCH@.so: $(OBJS)
-	gcc -fPIC -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o && cp $@ ../../../../system/players/paplayer/
+$(LIB): $(OBJS)
+	gcc -fPIC -shared -o $@ $(OBJS) \
+		`cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
 
 clean:
-	$(RM) $(OBJS) *.so
+	$(RM) $(LIB) $(OBJS)
 
 %o : %c
 	gcc $(CFLAGS) -O2 -fPIC -c $< -o $@
