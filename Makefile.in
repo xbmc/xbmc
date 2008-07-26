@@ -37,7 +37,7 @@ DIRS=	\
 	xbmc/FileSystem/MusicDatabaseDirectory \
 	xbmc/FileSystem/VideoDatabaseDirectory \
 	xbmc/lib/cximage-6.0 \
-	xbmc/lib/libass \
+	xbmc/lib/libass/xbmc \
 	xbmc/lib/libcmyth \
 	xbmc/lib/libexif \
 	xbmc/lib/libGoAhead \
@@ -143,7 +143,7 @@ librtv:
 libxdaap:
 	$(MAKE) -C xbmc/lib/libXDAAP
 libass:
-	$(MAKE) -C xbmc/lib/libass -f Makefile.xbmc_linux
+	$(MAKE) -C xbmc/lib/libass 
 libhdhomerun:
 	$(MAKE) -C xbmc/lib/libhdhomerun
 libshout:
