@@ -26,7 +26,7 @@ DIRS=	\
 	xbmc/cores/paplayer/YMCodec/StSoundLibrary \
 	xbmc/cores/paplayer/ModuleCodec \
 	xbmc/cores/paplayer/MPCCodec \
-	xbmc/cores/paplayer/SPCCodec \
+	xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU\
 	xbmc/cores/paplayer/MP3Codec \
 	xbmc/cores/paplayer/flac-1.2.1/ \
 	xbmc/cores/paplayer/MACDll \
