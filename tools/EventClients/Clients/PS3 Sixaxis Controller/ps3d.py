@@ -75,7 +75,7 @@ class PS3SixaxisThread ( StoppableThread ):
         self.csock = csock
         self.isock = isock
         self.xbmc = XBMCClient("PS3 Sixaxis", ICON_PATH + "/bluetooth.png")
-        self.set_timeout(300)
+        self.set_timeout(600)
 
     def run(self):
         sixaxis.initialize(self.csock, self.isock)
@@ -117,6 +117,7 @@ class PS3SixaxisThread ( StoppableThread ):
                     if bflags:
                         try:
                             self.xbmc.send_keyboard_button(keymap_sixaxis[bflags])
+                            self.reset_timeout()
                         except:
                             pass
                     else:
