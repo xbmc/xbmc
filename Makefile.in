@@ -243,7 +243,7 @@ install-datas: tools/XBMCTex/XBMCTex
 	@find language media screensavers scripts skin sounds userdata visualisations system -type d -not -iregex ".*svn.*" -exec mkdir -p $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@echo "Copying system files to $(prefix)/share/xbmc"
 	@# Arch independent files
-	@find language media screensavers scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
+	@find language media screensavers scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*win32\.vis|.*osx\.vis" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@# Arch dependent files
 	@find system -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*@ARCH@.*" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@# PM3
