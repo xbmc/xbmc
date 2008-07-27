@@ -41,6 +41,11 @@ CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, float posX, 
 
   m_pReader = NULL;
   ControlType = GUICONTROL_RSS;
+
+  if (g_guiSettings.GetBool("lookandfeel.rssfeedsrtl"))
+  {
+    m_scrollInfo.SetSpeed(-60);
+  }
 }
 
 CGUIRSSControl::~CGUIRSSControl(void)
@@ -53,7 +58,7 @@ CGUIRSSControl::~CGUIRSSControl(void)
 
 void CGUIRSSControl::SetUrls(const vector<string> &vecUrl)
 {
-  m_vecUrls = vecUrl; 
+  m_vecUrls = vecUrl;
 }
 
 void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)

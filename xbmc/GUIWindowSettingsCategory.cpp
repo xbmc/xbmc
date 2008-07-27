@@ -1344,6 +1344,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videolibrary.enabled"));
     }
+    else if (strSetting.Equals("lookandfeel.rssfeedsrtl"))
+    { // only visible if rss is enabled
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
+    }
   }
 }
 
@@ -1632,7 +1637,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_application.StopFtpServer();
     if (g_guiSettings.GetBool("servers.ftpserver"))
       g_application.StartFtpServer();
-
   }
   else if (strSetting.Equals("servers.ftpserverpassword"))
   {
