@@ -82,7 +82,7 @@ bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems
   return !dir->m_cancelled;
 }
 
-void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceListing)
+void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceListing, bool cacheToDisc)
 {
   CSingleLock lock(m_handleLock);
   if (handle < 0 || handle >= (int)globalHandles.size())
@@ -91,6 +91,10 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
     return;
   }
   CPluginDirectory *dir = globalHandles[handle];
+
+  // set cache to disc
+  dir->m_listItems->SetCacheToDisc(cacheToDisc ? CFileItemList::CACHE_IF_SLOW : CFileItemList::CACHE_NEVER);
+
   dir->m_success = success;
   dir->m_listItems->SetReplaceListing(replaceListing);
 
@@ -552,19 +556,6 @@ void CPluginDirectory::SetProperty(int handle, const CStdString &strProperty, co
 
   CPluginDirectory *dir = globalHandles[handle];
   dir->m_listItems->SetProperty(strProperty, strValue);
-}
-
-void CPluginDirectory::SetCacheToDisc(int handle, bool cacheToDisc)
-{
-  CSingleLock lock(m_handleLock);
-  if (handle < 0 || handle >= (int)globalHandles.size())
-  {
-    CLog::Log(LOGERROR, "%s called with an invalid handle.", __FUNCTION__);
-    return;
-  }
-
-  CPluginDirectory *dir = globalHandles[handle];
-  dir->m_listItems->SetCacheToDisc(cacheToDisc ? CFileItemList::CACHE_IF_SLOW : CFileItemList::CACHE_NEVER);
 }
 
 void CPluginDirectory::LoadPluginStrings(const CURL &url)
