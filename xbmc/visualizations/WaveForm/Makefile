@@ -1,13 +1,14 @@
 INCLUDES=-I. -I../../linux -I../../ -I ../../../guilib
+DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
 
 SRCS=Main.cpp
 
-LIB=Waveform.vis
-DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
+LIB=../../../visualisations/Waveform.vis
 
 include ../../../Makefile.include
+-include $(OBJS:.o=.P)
 
-lib: $(OBJS) vis
+$(LIB): $(OBJS)
+	$(CXX) -fpic -shared -g -o $(LIB) $(OBJS)
 
-vis:
-	$(CXX) -fpic -shared -o $(LIB) $(OBJS) && cp $(LIB) ../../../visualisations/
+.DEFAULT_GOAL:= $(LIB)
