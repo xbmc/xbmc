@@ -377,3 +377,4 @@ bool CGUIControlGroupList::IsLastFocusableControl(const CGUIControl *control) co
   }
   return false;
 }
+
