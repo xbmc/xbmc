@@ -220,7 +220,7 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
   if (flipY && strcmpi(flipY, "true") == 0) image.orientation = 3 - image.orientation;  // either 3 or 2
   image.diffuse = pNode->Attribute("diffuse");
   CStdString fallback = pNode->Attribute("fallback");
-  CStdString file = pNode->FirstChild() ? pNode->FirstChild()->Value() : "";
+  CStdString file = (pNode->FirstChild() && pNode->FirstChild()->ValueStr() != "-") ? pNode->FirstChild()->Value() : "";
   image.diffuse.Replace("/", "\\");
   file.Replace("/", "\\");
   fallback.Replace("/", "\\");
@@ -963,7 +963,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
   XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
 
-  if (!GetTexture(pControlNode, "imagepath", texturePath))
+  GetTexture(pControlNode, "imagepath", texturePath);
+  if (texturePath.file.IsEmpty())
     GetInfoLabel(pControlNode, "imagepath", texturePath.file);
   XMLUtils::GetDWORD(pControlNode,"timeperimage", timePerImage);
   XMLUtils::GetDWORD(pControlNode,"fadetime", fadeTime);
