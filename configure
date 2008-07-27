@@ -10056,11 +10056,13 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <stdio.h>
+#include <sys/types.h> /* for off_t */
+     #include <stdio.h>
 int
 main ()
 {
-return fseeko (stdin, 0, 0) && (fseeko) (stdin, 0, 0);
+int (*fp) (FILE *, off_t, int) = fseeko;
+     return fseeko (stdin, 0, 0) && fp (stdin, 0, 0);
   ;
   return 0;
 }
@@ -10100,11 +10102,13 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #define _LARGEFILE_SOURCE 1
-#include <stdio.h>
+#include <sys/types.h> /* for off_t */
+     #include <stdio.h>
 int
 main ()
 {
-return fseeko (stdin, 0, 0) && (fseeko) (stdin, 0, 0);
+int (*fp) (FILE *, off_t, int) = fseeko;
+     return fseeko (stdin, 0, 0) && fp (stdin, 0, 0);
   ;
   return 0;
 }
@@ -14780,20 +14784,20 @@ echo "$as_me: error: Submodule xbmc/lib/libid3tag/libid3tag doesn't exist" >&2;}
 fi;
 
 
-if [ -d xbmc/visualizations/XBMCProjectM ]; then
-  pushd xbmc/visualizations/XBMCProjectM
-  cd libprojectM; CC="" CXX="" cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .;
+if [ -d xbmc/visualizations/XBMCProjectM/libprojectM ]; then
+  pushd xbmc/visualizations/XBMCProjectM/libprojectM
+  rm -f CMakeCache.txt && CC="" CXX="" cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
   if [ $? -ne 0 ]; then
     popd
-    { { echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/XBMCProjectM failed to configure" >&5
-echo "$as_me: error: Submodule xbmc/visualizations/XBMCProjectM failed to configure" >&2;}
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/XBMCProjectM/libprojectM failed to configure" >&5
+echo "$as_me: error: Submodule xbmc/visualizations/XBMCProjectM/libprojectM failed to configure" >&2;}
    { (exit 1); exit 1; }; }
   else
     popd
   fi;
 else
-  { { echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/XBMCProjectM doesn't exist" >&5
-echo "$as_me: error: Submodule xbmc/visualizations/XBMCProjectM doesn't exist" >&2;}
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/XBMCProjectM/libprojectM doesn't exist" >&5
+echo "$as_me: error: Submodule xbmc/visualizations/XBMCProjectM/libprojectM doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
 fi;
 
