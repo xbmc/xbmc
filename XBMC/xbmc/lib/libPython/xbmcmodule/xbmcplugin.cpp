@@ -100,40 +100,43 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(endOfDirectory__doc__,
-    "endOfDirectory(handle[, succeeded, updateListing]) -- Callback function to tell XBMC that the end of the directory listing in a virtualPythonFolder module is reached.\n"
+    "endOfDirectory(handle[, succeeded, updateListing, cacheToDisc]) -- Callback function to tell XBMC that the end of the directory listing in a virtualPythonFolder module is reached.\n"
     "\n"
     "handle           : integer - handle the plugin was started with.\n"
     "succeeded        : [opt] bool - True=script completed successfully(Default)/False=Script did not.\n"
     "updateListing    : [opt] bool - True=this folder should update the current listing/False=Folder is a subfolder(Default).\n"
+    "cacheToDisc      : [opt] bool - True=Folder will cache if extended time(default)/False=this folder will never cache to disc.\n"
     "\n"
     "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
     "example:\n"
-    "  - xbmcplugin.endOfDirectory(int(sys.argv[1]))\n");
+    "  - xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=False)\n");
 
   PyObject* XBMCPLUGIN_EndOfDirectory(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static const char *keywords[] = { "handle", "succeeded", "updateListing", NULL };
+    static const char *keywords[] = { "handle", "succeeded", "updateListing", "cacheToDisc", NULL };
     int handle = -1;
     bool bSucceeded = true;
     bool bUpdateListing = false;
+    bool bCacheToDisc = true;
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      (char*)"i|bb",
+      (char*)"i|bbb",
       (char**)keywords,
       &handle,
       &bSucceeded,
-      &bUpdateListing
+      &bUpdateListing,
+      &bCacheToDisc
       ))
     {
       return NULL;
     };
 
     // tell the directory class that we're done
-    DIRECTORY::CPluginDirectory::EndOfDirectory(handle, bSucceeded, bUpdateListing);
+    DIRECTORY::CPluginDirectory::EndOfDirectory(handle, bSucceeded, bUpdateListing, bCacheToDisc);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -331,40 +334,6 @@ namespace PYXBMC
     return Py_None;
   }
 
-  PyDoc_STRVAR(disableCache__doc__,
-    "disableCache(handle) -- Disables the cache to disc in current directory for this plugin.\n"
-    "\n"
-    "handle      : integer - handle the plugin was started with.\n"
-    "\n"
-    "*Note, You can use the above as keywords for arguments.\n"
-    "\n"
-    "       By default caching is time based.\n"
-    "\n"
-    "example:\n"
-    "  - xbmcplugin.disableCache(int(sys.argv[1]))\n");
-
-  PyObject* XBMCPLUGIN_DisableCache(PyTypeObject *type, PyObject *args, PyObject *kwds)
-  {
-    static char *keywords[] = { "handle", NULL };
-    int handle = -1;
-    // parse arguments to constructor
-    if (!PyArg_ParseTupleAndKeywords(
-      args,
-      kwds,
-      (char*)"i",
-      (char**)keywords,
-      &handle
-      ))
-    {
-      return NULL;
-    };
-
-    DIRECTORY::CPluginDirectory::SetCacheToDisc(handle, false);
-
-    Py_INCREF(Py_None);
-    return Py_None;
-  }
-
   // define c functions to be used in python here
   PyMethodDef pluginMethods[] = {
     {(char*)"addDirectoryItem", (PyCFunction)XBMCPLUGIN_AddDirectoryItem, METH_VARARGS|METH_KEYWORDS, addDirectoryItem__doc__},
@@ -374,7 +343,6 @@ namespace PYXBMC
     {(char*)"setContent", (PyCFunction)XBMCPLUGIN_SetContent, METH_VARARGS|METH_KEYWORDS, setContent__doc__},
     {(char*)"setPluginCategory", (PyCFunction)XBMCPLUGIN_SetPluginCategory, METH_VARARGS|METH_KEYWORDS, setPluginCategory__doc__},
     {(char*)"setPluginFanart", (PyCFunction)XBMCPLUGIN_SetPluginFanart, METH_VARARGS|METH_KEYWORDS, setPluginFanart__doc__},
-    {(char*)"disableCache", (PyCFunction)XBMCPLUGIN_DisableCache, METH_VARARGS|METH_KEYWORDS, disableCache__doc__},
     {NULL, NULL, 0, NULL}
   };
 
