@@ -1,13 +1,14 @@
 INCLUDES=-I. -I.. -I../../linux -I../../ -I ../../../guilib
+DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
 
 SRCS=opengl_spectrum.cpp
 
-LIB=opengl_spectrum.vis
-DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
+LIB=../../../visualisations/opengl_spectrum.vis
 
 include ../../../Makefile.include
+-include $(OBJS:.o=.P)
 
-lib: $(OBJS) vis
+$(LIB): $(OBJS)
+	$(CXX) -fpic -shared -g -o $(LIB) $(OBJS)
 
-vis:
-	$(CXX) -fpic -shared -g -o $(LIB) $(OBJS) && cp $(LIB) ../../../visualisations
+.DEFAULT_GOAL:= $(LIB)

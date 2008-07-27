@@ -1,15 +1,20 @@
 INCLUDES=-I. -I.. -I../../linux -I../../ -I../../../guilib -I../../../visualisations
 SRCS=Main.cpp
-LIB=ProjectM.vis
+LIB=../../../visualisations/ProjectM.vis
 CFLAGS=-O3 -g -fPIC
-
-default: vis
 DIRS=libprojectM
 
 include ../../../Makefile.include
+-include $(OBJS:.o=.P)
 
-lib: vis
+.PHONY: $(DIRS)
+.DEFAULT_GOAL:= $(LIB)
 
-vis: Main.o
+libprojectM/libprojectM.so: libprojectM;
+libprojectM:
 	$(MAKE) -C libprojectM
-	$(CXX) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared $(CFLAGS) -o $(LIB) $(OBJS) `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o && cp $(LIB) ../../../visualisations/
+
+$(LIB): $(OBJS) libprojectM/libprojectM.so
+	$(CXX) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared $(CFLAGS) -o $(LIB) $(OBJS) `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
+
+
