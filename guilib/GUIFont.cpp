@@ -123,28 +123,58 @@ void CGUIFont::DrawScrollingText(float x, float y, const std::vector<DWORD> &col
   //   pixelPos is the amount in pixels to move the string by.
   //   characterPos is the amount in characters to rotate the string by.
   //
+  float offset = 0;
   if (!scrollInfo.waitTime)
   {
     // move along by the appropriate scroll amount
-    float scrollAmount = scrollInfo.GetPixelsPerFrame() * g_graphicsContext.GetGUIScaleX();
-    // we want to move scrollAmount, grab the next character
-    float charWidth = GetCharWidth(scrollInfo.GetCurrentChar(text));
-    if (scrollInfo.pixelPos + scrollAmount < charWidth)
-      scrollInfo.pixelPos += scrollAmount;  // within the current character
-    else
-    { // past the current character, decrement scrollAmount by the charWidth and move to the next character
-      while (scrollInfo.pixelPos + scrollAmount > charWidth)
-      {
-        scrollAmount -= (charWidth - scrollInfo.pixelPos);
-        scrollInfo.pixelPos = 0;
-        scrollInfo.characterPos++;
-        if (scrollInfo.characterPos >= text.size() + scrollInfo.suffix.size())
+    float scrollAmount = fabs(scrollInfo.GetPixelsPerFrame() * g_graphicsContext.GetGUIScaleX());
+
+    if (scrollInfo.pixelSpeed > 0)
+    {
+      // we want to move scrollAmount, grab the next character
+      float charWidth = GetCharWidth(scrollInfo.GetCurrentChar(text));
+      if (scrollInfo.pixelPos + scrollAmount < charWidth)
+        scrollInfo.pixelPos += scrollAmount;  // within the current character
+      else
+      { // past the current character, decrement scrollAmount by the charWidth and move to the next character
+        while (scrollInfo.pixelPos + scrollAmount > charWidth)
         {
-          scrollInfo.Reset();
-          break;
+          scrollAmount -= (charWidth - scrollInfo.pixelPos);
+          scrollInfo.pixelPos = 0;
+          scrollInfo.characterPos++;
+          if (scrollInfo.characterPos >= text.size() + scrollInfo.suffix.size())
+          {
+            scrollInfo.Reset();
+            break;
+          }
+          charWidth = GetCharWidth(scrollInfo.GetCurrentChar(text));
         }
-        charWidth = GetCharWidth(scrollInfo.GetCurrentChar(text));
       }
+      offset = scrollInfo.pixelPos;
+    }
+    else
+    { // scrolling backwards
+      // we want to move scrollAmount, grab the next character
+      float charWidth = GetCharWidth(scrollInfo.GetCurrentChar(text));
+      if (scrollInfo.pixelPos + scrollAmount < charWidth)
+        scrollInfo.pixelPos += scrollAmount;  // within the current character
+      else
+      { // past the current character, decrement scrollAmount by the charWidth and move to the next character
+        while (scrollInfo.pixelPos + scrollAmount > charWidth)
+        {
+          scrollAmount -= (charWidth - scrollInfo.pixelPos);
+          scrollInfo.pixelPos = 0;
+          if (scrollInfo.characterPos == 0)
+          {
+            scrollInfo.Reset();
+            scrollInfo.characterPos = text.size() + scrollInfo.suffix.size() - 1;
+            break;
+          }
+          scrollInfo.characterPos--;
+          charWidth = GetCharWidth(scrollInfo.GetCurrentChar(text));
+        }
+      }
+      offset = charWidth - scrollInfo.pixelPos;
     }
   }
   else
@@ -170,9 +200,9 @@ void CGUIFont::DrawScrollingText(float x, float y, const std::vector<DWORD> &col
     renderColors.push_back(g_graphicsContext.MergeAlpha(colors[i] ? colors[i] : m_textColor));
 
   if (shadowColor)
-    m_font->DrawTextInternal(x - scrollInfo.pixelPos + 1, y + 1, g_graphicsContext.MergeAlpha(shadowColor), renderText, alignment, maxWidth + scrollInfo.pixelPos + m_font->GetLineHeight(2.0f));
+    m_font->DrawTextInternal(x - offset + 1, y + 1, g_graphicsContext.MergeAlpha(shadowColor), renderText, alignment, maxWidth + scrollInfo.pixelPos + m_font->GetLineHeight(2.0f));
 
-  m_font->DrawTextInternal(x - scrollInfo.pixelPos, y, renderColors, renderText, alignment, maxWidth + scrollInfo.pixelPos + m_font->GetLineHeight(2.0f));
+  m_font->DrawTextInternal(x - offset, y, renderColors, renderText, alignment, maxWidth + scrollInfo.pixelPos + m_font->GetLineHeight(2.0f));
 
   g_graphicsContext.RestoreClipRegion();
 }

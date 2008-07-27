@@ -37,7 +37,7 @@ public:
     // value will mean the text starts to the right
     pixelPos = -initialPos;
     // privates:
-    m_averageFrameTime = 1000.f / defaultSpeed;
+    m_averageFrameTime = 1000.f / abs(defaultSpeed);
     m_lastFrameTime = 0;
   }
   DWORD GetCurrentChar(const std::vector<DWORD> &text) const
