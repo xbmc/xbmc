@@ -256,7 +256,7 @@ install-datas: tools/XBMCTex/XBMCTex
 
 install-web:
 	@mkdir -p $(prefix)/share/xbmc/web
-	@unzip web/Project_Mayem_III_webserver_v1.0.zip -d $(prefix)/share/xbmc/web
+	@unzip web/Project_Mayhem_III_webserver_v1.0.zip -d $(prefix)/share/xbmc/web
 
 uninstall:
 	@echo "Removing XBMC..."
