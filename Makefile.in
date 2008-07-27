@@ -70,6 +70,8 @@ INCLUDES=@INCLUDES@
 
 all : compile xbmc.bin xbmc-xrandr skin/Project\ Mayhem\ III/media/Textures.xpr;
 
+include Makefile.include
+
 .PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualizations screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients librtmp papcodecs dvdcodecs imagelib
 
 skin/Project\ Mayhem\ III/media/Textures.xpr: tools/XBMCTex/XBMCTex
@@ -160,8 +162,8 @@ papcodecs: dllloader linux dvdcodecs
 	$(MAKE) -C xbmc/cores/paplayer/DCACodec
 	$(MAKE) -C xbmc/cores/paplayer/flac-1.2.1
 	$(MAKE) -C xbmc/cores/paplayer/GYMCodec
-ifneq ($(ARCH), x86_64-linux)
 	$(MAKE) -C xbmc/cores/paplayer/MACDll
+ifneq ($(ARCH), x86_64-linux)
 	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
 	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU	
 endif
@@ -286,4 +288,3 @@ reallyclean:
 	 	echo; \
 	 fi
 
-include Makefile.include
