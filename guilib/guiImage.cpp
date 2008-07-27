@@ -532,14 +532,22 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
     glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x1, diffuse.y1);
   glVertex3f(x1, y1, z1);
   
-  // Bottom-left vertex (corner)
+  // Top-right vertex (corner)
   color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[1],m_diffuseColor));  
   glColor4ub((GLubyte)((color >> 16) & 0xff), (GLubyte)((color >> 8) & 0xff), (GLubyte)(color & 0xff), (GLubyte)(color >> 24));
-  glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x2, texture.y1);
+  if (textureOrientation & 4)
+    glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x1, texture.y2);
+  else
+    glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x2, texture.y1);
   if (m_diffuseTexture)
-    glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x2, diffuse.y1);
+  {
+    if (m_image.orientation & 4)
+      glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x1, diffuse.y2);
+    else
+      glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x2, diffuse.y1);
+  }
   glVertex3f(x2, y2, z2);
-  
+
   // Bottom-right vertex (corner)
   color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[2],m_diffuseColor));  
   glColor4ub((GLubyte)((color >> 16) & 0xff), (GLubyte)((color >> 8) & 0xff), (GLubyte)(color & 0xff), (GLubyte)(color >> 24));
@@ -548,12 +556,20 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
     glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x2, diffuse.y2);
   glVertex3f(x3, y3, z3);
   
-  // Top-right vertex (corner)
+  // Bottom-left vertex (corner)
   color = g_graphicsContext.MergeAlpha(MIX_ALPHA(m_alpha[3],m_diffuseColor));  
   glColor4ub((GLubyte)((color >> 16) & 0xff), (GLubyte)((color >> 8) & 0xff), (GLubyte)(color & 0xff), (GLubyte)(color >> 24));
-  glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x1, texture.y2);
+  if (textureOrientation & 4)
+    glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x2, texture.y1);
+  else
+    glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x1, texture.y2);
   if (m_diffuseTexture)
-    glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x1, diffuse.y2);
+  {
+    if (m_image.orientation & 4)
+      glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x2, diffuse.y1);
+    else
+      glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x1, diffuse.y2);
+  }
   glVertex3f(x4, y4, z4);
 #endif
 }
@@ -1103,8 +1119,13 @@ void CGUIImage::OrientateTexture(CRect &rect, int orientation)
   }
   if (orientation & 4)
   {
-    swap(rect.x1, rect.y1);
-    swap(rect.x2, rect.y2);
+    // we need to swap x and y coordinates but only within the m_fU,m_fV block
+    float temp = rect.x1;
+    rect.x1 = rect.y1 * m_fU/m_fV;
+    rect.y1 = temp * m_fV/m_fU;
+    temp = rect.x2;
+    rect.x2 = rect.y2 * m_fU/m_fV;
+    rect.y2 = temp * m_fV/m_fU;
   }
 }
 
