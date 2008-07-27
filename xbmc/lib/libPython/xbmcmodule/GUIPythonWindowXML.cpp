@@ -335,7 +335,7 @@ bool CGUIPythonWindowXML::LoadXML(const CStdString &strPath, const CStdString &s
       // replace the occurences of PYTHON### with offset+###
       // not particularly efficient, but it works
       int pos = xml.Find("PYTHON");
-      while (pos != CStdString::npos)
+      while (pos != (int)CStdString::npos)
       {
         CStdString num = xml.Mid(pos + 6, 4);
         int number = atol(num.c_str());
