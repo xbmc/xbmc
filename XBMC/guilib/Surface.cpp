@@ -564,9 +564,6 @@ void CSurface::EnableVSync(bool enable)
   {
     CLog::Log(LOGINFO, "GL: Enabling VSYNC");
 
-#ifdef __GNUC__
-// FIXME: using vsync on nvidia always true
-#endif
     // the following setenv will currently have no effect on rendering. it should be set before screen setup.
     // workaround needed.
 #ifdef _LINUX
@@ -584,53 +581,47 @@ void CSurface::EnableVSync(bool enable)
   }
 
   // Nvidia cards: See Appendix E. of NVidia Linux Driver Set README
-  CStdString strVendor(s_glVendor);
+  CStdString strVendor(s_glVendor), strRenderer(s_glRenderer);
   strVendor.ToLower();
-  bool bNVidia = (strVendor.find("nvidia") != std::string::npos);
-  if (!bNVidia)
-  {
-    if (_glXSwapIntervalSGI)
-      _glXSwapIntervalSGI(0);
-    if (_glXSwapIntervalMESA)
-      _glXSwapIntervalMESA(0);
-    if (_wglSwapIntervalEXT)
-      _wglSwapIntervalEXT(0);
-  }
+  strRenderer.ToLower();
 
   m_iVSyncMode = 0;
   m_bVSync=enable;
-  if (bNVidia)
+  if (strVendor.find("nvidia") != std::string::npos)
     return;
+
+#ifdef HAS_GLX
+  // Obtain function pointers
+  if (!_glXGetSyncValuesOML)
+    _glXGetSyncValuesOML = (Bool (*)(Display*, GLXDrawable, int64_t*, int64_t*, int64_t*))glXGetProcAddress((const GLubyte*)"glXGetSyncValuesOML");
+  if (!_glXSwapBuffersMscOML)
+    _glXSwapBuffersMscOML = (int64_t (*)(Display*, GLXDrawable, int64_t, int64_t, int64_t))glXGetProcAddress((const GLubyte*)"glXSwapBuffersMscOML");
+  if (!_glXWaitVideoSyncSGI)
+    _glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
+  if (!_glXGetVideoSyncSGI)
+    _glXGetVideoSyncSGI = (int (*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetVideoSyncSGI");
+  if (!_glXSwapIntervalSGI)
+    _glXSwapIntervalSGI = (int (*)(int))glXGetProcAddress((const GLubyte*)"glXSwapIntervalSGI");
+  if (!_glXSwapIntervalMESA)
+    _glXSwapIntervalMESA = (int (*)(int))glXGetProcAddress((const GLubyte*)"glXSwapIntervalMESA");
+#elif defined (_WIN32)
+  if (!_wglSwapIntervalEXT)
+    _wglSwapIntervalEXT = (bool (APIENTRY *)(GLint))wglGetProcAddress("wglSwapIntervalEXT");
+#endif
+
+#ifdef HAS_GLX
+  if (_glXSwapIntervalSGI)
+    _glXSwapIntervalSGI(0);
+  if (_glXSwapIntervalMESA)
+    _glXSwapIntervalMESA(0);
+#elif defined (_WIN32)
+  if (_wglSwapIntervalEXT)
+    _wglSwapIntervalEXT(0);
+#endif
+
   if (IsValid() && enable)
   {
 #ifdef HAS_GLX
-    // Obtain function pointers
-    if (!_glXGetSyncValuesOML)
-      _glXGetSyncValuesOML = (Bool (*)(Display*, GLXDrawable, int64_t*, int64_t*, int64_t*))glXGetProcAddress((const GLubyte*)"glXGetSyncValuesOML");
-    if (!_glXSwapBuffersMscOML)
-      _glXSwapBuffersMscOML = (int64_t (*)(Display*, GLXDrawable, int64_t, int64_t, int64_t))glXGetProcAddress((const GLubyte*)"glXSwapBuffersMscOML");
-    if (!_glXWaitVideoSyncSGI)
-    {
-      _glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
-    }
-    if (!_glXGetVideoSyncSGI)
-    {
-      _glXGetVideoSyncSGI = (int (*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetVideoSyncSGI");
-    }
-    if (!_glXSwapIntervalSGI)
-    {
-      _glXSwapIntervalSGI = (int (*)(int))glXGetProcAddress((const GLubyte*)"glXSwapIntervalSGI");
-    }
-    if (!_glXSwapIntervalMESA)
-    {
-      _glXSwapIntervalMESA = (int (*)(int))glXGetProcAddress((const GLubyte*)"glXSwapIntervalMESA");
-    }
-#elif defined (_WIN32)
-    if (!_wglSwapIntervalEXT)
-    {
-      _wglSwapIntervalEXT = (bool (APIENTRY *)(GLint))wglGetProcAddress("wglSwapIntervalEXT");
-    }
-#endif
     // first we set swap interval to keep fps down
     if (_glXSwapIntervalSGI)
     {
@@ -642,19 +633,14 @@ void CSurface::EnableVSync(bool enable)
       if(_glXSwapIntervalMESA(1) != 0)
         CLog::Log(LOGWARNING, "%s - glXSwapIntervalMESA failed", __FUNCTION__);
     }
-#ifdef _WIN32
+#elif defined (_WIN32)
     if (_wglSwapIntervalEXT)
     {
-      m_iVSyncMode = 1;
       if(!_wglSwapIntervalEXT(1))
-      {
-        CLog::Log(LOGWARNING, "%s - wglSwapIntervalEXT failed, disabling vsync", __FUNCTION__);
-        //stop it from trying to set vsync again
-        g_videoConfig.SetVSyncMode(VSYNC_DISABLED);
-        m_iVSyncMode = 0;
-      }
+        CLog::Log(LOGWARNING, "%s - wglSwapIntervalEXT failed", __FUNCTION__);
     }
 #endif
+
 #ifdef HAS_GLX
     // now let's see if we have some system to do specific vsync handling
     if (_glXGetSyncValuesOML && _glXSwapBuffersMscOML && !m_iVSyncMode)
@@ -669,11 +655,17 @@ void CSurface::EnableVSync(bool enable)
     {
       unsigned int count;
       if(_glXGetVideoSyncSGI(&count) == 0)
-        m_iVSyncMode = 4;
+      {
+        if (strRenderer.find("intel") != std::string::npos)
+          m_iVSyncMode = 3;
+        else
+          m_iVSyncMode = 4;
+      }
       else
         CLog::Log(LOGWARNING, "%s - glXGetVideoSyncSGI failed, glcontext probably not direct", __FUNCTION__);
     }
 #endif
+
     if(!m_iVSyncMode)
     {
       m_iVSyncMode = 0;
@@ -692,9 +684,27 @@ void CSurface::Flip()
   if (m_bOK && m_bDoublebuffer)
   {
 #ifdef HAS_GLX
-    glFinish();
-    if (m_iVSyncMode == 4)
+    if (m_iVSyncMode == 3)
     {
+      glFinish();
+      unsigned int before, after;
+      if(_glXGetVideoSyncSGI(&before) != 0)
+        CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Failed to get current retrace count", __FUNCTION__);
+
+      glXSwapBuffers(s_dpy, m_glWindow);
+
+      if(_glXGetVideoSyncSGI(&after) != 0)
+        CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Failed to get current retrace count", __FUNCTION__);
+
+      if(after == before)
+      {
+        CLog::Log(LOGINFO, "GL: retrace count didn't change after buffer swap, switching to vsync mode 4", __FUNCTION__);
+        m_iVSyncMode = 4;
+      }
+    }
+    else if (m_iVSyncMode == 4)
+    {
+      glFinish();
       unsigned int vCount;
       if(_glXGetVideoSyncSGI(&vCount) == 0)
         _glXWaitVideoSyncSGI(2, (vCount+1)%2, &vCount);
