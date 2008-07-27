@@ -1268,6 +1268,7 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   m_replaceListing = itemlist.m_replaceListing;
   m_content = itemlist.m_content;
   m_mapProperties = itemlist.m_mapProperties;
+  m_cacheToDisc = itemlist.m_cacheToDisc;
 }
 
 CFileItemPtr CFileItemList::Get(int iItem)
