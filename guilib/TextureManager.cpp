@@ -1095,7 +1095,8 @@ CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName)
     for (vector<CStdString>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
     {
       CStdString path;
-      path.Format("%s\\media\\%s", _P(it->c_str()), textureName.c_str());
+      path.Format("%s\\media\\%s", it->c_str(), textureName.c_str());
+      path = _P(path);
       if (XFILE::CFile::Exists(path))
         return path;
     }
