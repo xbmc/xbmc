@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 14277-->
+<!--Based on english strings version 14383-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -449,7 +449,7 @@
   <string id="542">DVD ikoner</string>
   <string id="543">DVD</string>
   <string id="544">Mediainfo</string>
-  <string id="545">Audio Output Device</string>
+  <string id="545"Ljudutgångsenhet</string>
   <string id="546">Genomströmning utgångsenhet</string>
   <string id="547">Ingen biografi för denna artist</string>
   <string id="550">Sort: %s</string>
@@ -743,6 +743,8 @@
   <string id="1412">blåsigt</string>
   <string id="1413">duggregn</string>
   <string id="1414">Åskstorm</string>
+  <string id="1415">Duggar</string>
+  <string id="1416">Disigt</string>
   <string id="2050">Speltid:</string>
   <string id="4501">LCD typ</string>
   <string id="10000">Hem</string>
@@ -908,9 +910,9 @@
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
-  <string id="13130">Display Blanking</string>
+  <string id="13130">Skärmrensning</string>
   <string id="13131">Inaktivera</string>
-  <string id="13132">Blank displays</string>
+  <string id="13132">Rensa skärmar</string>
   <string id="13150">HDD nyckel:</string>
   <string id="13151">HDD temp:</string>
   <string id="13152">DVD modell:</string>
