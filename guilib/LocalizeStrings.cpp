@@ -52,8 +52,6 @@ CStdString CLocalizeStrings::ToUTF8(const CStdString& strEncoding, const CStdStr
 void CLocalizeStrings::ClearSkinStrings()
 {
   // clear the skin strings
-  unsigned int skin_strings_start = 31000;
-  unsigned int skin_strings_end = 31999;
   Clear(31000, 31999);
 }
 
