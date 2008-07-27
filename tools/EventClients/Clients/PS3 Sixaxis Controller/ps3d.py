@@ -89,6 +89,7 @@ class PS3SixaxisThread ( StoppableThread ):
         try:
             while not self.stop():
                 if self.timed_out():
+                    self.xbmc.release_button()
                     raise Exception("PS3 Sixaxis powering off, timed out")
                 if self.idle_time() > 50:
                     self.xbmc.connect()
@@ -103,6 +104,7 @@ class PS3SixaxisThread ( StoppableThread ):
                     self.reset_timeout()
                     if psdown:
                         if (time.time() - psdown) > 5:
+                            self.xbmc.release_button()
                             raise Exception("PS3 Sixaxis powering off, user request")
                     else:
                         psdown = time.time()
