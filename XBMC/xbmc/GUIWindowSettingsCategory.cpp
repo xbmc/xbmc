@@ -342,7 +342,7 @@ void CGUIWindowSettingsCategory::SetupControls()
   if (!m_pOriginalCategoryButton || !m_pOriginalSpin || !m_pOriginalRadioButton || !m_pOriginalButton)
     return ;
   m_pOriginalEdit = (CGUIEditControl *)GetControl(CONTROL_DEFAULT_EDIT);
-  if (!m_pOriginalEdit)
+  if (!m_pOriginalEdit || m_pOriginalEdit->GetControlType() != CGUIControl::GUICONTROL_EDIT)
     m_pOriginalEdit = new CGUIEditControl(*m_pOriginalButton);
   m_pOriginalSpin->SetVisible(false);
   m_pOriginalRadioButton->SetVisible(false);
