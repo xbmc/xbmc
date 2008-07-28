@@ -922,9 +922,6 @@ CProfile* CApplication::InitDirectoriesLinux()
 
 #if defined(_LINUX) && !defined(__APPLE__)
   CProfile* profile = NULL;
-  CStdString strExecutablePath;
-
-  CUtil::GetHomePath(strExecutablePath);
 
   // Z: common for both
   CIoSupport::RemapDriveLetter('Z',"/tmp/xbmc");
@@ -949,18 +946,12 @@ CProfile* CApplication::InitDirectoriesLinux()
       logDir += "-";
     }
     g_stSettings.m_logFolder = logDir;
-  }
-  else
-  {
-    CStdString logDir = strExecutablePath;
-    CUtil::AddDirectorySeperator(logDir);
-    g_stSettings.m_logFolder = logDir;
-  }
 
-  if (m_bPlatformDirectories)
-  {
+    setenv("XBMC_HOME", INSTALL_PATH, 0);
+
     CStdString str = INSTALL_PATH;
     CIoSupport::RemapDriveLetter('Q', (char*) str.c_str());
+
 
     // make the $HOME/.xbmc directory
     CStdString xbmcHome = userHome + "/.xbmc";
@@ -1012,7 +1003,14 @@ CProfile* CApplication::InitDirectoriesLinux()
   }
   else
   {
-    CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
+    CStdString strHomePath;
+    CUtil::GetHomePath(strHomePath);
+    setenv("XBMC_HOME", strHomePath.c_str(), 0);
+
+    CUtil::AddDirectorySeperator(strHomePath);
+    g_stSettings.m_logFolder = strHomePath;
+
+    CIoSupport::RemapDriveLetter('Q', (char*)strHomePath.c_str());
     CIoSupport::RemapDriveLetter('T', _P("Q:\\userdata"));
     CIoSupport::RemapDriveLetter('U', _P("Q:"));
   }
