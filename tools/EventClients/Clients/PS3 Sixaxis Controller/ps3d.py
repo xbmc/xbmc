@@ -118,7 +118,8 @@ class PS3SixaxisThread ( StoppableThread ):
                 if bflags != last_bflags:
                     if bflags:
                         try:
-                            self.xbmc.send_keyboard_button(keymap_sixaxis[bflags])
+                            (mapname, action) = keymap_sixaxis[bflags].split(":")
+                            self.xbmc.send_button(map=mapname, button=action)
                             self.reset_timeout()
                         except:
                             pass
