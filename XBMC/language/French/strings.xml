@@ -765,7 +765,7 @@
   <string id="1403">Soleil</string>
   <string id="1404">important(e)(s)</string>
   <string id="1405">dans</string>
-  <string id="1406">le/la/les</string>
+  <string id="1406">la</string>
   <string id="1407">environs</string>
   <string id="1408">glace</string>
   <string id="1409">cristaux</string>
@@ -774,6 +774,8 @@
   <string id="1412">venteux</string>
   <string id="1413">bruine</string>
   <string id="1414">Orageux</string>
+  <string id="1415">Drizzle</string>
+  <string id="1416">Brumeux</string>
 
   <!-- strings through to 1450 reserved for weather translation -->
 
@@ -1146,6 +1148,7 @@
   <string id="13409">Top 250:</string>
   <string id="13410">Envoyer sur lastfm</string>
   <string id="13411">Vitesse du ventilateur minimum</string>
+  <string id="13412">Flux RSS dont le texte est de la droite vers la gauche</string>
   
   <string id="13600">Télécommande Apple</string>
   <string id="13601">Mode</string>
@@ -1594,7 +1597,7 @@
   <string id="20138">Impossible de monter l'unité mémoire</string>
   <string id="20139">Dans le port %i, emplacement %i</string>
   <string id="20140">Protéger par mot de passe</string>
-  <string id="20141">Réglé</string>
+  <string id="20141">Valider</string>
   <string id="20142">Nom d'utilisateur</string>
   <string id="20143">Entrer le mot de passe pour</string>
   <string id="20144">Minuteur de fermeture</string>
@@ -1691,7 +1694,7 @@
   <string id="20327">aux valeurs par défaut.</string>
   <string id="20328">Parcourir pour une destination</string>
   <string id="20329"></string>
-  <string id="20330">Utiliser le nom des dossiers pour la consultation</string>
+  <string id="20330">Consultation avec les noms des dossiers</string>
   <string id="20331">Fichier</string>
   <string id="20332">Utiliser le nom des dossiers ou fichiers&#10;pour la consultation</string>
   <string id="20333">Catégorie</string>
@@ -1772,14 +1775,21 @@
   <string id="20408">Téléchargement des infos Clip Vidéo</string>
   <string id="20409">Téléchargement des infos Série TV</string>
   <string id="20410">Bande Annonce</string>
-  <string id="20411">Empiler</string>
-  <string id="20412">Empiler la série TV si qu'une saison est disponible</string>
+  <string id="20411">Superposer</string>
+  <string id="20412">Superposer Série TV</string>
   <string id="20413">Récupérer FanArt</string>
   <string id="20414">Afficher le FanArt dans la bibliothèque vidéo</string>
   <string id="20415">Recherche de nouveau contenu</string>
   <string id="20416">Première diffusion</string>
-  <string id="20417">Auteur</string>
+  <string id="20417">Scénariste</string>
   <string id="20418">Nettoyer les noms de fichiers</string>
+  <string id="20419">Superposer les Séries TV en double</string>
+  <string id="20420">Jamais</string>
+  <string id="20421">Si seulement 1 Saison</string>
+  <string id="20422">Toujours</string>
+  <string id="20423">A un trailer</string>
+  <string id="20424">Faux</string>
+
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Afficher les dossiers et les fichiers cachés</string>
