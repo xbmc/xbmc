@@ -90,6 +90,7 @@
 #include "GUIDialogOK.h"
 #ifdef _WIN32PC
 #include <shlobj.h>
+#include "WIN32Util.h"
 #endif
 #include "GUIDialogYesNo.h"
 #include "GUIDialogKeyboard.h"
@@ -2336,6 +2337,9 @@ const BUILT_IN commands[] = {
   { "Dialog.Close",               true,   "Close a dialog" },
   { "System.LogOff",              false,  "Log off current user" },
   { "System.Exec",                true,   "Execute shell commands" },
+#ifdef _WIN32PC
+  { "System.ExecWait",            true,   "Execute shell commands and freezes XBMC until shell is closed" },
+#endif
   { "Resolution",                 true,   "Change XBMC's Resolution" },
   { "SetFocus",                   true,   "Change current focus to a different control id" },
   { "UpdateLibrary",              true,   "Update the selected library (music or video)" },
@@ -2537,10 +2541,19 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       g_pythonParser.evalFile(strParameterCaseIntact.c_str());
   }
 #endif
-#if defined(_LINUX) || defined(_WIN32PC)
+#if defined(_LINUX)
   else if (execute.Equals("system.exec"))
   {
     system(strParameterCaseIntact.c_str());
+  }
+#elif defined(_WIN32PC)
+  else if (execute.Equals("system.exec"))
+  {
+    CWIN32Util::XBMCShellExecute(strParameterCaseIntact, false);
+  }
+  else if (execute.Equals("system.execwait"))
+  {
+    CWIN32Util::XBMCShellExecute(strParameterCaseIntact, true);
   }
 #endif
   else if (execute.Equals("resolution"))
