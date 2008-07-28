@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 14383-->
+<!--Based on english strings version 14513-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1079,6 +1079,7 @@
   <string id="13409">Topp 250:</string>
   <string id="13410">Ställ in på lastfm</string>
   <string id="13411">Minsta fläkthastighet</string>
+  <string id="13412">RSS flöde innehåller Höger-till-vänster text</string>
   <string id="13600">Apple fjärrkontroll</string>
   <string id="13601">Läge</string>
   <string id="13602">Körs alltid</string>
