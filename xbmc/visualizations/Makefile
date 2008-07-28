@@ -1,12 +1,14 @@
 INCLUDES=-I. -I../ -I../linux -I../../guilib -I../utils
 
 SRCS=fft.cpp Visualisation.cpp VisualisationFactory.cpp
-
-LIB=visualizations.a
 DIRS=OpenGLSpectrum WaveForm XBMCProjectM
 
 include ../../Makefile.include
--include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
+-include $(OBJS:.o=.P)
 
-lib: $(OBJS)
-	for DIR in $(DIRS); do make -C $$DIR; done
+lib: $(DIRS) $(OBJS)
+
+.PHONY: $(DIRS)
+$(DIRS):
+	$(MAKE) -C $@
+
