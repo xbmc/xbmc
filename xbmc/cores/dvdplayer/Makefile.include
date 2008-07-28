@@ -2,7 +2,7 @@
 include $(dir $(lastword $(MAKEFILE_LIST)))../../../Makefile.include
 
 $(LIB): $(OBJS) $(LIBS)
-	$(LD) -Ur -o $(LIB) $(LIBS) $(OBJS)
+	$(LD) -r -o $(LIB) $(LIBS) $(OBJS)
 #	$(RM) -f $(LIB)
 #	$(AR) q $(LIB) $(LIBS) $(OBJS)
 
