@@ -271,6 +271,12 @@
 				RelativePath="..\..\xbmc\win32\WIN32Util.h">
 			</File>
 			<File
+				RelativePath="..\..\xbmc\win32\WindowHelper.cpp">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\WindowHelper.h">
+			</File>
+			<File
 				RelativePath="..\..\xbmc\win32\XBMC_PC.cpp">
 			</File>
 			<File
