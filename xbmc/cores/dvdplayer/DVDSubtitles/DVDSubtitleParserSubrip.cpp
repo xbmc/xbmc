@@ -101,6 +101,7 @@ int CDVDSubtitleParserSubrip::ParseFile()
 
         while (m_pStream->ReadLine(line, sizeof(line)))
         {
+          pLineStart = line;
           // trim
           while (pLineStart[0] == ' ') pLineStart++;
 
