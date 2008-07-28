@@ -20,10 +20,10 @@ include ../../Makefile.include
 all: $(OBJS) $(SOLARWINDS-OUT) $(PLASMA-OUT);
 
 $(SOLARWINDS-OUT): $(SOLARWINDS-DEP)
-	g++ -shared -o $(SOLARWINDS-OUT) $(RSXS)/src/solarwinds/*.o $(RSXS-OBJS) -lXmu
+	$(CXX) -shared -o $(SOLARWINDS-OUT) $(RSXS)/src/solarwinds/*.o $(RSXS-OBJS) -lXmu
 
 $(PLASMA-OUT): $(PLASMA-DEP)
-	g++ -shared -o $(PLASMA-OUT)     $(RSXS)/src/plasma/*.o     $(RSXS-OBJS) -lXmu
+	$(CXX) -shared -o $(PLASMA-OUT)     $(RSXS)/src/plasma/*.o     $(RSXS-OBJS) -lXmu
 
 $(SOLARWINDS-DEP) : $(RSXS);
 $(PLASMA-DEP)     : $(RSXS);
