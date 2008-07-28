@@ -10,7 +10,7 @@ CNNFilter::CNNFilter(int nOrder, int nShift, int nVersion)
     m_nShift = nShift;
     m_nVersion = nVersion;
     
-    m_bMMXAvailable = GetMMXAvailable();
+    m_bMMXAvailable = false;//GetMMXAvailable();
     
     m_rbInput.Create(NN_WINDOW_ELEMENTS, m_nOrder);
     m_rbDeltaM.Create(NN_WINDOW_ELEMENTS, m_nOrder);
