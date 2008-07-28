@@ -81,24 +81,28 @@ SX_SELECT   = 1
 SX_START    = 8
 
 keymap_sixaxis = {
-    SX_X        : 'return',
-    SX_CIRCLE   : 'escape',
-    SX_SQUARE   : 'tab',
-    SX_TRIANGLE : 'q',
-    
-    SX_DUP      : 'up',
-    SX_DDOWN    : 'down',
-    SX_DLEFT    : 'left',
-    SX_DRIGHT   : 'right',
+    SX_X        : 'XG:A',
+    SX_CIRCLE   : 'XG:B',
+    SX_SQUARE   : 'XG:X',
+    SX_TRIANGLE : 'XG:Y',
 
-    SX_START    : 'm',
-    SX_SELECT   : 'escape',
+    SX_DUP      : 'XG:dpadup',
+    SX_DDOWN    : 'XG:dpaddown',
+    SX_DLEFT    : 'XG:dpadleft',
+    SX_DRIGHT   : 'XG:dpadright',
 
-    SX_R1       : 'menu',
-    SX_R2       : 'f',
-    SX_L2       : 'r',
-    SX_L1       : 'menu',
-    
-    SX_L3       : 'printscreen',
-    SX_R3       : 's',
+    SX_START    : 'XG:start',
+    SX_SELECT   : 'XG:back',
+
+    SX_R1       : 'XG:black',
+    SX_R2       : 'XG:rightanalogtrigger',
+    SX_L2       : 'XG:leftanalogtrigger',
+    SX_L1       : 'XG:white',
+
+    SX_L3       : 'XG:leftthumbbutton',
+    SX_R3       : 'XG:rightthumbbutton',
+#    SX_R_LEFT   : 'XG:rightthumbstickleft',
+#    SX_R_RIGHT  : 'XG:rightthumbstickright',
+#    SX_R_UP     : 'XG:rightthumbstickup',
+#    SX_R_DOWN   : 'XG:rightthumbstickdown'
 }
