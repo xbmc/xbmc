@@ -241,6 +241,7 @@ void GUIFontManager::Clear()
 
   m_vecFonts.clear();
   m_vecFontFiles.clear();
+  m_vecFontInfo.clear();
   m_fontsetUnicode=false;
 }
 
