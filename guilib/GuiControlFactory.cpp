@@ -964,7 +964,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
 
   GetTexture(pControlNode, "imagepath", texturePath);
-  if (texturePath.file.IsEmpty())
+  if (texturePath.file.IsConstant())
     GetInfoLabel(pControlNode, "imagepath", texturePath.file);
   XMLUtils::GetDWORD(pControlNode,"timeperimage", timePerImage);
   XMLUtils::GetDWORD(pControlNode,"fadetime", fadeTime);
