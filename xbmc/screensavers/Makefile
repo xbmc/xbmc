@@ -1,4 +1,5 @@
 INCLUDES=-I. -I../ -I../linux -I../../guilib -I../utils
+CFLAGS=-fPIC
 
 OUTDIR=../../screensavers
 RSXS=rsxs-0.9
@@ -20,10 +21,10 @@ include ../../Makefile.include
 all: $(OBJS) $(SOLARWINDS-OUT) $(PLASMA-OUT);
 
 $(SOLARWINDS-OUT): $(SOLARWINDS-DEP)
-	$(CXX) -shared -o $(SOLARWINDS-OUT) $(RSXS)/src/solarwinds/*.o $(RSXS-OBJS) -lXmu
+	$(CXX) $(CFLAGS) -shared -o $(SOLARWINDS-OUT) $(RSXS)/src/solarwinds/*.o $(RSXS-OBJS) -lXmu
 
 $(PLASMA-OUT): $(PLASMA-DEP)
-	$(CXX) -shared -o $(PLASMA-OUT)     $(RSXS)/src/plasma/*.o     $(RSXS-OBJS) -lXmu
+	$(CXX) $(CFLAGS) -shared -o $(PLASMA-OUT)     $(RSXS)/src/plasma/*.o     $(RSXS-OBJS) -lXmu
 
 $(SOLARWINDS-DEP) : $(RSXS);
 $(PLASMA-DEP)     : $(RSXS);
