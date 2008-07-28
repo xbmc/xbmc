@@ -32,7 +32,7 @@ CAPEDecompressCore::CAPEDecompressCore(CIO * pIO, IAPEDecompress * pAPEDecompres
     m_nBlocksProcessed = 0;
     
     // check to see if MMX is available
-    m_bMMXAvailable = GetMMXAvailable();
+    m_bMMXAvailable = false;//GetMMXAvailable();
     
 }
 
