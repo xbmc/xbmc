@@ -25,6 +25,7 @@
 #include "../Util.h"
 #include "FileSystem/cdioSupport.h"
 #include "PowrProf.h"
+#include "WindowHelper.h"
 
 extern HWND g_hWnd;
 
@@ -305,6 +306,9 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
     strParams = strCommand.substr(iIndex + 1);
   }
 
+  strExe.Replace("\"","");
+  strParams.Replace("\"","");
+
   bool ret;
   SHELLEXECUTEINFO ShExecInfo = {0};
   ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
@@ -316,17 +320,23 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
   ShExecInfo.lpDirectory = NULL;
   ShExecInfo.nShow = SW_SHOW;
   ShExecInfo.hInstApp = NULL;	
+
+  ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+  ShowWindow(g_hWnd,SW_MINIMIZE);
+  ret = ShellExecuteEx(&ShExecInfo) == TRUE;
+  g_windowHelper.SetHANDLE(ShExecInfo.hProcess);
+
+  // ShellExecute doesn't return the window of the started process
+  // we need to gather it from somewhere to allow switch back to XBMC
+  // when a program is minimized instead of stopped.
+  //g_windowHelper.SetHWND(ShExecInfo.hwnd);
+  g_windowHelper.Create();
+
   if(bWaitForScriptExit)
   {
-    ShowWindow(g_hWnd,SW_MINIMIZE);
-    ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
-    ret = ShellExecuteEx(&ShExecInfo) == TRUE;
+    // Todo: Pause music and video playback
     WaitForSingleObject(ShExecInfo.hProcess,INFINITE);
-    CloseHandle(ShExecInfo.hProcess);
-    ShowWindow(g_hWnd,SW_RESTORE);
   }
-  else
-    ret = ShellExecuteEx(&ShExecInfo) == TRUE;
 
   return ret;
 }
