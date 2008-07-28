@@ -340,20 +340,16 @@ copy() {
       fi
     elif [[ "$I" == "web" ]]
     then
-      RAR="$(which unrar)"
-      if [[ $RAR == "" ]]
-      then
-        RAR="$(which rar)"
-      fi
-      if ! [[ $RAR == "" ]]
+      UNZIP="$(which unzip)"
+      if ! [[ $UNZIP == "" ]]
       then
         if (( VERBOSE ))
         then
           mkdir -vp "$BUILDDIR/web"
-          "$RAR" x -y "$WEB" "$BUILDDIR/web/"
+          "$UNZIP" "$WEB" -d "$BUILDDIR/web/"
         else
           mkdir -p "$BUILDDIR/web" &> /dev/null
-          "$RAR" x -y -inul "$WEB" "$BUILDDIR/web/"
+          "$UNZIP" -q "$WEB" -d "$BUILDDIR/web/"
         fi
       fi
     elif [[ "$I" == "xbmc.bin" ]]
@@ -408,9 +404,9 @@ copy() {
   fi
 
   printf "\r Copying %-16.16s\n" "complete!" 
-  if [[ $RAR == "" ]]
+  if [[ $UNZIP == "" ]]
   then
-    echo "  Couldn't find \"rar\" or \"unrar\" please install one to use web interface"
+    echo "  Couldn't find \"unzip\" please install to use web interface"
   fi
 }
 
@@ -591,7 +587,7 @@ fi
 
 if [[ $WEB == "" ]]
 then
-  WEB="$SOURCEDIR/web/Project_Mayem_III_webserver_v1.0.rar"
+  WEB="$SOURCEDIR/web/Project_Mayhem_III_webserver_v1.0.zip"
 fi
 
 if (( UPDATE ))
