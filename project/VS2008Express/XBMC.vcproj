@@ -235,6 +235,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\win32\WindowHelper.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\WindowHelper.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\win32\XBMC.ico"
 				>
 			</File>
