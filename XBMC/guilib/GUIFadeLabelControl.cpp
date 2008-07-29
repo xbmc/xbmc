@@ -43,7 +43,7 @@ CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, 
 }
 
 CGUIFadeLabelControl::CGUIFadeLabelControl(const CGUIFadeLabelControl &from)
-: CGUIControl(from), m_textLayout(from.m_textLayout), m_scrollInfo(from.m_scrollInfo), m_infoLabels(from.m_infoLabels)
+: CGUIControl(from), m_infoLabels(from.m_infoLabels), m_scrollInfo(from.m_scrollInfo), m_textLayout(from.m_textLayout)
 {
   m_label = from.m_label;
   m_scrollOut = from.m_scrollOut;
