@@ -124,7 +124,7 @@ public:
     for (int i = 0; i < 100; i++)
       cdtext_init(&m_ti[i].cdtext);
 
-    m_nLenght = m_nFirstTrack = m_nNumTrack = m_nNumAudio = m_nFirstAudio = m_nNumData = m_nFirstData = 0;
+    m_nLength = m_nFirstTrack = m_nNumTrack = m_nNumAudio = m_nFirstAudio = m_nNumData = m_nFirstData = 0;
   }
   virtual ~CCdInfo()
   {
@@ -145,7 +145,7 @@ trackinfo GetTrackInformation( int nTrack ) { return m_ti[nTrack -1]; }
   int GetDataTrackCount() { return m_nNumData; }
   int GetAudioTrackCount() { return m_nNumAudio; }
   ULONG GetCddbDiscId() { return m_ulCddbDiscId; }
-  int GetDiscLength() { return m_nLenght; }
+  int GetDiscLength() { return m_nLength; }
   CStdString GetDiscLabel(){ return m_strDiscLabel; }
 
   // CD-ROM with ISO 9660 filesystem
@@ -240,7 +240,7 @@ bool IsChaojiVideoCD( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & CVD) ? f
 void SetDiscCDTextInformation( cdtext_t cdtext ) { m_cdtext = cdtext; }
 
   void SetCddbDiscId( ULONG ulCddbDiscId ) { m_ulCddbDiscId = ulCddbDiscId; }
-  void SetDiscLength( int nLenght ) { m_nLenght = nLenght; }
+  void SetDiscLength( int nLength ) { m_nLength = nLength; }
   bool HasCDDBInfo() { return m_bHasCDDBInfo; }
   void SetNoCDDBInfo() { m_bHasCDDBInfo = false; }
 
@@ -255,7 +255,7 @@ private:
   int m_nFirstTrack;
   trackinfo m_ti[100];
   ULONG m_ulCddbDiscId;
-  int m_nLenght;   // Disclenght can be used for cddb query, also see trackinfo.nFrames
+  int m_nLength;   // Disclength can be used for cddb query, also see trackinfo.nFrames
   bool m_bHasCDDBInfo;
   CStdString m_strDiscLabel;
   cdtext_t m_cdtext;  //  CD-Text for this disc

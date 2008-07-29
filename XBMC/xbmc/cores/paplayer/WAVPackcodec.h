@@ -41,7 +41,7 @@ private:
   static unsigned int GetPosCallback(void *id);
   static int SetPosAbsCallback(void *id, unsigned int pos);
   static int SetPosRelCallback(void *id, int delta, int mode);
-  static unsigned int GetLenghtCallback(void *id);
+  static unsigned int GetLengthCallback(void *id);
   static int CanSeekCallback(void *id);
   static int PushBackByteCallback(void *id, int c);
 
