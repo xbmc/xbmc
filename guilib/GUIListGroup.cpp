@@ -35,25 +35,6 @@ CGUIListGroup::CGUIListGroup(DWORD dwParentID, DWORD dwControlId, float posX, fl
 CGUIListGroup::CGUIListGroup(const CGUIListGroup &right)
 : CGUIControlGroup(right)
 {
-  // NOTE: CGUIControlGroup's copy constructor is just going to copy m_children's pointers
-  //       across, whereas we actually want to create new copies of everything.
-  //       Putting this in CGUIControlGroup, however, is overkill at this point, so just
-  //       clear them out here
-  m_children.clear();
-  for (ciControls it = right.m_children.begin(); it != right.m_children.end(); it++)
-  {
-    CGUIControl *control = *it;
-    if (control->GetControlType() == CGUIControl::GUICONTROL_LISTLABEL)
-      m_children.push_back(new CGUIListLabel(*(CGUIListLabel *)control));
-    else if (control->GetControlType() == CGUIControl::GUICONTROL_BORDEREDIMAGE)
-      m_children.push_back(new CGUIBorderedImage(*(CGUIBorderedImage *)control));
-    else if (control->GetControlType() == CGUIControl::GUICONTROL_IMAGE)
-      m_children.push_back(new CGUIImage(*(CGUIImage *)control));
-    else if (control->GetControlType() == CGUIControl::GUICONTROL_MULTISELECT)
-      m_children.push_back(new CGUIMultiSelectTextControl(*(CGUIMultiSelectTextControl *)control));
-    else if (control->GetControlType() == CGUIControl::GUICONTROL_LISTGROUP)
-      m_children.push_back(new CGUIListGroup(*(CGUIListGroup *)control));
-  }
   m_item = NULL;
   ControlType = GUICONTROL_LISTGROUP;
 }

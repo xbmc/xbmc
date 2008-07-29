@@ -42,6 +42,24 @@ CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, 
   m_resetOnLabelChange = resetOnLabelChange;
 }
 
+CGUIFadeLabelControl::CGUIFadeLabelControl(const CGUIFadeLabelControl &from)
+: CGUIControl(from), m_textLayout(from.m_textLayout), m_scrollInfo(from.m_scrollInfo), m_infoLabels(from.m_infoLabels)
+{
+  m_label = from.m_label;
+  m_scrollOut = from.m_scrollOut;
+  m_scrollSpeed = from.m_scrollSpeed;
+  m_resetOnLabelChange = from.m_resetOnLabelChange;
+
+  if (from.m_fadeAnim)
+    m_fadeAnim = new CAnimation(*from.m_fadeAnim);
+  if (m_fadeAnim)
+    m_fadeAnim->ApplyAnimation();
+  m_currentLabel = 0;
+  m_renderTime = 0;
+  m_lastLabel = -1;
+  ControlType = GUICONTROL_FADELABEL;
+}
+
 CGUIFadeLabelControl::~CGUIFadeLabelControl(void)
 {
   if (m_fadeAnim)

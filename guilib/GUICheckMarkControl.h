@@ -40,6 +40,8 @@ class CGUICheckMarkControl: public CGUIControl
 public:
   CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureCheckMark, const CImage& textureCheckMarkNF, float checkWidth, float checkHeight, const CLabelInfo &labelInfo);
   virtual ~CGUICheckMarkControl(void);
+  virtual CGUICheckMarkControl *Clone() const { return new CGUICheckMarkControl(*this); };
+
   virtual void Render();
   virtual bool OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);

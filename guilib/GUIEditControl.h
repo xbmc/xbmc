@@ -52,8 +52,8 @@ public:
                   float width, float height, const CImage &textureFocus, const CImage &textureNoFocus,
                   const CLabelInfo& labelInfo, const std::string &text);
   CGUIEditControl(const CGUIButtonControl &button);
-
   virtual ~CGUIEditControl(void);
+  virtual CGUIEditControl *Clone() const { return new CGUIEditControl(*this); };
 
   virtual bool OnMessage(CGUIMessage &message);
   virtual bool OnAction(const CAction &action);

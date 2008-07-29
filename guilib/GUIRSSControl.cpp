@@ -48,6 +48,17 @@ CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, float posX, 
   }
 }
 
+CGUIRSSControl::CGUIRSSControl(const CGUIRSSControl &from)
+: CGUIControl(from),m_scrollInfo(from.m_scrollInfo)
+{
+  m_label = from.m_label;
+  m_headlineColor = from.m_headlineColor;
+  m_channelColor = from.m_channelColor;
+  m_strRSSTags = from.m_strRSSTags;
+  m_pReader = NULL;
+  ControlType = GUICONTROL_RSS;
+}
+
 CGUIRSSControl::~CGUIRSSControl(void)
 {
   CSingleLock lock(m_criticalSection);
