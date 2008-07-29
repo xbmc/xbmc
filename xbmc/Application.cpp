@@ -559,7 +559,7 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGNOTICE, "Q is mapped to: %s", _P("Q:").c_str());
   char szXBEFileName[1024];
   CIoSupport::GetXbePath(szXBEFileName);
-  CLog::Log(LOGNOTICE, "The executeable running is: %s", szXBEFileName);
+  CLog::Log(LOGNOTICE, "The executable running is: %s", szXBEFileName);
   CLog::Log(LOGNOTICE, "Log File is located: %s", g_stSettings.m_logFolder.c_str());
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
