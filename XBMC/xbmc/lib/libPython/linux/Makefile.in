@@ -82,8 +82,8 @@ tmp: ../Python/libpython2.4.a
 
 clean:
 	for d in $(DIRS); do make -C $$d clean; done
-	rm -f $(LIB) $(ZIP) $(PYC) $(PYO) ../Python/libpython2.4.a $(WRAPPER)
+	rm -f $(LIB) $(ZIP) $(PYC) $(PYO) ../Python/libpython2.4.a $(PYWRAP)
 
 distclean:
 	for d in $(DIRS); do make -C $$d distclean; done
-	rm -f $(LIB) $(ZIP) $(PYC) $(PYO) ../Python/libpython2.4.a $(WRAPPER)
+	rm -f $(LIB) $(ZIP) $(PYC) $(PYO) ../Python/libpython2.4.a $(PYWRAP)
