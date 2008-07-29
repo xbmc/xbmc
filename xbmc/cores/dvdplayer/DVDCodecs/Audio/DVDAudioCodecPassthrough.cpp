@@ -87,13 +87,13 @@ CDVDAudioCodecPassthrough::~CDVDAudioCodecPassthrough(void)
 bool CDVDAudioCodecPassthrough::SyncDTSHeader(BYTE* pData, int iDataSize, int* iOffset, int* iFrameSize)
 {
   int i = 0, iLen = 0;
-  int iFlags, iSampleRate, iBitRate, iFrameLenght;
+  int iFlags, iSampleRate, iBitRate, iFrameLength;
 
   if( !m_pStateDTS ) return false;
 
   while (i <= (iDataSize - 10))
   {
-    iLen = m_dllDTS.dts_syncinfo(m_pStateDTS, pData, &iFlags, &iSampleRate, &iBitRate, &iFrameLenght);
+    iLen = m_dllDTS.dts_syncinfo(m_pStateDTS, pData, &iFlags, &iSampleRate, &iBitRate, &iFrameLength);
     if (iLen > 0)
     {
 
@@ -103,7 +103,7 @@ bool CDVDAudioCodecPassthrough::SyncDTSHeader(BYTE* pData, int iDataSize, int* i
         return false;
       }
 
-      m_iSamplesPerFrame = iFrameLenght;
+      m_iSamplesPerFrame = iFrameLength;
       m_iSampleRate = iSampleRate;
 
       (*iFrameSize) = iLen;

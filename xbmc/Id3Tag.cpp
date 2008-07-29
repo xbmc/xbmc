@@ -124,11 +124,11 @@ bool CID3Tag::Parse()
   dateTime.wYear = atoi(GetYear());
   tag.SetReleaseDate(dateTime);
 
-  id3_length_t lenght;
-  const LPCSTR pb=(LPCSTR)GetUniqueFileIdentifier("http://musicbrainz.org", &lenght);
+  id3_length_t length;
+  const LPCSTR pb=(LPCSTR)GetUniqueFileIdentifier("http://musicbrainz.org", &length);
   if (pb)
   {
-    CStdString strTrackId(pb, lenght);
+    CStdString strTrackId(pb, length);
     tag.SetMusicBrainzTrackID(strTrackId);
   }
 
@@ -355,9 +355,9 @@ const BYTE* CID3Tag::GetPictureData(id3_picture_type pictype, id3_length_t* leng
   return m_dll.id3_metadata_getpicturedata(m_tag, pictype, length);
 }
 
-const BYTE* CID3Tag::GetUniqueFileIdentifier(const CStdString& strOwnerIdentifier, id3_length_t* lenght) const
+const BYTE* CID3Tag::GetUniqueFileIdentifier(const CStdString& strOwnerIdentifier, id3_length_t* length) const
 {
-  return m_dll.id3_metadata_getuniquefileidentifier(m_tag, strOwnerIdentifier.c_str(), lenght);
+  return m_dll.id3_metadata_getuniquefileidentifier(m_tag, strOwnerIdentifier.c_str(), length);
 }
 
 CStdString CID3Tag::GetUserText(const CStdString& strDescription) const

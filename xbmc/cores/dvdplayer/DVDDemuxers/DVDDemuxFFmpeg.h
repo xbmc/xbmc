@@ -88,7 +88,7 @@ public:
 
   bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
   bool SeekByte(__int64 pos);
-  int GetStreamLenght();
+  int GetStreamLength();
   CDemuxStream* GetStream(int iStreamId);
   int GetNrOfStreams();
 
