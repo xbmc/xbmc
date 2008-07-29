@@ -1,0 +1,123 @@
+CFLAGS +=-D_LINUX -fPIC -DPIC -O3 -fno-stack-protector -DXBMC
+
+CODING_OBJS=src/coding/adx_decoder.o \
+            src/coding/g721_decoder.o \
+            src/coding/ima_decoder.o \
+            src/coding/ngc_afc_decoder.o \
+            src/coding/ngc_dsp_decoder.o \
+            src/coding/ngc_dtk_decoder.o \
+            src/coding/pcm_decoder.o \
+            src/coding/psx_decoder.o \
+            src/coding/xa_decoder.o \
+            src/coding/eaxa_decoder.o \
+            src/coding/ogg_vorbis_decoder.o \
+            src/coding/sdx2_decoder.o \
+            src/coding/ws_decoder.o \
+            src/coding/mpeg_decoder.o \
+            src/coding/acm_decoder.o
+
+LAYOUT_OBJS=src/layout/ast_blocked.o \
+            src/layout/blocked.o \
+            src/layout/halpst_blocked.o \
+            src/layout/interleave.o \
+            src/layout/nolayout.o \
+            src/layout/xa_blocked.o \
+            src/layout/caf_blocked.o \
+            src/layout/ea_block.o \
+            src/layout/wsi_blocked.o \
+            src/layout/str_snds_blocked.o \
+            src/layout/ws_aud_blocked.o \
+            src/layout/interleave_byte.o \
+            src/layout/mus_acm_layout.o
+
+META_OBJS=src/meta/adx_header.o \
+          src/meta/afc_header.o \
+          src/meta/agsc.o \
+          src/meta/ast.o \
+          src/meta/brstm.o \
+          src/meta/halpst.o \
+          src/meta/nds_strm.o \
+          src/meta/ngc_adpdtk.o \
+          src/meta/rsf.o \
+          src/meta/rs03.o \
+          src/meta/ngc_dsp_std.o \
+          src/meta/Cstr.o \
+          src/meta/gcsw.o \
+          src/meta/ps2_ads.o \
+          src/meta/ps2_npsf.o \
+          src/meta/rwsd.o \
+          src/meta/psx_cdxa.o \
+          src/meta/ps2_rxw.o \
+          src/meta/ps2_int.o \
+          src/meta/ps2_exst.o \
+          src/meta/ps2_svag.o \
+          src/meta/ps2_mib.o \
+          src/meta/ps2_mic.o \
+          src/meta/raw.o \
+          src/meta/ps2_vag.o \
+          src/meta/psx_gms.o \
+          src/meta/ps2_str.o \
+          src/meta/ps2_ild.o \
+          src/meta/ps2_pnb.o \
+          src/meta/xbox_wavm.o \
+          src/meta/xbox_xwav.o \
+          src/meta/ea_header.o \
+          src/meta/ngc_caf.o \
+          src/meta/ps2_vpk.o \
+          src/meta/genh.o \
+          src/meta/ogg_vorbis_file.o \
+          src/meta/ps2_bmdx.o \
+          src/meta/aifc.o \
+          src/meta/str_snds.o \
+          src/meta/ws_aud.o \
+          src/meta/ahx.o \
+          src/meta/ivb.o \
+          src/meta/svs.o \
+          src/meta/riff.o \
+          src/meta/pos.o \
+          src/meta/nwa.o \
+          src/meta/ps2_rws.o \
+          src/meta/ps2_hgc1.o \
+          src/meta/xss.o \
+          src/meta/ps2_sl3.o \
+          src/meta/ps2_aus.o \
+          src/meta/fsb.o \
+          src/meta/rsd.o \
+          src/meta/rwx.o \
+          src/meta/xwb.o \
+          src/meta/ea_old.o \
+          src/meta/ps2_xa30.o \
+          src/meta/musc.o \
+          src/meta/musx.o \
+          src/meta/ps2_leg.o \
+          src/meta/ps2_filp.o \
+          src/meta/ps2_ikm.o \
+          src/meta/ps2_sfs.o \
+          src/meta/sat_dvi.o \
+          src/meta/ps2_bg00.o \
+          src/meta/dc_kcey.o \
+          src/meta/ps2_rstm.o \
+          src/meta/acm.o \
+          src/meta/mus_acm.o \
+          src/meta/ps2_kces.o \
+          src/meta/ps2_dxh.o \
+          src/meta/ps2_psh.o \
+          src/meta/sli.o \
+          src/meta/sfl.o \
+          src/meta/ps2_pcm.o \
+          src/meta/ps2_psw.o \
+          src/meta/ps2_rkv.o \
+          src/meta/ps2_vas.o \
+          src/meta/ps2_tec.o \
+          src/meta/ps2_enth.o
+
+OBJS = $(CODING_OBJS) $(LAYOUT_OBJS) $(META_OBJS) XBMCVGM.o src/vgmstream.o src/util.o src/streamfile.o
+
+LIB=../../../../system/players/paplayer/vgmstream-@ARCH@.so
+
+include ../../../../Makefile.include
+
+lib: $(LIB)
+
+$(LIB): $(OBJS)
+	gcc -fPIC -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
