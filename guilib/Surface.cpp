@@ -62,7 +62,6 @@ static int (*_glXGetVideoSyncSGI)(unsigned int*) = 0;
 static int (*_glXWaitVideoSyncSGI)(int, int, unsigned int*) = 0;
 static int (*_glXSwapIntervalSGI)(int) = 0;
 static int (*_glXSwapIntervalMESA)(int) = 0;
-static bool (APIENTRY *_wglSwapIntervalEXT)(GLint) = 0;
 #endif
 
 #ifdef HAS_SDL
@@ -698,7 +697,7 @@ void CSurface::Flip()
 
       if(after == before)
       {
-        CLog::Log(LOGINFO, "GL: retrace count didn't change after buffer swap, switching to vsync mode 4", __FUNCTION__);
+        CLog::Log(LOGINFO, "GL: retrace count didn't change after buffer swap, switching to vsync mode 4");
         m_iVSyncMode = 4;
       }
     }
