@@ -242,12 +242,21 @@ extern "C" bool OnAction(long flags, void *param)
   else if (flags == VIS_ACTION_NEXT_PRESET)
   {
 //    switchPreset(ALPHA_NEXT, SOFT_CUT);
-    ret = false;
+    if (!globalPM->isShuffleEnabled())
+      globalPM->key_handler(PROJECTM_KEYDOWN, PROJECTM_K_n, PROJECTM_KMOD_CAPS); //ignore PROJECTM_KMOD_CAPS
+    else 
+      globalPM->key_handler(PROJECTM_KEYDOWN, PROJECTM_K_r, PROJECTM_KMOD_CAPS); //ignore PROJECTM_KMOD_CAPS
+    ret = true;
   }
   else if (flags == VIS_ACTION_PREV_PRESET)
   {
 //    switchPreset(ALPHA_PREVIOUS, SOFT_CUT);
-    ret = false;
+    if (!globalPM->isShuffleEnabled())
+      globalPM->key_handler(PROJECTM_KEYDOWN, PROJECTM_K_p, PROJECTM_KMOD_CAPS); //ignore PROJECTM_KMOD_CAPS
+    else
+      globalPM->key_handler(PROJECTM_KEYDOWN, PROJECTM_K_r, PROJECTM_KMOD_CAPS); //ignore PROJECTM_KMOD_CAPS
+                        
+    ret = true;
   }
   else if (flags == VIS_ACTION_RANDOM_PRESET)
   {
