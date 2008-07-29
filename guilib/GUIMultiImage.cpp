@@ -47,6 +47,23 @@ CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, 
   m_directoryLoaded = false;
 }
 
+CGUIMultiImage::CGUIMultiImage(const CGUIMultiImage &from)
+: CGUIControl(from)
+{
+  m_texturePath = from.m_texturePath;
+  m_timePerImage = from.m_timePerImage;
+  m_timeToPauseAtEnd = from.m_timeToPauseAtEnd;
+  m_fadeTime = from.m_fadeTime;
+  m_randomized = from.m_randomized;
+  m_loop = from.m_loop;
+  m_aspectRatio = from.m_aspectRatio;
+  m_directoryLoaded = false;
+  if (m_texturePath.file.IsConstant())
+    m_currentPath = m_texturePath.file.GetLabel(WINDOW_INVALID);
+  m_currentImage = 0;
+  ControlType = GUICONTROL_MULTI_IMAGE;
+}
+
 CGUIMultiImage::~CGUIMultiImage(void)
 {
 }

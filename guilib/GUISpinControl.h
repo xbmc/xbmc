@@ -45,6 +45,8 @@ class CGUISpinControl : public CGUIControl
 public:
   CGUISpinControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureUp, const CImage& textureDown, const CImage& textureUpFocus, const CImage& textureDownFocus, const CLabelInfo& labelInfo, int iType);
   virtual ~CGUISpinControl(void);
+  virtual CGUISpinControl *Clone() const { return new CGUISpinControl(*this); };
+
   virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual void OnLeft();

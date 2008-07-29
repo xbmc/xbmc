@@ -61,6 +61,29 @@ CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, float posX, float 
   m_label = labelInfo;
 }
 
+CGUITextBox::CGUITextBox(const CGUITextBox &from)
+: CGUIControl(from), CGUITextLayout(from), m_upDown(from.m_upDown)
+{
+  m_spinPosX = from.m_spinPosX;
+  m_spinPosY = from.m_spinPosY;
+  m_pageControl = from.m_pageControl;
+  m_scrollTime = from.m_scrollTime;
+  m_autoScrollCondition = from.m_autoScrollCondition;
+  m_autoScrollTime = from.m_autoScrollTime;
+  m_autoScrollDelay = from.m_autoScrollDelay;
+  m_autoScrollRepeatAnim = NULL;
+  m_label = from.m_label;
+  // defaults
+  m_offset = 0;
+  m_scrollOffset = 0;
+  m_itemsPerPage = 10;
+  m_itemHeight = 10;
+  m_renderTime = 0;
+  m_lastRenderTime = 0;
+  m_autoScrollDelayTime = 0;
+  ControlType = GUICONTROL_TEXTBOX;
+}
+
 CGUITextBox::~CGUITextBox(void)
 {
   if (m_autoScrollRepeatAnim)
