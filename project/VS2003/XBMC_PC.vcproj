@@ -897,12 +897,6 @@
 					RelativePath="..\..\xbmc\cores\paplayer\CodecFactory.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\CubeCodec.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\paplayer\CubeCodec.h">
-				</File>
-				<File
 					RelativePath="..\..\xbmc\cores\paplayer\dec_if.h">
 				</File>
 				<File
@@ -1066,6 +1060,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\paplayer\TimidityCodec.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\paplayer\VGMCodec.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\paplayer\VGMCodec.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\paplayer\WAVcodec.cpp">
