@@ -298,8 +298,6 @@ rs_euphoria_LDADD = $(LIBMISC) $(X_LIBS) $(OPENGL_LIBS) $(IMAGE_LIBS)
 euphoriadatadir = $(pkgdatadir)/euphoria
 dist_euphoriadata_DATA = lines.png plasma.png stringy.png
 all: all-am
-	g++ -shared -o Euphoria.xbs ../common.o ../color.o ../pngimage.o *.o ../../lib/libmisc.a -lXmu
-	cp Euphoria.xbs *.png ../../../../../screensavers/
 
 .SUFFIXES:
 .SUFFIXES: .cc .o .obj

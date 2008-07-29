@@ -105,6 +105,11 @@ namespace Common {
 
 	extern ResourceManager* resources;
 
+#ifndef NOXBMC
+         void init(int argc, char** argv);
+         void run();
+#endif
+
 	static inline int randomInt(int x) {
 		return std::rand() % x;
 	}
