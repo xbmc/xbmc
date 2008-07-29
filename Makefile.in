@@ -147,7 +147,7 @@ librtv:
 libxdaap:
 	$(MAKE) -C xbmc/lib/libXDAAP
 libass:
-	$(MAKE) -C xbmc/lib/libass 
+	$(MAKE) -C xbmc/lib/libass/xbmc
 libhdhomerun:
 	$(MAKE) -C xbmc/lib/libhdhomerun
 libshout:
