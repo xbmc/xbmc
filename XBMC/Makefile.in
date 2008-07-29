@@ -26,7 +26,7 @@ DIRS=	\
 	xbmc/cores/paplayer/ModuleCodec/vc6/dumb \
 	xbmc/cores/paplayer/MPCCodec/xbmc \
 	xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU \
-        xbmc/cores/paplayer/vgstream/ \
+	xbmc/cores/paplayer/vgmstream \
 	xbmc/cores/paplayer/MP3Codec \
 	xbmc/cores/paplayer/flac-1.2.1/ \
 	xbmc/cores/paplayer/MACDll \
