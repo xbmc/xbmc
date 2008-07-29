@@ -46,6 +46,8 @@ public:
                        const CImage& nibTexture, const CImage& nibTextureFocus,
                        ORIENTATION orientation, bool showOnePage);
   virtual ~CGUIScrollBar(void);
+  virtual CGUIScrollBar *Clone() const { return new CGUIScrollBar(*this); };
+
   virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual void PreAllocResources();

@@ -37,6 +37,8 @@ class CGUIControlGroupList : public CGUIControlGroup
 public:
   CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float itemGap, DWORD pageControl, ORIENTATION orientation, bool useControlPositions);
   virtual ~CGUIControlGroupList(void);
+  virtual CGUIControlGroupList *Clone() const { return new CGUIControlGroupList(*this); };
+
   virtual void Render();
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const;

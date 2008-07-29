@@ -71,6 +71,40 @@ CGUIButtonScroller::CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, floa
   m_label = labelInfo;
 }
 
+CGUIButtonScroller::CGUIButtonScroller(const CGUIButtonScroller &from)
+: CGUIControl(from), m_imgFocus(from.m_imgFocus), m_imgNoFocus(from.m_imgNoFocus)
+{
+  m_iXMLNumSlots = from.m_iXMLNumSlots;
+  m_iXMLDefaultSlot = from.m_iXMLDefaultSlot;
+  m_xmlPosX = from.m_xmlPosX;
+  m_xmlPosY = from.m_xmlPosY;
+  m_xmlWidth = from.m_xmlWidth;
+  m_xmlHeight = from.m_xmlHeight;
+  m_buttonGap = from.m_buttonGap;
+  m_iNumSlots = from.m_iNumSlots;
+  m_bHorizontal = from.m_bHorizontal;
+  m_iDefaultSlot = from.m_iDefaultSlot;
+  m_iMovementRange = from.m_iMovementRange;
+  m_iAlpha = from.m_iAlpha;
+  m_bWrapAround = from.m_bWrapAround;
+  m_bSmoothScrolling = from.m_bSmoothScrolling;
+  m_iSlowScrollCount = 0;
+  // reset other variables to the defaults
+  m_iCurrentSlot = -1;
+  m_iOffset = 0;
+  m_scrollOffset = 0;
+  m_bScrollUp = false;
+  m_bScrollDown = false;
+  m_bMoveUp = false;
+  m_bMoveDown = false;
+  m_fAnalogScrollSpeed = 0;
+  ControlType = GUICONTROL_BUTTONBAR;
+  //  m_dwFrameCounter = 0;
+  m_label = from.m_label;
+  // TODO: Clone - copy the buttons across
+
+}
+
 CGUIButtonScroller::~CGUIButtonScroller(void)
 {}
 

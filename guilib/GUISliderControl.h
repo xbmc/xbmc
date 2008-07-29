@@ -45,6 +45,8 @@ class CGUISliderControl :
 public:
   CGUISliderControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& backGroundTexture, const CImage& mibTexture, const CImage& nibTextureFocus, int iType);
   virtual ~CGUISliderControl(void);
+  virtual CGUISliderControl *Clone() const { return new CGUISliderControl(*this); };
+
   virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual void PreAllocResources();

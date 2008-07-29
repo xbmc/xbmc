@@ -45,6 +45,7 @@ public:
                     const CLabelInfo &label);
 
   virtual ~CGUIButtonControl(void);
+  virtual CGUIButtonControl *Clone() const { return new CGUIButtonControl(*this); };
 
   virtual void Render();
   virtual bool OnAction(const CAction &action) ;
