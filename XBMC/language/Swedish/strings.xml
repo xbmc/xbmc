@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 14513-->
+<!--Based on english strings version 14557-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -776,7 +776,7 @@
   <string id="10211">Buffrar undertexter...</string>
   <string id="10212">avbryter</string>
   <string id="10213">buffrar</string>
-  <string id="10214">öppenar ström</string>
+  <string id="10214">Öppnar ström</string>
   <string id="10500">Musik/Spellista</string>
   <string id="10501">Musik/Filer</string>
   <string id="10502">Musik/Album</string>
