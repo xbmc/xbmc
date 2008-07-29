@@ -638,7 +638,16 @@ void CSurface::EnableVSync(bool enable)
     if (_wglSwapIntervalEXT)
     {
       if(!_wglSwapIntervalEXT(1))
+      {
         CLog::Log(LOGWARNING, "%s - wglSwapIntervalEXT failed", __FUNCTION__);
+        //stop it from trying to set vsync again
+        g_videoConfig.SetVSyncMode(VSYNC_DISABLED);
+        m_iVSyncMode = 0;
+      }
+      else
+      {
+        m_iVSyncMode = 1;
+      }
     }
 #endif
 
