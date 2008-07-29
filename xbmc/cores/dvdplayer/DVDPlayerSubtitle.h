@@ -61,6 +61,7 @@ private:
   CDVDDemuxSPU        m_dvdspus;
 
   CDVDStreamInfo      m_streaminfo;
+  double              m_lastPts;
 };
 
 
