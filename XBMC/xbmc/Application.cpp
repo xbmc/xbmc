@@ -2385,8 +2385,10 @@ bool CApplication::OnKey(CKey& key)
     m_idleTimer.StartZero();
 
     ResetScreenSaver();
-    if (ResetScreenSaverWindow())
+    if (ResetScreenSaverWindow()) {
+      g_Keyboard.Reset();
       return true;
+    }
   }
 
   // get the current active window
