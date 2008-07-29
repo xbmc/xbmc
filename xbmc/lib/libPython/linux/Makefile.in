@@ -1,4 +1,4 @@
-ARCH=i486-linux
+ARCH=@ARCH@
 SHELL=/bin/bash
 SYSDIR=../../../../system/python
 SO=python24-$(ARCH).so
@@ -9,7 +9,11 @@ WRAPPER=../../../cores/DllLoader/exports/wrapper.o
 WRAPPERDEF=$(WRAPPER:.o=.def)
 PYWRAP=wrapper_python.o
 PYWRAPDEF=$(PYWRAP:.o=.def)
-PYSOS=$(addprefix ../Python/build/lib.linux-i686-2.4/,array.so audioop.so binascii.so _bisect.so bz2.so cmath.so _codecs_cn.so _codecs_hk.so _codecs_iso2022.so _codecs_jp.so _codecs_kr.so _codecs_tw.so collections.so cPickle.so crypt.so cStringIO.so _csv.so datetime.so dl.so fcntl.so grp.so _heapq.so _hotshot.so imageop.so itertools.so linuxaudiodev.so _locale.so math.so md5.so mmap.so _multibytecodec.so nis.so operator.so ossaudiodev.so parser.so pyexpat.so _random.so regex.so resource.so rgbimg.so select.so sha.so _socket.so _ssl.so strop.so struct.so syslog.so termios.so _testcapi.so time.so timing.so unicodedata.so _weakref.so zlib.so)
+ifeq ($(ARCH), x86_64-linux)
+	PYLIBDIR=lib.linux-x86_64-2.4
+else
+	PYLIBDIR=lib.linux-i686-2.4
+endif
 PYDIRS=bsddb compiler curses distutils email encodings hotshot idlelib \
 			 lib-old lib-tk logging site-packages xml
 ifeq ($(ARCH), x86-osx)
@@ -46,16 +50,13 @@ $(LIB): $(WRAPPER) $(WRAPPERDEF) $(PYWRAP) $(PYWRAPDEF) ../Python/libpython2.4.a
 		../../../cores/DllLoader/exports/wrapper.o
 endif
 
-$(ZIP): $(PYSOS) $(PYC) $(PYO)
-	pushd ../Python/build/lib.linux-i686-2.4/ && \
+$(ZIP): $(PYC) $(PYO)
+	pushd ../Python/build/$(PYLIBDIR)/ && \
 		zip -0guq ../../$@ *.so; \
 		popd
 	pushd ../Python/Lib/ && \
 		zip -0gurq ../$@ *.py* $(PYDIRS) -x *.svn* *test*; \
 		popd
-
-$(PYSOS):
-	$(MAKE) -C ../Python
 
 ../Python/libpython2.4.a: compile
 	$(MAKE) -C ../Python

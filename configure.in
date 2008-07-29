@@ -374,7 +374,7 @@ XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
     --enable-unicode=ucs4 \
     --without-cxx \
     --enable-shared \
-    --prefix=`pwd`/../linux/python-lib MACOSX_DEPLOYMENT_TARGET=10.5 &&
+    --prefix=`pwd`/../linux/python-lib MACOSX_DEPLOYMENT_TARGET=10.5 CFLAGS=-fPIC &&
   sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h &&
   cp pyconfig.h Include
 ])
