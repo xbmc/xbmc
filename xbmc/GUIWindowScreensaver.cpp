@@ -54,7 +54,7 @@ void CGUIWindowScreensaver::Render()
       {
         //some screensavers seem to be depending on xbmc clearing the screen
         //       g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L );
-        g_graphicsContext.ApplyStateBlock();
+        g_graphicsContext.CaptureStateBlock();
         m_pScreenSaver->Render();
         g_graphicsContext.ApplyStateBlock();
       }
@@ -150,7 +150,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       if (m_pScreenSaver)
       {
         OutputDebugString("ScreenSaver::Create()\n");
-        g_graphicsContext.ApplyStateBlock();
+        g_graphicsContext.CaptureStateBlock();
         m_pScreenSaver->Create();
       }
 #endif

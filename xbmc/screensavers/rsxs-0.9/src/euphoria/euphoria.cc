@@ -193,22 +193,6 @@ std::string Hack::getName()      { return "Euphoria"; }
 void Hack::start() {
 	glViewport(0, 0, Common::width, Common::height);
 
-	// setup regular drawing area just in case feedback isn't used
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(20.0, Common::aspectRatio, 0.01, 20);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glTranslatef(0.0, 0.0, -5.0);
-
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE, GL_ONE);
-	glLineWidth(2.0f);
-	glEnable(GL_LINE_SMOOTH);
-	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-
 	_tex = 0;
 	if (texture.length()) {
 		glEnable(GL_TEXTURE_2D);
@@ -253,6 +237,27 @@ void Hack::start() {
 }
 
 void Hack::tick() {
+
+Common::run();
+
+	// setup regular drawing area just in case feedback isn't used
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluPerspective(20.0, Common::aspectRatio, 0.01, 20);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	glTranslatef(0.0, 0.0, -5.0);
+
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE);
+	glLineWidth(2.0f);
+	glEnable(GL_LINE_SMOOTH);
+	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+
 	// Update wisps
 	stdx::call_all(_wisps, &Wisp::update);
 	stdx::call_all(_backWisps, &Wisp::update);
@@ -348,7 +353,15 @@ void Hack::tick() {
 	stdx::call_all(_backWisps, &Wisp::drawAsBackground);
 	stdx::call_all(_wisps, &Wisp::draw);
 
-	Common::flush();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	//Common::flush();
+
+   // Clear the error flag
+   glGetError();
 }
 
 void Hack::reshape() {
@@ -391,6 +404,7 @@ void Create(void* pd3dDevice, int iWidth, int iHeight, const char * szScreensave
   Common::width = iWidth;
   Common::height = iHeight;
   Common::aspectRatio = float(Common::width) / float(Common::height);
+  Common::init(0, NULL);
 }
 
 void Start()

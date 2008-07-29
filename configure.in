@@ -443,7 +443,7 @@ XB_CONFIG_MODULE([xbmc/lib/cximage-6.0/zlib], [CFLAGS=-fPIC ./configure])
 XB_CONFIG_MODULE([xbmc/lib/libass], [CFLAGS=-fPIC ./configure])
 XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[CFLAGS=-O3 ./configure --disable-static --disable-debugging --with-pic])
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[rm -f CMakeCache.txt && CC="" CXX="" cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .])
-XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [CFLAGS=-fPIC CXXFLAGS=-fPIC ./configure --without-xscreensaver --disable-sound --disable-cyclone --disable-euphoria --disable-fieldlines --disable-flocks --disable-flux --disable-helios --disable-hyperspace --disable-lattice --disable-skyrocket])
+XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [CFLAGS=-fPIC CXXFLAGS=-fPIC ./configure --without-xscreensaver --disable-sound --disable-cyclone --disable-fieldlines --disable-flocks --disable-flux --disable-helios --disable-hyperspace --disable-lattice --disable-skyrocket])
 
 AC_OUTPUT
 

@@ -15,10 +15,13 @@ SOLARWINDS-DEP=$(RSXS)/src/solarwinds/rs-solarwinds
 PLASMA-OUT=$(OUTDIR)/Plasma.xbs
 PLASMA-DEP=$(RSXS)/src/plasma/rs-plasma
 
+EUPHORIA-OUT=$(OUTDIR)/Euphoria.xbs
+EUPHORIA-DEP=$(RSXS)/src/euphoria/rs-euphoria
+
 include ../../Makefile.include
 -include $(OBJS:.o=.P)
 
-all: $(OBJS) $(SOLARWINDS-OUT) $(PLASMA-OUT);
+all: $(OBJS) $(SOLARWINDS-OUT) $(PLASMA-OUT) $(EUPHORIA-OUT);
 
 $(SOLARWINDS-OUT): $(SOLARWINDS-DEP)
 	$(CXX) $(CFLAGS) -shared -o $(SOLARWINDS-OUT) $(RSXS)/src/solarwinds/*.o $(RSXS-OBJS) -lXmu
@@ -26,8 +29,12 @@ $(SOLARWINDS-OUT): $(SOLARWINDS-DEP)
 $(PLASMA-OUT): $(PLASMA-DEP)
 	$(CXX) $(CFLAGS) -shared -o $(PLASMA-OUT)     $(RSXS)/src/plasma/*.o     $(RSXS-OBJS) -lXmu
 
+$(EUPHORIA-OUT): $(EUPHORIA-DEP)
+	$(CXX) $(CFLAGS) -shared -o $(EUPHORIA-OUT)   $(RSXS)/src/euphoria/*.o     $(RSXS-OBJS) -lXmu
+
 $(SOLARWINDS-DEP) : $(RSXS);
 $(PLASMA-DEP)     : $(RSXS);
+$(EUPHORIA-DEP)   : $(RSXS);
 
 $(RSXS):
 	$(MAKE) -C $(RSXS)
