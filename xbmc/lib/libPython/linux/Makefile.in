@@ -1,49 +1,89 @@
-ARCH=@ARCH@
-
+ARCH=i486-linux
+SHELL=/bin/bash
+SYSDIR=../../../../system/python
+SO=python24-$(ARCH).so
+LIB=$(SYSDIR)/$(SO)
+ZIP=$(SYSDIR)/python24.zip  ##Should probably add arch here too
+DIRS=../Python
+WRAPPER=../../../cores/DllLoader/exports/wrapper.o
+WRAPPERDEF=$(WRAPPER:.o=.def)
+PYWRAP=wrapper_python.o
+PYWRAPDEF=$(PYWRAP:.o=.def)
+PYSOS=$(addprefix ../Python/build/lib.linux-i686-2.4/,array.so audioop.so binascii.so _bisect.so bz2.so cmath.so _codecs_cn.so _codecs_hk.so _codecs_iso2022.so _codecs_jp.so _codecs_kr.so _codecs_tw.so collections.so cPickle.so crypt.so cStringIO.so _csv.so datetime.so dl.so fcntl.so grp.so _heapq.so _hotshot.so imageop.so itertools.so linuxaudiodev.so _locale.so math.so md5.so mmap.so _multibytecodec.so nis.so operator.so ossaudiodev.so parser.so pyexpat.so _random.so regex.so resource.so rgbimg.so select.so sha.so _socket.so _ssl.so strop.so struct.so syslog.so termios.so _testcapi.so time.so timing.so unicodedata.so _weakref.so zlib.so)
+PYDIRS=bsddb compiler curses distutils email encodings hotshot idlelib \
+			 lib-old lib-tk logging site-packages xml
 ifeq ($(ARCH), x86-osx)
-LIB=python24-osx.so
+	PYDIRS+=plat-darwin
+	@#PYDIRS+=plat-mac
 else
-LIB=python24-@ARCH@.so
+	PYDIRS+=plat-linux2
 endif
 
-.PHONY: tmp
+PY=$(wildcard ../Python/Lib/*.py) 
+PY+=$(foreach DIR, $(PYDIRS), $(wildcard ../Python/Lib/$(DIR)/*.py))
+PY+=$(foreach DIR, $(PYDIRS), $(wildcard ../Python/Lib/$(DIR)/*/*.py))
+PY+=$(foreach DIR, $(PYDIRS), $(wildcard ../Python/Lib/$(DIR)/*/*/*.py))
+PYC=$(addsuffix c, $(PY))
+PYO=$(addsuffix o, $(PY))
 
-default: $(LIB) python24.zip
-	cp $^  ../../../../system/python
+.PHONY: compile
 
-python24.zip: python-lib
-	(cd python-lib/lib/python2.4; mv lib-dynload/* .; zip -0 -r ../../../python24.zip *)
+all: $(LIB)
+	$(MAKE) $(ZIP)
 
-tmp:
-	mkdir -p tmp;
-	(cd ./tmp; ar x ../../Python/libpython2.4.a)
-
-python24-@ARCH@.so : wrapper_python.o wrapper_python.def ../../../cores/DllLoader/exports/wrapper.def ../../../cores/DllLoader/exports/wrapper.o python24.zip tmp
-	gcc -shared -o $@ tmp/*.o `cat wrapper_python.def` wrapper_python.o `cat ../../../cores/DllLoader/exports/wrapper.def` ../../../cores/DllLoader/exports/wrapper.o
-	rm -rf tmp
-
-python24-osx.so: python24.zip tmp ../../../../tools/Mach5/Makefile
+ifeq ($(ARCH), x86-osx)
+$(LIB): tmp ../../../../tools/Mach5/Makefile
 	gcc -bundle -flat_namespace -undefined suppress -shared \
-		-o python24-osx.so tmp/*.o
+	    -o python24-osx.so tmp/*.o
 	$(MAKE) -C ../../../../tools/Mach5/ python
 	cp ../../../../tools/Mach5/output.so $@
 	rm -rf tmp
+else
+$(LIB): $(WRAPPER) $(WRAPPERDEF) $(PYWRAP) $(PYWRAPDEF) ../Python/libpython2.4.a
+	$(CC) -shared -o $@ -Wl,--whole-archive ../Python/libpython2.4.a \
+		-Wl,--no-whole-archive `cat wrapper_python.def` wrapper_python.o \
+		`cat ../../../cores/DllLoader/exports/wrapper.def` \
+		../../../cores/DllLoader/exports/wrapper.o
+endif
 
-wrapper_python.o : wrapper_python.c
-	gcc -fPIC -o $@ -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -c $<
+$(ZIP): $(PYSOS) $(PYC) $(PYO)
+	pushd ../Python/build/lib.linux-i686-2.4/ && \
+		zip -0guq ../../$@ *.so; \
+		popd
+	pushd ../Python/Lib/ && \
+		zip -0gurq ../$@ *.py* $(PYDIRS) -x *.svn* *test*; \
+		popd
 
-wrapper_python.def : wrapper_python.c
-	(echo -n "-Wl"; grep PYTHON_WRAP wrapper_python.c | grep -v define | awk -F ')' '{print $$1}' | awk -F'(' '{print $$2}' | grep -v '^l*stat$$' | awk '{printf(",-wrap,%s",$$0);}') > wrapper_python.def
-
-python-lib:
+$(PYSOS):
 	$(MAKE) -C ../Python
-	$(MAKE) -C ../Python sharedinstall
-	$(MAKE) -C ../Python libinstall
+
+../Python/libpython2.4.a: compile
+	$(MAKE) -C ../Python
+
+%pyc: %py
+	@echo Compiling $@
+	@../Python/python ../Python/Lib/py_compile.py $<
+
+%pyo: %py
+	@echo Compiling $@
+	@../Python/python -O ../Python/Lib/py_compile.py $<
+
+$(PYWRAP): $(PYWRAP:.o=.c)
+	 $(CC) -fPIC -o $@ -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -c $<
+
+$(PYWRAPDEF): $(PYWRAPDEF:.def=.c)
+	(echo -n "-Wl"; grep PYTHON_WRAP wrapper_python.c | grep -v define | \
+		awk -F ')' '{print $$1}' | awk -F'(' '{print $$2}' | grep -v '^l*stat$$' | \
+		awk '{printf(",-wrap,%s",$$0);}') > wrapper_python.def
+
+tmp: ../Python/libpython2.4.a
+	mkdir -p tmp;
+	(cd ./tmp && ar x ../../Python/libpython2.4.a)
 
 clean:
-	$(RM) -rf *.so *.o *.def python-lib python24.zip
-	$(MAKE) -C ../Python clean
+	for d in $(DIRS); do make -C $$d clean; done
+	rm -f $(LIB) $(ZIP) $(PYC) $(PYO) ../Python/libpython2.4.a
 
-distclean: clean
-	$(MAKE) -C ../Python distclean
-
+distclean:
+	for d in $(DIRS); do make -C $$d distclean; done
+	rm -f $(LIB) $(ZIP) $(PYC) $(PYO) ../Python/libpython2.4.a
