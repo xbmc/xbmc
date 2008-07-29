@@ -57,7 +57,9 @@ int         CSurface::s_glMinVer = 0;
 
 #include "GraphicContext.h"
 
-#if defined(HAS_SDL_OPENGL) && !defined(__APPLE__)
+#ifdef _WIN32
+static bool (APIENTRY *_wglSwapIntervalEXT)(GLint) = 0;
+#elif defined(HAS_SDL_OPENGL) && !defined(__APPLE__)
 static int (*_glXGetVideoSyncSGI)(unsigned int*) = 0;
 static int (*_glXWaitVideoSyncSGI)(int, int, unsigned int*) = 0;
 static int (*_glXSwapIntervalSGI)(int) = 0;
