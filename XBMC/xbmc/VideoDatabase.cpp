@@ -1689,6 +1689,12 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
 {
   try
   {
+    if (!m_pDB.get() || !m_pDS.get()) 
+    {
+      assert(0);
+      return -1;
+    }
+
     long lTvShowId = GetTvShowId(strPath);
     if (lTvShowId < 0)
       lTvShowId = AddTvShow(strPath);
