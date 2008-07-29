@@ -43,7 +43,7 @@ extern "C"
   unsigned long __declspec(dllexport) DLL_Seek(long vgm, unsigned long timepos)
   {
     VGMSTREAM* song = (VGMSTREAM*)vgm;
-    int16_t buffer[576*song->channels];
+    int16_t* buffer = new int16_t[576*song->channels];
     long samples_to_do = (long)timepos * song->sample_rate / 1000L;
     if (samples_to_do < song->current_sample )
        reset_vgmstream(song);
@@ -56,6 +56,7 @@ extern "C"
       render_vgmstream(buffer,l,song);
       samples_to_do -= l;
     }
+    delete[] buffer;
 
     return timepos;
   }
