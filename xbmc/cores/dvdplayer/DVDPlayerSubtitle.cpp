@@ -43,6 +43,7 @@ CDVDPlayerSubtitle::CDVDPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer)
   m_pSubtitleFileParser = NULL;
   m_pSubtitleStream = NULL;
   m_pOverlayCodec = NULL;
+  m_lastPts = DVD_NOPTS_VALUE;
 }
 
 CDVDPlayerSubtitle::~CDVDPlayerSubtitle()
@@ -133,6 +134,8 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
 
     if (m_pOverlayCodec)
       m_pOverlayCodec->Flush();
+
+    m_lastPts = DVD_NOPTS_VALUE;
   }
 
   pMsg->Release();
@@ -197,12 +200,17 @@ void CDVDPlayerSubtitle::Process(double pts)
   if(!AcceptsData())
     return;
 
+  if (pts < m_lastPts)
+    m_pOverlayContainer->Clear();
+
   if (m_pSubtitleFileParser)
   {
     CDVDOverlay* pOverlay = m_pSubtitleFileParser->Parse(pts);
     if (pOverlay)
       m_pOverlayContainer->Add(pOverlay);
   }
+
+  m_lastPts = pts;
 }
 
 bool CDVDPlayerSubtitle::AcceptsData()
