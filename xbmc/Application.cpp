@@ -1217,7 +1217,7 @@ HRESULT CApplication::Initialize()
   CreateDirectory(g_settings.GetGameSaveThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetPicturesThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetProfilesThumbFolder().c_str(),NULL);
-  CreateDirectory(g_settings.GetFanartFolder().c_str(),NULL);
+  CreateDirectory(g_settings.GetVideoFanartFolder().c_str(),NULL);
   CLog::Log(LOGINFO, "  thumbnails folder:%s", g_settings.GetThumbnailsFolder().c_str());
   for (unsigned int hex=0; hex < 16; hex++)
   {
