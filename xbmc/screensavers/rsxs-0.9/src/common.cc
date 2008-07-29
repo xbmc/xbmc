@@ -172,7 +172,11 @@ error_t Common::parse(int key, char* arg, struct argp_state* state) {
 	}
 }
 
+static struct timeval now;
+static struct timeval then;
+
 void Common::init(int argc, char** argv) {
+#ifdef NOXBMC
 	display = XOpenDisplay(_displayName);
 	if (!display) {
 		if (_displayName != "")
@@ -188,22 +192,23 @@ void Common::init(int argc, char** argv) {
 
 	updateAttributes();
 	XMapRaised(display, window);
+#endif
 	running = true;
 	speed = 1.0f;
 
 	resources = new ResourceManager;
+
+	gettimeofday(&now, NULL);
 }
 
+
 void Common::run() {
+#ifdef NOXBMC
 	Hack::start();
 
 #ifndef NDEBUG
 	dumpErrors("start");
 #endif // !NDEBUG
-
-	struct timeval now;
-	struct timeval then;
-	gettimeofday(&now, NULL);
 
 	while (running) {
 		Hack::tick();
@@ -286,6 +291,7 @@ void Common::run() {
 				break;
 			}
 		}
+#endif
 
 		then = now;
 		gettimeofday(&now, NULL);
@@ -327,11 +333,13 @@ void Common::run() {
 		}
 #endif // !NDEBUG
 		elapsedTime = speed * elapsedSecs;
+#ifdef NOXBMC
 	}
 	Hack::stop();
 #ifndef NDEBUG
 	dumpErrors("stop");
 #endif // !NDEBUG
+#endif
 }
 
 void Common::fini() {
