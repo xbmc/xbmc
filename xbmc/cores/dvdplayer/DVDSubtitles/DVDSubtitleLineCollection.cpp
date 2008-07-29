@@ -28,6 +28,7 @@ CDVDSubtitleLineCollection::CDVDSubtitleLineCollection()
 {
   m_pHead = NULL;
   m_pCurrent = NULL;
+  m_pTail = NULL;
   
   m_iSize = 0;
   m_fLastPts = DVD_NOPTS_VALUE;
@@ -46,16 +47,13 @@ void CDVDSubtitleLineCollection::Add(CDVDOverlay* pOverlay)
 
   if (!m_pHead)
   {
-    m_pHead = pElement;
+    m_pHead = m_pTail = pElement;
     m_pCurrent = m_pHead;
   }
   else
   {
-    ListElement* pIt = m_pHead;
-
-    while (pIt->pNext) pIt = pIt->pNext;
-              
-    pIt->pNext = pElement;
+    m_pTail->pNext = pElement;
+    m_pTail = pElement;
   }
   
   m_iSize++;
