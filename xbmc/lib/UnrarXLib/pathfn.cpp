@@ -515,10 +515,10 @@ void MakeNameUsable(char *Name, bool bKeepExtension, bool IsFATX)
 	  else if (iFileNameSize > 42 && bKeepExtension == true)
 	  {
 		  char strExtension[42];
-		  unsigned int iExtensionLenght = iFileNameSize - (strrchr(FileName, '.') - FileName);
-		  strcpy(strExtension, (FileName + iFileNameSize - iExtensionLenght));
+		  unsigned int iExtensionLength = iFileNameSize - (strrchr(FileName, '.') - FileName);
+		  strcpy(strExtension, (FileName + iFileNameSize - iExtensionLength));
 
-		  strcpy(FileName + (42 - iExtensionLenght), strExtension);
+		  strcpy(FileName + (42 - iExtensionLength), strExtension);
 	  }
 	}
 

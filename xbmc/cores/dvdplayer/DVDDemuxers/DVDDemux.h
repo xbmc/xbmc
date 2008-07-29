@@ -233,7 +233,7 @@ public:
   /*
    * returns the total time in msec
    */
-  virtual int GetStreamLenght() = 0;
+  virtual int GetStreamLength() = 0;
   
   /*
    * returns the stream or NULL on error, starting from 0
