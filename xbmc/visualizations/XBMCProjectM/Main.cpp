@@ -144,25 +144,15 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   configPM.shuffleEnabled = true;
   configPM.windowLeft = iPosX;
   configPM.windowBottom = iPosY;
-  // workaround: projectM crashes without configFile and 
-  // fstream won't create it
-  //FILE *f = fopen(configFile.c_str(), "r");
-  //if (f)
-  //  fclose(f);
-  //else
-  //
+
   {
     FILE *f;
     f = fopen(configFile.c_str(), "r");
     if (f)
       fclose(f);
     else 
-    {
-      f = fopen(configFile.c_str(), "w");
-      if (f)
-        fclose(f);
-        projectM::writeConfig(configFile, configPM);
-    }
+      projectM::writeConfig(configFile, configPM);
+    
   }
 
   if (globalPM)
