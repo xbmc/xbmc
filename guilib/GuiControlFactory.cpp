@@ -281,17 +281,16 @@ bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode, const char* s
   return true;
 }
 
-bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, int &condition, bool &allowHiddenFocus)
+bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, int &condition, CGUIInfoBool &allowHiddenFocus)
 {
   const TiXmlElement* node = control->FirstChildElement("visible");
   if (!node) return false;
-  allowHiddenFocus = false;
   vector<CStdString> conditions;
   while (node)
   {
     const char *hidden = node->Attribute("allowhiddenfocus");
-    if (hidden && strcmpi(hidden, "true") == 0)
-      allowHiddenFocus = true;
+    if (hidden)
+      allowHiddenFocus.Parse(hidden);
     // add to our condition string
     if (!node->NoChildren())
       conditions.push_back(node->FirstChild()->Value());
@@ -325,7 +324,7 @@ bool CGUIControlFactory::GetCondition(const TiXmlNode *control, const char *tag,
 
 bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode *control, int &condition)
 {
-  bool allowHiddenFocus;
+  CGUIInfoBool allowHiddenFocus;
   return GetConditionalVisibility(control, condition, allowHiddenFocus);
 }
 
@@ -642,7 +641,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 #endif
 
   int iVisibleCondition = 0;
-  bool allowHiddenFocus = false;
+  CGUIInfoBool allowHiddenFocus(false);
   int enableCondition = 0;
 
   vector<CAnimation> animations;
