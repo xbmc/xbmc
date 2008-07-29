@@ -329,7 +329,6 @@ void Create(void* pd3dDevice, int iWidth, int iHeight, const char * szScreensave
   Common::width = iWidth;
   Common::height = iHeight;
   Common::aspectRatio = float(Common::width) / float(Common::height);
-  Common::resourceDir = "/home/yuvalt/linuxport/XBMC/screensavers/Euphoria";
 }
 
 void Start()
