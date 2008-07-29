@@ -85,6 +85,7 @@ public:
   CGUIControl();
   CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
   virtual ~CGUIControl(void);
+  virtual CGUIControl *Clone() const=0;
 
   virtual void DoRender(DWORD currentTime);
   virtual void Render();

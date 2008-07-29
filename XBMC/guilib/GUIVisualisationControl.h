@@ -48,7 +48,10 @@ class CGUIVisualisationControl :
 {
 public:
   CGUIVisualisationControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
+  CGUIVisualisationControl(const CGUIVisualisationControl &from);
   virtual ~CGUIVisualisationControl(void);
+  virtual CGUIVisualisationControl *Clone() const { return new CGUIVisualisationControl(*this); };
+
   virtual void Render();
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
   virtual void FreeResources();

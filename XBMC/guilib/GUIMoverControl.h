@@ -57,6 +57,7 @@ public:
                    const CImage& textureFocus, const CImage& textureNoFocus);
 
   virtual ~CGUIMoverControl(void);
+  virtual CGUIMoverControl *Clone() const { return new CGUIMoverControl(*this); };
 
   virtual void Render();
   virtual bool OnAction(const CAction &action);

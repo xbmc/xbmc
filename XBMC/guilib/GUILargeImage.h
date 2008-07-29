@@ -38,6 +38,7 @@ class CGUILargeImage : public CGUIImage
 public:
   CGUILargeImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture);
   virtual ~CGUILargeImage(void);
+  virtual CGUILargeImage *Clone() const { return new CGUILargeImage(*this); };
 
   virtual void PreAllocResources();
   virtual void AllocResources();

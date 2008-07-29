@@ -50,7 +50,10 @@ class CGUIButtonScroller :
 {
 public:
   CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float gap, int iSlots, int iDefaultSlot, int iMovementRange, bool bHorizontal, int iAlpha, bool bWrapAround, bool bSmoothScrolling, const CImage& textureFocus, const CImage& textureNoFocus, const CLabelInfo& labelInfo);
+  CGUIButtonScroller(const CGUIButtonScroller &from);
   virtual ~CGUIButtonScroller(void);
+  virtual CGUIButtonScroller *Clone() const { return new CGUIButtonScroller(*this); };
+
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage &message);
   virtual void OnUp();

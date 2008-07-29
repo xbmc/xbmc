@@ -49,6 +49,7 @@ public:
                     const CImage& textureFocus, const CImage& textureNoFocus);
 
   virtual ~CGUIResizeControl(void);
+  virtual CGUIResizeControl *Clone() const { return new CGUIResizeControl(*this); };
 
   virtual void Render();
   virtual bool OnAction(const CAction &action);

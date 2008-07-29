@@ -97,6 +97,8 @@ public:
                           const CImage& selectArrowLeft, const CImage& selectArrowLeftFocus,
                           const CImage& selectArrowRight, const CImage& selectArrowRightFocus);
   virtual ~CGUISelectButtonControl(void);
+  virtual CGUISelectButtonControl *Clone() const { return new CGUISelectButtonControl(*this); };
+
   virtual void Render();
   virtual bool OnAction(const CAction &action) ;
   virtual void OnLeft();
