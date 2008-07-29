@@ -896,6 +896,9 @@ HRESULT CApplication::Create(HWND hWnd)
 
   g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
 
+  if (!m_bQuiet)
+    m_bQuiet = !g_guiSettings.GetBool("system.debuglogging");
+
   return CXBApplicationEx::Create(hWnd);
 }
 

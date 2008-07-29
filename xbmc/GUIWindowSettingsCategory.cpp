@@ -1453,11 +1453,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (g_guiSettings.GetBool("system.debuglogging") && g_advancedSettings.m_logLevel < LOG_LEVEL_DEBUG_FREEMEM)
     {
       g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
+      g_application.SetQuiet(false);
       CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting");
     }
     else if (!g_guiSettings.GetBool("system.debuglogging") && g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_FREEMEM)
     {
       CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting");
+      g_application.SetQuiet(true);
       g_advancedSettings.m_logLevel = LOG_LEVEL_NORMAL;
     }
   }
