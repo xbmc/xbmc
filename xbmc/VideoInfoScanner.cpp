@@ -146,7 +146,7 @@ namespace VIDEO
       // we go.
       m_database.Open();
       m_database.GetPaths(m_pathsToScan);
-      m_bClean = true;
+      m_bClean = g_advancedSettings.m_bVideoLibraryCleanOnUpdate;
       m_database.Close();
     }
     else
@@ -297,6 +297,9 @@ namespace VIDEO
         bSkip = true;
       }
     }
+
+    CLog::Log(LOGDEBUG,"Hash[%s,%s]:DB=[%s],Computed=[%s]",
+      m_info.strContent.c_str(),strDirectory.c_str(),dbHash.c_str(),hash.c_str());
 
     if (!m_info.settings.GetPluginRoot() && m_info.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
     {

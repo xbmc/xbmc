@@ -206,6 +206,7 @@ public:
     bool m_bVideoLibraryAllItemsOnBottom;
     bool m_bVideoLibraryHideRecentlyAddedItems;
     bool m_bVideoLibraryHideEmptySeries;
+    bool m_bVideoLibraryCleanOnUpdate;
 
     bool m_bUseEvilB;
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
