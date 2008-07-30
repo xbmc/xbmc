@@ -283,7 +283,7 @@ void CBackgroundPlayer::Process()
 }
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
-CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CFileItem), m_bQuiet(false)
+CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CFileItem)
 {
   m_iPlaySpeed = 1;
 #ifdef HAS_WEB_SERVER
@@ -895,9 +895,6 @@ HRESULT CApplication::Create(HWND hWnd)
 #endif
 
   g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
-
-  if (!m_bQuiet)
-    m_bQuiet = !g_guiSettings.GetBool("system.debuglogging");
 
   return CXBApplicationEx::Create(hWnd);
 }
@@ -2237,11 +2234,6 @@ void CApplication::NewFrame()
 #endif
 }
 
-void CApplication::SetQuiet(bool bQuiet)
-{
-  m_bQuiet = bQuiet;
-}
-
 void CApplication::Render()
 {
   if (!m_AppActive && !m_bStop && (!IsPlayingVideo() || IsPaused()))
@@ -2327,7 +2319,7 @@ void CApplication::RenderMemoryStatus()
     RESOLUTION res = g_graphicsContext.GetVideoResolution();
     g_graphicsContext.SetScalingResolution(res, 0, 0, false);
 
-    if (!m_bQuiet)
+    if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
     {
       CStdString info;
       MEMORYSTATUS stat;
