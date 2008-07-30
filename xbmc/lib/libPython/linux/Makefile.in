@@ -63,11 +63,13 @@ $(ZIP): $(PYC) $(PYO)
 
 %pyc: %py
 	@echo Compiling $@
-	@../Python/python ../Python/Lib/py_compile.py $<
+	@LD_PRELOAD=../Python/libpython2.4.so.1.0 ../Python/python \
+		../Python/Lib/py_compile.py $<
 
 %pyo: %py
 	@echo Compiling $@
-	@../Python/python -O ../Python/Lib/py_compile.py $<
+	@LD_PRELOAD=../Python/libpython2.4.so.1.0 ../Python/python -O \
+		../Python/Lib/py_compile.py $<
 
 $(PYWRAP): $(PYWRAP:.o=.c)
 	 $(CC) -fPIC -o $@ -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -c $<
