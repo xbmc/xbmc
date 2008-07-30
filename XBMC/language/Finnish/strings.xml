@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mika Pirinen (1/2007->)-->
-<!--Date of translation: 24/7/2008-->
-<!--Finnish strings based on linux branch English strings version 14383-->
+<!--Date of translation: 30/7/2008-->
+<!--Finnish strings based on linux branch English strings version 14557-->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -509,7 +509,7 @@
   <string id="595">Jatkuva toisto: Pois</string>
   <string id="596">Kappaleen toisto</string>
   <string id="597">Jatkuva toisto: Päällä</string>
-  
+
   <string id="600">Siirrä CD-levy kiintolevylle</string>
   <string id="601">Keskimääräinen</string>
   <string id="602">Normaali</string>
@@ -522,7 +522,7 @@
   <string id="609">Tallennuskansiota ei ole määritetty.</string>
   <string id="610">Siirrä kappale kiintolevylle</string>
   <string id="611">Anna numero</string>
- 
+
   <string id="620">CD:n siirto</string>
   <string id="621">Enkooderi</string>
   <string id="622">Laatu</string>
@@ -562,7 +562,7 @@
   <string id="659">Kommentti</string>
   <string id="660">Voimakkuuden vahvistus</string>
   <string id="661">Valitse vientikansio</string>
-  
+
   <string id="700">Järjestetään tietokanta</string>
   <string id="701">Poistetaan vanhat kappaleet tietokannasta</string>
   <string id="702">Tämä polku on luettu aiemmin</string>
@@ -821,7 +821,7 @@
   <string id="10211">Välimuistitetaan tekstityksiä...</string>
   <string id="10212">Keskeytään</string>
   <string id="10213">puskuroidaan</string>
-  <string id="10214">ladataan katseltavaa ohjelmaa</string>
+  <string id="10214">Ladataan katseltavaa ohjelmaa</string>
   
   <string id="10500">Musiikki/Soittolista</string>
   <string id="10501">Musiikki/Tiedostot</string>
@@ -848,7 +848,7 @@
   <string id="10522">Videot - Toistetaan</string>
   <string id="10523">Albumin tiedot</string>
   <string id="10524">Elokuvan tiedot</string>
-  
+
   <string id="12000">Valitse dialogi</string>
   <string id="12001">Musiikki/Tiedot</string>
   <string id="12002">Dialogi OK</string>
@@ -942,7 +942,7 @@
 
   <string id="12900">Näytönsäästäjä</string>
   <string id="12901">Kokoruudun valikko</string>
- 
+
   <string id="13000">Järjestelmä</string>
   <string id="13001">Kiintolevyn välitön pysäytys</string>
   <string id="13002">Vain videoilla</string>
@@ -964,7 +964,7 @@
   <string id="13109">Testaa resoluutio</string>
   <string id="13110">Tallenna resoluutio?</string>
   <string id="13111">Haluatko säilyttää nämä asetukset?</string>
-  
+
   <string id="13112">Korkealaatuinen ohjelmistollinen skaalaus</string>
   <string id="13113">Ei käytössä</string>
   <string id="13114">Käytössä vakio sisällöllä</string>
@@ -1007,7 +1007,7 @@
   <string id="13172">%s sek jälkeen</string>
   <string id="13173">Kiintolevyn asennuspäivä:</string>
   <string id="13174">Kiintolevyn käynnistyslaskuri:</string>
-    
+
   <string id="13200">Käyttäjä profiilit</string>
   <string id="13201">Poistetaanko profiili '%s' ?</string>
   <string id="13204">Viimeksi ladattu profiili:</string>
@@ -1018,7 +1018,7 @@
   <string id="13210">Käynnistetty, hälytys %imin kuluttua</string>
   <string id="13211">Hälytys!</string>
   <string id="13212">peruutettu, %im%is jäljellä</string>
-  
+
   <string id="13249">Etsi tekstitykset Rar-paketeista</string>
   <string id="13250">Valitse tekstitys...</string>
   <string id="13251">Siirrä</string>
@@ -1152,6 +1152,7 @@
   <string id="13409">250 suosituinta</string> 
   <string id="13410">Aloita Last.FM:n kuuntelu</string> 
   <string id="13411">Tuulettimen miniminopeus</string>
+  <string id="13412">RSS-syöte sisältää tekstiä oikealta vasemmalle</string>
 
   <string id="13600">Apple kauko-ohjaus</string>
   <string id="13601">Toimintatapa</string>
@@ -1395,16 +1396,16 @@
   <string id="15301">Palvelimeen ei saada yhteyttä</string>
   <string id="15302">Palvelimia ei löytynyt</string>
   <string id="15303">Työryhmää ei löytynyt</string>
-  
+
   <string id="15310">Avataan useapolkuista sijaintia</string>
   <string id="15311">Polku:</string>
-  
+
   <string id="16000">Yleiset</string>
   <string id="16001">Äänilaitteiston asetukset...</string>
   <string id="16002">CD-tietokantahaku</string>
   <string id="16003">Soitin</string>
   <string id="16004">Toista media levyltä</string>
-  
+
   <string id="16008">Anna uusi nimi</string>
   <string id="16009">Anna elokuvan nimi</string>
   <string id="16010">Anna profiilin nimi</string>
@@ -1433,7 +1434,7 @@
   <string id="16033">Tietokantaa ei voida avata.</string>
   <string id="16034">Tietokannasta ei voitu hakea kappaleita.</string>
   <string id="16035">Jukeboksin soittolista</string>
-    
+
   <string id="16100">Kaikki videot</string>
   <string id="16101">Katsomattomat</string>
   <string id="16102">Katsotut</string>
@@ -1445,7 +1446,7 @@
   <string id="16108">Käytä vain NTSC-J</string>
   <string id="16109">Käytä vain PAL-60</string>
   <string id="16110">60Hz:n peleillä</string>
-  
+
   <string id="16200">Käyttö keskeytettiin</string>
   <string id="16201">Kopiointi epäonnistui</string>
   <string id="16202">Vähintään yhden tiedoston kopiointi epäonnistui</string>
@@ -1453,7 +1454,7 @@
   <string id="16204">Vähintään yhden tiedoston siirto epäonnistui</string>
   <string id="16205">Poisto epäonnistui</string>
   <string id="16206">Vähintään yhden tiedoston poisto epäonnistui</string>
-  
+
  <string id="16300">Video Scaling Method</string>
   <string id="16301">Nearest Neighbour</string>
   <string id="16302">Bilinear</string>
@@ -1467,7 +1468,7 @@
   <string id="16309">Sinc (software)</string>
 
   <string id="17500">Display Sleep Timeout</string>
- 
+
   <string id="20000">Tallennuskansio</string>
   <string id="20001">Käytä ulkoista DVD toisto-ohjelmaa</string>
   <string id="20002">Ulkoinen DVD toisto-ohjelma</string>
@@ -1673,7 +1674,7 @@
   <string id="20303"></string>
   <string id="20304"></string>
   <string id="20305"></string>
-  
+
   <string id="20306">Ei voida tunnistaa</string>
   <string id="20307">Toissijainen DNS</string>
   <string id="20308">DHCP-Palvelin:</string>
@@ -1789,10 +1790,11 @@
   <string id="20418">Siivoa tiedostonimet</string>
   <string id="20419">Pinoa TV-ohjelmien kaksoiskappaleet</string>
   <string id="20420">Ei koskaan</string>
-  <string id="20421">Jos vain yksi jakso</string>
+  <string id="20421">Jos samalla tuotantokaudella</string>
   <string id="20422">Aina</string>
   <string id="20423">On esittely</string>
   <string id="20424">Ei ole</string>
+  
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
