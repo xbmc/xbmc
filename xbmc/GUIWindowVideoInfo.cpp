@@ -41,6 +41,7 @@
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
+#include "MediaManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -726,7 +727,9 @@ void CGUIWindowVideoInfo::OnGetThumb()
   }
 
   CStdString result;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_videoSources, g_localizeStrings.Get(20019), result))
+  VECSOURCES sources(g_settings.m_videoSources);
+  g_mediaManager.GetLocalDrives(sources);  
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result))
     return;   // user cancelled
 
   if (result == "thumb://Current")
