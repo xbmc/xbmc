@@ -477,6 +477,11 @@ namespace PYXBMC
             self->item->m_strTitle = tmp;
           else if (strcmpi(PyString_AsString(key), "picturepath") == 0)
             self->item->m_strPath = tmp;
+          else if (strcmpi(PyString_AsString(key), "date") == 0)
+          {
+            if (strlen(tmp) == 10)
+              self->item->m_dateTime.SetDate(atoi(tmp.Right(4)), atoi(tmp.Mid(3,4)), atoi(tmp.Left(2)));
+          }
           else
           {
             CStdString exifkey = PyString_AsString(key);
