@@ -236,6 +236,7 @@ bool CGUIWrappingListContainer::SelectItemFromPoint(const CPoint &point)
     return false;
 
   const float mouse_scroll_speed = 0.05f;
+  const float mouse_max_amount = 1.0f;   // max speed: 1 item per frame
   float sizeOfItem = m_layout->Size(m_orientation);
   // see if the point is either side of our focused item
   float start = m_cursor * sizeOfItem;
@@ -245,8 +246,9 @@ bool CGUIWrappingListContainer::SelectItemFromPoint(const CPoint &point)
   { // scroll backward
     if (!InsideLayout(m_layout, point))
       return false;
-    float amount = (start - pos) / sizeOfItem;
+    float amount = std::min((start - pos) / sizeOfItem, mouse_max_amount);
     m_analogScrollCount += amount * amount * mouse_scroll_speed;
+    CLog::Log(LOGERROR, "%s: Speed %f", __FUNCTION__, amount);
     if (m_analogScrollCount > 1)
     {
       Scroll(-1);
@@ -259,7 +261,7 @@ bool CGUIWrappingListContainer::SelectItemFromPoint(const CPoint &point)
     if (!InsideLayout(m_layout, point))
       return false;
 
-    float amount = (pos - end) / sizeOfItem;
+    float amount = std::min((pos - end) / sizeOfItem, mouse_max_amount);
     m_analogScrollCount += amount * amount * mouse_scroll_speed;
     if (m_analogScrollCount > 1)
     {
