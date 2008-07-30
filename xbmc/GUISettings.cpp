@@ -408,7 +408,7 @@ CGUISettings::CGUISettings(void)
   AddBool(7, "videolibrary.removeduplicates", 20419, true);
   AddSeparator(7, "videolibrary.sep1");
   AddBool(8, "videolibrary.updateonstartup", 22000, false);
-  AddBool(9, "videolibrary.backgroundupdate", 22001, false);
+  AddBool(0, "videolibrary.backgroundupdate", 22001, false);
   AddSeparator(10, "videolibrary.sep2");
   AddString(11, "videolibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
   AddString(12, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
