@@ -1237,7 +1237,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   }
   else if (strType == "image")
   {
-    if (borderTexture.file.IsEmpty())
+    // use a bordered texture if we have <bordersize> or <bordertexture> specified.
+    if (borderTexture.file.IsEmpty() && borderStr.IsEmpty())
       control = new CGUIImage(
         dwParentId, id, posX, posY, width, height, texture, dwColorKey);
     else
