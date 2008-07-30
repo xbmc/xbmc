@@ -309,7 +309,7 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 	              The list should be freed with urarlib_freelist().
 	libpassword - Password (for encrypted archives)
 \*-------------------------------------------------------------------------*/
-int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
+int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword, bool stopattwo)
 {
   if (!ppList)
 		return 0;
@@ -385,6 +385,8 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
               pCurr->next = NULL;
               pPrev = pCurr;
               FileCount++;
+              if (stopattwo && FileCount > 1)
+                break;
             }
             iOffset = pArc->NextBlockPos;
             pArc->SeekToNext();
@@ -445,47 +447,12 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword)
 
 bool urarlib_hasmultiple(const char *rarfile, char *libpassword)
 {
-	uint FileCount = 0;
-	InitCRC();
+  ArchiveList_struct* pplist;
+  urarlib_list(const_cast<char*>(rarfile),&pplist,libpassword,true);
+  bool bResult = (pplist && pplist->next);
+  urarlib_freelist(pplist);
 
-	// Set the arguments for the extract command
-  auto_ptr<CommandData> pCmd( new CommandData );
-
-	{
-		strcpy(pCmd->Command, "L");
-		pCmd->AddArcName(const_cast<char*>(rarfile), NULL);
-		pCmd->FileArgs->AddString(MASKALL);
-
-		// Set password for encrypted archives
-		if (libpassword)
-		{
-			strncpy(pCmd->Password, libpassword, sizeof(pCmd->Password) - 1);
-			pCmd->Password[sizeof(pCmd->Password) - 1] = '\0';
-		}
-
-		// Opent the archive
-		auto_ptr<Archive> pArc( new Archive(pCmd.get()) );
-		if ( pArc.get() )
-		{
-			if (!pArc->WOpen(rarfile,NULL))
-				return 0;
-
-			FileCount=0;
-			if (pArc->IsOpened() && pArc->IsArchive(true))
-			{
-				while(pArc->ReadHeader()>0 && FileCount < 2)
-				{
-					if (pArc->GetHeaderType() == FILE_HEAD)
-						FileCount++;
-
-					pArc->SeekToNext();
-				}
-			}
-		}
-	}
-
-	File::RemoveCreated();
-	return FileCount>1;
+  return bResult;
 }
 
 /*-------------------------------------------------------------------------*\
