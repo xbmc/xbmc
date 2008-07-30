@@ -360,12 +360,14 @@ int CXbmcHttp::displayDir(int numParas, CStdString paras[])
   //mask = ".mp3|.wma" or one of "[music]", "[video]", "[pictures]", "[files]"-> matching files
   //mask = "*" or "/" -> just folders
   //mask = "" -> all files and folder
-  //option = "1" -> append date&time to file name
+  //option = "1" (or "showdate") -> append date&time to file name
+  //option = "size" -> just return the number of entries
 
   CFileItemList dirItems;
   CStdString output="";
 
   CStdString  folder, mask="", option="";
+  int lineStart=0, numLines=-1;
 
   if (numParas==0)
   {
@@ -379,7 +381,11 @@ int CXbmcHttp::displayDir(int numParas, CStdString paras[])
   if (numParas>1)
     mask=procMask(paras[1]);
   if (numParas>2)
-    option=paras[2];
+    option=paras[2].ToLower();
+  if (numParas>3)
+	  lineStart=atoi(paras[3]);
+  if (numParas>4)
+	  numLines=atoi(paras[4]);
   IDirectory *pDirectory = CFactoryDirectory::Create(folder);
   if (!pDirectory) 
   {
@@ -390,9 +396,21 @@ int CXbmcHttp::displayDir(int numParas, CStdString paras[])
   {
     return SetResponse(openTag+"Error:Not folder");
   }
+  if (option=="size")
+  {
+	CStdString tmp;
+	tmp.Format("%i",dirItems.Size());
+    return SetResponse(openTag+tmp);
+  }
   dirItems.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
   CStdString aLine="";
-  for (int i=0; i<dirItems.Size(); ++i)
+  if (lineStart>dirItems.Size() || lineStart<0)
+    return SetResponse(openTag+"Error:Line start value out of range");
+  if (numLines==-1)
+    numLines=dirItems.Size();
+  if ((numLines+lineStart)>dirItems.Size())
+    numLines=dirItems.Size()-lineStart;
+  for (int i=lineStart; i<lineStart+numLines; ++i)
   {
     CFileItemPtr itm = dirItems[i];
     if (mask=="*" || mask=="/" || (mask =="" && itm->m_bIsFolder))
@@ -405,7 +423,7 @@ int CXbmcHttp::displayDir(int numParas, CStdString paras[])
         aLine=closeTag+openTag + itm->m_strPath;
     if (aLine!="")
     {
-      if (option=="1") {
+      if (option=="1" || option=="showdate") {
         output+=aLine+"  ;" + itm->m_dateTime.GetAsLocalizedDateTime();
       }
       else
@@ -625,6 +643,8 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
   // handle options
   bool bShowDate = false;
   bool bPathsOnly = false;
+  bool bSize = false;
+  int lineStart=0, numLines=-1;
   if (numParas > 2)
   {
     for (int i = 2; i < numParas; ++i)
@@ -633,6 +653,19 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
         bShowDate = true;
       else if (paras[i].Equals("pathsonly"))
         bPathsOnly = true;
+	  else if (paras[i].Equals("size"))
+	    bSize = true;
+	  else if (StringUtils::IsNaturalNumber(paras[i]))
+	  {
+	    lineStart=atoi(paras[i]);
+		i++;
+		if (i<numParas)
+          if (StringUtils::IsNaturalNumber(paras[i]))
+		  {
+		    numLines=atoi(paras[i]);
+			i++;
+		  }
+	  }
     }
     // pathsonly and showdate are mutually exclusive, pathsonly wins
     if (bPathsOnly)
@@ -736,10 +769,21 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
     CStdString strError = "Error: could not get location, " + strLocation;
     return SetResponse(openTag+strError);
   }
-
+  if (bSize)
+  {
+	CStdString tmp;
+	tmp.Format("%i",items.Size());
+    return SetResponse(openTag+tmp);
+  }    
   items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
   CStdString strLine;
-  for (int i = 0; i < items.Size(); ++i)
+  if (lineStart>items.Size() || lineStart<0)
+    return SetResponse(openTag+"Error:Line start value out of range");
+  if (numLines==-1)
+    numLines=items.Size();
+  if ((numLines+lineStart)>items.Size())
+    numLines=items.Size()-lineStart;
+  for (int i=lineStart; i<lineStart+numLines; ++i)
   {
     CFileItemPtr item = items[i];
     CStdString strLabel = item->GetLabel();
