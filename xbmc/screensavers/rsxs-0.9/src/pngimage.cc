@@ -33,6 +33,7 @@
 #include <cerrno>
 #include <color.hh>
 #include <pngimage.hh>
+#include <cstring>
 
 void PNG::load(FILE* in, bool fullColor) {
 	png_byte sig[8];
