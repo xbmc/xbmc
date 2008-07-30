@@ -210,7 +210,6 @@ public:
 
   int GlobalIdleTime();
   void NewFrame();
-  void SetQuiet(bool bQuiet);
   void EnablePlatformDirectories(bool enable=true)
   {
     m_bPlatformDirectories = enable;
@@ -253,7 +252,6 @@ protected:
   bool m_bAllSettingsLoaded;
   bool m_bInitializing;
   bool m_playCountUpdated;
-  bool m_bQuiet;
   bool m_bPlatformDirectories;
 
   int m_iPlaySpeed;
