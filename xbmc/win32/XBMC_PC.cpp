@@ -416,9 +416,6 @@ HRESULT CXBMC_PC::Create( HINSTANCE hInstance, LPSTR commandLine )
   if(strcl.Find("-fs") >= 0)
     g_advancedSettings.m_fullScreen = true;
 
-  if(strcl.Find("-q") >= 0)
-    g_application.SetQuiet(true);
-
   if(strcl.Find("-p") >= 0)
   {
     printf("Using platform specific directories...\n");
