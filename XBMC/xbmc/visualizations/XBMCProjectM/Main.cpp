@@ -150,9 +150,11 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
     f = fopen(configFile.c_str(), "r");
     if (f)
       fclose(f);
-    else 
+    else {
+      f = fopen(configFile.c_str(), "w");
+      fclose(f);
       projectM::writeConfig(configFile, configPM);
-    
+    }
   }
 
   if (globalPM)
