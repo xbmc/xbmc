@@ -255,16 +255,17 @@ bool CGUIFixedListContainer::SelectItemFromPoint(const CPoint &point)
   if (!m_focusedLayout || !m_layout)
     return false;
 
-  const float mouse_scroll_speed = 0.5f;
+  const float mouse_scroll_speed = 0.05f;
+  float sizeOfItem = m_layout->Size(m_orientation);
   // see if the point is either side of our focused item
-  float start = m_cursor * m_layout->Size(m_orientation);
+  float start = m_cursor * sizeOfItem;
   float end = start + m_focusedLayout->Size(m_orientation);
   float pos = (m_orientation == VERTICAL) ? point.y : point.x;
-  if (pos < start)
+  if (pos < start - 0.5f * sizeOfItem)
   { // scroll backward
     if (!InsideLayout(m_layout, point))
       return false;
-    float amount = (start - pos) / m_layout->Size(m_orientation);
+    float amount = (start - pos) / sizeOfItem;
     m_analogScrollCount += amount * amount * mouse_scroll_speed;
     if (m_analogScrollCount > 1)
     {
@@ -273,12 +274,12 @@ bool CGUIFixedListContainer::SelectItemFromPoint(const CPoint &point)
     }
     return true;
   }
-  else if (pos > end)
+  else if (pos > end + 0.5f * sizeOfItem)
   {
     if (!InsideLayout(m_layout, point))
       return false;
     // scroll forward
-    float amount = (pos - end) / m_layout->Size(m_orientation);
+    float amount = (pos - end) / sizeOfItem;
     m_analogScrollCount += amount * amount * mouse_scroll_speed;
     if (m_analogScrollCount > 1)
     {
