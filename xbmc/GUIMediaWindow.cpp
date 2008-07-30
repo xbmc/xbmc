@@ -970,8 +970,9 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem)
 void CGUIMediaWindow::UpdateFileList()
 {
   int nItem = m_viewControl.GetSelectedItem();
-  CFileItemPtr pItem = m_vecItems->Get(nItem);
-  const CStdString& strSelected = pItem->m_strPath;
+  CStdString strSelected;
+  if (nItem >= 0)
+    strSelected = m_vecItems->Get(nItem)->m_strPath;
 
   FormatAndSort(*m_vecItems);
   UpdateButtons();
@@ -1216,4 +1217,5 @@ const CFileItemList& CGUIMediaWindow::CurrentDirectory() const
 {
   return *m_vecItems;
 }
+
 
