@@ -50,13 +50,7 @@ int main(int argc, char* argv[])
   {
     for (int i=1; i<argc;i++)
     {
-      if (strnicmp(argv[i], "-q", 2) == 0)
-      {
-        g_application.SetQuiet(true);
-        g_guiSettings.SetBool("system.debuglogging",true);
-      }
-
-      else if (strnicmp(argv[i], "-fs", 3) == 0)
+      if (strnicmp(argv[i], "-fs", 3) == 0)
       {
         printf("Running in fullscreen mode...\n");
         g_advancedSettings.m_fullScreen = true;
