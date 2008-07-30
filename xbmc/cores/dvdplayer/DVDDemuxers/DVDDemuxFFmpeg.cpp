@@ -286,7 +286,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       context->max_packet_size = FFMPEG_DVDNAV_BUFFER_SIZE;
       context->is_streamed = 1;
     }
-    if (m_pInput->IsStreamType(DVDSTREAM_TYPE_TV))
+    else if (m_pInput->IsStreamType(DVDSTREAM_TYPE_TV))
     {
       if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
         context->is_streamed = 1;
@@ -567,6 +567,11 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     if(m_pFormatContext->pb)
       m_pFormatContext->pb->eof_reached = 0;
 
+    // keep track if ffmpeg doesn't always set these
+    pkt.size = 0;
+    pkt.data = NULL;
+    pkt.stream_index = MAX_STREAMS;
+
     // timeout reads after 100ms
     m_timeout = GetTickCount() + 20000;
     int result = 0;
@@ -590,102 +595,107 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     {
       Flush();
     }
-    else
+    else if (pkt.size < 0 || pkt.stream_index >= MAX_STREAMS)
     {
       // XXX, in some cases ffmpeg returns a negative packet size
-      if (pkt.size < 0 || pkt.stream_index >= MAX_STREAMS)
+      if(m_pFormatContext->pb && !m_pFormatContext->pb->eof_reached)
       {
         CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::Read() no valid packet");
         bReturnEmpty = true;
+        Flush();
       }
       else
+        CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::Read() returned invalid packet and eof reached");
+
+      av_free_packet(&pkt);
+    }
+    else
+    {
+      AVStream *stream = m_pFormatContext->streams[pkt.stream_index];
+
+      if (m_pFormatContext->nb_programs)
       {
-        AVStream *stream = m_pFormatContext->streams[pkt.stream_index];
-
-        if (m_pFormatContext->nb_programs)
+        /* check so packet belongs to selected program */
+        for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)
         {
-          /* check so packet belongs to selected program */
-          for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)
+          if(pkt.stream_index == (int)m_pFormatContext->programs[m_program]->stream_index[i])
           {
-            if(pkt.stream_index == (int)m_pFormatContext->programs[m_program]->stream_index[i])
-            {
-              pPacket = CDVDDemuxUtils::AllocateDemuxPacket(pkt.size);
-              break;
-            }
+            pPacket = CDVDDemuxUtils::AllocateDemuxPacket(pkt.size);
+            break;
           }
-
-          if (!pPacket)
-            bReturnEmpty = true;
         }
-        else
-          pPacket = CDVDDemuxUtils::AllocateDemuxPacket(pkt.size);
 
-        if (pPacket)
-        {
-          // lavf sometimes bugs out and gives 0 dts/pts instead of no dts/pts
-          // since this could only happens on initial frame under normal
-          // circomstances, let's assume it is wrong all the time
-          if(pkt.dts == 0)
+        if (!pPacket)
+          bReturnEmpty = true;
+      }
+      else
+        pPacket = CDVDDemuxUtils::AllocateDemuxPacket(pkt.size);
+
+      if (pPacket)
+      {
+        // lavf sometimes bugs out and gives 0 dts/pts instead of no dts/pts
+        // since this could only happens on initial frame under normal
+        // circomstances, let's assume it is wrong all the time
+        if(pkt.dts == 0)
+          pkt.dts = AV_NOPTS_VALUE;
+        if(pkt.pts == 0)
+          pkt.pts = AV_NOPTS_VALUE;
+
+        if(m_bMatroska && stream->codec && stream->codec->codec_type == CODEC_TYPE_VIDEO)
+        { // matroska can store different timestamps
+          // for different formats, for native stored
+          // stuff it is pts, but for ms compatibility
+          // tracks, it is really dts. sadly ffmpeg
+          // sets these two timestamps equal all the
+          // time, so we select it here instead
+          if(stream->codec->codec_tag == 0)
             pkt.dts = AV_NOPTS_VALUE;
-          if(pkt.pts == 0)
+          else
             pkt.pts = AV_NOPTS_VALUE;
-
-          if(m_bMatroska && stream->codec && stream->codec->codec_type == CODEC_TYPE_VIDEO)
-          { // matroska can store different timestamps
-            // for different formats, for native stored
-            // stuff it is pts, but for ms compatibility
-            // tracks, it is really dts. sadly ffmpeg
-            // sets these two timestamps equal all the
-            // time, so we select it here instead
-            if(stream->codec->codec_tag == 0)
-              pkt.dts = AV_NOPTS_VALUE;
-            else
-              pkt.pts = AV_NOPTS_VALUE;
-          }
-
-          // copy contents into our own packet
-          pPacket->iSize = pkt.size;
-
-          // maybe we can avoid a memcpy here by detecting where pkt.destruct is pointing too?
-          if (pkt.data)
-            memcpy(pPacket->pData, pkt.data, pPacket->iSize);
-
-          pPacket->pts = ConvertTimestamp(pkt.pts, stream->time_base.den, stream->time_base.num);
-          pPacket->dts = ConvertTimestamp(pkt.dts, stream->time_base.den, stream->time_base.num);
-          pPacket->duration =  DVD_SEC_TO_TIME((double)pkt.duration * stream->time_base.num / stream->time_base.den);
-
-          // used to guess streamlength
-          if (pPacket->dts != DVD_NOPTS_VALUE && (pPacket->dts > m_iCurrentPts || m_iCurrentPts == DVD_NOPTS_VALUE))
-            m_iCurrentPts = pPacket->dts;
-
-
-          // check if stream has passed full duration, needed for live streams
-          if(pkt.dts != (int64_t)AV_NOPTS_VALUE)
-          {
-              int64_t duration;
-              duration = pkt.dts;
-              if(stream->start_time != (int64_t)AV_NOPTS_VALUE)
-                duration -= stream->start_time;
-
-              if(duration > stream->duration)
-              {
-                stream->duration = duration;
-                duration = m_dllAvUtil.av_rescale_rnd(stream->duration, stream->time_base.num * AV_TIME_BASE, stream->time_base.den, AV_ROUND_NEAR_INF);
-                if ((m_pFormatContext->duration == (int64_t)AV_NOPTS_VALUE && m_pFormatContext->file_size > 0)
-                ||  (m_pFormatContext->duration != (int64_t)AV_NOPTS_VALUE && duration > m_pFormatContext->duration))
-                  m_pFormatContext->duration = duration;
-              }
-          }
-
-          // check if stream seem to have grown since start
-          if(m_pFormatContext->file_size > 0 && m_pFormatContext->pb)
-          {
-            if(m_pFormatContext->pb->pos > m_pFormatContext->file_size)
-              m_pFormatContext->file_size = m_pFormatContext->pb->pos;
-          }
-
-          pPacket->iStreamId = pkt.stream_index; // XXX just for now
         }
+
+        // copy contents into our own packet
+        pPacket->iSize = pkt.size;
+
+        // maybe we can avoid a memcpy here by detecting where pkt.destruct is pointing too?
+        if (pkt.data)
+          memcpy(pPacket->pData, pkt.data, pPacket->iSize);
+
+        pPacket->pts = ConvertTimestamp(pkt.pts, stream->time_base.den, stream->time_base.num);
+        pPacket->dts = ConvertTimestamp(pkt.dts, stream->time_base.den, stream->time_base.num);
+        pPacket->duration =  DVD_SEC_TO_TIME((double)pkt.duration * stream->time_base.num / stream->time_base.den);
+
+        // used to guess streamlength
+        if (pPacket->dts != DVD_NOPTS_VALUE && (pPacket->dts > m_iCurrentPts || m_iCurrentPts == DVD_NOPTS_VALUE))
+          m_iCurrentPts = pPacket->dts;
+
+
+        // check if stream has passed full duration, needed for live streams
+        if(pkt.dts != (int64_t)AV_NOPTS_VALUE)
+        {
+            int64_t duration;
+            duration = pkt.dts;
+            if(stream->start_time != (int64_t)AV_NOPTS_VALUE)
+              duration -= stream->start_time;
+
+            if(duration > stream->duration)
+            {
+              stream->duration = duration;
+              duration = m_dllAvUtil.av_rescale_rnd(stream->duration, stream->time_base.num * AV_TIME_BASE, stream->time_base.den, AV_ROUND_NEAR_INF);
+              if ((m_pFormatContext->duration == (int64_t)AV_NOPTS_VALUE && m_pFormatContext->file_size > 0)
+              ||  (m_pFormatContext->duration != (int64_t)AV_NOPTS_VALUE && duration > m_pFormatContext->duration))
+                m_pFormatContext->duration = duration;
+            }
+        }
+
+        // check if stream seem to have grown since start
+        if(m_pFormatContext->file_size > 0 && m_pFormatContext->pb)
+        {
+          if(m_pFormatContext->pb->pos > m_pFormatContext->file_size)
+            m_pFormatContext->file_size = m_pFormatContext->pb->pos;
+        }
+
+        pPacket->iStreamId = pkt.stream_index; // XXX just for now
       }
       av_free_packet(&pkt);
     }
