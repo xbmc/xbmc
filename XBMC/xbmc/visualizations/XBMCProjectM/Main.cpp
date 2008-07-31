@@ -1,3 +1,4 @@
+
 /* 
 xmms-projectM v0.99 - xmms-projectm.sourceforge.net
 --------------------------------------------------
@@ -36,6 +37,7 @@ d4rk@xboxmediacenter.com
 
 #include "xbmc_vis.h"
 #include <GL/glew.h>
+#include "libprojectM/ConfigFile.h"
 #include "libprojectM/projectM.hpp"
 #include "libprojectM/Preset.hpp"
 #include "libprojectM/PCM.hpp"
@@ -148,13 +150,29 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   {
     FILE *f;
     f = fopen(configFile.c_str(), "r");
-    if (f)
+    if (f) {   // Config exists.  Let's preserve settings except for iWidth, iHeight, iPosX, iPosY
       fclose(f);
+      ConfigFile config(configFile.c_str());
+      if (config.keyExists("Mesh X")) configPM.meshX = config.read<int> ("Mesh X", gx);
+      if (config.keyExists("Mesh Y")) configPM.meshY = config.read<int> ("Mesh Y", gy);
+      if (config.keyExists("Texture Size")) configPM.textureSize = config.read<int> ("Texture Size", texsize);
+      if (config.keyExists("Preset Path")) configPM.presetURL = config.read<string> ("Preset Path", presetsDir);
+      if (config.keyExists("Smooth Preset Duration")) configPM.smoothPresetDuration = config.read<int> ("Smooth Preset Duration", 5);
+      if (config.keyExists("Preset Duration")) configPM.presetDuration = config.read<int> ("Preset Duration", 15);
+      if (config.keyExists("FPS")) configPM.fps = config.read<int> ("FPS", fps);
+      if (config.keyExists("Beat Sensitivity")) configPM.beatSensitivity = config.read<float> ("Beat Sensitivity", 10.0);
+      if (config.keyExists("Aspect Correction")) configPM.aspectCorrection = config.read<bool> ("Aspect Correction", true);
+      if (config.keyExists("Easter Egg")) configPM.easterEgg = config.read<float> ("Easter Egg", 0.0);
+      if (config.keyExists("Shuffle Enabled")) configPM.shuffleEnabled = config.read<bool> ("Shuffle Enabled", true);
+    }   
+         
     else {
-      f = fopen(configFile.c_str(), "w");
+      f = fopen(configFile.c_str(), "w");   // Config does not exist, but we still need at least a blank file.
       fclose(f);
-      projectM::writeConfig(configFile, configPM);
     }
+
+      projectM::writeConfig(configFile, configPM);
+
   }
 
   if (globalPM)
