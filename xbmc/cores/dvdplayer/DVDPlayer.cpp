@@ -2211,6 +2211,10 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 
         m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NAV);
         m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
+
+        // we must hold here once more, otherwise the demuxer message
+        // will be executed after demuxer have filled with data
+        return NAVRESULT_HOLD;
       }
       break;
     case DVDNAV_CELL_CHANGE:
