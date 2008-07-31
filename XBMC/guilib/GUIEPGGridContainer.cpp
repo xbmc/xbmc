@@ -1,23 +1,23 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
- *      http://www.xbmc.org
- *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
- *
- *  This Program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
- *
- */
+*      Copyright (C) 2005-2008 Team XBMC
+*      http://www.xbmc.org
+*
+*  This Program is free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; either version 2, or (at your option)
+*  any later version.
+*
+*  This Program is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with XBMC; see the file COPYING.  If not, write to
+*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+*  http://www.gnu.org/copyleft/gpl.html
+*
+*/
 
 #include "include.h"
 #include "GUIEPGGridContainer.h"
@@ -26,36 +26,39 @@
 #include "GUIFontManager.h"
 
 #define SHORTGAP     4
-#define MINSPERBLOCK 5
+#define MINSPERBLOCK 5 /// would be nice to offer zooming of busy schedules
 
 CGUIEPGGridContainer::CGUIEPGGridContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, int scrollTime, int timeBlocks)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+: CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   ControlType = GUICONTAINER_EPGGRID;
-  m_posX = posX;
-  m_posY = posY;
-  m_width = width;
-  m_height = height;
-  m_channel = 0;
-  m_item = 0;
-  m_block = 0;
-  m_chanOffset = 0;
-  m_blockOffset = 0;
-  m_scrollTime = scrollTime ? scrollTime : 1;
-  m_scrollOffset = 0;
-  m_scrollSpeed = 0;
-  m_channelsPerPage = 10;
-  m_renderTime = 0;
-  m_lastItem = NULL;
   m_blocksPerPage = timeBlocks;
-  m_wrapAround = false; /* get from settings */
+  m_blockSize = 0;
+  m_channel = 0;
+  m_block = 0;
+  m_channelOffset = 0;
+  m_blockOffset = 0;
+  m_vertScrollOffset = 0;
+  m_vertScrollSpeed = 0;
+  m_vertScrollLastTime = 0;
+  m_horzScrollOffset = 0;
+  m_horzScrollSpeed = 0;
+  m_horzScrollLastTime = 0;
+  m_scrollTime = scrollTime ? scrollTime : 1;
+  m_renderTime = 0;
+  m_item.reset();
+  m_lastItem.reset();
+  m_layout = NULL;
+  m_focusedLayout = NULL;
+  m_channelWrapAround = false;
 }
 
 CGUIEPGGridContainer::~CGUIEPGGridContainer(void)
 {
+  //Reset();
 }
 
-void CGUIEPGGridContainer::RenderItem(float posX, float posY, CGUIListItem *item, bool focused)
+void CGUIEPGGridContainer::RenderItem(float posX, float posY, CGUIListItemPtr item, bool focused)
 {
   if (!m_focusedLayout || !m_layout) return;
 
@@ -85,7 +88,7 @@ void CGUIEPGGridContainer::RenderItem(float posX, float posY, CGUIListItem *item
           subItem = m_lastItem->GetFocusedLayout()->GetFocusedItem();
         item->GetFocusedLayout()->SetFocusedItem(subItem ? subItem : 1);
       }
-      item->GetFocusedLayout()->Render(item, m_dwParentID, m_renderTime);
+      item->GetFocusedLayout()->Render(item.get(), m_dwParentID, m_renderTime);
     }
     m_lastItem = item;
   }
@@ -99,9 +102,9 @@ void CGUIEPGGridContainer::RenderItem(float posX, float posY, CGUIListItem *item
       item->SetLayout(layout);
     }
     if (item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS))
-      item->GetFocusedLayout()->Render(item, m_dwParentID, m_renderTime);
+      item->GetFocusedLayout()->Render(item.get(), m_dwParentID, m_renderTime);
     else if (item->GetLayout())
-      item->GetLayout()->Render(item, m_dwParentID, m_renderTime);
+      item->GetLayout()->Render(item.get(), m_dwParentID, m_renderTime);
   }
   g_graphicsContext.RestoreOrigin();
 }
@@ -116,43 +119,79 @@ void CGUIEPGGridContainer::Render()
   if (!m_layout || !m_focusedLayout)
     return;
 
-  m_scrollOffset += m_scrollSpeed * (m_renderTime - m_scrollLastTime);
-  if ((m_scrollSpeed < 0 && m_scrollOffset < m_chanOffset * m_layout->Size(VERTICAL)) ||
-    (m_scrollSpeed > 0 && m_scrollOffset > m_chanOffset * m_layout->Size(VERTICAL)))
+  m_vertScrollOffset += m_vertScrollSpeed * (m_renderTime - m_vertScrollLastTime);
+  if ((m_vertScrollSpeed < 0 && m_vertScrollOffset < m_channelOffset * m_layout->Size(VERTICAL)) ||
+    (m_vertScrollSpeed > 0 && m_vertScrollOffset > m_channelOffset * m_layout->Size(VERTICAL)))
   {
-    m_scrollOffset = m_chanOffset * m_layout->Size(VERTICAL);
-    m_scrollSpeed = 0;
+    m_vertScrollOffset = m_channelOffset * m_layout->Size(VERTICAL);
+    m_vertScrollSpeed = 0;
   }
-  m_scrollLastTime = m_renderTime;
+  m_vertScrollLastTime = m_renderTime;
 
-  int offset = (int)(m_scrollOffset / m_layout->Size(VERTICAL));
+  m_horzScrollOffset += m_horzScrollSpeed * (m_renderTime - m_horzScrollLastTime);
+  if ((m_horzScrollSpeed < 0 && m_horzScrollOffset < m_blockOffset * m_blockSize) ||
+    (m_horzScrollSpeed > 0 && m_horzScrollOffset > m_blockOffset * m_blockSize))
+  {
+    m_horzScrollOffset = m_blockOffset * m_blockSize;
+    m_horzScrollSpeed = 0;
+  }
+  m_horzScrollLastTime = m_renderTime;
+  
+  int chanOffset = (int)(m_vertScrollOffset / m_layout->Size(VERTICAL));
+  int blockOffset = (int)(m_horzScrollOffset / m_blockSize);
 
-  //g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
-  /// disabled to check that griditems are correct size
+  g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
 
-  float posX = m_posX;
   float posY = m_posY;
+
+  // we offset our draw position to take into account scrolling and whether or not our focused
+  // item is offscreen "above" the list.
+  float vertDrawOffset = chanOffset * m_layout->Size(VERTICAL) - m_vertScrollOffset;
+  if (chanOffset > m_channelOffset + m_channel)
+    vertDrawOffset += m_focusedLayout->Size(VERTICAL) - m_layout->Size(VERTICAL);
+  
+  float horzDrawOffset = blockOffset * m_blockSize - m_horzScrollOffset;
+
+  if (horzDrawOffset != 0)
+    CLog::Log(LOGDEBUG, "horzDrawOffset: %f, m_horzScrollOffset: %f, m_horzScrollSpeed: %f, blockOFfset: %u ", horzDrawOffset, m_horzScrollOffset, m_horzScrollSpeed, blockOffset);
+  posY += vertDrawOffset;
+
   float focusedPosX = 0;
   float focusedPosY = 0;
   CGUIListItemPtr focusedItem;
 
-  int iC = m_chanOffset;
-  int iS = 0;
-  int x  = 0;
+  int channel = chanOffset;
 
   while (posY < m_posY + m_height && m_gridItems.size())
   {
-    if (iC >= (int)m_gridItems.size())
+    if (channel >= (int)m_gridItems.size())
       break;
-    while (posX < m_posX + m_width && iS < (int) m_gridItems[iC].size())
+
+    int block = blockOffset;
+    float posX = m_posX + horzDrawOffset;
+
+    if (horzDrawOffset > 0)
+      int breakpoint = 0;
+
+    CGUIListItemPtr item;
+    item = m_gridIndex[channel][block]; 
+    if (item == m_gridIndex[channel][blockOffset-1] && blockOffset != 0)
     {
-      CGUIListItemPtr item = m_gridItems[iC][iS];
+      /* first program starts before current view */
+      int startBlock = blockOffset - 1;
+      while (m_gridIndex[channel][startBlock] == item)
+        startBlock--;
 
-      bool focused = false;
-      if (iC == m_channel)
-        if(iS == m_item)
-          focused = true;
+      block = startBlock + 1;
+      int missingSection = blockOffset - block;
+      posX -= missingSection * m_blockSize;
+    }
 
+    while (posX < m_posX + m_width && m_gridItems[channel].size())
+    {
+      item = m_gridIndex[channel][block];  
+     
+      bool focused = (channel == m_channelOffset + m_channel) && (item == m_gridIndex[m_channelOffset + m_channel][m_blockOffset + m_block]);
       // render our item
       if (focused)
       {
@@ -161,42 +200,46 @@ void CGUIEPGGridContainer::Render()
         focusedItem = item;
       }
       else
-        RenderItem(posX, posY, item.get(), focused);
+        RenderItem(posX, posY, item, focused);
 
       // increment our X position
-      iS++;
+      block += (int)(item->GetLayout()->Size(HORIZONTAL) / m_blockSize);
       posX += item->GetLayout()->Size(HORIZONTAL); // assumes focused & unfocused layouts have equal length
-
     }
     // increment our Y position
-    iC++;
-    posX = m_posX; // reset X position
-    iS = 0;
+    channel++;
     posY += m_layout->Size(VERTICAL); // assumes focused & unfocused layouts have equal height
   }
   // and render the focused item last (for overlapping purposes)
   if (focusedItem)
-    RenderItem(focusedPosX, focusedPosY, focusedItem.get(), true);
+    RenderItem(focusedPosX, focusedPosY, focusedItem, true);
 
-  RenderRuler();
+  RenderDebug();
 
   CGUIControl::Render();
-  //g_graphicsContext.RestoreClipRegion();
+
+  g_graphicsContext.RestoreClipRegion();
 }
 
-void CGUIEPGGridContainer::RenderRuler()
+void CGUIEPGGridContainer::RenderDebug()
 {
   RESOLUTION res = g_graphicsContext.GetVideoResolution();
   g_graphicsContext.SetScalingResolution(res, 0, 0, false);
 
   CStdStringW wszText;
 
-  wszText.Format(L"Item:%u, Block:%u, BlockOffset:%u, Channel:%u, ChannelOffset:%u", m_item, m_block, m_blockOffset, m_channel, m_chanOffset);
+  CStdString start, end;
+  start = m_gridStart.GetAsDBDateTime();
+  end = m_gridEnd.GetAsDBDateTime();
+  
+  wszText.Format(L"Block:%u, BlockOffset:%u, Channel:%u, ChannelOffset:%u", m_block, m_blockOffset, m_channel, m_channelOffset);
 
-  float x = 0.30f * g_graphicsContext.GetWidth();
-  float y = 0.96f * g_graphicsContext.GetHeight();
+  float x = 0.20f * g_graphicsContext.GetWidth();
+  float y = 0.90f * g_graphicsContext.GetHeight();
   CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, wszText);
+  
 }
+
 void CGUIEPGGridContainer::UpdateItems(EPGGrid &gridData, const CDateTime &start, const CDateTime &end)
 {
   if (m_gridItems.size() > 0)
@@ -204,7 +247,7 @@ void CGUIEPGGridContainer::UpdateItems(EPGGrid &gridData, const CDateTime &start
 
   float posX = m_posX;
   float posY = m_posY;
-  float blockSize = m_width / m_blocksPerPage;
+  m_blockSize = m_width / m_blocksPerPage;
 
   CDateTime gridStart, gridEnd;
   CDateTimeSpan gridDuration, blockDuration, pageDuration;
@@ -213,111 +256,66 @@ void CGUIEPGGridContainer::UpdateItems(EPGGrid &gridData, const CDateTime &start
   gridStart = start;
   pageDuration.SetDateTimeSpan(0, 0, MINSPERBLOCK*m_blocksPerPage, 0);
   gridEnd = start + pageDuration;
+  m_gridStart = gridStart;
+  m_gridEnd = gridEnd;
 
   m_blocks = (gridDuration.GetDays()*24*60 + gridDuration.GetHours()*60 + gridDuration.GetMinutes()) / MINSPERBLOCK;
   blockDuration.SetDateTimeSpan(0, 0, MINSPERBLOCK, 0);
 
-  itEPGRow itY = gridData.begin();
-  bool unknown = false;
-
-  std::vector< int > rowIndex;
-  std::vector< CGUIListItemPtr > rowItems;
-  std::vector< CGUIListItemPtr > unknownItems;
-
   DWORD tick(timeGetTime());
-  for (int y = 0 ; itY != gridData.end(); itY++, y++)
+  iEPGRow itY = gridData.begin();
+  
+  /** FOR EACH CHANNEL **********************************************************************/
+  for (int row = 0 ; itY != gridData.end(); itY++, row++)
   {
-    itEPGShow itX = itY->shows.begin();
-    
-    CDateTime gridCursor = gridStart;
-    
-    int itemSize = 0;
-    int itemIdx = -1;
-    int offset = 0;
+    CDateTime gridCursor = gridStart; //reset cursor for new channel
+    iEPGItem program = itY->begin();
 
-    CGUIListItemPtr Item(new CGUIListItem());
-
-    for (int x = 0; x < m_blocks; x++)
+    /** FOR EACH BLOCK **********************************************************************/
+    for (int block = 0; block < m_blocks; block++)
     {
-      CDateTime itemStart, itemEnd;
-      CDateTimeSpan itemDuration;
-      itemStart.SetFromDBDateTime((*itX)->GetProperty("StartTime").c_str());
-      itemDuration.SetDateTimeSpan(0, 0, 0, (*itX)->GetPropertyInt("Duration"));
-      itemEnd = itemStart + itemDuration;
+      while (program != itY->end() && (*program)->GetEPGInfoTag()->m_endTime < gridCursor)
+        program++;
 
-      if ((*itX) && gridCursor >= gridEnd)
+      // we are either at the end of the programs, or have a program ending after this time
+      if (program == itY->end())
       {
-        /* give each ListItem it's own unique layout */
-        CGUIListItemLayout *pItemLayout = new CGUIListItemLayout(*m_layout);
-        CGUIListItemLayout *pItemFocusedLayout = new CGUIListItemLayout(*m_focusedLayout);
-
-        pItemLayout->SetWidth(itemSize*blockSize);
-        pItemFocusedLayout->SetWidth(itemSize*blockSize);
-        Item->SetFocusedLayout(pItemFocusedLayout);
-        Item->SetLayout(pItemLayout);
-
-        if (itemEnd <= gridEnd)
-        {
-          itX++; // last program ended on the page edge, next programme
-        }
-        itemSize = 0;
-      }
-
-      if (!(*itX) || (gridCursor < itemStart)) // there's a gap in the schedule
-      {
-        if (unknown)
-        {
-          itemSize++;
-          /// finalize layout for unknown item
-        }
-        else
-        {
-          Item = CGUIListItemPtr();
-          Item->SetLabel("_?_");
-          Item->SetProperty("Category", "Unknown");
-
-          itemIdx++;
-          unknown = true;
-        }
+        m_gridIndex[row][block].reset(); // no program here
       }
       else
       {
-        if (Item == *itX)
+        // we have a program ending after this time, so check whether it starts before this
+        if ((*program)->GetEPGInfoTag()->m_startTime <= gridCursor)
         {
-          // we've already found this programme, increment size of item in blocks
-          itemSize++;
+          m_gridIndex[row][block] = *program;
         }
         else
         {
-          if (*itX != *itY->shows.end())
-          Item = *itX; // Found a new programme
-          rowItems.push_back(Item); // fill the channels vector
-          itemSize = 1;
-          itemIdx++;
-          unknown = false;
+          m_gridIndex[row][block].reset();
         }
       }
-      rowIndex.push_back(itemIdx);
-      gridCursor += blockDuration; // add 5 minutes
-
-      offset++;
-      if (offset - m_blocksPerPage == 0)
+      gridCursor += blockDuration;
+    }
+    
+    /** calculate the width of each item & set a new layout **/
+    int itemSize = 1; // size of the programme in blocks
+    std::vector< CGUIListItemPtr > items; // this channel's items
+    for (int block = 0; block < m_blocks; block++)
+    {
+      if (m_gridIndex[row][block] != m_gridIndex[row][block+1])
       {
-        // new page
-        gridStart += pageDuration;
-        gridEnd   += pageDuration;
-        offset = 0;
+        GenerateItemLayout(row, itemSize, block);
+        items.push_back(m_gridIndex[row][block]);
+        itemSize = 1;
+      }
+      else
+      {
+        itemSize++;
       }
     }
-    if (rowItems.size() > 0)
-    {
-      m_gridItems.push_back(rowItems);
-      m_gridIndex.push_back(rowIndex);
-    }
-    rowItems.clear();
-    rowIndex.clear();
+    m_gridItems.push_back(items);
   }
-
+  /******************************************************************************************/
 
   if (m_gridItems.size() < 1)
   {
@@ -326,7 +324,10 @@ void CGUIEPGGridContainer::UpdateItems(EPGGrid &gridData, const CDateTime &start
   }
 
   CLog::Log(LOGDEBUG, "%s completed successfully in %u ms", __FUNCTION__, timeGetTime()-tick);
+
   m_channels = (int)m_gridItems.size();
+  m_item = GetItem(m_channel);
+  m_block = GetBlock(m_item, m_channel);
 
   SetInvalid(); 
 }
@@ -340,7 +341,7 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
   case ACTION_MOVE_DOWN:
   case ACTION_MOVE_UP:
     { // use base class implementation
-      
+
       return CGUIControl::OnAction(action);
     }
     break;
@@ -361,144 +362,160 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
 
 void CGUIEPGGridContainer::OnUp()
 {
-  bool wrapAround = m_wrapAround;
-  if (MoveUp(wrapAround))
-    return;
-  CGUIControl::OnUp();
-}
-
-void CGUIEPGGridContainer::OnDown()
-{
-  if (MoveDown(m_wrapAround))
-    return;
-  CGUIControl::OnDown();
-}
-
-void CGUIEPGGridContainer::OnLeft()
-{
-  if (MoveLeft(m_wrapAround))
-    return;
-  CGUIControl::OnLeft();
-}
-
-void CGUIEPGGridContainer::OnRight()
-{
-  if (MoveRight(m_wrapAround))
-    return;
-  CGUIControl::OnRight();
-}
-
-bool CGUIEPGGridContainer::MoveUp(bool wrapAround)
-{
   if (m_channel > 0)
   {
     SetChannel(m_channel - 1);
   }
-  else if (m_channel == 0 && m_chanOffset)
+  else if (m_channel == 0 && m_channelOffset)
   {
-    ScrollToChannelOffset(m_chanOffset - m_channelsPerPage);
+    ScrollToChannelOffset(m_channelOffset - 1);
   }
-  else if (m_wrapAround)
+  else if (m_channelWrapAround)
   {
-    if (m_gridItems.size() > 0)
-    {
-      int offset = m_channels - m_channelsPerPage;
-      if (offset < 0) offset = 0;
-      SetChannel(m_channels - offset - 1);
-      ScrollToChannelOffset(offset);
-    }
+    int offset = m_channels - m_channelsPerPage;
+    if (offset < 0) offset = 0;
+    SetChannel(m_channels - offset - 1);
+    ScrollToChannelOffset(offset);
   }
   else
-    return false;
-
-  return true;
+    CGUIControl::OnUp();
 }
 
-bool CGUIEPGGridContainer::MoveDown(bool wrapAround)
+void CGUIEPGGridContainer::OnDown()
 {
-  int channel = m_channel + 1;
-  if (m_chanOffset + channel < m_channels)
+  if (m_channelOffset + m_channel + 1 < m_channels)
   {
-    if (channel < m_channelsPerPage)
+    if (m_channel + 1 < m_channelsPerPage)
     {
-      SetChannel(channel);
-      
-      /*m_block   = (GetBlock(m_item) - m_block) > (;*/
+      SetChannel(m_channel + 1);
     }
     else
     {
-      SetChannel(channel);
-      ScrollToChannelOffset(m_chanOffset + m_channelsPerPage);
-      m_channel = 0;
+      ScrollToChannelOffset(m_channelOffset + 1);
     }
   }
-  else if(wrapAround)
-  { // move first item in list, and set our container moving in the "down" direction
+  else if(m_channelWrapAround)
+  {
     SetChannel(0);
     ScrollToChannelOffset(0);
   }
   else
-    return false;
-
-  return true;
+    CGUIControl::OnDown();
 }
-bool CGUIEPGGridContainer::MoveLeft(bool wrapAround)
+
+void CGUIEPGGridContainer::OnLeft()
 {
-  if (m_item != m_gridIndex[m_channel][m_blockOffset] )
+  if (m_item != m_gridIndex[m_channel + m_channelOffset][m_blockOffset])
   {
     // this is not first item on page
-    m_block = GetBlock(--m_item, m_channel);
+    m_item = GetPrevItem(m_channel);
+    m_block = GetBlock(m_item, m_channel);
   }
   else if (m_block == 0 && m_blockOffset)
   {
-    // at left edge and 2+ pages
-    m_block = GetBlock(--m_item, m_channel);
-    ScrollToBlockOffset(1);
-  }
-  else if (m_wrapAround)
-  {
-    if (m_gridItems.size() > 0)
+    // we're at the left edge and offset
+    int itemSize = GetItemSize(m_item);
+    int block = GetRealBlock(m_item, m_channel);
+
+    if (block < m_blockOffset) /* current item begins before current offset, keep selected */
     {
-      int offset = m_blocks - m_blocksPerPage;
-      if (offset < 0) offset = 0;
-      /*SetItr(m_channels - offset - 1);*/
-      ScrollToBlockOffset(offset);
+      if (itemSize > m_blocksPerPage) /* current item is longer than one page, scroll to end of item */
+      {
+        ScrollToBlockOffset(m_blockOffset - block);
+        SetBlock(0);
+      }
+      else /* current item is shorter than one page, scroll left to start of item */
+      {
+        ScrollToBlockOffset(block); // -1?
+        SetBlock(0); //should be zero
+      }
+    }
+    else /* current item finishes on this page's edge, select the next item */
+    {
+      m_item = GetPrevItem(m_channel);
+      itemSize = GetItemSize(m_item);
+      int block = GetRealBlock(m_item, m_channel);
+      if (itemSize > m_blocksPerPage) // previous item is longer than one page, scroll left to last page of item */
+      {
+        ScrollToBlockOffset(m_blockOffset - m_blocksPerPage); // left one whole page
+        SetBlock(m_blocksPerPage -1 ); // helps navigation by setting cursor to far right edge
+      }
+      else /* previous item is shorter than one page, scroll left to start of item */
+      {
+        ScrollToBlockOffset(m_blockOffset - itemSize);
+        SetBlock(0); //should be zero
+      }
+    }
+  }
+  /*else if (m_channelWrapAround)
+  {
+    int offset = m_blocks - m_blocksPerPage;
+    if (offset < 0)
+      offset = 0;
+    ScrollToBlockOffset(offset);
+  }*/
+  else
+    CGUIControl::OnLeft();
+  /* call CGUIWindowEPG::OnLeft(); to load previous range of dates*/
+}
+
+void CGUIEPGGridContainer::OnRight()
+{
+  if ( m_item != m_gridIndex[m_channel + m_channelOffset][m_blocksPerPage + m_blockOffset - 1] )
+  {
+    // this is not last item on page
+    m_item = GetNextItem(m_channel);
+    m_block = GetBlock(m_item, m_channel);
+  }
+  else if ((m_blockOffset + m_block + GetItemSize(m_item) != m_blocks) && m_blocks > m_blocksPerPage)
+  {
+    // at right edge and not last page
+    int itemSize = GetItemSize(m_item);
+    int block = GetRealBlock(m_item, m_channel);
+
+    if (itemSize > m_blocksPerPage - m_block) // current item extends into next page, keep selected
+    {
+      if (itemSize > m_blocksPerPage) // current item is longer than one page, scroll to start of item
+      {
+        ScrollToBlockOffset(m_blockOffset + block); //// ??
+        SetBlock(0);
+      }
+      else // current item is shorter than one page, scroll so end of item sits on end of grid
+      {
+        /// todo check for shorter last page, or do this in validateoffset
+        ScrollToBlockOffset(block + itemSize - m_blocksPerPage);
+        SetBlock(GetBlock(m_item, m_channel)); // block needs updated
+      }
+    }
+    else // current item finishes on this page's edge, select the next item
+    {
+      m_item = GetNextItem(m_channel);
+      itemSize = GetItemSize(m_item);
+      block = GetRealBlock(m_item, m_channel);
+      if (itemSize > m_blocksPerPage) // next item is longer than one page, scroll to first page of this item
+      {
+        ScrollToBlockOffset(m_blockOffset + m_blocksPerPage);
+        SetBlock(0);
+      }
+      else // next item is shorter than one page, scroll so end of item sits on end of grid
+      {
+        ScrollToBlockOffset(m_blockOffset + itemSize);
+        SetBlock(m_blocksPerPage - 1); // helps navigation by setting cursor to far right edge
+      }
     }
   }
   else
-    return false;
-
-  CLog::Log(LOGDEBUG, "Block: %u | Item: %u", m_block+m_blockOffset, m_item);
-  return true;
-}
-
-bool CGUIEPGGridContainer::MoveRight(bool wrapAround)
-{
-  
-  if ( m_item != m_gridIndex[m_channel][m_blocksPerPage + m_blockOffset] )
-  {
-    // this is not last item on page
-    m_block = GetBlock(++m_item, m_channel);
-  }
-  CLog::Log(LOGDEBUG, "Block: %u | Item: %u", m_block+m_blockOffset, m_item);
-  return true;
+    CGUIControl::OnRight();
+  /* call parent handler CGUIWindowEPG::OnRight(); to load next range of dates*/
 }
 
 void CGUIEPGGridContainer::SetChannel(int channel)
 {
-  if (channel > m_channels - 1) 
-    channel = m_channels - 1;
-  if (channel < 0) 
-    channel = 0;
-
-  if (channel == m_channel)
-    return;
-
-  if (m_block == 0 || m_block == m_blocksPerPage)
+  if (m_block == 0 || m_block + GetItemSize(m_item) >= m_blocksPerPage)
   {
-    m_channel = channel;
     m_item = GetItem(channel);
     m_block = GetBlock(m_item, channel);
+    m_channel = channel;
     return;
   }
 
@@ -506,72 +523,119 @@ void CGUIEPGGridContainer::SetChannel(int channel)
   m_item = GetClosestItem(channel);
   m_channel = channel;
   m_block = GetBlock(m_item, m_channel);
-
-  CLog::Log(LOGDEBUG, "*********************************");
-  for (int i = 0; i < 36; i++)
-  {
-    CLog::Log(LOGDEBUG, "%u: %u", i, m_gridIndex[m_channel][i]);
-  }
-
 }
-void CGUIEPGGridContainer::Scroll(int amount)
+
+void CGUIEPGGridContainer::SetBlock(int block)
 {
-
+  m_block = block; 
+  m_item = GetItem(m_channel);
 }
-
 
 int CGUIEPGGridContainer::GetSelectedItem() const
 {
-  return CorrectOffset(m_chanOffset, m_channel);
+  return 0;
 }
 
-int CGUIEPGGridContainer::GetClosestItem(const int &channel)
+CGUIListItemPtr CGUIEPGGridContainer::GetClosestItem(const int &channel)
 {
+  CGUIListItemPtr closest = GetItem(channel);
+  int block = GetBlock(closest, channel);
+  int left;   // num blocks to start of previous item
+  int right;  // num blocks to start of next item
 
-  int item = GetItem(channel);
-  int block = GetBlock(item, channel) - m_blockOffset;
-  int left, right;
-  bool forward = true;
+  if (block == m_block)
+    return closest; // item & m_item start together
 
-  if (block == m_block) // item & m_item start together
-    return item;
+  if (block + GetItemSize(closest) == m_block + GetItemSize(m_item))
+    return closest; //closest item ends when current does
 
   if (block > m_block)  // item starts after m_item
   {
-    left = m_block - GetBlock(item - 1, channel);
+    left = m_block - GetBlock(closest, channel); 
     right = block - m_block;
   }
   else
   {
-    left = m_block - block;
-    right = GetBlock(item + 1, channel) - m_block;
+    left  = m_block - block;
+    right = GetBlock(GetNextItem(channel), channel) - m_block;
   }
 
-  if (right > SHORTGAP)
-  {
-    return item;
-  }
+  if (right <= SHORTGAP && right < left || right == left) 
+    return m_gridIndex[channel+m_channelOffset][m_block + right + m_blockOffset];
   else
+    return m_gridIndex[channel+m_channelOffset][m_block - left  + m_blockOffset];
+}
+
+
+int CGUIEPGGridContainer::GetItemSize(CGUIListItemPtr item)
+{
+  return (int)(item->GetLayout()->Size(HORIZONTAL) / m_blockSize);
+}
+
+int CGUIEPGGridContainer::GetBlock(const CGUIListItemPtr &item, const int &channel)
+{
+  int block = 0;
+  while (m_gridIndex[channel + m_channelOffset][block + m_blockOffset] != item)
+    block++;
+  return block;
+}
+
+int CGUIEPGGridContainer::GetRealBlock(const CGUIListItemPtr &item, const int &channel)
+{
+  int block = 0;
+  while (m_gridIndex[channel + m_channelOffset][block] != item)
+    block++;
+  return block;
+}
+
+void CGUIEPGGridContainer::GenerateItemLayout(int row, int itemSize, int block)
+{
+  CGUIListItemLayout *pItemLayout = new CGUIListItemLayout(*m_layout);
+  CGUIListItemLayout *pItemFocusedLayout = new CGUIListItemLayout(*m_focusedLayout);
+  pItemLayout->SetWidth(itemSize*m_blockSize);
+  pItemFocusedLayout->SetWidth(itemSize*m_blockSize);
+
+  if (!m_gridIndex[row][block])
   {
-    if (right < left) 
-      return m_gridIndex[channel][block + right + m_blockOffset];
-    else
-      return m_gridIndex[channel][block - left  + m_blockOffset];
+   CFileItemPtr unknown(new CFileItem("Unknown"));
+   for (int i = block ; i > block - itemSize; i--)
+     m_gridIndex[row][i] = unknown;
   }
+  
+  m_gridIndex[row][block]->SetFocusedLayout(pItemFocusedLayout);
+  m_gridIndex[row][block]->SetLayout(pItemLayout);
+  m_lastItem = m_gridIndex[row][block];
 }
 
-int CGUIEPGGridContainer::GetBlock(const int &item, const int &channel)
+
+CGUIListItemPtr CGUIEPGGridContainer::GetNextItem(const int &channel)
 {
-  int i = 0;
-  while (m_gridIndex[channel][i] != item)
+  int i = m_block;
+  while (m_gridIndex[channel + m_channelOffset][i + m_blockOffset] == m_gridIndex[channel + m_channelOffset][m_block + m_blockOffset] && i < m_blocksPerPage)
     i++;
-  return i;
+  return m_gridIndex[channel + m_channelOffset][i + m_blockOffset];
 }
 
-int CGUIEPGGridContainer::GetItem(const int &channel)
+CGUIListItemPtr CGUIEPGGridContainer::GetPrevItem(const int &channel)
 {
-  return m_gridIndex[channel][m_block+m_blockOffset];
+  return m_gridIndex[channel + m_channelOffset][m_block + m_blockOffset - 1];
 }
+
+CGUIListItemPtr CGUIEPGGridContainer::GetItem(const int &channel)
+{
+  return m_gridIndex[channel + m_channelOffset][m_block + m_blockOffset];
+}
+
+void CGUIEPGGridContainer::SetFocus(bool bOnOff)
+{
+  if (bOnOff != HasFocus())
+  {
+    SetInvalid();
+    m_lastItem.reset();
+  }
+  CGUIControl::SetFocus(bOnOff);
+}
+
 
 void CGUIEPGGridContainer::DoRender(DWORD currentTime)
 {
@@ -585,55 +649,60 @@ void CGUIEPGGridContainer::ScrollToChannelOffset(int offset)
   float size = m_layout->Size(VERTICAL);
   int range = m_channelsPerPage / 4;
   if (range <= 0) range = 1;
-  if (offset * size < m_scrollOffset &&  m_scrollOffset - offset * size > size * range)
+  if (offset * size < m_vertScrollOffset &&  m_vertScrollOffset - offset * size > size * range)
   { // scrolling up, and we're jumping more than 0.5 of a screen
-    m_scrollOffset = (offset + range) * size;
+    m_vertScrollOffset = (offset + range) * size;
   }
-  if (offset * size > m_scrollOffset && offset * size - m_scrollOffset > size * range)
+  if (offset * size > m_vertScrollOffset && offset * size - m_vertScrollOffset > size * range)
   { // scrolling down, and we're jumping more than 0.5 of a screen
-    m_scrollOffset = (offset - range) * size;
+    m_vertScrollOffset = (offset - range) * size;
   }
-  m_scrollSpeed = (offset * size - m_scrollOffset) / m_scrollTime;
-  m_chanOffset = offset;
+  m_vertScrollSpeed = (offset * size - m_vertScrollOffset) / m_scrollTime;
+  m_channelOffset = offset;
 }
 
 void CGUIEPGGridContainer::ScrollToBlockOffset(int offset)
 {
-  float size = m_layout->Size(VERTICAL);
-  int range = m_channelsPerPage / 4;
+  float size = m_blockSize;
+  int range = m_blocksPerPage / 4;
   if (range <= 0) range = 1;
-  if (offset * size < m_scrollOffset &&  m_scrollOffset - offset * size > size * range)
-  { // scrolling up, and we're jumping more than 0.5 of a screen
-    m_scrollOffset = (offset + range) * size;
+  if (offset * size < m_horzScrollOffset &&  m_horzScrollOffset - offset * size > size * range)
+  { // scrolling left, and we're jumping more than 0.5 of a screen
+    m_horzScrollOffset = (offset + range) * size;
   }
-  if (offset * size > m_scrollOffset && offset * size - m_scrollOffset > size * range)
-  { // scrolling down, and we're jumping more than 0.5 of a screen
-    m_scrollOffset = (offset - range) * size;
+  if (offset * size > m_horzScrollOffset && offset * size - m_horzScrollOffset > size * range)
+  { // scrolling right, and we're jumping more than 0.5 of a screen
+    m_horzScrollOffset = (offset - range) * size;
   }
-  m_scrollSpeed = (offset * size - m_scrollOffset) / m_scrollTime;
-  m_chanOffset = offset;
+  m_horzScrollSpeed = (offset * size - m_horzScrollOffset) / m_scrollTime;
+  m_blockOffset = offset;
 }
 
 void CGUIEPGGridContainer::ValidateOffset()
 {
   if (!m_layout) 
     return;
-  if (m_chanOffset > m_channels - m_channelsPerPage)
+  if (m_channelOffset > m_channels - m_channelsPerPage)
   {
-    m_chanOffset = m_channels - m_channelsPerPage;
-    m_scrollOffset = m_chanOffset * m_layout->Size(VERTICAL);
+    m_channelOffset = m_channels - m_channelsPerPage;
+    m_vertScrollOffset = m_channelOffset * m_layout->Size(VERTICAL);
   }
-  if (m_chanOffset < 0)
+  if (m_channelOffset < 0)
   {
-    m_chanOffset = 0;
-    m_scrollOffset = 0;
+    m_channelOffset = 0;
+    m_vertScrollOffset = 0;
+  }
+  if (m_blockOffset > m_blocks - m_blocksPerPage)
+  {
+    m_blockOffset = m_blocks - m_blocksPerPage;
+    m_horzScrollOffset = m_blockOffset * m_blockSize;
+  }
+  if (m_blockOffset < 0)
+  {
+    m_blockOffset = 0;
+    m_horzScrollOffset = 0;
   }
 }
-int CGUIEPGGridContainer::CorrectOffset(int offset, int cursor) const
-{
-  return offset + cursor;
-}
-
 void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
 {
   TiXmlElement *itemElement = layout->FirstChildElement("itemlayout");
@@ -656,11 +725,13 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
 
 void CGUIEPGGridContainer::UpdateLayout(bool updateAllItems)
 {
+  // if container is invalid, either new data has arrived, or m_blockSize has changed
+  //  need to run UpdateItems rather than CalculateLayout?
   if (updateAllItems)
   { // free memory of items
-    for (itChannels itC = m_gridItems.begin(); itC != m_gridItems.end(); itC++)
+    for (iChannels itC = m_gridItems.begin(); itC != m_gridItems.end(); itC++)
     {
-      for (itShows itS = itC->begin(); itS != itC->end(); itS++)
+      for (iShows itS = itC->begin(); itS != itC->end(); itS++)
       {
         (*itS)->FreeMemory();
       }
@@ -681,8 +752,9 @@ void CGUIEPGGridContainer::CalculateLayout()
   }
   m_channelsPerPage = (int)((m_height - m_focusedLayout->Size(VERTICAL)) / m_layout->Size(VERTICAL)) + 1;
 
-  // ensure that the scroll offset is a multiple of our size
-  m_scrollOffset = m_chanOffset * m_layout->Size(VERTICAL);
+  // ensure that the scroll offsets are a multiple of our sizes
+  m_vertScrollOffset = m_channelOffset * m_layout->Size(VERTICAL);
+  m_horzScrollOffset = m_blockOffset * m_blockSize;
 }
 
 CStdString CGUIEPGGridContainer::GetDescription() const
@@ -695,4 +767,17 @@ CStdString CGUIEPGGridContainer::GetDescription() const
   //  //strLabel = pItem.GetLabel(); // get ptr
   //}
   return strLabel;
+}
+
+void CGUIEPGGridContainer::Reset()
+{
+  m_wasReset = true;
+  for (iChannels itC = m_gridItems.begin(); itC != m_gridItems.end(); itC++)
+  {
+    for (iShows itS = itC->begin(); itS != itC->end(); itS++)
+    {
+      (*itS)->FreeMemory();
+    }
+  }
+  m_lastItem.reset();
 }

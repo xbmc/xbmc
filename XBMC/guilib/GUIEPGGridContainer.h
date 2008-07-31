@@ -26,10 +26,14 @@
 #include "GUIListItem.h"
 #include "TVDatabase.h"
 
+#define MAXCHANNELS 200
+#define MAXBLOCKS   576 // 2 days of 5 minute blocks
+
 class CGUIEPGGridContainer : public CGUIControl
 {
 public:
-  CGUIEPGGridContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, int scrollTime, int minutesPerPage);
+  CGUIEPGGridContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, 
+                       float width, float height, int scrollTime, int minutesPerPage);
   virtual ~CGUIEPGGridContainer(void);
 
   virtual bool OnAction(const CAction &action);
@@ -37,12 +41,14 @@ public:
   virtual void OnUp();
   virtual void OnLeft();
   virtual void OnRight();
-  virtual bool OnMessage(CGUIMessage& message);
 
-  const int GetNumChannels()   { return m_channels; }
+  virtual bool OnMessage(CGUIMessage& message);
+  virtual void SetFocus(bool bOnOff);
+
   void UpdateItems(EPGGrid &gridData, const CDateTime &dataStart, const CDateTime &dataEnd);
 
   CStdString GetDescription() const;
+  const int GetNumChannels()   { return m_channels; }
   int GetSelectedItem() const;
 
   void DoRender(DWORD currentTime);
@@ -55,64 +61,68 @@ public:
 protected:
   bool OnClick(DWORD actionID);
   bool SelectItemFromPoint(const CPoint &point);
-  void RenderItem(float posX, float posY, CGUIListItem  *item, bool focused);
-  void RenderRuler();
-  void Scroll(int amount);
-  void SetChannel(int cursor);
-  bool MoveDown(bool wrapAround);
-  bool MoveUp(bool wrapAround);
-  bool MoveLeft(bool wrapAround);
-  bool MoveRight(bool wrapAround);
+  void RenderItem(float posX, float posY, CGUIListItemPtr item, bool focused);
+  void RenderDebug();
+  void SetChannel(int channel);
+  void SetBlock(int block);
   void ValidateOffset();
-  int  CorrectOffset(int offset, int cursor) const;
   void UpdateLayout(bool refreshAllItems = false);
   void CalculateLayout();
-
-  //int  GetItemAbove(int channel, int item);
-  //int  GetItemBelow(int channel, int item);
-  //int  GetItemLeft (int channel, int item);
-  //int  GetItemRight(int channel, int item);
-  int  GetBlock(const int &item, const int &channel);
-  int  GetItem(const int &channel);
-  int  GetClosestItem(const int &channel);
-
+  void GenerateItemLayout(int row, int itemSize, int block);
+  void Reset();
+  
+  CGUIListItemPtr GetItem(const int &channel);
+  CGUIListItemPtr GetNextItem(const int &channel);
+  CGUIListItemPtr GetPrevItem(const int &channel);
+  CGUIListItemPtr GetClosestItem(const int &channel);
+  
+  int  GetItemSize(CGUIListItemPtr item);
+  int  GetBlock(const CGUIListItemPtr &item, const int &channel);
+  int  GetRealBlock(const CGUIListItemPtr &item, const int &channel);
   void MoveToRow(int row);
   void FreeMemory(int keepStart, int keepEnd);
   void GetCurrentLayouts();
 
   CGUIListItemLayout *GetFocusedLayout() const;
   
-  int m_item;
-  int m_channels;
-  int m_channelsPerPage;
-  int m_channel;
-  int m_chanOffset;
-  int m_blocks;
-  int m_blocksPerPage;
-  int m_block;
-  int m_blockOffset; 
+  int   m_channels;
+  int   m_channelsPerPage;
+  int   m_channel;
+  int   m_channelOffset;
+  int   m_blocks;
+  int   m_blocksPerPage;
+  int   m_block;
+  int   m_blockOffset;
 
+  float m_blockSize;
   float m_analogScrollCount;
-  bool  m_favouritesOnly;
 
-  std::vector< std::vector< int > > m_gridIndex;
+  CDateTime m_gridStart;
+  CDateTime m_gridEnd;
+
+  CFileItemPtr m_gridIndex[MAXCHANNELS][MAXBLOCKS];
   std::vector< std::vector< CGUIListItemPtr > > m_gridItems;
-  typedef std::vector< std::vector< CGUIListItemPtr > >::iterator itChannels;
-  typedef std::vector< CGUIListItemPtr >::iterator itShows;
-  CGUIListItem *m_lastItem;
+  typedef std::vector< std::vector< CGUIListItemPtr > >::iterator iChannels;
+  typedef std::vector< CGUIListItemPtr >::iterator iShows;
+  CGUIListItemPtr  m_item;
+  CGUIListItemPtr  m_lastItem;
 
   DWORD m_renderTime;
 
   CGUIListItemLayout *m_layout;
   CGUIListItemLayout *m_focusedLayout;
   
-  void ScrollToBlockOffset(int offset);
-  void ScrollToChannelOffset(int offset);
-  DWORD m_scrollLastTime;
   int   m_scrollTime;
-  float m_scrollSpeed;
-  float m_scrollOffset;
-  bool  m_wrapAround;
+  bool  m_channelWrapAround; ///only when no more data available should this be true
+
+  void ScrollToBlockOffset(int offset);
+  DWORD m_horzScrollLastTime;
+  float m_horzScrollSpeed;
+  float m_horzScrollOffset;
+  void ScrollToChannelOffset(int offset);
+  DWORD m_vertScrollLastTime;
+  float m_vertScrollSpeed;
+  float m_vertScrollOffset;
 
   CStdString m_label;
   bool m_wasReset;

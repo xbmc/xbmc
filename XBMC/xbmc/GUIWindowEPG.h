@@ -37,17 +37,17 @@ class CGUIWindowEPG : public CGUIWindow
 public:
   CGUIWindowEPG(void);
   virtual ~CGUIWindowEPG(void);
+  void OnWindowLoaded();
+  void OnWindowUnload();
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   virtual void Render();
 
 protected:
   virtual void OnInitWindow();
-  void UpdateGridData();
+  void GetGridData();
   void UpdateGridItems();
   void Refresh();
-
-  void GetEPG();
 
   void DisplayEmptyDatabaseMessage(bool bDisplay);
   bool m_bDisplayEmptyDatabaseMessage;
@@ -64,5 +64,5 @@ protected:
 
   CTVDatabase m_database;
   EPGGrid m_gridData;
-  CGUIEPGGridContainer *m_gridItems;
+  CGUIEPGGridContainer* m_guideGrid;
 };

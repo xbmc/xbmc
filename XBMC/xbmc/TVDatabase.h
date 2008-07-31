@@ -23,45 +23,14 @@
 #include "Database.h"
 #include "DateTime.h"
 #include "settings/VideoSettings.h"
-#include "VideoInfoTag.h"
+#include "utils/EPGInfoTag.h"
 #include "FileItem.h"
 
-//struct TVProgramme
-//{
-//  CStdString ProgrammeName;
-//  CStdString ShortDesc;
-//  CStdString LongDesc;
-//  CStdString Category;
-//  bool       freeToView;
-//
-//  CStdString SourceName;
-//  CStdString BouquetName;
-//
-//  CStdString ChannelCallsign
-//  CStdString ChannelName;
-//  int        ChannelNumber;
-//  
-//  CDateTime FirstBroadcast;
-//  CDateTime StartTime;
-//  int       Duration;
-//};
+typedef std::vector<VECFILEITEMS> EPGGrid;
+typedef std::vector<VECFILEITEMS>::const_iterator iEPGRow;
 
-typedef VECFILEITEMS  VECTVSHOWS;
-typedef VECFILEITEMS  VECTVCHANNELS;
+typedef VECFILEITEMS::const_iterator iEPGItem;
 
-struct EPGRow
-{
-  VECTVSHOWS shows;
-  CStdString channelName;
-  int        channelNum;
-  bool       freeToView;
-};
-
-typedef VECTVSHOWS::const_iterator itEPGShow;
-typedef std::vector<struct EPGRow> EPGGrid;
-typedef std::vector<struct EPGRow>::const_iterator itEPGRow;
-
-//****************************************************************************/
 class CTVDatabase : public CDatabase
 {
 public:
@@ -72,11 +41,11 @@ public:
 
   // epg
   bool FillEPG(const CStdString &source, const CStdString &bouquet, const CStdString &channel, const int &channum, const CStdString &progTitle, 
-               const CStdString &progShortDesc, const CStdString &progLongDesc, const CStdString &episode, const CStdString &series, 
-               const CDateTime &progStartTime, const int &progDuration, const CDateTime &progAirDate, const CStdString &category);
+               const CStdString &progSubtitle, const CStdString &progDescription, const CStdString &episode, const CStdString &series, 
+               const CDateTime &progStartTime, const CDateTime &progEndTime, const CStdString &category);
 
-  void GetAllChannels(bool freeToAirOnly, VECTVCHANNELS &channels);
-  bool GetShowsByChannel(const CStdString &channel, VECTVSHOWS &shows, const CDateTime &start, const CDateTime &end);
+  void GetChannels(bool freeToAirOnly, VECFILEITEMS &channels);
+  bool GetProgrammesByChannel(const CStdString &channel, VECFILEITEMS &shows, const CDateTime &start, const CDateTime &end);
 
   // per-channel video settings
   bool GetChannelSettings(const CStdString &channel, CVideoSettings &settings);
@@ -90,6 +59,8 @@ public:
   void EraseChannelSettings();
 
 protected:
+  CEPGInfoTag GetUniqueBroadcast(std::auto_ptr<dbiplus::Dataset> &pDS);
+
   long AddSource(const CStdString &source);
   long AddBouquet(const long &sourceId, const CStdString &bouquet);
   long AddChannel(const long &idSource, const long &idBouquet, const CStdString &Callsign, const CStdString &Name, const int &Number);
@@ -101,10 +72,6 @@ protected:
   long GetChannelId(const CStdString &channel);
   long GetCategoryId(const CStdString &category);
   long GetProgrammeId(const CStdString &programme);
-
-  void AddToLinkTable(const char *table, const char *firstField, long firstID, const char *secondField, long secondID);
-
-  CDateTime m_dataEnd; // schedule data exists up to this date
 
 private:
   virtual bool CreateTables();

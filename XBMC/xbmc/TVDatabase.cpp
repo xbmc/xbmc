@@ -35,7 +35,6 @@ CTVDatabase::CTVDatabase(void)
   m_preV2version = TV_DATABASE_OLD_VERSION;
   m_version = TV_DATABASE_VERSION;
   m_strDatabaseFile = TV_DATABASE_NAME;
-  m_dataEnd = NULL;
 }
 
 CTVDatabase::~CTVDatabase(void)
@@ -49,26 +48,10 @@ bool CTVDatabase::CreateTables()
     CDatabase::CreateTables();
 
     CLog::Log(LOGINFO, "TV: Creating tables");
-    CLog::Log(LOGINFO, "TV: Creating ChannelSettings table");
-    m_pDS->exec("CREATE TABLE ChannelSettings ( idSource integer, idChannel integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer,"
-                "ViewMode integer, ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
-                "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
-                "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer,"
-                "CropRight integer, CropTop integer, CropBottom integer)\n");
-    m_pDS->exec("CREATE UNIQUE INDEX ix_ChannelSettings ON ChannelSettings (idChannel)\n");
-
-    CLog::Log(LOGINFO, "TV: Creating ProgrammeSettings table");
-    m_pDS->exec("CREATE TABLE ProgrammeSettings ( idSource integer, idChannel integer, idProgramme integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer,"
-                "ViewMode integer, ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
-                "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
-                "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer,"
-                "CropRight integer, CropTop integer, CropBottom integer)\n");
-    m_pDS->exec("CREATE UNIQUE INDEX ix_ProgrammeSettings ON ProgrammeSettings (idProgramme)\n");
-
     CLog::Log(LOGINFO, "TV: Creating Sources table");
     m_pDS->exec("CREATE TABLE Sources (idSource integer primary key, CallSign text, Name text)\n");
 
-    CLog::Log(LOGINFO, "TV: Creating categories table");
+    CLog::Log(LOGINFO, "TV: Creating Categories table");
     m_pDS->exec("CREATE TABLE categories (idCategory integer primary key, Name text)\n");
 
     CLog::Log(LOGINFO, "TV: Creating Bouquets table");
@@ -85,10 +68,26 @@ bool CTVDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "TV: Creating GuideData table");
     m_pDS->exec("CREATE TABLE GuideData (idSource integer, idBouquet integer, idChannel integer, idProgramme integer,"
-                "idCategory integer, ShortDesc text, LongDesc text, Episode text, Series text, StartTime datetime,"
-                "Duration integer, AirDate datetime)"
+                "idCategory integer, Subtitle text, Description text, EpisodeID text, SeriesID text, StartTime datetime,"
+                "EndTime datetime, Year string)"
                 /*"StreamPIDs text, StreamTypes text, StreamNames text)*/"\n");
     m_pDS->exec("CREATE UNIQUE INDEX idx_UniqueBroadcast on GuideData(idProgramme, idChannel, idBouquet, StartTime desc)\n");
+
+    CLog::Log(LOGINFO, "TV: Creating ChannelSettings table");
+    m_pDS->exec("CREATE TABLE ChannelSettings ( idSource integer, idChannel integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer,"
+      "ViewMode integer, ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
+      "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
+      "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer,"
+      "CropRight integer, CropTop integer, CropBottom integer)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_ChannelSettings ON ChannelSettings (idChannel)\n");
+
+    CLog::Log(LOGINFO, "TV: Creating ProgrammeSettings table");
+    m_pDS->exec("CREATE TABLE ProgrammeSettings ( idSource integer, idChannel integer, idProgramme integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer,"
+      "ViewMode integer, ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
+      "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
+      "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer,"
+      "CropRight integer, CropTop integer, CropBottom integer)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_ProgrammeSettings ON ProgrammeSettings (idProgramme)\n");
   }
   catch (...)
   {
@@ -109,8 +108,8 @@ bool CTVDatabase::CommitTransaction()
   return false;
 }
 
-bool CTVDatabase::FillEPG(const CStdString &source, const CStdString &bouquet, const CStdString &channel, const int &channum, const CStdString &progTitle, const CStdString &progShortDesc,
-                          const CStdString &progLongDesc, const CStdString &episode, const CStdString &series, const CDateTime &progStartTime, const int &progDuration, const CDateTime &progAirDate, const CStdString &category)
+bool CTVDatabase::FillEPG(const CStdString &source, const CStdString &bouquet, const CStdString &channel, const int &channum, const CStdString &progTitle, const CStdString &progSubtitle,
+                          const CStdString &progDescription, const CStdString &episode, const CStdString &series, const CDateTime &progStartTime, const CDateTime &progEndTime, const CStdString &category)
 {
 	try
   {
@@ -138,19 +137,13 @@ bool CTVDatabase::FillEPG(const CStdString &source, const CStdString &bouquet, c
       return false;
 
     CStdString SQL=FormatSQL("insert into GuideData (idSource, idBouquet, idChannel, idProgramme, idCategory,"
-                             "ShortDesc, LongDesc, Episode, Series, StartTime, Duration, AirDate)"
-                             "values ('%u', '%u', '%u', '%u', '%u', '%s', '%s', '%s', '%s', '%s', '%u', '%s')",
-                             sourceId, bouquetId, channelId, programmeId, categoryId, progShortDesc.c_str(), progLongDesc.c_str(), episode.c_str(), 
-                             series.c_str(), progStartTime.GetAsDBDateTime().c_str(), progDuration, progAirDate.GetAsDBDateTime().c_str());
+                             "Subtitle, Description, EpisodeID, SeriesID, StartTime, EndTime)"
+                             "values ('%u', '%u', '%u', '%u', '%u', '%s', '%s', '%s', '%s', '%s', '%s')",
+                             sourceId, bouquetId, channelId, programmeId, categoryId, progSubtitle.c_str(), progDescription.c_str(), episode.c_str(), 
+                             series.c_str(), progStartTime.GetAsDBDateTime().c_str(), progEndTime.GetAsDBDateTime().c_str());
     m_pDS->exec(SQL.c_str());
     long progId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
 
-    if (m_dataEnd < progStartTime)
-    {
-      CDateTimeSpan length;
-      length.SetDateTimeSpan(0, 0, 0, progDuration);
-      m_dataEnd = progStartTime + length;
-    }
     return true;
   }
   catch (...)
@@ -289,55 +282,28 @@ long CTVDatabase::AddCategory(const CStdString &category)
   return -1;
 }
 
-void CTVDatabase::AddToLinkTable(const char *table, const char *firstField, long firstID, const char *secondField, long secondID)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return ;
-    if (NULL == m_pDS.get()) return ;
-
-    CStdString SQL=FormatSQL("select * from %s where %s=%u and %s=%u", table, firstField, firstID, secondField, secondID);
-    m_pDS->query(SQL.c_str());
-    if (m_pDS->num_rows() == 0)
-    {
-      // doesnt exists, add it
-      SQL=FormatSQL("insert into %s (%s,%s) values(%i,%i)", table, firstField, secondField, firstID, secondID);
-      m_pDS->exec(SQL.c_str());
-    }
-    m_pDS->close();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
-}
-
-
 CDateTime CTVDatabase::GetDataEnd()
 {
-  CDateTime utc = NULL;
+  CDateTime lastProgramme;
   try
   {
-    if (NULL == m_pDB.get()) return utc;
-    if (NULL == m_pDS.get()) return utc;
+    if (NULL == m_pDB.get()) return lastProgramme;
+    if (NULL == m_pDS.get()) return lastProgramme;
 
-    CStdString SQL=FormatSQL("SELECT guidedata.StartTime, guidedata.Duration FROM guidedata "
-                             "ORDER BY guidedata.StartTime DESC;");
+    CStdString SQL=FormatSQL("SELECT GuideData.EndTime FROM GuideData "
+                             "ORDER BY guidedata.EndTime DESC;");
     m_pDS->query( SQL.c_str() );
     if (!m_pDS->eof())
     {
-      utc.SetFromDBDateTime(m_pDS->fv("StartTime").get_asString());
-      CDateTimeSpan duration;
-      duration.SetDateTimeSpan(0, 0, 0, m_pDS->fv("Duration").get_asInteger());
-      utc += duration;
+      lastProgramme.SetFromDBDateTime(m_pDS->fv("EndTime").get_asString());
     }
     m_pDS->close();
-    return utc;
+    return lastProgramme;
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-    return NULL;
+    return lastProgramme;
   }
 }
 
@@ -571,11 +537,12 @@ void CTVDatabase::SetProgrammeSettings(const CStdString& programmeID, const CVid
   }
 }
 
-void CTVDatabase::GetAllChannels(bool freeToAirOnly, VECTVCHANNELS &channels)
+void CTVDatabase::GetChannels(bool freeToAirOnly, VECFILEITEMS &channels)
 {
   try
   {
-    channels.erase(channels.begin(), channels.end());
+    channels.clear();
+
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
@@ -602,71 +569,70 @@ void CTVDatabase::GetAllChannels(bool freeToAirOnly, VECTVCHANNELS &channels)
   }
 }
 
-bool CTVDatabase::GetShowsByChannel(const CStdString &channel, VECTVSHOWS &shows, const CDateTime &start, const CDateTime &end)
+bool CTVDatabase::GetProgrammesByChannel(const CStdString &channel, VECFILEITEMS &programmes, const CDateTime &start, const CDateTime &end)
 {
   try
   {
+    DWORD time = timeGetTime();
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
     long channelId = GetChannelId(channel);
     if (channelId < 0 )
-      return false; ///TODO
+      return false;
 
     CDateTime     gridStart;
     CDateTime     gridEnd;
     CDateTimeSpan offset;
 
     gridStart = start;
-    offset.SetDateTimeSpan(0, 1, 0, 0); // BST hack
-    gridStart -= offset;
+    CDateTimeSpan hour;
+    hour.SetDateTimeSpan(0, 1, 0, 0); /// BST hack
+    gridStart -= hour;
     gridEnd = end;
 
-    CStdString SQL=FormatSQL("SELECT bouquets.Name, channels.Name, channels.Number, categories.Name, programmes.Title,"
-      "guidedata.ShortDesc, guidedata.LongDesc, guidedata.StartTime, guidedata.Duration FROM guidedata "
-      "JOIN bouquets ON bouquets.idBouquet=guidedata.idBouquet "
-      "JOIN programmes ON programmes.idProgramme=guidedata.idProgramme "
-      "JOIN channels ON channels.idChannel=guidedata.idChannel "
-      "JOIN categories ON categories.idCategory=guidedata.idCategory "
-      "WHERE guidedata.idChannel = '%u' AND GuideData.StartTime >= '%s' AND GuideData.StartTime <= '%s' "
-      "ORDER BY guidedata.StartTime;", channelId, gridStart.GetAsDBDateTime().c_str(), gridEnd.GetAsDBDateTime().c_str());
-    m_pDS->query( SQL.c_str() );
+    CStdString SQL=FormatSQL("SELECT Bouquets.Name, Channels.Name, Channels.Number, Categories.Name, Programmes.Title, "
+      "GuideData.Subtitle, GuideData.Description, GuideData.StartTime, GuideData.EndTime FROM GuideData "
+      "JOIN Bouquets ON Bouquets.idBouquet=GuideData.idBouquet "
+      "JOIN Programmes ON Programmes.idProgramme=GuideData.idProgramme "
+      "JOIN Channels ON Channels.idChannel=GuideData.idChannel "
+      "JOIN Categories ON Categories.idCategory=GuideData.idCategory "
+      "WHERE GuideData.idChannel = '%u' AND GuideData.EndTime > '%s' AND GuideData.StartTime < '%s' "
+      "ORDER BY GuideData.StartTime;", channelId, gridStart.GetAsDBDateTime().c_str(), gridEnd.GetAsDBDateTime().c_str());    
+    
+    //run query
+    //CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, SQL.c_str());
+    if (!m_pDS->query(SQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return false; /// Don't currently want channels without any guide data
+    }
 
-    CDateTimeSpan hour;
-    hour.SetDateTimeSpan(0, 1, 0, 0); // BST hack
-
-    bool hasdata = false;
+    //CLog::Log(LOGDEBUG,"Time for (initial) SQL query = %ldms", timeGetTime() - time);
+    
+    time = timeGetTime();
+    // get data from returned rows
+    programmes.reserve(iRowsFound);
     while (!m_pDS->eof())
     {
-      hasdata = true;
-      CFileItemPtr pItem(new CFileItem(m_pDS->fv("Title").get_asString()));
-      pItem->SetProperty("ShortDesc", m_pDS->fv("ShortDesc").get_asString());
-      pItem->SetProperty("LongDesc", m_pDS->fv("LongDesc").get_asString());
-      /*pItem->SetProperty("Category", m_pDS->fv("LongDesc").get_asString());*/
-      pItem->SetProperty("ChannelId", channelId);
-      CDateTime utc;
-      utc.SetFromDBDateTime(m_pDS->fv("StartTime").get_asString());
-      utc += hour;
-      pItem->SetProperty("StartTime", utc.GetAsDBDateTime());
-      pItem->SetProperty("Duration", m_pDS->fv("Duration").get_asInteger());
-      shows.push_back(pItem);
+      CEPGInfoTag programme = GetUniqueBroadcast(m_pDS);
+      CFileItemPtr pItem(new CFileItem(programme));
+      programmes.push_back(pItem);
       m_pDS->next();
     }
-    m_pDS->close();
-    
-    if (!hasdata)
-      return false;
 
-    // check for a very long previous program
+    // check for a very long previous program - first item will start after the requested range
     CDateTime itemStart;
-    itemStart.SetFromDBDateTime(shows.begin()->get()->GetProperty("StartTime"));
+    itemStart = programmes.begin()->get()->GetEPGInfoTag()->m_startTime;
     itemStart -= hour; // back to UTC
 
-    if (itemStart > gridStart) // we missed a program starting before 'offset'
+    if (itemStart > gridStart) // we missed a program starting before 'offset' /// instead use UniqueBroadcastID and just grab the ID-1
     {
       CLog::Log(LOGDEBUG, "TEMP: Missed a program");
       CStdString SQL=FormatSQL("SELECT bouquets.Name, channels.Name, channels.Number, categories.Name, programmes.Title,"
-        "guidedata.ShortDesc, guidedata.LongDesc, guidedata.StartTime, guidedata.Duration FROM guidedata "
+        "guidedata.Subtitle, guidedata.Description, guidedata.StartTime, guidedata.EndTime FROM guidedata "
         "JOIN bouquets ON bouquets.idBouquet=guidedata.idBouquet "
         "JOIN programmes ON programmes.idProgramme=guidedata.idProgramme "
         "JOIN channels ON channels.idChannel=guidedata.idChannel "
@@ -676,22 +642,16 @@ bool CTVDatabase::GetShowsByChannel(const CStdString &channel, VECTVSHOWS &shows
       m_pDS->query( SQL.c_str() );
       if (!m_pDS->eof())
       {
-        CFileItemPtr pItem(new CFileItem(m_pDS->fv("Title").get_asString()));
-        pItem->SetProperty("ShortDesc", m_pDS->fv("ShortDesc").get_asString());
-        pItem->SetProperty("LongDesc", m_pDS->fv("LongDesc").get_asString());
-        /*pItem->SetProperty("Category", m_pDS->fv("LongDesc").get_asString());*/
-        pItem->SetProperty("ChannelId", channelId);
-        CDateTime utc;
-        utc.SetFromDBDateTime(m_pDS->fv("StartTime").get_asString());
-        CDateTimeSpan hour;
-        hour.SetDateTimeSpan(0, 1, 0, 0); // BST hack
-        utc += hour;
-        pItem->SetProperty("StartTime", utc.GetAsDBDateTime());
-        pItem->SetProperty("Duration", m_pDS->fv("Duration").get_asInteger());
-        shows.insert(shows.begin(), pItem); // insert at start of channel data
+        CEPGInfoTag programme = GetUniqueBroadcast(m_pDS);
+        CFileItemPtr pItem(new CFileItem(programme));
+        programmes.insert(programmes.begin(), pItem); // insert at start of channel data
       }
-      m_pDS->close();
     }
+
+    //CLog::Log(LOGDEBUG,"Time to retrieve programmes from dataset = %ldms", timeGetTime() - time);
+
+    // cleanup
+    m_pDS->close();
     return true;
   }
   catch (...)
@@ -819,4 +779,36 @@ long CTVDatabase::GetCategoryId(const CStdString& category)
     CLog::Log(LOGERROR, "%s unable to get CategoryId (%s)", __FUNCTION__, SQL.c_str());
   }
   return -1;
+}
+
+CEPGInfoTag CTVDatabase::GetUniqueBroadcast(auto_ptr<Dataset> &pDS)
+{
+  CEPGInfoTag details;
+
+  // GuideData columns:
+  // 0:  Bouquets.Name
+  // 1:  Channels.Name
+  // 2:  Channels.Number
+  // 3:  Categories.Name
+  // 4:  Programmes.Title
+  // 5:  GuideData.Subtitle
+  // 6:  GuideData.Description
+  // 7:  GuideData.StartTime
+  // 8:  GuideData.EndTime
+
+  details.m_strBouquet = m_pDS->fv(0).get_asString();
+  details.m_strChannel = m_pDS->fv(1).get_asString();
+  details.m_channelNum = m_pDS->fv(2).get_asInteger();
+  details.m_strGenre   = m_pDS->fv(3).get_asString();
+  details.m_strTitle   = m_pDS->fv(4).get_asString();
+  details.m_strPlotOutline = m_pDS->fv(5).get_asString();
+  details.m_strPlot    = m_pDS->fv(6).get_asString();
+  details.m_startTime.SetFromDBDateTime(m_pDS->fv(7).get_asString());
+  details.m_endTime.SetFromDBDateTime(m_pDS->fv(8).get_asString());
+  if (details.m_startTime.IsValid() && details.m_endTime.IsValid())
+  {
+    details.m_duration = details.m_endTime - details.m_startTime;
+  }
+
+  return details;
 }

@@ -40,7 +40,19 @@ CGUIWindowEPG::CGUIWindowEPG(void)
 
 CGUIWindowEPG::~CGUIWindowEPG(void)
 {
-  
+  m_gridData.clear();      
+}
+
+void CGUIWindowEPG::OnWindowLoaded()
+{
+  CGUIWindow::OnWindowLoaded();
+  GetGridData();
+  UpdateGridItems();
+}
+
+void CGUIWindowEPG::OnWindowUnload()
+{
+  CGUIWindow::OnWindowUnload();
 }
 
 bool CGUIWindowEPG::OnAction(const CAction &action)
@@ -76,84 +88,67 @@ bool CGUIWindowEPG::OnMessage(CGUIMessage& message)
 
 void CGUIWindowEPG::OnInitWindow()
 {
-  UpdateGridData();
-  UpdateGridItems();
   CGUIWindow::OnInitWindow();
 }
 
-void CGUIWindowEPG::UpdateGridData()
+void CGUIWindowEPG::GetGridData()
 {
-  GetEPG();
-}
-
-void CGUIWindowEPG::UpdateGridItems()
-{
-  m_gridItems = (CGUIEPGGridContainer*)GetControl(CONTROL_EPGGRID);
-  m_gridItems->UpdateItems(m_gridData, m_gridStart, m_gridEnd);
-}
-void CGUIWindowEPG::GetEPG()
-{
-  VECTVCHANNELS channels;
-
-  m_database.Open();
-  m_database.GetAllChannels(false, channels);
-  m_database.Close();
-
+  ///////
   m_daysToDisplay = 1; /// from settings
+  ///////
 
   CDateTimeSpan offset;
   CDateTime now;
 
   now = CDateTime::GetCurrentDateTime();
-  offset.SetDateTimeSpan(0, 0, 0, (now.GetMinute() % 30) * 60 + now.GetSecond()); // back to last half-hour
-  now -= offset; // tidy up dataStart time
-
-  m_gridStart = now;
-
-  // check that this date exists in schedules
-  // otherwise show no data message
+  offset.SetDateTimeSpan(0, 0, 0, (now.GetMinute() % 30) * 60 + now.GetSecond()); // set start to previous half-hour
+  m_gridStart = now - offset;
 
   offset.SetDateTimeSpan(m_curDaysOffset, 0, 0, 0);
-  m_gridStart = now + offset;
- 
+  m_gridStart += offset;
+
   offset.SetDateTimeSpan(m_daysToDisplay, 0, 0, 0);
   m_gridEnd = m_gridStart + offset;
+  
+  // check that m_gridEnd date exists in schedules
+  // otherwise reduce the range
   m_dataEnd = m_database.GetDataEnd();
-
   if (m_dataEnd < m_gridEnd)
   {
     m_gridEnd = m_dataEnd;
   }
 
+  // grab the list of channels
+  VECFILEITEMS channels;
+  m_database.Open();
+  m_database.GetChannels(false, channels);
+  m_database.Close();
   m_numChannels = (int)channels.size();
+
   if (m_numChannels > 0)
   {
-    // start with an empty datastore
-    itEPGRow it = m_gridData.begin();
+    // start with an empty data store
+    iEPGRow it = m_gridData.begin();
     for ( ; it != m_gridData.end(); it++)
     {
-      if (it->shows.size())
-        it->shows.empty();
+      if (it->size())
+        it->empty();
     }
     m_gridData.clear();
 
     DWORD tick(timeGetTime());
-
     m_database.Open();
     m_database.BeginTransaction();
 
     int items = 0;
     for (int i = 0; i < m_numChannels; i++)
     {
-      EPGRow curRow;
-      curRow.channelName = channels[i]->GetLabel();
-      curRow.channelNum  = channels[i]->GetPropertyInt("ChannelNum");
-
-      if(!m_database.GetShowsByChannel(channels[i]->GetLabel(), curRow.shows, m_gridStart, m_gridEnd))
+      VECFILEITEMS programmes;
+      if(!m_database.GetProgrammesByChannel(channels[i]->GetLabel(), programmes, m_gridStart, m_gridEnd))
         continue;
-
-      items += (int)curRow.shows.size();
-      m_gridData.push_back(curRow);
+      
+      items += (int)programmes.size();
+      m_gridData.push_back(programmes);
     }
     m_database.CommitTransaction();
     m_database.Close();
@@ -174,6 +169,12 @@ void CGUIWindowEPG::GetEPG()
     CLog::Log(LOGERROR, "%s failed, (%s)", __FUNCTION__, "No Channels found!");
     m_bDisplayEmptyDatabaseMessage = true;
   }
+}
+
+void CGUIWindowEPG::UpdateGridItems()
+{
+  m_guideGrid = (CGUIEPGGridContainer*)GetControl(CONTROL_EPGGRID);
+  m_guideGrid->UpdateItems(m_gridData, m_gridStart, m_gridEnd);
 }
 
 void CGUIWindowEPG::DisplayEmptyDatabaseMessage(bool bDisplay)
