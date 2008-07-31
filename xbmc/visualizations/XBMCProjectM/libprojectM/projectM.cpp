@@ -153,7 +153,7 @@ bool projectM::writeConfig(const std::string & configFile, const Settings & sett
 	config.add("Window Left", settings.windowLeft);
 	config.add("Window Bottom", settings.windowBottom);
 	
-	std::ofstream file(configFile.c_str());	
+	std::fstream file(configFile.c_str());	
 	if (file.is_open()) {
 		file << config;
 		return true;
