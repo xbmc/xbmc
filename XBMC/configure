@@ -14674,7 +14674,7 @@ if [ -d xbmc/cores/dvdplayer/Codecs/libdvdnav ]; then
     --enable-static \
     --disable-shared \
     --with-pic \
-    CFLAGS=-D_XBOX
+    CFLAGS="-D_XBOX -DHAVE_DVDCSS_DVDCSS_H"
 
   if [ $? -ne 0 ]; then
     popd
