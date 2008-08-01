@@ -33,11 +33,13 @@ LIBS=	avutil-51-$(ARCH).so \
 codecs: $(addprefix $(SYSDIR)/, $(LIBS));
 
 $(SYSDIR)/avutil-51-$(ARCH).so: ffmpeg/libavutil/libavutil.so
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libavutil/*.o
+	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libavutil/*.o \
+		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/avcodec-51-$(ARCH).so: $(WRAPPER) ffmpeg/libavcodec/libavcodec.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ /usr/lib/libfaac.a ffmpeg/libavcodec/*.o \
-		ffmpeg/libavcodec/i386/*.o `cat $(WRAPPER:.o=.def)` $(WRAPPER)
+		ffmpeg/libavcodec/i386/*.o \
+		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/avformat-51-$(ARCH).so: $(WRAPPER) ffmpeg/libavformat/libavformat.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libavformat/*.o \
@@ -53,19 +55,20 @@ $(SYSDIR)/postproc-51-$(ARCH).so: $(WRAPPER) ffmpeg/libpostproc/libpostproc.so
 
 $(SYSDIR)/libdts-$(ARCH).so: $(WRAPPER) libdts/libdts/libdts.a
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ libdts/libdts/bitstream.o \
-		libdts/libdts/downmix.o libdts/libdts/parse.o -Wl`sed 's/[(\*]/ /g' \
-		$(WRAPPER:.o=.c) | grep -v bash | awk \
-		'/__wrap/ {out=out","$$2} END {print out}' | sed 's/__wrap_/-wrap,/g'` 
+		libdts/libdts/downmix.o libdts/libdts/parse.o \
+		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/libDVDCSS-$(ARCH).so: $(WRAPPER) libDVDCSS/src/libdvdcss.la
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ libDVDCSS/src/*.o -Wl`sed 's/[(\*]/ /g' $(WRAPPER:.o=.c) | grep -v bash | awk '/__wrap/ {out=out","$$2} END {print out}' | sed 's/__wrap_/-wrap,/g'`
+	$(CC) -o $@ $(LDFLAGS) --soname,$@ libDVDCSS/src/*.o \
+		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/libdvdnav-$(ARCH).so: $(WRAPPER) libDVDCSS/src/libdvdcss.la libdvdnav/src/libdvdnav.la libdvdnav/src/vm/libdvdvm.la libdvdnav/src/dvdread/libdvdread.la
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ libDVDCSS/src/*.o libdvdnav/src/*.o libdvdnav/src/vm/*.o libdvdnav/src/dvdread/*.o \-Wl`sed 's/[(\*]/ /g' $(WRAPPER:.o=.c) | grep -v bash | awk '/__wrap/ {out=out","$$2} END {print out}' | sed 's/__wrap_/-wrap,/g'`
+	$(CC) -o $@ $(LDFLAGS) --soname,$@ libDVDCSS/src/*.o libdvdnav/src/*.o libdvdnav/src/vm/*.o libdvdnav/src/dvdread/*.o \
+		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/libfaad-$(ARCH).so: $(WRAPPER) libfaad2/libfaad/libfaad.la
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ libfaad2/libfaad/*.o \
-		`cat $(WRAPPER:.o=.def)`
+		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/libmad-$(ARCH).so: libmad/libmad.la
 	cp libmad/.libs/libmad.so $@
@@ -89,7 +92,7 @@ libDVDCSS:
 libdvdnav/src/libdvdnav.la          : libdvdnav;
 libdvdnav/src/vm/libdvdvm.la        : libdvdnav;
 libdvdnav/src/dvdread/libdvdread.la : libdvdnav;
-libdvdnav:
+libdvdnav: libDVDCSS
 	$(MAKE) -C $@
 
 libfaad2/libfaad/libfaad.la: libfaad2;
