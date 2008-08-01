@@ -2751,7 +2751,11 @@ bool CApplication::OnAction(const CAction &action)
     }
 
     SetHardwareVolume(volume);
-    g_audioManager.SetVolume((int)(128.f * (g_stSettings.m_nVolumeLevel + -VOLUME_MINIMUM) / (float)(-VOLUME_MINIMUM+VOLUME_MAXIMUM)));
+#ifndef HAS_SDL_AUDIO
+    g_audioManager.SetVolume(g_stSettings.m_nVolumeLevel);
+#else
+    g_audioManager.SetVolume((int)(128.f * (g_stSettings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
+#endif
 
     // show visual feedback of volume change...
     m_guiDialogVolumeBar.Show();
