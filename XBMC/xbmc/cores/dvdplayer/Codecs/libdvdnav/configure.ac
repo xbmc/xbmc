@@ -232,5 +232,4 @@ misc/libdvdnav.spec
 misc/relchk.sh
 m4/Makefile
 doc/Makefile
-examples/Makefile
 ])

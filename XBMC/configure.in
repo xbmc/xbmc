@@ -431,7 +431,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvdnav], [
     --enable-static \
     --disable-shared \
     --with-pic \
-    CFLAGS=-D_XBOX
+    CFLAGS="-D_XBOX -DHAVE_DVDCSS_DVDCSS_H"
 ])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libfaad2], [
   ./configure \

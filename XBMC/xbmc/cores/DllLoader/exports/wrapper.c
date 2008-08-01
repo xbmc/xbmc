@@ -86,6 +86,7 @@ int dll_getc (FILE * stream);
 int dll_ungetc (int c, FILE * stream);
 int dll_ioctl(int d, unsigned long int request, va_list va);
 int dll_stat(const char *path, struct _stat *buffer);
+int dll_stat64(const char *path, struct _stat64 *buffer);
 void dll_flockfile(FILE *file);
 int dll_ftrylockfile(FILE *file);
 void dll_funlockfile(FILE *file);
@@ -339,6 +340,16 @@ int __wrap_ioctl(int d, unsigned long int request, ...)
 int __wrap_stat(const char *path, struct _stat *buffer)
 {
   return dll_stat(path, buffer);
+}
+
+int __wrap___xstat64(int __ver, const char *__filename, struct stat64 *__stat_buf)
+{
+  return dll_stat64(__filename, __stat_buf);
+}
+
+int __wrap___lxstat64(int __ver, const char *__filename, struct stat64 *__stat_buf)
+{
+  return dll_stat64(__filename, __stat_buf);
 }
 
 void __wrap_flockfile(FILE *file)

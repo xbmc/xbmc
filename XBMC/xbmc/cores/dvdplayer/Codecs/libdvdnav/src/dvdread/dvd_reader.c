@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2001-2004 Billy Biggs <vektor@dumbterm.net>,
- *                         Håkan Hjort <d95hjort@dtek.chalmers.se>,
- *                         Björn Englund <d4bjorn@dtek.chalmers.se>
+ *                         Hï¿½kan Hjort <d95hjort@dtek.chalmers.se>,
+ *                         Bjï¿½rn Englund <d4bjorn@dtek.chalmers.se>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -475,6 +475,13 @@ dvd_reader_t *DVDOpen( const char *ppath )
 	    fclose( mntfile );
 	}
 #elif defined(__linux__)
+#ifdef _XBOX
+    /**
+     * let's just give it a try to open the path directly
+     * should fail if this is really a standard folder
+     */
+    auth_drive = DVDOpenImageFile( path, have_css );
+#else
         mntfile = fopen( MOUNTED, "r" );
         if( mntfile ) {
             struct mntent *me;
@@ -493,6 +500,7 @@ dvd_reader_t *DVDOpen( const char *ppath )
             }
             fclose( mntfile );
 	}
+#endif
 #elif defined(_MSC_VER)
     auth_drive = DVDOpenImageFile( path, have_css );
 #endif
