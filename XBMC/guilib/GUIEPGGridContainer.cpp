@@ -25,7 +25,7 @@
 #include "GUIListItem.h"
 #include "GUIFontManager.h"
 
-#define SHORTGAP     4
+#define SHORTGAP     5
 #define MINSPERBLOCK 5 /// would be nice to offer zooming of busy schedules
 
 CGUIEPGGridContainer::CGUIEPGGridContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, int scrollTime, int timeBlocks)
@@ -419,18 +419,19 @@ void CGUIEPGGridContainer::OnLeft()
 
     if (block < m_blockOffset) /* current item begins before current offset, keep selected */
     {
-      if (itemSize > m_blocksPerPage) /* current item is longer than one page, scroll to end of item */
+      if (itemSize > m_blocksPerPage) /* current item is longer than one page, scroll one page left */
       {
-        ScrollToBlockOffset(m_blockOffset - block);
+        m_blockOffset < m_blocksPerPage ? block = 0 : block = m_blockOffset - m_blocksPerPage; // number blocks left < m_blocksPerPAge
+        ScrollToBlockOffset(block);
         SetBlock(0);
       }
       else /* current item is shorter than one page, scroll left to start of item */
       {
         ScrollToBlockOffset(block); // -1?
-        SetBlock(0); //should be zero
+        SetBlock(0); // align cursor to left edge
       }
     }
-    else /* current item finishes on this page's edge, select the next item */
+    else /* current item starts on this page's edge, select the previous item */
     {
       m_item = GetPrevItem(m_channel);
       itemSize = GetItemSize(m_item);
@@ -438,7 +439,8 @@ void CGUIEPGGridContainer::OnLeft()
       if (itemSize > m_blocksPerPage) // previous item is longer than one page, scroll left to last page of item */
       {
         ScrollToBlockOffset(m_blockOffset - m_blocksPerPage); // left one whole page
-        SetBlock(m_blocksPerPage -1 ); // helps navigation by setting cursor to far right edge
+        //SetBlock(m_blocksPerPage -1 ); // helps navigation by setting cursor to far right edge
+        SetBlock(0); // align cursor to left edge
       }
       else /* previous item is shorter than one page, scroll left to start of item */
       {
@@ -475,9 +477,13 @@ void CGUIEPGGridContainer::OnRight()
 
     if (itemSize > m_blocksPerPage - m_block) // current item extends into next page, keep selected
     {
-      if (itemSize > m_blocksPerPage) // current item is longer than one page, scroll to start of item
+      if (itemSize > m_blocksPerPage) // current item is longer than one page, scroll one page right
       {
-        ScrollToBlockOffset(m_blockOffset + block); //// ??
+        if (m_blockOffset && m_blockOffset + m_blocksPerPage > m_blocks)
+          block = m_blocks - m_blocksPerPage;
+        else
+          block = m_blockOffset + m_blocksPerPage;
+        ScrollToBlockOffset(block);
         SetBlock(0);
       }
       else // current item is shorter than one page, scroll so end of item sits on end of grid
@@ -491,7 +497,6 @@ void CGUIEPGGridContainer::OnRight()
     {
       m_item = GetNextItem(m_channel);
       itemSize = GetItemSize(m_item);
-      block = GetRealBlock(m_item, m_channel);
       if (itemSize > m_blocksPerPage) // next item is longer than one page, scroll to first page of this item
       {
         ScrollToBlockOffset(m_blockOffset + m_blocksPerPage);
@@ -500,7 +505,7 @@ void CGUIEPGGridContainer::OnRight()
       else // next item is shorter than one page, scroll so end of item sits on end of grid
       {
         ScrollToBlockOffset(m_blockOffset + itemSize);
-        SetBlock(m_blocksPerPage - 1); // helps navigation by setting cursor to far right edge
+        SetBlock(m_blocksPerPage - itemSize); // helps navigation by setting cursor to far right edge
       }
     }
   }
@@ -511,7 +516,7 @@ void CGUIEPGGridContainer::OnRight()
 
 void CGUIEPGGridContainer::SetChannel(int channel)
 {
-  if (m_block == 0 || m_block + GetItemSize(m_item) >= m_blocksPerPage)
+  if (m_block + m_blockOffset == 0 || m_blockOffset + m_block + GetItemSize(m_item) == m_blocks)
   {
     m_item = GetItem(channel);
     m_block = GetBlock(m_item, channel);
@@ -549,7 +554,7 @@ CGUIListItemPtr CGUIEPGGridContainer::GetClosestItem(const int &channel)
   if (block + GetItemSize(closest) == m_block + GetItemSize(m_item))
     return closest; //closest item ends when current does
 
-  if (block > m_block)  // item starts after m_item
+  if (block > m_block)  // item starts after m_item 
   {
     left = m_block - GetBlock(closest, channel); 
     right = block - m_block;
@@ -560,7 +565,7 @@ CGUIListItemPtr CGUIEPGGridContainer::GetClosestItem(const int &channel)
     right = GetBlock(GetNextItem(channel), channel) - m_block;
   }
 
-  if (right <= SHORTGAP && right < left || right == left) 
+  if (right <= SHORTGAP && right <= left && m_block + right < m_blocksPerPage) 
     return m_gridIndex[channel+m_channelOffset][m_block + right + m_blockOffset];
   else
     return m_gridIndex[channel+m_channelOffset][m_block - left  + m_blockOffset];
@@ -575,7 +580,7 @@ int CGUIEPGGridContainer::GetItemSize(CGUIListItemPtr item)
 int CGUIEPGGridContainer::GetBlock(const CGUIListItemPtr &item, const int &channel)
 {
   int block = 0;
-  while (m_gridIndex[channel + m_channelOffset][block + m_blockOffset] != item)
+  while (m_gridIndex[channel + m_channelOffset][block + m_blockOffset] != item && block + m_blockOffset < m_blocks)
     block++;
   return block;
 }
@@ -583,7 +588,7 @@ int CGUIEPGGridContainer::GetBlock(const CGUIListItemPtr &item, const int &chann
 int CGUIEPGGridContainer::GetRealBlock(const CGUIListItemPtr &item, const int &channel)
 {
   int block = 0;
-  while (m_gridIndex[channel + m_channelOffset][block] != item)
+  while (m_gridIndex[channel + m_channelOffset][block] != item && block < m_blocks)
     block++;
   return block;
 }
@@ -664,7 +669,7 @@ void CGUIEPGGridContainer::ScrollToChannelOffset(int offset)
 void CGUIEPGGridContainer::ScrollToBlockOffset(int offset)
 {
   float size = m_blockSize;
-  int range = m_blocksPerPage / 4;
+  int range = m_blocksPerPage / 1;
   if (range <= 0) range = 1;
   if (offset * size < m_horzScrollOffset &&  m_horzScrollOffset - offset * size > size * range)
   { // scrolling left, and we're jumping more than 0.5 of a screen
@@ -701,6 +706,10 @@ void CGUIEPGGridContainer::ValidateOffset()
   {
     m_blockOffset = 0;
     m_horzScrollOffset = 0;
+  }
+  if (m_block > m_blocksPerPage)
+  {
+    m_block = GetBlock(m_item, m_channel);
   }
 }
 void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
