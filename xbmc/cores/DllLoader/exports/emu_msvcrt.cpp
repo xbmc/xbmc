@@ -1438,6 +1438,17 @@ extern "C"
 
   int dll_stati64(const char *path, struct _stati64 *buffer)
   {
+    struct stat64 a;
+    if(dll_stat64(path, &a) == 0)
+    {
+      CUtil::Stat64ToStatI64(buffer, &a);
+      return 0;
+    }
+    return -1;
+  }
+
+  int dll_stat64(const char *path, struct stat64 *buffer)
+  {
 #ifndef _LINUX
     //stating a root, for example C:\\, failes on the xbox
     if (emu_is_root_drive(path))
@@ -1474,14 +1485,7 @@ extern "C"
       return 0;
     }
 
-    struct __stat64 tStat;
-    if (CFile::Stat(path, &tStat) == 0)
-    {
-      CUtil::Stat64ToStatI64(buffer, &tStat);
-      return 0;
-    }
-    // errno is set by file.Stat(...)
-    return -1;
+    return CFile::Stat(path, buffer);
   }
 
 

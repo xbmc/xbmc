@@ -21741,7 +21741,7 @@ if test ! -z $am_depcomp; then
 fi
 
 
-ac_config_files="$ac_config_files Makefile src/Makefile src/dvdread/Makefile src/vm/Makefile misc/Makefile misc/dvdnav-config misc/libdvdnav.spec misc/relchk.sh m4/Makefile doc/Makefile examples/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile src/dvdread/Makefile src/vm/Makefile misc/Makefile misc/dvdnav-config misc/libdvdnav.spec misc/relchk.sh m4/Makefile doc/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -22353,7 +22353,6 @@ do
     "misc/relchk.sh") CONFIG_FILES="$CONFIG_FILES misc/relchk.sh" ;;
     "m4/Makefile") CONFIG_FILES="$CONFIG_FILES m4/Makefile" ;;
     "doc/Makefile") CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
-    "examples/Makefile") CONFIG_FILES="$CONFIG_FILES examples/Makefile" ;;
 
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}

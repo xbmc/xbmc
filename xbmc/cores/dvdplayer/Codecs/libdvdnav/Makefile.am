@@ -2,7 +2,7 @@ include $(top_srcdir)/misc/Makefile.common
 
 AUTOMAKE_OPTIONS = 1.3
 
-SUBDIRS = src examples doc misc m4
+SUBDIRS = src doc misc m4
 
 EXTRA_DIST = autogen.sh \
 	     AUTHORS \
