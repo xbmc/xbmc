@@ -115,6 +115,7 @@ extern "C"
                            LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags,
                            LPDWORD lpThreadId);
   int dll_stati64(const char *path, struct _stati64 *buffer);
+  int dll_stat64(const char *path, struct stat64 *buffer);
   int dll_stat(const char *path, struct _stat *buffer);
   int dll_fstat(int fd, struct stat *buffer);
   int dll_fstati64(int fd, struct _stati64 *buffer);
