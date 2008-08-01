@@ -28,10 +28,11 @@
 
 
 #include "avutil.h"
+//#include "libavutil/avutil.h"
 
 #define LIBAVCODEC_VERSION_MAJOR 51
 #define LIBAVCODEC_VERSION_MINOR 57
-#define LIBAVCODEC_VERSION_MICRO  0
+#define LIBAVCODEC_VERSION_MICRO  2
 
 #define LIBAVCODEC_VERSION_INT  AV_VERSION_INT(LIBAVCODEC_VERSION_MAJOR, \
                                                LIBAVCODEC_VERSION_MINOR, \
@@ -374,6 +375,7 @@ enum Motion_Est_ID {
     ME_HEX,         ///< hexagon based search
     ME_UMH,         ///< uneven multi-hexagon search
     ME_ITER,        ///< iterative search
+    ME_TESA,        ///< transformed exhaustive search algorithm
 };
 
 enum AVDiscard{
@@ -840,7 +842,7 @@ typedef struct AVCodecContext {
     /**
      * Motion estimation algorithm used for video coding.
      * 1 (zero), 2 (full), 3 (log), 4 (phods), 5 (epzs), 6 (x1), 7 (hex),
-     * 8 (umh), 9 (iter) [7, 8 are x264 specific, 9 is snow specific]
+     * 8 (umh), 9 (iter), 10 (tesa) [7, 8, 10 are x264 specific, 9 is snow specific]
      * - encoding: MUST be set by user.
      * - decoding: unused
      */
@@ -2822,7 +2824,7 @@ typedef struct AVCodecParserContext {
     int64_t frame_offset; /* offset of the current frame */
     int64_t cur_offset; /* current offset
                            (incremented by each av_parser_parse()) */
-    int64_t last_frame_offset; /* offset of the last frame */
+    int64_t next_frame_offset; /* offset of the next frame */
     /* video info */
     int pict_type; /* XXX: Put it back in AVCodecContext. */
     int repeat_pict; /* XXX: Put it back in AVCodecContext. */
@@ -2844,7 +2846,7 @@ typedef struct AVCodecParserContext {
 #define PARSER_FLAG_COMPLETE_FRAMES           0x0001
 
     int64_t offset;      ///< byte offset from starting packet start
-    int64_t last_offset;
+    int64_t cur_frame_end[AV_PARSER_PTS_NB];
 } AVCodecParserContext;
 
 typedef struct AVCodecParser {
@@ -2917,31 +2919,6 @@ AVBitStreamFilter *av_bitstream_filter_next(AVBitStreamFilter *f);
  * @see av_realloc
  */
 void *av_fast_realloc(void *ptr, unsigned int *size, unsigned int min_size);
-
-/* for static data only */
-
-/**
- * Frees all static arrays and resets their pointers to 0.
- * Call this function to release all statically allocated tables.
- *
- * @deprecated. Code which uses av_free_static is broken/misdesigned
- * and should correctly use static arrays
- *
- */
-attribute_deprecated void av_free_static(void);
-
-/**
- * Allocation of static arrays.
- *
- * @warning Do not use for normal allocation.
- *
- * @param[in] size The amount of memory you need in bytes.
- * @return block of memory of the requested size
- * @deprecated. Code which uses av_mallocz_static is broken/misdesigned
- * and should correctly use static arrays
- */
-attribute_deprecated av_malloc_attrib av_alloc_size(1)
-void *av_mallocz_static(unsigned int size);
 
 /**
  * Copy image 'src' to 'dst'.
