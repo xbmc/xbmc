@@ -171,7 +171,15 @@ void CGUIFadeLabelControl::Render()
   { // increment the label and reset scrolling
     if (m_fadeAnim->GetProcess() != ANIM_PROCESS_NORMAL)
     {
-      m_currentLabel++;
+      unsigned int label = m_currentLabel;
+      do
+      { // cycle until we get a non-empty label, or stick with the one we have
+        label++;
+        if (label >= m_infoLabels.size())
+          label = 0;
+      }
+      while (label != m_currentLabel && m_infoLabels[label].GetLabel(m_dwParentID).IsEmpty());
+      m_currentLabel = label;
       m_scrollInfo.Reset();
       m_fadeAnim->QueueAnimation(ANIM_PROCESS_REVERSE);
     }
