@@ -34,17 +34,28 @@ command.
    $ svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/linuxport/XBMC
 
 -----------------------------------------------------------------------------
-3.0 Installing the required MacPorts packages
+3.0 Installing the required mpkgs or MacPorts packages
 -----------------------------------------------------------------------------
 
 Install Xcode 3.0. You can download it from Apple's site after registration at
-(http://developer.apple.com/tools/download).
+(http://developer.apple.com/tools/download). You also need to install the 10.4 sdk.
 
-Since the XBMC OSX build is moving to 10.4 sdk refs, it is important to make sure that any 
-referenced dylibs are also built using 10.4 sdk refs. The best way to ensure this is 
-to remove the existing MacPorts install and re-install MacPorts.
+it is important to make sure that any libs are also built using 10.4 sdk refs. 
+It is not possible to build using MacPorts 1.6.0 to 10.4 sdk on a 10.5 system.
 
-To completly a previous install of  MacPorts, enter the following from a terminal windows:
+The best way to ensure this is to remove the existing MacPorts installation and
+install the required libs using MacPorts-mpkgs-1.0.zip download at 
+
+http://sourceforge.net/project/showfiles.php?group_id=87054. 
+
+These libs are built to 10.4 sdk. You can still use MacPorts but the resulting 
+binary will only run under 10.5 if built under 10.5. 
+
+-----------------------------------------------------------------------------
+3.1 Option A, Install the libraries mpkgs
+-----------------------------------------------------------------------------
+
+Completly a previous install of MacPorts, enter the following from a terminal windows:
 
 	$ sudo rm -rf \
 		/opt/local \
@@ -59,27 +70,33 @@ To completly a previous install of  MacPorts, enter the following from a termina
 		/Library/Tcl/darwinports1.0 \
 		/Library/Tcl/macports1.0
 
+Download MacPorts-mpkgs-1.0.zip, unzip and install all packages.
+
+-----------------------------------------------------------------------------
+3.2 Option B, Install MacPorts
+-----------------------------------------------------------------------------
+
 Install MacPorts (http://www.macports.org/) again, then install the following packages 
 from the Terminal window:
 
-	$ sudo port install lzo +darwin_8
-	$ sudo port install glew +darwin_8
-	$ sudo port install pcre +darwin_8
-	$ sudo port install zlib +darwin_8
-	$ sudo port install bzip2 +darwin_8
-	$ sudo port install jam +darwin_8
-	$ sudo port install boost +darwin_8
-	$ sudo port install libogg +darwin_8
-	$ sudo port install libmad +darwin_8
-	$ sudo port install mysql5 +darwin_8
-	$ sudo port install fribidi +darwin_8
-	$ sudo port install libiconv +darwin_8
-	$ sudo port install freetype +darwin_8
-	$ sudo port install readline +darwin_8
-	$ sudo port install fontconfig +darwin_8
-	$ sudo port install libsdl +darwin_8
-	$ sudo port install libsdl_image +darwin_8
-	$ sudo port install libsdl_mixer +darwin_8
+	$ sudo port install lzo
+	$ sudo port install glew
+	$ sudo port install pcre
+	$ sudo port install zlib
+	$ sudo port install bzip2
+	$ sudo port install jam
+	$ sudo port install boost
+	$ sudo port install libogg
+	$ sudo port install libmad
+	$ sudo port install mysql5
+	$ sudo port install fribidi
+	$ sudo port install libiconv
+	$ sudo port install freetype
+	$ sudo port install readline
+	$ sudo port install fontconfig
+	$ sudo port install libsdl
+	$ sudo port install libsdl_image
+	$ sudo port install libsdl_mixer
 
 You will need to use samba3 version 3.0.28a so follow these instructions to setup 
 MacPorts for a local dport repository:
@@ -97,9 +114,8 @@ We will install the revision 34870 (version 3.0.28a). Edit /opt/local/etc/macpor
 	$ sudo port clean samba3
 	$ sudo port install samba3@3.0.28a +darwin_8
 
------------------------------------------------------------------------------
-3.1 Fix two MacPorts package default install locations with sym links
------------------------------------------------------------------------------
+Fix two MacPorts package default install locations with sym links
+
 	$ sudo ln -s /opt/local/include/mysql5/mysql/ /opt/local/include/mysql
 	$ sudo ln -s /opt/local/Library/Frameworks/Python.framework/Versions/2.4/include/python2.4 /opt/local/include/python2.4
 
@@ -111,13 +127,14 @@ We will install the revision 34870 (version 3.0.28a). Edit /opt/local/etc/macpor
 4.1 Using Xcode
 ----------------------------------------
 
-Start XCode and load the XBMC project. Open "External Frameworks and Libraries" 
-and fix any red items by doing a "Get Info" and correcting the path error. Then 
-Project -> Edit Active Executable "XBMC", click "Arguments" tab and add "XBMC_HOME" 
-as an enviroment variable. Set the value to the path to the XBMC root folder. 
-For example, "/Users/bigdog/Documents/XBMC/linuxport/XBMC"
+Start XCode and load the XBMC project.
 
-Click the "Build" button.
+Set the value to the path to the XBMC root folder. Project -> Edit Active Executable "XBMC",
+click "Arguments" tab and add "XBMC_HOME" as an enviroment variable. Set the value to
+the path to the XBMC root folder. For example, "/Users/bigdog/Documents/XBMC/linuxport/XBMC"
+
+Build "python", Build "libraries", Build "XBMCHelper", then Build "XBMC".
+
 
 ----------------------------------------
 4.2 Using Eclipse

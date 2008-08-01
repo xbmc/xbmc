@@ -30,7 +30,7 @@
     #define DECLARE_ALIGNED(n,t,v)      t v __attribute__ ((aligned (n)))
     #define DECLARE_ASM_CONST(n,t,v)    const t __attribute__ ((aligned (n))) v
 #elif defined(__GNUC__)
-    #define DECLARE_ALIGNED(n,t,v)      t v __attribute__ ((aligned (n)))
+    #define DECLARE_ALIGNED(n,t,v)      t v __attribute__ ((aligned (n), visibility("hidden")))
     #define DECLARE_ASM_CONST(n,t,v)    static const t v attribute_used __attribute__ ((aligned (n)))
 #elif defined(_MSC_VER)
     #define DECLARE_ALIGNED(n,t,v)      __declspec(align(n)) t v
@@ -42,13 +42,13 @@
     #define DECLARE_ASM_CONST(n,t,v)    static const t v
 #endif
 
-#if defined(__GNUC__) && (__GNU__ > 3 || __GNU__ == 3 && __GNU_MINOR__ > 0)
+#if defined(__GNUC__) && (__GNUC__ > 3 || __GNUC__ == 3 && __GNUC_MINOR__ > 0)
     #define av_malloc_attrib __attribute__((__malloc__))
 #else
     #define av_malloc_attrib
 #endif
 
-#if defined(__GNUC__) && (__GNU__ > 4 || __GNU__ == 4 && __GNU_MINOR__ > 1)
+#if defined(__GNUC__) && (__GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ > 2)
     #define av_alloc_size(n) __attribute__((alloc_size(n)))
 #else
     #define av_alloc_size(n)

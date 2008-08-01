@@ -12,11 +12,7 @@ extern "C" {
 #ifndef __GNUC__
 #pragma warning(disable:4244)
 #endif
-#ifdef __APPLE__
-#include "libffmpeg-OSX/avformat.h"
-#else
 #include "avformat.h"
-#endif
 }
 
 

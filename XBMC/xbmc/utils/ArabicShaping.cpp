@@ -23,7 +23,7 @@
  */
 
 #include "stdafx.h"
-#include <malloc.h>
+#include <stdlib.h>
 #include "ArabicShaping.h"
 
 #define NIL 0x0000
