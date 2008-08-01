@@ -1,5 +1,5 @@
 <window id="8">
-	<defaultcontrol>2</defaultcontrol>
+	<defaultcontrol>20</defaultcontrol>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
 		<control type="image">
@@ -48,71 +48,75 @@
 		</control>
 		<control type="epggrid" id="20">
 			<description>EPG Grid</description>
-			<posx>30</posx>
-			<posy>100</posy>
-			<width>660</width>
-			<height>425</height>
+			<posx>60</posx>
+			<posy>130</posy>
+			<width>540</width>
+			<height>406</height>
 			<onleft>20</onleft>
 			<onright>20</onright>
 			<onup>20</onup>
 			<ondown>20</ondown>
 			<pagecontrol>20</pagecontrol>
-			<scrolltime>200</scrolltime>
-			<include>contentpanelslide</include>
+			<scrolltime>400</scrolltime>
+			<timeblocks>36</timeblocks>
 			<itemlayout height="29">
-				<control type="image">
-					<width>0</width>
-					<height>0</height>
+				<control type="image" id="1">
+					<width>40</width>
+					<height>29</height>
 					<posx>0</posx>
 					<posy>0</posy>
-					<visible>Control.HasFocus(20)</visible>
-					<texture>list-nofocus.png</texture>
+					<texture>dark-green.png</texture>
+					<bordertexture>blue_rectangle_music.png</bordertexture>
+					<bordersize>0.5</bordersize>
 				</control>
-				<control type="image">
-					<posx>5r</posx>
-					<posy>3r</posy>
-					<width>22</width>
-					<height>22</height>
-					<info>ListItem.Icon</info>
-				</control>
-				<control type="label">
+				<control type="label" id="1">
 					<posx>5</posx>
 					<posy>3</posy>
-					<width>0</width>
+					<width>40</width>
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
 					<selectedcolor>green</selectedcolor>
 					<align>left</align>
 					<info>ListItem.Label</info>
+				</control>
+				<control type="image">
+					<width>15</width>
+					<height>14</height>
+					<posx>0r</posx>
+					<posy>0r</posy>
+					<texture>OverlayRecording.png</texture>
+					<visible>ListItem.Property(Recording)</visible>
 				</control>
 			</itemlayout>
 			<focusedlayout height="29">
-				<control type="image">
-					<width>0</width>
-					<height>0</height>
+				<control type="image" id="1">
+					<width>40</width>
+					<height>29</height>
 					<posx>0</posx>
 					<posy>0</posy>
-					<visible>Control.HasFocus(20)</visible>
-					<texture>list-focus.png</texture>
+					<texture>light-green.png</texture>
+					<bordertexture>blue_rectangle_music.png</bordertexture>
+					<bordersize>0.5</bordersize>
 				</control>
-				<control type="image">
-					<posx>5r</posx>
-					<posy>3r</posy>
-					<width>22</width>
-					<height>22</height>
-					<info>ListItem.Icon</info>
-				</control>
-				<control type="label">
+				<control type="label" id="1">
 					<posx>5</posx>
 					<posy>3</posy>
-					<width>0</width>
+					<width>40</width>
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
 					<selectedcolor>green</selectedcolor>
 					<align>left</align>
 					<info>ListItem.Label</info>
+				</control>
+				<control type="image">
+					<width>15</width>
+					<height>14</height>
+					<posx>0r</posx>
+					<posy>0r</posy>
+					<texture>OverlayRecording.png</texture>
+					<visible>ListItem.Property(Recording)</visible>
 				</control>
 			</focusedlayout>
 		</control>
