@@ -23,9 +23,6 @@ DIR *xbp_opendir(const char *name);
 #ifdef __APPLE__
 int xbp_stat(const char * path, struct stat * buf);
 int xbp_lstat(const char * path, struct stat * buf);
-#else
-int xbp__xstat64(int ver, const char *filename, struct stat64 *stat_buf);
-int xbp__lxstat64(int ver, const char *filename, struct stat64 *stat_buf);
 #endif
 void *xbp_dlopen(const char *filename, int flag);
 int xbp_dlclose(void *handle);
@@ -96,16 +93,6 @@ int PYTHON_WRAP(stat)(const char * path, struct stat * buf)
 int PYTHON_WRAP(lstat)(const char * path, struct stat * buf)
 {
   return xbp_lstat(path, buf);
-}
-#else
-int PYTHON_WRAP(__xstat64)(int ver, const char *filename, struct stat64 *stat_buf)
-{
-  return xbp__xstat64(ver, filename, stat_buf);
-}
-
-int PYTHON_WRAP(__lxstat64)(int ver, const char *filename, struct stat64 *stat_buf)
-{
-  return xbp__lxstat64(ver, filename, stat_buf);
 }
 #endif
 
