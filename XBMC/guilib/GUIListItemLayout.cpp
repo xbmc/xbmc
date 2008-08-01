@@ -103,8 +103,8 @@ unsigned int CGUIListItemLayout::GetFocusedItem() const
 
 void CGUIListItemLayout::SetWidth(float width)
 {
+  m_group.EnlargeWidth(width - m_width);
   m_width = width;
-  m_group.SetWidth(width);
   SetInvalid();
 }
 void CGUIListItemLayout::SelectItemFromPoint(const CPoint &point)

@@ -149,18 +149,22 @@ void CGUIListGroup::UpdateInfo(const CGUIListItem *item)
   }
 }
 
-void CGUIListGroup::SetWidth(float width)
+void CGUIListGroup::EnlargeWidth(float difference)
 {
   // Alters the width of the controls that have an ID of 1
   for (iControls it = m_children.begin(); it != m_children.end(); it++)
   {
-    if ((*it)->GetID() == 1)
+    CGUIControl *child = *it;
+    if (child->GetID() == 1 || 2)
     {
-      ((CGUIControl *)(*it))->SetWidth(width);
+      child->SetWidth(child->GetWidth() + difference);
+      if (child->GetID() == 2) // label
+        child->SetVisible(child->GetWidth() > 10);
     }
   }
   SetInvalid();
 }
+
 void CGUIListGroup::SetFocusedItem(unsigned int focus)
 {
   for (iControls it = m_children.begin(); it != m_children.end(); it++)

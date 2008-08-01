@@ -219,6 +219,8 @@ void CGUIEPGGridContainer::Render()
   CGUIControl::Render();
 
   g_graphicsContext.RestoreClipRegion();
+
+  RenderDebug();
 }
 
 void CGUIEPGGridContainer::RenderDebug()
@@ -228,14 +230,14 @@ void CGUIEPGGridContainer::RenderDebug()
 
   CStdStringW wszText;
 
-  CStdString start, end;
-  start = m_gridStart.GetAsDBDateTime();
-  end = m_gridEnd.GetAsDBDateTime();
+  CStdStringW label = "";
+  if (m_item)
+    label = m_item->GetLabel();
   
-  wszText.Format(L"Block:%u, BlockOffset:%u, Channel:%u, ChannelOffset:%u", m_block, m_blockOffset, m_channel, m_channelOffset);
+  wszText.Format(L"Block: %u, BlockOffset: %u, Channel: %u, ChannelOffset: %u, ItemLabel: %s", m_block, m_blockOffset, m_channel, m_channelOffset, label);
 
-  float x = 0.20f * g_graphicsContext.GetWidth();
-  float y = 0.90f * g_graphicsContext.GetHeight();
+  float x = 0.05f * g_graphicsContext.GetWidth();
+  float y = 0.95f * g_graphicsContext.GetHeight();
   CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, wszText);
   
 }
@@ -357,6 +359,10 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
 
 bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
 {
+  if (m_block > m_blocksPerPage)
+  {
+    m_block = GetBlock(m_item, m_channel);
+  }
   return CGUIControl::OnMessage(message);
 }
 
@@ -369,6 +375,7 @@ void CGUIEPGGridContainer::OnUp()
   else if (m_channel == 0 && m_channelOffset)
   {
     ScrollToChannelOffset(m_channelOffset - 1);
+    SetChannel(0);
   }
   else if (m_channelWrapAround)
   {
@@ -392,6 +399,7 @@ void CGUIEPGGridContainer::OnDown()
     else
     {
       ScrollToChannelOffset(m_channelOffset + 1);
+      SetChannel(m_channelsPerPage - 1);
     }
   }
   else if(m_channelWrapAround)
@@ -469,9 +477,9 @@ void CGUIEPGGridContainer::OnRight()
     m_item = GetNextItem(m_channel);
     m_block = GetBlock(m_item, m_channel);
   }
-  else if ((m_blockOffset + m_block + GetItemSize(m_item) != m_blocks) && m_blocks > m_blocksPerPage)
+  else if ((m_blockOffset != m_blocks - m_blocksPerPage) && m_blocks > m_blocksPerPage)
   {
-    // at right edge and not last page
+    // at right edge, more than one page and not at maximum offset
     int itemSize = GetItemSize(m_item);
     int block = GetRealBlock(m_item, m_channel);
 
@@ -706,10 +714,6 @@ void CGUIEPGGridContainer::ValidateOffset()
   {
     m_blockOffset = 0;
     m_horzScrollOffset = 0;
-  }
-  if (m_block > m_blocksPerPage)
-  {
-    m_block = GetBlock(m_item, m_channel);
   }
 }
 void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)

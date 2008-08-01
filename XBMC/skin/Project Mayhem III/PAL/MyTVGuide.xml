@@ -59,7 +59,7 @@
 			<pagecontrol>20</pagecontrol>
 			<scrolltime>400</scrolltime>
 			<timeblocks>36</timeblocks>
-			<itemlayout height="29">
+			<itemlayout height="29" width="40">
 				<control type="image" id="1">
 					<width>40</width>
 					<height>29</height>
@@ -69,10 +69,10 @@
 					<bordertexture>blue_rectangle_music.png</bordertexture>
 					<bordersize>0.5</bordersize>
 				</control>
-				<control type="label" id="1">
+				<control type="label" id="2">
 					<posx>5</posx>
 					<posy>3</posy>
-					<width>40</width>
+					<width>30</width>
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>
@@ -89,7 +89,7 @@
 					<visible>ListItem.Property(Recording)</visible>
 				</control>
 			</itemlayout>
-			<focusedlayout height="29">
+			<focusedlayout height="29" width="40">
 				<control type="image" id="1">
 					<width>40</width>
 					<height>29</height>
@@ -99,10 +99,10 @@
 					<bordertexture>blue_rectangle_music.png</bordertexture>
 					<bordersize>0.5</bordersize>
 				</control>
-				<control type="label" id="1">
+				<control type="label" id="2">
 					<posx>5</posx>
 					<posy>3</posy>
-					<width>40</width>
+					<width>30</width>
 					<height>22</height>
 					<font>font13</font>
 					<aligny>center</aligny>

@@ -656,7 +656,7 @@ bool CTVDatabase::GetProgrammesByChannel(const CStdString &channel, VECFILEITEMS
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, channel);
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, channel.c_str());
   }
   return false;
 }
