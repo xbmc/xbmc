@@ -13,13 +13,8 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
   
-#ifdef __APPLE__
-#include "libffmpeg-OSX/avutil.h"
-#include "libffmpeg-OSX/postprocess.h"
-#else
 #include "avutil.h"
 #include "postprocess.h"
-#endif
 }
 
 class DllPostProcInterface

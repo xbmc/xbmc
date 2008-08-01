@@ -17,12 +17,7 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
 
-#ifdef __APPLE__
-#include "libffmpeg-OSX/log.h"
-#include "libffmpeg-OSX/avcodec.h"
-#else
 #include "avcodec.h"
-#endif
 }
 
 class DllAvCodecInterface

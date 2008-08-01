@@ -18,15 +18,9 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
 
-#ifdef __APPLE__
-#include "libffmpeg-OSX/avutil.h"
-#include "libffmpeg-OSX/swscale.h"
-#include "libffmpeg-OSX/rgb2rgb.h"
-#else
 #include "avutil.h"
 #include "swscale.h"
 #include "rgb2rgb.h"
-#endif
 }
 
 class DllSwScaleInterface
