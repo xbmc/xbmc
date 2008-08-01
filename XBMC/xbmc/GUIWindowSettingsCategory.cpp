@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "GUIWindowSettingsCategory.h"
 #include "Application.h"
+#include "KeyboardLayoutConfiguration.h"
 #include "FileSystem/HDDirectory.h"
 #include "Util.h"
 #include "GUILabelControl.h"
@@ -203,6 +204,11 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 
         g_charsetConverter.reset();
 
+        CStdString strKeyboardLayoutConfigurationPath;
+        strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", m_strNewLanguage.c_str());
+        CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
+        g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
+
         CStdString strLanguagePath;
         strLanguagePath.Format("Q:\\language\\%s\\strings.xml", m_strNewLanguage.c_str());
         g_localizeStrings.Load(strLanguagePath);
@@ -347,7 +353,7 @@ void CGUIWindowSettingsCategory::SetupControls()
     const CGUIControl *gap = GetControl(CONTROL_BUTTON_GAP);
     if (!area || !gap)
       return;
-    Remove(CONTROL_BUTTON_AREA);
+    Remove(area);
     group = new CGUIControlGroupList(GetID(), CATEGORY_GROUP_ID, area->GetXPosition(), area->GetYPosition(),
                                      area->GetWidth(), 1080, gap->GetHeight() - m_pOriginalCategoryButton->GetHeight(),
                                      0, VERTICAL, false);
@@ -399,7 +405,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
   {
     CGUIControl *area = (CGUIControl *)GetControl(CONTROL_AREA);
     const CGUIControl *gap = GetControl(CONTROL_GAP);
-    Remove(CONTROL_AREA);
+    Remove(area);
     group = new CGUIControlGroupList(GetID(), SETTINGS_GROUP_ID, area->GetXPosition(), area->GetYPosition(),
                                      area->GetWidth(), 1080, gap->GetHeight() - m_pOriginalButton->GetHeight(), 0, VERTICAL, false);
     group->SetNavigation(SETTINGS_GROUP_ID, SETTINGS_GROUP_ID, CATEGORY_GROUP_ID, CATEGORY_GROUP_ID);
@@ -1995,11 +2001,11 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     ClearFolderViews(pSettingControl->GetSetting(), WINDOW_PICTURES);
   }
-/* TODO:TTF_FONTS - xbox doesn't support this yet
+
   else if (strSetting.Equals("lookandfeel.skinzoom"))
   {
     g_fontManager.ReloadTTFFonts();
-  }*/
+  }
   else if (strSetting.Equals("videolibrary.flattentvshows") ||
            strSetting.Equals("videolibrary.removeduplicates"))
   {

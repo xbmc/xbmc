@@ -35,11 +35,8 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, float 
     , m_textLayout(labelInfo.font, false), m_textLayout2(labelInfo.font, false)
 {
   m_bSelected = false;
-  m_bTabButton = false;
   m_alpha = 255;
   m_dwFocusCounter = 0;
-  m_dwFlickerCounter = 0;
-  m_dwFrameCounter = 0;
   m_label = labelInfo;
   ControlType = GUICONTROL_BUTTON;
 }
@@ -58,14 +55,8 @@ void CGUIButtonControl::Render()
     m_imgNoFocus.SetWidth(m_width);
     m_imgNoFocus.SetHeight(m_height);
   }
-  m_dwFrameCounter++;
 
-  if (m_bTabButton)
-  {
-    m_imgFocus.SetVisible(m_bSelected);
-    m_imgNoFocus.SetVisible(!m_bSelected);
-  }
-  else if (HasFocus())
+  if (HasFocus())
   {
     if (m_pulseOnSelect)
     {
@@ -93,55 +84,53 @@ void CGUIButtonControl::Render()
   m_imgFocus.Render();
   m_imgNoFocus.Render();
 
-  // if we're flickering then we may not need to render text
-  bool bRenderText = (m_dwFlickerCounter > 0) ? (m_dwFrameCounter % 60 > 30) : true;
-  m_dwFlickerCounter = (m_dwFlickerCounter > 0) ? (m_dwFlickerCounter - 1) : 0;
+  RenderText();
+  CGUIControl::Render();
+}
 
+void CGUIButtonControl::RenderText()
+{
   m_textLayout.Update(m_info.GetLabel(m_dwParentID));
 
-  if (bRenderText)
+  float fPosX = m_posX + m_label.offsetX;
+  float fPosY = m_posY + m_label.offsetY;
+
+  if (m_label.align & XBFONT_RIGHT)
+    fPosX = m_posX + m_width - m_label.offsetX;
+
+  if (m_label.align & XBFONT_CENTER_X)
+    fPosX = m_posX + m_width / 2;
+
+  if (m_label.align & XBFONT_CENTER_Y)
+    fPosY = m_posY + m_height / 2;
+
+  if (IsDisabled())
+    m_textLayout.Render( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, m_label.align, m_label.width, true);
+  else if (HasFocus() && m_label.focusedColor)
+    m_textLayout.Render( fPosX, fPosY, m_label.angle, m_label.focusedColor, m_label.shadowColor, m_label.align, m_label.width);
+  else
+    m_textLayout.Render( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, m_label.align, m_label.width);
+
+  // render the second label if it exists
+  CStdString label2(m_info2.GetLabel(m_dwParentID));
+  if (!label2.IsEmpty())
   {
-    float fPosX = m_posX + m_label.offsetX;
-    float fPosY = m_posY + m_label.offsetY;
+    float textWidth, textHeight;
+    m_textLayout.GetTextExtent(textWidth, textHeight);
+    m_textLayout2.Update(label2);
 
-    if (m_label.align & XBFONT_RIGHT)
-      fPosX = m_posX + m_width - m_label.offsetX;
+    float width = m_width - 2 * m_label.offsetX - textWidth - 5;
+    if (width < 0) width = 0;
+    fPosX = m_posX + m_width - m_label.offsetX;
+    DWORD dwAlign = XBFONT_RIGHT | (m_label.align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED;
 
-    if (m_label.align & XBFONT_CENTER_X)
-      fPosX = m_posX + m_width / 2;
-
-    if (m_label.align & XBFONT_CENTER_Y)
-      fPosY = m_posY + m_height / 2;
-
-    if (IsDisabled())
-      m_textLayout.Render( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, m_label.align, m_label.width, true);
+    if (IsDisabled() )
+      m_textLayout2.Render( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, dwAlign, width, true);
     else if (HasFocus() && m_label.focusedColor)
-      m_textLayout.Render( fPosX, fPosY, m_label.angle, m_label.focusedColor, m_label.shadowColor, m_label.align, m_label.width);
+      m_textLayout2.Render( fPosX, fPosY, m_label.angle, m_label.focusedColor, m_label.shadowColor, dwAlign, width);
     else
-      m_textLayout.Render( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, m_label.align, m_label.width);
-
-    // render the second label if it exists
-    CStdString label2(m_info2.GetLabel(m_dwParentID));
-    if (!label2.IsEmpty())
-    {
-      float textWidth, textHeight;
-      m_textLayout.GetTextExtent(textWidth, textHeight);
-      m_textLayout2.Update(label2);
-
-      float width = m_width - 2 * m_label.offsetX - textWidth - 5;
-      if (width < 0) width = 0;
-      fPosX = m_posX + m_width - m_label.offsetX;
-      DWORD dwAlign = XBFONT_RIGHT | (m_label.align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED;
-
-      if (IsDisabled() )
-        m_textLayout2.Render( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, dwAlign, width, true);
-      else if (HasFocus() && m_label.focusedColor)
-        m_textLayout2.Render( fPosX, fPosY, m_label.angle, m_label.focusedColor, m_label.shadowColor, dwAlign, width);
-      else
-        m_textLayout2.Render( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, dwAlign, width);
-    }
+      m_textLayout2.Render( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, dwAlign, width);
   }
-  CGUIControl::Render();
 }
 
 bool CGUIButtonControl::OnAction(const CAction &action)
@@ -254,11 +243,6 @@ bool CGUIButtonControl::OnMouseClick(DWORD dwButton, const CPoint &point)
     return true;
   }
   return false;
-}
-
-void CGUIButtonControl::Flicker(bool bFlicker)
-{
-  m_dwFlickerCounter = bFlicker ? 240 : 0;
 }
 
 CStdString CGUIButtonControl::GetDescription() const

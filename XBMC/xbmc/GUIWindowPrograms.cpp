@@ -727,7 +727,10 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
       {
         shortcutPath = item->m_strPath;
         item->m_strPath = cut.m_strPath;
-        item->SetThumbnailImage(cut.m_strThumb);
+        if (cut.m_strThumb.IsEmpty()) // try to cache thumb for path
+          item->SetUserProgramThumb();
+        else
+          item->SetThumbnailImage(cut.m_strThumb);
 
         LABEL_MASKS labelMasks;
         m_guiState->GetSortMethodLabelMasks(labelMasks);

@@ -332,6 +332,40 @@ namespace PYXBMC
     return Py_None;
   }
 
+  PyDoc_STRVAR(disableCache__doc__,
+    "disableCache(handle) -- Disables the cache to disc in current directory for this plugin.\n"
+    "\n"
+    "handle      : integer - handle the plugin was started with.\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments.\n"
+    "\n"
+    "       By default caching is time based.\n"
+    "\n"
+    "example:\n"
+    "  - xbmcplugin.disableCache(int(sys.argv[1]))\n");
+
+  PyObject* XBMCPLUGIN_DisableCache(PyTypeObject *type, PyObject *args, PyObject *kwds)
+  {
+    static char *keywords[] = { "handle", NULL };
+    int handle = -1;
+    // parse arguments to constructor
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      "i",
+      keywords,
+      &handle
+      ))
+    {
+      return NULL;
+    };
+
+    DIRECTORY::CPluginDirectory::SetProperty(handle, "donotcachetodisc", "1");
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   // define c functions to be used in python here
   PyMethodDef pluginMethods[] = {
     {"addDirectoryItem", (PyCFunction)XBMCPLUGIN_AddDirectoryItem, METH_VARARGS|METH_KEYWORDS, addDirectoryItem__doc__},
@@ -341,6 +375,7 @@ namespace PYXBMC
     {"setContent", (PyCFunction)XBMCPLUGIN_SetContent, METH_VARARGS|METH_KEYWORDS, setContent__doc__},
     {"setPluginCategory", (PyCFunction)XBMCPLUGIN_SetPluginCategory, METH_VARARGS|METH_KEYWORDS, setPluginCategory__doc__},
     {"setPluginFanart", (PyCFunction)XBMCPLUGIN_SetPluginFanart, METH_VARARGS|METH_KEYWORDS, setPluginFanart__doc__},
+    {"disableCache", (PyCFunction)XBMCPLUGIN_DisableCache, METH_VARARGS|METH_KEYWORDS, disableCache__doc__},
     {NULL, NULL, 0, NULL}
   };
 

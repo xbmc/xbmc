@@ -39,26 +39,41 @@ CButtonTranslator::~CButtonTranslator()
 
 bool CButtonTranslator::Load()
 {
-  // load our xml file, and fill up our mapping tables
-  TiXmlDocument xmlDoc;
+  translatorMap.clear();
 
   // Load the config file
   CStdString keymapPath;
   //CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Keymap.xml", keymapPath);
+  keymapPath = "Q:\\system\\Keymap.xml";
+  bool success = LoadKeymap(keymapPath);
   keymapPath = g_settings.GetUserDataItem("Keymap.xml");
-  CLog::Log(LOGINFO, "Loading %s", keymapPath.c_str());
-  if (!xmlDoc.LoadFile(keymapPath))
+  success |= LoadKeymap(keymapPath);
+
+  if (!success)
   {
-    g_LoadErrorStr.Format("%s, Line %d\n%s", keymapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    g_LoadErrorStr.Format("Error loading keymap: %s", keymapPath.c_str());
     return false;
   }
 
-  translatorMap.clear();
+  // Done!
+  return true;
+}
+
+bool CButtonTranslator::LoadKeymap(const CStdString &keymapPath)
+{
+  TiXmlDocument xmlDoc;
+
+  CLog::Log(LOGINFO, "Loading %s", keymapPath.c_str());
+  if (!xmlDoc.LoadFile(keymapPath))
+  {
+    CLog::Log(LOGERROR, "Error loading keymap: %s, Line %d\n%s", keymapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    return false;
+  }
   TiXmlElement* pRoot = xmlDoc.RootElement();
   CStdString strValue = pRoot->Value();
   if ( strValue != "keymap")
   {
-    g_LoadErrorStr.Format("%sl Doesn't contain <keymap>", keymapPath.c_str());
+    CLog::Log(LOGERROR, "%s Doesn't contain <keymap>", keymapPath.c_str());
     return false;
   }
   // run through our window groups
@@ -79,7 +94,6 @@ bool CButtonTranslator::Load()
       pWindow = pWindow->NextSibling();
     }
   }
-  // Done!
   return true;
 }
 
@@ -160,11 +174,12 @@ void CButtonTranslator::MapAction(WORD wButtonCode, const char *szAction, button
   // have a valid action, and a valid button - map it.
   // check to see if we've already got this (button,action) pair defined
   buttonMap::iterator it = map.find(wButtonCode);
-  if (it == map.end() || (*it).second.wID != wAction)
+  if (it == map.end() || (*it).second.wID != wAction || (*it).second.strID != szAction)
   {
-    //char szTmp[128];
-    //sprintf(szTmp,"  action:%i button:%i\n", wAction,wButtonCode);
-    //OutputDebugString(szTmp);
+    // NOTE: This multimap is only being used as a normal map at this point (no support
+    //       for multiple actions per key)
+    if (it != map.end())
+      map.erase(it);
     CButtonAction button;
     button.wID = wAction;
     button.strID = szAction;
@@ -176,6 +191,12 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
 {
   if (!pWindow || wWindowID == WINDOW_INVALID) return;
   buttonMap map;
+  std::map<WORD, buttonMap>::iterator it = translatorMap.find(wWindowID);
+  if (it != translatorMap.end())
+  {
+    map = it->second;
+    translatorMap.erase(it);
+  }
   TiXmlNode* pDevice;
   if ((pDevice = pWindow->FirstChild("gamepad")) != NULL)
   { // map gamepad actions
@@ -215,7 +236,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
     TiXmlElement *pButton = pDevice->FirstChildElement();
     while (pButton)
     {
-      WORD wButtonCode = TranslateKeyboardString(pButton->Value());
+      WORD wButtonCode = TranslateKeyboardButton(pButton);
       if (pButton->FirstChild())
         MapAction(wButtonCode, pButton->FirstChild()->Value(), map);
       pButton = pButton->NextSiblingElement();
@@ -585,11 +606,12 @@ WORD CButtonTranslator::TranslateUniversalRemoteString(const char *szButton)
 
 WORD CButtonTranslator::TranslateKeyboardString(const char *szButton)
 {
-  if (!szButton) return 0;
   WORD wButtonCode = 0;
   if (strlen(szButton) == 1)
   { // single character
     wButtonCode = (WORD)toupper(szButton[0]) | KEY_VKEY;
+    // FIXME It is a printable character, printable should be ASCII not VKEY! Till now it works, but how (long)?
+    // FIXME support unicode: additional parameter necessary since unicode can not be embedded into key/action-ID.
   }
   else
   { // for keys such as return etc. etc.
@@ -667,6 +689,27 @@ WORD CButtonTranslator::TranslateKeyboardString(const char *szButton)
     else CLog::Log(LOGERROR, "Keyboard Translator: Can't find button %s", strKey.c_str());
   }
   return wButtonCode;
+}
+
+WORD CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
+{
+  const char *szButton = pButton->Value();
+
+  if (!szButton) return 0;
+  CStdString strKey = szButton;
+  if (strKey.Equals("key"))
+  {
+    int id = 0;
+    if (pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS)
+      return id;
+    else
+      CLog::Log(LOGERROR, "Keyboard Translator: `key' button has no id");
+  }
+  else
+  {
+    return TranslateKeyboardString(szButton);
+  }
+  return 0;
 }
 
 void CButtonTranslator::Clear()

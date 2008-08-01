@@ -929,6 +929,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\utils\InfoLoader.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\KeyboardLayoutConfiguration.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\KeyboardLayoutConfiguration.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\utils\LabelFormatter.cpp">
 				</File>
 				<File
@@ -1138,6 +1144,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\Song.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\TVDatabase.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\TVDatabase.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\VideoDatabase.cpp">
@@ -1362,6 +1374,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIViewStateScripts.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowEPG.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowEPG.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowFileManager.cpp">

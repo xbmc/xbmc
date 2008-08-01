@@ -29,6 +29,7 @@
 class CKey;
 struct CAction;
 class TiXmlNode;
+class TiXmlElement;
 
 struct CButtonAction
 {
@@ -59,8 +60,12 @@ private:
   WORD TranslateRemoteString(const char *szButton);
   WORD TranslateUniversalRemoteString(const char *szButton);
   WORD TranslateKeyboardString(const char *szButton);
+  WORD TranslateKeyboardButton(TiXmlElement *pButton);
+
   void MapWindowActions(TiXmlNode *pWindow, WORD wWindowID);
   void MapAction(WORD wButtonCode, const char *szAction, buttonMap &map);
+
+  bool LoadKeymap(const CStdString &keymapPath);
 };
 
 extern CButtonTranslator g_buttonTranslator;

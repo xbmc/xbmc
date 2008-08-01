@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "Application.h"
+#include "KeyboardLayoutConfiguration.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "xbox/XKEEPROM.h"
 #include "utils/LCD.h"
@@ -1054,12 +1055,11 @@ HRESULT CApplication::Create(HWND hWnd)
   CStdString strHomePath = "Q:";
   CLog::Log(LOGINFO, "Checking skinpath existance, and existence of keymap.xml:%s...", (strHomePath + "\\skin").c_str());
 
-  CStdString systemKeymapPath = "Q:\\system\\Keymap.xml";
-  CStdString userKeymapPath = g_settings.GetUserDataItem("Keymap.xml");
+  keymapPath = "Q:\\system\\Keymap.xml";
 #ifdef _XBOX
   if (access(strHomePath + "\\skin", 0) || (access(systemKeymapPath.c_str(), 0) && access(userKeymapPath.c_str(), 0)))
   {
-    g_LoadErrorStr = "Unable to find skin or Keymap.xml.  Make sure you have UserData/Keymap.xml and Skin/ folder";
+    g_LoadErrorStr = "Unable to find skin or Keymap.xml.  Make sure you have System/Keymap.xml and Skin/ folder";
     FatalErrorHandler(true, false, true);
   }
 #endif
@@ -1131,6 +1131,11 @@ HRESULT CApplication::Create(HWND hWnd)
 
   CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
+
+  CStdString strKeyboardLayoutConfigurationPath;
+  strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", g_guiSettings.GetString("locale.language"));
+  CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
+  g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
 
   m_splash = new CSplash("Q:\\media\\splash.png");
   m_splash->Start();
@@ -2421,13 +2426,20 @@ bool CApplication::OnKey(CKey& key)
       {
         if (key.GetButtonCode() != KEY_INVALID)
           action.wID = (WORD) key.GetButtonCode();
+          action.unicode = key.GetUnicode();
       }
       else
       { // see if we've got an ascii key
-        if (g_Keyboard.GetAscii() != 0)
-          action.wID = (WORD)g_Keyboard.GetAscii() | KEY_ASCII;
+        if (g_Keyboard.GetUnicode())
+        {
+          action.wID = (WORD)g_Keyboard.GetAscii() | KEY_ASCII; // Only for backwards compatibility
+          action.unicode = g_Keyboard.GetUnicode();
+        }
         else
+        {
           action.wID = (WORD)g_Keyboard.GetKey() | KEY_VKEY;
+          action.unicode = 0;
+        }
       }
 #ifdef HAS_SDL
       g_Keyboard.Reset();
@@ -3239,10 +3251,15 @@ bool CApplication::ProcessKeyboard()
 {
   // process the keyboard buttons etc.
   BYTE vkey = g_Keyboard.GetKey();
-  if (vkey)
+  WCHAR unicode = g_Keyboard.GetUnicode();
+  if (vkey || unicode)
   {
     // got a valid keypress - convert to a key code
-    WORD wkeyID = (WORD)vkey | KEY_VKEY;
+    WORD wkeyID;
+    if (vkey) // FIXME, every ascii has a vkey so vkey would always and ascii would never be processed, but fortunately OnKey uses wkeyID only to detect keyboard use and the real key is recalculated correctly.
+      wkeyID = (WORD)vkey | KEY_VKEY;
+    else
+      wkeyID = KEY_UNICODE;
     //  CLog::Log(LOGDEBUG,"Keyboard: time=%i key=%i", timeGetTime(), vkey);
     CKey key(wkeyID);
     return OnKey(key);
@@ -3359,7 +3376,6 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_PICTURES);
     m_gWindowManager.Delete(WINDOW_SCRIPTS);
     m_gWindowManager.Delete(WINDOW_GAMESAVES);
-    m_gWindowManager.Delete(WINDOW_BUDDIES);
     m_gWindowManager.Delete(WINDOW_WEATHER);
 
     m_gWindowManager.Delete(WINDOW_SETTINGS_MYPICTURES);

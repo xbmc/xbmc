@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "Settings.h"
 #include "Application.h"
+#include "KeyboardLayoutConfiguration.h"
 #include "Util.h"
 #include "URL.h"
 #include "GUIWindowFileManager.h"
@@ -167,10 +168,10 @@ CSettings::CSettings(void)
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+part[ _\\.-]*([0-9a-d]+)");
-  g_advancedSettings.m_videoStackRegExps.push_back("()[ _\\.-]+([0-9]*[abcd]+)(\\....)$");
-  g_advancedSettings.m_videoStackRegExps.push_back("()[^ _\\.-]+([0-9]+)(\\....)$");
-  g_advancedSettings.m_videoStackRegExps.push_back("([a-z])([0-9]+)(\\....)$");
-  g_advancedSettings.m_videoStackRegExps.push_back("()([ab])(\\....)$");
+  g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dis[ck][ _\\.-]*([0-9a-d]+)");
+  g_advancedSettings.m_videoStackRegExps.push_back("()[ _\\.-]+([0-9]*[abcd]+)(\\.....?)$"); // can anyone explain this one?  should this be ([0-9a-d]+) ?
+  g_advancedSettings.m_videoStackRegExps.push_back("([a-z])([0-9]+)(\\.....?)$");
+  g_advancedSettings.m_videoStackRegExps.push_back("()([ab])(\\.....?)$");
 
   // foo_[s01]_[e01]
   g_advancedSettings.m_tvshowStackRegExps.push_back("\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$");
@@ -951,8 +952,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   if (pElement)
   {
     GetInteger(pElement, "systemtotaluptime", g_stSettings.m_iSystemTimeTotalUp, 0, 0, INT_MAX);
-	  GetInteger(pElement, "httpapibroadcastlevel", g_stSettings.m_HttpApiBroadcastLevel, 0, 0,5);
-	  GetInteger(pElement, "httpapibroadcastport", g_stSettings.m_HttpApiBroadcastPort, 8278, 1, 65535);
+    GetInteger(pElement, "httpapibroadcastlevel", g_stSettings.m_HttpApiBroadcastLevel, 0, 0,5);
+    GetInteger(pElement, "httpapibroadcastport", g_stSettings.m_HttpApiBroadcastPort, 8278, 1, 65535);
   }
 
   pElement = pRootElement->FirstChildElement("defaultvideosettings");
@@ -1791,14 +1792,12 @@ bool CSettings::LoadProfile(int index)
     {
       CStdString strHex;
       strHex.Format("%x",hex);
-      CStdString strThumbLoc = g_settings.GetPicturesThumbFolder();
-      strThumbLoc += "\\" + strHex;
+      CStdString strThumbLoc;
+      CUtil::AddFileToFolder(g_settings.GetPicturesThumbFolder(), strHex, strThumbLoc);
       CreateDirectory(strThumbLoc.c_str(),NULL);
-      strThumbLoc = g_settings.GetMusicThumbFolder();
-      strThumbLoc += "\\" + strHex;
+      CUtil::AddFileToFolder(g_settings.GetMusicThumbFolder(), strHex, strThumbLoc);
       CreateDirectory(strThumbLoc.c_str(),NULL);
-      strThumbLoc = g_settings.GetVideoThumbFolder();
-      strThumbLoc += "\\" + strHex;
+      CUtil::AddFileToFolder(g_settings.GetVideoThumbFolder(), strHex, strThumbLoc);
       CreateDirectory(strThumbLoc.c_str(),NULL);
     }
 
@@ -1806,14 +1805,20 @@ bool CSettings::LoadProfile(int index)
     g_charsetConverter.reset();
 
     // Load the langinfo to have user charset <-> utf-8 conversion
-    CStdString strLangInfoPath;
-    strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", g_guiSettings.GetString("locale.language"));
+    CStdString strLanguage = g_guiSettings.GetString("locale.language");
 
+    CStdString strLangInfoPath;
+    strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", strLanguage.c_str());
     CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
     g_langInfo.Load(strLangInfoPath);
 
+    CStdString strKeyboardLayoutConfigurationPath;
+    strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", strLanguage.c_str());
+    CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
+    g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
+
     CStdString strLanguagePath;
-    strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("locale.language"));
+    strLanguagePath.Format("Q:\\language\\%s\\strings.xml", strLanguage.c_str());
 
     g_buttonTranslator.Load();
     g_localizeStrings.Load(strLanguagePath);

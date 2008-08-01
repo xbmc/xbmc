@@ -467,11 +467,30 @@ CGUIControl *CGUIControlGroup::GetFirstFocusableControl(int id)
   return NULL;
 }
 
-void CGUIControlGroup::AddControl(CGUIControl *control)
+void CGUIControlGroup::AddControl(CGUIControl *control, int position /* = -1*/)
 {
   if (!control) return;
-  m_children.push_back(control);
+  if (position < 0 || position > (int)m_children.size())
+    position = (int)m_children.size();
+  m_children.insert(m_children.begin() + position, control);
   control->SetParentControl(this);
+}
+
+bool CGUIControlGroup::InsertControl(CGUIControl *control, const CGUIControl *insertPoint)
+{
+  // find our position
+  for (unsigned int i = 0; i < m_children.size(); i++)
+  {
+    CGUIControl *child = m_children[i];
+    if (child->IsGroup() && ((CGUIControlGroup *)child)->InsertControl(control, insertPoint))
+      return true;
+    else if (child == insertPoint)
+    {
+      AddControl(control, i);
+      return true;
+    }
+  }
+  return false;
 }
 
 void CGUIControlGroup::SaveStates(vector<CControlState> &states)
@@ -483,18 +502,14 @@ void CGUIControlGroup::SaveStates(vector<CControlState> &states)
 }
 
 // Note: This routine doesn't delete the control.  It just removes it from the control list
-bool CGUIControlGroup::RemoveControl(int id)
+bool CGUIControlGroup::RemoveControl(const CGUIControl *control)
 {
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
-    CGUIControl *control = *it;
-    if (control->IsGroup())
-    {
-      CGUIControlGroup *group = (CGUIControlGroup *)control;
-      if (group->RemoveControl(id))
-        return true;
-    }
-    if ((int) control->GetID() == id)
+    CGUIControl *child = *it;
+    if (child->IsGroup() && ((CGUIControlGroup *)child)->RemoveControl(control))
+      return true;
+    if (control == child)
     {
       m_children.erase(it);
       return true;
@@ -527,7 +542,7 @@ void CGUIControlGroup::GetContainers(vector<CGUIControl *> &containers) const
 #ifdef _DEBUG
 void CGUIControlGroup::DumpTextureUse()
 {
-  CLog::Log(LOGDEBUG, "%s for controlgroup %lu", __FUNCTION__, GetID());
+  CLog::Log(LOGDEBUG, "%s for controlgroup %u", __FUNCTION__, GetID());
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     (*it)->DumpTextureUse();

@@ -2383,6 +2383,8 @@ void CFileItem::CacheVideoFanart() const
 {
   if (IsVideoDb())
   {
+    if (!HasVideoInfoTag())
+      return; // nothing can be done
     CFileItem dbItem(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath, m_bIsFolder);
     return dbItem.CacheVideoFanart();
   }
@@ -2429,7 +2431,11 @@ CStdString CFileItem::GetCachedVideoFanart() const
 {
   // get the locally cached thumb
   if (IsVideoDb())
+  {
+    if (!HasVideoInfoTag())
+      return "";
     return CFileItem::GetCachedVideoFanart(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath);
+  }
   return CFileItem::GetCachedVideoFanart(m_strPath);
 }
 

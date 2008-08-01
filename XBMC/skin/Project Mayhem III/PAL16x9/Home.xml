@@ -1037,7 +1037,7 @@
 				<include>homemisc</include>
 				<onclick>XBMC.PlayDVD()</onclick>
 				<onleft>9001</onleft>
-				<onright>95</onright>
+				<onright>100</onright>
 				<onup>9001</onup>
 				<ondown>9001</ondown>
 			</control>
@@ -1059,7 +1059,7 @@
 				<texturefocus>home-sub.gif</texturefocus>
 				<texturenofocus>-</texturenofocus>
 				<label>-</label>
-				<onleft>97</onleft>
+				<onleft>96</onleft>
 				<onright>98</onright>
 				<onup>9001</onup>
 				<ondown>9001</ondown>

@@ -264,6 +264,11 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       else if (message.GetParam1()==GUI_MSG_UPDATE && IsActive())
       {
         int iItem = m_viewControl.GetSelectedItem();
+        if (message.GetStringParam().size())
+        {
+          m_vecItems->m_strPath = message.GetStringParam();
+          SetHistoryForPath(m_vecItems->m_strPath);
+        }
         Update(m_vecItems->m_strPath);
         m_viewControl.SetSelectedItem(iItem);        
       }
@@ -474,7 +479,8 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
       return false;
 
     // took over a second, and not normally cached, so cache it
-    if (time + 1000 < timeGetTime() && !items.GetCacheToDisc())
+    if ((time + 1000 < timeGetTime() && !items.GetCacheToDisc()) &&
+        !items.GetPropertyBOOL("donotcachetodisc"))
       items.Save();
 
     // if these items should replace the current listing, then pop it off the top

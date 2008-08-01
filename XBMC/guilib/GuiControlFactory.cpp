@@ -1089,7 +1089,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "edit")
   {
     control = new CGUIEditControl(
-      dwParentId, id, posX, posY, width, height,
+      dwParentId, id, posX, posY, width, height, textureFocus, textureNoFocus,
       labelInfo, strLabel);
   }
   else if (strType == "videowindow")
