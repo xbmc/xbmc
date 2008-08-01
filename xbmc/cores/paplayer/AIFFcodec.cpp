@@ -40,8 +40,7 @@ inline void byte_swap(unsigned char * b, int n)
 #define COMMON_ID "COMM"
 #define SOUND_DATA_ID "SSND"
 
-#pragma pack(push)
-#pragma pack(2)
+#pragma pack(push, 2)
 
 typedef struct
 {

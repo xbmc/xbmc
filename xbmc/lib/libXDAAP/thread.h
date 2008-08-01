@@ -37,6 +37,10 @@
 #define ts_mutex      pthread_mutex_t
 #define ts_condition  pthread_cond_t
 
+#ifndef PTHREAD_MUTEX_RECURSIVE_NP 
+	#define PTHREAD_MUTEX_RECURSIVE_NP PTHREAD_MUTEX_RECURSIVE 
+#endif 
+	
 #define ts_mutex_create(m)            pthread_mutex_init(& m, NULL)
 #define ts_mutex_create_recursive(m)  do { \
         pthread_mutexattr_t attr; \

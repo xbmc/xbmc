@@ -21,13 +21,9 @@
  
 #include "stdafx.h"
 #include "DVDDemuxUtils.h"
-#ifdef __APPLE__
 extern "C" {
-#include "libffmpeg-OSX/avcodec.h"
-}
-#else
 #include "../../ffmpeg/avcodec.h"
-#endif
+}
 
 void CDVDDemuxUtils::FreeDemuxPacket(DemuxPacket* pPacket)
 {
