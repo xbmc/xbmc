@@ -18,6 +18,8 @@ PLASMA-DEP=$(RSXS)/src/plasma/rs-plasma
 EUPHORIA-OUT=$(OUTDIR)/Euphoria.xbs
 EUPHORIA-DEP=$(RSXS)/src/euphoria/rs-euphoria
 
+CLEAN_FILES=$(SOLARWINDS-OUT) $(PLASMA-OUT) $(EUPHORIA-OUT)
+
 include ../../Makefile.include
 -include $(OBJS:.o=.P)
 
