@@ -585,7 +585,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     res = g_videoConfig.GetSafeMode();
   }
 #ifdef _WIN32PC
-  if (g_advancedSettings.m_fullScreen)
+  if (g_advancedSettings.m_fullScreen || res==DESKTOP)
 #else
   if (res>=DESKTOP)
 #endif
@@ -1378,6 +1378,9 @@ bool CGraphicContext::ToggleFullScreenRoot ()
     }
   }
   g_fontManager.ReloadTTFFonts();
+#ifdef _WIN32PC
+  g_application.ReloadSkin();
+#endif
   return  m_bFullScreenRoot;
 }
 
