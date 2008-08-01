@@ -1438,7 +1438,7 @@ extern "C"
 
   int dll_stati64(const char *path, struct _stati64 *buffer)
   {
-    struct stat64 a;
+    struct __stat64 a;
     if(dll_stat64(path, &a) == 0)
     {
       CUtil::Stat64ToStatI64(buffer, &a);
@@ -1447,7 +1447,7 @@ extern "C"
     return -1;
   }
 
-  int dll_stat64(const char *path, struct stat64 *buffer)
+  int dll_stat64(const char *path, struct __stat64 *buffer)
   {
 #ifndef _LINUX
     //stating a root, for example C:\\, failes on the xbox
