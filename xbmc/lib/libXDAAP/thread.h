@@ -37,7 +37,7 @@
 #define ts_mutex      pthread_mutex_t
 #define ts_condition  pthread_cond_t
 
-#ifndef PTHREAD_MUTEX_RECURSIVE_NP 
+#ifdef __APPLE__
 	#define PTHREAD_MUTEX_RECURSIVE_NP PTHREAD_MUTEX_RECURSIVE 
 #endif 
 	
