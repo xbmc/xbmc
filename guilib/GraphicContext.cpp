@@ -587,10 +587,10 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 #ifdef _WIN32PC
   if (g_advancedSettings.m_fullScreen || res==DESKTOP)
 #else
-  if (res>=DESKTOP)
+  if (g_advancedSettings.m_fullScreen || res>=DESKTOP)
 #endif
   {
-    g_advancedSettings.m_fullScreen = 1;
+    g_advancedSettings.m_fullScreen = true;
     m_bFullScreenRoot = true;
     if (res!=m_Resolution)
     {
@@ -600,7 +600,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   }
   else
   {
-    g_advancedSettings.m_fullScreen = 0;
+    g_advancedSettings.m_fullScreen = false;
     m_bFullScreenRoot = false;
 #ifdef HAS_XRANDR
     g_xrandr.RestoreState();
