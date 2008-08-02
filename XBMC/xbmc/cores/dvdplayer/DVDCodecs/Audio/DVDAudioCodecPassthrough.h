@@ -43,35 +43,28 @@ public:
   virtual const char* GetName()  { return "passthrough"; }
   
 private:
-  bool SyncAC3Header(BYTE* pData, int iDataSize, int* iOffset, int* iFrameSize );
-  bool SyncDTSHeader( BYTE* pData, int iDataSize, int* iOffset, int* iFrameSize );
+  int ParseFrame(BYTE* data, int size, BYTE** frame, int* framesize);
+
   int PaddAC3Data( BYTE* pData, int iDataSize, BYTE* pOut);
   int PaddDTSData( BYTE* pData, int iDataSize, BYTE* pOut);
   
-  int m_iPassBufferAlloced;
-  BYTE* m_pPassBuffer;
-  int m_iPassBufferLen;
+  BYTE m_OutputBuffer[131072];
+  int  m_OutputSize;
 
-  bool m_bHasMMByte;
-  BYTE m_bMMByte;
-  
-  BYTE* m_pDataFrame;
-  int m_iDataFrameAlloced;
-  int m_iDataFrameLen;
-  int m_iOffset;
+  BYTE m_InputBuffer[4096];
+  int  m_InputSize;
 
-  int m_iFrameSize; //Input number of bytes  
-  int m_iChunkSize;
+  int m_iFrameSize;
 
-  int m_iSamplesPerFrame; //Equivalent number of output bytes per frame
+  int m_iSamplesPerFrame;
   int m_iSampleRate;
 
-  enum EN_SYNCTYPE
-  {
-    ENS_UNKNOWN=0,
-    ENS_AC3=1,
-    ENS_DTS=2
-  } m_iType;
+  int     m_Codec;
+  bool    m_Synced;
+
+  int m_iSourceFlags;
+  int m_iSourceSampleRate;
+  int m_iSourceBitrate;
 
   DllLibDts m_dllDTS;
   DllLiba52 m_dllA52;
