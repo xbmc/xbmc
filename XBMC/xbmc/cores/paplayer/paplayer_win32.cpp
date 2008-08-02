@@ -444,9 +444,9 @@ void PAPlayer::Process()
     CLog::Log(LOGINFO, "PAPlayer: End of playback reached");
     m_bIsPlaying = false;
     if (!m_bStopPlaying && !m_bStop)
-    {
       m_callback.OnPlayBackEnded();
-    }
+    else
+      m_callback.OnPlayBackStopped();
   }
 }
 
