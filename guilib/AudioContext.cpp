@@ -31,6 +31,22 @@ extern HWND g_hWnd;
 
 CAudioContext g_audioContext;
 
+static GUID g_digitaldevice;
+BOOL CALLBACK DSEnumCallback(
+  LPGUID lpGuid,
+  LPCSTR lpcstrDescription,
+  LPCSTR lpcstrModule,
+  LPVOID lpContext
+)
+{
+  if(strstr(lpcstrDescription, "Digital Output Device") != NULL)
+  {
+    g_digitaldevice = *lpGuid;
+    return false;
+  }
+  return true;
+}
+
 CAudioContext::CAudioContext()
 {
   m_iDevice=DEFAULT_DEVICE;
@@ -71,13 +87,24 @@ void CAudioContext::SetActiveDevice(int iDevice)
   /* deinit current device */
   RemoveActiveDevice();
 
+  memset(&g_digitaldevice, 0, sizeof(GUID));
+  if (FAILED(DirectSoundEnumerate(DSEnumCallback, this)))
+    CLog::Log(LOGERROR, "%s - failed to enumerate output devices", __FUNCTION__);
+
   m_iDevice=iDevice;
 
 #ifdef HAS_AUDIO
-  if (iDevice==DIRECTSOUND_DEVICE)
+  if (iDevice==DIRECTSOUND_DEVICE
+  ||  iDevice==DIRECTSOUND_DEVICE_DIGITAL)
   {
+    LPGUID guid = NULL;
+    if(iDevice == DIRECTSOUND_DEVICE_DIGITAL 
+    && ( g_digitaldevice.Data1 || g_digitaldevice.Data2 
+      || g_digitaldevice.Data3 || g_digitaldevice.Data4 ))
+      guid = &g_digitaldevice;
+
     // Create DirectSound
-    if (FAILED(DirectSoundCreate( NULL, &m_pDirectSoundDevice, NULL )))
+    if (FAILED(DirectSoundCreate( guid, &m_pDirectSoundDevice, NULL )))
     {
       CLog::Log(LOGERROR, "DirectSoundCreate() Failed");
       return;
@@ -88,16 +115,25 @@ void CAudioContext::SetActiveDevice(int iDevice)
       return;
     }
   }
+  else if (iDevice == DIRECTSOUND_DEVICE_DIGITAL)
+  {
+
+  }
+#ifdef HAS_AUDIO_PASS_THROUGH
   else if (iDevice==AC97_DEVICE)
   {
-#ifdef HAS_AUDIO_PASS_THROUGH
     // Create AC97 Device
     if (FAILED(Ac97CreateMediaObject(DSAC97_CHANNEL_DIGITAL, NULL, NULL, &m_pAC97Device)))
-#endif
     {
       CLog::Log(LOGERROR, "Failed to create digital Ac97CreateMediaObject()");
       return;
     }
+  }
+#endif
+  else
+  {
+    CLog::Log(LOGERROR, "Failed to create audio device");
+    return;
   }
 #endif  
 

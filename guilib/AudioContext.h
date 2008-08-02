@@ -60,7 +60,7 @@ public:
   bool                        IsAC3EncoderActive() const;
   bool                        IsPassthroughActive() const;
 
-  enum AUDIO_DEVICE {NONE=0, DEFAULT_DEVICE, DIRECTSOUND_DEVICE, AC97_DEVICE };
+  enum AUDIO_DEVICE {NONE=0, DEFAULT_DEVICE, DIRECTSOUND_DEVICE, AC97_DEVICE, DIRECTSOUND_DEVICE_DIGITAL };
 protected:
   void                         RemoveActiveDevice();
 

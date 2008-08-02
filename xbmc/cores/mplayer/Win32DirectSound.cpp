@@ -43,7 +43,10 @@ CWin32DirectSound::CWin32DirectSound(IAudioCallback* pCallback, int iChannels, u
   //////////////////////////////////
   bool bAudioOnAllSpeakers(false);
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);
-  g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
+  if(bAudioPassthrough)
+    g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE_DIGITAL);
+  else
+    g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
   m_pDSound=g_audioContext.GetDirectSoundDevice();
 
   m_bPause = false;
@@ -62,21 +65,21 @@ CWin32DirectSound::CWin32DirectSound(IAudioCallback* pCallback, int iChannels, u
 
   //fill waveformatex
   ZeroMemory(&wfxex, sizeof(WAVEFORMATEXTENSIBLE));
-  wfxex.Format.cbSize          = (iChannels > 2) ? sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX) : 0;
+  wfxex.Format.cbSize          =  sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
   wfxex.Format.nChannels       = iChannels;
   wfxex.Format.nSamplesPerSec  = uiSamplesPerSec;
   if (bAudioPassthrough == true) 
   {
     wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
     wfxex.Format.wBitsPerSample  = 16;
-    wfxex.Format.nBlockAlign     = 4;
   } 
   else 
   {
-    wfxex.Format.wFormatTag      = (iChannels > 2) ? WAVE_FORMAT_EXTENSIBLE : WAVE_FORMAT_PCM;
+    wfxex.Format.wFormatTag      = WAVE_FORMAT_EXTENSIBLE;
     wfxex.Format.wBitsPerSample  = uiBitsPerSample;
-    wfxex.Format.nBlockAlign     = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
   }
+  wfxex.Format.nBlockAlign     = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
+  wfxex.Format.nAvgBytesPerSec = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
   // unsure if this are the right values
   m_dwPacketSize = wfxex.Format.nBlockAlign * 3096;
@@ -98,22 +101,21 @@ CWin32DirectSound::CWin32DirectSound(IAudioCallback* pCallback, int iChannels, u
 
   const int channel_mask[] = 
   {
+    SPEAKER_FRONT_LEFT,
+    SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT,
     SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_LOW_FREQUENCY,
     SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT,
     SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT   | SPEAKER_LOW_FREQUENCY,
     SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_CENTER | SPEAKER_FRONT_RIGHT  | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT     | SPEAKER_LOW_FREQUENCY
   };
 
-  if (iChannels > 2) 
-  {
-    wfxex.dwChannelMask = channel_mask[iChannels - 3];
-    wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
-    wfxex.Samples.wValidBitsPerSample = wfxex.Format.wBitsPerSample;
-    // Needed for 5.1 on emu101k - shit soundblaster
-    dsbdesc.dwFlags |= DSBCAPS_LOCHARDWARE;
-  }
+  wfxex.dwChannelMask = channel_mask[iChannels - 1];
+  wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
+  wfxex.Samples.wValidBitsPerSample = wfxex.Format.wBitsPerSample;
+  // Needed for 5.1 on emu101k - shit soundblaster
+  dsbdesc.dwFlags |= DSBCAPS_LOCHARDWARE;
 
-  wfxex.Format.nAvgBytesPerSec = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
+  
 
   //dsbdesc.dwBufferBytes = iChannels * uiSamplesPerSec * (wfxex.Format.wBitsPerSample >> 3); // space for 1 sec
   dsbdesc.dwBufferBytes = m_dwNumPackets * m_dwPacketSize;
