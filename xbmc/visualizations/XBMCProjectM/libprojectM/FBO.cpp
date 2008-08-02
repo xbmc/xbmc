@@ -88,7 +88,7 @@ return -1;
 }
 
 /** Creates new pbuffers */
-RenderTarget::RenderTarget(int texsize, int width, int height) : useFBO(false) {
+RenderTarget::RenderTarget(int texsize, int width, int height, bool use_fbo) : useFBO(use_fbo) {
 
     int mindim = 0;
     int origtexsize = 0;
@@ -98,7 +98,6 @@ RenderTarget::RenderTarget(int texsize, int width, int height) : useFBO(false) {
     this->texsize = texsize;
 
 #ifdef USE_FBO
-    this->useFBO = true;
    if(this->useFBO)
     { 
       glewInit();
