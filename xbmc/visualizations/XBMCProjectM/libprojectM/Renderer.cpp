@@ -11,7 +11,7 @@
 
 class Preset;
 
-Renderer::Renderer(int width, int height, int gx, int gy, int texsize, BeatDetect *beatDetect, std::string _presetURL, std::string _titlefontURL, std::string _menufontURL, int xpos, int ypos): title_fontURL(_titlefontURL), menu_fontURL(_menufontURL), presetURL(_presetURL), m_presetName("None"), vw(width), vh(height), gx(gx), gy(gy), texsize(texsize), vx(xpos), vy(ypos)
+Renderer::Renderer(int width, int height, int gx, int gy, int texsize, BeatDetect *beatDetect, std::string _presetURL, std::string _titlefontURL, std::string _menufontURL, int xpos, int ypos, bool usefbo): title_fontURL(_titlefontURL), menu_fontURL(_menufontURL), presetURL(_presetURL), m_presetName("None"), vw(width), vh(height), gx(gx), gy(gy), texsize(texsize), vx(xpos), vy(ypos), useFBO(usefbo)
 {
 	int x; int y;
 	
@@ -75,7 +75,7 @@ Renderer::Renderer(int width, int height, int gx, int gy, int texsize, BeatDetec
 	}
 	
 	/// @bug put these on member init list
-	this->renderTarget = new RenderTarget( texsize, width, height );
+	this->renderTarget = new RenderTarget( texsize, width, height, useFBO );
 	this->textureManager = new TextureManager(presetURL);
 	this->beatDetect = beatDetect;
 	
@@ -107,7 +107,7 @@ void Renderer::ResetTextures()
 	textureManager->Clear();
 	
 	delete(renderTarget);
-	renderTarget = new RenderTarget(texsize, vw, vh);
+	renderTarget = new RenderTarget(texsize, vw, vh, useFBO);
 	reset(vw, vh);
 	
 	textureManager->Preload();
