@@ -65,7 +65,7 @@ extern int preset_index;
 
 // some projectm globals
 int maxSamples=512;
-int texsize=1024;
+int texsize=512;
 int gx=40,gy=30;
 int fps=100;
 char *disp;
@@ -192,15 +192,15 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   {
     quality.current = 3;
   }
-  else if (g_configPM.textureSize == 2048)
+  else if (g_configPM.textureSize == 1024)
   {
     quality.current = 2;
   }
-  else if (g_configPM.textureSize == 1024)
+  else if (g_configPM.textureSize == 512)
   {
     quality.current = 1;
   }
-  else if (g_configPM.textureSize == 512)
+  else if (g_configPM.textureSize == 256)
   {
     quality.current = 0;
   }
@@ -312,6 +312,7 @@ extern "C" bool OnAction(long flags, void *param)
   }
   else if (flags == PROJECTM_QUALITY && param)
   {
+    ret = true;
     int pindex = *((int *)param);
     if (globalPM) 
     {
@@ -323,17 +324,17 @@ extern "C" bool OnAction(long flags, void *param)
     if ( pindex == 0 ) // low
     {
       g_configPM.useFBO = false;
-      g_configPM.textureSize = 512;
+      g_configPM.textureSize = 256;
     }
     else if ( pindex == 1 ) // med
     {
       g_configPM.useFBO = false;
-      g_configPM.textureSize = 1024;
+      g_configPM.textureSize = 512;
     }
     else if ( pindex == 2 ) // high
     {
       g_configPM.useFBO = false;
-      g_configPM.textureSize = 2048;
+      g_configPM.textureSize = 1024;
     }
     else if ( pindex == 3 ) // max
     {
