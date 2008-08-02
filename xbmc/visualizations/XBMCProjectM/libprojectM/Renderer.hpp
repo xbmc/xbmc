@@ -55,7 +55,7 @@ public:
   int drawtitle;
   int texsize;
 
-  Renderer( int width, int height, int gx, int gy, int texsize,  BeatDetect *beatDetect, std::string presetURL, std::string title_fontURL, std::string menu_fontURL, int xpos, int ypos);
+  Renderer( int width, int height, int gx, int gy, int texsize,  BeatDetect *beatDetect, std::string presetURL, std::string title_fontURL, std::string menu_fontURL, int xpos, int ypos, bool usefbo=false );
   ~Renderer();
   void RenderFrame(PresetOutputs *presetOutputs, PresetInputs *presetInputs);
   void ResetTextures();
@@ -95,7 +95,7 @@ private:
   int vy;
   int vw; 
   int vh;
-  
+  bool useFBO;
   float aspect;
   
 
