@@ -1037,6 +1037,18 @@ int CDVDDemuxFFmpeg::GetChapter()
   return 0;
 }
 
+void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName)
+{
+  if(m_pInput && m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+    return;
+  else 
+  {
+    int chapterIdx = GetChapter();
+    if(chapterIdx)
+      strChapterName = m_pFormatContext->chapters[chapterIdx-1]->title;
+  }
+}
+
 bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
 {
   if(chapter < 1)

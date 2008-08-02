@@ -188,6 +188,7 @@ public:
 
   virtual int  GetChapterCount();
   virtual int  GetChapter();
+  virtual void GetChapterName(CStdString& strChapterName);
   virtual int  SeekChapter(int iChapter);
 
   virtual void SeekTime(__int64 iTime);

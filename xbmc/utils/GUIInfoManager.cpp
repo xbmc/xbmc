@@ -201,6 +201,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("player.hasduration")) ret = PLAYER_HASDURATION;
     else if (strTest.Equals("player.chapter")) ret = PLAYER_CHAPTER;
     else if (strTest.Equals("player.chaptercount")) ret = PLAYER_CHAPTERCOUNT;
+    else if (strTest.Equals("player.chaptername")) ret = PLAYER_CHAPTERNAME;
     else if (strTest.Equals("player.starrating")) ret = PLAYER_STAR_RATING;
   }
   else if (strCategory.Equals("weather"))
@@ -899,6 +900,10 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case PLAYER_CHAPTERCOUNT:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
       strLabel.Format("%02d", g_application.m_pPlayer->GetChapterCount());
+    break;
+  case PLAYER_CHAPTERNAME:
+    if(g_application.IsPlaying() && g_application.m_pPlayer)
+      g_application.m_pPlayer->GetChapterName(strLabel);
     break;
   case PLAYER_CACHELEVEL:
     {
