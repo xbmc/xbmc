@@ -65,6 +65,7 @@ public:
   int GetSubStart(int iSub) { return m_iOvector[iSub*2] - m_iOvector[0]; } // normalized to match old engine
   int GetSubLength(int iSub) { return (m_iOvector[(iSub*2)+1] - m_iOvector[(iSub*2)]); } // correct spelling
   CStdString GetMatch(int iSub = 0);
+  bool GetNamedSubPattern(const char* strName, CStdString& strMatch);
   void DumpOvector(int iLog = LOGDEBUG);
 
 private:
