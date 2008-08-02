@@ -86,7 +86,7 @@ int dll_getc (FILE * stream);
 int dll_ungetc (int c, FILE * stream);
 int dll_ioctl(int d, unsigned long int request, va_list va);
 int dll_stat(const char *path, struct _stat *buffer);
-int dll_stat64(const char *path, struct _stat64 *buffer);
+int dll_stat64(const char *path, struct stat64 *buffer);
 void dll_flockfile(FILE *file);
 int dll_ftrylockfile(FILE *file);
 void dll_funlockfile(FILE *file);
