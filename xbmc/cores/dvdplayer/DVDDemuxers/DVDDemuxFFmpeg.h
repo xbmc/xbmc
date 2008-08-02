@@ -95,6 +95,7 @@ public:
   bool SeekChapter(int chapter, double* startpts = NULL);
   int GetChapterCount();
   int GetChapter();
+  void GetChapterName(std::string& strChapterName);
 
 
   bool Aborted();

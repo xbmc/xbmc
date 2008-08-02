@@ -96,6 +96,7 @@ class CGUIListItem;
 #define PLAYER_FINISH_TIME           38
 #define PLAYER_CACHELEVEL            39
 #define PLAYER_STAR_RATING           40
+#define PLAYER_CHAPTERNAME           41
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
