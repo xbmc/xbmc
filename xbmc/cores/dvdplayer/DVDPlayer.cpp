@@ -2632,6 +2632,12 @@ int CDVDPlayer::GetChapter()
   return m_State.chapter;
 }
 
+void CDVDPlayer::GetChapterName(CStdString& strChapterName)
+{
+  if(m_pDemuxer)
+    m_pDemuxer->GetChapterName(strChapterName);
+}
+
 int CDVDPlayer::SeekChapter(int iChapter)
 {
   if (GetChapterCount() > 0)

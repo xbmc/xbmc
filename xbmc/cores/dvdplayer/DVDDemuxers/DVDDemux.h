@@ -220,6 +220,11 @@ public:
   virtual int GetChapter() { return -1; }
 
   /*
+   * Get the name of the current chapter
+   */
+  virtual void GetChapterName(std::string& strChapterName) {}
+
+  /*
    * Set the playspeed, if demuxer can handle different
    * speeds of playback
    */
