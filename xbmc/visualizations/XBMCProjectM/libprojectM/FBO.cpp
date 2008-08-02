@@ -145,7 +145,6 @@ RenderTarget::RenderTarget(int texsize, int width, int height, bool use_fbo) : u
 	  GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
 	  if (status == GL_FRAMEBUFFER_COMPLETE_EXT) {
 	    this->renderToTexture = 1;
-	    std::cerr<<"FBO creation successfull\n";
 	    return;
 	  }	
 	}
