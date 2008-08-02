@@ -587,7 +587,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 #ifdef _WIN32PC
   if (g_advancedSettings.m_fullScreen || res==DESKTOP)
 #else
-  if (g_advancedSettings.m_fullScreen || res>=DESKTOP)
+  if (res>=DESKTOP)
 #endif
   {
     g_advancedSettings.m_fullScreen = true;
@@ -609,7 +609,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   
   if (res==WINDOW)
   {
-    g_advancedSettings.m_fullScreen = 0;
+    g_advancedSettings.m_fullScreen = false;
     m_bFullScreenRoot = false;
   }
 
