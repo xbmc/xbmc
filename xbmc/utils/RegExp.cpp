@@ -199,6 +199,16 @@ CStdString CRegExp::GetMatch(int iSub /* = 0 */)
   return m_subject.substr(pos, len);
 }
 
+bool CRegExp::GetNamedSubPattern(const char* strName, CStdString& strMatch)
+{
+  strMatch.Empty();
+  int iSub = pcre_get_stringnumber(m_re, strName);
+  if (iSub < 0)
+    return false;
+  strMatch = GetMatch(iSub);
+  return true;
+}
+
 void CRegExp::DumpOvector(int iLog /* = LOGDEBUG */)
 {
   if (iLog < LOGDEBUG || iLog > LOGNONE)
