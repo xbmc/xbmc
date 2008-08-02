@@ -309,8 +309,9 @@ protected:
     double time;              // current playback time
     double time_total;        // total playback time
 
-    int chapter;              // current chapter
-    int chapter_count;        // number of chapter
+    int         chapter;      // current chapter
+    std::string chapter_name; // name of current chapter
+    int         chapter_count;// number of chapter
 
     bool canrecord;           // can input stream record
     bool recording;           // are we currently recording
