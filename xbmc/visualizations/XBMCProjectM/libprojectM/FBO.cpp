@@ -94,13 +94,13 @@ RenderTarget::RenderTarget(int texsize, int width, int height, bool use_fbo) : u
     int origtexsize = 0;
   
     this->renderToTexture = 0;
-
+    this->useFBO = use_fbo;
     this->texsize = texsize;
 
 #ifdef USE_FBO
    if(this->useFBO)
     { 
-      glewInit();
+      //glewInit();
       
       if(glewIsSupported("GL_EXT_framebuffer_object"))
 	{	 
@@ -144,6 +144,8 @@ RenderTarget::RenderTarget(int texsize, int width, int height, bool use_fbo) : u
 	  
 	  GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
 	  if (status == GL_FRAMEBUFFER_COMPLETE_EXT) {
+	    this->renderToTexture = 1;
+	    std::cerr<<"FBO creation successfull\n";
 	    return;
 	  }	
 	}
@@ -161,7 +163,7 @@ RenderTarget::RenderTarget(int texsize, int width, int height, bool use_fbo) : u
     mindim = width < height ? width : height;
     origtexsize = this->texsize;
     this->texsize = nearestPower2( mindim, SCALE_MINIFY );      
-
+    this->texsize = origtexsize;  // ^-- ok, texsize is just ignored with this
   
 
  
@@ -193,7 +195,7 @@ RenderTarget::RenderTarget(int texsize, int width, int height, bool use_fbo) : u
 	int mindim = width < height ? width : height;
     int origtexsize = this->texsize;
     this->texsize = nearestPower2( mindim, SCALE_MINIFY );      
-
+    this->texsize = origtexsize; // ^-- ok, texsize is just ignored with this
     /* Create the texture that will be bound to the render this */
     /*
 
@@ -253,7 +255,6 @@ void RenderTarget::unlock() {
     }
 #endif
     /** Fallback texture path */
-    
     glBindTexture( GL_TEXTURE_2D, this->textureID[0] );
     
 	glCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, this->texsize, this->texsize );
