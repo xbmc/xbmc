@@ -14,6 +14,9 @@
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Trailer&quot; type=&quot;bool&quot; id=&quot;trailer&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;IMDB Poster &amp;amp; Actor Thumb(s) Size&quot; type=&quot;labelenum&quot; values=&quot;192|256|384|512|1024&quot; id=&quot;imdbscale&quot; default=&quot;512&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
@@ -127,6 +130,9 @@
 			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-posters.html&quot; function=&quot;GetIMDBPoster&quot;&gt;$$3posters&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
+                        <RegExp conditional="fanart" input="$$2" output="&lt;url function=&quot;GetFanart&quot;&gt;http://www.moviebackdrops.com/tab_movie.php5?id=$$2&lt;/url&gt;" dest="5+">
+                        	<expression></expression>
+			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetDetails>
@@ -228,4 +234,12 @@
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetIMDBPoster>
+        <GetFanart dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://www.moviebackdrops.com/&quot;>\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="2">
+				<expression repeat="yes">a href=&quot;(/backdrops/[^&quot;]+)&quot;</expression>
+			</RegExp>
+			<expression noclean="1">(.+)</expression>
+		</RegExp>
+        </GetFanart>
 </scraper>
