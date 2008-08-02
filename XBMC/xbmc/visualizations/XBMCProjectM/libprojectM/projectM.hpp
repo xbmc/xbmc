@@ -152,6 +152,7 @@ public:
 	bool aspectCorrection;
 	float easterEgg;
 	bool shuffleEnabled;
+        bool useFBO;
   };
 
 

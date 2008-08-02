@@ -60,21 +60,26 @@ d4rk@xboxmediacenter.com
 #endif
 
 projectM *globalPM = NULL;
+
 extern int preset_index;
 
+// some projectm globals
 int maxSamples=512;
-
 int texsize=1024;
-//int gx=32,gy=24;
 int gx=40,gy=30;
-int fps=200;
+int fps=100;
 char *disp;
 char g_visName[512];
 char **g_presets=NULL;
 int g_numPresets = 0;
+projectM::Settings g_configPM;
+std::string g_configFile;
 
-std::string configFile;
-
+#define QUALITY_LOW "Low"
+#define QUALITY_MEDIUM "Medium"
+#define QUALITY_HIGH "High"
+#define QUALITY_MAX "Maximum"
+#define PROJECTM_QUALITY (VIS_ACTION_USER+1)
 
 // Some helper Functions
 
@@ -108,7 +113,6 @@ int check_valid_extension(const struct dirent* ent)
   return 0;
 }
 
-
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
@@ -120,65 +124,87 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
 {
   strcpy(g_visName, szVisualisationName);
 
+  m_vecSettings.clear();
+
   /** Initialise projectM */
 
 #ifdef _WIN32PC
+  g_configFile = string(getenv("XBMC_PROFILE_USERDATA")) + "\\" + CONFIG_FILE;
   std::string presetsDir = string(getenv("XBMC_HOME")) + "\\" + PRESETS_DIR;
-  configFile = string(getenv("XBMC_PROFILE_USERDATA")) + "\\" + CONFIG_FILE;
 #else
+  g_configFile = _P(CONFIG_FILE);
   std::string presetsDir = _P(PRESETS_DIR);
-  configFile = _P(CONFIG_FILE);
 #endif
 
-  projectM::Settings configPM;
-  configPM.meshX = gx;
-  configPM.meshY = gy;
-  configPM.fps = fps;
-  configPM.textureSize = texsize;
-  configPM.windowWidth = iWidth;
-  configPM.windowHeight = iHeight;
-  configPM.presetURL = presetsDir;
-  configPM.smoothPresetDuration = 5;
-  configPM.presetDuration = 15;
-  configPM.beatSensitivity = 10.0;
-  configPM.aspectCorrection = true;
-  configPM.easterEgg = 0.0;
-  configPM.shuffleEnabled = true;
-  configPM.windowLeft = iPosX;
-  configPM.windowBottom = iPosY;
+  g_configPM.meshX = gx;
+  g_configPM.meshY = gy;
+  g_configPM.fps = fps;
+  g_configPM.textureSize = texsize;
+  g_configPM.windowWidth = iWidth;
+  g_configPM.windowHeight = iHeight;
+  g_configPM.presetURL = presetsDir;
+  g_configPM.smoothPresetDuration = 5;
+  g_configPM.presetDuration = 15;
+  g_configPM.beatSensitivity = 10.0;
+  g_configPM.aspectCorrection = true;
+  g_configPM.easterEgg = 0.0;
+  g_configPM.shuffleEnabled = true;
+  g_configPM.windowLeft = iPosX;
+  g_configPM.windowBottom = iPosY;
 
   {
     FILE *f;
-    f = fopen(configFile.c_str(), "r");
+    f = fopen(g_configFile.c_str(), "r");
     if (f) {   // Config exists.  Let's preserve settings except for iWidth, iHeight, iPosX, iPosY
       fclose(f);
-      ConfigFile config(configFile.c_str());
-      if (config.keyExists("Mesh X")) configPM.meshX = config.read<int> ("Mesh X", gx);
-      if (config.keyExists("Mesh Y")) configPM.meshY = config.read<int> ("Mesh Y", gy);
-      if (config.keyExists("Texture Size")) configPM.textureSize = config.read<int> ("Texture Size", texsize);
-      if (config.keyExists("Preset Path")) configPM.presetURL = config.read<string> ("Preset Path", presetsDir);
-      if (config.keyExists("Smooth Preset Duration")) configPM.smoothPresetDuration = config.read<int> ("Smooth Preset Duration", 5);
-      if (config.keyExists("Preset Duration")) configPM.presetDuration = config.read<int> ("Preset Duration", 15);
-      if (config.keyExists("FPS")) configPM.fps = config.read<int> ("FPS", fps);
-      if (config.keyExists("Beat Sensitivity")) configPM.beatSensitivity = config.read<float> ("Beat Sensitivity", 10.0);
-      if (config.keyExists("Aspect Correction")) configPM.aspectCorrection = config.read<bool> ("Aspect Correction", true);
-      if (config.keyExists("Easter Egg")) configPM.easterEgg = config.read<float> ("Easter Egg", 0.0);
-      if (config.keyExists("Shuffle Enabled")) configPM.shuffleEnabled = config.read<bool> ("Shuffle Enabled", true);
-    }   
-         
+      ConfigFile config(g_configFile.c_str());
+      if (config.keyExists("Mesh X")) g_configPM.meshX = config.read<int> ("Mesh X", gx);
+      if (config.keyExists("Mesh Y")) g_configPM.meshY = config.read<int> ("Mesh Y", gy);
+      if (config.keyExists("Texture Size")) g_configPM.textureSize = config.read<int> ("Texture Size", texsize);
+      if (config.keyExists("Preset Path")) g_configPM.presetURL = config.read<string> ("Preset Path", presetsDir);
+      if (config.keyExists("Smooth Preset Duration")) g_configPM.smoothPresetDuration = config.read<int> ("Smooth Preset Duration", 5);
+      if (config.keyExists("Preset Duration")) g_configPM.presetDuration = config.read<int> ("Preset Duration", 15);
+      if (config.keyExists("FPS")) g_configPM.fps = config.read<int> ("FPS", fps);
+      if (config.keyExists("Beat Sensitivity")) g_configPM.beatSensitivity = config.read<float> ("Beat Sensitivity", 10.0);
+      if (config.keyExists("Aspect Correction")) g_configPM.aspectCorrection = config.read<bool> ("Aspect Correction", true);
+      if (config.keyExists("Easter Egg")) g_configPM.easterEgg = config.read<float> ("Easter Egg", 0.0);
+      if (config.keyExists("Shuffle Enabled")) g_configPM.shuffleEnabled = config.read<bool> ("Shuffle Enabled", true);
+      if (config.keyExists("Use FBO")) g_configPM.useFBO = config.read<bool> ("Use FBO", false);
+    }
     else {
-      f = fopen(configFile.c_str(), "w");   // Config does not exist, but we still need at least a blank file.
+      f = fopen(g_configFile.c_str(), "w");   // Config does not exist, but we still need at least a blank file.
       fclose(f);
     }
-
-      projectM::writeConfig(configFile, configPM);
-
+      projectM::writeConfig(g_configFile, g_configPM);
   }
 
   if (globalPM)
     delete globalPM;
 
-  globalPM = new projectM(configFile);
+  globalPM = new projectM(g_configFile);
+
+  VisSetting quality(VisSetting::SPIN, "Render Quality");
+  quality.AddEntry("Low");
+  quality.AddEntry("Medium");
+  quality.AddEntry("High");
+  quality.AddEntry("Maximum");
+  if (g_configPM.useFBO)
+  {
+    quality.current = 3;
+  }
+  else if (g_configPM.textureSize == 2048)
+  {
+    quality.current = 2;
+  }
+  else if (g_configPM.textureSize == 1024)
+  {
+    quality.current = 1;
+  }
+  else if (g_configPM.textureSize == 512)
+  {
+    quality.current = 0;
+  }
+  m_vecSettings.push_back( quality );
 
   VisSetting setting(VisSetting::CHECK, "Shuffle Mode");
   setting.current = globalPM->isShuffleEnabled();
@@ -200,7 +226,7 @@ extern "C" void Stop()
 {
   if (globalPM) 
   {
-    projectM::writeConfig(configFile,globalPM->settings());
+    projectM::writeConfig(g_configFile,globalPM->settings());
     delete globalPM;
     globalPM = NULL;
   }
@@ -284,6 +310,39 @@ extern "C" bool OnAction(long flags, void *param)
     globalPM->setPresetLock(!globalPM->isPresetLocked());
     ret = true;
   }
+  else if (flags == PROJECTM_QUALITY && param)
+  {
+    int pindex = *((int *)param);
+    if (globalPM) 
+    {
+      g_configPM = globalPM->settings();
+      projectM::writeConfig(g_configFile,globalPM->settings());
+      delete globalPM;
+      globalPM = NULL;
+    }
+    if ( pindex == 0 ) // low
+    {
+      g_configPM.useFBO = false;
+      g_configPM.textureSize = 512;
+    }
+    else if ( pindex == 1 ) // med
+    {
+      g_configPM.useFBO = false;
+      g_configPM.textureSize = 1024;
+    }
+    else if ( pindex == 2 ) // high
+    {
+      g_configPM.useFBO = false;
+      g_configPM.textureSize = 2048;
+    }
+    else if ( pindex == 3 ) // max
+    {
+      g_configPM.useFBO = true;
+      g_configPM.textureSize = 1024;
+    }
+    projectM::writeConfig(g_configFile, g_configPM);
+    globalPM = new projectM(g_configFile);
+  }
   return ret;
 }
 
@@ -349,4 +408,6 @@ extern "C" void UpdateSetting(int num)
     OnAction(34, (void*)&setting.current);
   else if (strcasecmp(setting.name, "Shuffle Mode")==0)
     OnAction(VIS_ACTION_RANDOM_PRESET, (void*)&setting.current);
+  else if (strcasecmp(setting.name, "Render Quality")==0)
+    OnAction(PROJECTM_QUALITY, (void*)&setting.current);
 }

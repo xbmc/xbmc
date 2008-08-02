@@ -68,7 +68,7 @@ public:
 
   ~RenderTarget();
 
-  RenderTarget( int texsize, int width, int height );
+  RenderTarget( int texsize, int width, int height, bool use_fbo=false );
   void lock();
   void unlock();
   GLuint initRenderToTexture();

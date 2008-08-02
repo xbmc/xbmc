@@ -150,6 +150,7 @@ bool projectM::writeConfig(const std::string & configFile, const Settings & sett
 	config.add("Aspect Correction", settings.aspectCorrection);
 	config.add("Easter Egg Parameter", settings.easterEgg);
 	config.add("Shuffle Enabled", settings.shuffleEnabled);
+	config.add("Use FBO", settings.useFBO);
 	config.add("Window Left", settings.windowLeft);
 	config.add("Window Bottom", settings.windowBottom);
 	
@@ -216,6 +217,7 @@ void projectM::readConfig (const std::string & configFile )
 	
 	
 	_settings.shuffleEnabled = config.read<bool> ( "Shuffle Enabled", true);
+	_settings.useFBO = config.read<bool> ( "Use FBO", false);
 			
 	_settings.easterEgg = config.read<float> ( "Easter Egg Parameter", 0.0);
 	
