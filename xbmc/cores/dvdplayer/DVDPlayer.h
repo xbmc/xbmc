@@ -304,6 +304,17 @@ protected:
 
   struct SPlayerState
   {
+    void Clear()
+    {
+      timestamp     = 0;
+      time          = 0;
+      time_total    = 0;
+      chapter       = 0;
+      chapter_count = 0;
+      canrecord     = false;
+      recording     = false;
+    }
+
     double timestamp;         // last time of update
 
     double time;              // current playback time

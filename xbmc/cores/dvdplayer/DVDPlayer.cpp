@@ -257,7 +257,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_dvd.iSelectedAudioStream = -1;
   m_dvd.iSelectedSPUStream = -1;
 
-  memset(&m_State, 0, sizeof(m_State));
+  m_State.Clear();
   m_UpdateApplication = 0;
 
   m_bAbortRequest = false;
