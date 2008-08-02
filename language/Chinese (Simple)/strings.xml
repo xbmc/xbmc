@@ -13,7 +13,6 @@
   <string id="7">文件管理</string>
   <string id="8">天气</string>
   <string id="9">xbmc 媒体中心</string>
-
   <string id="11">星期一</string>
   <string id="12">星期二</string>
   <string id="13">星期三</string>
@@ -103,7 +102,7 @@
   <string id="167">启用 FTP 服务器</string>
   <string id="168">自动与时间服务器同步</string>
   <string id="169">分辨率</string>
-  <string id="172">发行时间：</string>
+  <string id="172">发行时间</string>
   <string id="175">音调</string>
   <string id="176">风格</string>
   <string id="179">歌曲</string>
@@ -184,7 +183,7 @@
   <string id="262">脚本输出</string>
   <string id="263">启用 Web 服务器</string>
   <string id="264">录音</string>
-  <string id="265">停止录音</string>
+  <string id="265">停止录音.</string>
   <string id="266">排序：音轨</string>
   <string id="267">排序：时间</string>
   <string id="268">排序：标题</string>
@@ -732,7 +731,9 @@
   <string id="1412">风</string>
   <string id="1413">小雨</string>
   <string id="1414">雷雨</string>
-  <string id="2050">运行时间：</string>
+  <string id="1415">毛毛雨</string>
+  <string id="1416">雾</string>
+  <string id="2050">运行时间</string>
   <string id="4501">LCD 类型</string>
   <string id="10000">首页</string>
   <string id="10001">程序</string>
@@ -1066,6 +1067,7 @@
   <string id="13409">排名前 250：</string>
   <string id="13410">Tune in on lastfm</string>
   <string id="13411">风扇最低转速</string>
+  <string id="13412"> RSS种子内容为从右到左</string>
   <string id="13600">Apple 遥控器</string>
   <string id="13601">模式</string>
   <string id="13602">始终运行</string>
@@ -1664,6 +1666,8 @@
   <string id="20420">从不</string>
   <string id="20421">如果只有一季</string>
   <string id="20422">总是</string>
+  <string id="20423">有宣传片</string>
+  <string id="20424">假</string>
   <string id="21330">显示隐藏文件和目录</string>
   <string id="21331">TuxBox 客户端</string>
   <string id="21332">警告：目标 TuxBox 设备正处于录制模式！</string>
