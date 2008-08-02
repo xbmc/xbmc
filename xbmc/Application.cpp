@@ -4855,6 +4855,13 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYBACK_STOPPED:
   case GUI_MSG_PLAYBACK_ENDED:
     {
+
+      if(IsPlaying())
+      {
+        CLog::Log(LOGDEBUG, "CApplication::OnMessage - playback was ended, but application has already started next file, skipping event");
+        return true;
+      }
+
       // first check if we still have items in the stack to play
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
@@ -4888,6 +4895,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
       // Reset audioscrobbler submit status
       CScrobbler::GetInstance()->SetSubmitSong(false);
+
+      // stop lastfm
+      CLastFmManager::GetInstance()->StopRadio();
 
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
@@ -4956,22 +4966,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     {
-      // if in visualisation or fullscreen video, go back to gui
-      if (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION || m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-          m_gWindowManager.PreviousWindow();
-
-      // reset the current playing file
-      m_itemCurrentFile->Reset();
-      g_infoManager.ResetCurrentItem();
-      m_currentStack->Clear();
-      CLastFmManager::GetInstance()->StopRadio();
-
-#ifdef HAS_KARAOKE
-      if(m_pCdgParser)
-        m_pCdgParser->Free();
-#endif
-
-      SAFE_DELETE(m_pPlayer);
       return true;
     }
     break;
