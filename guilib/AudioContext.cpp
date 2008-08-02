@@ -31,6 +31,7 @@ extern HWND g_hWnd;
 
 CAudioContext g_audioContext;
 
+#ifdef _WIN32
 static GUID g_digitaldevice;
 BOOL CALLBACK DSEnumCallback(
   LPGUID lpGuid,
@@ -46,6 +47,7 @@ BOOL CALLBACK DSEnumCallback(
   }
   return true;
 }
+#endif
 
 CAudioContext::CAudioContext()
 {
@@ -87,13 +89,13 @@ void CAudioContext::SetActiveDevice(int iDevice)
   /* deinit current device */
   RemoveActiveDevice();
 
+  m_iDevice=iDevice;
+
+#ifdef HAS_AUDIO
   memset(&g_digitaldevice, 0, sizeof(GUID));
   if (FAILED(DirectSoundEnumerate(DSEnumCallback, this)))
     CLog::Log(LOGERROR, "%s - failed to enumerate output devices", __FUNCTION__);
 
-  m_iDevice=iDevice;
-
-#ifdef HAS_AUDIO
   if (iDevice==DIRECTSOUND_DEVICE
   ||  iDevice==DIRECTSOUND_DEVICE_DIGITAL)
   {
