@@ -2634,8 +2634,8 @@ int CDVDPlayer::GetChapter()
 
 void CDVDPlayer::GetChapterName(CStdString& strChapterName)
 {
-  if(m_pDemuxer)
-    m_pDemuxer->GetChapterName(strChapterName);
+  CSingleLock lock(m_StateSection);
+  strChapterName = m_State.chapter_name;
 }
 
 int CDVDPlayer::SeekChapter(int iChapter)
@@ -2737,6 +2737,7 @@ void CDVDPlayer::HandlePlayState(double timeout)
   {
     m_State.chapter       = m_pDemuxer->GetChapter();
     m_State.chapter_count = m_pDemuxer->GetChapterCount();
+    m_pDemuxer->GetChapterName(m_State.chapter_name);
 
     m_State.time       = DVD_TIME_TO_MSEC(m_clock.GetClock());
     m_State.time_total = m_pDemuxer->GetStreamLength();
