@@ -4137,9 +4137,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
 void CApplication::OnPlayBackEnded()
 {
-  //playback ended
-  SetPlaySpeed(1);
-
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
 #ifdef HAS_PYTHON
@@ -4156,12 +4153,6 @@ void CApplication::OnPlayBackEnded()
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
-  DimLCDOnPlayback(false);
-
-  g_audioManager.Enable(true);
-
-  //  Reset audioscrobbler submit status
-  CScrobbler::GetInstance()->SetSubmitSong(false);
 }
 
 void CApplication::OnPlayBackStarted()
@@ -4182,8 +4173,6 @@ void CApplication::OnPlayBackStarted()
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
-
-  DimLCDOnPlayback(true);
 }
 
 void CApplication::OnQueueNextItem()
@@ -4219,15 +4208,9 @@ void CApplication::OnPlayBackStopped()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
 #endif
 
-  OutputDebugString("Playback was stopped\n");
+  CLog::Log(LOGDEBUG, "Playback was stopped\n");
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
-  m_gWindowManager.SendMessage(msg);
-  DimLCDOnPlayback(false);
-
-  g_audioManager.Enable(true);
-
-  //  Reset audioscrobbler submit status
-  CScrobbler::GetInstance()->SetSubmitSong(false);
+  m_gWindowManager.SendThreadMessage(msg);
 }
 
 bool CApplication::IsPlaying() const
@@ -4321,7 +4304,6 @@ void CApplication::StopPlaying()
     m_pPlayer->CloseFile();
     g_partyModeManager.Disable();
   }
-  OnPlayBackStopped();
 }
 
 bool CApplication::NeedRenderFullScreen()
@@ -4811,6 +4793,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
       CLastFmManager::GetInstance()->OnSongChange(*m_itemCurrentFile);
       g_partyModeManager.OnSongChange(true);
 
+      DimLCDOnPlayback(true);
+
       if (IsPlayingAudio())
       {
         // Start our cdg parser as appropriate
@@ -4902,6 +4886,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
       g_infoManager.ResetCurrentItem();
       m_currentStack->Clear();
 
+      // Reset audioscrobbler submit status
+      CScrobbler::GetInstance()->SetSubmitSong(false);
+
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
         // sending true to PlayNext() effectively passes bRestart to PlayFile()
@@ -4918,11 +4905,16 @@ bool CApplication::OnMessage(CGUIMessage& message)
         }
       }
 
+      if (!IsPlaying())
+      {
+        g_audioManager.Enable(true);
+        DimLCDOnPlayback(false);
+
 #ifdef HAS_KARAOKE
-      // no new player, free any cdg parser
-      if (!m_pPlayer && m_pCdgParser)
-        m_pCdgParser->Free();
+        if(m_pCdgParser)
+          m_pCdgParser->Free();
 #endif
+      }
 
       if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
       {
