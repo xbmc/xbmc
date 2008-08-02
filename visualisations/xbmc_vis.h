@@ -127,6 +127,8 @@ extern "C"
   #define VIS_ACTION_RANDOM_PRESET  4
   #define VIS_ACTION_LOCK_PRESET    5
 
+  #define VIS_ACTION_USER 100
+
   // Functions that your visualisation must implement
 #ifndef HAS_SDL_OPENGL
   void Create(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio);
