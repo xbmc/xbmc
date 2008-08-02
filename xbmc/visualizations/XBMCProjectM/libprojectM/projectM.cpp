@@ -224,7 +224,7 @@ void projectM::readConfig (const std::string & configFile )
 	
 	 projectM_init ( _settings.meshX, _settings.meshY, _settings.fps,
 			 _settings.textureSize, _settings.windowWidth,_settings.windowHeight,
-			 _settings.windowLeft, _settings.windowBottom);
+			 _settings.windowLeft, _settings.windowBottom, _settings.useFBO );
 
 	
 	 _settings.beatSensitivity = beatDetect->beat_sensitivity = config.read<float> ( "Hard Cut Sensitivity", 10.0 );
@@ -430,7 +430,7 @@ void projectM::projectM_reset()
 	projectM_resetengine();
 }
 
-void projectM::projectM_init ( int gx, int gy, int fps, int texsize, int width, int height, int xpos, int ypos )
+void projectM::projectM_init ( int gx, int gy, int fps, int texsize, int width, int height, int xpos, int ypos, bool usefbo )
 {
 
 	/** Initialise engine variables */
@@ -465,7 +465,7 @@ void projectM::projectM_init ( int gx, int gy, int fps, int texsize, int width, 
 	this->presetInputs2.gx = gx;
 	this->presetInputs2.gy = gy;
 
-	this->renderer = new Renderer ( width, height, gx, gy, texsize,  beatDetect, settings().presetURL, settings().titleFontURL, settings().menuFontURL, xpos, ypos);
+	this->renderer = new Renderer ( width, height, gx, gy, texsize,  beatDetect, settings().presetURL, settings().titleFontURL, settings().menuFontURL, xpos, ypos, usefbo);
 
 	initPresetTools();
 	if ( presetInputs.fps > 0 )
