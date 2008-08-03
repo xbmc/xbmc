@@ -648,26 +648,26 @@ void CGUIWindowManager::SendThreadMessage(CGUIMessage& message, DWORD dwWindow)
 void CGUIWindowManager::DispatchThreadMessages()
 {
   ::EnterCriticalSection(&m_critSection );
-  while ( m_vecThreadMessages.size() > 0 )
+  vector< pair<CGUIMessage*,DWORD> > messages(m_vecThreadMessages);
+  m_vecThreadMessages.erase(m_vecThreadMessages.begin(), m_vecThreadMessages.end());
+  ::LeaveCriticalSection(&m_critSection );
+
+  while ( messages.size() > 0 )
   {
-    vector< pair<CGUIMessage*,DWORD> >::iterator it = m_vecThreadMessages.begin();
+    vector< pair<CGUIMessage*,DWORD> >::iterator it = messages.begin();
     CGUIMessage* pMsg = it->first;
     DWORD dwWindow = it->second;
     // first remove the message from the queue,
     // else the message could be processed more then once
-    it = m_vecThreadMessages.erase(it);
+    it = messages.erase(it);
     
     //Leave critical section here since this can cause some thread to come back here into dispatch
-    ::LeaveCriticalSection(&m_critSection );
     if(dwWindow)
       SendMessage( *pMsg, dwWindow );
     else
       SendMessage( *pMsg );
     delete pMsg;
-    ::EnterCriticalSection(&m_critSection );
   }
-
-  ::LeaveCriticalSection(&m_critSection );
 }
 
 void CGUIWindowManager::AddMsgTarget( IMsgTargetCallback* pMsgTarget )
