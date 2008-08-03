@@ -306,6 +306,7 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_strPlayListFile = "";
   m_nextPlaylistItem = -1;
   m_playCountUpdated = false;
+  m_bPlaybackStarting = false;
 
   //true while we in IsPaused mode! Workaround for OnPaused, which must be add. after v2.0
   m_bIsPaused = false;
@@ -4084,6 +4085,9 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_pCdgParser->Stop();
 #endif
 
+  // tell system we are starting a file
+  m_bPlaybackStarting = true;
+
   // We should restart the player, unless the previous and next tracks are using
   // one of the players that allows gapless playback (paplayer, dvdplayer)
   if (m_pPlayer)
@@ -4104,6 +4108,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (!m_pPlayer)
   {
     CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", item.m_strPath.c_str());
+    m_bPlaybackStarting = false;
     return false;
   }
 
@@ -4132,6 +4137,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       g_audioManager.Enable(false);
   }
 
+  m_bPlaybackStarting = false;
   return bResult;
 }
 
@@ -4859,6 +4865,12 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if(IsPlaying())
       {
         CLog::Log(LOGDEBUG, "CApplication::OnMessage - playback was ended, but application has already started next file, skipping event");
+        return true;
+      }
+
+      if(m_bPlaybackStarting)
+      {
+        m_gWindowManager.SendThreadMessage(message);
         return true;
       }
 
