@@ -51,7 +51,8 @@ void StringUtils::JoinString(const CStdStringArray &strings, const CStdString& d
 
 // Splits the string input into pieces delimited by delimiter.
 // if 2 delimiters are in a row, it will include the empty string between them.
-int StringUtils::SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results)
+// added MaxStrings parameter to restrict the number of returned substrings (like perl and python)
+int StringUtils::SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results, unsigned int iMaxStrings /* = 0 */)
 {
   int iPos = -1;
   int newPos = -1;
@@ -60,7 +61,6 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
 
   results.clear();
 
-  //CArray positions;
   vector<unsigned int> positions;
 
   newPos = input.Find (delimiter, 0);
@@ -71,22 +71,25 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
     return 1;
   }
 
-  int numFound = 1;
-
   while ( newPos > iPos )
   {
-    numFound++;
     positions.push_back(newPos);
     iPos = newPos;
     newPos = input.Find (delimiter, iPos + sizeS2);
   }
 
-  for ( unsigned int i = 0; i <= positions.size(); i++ )
+  // numFound is the number of delimeters which is one less
+  // than the number of substrings
+  unsigned int numFound = positions.size();
+  if (iMaxStrings > 0 && numFound >= iMaxStrings)
+    numFound = iMaxStrings - 1;
+
+  for ( unsigned int i = 0; i <= numFound; i++ )
   {
     CStdString s;
     if ( i == 0 )
     {
-      if (i == positions.size())
+      if ( i == numFound )
         s = input;
       else
         s = input.Mid( i, positions[i] );
@@ -96,7 +99,7 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
       int offset = positions[i - 1] + sizeS2;
       if ( offset < isize )
       {
-        if ( i == positions.size() )
+        if ( i == numFound )
           s = input.Mid(offset);
         else if ( i > 0 )
           s = input.Mid( positions[i - 1] + sizeS2,
@@ -105,7 +108,8 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
     }
     results.push_back(s);
   }
-  return numFound;
+  // return the number of substrings
+  return results.size();
 }
 
 // returns the number of occurences of strFind in strInput.
