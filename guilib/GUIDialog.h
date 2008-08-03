@@ -43,7 +43,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
 
-  void DoModal(int iWindowID = WINDOW_INVALID); // modal
+  void DoModal(int iWindowID = WINDOW_INVALID, const CStdString &param = ""); // modal
   void Show(); // modeless
 
   virtual void Close(bool forceClose = false);
@@ -60,7 +60,7 @@ protected:
   virtual void OnWindowLoaded();
 
   friend class CApplicationMessenger;
-  void DoModal_Internal(int iWindowID = WINDOW_INVALID); // modal
+  void DoModal_Internal(int iWindowID = WINDOW_INVALID, const CStdString &param = ""); // modal
   void Show_Internal(); // modeless
 
   bool m_bRunning;
