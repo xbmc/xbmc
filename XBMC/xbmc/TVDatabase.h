@@ -40,7 +40,7 @@ public:
   virtual bool CommitTransaction();
 
   // epg
-  bool FillEPG(const CStdString &source, const CStdString &bouquet, const CStdString &channel, const int &channum, const CStdString &progTitle, 
+  bool FillEPG(const CStdString &source, const CStdString &bouquet, const CStdString &channame, const CStdString &callsign, const int &channum, const CStdString &progTitle, 
                const CStdString &progSubtitle, const CStdString &progDescription, const CStdString &episode, const CStdString &series, 
                const CDateTime &progStartTime, const CDateTime &progEndTime, const CStdString &category);
 

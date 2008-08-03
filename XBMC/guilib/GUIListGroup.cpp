@@ -159,7 +159,7 @@ void CGUIListGroup::EnlargeWidth(float difference)
     {
       child->SetWidth(child->GetWidth() + difference);
       if (child->GetID() == 2) // label
-        child->SetVisible(child->GetWidth() > 10);
+        child->SetVisible(child->GetWidth() > 10); ///
     }
   }
   SetInvalid();

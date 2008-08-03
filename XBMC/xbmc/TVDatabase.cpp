@@ -108,7 +108,7 @@ bool CTVDatabase::CommitTransaction()
   return false;
 }
 
-bool CTVDatabase::FillEPG(const CStdString &source, const CStdString &bouquet, const CStdString &channel, const int &channum, const CStdString &progTitle, const CStdString &progSubtitle,
+bool CTVDatabase::FillEPG(const CStdString &source, const CStdString &bouquet, const CStdString &channame, const CStdString &callsign, const int &channum, const CStdString &progTitle, const CStdString &progSubtitle,
                           const CStdString &progDescription, const CStdString &episode, const CStdString &series, const CDateTime &progStartTime, const CDateTime &progEndTime, const CStdString &category)
 {
 	try
@@ -124,7 +124,7 @@ bool CTVDatabase::FillEPG(const CStdString &source, const CStdString &bouquet, c
     if (bouquetId < 0)
       return false;
 
-    long channelId = AddChannel(sourceId, bouquetId, "callsign", channel, channum);
+    long channelId = AddChannel(sourceId, bouquetId, callsign, channame, channum);
     if (channelId < 0)
       return false;
 
@@ -539,7 +539,7 @@ void CTVDatabase::SetProgrammeSettings(const CStdString& programmeID, const CVid
 
 void CTVDatabase::GetChannels(bool freeToAirOnly, VECFILEITEMS &channels)
 {
-  /*channels.clear();*/
+  channels.clear();
   try
   {
     if (NULL == m_pDB.get()) return;

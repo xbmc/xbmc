@@ -23,7 +23,6 @@
 
 #include "GUIControl.h"
 #include "GUIListItemLayout.h"
-#include "GUIListItem.h"
 #include "TVDatabase.h"
 
 #define MAXCHANNELS 200
@@ -33,7 +32,8 @@ class CGUIEPGGridContainer : public CGUIControl
 {
 public:
   CGUIEPGGridContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, 
-                       float width, float height, int scrollTime, int minutesPerPage);
+                       float width, float height, int scrollTime, int minutesPerPage,
+                       int rulerUnit);
   virtual ~CGUIEPGGridContainer(void);
 
   virtual bool OnAction(const CAction &action);
@@ -50,7 +50,8 @@ public:
 
   CStdString GetDescription() const;
   const int GetNumChannels()   { return m_channels; }
-  int GetSelectedItem() const;
+  virtual int GetSelectedItem() const;
+  const int GetSelectedChannel() { return m_channelCursor + m_channelOffset; }
 
   void DoRender(DWORD currentTime);
   void Render();
@@ -62,15 +63,21 @@ public:
 protected:
   bool OnClick(DWORD actionID);
   bool SelectItemFromPoint(const CPoint &point);
-  void RenderChannels(float posY, int chanOffset); // render the column of channels
-  void RenderItems(float posX, float posY, int chanOffset, int blockOffset); // render the grid of items
 
-  void RenderChannel(float posX, float posY, CGUIListItemPtr item, bool focused); // render an individual channel layout
-  void RenderItem(float posX, float posY, CGUIListItemPtr item, bool focused); // render an individual gridItem layout
+  void UpdateRuler();
+
+  void RenderRuler(float horzDrawOffset, int blockOffset);
+  void RenderChannels(float posY, int chanOffset); // render the column of channels
+  void RenderItems(float horzDrawOffset, float posY, int chanOffset, int blockOffset); // render the grid of items
+
+  void RenderChannel(float posX, float posY, CGUIListItem *item, bool focused); // render an individual channel layout
+  void RenderItem(float posX, float posY, CGUIListItem *item, bool focused); // render an individual gridItem layout
  
   void RenderDebug();
   void SetChannel(int channel);
   void SetBlock(int block);
+  void VerticalScroll(int amount);
+  void HorizontalScroll(int amount);
   void ValidateOffset();
   void UpdateLayout(bool refreshAllItems = false);
   void CalculateLayout();
@@ -91,6 +98,7 @@ protected:
 
   CGUIListItemLayout *GetFocusedLayout() const;
   
+  int   m_rulerUnit; // number of blocks that makes up one element of the ruler
   int   m_channels;
   int   m_channelsPerPage;
   int   m_channelCursor;
@@ -100,15 +108,21 @@ protected:
   int   m_blockCursor;
   int   m_blockOffset;
 
-  float m_gridPosX; //
+  float m_channelPosY; // Y position of first channel row
+  float m_gridPosX; // X position of first grid item
   float m_gridWidth;
-  float m_channelHeight;  // height in pixels of each channel row
-  float m_channelWidth;
-  float m_blockSize;
+  float m_gridHeight;
+  float m_rulerHeight; // height of the scrolling timeline above the grid items
+  float m_rulerWidth; // width of each element of the ruler
+  float m_channelHeight;  // height of each channel row (& every grid item)
+  float m_channelWidth; // width of the channel item
+  float m_blockSize; // a block's width in pixels
   float m_analogScrollCount;
 
   CDateTime m_gridStart;
   CDateTime m_gridEnd;
+
+  std::vector< CGUIListItemPtr > m_rulerItems;
 
   std::vector< CGUIListItemPtr > m_channelItems;
   CGUIListItemPtr m_channel;
@@ -118,11 +132,12 @@ protected:
   typedef std::vector< std::vector< CGUIListItemPtr > >::iterator iChannels;
   typedef std::vector< CGUIListItemPtr >::iterator iShows;
   CGUIListItemPtr  m_item;
-  CGUIListItemPtr  m_lastItem;
-  CGUIListItemPtr  m_lastChannel;
+  CGUIListItem *m_lastItem;
+  CGUIListItem *m_lastChannel;
 
   DWORD m_renderTime;
 
+  CGUIListItemLayout *m_rulerLayout;
   CGUIListItemLayout *m_channelLayout;
   CGUIListItemLayout *m_focusedChannelLayout;
   CGUIListItemLayout *m_layout;

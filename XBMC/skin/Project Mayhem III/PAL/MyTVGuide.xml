@@ -36,10 +36,10 @@
 		</control>
 		<control type="label" id="10">
 			<description>No Info Scanned Label</description>
-			<posx>190</posx>
-			<posy>200</posy>
-			<width>485</width>
-			<height>150</height>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>576</height>
 			<font>Special13</font>
 			<label>-</label>
 			<align>center</align>
@@ -49,32 +49,58 @@
 		<control type="epggrid" id="20">
 			<description>EPG Grid</description>
 			<posx>20</posx>
-			<posy>130</posy>
+			<posy>101</posy>
 			<width>656</width>
-			<height>408</height>
+			<height>437</height>
 			<onleft>20</onleft>
 			<onright>20</onright>
 			<onup>20</onup>
 			<ondown>20</ondown>
 			<pagecontrol>20</pagecontrol>
-			<scrolltime>150</scrolltime>
+			<scrolltime>350</scrolltime>
 			<timeblocks>36</timeblocks>
+			<rulerunit>3</rulerunit>
+			<bordertexture>totalblack.png</bordertexture>
+			<bordersize>1,1,0,1</bordersize>
+			<rulerlayout height="29" width="40">
+				<control type="image" id="1">
+					<width>40</width>
+					<height>29</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>totalblack.png</texture>
+					<bordertexture>white.png</bordertexture>
+					<bordersize>1,0,0,0</bordersize>
+				</control>
+				<control type="label" id="1">
+					<posx>4</posx>`
+					<posy>3</posy>
+					<width>34</width>
+					<height>29</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+			</rulerlayout>
 			<channellayout height="34" width="80">
+				<animation effect="fade" start="70" time="200">UnFocus</animation>
 				<control type="image" id="1">
 					<width>80</width>
 					<height>34</height>
 					<posx>0</posx>
 					<posy>0</posy>
 					<texture>dark-green.png</texture>
-					<bordertexture>black.png</bordertexture>
-					<bordersize>0.5</bordersize>
+					<bordertexture>totalblack.png</bordertexture>
+					<bordersize>0,1,1,0</bordersize>
 				</control>
-				<control type="label" id="2">
+				<control type="label" id="1">
 					<posx>4</posx>
 					<posy>1</posy>
-					<width>43</width>
+					<width>72</width>
 					<height>32</height>
-					<font>font13</font>
+					<font>special12</font>
 					<aligny>center</aligny>
 					<selectedcolor>green</selectedcolor>
 					<align>left</align>
@@ -89,21 +115,22 @@
 				</control>
 			</channellayout>
 			<focusedchannellayout height="34" width="80">
+				<animation effect="fade" start="70" time="200">OnFocus</animation>
 				<control type="image" id="1">
 					<width>80</width>
 					<height>34</height>
 					<posx>0</posx>
 					<posy>0</posy>
-					<texture>light-green.png</texture>
-					<bordertexture>black.png</bordertexture>
-					<bordersize>0.5</bordersize>
+					<texture>dark-green.png</texture>
+					<bordertexture>light-green.png</bordertexture>
+					<bordersize>2,2,2,2</bordersize>
 				</control>
-				<control type="label" id="2">
+				<control type="label" id="1">
 					<posx>4</posx>
 					<posy>1</posy>
-					<width>43</width>
+					<width>72</width>
 					<height>32</height>
-					<font>font13</font>
+					<font>special12</font>
 					<aligny>center</aligny>
 					<selectedcolor>green</selectedcolor>
 					<align>left</align>
@@ -124,12 +151,12 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<texture>dark-green.png</texture>
-					<bordertexture>black.png</bordertexture>
-					<bordersize>0.5</bordersize>
+					<bordertexture>totalblack.png</bordertexture>
+					<bordersize>1,1,0,0</bordersize>
 				</control>
 				<control type="label" id="2">
-					<posx>4</posx>
-					<posy>2</posy>
+					<posx>6</posx>
+					<posy>3</posy>
 					<width>30</width>
 					<height>22</height>
 					<font>font13</font>
@@ -154,12 +181,12 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<texture>light-green.png</texture>
-					<bordertexture>black.png</bordertexture>
-					<bordersize>0.5</bordersize>
+					<bordertexture>totalblack.png</bordertexture>
+					<bordersize>1,1,0,0</bordersize>
 				</control>
 				<control type="label" id="2">
-					<posx>4</posx>
-					<posy>2</posy>
+					<posx>6</posx>
+					<posy>3</posy>
 					<width>30</width>
 					<height>22</height>
 					<font>font13</font>
