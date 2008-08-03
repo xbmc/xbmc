@@ -10,6 +10,7 @@
 #include "utils/CharsetConverter.h"
 #include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/File.h"
+#include "../xbmc/FileSystem/Directory.h"
 
 #ifdef HAS_SDL
 #define MAX_PICTURE_WIDTH  4096
@@ -1082,7 +1083,7 @@ void CGUITextureManager::RemoveTexturePath(const CStdString &texturePath)
   }
 }
 
-CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName)
+CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName, bool directory /* = false */)
 {
 #ifndef _LINUX  
   if (textureName.c_str()[1] == ':')
@@ -1097,8 +1098,16 @@ CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName)
       CStdString path;
       path.Format("%s\\media\\%s", it->c_str(), textureName.c_str());
       path = _P(path);
-      if (XFILE::CFile::Exists(path))
-        return path;
+      if (directory)
+      {
+        if (DIRECTORY::CDirectory::Exists(path))
+          return path;
+      }
+      else
+      {
+        if (XFILE::CFile::Exists(path))
+          return path;
+      }
     }
   }
   return "";
