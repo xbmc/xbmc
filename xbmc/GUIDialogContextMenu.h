@@ -126,7 +126,7 @@ public:
   CGUIDialogContextMenu(void);
   virtual ~CGUIDialogContextMenu(void);
   virtual bool OnMessage(CGUIMessage &message);
-  virtual void DoModal(int iWindowID = WINDOW_INVALID);
+  virtual void DoModal(int iWindowID = WINDOW_INVALID, const CStdString &param = "");
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
   virtual void SetPosition(float posX, float posY);
