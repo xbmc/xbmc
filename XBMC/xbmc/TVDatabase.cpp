@@ -539,10 +539,9 @@ void CTVDatabase::SetProgrammeSettings(const CStdString& programmeID, const CVid
 
 void CTVDatabase::GetChannels(bool freeToAirOnly, VECFILEITEMS &channels)
 {
+  /*channels.clear();*/
   try
   {
-    channels.clear();
-
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
@@ -552,13 +551,16 @@ void CTVDatabase::GetChannels(bool freeToAirOnly, VECFILEITEMS &channels)
     while (!m_pDS->eof())
     {
       CFileItemPtr pItem(new CFileItem(m_pDS->fv("Name").get_asString()));
+      pItem->SetLabel(m_pDS->fv("Name").get_asString());
       pItem->SetLabel2(m_pDS->fv("Callsign").get_asString());
-      /*pItem->SetIconImage(m_pDS->fv("Logo").get_asString());*/
-      pItem->SetProperty("Number", m_pDS->fv("Number").get_asInteger());
+      pItem->SetProperty("dbID", m_pDS->fv("idChannel").get_asInteger());
+      pItem->GetEPGInfoTag()->m_playCount = m_pDS->fv("PlayCount").get_asInteger();
+      pItem->SetProperty("HasSettings", m_pDS->fv("HasSettings").get_asBool());
       pItem->m_bIsFolder = true;
       pItem->m_bIsShareOrDrive = false;
 
       channels.push_back(pItem);
+
       m_pDS->next();
     }
     m_pDS->close();

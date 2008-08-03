@@ -36,6 +36,7 @@ CGUIWindowEPG::CGUIWindowEPG(void)
     : CGUIWindow(WINDOW_EPG, "MyTVGuide.xml")
 {
   m_curDaysOffset = 0; // offset of zero to grab current schedule
+  m_bDisplayEmptyDatabaseMessage = false;
 }
 
 CGUIWindowEPG::~CGUIWindowEPG(void)
@@ -46,7 +47,6 @@ CGUIWindowEPG::~CGUIWindowEPG(void)
 void CGUIWindowEPG::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
-  GetGridData();
   UpdateGridItems();
 }
 
@@ -78,7 +78,7 @@ bool CGUIWindowEPG::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-      m_database.Open();
+      m_database.Open(); /// only if need new data
       return CGUIWindow::OnMessage(message);
     }
     break;
@@ -94,7 +94,7 @@ void CGUIWindowEPG::OnInitWindow()
 void CGUIWindowEPG::GetGridData()
 {
   ///////
-  m_daysToDisplay = 1; /// from settings
+  m_daysToDisplay = 2; /// from settings
   ///////
 
   CDateTimeSpan offset;
@@ -112,18 +112,23 @@ void CGUIWindowEPG::GetGridData()
   
   // check that m_gridEnd date exists in schedules
   // otherwise reduce the range
+  DWORD tick(timeGetTime());
   m_dataEnd = m_database.GetDataEnd();
+
+  CLog::Log(LOGDEBUG, "TV: m_database.GetDataEnd() took %u ms to return", timeGetTime()-tick); /// slow to return
+
   if (m_dataEnd < m_gridEnd)
   {
     m_gridEnd = m_dataEnd;
   }
 
-  // grab the list of channels
-  VECFILEITEMS channels;
+  // grab the channel list
+  tick = timeGetTime();
   m_database.Open();
-  m_database.GetChannels(false, channels);
+  m_database.GetChannels(false, m_channels);
   m_database.Close();
-  m_numChannels = (int)channels.size();
+  CLog::Log(LOGDEBUG, "TV: m_database.GetChannels() took %u ms to return", timeGetTime()-tick);
+  m_numChannels = (int)m_channels.size();
 
   if (m_numChannels > 0)
   {
@@ -144,7 +149,7 @@ void CGUIWindowEPG::GetGridData()
     for (int i = 0; i < m_numChannels; i++)
     {
       VECFILEITEMS programmes;
-      if(!m_database.GetProgrammesByChannel(channels[i]->GetLabel(), programmes, m_gridStart, m_gridEnd))
+      if(!m_database.GetProgrammesByChannel(m_channels[i]->GetLabel(), programmes, m_gridStart, m_gridEnd))
         continue;
       
       items += (int)programmes.size();
@@ -173,7 +178,17 @@ void CGUIWindowEPG::GetGridData()
 
 void CGUIWindowEPG::UpdateGridItems()
 {
+  if (m_bDisplayEmptyDatabaseMessage)
+    return; // no schedule data available
+
+  /// if db still valid no point in doing this each time
+  GetGridData();
+
+  // get a pointer to the grid container
   m_guideGrid = (CGUIEPGGridContainer*)GetControl(CONTROL_EPGGRID);
+
+  // populate the container
+  m_guideGrid->UpdateChannels(m_channels);
   m_guideGrid->UpdateItems(m_gridData, m_gridStart, m_gridEnd);
 }
 

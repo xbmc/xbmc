@@ -48,30 +48,88 @@
 		</control>
 		<control type="epggrid" id="20">
 			<description>EPG Grid</description>
-			<posx>60</posx>
+			<posx>20</posx>
 			<posy>130</posy>
-			<width>540</width>
-			<height>406</height>
+			<width>656</width>
+			<height>408</height>
 			<onleft>20</onleft>
 			<onright>20</onright>
 			<onup>20</onup>
 			<ondown>20</ondown>
 			<pagecontrol>20</pagecontrol>
-			<scrolltime>400</scrolltime>
+			<scrolltime>150</scrolltime>
 			<timeblocks>36</timeblocks>
-			<itemlayout height="29" width="40">
+			<channellayout height="34" width="80">
 				<control type="image" id="1">
-					<width>40</width>
-					<height>29</height>
+					<width>80</width>
+					<height>34</height>
 					<posx>0</posx>
 					<posy>0</posy>
 					<texture>dark-green.png</texture>
-					<bordertexture>blue_rectangle_music.png</bordertexture>
+					<bordertexture>black.png</bordertexture>
 					<bordersize>0.5</bordersize>
 				</control>
 				<control type="label" id="2">
-					<posx>5</posx>
-					<posy>3</posy>
+					<posx>4</posx>
+					<posy>1</posy>
+					<width>43</width>
+					<height>32</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="image">
+					<width>32</width>
+					<height>32</height>
+					<posx>1r</posx>
+					<posy>2r</posy>
+					<info>ListItem.Icon</info>
+				</control>
+			</channellayout>
+			<focusedchannellayout height="34" width="80">
+				<control type="image" id="1">
+					<width>80</width>
+					<height>34</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>light-green.png</texture>
+					<bordertexture>black.png</bordertexture>
+					<bordersize>0.5</bordersize>
+				</control>
+				<control type="label" id="2">
+					<posx>4</posx>
+					<posy>1</posy>
+					<width>43</width>
+					<height>32</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="image">
+					<width>32</width>
+					<height>32</height>
+					<posx>1r</posx>
+					<posy>1r</posy>
+					<info>ListItem.Icon</info>
+				</control>
+			</focusedchannellayout>
+			<itemlayout height="34" width="40">
+				<control type="image" id="1">
+					<width>40</width>
+					<height>34</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>dark-green.png</texture>
+					<bordertexture>black.png</bordertexture>
+					<bordersize>0.5</bordersize>
+				</control>
+				<control type="label" id="2">
+					<posx>4</posx>
+					<posy>2</posy>
 					<width>30</width>
 					<height>22</height>
 					<font>font13</font>
@@ -89,19 +147,19 @@
 					<visible>ListItem.Property(Recording)</visible>
 				</control>
 			</itemlayout>
-			<focusedlayout height="29" width="40">
+			<focusedlayout height="34" width="40">
 				<control type="image" id="1">
 					<width>40</width>
-					<height>29</height>
+					<height>34</height>
 					<posx>0</posx>
 					<posy>0</posy>
 					<texture>light-green.png</texture>
-					<bordertexture>blue_rectangle_music.png</bordertexture>
+					<bordertexture>black.png</bordertexture>
 					<bordersize>0.5</bordersize>
 				</control>
 				<control type="label" id="2">
-					<posx>5</posx>
-					<posy>3</posy>
+					<posx>4</posx>
+					<posy>2</posy>
 					<width>30</width>
 					<height>22</height>
 					<font>font13</font>

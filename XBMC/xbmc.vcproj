@@ -875,6 +875,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\Edl.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\utils\EPGInfoTag.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\EPGInfoTag.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\utils\Event.cpp">
 				</File>
 				<File

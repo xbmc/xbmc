@@ -46,6 +46,7 @@ public:
   virtual void SetFocus(bool bOnOff);
 
   void UpdateItems(EPGGrid &gridData, const CDateTime &dataStart, const CDateTime &dataEnd);
+  void UpdateChannels(VECFILEITEMS &channels);
 
   CStdString GetDescription() const;
   const int GetNumChannels()   { return m_channels; }
@@ -61,7 +62,12 @@ public:
 protected:
   bool OnClick(DWORD actionID);
   bool SelectItemFromPoint(const CPoint &point);
-  void RenderItem(float posX, float posY, CGUIListItemPtr item, bool focused);
+  void RenderChannels(float posY, int chanOffset); // render the column of channels
+  void RenderItems(float posX, float posY, int chanOffset, int blockOffset); // render the grid of items
+
+  void RenderChannel(float posX, float posY, CGUIListItemPtr item, bool focused); // render an individual channel layout
+  void RenderItem(float posX, float posY, CGUIListItemPtr item, bool focused); // render an individual gridItem layout
+ 
   void RenderDebug();
   void SetChannel(int channel);
   void SetBlock(int block);
@@ -87,18 +93,25 @@ protected:
   
   int   m_channels;
   int   m_channelsPerPage;
-  int   m_channel;
+  int   m_channelCursor;
   int   m_channelOffset;
   int   m_blocks;
   int   m_blocksPerPage;
-  int   m_block;
+  int   m_blockCursor;
   int   m_blockOffset;
 
+  float m_gridPosX; //
+  float m_gridWidth;
+  float m_channelHeight;  // height in pixels of each channel row
+  float m_channelWidth;
   float m_blockSize;
   float m_analogScrollCount;
 
   CDateTime m_gridStart;
   CDateTime m_gridEnd;
+
+  std::vector< CGUIListItemPtr > m_channelItems;
+  CGUIListItemPtr m_channel;
 
   CFileItemPtr m_gridIndex[MAXCHANNELS][MAXBLOCKS];
   std::vector< std::vector< CGUIListItemPtr > > m_gridItems;
@@ -106,9 +119,12 @@ protected:
   typedef std::vector< CGUIListItemPtr >::iterator iShows;
   CGUIListItemPtr  m_item;
   CGUIListItemPtr  m_lastItem;
+  CGUIListItemPtr  m_lastChannel;
 
   DWORD m_renderTime;
 
+  CGUIListItemLayout *m_channelLayout;
+  CGUIListItemLayout *m_focusedChannelLayout;
   CGUIListItemLayout *m_layout;
   CGUIListItemLayout *m_focusedLayout;
   

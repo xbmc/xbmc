@@ -63,6 +63,8 @@ protected:
   bool m_favouritesOnly;
 
   CTVDatabase m_database;
+
+  VECFILEITEMS m_channels;
   EPGGrid m_gridData;
   CGUIEPGGridContainer* m_guideGrid;
 };
