@@ -1410,6 +1410,7 @@ void CDVDPlayer::OnExit()
     m_pDlgCache = NULL;
   }
 
+  m_bStop = true;
   // if we didn't stop playing, advance to the next item in xbmc's playlist
   if(m_PlayerOptions.identify == false)
   {
