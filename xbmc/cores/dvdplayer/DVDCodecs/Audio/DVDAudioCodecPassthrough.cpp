@@ -298,7 +298,7 @@ int CDVDAudioCodecPassthrough::ParseFrame(BYTE* data, int size, BYTE** frame, in
   if(m_iSourceFlags != flags)
   {
     m_iSourceFlags = flags;
-    CLog::Log(LOGDEBUG, "%s - source flags changed flags:%x sr:%d br:%d", m_iSourceFlags, m_iSourceSampleRate, m_iSourceBitrate);
+    CLog::Log(LOGDEBUG, "%s - source flags changed flags:%x sr:%d br:%d", __FUNCTION__, m_iSourceFlags, m_iSourceSampleRate, m_iSourceBitrate);
   }
 
   len = m_iFrameSize-m_InputSize;
