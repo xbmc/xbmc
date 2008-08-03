@@ -354,30 +354,25 @@ extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets
 {
   if (!g_presets)
   {
-    struct dirent** entries;
-    fprintf(stderr, "Preset Dir: %s\n",globalPM->settings().presetURL.c_str());
-    int dir_size = scandir(globalPM->settings().presetURL.c_str(), &entries,
-                           check_valid_extension, alphasort);
-
-    if (dir_size>0)
+    if (globalPM->getPlaylistSize() > 0)
     {
-      g_numPresets = dir_size;
-      g_presets = (char **)malloc(sizeof(char*)*dir_size);
+      g_numPresets = globalPM->getPlaylistSize();
+      g_presets = (char **)malloc(sizeof(char*)*globalPM->getPlaylistSize());
       if (g_presets)
       {
-        for (int i = 0 ; i<dir_size ; i++)
+        for (int i = 0; i<globalPM->getPlaylistSize() ; i++)
         {
-          g_presets[i] = (char*)malloc(strlen(entries[i]->d_name)+2);
+          g_presets[i] = (char*)malloc(strlen(globalPM->getPresetName(i).c_str())+2);
           if (g_presets[i])
           {
-            strcpy(g_presets[i], entries[i]->d_name);
+            strcpy(g_presets[i], globalPM->getPresetName(i).c_str());
           }
-          free(entries[i]);
         }
-        free(entries);
       }
     }
   }
+        
+
   if (g_presets)
   {
     *pPresets = g_presets;
