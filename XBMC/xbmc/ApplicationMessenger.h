@@ -107,7 +107,7 @@ public:
 
   void NetworkMessage(DWORD dwMessage, DWORD dwParam = 0);
 
-  void DoModal(CGUIDialog *pDialog, int iWindowID = WINDOW_INVALID);
+  void DoModal(CGUIDialog *pDialog, int iWindowID = WINDOW_INVALID, const CStdString &param = "");
   void Show(CGUIDialog *pDialog);
   void WindowManagerProcess(bool renderOnly = false); // will call m_gWindowManager.Process on the rendering thread
   void Render(); // will call m_gWindowManager.Render on the rendering thread

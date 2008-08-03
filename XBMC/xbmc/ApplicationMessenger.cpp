@@ -464,9 +464,8 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
     case TMSG_GUI_DO_MODAL:
       {
         CGUIDialog *pDialog = (CGUIDialog *)pMsg->lpVoid;
-        int nId = (int)pMsg->dwParam1;
         if (pDialog)
-          pDialog->DoModal_Internal(nId);
+          pDialog->DoModal_Internal((int)pMsg->dwParam1, pMsg->strParam);
       }
       break;
     case TMSG_GUI_SHOW:
@@ -660,11 +659,12 @@ void CApplicationMessenger::SwitchToFullscreen()
   SendMessage(tMsg, true);
 }
 
-void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID)
+void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param)
 {
   ThreadMessage tMsg = {TMSG_GUI_DO_MODAL};
   tMsg.lpVoid = pDialog;
   tMsg.dwParam1 = (DWORD)iWindowID;
+  tMsg.strParam = param;
   SendMessage(tMsg, true);
 }
 

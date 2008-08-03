@@ -367,7 +367,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
   else if (pNewWindow->IsDialog())
   { // if we have a dialog, we do a DoModal() rather than activate the window
     if (!pNewWindow->IsDialogRunning())
-      ((CGUIDialog *)pNewWindow)->DoModal(iWindowID);
+      ((CGUIDialog *)pNewWindow)->DoModal(iWindowID, strPath);
     return;
   }
 
