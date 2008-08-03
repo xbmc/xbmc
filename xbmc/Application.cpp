@@ -4086,6 +4086,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #endif
 
   // tell system we are starting a file
+  while(m_vPlaybackStarting.size()) m_vPlaybackStarting.pop();
   m_bPlaybackStarting = true;
 
   // We should restart the player, unless the previous and next tracks are using
@@ -4105,14 +4106,14 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_pPlayer = CPlayerCoreFactory::CreatePlayer(eNewCore, *this);
   }
 
-  if (!m_pPlayer)
+  bool bResult;
+  if (m_pPlayer)
+    bResult = m_pPlayer->OpenFile(item, options);
+  else
   {
     CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", item.m_strPath.c_str());
-    m_bPlaybackStarting = false;
-    return false;
+    bResult = false;
   }
-
-  bool bResult = m_pPlayer->OpenFile(item, options);
 
   if(bResult)
   {
@@ -4137,7 +4138,18 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       g_audioManager.Enable(false);
   }
 
+  if(!IsPlaying())
+  {
+    // since we didn't manage to get playback started, send any queued up messages
+    while(m_vPlaybackStarting.size())
+    {
+      m_gWindowManager.SendMessage(m_vPlaybackStarting.front());
+      m_vPlaybackStarting.pop();
+    }
+  }
+  while(m_vPlaybackStarting.size()) m_vPlaybackStarting.pop();
   m_bPlaybackStarting = false;
+
   return bResult;
 }
 
@@ -4158,7 +4170,11 @@ void CApplication::OnPlayBackEnded()
   CLog::Log(LOGDEBUG, "Playback has finished");
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
-  m_gWindowManager.SendThreadMessage(msg);
+
+  if(m_bPlaybackStarting)
+    m_vPlaybackStarting.push(msg);
+  else
+    m_gWindowManager.SendThreadMessage(msg);
 }
 
 void CApplication::OnPlayBackStarted()
@@ -4215,8 +4231,12 @@ void CApplication::OnPlayBackStopped()
 #endif
 
   CLog::Log(LOGDEBUG, "Playback was stopped\n");
+
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
-  m_gWindowManager.SendThreadMessage(msg);
+  if(m_bPlaybackStarting)
+    m_vPlaybackStarting.push(msg);
+  else
+    m_gWindowManager.SendThreadMessage(msg);
 }
 
 bool CApplication::IsPlaying() const
@@ -4860,20 +4880,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_PLAYBACK_STOPPED:
   case GUI_MSG_PLAYBACK_ENDED:
+  case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     {
-
-      if(IsPlaying())
-      {
-        CLog::Log(LOGDEBUG, "CApplication::OnMessage - playback was ended, but application has already started next file, skipping event");
-        return true;
-      }
-
-      if(m_bPlaybackStarting)
-      {
-        m_gWindowManager.SendThreadMessage(message);
-        return true;
-      }
-
       // first check if we still have items in the stack to play
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
@@ -4972,11 +4980,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_PLAYLISTPLAYER_STARTED:
   case GUI_MSG_PLAYLISTPLAYER_CHANGED:
-    {
-      return true;
-    }
-    break;
-  case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     {
       return true;
     }
