@@ -290,6 +290,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
   if (result == DVDNAV_STATUS_ERR)
   {
     CLog::Log(LOGERROR,"Error getting next block: %s\n", m_dll.dvdnav_err_to_string(m_dvdnav));
+    m_bEOF = true;
     return NAVRESULT_ERROR;
   }
 
