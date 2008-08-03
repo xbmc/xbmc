@@ -202,6 +202,7 @@ public:
 
   DWORD m_dwSkinTime;
   bool m_bIsPaused;
+  bool m_bPlaybackStarting;
 
   CCdgParser* m_pCdgParser;
 
