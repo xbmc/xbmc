@@ -259,7 +259,7 @@
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>
 				<scroll>true</scroll>
-		</control>
+			</control>
 			<control type="label" id="1">
 				<description>Top 250 Value</description>
 				<posx>310</posx>
@@ -305,7 +305,7 @@
 			<control type="label" id="20">
 				<description>TV Show Title value</description>
 				<posx>60</posx>
-				<posy>225</posy>
+				<posy>215</posy>
 				<width>615</width>
 				<label>-</label>
 				<font>special13</font>
@@ -315,7 +315,7 @@
 			<control type="label" id="1">
 				<description>Episodes txt</description>
 				<posx>60</posx>
-				<posy>255</posy>
+				<posy>243</posy>
 				<width>90</width>
 				<label>$LOCALIZE[20360]:</label>
 				<font>font13</font>
@@ -324,7 +324,7 @@
 			<control type="label" id="1">
 				<description>Episodes Value</description>
 				<posx>170</posx>
-				<posy>255</posy>
+				<posy>243</posy>
 				<width>550</width>
 				<label>$INFO[listitem.episode] [COLOR=grey] ($INFO[ListItem.Property(WatchedEpisodes),, $LOCALIZE[16102]] - $INFO[ListItem.Property(UnWatchedEpisodes), , $LOCALIZE[16101]])[/COLOR]</label>
 				<font>font13</font>
@@ -334,7 +334,7 @@
 			<control type="label" id="1">
 				<description>First Aired txt</description>
 				<posx>60</posx>
-				<posy>280</posy>
+				<posy>266</posy>
 				<width>90</width>
 				<label>$LOCALIZE[20416]:</label>
 				<font>font13</font>
@@ -344,7 +344,7 @@
 			<control type="label" id="24">
 				<description>First Aired Value</description>
 				<posx>170</posx>
-				<posy>280</posy>
+				<posy>266</posy>
 				<width>550</width>
 				<label>-</label>
 				<font>font13</font>
@@ -354,7 +354,7 @@
 			<control type="label" id="1">
 				<description>Genre txt</description>
 				<posx>60</posx>
-				<posy>305</posy>
+				<posy>289</posy>
 				<width>90</width>
 				<label>$LOCALIZE[515]:</label>
 				<font>font13</font>
@@ -363,10 +363,30 @@
 			<control type="label" id="23">
 				<description>Genre value</description>
 				<posx>170</posx>
-				<posy>305</posy>
+				<posy>289</posy>
 				<width>550</width>
 				<label></label>
 				<font>font13</font>
+				<visible>container.content(tvshows)</visible>
+				<scroll>true</scroll>
+			</control>
+			<control type="label" id="1">
+				<description>Path txt</description>
+				<posx>60</posx>
+				<posy>312</posy>
+				<width>90</width>
+				<label>$LOCALIZE[15311]</label>
+				<font>font13</font>
+				<visible>container.content(tvshows)</visible>
+			</control>
+			<control type="label">
+				<description>Path value</description>
+				<posx>170</posx>
+				<posy>312</posy>
+				<width>550</width>
+				<label></label>
+				<font>font13</font>
+				<info>ListItem.Path</info>
 				<visible>container.content(tvshows)</visible>
 				<scroll>true</scroll>
 			</control>
@@ -405,7 +425,7 @@
 			<control type="label" id="1">
 				<description>Tv ShowTitle value</description>
 				<posx>200</posx>
-				<posy>110</posy>
+				<posy>100</posy>
 				<width>330</width>
 				<info>ListItem.tvshowtitle</info>
 				<font>special13</font>
@@ -415,7 +435,7 @@
 			<control type="label" id="20">
 				<description>Title value</description>
 				<posx>200</posx>
-				<posy>140</posy>
+				<posy>130</posy>
 				<width>330</width>
 				<label>-</label>
 				<font>special13</font>
@@ -425,7 +445,7 @@
 			<control type="label" id="1">
 				<description>Episode txt</description>
 				<posx>200</posx>
-				<posy>175</posy>
+				<posy>165</posy>
 				<width>90</width>
 				<label>$LOCALIZE[20359]:</label>
 				<font>font12</font>
@@ -434,7 +454,7 @@
 			<control type="label" id="1">
 				<description>Season txt</description>
 				<posx>200</posx>
-				<posy>195</posy>
+				<posy>185</posy>
 				<width>90</width>
 				<label>$LOCALIZE[20373]:</label>
 				<font>font12</font>
@@ -443,7 +463,7 @@
 			<control type="label" id="1">
 				<description>Director txt</description>
 				<posx>200</posx>
-				<posy>215</posy>
+				<posy>205</posy>
 				<width>90</width>
 				<label>$LOCALIZE[20339]:</label>
 				<font>font12</font>
@@ -452,7 +472,7 @@
 			<control type="label" id="1">
 				<description>Writing Credits txt</description>
 				<posx>200</posx>
-				<posy>235</posy>
+				<posy>225</posy>
 				<width>90</width>
 				<label>$LOCALIZE[20417]:</label>
 				<font>font12</font>
@@ -461,7 +481,7 @@
 			<control type="label" id="1">
 				<description>Genre txt</description>
 				<posx>200</posx>
-				<posy>255</posy>
+				<posy>245</posy>
 				<width>90</width>
 				<label>$LOCALIZE[515]:</label>
 				<font>font12</font>
@@ -470,7 +490,7 @@
 			<control type="label" id="1">
 				<description>Year</description>
 				<posx>200</posx>
-				<posy>275</posy>
+				<posy>265</posy>
 				<width>90</width>
 				<label>$LOCALIZE[20416]:</label>
 				<font>font12</font>
@@ -479,16 +499,25 @@
 			<control type="label" id="1">
 				<description>Rating txt</description>
 				<posx>200</posx>
-				<posy>295</posy>
+				<posy>285</posy>
 				<width>90</width>
 				<label>$LOCALIZE[563]:</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
 			</control>
 			<control type="label" id="1">
+				<description>Path txt</description>
+				<posx>200</posx>
+				<posy>305</posy>
+				<width>90</width>
+				<label>$LOCALIZE[15311]</label>
+				<font>font12</font>
+				<visible>container.content(episodes)</visible>
+			</control>
+			<control type="label" id="1">
 				<description>Episode value</description>
 				<posx>300</posx>
-				<posy>178</posy>
+				<posy>168</posy>
 				<width>375</width>
 				<info>Listitem.Episode</info>
 				<font>font12</font>
@@ -498,7 +527,7 @@
 			<control type="label" id="1">
 				<description>Sesson value</description>
 				<posx>300</posx>
-				<posy>195</posy>
+				<posy>185</posy>
 				<width>375</width>
 				<info>Listitem.Season</info>
 				<font>font12</font>
@@ -508,7 +537,7 @@
 			<control type="label" id="21">
 				<description>Director value</description>
 				<posx>300</posx>
-				<posy>215</posy>
+				<posy>205</posy>
 				<width>375</width>
 				<label>-</label>
 				<font>font12</font>
@@ -518,7 +547,7 @@
 			<control type="label" id="22">
 				<description>Writing Credits value</description>
 				<posx>300</posx>
-				<posy>235</posy>
+				<posy>225</posy>
 				<width>375</width>
 				<label>-</label>
 				<font>font12</font>
@@ -528,7 +557,7 @@
 			<control type="label" id="23">
 				<description>Genre value</description>
 				<posx>300</posx>
-				<posy>255</posy>
+				<posy>245</posy>
 				<width>375</width>
 				<label>-</label>
 				<font>font12</font>
@@ -538,7 +567,7 @@
 			<control type="label" id="24">
 				<description>Year value</description>
 				<posx>300</posx>
-				<posy>275</posy>
+				<posy>265</posy>
 				<width>375</width>
 				<label>-</label>
 				<font>font12</font>
@@ -548,9 +577,19 @@
 			<control type="label" id="30">
 				<description>Rating and votes value</description>
 				<posx>300</posx>
-				<posy>295</posy>
+				<posy>285</posy>
 				<width>375</width>
 				<label>-</label>
+				<font>font12</font>
+				<visible>container.content(episodes)</visible>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<description>File Path value</description>
+				<posx>300</posx>
+				<posy>305</posy>
+				<width>375</width>
+				<info>Listitem.FilenameAndPath</info>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
 				<scroll>true</scroll>
