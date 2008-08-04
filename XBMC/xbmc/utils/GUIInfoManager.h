@@ -34,7 +34,6 @@
 #include "CPUInfo.h"
 #endif
 #include "IMsgTargetCallback.h"
-#include "DateTime.h"
 #include "inttypes.h"
 
 #include <list>
@@ -47,6 +46,7 @@ namespace MUSIC_INFO
 class CVideoInfoTag;
 class CFileItem;
 class CGUIListItem;
+class CDateTime;
 
 // conditions for window retrieval
 #define WINDOW_CONDITION_HAS_LIST_ITEMS  1
