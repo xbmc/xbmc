@@ -90,7 +90,7 @@
 			<width>350</width>
 			<height>22</height>
 			<font>special13</font>
-            <align>center</align>
+			<align>center</align>
 			<textcolor>green</textcolor>
 		</control>
 		<control type="group" id="9000">
