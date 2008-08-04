@@ -292,6 +292,8 @@ typedef std::map<CStdString, CFileItemPtr >::iterator IMAPFILEITEMS;
 typedef std::pair<CStdString, CFileItemPtr > MAPFILEITEMSPAIR;
 
 typedef bool (*FILEITEMLISTCOMPARISONFUNC) (const CFileItemPtr &pItem1, const CFileItemPtr &pItem2);
+typedef void (*FILEITEMFILLFUNC) (CFileItemPtr &item);
+
 /*!
   \brief Represents a list of files
   \sa CFileItemList, CFileItem
@@ -371,6 +373,7 @@ public:
   void ClearSortState();
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
+  void FillSortFields(FILEITEMFILLFUNC func);
   CStdString GetDiscCacheFile() const;
 
   VECFILEITEMS m_items;

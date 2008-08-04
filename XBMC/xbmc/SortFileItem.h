@@ -27,100 +27,40 @@ class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 
 struct SSortFileItem
 {
-  // Sort by file - this sorts by entire filepath, followed by the startoffset (for .cue items)
-  static bool FileAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool FileDescending(const CFileItemPtr &left, const CFileItemPtr &right);
+  // Sort by sort field
+  static bool Ascending(const CFileItemPtr &left, const CFileItemPtr &right);
+  static bool Descending(const CFileItemPtr &left, const CFileItemPtr &right);
 
-  // Sort by date
-  static bool DateAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool DateDescending(const CFileItemPtr &left, const CFileItemPtr &right);
+  // Fill in sort field
+  static void ByLabel(CFileItemPtr &item);
+  static void ByLabelNoThe(CFileItemPtr &item);
+  static void ByFile(CFileItemPtr &item);
+  static void ByDate(CFileItemPtr &item);
+  static void BySize(CFileItemPtr &item);
+  static void ByDriveType(CFileItemPtr &item);
+  static void BySongTitle(CFileItemPtr &item);
+  static void BySongTitleNoThe(CFileItemPtr &item);
+  static void BySongAlbum(CFileItemPtr &item);
+  static void BySongAlbumNoThe(CFileItemPtr &item);
+  static void BySongArtist(CFileItemPtr &item);
+  static void BySongArtistNoThe(CFileItemPtr &item);
+  static void BySongTrackNum(CFileItemPtr &item);
+  static void BySongDuration(CFileItemPtr &item);
+  static void BySongRating(CFileItemPtr &item);
 
-  // Sort by filesize
-  static bool SizeAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool SizeDescending(const CFileItemPtr &left, const CFileItemPtr &right);
+  static void ByProgramCount(CFileItemPtr &item);
 
-  // Sort by Drive type, and then by label
-  static bool DriveTypeAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool DriveTypeDescending(const CFileItemPtr &left, const CFileItemPtr &right);
+  static void ByGenre(CFileItemPtr &item);
+  static void ByMovieTitle(CFileItemPtr &item);
+  static void ByMovieYear(CFileItemPtr &item);
+  static void ByMovieRating(CFileItemPtr &item);
+  static void ByMovieRuntime(CFileItemPtr &item);
+  static void ByMPAARating(CFileItemPtr &item);
+  static void ByStudio(CFileItemPtr &item);
+  static void ByStudioNoThe(CFileItemPtr &item);
 
-  // Sort by Label - the NoThe methods remove the "The " in front of items
-  static bool LabelAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool LabelDescending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool LabelAscendingNoThe(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool LabelDescendingNoThe(const CFileItemPtr &left, const CFileItemPtr &right);
-
-  // Sort by Title
-  static bool SongTitleAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool SongTitleDescending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool SongTitleAscendingNoThe(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool SongTitleDescendingNoThe(const CFileItemPtr &left, const CFileItemPtr &right);
-
-  // Sort by Movie Title
-  static bool MovieTitleAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool MovieTitleDescending(const CFileItemPtr &left, const CFileItemPtr &right);
-
-  // Sort by album (then artist, then tracknumber)
-  static bool SongAlbumAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool SongAlbumDescending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool SongAlbumAscendingNoThe(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool SongAlbumDescendingNoThe(const CFileItemPtr &left, const CFileItemPtr &right);
-
-  // Sort by artist (then album, then tracknumber)
-  static bool SongArtistAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool SongArtistDescending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool SongArtistAscendingNoThe(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool SongArtistDescendingNoThe(const CFileItemPtr &left, const CFileItemPtr &right);
-
-  // Sort by genre
-  static bool GenreAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool GenreDescending(const CFileItemPtr &left, const CFileItemPtr &right);
-
-  // Sort by track number
-  static bool SongTrackNumAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool SongTrackNumDescending(const CFileItemPtr &left, const CFileItemPtr &right);
-
-  // Sort by episode number
-  static bool EpisodeNumAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool EpisodeNumDescending(const CFileItemPtr &left, const CFileItemPtr &right);
-
-  // Sort by song duration
-  static bool SongDurationAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool SongDurationDescending(const CFileItemPtr &left, const CFileItemPtr &right);
-
-  // Sort by program count
-  static bool ProgramCountAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool ProgramCountDescending(const CFileItemPtr &left, const CFileItemPtr &right);
-
-  // Sort by Movie Year, and if equal, sort by label
-  static bool MovieYearAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool MovieYearDescending(const CFileItemPtr &left, const CFileItemPtr &right);
-
-  // Sort by Movie Rating, and if equal, sort by label
-  static bool MovieRatingAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool MovieRatingDescending(const CFileItemPtr &left, const CFileItemPtr &right);
-
-  // Sort by MPAA Rating, and if equal, sort by label
-  static bool MPAARatingAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool MPAARatingDescending(const CFileItemPtr &left, const CFileItemPtr &right);
-
-  // Sort by Production Code
-  static bool ProductionCodeAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool ProductionCodeDescending(const CFileItemPtr &left, const CFileItemPtr &right);
-
-  // Sort by Song Rating (0 -> 5)
-  static bool SongRatingAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool SongRatingDescending(const CFileItemPtr &left, const CFileItemPtr &right);
-
-  // Sort by Movie Runtime, and if equal, sort by label
-  static bool MovieRuntimeAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool MovieRuntimeDescending(const CFileItemPtr &left, const CFileItemPtr &right);
-
-  // Sort by Studio, and if equal, sort by label
-  static bool StudioAscending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool StudioDescending(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool StudioAscendingNoThe(const CFileItemPtr &left, const CFileItemPtr &right);
-  static bool StudioDescendingNoThe(const CFileItemPtr &left, const CFileItemPtr &right);
-
+  static void ByEpisodeNum(CFileItemPtr &item);
+  static void ByProductionCode(CFileItemPtr &item);
 };
 
 typedef enum {
