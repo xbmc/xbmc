@@ -158,6 +158,7 @@
   <string id="222">Cancel</string>
   <string id="224">Speed</string>
   <string id="225">Transition Time</string>
+  <string id="226">Test Pattern...</string>
   <string id="227">Lookup audio CDs on freedb</string>
   <string id="228">Shuffle Playlist on Load</string>
   <string id="229">HD Spindown Time</string>
