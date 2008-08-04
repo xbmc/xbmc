@@ -1,0 +1,55 @@
+Les différentes données..
+-----
+
+typedef struct {
+  int32 * buf;
+  int32 width;
+  int32 height;
+  int32 size;
+
+  int32 * realstart;
+} Surface;
+-----
+
+>> taille du buffer de zoom
+guint32 mmx_zoom_size;
+-----
+
+>> les buffers bruts contiennent les px et py de chaque point
+>> => brutS[0] = px0, brutS[1] = py0, brutS[2] = px1, [...]
+
+signed int *brutS = 0, *freebrutS = 0; // source
+signed int *brutD = 0, *freebrutD = 0; // dest
+signed int *brutT = 0, *freebrutT = 0; // temp (en cours de génération)
+
+>> pointeur vers p1
+guint32 *expix1 = 0;
+>> pointeur vers p2
+guint32 *expix2 = 0;
+
+>> largeur d'une ligne = prevX
+guint32 zoom_width;
+
+>> largeur et hauteur des differents buffers.
+int prevX=0,prevY=0;
+-----
+
+>> buffratio est un fixpoint : 16,16
+>> valeur normalement comprise entre 0 et 1,
+>> soit 0<=buffratio<=BUFFPOINTMASK
+
+int buffratio = 0;
+
+#define BUFFPOINTNB 16
+#define BUFFPOINTMASK 0xffff
+#define BUFFINCR 0xff
+-----
+
+#define sqrtperte 16
+>> faire : a % sqrtperte <=> a & pertemask
+#define PERTEMASK 0xf
+>> faire : a / sqrtperte <=> a >> PERTEDEC
+#define PERTEDEC 4
+-----
+
+int precalCoef[16][16];
