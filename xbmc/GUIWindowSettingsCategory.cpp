@@ -1694,6 +1694,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   { // activate the video calibration screen
     m_gWindowManager.ActivateWindow(WINDOW_SCREEN_CALIBRATION);
   }
+  else if (strSetting.Equals("videoscreen.testpattern"))
+  { // activate the test pattern
+    m_gWindowManager.ActivateWindow(WINDOW_TEST_PATTERN);
+  }
   else if (strSetting.Equals("videoplayer.externaldvdplayer"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
