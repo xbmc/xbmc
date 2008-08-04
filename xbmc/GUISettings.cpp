@@ -223,12 +223,10 @@ CGUISettings::CGUISettings(void)
   // My Music Settings
   AddGroup(3, 2);
   AddCategory(3, "mymusic", 16000);
-#ifdef __APPLE__
+#ifdef _LINUX
   AddString(1, "mymusic.visualisation", 250, "ProjectM.vis", SPIN_CONTROL_TEXT);
 #elif defined(_WIN32PC)
   AddString(1, "mymusic.visualisation", 250, "opengl_spectrum_win32.vis", SPIN_CONTROL_TEXT);
-#else
-  AddString(1, "mymusic.visualisation", 250, "milkdrop.vis", SPIN_CONTROL_TEXT);
 #endif
   AddSeparator(2, "mymusic.sep1");
   AddBool(3, "mymusic.autoplaynextitem", 489, true);
