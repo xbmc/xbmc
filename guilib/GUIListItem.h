@@ -78,6 +78,9 @@ public:
   void SetOverlayImage(GUIIconOverlay icon, bool bOnOff=false);
   CStdString GetOverlayImage() const;
 
+  void SetSortLabel(const CStdString &label);
+  const CStdString &GetSortLabel() const;
+
   void Select(bool bOnOff);
   bool IsSelected() const;
 
@@ -120,7 +123,6 @@ public:
   double     GetPropertyDouble(const CStdString &strKey) const;
 
 protected:
-  CStdString m_strLabel;      // text of column1
   CStdString m_strLabel2;     // text of column2
   CStdString m_strThumbnailImage; // filename of thumbnail
   CStdString m_strIcon;      // filename of icon
@@ -139,6 +141,9 @@ protected:
   };
 
   std::map<CStdString, CStdString, icompare> m_mapProperties;
+private:
+  CStdString m_sortLabel;     // text for sorting
+  CStdString m_strLabel;      // text of column1
 };
 #endif
 
