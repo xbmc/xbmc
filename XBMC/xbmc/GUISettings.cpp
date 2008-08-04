@@ -581,6 +581,7 @@ CGUISettings::CGUISettings(void)
 #endif
 
   AddString(3, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
+  AddString(4, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
   AddInt(6, "videoscreen.vsync", 13105,
 #ifdef _LINUX
          VSYNC_DISABLED,
