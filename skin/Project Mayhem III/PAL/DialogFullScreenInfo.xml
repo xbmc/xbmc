@@ -256,7 +256,7 @@
 			</control>
 			<control type="label">
 				<description>time label</description>
-				<width>520</width>
+				<width>200</width>
 				<posx>160</posx>
 				<posy>80</posy>
 				<label>$INFO[VideoPlayer.Time]$INFO[Player.Duration, / ]</label>
@@ -271,6 +271,17 @@
 				<posy>80</posy>
 				<label>$INFO[player.chapter,$LOCALIZE[21396] ]$INFO[player.chaptercount, / ]</label>
 				<visible>player.chaptercount + !Control.HasFocus(2) + !Control.HasFocus(61)</visible>
+				<align>right</align>
+				<font>font10</font>
+				<animation effect="slide" end="0,-20" time="0" condition="!IsEmpty(player.chaptername)">Conditional</animation>
+			</control>
+			<control type="label">
+				<description>Chapter Name</description>
+				<width>400</width>
+				<posx>680</posx>
+				<posy>80</posy>
+				<label>$INFO[player.chaptername]</label>
+				<visible>player.chaptercount + !Control.HasFocus(2) + !Control.HasFocus(61) + !IsEmpty(player.chaptername)</visible>
 				<align>right</align>
 				<font>font10</font>
 			</control>
