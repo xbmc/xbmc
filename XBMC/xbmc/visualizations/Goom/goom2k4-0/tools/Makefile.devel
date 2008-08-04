@@ -1,0 +1,5 @@
+minicompress:minicompress.c
+	gcc -o minicompress -Wall minicompress.c
+
+clean:
+	rm -f *~ *.o minicompress
