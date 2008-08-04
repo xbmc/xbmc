@@ -661,6 +661,9 @@ host
 host_cpu
 host_vendor
 host_os
+ARCH_DEFINES
+ARCH
+HAVE_PMOUNT
 CCACHE
 AWK
 CXX
@@ -679,11 +682,14 @@ INCLUDES
 CPP
 GREP
 EGREP
+HAVE_GAWK
+HAVE_CMAKE
+HAVE_GPERF
+HAVE_UNZIP
+HAVE_NASM
 ALLOCA
 LIBOBJS
 POW_LIB
-ARCH_DEFINES
-ARCH
 DEBUG_FLAGS
 SDL_DEFINES
 LZO_INCLUDES
@@ -1851,6 +1857,33 @@ case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
 
 
 
+case $host in
+    i*86*-linux-gnu)
+       ARCH="i486-linux"
+       ;;
+    x86_64-*-linux-gnu)
+       ARCH="x86_64-linux"
+       ;;
+    i386-apple-darwin*)
+       ARCH="x86-osx"
+       ;;
+    powerpc-*-linux-gnu)
+       ARCH="powerpc-linux"
+       ARCH_DEFINES="-D_POWERPC"
+
+       ;;
+    powerpc64-*-linux-gnu)
+       ARCH="powerpc64-linux"
+       ARCH_DEFINES="-D_POWERPC64"
+
+       ;;
+    *)
+       { { echo "$as_me:$LINENO: error: ==unsupported host" >&5
+echo "$as_me: error: ==unsupported host" >&2;}
+   { (exit 1); exit 1; }; }
+esac
+
+
 # Check whether --enable-debug was given.
 if test "${enable_debug+set}" = set; then
   enableval=$enable_debug; use_debug=$enableval
@@ -1901,7 +1934,49 @@ fi
 
 # Check whether --enable-halmount was given.
 if test "${enable_halmount+set}" = set; then
-  enableval=$enable_halmount; use_halmount=$enableval
+  enableval=$enable_halmount; # Extract the first word of "pmount", so it can be a program name with args.
+set dummy pmount; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_prog_HAVE_PMOUNT+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test -n "$HAVE_PMOUNT"; then
+  ac_cv_prog_HAVE_PMOUNT="$HAVE_PMOUNT" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_prog_HAVE_PMOUNT="yes"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_prog_HAVE_PMOUNT" && ac_cv_prog_HAVE_PMOUNT="no"
+fi
+fi
+HAVE_PMOUNT=$ac_cv_prog_HAVE_PMOUNT
+if test -n "$HAVE_PMOUNT"; then
+  { echo "$as_me:$LINENO: result: $HAVE_PMOUNT" >&5
+echo "${ECHO_T}$HAVE_PMOUNT" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+ \
+             if test "$HAVE_PMOUNT" = "no"; then \
+               { echo "$as_me:$LINENO: WARNING: == Could not find required program. Please see README.linux. Disabling halmount." >&5
+echo "$as_me: WARNING: == Could not find required program. Please see README.linux. Disabling halmount." >&2;}; \
+             fi; \
+             use_halmount="$HAVE_PMOUNT"
 else
   use_halmount=no
 fi
@@ -6682,6 +6757,228 @@ echo "$as_me: error: == Could not find a required library. Please see README.lin
    { (exit 1); exit 1; }; }
 fi
 
+fi
+
+# Extract the first word of "gawk", so it can be a program name with args.
+set dummy gawk; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_prog_HAVE_GAWK+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test -n "$HAVE_GAWK"; then
+  ac_cv_prog_HAVE_GAWK="$HAVE_GAWK" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_prog_HAVE_GAWK=""yes""
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_prog_HAVE_GAWK" && ac_cv_prog_HAVE_GAWK=""no""
+fi
+fi
+HAVE_GAWK=$ac_cv_prog_HAVE_GAWK
+if test -n "$HAVE_GAWK"; then
+  { echo "$as_me:$LINENO: result: $HAVE_GAWK" >&5
+echo "${ECHO_T}$HAVE_GAWK" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+if test "$HAVE_GAWK" = "no" ; then
+  { { echo "$as_me:$LINENO: error: == Could not find a required program.  Please see README.linux." >&5
+echo "$as_me: error: == Could not find a required program.  Please see README.linux." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+# Extract the first word of "cmake", so it can be a program name with args.
+set dummy cmake; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_prog_HAVE_CMAKE+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test -n "$HAVE_CMAKE"; then
+  ac_cv_prog_HAVE_CMAKE="$HAVE_CMAKE" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_prog_HAVE_CMAKE=""yes""
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_prog_HAVE_CMAKE" && ac_cv_prog_HAVE_CMAKE=""no""
+fi
+fi
+HAVE_CMAKE=$ac_cv_prog_HAVE_CMAKE
+if test -n "$HAVE_CMAKE"; then
+  { echo "$as_me:$LINENO: result: $HAVE_CMAKE" >&5
+echo "${ECHO_T}$HAVE_CMAKE" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+if test "$HAVE_CMAKE" = "no" ; then
+  { { echo "$as_me:$LINENO: error: == Could not find a required program.  Please see README.linux." >&5
+echo "$as_me: error: == Could not find a required program.  Please see README.linux." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+# Extract the first word of "gperf", so it can be a program name with args.
+set dummy gperf; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_prog_HAVE_GPERF+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test -n "$HAVE_GPERF"; then
+  ac_cv_prog_HAVE_GPERF="$HAVE_GPERF" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_prog_HAVE_GPERF=""yes""
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_prog_HAVE_GPERF" && ac_cv_prog_HAVE_GPERF=""no""
+fi
+fi
+HAVE_GPERF=$ac_cv_prog_HAVE_GPERF
+if test -n "$HAVE_GPERF"; then
+  { echo "$as_me:$LINENO: result: $HAVE_GPERF" >&5
+echo "${ECHO_T}$HAVE_GPERF" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+if test "$HAVE_GPERF" = "no" ; then
+  { { echo "$as_me:$LINENO: error: == Could not find a required program.  Please see README.linux." >&5
+echo "$as_me: error: == Could not find a required program.  Please see README.linux." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+# Extract the first word of "unzip", so it can be a program name with args.
+set dummy unzip; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_prog_HAVE_UNZIP+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test -n "$HAVE_UNZIP"; then
+  ac_cv_prog_HAVE_UNZIP="$HAVE_UNZIP" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_prog_HAVE_UNZIP=""yes""
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_prog_HAVE_UNZIP" && ac_cv_prog_HAVE_UNZIP=""no""
+fi
+fi
+HAVE_UNZIP=$ac_cv_prog_HAVE_UNZIP
+if test -n "$HAVE_UNZIP"; then
+  { echo "$as_me:$LINENO: result: $HAVE_UNZIP" >&5
+echo "${ECHO_T}$HAVE_UNZIP" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+if test "$HAVE_UNZIP" = "no" ; then
+  { { echo "$as_me:$LINENO: error: == Could not find a required program.  Please see README.linux." >&5
+echo "$as_me: error: == Could not find a required program.  Please see README.linux." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+if test "$ARCH" != "x86_64-linux"; then
+  # Extract the first word of "nasm", so it can be a program name with args.
+set dummy nasm; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_prog_HAVE_NASM+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test -n "$HAVE_NASM"; then
+  ac_cv_prog_HAVE_NASM="$HAVE_NASM" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_prog_HAVE_NASM=""yes""
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_prog_HAVE_NASM" && ac_cv_prog_HAVE_NASM=""no""
+fi
+fi
+HAVE_NASM=$ac_cv_prog_HAVE_NASM
+if test -n "$HAVE_NASM"; then
+  { echo "$as_me:$LINENO: result: $HAVE_NASM" >&5
+echo "${ECHO_T}$HAVE_NASM" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+  if test "$HAVE_NASM" = "no" ; then
+    { { echo "$as_me:$LINENO: error: == Could not find a required program.  Please see README.linux." >&5
+echo "$as_me: error: == Could not find a required program.  Please see README.linux." >&2;}
+   { (exit 1); exit 1; }; }
+  fi
 fi
 
 # Checks for header files.
@@ -13233,33 +13530,6 @@ else
   LZO_INCLUDES="$LZO_INCLUDES"
 fi
 
-case $host in
-    i*86*-linux-gnu)
-       ARCH="i486-linux"
-       ;;
-    x86_64-*-linux-gnu)
-       ARCH="x86_64-linux"
-       ;;
-    i386-apple-darwin*)
-       ARCH="x86-osx"
-       ;;
-    powerpc-*-linux-gnu)
-       ARCH="powerpc-linux"
-       ARCH_DEFINES="-D_POWERPC"
-
-       ;;
-    powerpc64-*-linux-gnu)
-       ARCH="powerpc64-linux"
-       ARCH_DEFINES="-D_POWERPC64"
-
-       ;;
-    *)
-       { { echo "$as_me:$LINENO: error: ==unsupported host" >&5
-echo "$as_me: error: ==unsupported host" >&2;}
-   { (exit 1); exit 1; }; }
-esac
-
-
 if test "$use_halmount" = "yes"; then
   final_message="$final_message\n  Automount:\tYes"
   SDL_DEFINES="$SDL_DEFINES -DHAL_HANDLEMOUNT"
@@ -14041,6 +14311,9 @@ host!$host$ac_delim
 host_cpu!$host_cpu$ac_delim
 host_vendor!$host_vendor$ac_delim
 host_os!$host_os$ac_delim
+ARCH_DEFINES!$ARCH_DEFINES$ac_delim
+ARCH!$ARCH$ac_delim
+HAVE_PMOUNT!$HAVE_PMOUNT$ac_delim
 CCACHE!$CCACHE$ac_delim
 AWK!$AWK$ac_delim
 CXX!$CXX$ac_delim
@@ -14059,18 +14332,21 @@ INCLUDES!$INCLUDES$ac_delim
 CPP!$CPP$ac_delim
 GREP!$GREP$ac_delim
 EGREP!$EGREP$ac_delim
+HAVE_GAWK!$HAVE_GAWK$ac_delim
+HAVE_CMAKE!$HAVE_CMAKE$ac_delim
+HAVE_GPERF!$HAVE_GPERF$ac_delim
+HAVE_UNZIP!$HAVE_UNZIP$ac_delim
+HAVE_NASM!$HAVE_NASM$ac_delim
 ALLOCA!$ALLOCA$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
 POW_LIB!$POW_LIB$ac_delim
-ARCH_DEFINES!$ARCH_DEFINES$ac_delim
-ARCH!$ARCH$ac_delim
 DEBUG_FLAGS!$DEBUG_FLAGS$ac_delim
 SDL_DEFINES!$SDL_DEFINES$ac_delim
 LZO_INCLUDES!$LZO_INCLUDES$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 72; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 78; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -14481,7 +14757,7 @@ if [ -d xbmc/lib/libPython/Python ]; then
     --enable-unicode=ucs4 \
     --without-cxx \
     --enable-shared \
-    --prefix=`pwd`/../linux/python-lib MACOSX_DEPLOYMENT_TARGET=10.5 &&
+    --prefix=`pwd`/../linux/python-lib MACOSX_DEPLOYMENT_TARGET=10.5 CFLAGS=-fPIC &&
   sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h &&
   cp pyconfig.h Include
 
