@@ -52,7 +52,7 @@ bool CGUIWindowTestPattern::OnAction(const CAction &action)
 
   case ACTION_MOVE_UP:
   case ACTION_MOVE_LEFT:
-     m_pattern = m_pattern > 0 ? m_pattern-- : NUM_PATTERNS;
+     m_pattern = m_pattern > 0 ? m_pattern - 1 : NUM_PATTERNS;
      break;
 
   case ACTION_MOVE_DOWN:
