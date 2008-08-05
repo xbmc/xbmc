@@ -35,7 +35,7 @@
 #endif
 
 class CKey;
-struct CAction;
+class CAction;
 class TiXmlNode;
 
 struct CButtonAction
