@@ -1410,6 +1410,12 @@
 					RelativePath="..\..\xbmc\GUIWindowSettingsScreenCalibration.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIWindowTestPattern.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowTestPattern.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\PluginSettings.cpp">
 				</File>
 				<File
@@ -3844,6 +3850,12 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\keyboard.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\language.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\language.h">
 					</File>
 					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\listitem.cpp">
