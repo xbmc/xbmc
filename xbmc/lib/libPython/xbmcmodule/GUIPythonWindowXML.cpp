@@ -332,18 +332,18 @@ bool CGUIPythonWindowXML::LoadXML(const CStdString &strPath, const CStdString &s
     xml = buffer;
     if (offset)
     {
-      // replace the occurences of PYTHON### with offset+###
+      // replace the occurences of SCRIPT### with offset+###
       // not particularly efficient, but it works
-      int pos = xml.Find("PYTHON");
+      int pos = xml.Find("SCRIPT");
       while (pos != (int)CStdString::npos)
       {
         CStdString num = xml.Mid(pos + 6, 4);
         int number = atol(num.c_str());
         CStdString oldNumber, newNumber;
-        oldNumber.Format("PYTHON%d", number);
+        oldNumber.Format("SCRIPT%d", number);
         newNumber.Format("%lu", offset + number);
         xml.Replace(oldNumber, newNumber);
-        pos = xml.Find("PYTHON", pos + 6);
+        pos = xml.Find("SCRIPT", pos + 6);
       }
     }
     delete[] buffer;
