@@ -781,6 +781,9 @@ void CGUIWindowVideoInfo::OnGetFanart()
 {
   CFileItemList items;
 
+  // ensure the fanart is unpacked
+  m_movieItem->GetVideoInfoTag()->m_fanart.Unpack();
+
   // Grab the thumbnails from the web
   CStdString strPath;
   CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"fanartthumbs",strPath);
