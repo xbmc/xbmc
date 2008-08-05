@@ -38,6 +38,7 @@
 #include "FileSystem/File.h"
 #include "Settings.h"
 #include "TextureManager.h"
+#include "language.h"
 
 // include for constants
 #include "pyutil.h"
@@ -807,13 +808,15 @@ namespace PYXBMC
     initPlayListItem_Type();
     initInfoTagMusic_Type();
     initInfoTagVideo_Type();
+    initLanguage_Type();
 
     if (PyType_Ready(&Keyboard_Type) < 0 ||
         PyType_Ready(&Player_Type) < 0 ||
         PyType_Ready(&PlayList_Type) < 0 ||
         PyType_Ready(&PlayListItem_Type) < 0 ||
         PyType_Ready(&InfoTagMusic_Type) < 0 ||
-        PyType_Ready(&InfoTagVideo_Type) < 0) return;
+        PyType_Ready(&InfoTagVideo_Type) < 0 ||
+        PyType_Ready(&Language_Type) < 0) return;
 
     Py_INCREF(&Keyboard_Type);
     Py_INCREF(&Player_Type);
@@ -821,6 +824,7 @@ namespace PYXBMC
     Py_INCREF(&PlayListItem_Type);
     Py_INCREF(&InfoTagMusic_Type);
     Py_INCREF(&InfoTagVideo_Type);
+    Py_INCREF(&Language_Type);
 
     pXbmcModule = Py_InitModule("xbmc", xbmcMethods);
     if (pXbmcModule == NULL) return;
@@ -831,6 +835,7 @@ namespace PYXBMC
     PyModule_AddObject(pXbmcModule, "PlayListItem", (PyObject*)&PlayListItem_Type);
     PyModule_AddObject(pXbmcModule, "InfoTagMusic", (PyObject*)&InfoTagMusic_Type);
     PyModule_AddObject(pXbmcModule, "InfoTagVideo", (PyObject*)&InfoTagVideo_Type);
+    PyModule_AddObject(pXbmcModule, "Language", (PyObject*)&Language_Type);
 
     // constants
     PyModule_AddStringConstant(pXbmcModule, "__author__", PY_XBMC_AUTHOR);
