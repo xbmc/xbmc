@@ -85,6 +85,32 @@ bool CPlayListPlayer::OnMessage(CGUIMessage &message)
   return false;
 }
 
+int CPlayListPlayer::GetNextSong(int offset) const
+{
+  if (m_iCurrentPlayList == PLAYLIST_NONE)
+    return -1;
+
+  const CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+  if (playlist.size() <= 0)
+    return -1;
+
+  int song = m_iCurrentSong;
+
+  // party mode
+  if (g_partyModeManager.IsEnabled() && GetCurrentPlaylist() == PLAYLIST_MUSIC)
+    return song + offset;
+
+  // wrap around in the case of repeating
+  if (RepeatedOne(m_iCurrentPlayList))
+    return song;
+
+  song++;
+  if (song >= playlist.size() && Repeated(m_iCurrentPlayList))
+    song = 0;
+
+  return song;
+}
+
 int CPlayListPlayer::GetNextSong()
 {
   if (m_iCurrentPlayList == PLAYLIST_NONE)
@@ -302,7 +328,7 @@ bool CPlayListPlayer::HasChanged()
 /// - PLAYLIST_NONE \n No playlist active
 /// - PLAYLIST_MUSIC \n Playlist from music playlist window
 /// - PLAYLIST_VIDEO \n Playlist from music playlist window
-int CPlayListPlayer::GetCurrentPlaylist()
+int CPlayListPlayer::GetCurrentPlaylist() const
 {
   return m_iCurrentPlayList;
 }
@@ -363,6 +389,23 @@ CPlayList& CPlayListPlayer::GetPlaylist(int iPlaylist)
   }
 }
 
+const CPlayList& CPlayListPlayer::GetPlaylist(int iPlaylist) const
+{
+  switch ( iPlaylist )
+  {
+  case PLAYLIST_MUSIC:
+    return *m_PlaylistMusic;
+    break;
+  case PLAYLIST_VIDEO:
+    return *m_PlaylistVideo;
+    break;
+  default:
+    // NOTE: This playlist may not be empty if the caller of the non-const version alters it!
+    return *m_PlaylistEmpty;
+    break;
+  }
+}
+
 /// \brief Removes any item from all playlists located on a removable share
 /// \return Number of items removed from PLAYLIST_MUSIC and PLAYLIST_VIDEO
 int CPlayListPlayer::RemoveDVDItems()
@@ -392,7 +435,7 @@ bool CPlayListPlayer::HasPlayedFirstFile()
 
 /// \brief Returns \e true if iPlaylist is repeated
 /// \param iPlaylist Playlist to be asked
-bool CPlayListPlayer::Repeated(int iPlaylist)
+bool CPlayListPlayer::Repeated(int iPlaylist) const
 {
   if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO)
     return (m_repeatState[iPlaylist] == REPEAT_ALL);
@@ -401,7 +444,7 @@ bool CPlayListPlayer::Repeated(int iPlaylist)
 
 /// \brief Returns \e true if iPlaylist repeats one song
 /// \param iPlaylist Playlist to be asked
-bool CPlayListPlayer::RepeatedOne(int iPlaylist)
+bool CPlayListPlayer::RepeatedOne(int iPlaylist) const
 {
   if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO)
     return (m_repeatState[iPlaylist] == REPEAT_ONE);

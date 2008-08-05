@@ -52,12 +52,14 @@ public:
   void Play();
   void Play(int iSong, bool bAutoPlay = false, bool bPlayPrevious = false);
   int GetCurrentSong() const;
+  int GetNextSong(int offset) const; ///< Returns the song index that is offset away from the current song
   int GetNextSong();
   void SetCurrentSong(int iSong);
   bool HasChanged();
   void SetCurrentPlaylist(int iPlaylist);
-  int GetCurrentPlaylist();
+  int GetCurrentPlaylist() const;
   CPlayList& GetPlaylist(int iPlaylist);
+  const CPlayList& GetPlaylist(int iPlaylist) const;
   int RemoveDVDItems();
   void Reset();
   void ClearPlaylist(int iPlaylist);
@@ -75,8 +77,8 @@ public:
   void Add(int iPlaylist, CFileItemList& items);
 
 protected:
-  bool Repeated(int iPlaylist);
-  bool RepeatedOne(int iPlaylist);
+  bool Repeated(int iPlaylist) const;
+  bool RepeatedOne(int iPlaylist) const;
   void ReShuffle(int iPlaylist, int iPosition);
   bool m_bChanged;
   bool m_bPlayedFirstFile;
