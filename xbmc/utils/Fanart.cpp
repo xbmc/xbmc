@@ -23,6 +23,7 @@
 #include "Fanart.h"
 #include "HTTP.h"
 #include "tinyXML/tinyxml.h"
+#include "Util.h"
 
 #ifdef RESAMPLE_CACHED_IMAGES
 #include "Picture.h"
@@ -74,7 +75,6 @@ bool CFanart::Unpack()
 	  {
       SFanartData data;
       data.strImage = fanartThumb->GetText();
-      data.strThumb.Format("_cache/%s", data.strImage.c_str());
       data.strResolution = fanartThumb->Attribute("dim");
       ParseColors(fanartThumb->Attribute("colors"), data.strColors);
       m_fanart.push_back(data);
@@ -91,16 +91,6 @@ const CStdString CFanart::GetImageURL() const
 
   CStdString result;
   result.Format("%s%s", m_url.c_str(), m_fanart[0].strImage.c_str());
-  return result;
-}
-
-const CStdString CFanart::GetThumbURL() const
-{
-  if (m_fanart.size() == 0)
-    return "";
-
-  CStdString result;
-  result.Format("%s%s", m_url.c_str(), m_fanart[0].strThumb.c_str());
   return result;
 }
 
@@ -131,33 +121,46 @@ bool CFanart::DownloadThumb(unsigned int index, const CStdString &strDestination
   if (index >= m_fanart.size())
     return false;
 
+  // thetvdb.com uses the url format:
+  // <url>/_cache/<thumbname> for the thumb <url>/<thumbname>
+
+  CStdString thumbURL = CUtil::AddFileToFolder(m_url, "_cache");
+  thumbURL = CUtil::AddFileToFolder(thumbURL, m_fanart[index].strImage.c_str());
+
   CHTTP http;
-  CStdString thumbURL;
-  thumbURL.Format("%s%s", m_url.c_str(), m_fanart[index].strThumb.c_str());
-  return (http.Download(thumbURL, strDestination));
+  if (http.Download(thumbURL, strDestination))
+    return true;
+
+  // try downloading the image instead
+  thumbURL = CUtil::AddFileToFolder(m_url, m_fanart[index].strImage.c_str());
+  return DownloadImage(thumbURL, strDestination);
+}
+
+bool CFanart::DownloadImage(const CStdString &url, const CStdString &destination) const
+{
+  // Ideally we'd just call CPicture::CacheImage() directly, but for some
+  // reason curl doesn't seem to like downloading these for us
+  CHTTP http;
+#ifdef RESAMPLE_CACHED_IMAGES
+  CStdString tempFile = _P("Z:\\fanart_download.jpg");
+  if (http.Download(url, tempFile))
+  { 
+    CPicture pic;
+    pic.CacheImage(tempFile, destination);
+    XFILE::CFile::Delete(tempFile);
+    return true;
+  }
+  return false;
+#else
+  return http.Download(url, destination);
+#endif
 }
 
 bool CFanart::DownloadImage(const CStdString &strDestination) const
 {
   if (m_fanart.size() == 0)
     return false;
-
-  // Ideally we'd just call CPicture::CacheImage() directly, but for some
-  // reason curl doesn't seem to like downloading these for us
-  CHTTP http;
-#ifdef RESAMPLE_CACHED_IMAGES
-  CStdString tempFile = _P("Z:\\fanart_download.jpg");
-  if (http.Download(GetImageURL(), tempFile))
-  { 
-    CPicture pic;
-    pic.CacheImage(tempFile, strDestination);
-    XFILE::CFile::Delete(tempFile);
-    return true;
-  }
-  return false;
-#else
-  return http.Download(GetImageURL(), strDestination);
-#endif
+  return DownloadImage(GetImageURL(), strDestination);
 }
 
 unsigned int CFanart::GetNumFanarts()
