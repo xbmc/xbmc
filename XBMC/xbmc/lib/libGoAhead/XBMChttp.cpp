@@ -1522,21 +1522,20 @@ int CXbmcHttp::xbmcClearSlideshow()
   }
 }
 
-int CXbmcHttp::xbmcPlaySlideshow(int numParas, CStdString paras[] )
+int CXbmcHttp::xbmcPlaySlideshow(int numParas, CStdString paras[])
 { // (filename(;1)) -> 1 indicates recursive
-    int recursive;
-    if (numParas>1)
-      recursive=atoi(paras[1].c_str());
-    else
-      recursive=0;
-    CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, recursive);
-    if (numParas==0)
-      msg.SetStringParam("");
-    else
-      msg.SetStringParam(paras[0]);
-    CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
-    if (pWindow) pWindow->OnMessage(msg);
-    return SetResponse(openTag+"OK");
+  // TODO: add suoport for new random and notrandom options
+  unsigned int recursive = 0;
+  if (numParas>1 && paras[1].Equals("1"))
+    recursive=1;
+  CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, recursive);
+  if (numParas==0)
+    msg.SetStringParam("");
+  else
+    msg.SetStringParam(paras[0]);
+  CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+  if (pWindow) pWindow->OnMessage(msg);
+  return SetResponse(openTag+"OK");
 }
 
 int CXbmcHttp::xbmcSlideshowSelect(int numParas, CStdString paras[])
