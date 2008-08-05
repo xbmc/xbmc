@@ -118,13 +118,13 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
     }
     break;
 
-  case ACTION_MOVE_ITEM_DOWN:
+  case ACTION_NEXT_LETTER:
     {
       OnNextLetter();
       return true;
     }
     break;
-  case ACTION_MOVE_ITEM_UP:
+  case ACTION_PREV_LETTER:
     {
       OnPrevLetter();
       return true;
