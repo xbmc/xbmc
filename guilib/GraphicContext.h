@@ -192,7 +192,8 @@ public:
   void Clear();
 
   // output scaling
-  void SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  // sets the input skin resolution.
+  void SetRenderingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  ///< Sets scaling up for rendering
+  void SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);    ///< Sets scaling up for skin loading etc.
   float GetScalingPixelRatio() const;
   void Flip() {m_screenSurface->Flip();}
   void InvertFinalCoords(float &x, float &y) const;
