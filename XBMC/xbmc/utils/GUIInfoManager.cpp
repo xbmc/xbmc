@@ -555,6 +555,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("viewmode")) ret = CONTAINER_VIEWMODE;
     else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
     else if (info.Equals("onprevious")) ret = CONTAINER_ON_PREVIOUS;
+    else if (info.Equals("scrolling"))
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SCROLLING : CONTAINER_SCROLLING, id, 0));
     else if (info.Equals("hasnext"))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_HAS_NEXT : CONTAINER_HAS_NEXT, id, 0));
     else if (info.Equals("hasprevious"))
@@ -805,6 +807,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("top250")) return LISTITEM_TOP250;
   else if (info.Equals("trailer")) return LISTITEM_TRAILER;
   else if (info.Equals("starrating")) return LISTITEM_STAR_RATING;
+  else if (info.Equals("sortletter")) return LISTITEM_SORT_LETTER;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -1983,6 +1986,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       case CONTAINER_POSITION:
       case CONTAINER_HAS_NEXT:
       case CONTAINER_HAS_PREVIOUS:
+      case CONTAINER_SCROLLING:
       case CONTAINER_SUBITEM:
         {
           const CGUIControl *control = NULL;
@@ -3616,6 +3620,13 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       if (item->GetVideoInfoTag()->m_iTop250 > 0)
         strResult.Format("%i",item->GetVideoInfoTag()->m_iTop250);
       return strResult;
+    }
+    break;
+  case LISTITEM_SORT_LETTER:
+    {
+      CStdString letter = item->GetSortLabel().Left(1);
+      letter.ToUpper();
+      return letter;
     }
     break;
   }

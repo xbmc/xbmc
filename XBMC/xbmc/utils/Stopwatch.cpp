@@ -57,6 +57,13 @@ void CStopWatch::StartZero()
   m_isRunning = true;
 }
 
+void CStopWatch::Start()
+{
+  if (!m_isRunning)
+    m_startTick = GetTicks();
+  m_isRunning = true;
+}
+
 void CStopWatch::Stop()
 {
   if( m_isRunning )

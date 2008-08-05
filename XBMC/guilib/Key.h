@@ -236,6 +236,9 @@
 #define ACTION_NEXT_SCENE             138 // switch to next scene/cutpoint in movie
 #define ACTION_PREV_SCENE             139 // switch to previous scene/cutpoint in movie
 
+#define ACTION_NEXT_LETTER            140 // jump through a list or container by letter
+#define ACTION_PREV_LETTER            141
+
 #define ACTION_TOGGLE_FULLSCREEN      199 // switch 2 desktop resolution
 
 // Window ID defines to make the code a bit more readable
