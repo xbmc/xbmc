@@ -19,12 +19,12 @@
  *
  */
 
-#include "stdafx.h"
-#include "VGMCodec.h"
+#include " ||stdafx.h" ||
+#include " ||VGMCodec.h" ||
 
 VGMCodec::VGMCodec()
 {
-  m_CodecName = "VGM";
+  m_CodecName = " ||VGM" ||;
   m_vgm = 0;
   m_iDataPos = -1; 
 }
@@ -41,12 +41,12 @@ bool VGMCodec::Init(const CStdString &strFile, unsigned int filecache)
   
   m_dll.Init();
 
-  CStdString strFileToLoad = "filereader://"+strFile;
+  CStdString strFileToLoad = " ||filereader://" ||+strFile;
 
   m_vgm = m_dll.LoadVGM(strFileToLoad.c_str(),&m_SampleRate,&m_BitsPerSample,&m_Channels);
   if (!m_vgm)
   {
-    CLog::Log(LOGERROR,"%s: error opening file %s!",__FUNCTION__,strFile.c_str());
+    CLog::Log(LOGERROR," ||%s: error opening file %s!" ||,__FUNCTION__,strFile.c_str());
     return false;
   }
   
@@ -98,28 +98,105 @@ bool VGMCodec::CanInit()
 
 bool VGMCodec::IsSupportedFormat(const CStdString& strExt)
 {
-  if (strExt == "afc"   || strExt == "agsc" || strExt == "amts"  || strExt == "adp"  ||
-      strExt == "cfn"   || strExt == "dsp"  || strExt == "gcm"   || strExt == "hps"  || 
-      strExt == "mpdsp" || strExt == "mss"  || strExt == "sad"   || strExt == "stm"  || 
-      strExt == "str"   || strExt == "ast"  || strExt == "brstm" || strExt == "wsi"  || 
-      strExt == "rwsd"  || strExt == "strm" || strExt == "xa"    || strExt == "ads"  || 
-      strExt == "ss2"   || strExt == "bmdx" || strExt == "gms"   || strExt == "ild"  || 
-      strExt == "mib"   || strExt == "mi4"  || strExt == "mih"   || strExt == "mic"  || 
-      strExt == "npsf"  || strExt == "pnb"  || strExt == "rxw"   || strExt == "sts"  || 
-      strExt == "svag"  || strExt == "str+" || strExt == "sth"   || strExt == "sng"  || 
-      strExt == "asf"   || strExt == "eam"  || strExt == "vag"   || strExt == "vpk"  || 
-      strExt == "wp2"   || strExt == "aus"  || strExt == "bg00"  || strExt == "cnk"  || 
-      strExt == "filp"  || strExt == "hgc1" || strExt == "ikm"   || strExt == "ivb"  || 
-      strExt == "leg"   || strExt == "musc" || strExt == "musx"  || strExt == "psh"  || 
-      strExt == "rstm"  || strExt == "rws"  || strExt == "sfs"   || strExt == "sl3"  || 
-      strExt == "svs"   || strExt == "vig"  || strExt == "xa30"  || strExt == "wavm" || 
-      strExt == "xwav"  || strExt == "xwb"  || strExt == "fsb"   || strExt == "genh" || 
-      strExt == "rsd"   || strExt == "acm"  || strExt == "adx"   || strExt == "aiff" ||  
-      strExt == "aifc"  || strExt == "ahx"  || strExt == "as4"   || strExt == "aud"  || 
-      strExt == "dvi"   || strExt == "kcey" || strExt == "rsf"   || strExt == "gcsw" || 
-      strExt == "int"   || strExt == "nwa"  || strExt == "raw"   || strExt == "rwx"  || 
-      strExt == "xss"   || strExt == "lwav" || strExt == "pos"   || strExt == "logg" ||
-      strExt == "sli"   || strExt == "sfl"   || strExt == "um3")
+  if (strExt == "acm" ||
+      strExt == "adp" ||
+      strExt == "ads" ||
+      strExt == "adx" ||
+      strExt == "afc" ||
+      strExt == "agsc" ||
+      strExt == "ahx" ||
+      strExt == "aifc" ||
+      strExt == "aix" ||
+      strExt == "aix" ||
+      strExt == "amts" ||
+      strExt == "as4" ||
+      strExt == "asf" ||
+      strExt == "ast" ||
+      strExt == "aud" ||
+      strExt == "aus" ||
+      strExt == "bg00" ||
+      strExt == "biodsp" ||
+      strExt == "bmdx" ||
+      strExt == "brstm" ||
+      strExt == "cfn" ||
+      strExt == "cnk" ||
+      strExt == "dsp" ||
+      strExt == "dvi" ||
+      strExt == "dxh" ||
+      strExt == "eam" ||
+      strExt == "enth" ||
+      strExt == "filp" ||
+      strExt == "fsb" ||
+      strExt == "gcm" ||
+      strExt == "gcw" ||
+      strExt == "genh" ||
+      strExt == "gms" ||
+      strExt == "hgc1" ||
+      strExt == "hps" ||
+      strExt == "ikm" ||
+      strExt == "ild" ||
+      strExt == "int" ||
+      strExt == "ivb" ||
+      strExt == "kces" ||
+      strExt == "kcey" ||
+      strExt == "leg" ||
+      strExt == "logg" ||
+      strExt == "lwav" ||
+      strExt == "mi4" ||
+      strExt == "mib" ||
+      strExt == "mic" ||
+      strExt == "mpdsp" ||
+      strExt == "mss" ||
+      strExt == "mus" ||
+      strExt == "musc" ||
+      strExt == "musx" ||
+      strExt == "npsf" ||
+      strExt == "nwa" ||
+      strExt == "pcm" ||
+      strExt == "pnb" ||
+      strExt == "pos" ||
+      strExt == "psh" ||
+      strExt == "psw" ||
+      strExt == "raw" ||
+      strExt == "rkv" ||
+      strExt == "rsd" ||
+      strExt == "rsf" ||
+      strExt == "rstm" ||
+      strExt == "rws" ||
+      strExt == "rwsd" ||
+      strExt == "rwx" ||
+      strExt == "rxw" ||
+      strExt == "sad" ||
+      strExt == "sdt" ||
+      strExt == "sfl" ||
+      strExt == "sfs" ||
+      strExt == "sl3" ||
+      strExt == "sli" ||
+      strExt == "sng" ||
+      strExt == "ss2" ||
+      strExt == "str" ||
+      strExt == "strm" ||
+      strExt == "sts" ||
+      strExt == "svag" ||
+      strExt == "svs" ||
+      strExt == "swd" ||
+      strExt == "tec" ||
+      strExt == "tydsp" ||
+      strExt == "um3" ||
+      strExt == "vag" ||
+      strExt == "vas" ||
+      strExt == "vig" ||
+      strExt == "vjdsp" ||
+      strExt == "vpk" ||
+      strExt == "wavm" ||
+      strExt == "wp2" ||
+      strExt == "wsi" ||
+      strExt == "wvs" ||
+      strExt == "xa" ||
+      strExt == "xa30" ||
+      strExt == "xss" ||
+      strExt == "xwav" ||
+      strExt == "xwb")
     return true;
   
   return false;
