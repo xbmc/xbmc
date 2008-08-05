@@ -815,7 +815,9 @@ void CGUIWindowVideoInfo::OnGetFanart()
   items.Add(itemNone);
 
   CStdString result;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_videoSources, g_localizeStrings.Get(20019), result))
+  VECSOURCES sources(g_settings.m_videoSources);
+  g_mediaManager.GetLocalDrives(sources);  
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result))
     return;   // user cancelled
 
   // delete the thumbnail if that's what the user wants, else overwrite with the
