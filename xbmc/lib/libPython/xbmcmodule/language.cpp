@@ -45,7 +45,7 @@ namespace PYXBMC
     self = (Language*)type->tp_alloc(type, 0);
     if (!self) return NULL;
 
-    static char *keywords[] = { "languagePath", "defaultLanguage", NULL };
+    static const char *keywords[] = { "languagePath", "defaultLanguage", NULL };
     char *cLanguagePath = NULL;
     char *cDefaultLanguage = NULL;
 
@@ -115,7 +115,7 @@ namespace PYXBMC
 
   PyObject* Language_GetLocalizedString(Language *self, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = { "id", NULL };
+    static const char *keywords[] = { "id", NULL };
     int id = -1;
     // parse arguments
     if (!PyArg_ParseTupleAndKeywords(
