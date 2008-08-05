@@ -1,14 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <scraper name="allocine.fr" content="movies" thumb="allocine.jpg">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;setting label=&quot;Activer Full Thumbnail&quot; type=&quot;bool&quot; id=&quot;FullThumbnail&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Activer les images HD et photos du film&quot; type=&quot;bool&quot; id=&quot;GetThumbnail&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Activer Informations du film&quot; type=&quot;bool&quot; id=&quot;info&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Activer les Informations du film&quot; type=&quot;bool&quot; id=&quot;info&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Activer Vignettes Acteurs&quot; type=&quot;bool&quot; id=&quot;actor&quot; default=&quot;falsetrue&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Activer les Vignettes d'acteurs&quot; type=&quot;bool&quot; id=&quot;actor&quot; default=&quot;falsetrue&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<expression noclean="1"></expression>
@@ -16,8 +16,8 @@
 	</GetSettings>
 
 	<NfoUrl dest="3">
-		<RegExp input="$$1" output="http://www.allocine.fr/recherche/?motcle=\1&amp;rub=0"  dest="3">
-			<expression noclean="1">allocine.fr/film/fichefilm_gen_cfilm=([0-9]*).html</expression>
+		<RegExp input="$$1" output="http://www.allocine.fr/film/fichefilm_gen_cfilm=\1.html"  dest="3">
+			<expression clear="yes" noclean="1">allocine\.fr/film/fichefilm_gen_cfilm=([0-9]*)\.html</expression>
 		</RegExp>
 	</NfoUrl>
 
@@ -125,7 +125,7 @@
 			<RegExp input="$$1" output="\1/rsz/434/x/x/x/medias" dest="6+">
 				<expression>var CRP_PATH = &quot;([^&quot;]*)/crp/80/80/x/x/medias&quot;</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb&gt;$$6\1&lt;/thumb&gt;" dest="3+">
+			<RegExp conditional="GetThumbnail" input="$$1" output="&lt;thumb&gt;$$6\1&lt;/thumb&gt;" dest="3+">
 				<expression repeat="yes" noclean="1">&quot;fichier&quot;:&quot;([^&quot;]*)&quot;</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
