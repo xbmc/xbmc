@@ -51,14 +51,7 @@ void CGUIPanelContainer::Render()
 
   if (!m_layout || !m_focusedLayout) return;
 
-  m_scrollOffset += m_scrollSpeed * (m_renderTime - m_scrollLastTime);
-  if ((m_scrollSpeed < 0 && m_scrollOffset < m_offset * m_layout->Size(m_orientation)) ||
-      (m_scrollSpeed > 0 && m_scrollOffset > m_offset * m_layout->Size(m_orientation)))
-  {
-    m_scrollOffset = m_offset * m_layout->Size(m_orientation);
-    m_scrollSpeed = 0;
-  }
-  m_scrollLastTime = m_renderTime;
+  UpdateScrollOffset();
 
   int offset = (int)(m_scrollOffset / m_layout->Size(m_orientation));
 

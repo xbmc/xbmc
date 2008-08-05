@@ -118,6 +118,19 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
     }
     break;
 
+  case ACTION_MOVE_ITEM_DOWN:
+    {
+      OnNextLetter();
+      return true;
+    }
+    break;
+  case ACTION_MOVE_ITEM_UP:
+    {
+      OnPrevLetter();
+      return true;
+    }
+    break;
+
   default:
     if (action.wID)
     { 
@@ -140,6 +153,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
         for (int i = 0; i < items->Size(); i++)
           m_items.push_back(items->Get(i));
         UpdateLayout(true); // true to refresh all items
+        UpdateScrollByLetter();
         SelectItem(message.GetParam1());
         return true;
       }
@@ -147,6 +161,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
       {
         CGUIListItemPtr item = message.GetItem();
         m_items.push_back(item);
+        UpdateScrollByLetter();
         if (m_pageControl)
         {
           CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
@@ -174,6 +189,8 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
     {
       if (message.GetSenderId() == m_pageControl && IsVisible())
       { // update our page if we're visible - not much point otherwise
+        if ((int)message.GetParam1() != m_offset)
+          m_pageChangeTimer.StartZero();
         ScrollToOffset(message.GetParam1());
         return true;
       }
@@ -246,6 +263,34 @@ void CGUIBaseContainer::OnRight()
       return;
   }
   CGUIControl::OnRight();
+}
+
+void CGUIBaseContainer::OnNextLetter()
+{
+  int offset = CorrectOffset(m_offset, m_cursor);
+  for (unsigned int i = 0; i < m_letterOffsets.size(); i++)
+  {
+    if (m_letterOffsets[i].first > offset)
+    {
+      SelectItem(m_letterOffsets[i].first);
+      return;
+    }
+  }
+}
+
+void CGUIBaseContainer::OnPrevLetter()
+{
+  int offset = CorrectOffset(m_offset, m_cursor);
+  if (!m_letterOffsets.size())
+    return;
+  for (unsigned int i = m_letterOffsets.size() - 1; i >= 0; i--)
+  {
+    if (m_letterOffsets[i].first < offset)
+    {
+      SelectItem(m_letterOffsets[i].first);
+      return;
+    }
+  }
 }
 
 bool CGUIBaseContainer::MoveUp(bool wrapAround)
@@ -443,6 +488,8 @@ void CGUIBaseContainer::DoRender(DWORD currentTime)
 {
   m_renderTime = currentTime;
   CGUIControl::DoRender(currentTime);
+  if (m_pageChangeTimer.GetElapsedMilliseconds() > 200)
+    m_pageChangeTimer.Stop();
   m_wasReset = false;
 }
 
@@ -511,6 +558,7 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
           m_lastItem = lastItem;
       }
     }
+    UpdateScrollByLetter();
   }
 }
 
@@ -531,6 +579,23 @@ void CGUIBaseContainer::CalculateLayout()
 
   // ensure that the scroll offset is a multiple of our size
   m_scrollOffset = m_offset * m_layout->Size(m_orientation);
+}
+
+void CGUIBaseContainer::UpdateScrollByLetter()
+{
+  m_letterOffsets.clear();
+
+  // for scrolling by letter we have an offset table into our vector.
+  CStdString currentMatch;
+  for (unsigned int i = 0; i < m_items.size(); i++)
+  {
+    CGUIListItemPtr item = m_items[i];
+    if (currentMatch != item->GetSortLabel().Left(1))
+    {
+      currentMatch = item->GetSortLabel().Left(1);
+      m_letterOffsets.push_back(make_pair((int)i, currentMatch));
+    }
+  }
 }
 
 unsigned int CGUIBaseContainer::GetRows() const
@@ -560,8 +625,27 @@ void CGUIBaseContainer::ScrollToOffset(int offset)
   }
   m_scrollSpeed = (offset * size - m_scrollOffset) / m_scrollTime;
   if (!m_wasReset)
+  {
     g_infoManager.SetContainerMoving(GetID(), offset - m_offset);
+    if (m_scrollSpeed)
+      m_scrollTimer.Start();
+    else
+      m_scrollTimer.Stop();
+  }
   m_offset = offset;
+}
+
+void CGUIBaseContainer::UpdateScrollOffset()
+{
+  m_scrollOffset += m_scrollSpeed * (m_renderTime - m_scrollLastTime);
+  if ((m_scrollSpeed < 0 && m_scrollOffset < m_offset * m_layout->Size(m_orientation)) ||
+      (m_scrollSpeed > 0 && m_scrollOffset > m_offset * m_layout->Size(m_orientation)))
+  {
+    m_scrollOffset = m_offset * m_layout->Size(m_orientation);
+    m_scrollSpeed = 0;
+    m_scrollTimer.Stop();
+  }
+  m_scrollLastTime = m_renderTime;
 }
 
 int CGUIBaseContainer::CorrectOffset(int offset, int cursor) const
@@ -743,6 +827,8 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const
       CGUIListItemLayout *layout = GetFocusedLayout();
       return layout ? (layout->GetFocusedItem() == (unsigned int)data) : false;
     }
+  case CONTAINER_SCROLLING:
+    return (m_scrollTimer.GetElapsedMilliseconds() > m_scrollTime || m_pageChangeTimer.IsRunning());
   default:
     return false;
   }
