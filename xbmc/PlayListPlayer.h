@@ -55,7 +55,6 @@ public:
   int GetNextSong(int offset) const; ///< Returns the song index that is offset away from the current song
   int GetNextSong();
   void SetCurrentSong(int iSong);
-  bool HasChanged();
   void SetCurrentPlaylist(int iPlaylist);
   int GetCurrentPlaylist() const;
   CPlayList& GetPlaylist(int iPlaylist);
@@ -65,11 +64,11 @@ public:
   void ClearPlaylist(int iPlaylist);
   void Clear();
   void SetShuffle(int iPlaylist, bool bYesNo);
-  bool IsShuffled(int iPlaylist);
-  bool HasPlayedFirstFile();
+  bool IsShuffled(int iPlaylist) const;
+  bool HasPlayedFirstFile() const;
 
   void SetRepeat(int iPlaylist, REPEAT_STATE state);
-  REPEAT_STATE GetRepeat(int iPlaylist);
+  REPEAT_STATE GetRepeat(int iPlaylist) const;
 
   // add items via the playlist player
   void Add(int iPlaylist, CPlayList& playlist);
@@ -80,7 +79,7 @@ protected:
   bool Repeated(int iPlaylist) const;
   bool RepeatedOne(int iPlaylist) const;
   void ReShuffle(int iPlaylist, int iPosition);
-  bool m_bChanged;
+
   bool m_bPlayedFirstFile;
   int m_iFailedSongs;
   int m_iCurrentSong;

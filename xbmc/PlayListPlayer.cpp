@@ -39,7 +39,6 @@ CPlayListPlayer::CPlayListPlayer(void)
   m_PlaylistVideo = new CPlayList;
   m_PlaylistEmpty = new CPlayList;
   m_iCurrentSong = -1;
-  m_bChanged = false;
   m_bPlayedFirstFile = false;
   m_iCurrentPlayList = PLAYLIST_NONE;
   for (int i = 0; i < 2; i++)
@@ -230,7 +229,6 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
         break;
   }
 
-  m_bChanged = true;
   int iPreviousSong = m_iCurrentSong;
   m_iCurrentSong = iSong;
   CFileItemPtr item = playlist[m_iCurrentSong];
@@ -315,13 +313,6 @@ int CPlayListPlayer::GetCurrentSong() const
   return m_iCurrentSong;
 }
 
-bool CPlayListPlayer::HasChanged()
-{
-  bool bResult = m_bChanged;
-  m_bChanged = false;
-  return bResult;
-}
-
 /// \brief Returns the active playlist.
 /// \return Active playlist \n
 /// Return values can be: \n
@@ -351,7 +342,6 @@ void CPlayListPlayer::SetCurrentPlaylist(int iPlaylist)
 
   m_iCurrentPlayList = iPlaylist;
   m_bPlayedFirstFile = false;
-  m_bChanged = true;
 }
 
 void CPlayListPlayer::ClearPlaylist(int iPlaylist)
@@ -428,7 +418,7 @@ void CPlayListPlayer::Reset()
 }
 
 /// \brief Whether or not something has been played yet or not from the current playlist.
-bool CPlayListPlayer::HasPlayedFirstFile()
+bool CPlayListPlayer::HasPlayedFirstFile() const
 {
   return m_bPlayedFirstFile;
 }
@@ -489,7 +479,7 @@ void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo)
   }
 }
 
-bool CPlayListPlayer::IsShuffled(int iPlaylist)
+bool CPlayListPlayer::IsShuffled(int iPlaylist) const
 {
   // even if shuffled, party mode says its not
   if (g_partyModeManager.IsEnabled() && iPlaylist == PLAYLIST_MUSIC)
@@ -514,7 +504,7 @@ void CPlayListPlayer::SetRepeat(int iPlaylist, REPEAT_STATE state)
   m_repeatState[iPlaylist] = state;
 }
 
-REPEAT_STATE CPlayListPlayer::GetRepeat(int iPlaylist)
+REPEAT_STATE CPlayListPlayer::GetRepeat(int iPlaylist) const
 {
   if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO)
     return m_repeatState[iPlaylist];
