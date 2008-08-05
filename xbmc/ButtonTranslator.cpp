@@ -393,6 +393,7 @@ void CButtonTranslator::GetAction(WORD wWindow, const CKey &key, CAction &action
   action.fAmount2 = 0;
   action.fRepeat = key.GetRepeat();
   action.m_dwButtonCode = key.GetButtonCode();
+  action.holdTime = key.GetHeld();
   // get the action amounts of the analog buttons
   if (key.GetButtonCode() == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
   {

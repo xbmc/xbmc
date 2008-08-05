@@ -6,9 +6,14 @@
 
 #define FRAME_DELAY 5
 
+const unsigned int CLowLevelKeyboard::key_hold_time = 500;  // time in ms before we declare it held
+
 CLowLevelKeyboard::CLowLevelKeyboard()
 {
   Reset();
+  m_lastKeyTime = 0;
+  m_keyHoldTime = 0;
+  memset(&m_lastKey, 0, sizeof(m_lastKey));
 }
 
 void CLowLevelKeyboard::Initialize(HWND hWnd)
@@ -28,10 +33,23 @@ void CLowLevelKeyboard::Reset()
   m_VKey = 0;
 }
 
+unsigned int CLowLevelKeyboard::KeyHeld() const
+{
+  if (m_keyHoldTime > key_hold_time)
+    return m_keyHoldTime - key_hold_time;
+  return 0;
+}
+
 void CLowLevelKeyboard::Update(SDL_Event& m_keyEvent)
 {
   if (m_keyEvent.type == SDL_KEYDOWN)
   {
+    DWORD now = timeGetTime();
+    if (memcmp(&m_lastKey, &m_keyEvent, sizeof(SDL_Event)) == 0)
+      m_keyHoldTime += now - m_lastKeyTime;
+    m_lastKey = m_keyEvent;
+    m_lastKeyTime = now;
+
     m_cAscii = 0;
     m_VKey = 0;
 
@@ -211,8 +229,10 @@ void CLowLevelKeyboard::Update(SDL_Event& m_keyEvent)
     }
   }
   else
-  {
+  { // key up event
     Reset();
+    memset(&m_lastKey, 0, sizeof(m_lastKey));
+    m_keyHoldTime = 0;
   }
 }
 
