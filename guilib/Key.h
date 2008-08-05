@@ -354,8 +354,17 @@
   \ingroup actionkeys
   \brief 
   */
-struct CAction
+class CAction
 {
+public:
+  CAction()
+  {
+    wID = 0;
+    fAmount1 = fAmount2 = fRepeat = 0;
+    m_dwButtonCode = 0;
+    unicode = 0;
+    holdTime = 0;
+  };
   WORD wID;
   float fAmount1;
   float fAmount2;
