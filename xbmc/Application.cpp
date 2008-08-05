@@ -2431,7 +2431,7 @@ bool CApplication::OnKey(CKey& key)
       {
         if (key.GetButtonCode() != KEY_INVALID)
           action.wID = (WORD) key.GetButtonCode();
-          action.unicode = key.GetUnicode();
+        action.unicode = key.GetUnicode();
       }
       else
       { // see if we've got an ascii key
@@ -3476,6 +3476,7 @@ bool CApplication::ProcessKeyboard()
       wkeyID = KEY_UNICODE;
     //  CLog::Log(LOGDEBUG,"Keyboard: time=%i key=%i", timeGetTime(), vkey);
     CKey key(wkeyID);
+    key.SetHeld(g_Keyboard.KeyHeld());
     return OnKey(key);
   }
   return false;
