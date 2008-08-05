@@ -43,6 +43,7 @@ CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, float posX, float 
   m_upDown.SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
   m_offset = 0;
   m_scrollOffset = 0;
+  m_scrollSpeed = 0;
   m_itemsPerPage = 10;
   m_itemHeight = 10;
   m_spinPosX = spinX;
