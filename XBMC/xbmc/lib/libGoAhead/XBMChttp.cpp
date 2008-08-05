@@ -1023,7 +1023,6 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
     }
     if (changed)
     {
-      g_playlistPlayer.HasChanged();
       return SetResponse(openTag+"OK");
     }
     else
