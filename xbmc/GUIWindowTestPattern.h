@@ -36,5 +36,14 @@ private:
   void DrawVerticalLines(int top, int left, int bottom, int right);
   void DrawHorizontalLines(int top, int left, int bottom, int right);
   void DrawCheckers(int top, int left, int bottom, int right);
+  void DrawBouncingRectangle(int top, int left, int bottom, int right);
+  void DrawContrastBrightnessPattern(int top, int left, int bottom, int right);
+  void DrawCircle(int originX, int originY, int radius);
+
   int m_pattern;
+  int m_bounceX;
+  int m_bounceY;
+  int m_bounceDirectionX;
+  int m_bounceDirectionY;
+  int m_blinkFrame;
 };
