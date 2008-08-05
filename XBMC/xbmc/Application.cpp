@@ -2314,53 +2314,48 @@ void CApplication::RenderMemoryStatus()
   g_infoManager.UpdateFPS();
   g_cpuInfo.getUsedPercentage(); // must call it to recalculate pct values
 
-#if !defined(_DEBUG) && !defined(PROFILE)
   if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
-#endif
   {
     // reset the window scaling and fade status
     RESOLUTION res = g_graphicsContext.GetVideoResolution();
     g_graphicsContext.SetScalingResolution(res, 0, 0, false);
 
-    if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
-    {
-      CStdString info;
-      MEMORYSTATUS stat;
-      GlobalMemoryStatus(&stat);
+    CStdString info;
+    MEMORYSTATUS stat;
+    GlobalMemoryStatus(&stat);
 #ifdef __APPLE__
-      double dCPU = m_resourceCounter.GetCPUUsage();
-      info.Format("FreeMem %ju/%ju MB, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%", stat.dwAvailPhys/(1024*1024), stat.dwTotalPhys/(1024*1024),
-               g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU);
+    double dCPU = m_resourceCounter.GetCPUUsage();
+    info.Format("FreeMem %ju/%ju MB, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%", stat.dwAvailPhys/(1024*1024), stat.dwTotalPhys/(1024*1024),
+              g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU);
 #elif !defined(_LINUX)
-      CStdString strCores = g_cpuInfo.GetCoresUsageString();
-      info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s.", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str());
+    CStdString strCores = g_cpuInfo.GetCoresUsageString();
+    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s.", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str());
 #else
-      double dCPU = m_resourceCounter.GetCPUUsage();
-      CStdString strCores = g_cpuInfo.GetCoresUsageString();
-      info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
-               g_infoManager.GetFPS(), strCores.c_str(), dCPU);
+    double dCPU = m_resourceCounter.GetCPUUsage();
+    CStdString strCores = g_cpuInfo.GetCoresUsageString();
+    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
+              g_infoManager.GetFPS(), strCores.c_str(), dCPU);
 #endif
 
-      static int yShift = 20;
-      static int xShift = 40;
-      static unsigned int lastShift = time(NULL);
-      time_t now = time(NULL);
-      if (now - lastShift > 10)
-      {
-        yShift *= -1;
-        if (now % 5 == 0)
-          xShift *= -1;
-        lastShift = now;
-      }
+    static int yShift = 20;
+    static int xShift = 40;
+    static unsigned int lastShift = time(NULL);
+    time_t now = time(NULL);
+    if (now - lastShift > 10)
+    {
+      yShift *= -1;
+      if (now % 5 == 0)
+        xShift *= -1;
+      lastShift = now;
+    }
 
 #ifndef __APPLE__
-      float x = xShift + 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
-      float y = yShift + 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
+    float x = xShift + 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
+    float y = yShift + 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
 
-      // Disable this for now as it might still be responsible for some crashes.
-      CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, info);
+    // Disable this for now as it might still be responsible for some crashes.
+    CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, info);
 #endif
-    }
   }
 }
 // OnKey() translates the key into a CAction which is sent on to our Window Manager.
