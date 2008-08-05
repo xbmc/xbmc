@@ -19,12 +19,12 @@
  *
  */
 
-#include " ||stdafx.h" ||
-#include " ||VGMCodec.h" ||
+#include "stdafx.h"
+#include "VGMCodec.h"
 
 VGMCodec::VGMCodec()
 {
-  m_CodecName = " ||VGM" ||;
+  m_CodecName = "VGM";
   m_vgm = 0;
   m_iDataPos = -1; 
 }
@@ -41,12 +41,12 @@ bool VGMCodec::Init(const CStdString &strFile, unsigned int filecache)
   
   m_dll.Init();
 
-  CStdString strFileToLoad = " ||filereader://" ||+strFile;
+  CStdString strFileToLoad = "filereader://"+strFile;
 
   m_vgm = m_dll.LoadVGM(strFileToLoad.c_str(),&m_SampleRate,&m_BitsPerSample,&m_Channels);
   if (!m_vgm)
   {
-    CLog::Log(LOGERROR," ||%s: error opening file %s!" ||,__FUNCTION__,strFile.c_str());
+    CLog::Log(LOGERROR,"%s: error opening file %s!",__FUNCTION__,strFile.c_str());
     return false;
   }
   
@@ -201,4 +201,3 @@ bool VGMCodec::IsSupportedFormat(const CStdString& strExt)
   
   return false;
 }
-
