@@ -1174,9 +1174,12 @@ void CSettings::LoadAdvancedSettings()
   if (GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NORMAL, LOG_LEVEL_NONE, LOG_LEVEL_MAX))
   { // read the loglevel setting, so set the setting advanced to hide it in GUI
     // as altering it will do nothing - we don't write to advancedsettings.xml
-    CSetting *setting = g_guiSettings.GetSetting("system.debuglogging");
+    CSettingBool *setting = (CSettingBool *)g_guiSettings.GetSetting("system.debuglogging");
     if (setting)
+    {
+      setting->SetData(g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG_FREEMEM);
       setting->SetAdvanced();
+    }
   }
   GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress, "freedb.freedb.org");
 #ifdef HAS_HAL
