@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 14557-->
+<!--Based on english strings version 14679-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -152,6 +152,7 @@
   <string id="222">Avbryt</string>
   <string id="224">Hastighet</string>
   <string id="225">Tid för övergång</string>
+  <string id="226">Testmönster...</string>
   <string id="227">Aktivera CDDB</string>
   <string id="228">Blanda spellistor när de laddas</string>
   <string id="229">Tid innan sänkt HD-hastighet</string>
