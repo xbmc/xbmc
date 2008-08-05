@@ -591,8 +591,21 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
   case GUI_MSG_START_SLIDESHOW:
     {
       CStdString strFolder = message.GetStringParam();
-      bool bRecursive = message.GetParam1() != 0;
-        RunSlideShow(strFolder, bRecursive);
+      unsigned int iParams = message.GetParam1();
+      //decode params
+      bool bRecursive = false;
+      bool bRandom = false;
+      bool bNotRandom = false;
+      if (iParams > 0)
+      {
+        if ((iParams & 1) == 1)
+          bRecursive = true;
+        if ((iParams & 2) == 2)
+          bRandom = true;
+        if ((iParams & 4) == 4)
+          bNotRandom = true;
+      }
+      RunSlideShow(strFolder, bRecursive, bRandom, bNotRandom);
     }
     break;
   }
@@ -730,7 +743,7 @@ int CGUIWindowSlideShow::CurrentSlide() const
   return m_iCurrentSlide + 1;
 }
 
-void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursive)
+void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursive /* = false */, bool bRandom /* = false */, bool bNotRandom /* = false */)
 {
   // stop any video
   if (g_application.IsPlayingVideo())
@@ -742,7 +755,14 @@ void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursiv
     AddItems(strPath, bRecursive);
     // ok, now run the slideshow
   }
-  if (g_guiSettings.GetBool("slideshow.shuffle"))
+
+  // mutually exclusive options
+  // if both are set, clear both and use the gui setting
+  if (bRandom && bNotRandom)
+    bRandom = bNotRandom = false;
+
+  // NotRandom overrides the window setting
+  if ((!bNotRandom && g_guiSettings.GetBool("slideshow.shuffle")) || bRandom)
     Shuffle();
 
   StartSlideShow();
