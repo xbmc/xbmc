@@ -21,6 +21,7 @@ public:
   char GetAscii() { return m_cAscii;}; // FIXME should be replaced completly by GetUnicode() 
   WCHAR GetUnicode() { return m_wUnicode;};
   BYTE GetKey() { return m_VKey;};
+  unsigned int KeyHeld() const;
 
 private:
   bool m_bShift;
@@ -33,6 +34,12 @@ private:
 #ifdef HAS_SDL_JOYSTICK
   SDL_Joystick* m_pJoy;
 #endif
+
+  SDL_Event m_lastKey;
+  DWORD m_lastKeyTime;
+  unsigned int m_keyHoldTime;
+
+  static const unsigned int key_hold_time;
 };
 
 #endif
