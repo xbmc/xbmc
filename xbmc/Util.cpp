@@ -2663,8 +2663,63 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       CLog::Log(LOGERROR, "XBMC.SlideShow called with empty parameter");
       return -2;
     }
-    CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, execute.Equals("SlideShow") ? 0 : 1);
-    msg.SetStringParam(strParameterCaseIntact);
+    bool bRecursive = false;
+    bool bRandom = false;
+    bool bNotRandom = false;
+    CStdString strDir = strParameterCaseIntact;
+
+    // leave RecursiveSlideShow command as-is
+    if (execute.Equals("RecursiveSlideShow"))
+      bRecursive = true;
+
+    // SlideShow([recursive],[[not]random],dir)
+    // additional parameters must at the beginning as the dir may contain commas
+    else
+    {
+      vector<CStdString> results;
+      StringUtils::SplitString(strParameterCaseIntact, ",", results, 2); // max of two split pieces
+      while (results.size() > 0)
+      {
+        // pop off the first item in the vector
+        CStdString strTest = results.front();
+        results.erase(results.begin());
+
+        if (strTest.Equals("recursive"))
+          bRecursive = true;
+        else if (strTest.Equals("random"))
+          bRandom = true;
+        else if (strTest.Equals("notrandom"))
+          bNotRandom = true;
+        else
+        {
+          // not a known parameter, so it must be the directory 
+          // add the test string back to the remainder of the result array
+          // (this means the directory contained a comma)
+          strDir = strTest;
+          if (results.size() > 0)
+            strDir += "," + results.front();
+          break;
+        }
+        // it was a parameter, so we need to split again
+        if (results.size() > 0)
+        {
+          strTest = results.front();
+          StringUtils::SplitString(strTest, ",", results, 2);
+        }
+      }
+    }
+
+    // encode parameters
+    unsigned int iParams = 0;
+    if (bRecursive)
+      iParams += 1;
+    if (bRandom)
+      iParams += 2;
+    if (bNotRandom)
+      iParams += 4;
+
+    CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, iParams);
+    msg.SetStringParam(strDir);
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
     if (pWindow) pWindow->OnMessage(msg);
   }
