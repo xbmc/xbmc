@@ -8,6 +8,12 @@
 			<RegExp input="$$1" output="&lt;setting label=&quot;Use DVD Order&quot; type=&quot;bool&quot; id=&quot;dvdorder&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Prefer Posters&quot; type=&quot;bool&quot; id=&quot;posters&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
 			<RegExp input="$$1" output="&lt;setting type=&quot;sep&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
@@ -91,6 +97,9 @@
 				<expression repeat="yes" noclean="1,2,3">&lt;Actor&gt;.*?&lt;Image&gt;([^&lt;]*)&lt;/Image&gt;.*?&lt;Name&gt;([^&lt;]*)&lt;/Name&gt;.*?&lt;Role&gt;([^&lt;]*)</expression>
                         </RegExp>
 			<RegExp input="$$6" output="&lt;thumbs&gt;\1&lt;/thumbs&gt;" dest="4+">
+				<RegExp conditional="posters" output="&lt;thumb&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="6+">
+					<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;poster&lt;/BannerType&gt;</expression>
+				</RegExp>
 				<RegExp conditional="!override" input="$$5" output="&lt;thumb&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="6+">
 					<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;series&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;graphical&lt;/BannerType2&gt;[^&lt;]*&lt;Language&gt;$INFO[language]&lt;/Language&gt;</expression>
 				</RegExp>
@@ -118,9 +127,12 @@
 				<RegExp conditional="override" input="$$5" output="&lt;thumb type=&quot;season&quot; season=&quot;\2&quot;&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="6+">
 					<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;season&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;seasonwide&lt;/BannerType2&gt;[^&lt;]*&lt;Language&gt;[a-z]*&lt;/Language&gt;[^&lt;]*&lt;Season&gt;([0-9]+)&lt;/Season&gt;</expression>
 				</RegExp>
+				<RegExp conditional="!posters" output="&lt;thumb&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="6+">
+					<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;poster&lt;/BannerType&gt;</expression>
+				</RegExp>
 				<expression noclean="1"></expression>
 			</RegExp>
-			<RegExp input="$$7" output="&lt;fanart url=&quot;http://thetvdb.com/banners/&quot;&gt;\1&lt;/fanart&gt;" dest="4+">
+			<RegExp conditional="fanart" input="$$7" output="&lt;fanart url=&quot;http://thetvdb.com/banners/&quot;&gt;\1&lt;/fanart&gt;" dest="4+">
 				<RegExp conditional="!override" input="$$5" output="&lt;thumb dim=&quot;\2&quot; colors=&quot;\3&quot;&gt;\1&lt;/thumb&gt;" dest="7+">
 					<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;fanart&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;([^&lt;]*)&lt;/BannerType2&gt;[^&lt;]*&lt;Colors&gt;([^&lt;]*)&lt;/Colors&gt;[^&lt;]*&lt;Language&gt;$INFO[language]&lt;/Language&gt;</expression>
 				</RegExp>
