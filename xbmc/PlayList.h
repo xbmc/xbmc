@@ -42,7 +42,7 @@ public:
   void Insert(CPlayList& playlist, int iPosition = -1);
   void Insert(CFileItemList& items, int iPosition = -1);
 
-  int FindOrder(int iOrder);
+  int FindOrder(int iOrder) const;
   const CStdString& GetName() const;
   void Remove(const CStdString& strFileName);
   void Remove(int position);
@@ -55,16 +55,15 @@ public:
   const CFileItemPtr operator[] (int iItem) const;
   CFileItemPtr operator[] (int iItem);
 
-  // why are these virtual functions? there is no derived child class
   void Shuffle(int iPosition = 0);
   void UnShuffle();
-  bool IsShuffled() { return m_bShuffled; }
+  bool IsShuffled() const { return m_bShuffled; }
 
   void SetPlayed(bool bPlayed) { m_bWasPlayed = true; };
-  bool WasPlayed() { return m_bWasPlayed; };
+  bool WasPlayed() const { return m_bWasPlayed; };
 
   void SetUnPlayable(int iItem);
-  int GetPlayable() { return m_iPlayableItems; };
+  int GetPlayable() const { return m_iPlayableItems; };
 
   void UpdateItem(const CFileItem *item);
 

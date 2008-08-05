@@ -267,7 +267,7 @@ void CPlayList::Remove(const CStdString& strFileName)
   DecrementOrder(iOrder);
 }
 
-int CPlayList::FindOrder(int iOrder)
+int CPlayList::FindOrder(int iOrder) const
 {
   for (int i = 0; i < size(); i++)
   {
