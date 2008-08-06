@@ -113,12 +113,20 @@
 				<onup>3</onup>
 				<ondown>8</ondown>
 			</control>
-			<control type="button" id="8">
+			<control type="edit" id="8">
 				<description>Search button</description>
 				<posx>0</posx>
 				<posy>111</posy>
-				<label>137</label>
+				<width>160</width>
+				<height>33</height>
+				<texturefocus>button-focus.png</texturefocus>
+				<texturenofocus>button-nofocus.png</texturenofocus>
 				<font>font13</font>
+				<textcolor>white</textcolor>
+				<disabledcolor>disabled</disabledcolor>
+				<textoffsetx>17</textoffsetx>
+				<aligny>center</aligny>
+				<label>137</label>
 				<onleft>50</onleft>
 				<onright>50</onright>
 				<onup>99</onup>
