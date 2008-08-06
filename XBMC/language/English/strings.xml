@@ -193,7 +193,7 @@
   <string id="258">Enable tag reading</string>
   <string id="259">Opening</string>
   <string id="260">Shoutcast</string>
-  <string id="261">Waiting for start....</string>
+  <string id="261">Waiting for start...</string>
   <string id="262">Scripts Output</string>
   <string id="263">Enable Web Server</string>
   <string id="264">Record</string>
@@ -435,7 +435,7 @@
   <string id="516">Make archives with one file transparent</string>
   <string id="517">Recently Played Albums</string>
   <string id="518">Launch</string>
-  <string id="519">Launch in..</string>
+  <string id="519">Launch in...</string>
   <string id="520">Edit XBE title</string>
   <string id="521">Compilations</string>
   <string id="522">Remove Source</string>
@@ -748,13 +748,13 @@
   <string id="1247">User Password has been set successfully</string>
 
   <string id="1250">Autodetection</string>
-  <string id="1251">Xbox Autodetection</string>
+  <string id="1251">Autodetect system</string>
   <string id="1252">Nick Name</string>
   <string id="1253"></string>
   <string id="1254">Ask to Connect</string>
   <string id="1255">Send FTP User and Password</string>
   <string id="1256">Ping Interval</string>
-  <string id="1257">Would you like to connect to the Autodetected Xbox?</string>
+  <string id="1257">Would you like to connect to the Autodetected system?</string>
 
   <string id="1396">Drifting</string>
   <string id="1397">and</string>
@@ -907,14 +907,14 @@
   <string id="12344">Passwords entered did not match.</string>
   <string id="12345">Access Denied</string>
   <string id="12346">Password retry limit exceeded.</string>
-  <string id="12347">The Xbox will now shut off.</string>
+  <string id="12347">The system will now shut off.</string>
   <string id="12348">Item Locked</string>
   <string id="12353">Reactivate Lock</string>
   <string id="12356">Change Lock</string>
   <string id="12357">Source Lock</string>
   <string id="12358">Password entry was blank. Try again.</string>
   <string id="12360">Master Lock</string>
-  <string id="12362">Shutdown Xbox if Master Lock retries exceeded</string>
+  <string id="12362">Shutdown system if Master Lock retries exceeded</string>
   <string id="12367">Master Code is not valid!</string>
   <string id="12368">Please Enter a valid Master Code!</string>
   <string id="12373">Settings &amp;  Filemanager</string>
@@ -1060,7 +1060,7 @@
   <string id="13305">Enable RSS Feeds</string>
   <string id="13306">Hide Parent Folder Items</string>
   <string id="13307">Track Naming Template</string>
-  <string id="13308">Do you wish to reboot your Xbox</string>
+  <string id="13308">Do you wish to reboot your system</string>
   <string id="13309">instead of just XBMC?</string>
   <string id="13310">Zoom Effect</string>
   <string id="13311">Float Effect</string>
@@ -1338,7 +1338,7 @@
   <string id="15213">Play Using...</string>
   <string id="15214">Use Smoothed A/V Synchronisation</string>
   <string id="15215">Hide File Names in Thumbs View</string>
-  <string id="15216">Play in Partymode</string>
+  <string id="15216">Play in Party Mode</string>
 
   <string id="15250">Submit Last.FM Radio to Last.FM</string>
   <string id="15251">Connecting to Last.FM...</string>
@@ -1426,12 +1426,12 @@
   <string id="16027">Too many consecutive failed items</string>
   <string id="16028">Enter value</string>
 
-  <string id="16030">Party Mode mode aborted.</string>
+  <string id="16030">Party Mode aborted.</string>
   <string id="16031">No matching songs in the Library.</string>
   <string id="16032">Could not initialise database.</string>
   <string id="16033">Could not open database.</string>
   <string id="16034">Could not get songs from database.</string>
-  <string id="16035">Partymode Playlist</string>
+  <string id="16035">Party Mode Playlist</string>
 
   <string id="16100">All Videos</string>
   <string id="16101">UnWatched</string>
