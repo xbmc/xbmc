@@ -156,6 +156,7 @@
 		<include>WideIcon_Small</include>
 		<include>WideIcon_Big</include>
 		<include>AllViewCommonPageControls</include>
+		<include>ScrollOffsetLabel</include>
 		<include>windowswitchtransition</include>
 	</controls>
 </window>
