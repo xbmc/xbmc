@@ -4,7 +4,7 @@
 <!--Email: blittan@xbmc.org-->
 <!--Date of translation: 08/06/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 14709-->
+<!--Based on english strings version 14723-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -67,7 +67,7 @@
   <string id="131">Bildskärm</string>
   <string id="132">Album</string>
   <string id="133">Artister</string>
-  <string id="134">Sånger</string>
+  <string id="134">Låtar</string>
   <string id="135">Genre</string>
   <string id="136">Spelningslistor</string>
   <string id="137">Sök</string>
@@ -106,7 +106,7 @@
   <string id="172">Utgivningsdatum</string>
   <string id="175">Sinnesstämmning</string>
   <string id="176">Stilar</string>
-  <string id="179">Sång</string>
+  <string id="179">Låt</string>
   <string id="180">Varaktighet</string>
   <string id="181">Välj album</string>
   <string id="182">Spår</string>
@@ -230,10 +230,10 @@
   <string id="313">Rensar databas</string>
   <string id="314">Förbereder...</string>
   <string id="315">Databasfel</string>
-  <string id="316">Söker sånger...</string>
+  <string id="316">Söker låtar...</string>
   <string id="317">Rensning av databasen lyckades</string>
-  <string id="318">Rensar sånger...</string>
-  <string id="319">Fel vid rensning av sånger</string>
+  <string id="318">Rensar låtar...</string>
+  <string id="319">Fel vid rensning av låtar</string>
   <string id="320">Rensar artister...</string>
   <string id="321">Fel vid rensning av artister</string>
   <string id="322">Rensar genre...</string>
@@ -414,7 +414,7 @@
   <string id="516">Gör arkiv med en fil transparenta</string>
   <string id="517">Senast spelade album</string>
   <string id="518">Starta</string>
-  <string id="519">Starta i..</string>
+  <string id="519">Starta i...</string>
   <string id="520">Redigera XBE-titel</string>
   <string id="521">Kompileringar</string>
   <string id="522">Ta bort källa</string>
@@ -492,7 +492,7 @@
   <string id="605">Rippar...</string>
   <string id="607">Till:</string>
   <string id="608">Kunde inte rippa CD eller spår</string>
-  <string id="609">CDDA-sökväg inte angiven</string>
+  <string id="609">CDDA-sökväg inte angiven.</string>
   <string id="610">Rippa ljudspår</string>
   <string id="611">Ange nummer</string>
   <string id="620">CD rippning</string>
@@ -535,7 +535,7 @@
   <string id="661">Välj exporteringsmapp</string>
   <string id="700">Rensar bibliotek</string>
   <string id="701">Raderar gamla låtar från databasen</string>
-  <string id="702">Denna sökväg har skannats tidigare.</string>
+  <string id="702">Denna sökväg har skannats tidigare</string>
   <string id="705">Nätverk</string>
   <string id="706">HTTP proxy värd</string>
   <string id="707">HTTP proxy port</string>
@@ -765,7 +765,7 @@
   <string id="10501">Musik/Filer</string>
   <string id="10502">Musik/Bibliotek</string>
   <string id="10503">Spellistsredigerare</string>
-  <string id="10504">Topp 100 sånger</string>
+  <string id="10504">Topp 100 låtar</string>
   <string id="10505">Topp 100 album</string>
   <string id="10506">Program</string>
   <string id="10507">Konfiguration</string>
@@ -821,7 +821,7 @@
   <string id="12328">Ange låskod</string>
   <string id="12329">eller tryck C för att avbryta</string>
   <string id="12330">Ange knappkombination på spelkontrollen och </string>
-  <string id="12331">tryck Start, eller Back för att avbryta:</string>
+  <string id="12331">tryck Start, eller Back för att avbryta</string>
   <string id="12332">Ange lås</string>
   <string id="12333">Lås upp</string>
   <string id="12334">Återställ lås</string>
@@ -993,10 +993,10 @@
   <string id="13325">Förgrundstransparens</string>
   <string id="13326">A/V förskjutning</string>
   <string id="13327">Karaoke</string>
-  <string id="13328">%s hittades inte.</string>
+  <string id="13328">%s hittades inte</string>
   <string id="13329">Fel vid öppnande av %s</string>
   <string id="13330">Gick inte ladda %s</string>
-  <string id="13331">Fel: för lite ledigt minne.</string>
+  <string id="13331">Fel: för lite ledigt minne</string>
   <string id="13332">Flytta upp</string>
   <string id="13333">Flytta ned</string>
   <string id="13334">Ändra namn</string>
@@ -1060,7 +1060,7 @@
   <string id="13406">Bildinformation</string>
   <string id="13407">%s förinställningar</string>
   <string id="13408">(IMDb användarbetyg)</string>
-  <string id="13409">Topp 250:</string>
+  <string id="13409">Topp 250</string>
   <string id="13410">Ställ in på Last.FM</string>
   <string id="13411">Minsta fläkthastighet</string>
   <string id="13412">RSS flöde innehåller höger-till-vänster text</string>
@@ -1137,7 +1137,7 @@
   <string id="14063">Datum &amp; tid</string>
   <string id="14064">Ange datum</string>
   <string id="14065">Ange klockslag</string>
-  <string id="14066">Ange tiden i 24-timmars TIM:MIN format</string>
+  <string id="14066">Ange tiden i 24-timmars TT:MM format</string>
   <string id="14067">Ange datum i DD/MM/ÅÅÅÅ format</string>
   <string id="14068">Ange IP adress</string>
   <string id="14069">Vill du spara dessa inställningar nu?</string>
@@ -1154,7 +1154,7 @@
   <string id="15101">Databas</string>
   <string id="15102">* Alla album</string>
   <string id="15103">* Alla artister</string>
-  <string id="15104">* Alla sånger</string>
+  <string id="15104">* Alla låtar</string>
   <string id="15105">* Alla genrer</string>
   <string id="15106">Kom ihåg vald fil vid navigering framåt</string>
   <string id="15107">Buffrar...</string>
@@ -1172,7 +1172,7 @@
   <string id="15207">Uppkopplad</string>
   <string id="15208">Inte uppkopplad</string>
   <string id="15209">Leveransintervall %i</string>
-  <string id="15210">Buffrade %i sånger</string>
+  <string id="15210">Buffrade %i låtar</string>
   <string id="15211">Skickar...</string>
   <string id="15212">Skickar om %i sek</string>
   <string id="15213">Spela upp med...</string>
@@ -1235,7 +1235,7 @@
   <string id="15310">Öppnar multi-sökvägskälla</string>
   <string id="15311">Sökväg:</string>
   <string id="16000">Allmänt</string>
-  <string id="16001">Konfigurera ljudhårdvara</string>
+  <string id="16001">Konfigurera ljudhårdvara...</string>
   <string id="16002">CDDB sökning</string>
   <string id="16003">Spelare</string>
   <string id="16004">Spela media från skiva</string>
@@ -1264,7 +1264,7 @@
   <string id="16031">Inga matchande låtar i biblioteket.</string>
   <string id="16032">Kunde inte initiera databasen.</string>
   <string id="16033">Kunde inte öppna databasen.</string>
-  <string id="16034">Kunde inte hämta sånger från databasen.</string>
+  <string id="16034">Kunde inte hämta låtar från databasen.</string>
   <string id="16035">Partylägespellista</string>
   <string id="16100">Alla filmer</string>
   <string id="16101">Inte visad</string>
@@ -1361,6 +1361,7 @@
   <string id="20079">Aktivera animationer</string>
   <string id="20080">Inaktivera RSS under musik</string>
   <string id="20081">Aktivera genvägsknappar</string>
+  <string id="20082">Visa program i huvudmenyn</string>
   <string id="20083">Visa musikinformation</string>
   <string id="20084">Visa väderinformation</string>
   <string id="20085">Visa systeminformation</string>
@@ -1462,6 +1463,7 @@
   <string id="20182">Mellanslag</string>
   <string id="20183">Ladda om skal</string>
   <string id="20184">Vrid som angivet i EXIF information</string>
+  <string id="20185">Använd postervisning för TV-serier</string>
   <string id="20186">Var god vänta</string>
   <string id="20187">Tar backup av EEPROM</string>
   <string id="20188">Tar backup av BIOS</string>
@@ -1479,7 +1481,7 @@
   <string id="20250">Festa på! (filmer)</string>
   <string id="20251">Blandar drinkar (filmer)</string>
   <string id="20252">Fyller glasen (filmer)</string>
-  <string id="20306">Okänd. Lägg till MD5 från xbmc.log till BiosIDs.ini</string>
+  <string id="20306">Okänd. Lägg till MD5 från xbmc.log till BiosIDs.ini.</string>
   <string id="20307">Sekundär DNS</string>
   <string id="20308">DHCP server:</string>
   <string id="20309">Skapa ny mapp</string>
@@ -1528,7 +1530,7 @@
   <string id="20353">Laddar TV-seriesdetaljer</string>
   <string id="20354">Hämtar avsnittsguide</string>
   <string id="20355">Laddar info för avsnitt i katalogen</string>
-  <string id="20356">Välj TV-serie</string>
+  <string id="20356">Välj TV-serie:</string>
   <string id="20357">Ange TV-seriens namn</string>
   <string id="20358">Säsong %i</string>
   <string id="20359">Avsnitt</string>
@@ -1569,7 +1571,7 @@
   <string id="20395">Blandad</string>
   <string id="20396">Gå till album av artist</string>
   <string id="20397">Gå till album</string>
-  <string id="20398">Spela sång</string>
+  <string id="20398">Spela låt</string>
   <string id="20399">Gå till musikvideor från album</string>
   <string id="20400">Gå till musikvideor av artist</string>
   <string id="20401">Spela musikvideo</string>
@@ -1577,7 +1579,7 @@
   <string id="20403">Ange skådespelarminiatyr</string>
   <string id="20405">Ta bort avsnittsbokmärke</string>
   <string id="20406">Lägg till avsnittsbokmärke</string>
-  <string id="20407">Skrapa-inställningar</string>
+  <string id="20407">Skrape-inställningar</string>
   <string id="20408">Hämtar musikvideo-information</string>
   <string id="20409">Hämtar TV-serieinformation</string>
   <string id="20410">Trailer</string>
@@ -1746,14 +1748,14 @@
   <string id="21889">Söker artist</string>
   <string id="21890">Välj artist</string>
   <string id="21891">Artist information</string>
-  <string id="21892">Instrument:</string>
-  <string id="21893">Född:</string>
-  <string id="21894">Bildat:</string>
-  <string id="21895">Teman:</string>
-  <string id="21896">Upplöst:</string>
-  <string id="21897">Död:</string>
-  <string id="21898">Aktiva år:</string>
-  <string id="21899">Etikett:</string>
+  <string id="21892">Instrument</string>
+  <string id="21893">Född</string>
+  <string id="21894">Bildat</string>
+  <string id="21895">Teman</string>
+  <string id="21896">Upplöst</string>
+  <string id="21897">Död</string>
+  <string id="21898">Aktiva år</string>
+  <string id="21899">Etikett</string>
   <string id="21900">Född/bildat</string>
   <string id="22000">Uppdatera biblioteket vid uppstart</string>
   <string id="22001">Uppdatera alltid biblioteket i bakgrunden</string>
