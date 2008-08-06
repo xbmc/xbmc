@@ -171,6 +171,9 @@ void CGUIEditControl::OnClick()
     case INPUT_TYPE_IPADDRESS:
       textChanged = CGUIDialogNumeric::ShowAndGetIPAddress(utf8, heading);
       break;
+    case INPUT_TYPE_SEARCH:
+      CGUIDialogKeyboard::ShowAndGetFilter(utf8, true);
+      break;
     case INPUT_TYPE_TEXT:
     default:
       textChanged = CGUIDialogKeyboard::ShowAndGetInput(utf8, heading, true, m_inputType == INPUT_TYPE_PASSWORD);
