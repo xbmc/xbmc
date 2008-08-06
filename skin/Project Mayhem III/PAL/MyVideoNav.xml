@@ -333,6 +333,7 @@
 		<include>VideoDVDWrapView</include>
 		<include>VideoLibrary_BigList</include>
 		<include>AllViewCommonPageControls</include>
+		<include>ScrollOffsetLabel</include>
 		<include>windowswitchtransition</include>
 	</controls>
 </window>
