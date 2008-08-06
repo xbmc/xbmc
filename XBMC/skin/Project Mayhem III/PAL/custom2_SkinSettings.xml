@@ -389,6 +389,16 @@
 					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 				</control>
+				<control type="radiobutton" id="82">
+					<description>enable Tv Posters</description>
+					<width>485</width>
+					<label>20185</label>
+					<onclick>Skin.ToggleSetting(UseTVPosters)</onclick>
+					<selected>Skin.HasSetting(UseTVPosters)</selected>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+				</control>
 			</control>
 		</control>
 		<include>windowswitchtransition</include>
