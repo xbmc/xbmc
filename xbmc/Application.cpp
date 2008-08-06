@@ -617,9 +617,13 @@ HRESULT CApplication::Create(HWND hWnd)
 
 
 #ifdef _LINUX
-  // for nvidia cards - vsync currently ALWAYS enabled.
-  // the reason is that after screen has been setup changing this env var will make no difference.
-  setenv("__GL_SYNC_TO_VBLANK","1",true);
+// Sadly this doesn't work, the question is when is the last time we can 
+// set that variable. Cause if we have the following, that would be better
+// so for now it's disabled. we'll see how many complaints we get from 
+// nvidia users
+//  if(!glewIsSupported("GLX_SGI_video_sync") 
+//  && !glewIsSupported("GLX_OML_sync_control"))
+//    setenv("__GL_SYNC_TO_VBLANK","1",true);
 #endif
 
   if (SDL_Init(sdlFlags) != 0)
