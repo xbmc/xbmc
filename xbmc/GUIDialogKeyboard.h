@@ -87,7 +87,6 @@ private:
 
   DWORD m_lastRemoteClickTime;
   WORD m_lastRemoteKeyClicked;
-  DWORD m_lastSearchUpdate;
   int m_indexInSeries;
   CStdString m_strHeading;
   static const char* s_charsSeries[10];
