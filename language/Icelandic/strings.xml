@@ -85,7 +85,7 @@
   <string id="148">DHCP</string>
   <string id="149">MAC</string>
   <string id="150">IP</string>
-  <string id="151">Tenging:</string>
+  <string id="151">Tenging: </string>
   <string id="152">Einstefna</string>
   <string id="153">Tvístefna</string>
   <string id="154">Geymslurými</string>
@@ -157,6 +157,7 @@
   <string id="222">Hætta við</string>
   <string id="224">Hraði</string>
   <string id="225">Breytingarhraði</string>
+  <string id="226"></string>
   <string id="227">Virkja freedb</string>
   <string id="228">Endurraða spilunarlista í byrjun</string>
   <string id="229">Hvíldartími harðdisks</string>
@@ -358,7 +359,7 @@
   <string id="434"/>
   <string id="435"/>
   <string id="436"/>
-  <string id="437"/>
+  <string id="437">Færanlegur diskur</string>
   <string id="438">Opna skrá</string>
   <string id="439">Biðminni</string>
   <string id="440">Harður diskur</string>
@@ -377,7 +378,7 @@
   <string id="453">Röð 3 númer</string>
   <string id="454">Röð 4 númer</string>
   <string id="455">Raðir</string>
-  <string id="456">hamur</string>
+  <string id="456">Hamur</string>
   <string id="457">Breyta sýn</string>
   <string id="459">Textar</string>
   <string id="460">Hljóðstraumur</string>
@@ -566,12 +567,12 @@
   <string id="706">HTTP Proxy þjónn</string>
   <string id="707">HTTP Proxy gátt</string>
   <string id="708">Virkja HTTP Proxy</string>
-  <string id="709">XLink Kai XTag</string>
-  <string id="710">XLink Kai Lykilorð</string>
+  <string id="709"/>
+  <string id="710"/>
   <string id="711">Internet Protocol (IP)</string>
   <string id="712">Röng gátt valinn. Gildi þarf að vera á milli 1 og 65535.</string>
   <string id="713">HTTP Proxy</string>
-  <string id="714">XLink Kai</string>
+  <string id="714"/>
   <string id="715">Úthlutun</string>
   <string id="716">Sjálfvirkt (DHCP)</string>
   <string id="717">Handvirkt (Föst)</string>
@@ -632,6 +633,21 @@
   <string id="772">Hljóðbúnaður</string>
   <string id="773">Leita</string>
   <string id="774">Mappa fyrir skjáhvílu myndasýningar</string>
+  <string id="775">Viðmót nets</string>
+  <string id="776"></string>
+  <string id="777"></string>
+  <string id="778"></string>
+  <string id="779"></string>
+  <string id="780"></string>
+  <string id="781"></string>
+  <string id="782"></string>
+  <string id="783"></string>
+  <string id="784"></string>
+  <string id="785"></string>
+  <string id="786"></string>
+  <string id="787"></string>
+  <string id="788"></string>
+  <string id="789"></string>
 
   <string id="790">Fjarlægir atburðir</string>
   <string id="791">Virkja fjarlæga atburði</string>
@@ -642,8 +658,8 @@
   <string id="796">Samfelld endurtekningarbið (ms)</string>
   <string id="797">Hámarksfjöldi biðlara</string>
 
-  <string id="998">XLink Kai</string>
-  <string id="999">Net leikjaspilun</string>
+  <string id="998"/>
+  <string id="999"/>
   <string id="1000">Skjáhvílu Sýnishorn</string>
   <string id="1001">Get ekki tengst</string>
   <string id="1002">XBMC getur ekki tengst við net slóð.</string>
@@ -690,6 +706,8 @@
   <string id="1043">Forrita viðbætur</string>
   <string id="1044">Setja viðbótar smámynd</string>
   <string id="1045">Stilling viðbóta</string>
+  <string id="1046">Aðgangsstaðir</string>^
+  <string id="1047">Annað...</string>^
 
   <string id="1200">SMB Biðlari</string>
   <string id="1202">Vinnuhópur</string>
@@ -697,6 +715,7 @@
   <string id="1204">Sjálfgefið Lykilorð</string>
 
   <string id="1207">WINS-Þjónn</string>
+  <string id="1208"></string>
 
   <string id="1210">Fjarlægja</string>
   <string id="1211">Tónlist</string>
@@ -755,6 +774,8 @@
   <string id="1412">vindasamt</string>
   <string id="1413">úði</string>
   <string id="1414">Þrumuveður</string>
+  <string id="1415">Úði</string>
+  <string id="1416"></string>
 
   <!-- strings through to 1450 reserved for weather translation -->
 
@@ -770,28 +791,34 @@
   <string id="10005">Tónlist</string>
   <string id="10006">Myndefni</string>
   <string id="10007">Kerfisupplýsingar</string>
-  <string id="10008">Stillingar-&gt;Almennar</string>
-  <string id="10009">Stillingar-&gt;Skjár</string>
-  <string id="10010">Stillingar-&gt;Skjár-&gt;Viðmótsstilling</string>
-  <string id="10011">Stillingar-&gt;Skjár-&gt;Skjástillingar</string>
-  <string id="10012">Stillingar-&gt;Myndasýning</string>
-  <string id="10013">Stillingar-&gt;Forrit</string>
-  <string id="10014">Stillingar-&gt;Tónlist</string>
-  <string id="10015">Stillingar-&gt;Tónlist</string>
-  <string id="10016">Stillingar-&gt;Kerfi</string>
-  <string id="10017">Stillingar-&gt;Veður</string>
-  <string id="10018">Stillingar-&gt;Netkerfi</string>
-  <string id="10019">Stillingar-&gt;Viðmót</string>
+  <string id="10008">Stillingar - Almennar</string>
+  <string id="10009">Stillingar - Skjár</string>
+  <string id="10010">Stillingar - Skjár - Viðmótsstilling</string>
+  <string id="10011">Stillingar - Skjár - Skjástillingar</string>
+  <string id="10012">Stillingar - Myndasýning</string>
+  <string id="10013">Stillingar - Forrit</string>
+  <string id="10014">Stillingar - Tónlist</string>
+  <string id="10015">Stillingar - Tónlist</string>
+  <string id="10016">Stillingar - Kerfi</string>
+  <string id="10017">Stillingar - Veður</string>
+  <string id="10018">Stillingar - Netkerfi</string>
+  <string id="10019">Stillingar - Viðmót</string>
   <string id="10020">Skriftur</string>
   <string id="10021"/>
   <string id="10022"/>
   <string id="10023"/>
   <string id="10025"/>
   <string id="10028">Myndefni/Spilunarlisti</string>
-  <string id="10034">Stillingar-&gt;Forstillingar</string>
+  <string id="10034">Stillingar - Forstillingar</string>
 
   <string id="10100">Já/Nei melding</string>
   <string id="10101">Vinnslumelding</string>
+
+  <string id="10210"></string>
+  <string id="10211"></string>
+  <string id="10212"></string>
+  <string id="10213">biðminni</string>
+  <string id="10214"></string>
 
   <string id="10500">Tónlist/Lagalisti</string>
   <string id="10501">Tónlist/Skrár</string>
@@ -843,6 +870,7 @@
   <string id="12021">Byrja frá byrjun</string>
   <string id="12022">Halda áfram frá seinustu staðsetningu</string>
   <string id="12023">Staðfesti núverandi svindl...</string>
+  <string id="12024"></string>
 
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -878,7 +906,7 @@
   <string id="12344">Lykilorð passa ekki.</string>
   <string id="12345">Aðgangur ekki leyfður</string>
   <string id="12346">Fjöldi ágiskana á lykilorð er uppurinn.</string>
-  <string id="12347">XBOX mun núna slökkva á sér.</string>
+  <string id="12347">Xbox mun núna slökkva á sér.</string>
   <string id="12348">Atriði læst</string>
   <string id="12353">Setja læsingu á</string>
   <string id="12356">Breyta læsingu</string>
@@ -920,12 +948,33 @@
   <string id="13005">Slökkva</string>
   <string id="13006">Mælaborð</string>
   <string id="13007">Nota slóða að eigin mælaborði</string>
+  <string id="13008"></string>
+  <string id="13009">Gera ekkert</string>
+  <string id="13010">Dvali</string>
+  <string id="13011">Svæfa</string>
 
   <string id="13100">Flökt Sía</string>
   <string id="13105">Vertical Blank Sync</string>
   <string id="13106">Óvirkt</string>
   <string id="13107">Virkt við afspilun</string>
   <string id="13108">Alltaf virkt</string>
+  <string id="13109"></string>
+  <string id="13110"></string>
+  <string id="13111"></string>
+  
+  <string id="13112"></string>
+  <string id="13113">Óvirkt</string>
+  <string id="13114"></string>
+  <string id="13115">Alltaf virkt</string>
+  
+  <string id="13116"></string>
+  <string id="13117"></string>
+  <string id="13118"></string>
+  <string id="13119"></string>
+
+  <string id="13130"></string>
+  <string id="13131">Óvirkt</string>
+  <string id="13132"></string>
 
   <string id="13150">HDD lykill:</string>
   <string id="13151">HDD hiti:</string>
@@ -1098,8 +1147,25 @@
   <string id="13407">%s Forstilling</string>
   <string id="13408">(IMDb Stjörnugjöf notenda)</string>
   <string id="13409">Topp 250</string>
-  <string id="13410">Stilla inn á lastfm</string>
+  <string id="13410">Stilla inn á Last.FM</string>
   <string id="13411">Lágmarks viftuhraði</string>
+  <string id="13412"></string>
+  
+  <string id="13600"></string>
+  <string id="13601">Hamur</string>
+  <string id="13602"></string>
+  <string id="13603"></string>
+  
+  <string id="13610">Óvirkt</string>
+  <string id="13611">Venjulegt</string>
+  <string id="13612"></string>
+  
+  <string id="13620"></string>
+  <string id="13621"></string>
+  <string id="13622"></string>
+
+  <string id="13623"></string>
+  <string id="13624"></string>
 
   <string id="14000">Stafla</string>
   <string id="14001">Ekki stafla</string>
@@ -1108,7 +1174,7 @@
   <string id="14005">Þátta streymi lista...</string>
   <string id="14006">Niðurhölun streymi lista mistókst</string>
   <string id="14007">Niðurhölun spilunarlista mistókst</string>
-  <string id="14008">Virkja Kai tilkynningar</string>
+  <string id="14008"/>
   <string id="14009">Leikja mappa</string>
   <string id="14010">Skipta sjálfvirkt á smámyndir ef</string>
   <string id="14011">Virkja Sjálfvirka skiptingu á smámyndir</string>
@@ -1140,7 +1206,7 @@
   <string id="14039">XBMC þarf að endurræsa til að virkja</string>
   <string id="14040">netstillingar.  Viltu endurræsa núna?</string>
   <string id="14041">Eftirvinnsla</string>
-  <string id="14042">IP Vistfang Vélar</string>
+  <string id="14042"/>
   <string id="14043">- Slökkva í miðri spilun</string>
   <string id="14044">%i mín</string>
   <string id="14045">%i sek</string>
@@ -1170,76 +1236,78 @@
   <string id="14069">Viltu virkja þessar stillingar núna?</string>
   <string id="14070">Virkja stillingar núna</string>
   <string id="14071">Leyfa að eyða skrám</string>
-  <string id="14072">Virkja XLink Kai</string>
-  <string id="14073">XLink Kai er ekki virkt.</string>
+  <string id="14072"/>
+  <string id="14073"/>
   <string id="14074">Setja tímabelti</string>
   <string id="14075">Nota sumartíma</string>
   <string id="14076">Bæta við í uppáhalds</string>
   <string id="14077">Fjarlægja úr uppáhalds</string>
   <string id="14078">Litir útlits</string>
+  <string id="14079"></string>
+  <string id="14080">Tímabelti</string>
 
-  <string id="15000">XLink Kai</string>
-  <string id="15001">Þjónustan er ekki tengt.</string>
-  <string id="15002">Viltu reyna að tengjast aftur?</string>
-  <string id="15003">Sláðu inn Skilaboð</string>
-  <string id="15004">Þér hefur verið boðið að spila %s.</string>
-  <string id="15005">Dagsetning: %s</string>
-  <string id="15006">Frá: %s</string>
-  <string id="15007">Boðskort</string>
-  <string id="15008">Þér hefur verið boðið að tengjast %s.</string>
-  <string id="15009">Ótengdur</string>
-  <string id="15010">Vinir</string>
-  <string id="15011">Sýna: Vini</string>
-  <string id="15012">Tengjast</string>
-  <string id="15013">Rödd</string>
-  <string id="15014">Bjóða</string>
-  <string id="15015">Fjarlægja</string>
-  <string id="15016">Leikir</string>
-  <string id="15017">Sýna: Leikir</string>
-  <string id="15018">Hefja</string>
-  <string id="15019">Bæta við</string>
-  <string id="15020">Hýsa</string>
-  <string id="15021">Leikvangur</string>
-  <string id="15022">Sýna: Leikvang</string>
-  <string id="15023">Spila</string>
-  <string id="15024">Bæta við</string>
-  <string id="15025">Hýsa</string>
-  <string id="15026">Spjall</string>
-  <string id="15027">Sýna: Spjall</string>
-  <string id="15028">Lyklaborð</string>
-  <string id="15029">Lykilorð er nauðsynlegt til að tengjast þessu svæði.</string>
-  <string id="15030">Þjónustunni var slitið</string>
-  <string id="15031">XLink Kai sannvottun</string>
-  <string id="15032">Notandanafn þitt og/eða lykilorð var hafnað af</string>
-  <string id="15033">orbital þjóninum. Vinsamlega athugið stillingar.</string>
-  <string id="15034">var að tengjast</string>
-  <string id="15035">hefur byrjað spjall</string>
-  <string id="15036">hefur sent þér boðskort</string>
-  <string id="15037">XBMC getur ekki sannreynt hvort nettenging þín tengjanlegt.</string>
-  <string id="15038">Þú getur lent í vandræðum með að tengjast eða hýsa leiki.</string>
-  <string id="15039">Xbox Media Center gat ekki fundið leikinn sjálfvirkt.</string>
-  <string id="15040">Settu leikinn inn í Xbox drifið eða ýttu á 'A' til að hætta við</string>
-  <string id="15041">og ræsa leikinn handvirkt.</string>
-  <string id="15042">Aðgangur ekki leyfður</string>
-  <string id="15043">%s tengist spjalli.</string>
-  <string id="15044">%s fór burt af spjalli.</string>
-  <string id="15045">Sláðu inn þín persónulegu skilaboð.</string>
-  <string id="15046">Núverandi Leikvangur</string>
-  <string id="15047">Sláðu inn lykilorð fyrir þinn leikvang.</string>
-  <string id="15048">Sláðu inn lýsingu fyrir þinn leikvang.</string>
-  <string id="15049">Hýsa Leik</string>
-  <string id="15050">Hýsa leikvang í einrúmi</string>
-  <string id="15051">Leikmanna Takmörk</string>
-  <string id="15052">Lykilorð</string>
-  <string id="15053">Lýsing</string>
-  <string id="15054">Boðsgluggi</string>
-  <string id="15055">Veldu leik:</string>
-  <string id="15056">Sláðu inn skilaboð:</string>
-  <string id="15057">Senda</string>
-  <string id="15058">Hýsa</string>
-  <string id="15059">Boði var tekið!</string>
-  <string id="15060">Skilaboð Hérna</string>
-  <string id="15061">Þér er boðið að taka þátt í %s.</string>
+  <string id="15000"/>
+  <string id="15001"/>
+  <string id="15002"/>
+  <string id="15003"/>
+  <string id="15004"/>
+  <string id="15005"/>
+  <string id="15006"/>
+  <string id="15007"/>
+  <string id="15008"/>
+  <string id="15009"/>
+  <string id="15010"/>
+  <string id="15011"/>
+  <string id="15012"/>
+  <string id="15013"/>
+  <string id="15014"/>
+  <string id="15015"/>
+  <string id="15016"/>
+  <string id="15017"/>
+  <string id="15018"/>
+  <string id="15019"/>
+  <string id="15020"/>
+  <string id="15021"/>
+  <string id="15022"/>
+  <string id="15023"/>
+  <string id="15024"/>
+  <string id="15025"/>
+  <string id="15026"/>
+  <string id="15027"/>
+  <string id="15028"/>
+  <string id="15029"/>
+  <string id="15030"/>
+  <string id="15031"/>
+  <string id="15032"/>
+  <string id="15033"/>
+  <string id="15034"/>
+  <string id="15035"/>
+  <string id="15036"/>
+  <string id="15037"/>
+  <string id="15038"/>
+  <string id="15039"/>
+  <string id="15040"/>
+  <string id="15041"/>
+  <string id="15042"/>
+  <string id="15043"/>
+  <string id="15044"/>
+  <string id="15045"/>
+  <string id="15046"/>
+  <string id="15047"/>
+  <string id="15048"/>
+  <string id="15049"/>
+  <string id="15050"/>
+  <string id="15051"/>
+  <string id="15052"/>
+  <string id="15053"/>
+  <string id="15054"/>
+  <string id="15055"/>
+  <string id="15056"/>
+  <string id="15057"/>
+  <string id="15058"/>
+  <string id="15059"/>
+  <string id="15060"/>
+  <string id="15061"/>
   <string id="15100">Tónlistargrunnur</string>
   <string id="15101">Gagnagrunnur</string>
   <string id="15102">* Allar Hljómplötur</string>
@@ -1355,6 +1423,7 @@
   <string id="16025">Sláðu inn nafn listamanns</string>
   <string id="16026">Hætt við spilun spilunarlista</string>
   <string id="16027">Of margir hlutir í röð mistókust</string>
+  <string id="16028">Sláðu inn gildi</string>
 
   <string id="16030">Hætt við Partí ham.</string>
   <string id="16031">Engin samsvarandi lög í lagasafni.</string>
@@ -1383,6 +1452,20 @@
   <string id="16205">Eyðing mistókst</string>
   <string id="16206">Mistókst að eyða amk einni skrá</string>
 
+  <string id="16300"></string>
+  <string id="16301"></string>
+  <string id="16302">Tvílínulegt</string>
+  <string id="16303"></string>
+  <string id="16304"></string>
+  <string id="16305"></string>
+  <string id="16306"></string>
+  
+  <string id="16307"></string>
+  <string id="16308"></string>  
+  <string id="16309"></string>
+
+  <string id="17500"></string> 
+
   <string id="20000">CDDA Rip mappa</string>
   <string id="20001">Nota utanaðkomandi DVD spilara</string>
   <string id="20002">Ytri DVD spilari</string>
@@ -1403,8 +1486,8 @@
   <string id="20017">Nærliggjandi smámynd</string>
   <string id="20018">Engin smámynd</string>
   <string id="20019">Velja smámynd</string>
-  <string id="20020">Get ekki notað bæði KAI og svindl</string>
-  <string id="20021">Veldu hvort þú vilt nota</string>
+  <string id="20020"/>
+  <string id="20021"/>
   <!-- string id 20022 will always be set to an empty string (LocalizeStrings.cpp)-->
   <string id="20022"/>
   <string id="20023">Árekstur</string>
@@ -1458,7 +1541,7 @@
   <string id="20079">Virkja hreyfimyndir</string>
   <string id="20080">Slökkva á RSS þegar spiluð er tónlist</string>
   <string id="20081">Virkja bókamerkja takka</string>
-  <string id="20082">Sýna XLink Kai upplýsingar</string>
+  <string id="20082"></string>
   <string id="20083">Sýna tónlistarupplýsingar</string>
   <string id="20084">Sýna veðurupplýsingar</string>
   <string id="20085">Sýna kerfisupplýsingar</string>
@@ -1560,7 +1643,7 @@
   <string id="20182">Bil</string>
   <string id="20183">Endurhlaða Húð</string>
   <string id="20184">Snúa með upplýsingum frá EXIF</string>
-  <string id="20185"/>
+  <string id="20185"></string>
   <string id="20186">Bíddu Aðeins</string>
   <string id="20187">Afrita EEPROM</string>
   <string id="20188">Afrita BIOS</string>
@@ -1611,7 +1694,7 @@
   <string id="20325">Endurstilla tækjastillingu</string>
   <string id="20326">Þetta endurstillir tækjastillingu fyrir %s</string>
   <string id="20327">á sín upprunalegu gildi.</string>
-  <string id="20328">staðsetning til að aftrita vistun á </string>
+  <string id="20328">staðsetning til að aftrita vistun á</string>
   <string id="20329"/>
   <string id="20330">Nota möppunafn til að leita</string>
   <string id="20331">Skrá</string>
@@ -1702,6 +1785,13 @@
   <string id="20416">Fór fyrst í loftið</string>
   <string id="20417">Handritshöfundur</string>
   <string id="20418">Hreinsa skráarnöfn</string>
+  <string id="20419">Stafla eins sjónvarpsþáttum</string>
+  <string id="20420">Aldrei</string>
+  <string id="20421">Bara ef ein sería</string>
+  <string id="20422">Alltaf</string>
+  <string id="20423"></string>
+  <string id="20424">Ósatt</string>
+  
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Sýna faldar skrár og möppur</string>
@@ -1758,7 +1848,7 @@
   <string id="21396">Kafli</string>
   <string id="21397">Hágæða punkta skyggnir V2</string>
   <string id="21398">Virkja spilunarlista í ræsingu</string>
-  <string id="21399">Nota Tween hreyfimyndir</string>
+  <string id="21399">Nota skopp hreyfimyndir</string>
   <string id="21400">inniheldur</string>
   <string id="21401">inniheldur ekki</string>
   <string id="21402">er</string>
@@ -1792,6 +1882,7 @@
   <string id="21437">Nýr snjall lagalisti...</string>
   <string id="21438">%c Drif</string>
   <string id="21439">Breyta reglum fyrir Partí ham</string>
+  <string id="21440">Heimamappa</string>
   <string id="21441">Fjöldi áhorfa</string>
   <string id="21442">Titill þáttar</string>
 
@@ -1883,5 +1974,5 @@
 
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
+  <!-- strings 32000 thru 32999 reserved for scripts -->
 </strings>
- 	  	 
