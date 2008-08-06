@@ -562,24 +562,9 @@ void CSurface::EnableVSync(bool enable)
   return;
 #else
   if (enable)
-  {
     CLog::Log(LOGINFO, "GL: Enabling VSYNC");
-
-    // the following setenv will currently have no effect on rendering. it should be set before screen setup.
-    // workaround needed.
-#ifdef _LINUX
-    if (setenv("__GL_SYNC_TO_VBLANK","1",true) != 0)
-      CLog::Log(LOGERROR,"GL: failed to set vsync env variable!");
-#endif
-  }
   else
-  {
     CLog::Log(LOGINFO, "GL: Disabling VSYNC");
-#ifdef _LINUX
-    if (unsetenv("__GL_SYNC_TO_VBLANK") != 0)
-      CLog::Log(LOGERROR,"GL: failed to unset vsync env variable!");
-#endif
-  }
 
   // Nvidia cards: See Appendix E. of NVidia Linux Driver Set README
   CStdString strVendor(s_glVendor), strRenderer(s_glRenderer);
@@ -588,8 +573,6 @@ void CSurface::EnableVSync(bool enable)
 
   m_iVSyncMode = 0;
   m_bVSync=enable;
-  if (strVendor.find("nvidia") != std::string::npos)
-    return;
 
 #ifdef HAS_GLX
   // Obtain function pointers
@@ -620,37 +603,15 @@ void CSurface::EnableVSync(bool enable)
     _wglSwapIntervalEXT(0);
 #endif
 
+  // if this env is turned on, no point in trying anything else
+  if( getenv("__GL_SYNC_TO_VBLANK") && strcmp(getenv("__GL_SYNC_TO_VBLANK"), "1") == 0)
+  {
+    CLog::Log(LOGINFO, "GL: Ignoring internal vsync handling due to __GL_SYNC_TO_VBLANK being set");
+    return;
+  }
+
   if (IsValid() && enable)
   {
-#ifdef HAS_GLX
-    // first we set swap interval to keep fps down
-    if (_glXSwapIntervalSGI)
-    {
-      if(_glXSwapIntervalSGI(1) != 0)
-        CLog::Log(LOGWARNING, "%s - glXSwapIntervalSGI failed", __FUNCTION__);
-    }
-    if (_glXSwapIntervalMESA)
-    {
-      if(_glXSwapIntervalMESA(1) != 0)
-        CLog::Log(LOGWARNING, "%s - glXSwapIntervalMESA failed", __FUNCTION__);
-    }
-#elif defined (_WIN32)
-    if (_wglSwapIntervalEXT)
-    {
-      if(!_wglSwapIntervalEXT(1))
-      {
-        CLog::Log(LOGWARNING, "%s - wglSwapIntervalEXT failed", __FUNCTION__);
-        //stop it from trying to set vsync again
-        g_videoConfig.SetVSyncMode(VSYNC_DISABLED);
-        m_iVSyncMode = 0;
-      }
-      else
-      {
-        m_iVSyncMode = 1;
-      }
-    }
-#endif
-
 #ifdef HAS_GLX
     // now let's see if we have some system to do specific vsync handling
     if (_glXGetSyncValuesOML && _glXSwapBuffersMscOML && !m_iVSyncMode)
@@ -665,21 +626,40 @@ void CSurface::EnableVSync(bool enable)
     {
       unsigned int count;
       if(_glXGetVideoSyncSGI(&count) == 0)
-      {
-        if (strRenderer.find("intel") != std::string::npos)
           m_iVSyncMode = 3;
-        else
-          m_iVSyncMode = 4;
-      }
       else
         CLog::Log(LOGWARNING, "%s - glXGetVideoSyncSGI failed, glcontext probably not direct", __FUNCTION__);
+    }
+#endif
+
+#ifdef HAS_GLX
+    if (_glXSwapIntervalSGI && !m_iVSyncMode)
+    {
+      if(_glXSwapIntervalSGI(1) == 0)
+        m_iVSyncMode = 2;
+      else
+        CLog::Log(LOGWARNING, "%s - glXSwapIntervalSGI failed", __FUNCTION__);
+    }
+    if (_glXSwapIntervalMESA && !m_iVSyncMode)
+    {
+      if(_glXSwapIntervalMESA(1) == 0)
+        m_iVSyncMode = 2;
+      else
+        CLog::Log(LOGWARNING, "%s - glXSwapIntervalMESA failed", __FUNCTION__);
+    }
+#elif defined (_WIN32)
+    if (_wglSwapIntervalEXT && !m_iVSyncMode)
+    {
+      if(_wglSwapIntervalEXT(1))
+        m_iVSyncMode = 2;
+      else
+        CLog::Log(LOGWARNING, "%s - wglSwapIntervalEXT failed", __FUNCTION__);
     }
 #endif
 
     if(!m_iVSyncMode)
     {
       m_iVSyncMode = 0;
-      m_bVSync = false;
       CLog::Log(LOGERROR, "GL: Vertical Blank Syncing unsupported");
     }
     else
