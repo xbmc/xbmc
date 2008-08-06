@@ -603,13 +603,6 @@ void CSurface::EnableVSync(bool enable)
     _wglSwapIntervalEXT(0);
 #endif
 
-  // if this env is turned on, no point in trying anything else
-  if( getenv("__GL_SYNC_TO_VBLANK") && strcmp(getenv("__GL_SYNC_TO_VBLANK"), "1") == 0)
-  {
-    CLog::Log(LOGINFO, "GL: Ignoring internal vsync handling due to __GL_SYNC_TO_VBLANK being set");
-    return;
-  }
-
   if (IsValid() && enable)
   {
 #ifdef HAS_GLX
@@ -676,7 +669,7 @@ void CSurface::Flip()
 #ifdef HAS_GLX
     if (m_iVSyncMode == 3)
     {
-      glFinish();
+      glXWaitGL();
       unsigned int before, after;
       if(_glXGetVideoSyncSGI(&before) != 0)
         CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Failed to get current retrace count", __FUNCTION__);
@@ -694,7 +687,7 @@ void CSurface::Flip()
     }
     else if (m_iVSyncMode == 4)
     {
-      glFinish();
+      glXWaitGL();
       unsigned int vCount;
       if(_glXGetVideoSyncSGI(&vCount) == 0)
         _glXWaitVideoSyncSGI(2, (vCount+1)%2, &vCount);
