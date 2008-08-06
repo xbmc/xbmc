@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Based on english strings version 10756-->
+<!--Based on english strings version 14720-->
 <strings>
   <string id="0">Programmes</string>
   <string id="1">Images</string>
@@ -7,10 +7,10 @@
   <string id="3">Vidéos</string>
   <string id="4">Guide TV</string>
   <string id="5">Paramètres</string>
-  <string id="6">Xbox Media Center SVN</string>
+  <string id="6">XBMC SVN</string>
   <string id="7">Fichiers</string>
   <string id="8">Météo</string>
-  <string id="9">xbmc</string>
+  <string id="9">xbmc media center</string>
   
   <string id="11">Lundi</string>
   <string id="12">Mardi</string>
@@ -141,7 +141,7 @@
   <string id="203">Résumé:</string>
   <string id="204"></string>
   <string id="205">Votes:</string>
-  <string id="206">Distribution</string>
+  <string id="206">Casting</string>
   <string id="207">Résumé</string>
   <string id="208">Lire</string>
   <string id="209">Suivant</string>
@@ -791,18 +791,18 @@
   <string id="10005">Musiques</string>
   <string id="10006">Vidéos</string>
   <string id="10007">Informations Système</string>
-  <string id="10008">Paramètres-&gt;Général</string>
-  <string id="10009">Paramètres-&gt;Écran</string>
-  <string id="10010">Paramètres-&gt;Apparence-&gt;Calibration Gui</string>
-  <string id="10011">Paramètres-&gt;Vidéos-&gt;Calibration d'écran</string>
-  <string id="10012">Paramètres-&gt;Images</string>
-  <string id="10013">Paramètres-&gt;Programmes</string>
-  <string id="10014">Paramètres-&gt;Météo</string>
-  <string id="10015">Paramètres-&gt;Musique</string>
-  <string id="10016">Paramètres-&gt;Système</string>
-  <string id="10017">Paramètres-&gt;Vidéos</string>
-  <string id="10018">Paramètres-&gt;Réseau</string>
-  <string id="10019">Paramètres-&gt;Apparence</string>
+  <string id="10008">Paramètres - Général</string>
+  <string id="10009">Paramètres - Écran</string>
+  <string id="10010">Paramètres - Apparence - Calibration GUI</string>
+  <string id="10011">Paramètres - Vidéos - Calibration d'écran</string>
+  <string id="10012">Paramètres - Images</string>
+  <string id="10013">Paramètres - Programmes</string>
+  <string id="10014">Paramètres - Météo</string>
+  <string id="10015">Paramètres - Musique</string>
+  <string id="10016">Paramètres - Système</string>
+  <string id="10017">Paramètres - Vidéos</string>
+  <string id="10018">Paramètres - Réseau</string>
+  <string id="10019">Paramètres - Apparence</string>
   <string id="10020">Scripts</string>
   <string id="10021"></string>
   <string id="10022"></string>
@@ -870,7 +870,7 @@
   <string id="12021">Commencer depuis le début</string>
   <string id="12022">Reprendre depuis la dernière position</string>
   <string id="12023">Validation des trainers existants...</string>
-  
+  <string id="12024">Générer automatiquement des vignettes pour les vidéos</string>
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -1015,7 +1015,7 @@
   <string id="13211">Alarme!</string>
   <string id="13212">Annulé avec %im%is restant</string>
   
-  <string id="13249">Activer la recherche des sous-titres en RAR</string>
+  <string id="13249">Activer la recherche des sous-titres .RAR</string>
   <string id="13250">Rechercher des sous-titres...</string>
   <string id="13251">Déplacer</string>
   <string id="13252">Déplacer ici</string>
@@ -1173,15 +1173,15 @@
   <string id="14005">Parcours de la liste des flux...</string>
   <string id="14006">Le téléchargement de la liste des flux a échoué</string>
   <string id="14007">Le téléchargement de la liste de lecture a échoué</string>
-  <string id="14008">Activer les Notifications Kai</string>
+  <string id="14008"></string>
   <string id="14009">Répertoire des Jeux</string>
   <string id="14010">Basculement des vignettes basées sur</string>
   <string id="14011">Activer le basculement</string>
   <string id="14012">- Utiliser les affiches</string>
-  <string id="14013">- Basculement -</string>
+  <string id="14013">- Basculement basé sur</string>
   <string id="14014">- Pourcentage</string>
-  <string id="14015">Aucun fichier et au moins une vignette</string>
-  <string id="14016">Au moins un fichier et une vignette</string>
+  <string id="14015">Aucun fichier et au moins 1 vignette</string>
+  <string id="14016">Au moins 1 fichier et 1 vignette</string>
   <string id="14017">Pourcentage des vignettes</string>
   <string id="14018">Affichage</string>
   <string id="14019">Changer emplacement 1</string>
@@ -1205,7 +1205,7 @@
   <string id="14039">Vous venez de modifier les paramètres réseaux</string>
   <string id="14040">Redémarrer XBMC pour appliquer les changements ?</string>
   <string id="14041">Post Traitement</string>
-  <string id="14042">Adresse IP du moteur Kai</string>
+  <string id="14042"></string>
   <string id="14043">- Eteindre pendant la lecture</string>
   <string id="14044">%i mins</string>
   <string id="14045">%i secs</string>
@@ -1245,68 +1245,68 @@
   <string id="14079">Pays fuseau horaire</string>
   <string id="14080">Fuseau horaire</string>
   
-  <string id="15000">XLink Kai</string>
-  <string id="15001">Le service n'est pas connecté, voulez-vous essayer</string>
-  <string id="15002">de vous y connecter avec XBox Media Center ?</string>
-  <string id="15003">Saisissez votre message.</string>
-  <string id="15004">Vous avez été invité(e) à jouer %s.</string>
-  <string id="15005">Date: %s</string>
-  <string id="15006">De: %s</string>
-  <string id="15007">Invitation</string>
-  <string id="15008">Vous avez été invité(e) à rejoindre %s.</string>
-  <string id="15009">Hors-ligne</string>
-  <string id="15010">Amis</string>
-  <string id="15011">Voir: Amis</string>
-  <string id="15012">Joindre</string>
-  <string id="15013">Voix</string>
-  <string id="15014">Inviter</string>
-  <string id="15015">Supprimer</string>
-  <string id="15016">Jeux</string>
-  <string id="15017">Voir: Jeux</string>
-  <string id="15018">Entrer</string>
-  <string id="15019">Ajouter</string>
-  <string id="15020">Héberger</string>
-  <string id="15021">Arènes</string>
-  <string id="15022">Voir: Arènes</string>
-  <string id="15023">Jouer</string>
-  <string id="15024">Ajouter</string>
-  <string id="15025">Héberger</string>
-  <string id="15026">Chat</string>
-  <string id="15027">Voir: Chat</string>
-  <string id="15028">Clavier</string>
-  <string id="15029">Un mot de passe est nécessaire pour joindre cette Arène.</string>
-  <string id="15030">Le service a été déconnecté</string>
-  <string id="15031">Authentification XLink Kai</string>
-  <string id="15032">Votre login et/ou mot de passe a été rejeté</string>
-  <string id="15033">orbital serveur. Merci de vérifier votre configuration.</string>
-  <string id="15034">viens juste de se connecter</string>
-  <string id="15035">a initialisé un chat vocal</string>
-  <string id="15036">vous a envoyé une invitation</string>
-  <string id="15037">XBMC ne peut pas vérifier si votre réseau est accessible</string>
-  <string id="15038">Vous aurez peut-être des difficultés à joindre ou héberger une partie.</string>
-  <string id="15039">Impossible de détecter vos jeux automatiquement.</string>
-  <string id="15040">Insérer le jeu dans votre XBox ou appuyer sur 'A' pour annuler</string>
-  <string id="15041">et lancer le jeu manuellement.</string>
-  <string id="15042">Accès refusé</string>
-  <string id="15043">%s rejoint le chat.</string>
-  <string id="15044">%s quitte le chat.</string>
-  <string id="15045">Saisissez votre message personnel.</string>
-  <string id="15046">Arène courante</string>
-  <string id="15047">Saisissez un mot de passe pour votre arène.</string>
-  <string id="15048">Saisissez une description pour votre arène.</string>
-  <string id="15049">Héberger un jeu</string>
-  <string id="15050">Héberger dans une arène privée</string>
-  <string id="15051">Limite de joueur</string>
-  <string id="15052">Mot de passe</string>
-  <string id="15053">Description</string>
-  <string id="15054">Invitation</string>
-  <string id="15055">Choisir un jeu:</string>
-  <string id="15056">Saisissez message:</string>
-  <string id="15057">Envoyer</string>
-  <string id="15058">Héberger</string>
-  <string id="15059">Invitation acceptée !</string>
-  <string id="15060">Votre message</string>
-  <string id="15061">Vous avez été invité(e) à jouer %s.</string>
+  <string id="15000"></string>
+  <string id="15001"></string>
+  <string id="15002"></string>
+  <string id="15003"></string>
+  <string id="15004"></string>
+  <string id="15005"></string>
+  <string id="15006"></string>
+  <string id="15007"></string>
+  <string id="15008"></string>
+  <string id="15009"></string>
+  <string id="15010"></string>
+  <string id="15011"></string>
+  <string id="15012"></string>
+  <string id="15013"></string>
+  <string id="15014"></string>
+  <string id="15015"></string>
+  <string id="15016"></string>
+  <string id="15017"></string>
+  <string id="15018"></string>
+  <string id="15019"></string>
+  <string id="15020"></string>
+  <string id="15021"></string>
+  <string id="15022"></string>
+  <string id="15023"></string>
+  <string id="15024"></string>
+  <string id="15025"></string>
+  <string id="15026"></string>
+  <string id="15027"></string>
+  <string id="15028"></string>
+  <string id="15029"></string>
+  <string id="15030"></string>
+  <string id="15031"></string>
+  <string id="15032"></string>
+  <string id="15033"></string>
+  <string id="15034"></string>
+  <string id="15035"></string>
+  <string id="15036"></string>
+  <string id="15037"></string>
+  <string id="15038"></string>
+  <string id="15039"></string>
+  <string id="15040"></string>
+  <string id="15041"></string>
+  <string id="15042"></string>
+  <string id="15043"></string>
+  <string id="15044"></string>
+  <string id="15045"></string>
+  <string id="15046"></string>
+  <string id="15047"></string>
+  <string id="15048"></string>
+  <string id="15049"></string>
+  <string id="15050"></string>
+  <string id="15051"></string>
+  <string id="15052"></string>
+  <string id="15053"></string>
+  <string id="15054"></string>
+  <string id="15055"></string>
+  <string id="15056"></string>
+  <string id="15057"></string>
+  <string id="15058"></string>
+  <string id="15059"></string>
+  <string id="15060"></string>
+  <string id="15061"></string>
   <string id="15100">Bibliothèque</string>
   <string id="15101">Base de données</string>
   <string id="15102">* Tous les Albums</string>
@@ -1484,8 +1484,8 @@
   <string id="20017">Locale</string>
   <string id="20018">Aucune</string>
   <string id="20019">Choisir une vignette</string>
-  <string id="20020">Impossible d'utiliser Kai et Trainer ensemble</string>
-  <string id="20021">Choisissez celui que vous voulez utiliser</string>
+  <string id="20020"></string>
+  <string id="20021"></string>
   <!-- string id 20022 will always be set to an empty string (LocalizeStrings.cpp)-->
   <string id="20022"></string>
   <string id="20023">Conflit</string>
@@ -1641,7 +1641,7 @@
   <string id="20182">Espace</string>
   <string id="20183">Recharger Thème</string>
   <string id="20184">Pivoter en utilisant l'info EXIF</string>
-  <string id="20185"></string>
+  <string id="20185">Utiliser la vue Poster pour les Séries TV</string>
   <string id="20186">Chargement</string>
   <string id="20187">Sauvegarde de l'EEPROM</string>
   <string id="20188">Sauvegarde du BIOS</string>
@@ -1714,18 +1714,18 @@
   <string id="20347">est</string>
   <string id="20348">Réalisateurs</string>
   <string id="20349">Le fichier vidéo n'a pas été trouvé dans ce chemin !</string>
-  <string id="20350">voix</string>
+  <string id="20350">votes</string>
   <string id="20351">Infos Série TV</string>
   <string id="20352">Information de l'épisode</string>
   <string id="20353">Chargement des détails de la série TV</string>
   <string id="20354">Recherche du guide de l'épisode</string>
   <string id="20355">Chargement des infos pour les épisodes dans le répertoire</string>
-  <string id="20356">Choisir Émission Télé:</string>
-  <string id="20357">Entrer le nom de la série TV</string>
+  <string id="20356">Choisir Série TV:</string>
+  <string id="20357">Entrer le nom de la Série TV</string>
   <string id="20358">Saison %i</string>
   <string id="20359">Épisode</string>
   <string id="20360">Épisodes</string>
-  <string id="20361">Chargement des détails de l'épisode</string>
+  <string id="20361">Chargement des détails des épisodes</string>
   <string id="20362">Retirer l'épisode...</string>
   <string id="20363">Retirer série TV...</string>
   <string id="20364">Série TV</string>
@@ -1768,15 +1768,15 @@
   <string id="20401">Jouer le Clip</string>
   <string id="20402">Récupérer automatiquement les vignettes des acteurs</string>
   <string id="20403">Définir vignette Acteur</string>
-  <string id="20404"/>
+  <string id="20404"></string>
   <string id="20405">Supprimer les Signets de l'Épisode</string>
   <string id="20406">Ajouter un Signet pour l'Épisode</string>
   <string id="20407">Paramètres du Scraper</string>
   <string id="20408">Téléchargement des infos Clip Vidéo</string>
   <string id="20409">Téléchargement des infos Série TV</string>
   <string id="20410">Bande Annonce</string>
-  <string id="20411">Superposer</string>
-  <string id="20412">Superposer Série TV</string>
+  <string id="20411">Assembler</string>
+  <string id="20412">Assembler Série TV</string>
   <string id="20413">Récupérer FanArt</string>
   <string id="20414">Afficher le FanArt dans la bibliothèque vidéo</string>
   <string id="20415">Recherche de nouveau contenu</string>
@@ -1970,6 +1970,7 @@
 
   <string id="29999">Appliquer paramètre du filtre de scintillement aux jeux</string>
 
-  <!-- strings 30000 thru 31000 reserved for plugin settings -->
-  <!-- strings 31001 thru 32000 reserved for skins -->
+  <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
+  <!-- strings 31000 thru 31999 reserved for skins -->
+  <!-- strings 32000 thru 32999 reserved for scripts -->
 </strings>
