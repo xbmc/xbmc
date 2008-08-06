@@ -619,7 +619,8 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifdef _LINUX
   // for nvidia cards - vsync currently ALWAYS enabled.
   // the reason is that after screen has been setup changing this env var will make no difference.
-  setenv("__GL_SYNC_TO_VBLANK","1",true);
+  if(getenv("__GL_SYNC_TO_VBLANK") == NULL)
+    setenv("__GL_SYNC_TO_VBLANK","1",true);
 #endif
 
   if (SDL_Init(sdlFlags) != 0)
