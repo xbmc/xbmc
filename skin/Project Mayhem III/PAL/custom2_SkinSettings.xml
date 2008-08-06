@@ -260,102 +260,84 @@
 				</control>
 			</control>
 			<!-- Homescreen Options -->
-			<control type="group" id="9003">
+			<control type="grouplist" id="9003">
+				<posx>190</posx>
+				<posy>100</posy>
+				<width>485</width>
+				<onleft>9001</onleft>
+				<onright>9001</onright>
+				<onup>9003</onup>
+				<ondown>9003</ondown>
 				<visible>Skin.String(SkinSettings,2)</visible>
+				<control type="radiobutton" id="37">
+					<description>Show Programs on Non Xbox Platforms</description>
+					<width>485</width>
+					<label>20082</label>
+					<onclick>Skin.ToggleSetting(ProgramsInHome)</onclick>
+					<selected>Skin.HasSetting(ProgramsInHome)</selected>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<visible>!System.Platform.Xbox</visible>
+				</control>
 				<control type="radiobutton" id="30">
 					<description>enable RSS</description>
-					<posx>190</posx>
-					<posy>100</posy>
 					<width>485</width>
 					<label>20080</label>
 					<onclick>Skin.ToggleSetting(NoAudioRSS)</onclick>
 					<selected>!Skin.HasSetting(NoAudioRSS)</selected>
-					<onleft>9001</onleft>
-					<onright>9001</onright>
-					<onup>36</onup>
-					<ondown>31</ondown>
 					<textoffsetx>7</textoffsetx>
 					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 				</control>
 				<control type="radiobutton" id="31">
 					<description>enable video info</description>
-					<posx>190</posx>
-					<posy>137</posy>
 					<width>485</width>
 					<label>20176</label>
 					<onclick>Skin.ToggleSetting(homepageVideoinfo)</onclick>
 					<selected>!Skin.HasSetting(homepageVideoinfo)</selected>
-					<onleft>9001</onleft>
-					<onright>9001</onright>
-					<onup>30</onup>
-					<ondown>32</ondown>
 					<textoffsetx>7</textoffsetx>
 					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 				</control>
 				<control type="radiobutton" id="32">
 					<description>enable music info</description>
-					<posx>190</posx>
-					<posy>174</posy>
 					<width>485</width>
 					<label>20083</label>
 					<onclick>Skin.ToggleSetting(homepageMusicinfo)</onclick>
 					<selected>!Skin.HasSetting(homepageMusicinfo)</selected>
-					<onleft>9001</onleft>
-					<onright>9001</onright>
-					<onup>31</onup>
-					<ondown>33</ondown>
 					<textoffsetx>7</textoffsetx>
 					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 				</control>
 				<control type="radiobutton" id="33">
 					<description>enable weather info</description>
-					<posx>190</posx>
-					<posy>211</posy>
 					<width>485</width>
 					<label>20084</label>
 					<onclick>Skin.ToggleSetting(homepageWeatherinfo)</onclick>
 					<selected>!Skin.HasSetting(homepageWeatherinfo)</selected>
-					<onleft>9001</onleft>
-					<onright>9001</onright>
-					<onup>32</onup>
-					<ondown>34</ondown>
 					<textoffsetx>7</textoffsetx>
 					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 				</control>
 				<control type="radiobutton" id="34">
 					<description>enable System info</description>
-					<posx>190</posx>
-					<posy>248</posy>
 					<width>485</width>
 					<label>20085</label>
 					<onclick>Skin.ToggleSetting(homepageSysteminfo)</onclick>
 					<selected>!Skin.HasSetting(homepageSysteminfo)</selected>
-					<onleft>9001</onleft>
-					<onright>9001</onright>
-					<onup>33</onup>
-					<ondown>35</ondown>
 					<textoffsetx>7</textoffsetx>
 					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 				</control>
 				<control type="radiobutton" id="35">
 					<description>enable homepage drive stats C: E: F:</description>
-					<posx>190</posx>
-					<posy>285</posy>
 					<width>485</width>
 					<label>20086</label>
 					<visible>System.Platform.XBOX</visible>
 					<selected>!Skin.HasSetting(homepageDriveinfo1)</selected>
 					<onclick>Skin.ToggleSetting(homepageDriveinfo1)</onclick>
 					<onclick>Skin.ResetSetting(homepageDriveinfo2)</onclick>
-					<onleft>9001</onleft>
-					<onright>9001</onright>
-					<onup>34</onup>
-					<ondown>36</ondown>
 					<textoffsetx>7</textoffsetx>
 					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
@@ -364,18 +346,12 @@
 				</control>
 				<control type="radiobutton" id="36">
 					<description>enable homepage drive stats E: F: G:</description>
-					<posx>190</posx>
-					<posy>322</posy>
 					<width>485</width>
 					<label>20087</label>
 					<visible>System.Platform.XBOX</visible>
 					<selected>Skin.HasSetting(homepageDriveinfo2)</selected>
 					<onclick>Skin.ToggleSetting(homepageDriveinfo2)</onclick>
 					<onclick>Skin.ResetSetting(homepageDriveinfo1)</onclick>
-					<onleft>9001</onleft>
-					<onright>9001</onright>
-					<onup>35</onup>
-					<ondown>30</ondown>
 					<textoffsetx>7</textoffsetx>
 					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
