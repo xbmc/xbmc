@@ -517,6 +517,9 @@ void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons 
 
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
   {
+    CFileItemPtr item;
+    item = m_vecItems->Get(itemNumber);
+
     if (m_movingFrom >= 0)
     {
       // we can move the item to any position not where we are, and any position not above currently
@@ -527,15 +530,16 @@ void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons 
     }
     else
     { // aren't in a move
+      if (!item->IsLastFM() && !item->IsShoutCast())
+        buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
       if (itemNumber > (g_partyModeManager.IsEnabled() ? 1 : 0))
         buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_UP, 13332);
       if (itemNumber + 1 < m_vecItems->Size())
         buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_DOWN, 13333);
       if (!g_partyModeManager.IsEnabled() || itemNumber != itemPlaying)
         buttons.Add(CONTEXT_BUTTON_MOVE_ITEM, 13251);
-
       if (itemNumber != itemPlaying)
-        buttons.Add(CONTEXT_BUTTON_DELETE, 15015);
+        buttons.Add(CONTEXT_BUTTON_DELETE, 1210); // Remove
     }
   }
 
