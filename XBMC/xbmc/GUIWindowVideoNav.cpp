@@ -35,6 +35,7 @@
 #include "PlayListFactory.h"
 #include "GUIFontManager.h"
 #include "GUIDialogVideoScan.h"
+#include "GUIDialogOK.h"
 #include "PartyModeManager.h"
 #include "MusicDatabase.h"
 #include "GUIWindowManager.h"
@@ -809,6 +810,14 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
 
 bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
 {
+  // dont allow update while scanning
+  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+  if (pDialogScan && pDialogScan->IsScanning())
+  {
+    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+    return false;
+  }
+
   VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty())
     iType = VIDEODB_CONTENT_TVSHOWS;
