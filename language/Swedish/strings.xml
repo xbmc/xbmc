@@ -4,7 +4,7 @@
 <!--Email: blittan@xbmc.org-->
 <!--Date of translation: 08/06/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 14723-->
+<!--Based on english strings version 14727-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1150,6 +1150,7 @@
   <string id="14078">Skalfärger</string>
   <string id="14079">Tidzonsland</string>
   <string id="14080">Tidzon</string>
+  <string id="15019">Lägg till</string>
   <string id="15100">Bibliotek</string>
   <string id="15101">Databas</string>
   <string id="15102">* Alla album</string>
