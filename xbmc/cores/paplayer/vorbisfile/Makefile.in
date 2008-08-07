@@ -8,7 +8,7 @@ LIBS=libvorbis/lib/.libs/libvorbis.a ogg/src/.libs/libogg.a
 .PHONY: compile
 
 $(LIB): $(LIBS)
-	gcc -shared -o $@ -Wl,--whole-archive ogg/src/.libs/libogg.a \
+	gcc -shared -o $@ libvorbis/lib/.libs/vorbisfile.o -Wl,--whole-archive ogg/src/.libs/libogg.a \
 		libvorbis/lib/.libs/libvorbis.a -Wl,--no-whole-archive \
 		`cat ../../DllLoader/exports/wrapper.def` \
 		../../DllLoader/exports/wrapper.o
