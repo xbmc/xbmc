@@ -621,7 +621,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
       CPicture pic;
       pic.DoCreateThumbnail(thumb, pItem->GetCachedPictureThumb(),true);
     }
-    else
+    else if (!pItem->IsPluginFolder())
     {
       // we load the directory, grab 4 random thumb files (if available) and then generate
       // the thumb.
