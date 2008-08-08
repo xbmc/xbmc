@@ -39,8 +39,10 @@
 class CGUIMultiImage : public CGUIControl
 {
 public:
-  CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CGUIInfoLabel& texturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd);
+  CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd);
+  CGUIMultiImage(const CGUIMultiImage &from);
   virtual ~CGUIMultiImage(void);
+  virtual CGUIMultiImage *Clone() const { return new CGUIMultiImage(*this); };
 
   virtual void Render();
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
@@ -58,7 +60,7 @@ public:
 protected:
   void LoadDirectory();
   void LoadImage(int image);
-  CGUIInfoLabel m_texturePath;
+  CImage m_texturePath;
   CStdString m_currentPath;
   unsigned int m_currentImage;
   CStopWatch m_imageTimer;

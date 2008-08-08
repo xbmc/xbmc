@@ -21,15 +21,15 @@
 
 #include "stdafx.h"
 #include "GUIDialogSmartPlaylistRule.h"
-#include "GUIDialogKeyboard.h"
-#include "GUIDialogNumeric.h"
 #include "GUIDialogFileBrowser.h"
 #include "Util.h"
 #include "MusicDatabase.h"
 #include "VideoDatabase.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogSelect.h"
+#include "FileSystem/Directory.h"
 #include "FileItem.h"
+#include "GUIEditControl.h"
 
 #define CONTROL_FIELD           15
 #define CONTROL_OPERATOR        16
@@ -69,7 +69,7 @@ bool CGUIDialogSmartPlaylistRule::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_CANCEL)
         OnCancel();
       else if (iControl == CONTROL_VALUE)
-        OnValue();
+        OnEditChanged(iControl, m_rule.m_parameter);
       else if (iControl == CONTROL_OPERATOR)
         OnOperator();
       else if (iControl == CONTROL_FIELD)
@@ -165,6 +165,18 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   {
     videodatabase.GetTvShowsNav("",items);
   }
+  else if (m_rule.m_field == CSmartPlaylistRule::FIELD_PLAYLIST)
+  {
+    // use filebrowser to grab another smart playlist
+
+    // Note: This can cause infinite loops (playlist that refers to the same playlist) but I don't
+    //       think there's any decent way to deal with this, as the infinite loop may be an arbitrary
+    //       number of playlists deep, eg playlist1 -> playlist2 -> playlist3 ... -> playlistn -> playlist1
+    CStdString path = "special://videoplaylists/";
+    if (m_type.Equals("songs") || m_type.Equals("albums"))
+      path = "special://musicplaylists/";
+    DIRECTORY::CDirectory::GetDirectory(path, items, ".xsp", false);
+  }
   else
   { // TODO: Add browseability in here.
     assert(false);
@@ -194,65 +206,6 @@ void CGUIDialogSmartPlaylistRule::OnCancel()
   Close();
 }
 
-void CGUIDialogSmartPlaylistRule::OnValue()
-{
-  CStdString value(m_rule.m_parameter);
-  switch (CSmartPlaylistRule::GetFieldType(m_rule.m_field))
-  {
-  case CSmartPlaylistRule::TEXT_FIELD:
-  case CSmartPlaylistRule::BROWSEABLE_FIELD:
-    if (CGUIDialogKeyboard::ShowAndGetInput(value, g_localizeStrings.Get(21420), false))
-      m_rule.m_parameter = value;
-    break;
-  case CSmartPlaylistRule::DATE_FIELD:
-    if (m_rule.m_operator == CSmartPlaylistRule::OPERATOR_IN_THE_LAST)
-    {
-      if (CGUIDialogKeyboard::ShowAndGetInput(value, g_localizeStrings.Get(21420), false))
-        m_rule.m_parameter = value;
-    }
-    else
-    {
-      CDateTime dateTime;
-      dateTime.SetFromDBDate(m_rule.m_parameter);
-      if (dateTime < CDateTime(2000,1, 1, 0, 0, 0))
-        dateTime = CDateTime(2000, 1, 1, 0, 0, 0);
-      SYSTEMTIME date;
-      dateTime.GetAsSystemTime(date);
-      if (CGUIDialogNumeric::ShowAndGetDate(date, g_localizeStrings.Get(21420)))
-      {
-        dateTime = CDateTime(date);
-        m_rule.m_parameter = dateTime.GetAsDBDate();
-      }
-    }
-    break;
-  case CSmartPlaylistRule::SECONDS_FIELD:
-    if (CGUIDialogNumeric::ShowAndGetSeconds(value, g_localizeStrings.Get(21420)))
-      m_rule.m_parameter = value;
-    break;
-  case CSmartPlaylistRule::NUMERIC_FIELD:
-    if (CGUIDialogNumeric::ShowAndGetNumber(value, g_localizeStrings.Get(21420)))
-      m_rule.m_parameter = value;
-    break;
-  case CSmartPlaylistRule::PLAYLIST_FIELD:
-    // use filebrowser to grab another smart playlist
-
-    // Note: This can cause infinite loops (playlist that refers to the same playlist) but I don't
-    //       think there's any decent way to deal with this, as the infinite loop may be an arbitrary
-    //       number of playlists deep, eg playlist1 -> playlist2 -> playlist3 ... -> playlistn -> playlist1
-    CStdString path = "special://videoplaylists/";
-    if (m_type.Equals("songs") || m_type.Equals("albums"))
-      path = "special://musicplaylists/";
-    if (CGUIDialogFileBrowser::ShowAndGetFile(path, ".xsp", g_localizeStrings.Get(656), path))
-    {
-      CSmartPlaylist playlist;
-      if (playlist.Load(path))
-        m_rule.m_parameter = !playlist.GetName().IsEmpty() ? playlist.GetName() : CUtil::GetTitleFromPath(path);
-    }
-    break;
-  }
-  UpdateButtons();
-}
-
 void CGUIDialogSmartPlaylistRule::OnField()
 {
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_FIELD);
@@ -274,16 +227,15 @@ void CGUIDialogSmartPlaylistRule::OnOperator()
 void CGUIDialogSmartPlaylistRule::UpdateButtons()
 {
   // update the field control
-  CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_FIELD, m_rule.m_field);
-  OnMessage(msg);
+  SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_FIELD, m_rule.m_field);
   CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_FIELD);
   OnMessage(msg2);
   m_rule.m_field = (CSmartPlaylistRule::DATABASE_FIELD)msg2.GetParam1();
 
   // and now update the operator set
-  CGUIMessage reset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_OPERATOR);
-  OnMessage(reset);
+  SendMessage(GUI_MSG_LABEL_RESET, CONTROL_OPERATOR);
 
+  CONTROL_ENABLE(CONTROL_VALUE);
   CONTROL_DISABLE(CONTROL_BROWSE);
   switch (CSmartPlaylistRule::GetFieldType(m_rule.m_field))
   {
@@ -318,19 +270,51 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
     break;
 
   case CSmartPlaylistRule::PLAYLIST_FIELD:
+    CONTROL_ENABLE(CONTROL_BROWSE);
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_EQUALS);
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL);
+    break;
+
+  case CSmartPlaylistRule::BOOLEAN_FIELD:
+    CONTROL_DISABLE(CONTROL_VALUE);
+    AddOperatorLabel(CSmartPlaylistRule::OPERATOR_TRUE);
+    AddOperatorLabel(CSmartPlaylistRule::OPERATOR_FALSE);
     break;
   }
 
   // check our operator is valid, and update if not
-  CGUIMessage select(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_OPERATOR, m_rule.m_operator);
-  OnMessage(select);
+  SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_OPERATOR, m_rule.m_operator);
   CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_OPERATOR);
   OnMessage(selected);
   m_rule.m_operator = (CSmartPlaylistRule::SEARCH_OPERATOR)selected.GetParam1();
 
-  SET_CONTROL_LABEL(CONTROL_VALUE, m_rule.m_parameter);
+  // update the parameter edit control appropriately
+  SET_CONTROL_LABEL2(CONTROL_VALUE, m_rule.m_parameter);
+  CGUIEditControl::INPUT_TYPE type = CGUIEditControl::INPUT_TYPE_TEXT;
+  CSmartPlaylistRule::FIELD_TYPE fieldType = CSmartPlaylistRule::GetFieldType(m_rule.m_field);
+  switch (fieldType)
+  {
+  case CSmartPlaylistRule::TEXT_FIELD:
+  case CSmartPlaylistRule::BROWSEABLE_FIELD:
+  case CSmartPlaylistRule::PLAYLIST_FIELD:
+    type = CGUIEditControl::INPUT_TYPE_TEXT;
+    break;
+  case CSmartPlaylistRule::DATE_FIELD:
+    if (m_rule.m_operator == CSmartPlaylistRule::OPERATOR_IN_THE_LAST ||
+        m_rule.m_operator == CSmartPlaylistRule::OPERATOR_NOT_IN_THE_LAST)
+      type = CGUIEditControl::INPUT_TYPE_TEXT;
+    else
+      type = CGUIEditControl::INPUT_TYPE_DATE;
+    break;
+  case CSmartPlaylistRule::SECONDS_FIELD:
+    type = CGUIEditControl::INPUT_TYPE_SECONDS;
+    break;
+  case CSmartPlaylistRule::NUMERIC_FIELD:
+  case CSmartPlaylistRule::BOOLEAN_FIELD:
+    type = CGUIEditControl::INPUT_TYPE_NUMBER;
+    break;
+  }
+  SendMessage(GUI_MSG_SET_TYPE, CONTROL_VALUE, (DWORD)type, 21420);
 }
 
 void CGUIDialogSmartPlaylistRule::AddOperatorLabel(CSmartPlaylistRule::SEARCH_OPERATOR op)
@@ -342,6 +326,7 @@ void CGUIDialogSmartPlaylistRule::AddOperatorLabel(CSmartPlaylistRule::SEARCH_OP
 
 void CGUIDialogSmartPlaylistRule::OnInitWindow()
 {
+  ChangeButtonToEdit(CONTROL_VALUE, true); // true for single label
   CGUIDialog::OnInitWindow();
   // add the fields to the field spincontrol
   vector<CSmartPlaylistRule::DATABASE_FIELD> fields = CSmartPlaylistRule::GetFields(m_type);
@@ -365,3 +350,4 @@ bool CGUIDialogSmartPlaylistRule::EditRule(CSmartPlaylistRule &rule, const CStdS
   rule = editor->m_rule;
   return !editor->m_cancelled;
 }
+

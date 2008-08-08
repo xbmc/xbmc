@@ -27,6 +27,7 @@
 
 #include <string>
 #include <vector>
+#include "../utils/CriticalSection.h"
 
 class CURL;
 class CFileItemList;
@@ -48,7 +49,7 @@ public:
 
   // callbacks from python
   static bool AddItem(int handle, const CFileItem *item, int totalItems);
-  static void EndOfDirectory(int handle, bool success, bool replaceListing);
+  static void EndOfDirectory(int handle, bool success, bool replaceListing, bool cacheToDisc);
   static void AddSortMethod(int handle, SORT_METHOD sortMethod);
   static void SetContent(int handle, const CStdString &strContent);
   static void SetProperty(int handle, const CStdString &strProperty, const CStdString &strValue);
@@ -59,6 +60,7 @@ private:
   static std::vector<CPluginDirectory*> globalHandles;
   static int getNewHandle(CPluginDirectory *cp);
   static void removeHandle(int handle);
+  static CCriticalSection m_handleLock;
 
   CFileItemList* m_listItems;
   HANDLE        m_directoryFetched;

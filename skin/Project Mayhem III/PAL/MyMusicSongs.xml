@@ -49,7 +49,7 @@
 			<posx>670</posx>
 			<posy>43</posy>
 			<align>right</align>
-            <info>Container.Property(PluginCategory)</info>
+			<info>Container.Property(PluginCategory)</info>
 			<font>special13</font>
 			<visible>!IsEmpty(Container.Property(PluginCategory))</visible>
 		</control>
@@ -194,6 +194,7 @@
 		<include>MusicCoverThumbView</include>
 		<include>MusicCoverWrapView</include>
 		<include>AllViewCommonPageControls</include>
+		<include>ScrollOffsetLabel</include>
 		<include>windowswitchtransition</include>
 	</controls>
 </window>

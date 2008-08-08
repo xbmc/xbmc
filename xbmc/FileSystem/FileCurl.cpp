@@ -31,6 +31,7 @@
 
 using namespace XFILE;
 using namespace XCURL;
+using namespace std;
 
 #ifndef PRId64
 #ifdef _MSC_VER
@@ -778,7 +779,7 @@ unsigned int CFileCurl::CReadState::Read(void* lpBuf, __int64 uiBufSize)
     return 0;
 
   /* ensure only available data is considered */
-  unsigned int want = (unsigned int)min(m_buffer.GetMaxReadSize(), uiBufSize);
+  unsigned int want = (unsigned int)min(m_buffer.GetMaxReadSize(), (unsigned int)uiBufSize);
 
   /* xfer data to caller */
   if (m_buffer.ReadBinary((char *)lpBuf, want))

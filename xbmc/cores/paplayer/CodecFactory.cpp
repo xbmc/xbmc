@@ -42,7 +42,7 @@
 #include "GYMCodec.h"
 #include "SIDCodec.h"
 #include "AdplugCodec.h"
-#include "CubeCodec.h"
+#include "VGMCodec.h"
 #include "YMCodec.h"
 #include "WMACodec.h"
 #include "AIFFcodec.h"
@@ -93,8 +93,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new SIDCodec();
   else if (AdplugCodec::IsSupportedFormat(strFileType))
     return new AdplugCodec();
-  else if (CubeCodec::IsSupportedFormat(strFileType))
-    return new CubeCodec();
+  else if (VGMCodec::IsSupportedFormat(strFileType))
+    return new VGMCodec();
   else if (strFileType.Equals("ym"))
     return new YMCodec();
 #ifdef HAS_WMA_CODEC

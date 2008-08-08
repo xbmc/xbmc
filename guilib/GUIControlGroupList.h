@@ -37,6 +37,8 @@ class CGUIControlGroupList : public CGUIControlGroup
 public:
   CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float itemGap, DWORD pageControl, ORIENTATION orientation, bool useControlPositions);
   virtual ~CGUIControlGroupList(void);
+  virtual CGUIControlGroupList *Clone() const { return new CGUIControlGroupList(*this); };
+
   virtual void Render();
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const;
@@ -47,6 +49,8 @@ public:
 
   virtual bool GetCondition(int condition, int data) const;
 protected:
+  bool IsFirstFocusableControl(const CGUIControl *control) const;
+  bool IsLastFocusableControl(const CGUIControl *control) const;
   void ValidateOffset();
   inline float Size(const CGUIControl *control) const;
   inline float Size() const;

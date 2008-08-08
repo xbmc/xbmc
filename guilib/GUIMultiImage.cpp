@@ -29,12 +29,12 @@
 using namespace std;
 using namespace DIRECTORY;
 
-CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CGUIInfoLabel& texturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd)
+CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_texturePath = texturePath;
-  if (m_texturePath.IsConstant())
-    m_currentPath = m_texturePath.GetLabel(WINDOW_INVALID);
+  if (m_texturePath.file.IsConstant())
+    m_currentPath = m_texturePath.file.GetLabel(WINDOW_INVALID);
   m_currentImage = 0;
   m_timePerImage = timePerImage;
   m_timeToPauseAtEnd = timeToPauseAtEnd;
@@ -45,6 +45,23 @@ CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, 
   ControlType = GUICONTROL_MULTI_IMAGE;
   m_bDynamicResourceAlloc=false;
   m_directoryLoaded = false;
+}
+
+CGUIMultiImage::CGUIMultiImage(const CGUIMultiImage &from)
+: CGUIControl(from)
+{
+  m_texturePath = from.m_texturePath;
+  m_timePerImage = from.m_timePerImage;
+  m_timeToPauseAtEnd = from.m_timeToPauseAtEnd;
+  m_fadeTime = from.m_fadeTime;
+  m_randomized = from.m_randomized;
+  m_loop = from.m_loop;
+  m_aspectRatio = from.m_aspectRatio;
+  m_directoryLoaded = false;
+  if (m_texturePath.file.IsConstant())
+    m_currentPath = m_texturePath.file.GetLabel(WINDOW_INVALID);
+  m_currentImage = 0;
+  ControlType = GUICONTROL_MULTI_IMAGE;
 }
 
 CGUIMultiImage::~CGUIMultiImage(void)
@@ -67,9 +84,9 @@ void CGUIMultiImage::UpdateVisibility(const CGUIListItem *item)
 
   // check for conditional information before we
   // alloc as this can free our resources
-  if (!m_texturePath.IsConstant())
+  if (!m_texturePath.file.IsConstant())
   {
-    CStdString texturePath(m_texturePath.GetLabel(m_dwParentID));
+    CStdString texturePath(m_texturePath.file.GetLabel(m_dwParentID));
     if (texturePath != m_currentPath && !texturePath.IsEmpty())
     {
       m_currentPath = texturePath;
@@ -173,7 +190,7 @@ bool CGUIMultiImage::OnMessage(CGUIMessage &message)
 {
   if (message.GetMessage() == GUI_MSG_REFRESH_THUMBS)
   {
-    if (!m_texturePath.IsConstant())
+    if (!m_texturePath.file.IsConstant())
       FreeResources();
     return true;
   }
@@ -199,7 +216,9 @@ void CGUIMultiImage::AllocResources()
 
   for (unsigned int i=0; i < m_files.size(); i++)
   {
-    CGUIImage *pImage = new CGUIImage(GetParentID(), GetID(), m_posX, m_posY, m_width, m_height, m_files[i]);
+    CImage image(m_texturePath);
+    image.file = m_files[i];
+    CGUIImage *pImage = new CGUIImage(GetParentID(), GetID(), m_posX, m_posY, m_width, m_height, image);
     if (pImage)
       m_images.push_back(pImage);
   }
@@ -297,7 +316,10 @@ void CGUIMultiImage::LoadDirectory()
 
     // Load in our images from the directory specified
     // m_currentPath is relative (as are all skin paths)
-    CStdString realPath = g_TextureManager.GetTexturePath(m_currentPath);
+    CStdString realPath = g_TextureManager.GetTexturePath(m_currentPath, true);
+    if (realPath.IsEmpty())
+      return;
+
     CUtil::AddSlashAtEnd(realPath);
     CHDDirectory dir;
     CFileItemList items;

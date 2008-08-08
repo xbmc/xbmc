@@ -73,7 +73,7 @@ bool CFileReader::Open(const CStdString &strFile, bool autoBuffer, bool preBuffe
     if (preBuffer)
     {
       unsigned int ms = 0;
-      unsigned int minBuffered = (unsigned int)min(((m_ringBuffer.Size() - DATA_TO_KEEP_BEHIND)*0.5f), 32768);
+      unsigned int minBuffered = std::min<unsigned int>(((m_ringBuffer.Size() - DATA_TO_KEEP_BEHIND)/2), 32768);
       while ((m_ringBuffer.GetMaxReadSize() < minBuffered) && (ms < 10000))
       {
         Sleep(1);
@@ -133,7 +133,7 @@ int CFileReader::Read(void *out, __int64 size)
     unsigned int readAhead = m_ringBuffer.GetMaxReadSize();
     if (readAhead)
     {
-      unsigned int amountToCopy = (unsigned int)min(readAhead, sizeleft);
+      unsigned int amountToCopy = std::min<unsigned int>(readAhead, sizeleft);
       if (m_ringBuffer.ReadBinary(byteOut, amountToCopy))
       {
         m_bufferedDataPos += amountToCopy;

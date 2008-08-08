@@ -104,7 +104,9 @@ public:
   virtual void SetAudioStream(int iStream){};
 
   virtual int  GetChapterCount()                               { return 0; }
-  virtual int  GetChapter()                                    { return -1; } 
+  virtual int  GetChapter()                                    { return -1; }
+  virtual void GetChapterName(CStdString& strChapterName)      { return; }
+  virtual int  SeekChapter(int iChapter)                       { return -1; }
 //  virtual bool GetChapterInfo(int chapter, SChapterInfo &info) { return false; }
 
   virtual float GetActualFPS() { return 0.0f; };

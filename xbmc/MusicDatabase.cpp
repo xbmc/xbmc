@@ -1603,7 +1603,7 @@ bool CMusicDatabase::SearchAlbums(const CStdString& search, CFileItemList &album
 
     if (!m_pDS->query(strSQL.c_str())) return false;
 
-    CStdString albumLabel(g_localizeStrings.Get(483)); // Album
+    CStdString albumLabel(g_localizeStrings.Get(558)); // Album
     while (!m_pDS->eof())
     {
       CAlbum album = GetAlbumFromDataset(m_pDS.get());

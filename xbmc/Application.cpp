@@ -305,6 +305,7 @@ CApplication::CApplication(void)
   m_strPlayListFile = "";
   m_nextPlaylistItem = -1;
   m_playCountUpdated = false;
+  m_bPlaybackStarting = false;
 
   //true while we in IsPaused mode! Workaround for OnPaused, which must be add. after v2.0
   m_bIsPaused = false;
@@ -753,7 +754,7 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGNOTICE, "Q is mapped to: %s", strExecutablePath.c_str());
   char szXBEFileName[1024];
   CIoSupport::GetXbePath(szXBEFileName);
-  CLog::Log(LOGNOTICE, "The executeable running is: %s", szXBEFileName);
+  CLog::Log(LOGNOTICE, "The executable running is: %s", szXBEFileName);
   CLog::Log(LOGNOTICE, "Log File is located: %s", strLogFile.c_str());
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
@@ -1051,7 +1052,7 @@ HRESULT CApplication::Create(HWND hWnd)
 #endif
 
   CStdString strHomePath = "Q:";
-  CLog::Log(LOGINFO, "Checking skinpath existance, and existence of keymap.xml:%s...", (strHomePath + "\\skin").c_str());
+  CLog::Log(LOGINFO, "Checking skinpath existence, and existence of keymap.xml:%s...", (strHomePath + "\\skin").c_str());
 
   CStdString systemKeymapPath = "Q:\\system\\Keymap.xml";
   CStdString userKeymapPath = g_settings.GetUserDataItem("Keymap.xml");
@@ -2251,7 +2252,7 @@ void CApplication::DoRender()
     }
 
     // reset image scaling and effect states
-    g_graphicsContext.SetScalingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
+    g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
 
     // If we have the remote codes enabled, then show them
     if (g_advancedSettings.m_displayRemoteCodes)
@@ -2324,7 +2325,7 @@ void CApplication::RenderMemoryStatus()
   {
     // reset the window scaling and fade status
     RESOLUTION res = g_graphicsContext.GetVideoResolution();
-    g_graphicsContext.SetScalingResolution(res, 0, 0, false);
+    g_graphicsContext.SetRenderingResolution(res, 0, 0, false);
 
     CStdStringW wszText;
     MEMORYSTATUS stat;
@@ -2407,7 +2408,7 @@ bool CApplication::OnKey(CKey& key)
       {
         if (key.GetButtonCode() != KEY_INVALID)
           action.wID = (WORD) key.GetButtonCode();
-          action.unicode = key.GetUnicode();
+        action.unicode = key.GetUnicode();
       }
       else
       { // see if we've got an ascii key
@@ -2710,6 +2711,11 @@ bool CApplication::OnAction(const CAction &action)
     }
 
     SetHardwareVolume(volume);
+#ifndef HAS_SDL_AUDIO
+    g_audioManager.SetVolume(g_stSettings.m_nVolumeLevel);
+#else
+    g_audioManager.SetVolume((int)(128.f * (g_stSettings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
+#endif
 
     // show visual feedback of volume change...
     m_guiDialogVolumeBar.Show();
@@ -3243,6 +3249,7 @@ bool CApplication::ProcessKeyboard()
       wkeyID = KEY_UNICODE;
     //  CLog::Log(LOGDEBUG,"Keyboard: time=%i key=%i", timeGetTime(), vkey);
     CKey key(wkeyID);
+    key.SetHeld(g_Keyboard.KeyHeld());
     return OnKey(key);
   }
   return false;
@@ -3794,6 +3801,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_pCdgParser->Stop();
 #endif
 
+  // tell system we are starting a file
+  while(m_vPlaybackStarting.size()) m_vPlaybackStarting.pop();
+  m_bPlaybackStarting = true;
+
   // We should restart the player, unless the previous and next tracks are using
   // one of the players that allows gapless playback (paplayer, dvdplayer)
   if (m_pPlayer)
@@ -3811,13 +3822,14 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_pPlayer = CPlayerCoreFactory::CreatePlayer(eNewCore, *this);
   }
 
-  if (!m_pPlayer)
+  bool bResult;
+  if (m_pPlayer)
+    bResult = m_pPlayer->OpenFile(item, options);
+  else
   {
     CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", item.m_strPath.c_str());
-    return false;
+    bResult = false;
   }
-
-  bool bResult = m_pPlayer->OpenFile(item, options);
 
   if(bResult)
   {
@@ -3842,14 +3854,24 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       g_audioManager.Enable(false);
   }
 
+  if(!bResult || !IsPlaying())
+  {
+    // since we didn't manage to get playback started, send any queued up messages
+    while(m_vPlaybackStarting.size())
+    {
+      m_gWindowManager.SendMessage(m_vPlaybackStarting.front());
+      m_vPlaybackStarting.pop();
+    }
+  }
+
+  while(m_vPlaybackStarting.size()) m_vPlaybackStarting.pop();
+  m_bPlaybackStarting = false;
+
   return bResult;
 }
 
 void CApplication::OnPlayBackEnded()
 {
-  //playback ended
-  SetPlaySpeed(1);
-
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackEnded();
@@ -3860,14 +3882,11 @@ void CApplication::OnPlayBackEnded()
   CLog::Log(LOGDEBUG, "Playback has finished");
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
-  m_gWindowManager.SendThreadMessage(msg);
-  StartLEDControl(false);
-  DimLCDOnPlayback(false);
 
-  g_audioManager.Enable(true);
-
-  //  Reset audioscrobbler submit status
-  CScrobbler::GetInstance()->SetSubmitSong(false);
+  if(m_bPlaybackStarting)
+    m_vPlaybackStarting.push(msg);
+  else
+    m_gWindowManager.SendThreadMessage(msg);
 }
 
 void CApplication::OnPlayBackStarted()
@@ -3884,11 +3903,6 @@ void CApplication::OnPlayBackStarted()
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
-
-  CheckNetworkHDSpinDown(true);
-
-  StartLEDControl(true);
-  DimLCDOnPlayback(true);
 }
 
 void CApplication::OnQueueNextItem()
@@ -3917,16 +3931,13 @@ void CApplication::OnPlayBackStopped()
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
     g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackStopped;1");
 
-  OutputDebugString("Playback was stopped\n");
+  CLog::Log(LOGDEBUG, "Playback was stopped\n");
+
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
-  m_gWindowManager.SendMessage(msg);
-  StartLEDControl(false);
-  DimLCDOnPlayback(false);
-
-  g_audioManager.Enable(true);
-
-  //  Reset audioscrobbler submit status
-  CScrobbler::GetInstance()->SetSubmitSong(false);
+  if(m_bPlaybackStarting)
+    m_vPlaybackStarting.push(msg);
+  else
+    m_gWindowManager.SendThreadMessage(msg);
 }
 
 bool CApplication::IsPlaying() const
@@ -4014,7 +4025,6 @@ void CApplication::StopPlaying()
     m_pPlayer->CloseFile();
     g_partyModeManager.Disable();
   }
-  OnPlayBackStopped();
 }
 
 bool CApplication::NeedRenderFullScreen()
@@ -4533,6 +4543,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
       CLastFmManager::GetInstance()->OnSongChange(*m_itemCurrentFile);
       g_partyModeManager.OnSongChange(true);
 
+      CheckNetworkHDSpinDown(true);
+      StartLEDControl(true);
+      DimLCDOnPlayback(true);
+
       if (IsPlayingAudio())
       {
         // Start our cdg parser as appropriate
@@ -4592,6 +4606,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_PLAYBACK_STOPPED:
   case GUI_MSG_PLAYBACK_ENDED:
+  case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     {
       // first check if we still have items in the stack to play
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
@@ -4624,6 +4639,12 @@ bool CApplication::OnMessage(CGUIMessage& message)
       g_infoManager.ResetCurrentItem();
       m_currentStack->Clear();
 
+      // Reset audioscrobbler submit status
+      CScrobbler::GetInstance()->SetSubmitSong(false);
+
+      // stop lastfm
+      CLastFmManager::GetInstance()->StopRadio();
+
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
         // sending true to PlayNext() effectively passes bRestart to PlayFile()
@@ -4640,11 +4661,17 @@ bool CApplication::OnMessage(CGUIMessage& message)
         }
       }
 
+      if (!IsPlaying())
+      {
+        g_audioManager.Enable(true);
+        StartLEDControl(false);
+        DimLCDOnPlayback(false);
+
 #ifdef HAS_KARAOKE
-      // no new player, free any cdg parser
-      if (!m_pPlayer && m_pCdgParser)
-        m_pCdgParser->Free();
+        if(m_pCdgParser)
+          m_pCdgParser->Free();
 #endif
+      }
 
       if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
       {
@@ -4681,27 +4708,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYLISTPLAYER_STARTED:
   case GUI_MSG_PLAYLISTPLAYER_CHANGED:
     {
-      return true;
-    }
-    break;
-  case GUI_MSG_PLAYLISTPLAYER_STOPPED:
-    {
-      // if in visualisation or fullscreen video, go back to gui
-      if (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION || m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-          m_gWindowManager.PreviousWindow();
-
-      // reset the current playing file
-      m_itemCurrentFile->Reset();
-      g_infoManager.ResetCurrentItem();
-      m_currentStack->Clear();
-      CLastFmManager::GetInstance()->StopRadio();
-
-#ifdef HAS_KARAOKE
-      if(m_pCdgParser)
-        m_pCdgParser->Free();
-#endif
-
-      SAFE_DELETE(m_pPlayer);
       return true;
     }
     break;

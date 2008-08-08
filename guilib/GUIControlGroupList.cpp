@@ -121,7 +121,12 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
           continue;
         if (control->HasID(message.GetControlId()))
         {
-          if (offset < m_offset)
+          // find out whether this is the first or last control
+          if (IsFirstFocusableControl(control))
+            ScrollTo(0);
+          else if (IsLastFocusableControl(control))
+            ScrollTo(m_totalSize - Size());
+          else if (offset < m_offset)
             ScrollTo(offset);
           else if (offset + Size(control) > m_offset + Size())
             ScrollTo(offset + Size(control) - Size());
@@ -345,5 +350,31 @@ bool CGUIControlGroupList::GetCondition(int condition, int data) const
   default:
     return false;
   }
+}
+
+bool CGUIControlGroupList::IsFirstFocusableControl(const CGUIControl *control) const
+{
+  for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
+  {
+    CGUIControl *child = *it;
+    if (child->IsVisible() && child->CanFocus())
+    { // found first focusable
+      return child == control;
+    }
+  }
+  return false;
+}
+
+bool CGUIControlGroupList::IsLastFocusableControl(const CGUIControl *control) const
+{
+  for (crControls it = m_children.rbegin(); it != m_children.rend(); ++it)
+  {
+    CGUIControl *child = *it;
+    if (child->IsVisible() && child->CanFocus())
+    { // found first focusable
+      return child == control;
+    }
+  }
+  return false;
 }
 

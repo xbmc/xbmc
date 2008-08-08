@@ -112,6 +112,7 @@ public:
   CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, DWORD dwColorKey = 0);
   CGUIImage(const CGUIImage &left);
   virtual ~CGUIImage(void);
+  virtual CGUIImage *Clone() const { return new CGUIImage(*this); };
 
   virtual void Render();
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
@@ -132,6 +133,8 @@ public:
   void SetAspectRatio(CAspectRatio::ASPECT_RATIO ratio) { CAspectRatio aspect(ratio); SetAspectRatio(aspect); };
   void SetAlpha(unsigned char alpha);
   void SetAlpha(unsigned char a0, unsigned char a1, unsigned char a2, unsigned char a3);
+  virtual void SetWidth(float width);
+  virtual void SetHeight(float height);
 
   const CStdString& GetFileName() const { return m_strFileName;};
   int GetTextureWidth() const;

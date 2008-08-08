@@ -48,7 +48,10 @@ public:
               const CImage& textureUpFocus, const CImage& textureDownFocus,
               const CLabelInfo& spinInfo, float spinX, float spinY,
               const CLabelInfo &labelInfo, int scrollTime = 200);
+  CGUITextBox(const CGUITextBox &from);
   virtual ~CGUITextBox(void);
+  virtual CGUITextBox *Clone() const { return new CGUITextBox(*this); };
+
   virtual void DoRender(DWORD currentTime);
   virtual void Render();
   virtual bool OnAction(const CAction &action) ;

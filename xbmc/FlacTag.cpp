@@ -29,6 +29,7 @@
 
 using namespace XFILE;
 using namespace MUSIC_INFO;
+using namespace std;
 
 #define CHUNK_SIZE 8192  // should suffice for most tags
 

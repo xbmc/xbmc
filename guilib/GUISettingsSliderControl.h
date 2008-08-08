@@ -46,6 +46,8 @@ class CGUISettingsSliderControl :
 public:
   CGUISettingsSliderControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float sliderWidth, float sliderHeight, const CImage &textureFocus, const CImage &textureNoFocus, const CImage& backGroundTexture, const CImage& nibTexture, const CImage& nibTextureFocus, const CLabelInfo &labelInfo, int iType);
   virtual ~CGUISettingsSliderControl(void);
+  virtual CGUISettingsSliderControl *Clone() const { return new CGUISettingsSliderControl(*this); };
+
   virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual void PreAllocResources();

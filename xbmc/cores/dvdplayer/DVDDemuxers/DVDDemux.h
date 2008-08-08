@@ -213,6 +213,11 @@ public:
   virtual int GetChapter() { return -1; }
 
   /*
+   * Get the name of the current chapter
+   */
+  virtual void GetChapterName(std::string& strChapterName) {}
+
+  /*
    * Set the playspeed, if demuxer can handle different
    * speeds of playback
    */
@@ -221,7 +226,7 @@ public:
   /*
    * returns the total time in msec
    */
-  virtual int GetStreamLenght() = 0;
+  virtual int GetStreamLength() = 0;
   
   /*
    * returns the stream or NULL on error, starting from 0

@@ -69,6 +69,7 @@ int CGUIFontTTF::justification_word_weight = 6;   // weight of word spacing over
                                                   // A larger number means more of the "dead space" is placed between
                                                   // words rather than between letters.
 
+unsigned int CGUIFontTTF::max_texture_size = 4096;         // max texture size - 4096 for xbox
 
 class CFreeTypeLibrary
 {
@@ -255,7 +256,7 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect
 
   m_textureHeight = 0;
   m_textureWidth = ((m_cellHeight * CHARS_PER_TEXTURE_LINE) & ~63) + 64;
-  if (m_textureWidth > 4096) m_textureWidth = 4096;
+  if (m_textureWidth > max_texture_size) m_textureWidth = max_texture_size;
 
   // set the posX and posY so that our texture will be created on first character write.
   m_posX = m_textureWidth;
@@ -534,10 +535,10 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
       // create the new larger texture
       unsigned newHeight = m_posY + m_cellHeight;
       LPDIRECT3DTEXTURE8 newTexture;
-      // check for max height (can't be more than 4096 texels)
-      if (newHeight > 4096)
+      // check for max height (can't be more than max_texture_size texels
+      if (newHeight > max_texture_size)
       {
-        CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: New cache texture is too large (%i > 4096 pixels long)", newHeight);
+        CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: New cache texture is too large (%u > %u pixels long)", newHeight, max_texture_size);
         FT_Done_Glyph(glyph);
         return false;
       }

@@ -57,7 +57,7 @@ bool CPlaylistDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
   for (int i = 0; i < playlist.size(); ++i)
   {
     CFileItemPtr item = playlist[i];
-    item->m_iprogramCount = i;
+    //item->m_iprogramCount = i; // the programCount is set as items are added!
     items.Add(item);
   }
 

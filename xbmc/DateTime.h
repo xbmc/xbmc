@@ -153,6 +153,7 @@ public:
   void GetAsTm(tm& time) const;
   void GetAsTimeStamp(FILETIME& time) const;
 
+  CStdString GetAsDBDateTime() const;
   CStdString GetAsDBDate() const;
   CStdString GetAsLocalizedDate(bool longDate=false) const;
   CStdString GetAsLocalizedTime(const CStdString &format, bool withSeconds=true) const;

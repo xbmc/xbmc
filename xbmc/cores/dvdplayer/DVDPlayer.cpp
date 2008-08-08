@@ -242,7 +242,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_dvd.iSelectedAudioStream = -1;
   m_dvd.iSelectedSPUStream = -1;
 
-  memset(&m_State, 0, sizeof(m_State));
+  m_State.Clear();
   m_UpdateApplication = 0;
 
   m_bAbortRequest = false;
@@ -616,6 +616,7 @@ void CDVDPlayer::Process()
 
   // make sure application know our info
   UpdateApplication(0);
+  HandlePlayState(0);
 
   int count;
 
@@ -651,7 +652,8 @@ void CDVDPlayer::Process()
   // we are done initializing now, set the readyevent
   SetEvent(m_hReadyEvent);
 
-  m_callback.OnPlayBackStarted();
+  if(m_PlayerOptions.identify == false)
+    m_callback.OnPlayBackStarted();
 
   while (!m_bAbortRequest)
   {
@@ -1288,9 +1290,6 @@ void CDVDPlayer::OnExit()
     // clean up all selection streams
     m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NONE);
 
-    // if we didn't stop playing, advance to the next item in xbmc's playlist
-    if (!m_bAbortRequest) m_callback.OnPlayBackEnded();
-
     m_messenger.End();
 
   }
@@ -1299,6 +1298,25 @@ void CDVDPlayer::OnExit()
     CLog::Log(LOGERROR, "%s - Exception thrown when trying to close down player, memory leak will follow", __FUNCTION__);
     m_pInputStream = NULL;
     m_pDemuxer = NULL;   
+  }
+
+  // if we didn't stop playing, advance to the next item in xbmc's playlist
+  if(m_PlayerOptions.identify == false)
+  {
+    if (m_bAbortRequest)
+      m_callback.OnPlayBackStopped();
+    else
+      m_callback.OnPlayBackEnded();
+  }
+
+  m_bStop = true;
+  // if we didn't stop playing, advance to the next item in xbmc's playlist
+  if(m_PlayerOptions.identify == false)
+  {
+    if (m_bAbortRequest)
+      m_callback.OnPlayBackStopped();
+    else
+      m_callback.OnPlayBackEnded();
   }
 }
 
@@ -2500,6 +2518,12 @@ int CDVDPlayer::GetChapter()
   return m_State.chapter;
 }
 
+void CDVDPlayer::GetChapterName(CStdString& strChapterName)
+{
+  CSingleLock lock(m_StateSection);
+  strChapterName = m_State.chapter_name;
+}
+
 int CDVDPlayer::SeekChapter(int iChapter)
 {
   if (GetChapterCount() > 0)
@@ -2578,9 +2602,10 @@ void CDVDPlayer::HandlePlayState(double timeout)
   {
     m_State.chapter       = m_pDemuxer->GetChapter();
     m_State.chapter_count = m_pDemuxer->GetChapterCount();
+    m_pDemuxer->GetChapterName(m_State.chapter_name);
 
     m_State.time       = DVD_TIME_TO_MSEC(m_clock.GetClock());
-    m_State.time_total = m_pDemuxer->GetStreamLenght();
+    m_State.time_total = m_pDemuxer->GetStreamLength();
   }
 
   if(m_pInputStream)

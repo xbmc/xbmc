@@ -117,8 +117,13 @@ public:
   void Dump() const;
   DWORD GetMemoryUsage() const;
   void Flush();
-  CStdString GetTexturePath(const CStdString& textureName);
+  CStdString GetTexturePath(const CStdString& textureName, bool directory = false);
   void GetBundledTexturesFromPath(const CStdString& texturePath, std::vector<CStdString> &items);
+
+  void AddTexturePath(const CStdString &texturePath);    ///< Add a new path to the paths to check when loading media
+  void SetTexturePath(const CStdString &texturePath);    ///< Set a single path as the path to check when loading media (clear then add)
+  void RemoveTexturePath(const CStdString &texturePath); ///< Remove a path from the paths to check when loading media
+
 protected:
   std::vector<CTextureMap*> m_vecTextures;
   typedef std::vector<CTextureMap*>::iterator ivecTextures;
@@ -126,6 +131,8 @@ protected:
   CTextureBundle m_TexBundle[2];
   std::list<CStdString> m_PreLoadNames[2];
   std::list<CStdString>::iterator m_iNextPreload[2];
+
+  std::vector<CStdString> m_texturePaths;
 };
 
 /*!

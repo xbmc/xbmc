@@ -200,6 +200,7 @@ char* CDVDSubtitleStream::ReadLine(char* buf, int iLen)
   char* pBuffer = buf;
   
   pBuffer[0] = '\0';
+  int residualBytes = 0;
   
   if (m_buffer)
   {
@@ -211,10 +212,10 @@ char* CDVDSubtitleStream::ReadLine(char* buf, int iLen)
         m_iBufferPos = 0;
         m_iBufferSize = 0;
         
-        int iRes = m_pInputStream->Read(m_buffer, m_iMaxBufferSize);
+        int iRes = m_pInputStream->Read(m_buffer+residualBytes, m_iMaxBufferSize-residualBytes);
         if (iRes > 0)
         {
-          m_iBufferSize = iRes;
+          m_iBufferSize = iRes+residualBytes;
         }
         else
         {
@@ -223,8 +224,7 @@ char* CDVDSubtitleStream::ReadLine(char* buf, int iLen)
         }
       }
       
-      int iBytesToRead = iLen;
-      if (iBytesToRead > m_iBufferSize) iBytesToRead = m_iBufferSize;    
+      int iBytesToRead = min(iLen,m_iBufferSize);
       
       // now find end of string
       char* pLineStart = (char*)(m_buffer + m_iBufferPos);
@@ -257,10 +257,9 @@ char* CDVDSubtitleStream::ReadLine(char* buf, int iLen)
           return NULL;
         }
         
-        memcpy(pBuffer, m_buffer + m_iBufferPos, m_iBufferSize);
-        m_iBufferPos += m_iBufferSize;
-        m_iBufferSize -= m_iBufferSize;
-        pBuffer += m_iBufferSize;
+        memcpy(m_buffer, m_buffer + m_iBufferPos, m_iBufferSize);
+        residualBytes = m_iBufferSize;
+        m_iBufferSize = 0;
       }
     }
   }
