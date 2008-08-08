@@ -44,23 +44,32 @@ void CXRandR::Query(bool force)
     if (m_bInit)
       return;
 
+  if (getenv("XBMC_HOME") == NULL)
+    return;
+
   m_outputs.clear();
   m_current.clear();
 
-  char cmd[255];
-  unlink("/tmp/xbmc_xranr");
-  if (getenv("XBMC_HOME"))
-    snprintf(cmd, sizeof(cmd), "%s/xbmc-xrandr > /tmp/xbmc_xrandr", getenv("XBMC_HOME"));
-  else
-    return;
-  system(cmd);
+  CStdString cmd;
+  cmd  = getenv("XBMC_HOME");
+  cmd += "/xbmc-xrandr";
 
-  TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile("/tmp/xbmc_xrandr"))
+  FILE* file = popen(cmd.c_str(),"r");
+  if (!file)
   {
-    // TODO ERROR
+    CLog::Log(LOGERROR, "CXRandR::Query - unable to execute xrandr tool");
     return;
   }
+
+
+  TiXmlDocument xmlDoc;
+  if (!xmlDoc.LoadFile(file, TIXML_DEFAULT_ENCODING))
+  {
+    CLog::Log(LOGERROR, "CXRandR::Query - unable to open xrandr xml");
+    pclose(file);
+    return;
+  }
+  pclose(file);
 
   TiXmlElement *pRootElement = xmlDoc.RootElement();
   if (strcasecmp(pRootElement->Value(), "screen") != 0)
