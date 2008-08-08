@@ -88,7 +88,7 @@ namespace MathUtils
         "fadd %%st(1)\n\t"
         "fistpl %0\n\t"
         "sarl $1, %0\n"
-        : "=m"(i) : "m"(x), "f"(round_to_nearest)
+        : "=m"(i) : "f"(x), "f"(round_to_nearest)
     );
 #endif
     return (i);
@@ -116,7 +116,7 @@ namespace MathUtils
         "fsubr %%st(1)\n\t"
         "fistpl %0\n\t"
         "sarl $1, %0\n"
-        : "=m"(i) : "m"(x), "f"(round_towards_p_i)
+        : "=m"(i) : "f"(x), "f"(round_towards_p_i)
     );
 #endif
     return (-i);
@@ -146,7 +146,7 @@ namespace MathUtils
         "fadd %%st(1)\n\t"
         "fistpl %0\n\t"
         "sarl $1, %0\n"
-        : "=m"(i) : "m"(x), "f"(round_towards_m_i)
+        : "=m"(i) : "f"(x), "f"(round_towards_m_i)
     );
 #endif
     if (x < 0)
