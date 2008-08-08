@@ -56,8 +56,7 @@ protected:
   int              LoadScriptStrings();
   void             ClearScriptStrings();
   virtual void     Update();
-  virtual void     OnInitWindow();
-  void              SetupShares();
+  void             SetupShares();
   PyObject*        pCallbackWindow;
   HANDLE           m_actionEvent;
   bool             m_bRunning;

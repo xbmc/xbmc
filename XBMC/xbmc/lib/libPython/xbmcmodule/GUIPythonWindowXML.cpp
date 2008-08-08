@@ -342,7 +342,7 @@ int Py_XBMC_Event_OnClick(void* arg)
     PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onClick", (char*)"(i)", action->controlId);
     if (ret)
     {
-	    Py_DECREF(ret);
+      Py_DECREF(ret);
     }
     delete action;
   }
@@ -378,15 +378,6 @@ int Py_XBMC_Event_OnInit(void* arg)
     delete action;
   }
   return 0;
-}
-
-void CGUIPythonWindowXML::OnInitWindow()
-{
-  // Update list/thumb control
-  m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);
-  m_viewControl.SetFocused();
-  SET_CONTROL_VISIBLE(CONTROL_LIST);
-  CGUIWindow::OnInitWindow();
 }
 
 void CGUIPythonWindowXML::SetCallbackWindow(PyObject *object)
