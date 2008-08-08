@@ -22,6 +22,8 @@
 #include "utils/Thread.h"
 #include "VideoDatabase.h"
 #include "ScraperSettings.h"
+#include "NfoFile.h"
+#include "utils/IMDB.h"
 
 class CIMDB;
 
@@ -33,6 +35,15 @@ namespace VIDEO
     bool parent_name_root;  /* use the name of directory where scan started as name for files in that dir */
     int  recurse;           /* recurse into sub folders (indicate levels) */
   } SScanSettings;
+
+  typedef struct SEpisode
+  {
+    CStdString strPath;
+    int iSeason;
+    int iEpisode;
+  } SEpisode;
+
+  typedef std::vector<SEpisode> EPISODES;
 
   enum SCAN_STATE { PREPARING = 0, REMOVING_OLD, CLEANING_UP_DATABASE, FETCHING_MOVIE_INFO, FETCHING_MUSICVIDEO_INFO, FETCHING_TVSHOW_INFO, COMPRESSING_DATABASE, WRITING_CHANGES };
 
@@ -59,9 +70,9 @@ namespace VIDEO
     void Stop();
     void SetObserver(IVideoInfoScannerObserver* pObserver);
 
-    void EnumerateSeriesFolder(const CFileItem* item, std::map<std::pair<int,int>,CScraperUrl>& episodeList);
+    void EnumerateSeriesFolder(const CFileItem* item, EPISODES& episodeList);
     long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CVideoInfoTag &movieDetails, long idShow, bool bApplyToDir=false, CGUIDialogProgress* pDialog = NULL);
-    void OnProcessSeriesFolder(std::map<std::pair<int,int>,CScraperUrl>& episodes, std::map<std::pair<int,int>,CScraperUrl>& files, long lShowId, CIMDB& IMDB, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
+    void OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, long lShowId, CIMDB& IMDB, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
     static CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false);
     long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const SScraperInfo& info, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL);
     bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* pDlgProgress  = NULL);

@@ -120,7 +120,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
           if (iIndex > -1)
           {
             bool unlocked = true;
-            if (shares[iIndex].m_iHasLock == 2)
+            if (iIndex < (int)shares.size() && shares[iIndex].m_iHasLock == 2)
             {
               CFileItem item(shares[iIndex]);
               if (!g_passwordManager.IsItemUnlocked(&item,"music"))

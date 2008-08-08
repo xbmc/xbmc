@@ -73,6 +73,8 @@ class CGUILabelControl :
 public:
   CGUILabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool wrapMultiLine, bool bHasPath);
   virtual ~CGUILabelControl(void);
+  virtual CGUILabelControl *Clone() const { return new CGUILabelControl(*this); };
+
   virtual void Render();
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);

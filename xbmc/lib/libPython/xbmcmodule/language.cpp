@@ -45,7 +45,7 @@ namespace PYXBMC
     self = (Language*)type->tp_alloc(type, 0);
     if (!self) return NULL;
 
-    static char *keywords[] = { "languagePath", "defaultLanguage", NULL };
+    static const char *keywords[] = { "languagePath", "defaultLanguage", NULL };
     char *cLanguagePath = NULL;
     char *cDefaultLanguage = NULL;
 
@@ -53,8 +53,8 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "s|s",
-      keywords,
+      (char*)"s|s",
+      (char**)keywords,
       &cLanguagePath,
       &cDefaultLanguage
       ))
@@ -115,14 +115,14 @@ namespace PYXBMC
 
   PyObject* Language_GetLocalizedString(Language *self, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = { "id", NULL };
+    static const char *keywords[] = { "id", NULL };
     int id = -1;
     // parse arguments
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "i",
-      keywords,
+      (char*)"i",
+      (char**)keywords,
       &id
       ))
     {
@@ -135,11 +135,11 @@ namespace PYXBMC
     else
       g_charsetConverter.utf8ToW(self->pLanguage->Get(id), unicodeLabel);
 
-    return Py_BuildValue("u", unicodeLabel.c_str());
+    return Py_BuildValue((char*)"u", unicodeLabel.c_str());
   }
 
   PyMethodDef Language_methods[] = {
-    {"getLocalizedString", (PyCFunction)Language_GetLocalizedString, METH_VARARGS|METH_KEYWORDS, getLocalizedString__doc__},
+    {(char*)"getLocalizedString", (PyCFunction)Language_GetLocalizedString, METH_VARARGS|METH_KEYWORDS, getLocalizedString__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -173,7 +173,7 @@ namespace PYXBMC
   {
     PyInitializeTypeObject(&Language_Type);
 
-    Language_Type.tp_name = "xbmc.Language";
+    Language_Type.tp_name = (char*)"xbmc.Language";
     Language_Type.tp_basicsize = sizeof(Language);
     Language_Type.tp_dealloc = (destructor)Language_Dealloc;
     Language_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;

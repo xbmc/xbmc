@@ -83,6 +83,8 @@
 #define GUI_MSG_PAGE_DOWN    31 // page down
 #define GUI_MSG_MOVE_OFFSET  32 // Instruct the contorl to MoveUp or MoveDown by offset amount
 
+#define GUI_MSG_SET_TYPE     33 ///< Instruct a control to set it's type appropriately
+
 #define GUI_MSG_USER         1000
 
 /*!
@@ -150,11 +152,22 @@ do { \
 
 /*!
  \ingroup winmsg
- \brief 
+ \brief Set the label of the current control
  */
 #define SET_CONTROL_LABEL(dwControlID,label) \
 do { \
  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), dwControlID); \
+ msg.SetLabel(label); \
+ OnMessage(msg); \
+} while(0);
+
+/*!
+ \ingroup winmsg
+ \brief Set the second label of the current control
+ */
+#define SET_CONTROL_LABEL2(dwControlID,label) \
+do { \
+ CGUIMessage msg(GUI_MSG_LABEL2_SET, GetID(), dwControlID); \
  msg.SetLabel(label); \
  OnMessage(msg); \
 } while(0);

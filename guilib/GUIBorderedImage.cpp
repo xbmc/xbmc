@@ -45,12 +45,13 @@ void CGUIBorderedImage::Render()
 {
   if (!m_borderImage.GetFileName().IsEmpty() && m_vecTextures.size())
   {
-    if (m_bInvalidated) CGUIImage::CalculateSize();
-
-    m_borderImage.SetPosition(m_fX - m_borderSize.left, m_fY - m_borderSize.top);
-    m_borderImage.SetWidth(m_fNW + m_borderSize.left + m_borderSize.right);
-    m_borderImage.SetHeight(m_fNH + m_borderSize.top + m_borderSize.bottom);
-
+    if (m_bInvalidated)
+    {
+      CGUIImage::CalculateSize();
+      m_borderImage.SetPosition(m_fX - m_borderSize.left, m_fY - m_borderSize.top);
+      m_borderImage.SetWidth(m_fNW + m_borderSize.left + m_borderSize.right);
+      m_borderImage.SetHeight(m_fNH + m_borderSize.top + m_borderSize.bottom);
+    }
     m_borderImage.Render();
   }
   CGUIImage::Render();

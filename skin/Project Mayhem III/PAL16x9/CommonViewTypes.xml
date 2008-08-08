@@ -1124,7 +1124,7 @@
 	</include>
 	<include name="VideoDVDWrapView">
 		<control type="fixedlist" id="56">
-			<visible>!Container.Content(TVshows) + !Container.Content(Episodes) + !Container.Content(MusicVideos)</visible>
+			<visible>!Container.Content(TVshows) + !Container.Content(Episodes) + !Container.Content(MusicVideos) | [Container.Content(TVShows) + Skin.HasSetting(UseTVPosters)]</visible>
 			<posx>190</posx>
 			<posy>100</posy>
 			<width>520</width>
@@ -1764,7 +1764,7 @@
 			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(60)</visible>
-			<animation effect="slide" start="0,0" end="-205,0" time="0" condition="Container.Content(Seasons) + Control.IsVisible(58)">conditional</animation>
+			<animation effect="slide" start="0,0" end="-205,0" time="0" condition="Window.IsActive(myvideolibrary) + Control.IsVisible(58)">conditional</animation>
 		</control>
 		<control type="button">
 			<posx>680</posx>
@@ -1776,7 +1776,7 @@
 			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
 			<include>contentpanelslide</include>
 			<visible>Control.IsVisible(60)</visible>
-			<animation effect="slide" start="0,0" end="-205,0" time="0" condition="Container.Content(Seasons) + Control.IsVisible(58)">conditional</animation>
+			<animation effect="slide" start="0,0" end="-205,0" time="0" condition="Window.IsActive(myvideolibrary) + Control.IsVisible(58)">conditional</animation>
 		</control>
 		<control type="scrollbar" id="60">
 			<posx>680</posx>
@@ -1800,7 +1800,7 @@
 			<visible>![Window.IsActive(mymusiclibrary) + Control.IsVisible(51)]</visible>
 			<visible>![Window.IsActive(mymusiclibrary) + Control.IsVisible(58)]</visible>
 			<visible>![Window.IsActive(mymusicplaylist) + Control.IsVisible(57)]</visible>
-			<animation effect="slide" start="0,0" end="-205,0" time="0" condition="Container.Content(Seasons) + Control.IsVisible(58)">conditional</animation>
+			<animation effect="slide" start="0,0" end="-205,0" time="0" condition="Window.IsActive(myvideolibrary) + Control.IsVisible(58)">conditional</animation>
 		</control>
 	</include>
 	<include name="scrollbar_width">

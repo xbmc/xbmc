@@ -63,7 +63,7 @@ bool WAVPackCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_Callbacks.set_pos_abs=SetPosAbsCallback;
   m_Callbacks.set_pos_rel=SetPosRelCallback;
   m_Callbacks.push_back_byte=PushBackByteCallback;
-  m_Callbacks.get_length=GetLenghtCallback;
+  m_Callbacks.get_length=GetLengthCallback;
   m_Callbacks.can_seek=CanSeekCallback;
 
   //  open file with decoder
@@ -304,7 +304,7 @@ int WAVPackCodec::CanSeekCallback(void *id)
   return 1;
 }
 
-unsigned int WAVPackCodec::GetLenghtCallback(void *id)
+unsigned int WAVPackCodec::GetLengthCallback(void *id)
 {
   WAVPackCodec* pCodec=(WAVPackCodec*)id;
   if (!pCodec)

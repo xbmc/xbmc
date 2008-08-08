@@ -21,6 +21,8 @@
 
 #include "stdafx.h"
 #include "Util.h"
+#include "ArabicShaping.h"
+#include "GUISettings.h"
 
 using namespace std;
 
@@ -126,7 +128,7 @@ CStdString& CCharsetConverter::getCharsetLabelByName(const CStdString& charsetNa
 {
   for (unsigned int i = 0; i < m_vecCharsetNames.size(); i++)
   {
-    if (m_vecCharsetNames[i] == charsetName)
+    if (m_vecCharsetNames[i].Equals(charsetName))
     {
       return m_vecCharsetLabels[i];
     }
@@ -139,7 +141,7 @@ CStdString& CCharsetConverter::getCharsetNameByLabel(const CStdString& charsetLa
 {
   for (unsigned int i = 0; i < m_vecCharsetLabels.size(); i++)
   {
-    if (m_vecCharsetLabels[i] == charsetLabel)
+    if (m_vecCharsetLabels[i].Equals(charsetLabel))
     {
       return m_vecCharsetNames[i];
     }
@@ -179,7 +181,7 @@ void CCharsetConverter::reset(void)
 
   for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
   {
-    if (m_vecBidiCharsetNames[i] == strCharset)
+    if (m_vecBidiCharsetNames[i].Equals(strCharset))
     {
       m_stringFribidiCharset = m_vecBidiCharsets[i];
     }
@@ -278,7 +280,7 @@ void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdSt
 
   for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
   {
-    if (m_vecBidiCharsetNames[i].Equals(charset))
+    if (m_vecBidiCharsetNames[i].Equals(charset, false))
     {
       fribidiCharset = m_vecBidiCharsets[i];
       break;
@@ -301,6 +303,12 @@ void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdSt
     FriBidiChar* visual = (FriBidiChar*) malloc((sourceLen + 1) * sizeof(FriBidiChar));
     // Convert from the selected charset to Unicode
     int len = fribidi_charset_to_unicode(fribidiCharset, (char*) lines[i].c_str(), sourceLen, logical);
+
+    // Shape Arabic Text
+    FriBidiChar *shaped_text = shape_arabic(logical, len);
+    for (int i=0; i<len; i++)
+       logical[i] = shaped_text[i];
+    free(shaped_text);
 
     if (fribidi_log2vis(logical, len, &base, visual, NULL, NULL, NULL))
     {

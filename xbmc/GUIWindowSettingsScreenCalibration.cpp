@@ -348,7 +348,7 @@ void CGUIWindowSettingsScreenCalibration::Render()
 
   m_needsScaling = true;
   CGUIWindow::Render();
-  g_graphicsContext.SetScalingResolution(m_coordsRes, 0, 0, false);
+  g_graphicsContext.SetRenderingResolution(m_coordsRes, 0, 0, false);
 
   SET_CONTROL_VISIBLE(CONTROL_TOP_LEFT);
   SET_CONTROL_VISIBLE(CONTROL_BOTTOM_RIGHT);

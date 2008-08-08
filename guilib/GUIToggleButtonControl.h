@@ -40,6 +40,7 @@ class CGUIToggleButtonControl : public CGUIButtonControl
 public:
   CGUIToggleButtonControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureFocus, const CImage& textureNoFocus, const CImage& altTextureFocus, const CImage& altTextureNoFocus, const CLabelInfo &labelInfo);
   virtual ~CGUIToggleButtonControl(void);
+  virtual CGUIToggleButtonControl *Clone() const { return new CGUIToggleButtonControl(*this); };
 
   virtual void Render();
   virtual bool OnAction(const CAction &action);

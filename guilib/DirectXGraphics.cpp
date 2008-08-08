@@ -263,7 +263,7 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, LPDIRECT3DTEXTURE8 *ppT
       {
         BYTE *src = texDataStart + y * pitch;
         BYTE *dest = (BYTE *)lr.pBits + y * destPitch;
-        memcpy(dest, src, min(pitch, (unsigned int)destPitch));
+        memcpy(dest, src, min(pitch, destPitch));
       }
     }
     if (IsSwizzledFormat(fmt))

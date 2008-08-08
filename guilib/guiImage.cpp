@@ -814,8 +814,26 @@ void CGUIImage::OrientateTexture(CRect &rect, int orientation)
   }
   if (orientation & 4)
   {
-    swap(rect.x1, rect.y1);
-    swap(rect.x2, rect.y2);
+    // we need to swap x and y coordinates but only within the m_fU,m_fV block
+    float temp = rect.x1;
+    rect.x1 = rect.y1 * m_fU/m_fV;
+    rect.y1 = temp * m_fV/m_fU;
+    temp = rect.x2;
+    rect.x2 = rect.y2 * m_fU/m_fV;
+    rect.y2 = temp * m_fV/m_fU;
   }
 }
 
+void CGUIImage::SetWidth(float width)
+{
+  if (width < m_image.border.left + m_image.border.right)
+    width = m_image.border.left + m_image.border.right;
+  CGUIControl::SetWidth(width);
+}
+
+void CGUIImage::SetHeight(float height)
+{
+  if (height < m_image.border.top + m_image.border.bottom)
+    height = m_image.border.top + m_image.border.bottom;
+  CGUIControl::SetHeight(height);
+}

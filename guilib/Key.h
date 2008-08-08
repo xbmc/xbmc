@@ -236,6 +236,11 @@
 #define ACTION_NEXT_SCENE             138 // switch to next scene/cutpoint in movie
 #define ACTION_PREV_SCENE             139 // switch to previous scene/cutpoint in movie
 
+#define ACTION_NEXT_LETTER            140 // jump through a list or container by letter
+#define ACTION_PREV_LETTER            141
+
+#define ACTION_TOGGLE_FULLSCREEN      199 // switch 2 desktop resolution
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
 #define WINDOW_HOME                       10000
@@ -349,8 +354,17 @@
   \ingroup actionkeys
   \brief 
   */
-struct CAction
+class CAction
 {
+public:
+  CAction()
+  {
+    wID = 0;
+    fAmount1 = fAmount2 = fRepeat = 0;
+    m_dwButtonCode = 0;
+    unicode = 0;
+    holdTime = 0;
+  };
   WORD wID;
   float fAmount1;
   float fAmount2;
@@ -358,6 +372,7 @@ struct CAction
   DWORD m_dwButtonCode;
   CStdString strAction;
   WCHAR unicode; // new feature, does not fit into wID like ASCII, wouldn't be good design either!? Will be set whenever ASCII is set into wID (for backwards compatibility)
+  unsigned int holdTime; ///< Time the key has been held down (in ms)
 };
 
 /*!
@@ -388,6 +403,8 @@ public:
   void SetFromHttpApi(bool);
   bool GetFromHttpApi() const;
 
+  void SetHeld(unsigned int held);
+  unsigned int GetHeld() const;
 private:
   DWORD m_dwButtonCode;
   BYTE m_bLeftTrigger;
@@ -398,6 +415,7 @@ private:
   float m_fRightThumbY;
   float m_fRepeat; // time since last keypress
   bool m_fromHttpApi;
+  unsigned int m_held;
 };
 #endif
 

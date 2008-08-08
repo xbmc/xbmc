@@ -55,7 +55,7 @@ typedef enum
   VIDEODB_CONTENT_MOVIES = 1,
   VIDEODB_CONTENT_TVSHOWS = 2,
   VIDEODB_CONTENT_MUSICVIDEOS = 3,
-  VIDEODB_CONTENT_EPISODES    = 4
+  VIDEODB_CONTENT_EPISODES = 4
 } VIDEODB_CONTENT_TYPE;
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
@@ -81,6 +81,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_THUMBURL_SPOOF = 17,
   VIDEODB_ID_STUDIOS = 18,
   VIDEODB_ID_TRAILER = 19,
+  VIDEODB_ID_FANART = 20,
   VIDEODB_ID_MAX
 } VIDEODB_IDS;
 
@@ -109,7 +110,8 @@ const struct SDbTableOffsets
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strOriginalTitle) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strStudio) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strTrailer) }
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strTrailer) },
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_fanart.m_xml) }
 };
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
@@ -307,10 +309,10 @@ public:
   long SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, long idShow, long lEpisodeId=-1);
   void SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
 
-  void DeleteMovie(const CStdString& strFilenameAndPath);
-  void DeleteTvShow(const CStdString& strPath);
-  void DeleteEpisode(const CStdString& strFilenameAndPath, long lEpisodeId=-1);
-  void DeleteMusicVideo(const CStdString& strFilenameAndPath);
+  void DeleteMovie(const CStdString& strFilenameAndPath, bool bKeepId = false, bool bKeepThumb = false);
+  void DeleteTvShow(const CStdString& strPath, bool bKeepId = false, bool bKeepThumb = false);
+  void DeleteEpisode(const CStdString& strFilenameAndPath, long lEpisodeId = -1, bool bKeepId = false, bool bKeepThumb = false);
+  void DeleteMusicVideo(const CStdString& strFilenameAndPath, bool bKeepId = false, bool bKeepThumb = false);
   void DeleteDetailsForTvShow(const CStdString& strPath);
   void RemoveContentForPath(const CStdString& strPath,CGUIDialogProgress *progress = NULL);
 
@@ -479,5 +481,5 @@ private:
   void DeleteThumbForItem(const CStdString& strPath, bool bFolder);
 
   bool GetStackedTvShowList(long idShow, CStdString& strIn);
-  void Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type = VIDEODB_CONTENT_TVSHOWS);
+  void Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type);
 };

@@ -8,6 +8,8 @@
 #include "utils/SingleLock.h"
 #include "StringUtils.h"
 #include "utils/CharsetConverter.h"
+#include "../xbmc/FileSystem/File.h"
+#include "../xbmc/FileSystem/Directory.h"
 
 #ifdef HAS_XBOX_D3D
 #include <XGraphics.h>
@@ -952,14 +954,53 @@ DWORD CGUITextureManager::GetMemoryUsage() const
   return memUsage;
 }
 
-CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName)
+void CGUITextureManager::SetTexturePath(const CStdString &texturePath)
 {
-  CStdString path;
+  m_texturePaths.clear();
+  AddTexturePath(texturePath);
+}
+
+void CGUITextureManager::AddTexturePath(const CStdString &texturePath)
+{
+  if (!texturePath.IsEmpty())
+    m_texturePaths.push_back(texturePath);
+}
+
+void CGUITextureManager::RemoveTexturePath(const CStdString &texturePath)
+{
+  for (vector<CStdString>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
+  {
+    if (*it == texturePath)
+    {
+      m_texturePaths.erase(it);
+      return;
+    }
+  }
+}
+
+CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName, bool directory /* = false */)
+{
   if (textureName.c_str()[1] == ':')
-    path = textureName;
+    return textureName; // texture includes the full path
   else
-    path.Format("%s\\media\\%s", g_graphicsContext.GetMediaDir().c_str(), textureName.c_str());
-  return path;
+  { // texture doesn't include the full path, so check all fallbacks
+    for (vector<CStdString>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
+    {
+      CStdString path;
+      path.Format("%s\\media\\%s", it->c_str(), textureName.c_str());
+      if (directory)
+      {
+        if (DIRECTORY::CDirectory::Exists(path))
+          return path;
+      }
+      else
+      {
+        if (XFILE::CFile::Exists(path))
+          return path;
+      }
+    }
+  }
+  return "";
 }
 
 void CGUITextureManager::GetBundledTexturesFromPath(const CStdString& texturePath, std::vector<CStdString> &items)

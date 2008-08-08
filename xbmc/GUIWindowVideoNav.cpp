@@ -35,6 +35,7 @@
 #include "PlayListFactory.h"
 #include "GUIFontManager.h"
 #include "GUIDialogVideoScan.h"
+#include "GUIDialogOK.h"
 #include "PartyModeManager.h"
 #include "MusicDatabase.h"
 #include "GUIWindowManager.h"
@@ -44,6 +45,7 @@
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
+#include "Application.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -96,6 +98,8 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
+/* We don't want to show Autosourced items (ie removable pendrives, memorycards) in Library mode */
+      m_rootDir.AllowNonLocalSources(false);
       // check for valid quickpath parameter
       CStdStringArray params;
       StringUtils::SplitString(message.GetStringParam(), ",", params);
@@ -382,8 +386,8 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         items.SetProperty("fanart_color1", details.m_fanart.GetColor(0));
         items.SetProperty("fanart_color2", details.m_fanart.GetColor(1));
         items.SetProperty("fanart_color3", details.m_fanart.GetColor(2));
-        showItem.CacheVideoFanart();
-        CStdString fanart(showItem.GetCachedVideoFanart());
+        showItem.CacheFanart();
+        CStdString fanart(showItem.GetCachedFanart());
         if (CFile::Exists(fanart))
           items.SetProperty("fanart_image", fanart);
 
@@ -542,6 +546,18 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
       tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  tempItems.Clear();
+  m_database.GetMusicVideoGenresByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    CStdString strGenre = g_localizeStrings.Get(515); // Genre
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
     }
     items.Append(tempItems);
   }
@@ -794,6 +810,14 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
 
 bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
 {
+  // dont allow update while scanning
+  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+  if (pDialogScan && pDialogScan->IsScanning())
+  {
+    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+    return false;
+  }
+
   VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty())
     iType = VIDEODB_CONTENT_TVSHOWS;

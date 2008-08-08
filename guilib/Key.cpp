@@ -33,6 +33,7 @@ CKey::CKey(void)
   m_fRightThumbY = 0.0f;
   m_fRepeat = 0.0f;
   m_fromHttpApi = false;
+  m_held = 0;
 }
 
 CKey::~CKey(void)
@@ -49,6 +50,7 @@ CKey::CKey(DWORD dwButtonCode, BYTE bLeftTrigger, BYTE bRightTrigger, float fLef
   m_dwButtonCode = dwButtonCode;
   m_fRepeat = fRepeat;
   m_fromHttpApi = false;
+  m_held = 0;
 }
 
 CKey::CKey(const CKey& key)
@@ -148,5 +150,15 @@ bool CKey::GetFromHttpApi() const
 void CKey::SetFromHttpApi(bool bFromHttpApi)
 {
   m_fromHttpApi = bFromHttpApi;
+}
+
+void CKey::SetHeld(unsigned int held)
+{
+  m_held = held;
+}
+
+unsigned int CKey::GetHeld() const
+{
+  return m_held;
 }
 

@@ -87,14 +87,15 @@ public:
   DemuxPacket* Read();
 
   bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
-  bool SeekByte(int64_t pos);
-  int GetStreamLenght();
+  bool SeekByte(__int64 pos);
+  int GetStreamLength();
   CDemuxStream* GetStream(int iStreamId);
   int GetNrOfStreams();
 
   bool SeekChapter(int chapter, double* startpts = NULL);
   int GetChapterCount();
   int GetChapter();
+  void GetChapterName(std::string& strChapterName);
 
 
   bool Aborted();

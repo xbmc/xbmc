@@ -80,7 +80,7 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_PATH_REMOVE)
         OnPathRemove(GetSelectedItem());
       else if (iControl == CONTROL_NAME)
-        OnName();
+        OnEditChanged(iControl, m_name);
       else if (iControl == CONTROL_OK)
         OnOK();
       else if (iControl == CONTROL_CANCEL)
@@ -355,12 +355,6 @@ void CGUIDialogMediaSource::OnPath(int item)
   UpdateButtons();
 }
 
-void CGUIDialogMediaSource::OnName()
-{
-  CGUIDialogKeyboard::ShowAndGetInput(m_name, g_localizeStrings.Get(1022), false);
-  UpdateButtons();
-}
-
 void CGUIDialogMediaSource::OnOK()
 {
   // verify the path by doing a GetDirectory.
@@ -414,30 +408,16 @@ void CGUIDialogMediaSource::OnCancel()
 
 void CGUIDialogMediaSource::UpdateButtons()
 {
-  if (m_paths->Get(0)->m_strPath.IsEmpty() || m_name.IsEmpty())
-  {
-    CONTROL_DISABLE(CONTROL_OK)
-  }
-  else
-  {
-    CONTROL_ENABLE(CONTROL_OK)
-  }
-  if (m_paths->Size() <= 1)
-  {
-    CONTROL_DISABLE(CONTROL_PATH_REMOVE)
-  }
-  else
-  {
-    CONTROL_ENABLE(CONTROL_PATH_REMOVE)
-  }
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_OK, !m_paths->Get(0)->m_strPath.IsEmpty() && !m_name.IsEmpty());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_PATH_REMOVE, m_paths->Size() > 1);
   // name
-  SET_CONTROL_LABEL(CONTROL_NAME, m_name)
+  SET_CONTROL_LABEL2(CONTROL_NAME, m_name);
+  SendMessage(GUI_MSG_SET_TYPE, CONTROL_NAME, 0, 1022);
 
   if (m_hasMultiPath)
   {
     int currentItem = GetSelectedItem();
-    CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PATH);
-    OnMessage(msgReset);
+    SendMessage(GUI_MSG_LABEL_RESET, CONTROL_PATH);
     for (int i = 0; i < m_paths->Size(); i++)
     {
       CFileItemPtr item = m_paths->Get(i);
@@ -449,8 +429,7 @@ void CGUIDialogMediaSource::UpdateButtons()
       CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PATH, 0, 0, item);
       OnMessage(msg);
     }
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_PATH, currentItem);
-    OnMessage(msg);
+    SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_PATH, currentItem);
   }
   else
   {
@@ -463,15 +442,8 @@ void CGUIDialogMediaSource::UpdateButtons()
 
   if (m_type.Equals("video"))
   {
-    SET_CONTROL_VISIBLE(CONTROL_CONTENT)
-    if (m_paths->Get(0)->m_strPath.IsEmpty() || m_name.IsEmpty())
-    {
-      CONTROL_DISABLE(CONTROL_CONTENT)
-    }
-    else
-    {
-      CONTROL_ENABLE(CONTROL_CONTENT)
-    }
+    SET_CONTROL_VISIBLE(CONTROL_CONTENT);
+    CONTROL_ENABLE_ON_CONDITION(CONTROL_CONTENT, !m_paths->Get(0)->m_strPath.IsEmpty() && !m_name.IsEmpty());
   }
   else
   {
@@ -524,6 +496,7 @@ void CGUIDialogMediaSource::SetTypeOfMedia(const CStdString &type, bool editNotA
 void CGUIDialogMediaSource::OnWindowLoaded()
 {
   CGUIDialog::OnWindowLoaded();
+  ChangeButtonToEdit(CONTROL_NAME, true);  // true for single label
   // disable the spincontrol
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   const CGUIControl *control = GetControl(CONTROL_PATH);

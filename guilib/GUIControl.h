@@ -85,6 +85,7 @@ public:
   CGUIControl();
   CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
   virtual ~CGUIControl(void);
+  virtual CGUIControl *Clone() const=0;
 
   virtual void DoRender(DWORD currentTime);
   virtual void Render();
@@ -164,7 +165,7 @@ public:
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
   virtual void SetVisible(bool bVisible);
-  void SetVisibleCondition(int visible, bool allowHiddenFocus);
+  void SetVisibleCondition(int visible, const CGUIInfoBool &allowHiddenFocus);
   int GetVisibleCondition() const { return m_visibleCondition; };
   void SetEnableCondition(int condition);
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
@@ -280,7 +281,7 @@ protected:
   GUIVISIBLE m_visible;
   bool m_visibleFromSkinCondition;
   bool m_forceHidden;       // set from the code when a hidden operation is given - overrides m_visible
-  bool m_allowHiddenFocus;
+  CGUIInfoBool m_allowHiddenFocus;
   bool m_hasRendered;
   // enable/disable state
   int m_enableCondition;

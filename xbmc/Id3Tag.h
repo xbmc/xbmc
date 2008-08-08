@@ -55,7 +55,7 @@ protected:
   bool HasPicture(id3_picture_type pictype) const;
   CStdString GetPictureMimeType(id3_picture_type pictype) const;
   const BYTE* GetPictureData(id3_picture_type pictype, id3_length_t* length) const;
-  const BYTE* GetUniqueFileIdentifier(const CStdString& strOwnerIdentifier, id3_length_t* lenght) const;
+  const BYTE* GetUniqueFileIdentifier(const CStdString& strOwnerIdentifier, id3_length_t* length) const;
   CStdString GetUserText(const CStdString& strDescription) const;
   bool GetFirstNonStandardPictype(id3_picture_type* pictype) const;
 

@@ -64,7 +64,6 @@ Reason: Prepared for Public Release
 #include "xkeeprom.h"
 #include <stdio.h>
 
-
 /* Default Constructor using a Blank eeprom image... */
 XKEEPROM::XKEEPROM()
 {
@@ -433,7 +432,7 @@ void XKEEPROM::SetConfounderString(LPCSTR Confounder)
   DWORD len = CONFOUNDER_SIZE * 2;
   BYTE tmpData[(CONFOUNDER_SIZE * 2) + 1];
   ZeroMemory(tmpData, len + 1);
-  memcpy(tmpData, Confounder2, min(strlen(Confounder2), len));
+  memcpy(tmpData, Confounder2, std::min<size_t>(strlen(Confounder2), len));
 
   XKGeneral::HexStrToBytes(tmpData, &len, TRUE);
 
@@ -470,7 +469,7 @@ void XKEEPROM::SetHDDKeyString(LPCSTR HDDKey)
   DWORD len = HDDKEY_SIZE * 2;
   BYTE tmpData[(HDDKEY_SIZE * 2) + 1];
   ZeroMemory(tmpData, len + 1);
-  memcpy(tmpData, HDDKey, min(strlen(HDDKey), len));
+  memcpy(tmpData, HDDKey, std::min<size_t>(strlen(HDDKey), len));
 
   XKGeneral::HexStrToBytes(tmpData, &len, TRUE);
 
@@ -509,7 +508,7 @@ void XKEEPROM::SetXBERegionString(LPCSTR XBERegion)
   DWORD len = XBEREGION_SIZE * 2;
   BYTE tmpData[(XBEREGION_SIZE * 2) + 1];
   ZeroMemory(tmpData, len + 1);
-  memcpy(tmpData, XBERegion, min(strlen(XBERegion), len));
+  memcpy(tmpData, XBERegion, std::min<size_t>(strlen(XBERegion), len));
 
   XKGeneral::HexStrToBytes(tmpData, &len, TRUE);
 
@@ -595,7 +594,7 @@ void XKEEPROM::SetMACAddressString(LPCSTR MACAddress)
   DWORD len = MACADDRESS_SIZE * 3;
   BYTE tmpData[(HDDKEY_SIZE * 3) + 1];
   ZeroMemory(tmpData, len + 1);
-  memcpy(tmpData, MACAddress, min(strlen(MACAddress), len));
+  memcpy(tmpData, MACAddress, std::min<size_t>(strlen(MACAddress), len));
 
   XKGeneral::HexStrToBytes(tmpData, &len, TRUE);
 
@@ -618,7 +617,7 @@ void XKEEPROM::SetOnlineKeyString(LPCSTR OnlineKey)
   DWORD len = ONLINEKEY_SIZE * 2;
   BYTE tmpData[(HDDKEY_SIZE * 2) + 1];
   ZeroMemory(tmpData, len + 1);
-  memcpy(tmpData, OnlineKey, min(strlen(OnlineKey), len));
+  memcpy(tmpData, OnlineKey, std::min<size_t>(strlen(OnlineKey), len));
 
   XKGeneral::HexStrToBytes(tmpData, &len, TRUE);
 
@@ -639,7 +638,7 @@ void XKEEPROM::SetDVDRegionString(LPCSTR DVDRegion)
   DWORD len = DVDREGION_SIZE * 2;
   BYTE tmpData[(DVDREGION_SIZE * 2) + 1];
   ZeroMemory(tmpData, len + 1);
-  memcpy(tmpData, DVDRegion, min(strlen(DVDRegion), len));
+  memcpy(tmpData, DVDRegion, std::min<size_t>(strlen(DVDRegion), len));
 
   XKGeneral::HexStrToBytes(tmpData, &len, TRUE);
 
@@ -692,7 +691,7 @@ void XKEEPROM::SetVideoStandardString(LPCSTR VideoStandard)
   DWORD len = VIDEOSTANDARD_SIZE * 2;
   BYTE tmpData[(VIDEOSTANDARD_SIZE * 2) + 1];
   ZeroMemory(tmpData, len + 1);
-  memcpy(tmpData, VideoStandard, min(strlen(VideoStandard), len));
+  memcpy(tmpData, VideoStandard, std::min<size_t>(strlen(VideoStandard), len));
 
   XKGeneral::HexStrToBytes(tmpData, &len, TRUE);
 

@@ -42,6 +42,24 @@ CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, 
   m_resetOnLabelChange = resetOnLabelChange;
 }
 
+CGUIFadeLabelControl::CGUIFadeLabelControl(const CGUIFadeLabelControl &from)
+: CGUIControl(from), m_infoLabels(from.m_infoLabels), m_scrollInfo(from.m_scrollInfo), m_textLayout(from.m_textLayout)
+{
+  m_label = from.m_label;
+  m_scrollOut = from.m_scrollOut;
+  m_scrollSpeed = from.m_scrollSpeed;
+  m_resetOnLabelChange = from.m_resetOnLabelChange;
+
+  if (from.m_fadeAnim)
+    m_fadeAnim = new CAnimation(*from.m_fadeAnim);
+  if (m_fadeAnim)
+    m_fadeAnim->ApplyAnimation();
+  m_currentLabel = 0;
+  m_renderTime = 0;
+  m_lastLabel = -1;
+  ControlType = GUICONTROL_FADELABEL;
+}
+
 CGUIFadeLabelControl::~CGUIFadeLabelControl(void)
 {
   if (m_fadeAnim)
@@ -153,7 +171,15 @@ void CGUIFadeLabelControl::Render()
   { // increment the label and reset scrolling
     if (m_fadeAnim->GetProcess() != ANIM_PROCESS_NORMAL)
     {
-      m_currentLabel++;
+      unsigned int label = m_currentLabel;
+      do
+      { // cycle until we get a non-empty label, or stick with the one we have
+        label++;
+        if (label >= m_infoLabels.size())
+          label = 0;
+      }
+      while (label != m_currentLabel && m_infoLabels[label].GetLabel(m_dwParentID).IsEmpty());
+      m_currentLabel = label;
       m_scrollInfo.Reset();
       m_fadeAnim->QueueAnimation(ANIM_PROCESS_REVERSE);
     }

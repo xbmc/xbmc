@@ -40,14 +40,10 @@ CGUIDialog::CGUIDialog(DWORD dwID, const CStdString &xmlFile)
 CGUIDialog::~CGUIDialog(void)
 {}
 
-bool CGUIDialog::Load(const CStdString& strFileName, bool bContainsPath)
+void CGUIDialog::OnWindowLoaded()
 {
-  m_renderOrder = 1;
-  if (!CGUIWindow::Load(strFileName, bContainsPath))
-  {
-    return false;
-  }
-
+  CGUIWindow::OnWindowLoaded();
+  
   // Clip labels to extents
   if (m_vecControls.size())
   {
@@ -68,8 +64,6 @@ bool CGUIDialog::Load(const CStdString& strFileName, bool bContainsPath)
       }
     }
   }
-
-  return true;
 }
 
 bool CGUIDialog::OnAction(const CAction &action)
@@ -138,7 +132,7 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
   OnMessage(msg);
 }
 
-void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */)
+void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */, const CStdString &param)
 {
   //Lock graphic context here as it is sometimes called from non rendering threads
   //maybe we should have a critical section per window instead??
@@ -158,6 +152,7 @@ void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */)
 
   // active this window...
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, iWindowID);
+  msg.SetStringParam(param);
   OnMessage(msg);
 
 //  m_bRunning = true;
