@@ -99,16 +99,6 @@
 #include "Crc32.h"
 
 using namespace std;
-
-void hack()
-{
-  // stupid hack to keep compiler from dropping these
-  // functions as unused
-  MathUtils::round_int(0.0);
-  MathUtils::truncate_int(0.0);
-  MathUtils::ceil_int(0.0);
-}
-
 using namespace DIRECTORY;
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]

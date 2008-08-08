@@ -65,7 +65,6 @@ struct XBOXDETECTION
 namespace MathUtils
 {
 
-#ifndef _LINUX
   inline int round_int (double x)
   {
     assert (x > static_cast <double>(INT_MIN / 2) - 1.0);
@@ -73,6 +72,7 @@ namespace MathUtils
 
     const float round_to_nearest = 0.5f;
     int i;
+#ifndef _LINUX
     __asm
     {
       fld x
@@ -81,20 +81,26 @@ namespace MathUtils
       fistp i
       sar i, 1
     }
+#else
+    __asm__ (
+        "fld %1\n\t"
+        "fadd %%st\n\t"
+        "fadd %%st(1)\n\t"
+        "fistpl %0\n\t"
+        "sarl $1, %0\n"
+        : "=m"(i) : "m"(x), "f"(round_to_nearest)
+    );
+#endif
     return (i);
   }
-#else
-  inline int round_int (float x) { return lrintf(x); }
-  inline int round_int (double x) { return lrint(x); }
-#endif
 
   inline int ceil_int (double x)
   {
     assert (x > static_cast <double>(INT_MIN / 2) - 1.0);
     assert (x < static_cast <double>(INT_MAX / 2) + 1.0);
-  #ifndef _LINUX
     const float round_towards_p_i = -0.5f;
     int i;
+#ifndef _LINUX
     __asm
     {
       fld x
@@ -103,19 +109,26 @@ namespace MathUtils
       fistp i
       sar i, 1
     }
+#else
+    __asm__ (
+        "fldl %1\n\t"
+        "fadd %%st\n\t"
+        "fsubr %%st(1)\n\t"
+        "fistpl %0\n\t"
+        "sarl $1, %0\n"
+        : "=m"(i) : "m"(x), "f"(round_towards_p_i)
+    );
+#endif
     return (-i);
-  #else
-    return (int)(ceil(x));
-  #endif
   }
-
+ 
   inline int truncate_int(double x)
   {
     assert (x > static_cast <double>(INT_MIN / 2) - 1.0);
     assert (x < static_cast <double>(INT_MAX / 2) + 1.0);
-  #ifndef _LINUX
     const float round_towards_m_i = -0.5f;
     int i;
+#ifndef _LINUX
     __asm
     {
       fld x
@@ -125,12 +138,29 @@ namespace MathUtils
       fistp i
       sar i, 1
     }
+#else
+    __asm__ (
+        "fldl %1\n\t"
+        "fadd %%st\n\t"
+        "fabs\n\t"
+        "fadd %%st(1)\n\t"
+        "fistpl %0\n\t"
+        "sarl $1, %0\n"
+        : "=m"(i) : "m"(x), "f"(round_towards_m_i)
+    );
+#endif
     if (x < 0)
       i = -i;
     return (i);
-  #else
-    return (int)(x);
-  #endif
+  }
+ 
+  inline void hack()
+  {
+    // stupid hack to keep compiler from dropping these
+    // functions as unused
+    MathUtils::round_int(0.0);
+    MathUtils::truncate_int(0.0);
+    MathUtils::ceil_int(0.0);  
   }
 } // namespace MathUtils
 
