@@ -1056,22 +1056,16 @@ bool TiXmlDocument::LoadFile( FILE* file, TiXmlEncoding encoding )
 	location.Clear();
 
 	// Get the file size, so we can pre-allocate the string. HUGE speed impact.
-	long length = 0;
-	fseek( file, 0, SEEK_END );
-	length = ftell( file );
-	fseek( file, 0, SEEK_SET );
 
-	// Strange case, but good to handle up front.
-	if ( length == 0 )
-	{
-		SetError( TIXML_ERROR_DOCUMENT_EMPTY, 0, 0, TIXML_ENCODING_UNKNOWN );
-		return false;
+	long length = -1;
+	if( fseek( file, 0, SEEK_END ) == 0 ) {
+		length = ftell( file );
+		fseek( file, 0, SEEK_SET );
 	}
 
-	// If we have a file, assume it is all one big XML file, and read it in.
-	// The document parser may decide the document ends sooner than the entire file, however.
-	TIXML_STRING data;
-	data.reserve( length );
+        // We might be streaming it, correct length will be fixed by reading
+	if( length < 0 )
+		length = 1024;
 
 	// Subtle bug here. TinyXml did use fgets. But from the XML spec:
 	// 2.11 End-of-Line Handling
@@ -1094,13 +1088,30 @@ bool TiXmlDocument::LoadFile( FILE* file, TiXmlEncoding encoding )
 	}
 	*/
 
-	char* buf = new char[ length+1 ];
-	buf[0] = 0;
+	char*  buf = (char*)malloc(length+1);
+	long   pos = 0;
+	long   len;
+        while( (len = fread(buf+pos, 1, length-pos, file)) > 0 ) {
+		pos += len;
+		assert(pos <= length);
+		if(pos == length) {
+			length *= 2;
+			buf = (char*)realloc(buf, length);
+		}
+	}
+	length = pos;
 
-	if ( fread( buf, length, 1, file ) != 1 ) {
-		SetError( TIXML_ERROR_OPENING_FILE, 0, 0, TIXML_ENCODING_UNKNOWN );
+	// Strange case, but good to handle up front.
+	if ( length == 0 )
+	{
+		SetError( TIXML_ERROR_DOCUMENT_EMPTY, 0, 0, TIXML_ENCODING_UNKNOWN );
 		return false;
 	}
+
+	// If we have a file, assume it is all one big XML file, and read it in.
+	// The document parser may decide the document ends sooner than the entire file, however.
+	TIXML_STRING data;
+	data.reserve( length );
 
 	const char* lastPos = buf;
 	const char* p = buf;
@@ -1145,7 +1156,7 @@ bool TiXmlDocument::LoadFile( FILE* file, TiXmlEncoding encoding )
 	if ( p-lastPos ) {
 		data.append( lastPos, p-lastPos );
 	}		
-	delete [] buf;
+	free(buf);
 	buf = 0;
 
 	Parse( data.c_str(), 0, encoding );
