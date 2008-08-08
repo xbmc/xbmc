@@ -87,16 +87,15 @@ CSPUInfo* CDVDDemuxSPU::AddData(BYTE* data, int iSize, double pts)
     pSPUData->iSize = 0;
 
     // check spu data lenght, only needed / possible in the first spu pakcet
-    unsigned __int16 lenght = data[0] << 8 | data[1];
-
-    if (lenght == 0)
+    unsigned __int16 length = data[0] << 8 | data[1];
+    if (length == 0)
     {
       DebugLog("corrupt spu data: zero packet");
       m_spuData.iNeededSize = 0;
       m_spuData.iSize = 0;
       return NULL;
     }
-    if (lenght > iSize) pSPUData->iNeededSize = lenght;
+    if (length > iSize) pSPUData->iNeededSize = length;
     else pSPUData->iNeededSize = iSize;
 
     // set presentation time stamp
@@ -125,7 +124,7 @@ CSPUInfo* CDVDDemuxSPU::AddData(BYTE* data, int iSize, double pts)
   
   if (pSPUData->iSize == pSPUData->iNeededSize)
   {
-    DebugLog("got complete spu packet\n  lenght: %i bytes\n  stream: %i\n", pSPUData->iSize);
+    DebugLog("got complete spu packet\n  length: %i bytes\n  stream: %i\n", pSPUData->iSize);
 
     return ParsePacket(pSPUData);
   }
@@ -162,7 +161,7 @@ CSPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
   BYTE* p = pSPUData->data; // pointer to walk through all data
 
   // get data length
-  unsigned __int16 datalenght = p[2] << 8 | p[3]; // datalength + 4 control bytes
+  unsigned __int16 datalength = p[2] << 8 | p[3]; // datalength + 4 control bytes
 
   pUnparsedData = pSPUData->data + 4;
 
@@ -171,7 +170,7 @@ CSPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
   pSPUInfo->iPTSStartTime = -1;
 
   //skip data packet and goto control sequence
-  p += datalenght;
+  p += datalength;
 
   bool bHasNewDCSQ = true;
   while (bHasNewDCSQ)
@@ -294,9 +293,9 @@ CSPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       case CHG_COLCON:
         {
           p++;
-          unsigned __int16 paramlenght = p[0] << 8 | p[1];
-          DebugLog("GetPacket, CHG_COLCON, skippin %i bytes", paramlenght);
-          p += paramlenght;
+          unsigned __int16 paramlength = p[0] << 8 | p[1];
+          DebugLog("GetPacket, CHG_COLCON, skippin %i bytes", paramlength);
+          p += paramlength;
         }
         break;
 

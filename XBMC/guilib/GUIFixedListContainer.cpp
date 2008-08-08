@@ -45,14 +45,7 @@ void CGUIFixedListContainer::Render()
 
   if (!m_focusedLayout || !m_layout) return;
 
-  m_scrollOffset += m_scrollSpeed * (m_renderTime - m_scrollLastTime);
-  if ((m_scrollSpeed < 0 && m_scrollOffset < m_offset * m_layout->Size(m_orientation)) ||
-      (m_scrollSpeed > 0 && m_scrollOffset > m_offset * m_layout->Size(m_orientation)))
-  {
-    m_scrollOffset = m_offset * m_layout->Size(m_orientation);
-    m_scrollSpeed = 0;
-  }
-  m_scrollLastTime = m_renderTime;
+  UpdateScrollOffset();
 
   int offset = (int)(m_scrollOffset / m_layout->Size(m_orientation));
   // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
@@ -255,16 +248,18 @@ bool CGUIFixedListContainer::SelectItemFromPoint(const CPoint &point)
   if (!m_focusedLayout || !m_layout)
     return false;
 
-  const float mouse_scroll_speed = 0.5f;
+  const float mouse_scroll_speed = 0.05f;
+  const float mouse_max_amount = 1.5f;   // max speed: 1 item per frame
+  float sizeOfItem = m_layout->Size(m_orientation);
   // see if the point is either side of our focused item
-  float start = m_cursor * m_layout->Size(m_orientation);
+  float start = m_cursor * sizeOfItem;
   float end = start + m_focusedLayout->Size(m_orientation);
   float pos = (m_orientation == VERTICAL) ? point.y : point.x;
-  if (pos < start)
+  if (pos < start - 0.5f * sizeOfItem)
   { // scroll backward
     if (!InsideLayout(m_layout, point))
       return false;
-    float amount = (start - pos) / m_layout->Size(m_orientation);
+    float amount = min((start - pos) / sizeOfItem, mouse_max_amount);
     m_analogScrollCount += amount * amount * mouse_scroll_speed;
     if (m_analogScrollCount > 1)
     {
@@ -273,12 +268,12 @@ bool CGUIFixedListContainer::SelectItemFromPoint(const CPoint &point)
     }
     return true;
   }
-  else if (pos > end)
+  else if (pos > end + 0.5f * sizeOfItem)
   {
     if (!InsideLayout(m_layout, point))
       return false;
     // scroll forward
-    float amount = (pos - end) / m_layout->Size(m_orientation);
+    float amount = min((pos - end) / sizeOfItem, mouse_max_amount);
     m_analogScrollCount += amount * amount * mouse_scroll_speed;
     if (m_analogScrollCount > 1)
     {

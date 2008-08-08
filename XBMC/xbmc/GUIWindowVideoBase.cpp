@@ -1298,6 +1298,14 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
 
 void CGUIWindowVideoBase::MarkUnWatched(const CFileItemPtr &item)
 {
+  // dont allow update while scanning
+  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+  if (pDialogScan && pDialogScan->IsScanning())
+  {
+    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+    return;
+  }
+
   CVideoDatabase database;
   database.Open();
   CFileItemList items;
@@ -1325,6 +1333,14 @@ void CGUIWindowVideoBase::MarkUnWatched(const CFileItemPtr &item)
 //Add Mark a Title as watched
 void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item)
 {
+  // dont allow update while scanning
+  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+  if (pDialogScan && pDialogScan->IsScanning())
+  {
+    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+    return;
+  }
+
   CVideoDatabase database;
   database.Open();
   CFileItemList items;
@@ -1352,6 +1368,14 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item)
 //Add change a title's name
 void CGUIWindowVideoBase::UpdateVideoTitle(const CFileItem* pItem)
 {
+  // dont allow update while scanning
+  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+  if (pDialogScan && pDialogScan->IsScanning())
+  {
+    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+    return;
+  }
+
   CVideoInfoTag detail;
   CVideoDatabase database;
   database.Open();

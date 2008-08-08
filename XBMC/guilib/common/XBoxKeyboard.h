@@ -41,6 +41,7 @@ public:
   char GetAscii() { return m_cAscii;};
   WCHAR GetUnicode() { return GetAscii();}; // FIXME HELPME is there any unicode feature available?
   BYTE GetKey() { return m_VKey;};
+  bool KeyHeld() const { return false; };
 
 private:
   // variables for mouse state

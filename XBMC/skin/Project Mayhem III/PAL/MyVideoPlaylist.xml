@@ -106,6 +106,7 @@
 		<include>AllViewCommonThumbSmall</include>
 		<include>AllViewCommonThumbLarge</include>
 		<include>AllViewCommonPageControls</include>
+		<include>ScrollOffsetLabel</include>
 		<include>windowswitchtransition</include>
 	</controls>
 </window>

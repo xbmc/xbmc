@@ -32,8 +32,7 @@
 
 #include "StdString.h"
 #include "Thread.h"
-#include "lib/libiconv/iconv.h"
-#include "tinyXML/tinyXML.h"
+#include "tinyxml/tinyxml.h"
 
 #include <vector>
 #include <list>
@@ -63,6 +62,7 @@ public:
   void UpdateObserver();
   void SetObserver(IRssObserver* observer);
   void CheckForUpdates();
+  void requestRefresh();
 
 private:
   void fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDest);
@@ -85,9 +85,9 @@ private:
   std::vector<std::string> m_vecUrls;
   std::vector<int> m_vecQueue;
   bool m_bIsRunning;
-  iconv_t m_iconv;
-  bool m_shouldFlip;
   CStdString m_encoding;
+  bool m_rtlText;
+  bool m_requestRefresh;
 };
 
 class CRssManager
@@ -97,6 +97,7 @@ public:
   ~CRssManager();
 
   void Stop();
+  void Reset();
 
   bool GetReader(DWORD controlID, DWORD windowID, IRssObserver* observer, CRssReader *&reader);
 

@@ -34,7 +34,7 @@ public:
 
   virtual void Render();
   void SetHeading(const CStdString& strHeading) {m_strHeading = strHeading;} ;
-  void SetText(CStdString& aTextString);
+  void SetText(const CStdString& aTextString);
   CStdString GetText() const;
   bool IsConfirmed() { return m_bIsConfirmed; };
   void SetHiddenInput(bool hiddenInput) { m_hiddenInput = hiddenInput; };
@@ -87,7 +87,6 @@ private:
 
   DWORD m_lastRemoteClickTime;
   WORD m_lastRemoteKeyClicked;
-  DWORD m_lastSearchUpdate;
   int m_indexInSeries;
   CStdString m_strHeading;
   static const char* s_charsSeries[10];

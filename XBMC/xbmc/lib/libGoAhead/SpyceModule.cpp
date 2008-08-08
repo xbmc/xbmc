@@ -77,7 +77,7 @@ namespace WEBS_SPYCE
 		std::string strRequestMethod;
 		std::string strQuery = wp->query;
 		std::string strCookie;
-		int iContentLenght = 0;
+		int iContentLength = 0;
 		
 		if (strlen(wp->query) > 0)
 		{
@@ -87,12 +87,12 @@ namespace WEBS_SPYCE
 		}
 
 		if (wp->flags & WEBS_COOKIE) strCookie = wp->cookie;
-		iContentLenght = strQuery.length();
+		iContentLength = strQuery.length();
 
 		// create enviroment and parse file
 		PyObject* pEnv = PyDict_New();
 		PyObject* pREQUEST_METHOD = PyString_FromString(strRequestMethod.c_str());
-		PyObject* pCONTENT_LENGTH = PyInt_FromLong(iContentLenght);
+		PyObject* pCONTENT_LENGTH = PyInt_FromLong(iContentLength);
 		PyObject* pQUERY_STRING = PyString_FromString(strQuery.c_str());
 		PyObject* pHTTP_COOKIE = PyString_FromString(strCookie.c_str());
 		PyObject* pCONTENT_TYPE = PyString_FromString(wp->type);

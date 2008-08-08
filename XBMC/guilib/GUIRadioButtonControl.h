@@ -43,6 +43,8 @@ public:
                          const CImage& radioFocus, const CImage& radioNoFocus);
 
   virtual ~CGUIRadioButtonControl(void);
+  virtual CGUIRadioButtonControl *Clone() const { return new CGUIRadioButtonControl(*this); };
+
   virtual void Render();
   virtual bool OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);

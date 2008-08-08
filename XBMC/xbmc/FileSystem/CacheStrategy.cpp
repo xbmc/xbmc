@@ -183,7 +183,7 @@ __int64 CSimpleFileCache::WaitForData(unsigned int iMinAvail, unsigned int iMill
       return iAvail;
 
     // busy look (sleep max 1 sec each round)
-    DWORD dwRc = WaitForSingleObject(m_hDataAvailEvent, max(dwTimeout - dwTime, 1000) );
+    DWORD dwRc = WaitForSingleObject(m_hDataAvailEvent, std::max((unsigned int)(dwTimeout - dwTime), (unsigned int)1000) );
     if (dwRc == WAIT_FAILED || dwRc == WAIT_ABANDONED)
       return CACHE_RC_ERROR;
   }

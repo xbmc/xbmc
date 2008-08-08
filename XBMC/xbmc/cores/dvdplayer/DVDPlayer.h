@@ -186,6 +186,7 @@ public:
 
   virtual int  GetChapterCount();
   virtual int  GetChapter();
+  virtual void GetChapterName(CStdString& strChapterName);
   virtual int  SeekChapter(int iChapter);
 
   virtual void SeekTime(__int64 iTime);
@@ -290,13 +291,25 @@ protected:
 
   struct SPlayerState
   {
+    void Clear()
+    {
+      timestamp     = 0;
+      time          = 0;
+      time_total    = 0;
+      chapter       = 0;
+      chapter_count = 0;
+      canrecord     = false;
+      recording     = false;
+    }
+
     double timestamp;         // last time of update
 
     double time;              // current playback time
     double time_total;        // total playback time
 
-    int chapter;              // current chapter
-    int chapter_count;        // number of chapter
+    int         chapter;      // current chapter
+    std::string chapter_name; // name of current chapter
+    int         chapter_count;// number of chapter
 
     bool canrecord;           // can input stream record
     bool recording;           // are we currently recording

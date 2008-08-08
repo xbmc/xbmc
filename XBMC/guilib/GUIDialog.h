@@ -43,12 +43,11 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
 
-  virtual void DoModal(int iWindowID = WINDOW_INVALID); // modal
+  void DoModal(int iWindowID = WINDOW_INVALID, const CStdString &param = ""); // modal
   void DoModalThreadSafe(); // threadsafe version of DoModal
   void Show(); // modeless
 
   virtual void Close(bool forceClose = false);
-  virtual bool Load(const CStdString& strFileName, bool bContainsPath = false);
   virtual bool IsDialogRunning() const { return m_bRunning; };
   virtual bool IsDialog() const { return true;};
   virtual bool IsModalDialog() const { return m_bModal; };
@@ -58,6 +57,7 @@ public:
 protected:
   virtual bool RenderAnimation(DWORD time);
   virtual void SetDefaults();
+  virtual void OnWindowLoaded();
 
   bool m_bRunning;
   bool m_bModal;

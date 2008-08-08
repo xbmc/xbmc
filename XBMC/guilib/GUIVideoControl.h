@@ -41,6 +41,8 @@ class CGUIVideoControl :
 public:
   CGUIVideoControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
   virtual ~CGUIVideoControl(void);
+  virtual CGUIVideoControl *Clone() const { return new CGUIVideoControl(*this); };
+
   virtual void Render();
   virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
   virtual bool OnMouseOver(const CPoint &point);

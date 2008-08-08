@@ -813,7 +813,7 @@ CStdString PAPlayer::GetCodecName()
   return "";
 }
 
-int PAPlayer::GetBitrate()
+int PAPlayer::GetAudioBitrate()
 {
   ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
   if (codec)

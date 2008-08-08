@@ -146,7 +146,7 @@ int CGUIDialogContextMenu::AddButton(const CStdString &strLabel)
   }
   return m_iNumButtons;
 }
-void CGUIDialogContextMenu::DoModal(int iWindowID /*= WINDOW_INVALID */)
+void CGUIDialogContextMenu::DoModal(int iWindowID /*= WINDOW_INVALID */, const CStdString &param)
 {
   // update the navigation of the first and last buttons
   CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_TEMPLATE + 1);
@@ -549,7 +549,7 @@ CStdString CGUIDialogContextMenu::GetDefaultShareNameByType(const CStdString &st
 
   bool bIsSourceName(false);
   int iIndex = CUtil::GetMatchingSource(strDefault, *pShares, bIsSourceName);
-  if (iIndex < 0)
+  if (iIndex < 0 || iIndex >= (int)pShares->size())
     return "";
 
   return pShares->at(iIndex).strName;

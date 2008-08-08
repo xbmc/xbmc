@@ -41,6 +41,22 @@ CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, float posX, 
 
   m_pReader = NULL;
   ControlType = GUICONTROL_RSS;
+
+  if (g_guiSettings.GetBool("lookandfeel.rssfeedsrtl"))
+  {
+    m_scrollInfo.SetSpeed(-60);
+  }
+}
+
+CGUIRSSControl::CGUIRSSControl(const CGUIRSSControl &from)
+: CGUIControl(from),m_scrollInfo(from.m_scrollInfo)
+{
+  m_label = from.m_label;
+  m_headlineColor = from.m_headlineColor;
+  m_channelColor = from.m_channelColor;
+  m_strRSSTags = from.m_strRSSTags;
+  m_pReader = NULL;
+  ControlType = GUICONTROL_RSS;
 }
 
 CGUIRSSControl::~CGUIRSSControl(void)
@@ -53,7 +69,7 @@ CGUIRSSControl::~CGUIRSSControl(void)
 
 void CGUIRSSControl::SetUrls(const vector<string> &vecUrl)
 {
-  m_vecUrls = vecUrl; 
+  m_vecUrls = vecUrl;
 }
 
 void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)

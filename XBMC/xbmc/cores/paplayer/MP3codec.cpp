@@ -217,7 +217,7 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
   *actualsize = 0;
   // First read in any extra info we need from our MP3
-  int inputBufferToRead = min(m_file.GetChunkSize(), m_InputBufferSize - m_InputBufferPos);
+  int inputBufferToRead = std::min(m_file.GetChunkSize(), m_InputBufferSize - m_InputBufferPos);
   if ( inputBufferToRead && !m_CallAgainWithSameBuffer && !m_eof ) 
   {
     if (m_file.GetLength() > 0)

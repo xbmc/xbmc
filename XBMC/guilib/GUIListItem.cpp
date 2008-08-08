@@ -49,6 +49,7 @@ CGUIListItem::CGUIListItem(const CStdString& strLabel)
   m_bIsFolder = false;
   m_strLabel2 = "";
   m_strLabel = strLabel;
+  m_sortLabel = strLabel;
   m_bSelected = false;
   m_strIcon = "";
   m_strThumbnailImage = "";
@@ -65,6 +66,8 @@ CGUIListItem::~CGUIListItem(void)
 void CGUIListItem::SetLabel(const CStdString& strLabel)
 {
   m_strLabel = strLabel;
+  if (m_sortLabel.IsEmpty())
+    m_sortLabel = strLabel;
   SetInvalid();
 }
 
@@ -83,6 +86,17 @@ void CGUIListItem::SetLabel2(const CStdString& strLabel2)
 const CStdString& CGUIListItem::GetLabel2() const
 {
   return m_strLabel2;
+}
+
+void CGUIListItem::SetSortLabel(const CStdString &label)
+{
+  m_sortLabel = label;
+  // no need to invalidate - this is never shown in the UI
+}
+
+const CStdString& CGUIListItem::GetSortLabel() const
+{
+  return m_sortLabel;
 }
 
 void CGUIListItem::SetThumbnailImage(const CStdString& strThumbnail)
@@ -172,6 +186,7 @@ const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
   if (&item == this) return * this;
   m_strLabel2 = item.m_strLabel2;
   m_strLabel = item.m_strLabel;
+  m_sortLabel = item.m_sortLabel;
   FreeMemory();
   m_bSelected = item.m_bSelected;
   m_strIcon = item.m_strIcon;
@@ -190,6 +205,7 @@ void CGUIListItem::Serialize(CArchive &ar)
     ar << m_bIsFolder;
     ar << m_strLabel;
     ar << m_strLabel2;
+    ar << m_sortLabel;
     ar << m_strThumbnailImage;
     ar << m_strIcon;
     ar << m_bSelected;
@@ -206,6 +222,7 @@ void CGUIListItem::Serialize(CArchive &ar)
     ar >> m_bIsFolder;
     ar >> m_strLabel;
     ar >> m_strLabel2;
+    ar >> m_sortLabel;
     ar >> m_strThumbnailImage;
     ar >> m_strIcon;
     ar >> m_bSelected;

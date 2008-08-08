@@ -44,6 +44,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogKeyboard.h"
+#include "GUIEditControl.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
 
@@ -61,7 +62,7 @@ using namespace MUSICDATABASEDIRECTORY;
 #define CONTROL_BIGLIST           52
 #define CONTROL_LABELFILES        12
 
-#define CONTROL_BTNSEARCH          8
+#define CONTROL_SEARCH             8
 #define CONTROL_FILTER            15
 #define CONTROL_BTNPARTYMODE      16
 #define CONTROL_BTNMANUALINFO     17
@@ -75,6 +76,7 @@ CGUIWindowMusicNav::CGUIWindowMusicNav(void)
   m_bDisplayEmptyDatabaseMessage = false;
   m_thumbLoader.SetObserver(this);
   m_unfilteredItems = new CFileItemList;
+  m_searchWithEdit = false;
 }
 
 CGUIWindowMusicNav::~CGUIWindowMusicNav(void)
@@ -241,9 +243,19 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         CGUIDialogKeyboard::ShowAndGetFilter(m_filter, false);
         return true;
       }
-      else if (iControl == CONTROL_BTNSEARCH)
+      else if (iControl == CONTROL_SEARCH)
       {
-        OnSearch();
+        if (m_searchWithEdit)
+        {
+          // search updated - reset timer
+          m_searchTimer.StartZero();
+          // grab our search string
+          CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_SEARCH);
+          OnMessage(selected);
+          m_search = selected.GetLabel();
+          return true;
+        }
+        CGUIDialogKeyboard::ShowAndGetFilter(m_search, true);
         return true;
       }
     }
@@ -266,14 +278,9 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       }
       if (message.GetParam1() == GUI_MSG_SEARCH_UPDATE && IsActive())
       {
+        // search updated - reset timer
+        m_searchTimer.StartZero();
         m_search = message.GetStringParam();
-        CUtil::URLEncode(m_search);
-        if (!m_search.IsEmpty())
-        {
-          CStdString path = "musicsearch://" + m_search + "/";
-          m_history.ClearPathHistory();
-          Update(path);
-        }
       }
     }
   }
@@ -320,23 +327,22 @@ bool CGUIWindowMusicNav::OnClick(int iItem)
   CFileItemPtr item = m_vecItems->Get(iItem);
   if (item->m_strPath.Left(14) == "musicsearch://")
   {
-    OnSearch();
+    if (m_searchWithEdit)
+      OnSearchUpdate();
+    else
+      CGUIDialogKeyboard::ShowAndGetFilter(m_search, true);
     return true;
   }
   return CGUIWindowMusicBase::OnClick(iItem);
-}
-
-void CGUIWindowMusicNav::OnSearch()
-{
-  CStdString search(m_search);
-  CUtil::UrlDecode(search);
-  CGUIDialogKeyboard::ShowAndGetFilter(search, true);
 }
 
 bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   if (m_bDisplayEmptyDatabaseMessage)
     return true;
+
+  if (strDirectory.IsEmpty())
+    AddSearchFolder();
 
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
@@ -425,6 +431,12 @@ void CGUIWindowMusicNav::UpdateButtons()
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTN_FILTER, !m_filter.IsEmpty());
+
+  if (m_searchWithEdit)
+  {
+    SendMessage(GUI_MSG_SET_TYPE, CONTROL_SEARCH, CGUIEditControl::INPUT_TYPE_SEARCH);
+    SET_CONTROL_LABEL2(CONTROL_SEARCH, m_search);
+  }
 }
 
 void CGUIWindowMusicNav::PlayItem(int iItem)
@@ -455,6 +467,9 @@ void CGUIWindowMusicNav::OnWindowLoaded()
     Add(pLabel);
   }
 #endif
+
+  const CGUIControl *control = GetControl(CONTROL_SEARCH);
+  m_searchWithEdit = (control && control->GetControlType() == CGUIControl::GUICONTROL_EDIT);
 
   CGUIWindowMusicBase::OnWindowLoaded();
 }
@@ -915,8 +930,30 @@ void CGUIWindowMusicNav::DisplayEmptyDatabaseMessage(bool bDisplay)
   m_bDisplayEmptyDatabaseMessage = bDisplay;
 }
 
+void CGUIWindowMusicNav::OnSearchUpdate()
+{
+  CStdString search(m_search);
+  CUtil::URLEncode(search);
+  if (!search.IsEmpty())
+  {
+    CStdString path = "musicsearch://" + search + "/";
+    m_history.ClearPathHistory();
+    Update(path);
+  }
+  else if (m_vecItems->IsVirtualDirectoryRoot())
+  {
+    Update("");
+  }
+}
+
 void CGUIWindowMusicNav::Render()
 {
+  // update our searching
+  if (m_searchTimer.IsRunning() && m_searchTimer.GetElapsedMilliseconds() > 1000)
+  {
+    OnSearchUpdate();
+    m_searchTimer.Stop();
+  }
   if (m_bDisplayEmptyDatabaseMessage)
   {
     SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746))
@@ -991,4 +1028,39 @@ void CGUIWindowMusicNav::OnFinalizeFileItems(CFileItemList &items)
   // now filter as necessary
   if (!m_filter.IsEmpty())
     FilterItems(items);
+}
+
+void CGUIWindowMusicNav::AddSearchFolder()
+{
+  if (m_guiState.get())
+  {
+    // add our remove the musicsearch source
+    VECSOURCES &sources = m_guiState->GetSources();
+    bool haveSearchSource = false;
+    bool needSearchSource = !m_search.IsEmpty() || !m_searchWithEdit; // we always need it if we don't have the edit control
+    for (IVECSOURCES it = sources.begin(); it != sources.end(); ++it)
+    {
+      CMediaSource& share = *it;
+      if (share.strPath == "musicsearch://")
+      {
+        haveSearchSource = true;
+        if (!needSearchSource)
+        { // remove it
+          sources.erase(it);
+          break;
+        }
+      }
+    }
+    if (!haveSearchSource && needSearchSource)
+    {
+      // add earch share
+      CMediaSource share;
+      share.strName=g_localizeStrings.Get(137); // Search
+      share.strPath = "musicsearch://";
+      share.m_strThumbnailImage="defaultFolderBig.png";
+      share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+      sources.push_back(share);
+    }
+    m_rootDir.SetSources(sources);
+  }
 }

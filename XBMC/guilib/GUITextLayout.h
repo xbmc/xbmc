@@ -58,6 +58,7 @@ public:
   void RenderScrolling(float x, float y, float angle, DWORD color, DWORD shadowColor, DWORD alignment, float maxWidth, CScrollInfo &scrollInfo);
   void RenderOutline(float x, float y, DWORD color, DWORD outlineColor, DWORD outlineWidth, DWORD alignment, float maxWidth);
   void GetTextExtent(float &width, float &height);
+  float GetTextWidth();
   float GetTextWidth(const CStdStringW &text) const;
   bool Update(const CStdString &text, float maxWidth = 0);
   void SetText(const CStdStringW &text, float maxWidth = 0);

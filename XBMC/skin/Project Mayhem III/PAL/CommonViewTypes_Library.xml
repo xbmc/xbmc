@@ -13,7 +13,7 @@
 			<pagecontrol>61</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<include>contentpanelslide</include>
-			<visible>Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)</visible>
+			<visible>Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos) | [Container.Content(TVShows) + Skin.HasSetting(UseTVPosters)]</visible>
 			<itemlayout height="29">
 				<control type="image">
 					<posx>5</posx>
@@ -329,7 +329,7 @@
 	</include>
 	<include name="VideoLibraryWideIcon_Small">
 		<control type="panel" id="57">
-			<visible>Container.Content(Movies) | Container.Content(tvshows) | Container.Content(MusicVideos) | Container.Content(Episodes)</visible>
+			<visible>Container.Content(Movies) | [Container.Content(tvshows) + !Skin.HasSetting(UseTVPosters)] | Container.Content(MusicVideos) | Container.Content(Episodes)</visible>
 			<posx>432</posx>
 			<posy>100</posy>
 			<width>242</width>
@@ -657,7 +657,7 @@
 	</include>
 	<include name="VideoLibrary_BigList">
 		<control type="list" id="59">
-			<visible>!Container.Content(Seasons)</visible>
+			<visible>!Container.Content(Seasons) + ![Container.Content(tvshows) + Skin.HasSetting(UseTVPosters)]</visible>
 			<posx>190</posx>
 			<posy>100</posy>
 			<width>485</width>
@@ -1065,7 +1065,7 @@
 			<pagecontrol>60</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<include>contentpanelslide</include>
-			<visible>Container.Content(Seasons)</visible>
+			<visible>Container.Content(Seasons) | [Container.Content(tvshows) + Skin.HasSetting(UseTVPosters)]</visible>
 			<itemlayout height="29">
 				<control type="image">
 					<posx>5</posx>
@@ -1133,7 +1133,7 @@
 				<height>32</height>
 				<aspectratio>keep</aspectratio>
 				<info>ListItem.Overlay</info>
-			</control>
+		</control>
 		</control>
 	</include>
 	<include name="MusicLibraryMediaInfo">

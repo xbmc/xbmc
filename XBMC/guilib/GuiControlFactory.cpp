@@ -220,7 +220,7 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
   if (flipY && strcmpi(flipY, "true") == 0) image.orientation = 3 - image.orientation;  // either 3 or 2
   image.diffuse = pNode->Attribute("diffuse");
   CStdString fallback = pNode->Attribute("fallback");
-  CStdString file = pNode->FirstChild() ? pNode->FirstChild()->Value() : "";
+  CStdString file = (pNode->FirstChild() && pNode->FirstChild()->ValueStr() != "-") ? pNode->FirstChild()->Value() : "";
   image.diffuse.Replace("/", "\\");
   file.Replace("/", "\\");
   fallback.Replace("/", "\\");
@@ -281,17 +281,16 @@ bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode, const char* s
   return true;
 }
 
-bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, int &condition, bool &allowHiddenFocus)
+bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, int &condition, CGUIInfoBool &allowHiddenFocus)
 {
   const TiXmlElement* node = control->FirstChildElement("visible");
   if (!node) return false;
-  allowHiddenFocus = false;
   vector<CStdString> conditions;
   while (node)
   {
     const char *hidden = node->Attribute("allowhiddenfocus");
-    if (hidden && strcmpi(hidden, "true") == 0)
-      allowHiddenFocus = true;
+    if (hidden)
+      allowHiddenFocus.Parse(hidden);
     // add to our condition string
     if (!node->NoChildren())
       conditions.push_back(node->FirstChild()->Value());
@@ -325,7 +324,7 @@ bool CGUIControlFactory::GetCondition(const TiXmlNode *control, const char *tag,
 
 bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode *control, int &condition)
 {
-  bool allowHiddenFocus;
+  CGUIInfoBool allowHiddenFocus;
   return GetConditionalVisibility(control, condition, allowHiddenFocus);
 }
 
@@ -591,6 +590,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   CImage textureAltFocus, textureAltNoFocus;
   CImage textureRadioFocus, textureRadioNoFocus;
   CImage imageNoFocus, imageFocus;
+  CImage texturePath;
   DWORD dwColorKey = 0;
   FRECT borderSize = { 0, 0, 0, 0};
 
@@ -642,7 +642,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 #endif
 
   int iVisibleCondition = 0;
-  bool allowHiddenFocus = false;
+  CGUIInfoBool allowHiddenFocus(false);
   int enableCondition = 0;
 
   vector<CAnimation> animations;
@@ -963,8 +963,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
   XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
 
-  CGUIInfoLabel texturePath;
-  GetInfoLabel(pControlNode,"imagepath", texturePath);
+  GetTexture(pControlNode, "imagepath", texturePath);
+  if (texturePath.file.IsConstant())
+    GetInfoLabel(pControlNode, "imagepath", texturePath.file);
   XMLUtils::GetDWORD(pControlNode,"timeperimage", timePerImage);
   XMLUtils::GetDWORD(pControlNode,"fadetime", fadeTime);
   XMLUtils::GetDWORD(pControlNode,"pauseatend", timeToPauseAtEnd);
@@ -1002,7 +1003,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     viewType = VIEW_TYPE_LIST;
     viewLabel = g_localizeStrings.Get(535);
   }
-  else if (strType == "wraplist")
+  else
   {
     viewType = VIEW_TYPE_WRAP;
     viewLabel = g_localizeStrings.Get(541);
@@ -1237,7 +1238,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   }
   else if (strType == "image")
   {
-    if (borderTexture.file.IsEmpty())
+    // use a bordered texture if we have <bordersize> or <bordertexture> specified.
+    if (borderTexture.file.IsEmpty() && borderStr.IsEmpty())
       control = new CGUIImage(
         dwParentId, id, posX, posY, width, height, texture, dwColorKey);
     else

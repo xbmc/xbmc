@@ -30,6 +30,8 @@ public:
   CGUIViewStateWindowVideo(const CFileItemList& items) : CGUIViewState(items) {}
 
 protected:
+  virtual void SaveViewToDb(const CStdString &path, int windowID, CViewState *viewState = NULL);
+
   virtual CStdString GetLockType();
   virtual bool UnrollArchives();
   virtual int GetPlaylist();

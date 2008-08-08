@@ -21,7 +21,7 @@
  *
  */
 
-#include "lib/libPython/python/Python.h"
+#include "lib/libPython/Python/Python.h"
 
 #ifdef __cplusplus
 extern "C" {

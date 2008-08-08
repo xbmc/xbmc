@@ -38,6 +38,7 @@ public:
   char GetAscii() { return m_cAscii;}; // FIXME should be replaced completly by GetUnicode() 
   WCHAR GetUnicode() { return GetAscii();}; // FIXME HELPME is there any unicode feature available?
   BYTE GetKey() { return m_VKey;};
+  bool KeyHeld() const { return false; };
 
 private:
   inline bool KeyDown(unsigned char key) const { return (m_keystate[key] & 0x80) ? true : false; };
