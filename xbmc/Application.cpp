@@ -3573,6 +3573,7 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_SETTINGS_MENU);
     m_gWindowManager.Delete(WINDOW_SETTINGS_PROFILES);
     m_gWindowManager.Delete(WINDOW_SETTINGS_MYPICTURES);  // all the settings categories
+    m_gWindowManager.Delete(WINDOW_TEST_PATTERN);
     m_gWindowManager.Delete(WINDOW_SCREEN_CALIBRATION);
     m_gWindowManager.Delete(WINDOW_SYSTEM_INFORMATION);
     m_gWindowManager.Delete(WINDOW_SCREENSAVER);
