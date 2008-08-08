@@ -90,7 +90,7 @@ public:
 class CXRandR
 {
 public:
-  CXRandR(bool query=true);
+  CXRandR(bool query=false);
   std::vector<XOutput> GetModes(void);
   XMode GetCurrentMode(CStdString outputName);
   bool SetMode(XOutput output, XMode mode);
