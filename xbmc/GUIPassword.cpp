@@ -521,17 +521,17 @@ void CGUIPassword::RemoveSourceLocks()
   m_gWindowManager.SendThreadMessage(msg);
 }
 
-bool CGUIPassword::IsDatabasePathUnlocked(CStdString& strPath, VECSOURCES& VECSOURCES)
+bool CGUIPassword::IsDatabasePathUnlocked(CStdString& strPath, VECSOURCES& vecSources)
 {
   if (g_passwordManager.bMasterUser || g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE)
     return true;
 
   // try to find the best matching source
   bool bName = false;
-  int iIndex = CUtil::GetMatchingSource(strPath, VECSOURCES, bName);
+  int iIndex = CUtil::GetMatchingSource(strPath, vecSources, bName);
 
-  if (iIndex > -1)
-    if (VECSOURCES[iIndex].m_iHasLock < 2)
+  if (iIndex > -1 && iIndex < (int)vecSources.size())
+    if (vecSources[iIndex].m_iHasLock < 2)
       return true;
 
   return false;

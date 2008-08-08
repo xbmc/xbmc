@@ -39,7 +39,6 @@ CPlayListPlayer::CPlayListPlayer(void)
   m_PlaylistVideo = new CPlayList;
   m_PlaylistEmpty = new CPlayList;
   m_iCurrentSong = -1;
-  m_bChanged = false;
   m_bPlayedFirstFile = false;
   m_iCurrentPlayList = PLAYLIST_NONE;
   for (int i = 0; i < 2; i++)
@@ -85,6 +84,32 @@ bool CPlayListPlayer::OnMessage(CGUIMessage &message)
   return false;
 }
 
+int CPlayListPlayer::GetNextSong(int offset) const
+{
+  if (m_iCurrentPlayList == PLAYLIST_NONE)
+    return -1;
+
+  const CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+  if (playlist.size() <= 0)
+    return -1;
+
+  int song = m_iCurrentSong;
+
+  // party mode
+  if (g_partyModeManager.IsEnabled() && GetCurrentPlaylist() == PLAYLIST_MUSIC)
+    return song + offset;
+
+  // wrap around in the case of repeating
+  if (RepeatedOne(m_iCurrentPlayList))
+    return song;
+
+  song++;
+  if (song >= playlist.size() && Repeated(m_iCurrentPlayList))
+    song = 0;
+
+  return song;
+}
+
 int CPlayListPlayer::GetNextSong()
 {
   if (m_iCurrentPlayList == PLAYLIST_NONE)
@@ -102,7 +127,7 @@ int CPlayListPlayer::GetNextSong()
   if (RepeatedOne(m_iCurrentPlayList))
   {
     // otherwise immediately abort playback
-    if (playlist[m_iCurrentSong]->GetPropertyBOOL("unplayable"))
+    if (m_iCurrentSong >= 0 && m_iCurrentSong < playlist.size() && playlist[m_iCurrentSong]->GetPropertyBOOL("unplayable"))
     {
       CLog::Log(LOGERROR,"Playlist Player: RepeatOne stuck on unplayable item: %i, path [%s]", m_iCurrentSong, playlist[m_iCurrentSong]->m_strPath.c_str());
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
@@ -205,7 +230,6 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
       break;
   }
 
-  m_bChanged = true;
   int iPreviousSong = m_iCurrentSong;
   m_iCurrentSong = iSong;
   CFileItemPtr item = playlist[m_iCurrentSong];
@@ -290,20 +314,13 @@ int CPlayListPlayer::GetCurrentSong() const
   return m_iCurrentSong;
 }
 
-bool CPlayListPlayer::HasChanged()
-{
-  bool bResult = m_bChanged;
-  m_bChanged = false;
-  return bResult;
-}
-
 /// \brief Returns the active playlist.
 /// \return Active playlist \n
 /// Return values can be: \n
 /// - PLAYLIST_NONE \n No playlist active
 /// - PLAYLIST_MUSIC \n Playlist from music playlist window
 /// - PLAYLIST_VIDEO \n Playlist from music playlist window
-int CPlayListPlayer::GetCurrentPlaylist()
+int CPlayListPlayer::GetCurrentPlaylist() const
 {
   return m_iCurrentPlayList;
 }
@@ -326,7 +343,6 @@ void CPlayListPlayer::SetCurrentPlaylist(int iPlaylist)
 
   m_iCurrentPlayList = iPlaylist;
   m_bPlayedFirstFile = false;
-  m_bChanged = true;
 }
 
 void CPlayListPlayer::ClearPlaylist(int iPlaylist)
@@ -364,6 +380,23 @@ CPlayList& CPlayListPlayer::GetPlaylist(int iPlaylist)
   }
 }
 
+const CPlayList& CPlayListPlayer::GetPlaylist(int iPlaylist) const
+{
+  switch ( iPlaylist )
+  {
+  case PLAYLIST_MUSIC:
+    return *m_PlaylistMusic;
+    break;
+  case PLAYLIST_VIDEO:
+    return *m_PlaylistVideo;
+    break;
+  default:
+    // NOTE: This playlist may not be empty if the caller of the non-const version alters it!
+    return *m_PlaylistEmpty;
+    break;
+  }
+}
+
 /// \brief Removes any item from all playlists located on a removable share
 /// \return Number of items removed from PLAYLIST_MUSIC and PLAYLIST_VIDEO
 int CPlayListPlayer::RemoveDVDItems()
@@ -386,14 +419,14 @@ void CPlayListPlayer::Reset()
 }
 
 /// \brief Whether or not something has been played yet or not from the current playlist.
-bool CPlayListPlayer::HasPlayedFirstFile()
+bool CPlayListPlayer::HasPlayedFirstFile() const
 {
   return m_bPlayedFirstFile;
 }
 
 /// \brief Returns \e true if iPlaylist is repeated
 /// \param iPlaylist Playlist to be asked
-bool CPlayListPlayer::Repeated(int iPlaylist)
+bool CPlayListPlayer::Repeated(int iPlaylist) const
 {
   if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO)
     return (m_repeatState[iPlaylist] == REPEAT_ALL);
@@ -402,7 +435,7 @@ bool CPlayListPlayer::Repeated(int iPlaylist)
 
 /// \brief Returns \e true if iPlaylist repeats one song
 /// \param iPlaylist Playlist to be asked
-bool CPlayListPlayer::RepeatedOne(int iPlaylist)
+bool CPlayListPlayer::RepeatedOne(int iPlaylist) const
 {
   if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO)
     return (m_repeatState[iPlaylist] == REPEAT_ONE);
@@ -425,19 +458,20 @@ void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo)
   {
     // save the order value of the current song so we can use it find its new location later
     int iOrder = -1;
-    if (m_iCurrentSong >= 0)
-      iOrder = GetPlaylist(iPlaylist)[m_iCurrentSong]->m_iprogramCount;
+    CPlayList &playlist = GetPlaylist(iPlaylist);
+    if (m_iCurrentSong >= 0 && m_iCurrentSong < playlist.size())
+      iOrder = playlist[m_iCurrentSong]->m_iprogramCount;
 
     // shuffle or unshuffle as necessary
     if (bYesNo)
-      GetPlaylist(iPlaylist).Shuffle();
+      playlist.Shuffle();
     else
-      GetPlaylist(iPlaylist).UnShuffle();
+      playlist.UnShuffle();
 
     // find the previous order value and fix the current song marker
     if (iOrder >= 0)
     {
-      int iIndex = GetPlaylist(iPlaylist).FindOrder(iOrder);
+      int iIndex = playlist.FindOrder(iOrder);
       if (iIndex >= 0)
         m_iCurrentSong = iIndex;
       // if iIndex < 0, something unexpected happened
@@ -446,7 +480,7 @@ void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo)
   }
 }
 
-bool CPlayListPlayer::IsShuffled(int iPlaylist)
+bool CPlayListPlayer::IsShuffled(int iPlaylist) const
 {
   // even if shuffled, party mode says its not
   if (g_partyModeManager.IsEnabled() && iPlaylist == PLAYLIST_MUSIC)
@@ -471,7 +505,7 @@ void CPlayListPlayer::SetRepeat(int iPlaylist, REPEAT_STATE state)
   m_repeatState[iPlaylist] = state;
 }
 
-REPEAT_STATE CPlayListPlayer::GetRepeat(int iPlaylist)
+REPEAT_STATE CPlayListPlayer::GetRepeat(int iPlaylist) const
 {
   if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO)
     return m_repeatState[iPlaylist];
@@ -554,3 +588,4 @@ void CPlayListPlayer::Clear()
     m_PlaylistEmpty->Clear();
   }
 }
+

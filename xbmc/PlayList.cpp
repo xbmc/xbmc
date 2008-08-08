@@ -67,7 +67,7 @@ void CPlayList::Add(const CFileItemPtr &item, int iPosition, int iOrder)
   else
     m_iPlayableItems++;
 
-  //CLog::Log(LOGDEBUG,"%s item:(%02i/%02i)[%s]", __FUNCTION__, iPosition, item.m_iprogramCount, item.m_strPath.c_str());
+  //CLog::Log(LOGDEBUG,"%s item:(%02i/%02i)[%s]", __FUNCTION__, iPosition, item->m_iprogramCount, item->m_strPath.c_str());
   if (iPosition == iOldSize)
     m_vecItems.push_back(item);
   else
@@ -143,7 +143,7 @@ void CPlayList::DecrementOrder(int iOrder)
     CFileItemPtr item = *it;
     if (item->m_iprogramCount > iOrder)
     {
-      //CLog::Log(LOGDEBUG,"%s fixing item at order %i", __FUNCTION__, item.m_iprogramCount);
+      //CLog::Log(LOGDEBUG,"%s fixing item at order %i", __FUNCTION__, item->m_iprogramCount);
       item->m_iprogramCount--;
     }
     ++it;
@@ -162,7 +162,7 @@ void CPlayList::IncrementOrder(int iPosition, int iOrder)
     CFileItemPtr item = *it;
     if (item->m_iprogramCount >= iOrder)
     {
-      //CLog::Log(LOGDEBUG,"%s fixing item at order %i", __FUNCTION__, item.m_iprogramCount);
+      //CLog::Log(LOGDEBUG,"%s fixing item at order %i", __FUNCTION__, item->m_iprogramCount);
       item->m_iprogramCount++;
     }
     ++it;
@@ -184,11 +184,23 @@ int CPlayList::size() const
 
 const CFileItemPtr CPlayList::operator[] (int iItem) const
 {
+  if (iItem < 0 || iItem >= size())
+  {
+    assert(false);
+    CLog::Log(LOGERROR, "Error trying to retrieve an item that's out of range");
+    return CFileItemPtr();
+  }
   return m_vecItems[iItem];
 }
 
 CFileItemPtr CPlayList::operator[] (int iItem)
 {
+  if (iItem < 0 || iItem >= size())
+  {
+    assert(false);
+    CLog::Log(LOGERROR, "Error trying to retrieve an item that's out of range");
+    return CFileItemPtr();
+  }
   return m_vecItems[iItem];
 }
 
@@ -205,7 +217,7 @@ void CPlayList::Shuffle(int iPosition)
       return;
     if (iPosition < 0)
       iPosition = 0;
-    CLog::Log(LOGDEBUG,"%s :shuffling at pos:%i", __FUNCTION__, iPosition);
+    CLog::Log(LOGDEBUG,"%s shuffling at pos:%i", __FUNCTION__, iPosition);
 
     ivecItems it = m_vecItems.begin() + iPosition;
     random_shuffle(it, m_vecItems.end());
@@ -255,7 +267,7 @@ void CPlayList::Remove(const CStdString& strFileName)
   DecrementOrder(iOrder);
 }
 
-int CPlayList::FindOrder(int iOrder)
+int CPlayList::FindOrder(int iOrder) const
 {
   for (int i = 0; i < size(); i++)
   {
@@ -326,7 +338,7 @@ bool CPlayList::Swap(int position1, int position2)
   if (!IsShuffled())
   {
     // swap the ordinals before swapping the items!
-    //CLog::Log(LOGDEBUG,"PLAYLIST swapping items at orders (%i, %i)",m_vecItems[position1].m_iprogramCount,m_vecItems[position2].m_iprogramCount);
+    //CLog::Log(LOGDEBUG,"PLAYLIST swapping items at orders (%i, %i)",m_vecItems[position1]->m_iprogramCount,m_vecItems[position2]->m_iprogramCount);
     swap(m_vecItems[position1]->m_iprogramCount, m_vecItems[position2]->m_iprogramCount);
   }
 

@@ -181,12 +181,12 @@ public:
   CStdString GetCachedProfileThumb() const;
   CStdString GetCachedSeasonThumb() const;
   CStdString GetCachedActorThumb() const;
-  CStdString GetCachedVideoFanart() const;
-  static CStdString GetCachedVideoFanart(const CStdString &path);
+  CStdString GetCachedFanart() const;
+  static CStdString GetCachedFanart(const CStdString &path);
 
   // Sets the video thumb (cached first, else caches user thumb)
   void SetVideoThumb();
-  void CacheVideoFanart() const;
+  void CacheFanart() const;
 
   // Sets the cached thumb for the item if it exists
   void SetCachedVideoThumb();
@@ -291,6 +291,8 @@ typedef std::map<CStdString, CFileItemPtr >::iterator IMAPFILEITEMS;
 typedef std::pair<CStdString, CFileItemPtr > MAPFILEITEMSPAIR;
 
 typedef bool (*FILEITEMLISTCOMPARISONFUNC) (const CFileItemPtr &pItem1, const CFileItemPtr &pItem2);
+typedef void (*FILEITEMFILLFUNC) (CFileItemPtr &item);
+
 /*!
   \brief Represents a list of files
   \sa CFileItemList, CFileItem
@@ -298,6 +300,8 @@ typedef bool (*FILEITEMLISTCOMPARISONFUNC) (const CFileItemPtr &pItem1, const CF
 class CFileItemList : public CFileItem
 {
 public:
+  enum CACHE_TYPE { CACHE_NEVER = 0, CACHE_IF_SLOW, CACHE_ALWAYS };
+
   CFileItemList();
   CFileItemList(const CStdString& strPath);
   virtual ~CFileItemList();
@@ -340,8 +344,9 @@ public:
   SORT_METHOD GetSortMethod() const { return m_sortMethod; }
   bool Load();
   bool Save();
-  void SetCacheToDisc(bool bYesNo) { m_bCacheToDisc=bYesNo; }
-  bool GetCacheToDisc() const { return m_bCacheToDisc; }
+  void SetCacheToDisc(CACHE_TYPE cacheToDisc) { m_cacheToDisc = cacheToDisc; }
+  bool CacheToDiscAlways() const { return m_cacheToDisc == CACHE_ALWAYS; }
+  bool CacheToDiscIfSlow() const { return m_cacheToDisc == CACHE_IF_SLOW; }
   void RemoveDiscCache() const;
   bool AlwaysCache() const;
 
@@ -367,6 +372,7 @@ public:
   void ClearSortState();
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
+  void FillSortFields(FILEITEMFILLFUNC func);
   CStdString GetDiscCacheFile() const;
 
   VECFILEITEMS m_items;
@@ -374,7 +380,7 @@ private:
   bool m_fastLookup;
   SORT_METHOD m_sortMethod;
   SORT_ORDER m_sortOrder;
-  bool m_bCacheToDisc;
+  CACHE_TYPE m_cacheToDisc;
   bool m_replaceListing;
   CStdString m_content;
 

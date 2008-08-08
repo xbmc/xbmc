@@ -43,7 +43,7 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 	              The list should be freed with urarlib_freelist().
 	libpassword - Password (for encrypted archives)
 \*-------------------------------------------------------------------------*/
-int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword = NULL);
+int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword = NULL, bool stopattwo=false);
 
 bool urarlib_hasmultiple(const char* rarfile, char* libpassword=NULL);
 

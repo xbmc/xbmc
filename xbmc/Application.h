@@ -121,6 +121,7 @@ public:
   bool IsPaused() const;
   bool IsPlayingAudio() const ;
   bool IsPlayingVideo() const ;
+  bool IsStartingPlayback() const { return m_bPlaybackStarting; }
   bool OnKey(CKey& key);
   bool OnAction(const CAction &action);
   void RenderMemoryStatus();
@@ -179,6 +180,8 @@ public:
 
   DWORD m_dwSkinTime;
   bool m_bIsPaused;
+  bool m_bPlaybackStarting;
+  std::queue<CGUIMessage> m_vPlaybackStarting;
 
   CCdgParser* m_pCdgParser;
 

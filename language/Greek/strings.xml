@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 06/27/2008-->
+<!--Date of translation: 07/23/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 13794-->
+<!--Based on english strings version 14279-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -357,9 +357,11 @@
   <string id="431">Δεν υπάρχει ελεύθερη Λανθάνουσα Μνήμη</string>
   <string id="432">Διαγραφή ταινίας από την βιβλιοθήκη</string>
   <string id="433">Να διαγραφεί '%s';</string>
+  <string id="434">
+  </string>
   <string id="435">Κομμάτι</string>
   <string id="436">Έτος</string>
-  <string id="437">Διάρκεια</string>
+  <string id="437">Αφαιρούμενος Δίσκος</string>
   <string id="438">Άνοιγμα Αρχείου</string>
   <string id="439">Λανθάνουσα Μνήμη</string>
   <string id="440">Σκληρός Δίσκος</string>
@@ -1314,6 +1316,7 @@
   <string id="16025">Εισάγετε το Όνομα του Καλλιτέχνη</string>
   <string id="16026">Η αναπαραγωγή της λίστας ακυρώθηκε</string>
   <string id="16027">Πάρα πολλά διαδοχικά αποτυχημένα αντικείμενα</string>
+  <string id="16028">Εισαγωγή τιμής</string>
   <string id="16030">Το PartyMode ως μέθοδος απορρίφθηκε.</string>
   <string id="16031">Δεν υπάρχουν τραγούδια που ταιριάζουν στη βιβλιοθήκη.</string>
   <string id="16032">Δεν είναι δυνατός ο συγχρονισμός με τη βάση δεδομένων.</string>
@@ -1642,13 +1645,17 @@
   <string id="20409">Μεταφορτώνονται πληροφορίες για τη Τηλεοπτική Σειρά </string>
   <string id="20410">Διαφημιστικό</string>
   <string id="20411">Ισοπέδωση</string>
-  <string id="20412">Ομαδοποίηση Τηλεοπτικής Σειράς για μία ενιαία περίοδο</string>
+  <string id="20412">Ισοπέδωση Τηλεοπτικών Σειρών</string>
   <string id="20413">Λήψη FanArt</string>
   <string id="20414">Προβολή FanArt στη Βιβλιοθήκη </string>
   <string id="20415">Έλεγχος για νέα περιεχόμενα</string>
   <string id="20416">Πρώτη ανάρτηση</string>
   <string id="20417">Σεναριογράφος</string>
   <string id="20418">Εκκαθάριση Ονομάτων Αρχείων</string>
+  <string id="20419">Στοίβαγμα διπλών Τηλεοπτικών Σειρών</string>
+  <string id="20420">Ποτέ</string>
+  <string id="20421">εάν είναι Μόνο μία Εποχή</string>
+  <string id="20422">Πάντα</string>
   <string id="21330">Προβολή κρυφών αρχείων και φακέλων</string>
   <string id="21331">Πελάτης TuxBox</string>
   <string id="21332">ΠΡΟΣΟΧΗ: Η συσκευή TuxBox βρίσκεται σε Recording-Mode!</string>
@@ -1814,4 +1821,3 @@
   <string id="22003">Ενεργοποίηση Επεξεργασίας των Καταλόγων διανομής</string>
   <string id="29999">Αυτόματο Φίλτρο Flicker</string>
 </strings>
- 	  	 

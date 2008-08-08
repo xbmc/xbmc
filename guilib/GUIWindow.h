@@ -55,6 +55,7 @@ class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 // forward
 class TiXmlNode;
 class TiXmlElement;
+class TiXmlDocument;
 
 class COrigin
 {
@@ -82,8 +83,8 @@ public:
   virtual ~CGUIWindow(void);
 
   bool Initialize();  // loads the window
-  virtual bool Load(const CStdString& strFileName, bool bContainsPath = false);
-  virtual bool Load(TiXmlElement* pRootElement);
+  bool Load(const CStdString& strFileName, bool bContainsPath = false);
+  
   virtual void SetPosition(float posX, float posY);
   void CenterWindow();
   virtual void Render();
@@ -160,6 +161,9 @@ public:
 #endif
 
 protected:
+  virtual bool LoadXML(const CStdString& strPath, const CStdString &strLowerPath);  ///< Loads from the given file
+  bool Load(TiXmlDocument &xmlDoc);                 ///< Loads from the given XML document
+
   virtual void SetDefaults();
   virtual void OnWindowUnload() {}
   virtual void OnWindowLoaded();
@@ -168,6 +172,7 @@ protected:
   virtual void OnMouseAction();
   virtual bool RenderAnimation(DWORD time);
   virtual void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
+
   bool HasAnimation(ANIMATION_TYPE animType);
   CAnimation *GetAnimation(ANIMATION_TYPE animType, bool checkConditions = true);
 
@@ -176,6 +181,10 @@ protected:
   virtual void RestoreControlStates();
   void AddControlGroup(int id);
   virtual CGUIControl *GetFirstFocusableControl(int id);
+
+  // methods for updating controls and sending messages
+  void OnEditChanged(int id, CStdString &text);
+  bool SendMessage(DWORD message, DWORD id, DWORD param1 = 0, DWORD param2 = 0);
 
   typedef GUIEvent<CGUIMessage&> CLICK_EVENT;
   typedef std::map<int, CLICK_EVENT> MAPCONTROLCLICKEVENTS;
@@ -189,6 +198,7 @@ protected:
 
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   bool LoadReferences();
+  void ChangeButtonToEdit(int id, bool singleLabel = false);
   static CStdString CacheFilename;
 //#endif
 

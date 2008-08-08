@@ -112,6 +112,7 @@ void CButtonTranslator::GetAction(WORD wWindow, const CKey &key, CAction &action
   action.fAmount2 = 0;
   action.fRepeat = key.GetRepeat();
   action.m_dwButtonCode = key.GetButtonCode();
+  action.holdTime = key.GetHeld();
   // get the action amounts of the analog buttons
   if (key.GetButtonCode() == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
   {
@@ -383,6 +384,8 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("decreaserating")) wAction = ACTION_DECREASE_RATING;
   else if (strAction.Equals("nextscene")) wAction = ACTION_NEXT_SCENE;
   else if (strAction.Equals("previousscene")) wAction = ACTION_PREV_SCENE;
+  else if (strAction.Equals("nextletter")) wAction = ACTION_NEXT_LETTER;
+  else if (strAction.Equals("prevletter")) wAction = ACTION_PREV_LETTER;
   else
     CLog::Log(LOGERROR, "Keymapping error: no such action '%s' defined", strAction.c_str());
   return (wAction != ACTION_NONE);

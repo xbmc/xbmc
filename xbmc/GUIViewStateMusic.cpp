@@ -60,6 +60,15 @@ CStdString CGUIViewStateWindowMusic::GetExtensions()
   return g_stSettings.m_musicExtensions;
 }
 
+void CGUIViewStateWindowMusic::SaveViewToDb(const CStdString &path, int windowID, CViewState *viewState)
+{
+  // Note that musicfiles.savefolderviews only seems to apply to files view
+  // (see CGUIWindowSettingsCategory::ClearFolderViews), so that's all we
+  // check for here.
+  if (windowID != WINDOW_MUSIC_FILES || g_guiSettings.GetBool("musicfiles.savefolderviews"))
+    CGUIViewState::SaveViewToDb(path, windowID, viewState);
+}
+
 CGUIViewStateMusicSearch::CGUIViewStateMusicSearch(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
 {
   CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.librarytrackformat");
@@ -96,7 +105,7 @@ CGUIViewStateMusicSearch::CGUIViewStateMusicSearch(const CFileItemList& items) :
 
 void CGUIViewStateMusicSearch::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, g_stSettings.m_viewStateMusicNavSongs);
+  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, &g_stSettings.m_viewStateMusicNavSongs);
 }
 
 CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
@@ -314,12 +323,12 @@ void CGUIViewStateMusicDatabase::SaveViewState()
   switch (NodeType)
   {
     case NODE_TYPE_ARTIST:
-      SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, g_stSettings.m_viewStateMusicNavArtists);
+      SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, &g_stSettings.m_viewStateMusicNavArtists);
       break;
     case NODE_TYPE_ALBUM_COMPILATIONS:
     case NODE_TYPE_ALBUM:
     case NODE_TYPE_YEAR_ALBUM:
-      SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, g_stSettings.m_viewStateMusicNavAlbums);
+      SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, &g_stSettings.m_viewStateMusicNavAlbums);
       break;
     case NODE_TYPE_ALBUM_RECENTLY_ADDED:
     case NODE_TYPE_ALBUM_TOP100:
@@ -329,7 +338,7 @@ void CGUIViewStateMusicDatabase::SaveViewState()
     case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
     case NODE_TYPE_SONG:
     case NODE_TYPE_YEAR_SONG:
-      SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, g_stSettings.m_viewStateMusicNavSongs);
+      SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, &g_stSettings.m_viewStateMusicNavSongs);
       break;
     case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
     case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
@@ -376,7 +385,7 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
 
 void CGUIViewStateMusicSmartPlaylist::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, g_stSettings.m_viewStateMusicNavSongs);
+  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV, &g_stSettings.m_viewStateMusicNavSongs);
 }
 
 CGUIViewStateMusicPlaylist::CGUIViewStateMusicPlaylist(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
@@ -672,7 +681,7 @@ bool CGUIViewStateMusicShoutcast::AutoPlayNextItem()
 
 void CGUIViewStateMusicShoutcast::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES, g_stSettings.m_viewStateMusicShoutcast);
+  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES, &g_stSettings.m_viewStateMusicShoutcast);
 }
 
 CGUIViewStateMusicLastFM::CGUIViewStateMusicLastFM(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
@@ -698,6 +707,6 @@ bool CGUIViewStateMusicLastFM::AutoPlayNextItem()
 
 void CGUIViewStateMusicLastFM::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES, g_stSettings.m_viewStateMusicLastFM);
+  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES, &g_stSettings.m_viewStateMusicLastFM);
 }
 

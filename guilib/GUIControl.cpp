@@ -501,6 +501,7 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
   // this may need to be reviewed at a later date
   if (m_enableCondition)
     m_enabled = g_infoManager.GetBool(m_enableCondition, m_dwParentID, item);
+  m_allowHiddenFocus.Update(m_dwParentID, item);
 }
 
 void CGUIControl::SetInitialVisibility()
@@ -521,9 +522,10 @@ void CGUIControl::SetInitialVisibility()
     if (anim.GetType() == ANIM_TYPE_CONDITIONAL)
       anim.SetInitialCondition(GetParentID());
   }
+  m_allowHiddenFocus.Update(m_dwParentID);
 }
 
-void CGUIControl::SetVisibleCondition(int visible, bool allowHiddenFocus)
+void CGUIControl::SetVisibleCondition(int visible, const CGUIInfoBool &allowHiddenFocus)
 {
   m_visibleCondition = visible;
   m_allowHiddenFocus = allowHiddenFocus;

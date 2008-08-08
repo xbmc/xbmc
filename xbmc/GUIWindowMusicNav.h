@@ -23,6 +23,7 @@
 
 #include "GUIWindowMusicBase.h"
 #include "ThumbLoader.h"
+#include "utils/Stopwatch.h"
 
 class CFileItemList;
 
@@ -50,7 +51,6 @@ protected:
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual void OnFilterItems();
   virtual bool OnClick(int iItem);
-  void OnSearch();
   void FilterItems(CFileItemList &items);
 
   void SetThumb(int iItem, CONTEXT_BUTTON button);
@@ -68,5 +68,10 @@ protected:
   CFileItemList* m_unfilteredItems;
   CStdString m_filter;
 
-  CStdString m_search;  // current search
+  // searching
+  void OnSearchUpdate();
+  void AddSearchFolder();
+  CStdString m_search;      ///< current search string
+  CStopWatch m_searchTimer; ///< Timer to delay a search while more characters are entered
+  bool m_searchWithEdit;    ///< Whether the skin supports the new edit control searching
 };

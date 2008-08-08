@@ -83,6 +83,16 @@ CGUIVisualisationControl::CGUIVisualisationControl(DWORD dwParentID, DWORD dwCon
   ControlType = GUICONTROL_VISUALISATION;
 }
 
+CGUIVisualisationControl::CGUIVisualisationControl(const CGUIVisualisationControl &from)
+: CGUIControl(from)
+{
+  m_pVisualisation = NULL;
+  m_bInitialized = false;
+  m_iNumBuffers = 0;
+  m_currentVis = "";
+  ControlType = GUICONTROL_VISUALISATION;
+}
+
 CGUIVisualisationControl::~CGUIVisualisationControl(void)
 {
 }

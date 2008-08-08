@@ -1597,7 +1597,7 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
       if (iIndex > -1)
       {
         // set current directory to matching share
-        if (bIsSourceName)
+        if (bIsSourceName && iIndex < (int)shares.size())
           m_Directory[0]->m_strPath = shares[iIndex].strPath;
         else
           m_Directory[0]->m_strPath = strDestination;

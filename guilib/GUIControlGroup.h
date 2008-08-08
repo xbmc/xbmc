@@ -36,7 +36,10 @@ class CGUIControlGroup : public CGUIControl
 {
 public:
   CGUIControlGroup(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
+  CGUIControlGroup(const CGUIControlGroup &from);
   virtual ~CGUIControlGroup(void);
+  virtual CGUIControlGroup *Clone() const { return new CGUIControlGroup(*this); };
+
   virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);

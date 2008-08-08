@@ -29,9 +29,6 @@
 #include "GUISettings.h"
 #include "Settings.h"
 #include "FileItem.h"
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-#include "GUIEditControl.h"
-#endif
 
 #define CONTROL_HEADING         2
 #define CONTROL_RULE_LIST       10
@@ -102,7 +99,7 @@ bool CGUIDialogSmartPlaylistEditor::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_RULE_REMOVE)
         OnRuleRemove(GetSelectedItem());
       else if (iControl == CONTROL_NAME)
-        OnName();
+        OnEditChanged(iControl, m_playlist.m_playlistName);
       else if (iControl == CONTROL_OK)
         OnOK();
       else if (iControl == CONTROL_CANCEL)
@@ -158,13 +155,6 @@ void CGUIDialogSmartPlaylistEditor::OnRuleList(int item)
     m_playlist.m_playlistRules[item] = rule;
 
   UpdateButtons();
-}
-
-void CGUIDialogSmartPlaylistEditor::OnName()
-{
-  const CGUIControl *control = GetControl(CONTROL_NAME);
-  if (control)
-    m_playlist.m_playlistName = control->GetDescription();
 }
 
 void CGUIDialogSmartPlaylistEditor::OnOK()
@@ -273,12 +263,12 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
   // name
   if (m_mode == "partyvideo" || m_mode == "partymusic")
   {
-    SET_CONTROL_LABEL(CONTROL_NAME, g_localizeStrings.Get(16035))
+    SET_CONTROL_LABEL2(CONTROL_NAME, g_localizeStrings.Get(16035))
     CONTROL_DISABLE(CONTROL_NAME)
   }
   else
   {
-  SET_CONTROL_LABEL(CONTROL_NAME, m_playlist.m_playlistName)
+  SET_CONTROL_LABEL2(CONTROL_NAME, m_playlist.m_playlistName)
   }
 
   int currentItem = GetSelectedItem();
@@ -329,25 +319,8 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
 void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
 {
   CGUIDialog::OnWindowLoaded();
-
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  CGUIControl *name = (CGUIControl *)GetControl(CONTROL_NAME);
-  if (name && name->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
-  { // change it to an edit control
-    CGUIEditControl *edit = new CGUIEditControl(*(const CGUIButtonControl *)name);
-    if (edit)
-    {
-      Insert(edit, name);
-      Remove(name);
-      name->FreeResources();
-      delete name;
-    }
-  }
-#endif
-  {
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_NAME, 16012);
-    OnMessage(msg);
-  }
+  ChangeButtonToEdit(CONTROL_NAME, true); // true for single label
+  SendMessage(GUI_MSG_SET_TYPE, CONTROL_NAME, 0, 16012);
   // setup the match spinner
   {
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_MATCH, 0);
@@ -359,10 +332,7 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
     msg.SetLabel(21426);
     OnMessage(msg);
   }
-  {
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_MATCH, m_playlist.m_matchAllRules ? 0 : 1);
-    OnMessage(msg);
-  }
+  SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_MATCH, m_playlist.m_matchAllRules ? 0 : 1);
   // and now the limit spinner
   {
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIMIT, 0);
@@ -377,10 +347,7 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
     msg.SetLabel(label);
     OnMessage(msg);
   }
-  {
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_LIMIT, m_playlist.m_limit);
-    OnMessage(msg);
-  }
+  SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_LIMIT, m_playlist.m_limit);
 
   std::vector<PLAYLIST_TYPE> allowedTypes;
   if (m_mode.Equals("partymusic"))
@@ -423,8 +390,7 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
   if (!allowed && allowedTypes.size())
     type = allowedTypes[0];
 
-  CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_TYPE, type);
-  OnMessage(msg);
+  SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_TYPE, type);
   m_playlist.SetType(ConvertType(type));
 }
 

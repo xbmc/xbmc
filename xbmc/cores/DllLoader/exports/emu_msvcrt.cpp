@@ -48,6 +48,13 @@ using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
 
+#if defined(_MSC_VER) && _MSC_VER < 1500
+extern "C" {
+  __int64 __cdecl _ftelli64(FILE *);
+  int __cdecl _fseeki64(FILE *, __int64, int);
+}
+#endif
+
 struct SDirData
 {
   DIRECTORY::IDirectory* Directory;
@@ -859,7 +866,7 @@ extern "C"
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
-      return fseek(stream, offset, origin);
+      return fseeko64(stream, offset, origin);
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
@@ -898,18 +905,23 @@ extern "C"
     return EOF;
   }
 
-  long dll_ftell(FILE * stream)
+  long dll_ftell(FILE *stream)
+  {
+    return (long)dll_ftell64(stream);
+  }
+
+  off64_t dll_ftell64(FILE *stream)
   {
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
     if (pFile != NULL)
     {
-       return (long)pFile->GetPosition();
+       return (off64_t)pFile->GetPosition();
     }
     else if (!IS_STD_STREAM(stream))
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
-      return ftell(stream);
+      return ftello64(stream);
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
@@ -1104,8 +1116,22 @@ extern "C"
     va_end(va);
     return res;
   }
-
+  
   int dll_fgetpos(FILE* stream, fpos_t* pos)
+  {
+    fpos64_t tmpPos;
+    int ret;
+
+    ret = dll_fgetpos64(stream, &tmpPos);
+#if !defined(_LINUX) || defined(__APPLE__)
+    *pos = (fpos_t)tmpPos;
+#else
+    pos->__pos = (off_t)tmpPos.__pos;
+#endif
+    return ret;
+  }
+
+  int dll_fgetpos64(FILE *stream, fpos64_t *pos)
   {
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
     if (pFile != NULL)
@@ -1262,6 +1288,17 @@ extern "C"
 
   int dll_stati64(const char *path, struct _stati64 *buffer)
   {
+    struct __stat64 a;
+    if(dll_stat64(path, &a) == 0)
+    {
+      CUtil::Stat64ToStatI64(buffer, &a);
+      return 0;
+    }
+    return -1;
+  }
+
+  int dll_stat64(const char *path, struct __stat64 *buffer)
+  {
     //stating a root, for example C:\\, failes on the xbox
     if (emu_is_root_drive(path))
     {
@@ -1297,14 +1334,7 @@ extern "C"
       return 0;
     }
 
-    struct __stat64 tStat;
-    if (CFile::Stat(path, &tStat) == 0)
-    {
-      CUtil::Stat64ToStatI64(buffer, &tStat);
-      return 0;
-    }
-    // errno is set by file.Stat(...)
-    return -1;
+    return CFile::Stat(path, buffer);
   }
 
 
@@ -1568,5 +1598,12 @@ extern "C"
   {
     static char*** t = (char***)&dll__environ;
     return (char***)&t;
+  }
+
+  int dll_setvbuf(FILE *stream, char *buf, int type, size_t size)
+  {
+    CLog::Log(LOGWARNING, "%s - May not be implemented correctly",
+              __FUNCTION__);
+    return 0;
   }
 }

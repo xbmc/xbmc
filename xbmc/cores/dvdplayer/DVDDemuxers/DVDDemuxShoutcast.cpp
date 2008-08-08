@@ -177,7 +177,7 @@ bool CDVDDemuxShoutcast::SeekTime(int time, bool backwords, double* startpts)
   return false;
 }
 
-int CDVDDemuxShoutcast::GetStreamLenght()
+int CDVDDemuxShoutcast::GetStreamLength()
 {
   return 0;
 }

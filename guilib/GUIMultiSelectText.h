@@ -37,6 +37,7 @@ public:
                     const CImage& textureFocus, const CImage& textureNoFocus, const CLabelInfo &label, const CGUIInfoLabel &content);
 
   virtual ~CGUIMultiSelectTextControl(void);
+  virtual CGUIMultiSelectTextControl *Clone() const { return new CGUIMultiSelectTextControl(*this); };
 
   virtual void DoRender(DWORD currentTime);
   virtual void Render();

@@ -38,7 +38,7 @@ CDatabase::CDatabase(void)
 
 CDatabase::~CDatabase(void)
 {
-
+  Close();
 }
 
 void CDatabase::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName)

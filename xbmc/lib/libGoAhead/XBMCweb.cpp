@@ -658,7 +658,6 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
           // attempt to enque the selected directory or file
           CFileItemPtr itm = webDirItems->Get(selectionNumber);
           AddItemToPlayList(itm);
-          g_playlistPlayer.HasChanged();
         }
         else if (strAction == XBMC_CAT_UNQUE)
         {

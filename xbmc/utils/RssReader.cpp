@@ -44,8 +44,6 @@ CRssReader::CRssReader() : CThread()
   m_pObserver = NULL;
   m_spacesBetweenFeeds = 0;
   m_bIsRunning = false;
-  m_iconv = (iconv_t) -1;
-  m_shouldFlip = false;
 }
 
 CRssReader::~CRssReader()
@@ -53,9 +51,6 @@ CRssReader::~CRssReader()
   StopThread();
   for (unsigned int i = 0; i < m_vecTimeStamps.size(); i++)
     delete m_vecTimeStamps[i];
-
-  if (m_iconv != (iconv_t) -1)
-    iconv_close(m_iconv);
 }
 
 void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, const vector<int> &times, int spacesBetweenFeeds)
@@ -67,6 +62,9 @@ void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, co
   m_strColors.resize(aUrls.size());
   // set update times
   m_vecUpdateTimes = times;
+  m_rtlText = g_guiSettings.GetBool("lookandfeel.rssfeedsrtl");
+  m_requestRefresh = false;
+
   // update each feed on creation
   for (unsigned int i=0;i<m_vecUpdateTimes.size();++i )
   {
@@ -75,6 +73,11 @@ void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, co
     GetLocalTime(time);
     m_vecTimeStamps.push_back(time);
   }
+}
+
+void CRssReader::requestRefresh()
+{
+  m_requestRefresh = true;
 }
 
 void CRssReader::AddToQueue(int iAdd)
@@ -191,7 +194,10 @@ void CRssReader::AddTag(const CStdString aString)
 
 void CRssReader::AddString(CStdStringW aString, int aColour, int iFeed)
 {
-  m_strFeed[iFeed] += aString;
+  if (m_rtlText)
+    m_strFeed[iFeed] = aString + m_strFeed[iFeed];
+  else
+    m_strFeed[iFeed] += aString;
 
   int nStringLength = aString.GetLength();
 
@@ -200,7 +206,10 @@ void CRssReader::AddString(CStdStringW aString, int aColour, int iFeed)
     aString[i] = (CHAR) (48 + aColour);
   }
 
-  m_strColors[iFeed] += aString;
+  if (m_rtlText)
+    m_strColors[iFeed] = aString + m_strColors[iFeed];
+  else
+    m_strColors[iFeed] += aString;
 }
 
 void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
@@ -242,8 +251,7 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
           // </title>
           if (htmlText.Equals("div") || htmlText.Equals("span"))
           {
-	          m_shouldFlip = true;
-	          htmlText = childNode->FirstChild()->FirstChild()->Value();
+            htmlText = childNode->FirstChild()->FirstChild()->Value();
           }
 
           CStdString text;
@@ -279,57 +287,17 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
 void CRssReader::fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDest)
 {
 	CStdString flippedStrSource;
+  CStdString strSourceUtf8;
 
-	if (m_shouldFlip)
-	{
-		g_charsetConverter.logicalToVisualBiDi(strSource, flippedStrSource, m_encoding, FRIBIDI_TYPE_RTL);
-	}
-	else
-	{
-		flippedStrSource = strSource;
-	}
-	
-	if (m_iconv != (iconv_t) - 1)
-    {
-		const char* src = flippedStrSource.c_str();
-		size_t inBytes = flippedStrSource.length() + 1;
-
-		wchar_t outBuf[1024];
-		char* dst = (char*) &outBuf[0];
-		size_t outBytes=1024;
-		size_t originalOutBytes = outBytes;
-
-		iconv(m_iconv, NULL, &inBytes, NULL, &outBytes);
-
-		if (iconv(m_iconv, &src, &inBytes, &dst, &outBytes) == (size_t) -1)
-		{
-			// For some reason it failed (maybe wrong charset?). Nothing to do but
-			// return the original..
-			strDest = flippedStrSource;
-			return;
-		}
-
-		outBuf[(originalOutBytes - outBytes) / 2] = '\0';
-		strDest = outBuf;
-	}
-	else
-	{
-		strDest = flippedStrSource;
-		return;
-	}
+  g_charsetConverter.stringCharsetToUtf8(m_encoding, strSource, strSourceUtf8);
+  g_charsetConverter.logicalToVisualBiDi(strSourceUtf8, flippedStrSource, FRIBIDI_CHAR_SET_UTF8, FRIBIDI_TYPE_RTL);
+  g_charsetConverter.utf8ToW(flippedStrSource, strDest, false);
 }
 
 bool CRssReader::Parse(LPSTR szBuffer, int iFeed)
 {
   m_xml.Clear();
   m_xml.Parse((LPCSTR)szBuffer, 0, TIXML_ENCODING_LEGACY);
-
-  if (m_iconv != (iconv_t) -1)
-  {
-	  iconv_close(m_iconv);
-      m_iconv = (iconv_t) -1;
-	  m_shouldFlip = false;
-  }
 
   m_encoding = "UTF-8";
   if (m_xml.RootElement())
@@ -342,12 +310,6 @@ bool CRssReader::Parse(LPSTR szBuffer, int iFeed)
   }
 
   CLog::Log(LOGDEBUG, "RSS feed encoding: %s", m_encoding.c_str());
-  m_iconv = iconv_open("UTF-16LE", m_encoding.c_str());
-
-  if (g_charsetConverter.isBidiCharset(m_encoding))
-  {
-	  m_shouldFlip = true;
-  }
 
   return Parse(iFeed);
 }
@@ -379,11 +341,12 @@ bool CRssReader::Parse(int iFeed)
     if (titleNode && !titleNode->NoChildren())
     {
       CStdString strChannel = titleNode->FirstChild()->Value();
-	  CStdStringW strChannelUnicode;
-	  fromRSSToUTF16(strChannel, strChannelUnicode);
-	  AddString(strChannelUnicode, RSS_COLOR_CHANNEL, iFeed);
+      CStdStringW strChannelUnicode;
+      fromRSSToUTF16(strChannel, strChannelUnicode);
+      AddString(strChannelUnicode, RSS_COLOR_CHANNEL, iFeed);
 
-	  AddString(": ", RSS_COLOR_CHANNEL, iFeed);
+      AddString(":", RSS_COLOR_CHANNEL, iFeed);
+      AddString(" ", RSS_COLOR_CHANNEL, iFeed);
     }
 
     GetNewsItems(channelXmlNode,iFeed);
@@ -392,10 +355,15 @@ bool CRssReader::Parse(int iFeed)
   GetNewsItems(rssXmlNode,iFeed);
 
   // avoid trailing ' - '
-  if( m_strFeed[iFeed].size() > 3 && m_strFeed[iFeed].Mid(m_strFeed[iFeed].size()-3) == L" - ")
+  if (m_strFeed[iFeed].size() > 3 && m_strFeed[iFeed].Mid(m_strFeed[iFeed].size()-3) == L" - " && !m_rtlText)
   {
     m_strFeed[iFeed].erase(m_strFeed[iFeed].length()-3);
     m_strColors[iFeed].erase(m_strColors[iFeed].length()-3);
+  }
+  else if (m_strFeed[iFeed].size() > 3 && m_strFeed[iFeed].Mid(m_strFeed[iFeed].size()-3) == L" - " && m_rtlText)
+  {
+    m_strFeed[iFeed].erase(0, 3);
+    m_strColors[iFeed].erase(0, 3);
   }
   return true;
 }
@@ -423,15 +391,18 @@ void CRssReader::CheckForUpdates()
 {
   SYSTEMTIME time;
   GetLocalTime(&time);
+
   for (unsigned int i = 0;i < m_vecUpdateTimes.size(); ++i )
   {
-    if (((time.wDay * 24 * 60) + (time.wHour * 60) + time.wMinute) - ((m_vecTimeStamps[i]->wDay * 24 * 60) + (m_vecTimeStamps[i]->wHour * 60) + m_vecTimeStamps[i]->wMinute) > m_vecUpdateTimes[i] )
+    if (m_requestRefresh || ((time.wDay * 24 * 60) + (time.wHour * 60) + time.wMinute) - ((m_vecTimeStamps[i]->wDay * 24 * 60) + (m_vecTimeStamps[i]->wHour * 60) + m_vecTimeStamps[i]->wMinute) > m_vecUpdateTimes[i] )
     {
       CLog::Log(LOGDEBUG, "Updating RSS");
       GetLocalTime(m_vecTimeStamps[i]);
       AddToQueue(i);
     }
   }
+
+  m_requestRefresh = false;
 }
 
 CRssManager g_rssManager;

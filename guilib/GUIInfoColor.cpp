@@ -28,6 +28,36 @@
 
 using namespace std;
 
+CGUIInfoBool::CGUIInfoBool(bool value)
+{
+  m_info = 0;
+  m_value = value;
+}
+
+void CGUIInfoBool::Parse(const CStdString &info)
+{
+  m_info = g_infoManager.TranslateString(info);
+  if (m_info == SYSTEM_ALWAYS_TRUE)
+  {
+    m_value = true;
+    m_info = 0;
+  }
+  else if (m_info == SYSTEM_ALWAYS_FALSE)
+  {
+    m_value = false;
+    m_info = 0;
+  }
+  else
+    m_info = g_infoManager.GetBool(m_info);
+}
+
+void CGUIInfoBool::Update(DWORD parentID, const CGUIListItem *item)
+{
+  if (m_info)
+    m_value = g_infoManager.GetBool(m_info, parentID, item);
+}
+
+
 CGUIInfoColor::CGUIInfoColor(DWORD color)
 {
   m_color = color;

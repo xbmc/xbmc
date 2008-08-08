@@ -40,6 +40,7 @@
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
+#include "MediaManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -325,9 +326,9 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       m_movieItem->SetProperty("watchedepisodes", m_movieItem->GetVideoInfoTag()->m_playCount);
       m_movieItem->SetProperty("unwatchedepisodes", m_movieItem->GetVideoInfoTag()->m_iEpisode - m_movieItem->GetVideoInfoTag()->m_playCount);
       m_movieItem->GetVideoInfoTag()->m_playCount = (m_movieItem->GetVideoInfoTag()->m_iEpisode == m_movieItem->GetVideoInfoTag()->m_playCount) ? 1 : 0;
-      m_movieItem->CacheVideoFanart();
-      if (CFile::Exists(m_movieItem->GetCachedVideoFanart()))
-        m_movieItem->SetProperty("fanart_image",m_movieItem->GetCachedVideoFanart());
+      m_movieItem->CacheFanart();
+      if (CFile::Exists(m_movieItem->GetCachedFanart()))
+        m_movieItem->SetProperty("fanart_image",m_movieItem->GetCachedFanart());
     }
     else if (m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
     {
@@ -723,7 +724,9 @@ void CGUIWindowVideoInfo::OnGetThumb()
   }
 
   CStdString result;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_videoSources, g_localizeStrings.Get(20019), result))
+  VECSOURCES sources(g_settings.m_videoSources);
+  g_mediaManager.GetLocalDrives(sources);  
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result))
     return;   // user cancelled
 
   if (result == "thumb://Current")
@@ -775,6 +778,9 @@ void CGUIWindowVideoInfo::OnGetFanart()
 {
   CFileItemList items;
 
+  // ensure the fanart is unpacked
+  m_movieItem->GetVideoInfoTag()->m_fanart.Unpack();
+
   // Grab the thumbnails from the web
   CStdString strPath;
   CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"fanartthumbs",strPath);
@@ -806,13 +812,15 @@ void CGUIWindowVideoInfo::OnGetFanart()
   items.Add(itemNone);
 
   CStdString result;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_videoSources, g_localizeStrings.Get(20019), result))
+  VECSOURCES sources(g_settings.m_videoSources);
+  g_mediaManager.GetLocalDrives(sources);  
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result))
     return;   // user cancelled
 
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
   CFileItem item(*m_movieItem->GetVideoInfoTag());
-  CStdString cachedThumb(item.GetCachedVideoFanart());
+  CStdString cachedThumb(item.GetCachedFanart());
 
   if (result.Mid(0,15) == "thumb://FANART_")
   {

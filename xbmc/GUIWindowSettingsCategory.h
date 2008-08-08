@@ -69,9 +69,11 @@ protected:
   void CreateSettings();
   void UpdateSettings();
   void UpdateRealTimeSettings();
+  void CheckForUpdates();
   void FreeSettingsControls();
   virtual void FreeControls();
   virtual void OnClick(CBaseSettingControl *pSettingControl);
+  virtual void OnSettingChanged(CBaseSettingControl *pSettingControl);
   void AddSetting(CSetting *pSetting, float width, int &iControlID);
   CBaseSettingControl* GetSetting(const CStdString &strSetting);
 
@@ -87,6 +89,7 @@ protected:
   CGUIRadioButtonControl *m_pOriginalRadioButton;
   CGUIButtonControl *m_pOriginalCategoryButton;
   CGUIButtonControl *m_pOriginalButton;
+  CGUIEditControl *m_pOriginalEdit;
   CGUIImage *m_pOriginalImage;
   // Network settings
   int m_iNetworkAssignment;
