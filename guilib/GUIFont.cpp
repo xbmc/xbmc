@@ -24,17 +24,9 @@
 #include "GraphicContext.h"
 
 #include "utils/SingleLock.h"
-#include <math.h>
+#include "Util.h"
 
-
-#ifndef _LINUX
-namespace MathUtils {
-  int round_int (double x);
-}
 #define ROUND(x) (float)(MathUtils::round_int(x))
-#else
-#define ROUND roundf
-#endif
 
 float CScrollInfo::GetPixelsPerFrame()
 {

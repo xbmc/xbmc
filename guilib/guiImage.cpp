@@ -31,20 +31,11 @@
 
 using namespace std;
 
-#ifdef _LINUX
-#define ROUND_TO_PIXEL(x) x
-#else
-namespace MathUtils {
-  inline int round_int (double x);
-}
-
 #if defined(HAS_SDL_OPENGL)
 #define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
 #else
 #define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x)) - 0.5f
 #endif
-
-#endif // _LINUX
 
 #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
 
