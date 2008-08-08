@@ -802,6 +802,12 @@ bool CFileItem::IsVideoDb() const
   return false;
 }
 
+bool CFileItem::IsTVDb() const
+{
+  if (HasEPGInfoTag()) return true; /// is this enough?
+  return false;
+}
+
 bool CFileItem::IsVirtualDirectoryRoot() const
 {
   return (m_bIsFolder && m_strPath.IsEmpty());

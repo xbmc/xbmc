@@ -102,8 +102,10 @@ class CEPGInfoTag : public CVideoInfoTag
 {
 public:
   CEPGInfoTag() { Reset(); };
+  CEPGInfoTag(long uniqueBroadcastID);
   
   void Reset();
+  const long GetID() const { return m_uniqueBroadcastID; };
 
   CStdString    m_strSource;
   CStdString    m_strBouquet;
@@ -112,7 +114,6 @@ public:
 
   CStdString    m_seriesID;
   CStdString    m_episodeID;
-  long          m_uniqueBroadcastID;
 
   CDateTime     m_startTime;
   CDateTime     m_endTime;
@@ -130,6 +131,10 @@ public:
   CommFlagStatus    m_commFlagStatus;
   TranscodingStatus m_transCodeStatus;
   AvailableStatus   m_availableStatus;
+
+private:
+  long m_uniqueBroadcastID;
+
 };
 
 typedef std::vector<CEPGInfoTag> VECPROGRAMMES;

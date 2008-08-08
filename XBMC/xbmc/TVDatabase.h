@@ -26,6 +26,8 @@
 #include "utils/EPGInfoTag.h"
 #include "FileItem.h"
 
+class CGUIDialogProgress;
+
 typedef std::vector<VECFILEITEMS> EPGGrid;
 typedef std::vector<VECFILEITEMS>::const_iterator iEPGRow;
 
@@ -45,7 +47,11 @@ public:
                const CDateTime &progStartTime, const CDateTime &progEndTime, const CStdString &category);
 
   void GetChannels(bool freeToAirOnly, VECFILEITEMS &channels);
-  bool GetProgrammesByChannel(const CStdString &channel, VECFILEITEMS &shows, const CDateTime &start, const CDateTime &end);
+
+  bool GetProgrammesByChannelName(const CStdString &channel, VECFILEITEMS &shows, const CDateTime &start, const CDateTime &end);
+  bool GetProgrammesByEpisodeID(const CStdString& episodeID, CFileItemList* items, bool noHistory /* == true */);
+  void GetProgrammesByName(const CStdString& progName, CFileItemList& items, bool noHistory /* == true */);
+  bool GetProgrammesBySubtitle(const CStdString& subtitle, CFileItemList* items, bool noHistory /* == true */);
 
   // per-channel video settings
   bool GetChannelSettings(const CStdString &channel, CVideoSettings &settings);
@@ -60,6 +66,7 @@ public:
 
 protected:
   CEPGInfoTag GetUniqueBroadcast(std::auto_ptr<dbiplus::Dataset> &pDS);
+  void FillProperties(CFileItem* programme);
 
   long AddSource(const CStdString &source);
   long AddBouquet(const long &sourceId, const CStdString &bouquet);
@@ -72,6 +79,8 @@ protected:
   long GetChannelId(const CStdString &channel);
   long GetCategoryId(const CStdString &category);
   long GetProgrammeId(const CStdString &programme);
+
+  CStdString m_progInfoSelectStatement;
 
 private:
   virtual bool CreateTables();

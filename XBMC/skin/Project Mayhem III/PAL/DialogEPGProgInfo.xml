@@ -1,0 +1,385 @@
+<window id="600">
+	<defaultcontrol always="true">6</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<coordinates>
+    <system>1</system>
+    <posx>185</posx>
+    <posy>118</posy>
+  </coordinates>
+	<controls>
+		<control type="image">
+			<posx>-185</posx>
+			<posy>-118</posy>
+			<width>720</width>
+			<height>576</height>
+			<texture>black.png</texture>
+			<animation effect="fade" time="120">WindowOpen</animation>
+			<animation effect="fade" time="75">WindowClose</animation>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>350</width>
+			<height>340</height>
+			<texture border="20,10,10,30">dialog-panel2.png</texture>
+		</control>
+		<control type="group">
+			<control type="label" id="27">
+				<description>ProgInfo ChannelName value</description>
+				<posx>22</posx>
+				<posy>39</posy>
+				<width>140</width>
+				<label>-</label>
+				<font>font11</font>
+			</control>
+			<control type="label" id="23">
+				<description>ProgInfo StartTime value</description>
+				<posx>22</posx>
+				<posy>15</posy>
+				<width>42</width>
+				<label>-</label>
+				<font>special13</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label" id="20">
+				<description>ProgInfo Title value</description>
+				<posx>330</posx>
+				<posy>15</posy>
+				<width>279</width>
+				<align>right</align>
+				<label>-</label>
+				<font>special13</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label" id="26">
+				<description>ProgInfo Genre value</description>
+				<posx>330</posx>
+				<posy>39</posy>
+				<width>180</width>
+				<label>-</label>
+				<align>right</align>
+				<font>special12</font>
+				<scroll>true</scroll>
+			</control>
+		</control>
+		<control type="image">
+			<posx>22</posx>
+			<posy>87</posy>
+			<width>315</width>
+			<height>10</height>
+			<texture>separator.png</texture>
+		</control>
+		<control type="label" id="21">
+				<description>ProgInfo Subtitle value</description>
+				<posx>22</posx>
+				<posy>97</posy>
+				<width>315</width>
+				<label>-</label>
+				<align>left</align>
+				<font>font10</font>
+				<scroll>true</scroll>
+				<visible>!Control.IsVisible(50)</visible>
+			</control>
+		<control type="list" id="50">
+			<description>Matching List Container when Scrollbar is Hidden</description>
+			<posx>22</posx>
+			<posy>97</posy>
+			<width>299</width>
+			<height>176</height>
+			<onleft>9000</onleft>
+			<onright>61</onright>
+			<onup>50</onup>
+			<ondown>50</ondown>
+			<orientation>vertical</orientation>
+			<pagecontrol>61</pagecontrol>
+			<visible>!Control.IsVisible(61) + !Control.IsVisible(22)</visible>
+			<scrolltime>200</scrolltime>
+			<itemlayout width="250" height="29">
+				<control type="image">
+					<posx>0</posx>
+					<posy>7</posy>
+					<width>16</width>
+					<height>16</height>
+					<texture>DefaultShortCut.png</texture>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>3</posy>
+					<width>170</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Property(LocaleDateTime)</info>
+				</control>
+				<control type="label">
+					<posx>200</posx>
+					<posy>3</posy>
+					<width>295</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Property(Channel)</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="29" width="250">
+				<control type="image">
+					<width>299</width>
+					<height>29</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<visible>Control.HasFocus(50)</visible>
+					<texture>list-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>7</posy>
+					<width>16</width>
+					<height>16</height>
+					<texture>DefaultShortCut.png</texture>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>3</posy>
+					<width>320</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Property(LocaleDateTime)</info>
+				</control>
+				<control type="label">
+					<posx>200</posx>
+					<posy>3</posy>
+					<width>320</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Property(Channel)</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="list" id="50">
+			<description>Matching List Container When Scrollbar is visible</description>
+			<posx>22</posx>
+			<posy>97</posy>
+			<width>283</width>
+			<height>176</height>
+			<onleft>9000</onleft>
+			<onright>61</onright>
+			<onup>50</onup>
+			<ondown>50</ondown>
+			<orientation>vertical</orientation>
+			<pagecontrol>61</pagecontrol>
+			<visible>Control.IsVisible(61) + !Control.IsVisible(22)</visible>
+			<scrolltime>200</scrolltime>
+			<itemlayout width="250" height="29">
+				<control type="image">
+					<posx>0</posx>
+					<posy>7</posy>
+					<width>16</width>
+					<height>16</height>
+					<texture>DefaultShortCut.png</texture>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>3</posy>
+					<width>170</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Property(LocaleDateTime)</info>
+				</control>
+				<control type="label">
+					<posx>200</posx>
+					<posy>3</posy>
+					<width>180</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Property(Channel)</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="29" width="250">
+				<control type="image">
+					<width>283</width>
+					<height>29</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<visible>Control.HasFocus(50)</visible>
+					<texture>list-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>7</posy>
+					<width>16</width>
+					<height>16</height>
+					<texture>DefaultShortCut.png</texture>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>3</posy>
+					<width>120</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Property(LocaleDateTime)</info>
+				</control>
+				<control type="label">
+					<posx>200</posx>
+					<posy>3</posy>
+					<width>120</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Property(Channel)</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="textbox" id="22">
+			<description>Textbox when scrollbar is visible & subtitle is hidden</description>
+			<posx>22</posx>
+			<posy>97</posy>
+			<width>299</width>
+			<height>181</height>
+			<onleft>5</onleft>
+			<onright>50</onright>
+			<onup>5</onup>
+			<ondown>5</ondown>
+			<pagecontrol>61</pagecontrol>
+			<visible>Control.IsVisible(61) + !Control.IsVisible(50) + !Control.IsVisible(21)</visible>
+			<include>autoscrollmedium</include>
+		</control>
+		<control type="textbox" id="22">
+			<description>Textbox when scrollbar is NOT visible & subtitle is hidden</description>
+			<posx>22</posx>
+			<posy>97</posy>
+			<width>315</width>
+			<height>181</height>
+			<onleft>5</onleft>
+			<onright>50</onright>
+			<onup>5</onup>
+			<ondown>5</ondown>
+			<pagecontrol>61</pagecontrol>
+			<visible>!Control.IsVisible(61) + !Control.IsVisible(50) + !Control.IsVisible(21)</visible>
+			<include>autoscrollmedium</include>
+		</control>
+		<control type="textbox" id="22">
+			<description>Textbox when scrollbar is visible & subtitle is visible</description>
+			<posx>22</posx>
+			<posy>113</posy>
+			<width>299</width>
+			<height>165</height>
+			<onleft>5</onleft>
+			<onright>50</onright>
+			<onup>5</onup>
+			<ondown>5</ondown>
+			<pagecontrol>61</pagecontrol>
+			<visible>Control.IsVisible(61) + !Control.IsVisible(50) + Control.IsVisible(21)</visible>
+			<include>autoscrollmedium</include>
+		</control>
+		<control type="textbox" id="22">
+			<description>Textbox when scrollbar is NOT visible & subtitle is visible</description>
+			<posx>22</posx>
+			<posy>113</posy>
+			<width>315</width>
+			<height>165</height>
+			<onleft>5</onleft>
+			<onright>50</onright>
+			<onup>5</onup>
+			<ondown>5</ondown>
+			<pagecontrol>61</pagecontrol>
+			<visible>!Control.IsVisible(61) + !Control.IsVisible(50) + Control.IsVisible(21)</visible>
+			<include>autoscrollmedium</include>
+		</control>
+		<control type="button">
+			<posx>320</posx>
+			<posy>97</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<onclick>PageUp(61)</onclick>
+			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
+			<visible>Control.IsVisible(61)</visible>
+		</control>
+		<control type="button">
+			<posx>320</posx>
+			<posy>253</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<onclick>PageDown(61)</onclick>
+			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
+			<visible>Control.IsVisible(61)</visible>
+		</control>
+		<control type="scrollbar" id="61">
+			<posx>320</posx>
+			<posy>100</posy>
+			<include>scrollbar_width</include>
+			<height>176</height>
+			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>-</textureslidernib>
+			<textureslidernibfocus>-</textureslidernibfocus>
+			<onleft>50</onleft>
+			<onright>9000</onright>
+			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
+		</control>
+		<control type="group" id="9000">
+			<posy>-22</posy>
+			<control type="button" id ="5">
+				<description>Plot/LikeList</description>
+				<posx>22</posx>
+				<posy>300</posy>
+				<width>105</width>
+				<height>32</height>
+				<label>206</label>
+				<font>font10</font>
+				<align>center</align>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>7</onleft>
+				<onright>6</onright>
+				<onup>50</onup>
+				<ondown>5</ondown>
+			</control>
+			<control type="button" id ="6">
+				<description>Record</description>
+				<posx>127</posx>
+				<posy>300</posy>
+				<width>105</width>
+				<height>32</height>
+				<label>264</label>
+				<font>font10</font>
+				<align>center</align>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>5</onleft>
+				<onright>7</onright>
+				<onup>50</onup>
+				<ondown>6</ondown>
+			</control>
+		</control>
+	</controls>
+</window>

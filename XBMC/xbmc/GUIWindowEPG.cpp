@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIWindowEPG.h"
+#include "GUIWindowEPGProgInfo.h"
 #include "PVRManager.h"
 #include "GUISettings.h"
 #include "GUIWindowManager.h"
@@ -71,15 +72,47 @@ bool CGUIWindowEPG::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
+      CGUIWindow::OnMessage(message);
       m_database.Close();
+      return true;
     }
     break;
-
+  case GUI_MSG_LABEL_RESET:
+    {
+      /*m_bDisplayEmptyDatabaseMessage = !m_bDisplayEmptyDatabaseMessage;*/ // flip the visibility
+    }
+    break;
   case GUI_MSG_WINDOW_INIT:
     {
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       m_database.Open(); /// only if need new data
       return CGUIWindow::OnMessage(message);
+    }
+    break;
+  case GUI_MSG_CLICKED:
+    {
+      int iControl = message.GetSenderId();
+
+      if (iControl == m_guideGrid->GetID())  // grid control
+      {
+        // get selected item
+        CFileItemPtr item = m_guideGrid->GetSelectedItemPtr();
+        if (!item) return false;
+
+        int iAction = message.GetParam1();
+
+        // iItem is checked for validity inside these routines
+        if (iAction == ACTION_QUEUE_ITEM || iAction == ACTION_MOUSE_MIDDLE_CLICK)
+        {
+          /*OnQueueItem(iItem);*/
+          return true;
+        }
+        else if (iAction == ACTION_SHOW_INFO || iAction == ACTION_SELECT_ITEM)
+        {
+          OnInfo(item.get());
+          return true;
+        }
+      }
     }
     break;
   }
@@ -149,7 +182,7 @@ void CGUIWindowEPG::GetGridData()
     for (int i = 0; i < m_numChannels; i++)
     {
       VECFILEITEMS programmes;
-      if(!m_database.GetProgrammesByChannel(m_channels[i]->GetLabel(), programmes, m_gridStart, m_gridEnd))
+      if(!m_database.GetProgrammesByChannelName(m_channels[i]->GetLabel(), programmes, m_gridStart, m_gridEnd))
         continue;
       
       items += (int)programmes.size();
@@ -192,6 +225,28 @@ void CGUIWindowEPG::UpdateGridItems()
   m_guideGrid->UpdateItems(m_gridData, m_gridStart, m_gridEnd);
 }
 
+void CGUIWindowEPG::OnInfo(CFileItem* pItem)
+{
+  if ( !pItem ) return ;
+  /// ShowInfo can kill the item as this window can be closed while we do it, can it?
+  /// so take a copy of the item now
+  CFileItem item(*pItem);
+  if (!item.IsTVDb())
+    return;
+  
+  ShowEPGInfo(&item);
+}
+
+void CGUIWindowEPG::ShowEPGInfo(CFileItem *item)
+{
+  CGUIWindowEPGProgInfo* pDlgInfo = (CGUIWindowEPGProgInfo*)m_gWindowManager.GetWindow(WINDOW_EPG_INFO);
+  if (!pDlgInfo)
+    return;
+
+  pDlgInfo->SetProgramme(item);
+  pDlgInfo->DoModal();
+
+}
 void CGUIWindowEPG::DisplayEmptyDatabaseMessage(bool bDisplay)
 {
   m_bDisplayEmptyDatabaseMessage = bDisplay;
@@ -202,10 +257,12 @@ void CGUIWindowEPG::Render()
   if (m_bDisplayEmptyDatabaseMessage)
   {
     SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(775))
+    SET_CONTROL_HIDDEN(CONTROL_EPGGRID)
   }
   else
   {
     SET_CONTROL_LABEL(CONTROL_LABELEMPTY,"")
+    SET_CONTROL_VISIBLE(CONTROL_EPGGRID)
   }
 
   CGUIWindow::Render();

@@ -21,6 +21,12 @@
 
 #include "EPGInfoTag.h"
 
+CEPGInfoTag::CEPGInfoTag(long uniqueBroadcastID)
+{
+  Reset();
+  m_uniqueBroadcastID = uniqueBroadcastID;
+}
+
 void CEPGInfoTag::Reset()
 {
   m_strSource = "";

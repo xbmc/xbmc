@@ -134,6 +134,7 @@
 #include "GUIWindowPictures.h"
 #include "GUIWindowScripts.h"
 #include "GUIWindowEPG.h"
+#include "GUIWindowEPGProgInfo.h"
 #include "GUIWindowWeather.h"
 #include "GUIWindowGameSaves.h"
 #include "GUIWindowLoginScreen.h"
@@ -1055,7 +1056,8 @@ HRESULT CApplication::Create(HWND hWnd)
   CStdString strHomePath = "Q:";
   CLog::Log(LOGINFO, "Checking skinpath existance, and existence of keymap.xml:%s...", (strHomePath + "\\skin").c_str());
 
-  keymapPath = "Q:\\system\\Keymap.xml";
+  CStdString systemKeymapPath = "Q:\\system\\Keymap.xml";
+  CStdString userKeymapPath = g_settings.GetUserDataItem("Keymap.xml");
 #ifdef _XBOX
   if (access(strHomePath + "\\skin", 0) || (access(systemKeymapPath.c_str(), 0) && access(userKeymapPath.c_str(), 0)))
   {
@@ -1327,6 +1329,8 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
   m_gWindowManager.Add(new CGUIWindowMusicNav);               // window id = 502
   m_gWindowManager.Add(new CGUIWindowMusicPlaylistEditor);    // window id = 503
+
+  m_gWindowManager.Add(new CGUIWindowEPGProgInfo);            // window id = 600
 
   m_gWindowManager.Add(new CGUIDialogSelect);             // window id = 2000
   m_gWindowManager.Add(new CGUIWindowMusicInfo);                // window id = 2001
@@ -1731,7 +1735,7 @@ void CApplication::StopPVRManager()
   if (CPVRManager::IsInstantiated())
   {
     CLog::Log(LOGNOTICE, "stopping pvr manager service");
-    /*CPVRManager::GetInstance()->*/
+    //CPVRManager::GetInstance()->
   }
 }
 
@@ -3319,8 +3323,10 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_VIDEO_PLAYLIST);
     m_gWindowManager.Delete(WINDOW_VIDEO_NAV);
     m_gWindowManager.Delete(WINDOW_FILES);
+    m_gWindowManager.Delete(WINDOW_EPG);
     m_gWindowManager.Delete(WINDOW_MUSIC_INFO);
     m_gWindowManager.Delete(WINDOW_VIDEO_INFO);
+    m_gWindowManager.Delete(WINDOW_EPG_INFO);
     m_gWindowManager.Delete(WINDOW_DIALOG_YES_NO);
     m_gWindowManager.Delete(WINDOW_DIALOG_PROGRESS);
     m_gWindowManager.Delete(WINDOW_DIALOG_NUMERIC);

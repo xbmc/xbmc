@@ -2180,6 +2180,9 @@
 					RelativePath="..\..\xbmc\GUIWindowEPG.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIWindowEPGProgInfo.cpp">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIWindowFileManager.cpp">
 				</File>
 				<File
@@ -3098,6 +3101,9 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\GUIWindowEPG.h">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\GUIWindowEPGProgInfo.h">
 			</File>
 			<File
 				RelativePath="..\..\xbmc\GUIWindowFileManager.h">

@@ -41,7 +41,10 @@ public:
   virtual void OnUp();
   virtual void OnLeft();
   virtual void OnRight();
-
+  virtual bool OnMouseOver(const CPoint &point);
+  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseDoubleClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetFocus(bool bOnOff);
 
@@ -49,8 +52,9 @@ public:
   void UpdateChannels(VECFILEITEMS &channels);
 
   CStdString GetDescription() const;
-  const int GetNumChannels()   { return m_channels; }
-  virtual int GetSelectedItem() const;
+  const int GetNumChannels()   { return m_channels; };
+  virtual int GetSelectedItem() const { return 0; };
+  CFileItemPtr GetSelectedItemPtr() const;
   const int GetSelectedChannel() { return m_channelCursor + m_channelOffset; }
 
   void DoRender(DWORD currentTime);
@@ -59,6 +63,7 @@ public:
   void LoadContent(TiXmlElement *content);
   
   virtual bool IsContainer() const { return true; };
+  CGUIListItemPtr GetListItem(int offset) const;
 
 protected:
   bool OnClick(DWORD actionID);

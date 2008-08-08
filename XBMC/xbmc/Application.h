@@ -83,11 +83,11 @@ public:
   void StopUPnPClient();
   void StartUPnPServer();
   void StopUPnPServer();
+  void StartPVRManager();
+  void StopPVRManager();
   void StartEventServer();
   void StopEventServer();
   void RefreshEventServer();
-  void StartPVRManager();
-  void StopPVRManager();
   void StartLEDControl(bool switchoff = false);
   void DimLCDOnPlayback(bool dim);
   void PrintXBEToLCD(const char* xbePath);
@@ -171,6 +171,7 @@ public:
   CWebServer* m_pWebServer;
   CXBFileZilla* m_pFileZilla;
   IPlayer* m_pPlayer;
+
 
   bool m_bSpinDown;
   bool m_bNetworkSpinDown;

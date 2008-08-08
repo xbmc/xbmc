@@ -55,7 +55,7 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(DWORD dwParentID, DWORD dwControlId, 
   m_lastChannel = NULL;
   m_layout = NULL;
   m_focusedLayout = NULL;
-  m_channelWrapAround = false;
+  m_channelWrapAround = true; /// get from settings?
 }
 
 CGUIEPGGridContainer::~CGUIEPGGridContainer(void)
@@ -67,6 +67,8 @@ void CGUIEPGGridContainer::RenderItem(float posX, float posY, CGUIListItem *item
 {
   if (!m_focusedLayout || !m_layout) return;
 
+  if (!item)
+    return; /// why are there duff pointers here? should be Unknowns
   // set the origin
   g_graphicsContext.SetOrigin(posX, posY);
 
@@ -428,6 +430,15 @@ void CGUIEPGGridContainer::UpdateItems(EPGGrid &gridData, const CDateTime &start
   gridDuration = m_gridEnd - m_gridStart;
 
   m_blocks = (gridDuration.GetDays()*24*60 + gridDuration.GetHours()*60 + gridDuration.GetMinutes()) / MINSPERBLOCK;
+  /* if less than one page, can't display grid */
+  if (m_blocks < m_blocksPerPage)
+  {
+    CLog::Log(LOGERROR, "(%s) - Less than one page of data available.", __FUNCTION__);
+    CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), GetParentID()); // message the window
+    SendWindowMessage(msg);
+    return;
+  }
+
   blockDuration.SetDateTimeSpan(0, 0, MINSPERBLOCK, 0);
 
   DWORD tick(timeGetTime());
@@ -586,7 +597,7 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
   default:
     if (action.wID)
     { 
-      return true /*OnClick(action.wID)*/;
+      return OnClick(action.wID);
     }
   }
   return false;
@@ -806,18 +817,27 @@ void CGUIEPGGridContainer::SetBlock(int block)
   m_item = GetItem(m_channelCursor);
 }
 
+CGUIListItemLayout *CGUIEPGGridContainer::GetFocusedLayout() const
+{
+  CGUIListItemPtr item = GetListItem(0);
+  if (item.get()) return item->GetFocusedLayout();
+  return NULL;
+}
+
 bool CGUIEPGGridContainer::SelectItemFromPoint(const CPoint &point)
 {
+  /* point has already had origin set to m_posX, m_posY */
+
   if (!m_focusedLayout || !m_layout)
     return false;
 
-  if (point.x < m_gridPosX || point.x > m_gridPosX + m_blockSize * m_blocksPerPage)
-    return false;
-  if (point.y < m_rulerHeight + m_posY || point.y > m_posY + m_height)
-    return false;
+  int channel = (int) (point.y / m_channelHeight);
+  int block   = (int) (point.x / m_blockSize);
 
-  int channel = (int) ((point.y - (m_posY + m_rulerHeight)) / m_blockSize);
-  int block   = (int) ((point.x - m_gridPosX) / m_blockSize);
+  if (channel > m_channelsPerPage) channel = m_channelsPerPage - 1;
+  if (channel < 0) channel = 0;
+  if (block > m_blocksPerPage) block = m_blocksPerPage - 1;
+  if (block < 0) block = 0;
 
   SetChannel(channel);
   SetBlock(block);
@@ -825,9 +845,84 @@ bool CGUIEPGGridContainer::SelectItemFromPoint(const CPoint &point)
   return true;
 }
 
-int CGUIEPGGridContainer::GetSelectedItem() const
+bool CGUIEPGGridContainer::OnMouseOver(const CPoint &point)
 {
-  return 0; ///
+  // select the item under the pointer
+  SelectItemFromPoint(point - CPoint(m_gridPosX, m_posY + m_rulerHeight));
+  return CGUIControl::OnMouseOver(point);
+}
+
+bool CGUIEPGGridContainer::OnMouseClick(DWORD dwButton, const CPoint &point)
+{
+  if (SelectItemFromPoint(point - CPoint(m_gridPosX, m_posY + m_rulerHeight)))
+  { // send click message to window
+    OnClick(ACTION_MOUSE_CLICK + dwButton);
+    return true;
+  }
+  return false;
+}
+
+bool CGUIEPGGridContainer::OnMouseDoubleClick(DWORD dwButton, const CPoint &point)
+{
+  if (SelectItemFromPoint(point - CPoint(m_gridPosX, m_posY + m_rulerHeight)))
+  { // send double click message to window
+    OnClick(ACTION_MOUSE_DOUBLE_CLICK + dwButton);
+    return true;
+  }
+  return false;
+}
+
+bool CGUIEPGGridContainer::OnClick(DWORD actionID)
+{
+  int subItem = 0;
+  if (actionID == ACTION_SELECT_ITEM || actionID == ACTION_MOUSE_LEFT_CLICK)
+  {
+    //if (m_staticContent)
+    //{ // "select" action
+    //  int selected = GetSelectedItem();
+    //  if (selected >= 0 && selected < (int)m_items.size())
+    //  {
+    //    CFileItemPtr item = boost::static_pointer_cast<CFileItem>(m_items[selected]);
+    //    // multiple action strings are concat'd together, separated with " , "
+    //    vector<CStdString> actions;
+    //    StringUtils::SplitString(item->m_strPath, " , ", actions);
+    //    for (unsigned int i = 0; i < actions.size(); i++)
+    //    {
+    //      CStdString action = actions[i];
+    //      action.Replace(",,", ",");
+    //      CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
+    //      message.SetStringParam(action);
+    //      g_graphicsContext.SendMessage(message);
+    //    }
+    //  }
+    //  return true;
+    //}
+    // grab the currently focused subitem (if applicable)
+    CGUIListItemLayout *focusedLayout = GetFocusedLayout();
+    if (focusedLayout)
+      subItem = focusedLayout->GetFocusedItem();
+  }
+  // Don't know what to do, so send to our parent window.
+  CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), actionID, subItem);
+  return SendWindowMessage(msg);
+}
+
+bool CGUIEPGGridContainer::OnMouseWheel(char wheel, const CPoint &point)
+{
+  ///doesn't work while an item is selected?
+  HorizontalScroll(-wheel);
+  return true;
+}
+CFileItemPtr CGUIEPGGridContainer::GetSelectedItemPtr() const
+{
+  return m_gridIndex[m_channelCursor + m_channelOffset][m_blockCursor + m_blockOffset]; ///
+}
+
+CGUIListItemPtr CGUIEPGGridContainer::GetListItem(int offset) const
+{
+  if (!m_gridItems.size())
+    return CGUIListItemPtr();
+  return m_item;
 }
 
 CGUIListItemPtr CGUIEPGGridContainer::GetClosestItem(const int &channel)
@@ -864,6 +959,8 @@ CGUIListItemPtr CGUIEPGGridContainer::GetClosestItem(const int &channel)
 
 int CGUIEPGGridContainer::GetItemSize(CGUIListItemPtr item)
 {
+  if (!item)
+    return 0; /// stops it crashing
   return (int)(item->GetLayout()->Size(HORIZONTAL) / m_blockSize);
 }
 
@@ -984,7 +1081,7 @@ void CGUIEPGGridContainer::ValidateOffset()
   if (m_channelOffset > m_channels - m_channelsPerPage)
   {
     m_channelOffset = m_channels - m_channelsPerPage;
-    m_vertScrollOffset = m_channelOffset * m_layout->Size(VERTICAL);
+    m_vertScrollOffset = m_channelOffset * m_channelHeight;
   }
   if (m_channelOffset < 0)
   {

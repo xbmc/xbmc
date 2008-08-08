@@ -43,12 +43,15 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void Render();
 
+  void OnInfo(CFileItem* pItem);
+
 protected:
   virtual void OnInitWindow();
   void GetGridData();
   void UpdateGridItems();
   void Refresh();
 
+  void ShowEPGInfo(CFileItem *item);
   void DisplayEmptyDatabaseMessage(bool bDisplay);
   bool m_bDisplayEmptyDatabaseMessage;
 

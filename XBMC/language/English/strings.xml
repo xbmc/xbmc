@@ -139,7 +139,7 @@
   <string id="201"></string>
   <string id="202">Tagline</string>
   <string id="203">Plot outline</string>
-  <string id="204"></string>
+  <string id="204">Similar Items</string>
   <string id="205">Votes:</string>
   <string id="206">Cast</string>
   <string id="207">Plot</string>
@@ -633,7 +633,7 @@
   <string id="772">Audio Hardware</string>
   <string id="773">Seeking</string>
   <string id="774">Slideshow Folder</string>
-  <string id="775">No TV-Guide Data Available</string>
+  <string id="775">No EPG data available - check Settings</string>
 
   <string id="790">Remote Events</string>
   <string id="791">Enable Remote Events</string>
@@ -821,6 +821,10 @@
   <string id="10522">Now Playing - Videos</string>
   <string id="10523">Album Info</string>
   <string id="10524">Movie Info</string>
+	
+	<string id="10600">EPG ProgInfo</string>
+	<string id="10610">Programme Details</string>
+	<string id="10611">Channel</string>
 
   <string id="12000">Select dialog</string>
   <string id="12001">Music/info</string>
@@ -1386,6 +1390,7 @@
   <string id="16204">Failed to move atleast one file</string>  
   <string id="16205">Delete failed</string>
   <string id="16206">Failed to delete atleast one file</string>
+	
   <string id="17000">TV</string>
   <string id="17010">Enable TV service</string>
   <string id="17011">TV-Guide update frequency</string>

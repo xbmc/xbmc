@@ -571,7 +571,7 @@ void CTVDatabase::GetChannels(bool freeToAirOnly, VECFILEITEMS &channels)
   }
 }
 
-bool CTVDatabase::GetProgrammesByChannel(const CStdString &channel, VECFILEITEMS &programmes, const CDateTime &start, const CDateTime &end)
+bool CTVDatabase::GetProgrammesByChannelName(const CStdString &channel, VECFILEITEMS &programmes, const CDateTime &start, const CDateTime &end)
 {
   try
   {
@@ -594,7 +594,7 @@ bool CTVDatabase::GetProgrammesByChannel(const CStdString &channel, VECFILEITEMS
     gridEnd = end;
 
     CStdString SQL=FormatSQL("SELECT Bouquets.Name, Channels.Name, Channels.Number, Categories.Name, Programmes.Title, "
-      "GuideData.Subtitle, GuideData.Description, GuideData.StartTime, GuideData.EndTime FROM GuideData "
+      "GuideData.Subtitle, GuideData.Description, GuideData.StartTime, GuideData.EndTime, GuideData.EpisodeID, GuideData.SeriesID FROM GuideData "
       "JOIN Bouquets ON Bouquets.idBouquet=GuideData.idBouquet "
       "JOIN Programmes ON Programmes.idProgramme=GuideData.idProgramme "
       "JOIN Channels ON Channels.idChannel=GuideData.idChannel "
@@ -621,6 +621,7 @@ bool CTVDatabase::GetProgrammesByChannel(const CStdString &channel, VECFILEITEMS
     {
       CEPGInfoTag programme = GetUniqueBroadcast(m_pDS);
       CFileItemPtr pItem(new CFileItem(programme));
+      FillProperties(pItem.get());
       programmes.push_back(pItem);
       m_pDS->next();
     }
@@ -634,7 +635,7 @@ bool CTVDatabase::GetProgrammesByChannel(const CStdString &channel, VECFILEITEMS
     {
       CLog::Log(LOGDEBUG, "TEMP: Missed a program");
       CStdString SQL=FormatSQL("SELECT bouquets.Name, channels.Name, channels.Number, categories.Name, programmes.Title,"
-        "guidedata.Subtitle, guidedata.Description, guidedata.StartTime, guidedata.EndTime FROM guidedata "
+        "guidedata.Subtitle, guidedata.Description, guidedata.StartTime, guidedata.EndTime, GuideData.EpisodeID, GuideData.SeriesID FROM guidedata "
         "JOIN bouquets ON bouquets.idBouquet=guidedata.idBouquet "
         "JOIN programmes ON programmes.idProgramme=guidedata.idProgramme "
         "JOIN channels ON channels.idChannel=guidedata.idChannel "
@@ -646,6 +647,7 @@ bool CTVDatabase::GetProgrammesByChannel(const CStdString &channel, VECFILEITEMS
       {
         CEPGInfoTag programme = GetUniqueBroadcast(m_pDS);
         CFileItemPtr pItem(new CFileItem(programme));
+        FillProperties(pItem.get());
         programmes.insert(programmes.begin(), pItem); // insert at start of channel data
       }
     }
@@ -661,6 +663,145 @@ bool CTVDatabase::GetProgrammesByChannel(const CStdString &channel, VECFILEITEMS
     CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, channel.c_str());
   }
   return false;
+}
+
+bool CTVDatabase::GetProgrammesByEpisodeID(const CStdString& episodeID, CFileItemList* items, bool noHistory)
+{
+  /* Finds unique broadcasts with matching EpisodeIDs. Default behaviour is to return all programs with end times later than now */
+  /* setting noHistory to false returns all available matched */
+  if (episodeID.empty())
+    return false;
+  try
+  {
+    DWORD time = timeGetTime();
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CDateTime from;
+
+    if (noHistory)
+    {
+      CDateTimeSpan hour;
+      from = CDateTime::GetCurrentDateTime();
+      hour.SetDateTimeSpan(0, 1, 0, 0); /// BST hack
+      from -= hour;
+    }
+   
+
+    CStdString SQL= FormatSQL("SELECT Bouquets.Name, Channels.Name, Channels.Number, Categories.Name, Programmes.Title, "
+                              "GuideData.Subtitle, GuideData.Description, GuideData.StartTime, GuideData.EndTime, GuideData.EpisodeID, GuideData.SeriesID FROM GuideData "
+                              "JOIN Bouquets ON Bouquets.idBouquet=GuideData.idBouquet "
+                              "JOIN Programmes ON Programmes.idProgramme=GuideData.idProgramme "
+                              "JOIN Channels ON Channels.idChannel=GuideData.idChannel "
+                              "JOIN Categories ON Categories.idCategory=GuideData.idCategory "
+                              "WHERE GuideData.EpisodeID = '%s' AND GuideData.EndTime > '%s'"
+                              "ORDER BY GuideData.StartTime;", episodeID.c_str(), from.GetAsDBDateTime().c_str()); 
+
+    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, SQL.c_str());
+    //run query
+    m_pDS->query( SQL.c_str() );
+
+    int rowsFound = m_pDS->num_rows();
+    if (rowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    items->Reserve(rowsFound + items->Size()); // because items could already be populated
+    while (!m_pDS->eof())
+    {
+      CEPGInfoTag progInfo = GetUniqueBroadcast(m_pDS);
+      CFileItemPtr item(new CFileItem(progInfo));
+      FillProperties(item.get());
+      items->Add(item);
+      m_pDS->next();
+    }
+
+    CLog::Log(LOGDEBUG,"Time for SQL query = %ldms", timeGetTime() - time);
+
+    m_pDS->close();
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    return false;
+  }
+
+}
+
+bool CTVDatabase::GetProgrammesBySubtitle(const CStdString& subtitle, CFileItemList* items, bool noHistory)
+{
+  /* Finds unique broadcasts with matching SubTitles. Default behaviour is to return all programs with end times later than now */
+  /* setting noHistory to false returns all available matched */
+  if (subtitle.empty())
+    return false;
+  try
+  {
+    DWORD time = timeGetTime();
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CDateTime from;
+
+    if (noHistory)
+    {
+      CDateTimeSpan hour;
+      from = CDateTime::GetCurrentDateTime();
+      hour.SetDateTimeSpan(0, 1, 0, 0); /// BST hack
+      from -= hour;
+    }
+
+
+    CStdString SQL= FormatSQL("SELECT Bouquets.Name, Channels.Name, Channels.Number, Categories.Name, Programmes.Title, "
+      "GuideData.Subtitle, GuideData.Description, GuideData.StartTime, GuideData.EndTime, GuideData.EpisodeID, GuideData.SeriesID FROM GuideData "
+      "JOIN Bouquets ON Bouquets.idBouquet=GuideData.idBouquet "
+      "JOIN Programmes ON Programmes.idProgramme=GuideData.idProgramme "
+      "JOIN Channels ON Channels.idChannel=GuideData.idChannel "
+      "JOIN Categories ON Categories.idCategory=GuideData.idCategory "
+      "WHERE GuideData.SubTitle = '%s' AND GuideData.EndTime > '%s' AND GuideData.EpisodeID = ''"
+      "ORDER BY GuideData.StartTime;", subtitle.c_str(), from.GetAsDBDateTime().c_str()); 
+
+    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, SQL.c_str());
+    //run query
+    m_pDS->query( SQL.c_str() );
+
+    int rowsFound = m_pDS->num_rows();
+    if (rowsFound == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    items->Reserve(rowsFound + items->Size()); // because items could already be populated
+    while (!m_pDS->eof())
+    {
+      CEPGInfoTag progInfo = GetUniqueBroadcast(m_pDS);
+      CFileItemPtr item(new CFileItem(progInfo));
+      FillProperties(item.get());
+      items->Add(item);
+      m_pDS->next();
+    }
+
+    CLog::Log(LOGDEBUG,"Time for SQL query = %ldms", timeGetTime() - time);
+
+    m_pDS->close();
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    return false;
+  }
+
+}
+
+void CTVDatabase::GetProgrammesByName(const CStdString& progName, CFileItemList& items, bool noHistory)
+{
+
 }
 
 long CTVDatabase::GetSourceId(const CStdString& source)
@@ -787,7 +928,7 @@ CEPGInfoTag CTVDatabase::GetUniqueBroadcast(auto_ptr<Dataset> &pDS)
 {
   CEPGInfoTag details;
 
-  // GuideData columns:
+  // Dataset columns:
   // 0:  Bouquets.Name
   // 1:  Channels.Name
   // 2:  Channels.Number
@@ -797,6 +938,9 @@ CEPGInfoTag CTVDatabase::GetUniqueBroadcast(auto_ptr<Dataset> &pDS)
   // 6:  GuideData.Description
   // 7:  GuideData.StartTime
   // 8:  GuideData.EndTime
+  // 9:  GuideData.EpisodeID
+  //10:  GuideData.SeriesID
+
 
   details.m_strBouquet = m_pDS->fv(0).get_asString();
   details.m_strChannel = m_pDS->fv(1).get_asString();
@@ -811,6 +955,39 @@ CEPGInfoTag CTVDatabase::GetUniqueBroadcast(auto_ptr<Dataset> &pDS)
   {
     details.m_duration = details.m_endTime - details.m_startTime;
   }
+  details.m_episodeID = m_pDS->fv(9).get_asString();
+  details.m_seriesID  = m_pDS->fv(10).get_asString();
 
   return details;
+}
+
+void CTVDatabase::FillProperties(CFileItem* programme)
+{
+  /* Fills the properties map with properties needed for skins */
+  programme->SetProperty("uniqueID", programme->GetEPGInfoTag()->GetID());
+  programme->SetProperty("Bouquet", programme->GetEPGInfoTag()->m_strBouquet);
+  programme->SetProperty("Channel", programme->GetEPGInfoTag()->m_strChannel);
+  programme->SetProperty("Genre", programme->GetEPGInfoTag()->m_strGenre);
+  programme->SetProperty("Title", programme->GetEPGInfoTag()->m_strTitle);
+  programme->SetProperty("PlotOutline", programme->GetEPGInfoTag()->m_strPlotOutline);
+  programme->SetProperty("Plot", programme->GetEPGInfoTag()->m_strPlot);
+  programme->SetProperty("ChannelNum", programme->GetEPGInfoTag()->m_channelNum);
+  /// temp: get a short datetime
+  CDateTime startTime = programme->GetEPGInfoTag()->m_startTime;
+  SYSTEMTIME dateTime;
+  startTime.GetAsSystemTime(dateTime);
+  CStdString day;
+  switch (dateTime.wDayOfWeek)
+  {
+  case 1 : day = g_localizeStrings.Get(11); break;
+  case 2 : day = g_localizeStrings.Get(12); break;
+  case 3 : day = g_localizeStrings.Get(13); break;
+  case 4 : day = g_localizeStrings.Get(14); break;
+  case 5 : day = g_localizeStrings.Get(15); break;
+  case 6 : day = g_localizeStrings.Get(16); break;
+  default: day = g_localizeStrings.Get(17); break;
+  }
+  CStdString shortTime;
+  shortTime = startTime.GetAsLocalizedTime("HH:mm", false);
+  programme->SetProperty("LocaleDateTime", shortTime + " " + day);
 }
