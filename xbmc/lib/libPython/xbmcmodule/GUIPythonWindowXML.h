@@ -22,15 +22,13 @@
  */
 
 #include "GUIPythonWindow.h"
-#include "GUIViewControl.h"
-
-class CFileItemList;
+#include "GUIMediaWindow.h"
 
 int Py_XBMC_Event_OnClick(void* arg);
 int Py_XBMC_Event_OnFocus(void* arg);
 int Py_XBMC_Event_OnInit(void* arg);
 
-class CGUIPythonWindowXML : public CGUIWindow
+class CGUIPythonWindowXML : public CGUIMediaWindow
 {
 public:
   CGUIPythonWindowXML(DWORD dwId, CStdString strXML, CStdString strFallBackPath);
@@ -42,7 +40,6 @@ public:
   virtual void      Render();
   void              WaitForActionEvent(DWORD timeout);
   void              PulseActionEvent();
-  void              UpdateFileList();
   void              AddItem(CFileItemPtr fileItem,int itemPosition);
   void              RemoveItem(int itemPosition);
   void              ClearList();
@@ -50,30 +47,20 @@ public:
   int               GetListSize();
   int               GetCurrentListPosition();
   void              SetCurrentListPosition(int item);
-  virtual bool      IsMediaWindow() const { return true; };
-  virtual bool      HasListItems() const { return true; };
-  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
-  const CFileItemList& CurrentDirectory() const;
-  int               GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
+  void              SetCallbackWindow(PyObject *object);
+  virtual bool      OnClick(int iItem);
 
 protected:
+  virtual void     GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool     LoadXML(const CStdString &strPath, const CStdString &strPathLower);
   int              LoadScriptStrings();
   void             ClearScriptStrings();
-  CGUIControl      *GetFirstFocusableControl(int id);
-  virtual void     UpdateButtons();
-  virtual void     FormatAndSort(CFileItemList &items);
   virtual void     Update();
-  virtual void     OnWindowLoaded();
-  virtual void     OnInitWindow();
-  virtual void     FormatItemLabels();
-  virtual void     SortItems(CFileItemList &items);
+  void             SetupShares();
   PyObject*        pCallbackWindow;
   HANDLE           m_actionEvent;
   bool             m_bRunning;
   CStdString       m_scriptPath;
   CStdString       m_mediaDir;
-  CGUIViewControl  m_viewControl;
-  std::auto_ptr<CGUIViewState> m_guiState;
-  CFileItemList*    m_vecItems;
 };
+
