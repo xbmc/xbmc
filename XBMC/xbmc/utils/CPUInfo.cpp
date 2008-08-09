@@ -52,20 +52,13 @@ static inline int _private_gettimeofday( struct timeval *tv, void *tz )
 
 CCPUInfo::CCPUInfo(void)
 {
+  m_fProcStat = m_fProcTemperature = m_fCPUInfo = NULL;
 #ifdef __APPLE__
   size_t len = 4;
 
   // The number of cores.
   if (sysctlbyname("hw.activecpu", &m_cpuCount, &len, NULL, 0) == -1)
       m_cpuCount = 1;
-
-  // Get CPU frequency, scaled to MHz.
-  long long hz = 0;
-  len = sizeof(hz);
-  if (sysctlbyname("hw.cpufrequency", &hz, &len, NULL, 0) == -1)
-    m_cpuFreq = 0.0;
-  else
-    m_cpuFreq = hz / 1000000.0;
 
   // The model.
   char buffer[512];
@@ -92,15 +85,6 @@ CCPUInfo::CCPUInfo(void)
   else
     m_cpuModel = "Unknown";
 
-  dwSize = sizeof(dwMHz);
-  ret = RegQueryValueEx(hKey,"~MHz", NULL, NULL, (LPBYTE)&dwMHz, &dwSize);
-  if(ret == 0)
-  {
-    m_cpuFreq = float(dwMHz)/1000;
-  }
-  else
-    m_cpuFreq = 0.0;
-
   RegCloseKey(hKey);
 
   SYSTEM_INFO siSysInfo;
@@ -119,15 +103,14 @@ CCPUInfo::CCPUInfo(void)
     m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THM/temperature", "r");
   m_lastUsedPercentage = 0;
 
-  FILE* cpuinfo = fopen("/proc/cpuinfo", "r");
+  m_fCPUInfo = fopen("/proc/cpuinfo", "r");
   m_cpuCount = 0;
-  m_cpuFreq = 0;
-  if (cpuinfo)
+  if (m_fCPUInfo)
   {
     char buffer[512];
 
     int nCurrId = 0;
-    while (fgets(buffer, sizeof(buffer), cpuinfo))
+    while (fgets(buffer, sizeof(buffer), m_fCPUInfo))
     {
       if (strncmp(buffer, "processor", strlen("processor"))==0)
       {
@@ -140,16 +123,6 @@ CCPUInfo::CCPUInfo(void)
           m_cores[core.m_id] = core;
         }
         m_cpuCount++;
-      }
-      else if (strncmp(buffer, "cpu MHz", strlen("cpu MHz"))==0)
-      {
-        char *needle = strstr(buffer, ":");
-        if (needle && strlen(needle)>3)
-        {
-          needle+=2;
-          sscanf(needle, "%f", &m_cpuFreq);
-          m_cores[nCurrId].m_fSpeed = m_cpuFreq;
-        }
       }
       else if (strncmp(buffer, "vendor_id", strlen("vendor_id"))==0)
       {
@@ -173,7 +146,6 @@ CCPUInfo::CCPUInfo(void)
         }
       }
     }
-    fclose(cpuinfo);
   }
   else
   {
@@ -192,6 +164,9 @@ CCPUInfo::~CCPUInfo()
 
   if (m_fProcTemperature != NULL)
     fclose(m_fProcTemperature);
+
+  if (m_fCPUInfo != NULL)
+    fclose(m_fCPUInfo);
 }
 
 int CCPUInfo::getUsedPercentage()
@@ -230,6 +205,48 @@ int CCPUInfo::getUsedPercentage()
   m_lastUsedPercentage = result;
 
   return result;
+}
+
+float CCPUInfo::getCPUFrequency()
+{
+  // Get CPU frequency, scaled to MHz.
+#ifdef __APPLE__
+  long long hz = 0;
+  len = sizeof(hz);
+  if (sysctlbyname("hw.cpufrequency", &hz, &len, NULL, 0) == -1)
+    return 0.f;
+  else
+    return hz / 1000000.0;
+#elif defined _WIN32PC
+  HKEY hKey;
+  DWORD dwMHz=0;
+  DWORD dwSize=sizeof(dwMHz);
+  LONG ret = RegOpenKeyEx(HKEY_LOCAL_MACHINE,"HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0",0, KEY_READ, &hKey);
+  ret = RegQueryValueEx(hKey,"~MHz", NULL, NULL, (LPBYTE)&dwMHz, &dwSize);
+  RegCloseKey(hKey);
+  if(ret == 0)
+  {
+    return float(dwMHz);
+  }
+  else
+    return = 0.f;
+#else
+  float mhz = 0.f;
+  char buf[256],
+       *needle = NULL;
+  if (!m_fCPUInfo)
+    return mhz;
+  rewind(m_fCPUInfo);
+  fflush(m_fCPUInfo);
+  while (fgets(buf, 256, m_fCPUInfo) != NULL) {
+    if (strncmp(buf, "cpu MHz", 7) == 0) {
+      needle = strchr(buf, ':');
+      sscanf(++needle, "%f", &mhz);
+      break;
+    }
+  }
+  return mhz;
+#endif
 }
 
 CTemperature CCPUInfo::getTemperature()
