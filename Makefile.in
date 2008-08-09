@@ -1,9 +1,7 @@
-DIRS=	\
+BIN_DIRS=	\
 	guilib \
 	guilib/common \
 	guilib/tinyXML \
-	tools/EventClients \
-	tools/XBMCTex \
 	xbmc \
 	xbmc/cdrip \
 	xbmc/cores \
@@ -11,8 +9,42 @@ DIRS=	\
 	xbmc/cores/DllLoader/exports \
 	xbmc/cores/DllLoader/exports/util \
 	xbmc/cores/dvdplayer \
-	xbmc/cores/dvdplayer/Codecs \
 	xbmc/cores/paplayer \
+	xbmc/cores/VideoRenderers \
+	xbmc/cores/VideoRenderers/VideoShaders \
+	xbmc/FileSystem \
+	xbmc/FileSystem/MusicDatabaseDirectory \
+	xbmc/FileSystem/VideoDatabaseDirectory \
+	xbmc/lib/libcmyth \
+	xbmc/lib/libGoAhead \
+	xbmc/lib/libPython \
+	xbmc/lib/libPython/xbmcmodule \
+	xbmc/lib/libRTMP \
+	xbmc/lib/libRTV \
+	xbmc/lib/libscrobbler \
+	xbmc/lib/libshout \
+	xbmc/lib/libUPnP \
+	xbmc/lib/libXBMS \
+	xbmc/lib/libXDAAP \
+	xbmc/lib/sqLite \
+	xbmc/lib/UnrarXLib \
+	xbmc/linux \
+	xbmc/screensavers \
+	xbmc/utils \
+	xbmc/visualizations \
+	xbmc/xbox
+
+EC_DIRS= \
+	tools/EventClients
+
+XBMCTEX_DIRS= \
+	tools/XBMCTex
+
+DVDPCODECS_DIRS= \
+	xbmc/cores/dvdplayer/Codecs \
+	xbmc/lib/libass/xbmc \
+
+PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/AC3Codec \
 	xbmc/cores/paplayer/ADPCMCodec \
 	xbmc/cores/paplayer/AACCodec \
@@ -30,40 +62,25 @@ DIRS=	\
 	xbmc/cores/paplayer/MP3Codec \
 	xbmc/cores/paplayer/flac-1.2.1/ \
 	xbmc/cores/paplayer/MACDll \
-	xbmc/cores/paplayer/vorbisfile \
-	xbmc/cores/VideoRenderers \
-	xbmc/cores/VideoRenderers/VideoShaders \
-	xbmc/FileSystem \
-	xbmc/FileSystem/MusicDatabaseDirectory \
-	xbmc/FileSystem/VideoDatabaseDirectory \
+	xbmc/cores/paplayer/vorbisfile
+
+LIB_DIRS=\
 	xbmc/lib/cximage-6.0 \
-	xbmc/lib/libass/xbmc \
-	xbmc/lib/libcmyth \
 	xbmc/lib/libexif \
-	xbmc/lib/libGoAhead \
 	xbmc/lib/libhdhomerun \
 	xbmc/lib/libid3tag \
-	xbmc/lib/libPython \
-	xbmc/lib/libPython/linux \
-	xbmc/lib/libPython/xbmcmodule \
-	xbmc/lib/libRTMP \
-	xbmc/lib/libRTV \
-	xbmc/lib/libscrobbler \
-	xbmc/lib/libshout \
-	xbmc/lib/libUPnP \
-	xbmc/lib/libXBMS \
-	xbmc/lib/libXDAAP \
-	xbmc/lib/sqLite \
-	xbmc/lib/UnrarXLib \
-	xbmc/linux \
-	xbmc/screensavers \
-	xbmc/screensavers/rsxs-0.9/xbmc \
-	xbmc/utils \
-	xbmc/visualizations \
+	xbmc/lib/libPython/linux
+
+SS_DIRS=\
+	xbmc/screensavers/rsxs-0.9/xbmc
+
+VIS_DIRS=\
 	xbmc/visualizations/OpenGLSpectrum \
 	xbmc/visualizations/WaveForm \
-	xbmc/visualizations/XBMCProjectM \
-	xbmc/xbox \
+	xbmc/visualizations/XBMCProjectM
+
+DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
+			$(LIBS_DIRS) $(SS_DIRS) $(VIS_DIRS)
 
 LIBS=@LIBS@
 DEBUG_FLAGS=@DEBUG_FLAGS@
@@ -72,13 +89,13 @@ CXXFLAGS=@CXXFLAGS@
 LDFLAGS=@LDFLAGS@
 INCLUDES=@INCLUDES@
 
-all : xbmc.bin xbmc-xrandr skin/Project\ Mayhem\ III/media/Textures.xpr;
+all : xbmc.bin externals xbmc-xrandr skin/Project\ Mayhem\ III/media/Textures.xpr
 
 include Makefile.include
 
-.PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualisation-interface visualizations screensaver-interface screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients librtmp papcodecs dvdcodecs imagelib
+.PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualization-interface visualizations screensaver-interface screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients librtmp papcodecs dvdpcodecs imagelib codecs externals cdrip
 
-skin/Project\ Mayhem\ III/media/Textures.xpr: tools/XBMCTex/XBMCTex
+skin/Project\ Mayhem\ III/media/Textures.xpr: xbmctex
 	 @tools/XBMCTex/XBMCTex -input "\"skin/Project Mayhem III/media\"" -output "\"skin/Project Mayhem III\media\Textures.xpr\""
 
 guilib: 
@@ -106,13 +123,13 @@ linux:
 	$(MAKE) -C xbmc/linux
 visualization-interface: 
 	$(MAKE) -C xbmc/visualizations
-visualizations:
+visualizations: exports
 	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
 	$(MAKE) -C xbmc/visualizations/WaveForm
 	$(MAKE) -C xbmc/visualizations/XBMCProjectM
 screensaver-interface: 
 	$(MAKE) -C xbmc/screensavers
-screensavers:
+screensavers: exports
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
 utils: 
 	$(MAKE) -C xbmc/utils
@@ -139,7 +156,7 @@ dvdplayer:
 	$(MAKE) -C xbmc/cores/dvdplayer
 	$(MAKE) -C xbmc/cores/VideoRenderers 
 	$(MAKE) -C xbmc/cores/VideoRenderers/VideoShaders 
-dvdcodecs: dllloader
+dvdpcodecs: dllloader
 	$(MAKE) -C xbmc/cores/dvdplayer/Codecs
 	$(MAKE) -C xbmc/lib/libass/xbmc
 cdrip:
@@ -164,7 +181,7 @@ libshout:
 	$(MAKE) -C xbmc/lib/libshout
 libid3tag: dllloader
 	$(MAKE) -C xbmc/lib/libid3tag
-papcodecs: dllloader linux dvdcodecs
+papcodecs: dllloader linux dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/AACCodec
 	$(MAKE) -C xbmc/cores/paplayer/AC3Codec
 	$(MAKE) -C xbmc/cores/paplayer/ADPCMCodec
@@ -187,8 +204,19 @@ endif
 	$(MAKE) -C xbmc/cores/paplayer/YMCodec/StSoundLibrary	
 imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
+xbmctex:
+	$(MAKE) -C tools/XBMCTex
 
-compile: guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualisation-interface visualizations screensaver-interface screensavers utils common tinyxml sqllite libscrobbler libgoahead unrarxlib libpython dvdplayer libupnp cdrip libcmyth librtmp libxbms libexif librtv libxdaap libhdhomerun libshout libid3tag papcodecs dvdcodecs imagelib
+codecs: papcodecs dvdpcodecs
+
+libs: libhdhomerun libid3tag imagelib libexif python
+	
+externals: codecs libs python visualizations screensavers
+compile: guilib xbmc filesystem musicdatabase videodatabase cores cdrip \
+	paplayer dllloader exports xbox linux utils common tinyxml sqllite \
+	libscrobbler libgoahead unrarxlib libpython dvdplayer libupnp libcmyth \
+	librtmp libxbms librtv libxdaap libshout screensaver-interface \
+	visualization-interface
 
 LIBS+=	\
 	guilib/*.o \
@@ -239,7 +267,7 @@ xbmc-xrandr: xbmc-xrandr.c
 tools/XBMCTex/XBMCTex:
 	$(MAKE) -C tools/XBMCTex/
 
-install-bin: all # developement convenience target
+install-bin: xbmc.bin # developement convenience target
 	sudo cp xbmc.bin $(prefix)/share/xbmc
 
 install: all install-datas install-web
@@ -298,4 +326,26 @@ reallyclean:
 	 else \
 	 	echo; \
 	 fi
+
+clean-xbmc.bin:
+	for d in $(BIN_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
+clean-eventclients:
+	for d in $(EC_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
+clean-xbmctex:
+	for d in $(XBMCTEX_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
+clean-dvdpcodecs: 
+	for d in $(DVDPCODECS_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
+clean-papcodecs:
+	for d in $(PAPCODECS_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
+clean-libs: 
+	for d in $(LIB_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
+clean-screensavers: 
+	for d in $(SS_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
+clean-visualisations:
+	for d in $(VIS_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
+
+clean-codecs: clean-dvdpcodecs clean-papcodecs
+
+clean-externals: clean-codecs clean-eventclients clean-xbmctex clean-libs \
+	clean-screensavers clean-visualisations
 
