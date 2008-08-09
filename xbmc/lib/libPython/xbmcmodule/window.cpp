@@ -431,8 +431,14 @@ namespace PYXBMC
   {
     self->bModal = false;
     if (self->bIsPythonWindow)
-      ((CGUIPythonWindow*)self->pWindow)->PulseActionEvent();
-
+    {
+      if (WindowXML_Check(self))
+        ((CGUIPythonWindowXML*)self->pWindow)->PulseActionEvent();
+      else if (WindowXMLDialog_Check(self))
+        ((CGUIPythonWindowXMLDialog*)self->pWindow)->PulseActionEvent();
+      else
+        ((CGUIPythonWindow*)self->pWindow)->PulseActionEvent();
+    }
     PyGUILock();
 
     // if it's a dialog, we have to close it a bit different
