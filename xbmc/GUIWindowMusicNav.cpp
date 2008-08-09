@@ -243,7 +243,13 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_FILTER)
       {
-        CGUIDialogKeyboard::ShowAndGetFilter(m_filter, false);
+        if (m_filter.IsEmpty())
+          CGUIDialogKeyboard::ShowAndGetFilter(m_filter, false);
+        else
+        {
+          m_filter.Empty();
+          OnFilterItems();
+        }
         return true;
       }
       else if (iControl == CONTROL_SEARCH)
@@ -275,9 +281,17 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
     {
       if (message.GetParam1() == GUI_MSG_FILTER_ITEMS && IsActive())
       {
-        m_filter = message.GetStringParam();
-        m_filter.TrimLeft().ToLower();
+        if (message.GetParam2() == 1) // append
+          m_filter += message.GetStringParam();
+        else if (message.GetParam2() == 2)
+        { // delete
+          if (m_filter.size())
+            m_filter = m_filter.Left(m_filter.size() - 1);
+        }
+        else
+          m_filter = message.GetStringParam();
         OnFilterItems();
+        return true;
       }
       if (message.GetParam1() == GUI_MSG_SEARCH_UPDATE && IsActive())
       {
@@ -381,6 +395,9 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     else if (node == NODE_TYPE_SONG)
       items.SetContent("songs");
   }
+
+  // clear the filter
+  m_filter.Empty();
   return bResult;
 }
 
@@ -997,11 +1014,16 @@ void CGUIWindowMusicNav::FilterItems(CFileItemList &items)
   if (m_vecItems->IsVirtualDirectoryRoot())
     return;
 
-  items.Clear();
+  items.ClearItems();
+
+  CStdString filter(m_filter);
+  filter.TrimLeft().ToLower();
+  bool numericMatch = StringUtils::IsNaturalNumber(filter);
+
   for (int i = 0; i < m_unfilteredItems->Size(); i++)
   {
     CFileItemPtr item = m_unfilteredItems->Get(i);
-    if (item->IsParentFolder() || m_filter.IsEmpty() ||
+    if (item->IsParentFolder() || filter.IsEmpty() ||
         CMusicDatabaseDirectory::IsAllItem(item->m_strPath))
     {
       items.Add(item);
@@ -1018,8 +1040,13 @@ void CGUIWindowMusicNav::FilterItems(CFileItemList &items)
     else if (item->GetLayout())
       match = item->GetLayout()->GetAllText();
     else*/
-      match = item->GetLabel() + " " + item->GetLabel2();
-    if (StringUtils::FindWords(match.c_str(), m_filter.c_str()))
+    match = item->GetLabel();
+
+    if (numericMatch)
+      StringUtils::WordToDigits(match);
+    size_t pos = StringUtils::FindWords(match.c_str(), filter.c_str());
+
+    if (pos != CStdString::npos)
       items.Add(item);
   }
 }
