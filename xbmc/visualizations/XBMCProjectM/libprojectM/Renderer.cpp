@@ -286,9 +286,7 @@ void Renderer::Interpolation(PresetOutputs *presetOutputs, PresetInputs *presetI
 	int size = presetInputs->gy;
 
 #ifdef _WIN32PC
-  char buf[1024];
-  sprintf(buf, "%s: gy = %d\n", __FUNCTION__,size);
-  OutputDebugString( buf );
+  // guessed value. solved in current projectM svn
   float p[30*2][2];
   float t[30*2][2];
 #else
@@ -574,8 +572,8 @@ void Renderer::draw_custom_waves(PresetOutputs *presetOutputs)
       char buf[1024];
       sprintf(buf, "%s: samples = %d\n", __FUNCTION__,(*pos)->samples);
       OutputDebugString( buf );
-      float colors[512][4];
-			float points[512][2];
+      float colors[1024][4];
+			float points[1024][2];
 #else
 			float colors[(*pos)->samples][4];
 			float points[(*pos)->samples][2];
@@ -676,9 +674,9 @@ void Renderer::draw_shapes(PresetOutputs *presetOutputs)
         char buf[1024];
         sprintf(buf, "%s: sides = %d\n", __FUNCTION__,(*pos)->sides);
         OutputDebugString( buf );
-        float colors[10+2][4];
-				float tex[10+2][2];
-				float points[10+2][2];
+        float colors[1024][4];
+				float tex[1024][2];
+				float points[1024][2];
 #else
 				float colors[(*pos)->sides+2][4];
 				float tex[(*pos)->sides+2][2];
@@ -743,8 +741,11 @@ void Renderer::draw_shapes(PresetOutputs *presetOutputs)
 			  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 #ifdef _WIN32PC
-        float colors[10+2][4];				
-			  float points[10+2][2];
+        char buf[1024];
+        sprintf(buf, "%s: sides = %d\n", __FUNCTION__,(*pos)->sides+2);
+        OutputDebugString( buf );
+        float colors[1024][4];				
+			  float points[1024][2];
 #else
 			  float colors[(*pos)->sides+2][4];				
 			  float points[(*pos)->sides+2][2];			
@@ -786,7 +787,10 @@ void Renderer::draw_shapes(PresetOutputs *presetOutputs)
 			glDisableClientState(GL_COLOR_ARRAY);	 
 
 #ifdef _WIN32PC
-      float points[10+1][2];
+      char buf[1024];
+      sprintf(buf, "%s: sides = %d\n", __FUNCTION__,(*pos)->sides+1);
+      OutputDebugString( buf );
+      float points[1024][2];
 #else
 			float points[(*pos)->sides+1][2];
 #endif
@@ -1248,8 +1252,9 @@ void Renderer::draw_motion_vectors(PresetOutputs *presetOutputs)
 	int size = numx * numy;
 
 #ifdef _WIN32PC
+  // guessed value. solved in current projectM svn
   char buf[1024];
-  sprintf(buf, "%s: point size = %d\n", __FUNCTION__,size);
+  sprintf(buf, "%s: size = %d\n", __FUNCTION__,size);
   OutputDebugString( buf );
   float points[1024][2];
 #else
