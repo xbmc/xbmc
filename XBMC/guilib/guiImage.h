@@ -160,7 +160,7 @@ public:
 protected:
   void LoadDiffuseImage();
   virtual void AllocateOnDemand();
-  virtual void FreeTextures();
+  virtual void FreeTextures(bool immediately = false);
   void Process();
   void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2);
   virtual int GetOrientation() const { return m_image.orientation; };
