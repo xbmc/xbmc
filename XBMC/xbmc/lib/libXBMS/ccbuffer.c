@@ -1,10 +1,12 @@
 // Place the code and data below here into the LIBXBMS section.
+#ifndef __GNUC__
 #pragma code_seg( "LIBXBMS" )
 #pragma data_seg( "LIBXBMS_RW" )
 #pragma bss_seg( "LIBXBMS_RW" )
 #pragma const_seg( "LIBXBMS_RD" )
 #pragma comment(linker, "/merge:LIBXBMS_RW=LIBXBMS")
 #pragma comment(linker, "/merge:LIBXBMS_RD=LIBXBMS")
+#endif
 /*   -*- c -*-
  * 
  *  ----------------------------------------------------------------------

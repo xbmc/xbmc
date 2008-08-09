@@ -1,10 +1,13 @@
 // Place the code and data below here into the LIBXBMS section.
+#ifndef __GNUC__
 #pragma code_seg( "LIBXBMS" )
 #pragma data_seg( "LIBXBMS_RW" )
 #pragma bss_seg( "LIBXBMS_RW" )
 #pragma const_seg( "LIBXBMS_RD" )
 #pragma comment(linker, "/merge:LIBXBMS_RW=LIBXBMS")
-#pragma comment(linker, "/merge:LIBXBMS_RD=LIBXBMS")/*   -*- c -*-
+#pragma comment(linker, "/merge:LIBXBMS_RD=LIBXBMS")
+#endif
+/*   -*- c -*-
  * 
  *  ----------------------------------------------------------------------
  *  CcXstream Client Library for XBOX Media Player
@@ -32,7 +35,6 @@
  *  the same conditions as the XBMP itself.
  *
  */
-
 #include "ccincludes.h"
 #include "ccbuffer.h"
 #include "ccxclient.h"
@@ -51,9 +53,9 @@
 
 static void cc_xstream_client_socket_setup(CC_XSTREAM_SOCKET_FD_TYPE sock)
 {
+#ifdef TCP_NODELAY
   int i;
 
-#ifdef TCP_NODELAY
   i = 1;
   setsockopt(sock, IPPROTO_TCP,TCP_NODELAY, (char *)(&i), sizeof (i));
 #endif /* TCP_NODELAY */

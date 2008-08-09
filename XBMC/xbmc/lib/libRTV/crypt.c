@@ -1,7 +1,9 @@
+#ifndef __GNUC__
 #pragma code_seg( "RTV_TEXT" )
 #pragma data_seg( "RTV_DATA" )
 #pragma bss_seg( "RTV_BSS" )
 #pragma const_seg( "RTV_RD" )
+#endif
 
 /*
  * Copyright (C) 2002 John Todd Larason <jtl@molehill.org>
