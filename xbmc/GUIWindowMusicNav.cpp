@@ -243,6 +243,14 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_FILTER)
       {
+        if (GetControl(iControl)->GetControlType() == CGUIControl::GUICONTROL_EDIT)
+        { // filter updated
+          CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_BTN_FILTER);
+          OnMessage(selected);
+          m_filter = selected.GetLabel();
+          OnFilterItems();
+          return true;
+        }
         if (m_filter.IsEmpty())
           CGUIDialogKeyboard::ShowAndGetFilter(m_filter, false);
         else
@@ -451,6 +459,7 @@ void CGUIWindowMusicNav::UpdateButtons()
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTN_FILTER, !m_filter.IsEmpty());
+  SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, m_filter);
 
   if (m_searchWithEdit)
   {
@@ -491,6 +500,7 @@ void CGUIWindowMusicNav::OnWindowLoaded()
   const CGUIControl *control = GetControl(CONTROL_SEARCH);
   m_searchWithEdit = (control && control->GetControlType() == CGUIControl::GUICONTROL_EDIT);
 
+  SendMessage(GUI_MSG_SET_TYPE, CONTROL_BTN_FILTER, CGUIEditControl::INPUT_TYPE_FILTER);
   CGUIWindowMusicBase::OnWindowLoaded();
 }
 

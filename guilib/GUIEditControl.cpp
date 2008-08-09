@@ -134,6 +134,16 @@ bool CGUIEditControl::OnAction(const CAction &action)
     OnTextChanged();
     return true;
   }
+  else if (action.wID >= REMOTE_2 && action.wID <= REMOTE_9)
+  { // input from the remote
+    if (m_inputType == INPUT_TYPE_FILTER)
+    { // filtering - use single number presses
+      m_text2.insert(m_text2.begin() + m_cursorPos, L'0' + (action.wID - REMOTE_0));
+      m_cursorPos++;
+      OnTextChanged();
+      return true;
+    }
+  }
   return CGUIButtonControl::OnAction(action);
 }
 
@@ -173,6 +183,9 @@ void CGUIEditControl::OnClick()
       break;
     case INPUT_TYPE_SEARCH:
       CGUIDialogKeyboard::ShowAndGetFilter(utf8, true);
+      break;
+    case INPUT_TYPE_FILTER:
+      CGUIDialogKeyboard::ShowAndGetFilter(utf8, false);
       break;
     case INPUT_TYPE_TEXT:
     default:

@@ -42,6 +42,7 @@
 #include "GUIDialogYesNo.h"
 #include "GUIDialogSelect.h"
 #include "GUIDialogKeyboard.h"
+#include "GUIEditControl.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
@@ -234,6 +235,14 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_FILTER)
       {
+        if (GetControl(iControl)->GetControlType() == CGUIControl::GUICONTROL_EDIT)
+        { // filter updated
+          CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_BTN_FILTER);
+          OnMessage(selected);
+          m_filter = selected.GetLabel();
+          OnFilterItems();
+          return true;
+        }
         if (m_filter.IsEmpty())
           CGUIDialogKeyboard::ShowAndGetFilter(m_filter, false);
         else
@@ -528,6 +537,7 @@ void CGUIWindowVideoNav::UpdateButtons()
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNSHOWALL,g_stSettings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL);
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTN_FILTER, !m_filter.IsEmpty());
+  SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, m_filter);
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
@@ -750,6 +760,7 @@ void CGUIWindowVideoNav::OnWindowLoaded()
     Add(pLabel);
   }
 #endif
+  SendMessage(GUI_MSG_SET_TYPE, CONTROL_BTN_FILTER, CGUIEditControl::INPUT_TYPE_FILTER);
   CGUIWindowVideoBase::OnWindowLoaded();
 }
 
