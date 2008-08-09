@@ -702,6 +702,15 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("jumpsms7")) wAction = ACTION_JUMP_SMS7;
   else if (strAction.Equals("jumpsms8")) wAction = ACTION_JUMP_SMS8;
   else if (strAction.Equals("jumpsms9")) wAction = ACTION_JUMP_SMS9;
+  else if (strAction.Equals("filterclear")) wAction = ACTION_FILTER_CLEAR;
+  else if (strAction.Equals("filtersms2")) wAction = ACTION_FILTER_SMS2;
+  else if (strAction.Equals("filtersms3")) wAction = ACTION_FILTER_SMS3;
+  else if (strAction.Equals("filtersms4")) wAction = ACTION_FILTER_SMS4;
+  else if (strAction.Equals("filtersms5")) wAction = ACTION_FILTER_SMS5;
+  else if (strAction.Equals("filtersms6")) wAction = ACTION_FILTER_SMS6;
+  else if (strAction.Equals("filtersms7")) wAction = ACTION_FILTER_SMS7;
+  else if (strAction.Equals("filtersms8")) wAction = ACTION_FILTER_SMS8;
+  else if (strAction.Equals("filtersms9")) wAction = ACTION_FILTER_SMS9;
 
   if (wAction == ACTION_NONE)
   {
