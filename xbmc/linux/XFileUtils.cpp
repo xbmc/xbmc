@@ -561,12 +561,10 @@ DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation ) {
   if (lpTimeZoneInformation == NULL)
     return TIME_ZONE_ID_UNKNOWN;
 
-#ifdef MAC_TIGER
+#ifdef __APPLE__
   struct timezone tz;
   gettimeofday(NULL, &tz);
   lpTimeZoneInformation->Bias = tz.tz_minuteswest;
-#else
-  lpTimeZoneInformation->Bias = timezone / 60;
 #endif
   swprintf(lpTimeZoneInformation->StandardName, 31, L"%s", tzname[0]);
   swprintf(lpTimeZoneInformation->DaylightName, 31, L"%s", tzname[1]);
