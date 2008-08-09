@@ -904,6 +904,8 @@
 		F5F8E1DA0E427E8000A8E96F /* VGMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */; };
 		F5F8E1E80E427F6700A8E96F /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1E60E427F6700A8E96F /* md5.cpp */; };
 		F5F8E1F00E42807A00A8E96F /* ArabicShaping.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1EF0E42807A00A8E96F /* ArabicShaping.cpp */; };
+		F5F95DA00E4E203700C3FA5C /* GUIWindowTestPattern.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F95D9F0E4E203700C3FA5C /* GUIWindowTestPattern.cpp */; };
+		F5F95DAE0E4E220900C3FA5C /* language.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F95DAD0E4E220900C3FA5C /* language.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1030,7 +1032,7 @@
 		88ECB6E60DE07BA6003396A7 /* libfontconfig.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfontconfig.a; path = /opt/local/lib/libfontconfig.a; sourceTree = "<absolute>"; };
 		88ECB6E90DE07BEE003396A7 /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = /opt/local/lib/libogg.a; sourceTree = "<absolute>"; };
 		88ECB6EB0DE07C56003396A7 /* libmysqlclient.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmysqlclient.a; path = /opt/local/lib/mysql5/mysql/libmysqlclient.a; sourceTree = "<absolute>"; };
-		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
+		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
 		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
 		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		E30B3E8E0D5D59290030A311 /* libShout-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libShout-osx.a"; path = "xbmc/lib/libshout/libShout-osx.a"; sourceTree = "<group>"; };
@@ -2750,6 +2752,9 @@
 		F5F8E1E70E427F6700A8E96F /* md5.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = "<group>"; };
 		F5F8E1EE0E42807A00A8E96F /* ArabicShaping.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ArabicShaping.h; sourceTree = "<group>"; };
 		F5F8E1EF0E42807A00A8E96F /* ArabicShaping.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ArabicShaping.cpp; sourceTree = "<group>"; };
+		F5F95D9E0E4E203700C3FA5C /* GUIWindowTestPattern.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = GUIWindowTestPattern.h; sourceTree = "<group>"; };
+		F5F95D9F0E4E203700C3FA5C /* GUIWindowTestPattern.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowTestPattern.cpp; sourceTree = "<group>"; };
+		F5F95DAD0E4E220900C3FA5C /* language.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = language.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3388,6 +3393,8 @@
 				E38E18380D25F9FA00618676 /* GUIWindowStartup.h */,
 				E38E18390D25F9FA00618676 /* GUIWindowSystemInfo.cpp */,
 				E38E183A0D25F9FA00618676 /* GUIWindowSystemInfo.h */,
+				F5F95D9F0E4E203700C3FA5C /* GUIWindowTestPattern.cpp */,
+				F5F95D9E0E4E203700C3FA5C /* GUIWindowTestPattern.h */,
 				E38E183B0D25F9FA00618676 /* GUIWindowVideoBase.cpp */,
 				E38E183C0D25F9FA00618676 /* GUIWindowVideoBase.h */,
 				E38E183D0D25F9FA00618676 /* GUIWindowVideoFiles.cpp */,
@@ -4650,6 +4657,7 @@
 				E38E258F0D263CE000618676 /* infotagmusic.cpp */,
 				E38E25900D263CE000618676 /* infotagvideo.cpp */,
 				E38E25910D263CE000618676 /* keyboard.cpp */,
+				F5F95DAD0E4E220900C3FA5C /* language.cpp */,
 				E38E25920D263CE000618676 /* listitem.cpp */,
 				E38E25930D263CE000618676 /* player.cpp */,
 				E38E25940D263CE000618676 /* pyplaylist.cpp */,
@@ -6623,6 +6631,8 @@
 				F5F8E1DA0E427E8000A8E96F /* VGMCodec.cpp in Sources */,
 				F5F8E1E80E427F6700A8E96F /* md5.cpp in Sources */,
 				F5F8E1F00E42807A00A8E96F /* ArabicShaping.cpp in Sources */,
+				F5F95DA00E4E203700C3FA5C /* GUIWindowTestPattern.cpp in Sources */,
+				F5F95DAE0E4E220900C3FA5C /* language.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
