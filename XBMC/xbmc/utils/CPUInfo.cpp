@@ -212,11 +212,10 @@ float CCPUInfo::getCPUFrequency()
   // Get CPU frequency, scaled to MHz.
 #ifdef __APPLE__
   long long hz = 0;
-  len = sizeof(hz);
+  size_t len = sizeof(hz);
   if (sysctlbyname("hw.cpufrequency", &hz, &len, NULL, 0) == -1)
     return 0.f;
-  else
-    return hz / 1000000.0;
+  return hz / 1000000.0;
 #elif defined _WIN32PC
   HKEY hKey;
   DWORD dwMHz=0;
