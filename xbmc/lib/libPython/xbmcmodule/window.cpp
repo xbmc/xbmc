@@ -91,19 +91,22 @@ namespace PYXBMC
       pWindow->bModal = false;
       pWindow->bIsPythonWindow = true;
 
-      if (!bAsDialog && !pWindow->bUsingXML) {
-        pWindow->pWindow = new CGUIPythonWindow(id);
-      } else if (pWindow->bUsingXML && !bAsDialog) {
-          pWindow->pWindow = new CGUIPythonWindowXML(id,pWindow->sXMLFileName,pWindow->sFallBackPath);
-          ((CGUIPythonWindowXML*)pWindow->pWindow)->SetCallbackWindow((PyObject*)pWindow);
-      } else if (pWindow->bUsingXML && bAsDialog) {
+      if (pWindow->bUsingXML)
+      {
+        if (bAsDialog)
           pWindow->pWindow = new CGUIPythonWindowXMLDialog(id,pWindow->sXMLFileName,pWindow->sFallBackPath);
-          ((CGUIPythonWindowXML*)pWindow->pWindow)->SetCallbackWindow((PyObject*)pWindow);
-      } else {
-        pWindow->pWindow = new CGUIPythonWindowDialog(id);
+        else
+          pWindow->pWindow = new CGUIPythonWindowXML(id,pWindow->sXMLFileName,pWindow->sFallBackPath);
+        ((CGUIPythonWindowXML*)pWindow->pWindow)->SetCallbackWindow((PyObject*)pWindow);
       }
-    if (pWindow->bIsPythonWindow)
+      else
+      {
+        if (bAsDialog)
+          pWindow->pWindow = new CGUIPythonWindowDialog(id);
+        else
+          pWindow->pWindow = new CGUIPythonWindow(id);
         ((CGUIPythonWindow*)pWindow->pWindow)->SetCallbackWindow((PyObject*)pWindow);
+      }
 
       PyGUILock();
       m_gWindowManager.Add(pWindow->pWindow);
@@ -428,8 +431,14 @@ namespace PYXBMC
   {
     self->bModal = false;
     if (self->bIsPythonWindow)
-      ((CGUIPythonWindow*)self->pWindow)->PulseActionEvent();
-
+    {
+      if (WindowXML_Check(self))
+        ((CGUIPythonWindowXML*)self->pWindow)->PulseActionEvent();
+      else if (WindowXMLDialog_Check(self))
+        ((CGUIPythonWindowXMLDialog*)self->pWindow)->PulseActionEvent();
+      else
+        ((CGUIPythonWindow*)self->pWindow)->PulseActionEvent();
+    }
     PyGUILock();
 
     // if it's a dialog, we have to close it a bit different
