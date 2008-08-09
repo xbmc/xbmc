@@ -107,13 +107,13 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_DEINIT:
     {
-      return CGUIWindow::OnMessage(message);
+      return CGUIMediaWindow::OnMessage(message);
     }
     break;
 
     case GUI_MSG_WINDOW_INIT:
     {
-      CGUIWindow::OnMessage(message);
+      CGUIMediaWindow::OnMessage(message);
       PyXBMCAction* inf = new PyXBMCAction;
       inf->pObject = NULL;
       // create a new call and set it in the python queue
@@ -313,7 +313,9 @@ bool CGUIPythonWindowXML::LoadXML(const CStdString &strPath, const CStdString &s
   }
 
   TiXmlDocument xmlDoc;
-  if (!xmlDoc.Parse(xml.c_str()))
+  xmlDoc.Parse(xml.c_str());
+
+  if (xmlDoc.Error())
     return false;
 
   return Load(xmlDoc);
