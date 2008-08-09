@@ -57,8 +57,12 @@ DIRS=	\
 	xbmc/lib/UnrarXLib \
 	xbmc/linux \
 	xbmc/screensavers \
+	xbmc/screensavers/rsxs-0.9/xbmc \
 	xbmc/utils \
 	xbmc/visualizations \
+	xbmc/visualizations/OpenGLSpectrum \
+	xbmc/visualizations/WaveForm \
+	xbmc/visualizations/XBMCProjectM \
 	xbmc/xbox \
 
 LIBS=@LIBS@
@@ -68,11 +72,11 @@ CXXFLAGS=@CXXFLAGS@
 LDFLAGS=@LDFLAGS@
 INCLUDES=@INCLUDES@
 
-all : compile xbmc.bin xbmc-xrandr skin/Project\ Mayhem\ III/media/Textures.xpr;
+all : xbmc.bin xbmc-xrandr skin/Project\ Mayhem\ III/media/Textures.xpr;
 
 include Makefile.include
 
-.PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualizations screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients librtmp papcodecs dvdcodecs imagelib
+.PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualisation-interface visualizations screensaver-interface screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients librtmp papcodecs dvdcodecs imagelib
 
 skin/Project\ Mayhem\ III/media/Textures.xpr: tools/XBMCTex/XBMCTex
 	 @tools/XBMCTex/XBMCTex -input "\"skin/Project Mayhem III/media\"" -output "\"skin/Project Mayhem III\media\Textures.xpr\""
@@ -100,10 +104,16 @@ xbox:
 	$(MAKE) -C xbmc/xbox
 linux: 
 	$(MAKE) -C xbmc/linux
-visualizations: 
+visualization-interface: 
 	$(MAKE) -C xbmc/visualizations
-screensavers: 
+visualizations:
+	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
+	$(MAKE) -C xbmc/visualizations/WaveForm
+	$(MAKE) -C xbmc/visualizations/XBMCProjectM
+screensaver-interface: 
 	$(MAKE) -C xbmc/screensavers
+screensavers:
+	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
 utils: 
 	$(MAKE) -C xbmc/utils
 common: 
@@ -119,6 +129,7 @@ unrarxlib:
 libpython: dllloader
 	$(MAKE) -C xbmc/lib/libPython
 	$(MAKE) -C xbmc/lib/libPython/xbmcmodule
+python:
 	$(MAKE) -C xbmc/lib/libPython/linux
 libgoahead: 
 	$(MAKE) -C xbmc/lib/libGoAhead
@@ -130,6 +141,7 @@ dvdplayer:
 	$(MAKE) -C xbmc/cores/VideoRenderers/VideoShaders 
 dvdcodecs: dllloader
 	$(MAKE) -C xbmc/cores/dvdplayer/Codecs
+	$(MAKE) -C xbmc/lib/libass/xbmc
 cdrip:
 	$(MAKE) -C xbmc/cdrip
 libcmyth: dllloader 
@@ -146,8 +158,6 @@ librtv:
 	$(MAKE) -C xbmc/lib/libRTV
 libxdaap:
 	$(MAKE) -C xbmc/lib/libXDAAP
-libass:
-	$(MAKE) -C xbmc/lib/libass/xbmc
 libhdhomerun:
 	$(MAKE) -C xbmc/lib/libhdhomerun
 libshout:
@@ -178,7 +188,7 @@ endif
 imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
 
-compile: guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualizations screensavers utils common tinyxml sqllite libscrobbler libgoahead unrarxlib libpython dvdplayer libupnp cdrip libcmyth librtmp libxbms libexif librtv libxdaap libass libhdhomerun libshout libid3tag papcodecs dvdcodecs imagelib
+compile: guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualisation-interface visualizations screensaver-interface screensavers utils common tinyxml sqllite libscrobbler libgoahead unrarxlib libpython dvdplayer libupnp cdrip libcmyth librtmp libxbms libexif librtv libxdaap libhdhomerun libshout libid3tag papcodecs dvdcodecs imagelib
 
 LIBS+=	\
 	guilib/*.o \
@@ -220,7 +230,7 @@ LIBS+=	\
 	xbmc/xbox/*.o \
 
 
-xbmc.bin: compile $(wildcard $(OBJS) @(LIBS))
+xbmc.bin: compile $(wildcard $(OBJS) $(LIBS))
 	g++ $(DEBUG_FLAGS) -o xbmc.bin  $(OBJS) $(LIBS) -rdynamic
 
 xbmc-xrandr: xbmc-xrandr.c
