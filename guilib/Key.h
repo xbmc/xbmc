@@ -239,6 +239,15 @@
 #define ACTION_NEXT_LETTER            140 // jump through a list or container by letter
 #define ACTION_PREV_LETTER            141
 
+#define ACTION_JUMP_SMS2              142
+#define ACTION_JUMP_SMS3              143
+#define ACTION_JUMP_SMS4              144
+#define ACTION_JUMP_SMS5              145
+#define ACTION_JUMP_SMS6              146
+#define ACTION_JUMP_SMS7              147
+#define ACTION_JUMP_SMS8              148
+#define ACTION_JUMP_SMS9              149
+
 #define ACTION_TOGGLE_FULLSCREEN      199 // switch 2 desktop resolution
 
 // Window ID defines to make the code a bit more readable
