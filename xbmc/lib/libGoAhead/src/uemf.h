@@ -219,7 +219,9 @@
 #ifndef O_BINARY
 #define O_BINARY 		0
 #endif /* O_BINARY */
+#ifndef SOCKET_ERROR
 #define	SOCKET_ERROR	-1
+#endif
 #endif /* SCOV5 || VXWORKS || LINUX || LYNX || MACOSX */
 
 #if (defined (WIN) || defined (CE))
