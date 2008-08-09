@@ -228,7 +228,7 @@ float CCPUInfo::getCPUFrequency()
     return float(dwMHz);
   }
   else
-    return = 0.f;
+    return 0.f;
 #else
   float mhz = 0.f;
   char buf[256],
