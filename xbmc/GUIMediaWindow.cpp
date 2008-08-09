@@ -131,6 +131,32 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     return true;
   }
 
+  // live filtering
+  if (action.wID == ACTION_FILTER_CLEAR)
+  {
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS);
+    message.SetStringParam("");
+    OnMessage(message);
+    return true;
+  }
+  
+  if (action.wID == ACTION_BACKSPACE)
+  {
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 2); // 2 for delete
+    OnMessage(message);
+    return true;
+  }
+
+  if (action.wID >= ACTION_FILTER_SMS2 && action.wID <= ACTION_FILTER_SMS9)
+  {
+    CStdString filter;
+    filter.Format("%i", (int)(action.wID - ACTION_FILTER_SMS2 + 2));
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 1); // 1 for append
+    message.SetStringParam(filter);
+    OnMessage(message);
+    return true;
+  }
+
   return CGUIWindow::OnAction(action);
 }
 
