@@ -2357,8 +2357,8 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
       {
         CLog::Log(LOGNOTICE, "GL: Creating Y power of two texture of size %ld x %ld", np2x, np2y);
         glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, np2x, np2y, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-        im.texcoord_x = ((float)im.width / (float)np2x);
-        im.texcoord_y = ((float)im.height / (float)divfactor / (float)np2y);
+        im.texcoord_x = ((float)(im.width-1.0) / (float)np2x);
+        im.texcoord_y = ((float)(im.height-1.0) / (float)divfactor / (float)np2y);
       }
       else
       {
