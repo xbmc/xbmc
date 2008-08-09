@@ -55,7 +55,7 @@ public:
 
   int getUsedPercentage();
   int getCPUCount() { return m_cpuCount; }
-  float getCPUFrequency() { return m_cpuFreq; }
+  float getCPUFrequency();
   CTemperature getTemperature();
   std::string& getCPUModel() { return m_cpuModel; }
 
@@ -70,6 +70,7 @@ private:
 
   FILE* m_fProcStat;
   FILE* m_fProcTemperature;
+  FILE* m_fCPUInfo;
 
   unsigned long long m_userTicks;
   unsigned long long m_niceTicks;
@@ -78,7 +79,6 @@ private:
 
   int m_lastUsedPercentage;
   time_t m_lastReadTime;
-  float m_cpuFreq;
   std::string m_cpuModel;
   int m_cpuCount;
 
