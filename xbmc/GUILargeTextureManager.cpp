@@ -45,9 +45,9 @@ CGUILargeTextureManager::~CGUILargeTextureManager()
 // Once there's nothing queued or allocated, end the thread.
 void CGUILargeTextureManager::Process()
 {
+  m_running = true;
   // lock item list
   CSingleLock lock(m_listSection);
-  m_running = true;
   while (m_queued.size() && !m_bStop)
   { // load the top item in the queue
     // take a copy of the details required for the load, as
@@ -135,21 +135,11 @@ CGLTexture * CGUILargeTextureManager::GetImage(const CStdString &path, int &widt
 #endif
     }
   }
+  lock.Leave();
+
   if (firstRequest)
-  {
-    for (listIterator it = m_queued.begin(); it != m_queued.end(); ++it)
-    {
-      CLargeTexture *image = *it;
-      if (image->GetPath() == path)
-      {
-        image->AddRef();
-        return NULL; // already queued - it'll be returned above.
-      }
-    }
-    // queue the item
-    CLargeTexture *image = new CLargeTexture(path);
-    QueueImage(image);
-  }
+    QueueImage(path);
+
   return NULL;
 }
 
@@ -161,7 +151,8 @@ void CGUILargeTextureManager::ReleaseImage(const CStdString &path, bool immediat
     CLargeTexture *image = *it;
     if (image->GetPath() == path)
     {
-      image->DecrRef(immediately);
+      if (image->DecrRef(immediately) && immediately)
+        m_allocated.erase(it);
       return;
     }
   }
@@ -177,10 +168,24 @@ void CGUILargeTextureManager::ReleaseImage(const CStdString &path, bool immediat
 }
 
 // queue the image, and start the background loader if necessary
-void CGUILargeTextureManager::QueueImage(CLargeTexture *image)
+void CGUILargeTextureManager::QueueImage(const CStdString &path)
 {
   CSingleLock lock(m_listSection);
+  for (listIterator it = m_queued.begin(); it != m_queued.end(); ++it)
+  {
+    CLargeTexture *image = *it;
+    if (image->GetPath() == path)
+    {
+      image->AddRef();
+      return; // already queued
+    }
+  }
+
+  // queue the item
+  CLargeTexture *image = new CLargeTexture(path);
   m_queued.push_back(image);
+
+  lock.Leave(); // done with our lock
 
   if (!m_running)
   {
