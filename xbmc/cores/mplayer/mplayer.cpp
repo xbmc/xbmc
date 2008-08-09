@@ -1448,14 +1448,9 @@ void CMPlayer::Process()
   CloseFile();
 
   if (m_bStop)
-  {
-    //Can't be sent here as it apperently causes the mplayer class to be deleted
-    //m_callback.OnPlayBackStopped();
-  }
+    m_callback.OnPlayBackStopped();
   else
-  {
     m_callback.OnPlayBackEnded();
-  }
 }
 
 void CMPlayer::Unload()
