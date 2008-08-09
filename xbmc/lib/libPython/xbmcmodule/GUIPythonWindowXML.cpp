@@ -332,7 +332,7 @@ void CGUIPythonWindowXML::FreeResources(bool forceUnLoad /*= FALSE */)
 void CGUIPythonWindowXML::Render()
 {
   g_TextureManager.AddTexturePath(m_mediaDir);
-  CGUIWindow::Render();
+  CGUIMediaWindow::Render();
   g_TextureManager.RemoveTexturePath(m_mediaDir);
 }
 
