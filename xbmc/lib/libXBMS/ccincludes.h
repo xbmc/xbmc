@@ -39,13 +39,16 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <inttypes.h>
+#include <unistd.h>
 
 #include "ccutil.h"
 
 #ifdef _XBOX
 #include <xtl.h>
 #elif defined(_LINUX)
+#include <arpa/inet.h>
 #include <sys/socket.h>
+#include <sys/time.h>
 #include <inttypes.h>
 #include <netdb.h>
 #else

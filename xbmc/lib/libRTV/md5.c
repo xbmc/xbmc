@@ -1,7 +1,9 @@
+#ifndef __GNUC__
 #pragma code_seg( "RTV_TEXT" )
 #pragma data_seg( "RTV_DATA" )
 #pragma bss_seg( "RTV_BSS" )
 #pragma const_seg( "RTV_RD" )
+#endif
 
 /*
  * RFC 1321 compliant MD5 implementation,
@@ -40,7 +42,7 @@ void md5_starts( md5_context *ctx )
     ctx->state[3] = 0x10325476;
 }
 
-void md5_process( md5_context *ctx, uint8 data[64] )
+void md5_process( md5_context *ctx, const uint8 data[64] )
 {
     uint32 X[16], A, B, C, D;
 
@@ -163,7 +165,7 @@ void md5_process( md5_context *ctx, uint8 data[64] )
     ctx->state[3] += D;
 }
 
-void md5_update( md5_context *ctx, uint8 *input, uint32 length )
+void md5_update( md5_context *ctx, const uint8 *input, uint32 length )
 {
     uint32 left, fill;
 
