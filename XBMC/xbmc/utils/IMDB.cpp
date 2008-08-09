@@ -304,6 +304,7 @@ bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetai
     m_parser.m_param[i] = strHTML[i];
 
   m_parser.m_param[strHTML.size()] = url.strId;
+  m_parser.m_param[strHTML.size()+1] = url.m_url[0].m_url;
 
   CStdString strXML = m_parser.Parse(strFunction,&m_info.settings);
   if (strXML.IsEmpty())

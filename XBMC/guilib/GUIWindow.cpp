@@ -30,6 +30,7 @@
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "GUIListContainer.h"
 #include "GUIPanelContainer.h"
+#include "GUIEditControl.h"
 #endif
 
 #include "SkinInfo.h"
@@ -154,6 +155,23 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   else
     strPath = g_SkinInfo.GetSkinPath(strFileName, &resToUse);
 
+  if (!bContainsPath)
+    m_coordsRes = resToUse;
+
+  CStdString strLowerPath = "";
+  bool ret = LoadXML(strPath.c_str(), strLowerPath.c_str());
+
+  LARGE_INTEGER end, freq;
+  QueryPerformanceCounter(&end);
+  QueryPerformanceFrequency(&freq);
+  CLog::Log(LOGDEBUG,"Load %s: %.2fms", m_xmlFile.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart);
+
+  return ret;
+}
+
+bool CGUIWindow::LoadXML(const CStdString &strPath, const CStdString &strLowerPath)
+{
+  TiXmlDocument xmlDoc;
   if ( !xmlDoc.LoadFile(strPath.c_str()) )
   {
     CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
@@ -167,30 +185,19 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
     m_dwWindowId = WINDOW_INVALID;
     return false;
   }
+  
+  return Load(xmlDoc);
+}
+
+bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
+{
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   if (strcmpi(pRootElement->Value(), "window"))
   {
-    CLog::Log(LOGERROR, "file :%s doesnt contain <window>", strPath.c_str());
+    CLog::Log(LOGERROR, "file : XML file doesnt contain <window>");
     return false;
   }
 
-  LARGE_INTEGER lend;
-  QueryPerformanceCounter(&lend);
-
-  if (!bContainsPath)
-    m_coordsRes = resToUse;
-  bool ret = Load(pRootElement);
-
-  LARGE_INTEGER end, freq;
-  QueryPerformanceCounter(&end);
-  QueryPerformanceFrequency(&freq);
-  CLog::Log(LOGDEBUG,"Load %s: %.2fms (%.2f ms xml load)", m_xmlFile.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (lend.QuadPart - start.QuadPart) / freq.QuadPart);
-
-  return ret;
-}
-
-bool CGUIWindow::Load(TiXmlElement* pRootElement)
-{
   // set the scaling resolution so that any control creation or initialisation can
   // be done with respect to the correct aspect ratio
   g_graphicsContext.SetScalingResolution(m_coordsRes, 0, 0, m_needsScaling);
@@ -505,7 +512,7 @@ void CGUIWindow::OnMouseAction()
       break;
     }
   }
-  g_graphicsContext.SetScalingResolution(m_coordsRes, posX, posY, m_needsScaling);
+  g_graphicsContext.SetRenderingResolution(m_coordsRes, posX, posY, m_needsScaling);
   CPoint mousePoint(g_Mouse.GetLocation());
   g_graphicsContext.InvertFinalCoords(mousePoint.x, mousePoint.y);
   m_transform.InverseTransformPosition(mousePoint.x, mousePoint.y);
@@ -1304,6 +1311,19 @@ void CGUIWindow::GetContainers(vector<CGUIControl *> &containers) const
   }
 }
 
+void CGUIWindow::OnEditChanged(int id, CStdString &text)
+{
+  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), id);
+  OnMessage(msg);
+  text = msg.GetLabel();
+}
+
+bool CGUIWindow::SendMessage(DWORD message, DWORD id, DWORD param1 /* = 0*/, DWORD param2 /* = 0*/)
+{
+  CGUIMessage msg(message, GetID(), id, param1, param2);
+  return OnMessage(msg);
+}
+
 #ifdef _DEBUG
 void CGUIWindow::DumpTextureUse()
 {
@@ -1314,3 +1334,24 @@ void CGUIWindow::DumpTextureUse()
   }
 }
 #endif
+
+void CGUIWindow::ChangeButtonToEdit(int id, bool singleLabel /* = false*/)
+{
+#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+  CGUIControl *name = (CGUIControl *)GetControl(id);
+  if (name && name->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
+  { // change it to an edit control
+    CGUIEditControl *edit = new CGUIEditControl(*(const CGUIButtonControl *)name);
+    if (edit)
+    {
+      if (singleLabel)
+        edit->SetLabel("");
+      Insert(edit, name);
+      Remove(name);
+      name->FreeResources();
+      delete name;
+    }
+  }
+#endif
+}
+

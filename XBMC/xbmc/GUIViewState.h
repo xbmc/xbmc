@@ -64,8 +64,7 @@ public:
 protected:
   CGUIViewState(const CFileItemList& items);  // no direct object creation, use GetViewState()
   virtual void SaveViewState()=0;
-  void SaveViewToDb(const CStdString &path, int windowID);
-  void SaveViewToDb(const CStdString &path, int windowID, CViewState &viewState, bool saveSettings = true);
+  virtual void SaveViewToDb(const CStdString &path, int windowID, CViewState *viewState = NULL);
   void LoadViewState(const CStdString &path, int windowID);
 
   void AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, LABEL_MASKS labelmasks);

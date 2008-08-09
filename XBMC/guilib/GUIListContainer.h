@@ -44,6 +44,7 @@ public:
   CGUIControl *m_spinControl;
 //#endif
   virtual ~CGUIListContainer(void);
+  virtual CGUIListContainer *Clone() const { return new CGUIListContainer(*this); };
 
   virtual void Render();
   virtual bool OnAction(const CAction &action);

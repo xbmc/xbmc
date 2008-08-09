@@ -45,7 +45,6 @@ protected:
   void OnRuleList(int item);
   void OnRuleAdd();
   void OnRuleRemove(int item);
-  void OnName();
   void OnMatch();
   void OnLimit();
   void OnType();

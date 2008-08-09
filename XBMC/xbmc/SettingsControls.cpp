@@ -147,27 +147,7 @@ CButtonSettingControl::~CButtonSettingControl()
 
 bool CButtonSettingControl::OnClick()
 {
-  // grab the onscreen keyboard
-  CStdString keyboardInput(((CSettingString *)m_pSetting)->GetData());
-  CStdString heading;
-  if (((CSettingString *)m_pSetting)->m_iHeadingString > 0)
-    heading = g_localizeStrings.Get(((CSettingString *)m_pSetting)->m_iHeadingString);
-  if (m_pSetting->GetControlType() == BUTTON_CONTROL_INPUT)
-  {
-    if (!CGUIDialogKeyboard::ShowAndGetInput(keyboardInput, heading, ((CSettingString *)m_pSetting)->m_bAllowEmpty))
-      return false;
-  }
-  if (m_pSetting->GetControlType() == BUTTON_CONTROL_HIDDEN_INPUT)
-  {
-    if (!CGUIDialogKeyboard::ShowAndGetNewPassword(keyboardInput, heading, ((CSettingString *)m_pSetting)->m_bAllowEmpty))
-      return false;
-  }
-  if (m_pSetting->GetControlType() == BUTTON_CONTROL_IP_INPUT)
-  {
-    if (!CGUIDialogNumeric::ShowAndGetIPAddress(keyboardInput, g_localizeStrings.Get(14068)))
-      return false;
-  }
-  ((CSettingString *)m_pSetting)->SetData(keyboardInput);
+  // this is pretty much a no-op as all click action is done in the calling class
   Update();
   return true;
 }
@@ -177,13 +157,6 @@ void CButtonSettingControl::Update()
   if (m_pSetting->GetControlType() == BUTTON_CONTROL_STANDARD)
     return ;
   CStdString strText = ((CSettingString *)m_pSetting)->GetData();
-  if (m_pSetting->GetControlType() == BUTTON_CONTROL_HIDDEN_INPUT)
-  {
-    int iNumChars = strText.size();
-    strText.Empty();
-    for (int i = 0; i < iNumChars; i++)
-      strText += '*';
-  }
   if (m_pSetting->GetControlType() == BUTTON_CONTROL_PATH_INPUT)
   {
     CStdString shortPath;
@@ -193,8 +166,44 @@ void CButtonSettingControl::Update()
   m_pButton->SetLabel2(strText);
 }
 
+CEditSettingControl::CEditSettingControl(CGUIEditControl *pEdit, DWORD dwID, CSetting *pSetting)
+    : CBaseSettingControl(dwID, pSetting)
+{
+  m_needsUpdate = false;
+  m_pEdit = pEdit;
+  m_pEdit->SetID(dwID);
+  int heading = ((CSettingString *)m_pSetting)->m_iHeadingString;
+  if (heading < 0) heading = 0;
+  if (pSetting->GetControlType() == EDIT_CONTROL_HIDDEN_INPUT)
+    m_pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_PASSWORD, heading);
+  else if (pSetting->GetControlType() == EDIT_CONTROL_IP_INPUT)
+    m_pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_IPADDRESS, heading);
+  else if (pSetting->GetControlType() == EDIT_CONTROL_NUMBER_INPUT)
+    m_pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_NUMBER, heading);
+  else
+    m_pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_TEXT, heading);
+  Update();
+}
 
-bool CButtonSettingControl::IsValidIPAddress(const CStdString &strIP)
+CEditSettingControl::~CEditSettingControl()
+{
+}
+
+bool CEditSettingControl::OnClick()
+{
+  // update our string
+  ((CSettingString *)m_pSetting)->SetData(m_pEdit->GetLabel2());
+  // we update on exit only
+  m_needsUpdate = true;
+  return false;
+}
+
+void CEditSettingControl::Update()
+{
+  m_pEdit->SetLabel2(((CSettingString *)m_pSetting)->GetData());
+}
+
+bool CEditSettingControl::IsValidIPAddress(const CStdString &strIP)
 {
   const char* s = strIP.c_str();
   bool legalFormat = true;

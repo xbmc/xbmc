@@ -109,7 +109,7 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
 
 bool CVirtualPathDirectory::Exists(const CStdString& strPath)
 {
-  CLog::Log(LOGDEBUG,"Testing Existance (%s)", strPath.c_str());
+  CLog::Log(LOGDEBUG,"Testing Existence (%s)", strPath.c_str());
   CMediaSource share;
   if (!GetMatchingSource(strPath, share))
     return false;
@@ -117,10 +117,10 @@ bool CVirtualPathDirectory::Exists(const CStdString& strPath)
   unsigned int iFailures = 0;
   for (int i = 0; i < (int)share.vecPaths.size(); ++i)
   {
-    CLog::Log(LOGDEBUG,"Testing Existance (%s)", share.vecPaths[i].c_str());
+    CLog::Log(LOGDEBUG,"Testing Existence (%s)", share.vecPaths[i].c_str());
     if (!CDirectory::Exists(share.vecPaths[i]))
     {
-      CLog::Log(LOGERROR,"Error Testing Existance (%s)", share.vecPaths[i].c_str());
+      CLog::Log(LOGERROR,"Error Testing Existence (%s)", share.vecPaths[i].c_str());
       iFailures++;
     }
   }
@@ -177,7 +177,7 @@ bool CVirtualPathDirectory::GetMatchingSource(const CStdString &strPath, CMediaS
   int iIndex = CUtil::GetMatchingSource(strSource, *VECSOURCES, bIsSourceName);
   if (!bIsSourceName)
     return false;
-  if (iIndex < 0)
+  if (iIndex < 0 || iIndex >= (int)VECSOURCES->size())
     return false;
 
   share = (*VECSOURCES)[iIndex];

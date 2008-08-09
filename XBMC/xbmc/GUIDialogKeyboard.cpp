@@ -65,7 +65,6 @@ CGUIDialogKeyboard::CGUIDialogKeyboard(void)
   m_keyType = LOWER;
   m_strHeading = "";
   m_lastRemoteClickTime = 0;
-  m_lastSearchUpdate = 0;
 }
 
 CGUIDialogKeyboard::~CGUIDialogKeyboard(void)
@@ -100,11 +99,6 @@ void CGUIDialogKeyboard::OnInitWindow()
 
 bool CGUIDialogKeyboard::OnAction(const CAction &action)
 {
-  // check if we're doing a search, and if so, interrupt the search timer.
-  DWORD now = timeGetTime();
-  if (m_lastSearchUpdate || m_lastSearchUpdate + SEARCH_DELAY >= now)
-    m_lastSearchUpdate = now;
-
   if (action.wID == ACTION_BACKSPACE)
   {
     Backspace();
@@ -240,8 +234,9 @@ bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
   return true;
 }
 
-void CGUIDialogKeyboard::SetText(CStdString& aTextString)
+void CGUIDialogKeyboard::SetText(const CStdString& aTextString)
 {
+  m_strEdit.Empty();
   g_charsetConverter.utf8ToW(aTextString, m_strEdit);
   UpdateLabel();
   MoveCursor(m_strEdit.size());
@@ -272,8 +267,6 @@ void CGUIDialogKeyboard::Render()
     // finished inputting a sms style character - turn off our shift and symbol states
     ResetShiftAndSymbols();
   }
-  if (m_lastSearchUpdate && m_lastSearchUpdate + SEARCH_DELAY < timeGetTime())
-    UpdateLabel();
   CGUIDialog::Render();
 }
 
@@ -298,28 +291,22 @@ void CGUIDialogKeyboard::UpdateLabel()
     CStdString utf8Edit;
     g_charsetConverter.wToUTF8(edit, utf8Edit);
     pEdit->SetLabel(utf8Edit);
-    // Send off a search message if it's been SEARCH_DELAY since last search.
+    // Send off a search message
     DWORD now = timeGetTime();
-    if (!m_lastSearchUpdate || m_lastSearchUpdate + SEARCH_DELAY >= now)
-      m_lastSearchUpdate = now; // update is called when we haven't passed our search delay, so reset it
-    if (m_lastSearchUpdate + SEARCH_DELAY < now)
-    {
-      // don't send until the REMOTE_SMS_DELAY has passed
-      if (m_lastRemoteClickTime && m_lastRemoteClickTime + REMOTE_SMS_DELAY >= now)
-        return;
-      m_lastSearchUpdate = 0;
-      if (m_filtering == FILTERING_CURRENT)
-      { // send our filter message
-        CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS);
-        message.SetStringParam(utf8Edit);
-        g_graphicsContext.SendMessage(message);
-      }
-      if (m_filtering == FILTERING_SEARCH)
-      { // send our search message
-        CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_SEARCH_UPDATE);
-        message.SetStringParam(utf8Edit);
-        g_graphicsContext.SendMessage(message);
-      }
+    // don't send until the REMOTE_SMS_DELAY has passed
+    if (m_lastRemoteClickTime && m_lastRemoteClickTime + REMOTE_SMS_DELAY >= now)
+      return;
+    if (m_filtering == FILTERING_CURRENT)
+    { // send our filter message
+      CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS);
+      message.SetStringParam(utf8Edit);
+      g_graphicsContext.SendMessage(message);
+    }
+    if (m_filtering == FILTERING_SEARCH)
+    { // send our search message
+      CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_SEARCH_UPDATE);
+      message.SetStringParam(utf8Edit);
+      g_graphicsContext.SendMessage(message);
     }
   }
 }
@@ -706,7 +693,7 @@ void CGUIDialogKeyboard::OnIPAddress()
   int length = 0;
   if (start > -1)
   {
-    length = reg.GetSubLenght(0);
+    length = reg.GetSubLength(0);
     ip = utf8String.Mid(start, length);
   }
   else

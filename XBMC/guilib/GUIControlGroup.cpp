@@ -34,6 +34,22 @@ CGUIControlGroup::CGUIControlGroup(DWORD dwParentID, DWORD dwControlId, float po
   ControlType = GUICONTROL_GROUP;
 }
 
+CGUIControlGroup::CGUIControlGroup(const CGUIControlGroup &from)
+: CGUIControl(from)
+{
+  m_defaultControl = from.m_defaultControl;
+  m_renderFocusedLast = from.m_renderFocusedLast;
+
+  // run through and add our controls
+  for (ciControls it = from.m_children.begin(); it != from.m_children.end(); ++it)
+    AddControl((*it)->Clone());
+
+  // defaults
+  m_focusedControl = 0;
+  m_renderTime = 0;
+  ControlType = GUICONTROL_GROUP;
+}
+
 CGUIControlGroup::~CGUIControlGroup(void)
 {
   ClearAll();

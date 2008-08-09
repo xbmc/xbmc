@@ -24,6 +24,7 @@
 #include "PluginDirectory.h"
 #include "Util.h"
 #include "lib/libPython/XBPython.h"
+#include "../utils/SingleLock.h"
 #include "PluginSettings.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
@@ -35,6 +36,7 @@ using namespace DIRECTORY;
 using namespace std;
 
 vector<CPluginDirectory *> CPluginDirectory::globalHandles;
+CCriticalSection CPluginDirectory::m_handleLock;
 
 CPluginDirectory::CPluginDirectory(void)
 {
@@ -50,6 +52,7 @@ CPluginDirectory::~CPluginDirectory(void)
 
 int CPluginDirectory::getNewHandle(CPluginDirectory *cp)
 {
+  CSingleLock lock(m_handleLock);
   int handle = (int)globalHandles.size();
   globalHandles.push_back(cp);
   return handle;
@@ -57,12 +60,14 @@ int CPluginDirectory::getNewHandle(CPluginDirectory *cp)
 
 void CPluginDirectory::removeHandle(int handle)
 {
+  CSingleLock lock(m_handleLock);
   if (handle > 0 && handle < (int)globalHandles.size())
     globalHandles.erase(globalHandles.begin() + handle);
 }
 
 bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems)
 {
+  CSingleLock lock(m_handleLock);
   if (handle < 0 || handle >= (int)globalHandles.size())
   {
     CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
@@ -77,14 +82,19 @@ bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems
   return !dir->m_cancelled;
 }
 
-void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceListing)
+void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceListing, bool cacheToDisc)
 {
+  CSingleLock lock(m_handleLock);
   if (handle < 0 || handle >= (int)globalHandles.size())
   {
     CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
     return;
   }
   CPluginDirectory *dir = globalHandles[handle];
+
+  // set cache to disc
+  dir->m_listItems->SetCacheToDisc(cacheToDisc ? CFileItemList::CACHE_IF_SLOW : CFileItemList::CACHE_NEVER);
+
   dir->m_success = success;
   dir->m_listItems->SetReplaceListing(replaceListing);
 
@@ -97,6 +107,7 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
 
 void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
 {
+  CSingleLock lock(m_handleLock);
   if (handle < 0 || handle >= (int)globalHandles.size())
   {
     CLog::Log(LOGERROR, "%s - called with an invalid handle.", __FUNCTION__);
@@ -532,6 +543,7 @@ void CPluginDirectory::SetContent(int handle, const CStdString &strContent)
 
 void CPluginDirectory::SetProperty(int handle, const CStdString &strProperty, const CStdString &strValue)
 {
+  CSingleLock lock(m_handleLock);
   if (handle < 0 || handle >= (int)globalHandles.size())
   {
     CLog::Log(LOGERROR, "%s called with an invalid handle.", __FUNCTION__);

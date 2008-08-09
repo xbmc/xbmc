@@ -220,7 +220,7 @@
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories="./xbmc;./xbmc/cores/dvdplayer/;./guilib;./guilib/common;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox;./xbmc/lib/boost;./xbmc/lib/libRTMP"
-				PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS"
+				PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS;NOMINMAX"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
 				BasicRuntimeChecks="0"
@@ -292,7 +292,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories="./xbmc;./xbmc/cores/dvdplayer/;./guilib;./guilib/common;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox;./xbmc/lib/boost;./xbmc/lib/libRTMP"
-				PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS;LTCG"
+				PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS;LTCG;NOMINMAX"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
 				RuntimeLibrary="0"
@@ -816,6 +816,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\ApplicationMessenger.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\ArabicShaping.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\ArabicShaping.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\Archive.cpp">
@@ -3801,12 +3807,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\paplayer\CodecFactory.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\paplayer\CubeCodec.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\cores\paplayer\CubeCodec.h">
-				</File>
-				<File
 					RelativePath=".\xbmc\cores\paplayer\DllAACCodec.h">
 				</File>
 				<File
@@ -3856,6 +3856,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\DllTimidity.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\DllVGMStream.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\DllVorbisfile.h">
@@ -3964,6 +3967,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\TimidityCodec.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\VGMCodec.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\paplayer\VGMCodec.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\WAVcodec.cpp">
@@ -4442,6 +4451,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\keyboard.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\language.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\language.h">
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\listitem.cpp">

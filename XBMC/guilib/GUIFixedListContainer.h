@@ -37,6 +37,7 @@ class CGUIFixedListContainer : public CGUIBaseContainer
 public:
   CGUIFixedListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int fixedPosition);
   virtual ~CGUIFixedListContainer(void);
+  virtual CGUIFixedListContainer *Clone() const { return new CGUIFixedListContainer(*this); };
 
   virtual void Render();
   virtual bool OnAction(const CAction &action);

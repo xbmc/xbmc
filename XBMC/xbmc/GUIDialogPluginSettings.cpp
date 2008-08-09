@@ -33,21 +33,23 @@
 #include "VideoInfoScanner.h"
 #include "ScraperSettings.h"
 #include "GUIWindowManager.h"
+#include "Application.h"
 #include "GUIDialogKeyboard.h"
 #include "FileItem.h"
 
 using namespace std;
 
-#define CONTROL_AREA                  2
-#define CONTROL_DEFAULT_BUTTON        3
-#define CONTROL_DEFAULT_RADIOBUTTON   4
-#define CONTROL_DEFAULT_SPIN          5
-#define CONTROL_DEFAULT_SEPARATOR     6
-#define ID_BUTTON_OK                  10
-#define ID_BUTTON_CANCEL              11
-#define ID_BUTTON_DEFAULT             12
-#define CONTROL_HEADING_LABEL         20
-#define CONTROL_START_CONTROL         100
+#define CONTROL_AREA                    2
+#define CONTROL_DEFAULT_BUTTON          3
+#define CONTROL_DEFAULT_RADIOBUTTON     4
+#define CONTROL_DEFAULT_SPIN            5
+#define CONTROL_DEFAULT_SEPARATOR       6
+#define CONTROL_DEFAULT_LABEL_SEPARATOR 7
+#define ID_BUTTON_OK                    10
+#define ID_BUTTON_CANCEL                11
+#define ID_BUTTON_DEFAULT               12
+#define CONTROL_HEADING_LABEL           20
+#define CONTROL_START_CONTROL           100
 
 CGUIDialogPluginSettings::CGUIDialogPluginSettings()
    : CGUIDialogBoxBase(WINDOW_DIALOG_PLUGIN_SETTINGS, "DialogPluginSettings.xml")
@@ -320,6 +322,7 @@ void CGUIDialogPluginSettings::CreateControls()
   CGUIRadioButtonControl *pOriginalRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_DEFAULT_RADIOBUTTON);
   CGUIButtonControl *pOriginalButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_BUTTON);
   CGUIImage *pOriginalImage = (CGUIImage *)GetControl(CONTROL_DEFAULT_SEPARATOR);
+  CGUILabelControl *pOriginalLabel = (CGUILabelControl *)GetControl(CONTROL_DEFAULT_LABEL_SEPARATOR);
 
   if (!pOriginalSpin || !pOriginalRadioButton || !pOriginalButton || !pOriginalImage)
     return;
@@ -328,6 +331,8 @@ void CGUIDialogPluginSettings::CreateControls()
   pOriginalRadioButton->SetVisible(false);
   pOriginalButton->SetVisible(false);
   pOriginalImage->SetVisible(false);
+  if (pOriginalLabel)
+    pOriginalLabel->SetVisible(false);
 
   // clear the category group
   CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_AREA);
@@ -457,6 +462,12 @@ void CGUIDialogPluginSettings::CreateControls()
     }
     else if (strcmpi(type, "sep") == 0 && pOriginalImage)
       pControl = new CGUIImage(*pOriginalImage);
+    else if (strcmpi(type, "lsep") == 0 && pOriginalLabel)
+    {
+      pControl = new CGUILabelControl(*pOriginalLabel);
+      if (!pControl) return;
+      ((CGUILabelControl *)pControl)->SetLabel(label);
+    }
 
     if (pControl)
     {

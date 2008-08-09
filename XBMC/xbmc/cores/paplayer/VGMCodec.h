@@ -23,13 +23,13 @@
  */
 
 #include "ICodec.h"
-#include "DllCube.h"
+#include "DllVGMStream.h"
 
-class CubeCodec : public ICodec
+class VGMCodec : public ICodec
 {
 public:
-  CubeCodec();
-  virtual ~CubeCodec();
+  VGMCodec();
+  virtual ~VGMCodec();
 
   virtual bool Init(const CStdString &strFile, unsigned int filecache);
   virtual void DeInit();
@@ -39,9 +39,8 @@ public:
   static bool IsSupportedFormat(const CStdString& strExt);
 
 private:
-  DllCube m_dll;
-  int m_adx;
-//  int m_iTrack;
+  DllVGM m_dll;
+  int m_vgm;
   __int64 m_iDataPos;
 };
 

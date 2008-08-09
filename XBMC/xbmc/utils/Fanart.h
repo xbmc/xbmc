@@ -38,11 +38,11 @@
 /// In order to provide an interface between the fanart data and the XBMC database, all data
 /// is stored internally it its own form, as well as packed into an XML formatted CStdString
 /// stored in the member variable m_xml.
-/// Information on multiple fanarts for a given show is stored, but XBMC only cares about the 
+/// Information on multiple fanarts for a given show is stored, but XBMC only cares about the
 /// very first fanart stored.  These interfaces provide a means to access the data in that first
 /// fanart record, as well as to set which fanart is the first record.  Externally, all XBMC needs
 /// to care about is getting and setting that first record.  Everything else is maintained internally
-/// by CFanart.  This point is key to using the interface properly.   
+/// by CFanart.  This point is key to using the interface properly.
 class CFanart
 {
 public:
@@ -63,10 +63,6 @@ public:
   /// \return A CStdString containing the full URL to the full resolution fanart image
   const CStdString GetImageURL() const;
   ///
-  /// Retrieves the fanart thumbnail image URL
-  /// \return a CStdString containing the full URL to the thumbnail sized fanart image
-  const CStdString GetThumbURL() const;
-  ///
   /// Used to return a specified fanart theme color value
   /// \param index: 0 based index of the color to retrieve.  A fanart theme contains 3 colors, indices 0-2, arranged from darkest to lightest.
   const CStdString GetColor(unsigned int index) const;
@@ -85,7 +81,7 @@ public:
   bool DownloadThumb(unsigned int index, const CStdString &strDestination) const;
   ///
   /// Downloads the primary fanart full resolution image
-  /// 
+  ///
   /// This interface ONLY downloads the primary image because there should not be a reason to download any other
   /// \param strDestination: CStdString full path and filename indicating where to store the image
   /// \return A boolean indicating success of failure of the download
@@ -102,12 +98,19 @@ public:
   /// also the interface used to pass the fanart data from the scraper to CFanart.
   CStdString m_xml;
 private:
-  static const unsigned int max_fanart_colors = 3;
+  ///
+  /// Downloads the specified image to the specified destination
+  ///
+  /// \param url: CStdString full url indicating where to download the image from
+  /// \param destination: CStdString full path and filename indicating where to store the image
+  /// \return A boolean indicating success of failure of the download
+  bool DownloadImage(const CStdString &url, const CStdString &destination) const;
+  static const unsigned int max_fanart_colors;
   ///
   /// Parse various color formats as returned by the sites scraped into a format we recognize
   ///
-  /// Supported Formats: 
-  ///  
+  /// Supported Formats:
+  ///
   /// * The TVDB RGB Int Triplets, pipe seperate with leading/trailing pipes "|68,69,59|69,70,58|78,78,68|"
   /// * XBMC ARGB Hexadecimal string comma seperated "FFFFFFFF,DDDDDDDD,AAAAAAAA"
   ///
@@ -119,7 +122,6 @@ private:
   struct SFanartData
   {
     CStdString strImage;
-    CStdString strThumb;
     CStdString strResolution;
     CStdString strColors;
   };

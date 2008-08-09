@@ -103,12 +103,12 @@
 		</control>
 		<include>OldListViewCommons</include>
 		<include>MusicViewCommons</include>
-		<include>3D_Cover_View</include>
 		<include>AllViewCommonThumbSmall</include>
 		<include>AllViewCommonThumbLarge</include>
 		<include>MusicCoverThumbView</include>
 		<include>MusicCoverWrapView</include>
 		<include>AllViewCommonPageControls</include>
+		<include>ScrollOffsetLabel</include>
 		<include>windowswitchtransition</include>
 	</controls>
 </window>

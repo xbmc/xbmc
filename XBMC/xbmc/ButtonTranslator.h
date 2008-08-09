@@ -27,7 +27,7 @@
 #endif
 
 class CKey;
-struct CAction;
+class CAction;
 class TiXmlNode;
 class TiXmlElement;
 

@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../xbmc/;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32;../../xbmc/cores/dvdplayer;../../xbmc/lib/boost;..\..\xbmc\lib\libRTMP"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_WIN32_WINNT=0x0500;WINVER=0x0500"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_WIN32_WINNT=0x0500;WINVER=0x0500;NOMINMAX"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
@@ -707,12 +707,6 @@
 					RelativePath="..\..\xbmc\cores\paplayer\CodecFactory.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\CubeCodec.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\paplayer\CubeCodec.h">
-				</File>
-				<File
 					RelativePath="..\..\xbmc\cores\paplayer\dec_if.h">
 				</File>
 				<File
@@ -765,6 +759,9 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\paplayer\DllTimidity.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\paplayer\DllVGMStream.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\paplayer\DllVorbisfile.h">
@@ -876,6 +873,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\paplayer\TimidityCodec.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\paplayer\VGMCodec.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\paplayer\VGMCodec.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\paplayer\WAVcodec.cpp">
@@ -1626,6 +1629,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\ApplicationMessenger.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\ArabicShaping.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\ArabicShaping.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\Archive.cpp">
@@ -3531,6 +3540,12 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\keyboard.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\language.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\language.h">
 					</File>
 					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\listitem.cpp">

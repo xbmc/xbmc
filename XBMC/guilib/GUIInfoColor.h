@@ -29,6 +29,21 @@
  *
  */
 
+class CGUIListItem;
+
+class CGUIInfoBool
+{
+public:
+  CGUIInfoBool(bool value = false);
+  operator bool() const { return m_value; };
+
+  void Update(DWORD parentID = 0, const CGUIListItem *item = NULL);
+  void Parse(const CStdString &info);
+private:
+  int m_info;
+  bool m_value;
+};
+
 class CGUIInfoColor
 {
 public:

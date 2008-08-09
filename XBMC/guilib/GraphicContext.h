@@ -109,7 +109,7 @@ public:
   void setMessageSender(IMsgSenderCallback* pCallback);
   DWORD GetNewID();
   const CStdString& GetMediaDir() const { return m_strMediaDir; }
-  void SetMediaDir(const CStdString& strMediaDir) { m_strMediaDir = strMediaDir; }
+  void SetMediaDir(const CStdString& strMediaDir);
   bool IsWidescreen() const { return m_bWidescreen; }
   bool SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious = false);
   void RestoreViewPort();
@@ -136,7 +136,8 @@ public:
   void Clear();
 
   // output scaling
-  void SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  // sets the input skin resolution.
+  void SetRenderingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  ///< Sets scaling up for rendering
+  void SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);    ///< Sets scaling up for skin loading etc.
   float GetScalingPixelRatio() const;
 
   void InvertFinalCoords(float &x, float &y) const;

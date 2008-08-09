@@ -544,8 +544,8 @@ CUPnPServer::BuildObject(CFileItem*      item,
                 case VIDEODATABASEDIRECTORY::NODE_TYPE_MOVIES_OVERVIEW:
                   container->m_ObjectClass.type += ".storageFolder";
                   break;
-		        default:
-		          break;
+                default:
+                  break;
             }
         } else if(item->IsPlayList()) {
             container->m_ObjectClass.type += ".playlistContainer";
@@ -982,7 +982,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
         } else {
             CDirectory::GetDirectory((const char*)id, items);
         }
-        if(items.GetCacheToDisc() || time < GetTickCount())
+        if(items.CacheToDiscAlways() || (items.CacheToDiscIfSlow() && time < GetTickCount()))
           items.Save();
     }
 
@@ -1424,7 +1424,6 @@ CUPnP::StartServer()
 
     // trying to set optional upnp values for XP UPnP UI Icons to detect us
     // but it doesn't work anyways as it requires multicast for XP to detect us
-
     m_ServerHolder->m_Device->m_PresentationURL = NPT_HttpUrl(ip, atoi(g_guiSettings.GetString("servers.webserverport")), "/").ToString();
     // c0diq: For the XBox260 to discover XBMC, the ModelName must stay "Windows Media Connect"
     //m_ServerHolder->m_Device->m_ModelName = "XBMC";

@@ -120,7 +120,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
           if (iIndex > -1)
           {
             bool bDoStuff = true;
-            if (shares[iIndex].m_iHasLock == 2)
+            if (iIndex < (int)shares.size() && shares[iIndex].m_iHasLock == 2)
             {
               CFileItem item(shares[iIndex]);
               if (!g_passwordManager.IsItemUnlocked(&item,"pictures"))
@@ -621,7 +621,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
       CPicture pic;
       pic.DoCreateThumbnail(thumb, pItem->GetCachedPictureThumb(),true);
     }
-    else
+    else if (!pItem->IsPluginFolder())
     {
       // we load the directory, grab 4 random thumb files (if available) and then generate
       // the thumb.

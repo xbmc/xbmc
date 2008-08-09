@@ -49,17 +49,17 @@ public:
   void              SetCurrentListPosition(int item);
   void              SetCallbackWindow(PyObject *object);
   virtual bool      OnClick(int iItem);
-  void              LoadScriptStrings(const CStdString &strPath);
-  void              ClearScriptStrings();
 
 protected:
   virtual void     GetContextButtons(int itemNumber, CContextButtons &buttons);
+  virtual bool     LoadXML(const CStdString &strPath, const CStdString &strPathLower);
+  int              LoadScriptStrings();
+  void             ClearScriptStrings();
   virtual void     Update();
-  virtual void     OnInitWindow();
-  void              SetupShares();
+  void             SetupShares();
   PyObject*        pCallbackWindow;
   HANDLE           m_actionEvent;
   bool             m_bRunning;
-  CStdString       m_fallbackPath;
-  CStdString       m_backupMediaDir;
+  CStdString       m_scriptPath;
+  CStdString       m_mediaDir;
 };

@@ -269,13 +269,13 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(3, "musicfiles", 744);
   AddBool(1, "musicfiles.usetags", 258, true);
-  AddString(2, "musicfiles.trackformat", 13307, "[%N. ]%A - %T", BUTTON_CONTROL_INPUT, false, 16016);
-  AddString(3, "musicfiles.trackformatright", 13387, "%D", BUTTON_CONTROL_INPUT, false, 16016);
+  AddString(2, "musicfiles.trackformat", 13307, "[%N. ]%A - %T", EDIT_CONTROL_INPUT, false, 16016);
+  AddString(3, "musicfiles.trackformatright", 13387, "%D", EDIT_CONTROL_INPUT, false, 16016);
   // advanced per-view trackformats.
-  AddString(0, "musicfiles.nowplayingtrackformat", 13307, "", BUTTON_CONTROL_INPUT, false, 16016);
-  AddString(0, "musicfiles.nowplayingtrackformatright", 13387, "", BUTTON_CONTROL_INPUT, false, 16016);
-  AddString(0, "musicfiles.librarytrackformat", 13307, "", BUTTON_CONTROL_INPUT, false, 16016);
-  AddString(0, "musicfiles.librarytrackformatright", 13387, "", BUTTON_CONTROL_INPUT, false, 16016);
+  AddString(0, "musicfiles.nowplayingtrackformat", 13307, "", EDIT_CONTROL_INPUT, false, 16016);
+  AddString(0, "musicfiles.nowplayingtrackformatright", 13387, "", EDIT_CONTROL_INPUT, false, 16016);
+  AddString(0, "musicfiles.librarytrackformat", 13307, "", EDIT_CONTROL_INPUT, false, 16016);
+  AddString(0, "musicfiles.librarytrackformatright", 13387, "", EDIT_CONTROL_INPUT, false, 16016);
   AddSeparator(4, "musicfiles.sep1");
   AddInt(5, "musicfiles.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
   AddInt(6, "musicfiles.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
@@ -288,12 +288,12 @@ CGUISettings::CGUISettings(void)
   AddCategory(3, "lastfm", 15200);
   AddBool(1, "lastfm.enable", 15201, false);
   AddBool(2, "lastfm.recordtoprofile", 15250, false);
-  AddString(3,"lastfm.username", 15202, "", BUTTON_CONTROL_INPUT, false, 15202);
-  AddString(4,"lastfm.password", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 15203);
+  AddString(3,"lastfm.username", 15202, "", EDIT_CONTROL_INPUT, false, 15202);
+  AddString(4,"lastfm.password", 15203, "", EDIT_CONTROL_HIDDEN_INPUT, false, 15203);
 
   AddCategory(3, "cddaripper", 620);
   AddString(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 657);
-  AddString(2, "cddaripper.trackformat", 13307, "[%N. ]%T - %A", BUTTON_CONTROL_INPUT, false, 16016);
+  AddString(2, "cddaripper.trackformat", 13307, "[%N. ]%T - %A", EDIT_CONTROL_INPUT, false, 16016);
   AddInt(3, "cddaripper.encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
   AddInt(4, "cddaripper.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
   AddInt(5, "cddaripper.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
@@ -414,16 +414,16 @@ CGUISettings::CGUISettings(void)
   AddBool(7, "videolibrary.removeduplicates", 20419, true);
   AddSeparator(7, "videolibrary.sep1");
   AddBool(8, "videolibrary.updateonstartup", 22000, false);
-  AddBool(9, "videolibrary.backgroundupdate", 22001, false);    
-  AddSeparator(10, "videolibrary.sep2");  
+  AddBool(0, "videolibrary.backgroundupdate", 22001, false);
+  AddSeparator(10, "videolibrary.sep2");
   AddString(11, "videolibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
   AddString(12, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
   AddString(13, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
 
-  AddCategory(5, "pvrfrontend", 17000);
-  AddBool(1, "pvrfrontend.enabled", 17010, false);
-  //AddInt(2, "pvrfrontend.servertype", 17011, 
-  AddString(3, "pvrfrontend.serverip", 17012, "", BUTTON_CONTROL_IP_INPUT);
+  AddCategory(5, "pvrmanager", 17000);
+  AddBool(1, "pvrmanager.enabled", 17010, false);
+  //AddInt(2, "pvrmanager.servertype", 17011, 
+  AddString(3, "pvrmanager.serverip", 17012, "", BUTTON_CONTROL_IP_INPUT);
 
 
   AddCategory(5, "videoplayer", 16003);
@@ -450,7 +450,6 @@ CGUISettings::CGUISettings(void)
   AddInt(3, "subtitles.style", 736, FONT_STYLE_BOLD, FONT_STYLE_NORMAL, 1, FONT_STYLE_BOLD_ITALICS, SPIN_CONTROL_TEXT);
   AddInt(4, "subtitles.color", 737, SUBTITLE_COLOR_START + 1, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
   AddString(5, "subtitles.charset", 735, "DEFAULT", SPIN_CONTROL_TEXT);
-  AddBool(6, "subtitles.flipbidicharset", 13304, false);
   AddSeparator(7, "subtitles.sep1");
   AddBool(9, "subtitles.searchrars", 13249, false);
   AddSeparator(10,"subtitles.sep2");
@@ -471,43 +470,44 @@ CGUISettings::CGUISettings(void)
   AddGroup(6, 705);
   AddCategory(6, "network", 705);
   AddInt(1, "network.assignment", 715, NETWORK_DASH, NETWORK_DASH, 1, NETWORK_STATIC, SPIN_CONTROL_TEXT);
-  AddString(2, "network.ipaddress", 719, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
-  AddString(3, "network.subnet", 720, "255.255.255.0", BUTTON_CONTROL_IP_INPUT);
-  AddString(4, "network.gateway", 721, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
-  AddString(5, "network.dns", 722, "0.0.0.0", BUTTON_CONTROL_IP_INPUT);
-  AddString(6, "network.dnssuffix", 22002, "", BUTTON_CONTROL_INPUT, true);
+  AddString(2, "network.ipaddress", 719, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
+  AddString(3, "network.subnet", 720, "255.255.255.0", EDIT_CONTROL_IP_INPUT);
+  AddString(4, "network.gateway", 721, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
+  AddString(5, "network.dns", 722, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
+  AddString(6, "network.dnssuffix", 22002, "", EDIT_CONTROL_INPUT, true);
   AddSeparator(7, "network.sep1");
   AddBool(8, "network.usehttpproxy", 708, false);
-  AddString(9, "network.httpproxyserver", 706, "", BUTTON_CONTROL_IP_INPUT);
-  AddString(10, "network.httpproxyport", 707, "8080", BUTTON_CONTROL_INPUT, false, 707);
+  AddString(9, "network.httpproxyserver", 706, "", EDIT_CONTROL_IP_INPUT);
+  AddString(10, "network.httpproxyport", 707, "8080", EDIT_CONTROL_INPUT, false, 707);
   AddSeparator(11, "network.sep2");
   AddBool(12, "network.enableinternet", 14054, true);
+  AddBool(13, "network.usehttpproxy", 708, false);
   // hidden proxy authentication details
-  AddString(0, "network.httpproxyusername", 706, "", BUTTON_CONTROL_INPUT);
-  AddString(0, "network.httpproxypassword", 706, "", BUTTON_CONTROL_INPUT);
+  AddString(0, "network.httpproxyusername", 706, "", EDIT_CONTROL_INPUT);
+  AddString(0, "network.httpproxypassword", 706, "", EDIT_CONTROL_INPUT);
 
   AddCategory(6, "servers", 14036);
   AddBool(1,  "servers.ftpserver",        167, true);
   AddString(2,"servers.ftpserveruser",    1245, "xbox", SPIN_CONTROL_TEXT);
-  AddString(3,"servers.ftpserverpassword",1246, "xbox", BUTTON_CONTROL_HIDDEN_INPUT, true, 1246);
+  AddString(3,"servers.ftpserverpassword",1246, "xbox", EDIT_CONTROL_HIDDEN_INPUT, true, 1246);
   AddBool(4,  "servers.ftpautofatx",      771, true);
   AddSeparator(5, "servers.sep1");
   AddBool(6,  "servers.webserver",        263, false);
-  AddString(7,"servers.webserverport",    730, "80", BUTTON_CONTROL_INPUT, false, 730);
-  AddString(8,"servers.webserverpassword",733, "", BUTTON_CONTROL_HIDDEN_INPUT, true, 733);
+  AddString(7,"servers.webserverport",    730, "80", EDIT_CONTROL_NUMBER_INPUT, false, 730);
+  AddString(8,"servers.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
 
   AddCategory(6,"autodetect",           1250  );
   AddBool(1,    "autodetect.onoff",     1251, true);
   AddBool(2,    "autodetect.popupinfo", 1254, true);
-  AddString(3,  "autodetect.nickname",  1252, "XBMC-NickName",BUTTON_CONTROL_INPUT, false, 1252);
+  AddString(3,  "autodetect.nickname",  1252, "XBMC-NickName",EDIT_CONTROL_INPUT, false, 1252);
   AddSeparator(4, "autodetect.sep1");
   AddBool(5,    "autodetect.senduserpw",1255, true); // can be in advanced.xml! default:true
 
   AddCategory(6, "smb", 1200);
-  AddString(1, "smb.username",    1203,   "", BUTTON_CONTROL_INPUT, true, 1203);
-  AddString(2, "smb.password",    1204,   "", BUTTON_CONTROL_HIDDEN_INPUT, true, 1204);
-  AddString(3, "smb.winsserver",  1207,   "",  BUTTON_CONTROL_IP_INPUT);
-  AddString(4, "smb.workgroup",   1202,   "WORKGROUP", BUTTON_CONTROL_INPUT, false, 1202);
+  AddString(1, "smb.username",    1203,   "", EDIT_CONTROL_INPUT, true, 1203);
+  AddString(2, "smb.password",    1204,   "", EDIT_CONTROL_HIDDEN_INPUT, true, 1204);
+  AddString(3, "smb.winsserver",  1207,   "",  EDIT_CONTROL_IP_INPUT);
+  AddString(4, "smb.workgroup",   1202,   "WORKGROUP", EDIT_CONTROL_INPUT, false, 1202);
   AddSeparator(6, "smb.sep1");
   AddBool(7,   "smb.showhidden", 21330, false);
 
@@ -524,7 +524,7 @@ CGUISettings::CGUISettings(void)
 #ifdef HAS_EVENT_SERVER
   AddCategory(6, "remoteevents", 790);
   AddBool(1,  "remoteevents.enabled",         791, true);
-  AddString(2,"remoteevents.port",            792, "9777", BUTTON_CONTROL_INPUT, false, 792);
+  AddString(2,"remoteevents.port",            792, "9777", EDIT_CONTROL_NUMBER_INPUT, false, 792);
   AddInt(3,   "remoteevents.portrange",       793, 10, 1, 1, 100, SPIN_CONTROL_INT);
   AddInt(4,   "remoteevents.maxclients",      797, 20, 1, 1, 100, SPIN_CONTROL_INT);
   AddSeparator(5,"remoteevents.sep1");
@@ -550,7 +550,8 @@ CGUISettings::CGUISettings(void)
   AddBool(9,"lookandfeel.soundsduringplayback",21370,false);
   AddSeparator(10, "lookandfeel.sep2");
   AddBool(11, "lookandfeel.enablerssfeeds",13305,  true);
-  AddBool(12, "lookandfeel.enablemouse", 21369, true);
+  AddBool(12, "lookandfeel.rssfeedsrtl",13412,  false);
+  AddBool(13, "lookandfeel.enablemouse", 21369, true);
 
   AddCategory(7, "locale", 20026);
   AddString(1, "locale.country", 20026, "", SPIN_CONTROL_TEXT);
@@ -563,7 +564,7 @@ CGUISettings::CGUISettings(void)
   AddBool(8, "locale.usedst", 14075, false);
   AddSeparator(9, "locale.sep2");
   AddBool(10,   "locale.timeserver"       , 168  , false);
-  AddString(11, "locale.timeserveraddress"      , 731  , "pool.ntp.org", BUTTON_CONTROL_INPUT);
+  AddString(11, "locale.timeserveraddress"      , 731  , "pool.ntp.org", EDIT_CONTROL_INPUT);
 
   AddCategory(7, "videoscreen", 131);
   AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);

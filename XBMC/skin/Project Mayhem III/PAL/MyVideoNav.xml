@@ -27,69 +27,72 @@
 			<aspectratio align="left">keep</aspectratio>
 			<texture diffuse="Wide_Icon_Diffuse.png" />
 			<info>Container.TVShowThumb</info>
+			<visible>!Skin.HasSetting(UseTVPosters)</visible>
 		</control>
-		<control type="label">
-			<description>XBMC label</description>
-			<posx>200</posx>
-			<posy>43</posy>
-			<align>right</align>
-			<label>9</label>
-			<font>special12</font>
-			<visible>IsEmpty(Container.TVShowThumb)</visible>
-		</control>
-		<control type="label">
-			<description>description label</description>
-			<posx>207</posx>
-			<posy>43</posy>
-			<align>left</align>
-			<label>$LOCALIZE[20314]</label>
-			<font>special13</font>
-			<visible>IsEmpty(Container.PluginName) + IsEmpty(Container.TVShowThumb) + !container.content(tvshows) + !container.content(movies) + !container.content(musicvideos)</visible>
-		</control>
-		<control type="label">
-			<description>description label</description>
-			<posx>207</posx>
-			<posy>43</posy>
-			<align>left</align>
-			<label>$LOCALIZE[20314] - $LOCALIZE[20343]</label>
-			<font>special13</font>
-			<visible>IsEmpty(Container.PluginName) + container.content(tvshows)</visible>
-		</control>
-		<control type="label">
-			<description>description label</description>
-			<posx>207</posx>
-			<posy>43</posy>
-			<align>left</align>
-			<label>$LOCALIZE[20314] - $LOCALIZE[342]</label>
-			<font>special13</font>
-			<visible>IsEmpty(Container.PluginName) + container.content(movies)</visible>
-		</control>
-		<control type="label">
-			<description>description label</description>
-			<posx>207</posx>
-			<posy>43</posy>
-			<align>left</align>
-			<label>$LOCALIZE[20314] - $LOCALIZE[20389]</label>
-			<font>special13</font>
-			<visible>IsEmpty(Container.PluginName) + container.content(musicvideos)</visible>
-		</control>
-		<control type="label">
-			<description>description label</description>
-			<posx>207</posx>
-			<posy>43</posy>
-			<align>left</align>
-			<info>Container.PluginName</info>
-			<font>special13</font>
-			<visible>!IsEmpty(Container.PluginName)</visible>
-		</control>
-		<control type="label">
-			<description>Category Label</description>
-			<posx>670</posx>
-			<posy>43</posy>
-			<align>right</align>
-            <info>Container.Property(PluginCategory)</info>
-			<font>special13</font>
-			<visible>!IsEmpty(Container.Property(PluginCategory))</visible>
+		<control type="group">
+			<visible>IsEmpty(Container.TVShowThumb) | Skin.HasSetting(UseTVPosters)</visible>
+			<control type="label">
+				<description>XBMC label</description>
+				<posx>200</posx>
+				<posy>43</posy>
+				<align>right</align>
+				<label>9</label>
+				<font>special12</font>
+			</control>
+			<control type="label">
+				<description>description label</description>
+				<posx>207</posx>
+				<posy>43</posy>
+				<align>left</align>
+				<label>$LOCALIZE[20314]</label>
+				<font>special13</font>
+				<visible>IsEmpty(Container.PluginName) + !container.content(tvshows) + !container.content(movies) + !container.content(musicvideos)</visible>
+			</control>
+			<control type="label">
+				<description>description label</description>
+				<posx>207</posx>
+				<posy>43</posy>
+				<align>left</align>
+				<label>$LOCALIZE[20314] - $LOCALIZE[20343]</label>
+				<font>special13</font>
+				<visible>IsEmpty(Container.PluginName) + container.content(tvshows)</visible>
+			</control>
+			<control type="label">
+				<description>description label</description>
+				<posx>207</posx>
+				<posy>43</posy>
+				<align>left</align>
+				<label>$LOCALIZE[20314] - $LOCALIZE[342]</label>
+				<font>special13</font>
+				<visible>IsEmpty(Container.PluginName) + container.content(movies)</visible>
+			</control>
+			<control type="label">
+				<description>description label</description>
+				<posx>207</posx>
+				<posy>43</posy>
+				<align>left</align>
+				<label>$LOCALIZE[20314] - $LOCALIZE[20389]</label>
+				<font>special13</font>
+				<visible>IsEmpty(Container.PluginName) + container.content(musicvideos)</visible>
+			</control>
+			<control type="label">
+				<description>description label</description>
+				<posx>207</posx>
+				<posy>43</posy>
+				<align>left</align>
+				<info>Container.PluginName</info>
+				<font>special13</font>
+				<visible>!IsEmpty(Container.PluginName)</visible>
+			</control>
+			<control type="label">
+				<description>Category Label</description>
+				<posx>670</posx>
+				<posy>43</posy>
+				<align>right</align>
+				<info>Container.Property(PluginCategory)</info>
+				<font>special13</font>
+				<visible>!IsEmpty(Container.Property(PluginCategory))</visible>
+			</control>
 		</control>
 		<include>contentpanel</include>
 		<control type="image" id="1000">
@@ -180,15 +183,14 @@
 				<onleft>50</onleft>
 				<onright>50</onright>
 				<onup>10</onup>
-				<ondown>888</ondown>
+				<ondown>8</ondown>
 				<visible>Skin.HasSetting(watched_filtering_toggle)</visible>
 			</control>
-			<control type="button" id="888">
+			<control type="button" id="8">
 				<description>Search</description>
 				<posx>0</posx>
 				<posy>148</posy>
 				<label>137</label>
-				<onclick>Container.Refresh(videodb://2/1)</onclick>
 				<onleft>50</onleft>
 				<onright>50</onright>
 				<onup>14</onup>
@@ -202,7 +204,7 @@
 				<label>587</label>
 				<onleft>50</onleft>
 				<onright>50</onright>
-				<onup>888</onup>
+				<onup>8</onup>
 				<ondown>16</ondown>
 			</control>
 			<control type="radiobutton" id="16">
@@ -331,6 +333,7 @@
 		<include>VideoDVDWrapView</include>
 		<include>VideoLibrary_BigList</include>
 		<include>AllViewCommonPageControls</include>
+		<include>ScrollOffsetLabel</include>
 		<include>windowswitchtransition</include>
 	</controls>
 </window>

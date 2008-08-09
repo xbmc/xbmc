@@ -42,7 +42,7 @@ public:
   virtual void          SetSpeed(int speed) {}
   virtual CDemuxStream* GetStream(int index) { return m_Streams[index]; }
   virtual int           GetNrOfStreams()     { return m_Streams.size(); }
-  virtual int           GetStreamLenght()    { return 0; }
+  virtual int           GetStreamLength()    { return 0; }
   virtual std::string   GetFileName()        { return m_Filename; }
 
 private:

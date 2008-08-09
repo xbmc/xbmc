@@ -89,7 +89,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
   m_crossFading = g_guiSettings.GetInt("musicplayer.crossfade");
   //no crossfading for cdda, cd-reading goes mad and no crossfading for last.fm doesn't like two connections
-  if (file.IsCDDA() || file.IsLastFM()) m_crossFading = 0;
+  if (file.IsCDDA() || file.IsLastFM() || file.IsShoutCast()) m_crossFading = 0;
   if (m_crossFading && IsPlaying())
   {
     //do a short crossfade on trackskip
@@ -135,6 +135,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   {
     m_decoder[m_currentDecoder].Destroy();
     CLog::Log(LOGERROR, "PAPlayer::Unable to create audio stream");
+    return false;
   }
 
   *m_currentFile = file;
@@ -151,11 +152,6 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   m_bQueueFailed = false;
 
   m_decoder[m_currentDecoder].Start();  // start playback
-#ifdef HAS_XBOX_AUDIO
-  m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
-#else
-  m_pStream[m_currentStream]->Play(0, 0, DSBPLAY_LOOPING);
-#endif
 
   return true;
 }
@@ -169,6 +165,7 @@ void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
       (
         file.IsCDDA() ||
         file.IsLastFM() ||
+        file.IsShoutCast() ||
         (
           file.HasMusicInfoTag() && !g_guiSettings.GetBool("musicplayer.crossfadealbumtracks") &&
           (m_currentFile->GetMusicInfoTag()->GetAlbum() != "") &&
@@ -511,9 +508,9 @@ void PAPlayer::Process()
     CLog::Log(LOGINFO, "PAPlayer: End of playback reached");
     m_bIsPlaying = false;
     if (!m_bStopPlaying && !m_bStop)
-    {
       m_callback.OnPlayBackEnded();
-    }
+    else
+      m_callback.OnPlayBackStopped();
   }
 }
 
@@ -571,6 +568,13 @@ bool PAPlayer::ProcessPAP()
     int status = m_decoder[m_currentDecoder].GetStatus();
     if (status == STATUS_NO_FILE)
       return false;
+    if (status == STATUS_PLAYING && !m_bPaused)
+    {
+      DWORD status;
+      m_pStream[m_currentStream]->GetStatus(&status);
+      if (!(status & DSBSTATUS_PLAYING)) 
+        m_pStream[m_currentStream]->Play(0, 0, DSBPLAY_LOOPING);
+    }
 
     UpdateCacheLevel();
 
@@ -604,6 +608,8 @@ bool PAPlayer::ProcessPAP()
 
 #ifdef HAS_XBOX_AUDIO
           m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
+#else
+          m_pStream[m_currentStream]->Play(0, 0, DSBPLAY_LOOPING);
 #endif
           m_callback.OnPlayBackStarted();
           m_timeOffset = m_nextFile->m_lStartOffset * 1000 / 75;
@@ -846,7 +852,7 @@ CStdString PAPlayer::GetCodecName()
   return "";
 }
 
-int PAPlayer::GetBitrate()
+int PAPlayer::GetAudioBitrate()
 {
   ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
   if (codec)
@@ -1030,18 +1036,6 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
   DWORD playCursor, writeCursor;
   if (SUCCEEDED(m_pStream[stream]->GetCurrentPosition(&playCursor, &writeCursor)))
   {
-    // TODO: Provide feedback to the visualisation
-    // update our play position
-    if (prevPlayCursor == -1)
-    {
-      prevPlayCursor = playCursor;
-      m_bytesSentOut = 0;
-    }
-    if (playCursor >= prevPlayCursor)
-      m_bytesSentOut += (playCursor - prevPlayCursor);
-    else
-      m_bytesSentOut += (playCursor + PACKET_SIZE*PACKET_COUNT - prevPlayCursor);
-    prevPlayCursor = playCursor;
     // we may write from writeCursor to playCursor - do it in chunks
     // round up writecursor and down playcursor
     DWORD writePos = writeCursor / PACKET_SIZE + 1;

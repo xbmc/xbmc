@@ -192,7 +192,7 @@
   <string id="258">Enable tag reading</string>
   <string id="259">Opening</string>
   <string id="260">Shoutcast</string>
-  <string id="261">Waiting for start....</string>
+  <string id="261">Waiting for start...</string>
   <string id="262">Scripts Output</string>
   <string id="263">Enable Web Server</string>
   <string id="264">Record</string>
@@ -434,7 +434,7 @@
   <string id="516">Make archives with one file transparent</string>
   <string id="517">Recently Played Albums</string>
   <string id="518">Launch</string>
-  <string id="519">Launch in..</string>
+  <string id="519">Launch in...</string>
   <string id="520">Edit XBE title</string>
   <string id="521">Compilations</string>
   <string id="522">Remove Source</string>
@@ -567,12 +567,12 @@
   <string id="706">HTTP Proxy Host</string>
   <string id="707">HTTP Proxy Port</string>
   <string id="708">Enable HTTP Proxy</string>
-  <string id="709">XLink Kai XTag</string>
-  <string id="710">XLink Kai Password</string>
+  <string id="709"></string>
+  <string id="710"></string>
   <string id="711">Internet Protocol (IP)</string>
   <string id="712">Invalid port specified. Value must be between 1 and 65535.</string>
   <string id="713">HTTP Proxy</string>
-  <string id="714">XLink Kai</string>
+  <string id="714"></string>
   <string id="715">Assignment</string>
   <string id="716">Automatic (DHCP)</string>
   <string id="717">Manual (Static)</string>
@@ -644,8 +644,8 @@
   <string id="796">Continuous Repeat Delay (ms)</string>
   <string id="797">Maximum Number of Clients</string>
 
-  <string id="998">XLink Kai</string>
-  <string id="999">Online Gaming</string>
+  <string id="998"></string>
+  <string id="999"></string>
   <string id="1000">Screensaver Preview</string>
   <string id="1001">Unable to connect</string>
   <string id="1002">XBMC was unable to connect to the network location.</string>
@@ -730,13 +730,13 @@
   <string id="1247">User Password has been set successfully</string>
 
   <string id="1250">Autodetection</string>
-  <string id="1251">Xbox Autodetection</string>
+  <string id="1251">Autodetect system</string>
   <string id="1252">Nick Name</string>
   <string id="1253"></string>
   <string id="1254">Ask to Connect</string>
   <string id="1255">Send FTP User and Password</string>
   <string id="1256">Ping Interval</string>
-  <string id="1257">Would you like to connect to the Autodetected Xbox?</string>
+  <string id="1257">Would you like to connect to the Autodetected system?</string>
 
   <string id="1396">Drifting</string>
   <string id="1397">and</string>
@@ -757,6 +757,8 @@
   <string id="1412">windy</string>
   <string id="1413">drizzle</string>
   <string id="1414">T-Storm</string>
+  <string id="1415">Drizzle</string>
+  <string id="1416">Foggy</string>
 
   <!-- strings through to 1450 reserved for weather translation -->
 
@@ -796,6 +798,12 @@
   <string id="10100">Yes/no dialog</string>
   <string id="10101">Progress dialog</string>
 
+  <string id="10210">Looking for subtitles...</string>
+  <string id="10211">Caching subtitles...</string>
+  <string id="10212">terminating</string>
+  <string id="10213">buffering</string>
+  <string id="10214">Opening stream</string>
+
   <string id="10500">Music/Playlist</string>
   <string id="10501">Music/Files</string>
   <string id="10502">Music/Library</string>
@@ -827,7 +835,7 @@
 	<string id="10611">Channel</string>
 
   <string id="12000">Select dialog</string>
-  <string id="12001">Music/info</string>
+  <string id="12001">Music/Info</string>
   <string id="12002">Dialog OK</string>
   <string id="12003">Videos/Info</string>
   <string id="12004">Scripts/Info</string>
@@ -869,7 +877,7 @@
   <string id="12327">Enter Master Code</string>
   <string id="12328">Enter Unlock Code</string>
   <string id="12329">or press C to cancel</string>
-  <string id="12330">Enter Gamepad button combo and press Start</string>
+  <string id="12330">Enter Gamepad button combo and</string>
   <string id="12331">press Start, or Back to cancel</string>
   <string id="12332">Set Lock</string>
   <string id="12333">Unlock</string>
@@ -885,14 +893,14 @@
   <string id="12344">Passwords entered did not match.</string>
   <string id="12345">Access Denied</string>
   <string id="12346">Password retry limit exceeded.</string>
-  <string id="12347">The Xbox will now shut off.</string>
+  <string id="12347">The system will now shut off.</string>
   <string id="12348">Item Locked</string>
   <string id="12353">Reactivate Lock</string>
   <string id="12356">Change Lock</string>
   <string id="12357">Source Lock</string>
   <string id="12358">Password entry was blank. Try again.</string>
   <string id="12360">Master Lock</string>
-  <string id="12362">Shutdown Xbox if Master Lock retries exceeded</string>
+  <string id="12362">Shutdown system if Master Lock retries exceeded</string>
   <string id="12367">Master Code is not valid!</string>
   <string id="12368">Please Enter a valid Master Code!</string>
   <string id="12373">Settings &amp;  Filemanager</string>
@@ -1017,7 +1025,7 @@
   <string id="13305">Enable RSS Feeds</string>
   <string id="13306">Hide Parent Folder Items</string>
   <string id="13307">Track Naming Template</string>
-  <string id="13308">Do you wish to reboot your Xbox</string>
+  <string id="13308">Do you wish to reboot your system</string>
   <string id="13309">instead of just XBMC?</string>
   <string id="13310">Zoom Effect</string>
   <string id="13311">Float Effect</string>
@@ -1105,8 +1113,9 @@
   <string id="13407">%s Presets</string>
   <string id="13408">(IMDb User Rating)</string>
   <string id="13409">Top 250</string>
-  <string id="13410">Tune in on lastfm</string>
+  <string id="13410">Tune in on Last.FM</string>
   <string id="13411">Minimum fanspeed</string>
+  <string id="13412">RSS Feeds Contain Right-To-Left Text</string>
 
   <string id="14000">Stack</string>
   <string id="14001">Unstack</string>
@@ -1115,7 +1124,7 @@
   <string id="14005">Parsing streams list...</string>
   <string id="14006">Downloading streams list failed</string>
   <string id="14007">Downloading playlist file failed</string>
-  <string id="14008">Enable Kai Notifications</string>
+  <string id="14008"></string>
   <string id="14009">Games Directory</string>
   <string id="14010">Autoswitch to Thumbs based on</string>
   <string id="14011">Enable Autoswitching to Thumbs View</string>
@@ -1147,7 +1156,7 @@
   <string id="14039">XBMC requires to restart to change your</string>
   <string id="14040">network setup.  Would you like to restart now?</string>
   <string id="14041">Post Processing</string>
-  <string id="14042">Engine IP Address</string>
+  <string id="14042"></string>
   <string id="14043">- Shutdown while playing</string>
   <string id="14044">%i mins</string>
   <string id="14045">%i secs</string>
@@ -1177,76 +1186,76 @@
   <string id="14069">Apply these settings now?</string>
   <string id="14070">Apply Changes Now</string>
   <string id="14071">Allow File Renaming and Deletion</string>
-  <string id="14072">Enable XLink Kai</string>
-  <string id="14073">XLink Kai is not enabled.</string>
+  <string id="14072"></string>
+  <string id="14073"></string>
   <string id="14074">Set Timezone</string>
   <string id="14075">Use Daylight Saving Time</string>
   <string id="14076">Add to Favourites</string>
   <string id="14077">Remove from Favourites</string>
   <string id="14078">Skin Colours</string>
 
-  <string id="15000">XLink Kai</string>
-  <string id="15001">The service is not connected.</string>
-  <string id="15002">Attempt to reconnect?</string>
-  <string id="15003">Enter your message</string>
-  <string id="15004">You've been invited to play %s.</string>
-  <string id="15005">Date: %s</string>
-  <string id="15006">From: %s</string>
-  <string id="15007">Invitation</string>
-  <string id="15008">You've been invited to join %s.</string>
-  <string id="15009">Offline</string>
-  <string id="15010">Friends</string>
-  <string id="15011">View: Friends</string>
-  <string id="15012">Join</string>
-  <string id="15013">Voice</string>
-  <string id="15014">Invite</string>
-  <string id="15015">Remove</string>
-  <string id="15016">Games</string>
-  <string id="15017">View: Games</string>
-  <string id="15018">Enter</string>
+  <string id="15000"></string>
+  <string id="15001"></string>
+  <string id="15002"></string>
+  <string id="15003"></string>
+  <string id="15004"></string>
+  <string id="15005"></string>
+  <string id="15006"></string>
+  <string id="15007"></string>
+  <string id="15008"></string>
+  <string id="15009"></string>
+  <string id="15010"></string>
+  <string id="15011"></string>
+  <string id="15012"></string>
+  <string id="15013"></string>
+  <string id="15014"></string>
+  <string id="15015"></string>
+  <string id="15016"></string>
+  <string id="15017"></string>
+  <string id="15018"></string>
   <string id="15019">Add</string>
-  <string id="15020">Host</string>
-  <string id="15021">Arenas</string>
-  <string id="15022">View: Arenas</string>
-  <string id="15023">Play</string>
-  <string id="15024">Add</string>
-  <string id="15025">Host</string>
-  <string id="15026">Chat</string>
-  <string id="15027">View: Chat</string>
-  <string id="15028">Keyboard</string>
-  <string id="15029">A password is required to join this arena.</string>
-  <string id="15030">Service has disconnected</string>
-  <string id="15031">XLink Kai Authentication</string>
-  <string id="15032">Your username and/or password was rejected by the</string>
-  <string id="15033">orbital server. Please check your configuration.</string>
-  <string id="15034">has just signed in</string>
-  <string id="15035">has initiated voice chat</string>
-  <string id="15036">has sent you an invitation</string>
-  <string id="15037">XBMC is unable to confirm your network is reachable.</string>
-  <string id="15038">You may experience difficulties joining or hosting games.</string>
-  <string id="15039">Unable to locate game automatically.</string>
-  <string id="15040">Insert the game disk into your Xbox or press 'A' to cancel</string>
-  <string id="15041">and launch the game manually.</string>
-  <string id="15042">Access Denied</string>
-  <string id="15043">%s joins chat.</string>
-  <string id="15044">%s leaves chat.</string>
-  <string id="15045">Enter your personal message.</string>
-  <string id="15046">Current Arena</string>
-  <string id="15047">Enter a password for your arena.</string>
-  <string id="15048">Enter a description for your arena.</string>
-  <string id="15049">Host Game</string>
-  <string id="15050">Host in a private arena</string>
-  <string id="15051">Player Limit</string>
-  <string id="15052">Password</string>
-  <string id="15053">Description</string>
-  <string id="15054">Invite Dialog</string>
-  <string id="15055">Choose game:</string>
-  <string id="15056">Enter message:</string>
-  <string id="15057">Send</string>
-  <string id="15058">Host</string>
-  <string id="15059">Invite accepted!</string>
-  <string id="15060">Message Here</string>
-  <string id="15061">You're invited to play %s.</string>
+  <string id="15020"></string>
+  <string id="15021"></string>
+  <string id="15022"></string>
+  <string id="15023"></string>
+  <string id="15024"></string>
+  <string id="15025"></string>
+  <string id="15026"></string>
+  <string id="15027"></string>
+  <string id="15028"></string>
+  <string id="15029"></string>
+  <string id="15030"></string>
+  <string id="15031"></string>
+  <string id="15032"></string>
+  <string id="15033"></string>
+  <string id="15034"></string>
+  <string id="15035"></string>
+  <string id="15036"></string>
+  <string id="15037"></string>
+  <string id="15038"></string>
+  <string id="15039"></string>
+  <string id="15040"></string>
+  <string id="15041"></string>
+  <string id="15042"></string>
+  <string id="15043"></string>
+  <string id="15044"></string>
+  <string id="15045"></string>
+  <string id="15046"></string>
+  <string id="15047"></string>
+  <string id="15048"></string>
+  <string id="15049"></string>
+  <string id="15050"></string>
+  <string id="15051"></string>
+  <string id="15052"></string>
+  <string id="15053"></string>
+  <string id="15054"></string>
+  <string id="15055"></string>
+  <string id="15056"></string>
+  <string id="15057"></string>
+  <string id="15058"></string>
+  <string id="15059"></string>
+  <string id="15060"></string>
+  <string id="15061"></string>
   <string id="15100">Library</string>
   <string id="15101">Database</string>
   <string id="15102">* All Albums</string>
@@ -1276,7 +1285,7 @@
   <string id="15213">Play Using...</string>
   <string id="15214">Use Smoothed A/V Synchronisation</string>
   <string id="15215">Hide File Names in Thumbs View</string>
-  <string id="15216">Play in Partymode</string>
+  <string id="15216">Play in Party Mode</string>
 
   <string id="15250">Submit Last.FM Radio to Last.FM</string>
   <string id="15251">Connecting to Last.FM...</string>
@@ -1364,12 +1373,12 @@
   <string id="16027">Too many consecutive failed items</string>
   <string id="16028">Enter value</string>
 
-  <string id="16030">Party Mode mode aborted.</string>
+  <string id="16030">Party Mode aborted.</string>
   <string id="16031">No matching songs in the Library.</string>
   <string id="16032">Could not initialise database.</string>
   <string id="16033">Could not open database.</string>
   <string id="16034">Could not get songs from database.</string>
-  <string id="16035">Partymode Playlist</string>
+  <string id="16035">Party Mode Playlist</string>
 
   <string id="16100">All Videos</string>
   <string id="16101">UnWatched</string>
@@ -1416,8 +1425,8 @@
   <string id="20017">Local Thumb</string>
   <string id="20018">No Thumb</string>
   <string id="20019">Choose Thumbnail</string>
-  <string id="20020">Cannot use both KAI and trainer</string>
-  <string id="20021">Choose which you want to use</string>
+  <string id="20020"></string>
+  <string id="20021"></string>
   <!-- string id 20022 will always be set to an empty string (LocalizeStrings.cpp)-->
   <string id="20022"></string>
   <string id="20023">Conflict</string>
@@ -1471,7 +1480,7 @@
   <string id="20079">Enable Animations</string>
   <string id="20080">Disable RSS during Music</string>
   <string id="20081">Enable Shortcut Buttons</string>
-  <string id="20082">Show XLink Kai Info</string>
+  <string id="20082">Show Programs in Main Menu</string>
   <string id="20083">Show Music info</string>
   <string id="20084">Show Weather info</string>
   <string id="20085">Show System info</string>
@@ -1573,7 +1582,7 @@
   <string id="20182">Space</string>
   <string id="20183">Reload Skin</string>
   <string id="20184">Rotate using EXIF information</string>
-  <string id="20185"></string>
+  <string id="20185">USE Poster View Styles for TV Shows</string>
   <string id="20186">Please Wait</string>
   <string id="20187">Backing up EEPROM</string>
   <string id="20188">Backing up BIOS</string>
@@ -1718,6 +1727,8 @@
   <string id="20420">Never</string>
   <string id="20421">If Only One Season</string>
   <string id="20422">Always</string>
+  <string id="20423">Has Trailer</string>
+  <string id="20424">False</string>
   
   <!-- up to 21329 is reserved for the video db !! !-->
 

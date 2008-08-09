@@ -28,9 +28,10 @@ public:
   ~CStopWatch();
 
   bool IsRunning() const;
-  void StartZero();
-  void Stop();
-  void Reset();
+  void StartZero();          ///< Resets clock to zero and starts running
+  void Start();              ///< Sets clock to zero if not running and starts running.
+  void Stop();               ///< Stops clock and sets to zero if running.
+  void Reset();              ///< Resets clock to zero - does not alter running state.
 
   float GetElapsedSeconds() const;
   float GetElapsedMilliseconds() const;

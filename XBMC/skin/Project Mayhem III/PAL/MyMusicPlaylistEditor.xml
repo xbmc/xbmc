@@ -31,7 +31,7 @@
 			<posx>207</posx>
 			<posy>43</posy>
 			<align>left</align>
-			<label>$LOCALIZE[559] Editor</label>
+			<label>10503</label>
 			<font>special13</font>
 		</control>
 		<control type="image">

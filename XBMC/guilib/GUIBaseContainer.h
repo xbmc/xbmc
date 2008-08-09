@@ -29,6 +29,7 @@
 #include "GUIControl.h"
 #include "GUIListItemLayout.h"
 #include "boost/shared_ptr.hpp"
+#include "utils/Stopwatch.h"
 
 typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
 
@@ -143,9 +144,10 @@ protected:
   CGUIListItemLayout *m_focusedLayout;
 
   virtual void ScrollToOffset(int offset);
+  void UpdateScrollOffset();
+
   DWORD m_scrollLastTime;
   int   m_scrollTime;
-  float m_scrollSpeed;
   float m_scrollOffset;
 
   VIEW_TYPE m_type;
@@ -157,5 +159,14 @@ protected:
                     // us to make sure we don't tell the infomanager that we've been moving when
                     // the "movement" was simply due to the list being repopulated (thus cursor position
                     // changing around)
+
+  void UpdateScrollByLetter();
+  void OnNextLetter();
+  void OnPrevLetter();
+  std::vector< std::pair<int, CStdString> > m_letterOffsets;
+private:
+  float m_scrollSpeed;
+  CStopWatch m_scrollTimer;
+  CStopWatch m_pageChangeTimer;
 };
 

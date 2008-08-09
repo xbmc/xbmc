@@ -48,6 +48,7 @@ public:
   CGUIControl *m_largePanel;
 //#endif
   virtual ~CGUIPanelContainer(void);
+  virtual CGUIPanelContainer *Clone() const { return new CGUIPanelContainer(*this); };
 
   virtual void Render();
   virtual bool OnAction(const CAction &action);

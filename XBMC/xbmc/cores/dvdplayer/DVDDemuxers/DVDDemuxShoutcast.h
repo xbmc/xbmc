@@ -48,7 +48,7 @@ public:
   DemuxPacket* Read();
 
   bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
-  int GetStreamLenght();
+  int GetStreamLength();
   CDemuxStream* GetStream(int iStreamId);
   int GetNrOfStreams();
 

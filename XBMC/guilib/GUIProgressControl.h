@@ -45,6 +45,8 @@ public:
                       const CImage& rightTexture, const CImage& overlayTexture, 
                       float min, float max, bool reveal=false);
   virtual ~CGUIProgressControl(void);
+  virtual CGUIProgressControl *Clone() const { return new CGUIProgressControl(*this); };
+
   virtual void Render();
   virtual bool CanFocus() const;
   virtual void PreAllocResources();

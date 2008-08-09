@@ -566,7 +566,7 @@
 		</control>
 		<!-- main buttons -->
 		<control type="group" id="9001">
-			<visible>System.Platform.Xbox</visible>
+			<visible>System.Platform.Xbox | Skin.HasSetting(ProgramsInHome)</visible>
 			<control type="group" id="9002">
 				<posx>55</posx>
 				<posy>450</posy>
@@ -812,7 +812,7 @@
 			</control>
 		</control>
 		<control type="group" id="9001">
-			<visible>!System.Platform.Xbox</visible>
+			<visible>!System.Platform.Xbox + !Skin.HasSetting(ProgramsInHome)</visible>
 			<control type="group" id="9002">
 				<posx>55</posx>
 				<posy>450</posy>

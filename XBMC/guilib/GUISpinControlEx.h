@@ -41,6 +41,8 @@ class CGUISpinControlEx : public CGUISpinControl
 public:
   CGUISpinControlEx(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float spinWidth, float spinHeight, const CLabelInfo& spinInfo, const CImage &textureFocus, const CImage &textureNoFocus, const CImage& textureUp, const CImage& textureDown, const CImage& textureUpFocus, const CImage& textureDownFocus, const CLabelInfo& labelInfo, int iType);
   virtual ~CGUISpinControlEx(void);
+  virtual CGUISpinControlEx *Clone() const { return new CGUISpinControlEx(*this); };
+
   virtual void Render();
   virtual void SetPosition(float posX, float posY);
   virtual float GetWidth() const { return m_buttonControl.GetWidth();};

@@ -52,8 +52,10 @@ public:
 private:
   ListElement* m_pHead;
   ListElement* m_pCurrent;
+  ListElement* m_pTail;
   
   int m_iSize;
+  double m_fLastPts;
   //CRITICAL_SECTION m_critSection;
 };
 

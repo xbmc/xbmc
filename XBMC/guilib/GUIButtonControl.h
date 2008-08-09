@@ -45,6 +45,7 @@ public:
                     const CLabelInfo &label);
 
   virtual ~CGUIButtonControl(void);
+  virtual CGUIButtonControl *Clone() const { return new CGUIButtonControl(*this); };
 
   virtual void Render();
   virtual bool OnAction(const CAction &action) ;
@@ -57,7 +58,7 @@ public:
   virtual void SetPosition(float posX, float posY);
   virtual void SetColorDiffuse(const CGUIInfoColor &color);
   virtual void SetLabel(const std::string & aLabel);
-  void SetLabel2(const std::string & aLabel2);
+  virtual void SetLabel2(const std::string & aLabel2);
   void SetClickActions(const std::vector<CStdString>& clickActions) { m_clickActions = clickActions; };
   const std::vector<CStdString> &GetClickActions() const { return m_clickActions; };
   void SetFocusActions(const std::vector<CStdString>& focusActions) { m_focusActions = focusActions; };
