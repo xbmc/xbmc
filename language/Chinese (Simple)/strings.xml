@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
   <!--Language file translated with Team XBMC Translator-->
-  <!--Date of translation: 07/22/2008-->
+  <!--Date of translation: 08/07/2008-->
   <!--$Revision$-->
-  <!--Based on english strings version 14277--><strings>
+  <!--Based on english strings version 14727-->>
+<strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
   <string id="2">音乐</string>
@@ -145,6 +146,7 @@
   <string id="222">取消</string>
   <string id="224">速度</string>
   <string id="225">特效过渡时间</string>
+  <string id="226">测试图案...</string>
   <string id="227">在 freedb 查找音乐 CD 信息</string>
   <string id="228">载入播放列表时打乱顺序</string>
   <string id="229">关闭硬盘 空闲时间(分)</string>
@@ -538,12 +540,9 @@
   <string id="706">HTTP 代理服务器地址</string>
   <string id="707">HTTP 代理服务器端口</string>
   <string id="708">启用 HTTP 代理</string>
-  <string id="709">XLink Kai 账号</string>
-  <string id="710">XLink Kai 密码</string>
   <string id="711">网络地址(IP)</string>
   <string id="712">无效端口！必须在 1 至 65535 之间。</string>
   <string id="713">HTTP 代理</string>
-  <string id="714">XLink Kai</string>
   <string id="715">IP 设置</string>
   <string id="716">自动(动态分配)</string>
   <string id="717">手动(静态分配)</string>
@@ -623,8 +622,6 @@
   <string id="795">初始重复等待时间(ms)</string>
   <string id="796">持续等待时间(ms)</string>
   <string id="797">最大客户数</string>
-  <string id="998">XLink KAI</string>
-  <string id="999">在线游戏</string>
   <string id="1000">屏幕保护预览</string>
   <string id="1001">无法连接</string>
   <string id="1002">XBMC 无法连接到该网上邻居！</string>
@@ -1087,7 +1084,6 @@
   <string id="14005">分析流媒体列表…</string>
   <string id="14006">流媒体列表下载失败</string>
   <string id="14007">播放列表下载失败</string>
-  <string id="14008">启用 Kai 通告</string>
   <string id="14009">游戏目录</string>
   <string id="14010">自动切换为图标显示条件</string>
   <string id="14011">允许自动切换为图标显示</string>
@@ -1119,7 +1115,6 @@
   <string id="14039">XBMC 需要重启改变你的网络设置。</string>
   <string id="14040">你想现在就重启吗？</string>
   <string id="14041">后置处理</string>
-  <string id="14042">主机 IP 地址</string>
   <string id="14043">- 播放时关机</string>
   <string id="14044">%i分</string>
   <string id="14045">%i秒</string>
@@ -1149,8 +1144,6 @@
   <string id="14069">确定要设置这些参数吗？</string>
   <string id="14070">应用设置</string>
   <string id="14071">允许重命名和删除文件</string>
-  <string id="14072">启用 XLink Kai</string>
-  <string id="14073">XLink Kai 没有被启用！</string>
   <string id="14074">设置时区</string>
   <string id="14075">使用夏令制时间</string>
   <string id="14076">添加到收藏夹</string>
@@ -1158,68 +1151,7 @@
   <string id="14078">皮肤颜色</string>
   <string id="14079">时区-国家</string>
   <string id="14080">时区</string>
-  <string id="15000">XLink Kai</string>
-  <string id="15001">没有连线到服务器</string>
-  <string id="15002">尝试再连线？</string>
-  <string id="15003">输入你的讯息</string>
-  <string id="15004">你被邀请玩 %s。</string>
-  <string id="15005">日期：%s</string>
-  <string id="15006">来自：%s</string>
-  <string id="15007">邀请</string>
-  <string id="15008">你被邀请加入 %s。</string>
-  <string id="15009">离线</string>
-  <string id="15010">好友</string>
-  <string id="15011">显示：好友</string>
-  <string id="15012">加入游戏</string>
-  <string id="15013">语音交谈</string>
-  <string id="15014">邀请</string>
-  <string id="15015">移除</string>
-  <string id="15016">游戏</string>
-  <string id="15017">显示：游戏</string>
-  <string id="15018">进入</string>
-  <string id="15019">添加为好友</string>
-  <string id="15020">建立游戏</string>
-  <string id="15021">游戏室</string>
-  <string id="15022">显示：游戏室</string>
-  <string id="15023">开始游戏</string>
-  <string id="15024">添加为好友</string>
-  <string id="15025">建立游戏</string>
-  <string id="15026">聊天室</string>
-  <string id="15027">显示：聊天室</string>
-  <string id="15028">键盘</string>
-  <string id="15029">加入这个游戏室须要密码。</string>
-  <string id="15030">游戏已中断</string>
-  <string id="15031">XLink Kai 认证</string>
-  <string id="15032">名称或密码不正确</string>
-  <string id="15033">请检查设置无误后再尝试。</string>
-  <string id="15034">登陆</string>
-  <string id="15035">启动语音聊天</string>
-  <string id="15036">发送一封你的邀请函</string>
-  <string id="15037">XBMC 无法确定你的网络是否能够连接。</string>
-  <string id="15038">你将会很难加入或建立游戏。</string>
-  <string id="15039">XBMC 无法将游戏自动执行。</string>
-  <string id="15040">放入游戏碟片或按 A 取消，</string>
-  <string id="15041">和开启游戏手册。</string>
-  <string id="15042">存取被拒</string>
-  <string id="15043">%s 加入聊天室。</string>
-  <string id="15044">%s 离开聊天室。</string>
-  <string id="15045">输入你的讯息。</string>
-  <string id="15046">目前游戏室</string>
-  <string id="15047">输入游戏场密码。</string>
-  <string id="15048">输入游戏场说明。</string>
-  <string id="15049">建立游戏</string>
-  <string id="15050">建立个人游戏室</string>
-  <string id="15051">玩家限制</string>
-  <string id="15052">密码</string>
-  <string id="15053">简介</string>
-  <string id="15054">邀请函</string>
-  <string id="15055">选择游戏：</string>
-  <string id="15056">输入讯息：</string>
-  <string id="15057">发送</string>
-  <string id="15058">建立游戏</string>
-  <string id="15059">接受邀请！</string>
-  <string id="15060">讯息</string>
-  <string id="15061">邀请玩家 %s。</string>
+  <string id="15019">添加</string>
   <string id="15100">资料库</string>
   <string id="15101">数据库</string>
   <string id="15102">* 所有专辑</string>
@@ -1384,8 +1316,6 @@
   <string id="20017">本地缩略图</string>
   <string id="20018">无缩略图</string>
   <string id="20019">选择缩略图</string>
-  <string id="20020">KAI 与金手指不能同时使用</string>
-  <string id="20021">请选择你要使用的项目</string>
   <string id="20023">冲突</string>
   <string id="20024">扫描新的</string>
   <string id="20025">扫描全部</string>
@@ -1433,7 +1363,7 @@
   <string id="20079">启用桌面动画效果</string>
   <string id="20080">播放音乐时关闭 RSS</string>
   <string id="20081">启用快捷方式</string>
-  <string id="20082">显示 XLink Kai 信息</string>
+  <string id="20082">字啊住界面中显示程序菜单</string>
   <string id="20083">显示音乐讯息</string>
   <string id="20084">显示天气预报</string>
   <string id="20085">显示系统信息</string>
@@ -1535,6 +1465,7 @@
   <string id="20182">空格</string>
   <string id="20183">重载桌面皮肤</string>
   <string id="20184">根据 EXIF 信息旋转图片</string>
+  <string id="20185">使用海报模式显示电视片</string>
   <string id="20186">请稍候…</string>
   <string id="20187">备份 EEPROM</string>
   <string id="20188">备份 BIOS</string>
