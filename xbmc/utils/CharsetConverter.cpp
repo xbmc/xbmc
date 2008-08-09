@@ -34,11 +34,29 @@ using namespace std;
 size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft,
 		    char* * outbuf, size_t *outbytesleft)
 {
-#if defined(_LINUX) || defined(__APPLE__)
-  return iconv(cd, (char**)inbuf, inbytesleft, outbuf, outbytesleft);
-#else
-  return iconv(cd, inbuf, inbytesleft, outbuf, outbytesleft);
-#endif
+    struct iconv_param_adapter {
+        iconv_param_adapter(const char**p) : p(p) {}
+        iconv_param_adapter(char**p) : p((const char**)p) {}
+        operator char**() const
+        {
+            return(char**)p;
+        }
+        operator const char**() const
+        {
+            return(const char**)p;
+        }
+        const char** p;
+    };
+    
+    return iconv(cd, iconv_param_adapter(inbuf), inbytesleft, outbuf, outbytesleft);
+
+// (davilla) leave these here for now until all platforms 
+// have proven builds
+//#if defined(_LINUX) || defined(__APPLE__)
+//  return iconv(cd, (char**)inbuf, inbytesleft, outbuf, outbytesleft);
+//#else
+//  return iconv(cd, inbuf, inbytesleft, outbuf, outbytesleft);
+//#endif
 }
 
 CCharsetConverter g_charsetConverter;
