@@ -313,7 +313,7 @@ CStdString StringUtils::SizeToString(__int64 size)
   return strLabel;
 }
 
-bool StringUtils::FindWords(const char *str, const char *wordLowerCase)
+size_t StringUtils::FindWords(const char *str, const char *wordLowerCase)
 {
   // NOTE: This assumes word is lowercase!
   unsigned char *s = (unsigned char *)str;
@@ -333,7 +333,7 @@ bool StringUtils::FindWords(const char *str, const char *wordLowerCase)
         same = false;
     }
     if (same && *w == 0)  // only the same if word has been exhausted
-      return true;
+      return (const char *)s - str;
 
     // otherwise, find a space and skip to the end of the whitespace
     while (*s && *s != ' ') s++;
@@ -342,7 +342,7 @@ bool StringUtils::FindWords(const char *str, const char *wordLowerCase)
     // and repeat until we're done
   } while (*s);
 
-  return false;
+  return CStdString::npos;
 }
 
 // assumes it is called from after the first open bracket is found
@@ -361,4 +361,22 @@ int StringUtils::FindEndBracket(const CStdString &str, char opener, char closer,
     }
   }
   return CStdString::npos;
+}
+
+void StringUtils::WordToDigits(CStdString &word) 
+{
+  static const char word_to_letter[] = "22233344455566677778889999";
+  word.ToLower();
+  for (unsigned int i = 0; i < word.size(); ++i)
+  { // NB: This assumes ascii, which probably needs extending at some  point.
+    char letter = word[i];
+    if ((letter >= 'a' && letter <= 'z')) // assume contiguous letter range
+    {  
+      word[i] = word_to_letter[letter-'a'];
+    }
+    else if (letter < '0' || letter > '9') // We want to keep 0-9!
+    {  
+      word[i] = ' ';  // replace everything else with a space
+    }
+  }
 }

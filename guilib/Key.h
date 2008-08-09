@@ -239,7 +239,7 @@
 #define ACTION_NEXT_LETTER            140 // jump through a list or container by letter
 #define ACTION_PREV_LETTER            141
 
-#define ACTION_JUMP_SMS2              142
+#define ACTION_JUMP_SMS2              142 // jump direct to a particular letter using SMS-style input
 #define ACTION_JUMP_SMS3              143
 #define ACTION_JUMP_SMS4              144
 #define ACTION_JUMP_SMS5              145
@@ -247,6 +247,16 @@
 #define ACTION_JUMP_SMS7              147
 #define ACTION_JUMP_SMS8              148
 #define ACTION_JUMP_SMS9              149
+
+#define ACTION_FILTER_CLEAR           150
+#define ACTION_FILTER_SMS2            151
+#define ACTION_FILTER_SMS3            152
+#define ACTION_FILTER_SMS4            153
+#define ACTION_FILTER_SMS5            154
+#define ACTION_FILTER_SMS6            155
+#define ACTION_FILTER_SMS7            156
+#define ACTION_FILTER_SMS8            157
+#define ACTION_FILTER_SMS9            158
 
 #define ACTION_TOGGLE_FULLSCREEN      199 // switch 2 desktop resolution
 
