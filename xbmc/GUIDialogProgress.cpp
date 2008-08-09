@@ -44,7 +44,7 @@ CGUIDialogProgress::~CGUIDialogProgress(void)
 
 }
 
-void CGUIDialogProgress::DoModal(int iWindowID)
+void CGUIDialogProgress::DoModal(int iWindowID, const CStdString &param)
 {
   // NOTE: This is pretty much identical to CGUIDialog::DoModal() other than the fact that
   //       we only run for the opening animation.  The app then calls Progress() progressively
