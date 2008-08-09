@@ -693,9 +693,23 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("previousscene")) wAction = ACTION_PREV_SCENE;
   else if (strAction.Equals("nextletter")) wAction = ACTION_NEXT_LETTER;
   else if (strAction.Equals("prevletter")) wAction = ACTION_PREV_LETTER;
-  else
+  // break if else block (MSVC 2k3 complains otherwise)
+  if (strAction.Equals("jumpsms2")) wAction = ACTION_JUMP_SMS2;
+  else if (strAction.Equals("jumpsms3")) wAction = ACTION_JUMP_SMS3;
+  else if (strAction.Equals("jumpsms4")) wAction = ACTION_JUMP_SMS4;
+  else if (strAction.Equals("jumpsms5")) wAction = ACTION_JUMP_SMS5;
+  else if (strAction.Equals("jumpsms6")) wAction = ACTION_JUMP_SMS6;
+  else if (strAction.Equals("jumpsms7")) wAction = ACTION_JUMP_SMS7;
+  else if (strAction.Equals("jumpsms8")) wAction = ACTION_JUMP_SMS8;
+  else if (strAction.Equals("jumpsms9")) wAction = ACTION_JUMP_SMS9;
+
+  if (wAction == ACTION_NONE)
+  {
     CLog::Log(LOGERROR, "Keymapping error: no such action '%s' defined", strAction.c_str());
-  return (wAction != ACTION_NONE);
+    return false;
+  }
+
+  return true;
 }
 
 WORD CButtonTranslator::TranslateWindowString(const char *szWindow)

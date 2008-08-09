@@ -163,6 +163,7 @@ protected:
   void UpdateScrollByLetter();
   void OnNextLetter();
   void OnPrevLetter();
+  void OnJumpLetter(int letter);
   std::vector< std::pair<int, CStdString> > m_letterOffsets;
 private:
   float m_scrollSpeed;
