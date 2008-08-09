@@ -43,9 +43,12 @@ int websDefaultHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 						char_t *url, char_t *path, char_t *query)
 {
 	websStatType	sbuf;
-	char_t			*lpath, *tmp, *date;
-	int				bytes, flags, nchars;
-	char_t			*cp;
+	char_t			 *lpath, *tmp, *date;
+	int           bytes, flags, nchars;
+
+#ifdef _XBOX
+  char_t			*cp;
+#endif
 
 	a_assert(websValid(wp));
 	a_assert(url && *url);

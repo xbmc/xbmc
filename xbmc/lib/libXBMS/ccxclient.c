@@ -1,10 +1,13 @@
 // Place the code and data below here into the LIBXBMS section.
+#ifndef __GNUC__
 #pragma code_seg( "LIBXBMS" )
 #pragma data_seg( "LIBXBMS_RW" )
 #pragma bss_seg( "LIBXBMS_RW" )
 #pragma const_seg( "LIBXBMS_RD" )
 #pragma comment(linker, "/merge:LIBXBMS_RW=LIBXBMS")
-#pragma comment(linker, "/merge:LIBXBMS_RD=LIBXBMS")/*   -*- c -*-
+#pragma comment(linker, "/merge:LIBXBMS_RD=LIBXBMS")
+#endif
+/*   -*- c -*-
  * 
  *  ----------------------------------------------------------------------
  *  CcXstream Client Library for XBOX Media Player
@@ -38,10 +41,12 @@
 #include "ccxclient.h"
 #include "ccxencode.h"
 
+#ifndef __GNUC__
 #pragma code_seg()
-#pragma data_seg( )
-#pragma bss_seg( )
-#pragma const_seg(  )
+#pragma data_seg()
+#pragma bss_seg()
+#pragma const_seg()
+#endif
 
 static unsigned long lNextId = 0;
 unsigned long next_id()
@@ -53,12 +58,14 @@ unsigned long next_id()
   return (lNextId << 12); /* Low 12 bits are zero */
 }
 
+#ifndef __GNUC__
 #pragma code_seg( "LIBXBMS" )
 #pragma data_seg( "LIBXBMS_RW" )
 #pragma bss_seg( "LIBXBMS_RW" )
 #pragma const_seg( "LIBXBMS_RD" )
 #pragma comment(linker, "/merge:LIBXBMS_RW=LIBXBMS")
 #pragma comment(linker, "/merge:LIBXBMS_RD=LIBXBMS")
+#endif
 
 CcXstreamClientError cc_xstream_client_version_handshake(CcXstreamServerConnection s)
 {
