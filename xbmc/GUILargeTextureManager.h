@@ -123,7 +123,7 @@ protected:
     unsigned int m_timeToDelete;
   };
 
-  void QueueImage(CLargeTexture *image);
+  void QueueImage(const CStdString &path);
 
 private:
   std::vector<CLargeTexture *> m_queued;
