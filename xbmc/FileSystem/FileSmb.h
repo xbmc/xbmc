@@ -97,6 +97,7 @@ public:
   virtual bool Open(const CURL& url, bool bBinary = true);
   virtual bool Exists(const CURL& url);
   virtual int Stat(const CURL& url, struct __stat64* buffer);
+  virtual int Stat(struct __stat64* buffer);
   virtual __int64 GetLength();
   virtual __int64 GetPosition();
   virtual int Write(const void* lpBuf, __int64 uiBufSize);
