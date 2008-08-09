@@ -851,6 +851,8 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
 void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
 {
+  CSingleLock lock(g_graphicsContext);
+
   LARGE_INTEGER start;
   QueryPerformanceCounter(&start);
 
