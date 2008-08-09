@@ -1,8 +1,8 @@
 /* libdvdcss.c: DVD reading library.
  *
- * Authors: Stéphane Borel <stef@via.ecp.fr>
+ * Authors: Stï¿½phane Borel <stef@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
- *          Håkan Hjort <d95hjort@dtek.chalmers.se>
+ *          Hï¿½kan Hjort <d95hjort@dtek.chalmers.se>
  *
  * Copyright (C) 1998-2002 VideoLAN
  * $Id: libdvdcss.c 160 2004-08-13 13:40:44Z sam $
@@ -362,10 +362,8 @@ extern dvdcss_t dvdcss_open ( char *psz_target )
             dvdcss->b_scrambled = i_ret;
         }
     }
-#ifdef _XBOX
     /* if wo don't have b_ioctls, we don't have a disk key, make sure area is nulled */
     memset( dvdcss->css.p_disc_key, 0, KEY_SIZE );
-#endif
 
     /* If disc is CSS protected and the ioctls work, authenticate the drive */
     if( dvdcss->b_scrambled && dvdcss->b_ioctls )
