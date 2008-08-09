@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mika Pirinen (1/2007->)-->
-<!--Date of translation: 30/7/2008-->
-<!--Finnish strings based on linux branch English strings version 14557-->
+<!--Date of translation: 9/8/2008-->
+<!--Finnish strings based on linux branch English strings version 14727-->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -108,8 +108,8 @@
   <string id="167">FTP-palvelin käytössä</string>
   <string id="168">Kellonajan päivitys internetistä</string>
   <string id="169">Näytönresoluutio</string>
-  <string id="170">Albumi</string>
-  <string id="171">Esittäjä</string>
+  <string id="170"></string>
+  <string id="171"></string>
   <string id="172">Julkaistu</string>
   <string id="173">Arvosana</string>
   <string id="174">Tyyli</string>
@@ -161,6 +161,7 @@
   <string id="222">Peruuta</string>
   <string id="224">Näyttöaika</string>
   <string id="225">Siirtymäaika</string>
+  <string id="226">Testikuviot...</string>
   <string id="227">Hae albumin tiedot freedb:stä</string>
   <string id="228">Sekoita soittolista ladattaessa</string>
   <string id="229">Kiintolevyn pysäytysaika</string>
@@ -506,9 +507,9 @@
   <string id="592">Yksi</string>
   <string id="593">Kaikki</string>
   <string id="594">Pois</string>
-  <string id="595">Jatkuva toisto: Pois</string>
-  <string id="596">Kappaleen toisto</string>
-  <string id="597">Jatkuva toisto: Päällä</string>
+  <string id="595">Toisto: Pois</string>
+  <string id="596">Toisto: Kappale</string>
+  <string id="597">Toisto: Kaikki</string>
 
   <string id="600">Siirrä CD-levy kiintolevylle</string>
   <string id="601">Keskimääräinen</string>
@@ -709,8 +710,8 @@
   <string id="1043">Ohjelma-lisäkkeet</string>
   <string id="1044">Lisäkkeen pienoiskuvake</string>
   <string id="1045">Lisäkkeen asetukset</string>
-  <string id="1046">Access Points</string>^
-  <string id="1047">Muita...</string>^
+  <string id="1046">Yhteyspisteet</string>
+  <string id="1047">Muita...</string>
 
   <string id="1200">SMB-asiakas</string>
   <string id="1202">Työryhmä</string>
@@ -750,13 +751,13 @@
   <string id="1247">Salasanan asetus onnistui</string>
   
   <string id="1250">Tunnistus</string>
-  <string id="1251">Xboxin automaattitunnistus</string>
+  <string id="1251">Järjestelmän automaattitunnistus</string>
   <string id="1252">Lempinimi</string>
   <string id="1253"></string>
   <string id="1254">Kysy ennen yhdistämistä</string>
   <string id="1255">Lähetä FTP-käyttäjätunnus ja salasana</string>
   <string id="1256">Pingauksen väli</string>
-  <string id="1257">Yhdistetäänkö havaittuun Xboxiin?</string>
+  <string id="1257">Yhdistetäänkö havaittuun järjestelmään?</string>
   
   <string id="1396">kasaantuvaa</string>
   <string id="1397">ja</string>
@@ -909,7 +910,7 @@
   <string id="12344">Annetut salasanat eivät täsmää.</string>
   <string id="12345">Pääsy evätty</string>
   <string id="12346">Kaikki kirjautumisyritykset käytetty.</string>
-  <string id="12347">Laite sammutetaan nyt.</string>
+  <string id="12347">Järjestelmä sammutetaan nyt.</string>
   <string id="12348">Kohde lukittu</string>
   <string id="12353">Uudelleenaktivoi lukitus</string>
   <string id="12356">Muuta lukitus</string>
@@ -1062,7 +1063,7 @@
   <string id="13305">RSS uutispalvelu käytössä</string>
   <string id="13306">Piilota päähakemisto</string>
   <string id="13307">Kappaleen nimeämistapa</string>
-  <string id="13308">Käynnistetäänkö laite uudelleen,</string>
+  <string id="13308">Käynnistetäänkö järjestelmä uudelleen,</string>
   <string id="13309">vai pelkkä XBMC?</string>
   <string id="13310">Zoomaus tehoste</string>
   <string id="13311">Kellunta tehoste</string>
@@ -1455,19 +1456,19 @@
   <string id="16205">Poisto epäonnistui</string>
   <string id="16206">Vähintään yhden tiedoston poisto epäonnistui</string>
 
- <string id="16300">Video Scaling Method</string>
-  <string id="16301">Nearest Neighbour</string>
-  <string id="16302">Bilinear</string>
+ <string id="16300">Videon skaalaus menetelmä</string>
+  <string id="16301">Lähin viereinen</string>
+  <string id="16302">Bilineaarinen</string>
   <string id="16303">Bicubic</string>
   <string id="16304">Lanczos2</string>
   <string id="16305">Lanczos3</string>
   <string id="16306">Sinc8</string>
   
-  <string id="16307">Bicubic (software)</string>
-  <string id="16308">Lanczos (software)</string>  
-  <string id="16309">Sinc (software)</string>
+  <string id="16307">Bicubic (ohjelmallinen)</string>
+  <string id="16308">Lanczos (ohjelmallinen)</string>  
+  <string id="16309">Sinc (ohjelmallinen)</string>
 
-  <string id="17500">Display Sleep Timeout</string>
+  <string id="17500">Näytön pimennyksen viive</string>
 
   <string id="20000">Tallennuskansio</string>
   <string id="20001">Käytä ulkoista DVD toisto-ohjelmaa</string>
@@ -1536,7 +1537,7 @@
   <string id="20071">Käynnistä uuden media sijainnin kanssa</string>
   <string id="20072">varmista että valittu kansio on kirjoitettava</string>
   <string id="20073">ja kansion nimi on käyttökelpoinen</string>
-  <string id="20074">MPAA luokitus</string>
+  <string id="20074">MPAA-luokitus</string>
   <string id="20075">Anna pääkäyttäjän lukituskoodi</string>
   <string id="20076">Kysy pääkäyttäjän lukituskoodia käynnistyessä</string>
   <string id="20077">Skinin asetukset</string>
@@ -1646,7 +1647,7 @@
   <string id="20182">Välilyönti</string>
   <string id="20183">Päivitä skini</string>
   <string id="20184">Käännä kuvat EXIF-tietojen mukaisesti</string>
-  <string id="20185"></string>
+  <string id="20185">Käytä juliste näkymää TV-ohjelmilla</string>
   <string id="20186">Odota hetki</string>
   <string id="20187">Varmuuskopioidaan EEPROM:in tiedot</string>
   <string id="20188">Varmuuskopioidaan Bios:in tiedot</string>
