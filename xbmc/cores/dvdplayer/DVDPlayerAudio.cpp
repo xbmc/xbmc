@@ -320,15 +320,14 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     m_decode.Release();
 
     if (m_messageQueue.RecievedAbortRequest()) return DECODE_FLAG_ABORT;
-    
+
+    CDVDMsg* pMsg;
+    int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE) ? 1 : 0;
     // read next packet and return -1 on error
     LeaveCriticalSection(&m_critCodecSection); //Leave here as this might stall a while
-    
-    CDVDMsg* pMsg;
-    MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, datatimeout);
-    
+    MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, datatimeout, iPriority);
     EnterCriticalSection(&m_critCodecSection);
-    
+
     if (ret == MSGQ_TIMEOUT) 
       return DECODE_FLAG_TIMEOUT;
 
@@ -381,6 +380,18 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
       m_decode.Release();
     }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
+    {
+      m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
+
+      if (m_speed == DVD_PLAYSPEED_PAUSE)
+      {
+        m_ptsOutput.Flush();
+        m_dvdAudio.Pause();
+      }
+      else 
+        m_dvdAudio.Resume();
+    }
     pMsg->Release();
   }
   return 0;
@@ -407,9 +418,6 @@ void CDVDPlayerAudio::Process()
 
   while (!m_bStop)
   {
-    //make sure player doesn't keep processing data while paused
-    while (!m_bStop && m_speed == DVD_PLAYSPEED_PAUSE && !m_messageQueue.RecievedAbortRequest()) Sleep(5);
-
     //Don't let anybody mess with our global variables
     EnterCriticalSection(&m_critCodecSection);
     result = DecodeFrame(audioframe, m_speed != DVD_PLAYSPEED_NORMAL); // blocks if no audio is available, but leaves critical section before doing so
@@ -512,15 +520,10 @@ void CDVDPlayerAudio::OnExit()
 
 void CDVDPlayerAudio::SetSpeed(int speed)
 { 
-  m_speed = speed;
-  
-  if (m_speed == DVD_PLAYSPEED_PAUSE)
-  {
-    m_ptsOutput.Flush();
-    m_dvdAudio.Pause();
-  }
-  else 
-    m_dvdAudio.Resume();
+  if(m_messageQueue.IsInited())
+    m_messageQueue.Put( new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed), 1 );
+  else
+    m_speed = speed;
 }
 
 void CDVDPlayerAudio::Flush()
