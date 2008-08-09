@@ -274,7 +274,7 @@ CStdString CSysInfo::GetCPUFreqInfo()
 {
   CStdString strCPUFreq;
   double CPUFreq = GetCPUFrequency();
-  strCPUFreq.Format("%s %4.2fGHz", g_localizeStrings.Get(13284), CPUFreq);
+  strCPUFreq.Format("%s %4.2fMHz", g_localizeStrings.Get(13284), CPUFreq);
   return strCPUFreq;
 }
 
