@@ -203,12 +203,12 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     break;
 
   case ACTION_BIG_STEP_BACK:
-    SeekChapter(g_application.m_pPlayer->GetChapter() - 1);
+    Seek(false, true);
     return true;
     break;
 
   case ACTION_BIG_STEP_FORWARD:
-    SeekChapter(g_application.m_pPlayer->GetChapter() + 1);
+    Seek(true, true);
     return true;
     break;
 
