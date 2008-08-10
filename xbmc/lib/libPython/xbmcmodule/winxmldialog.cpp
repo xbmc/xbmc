@@ -97,7 +97,7 @@ namespace PYXBMC
       {
         CUtil::AddFileToFolder(strFallbackPath, "skins", strSkinPath);
         CUtil::AddFileToFolder(strSkinPath, strDefault, strSkinPath);
-        CUtil::AddFileToFolder(strSkinPath, "pal", strSkinPath);
+        CUtil::AddFileToFolder(strSkinPath, "PAL", strSkinPath);
         CUtil::AddFileToFolder(strSkinPath, strXMLname, strSkinPath);
         res = PAL_4x3;
         if (!XFILE::CFile::Exists(strSkinPath))
