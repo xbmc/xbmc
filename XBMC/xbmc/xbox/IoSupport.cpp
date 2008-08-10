@@ -146,12 +146,14 @@ HRESULT CIoSupport::MapDriveLetter(char cDriveLetter, const char* szDevice)
   if((strnicmp(szDevice, "Harddisk0",9)==0) || (strnicmp(szDevice, "Cdrom",5)==0))
     return S_OK;
 #endif
+  CStdString device(szDevice);
+  device.TrimRight("/\\");
   char upperLetter = toupper(cDriveLetter);
   for (unsigned int i=0; i < NUM_OF_DRIVES; i++)
     if (driveMapping[i].cDriveLetter == upperLetter)
     {
-      strcpy(driveMapping[i].szDevice, szDevice);
-      CLog::Log(LOGNOTICE, "Mapping drive %c to %s", cDriveLetter, szDevice);
+      strcpy(driveMapping[i].szDevice, device.c_str());
+      CLog::Log(LOGNOTICE, "Mapping drive %c to %s", cDriveLetter, device.c_str());
       return S_OK;
     }
   return E_FAIL;
