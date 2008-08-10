@@ -43,6 +43,7 @@
 #include "FileSystem/File.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "Application.h"
 
 using namespace std;
 using namespace AUTOPTR;
@@ -2193,7 +2194,11 @@ void CMusicDatabase::DeleteAlbumInfo()
 
 bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
 {
-  if (!g_guiSettings.GetBool("musicfiles.usecddb") || !g_guiSettings.GetBool("network.enableinternet"))
+  if (!g_guiSettings.GetBool("musicfiles.usecddb"))
+    return false;
+
+  // check network connectivity
+  if (!g_guiSettings.GetBool("network.enableinternet") || !g_application.getNetwork().IsConnected())
     return false;
 
   // Get information for the inserted disc
@@ -2234,8 +2239,6 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
     pDialogProgress->SetLine(2, "");
     pDialogProgress->ShowProgressBar(false);
     pDialogProgress->StartModal();
-    while (pDialogProgress->IsAnimating(ANIM_TYPE_WINDOW_OPEN))
-      pDialogProgress->Progress();
 
     // get cddb information
     if (!cddb.queryCDinfo(pCdInfo))
