@@ -307,7 +307,7 @@ CGUISettings::CGUISettings(void)
   AddGroup(4, 13000);
   AddCategory(4, "system", 13281);
   // advanced only configuration
-  AddBool(1, "system.debuglogging", 20191, true);
+  AddBool(1, "system.debuglogging", 20191, false);
   AddInt(2, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
 #ifdef __APPLE__
   AddInt(3, "system.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
