@@ -23,7 +23,6 @@
 
 #include "GUIDialog.h"
 #include "GUIListItem.h"
-#include "VideoDatabase.h"
 #include "GUIWindowVideoBase.h"
 #include "GUIWindowVideoFiles.h"
 
@@ -65,5 +64,4 @@ protected:
   bool m_bRefresh;
   bool m_bRefreshAll;
   CGUIDialogProgress* m_dlgProgress;
-  CVideoDatabase m_database;
 };
