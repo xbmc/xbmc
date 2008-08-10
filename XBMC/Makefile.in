@@ -270,7 +270,7 @@ tools/XBMCTex/XBMCTex:
 install-bin: xbmc.bin # developement convenience target
 	sudo cp xbmc.bin $(prefix)/share/xbmc
 
-install: all install-datas install-web
+install: install-datas install-web
 	@echo "Copying XBMC binary to $(prefix)/share/xbmc/xbmc.bin"
 	@cp xbmc.bin $(prefix)/share/xbmc/xbmc.bin
 	@mkdir -p $(prefix)/bin
@@ -281,7 +281,7 @@ install: all install-datas install-web
 	@echo "Done!"
 	@echo "You can run XBMC with the command 'xbmc'"
 
-install-datas: tools/XBMCTex/XBMCTex
+install-datas:
 	@echo "Creating target directories in $(prefix)/share/xbmc"
 	@find language media screensavers scripts skin sounds userdata visualisations system -type d -not -iregex ".*svn.*" -exec mkdir -p $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@echo "Copying system files to $(prefix)/share/xbmc"
