@@ -22,6 +22,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+#include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <ctype.h>
@@ -97,6 +99,7 @@ static char *get_debug_class_str(enum __DEBUG_CLASS debug_class)
         case __DEBUG_TRACE: return "trace";
         case __DEBUG_ERR: return "err";
         case __DEBUG_FIXME: return "fixme";
+        default: return "";
     }
 }
 
@@ -108,6 +111,7 @@ int debug_get_debugging(enum __DEBUG_CLASS debug_class, const char *debug_channe
         case __DEBUG_TRACE: return tracesEnabled;
         case __DEBUG_ERR: return errEnabled;
         case __DEBUG_FIXME: return fixmeEnabled;
+        default: return 0;
     }
 }
 

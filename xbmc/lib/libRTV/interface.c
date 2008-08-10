@@ -1,7 +1,9 @@
+#ifndef __GNUC__
 #pragma code_seg( "RTV_TEXT" )
 #pragma data_seg( "RTV_DATA" )
 #pragma bss_seg( "RTV_BSS" )
 #pragma const_seg( "RTV_RD" )
+#endif
 
 /*
  * libRTV
@@ -84,7 +86,7 @@ u64 rtv_get_filesize(const char* strHostName, const char* strFileName)
     num_lines = rtv_split_lines(data, &lines);
     for (i = 0; i < num_lines; i++) {
         if (strncmp(lines[i], "size=", 5) == 0) {
-            sscanf(lines[i]+5, "%"U64F"d", &size);
+            sscanf(lines[i]+5, "%llu", &size);
 			break;
         }
     }
@@ -173,7 +175,7 @@ RTVD rtv_open_file(const char * address, const char * strFileName, u64 filePos)
 
 	rtvd->firstReadDone = 0;
 #ifdef _LINUX
-	sprintf(szOffset,"%ll",filePos);
+	sprintf(szOffset,"%llu",filePos);
 #else
 	_i64toa(filePos,szOffset,10);
 #endif

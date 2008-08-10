@@ -126,6 +126,7 @@ mkdir_if_needed (mchar *str)
 /* Recursively make directories.  If make_last == 1, then the final 
    substring (after the last '/') is considered a directory rather 
    than a file name */
+#ifndef XBMC
 static error_code
 mkdir_recursive (mchar *str, int make_last)
 {
@@ -145,6 +146,7 @@ mkdir_recursive (mchar *str, int make_last)
     }
     return SR_SUCCESS;
 }
+#endif
 
 error_code
 filelib_init (BOOL do_individual_tracks,
@@ -284,6 +286,7 @@ filelib_init (BOOL do_individual_tracks,
 /* This sets the value for m_default_pattern and m_default_showfile_pattern,
    using the -q & -s flags.  This function cannot overflow 
    these static buffers. */
+#ifndef XBMC
 static void
 set_default_pattern (BOOL get_separate_dirs, BOOL do_count)
 {
@@ -413,6 +416,7 @@ set_output_directory (mchar* global_output_directory,
 
     return SR_SUCCESS;
 }
+#endif
 
 /* Parse & substitute the output pattern.  What we're trying to
    get is everything up to the pattern specifiers that change 
@@ -580,6 +584,7 @@ void close_file (FHANDLE* fp)
     }
 }
 
+#ifndef XBMC
 void close_files()
 {
     close_file (&m_file);
@@ -606,6 +611,7 @@ file_exists (mchar *filename)
     close_file (&f);
     return TRUE;
 }
+#endif
 
 error_code
 filelib_write_cue (TRACK_INFO* ti, int secs)
@@ -1138,6 +1144,7 @@ filelib_shutdown()
 }
 
 /* GCS: This should get only the name, not the directory */
+#ifndef XBMC
 static void
 trim_filename (mchar* out, mchar *filename)
 {
@@ -1157,6 +1164,7 @@ trim_mp3_suffix (mchar *filename)
 	*suffix_ptr = 0;
     }
 }
+#endif
 
 /* GCS FIX: This may not work with filesystem charsets where 0-9 are 
    not ascii compatible? */

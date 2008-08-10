@@ -1,8 +1,10 @@
 // Place the code and data below here into the LIBXDAAP section.
+#ifndef __GNUC__
 #pragma code_seg( "LIBXDAAP_TEXT" )
 #pragma data_seg( "LIBXDAAP_DATA" )
 #pragma bss_seg( "LIBXDAAP_BSS" )
 #pragma const_seg( "LIBXDAAP_RD" )
+#endif
 
 /* Copyright (c) 2004 David Hammerton
  * david@crazney.net

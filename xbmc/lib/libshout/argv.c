@@ -42,12 +42,8 @@ void freeargv (char **vector);
 #else	/* !ANSI_PROTOTYPES */
 
 #if !defined _WIN32 || defined __GNUC__
-extern char *memcpy ();		/* Copy memory region */
-extern int strlen ();		/* Count length of string */
-extern char *malloc ();		/* Standard memory allocater */
-extern char *realloc ();	/* Standard memory reallocator */
-extern void free ();		/* Free malloc'd memory */
-extern char *strdup ();		/* Duplicate a string */
+#include <stdlib.h>
+#include <string.h>
 #endif
 
 #endif	/* ANSI_PROTOTYPES */
