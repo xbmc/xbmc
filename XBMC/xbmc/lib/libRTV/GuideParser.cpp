@@ -773,7 +773,6 @@ void DisplayMPAARating(int mpaarating, char *szRating)
 //-------------------------------------------------------------------------
 void ConvertCodepage(char *szString)
 {
-    bool exitloop = false;
     unsigned int i = 0;
     char ch;
     
@@ -825,7 +824,6 @@ void ConvertCodepage(char *szString)
 //-------------------------------------------------------------------------
 int CalculateMinutes( int seconds )
 {
-    int original = seconds;
     int retval = 0;
     double result1 = 0.0;
     double result2 = 0.0;
@@ -877,8 +875,8 @@ DWORD64 ntohll(DWORD64 llValue)
 
     MoveMemory(szBuffer,&llValue,sizeof(llValue));
             
-    int cc = sizeof(llValue) - 1;
-    int i = 0;
+    size_t cc = sizeof(llValue) - 1;
+    size_t i = 0;
             
     for( i = 0; i < sizeof(llValue); ++i )
     {
@@ -1051,7 +1049,7 @@ int GuideParser(char * szOutputBuffer, const char * szInput, const size_t InputS
     char szExtTV[64];
     char szExtMPAA[64];
     int i, curshow, cc;
-	size_t readsize;
+	  size_t readsize;
     ReplayShow strReplayShow;
     GuideHeader strGuideHeader;
     GuideHeader45 strGuideHeader45;
@@ -1068,7 +1066,7 @@ int GuideParser(char * szOutputBuffer, const char * szInput, const size_t InputS
     memset(szMPAARating,0,sizeof(szMPAARating));
     memset(szExtTV,0,sizeof(szExtTV));
     memset(szExtMPAA,0,sizeof(szExtMPAA));
-	sprintf(szOutputBuffer,"");
+	  sprintf(szOutputBuffer,"%s", "");
 
     // Display Initial Header
     
@@ -1553,7 +1551,7 @@ int GuideParser(char * szOutputBuffer, const char * szInput, const size_t InputS
 			sprintf(szBuffer,"\t<RECORDED>%s</RECORDED>\n",UnixTimeToString(strReplayShow.recorded));
 			strcat(szOutputBuffer, szBuffer);
             
-			sprintf(szBuffer,"\t<PATH>Video/%u.mpg</PATH>\n",strReplayShow.recorded);
+			sprintf(szBuffer,"\t<PATH>Video/%ld.mpg</PATH>\n",strReplayShow.recorded);
 			strcat(szOutputBuffer, szBuffer);
 
 			strcat(szOutputBuffer,"\t<DURATION>");

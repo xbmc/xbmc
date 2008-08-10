@@ -136,7 +136,9 @@ debug_mprintf (mchar* fmt, ...)
     int was_open = 1;
     va_list argptr;
     int rc;
+#if defined HAVE_WCHAR_SUPPORT    
     mchar mbuf[DEBUG_BUF_LEN];
+#endif    
     char cbuf[DEBUG_BUF_LEN];
 
     if (!debug_on) return;

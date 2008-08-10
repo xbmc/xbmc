@@ -1,4 +1,5 @@
 // Place the code and data below here into the LIBXDAAP section.
+#ifndef __GNUC__
 #pragma code_seg( "LIBXDAAP_TEXT" )
 #pragma data_seg( "LIBXDAAP_DATA" )
 #pragma bss_seg( "LIBXDAAP_BSS" )
@@ -9,6 +10,7 @@
 #pragma comment(linker, "/merge:LIBXDAAP_BSS=LIBXDAAP")
 #pragma comment(linker, "/merge:LIBXDAAP_RD=LIBXDAAP")
 #pragma comment(linker, "/section:LIBXDAAP,RWE")
+#endif
 
 /* client class
  *
@@ -1217,7 +1219,6 @@ static char *encode_base64(char *string)
 void DAAP_ClientHost_SetPassword(DAAP_SClientHost *pCHThis,
                                  char *password)
 {
-    unsigned int i;
     char *tmppass;
 
     if (pCHThis->password)

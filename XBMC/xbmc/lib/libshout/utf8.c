@@ -25,7 +25,7 @@
 #include <string.h>
 
 #include "utf8.h"
-
+#include "charset.h"
 
 #ifdef _WIN32
 
