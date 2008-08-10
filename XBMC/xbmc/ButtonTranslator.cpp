@@ -25,8 +25,11 @@
 #include "Settings.h"
 #include "SkinInfo.h"
 #include "Key.h"
+#include "File.h"
+
 
 using namespace std;
+using namespace XFILE;
 
 CButtonTranslator g_buttonTranslator;
 extern CStdString g_LoadErrorStr;
@@ -43,11 +46,19 @@ bool CButtonTranslator::Load()
 
   // Load the config file
   CStdString keymapPath;
-  //CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Keymap.xml", keymapPath);
+  bool success;
+
   keymapPath = _P("Q:\\system\\Keymap.xml");
-  bool success = LoadKeymap(keymapPath);
+  if(CFile::Exists(keymapPath))
+    success |= LoadKeymap(keymapPath);
+  else
+    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no system keymap found, skipping");
+
   keymapPath = g_settings.GetUserDataItem("Keymap.xml");
-  success |= LoadKeymap(keymapPath);
+  if(CFile::Exists(keymapPath))
+    success |= LoadKeymap(keymapPath);
+  else
+    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no userdata keymap found, skipping");
 
   if (!success)
   {
