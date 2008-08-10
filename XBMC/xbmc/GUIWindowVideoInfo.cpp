@@ -97,13 +97,11 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       ClearCastList();
-      m_database.Close();
     }
     break;
 
   case GUI_MSG_WINDOW_INIT:
     {
-      m_database.Open();
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       m_bRefresh = false;
@@ -190,7 +188,12 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
           if (CGUIDialogYesNo::ShowAndGetInput(20377,20378,-1,-1,bCanceled))
           {
             m_bRefreshAll = true;
-            m_database.SetPathHash(m_movieItem->GetVideoInfoTag()->m_strPath,"");
+            CVideoDatabase db;
+            if (db.Open())
+            {
+              db.SetPathHash(m_movieItem->GetVideoInfoTag()->m_strPath,"");
+              db.Close();
+            }
           }
           else
             m_bRefreshAll = false;
@@ -564,7 +567,11 @@ void CGUIWindowVideoInfo::OnSearch(CStdString& strSearch)
 void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
 {
   VECMOVIES movies;
-  m_database.GetMoviesByActor(strSearch, movies);
+  CVideoDatabase db;
+  if (!db.Open())
+    return;
+
+  db.GetMoviesByActor(strSearch, movies);
   for (int i = 0; i < (int)movies.size(); ++i)
   {
     CStdString strItem;
@@ -575,7 +582,7 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
     items.Add(pItem);
   }
   movies.clear();
-  m_database.GetTvShowsByActor(strSearch, movies);
+  db.GetTvShowsByActor(strSearch, movies);
   for (int i = 0; i < (int)movies.size(); ++i)
   {
     CStdString strItem;
@@ -586,7 +593,7 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
     items.Add(pItem);
   }
   movies.clear();
-  m_database.GetEpisodesByActor(strSearch, movies);
+  db.GetEpisodesByActor(strSearch, movies);
   for (int i = 0; i < (int)movies.size(); ++i)
   {
     CStdString strItem;
@@ -598,7 +605,7 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
   }
 
   CFileItemList mvids;
-  m_database.GetMusicVideosByArtist(strSearch, mvids);
+  db.GetMusicVideosByArtist(strSearch, mvids);
   for (int i = 0; i < (int)mvids.Size(); ++i)
   {
     CStdString strItem;
@@ -608,6 +615,7 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
     pItem->m_strPath = mvids[i]->GetVideoInfoTag()->m_strFileNameAndPath;
     items.Add(pItem);
   }
+  db.Close();
 }
 
 /// \brief React on the selected search item
@@ -622,15 +630,20 @@ void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
     iType = 3;
 
+  CVideoDatabase db;
+  if (!db.Open())
+    return;
+
   CVideoInfoTag movieDetails;
   if (iType == 0)
-    m_database.GetMovieInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
+    db.GetMovieInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
   if (iType == 1)
-    m_database.GetEpisodeInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
+    db.GetEpisodeInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
   if (iType == 2)
-    m_database.GetTvShowInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
+    db.GetTvShowInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
   if (iType == 3)
-    m_database.GetMusicVideoInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
+    db.GetMusicVideoInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
+  db.Close();
 
   CFileItem item(*pItem);
   *item.GetVideoInfoTag() = movieDetails;
@@ -834,7 +847,12 @@ void CGUIWindowVideoInfo::OnGetFanart()
     {
       // set new primary fanart, and update our database accordingly
       m_movieItem->GetVideoInfoTag()->m_fanart.SetPrimaryFanart(iFanart);
-      m_database.SetDetailsForTvShow(m_movieItem->m_strPath, *m_movieItem->GetVideoInfoTag());
+      CVideoDatabase db;
+      if (db.Open())
+      {
+        db.SetDetailsForTvShow(m_movieItem->m_strPath, *m_movieItem->GetVideoInfoTag());
+        db.Close();
+      }
 
       // download the fullres fanart image.  TODO: FANART - this could take some time, so should probably be backgrounded
       m_movieItem->GetVideoInfoTag()->m_fanart.DownloadImage(cachedThumb);
