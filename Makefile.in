@@ -79,6 +79,8 @@ VIS_DIRS=\
 	xbmc/visualizations/WaveForm \
 	xbmc/visualizations/XBMCProjectM
 
+SKIN_MEDIA=skin/Project\ Mayhem\ III/media
+
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
 			$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS)
 
@@ -89,14 +91,14 @@ CXXFLAGS=@CXXFLAGS@
 LDFLAGS=@LDFLAGS@
 INCLUDES=@INCLUDES@
 
-all : xbmc.bin externals xbmc-xrandr skin/Project\ Mayhem\ III/media/Textures.xpr
+all : xbmc.bin externals xbmc-xrandr $(SKIN_MEDIA)/Textures.xpr
 
 include Makefile.include
 
 .PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualization-interface visualizations screensaver-interface screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients librtmp papcodecs dvdpcodecs imagelib codecs externals cdrip
 
-skin/Project\ Mayhem\ III/media/Textures.xpr: xbmctex
-	 @tools/XBMCTex/XBMCTex -input "\"skin/Project Mayhem III/media\"" -output "\"skin/Project Mayhem III\media\Textures.xpr\""
+$(SKIN_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(SKIN_MEDIA)/*.png $(SKIN_MEDIA)/*/*.png
+	 tools/XBMCTex/XBMCTex -input \"$(SKIN_MEDIA)\" -output \"$(SKIN_MEDIA)/Textures.xpr\"
 
 guilib: 
 	$(MAKE) -C guilib
@@ -204,8 +206,6 @@ endif
 	$(MAKE) -C xbmc/cores/paplayer/YMCodec/StSoundLibrary	
 imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
-xbmctex:
-	$(MAKE) -C tools/XBMCTex
 
 codecs: papcodecs dvdpcodecs
 
