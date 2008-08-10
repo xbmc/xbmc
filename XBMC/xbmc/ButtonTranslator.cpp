@@ -220,13 +220,15 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
   TiXmlElement *pButton = pJoystick->FirstChildElement();
   int id = 0;
   //char* szId;
-  char* szType;
-  char *szAction;
+  const char* szType;
+  const char *szAction;
   while (pButton)
   {
-    szType = (char*)pButton->Value();
-    szAction = (char*)pButton->GetText();
-    if (szType && szAction)
+    szType = pButton->Value();
+    szAction = pButton->GetText();
+    if (szAction == NULL)
+      szAction = "";
+    if (szType)
     {
       if ((pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS) && id>=0 && id<=256)
       {
@@ -289,7 +291,7 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
   {
     m_joystickButtonMap[*it][wWindowID] = buttonMap;
     m_joystickAxisMap[*it][wWindowID] = axisMap;
-    CLog::Log(LOGNOTICE, "Found Joystick map for %s", it->c_str());
+    CLog::Log(LOGDEBUG, "Found Joystick map for window %d using %s", wWindowID, it->c_str());
     it++;
   }
 
