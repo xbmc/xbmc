@@ -68,7 +68,7 @@ void CGUIPythonWindowXML::Update()
 bool CGUIPythonWindowXML::OnAction(const CAction &action)
 {
   // do the base class window first, and the call to python after this
-  bool ret = CGUIWindow::OnAction(action);
+  bool ret = CGUIWindow::OnAction(action);  // we don't currently want the mediawindow actions here
   if(pCallbackWindow)
   {
     PyXBMCAction* inf = new PyXBMCAction;
@@ -271,7 +271,7 @@ void CGUIPythonWindowXML::AllocResources(bool forceLoad /*= FALSE */)
 
   //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: %s", fallbackMediaPath.c_str());
   g_TextureManager.AddTexturePath(m_mediaDir);
-  CGUIWindow::AllocResources(forceLoad);
+  CGUIMediaWindow::AllocResources(forceLoad);
   g_TextureManager.RemoveTexturePath(m_mediaDir);
 }
 
@@ -326,13 +326,13 @@ void CGUIPythonWindowXML::FreeResources(bool forceUnLoad /*= FALSE */)
   // Unload temporary language strings
   ClearScriptStrings();
 
-  CGUIWindow::FreeResources(forceUnLoad);
+  CGUIMediaWindow::FreeResources(forceUnLoad);
 }
 
 void CGUIPythonWindowXML::Render()
 {
   g_TextureManager.AddTexturePath(m_mediaDir);
-  CGUIWindow::Render();
+  CGUIMediaWindow::Render();
   g_TextureManager.RemoveTexturePath(m_mediaDir);
 }
 
