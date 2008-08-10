@@ -1160,10 +1160,11 @@ extern "C"
       // unimplemented
       return 0;
     }
-    else if (!IS_STD_STREAM(stream))
-    {
+    else if (IS_STD_STREAM(stream))
+      return 0;
+    else
       return ferror(stream);
-    }
+
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return -1;
   }
