@@ -119,6 +119,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
       // create a new call and set it in the python queue
       inf->pCallbackWindow = pCallbackWindow;
       Py_AddPendingCall(Py_XBMC_Event_OnInit, inf);
+      PulseActionEvent();
       return true;
     }
     break;
