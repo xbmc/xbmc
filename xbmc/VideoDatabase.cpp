@@ -4206,7 +4206,11 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
     CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d",
               timeGetTime() - time);
     if (g_guiSettings.GetBool("videolibrary.removeduplicates"))
-      Stack(items, VIDEODB_CONTENT_TVSHOWS);
+    {
+      CStdString order(where);
+      bool maintainOrder = order.ToLower().Find("order by")  != CStdString::npos;
+      Stack(items, VIDEODB_CONTENT_TVSHOWS, maintainOrder);
+    }
 
     // cleanup
     m_pDS->close();
@@ -4219,8 +4223,15 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
   return false;
 }
 
-void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type)
+void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool maintainSortOrder /* = false */)
 {
+  if (maintainSortOrder)
+  {
+    // save current sort order
+    for (int i = 0; i < items.Size(); i++)
+      items[i]->m_iprogramCount = i;
+  }
+
   switch (type)
   {
     case VIDEODB_CONTENT_TVSHOWS:
@@ -4352,6 +4363,11 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type)
     default:
       break;
   }
+  if (maintainSortOrder)
+  {
+    // restore original sort order - essential for smartplaylists
+    items.Sort(SORT_METHOD_PROGRAM_COUNT, SORT_ORDER_ASC);
+  }
 }
 
 bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idYear, long idActor, long idDirector, long idShow, long idSeason)
@@ -4443,7 +4459,11 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
     CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d",
               timeGetTime() - time);
     if (g_guiSettings.GetBool("videolibrary.removeduplicates"))
-      Stack(items, VIDEODB_CONTENT_EPISODES);
+    {
+      CStdString order(where);
+      bool maintainOrder = order.ToLower().Find("order by")  != CStdString::npos;
+      Stack(items, VIDEODB_CONTENT_EPISODES, maintainOrder);
+    }
 
     // cleanup
     m_pDS->close();
