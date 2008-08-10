@@ -5,7 +5,6 @@
 #include <wchar.h>
 #include <wctype.h>
 
-
 int
 main (int argc, char* argv[])
 {

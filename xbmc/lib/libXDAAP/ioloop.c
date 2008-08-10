@@ -1,8 +1,10 @@
 // Place the code and data below here into the LIBXDAAP section.
+#ifndef __GNUC__
 #pragma code_seg( "LIBXDAAP_TEXT" )
 #pragma data_seg( "LIBXDAAP_DATA" )
 #pragma bss_seg( "LIBXDAAP_BSS" )
 #pragma const_seg( "LIBXDAAP_RD" )
+#endif
 
 /* ioloop stuff
  * Can add IO watches, event watches
@@ -38,14 +40,15 @@
 #include "portability.h"
 
 #ifdef SYSTEM_POSIX
-# include <unistd.h>
-# include <sys/types.h>
-# include <sys/socket.h>
-# include <sys/select.h>
-# include <netdb.h>
-# include <fcntl.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/select.h>
+#include <netdb.h>
+#include <fcntl.h>
 #else
-# error implement me
+#error implement me
 #endif
 
 #include <stdlib.h>
