@@ -1,6 +1,8 @@
 #ifdef XBOX
 #include <xtl.h>
 #endif
+#include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
 
 #include "client.h"
