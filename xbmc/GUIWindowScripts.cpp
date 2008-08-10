@@ -213,6 +213,7 @@ void CGUIWindowScripts::GetContextButtons(int itemNumber, CContextButtons &butto
 {
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
   buttons.Add(CONTEXT_BUTTON_INFO, 654);
+  buttons.Add(CONTEXT_BUTTON_SCRIPT_SETTINGS, 1045);
 }
 
 bool CGUIWindowScripts::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
