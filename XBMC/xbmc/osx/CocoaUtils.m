@@ -80,12 +80,12 @@ int Cocoa_GetDisplay(int screen)
   
 	// Get the list of displays.
 	CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
-	return displayArray[screen];
+	return( (int)displayArray[screen]);
 }
 
 void Cocoa_GetScreenResolutionOfAnotherScreen(int screen, int* w, int* h)
 {
-	CFDictionaryRef mode = CGDisplayCurrentMode(Cocoa_GetDisplay(screen));
+	CFDictionaryRef mode = CGDisplayCurrentMode( (CGDirectDisplayID)Cocoa_GetDisplay(screen));
   CFNumberGetValue(CFDictionaryGetValue(mode, kCGDisplayWidth), kCFNumberSInt32Type, w);
   CFNumberGetValue(CFDictionaryGetValue(mode, kCGDisplayHeight), kCFNumberSInt32Type, h);
 }
@@ -115,7 +115,7 @@ static double getDictDouble(CFDictionaryRef refDict, CFStringRef key)
 double Cocoa_GetScreenRefreshRate(int screen)
 {
   // Figure out the refresh rate.
-  CFDictionaryRef mode = CGDisplayCurrentMode(Cocoa_GetDisplay(screen));
+  CFDictionaryRef mode = CGDisplayCurrentMode((CGDirectDisplayID)Cocoa_GetDisplay(screen));
   return (mode != NULL) ? getDictDouble(mode, kCGDisplayRefreshRate) : 0.0f;
  }
 
@@ -198,13 +198,13 @@ void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool bla
     if (blankOtherDisplays == true)
       CGCaptureAllDisplays();
     else
-      CGDisplayCapture(fullScreenDisplay);
+      CGDisplayCapture((CGDirectDisplayID)fullScreenDisplay);
     
     // Hide the mouse.
     [NSCursor hide];
     
     // If we don't hide menu bar, it will get events and interrupt the program.
-    if (fullScreenDisplay == kCGDirectMainDisplay)
+    if (fullScreenDisplay == (int)kCGDirectMainDisplay)
       HideMenuBar();
     
     // set fullscreen
@@ -236,7 +236,7 @@ void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool bla
     
     [NSCursor unhide];
     
-    if (fullScreenDisplay == kCGDirectMainDisplay)
+    if (fullScreenDisplay == (int)kCGDirectMainDisplay)
       ShowMenuBar();
     
     // release displays
