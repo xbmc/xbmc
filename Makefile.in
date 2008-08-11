@@ -77,7 +77,8 @@ SS_DIRS=\
 VIS_DIRS=\
 	xbmc/visualizations/OpenGLSpectrum \
 	xbmc/visualizations/WaveForm \
-	xbmc/visualizations/XBMCProjectM
+	xbmc/visualizations/XBMCProjectM \
+	xbmc/visualizations/Goom
 
 SKIN_MEDIA=skin/Project\ Mayhem\ III/media
 
@@ -129,6 +130,7 @@ visualizations: exports
 	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
 	$(MAKE) -C xbmc/visualizations/WaveForm
 	$(MAKE) -C xbmc/visualizations/XBMCProjectM
+	$(MAKE) -C xbmc/visualizations/Goom
 screensaver-interface: 
 	$(MAKE) -C xbmc/screensavers
 screensavers: exports
