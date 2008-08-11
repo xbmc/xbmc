@@ -21,6 +21,7 @@
 #include <mpg123.h>
 #endif
 #include "coding/acm_decoder.h"
+#include "coding/nwa_decoder.h"
 
 /* The encoding type specifies the format the sound data itself takes */
 typedef enum {
@@ -34,6 +35,8 @@ typedef enum {
     coding_PCM8,            /* 8-bit PCM */
 	coding_PCM8_int,		/* 8-Bit PCM with sample-level interleave handled
                                by the decoder */
+    coding_PCM8_SB_int,     /* 8-bit PCM, sign bit (others are 2's complement),
+                               sample-level interleave */
 
     /* 4-bit ADPCM */
     coding_NDS_IMA,         /* IMA ADPCM w/ NDS layout */
@@ -58,7 +61,7 @@ typedef enum {
                                with smaple-level interleave handled by the
                                decoder */
     coding_DVI_IMA,         /* DVI (bare IMA, high nibble first), aka ADP4 */
-	coding_INT_DVI_IMA,		/* Interlaved DVI */
+	coding_INT_DVI_IMA,		/* Interleaved DVI */
 	coding_EACS_IMA,
     coding_IMA,             /* bare IMA, low nibble first */
     coding_WS,              /* Westwood Studios' custom VBR ADPCM */
@@ -77,6 +80,13 @@ typedef enum {
 #endif
 
     coding_ACM,             /* InterPlay ACM */
+    /* compressed NWA at various levels */
+    coding_NWA0,
+    coding_NWA1,
+    coding_NWA2,
+    coding_NWA3,
+    coding_NWA4,
+    coding_NWA5,
 } coding_t;
 
 /* The layout type specifies how the sound data is laid out in the file */
@@ -99,6 +109,7 @@ typedef enum {
     layout_wsi_blocked,
     layout_str_snds_blocked,
     layout_ws_aud_blocked,
+	layout_matx_blocked,
 #if 0
     layout_strm_blocked,    /* */
 #endif
@@ -113,6 +124,7 @@ typedef enum {
 #endif
     layout_acm,             /* dummy, let libacm handle layout */
     layout_mus_acm,         /* mus has multi-files to deal with */
+    layout_aix,             /* CRI AIX's wheels within wheels */
 } layout_t;
 
 /* The meta type specifies how we know what we know about the file. We may know because of a header we read, some of it may have been guessed from filenames, etc. */
@@ -145,6 +157,7 @@ typedef enum {
     meta_ADX_03,            /* ADX "type 03" */
     meta_ADX_04,            /* ADX "type 04" */
 	meta_ADX_05,            /* ADX "type 05" */
+    meta_AIX,               /* CRI AIX */
 
     /* etc */
     meta_NGC_ADPDTK,        /* NGC DTK/ADP, no header (.adp) */
@@ -198,15 +211,23 @@ typedef enum {
 	meta_PS2_KCES,			/* Dance Dance Revolution */
 	meta_PS2_DXH,			/* Tokobot Plus - Myteries of the Karakuri */
 	meta_PS2_PSH,			/* Dawn of Mana - Seiken Densetsu 4 */
-	meta_PS2_PCM,			/* Ephemeral Fantasia */
+	meta_PCM,				/* Ephemeral Fantasia, Lunar - Eternal Blue */
 	meta_PS2_RKV,			/* Legacy of Kain - Blood Omen 2 */
 	meta_PS2_PSW,			/* Rayman Raving Rabbids */
 	meta_PS2_VAS,			/* Pro Baseball Spirits 5 */
 	meta_PS2_TEC,			/* TECMO badflagged stream */
 	meta_PS2_ENTH,			/* Enthusia */
+	meta_SDT,				/* Baldur's Gate - Dark Alliance */
+	meta_NGC_TYDSP,			/* Ty - The Tasmanian Tiger */
+	meta_NGC_SWD,			/* Conflict - Desert Storm 1 & 2 */
+	meta_NGC_VJDSP,			/* Viewtiful Joe */
+	meta_DC_STR,			/* Evil Dead */
 
 	meta_XBOX_WAVM,			/* XBOX WAVM File */
 	meta_XBOX_RIFF,			/* XBOX RIFF/WAVE File */
+	meta_XBOX_WVS,			/* XBOX WVS */
+	meta_XBOX_STMA,			/* XBOX STMA */
+	meta_XBOX_MATX,			/* XBOX MATX */
 
 	meta_EAXA_R2,			/* EA XA Release 2 */
 	meta_EAXA_R3,			/* EA XA Release 3 */
@@ -386,6 +407,25 @@ typedef struct {
     /*int end_file;*/
     ACMStream **files;
 } mus_acm_codec_data;
+
+#define AIX_BUFFER_SIZE 0x1000
+/* AIXery */
+typedef struct {
+    sample buffer[AIX_BUFFER_SIZE];
+    int segment_count;
+    int stream_count;
+    int current_segment;
+    /* one per segment */
+    int32_t *sample_counts;
+    /* organized like:
+     * segment1_stream1, segment1_stream2, segment2_stream1, segment2_stream2*/
+    VGMSTREAM **adxs;
+} aix_codec_data;
+
+/* for compressed NWA */
+typedef struct {
+    NWAData *nwa;
+} nwa_codec_data;
 
 /* do format detection, return pointer to a usable VGMSTREAM, or NULL on failure */
 VGMSTREAM * init_vgmstream(const char * const filename);
