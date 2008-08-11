@@ -1,5 +1,6 @@
 #include "meta.h"
 #include "../util.h"
+#include "../coding/nwa_decoder.h"
 #include <string.h>
 #include <ctype.h>
 
@@ -9,14 +10,7 @@
 #define DIRSEP '/'
 #endif
 
-/* NWA - Visual Arts streams
- *
- * This can apparently get a lot more complicated, I'm only handling the
- * raw PCM case at the moment (until I see something else).
- *
- * Kazunori "jagarl" Ueno's nwatowav was helpful, and will probably be used
- * to write coding support if it comes to that.
- */
+/* NWA - Visual Art's streams */
 
 VGMSTREAM * init_vgmstream_nwa(STREAMFILE *streamFile) {
     VGMSTREAM * vgmstream = NULL;
@@ -28,19 +22,38 @@ VGMSTREAM * init_vgmstream_nwa(STREAMFILE *streamFile) {
     int32_t loop_end_sample = 0;
     int nwainfo_ini_found = 0;
     int gameexe_ini_found = 0;
+    int just_pcm = 0;
+    int comp_level = -2;
+    nwa_codec_data *data = NULL;
 
     /* check extension, case insensitive */
     streamFile->get_name(streamFile,filename,sizeof(filename));
     if (strcasecmp("nwa",filename_extension(filename))) goto fail;
 
-    /* check that we're using raw pcm */
+    channel_count = read_16bitLE(0x00,streamFile);
+    if (channel_count != 1 && channel_count != 2) goto fail;
+
+    /* check if we're using raw pcm */
     if (
-            read_32bitLE(0x08,streamFile)!=-1 || /* compression level */
-            read_32bitLE(0x10,streamFile)!=0  || /* block count */
-            read_32bitLE(0x18,streamFile)!=0  || /* compressed data size */
-            read_32bitLE(0x20,streamFile)!=0  || /* block size */
-            read_32bitLE(0x24,streamFile)!=0     /* restsize */
-       ) goto fail;
+            read_32bitLE(0x08,streamFile)==-1 || /* compression level */
+            read_32bitLE(0x10,streamFile)==0  || /* block count */
+            read_32bitLE(0x18,streamFile)==0  || /* compressed data size */
+            read_32bitLE(0x20,streamFile)==0  || /* block size */
+            read_32bitLE(0x24,streamFile)==0     /* restsize */
+       )
+    {
+        just_pcm = 1;
+    }
+    else
+    {
+        comp_level = read_32bitLE(0x08,streamFile);
+
+        data = malloc(sizeof(nwa_codec_data));
+        if (!data) goto fail;
+
+        data->nwa = open_nwa(streamFile,filename);
+        if (!data->nwa) goto fail;
+    }
 
     /* try to locate NWAINFO.INI in the same directory */
     {
@@ -132,8 +145,6 @@ VGMSTREAM * init_vgmstream_nwa(STREAMFILE *streamFile) {
 
         streamFile->get_realname(streamFile,namebase_array,sizeof(namebase_array));
 
-        channel_count = read_16bitLE(0x00,streamFile);
-
         ini_lastslash = strrchr(ininame,DIRSEP);
         if (!ini_lastslash) {
             strncpy(ininame,"Gameexe.ini",sizeof(ininame));
@@ -217,6 +228,10 @@ VGMSTREAM * init_vgmstream_nwa(STREAMFILE *streamFile) {
                         /* not ok to start at last sample,
                          * don't set start_ok flag */
                     }
+                    else if (!memcmp("00000000",loopstring,8))
+                    {
+                        /* loops from the start aren't really loops */
+                    }
                     else
                     {
                         loop_start_sample = atol(loopstring);
@@ -238,22 +253,54 @@ VGMSTREAM * init_vgmstream_nwa(STREAMFILE *streamFile) {
     /* fill in the vital statistics */
     vgmstream->channels = channel_count;
     vgmstream->sample_rate = read_32bitLE(0x04,streamFile);
-    switch (read_16bitLE(0x02,streamFile)) {
-        case 16:
-            vgmstream->coding_type = coding_PCM16LE;
-            vgmstream->interleave_block_size = 2;
-            break;
-        case 8:
-            vgmstream->coding_type = coding_PCM8;
-            vgmstream->interleave_block_size = 1;
-            break;
-        default:
-            goto fail;
-    }
+
     vgmstream->num_samples = read_32bitLE(0x1c,streamFile)/channel_count;
-    if (channel_count > 1) {
-        vgmstream->layout_type = layout_interleave;
-    } else {
+
+    if (just_pcm) {
+        switch (read_16bitLE(0x02,streamFile)) {
+            case 8:
+                vgmstream->coding_type = coding_PCM8;
+                vgmstream->interleave_block_size = 1;
+                break;
+            case 16:
+                vgmstream->coding_type = coding_PCM16LE;
+                vgmstream->interleave_block_size = 2;
+                break;
+            default:
+                goto fail;
+        }
+        if (channel_count > 1) {
+            vgmstream->layout_type = layout_interleave;
+        } else {
+            vgmstream->layout_type = layout_none;
+        }
+    }
+    else
+    {
+        switch (comp_level)
+        {
+            case 0:
+                vgmstream->coding_type = coding_NWA0;
+                break;
+            case 1:
+                vgmstream->coding_type = coding_NWA1;
+                break;
+            case 2:
+                vgmstream->coding_type = coding_NWA2;
+                break;
+            case 3:
+                vgmstream->coding_type = coding_NWA3;
+                break;
+            case 4:
+                vgmstream->coding_type = coding_NWA4;
+                break;
+            case 5:
+                vgmstream->coding_type = coding_NWA5;
+                break;
+            default:
+                goto fail;
+                break;
+        }
         vgmstream->layout_type = layout_none;
     }
 
@@ -274,8 +321,8 @@ VGMSTREAM * init_vgmstream_nwa(STREAMFILE *streamFile) {
     }
 
 
-    /* open the file for reading by each channel */
-    {
+    if (just_pcm) {
+        /* open the file for reading by each channel */
         STREAMFILE *chstreamfile;
 
         /* have both channels use the same buffer, as interleave is so small */
@@ -290,11 +337,22 @@ VGMSTREAM * init_vgmstream_nwa(STREAMFILE *streamFile) {
                 vgmstream->ch[i].offset=0x2c+(off_t)(i*vgmstream->interleave_block_size);
         }
     }
+    else
+    {
+        vgmstream->codec_data = data;
+    }
 
     return vgmstream;
 
     /* clean up anything we may have opened */
 fail:
     if (vgmstream) close_vgmstream(vgmstream);
+    if (data) {
+        if (data->nwa)
+        {
+            close_nwa(data->nwa);
+        }
+        free(data);
+    }
     return NULL;
 }

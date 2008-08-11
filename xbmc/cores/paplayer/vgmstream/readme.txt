@@ -105,7 +105,7 @@ File types supported by this version of vgmstream:
 - .wav (8/16 bit PCM)
 - .lwav (8/16 bit PCM)
 - .pos (loop info for .wav)
-- .nwa (16 bit PCM)
+- .nwa (16 bit PCM, NWA DPCM)
 - .xss (16 bit PCM)
 - .sl3 (PS2 ADPCM)
 - .hgc1 (PS2 ADPCM)
@@ -134,6 +134,15 @@ File types supported by this version of vgmstream:
 - .vig (PS2 ADPCM)
 - .sfl (loop info for .ogg);
 - .um3 (Ogg Vorbis)
+- .rkv (PS2 ADPCM)
+- .psw (PS2 ADPCM)
+- .vas (PS2 ADPCM)
+- .tec (PS2 ADPCM)
+- .enth (PS2 ADPCM)
+- .sdt (GC DSP ADPCM)
+- .aix (CRI ADX ADPCM)
+- .tydsp (GC DSP ADPCM)
+- .matx (xbox audio)
 
 Enjoy!
 -hcs

@@ -1,15 +1,12 @@
 #include "meta.h"
 #include "../util.h"
 
-/* WAVM
+/* matx
 
-   WAVM is an headerless format which can be found on XBOX
-   known extensions : WAVM
-
-   2008-05-23 - Fastelbja : First version ...
+   MATX (found in Matrix)
 */
 
-VGMSTREAM * init_vgmstream_xbox_wavm(STREAMFILE *streamFile) {
+VGMSTREAM * init_vgmstream_xbox_matx(STREAMFILE *streamFile) {
     VGMSTREAM * vgmstream = NULL;
     char filename[260];
 
@@ -19,39 +16,41 @@ VGMSTREAM * init_vgmstream_xbox_wavm(STREAMFILE *streamFile) {
 
     /* check extension, case insensitive */
     streamFile->get_name(streamFile,filename,sizeof(filename));
-    if (strcasecmp("wavm",filename_extension(filename))) goto fail;
+    if (strcasecmp("matx",filename_extension(filename))) goto fail;
 
-    /* No loop on wavm */
 	loop_flag = 0;
-    
-	/* Always stereo files */
-	channel_count=2;
+	channel_count=read_16bitLE(0x4,streamFile);
     
 	/* build the VGMSTREAM */
     vgmstream = allocate_vgmstream(channel_count,loop_flag);
     if (!vgmstream) goto fail;
 
 	/* fill in the vital statistics */
-	/* allways 2 channels @ 44100 Hz */
-	vgmstream->channels = 2;
-    vgmstream->sample_rate = 44100;
-
+	vgmstream->channels = channel_count;
+    vgmstream->sample_rate = read_16bitLE(0x06,streamFile) & 0xffff;
 	vgmstream->coding_type = coding_XBOX;
-    vgmstream->num_samples = (int32_t)(get_streamfile_size(streamFile) / 36 * 64 / vgmstream->channels);
-    vgmstream->layout_type = layout_none;
-	
-    vgmstream->meta_type = meta_XBOX_WAVM;
+
+    vgmstream->layout_type = layout_matx_blocked;
+    vgmstream->meta_type = meta_XBOX_MATX;
 
     /* open the file for reading by each channel */
     {
         for (i=0;i<channel_count;i++) {
             vgmstream->ch[i].streamfile = streamFile->open(streamFile,filename,36);
-            vgmstream->ch[i].offset = 0;
-
             if (!vgmstream->ch[i].streamfile) goto fail;
         }
     }
 
+	/* Calc num_samples */
+	matx_block_update(0,vgmstream);
+	vgmstream->num_samples=0;
+
+	do {
+		vgmstream->num_samples += vgmstream->current_block_size/36*64;
+		matx_block_update(vgmstream->next_block_offset,vgmstream);
+	} while (vgmstream->next_block_offset<get_streamfile_size(streamFile));
+
+	matx_block_update(0,vgmstream);
     return vgmstream;
 
     /* clean up anything we may have opened */

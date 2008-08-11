@@ -19,8 +19,9 @@ VGMSTREAM * init_vgmstream_rsd(STREAMFILE *streamFile) {
 
 
     /* check header */
-	if (read_32bitBE(0x0,streamFile) != 0x52534436 &&   /* RSD6 */
-		read_32bitBE(0x0,streamFile) != 0x52534434)	/* RSD4 */
+	if (read_32bitBE(0x0,streamFile) != 0x52534432 &&   /* RSD2 */
+		read_32bitBE(0x0,streamFile) != 0x52534434 &&	/* RSD4 */
+		read_32bitBE(0x0,streamFile) != 0x52534436)		/* RSD6 */
         goto fail;
 
 	loop_flag = 0; /* (read_32bitLE(checkZERO-0x4,streamFile)!=0); */
@@ -43,7 +44,7 @@ VGMSTREAM * init_vgmstream_rsd(STREAMFILE *streamFile) {
 		vgmstream->interleave_block_size = read_32bitLE(0x0C,streamFile);
 		vgmstream->num_samples = (get_streamfile_size(streamFile)-start_offset)*28/16/channel_count;
 	if (loop_flag) {
-        vgmstream->loop_start_sample = (uint16_t)(read_32bitLE(0x12,streamFile))*28/16/channel_count;
+        vgmstream->loop_start_sample = 0;
         vgmstream->loop_end_sample = (get_streamfile_size(streamFile)-start_offset)*28/16/channel_count;
 	}
 	break;
@@ -54,7 +55,7 @@ VGMSTREAM * init_vgmstream_rsd(STREAMFILE *streamFile) {
 		vgmstream->interleave_block_size = 0x2;
 		vgmstream->num_samples = (get_streamfile_size(streamFile)-start_offset)/2/channel_count;
 	if (loop_flag) {
-        vgmstream->loop_start_sample = (uint16_t)(read_32bitLE(0x12,streamFile))/2/channel_count;;
+        vgmstream->loop_start_sample = 0;
         vgmstream->loop_end_sample = (get_streamfile_size(streamFile)-start_offset)/2/channel_count;
     }
 	break;
@@ -65,7 +66,7 @@ VGMSTREAM * init_vgmstream_rsd(STREAMFILE *streamFile) {
 		vgmstream->interleave_block_size = 0x10;
 		vgmstream->num_samples = (get_streamfile_size(streamFile)-start_offset)/2/channel_count;
 	if (loop_flag) {
-        vgmstream->loop_start_sample = (uint16_t)(read_32bitLE(0x12,streamFile))/2/channel_count;;
+        vgmstream->loop_start_sample = 0;
         vgmstream->loop_end_sample = (get_streamfile_size(streamFile)-start_offset)/2/channel_count;
     }
 	break;
@@ -75,27 +76,33 @@ VGMSTREAM * init_vgmstream_rsd(STREAMFILE *streamFile) {
 		coding_type = coding_PCM16BE;
 		vgmstream->interleave_block_size = 0x2;
 		vgmstream->num_samples = (get_streamfile_size(streamFile)-start_offset)/2/channel_count;
-
-		/* loop_flag = checkZERO; */
-
 	if (loop_flag) {
-        vgmstream->loop_start_sample = 0; /* (uint16_t)(read_32bitLE(0x12,streamFile))/2/channel_count;; */
+        vgmstream->loop_start_sample = 0;
         vgmstream->loop_end_sample = (get_streamfile_size(streamFile)-start_offset)/2/channel_count;
     }
 	break;
+	case 0x58414450: /* RSD2XADP */
+		start_offset = 0x40;
+		coding_type = coding_XBOX;
+		vgmstream->num_samples = (get_streamfile_size(streamFile)-start_offset)*64/36/channel_count;
 
 
+	if (loop_flag) {
+        vgmstream->loop_start_sample = 0;
+        vgmstream->loop_end_sample = (get_streamfile_size(streamFile)-start_offset)*64/36/channel_count;
+    }
+	break;
+
+#if 0
 	case 0x584D4120: /* RSD6XMA */
-		goto fail;	
+		goto fail;
 		default:
 			goto fail;
+#endif
 
 }
 
 
-
-
-	
 	vgmstream->channels = channel_count;
     vgmstream->sample_rate = (uint16_t)read_16bitLE(0x10,streamFile);
 	vgmstream->coding_type = coding_type;
@@ -103,6 +110,7 @@ VGMSTREAM * init_vgmstream_rsd(STREAMFILE *streamFile) {
 	vgmstream->layout_type = layout_interleave;
 	vgmstream->meta_type = meta_RSD;
 	
+
 
     /* open the file for reading */
     {
@@ -113,9 +121,15 @@ VGMSTREAM * init_vgmstream_rsd(STREAMFILE *streamFile) {
         for (i=0;i<channel_count;i++) {
             vgmstream->ch[i].streamfile = file;
 
-            vgmstream->ch[i].channel_start_offset=
-                vgmstream->ch[i].offset=start_offset+
-                vgmstream->interleave_block_size*i;
+            
+            if (vgmstream->coding_type == coding_XBOX) {
+				vgmstream->layout_type=layout_none;
+                vgmstream->ch[i].channel_start_offset=start_offset;
+            } else {
+                vgmstream->ch[i].channel_start_offset=
+                    start_offset+vgmstream->interleave_block_size*i;
+            }
+            vgmstream->ch[i].offset = vgmstream->ch[i].channel_start_offset;
 
         }
     }
@@ -127,4 +141,5 @@ fail:
     if (vgmstream) close_vgmstream(vgmstream);
     return NULL;
 }
+
 

@@ -38,24 +38,28 @@ VGMSTREAM * init_vgmstream_ps2_psh(STREAMFILE *streamFile) {
 	vgmstream->coding_type = coding_PSX;
 	vgmstream->num_samples = (uint16_t)read_16bitLE(0x0C,streamFile)*0x800*28/16/channel_count;
     
-	if (loop_flag) {
-        vgmstream->loop_start_sample =
-            ((uint16_t)read_16bitLE(0x06,streamFile)-0x8000)*0x400*28/16;
-        
-		// loop end is set by the loop marker which we need to find ...
-		fileLength = get_streamfile_size(streamFile);
-		do {
-			readOffset+=(off_t)read_streamfile(testBuffer,readOffset,0x10,streamFile); 
-			
-			// Loop End ...
-			if(testBuffer[0x01]==0x03) {
-				if(loopEnd==0) loopEnd = readOffset-0x10;
-				break;
-			}
+	// loop end is set by the loop marker which we need to find ...
+	// there's some extra data on unloop files, so we calculate
+	// the sample count with loop marker on this files
+	fileLength = get_streamfile_size(streamFile);
+	do {
+		readOffset+=(off_t)read_streamfile(testBuffer,readOffset,0x10,streamFile); 
+		
+		// Loop End ...
+		if(testBuffer[0x01]==0x03) {
+			if(loopEnd==0) loopEnd = readOffset-0x10;
+			break;
+		}
+	} while (streamFile->get_offset(streamFile)<(int32_t)fileLength);
+	
+	if(loopEnd!=0)
+		vgmstream->num_samples = loopEnd*28/16/channel_count;
 
-		} while (streamFile->get_offset(streamFile)<(int32_t)fileLength);
-		vgmstream->loop_end_sample = loopEnd*28/16/channel_count;
-    }
+	if(loop_flag) {
+		vgmstream->loop_start_sample =
+			((uint16_t)read_16bitLE(0x06,streamFile)-0x8000)*0x400*28/16;
+		vgmstream->loop_end_sample=vgmstream->num_samples;
+	}
 
     vgmstream->layout_type = layout_interleave;
     vgmstream->interleave_block_size = 0x800;
