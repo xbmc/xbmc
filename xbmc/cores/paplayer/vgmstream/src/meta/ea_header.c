@@ -175,15 +175,19 @@ VGMSTREAM * init_vgmstream_ea(STREAMFILE *streamFile) {
 	if(ea.sample_rate!=0) {
 		vgmstream->sample_rate = ea.sample_rate;
 	} else {
-		switch(vgmstream->ea_platform) {
-			case EA_XBOX:
-				vgmstream->sample_rate=24000;
-				break;
-			case EA_X360:
-				vgmstream->sample_rate=44100;
-				break;
-			default:
-				vgmstream->sample_rate=22050;
+		if(read_32bitBE(0x08,streamFile)==0x47535452) { // GSTR
+			vgmstream->sample_rate=44100;
+		} else {
+			switch(vgmstream->ea_platform) {
+				case EA_XBOX:
+					vgmstream->sample_rate=24000;
+					break;
+				case EA_X360:
+					vgmstream->sample_rate=44100;
+					break;
+				default:
+					vgmstream->sample_rate=22050;
+			}
 		}
 	}
 

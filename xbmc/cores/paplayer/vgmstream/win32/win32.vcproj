@@ -127,6 +127,9 @@
 				<File
 					RelativePath="..\src\coding\g72x_state.h">
 				</File>
+				<File
+					RelativePath="..\src\coding\nwa_decoder.h">
+				</File>
 			</Filter>
 			<Filter
 				Name="Source Files"
@@ -157,6 +160,9 @@
 				</File>
 				<File
 					RelativePath="..\src\coding\ngc_dtk_decoder.c">
+				</File>
+				<File
+					RelativePath="..\src\coding\nwa_decoder.c">
 				</File>
 				<File
 					RelativePath="..\src\coding\ogg_vorbis_decoder.c">
@@ -242,6 +248,9 @@
 					RelativePath="..\src\meta\aifc.c">
 				</File>
 				<File
+					RelativePath="..\src\meta\aix.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\ast.c">
 				</File>
 				<File
@@ -252,6 +261,9 @@
 				</File>
 				<File
 					RelativePath="..\src\meta\dc_kcey.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\dc_str.c">
 				</File>
 				<File
 					RelativePath="..\src\meta\ea_header.c">
@@ -296,10 +308,19 @@
 					RelativePath="..\src\meta\ngc_dsp_std.c">
 				</File>
 				<File
+					RelativePath="..\src\meta\ngc_tydsp.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\ngc_vjdsp.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\nwa.c">
 				</File>
 				<File
 					RelativePath="..\src\meta\ogg_vorbis_file.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\pcm.c">
 				</File>
 				<File
 					RelativePath="..\src\meta\pos.c">
@@ -354,9 +375,6 @@
 				</File>
 				<File
 					RelativePath="..\src\meta\ps2_npsf.c">
-				</File>
-				<File
-					RelativePath="..\src\meta\ps2_pcm.c">
 				</File>
 				<File
 					RelativePath="..\src\meta\ps2_pnb.c">
@@ -437,6 +455,9 @@
 					RelativePath="..\src\meta\sat_dvi.c">
 				</File>
 				<File
+					RelativePath="..\src\meta\sdt.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\sfl.c">
 				</File>
 				<File
@@ -452,7 +473,16 @@
 					RelativePath="..\src\meta\ws_aud.c">
 				</File>
 				<File
+					RelativePath="..\src\meta\xbox_ims.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\xbox_stma.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\xbox_wavm.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\xbox_wvs.c">
 				</File>
 				<File
 					RelativePath="..\src\meta\xbox_xwav.c">
@@ -479,6 +509,9 @@
 				Name="Source Files"
 				Filter="">
 				<File
+					RelativePath="..\src\layout\aix_layout.c">
+				</File>
+				<File
 					RelativePath="..\src\layout\ast_blocked.c">
 				</File>
 				<File
@@ -492,6 +525,9 @@
 				</File>
 				<File
 					RelativePath="..\src\layout\halpst_blocked.c">
+				</File>
+				<File
+					RelativePath="..\src\layout\ims_block.c">
 				</File>
 				<File
 					RelativePath="..\src\layout\interleave.c">
