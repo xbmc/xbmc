@@ -104,7 +104,6 @@ META_OBJS=src/meta/adx_header.o \
           src/meta/ps2_psh.o \
           src/meta/sli.o \
           src/meta/sfl.o \
-          src/meta/ps2_pcm.o \
           src/meta/ps2_psw.o \
           src/meta/ps2_rkv.o \
           src/meta/ps2_vas.o \
