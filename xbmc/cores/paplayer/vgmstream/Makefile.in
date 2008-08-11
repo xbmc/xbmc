@@ -113,7 +113,7 @@ META_OBJS=src/meta/adx_header.o \
           src/meta/ps2_vas.o \
           src/meta/ps2_tec.o \
           src/meta/ps2_enth.o \
-	      src/meta/sdt.o \
+	      	src/meta/sdt.o \
           src/meta/aix.o \
           src/meta/ngc_tydsp.o \
           src/meta/ngc_vjdsp.o \
