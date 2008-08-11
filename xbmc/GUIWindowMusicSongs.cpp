@@ -146,6 +146,10 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
           }
         }
 
+        // check for network up
+        if (CUtil::IsRemote(m_vecItems->m_strPath) && !WaitForNetwork())
+          m_vecItems->m_strPath.Empty();
+
         // need file filters or GetDirectory in SetHistoryPath fails
         SetHistoryForPath(m_vecItems->m_strPath);
       }
