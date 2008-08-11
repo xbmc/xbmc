@@ -79,6 +79,7 @@ protected:
   void OnRenameItem(int iItem);
 
 protected:
+  bool WaitForNetwork() const;
   DIRECTORY::CVirtualDirectory m_rootDir;
   CGUIViewControl m_viewControl;
 
