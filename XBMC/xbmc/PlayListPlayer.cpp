@@ -40,6 +40,7 @@ CPlayListPlayer::CPlayListPlayer(void)
   m_PlaylistEmpty = new CPlayList;
   m_iCurrentSong = -1;
   m_bPlayedFirstFile = false;
+  m_bPlaybackStarted = false;
   m_iCurrentPlayList = PLAYLIST_NONE;
   for (int i = 0; i < 2; i++)
     m_repeatState[i] = REPEAT_NONE;
@@ -69,7 +70,7 @@ bool CPlayListPlayer::OnMessage(CGUIMessage &message)
     break;
   case GUI_MSG_PLAYBACK_STOPPED:
     {
-      if (m_iCurrentPlayList != PLAYLIST_NONE)
+      if (m_iCurrentPlayList != PLAYLIST_NONE && m_bPlaybackStarted)
       {
         CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
         m_gWindowManager.SendThreadMessage(msg);
@@ -235,6 +236,8 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
   CFileItemPtr item = playlist[m_iCurrentSong];
   playlist.SetPlayed(true);
 
+  m_bPlaybackStarted = false;
+
   if (!g_application.PlayFile(*item, bAutoPlay))
   {
     CLog::Log(LOGERROR,"Playlist Player: skipping unplayable item: %i, path [%s]", m_iCurrentSong, item->m_strPath.c_str());
@@ -279,10 +282,14 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
     }
   }
 
-  m_bPlayedFirstFile = true;
+  // TODO - move the above failure logic and the below success logic
+  //        to callbacks instead so we don't rely on the return value
+  //        of PlayFile()
 
   // consecutive error counter so reset if the current item is playing
   m_iFailedSongs = 0;
+  m_bPlaybackStarted = true;
+  m_bPlayedFirstFile = true;
 
   if (!item->IsShoutCast())
   {
@@ -412,6 +419,7 @@ void CPlayListPlayer::Reset()
 {
   m_iCurrentSong = -1;
   m_bPlayedFirstFile = false;
+  m_bPlaybackStarted = false;
 
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
