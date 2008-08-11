@@ -29,6 +29,7 @@ void decode_pcm16LE_int(VGMSTREAMCHANNEL * stream, sample * outbuf, int channels
 void decode_pcm16BE(VGMSTREAMCHANNEL * stream, sample * outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do);
 void decode_pcm8(VGMSTREAMCHANNEL * stream, sample * outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do);
 void decode_pcm8_int(VGMSTREAMCHANNEL * stream, sample * outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do);
+void decode_pcm8_sb_int(VGMSTREAMCHANNEL * stream, sample * outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do);
 
 void decode_psx(VGMSTREAMCHANNEL * stream, sample * outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do);
 
@@ -62,5 +63,7 @@ void decode_mpeg(VGMSTREAMCHANNEL * stream,
 
 void decode_acm(ACMStream * acm, sample * outbuf,
         int32_t samples_to_do, int channelspacing);
+
+void decode_nwa(NWAData *nwa, sample *outbuf, int32_t samples_to_do);
 
 #endif
