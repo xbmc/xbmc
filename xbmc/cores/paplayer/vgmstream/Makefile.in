@@ -14,7 +14,8 @@ CODING_OBJS=src/coding/adx_decoder.o \
             src/coding/sdx2_decoder.o \
             src/coding/ws_decoder.o \
             src/coding/mpeg_decoder.o \
-            src/coding/acm_decoder.o
+            src/coding/acm_decoder.o \
+            src/coding/nwa_decoder.o
 
 LAYOUT_OBJS=src/layout/ast_blocked.o \
             src/layout/blocked.o \
@@ -28,7 +29,9 @@ LAYOUT_OBJS=src/layout/ast_blocked.o \
             src/layout/str_snds_blocked.o \
             src/layout/ws_aud_blocked.o \
             src/layout/interleave_byte.o \
-            src/layout/mus_acm_layout.o
+            src/layout/mus_acm_layout.o \
+            src/layout/aix_layout.o \
+            src/layout/ims_block.o
 
 META_OBJS=src/meta/adx_header.o \
           src/meta/afc_header.o \
@@ -104,12 +107,19 @@ META_OBJS=src/meta/adx_header.o \
           src/meta/ps2_psh.o \
           src/meta/sli.o \
           src/meta/sfl.o \
-          src/meta/ps2_pcm.o \
+          src/meta/pcm.o \
           src/meta/ps2_psw.o \
           src/meta/ps2_rkv.o \
           src/meta/ps2_vas.o \
           src/meta/ps2_tec.o \
-          src/meta/ps2_enth.o
+          src/meta/ps2_enth.o \
+	      	src/meta/sdt.o \
+          src/meta/aix.o \
+          src/meta/ngc_tydsp.o \
+          src/meta/ngc_vjdsp.o \
+          src/meta/xbox_wvs.o \
+          src/meta/xbox_stma.o \
+					src/meta/xbox_ims.o
 
 OBJS = $(CODING_OBJS) $(LAYOUT_OBJS) $(META_OBJS) XBMCVGM.o src/vgmstream.o src/util.o src/streamfile.o
 

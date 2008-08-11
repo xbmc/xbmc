@@ -34,6 +34,7 @@
 #include "GUIWindowFileManager.h"
 #include "Favourites.h"
 #include "utils/LabelFormatter.h"
+#include "GUIDialogProgress.h"
 
 #include "guiImage.h"
 #include "GUIMultiImage.h"
@@ -1241,4 +1242,32 @@ const CFileItemList& CGUIMediaWindow::CurrentDirectory() const
   return *m_vecItems;
 }
 
+bool CGUIMediaWindow::WaitForNetwork() const
+{
+  if (g_network.IsAvailable())
+    return true;
+
+  CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  if (!progress)
+    return true;
+
+  CURL url(m_vecItems->m_strPath);
+  CStdString displayPath;
+  url.GetURLWithoutUserDetails(displayPath);
+  progress->SetHeading(1040); // Loading Directory
+  progress->SetLine(1, displayPath);
+  progress->ShowProgressBar(false);
+  progress->StartModal();
+  while (!g_network.IsAvailable())
+  {
+    progress->Progress();
+    if (progress->IsCanceled())
+    {
+      progress->Close();
+      return false;
+    }
+  }
+  progress->Close();
+  return true;
+}
 

@@ -81,6 +81,7 @@ protected:
   void ReShuffle(int iPlaylist, int iPosition);
 
   bool m_bPlayedFirstFile;
+  bool m_bPlaybackStarted;
   int m_iFailedSongs;
   int m_iCurrentSong;
   int m_iCurrentPlayList;
