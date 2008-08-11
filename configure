@@ -13617,6 +13617,9 @@ ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/l
 
 
 
+
+
+
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -15076,6 +15079,24 @@ echo "$as_me: error: Submodule xbmc/visualizations/XBMCProjectM/libprojectM fail
 else
   { { echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/XBMCProjectM/libprojectM doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/visualizations/XBMCProjectM/libprojectM doesn't exist" >&2;}
+   { (exit 1); exit 1; }; }
+fi;
+
+
+if [ -d xbmc/visualizations/Goom/goom2k4-0 ]; then
+  pushd xbmc/visualizations/Goom/goom2k4-0
+  ./configure --disable-shared --enable-static
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/Goom/goom2k4-0 failed to configure" >&5
+echo "$as_me: error: Submodule xbmc/visualizations/Goom/goom2k4-0 failed to configure" >&2;}
+   { (exit 1); exit 1; }; }
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/Goom/goom2k4-0 doesn't exist" >&5
+echo "$as_me: error: Submodule xbmc/visualizations/Goom/goom2k4-0 doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
 fi;
 
