@@ -112,7 +112,8 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_USER7,
                       CONTEXT_BUTTON_USER8,
                       CONTEXT_BUTTON_USER9,
-                      CONTEXT_BUTTON_USER10
+                      CONTEXT_BUTTON_USER10,
+                      CONTEXT_BUTTON_SCRIPT_SETTINGS
                     };
 
 class CContextButtons : public std::vector< std::pair<CONTEXT_BUTTON, CStdString> >

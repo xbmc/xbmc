@@ -49,7 +49,7 @@ namespace PYXBMC
   {
     WindowXML *self;
 
-    self = (WindowXML*)type->tp_alloc(type, 0);
+    self = (WindowXML*)type->tp_alloc(type, 0);    
     if (!self) return NULL;
     self->iWindowId = -1;
     PyObject* pyOXMLname, * pyOname;
@@ -70,7 +70,10 @@ namespace PYXBMC
     if (!XFILE::CFile::Exists(strSkinPath))
     {
       // Check for the matching folder for the skin in the fallback skins folder
-      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname, &res, strFallbackPath + "\\skins\\" + CUtil::GetFileName(g_SkinInfo.GetBaseDir()));
+      CStdString basePath;
+      CUtil::AddFileToFolder(strFallbackPath, "skins", basePath);
+      CUtil::AddFileToFolder(basePath, CUtil::GetFileName(g_SkinInfo.GetBaseDir()), basePath);
+      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res,basePath);
       if (!XFILE::CFile::Exists(strSkinPath))
       {
         // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
@@ -87,7 +90,10 @@ namespace PYXBMC
 
       if (!XFILE::CFile::Exists(strSkinPath))
       {
-        strSkinPath = strFallbackPath + "\\skins\\" + strDefault + "\\pal\\" + strXMLname;
+        CUtil::AddFileToFolder(strFallbackPath, "skins", strSkinPath);
+        CUtil::AddFileToFolder(strSkinPath, strDefault, strSkinPath);
+        CUtil::AddFileToFolder(strSkinPath, "PAL", strSkinPath);
+        CUtil::AddFileToFolder(strSkinPath, strXMLname, strSkinPath);
         res = PAL_4x3;
         if (!XFILE::CFile::Exists(strSkinPath))
         {
@@ -126,7 +132,7 @@ namespace PYXBMC
     if (!self->pWindow) return NULL;
 
     int itemPosition;
-    if (!PyArg_ParseTuple(args, "i", &itemPosition)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"i", &itemPosition)) return NULL;
 
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
 
@@ -155,7 +161,7 @@ namespace PYXBMC
 
     PyObject *pObject;
     int itemPosition = INT_MAX;
-    if (!PyArg_ParseTuple(args, "O|i", &pObject, &itemPosition)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O|i", &pObject, &itemPosition)) return NULL;
 
     string strText;
     ListItem* pListItem = NULL;
@@ -227,7 +233,7 @@ namespace PYXBMC
     if (!self->pWindow) return NULL;
 
     int listPos = -1;
-    if (!PyArg_ParseTuple(args, "i", &listPos)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"i", &listPos)) return NULL;
 
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
 
@@ -257,7 +263,7 @@ namespace PYXBMC
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
-    return Py_BuildValue("l", listPos);
+    return Py_BuildValue((char*)"l", listPos);
   }
 
   // getListItem() method
@@ -274,7 +280,7 @@ namespace PYXBMC
     if (!self->pWindow) return NULL;
 
     int listPos = -1;
-    if (!PyArg_ParseTuple(args, "i", &listPos)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"i", &listPos)) return NULL;
 
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
 
@@ -314,7 +320,7 @@ namespace PYXBMC
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
-    return Py_BuildValue("l", listSize);
+    return Py_BuildValue((char*)"l", listSize);
   }
 
   PyDoc_STRVAR(windowXML__doc__,
@@ -329,13 +335,13 @@ namespace PYXBMC
     );
 
   PyMethodDef WindowXML_methods[] = {
-    {"addItem", (PyCFunction)WindowXML_AddItem, METH_VARARGS, addItem__doc__},
-    {"removeItem", (PyCFunction)WindowXML_RemoveItem, METH_VARARGS, removeItem__doc__},
-    {"getCurrentListPosition", (PyCFunction)WindowXML_GetCurrentListPosition, METH_VARARGS, getCurrentListPosition__doc__},
-    {"setCurrentListPosition", (PyCFunction)WindowXML_SetCurrentListPosition, METH_VARARGS, setCurrentListPosition__doc__},
-    {"getListItem", (PyCFunction)WindowXML_GetListItem, METH_VARARGS, getListItem__doc__},
-    {"getListSize", (PyCFunction)WindowXML_GetListSize, METH_VARARGS, getListSize__doc__},
-    {"clearList", (PyCFunction)WindowXML_ClearList, METH_VARARGS, clearList__doc__},
+    {(char*)"addItem", (PyCFunction)WindowXML_AddItem, METH_VARARGS, addItem__doc__},
+    {(char*)"removeItem", (PyCFunction)WindowXML_RemoveItem, METH_VARARGS, removeItem__doc__},
+    {(char*)"getCurrentListPosition", (PyCFunction)WindowXML_GetCurrentListPosition, METH_VARARGS, getCurrentListPosition__doc__},
+    {(char*)"setCurrentListPosition", (PyCFunction)WindowXML_SetCurrentListPosition, METH_VARARGS, setCurrentListPosition__doc__},
+    {(char*)"getListItem", (PyCFunction)WindowXML_GetListItem, METH_VARARGS, getListItem__doc__},
+    {(char*)"getListSize", (PyCFunction)WindowXML_GetListSize, METH_VARARGS, getListSize__doc__},
+    {(char*)"clearList", (PyCFunction)WindowXML_ClearList, METH_VARARGS, clearList__doc__},
     {NULL, NULL, 0, NULL}
   };
 // Restore code and data sections to normal.
@@ -352,7 +358,7 @@ namespace PYXBMC
   {
     PyInitializeTypeObject(&WindowXML_Type);
 
-    WindowXML_Type.tp_name = "xbmcgui.WindowXML";
+    WindowXML_Type.tp_name = (char*)"xbmcgui.WindowXML";
     WindowXML_Type.tp_basicsize = sizeof(WindowXML);
     WindowXML_Type.tp_dealloc = (destructor)Window_Dealloc;
     WindowXML_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;

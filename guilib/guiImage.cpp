@@ -449,7 +449,7 @@ bool CGUIImage::OnMessage(CGUIMessage& message)
   if (message.GetMessage() == GUI_MSG_REFRESH_THUMBS)
   {
     if (!m_image.file.IsConstant())
-      FreeResources();
+      FreeTextures(true); // true as we want to free the texture immediately
     return true;
   }
   return CGUIControl::OnMessage(message);
@@ -537,7 +537,7 @@ void CGUIImage::LoadDiffuseImage()
   }
 }
 
-void CGUIImage::FreeTextures()
+void CGUIImage::FreeTextures(bool immediately /* = false */)
 {
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
   {
