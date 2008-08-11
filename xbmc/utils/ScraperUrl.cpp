@@ -75,12 +75,12 @@ bool CScraperUrl::ParseElement(const TiXmlElement* element)
   stream << *element;
   m_xml += stream.str();
   bool bHasChilds = false;
-  if (element->FirstChildElement("thumb")) 
+  if (element->FirstChildElement("thumb"))
   {
     element = element->FirstChildElement("thumb");
     bHasChilds = true;
   }
-  else if (element->FirstChildElement("url")) 
+  else if (element->FirstChildElement("url"))
   {
     element = element->FirstChildElement("url");
     bHasChilds = true;
@@ -101,31 +101,31 @@ bool CScraperUrl::ParseElement(const TiXmlElement* element)
     if (pCache)
       url.m_cache = pCache;
 
-     const char* szType = element->Attribute("type");
-     url.m_type = URL_TYPE_GENERAL;
-     if (szType && stricmp(szType,"season") == 0)
-     {
-       url.m_type = URL_TYPE_SEASON;
-       const char* szSeason = element->Attribute("season");
-       if (szSeason)
+    const char* szType = element->Attribute("type");
+    url.m_type = URL_TYPE_GENERAL;
+    if (szType && stricmp(szType,"season") == 0)
+    {
+      url.m_type = URL_TYPE_SEASON;
+      const char* szSeason = element->Attribute("season");
+      if (szSeason)
         url.m_season = atoi(szSeason);
-        else
-          url.m_season = -1;
-     }
-     else
-       url.m_season = -1;
-
-     m_url.push_back(url);
-     if (bHasChilds)
-     {
-       const TiXmlElement* temp = element->NextSiblingElement("thumb");
-       if (temp)
-        element = temp;
-       else
-         element = element->NextSiblingElement("url");
+      else
+        url.m_season = -1;
     }
     else
-     element = NULL;
+      url.m_season = -1;
+
+    m_url.push_back(url);
+    if (bHasChilds)
+    {
+      const TiXmlElement* temp = element->NextSiblingElement("thumb");
+      if (temp)
+        element = temp;
+      else
+        element = element->NextSiblingElement("url");
+    }
+    else
+      element = NULL;
   }
   return true;
 }
@@ -290,5 +290,6 @@ bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
   }
   else
     return false;
+
   return true;
 }
