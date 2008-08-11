@@ -1484,8 +1484,6 @@ void CDVDPlayer::HandleMessages()
         m_playSpeed = speed;
         m_caching = false;
         m_clock.SetSpeed(speed);
-        m_dvdPlayerAudio.SetSpeed(speed);
-        m_dvdPlayerVideo.SetSpeed(speed);
 
         // TODO - we really shouldn't pause demuxer 
         //        untill our buffers are somewhat filled
@@ -1549,6 +1547,8 @@ void CDVDPlayer::SetCaching(bool enabled)
 void CDVDPlayer::SetPlaySpeed(int speed)
 {
   m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed));
+  m_dvdPlayerAudio.SetSpeed(speed);
+  m_dvdPlayerVideo.SetSpeed(speed);
   SyncronizeDemuxer(100);
 }
 
@@ -1602,7 +1602,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
     return;
   }
 #endif
-  if (bLargeStep && GetChapterCount() > 0)
+  if (bLargeStep && GetChapterCount() > 1)
   {
     if(bPlus)
       SeekChapter(GetChapter() + 1);

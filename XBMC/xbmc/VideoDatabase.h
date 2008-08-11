@@ -481,5 +481,5 @@ private:
   void DeleteThumbForItem(const CStdString& strPath, bool bFolder);
 
   bool GetStackedTvShowList(long idShow, CStdString& strIn);
-  void Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type);
+  void Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool maintainSortOrder = false);
 };

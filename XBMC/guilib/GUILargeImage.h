@@ -49,7 +49,7 @@ public:
 protected:
   virtual void SetFileName(const CStdString &strFileName, bool setConstant = false);
   virtual void AllocateOnDemand();
-  virtual void FreeTextures();
+  virtual void FreeTextures(bool immediately = false);
   virtual int GetOrientation() const;
 
   bool m_usingBundledTexture;
