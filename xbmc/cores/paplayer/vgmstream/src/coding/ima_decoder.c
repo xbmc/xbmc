@@ -111,6 +111,10 @@ void decode_xbox_ima(VGMSTREAMCHANNEL * stream, sample * outbuf, int channelspac
         outbuf[sample_count]=(short)(hist1);
     }
 
+	// Only increment offset on complete frame
+	if(offset-stream->offset==(32*channelspacing)+(4*channel)+channelspacing+1) // ??
+		stream->offset+=36*channelspacing;
+
 	stream->adpcm_history1_32=hist1;
 	stream->adpcm_step_index=step_index;
 }

@@ -100,12 +100,20 @@ VGMSTREAM * (*init_vgmstream_fcns[])(STREAMFILE *streamFile) = {
 	init_vgmstream_ps2_kces,
 	init_vgmstream_ps2_dxh,
 	init_vgmstream_ps2_psh,
-	init_vgmstream_ps2_pcm,
+	init_vgmstream_pcm,
 	init_vgmstream_ps2_rkv,
 	init_vgmstream_ps2_psw,
 	init_vgmstream_ps2_vas,
 	init_vgmstream_ps2_tec,
 	init_vgmstream_ps2_enth,
+	init_vgmstream_sdt,
+    init_vgmstream_aix,
+	init_vgmstream_ngc_tydsp,
+	init_vgmstream_ngc_swd,
+	init_vgmstream_ngc_vjdsp,
+	init_vgmstream_xbox_wvs,
+	init_vgmstream_xbox_stma,
+	init_vgmstream_xbox_matx,
 };
 
 #define INIT_VGMSTREAM_FCNS (sizeof(init_vgmstream_fcns)/sizeof(init_vgmstream_fcns[0]))
@@ -131,7 +139,7 @@ VGMSTREAM * init_vgmstream_internal(STREAMFILE *streamFile, int do_dfs) {
             }
 
             /* dual file stereo */
-            if (do_dfs && ((vgmstream->meta_type == meta_DSP_STD) || (vgmstream->meta_type == meta_PS2_VAGp)) && vgmstream->channels == 1) {
+            if (do_dfs && ((vgmstream->meta_type == meta_DSP_STD) || (vgmstream->meta_type == meta_PS2_VAGp) || (vgmstream->meta_type == meta_GENH)) && vgmstream->channels == 1) {
                 try_dual_file_stereo(vgmstream, streamFile);
             }
 
@@ -208,6 +216,29 @@ void reset_vgmstream(VGMSTREAM * vgmstream) {
             acm_reset(data->files[i]);
         }
     }
+
+    if (vgmstream->layout_type==layout_aix) {
+        aix_codec_data *data = vgmstream->codec_data;
+        int i;
+
+        data->current_segment = 0;
+        for (i=0;i<data->segment_count*data->stream_count;i++)
+        {
+            reset_vgmstream(data->adxs[i]);
+        }
+    }
+
+    if (
+            vgmstream->coding_type == coding_NWA0 ||
+            vgmstream->coding_type == coding_NWA1 ||
+            vgmstream->coding_type == coding_NWA2 ||
+            vgmstream->coding_type == coding_NWA3 ||
+            vgmstream->coding_type == coding_NWA4 ||
+            vgmstream->coding_type == coding_NWA5
+       ) {
+        nwa_codec_data *data = vgmstream->codec_data;
+        reset_nwa(data->nwa);
+    }
 }
 
 /* simply allocate memory for the VGMSTREAM and its channels */
@@ -222,6 +253,12 @@ VGMSTREAM * allocate_vgmstream(int channel_count, int looped) {
 
     vgmstream = calloc(1,sizeof(VGMSTREAM));
     if (!vgmstream) return NULL;
+    
+    vgmstream->ch = NULL;
+    vgmstream->start_ch = NULL;
+    vgmstream->loop_ch = NULL;
+    vgmstream->start_vgmstream = NULL;
+    vgmstream->codec_data = NULL;
 
     start_vgmstream = calloc(1,sizeof(VGMSTREAM));
     if (!start_vgmstream) {
@@ -269,28 +306,6 @@ VGMSTREAM * allocate_vgmstream(int channel_count, int looped) {
 void close_vgmstream(VGMSTREAM * vgmstream) {
     int i,j;
     if (!vgmstream) return;
-
-    for (i=0;i<vgmstream->channels;i++) {
-        if (vgmstream->ch[i].streamfile) {
-            close_streamfile(vgmstream->ch[i].streamfile);
-            /* Multiple channels might have the same streamfile. Find the others
-             * that are the same as this and clear them so they won't be closed
-             * again. */
-            for (j=0;j<vgmstream->channels;j++) {
-                if (i!=j && vgmstream->ch[j].streamfile == 
-                            vgmstream->ch[i].streamfile) {
-                    vgmstream->ch[j].streamfile = NULL;
-                }
-            }
-            vgmstream->ch[i].streamfile = NULL;
-        }
-    }
-
-    if (vgmstream->loop_ch) free(vgmstream->loop_ch);
-    if (vgmstream->start_ch) free(vgmstream->start_ch);
-    if (vgmstream->ch) free(vgmstream->ch);
-    /* the start_vgmstream is considered just data */
-    if (vgmstream->start_vgmstream) free(vgmstream->start_vgmstream);
 
 #ifdef VGM_USE_VORBIS
     if (vgmstream->coding_type==coding_ogg_vorbis) {
@@ -347,6 +362,70 @@ void close_vgmstream(VGMSTREAM * vgmstream) {
         }
     }
 
+    if (vgmstream->layout_type==layout_aix) {
+        aix_codec_data *data = vgmstream->codec_data;
+
+        if (data) {
+            if (data->adxs) {
+                int i;
+                for (i=0;i<data->segment_count*data->stream_count;i++) {
+
+                    /* note that the AIX close_streamfile won't do anything but
+                     * deallocate itself, there is only one open file and that
+                     * is in vgmstream->ch[0].streamfile  */
+                    close_vgmstream(data->adxs[i]);
+                }
+                free(data->adxs);
+            }
+            if (data->sample_counts) {
+                free(data->sample_counts);
+            }
+
+            free(data);
+        }
+        vgmstream->codec_data = NULL;
+    }
+
+    if (
+            vgmstream->coding_type == coding_NWA0 ||
+            vgmstream->coding_type == coding_NWA1 ||
+            vgmstream->coding_type == coding_NWA2 ||
+            vgmstream->coding_type == coding_NWA3 ||
+            vgmstream->coding_type == coding_NWA4 ||
+            vgmstream->coding_type == coding_NWA5
+       ) {
+        nwa_codec_data *data = vgmstream->codec_data;
+
+        close_nwa(data->nwa);
+        
+        free(data);
+
+        vgmstream->codec_data = NULL;
+    }
+
+    /* now that the special cases have had their chance, clean up the standard items */
+    for (i=0;i<vgmstream->channels;i++) {
+        if (vgmstream->ch[i].streamfile) {
+            close_streamfile(vgmstream->ch[i].streamfile);
+            /* Multiple channels might have the same streamfile. Find the others
+             * that are the same as this and clear them so they won't be closed
+             * again. */
+            for (j=0;j<vgmstream->channels;j++) {
+                if (i!=j && vgmstream->ch[j].streamfile == 
+                            vgmstream->ch[i].streamfile) {
+                    vgmstream->ch[j].streamfile = NULL;
+                }
+            }
+            vgmstream->ch[i].streamfile = NULL;
+        }
+    }
+
+    if (vgmstream->loop_ch) free(vgmstream->loop_ch);
+    if (vgmstream->start_ch) free(vgmstream->start_ch);
+    if (vgmstream->ch) free(vgmstream->ch);
+    /* the start_vgmstream is considered just data */
+    if (vgmstream->start_vgmstream) free(vgmstream->start_vgmstream);
+
     free(vgmstream);
 }
 
@@ -382,6 +461,7 @@ void render_vgmstream(sample * buffer, int32_t sample_count, VGMSTREAM * vgmstre
         case layout_wsi_blocked:
         case layout_str_snds_blocked:
         case layout_ws_aud_blocked:
+		case layout_matx_blocked:
             render_vgmstream_blocked(buffer,sample_count,vgmstream);
             break;
         case layout_interleave_byte:
@@ -390,6 +470,9 @@ void render_vgmstream(sample * buffer, int32_t sample_count, VGMSTREAM * vgmstre
         case layout_acm:
         case layout_mus_acm:
             render_vgmstream_mus_acm(buffer,sample_count,vgmstream);
+            break;
+        case layout_aix:
+            render_vgmstream_aix(buffer,sample_count,vgmstream);
             break;
     }
 }
@@ -405,6 +488,7 @@ int get_vgmstream_samples_per_frame(VGMSTREAM * vgmstream) {
         case coding_PCM16BE:
         case coding_PCM8:
 		case coding_PCM8_int:
+        case coding_PCM8_SB_int:
 #ifdef VGM_USE_VORBIS
         case coding_ogg_vorbis:
 #endif
@@ -423,6 +507,12 @@ int get_vgmstream_samples_per_frame(VGMSTREAM * vgmstream) {
         case coding_SDX2:
         case coding_SDX2_int:
         case coding_ACM:
+        case coding_NWA0:
+        case coding_NWA1:
+        case coding_NWA2:
+        case coding_NWA3:
+        case coding_NWA4:
+        case coding_NWA5:
             return 1;
         case coding_NDS_IMA:
             return (vgmstream->interleave_block_size-4)*2;
@@ -478,8 +568,15 @@ int get_vgmstream_frame_size(VGMSTREAM * vgmstream) {
             return 2;
         case coding_PCM8:
 		case coding_PCM8_int:
+        case coding_PCM8_SB_int:
         case coding_SDX2:
         case coding_SDX2_int:
+        case coding_NWA0:
+        case coding_NWA1:
+        case coding_NWA2:
+        case coding_NWA3:
+        case coding_NWA4:
+        case coding_NWA5:
             return 1;
         case coding_NDS_IMA:
             return vgmstream->interleave_block_size;
@@ -587,6 +684,13 @@ void decode_vgmstream(VGMSTREAM * vgmstream, int samples_written, int samples_to
         case coding_PCM8_int:
             for (chan=0;chan<vgmstream->channels;chan++) {
                 decode_pcm8_int(&vgmstream->ch[chan],buffer+samples_written*vgmstream->channels+chan,
+                        vgmstream->channels,vgmstream->samples_into_block,
+                        samples_to_do);
+            }
+            break;
+        case coding_PCM8_SB_int:
+            for (chan=0;chan<vgmstream->channels;chan++) {
+                decode_pcm8_sb_int(&vgmstream->ch[chan],buffer+samples_written*vgmstream->channels+chan,
                         vgmstream->channels,vgmstream->samples_into_block,
                         samples_to_do);
             }
@@ -740,10 +844,21 @@ void decode_vgmstream(VGMSTREAM * vgmstream, int samples_written, int samples_to
                     buffer+samples_written*vgmstream->channels,samples_to_do,
                     vgmstream->channels);
             break;
+#endif
         case coding_ACM:
             /* handled in its own layout, here to quiet compiler */
             break;
-#endif
+        case coding_NWA0:
+        case coding_NWA1:
+        case coding_NWA2:
+        case coding_NWA3:
+        case coding_NWA4:
+        case coding_NWA5:
+            decode_nwa(((nwa_codec_data*)vgmstream->codec_data)->nwa,
+                    buffer+samples_written*vgmstream->channels,
+                    samples_to_do
+                    );
+            break;
     }
 }
 
@@ -834,6 +949,19 @@ int vgmstream_do_loop(VGMSTREAM * vgmstream) {
                 data->buffer_full = data->buffer_used = 0;
             }
 #endif
+
+            if (vgmstream->coding_type == coding_NWA0 ||
+                    vgmstream->coding_type == coding_NWA1 ||
+                    vgmstream->coding_type == coding_NWA2 ||
+                    vgmstream->coding_type == coding_NWA3 ||
+                    vgmstream->coding_type == coding_NWA4 ||
+                    vgmstream->coding_type == coding_NWA5)
+            {
+                nwa_codec_data *data = vgmstream->codec_data;
+
+                seek_nwa(data->nwa, vgmstream->loop_sample);
+            }
+
             /* restore! */
             memcpy(vgmstream->ch,vgmstream->loop_ch,sizeof(VGMSTREAMCHANNEL)*vgmstream->channels);
             vgmstream->current_sample=vgmstream->loop_sample;
@@ -911,6 +1039,9 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
             break;
         case coding_PCM8_int:
             snprintf(temp,TEMPSIZE,"8-bit PCM with 1 byte interleave");
+            break;
+        case coding_PCM8_SB_int:
+            snprintf(temp,TEMPSIZE,"8-bit PCM with sign bit, 1 byte interleave");
             break;
         case coding_NGC_DSP:
             snprintf(temp,TEMPSIZE,"Gamecube \"DSP\" 4-bit ADPCM");
@@ -1012,6 +1143,24 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
         case coding_ACM:
             snprintf(temp,TEMPSIZE,"InterPlay ACM");
             break;
+        case coding_NWA0:
+            snprintf(temp,TEMPSIZE,"NWA DPCM Level 0");
+            break;
+        case coding_NWA1:
+            snprintf(temp,TEMPSIZE,"NWA DPCM Level 1");
+            break;
+        case coding_NWA2:
+            snprintf(temp,TEMPSIZE,"NWA DPCM Level 2");
+            break;
+        case coding_NWA3:
+            snprintf(temp,TEMPSIZE,"NWA DPCM Level 3");
+            break;
+        case coding_NWA4:
+            snprintf(temp,TEMPSIZE,"NWA DPCM Level 4");
+            break;
+        case coding_NWA5:
+            snprintf(temp,TEMPSIZE,"NWA DPCM Level 5");
+            break;
         default:
             snprintf(temp,TEMPSIZE,"CANNOT DECODE");
     }
@@ -1068,6 +1217,9 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
         case layout_ws_aud_blocked:
             snprintf(temp,TEMPSIZE,"Westwood Studios .aud blocked");
             break;
+        case layout_matx_blocked:
+            snprintf(temp,TEMPSIZE,"Matrix .matx blocked");
+            break;
 #ifdef VGM_USE_MPEG
         case layout_fake_mpeg:
             snprintf(temp,TEMPSIZE,"MPEG Audio stream with incorrect frame headers");
@@ -1081,6 +1233,9 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
             break;
         case layout_mus_acm:
             snprintf(temp,TEMPSIZE,"multiple ACM files, ACM blocked");
+            break;
+        case layout_aix:
+            snprintf(temp,TEMPSIZE,"AIX interleave, internally 18-byte interleaved");
             break;
         default:
             snprintf(temp,TEMPSIZE,"INCONCEIVABLE");
@@ -1120,6 +1275,9 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
             break;
         case meta_ADX_05:
             snprintf(temp,TEMPSIZE,"CRI ADX header type 05");
+            break;
+        case meta_AIX:
+            snprintf(temp,TEMPSIZE,"CRI AIX header");
             break;
         case meta_DSP_AGSC:
             snprintf(temp,TEMPSIZE,"Retro Studios AGSC header");
@@ -1422,8 +1580,8 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
         case meta_RIFF_WAVE_labl_Marker:
             snprintf(temp,TEMPSIZE,"RIFF WAVE header with loop markers");
             break;
-		case meta_PS2_PCM:
-            snprintf(temp,TEMPSIZE,"Ephemeral Fantasia PCM Header");
+		case meta_PCM:
+            snprintf(temp,TEMPSIZE,"PCM file with custom header");
             break;
 		case meta_PS2_RKV:
             snprintf(temp,TEMPSIZE,"Legacy of Kain - Blood Omen 2 RKV Header");
@@ -1437,6 +1595,15 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
 		case meta_PS2_TEC:
             snprintf(temp,TEMPSIZE,"assumed TECMO badflagged stream by .tec extension");
             break;
+		case meta_XBOX_WVS:
+            snprintf(temp,TEMPSIZE,"Metal Arms WVS Header");
+            break;
+		case meta_XBOX_STMA:
+			snprintf(temp,TEMPSIZE,"Midnight Club 2 STMA Header");
+			break;
+		case meta_XBOX_MATX:
+			snprintf(temp,TEMPSIZE,"assumed Matrix file by .matx extension");
+			break;
         default:
             snprintf(temp,TEMPSIZE,"THEY SHOULD HAVE SENT A POET");
     }
