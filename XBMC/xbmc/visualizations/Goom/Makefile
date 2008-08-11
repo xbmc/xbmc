@@ -10,7 +10,8 @@ include ../../../Makefile.include
 .PHONY: $(DIRS)
 .DEFAULT_GOAL:= $(LIB)
 
-goom2k4-0/src/.libs/libgoom2.a: goom2k4-0
+goom2k4-0/src/.libs/libgoom2.a:
+	$(MAKE) -C goom2k4-0
 #goom2k4-0:
 #	./configure --enable-static --disable-shared
 #	$(MAKE)
