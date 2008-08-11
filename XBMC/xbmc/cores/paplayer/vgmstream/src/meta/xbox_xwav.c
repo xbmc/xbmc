@@ -60,8 +60,7 @@ VGMSTREAM * init_vgmstream_xbox_xwav(STREAMFILE *streamFile) {
 
 	vgmstream->coding_type = coding_XBOX;
     vgmstream->num_samples = read_32bitLE(start_offset,streamFile) / 36 * 64 / vgmstream->channels;
-    vgmstream->layout_type = layout_interleave;
-	vgmstream->interleave_block_size=36;
+    vgmstream->layout_type = layout_none;
 	
     vgmstream->meta_type = meta_XBOX_RIFF;
 

@@ -83,8 +83,7 @@ VGMSTREAM * init_vgmstream_fsb(STREAMFILE *streamFile) {
 		case 0x41004800: /* XBOX (FlatOut, Rainbow Six - Lockdown) */
 		case 0x01004804: /* XBOX (Cold Fear) <- maybe IMA??? */
 		vgmstream->coding_type = coding_XBOX;
-		vgmstream->layout_type = layout_interleave;
-        vgmstream->interleave_block_size = 36;
+		vgmstream->layout_type = layout_none;
 		vgmstream->num_samples = read_32bitLE(0x0C,streamFile)*64/36/channel_count;
 	if (loop_flag) {
         vgmstream->loop_start_sample = read_32bitLE(0x40,streamFile);
