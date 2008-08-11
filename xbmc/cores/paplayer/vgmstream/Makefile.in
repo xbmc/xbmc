@@ -108,7 +108,8 @@ META_OBJS=src/meta/adx_header.o \
           src/meta/ps2_rkv.o \
           src/meta/ps2_vas.o \
           src/meta/ps2_tec.o \
-          src/meta/ps2_enth.o
+          src/meta/ps2_enth.o \
+					src/meta/pcm.o
 
 OBJS = $(CODING_OBJS) $(LAYOUT_OBJS) $(META_OBJS) XBMCVGM.o src/vgmstream.o src/util.o src/streamfile.o
 
