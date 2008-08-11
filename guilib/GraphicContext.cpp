@@ -557,14 +557,17 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   { // set the mouse resolution
     g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
     ResetOverscan(g_settings.m_ResInfo[res]);
-    g_fontManager.ReloadTTFFonts();
   }
 
   SetFullScreenViewWindow(res);
   
   m_Resolution = res;
   if(NeedReset)
+  {
     CLog::Log(LOGDEBUG, "We set resolution %i", m_Resolution);
+    if (m_Resolution != INVALID)
+      g_fontManager.ReloadTTFFonts();
+  }
 
   Unlock();  
 }
