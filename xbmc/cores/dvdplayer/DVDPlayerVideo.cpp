@@ -212,13 +212,12 @@ void CDVDPlayerVideo::Process()
 
   while (!m_bStop)
   {
-    while (!m_bStop && m_speed == DVD_PLAYSPEED_PAUSE && !m_messageQueue.RecievedAbortRequest() && m_iNrOfPicturesNotToSkip==0) Sleep(5);
-
     int iQueueTimeOut = (int)(m_stalled ? frametime / 4 : frametime * 10) / 1000;
-    
+    int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE && m_iNrOfPicturesNotToSkip == 0) ? 1 : 0;
+
     CDVDMsg* pMsg;
-    MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, iQueueTimeOut);
-   
+    MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, iQueueTimeOut, iPriority);
+
     if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT) 
     {
       CLog::Log(LOGERROR, "Got MSGQ_ABORT or MSGO_IS_ERROR return true");
@@ -299,6 +298,12 @@ void CDVDPlayerVideo::Process()
       // just display those together with the correct one.
       // (setting it to 2 will skip some menu stills, 5 is working ok for me).
       m_iNrOfPicturesNotToSkip = 5;
+    }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
+    {
+      m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
+      if(m_speed == DVD_PLAYSPEED_PAUSE)
+        m_iNrOfPicturesNotToSkip = 0;
     }
 
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
@@ -557,9 +562,10 @@ bool CDVDPlayerVideo::InitializedOutputDevice()
 
 void CDVDPlayerVideo::SetSpeed(int speed)
 {
-  m_speed = speed;
-  if(m_speed == DVD_PLAYSPEED_PAUSE)
-    m_iNrOfPicturesNotToSkip = 0;
+  if(m_messageQueue.IsInited())
+    m_messageQueue.Put( new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed), 1 );
+  else
+    m_speed = speed;
 }
 
 void CDVDPlayerVideo::StepFrame()

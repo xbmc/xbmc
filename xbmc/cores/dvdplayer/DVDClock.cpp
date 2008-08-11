@@ -142,6 +142,6 @@ void CDVDClock::Resume()
 
 double CDVDClock::DistanceToDisc()
 {
-  CSharedLock lock(m_critSection);
+  // GetClock will lock. if we lock the shared lock here there's potentialy a chance that another thread will try exclusive lock on the section and we'll deadlock
   return GetClock() - m_iDisc;
 }
