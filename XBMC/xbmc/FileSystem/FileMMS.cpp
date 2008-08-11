@@ -473,7 +473,7 @@ int CFileMMS::streaming_start(char* hostname, int port, char* path)
   }
 
   /* fill socket structure */
-  memmove(hp->h_addr, &sa.sin_addr, hp->h_length);
+  memmove(&sa.sin_addr, hp->h_addr, hp->h_length);
   sa.sin_family = hp->h_addrtype;
   sa.sin_port = htons(port);
 
@@ -486,7 +486,7 @@ int CFileMMS::streaming_start(char* hostname, int port, char* path)
   /* try to connect */
   if (connect(s, (struct sockaddr *) &sa, sizeof sa) < 0)
   {
-        CLog::Log(LOGERROR, "MMS: error connecting socket: %d", errno);
+    CLog::Log(LOGERROR, "MMS: error connecting socket: %d", errno);
     return -1;
   }
 
