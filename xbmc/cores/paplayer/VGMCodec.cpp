@@ -21,6 +21,9 @@
 
 #include "stdafx.h"
 #include "VGMCodec.h"
+#include "Util.h"
+#include "FileSystem/File.h"
+
 
 VGMCodec::VGMCodec()
 {
@@ -41,9 +44,11 @@ bool VGMCodec::Init(const CStdString &strFile, unsigned int filecache)
   
   m_dll.Init();
 
-  CStdString strFileToLoad = "filereader://"+strFile;
+  //CStdString strFileToLoad = "filereader://"+strFile;
+  XFILE::CFile::Cache(strFile,"Z:\\"+CUtil::GetFileName(strFile));
 
-  m_vgm = m_dll.LoadVGM(strFileToLoad.c_str(),&m_SampleRate,&m_BitsPerSample,&m_Channels);
+  //m_vgm = m_dll.LoadVGM(strFileToLoad.c_str(),&m_SampleRate,&m_BitsPerSample,&m_Channels);
+  m_vgm = m_dll.LoadVGM("Z:\\"+CUtil::GetFileName(strFile),&m_SampleRate,&m_BitsPerSample,&m_Channels);
   if (!m_vgm)
   {
     CLog::Log(LOGERROR,"%s: error opening file %s!",__FUNCTION__,strFile.c_str());
@@ -107,7 +112,6 @@ bool VGMCodec::IsSupportedFormat(const CStdString& strExt)
       strExt == "ahx" ||
       strExt == "aifc" ||
       strExt == "aix" ||
-      strExt == "aix" ||
       strExt == "amts" ||
       strExt == "as4" ||
       strExt == "asf" ||
@@ -142,6 +146,7 @@ bool VGMCodec::IsSupportedFormat(const CStdString& strExt)
       strExt == "leg" ||
       strExt == "logg" ||
       strExt == "lwav" ||
+	  strExt == "matx" ||
       strExt == "mi4" ||
       strExt == "mib" ||
       strExt == "mic" ||
@@ -174,6 +179,7 @@ bool VGMCodec::IsSupportedFormat(const CStdString& strExt)
       strExt == "sli" ||
       strExt == "sng" ||
       strExt == "ss2" ||
+	  strExt == "stma" ||
       strExt == "str" ||
       strExt == "strm" ||
       strExt == "sts" ||

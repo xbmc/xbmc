@@ -141,8 +141,7 @@ VGMSTREAM * init_vgmstream_genh(STREAMFILE *streamFile) {
             }
             break;
         case coding_XBOX:
-            vgmstream->layout_type = layout_interleave;
-            vgmstream->interleave_block_size = 36;
+            vgmstream->layout_type = layout_none;
 
             break;
         case coding_NGC_DTK:
