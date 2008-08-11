@@ -118,7 +118,8 @@ META_OBJS=src/meta/adx_header.o \
           src/meta/ngc_tydsp.o \
           src/meta/ngc_vjdsp.o \
           src/meta/xbox_wvs.o \
-          src/meta/xbox_stma.o
+          src/meta/xbox_stma.o \
+					src/meta/xbox_ims.o
 
 OBJS = $(CODING_OBJS) $(LAYOUT_OBJS) $(META_OBJS) XBMCVGM.o src/vgmstream.o src/util.o src/streamfile.o
 
