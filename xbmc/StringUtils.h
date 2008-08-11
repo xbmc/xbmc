@@ -59,9 +59,10 @@ public:
   static bool IsNaturalNumber(const CStdString& str);
   static CStdString SizeToString(__int64 size);
   static const CStdString EmptyString;
-  static bool FindWords(const char *str, const char *wordLowerCase);
+  static size_t FindWords(const char *str, const char *wordLowerCase);
   static int FindEndBracket(const CStdString &str, char opener, char closer, int startPos = 0);
   static int DateStringToYYYYMMDD(const CStdString &dateString);
+  static void WordToDigits(CStdString &word);
 };
 
 #endif

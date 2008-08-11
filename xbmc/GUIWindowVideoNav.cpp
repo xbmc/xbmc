@@ -42,6 +42,7 @@
 #include "GUIDialogYesNo.h"
 #include "GUIDialogSelect.h"
 #include "GUIDialogKeyboard.h"
+#include "GUIEditControl.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
@@ -234,7 +235,21 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_FILTER)
       {
-        CGUIDialogKeyboard::ShowAndGetFilter(m_filter, false);
+        if (GetControl(iControl)->GetControlType() == CGUIControl::GUICONTROL_EDIT)
+        { // filter updated
+          CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_BTN_FILTER);
+          OnMessage(selected);
+          m_filter = selected.GetLabel();
+          OnFilterItems();
+          return true;
+        }
+        if (m_filter.IsEmpty())
+          CGUIDialogKeyboard::ShowAndGetFilter(m_filter, false);
+        else
+        {
+          m_filter.Empty();
+          OnFilterItems();
+        }
         return true;
       }
       else if (iControl == CONTROL_BTNSHOWMODE)
@@ -285,8 +300,15 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
     {
       if (message.GetParam1() == GUI_MSG_FILTER_ITEMS && IsActive())
       {
-        m_filter = message.GetStringParam();
-        m_filter.TrimLeft().ToLower();
+        if (message.GetParam2() == 1)  // append
+          m_filter += message.GetStringParam();
+        else if (message.GetParam2() == 2) // delete
+        {
+          if (m_filter.size())
+            m_filter.erase(m_filter.end() - 1);
+        }
+        else
+          m_filter = message.GetStringParam();
         OnFilterItems();
       }
     }
@@ -458,6 +480,8 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     }
   }
 
+  // clear the filter
+  m_filter.Empty();
   return bResult;
 }
 
@@ -513,6 +537,7 @@ void CGUIWindowVideoNav::UpdateButtons()
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNSHOWALL,g_stSettings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL);
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTN_FILTER, !m_filter.IsEmpty());
+  SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, m_filter);
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
@@ -735,6 +760,7 @@ void CGUIWindowVideoNav::OnWindowLoaded()
     Add(pLabel);
   }
 #endif
+  SendMessage(GUI_MSG_SET_TYPE, CONTROL_BTN_FILTER, CGUIEditControl::INPUT_TYPE_FILTER);
   CGUIWindowVideoBase::OnWindowLoaded();
 }
 
@@ -953,6 +979,7 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
     filterWatched = false;
 
   NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
+  // todo: why aren't we filtering every view consistently?
   if (m_vecItems->IsVirtualDirectoryRoot() ||
       node == NODE_TYPE_MOVIES_OVERVIEW    ||
       node == NODE_TYPE_TVSHOWS_OVERVIEW   ||
@@ -960,6 +987,10 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
   {
     return;
   }
+ 
+  CStdString filter = m_filter;
+  filter.TrimLeft().ToLower();
+  bool numericMatch = StringUtils::IsNaturalNumber(filter);
 
   items.ClearItems(); // clear the items only - we want to keep content etc.
   items.SetFastLookup(true);
@@ -968,8 +999,8 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
     CFileItemPtr item = m_unfilteredItems->Get(i);
     if (item->m_bIsFolder || item->IsParentFolder()         ||
         CVideoDatabaseDirectory::IsAllItem(item->m_strPath) ||
-       (m_filter.IsEmpty() && (!filterWatched               ||
-       (item->GetVideoInfoTag()->m_playCount>0) == (g_stSettings.m_iMyVideoWatchMode==2))))
+      (filter.IsEmpty() && (!filterWatched               ||
+      (item->GetVideoInfoTag()->m_playCount>0) == (g_stSettings.m_iMyVideoWatchMode==2))))
     {
       if ((params.GetContentType() != VIDEODB_CONTENT_MOVIES  && params.GetContentType() != VIDEODB_CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
         items.Add(item);
@@ -986,12 +1017,17 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
     else if (item->GetLayout())
       match = item->GetLayout()->GetAllText();
     else*/
-      match = item->GetLabel() + " " + item->GetLabel2();
-    if (StringUtils::FindWords(match.c_str(), m_filter.c_str()) &&
-        (!filterWatched || (item->GetVideoInfoTag()->m_playCount>0) == (g_stSettings.m_iMyVideoWatchMode==2)))
+    match = item->GetLabel(); // Filter label only for now
+
+    if (numericMatch)
+      StringUtils::WordToDigits(match);
+
+    size_t pos = StringUtils::FindWords(match.c_str(), filter.c_str());
+    if (pos != CStdString::npos &&
+       (!filterWatched || (item->GetVideoInfoTag()->m_playCount>0) == (g_stSettings.m_iMyVideoWatchMode==2)))
     {
       if ((params.GetContentType() != VIDEODB_CONTENT_MOVIES && params.GetContentType() != VIDEODB_CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
-        items.Add(item);
+        items.Add(item); 
     }
   }
   items.SetFastLookup(false);

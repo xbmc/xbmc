@@ -22,6 +22,7 @@
 #include "include.h"
 #include "GUIIncludes.h"
 #include "SkinInfo.h"
+#include "utils/GUIInfoManager.h"
 
 using namespace std;
 
@@ -147,6 +148,15 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, const CStdString &type)
     { // we need to load this include from the alternative file
       RESOLUTION res;
       LoadIncludes(g_SkinInfo.GetSkinPath(file, &res));
+    }
+    const char *condition = include->Attribute("condition");
+    if (condition)
+    { // check this condition
+      if (!g_infoManager.GetBool(g_infoManager.TranslateString(condition))) 
+      {
+        include = include->NextSiblingElement("include");
+        continue;
+      }
     }
     CStdString tagName = include->FirstChild()->Value();
     map<CStdString, TiXmlElement>::iterator it = m_includes.find(tagName);

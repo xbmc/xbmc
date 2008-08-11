@@ -46,7 +46,8 @@ public:
                     INPUT_TYPE_DATE,
                     INPUT_TYPE_IPADDRESS,
                     INPUT_TYPE_PASSWORD,
-                    INPUT_TYPE_SEARCH
+                    INPUT_TYPE_SEARCH,
+                    INPUT_TYPE_FILTER
                   };
 
   CGUIEditControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY,

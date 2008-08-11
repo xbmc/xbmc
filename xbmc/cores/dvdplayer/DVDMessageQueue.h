@@ -27,6 +27,7 @@ typedef struct stDVDMessageListItem
 {
   CDVDMsg* pMsg;
   struct stDVDMessageListItem *pNext;
+  int priority;
 }
 DVDMessageListItem;
 
@@ -49,17 +50,17 @@ public:
   virtual ~CDVDMessageQueue();
   
   void  Init();
-  void  Flush();
+  void  Flush(CDVDMsg::Message message = CDVDMsg::DEMUXER_PACKET);
   void  Abort();
   void  End();
 
-  MsgQueueReturnCode Put(CDVDMsg* pMsg);
+  MsgQueueReturnCode Put(CDVDMsg* pMsg, int priority = 0);
  
   /**
    * msg,       message type from DVDMessage.h
    * timeout,   timeout in msec
    */
-  MsgQueueReturnCode Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds);
+  MsgQueueReturnCode Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int priority = 0);
 
   
   int GetDataSize() const               { return m_iDataSize; }

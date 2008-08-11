@@ -399,13 +399,59 @@ bool CFileSMB::Exists(const CURL& url)
   return true;
 }
 
+int CFileSMB::Stat(struct __stat64* buffer)
+{
+  if (m_fd == -1)
+    return -1;
+
+#ifndef _LINUX
+  struct __stat64 tmpBuffer = {0};
+#else
+  struct stat tmpBuffer = {0};
+#endif
+
+  CSingleLock lock(smb);
+  int iResult = smbc_fstat(m_fd, &tmpBuffer);
+
+  buffer->st_dev = tmpBuffer.st_dev;
+  buffer->st_ino = tmpBuffer.st_ino;  
+  buffer->st_mode = tmpBuffer.st_mode;
+  buffer->st_nlink = tmpBuffer.st_nlink;
+  buffer->st_uid = tmpBuffer.st_uid;
+  buffer->st_gid = tmpBuffer.st_gid;
+  buffer->st_rdev = tmpBuffer.st_rdev;
+  buffer->st_size = tmpBuffer.st_size;
+  buffer->st_atime = tmpBuffer.st_atime;
+  buffer->st_mtime = tmpBuffer.st_mtime;
+  buffer->st_ctime = tmpBuffer.st_ctime;
+
+  return iResult;
+}
+
 int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 {
   CStdString strFileName = smb.URLEncode(url);
   strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
   CSingleLock lock(smb);
-  int iResult = smbc_stat(strFileName, buffer);
+#ifndef _LINUX
+  struct __stat64 tmpBuffer = {0};
+#else
+  struct stat tmpBuffer = {0};
+#endif
+  int iResult = smbc_stat(strFileName, &tmpBuffer);
+
+  buffer->st_dev = tmpBuffer.st_dev;
+  buffer->st_ino = tmpBuffer.st_ino;  
+  buffer->st_mode = tmpBuffer.st_mode;
+  buffer->st_nlink = tmpBuffer.st_nlink;
+  buffer->st_uid = tmpBuffer.st_uid;
+  buffer->st_gid = tmpBuffer.st_gid;
+  buffer->st_rdev = tmpBuffer.st_rdev;
+  buffer->st_size = tmpBuffer.st_size;
+  buffer->st_atime = tmpBuffer.st_atime;
+  buffer->st_mtime = tmpBuffer.st_mtime;
+  buffer->st_ctime = tmpBuffer.st_ctime;
 
   return iResult;
 }
