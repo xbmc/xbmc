@@ -239,7 +239,8 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 
           if (bShowProgress)
           {
-            pExtract->GetDataIO().m_pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+            // temporary workaround to avoid deadlocks caused by dvdplayer halting app thread
+            pExtract->GetDataIO().m_pDlgProgress = NULL;//(CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
           }
 
           __int64 iOff=0;
