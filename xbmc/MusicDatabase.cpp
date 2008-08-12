@@ -1744,19 +1744,11 @@ bool CMusicDatabase::SetAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs)
     if (NULL == m_pDS.get()) return false;
 
     strSQL=FormatSQL("delete from albuminfosong where idAlbumInfo=%i", idAlbumInfo);
-    if (!m_pDS->exec(strSQL.c_str())) return false;
+    m_pDS->exec(strSQL.c_str());
 
     for (int i = 0; i < (int)songs.size(); i++)
     {
       CSong song = songs[i];
-
-      strSQL=FormatSQL("select * from albuminfosong where idAlbumInfo=%i and iTrack=%i", idAlbumInfo, song.iTrack);
-      if (!m_pDS->query(strSQL.c_str())) continue;
-
-      int iRowsFound = m_pDS->num_rows();
-      if (iRowsFound != 0)
-        continue;
-
       strSQL=FormatSQL("insert into albuminfosong (idAlbumInfoSong,idAlbumInfo,iTrack,strTitle,iDuration) values(NULL,%i,%i,'%s',%i)",
                     idAlbumInfo,
                     song.iTrack,
