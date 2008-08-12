@@ -342,18 +342,29 @@ void CGUIImage::Render(float left, float top, float right, float bottom, float u
     return; // nothing to render
 
   float x1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1));
+  assert(x1 != INT_MIN);
   float y1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
+  assert(y1 != INT_MIN);
   float x2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1));
+  assert(x2 != INT_MIN);
   float y2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
+  assert(y2 != INT_MIN);
   float x3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2));
+  assert(x3 != INT_MIN);
   float y3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
+  assert(y3 != INT_MIN);
   float x4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2));
+  assert(x4 != INT_MIN);
   float y4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
-
+  assert(y4 != INT_MIN);
   float z1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
+  assert(z1 != INT_MIN);
   float z2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
+  assert(z2 != INT_MIN);
   float z3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
+  assert(z3 != INT_MIN);
   float z4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
+  assert(z4 != INT_MIN);
 
   if (y3 == y1) y3 += 1.0f; if (x3 == x1) x3 += 1.0f;
   if (y4 == y2) y4 += 1.0f; if (x4 == x2) x4 += 1.0f;
