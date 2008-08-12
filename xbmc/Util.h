@@ -22,6 +22,7 @@
 #include <climits>
 #include <math.h>
 #include <vector>
+#include <limits>
 #include "MediaSource.h"
 
 namespace XFILE
