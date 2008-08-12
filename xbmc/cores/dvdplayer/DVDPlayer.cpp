@@ -1829,25 +1829,24 @@ float CDVDPlayer::GetPercentage()
   return GetTime() * 100 / (float)iTotalTime;
 }
 
-//This is how much audio is delayed to video, we count the oposite in the dvdplayer
 void CDVDPlayer::SetAVDelay(float fValue)
 {
-  m_dvdPlayerVideo.SetDelay( - (fValue * DVD_TIME_BASE) ) ;
+  m_dvdPlayerVideo.SetDelay( (fValue * DVD_TIME_BASE) ) ;
 }
 
 float CDVDPlayer::GetAVDelay()
 {
-  return - m_dvdPlayerVideo.GetDelay() / (float)DVD_TIME_BASE;
+  return m_dvdPlayerVideo.GetDelay() / (float)DVD_TIME_BASE;
 }
 
 void CDVDPlayer::SetSubTitleDelay(float fValue)
 {
-  m_dvdPlayerVideo.SetSubtitleDelay(fValue * DVD_TIME_BASE);
+  m_dvdPlayerVideo.SetSubtitleDelay(-fValue * DVD_TIME_BASE);
 }
 
 float CDVDPlayer::GetSubTitleDelay()
 {
-  return m_dvdPlayerVideo.GetSubtitleDelay() / DVD_TIME_BASE;
+  return -m_dvdPlayerVideo.GetSubtitleDelay() / DVD_TIME_BASE;
 }
 
 // priority: 1: libdvdnav, 2: external subtitles, 3: muxed subtitles
