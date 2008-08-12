@@ -71,15 +71,15 @@ bool CFanart::Unpack()
   {
     m_url = fanart->Attribute("url");
     TiXmlElement *fanartThumb = fanart->FirstChildElement("thumb");
-	  while (fanartThumb)
-	  {
+    while (fanartThumb)
+    {
       SFanartData data;
       data.strImage = fanartThumb->GetText();
       data.strResolution = fanartThumb->Attribute("dim");
       ParseColors(fanartThumb->Attribute("colors"), data.strColors);
       m_fanart.push_back(data);
       fanartThumb = fanartThumb->NextSiblingElement("thumb");
-	  }
+    }
   }
   return true;
 }
