@@ -30,7 +30,7 @@
 class SettingInfo
 {
 public:
-  enum SETTING_TYPE { NONE=0, BUTTON, CHECK, CHECK_UCHAR, SPIN, SLIDER, SLIDER_INT, SEPARATOR };
+  enum SETTING_TYPE { NONE=0, BUTTON, CHECK, CHECK_UCHAR, SPIN, SLIDER, SLIDER_INT, SLIDER_ABS, SEPARATOR };
   SettingInfo()
   {
     id = 0;
@@ -76,7 +76,7 @@ protected:
   void AddBool(unsigned int id, int label, bool *on, bool enabled = true);
   void AddSpin(unsigned int id, int label, int *current, unsigned int max, const int *entries);
   void AddSpin(unsigned int id, int label, int *current, unsigned int min, unsigned int max, const char* minLabel = NULL);
-  void AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, const char *format = NULL);
+  void AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, const char *format = NULL, bool absvalue=false);
   void AddSlider(unsigned int id, int label, int *current, int min, int max);
   void AddSeparator(unsigned int id);
 
