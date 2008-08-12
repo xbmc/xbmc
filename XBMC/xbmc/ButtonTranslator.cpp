@@ -78,7 +78,10 @@ bool CButtonTranslator::Load()
   lircmapPath = g_settings.GetUserDataItem(REMOTEMAP);
   success |= LoadLircMap(lircmapPath);
   if (!success)
-    return false;
+  {
+    CLog::Log(LOGERROR, "%s - unable to load remote map %s", __FUNCTION__, REMOTEMAP);
+    // don't return false - it is to only indicate a fatal error (which this is not)
+  }
 #endif
 
   // Done!
