@@ -79,6 +79,7 @@ void CGUIFont::DrawText( float x, float y, const std::vector<DWORD> &colors, DWO
     return;
       
   maxPixelWidth = ROUND(maxPixelWidth / g_graphicsContext.GetGUIScaleX());
+  assert(maxPixelWidth != INT_MIN);
   std::vector<DWORD> renderColors;
   for (unsigned int i = 0; i < colors.size(); i++)
     renderColors.push_back(g_graphicsContext.MergeAlpha(colors[i] ? colors[i] : m_textColor));
@@ -108,6 +109,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const std::vector<DWORD> &col
     return; // nothing to render
 
   maxWidth = ROUND(maxWidth / g_graphicsContext.GetGUIScaleX());
+  assert(maxWidth != INT_MIN);
 
   // draw at our scroll position
   // we handle the scrolling as follows:
