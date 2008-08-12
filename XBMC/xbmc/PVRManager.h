@@ -21,36 +21,37 @@
  */
 
 #include "utils/Thread.h"
+#include "utils/IPVRClient.h"
 #include "fileitem.h"
 
 #include <vector>
 
-namespace PLAYLIST
-{
-  class CPlayList;
-}
+class CEPGInfoTag;
 
-class CVideoInfoTag;
-
-class CPVRManager : CThread
+class CPVRManager 
+  : public IPVRClientCallback
+  , private CThread
 {
 public:
-  virtual ~CPVRManager();
+  ~CPVRManager();
   static void RemoveInstance();
+  void OnMessage(int event, const std::string& data);
+
+  // start/stop
+  void Start();
+  void Stop();
   static CPVRManager* GetInstance();
-  static bool IsInstantiated() { return m_pInstance != NULL; }
+  static void   ReleaseInstance();
+  static bool   IsInstantiated() { return m_instance != NULL; }
 
- /* void FillGuideGrid(EPGGrid* grid, int numDaysOffset);*/
-
-protected:
-  virtual void Process();
-  virtual void OnStartup();
+  // pvrmanager status
+  static bool HasRecordings() { return m_hasRecordings; }
 
 private:
   CPVRManager();
-  static CPVRManager* m_pInstance;
+  static CPVRManager* m_instance;
 
-  PLAYLIST::CPlayList* m_LiveTVQueue;
-  HANDLE m_hWorkerEvent;
-  CCriticalSection m_lockPlaylist;
+  IPVRClient* m_client;
+
+  static bool m_hasRecordings;
 };

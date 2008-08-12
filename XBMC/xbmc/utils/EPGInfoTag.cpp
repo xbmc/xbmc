@@ -27,14 +27,21 @@ CEPGInfoTag::CEPGInfoTag(long uniqueBroadcastID)
   m_uniqueBroadcastID = uniqueBroadcastID;
 }
 
+CEPGInfoTag::CEPGInfoTag(DWORD sourceID)
+{
+  Reset();
+  m_sourceID = sourceID;
+}
+
 void CEPGInfoTag::Reset()
 {
+  m_sourceID = -1;
+  m_uniqueBroadcastID = -1;
   m_strSource = "";
   m_strBouquet = "";
   m_strChannel = "";
   m_seriesID = "";
   m_episodeID = "";
-  m_uniqueBroadcastID = -1;
   m_repeat = false;
   m_videoProps.clear();
   m_audioProps.clear();
@@ -43,5 +50,5 @@ void CEPGInfoTag::Reset()
   m_recstatus = rsUnknown;
   m_availableStatus = asAvailable;
 
-  //CVideoInfoTag::Reset();
+  CVideoInfoTag::Reset();
 }

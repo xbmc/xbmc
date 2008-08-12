@@ -132,7 +132,7 @@ CFileItem::CFileItem(const CEPGInfoTag& programme)
   Reset();
   m_bIsFolder = false;
   *GetEPGInfoTag() = programme;
-  m_strLabel = programme.m_strTitle;
+  SetLabel(programme.m_strTitle);
   //FillInDefaultIcon();
   //SetVideoThumb();
   SetInvalid();

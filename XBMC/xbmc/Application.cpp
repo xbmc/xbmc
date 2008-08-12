@@ -35,6 +35,7 @@
 #include "PlayListPlayer.h"
 #include "MusicDatabase.h"
 #include "VideoDatabase.h"
+#include "TVDatabase.h"
 #include "Autorun.h"
 #include "ActionManager.h"
 #ifdef HAS_LCD
@@ -1727,17 +1728,15 @@ void CApplication::StartPVRManager()
 {
   if (g_guiSettings.GetBool("pvrmanager.enabled"))
   {
-    CLog::Log(LOGNOTICE, "starting pvr manager service");
+    CLog::Log(LOGNOTICE, "starting pvr manager");
+    CPVRManager::GetInstance()->Start();
   }
 }
 
 void CApplication::StopPVRManager()
 {
-  if (CPVRManager::IsInstantiated())
-  {
-    CLog::Log(LOGNOTICE, "stopping pvr manager service");
-    //CPVRManager::GetInstance()->
-  }
+  CLog::Log(LOGERROR, "stopping pvr manager service");
+  CPVRManager::GetInstance()->Stop();
 }
 
 void CApplication::StartLEDControl(bool switchoff)
@@ -3425,7 +3424,7 @@ HRESULT CApplication::Cleanup()
     g_buttonTranslator.Clear();
     CScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
-    CPVRManager::RemoveInstance();
+    /*CPVRManager::Stop()*/
 #ifdef HAS_EVENT_SERVER
     CEventServer::RemoveInstance();
 #endif
@@ -5474,6 +5473,16 @@ void CApplication::SaveCurrentFileSettings()
       CVideoDatabase dbs;
       dbs.Open();
       dbs.SetVideoSettings(m_itemCurrentFile->m_strPath, g_stSettings.m_currentVideoSettings);
+      dbs.Close();
+    }
+  }
+  else if (m_itemCurrentFile->IsTVDb())
+  { ///TV save channel settings
+    if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
+    {
+      CTVDatabase dbs;
+      dbs.Open();
+      dbs.SetChannelSettings(m_itemCurrentFile->GetEPGInfoTag()->m_strChannel, g_stSettings.m_currentVideoSettings);
       dbs.Close();
     }
   }

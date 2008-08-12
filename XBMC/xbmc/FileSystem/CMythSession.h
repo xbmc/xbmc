@@ -21,6 +21,7 @@
  */
 
 #include "utils/Thread.h"
+#include "utils/CriticalSection.h"
 
 typedef struct cmyth_ringbuf   *cmyth_ringbuf_t;
 typedef struct cmyth_conn      *cmyth_conn_t;
@@ -32,6 +33,7 @@ typedef struct cmyth_database  *cmyth_database_t;
 typedef struct cmyth_timestamp *cmyth_timestamp_t;
 
 class DllLibCMyth;
+class CCriticalSection;
 class CDateTime;
 class CURL;
 

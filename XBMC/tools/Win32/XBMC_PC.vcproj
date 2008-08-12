@@ -1918,6 +1918,19 @@
 				<File
 					RelativePath="..\..\xbmc\XBVideoConfig.cpp">
 				</File>
+				<Filter
+					Name="pvrclients"
+					Filter="">
+					<File
+						RelativePath="..\..\xbmc\utils\IPVRClient.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\utils\PVRClient-mythtv.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\utils\PVRClient-mythtv.h">
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Database"

@@ -101,11 +101,12 @@ enum SubtitleTypes_t {
 class CEPGInfoTag : public CVideoInfoTag
 {
 public:
-  CEPGInfoTag() { Reset(); };
   CEPGInfoTag(long uniqueBroadcastID);
+  CEPGInfoTag(DWORD sourceID);
   
   void Reset();
-  const long GetID() const { return m_uniqueBroadcastID; };
+  const long GetDbID() const { return m_uniqueBroadcastID; };
+  const long GetSourceID() const { return m_sourceID; };
 
   CStdString    m_strSource;
   CStdString    m_strBouquet;
@@ -133,7 +134,8 @@ public:
   AvailableStatus   m_availableStatus;
 
 private:
-  long m_uniqueBroadcastID;
+  DWORD m_sourceID; // plugin's ID this tag came from
+  long m_uniqueBroadcastID; // db's unique identifier for this tag
 
 };
 

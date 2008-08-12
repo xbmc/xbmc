@@ -484,6 +484,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       g_application.StartFtpServer();      
       g_application.StartUPnP();
       g_application.StartEventServer();
+      g_application.StartPVRManager();
       CScrobbler::GetInstance()->Init();
     }
     break;
@@ -495,6 +496,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       g_application.StopFtpServer();
       g_application.StopUPnP();
       g_application.StopEventServer();
+      g_application.StopPVRManager();
       CScrobbler::GetInstance()->Term();
       // smb.Deinit(); if any file is open over samba this will break.
 

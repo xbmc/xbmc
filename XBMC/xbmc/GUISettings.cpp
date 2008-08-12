@@ -404,7 +404,6 @@ CGUISettings::CGUISettings(void)
   AddBool(8, "myvideos.savefolderviews", 583, true);
 
   AddCategory(5, "videolibrary", 14022);
-
   AddBool(1, "videolibrary.enabled", 418, true);
   AddSeparator(2, "videolibrary.sep1");
   AddBool(3, "videolibrary.hideplots", 20369, false);
@@ -422,9 +421,9 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(5, "pvrmanager", 17000);
   AddBool(1, "pvrmanager.enabled", 17010, false);
-  //AddInt(2, "pvrmanager.servertype", 17011, 
-  AddString(3, "pvrmanager.serverip", 17012, "", BUTTON_CONTROL_IP_INPUT);
-
+  AddString(2, "pvrmanager.serverip", 17012, "", EDIT_CONTROL_IP_INPUT);
+  AddString(3, "pvrmanager.username", 17013, "", EDIT_CONTROL_INPUT, false, 17013);
+  AddString(4, "pvrmanager.password", 17014, "", EDIT_CONTROL_HIDDEN_INPUT, false, 17014);
 
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);

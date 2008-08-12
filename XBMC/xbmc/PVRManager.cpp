@@ -21,79 +21,90 @@
 
 #include "stdafx.h"
 #include "PVRManager.h"
+#include "utils/PVRClient-mythtv.h"
+#include "GUISettings.h"
 #include "Application.h"
 #include "TVDatabase.h"
 #include "PlayListPlayer.h"
 #include "PlayListFactory.h"
-#include "VideoInfoTag.h"
+#include "utils/EPGInfoTag.h"
 #include "Playlist.h"
 
 using namespace PLAYLIST;
 
 #define XBMC_PVRMANAGER_VERSION "0.1"
 
-CPVRManager* CPVRManager::m_pInstance=NULL;
+CPVRManager* CPVRManager::m_instance=NULL;
+bool CPVRManager::m_hasRecordings=true; /// fix this
+
 
 CPVRManager::CPVRManager()
 {
-  m_hWorkerEvent = CreateEvent(NULL, false, false, NULL);
-  m_LiveTVQueue = new CPlayList;
+  m_hasRecordings = true;
 }
 
 CPVRManager::~CPVRManager()
 {
-  CloseHandle(m_hWorkerEvent);
-  StopThread();
   CLog::Log(LOGINFO,"pvrmanager destroyed");
-  delete m_LiveTVQueue;
 }
 
 void CPVRManager::RemoveInstance()
 {
-  if (m_pInstance)
+  if (m_instance)
   {
-    delete m_pInstance;
-    m_pInstance=NULL;
+    delete m_instance;
+    m_instance=NULL;
   }
+}
+
+void CPVRManager::Start()
+{
+  if (g_guiSettings.GetString("pvrmanager.serverip").IsEmpty() ||
+      g_guiSettings.GetString("pvrmanager.username").IsEmpty() ||
+      g_guiSettings.GetString("pvrmanager.password").IsEmpty() ||
+      g_guiSettings.GetString("pvrmanager.username").IsEmpty())
+  {
+    return;
+  }
+
+  // determine which plugins are enabled
+  // init and add each IPVRClient to a vector
+  m_client = new PVRClientMythTv(0, this);
+  CFileItemList recordings;
+  m_client->GetRecordingSchedules(recordings);
+  recordings.Clear();
+  m_client->GetUpcomingRecordings(recordings);
+  recordings.Clear();
+  m_client->GetConflicting(recordings);
+  int breakpoint = 1;
+}
+
+void CPVRManager::Stop()
+{
+
 }
 
 CPVRManager* CPVRManager::GetInstance()
 {
-  if (!m_pInstance)
-    m_pInstance=new CPVRManager;
+  if (!m_instance)
+    m_instance = new CPVRManager();
 
-  return m_pInstance;
+  return m_instance;
 }
 
-//void CPVRManager::Parameter(const CStdString& key, const CStdString& data, CStdString& value)
-//{
-//  value = "";
-//  vector<CStdString> params;
-//  StringUtils::SplitString(data, "\n", params);
-//  for (int i = 0; i < (int)params.size(); i++)
-//  {
-//    CStdString tmp = params[i];
-//    if (int pos = tmp.Find(key) >= 0)
-//    {
-//      tmp.Delete(pos - 1, key.GetLength() + 1);
-//      value = tmp;
-//      break;
-//    }
-//  }
-//  CLog::Log(LOGDEBUG, "Parameter %s -> %s", key.c_str(), value.c_str());
-//}
-
-void CPVRManager::OnStartup()
+void CPVRManager::ReleaseInstance()
 {
-  SetPriority(THREAD_PRIORITY_NORMAL);
+  m_instance = NULL; /// check is this enough?
 }
 
-//void CPVRManager::FillGuideGrid(EPGGuideGrid* grid, int numDaysOffset)
-//{
-//
-//}
-
-void CPVRManager::Process()
+void CPVRManager::OnMessage(int event, const std::string& data)
 {
- 
+  switch (event) {
+    case PVR_EVENT_UNKNOWN:
+      CLog::Log(LOGDEBUG, "%s - PVRClient unknown event (error?)", __FUNCTION__);
+      break;
+    case PVR_EVENT_SCHEDULE_CHANGE:
+      CLog::Log(LOGDEBUG, "%s - PVRClient schedule change: %s", __FUNCTION__, data);
+      break;
+  }
 }

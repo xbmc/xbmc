@@ -35,6 +35,7 @@ public:
                        float width, float height, int scrollTime, int minutesPerPage,
                        int rulerUnit);
   virtual ~CGUIEPGGridContainer(void);
+  virtual CGUIEPGGridContainer *Clone() const { return new CGUIEPGGridContainer(*this); };
 
   virtual bool OnAction(const CAction &action);
   virtual void OnDown();
