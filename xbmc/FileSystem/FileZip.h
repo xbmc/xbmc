@@ -26,7 +26,6 @@
 #include "lib/zlib/zlib.h"
 #include "utils/log.h"
 #include "GUIWindowManager.h"
-#include "GUIDialogProgress.h"
 #include "FileSystem/File.h"
 #include "FileSystem/ZipManager.h"
 
@@ -54,8 +53,6 @@ namespace XFILE
     bool InitDecompress();
     bool FillBuffer();
     void DestroyBuffer(void* lpBuffer, int iBufSize);
-    void StartProgressBar();
-    void StopProgressBar();
     CFile mFile;
     SZipEntry mZipItem;
     __int64 m_iFilePos; // position in _uncompressed_ data read
@@ -68,8 +65,7 @@ namespace XFILE
     int m_iDataInStringBuffer;
     int m_iRead;
     bool m_bFlush;
-    bool m_bUseProgressBar;
-    CGUIDialogProgress* m_dlgProgress; // used if seeking is required..
+    bool m_bCached;
   };
 }
 

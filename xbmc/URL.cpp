@@ -161,7 +161,8 @@ CURL::CURL(const CStdString& strURL)
     || m_strProtocol.Equals("daap")
     || m_strProtocol.Equals("plugin")
     || m_strProtocol.Equals("hdhomerun")
-    || m_strProtocol.Equals("rtsp"))
+    || m_strProtocol.Equals("rtsp")
+    || m_strProtocol.Equals("zip"))
   {
     int iOptions = strURL.find_first_of("?;#", iPos);
     if (iOptions >= 0 )
