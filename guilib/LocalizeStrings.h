@@ -55,8 +55,8 @@ protected:
   typedef std::map<DWORD, CStdString>::const_iterator ciStrings;
   typedef std::map<DWORD, CStdString>::iterator       iStrings;
 
-  static const DWORD block_start = 0xf0000000;
-  static const DWORD block_size = 1024;
+  static const DWORD block_start = 0xf000000;
+  static const DWORD block_size = 4096;
   std::map<CStdString, DWORD> m_blocks;
   typedef std::map<CStdString, DWORD>::iterator iBlocks;
 };
