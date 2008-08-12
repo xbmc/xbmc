@@ -17,6 +17,10 @@ VGMSTREAM * init_vgmstream_rws(STREAMFILE *streamFile) {
     /* check header */
     if (read_32bitBE(0x00,streamFile) != 0x0D080000)
 		goto fail;
+	
+	/* check if is used as container file */
+	if (read_32bitBE(0x38,streamFile) != 0x01000000)
+		goto fail;
 
     loop_flag = 0;
     channel_count = 2;
@@ -26,7 +30,7 @@ VGMSTREAM * init_vgmstream_rws(STREAMFILE *streamFile) {
     if (!vgmstream) goto fail;
 
 	/* fill in the vital statistics */
-    start_offset = 0x800;
+    start_offset = read_32bitLE(0x50,streamFile);
 	vgmstream->channels = channel_count;
     vgmstream->sample_rate = 44100;
     vgmstream->coding_type = coding_PSX;

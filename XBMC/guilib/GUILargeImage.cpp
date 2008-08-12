@@ -102,7 +102,6 @@ void CGUILargeImage::AllocResources()
   }
 
 
-
   CalculateSize();
 
   LoadDiffuseImage();
@@ -114,14 +113,14 @@ void CGUILargeImage::FreeResources()
   CGUIImage::FreeResources();
 }
 
-void CGUILargeImage::FreeTextures()
+void CGUILargeImage::FreeTextures(bool immediately /* = false */)
 {
   if (m_texturesAllocated)
   {
     if (m_usingBundledTexture)
       g_TextureManager.ReleaseTexture(m_strFileName);
     else
-      g_largeTextureManager.ReleaseImage(m_strFileName);
+      g_largeTextureManager.ReleaseImage(m_strFileName, immediately);
   }
 
   if (m_diffuseTexture)

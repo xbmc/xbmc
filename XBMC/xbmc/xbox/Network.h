@@ -54,7 +54,7 @@ public:
   bool WaitForSetup(DWORD timeout);
 
   bool IsEthernetConnected();
-  bool IsAvailable(bool wait = true);
+  bool IsAvailable(bool wait = false);
   bool IsInited() { return m_inited; }
 
   /* updates and returns current network state */

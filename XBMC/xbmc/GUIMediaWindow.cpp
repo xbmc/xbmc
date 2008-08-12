@@ -34,6 +34,7 @@
 #include "GUIWindowFileManager.h"
 #include "Favourites.h"
 #include "utils/LabelFormatter.h"
+#include "GUIDialogProgress.h"
 
 #include "guiImage.h"
 #include "GUIMultiImage.h"
@@ -128,6 +129,32 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
   if (action.wID == ACTION_CONTEXT_MENU && !m_viewControl.HasControl(GetFocusedControlID()))
   {
     OnPopupMenu(-1);
+    return true;
+  }
+
+  // live filtering
+  if (action.wID == ACTION_FILTER_CLEAR)
+  {
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS);
+    message.SetStringParam("");
+    OnMessage(message);
+    return true;
+  }
+  
+  if (action.wID == ACTION_BACKSPACE)
+  {
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 2); // 2 for delete
+    OnMessage(message);
+    return true;
+  }
+
+  if (action.wID >= ACTION_FILTER_SMS2 && action.wID <= ACTION_FILTER_SMS9)
+  {
+    CStdString filter;
+    filter.Format("%i", (int)(action.wID - ACTION_FILTER_SMS2 + 2));
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 1); // 1 for append
+    message.SetStringParam(filter);
+    OnMessage(message);
     return true;
   }
 
@@ -1215,4 +1242,32 @@ const CFileItemList& CGUIMediaWindow::CurrentDirectory() const
   return *m_vecItems;
 }
 
+bool CGUIMediaWindow::WaitForNetwork() const
+{
+  if (g_network.IsAvailable())
+    return true;
+
+  CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  if (!progress)
+    return true;
+
+  CURL url(m_vecItems->m_strPath);
+  CStdString displayPath;
+  url.GetURLWithoutUserDetails(displayPath);
+  progress->SetHeading(1040); // Loading Directory
+  progress->SetLine(1, displayPath);
+  progress->ShowProgressBar(false);
+  progress->StartModal();
+  while (!g_network.IsAvailable())
+  {
+    progress->Progress();
+    if (progress->IsCanceled())
+    {
+      progress->Close();
+      return false;
+    }
+  }
+  progress->Close();
+  return true;
+}
 

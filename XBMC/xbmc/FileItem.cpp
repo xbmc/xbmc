@@ -1999,6 +1999,8 @@ void CFileItemList::Stack()
         // the label may be in a different char set from the filename (eg over smb
         // the label is converted from utf8, but the filename is not)
         CUtil::GetVolumeFromFileName(item->GetLabel(), fileTitle, volumeNumber);
+        if (g_guiSettings.GetBool("filelists.hideextensions"))
+          CUtil::RemoveExtension(fileTitle);
         item->SetLabel(fileTitle);
         item->m_dwSize = size;
       }

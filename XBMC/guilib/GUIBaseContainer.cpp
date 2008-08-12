@@ -130,6 +130,19 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
       return true;
     }
     break;
+  case ACTION_JUMP_SMS2:
+  case ACTION_JUMP_SMS3:
+  case ACTION_JUMP_SMS4:
+  case ACTION_JUMP_SMS5:
+  case ACTION_JUMP_SMS6:
+  case ACTION_JUMP_SMS7:
+  case ACTION_JUMP_SMS8:
+  case ACTION_JUMP_SMS9:
+    {
+      OnJumpLetter(action.wID - ACTION_JUMP_SMS2 + 2);
+      return true;
+    }
+    break;
 
   default:
     if (action.wID)
@@ -290,6 +303,43 @@ void CGUIBaseContainer::OnPrevLetter()
       SelectItem(m_letterOffsets[i].first);
       return;
     }
+  }
+}
+
+void CGUIBaseContainer::OnJumpLetter(int letter)
+{
+  static const char letterMap[8][6] = { "ABC2", "DEF3", "GHI4", "JKL5", "MNO6", "PQRS7", "TUV8", "WXYZ9" };
+
+  // only 2..9 supported
+  if (letter < 2 || letter > 9 || !m_letterOffsets.size())
+    return;
+
+  const CStdString letters = letterMap[letter - 2];
+  // find where we currently are
+  int offset = CorrectOffset(m_offset, m_cursor);
+  unsigned int currentLetter = 0;
+  while (currentLetter + 1 < m_letterOffsets.size() && m_letterOffsets[currentLetter + 1].first <= offset)
+    currentLetter++;
+
+  // now switch to the next letter
+  CStdString current = m_letterOffsets[currentLetter].second;
+  int startPos = (letters.Find(current) + 1) % letters.size();
+  // now jump to letters[startPos], or another one in the same range if possible
+  int pos = startPos;
+  while (true)
+  {
+    // check if we can jump to this letter
+    for (unsigned int i = 0; i < m_letterOffsets.size(); i++)
+    {
+      if (m_letterOffsets[i].second == letters.Mid(pos, 1))
+      {
+        SelectItem(m_letterOffsets[i].first);
+        return;
+      }
+    }
+    pos = (pos + 1) % letters.size();
+    if (pos == startPos)
+      return;
   }
 }
 

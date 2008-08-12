@@ -67,7 +67,10 @@ namespace PYXBMC
     if (!XFILE::CFile::Exists(strSkinPath))
     {
       // Check for the matching folder for the skin in the fallback skins folder
-      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res,strFallbackPath + "\\skins\\" + CUtil::GetFileName(g_SkinInfo.GetBaseDir()));
+      CStdString basePath;
+      CUtil::AddFileToFolder(strFallbackPath, "skins", basePath);
+      CUtil::AddFileToFolder(basePath, CUtil::GetFileName(g_SkinInfo.GetBaseDir()), basePath);
+      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res,basePath);
       if (!XFILE::CFile::Exists(strSkinPath))
       {
         // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
@@ -84,7 +87,10 @@ namespace PYXBMC
       
       if (!XFILE::CFile::Exists(strSkinPath))
       {
-        strSkinPath = strFallbackPath + "\\skins\\"+ strDefault + "\\pal\\" + strXMLname;
+        CUtil::AddFileToFolder(strFallbackPath, "skins", strSkinPath);
+        CUtil::AddFileToFolder(strSkinPath, strDefault, strSkinPath);
+        CUtil::AddFileToFolder(strSkinPath, "PAL", strSkinPath);
+        CUtil::AddFileToFolder(strSkinPath, strXMLname, strSkinPath);
         res = PAL_4x3;
         if (!XFILE::CFile::Exists(strSkinPath))
         {
