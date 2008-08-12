@@ -64,11 +64,14 @@ struct XBOXDETECTION
 
 namespace MathUtils
 {
-
+  // GCC does something stupid with optimization on release builds if we try 
+  // to assert in these functions
   inline int round_int (double x)
   {
-    assert (x > static_cast <double>(INT_MIN / 2) - 1.0);
-    assert (x < static_cast <double>(INT_MAX / 2) + 1.0);
+    if (x + std::numeric_limits<double>::epsilon() <= static_cast<double>(INT_MIN / 2) - 1.0 + std::numeric_limits<double>::epsilon())
+      return INT_MIN;
+    if (x + std::numeric_limits<double>::epsilon() >= static_cast <double>(INT_MAX / 2) + 1.0 + std::numeric_limits<double>::epsilon())
+      return INT_MIN;
 
     const float round_to_nearest = 0.5f;
     int i;
@@ -96,8 +99,11 @@ namespace MathUtils
 
   inline int ceil_int (double x)
   {
-    assert (x > static_cast <double>(INT_MIN / 2) - 1.0);
-    assert (x < static_cast <double>(INT_MAX / 2) + 1.0);
+    if (x + std::numeric_limits<double>::epsilon() <= static_cast<double>(INT_MIN / 2) - 1.0 + std::numeric_limits<double>::epsilon())
+      return INT_MIN;
+    if (x + std::numeric_limits<double>::epsilon() >= static_cast <double>(INT_MAX / 2) + 1.0 + std::numeric_limits<double>::epsilon())
+      return INT_MIN;
+
     const float round_towards_p_i = -0.5f;
     int i;
 #ifndef _LINUX
@@ -124,8 +130,11 @@ namespace MathUtils
  
   inline int truncate_int(double x)
   {
-    assert (x > static_cast <double>(INT_MIN / 2) - 1.0);
-    assert (x < static_cast <double>(INT_MAX / 2) + 1.0);
+    if (x + std::numeric_limits<double>::epsilon() <= static_cast<double>(INT_MIN / 2) - 1.0 + std::numeric_limits<double>::epsilon())
+      return INT_MIN;
+    if (x + std::numeric_limits<double>::epsilon() >= static_cast <double>(INT_MAX / 2) + 1.0 + std::numeric_limits<double>::epsilon())
+      return INT_MIN;
+
     const float round_towards_m_i = -0.5f;
     int i;
 #ifndef _LINUX
