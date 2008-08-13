@@ -14,6 +14,3 @@ goom:
 
 $(LIB): $(OBJS) goom2k4-0/src/.libs/libgoom2.a
 	$(CXX) $(CFLAGS) -bundle -shared -undefined suppress -flat_namespace goom2k4-0/src/.libs/libgoom2.a $(CFLAGS) -o $(LIB) $(OBJS)
-
-
-
