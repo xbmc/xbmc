@@ -1078,8 +1078,10 @@ CProfile* CApplication::InitDirectoriesOSX()
     // Put the user data folder somewhere standard for the platform.
     str = getenv("HOME");
     str.append("/Library/Application Support/XBMC");
-    CIoSupport::RemapDriveLetter('T', str.c_str());
     CIoSupport::RemapDriveLetter('U', str.c_str());
+
+    str.append("/UserData");
+    CIoSupport::RemapDriveLetter('T', str.c_str());
 
     if (g_settings.m_vecProfiles.size()==0)
     {
