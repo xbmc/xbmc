@@ -65,27 +65,27 @@ void Cocoa_GL_SwapBuffers(void* theContext)
 
 int Cocoa_GetNumDisplays()
 {
-	CGDirectDisplayID displayArray[MAX_DISPLAYS];
-	CGDisplayCount    numDisplays;
-  
-	// Get the list of displays.
-	CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
-	return numDisplays;
+  CGDirectDisplayID displayArray[MAX_DISPLAYS];
+  CGDisplayCount    numDisplays;
+
+  // Get the list of displays.
+  CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
+  return numDisplays;
 }
 
 int Cocoa_GetDisplay(int screen)
 {
-	CGDirectDisplayID displayArray[MAX_DISPLAYS];
-	CGDisplayCount    numDisplays;
-  
-	// Get the list of displays.
-	CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
-	return( (int)displayArray[screen]);
+  CGDirectDisplayID displayArray[MAX_DISPLAYS];
+  CGDisplayCount    numDisplays;
+
+  // Get the list of displays.
+  CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
+  return( (int)displayArray[screen]);
 }
 
 void Cocoa_GetScreenResolutionOfAnotherScreen(int screen, int* w, int* h)
 {
-	CFDictionaryRef mode = CGDisplayCurrentMode( (CGDirectDisplayID)Cocoa_GetDisplay(screen));
+  CFDictionaryRef mode = CGDisplayCurrentMode( (CGDirectDisplayID)Cocoa_GetDisplay(screen));
   CFNumberGetValue(CFDictionaryGetValue(mode, kCGDisplayWidth), kCFNumberSInt32Type, w);
   CFNumberGetValue(CFDictionaryGetValue(mode, kCGDisplayHeight), kCFNumberSInt32Type, h);
 }
@@ -308,6 +308,7 @@ void* Cocoa_GL_GetWindowPixelFormat()
     NSOpenGLPFAWindow,
     NSOpenGLPFANoRecovery,
     NSOpenGLPFAAccelerated,
+    NSOpenGLPFADepthSize, 8,
     //NSOpenGLPFAColorSize, 32,
     //NSOpenGLPFAAlphaSize, 8,
     0
@@ -324,6 +325,7 @@ void* Cocoa_GL_GetFullScreenPixelFormat(int screen)
     NSOpenGLPFAFullScreen,
     NSOpenGLPFANoRecovery,
     NSOpenGLPFAAccelerated,
+    NSOpenGLPFADepthSize, 8,
     NSOpenGLPFAScreenMask,
     CGDisplayIDToOpenGLDisplayMask((CGDirectDisplayID)Cocoa_GetDisplay(screen)),
     0
@@ -381,11 +383,11 @@ void Cocoa_GL_ReplaceSDLWindowContext()
 
 int Cocoa_DimDisplayNow()
 {
-	io_registry_entry_t r = IORegistryEntryFromPath(kIOMasterPortDefault, "IOService:/IOResources/IODisplayWrangler");
-	if(!r) return 1;
-	int err = IORegistryEntrySetCFProperty(r, CFSTR("IORequestIdle"), kCFBooleanTrue);
-	IOObjectRelease(r);
-	return err;
+  io_registry_entry_t r = IORegistryEntryFromPath(kIOMasterPortDefault, "IOService:/IOResources/IODisplayWrangler");
+  if(!r) return 1;
+  int err = IORegistryEntrySetCFProperty(r, CFSTR("IORequestIdle"), kCFBooleanTrue);
+  IOObjectRelease(r);
+  return err;
 }
 
 void Cocoa_UpdateSystemActivity()
@@ -408,4 +410,4 @@ int Cocoa_SleepSystem()
     return 3;
 
   return 0;
-}        
+}
