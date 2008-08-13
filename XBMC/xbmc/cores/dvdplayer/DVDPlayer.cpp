@@ -781,12 +781,7 @@ void CDVDPlayer::Process()
       ||  (m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.inited && m_CurrentVideo.id >= 0))
       {
         if(!m_caching && m_playSpeed == DVD_PLAYSPEED_NORMAL)
-        {
-          m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
-          m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
-          m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
-          m_caching = true;
-        }
+          SetCaching(true);
       }
     }  
 
@@ -1585,6 +1580,8 @@ void CDVDPlayer::HandleMessages()
         m_playSpeed = speed;
         m_caching = false;
         m_clock.SetSpeed(speed);
+        m_dvdPlayerAudio.SetSpeed(speed);
+        m_dvdPlayerVideo.SetSpeed(speed);
 
         // TODO - we really shouldn't pause demuxer 
         //        untill our buffers are somewhat filled
@@ -1654,8 +1651,6 @@ void CDVDPlayer::SetCaching(bool enabled)
 void CDVDPlayer::SetPlaySpeed(int speed)
 {
   m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed));
-  m_dvdPlayerAudio.SetSpeed(speed);
-  m_dvdPlayerVideo.SetSpeed(speed);
   SyncronizeDemuxer(100);
 }
 
@@ -1709,7 +1704,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
     return;
   }
 #endif
-  if (bLargeStep && GetChapterCount() > 1)
+  if (bLargeStep && GetChapterCount() > 0)
   {
     if(bPlus)
       SeekChapter(GetChapter() + 1);
@@ -1829,24 +1824,25 @@ float CDVDPlayer::GetPercentage()
   return GetTime() * 100 / (float)iTotalTime;
 }
 
+//This is how much audio is delayed to video, we count the oposite in the dvdplayer
 void CDVDPlayer::SetAVDelay(float fValue)
 {
-  m_dvdPlayerVideo.SetDelay( (fValue * DVD_TIME_BASE) ) ;
+  m_dvdPlayerVideo.SetDelay( - (fValue * DVD_TIME_BASE) ) ;
 }
 
 float CDVDPlayer::GetAVDelay()
 {
-  return m_dvdPlayerVideo.GetDelay() / (float)DVD_TIME_BASE;
+  return - m_dvdPlayerVideo.GetDelay() / (float)DVD_TIME_BASE;
 }
 
 void CDVDPlayer::SetSubTitleDelay(float fValue)
 {
-  m_dvdPlayerVideo.SetSubtitleDelay(-fValue * DVD_TIME_BASE);
+  m_dvdPlayerVideo.SetSubtitleDelay(fValue * DVD_TIME_BASE);
 }
 
 float CDVDPlayer::GetSubTitleDelay()
 {
-  return -m_dvdPlayerVideo.GetSubtitleDelay() / DVD_TIME_BASE;
+  return m_dvdPlayerVideo.GetSubtitleDelay() / DVD_TIME_BASE;
 }
 
 // priority: 1: libdvdnav, 2: external subtitles, 3: muxed subtitles
