@@ -63,9 +63,10 @@ void CGUISliderControl::Render()
     CStdString text;
     switch (m_iType)
     {
+    case SPIN_CONTROL_TYPE_FLOAT_ABS:
     case SPIN_CONTROL_TYPE_FLOAT:
       if (m_iInfoCode) m_fValue = (float)g_infoManager.GetInt(m_iInfoCode);
-      text.Format("%2.2f", m_fValue);
+      text.Format("%2.2f", m_iType==SPIN_CONTROL_TYPE_FLOAT_ABS?fabs(m_fValue):m_fValue);
 
       m_guiBackground.SetPosition(m_posX + m_controlOffsetX, m_posY + m_controlOffsetY);
 
@@ -174,6 +175,7 @@ void CGUISliderControl::Move(int iNumSteps)
 {
   switch (m_iType)
   {
+  case SPIN_CONTROL_TYPE_FLOAT_ABS:
   case SPIN_CONTROL_TYPE_FLOAT:
     m_fValue += m_fInterval * iNumSteps;
     if (m_fValue < m_fStart) m_fValue = m_fStart;
@@ -209,7 +211,7 @@ int CGUISliderControl::GetPercentage() const
 
 void CGUISliderControl::SetIntValue(int iValue)
 {
-  if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
+  if (m_iType == SPIN_CONTROL_TYPE_FLOAT || m_iType == SPIN_CONTROL_TYPE_FLOAT_ABS)
     m_fValue = (float)iValue;
   else if (m_iType == SPIN_CONTROL_TYPE_INT)
     m_iValue = iValue;
@@ -219,7 +221,7 @@ void CGUISliderControl::SetIntValue(int iValue)
 
 int CGUISliderControl::GetIntValue() const
 {
-  if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
+  if (m_iType == SPIN_CONTROL_TYPE_FLOAT || m_iType == SPIN_CONTROL_TYPE_FLOAT_ABS)
     return (int)m_fValue;
   else if (m_iType == SPIN_CONTROL_TYPE_INT)
     return m_iValue;
@@ -229,7 +231,7 @@ int CGUISliderControl::GetIntValue() const
 
 void CGUISliderControl::SetFloatValue(float fValue)
 {
-  if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
+  if (m_iType == SPIN_CONTROL_TYPE_FLOAT || m_iType == SPIN_CONTROL_TYPE_FLOAT_ABS)
     m_fValue = fValue;
   else if (m_iType == SPIN_CONTROL_TYPE_INT)
     m_iValue = (int)fValue;
@@ -239,7 +241,7 @@ void CGUISliderControl::SetFloatValue(float fValue)
 
 float CGUISliderControl::GetFloatValue() const
 {
-  if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
+  if (m_iType == SPIN_CONTROL_TYPE_FLOAT || m_iType == SPIN_CONTROL_TYPE_FLOAT_ABS)
     return m_fValue;
   else if (m_iType == SPIN_CONTROL_TYPE_INT)
     return (float)m_iValue;
@@ -254,7 +256,7 @@ void CGUISliderControl::SetFloatInterval(float fInterval)
 
 void CGUISliderControl::SetRange(int iStart, int iEnd)
 {
-  if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
+  if (m_iType == SPIN_CONTROL_TYPE_FLOAT || m_iType == SPIN_CONTROL_TYPE_FLOAT_ABS)
     SetFloatRange((float)iStart,(float)iEnd);
   else
   {
@@ -321,6 +323,7 @@ void CGUISliderControl::SetFromPosition(const CPoint &point)
   switch (m_iType)
   {
   case SPIN_CONTROL_TYPE_FLOAT:
+  case SPIN_CONTROL_TYPE_FLOAT_ABS:
     m_fValue = m_fStart + (m_fEnd - m_fStart) * fPercent;
     break;
 
@@ -378,6 +381,13 @@ CStdString CGUISliderControl::GetDescription() const
       description.Format("%2.2f", m_fValue);
     else
       description.Format(m_formatString.c_str(), m_fValue);
+  }
+  else if (m_iType == SPIN_CONTROL_TYPE_FLOAT_ABS)
+  {
+    if (m_formatString.IsEmpty())
+      description.Format("%2.2f", fabs(m_fValue));
+    else
+      description.Format(m_formatString.c_str(), fabs(m_fValue));
   }
   else if (m_iType == SPIN_CONTROL_TYPE_INT)
   {

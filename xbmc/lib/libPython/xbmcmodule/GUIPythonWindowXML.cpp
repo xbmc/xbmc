@@ -287,7 +287,7 @@ bool CGUIPythonWindowXML::LoadXML(const CStdString &strPath, const CStdString &s
     return false;
   }
   // load the strings in
-  int offset = LoadScriptStrings();
+  unsigned int offset = LoadScriptStrings();
 
   CStdString xml;
   char *buffer = new char[(unsigned int)file.GetLength()];
@@ -394,7 +394,7 @@ void CGUIPythonWindowXML::GetContextButtons(int itemNumber, CContextButtons &but
   // with out this method overriding the MediaWindow version, it will display 'Add to Favorites'
 }
 
-int CGUIPythonWindowXML::LoadScriptStrings()
+unsigned int CGUIPythonWindowXML::LoadScriptStrings()
 {
   // Path where the language strings reside
   CStdString pathToLanguageFile = m_scriptPath;
