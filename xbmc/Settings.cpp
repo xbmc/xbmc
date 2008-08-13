@@ -1663,32 +1663,8 @@ bool CSettings::LoadProfile(int index)
   //int iOldRes = g_guiSettings.GetInt("videoscreen.resolution");
   if (Load(bSourcesXML,bSourcesXML))
   {
-    CreateDirectory(g_settings.GetDatabaseFolder(), NULL);
-    CreateDirectory(g_settings.GetCDDBFolder().c_str(), NULL);
-
-    // Thumbnails/
-    CreateDirectory(g_settings.GetThumbnailsFolder().c_str(), NULL);
-    CreateDirectory(g_settings.GetMusicThumbFolder().c_str(), NULL);
-    CreateDirectory(g_settings.GetMusicArtistThumbFolder().c_str(), NULL);
-    CreateDirectory(g_settings.GetLastFMThumbFolder().c_str(), NULL);
-    CreateDirectory(g_settings.GetVideoThumbFolder().c_str(), NULL);
-    CreateDirectory(g_settings.GetBookmarksThumbFolder().c_str(), NULL);
-    CreateDirectory(g_settings.GetProgramsThumbFolder().c_str(), NULL);
-    CreateDirectory(g_settings.GetPicturesThumbFolder().c_str(), NULL);
+    g_settings.CreateProfileFolders();
     CreateDirectory(_P("P:\\visualisations"),NULL);
-    CLog::Log(LOGINFO, "  thumbnails folder:%s", g_settings.GetThumbnailsFolder().c_str());
-    for (unsigned int hex=0; hex < 16; hex++)
-    {
-      CStdString strHex;
-      strHex.Format("%x",hex);
-      CStdString strThumbLoc;
-      CUtil::AddFileToFolder(g_settings.GetPicturesThumbFolder(), strHex, strThumbLoc);
-      CreateDirectory(strThumbLoc.c_str(),NULL);
-      CUtil::AddFileToFolder(g_settings.GetMusicThumbFolder(), strHex, strThumbLoc);
-      CreateDirectory(strThumbLoc.c_str(),NULL);
-      CUtil::AddFileToFolder(g_settings.GetVideoThumbFolder(), strHex, strThumbLoc);
-      CreateDirectory(strThumbLoc.c_str(),NULL);
-    }
 
     // initialize our charset converter
     g_charsetConverter.reset();
@@ -2709,3 +2685,31 @@ CStdString CSettings::GetSettingsFile() const
   return _P(settings);
 }
 
+void CSettings::CreateProfileFolders()
+{
+  CreateDirectory(GetDatabaseFolder(), NULL);
+  CreateDirectory(GetCDDBFolder().c_str(), NULL);
+
+  // Thumbnails/
+  CreateDirectory(GetThumbnailsFolder().c_str(), NULL);
+  CreateDirectory(GetMusicThumbFolder().c_str(), NULL);
+  CreateDirectory(GetMusicArtistThumbFolder().c_str(), NULL);
+  CreateDirectory(GetLastFMThumbFolder().c_str(), NULL);
+  CreateDirectory(GetVideoThumbFolder().c_str(), NULL);
+  CreateDirectory(GetBookmarksThumbFolder().c_str(), NULL);
+  CreateDirectory(GetProgramsThumbFolder().c_str(), NULL);
+  CreateDirectory(GetPicturesThumbFolder().c_str(), NULL);
+  CLog::Log(LOGINFO, "  thumbnails folder:%s", GetThumbnailsFolder().c_str());
+  for (unsigned int hex=0; hex < 16; hex++)
+  {
+    CStdString strHex;
+    strHex.Format("%x",hex);
+    CStdString strThumbLoc;
+    CUtil::AddFileToFolder(GetPicturesThumbFolder(), strHex, strThumbLoc);
+    CreateDirectory(strThumbLoc.c_str(),NULL);
+    CUtil::AddFileToFolder(GetMusicThumbFolder(), strHex, strThumbLoc);
+    CreateDirectory(strThumbLoc.c_str(),NULL);
+    CUtil::AddFileToFolder(GetVideoThumbFolder(), strHex, strThumbLoc);
+    CreateDirectory(strThumbLoc.c_str(),NULL);
+  }
+}
