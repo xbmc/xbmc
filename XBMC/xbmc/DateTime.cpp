@@ -820,7 +820,7 @@ CStdString CDateTime::GetAsDBDateTime() const
   GetAsSystemTime(st);
 
   CStdString date;
-  date.Format("%04i-%02i-%02i %02i:%02i:%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMilliseconds, st.wSecond);
+  date.Format("%04i-%02i-%02i %02i:%02i:%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 
   return date;
 }
