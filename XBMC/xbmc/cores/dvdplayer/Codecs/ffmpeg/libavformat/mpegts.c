@@ -603,6 +603,25 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
                 language[2] = get8(&p, desc_end);
                 language[3] = 0;
                 break;
+            case REGISTRATION_DESCRIPTOR: /*MPEG-2 Registration descriptor */
+                {
+                    uint8_t bytes[4];
+                    bytes[0] = get8(&p, desc_end);
+                    bytes[1] = get8(&p, desc_end);
+                    bytes[2] = get8(&p, desc_end);
+                    bytes[3] = get8(&p, desc_end);
+
+                    if (stream_type == STREAM_TYPE_PRIVATE_DATA) {
+                        if(bytes[0] == 'A' && bytes[1] == 'C' &&
+                           bytes[2] == '-' && bytes[3] == '3')
+                            stream_type = STREAM_TYPE_AUDIO_AC3;
+
+                        if(bytes[0] == 'D' && bytes[1] == 'T' && bytes[2] == 'S' && 
+                          (bytes[3] == '1' || bytes[3] == '2' || bytes[3] == '3'))
+                            stream_type = STREAM_TYPE_AUDIO_DTS;
+                    }
+                    break;
+                }
             default:
                 break;
             }
@@ -1418,7 +1437,8 @@ static int64_t mpegts_get_pcr(AVFormatContext *s, int stream_index,
     pos = ((*ppos  + ts->raw_packet_size - 1 - ts->pos47) / ts->raw_packet_size) * ts->raw_packet_size + ts->pos47;
     if (find_next) {
         for(;;) {
-            url_fseek(s->pb, pos, SEEK_SET);
+            if (url_fseek(s->pb, pos, SEEK_SET) < 0)
+                return AV_NOPTS_VALUE;
             if (get_buffer(s->pb, buf, TS_PACKET_SIZE) != TS_PACKET_SIZE)
                 return AV_NOPTS_VALUE;
             if ((pcr_pid < 0 || (AV_RB16(buf + 1) & 0x1fff) == pcr_pid) &&
@@ -1432,7 +1452,8 @@ static int64_t mpegts_get_pcr(AVFormatContext *s, int stream_index,
             pos -= ts->raw_packet_size;
             if (pos < 0)
                 return AV_NOPTS_VALUE;
-            url_fseek(s->pb, pos, SEEK_SET);
+            if (url_fseek(s->pb, pos, SEEK_SET) < 0)
+                return AV_NOPTS_VALUE;
             if (get_buffer(s->pb, buf, TS_PACKET_SIZE) != TS_PACKET_SIZE)
                 return AV_NOPTS_VALUE;
             if ((pcr_pid < 0 || (AV_RB16(buf + 1) & 0x1fff) == pcr_pid) &&
