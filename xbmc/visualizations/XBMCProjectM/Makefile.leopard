@@ -1,15 +1,15 @@
-INCLUDES=-I. -I.. -I../../../XBMC/xbmc/linux -I../../../XBMC/xbmc -I../../../XBMC/guilib
+INCLUDES=-I. -I.. -I../../../xbmc/linux -I../../../xbmc -I../../../guilib -I../../../visualisations -I/opt/local/include
 SRCS=Main.cpp
-LIB=ProjectM.vis
+LIB=../../../visualisations/ProjectM.vis
 CFLAGS=-O3 -g
 
 default: vis
 
-include ../../../XBMC/Makefile.include
+include ../../../Makefile.include
 
 vis: Main.o
-	$(CXX) -bundle -shared -undefined suppress -flat_namespace $(CFLAGS) -o $(LIB) ./libprojectM/CMakeFiles/projectM.dir/*.o $(OBJS)
+	MACOSX_DEPLOYMENT_TARGET=10.4 CCFLAGS="-mmacosx-version-min=10.4" CXXFLAGS="-mmacosx-version-min=10.4" $(CXX) -bundle -shared -undefined suppress -flat_namespace $(CFLAGS) -o $(LIB) ./libprojectM/CMakeFiles/projectM.dir/*.o $(OBJS)
 
 projectm:
-	(unset CC; unset CXX; cd libprojectM; cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .;)
-	$(MAKE) -C libprojectM
+	(unset CC; unset CXX; cd libprojectM; MACOSX_DEPLOYMENT_TARGET=10.4 CCFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .;)
+	MACOSX_DEPLOYMENT_TARGET=10.4 CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" $(MAKE) -C libprojectM
