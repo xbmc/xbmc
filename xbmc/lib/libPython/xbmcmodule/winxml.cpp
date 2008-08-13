@@ -58,14 +58,16 @@ namespace PYXBMC
     new(&self->sFallBackPath) string();
     new(&self->vecControls) std::vector<Control*>();        
     self->iWindowId = -1;
-    PyObject* pyOXMLname, * pyOname;
-    PyObject * pyDName = NULL;
+    PyObject* pyOXMLname = NULL;
+    PyObject* pyOname = NULL;
+    PyObject* pyDName = NULL;
     bool bForceDefaultSkin = false;
 
     string strXMLname, strFallbackPath;
     string strDefault = "Default";
 
     if (!PyArg_ParseTuple(args, (char*)"OO|Ob", &pyOXMLname, &pyOname, &pyDName, &bForceDefaultSkin )) return NULL;
+
     PyGetUnicodeString(strXMLname, pyOXMLname);
     PyGetUnicodeString(strFallbackPath, pyOname);
     if (pyDName) PyGetUnicodeString(strDefault, pyDName);
@@ -77,7 +79,8 @@ namespace PYXBMC
     {
       // Check for the matching folder for the skin in the fallback skins folder
       CStdString basePath;
-      CUtil::AddFileToFolder(strFallbackPath, "skins", basePath);
+      CUtil::AddFileToFolder(strFallbackPath, "resources", basePath);
+      CUtil::AddFileToFolder(basePath, "skins", basePath);
       CUtil::AddFileToFolder(basePath, CUtil::GetFileName(g_SkinInfo.GetBaseDir()), basePath);
       strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res,basePath);
       if (!XFILE::CFile::Exists(strSkinPath))
@@ -90,13 +93,13 @@ namespace PYXBMC
 
     if (bForceDefaultSkin)
     {
-      bForceDefaultSkin = true;
       PyGetUnicodeString(strXMLname, pyOXMLname);
       strSkinPath = g_SkinInfo.GetSkinPath(strXMLname, &res, strFallbackPath + "\\skins\\" + strDefault);
 
       if (!XFILE::CFile::Exists(strSkinPath))
       {
-        CUtil::AddFileToFolder(strFallbackPath, "skins", strSkinPath);
+        CUtil::AddFileToFolder(strFallbackPath, "resources", strSkinPath);
+        CUtil::AddFileToFolder(strSkinPath, "skins", strSkinPath);
         CUtil::AddFileToFolder(strSkinPath, strDefault, strSkinPath);
         CUtil::AddFileToFolder(strSkinPath, "PAL", strSkinPath);
         CUtil::AddFileToFolder(strSkinPath, strXMLname, strSkinPath);
@@ -383,13 +386,19 @@ namespace PYXBMC
   PyDoc_STRVAR(windowXML__doc__,
     "WindowXML class.\n"
     "\n"
-    "WindowXML(self, XMLname, fallbackPath[, defaultskinname, forceFallback) -- Create a new WindowXML to rendered a xml onto it.\n"
+    "WindowXML(self, xmlFilename, scriptPath[, defaultSkin, forceFallback) -- Create a new WindowXML script.\n"
     "\n"
-    "XMLname         : string - the name of the xml file to look for.\n"
-    "fallbackPath    : string - the directory to fallback to if the xml doesn't exist in the current skin.\n"
-    "defaultskinname : [opt] string - name of the folder in the fallback path to look in for the xml. 'Default' is used if this is not set.\n"
-    "forceFallback   : [opt] boolean - if true then it will look only in the defaultskinname folder.\n"
-    );
+    "xmlFilename     : string - the name of the xml file to look for.\n"
+    "scriptPath      : string - path to script. used to fallback to if the xml doesn't exist in the current skin. (eg os.getcwd())\n"
+    "defaultSkin     : [opt] string - name of the folder in the skins path to look in for the xml. (default='Default')\n"
+    "forceFallback   : [opt] boolean - if true then it will look only in the defaultSkin folder. (default=False)\n"
+    "\n"
+    "*Note, skin folder structure is eg(resources/skins/Default/PAL)\n"
+    "\n"
+    "example:\n"
+    " - ui = GUI('script-AMT-main.xml', os.getcwd(), 'LCARS', True)\n"
+    "   ui.doModal()\n"
+    "   del ui\n");
 
   PyMethodDef WindowXML_methods[] = {
     {(char*)"addItem", (PyCFunction)WindowXML_AddItem, METH_VARARGS, addItem__doc__},
