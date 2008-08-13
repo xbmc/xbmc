@@ -236,6 +236,11 @@ void CGUIPythonWindowXML::SetCurrentListPosition(int item)
   m_viewControl.SetSelectedItem(item);
 }
 
+void CGUIPythonWindowXML::SetProperty(const CStdString& key, const CStdString& value)
+{
+  m_vecItems->SetProperty(key, value);
+}
+
 CFileItemPtr CGUIPythonWindowXML::GetListItem(int position)
 { 
   if (position < 0 || position >= m_vecItems->Size()) return CFileItemPtr();
