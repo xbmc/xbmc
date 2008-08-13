@@ -10,7 +10,7 @@
 #endif
 
 #ifdef __APPLE__
-#include <GL/gl.h>
+#include <OpenGL/gl.h>
 #endif
 
 #ifdef USE_DEVIL
