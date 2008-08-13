@@ -333,6 +333,53 @@ namespace PYXBMC
     return Py_BuildValue((char*)"l", listSize);
   }
 
+  // setProperty() method
+  PyDoc_STRVAR(setProperty__doc__,
+    "setProperty(key, value) -- Sets a container property, similar to an infolabel.\n"
+    "\n"
+    "key            : string - property name.\n"
+    "value          : string or unicode - value of property.\n"
+    "\n"
+    "*Note, Key is NOT case sensitive.\n"
+    "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "\n"
+    "example:\n"
+    "  - self.setProperty('Category', 'Newest')\n");
+
+  PyObject* WindowXML_SetProperty(WindowXML *self, PyObject *args, PyObject *kwds)
+  {
+    static const char *keywords[] = { "key", "value", NULL };
+    char *key = NULL;
+    PyObject *value = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"sO",
+      (char**)keywords,
+      &key,
+      &value))
+    {
+      return NULL;
+    }
+    if (!key || !value) return NULL;
+
+    CStdString uText;
+    if (!PyGetUnicodeString(uText, value, 1))
+      return NULL;
+
+    CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
+    CStdString lowerKey = key;
+
+    PyGUILock();
+    pwx->SetProperty(lowerKey.ToLower(), uText.c_str());
+    PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   PyDoc_STRVAR(windowXML__doc__,
     "WindowXML class.\n"
     "\n"
@@ -352,6 +399,7 @@ namespace PYXBMC
     {(char*)"getListItem", (PyCFunction)WindowXML_GetListItem, METH_VARARGS, getListItem__doc__},
     {(char*)"getListSize", (PyCFunction)WindowXML_GetListSize, METH_VARARGS, getListSize__doc__},
     {(char*)"clearList", (PyCFunction)WindowXML_ClearList, METH_VARARGS, clearList__doc__},
+    {(char*)"setProperty", (PyCFunction)WindowXML_SetProperty, METH_VARARGS|METH_KEYWORDS, setProperty__doc__},
     {NULL, NULL, 0, NULL}
   };
 // Restore code and data sections to normal.
