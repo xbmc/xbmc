@@ -126,8 +126,8 @@ void XBPyThread::Process()
   PyEval_ReleaseLock();
 
   if (!m_threadState) {
-	CLog::Log(LOGERROR,"Python thread: FAILED to get thread state!");
-	return;
+    CLog::Log(LOGERROR,"Python thread: FAILED to get thread state!");
+    return;
   }
 
   PyEval_AcquireLock();
@@ -179,7 +179,7 @@ void XBPyThread::Process()
       if (PyRun_SimpleFile(fp, source) == -1)
       {
         CLog::Log(LOGERROR, "Scriptresult: Error\n");
-        if (PyErr_Occurred())	PyErr_Print();
+        if (PyErr_Occurred()) PyErr_Print();
       }
       else CLog::Log(LOGINFO, "Scriptresult: Succes\n");
       fclose(fp);
@@ -201,7 +201,7 @@ void XBPyThread::Process()
 
   // when a script uses threads or timers - we have to wait for them to be over before we terminate the interpreter.
   // so first - release the lock and allow the threads to terminate.
-  
+
   ::Sleep(500);
   PyEval_AcquireLock();
 
