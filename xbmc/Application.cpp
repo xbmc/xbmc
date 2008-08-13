@@ -1208,34 +1208,9 @@ HRESULT CApplication::Initialize()
 
   CreateDirectory(g_settings.GetUserDataFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetProfileUserDataFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetDatabaseFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetCDDBFolder().c_str(), NULL);
+  g_settings.CreateProfileFolders();
 
-  // Thumbnails/
-  CreateDirectory(g_settings.GetThumbnailsFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetMusicThumbFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetMusicArtistThumbFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetLastFMThumbFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetVideoThumbFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetBookmarksThumbFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetProgramsThumbFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetGameSaveThumbFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetPicturesThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetProfilesThumbFolder().c_str(),NULL);
-  CreateDirectory(g_settings.GetVideoFanartFolder().c_str(),NULL);
-  CLog::Log(LOGINFO, "  thumbnails folder:%s", g_settings.GetThumbnailsFolder().c_str());
-  for (unsigned int hex=0; hex < 16; hex++)
-  {
-    CStdString strHex;
-    strHex.Format("%x",hex);
-    CStdString strThumbLoc;
-    CUtil::AddFileToFolder(g_settings.GetPicturesThumbFolder(), strHex, strThumbLoc);
-    CreateDirectory(strThumbLoc.c_str(),NULL);
-    CUtil::AddFileToFolder(g_settings.GetMusicThumbFolder(), strHex, strThumbLoc);
-    CreateDirectory(strThumbLoc.c_str(),NULL);
-    CUtil::AddFileToFolder(g_settings.GetVideoThumbFolder(), strHex, strThumbLoc);
-    CreateDirectory(strThumbLoc.c_str(),NULL);
-  }
 
   CreateDirectory(_P("Z:\\temp"), NULL); // temp directory for python and dllGetTempPathA
   CreateDirectory(_P("Q:\\scripts"), NULL);
