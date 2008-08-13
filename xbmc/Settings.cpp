@@ -1514,7 +1514,7 @@ void CSettings::LoadAdvancedSettings()
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
 }
 
-bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
+bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings /* = NULL */) const
 {
   TiXmlDocument xmlDoc;
   TiXmlElement xmlRootElement("settings");
@@ -1637,7 +1637,10 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 
   SaveCalibration(pRoot);
 
-  g_guiSettings.SaveXML(pRoot);
+  if (localSettings) // local settings to save
+    localSettings->SaveXML(pRoot);
+  else // save the global settings
+    g_guiSettings.SaveXML(pRoot);
 
   SaveSkinSettings(pRoot);
 
