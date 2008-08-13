@@ -366,7 +366,7 @@ public:
   bool LoadProfiles(const CStdString& strSettingsFile);
   bool SaveProfiles(const CStdString& strSettingsFile) const;
 
-  bool SaveSettings(const CStdString& strSettingsFile) const;
+  bool SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings = NULL) const;
 
   bool SaveSources();
 
