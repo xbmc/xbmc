@@ -74,8 +74,11 @@ namespace MathUtils
     if (x + std::numeric_limits<double>::epsilon() >= static_cast <double>(INT_MAX / 2) + 1.0 + std::numeric_limits<double>::epsilon())
       return INT_MIN;
 
-    const float round_to_nearest = 0.5f;
+    #ifndef __APPLE__
+        const float round_to_nearest = 0.5f;
+    #endif
     int i;
+    
 #ifndef _LINUX
     __asm
     {
@@ -86,14 +89,18 @@ namespace MathUtils
       sar i, 1
     }
 #else
-    __asm__ (
-        "fld %1\n\t"
-        "fadd %%st\n\t"
-        "fadd %%st(1)\n\t"
-        "fistpl %0\n\t"
-        "sarl $1, %0\n"
-        : "=m"(i) : "f"(x), "f"(round_to_nearest)
-    );
+    #ifdef __APPLE__
+        i = lrint(x);
+    #else
+        __asm__ (
+            "fld %1\n\t"
+            "fadd %%st\n\t"
+            "fadd %%st(1)\n\t"
+            "fistpl %0\n\t"
+            "sarl $1, %0\n"
+            : "=m"(i) : "f"(x), "f"(round_to_nearest)
+        );
+    #endif
 #endif
     return (i);
   }
@@ -105,8 +112,11 @@ namespace MathUtils
     if (x + std::numeric_limits<double>::epsilon() >= static_cast <double>(INT_MAX / 2) + 1.0 + std::numeric_limits<double>::epsilon())
       return INT_MIN;
 
-    const float round_towards_p_i = -0.5f;
+    #ifndef __APPLE__
+        const float round_towards_p_i = -0.5f;
+    #endif
     int i;
+    
 #ifndef _LINUX
     __asm
     {
@@ -117,14 +127,18 @@ namespace MathUtils
       sar i, 1
     }
 #else
-    __asm__ (
-        "fldl %1\n\t"
-        "fadd %%st\n\t"
-        "fsubr %%st(1)\n\t"
-        "fistpl %0\n\t"
-        "sarl $1, %0\n"
-        : "=m"(i) : "f"(x), "f"(round_towards_p_i)
-    );
+    #ifdef __APPLE__
+        i = ceil(x);
+    #else
+        __asm__ (
+            "fldl %1\n\t"
+            "fadd %%st\n\t"
+            "fsubr %%st(1)\n\t"
+            "fistpl %0\n\t"
+            "sarl $1, %0\n"
+            : "=m"(i) : "f"(x), "f"(round_towards_p_i)
+        );
+    #endif
 #endif
     return (-i);
   }
@@ -136,8 +150,11 @@ namespace MathUtils
     if (x + std::numeric_limits<double>::epsilon() >= static_cast <double>(INT_MAX / 2) + 1.0 + std::numeric_limits<double>::epsilon())
       return INT_MIN;
 
-    const float round_towards_m_i = -0.5f;
+    #ifndef __APPLE__
+        const float round_towards_m_i = -0.5f;
+    #endif
     int i;
+    
 #ifndef _LINUX
     __asm
     {
@@ -149,15 +166,19 @@ namespace MathUtils
       sar i, 1
     }
 #else
-    __asm__ (
-        "fldl %1\n\t"
-        "fadd %%st\n\t"
-        "fabs\n\t"
-        "fadd %%st(1)\n\t"
-        "fistpl %0\n\t"
-        "sarl $1, %0\n"
-        : "=m"(i) : "f"(x), "f"(round_towards_m_i)
-    );
+    #ifdef __APPLE__
+        i = (int)x;
+    #else
+        __asm__ (
+            "fldl %1\n\t"
+            "fadd %%st\n\t"
+            "fabs\n\t"
+            "fadd %%st(1)\n\t"
+            "fistpl %0\n\t"
+            "sarl $1, %0\n"
+            : "=m"(i) : "f"(x), "f"(round_towards_m_i)
+        );
+    #endif
 #endif
     if (x < 0)
       i = -i;
