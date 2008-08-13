@@ -226,7 +226,7 @@
   <string id="293">Browse for Subtitles</string>
   <string id="294">Create bookmark</string>
   <string id="296">Clear bookmarks</string>
-  <string id="297">Audio Delay</string>
+  <string id="297">Audio Offset</string>
   <string id="298">Bookmarks</string>
   <string id="303">Delay</string>
   <string id="304">Language</string>
@@ -1571,7 +1571,7 @@
   <string id="20182">Space</string>
   <string id="20183">Reload Skin</string>
   <string id="20184">Rotate using EXIF information</string>
-  <string id="20185">USE Poster View Styles for TV Shows</string>
+  <string id="20185">Use Poster View Styles for TV Shows</string>
   <string id="20186">Please Wait</string>
   <string id="20187">Backing up EEPROM</string>
   <string id="20188">Backing up BIOS</string>
@@ -1896,6 +1896,9 @@
   <string id="22001">Always update library in background</string>
   <string id="22002">- DNS Suffix</string>
   <string id="22003">Enable Edit and Decision Lists</string>
+  <string id="22004">Delayed by: %2.3fs</string>
+  <string id="22005">Ahead by: %2.3fs</string>
+  <string id="22006">Subtitle Offset</string>
 
   <string id="29999">Apply Flicker Filter Setting to Games</string>
 

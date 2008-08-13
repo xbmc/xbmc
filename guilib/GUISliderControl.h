@@ -3,8 +3,8 @@
 \brief 
 */
 
-#ifndef GUILIB_GUIsliderCONTROL_H
-#define GUILIB_GUIsliderCONTROL_H
+#ifndef GUILIB_GUISLIDERCONTROL_H
+#define GUILIB_GUISLIDERCONTROL_H
 
 #pragma once
 
@@ -31,9 +31,10 @@
 
 #include "guiImage.h"
 
-#define SPIN_CONTROL_TYPE_INT    1
-#define SPIN_CONTROL_TYPE_FLOAT  2
-#define SPIN_CONTROL_TYPE_TEXT   3
+#define SPIN_CONTROL_TYPE_INT       1
+#define SPIN_CONTROL_TYPE_FLOAT     2
+#define SPIN_CONTROL_TYPE_TEXT      3
+#define SPIN_CONTROL_TYPE_FLOAT_ABS 4
 
 /*!
  \ingroup controls

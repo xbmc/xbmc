@@ -53,7 +53,7 @@ public:
 protected:
   virtual void     GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool     LoadXML(const CStdString &strPath, const CStdString &strPathLower);
-  int              LoadScriptStrings();
+  unsigned int     LoadScriptStrings();
   void             ClearScriptStrings();
   virtual void     Update();
   void             SetupShares();
