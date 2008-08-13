@@ -404,6 +404,8 @@ unsigned int CGUIPythonWindowXML::LoadScriptStrings()
   // Path where the language strings reside
   CStdString pathToLanguageFile = m_scriptPath;
   CStdString pathToFallbackLanguageFile = m_scriptPath;
+  CUtil::AddFileToFolder(pathToLanguageFile, "resources", pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "resources", pathToFallbackLanguageFile);
   CUtil::AddFileToFolder(pathToLanguageFile, "language", pathToLanguageFile);
   CUtil::AddFileToFolder(pathToFallbackLanguageFile, "language", pathToFallbackLanguageFile);
   CUtil::AddFileToFolder(pathToLanguageFile, g_guiSettings.GetString("locale.language"), pathToLanguageFile);
