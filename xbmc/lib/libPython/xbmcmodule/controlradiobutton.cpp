@@ -367,10 +367,10 @@ namespace PYXBMC
   }
 
   PyMethodDef ControlRadioButton_methods[] = {
-    {(char*)"setSelected", (PyCFunction)ControlRadioButton_SetSelected, METH_KEYWORDS, setSelected__doc__},
+    {(char*)"setSelected", (PyCFunction)ControlRadioButton_SetSelected, METH_VARARGS|METH_KEYWORDS, setSelected__doc__},
     {(char*)"isSelected", (PyCFunction)ControlRadioButton_IsSelected, METH_VARARGS, isSelected__doc__},
-    {(char*)"setLabel", (PyCFunction)ControlRadioButton_SetLabel, METH_KEYWORDS, setLabel__doc__},
-    {(char*)"setRadioDimension", (PyCFunction)ControlRadioButton_SetRadioDimension, METH_KEYWORDS, setRadioDimension__doc__},
+    {(char*)"setLabel", (PyCFunction)ControlRadioButton_SetLabel, METH_VARARGS|METH_KEYWORDS, setLabel__doc__},
+    {(char*)"setRadioDimension", (PyCFunction)ControlRadioButton_SetRadioDimension, METH_VARARGS|METH_KEYWORDS, setRadioDimension__doc__},
     {NULL, NULL, 0, NULL}
   };
 
