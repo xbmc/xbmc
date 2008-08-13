@@ -619,8 +619,10 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   if (res==WINDOW || (m_Resolution != res))
   {
     Lock();
-    m_iScreenWidth = g_settings.m_ResInfo[res].iWidth;
+    m_iScreenWidth  = g_settings.m_ResInfo[res].iWidth;
     m_iScreenHeight = g_settings.m_ResInfo[res].iHeight;
+    m_Resolution    = res;
+
 #ifdef HAS_SDL_2D
     int options = SDL_HWSURFACE | SDL_DOUBLEBUF;
     if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
@@ -643,15 +645,13 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
       g_xrandr.SetMode(out, mode);
 #endif
-      
+
       rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
       // attach a GLX surface to the root window
       m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, rootWindow, false, false, false, g_advancedSettings.m_fullScreen);
       if (g_videoConfig.GetVSyncMode()==VSYNC_ALWAYS)
         m_screenSurface->EnableVSync();
-      //glEnable(GL_MULTISAMPLE);
-      SDL_WM_SetCaption("XBMC", NULL);
-      
+
       if (g_advancedSettings.m_fullScreen)
       {
         SetFullScreenRoot(true);
@@ -670,16 +670,12 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       }
     }
 
-#else
-#ifdef __APPLE__
-    // Make sure this gets set early.
-    m_Resolution = res;
-    
+#elif defined(__APPLE__)
     // Allow for fullscreen.
     bool needsResize = (m_screenSurface != 0);
     if (!m_screenSurface)
       m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, g_advancedSettings.m_fullScreen);
-    
+
     if (g_advancedSettings.m_fullScreen)
     {
       SetFullScreenRoot(true);
@@ -688,7 +684,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     {
       SetFullScreenRoot(false);
     }
-    
+
     if (needsResize)
       m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
 
@@ -700,23 +696,20 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     devmode.dmSize = sizeof(devmode);
     EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
     g_settings.m_ResInfo[res].fRefreshRate = (float)devmode.dmDisplayFrequency;
-#else
-    m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0);
 #endif
+
     SDL_WM_SetCaption("XBMC", NULL);
-#endif
-    
+
     {
       CSingleLock aLock(m_surfaceLock);
       m_surfaces[SDL_ThreadID()] = m_screenSurface;
     }
 
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-    
-    {
-      glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
-      glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
-    }
+
+    glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
+    glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
+
     glEnable(GL_TEXTURE_2D); 
     glEnable(GL_SCISSOR_TEST); 
 
