@@ -164,11 +164,9 @@ void XBPyThread::Process()
     PySys_SetArgv(argc, argv);
   }
   PySys_SetPath(path);
-#ifdef _LINUX
-  // Replace the : at the end with ; so it will be EXACTLY like the xbox version
-  strcpy(strrchr(sourcedir, PY_PATH_SEP), ";");
-#endif  
-  xbp_chdir(sourcedir); // XXX, there is a ';' at the end
+  // Remove the PY_PATH_SEP at the end
+  sourcedir[strlen(sourcedir)-1] = 0;
+  xbp_chdir(sourcedir);
 
   if (type == 'F')
   {
