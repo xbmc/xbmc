@@ -53,7 +53,6 @@ CDVDVideoCodecLibMpeg2::CDVDVideoCodecLibMpeg2()
   m_irffpattern = 0;
   m_bFilm = false;
   m_bIs422 = false;
-  m_bmpeg1 = false;
 }
 
 CDVDVideoCodecLibMpeg2::~CDVDVideoCodecLibMpeg2()
@@ -167,11 +166,6 @@ bool CDVDVideoCodecLibMpeg2::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
 {
   if (!m_dll.Load())
     return false;
-
-  if(hints.codec == CODEC_ID_MPEG1VIDEO)
-    m_bmpeg1 = true;
-  else
-    m_bmpeg1 = false;
 
 #ifdef __APPLE__
   m_dll.mpeg2_accel(MPEG2_ACCEL_X86_SSE3 | MPEG2_ACCEL_X86_SSE2 | MPEG2_ACCEL_X86_MMXEXT | MPEG2_ACCEL_X86_MMX);
@@ -456,13 +450,11 @@ void CDVDVideoCodecLibMpeg2::Reset()
 {
   CLog::Log(LOGDEBUG, "(%s)", __FUNCTION__);
 
-  if (m_pHandle) 
-  {
-    if(m_bmpeg1) /* sadly, libmpeg2 doesn't resync after a reset if we are playing mpeg1 files if we do a full reset */
-      m_dll.mpeg2_reset(m_pHandle, 0);
-    else
-      m_dll.mpeg2_reset(m_pHandle, 1);
-  }
+  /* we can't do a full reset here as then libmpeg2 doesn't search for all *
+   * start codes, but doesn't have enough state information to continue    *
+   * decoding. m_pHandle->sequence.width should be set to -1 on full reset */
+  if (m_pHandle)
+    m_dll.mpeg2_reset(m_pHandle, 0);
 
   ReleaseBuffer(NULL);
   m_pCurrentBuffer = NULL;
