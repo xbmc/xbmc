@@ -73,7 +73,7 @@ CSMB::~CSMB()
 }
 void CSMB::Deinit()
 {
-  CSingleLock(*this);
+  CSingleLock lock(*this);
 
   /* samba goes loco if deinited while it has some files opened */
   if (m_context)
@@ -100,7 +100,7 @@ void CSMB::Deinit()
 
 void CSMB::Init()
 {
-  CSingleLock(*this);
+  CSingleLock lock(*this);
   if (!m_context)
   {
     // setup our context
@@ -180,7 +180,7 @@ void CSMB::Init()
 void CSMB::Purge()
 {
 #ifndef _LINUX
-  CSingleLock(*this);
+  CSingleLock lock(*this);
   smbc_purge();
 #endif
 }
@@ -197,7 +197,7 @@ void CSMB::Purge()
  */
 void CSMB::PurgeEx(const CURL& url)
 {
-  CSingleLock(*this);
+  CSingleLock lock(*this);
   CStdString strShare = url.GetFileName().substr(0, url.GetFileName().Find('/'));
 
 #ifndef _LINUX
@@ -289,7 +289,7 @@ void CSMB::CheckIfIdle()
    worst case scenario is that m_OpenConnections could read 0 and then changed to 1 if this happens it will enter the if wich will lead to another check, wich is locked.  */
   if (m_OpenConnections == 0)
   { /* I've set the the maxiumum IDLE time to be 1 min and 30 sec. */
-    CSingleLock(*this);
+    CSingleLock lock(*this);
     if (m_OpenConnections == 0 /* check again - when locked */ && m_context != NULL && (timeGetTime() - m_LastActive) > 90000)
     {
       CLog::Log(LOGNOTICE, "Samba is idle. Closing the remaining connections");
@@ -307,12 +307,12 @@ void CSMB::SetActivityTime()
    This makes the idle timer not count if a movie is paused for example */
 void CSMB::AddActiveConnection()
 {
-  CSingleLock(*this);
+  CSingleLock lock(*this);
   m_OpenConnections++;
 }
 void CSMB::AddIdleConnection()
 {
-  CSingleLock(*this);
+  CSingleLock lock(*this);
   m_OpenConnections--;
   /* If we close a file we reset the idle timer so that we don't have any wierd behaviours if a user
      leaves the movie paused for a long while and then press stop */
