@@ -73,6 +73,8 @@ public:
 
   static void DrawText(CGUIFont *font, float x, float y, DWORD color, DWORD shadowColor, const CStdString &text, DWORD align);
   static void DrawOutlineText(CGUIFont *font, float x, float y, DWORD color, DWORD outlineColor, DWORD outlineWidth, const CStdString &text);
+  static void Filter(CStdString &text);
+
 protected:
   void ParseText(const CStdStringW &text, std::vector<DWORD> &parsedText);
   void WrapText(std::vector<DWORD> &text, float maxWidth);
@@ -95,6 +97,7 @@ private:
   static void AppendToUTF32(const CStdString &utf8, DWORD colStyle, std::vector<DWORD> &utf32);
   static void AppendToUTF32(const CStdStringW &utf16, DWORD colStyle, std::vector<DWORD> &utf32);
   static void DrawOutlineText(CGUIFont *font, float x, float y, const std::vector<DWORD> &colors, DWORD outlineColor, DWORD outlineWidth, const std::vector<DWORD> &text, DWORD align, float maxWidth);
+  static void ParseText(const CStdStringW &text, DWORD defaultStyle, std::vector<DWORD> &colors, std::vector<DWORD> &parsedText);
 
   static void utf8ToW(const CStdString &utf8, CStdStringW &utf16);
 };
