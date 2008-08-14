@@ -58,7 +58,7 @@ CSMB::~CSMB()
 }
 void CSMB::Deinit()
 {
-  CSingleLock(*this);
+  CSingleLock lock(*this);
 
   /* samba goes loco if deinited while it has some files opened */
   if (m_context)
@@ -78,7 +78,7 @@ void CSMB::Deinit()
 
 void CSMB::Init()
 {
-  CSingleLock(*this);
+  CSingleLock lock(*this);
   if (!m_context)
   {
     set_xbox_interface(g_network.m_networkinfo.ip, g_network.m_networkinfo.subnet);
@@ -127,7 +127,7 @@ void CSMB::Init()
 
 void CSMB::Purge()
 {
-  CSingleLock(*this);
+  CSingleLock lock(*this);
   smbc_purge();
 }
 
@@ -143,7 +143,7 @@ void CSMB::Purge()
  */
 void CSMB::PurgeEx(const CURL& url)
 {
-  CSingleLock(*this);
+  CSingleLock lock(*this);
   CStdString strShare = url.GetFileName().substr(0, url.GetFileName().Find('/'));
 
   if (m_strLastShare.length() > 0 && (m_strLastShare != strShare || m_strLastHost != url.GetHostName()))

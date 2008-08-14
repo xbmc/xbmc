@@ -45,8 +45,8 @@ namespace PYXBMC
     self = (Language*)type->tp_alloc(type, 0);
     if (!self) return NULL;
 
-    static const char *keywords[] = { "languagePath", "defaultLanguage", NULL };
-    char *cLanguagePath = NULL;
+    static const char *keywords[] = { "scriptPath", "defaultLanguage", NULL };
+    char *cScriptPath = NULL;
     char *cDefaultLanguage = NULL;
 
     // parse arguments
@@ -55,7 +55,7 @@ namespace PYXBMC
       kwds,
       (char*)"s|s",
       (char**)keywords,
-      &cLanguagePath,
+      &cScriptPath,
       &cDefaultLanguage
       ))
     {
@@ -64,7 +64,7 @@ namespace PYXBMC
     };
     self->pLanguage = new CLocalizeStrings();
 
-    CStdString languagePath = cLanguagePath;
+    CStdString languagePath = cScriptPath;
     CStdString languageFallbackPath = languagePath;
     CStdString defaultLanguage;
 
@@ -75,6 +75,8 @@ namespace PYXBMC
       defaultLanguage = cDefaultLanguage;
 
     // Path where the language strings reside
+    CUtil::AddFileToFolder(languagePath, "resources", languagePath);
+    CUtil::AddFileToFolder(languageFallbackPath, "resources", languageFallbackPath);
     CUtil::AddFileToFolder(languagePath, "language", languagePath);
     CUtil::AddFileToFolder(languageFallbackPath, "language", languageFallbackPath);
     CUtil::AddFileToFolder(languagePath, g_guiSettings.GetString("locale.language"), languagePath);
@@ -146,9 +148,9 @@ namespace PYXBMC
   PyDoc_STRVAR(language__doc__,
     "Language class.\n"
     "\n"
-    "Language(languagePath, defaultLanguage) -- Creates a new Language class.\n"
+    "Language(scriptPath, defaultLanguage) -- Creates a new Language class.\n"
     "\n"
-    "languagePath    : string - path to where language folder is.\n"
+    "scriptPath      : string - path to script. (eg os.getcwd())\n"
     "defaultLanguage : [opt] string - default language to fallback to. (default=English)\n"
     "\n"
     "*Note, language folder structure is eg(language/English/strings.xml)\n"
@@ -157,7 +159,7 @@ namespace PYXBMC
     "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
     "example:\n"
-    " - self.Language = xbmc.Language(os.path.join(os.getcwd().replace(';', ''), 'resources'))\n");
+    " - self.Language = xbmc.Language(os.getcwd())\n");
 
 // Restore code and data sections to normal.
 #ifndef __GNUC__
