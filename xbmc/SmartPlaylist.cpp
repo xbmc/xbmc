@@ -24,6 +24,7 @@
 #include "utils/log.h"
 #include "StringUtils.h"
 #include "FileSystem/SmartPlaylistDirectory.h"
+#include "FileSystem/File.h"
 #include "utils/CharsetConverter.h"
 #include "XMLUtils.h"
 #include "Database.h"
@@ -33,6 +34,7 @@
 
 using namespace std;
 using namespace DIRECTORY;
+using namespace XFILE;
 
 typedef struct
 {
@@ -615,9 +617,19 @@ CSmartPlaylist::CSmartPlaylist()
 
 TiXmlElement *CSmartPlaylist::OpenAndReadName(const CStdString &path)
 {
-  if (!m_xmlDoc.LoadFile(path))
+  CFileStream file;
+  if (!file.Open(path))
   {
-    CLog::Log(LOGERROR, "Error loading Smart playlist %s", path.c_str());
+    CLog::Log(LOGERROR, "Error loading Smart playlist %s (failed to read file)", path.c_str());
+    return NULL;
+  }
+
+  m_xmlDoc.Clear();
+  file >> m_xmlDoc;
+
+  if (m_xmlDoc.Error())
+  {
+    CLog::Log(LOGERROR, "Error loading Smart playlist (failed to parse xml: %s)", m_xmlDoc.ErrorDesc());
     return NULL;
   }
 
