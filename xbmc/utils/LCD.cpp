@@ -471,6 +471,7 @@ void ILCD::Render(LCD_MODE mode)
   while (outLine < 4 && inLine < m_lcdMode[mode].size())
   {
     CStdString utf8Line = m_lcdMode[mode][inLine++].GetLabel(0);
+    CGUITextLayout::Filter(utf8Line);
     if (!utf8Line.IsEmpty())
     {
       // convert to the user char set
