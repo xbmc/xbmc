@@ -1835,7 +1835,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     if ( strcmpi(strSkin.c_str(), "Project Mayhem III") != 0)
     {
       CLog::Log(LOGERROR, "failed to load home.xml for skin:%s, fallback to \"Project Mayhem III\" skin", strSkin.c_str());
-      LoadSkin("Project Mayhem III");
+      g_guiSettings.SetString("lookandfeel.skin", "Project Mayhem III");
+      LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
       return ;
     }
   }
