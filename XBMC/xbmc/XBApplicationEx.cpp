@@ -335,7 +335,8 @@ void CXBApplicationEx::ReadInput()
   g_Mouse.Update();
 
   SDL_Event event;
-  while (SDL_PollEvent(&event))
+  bool bProcessNextEvent = true;
+  while (bProcessNextEvent && SDL_PollEvent(&event))
   {
     switch(event.type)
     {
@@ -395,6 +396,11 @@ void CXBApplicationEx::ReadInput()
       break;
 #endif
     case SDL_KEYDOWN:
+      g_Keyboard.Update(event);
+      // don't handle any more messages in the queue until we've handled keydown,
+      // if a keyup is in the queue it will reset the keypress before it is handled.
+      bProcessNextEvent = false;
+      break;
     case SDL_KEYUP:
       g_Keyboard.Update(event);
       break;
