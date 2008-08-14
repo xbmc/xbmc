@@ -479,6 +479,10 @@
       <start>Close</start>
     </gamepad>
 
+    <keyboard>
+      <m>close</m>
+    </keyboard>
+
     <joystick name="Microsoft Xbox Controller S">
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
