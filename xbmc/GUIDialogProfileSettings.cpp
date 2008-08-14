@@ -333,11 +333,11 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
           CFile::Cache(g_settings.GetUserDataFolder()+"\\guisettings.xml",g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\guisettings.xml");
         else
         {
-          CGUISettings settings = g_guiSettings;
-          CGUISettings settings2;
-          g_guiSettings = settings2;
-          g_settings.SaveSettings(g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\guisettings.xml");
-          g_guiSettings = settings;
+          // create some new settings
+          CGUISettings localSettings;
+          CStdString path = CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), dialog->m_strDirectory);
+          path = CUtil::AddFileToFolder(path, "guisettings.xml");
+          g_settings.SaveSettings(path, &localSettings);
         }
       }
 

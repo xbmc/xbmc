@@ -49,6 +49,7 @@ public:
   void              SetCurrentListPosition(int item);
   void              SetCallbackWindow(PyObject *object);
   virtual bool      OnClick(int iItem);
+  void              SetProperty(const CStdString &strProperty, const CStdString &strValue);
 
 protected:
   virtual void     GetContextButtons(int itemNumber, CContextButtons &buttons);

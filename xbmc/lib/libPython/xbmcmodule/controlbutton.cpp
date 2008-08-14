@@ -276,9 +276,47 @@ namespace PYXBMC
     return Py_None;
   }
 
+  // getLabel() Method
+  PyDoc_STRVAR(getLabel__doc__,
+    "getLabel() -- Returns the text value for this label.\n"
+    "\n"
+    "example:\n"
+    "  - label = self.button.getLabel()\n");
+
+  PyObject* ControlButton_GetLabel(ControlButton *self, PyObject *args)
+  {
+    if (!self->pGUIControl) return NULL;
+
+    PyGUILock();
+    CStdString cLabel = ((CGUIButtonControl*) self->pGUIControl)->GetLabel();
+    PyGUIUnlock();
+
+    return Py_BuildValue((char*)"s", cLabel.c_str());
+  }
+
+  // getLabel2() Method
+  PyDoc_STRVAR(getLabel2__doc__,
+    "getLabel2() -- Returns the text value for this label.\n"
+    "\n"
+    "example:\n"
+    "  - label = self.button.getLabel2()\n");
+
+  PyObject* ControlButton_GetLabel2(ControlButton *self, PyObject *args)
+  {
+    if (!self->pGUIControl) return NULL;
+
+    PyGUILock();
+    CStdString cLabel = ((CGUIButtonControl*) self->pGUIControl)->GetLabel2();
+    PyGUIUnlock();
+
+    return Py_BuildValue((char*)"s", cLabel.c_str());
+  }
+
   PyMethodDef ControlButton_methods[] = {
-    {"setLabel", (PyCFunction)ControlButton_SetLabel, METH_KEYWORDS, setLabel__doc__},
-    {"setDisabledColor", (PyCFunction)ControlButton_SetDisabledColor, METH_VARARGS, setDisabledColor__doc__},
+    {(char*)"setLabel", (PyCFunction)ControlButton_SetLabel, METH_VARARGS|METH_KEYWORDS, setLabel__doc__},
+    {(char*)"setDisabledColor", (PyCFunction)ControlButton_SetDisabledColor, METH_VARARGS, setDisabledColor__doc__},
+    {(char*)"getLabel", (PyCFunction)ControlButton_GetLabel, METH_VARARGS, getLabel__doc__},
+    {(char*)"getLabel2", (PyCFunction)ControlButton_GetLabel2, METH_VARARGS, getLabel2__doc__},
     {NULL, NULL, 0, NULL}
   };
 

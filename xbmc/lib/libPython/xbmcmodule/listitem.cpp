@@ -645,18 +645,18 @@ namespace PYXBMC
   }
 
   PyMethodDef ListItem_methods[] = {
-    {"getLabel" , (PyCFunction)ListItem_GetLabel, METH_VARARGS, getLabel__doc__},
-    {"setLabel" , (PyCFunction)ListItem_SetLabel, METH_VARARGS, setLabel__doc__},
-    {"getLabel2", (PyCFunction)ListItem_GetLabel2, METH_VARARGS, getLabel2__doc__},
-    {"setLabel2", (PyCFunction)ListItem_SetLabel2, METH_VARARGS, setLabel2__doc__},
-    {"setIconImage", (PyCFunction)ListItem_SetIconImage, METH_VARARGS, setIconImage__doc__},
-    {"setThumbnailImage", (PyCFunction)ListItem_SetThumbnailImage, METH_VARARGS, setThumbnailImage__doc__},
-    {"select", (PyCFunction)ListItem_Select, METH_VARARGS, select__doc__},
-    {"isSelected", (PyCFunction)ListItem_IsSelected, METH_VARARGS, isSelected__doc__},
-    {"setInfo", (PyCFunction)ListItem_SetInfo, METH_KEYWORDS, setInfo__doc__},
-    {"setProperty", (PyCFunction)ListItem_SetProperty, METH_KEYWORDS, setProperty__doc__},
-    {"getProperty", (PyCFunction)ListItem_GetProperty, METH_KEYWORDS, getProperty__doc__},
-    {"addContextMenuItems", (PyCFunction)ListItem_AddContextMenuItems, METH_VARARGS, addContextMenuItems__doc__},
+    {(char*)"getLabel" , (PyCFunction)ListItem_GetLabel, METH_VARARGS, getLabel__doc__},
+    {(char*)"setLabel" , (PyCFunction)ListItem_SetLabel, METH_VARARGS, setLabel__doc__},
+    {(char*)"getLabel2", (PyCFunction)ListItem_GetLabel2, METH_VARARGS, getLabel2__doc__},
+    {(char*)"setLabel2", (PyCFunction)ListItem_SetLabel2, METH_VARARGS, setLabel2__doc__},
+    {(char*)"setIconImage", (PyCFunction)ListItem_SetIconImage, METH_VARARGS, setIconImage__doc__},
+    {(char*)"setThumbnailImage", (PyCFunction)ListItem_SetThumbnailImage, METH_VARARGS, setThumbnailImage__doc__},
+    {(char*)"select", (PyCFunction)ListItem_Select, METH_VARARGS, select__doc__},
+    {(char*)"isSelected", (PyCFunction)ListItem_IsSelected, METH_VARARGS, isSelected__doc__},
+    {(char*)"setInfo", (PyCFunction)ListItem_SetInfo, METH_VARARGS|METH_KEYWORDS, setInfo__doc__},
+    {(char*)"setProperty", (PyCFunction)ListItem_SetProperty, METH_VARARGS|METH_KEYWORDS, setProperty__doc__},
+    {(char*)"getProperty", (PyCFunction)ListItem_GetProperty, METH_VARARGS|METH_KEYWORDS, getProperty__doc__},
+    {(char*)"addContextMenuItems", (PyCFunction)ListItem_AddContextMenuItems, METH_VARARGS, addContextMenuItems__doc__},
     {NULL, NULL, 0, NULL}
   };
 
