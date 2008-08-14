@@ -188,7 +188,7 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   quality.AddEntry("Medium");
   quality.AddEntry("High");
   quality.AddEntry("Maximum");
-  if (g_configPM.useFBO)
+  if (g_configPM.textureSize == 2048)
   {
     quality.current = 3;
   }
@@ -338,8 +338,8 @@ extern "C" bool OnAction(long flags, void *param)
     }
     else if ( pindex == 3 ) // max
     {
-      g_configPM.useFBO = true;
-      g_configPM.textureSize = 1024;
+      g_configPM.useFBO = false;
+      g_configPM.textureSize = 2048;
     }
     projectM::writeConfig(g_configFile, g_configPM);
     globalPM = new projectM(g_configFile);

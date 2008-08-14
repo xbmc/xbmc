@@ -161,7 +161,7 @@ RenderTarget::RenderTarget(int texsize, int width, int height, bool use_fbo) : u
     /** If the viewport is larger, scale it up */
     mindim = width < height ? width : height;
     origtexsize = this->texsize;
-    this->texsize = nearestPower2( mindim, SCALE_MINIFY );      
+    this->texsize = nearestPower2( mindim, SCALE_MINIFY );
     this->texsize = origtexsize;  // ^-- ok, texsize is just ignored with this
   
 
@@ -194,7 +194,9 @@ RenderTarget::RenderTarget(int texsize, int width, int height, bool use_fbo) : u
 	int mindim = width < height ? width : height;
     int origtexsize = this->texsize;
     this->texsize = nearestPower2( mindim, SCALE_MINIFY );      
-    this->texsize = origtexsize; // ^-- ok, texsize is just ignored with this
+    if (!this>useFBO) {
+        this->texsize = origtexsize; // ^-- ok, texsize is just ignored with the previous assignment
+    }
     /* Create the texture that will be bound to the render this */
     /*
 
