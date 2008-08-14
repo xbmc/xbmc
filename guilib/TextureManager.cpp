@@ -560,6 +560,9 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
   else
     strPath = strTextureName;
 
+  if (strPath.IsEmpty())
+    return 0;
+
 #ifdef _DEBUG
   LARGE_INTEGER start;
   QueryPerformanceCounter(&start);
