@@ -2681,6 +2681,12 @@
 					RelativePath="..\..\xbmc\FileSystem\MultiPathDirectory.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\MultiPathFile.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\MultiPathFile.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\MusicDatabaseDirectory.cpp">
 				</File>
 				<File
