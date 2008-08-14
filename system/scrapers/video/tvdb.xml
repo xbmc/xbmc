@@ -39,7 +39,7 @@
 	<!-- 	input: 		$1=query string -->
 	<!-- 	returns: 	the url we should use to do the search -->
 	<CreateSearchUrl dest="3">
-		<RegExp input="$$1" output="http://www.thetvdb.com/api/GetSeries.php?seriesname=\1" dest="3">
+		<RegExp input="$$1" output="http://www.thetvdb.com/api/GetSeries.php?seriesname=\1&amp;language=$INFO[language]" dest="3">
 			<expression></expression>
 		</RegExp>
 	</CreateSearchUrl>
@@ -50,8 +50,8 @@
 			<expression noclean="1">&lt;Data&gt;(.*)&lt;/Data&gt;</expression>
 		</RegExp>
 		<RegExp input="$$4" output="&lt;results&gt;\1&lt;/results&gt;" dest="1">
-			<RegExp input="$$3" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url cache=&quot;\1.xml&quot;&gt;http://www.thetvdb.com/api/1D62F2F90030C444/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="4">
-				<expression repeat="yes">&lt;seriesid&gt;([0-9]*)&lt;/seriesid&gt;[^&lt;]*&lt;language&gt;[^&lt;]*&lt;/language&gt;[^&lt;]*&lt;SeriesName&gt;([^&lt;]*)&lt;/SeriesName&gt;</expression>
+			<RegExp input="$$3" output="&lt;entity&gt;&lt;title&gt;\3 (\2)&lt;/title&gt;&lt;url cache=&quot;\1.xml&quot;&gt;http://www.thetvdb.com/api/1D62F2F90030C444/series/\1/all/\2.zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="4">
+				<expression repeat="yes">&lt;seriesid&gt;([0-9]*)&lt;/seriesid&gt;[^&lt;]*&lt;language&gt;([^&lt;]*)&lt;/language&gt;[^&lt;]*&lt;SeriesName&gt;([^&lt;]*)&lt;/SeriesName&gt;</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
