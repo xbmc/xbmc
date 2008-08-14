@@ -1951,6 +1951,7 @@ void CFileItemList::Stack()
     CStdString fileName, filePath;
     CUtil::Split(item->m_strPath, filePath, fileName);
     CStdString fileTitle, volumeNumber;
+    // hmmm... should this use GetLabel() or fileName?
     if (CUtil::GetVolumeFromFileName(item->GetLabel(), fileTitle, volumeNumber))
     {
       vector<int> stack;
@@ -1963,17 +1964,18 @@ void CFileItemList::Stack()
         CFileItemPtr item2 = Get(j);
         CStdString fileName2, filePath2;
         CUtil::Split(item2->m_strPath, filePath2, fileName2);
+        // only do a stacking comparison if the first letter of the filename is the same
+        if (fileName2.at(0) != fileName.at(0))
+          break;
+
         CStdString fileTitle2, volumeNumber2;
+        // hmmm... should this use GetLabel() or fileName2?
         if (CUtil::GetVolumeFromFileName(item2->GetLabel(), fileTitle2, volumeNumber2))
         {
           if (fileTitle2.Equals(fileTitle))
           {
             stack.push_back(j);
             size += item2->m_dwSize;
-          }
-          else
-          {
-            break;
           }
         }
 
