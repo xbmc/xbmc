@@ -291,10 +291,11 @@ namespace PYXBMC
     if (!self->pGUIControl) return NULL;
 
     PyGUILock();
-    CStdString cLabel = ((CGUIButtonControl*) self->pGUIControl)->GetLabel();
+    CStdStringW label;
+    g_charsetConverter.utf8ToW(((CGUIButtonControl*) self->pGUIControl)->GetLabel(), label);
     PyGUIUnlock();
 
-    return Py_BuildValue((char*)"s", cLabel.c_str());
+    return Py_BuildValue((char*)"u", label.c_str());
   }
 
   // getLabel2() Method
@@ -309,10 +310,11 @@ namespace PYXBMC
     if (!self->pGUIControl) return NULL;
 
     PyGUILock();
-    CStdString cLabel = ((CGUIButtonControl*) self->pGUIControl)->GetLabel2();
+    CStdStringW label;
+    g_charsetConverter.utf8ToW(((CGUIButtonControl*) self->pGUIControl)->GetLabel2(), label);
     PyGUIUnlock();
 
-    return Py_BuildValue((char*)"s", cLabel.c_str());
+    return Py_BuildValue((char*)"u", label.c_str());
   }
 
   PyMethodDef ControlButton_methods[] = {
