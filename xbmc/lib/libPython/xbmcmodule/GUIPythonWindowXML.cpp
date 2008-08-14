@@ -236,6 +236,11 @@ void CGUIPythonWindowXML::SetCurrentListPosition(int item)
   m_viewControl.SetSelectedItem(item);
 }
 
+void CGUIPythonWindowXML::SetProperty(const CStdString& key, const CStdString& value)
+{
+  m_vecItems->SetProperty(key, value);
+}
+
 CFileItemPtr CGUIPythonWindowXML::GetListItem(int position)
 { 
   if (position < 0 || position >= m_vecItems->Size()) return CFileItemPtr();
@@ -399,6 +404,8 @@ unsigned int CGUIPythonWindowXML::LoadScriptStrings()
   // Path where the language strings reside
   CStdString pathToLanguageFile = m_scriptPath;
   CStdString pathToFallbackLanguageFile = m_scriptPath;
+  CUtil::AddFileToFolder(pathToLanguageFile, "resources", pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "resources", pathToFallbackLanguageFile);
   CUtil::AddFileToFolder(pathToLanguageFile, "language", pathToLanguageFile);
   CUtil::AddFileToFolder(pathToFallbackLanguageFile, "language", pathToFallbackLanguageFile);
   CUtil::AddFileToFolder(pathToLanguageFile, g_guiSettings.GetString("locale.language"), pathToLanguageFile);

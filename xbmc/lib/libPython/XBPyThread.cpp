@@ -134,7 +134,9 @@ void XBPyThread::Process()
     PySys_SetArgv(argc, argv);
   }
   PySys_SetPath(path);
-  xbp_chdir(sourcedir); // XXX, there is a ';' at the end
+  // Remove the PY_PATH_SEP at the end
+  sourcedir[strlen(sourcedir)-1] = 0;
+  xbp_chdir(sourcedir);
 
   if (type == 'F')
   {
@@ -145,7 +147,7 @@ void XBPyThread::Process()
       if (PyRun_SimpleFile(fp, source) == -1)
       {
         CLog::Log(LOGERROR, "Scriptresult: Error\n");
-        if (PyErr_Occurred())	PyErr_Print();
+        if (PyErr_Occurred()) PyErr_Print();
       }
       else CLog::Log(LOGINFO, "Scriptresult: Succes\n");
       fclose(fp);

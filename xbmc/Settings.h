@@ -96,6 +96,7 @@ public:
   bool LoadProfile(int index);
   bool SaveSettingsToProfile(int index);
   bool DeleteProfile(int index);
+  void CreateProfileFolders();
 
   VECSOURCES *GetSourcesFromType(const CStdString &type);
   CStdString GetDefaultSourceFromType(const CStdString &type);
@@ -350,7 +351,7 @@ public:
   bool LoadProfiles(const CStdString& strSettingsFile);
   bool SaveProfiles(const CStdString& strSettingsFile) const;
 
-  bool SaveSettings(const CStdString& strSettingsFile) const;
+  bool SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings = NULL) const;
 
   bool SaveSources();
 
