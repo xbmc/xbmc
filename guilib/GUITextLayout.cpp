@@ -205,18 +205,35 @@ void CGUITextLayout::SetText(const CStdStringW &text, float maxWidth)
     LineBreakText(parsedText);
 }
 
+void CGUITextLayout::Filter(CStdString &text)
+{
+  CStdStringW utf16;
+  utf8ToW(text, utf16);
+  vector<DWORD> colors;
+  vector<DWORD> parsedText;
+  ParseText(utf16, 0, colors, parsedText);
+  utf16.Empty();
+  for (unsigned int i = 0; i < parsedText.size(); i++)
+    utf16 += (WCHAR)(0xffff & parsedText[i]);
+  g_charsetConverter.wToUTF8(utf16, text);
+}
+
 void CGUITextLayout::ParseText(const CStdStringW &text, vector<DWORD> &parsedText)
 {
   if (!m_font)
     return;
+  ParseText(text, m_font->GetStyle(), m_colors, parsedText);
+}
 
+void CGUITextLayout::ParseText(const CStdStringW &text, DWORD defaultStyle, vector<DWORD> &colors, vector<DWORD> &parsedText)
+{
   // run through the string, searching for:
   // [B] or [/B] -> toggle bold on and off
   // [I] or [/I] -> toggle italics on and off
   // [COLOR ffab007f] or [/COLOR] -> toggle color on and off
   // [CAPS <option>] or [/CAPS] -> toggle capatilization on and off
 
-  DWORD currentStyle = m_font->GetStyle(); // start with the default font's style
+  DWORD currentStyle = defaultStyle; // start with the default font's style
   DWORD currentColor = 0;
 
   stack<DWORD> colorStack;
@@ -274,8 +291,8 @@ void CGUITextLayout::ParseText(const CStdStringW &text, vector<DWORD> &parsedTex
       size_t finish = text.Find(L']', pos + 5);
       if (on && finish != CStdString::npos)
       { // create new color
-        newColor = m_colors.size();
-        m_colors.push_back(g_colorManager.GetColor(text.Mid(pos + 5, finish - pos - 5)));
+        newColor = colors.size();
+        colors.push_back(g_colorManager.GetColor(text.Mid(pos + 5, finish - pos - 5)));
         colorStack.push(newColor);
       }
       else if (!on && finish == pos + 5)
