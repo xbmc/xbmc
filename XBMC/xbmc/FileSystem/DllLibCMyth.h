@@ -35,9 +35,11 @@ public:
   virtual cmyth_conn_t     conn_connect_event       (char *server, unsigned short port, unsigned buflen, int tcp_rcvbuf)=0;
   virtual cmyth_file_t     conn_connect_file        (cmyth_proginfo_t prog, cmyth_conn_t control, unsigned buflen, int tcp_rcvbuf)=0;
   virtual cmyth_file_t     conn_connect_path        (char* path, cmyth_conn_t control, unsigned buflen, int tcp_rcvbuf)=0;
+  virtual int              conn_connect_ring        (cmyth_recorder_t rec, unsigned buflen, int tcp_rcvbuf)=0;
   virtual cmyth_recorder_t conn_get_free_recorder   (cmyth_conn_t conn)=0;
   virtual cmyth_recorder_t conn_get_recorder_from_num(cmyth_conn_t conn, int num)=0;
   virtual int              conn_get_freespace       (cmyth_conn_t control,long long *total, long long *used)=0;
+  virtual int              conn_hung                (cmyth_conn_t control)=0;
 
   virtual cmyth_event_t    event_get                (cmyth_conn_t conn, char * data, int len)=0;
   virtual int              event_select             (cmyth_conn_t conn, struct timeval *timeout)=0;
@@ -105,8 +107,9 @@ public:
   virtual cmyth_timestamp_t proginfo_end            (cmyth_proginfo_t prog)=0;
   virtual cmyth_timestamp_t proginfo_rec_start      (cmyth_proginfo_t prog)=0;
   virtual cmyth_timestamp_t proginfo_rec_end        (cmyth_proginfo_t prog)=0;
+  virtual cmyth_timestamp_t proginfo_originalairdate(cmyth_proginfo_t prog)=0;
   virtual cmyth_proginfo_rec_status_t proginfo_rec_status(cmyth_proginfo_t prog)=0;
-  virtual cmyth_proginfo_t  proginfo_get_from_basename   (cmyth_conn_t control, const char* basename)=0;
+  virtual long              proginfo_card_id        (cmyth_proginfo_t prog)=0;
   virtual int               proginfo_delete_recording(cmyth_conn_t control, cmyth_proginfo_t prog)=0;
   virtual int               proginfo_stop_recording(cmyth_conn_t control, cmyth_proginfo_t prog)=0;
   virtual int               proginfo_forget_recording(cmyth_conn_t control, cmyth_proginfo_t prog)=0;
@@ -131,10 +134,12 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD4(cmyth_conn_t,        conn_connect_event,       (char *p1, unsigned short p2, unsigned p3, int p4))
   DEFINE_METHOD4(cmyth_file_t,        conn_connect_file,        (cmyth_proginfo_t p1, cmyth_conn_t p2, unsigned p3, int p4))
   DEFINE_METHOD4(cmyth_file_t,        conn_connect_path,        (char* p1, cmyth_conn_t p2, unsigned p3, int p4))
+  DEFINE_METHOD3(int,                 conn_connect_ring,        (cmyth_recorder_t p1, unsigned p2, int p3))
 
   DEFINE_METHOD1(cmyth_recorder_t,    conn_get_free_recorder,   (cmyth_conn_t p1))
   DEFINE_METHOD2(cmyth_recorder_t,    conn_get_recorder_from_num,(cmyth_conn_t p1, int p2))
   DEFINE_METHOD3(int,                 conn_get_freespace,       (cmyth_conn_t p1, long long *p2, long long *p3))
+  DEFINE_METHOD1(int,                 conn_hung,                (cmyth_conn_t p1))
 
   DEFINE_METHOD3(cmyth_event_t,       event_get,                (cmyth_conn_t p1, char * p2, int p3))
   DEFINE_METHOD2(int,                 event_select,             (cmyth_conn_t p1, struct timeval *p2))
@@ -200,7 +205,9 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD1(cmyth_timestamp_t,   proginfo_end,             (cmyth_proginfo_t p1))
   DEFINE_METHOD1(cmyth_timestamp_t,   proginfo_rec_start,       (cmyth_proginfo_t p1))
   DEFINE_METHOD1(cmyth_timestamp_t,   proginfo_rec_end,         (cmyth_proginfo_t p1))
+  DEFINE_METHOD1(cmyth_timestamp_t,   proginfo_originalairdate, (cmyth_proginfo_t p1))
   DEFINE_METHOD1(cmyth_proginfo_rec_status_t, proginfo_rec_status, (cmyth_proginfo_t p1))
+  DEFINE_METHOD1(long,                proginfo_card_id,         (cmyth_proginfo_t p1))
   DEFINE_METHOD2(cmyth_proginfo_t,    proginfo_get_from_basename,    (cmyth_conn_t p1, const char* p2))
   DEFINE_METHOD2(int,                 proginfo_delete_recording, (cmyth_conn_t p1, cmyth_proginfo_t p2))
   DEFINE_METHOD2(int,                 proginfo_stop_recording,  (cmyth_conn_t p1, cmyth_proginfo_t p2))
@@ -222,9 +229,11 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_conn_connect_event, conn_connect_event)
     RESOLVE_METHOD_RENAME(cmyth_conn_connect_file, conn_connect_file)
     RESOLVE_METHOD_RENAME(cmyth_conn_connect_path, conn_connect_path)
+    RESOLVE_METHOD_RENAME(cmyth_conn_connect_ring, conn_connect_ring)
     RESOLVE_METHOD_RENAME(cmyth_conn_get_free_recorder, conn_get_free_recorder)
     RESOLVE_METHOD_RENAME(cmyth_conn_get_recorder_from_num, conn_get_recorder_from_num)
     RESOLVE_METHOD_RENAME(cmyth_conn_get_freespace, conn_get_freespace)
+    RESOLVE_METHOD_RENAME(cmyth_conn_hung, conn_hung)
 
     RESOLVE_METHOD_RENAME(cmyth_event_get, event_get)
     RESOLVE_METHOD_RENAME(cmyth_event_select, event_select)
@@ -289,6 +298,8 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_proginfo_rec_start, proginfo_rec_start)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_rec_end, proginfo_rec_end)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_rec_status, proginfo_rec_status)
+    RESOLVE_METHOD_RENAME(cmyth_proginfo_card_id, proginfo_card_id)
+    RESOLVE_METHOD_RENAME(cmyth_proginfo_originalairdate, proginfo_originalairdate)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_get_from_basename, proginfo_get_from_basename)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_delete_recording, proginfo_delete_recording)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_stop_recording, proginfo_stop_recording)

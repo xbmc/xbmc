@@ -59,7 +59,7 @@ bool CTVDatabase::CreateTables()
     m_pDS->exec("CREATE UNIQUE INDEX ix_bouquetlinksource ON Bouquets (idBouquet, idSource)\n");
 
     CLog::Log(LOGINFO, "TV: Creating Channels table");
-    m_pDS->exec("CREATE TABLE Channels (idSource integer, idBouquet integer, idChannel integer primary key, CallSign text, Name text,"
+    m_pDS->exec("CREATE TABLE Channels (idSource integer, idBouquet integer, idChannel integer primary key, CallSign text, Name text, "
                 "Number integer, PlayCount integer, HasSettings boolean)\n");
 
     CLog::Log(LOGINFO, "TV: Creating Programmes table");
@@ -67,25 +67,25 @@ bool CTVDatabase::CreateTables()
                 /*"StreamPIDs text, StreamTypes text, StreamNames text)*/"\n");
 
     CLog::Log(LOGINFO, "TV: Creating GuideData table");
-    m_pDS->exec("CREATE TABLE GuideData (idSource integer, idBouquet integer, idChannel integer, idProgramme integer,"
-                "idCategory integer, Subtitle text, Description text, EpisodeID text, SeriesID text, StartTime datetime,"
-                "EndTime datetime, Year string)"
+    m_pDS->exec("CREATE TABLE GuideData (idSource integer, idBouquet integer, idChannel integer, idProgramme integer, "
+                "idCategory integer, Subtitle text, Description text, EpisodeID text, SeriesID text, StartTime datetime, "
+                "EndTime datetime, Year string, idUniqueBroadcast integer primary key)"
                 /*"StreamPIDs text, StreamTypes text, StreamNames text)*/"\n");
     m_pDS->exec("CREATE UNIQUE INDEX idx_UniqueBroadcast on GuideData(idProgramme, idChannel, idBouquet, StartTime desc)\n");
 
     CLog::Log(LOGINFO, "TV: Creating ChannelSettings table");
-    m_pDS->exec("CREATE TABLE ChannelSettings ( idSource integer, idChannel integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer,"
-      "ViewMode integer, ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
-      "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
-      "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer,"
+    m_pDS->exec("CREATE TABLE ChannelSettings ( idSource integer, idChannel integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer, "
+      "ViewMode integer, ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer, "
+      "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer, "
+      "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer, "
       "CropRight integer, CropTop integer, CropBottom integer)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_ChannelSettings ON ChannelSettings (idChannel)\n");
 
     CLog::Log(LOGINFO, "TV: Creating ProgrammeSettings table");
-    m_pDS->exec("CREATE TABLE ProgrammeSettings ( idSource integer, idChannel integer, idProgramme integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer,"
-      "ViewMode integer, ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
-      "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
-      "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer,"
+    m_pDS->exec("CREATE TABLE ProgrammeSettings ( idSource integer, idChannel integer, idProgramme integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer, "
+      "ViewMode integer, ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer, "
+      "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer, "
+      "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer, "
       "CropRight integer, CropTop integer, CropBottom integer)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_ProgrammeSettings ON ProgrammeSettings (idProgramme)\n");
   }
@@ -136,14 +136,12 @@ bool CTVDatabase::FillEPG(const CStdString &source, const CStdString &bouquet, c
     if (programmeId < 0)
       return false;
 
-    CStdString SQL=FormatSQL("insert into GuideData (idSource, idBouquet, idChannel, idProgramme, idCategory,"
-                             "Subtitle, Description, EpisodeID, SeriesID, StartTime, EndTime)"
-                             "values ('%u', '%u', '%u', '%u', '%u', '%s', '%s', '%s', '%s', '%s', '%s')",
+    CStdString SQL=FormatSQL("insert into GuideData (idSource, idBouquet, idChannel, idProgramme, idCategory, "
+                             "Subtitle, Description, EpisodeID, SeriesID, StartTime, EndTime, idUniqueBroadcast) "
+                             "values ('%u', '%u', '%u', '%u', '%u', '%s', '%s', '%s', '%s', '%s', '%s', NULL)",
                              sourceId, bouquetId, channelId, programmeId, categoryId, progSubtitle.c_str(), progDescription.c_str(), episode.c_str(), 
                              series.c_str(), progStartTime.GetAsDBDateTime().c_str(), progEndTime.GetAsDBDateTime().c_str());
     m_pDS->exec(SQL.c_str());
-    long progId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-
     return true;
   }
   catch (...)
@@ -554,7 +552,7 @@ void CTVDatabase::GetChannels(bool freeToAirOnly, VECFILEITEMS &channels)
       pItem->SetLabel(m_pDS->fv("Name").get_asString());
       pItem->SetLabel2(m_pDS->fv("Callsign").get_asString());
       pItem->SetProperty("dbID", m_pDS->fv("idChannel").get_asInteger());
-      pItem->GetEPGInfoTag()->m_playCount = m_pDS->fv("PlayCount").get_asInteger();
+      pItem->SetProperty("PlayCount", m_pDS->fv("PlayCount").get_asInteger());
       pItem->SetProperty("HasSettings", m_pDS->fv("HasSettings").get_asBool());
       pItem->m_bIsFolder = true;
       pItem->m_bIsShareOrDrive = false;
@@ -594,7 +592,7 @@ bool CTVDatabase::GetProgrammesByChannelName(const CStdString &channel, VECFILEI
     gridEnd = end;
 
     CStdString SQL=FormatSQL("SELECT Bouquets.Name, Channels.Name, Channels.Number, Categories.Name, Programmes.Title, "
-      "GuideData.Subtitle, GuideData.Description, GuideData.StartTime, GuideData.EndTime, GuideData.EpisodeID, GuideData.SeriesID FROM GuideData "
+      "GuideData.Subtitle, GuideData.Description, GuideData.StartTime, GuideData.EndTime, GuideData.EpisodeID, GuideData.SeriesID, GuideData.idUniqueBroadcast FROM GuideData "
       "JOIN Bouquets ON Bouquets.idBouquet=GuideData.idBouquet "
       "JOIN Programmes ON Programmes.idProgramme=GuideData.idProgramme "
       "JOIN Channels ON Channels.idChannel=GuideData.idChannel "
@@ -603,7 +601,7 @@ bool CTVDatabase::GetProgrammesByChannelName(const CStdString &channel, VECFILEI
       "ORDER BY GuideData.StartTime;", channelId, gridStart.GetAsDBDateTime().c_str(), gridEnd.GetAsDBDateTime().c_str());    
     
     //run query
-    //CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, SQL.c_str());
+    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, SQL.c_str());
     if (!m_pDS->query(SQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -635,7 +633,7 @@ bool CTVDatabase::GetProgrammesByChannelName(const CStdString &channel, VECFILEI
     {
       CLog::Log(LOGDEBUG, "TEMP: Missed a program");
       CStdString SQL=FormatSQL("SELECT bouquets.Name, channels.Name, channels.Number, categories.Name, programmes.Title,"
-        "guidedata.Subtitle, guidedata.Description, guidedata.StartTime, guidedata.EndTime, GuideData.EpisodeID, GuideData.SeriesID FROM guidedata "
+        "guidedata.Subtitle, guidedata.Description, guidedata.StartTime, guidedata.EndTime, GuideData.EpisodeID, GuideData.SeriesID, GuideData.idUniqueBroadcast FROM guidedata "
         "JOIN bouquets ON bouquets.idBouquet=guidedata.idBouquet "
         "JOIN programmes ON programmes.idProgramme=guidedata.idProgramme "
         "JOIN channels ON channels.idChannel=guidedata.idChannel "
@@ -689,7 +687,7 @@ bool CTVDatabase::GetProgrammesByEpisodeID(const CStdString& episodeID, CFileIte
    
 
     CStdString SQL= FormatSQL("SELECT Bouquets.Name, Channels.Name, Channels.Number, Categories.Name, Programmes.Title, "
-                              "GuideData.Subtitle, GuideData.Description, GuideData.StartTime, GuideData.EndTime, GuideData.EpisodeID, GuideData.SeriesID FROM GuideData "
+                              "GuideData.Subtitle, GuideData.Description, GuideData.StartTime, GuideData.EndTime, GuideData.EpisodeID, GuideData.SeriesID, GuideData.idUniqueBroadcast FROM GuideData "
                               "JOIN Bouquets ON Bouquets.idBouquet=GuideData.idBouquet "
                               "JOIN Programmes ON Programmes.idProgramme=GuideData.idProgramme "
                               "JOIN Channels ON Channels.idChannel=GuideData.idChannel "
@@ -756,7 +754,7 @@ bool CTVDatabase::GetProgrammesBySubtitle(const CStdString& subtitle, CFileItemL
 
 
     CStdString SQL= FormatSQL("SELECT Bouquets.Name, Channels.Name, Channels.Number, Categories.Name, Programmes.Title, "
-      "GuideData.Subtitle, GuideData.Description, GuideData.StartTime, GuideData.EndTime, GuideData.EpisodeID, GuideData.SeriesID FROM GuideData "
+      "GuideData.Subtitle, GuideData.Description, GuideData.StartTime, GuideData.EndTime, GuideData.EpisodeID, GuideData.SeriesID, , GuideData.idUniqueBroadcast FROM GuideData "
       "JOIN Bouquets ON Bouquets.idBouquet=GuideData.idBouquet "
       "JOIN Programmes ON Programmes.idProgramme=GuideData.idProgramme "
       "JOIN Channels ON Channels.idChannel=GuideData.idChannel "
@@ -926,8 +924,6 @@ long CTVDatabase::GetCategoryId(const CStdString& category)
 
 CEPGInfoTag CTVDatabase::GetUniqueBroadcast(auto_ptr<Dataset> &pDS)
 {
-  CEPGInfoTag details;
-
   // Dataset columns:
   // 0:  Bouquets.Name
   // 1:  Channels.Name
@@ -940,7 +936,9 @@ CEPGInfoTag CTVDatabase::GetUniqueBroadcast(auto_ptr<Dataset> &pDS)
   // 8:  GuideData.EndTime
   // 9:  GuideData.EpisodeID
   //10:  GuideData.SeriesID
+  //11:  GuideData.UniqueBroadcastID
 
+  CEPGInfoTag details(m_pDS->fv(11).get_asLong());
 
   details.m_strBouquet = m_pDS->fv(0).get_asString();
   details.m_strChannel = m_pDS->fv(1).get_asString();
@@ -964,7 +962,7 @@ CEPGInfoTag CTVDatabase::GetUniqueBroadcast(auto_ptr<Dataset> &pDS)
 void CTVDatabase::FillProperties(CFileItem* programme)
 {
   /* Fills the properties map with properties needed for skins */
-  programme->SetProperty("uniqueID", programme->GetEPGInfoTag()->GetID());
+  programme->SetProperty("uniqueID", programme->GetEPGInfoTag()->GetDbID());
   programme->SetProperty("Bouquet", programme->GetEPGInfoTag()->m_strBouquet);
   programme->SetProperty("Channel", programme->GetEPGInfoTag()->m_strChannel);
   programme->SetProperty("Genre", programme->GetEPGInfoTag()->m_strGenre);

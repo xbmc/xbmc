@@ -100,10 +100,10 @@ bool CGUIWindowEPGProgInfo::OnMessage(CGUIMessage& message)
 void CGUIWindowEPGProgInfo::SetProgramme(const CFileItem *item)
 {
   *m_progItem = *item;
-  ClearLists();
+ 
   // get list of like items
+  ClearLists();
   m_database.Open();
-
   m_database.GetProgrammesByEpisodeID(m_progItem->GetEPGInfoTag()->m_episodeID, m_likeList, true);    // episodeID matches rank higher == appear first in the list
   m_database.GetProgrammesBySubtitle(m_progItem->GetEPGInfoTag()->m_strPlotOutline, m_likeList, true);
 
@@ -112,7 +112,7 @@ void CGUIWindowEPGProgInfo::SetProgramme(const CFileItem *item)
     /// remove the search item from results
     for (int i = 0; i < m_likeList->GetObjectCount(); i++)
     {
-      if (m_likeList[i].GetEPGInfoTag()->GetID() == item->GetEPGInfoTag()->GetID())
+      if (m_likeList[i].GetEPGInfoTag()->GetDbID() == item->GetEPGInfoTag()->GetDbID())
       {
         m_likeList->Remove(i);
         break; // only one match can be found

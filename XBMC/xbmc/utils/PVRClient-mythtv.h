@@ -31,7 +31,7 @@ class CCMythSession;
 class CCriticalSection;
 class DllLibCMyth;
 
-class PVRClientMythTv : public IPVRClient, CThread
+class PVRClientMythTv : public IPVRClient, IEventListener, CThread
 {
 public:
   PVRClientMythTv(DWORD sourceID, IPVRClientCallback *callback);
@@ -58,22 +58,23 @@ public:
   virtual bool GetConflicting(CFileItemList &results);
 
   /* recordings completed/started */
-  /*virtual bool GetAllRecordings(CFileItemList &results);*/
+  virtual bool GetAllRecordings(CFileItemList &results);
 
   /* individual programme operations */
-  /*virtual void UpdateRecStatus(CFileItem &programme);*/
 
 private:
   CStdString GetValue(char* str)           { return m_session->GetValue(str); }
   int        GetValue(int integer)         { return m_session->GetValue(integer); }
   CDateTime  GetValue(cmyth_timestamp_t t) { return m_session->GetValue(t); }
-  CEPGInfoTag FillProgramme(cmyth_proginfo_t programme);
+  CEPGInfoTag FillProgrammeTag(cmyth_proginfo_t programme);
+  bool       UpdateRecording(CFileItem &item, cmyth_proginfo_t info);
+  int        GetRecordingStatus(cmyth_proginfo_t prog);
 
   bool m_isConnected;
   DWORD m_sourceID;
   IPVRClientCallback*   m_manager;
 
-  XFILE::CCMythSession* m_session;
+  XFILE::CCMythSession* m_mythEvents;
   DllLibCMyth*          m_dll;
   cmyth_database_t      m_database;
   cmyth_recorder_t      m_recorder;

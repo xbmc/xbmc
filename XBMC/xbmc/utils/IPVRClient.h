@@ -29,7 +29,7 @@ typedef enum {
   PVR_EVENT_RECORDING_LIST_CHANGE,
   PVR_EVENT_SCHEDULE_CHANGE,
   PVR_EVENT_DONE_RECORDING,
-} PVREVENT;
+} PVR_EVENTS;
 
 class IPVRClientCallback
 {
@@ -60,7 +60,7 @@ public:
   virtual bool GetConflicting(CFileItemList &results)=0; // schedules that are flagged as conflicting with each over
 
   /* recordings completed/started */
-  /*virtual bool GetAllRecordings(CFileItemList &results)=0;*/
+  virtual bool GetAllRecordings(CFileItemList &results)=0;
 
   /* individual programme operations */
   //virtual void UpdateRecStatus(CFileItem &programme)=0; // updates the recording status of this Fileitem (used in dialogs)

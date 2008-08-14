@@ -35,8 +35,6 @@ CEPGInfoTag::CEPGInfoTag(DWORD sourceID)
 
 void CEPGInfoTag::Reset()
 {
-  m_sourceID = -1;
-  m_uniqueBroadcastID = -1;
   m_strSource = "";
   m_strBouquet = "";
   m_strChannel = "";
@@ -47,7 +45,7 @@ void CEPGInfoTag::Reset()
   m_audioProps.clear();
   m_subTypes.clear();
   m_commFree = false;
-  m_recstatus = rsUnknown;
+  m_recStatus = rsUnknown;
   m_availableStatus = asAvailable;
 
   CVideoInfoTag::Reset();

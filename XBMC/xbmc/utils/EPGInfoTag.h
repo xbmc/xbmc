@@ -23,32 +23,26 @@
 #include "VideoInfoTag.h"
 #include "DateTime.h"
 
-/* Enums from mythTV source code */
+/* Enums from mythTV & libcmyth source code */
 
 enum RecStatus {
-  rsFailed = -9,
-  rsTunerBusy = -8,
-  rsLowDiskSpace = -7,
-  rsCancelled = -6,
-  rsMissed = -5,
-  rsAborted = -4,
+  rsDeleted = -5,
+  rsStopped = -4,
   rsRecorded = -3,
   rsRecording = -2,
   rsWillRecord = -1,
   rsUnknown = 0,
   rsDontRecord = 1,
-  rsPreviousRecording = 2,
+  rsPrevRecording = 2,
   rsCurrentRecording = 3,
-  rsEarlierShowing = 4,
+  rsEarlierRecording = 4,
   rsTooManyRecordings = 5,
-  rsNotListed = 6,
+  rsCancelled = 6,
   rsConflict = 7,
   rsLaterShowing = 8,
   rsRepeat = 9,
-  rsInactive = 10,
-  rsNeverRecord = 11,
-  rsOffLine = 12,
-  rsOtherShowing = 13
+  rsLowDiskspace = 11,
+  rsTunerBusy = 12
 };
 
 enum CommFlagStatus {
@@ -103,10 +97,10 @@ class CEPGInfoTag : public CVideoInfoTag
 public:
   CEPGInfoTag(long uniqueBroadcastID);
   CEPGInfoTag(DWORD sourceID);
-  
+  CEPGInfoTag() { Reset(); };
   void Reset();
   const long GetDbID() const { return m_uniqueBroadcastID; };
-  const long GetSourceID() const { return m_sourceID; };
+  const DWORD GetSourceID() const { return m_sourceID; };
 
   CStdString    m_strSource;
   CStdString    m_strBouquet;
@@ -128,7 +122,7 @@ public:
 
   bool          m_commFree;
 
-  RecStatus         m_recstatus;
+  RecStatus         m_recStatus;
   CommFlagStatus    m_commFlagStatus;
   TranscodingStatus m_transCodeStatus;
   AvailableStatus   m_availableStatus;

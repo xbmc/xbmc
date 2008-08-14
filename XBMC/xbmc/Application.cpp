@@ -1450,6 +1450,17 @@ HRESULT CApplication::Initialize()
       scanner->StartScanning("");
   }
 
+  if (g_guiSettings.GetBool("pvrmanager.enabled"))
+    StartPVRManager();
+
+  //if (g_guiSettings.GetBool("pvrmanager.updateonstartup"))
+  //{
+  //  CLog::Log(LOGNOTICE, "Updating TV Guide on startup");
+  //  CGUIDialogEPGScan *scanner = (CGUIDialogEPGScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_EPG_SCAN);
+  //  if (scanner && !scanner->IsScanning())
+  //    scanner->StartScanning("");
+  //}
+
   m_slowTimer.StartZero();
 
   CLog::Log(LOGNOTICE, "initialize done");

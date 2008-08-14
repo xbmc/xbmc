@@ -211,11 +211,11 @@ void CGUIWindowEPG::GetGridData()
 
 void CGUIWindowEPG::UpdateGridItems()
 {
-  if (m_bDisplayEmptyDatabaseMessage)
-    return; // no schedule data available
-
   /// if db still valid no point in doing this each time
   GetGridData();
+
+  if (m_bDisplayEmptyDatabaseMessage)
+    return; // no schedule data available
 
   // get a pointer to the grid container
   m_guideGrid = (CGUIEPGGridContainer*)GetControl(CONTROL_EPGGRID);
