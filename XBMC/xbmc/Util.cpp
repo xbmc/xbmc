@@ -1898,20 +1898,19 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
 void CUtil::Tokenize(const CStdString& path, vector<CStdString>& tokens, const string& delimiters)
 {
   // Tokenize ripped from http://www.linuxselfhelp.com/HOWTO/C++Programming-HOWTO-7.html
-  string str = _P(path);
   // Skip delimiters at beginning.
-  string::size_type lastPos = str.find_first_not_of(delimiters, 0);
+  string::size_type lastPos = path.find_first_not_of(delimiters, 0);
   // Find first "non-delimiter".
-  string::size_type pos = str.find_first_of(delimiters, lastPos);
+  string::size_type pos = path.find_first_of(delimiters, lastPos);
 
   while (string::npos != pos || string::npos != lastPos)
   {
     // Found a token, add it to the vector.
-    tokens.push_back(str.substr(lastPos, pos - lastPos));
+    tokens.push_back(path.substr(lastPos, pos - lastPos));
     // Skip delimiters.  Note the "not_of"
-    lastPos = str.find_first_not_of(delimiters, pos);
+    lastPos = path.find_first_not_of(delimiters, pos);
     // Find next "non-delimiter"
-    pos = str.find_first_of(delimiters, lastPos);
+    pos = path.find_first_of(delimiters, lastPos);
   }
 }
 
