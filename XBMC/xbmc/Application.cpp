@@ -3187,25 +3187,6 @@ bool CApplication::ProcessMouse()
   action.fAmount1 = (float) m_guiPointer.GetPosX();
   action.fAmount2 = (float) m_guiPointer.GetPosY();
 
-  // send mouse event to the music + video overlays, if they're enabled
-  if (m_gWindowManager.IsOverlayAllowed())
-  {
-    // if we're playing a movie
-    if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
-    {
-      // then send the action to the video overlay window
-      CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_VIDEO_OVERLAY);
-      if (overlay)
-        overlay->OnAction(action);
-    }
-    else if ( IsPlayingAudio() )
-    {
-      // send message to the audio overlay window
-      CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_MUSIC_OVERLAY);
-      if (overlay)
-        overlay->OnAction(action);
-    }
-  }
   return m_gWindowManager.OnAction(action);
 }
 
@@ -3268,24 +3249,6 @@ bool CApplication::ProcessHTTPApiButtons()
           g_Mouse.bDoubleClick[keyHttp.GetRightTrigger()-1]=true;
         action.fAmount1 = keyHttp.GetLeftThumbX();
         action.fAmount2 = keyHttp.GetLeftThumbY();
-        // send mouse event to the music + video overlays, if they're enabled
-        if (m_gWindowManager.IsOverlayAllowed())
-        {
-          if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
-          {
-            // then send the action to the video overlay window
-            CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_VIDEO_OVERLAY);
-            if (overlay)
-              overlay->OnAction(action);
-          }
-          else if ( IsPlayingAudio() )
-          {
-            // send message to the audio overlay window
-            CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_MUSIC_OVERLAY);
-            if (overlay)
-              overlay->OnAction(action);
-          }
-        }
         m_gWindowManager.OnAction(action);
       }
       else
@@ -3354,27 +3317,6 @@ bool CApplication::ProcessEventServer(float frameTime)
       point.y = action.fAmount2;
       g_Mouse.SetLocation(point, true);
 
-      // TODO: the following lines of code need to be abstracted as they are
-      // reused in multiple functions
-      // send mouse event to the music + video overlays, if they're enabled
-      if (m_gWindowManager.IsOverlayAllowed())
-      {
-        // if we're playing a movie
-        if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
-        {
-          // then send the action to the video overlay window
-          CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_VIDEO_OVERLAY);
-          if (overlay)
-            overlay->OnAction(action);
-        }
-        else if ( IsPlayingAudio() )
-        {
-          // send message to the audio overlay window
-          CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_MUSIC_OVERLAY);
-          if (overlay)
-            overlay->OnAction(action);
-        }
-      }
       return m_gWindowManager.OnAction(action);
     }
   }
