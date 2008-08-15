@@ -65,7 +65,7 @@ namespace PYXBMC
     PyObject* pyDName = NULL;
     bool bForceDefaultSkin = false;
 
-    string strXMLname, strFallbackPath;
+    string strXMLname, strFallbackPath, strFinalPath;
     string strDefault = "Default";
 
     if (!PyArg_ParseTuple(args, (char*)"OO|Ob", &pyOXMLname, &pyOname, &pyDName, &bForceDefaultSkin )) return NULL;
@@ -94,20 +94,22 @@ namespace PYXBMC
           // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
           bForceDefaultSkin = true;
         }
-        strXMLname = strSkinPath;
+        strFinalPath = strSkinPath;
       }
     }
 
     if (bForceDefaultSkin)
     {
       CSkinInfo skinInfo;
-      PyGetUnicodeString(strXMLname, pyOXMLname);
       CStdString basePath;
       CUtil::AddFileToFolder(strFallbackPath, "resources", basePath);
       CUtil::AddFileToFolder(basePath, "skins", basePath);
       CUtil::AddFileToFolder(basePath, strDefault, basePath);
 
       skinInfo.Load(basePath);
+      // if no skin.xml file exists default to PAL_4x3 and PAL_16x9
+      if (skinInfo.GetDefaultResolution() == INVALID)
+        skinInfo.SetDefaults();
       strSkinPath = skinInfo.GetSkinPath(strXMLname, &res, basePath);
 
       if (!XFILE::CFile::Exists(strSkinPath))
@@ -115,11 +117,11 @@ namespace PYXBMC
         PyErr_SetString(PyExc_TypeError, "XML File for Window is missing");
         return NULL;
       }
-      strXMLname = strSkinPath;
+      strFinalPath = strSkinPath;
     }
 
     self->sFallBackPath = strFallbackPath;
-    self->sXMLFileName = strXMLname;
+    self->sXMLFileName = strFinalPath;
     self->bUsingXML = true;
 
     // create new GUIWindow
