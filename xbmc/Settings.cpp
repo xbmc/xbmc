@@ -409,7 +409,7 @@ void CSettings::ConvertHomeVar(CStdString& strText)
   strText = szText;
   // unroll any relative paths used
   std::vector<CStdString> token;
-  CUtil::Tokenize(strText,token,"\\");
+  CUtil::Tokenize(_P(strText),token,"\\");
   if (token.size() > 1)
   {
     strText = "";
