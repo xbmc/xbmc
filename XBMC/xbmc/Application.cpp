@@ -3310,7 +3310,7 @@ bool CApplication::ProcessEventServer(float frameTime)
   {
     CAction action;
     action.wID = ACTION_MOUSE;
-    if (es->GetMousePos(action.fAmount1, action.fAmount2))
+    if (es->GetMousePos(action.fAmount1, action.fAmount2) && g_Mouse.IsEnabled())
     {
       CPoint point;
       point.x = action.fAmount1;
