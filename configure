@@ -15089,7 +15089,7 @@ fi;
 
 if [ -d xbmc/visualizations/Goom/goom2k4-0 ]; then
   pushd xbmc/visualizations/Goom/goom2k4-0
-  ./configure --disable-shared --enable-static --with-pic
+  ./configure --disable-shared --enable-static --with-pic --add-missing
   if [ $? -ne 0 ]; then
     popd
     { { echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/Goom/goom2k4-0 failed to configure" >&5
