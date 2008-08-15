@@ -164,6 +164,7 @@
       <escape>PreviousMenu</escape>
       <i>Info</i>
       <menu>ContextMenu</menu>
+      <c>ContextMenu</c>
       <space>Pause</space>
       <x>Stop</x>
       <period>SkipNext</period>
@@ -252,7 +253,6 @@
     <keyboard>
       <space>Highlight</space>
       <delete>Delete</delete>
-      <c>Copy</c>
       <m>Move</m>
       <r>Rename</r>
     </keyboard>
