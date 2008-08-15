@@ -343,7 +343,7 @@ BOOL MoveFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName)
   }
 
   // try the stupid
-  if (CopyFile(lpExistingFileName,lpNewFileName))
+  if (CopyFile(lpExistingFileName,lpNewFileName,TRUE))
   {
     if (DeleteFile(lpExistingFileName))
       return 1;
