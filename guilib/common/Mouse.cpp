@@ -164,6 +164,12 @@ bool CMouse::IsActive() const
   return m_mouseState.active && m_mouseEnabled;
 }
 
+// IsEnabled - returns true if mouse is enabled
+bool CMouse::IsEnabled() const
+{
+  return m_mouseEnabled;
+}
+
 // turns off mouse activation
 void CMouse::SetInactive()
 {
