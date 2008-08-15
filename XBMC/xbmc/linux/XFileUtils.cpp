@@ -342,6 +342,15 @@ BOOL MoveFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName)
     }
   }
 
+  // try the stupid
+  if (CopyFile(lpExistingFileName,lpNewFileName))
+  {
+    if (DeleteFile(lpExistingFileName))
+      return 1;
+    // failed to remove original file - delete the copy we made
+    DeleteFile(lpNewFileName);
+  }
+
   return 0;
 }
 
