@@ -281,7 +281,7 @@ namespace PYXBMC
 
   // getLabel() Method
   PyDoc_STRVAR(getLabel__doc__,
-    "getLabel() -- Returns the text value for this label.\n"
+    "getLabel() -- Returns the buttons label as a unicode string.\n"
     "\n"
     "example:\n"
     "  - label = self.button.getLabel()\n");
@@ -300,7 +300,7 @@ namespace PYXBMC
 
   // getLabel2() Method
   PyDoc_STRVAR(getLabel2__doc__,
-    "getLabel2() -- Returns the text value for this label.\n"
+    "getLabel2() -- Returns the buttons label2 as a unicode string.\n"
     "\n"
     "example:\n"
     "  - label = self.button.getLabel2()\n");
