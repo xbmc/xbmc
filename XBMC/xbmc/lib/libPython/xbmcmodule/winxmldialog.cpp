@@ -65,7 +65,7 @@ namespace PYXBMC
     PyObject* pyDName = NULL;
     bool bForceDefaultSkin = false;
 
-    string strXMLname, strFallbackPath, strFinalPath;
+    string strXMLname, strFallbackPath;
     string strDefault = "Default";
 
     if (!PyArg_ParseTuple(args, (char*)"OO|Ob", &pyOXMLname, &pyOname, &pyDName, &bForceDefaultSkin )) return NULL;
@@ -94,7 +94,6 @@ namespace PYXBMC
           // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
           bForceDefaultSkin = true;
         }
-        strFinalPath = strSkinPath;
       }
     }
 
@@ -117,11 +116,10 @@ namespace PYXBMC
         PyErr_SetString(PyExc_TypeError, "XML File for Window is missing");
         return NULL;
       }
-      strFinalPath = strSkinPath;
     }
 
     self->sFallBackPath = strFallbackPath;
-    self->sXMLFileName = strFinalPath;
+    self->sXMLFileName = strSkinPath;
     self->bUsingXML = true;
 
     // create new GUIWindow
