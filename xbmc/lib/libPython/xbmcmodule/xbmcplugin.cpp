@@ -442,7 +442,7 @@ namespace PYXBMC
     PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_ALBUM", SORT_METHOD_ALBUM);
     PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_ALBUM_IGNORE_THE", SORT_METHOD_ALBUM_IGNORE_THE);
     PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_GENRE", SORT_METHOD_GENRE);
-    PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_VIDEO_YEAR", SORT_METHOD_VIDEO_YEAR);
+    PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_VIDEO_YEAR", SORT_METHOD_YEAR);
     PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_VIDEO_RATING", SORT_METHOD_VIDEO_RATING);
     PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_PROGRAM_COUNT", SORT_METHOD_PROGRAM_COUNT);
     PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_PLAYLIST_ORDER", SORT_METHOD_PLAYLIST_ORDER);

@@ -206,6 +206,9 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       else
         AddSortMethod(SORT_METHOD_ARTIST, 557, LABEL_MASKS("%F", "", strAlbumLeft, strAlbumRight));  // Filename, empty | Userdefined, Userdefined
 
+      // year
+      AddSortMethod(SORT_METHOD_YEAR, 562, LABEL_MASKS("%F", "", strAlbumLeft, strAlbumRight));
+
       SetSortMethod(g_stSettings.m_viewStateMusicNavAlbums.m_sortMethod);
 
       SetViewAsControl(g_stSettings.m_viewStateMusicNavAlbums.m_viewMode);
@@ -448,7 +451,7 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
           AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 556, LABEL_MASKS("%T", "%Y"));  // Filename, Duration | Foldername, empty
         else
           AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%Y"));  // Filename, Duration | Foldername, empty
-        AddSortMethod(SORT_METHOD_VIDEO_YEAR,562, LABEL_MASKS("%T", "%Y"));
+        AddSortMethod(SORT_METHOD_YEAR,562, LABEL_MASKS("%T", "%Y"));
         if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
         {
           AddSortMethod(SORT_METHOD_ARTIST_IGNORE_THE,557, LABEL_MASKS("%A - %T", "%Y"));
