@@ -105,17 +105,17 @@ void CGUIWindowEPGProgInfo::SetProgramme(const CFileItem *item)
   ClearLists();
   m_database.Open();
   m_database.GetProgrammesByEpisodeID(m_progItem->GetEPGInfoTag()->m_episodeID, m_likeList, true);    // episodeID matches rank higher == appear first in the list
-  m_database.GetProgrammesBySubtitle(m_progItem->GetEPGInfoTag()->m_strPlotOutline, m_likeList, true);
+  /*m_database.GetProgrammesBySubtitle(m_progItem->GetEPGInfoTag()->m_strPlotOutline, m_likeList, true);*/
 
   if (!m_likeList->IsEmpty())
   {
     /// remove the search item from results
-    for (int i = 0; i < m_likeList->GetObjectCount(); i++)
+    for (int i = 0; i < m_likeList->GetFileCount(); i++)
     {
-      if (m_likeList[i].GetEPGInfoTag()->GetDbID() == item->GetEPGInfoTag()->GetDbID())
+      if (m_likeList->Get(i)->GetEPGInfoTag()->GetDbID() == m_progItem->GetEPGInfoTag()->GetDbID())
       {
         m_likeList->Remove(i);
-        break; // only one match can be found
+        break; // only one match can ever be found
       }
     }
   }

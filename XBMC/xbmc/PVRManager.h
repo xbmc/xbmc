@@ -26,16 +26,19 @@
 
 #include <vector>
 
+typedef std::map< DWORD, CFileItemList* > PVRSCHEDULES;
+
 class CEPGInfoTag;
+enum RecStatus; /// forwarding an enum?
 
 class CPVRManager 
-  : public IPVRClientCallback
-  , private CThread
+      : public IPVRClientCallback
+      , private CThread
 {
 public:
   ~CPVRManager();
   static void RemoveInstance();
-  void OnMessage(int event, const std::string& data);
+  void OnMessage(DWORD clientID, int event, const std::string& data);
 
   // start/stop
   void Start();
@@ -44,14 +47,46 @@ public:
   static void   ReleaseInstance();
   static bool   IsInstantiated() { return m_instance != NULL; }
 
+  // info manager
+  CStdString GetNextRecording();
+  bool IsConnected() { return true; };
+
   // pvrmanager status
   static bool HasRecordings() { return m_hasRecordings; }
 
+  // backend's status
+
+  // called from TV Guide window
+  PVRSCHEDULES GetScheduled();
+  //PVRSCHEDULES GetTimers();
+  PVRSCHEDULES GetConflicting();
+
+
 private:
-  CPVRManager();
+  CPVRManager() { };
   static CPVRManager* m_instance;
 
-  IPVRClient* m_client;
+  void UpdateAll(); // wrapper to update ALL clients
+  void UpdateClient(DWORD clientID); // calls the specific client, asking it to update our tables
+  void SyncInfo(); // synchronize all PVRManager status info
+  CStdString PrintStatus(RecStatus status);
+
+  int GetRecordingSchedules(DWORD clientID); //called by UpdateClient(clientID)
+  int GetUpcomingRecordings(DWORD clientID); //called by UpdateClient(clientID)
+
+  std::vector< IPVRClient* > m_clients;
+
+  PVRSCHEDULES m_recordingSchedules; // list of all set recording schedules (including custom & manual)
+  PVRSCHEDULES m_scheduledRecordings; // what will actually be recorded
+  PVRSCHEDULES m_conflictingSchedules; // what is conflicting
+
+  unsigned m_numRecordings;
+  unsigned m_numUpcomingSchedules;
+  unsigned m_numTimers;
 
   static bool m_hasRecordings;
+  static bool m_hasSchedules;
+  static bool m_hasTimers;
 };
+
+//extern CPVRManager g_pvrManager;

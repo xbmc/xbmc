@@ -30,6 +30,7 @@
 #include "lib/libscrobbler/scrobbler.h"
 #include "utils/TuxBoxUtil.h"
 #include "Weather.h"
+#include "PVRManager.h"
 #include "PlayListPlayer.h"
 #include "PartyModeManager.h"
 #include "visualizations/Visualisation.h"
@@ -217,6 +218,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("weather.temperature")) ret = WEATHER_TEMPERATURE;
     else if (strTest.Equals("weather.location")) ret = WEATHER_LOCATION;
     else if (strTest.Equals("weather.isfetched")) ret = WEATHER_IS_FETCHED;
+  }
+  else if (strCategory.Equals("pvr"))
+  {
+    if (strTest.Equals("pvr.isconnected")) ret = PVR_IS_CONNECTED;
+    else if (strTest.Equals("pvr.recording")) ret = PVR_IS_RECORDING;
+    else if (strTest.Equals("pvr.nextrecording")) ret = PVR_NEXT_RECORDING;
   }
   else if (strCategory.Equals("bar"))
   {
@@ -909,6 +916,9 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
 
   switch (info)
   {
+  case PVR_NEXT_RECORDING:
+    strLabel = CPVRManager::GetInstance()->GetNextRecording();
+    break;
   case WEATHER_CONDITIONS:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND);
     break;
@@ -1692,6 +1702,8 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     bReturn = g_settings.bUseLoginScreen;
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
+  else if (condition == PVR_IS_CONNECTED)
+    bReturn = CPVRManager::GetInstance()->IsConnected();
   else if (condition == SYSTEM_INTERNET_STATE)
   {
     g_sysinfo.GetInfo(condition);

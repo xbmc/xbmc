@@ -24,17 +24,23 @@
 #include "FileItem.h"
 
 typedef enum {
-  PVR_EVENT_UNKNOWN = 0,
-  PVR_EVENT_CLOSE = 1,
-  PVR_EVENT_RECORDING_LIST_CHANGE,
-  PVR_EVENT_SCHEDULE_CHANGE,
-  PVR_EVENT_DONE_RECORDING,
+  PVRCLIENT_EVENT_UNKNOWN = 20,
+  PVRCLIENT_EVENT_CLOSE,
+  PVRCLIENT_EVENT_RECORDING_LIST_CHANGE,
+  PVRCLIENT_EVENT_SCHEDULE_CHANGE,
+  PVRCLIENT_EVENT_DONE_RECORDING,
 } PVR_EVENTS;
+
+typedef struct {
+  char *name;
+  bool liveTV;
+  bool canPause;
+} PVRCLIENT_CAPABILITIES;
 
 class IPVRClientCallback
 {
 public:
-  virtual void OnMessage(int event, const std::string& data)=0;
+  virtual void OnMessage(DWORD clientID, int event, const std::string& data)=0;
 };
 
 class IPVRClient
@@ -44,6 +50,7 @@ public:
   virtual ~IPVRClient(){};
 
   /* server status */
+  virtual PVRCLIENT_CAPABILITIES GetCapabilities()=0;
   virtual bool IsUp()=0;
   virtual bool GetDriveSpace(long long *total, long long *used)=0;
 

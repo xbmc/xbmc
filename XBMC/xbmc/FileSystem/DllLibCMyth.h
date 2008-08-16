@@ -35,7 +35,6 @@ public:
   virtual cmyth_conn_t     conn_connect_event       (char *server, unsigned short port, unsigned buflen, int tcp_rcvbuf)=0;
   virtual cmyth_file_t     conn_connect_file        (cmyth_proginfo_t prog, cmyth_conn_t control, unsigned buflen, int tcp_rcvbuf)=0;
   virtual cmyth_file_t     conn_connect_path        (char* path, cmyth_conn_t control, unsigned buflen, int tcp_rcvbuf)=0;
-  virtual int              conn_connect_ring        (cmyth_recorder_t rec, unsigned buflen, int tcp_rcvbuf)=0;
   virtual cmyth_recorder_t conn_get_free_recorder   (cmyth_conn_t conn)=0;
   virtual cmyth_recorder_t conn_get_recorder_from_num(cmyth_conn_t conn, int num)=0;
   virtual int              conn_get_freespace       (cmyth_conn_t control,long long *total, long long *used)=0;
@@ -134,7 +133,6 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD4(cmyth_conn_t,        conn_connect_event,       (char *p1, unsigned short p2, unsigned p3, int p4))
   DEFINE_METHOD4(cmyth_file_t,        conn_connect_file,        (cmyth_proginfo_t p1, cmyth_conn_t p2, unsigned p3, int p4))
   DEFINE_METHOD4(cmyth_file_t,        conn_connect_path,        (char* p1, cmyth_conn_t p2, unsigned p3, int p4))
-  DEFINE_METHOD3(int,                 conn_connect_ring,        (cmyth_recorder_t p1, unsigned p2, int p3))
 
   DEFINE_METHOD1(cmyth_recorder_t,    conn_get_free_recorder,   (cmyth_conn_t p1))
   DEFINE_METHOD2(cmyth_recorder_t,    conn_get_recorder_from_num,(cmyth_conn_t p1, int p2))
@@ -229,7 +227,6 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_conn_connect_event, conn_connect_event)
     RESOLVE_METHOD_RENAME(cmyth_conn_connect_file, conn_connect_file)
     RESOLVE_METHOD_RENAME(cmyth_conn_connect_path, conn_connect_path)
-    RESOLVE_METHOD_RENAME(cmyth_conn_connect_ring, conn_connect_ring)
     RESOLVE_METHOD_RENAME(cmyth_conn_get_free_recorder, conn_get_free_recorder)
     RESOLVE_METHOD_RENAME(cmyth_conn_get_recorder_from_num, conn_get_recorder_from_num)
     RESOLVE_METHOD_RENAME(cmyth_conn_get_freespace, conn_get_freespace)

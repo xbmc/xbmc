@@ -21,33 +21,34 @@
 
 #include "stdafx.h"
 #include "PVRClient-mythtv.h"
-#include "URL.h"
 
+XFILE::CCMythSession*   PVRClientMythTv::m_mythEventSession;
+myth_event_queue        PVRClientMythTv::m_thingsToDo;
+CCriticalSection        PVRClientMythTv::m_thingsToDoSection;
 
-PVRClientMythTv::PVRClientMythTv(DWORD sourceID, IPVRClientCallback *callback)
-  : IPVRClient(sourceID, callback)
+PVRClientMythTv::PVRClientMythTv(DWORD clientID, IPVRClientCallback *callback, CURL connString)
+  : IPVRClient(clientID, callback)
 {
-  CLog::Log(LOGERROR, "%s - constructor", __FUNCTION__);
-  m_mythEvents = CCMythSession::AquireSession();
-  m_mythEvents->SetListener(this);
+  m_recorder = NULL;
+  m_session = NULL;
+  m_connString = connString;
+  m_mythEventSession = XFILE::CCMythSession::AquireSession(m_connString);
+  m_mythEventSession->SetListener(this);
 
-  m_sourceID = sourceID;
+  m_isRunning = false;
+  m_clientID = clientID;
   m_manager = callback;
 }
 
 PVRClientMythTv::~PVRClientMythTv()
 {
-  CLog::Log(LOGERROR, "%s - deconstructor", __FUNCTION__);
+  CLog::Log(LOGERROR, "PVR: client_%u destroyed", m_clientID);
   Release();
+  StopThread();
 }
 
 void PVRClientMythTv::Release()
 {
-  if(m_recorder) ///
-  {
-    m_dll->ref_release(m_recorder);
-    m_recorder = NULL;
-  }
   if(m_session)
   {
     XFILE::CCMythSession::ReleaseSession(m_session);
@@ -56,33 +57,63 @@ void PVRClientMythTv::Release()
   m_dll = NULL;
 }
 
-//bool PVRClientMythTv::GetEPGDataEnd(CDateTime &end)
-//{
-//  CStdString strpath = "myth://myth:myth@tv"; ///TODO store individual settings for each client
-//  CURL url(strpath);
-//
-//  m_session = XFILE::CCMythSession::AquireSession(strpath);
-//  m_dll = m_session->GetLibrary();
-//  time_t = m_dll->
-//
-//}
+void PVRClientMythTv::OnEvent(int event, const std::string& data)
+{
+  CSingleLock lock(m_thingsToDoSection);
+
+  m_thingsToDo.push(std::make_pair<int, std::string>((int)event, data));
+  lock.Leave();
+
+  // start the thread to handle the event(s)
+  if (!m_isRunning)
+  {
+    StopThread();
+    Create(false, THREAD_MINSTACKSIZE);
+  }
+}
+
+void PVRClientMythTv::OnStartup()
+{
+  int breakpoint = 0;
+}
+
+void PVRClientMythTv::OnExit()
+{
+  int breakpoint = 0;
+}
+
+bool PVRClientMythTv::GetEPGDataEnd(CDateTime &end)
+{
+  if (!GetLibrary() || !GetControl() || !GetDB())
+    return false;
+
+  /// need to use database query to find end of epg data
+
+  return true;
+}
+
+PVRCLIENT_CAPABILITIES PVRClientMythTv::GetCapabilities()
+{
+  PVRCLIENT_CAPABILITIES caps;
+  caps.name     = "MythTV";
+  caps.liveTV   = true;
+  caps.canPause = true;
+  return caps;
+}
 
 bool PVRClientMythTv::GetDriveSpace(long long *total, long long *used)
 {
-  CStdString strpath = "myth://myth:myth@tv"; ///TODO store individual settings for each client
-  CURL url(strpath);
+  if (!GetLibrary() || !GetControl())
+    return false;
 
-  m_session = XFILE::CCMythSession::AquireSession(strpath);
-  m_dll = m_session->GetLibrary();
-
-  cmyth_conn_t control = m_session->GetControl();
-  if(!control)
+  cmyth_conn_t m_control = m_session->GetControl();
+  if(!m_control)
   {
     CLog::Log(LOGERROR, "%s - unable to GetControl", __FUNCTION__);
     return false;
   }
 
-  if(m_dll->conn_get_freespace(control, total, used) != 0)
+  if(m_dll->conn_get_freespace(m_control, total, used) != 0)
   {
     return false;
   }
@@ -92,48 +123,26 @@ bool PVRClientMythTv::GetDriveSpace(long long *total, long long *used)
 
 bool PVRClientMythTv::GetRecordingSchedules( CFileItemList &results )
 {
-  CStdString strpath = "myth://myth:myth@tv"; ///TODO store individual settings for each client
-  CURL url(strpath);
-
-  m_session = XFILE::CCMythSession::AquireSession(strpath);
-  m_dll = m_session->GetLibrary();
+  if (!GetLibrary() || !GetControl())
+    return false;
   
-  cmyth_conn_t control = m_session->GetControl();
-  if(!control)
+  cmyth_conn_t m_control = m_session->GetControl();
+  if(!m_control)
   {
     CLog::Log(LOGERROR, "%s - unable to GetControl", __FUNCTION__);
     return false;
   }
 
-  cmyth_proglist_t scheduled = m_dll->proglist_get_all_scheduled(control);
+  cmyth_proglist_t scheduled = m_dll->proglist_get_all_scheduled(m_control);
   int count = m_dll->proglist_get_count(scheduled);
   for(int i=0; i<count; i++)
   {
     cmyth_proginfo_t programme = m_dll->proglist_get_item(scheduled, i);
     if(programme)
     {
-      CStdString name, path;
-
-      path = m_dll->proginfo_pathname(programme);
-      name = m_dll->proginfo_title(programme);
-
-      CLog::Log(LOGDEBUG, "TV: get schedules: %s", name.c_str());
-
-      //CFileItemPtr item(new CFileItem("", false));
-      //m_session->UpdateItem(*item, programme);
-
-      //if(m_dll->proginfo_rec_status(programme) != RS_RECORDING)
-      //  name += " (" + item->m_dateTime.GetAsLocalizedDateTime() + ")";
-      //else
-      //{
-      //  name += " (Recording)";
-      //  item->SetThumbnailImage("");
-      //}
-
-      //item->SetLabel(name);
-
-      //results.Add(item);
-
+      CEPGInfoTag tag = FillProgrammeTag(programme);
+      CFileItemPtr item(new CFileItem(tag));    
+      results.Add(item);
       m_dll->ref_release(programme);
     }
   }
@@ -144,35 +153,31 @@ bool PVRClientMythTv::GetRecordingSchedules( CFileItemList &results )
 
 bool PVRClientMythTv::GetUpcomingRecordings( CFileItemList &results )
 {
-  CStdString strpath = "myth://myth:myth@tv"; ///TODO store individual settings for each client
-  CURL url(strpath);
+  //while (true)
+  //{
+  //  CLog::Log(LOGDEBUG, "PVRClient:%u MILKING 2 secs", m_clientID/*, __FUNCTION__*/);
+  //  Sleep(2000);
+  //}
+  if (!GetLibrary() || !GetControl())
+    return false;
 
-  m_session = XFILE::CCMythSession::AquireSession(strpath);
-  m_dll = m_session->GetLibrary();
-
-  cmyth_conn_t control = m_session->GetControl();
-  if(!control)
+  cmyth_conn_t m_control = m_session->GetControl();
+  if(!m_control)
   {
     CLog::Log(LOGERROR, "%s - unable to GetControl", __FUNCTION__);
     return false;
   }
 
-  cmyth_proglist_t pending = m_dll->proglist_get_all_pending(control);
+  cmyth_proglist_t pending = m_dll->proglist_get_all_pending(m_control);
   int count = m_dll->proglist_get_count(pending);
   for(int i=0; i<count; i++)
   {
     cmyth_proginfo_t programme = m_dll->proglist_get_item(pending, i);
     if(programme)
     {
-      CStdString name, path, recgroup, sourceName, recstatus;
-
-      path = m_dll->proginfo_pathname(programme);
-      name = m_dll->proginfo_title(programme);
-      recgroup = m_dll->proginfo_recgroup(programme);
-  
-      CLog::Log(LOGDEBUG, "TV: get upcoming: %s. RecStatus: %s. RecGroup: %s. SourceID: ", name.c_str(), recstatus.c_str(), recgroup.c_str());
-      //CFileItemPtr item(new CFileItem(FillProgrammeTag(programme)));
-      //results.Add(item);
+      CEPGInfoTag tag = FillProgrammeTag(programme);
+      CFileItemPtr item(new CFileItem(tag));
+      results.Add(item);
       m_dll->ref_release(programme);
     }
   }
@@ -184,77 +189,33 @@ bool PVRClientMythTv::GetUpcomingRecordings( CFileItemList &results )
 
 bool PVRClientMythTv::GetConflicting(CFileItemList &conflicts)
 {
-  CStdString strpath = "myth://myth:myth@tv"; ///TODO store individual settings for each client
-  CURL url(strpath);
-
-  m_session = XFILE::CCMythSession::AquireSession(strpath);
-  m_dll = m_session->GetLibrary();
-
-  cmyth_conn_t control = m_session->GetControl();
-  if(!control)
-  {
-    CLog::Log(LOGERROR, "%s - unable to GetControl", __FUNCTION__);
+  if (!GetLibrary() || !GetControl())
     return false;
-  }
 
-  cmyth_proglist_t conflicting = m_dll->proglist_get_conflicting(control);
+  cmyth_proglist_t conflicting = m_dll->proglist_get_conflicting(m_control);
   int count = m_dll->proglist_get_count(conflicting);
   for(int i=0; i<count; i++)
   {
     cmyth_proginfo_t programme = m_dll->proglist_get_item(conflicting, i);
     if(programme)
     {
-      //assert(m_dll->proginfo_rec_status(programme) == RS_RECORDING); //
-      CStdString name, path;
-
-      path = m_dll->proginfo_pathname(programme);
-      name = m_dll->proginfo_title(programme);
-
-      CLog::Log(LOGDEBUG, "TV: get conflicting: %s", name.c_str());
-      /*CFileItemPtr item(new CFileItem(FillProgrammeTag(programme)));
-
-      url.SetFileName("recordings/" + path);
-      url.GetURL(item->m_strPath);
-
-      url.SetFileName("files/" + path +  ".png");
-      url.GetURL(path);
-      item->SetThumbnailImage(path);
-
-      if(m_dll->proginfo_rec_status(programme) != RS_RECORDING)
-      name += " (" + item->m_dateTime.GetAsLocalizedDateTime() + ")";
-      else
-      {
-      name += " (Recording)";
-      item->SetThumbnailImage("");
-      }
-
-      item->SetLabel(name);
-
-      conflicts.Add(item);*/
+      CEPGInfoTag tag = FillProgrammeTag(programme);
+      CFileItemPtr item(new CFileItem(tag));
+      conflicts.Add(item);
       m_dll->ref_release(programme);
     }
   }
   m_dll->ref_release(conflicting);
-  //Release();
+
   return true;
 }
 
 bool PVRClientMythTv::GetAllRecordings(CFileItemList &results)
 {
-  CStdString strpath = "myth://myth:myth@tv"; ///TODO store individual settings for each client
-  CURL url(strpath);
-
-  m_session = XFILE::CCMythSession::AquireSession(strpath);
-  m_dll = m_session->GetLibrary();
-
-  cmyth_conn_t control = m_session->GetControl();
-  if(!control)
-  {
-    CLog::Log(LOGERROR, "%s - unable to GetControl", __FUNCTION__);
+  if (!GetLibrary() || !GetControl())
     return false;
-  }
 
-  cmyth_proglist_t list = m_dll->proglist_get_all_recorded(control);
+  cmyth_proglist_t list = m_dll->proglist_get_all_recorded(m_control);
   if(!list)
   {
     CLog::Log(LOGERROR, "%s - unable to get list of recordings", __FUNCTION__);
@@ -329,89 +290,61 @@ int  PVRClientMythTv::GetNumChannels()
 
 void PVRClientMythTv::GetEPGForChannel(int bouquet, int channel, CFileItemList &channelData)
 {
-
+  CStdString data = "getEPG";
+  CSingleLock lock(m_thingsToDoSection);
+  m_thingsToDo.push(std::make_pair<int, std::string>(GET_EPG_FOR_CHANNEL, data));
+  if (!m_isRunning) Create(); // start the task performing thread
 }
 
-void PVRClientMythTv::Process()
+void PVRClientMythTv::GetEPGForChannelTask()
 {
-  int process = 0;
+  //while (true)
+  //{
+  //  CLog::Log(LOGDEBUG, "PVRClient:%u SLEEPING 5 secs", m_clientID/*, __FUNCTION__*/);
+  //  Sleep(5000);
+  //}
 }
 
+/* Process loop for this thread **********************************************/
 void PVRClientMythTv::Process()
 {
-  while (!m_bStop)
+  CSingleLock lock(m_thingsToDoSection);
+
+  //CLog::Log(LOGDEBUG, "PVRClient:%u Begin Processing %u Tasks", m_sourceID, m_thingsToDo.size());
+  m_isRunning = true;
+
+  while (!m_bStop && m_thingsToDo.size())
   {
-    WaitForSingleObject(m_hWorkerEvent, INFINITE);
-    if (m_bStop)
+    int task         = m_thingsToDo.front().first;
+    CStdString data  = m_thingsToDo.front().second;
+    m_thingsToDo.pop();
+    lock.Leave();
+
+    switch (task) {
+    case CMYTH_EVENT_SCHEDULE_CHANGE:
+        lock.Enter();
+        m_manager->OnMessage(m_clientID, PVRCLIENT_EVENT_SCHEDULE_CHANGE, data.c_str());
+        break;
+    case GET_EPG_FOR_CHANNEL:
+      GetEPGForChannelTask();
       break;
-    int iNrCachedTracks = m_RadioTrackQueue->size();
-    if (iNrCachedTracks == 0)
-    {
-      RequestRadioTracks();
     }
-    CSingleLock lock(m_lockCache);
-    iNrCachedTracks = m_RadioTrackQueue->size();
-    CacheTrackThumb(iNrCachedTracks);
+    if (!lock.IsOwner())
+      lock.Enter();
   }
-  CLog::Log(LOGINFO,"LastFM thread terminated");
+  m_isRunning = false;
+  //CLog::Log(LOGDEBUG, "PVRClient:%u Finished Processing Tasks", m_sourceID);
 }
 
 CEPGInfoTag PVRClientMythTv::FillProgrammeTag(cmyth_proginfo_t programme)
 {
-  CEPGInfoTag tag(m_sourceID);
-  switch (m_dll->proginfo_rec_status(programme))
-  {
-    case RS_DELETED:
-      tag.m_recStatus = rsDeleted;
-      break;
-    case RS_STOPPED:
-      tag.m_recStatus = rsStopped;
-      break;
-    case RS_RECORDED:
-      tag.m_recStatus = rsRecorded;
-      break;
-    case RS_WILL_RECORD:
-      tag.m_recStatus = rsWillRecord;
-      break;
-    case RS_DONT_RECORD:
-      tag.m_recStatus = rsDontRecord;
-      break;
-    case RS_PREVIOUS_RECORDING:
-      tag.m_recStatus = rsPrevRecording;
-      break;
-    case RS_CURRENT_RECORDING:
-      tag.m_recStatus = rsCurrentRecording;
-      break;
-    case RS_EARLIER_RECORDING:
-      tag.m_recStatus = rsEarlierRecording;
-      break;
-    case RS_TOO_MANY_RECORDINGS:
-      tag.m_recStatus = rsTooManyRecordings;
-      break;
-    case RS_CANCELLED:
-      tag.m_recStatus = rsCancelled;
-      break;
-    case RS_CONFLICT:
-      tag.m_recStatus = rsConflict;
-      break;
-    case RS_LATER_SHOWING:
-      tag.m_recStatus = rsLaterShowing;
-      break;
-    case RS_REPEAT:
-      tag.m_recStatus = rsRepeat;
-      break;
-    case RS_LOW_DISKSPACE:
-      tag.m_recStatus = rsLowDiskspace;
-      break;
-    case RS_TUNER_BUSY:
-      tag.m_recStatus = rsTunerBusy;
-      break;
-    default:
-      tag.m_recStatus = rsUnknown;
-  }
+  CEPGInfoTag tag(m_clientID);
+  tag.m_channelNum = GetValue(m_dll->proginfo_chan_id(programme));
+  tag.m_startTime = GetValue(m_dll->proginfo_start(programme));
+  tag.m_endTime = GetValue(m_dll->proginfo_end(programme));
   
+  tag.m_recStatus = (RecStatus) GetRecordingStatus(programme); ///
   return tag;
-
 }
 
 bool PVRClientMythTv::UpdateRecording(CFileItem &item, cmyth_proginfo_t info)
@@ -507,4 +440,42 @@ int PVRClientMythTv::GetRecordingStatus(cmyth_proginfo_t prog)
   default:
     return rsUnknown;
   }
+}
+bool PVRClientMythTv::GetLibrary()
+{
+  m_session = XFILE::CCMythSession::AquireSession(m_connString);
+  m_dll = m_session->GetLibrary();
+  if(!m_dll)
+  {
+    CLog::Log(LOGERROR, "%s - unable to GetLibrary", __FUNCTION__); /// send logging thru pvrmanager
+    return false;
+  }
+
+  return true;
+}
+
+bool PVRClientMythTv::GetControl()
+{
+  m_session = XFILE::CCMythSession::AquireSession(m_connString); 
+  m_control = m_session->GetControl();
+  if(!m_control)
+  {
+    CLog::Log(LOGERROR, "%s - unable to GetControl", __FUNCTION__);
+    return false;
+  }
+
+  return true;
+}
+
+bool PVRClientMythTv::GetDB()
+{
+  m_session = XFILE::CCMythSession::AquireSession(m_connString); 
+  m_database = m_session->GetDatabase();
+  if(!m_database)
+  {
+    CLog::Log(LOGERROR, "%s - unable to GetDB", __FUNCTION__);
+    return false;
+  }
+
+  return true;
 }

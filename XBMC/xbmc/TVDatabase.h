@@ -46,7 +46,7 @@ public:
                const CStdString &progSubtitle, const CStdString &progDescription, const CStdString &episode, const CStdString &series, 
                const CDateTime &progStartTime, const CDateTime &progEndTime, const CStdString &category);
 
-  void GetChannels(bool freeToAirOnly, VECFILEITEMS &channels);
+  void GetChannels(bool freeToAirOnly, VECFILEITEMS* channels);
 
   bool GetProgrammesByChannelName(const CStdString &channel, VECFILEITEMS &shows, const CDateTime &start, const CDateTime &end);
   bool GetProgrammesByEpisodeID(const CStdString& episodeID, CFileItemList* items, bool noHistory /* == true */);
