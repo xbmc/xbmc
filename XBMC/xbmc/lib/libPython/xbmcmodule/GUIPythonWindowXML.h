@@ -49,11 +49,12 @@ public:
   void              SetCurrentListPosition(int item);
   void              SetCallbackWindow(PyObject *object);
   virtual bool      OnClick(int iItem);
+  void              SetProperty(const CStdString &strProperty, const CStdString &strValue);
 
 protected:
   virtual void     GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool     LoadXML(const CStdString &strPath, const CStdString &strPathLower);
-  int              LoadScriptStrings();
+  unsigned int     LoadScriptStrings();
   void             ClearScriptStrings();
   virtual void     Update();
   void             SetupShares();

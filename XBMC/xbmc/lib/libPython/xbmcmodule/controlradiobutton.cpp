@@ -47,7 +47,7 @@ namespace PYXBMC
     PyObject *args,
     PyObject *kwds )
   {
-    static char *keywords[] = {
+    static const char *keywords[] = {
       "x", "y", "width", "height", "label",
       "focusTexture", "noFocusTexture",
       "textXOffset", "textYOffset", "alignment",
@@ -89,8 +89,8 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "llllO|sslllssslssss",
-      keywords,
+      (char*)"llllO|sslllssslssss",
+      (char**)keywords,
       &self->dwPosX,
       &self->dwPosY,
       &self->dwWidth,
@@ -123,16 +123,16 @@ namespace PYXBMC
     // if texture is supplied use it, else get default ones
     self->strTextureFocus = cTextureFocus ?
       cTextureFocus :
-      PyGetDefaultImage("radiobutton", "texturefocus", "radiobutton-focus.png");
+      PyGetDefaultImage((char*)"radiobutton", (char*)"texturefocus", (char*)"radiobutton-focus.png");
     self->strTextureNoFocus = cTextureNoFocus ?
       cTextureNoFocus :
-      PyGetDefaultImage("radiobutton", "texturenofocus", "radiobutton-nofocus.jpg");
+      PyGetDefaultImage((char*)"radiobutton", (char*)"texturenofocus", (char*)"radiobutton-nofocus.jpg");
     self->strTextureRadioFocus = cTextureRadioFocus ?
       cTextureRadioFocus :
-      PyGetDefaultImage("radiobutton", "textureradiofocus", "radiobutton-focus.png");
+      PyGetDefaultImage((char*)"radiobutton", (char*)"textureradiofocus", (char*)"radiobutton-focus.png");
     self->strTextureRadioNoFocus = cTextureRadioNoFocus ?
       cTextureRadioNoFocus :
-      PyGetDefaultImage("radiobutton", "textureradionofocus", "radiobutton-nofocus.jpg");
+      PyGetDefaultImage((char*)"radiobutton", (char*)"textureradionofocus", (char*)"radiobutton-nofocus.jpg");
 
     if (cFont) self->strFont = cFont;
     if (cTextColor) sscanf( cTextColor, "%x", &self->dwTextColor );
@@ -200,7 +200,7 @@ namespace PYXBMC
 
   PyObject* ControlRadioButton_SetSelected(ControlRadioButton *self, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = {
+    static const char *keywords[] = {
       "selected",
       NULL};
 
@@ -209,8 +209,8 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "b",
-      keywords,
+      (char*)"b",
+      (char**)keywords,
       &selected))
     {
       return NULL;
@@ -241,7 +241,7 @@ namespace PYXBMC
       isSelected = ((CGUIRadioButtonControl*)self->pGUIControl)->IsSelected();
     PyGUIUnlock();
 
-    return Py_BuildValue("b", isSelected);
+    return Py_BuildValue((char*)"b", isSelected);
   }
 
   // setLabel() Method
@@ -263,7 +263,7 @@ namespace PYXBMC
 
   PyObject* ControlRadioButton_SetLabel(ControlRadioButton *self, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = {
+    static const char *keywords[] = {
       "label",
       "font",
       "textColor",
@@ -281,8 +281,8 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "O|sssss",
-      keywords,
+      (char*)"O|sssss",
+      (char**)keywords,
       &pObjectText,
       &cFont,
       &cTextColor,
@@ -334,7 +334,7 @@ namespace PYXBMC
 
   PyObject* ControlRadioButton_SetRadioDimension(ControlRadioButton *self, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = {
+    static const char *keywords[] = {
       "x",
       "y",
       "width",
@@ -344,8 +344,8 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "llll",
-      keywords,
+      (char*)"llll",
+      (char**)keywords,
       &self->dwPosX,
       &self->dwPosY,
       &self->dwWidth,
@@ -364,10 +364,10 @@ namespace PYXBMC
   }
 
   PyMethodDef ControlRadioButton_methods[] = {
-    {"setSelected", (PyCFunction)ControlRadioButton_SetSelected, METH_KEYWORDS, setSelected__doc__},
-    {"isSelected", (PyCFunction)ControlRadioButton_IsSelected, METH_VARARGS, isSelected__doc__},
-    {"setLabel", (PyCFunction)ControlRadioButton_SetLabel, METH_KEYWORDS, setLabel__doc__},
-    {"setRadioDimension", (PyCFunction)ControlRadioButton_SetRadioDimension, METH_KEYWORDS, setRadioDimension__doc__},
+    {(char*)"setSelected", (PyCFunction)ControlRadioButton_SetSelected, METH_VARARGS|METH_KEYWORDS, setSelected__doc__},
+    {(char*)"isSelected", (PyCFunction)ControlRadioButton_IsSelected, METH_VARARGS, isSelected__doc__},
+    {(char*)"setLabel", (PyCFunction)ControlRadioButton_SetLabel, METH_VARARGS|METH_KEYWORDS, setLabel__doc__},
+    {(char*)"setRadioDimension", (PyCFunction)ControlRadioButton_SetRadioDimension, METH_VARARGS|METH_KEYWORDS, setRadioDimension__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -419,7 +419,7 @@ namespace PYXBMC
   {
     PyInitializeTypeObject(&ControlRadioButton_Type);
 
-    ControlRadioButton_Type.tp_name = "xbmcgui.ControlRadioButton";
+    ControlRadioButton_Type.tp_name = (char*)"xbmcgui.ControlRadioButton";
     ControlRadioButton_Type.tp_basicsize = sizeof(ControlRadioButton);
     ControlRadioButton_Type.tp_dealloc = (destructor)ControlRadioButton_Dealloc;
     ControlRadioButton_Type.tp_compare = 0;

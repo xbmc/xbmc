@@ -1264,7 +1264,7 @@
   <string id="15016"></string>
   <string id="15017"></string>
   <string id="15018"></string>
-  <string id="15019"></string>
+  <string id="15019">Ajouter</string>
   <string id="15020"></string>
   <string id="15021"></string>
   <string id="15022"></string>
@@ -1682,9 +1682,9 @@
   <string id="20315">Sauvegardes</string>
   <string id="20316">Lister par ID</string>
   <string id="20317">Télécharger sauvegardes</string>
-  <string id="20318">Sauvegarde Installée sur le HDD</string>
+  <string id="20318">Sauvegarde installée sur le HDD</string>
   <string id="20319">Échec du téléchargement de la sauvegarde</string>
-  <string id="20320">Choisir la sauvegarde à télécharger et installe</string>
+  <string id="20320">Choisir la sauvegarde à télécharger et installer</string>
   <string id="20321">Aucune sauvegarde trouvée pour le jeu indiqué</string>
   <string id="20322">Aller aux Sauvegardes</string>
   <string id="20323">Sauvegardes</string>
@@ -1739,7 +1739,7 @@
   <string id="20372">Image Saison</string>
   <string id="20373">Saison</string>
   <string id="20374">Téléchargement des infos vidéo</string>
-  <string id="20375">Catégorie non assigner</string>
+  <string id="20375">Catégorie non assignée</string>
   <string id="20376">1re Diffusion:</string>
   <string id="20377">Rafraîchir Info Séries TV</string>
   <string id="20378">Rafraîchir info pour tous les épisodes?</string>

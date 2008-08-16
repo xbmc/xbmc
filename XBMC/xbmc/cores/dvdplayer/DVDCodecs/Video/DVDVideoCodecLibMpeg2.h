@@ -54,7 +54,6 @@ protected:
   bool m_bFilm; //Signals that we have film material
   bool m_bIs422;
 
-  bool m_bmpeg1;
   int m_hurry;
   //The buffer of pictures we need
   DVDVideoPicture m_pVideoBuffer[3];

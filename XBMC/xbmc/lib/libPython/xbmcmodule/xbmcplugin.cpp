@@ -334,6 +334,51 @@ namespace PYXBMC
     return Py_None;
   }
 
+  PyDoc_STRVAR(setProperty__doc__,
+    "setProperty(handle, key, value) -- Sets a container property for this plugin.\n"
+    "\n"
+    "handle      : integer - handle the plugin was started with.\n"
+    "key         : string - property name.\n"
+    "value       : string or unicode - value of property.\n"
+    "\n"
+    "*Note, Key is NOT case sensitive.\n"
+    "       You can use the above as keywords for arguments.\n"
+    "\n"
+    "example:\n"
+    "  - xbmcplugin.setProperty(int(sys.argv[1]), 'Emulator', 'M.A.M.E.')\n");
+
+  PyObject* XBMCPLUGIN_SetProperty(PyTypeObject *type, PyObject *args, PyObject *kwds)
+  {
+    static const char *keywords[] = { "handle", "key", "value", NULL };
+    int handle = -1;
+    char *key = NULL;
+    PyObject *pValue = NULL;
+    // parse arguments to constructor
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"isO",
+      (char**)keywords,
+      &handle,
+      &key,
+      &pValue
+      ))
+    {
+      return NULL;
+    };
+
+    if (!key || !pValue) return NULL;
+    CStdString value;
+    if (!PyGetUnicodeString(value, pValue, 1))
+      return NULL;
+
+    CStdString lowerKey = key;
+    DIRECTORY::CPluginDirectory::SetProperty(handle, key, value);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   // define c functions to be used in python here
   PyMethodDef pluginMethods[] = {
     {(char*)"addDirectoryItem", (PyCFunction)XBMCPLUGIN_AddDirectoryItem, METH_VARARGS|METH_KEYWORDS, addDirectoryItem__doc__},
@@ -343,6 +388,7 @@ namespace PYXBMC
     {(char*)"setContent", (PyCFunction)XBMCPLUGIN_SetContent, METH_VARARGS|METH_KEYWORDS, setContent__doc__},
     {(char*)"setPluginCategory", (PyCFunction)XBMCPLUGIN_SetPluginCategory, METH_VARARGS|METH_KEYWORDS, setPluginCategory__doc__},
     {(char*)"setPluginFanart", (PyCFunction)XBMCPLUGIN_SetPluginFanart, METH_VARARGS|METH_KEYWORDS, setPluginFanart__doc__},
+    {(char*)"setProperty", (PyCFunction)XBMCPLUGIN_SetProperty, METH_VARARGS|METH_KEYWORDS, setProperty__doc__},
     {NULL, NULL, 0, NULL}
   };
 
