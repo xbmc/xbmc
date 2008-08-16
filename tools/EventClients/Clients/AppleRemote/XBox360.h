@@ -382,7 +382,7 @@ class XBox360Controller
         if (event.elementCookie == buttons[i])
         {
 			if (g_appleRemote.IsVerbose())
-				printf("Button: %d %d.\n", i+1, event.value);
+				printf("Button: %d %d.\n", i+1, (int)event.value);
           
 			if (i+1 == 11 && !g_appleRemote.IsProgramRunning("XBMC", 0) && 
 				(g_appleRemote.GetServerAddress() == "127.0.0.1" || g_appleRemote.GetServerAddress() == "localhost") && 
@@ -453,6 +453,7 @@ class XBox360
   static void* Run(void* param)
   {
     ((XBox360* )param)->run();
+    return 0;
   }
   
   void run()
@@ -526,7 +527,7 @@ class XBox360
       return;
     }
     
-    for (int count = 1; hidDevice = IOIteratorNext(iterator); ) 
+    for (int count = 1; (hidDevice = IOIteratorNext(iterator)); ) 
     {
        bool deviceWired = IOObjectConformsTo(hidDevice, "Xbox360ControllerClass");
        bool deviceWireless = IOObjectConformsTo(hidDevice, "WirelessHIDDevice");
