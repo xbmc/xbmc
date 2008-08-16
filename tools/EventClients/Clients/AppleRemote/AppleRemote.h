@@ -66,6 +66,7 @@ protected:
 
 	std::map<std::string, CPacketBUTTON *>	m_mapCommands;
 	std::vector<std::string>				m_universalPrefixes;
+    std::string         m_launch_xbmc_button;
 	CFRunLoopTimerRef	m_timer;
 };
 

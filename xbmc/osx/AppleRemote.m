@@ -63,6 +63,11 @@ const int REMOTE_SWITCH_COOKIE=19;
 const NSTimeInterval DEFAULT_MAXIMUM_CLICK_TIME_DIFFERENCE=0.35;
 const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 
+// the WWDC 07 Leopard Build is missing the constant
+#ifndef NSAppKitVersionNumber10_4
+	#define NSAppKitVersionNumber10_4 824
+#endif
+
 @implementation AppleRemote
 
 #pragma public interface
@@ -74,7 +79,9 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
         hidDeviceInterface = NULL;
         cookieToButtonMapping = [[NSMutableDictionary alloc] init];
 
-        if( MACOS_VERSION < 10.5f )
+        // Runtime Version Check
+        if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_4)
+        //if( MACOS_VERSION < 10.5f )
         {
             /* use the traditional cookies for Tiger (and Panther, if it is supported by the frame app) */
             [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonVolume_Plus]  forKey:@"14_12_11_6_"];
