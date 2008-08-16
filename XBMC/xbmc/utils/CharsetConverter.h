@@ -90,7 +90,7 @@ public:
     }
   }
 
-  void utf8ToW(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip=true);
+  void utf8ToW(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip=true, bool* bWasFlipped=NULL);
 
   void utf16LEtoW(const CStdStringW& utf16String, CStdStringW &wString);
 
@@ -125,8 +125,8 @@ public:
   CStdString& getCharsetNameByLabel(const CStdString& charsetLabel);
   bool isBidiCharset(const CStdString& charset);
 
-  void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset, FriBidiCharType base = FRIBIDI_TYPE_LTR);
-  void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, CStdStringA& charset, FriBidiCharType base = FRIBIDI_TYPE_LTR);
+  void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset, FriBidiCharType base = FRIBIDI_TYPE_LTR, bool* bWasFlipped=NULL);
+  void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, CStdStringA& charset, FriBidiCharType base = FRIBIDI_TYPE_LTR, bool* bWasFlipped=NULL);
 
 private:
   std::vector<CStdString> m_vecCharsetNames;
