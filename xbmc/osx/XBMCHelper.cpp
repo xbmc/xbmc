@@ -76,7 +76,7 @@ XBMCHelper::XBMCHelper()
 void XBMCHelper::Start()
 {
   printf("Asking helper to start.\n");
-  string cmd = m_helperFile + " &";
+  string cmd = "\"" + m_helperFile + "\" &";
   system(cmd.c_str());
 }
 
