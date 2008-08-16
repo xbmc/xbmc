@@ -1813,6 +1813,10 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
 
     CStdString strDirectory;
     XMLUtils::GetString(pProfile,"directory",strDirectory);
+  strDirectory.Replace("U:\\userdata",_P("U:\\userdata"));
+#ifdef _LINUX
+    strDirectory.Replace("\\","/");
+#endif
     profile.setDirectory(strDirectory);
 
     CStdString strThumb;
@@ -1896,7 +1900,10 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
     TiXmlElement profileNode("profile");
     TiXmlNode *pNode = pRoot->InsertEndChild(profileNode);
     SetString(pNode,"name",g_settings.m_vecProfiles[iProfile].getName());
-    SetString(pNode,"directory",g_settings.m_vecProfiles[iProfile].getDirectory());
+    CStdString strDir(g_settings.m_vecProfiles[iProfile].getDirectory());
+    strDir.Replace(_P("U:\\userdata"),"U:\\userdata");
+    strDir.Replace("/","\\");
+    SetString(pNode,"directory",strDir);
     SetString(pNode,"thumbnail",g_settings.m_vecProfiles[iProfile].getThumb());
     SetString(pNode,"lastdate",g_settings.m_vecProfiles[iProfile].getDate());
 
