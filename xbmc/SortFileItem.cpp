@@ -286,19 +286,22 @@ void SSortFileItem::ByGenre(CFileItemPtr &item)
     item->SetSortLabel(item->GetVideoInfoTag()->m_strGenre);
 }
 
+void SSortFileItem::ByYear(CFileItemPtr &item)
+{
+  if (!item) return;
+
+  CStdString label;
+  if (item->HasMusicInfoTag())
+    label.Format("%i %s", item->GetMusicInfoTag()->GetYear(), item->GetLabel().c_str());
+  else
+    label.Format("%s %s %i %s", item->GetVideoInfoTag()->m_strPremiered.c_str(), item->GetVideoInfoTag()->m_strFirstAired, item->GetVideoInfoTag()->m_iYear, item->GetLabel().c_str());
+  item->SetSortLabel(label);
+}
+
 void SSortFileItem::ByMovieTitle(CFileItemPtr &item)
 {
   if (!item) return;
   item->SetSortLabel(item->GetVideoInfoTag()->m_strTitle);
-}
-
-void SSortFileItem::ByMovieYear(CFileItemPtr &item)
-{
-  if (!item) return;
-
-  CStdString label = item->GetVideoInfoTag()->m_strPremiered + " " + item->GetVideoInfoTag()->m_strFirstAired;
-  label.AppendFormat(" %i %s", item->GetVideoInfoTag()->m_iYear, item->GetLabel().c_str());
-  item->SetSortLabel(label);
 }
 
 void SSortFileItem::ByMovieRating(CFileItemPtr &item)
