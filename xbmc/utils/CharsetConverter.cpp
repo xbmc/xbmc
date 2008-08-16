@@ -47,10 +47,10 @@ size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft,
         }
         const char** p;
     };
-    
+
     return iconv(cd, iconv_param_adapter(inbuf), inbytesleft, outbuf, outbytesleft);
 
-// (davilla) leave these here for now until all platforms 
+// (davilla) leave these here for now until all platforms
 // have proven builds
 //#if defined(_LINUX) || defined(__APPLE__)
 //  return iconv(cd, (char**)inbuf, inbytesleft, outbuf, outbytesleft);
@@ -222,7 +222,7 @@ void CCharsetConverter::reset(void)
 
 // The bVisualBiDiFlip forces a flip of characters for hebrew/arabic languages, only set to false if the flipping
 // of the string is already made or the string is not displayed in the GUI
-void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wString, bool bVisualBiDiFlip/*=true*/)
+void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wString, bool bVisualBiDiFlip/*=true*/, bool* bWasFlipped/*=NULL*/)
 {
   CStdStringA strFlipped;
 
@@ -242,7 +242,7 @@ void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStr
   convert(m_iconvSubtitleCharsetToW,sizeof(wchar_t),g_langInfo.GetSubtitleCharSet(),WCHAR_CHARSET,strSource,strDest);
 }
 
-void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, CStdStringA& charset, FriBidiCharType base)
+void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, CStdStringA& charset, FriBidiCharType base, bool* bWasFlipped/*=NULL*/)
 {
   FriBidiCharSet fribidiCharset = FRIBIDI_CHAR_SET_UTF8;
 
@@ -255,26 +255,32 @@ void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdSt
     }
   }
 
-  logicalToVisualBiDi(strSource, strDest, fribidiCharset, base);
+  logicalToVisualBiDi(strSource, strDest, fribidiCharset, base, bWasFlipped);
 }
 
-void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset, FriBidiCharType base)
+void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset, FriBidiCharType base, bool* bWasFlipped/*=NULL*/)
 {
   vector<CStdString> lines;
   CUtil::Tokenize(strSource, lines, "\n");
   CStdString resultString;
 
+  if (bWasFlipped)
+    *bWasFlipped = false;
+
   for (unsigned int i = 0; i < lines.size(); i++)
   {
     int sourceLen = lines[i].length();
-    FriBidiChar* logical = (FriBidiChar*) malloc((sourceLen + 1) * sizeof(FriBidiChar));
-    FriBidiChar* visual = (FriBidiChar*) malloc((sourceLen + 1) * sizeof(FriBidiChar));
+
     // Convert from the selected charset to Unicode
+    FriBidiChar* logical = (FriBidiChar*) malloc((sourceLen + 1) * sizeof(FriBidiChar));
     int len = fribidi_charset_to_unicode(fribidiCharset, (char*) lines[i].c_str(), sourceLen, logical);
+
+    FriBidiChar* visual = (FriBidiChar*) malloc((len + 1) * sizeof(FriBidiChar));
+    FriBidiLevel* levels = (FriBidiLevel*) malloc((len + 1) * sizeof(FriBidiLevel));
 
     // Shape Arabic Text
     FriBidiChar *shaped_text = shape_arabic(logical, len);
-    for (int i=0; i<len; i++)
+    for (int i = 0; i < len; i++)
        logical[i] = shaped_text[i];
     free(shaped_text);
 
@@ -294,10 +300,24 @@ void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdSt
       strDest.ReleaseBuffer();
 
       resultString += strDest;
+
+      // Check whether the string was flipped if one of the embedding levels is greater than 0
+      if (bWasFlipped && !*bWasFlipped)
+      {
+        for (int i = 0; i < len; i++)
+        {
+          if ((int) levels[i] > 0)
+          {
+            *bWasFlipped = true;
+            break;
+          }
+        }
+      }
     }
 
     free(logical);
     free(visual);
+    free(levels);
   }
 
   strDest = resultString;
