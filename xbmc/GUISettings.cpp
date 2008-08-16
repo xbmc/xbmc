@@ -566,7 +566,7 @@ CGUISettings::CGUISettings(void)
   AddString(8, "locale.timezone", 14081, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
   AddString(7, "locale.timezonecountry", 14080, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
 #endif
-#ifndef __APPLE__
+#ifdef HAS_TIME_SERVER
   AddSeparator(9, "locale.sep2");
   AddBool(10,   "locale.timeserver"       , 168  , false);
   AddString(11, "locale.timeserveraddress"      , 731  , "pool.ntp.org", EDIT_CONTROL_INPUT);
