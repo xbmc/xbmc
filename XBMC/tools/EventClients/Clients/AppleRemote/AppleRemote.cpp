@@ -28,17 +28,56 @@
 #include "../../lib/c++/xbmcclient.h"
 
 #define DEFAULT_MAX_CLICK_DURATION 0.5
-#define LAUNCH_XBMC_BUTTON "20_"
 
 #define LOG if (m_bVerbose) printf
 
 #define APPLICATION_NAME "XBMC"
 
-AppleRemote::AppleRemote() : m_timer(NULL), 
-							m_dMaxClickDuration(DEFAULT_MAX_CLICK_DURATION), 
-							m_bVerbose(false), 
+enum {
+    IR_Select,
+    IR_Right,
+    IR_Left,
+    IR_Up,
+    IR_Down,
+    IR_RightHold,
+    IR_LeftHold,
+    IR_Menu,
+    IR_MenuHold
+};
+
+// magic HID key cookies for 10.4
+static std::string key_cookies10_4[] =
+{ 
+    "5_8_",
+    "5_9_",
+    "5_10_",
+    "5_12_",
+    "5_13_",
+    "4_5_",
+    "3_5_",
+    "5_",
+    "5_7_"
+};
+
+// magic HID key cookies for 10.5
+static std::string key_cookies10_5[] =
+{ 
+    "21_",
+    "22_",
+    "23_",
+    "29_",
+    "30_",
+    "4_",
+    "3_",
+    "18_",
+    "20_"
+};
+
+AppleRemote::AppleRemote() :m_bVerbose(false), 
 							m_remoteMode(REMOTE_NORMAL),
-							m_socket(-1)
+							m_dMaxClickDuration(DEFAULT_MAX_CLICK_DURATION), 
+							m_socket(-1),
+                            m_timer(NULL) 
 {
 	m_serverAddress = "localhost";
 }
@@ -56,6 +95,9 @@ void AppleRemote::RegisterCommand(const std::string &strSequence, CPacketBUTTON 
 
 void AppleRemote::Initialize()
 {
+    std::string    *key;
+    std::string     prefix;
+
 	LOG("initializing apple remote\n");
 	
 	DeInitialize();
@@ -69,32 +111,51 @@ void AppleRemote::Initialize()
 	
 	LOG("udp socket (%d) opened\n", m_socket);
 	
-	RegisterCommand("21_", new CPacketBUTTON("Select", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
-	RegisterCommand("22_", new CPacketBUTTON("Right", "R1", BTN_DOWN  | BTN_NO_REPEAT | BTN_QUEUE));
-	RegisterCommand("23_", new CPacketBUTTON("Left",  "R1", BTN_DOWN  | BTN_NO_REPEAT | BTN_QUEUE));
-	RegisterCommand("29_", new CPacketBUTTON("Up", "R1", BTN_DOWN));
-	RegisterCommand("30_", new CPacketBUTTON("Down", "R1", BTN_DOWN));
-	RegisterCommand("4_",  new CPacketBUTTON("Right", "R1", BTN_DOWN));
-	RegisterCommand("3_",  new CPacketBUTTON("Left", "R1", BTN_DOWN));
-	RegisterCommand("18_",  new CPacketBUTTON("Menu", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+    // Runtime Version Check
+    SInt32      MacVersion;
 
-	// Menu will be used both for sending "Back" and for starting universal remote combinations (if universal mode is on)
-	RegisterCommand("20_",  new CPacketBUTTON("Back", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+    Gestalt(gestaltSystemVersion, &MacVersion);
 
-	// Universal commmands:
-	RegisterCommand("20_30_",  new CPacketBUTTON("Back", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
-	RegisterCommand("20_21_22_",  new CPacketBUTTON("Info", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
-	RegisterCommand("20_21_23_",  new CPacketBUTTON("Title", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
-	RegisterCommand("20_21_29_",  new CPacketBUTTON("PagePlus", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
-	RegisterCommand("20_21_30_",  new CPacketBUTTON("PageMinus", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
-	RegisterCommand("20_21_21_",  new CPacketBUTTON("Display", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
-	
-	RegisterCommand("20_29_21_",  new CPacketBUTTON("Stop", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
-	RegisterCommand("20_29_23_",  new CPacketBUTTON("Power", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
-	RegisterCommand("20_29_22_",  new CPacketBUTTON("Zero", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
-	RegisterCommand("20_29_29_",  new CPacketBUTTON("Play", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
-	RegisterCommand("20_29_30_",  new CPacketBUTTON("Pause", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
-	
+    if (MacVersion < 0x1050)
+    {
+        key = key_cookies10_4;
+    }
+    else
+    {
+        key = key_cookies10_5;
+    }
+    m_launch_xbmc_button = key[IR_MenuHold];
+        
+    RegisterCommand(key[IR_Select],    new CPacketBUTTON("Select", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+    RegisterCommand(key[IR_Right],     new CPacketBUTTON("Right", "R1", BTN_DOWN  | BTN_NO_REPEAT | BTN_QUEUE));
+    RegisterCommand(key[IR_Left],      new CPacketBUTTON("Left",  "R1", BTN_DOWN  | BTN_NO_REPEAT | BTN_QUEUE));
+    RegisterCommand(key[IR_Up],        new CPacketBUTTON("Up", "R1", BTN_DOWN));
+    RegisterCommand(key[IR_Down],      new CPacketBUTTON("Down", "R1", BTN_DOWN));
+    RegisterCommand(key[IR_RightHold], new CPacketBUTTON("Right", "R1", BTN_DOWN));
+    RegisterCommand(key[IR_LeftHold],  new CPacketBUTTON("Left", "R1", BTN_DOWN));
+    RegisterCommand(key[IR_Menu],      new CPacketBUTTON("Menu", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+
+    // Menu Hold will be used both for sending "Back" and for starting universal remote combinations (if universal mode is on)
+    RegisterCommand(key[IR_MenuHold],  new CPacketBUTTON("Back", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+
+    // Universal commmands:
+    RegisterCommand(key[IR_MenuHold] + key[IR_Down], new CPacketBUTTON("Back", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+    
+    prefix = key[IR_MenuHold] + key[IR_Select];
+    RegisterCommand(prefix + key[IR_Right], new CPacketBUTTON("Info", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+    RegisterCommand(prefix + key[IR_Left],  new CPacketBUTTON("Title", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+    RegisterCommand(prefix + key[IR_Up],    new CPacketBUTTON("PagePlus", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+    RegisterCommand(prefix + key[IR_Down],  new CPacketBUTTON("PageMinus", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+    RegisterCommand(prefix + key[IR_Select],new CPacketBUTTON("Display", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+
+    prefix = key[IR_MenuHold] + key[IR_Up];
+
+    RegisterCommand(prefix + key[IR_Select],new CPacketBUTTON("Stop", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+    RegisterCommand(prefix + key[IR_Left],  new CPacketBUTTON("Power", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+    RegisterCommand(prefix + key[IR_Right], new CPacketBUTTON("Zero", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+    RegisterCommand(prefix + key[IR_Up],    new CPacketBUTTON("Play", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+    RegisterCommand(prefix + key[IR_Down],  new CPacketBUTTON("Pause", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+    
 	// for universal mode - some keys are part of a key combination.
 	// when those keys are pressed, we'll wait for more to come - until a valid combination was entered or a timeout expired.
 	// the keys "leading" a combination are added to the prefix vector. 
@@ -244,15 +305,16 @@ void AppleRemote::OnKeyDown(const std::string &key)
 {
 	if (!IsProgramRunning(APPLICATION_NAME) && (m_serverAddress == "localhost" || m_serverAddress == "127.0.0.1"))
 	{
-		if (key == LAUNCH_XBMC_BUTTON)
+		if (key == m_launch_xbmc_button)
 			LaunchApp();
 			
 		return;
 	}
 	
 	LOG("key down: %s\n", key.c_str());
-	if (m_remoteMode == REMOTE_NORMAL)
+	if (m_remoteMode == REMOTE_NORMAL) {
 		SendCommand(key);
+    }
 	else if (m_remoteMode == REMOTE_UNIVERSAL)
 	{
 		bool bCombinationStart = false;
