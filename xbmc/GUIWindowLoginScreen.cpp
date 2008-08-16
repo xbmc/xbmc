@@ -39,6 +39,7 @@
 #include "Settings.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
+#include "Util.h"
 
 using namespace XFILE;
 
@@ -101,7 +102,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
 
           if (bOkay)
           {
-            if (CFile::Exists("q:\\scripts\\autoexec.py") && watch.GetElapsedMilliseconds() < 5000.f)
+            if (CFile::Exists(_P("q:\\scripts\\autoexec.py")) && watch.GetElapsedMilliseconds() < 5000.f)
               while (watch.GetElapsedMilliseconds() < 5000) ;
             if (iItem != 0 || g_settings.m_iLastLoadedProfileIndex != 0)
             {
