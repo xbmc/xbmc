@@ -532,7 +532,7 @@ void CApplicationMessenger::HttpApi(string cmd)
   SetResponse("");
   ThreadMessage tMsg = {TMSG_HTTPAPI};
   tMsg.strParam = cmd;
-  SendMessage(tMsg, true);
+  SendMessage(tMsg);
 }
 
 void CApplicationMessenger::ExecBuiltIn(const CStdString &command)
