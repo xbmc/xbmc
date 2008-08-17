@@ -89,14 +89,14 @@ protected:
   float GetLineHeight(float lineSpacing) const;
 
   void DrawTextInternal(float x, float y, const std::vector<DWORD> &colors, const std::vector<DWORD> &text,
-                            DWORD alignment, float maxPixelWidth);
+                            DWORD alignment, float maxPixelWidth, bool scrolling);
 
   void DrawTextInternal(float x, float y, DWORD color, const std::vector<DWORD> &text,
-                            DWORD alignment, float maxPixelWidth)
+                            DWORD alignment, float maxPixelWidth, bool scrolling)
   {
     std::vector<DWORD> colors;
     colors.push_back(color);
-    DrawTextInternal(x, y, colors, text, alignment, maxPixelWidth);
+    DrawTextInternal(x, y, colors, text, alignment, maxPixelWidth, scrolling);
   }
 
   float m_height;
@@ -105,7 +105,7 @@ protected:
   // Stuff for pre-rendering for speed
   inline Character *GetCharacter(DWORD letter);
   bool CacheCharacter(WCHAR letter, DWORD style, Character *ch);
-  inline void RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor);
+  inline void RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor, bool roundX);
   void ClearCharacterCache();
   
   // modifying glyphs
