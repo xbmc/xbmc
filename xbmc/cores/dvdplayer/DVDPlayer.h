@@ -210,13 +210,7 @@ public:
   virtual bool IsCaching() const { return m_caching; } 
   virtual int GetCacheLevel() const ; 
 
-  virtual int OnDVDNavResult(void* pData, int iMessage);
-
-  static bool ExtractThumb(const CStdString &strPath, const CStdString &strTarget);
-  
-  // GetFileMetaData will fill pItem's properties according to what can be extracted from the file.
-  static void GetFileMetaData(const CStdString &strPath, CFileItem *pItem); 
-    
+  virtual int OnDVDNavResult(void* pData, int iMessage);    
 protected:  
   friend class CSelectionStreams;
   void LockStreams()                                            { EnterCriticalSection(&m_critStreamSection); }
