@@ -227,6 +227,7 @@ public:
     bool m_fullScreen;
 #endif
     int m_playlistRetries;
+    int m_playlistTimeout;
     bool m_GLRectangleHack;
   };
 

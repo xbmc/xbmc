@@ -252,6 +252,7 @@ CSettings::CSettings(void)
 #endif
 
   g_advancedSettings.m_playlistRetries = 100;
+  g_advancedSettings.m_playlistTimeout = 20; // 20 seconds timeout
   g_advancedSettings.m_GLRectangleHack = false;
 }
 
@@ -1201,6 +1202,7 @@ void CSettings::LoadAdvancedSettings()
   GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 10, 1, 15);
   GetInteger(pRootElement, "busydialogdelay", g_advancedSettings.m_busyDialogDelay, 2000, 0, 5000);
   GetInteger(pRootElement, "playlistretries", g_advancedSettings.m_playlistRetries, 100, -1, 5000);
+  GetInteger(pRootElement, "playlisttimeout", g_advancedSettings.m_playlistTimeout, 20, 0, 5000);
 
   XMLUtils::GetBoolean(pRootElement,"rootovershoot",g_advancedSettings.m_bUseEvilB);
   XMLUtils::GetBoolean(pRootElement,"glrectanglehack", g_advancedSettings.m_GLRectangleHack);
