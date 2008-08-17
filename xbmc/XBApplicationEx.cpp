@@ -329,7 +329,9 @@ void CXBApplicationEx::ReadInput()
 #ifdef HAS_SDL
   //SDL_PumpEvents();
 
+#ifndef __APPLE__
   static RESOLUTION windowres = WINDOW;
+#endif
 
   // Read the input from the mouse
   g_Mouse.Update();
