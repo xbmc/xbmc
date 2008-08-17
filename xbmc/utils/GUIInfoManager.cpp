@@ -2901,80 +2901,13 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
   CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentSong(%s)",item.m_strPath.c_str());
   *m_currentFile = item;
 
-  // Get a reference to the item's tag
-  CMusicInfoTag& tag = *m_currentFile->GetMusicInfoTag();
-  // check if we don't have the tag already loaded
-  if (!tag.Loaded())
+  m_currentFile->LoadMusicTag();
+  if (m_currentFile->GetMusicInfoTag()->GetTitle().IsEmpty())
   {
-    // we have a audio file.
-    // Look if we have this file in database...
-    bool bFound = false;
-    CMusicDatabase musicdatabase;
-    if (musicdatabase.Open())
-    {
-      CSong song;
-      bFound = musicdatabase.GetSongByFileName(m_currentFile->m_strPath, song);
-      m_currentFile->GetMusicInfoTag()->SetSong(song);
-      musicdatabase.Close();
-    }
-
-    if (!bFound)
-    {
-      // always get id3 info for the overlay
-      CMusicInfoTagLoaderFactory factory;
-      auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(m_currentFile->m_strPath));
-      // Do we have a tag loader for this file type?
-      if (NULL != pLoader.get())
-        pLoader->Load(m_currentFile->m_strPath, tag);
-    }
+    // No title in tag, show filename only
+    m_currentFile->GetMusicInfoTag()->SetTitle(CUtil::GetTitleFromPath(m_currentFile->m_strPath));
   }
-
-  // If we have tag information, ...
-  if (tag.Loaded())
-  {
-    if (!tag.GetTitle().size())
-    {
-      // No title in tag, show filename only
-        tag.SetTitle( CUtil::GetTitleFromPath(m_currentFile->m_strPath) );
-    }
-  } // if (tag.Loaded())
-  else
-  {
-    // If we have a cdda track without cddb information,...
-    if (m_currentFile->IsCDDA())
-    {
-      // we have the tracknumber...
-      int iTrack = tag.GetTrackNumber();
-      if (iTrack >= 1)
-      {
-        CStdString strText = g_localizeStrings.Get(554); // "Track"
-        if (strText.GetAt(strText.size() - 1) != ' ')
-          strText += " ";
-        CStdString strTrack;
-        strTrack.Format(strText + "%i", iTrack);
-        tag.SetTitle(strTrack);
-        tag.SetLoaded(true);
-      }
-    } // if (!tag.Loaded() && url.GetProtocol()=="cdda" )
-    else
-    {
-      CStdString fileName = CUtil::GetFileName(m_currentFile->m_strPath);
-      CUtil::RemoveExtension(fileName);
-      for (unsigned int i = 0; i < g_advancedSettings.m_musicTagsFromFileFilters.size(); i++)
-      {
-        CLabelFormatter formatter(g_advancedSettings.m_musicTagsFromFileFilters[i], "");
-        if (formatter.FillMusicTag(fileName, &tag))
-        {
-          tag.SetLoaded(true);
-          break;
-        }
-      }
-      if (!tag.Loaded()) // at worse, set our title as the filename
-        tag.SetTitle( CUtil::GetTitleFromPath(m_currentFile->m_strPath) );
-    }
-    // we now have at least the title
-    tag.SetLoaded(true);
-  }
+  m_currentFile->GetMusicInfoTag()->SetLoaded(true);
 
   // find a thumb for this file.
   if (m_currentFile->IsInternetStream())
