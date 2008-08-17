@@ -24,6 +24,7 @@
 #include "Settings.h"
 #include "Picture.h"
 
+
 #include "DVDFileInfo.h"
 #include "DVDStreamInfo.h"
 #include "DVDInputStreams/DVDInputStream.h"
@@ -40,6 +41,29 @@
 #include "../ffmpeg/DllAvCodec.h"
 #include "../ffmpeg/DllSwScale.h"
 
+
+bool CDVDFileInfo::GetFileDuration(const CStdString &path, int& duration)
+{
+  std::auto_ptr<CDVDInputStream> input;
+  std::auto_ptr<CDVDDemux> demux;
+
+  input.reset(CDVDFactoryInputStream::CreateInputStream(NULL, path, ""));
+  if (!input.get())
+    return false;
+
+  if (!input->Open(path, ""))
+    return false;
+
+  demux.reset(CDVDFactoryDemuxer::CreateDemuxer(input.get()));
+  if (!demux.get())
+    return false;
+
+  duration = demux->GetStreamLength();
+  if (duration > 0)
+    return true;
+  else
+    return false;
+}
 
 bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &strTarget)
 {
