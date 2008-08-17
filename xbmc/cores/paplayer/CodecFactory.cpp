@@ -51,6 +51,7 @@
 #include "ASAPCodec.h"
 #include "URL.h"
 #include "DVDPlayerCodec.h"
+#include "PSFCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -74,10 +75,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new FLACCodec();
   else if (strFileType.Equals("wav"))
     return new WAVCodec();
-#ifdef HAS_DTS_CODEC
   else if (strFileType.Equals("dts"))
-    return new DTSCodec();
-#endif
+    return new DVDPlayerCodec();
 #ifdef HAS_AC3_CODEC
   else if (strFileType.Equals("ac3"))
     return new AC3Codec();
