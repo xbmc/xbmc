@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 08/15/2008-->
+<!--Date of translation: 08/17/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 14929-->
+<!--Based on english strings version 14957-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1153,6 +1153,7 @@
   <string id="15015">Ta bort</string>
   <string id="15016">Spel</string>
   <string id="15019">Lägg till</string>
+  <string id="15052">Lösenord</string>
   <string id="15100">Bibliotek</string>
   <string id="15101">Databas</string>
   <string id="15102">* Alla album</string>
