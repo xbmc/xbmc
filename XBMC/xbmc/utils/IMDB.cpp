@@ -310,8 +310,6 @@ bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetai
   m_parser.m_param[strHTML.size()+1] = url.m_url[0].m_url;
 
   CStdString strXML = m_parser.Parse(strFunction,&m_info.settings);
-  printf("%s returned xml: %s\n",strFunction.c_str(), strXML.c_str());
-  printf("buf10: %s\n",m_parser.m_param[9].c_str());
   if (strXML.IsEmpty())
   {
     CLog::Log(LOGERROR, "%s: Unable to parse web site [%s]",__FUNCTION__,url.m_url[0].m_url.c_str());
