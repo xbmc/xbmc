@@ -759,9 +759,9 @@ HRESULT CApplication::Create(HWND hWnd)
 
   CStdString strHomePath = "Q:";
   CLog::Log(LOGINFO, "Checking skinpath existence, and existence of keymap.xml:%s...", (strHomePath + "\\skin").c_str());
-  CStdString keymapPath;
+  //CStdString keymapPath;
 
-  keymapPath = g_settings.GetUserDataItem("Keymap.xml");
+  //keymapPath = g_settings.GetUserDataItem("Keymap.xml");
 
   if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   {
@@ -1000,7 +1000,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     symlink( INSTALL_PATH "/scripts",  xbmcDir.c_str() );
 
     // copy required files
-    CopyUserDataIfNeeded(_P("t:\\"), "Keymap.xml");  // Eventual FIXME.
+    //CopyUserDataIfNeeded(_P("t:\\"), "Keymap.xml");  // Eventual FIXME.
     CopyUserDataIfNeeded(_P("t:\\"), "RssFeeds.xml");
     CopyUserDataIfNeeded(_P("t:\\"), "Lircmap.xml");
   }
@@ -1072,7 +1072,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     CreateDirectory(str.c_str(), NULL);
 
     // See if the keymap file exists, and if not, copy it from our "virgin" one.
-    CopyUserDataIfNeeded(str, "Keymap.xml");
+    //CopyUserDataIfNeeded(str, "Keymap.xml");
     CopyUserDataIfNeeded(str, "RssFeeds.xml");
 
     // Put the user data folder somewhere standard for the platform.
@@ -1141,7 +1141,7 @@ CProfile* CApplication::InitDirectoriesWin32()
     CreateDirectory(strPath.c_str(), NULL);
     CIoSupport::RemapDriveLetter('T', strPath.c_str());
     // See if the keymap file exists, and if not, copy it from our "virgin" one.
-    CopyUserDataIfNeeded(strPath, "Keymap.xml");
+    //CopyUserDataIfNeeded(strPath, "Keymap.xml");
     CopyUserDataIfNeeded(strPath, "RssFeeds.xml");
     CopyUserDataIfNeeded(strPath, "favourites.xml");
     CopyUserDataIfNeeded(strPath, "IRSSmap.xml");
