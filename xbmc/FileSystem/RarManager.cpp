@@ -31,6 +31,7 @@
 #include "FileSystem/Directory.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "Application.h"
 
 #include <set>
 
@@ -98,7 +99,8 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
   }
   
   int iRes = 0;
-#ifndef _LINUX
+#if 0 // temporary workaround. disable dialogs as they cause deadlocks since we cannot render 
+      // from spawned threads and dvdplayer stalls the app thread during startup
   //Extract archived file, using existing local copy or overwriting if wanted...
   if (iSize > EXTRACTION_WARN_SIZE)
   {
@@ -146,7 +148,6 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
   strPath.Replace('/', '\\');
 #endif
   //g_charsetConverter.stringCharsetToUtf8(strPath);
-  printf("strpath %s\n",strPath.c_str());
 
   __int64 iOffset = -1;
   if (iRes != 2)
@@ -169,7 +170,6 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
           g_charsetConverter.wToUTF8(pIterator->item.NameW, strName);
         else
           g_charsetConverter.stringCharsetToUtf8(pIterator->item.Name, strName);
-        printf("strname %s\n",strName.c_str());
         if (strName.Equals(strPath))
         {
           iOffset = pIterator->item.iOffset;
