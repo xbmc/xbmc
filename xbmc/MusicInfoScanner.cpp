@@ -759,6 +759,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   CStdString strAlbumPath, strNfo;
   m_musicDatabase.GetAlbumPath(params.GetAlbumId(),strAlbumPath);
   CUtil::AddFileToFolder(strAlbumPath,"album.nfo",strNfo);
+  bool nfoUrl = false;
   if (XFILE::CFile::Exists(strNfo))
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
@@ -780,6 +781,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
         CScraperUrl scrUrl(nfoReader.m_strImDbUrl);
         CMusicAlbumInfo album("nfo",scrUrl);
         scraper.GetAlbums().push_back(album);
+        nfoUrl = true;
       }
     }
     else
@@ -801,95 +803,98 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
 
   CGUIDialogSelect *pDlg=NULL;
   int iSelectedAlbum=0;
-  if (scraper.Successfull() && scraper.GetAlbumCount() >= 1)
+  if (!nfoUrl)
   {
-    int bestMatch = 0;
-    double bestRelevance = 0;
-    double minRelevance = THRESHOLD;
-    if (scraper.GetAlbumCount() > 1) // score the matches
+    if (scraper.Successfull() && scraper.GetAlbumCount() >= 1)
     {
-      //show dialog with all albums found
-      if (pDialog)
+      int bestMatch = 0;
+      double bestRelevance = 0;
+      double minRelevance = THRESHOLD;
+      if (scraper.GetAlbumCount() > 1) // score the matches
       {
-        pDlg = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
-        pDlg->SetHeading(g_localizeStrings.Get(181).c_str());
-        pDlg->Reset();
-        pDlg->EnableButton(true);
-        pDlg->SetButtonLabel(413); // manual
-      }
-
-      double secondBestRelevance = 0;
-      for (int i = 0; i < scraper.GetAlbumCount(); ++i)
-      {
-        CMusicAlbumInfo& info = scraper.GetAlbum(i);
-        double relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, strAlbum, info.GetAlbum().strArtist, strArtist);
-
-        // if we're doing auto-selection (ie querying all albums at once, then allow 95->100% for perfect matches)
-        // otherwise, perfect matches only
-        if (relevance >= max(minRelevance, bestRelevance))
-        { // we auto-select the best of these
-          secondBestRelevance = bestRelevance;
-          bestRelevance = relevance;
-          bestMatch = i;
-        }
+        //show dialog with all albums found
         if (pDialog)
         {
-          // set the label to [relevance]  album - artist
-          CStdString strTemp;
-          strTemp.Format("[%0.2f]  %s", relevance, info.GetTitle2());
-          CFileItem item(strTemp);
-          item.m_idepth = i; // use this to hold the index of the album in the scraper
-          pDlg->Add(&item);
+          pDlg = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+          pDlg->SetHeading(g_localizeStrings.Get(181).c_str());
+          pDlg->Reset();
+          pDlg->EnableButton(true);
+          pDlg->SetButtonLabel(413); // manual
         }
+
+        double secondBestRelevance = 0;
+        for (int i = 0; i < scraper.GetAlbumCount(); ++i)
+        {
+          CMusicAlbumInfo& info = scraper.GetAlbum(i);
+          double relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, strAlbum, info.GetAlbum().strArtist, strArtist);
+
+          // if we're doing auto-selection (ie querying all albums at once, then allow 95->100% for perfect matches)
+          // otherwise, perfect matches only
+          if (relevance >= max(minRelevance, bestRelevance))
+          { // we auto-select the best of these
+            secondBestRelevance = bestRelevance;
+            bestRelevance = relevance;
+            bestMatch = i;
+          }
+          if (pDialog)
+          {
+            // set the label to [relevance]  album - artist
+            CStdString strTemp;
+            strTemp.Format("[%0.2f]  %s", relevance, info.GetTitle2());
+            CFileItem item(strTemp);
+            item.m_idepth = i; // use this to hold the index of the album in the scraper
+            pDlg->Add(&item);
+          }
+        }
+      }
+      else
+      {
+        CMusicAlbumInfo& info = scraper.GetAlbum(0);
+        double relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, strAlbum, info.GetAlbum().strArtist, strArtist);
+        if (relevance < THRESHOLD)
+        {
+          m_musicDatabase.Close();
+          return false;
+        }
+      }
+
+      iSelectedAlbum = bestMatch;
+      if (pDialog && bestRelevance < THRESHOLD)
+      {
+        pDlg->Sort(false);
+        pDlg->DoModal();
+
+        // and wait till user selects one
+        if (pDlg->GetSelectedLabel() < 0)
+        { // none chosen
+          if (!pDlg->IsButtonPressed())
+          {
+            bCanceled = true;
+            return false;
+          }
+          // manual button pressed
+          CStdString strNewAlbum = strAlbum;
+          if (!CGUIDialogKeyboard::ShowAndGetInput(strNewAlbum, g_localizeStrings.Get(16011), false)) return false;
+          if (strNewAlbum == "") return false;
+
+          CStdString strNewArtist = strArtist;
+          if (!CGUIDialogKeyboard::ShowAndGetInput(strNewArtist, g_localizeStrings.Get(16025), false)) return false;
+
+          pDialog->SetLine(0, strNewAlbum);
+          pDialog->SetLine(1, strNewArtist);
+          pDialog->Progress();
+
+          m_musicDatabase.Close();
+          return DownloadAlbumInfo(strPath,strArtist,strAlbum,bCanceled,albumInfo,pDialog);
+        }
+        iSelectedAlbum = pDlg->GetSelectedItem().m_idepth;
       }
     }
     else
     {
-      CMusicAlbumInfo& info = scraper.GetAlbum(0);
-      double relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, strAlbum, info.GetAlbum().strArtist, strArtist);
-      if (relevance < THRESHOLD)
-      {
-        m_musicDatabase.Close();
-        return false;
-      }
-   }
-
-    iSelectedAlbum = bestMatch;
-    if (pDialog && bestRelevance < THRESHOLD)
-    {
-      pDlg->Sort(false);
-      pDlg->DoModal();
-
-      // and wait till user selects one
-      if (pDlg->GetSelectedLabel() < 0)
-      { // none chosen
-        if (!pDlg->IsButtonPressed())
-        {
-          bCanceled = true;
-          return false;
-        }
-        // manual button pressed
-        CStdString strNewAlbum = strAlbum;
-        if (!CGUIDialogKeyboard::ShowAndGetInput(strNewAlbum, g_localizeStrings.Get(16011), false)) return false;
-        if (strNewAlbum == "") return false;
-
-        CStdString strNewArtist = strArtist;
-        if (!CGUIDialogKeyboard::ShowAndGetInput(strNewArtist, g_localizeStrings.Get(16025), false)) return false;
-
-        pDialog->SetLine(0, strNewAlbum);
-        pDialog->SetLine(1, strNewArtist);
-        pDialog->Progress();
-
-        m_musicDatabase.Close();
-        return DownloadAlbumInfo(strPath,strArtist,strAlbum,bCanceled,albumInfo,pDialog);
-      }
-      iSelectedAlbum = pDlg->GetSelectedItem().m_idepth;
+      m_musicDatabase.Close();
+      return false;
     }
-  }
-  else
-  {
-    m_musicDatabase.Close();
-    return false;
   }
 
   scraper.LoadAlbuminfo(iSelectedAlbum);
@@ -959,6 +964,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   CStdString strArtistPath, strNfo;
   m_musicDatabase.GetArtistPath(params.GetArtistId(),strArtistPath);
   CUtil::AddFileToFolder(strArtistPath,"artist.nfo",strNfo);
+  bool nfoUrl = false;
   if (XFILE::CFile::Exists(strNfo))
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
@@ -979,6 +985,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
         CScraperUrl scrUrl(nfoReader.m_strImDbUrl);
         CMusicArtistInfo artist("nfo",scrUrl);
         scraper.GetArtists().push_back(artist);
+        nfoUrl = true;
       }
     }
     else
@@ -998,78 +1005,81 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
     Sleep(1);
   }
 
-  if (scraper.Successfull() && scraper.GetArtistCount() >= 1)
+  int iSelectedArtist = 0;
+  if (!nfoUrl)
   {
-    int iSelectedArtist = 0;
-    // now load the first match
-    if (pDialog && scraper.GetArtistCount() > 1)
+    if (scraper.Successfull() && scraper.GetArtistCount() >= 1)
     {
-      // if we found more then 1 album, let user choose one
-      CGUIDialogSelect *pDlg = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
-      if (pDlg)
+      // now load the first match
+      if (pDialog && scraper.GetArtistCount() > 1)
       {
-        pDlg->SetHeading(g_localizeStrings.Get(21890));
-        pDlg->Reset();
-        pDlg->EnableButton(true);
-        pDlg->SetButtonLabel(413); // manual
-
-        for (int i = 0; i < scraper.GetArtistCount(); ++i)
+        // if we found more then 1 album, let user choose one
+        CGUIDialogSelect *pDlg = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+        if (pDlg)
         {
-          // set the label to artist
-          CFileItem item(scraper.GetArtist(i).GetArtist());
-          CStdString strTemp=scraper.GetArtist(i).GetArtist().strArtist;
-          if (!scraper.GetArtist(i).GetArtist().strBorn.IsEmpty())
-            strTemp += " ("+scraper.GetArtist(i).GetArtist().strBorn+")";
-          if (!scraper.GetArtist(i).GetArtist().strGenre.IsEmpty())
-            strTemp.Format("[%s] %s",scraper.GetArtist(i).GetArtist().strGenre.c_str(),strTemp.c_str());
-          item.SetLabel(strTemp);
-          item.m_idepth = i; // use this to hold the index of the album in the scraper
-          pDlg->Add(&item);
-        }
-        pDlg->DoModal();
+          pDlg->SetHeading(g_localizeStrings.Get(21890));
+          pDlg->Reset();
+          pDlg->EnableButton(true);
+          pDlg->SetButtonLabel(413); // manual
 
-        // and wait till user selects one
-        if (pDlg->GetSelectedLabel() < 0)
-        { // none chosen
-          if (!pDlg->IsButtonPressed()) return false;
-          // manual button pressed
-          CStdString strNewArtist = strArtist;
-          if (!CGUIDialogKeyboard::ShowAndGetInput(strNewArtist, g_localizeStrings.Get(16025), false)) return false;
-
-          if (pDialog)
+          for (int i = 0; i < scraper.GetArtistCount(); ++i)
           {
-            pDialog->SetLine(0, strNewArtist);
-            pDialog->Progress();
+            // set the label to artist
+            CFileItem item(scraper.GetArtist(i).GetArtist());
+            CStdString strTemp=scraper.GetArtist(i).GetArtist().strArtist;
+            if (!scraper.GetArtist(i).GetArtist().strBorn.IsEmpty())
+              strTemp += " ("+scraper.GetArtist(i).GetArtist().strBorn+")";
+            if (!scraper.GetArtist(i).GetArtist().strGenre.IsEmpty())
+              strTemp.Format("[%s] %s",scraper.GetArtist(i).GetArtist().strGenre.c_str(),strTemp.c_str());
+            item.SetLabel(strTemp);
+            item.m_idepth = i; // use this to hold the index of the album in the scraper
+            pDlg->Add(&item);
           }
-          m_musicDatabase.Close();
-          return DownloadArtistInfo(strPath,strArtist,pDialog);
+          pDlg->DoModal();
+
+          // and wait till user selects one
+          if (pDlg->GetSelectedLabel() < 0)
+          { // none chosen
+            if (!pDlg->IsButtonPressed()) return false;
+            // manual button pressed
+            CStdString strNewArtist = strArtist;
+            if (!CGUIDialogKeyboard::ShowAndGetInput(strNewArtist, g_localizeStrings.Get(16025), false)) return false;
+
+            if (pDialog)
+            {
+              pDialog->SetLine(0, strNewArtist);
+              pDialog->Progress();
+            }
+            m_musicDatabase.Close();
+            return DownloadArtistInfo(strPath,strArtist,pDialog);
+          }
+          iSelectedArtist = pDlg->GetSelectedItem().m_idepth;
         }
-        iSelectedArtist = pDlg->GetSelectedItem().m_idepth;
       }
     }
-
-    scraper.LoadArtistinfo(iSelectedArtist);
-
-    while (!scraper.Completed())
+    else
     {
-      if (m_bStop)
-      {
-        scraper.Cancel();
-        break;
-      }
-      Sleep(1);
-    }
-
-    if (scraper.Successfull())
-    {
-      artist = scraper.GetArtist(iSelectedArtist).GetArtist();
-      m_musicDatabase.SetArtistInfo(params.GetArtistId(), artist);
+      m_musicDatabase.Close();
+      return false;
     }
   }
-  else
+
+  scraper.LoadArtistinfo(iSelectedArtist);
+
+  while (!scraper.Completed())
   {
-    m_musicDatabase.Close();
-    return false;
+    if (m_bStop)
+    {
+      scraper.Cancel();
+      break;
+    }
+    Sleep(1);
+  }
+
+  if (scraper.Successfull())
+  {
+    artist = scraper.GetArtist(iSelectedArtist).GetArtist();
+    m_musicDatabase.SetArtistInfo(params.GetArtistId(), artist);
   }
 
   // check thumb stuff
