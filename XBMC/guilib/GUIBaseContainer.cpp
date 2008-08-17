@@ -400,7 +400,7 @@ bool CGUIBaseContainer::SelectItemFromPoint(const CPoint &point)
 
   int row = 0;
   float pos = (m_orientation == VERTICAL) ? point.y : point.x;
-  while (row < m_itemsPerPage)
+  while (row < m_itemsPerPage + 1)  // 1 more to ensure we get the (possible) half item at the end.
   {
     const CGUIListItemLayout *layout = (row == m_cursor) ? m_focusedLayout : m_layout;
     if (pos < layout->Size(m_orientation) && row + m_offset < (int)m_items.size())
