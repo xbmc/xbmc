@@ -1091,8 +1091,7 @@ void CXBoxRenderer::Render(DWORD flags)
 
     if (!g_application.IsPaused())
     {
-      if (g_advancedSettings.m_logLevel <= LOGNOTICE)
-        g_application.RenderMemoryStatus();
+      g_application.RenderMemoryStatus();
     }
   }
 }
