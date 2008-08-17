@@ -25,6 +25,7 @@
 #include "Util.h"
 #include "TextureManager.h"
 #include "cores/PlayerCoreFactory.h"
+#include "cores/dvdplayer/DVDFileInfo.h"
 #include "PlayListPlayer.h"
 #include "MusicDatabase.h"
 #include "VideoDatabase.h"
@@ -214,7 +215,6 @@
 #include "utils/EventServer.h"
 #endif
 
-#include "cores/dlgcache.h"
 #include "lib/libcdio/logging.h"
 
 using namespace std;
@@ -3790,31 +3790,13 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
       (*m_currentStack)[i]->m_lEndOffset = times[i];
     else
     {
-      EPLAYERCORES eNewCore = m_eForcedNextPlayer;
-      if (eNewCore == EPC_NONE)
-        eNewCore = CPlayerCoreFactory::GetDefaultPlayer(item);
-
-      m_pPlayer = CPlayerCoreFactory::CreatePlayer(eNewCore, *this);
-      if(!m_pPlayer)
+      int duration;
+      if (!CDVDFileInfo::GetFileDuration((*m_currentStack)[i]->m_strPath, duration))
       {
         m_currentStack->Clear();
         return false;
       }
-
-      CPlayerOptions options;
-      options.identify = true;
-
-      if (!m_pPlayer->OpenFile(*(*m_currentStack)[i], options))
-      {
-        m_currentStack->Clear();
-        return false;
-      }
-
-      totalTime += (long)m_pPlayer->GetTotalTime();
-
-      m_pPlayer->CloseFile();
-      SAFE_DELETE(m_pPlayer);
-
+      totalTime += duration / 1000;
       (*m_currentStack)[i]->m_lEndOffset = totalTime;
       times.push_back(totalTime);
     }
@@ -3822,7 +3804,6 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
 
   *m_itemCurrentFile = item;
   m_currentStackPosition = 0;
-  m_eCurrentPlayer = EPC_NONE; // must be reset on initial play otherwise last player will be used
 
   double seconds = item.m_lStartOffset / 75.0;
 

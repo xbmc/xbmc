@@ -31,4 +31,5 @@ public:
   // GetFileMetaData will fill pItem's properties according to what can be extracted from the file.
   static void GetFileMetaData(const CStdString &strPath, CFileItem *pItem); 
 
+  static bool GetFileDuration(const CStdString &path, int &duration);
 };
