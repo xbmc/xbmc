@@ -2861,6 +2861,7 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
+    DWORD time = timeGetTime();
     // We don't use FormatSQL here, as the WHERE clause is already formatted.
     CStdString strSQL = "select * from songview " + whereClause;
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
@@ -2890,6 +2891,7 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString
 
     // cleanup
     m_pDS->close();
+    CLog::Log(LOGDEBUG, "%s(%s) - took %d ms", __FUNCTION__, whereClause.c_str(), timeGetTime() - time);
     return true;
   }
   catch (...)
