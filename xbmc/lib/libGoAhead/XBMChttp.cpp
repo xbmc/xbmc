@@ -1720,7 +1720,7 @@ int CXbmcHttp::xbmcGetThumb(int numParas, CStdString paras[], bool bGetThumb)
   }
   if (CUtil::IsRemote(paras[0]))
   {
-    CStdString strDest="Z:\\xbmcDownloadFile.tmp";
+    CStdString strDest=_P("Z:\\")+"xbmcDownloadFile.tmp";
     CFile::Cache(paras[0], strDest.c_str(),NULL,NULL) ;
     if (CFile::Exists(strDest))
     {
@@ -2255,7 +2255,7 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
     if (numParas>1)
       dest=paras[1];
     if (dest=="")
-      dest="Z:\\xbmcDownloadInternetFile.tmp" ;
+      dest=_P("Z:\\")+"xbmcDownloadInternetFile.tmp" ;
     if (src=="")
       return SetResponse(openTag+"Error:Missing parameter");
     else
@@ -2269,7 +2269,7 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
         if (encoded=="")
           return SetResponse(openTag+"Error:Nothing downloaded");
         {
-          if (dest=="Z:\\xbmcDownloadInternetFile.tmp")
+          if (dest==_P("Z:\\")+"xbmcDownloadInternetFile.tmp")
           ::DeleteFile(dest);
           return SetResponse(encoded) ;
         }
@@ -2290,26 +2290,27 @@ int CXbmcHttp::xbmcSetFile(int numParas, CStdString paras[])
   else
   {
     paras[1].Replace(" ","+");
+	CStdString tmpFile = _P("Z:\\")+"xbmcTemp.tmp";
 	if (numParas>2)
 	  if (paras[2].ToLower() == "first")
-		decodeBase64ToFile(paras[1], "Z:\\xbmcTemp.tmp");
+		decodeBase64ToFile(paras[1], tmpFile);
 	  else 
 	    if (paras[2].ToLower() == "continue")
-		  decodeBase64ToFile(paras[1], "Z:\\xbmcTemp.tmp", true);
+		  decodeBase64ToFile(paras[1], tmpFile, true);
 		else
 		  if (paras[2].ToLower() == "last")
 		  {
-		    decodeBase64ToFile(paras[1], "Z:\\xbmcTemp.tmp", true);
-			CFile::Cache("Z:\\xbmcTemp.tmp", paras[0].c_str(), NULL, NULL) ;
-            ::DeleteFile("Z:\\xbmcTemp.tmp");
+		    decodeBase64ToFile(paras[1], tmpFile, true);
+			CFile::Cache(tmpFile, paras[0].c_str(), NULL, NULL) ;
+            ::DeleteFile(tmpFile);
 		  }
 		  else
 		    return  SetResponse(openTag+"Error:Unknown 2nd parameter");
 	else
 	{
-      decodeBase64ToFile(paras[1], "Z:\\xbmcTemp.tmp");
-      CFile::Cache("Z:\\xbmcTemp.tmp", paras[0].c_str(), NULL, NULL) ;
-      ::DeleteFile("Z:\\xbmcTemp.tmp");
+      decodeBase64ToFile(paras[1], tmpFile);
+      CFile::Cache(tmpFile, paras[0].c_str(), NULL, NULL) ;
+      ::DeleteFile(tmpFile);
 	}
     return SetResponse(openTag+"OK");
   }
@@ -2735,12 +2736,13 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
   {
     CStdString filepath;
     if (paras[0]=="")
-      filepath="Z:\\screenshot.jpg";
+      filepath=_P("Z:\\")+"screenshot.jpg";
     else
       filepath=paras[0];
     if (numParas>5)
     {
-      CUtil::TakeScreenshot("Z:\\temp.bmp", paras[1].ToLower()=="true");
+	  CStdString tmpFile=_P("Z:\\")+"temp.bmp";
+      CUtil::TakeScreenshot(tmpFile, paras[1].ToLower()=="true");
       int height, width;
       if (paras[4]=="")
         if (paras[3]=="")
@@ -2765,10 +2767,10 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
         }
       CPicture pic;
       int ret;
-      ret=pic.ConvertFile("Z:\\temp.bmp", filepath, (float) atof(paras[2]), width, height, atoi(paras[5]));
+      ret=pic.ConvertFile(tmpFile, filepath, (float) atof(paras[2]), width, height, atoi(paras[5]));
       if (ret==0)
       {
-        ::DeleteFile("Z:\\temp.bmp");
+        ::DeleteFile(tmpFile);
         if (numParas>6)
           if (paras[6].ToLower()=="true")
           {
@@ -2783,7 +2785,7 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
               linesize=0;
             }
             b64+=encodeFileToBase64(filepath,linesize);
-            if (filepath=="Z:\\screenshot.jpg")
+            if (filepath==_P("Z:\\")+"screenshot.jpg")
               ::DeleteFile(filepath.c_str());
             if (bImgTag)
             {
@@ -2945,12 +2947,11 @@ int CXbmcHttp::xbmcSetResponseFormat(int numParas, CStdString paras[])
 int CXbmcHttp::xbmcHelp()
 {
   CStdString output;
-  output="<p><b>XBMC HTTP API Commands</b></p><p><b>Syntax: http://xbox/xbmcCmds/xbmcHttp?command=</b>one_of_the_commands_in_the_list_below<b>&ampparameter=</b>first_parameter<b>;</b>second_parameter<b>;...</b></p><p>Note the use of the semi colon to separate multiple parameters</p><p>The commands are case insensitive.</p>";
-
-  output+= "<p>The full documentation can be found here: <a  href=\"http://www.xboxmediacenter.com/wiki/index.php?title=WebServerHTTP-API\">http://www.xboxmediacenter.com/wiki/index.php?title=WebServerHTTP-API</a></p><p>The following list of commands is not necessarily complete</p>";
-
-  output+= openTag+"clearplaylist"+closeTag+openTag+"addtoplaylist"+closeTag+openTag+"playfile"+closeTag+openTag+"pause"+closeTag+openTag+"stop"+closeTag+openTag+"restart"+closeTag+openTag+"shutdown"+closeTag+openTag+"exit"+closeTag+openTag+"reset"+closeTag+openTag+"restartapp"+closeTag+openTag+"getcurrentlyplaying"+closeTag+openTag+"getdirectory"+closeTag+openTag+"gettagfromfilename"+closeTag+openTag+"getcurrentplaylist"+closeTag+openTag+"setcurrentplaylist"+closeTag+openTag+"getplaylistcontents"+closeTag+openTag+"removefromplaylist"+closeTag+openTag+"setplaylistsong"+closeTag+openTag+"getplaylistsong"+closeTag+openTag+"playlistnext"+closeTag+openTag+"playlistprev"+closeTag+openTag+"getpercentage"+closeTag+openTag+"seekpercentage"+closeTag+openTag+"seekpercentagerelative"+closeTag+openTag+"setvolume"+closeTag+openTag+"getvolume"+closeTag+openTag+"getthumbfilename"+closeTag+openTag+"lookupalbum"+closeTag+openTag+"choosealbum"+closeTag+openTag+"downloadinternetfile"+closeTag+openTag+"getmoviedetails"+closeTag+openTag+"showpicture"+closeTag+openTag+"sendkey"+closeTag+openTag+"filedelete"+closeTag+openTag+"filecopy"+closeTag+openTag+"fileexists"+closeTag+openTag+"fileupload"+closeTag+openTag+"getguistatus"+closeTag+openTag+"execbuiltin"+closeTag+openTag+"config"+closeTag+openTag+"getsysteminfo"+closeTag+openTag+"getsysteminfobyname"+closeTag+openTag+"guisetting"+closeTag+openTag+"addtoslideshow"+closeTag+openTag+"clearslideshow"+closeTag+openTag+"playslideshow"+closeTag+openTag+"getslideshowcontents"+closeTag+openTag+"slideshowselect"+closeTag+openTag+"getcurrentslide"+closeTag+openTag+"rotate"+closeTag+openTag+"move"+closeTag+openTag+"zoom"+closeTag+openTag+"playnext"+closeTag+openTag+"playprev"+closeTag+openTag+"TakeScreenShot"+closeTag+openTag+"GetGUIDescription"+closeTag+openTag+"GetPlaySpeed"+closeTag+openTag+"SetPlaySpeed"+closeTag+openTag+"SetResponseFormat"+closeTag+openTag+"Help";
-
+  output="<p><b>XBMC HTTP API Commands</b></p><p>There are two alternative but equivalent syntax forms:</p>";
+  output+="<p><b>Syntax 1: http://xbox/xbmcCmds/xbmcHttp?command=</b>command<b>&ampparameter=</b>first_parameter<b>;</b>second_parameter<b>;...</b></p>";
+  output+="<p><b>Syntax 2: http://xbox/xbmcCmds/xbmcHttp?command=</b>command<b>(</b>first_parameter<b>;</b>second_parameter<b>;...</b><b>)</b></p>";
+  output+="<p>Note the use of the semi colon to separate multiple parameters.</p><p>The commands are case insensitive.</p>";
+  output+= "<p>The full documentation can be found here: <a  href=\"http://xbmc.org/wiki/index.php?title=WebServerHTTP-API\">http://xbmc.org/wiki/index.php?title=WebServerHTTP-API</a></p>";
   return SetResponse(output);
 }
 
