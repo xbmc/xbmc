@@ -1,8 +1,0 @@
-include ../../../../Makefile.include
-
-LIB=../../../../system/players/paplayer/dcacodec-@ARCH@.so
-
-lib: $(LIB)
-
-$(LIB):
-	gcc -fPIC -shared -o $@ ../../dvdplayer/Codecs/libdts/libdts/*_pic*.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o

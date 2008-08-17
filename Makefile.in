@@ -53,7 +53,6 @@ PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/SIDCodec \
 	xbmc/cores/paplayer/WavPackCodec \
 	xbmc/cores/paplayer/GYMCodec \
-	xbmc/cores/paplayer/DCACodec \
 	xbmc/cores/paplayer/YMCodec/StSoundLibrary \
 	xbmc/cores/paplayer/ModuleCodec/vc6/dumb \
 	xbmc/cores/paplayer/MPCCodec/xbmc \
@@ -189,7 +188,6 @@ papcodecs: dllloader linux dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/AACCodec
 	$(MAKE) -C xbmc/cores/paplayer/AC3Codec
 	$(MAKE) -C xbmc/cores/paplayer/ADPCMCodec
-	$(MAKE) -C xbmc/cores/paplayer/DCACodec
 	$(MAKE) -C xbmc/cores/paplayer/flac-1.2.1
 	$(MAKE) -C xbmc/cores/paplayer/GYMCodec
 	$(MAKE) -C xbmc/cores/paplayer/MACDll
