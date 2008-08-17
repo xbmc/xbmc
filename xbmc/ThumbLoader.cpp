@@ -20,15 +20,6 @@
  */
 
 #include "stdafx.h"
-#ifndef __STDC_CONSTANT_MACROS
-#define __STDC_CONSTANT_MACROS
-#endif
-#ifdef _LINUX
-#include "stdint.h"
-#else
-#define INT64_C __int64
-#endif
-
 #include "FileSystem/StackDirectory.h"
 #include "ThumbLoader.h"
 #include "Util.h"
@@ -38,11 +29,8 @@
 #include "FileItem.h"
 #include "Settings.h"
 
-#include "cores/ffmpeg/DllAvFormat.h"
-#include "cores/ffmpeg/DllAvCodec.h"
-#include "cores/ffmpeg/DllSwScale.h"
 
-#include "cores/dvdplayer/DVDPlayer.h"
+#include "cores/dvdplayer/DVDFileInfo.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -58,24 +46,10 @@ CVideoThumbLoader::~CVideoThumbLoader()
 
 void CVideoThumbLoader::OnLoaderStart() 
 {
-  // load ffmpeg libs in start - just a small optimization so that when the frame extractor will run ffmpeg will
-  // already be in memory. not a requirement.
-  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllAvFormat.Load() || !m_dllSwScale.Load())  
-  {
-    CLog::Log(LOGERROR,"%s - failed to load ffmpeg lib", __FUNCTION__);
-    return;
-  }
-
-  m_dllAvFormat.av_register_all();
-  m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
 }
 
 void CVideoThumbLoader::OnLoaderFinish() 
 {
-  m_dllAvFormat.Unload();
-  m_dllAvCodec.Unload();
-  m_dllAvUtil.Unload();
-  m_dllSwScale.Unload();
 }
 
 bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString &strTarget)
@@ -93,7 +67,7 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
     return false;
 
   CLog::Log(LOGDEBUG,"%s - trying to extract thumb from video file %s", __FUNCTION__, strPath.c_str());
-  return CDVDPlayer::ExtractThumb(strPath, strTarget);
+  return CDVDFileInfo::ExtractThumb(strPath, strTarget);
 }
 
 bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
