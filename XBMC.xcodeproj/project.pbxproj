@@ -894,6 +894,7 @@
 		E3E920060D8C6277002BF43D /* ScraperSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E920050D8C6277002BF43D /* ScraperSettings.cpp */; };
 		E3EB8F060D5D5C0300FFF489 /* libmad.0.2.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */; };
 		E3EB8F080D5D5C0300FFF489 /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */; };
+		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
 		F57E213F0E3C3AB300700C9D /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E213E0E3C3AB200700C9D /* libiconv.dylib */; };
 		F57E21410E3C3AD400700C9D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E21400E3C3AD400700C9D /* libz.dylib */; };
 		F5F8E1BA0E42738B00A8E96F /* avutil-51-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F8E1B50E42738B00A8E96F /* avutil-51-osx.a */; };
@@ -2739,6 +2740,8 @@
 		E3E920050D8C6277002BF43D /* ScraperSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ScraperSettings.cpp; sourceTree = "<group>"; };
 		E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmad.0.2.1.dylib; path = /opt/local/lib/libmad.0.2.1.dylib; sourceTree = "<absolute>"; };
 		E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbis.dylib; path = /opt/local/lib/libvorbis.dylib; sourceTree = "<absolute>"; };
+		F50629780E57B9680066625A /* MultiPathFile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MultiPathFile.cpp; sourceTree = "<group>"; };
+		F50629790E57B9680066625A /* MultiPathFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MultiPathFile.h; sourceTree = "<group>"; };
 		F57E213E0E3C3AB200700C9D /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /opt/local/lib/libiconv.dylib; sourceTree = "<absolute>"; };
 		F57E21400E3C3AD400700C9D /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /opt/local/lib/libz.dylib; sourceTree = "<absolute>"; };
 		F5F8E1B50E42738B00A8E96F /* avutil-51-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "avutil-51-osx.a"; path = "system/players/dvdplayer/avutil-51-osx.a"; sourceTree = "<group>"; };
@@ -4302,9 +4305,10 @@
 				E38E16F40D25F9FA00618676 /* ISO9660Directory.h */,
 				E38E16F50D25F9FA00618676 /* LastFMDirectory.cpp */,
 				E38E16F60D25F9FA00618676 /* LastFMDirectory.h */,
-				E38E16F90D25F9FA00618676 /* MemoryUnits */,
 				E38E17080D25F9FA00618676 /* MultiPathDirectory.cpp */,
 				E38E17090D25F9FA00618676 /* MultiPathDirectory.h */,
+				F50629780E57B9680066625A /* MultiPathFile.cpp */,
+				F50629790E57B9680066625A /* MultiPathFile.h */,
 				E38E170A0D25F9FA00618676 /* MusicDatabaseDirectory */,
 				E38E17370D25F9FA00618676 /* MusicDatabaseDirectory.cpp */,
 				E38E17380D25F9FA00618676 /* MusicDatabaseDirectory.h */,
@@ -4372,13 +4376,6 @@
 				E38E16A90D25F9FA00618676 /* types.h */,
 			);
 			path = curl;
-			sourceTree = "<group>";
-		};
-		E38E16F90D25F9FA00618676 /* MemoryUnits */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = MemoryUnits;
 			sourceTree = "<group>";
 		};
 		E38E170A0D25F9FA00618676 /* MusicDatabaseDirectory */ = {
@@ -6633,6 +6630,7 @@
 				F5F8E1F00E42807A00A8E96F /* ArabicShaping.cpp in Sources */,
 				F5F95DA00E4E203700C3FA5C /* GUIWindowTestPattern.cpp in Sources */,
 				F5F95DAE0E4E220900C3FA5C /* language.cpp in Sources */,
+				F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
