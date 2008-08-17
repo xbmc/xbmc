@@ -302,7 +302,9 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   if (shared == 0)
   {
 #endif
+#ifndef __APPLE__
     int options = SDL_OPENGL | (fullscreen?SDL_FULLSCREEN:0);
+#endif
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   m_iRedSize);
     SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, m_iGreenSize);
     SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  m_iBlueSize);
