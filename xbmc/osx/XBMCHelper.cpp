@@ -76,8 +76,12 @@ XBMCHelper::XBMCHelper()
 void XBMCHelper::Start()
 {
   printf("Asking helper to start.\n");
-  string cmd = "\"" + m_helperFile + "\" &";
-  system(cmd.c_str());
+  int pid = GetProcessPid(XBMC_HELPER_PROGRAM);
+  if (pid == -1)
+  {
+    string cmd = "\"" + m_helperFile + "\" &";
+    system(cmd.c_str());
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -165,17 +169,24 @@ void XBMCHelper::Install()
   // Load template.
   string plistData = ReadFile(m_launchAgentLocalFile.c_str());
 
-  // Replace it in the file.
-  int start = plistData.find("${PATH}");
-  plistData.replace(start, 7, m_helperFile.c_str(), m_helperFile.length());
+  if (plistData != "") 
+  {
+      // Replace it in the file.
+      int start = plistData.find("${PATH}");
+      plistData.replace(start, 7, m_helperFile.c_str(), m_helperFile.length());
 
-  // Install it.
-  WriteFile(m_launchAgentInstallFile.c_str(), plistData);
+      // Install it.
+      WriteFile(m_launchAgentInstallFile.c_str(), plistData);
 
-  // Load it.
-  string cmd = "/bin/launchctl load ";
-  cmd += m_launchAgentInstallFile;
-  system(cmd.c_str());
+      // Load it.
+      int pid = GetProcessPid(XBMC_HELPER_PROGRAM);
+      if (pid == -1)
+      {
+          string cmd = "/bin/launchctl load ";
+          cmd += m_launchAgentInstallFile;
+          system(cmd.c_str());
+      }
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -207,24 +218,32 @@ bool XBMCHelper::IsSofaControlRunning()
 /////////////////////////////////////////////////////////////////////////////
 std::string XBMCHelper::ReadFile(const char* fileName)
 {
+  std::string ret = "";
   ifstream is;
+  
   is.open(fileName);
+  if( is.good() )
+  {
+      // Get length of file:
+      is.seekg (0, ios::end);
+      int length = is.tellg();
+      is.seekg (0, ios::beg);
 
-  // Get length of file:
-  is.seekg (0, ios::end);
-  int length = is.tellg();
-  is.seekg (0, ios::beg);
+      // Allocate memory:
+      char* buffer = new char [length+1];
 
-  // Allocate memory:
-  char* buffer = new char [length+1];
+      // Read data as a block:
+      is.read(buffer,length);
+      is.close();
+      buffer[length] = '\0';
 
-  // Read data as a block:
-  is.read(buffer,length);
-  is.close();
-  buffer[length] = '\0';
-
-  std::string ret = buffer;
-  delete[] buffer;
+      std::string ret = buffer;
+      delete[] buffer;
+  }
+  else
+  {
+      std::string ret = "";
+  }
   return ret;
 }
 
