@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 08/15/2008-->
+<!--Date of translation: 08/18/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 14928-->
+<!--Based on english strings version 14957-->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -318,7 +318,7 @@
   <string id="405">露点</string>
   <string id="406">湿度</string>
   <string id="407">风向</string>
-  <string id="408">风力</string>
+  <string id="408">风速</string>
   <string id="409">默认</string>
   <string id="410">访问 Weather.com</string>
   <string id="411">取得天气数据：</string>
@@ -1151,8 +1151,10 @@
   <string id="14078">皮肤颜色</string>
   <string id="14079">时区-国家</string>
   <string id="14080">时区</string>
+  <string id="15015">删除</string>
   <string id="15016">游戏</string>
   <string id="15019">添加</string>
+  <string id="15052">密码</string>
   <string id="15100">资料库</string>
   <string id="15101">数据库</string>
   <string id="15102">* 所有专辑</string>
