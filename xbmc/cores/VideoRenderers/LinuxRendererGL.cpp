@@ -1595,8 +1595,7 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
       g_application.RenderFullScreen();
       VerifyGLState();
     }
-    if (g_advancedSettings.m_logLevel <= LOGNOTICE)
-      g_application.RenderMemoryStatus();
+    g_application.RenderMemoryStatus();
     VerifyGLState();
   }
 }
