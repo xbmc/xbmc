@@ -28,7 +28,9 @@
 CDownloadQueueManager g_DownloadManager;
 
 CDownloadQueueManager::CDownloadQueueManager()
-{}
+{
+  InitializeCriticalSection(&m_critical);
+}
 
 CDownloadQueueManager::~CDownloadQueueManager(void)
 {
@@ -37,7 +39,6 @@ CDownloadQueueManager::~CDownloadQueueManager(void)
 
 VOID CDownloadQueueManager::Initialize()
 {
-  InitializeCriticalSection(&m_critical);
 }
 
 
