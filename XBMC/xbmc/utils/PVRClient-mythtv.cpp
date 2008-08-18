@@ -22,19 +22,17 @@
 #include "stdafx.h"
 #include "PVRClient-mythtv.h"
 
+using namespace PVR;
+
 XFILE::CCMythSession*   PVRClientMythTv::m_mythEventSession;
 myth_event_queue        PVRClientMythTv::m_thingsToDo;
 CCriticalSection        PVRClientMythTv::m_thingsToDoSection;
 
-PVRClientMythTv::PVRClientMythTv(DWORD clientID, IPVRClientCallback *callback, CURL connString)
+PVRClientMythTv::PVRClientMythTv(DWORD clientID, IPVRClientCallback *callback)
   : IPVRClient(clientID, callback)
 {
   m_recorder = NULL;
   m_session = NULL;
-  m_connString = connString;
-  m_mythEventSession = XFILE::CCMythSession::AquireSession(m_connString);
-  m_mythEventSession->SetListener(this);
-
   m_isRunning = false;
   m_clientID = clientID;
   m_manager = callback;
@@ -92,13 +90,35 @@ bool PVRClientMythTv::GetEPGDataEnd(CDateTime &end)
   return true;
 }
 
-PVRCLIENT_CAPABILITIES PVRClientMythTv::GetCapabilities()
+void PVRClientMythTv::Connect()
 {
-  PVRCLIENT_CAPABILITIES caps;
-  caps.name     = "MythTV";
-  caps.liveTV   = true;
-  caps.canPause = true;
-  return caps;
+  m_mythEventSession = XFILE::CCMythSession::AquireSession(m_connString);
+  m_mythEventSession->SetListener(this);
+}
+
+PVRCLIENT_PROPS PVRClientMythTv::GetProperties()
+{
+  PVRCLIENT_PROPS props;
+
+  props.Name            = "MythTV";
+  props.HasBouquets     = false;
+  props.DefaultHostname = "myth";
+  props.DefaultPort     = 6543;
+  props.DefaultUser     = "mythtv";
+  props.DefaultPassword = "mythtv";
+
+  return props;
+}
+
+bool PVRClientMythTv::IsUp()
+{
+  if (!GetControl() || !GetDB() || !GetLibrary())
+    return false;
+
+  // need to check user credentials are valid
+  cmyth_chanlist_t results = m_dll->mysql_get_chanlist(m_database);
+  int num = m_dll->chanlist_get_count(results);
+  return (num > 0);
 }
 
 bool PVRClientMythTv::GetDriveSpace(long long *total, long long *used)
@@ -153,11 +173,6 @@ bool PVRClientMythTv::GetRecordingSchedules( CFileItemList &results )
 
 bool PVRClientMythTv::GetUpcomingRecordings( CFileItemList &results )
 {
-  //while (true)
-  //{
-  //  CLog::Log(LOGDEBUG, "PVRClient:%u MILKING 2 secs", m_clientID/*, __FUNCTION__*/);
-  //  Sleep(2000);
-  //}
   if (!GetLibrary() || !GetControl())
     return false;
 
@@ -278,21 +293,48 @@ bool PVRClientMythTv::GetAllRecordings(CFileItemList &results)
   m_dll->ref_release(list);
   return true;
 }
-void PVRClientMythTv::GetChannelList(CFileItemList &channels)
+void PVRClientMythTv::GetChannelList(EPGData &channels)
 {
+  if (!GetLibrary() || !GetControl() || !GetDB())
+    return;
 
+  channels.clear();
+
+  cmyth_chanlist_t chanlist = m_dll->mysql_get_chanlist(m_database);
+  int numChannels = m_dll->chanlist_get_count(chanlist);
+  for (int i=0; i<numChannels; i++)
+  {
+    cmyth_channel_t channel = m_dll->chanlist_get_item(chanlist, i);
+    if (m_dll->channel_visible(channel) == 0)
+      continue; // this channel is hidden on backend, ignore it
+
+    char* name = m_dll->channel_name(channel);
+    char* callsign = name;
+    char* icon=  m_dll->channel_icon(channel);
+    int   number = m_dll->channel_channum(channel);
+
+    CTVChannel* pTVChannel = new CTVChannel(m_clientID, 0, 0, number, name, callsign, icon); //channelID is set by PVRManager
+    
+    channels.push_back(pTVChannel);
+  }
 }
 
-int  PVRClientMythTv::GetNumChannels()
+int PVRClientMythTv::GetNumChannels()
 {
-  return 0;
+  if (!GetLibrary() || !GetControl() || !GetDB())
+    return 0;
+
+  cmyth_chanlist_t channels = m_dll->mysql_get_chanlist(m_database);
+  return m_dll->chanlist_get_count(channels);
 }
 
 void PVRClientMythTv::GetEPGForChannel(int bouquet, int channel, CFileItemList &channelData)
 {
-  CStdString data = "getEPG";
+  // performed in a separate thread
+  CStdString chan;
+  chan.Format("%s", channel);
   CSingleLock lock(m_thingsToDoSection);
-  m_thingsToDo.push(std::make_pair<int, std::string>(GET_EPG_FOR_CHANNEL, data));
+  m_thingsToDo.push(std::make_pair<int, std::string>(GET_EPG_FOR_CHANNEL, chan.c_str()));
   if (!m_isRunning) Create(); // start the task performing thread
 }
 
@@ -323,7 +365,7 @@ void PVRClientMythTv::Process()
     switch (task) {
     case CMYTH_EVENT_SCHEDULE_CHANGE:
         lock.Enter();
-        m_manager->OnMessage(m_clientID, PVRCLIENT_EVENT_SCHEDULE_CHANGE, data.c_str());
+        m_manager->OnClientMessage(m_clientID, PVRCLIENT_EVENT_SCHEDULE_CHANGE, data.c_str());
         break;
     case GET_EPG_FOR_CHANNEL:
       GetEPGForChannelTask();

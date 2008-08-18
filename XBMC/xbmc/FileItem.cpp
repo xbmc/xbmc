@@ -2085,6 +2085,8 @@ bool CFileItemList::AlwaysCache() const
     return CMusicDatabaseDirectory::CanCache(m_strPath);
   if (IsVideoDb())
     return CVideoDatabaseDirectory::CanCache(m_strPath);
+  if (IsTVDb())
+    return true; // always cache
   return false;
 }
 

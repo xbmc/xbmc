@@ -24,6 +24,7 @@
 #include "utils/PVRClient-mythtv.h"
 #include "GUISettings.h"
 #include "Application.h"
+#include "utils/EPG.h"
 #include "TVDatabase.h"
 #include "PlayListPlayer.h"
 #include "PlayListFactory.h"
@@ -31,6 +32,7 @@
 #include "Playlist.h"
 
 using namespace PLAYLIST;
+using namespace PVR;
 
 #define XBMC_PVRMANAGER_VERSION "0.1"
 
@@ -58,21 +60,47 @@ void CPVRManager::RemoveInstance()
 
 void CPVRManager::Start()
 {
-  // determine which plugins are enabled
+  ///TODO determine which plugins are enabled
+  ///TODO init and push each IPVRClient onto m_clients
 
-  // init and push each IPVRClient into m_clients
-  CURL connString;
-  connString.SetHostName(g_guiSettings.GetString("pvrmanager.serverip"));
-  connString.SetUserName(g_guiSettings.GetString("pvrmanager.username"));
-  connString.SetPassword(g_guiSettings.GetString("pvrmanager.password"));
-  connString.SetPort(atoi(g_guiSettings.GetString("pvrmanager.serverport").c_str()));
+  // load list of client(s)
+  m_clients.clear();
+  m_clients.push_back(new PVRClientMythTv(0, this)); /// example clientID of 0
 
-  // load list of clients
-  m_clients.push_back(new PVRClientMythTv(0, this, connString)); /// clientID of 0
+  // for now get myth connection settings only
+  GetClientProperties();
 
-  CFileItemList data;
-  m_clients[0]->GetEPGForChannel(0, 0, data);
-  UpdateAll(); // update everything
+  // now that clients have been initialized, we check connectivity
+  std::vector< IPVRClient* >::iterator clientItr = m_clients.begin();
+  while (clientItr != m_clients.end())
+  {
+    // first find the connection string
+    CURL connString = GetConnString((*clientItr)->GetID());
+    (*clientItr)->SetConnString(connString);
+
+    // signal client to connect to backend
+    (*clientItr)->Connect();
+
+    // check client has connected
+    if ((*clientItr)->IsUp())
+      clientItr++;
+    else
+      m_clients.erase(clientItr);
+  }
+
+  if (m_clients.empty())
+  {
+    CLog::Log(LOGERROR, "PVR: no clients are connected");
+    Stop();
+    return;
+  }
+
+  // check if there are new channels since last connection
+  UpdateChannelsList();
+
+  // check if we need to update the db
+  UpdateChannelData();
+
   CLog::Log(LOGNOTICE, "PVR: pvrmanager started. Clients loaded = %u", m_clients.size());
 }
 
@@ -99,16 +127,73 @@ void CPVRManager::ReleaseInstance()
   m_instance = NULL; /// check is this enough?
 }
 
+CURL CPVRManager::GetConnString(DWORD clientID)
+{
+  CURL connString;
+
+  // set client defaults
+  connString.SetHostName(m_clientProps[clientID].DefaultHostname);
+  connString.SetUserName(m_clientProps[clientID].DefaultUser);
+  connString.SetPassword(m_clientProps[clientID].DefaultPassword);
+  connString.SetPort(m_clientProps[clientID].DefaultPort);
+
+  CStdString host, user, pass, port;
+  host = g_guiSettings.GetString("pvrmanager.serverip");
+  user = g_guiSettings.GetString("pvrmanager.username");
+  pass = g_guiSettings.GetString("pvrmanager.password");
+  port = g_guiSettings.GetString("pvrmanager.serverport");
+  
+  if (!host.IsEmpty())
+  {
+    connString.SetHostName(host);
+  }
+  if (!user.IsEmpty())
+  {
+    connString.SetUserName(user);
+  }
+  if (!pass.IsEmpty())
+  {
+    connString.SetPassword(pass);
+  }
+  if (!port.IsEmpty())
+  {
+    connString.SetPort(atoi(port));
+  }
+
+  return connString;
+}
+
+void CPVRManager::GetClientProperties()
+{
+  m_clientProps.clear();
+  for (unsigned i=0; i < m_clients.size(); i++)
+  {
+    GetClientProperties(i);
+  }
+}
+
+void CPVRManager::GetClientProperties(DWORD clientID)
+{
+  PVRCLIENT_PROPS props;
+  props = m_clients[clientID]->GetProperties();
+  m_clientProps.push_back(props); ///TODO !! broken, only one client suppored should really map clientID to props
+}
+
 CStdString CPVRManager::GetNextRecording()
 {
   CStdString label;
-  if (m_scheduledRecordings.size() > 0)
-    label = "Neighbours Mon 11th";
+  CDateTime now;
+  now = CDateTime::GetCurrentDateTime();
+  unsigned i = m_scheduledRecordings.size();
+  if ( i > 0)
+  {
+    
+  }
 
   return label;
 }
 
-void CPVRManager::OnMessage(DWORD clientID, int event, const std::string& data)
+void CPVRManager::OnClientMessage(DWORD clientID, int event, const std::string& data)
 {
   /* here the manager reacts to messages sent from any of the clients via the IPVRClientCallback */
   switch (event) {
@@ -124,14 +209,108 @@ void CPVRManager::OnMessage(DWORD clientID, int event, const std::string& data)
   }
 }
 
-void CPVRManager::UpdateAll()
+void CPVRManager::UpdateChannelsList()
 {
-  m_hasSchedules = false;
-
-  for (unsigned i=0; i < m_clients.size(); i++)
+  m_database.Open();
+  for (unsigned i = 0; i < m_clients.size(); i++)
   {
-    UpdateClient(i); // not right confuses clientID with position in m_clients
+    UpdateChannelsList(i);
   }
+  m_database.Close();
+  // get number of days of data available
+  // if less than mindays available 
+  // get days needed
+  // if (newchannels)
+  // get now + days needed
+}
+
+void CPVRManager::UpdateChannelsList(DWORD clientID)
+{
+  m_database.Open();
+
+  unsigned numClientChans, numDbChans;
+  numClientChans = m_clients[clientID]->GetNumChannels();
+  numDbChans = m_database.GetNumChannels(0);
+
+  bool newChannels;
+
+  if (numClientChans > numDbChans)
+  {
+    // client has found new channels
+    newChannels = true;
+
+    // get list of channels from client
+    EPGData clientChannels;
+    m_clients[clientID]->GetChannelList(clientChannels); ///TODO check for returned error message
+
+    //// and from the database
+    //EPGData dbChannels;
+    //m_database.GetChannelList(clientID, dbChannels);
+
+    std::vector< CStdString > newChannels;
+
+    // for each item, check if it exists in db, otherwise add
+    EPGData::iterator chanItr = clientChannels.begin();
+    while (chanItr != clientChannels.end())
+    {
+      if (!m_database.HasChannel(clientID, (*chanItr)->Name()))
+        //! don't have this channel, add it to db
+      {
+        // bouquets check
+        long idBouquet, idChannel;
+        CStdString strBouquet;
+
+        if(m_clientProps[clientID].HasBouquets)
+        {
+          CStdString strName = (*chanItr)->Name().c_str();
+          const char* name = strName.c_str();
+          int bouquet = m_clients[clientID]->GetBouquetForChannel(const_cast<char *>(name));
+          strBouquet = m_clients[clientID]->GetBouquetName(bouquet);
+        }
+        else
+        {
+          idBouquet = 0;
+          strBouquet = "Default";
+        }
+
+        // this updates idBouquet & idChannel, because these are set by the DB!!
+        m_database.NewChannel(clientID, idBouquet, idChannel, strBouquet, (*chanItr)->Name(), 
+          (*chanItr)->Name(), (*chanItr)->Number(), (*chanItr)->IconPath());
+
+        // update the CTVChannel with the correct chanID
+        (*chanItr)->SetID(idChannel);
+      }
+      chanItr++;
+    }
+
+    // 
+  }
+
+  m_database.Close();
+}
+
+void CPVRManager::UpdateChannelData()
+{
+  for (unsigned i = 0; i < m_clients.size(); i++)
+  {
+    UpdateChannelData(i);
+  }
+}
+
+void CPVRManager::UpdateChannelData(DWORD clientID)
+{
+  m_database.Open();
+  CDateTime dataEnd, now;
+  now = CDateTime::GetCurrentDateTime();
+  dataEnd = m_database.GetDataEnd(clientID);
+  CDateTimeSpan  minimum = CDateTimeSpan::SetDateTimeSpan(g_guiSettings.GetInt("pvrmanager.daystodisplay"), 0, 0, 0);
+  if (dataEnd < now + minimum)
+  {
+
+  }
+
+
+  m_database.Close();
 }
 
 PVRSCHEDULES CPVRManager::GetScheduled()
@@ -146,12 +325,12 @@ PVRSCHEDULES CPVRManager::GetConflicting()
 
  /** Protected ***************************************************************/
 
-void CPVRManager::UpdateClient( DWORD clientID )
-{
-  m_numUpcomingSchedules = GetUpcomingRecordings(clientID);  // not right confuses clientID with position in m_clients?
-  m_numTimers = GetRecordingSchedules(clientID);
-  SyncInfo();
-}
+//void CPVRManager::UpdateClient( DWORD clientID )
+//{
+//  m_numUpcomingSchedules = GetUpcomingRecordings(clientID);  /// confusing clientID with position in m_clients?
+//  m_numTimers = GetRecordingSchedules(clientID);
+//  SyncInfo();
+//}
 
 void CPVRManager::SyncInfo()
 {
@@ -195,20 +374,15 @@ int CPVRManager::GetRecordingSchedules( DWORD clientID )
   CFileItemList schedules;
   if(m_clients[clientID]->GetRecordingSchedules(schedules))
   {
-    if(m_recordingSchedules.count(clientID != 0))
-    {
+    if(m_recordingSchedules.count(clientID) != 0)
+    { /* this client has a list stored already */
       m_recordingSchedules.erase(clientID);
       m_recordingSchedules.insert(std::make_pair(clientID, &schedules));
     }
     else
       m_recordingSchedules.insert(std::make_pair(clientID, &schedules));
   }
-  CLog::Log(LOGINFO, "PVR: Client%u found %u timers", clientID, schedules.Size()); 
   int size = schedules.Size();
-  for (int i=0; i <size; i++)
-  {
-    CLog::Log(LOGDEBUG, "PVR: Timer - Client%u - %s : %s", clientID, schedules[i]->GetEPGInfoTag()->m_strTitle.c_str(), PrintStatus(schedules[i]->GetEPGInfoTag()->m_recStatus).c_str());
-  }
   return size;
 }
 
@@ -217,20 +391,14 @@ int CPVRManager::GetUpcomingRecordings( DWORD clientID )
   CFileItemList scheduled;
   if(m_clients[clientID]->GetUpcomingRecordings(scheduled))
   {
-    if(m_scheduledRecordings.count(clientID != 0))
-    {
+    if(m_scheduledRecordings.count(clientID) != 0)
+    { /* this client has a list stored already */
       m_scheduledRecordings.erase(clientID);
       m_scheduledRecordings.insert(std::make_pair(clientID, &scheduled));
     }
     else
       m_scheduledRecordings.insert(std::make_pair(clientID, &scheduled));
   }
-  CLog::Log(LOGINFO, "PVR: Client%u found %u recordings scheduled", clientID, scheduled.Size());
-
   int size = scheduled.Size();
-  for (int i=0; i <size; i++)
-  {
-    CLog::Log(LOGDEBUG, "PVR: Scheduled Recordings - Client%u - %s : %s", clientID, scheduled[i]->GetEPGInfoTag()->m_strTitle.c_str(), PrintStatus(scheduled[i]->GetEPGInfoTag()->m_recStatus).c_str());
-  }
   return size;
 }

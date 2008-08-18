@@ -917,7 +917,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   switch (info)
   {
   case PVR_NEXT_RECORDING:
-    strLabel = CPVRManager::GetInstance()->GetNextRecording();
+    strLabel = PVR::CPVRManager::GetInstance()->GetNextRecording();
     break;
   case WEATHER_CONDITIONS:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND);
@@ -1703,7 +1703,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
   else if (condition == PVR_IS_CONNECTED)
-    bReturn = CPVRManager::GetInstance()->IsConnected();
+    bReturn = PVR::CPVRManager::GetInstance()->IsConnected();
   else if (condition == SYSTEM_INTERNET_STATE)
   {
     g_sysinfo.GetInfo(condition);

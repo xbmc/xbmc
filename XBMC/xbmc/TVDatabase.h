@@ -24,14 +24,10 @@
 #include "DateTime.h"
 #include "settings/VideoSettings.h"
 #include "utils/EPGInfoTag.h"
+#include "utils/EPG.h"
 #include "FileItem.h"
 
 class CGUIDialogProgress;
-
-typedef std::vector<VECFILEITEMS> EPGGrid;
-typedef std::vector<VECFILEITEMS>::const_iterator iEPGRow;
-
-typedef VECFILEITEMS::const_iterator iEPGItem;
 
 class CTVDatabase : public CDatabase
 {
@@ -42,13 +38,16 @@ public:
   virtual bool CommitTransaction();
 
   // epg
-  bool FillEPG(const CStdString &source, const CStdString &bouquet, const CStdString &channame, const CStdString &callsign, const int &channum, const CStdString &progTitle, 
+  bool FillEPG(const CStdString &client, const CStdString &bouquet, const CStdString &channame, const CStdString &callsign, const int &channum, const CStdString &progTitle, 
                const CStdString &progSubtitle, const CStdString &progDescription, const CStdString &episode, const CStdString &series, 
                const CDateTime &progStartTime, const CDateTime &progEndTime, const CStdString &category);
 
-  void GetChannels(bool freeToAirOnly, VECFILEITEMS* channels);
+  void GetChannelList(DWORD clientID, PVR::EPGData &channels);
+  int  GetNumChannels(DWORD clientID);
 
-  bool GetProgrammesByChannelName(const CStdString &channel, VECFILEITEMS &shows, const CDateTime &start, const CDateTime &end);
+  bool HasChannel(DWORD clientID, const CStdString &name);
+
+  bool GetProgrammesByChannelName(const CStdString &channel, CFileItemList &shows, const CDateTime &start, const CDateTime &end);
   bool GetProgrammesByEpisodeID(const CStdString& episodeID, CFileItemList* items, bool noHistory /* == true */);
   void GetProgrammesByName(const CStdString& progName, CFileItemList& items, bool noHistory /* == true */);
   bool GetProgrammesBySubtitle(const CStdString& subtitle, CFileItemList* items, bool noHistory /* == true */);
@@ -60,21 +59,25 @@ public:
   bool GetProgrammeSettings(const CStdString &programme, CVideoSettings &settings);
   void SetProgrammeSettings(const CStdString &programme, const CVideoSettings &settings);
   
-  CDateTime GetDataEnd();
+  CDateTime GetDataEnd(DWORD clientID);
 
   void EraseChannelSettings();
+
+  // helper to add new channels from pvrmanager
+  void NewChannel(DWORD clientID, long &idBouquet, long &idChannel, CStdString bouquet, CStdString chanName, 
+                  CStdString callsign, int chanNum, CStdString iconPath);
 
 protected:
   CEPGInfoTag GetUniqueBroadcast(std::auto_ptr<dbiplus::Dataset> &pDS);
   void FillProperties(CFileItem* programme);
 
-  long AddSource(const CStdString &source);
-  long AddBouquet(const long &sourceId, const CStdString &bouquet);
-  long AddChannel(const long &idSource, const long &idBouquet, const CStdString &Callsign, const CStdString &Name, const int &Number);
+  long AddClient(const CStdString &client);
+  long AddBouquet(const long &clientId, const CStdString &bouquet);
+  long AddChannel(const long &clientId, const long &idBouquet, const CStdString &Callsign, const CStdString &Name, const int &Number, const CStdString &iconPath);
   long AddProgramme(const CStdString &Title, const long &categoryId);
   long AddCategory(const CStdString &category);
 
-  long GetSourceId(const CStdString &source);
+  long GetClientId(const CStdString &client);
   long GetBouquetId(const CStdString &bouquet);
   long GetChannelId(const CStdString &channel);
   long GetCategoryId(const CStdString &category);

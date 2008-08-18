@@ -116,8 +116,8 @@
 #define ACTION_TOGGLE_SOURCE_DEST     32 // used to toggle between source view and destination view. Can be used in myfiles.xml window id=3
 #define ACTION_SHOW_PLAYLIST          33 // used to toggle between current view and playlist view. Can b used in all mymusic xml files
 #define ACTION_QUEUE_ITEM             34 // used to queue a item to the playlist. Can b used in all mymusic xml files
-#define ACTION_REMOVE_ITEM            35 // not used anymore
-#define ACTION_SHOW_FULLSCREEN        36 // not used anymore
+#define ACTION_RECORD                 35 // used to toggle record state of currently selected/playing PVR fileitem. Can b used in videoFullScreen.xml window id=2005 and in all pvr xml files
+#define ACTION_SHOW_EPG               36 // show/hide EPG. Can b used in videoFullScreen.xml window id=2005
 #define ACTION_ZOOM_LEVEL_NORMAL      37 // zoom 1x picture during slideshow. Can b used in slideshow.xml window id=2007
 #define ACTION_ZOOM_LEVEL_1           38 // zoom 2x picture during slideshow. Can b used in slideshow.xml window id=2007
 #define ACTION_ZOOM_LEVEL_2           39 // zoom 3x picture during slideshow. Can b used in slideshow.xml window id=2007

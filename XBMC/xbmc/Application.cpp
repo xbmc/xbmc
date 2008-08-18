@@ -1212,36 +1212,9 @@ HRESULT CApplication::Initialize()
 
   CreateDirectory(g_settings.GetUserDataFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetProfileUserDataFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetDatabaseFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetCDDBFolder().c_str(), NULL);
+  g_settings.CreateProfileFolders();
 
-  // Thumbnails/
-  CreateDirectory(g_settings.GetThumbnailsFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetMusicThumbFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetMusicArtistThumbFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetLastFMThumbFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetVideoThumbFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetBookmarksThumbFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetProgramsThumbFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetGameSaveThumbFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetPicturesThumbFolder().c_str(), NULL);
   CreateDirectory(g_settings.GetProfilesThumbFolder().c_str(),NULL);
-  CreateDirectory(g_settings.GetVideoFanartFolder().c_str(),NULL);
-  CLog::Log(LOGINFO, "  thumbnails folder:%s", g_settings.GetThumbnailsFolder().c_str());
-  for (unsigned int hex=0; hex < 16; hex++)
-  {
-    CStdString strHex;
-    strHex.Format("%x",hex);
-    CStdString strThumbLoc = g_settings.GetPicturesThumbFolder();
-    strThumbLoc += "\\" + strHex;
-    CreateDirectory(strThumbLoc.c_str(),NULL);
-    strThumbLoc = g_settings.GetMusicThumbFolder();
-    strThumbLoc += "\\" + strHex;
-    CreateDirectory(strThumbLoc.c_str(),NULL);
-    strThumbLoc = g_settings.GetVideoThumbFolder();
-    strThumbLoc += "\\" + strHex;
-    CreateDirectory(strThumbLoc.c_str(),NULL);
-  }
 
   CreateDirectory("Z:\\temp", NULL); // temp directory for python and dllGetTempPathA
   CreateDirectory("Q:\\scripts", NULL);
@@ -1455,7 +1428,7 @@ HRESULT CApplication::Initialize()
 
   //if (g_guiSettings.GetBool("pvrmanager.updateonstartup"))
   //{
-  //  CLog::Log(LOGNOTICE, "Updating TV Guide on startup");
+  //  CLog::Log(LOGNOTICE, "Updating TV guide on startup");
   //  CGUIDialogEPGScan *scanner = (CGUIDialogEPGScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_EPG_SCAN);
   //  if (scanner && !scanner->IsScanning())
   //    scanner->StartScanning("");
@@ -1739,15 +1712,15 @@ void CApplication::StartPVRManager()
 {
   if (g_guiSettings.GetBool("pvrmanager.enabled"))
   {
-    CLog::Log(LOGNOTICE, "starting pvr manager");
-    CPVRManager::GetInstance()->Start();
+    CLog::Log(LOGINFO, "PVR: pvrmanager starting");
+    PVR::CPVRManager::GetInstance()->Start();
   }
 }
 
 void CApplication::StopPVRManager()
 {
-  CLog::Log(LOGERROR, "stopping pvr manager service");
-  CPVRManager::GetInstance()->Stop();
+  CLog::Log(LOGINFO, "PVR: pvrmanager stopping");
+  PVR::CPVRManager::GetInstance()->Stop();
 }
 
 void CApplication::StartLEDControl(bool switchoff)

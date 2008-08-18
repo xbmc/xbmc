@@ -38,17 +38,17 @@ CGUIWindowEPG::CGUIWindowEPG(void)
 {
   m_curDaysOffset = 0; // offset of zero to grab current schedule
   m_bDisplayEmptyDatabaseMessage = false;
+  m_channels = new VECFILEITEMS; ///
 }
 
 CGUIWindowEPG::~CGUIWindowEPG(void)
 {
-  m_gridData.clear();      
+  delete m_channels;
 }
 
 void CGUIWindowEPG::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
-  UpdateGridItems();
 }
 
 void CGUIWindowEPG::OnWindowUnload()
@@ -85,7 +85,7 @@ bool CGUIWindowEPG::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-      m_database.Open(); /// only if need new data
+      UpdateGrid();
       return CGUIWindow::OnMessage(message);
     }
     break;
@@ -93,7 +93,7 @@ bool CGUIWindowEPG::OnMessage(CGUIMessage& message)
     {
       int iControl = message.GetSenderId();
 
-      if (iControl == m_guideGrid->GetID())  // grid control
+      if (iControl == m_guideGrid->GetID())  // msg came from grid control
       {
         // get selected item
         CFileItemPtr item = m_guideGrid->GetSelectedItemPtr();
@@ -101,10 +101,15 @@ bool CGUIWindowEPG::OnMessage(CGUIMessage& message)
 
         int iAction = message.GetParam1();
 
-        // iItem is checked for validity inside these routines
-        if (iAction == ACTION_QUEUE_ITEM || iAction == ACTION_MOUSE_MIDDLE_CLICK)
+        if (iAction == ACTION_RECORD)
         {
-          /*OnQueueItem(iItem);*/
+          // bring up recording dialog
+          OnInfo(item.get());
+          return true;
+        }
+        else if (iAction == ACTION_PLAY)
+        {
+          // either switch channel, or set autoview
           return true;
         }
         else if (iAction == ACTION_SHOW_INFO || iAction == ACTION_SELECT_ITEM)
@@ -157,22 +162,11 @@ void CGUIWindowEPG::GetGridData()
 
   // grab the channel list
   tick = timeGetTime();
-  m_database.Open();
-  m_database.GetChannels(false, m_channels);
-  m_database.Close();
-  CLog::Log(LOGDEBUG, "TV: m_database.GetChannels() took %u ms to return", timeGetTime()-tick);
-  m_numChannels = (int)m_channels.size();
 
   if (m_numChannels > 0)
   {
     // start with an empty data store
-    iEPGRow it = m_gridData.begin();
-    for ( ; it != m_gridData.end(); it++)
-    {
-      if (it->size())
-        it->empty();
-    }
-    m_gridData.clear();
+    m_gridData = new EPGData;
 
     DWORD tick(timeGetTime());
     m_database.Open();
@@ -181,13 +175,14 @@ void CGUIWindowEPG::GetGridData()
     int items = 0;
     for (int i = 0; i < m_numChannels; i++)
     {
-      VECFILEITEMS programmes;
-      if(!m_database.GetProgrammesByChannelName(m_channels[i]->GetLabel(), programmes, m_gridStart, m_gridEnd))
+      /*VECFILEITEMS programmes;
+      CFileItemPtr prog = m_channels->at(i);
+      if(!m_database.GetProgrammesByChannelName(prog->GetLabel(), programmes, m_gridStart, m_gridEnd))
         continue;
       
       items += (int)programmes.size();
-      m_gridData.push_back(programmes);
-    }
+      m_gridData->push_back(programmes);
+    */}
     m_database.CommitTransaction();
     m_database.Close();
 
@@ -209,20 +204,15 @@ void CGUIWindowEPG::GetGridData()
   }
 }
 
-void CGUIWindowEPG::UpdateGridItems()
+void CGUIWindowEPG::UpdateGrid()
 {
-  /// if db still valid no point in doing this each time
-  GetGridData();
+  if (!m_guideGrid || !m_gridData) return; /// ?? what if GridContainer hasnt binded it's items
 
-  if (m_bDisplayEmptyDatabaseMessage)
-    return; // no schedule data available
+  /*CGUIListItemPtr currentItem = m_guideGrid->GetSelectedItemPtr();*/
 
-  // get a pointer to the grid container
-  m_guideGrid = (CGUIEPGGridContainer*)GetControl(CONTROL_EPGGRID);
-
-  // populate the container
-  m_guideGrid->UpdateChannels(m_channels);
-  m_guideGrid->UpdateItems(m_gridData, m_gridStart, m_gridEnd);
+  /* message the grid container */
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_EPGGRID, 0, 0);
+  g_graphicsContext.SendMessage(msg);
 }
 
 void CGUIWindowEPG::OnInfo(CFileItem* pItem)

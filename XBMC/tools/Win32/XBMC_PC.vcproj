@@ -1688,6 +1688,15 @@
 					RelativePath="..\..\xbmc\Edl.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\EPG.cpp">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"/>
+					</FileConfiguration>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\EPGInfoTag.cpp">
 				</File>
 				<File
@@ -3032,6 +3041,9 @@
 				RelativePath="..\..\xbmc\DynamicDll.h">
 			</File>
 			<File
+				RelativePath="..\..\xbmc\utils\EPG.h">
+			</File>
+			<File
 				RelativePath="..\..\xbmc\utils\EPGInfoTag.h">
 			</File>
 			<File
@@ -3913,12 +3925,6 @@
 			<Filter
 				Name="libScrobbler"
 				Filter="">
-				<File
-					RelativePath="..\..\xbmc\lib\libscrobbler\md5.c">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\lib\libscrobbler\md5.h">
-				</File>
 				<File
 					RelativePath="..\..\xbmc\lib\libscrobbler\scrobbler.cpp">
 				</File>

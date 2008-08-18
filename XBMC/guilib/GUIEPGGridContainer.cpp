@@ -21,6 +21,7 @@
 
 #include "include.h"
 #include "GUIEPGGridContainer.h"
+#include "PVRManager.h"
 #include "GUIControlFactory.h"
 #include "GUIListItem.h"
 #include "GUIFontManager.h"
@@ -60,7 +61,7 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(DWORD dwParentID, DWORD dwControlId, 
 
 CGUIEPGGridContainer::~CGUIEPGGridContainer(void)
 {
-  Reset();
+  //Reset();
 }
 
 void CGUIEPGGridContainer::RenderItem(float posX, float posY, CGUIListItem *item, bool focused)
@@ -393,37 +394,44 @@ void CGUIEPGGridContainer::UpdateRuler()
     m_rulerItems.push_back(markerItem);
   }
 }
-void CGUIEPGGridContainer::UpdateChannels(VECFILEITEMS &channels)
+void CGUIEPGGridContainer::UpdateChannels()
 {
   if (!m_channelItems.empty())
     m_channelItems.clear();
 
-  VECFILEITEMS::iterator channel = channels.begin();
-  for ( ; channel != channels.end(); channel++)
+  const EPGData* grid = m_epg->GetGrid();
+  EPGData::const_iterator chanItr = grid->begin();
+  for ( ; chanItr != grid->end(); chanItr++)
   {
+    CTVChannel* channel = (*chanItr);
     CGUIListItemLayout *pChannelLayout = new CGUIListItemLayout(*m_channelLayout);
     CGUIListItemLayout *pChannelFocusedLayout = new CGUIListItemLayout(*m_focusedChannelLayout);
     pChannelLayout->SetWidth(m_channelWidth);
     pChannelFocusedLayout->SetWidth(m_channelWidth);
 
-    CGUIListItemPtr item = *channel;
-    long test = item.use_count();
+    CGUIListItemPtr item(new CGUIListItem(channel->Callsign()));
+    item->SetLabel2(channel->Name());
+    item->SetIconImage(channel->IconPath());
     item->SetLayout(pChannelLayout);
     item->SetFocusedLayout(pChannelFocusedLayout);
     m_channelItems.push_back(item);
   }
 }
 
-void CGUIEPGGridContainer::UpdateItems(EPGGrid &gridData, const CDateTime &start, const CDateTime &end)
+void CGUIEPGGridContainer::UpdateItems()
 {
+  if (!m_epg)
+  {
+    return; // no data from pvrmanager, should never happen
+  }
   if (!m_gridItems.empty())
     m_gridItems.clear();
 
   float posX = m_posX + m_channelWidth;
   float posY = m_channelPosY;
 
-  m_gridStart = start;
-  m_gridEnd = end;
+  m_gridStart = m_epg->GetStart();
+  m_gridEnd   = m_epg->GetEnd();
 
 
   CDateTimeSpan blockDuration, gridDuration;
@@ -442,40 +450,47 @@ void CGUIEPGGridContainer::UpdateItems(EPGGrid &gridData, const CDateTime &start
   blockDuration.SetDateTimeSpan(0, 0, MINSPERBLOCK, 0);
 
   DWORD tick(timeGetTime());
-  iEPGRow itY = gridData.begin();
-  
+  const EPGData* gridData = m_epg->GetGrid();
+  EPGData::const_iterator itY = gridData->begin();
+
   /** FOR EACH CHANNEL **********************************************************************/
-  for (int row = 0 ; itY != gridData.end(); itY++, row++)
+  for (int row = 0 ; itY != gridData->end(); itY++, row++)
   {
     CDateTime gridCursor = m_gridStart; //reset cursor for new channel
-    iEPGItem program = itY->begin();
+    CFileItemPtr programme;
+    unsigned numItems = (*itY)->GetItems()->GetFileCount();
+    unsigned progIdx = 0;
 
     /** FOR EACH BLOCK **********************************************************************/
-    for (int block = 0; block < m_blocks; block++)
+    for (int block = 0; block < m_blocks; block++, progIdx++)
     {
-      while (program != itY->end() && (*program)->GetEPGInfoTag()->m_endTime < gridCursor)
-        program++;
+      while (progIdx < numItems) // make sure we have a programme
+      {
+        programme = (*itY)->GetItems()->Get(progIdx);
 
-      // we are either at the end of the programs, or have a program ending after this time
-      if (program == itY->end())
-      {
-        m_gridIndex[row][block].reset(); // no program here
-      }
-      else
-      {
-        // we have a program ending after this time, so check whether it starts before this
-        if ((*program)->GetEPGInfoTag()->m_startTime <= gridCursor)
+        while (progIdx != numItems -1 && programme->GetEPGInfoTag()->m_endTime < gridCursor)
+          progIdx++;
+
+        // we are either at the end of the programs, or have a program ending after this time
+        if (progIdx == numItems)
         {
-          m_gridIndex[row][block] = *program;
+          m_gridIndex[row][block].reset(); // no program here
         }
         else
         {
-          m_gridIndex[row][block].reset();
+          // we have a program ending after this time, so check whether it starts before this
+          if (programme->GetEPGInfoTag()->m_startTime <= gridCursor)
+          {
+            m_gridIndex[row][block] = programme;
+          }
+          else
+          {
+            m_gridIndex[row][block].reset();
+          }
         }
+        gridCursor += blockDuration;
       }
-      gridCursor += blockDuration;
     }
-    
     /** FOR EACH BLOCK **********************************************************************/
     int itemSize = 1; // size of the programme in blocks
     std::vector< CGUIListItemPtr > items; // this channel's items
@@ -610,6 +625,16 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
     if (message.GetMessage() == GUI_MSG_ITEM_SELECTED)
     {
       message.SetParam1(GetSelectedItem());
+      return true;
+    }
+    else if (message.GetMessage() == GUI_MSG_LABEL_BIND && message.GetLPVOID())
+    { // bind our items
+      Reset();
+      m_epg = CPVRManager::GetInstance()->GetEPG();
+      UpdateChannels();
+      UpdateItems();
+      UpdateLayout(true); // true to refresh all items
+      /*SelectItem(message.GetParam1());*/
       return true;
     }
   }
@@ -967,10 +992,7 @@ int CGUIEPGGridContainer::GetItemSize(CGUIListItemPtr item)
 ///*************** could store this value as a CGUIListItem property **********************/
 int CGUIEPGGridContainer::GetBlock(const CGUIListItemPtr &item, const int &channel)
 {
-  int block = 0;
-  while (m_gridIndex[channel + m_channelOffset][block + m_blockOffset] != item && block + m_blockOffset < m_blocks)
-    block++;
-  return block;
+  return GetRealBlock(item, channel) - m_blockOffset;
 }
 
 int CGUIEPGGridContainer::GetRealBlock(const CGUIListItemPtr &item, const int &channel)
@@ -998,7 +1020,7 @@ void CGUIEPGGridContainer::GenerateItemLayout(int row, int itemSize, int block)
   
   m_gridIndex[row][block]->SetFocusedLayout(pItemFocusedLayout);
   m_gridIndex[row][block]->SetLayout(pItemLayout);
-  //m_lastItem = m_gridIndex[row][block];
+  //m_lastItem = m_gridIndex[row][block]; ///?
   //m_lastChannel = m_channelItems[row];
 }
 
@@ -1220,10 +1242,7 @@ void CGUIEPGGridContainer::Reset()
   m_wasReset = true;
   for (iChannels itC = m_gridItems.begin(); itC != m_gridItems.end(); itC++)
   {
-    for (iShows itS = itC->begin(); itS != itC->end(); itS++)
-    {
-      (*itS)->FreeMemory();
-    }
+    itC->clear();
   }
   m_lastItem = NULL;
   m_lastChannel = NULL;

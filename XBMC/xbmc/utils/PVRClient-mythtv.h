@@ -43,7 +43,7 @@ class PVRClientMythTv : public IPVRClient
                       , CThread
 {
 public:
-  PVRClientMythTv(DWORD sourceID, IPVRClientCallback *callback, CURL connString);
+  PVRClientMythTv(DWORD sourceID, IPVRClientCallback *callback);
   ~PVRClientMythTv();
 
   void Release();
@@ -54,14 +54,23 @@ public:
   virtual void OnStartup();
   virtual void OnExit();
 
-  /* server status */
-  virtual PVRCLIENT_CAPABILITIES GetCapabilities();
-  virtual bool IsUp() { return true; }; ///
+  /* server */
+  virtual DWORD GetID() { return m_clientID; };
+  virtual void SetConnString(CURL connString) { m_connString = connString; };
+  virtual void Connect();
+  virtual PVRCLIENT_PROPS GetProperties();
+  virtual bool IsUp();
   virtual bool GetDriveSpace(long long *total, long long *used);
+
+  /* bouquets */
+  virtual int GetBouquetForChannel(char* chanName) { return 0; }; // no bouquet support in mythTV
+  virtual char* GetBouquetName(int bouquetID)   { return ""; };
+  virtual char* GetBouquetIcon(int bouquetID)   { return ""; };
+  virtual char* GetBouquetGenre(int bouquetID)  { return ""; };
 
   /* channels */
   virtual int  GetNumChannels();
-  virtual void GetChannelList(CFileItemList &channels);
+  virtual void GetChannelList(PVR::EPGData &channels);
 
   virtual bool GetEPGDataEnd(CDateTime &end);
   virtual void GetEPGForChannel(int bouquet, int channel, CFileItemList &channelData);

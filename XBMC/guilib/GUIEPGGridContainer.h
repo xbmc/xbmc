@@ -23,10 +23,13 @@
 
 #include "GUIControl.h"
 #include "GUIListItemLayout.h"
+#include "utils/EPG.h"
 #include "TVDatabase.h"
 
-#define MAXCHANNELS 200
-#define MAXBLOCKS   576 // 2 days of 5 minute blocks
+#define MAXCHANNELS 500 
+#define MAXBLOCKS   1152 //! !!_FOUR_!! days of 5 minute blocks
+
+using namespace PVR;
 
 class CGUIEPGGridContainer : public CGUIControl
 {
@@ -49,12 +52,9 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetFocus(bool bOnOff);
 
-  void UpdateItems(EPGGrid &gridData, const CDateTime &dataStart, const CDateTime &dataEnd);
-  void UpdateChannels(VECFILEITEMS &channels);
-
   CStdString GetDescription() const;
   const int GetNumChannels()   { return m_channels; };
-  virtual int GetSelectedItem() const { return 0; };
+  virtual int GetSelectedItem() const { return 0; }; /// doesn't currently store last position
   CFileItemPtr GetSelectedItemPtr() const;
   const int GetSelectedChannel() { return m_channelCursor + m_channelOffset; }
 
@@ -71,13 +71,15 @@ protected:
   bool SelectItemFromPoint(const CPoint &point);
 
   void UpdateRuler();
+  void UpdateItems();
+  void UpdateChannels();
 
   void RenderRuler(float horzDrawOffset, int blockOffset);
-  void RenderChannels(float posY, int chanOffset); // render the column of channels
-  void RenderItems(float horzDrawOffset, float posY, int chanOffset, int blockOffset); // render the grid of items
+  void RenderChannels(float posY, int chanOffset); //! render the column of channels
+  void RenderItems(float horzDrawOffset, float posY, int chanOffset, int blockOffset); //! render the grid of items
 
-  void RenderChannel(float posX, float posY, CGUIListItem *item, bool focused); // render an individual channel layout
-  void RenderItem(float posX, float posY, CGUIListItem *item, bool focused); // render an individual gridItem layout
+  void RenderChannel(float posX, float posY, CGUIListItem *item, bool focused); //! render an individual channel layout
+  void RenderItem(float posX, float posY, CGUIListItem *item, bool focused); //! render an individual gridItem layout
  
   void RenderDebug();
   void SetChannel(int channel);
@@ -104,7 +106,11 @@ protected:
 
   CGUIListItemLayout *GetFocusedLayout() const;
   
-  int   m_rulerUnit; // number of blocks that makes up one element of the ruler
+  void ScrollToBlockOffset(int offset);
+  void ScrollToChannelOffset(int offset);
+
+private:
+  int   m_rulerUnit; //! number of blocks that makes up one element of the ruler
   int   m_channels;
   int   m_channelsPerPage;
   int   m_channelCursor;
@@ -114,15 +120,15 @@ protected:
   int   m_blockCursor;
   int   m_blockOffset;
 
-  float m_channelPosY; // Y position of first channel row
-  float m_gridPosX; // X position of first grid item
+  float m_channelPosY; //! Y position of first channel row
+  float m_gridPosX; //! X position of first grid item
   float m_gridWidth;
   float m_gridHeight;
-  float m_rulerHeight; // height of the scrolling timeline above the grid items
-  float m_rulerWidth; // width of each element of the ruler
-  float m_channelHeight;  // height of each channel row (& every grid item)
-  float m_channelWidth; // width of the channel item
-  float m_blockSize; // a block's width in pixels
+  float m_rulerHeight; //! height of the scrolling timeline above the grid items
+  float m_rulerWidth; //! width of each element of the ruler
+  float m_channelHeight;  //! height of each channel row (& every grid item)
+  float m_channelWidth; //! width of the channel item
+  float m_blockSize; //! a block's width in pixels
   float m_analogScrollCount;
 
   CDateTime m_gridStart;
@@ -132,6 +138,8 @@ protected:
 
   std::vector< CGUIListItemPtr > m_channelItems;
   CGUIListItemPtr m_channel;
+
+  CEPG* m_epg;
 
   CFileItemPtr m_gridIndex[MAXCHANNELS][MAXBLOCKS];
   std::vector< std::vector< CGUIListItemPtr > > m_gridItems;
@@ -150,13 +158,13 @@ protected:
   CGUIListItemLayout *m_focusedLayout;
   
   int   m_scrollTime;
-  bool  m_channelWrapAround; ///only when no more data available should this be true
+  bool  m_channelWrapAround;
+  bool  m_gridWrapAround; //! only when no more data available should this be true
 
-  void ScrollToBlockOffset(int offset);
   DWORD m_horzScrollLastTime;
   float m_horzScrollSpeed;
   float m_horzScrollOffset;
-  void ScrollToChannelOffset(int offset);
+
   DWORD m_vertScrollLastTime;
   float m_vertScrollSpeed;
   float m_vertScrollOffset;
