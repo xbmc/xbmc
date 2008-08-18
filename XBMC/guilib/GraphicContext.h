@@ -294,7 +294,7 @@ private:
   TransformMatrix m_finalTransform;
   std::stack<TransformMatrix> m_groupTransform;
 
-  int m_maxTextureSize;
+  GLint m_maxTextureSize;
 };
 
 /*!
