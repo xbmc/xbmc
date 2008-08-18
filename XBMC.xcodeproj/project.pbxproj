@@ -342,8 +342,6 @@
 		E38E1FC50D25F9FD00618676 /* AudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E30D25F9FA00618676 /* AudioDecoder.cpp */; };
 		E38E1FC60D25F9FD00618676 /* CDDAcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E60D25F9FA00618676 /* CDDAcodec.cpp */; };
 		E38E1FC70D25F9FD00618676 /* CodecFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E80D25F9FA00618676 /* CodecFactory.cpp */; };
-		E38E1FC90D25F9FD00618676 /* DTSCDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16010D25F9FA00618676 /* DTSCDDACodec.cpp */; };
-		E38E1FCA0D25F9FD00618676 /* DTSCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16030D25F9FA00618676 /* DTSCodec.cpp */; };
 		E38E1FCB0D25F9FD00618676 /* FLACcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E160A0D25F9FA00618676 /* FLACcodec.cpp */; };
 		E38E1FCC0D25F9FD00618676 /* GYMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E160C0D25F9FA00618676 /* GYMCodec.cpp */; };
 		E38E1FCE0D25F9FD00618676 /* ModuleCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16110D25F9FA00618676 /* ModuleCodec.cpp */; };
@@ -896,6 +894,7 @@
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
 		F57E213F0E3C3AB300700C9D /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E213E0E3C3AB200700C9D /* libiconv.dylib */; };
 		F57E21410E3C3AD400700C9D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E21400E3C3AD400700C9D /* libz.dylib */; };
+		F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */; };
 		F5F8E1BA0E42738B00A8E96F /* avutil-51-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F8E1B50E42738B00A8E96F /* avutil-51-osx.a */; };
 		F5F8E1BB0E42738B00A8E96F /* postproc-51-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F8E1B60E42738B00A8E96F /* postproc-51-osx.a */; };
 		F5F8E1BC0E42738B00A8E96F /* avcodec-51-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F8E1B70E42738B00A8E96F /* avcodec-51-osx.a */; };
@@ -1513,10 +1512,6 @@
 		E38E15FE0D25F9FA00618676 /* DllVorbisfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllVorbisfile.h; sourceTree = "<group>"; };
 		E38E15FF0D25F9FA00618676 /* DllWAVPack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllWAVPack.h; sourceTree = "<group>"; };
 		E38E16000D25F9FA00618676 /* DllWMA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllWMA.h; sourceTree = "<group>"; };
-		E38E16010D25F9FA00618676 /* DTSCDDACodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DTSCDDACodec.cpp; sourceTree = "<group>"; };
-		E38E16020D25F9FA00618676 /* DTSCDDACodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTSCDDACodec.h; sourceTree = "<group>"; };
-		E38E16030D25F9FA00618676 /* DTSCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DTSCodec.cpp; sourceTree = "<group>"; };
-		E38E16040D25F9FA00618676 /* DTSCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTSCodec.h; sourceTree = "<group>"; };
 		E38E160A0D25F9FA00618676 /* FLACcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FLACcodec.cpp; sourceTree = "<group>"; };
 		E38E160B0D25F9FA00618676 /* FLACcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLACcodec.h; sourceTree = "<group>"; };
 		E38E160C0D25F9FA00618676 /* GYMCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GYMCodec.cpp; sourceTree = "<group>"; };
@@ -2741,6 +2736,8 @@
 		F50629790E57B9680066625A /* MultiPathFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MultiPathFile.h; sourceTree = "<group>"; };
 		F57E213E0E3C3AB200700C9D /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /opt/local/lib/libiconv.dylib; sourceTree = "<absolute>"; };
 		F57E21400E3C3AD400700C9D /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /opt/local/lib/libz.dylib; sourceTree = "<absolute>"; };
+		F5F2EF490E593E0D0092C37F /* DVDFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DVDFileInfo.h; sourceTree = "<group>"; };
+		F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = DVDFileInfo.cpp; sourceTree = "<group>"; };
 		F5F8E1B50E42738B00A8E96F /* avutil-51-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "avutil-51-osx.a"; path = "system/players/dvdplayer/avutil-51-osx.a"; sourceTree = "<group>"; };
 		F5F8E1B60E42738B00A8E96F /* postproc-51-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "postproc-51-osx.a"; path = "system/players/dvdplayer/postproc-51-osx.a"; sourceTree = "<group>"; };
 		F5F8E1B70E42738B00A8E96F /* avcodec-51-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "avcodec-51-osx.a"; path = "system/players/dvdplayer/avcodec-51-osx.a"; sourceTree = "<group>"; };
@@ -3752,6 +3749,8 @@
 				E38E15480D25F9F900618676 /* DVDDemuxers */,
 				E38E15550D25F9FA00618676 /* DVDDemuxSPU.cpp */,
 				E38E15560D25F9FA00618676 /* DVDDemuxSPU.h */,
+				F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */,
+				F5F2EF490E593E0D0092C37F /* DVDFileInfo.h */,
 				E38E15570D25F9FA00618676 /* DVDInputStreams */,
 				E38E15780D25F9FA00618676 /* DVDMessage.cpp */,
 				E38E15790D25F9FA00618676 /* DVDMessage.h */,
@@ -4067,13 +4066,8 @@
 				E38E15FE0D25F9FA00618676 /* DllVorbisfile.h */,
 				E38E15FF0D25F9FA00618676 /* DllWAVPack.h */,
 				E38E16000D25F9FA00618676 /* DllWMA.h */,
-				E38E16010D25F9FA00618676 /* DTSCDDACodec.cpp */,
-				E38E16020D25F9FA00618676 /* DTSCDDACodec.h */,
-				E38E16030D25F9FA00618676 /* DTSCodec.cpp */,
-				E38E16040D25F9FA00618676 /* DTSCodec.h */,
 				F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */,
 				F5F8E1D80E427E8000A8E96F /* VGMCodec.h */,
-				E38E16050D25F9FA00618676 /* flac */,
 				E38E160A0D25F9FA00618676 /* FLACcodec.cpp */,
 				E38E160B0D25F9FA00618676 /* FLACcodec.h */,
 				E38E160C0D25F9FA00618676 /* GYMCodec.cpp */,
@@ -4083,7 +4077,6 @@
 				E38E16120D25F9FA00618676 /* ModuleCodec.h */,
 				E38E16130D25F9FA00618676 /* MP3codec.cpp */,
 				E38E16140D25F9FA00618676 /* MP3codec.h */,
-				E38E16150D25F9FA00618676 /* mpc */,
 				E38E16190D25F9FA00618676 /* MPCcodec.cpp */,
 				E38E161A0D25F9FA00618676 /* MPCcodec.h */,
 				E38E161B0D25F9FA00618676 /* NSFCodec.cpp */,
@@ -4108,7 +4101,6 @@
 				E38E16380D25F9FA00618676 /* TimidityCodec.h */,
 				E38E16390D25F9FA00618676 /* WAVcodec.cpp */,
 				E38E163A0D25F9FA00618676 /* WAVcodec.h */,
-				E38E163B0D25F9FA00618676 /* wavpack */,
 				E38E163D0D25F9FA00618676 /* WAVPackcodec.cpp */,
 				E38E163E0D25F9FA00618676 /* WAVPackcodec.h */,
 				E38E163F0D25F9FA00618676 /* WMACodec.cpp */,
@@ -4117,20 +4109,6 @@
 				E38E16420D25F9FA00618676 /* YMCodec.h */,
 			);
 			path = paplayer;
-			sourceTree = "<group>";
-		};
-		E38E16050D25F9FA00618676 /* flac */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = flac;
-			sourceTree = "<group>";
-		};
-		E38E16150D25F9FA00618676 /* mpc */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = mpc;
 			sourceTree = "<group>";
 		};
 		E38E161D0D25F9FA00618676 /* ogg */ = {
@@ -4160,13 +4138,6 @@
 				E38E16340D25F9FA00618676 /* Types.h */,
 			);
 			path = spc;
-			sourceTree = "<group>";
-		};
-		E38E163B0D25F9FA00618676 /* wavpack */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = wavpack;
 			sourceTree = "<group>";
 		};
 		E38E16580D25F9FA00618676 /* VideoRenderers */ = {
@@ -6024,8 +5995,6 @@
 				E38E1FC50D25F9FD00618676 /* AudioDecoder.cpp in Sources */,
 				E38E1FC60D25F9FD00618676 /* CDDAcodec.cpp in Sources */,
 				E38E1FC70D25F9FD00618676 /* CodecFactory.cpp in Sources */,
-				E38E1FC90D25F9FD00618676 /* DTSCDDACodec.cpp in Sources */,
-				E38E1FCA0D25F9FD00618676 /* DTSCodec.cpp in Sources */,
 				E38E1FCB0D25F9FD00618676 /* FLACcodec.cpp in Sources */,
 				E38E1FCC0D25F9FD00618676 /* GYMCodec.cpp in Sources */,
 				E38E1FCE0D25F9FD00618676 /* ModuleCodec.cpp in Sources */,
@@ -6625,6 +6594,7 @@
 				F5F95DA00E4E203700C3FA5C /* GUIWindowTestPattern.cpp in Sources */,
 				F5F95DAE0E4E220900C3FA5C /* language.cpp in Sources */,
 				F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */,
+				F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
