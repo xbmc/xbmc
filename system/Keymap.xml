@@ -164,6 +164,7 @@
       <escape>PreviousMenu</escape>
       <i>Info</i>
       <menu>ContextMenu</menu>
+      <c>ContextMenu</c>
       <space>Pause</space>
       <x>Stop</x>
       <period>SkipNext</period>
@@ -252,7 +253,6 @@
     <keyboard>
       <space>Highlight</space>
       <delete>Delete</delete>
-      <c>Copy</c>
       <m>Move</m>
       <r>Rename</r>
     </keyboard>
@@ -479,10 +479,14 @@
       <start>Close</start>
     </gamepad>
 
+    <keyboard>
+      <m>close</m>
+    </keyboard>
+
     <joystick name="Microsoft Xbox Controller S">
-    <altname>Mad Catz MicroCON</altname>
-    <altname>Logitech Xbox Cordless Controller</altname>
-       <button id="9">Close</button>
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <button id="9">Close</button>
       <button id="17">Close</button>
     </joystick>
 

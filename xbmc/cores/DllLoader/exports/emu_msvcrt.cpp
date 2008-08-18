@@ -125,6 +125,29 @@ extern "C" void __stdcall init_emu_environ()
   dll_putenv("TEMP=Z:\\temp"); // for python tempdir
 }
 
+extern "C" void __stdcall update_emu_environ()
+{
+  // Use a proxy, if the GUI was configured as such
+  bool bProxyEnabled = g_guiSettings.GetBool("network.usehttpproxy");
+  if (g_guiSettings.GetBool("network.usehttpproxy") &&
+      g_guiSettings.GetString("network.httpproxyserver") &&
+      g_guiSettings.GetString("network.httpproxyport"))
+  {
+    const CStdString &strProxyServer = g_guiSettings.GetString("network.httpproxyserver");
+    const CStdString &strProxyPort = g_guiSettings.GetString("network.httpproxyport");
+    // Should we check for valid strings here? should HTTPS_PROXY use https://?
+    dll_putenv( "HTTP_PROXY=http://" + strProxyServer + ":" + strProxyPort );
+    dll_putenv( "HTTPS_PROXY=http://" + strProxyServer + ":" + strProxyPort );
+  }
+  else
+  {
+    // is there a better way to delete an environment variable?
+    // this works but leaves the variable
+    dll_putenv( "HTTP_PROXY=" );
+    dll_putenv( "HTTPS_PROXY=" );
+  }
+}
+
 bool emu_is_hd(const char* path)
 {
   if (path[0] != 0 && path[1] == ':')
@@ -1527,7 +1550,9 @@ extern "C"
     }
 
     EnterCriticalSection(&dll_cs_environ);
-    
+
+    update_emu_environ();//apply any changes
+
     for (int i = 0; i < EMU_MAX_ENVIRONMENT_ITEMS && value == NULL; i++)
     {
       if (dll__environ[i])

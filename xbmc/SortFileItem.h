@@ -51,8 +51,9 @@ struct SSortFileItem
   static void ByProgramCount(CFileItemPtr &item);
 
   static void ByGenre(CFileItemPtr &item);
+  static void ByYear(CFileItemPtr &item);
+
   static void ByMovieTitle(CFileItemPtr &item);
-  static void ByMovieYear(CFileItemPtr &item);
   static void ByMovieRating(CFileItemPtr &item);
   static void ByMovieRuntime(CFileItemPtr &item);
   static void ByMPAARating(CFileItemPtr &item);
@@ -80,7 +81,7 @@ typedef enum {
   SORT_METHOD_ALBUM,
   SORT_METHOD_ALBUM_IGNORE_THE,
   SORT_METHOD_GENRE,
-  SORT_METHOD_VIDEO_YEAR,
+  SORT_METHOD_YEAR,
   SORT_METHOD_VIDEO_RATING,
   SORT_METHOD_PROGRAM_COUNT,
   SORT_METHOD_PLAYLIST_ORDER,
