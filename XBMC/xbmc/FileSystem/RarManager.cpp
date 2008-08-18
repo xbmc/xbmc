@@ -140,7 +140,6 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
   CStdString strPath = strPathInRar;
   strPath.Replace('/', '\\');
   //g_charsetConverter.stringCharsetToUtf8(strPath);
-  printf("strpath %s\n",strPath.c_str());
 
   __int64 iOffset = -1;
   if (iRes != 2)
@@ -163,7 +162,6 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
           g_charsetConverter.wToUTF8(pIterator->item.NameW, strName);
         else
           g_charsetConverter.stringCharsetToUtf8(pIterator->item.Name, strName);
-        printf("strname %s\n",strName.c_str());
         if (strName.Equals(strPath))
         {
           iOffset = pIterator->item.iOffset;

@@ -1308,7 +1308,7 @@
 			<onup>9000</onup>
 			<ondown>9000</ondown>
 			<scrolltime>200</scrolltime>
-			<viewtype label="483">wraplist</viewtype>
+			<viewtype label="558">wraplist</viewtype>
 			<pagecontrol>-</pagecontrol>
 			<orientation>horizontal</orientation>
 			<focusposition>2</focusposition>

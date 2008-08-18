@@ -21,6 +21,7 @@
  */
 #include "utils/Thread.h"
 #include "MusicDatabase.h"
+#include "utils/MusicAlbumInfo.h"
 
 class CAlbum;
 class CArtist;
@@ -56,7 +57,7 @@ public:
   static void CheckForVariousArtists(VECSONGS &songs);
   static bool HasSingleAlbum(const VECSONGS &songs, CStdString &album, CStdString &artist);
 
-  bool DownloadAlbumInfo(const CStdString& strPath, const CStdString& strArtist, const CStdString& strAlbum, bool& bCanceled, CGUIDialogProgress* pDialog=NULL);
+  bool DownloadAlbumInfo(const CStdString& strPath, const CStdString& strArtist, const CStdString& strAlbum, bool& bCanceled, MUSIC_GRABBER::CMusicAlbumInfo& album, CGUIDialogProgress* pDialog=NULL);
   bool DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist, CGUIDialogProgress* pDialog=NULL);
 protected:
   virtual void Process();

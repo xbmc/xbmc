@@ -45,6 +45,7 @@ CPlayListPlayer::CPlayListPlayer(void)
   for (int i = 0; i < 2; i++)
     m_repeatState[i] = REPEAT_NONE;
   m_iFailedSongs = 0;
+  m_failedSongsStart = 0;
 }
 
 CPlayListPlayer::~CPlayListPlayer(void)
@@ -174,7 +175,7 @@ void CPlayListPlayer::PlayNext(bool bAutoPlay)
     }
   }
   Play(iSong, bAutoPlay);
-  if (playlist[iSong]->IsAudio() && m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+  if (iSong < playlist.size() && playlist[iSong]->IsAudio() && m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
     m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
   //g_partyModeManager.OnSongChange();
 }
@@ -238,14 +239,18 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
 
   m_bPlaybackStarted = false;
 
+  DWORD playAttempt = timeGetTime();
   if (!g_application.PlayFile(*item, bAutoPlay))
   {
     CLog::Log(LOGERROR,"Playlist Player: skipping unplayable item: %i, path [%s]", m_iCurrentSong, item->m_strPath.c_str());
     playlist.SetUnPlayable(m_iCurrentSong);
 
     // abort on 100 failed CONSECTUTIVE songs
+    if (!m_iFailedSongs)
+      m_failedSongsStart = playAttempt;
     m_iFailedSongs++;
-    if (m_iFailedSongs >= g_advancedSettings.m_playlistRetries && g_advancedSettings.m_playlistRetries >= 0)
+    if ((m_iFailedSongs >= g_advancedSettings.m_playlistRetries && g_advancedSettings.m_playlistRetries >= 0)
+        || (timeGetTime() - m_failedSongsStart  >= (unsigned int)g_advancedSettings.m_playlistTimeout * 1000) && g_advancedSettings.m_playlistTimeout)
     {
       CLog::Log(LOGDEBUG,"Playlist Player: too many consecutive failures... aborting playback");
 
@@ -258,6 +263,7 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
       GetPlaylist(m_iCurrentPlayList).Clear();
       m_iCurrentPlayList = PLAYLIST_NONE;
       m_iFailedSongs = 0;
+      m_failedSongsStart = 0;
       return;
     }
 
@@ -288,6 +294,7 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
 
   // consecutive error counter so reset if the current item is playing
   m_iFailedSongs = 0;
+  m_failedSongsStart = 0;
   m_bPlaybackStarted = true;
   m_bPlayedFirstFile = true;
 

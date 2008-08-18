@@ -339,4 +339,8 @@ bool CSkinInfo::LoadStartupWindows(const TiXmlElement *startup)
     m_onlyAnimateToHome = false;
   return true;
 }
-
+void CSkinInfo::SetDefaults()
+{
+  m_DefaultResolution = PAL_4x3;
+  m_DefaultResolutionWide = PAL_16x9;
+}

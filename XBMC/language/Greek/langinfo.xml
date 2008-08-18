@@ -13,9 +13,16 @@
     <region name="Ελλάδα">
       <dateshort>DD-MM-YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
-      <time symbolAM="πμ" symbolPM="μμ">h:mm:ss</time>
+      <time symbolAM="πμ" symbolPM="μμ">H:mm:ss</time>
       <tempunit>C</tempunit>
-      <speedunit>kmh</speedunit>
+      <speedunit>beaufort</speedunit>
+    </region>
+    <region name="Κύπρος">
+      <dateshort>DD.MM.YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="ΠΜ" symbolPM="ΜΜ">hh, mm, ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>beaufort</speedunit>
     </region>
   </regions>
 </language>

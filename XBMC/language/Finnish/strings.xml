@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mika Pirinen (1/2007->)-->
-<!--Date of translation: 9/8/2008-->
-<!--Finnish strings based on linux branch English strings version 14727-->
+<!--Date of translation: 14/8/2008  kommentit: kottis(at)gmail.com -->
+<!--Finnish strings based on English strings version 14870-->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -230,7 +230,7 @@
   <string id="293">Valitse tekstitys</string>
   <string id="294">Luo kirjanmerkki</string>
   <string id="296">Poista kirjanmerkit</string>
-  <string id="297">Äänen viive</string>
+  <string id="297">Äänen etäisyys</string>
   <string id="298">Kirjanmerkit</string>
   <string id="303">Tekstityksen viive</string>
   <string id="304">Kieli</string>
@@ -348,8 +348,8 @@
   <string id="419"></string>
   <string id="420"></string>
   <string id="421"></string>
-  <string id="422">Poista albumi tietokannasta</string>
-  <string id="423">Poista CDDB tiedot</string>
+  <string id="422">Poista albumin tiedot</string>
+  <string id="423">Poista CDDB-tiedot</string>
   <string id="424">Valitse</string>
   <string id="425">Albumin tietoja ei löytynyt.</string>
   <string id="426">CD-tietokannasta ei löytynyt tietoja.</string>
@@ -382,7 +382,7 @@
   <string id="453">Rivin 3 osoite</string>
   <string id="454">Rivin 4 osoite</string>
   <string id="455">Rivejä</string>
-  <string id="456">tila</string>
+  <string id="456">Tila</string>
   <string id="457">Vaihda näkymä</string>
   <string id="459">Tekstit</string>
   <string id="460">Ääniraita</string>
@@ -406,8 +406,8 @@
   <string id="480">Käyttöliittymä</string>
   <string id="481">Ääniasetukset</string>
   <string id="482">Tietoja ohjelmasta</string>
-  <string id="483">Albumi</string>
-  <string id="484">Esittäjä</string>
+  <string id="483"></string>
+  <string id="484"></string>
   <string id="485">Poista albumin tiedot</string>
   <string id="486">Jatkuva toisto päällä</string>
   <string id="487">Kappaleen toisto</string>
@@ -517,7 +517,7 @@
   <string id="603">Erittäin korkea</string>
   <string id="604">Vakiobittinopeus</string>
   <string id="605">Siirretään...</string>
-  <string id="606">Raita</string>
+  <string id="606"></string>
   <string id="607">Tallennetaan:</string>
   <string id="608">CD:tä tai kappaletta ei pystytty siirtämään</string>
   <string id="609">Tallennuskansiota ei ole määritetty.</string>
@@ -560,7 +560,7 @@
   <string id="656">Valitse soittolista</string>
   <string id="657">Valitse kansio</string>
   <string id="658">Kappaleen tiedot</string>
-  <string id="659">Kommentti</string>
+  <string id="659"></string>
   <string id="660">Voimakkuuden vahvistus</string>
   <string id="661">Valitse vientikansio</string>
 
@@ -571,12 +571,12 @@
   <string id="706">HTTP-välityspalvelin</string>
   <string id="707">HTTP-välityspalvelimen portti</string>
   <string id="708">HTTP-välityspalvelin käytössä</string>
-  <string id="709">XLink KAI XTag-tunnus</string>
-  <string id="710">XLink KAI salasana</string>
+  <string id="709"></string>
+  <string id="710"></string>
   <string id="711">Internet asetukset</string>
   <string id="712">Portti ei kelpaa. Arvo täytyy olla 1 ja 65535 välillä.</string>
   <string id="713">HTTP-välityspalvelin</string>
-  <string id="714">XLink Kai</string>
+  <string id="714"></string>
   <string id="715">Osoitteen määritys</string>
   <string id="716">Automaattinen (DHCP)</string>
   <string id="717">Manuaalinen (Kiinteä)</string>
@@ -662,8 +662,8 @@
   <string id="796">Jatkuvasti toistuva viive (ms)</string>
   <string id="797">Yhteyksien maksimi määrä</string>
 
-  <string id="998">XLink Kai</string>
-  <string id="999">Verkkopelaaminen</string>
+  <string id="998"></string>
+  <string id="999"></string>
   <string id="1000">Näytönsäästäjän esikatselu</string>
   <string id="1001">Ei saada yhteyttä</string>
   <string id="1002">XBMC ei saanut yhteyttä verkko-osoitteeseen.</string>
@@ -820,9 +820,9 @@
 
   <string id="10210">Haetaan tekstityksiä...</string>
   <string id="10211">Välimuistitetaan tekstityksiä...</string>
-  <string id="10212">Keskeytään</string>
+  <string id="10212">keskeytetään</string>
   <string id="10213">puskuroidaan</string>
-  <string id="10214">Ladataan katseltavaa ohjelmaa</string>
+  <string id="10214">Aloitetaan siirtoa</string>
   
   <string id="10500">Musiikki/Soittolista</string>
   <string id="10501">Musiikki/Tiedostot</string>
@@ -1178,7 +1178,7 @@
   <string id="14005">Tulkitaan ohjelmaluetteloa...</string>
   <string id="14006">Ohjelmaluettelon lataus ei onnistunut</string>
   <string id="14007">Soittolistan lataus ei onnistunut</string>
-  <string id="14008">KAI ilmoitukset käytössä</string>
+  <string id="14008"></string>
   <string id="14009">Pelit-hakemisto</string>
   <string id="14010">Vaihda pienoiskuvakkeisiin automaattisesti,jos</string>
   <string id="14011">Näytä pienoiskuvakkeet automaattisesti</string>
@@ -1210,7 +1210,7 @@
   <string id="14039">XBMC tarvitsee käynnistää uudelleen, jotta uudet</string>
   <string id="14040">asetukset tulevat käyttöön. Käynnistetäänkö uudelleen nyt?</string>
   <string id="14041">Jälkikäsittely</string>
-  <string id="14042">KAI koneen IP-osoite</string>
+  <string id="14042"></string>
   <string id="14043">- Sammuta kun toistettu</string>
   <string id="14044">%i min</string>
   <string id="14045">%i sek</string>
@@ -1240,8 +1240,8 @@
   <string id="14069">Otetaanko asetukset heti käyttöön?</string>
   <string id="14070">Muutokset otetaan käyttöön</string>
   <string id="14071">Salli tiedostojen poistaminen ja nimeäminen</string>
-  <string id="14072">Xlink KAI käytössä</string>
-  <string id="14073">Xlink KAI ei ole käytössä.</string>
+  <string id="14072"></string>
+  <string id="14073"></string>
   <string id="14074">Aseta aikavyöhyke</string>
   <string id="14075">Kesäaika käytössä</string>
   <string id="14076">Lisää suosikkeihin</string>
@@ -1250,68 +1250,68 @@
   <string id="14079">Aikavyöhyke</string>
   <string id="14080">Aikaero</string>
 
-  <string id="15000">XLink KAI</string>
-  <string id="15001">Ei saatu yhteyttä palveluun, haluatko</string>
-  <string id="15002">yrittää yhdistää uudelleen?</string>
-  <string id="15003">Kirjoita viesti</string>
-  <string id="15004">Sinut on kutsuttu pelaamaan peliä %s.</string>
-  <string id="15005">Päiväys: %s</string>
-  <string id="15006">Lähettäjä: %s</string>
-  <string id="15007">Pelikutsu</string>
-  <string id="15008">Sinut on kutsuttu %s-areenalle.</string>
-  <string id="15009">Ei yhteyttä</string>
-  <string id="15010">Kaverit</string>
-  <string id="15011">Näytä: Kaverit</string>
-  <string id="15012">Liity</string>
-  <string id="15013">Puhe</string>
-  <string id="15014">Kutsu</string>
-  <string id="15015">Poista</string>
-  <string id="15016">Pelit</string>
-  <string id="15017">Näytä: Pelit</string>
-  <string id="15018">Sisään</string>
+  <string id="15000"></string>
+  <string id="15001"></string>
+  <string id="15002"></string>
+  <string id="15003"></string>
+  <string id="15004"></string>
+  <string id="15005"></string>
+  <string id="15006"></string>
+  <string id="15007"></string>
+  <string id="15008"></string>
+  <string id="15009"></string>
+  <string id="15010"></string>
+  <string id="15011"></string>
+  <string id="15012"></string>
+  <string id="15013"></string>
+  <string id="15014"></string>
+  <string id="15015"></string>
+  <string id="15016"></string>
+  <string id="15017"></string>
+  <string id="15018"></string>
   <string id="15019">Lisää</string>
-  <string id="15020">Isännöi</string>
-  <string id="15021">Areenat</string>
-  <string id="15022">Näytä: Areenat</string>
-  <string id="15023">Pelaa</string>
-  <string id="15024">Lisää</string>
-  <string id="15025">Isännöi</string>
-  <string id="15026">Keskustelu</string>
-  <string id="15027">Näytä: Keskustelu</string>
-  <string id="15028">Näppäimistö</string>
-  <string id="15029">Tämä areena vaatii salasanan.</string>
-  <string id="15030">Yhteys palveluun on katkennut</string>
-  <string id="15031">XLink KAI kirjautuminen</string>
-  <string id="15032">Orbitaalipalvelin ei hyväksynyt käyttäjätunnus-</string>
-  <string id="15033">tasi ja/tai salasanaasi. Tarkista asetukset.</string>
-  <string id="15034">kirjautui sisään</string>
-  <string id="15035">aloitti äänikeskustelun</string>
-  <string id="15036">lähetti sinulle kutsun</string>
-  <string id="15037">XBMC ei pysty varmistamaan verkkosi saavutettavuutta.</string>
-  <string id="15038">Saatat kohdata ongelmia liittyessäsi tai isännöidessäsi pelejä.</string>
-  <string id="15039">XBMC ei löytänyt peliä automaattisesti.</string>
-  <string id="15040">Aseta peli asemaan tai paina 'A' peruuttaaksesi</string>
-  <string id="15041">ja käynnistä peli manuaalisesti.</string>
-  <string id="15042">Pääsy evätty</string>
-  <string id="15043">%s liittyi keskusteluun.</string>
-  <string id="15044">%s poistui keskustelusta.</string>
-  <string id="15045">Kirjoita henkilökohtainen viesti.</string>
-  <string id="15046">Nykyinen areena</string>
-  <string id="15047">Anna salasana areenallesi.</string>
-  <string id="15048">Anna kuvaus areenallesi.</string>
-  <string id="15049">Isännöi peliä</string>
-  <string id="15050">Isännöi yksityisellä areenalla</string>
-  <string id="15051">Pelaajarajoitus</string>
-  <string id="15052">Salasana</string>
-  <string id="15053">Kuvaus</string>
-  <string id="15054">Kutsu-dialogi</string>
-  <string id="15055">Valitse peli:</string>
-  <string id="15056">Kirjoita viesti:</string>
-  <string id="15057">Lähetä</string>
-  <string id="15058">Isännöi</string>
-  <string id="15059">Kutsu hyväksytty!</string>
-  <string id="15060">Viesti tänne</string>
-  <string id="15061">Sinut on kutsuttu pelaamaan %s-peliä.</string>
+  <string id="15020"></string>
+  <string id="15021"></string>
+  <string id="15022"></string>
+  <string id="15023"></string>
+  <string id="15024"></string>
+  <string id="15025"></string>
+  <string id="15026"></string>
+  <string id="15027"></string>
+  <string id="15028"></string>
+  <string id="15029"></string>
+  <string id="15030"></string>
+  <string id="15031"></string>
+  <string id="15032"></string>
+  <string id="15033"></string>
+  <string id="15034"></string>
+  <string id="15035"></string>
+  <string id="15036"></string>
+  <string id="15037"></string>
+  <string id="15038"></string>
+  <string id="15039"></string>
+  <string id="15040"></string>
+  <string id="15041"></string>
+  <string id="15042"></string>
+  <string id="15043"></string>
+  <string id="15044"></string>
+  <string id="15045"></string>
+  <string id="15046"></string>
+  <string id="15047"></string>
+  <string id="15048"></string>
+  <string id="15049"></string>
+  <string id="15050"></string>
+  <string id="15051"></string>
+  <string id="15052"></string>
+  <string id="15053"></string>
+  <string id="15054"></string>
+  <string id="15055"></string>
+  <string id="15056"></string>
+  <string id="15057"></string>
+  <string id="15058"></string>
+  <string id="15059"></string>
+  <string id="15060"></string>
+  <string id="15061"></string>
   <string id="15100">Kirjasto</string>
   <string id="15101">Tietokanta</string>
   <string id="15102">* Kaikki albumit</string>
@@ -1339,7 +1339,7 @@
   <string id="15211">Lähetetään...</string>
   <string id="15212">Lähetetään %i sek kuluttua</string>
   <string id="15213">Toista käyttäen...</string>
-  <string id="15214">Käytä pehmennettyä A/V-synkronointia</string>
+  <string id="15214">Käytä pehmennettyä A/V-tahdistusta</string>
   <string id="15215">Piilota tiedostonimet pienoiskuvakkeissa</string>
   <string id="15216">Toista jukeboksissa</string>
   
@@ -1490,8 +1490,8 @@
   <string id="20017">Paikallinen pienoiskuvake</string>
   <string id="20018">Ei pienoiskuvaketta</string>
   <string id="20019">Valitse kuvaketiedosto</string>
-  <string id="20020">Et voi käyttää KAI:ta ja traineria samanaikaisesti</string>
-  <string id="20021">Valitse kumpaa käytät</string>
+  <string id="20020"></string>
+  <string id="20021"></string>
   <!-- string id 20022 will always be set to an empty string (LocalizeStrings.cpp)-->
   <string id="20022"></string> 
   <string id="20023">Ei onnistu</string>
@@ -1774,7 +1774,7 @@
   <string id="20401">Toista musiikkivideo</string>
   <string id="20402">Automaattisesti luodut ohjaajan kuvakkeet</string>
   <string id="20403">Aseta ohjaajan pienoiskuvake</string>
-  <string id="20404">Studio</string>
+  <string id="20404"></string>
   <string id="20405">Poista jakson kirjanmerkki</string>
   <string id="20406">Aseta jakson kirjanmerkki</string>
   <string id="20407">Hakupaikan asetukset</string>
@@ -1808,7 +1808,7 @@
   <string id="21336">Yhdistetään: %s</string>
   <string id="21337">TuxBox laite</string>
   <!-- up to 21355 is reserved for the TuxBox Client!! !-->
-
+  
   <string id="21356">UPnP-musiikki</string>
   <string id="21357">UPnP-video</string>
   <string id="21358">UPnP-kuvat</string>
@@ -1973,6 +1973,9 @@
   <string id="22001">Suorita päivitys taustalla</string>
   <string id="22002">DNS-loppupääte</string>
   <string id="22003">EDl-leikkaustieto luettelo käytössä</string>
+  <string id="22004">Viivästetty: %2.3fs</string>
+  <string id="22005">Aiennettu: %2.3fs</string>
+  <string id="22006">Tekstityksen etäisyys</string>
 
   <string id="29999">Näytön välkynnän poisto</string>
 

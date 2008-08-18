@@ -278,7 +278,7 @@ namespace PYXBMC
 
   // getLabel() Method
   PyDoc_STRVAR(getLabel__doc__,
-    "getLabel() -- Returns the text value for this label.\n"
+    "getLabel() -- Returns the buttons label as a unicode string.\n"
     "\n"
     "example:\n"
     "  - label = self.button.getLabel()\n");
@@ -288,15 +288,16 @@ namespace PYXBMC
     if (!self->pGUIControl) return NULL;
 
     PyGUILock();
-    CStdString cLabel = ((CGUIButtonControl*) self->pGUIControl)->GetLabel();
+    CStdStringW label;
+    g_charsetConverter.utf8ToW(((CGUIButtonControl*) self->pGUIControl)->GetLabel(), label);
     PyGUIUnlock();
 
-    return Py_BuildValue((char*)"s", cLabel.c_str());
+    return Py_BuildValue((char*)"u", label.c_str());
   }
 
   // getLabel2() Method
   PyDoc_STRVAR(getLabel2__doc__,
-    "getLabel2() -- Returns the text value for this label.\n"
+    "getLabel2() -- Returns the buttons label2 as a unicode string.\n"
     "\n"
     "example:\n"
     "  - label = self.button.getLabel2()\n");
@@ -306,10 +307,11 @@ namespace PYXBMC
     if (!self->pGUIControl) return NULL;
 
     PyGUILock();
-    CStdString cLabel = ((CGUIButtonControl*) self->pGUIControl)->GetLabel2();
+    CStdStringW label;
+    g_charsetConverter.utf8ToW(((CGUIButtonControl*) self->pGUIControl)->GetLabel2(), label);
     PyGUIUnlock();
 
-    return Py_BuildValue((char*)"s", cLabel.c_str());
+    return Py_BuildValue((char*)"u", label.c_str());
   }
 
   PyMethodDef ControlButton_methods[] = {

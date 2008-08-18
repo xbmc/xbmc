@@ -424,6 +424,13 @@ bool CGUIWindowManager::OnAction(const CAction &action)
         return dialog->OnAction(action);
       return true; // do nothing with the action until the anim is finished
     }
+    // music or video overlay are handled as a special case, as they're modeless, but we allow
+    // clicking on them with the mouse.
+    if (action.wID == ACTION_MOUSE && (dialog->GetID() == WINDOW_VIDEO_OVERLAY ||
+                                       dialog->GetID() == WINDOW_MUSIC_OVERLAY))
+    {
+      return dialog->OnAction(action);
+    }
   }
   CGUIWindow* window = GetWindow(GetActiveWindow());
   if (window)
