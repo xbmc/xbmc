@@ -159,14 +159,17 @@ QueueCallbackFunction(void *target, IOReturn result, void *refcon, void *sender)
 		if (ret != kIOReturnSuccess)
 			continue;
 
-		if (event.value > 0)
-		  bKeyDown = true;
-		events.insert((int)event.elementCookie);
+		//printf("%d %d %d\n", event.elementCookie, event.value, event.longValue);		
+
+        if (event.value > 0)
+            bKeyDown = true;
+            
+        events.insert((int)event.elementCookie);
     }
 	
 	if (events.size() > 1)
 	{
-		std::set<int>::iterator iter = events.find(18);
+		std::set<int>::iterator iter = events.find( g_appleRemote.GetButtonEventTerminator() );
 		if (iter != events.end())
 			events.erase(iter);
 	}
@@ -175,6 +178,7 @@ QueueCallbackFunction(void *target, IOReturn result, void *refcon, void *sender)
 	std::set<int>::const_iterator iter = events.begin();
 	while (iter != events.end())
 	{
+		//printf("*iter = %d\n", *iter);		
 		char strEvent[10];
 		snprintf(strEvent, 10, "%d_", *iter); 
 		strEvents += strEvent;
