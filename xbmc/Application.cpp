@@ -488,6 +488,7 @@ LONG WINAPI CApplication::UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *E
 #endif
 
 extern "C" void __stdcall init_emu_environ();
+extern "C" void __stdcall update_emu_environ();
 
 //
 // Utility function used to copy files from the application bundle
@@ -739,6 +740,8 @@ HRESULT CApplication::Create(HWND hWnd)
   m_bAllSettingsLoaded = g_settings.Load(m_bXboxMediacenterLoaded, m_bSettingsLoaded);
   if (!m_bAllSettingsLoaded)
     FatalErrorHandler(true, true, true);
+
+  update_emu_environ();//apply the GUI settings
 
   // Check for WHITE + Y for forced Error Handler (to recover if something screwy happens)
 #ifdef HAS_GAMEPAD

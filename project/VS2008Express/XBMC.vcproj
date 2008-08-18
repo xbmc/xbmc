@@ -350,6 +350,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\DVDFileInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\DVDFileInfo.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamTV.cpp"
 					>
 				</File>
