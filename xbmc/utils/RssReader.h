@@ -45,6 +45,7 @@ class IRssObserver
 {
 public:
   virtual void OnFeedUpdate(const std::vector<DWORD> &feed) = 0;
+  virtual void OnFeedRelease() = 0;
   virtual ~IRssObserver() {}
 };
 
