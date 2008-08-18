@@ -114,8 +114,8 @@
 #define HAS_WMA_CODEC
 #ifndef __APPLE__
 #define HAS_CCXSTREAM
-#endif
 #define HAS_LIRC
+#endif
 #define HAS_AC3_CODEC
 #define HAS_DTS_CODEC
 #define HAS_CDDA_RIPPER
