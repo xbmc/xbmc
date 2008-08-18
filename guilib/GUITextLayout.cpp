@@ -395,6 +395,19 @@ void CGUITextLayout::WrapText(const vector<DWORD> &text, float maxWidth)
       pos++;
     }
     // now add whatever we have left to the string
+    float width = m_font->GetTextWidth(curLine);
+    if (width > maxWidth)
+    {
+      // too long - put up to the last space on if we can + remove it from what's left.
+      if (lastSpace != line.m_text.begin() && lastSpaceInLine > 0)
+      {
+        CGUIString string(curLine.begin(), curLine.begin() + lastSpaceInLine, false);
+        m_lines.push_back(string);
+        curLine.erase(curLine.begin(), curLine.begin() + lastSpaceInLine);
+        while (curLine.size() && (curLine.at(0) & 0xffff) == L' ')
+          curLine.erase(curLine.begin());
+      }
+    }
     CGUIString string(curLine.begin(), curLine.end(), true);
     m_lines.push_back(string);
   }
