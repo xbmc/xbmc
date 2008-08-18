@@ -133,7 +133,7 @@ Set the value to the path to the XBMC root folder. Project -> Edit Active Execut
 click "Arguments" tab and add "XBMC_HOME" as an enviroment variable. Set the value to
 the path to the XBMC root folder. For example, "/Users/bigdog/Documents/XBMC/linuxport/XBMC"
 
-Build "python", Build "libraries", Build "XBMCHelper", then Build "XBMC".
+Build "configure", "python", Build "libraries", Build "XBMCHelper", then Build "XBMC".
 
 
 ----------------------------------------
