@@ -44,19 +44,36 @@ enum {
     IR_Menu,
     IR_MenuHold
 };
-
+enum {
+    IR_Event_Term_ATV     = 8,
+    IR_Event_Term_10_4    = 5,
+    IR_Event_Term_10_5    = 18
+};
+// magic HID key cookies for AppleTV
+static std::string key_cookiesATV[] =
+{ 
+    "9_",   //SelectHold = "19_"
+    "10_",
+    "11_",
+    "13_",
+    "14_",
+    "5_",
+    "4_",
+    "8_",
+    "6_"
+};
 // magic HID key cookies for 10.4
 static std::string key_cookies10_4[] =
 { 
-    "5_8_",
-    "5_9_",
-    "5_10_",
-    "5_12_",
-    "5_13_",
-    "4_5_",
-    "3_5_",
+    "8_",   //SelectHold = "18_"
+    "9_",
+    "10_",
+    "12_",
+    "13_",
+    "4_",
+    "3_",
     "5_",
-    "5_7_"
+    "7_"
 };
 
 // magic HID key cookies for 10.5
@@ -118,11 +135,15 @@ void AppleRemote::Initialize()
 
     if (MacVersion < 0x1050)
     {
+        //key = key_cookiesATV;
+        //m_button_event_terminator = IR_Event_Term_ATV;
         key = key_cookies10_4;
+        m_button_event_terminator = IR_Event_Term_10_4;
     }
     else
     {
         key = key_cookies10_5;
+        m_button_event_terminator = IR_Event_Term_10_5;
     }
     m_launch_xbmc_button = key[IR_MenuHold];
         
@@ -162,8 +183,8 @@ void AppleRemote::Initialize()
 	// all we need to do to turn universal mode off is clear the prefix vector and then every command will be sent immidiately.
 	if (m_remoteMode == REMOTE_UNIVERSAL)
 	{
-		LOG("universal mode on. registering prefixes: 20_\n");
-		m_universalPrefixes.push_back("20_");
+		LOG("universal mode on. registering prefixes: %s\n", key[IR_MenuHold].c_str());
+		m_universalPrefixes.push_back( key[IR_MenuHold] );
 	}
 	else 
 	{
@@ -509,4 +530,9 @@ int AppleRemote::GetBSDProcessList(kinfo_proc **procList, size_t *procCount)
     assert( (err == 0) == (*procList != NULL) );
 
     return err;
+}
+
+int AppleRemote::GetButtonEventTerminator(void)
+{
+    return(m_button_event_terminator);
 }
