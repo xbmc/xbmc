@@ -1194,22 +1194,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\DTSCDDACodec.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\paplayer\DTSCDDACodec.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\paplayer\DTSCodec.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\paplayer\DTSCodec.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\cores\paplayer\DVDPlayerCodec.cpp"
 					>
 				</File>
