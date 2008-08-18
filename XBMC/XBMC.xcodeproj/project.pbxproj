@@ -173,7 +173,6 @@
 		E38E1EDA0D25F9FD00618676 /* AnimatedGif.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E138C0D25F9F900618676 /* AnimatedGif.cpp */; };
 		E38E1EDB0D25F9FD00618676 /* AudioContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E138E0D25F9F900618676 /* AudioContext.cpp */; };
 		E38E1EDF0D25F9FD00618676 /* Keyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13970D25F9F900618676 /* Keyboard.cpp */; };
-		E38E1EE00D25F9FD00618676 /* LIRC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13990D25F9F900618676 /* LIRC.cpp */; };
 		E38E1EE20D25F9FD00618676 /* Mouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E139D0D25F9F900618676 /* Mouse.cpp */; };
 		E38E1EE30D25F9FD00618676 /* SDLJoystick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E139F0D25F9F900618676 /* SDLJoystick.cpp */; };
 		E38E1EE40D25F9FD00618676 /* SDLKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13A10D25F9F900618676 /* SDLKeyboard.cpp */; };
@@ -1074,8 +1073,6 @@
 		E38E138F0D25F9F900618676 /* AudioContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioContext.h; sourceTree = "<group>"; };
 		E38E13970D25F9F900618676 /* Keyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Keyboard.cpp; sourceTree = "<group>"; };
 		E38E13980D25F9F900618676 /* Keyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keyboard.h; sourceTree = "<group>"; };
-		E38E13990D25F9F900618676 /* LIRC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LIRC.cpp; sourceTree = "<group>"; };
-		E38E139A0D25F9F900618676 /* LIRC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LIRC.h; sourceTree = "<group>"; };
 		E38E139D0D25F9F900618676 /* Mouse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Mouse.cpp; sourceTree = "<group>"; };
 		E38E139E0D25F9F900618676 /* Mouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mouse.h; sourceTree = "<group>"; };
 		E38E139F0D25F9F900618676 /* SDLJoystick.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SDLJoystick.cpp; sourceTree = "<group>"; };
@@ -3104,8 +3101,6 @@
 			children = (
 				E38E13970D25F9F900618676 /* Keyboard.cpp */,
 				E38E13980D25F9F900618676 /* Keyboard.h */,
-				E38E13990D25F9F900618676 /* LIRC.cpp */,
-				E38E139A0D25F9F900618676 /* LIRC.h */,
 				E38E139D0D25F9F900618676 /* Mouse.cpp */,
 				E38E139E0D25F9F900618676 /* Mouse.h */,
 				E38E139F0D25F9F900618676 /* SDLJoystick.cpp */,
@@ -5860,7 +5855,6 @@
 				E38E1EDA0D25F9FD00618676 /* AnimatedGif.cpp in Sources */,
 				E38E1EDB0D25F9FD00618676 /* AudioContext.cpp in Sources */,
 				E38E1EDF0D25F9FD00618676 /* Keyboard.cpp in Sources */,
-				E38E1EE00D25F9FD00618676 /* LIRC.cpp in Sources */,
 				E38E1EE20D25F9FD00618676 /* Mouse.cpp in Sources */,
 				E38E1EE30D25F9FD00618676 /* SDLJoystick.cpp in Sources */,
 				E38E1EE40D25F9FD00618676 /* SDLKeyboard.cpp in Sources */,
