@@ -248,6 +248,21 @@ bool CScraperUrl::DownloadThumbnail(const CStdString &thumb, const CScraperUrl::
   if (entry.m_url.IsEmpty())
     return false;
 
+  CURL url(entry.m_url);
+  if (url.GetProtocol() != "http")
+  { // do a direct file copy
+    try
+    {
+      CPicture picture;
+      return picture.DoCreateThumbnail(entry.m_url, thumb);
+    }
+    catch (...)
+    {
+      ::DeleteFile(thumb.c_str());
+    }
+    return false;
+  }
+
   CHTTP http;
   http.SetReferer(entry.m_spoof);
   string thumbData;
