@@ -190,6 +190,7 @@ public:
       UpdateFinalTransform(TransformMatrix());
   }
 
+  int GetMaxTextureSize() const { return m_maxTextureSize; };
 protected:
   IMsgSenderCallback* m_pCallback;
   LPDIRECT3DDEVICE8 m_pd3dDevice;
@@ -220,6 +221,8 @@ private:
   TransformMatrix m_guiTransform;
   TransformMatrix m_finalTransform;
   std::stack<TransformMatrix> m_groupTransform;
+
+  int m_maxTextureSize;
 };
 
 /*!

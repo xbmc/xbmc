@@ -50,6 +50,7 @@ CGraphicContext::CGraphicContext(void)
   m_pd3dDevice = NULL;
   m_pd3dParams = NULL;
   m_stateBlock = 0xffffffff;
+  m_maxTextureSize = 4096;
   m_dwID = 0;
   m_strMediaDir = "D:\\media";
   m_bCalibrating = false;
