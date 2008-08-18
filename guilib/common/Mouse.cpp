@@ -103,6 +103,11 @@ void CMouse::Update()
     bHold[i] = false;
     if (m_mouseState.button[i])
     {
+      if (!m_mouseState.active) // wake up mouse on any click
+      {
+        m_mouseState.active = true;
+        m_lastActiveTime = timeGetTime();
+      }
       bNothingDown = false;
       if (m_lastDown[i])
       { // start of hold
@@ -157,6 +162,12 @@ void CMouse::SetResolution(int maxX, int maxY, float speedX, float speedY)
 bool CMouse::IsActive() const
 {
   return m_mouseState.active && m_mouseEnabled;
+}
+
+// IsEnabled - returns true if mouse is enabled
+bool CMouse::IsEnabled() const
+{
+  return m_mouseEnabled;
 }
 
 // turns off mouse activation

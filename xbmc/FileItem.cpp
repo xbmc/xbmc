@@ -1395,8 +1395,8 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_VIDEO_TITLE:
     FillSortFields(SSortFileItem::ByMovieTitle);
     break;
-  case SORT_METHOD_VIDEO_YEAR:
-    FillSortFields(SSortFileItem::ByMovieYear);
+  case SORT_METHOD_YEAR:
+    FillSortFields(SSortFileItem::ByYear);
     break;
   case SORT_METHOD_PRODUCTIONCODE:
     FillSortFields(SSortFileItem::ByProductionCode);
@@ -1897,6 +1897,7 @@ void CFileItemList::Stack()
     CStdString fileName, filePath;
     CUtil::Split(item->m_strPath, filePath, fileName);
     CStdString fileTitle, volumeNumber;
+    // hmmm... should this use GetLabel() or fileName?
     if (CUtil::GetVolumeFromFileName(item->GetLabel(), fileTitle, volumeNumber))
     {
       vector<int> stack;
@@ -1909,17 +1910,18 @@ void CFileItemList::Stack()
         CFileItemPtr item2 = Get(j);
         CStdString fileName2, filePath2;
         CUtil::Split(item2->m_strPath, filePath2, fileName2);
+        // only do a stacking comparison if the first letter of the filename is the same
+        if (fileName2.at(0) != fileName.at(0))
+          break;
+
         CStdString fileTitle2, volumeNumber2;
+        // hmmm... should this use GetLabel() or fileName2?
         if (CUtil::GetVolumeFromFileName(item2->GetLabel(), fileTitle2, volumeNumber2))
         {
           if (fileTitle2.Equals(fileTitle))
           {
             stack.push_back(j);
             size += item2->m_dwSize;
-          }
-          else
-          {
-            break;
           }
         }
 
@@ -2358,6 +2360,9 @@ void CFileItem::CacheFanart() const
     return;
   // We don't have a cached image, so let's see if the user has a local image they want to use
 
+  if (IsInternetStream() || CUtil::IsFTP(m_strPath)) // no local fanart available for these
+    return;
+
   CStdString localFanart;
   if (m_bIsFolder)
   {
@@ -2618,24 +2623,54 @@ bool CFileItem::LoadMusicTag()
     return true;
   // check db
   CMusicDatabase musicDatabase;
-  CSong song;
-  musicDatabase.Open();
-  if (musicDatabase.GetSongByFileName(m_strPath, song))
+  if (musicDatabase.Open())
   {
-    GetMusicInfoTag()->SetSong(song);
-    return true;
+    CSong song;
+    if (musicDatabase.GetSongByFileName(m_strPath, song))
+    {
+      GetMusicInfoTag()->SetSong(song);
+      return true;
+    }
+    musicDatabase.Close();
   }
   // load tag from file
+  CLog::Log(LOGDEBUG, "%s: loading tag information for file: %s", __FUNCTION__, m_strPath.c_str());
+  CMusicInfoTagLoaderFactory factory;
+  auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(m_strPath));
+  if (NULL != pLoader.get())
+  {
+    if (pLoader->Load(m_strPath, *GetMusicInfoTag()))
+      return true;
+  }
+  // no tag - try some other things
+  if (IsCDDA())
+  {
+    // we have the tracknumber...
+    int iTrack = GetMusicInfoTag()->GetTrackNumber();
+    if (iTrack >= 1)
+    {
+      CStdString strText = g_localizeStrings.Get(554); // "Track"
+      if (strText.GetAt(strText.size() - 1) != ' ')
+        strText += " ";
+      CStdString strTrack;
+      strTrack.Format(strText + "%i", iTrack);
+      GetMusicInfoTag()->SetTitle(strTrack);
+      GetMusicInfoTag()->SetLoaded(true);
+      return true;
+    }
+  }
   else
   {
-    CLog::Log(LOGDEBUG, "%s: loading tag information for file: %s", __FUNCTION__, m_strPath.c_str());
-    CMusicInfoTagLoaderFactory factory;
-    CMusicInfoTag tag;
-    auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(m_strPath));
-    if (NULL != pLoader.get())
+    CStdString fileName = CUtil::GetFileName(m_strPath);
+    CUtil::RemoveExtension(fileName);
+    for (unsigned int i = 0; i < g_advancedSettings.m_musicTagsFromFileFilters.size(); i++)
     {
-      if (pLoader->Load(m_strPath, *GetMusicInfoTag()))
+      CLabelFormatter formatter(g_advancedSettings.m_musicTagsFromFileFilters[i], "");
+      if (formatter.FillMusicTag(fileName, GetMusicInfoTag()))
+      {
+        GetMusicInfoTag()->SetLoaded(true);
         return true;
+      }
     }
   }
   return false;

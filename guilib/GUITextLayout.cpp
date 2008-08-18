@@ -198,11 +198,14 @@ void CGUITextLayout::SetText(const CStdStringW &text, float maxWidth)
   // parse the text into our string objects
   ParseText(text, parsedText);
 
+  // add \n to the end of the string
+  parsedText.push_back(L'\n');
+
   // if we need to wrap the text, then do so
   if (m_wrap && maxWidth > 0)
     WrapText(parsedText, maxWidth);
   else
-    LineBreakText(parsedText);
+    LineBreakText(parsedText, m_lines);
 }
 
 void CGUITextLayout::Filter(CStdString &text)
@@ -339,7 +342,7 @@ void CGUITextLayout::SetMaxHeight(float fHeight)
   m_maxHeight = fHeight;
 }
 
-void CGUITextLayout::WrapText(vector<DWORD> &text, float maxWidth)
+void CGUITextLayout::WrapText(const vector<DWORD> &text, float maxWidth)
 {
   if (!m_font)
     return;
@@ -347,93 +350,73 @@ void CGUITextLayout::WrapText(vector<DWORD> &text, float maxWidth)
   int nMaxLines = (m_maxHeight > 0 && m_font->GetLineHeight() > 0)?(int)(m_maxHeight / m_font->GetLineHeight()):-1;
 
   m_lines.clear();
-  // add \n to the end of the string
-  text.push_back(L'\n');
-  vector<DWORD> line;
-  unsigned int lastSpaceInLine = 0;
-  vector<DWORD>::iterator lastSpace = text.begin();
-  vector<DWORD>::iterator pos = text.begin();
-  while (pos != text.end() && (nMaxLines <= 0 || m_lines.size() <= (size_t)nMaxLines))
+
+  vector<CGUIString> lines;
+  LineBreakText(text, lines);
+
+  for (unsigned int i = 0; i < lines.size(); i++)
+  {
+    const CGUIString &line = lines[i];
+    vector<DWORD>::const_iterator lastSpace = line.m_text.begin();
+    vector<DWORD>::const_iterator pos = line.m_text.begin();
+    unsigned int lastSpaceInLine = 0;
+    vector<DWORD> curLine;
+    while (pos != line.m_text.end() && (nMaxLines <= 0 || m_lines.size() <= (size_t)nMaxLines))
+    {
+      // Get the current letter in the string
+      DWORD letter = *pos;
+      // check for a space
+      if ((letter & 0xffff) == L' ')
+      {
+        float width = m_font->GetTextWidth(curLine);
+        if (width > maxWidth)
+        {
+          if (lastSpace != line.m_text.begin() && lastSpaceInLine > 0)
+          {
+            CGUIString string(curLine.begin(), curLine.begin() + lastSpaceInLine, false);
+            m_lines.push_back(string);
+            pos = ++lastSpace;
+            curLine.clear();
+            lastSpaceInLine = 0;
+            lastSpace = line.m_text.begin();
+            continue;
+          }
+        }
+        // only add spaces if we're not empty
+        if (curLine.size())
+        {
+          lastSpace = pos;
+          lastSpaceInLine = curLine.size();
+          curLine.push_back(letter);
+        }
+      }
+      else
+        curLine.push_back(letter);
+      pos++;
+    }
+    // now add whatever we have left to the string
+    CGUIString string(curLine.begin(), curLine.end(), true);
+    m_lines.push_back(string);
+  }
+}
+
+void CGUITextLayout::LineBreakText(const vector<DWORD> &text, vector<CGUIString> &lines)
+{
+  vector<DWORD>::const_iterator lineStart = text.begin();
+  vector<DWORD>::const_iterator pos = text.begin();
+  while (pos != text.end())
   {
     // Get the current letter in the string
     DWORD letter = *pos;
 
     // Handle the newline character
     if ((letter & 0xffff) == L'\n' )
-    {
-      float width = m_font->GetTextWidth(line);
-      if (width > maxWidth && lastSpaceInLine > 0)
-      {
-        CGUIString string(line.begin(), line.begin() + lastSpaceInLine, false);
-        m_lines.push_back(string);
-        lastSpaceInLine++;
-        if (lastSpaceInLine < line.size())
-        {
-          CGUIString string(line.begin() + lastSpaceInLine, line.end(), true);
-          m_lines.push_back(string);
-        }
-      }
-      else
-      {
-        CGUIString string(line.begin(), line.end(), true);
-        m_lines.push_back(string);
-      }
-      line.clear();
-      lastSpaceInLine = 0;
-      lastSpace = text.begin();
-    }
-    else
-    {
-      if ((letter & 0xffff) == L' ')
-      {
-        float width = m_font->GetTextWidth(line);
-        if (width > maxWidth)
-        {
-          if (lastSpace != text.begin() && lastSpaceInLine > 0)
-          {
-            CGUIString string(line.begin(), line.begin() + lastSpaceInLine, false);
-            m_lines.push_back(string);
-            pos = ++lastSpace;
-            line.clear();
-            lastSpaceInLine = 0;
-            lastSpace = text.begin();
-            continue;
-          }
-        }
-        // only add spaces if we're not empty
-        if (line.size())
-        {
-          lastSpace = pos;
-          lastSpaceInLine = line.size();
-          line.push_back(letter);
-        }
-      }
-      else
-        line.push_back(letter);
+    { // push back everything up till now
+      CGUIString string(lineStart, pos, true);
+      lines.push_back(string);
+      lineStart = pos + 1;
     }
     pos++;
-  }
-}
-
-void CGUITextLayout::LineBreakText(vector<DWORD> &text)
-{
-  text.push_back(L'\n');
-  vector<DWORD> line;
-  vector<DWORD>::iterator pos = text.begin();
-  while (pos != text.end())
-  {
-    // Get the current letter in the string
-    DWORD letter = *pos++;
-
-    // Handle the newline character
-    if ((letter & 0xffff) == L'\n' )
-    { // push back everything up till now
-      CGUIString string(line.begin(), line.end(), false);
-      m_lines.push_back(string);
-      line.clear();
-    }
-    else
-      line.push_back(letter);
   }
 }
 

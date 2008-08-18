@@ -365,10 +365,55 @@ void CDVDPlayer::OnStartup()
   g_dvdPerformanceCounter.EnableMainPerformance(ThreadHandle());
 }
 
+bool CDVDPlayer::OpenInputStream()
+{
+  if(m_pInputStream)
+    SAFE_DELETE(m_pInputStream);
+
+  CLog::Log(LOGNOTICE, "Creating InputStream");
+
+  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_content);
+  if(m_pInputStream == NULL)
+  {
+    CLog::Log(LOGERROR, "CDVDPlayer::OpenInputStream - unable to create input stream for [%s]", m_filename.c_str());
+    return false;
+  }
+
+  if (!m_pInputStream->Open(m_filename.c_str(), m_content))
+  {
+    CLog::Log(LOGERROR, "CDVDPlayer::OpenInputStream - error opening [%s]", m_filename.c_str());
+    return false;
+  }
+
+  // find any available external subtitles for non dvd files
+  if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
+  &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+  {
+    if(g_stSettings.m_currentVideoSettings.m_SubtitleOn)
+    {
+      // find any available external subtitles
+      std::vector<std::string> filenames;
+      CDVDFactorySubtitle::GetSubtitles(filenames, m_filename);
+      for(unsigned int i=0;i<filenames.size();i++)
+        AddSubtitleFile(filenames[i]);
+
+      g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
+    }
+
+    // look for any edl files
+    if (g_guiSettings.GetBool("videoplayer.editdecision"))
+      m_Edl.ReadnCacheAny(m_filename);
+  }
+
+  return true;
+}
+
 bool CDVDPlayer::OpenDemuxStream()
 {
   if(m_pDemuxer)
     SAFE_DELETE(m_pDemuxer);
+
+  CLog::Log(LOGNOTICE, "Creating Demuxer");
 
   try
   {
@@ -541,12 +586,8 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, StreamType type, CDemux
 
 void CDVDPlayer::Process()
 {
-  CLog::Log(LOGNOTICE, "Creating InputStream");
-  
-  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_content);
-  if (!m_pInputStream || !m_pInputStream->Open(m_filename.c_str(), m_content))
+  if (!OpenInputStream())
   {
-    CLog::Log(LOGERROR, "InputStream: Error opening, %s", m_filename.c_str());
     m_bAbortRequest = true;
     return;
   }
@@ -564,31 +605,10 @@ void CDVDPlayer::Process()
     g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
   }
 
-  CLog::Log(LOGNOTICE, "Creating Demuxer");
   if(!OpenDemuxStream())
   {
     m_bAbortRequest = true;
     return;
-  }
-
-  // find any available external subtitles for non dvd files
-  if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
-  &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
-  {
-    if(g_stSettings.m_currentVideoSettings.m_SubtitleOn)
-    {
-      // find any available external subtitles
-      std::vector<std::string> filenames;
-      CDVDFactorySubtitle::GetSubtitles(filenames, m_filename);
-      for(unsigned int i=0;i<filenames.size();i++)
-        AddSubtitleFile(filenames[i]);
-
-      g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
-    }
-
-    // look for any edl files
-    if (g_guiSettings.GetBool("videoplayer.editdecision"))
-      m_Edl.ReadnCacheAny(m_filename);
   }
 
   if( m_PlayerOptions.starttime > 0 )
@@ -616,7 +636,7 @@ void CDVDPlayer::Process()
 
   // make sure application know our info
   UpdateApplication(0);
-  HandlePlayState(0);
+  UpdatePlayState(0);
 
   int count;
 
@@ -663,6 +683,13 @@ void CDVDPlayer::Process()
     if(m_bAbortRequest)
       break;
 
+    // should we open a new input stream?
+    if(!m_pInputStream)
+    {
+      if (OpenInputStream() == false)
+        break;
+    }
+
     // should we open a new demuxer?
     if(!m_pDemuxer)
     {
@@ -673,22 +700,17 @@ void CDVDPlayer::Process()
         break;
 
       if (OpenDemuxStream() == false)
-      {
-        m_errorCount++;
-        if(m_errorCount > 10)
-          break;
-
-        continue;
-      }
+        break;
 
       UpdateApplication(0);
+      UpdatePlayState(0);
     }
 
     // handle eventual seeks due tp playspeed
     HandlePlaySpeed();
 
     // update player state
-    HandlePlayState(200);
+    UpdatePlayState(200);
 
     // update application with our state
     UpdateApplication(1000);
@@ -2584,7 +2606,7 @@ bool CDVDPlayer::AddSubtitleFile(const std::string& filename)
   
 }
 
-void CDVDPlayer::HandlePlayState(double timeout)
+void CDVDPlayer::UpdatePlayState(double timeout)
 {
   CSingleLock lock(m_StateSection);
 

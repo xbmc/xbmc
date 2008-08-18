@@ -32,6 +32,7 @@
 #include "GUIWindowManager.h"
 #include "FileSystem/Directory.h"
 #include "FileItem.h"
+#include "Util.h"
 
 using namespace DIRECTORY;
 
@@ -186,7 +187,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
           }
           else if (iItem > (int)g_settings.m_vecProfiles.size() - 1)
           {
-            CDirectory::Create(g_settings.GetUserDataFolder()+"\\profiles");
+            CDirectory::Create(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"profiles"));
             if (CGUIDialogProfileSettings::ShowForProfile(g_settings.m_vecProfiles.size()))
             {
               LoadList();

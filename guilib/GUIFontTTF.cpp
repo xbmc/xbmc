@@ -269,7 +269,7 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect
   return true;
 }
 
-void CGUIFontTTF::DrawTextInternal(float x, float y, const vector<DWORD> &colors, const vector<DWORD> &text, DWORD alignment, float maxPixelWidth)
+void CGUIFontTTF::DrawTextInternal(float x, float y, const vector<DWORD> &colors, const vector<DWORD> &text, DWORD alignment, float maxPixelWidth, bool scrolling)
 {
   Begin();
 
@@ -350,7 +350,7 @@ void CGUIFontTTF::DrawTextInternal(float x, float y, const vector<DWORD> &colors
 
         for (int i = 0; i < 3; i++)
         {
-          RenderCharacter(startX + cursorX, startY, period, color);
+          RenderCharacter(startX + cursorX, startY, period, color, !scrolling);
           cursorX += period->advance;
         }
         break;
@@ -359,7 +359,7 @@ void CGUIFontTTF::DrawTextInternal(float x, float y, const vector<DWORD> &colors
     else if (maxPixelWidth > 0 && cursorX > maxPixelWidth)
       break;  // exceeded max allowed width - stop rendering
 
-    RenderCharacter(startX + cursorX, startY, ch, color);
+    RenderCharacter(startX + cursorX, startY, ch, color, !scrolling);
     if ( alignment & XBFONT_JUSTIFIED )
     {
       if ((*pos & 0xffff) == L' ')
@@ -675,7 +675,7 @@ void CGUIFontTTF::End()
   m_numCharactersRendered = 0;
 }
 
-void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor)
+void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor, bool roundX)
 {
   // actual image width isn't same as the character width as that is
   // just baseline width and height should include the descent
@@ -693,19 +693,32 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
   g_graphicsContext.ClipRect(vertex, texture);
 
   // transform our positions - note, no scaling due to GUI calibration/resolution occurs
-  float x1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1));
+  float x[4];
+
+  if (roundX)
+  {
+    x[0] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1));
+    x[1] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1));
+    x[2] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2));
+    x[3] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2));
+  }
+  else
+  {
+    x[0] = g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1);
+    x[1] = g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1);
+    x[2] = g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2);
+    x[3] = g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2);
+  }
+
   float y1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
   float z1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
 
-  float x2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1));
   float y2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
   float z2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
 
-  float x3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2));
   float y3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
   float z3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
 
-  float x4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2));
   float y4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
   float z4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
 
@@ -721,13 +734,13 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
   m_pD3DDevice->SetVertexDataColor( D3DVSDE_DIFFUSE, dwColor);
 
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y1);
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x1, y1, z1, 1);
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x[0], y1, z1, 1);
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x2, texture.y1);
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x2, y2, z2, 1);
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x[1], y2, z2, 1);
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x2, texture.y2);
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x3, y3, z3, 1);
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x[2], y3, z3, 1);
   m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, texture.x1, texture.y2);
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x4, y4, z4, 1);
+  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, x[3], y4, z4, 1);
 
 #else
 struct CUSTOMVERTEX {
@@ -743,10 +756,10 @@ struct CUSTOMVERTEX {
   float tb = texture.y2 / m_textureHeight;
 
   CUSTOMVERTEX verts[4] =  {
-    { x1, y1, z1, dwColor, tl, tt},
-    { x2, y2, z2, dwColor, tr, tt},
-    { x3, y3, z3, dwColor, tr, tb},
-    { x4, y4, z4, dwColor, tl, tb}
+    { x[0], y1, z1, dwColor, tl, tt},
+    { x[1], y2, z2, dwColor, tr, tt},
+    { x[2], y3, z3, dwColor, tr, tb},
+    { x[3], y4, z4, dwColor, tl, tb}
   };
 
   m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
