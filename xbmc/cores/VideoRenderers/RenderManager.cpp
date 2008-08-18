@@ -139,6 +139,8 @@ void CXBoxRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 #ifdef HAS_SDL_OPENGL  
   if (m_pRenderer)
     m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_LAST, alpha);
+
+  m_eventPresented.Set();
 #endif
 }
 
