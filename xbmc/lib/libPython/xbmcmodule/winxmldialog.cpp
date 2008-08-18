@@ -57,59 +57,63 @@ namespace PYXBMC
     PyObject* pyDName = NULL;
     bool bForceDefaultSkin = false;
 
-    std::string strXMLname, strFallbackPath;
-    std::string strDefault = "Default";
+    string strXMLname, strFallbackPath;
+    string strDefault = "Default";
 
     if (!PyArg_ParseTuple(args, (char*)"OO|Ob", &pyOXMLname, &pyOname, &pyDName, &bForceDefaultSkin )) return NULL;
 
     PyGetUnicodeString(strXMLname, pyOXMLname);
     PyGetUnicodeString(strFallbackPath, pyOname);
     if (pyDName) PyGetUnicodeString(strDefault, pyDName);
-    // Check to see if the XML file exists in current skin. If not use fallback path to find a skin for the script
-    RESOLUTION res;
 
-    CStdString strSkinPath = g_SkinInfo.GetSkinPath(strXMLname, &res);
-    if (!XFILE::CFile::Exists(strSkinPath))
+    RESOLUTION res;
+    CStdString strSkinPath;
+    if (!bForceDefaultSkin)
     {
-      // Check for the matching folder for the skin in the fallback skins folder
-      CStdString basePath;
-      CUtil::AddFileToFolder(strFallbackPath, "resources", basePath);
-      CUtil::AddFileToFolder(basePath, "skins", basePath);
-      CUtil::AddFileToFolder(basePath, CUtil::GetFileName(g_SkinInfo.GetBaseDir()), basePath);
-      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname,&res,basePath);
-      if (!XFILE::CFile::Exists(strSkinPath))
-      {
-        // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
-        bForceDefaultSkin = true;
-      }
-      strXMLname = strSkinPath;
-    }
-    
-    if (bForceDefaultSkin)
-    {
-      PyGetUnicodeString(strXMLname, pyOXMLname);
-      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname, &res, strFallbackPath + "\\skins\\" + strDefault);
+      // Check to see if the XML file exists in current skin. If not use fallback path to find a skin for the script
+      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname, &res);
       
       if (!XFILE::CFile::Exists(strSkinPath))
       {
-        CUtil::AddFileToFolder(strFallbackPath, "resources", strSkinPath);
-        CUtil::AddFileToFolder(strSkinPath, "skins", strSkinPath);
-        CUtil::AddFileToFolder(strSkinPath, strDefault, strSkinPath);
-        CUtil::AddFileToFolder(strSkinPath, "PAL", strSkinPath);
-        CUtil::AddFileToFolder(strSkinPath, strXMLname, strSkinPath);
-        res = PAL_4x3;
+        // Check for the matching folder for the skin in the fallback skins folder
+        CStdString basePath;
+        CUtil::AddFileToFolder(strFallbackPath, "resources", basePath);
+        CUtil::AddFileToFolder(basePath, "skins", basePath);
+        CUtil::AddFileToFolder(basePath, CUtil::GetFileName(g_SkinInfo.GetBaseDir()), basePath);
+        strSkinPath = g_SkinInfo.GetSkinPath(strXMLname, &res, basePath);
         if (!XFILE::CFile::Exists(strSkinPath))
         {
-          PyErr_SetString(PyExc_TypeError, "XML File for Window is missing");
-          return NULL;
+          // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
+          bForceDefaultSkin = true;
         }
       }
-      strXMLname = strSkinPath;
+    }
+
+    if (bForceDefaultSkin)
+    {
+      CSkinInfo skinInfo;
+      CStdString basePath;
+      CUtil::AddFileToFolder(strFallbackPath, "resources", basePath);
+      CUtil::AddFileToFolder(basePath, "skins", basePath);
+      CUtil::AddFileToFolder(basePath, strDefault, basePath);
+
+      skinInfo.Load(basePath);
+      // if no skin.xml file exists default to PAL_4x3 and PAL_16x9
+      if (skinInfo.GetDefaultResolution() == INVALID)
+        skinInfo.SetDefaults();
+      strSkinPath = skinInfo.GetSkinPath(strXMLname, &res, basePath);
+
+      if (!XFILE::CFile::Exists(strSkinPath))
+      {
+        PyErr_SetString(PyExc_TypeError, "XML File for Window is missing");
+        return NULL;
+      }
     }
 
     self->sFallBackPath = strFallbackPath;
-    self->sXMLFileName = strXMLname;
+    self->sXMLFileName = strSkinPath;
     self->bUsingXML = true;
+
     // create new GUIWindow
     if (!Window_CreateNewWindow((Window*)self, true))
     {

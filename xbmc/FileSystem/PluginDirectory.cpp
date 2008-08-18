@@ -185,9 +185,9 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
         dir->m_listItems->AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));
         break;
       }
-    case SORT_METHOD_VIDEO_YEAR:
+    case SORT_METHOD_YEAR:
       {
-        dir->m_listItems->AddSortMethod(SORT_METHOD_VIDEO_YEAR, 562, LABEL_MASKS("%T", "%Y"));
+        dir->m_listItems->AddSortMethod(SORT_METHOD_YEAR, 562, LABEL_MASKS("%T", "%Y"));
         break;
       }
     case SORT_METHOD_SONG_RATING:

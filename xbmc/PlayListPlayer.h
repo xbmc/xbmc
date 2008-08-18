@@ -83,6 +83,7 @@ protected:
   bool m_bPlayedFirstFile;
   bool m_bPlaybackStarted;
   int m_iFailedSongs;
+  DWORD m_failedSongsStart;
   int m_iCurrentSong;
   int m_iCurrentPlayList;
   CPlayList* m_PlaylistMusic;

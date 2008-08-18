@@ -173,7 +173,10 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
           && url.strTitle.at(url.strTitle.length()-6) == '(')
           {
             int iYear2 = atoi(url.strTitle.Right(5).Left(4).c_str());
-            if( iYear2 != 0 && iYear != iYear2)
+
+            // 1920 is a release group name. ignore this particular year as
+            // wrong matches are more likely than people watching stuff from 1920
+            if( iYear2 != 0 && iYear != iYear2 && iYear != 1920)
               allowed = false;
           }
         }
@@ -309,7 +312,7 @@ bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetai
   CStdString strXML = m_parser.Parse(strFunction,&m_info.settings);
   if (strXML.IsEmpty())
   {
-    CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
+    CLog::Log(LOGERROR, "%s: Unable to parse web site [%s]",__FUNCTION__,url.m_url[0].m_url.c_str());
     return false;
   }
 
@@ -444,7 +447,7 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
     }
 
     CRegExp reTags;
-    reTags.RegComp("["SEP"](ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r5|se|svcd|swedish|unrated|ws|xvid|xxx|cd[1-9]|\\[.*\\])(["SEP"]|$)");
+    reTags.RegComp("["SEP"](ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r5|se|svcd|swedish|german|read.nfo|nfofix|unrated|ws|bdrip|720p|1080p|hddvd|bluray|x264|xvid|xxx|cd[1-9]|\\[.*\\])(["SEP"]|$)");
 
     int i=0;  
     if ((i=reTags.RegFind(strSearch1.c_str())) >= 0) // new logic - select the crap then drop anything to the right of it

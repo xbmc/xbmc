@@ -700,11 +700,13 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
     if (pItem->m_strPath == "newplaylist://")
     {
+      m_vecItems->RemoveDiscCache();
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR);
       return true;
     }
     else if (pItem->m_strPath.Left(19).Equals("newsmartplaylist://"))
     {
+      m_vecItems->RemoveDiscCache();
       if (CGUIDialogSmartPlaylistEditor::NewPlaylist(pItem->m_strPath.Mid(19)))
         Update(m_vecItems->m_strPath);
       return true;

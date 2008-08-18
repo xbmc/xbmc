@@ -106,7 +106,13 @@ CSettings::CSettings(void)
   // internal music extensions
   g_stSettings.m_musicExtensions += "|.sidstream|.oggstream|.nsfstream|.asapstream|.cdda";
 
-  g_stSettings.m_logFolder = "Q:\\";              // log file location
+  #ifdef __APPLE__
+    CStdString logDir = getenv("HOME");
+    logDir += "/Library/Logs/";
+    g_stSettings.m_logFolder = logDir;
+  #else
+    g_stSettings.m_logFolder = "Q:\\";              // log file location
+  #endif
 
   g_stSettings.m_defaultMusicScraper = "allmusic.xml";
 
@@ -227,6 +233,7 @@ CSettings::CSettings(void)
 
   g_advancedSettings.m_curlclienttimeout = 10;
   g_advancedSettings.m_playlistRetries = 100;
+  g_advancedSettings.m_playlistTimeout = 20; // 20 seconds timeout
 }
 
 CSettings::~CSettings(void)
@@ -1123,7 +1130,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "clienttimeout", g_advancedSettings.m_sambaclienttimeout, 10, 5, 100);
   }
 
-  if (GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NORMAL, LOG_LEVEL_NONE, LOG_LEVEL_MAX))
+  if (GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, g_advancedSettings.m_logLevel, LOG_LEVEL_NONE, LOG_LEVEL_MAX))
   { // read the loglevel setting, so set the setting advanced to hide it in GUI
     // as altering it will do nothing - we don't write to advancedsettings.xml
     CSetting *setting = g_guiSettings.GetSetting("system.debuglogging");
@@ -1140,6 +1147,7 @@ void CSettings::LoadAdvancedSettings()
   GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 10, 1, 15);
   GetInteger(pRootElement, "busydialogdelay", g_advancedSettings.m_busyDialogDelay, 2000, 0, 5000);
   GetInteger(pRootElement, "playlistretries", g_advancedSettings.m_playlistRetries, 100, -1, 5000);
+  GetInteger(pRootElement, "playlisttimeout", g_advancedSettings.m_playlistTimeout, 20, 0, 5000);
 
   XMLUtils::GetBoolean(pRootElement,"rootovershoot",g_advancedSettings.m_bUseEvilB);
 
@@ -1936,6 +1944,9 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
 
     CStdString strDirectory;
     XMLUtils::GetString(pProfile,"directory",strDirectory);
+#ifdef _LINUX
+    strDirectory.Replace("\\","/");
+#endif
     profile.setDirectory(strDirectory);
 
     CStdString strThumb;
@@ -2022,7 +2033,9 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
     TiXmlElement profileNode("profile");
     TiXmlNode *pNode = pRoot->InsertEndChild(profileNode);
     SetString(pNode,"name",g_settings.m_vecProfiles[iProfile].getName());
-    SetString(pNode,"directory",g_settings.m_vecProfiles[iProfile].getDirectory());
+    CStdString strDir(g_settings.m_vecProfiles[iProfile].getDirectory());
+    strDir.Replace("/","\\");
+    SetString(pNode,"directory",strDir);
     SetString(pNode,"thumbnail",g_settings.m_vecProfiles[iProfile].getThumb());
     SetString(pNode,"lastdate",g_settings.m_vecProfiles[iProfile].getDate());
     SetBoolean(pNode,"useavpacksettings",g_settings.m_vecProfiles[iProfile].useAvpackSettings());

@@ -1014,7 +1014,7 @@ namespace VIDEO
         CStdString strPath;
         CUtil::GetDirectory(url.GetHostName(),strPath);
         CUtil::AddFileToFolder(strPath,CUtil::GetFileName(item->m_strPath),item2.m_strPath);
-        return GetnfoFile(&item2);
+        return GetnfoFile(&item2,bGrabAny);
       }
 
       // already an .nfo file?

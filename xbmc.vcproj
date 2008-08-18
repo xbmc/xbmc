@@ -1696,6 +1696,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\FileSystem\MultiPathDirectory.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\FileSystem\MultiPathFile.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MultiPathFile.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory.cpp">
 				</File>
 				<File
@@ -3276,6 +3282,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxSPU.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDFileInfo.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDFileInfo.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\dvdplayer\DVDMessage.cpp">

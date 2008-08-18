@@ -32,6 +32,7 @@
 #include "Util.h"
 #include "TextureManager.h"
 #include "cores/PlayerCoreFactory.h"
+#include "cores/dvdplayer/DVDFileInfo.h"
 #include "PlayListPlayer.h"
 #include "MusicDatabase.h"
 #include "VideoDatabase.h"
@@ -706,6 +707,7 @@ LONG WINAPI CApplication::UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *E
 extern "C" HANDLE __stdcall KeGetCurrentThread(VOID);
 #endif
 extern "C" void __stdcall init_emu_environ();
+extern "C" void __stdcall update_emu_environ();
 
 HRESULT CApplication::Create(HWND hWnd)
 {
@@ -953,6 +955,8 @@ HRESULT CApplication::Create(HWND hWnd)
   m_bAllSettingsLoaded = g_settings.Load(m_bXboxMediacenterLoaded, m_bSettingsLoaded);
   if (!m_bAllSettingsLoaded)
     FatalErrorHandler(true, true, true);
+
+  update_emu_environ();//apply the GUI settings
 
   // Check for WHITE + Y for forced Error Handler (to recover if something screwy happens)
 #ifdef HAS_GAMEPAD
@@ -1946,7 +1950,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     if ( strcmpi(strSkin.c_str(), "Project Mayhem III") != 0)
     {
       CLog::Log(LOGERROR, "failed to load home.xml for skin:%s, fallback to \"Project Mayhem III\" skin", strSkin.c_str());
-      LoadSkin("Project Mayhem III");
+      g_guiSettings.SetString("lookandfeel.skin", "Project Mayhem III");
+      LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
       return ;
     }
   }
@@ -3050,25 +3055,6 @@ bool CApplication::ProcessMouse()
   action.wID = ACTION_MOUSE;
   action.fAmount1 = (float) m_guiPointer.GetPosX();
   action.fAmount2 = (float) m_guiPointer.GetPosY();
-  // send mouse event to the music + video overlays, if they're enabled
-  if (m_gWindowManager.IsOverlayAllowed())
-  {
-    // if we're playing a movie
-    if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
-    {
-      // then send the action to the video overlay window
-      CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_VIDEO_OVERLAY);
-      if (overlay)
-        overlay->OnAction(action);
-    }
-    else if ( IsPlayingAudio() )
-    {
-      // send message to the audio overlay window
-      CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_MUSIC_OVERLAY);
-      if (overlay)
-        overlay->OnAction(action);
-    }
-  }
   return m_gWindowManager.OnAction(action);
 }
 
@@ -3130,24 +3116,6 @@ bool CApplication::ProcessHTTPApiButtons()
           g_Mouse.bDoubleClick[keyHttp.GetRightTrigger()-1]=true;
         action.fAmount1 = keyHttp.GetLeftThumbX();
         action.fAmount2 = keyHttp.GetLeftThumbY();
-        // send mouse event to the music + video overlays, if they're enabled
-        if (m_gWindowManager.IsOverlayAllowed())
-        {
-          if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
-          {
-            // then send the action to the video overlay window
-            CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_VIDEO_OVERLAY);
-            if (overlay)
-              overlay->OnAction(action);
-          }
-          else if ( IsPlayingAudio() )
-          {
-            // send message to the audio overlay window
-            CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_MUSIC_OVERLAY);
-            if (overlay)
-              overlay->OnAction(action);
-          }
-        }
         m_gWindowManager.OnAction(action);
       }
       else
@@ -3175,34 +3143,13 @@ bool CApplication::ProcessEventServer(float frameTime)
   {
     CAction action;
     action.wID = ACTION_MOUSE;
-    if (es->GetMousePos(action.fAmount1, action.fAmount2))
+    if (es->GetMousePos(action.fAmount1, action.fAmount2) && g_Mouse.IsEnabled())
     {
       CPoint point;
       point.x = action.fAmount1;
       point.y = action.fAmount2;
       g_Mouse.SetLocation(point, true);
 
-      // TODO: the following lines of code need to be abstracted as they are
-      // reused in multiple functions
-      // send mouse event to the music + video overlays, if they're enabled
-      if (m_gWindowManager.IsOverlayAllowed())
-      {
-        // if we're playing a movie
-        if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
-        {
-          // then send the action to the video overlay window
-          CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_VIDEO_OVERLAY);
-          if (overlay)
-            overlay->OnAction(action);
-        }
-        else if ( IsPlayingAudio() )
-        {
-          // send message to the audio overlay window
-          CGUIWindow *overlay = m_gWindowManager.GetWindow(WINDOW_MUSIC_OVERLAY);
-          if (overlay)
-            overlay->OnAction(action);
-        }
-      }
       return m_gWindowManager.OnAction(action);
     }
   }
@@ -3561,31 +3508,13 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
       (*m_currentStack)[i]->m_lEndOffset = times[i];
     else
     {
-      EPLAYERCORES eNewCore = m_eForcedNextPlayer;
-      if (eNewCore == EPC_NONE)
-        eNewCore = CPlayerCoreFactory::GetDefaultPlayer(item);
-
-      m_pPlayer = CPlayerCoreFactory::CreatePlayer(eNewCore, *this);
-      if(!m_pPlayer)
+      int duration;
+      if (!CDVDFileInfo::GetFileDuration((*m_currentStack)[i]->m_strPath, duration))
       {
         m_currentStack->Clear();
         return false;
       }
-
-      CPlayerOptions options;
-      options.identify = true;
-
-      if (!m_pPlayer->OpenFile(*(*m_currentStack)[i], options))
-      {
-        m_currentStack->Clear();
-        return false;
-      }
-
-      totalTime += (long)m_pPlayer->GetTotalTime();
-
-      m_pPlayer->CloseFile();
-      SAFE_DELETE(m_pPlayer);
-
+      totalTime += duration / 1000;
       (*m_currentStack)[i]->m_lEndOffset = totalTime;
       times.push_back(totalTime);
     }
@@ -3593,7 +3522,6 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
 
   *m_itemCurrentFile = item;
   m_currentStackPosition = 0;
-  m_eCurrentPlayer = EPC_NONE; // must be reset on initial play otherwise last player will be used
 
   double seconds = item.m_lStartOffset / 75.0;
 

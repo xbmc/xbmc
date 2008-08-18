@@ -214,6 +214,7 @@ public:
 
     int m_curlclienttimeout;
     int m_playlistRetries;
+    int m_playlistTimeout;
   };
   struct stSettings
   {
