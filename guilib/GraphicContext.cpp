@@ -65,6 +65,7 @@ CGraphicContext::CGraphicContext(void)
   m_pd3dParams = NULL;
   m_stateBlock = 0xffffffff;
 #endif
+  m_maxTextureSize = 4096;
   m_dwID = 0;
   m_strMediaDir = "D:\\media";
   m_bCalibrating = false;
@@ -706,6 +707,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     }
 
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &m_maxTextureSize);
 
     glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
     glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
