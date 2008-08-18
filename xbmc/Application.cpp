@@ -630,13 +630,15 @@ HRESULT CApplication::Create(HWND hWnd)
         return E_FAIL;
   }
 
-  SDL_WM_SetIcon(IMG_Load(_P("Q:/media/icon.png")), NULL);
 
   // for python scripts that check the OS
 #ifdef __APPLE__
   setenv("OS","OS X",true);
 #elif defined(_LINUX)
+  SDL_WM_SetIcon(IMG_Load(_P("Q:/media/icon.png")), NULL);
   setenv("OS","Linux",true);
+#else
+  SDL_WM_SetIcon(IMG_Load(_P("Q:/media/icon.png")), NULL);
 #endif
 #endif
 
