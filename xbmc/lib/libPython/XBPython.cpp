@@ -218,23 +218,8 @@ void XBPython::InitializeInterpreter()
   InitPluginModule(); // init plugin modules
   InitGUIModule(); // init xbmcgui modules
 
-  CStdString envstring = "";
-  // set HTTP_PROXY and HTTPS_PROXY env variables
-  if (g_guiSettings.GetBool("network.usehttpproxy") &&
-      g_guiSettings.GetString("network.httpproxyserver") &&
-      g_guiSettings.GetString("network.httpproxyport"))
-  {
-    CStdString env;
-    CStdString proxy = "http://" + g_guiSettings.GetString("network.httpproxyserver")
-                           + ":" + g_guiSettings.GetString("network.httpproxyport");
-    envstring += "import os\n";
-    env.Format("os.environ['HTTP_PROXY']='%s'\n", proxy.c_str()); 
-    envstring += env;
-    env.Format("os.environ['HTTPS_PROXY']='%s'\n", proxy.c_str()); 
-    envstring += env;
-  };
   // redirecting default output to debug console
-  envstring += (
+  if (PyRun_SimpleString(""
         "import xbmc\n"
         "class xbmcout:\n"
         "	def write(self, data):\n"
@@ -248,9 +233,7 @@ void XBPython::InitializeInterpreter()
         "sys.stdout = xbmcout()\n"
         "sys.stderr = xbmcout()\n"
         "print '-->Python Interpreter Initialized<--'\n"
-        "");
-
-  if (PyRun_SimpleString(envstring.c_str()) == -1)
+        "") == -1)
   {
     CLog::Log(LOGFATAL, "Python Initialize Error");
   }
