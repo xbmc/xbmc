@@ -50,6 +50,8 @@ CRssReader::CRssReader() : CThread()
 
 CRssReader::~CRssReader()
 {
+  if (m_pObserver)
+    m_pObserver->OnFeedRelease();
   StopThread();
   for (unsigned int i = 0; i < m_vecTimeStamps.size(); i++)
     delete m_vecTimeStamps[i];

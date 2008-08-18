@@ -121,5 +121,9 @@ void CGUIRSSControl::OnFeedUpdate(const vector<DWORD> &feed)
   m_feed = feed;
 }
 
+void CGUIRSSControl::OnFeedRelease()
+{
+  m_pReader = NULL;
+}
 
 
