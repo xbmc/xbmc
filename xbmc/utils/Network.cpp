@@ -23,6 +23,7 @@
 #include "Network.h"
 #include "../Application.h"
 #include "../lib/libscrobbler/scrobbler.h"
+#include "RssReader.h"
 
 CNetwork::CNetwork()
 {
@@ -146,6 +147,8 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 #endif
       CScrobbler::GetInstance()->Term();
       // smb.Deinit(); if any file is open over samba this will break.
+
+      g_rssManager.Stop();
     }
     break;
   }
