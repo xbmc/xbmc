@@ -33,6 +33,8 @@ public:
     void OnKeyDown(const std::string &key);
     void OnKeyUp(const std::string &key);
 		
+    int  GetButtonEventTerminator(void);
+    
 	void SetMaxClickDuration(double dDuration);
 
 	void SetVerbose(bool bVerbose);
@@ -67,6 +69,7 @@ protected:
 	std::map<std::string, CPacketBUTTON *>	m_mapCommands;
 	std::vector<std::string>				m_universalPrefixes;
     std::string         m_launch_xbmc_button;
+    int                 m_button_event_terminator;
 	CFRunLoopTimerRef	m_timer;
 };
 
