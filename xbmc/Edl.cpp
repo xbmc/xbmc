@@ -47,6 +47,7 @@ using namespace XFILE;
 
 CEdl::CEdl()
 {
+  m_bCached=false;
   Reset();
 }
 
