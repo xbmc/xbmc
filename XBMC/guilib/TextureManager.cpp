@@ -983,17 +983,11 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iP
         delete pMap;
         i = m_vecTextures.erase(i);
       }
-      else
-      {
-        ++i;
-      }
-      //++i;
+      return;
     }
-    else
-    {
-      ++i;
-    }
+    ++i;
   }
+  CLog::Log(LOGERROR, "%s: Unable to release texture %s", __FUNCTION__, strTextureName.c_str());
 }
 
 void CGUITextureManager::Cleanup()
@@ -1005,6 +999,7 @@ void CGUITextureManager::Cleanup()
   while (i != m_vecTextures.end())
   {
     CTextureMap* pMap = *i;
+    CLog::Log(LOGERROR, "%s: Having to cleanup texture %s - this should not happen", __FUNCTION__, pMap->GetName());
     delete pMap;
     i = m_vecTextures.erase(i);
   }
