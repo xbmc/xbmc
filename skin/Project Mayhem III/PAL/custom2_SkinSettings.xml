@@ -182,7 +182,7 @@
 				<control type="radiobutton" id="124">
 					<description>QWERTY Keyboard Button</description>
 					<width>485</width>
-					<label>QWERTY $LOCALIZE[15028]</label>
+					<label>$LOCALIZE[29801]</label>
 					<onclick>Skin.ToggleSetting(QWERTYKeys)</onclick>
 					<selected>Skin.HasSetting(QWERTYKeys)</selected>
 					<textoffsetx>7</textoffsetx>

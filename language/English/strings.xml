@@ -1974,6 +1974,10 @@
   <string id="22005">Ahead by: %2.3fs</string>
   <string id="22006">Subtitle Offset</string>
 
+  <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
+  <string id="29800">Library Mode</string>
+  <string id="29801">QWERTY Keyboard</string>
+  
   <string id="29999">Apply Flicker Filter Setting to Games</string>
 
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
