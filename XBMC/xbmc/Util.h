@@ -19,6 +19,14 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+
+#ifdef min
+#undef min
+#endif
+#ifdef max
+#undef max
+#endif
+
 #include <climits>
 #include <cmath>
 #include <vector>
