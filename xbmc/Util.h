@@ -20,7 +20,7 @@
  *
  */
 #include <climits>
-#include <math.h>
+#include <cmath>
 #include <vector>
 #include <limits>
 #include "MediaSource.h"
@@ -91,7 +91,9 @@ namespace MathUtils
         i = floor(x + round_to_nearest);
     #else
         __asm__ (
-            "fld %1\n\t"
+    #ifndef __X86_64__
+            "fldl %1\n\t"
+    #endif
             "fadd %%st\n\t"
             "fadd %%st(1)\n\t"
             "fistpl %0\n\t"
@@ -129,7 +131,9 @@ namespace MathUtils
         i = ceil(x);
     #else
         __asm__ (
+    #ifndef __X86_64__
             "fldl %1\n\t"
+    #endif
             "fadd %%st\n\t"
             "fsubr %%st(1)\n\t"
             "fistpl %0\n\t"
@@ -168,7 +172,9 @@ namespace MathUtils
         i = (int)x;
     #else
         __asm__ (
+    #ifndef __X86_64__
             "fldl %1\n\t"
+    #endif
             "fadd %%st\n\t"
             "fabs\n\t"
             "fadd %%st(1)\n\t"
