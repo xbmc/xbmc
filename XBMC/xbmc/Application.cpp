@@ -1064,17 +1064,34 @@ CProfile* CApplication::InitDirectoriesOSX()
   if (m_bPlatformDirectories)
   {
     // Make sure the required directories exist.
-    CStdString str = home;
+    CStdString str2, str = home;
 
     str.append("/Library/Application Support");
     CreateDirectory(str.c_str(), NULL);
     str.append("/XBMC");
     CreateDirectory(str.c_str(), NULL);
-    CStdString str2 = str;
-    str2.append("/Mounts");
+    //
+    str2 = str;
+    str2.append("/mounts");
     CreateDirectory(str2.c_str(), NULL);
-    str.append("/UserData");
-    CreateDirectory(str.c_str(), NULL);
+    str2 = str;
+    str2.append("/userdata");
+    CreateDirectory(str2.c_str(), NULL);
+    str2 = str;
+    str2.append("/programs");
+    CreateDirectory(str2.c_str(), NULL);
+    str2 = str;
+    str2.append("/plugins");
+    CreateDirectory(str2.c_str(), NULL);
+    str2 = str;
+    str2.append("/plugins/music");
+    CreateDirectory(str2.c_str(), NULL);
+    str2 = str;
+    str2.append("/plugins/pictures");
+    CreateDirectory(str2.c_str(), NULL);
+    str2 = str;
+    str2.append("/plugins/video");
+    CreateDirectory(str2.c_str(), NULL);
 
     // See if the keymap file exists, and if not, copy it from our "virgin" one.
     //CopyUserDataIfNeeded(str, "Keymap.xml");
