@@ -4210,7 +4210,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
     if (g_guiSettings.GetBool("videolibrary.removeduplicates"))
     {
       CStdString order(where);
-      bool maintainOrder = order.ToLower().Find("order by")  != CStdString::npos;
+      bool maintainOrder = (size_t)order.ToLower().Find("order by") != CStdString::npos;
       Stack(items, VIDEODB_CONTENT_TVSHOWS, maintainOrder);
     }
 
@@ -4463,7 +4463,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
     if (g_guiSettings.GetBool("videolibrary.removeduplicates"))
     {
       CStdString order(where);
-      bool maintainOrder = order.ToLower().Find("order by")  != CStdString::npos;
+      bool maintainOrder = (size_t)order.ToLower().Find("order by") != CStdString::npos;
       Stack(items, VIDEODB_CONTENT_EPISODES, maintainOrder);
     }
 
