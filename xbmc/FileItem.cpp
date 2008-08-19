@@ -1179,7 +1179,13 @@ void CFileItemList::Clear()
 void CFileItemList::ClearItems()
 {
   CSingleLock lock(m_lock);
-
+  // make sure we free the memory of the items (these are GUIControls which may have allocated resources)
+  FreeMemory();
+  for (unsigned int i = 0; i < m_items.size(); i++)
+  {
+    CFileItemPtr item = m_items[i];
+    item->FreeMemory();
+  }
   m_items.clear();
   m_map.clear();
 }
