@@ -999,7 +999,7 @@ void CGUITextureManager::Cleanup()
   while (i != m_vecTextures.end())
   {
     CTextureMap* pMap = *i;
-    CLog::Log(LOGERROR, "%s: Having to cleanup texture %s - this should not happen", __FUNCTION__, pMap->GetName());
+    CLog::Log(LOGERROR, "%s: Having to cleanup texture %s - this should not happen", __FUNCTION__, pMap->GetName().c_str());
     delete pMap;
     i = m_vecTextures.erase(i);
   }
