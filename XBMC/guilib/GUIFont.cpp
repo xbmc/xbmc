@@ -42,7 +42,7 @@ float CScrollInfo::GetPixelsPerFrame()
   // do an exponential moving average of the frame time
   m_averageFrameTime = m_averageFrameTime + (delta - m_averageFrameTime) * alphaEMA;
   // and multiply by pixel speed (per ms) to get number of pixels to move this frame
-  return pixelSpeed * m_averageFrameTime;
+  return ROUND(pixelSpeed * m_averageFrameTime);
 }
 
 CGUIFont::CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, DWORD shadowColor, float lineSpacing, CGUIFontTTF *font)
@@ -133,7 +133,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const std::vector<DWORD> &col
         scrollInfo.pixelPos += scrollAmount;  // within the current character
       else
       { // past the current character, decrement scrollAmount by the charWidth and move to the next character
-        while (scrollInfo.pixelPos + scrollAmount > charWidth)
+        while (scrollInfo.pixelPos + scrollAmount >= charWidth)
         {
           scrollAmount -= (charWidth - scrollInfo.pixelPos);
           scrollInfo.pixelPos = 0;
@@ -156,7 +156,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const std::vector<DWORD> &col
         scrollInfo.pixelPos += scrollAmount;  // within the current character
       else
       { // past the current character, decrement scrollAmount by the charWidth and move to the next character
-        while (scrollInfo.pixelPos + scrollAmount > charWidth)
+        while (scrollInfo.pixelPos + scrollAmount >= charWidth)
         {
           scrollAmount -= (charWidth - scrollInfo.pixelPos);
           scrollInfo.pixelPos = 0;
