@@ -99,7 +99,7 @@ namespace MathUtils
         i = floor(x + round_to_nearest);
     #else
         __asm__ (
-    #ifndef __X86_64__
+    #ifndef __x86_64__
             "fldl %1\n\t"
     #endif
             "fadd %%st\n\t"
@@ -139,7 +139,7 @@ namespace MathUtils
         i = ceil(x);
     #else
         __asm__ (
-    #ifndef __X86_64__
+    #ifndef __x86_64__
             "fldl %1\n\t"
     #endif
             "fadd %%st\n\t"
@@ -180,7 +180,7 @@ namespace MathUtils
         i = (int)x;
     #else
         __asm__ (
-    #ifndef __X86_64__
+    #ifndef __x86_64__
             "fldl %1\n\t"
     #endif
             "fadd %%st\n\t"
