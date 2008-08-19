@@ -109,6 +109,7 @@ private:
   CGUIWindow *GetTopMostDialog() const;
 
   friend class CApplicationMessenger;
+  void ActivateWindow_Internal(int windowID, const CStdString &strPath, bool swappingWindows);
   void Process_Internal(bool renderOnly = false);
   void Render_Internal();
 
