@@ -53,6 +53,11 @@ void CGUIWindowVideoOverlay::Render()
   CGUIDialog::Render();
 }
 
+bool CGUIWindowVideoOverlay::OnMouse(const CPoint &point)
+{
+  return false;
+}
+
 void CGUIWindowVideoOverlay::SetDefaults()
 {
   CGUIDialog::SetDefaults();
