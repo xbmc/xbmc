@@ -310,6 +310,19 @@ void CGUIWindowManager::ChangeActiveWindow(int newWindow, const CStdString& strP
 
 void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath, bool swappingWindows)
 {
+  if (GetCurrentThreadId() != g_application.GetThreadId())
+  {
+    // make sure graphics lock is not held
+    int nCount = ExitCriticalSection(g_graphicsContext);
+    g_application.getApplicationMessenger().ActivateWindow(iWindowID, strPath, swappingWindows);
+    RestoreCriticalSection(g_graphicsContext, nCount);
+  }
+  else
+    ActivateWindow_Internal(iWindowID, strPath, swappingWindows);
+}
+
+void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const CStdString& strPath, bool swappingWindows)
+{
   CStdString strPath1 = strPath;
   // translate virtual windows
   // virtual music window which returns the last open music window (aka the music start window)

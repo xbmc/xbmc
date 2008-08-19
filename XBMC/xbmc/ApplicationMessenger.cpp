@@ -475,6 +475,11 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
           pDialog->Show_Internal();
       }
       break;
+    case TMSG_GUI_ACTIVATE_WINDOW:
+      {
+        m_gWindowManager.ActivateWindow(pMsg->dwParam1, pMsg->strParam, pMsg->dwParam2 > 0);
+      }
+      break;
     case TMSG_GUI_WIN_MANAGER_PROCESS:
       m_gWindowManager.Process_Internal(0 != pMsg->dwParam1);
       break;
@@ -672,6 +677,13 @@ void CApplicationMessenger::Show(CGUIDialog *pDialog)
 {
   ThreadMessage tMsg = {TMSG_GUI_SHOW};
   tMsg.lpVoid = pDialog;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::ActivateWindow(int windowID, const CStdString &path, bool swappingWindows)
+{
+  ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, windowID, swappingWindows ? 1 : 0};
+  tMsg.strParam = path;
   SendMessage(tMsg, true);
 }
 
