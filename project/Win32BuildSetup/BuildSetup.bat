@@ -156,7 +156,7 @@ rem	CONFIG START
   xcopy ..\..\system BUILD_WIN32\Xbmc\system /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\media BUILD_WIN32\Xbmc\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\sounds BUILD_WIN32\Xbmc\sounds /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
-  tools\7z\7za.exe x "..\..\web\Project_Mayhem_III_webserver_v1.0.zip" -oBUILD_WIN32\Xbmc\web\ > NUL
+  xcopy "..\..\web\Project Mayhem III" BUILD_WIN32\Xbmc\web /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   
   IF EXIST config.ini FOR /F "tokens=* DELIMS=" %%a IN ('FINDSTR/R "=" config.ini') DO SET %%a
   
