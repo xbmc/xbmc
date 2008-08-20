@@ -3748,7 +3748,8 @@ bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path, CSongMap &songs
   // After scanning we then remove the orphaned artists, genres and thumbs.
   try
   {
-    ASSERT(CUtil::HasSlashAtEnd(path));
+    if (!CUtil::HasSlashAtEnd(path))
+      CLog::Log(LOGWARNING,"%s: called on path without a trailing slash [%s]",__FUNCTION__,path.c_str());
 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
