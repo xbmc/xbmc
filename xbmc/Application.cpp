@@ -1008,6 +1008,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     //CopyUserDataIfNeeded(_P("t:\\"), "Keymap.xml");  // Eventual FIXME.
     CopyUserDataIfNeeded(_P("t:\\"), "RssFeeds.xml");
     CopyUserDataIfNeeded(_P("t:\\"), "Lircmap.xml");
+    CopyUserDataIfNeeded(_P("t:\\"), "LCD.xml");
   }
   else
   {
