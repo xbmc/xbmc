@@ -532,7 +532,7 @@ void CSettings::GetSources(const TiXmlElement* pRootElement, const CStdString& s
   }
   else
   {
-    CLog::Log(LOGERROR, "  <%s> tag is missing or sources.xml is malformed", strTagName.c_str());
+    CLog::Log(LOGDEBUG, "  <%s> tag is missing or sources.xml is malformed", strTagName.c_str());
   }
 }
 
