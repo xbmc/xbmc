@@ -4494,7 +4494,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     if (m_gWindowManager.HasModalDialog() || IsPlayingVideo())
       m_screenSaverMode = "Dim";
     // Check if we are Playing Audio and Vis instead Screensaver!
-    else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead"))
+    else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead") && g_guiSettings.GetString("mymusic.visualisation") != "None")
     { // activate the visualisation
       m_screenSaverMode = "Visualisation";
       m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
