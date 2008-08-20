@@ -1087,6 +1087,10 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
     bool CanHandle = false;
     switch (status)
     {
+    case 301:
+      // 301 Moved Permanently - auto redirect if this is a GET
+      CanHandle = true;
+      break;
     case 302:
       // 302 Found - auto redirect if this is a GET
       //Post redirect has to work for scrapers
