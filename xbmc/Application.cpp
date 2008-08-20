@@ -326,6 +326,9 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
 
   m_bPresentFrame = false;
   m_bPlatformDirectories = false;
+
+  m_bStandalone = false;
+  m_bEnableLegacyRes = false;
 }
 
 CApplication::~CApplication(void)
@@ -995,7 +998,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     CreateDirectory(xbmcDir.c_str(), NULL);
     xbmcDir = _P("u:\\plugins\\pictures");
     CreateDirectory(xbmcDir.c_str(), NULL);
-    
+
     xbmcDir = _P("u:\\scripts");
     CreateDirectory(xbmcDir.c_str(), NULL);
     xbmcDir = _P("u:\\scripts\\My Scripts"); // FIXME: both scripts should be in 1 directory
@@ -2243,7 +2246,7 @@ void CApplication::Render()
 {
   if (!m_AppActive && !m_bStop && (!IsPlayingVideo() || IsPaused()))
   {
-    Sleep(1); 
+    Sleep(1);
     ResetScreenSaver();
     return;
   }
