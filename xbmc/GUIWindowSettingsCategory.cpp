@@ -2393,6 +2393,9 @@ void CGUIWindowSettingsCategory::Render()
 
 void CGUIWindowSettingsCategory::CheckNetworkSettings()
 {
+  if (!g_application.IsStandAlone())
+    return;
+
   // check if our network needs restarting (requires a reset, so check well!)
   if (m_iNetworkAssignment == -1)
   {
@@ -3419,13 +3422,16 @@ void CGUIWindowSettingsCategory::FillInStartupWindow(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::OnInitWindow()
 {
+  if (g_application.IsStandAlone())
+  {
 #ifndef __APPLE__
-  m_iNetworkAssignment = g_guiSettings.GetInt("network.assignment");
-  m_strNetworkIPAddress = g_guiSettings.GetString("network.ipaddress");
-  m_strNetworkSubnet = g_guiSettings.GetString("network.subnet");
-  m_strNetworkGateway = g_guiSettings.GetString("network.gateway");
-  m_strNetworkDNS = g_guiSettings.GetString("network.dns");
+    m_iNetworkAssignment = g_guiSettings.GetInt("network.assignment");
+    m_strNetworkIPAddress = g_guiSettings.GetString("network.ipaddress");
+    m_strNetworkSubnet = g_guiSettings.GetString("network.subnet");
+    m_strNetworkGateway = g_guiSettings.GetString("network.gateway");
+    m_strNetworkDNS = g_guiSettings.GetString("network.dns");
 #endif
+  }
   m_strOldTrackFormat = g_guiSettings.GetString("musicfiles.trackformat");
   m_strOldTrackFormatRight = g_guiSettings.GetString("musicfiles.trackformatright");
   m_NewResolution = INVALID;
@@ -3579,6 +3585,9 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
 
 void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
 {
+  if (!g_application.IsStandAlone())
+    return;
+
 #ifdef __APPLE__
   return;
 #endif
