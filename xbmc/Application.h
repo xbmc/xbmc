@@ -218,6 +218,26 @@ public:
     m_bPlatformDirectories = enable;
   }
 
+  void SetStandAlone(bool value)
+  {
+    m_bStandalone = value;
+  }
+
+  bool IsStandAlone()
+  {
+    return m_bStandalone;
+  }
+
+  void SetEnableLegacyRes(bool value)
+  {
+    m_bEnableLegacyRes = value;
+  }
+
+  bool IsEnableLegacyRes()
+  {
+    return m_bEnableLegacyRes;
+  }
+
 protected:
   friend class CApplicationMessenger;
   // screensaver
@@ -262,6 +282,9 @@ protected:
   int m_nextPlaylistItem;
 
   bool m_bPresentFrame;
+
+  bool m_bStandalone;
+  bool m_bEnableLegacyRes;
 
 #ifdef HAS_SDL
   int        m_frameCount;
