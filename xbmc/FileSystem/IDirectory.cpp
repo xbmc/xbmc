@@ -49,8 +49,17 @@ bool IDirectory::IsAllowed(const CStdString& strFile)
   if ( !strFile.size() ) return true;
 
   CUtil::GetExtension(strFile, strExtension);
-  if (!strExtension.size()) return false;
   strExtension.ToLower();
+
+  // ignore all non dvd related ifo files.
+  if (strExtension.Equals(".ifo"))
+  {
+    if (strFile.Equals("video_ts.ifo")) return true;
+    if (strFile.Left(4).Equals("vts_") && strFile.Right(6).Equals("_0.ifo") && strFile.length() == 12) return true;
+    return false;
+  }
+  
+  if (!strExtension.size()) return false;
   bool bOkay = false;
   int i=-1;
   while (!bOkay)
