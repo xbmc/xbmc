@@ -48,12 +48,30 @@ int main(int argc, char* argv[])
 #endif
   if (argc > 1)
   {
-    for (int i=1; i<argc;i++)
+    for (int i = 1; i < argc; i++)
     {
       if (strnicmp(argv[i], "-fs", 3) == 0)
       {
-        printf("Running in fullscreen mode...\n");
         g_advancedSettings.m_fullScreen = true;
+      }
+      else if (strnicmp(argv[i], "-h", 2) == 0 || strnicmp(argv[i], "--help", 6) == 0)
+      {
+        printf("Usage: %s [OPTION]... [FILE]...\n\n", argv[0]);
+        printf("Arguments:\n");
+        printf("  -fs\t\t\tRuns XBMC in full screen\n");
+        printf("  --standalone\t\tXBMC runs in a stand alone environment without a window \n");
+        printf("\t\t\tmanager and supporting applications. For example, that\n");
+        printf("\t\t\tenables network settings.\n");
+        printf("  --legacy-res\t\tEnables screen resolutions such as PAL, NTSC, etc.\n");
+        exit(0);
+      }
+      else if (strnicmp(argv[i], "--standalone", 12) == 0)
+      {
+        g_application.SetStandAlone(true);
+      }
+      else if (strnicmp(argv[i], "--legacy-res", 12) == 0)
+      {
+        g_application.SetEnableLegacyRes(true);
       }
       else if (argv[i][0] != '-')
       {
