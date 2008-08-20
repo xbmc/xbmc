@@ -1079,9 +1079,6 @@ CProfile* CApplication::InitDirectoriesOSX()
     str2.append("/userdata");
     CreateDirectory(str2.c_str(), NULL);
     str2 = str;
-    str2.append("/programs");
-    CreateDirectory(str2.c_str(), NULL);
-    str2 = str;
     str2.append("/plugins");
     CreateDirectory(str2.c_str(), NULL);
     str2 = str;
@@ -1092,6 +1089,9 @@ CProfile* CApplication::InitDirectoriesOSX()
     CreateDirectory(str2.c_str(), NULL);
     str2 = str;
     str2.append("/plugins/video");
+    CreateDirectory(str2.c_str(), NULL);
+    str2 = str;
+    str2.append("/plugins/programs");
     CreateDirectory(str2.c_str(), NULL);
 
     // See if the keymap file exists, and if not, copy it from our "virgin" one.
