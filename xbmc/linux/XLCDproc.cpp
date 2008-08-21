@@ -79,6 +79,8 @@ void XLCDproc::Initialize()
   //Build command to setup screen
   CStdString cmd;
   cmd = "hello\nscreen_add xbmc\n";
+  if (!g_advancedSettings.m_lcdHeartbeat)
+    cmd.append("screen_set xbmc -heartbeat off\n");
   cmd.append("widget_add xbmc line1 scroller\n");
   cmd.append("widget_add xbmc line2 scroller\n");
   cmd.append("widget_add xbmc line3 scroller\n");

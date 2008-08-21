@@ -167,6 +167,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_lcdAddress2 = 0x40;
   g_advancedSettings.m_lcdAddress3 = 0x14;
   g_advancedSettings.m_lcdAddress4 = 0x54;
+  g_advancedSettings.m_lcdHeartbeat = false;
 
   g_advancedSettings.m_autoDetectPingTime = 30;
   g_advancedSettings.m_playCountMinimumPercent = 90.0f;
@@ -1184,6 +1185,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "address2", g_advancedSettings.m_lcdAddress2, 0, 0x100);
     GetInteger(pElement, "address3", g_advancedSettings.m_lcdAddress3, 0, 0x100);
     GetInteger(pElement, "address4", g_advancedSettings.m_lcdAddress4, 0, 0x100);
+    XMLUtils::GetBoolean(pElement, "heartbeat", g_advancedSettings.m_lcdHeartbeat);
   }
   pElement = pRootElement->FirstChildElement("network");
   if (pElement)
