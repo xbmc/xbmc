@@ -1313,15 +1313,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("lcd.contrast"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      // X3 can't controll the Contrast via software graying out!
-      if(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE)
-      {
-        if (pControl) pControl->SetEnabled(true);
-      }
-      else
-      {
-        if (pControl) pControl->SetEnabled(false);
-      }
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
     }
     else if (strSetting.Equals("lookandfeel.soundsduringplayback"))
     {
