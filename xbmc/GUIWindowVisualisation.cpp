@@ -226,8 +226,17 @@ bool CGUIWindowVisualisation::OnMouse(const CPoint &point)
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
   { // no control found to absorb this click - toggle the track INFO
     CAction action;
-    action.wID = ACTION_SHOW_INFO;
-    OnAction(action);
+    action.wID = ACTION_PAUSE;
+    return g_application.OnAction(action);
+  }
+  if (g_Mouse.HasMoved())
+  { // movement - toggle the OSD
+    CGUIDialog *pOSD = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
+    if (pOSD)
+    {
+      pOSD->SetAutoClose(3000);
+      pOSD->DoModal();
+    }
   }
   return true;
 }
