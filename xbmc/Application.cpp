@@ -1044,87 +1044,143 @@ CProfile* CApplication::InitDirectoriesLinux()
 CProfile* CApplication::InitDirectoriesOSX()
 {
 #ifdef __APPLE__
+  // these two lines should move elsewhere
   Cocoa_Initialize(this);
-
   // We're going to manually manage the screensaver.
   setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", true);
 
-  CStdString strExecutablePath;
-  CUtil::GetHomePath(strExecutablePath);
-  setenv("XBMC_HOME", strExecutablePath.c_str(), 0);
+  CProfile* profile = NULL;
 
   // Z: common for both
   CIoSupport::RemapDriveLetter('Z',"/tmp/xbmc");
   CreateDirectory(_P("Z:\\"), NULL);
 
-  CStdString home = getenv("HOME");
-  CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
-
-  g_settings.m_vecProfiles.clear();
-  g_settings.LoadProfiles(_P(PROFILES_FILE));
-
-  CProfile* profile = NULL;
-
-  if (m_bPlatformDirectories)
+  CStdString userHome;
+  if (getenv("HOME"))
   {
-    // Make sure the required directories exist.
-    CStdString str2, str = home;
-
-    str.append("/Library/Application Support");
-    CreateDirectory(str.c_str(), NULL);
-    str.append("/XBMC");
-    CreateDirectory(str.c_str(), NULL);
-    //
-    str2 = str;
-    str2.append("/mounts");
-    CreateDirectory(str2.c_str(), NULL);
-    str2 = str;
-    str2.append("/userdata");
-    CreateDirectory(str2.c_str(), NULL);
-    str2 = str;
-    str2.append("/plugins");
-    CreateDirectory(str2.c_str(), NULL);
-    str2 = str;
-    str2.append("/plugins/music");
-    CreateDirectory(str2.c_str(), NULL);
-    str2 = str;
-    str2.append("/plugins/pictures");
-    CreateDirectory(str2.c_str(), NULL);
-    str2 = str;
-    str2.append("/plugins/video");
-    CreateDirectory(str2.c_str(), NULL);
-    str2 = str;
-    str2.append("/plugins/programs");
-    CreateDirectory(str2.c_str(), NULL);
-
-    // See if the keymap file exists, and if not, copy it from our "virgin" one.
-    //CopyUserDataIfNeeded(str, "Keymap.xml");
-    CopyUserDataIfNeeded(str, "RssFeeds.xml");
-
-    // Put the user data folder somewhere standard for the platform.
-    str = getenv("HOME");
-    str.append("/Library/Application Support/XBMC");
-    CIoSupport::RemapDriveLetter('U', str.c_str());
-
-    str.append("/userdata");
-    CIoSupport::RemapDriveLetter('T', str.c_str());
-
-    if (g_settings.m_vecProfiles.size()==0)
-    {
-      profile = new CProfile;
-      CStdString s = getenv("HOME");
-      s.append("/Library/Application Support/XBMC/userdata");
-      profile->setDirectory(s.c_str());
-    }
+    userHome = getenv("HOME");
   }
   else
   {
-    CIoSupport::RemapDriveLetter('T', _P("Q:\\userdata").c_str());
-    if (g_settings.m_vecProfiles.size()==0)
-    {
-      profile = new CProfile;
-      profile->setDirectory(_P("q:\\userdata"));
-    }
+    userHome = "/root";
+  }
+
+  // OSX always runs with m_bPlatformDirectories == true
+  if (m_bPlatformDirectories)
+  {
+
+    #ifdef __APPLE__
+        CStdString logDir = userHome + "/Library/Logs/";
+        g_stSettings.m_logFolder = logDir;
+
+        // //Library/Application\ Support/XBMC/
+        CStdString install_path;
+        CUtil::GetHomePath(install_path);
+        setenv("XBMC_HOME", install_path.c_str(), 0);
+        CIoSupport::RemapDriveLetter('Q', (char*) install_path.c_str());
+
+        // /Users/<username>/Library/Application Support/XBMC
+        CStdString xbmcHome = userHome + "/Library/Application Support/XBMC";
+        CreateDirectory(xbmcHome, NULL);
+        CIoSupport::RemapDriveLetter('U', xbmcHome.c_str());
+
+        // /Users/<username>/Library/Application Support/XBMC/userdata
+        CStdString xbmcUserdata = xbmcHome + "/userdata";
+        CreateDirectory(xbmcUserdata, NULL);
+        CIoSupport::RemapDriveLetter('T', xbmcUserdata.c_str());
+    #else
+        CStdString logDir = "/var/tmp/";
+        if (getenv("USER"))
+        {
+          logDir += getenv("USER");
+          logDir += "-";
+        }
+        g_stSettings.m_logFolder = logDir;
+
+        setenv("XBMC_HOME", INSTALL_PATH, 0);
+        CStdString str = INSTALL_PATH;
+        CIoSupport::RemapDriveLetter('Q', (char*) str.c_str());
+
+        // make the $HOME/.xbmc directory
+        CStdString xbmcHome = userHome + "/.xbmc";
+        CreateDirectory(xbmcHome, NULL);
+        CIoSupport::RemapDriveLetter('U', xbmcHome.c_str());
+
+        // make the $HOME/.xbmc/userdata directory
+        CStdString xbmcUserdata = xbmcHome + "/userdata";
+        CreateDirectory(xbmcUserdata.c_str(), NULL);
+        CIoSupport::RemapDriveLetter('T', xbmcUserdata.c_str());
+    #endif
+
+
+    CStdString xbmcDir;
+    xbmcDir = _P("u:\\skin");
+    CreateDirectory(xbmcDir.c_str(), NULL);
+
+    xbmcDir = _P("u:\\visualisations");
+    CreateDirectory(xbmcDir.c_str(), NULL);
+
+    xbmcDir = _P("u:\\screensavers");
+    CreateDirectory(xbmcDir.c_str(), NULL);
+
+    xbmcDir = _P("u:\\sounds");
+    CreateDirectory(xbmcDir.c_str(), NULL);
+
+    xbmcDir = _P("u:\\system");
+    CreateDirectory(xbmcDir.c_str(), NULL);
+
+    xbmcDir = _P("u:\\plugins");
+    CreateDirectory(xbmcDir.c_str(), NULL);
+    xbmcDir = _P("u:\\plugins\\video");
+    CreateDirectory(xbmcDir.c_str(), NULL);
+    xbmcDir = _P("u:\\plugins\\music");
+    CreateDirectory(xbmcDir.c_str(), NULL);
+    xbmcDir = _P("u:\\plugins\\pictures");
+    CreateDirectory(xbmcDir.c_str(), NULL);
+    xbmcDir = _P("u:\\plugins\\programs");
+    CreateDirectory(xbmcDir.c_str(), NULL);
+    
+    xbmcDir = _P("u:\\scripts");
+    CreateDirectory(xbmcDir.c_str(), NULL);
+    xbmcDir = _P("u:\\scripts\\My Scripts"); // FIXME: both scripts should be in 1 directory
+    CreateDirectory(xbmcDir.c_str(), NULL);
+
+    xbmcDir = _P("u:\\scripts\\Common Scripts"); // FIXME:
+    #ifdef __APPLE__
+        CStdString str = install_path + "/scripts";
+        symlink( str.c_str(),  xbmcDir.c_str() );
+    #else
+        symlink( INSTALL_PATH "/scripts",  xbmcDir.c_str() );
+    #endif
+
+    // copy required files
+    //CopyUserDataIfNeeded(_P("t:\\"), "Keymap.xml");
+    CopyUserDataIfNeeded(_P("t:\\"), "RssFeeds.xml");
+    // this is wrong, CopyUserDataIfNeeded pulls from q:\\userdata, Lircmap.xml is in q:\\system
+    CopyUserDataIfNeeded(_P("t:\\"), "Lircmap.xml");    
+    CopyUserDataIfNeeded(_P("t:\\"), "LCD.xml");
+  }
+  else
+  {
+    CStdString strHomePath;
+    CUtil::GetHomePath(strHomePath);
+    setenv("XBMC_HOME", strHomePath.c_str(), 0);
+
+    CUtil::AddDirectorySeperator(strHomePath);
+    g_stSettings.m_logFolder = strHomePath;
+
+    CIoSupport::RemapDriveLetter('Q', (char*)strHomePath.c_str());
+    CIoSupport::RemapDriveLetter('T', _P("Q:\\userdata"));
+    CIoSupport::RemapDriveLetter('U', _P("Q:"));
+  }
+
+  g_settings.m_vecProfiles.clear();
+  g_settings.LoadProfiles(_P( PROFILES_FILE ));
+
+  if (g_settings.m_vecProfiles.size()==0)
+  {
+    profile = new CProfile;
+    profile->setDirectory(_P("t:\\"));
   }
   return profile;
 #else
