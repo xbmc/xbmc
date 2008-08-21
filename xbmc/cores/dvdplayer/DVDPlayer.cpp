@@ -562,10 +562,6 @@ bool CDVDPlayer::IsValidStream(CCurrentStream& stream, StreamType type)
   if(stream.id<0)
     return true; // we consider non selected as valid
 
-  // for dvd's consider all streams valid. IsBetterStream will handle switches
-  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-    return true;
-
   int source = STREAM_SOURCE_MASK(stream.source);
   if(source == STREAM_SOURCE_TEXT)
     return true;
@@ -585,6 +581,15 @@ bool CDVDPlayer::IsValidStream(CCurrentStream& stream, StreamType type)
       return false;
     if(st->type != type)
       return false;
+
+    if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+    {
+      if(type == STREAM_AUDIO    && st->iPhysicalId != m_dvd.iSelectedAudioStream)
+        return false;
+      if(type == STREAM_SUBTITLE && st->iPhysicalId != m_dvd.iSelectedSPUStream)
+        return false;
+    }
+
     return true;
   }
 
