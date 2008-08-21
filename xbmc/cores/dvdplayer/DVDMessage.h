@@ -49,6 +49,7 @@ public:
     GENERAL_FLUSH,                  // 
     GENERAL_STREAMCHANGE,           // 
     GENERAL_SYNCHRONIZE,            // 
+    GENERAL_DELAY,                  //
     
     
     // player core related messages (cdvdplayer.cpp)
