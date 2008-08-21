@@ -100,7 +100,7 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
-      m_showStartTime = SDL_GetTicks();
+      m_showStartTime = timeGetTime();
       return true;
     }
   }
@@ -226,12 +226,9 @@ void CGUIDialog::Render()
     Close(true);
   }
     
-  if (m_autoClosing)
+  if (m_autoClosing && m_showStartTime + m_showDuration < timeGetTime() && !m_dialogClosing)
   {
-     if (m_showStartTime + m_showDuration < SDL_GetTicks())
-     {
-        Close(true);
-     }
+    Close();
   }
 }
 
@@ -252,6 +249,8 @@ void CGUIDialog::SetAutoClose(unsigned int timeoutMs)
 {
    m_autoClosing = true;
    m_showDuration = timeoutMs;
+   if (m_bRunning)
+     m_showStartTime = timeGetTime();
 }
 
 
