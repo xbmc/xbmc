@@ -32,5 +32,6 @@ public:
 
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
+  virtual bool OnMouse(const CPoint &point);
   virtual void OnWindowLoaded();
 };
