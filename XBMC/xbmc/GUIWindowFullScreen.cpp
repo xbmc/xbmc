@@ -524,7 +524,6 @@ bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
   }
   if (g_Mouse.HasMoved())
   { // movement - toggle the OSD
-    CLog::Log(LOGDEBUG, "%s: mouse message sent", __FUNCTION__);
     CGUIWindowOSD *pOSD = (CGUIWindowOSD *)m_gWindowManager.GetWindow(WINDOW_OSD);
     if (pOSD)
     {
