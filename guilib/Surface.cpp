@@ -182,7 +182,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
       fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), doubleVisAttributesAA, &num);
       if (!fbConfigs)
       {
-        CLog::Log(LOGERROR, "GLX Error: No Multisample buffers available, FSAA disabled");
+        CLog::Log(LOGWARNING, "GLX: No Multisample buffers available, FSAA disabled");
         fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), doubleVisAttributes, &num);
       }
     }
