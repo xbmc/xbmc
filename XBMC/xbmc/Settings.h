@@ -159,6 +159,7 @@ public:
     int m_lcdAddress2;
     int m_lcdAddress3;
     int m_lcdAddress4;
+    bool m_lcdHeartbeat;
 
     int m_autoDetectPingTime;
     float m_playCountMinimumPercent;
