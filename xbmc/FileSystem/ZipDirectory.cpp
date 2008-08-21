@@ -130,7 +130,7 @@ namespace DIRECTORY
 
       CFileItemPtr pFileItem(new CFileItem);
       
-      if (g_charsetConverter.isValidUtf8(pathTokens[baseTokens.size()]));
+      if (g_charsetConverter.isValidUtf8(pathTokens[baseTokens.size()]))
         g_charsetConverter.utf8ToStringCharset(pathTokens[baseTokens.size()]);
 
       pFileItem->SetLabel(pathTokens[baseTokens.size()]);
