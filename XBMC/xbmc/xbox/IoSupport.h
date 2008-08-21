@@ -38,6 +38,7 @@
 #define DRIVE_READY      2
 #define DRIVE_CLOSED_NO_MEDIA   3 // CLOSED...but no media in drive
 #define DRIVE_CLOSED_MEDIA_PRESENT  4 // Will be send once when the drive just have closed
+#define DRIVE_NONE  5 // system doesn't have an optical drive
 
 #define MODE2_DATA_START   24   // Mode2 raw sector has 24 bytes before the data payload
 #define MODE2_DATA_SIZE    2324 // And has 2324 usable bytes
