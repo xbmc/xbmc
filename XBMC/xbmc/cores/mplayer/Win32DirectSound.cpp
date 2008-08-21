@@ -231,6 +231,8 @@ HRESULT CWin32DirectSound::Stop()
 {
   if (m_bPause) return S_OK;
   m_pBuffer->Stop();
+  m_pBuffer->SetCurrentPosition(0);
+  m_nextPacket = 0;
   return S_OK;
 }
 
@@ -273,20 +275,9 @@ HRESULT CWin32DirectSound::SetCurrentVolume(LONG nVolume)
 //***********************************************************************************************
 DWORD CWin32DirectSound::AddPackets(unsigned char *data, DWORD len)
 {
-  DWORD playCursor, writeCursor;
-  if (FAILED(m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor)))
-    return 0;
-
-  // the packet we can write to must be after the packet containing the
-  // write cursor and before the packet containing the play cursor.
-  DWORD writablePacket = (writeCursor + m_dwPacketSize - 1) / m_dwPacketSize;
-  DWORD playingPacket = playCursor / m_dwPacketSize;
-
   DWORD total = len;
 
-  // see GetSpace() for an explanation of the logic here
-  while ((playingPacket < writablePacket && (m_nextPacket >= writablePacket || m_nextPacket < playingPacket)) ||
-         (playingPacket > writablePacket && (m_nextPacket >= writablePacket && m_nextPacket < playingPacket)))
+  while (GetSpace() >= m_dwPacketSize)
   {
     if (len < m_dwPacketSize)
       break;
@@ -322,56 +313,56 @@ DWORD CWin32DirectSound::AddPackets(unsigned char *data, DWORD len)
 DWORD CWin32DirectSound::GetSpace()
 {
   DWORD playCursor, writeCursor;
-  if (SUCCEEDED(m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor)))
-  {
-    if (!writeCursor && !playCursor)
-    { // just starting, so we have all packets free
-      return m_dwPacketSize * m_dwNumPackets;
-    }
+  if (FAILED(m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor)))
+    return 0;
 
-    // the packet we can write to must be after the packet containing the
-    // write cursor and before the packet containing the play cursor.
-    DWORD writablePacket = (writeCursor + m_dwPacketSize - 1) / m_dwPacketSize;
-    DWORD playingPacket = playCursor / m_dwPacketSize;
+  // the packet we can write to must be after the packet containing the
+  // write cursor and before the packet containing the play cursor.
+  DWORD writablePacket = (writeCursor + m_dwPacketSize - 1) / m_dwPacketSize % m_dwNumPackets;
+  DWORD playingPacket = playCursor / m_dwPacketSize;
 
-    DWORD freePackets = 0;
-    if (playingPacket > writablePacket)
-    { // easy case - the next packet to write must be between the two
-      // | | | | | | | | | |
-      //    W   N-----P
-      if (m_nextPacket >= writablePacket && m_nextPacket < playingPacket)
-        freePackets = playingPacket - m_nextPacket;
-    }
-    else if (playingPacket < writablePacket)
-    { // wrapping, our next packet has to be either after our write packet, or before the playing packet
-      // | | | | | | | | | |        | | | | | | | | | |
-      // -----P     W   N---   OR    N---P     W
-      if (m_nextPacket >= writablePacket)
-        freePackets = m_dwNumPackets - m_nextPacket + playingPacket;
-      else if (m_nextPacket < playingPacket)
-        freePackets = playingPacket - m_nextPacket;
-    }
-    return freePackets * m_dwPacketSize;
+  // these are the logical situation that can occure
+  // | | | | | | | | | |
+  // ***N----W----P*****
+  // | | | | | | | | | |
+  // ---P****N----W----- < underrun
+  // | | | | | | | | | |
+  // ---W----P****N----- < underrun
+  // | | | | | | | | | |
+  // ***W****N----P*****
+  // | | | | | | | | | |
+  // ---P****W****N-----
+  // | | | | | | | | | |
+  // ***N----P****W*****
+
+  // we never allow the buffer to fill completely 
+  // thus P=N means buffer is empty, if we are playing
+  // check for underruns
+  if(writablePacket < playingPacket && playingPacket < m_nextPacket
+  || playingPacket <  m_nextPacket  && m_nextPacket  < writablePacket
+  || playingPacket == m_nextPacket  && playCursor != writeCursor)
+  { 
+    CLog::Log(LOGWARNING, "CWin32DirectSound::AddPackets - buffer underrun");
+    m_nextPacket = writablePacket;
   }
-  return 0;
+
+  DWORD freePackets = 0;
+  if (m_nextPacket > playingPacket)
+    return playCursor - m_nextPacket * m_dwPacketSize - m_dwPacketSize + m_dwNumPackets * m_dwPacketSize;
+  else if(m_nextPacket < playingPacket)
+    return playCursor - m_nextPacket * m_dwPacketSize - m_dwPacketSize;
+  else
+    return m_dwNumPackets * m_dwPacketSize - m_dwPacketSize;
 }
 
 //***********************************************************************************************
 FLOAT CWin32DirectSound::GetDelay()
 {
-  FLOAT delay = 0.008f;
+  DWORD bytes = m_dwPacketSize * (m_dwNumPackets - 1) - GetSpace();
+  FLOAT delay;
 
-  DWORD playCursor, writeCursor;
-  if (SUCCEEDED(m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor)))
-  {
-    DWORD bytes;
-    if (playCursor < m_nextPacket * m_dwPacketSize)
-      bytes = m_nextPacket * m_dwPacketSize - playCursor;
-    else
-      bytes = m_dwPacketSize * m_dwNumPackets - playCursor + m_nextPacket * m_dwPacketSize;
-
-    delay += (FLOAT)bytes / ( m_uiChannels * m_uiSamplesPerSec * m_uiBitsPerSample / 8 );
-  }
+  delay  = 0.008f;
+  delay += (FLOAT)bytes / ( m_uiChannels * m_uiSamplesPerSec * m_uiBitsPerSample / 8 );
   return delay;
 }
 
