@@ -117,6 +117,10 @@ VOID CDetectDVDMedia::UpdateDvdrom()
     CSingleLock waitLock(m_muReadingMedia);
     switch (GetTrayState())
     {
+      case DRIVE_NONE:
+        // TODO: reduce / stop polling for drive updates
+        break;
+
       case DRIVE_OPEN:
         {
           // Send Message to GUI that disc been ejected
@@ -353,7 +357,7 @@ DWORD CDetectDVDMedia::GetTrayState()
 
   char* dvdDevice = CCdIoSupport::GetDeviceFileName();
   if (strlen(dvdDevice) == 0)
-    return DRIVE_NOT_READY;
+    return DRIVE_NONE;
 
 #ifndef USING_CDIO78
 
