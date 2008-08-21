@@ -1656,6 +1656,8 @@ void CDVDPlayer::HandleMessages()
           }
         }
       }
+      else if (pMsg->IsType(CDVDMsg::GENERAL_GUI_ACTION))
+        OnAction(((CDVDMsgType<CAction>*)pMsg)->m_value);
     }
     catch (...)
     {
@@ -2440,6 +2442,14 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 
 bool CDVDPlayer::OnAction(const CAction &action)
 {
+#define THREAD_ACTION(action) \
+  do { \
+    if(GetCurrentThreadId() != CThread::ThreadId()) { \
+      m_messenger.Put(new CDVDMsgType<CAction>(CDVDMsg::GENERAL_GUI_ACTION, action)); \
+      return true; \
+    } \
+  } while(false);
+
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
@@ -2454,14 +2464,14 @@ bool CDVDPlayer::OnAction(const CAction &action)
         case ACTION_MOVE_UP:
         case ACTION_SELECT_ITEM:
           {
+            THREAD_ACTION(action);
             /* this will force us out of the stillframe */
             CLog::Log(LOGDEBUG, "%s - User asked to exit stillframe", __FUNCTION__);
             m_dvd.iDVDStillStartTime = 0;
-            m_dvd.iDVDStillTime = 1;
-            return true;
+            m_dvd.iDVDStillTime = 1;            
           }
-          break;
-      }        
+          return true;
+      }
     }
 
 
@@ -2469,6 +2479,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
     {
     case ACTION_PREV_ITEM:  // SKIP-:
       {
+        THREAD_ACTION(action);
         CLog::Log(LOGDEBUG, " - pushed prev");
         pStream->OnPrevious();
         g_infoManager.SetDisplayAfterSeek();
@@ -2477,6 +2488,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
       break;
     case ACTION_NEXT_ITEM:  // SKIP+:
       {
+        THREAD_ACTION(action);
         CLog::Log(LOGDEBUG, " - pushed next");
         pStream->OnNext();
         g_infoManager.SetDisplayAfterSeek();
@@ -2485,6 +2497,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
       break;
     case ACTION_SHOW_VIDEOMENU:   // start button
       {
+        THREAD_ACTION(action);
         CLog::Log(LOGDEBUG, " - go to menu");
         pStream->OnMenu();
         // send a message to everyone that we've gone to the menu
@@ -2501,30 +2514,35 @@ bool CDVDPlayer::OnAction(const CAction &action)
       {
       case ACTION_PREVIOUS_MENU:
         {
+          THREAD_ACTION(action);
           CLog::Log(LOGDEBUG, " - menu back");
           pStream->OnBack();
         }
         break;
       case ACTION_MOVE_LEFT:
         {
+          THREAD_ACTION(action);
           CLog::Log(LOGDEBUG, " - move left");
           pStream->OnLeft();
         }
         break;
       case ACTION_MOVE_RIGHT:
         {
+          THREAD_ACTION(action);
           CLog::Log(LOGDEBUG, " - move right");
           pStream->OnRight();
         }
         break;
       case ACTION_MOVE_UP:
         {
+          THREAD_ACTION(action);
           CLog::Log(LOGDEBUG, " - move up");
           pStream->OnUp();
         }
         break;
       case ACTION_MOVE_DOWN:
         {
+          THREAD_ACTION(action);
           CLog::Log(LOGDEBUG, " - move down");
           pStream->OnDown();
         }
@@ -2532,6 +2550,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
       case ACTION_SHOW_OSD:
       case ACTION_SELECT_ITEM:
         {
+          THREAD_ACTION(action);
           CLog::Log(LOGDEBUG, " - button select");
           // show button pushed overlay
           m_dvdPlayerSubtitle.UpdateOverlayInfo((CDVDInputStreamNavigator*)m_pInputStream, LIBDVDNAV_BUTTON_CLICKED);
@@ -2550,6 +2569,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
       case REMOTE_8:
       case REMOTE_9:
         {
+          THREAD_ACTION(action);
           // Offset from key codes back to button number
           int button = action.wID - REMOTE_0;
           CLog::Log(LOGDEBUG, " - button pressed %d", button);
