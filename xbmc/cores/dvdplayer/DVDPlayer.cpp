@@ -1135,12 +1135,7 @@ bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
     if ((current.startpts < current.dts && current.dts != DVD_NOPTS_VALUE)
     ||  (current.startpts == DVD_NOPTS_VALUE))
     {
-      if(source == DVDPLAYER_VIDEO)
-        m_dvdPlayerVideo.SendMessage(current.startsync);
-      else if(source == DVDPLAYER_AUDIO)
-        m_dvdPlayerAudio.SendMessage(current.startsync);
-      else if(source == DVDPLAYER_SUBTITLE)
-        m_dvdPlayerSubtitle.SendMessage(current.startsync);
+      SendPlayerMessage(current.startsync, source);
 
       current.startpts = DVD_NOPTS_VALUE;
       current.startsync = NULL;
@@ -1169,21 +1164,39 @@ bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
   //If this is the first packet after a discontinuity, send it as a resync
   if (current.inited == false && current.dts != DVD_NOPTS_VALUE)
   {
-    current.inited = true;
+    current.inited   = true;
+    current.startpts = current.dts;
 
     bool setclock = false;
-    if(source == DVDPLAYER_AUDIO)
-      setclock = m_CurrentVideo.id < 0 || m_playSpeed == DVD_PLAYSPEED_NORMAL;
-    else if(source == DVDPLAYER_VIDEO)
-      setclock = m_CurrentAudio.id < 0 || m_playSpeed != DVD_PLAYSPEED_NORMAL;
+    if(m_playSpeed == DVD_PLAYSPEED_NORMAL)
+    {
+      if(     source == DVDPLAYER_AUDIO)
+        setclock = !m_CurrentVideo.inited;
+      else if(source == DVDPLAYER_VIDEO)
+        setclock = !m_CurrentAudio.inited;
+    }
+    else
+    {
+      if(source == DVDPLAYER_VIDEO)
+        setclock = true;
+    }
 
-    CDVDMsgGeneralResync* msg = new CDVDMsgGeneralResync(current.dts, setclock);
-    if(source == DVDPLAYER_VIDEO)
-      m_dvdPlayerVideo.SendMessage(msg);
-    else if(source == DVDPLAYER_AUDIO)
-      m_dvdPlayerAudio.SendMessage(msg);
-    else if(source == DVDPLAYER_SUBTITLE)
-      m_dvdPlayerSubtitle.SendMessage(msg);
+    double starttime = current.startpts;
+    if(m_CurrentAudio.inited && m_CurrentAudio.startpts < starttime)
+      starttime = m_CurrentAudio.startpts;
+    if(m_CurrentVideo.inited && m_CurrentVideo.startpts < starttime)
+      starttime = m_CurrentVideo.startpts;
+
+    starttime = current.startpts - starttime;
+    if(starttime > 0)
+    {
+      if(starttime > DVD_SEC_TO_TIME(2))
+        CLog::Log(LOGWARNING, "CDVDPlayer::CheckPlayerInit(%d) - Ignoring too large delay of %f", source, starttime);
+      else
+        SendPlayerMessage(new CDVDMsgDouble(CDVDMsg::GENERAL_DELAY, starttime), source);
+    }
+
+    SendPlayerMessage(new CDVDMsgGeneralResync(current.dts, setclock), source);
   }
   return false;
 }
@@ -1350,6 +1363,16 @@ void CDVDPlayer::SyncronizePlayers(DWORD sources, double pts)
   }
 */
   message->Release();
+}
+
+void CDVDPlayer::SendPlayerMessage(CDVDMsg* pMsg, unsigned int target)
+{
+  if(target == DVDPLAYER_AUDIO)
+    m_dvdPlayerAudio.SendMessage(pMsg);
+  if(target == DVDPLAYER_VIDEO)
+    m_dvdPlayerVideo.SendMessage(pMsg);
+  if(target == DVDPLAYER_SUBTITLE)
+    m_dvdPlayerSubtitle.SendMessage(pMsg);
 }
 
 void CDVDPlayer::OnExit()
