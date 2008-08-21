@@ -217,7 +217,7 @@ CGUISettings::CGUISettings(void)
   AddCategory(2, "weather", 16000);
   AddString(1, "weather.areacode1", 14019, "GMXX0154 - Aachen, Germany", BUTTON_CONTROL_STANDARD);
   AddString(2, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
-  AddString(3, "weather.areacode3", 14021, "CAXX0343 - Ontario, Canada", BUTTON_CONTROL_STANDARD);
+  AddString(3, "weather.areacode3", 14021, "CAXX0343 - Ottawa, Canada", BUTTON_CONTROL_STANDARD);
   AddSeparator(4, "weather.sep1");
   AddString(5, "weather.jumptolocale", 20026, "", BUTTON_CONTROL_STANDARD);
 
