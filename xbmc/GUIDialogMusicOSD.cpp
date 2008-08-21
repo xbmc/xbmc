@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "GUIDialogMusicOSD.h"
 #include "GUIWindowSettingsCategory.h"
+#include "Application.h"
 
 
 #define CONTROL_VIS_BUTTON       500
@@ -104,5 +105,28 @@ void CGUIDialogMusicOSD::OnInitWindow()
 
   ResetControlStates();
   CGUIDialog::OnInitWindow();
+}
+
+bool CGUIDialogMusicOSD::OnAction(const CAction &action)
+{
+  if (action.wID == ACTION_MOUSE)
+  {
+    if (g_Mouse.HasMoved() && m_autoClosing)
+    { // movement - update the auto closing
+      SetAutoClose(3000);
+    }
+  }
+  return CGUIDialog::OnAction(action);
+}
+
+bool CGUIDialogMusicOSD::OnMouse(const CPoint &point)
+{
+  if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
+  { // pause
+    CAction action;
+    action.wID = ACTION_PAUSE;
+    return g_application.OnAction(action);
+  }
+  return CGUIDialog::OnMouse(point);
 }
 
