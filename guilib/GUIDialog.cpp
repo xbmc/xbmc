@@ -172,7 +172,10 @@ void CGUIDialog::DoModalThreadSafe()
 {
   // we make sure we're threadsafe by sending via the application messenger
   ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, GetID(), m_gWindowManager.GetActiveWindow()};
+  // first ensure we don't hold the graphics lock
+  int numLocks = ExitCriticalSection(g_graphicsContext);
   g_applicationMessenger.SendMessage(tMsg, true);
+  RestoreCriticalSection(g_graphicsContext, numLocks);
 }
 
 void CGUIDialog::Show()
