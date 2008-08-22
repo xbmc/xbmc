@@ -95,7 +95,7 @@
 do { \
  CGUIMessage msg(GUI_MSG_SELECTED, GetID(), dwControlID); \
  OnMessage(msg); \
-} while(0);
+} while(0)
 
 /*!
  \ingroup winmsg
@@ -105,7 +105,7 @@ do { \
 do { \
  CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), dwControlID); \
  OnMessage(msg); \
-} while(0);
+} while(0)
 
 
 /*!
@@ -116,7 +116,7 @@ do { \
 do { \
  CGUIMessage msg(GUI_MSG_ENABLED, GetID(), dwControlID); \
  OnMessage(msg); \
-} while(0);
+} while(0)
 
 /*!
  \ingroup winmsg
@@ -126,7 +126,7 @@ do { \
 do { \
  CGUIMessage msg(GUI_MSG_DISABLED, GetID(), dwControlID); \
  OnMessage(msg); \
-} while(0);
+} while(0)
 
 
 /*!
@@ -137,7 +137,7 @@ do { \
 do { \
  CGUIMessage msg(bCondition ? GUI_MSG_ENABLED:GUI_MSG_DISABLED, GetID(), dwControlID); \
  OnMessage(msg); \
-} while(0);
+} while(0)
 
 
 /*!
@@ -148,7 +148,7 @@ do { \
 do { \
  CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), dwControlID,iItem); \
  OnMessage(msg); \
-} while(0);
+} while(0)
 
 /*!
  \ingroup winmsg
@@ -159,7 +159,7 @@ do { \
  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), dwControlID); \
  msg.SetLabel(label); \
  OnMessage(msg); \
-} while(0);
+} while(0)
 
 /*!
  \ingroup winmsg
@@ -170,7 +170,7 @@ do { \
  CGUIMessage msg(GUI_MSG_LABEL2_SET, GetID(), dwControlID); \
  msg.SetLabel(label); \
  OnMessage(msg); \
-} while(0);
+} while(0)
 
 /*!
  \ingroup winmsg
@@ -180,7 +180,7 @@ do { \
 do { \
  CGUIMessage msg(GUI_MSG_HIDDEN, GetID(), dwControlID); \
  OnMessage(msg); \
-} while(0);
+} while(0)
 
 /*!
  \ingroup winmsg
@@ -190,7 +190,7 @@ do { \
 do { \
  CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), dwControlID, dwParam); \
  OnMessage(msg); \
-} while(0);
+} while(0)
 
 /*!
  \ingroup winmsg
@@ -200,18 +200,18 @@ do { \
 do { \
  CGUIMessage msg(GUI_MSG_VISIBLE, GetID(), dwControlID); \
  OnMessage(msg); \
-} while(0);
+} while(0)
 
 #define SET_CONTROL_SELECTED(dwSenderId, dwControlID, bSelect) \
 do { \
  CGUIMessage msg(bSelect?GUI_MSG_SELECTED:GUI_MSG_DESELECTED, dwSenderId, dwControlID); \
  OnMessage(msg); \
-} while(0);
+} while(0)
 
 #define BIND_CONTROL(i,c,pv) \
 do { \
  pv = ((c*)GetControl(i));\
-} while(0);
+} while(0)
 
 /*!
 \ingroup winmsg
@@ -221,7 +221,7 @@ do { \
 do { \
  CGUIMessage msg(GUI_MSG_CLICKED, dwID, dwParentID, dwAction); \
  SendWindowMessage(msg); \
-} while(0);
+} while(0)
 
 #include <boost/shared_ptr.hpp>
 
