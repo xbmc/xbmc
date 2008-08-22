@@ -7,10 +7,13 @@
 #define DLL_PATH_LIBID3TAG     "Q:\\system\\libid3tag-@ARCH@.so"
 #define DLL_PATH_LIBHDHOMERUN  "Q:\\system\\hdhomerun-@ARCH@.so"
 #define DLL_PATH_LIBCMYTH      "xbmc.so"
+
+#ifndef DLL_PATH_LIBCURL
 #ifdef __APPLE__
 #define DLL_PATH_LIBCURL       "Q:\\system\\libcurl-@ARCH@.so"
 #else
 #define DLL_PATH_LIBCURL       "/usr/lib/libcurl.so"
+#endif
 #endif
 
 /* paplayer */
