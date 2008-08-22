@@ -699,7 +699,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     g_settings.m_ResInfo[res].fRefreshRate = (float)devmode.dmDisplayFrequency;
 #endif
 
-    SDL_WM_SetCaption("XBMC", NULL);
+    SDL_WM_SetCaption("XBMC Media Center", NULL);
 
     {
       CSingleLock aLock(m_surfaceLock);
