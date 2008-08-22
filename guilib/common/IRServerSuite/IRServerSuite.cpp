@@ -75,7 +75,22 @@ bool CRemoteControl::Initialize()
 
 void CRemoteControl::Process()
 {
-  Connect();
+  DWORD iTries = 1;
+  DWORD iMsRetryDelay = 5000;
+  DWORD time = timeGetTime() - iMsRetryDelay;
+  // try to connect 6 times @ a 5 second interval (30 seconds)
+  // multiple tries because irss service might be up and running a little later then xbmc on boot.
+  while (!m_bStop && iTries <= 6)
+  {
+    if (timeGetTime() - time >= iMsRetryDelay)
+    {
+      time = timeGetTime();
+      if (Connect())
+        break;
+      iTries++;
+    }
+    Sleep(10);
+  }
 }
 
 bool CRemoteControl::Connect()
