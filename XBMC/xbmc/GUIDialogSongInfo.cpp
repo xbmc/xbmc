@@ -141,13 +141,10 @@ bool CGUIDialogSongInfo::OnAction(const CAction &action)
 void CGUIDialogSongInfo::OnInitWindow()
 {
   if (!g_guiSettings.GetBool("musiclibrary.enabled") || m_song->GetMusicInfoTag()->GetDatabaseId() == -1)
-  {
-    CONTROL_DISABLE(CONTROL_ALBUMINFO)
-  }
+    CONTROL_DISABLE(CONTROL_ALBUMINFO);
   else
-  {
-    CONTROL_ENABLE(CONTROL_ALBUMINFO)
-  }
+    CONTROL_ENABLE(CONTROL_ALBUMINFO);
+
   CGUIDialog::OnInitWindow();
 }
 

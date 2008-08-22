@@ -988,13 +988,9 @@ void CGUIWindowMusicNav::Render()
     m_searchTimer.Stop();
   }
   if (m_bDisplayEmptyDatabaseMessage)
-  {
-    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746))
-  }
+    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746));
   else
-  {
-    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,"")
-  }
+    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,"");
   CGUIWindowMusicBase::Render();
 }
 
