@@ -198,7 +198,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
           {
             int iItem = GetSelectedItem(i);
             Update(i, m_Directory[i]->m_strPath);
-            CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem)
+            CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem);
           }
           else if (m_Directory[i]->IsRemovable() && !m_rootDir.IsInSource(m_Directory[i]->m_strPath))
           { //
@@ -218,7 +218,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
           {
             int iItem = GetSelectedItem(i);
             Update(i, m_Directory[i]->m_strPath);
-            CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem)
+            CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem);
           }
         }
         return true;
@@ -609,7 +609,7 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( CStdString& strPath, int iDriv
       int iList = GetFocusedList();
       int iItem = GetSelectedItem(iList);
       Update(iList, "");
-      CONTROL_SELECT_ITEM(iList + CONTROL_LEFT_LIST, iItem)
+      CONTROL_SELECT_ITEM(iList + CONTROL_LEFT_LIST, iItem);
       return false;
     }
   }

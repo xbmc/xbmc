@@ -772,13 +772,9 @@ void CGUIWindowVideoNav::DisplayEmptyDatabaseMessage(bool bDisplay)
 void CGUIWindowVideoNav::Render()
 {
   if (m_bDisplayEmptyDatabaseMessage)
-  {
-    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746))
-  }
+    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746));
   else
-  {
-    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,"")
-  }
+    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,"");
   CGUIWindowVideoBase::Render();
 }
 
