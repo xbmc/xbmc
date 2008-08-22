@@ -616,16 +616,9 @@ bool CSettings::GetSource(const CStdString &category, const TiXmlNode *source, C
             bIsInvalid = true;
         }
 
-        // for others
+        // for others allow everything (if the user does something silly, we can't stop them)
         else
-        {
-          // only allow HD, SMB, XBMS and plugins
-          if (url.IsLocal() || protocol.Equals("smb") || protocol.Equals("xbms")
-                            || protocol.Equals("special") || protocol.Equals("plugin"))
-            verifiedPaths.push_back(vecPaths[j]);
-          else
-            bIsInvalid = true;
-        }
+          verifiedPaths.push_back(vecPaths[j]);
 
         // error message
         if (bIsInvalid)
