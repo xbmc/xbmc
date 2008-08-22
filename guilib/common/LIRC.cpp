@@ -44,14 +44,14 @@ void CRemoteControl::Initialize()
   m_fd = socket(AF_UNIX, SOCK_STREAM,0);
   if (m_fd == -1)  
   {
-    CLog::Log(LOGERROR, "LIRC %s: socket failed: %s", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGINFO, "LIRC %s: socket failed: %s", __FUNCTION__, strerror(errno));
     return;
   }
   
   // Connect to the socket
   if (connect(m_fd, (struct sockaddr *)&addr, sizeof(addr)) == -1)  
   {
-    CLog::Log(LOGERROR, "LIRC %s: connect failed: %s", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGINFO, "LIRC %s: connect failed: %s", __FUNCTION__, strerror(errno));
     return;
   }
   
