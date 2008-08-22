@@ -2448,7 +2448,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
       m_messenger.Put(new CDVDMsgType<CAction>(CDVDMsg::GENERAL_GUI_ACTION, action)); \
       return true; \
     } \
-  } while(false);
+  } while(false)
 
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
