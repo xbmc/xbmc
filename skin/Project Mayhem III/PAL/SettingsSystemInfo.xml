@@ -59,6 +59,7 @@
 				<font>font13</font>
 				<align>Left</align>
 			</control>
+<!--
 			<control type="button" id="102">
 				<description>Button HDD</description>
 				<posx>-</posx>
@@ -75,6 +76,7 @@
 				<font>font13</font>
 				<align>Left</align>
 			</control>
+-->
 			<control type="button" id="104">
 				<description>Button Network</description>
 				<posx>-</posx>
