@@ -1,5 +1,13 @@
 #include "rar.hpp"
 
+// yuvalt: wcstombs is not the way to go since it does not convert
+// from utf8 to utf16. Luickly, there's a UTF8/UTF16 conversion
+// functions in here which are used if _APPLE is defined.
+// Therefore, define _APPLE in this case to do proper conversion
+#undef MBFUNCTIONS
+#undef _WIN_32
+#define _APPLE
+
 bool WideToChar(const wchar *Src,char *Dest,int DestSize)
 {
   bool RetCode=true;
@@ -110,6 +118,8 @@ void WideToUtf(const wchar *Src,char *Dest,int DestSize)
 #ifdef _APPLE
 void UtfToWide(const char *Src,wchar *Dest,int DestSize)
 {
+  printf("u2w: %s=", Src);
+  wchar* D = Dest;
   DestSize--;
   while (*Src!=0)
   {
@@ -139,6 +149,8 @@ void UtfToWide(const char *Src,wchar *Dest,int DestSize)
     *(Dest++)=d;
   }
   *Dest=0;
+
+  wprintf(L"%s\n", D);
 }
 #endif
 
