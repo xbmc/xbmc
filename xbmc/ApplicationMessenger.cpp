@@ -660,8 +660,11 @@ void CApplicationMessenger::NetworkMessage(DWORD dwMessage, DWORD dwParam)
 
 void CApplicationMessenger::SwitchToFullscreen()
 {
+  /* FIXME: ideally this call should return upon a successfull switch but currently
+     is causing deadlocks between in the dvdplayer destructor and the rendermanager
+  */
   ThreadMessage tMsg = {TMSG_SWITCHTOFULLSCREEN};
-  SendMessage(tMsg, true);
+  SendMessage(tMsg, false);
 }
 
 void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param)
