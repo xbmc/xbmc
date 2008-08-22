@@ -103,6 +103,11 @@ void CSMB::Init()
   CSingleLock lock(*this);
   if (!m_context)
   {
+#ifdef _WIN32
+    // set the log function
+    set_log_callback(xb_smbc_log);
+#endif
+
     // setup our context
     m_context = smbc_new_context();
     m_context->debug = g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0;
