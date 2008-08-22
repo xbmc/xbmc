@@ -2856,11 +2856,11 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdStrin
 
 bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList &items)
 {
+  if (NULL == m_pDB.get()) return false;
+  if (NULL == m_pDS.get()) return false;
+
   try
   {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
     DWORD time = timeGetTime();
     // We don't use FormatSQL here, as the WHERE clause is already formatted.
     CStdString strSQL = "select * from songview " + whereClause;
@@ -2881,14 +2881,22 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString
     int count = 0;
     while (!m_pDS->eof())
     {
-      CFileItemPtr item(new CFileItem);
-      GetFileItemFromDataset(item.get(), baseDir);
-      // HACK for sorting by database returned order
-      item->m_iprogramCount = ++count;
-      items.Add(item);
-      m_pDS->next();
+      try
+      {
+        CFileItemPtr item(new CFileItem);
+        GetFileItemFromDataset(item.get(), baseDir);
+        // HACK for sorting by database returned order
+        item->m_iprogramCount = ++count;
+        items.Add(item);
+        m_pDS->next();
+      }
+      catch (...)
+      {
+        m_pDS->close();
+        CLog::Log(LOGERROR, "%s: out of memory loading query: %s", __FUNCTION__, whereClause.c_str());
+        return (items.Size() > 0);
+      }
     }
-
     // cleanup
     m_pDS->close();
     CLog::Log(LOGDEBUG, "%s(%s) - took %d ms", __FUNCTION__, whereClause.c_str(), timeGetTime() - time);
@@ -2896,6 +2904,8 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString
   }
   catch (...)
   {
+    // cleanup
+    m_pDS->close();
     CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, whereClause.c_str());
   }
   return false;
