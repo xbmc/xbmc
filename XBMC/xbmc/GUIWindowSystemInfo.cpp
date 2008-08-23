@@ -26,7 +26,9 @@
 #ifdef HAS_SYSINFO
 #include "SystemInfo.h"
 #endif
+#ifdef _LINUX
 #include "LinuxFileSystem.h"
+#endif
 
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 :CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
