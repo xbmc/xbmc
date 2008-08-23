@@ -41,5 +41,6 @@ private:
   #define CONTROL_BT_HARDWARE 98
   unsigned int iControl;
   void SetLabelDummy();
+  std::vector<CStdString> m_diskUsage;
 };
 
