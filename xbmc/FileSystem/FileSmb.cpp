@@ -56,9 +56,6 @@ smbc_get_cached_srv_fn orig_cache;
 
 SMBCSRV* xb_smbc_cache(SMBCCTX* c, const char* server, const char* share, const char* workgroup, const char* username)
 {
-  if (strcmp(share, "IPC$") == 0)
-    return NULL;
-
   return orig_cache(c, server, share, workgroup, username);
 }
 
@@ -114,7 +111,7 @@ void CSMB::Init()
     m_context->callbacks.auth_fn = xb_smbc_auth;
     orig_cache = m_context->callbacks.get_cached_srv_fn;
     m_context->callbacks.get_cached_srv_fn = xb_smbc_cache;
-    m_context->options.one_share_per_server = true;
+    m_context->options.one_share_per_server = false;
     m_context->options.browse_max_lmb_count = 0;
 
     /* set connection timeout. since samba always tries two ports, divide this by two the correct value */
