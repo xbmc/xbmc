@@ -136,6 +136,7 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
   int iPercent, iOldPercent = 0;
   bool bCancelled = false;
   const char* strFilename = strFile.c_str();
+  char tmp[PATH_MAX];
 
   CLog::Log(LOGINFO, "Start ripping track %s to %s", strTrackFile.c_str(), strFile.c_str());
 
@@ -143,7 +144,6 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
   CFileItem file(strFile, false);
   if (file.IsRemote()) 
   {
-    char tmp[PATH_MAX];
     strncpy(tmp, _P("Z:\\riptrackXXXXXX"), PATH_MAX);
     mkstemp(tmp);
     strFilename = tmp;
