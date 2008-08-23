@@ -52,8 +52,12 @@ def read_input(isock):
 
 
 def process_input(data, xbmc=None):
-    v1 = struct.unpack("H", data[42:44])
-    v2 = struct.unpack("H", data[44:46])
+    if len(data) >= 46:
+        v1 = struct.unpack("H", data[42:44])
+        v2 = struct.unpack("H", data[44:46])
+    else:
+        v1 = [0,0]
+        v2 = [0,0]
 
     bflags = struct.unpack("H", data[3:5])[0]
     psflags = struct.unpack("B", data[5:6])[0]
