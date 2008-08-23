@@ -23,6 +23,10 @@
 #include "GUIWindowSystemInfo.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowManager.h"
+#ifdef HAS_SYSINFO
+#include "SystemInfo.h"
+#endif
+#include "LinuxFileSystem.h"
 
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 :CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
@@ -52,6 +56,9 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
+  case GUI_MSG_WINDOW_DEINIT:
+    m_diskUsage.empty();
+    break;
   case GUI_MSG_CLICKED:
     {
       iControl=message.GetSenderId();
@@ -67,94 +74,95 @@ void CGUIWindowSystemInfo::Render()
   {
     SetLabelDummy();
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20154));
-    SET_CONTROL_LABEL(2, g_infoManager.GetSystemHeatInfo(SYSTEM_CPU_TEMPERATURE));
-    SET_CONTROL_LABEL(3, g_infoManager.GetSystemHeatInfo(SYSTEM_GPU_TEMPERATURE));
-    SET_CONTROL_LABEL(4, g_infoManager.GetSystemHeatInfo(SYSTEM_FAN_SPEED));
+    int i = 2;
     CStdString tmpStr = g_localizeStrings.Get(158) +": ";
     tmpStr += g_infoManager.GetLabel(SYSTEM_FREE_MEMORY);
-    SET_CONTROL_LABEL(5, tmpStr);
-    SET_CONTROL_LABEL(6, g_infoManager.GetLabel(NETWORK_IP_ADDRESS));
-    SET_CONTROL_LABEL(7,g_infoManager.GetLabel(SYSTEM_SCREEN_RESOLUTION));
+    SET_CONTROL_LABEL(i++, tmpStr);
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(NETWORK_IP_ADDRESS));
+    SET_CONTROL_LABEL(i++,g_infoManager.GetLabel(SYSTEM_SCREEN_RESOLUTION));
 #ifdef HAS_SYSINFO
-    SET_CONTROL_LABEL(8,g_infoManager.GetLabel(SYSTEM_KERNEL_VERSION));
+    SET_CONTROL_LABEL(i++,g_infoManager.GetLabel(SYSTEM_KERNEL_VERSION));
 #endif
-    SET_CONTROL_LABEL(9,g_infoManager.GetLabel(SYSTEM_UPTIME));
-    SET_CONTROL_LABEL(10,g_infoManager.GetLabel(SYSTEM_TOTALUPTIME));
-  }
-  else if(iControl == CONTROL_BT_HDD)
-  {
-    SetLabelDummy();
-    SET_CONTROL_LABEL(40,g_localizeStrings.Get(20156));
-    #ifdef HAS_SYSINFO
-    SET_CONTROL_LABEL(2, g_infoManager.GetLabel(SYSTEM_HDD_MODEL));
-    SET_CONTROL_LABEL(3, g_infoManager.GetLabel(SYSTEM_HDD_SERIAL));
-    SET_CONTROL_LABEL(4, g_infoManager.GetLabel(SYSTEM_HDD_FIRMWARE));
-    SET_CONTROL_LABEL(5, g_infoManager.GetLabel(SYSTEM_HDD_PASSWORD));
-    SET_CONTROL_LABEL(6, g_infoManager.GetLabel(SYSTEM_HDD_LOCKSTATE));
-    SET_CONTROL_LABEL(7, g_infoManager.GetLabel(SYSTEM_HDD_LOCKKEY));
-    SET_CONTROL_LABEL(10, g_infoManager.GetLabel(SYSTEM_HDD_TEMPERATURE));
-    #endif
-  }
-  else if(iControl == CONTROL_BT_DVD)
-  {
-    SetLabelDummy();
-    SET_CONTROL_LABEL(40,g_localizeStrings.Get(20157));
-    // note: No info on SDL platforms for dvd as yet
+    SET_CONTROL_LABEL(i++,g_infoManager.GetLabel(SYSTEM_UPTIME));
+    SET_CONTROL_LABEL(i++,g_infoManager.GetLabel(SYSTEM_TOTALUPTIME));
   }
   else if(iControl == CONTROL_BT_STORAGE)
   {
     SetLabelDummy();
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20155));
+    int i = 2;
+#ifdef _WIN32PC
     // for backward compatibility just show Free space info else would be to long...
-    SET_CONTROL_LABEL(2, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_C));
-#ifdef HAS_SYSINFO
-    SET_CONTROL_LABEL(3, g_infoManager.GetLabel(SYSTEM_DVD_TRAY_STATE));
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_C));
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_E));
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_F));
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_G));
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_X));
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_Y));
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_Z));
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_TOTAL_SPACE));
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_USED_SPACE_PERCENT));
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_PERCENT));
+#else
+    if (m_diskUsage.size() == 0)
+    {
+      m_diskUsage = CLinuxFileSystem::GetDiskUsage();
+    }
+
+    for (size_t d = 0; d < m_diskUsage.size(); d++)
+    {
+      SET_CONTROL_LABEL(i++, m_diskUsage[d]);
+    }
 #endif
-    SET_CONTROL_LABEL(4, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_E));
-    SET_CONTROL_LABEL(5, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_F));
-    SET_CONTROL_LABEL(6, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_G));
-    SET_CONTROL_LABEL(7, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_X));
-    SET_CONTROL_LABEL(8, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_Y));
-    SET_CONTROL_LABEL(9, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_Z));
-    SET_CONTROL_LABEL(10,g_infoManager.GetLabel(SYSTEM_TOTAL_SPACE));
-    SET_CONTROL_LABEL(11,g_infoManager.GetLabel(SYSTEM_USED_SPACE_PERCENT));
-    SET_CONTROL_LABEL(12,g_infoManager.GetLabel(SYSTEM_FREE_SPACE_PERCENT));
   }
   else if(iControl == CONTROL_BT_NETWORK)
   {
     SetLabelDummy();
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20158));
-    SET_CONTROL_LABEL(2, g_infoManager.GetLabel(NETWORK_IS_DHCP));
+    int i = 2;
 #ifdef HAS_SYSINFO
-    SET_CONTROL_LABEL(3, g_infoManager.GetLabel(NETWORK_LINK_STATE));
-    SET_CONTROL_LABEL(4, g_infoManager.GetLabel(NETWORK_MAC_ADDRESS));
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(NETWORK_LINK_STATE));
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(NETWORK_MAC_ADDRESS));
 #endif
-    SET_CONTROL_LABEL(5, g_infoManager.GetLabel(NETWORK_IP_ADDRESS));
-    SET_CONTROL_LABEL(6, g_infoManager.GetLabel(NETWORK_SUBNET_ADDRESS));
-    SET_CONTROL_LABEL(7, g_infoManager.GetLabel(NETWORK_GATEWAY_ADDRESS));
-    SET_CONTROL_LABEL(8, g_infoManager.GetLabel(NETWORK_DNS1_ADDRESS));
-    SET_CONTROL_LABEL(9, g_infoManager.GetLabel(NETWORK_DNS2_ADDRESS));
-    SET_CONTROL_LABEL(10, g_infoManager.GetLabel(SYSTEM_INTERNET_STATE));
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(NETWORK_IP_ADDRESS));
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(NETWORK_SUBNET_ADDRESS));
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(NETWORK_GATEWAY_ADDRESS));
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(NETWORK_DNS1_ADDRESS));
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(NETWORK_DNS2_ADDRESS));
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_INTERNET_STATE));
   }
   else if(iControl == CONTROL_BT_VIDEO)
   {
     SetLabelDummy();
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20159));
+    int i = 2;
 #ifdef HAS_SYSINFO
-    SET_CONTROL_LABEL(2,g_infoManager.GetLabel(SYSTEM_VIDEO_ENCODER_INFO));
-    SET_CONTROL_LABEL(3,g_infoManager.GetLabel(SYSTEM_SCREEN_RESOLUTION));
+    SET_CONTROL_LABEL(i++,g_infoManager.GetLabel(SYSTEM_VIDEO_ENCODER_INFO));
+    SET_CONTROL_LABEL(i++,g_infoManager.GetLabel(SYSTEM_SCREEN_RESOLUTION));
 #endif
+    SET_CONTROL_LABEL(i++,g_infoManager.GetLabel(SYSTEM_OPENGL_VENDOR));
+    SET_CONTROL_LABEL(i++,g_infoManager.GetLabel(SYSTEM_OPENGL_VERSION));
+    SET_CONTROL_LABEL(i++, g_infoManager.GetSystemHeatInfo(SYSTEM_GPU_TEMPERATURE));
   }
   else if(iControl == CONTROL_BT_HARDWARE)
   {
     SetLabelDummy();
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20160));
+    int i = 2;
 #ifdef HAS_SYSINFO
-    SET_CONTROL_LABEL(4, g_infoManager.GetLabel(SYSTEM_CPUFREQUENCY));
+    SET_CONTROL_LABEL(i++, g_sysinfo.GetXBVerInfo());
+    SET_CONTROL_LABEL(i++, g_infoManager.GetSystemHeatInfo(SYSTEM_CPU_TEMPERATURE));
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_CPUFREQUENCY));
 #endif
+    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_CPU_USAGE));
+    i++; // empty line
+    CStdString tmpStr = g_localizeStrings.Get(22012) +": ";
+    tmpStr += g_infoManager.GetLabel(SYSTEM_TOTAL_MEMORY);
+    SET_CONTROL_LABEL(i++, tmpStr);
+    tmpStr = g_localizeStrings.Get(158) +": ";
+    tmpStr += g_infoManager.GetLabel(SYSTEM_FREE_MEMORY);
+    SET_CONTROL_LABEL(i++, tmpStr);
   }
-  SET_CONTROL_LABEL(50, g_infoManager.GetTime(TIME_FORMAT_HH_MM_SS) + " | " + g_infoManager.GetDate());
-  SET_CONTROL_LABEL(51, g_localizeStrings.Get(144)+" "+g_infoManager.GetVersion());
   SET_CONTROL_LABEL(52, "XBMC "+g_infoManager.GetLabel(SYSTEM_BUILD_VERSION)+" (Compiled : "+g_infoManager.GetLabel(SYSTEM_BUILD_DATE)+")");
   CGUIWindow::Render();
 }

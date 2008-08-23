@@ -53,6 +53,7 @@
 #include "FileSystem/File.h"
 #include "PlayList.h"
 #include "TuxBoxUtil.h"
+#include "Surface.h"
 
 // stuff for current song
 #include "musicInfoTagLoaderFactory.h"
@@ -1375,6 +1376,19 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
         return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_image");
     }
     break;
+  case SYSTEM_OPENGL_VENDOR:
+    strLabel.Format("%s %s", g_localizeStrings.Get(22007), Surface::CSurface::GetGLVendor());
+    break;
+  case SYSTEM_OPENGL_RENDERER:
+    strLabel.Format("%s %s", g_localizeStrings.Get(22008), Surface::CSurface::GetGLRenderer());
+    break;
+  case SYSTEM_OPENGL_VERSION:
+  {
+    int major, minor;
+    Surface::CSurface::GetGLVersion(major, minor);
+    strLabel.Format("%s %d.%d", g_localizeStrings.Get(22009), major, minor);
+    break;
+  }
   }
 
   return strLabel;
@@ -2996,24 +3010,23 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
 #endif
   }
 
-
   CStdString text;
   switch(info)
   {
     case SYSTEM_CPU_TEMPERATURE:
 #ifdef _LINUX
       //text.Format("%s %s %s", g_localizeStrings.Get(140).c_str(), m_cpuTemp.IsValid()?m_cpuTemp.ToString():"", g_cpuInfo.getCPUModel().c_str());
-      text.Format("%s %s", g_localizeStrings.Get(140).c_str(), m_cpuTemp.IsValid()?m_cpuTemp.ToString():"?");
+      text.Format("%s %s", g_localizeStrings.Get(22011).c_str(), m_cpuTemp.IsValid()?m_cpuTemp.ToString():"?");
 #else
-      text.Format("%s %s", g_localizeStrings.Get(140).c_str(), m_cpuTemp.ToString());
+      text.Format("%s %s", g_localizeStrings.Get(22011).c_str(), m_cpuTemp.ToString());
 #endif
       break;
     case SYSTEM_GPU_TEMPERATURE:
 #ifdef HAS_SDL_OPENGL
       //text.Format("%s %s %s", g_localizeStrings.Get(141).c_str(), m_gpuTemp.IsValid()?m_gpuTemp.ToString():"", g_graphicsContext.getScreenSurface()->GetGLRenderer().c_str());
-      text.Format("%s %s", g_localizeStrings.Get(141).c_str(), m_gpuTemp.IsValid()?m_gpuTemp.ToString():"?");
+      text.Format("%s %s", g_localizeStrings.Get(22010).c_str(), m_gpuTemp.IsValid()?m_gpuTemp.ToString():"?");
 #else
-      text.Format("%s %s", g_localizeStrings.Get(141).c_str(), m_gpuTemp.ToString());
+      text.Format("%s %s", g_localizeStrings.Get(22010).c_str(), m_gpuTemp.ToString());
 #endif
       break;
     case SYSTEM_FAN_SPEED:
