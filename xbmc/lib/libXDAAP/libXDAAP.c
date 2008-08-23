@@ -260,7 +260,7 @@ DAAP_SClient *DAAP_Client_Create(DAAP_fnClientStatus pfnCallback,
 
 int DAAP_Client_SetDebug(DAAP_SClient *pCThis, const char *const debug)
 {
-    return debug_init(debug);
+    return daap_debug_init(debug);
 }
 
 unsigned int DAAP_Client_AddRef(DAAP_SClient *pCThis)
