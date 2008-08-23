@@ -1,8 +1,8 @@
 
-ifeq ($(ARCH), x86-osx)
-	CFLAGS=-fPIC -DXBMC -D_DLL -DNO_LCMS -DNO_JPEG -I../jasper/include -I../jpeg/
+ifeq ($(ARCH), osx)
+	CFLAGS+=-fPIC -DXBMC -D_DLL -DNO_LCMS -DNO_JPEG -I../jasper/include -I../jpeg/
 else
-	CFLAGS=-fPIC -DXBMC -D_DLL -D_LINUX -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+	CFLAGS+=-fPIC -DXBMC -D_DLL -D_LINUX -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 endif
 
 OBJS= \

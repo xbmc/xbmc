@@ -1,1 +1,5 @@
-CFLAGS+=-g
+CFLAGS+=-O2
+
+ifeq ($(ARCH), osx)
+	CFLAGS+= -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
+endif

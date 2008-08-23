@@ -26,9 +26,9 @@ bool CxImageBMP::Encode(CxFile * hFile)
 	hdr.bfReserved1 = hdr.bfReserved2 = 0;
 	hdr.bfOffBits = 14 /*sizeof(BITMAPFILEHEADER)*/ + head.biSize + GetPaletteSize();
 
-	hdr.bfType = ntohs(hdr.bfType); 
-	hdr.bfSize = ntohl(hdr.bfSize); 
-	hdr.bfOffBits = ntohl(hdr.bfOffBits); 
+	hdr.bfType = my_ntohs(hdr.bfType); 
+	hdr.bfSize = my_ntohl(hdr.bfSize); 
+	hdr.bfOffBits = my_ntohl(hdr.bfOffBits); 
 
 #if CXIMAGE_SUPPORT_ALPHA
 	if (GetNumColors()==0 && AlphaIsValid()){
@@ -42,7 +42,7 @@ bool CxImageBMP::Encode(CxFile * hFile)
 
 		hdr.bfSize = infohdr.biSize + infohdr.biSizeImage + 14 /*sizeof(BITMAPFILEHEADER)*/;
 
-		hdr.bfSize = ntohl(hdr.bfSize);
+		hdr.bfSize = my_ntohl(hdr.bfSize);
 		bihtoh(&infohdr);
 
 		// Write the file header
@@ -88,8 +88,8 @@ bool CxImageBMP::Decode(CxFile * hFile)
   cx_try {
 	if (hFile->Read(&bf,min(14,sizeof(bf)),1)==0) cx_throw("Not a BMP");
 
-	bf.bfSize = ntohl(bf.bfSize); 
-	bf.bfOffBits = ntohl(bf.bfOffBits); 
+	bf.bfSize = my_ntohl(bf.bfSize); 
+	bf.bfOffBits = my_ntohl(bf.bfOffBits); 
 
     if (bf.bfType != BFT_BITMAP) { //do we have a RC HEADER?
         bf.bfOffBits = 0L;

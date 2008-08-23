@@ -309,12 +309,12 @@ void CxImageTGA::ExpandUncompressedLine(BYTE* pDest,TGAHEADER* ptgaHead,CxFile *
 ////////////////////////////////////////////////////////////////////////////////
 void CxImageTGA::tga_toh(TGAHEADER* p)
 {
-    p->CmapIndex = ntohs(p->CmapIndex);
-    p->CmapLength = ntohs(p->CmapLength);
-    p->X_Origin = ntohs(p->X_Origin);
-    p->Y_Origin = ntohs(p->Y_Origin);
-    p->ImageWidth = ntohs(p->ImageWidth);
-    p->ImageHeight = ntohs(p->ImageHeight);
+    p->CmapIndex = my_ntohs(p->CmapIndex);
+    p->CmapLength = my_ntohs(p->CmapLength);
+    p->X_Origin = my_ntohs(p->X_Origin);
+    p->Y_Origin = my_ntohs(p->Y_Origin);
+    p->ImageWidth = my_ntohs(p->ImageWidth);
+    p->ImageHeight = my_ntohs(p->ImageHeight);
 }
 ////////////////////////////////////////////////////////////////////////////////
 #endif 	// CXIMAGE_SUPPORT_TGA

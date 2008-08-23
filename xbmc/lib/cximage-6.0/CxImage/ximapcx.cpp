@@ -466,14 +466,14 @@ void CxImagePCX::PCX_PixelsToPlanes(BYTE* raw, long width, BYTE* buf, long plane
 ////////////////////////////////////////////////////////////////////////////////
 void CxImagePCX::PCX_toh(PCXHEADER* p)
 {
-	p->Xmin = ntohs(p->Xmin);
-	p->Ymin = ntohs(p->Ymin);
-	p->Xmax = ntohs(p->Xmax);
-	p->Ymax = ntohs(p->Ymax);
-	p->Hres = ntohs(p->Hres);
-	p->Vres = ntohs(p->Vres);
-	p->BytesPerLine = ntohs(p->BytesPerLine);
-	p->PaletteType = ntohs(p->PaletteType);
+	p->Xmin = my_ntohs(p->Xmin);
+	p->Ymin = my_ntohs(p->Ymin);
+	p->Xmax = my_ntohs(p->Xmax);
+	p->Ymax = my_ntohs(p->Ymax);
+	p->Hres = my_ntohs(p->Hres);
+	p->Vres = my_ntohs(p->Vres);
+	p->BytesPerLine = my_ntohs(p->BytesPerLine);
+	p->PaletteType = my_ntohs(p->PaletteType);
 }
 ////////////////////////////////////////////////////////////////////////////////
 #endif // CXIMAGE_SUPPORT_PCX

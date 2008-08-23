@@ -23,8 +23,8 @@ bool CxImageICO::Decode(CxFile *hFile)
 	ICONHEADER icon_header;
 	hFile->Read(&icon_header,sizeof(ICONHEADER),1);
 
-	icon_header.idType = ntohs(icon_header.idType);
-	icon_header.idCount = ntohs(icon_header.idCount);
+	icon_header.idType = my_ntohs(icon_header.idType);
+	icon_header.idCount = my_ntohs(icon_header.idCount);
 
 	// check if it's an icon or a cursor
 	if ((icon_header.idReserved == 0) && ((icon_header.idType == 1)||(icon_header.idType == 2))) {
@@ -37,10 +37,10 @@ bool CxImageICO::Decode(CxFile *hFile)
 		for (c = 0; c < icon_header.idCount; c++) {
 			hFile->Read(icon_list + c, sizeof(ICONDIRENTRY), 1);
 
-			icon_list[c].wPlanes = ntohs(icon_list[c].wPlanes);
-			icon_list[c].wBitCount = ntohs(icon_list[c].wBitCount);
-			icon_list[c].dwBytesInRes = ntohl(icon_list[c].dwBytesInRes);
-			icon_list[c].dwImageOffset = ntohl(icon_list[c].dwImageOffset);
+			icon_list[c].wPlanes = my_ntohs(icon_list[c].wPlanes);
+			icon_list[c].wBitCount = my_ntohs(icon_list[c].wBitCount);
+			icon_list[c].dwBytesInRes = my_ntohl(icon_list[c].dwBytesInRes);
+			icon_list[c].dwImageOffset = my_ntohl(icon_list[c].dwImageOffset);
 		}
 		
 		if ((page>=0)&&(page<icon_header.idCount)){
@@ -363,24 +363,24 @@ bool CxImageICO::Encode(CxFile * hFile, bool bAppend, int nPageCount)
 #endif //CXIMAGE_SUPPORT_PNG
 
 	if (!bAppend){
-		icon_header.idType = ntohs(icon_header.idType);
-		icon_header.idCount = ntohs(icon_header.idCount);
+		icon_header.idType = my_ntohs(icon_header.idType);
+		icon_header.idCount = my_ntohs(icon_header.idCount);
 		hFile->Write(&icon_header,sizeof(ICONHEADER),1);	//write the file header
-		icon_header.idType = ntohs(icon_header.idType);
-		icon_header.idCount = ntohs(icon_header.idCount);
+		icon_header.idType = my_ntohs(icon_header.idType);
+		icon_header.idCount = my_ntohs(icon_header.idCount);
 	}
 
 
 	if ((bAppend && nPageCount==info.nNumFrames) || (!bAppend && nPageCount==0)){
-		icon_list.wPlanes = ntohs(icon_list.wPlanes);
-		icon_list.wBitCount = ntohs(icon_list.wBitCount);
-		icon_list.dwBytesInRes = ntohl(icon_list.dwBytesInRes);
-		icon_list.dwImageOffset = ntohl(icon_list.dwImageOffset);
+		icon_list.wPlanes = my_ntohs(icon_list.wPlanes);
+		icon_list.wBitCount = my_ntohs(icon_list.wBitCount);
+		icon_list.dwBytesInRes = my_ntohl(icon_list.dwBytesInRes);
+		icon_list.dwImageOffset = my_ntohl(icon_list.dwImageOffset);
 		hFile->Write(&icon_list,sizeof(ICONDIRENTRY),1);	//write the image entry
-		icon_list.wPlanes = ntohs(icon_list.wPlanes);
-		icon_list.wBitCount = ntohs(icon_list.wBitCount);
-		icon_list.dwBytesInRes = ntohl(icon_list.dwBytesInRes);
-		icon_list.dwImageOffset = ntohl(icon_list.dwImageOffset);
+		icon_list.wPlanes = my_ntohs(icon_list.wPlanes);
+		icon_list.wBitCount = my_ntohs(icon_list.wBitCount);
+		icon_list.dwBytesInRes = my_ntohl(icon_list.dwBytesInRes);
+		icon_list.dwImageOffset = my_ntohl(icon_list.dwImageOffset);
 
 		m_dwImageOffset += dwBytesInRes;			//update offset for next header
 	}
