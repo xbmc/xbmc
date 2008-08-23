@@ -4,8 +4,6 @@
 #ifdef _WIN32
 #define XBMC // even though defined in the project file it doesn't work
 #define _WIN32PC
-#define ntohs(a) a
-#define ntohl(a) a
 #endif
 
 /////////////////////////////////////////////////////////////////////////////

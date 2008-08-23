@@ -34,8 +34,8 @@ bool CxImageGIF::Decode(CxFile *fp)
 	if (strncmp(dscgif.header,"GIF8",4)!=0) return FALSE;
 
 	// Avoid Byte order problem with Mac <AMSN>
-	dscgif.scrheight = ntohs(dscgif.scrheight);
-	dscgif.scrwidth = ntohs(dscgif.scrwidth);
+	dscgif.scrheight = my_ntohs(dscgif.scrheight);
+	dscgif.scrwidth = my_ntohs(dscgif.scrwidth);
 
 	if (info.nEscape == -1) {
 		// Return output dimensions only
@@ -96,10 +96,10 @@ bool CxImageGIF::Decode(CxFile *fp)
 				assert(sizeof(image) == 9);
 				fp->Read(&image,sizeof(image),1);
 				//avoid byte order problems with Solaris <candan> <AMSN>
-				image.l = ntohs(image.l);
-				image.t = ntohs(image.t);
-				image.w = ntohs(image.w);
-				image.h = ntohs(image.h);
+				image.l = my_ntohs(image.l);
+				image.t = my_ntohs(image.t);
+				image.w = my_ntohs(image.w);
+				image.h = my_ntohs(image.h);
 
 				if (((image.l + image.w) > dscgif.scrwidth)||((image.t + image.h) > dscgif.scrheight))
 					break;
@@ -305,7 +305,7 @@ bool CxImageGIF::DecodeExtension(CxFile *fp)
 			if (bContinue) {
 				assert(sizeof(gifgce) == 4);
 				bContinue = (count == fp->Read(&gifgce, 1, sizeof(gifgce)));
-				gifgce.delaytime = ntohs(gifgce.delaytime); // Avoid Byte order problem with Mac <AMSN>
+				gifgce.delaytime = my_ntohs(gifgce.delaytime); // Avoid Byte order problem with Mac <AMSN>
 				if (bContinue) {
 					info.nBkgndIndex  = (gifgce.flags & 0x1) ? gifgce.transpcolindex : -1;
 					info.dwFrameDelay = gifgce.delaytime;
@@ -563,10 +563,10 @@ void CxImageGIF::EncodeExtension(CxFile *fp)
 	gifgce.transpcolindex = (BYTE)info.nBkgndIndex;	   
 
 	//Invert byte order in case we use a byte order arch, then set it back <AMSN>
-	gifgce.delaytime = ntohs(gifgce.delaytime);
+	gifgce.delaytime = my_ntohs(gifgce.delaytime);
 	fp->PutC(sizeof(gifgce));
 	fp->Write(&gifgce, sizeof(gifgce), 1);
-	gifgce.delaytime = ntohs(gifgce.delaytime);
+	gifgce.delaytime = my_ntohs(gifgce.delaytime);
 
 	fp->PutC(0);
 	// TRK END
@@ -1250,10 +1250,10 @@ int CxImageGIF::get_num_frames(CxFile *fp,struct_TabCol* TabColSrc,struct_dscgif
 				fp->Read(&image,sizeof(image),1);
 
 				//avoid byte order problems with Solaris <candan> <AMSN>
-				image.l = ntohs(image.l);
-				image.t = ntohs(image.t);
-				image.w = ntohs(image.w);
-				image.h = ntohs(image.h);
+				image.l = my_ntohs(image.l);
+				image.t = my_ntohs(image.t);
+				image.w = my_ntohs(image.w);
+				image.h = my_ntohs(image.h);
 
 				// in case of images with empty screen descriptor, give a last chance
 				if (dscgif->scrwidth==0 && dscgif->scrheight==0){

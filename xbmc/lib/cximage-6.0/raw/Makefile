@@ -1,4 +1,4 @@
-CFLAGS=-fPIC -DXBMC -D_LINUX
+CFLAGS+=-fPIC -DXBMC -D_LINUX 
 OBJS=dcr.o libdcr.o
 
 raw.a: $(OBJS)

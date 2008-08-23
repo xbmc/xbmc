@@ -21,9 +21,9 @@ bool CxImageSKA::Decode(CxFile *hFile)
 	SKAHEADER ska_header;
 	hFile->Read(&ska_header,sizeof(SKAHEADER),1);
 
-    ska_header.Width = ntohs(ska_header.Width);
-    ska_header.Height = ntohs(ska_header.Height);
-    ska_header.dwUnknown = ntohl(ska_header.dwUnknown);
+    ska_header.Width = my_ntohs(ska_header.Width);
+    ska_header.Height = my_ntohs(ska_header.Height);
+    ska_header.dwUnknown = my_ntohl(ska_header.dwUnknown);
 
 	// check header
 	if (ska_header.dwUnknown != 0x01000000 ||
@@ -92,15 +92,15 @@ bool CxImageSKA::Encode(CxFile * hFile)
 	ska_header.BppExp = 3;
 	ska_header.dwUnknown = 0x01000000;
 
-    ska_header.Width = ntohs(ska_header.Width);
-    ska_header.Height = ntohs(ska_header.Height);
-    ska_header.dwUnknown = ntohl(ska_header.dwUnknown);
+    ska_header.Width = my_ntohs(ska_header.Width);
+    ska_header.Height = my_ntohs(ska_header.Height);
+    ska_header.dwUnknown = my_ntohl(ska_header.dwUnknown);
 
 	hFile->Write(&ska_header,sizeof(SKAHEADER),1);
 
-    ska_header.Width = ntohs(ska_header.Width);
-    ska_header.Height = ntohs(ska_header.Height);
-    ska_header.dwUnknown = ntohl(ska_header.dwUnknown);
+    ska_header.Width = my_ntohs(ska_header.Width);
+    ska_header.Height = my_ntohs(ska_header.Height);
+    ska_header.dwUnknown = my_ntohl(ska_header.dwUnknown);
 
 	if (head.biBitCount<8) IncreaseBpp(8);
 
