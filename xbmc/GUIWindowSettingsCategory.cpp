@@ -1252,6 +1252,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         m_strOldTrackFormatRight = g_guiSettings.GetString("musicfiles.trackformatright");
       }
     }
+#ifdef HAS_TIME_SERVER
     else if (strSetting.Equals("locale.timeserveraddress"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1272,6 +1273,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       pSettingString->SetData(time);
       pSettingControl->Update();
     }
+#endif
     else if (strSetting.Equals("autodetect.nickname") || strSetting.Equals("autodetect.senduserpw"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1352,8 +1354,10 @@ void CGUIWindowSettingsCategory::UpdateRealTimeSettings()
     CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
     if (strSetting.Equals("locale.time") || strSetting.Equals("locale.date"))
     {
+#ifdef HAS_TIME_SERVER
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(!g_guiSettings.GetBool("locale.timeserver"));
+#endif
       SYSTEMTIME curTime;
       GetLocalTime(&curTime);
       CStdString time;
@@ -1964,12 +1968,14 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_langInfo.SetCurrentRegion(strRegion);
     g_guiSettings.SetString("locale.country", strRegion);
   }
+#ifdef HAS_TIME_SERVER
   else if (strSetting.Equals("locale.timeserver") || strSetting.Equals("locale.timeserveraddress"))
   {
     g_application.StopTimeServer();
     if (g_guiSettings.GetBool("locale.timeserver"))
       g_application.StartTimeServer();
   }
+#endif
   else if (strSetting.Equals("locale.time"))
   {
     SYSTEMTIME curTime;
