@@ -1,4 +1,4 @@
-CFLAGS=-fPIC -D_LINUX
+CFLAGS+=-fPIC -D_LINUX 
 OBJS=jbig.o jbig_tab.o 
 
 %o : %c

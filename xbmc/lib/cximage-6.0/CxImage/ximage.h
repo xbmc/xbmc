@@ -804,8 +804,8 @@ protected:
 	static float HueToRGB(float n1,float n2, float hue);
 	void Bitfield2RGB(BYTE *src, DWORD redmask, DWORD greenmask, DWORD bluemask, BYTE bpp);
 	static int CompareColors(const void *elem1, const void *elem2);
-	//short ntohs(const short word);
-	//long ntohl(const long dword);
+	short my_ntohs(const short word);
+	long my_ntohl(const long dword);
 	void bihtoh(BITMAPINFOHEADER* bih);
 
 	void*				pDib; //contains the header, the palette, the pixels
