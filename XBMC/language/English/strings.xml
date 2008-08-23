@@ -1035,7 +1035,7 @@
   <string id="13280">Video</string>
   <string id="13281">Hardware</string>
   <string id="13282">_</string>
-  <string id="13283">Kernel Version:</string>
+  <string id="13283">Operating System:</string>
   <string id="13284">CPU Speed:</string>
   <string id="13285">Detected BIOS:</string>
   <string id="13286">Video Encoder:</string>
@@ -1150,7 +1150,7 @@
   <string id="13409">Top 250</string>
   <string id="13410">Tune in on Last.FM</string>
   <string id="13411">Minimum fanspeed</string>
-  <string id="13412">RSS Feeds Contain Right-To-Left Text</string>
+  <string id="13412">- RSS Feeds Contain Right-To-Left Text</string>
   
   <string id="13600">Apple Remote</string>
   <string id="13601">Mode</string>
@@ -1973,6 +1973,12 @@
   <string id="22004">Delayed by: %2.3fs</string>
   <string id="22005">Ahead by: %2.3fs</string>
   <string id="22006">Subtitle Offset</string>
+  <string id="22007">OpenGL Vendor:</string>
+  <string id="22008">OpenGL Renderer:</string>
+  <string id="22009">OpenGL Version:</string>
+  <string id="22010">GPU Temperature:</string>
+  <string id="22011">CPU Temperature:</string>
+  <string id="22012">Total Memory</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
