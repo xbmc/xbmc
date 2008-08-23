@@ -38,7 +38,7 @@ static int errEnabled = 1;
 static int fixmeEnabled = 1;
 
 /* returns -1 on failure, 0 on success */
-int debug_init(const char *const debug_init_string)
+int daap_debug_init(const char *const debug_init_string)
 {
     const char *p = debug_init_string;
 
