@@ -270,9 +270,11 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       share2.strName = g_localizeStrings.Get(21883);
       extraShares.push_back(share2);
     }
+#ifdef _XBOX
     share1.strPath = "soundtrack://";
     share1.strName = "MS Soundtracks";
     extraShares.push_back(share1);
+#endif
     if (g_guiSettings.GetBool("network.enableinternet"))
     {
       CMediaSource share3;
