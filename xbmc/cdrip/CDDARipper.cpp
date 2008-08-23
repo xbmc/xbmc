@@ -141,7 +141,13 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
 
   // if we are ripping to a samba share, rip it to hd first and then copy it it the share
   CFileItem file(strFile, false);
-  if (file.IsRemote()) strFilename = tempnam("Z:\\", "");
+  if (file.IsRemote()) 
+  {
+    char tmp[PATH_MAX];
+    strncpy(tmp, _P("Z:\\riptrackXXXXXX"), PATH_MAX);
+    mkstemp(tmp);
+    strFilename = tmp;
+  }
   if (!strFilename)
   {
     CLog::Log(LOGERROR, "CCDDARipper: Error opening file");
