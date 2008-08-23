@@ -140,7 +140,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 #ifdef HAS_FTP_SERVER
       g_application.StopFtpServer();
 #endif
-#ifndef HAS_UPNP
+#ifdef HAS_UPNP
       g_application.StopUPnP();
 #endif
 #ifdef HAS_EVENT_SERVER
