@@ -190,6 +190,29 @@ vector<CStdString> CLinuxFileSystem::GetDrives(int *DeviceType, int len)
   return result;
 }
 
+std::vector<CStdString> CLinuxFileSystem::GetDiskUsage()
+{
+  vector<CStdString> result;
+  char line[1024];
+
+#ifdef __APPLE__
+  FILE* pipe = popen("df -hT ufs,cd9660,hfs,udf", "r");
+#else
+  FILE* pipe = popen("df -hx tmpfs", "r");
+#endif
+
+  if (pipe)
+  {
+    while (fgets(line, sizeof(line) - 1, pipe))
+    {
+      result.push_back(line);
+    }
+    pclose(pipe);
+  }
+
+  return result;
+}
+
 #ifdef HAS_HAL
 /* Remove a device based on the UUID for the partition. Hal Cannot make a CStorageDevice from something removed that is why we need UUID */
 bool CLinuxFileSystem::RemoveDevice(const char *UUID)

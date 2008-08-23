@@ -56,6 +56,7 @@ public:
   static std::vector<CStdString> GetLocalDrives();
   static std::vector<CStdString> GetRemovableDrives();
   static std::vector<CStdString> GetDrives(int *DeviceType, int len);
+  static std::vector<CStdString> GetDiskUsage();
 };
 
 #endif
