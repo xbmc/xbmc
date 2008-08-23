@@ -203,12 +203,6 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   {
     strFilename = g_localizeStrings.Get(20171); // Windows SMB Network (SMB)
   }
-
-  /*else if (strFileNameAndPath.Compare("soundtrack://") == 0)
-  {
-    strFilename = "MS Soundtracks";  // Would need localizing
-  }*/
-
   else if (strFileNameAndPath.Compare("shout://") == 0)
   {
     strFilename = g_localizeStrings.Get(260); // Shoutcast
