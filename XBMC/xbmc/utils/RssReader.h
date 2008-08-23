@@ -100,8 +100,10 @@ public:
   CRssManager();
   ~CRssManager();
 
+  void Start();
   void Stop();
   void Reset();
+  bool IsActive() { return m_bActive; }
 
   bool GetReader(DWORD controlID, DWORD windowID, IRssObserver* observer, CRssReader *&reader);
 
@@ -114,6 +116,7 @@ private:
   };
 
   std::vector<READERCONTROL> m_readers;
+  bool m_bActive;
 };
 
 extern CRssManager g_rssManager;
