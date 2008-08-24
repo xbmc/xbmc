@@ -5761,7 +5761,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"building Libraries\"\n\nif [ \"$ACTION\" = build ] ; then\n\tcd \"$SRCROOT\"/xbmc/lib/libshout/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libGoAhead/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libRTV/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libXDAAP/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/cores/dvdplayer/Codecs/ffmpeg\n\texport XBMC_ROOT=\"$SRCROOT\"\n\t./build_xbmc_osx.sh\nfi";
+			shellScript = "echo \"building Libraries\"\n\nif [ \"$ACTION\" = build ] ; then\n\t# osx voodoo\n\texport MACOSX_DEPLOYMENT_TARGET=10.4\n\n\tcd \"$SRCROOT\"/xbmc/lib/libshout/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libGoAhead/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libRTV/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libXDAAP/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/cores/dvdplayer/Codecs/ffmpeg\n\texport XBMC_ROOT=\"$SRCROOT\"\n\t./build_xbmc_osx.sh\nfi";
 		};
 		F57E20000E3BBDAB00700C9D /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -5787,7 +5787,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"building XBMCHelper\"\n\nif [ \"$ACTION\" = build ] ; then\ncd \"$SRCROOT\"/tools/EventClients/Clients/AppleRemote\nmake clean\nmake\n\ncp -f XBMCHelper \"$SRCROOT\"/\n\nfi";
+			shellScript = "echo \"building XBMCHelper\"\n\nif [ \"$ACTION\" = build ] ; then\n\texport MACOSX_DEPLOYMENT_TARGET=10.4\n\tcd \"$SRCROOT\"/tools/EventClients/Clients/AppleRemote\n\tmake clean\n\tmake\n\n\tcp -f XBMCHelper \"$SRCROOT\"/\nfi";
 		};
 		F5AA724D0E4137B2001D4AC9 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -6740,6 +6740,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
 				LIBRARY_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				VALID_ARCHS = "ppc i386";
@@ -6755,6 +6756,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
 				LIBRARY_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				VALID_ARCHS = "ppc i386";
