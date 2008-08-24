@@ -169,7 +169,7 @@ protected:
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
   virtual void OnDeinitWindow(int nextWindowID);
-  virtual void OnMouseAction();
+  virtual bool OnMouseAction();
   virtual bool RenderAnimation(DWORD time);
   virtual void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
 

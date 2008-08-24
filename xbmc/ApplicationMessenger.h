@@ -96,7 +96,7 @@ public:
 
   CStdString GetResponse();
   int SetResponse(CStdString response);
-  void HttpApi(std::string cmd);
+  void HttpApi(std::string cmd, bool wait = false);
   void ExecBuiltIn(const CStdString &command);
 
   void NetworkMessage(DWORD dwMessage, DWORD dwParam = 0);

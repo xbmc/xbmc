@@ -3623,6 +3623,9 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
 
 bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& items, const CStdString &type, long idContent)
 {
+  if (NULL == m_pDB.get()) return false;
+  if (NULL == m_pDS.get()) return false;
+
   try
   {
     // TODO: This routine (and probably others at this same level) use playcount as a reference to filter on at a later
@@ -3633,9 +3636,6 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
     //       above titles).
 
     // General routine that the other actor/director/writer routines call
-
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
 
     // get primary genres for movies
     CStdString strSQL;
@@ -3714,16 +3714,25 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
     {
       while (!m_pDS->eof())
       {
-        CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()));
-        CStdString strDir;
-        strDir.Format("%ld/", m_pDS->fv(0).get_asLong());
-        pItem->m_strPath=strBaseDir + strDir;
-        pItem->m_bIsFolder=true;
-        pItem->GetVideoInfoTag()->m_strPictureURL.ParseString(m_pDS->fv(2).get_asString());
-        if (idContent != VIDEODB_CONTENT_TVSHOWS)
-          pItem->GetVideoInfoTag()->m_playCount = m_pDS->fv(3).get_asInteger();
-        items.Add(pItem);
-        m_pDS->next();
+        try
+        {
+          CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()));
+          CStdString strDir;
+          strDir.Format("%ld/", m_pDS->fv(0).get_asLong());
+          pItem->m_strPath=strBaseDir + strDir;
+          pItem->m_bIsFolder=true;
+          pItem->GetVideoInfoTag()->m_strPictureURL.ParseString(m_pDS->fv(2).get_asString());
+          if (idContent != VIDEODB_CONTENT_TVSHOWS)
+            pItem->GetVideoInfoTag()->m_playCount = m_pDS->fv(3).get_asInteger();
+          items.Add(pItem);
+          m_pDS->next();
+        }
+        catch (...)
+        {
+          m_pDS->close();
+          CLog::Log(LOGERROR, "%s: out of memory - retrieved %i items", __FUNCTION__, items.Size());
+          return items.Size() > 0;
+        }
       }
       m_pDS->close();
     }
@@ -3733,6 +3742,7 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
   }
   catch (...)
   {
+    m_pDS->close();
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
   return false;
@@ -4204,7 +4214,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
     if (g_guiSettings.GetBool("videolibrary.removeduplicates"))
     {
       CStdString order(where);
-      bool maintainOrder = order.ToLower().Find("order by")  != CStdString::npos;
+      bool maintainOrder = (size_t)order.ToLower().Find("order by") != CStdString::npos;
       Stack(items, VIDEODB_CONTENT_TVSHOWS, maintainOrder);
     }
 
@@ -4456,7 +4466,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
     if (g_guiSettings.GetBool("videolibrary.removeduplicates"))
     {
       CStdString order(where);
-      bool maintainOrder = order.ToLower().Find("order by")  != CStdString::npos;
+      bool maintainOrder = (size_t)order.ToLower().Find("order by") != CStdString::npos;
       Stack(items, VIDEODB_CONTENT_EPISODES, maintainOrder);
     }
 

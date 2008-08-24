@@ -510,10 +510,6 @@ bool CDVDPlayer::IsValidStream(CCurrentStream& stream, StreamType type)
   if(stream.id<0)
     return true; // we consider non selected as valid
 
-  // for dvd's consider all streams valid. IsBetterStream will handle switches
-  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-    return true;
-
   int source = STREAM_SOURCE_MASK(stream.source);
   if(source == STREAM_SOURCE_TEXT)
     return true;
@@ -533,6 +529,15 @@ bool CDVDPlayer::IsValidStream(CCurrentStream& stream, StreamType type)
       return false;
     if(st->type != type)
       return false;
+
+    if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+    {
+      if(type == STREAM_AUDIO    && st->iPhysicalId != m_dvd.iSelectedAudioStream)
+        return false;
+      if(type == STREAM_SUBTITLE && st->iPhysicalId != m_dvd.iSelectedSPUStream)
+        return false;
+    }
+
     return true;
   }
 
@@ -1035,12 +1040,7 @@ bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
     if ((current.startpts < current.dts && current.dts != DVD_NOPTS_VALUE)
     ||  (current.startpts == DVD_NOPTS_VALUE))
     {
-      if(source == DVDPLAYER_VIDEO)
-        m_dvdPlayerVideo.SendMessage(current.startsync);
-      else if(source == DVDPLAYER_AUDIO)
-        m_dvdPlayerAudio.SendMessage(current.startsync);
-      else if(source == DVDPLAYER_SUBTITLE)
-        m_dvdPlayerSubtitle.SendMessage(current.startsync);
+      SendPlayerMessage(current.startsync, source);
 
       current.startpts = DVD_NOPTS_VALUE;
       current.startsync = NULL;
@@ -1069,21 +1069,39 @@ bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
   //If this is the first packet after a discontinuity, send it as a resync
   if (current.inited == false && current.dts != DVD_NOPTS_VALUE)
   {
-    current.inited = true;
+    current.inited   = true;
+    current.startpts = current.dts;
 
     bool setclock = false;
-    if(source == DVDPLAYER_AUDIO)
-      setclock = m_CurrentVideo.id < 0 || m_playSpeed == DVD_PLAYSPEED_NORMAL;
-    else if(source == DVDPLAYER_VIDEO)
-      setclock = m_CurrentAudio.id < 0 || m_playSpeed != DVD_PLAYSPEED_NORMAL;
+    if(m_playSpeed == DVD_PLAYSPEED_NORMAL)
+    {
+      if(     source == DVDPLAYER_AUDIO)
+        setclock = !m_CurrentVideo.inited;
+      else if(source == DVDPLAYER_VIDEO)
+        setclock = !m_CurrentAudio.inited;
+    }
+    else
+    {
+      if(source == DVDPLAYER_VIDEO)
+        setclock = true;
+    }
 
-    CDVDMsgGeneralResync* msg = new CDVDMsgGeneralResync(current.dts, setclock);
-    if(source == DVDPLAYER_VIDEO)
-      m_dvdPlayerVideo.SendMessage(msg);
-    else if(source == DVDPLAYER_AUDIO)
-      m_dvdPlayerAudio.SendMessage(msg);
-    else if(source == DVDPLAYER_SUBTITLE)
-      m_dvdPlayerSubtitle.SendMessage(msg);
+    double starttime = current.startpts;
+    if(m_CurrentAudio.inited && m_CurrentAudio.startpts < starttime)
+      starttime = m_CurrentAudio.startpts;
+    if(m_CurrentVideo.inited && m_CurrentVideo.startpts < starttime)
+      starttime = m_CurrentVideo.startpts;
+
+    starttime = current.startpts - starttime;
+    if(starttime > 0)
+    {
+      if(starttime > DVD_SEC_TO_TIME(2))
+        CLog::Log(LOGWARNING, "CDVDPlayer::CheckPlayerInit(%d) - Ignoring too large delay of %f", source, starttime);
+      else
+        SendPlayerMessage(new CDVDMsgDouble(CDVDMsg::GENERAL_DELAY, starttime), source);
+    }
+
+    SendPlayerMessage(new CDVDMsgGeneralResync(current.dts, setclock), source);
   }
   return false;
 }
@@ -1250,6 +1268,16 @@ void CDVDPlayer::SyncronizePlayers(DWORD sources, double pts)
   }
 */
   message->Release();
+}
+
+void CDVDPlayer::SendPlayerMessage(CDVDMsg* pMsg, unsigned int target)
+{
+  if(target == DVDPLAYER_AUDIO)
+    m_dvdPlayerAudio.SendMessage(pMsg);
+  if(target == DVDPLAYER_VIDEO)
+    m_dvdPlayerVideo.SendMessage(pMsg);
+  if(target == DVDPLAYER_SUBTITLE)
+    m_dvdPlayerSubtitle.SendMessage(pMsg);
 }
 
 void CDVDPlayer::OnExit()
@@ -1527,6 +1555,8 @@ void CDVDPlayer::HandleMessages()
           }
         }
       }
+      else if (pMsg->IsType(CDVDMsg::GENERAL_GUI_ACTION))
+        OnAction(((CDVDMsgType<CAction>*)pMsg)->m_value);
     }
     catch (...)
     {
@@ -2299,6 +2329,14 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 
 bool CDVDPlayer::OnAction(const CAction &action)
 {
+#define THREAD_ACTION(action) \
+  do { \
+    if(GetCurrentThreadId() != CThread::ThreadId()) { \
+      m_messenger.Put(new CDVDMsgType<CAction>(CDVDMsg::GENERAL_GUI_ACTION, action)); \
+      return true; \
+    } \
+  } while(false)
+
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
@@ -2313,14 +2351,14 @@ bool CDVDPlayer::OnAction(const CAction &action)
         case ACTION_MOVE_UP:
         case ACTION_SELECT_ITEM:
           {
+            THREAD_ACTION(action);
             /* this will force us out of the stillframe */
             CLog::Log(LOGDEBUG, "%s - User asked to exit stillframe", __FUNCTION__);
             m_dvd.iDVDStillStartTime = 0;
-            m_dvd.iDVDStillTime = 1;
-            return true;
+            m_dvd.iDVDStillTime = 1;            
           }
-          break;
-      }        
+          return true;
+      }
     }
 
 
@@ -2328,6 +2366,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
     {
     case ACTION_PREV_ITEM:  // SKIP-:
       {
+        THREAD_ACTION(action);
         CLog::Log(LOGDEBUG, " - pushed prev");
         pStream->OnPrevious();
         g_infoManager.SetDisplayAfterSeek();
@@ -2336,6 +2375,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
       break;
     case ACTION_NEXT_ITEM:  // SKIP+:
       {
+        THREAD_ACTION(action);
         CLog::Log(LOGDEBUG, " - pushed next");
         pStream->OnNext();
         g_infoManager.SetDisplayAfterSeek();
@@ -2344,6 +2384,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
       break;
     case ACTION_SHOW_VIDEOMENU:   // start button
       {
+        THREAD_ACTION(action);
         CLog::Log(LOGDEBUG, " - go to menu");
         pStream->OnMenu();
         // send a message to everyone that we've gone to the menu
@@ -2360,36 +2401,42 @@ bool CDVDPlayer::OnAction(const CAction &action)
       {
       case ACTION_PREVIOUS_MENU:
         {
+          THREAD_ACTION(action);
           CLog::Log(LOGDEBUG, " - menu back");
           pStream->OnBack();
         }
         break;
       case ACTION_MOVE_LEFT:
         {
+          THREAD_ACTION(action);
           CLog::Log(LOGDEBUG, " - move left");
           pStream->OnLeft();
         }
         break;
       case ACTION_MOVE_RIGHT:
         {
+          THREAD_ACTION(action);
           CLog::Log(LOGDEBUG, " - move right");
           pStream->OnRight();
         }
         break;
       case ACTION_MOVE_UP:
         {
+          THREAD_ACTION(action);
           CLog::Log(LOGDEBUG, " - move up");
           pStream->OnUp();
         }
         break;
       case ACTION_MOVE_DOWN:
         {
+          THREAD_ACTION(action);
           CLog::Log(LOGDEBUG, " - move down");
           pStream->OnDown();
         }
         break;
       case ACTION_SELECT_ITEM:
         {
+          THREAD_ACTION(action);
           CLog::Log(LOGDEBUG, " - button select");
           // show button pushed overlay
           m_dvdPlayerSubtitle.UpdateOverlayInfo((CDVDInputStreamNavigator*)m_pInputStream, LIBDVDNAV_BUTTON_CLICKED);
@@ -2408,6 +2455,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
       case REMOTE_8:
       case REMOTE_9:
         {
+          THREAD_ACTION(action);
           // Offset from key codes back to button number
           int button = action.wID - REMOTE_0;
           CLog::Log(LOGDEBUG, " - button pressed %d", button);

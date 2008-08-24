@@ -243,6 +243,19 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share1.strPath = "special://musicplaylists/";
     share1.strName = g_localizeStrings.Get(20011);
     extraShares.push_back(share1);
+
+    share1.strPath = "smb://";
+    share1.strName = "Windows Network (SMB)";
+    extraShares.push_back(share1);
+
+    share1.strPath = "upnp://";
+    share1.strName = "UPnP Devices";
+    extraShares.push_back(share1);
+
+    share1.strPath = "sap://";
+    share1.strName = "SAP Streams";
+    extraShares.push_back(share1);
+
     if (g_guiSettings.GetString("mymusic.recordingpath",false) != "")
     {
       CMediaSource share2;
@@ -293,7 +306,23 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
 
     CMediaSource share2;
     share2.strPath = "rtv://*/";
-    share2.strName = "ReplayTV";
+    share2.strName = "ReplayTV Devices";
+    extraShares.push_back(share2);
+
+    share2.strPath = "smb://";
+    share2.strName = "Windows Network (SMB)";
+    extraShares.push_back(share2);
+
+    share2.strPath = "hdhomerun://";
+    share2.strName = "HDHomerun Devices";
+    extraShares.push_back(share2);
+
+    share2.strPath = "sap://";
+    share2.strName = "SAP Streams";
+    extraShares.push_back(share2);
+
+    share2.strPath = "upnp://";
+    share2.strName = "UPnP Devices";
     extraShares.push_back(share2);
 
     // add the plugins dir as needed
@@ -314,6 +343,16 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       share1.strName = g_localizeStrings.Get(20008);
       extraShares.push_back(share1);
     }
+
+    CMediaSource share2;
+
+    share2.strPath = "smb://";
+    share2.strName = "Windows Network (SMB)";
+    extraShares.push_back(share2);
+
+    share2.strPath = "upnp://";
+    share2.strName = "UPnP Devices";
+    extraShares.push_back(share2);
 
     // add the plugins dir as needed
     if (CPluginDirectory::HasPlugins("pictures"))
@@ -437,7 +476,7 @@ void CGUIDialogMediaSource::UpdateButtons()
     CURL url(m_paths->Get(0)->m_strPath);
     url.GetURLWithoutUserDetails(path);
     if (path.IsEmpty()) path = "<"+g_localizeStrings.Get(231)+">"; // <None>
-    SET_CONTROL_LABEL(CONTROL_PATH, path)
+    SET_CONTROL_LABEL(CONTROL_PATH, path);
   }
 
   if (m_type.Equals("video"))
@@ -447,7 +486,7 @@ void CGUIDialogMediaSource::UpdateButtons()
   }
   else
   {
-    SET_CONTROL_HIDDEN(CONTROL_CONTENT)
+    SET_CONTROL_HIDDEN(CONTROL_CONTENT);
   }
 }
 

@@ -362,11 +362,14 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       if (pMsgGeneralResync->m_timestamp != DVD_NOPTS_VALUE)
         m_audioClock = pMsgGeneralResync->m_timestamp;
 
+      m_ptsOutput.Add(m_audioClock, m_dvdAudio.GetDelay(), 0);
       if (pMsgGeneralResync->m_clock)
       {
-        m_ptsOutput.Add(m_audioClock, m_dvdAudio.GetDelay(), 0);
+        CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f, 1)", m_audioClock);
         m_pClock->Discontinuity(CLOCK_DISC_NORMAL, m_ptsOutput.Current(), 0);
       }
+      else
+        CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f, 0)", m_audioClock);
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
     {
@@ -378,6 +381,19 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
         m_pAudioCodec->Reset();
 
       m_decode.Release();
+    }
+    else if (pMsg->IsType(CDVDMsg::GENERAL_DELAY))
+    {
+      if (m_speed != DVD_PLAYSPEED_PAUSE)
+      {
+        double timeout;
+        timeout  = static_cast<CDVDMsgDouble*>(pMsg)->m_value;
+        timeout *= (double)m_speed / DVD_PLAYSPEED_NORMAL;
+        timeout += CDVDClock::GetAbsoluteClock();
+
+        while(!m_bStop && CDVDClock::GetAbsoluteClock() < timeout)
+          Sleep(1);
+      }
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
     {

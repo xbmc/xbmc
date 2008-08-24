@@ -99,9 +99,9 @@ void CBackgroundPicLoader::Process()
           int iSize = pic.GetWidth() * pic.GetHeight() - MAX_PICTURE_SIZE;
           if ((iSize + (int)pic.GetWidth() > 0) || (iSize + (int)pic.GetHeight() > 0))
             bFullSize = true;
-          if (!bFullSize && pic.GetWidth() == g_graphicsContext.GetMaxTextureSize())
+          if (!bFullSize && (int)pic.GetWidth() == g_graphicsContext.GetMaxTextureSize())
             bFullSize = true;
-          if (!bFullSize && pic.GetHeight() == g_graphicsContext.GetMaxTextureSize())
+          if (!bFullSize && (int)pic.GetHeight() == g_graphicsContext.GetMaxTextureSize())
             bFullSize = true;
         }
         m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, pTexture, pic.GetWidth(), pic.GetHeight(), pic.GetOriginalWidth(), pic.GetOriginalHeight(), pic.GetExifInfo()->Orientation, bFullSize);
@@ -369,6 +369,7 @@ void CGUIWindowSlideShow::Render()
   // render the current image
   if (m_Image[m_iCurrentPic].IsLoaded())
   {
+    m_Image[m_iCurrentPic].SetInSlideshow(m_bSlideShow);
     m_Image[m_iCurrentPic].Pause(m_bPause);
     m_Image[m_iCurrentPic].Render();
   }
@@ -483,6 +484,16 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
   case ACTION_PAUSE:
     if (m_bSlideShow)
       m_bPause = !m_bPause;
+    break;
+
+  case ACTION_PLAYER_PLAY:
+    if (!m_bSlideShow)
+    {
+      m_bSlideShow = true;
+      m_bPause = false;
+    }
+    else if (m_bPause)
+      m_bPause = false;
     break;
 
   case ACTION_ZOOM_OUT:
