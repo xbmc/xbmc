@@ -1,3 +1,5 @@
+export MACOSX_DEPLOYMENT_TARGET=10.4
+
 #
 # Makefile for the GoAhead web server reference source base
 #  for the Linux OS
@@ -62,7 +64,7 @@ CFLAGS += -DWEBS -DUEMF -DOS="LINUX" -DLINUX $(UMSW) $(DASW) $(SSLSW) $(IFMODSW)
 OTHERS	= -DB_STATS -DB_FILL -DDEBUG
 DEBUG	= -g -Wall
 IFLAGS 	= -I..
-ARFLAGS = -rs
+ARFLAGS = -rus
 LDFLAGS = $(SSLLIB) $(IFMODLIB)
 
 compile: $(ARCH)
