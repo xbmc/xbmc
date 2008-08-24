@@ -1,6 +1,12 @@
 
+<<<<<<< .mine
+ifeq ($(ARCH), osx)
+	CFLAGS=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common \
+		-fPIC -DXBMC -D_DLL -DNO_LCMS -DNO_JPEG -I../jasper/include -I../jpeg/
+=======
 ifeq ($(ARCH), osx)
 	CFLAGS+=-fPIC -DXBMC -D_DLL -DNO_LCMS -DNO_JPEG -I../jasper/include -I../jpeg/
+>>>>>>> .r15155
 else
 	CFLAGS+=-fPIC -DXBMC -D_DLL -D_LINUX -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 endif
@@ -24,4 +30,4 @@ clean:
 
 distclean: clean
 
--include ../Makefile.include
+include ../Makefile.include
