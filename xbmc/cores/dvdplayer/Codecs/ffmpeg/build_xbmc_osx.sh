@@ -13,6 +13,10 @@ if [ "$XBMC_ROOT" == "" ]; then
    exit 1
 fi
 
+make distclean
+
+export MACOSX_DEPLOYMENT_TARGET=10.4
+
 echo "Configuring ffmpeg"
 ./configure --extra-cflags="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -I/opt/local/include -L/opt/local/lib -D_XBOX -DHAVE_INT32_T" --extra-ldflags="-L/opt/local/lib" --disable-ffmpeg --disable-ffserver --disable-ffplay --disable-encoders --disable-muxers --disable-debug --enable-gpl --enable-swscale --enable-postproc --enable-libvorbis --enable-protocol=http 
 
