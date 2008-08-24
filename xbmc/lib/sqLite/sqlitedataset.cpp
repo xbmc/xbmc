@@ -44,36 +44,41 @@ using namespace std;
 namespace dbiplus {
 //************* Callback function ***************************
 
-int callback(void* res_ptr,int ncol, char** reslt,char** cols){
+int callback(void* res_ptr,int ncol, char** reslt,char** cols)
+{
+  result_set* r = (result_set*)res_ptr;
 
-   result_set* r = (result_set*)res_ptr;
-   int sz = r->records.size();
- 
- 
-   if (!r->record_header.size()) 
-     for (int i=0; i < ncol; i++) {
-      r->record_header[i].name = cols[i];
-     }
+  if (!r->record_header.size())
+  {
+    r->record_header.reserve(ncol);
+    for (int i=0; i < ncol; i++) {
+      field_prop header;
+      header.name = cols[i];
+      r->record_header.push_back(header);
+    }
+  }
 
-
-   sql_record rec;
-   field_value v;
- 
-   if (reslt != NULL) {
-     for (int i=0; i<ncol; i++){ 
-       if (reslt[i] == NULL) {
-	 v.set_asString("");
-	 v.set_isNull();
-       }
-       else {
-	 v.set_asString(reslt[i]);
-       }
-     rec[i] = v;
-     }
-   r->records[sz] = rec;
-   }
+  if (reslt != NULL)
+  {
+    sql_record *rec = new sql_record;
+    rec->resize(ncol);
+    for (int i=0; i<ncol; i++)
+    { 
+      field_value &v = rec->at(i);
+      if (reslt[i] == NULL)
+      {
+        v.set_asString("");
+        v.set_isNull();
+      }
+      else
+      {
+        v.set_asString(reslt[i]);
+      }
+    }
+    r->records.push_back(rec);
+  }
   return 0;  
- }
+}
 
 static int busy_callback(void*, int busyCount)
 {
@@ -228,10 +233,10 @@ long SqliteDatabase::nextid(const char* sname) {
     return id;
   }
   else {
-    id = res.records[0][0].get_asInteger()+1;
+    id = res.records[0]->at(0).get_asInteger()+1;
     sprintf(sqlcmd,"update %s set nextid=%d where seq_name = '%s'",sequence_table.c_str(),id,sname);
     if ((last_err = sqlite3_exec(conn,sqlcmd,NULL,NULL,NULL) != SQLITE_OK)) return DB_UNEXPECTED_RESULT;
-    return id;    
+    return id;
   }
   return DB_UNEXPECTED_RESULT;
 }
@@ -353,25 +358,43 @@ void SqliteDataset::make_deletion() {
 void SqliteDataset::fill_fields() {
   //cout <<"rr "<<result.records.size()<<"|" << frecno <<"\n";
   if ((db == NULL) || (result.record_header.size() == 0) || (result.records.size() < (unsigned int)frecno)) return;
+
   if (fields_object->size() == 0) // Filling columns name
-    for (unsigned int i = 0; i < result.record_header.size(); i++) {
+  {
+    const unsigned int ncols = result.record_header.size();
+    fields_object->resize(ncols);
+    edit_object->resize(ncols);
+    for (unsigned int i = 0; i < ncols; i++)
+    {
       (*fields_object)[i].props = result.record_header[i];
       (*edit_object)[i].props = result.record_header[i];
     }
+  }
 
   //Filling result
-  if (result.records.size() != 0) {
-   for (unsigned int i = 0; i < result.records[frecno].size(); i++){
-    (*fields_object)[i].val = result.records[frecno][i];
-    (*edit_object)[i].val = result.records[frecno][i];
-   }
+  if (result.records.size() != 0)
+  {
+    const sql_record *row = result.records[frecno];
+    const unsigned int ncols = row->size();
+    fields_object->resize(ncols);
+    edit_object->resize(ncols);
+    for (unsigned int i = 0; i < ncols; i++)
+    {
+      (*fields_object)[i].val = row->at(i);
+      (*edit_object)[i].val = row->at(i);
+    }
   }
   else
-   for (unsigned int i = 0; i < result.record_header.size(); i++){
-    (*fields_object)[i].val = "";
-    (*edit_object)[i].val = "";
-   }    
-
+  {
+    const unsigned int ncols = result.record_header.size();
+    fields_object->resize(ncols);
+    edit_object->resize(ncols);
+    for (unsigned int i = 0; i < ncols; i++)
+    {
+      (*fields_object)[i].val = "";
+      (*edit_object)[i].val = "";
+    }    
+  }
 }
 
 
@@ -380,8 +403,7 @@ void SqliteDataset::fill_fields() {
 int SqliteDataset::exec(const string &sql) {
   if (!handle()) throw DbErrors("No Database Connection");
   int res;
-  exec_res.record_header.clear();
-  exec_res.records.clear();
+  exec_res.clear();
   if((res = db->setErr(sqlite3_exec(handle(),sql.c_str(),&callback,&exec_res,&errmsg),sql.c_str())) == SQLITE_OK)
     return res;
   else
@@ -409,15 +431,58 @@ bool SqliteDataset::query(const char *query) {
 
   close();
 
-  if (  db->setErr(sqlite3_exec(handle(),query,&callback,&result,&errmsg),query) == SQLITE_OK) {
-        active = true;
-	ds_state = dsSelect;
-	this->first();
-	return true;
+  sqlite3_stmt *stmt = NULL;
+  if (db->setErr(sqlite3_prepare_v2(handle(),query,-1,&stmt, NULL),query) != SQLITE_OK)
+    throw DbErrors(db->getErrorMsg());
+
+  // column headers
+  const unsigned int numColumns = sqlite3_column_count(stmt);
+  result.record_header.resize(numColumns);
+  for (unsigned int i = 0; i < numColumns; i++)
+    result.record_header[i].name = sqlite3_column_name(stmt, i);
+
+  // returned rows
+  while (sqlite3_step(stmt) == SQLITE_ROW)
+  { // have a row of data
+    sql_record *res = new sql_record;
+    res->resize(numColumns);
+    for (unsigned int i = 0; i < numColumns; i++)
+    {
+      field_value &v = res->at(i);
+      switch (sqlite3_column_type(stmt, i))
+      {
+      case SQLITE_INTEGER:
+        v.set_asInteger(sqlite3_column_int(stmt, i));
+        break;
+      case SQLITE_FLOAT:
+        v.set_asDouble(sqlite3_column_double(stmt, i));
+        break;
+      case SQLITE_TEXT:
+        v.set_asString((const char *)sqlite3_column_text(stmt, i));
+        break;
+      case SQLITE_BLOB:
+        v.set_asString((const char *)sqlite3_column_text(stmt, i));
+        break;
+      case SQLITE_NULL:
+      default:
+        v.set_asString("");
+        v.set_isNull();
+        break;
       }
-      else {
-          throw DbErrors(db->getErrorMsg());
-      }  
+    }
+    result.records.push_back(res);
+  }
+  if (db->setErr(sqlite3_finalize(stmt),query) == SQLITE_OK)
+  {
+    active = true;
+    ds_state = dsSelect;
+    this->first();
+    return true;
+  }
+  else
+  {
+    throw DbErrors(db->getErrorMsg());
+  }  
 }
 
 bool SqliteDataset::query(const string &q){
@@ -441,8 +506,7 @@ void SqliteDataset::open() {
 
 void SqliteDataset::close() {
   Dataset::close();
-  result.record_header.clear();
-  result.records.clear();
+  result.clear();
   edit_object->clear();
   fields_object->clear();
   ds_state = dsInactive;
