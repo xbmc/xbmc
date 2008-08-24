@@ -1939,7 +1939,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = g_guiSettings.GetString(strSetting,false);
     VECSOURCES shares;
+
+    g_mediaManager.GetNetworkLocations(shares);
     g_mediaManager.GetLocalDrives(shares);
+
     UpdateSettings();
     bool bWriteOnly = true;
 
