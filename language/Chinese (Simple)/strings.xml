@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 08/18/2008-->
+<!--Date of translation: 08/24/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 14957-->
+<!--Based on english strings version 15124-->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -949,7 +949,7 @@
   <string id="13280">视频</string>
   <string id="13281">硬件</string>
   <string id="13282">_</string>
-  <string id="13283">核心版本：</string>
+  <string id="13283">操作系统：</string>
   <string id="13284">CPU 速度：</string>
   <string id="13285">BIOS 型号：</string>
   <string id="13286">视频芯片：</string>
@@ -1769,5 +1769,13 @@
   <string id="22004">延迟： %2.3fs</string>
   <string id="22005">提前： %2.3fs</string>
   <string id="22006">字幕位置</string>
+  <string id="22007">OpenGL 提供商：</string>
+  <string id="22008">OpenGL 渲染器：</string>
+  <string id="22009">OpenGL 版本：</string>
+  <string id="22010">显示卡温度：</string>
+  <string id="22011">CPU 温度：</string>
+  <string id="22012">可用内存</string>
+  <string id="29800">资料库模式</string>
+  <string id="29801">QWERTY 键盘</string>
   <string id="29999">自动开启游戏抗闪烁过滤</string>
 </strings>
