@@ -22,6 +22,8 @@
 #include "stdafx.h"
 #include "GUIDialogMusicOSD.h"
 #include "GUIWindowSettingsCategory.h"
+#include "Application.h"
+#include "GUIWindowManager.h"
 
 
 #define CONTROL_VIS_BUTTON       500
@@ -94,6 +96,13 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
 
 void CGUIDialogMusicOSD::Render()
 {
+  if (m_autoClosing)
+  {
+    // check for movement of mouse or a submenu open
+    if (g_Mouse.HasMoved() || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_VIS_SETTINGS)
+                           || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_VIS_PRESET_LIST))
+      SetAutoClose(3000);
+  }
   CGUIDialog::Render();
 }
 
@@ -104,5 +113,24 @@ void CGUIDialogMusicOSD::OnInitWindow()
 
   ResetControlStates();
   CGUIDialog::OnInitWindow();
+}
+
+bool CGUIDialogMusicOSD::OnAction(const CAction &action)
+{
+  // keyboard or controller movement should prevent autoclosing
+  if (action.wID != ACTION_MOUSE && m_autoClosing)
+    SetAutoClose(3000);
+  return CGUIDialog::OnAction(action);
+}
+
+bool CGUIDialogMusicOSD::OnMouse(const CPoint &point)
+{
+  if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
+  { // pause
+    CAction action;
+    action.wID = ACTION_PAUSE;
+    return g_application.OnAction(action);
+  }
+  return CGUIDialog::OnMouse(point);
 }
 

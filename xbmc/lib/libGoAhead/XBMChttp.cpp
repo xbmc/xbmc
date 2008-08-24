@@ -3180,9 +3180,9 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
   if (legalCmd)
   {
 	  if (paras!="")
-		g_applicationMessenger.HttpApi(cmd+"; "+paras);
+		g_applicationMessenger.HttpApi(cmd+"; "+paras, true);
 	  else
-		g_applicationMessenger.HttpApi(cmd);
+		g_applicationMessenger.HttpApi(cmd, true);
 	//wait for response - max 20s
 	Sleep(0);
 	response=g_applicationMessenger.GetResponse();

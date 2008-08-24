@@ -31,6 +31,7 @@
 #include "../Key.h"
 #include "../GraphicContext.h"
 
+#define MOUSE_MINIMUM_MOVEMENT 2
 #define MOUSE_DOUBLE_CLICK_LENGTH 500L
 #define MOUSE_ACTIVE_LENGTH   5000L
 
@@ -81,8 +82,11 @@ void CMouse::Update()
     if (m_mouseState.y < 0) m_mouseState.y = 0;
     if (m_mouseState.x > m_maxX) m_mouseState.x = m_maxX;
     if (m_mouseState.y > m_maxY) m_mouseState.y = m_maxY;
-    m_mouseState.active = true;
-    m_lastActiveTime = timeGetTime();
+    if (HasMoved())
+    {
+      m_mouseState.active = true;
+      m_lastActiveTime = timeGetTime();
+    }
   }
   else
   {
@@ -178,7 +182,7 @@ void CMouse::SetInactive()
 
 bool CMouse::HasMoved() const
 {
-  return (m_mouseState.dx || m_mouseState.dy);
+  return (m_mouseState.dx * m_mouseState.dx + m_mouseState.dy + m_mouseState.dy >= MOUSE_MINIMUM_MOVEMENT * MOUSE_MINIMUM_MOVEMENT);
 }
 
 CPoint CMouse::GetLocation() const

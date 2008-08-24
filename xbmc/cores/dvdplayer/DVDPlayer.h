@@ -247,6 +247,7 @@ protected:
   void CheckContinuity(DemuxPacket* pPacket, unsigned int source);
   bool CheckSceneSkip(CCurrentStream& current, unsigned int source);
   bool CheckPlayerInit(CCurrentStream& current, unsigned int source);
+  void SendPlayerMessage(CDVDMsg* pMsg, unsigned int target);
 
   bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);
   bool IsValidStream(CCurrentStream& stream, StreamType type);

@@ -365,11 +365,12 @@ void CGUIWindowSettingsScreenCalibration::Render()
 
 }
 
-void CGUIWindowSettingsScreenCalibration::OnMouseAction()
+bool CGUIWindowSettingsScreenCalibration::OnMouseAction()
 {
   // we don't want mouse scaling on this window
   bool saveScaling = m_needsScaling;
   m_needsScaling = false;
-  CGUIWindow::OnMouseAction();
+  bool ret = CGUIWindow::OnMouseAction();
   m_needsScaling = saveScaling;
+  return ret;
 }

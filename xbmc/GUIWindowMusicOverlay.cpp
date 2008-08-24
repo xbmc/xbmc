@@ -78,10 +78,7 @@ bool CGUIWindowMusicOverlay::OnMouse(const CPoint &point)
     }
     return true;
   }
-  else
-  {
-    return CGUIDialog::OnMouse(point);
-  }
+  return false;
 }
 
 void CGUIWindowMusicOverlay::Render()

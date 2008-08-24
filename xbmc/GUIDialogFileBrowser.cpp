@@ -58,6 +58,7 @@ CGUIDialogFileBrowser::CGUIDialogFileBrowser()
   m_Directory->m_bIsFolder = true;
   m_browsingForFolders = 0;
   m_browsingForImages = false;
+  m_useFileDirectories = false;
   m_addNetworkShareEnabled = false;
   m_singleList = false;
   m_thumbLoader.SetObserver(this);

@@ -904,8 +904,11 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
     else if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
       XFILE::CFile::Cache(picturePath,cachedThumb);
 
+    if (!picturePath.Equals("thumb://None") && picturePath.Left(8).Equals("thumb://") && items.Get(picturePath))
+      picturePath = items.Get(picturePath)->GetThumbnailImage();
+
     if (picturePath.Equals("thumb://None") ||
-        picture.DoCreateThumbnail(items.Get(picturePath)->GetThumbnailImage(), cachedThumb))
+        picture.DoCreateThumbnail(picturePath, cachedThumb))
     {
       CMusicDatabaseDirectory dir;
       dir.ClearDirectoryCache(m_vecItems->m_strPath);
@@ -982,13 +985,9 @@ void CGUIWindowMusicNav::Render()
     m_searchTimer.Stop();
   }
   if (m_bDisplayEmptyDatabaseMessage)
-  {
-    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746))
-  }
+    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746));
   else
-  {
-    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,"")
-  }
+    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,"");
   CGUIWindowMusicBase::Render();
 }
 

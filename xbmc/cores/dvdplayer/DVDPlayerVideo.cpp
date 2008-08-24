@@ -264,20 +264,34 @@ void CDVDPlayerVideo::Process()
 
       if(pMsgGeneralResync->m_timestamp != DVD_NOPTS_VALUE)
         pts = pMsgGeneralResync->m_timestamp;
-            
+
+      double delay = m_FlipTimeStamp - m_pClock->GetAbsoluteClock();
+      if( delay > frametime ) delay = frametime;
+      else if( delay < 0 )    delay = 0;
+
       if(pMsgGeneralResync->m_clock)
       {
-        double delay = m_FlipTimeStamp - m_pClock->GetAbsoluteClock();
-        
-        if( delay > frametime ) delay = frametime;
-        else if( delay < 0 ) delay = 0;
-
+        CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, 1)", pts);
         m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pts, delay);
-        CLog::Log(LOGDEBUG, "CDVDPlayerVideo:: Resync - clock:%f, delay:%f", pts, delay);
       }
+      else
+        CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, 0)", pts);
 
       pMsgGeneralResync->Release();
       continue;
+    }
+    else if (pMsg->IsType(CDVDMsg::GENERAL_DELAY))
+    {
+      if (m_speed != DVD_PLAYSPEED_PAUSE)
+      {
+        double timeout;
+        timeout  = static_cast<CDVDMsgDouble*>(pMsg)->m_value;
+        timeout *= (double)m_speed / DVD_PLAYSPEED_NORMAL;
+        timeout += CDVDClock::GetAbsoluteClock();
+
+        while(!m_bStop && CDVDClock::GetAbsoluteClock() < timeout)
+          Sleep(1);
+      }
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_SET_ASPECT))
     {

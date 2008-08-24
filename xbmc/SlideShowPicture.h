@@ -59,6 +59,7 @@ public:
   void Zoom(int iZoomAmount, bool immediate = false);
   void Rotate(int iRotateAmount);
   void Pause(bool bPause);
+  void SetInSlideshow(bool slideshow);
   void SetOriginalSize(int iOriginalWidth, int iOriginalHeight, bool bFullSize);
   bool FullSize() const { return m_bFullSize;};
   int GetOriginalWidth();
