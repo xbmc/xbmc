@@ -48,6 +48,7 @@ protected:
 
   void OnRegenerateThumbs();
   virtual bool OnPlayMedia(int iItem);
+  bool ShowPicture(int iItem, bool startSlideShow);
   void OnShowPictureRecursive(const CStdString& strPicture, CFileItemList* pVecItems=NULL);
   void OnSlideShow(const CStdString& strPicture);
   void OnSlideShow();

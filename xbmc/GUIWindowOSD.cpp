@@ -39,8 +39,24 @@ void CGUIWindowOSD::OnWindowLoaded()
   m_bRelativeCoords = true;
 }
 
+void CGUIWindowOSD::Render()
+{
+  if (m_autoClosing)
+  {
+    // check for movement of mouse or a submenu open
+    if (g_Mouse.HasMoved() || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_AUDIO_OSD_SETTINGS)
+                           || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD_SETTINGS))
+      SetAutoClose(3000);
+  }
+  CGUIDialog::Render();
+}
+
 bool CGUIWindowOSD::OnAction(const CAction &action)
 {
+  // keyboard or controller movement should prevent autoclosing
+  if (action.wID != ACTION_MOUSE && m_autoClosing)
+    SetAutoClose(3000);
+
   // ACTION_SHOW_OSD should take the OSD away too!
   if (action.wID == ACTION_SHOW_OSD)
   {
@@ -55,6 +71,17 @@ bool CGUIWindowOSD::OnAction(const CAction &action)
   }
 
   return CGUIDialog::OnAction(action);
+}
+
+bool CGUIWindowOSD::OnMouse(const CPoint &point)
+{
+  if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
+  { // pause
+    CAction action;
+    action.wID = ACTION_PAUSE;
+    return g_application.OnAction(action);
+  }
+  return CGUIDialog::OnMouse(point);
 }
 
 bool CGUIWindowOSD::OnMessage(CGUIMessage& message)

@@ -41,6 +41,8 @@ public:
     GENERAL_FLUSH,                  // 
     GENERAL_STREAMCHANGE,           // 
     GENERAL_SYNCHRONIZE,            // 
+    GENERAL_DELAY,                  //
+    GENERAL_GUI_ACTION,             // gui action of some sort
     
     
     // player core related messages (cdvdplayer.cpp)
@@ -56,7 +58,6 @@ public:
 
     PLAYER_CHANNEL_NEXT,            // switches to next playback channel
     PLAYER_CHANNEL_PREV,            // switches to previous playback channel
-    
     
     // demuxer related messages
     

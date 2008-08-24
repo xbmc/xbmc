@@ -230,7 +230,7 @@ void CGUIWindowVideoFiles::UpdateButtons()
   {
     if ((g_stSettings.m_iMyVideoStack & STACK_UNAVAILABLE) != STACK_UNAVAILABLE)
     {
-      CONTROL_ENABLE(CONTROL_STACK)
+      CONTROL_ENABLE(CONTROL_STACK);
       if (stack->GetControlType() == CGUIControl::GUICONTROL_RADIO)
       {
         SET_CONTROL_SELECTED(GetID(), CONTROL_STACK, g_stSettings.m_iMyVideoStack == STACK_SIMPLE);
@@ -248,7 +248,7 @@ void CGUIWindowVideoFiles::UpdateButtons()
         SET_CONTROL_LABEL(CONTROL_STACK, 14000);  // Stack
       }
 
-      CONTROL_DISABLE(CONTROL_STACK)
+      CONTROL_DISABLE(CONTROL_STACK);
     }
   }
 }

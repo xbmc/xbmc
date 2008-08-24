@@ -429,7 +429,8 @@ bool CGUIWindowManager::OnAction(const CAction &action)
     if (action.wID == ACTION_MOUSE && (dialog->GetID() == WINDOW_VIDEO_OVERLAY ||
                                        dialog->GetID() == WINDOW_MUSIC_OVERLAY))
     {
-      return dialog->OnAction(action);
+      if (dialog->OnAction(action))
+        return true;
     }
   }
   CGUIWindow* window = GetWindow(GetActiveWindow());

@@ -460,12 +460,12 @@ CStdString CApplicationMessenger::GetResponse()
   return tmp;
 }
 
-void CApplicationMessenger::HttpApi(string cmd)
+void CApplicationMessenger::HttpApi(string cmd, bool wait)
 {
   SetResponse("");
   ThreadMessage tMsg = {TMSG_HTTPAPI};
   tMsg.strParam = cmd;
-  SendMessage(tMsg);
+  SendMessage(tMsg, wait);
 }
 
 void CApplicationMessenger::ExecBuiltIn(const CStdString &command)

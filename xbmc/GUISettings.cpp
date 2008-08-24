@@ -226,7 +226,7 @@ CGUISettings::CGUISettings(void)
   AddCategory(2, "weather", 16000);
   AddString(1, "weather.areacode1", 14019, "GMXX0154 - Aachen, Germany", BUTTON_CONTROL_STANDARD);
   AddString(2, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
-  AddString(3, "weather.areacode3", 14021, "CAXX0343 - Ontario, Canada", BUTTON_CONTROL_STANDARD);
+  AddString(3, "weather.areacode3", 14021, "CAXX0343 - Ottawa, Canada", BUTTON_CONTROL_STANDARD);
   AddSeparator(4, "weather.sep1");
   AddString(5, "weather.jumptolocale", 20026, "", BUTTON_CONTROL_STANDARD);
 
@@ -557,8 +557,8 @@ CGUISettings::CGUISettings(void)
   AddInt(7, "locale.timezone", 14074, 0, 0, 1, g_timezone.GetNumberOfTimeZones(), SPIN_CONTROL_TEXT);
   AddBool(8, "locale.usedst", 14075, false);
   AddSeparator(9, "locale.sep2");
-  AddBool(10,   "locale.timeserver"       , 168  , false);
-  AddString(11, "locale.timeserveraddress"      , 731  , "pool.ntp.org", EDIT_CONTROL_INPUT);
+  AddBool(10, "locale.timeserver", 168, false);
+  AddString(11, "locale.timeserveraddress", 731, "pool.ntp.org", EDIT_CONTROL_INPUT);
 
   AddCategory(7, "videoscreen", 131);
   AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);

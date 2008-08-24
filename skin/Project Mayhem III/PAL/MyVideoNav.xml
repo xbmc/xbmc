@@ -154,7 +154,7 @@
 				<description>Library button</description>
 				<posx>0</posx>
 				<posy>74</posy>
-				<label>$LOCALIZE[14022] $LOCALIZE[456]</label>
+				<label>$LOCALIZE[29800]</label>
 				<font>font13</font>
 				<onclick>ReplaceWindow(myvideofiles)</onclick>
 				<onclick>SetFocus(99)</onclick>

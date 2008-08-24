@@ -387,7 +387,7 @@ CStdString ILCD::GetBigDigit( UINT _nCharset, int _nDigit, UINT _nLine, UINT _nM
 void ILCD::Initialize()
 {
   CStdString lcdPath;
-  lcdPath = g_settings.GetUserDataItem("lcd.xml");
+  lcdPath = g_settings.GetUserDataItem("LCD.xml");
   LoadSkin(lcdPath);
   m_eCurrentCharset = CUSTOM_CHARSET_DEFAULT;
 

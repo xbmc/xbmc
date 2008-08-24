@@ -77,7 +77,7 @@ bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding,
   TiXmlDocument xmlDoc;
   if (!xmlDoc.LoadFile(filename.c_str()))
   {
-    CLog::Log(LOGERROR, "unable to load %s: %s at line %d", filename.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
+    CLog::Log(LOGDEBUG, "unable to load %s: %s at line %d", filename.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
     error.Format("Unable to load %s: %s at line %d", filename.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
     return false;
   }
