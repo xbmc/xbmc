@@ -223,7 +223,7 @@ do { \
  SendWindowMessage(msg); \
 } while(0)
 
-#include <boost/shared_ptr.hpp>
+#include "boost/shared_ptr.hpp"
 
 // forwards
 class CGUIListItem; typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
