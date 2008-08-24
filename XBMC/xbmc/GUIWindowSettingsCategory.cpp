@@ -2982,9 +2982,7 @@ void CGUIWindowSettingsCategory::JumpToSection(DWORD dwWindowId, const CStdStrin
   CGUIMessage msg1(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, dwWindowId);
   OnMessage(msg1);
   for (unsigned int i=0; i<m_vecSections.size(); ++i)
-  {
-    CONTROL_DISABLE(CONTROL_START_BUTTONS+i)
-  }
+    CONTROL_DISABLE(CONTROL_START_BUTTONS+i);
 }
 
 void CGUIWindowSettingsCategory::JumpToPreviousSection()

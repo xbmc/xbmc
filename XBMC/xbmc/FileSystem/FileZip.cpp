@@ -38,6 +38,7 @@ CFileZip::CFileZip() : m_dlgProgress(NULL), m_bUseProgressBar(false)
   m_szStringBuffer = NULL;
   m_szStartOfStringBuffer = NULL;
   m_iDataInStringBuffer = 0;
+  m_iRead = -1;
 }
 
 CFileZip::~CFileZip()
@@ -77,6 +78,7 @@ bool CFileZip::Open(const CURL&url, bool bBinary)
 
 bool CFileZip::InitDecompress()
 {
+  m_iRead = 1;
   m_iFilePos = 0;
   m_iZipFilePos = 0;
   m_iAvailBuffer = 0;
@@ -359,7 +361,7 @@ unsigned int CFileZip::Read(void* lpBuf, __int64 uiBufSize)
 
 void CFileZip::Close()
 {
-  if (mZipItem.method == 8)
+  if (mZipItem.method == 8 && m_iRead != -1)
     inflateEnd(&m_ZStream);
   
   mFile.Close();

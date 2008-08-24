@@ -1539,12 +1539,14 @@
       <skipplus>NextPicture</skipplus>
       <skipminus>PreviousPicture</skipminus>
       <info>Close</info>
+      <back>Close</back> 
     </remote>
 
     <keyboard>
       <period>NextPicture</period>
       <comma>PreviousPicture</comma>
       <i>Close</i>
+      <space>Pause</space>
     </keyboard>
   </PictureInfo>
 </keymap>

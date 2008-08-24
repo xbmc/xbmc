@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 08/17/2008-->
+<!--Date of translation: 08/19/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 14957-->
+<!--Based on english strings version 15042-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1768,5 +1768,7 @@
   <string id="22004">Fördröjd med: %2.3fs</string>
   <string id="22005">Förväg med: %2.3fs</string>
   <string id="22006">Undertextkompensering</string>
+  <string id="29800">Biblioteksläge</string>
+  <string id="29801">QWERTY tangentbord</string>
   <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>
 </strings>

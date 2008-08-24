@@ -1167,6 +1167,13 @@ void CFileItemList::Clear()
 
 void CFileItemList::ClearItems()
 {
+  // make sure we free the memory of the items (these are GUIControls which may have allocated resources)
+  FreeMemory();
+  for (unsigned int i = 0; i < m_items.size(); i++)
+  {
+    CFileItemPtr item = m_items[i];
+    item->FreeMemory();
+  }
   m_items.clear();
   m_map.clear();
 }
@@ -1911,7 +1918,7 @@ void CFileItemList::Stack()
         CStdString fileName2, filePath2;
         CUtil::Split(item2->m_strPath, filePath2, fileName2);
         // only do a stacking comparison if the first letter of the filename is the same
-        if (fileName2.at(0) != fileName.at(0))
+        if (fileName2.size() && fileName2.at(0) != fileName.at(0))
           break;
 
         CStdString fileTitle2, volumeNumber2;

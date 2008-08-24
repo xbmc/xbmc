@@ -517,10 +517,19 @@ bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
     return true;
   }
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
-  { // no control found to absorb this click - toggle the OSD
+  { // no control found to absorb this click - pause video
     CAction action;
-    action.wID = ACTION_SHOW_OSD;
-    OnAction(action);
+    action.wID = ACTION_PAUSE;
+    return g_application.OnAction(action);
+  }
+  if (g_Mouse.HasMoved())
+  { // movement - toggle the OSD
+    CGUIWindowOSD *pOSD = (CGUIWindowOSD *)m_gWindowManager.GetWindow(WINDOW_OSD);
+    if (pOSD)
+    {
+      pOSD->SetAutoClose(3000);
+      pOSD->DoModal();
+    }
   }
   return true;
 }
@@ -559,7 +568,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (m_bShowCurrentTime) return true;
   if (g_infoManager.GetDisplayAfterSeek()) return true;
   if (g_infoManager.GetBool(PLAYER_SEEKBAR, GetID())) return true;
-  if (CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subsLayout)
+  if (CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer && g_application.m_pPlayer->GetSubtitleVisible() && m_subsLayout)
     return true;
   if (m_bLastRender)
   {

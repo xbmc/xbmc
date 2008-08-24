@@ -219,6 +219,11 @@ namespace PYXBMC
     char *cLine = NULL;
     CStdString ret;
     if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
+    if (!m_pXbmcHttp)
+    {
+      CSectionLoader::Load("LIBHTTP");
+      m_pXbmcHttp = new CXbmcHttp();
+    }
     if (!pXbmcHttpShim)
     {
       pXbmcHttpShim = new CXbmcHttpShim();

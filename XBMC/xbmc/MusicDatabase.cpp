@@ -2851,11 +2851,11 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdStrin
 
 bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList &items)
 {
+  if (NULL == m_pDB.get()) return false;
+  if (NULL == m_pDS.get()) return false;
+
   try
   {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
     DWORD time = timeGetTime();
     // We don't use FormatSQL here, as the WHERE clause is already formatted.
     CStdString strSQL = "select * from songview " + whereClause;
@@ -2876,21 +2876,34 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString
     int count = 0;
     while (!m_pDS->eof())
     {
-      CFileItemPtr item(new CFileItem);
-      GetFileItemFromDataset(item.get(), baseDir);
-      // HACK for sorting by database returned order
-      item->m_iprogramCount = ++count;
-      items.Add(item);
-      m_pDS->next();
+      try
+      {
+        CFileItemPtr item(new CFileItem);
+        GetFileItemFromDataset(item.get(), baseDir);
+        // HACK for sorting by database returned order
+        item->m_iprogramCount = ++count;
+        items.Add(item);
+        m_pDS->next();
+      }
+      catch (...)
+      {
+        m_pDS->close();
+        CLog::Log(LOGERROR, "%s: out of memory loading query: %s", __FUNCTION__, whereClause.c_str());
+        return (items.Size() > 0);
+      }
     }
-
     // cleanup
     m_pDS->close();
+    CStdString output;
+    output.Format("time: %d ms\n", timeGetTime() - time);
+    OutputDebugString(output.c_str());
     CLog::Log(LOGDEBUG, "%s(%s) - took %d ms", __FUNCTION__, whereClause.c_str(), timeGetTime() - time);
     return true;
   }
   catch (...)
   {
+    // cleanup
+    m_pDS->close();
     CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, whereClause.c_str());
   }
   return false;
@@ -3741,7 +3754,8 @@ bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path, CSongMap &songs
   // After scanning we then remove the orphaned artists, genres and thumbs.
   try
   {
-    ASSERT(CUtil::HasSlashAtEnd(path));
+    if (!CUtil::HasSlashAtEnd(path))
+      CLog::Log(LOGWARNING,"%s: called on path without a trailing slash [%s]",__FUNCTION__,path.c_str());
 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;

@@ -481,10 +481,8 @@ void CGUIWindow::Render()
 bool CGUIWindow::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_MOUSE)
-  {
-    OnMouseAction();
-    return true;
-  }
+    return OnMouseAction();
+
   CGUIControl *focusedControl = GetFocusedControl();
   if (focusedControl)
     return focusedControl->OnAction(action);
@@ -497,7 +495,7 @@ bool CGUIWindow::OnAction(const CAction &action)
 }
 
 // OnMouseAction - called by OnAction()
-void CGUIWindow::OnMouseAction()
+bool CGUIWindow::OnMouseAction()
 {
   // we need to convert the mouse coordinates to window coordinates
   float posX = m_posX;
@@ -525,7 +523,7 @@ void CGUIWindow::OnMouseAction()
     if (pControl)
     { // this control has exclusive access to the mouse
       HandleMouse(pControl, mousePoint + g_Mouse.GetExclusiveOffset());
-      return;
+      return true;
     }
   }
 
@@ -553,11 +551,12 @@ void CGUIWindow::OnMouseAction()
   }
   if (!bHandled)
   { // haven't handled this action - call the window message handlers
-    OnMouse(mousePoint);
+    bHandled = OnMouse(mousePoint);
   }
   // and unfocus everything otherwise
   if (!controlUnderPointer)
     m_focusedControl = 0;
+  return bHandled;
 }
 
 // Handles any mouse actions that are not handled by a control
