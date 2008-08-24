@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
 import sys
+import traceback
+
 sys.path.append("../PS3 BD Remote")
 try:
     from xbmc.bt.hid import HID
@@ -25,6 +27,19 @@ import struct
 import threading
 
 event_threads = []
+
+def printerr():
+	trace = ""
+	exception = ""
+	exc_list = traceback.format_exception_only (sys.exc_type, sys.exc_value)
+	for entry in exc_list:
+		exception += entry
+	tb_list = traceback.format_tb(sys.exc_info()[2])
+	for entry in tb_list:
+		trace += entry	
+	print("%s\n%s" % (exception, trace), "Script Error")
+
+
 
 class StoppableThread ( threading.Thread ):
     def __init__(self):
@@ -112,22 +127,33 @@ class PS3SixaxisThread ( StoppableThread ):
                     if psdown:
                         toggle_mouse = 1 - toggle_mouse
                     psdown = 0
-                (bflags, psflags) = sixaxis.process_input(data, toggle_mouse
+
+                (bflags, psflags, preasure) = sixaxis.process_input(data, toggle_mouse
                                                           and self.xbmc
                                                           or None)
-                if bflags != last_bflags:
-                    if bflags:
-                        try:
-                            (mapname, action) = keymap_sixaxis[bflags].split(":")
-                            self.xbmc.send_button(map=mapname, button=action)
-                            self.reset_timeout()
-                        except:
-                            pass
-                    else:
+                if bflags:
+                    try:
+                        (mapname, action, amount) = keymap_sixaxis[bflags]
+                        if amount > 0:
+                            amount = preasure[amount-1] * 256
+
+                        #TODO - check against last amount instead. this however requires changes in how
+                        #       how the eventserver handles this situation, it must keep resending the
+                        #       keypress if it has an amount without the standard repeat delay        
+                        if bflags != last_bflags or amount > 0:
+                            self.xbmc.send_button(map=mapname, button=action, amount=amount)
+
+                        self.reset_timeout()
+                        last_amount = amount
+                        last_bflags = bflags
+                    except:
+                        pass
+                else:
+                    if last_bflags:
                         self.xbmc.release_button()
-                    last_bflags = bflags
+                    last_bflags = 0
         except Exception, e:
-            print str(e)
+            printerr()
         self.close_sockets()
 
 
