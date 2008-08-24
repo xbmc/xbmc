@@ -3,6 +3,7 @@
 import time
 import sys
 import struct
+import math
 from bluetooth import set_l2cap_mtu
 
 xval = 0
@@ -33,6 +34,15 @@ def normalize(val):
         val = 1
     return val
 
+def normalize_angle(val, valrange):
+    valrange *= 2
+
+    val = val / valrange
+    if val > 1.0:
+        val = 1.0
+    if val < -1.0:
+        val = -1.0
+    return (val + 0.5) * 65535.0
 
 def initialize(control_sock, interrupt_sock):    
     # sixaxis needs this to enable it
@@ -52,18 +62,30 @@ def read_input(isock):
 
 
 def process_input(data, xbmc=None):
-    if len(data) >= 46:
-        v1 = struct.unpack("H", data[42:44])
-        v2 = struct.unpack("H", data[44:46])
+    if len(data) >= 48:
+        v1 = struct.unpack("h", data[42:44])
+        v2 = struct.unpack("h", data[44:46])
+        v3 = struct.unpack("h", data[46:48])
     else:
         v1 = [0,0]
         v2 = [0,0]
+        v3 = [0,0]
+
+    ax = float(v1[0])
+    ay = float(v2[0])
+    az = float(v3[0])
+    at = math.sqrt(ax*ax + ay*ay + az*az)
+
 
     bflags = struct.unpack("H", data[3:5])[0]
     psflags = struct.unpack("B", data[5:6])[0]
+    preasure = struct.unpack("BBBBBBBBBBBB", data[15:27])
 
-    xpos = normalize(-v1[0])
-    ypos = normalize(v2[0])
+    roll  = -math.atan2(ax, math.sqrt(ay*ay + az*az))
+    pitch = math.atan2(ay, math.sqrt(ax*ax + az*az))
+
+    xpos = normalize_angle(roll, math.radians(60))
+    ypos = normalize_angle(pitch, math.radians(45))
 
     # update our sliding window array
     sumx.insert(0, xpos)
@@ -85,5 +107,5 @@ def process_input(data, xbmc=None):
     if xbmc:
         xbmc.send_mouse_position(xval/num_samples, yval/num_samples)    
 
-    return (bflags, psflags)
+    return (bflags, psflags, preasure)
 

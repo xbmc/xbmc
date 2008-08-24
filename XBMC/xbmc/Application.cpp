@@ -3385,8 +3385,14 @@ bool CApplication::ProcessEventServer(float frameTime)
     }
     else
     {
-      CKey key(wKeyID);
-      return OnKey( key );
+      CKey key;
+      if(wKeyID == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
+        key = CKey(wKeyID, (BYTE)(255*fAmount), 0);
+      else if(wKeyID == KEY_BUTTON_RIGHT_ANALOG_TRIGGER)
+        key = CKey(wKeyID, 0, (BYTE)(255*fAmount));
+      else
+        key = CKey(wKeyID);
+      return OnKey(key);
     }
   }
 
