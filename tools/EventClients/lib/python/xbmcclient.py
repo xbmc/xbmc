@@ -288,7 +288,7 @@ class PacketBUTTON (Packet):
     A button packet send a key press or release event to XBMC
     """
     def __init__(self, code=0, repeat=1, down=1, queue=0,
-                 map_name="", button_name="", amount=None):
+                 map_name="", button_name="", amount=0):
         """
         Keyword arguments:
         code -- raw button code (default: 0)
@@ -335,6 +335,7 @@ class PacketBUTTON (Packet):
             self.amount = int(amount)
         else:
             self.amount = 0
+
         if down:
             self.flags |= BT_DOWN
         else:
@@ -519,7 +520,7 @@ class XBMCClient:
         return
 
 
-    def send_button(self, map="", button=""):
+    def send_button(self, map="", button="", amount=0):
         """Send a button event to XBMC
         Keyword arguments:
         map -- a combination of map_name and button_name refers to a
@@ -537,7 +538,7 @@ class XBMCClient:
                   section in Keymap.xml then, valid buttons include 
                   "printscreen", "minus", "x", etc.
         """
-        packet = PacketBUTTON(map_name=str(map), button_name=str(button))
+        packet = PacketBUTTON(map_name=str(map), button_name=str(button), amount=amount)
         packet.send(self.sock, self.addr, self.uid)
         return
 
