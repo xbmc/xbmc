@@ -14,7 +14,7 @@
 ;General
 
   ;Name and file
-  Name "XBMC for Windows"
+  Name "XBMC Media Center"
   OutFile "XBMCSetup-Rev${xbmc_revision}.exe"
 
   XPStyle on
@@ -129,7 +129,7 @@ Section "XBMC" SecXBMC
 	
   ;add entry to add/remove programs
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
-                 "DisplayName" "XBMC for Windows"
+                 "DisplayName" "XBMC Media Center"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
                  "UninstallString" "$INSTDIR\uninstall.exe"
   WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
@@ -272,7 +272,7 @@ SectionEnd
 ;Descriptions
 
   ;Language strings
-  LangString DESC_SecXBMC ${LANG_ENGLISH} "XBMC for Windows."
+  LangString DESC_SecXBMC ${LANG_ENGLISH} "XBMC Media Center."
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
