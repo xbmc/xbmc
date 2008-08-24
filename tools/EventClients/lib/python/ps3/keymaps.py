@@ -81,28 +81,28 @@ SX_SELECT   = 1
 SX_START    = 8
 
 keymap_sixaxis = {
-    SX_X        : 'XG:A',
-    SX_CIRCLE   : 'XG:B',
-    SX_SQUARE   : 'XG:X',
-    SX_TRIANGLE : 'XG:Y',
+    SX_X        : ('XG', 'A', 0),
+    SX_CIRCLE   : ('XG', 'B', 0),
+    SX_SQUARE   : ('XG', 'X', 0),
+    SX_TRIANGLE : ('XG', 'Y', 0),
 
-    SX_DUP      : 'XG:dpadup',
-    SX_DDOWN    : 'XG:dpaddown',
-    SX_DLEFT    : 'XG:dpadleft',
-    SX_DRIGHT   : 'XG:dpadright',
+    SX_DUP      : ('XG', 'dpadup', 0),
+    SX_DDOWN    : ('XG', 'dpaddown', 0),
+    SX_DLEFT    : ('XG', 'dpadleft', 0),
+    SX_DRIGHT   : ('XG', 'dpadright', 0),
 
-    SX_START    : 'XG:start',
-    SX_SELECT   : 'XG:back',
+    SX_START    : ('XG', 'start', 0),
+    SX_SELECT   : ('XG', 'back', 0),
 
-    SX_R1       : 'XG:black',
-    SX_R2       : 'XG:rightanalogtrigger',
-    SX_L2       : 'XG:leftanalogtrigger',
-    SX_L1       : 'XG:white',
+    SX_R1       : ('XG', 'black', 0),
+    SX_R2       : ('XG', 'rightanalogtrigger', 6),
+    SX_L2       : ('XG', 'leftanalogtrigger', 5),
+    SX_L1       : ('XG', 'white', 0),
 
-    SX_L3       : 'XG:leftthumbbutton',
-    SX_R3       : 'XG:rightthumbbutton',
-#    SX_R_LEFT   : 'XG:rightthumbstickleft',
-#    SX_R_RIGHT  : 'XG:rightthumbstickright',
-#    SX_R_UP     : 'XG:rightthumbstickup',
-#    SX_R_DOWN   : 'XG:rightthumbstickdown'
+    SX_L3       : ('XG', 'leftthumbbutton', 0),
+    SX_R3       : ('XG', 'rightthumbbutton', 0),
+#    SX_R_LEFT   : ('XG', 'rightthumbstickleft', 0),
+#    SX_R_RIGHT  : ('XG', 'rightthumbstickright', 0),
+#    SX_R_UP     : ('XG', 'rightthumbstickup', 0),
+#    SX_R_DOWN   : ('XG', 'rightthumbstickdown', 0)
 }
