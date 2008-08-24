@@ -38,6 +38,10 @@ bool CMediaSource::isWritable() const
     if (strPath.substr(0,4) == "smb:")
       return true; // smb path
   }
+#ifdef _LINUX
+  if (strPath == getenv("HOME"))
+    return true;
+#endif
 
   return false;
 }
