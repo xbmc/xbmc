@@ -1,6 +1,6 @@
 ARCH=osx
 ifeq ($(ARCH), osx)
-export MACOSX_DEPLOYMENT_TARGET=10.4
+	export MACOSX_DEPLOYMENT_TARGET=10.4
 endif
 
 SO=ImageLib-$(ARCH).so
@@ -11,9 +11,9 @@ DIRS=CxImage raw jbig tiff zlib
 LIBS=CxImage/cximage.a raw/raw.a jbig/jbig.a tiff/tiff.a
 
 ifeq ($(ARCH), osx)
-export ARCH
-DIRS+=jasper jpeg png
-LIBS+=jasper/jasper.a jpeg/jpeg.a png/png.a
+	export ARCH
+	DIRS+=jasper jpeg png
+	LIBS+=jasper/jasper.a jpeg/jpeg.a png/png.a
 endif
 
 .PHONY: compile

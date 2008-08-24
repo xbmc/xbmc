@@ -1,7 +1,9 @@
-CFLAGS+=-fPIC -DXBMC -D_LINUX 
+CFLAGS+=-fPIC -DXBMC -D_LINUX
+
 ifeq ($(ARCH), osx)
-CFLAGS+=-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
+	CFLAGS+=-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
 endif
+
 OBJS=dcr.o libdcr.o
 
 raw.a: $(OBJS)
