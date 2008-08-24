@@ -185,7 +185,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
     return INVALID_HANDLE_VALUE;
   }
 
-  int flags = 0, mode=S_IRUSR;
+  int flags = 0, mode=S_IRUSR | S_IRGRP | S_IROTH;
   if (dwDesiredAccess & FILE_WRITE_DATA) {
     flags = O_RDWR;
     mode |= S_IWUSR;
