@@ -203,10 +203,10 @@ struct field {
 }; 
 
 
-typedef std::map<int,field> Fields;
-typedef std::map<int,field_value> sql_record;
-typedef std::map<int,field_prop> record_prop;
-typedef std::map<int,sql_record> query_data;
+typedef std::vector<field> Fields;
+typedef std::vector<field_value> sql_record;
+typedef std::vector<field_prop> record_prop;
+typedef std::vector<sql_record*> query_data;
 typedef field_value variant;
 
 //typedef Fields::iterator fld_itor;
@@ -214,7 +214,24 @@ typedef sql_record::iterator rec_itor;
 typedef record_prop::iterator recprop_itor;
 typedef query_data::iterator qry_itor;
 
-struct result_set {
+class result_set
+{
+public:
+  result_set()
+  {
+  };
+  ~result_set()
+  {
+    clear();
+  };
+  void clear()
+  {
+    for (unsigned int i = 0; i < records.size(); i++)
+      delete records[i];
+    records.clear();
+    record_header.clear();
+  };
+
   record_prop record_header;
   query_data records;
 };
