@@ -365,7 +365,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
         ( (flags & PTB_VKEY) ? (bcode|KEY_VKEY) : bcode );         // not name, use vkey?
       m_currentButton.m_mapName    = map;
       m_currentButton.m_buttonName = button;
-      m_currentButton.m_fAmount    = (flags & PTB_USE_AMOUNT) ? (amount/65535.0f*2.0f-1.0f) : 1.0f;
+      m_currentButton.m_fAmount    = (flags & PTB_USE_AMOUNT) ? (amount/65535.0f) : 0.0f;
       m_currentButton.m_bRepeat    = (flags & PTB_NO_REPEAT)  ? false : true;
       m_currentButton.m_bAxis      = (flags & PTB_AXIS)       ? true : false;
       m_currentButton.SetActive();
@@ -374,6 +374,20 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
     }
     else
     {
+      /* when a button is released that had amount, make sure *
+       * to resend the keypress with an amount of 0           */
+      if(m_currentButton.m_fAmount > 0.0)
+      {
+        m_buttonQueue.push (
+          new CEventButtonState( m_currentButton.m_iKeyCode,
+                                 m_currentButton.m_mapName,
+                                 m_currentButton.m_buttonName,
+                                 0.0,
+                                 m_currentButton.m_bAxis,
+                                 false )
+          );
+      }
+
       m_currentButton.Reset();
     }
   }
