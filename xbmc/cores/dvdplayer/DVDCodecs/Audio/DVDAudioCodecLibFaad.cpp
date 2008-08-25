@@ -216,6 +216,7 @@ bool CDVDAudioCodecLibFaad::OpenDecoder()
 
     // modify some stuff here
     pConfiguration->outputFormat = FAAD_FMT_16BIT; // already default
+    pConfiguration->downMatrix = 1;
 
     m_dll.faacDecSetConfiguration(m_pHandle, pConfiguration);
 
