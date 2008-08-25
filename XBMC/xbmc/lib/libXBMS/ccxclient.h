@@ -1,7 +1,7 @@
 /*   -*- c -*-
  * 
  *  ----------------------------------------------------------------------
- *  CcXstream Client Library for XBOX Media Player
+ *  CcXstream Client Library for XBMC Media Center
  *  ----------------------------------------------------------------------
  *
  *  Copyright (c) 2002-2003 by PuhPuh
@@ -21,9 +21,9 @@
  *
  *  ----------------------------------------------------------------------
  *
- *  This code has been integrated into Xbox Media Player.  
+ *  This code has been integrated into XBMC Media Center.  
  *  As such it can me copied, redistributed and modified under
- *  the same conditions as the XBMP itself.
+ *  the same conditions as the XBMC itself.
  *
  */
 
