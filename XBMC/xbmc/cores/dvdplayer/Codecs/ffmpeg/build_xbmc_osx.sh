@@ -13,12 +13,31 @@ if [ "$XBMC_ROOT" == "" ]; then
    exit 1
 fi
 
-make distclean
+make distclean >/dev/null 2>&1 
 
 export MACOSX_DEPLOYMENT_TARGET=10.4
 
 echo "Configuring ffmpeg"
-./configure --extra-cflags="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -I/opt/local/include -L/opt/local/lib -D_XBOX -DHAVE_INT32_T" --extra-ldflags="-L/opt/local/lib" --disable-ffmpeg --disable-ffserver --disable-ffplay --disable-encoders --disable-muxers --disable-debug --enable-gpl --enable-swscale --enable-postproc --enable-libvorbis --enable-protocol=http 
+./configure \
+    --extra-cflags="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -I/opt/local/include -L/opt/local/lib -D_XBOX" \
+    --extra-ldflags="-L/opt/local/lib" \
+    --enable-static \
+    --disable-altivec \
+    --disable-vhook \
+    --disable-debug \
+    --disable-muxers \
+    --disable-encoders \
+    --disable-devices \
+    --disable-ffplay \
+    --disable-ffserver \
+    --disable-ffmpeg \
+    --disable-shared \
+    --enable-postproc \
+    --enable-gpl \
+    --enable-swscale \
+    --enable-protocol=http \
+    --enable-pthreads \
+    --enable-libvorbis
 
 echo "Building ffmpeg"
 make clean
