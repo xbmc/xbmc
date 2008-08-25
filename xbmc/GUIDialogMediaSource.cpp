@@ -80,7 +80,10 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_PATH_REMOVE)
         OnPathRemove(GetSelectedItem());
       else if (iControl == CONTROL_NAME)
+      {
         OnEditChanged(iControl, m_name);
+        UpdateButtons();
+      }
       else if (iControl == CONTROL_OK)
         OnOK();
       else if (iControl == CONTROL_CANCEL)
