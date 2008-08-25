@@ -1364,10 +1364,10 @@ CUPnP::StartServer()
     // c0diq: For the XBox260 to discover XBMC, the ModelName must stay "Windows Media Connect"
     //m_ServerHolder->m_Device->m_ModelName = "XBMC";
     m_ServerHolder->m_Device->m_ModelNumber = "2.0";
-    m_ServerHolder->m_Device->m_ModelDescription = "Xbox Media Center - Media Server";
-    m_ServerHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";    
+    m_ServerHolder->m_Device->m_ModelDescription = "XBMC Media Center - Media Server";
+    m_ServerHolder->m_Device->m_ModelURL = "http://www.xbmc.org/";
     m_ServerHolder->m_Device->m_Manufacturer = "Team XBMC";
-    m_ServerHolder->m_Device->m_ManufacturerURL = "http://www.xboxmediacenter.com/";
+    m_ServerHolder->m_Device->m_ManufacturerURL = "http://www.xbmc.org/";
 
     // tell controller to ignore ourselves from list of upnp servers
     if (!m_CtrlPointHolder->m_CtrlPoint.IsNull()) {
@@ -1433,10 +1433,10 @@ void CUPnP::StartRenderer()
     m_RendererHolder->m_Device->m_PresentationURL = NPT_HttpUrl(ip, atoi(g_guiSettings.GetString("servers.webserverport")), "/").ToString();
     m_RendererHolder->m_Device->m_ModelName = "XBMC";
     m_RendererHolder->m_Device->m_ModelNumber = "2.0";
-    m_RendererHolder->m_Device->m_ModelDescription = "Xbox Media Center - Media Renderer";
-    m_RendererHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";    
+    m_RendererHolder->m_Device->m_ModelDescription = "XBMC Media Center - Media Renderer";
+    m_RendererHolder->m_Device->m_ModelURL = "http://www.xbmc.org/";    
     m_RendererHolder->m_Device->m_Manufacturer = "Team XBMC";
-    m_RendererHolder->m_Device->m_ManufacturerURL = "http://www.xboxmediacenter.com/";
+    m_RendererHolder->m_Device->m_ManufacturerURL = "http://www.xbmc.org/";
 
     m_UPnP->AddDevice(m_RendererHolder->m_Device);
 
