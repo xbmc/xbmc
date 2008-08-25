@@ -3134,9 +3134,9 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
 	  {
 	    if (m_pXbmcHttp->incWebHeader)
           websHeader(wp);
-	  }
-	  else
-	    websHeader(wp);
+	  };
+	  //else
+	    //websHeader(wp);
 
 	//we are being called via the webserver (rather than Python) so add any specific checks here
     if ((cmd=="webserverstatus") && (paras!=""))//(strcmp(parameter,XBMC_NONE)))
@@ -3169,7 +3169,7 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
   //flushresult
   retVal=flushResult(eid, wp, m_pXbmcHttp->userHeader+response+m_pXbmcHttp->userFooter);
   if (m_pXbmcHttp) //this should always be true unless something is very wrong
-    if ((wp!=NULL) && (m_pXbmcHttp->incWebFooter))
+    if ((wp!=NULL) && (m_pXbmcHttp->incWebFooter) && eid==NO_EID)
       websFooter(wp);
   return retVal;
 }
