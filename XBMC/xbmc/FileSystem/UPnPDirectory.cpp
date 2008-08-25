@@ -179,7 +179,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         }
 
         // same thing but special case for XBMC
-        if (root_id == "0" && ((*device)->m_ModelName.Find("Xbox Media Center", 0, true) >= 0)) {
+        if (root_id == "0" && ((*device)->m_ModelName.Find("XBMC", 0, true) >= 0)) {
 
             // look for a specific type to differentiate which folder we want
             if (audio && !video && !image) {

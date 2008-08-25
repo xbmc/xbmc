@@ -1474,8 +1474,8 @@
   <string id="20189">Aktivera automatisk rullning för handling &amp; recension</string>
   <string id="20190">Egen</string>
   <string id="20191">Aktivera debug-loggning</string>
-  <string id="20192">Hämta albuminformation vid skanning</string>
-  <string id="20193">Hämta artistinformation vid skanning</string>
+  <string id="20192">Hämta albuminformation under tilläggning till bibliotek</string>
+  <string id="20193">Hämta artistinformation under tilläggning till bibliotek</string>
   <string id="20194">Standard skrapa</string>
   <string id="20195">Byt skrapa</string>
   <string id="20196">Exportera musikbibliotek</string>
