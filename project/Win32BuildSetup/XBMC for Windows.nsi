@@ -67,6 +67,7 @@
 
   !insertmacro MUI_UNPAGE_WELCOME
   !insertmacro MUI_UNPAGE_CONFIRM
+  UninstPage custom un.UnPageProfile un.UnPageProfileLeave
   !insertmacro MUI_UNPAGE_INSTFILES
   !insertmacro MUI_UNPAGE_FINISH
 
@@ -282,6 +283,41 @@ SectionEnd
 ;--------------------------------
 ;Uninstaller Section
 
+Var UnPageProfileDialog
+Var UnPageProfileCheckbox
+Var UnPageProfileCheckbox_State
+Var UnPageProfileEditBox
+
+Function un.UnPageProfile
+    !insertmacro MUI_HEADER_TEXT "Uninstall XBMC Media Center" "Remove XBMC's profile folder from your computer."
+	nsDialogs::Create /NOUNLOAD 1018
+	Pop $UnPageProfileDialog
+
+	${If} $UnPageProfileDialog == error
+		Abort
+	${EndIf}
+
+	${NSD_CreateLabel} 0 0 100% 12u "Do you want to delete the profile folder?"
+	Pop $0
+
+	${NSD_CreateText} 0 13u 100% 12u "$APPDATA\XBMC\"
+	Pop $UnPageProfileEditBox
+    SendMessage $UnPageProfileEditBox ${EM_SETREADONLY} 1 0
+
+	${NSD_CreateLabel} 0 46u 100% 24u "Leave unchecked to keep the profile folder for later use or check to delete the profile folder."
+	Pop $0
+
+	${NSD_CreateCheckbox} 0 71u 100% 8u "Yes, also delete the profile folder."
+	Pop $UnPageProfileCheckbox
+	
+
+	nsDialogs::Show
+FunctionEnd
+
+Function un.UnPageProfileLeave
+${NSD_GetState} $UnPageProfileCheckbox $UnPageProfileCheckbox_State
+FunctionEnd
+
 Section "Uninstall"
 
   ;ADD YOUR OWN FILES HERE...
@@ -312,6 +348,11 @@ Section "Uninstall"
   Delete "$INSTDIR\Uninstall.exe"
 
   RMDir "$INSTDIR"
+  
+  ${If} $UnPageProfileCheckbox_State == ${BST_CHECKED}
+    RMDir /r "$APPDATA\XBMC\"
+  ${EndIf}
+
   
   !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
   Delete "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk"
