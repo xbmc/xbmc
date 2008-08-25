@@ -3255,7 +3255,7 @@ bool CApplication::ProcessMouse()
 {
   MEASURE_FUNCTION;
 
-  if (!g_Mouse.IsActive())
+  if (!g_Mouse.IsActive() || !m_AppFocused)
     return false;
 
   // Reset the screensaver and idle timers

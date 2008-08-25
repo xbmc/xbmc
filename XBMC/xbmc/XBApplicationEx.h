@@ -75,6 +75,7 @@ public:
   HANDLE m_hFrameCounter;     // Handle to frame rate perf counter
   bool m_bStop;
   bool m_AppActive;
+  bool m_AppFocused;
 #ifdef HAS_GAMEPAD
   // Members to init the XINPUT devices.
   XDEVICE_PREALLOC_TYPE* m_InputDeviceTypes;
