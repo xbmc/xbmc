@@ -26,6 +26,7 @@
 #include "VideoDatabase.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "Util.h"
 
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
@@ -598,16 +599,17 @@ void CGUIViewStateWindowMusicSongs::SaveViewState()
 
 VECSOURCES& CGUIViewStateWindowMusicSongs::GetSources()
 {
-  m_sources = g_settings.m_musicSources;
+  bool bIsSourceName = true;
   // plugins share
   if (CPluginDirectory::HasPlugins("music"))
   {
     CMediaSource share;
     share.strName = g_localizeStrings.Get(1038);
     share.strPath = "plugin://music/";
-    m_sources.push_back(share);
+    if (CUtil::GetMatchingSource(share.strName, g_settings.m_musicSources, bIsSourceName) < 0)
+      g_settings.m_musicSources.push_back(share);
   }
-  return CGUIViewStateWindowMusic::GetSources();
+  return g_settings.m_musicSources; 
 }
 
 CGUIViewStateWindowMusicPlaylist::CGUIViewStateWindowMusicPlaylist(const CFileItemList& items) : CGUIViewStateWindowMusic(items)

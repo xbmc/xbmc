@@ -27,6 +27,7 @@
 #include "Settings.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/PluginDirectory.h"
+#include "Util.h"
 
 using namespace DIRECTORY;
 
@@ -66,15 +67,16 @@ CStdString CGUIViewStateWindowPrograms::GetExtensions()
 
 VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
 {
-  m_sources = g_settings.m_programSources;
+  bool bIsSourceName = true;
   // plugins share
   if (CPluginDirectory::HasPlugins("programs"))
   {
     CMediaSource share;
     share.strName = g_localizeStrings.Get(1043); // Program Plugins
     share.strPath = "plugin://programs/";
-    m_sources.push_back(share);
+    if (CUtil::GetMatchingSource(share.strName, g_settings.m_programSources, bIsSourceName) < 0)
+      g_settings.m_programSources.push_back(share);
   }
-  return CGUIViewState::GetSources();
+  return g_settings.m_programSources; 
 }
 
