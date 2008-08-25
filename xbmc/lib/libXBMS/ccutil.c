@@ -30,9 +30,9 @@
  *
  *  ----------------------------------------------------------------------
  *
- *  This code has been integrated into Xbox Media Player.  
+ *  This code has been integrated into XBMC Media Center.  
  *  As such it can me copied, redistributed and modified under
- *  the same conditions as the XBMP itself.
+ *  the same conditions as the XBMC itself.
  *
  */
 
