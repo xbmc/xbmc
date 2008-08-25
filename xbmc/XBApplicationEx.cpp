@@ -69,6 +69,7 @@ CXBApplicationEx::CXBApplicationEx()
   m_strFrameRate[0] = L'\0';
   m_bStop = false;
   m_AppActive = true;
+  m_AppFocused = true;
 
 #ifndef HAS_SDL
   // Set up the presentation parameters for a double-buffered, 640x480,
@@ -411,6 +412,10 @@ void CXBApplicationEx::ReadInput()
       if( event.active.state & SDL_APPACTIVE )
       {
         m_AppActive = event.active.gain != 0;
+      }
+      if (event.active.state & SDL_APPINPUTFOCUS)
+      {
+        m_AppFocused = event.active.gain != 0;
       }
       break;
     case SDL_MOUSEBUTTONDOWN:
