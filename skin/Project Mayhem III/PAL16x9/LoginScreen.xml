@@ -24,7 +24,7 @@
 			<texture>background-bottom.png</texture>
 		</control>
 		<control type="label">
-			<description>Xbox media center label</description>
+			<description>XBMC media center label</description>
 			<posx>200</posx>
 			<posy>43</posy>
 			<align>right</align>

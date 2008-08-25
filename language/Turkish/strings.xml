@@ -1087,7 +1087,7 @@
   <string id="14072">XLink Kai Etkinleştir</string>
   <string id="14073">XLink Kai aktif değil.</string>
   <string id="15000">XLink Kai</string>
-  <string id="15001">Bağlantı yok. Xbox Media Center ile</string>
+  <string id="15001">Bağlantı yok. XBMC Media Center ile</string>
   <string id="15002">tekrar deneyip bağlanmak istiyor musunuz?</string>
   <string id="15003">Mesajınızı yazın</string>
   <string id="15004">%s. oyununa davet edildiniz</string>
@@ -1125,7 +1125,7 @@
   <string id="15036">size bir davetiye yolladı</string>
   <string id="15037">XBMC ağ ayarlarınızı kontrol edemiyor.</string>
   <string id="15038">Host olurken veya katılırken deneyim sahibi olmalısınız.</string>
-  <string id="15039">Xbox Media Center otomatik olarak oyunu başlatamıyor.</string>
+  <string id="15039">XBMC Media Center otomatik olarak oyunu başlatamıyor.</string>
   <string id="15040">Xbox' a bir oyun diski yerleştirin veya çıkmak için "A"' ya basın</string>
   <string id="15041">ve oyuna kendiniz girin.</string>
   <string id="15042">Reddedildi</string>
