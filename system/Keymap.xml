@@ -10,7 +10,7 @@
 <!--      <button>action</button>        -->
 <!--    </device>                        -->
 
-<!-- To map keys from other remotes using the RCA 5 protocol, you may add <universalremote> blocks -->
+<!-- To map keys from other remotes using the RCA protocol, you may add <universalremote> blocks -->
 <!-- In this case, the tags used are <obc#> where # is the original button code (OBC) of the key -->
 <!-- You set it up by adding a <universalremote> block to the window or <global> section:       -->
 <!--    <universalremote>             -->
