@@ -857,6 +857,7 @@
     <keyboard>
       <backspace>HideSubMenu</backspace>
       <escape>Close</escape>
+      <m>Close</m>
     </keyboard>
   </VideoOSD>
 
