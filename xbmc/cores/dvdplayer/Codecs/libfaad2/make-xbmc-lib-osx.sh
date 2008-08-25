@@ -8,7 +8,7 @@ fi
 
 export MACOSX_DEPLOYMENT_TARGET=10.4
 
-make distclean
+make distclean >/dev/null 2>&1
 
 autoreconf -vif &&
 ./configure --with-mp4v2 --with-pic CFLAGS="-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" &&
