@@ -39,7 +39,7 @@
  */
 
 /*
- * Port to XBox by Forza @ XBox Media Center Developers
+ * Port to XBMC by Forza @ XBMC Media Center Developers
  *
  * XBox modifications (c) 2004 Forza (Chris Barnett)
  *

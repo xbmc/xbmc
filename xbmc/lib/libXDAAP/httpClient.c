@@ -34,7 +34,7 @@
  */
 
 /*
- * Port to XBox by Forza of the XBox Media Center development team
+ * Port to XBMC by Forza of the XBMC Media Center development team
  *
  * 3rd July 2004
  *
