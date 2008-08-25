@@ -598,7 +598,16 @@ void CGUIViewStateWindowMusicSongs::SaveViewState()
 
 VECSOURCES& CGUIViewStateWindowMusicSongs::GetSources()
 {
-  return g_settings.m_musicSources;
+  m_sources = g_settings.m_musicSources;
+  // plugins share
+  if (CPluginDirectory::HasPlugins("music"))
+  {
+    CMediaSource share;
+    share.strName = g_localizeStrings.Get(1038);
+    share.strPath = "plugin://music/";
+    m_sources.push_back(share);
+  }
+  return CGUIViewStateWindowMusic::GetSources();
 }
 
 CGUIViewStateWindowMusicPlaylist::CGUIViewStateWindowMusicPlaylist(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
