@@ -45,7 +45,8 @@ void CGUIWindowOSD::Render()
   {
     // check for movement of mouse or a submenu open
     if (g_Mouse.HasMoved() || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_AUDIO_OSD_SETTINGS)
-                           || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD_SETTINGS))
+                           || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD_SETTINGS)
+                           || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_BOOKMARKS))
       SetAutoClose(3000);
   }
   CGUIDialog::Render();
