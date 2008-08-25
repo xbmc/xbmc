@@ -100,7 +100,8 @@ void CBackgroundWeatherLoader::GetInformation()
   if (!g_guiSettings.GetBool("network.enableinternet"))
     return;
 
-  if (!g_application.getNetwork().IsAvailable())
+  // wait for the network
+  if (!g_application.getNetwork().IsAvailable(true))
     return;
 
   CWeather *callback = (CWeather *)m_callback;
