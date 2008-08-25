@@ -18,4 +18,7 @@ tiff.a: $(OBJS)
 clean:
 	$(RM) $(OBJS) tiff.a
 
+distclean:
+	$(RM) $(OBJS) tiff.a
+
 include ../Makefile.include
