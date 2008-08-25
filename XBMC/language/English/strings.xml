@@ -1651,8 +1651,8 @@
   <string id="20189">Enable Auto Scrolling for Plot &amp; Review</string>
   <string id="20190">Custom</string>
   <string id="20191">Enable Debug Logging</string>
-  <string id="20192">Fetch Album Information On Scan</string>
-  <string id="20193">Fetch Artist Information On Scan</string>
+  <string id="20192">Fetch Album Information when adding to Library</string>
+  <string id="20193">Fetch Artist Information when adding to Library</string>
   <string id="20194">Default Scraper</string>
   <string id="20195">Change Scraper</string>
   <string id="20196">Export Music Library</string>
