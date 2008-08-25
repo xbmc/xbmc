@@ -388,9 +388,9 @@ void CGUIDialogFileBrowser::Render()
   int item = m_viewControl.GetSelectedItem();
   if (item >= 0)
   {
-    // as we don't have a "." item, assume that if the user
-    // is highlighting ".." then they wish to use that as the path
-    if ((*m_vecItems)[item]->IsParentFolder())
+    // if we are browsing for folders, and not in the root directory, then we use the parent path,
+    // else we use the current file's path
+    if (m_browsingForFolders && !m_Directory->IsVirtualDirectoryRoot())
       m_selectedPath = m_Directory->m_strPath;
     else
       m_selectedPath = (*m_vecItems)[item]->m_strPath;
