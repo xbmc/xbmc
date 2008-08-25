@@ -933,7 +933,7 @@
 
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
-		6E2FACD20E26E92800DF79EA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = xbmc/osx/Info.plist; sourceTree = "<group>"; };
+		6E2FACD20E26E92800DF79EA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = Info.plist; path = xbmc/osx/Info.plist; sourceTree = "<group>"; };
 		6E32A0AC0E353A37008872A4 /* FileMMS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileMMS.cpp; sourceTree = "<group>"; };
 		6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIInfoColor.cpp; sourceTree = "<group>"; };
 		6E97BDBD0DA2B5D8003A2A89 /* GUIInfoColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIInfoColor.h; sourceTree = "<group>"; };
@@ -1031,7 +1031,7 @@
 		88ECB6E60DE07BA6003396A7 /* libfontconfig.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfontconfig.a; path = /opt/local/lib/libfontconfig.a; sourceTree = "<absolute>"; };
 		88ECB6E90DE07BEE003396A7 /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = /opt/local/lib/libogg.a; sourceTree = "<absolute>"; };
 		88ECB6EB0DE07C56003396A7 /* libmysqlclient.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmysqlclient.a; path = /opt/local/lib/mysql5/mysql/libmysqlclient.a; sourceTree = "<absolute>"; };
-		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
+		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
 		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
 		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		E30B3E8E0D5D59290030A311 /* libShout-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libShout-osx.a"; path = "xbmc/lib/libshout/libShout-osx.a"; sourceTree = "<group>"; };
@@ -5774,7 +5774,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"cleaning Libraries\"\n\ncd \"$SRCROOT\"/xbmc/lib/libshout/\nmake -f Makefile.osx clean\n\ncd \"$SRCROOT\"/xbmc/lib/libGoAhead/\nmake -f Makefile.osx clean\n\ncd \"$SRCROOT\"/xbmc/lib/libRTV/\nmake -f Makefile.osx clean\n\ncd \"$SRCROOT\"/xbmc/lib/libXDAAP/\nmake -f Makefile.osx clean\n\ncd \"$SRCROOT\"/xbmc/cores/dvdplayer/Codecs/ffmpeg\nmake clean\nrm -f \"$SRCROOT\"/system/players/dvdplayer/avcodec-51-osx.a\nrm -f \"$SRCROOT\"/system/players/dvdplayer/avformat-51-osx.a\nrm -f \"$SRCROOT\"/system/players/dvdplayer/avutil-51-osx.a\nrm -f \"$SRCROOT\"/system/players/dvdplayer/postproc-51-osx.a\nrm -f \"$SRCROOT\"/system/players/dvdplayer/swscale-51-osx.a\n";
+			shellScript = "echo \"cleaning Libraries\"\n\ncd \"$SRCROOT\"/xbmc/lib/libshout/\nmake -f Makefile.osx clean\n\ncd \"$SRCROOT\"/xbmc/lib/libGoAhead/\nmake -f Makefile.osx clean\n\ncd \"$SRCROOT\"/xbmc/lib/libRTV/\nmake -f Makefile.osx clean\n\ncd \"$SRCROOT\"/xbmc/lib/libXDAAP/\nmake -f Makefile.osx clean\n\ncd \"$SRCROOT\"/xbmc/cores/dvdplayer/Codecs/ffmpeg\nmake clean >/dev/null 2>&1\nrm -f \"$SRCROOT\"/system/players/dvdplayer/avcodec-51-osx.a\nrm -f \"$SRCROOT\"/system/players/dvdplayer/avformat-51-osx.a\nrm -f \"$SRCROOT\"/system/players/dvdplayer/avutil-51-osx.a\nrm -f \"$SRCROOT\"/system/players/dvdplayer/postproc-51-osx.a\nrm -f \"$SRCROOT\"/system/players/dvdplayer/swscale-51-osx.a\n";
 		};
 		F57E20100E3BCD8100700C9D /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
