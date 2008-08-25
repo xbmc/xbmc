@@ -95,7 +95,16 @@ void CGUIViewStateWindowVideoFiles::SaveViewState()
 
 VECSOURCES& CGUIViewStateWindowVideoFiles::GetSources()
 {
-  return g_settings.m_videoSources;
+  m_sources = g_settings.m_videoSources;
+  // plugins share
+  if (CPluginDirectory::HasPlugins("video"))
+  {
+    CMediaSource share;
+    share.strName = g_localizeStrings.Get(1037);
+    share.strPath = "plugin://video/";
+    m_sources.push_back(share);
+  }
+  return CGUIViewStateWindowVideo::GetSources();
 }
 
 CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
