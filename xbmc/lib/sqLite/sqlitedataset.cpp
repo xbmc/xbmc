@@ -432,7 +432,11 @@ bool SqliteDataset::query(const char *query) {
   close();
 
   sqlite3_stmt *stmt = NULL;
+  #ifdef __APPLE__
+  if (db->setErr(sqlite3_prepare(handle(),query,-1,&stmt, NULL),query) != SQLITE_OK)
+  #else
   if (db->setErr(sqlite3_prepare_v2(handle(),query,-1,&stmt, NULL),query) != SQLITE_OK)
+  #endif
     throw DbErrors(db->getErrorMsg());
 
   // column headers
