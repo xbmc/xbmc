@@ -111,7 +111,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if (strProtocol == "filereader") 
     return CFactoryDirectory::Create(url.GetFileName());
 
-  if( g_application.getNetwork().IsAvailable() )
+  if( g_application.getNetwork().IsAvailable(true) )  // true to wait for the network (if possible)
   {
     if (strProtocol == "shout") return new CShoutcastDirectory();
     if (strProtocol == "lastfm") return new CLastFMDirectory();
