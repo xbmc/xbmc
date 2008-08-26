@@ -441,7 +441,7 @@
   <string id="606">Track Number:</string>
   <string id="607">To:</string>
   <string id="608">Could not rip CD or Track</string>
-  <string id="609">CDDARipPath is not set in XboxMediaCenter.xml</string>
+  <string id="609">CDDARipPath is not set in sources.xml</string>
   <string id="620">CD Ripping</string>
   <string id="621">Encoder</string>
   <string id="622">Quality</string>

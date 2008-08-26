@@ -41,9 +41,8 @@
 
 	   PC                       XBOX \n
 	-------------------------------------------------------------------------------  \n 
-	XboxMediaCenter.xml ->  e:\\apps\\xbmc\\XboxMediaCenter.xml \n
-	keymap.xml          ->  e:\\apps\\xbmc\\keymap.xml \n
-	FileZilla Server.xml->  e:\\apps\\xbmc\\FileZilla Server.xml \n
+	keymap.xml          ->  e:\\apps\\xbmc\\system\\keymap.xml \n
+	FileZilla Server.xml->  e:\\apps\\xbmc\\system\\FileZilla Server.xml \n
 	release/default.xbe ->  e:\\apps\\xbmc\\default.xbe \n
 	mplayer/            ->  e:\\apps\\xbmc\\mplayer        (copy all files & subdirs) \n
 	skin/               ->  e:\\apps\\xbmc\\skin           (copy all files & subdirs) \n
@@ -59,7 +58,7 @@
 
 	\section links Links
 	Related links
-	XBMC - http://www.xbmc.org \n
+	XBMC - http://xbmc.org \n
 	XBMC Forum - http://xbmc.org/forum/index.php \n
   */
 
