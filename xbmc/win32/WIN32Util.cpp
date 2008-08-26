@@ -340,3 +340,34 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
 
   return ret;
 }
+
+std::vector<CStdString> CWIN32Util::GetDiskUsage()
+{
+  CStdString strRet;
+  vector<CStdString> result;
+  ULARGE_INTEGER ULTotal= { { 0 } };
+  ULARGE_INTEGER ULTotalFree= { { 0 } };
+
+  char* pcBuffer= NULL;
+  DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
+  if( dwStrLength != 0 )
+  {
+    dwStrLength+= 1;
+    pcBuffer= new char [dwStrLength];
+    GetLogicalDriveStrings( dwStrLength, pcBuffer );
+    int iPos= 0;
+    do 
+    {
+      CStdString strDrive = pcBuffer + iPos;
+      if( DRIVE_FIXED == GetDriveType( strDrive.c_str()  ) &&
+        GetDiskFreeSpaceEx( ( strDrive.c_str() ), NULL, &ULTotal, &ULTotalFree ) )
+      {
+        strRet.Format("%s %d MB %s",strDrive.c_str(), int(ULTotalFree.QuadPart/(1024*1024)),g_localizeStrings.Get(160));
+        result.push_back(strRet);
+      }
+      iPos += (strlen( pcBuffer + iPos) + 1 );
+    }while( strlen( pcBuffer + iPos ) > 0 );
+  }
+  free( pcBuffer );
+  return result;
+}
