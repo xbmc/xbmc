@@ -2244,6 +2244,7 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
 
   CLog::Log(LOGDEBUG, "Deleted YV12 texture %i", index);
   /* finish up all textures, and delete them */
+  g_graphicsContext.BeginPaint();  //FIXME
   for(int f = 0;f<MAX_FIELDS;f++)
   {
     for(int p = 0;p<MAX_PLANES;p++)
@@ -2259,6 +2260,7 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
       }
     }
   }
+  g_graphicsContext.EndPaint();
 
   for(int p = 0;p<MAX_PLANES;p++)
   {
