@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mika Pirinen (1/2007->)-->
-<!--Date of translation: 14/8/2008  kommentit: kottis(at)gmail.com -->
-<!--Finnish strings based on English strings version 14870-->
+<!--Date of translation: 26/8/2008  kommentit: kottis(at)gmail.com -->
+<!--Finnish strings based on English strings version 15195-->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -719,7 +719,7 @@
   <string id="1204">Oletussalasana</string>
   
   <string id="1207">WINS-palvelin</string>
-  <string id="1208">Mounttaa SMB jaot</string>
+  <string id="1208">Mounttaa SMB-jaot</string>
 
   <string id="1210">Poista</string>
   <string id="1211">Musiikki</string>
@@ -1038,7 +1038,7 @@
   <string id="13280">Näyttö</string>
   <string id="13281">Laitteisto</string>
   <string id="13282">_</string>
-  <string id="13283">Kernel versio:</string>
+  <string id="13283">Käyttöjärjestelmä:</string>
   <string id="13284">Suorittimen nopeus:</string>
   <string id="13285">BIOS:</string>
   <string id="13286">Videoenkooderi:</string>
@@ -1266,7 +1266,7 @@
   <string id="15013"></string>
   <string id="15014"></string>
   <string id="15015"></string>
-  <string id="15016"></string>
+  <string id="15016">Pelit</string>
   <string id="15017"></string>
   <string id="15018"></string>
   <string id="15019">Lisää</string>
@@ -1302,7 +1302,7 @@
   <string id="15049"></string>
   <string id="15050"></string>
   <string id="15051"></string>
-  <string id="15052"></string>
+  <string id="15052">Salasana</string>
   <string id="15053"></string>
   <string id="15054"></string>
   <string id="15055"></string>
@@ -1573,7 +1573,7 @@
   <string id="20107">Omat(lukittu)</string>
   <string id="20108">Päähakemisto</string>
   <string id="20109">Skinin zoomaus</string>
-  <string id="20110">UPnP-asiakas</string>
+  <string id="20110">UPnP-asetukset</string>
   <string id="20111">Automaattinen käynnistys</string>
   <string id="20112">Viimeksi kirjautunut: %s</string>
   <string id="20113">Ei aiemmin kirjautunut</string>
@@ -1654,8 +1654,8 @@
   <string id="20189">Juonen ja esittelyn automaattinen vieritys käytössä</string>
   <string id="20190">Mukautus</string>
   <string id="20191">Suorituslokin kirjaus käytössä</string>
-  <string id="20192">Nouda esittäjän tiedot haettaessa</string>
-  <string id="20193">Nouda albumin tiedot haettaessa</string>
+  <string id="20192">Nouda albumin tiedot kirjastoon lisättäessä</string>
+  <string id="20193">Nouda esittäjän tiedot kirjastoon lisättäessä</string>
   <string id="20194">Oletus hakupaikka</string>
   <string id="20195">Vaihda hakupaikkaa</string>
   <string id="20196">Vie musiikkikirjasto</string>
@@ -1976,10 +1976,18 @@
   <string id="22004">Viivästetty: %2.3fs</string>
   <string id="22005">Aiennettu: %2.3fs</string>
   <string id="22006">Tekstityksen etäisyys</string>
+  <string id="22007">OpenGL valmistaja:</string>
+  <string id="22008">OpenGL renderoija:</string>
+  <string id="22009">OpenGL versio:</string>
+  <string id="22010">GPU lämpötila:</string>
+  <string id="22011">CPU lämpötila:</string>
+  <string id="22012">Kokonaismuisti</string>
+
+  <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code --> 
+  <string id="29800">Kirjastomuoto</string> 
+  <string id="29801">QWERTY-näppäimistö</string> 
 
   <string id="29999">Näytön välkynnän poisto</string>
-
-  <!-- strings 30000 thru 31000 reserved for plugin settings -->
-  <!-- strings 31000 thru 31999 reserved for skins -->
-
+  <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
+  
 </strings>
