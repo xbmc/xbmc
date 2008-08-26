@@ -49,6 +49,7 @@ public:
   static CStdString GetChangedDrive();
   static bool PowerManagement(PowerState State);
   static bool XBMCShellExecute(const CStdString &strPath, bool bWaitForScriptExit=false);
+  static std::vector<CStdString> GetDiskUsage();
 
 private:
   static DWORD dwDriveMask;
