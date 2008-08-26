@@ -77,11 +77,8 @@ namespace MathUtils
   // to assert in these functions
   inline int round_int (double x)
   {
-    if (x + std::numeric_limits<double>::epsilon() <= static_cast<double>(INT_MIN / 2) - 1.0 + std::numeric_limits<double>::epsilon())
-      return INT_MIN;
-    if (x + std::numeric_limits<double>::epsilon() >= static_cast <double>(INT_MAX / 2) + 1.0 + std::numeric_limits<double>::epsilon())
-      return INT_MIN;
-
+    assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
+    assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
     const float round_to_nearest = 0.5f;
     int i;
     
@@ -98,15 +95,12 @@ namespace MathUtils
     #ifdef __APPLE__
         i = floor(x + round_to_nearest);
     #else
-        __asm__ (
-    #ifndef __x86_64__
-            "fldl %1\n\t"
-    #endif
+        __asm__ __volatile__ (
             "fadd %%st\n\t"
             "fadd %%st(1)\n\t"
             "fistpl %0\n\t"
             "sarl $1, %0\n"
-            : "=m"(i) : "f"(x), "f"(round_to_nearest)
+            : "=m"(i) : "u"(round_to_nearest), "t"(x) : "st"
         );
     #endif
 #endif
@@ -115,10 +109,8 @@ namespace MathUtils
 
   inline int ceil_int (double x)
   {
-    if (x + std::numeric_limits<double>::epsilon() <= static_cast<double>(INT_MIN / 2) - 1.0 + std::numeric_limits<double>::epsilon())
-      return INT_MIN;
-    if (x + std::numeric_limits<double>::epsilon() >= static_cast <double>(INT_MAX / 2) + 1.0 + std::numeric_limits<double>::epsilon())
-      return INT_MIN;
+    assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
+    assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
 
     #ifndef __APPLE__
         const float round_towards_p_i = -0.5f;
@@ -138,15 +130,12 @@ namespace MathUtils
     #ifdef __APPLE__
         i = ceil(x);
     #else
-        __asm__ (
-    #ifndef __x86_64__
-            "fldl %1\n\t"
-    #endif
+        __asm__ __volatile__ (
             "fadd %%st\n\t"
             "fsubr %%st(1)\n\t"
             "fistpl %0\n\t"
             "sarl $1, %0\n"
-            : "=m"(i) : "f"(x), "f"(round_towards_p_i)
+            : "=m"(i) : "u"(round_towards_p_i), "t"(x) : "st"
         );
     #endif
 #endif
@@ -155,10 +144,8 @@ namespace MathUtils
  
   inline int truncate_int(double x)
   {
-    if (x + std::numeric_limits<double>::epsilon() <= static_cast<double>(INT_MIN / 2) - 1.0 + std::numeric_limits<double>::epsilon())
-      return INT_MIN;
-    if (x + std::numeric_limits<double>::epsilon() >= static_cast <double>(INT_MAX / 2) + 1.0 + std::numeric_limits<double>::epsilon())
-      return INT_MIN;
+    assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
+    assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
 
     #ifndef __APPLE__
         const float round_towards_m_i = -0.5f;
@@ -179,16 +166,13 @@ namespace MathUtils
     #ifdef __APPLE__
         i = (int)x;
     #else
-        __asm__ (
-    #ifndef __x86_64__
-            "fldl %1\n\t"
-    #endif
+        __asm__ __volatile__ (
             "fadd %%st\n\t"
             "fabs\n\t"
             "fadd %%st(1)\n\t"
             "fistpl %0\n\t"
             "sarl $1, %0\n"
-            : "=m"(i) : "f"(x), "f"(round_towards_m_i)
+            : "=m"(i) : "u"(round_towards_m_i), "t"(x) : "st"
         );
     #endif
 #endif
