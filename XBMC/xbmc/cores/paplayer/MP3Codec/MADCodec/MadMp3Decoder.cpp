@@ -1,6 +1,6 @@
 /****************************************************************************
 
-XboxMediaCenter MadMp3Decoder, September 2005 by chadoe
+XBMC Media Center MadMp3Decoder, September 2005 by chadoe
 
 Parts based on madxlib (c) 2005 J. A. Robson which was based on the madlld/madlldlib sources. Madlld comments have been
 preserved and noted.

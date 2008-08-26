@@ -10,10 +10,6 @@
 <!-- Where <name> specifies the action to map a sound to and <file> the wav -->
 <!-- file to play when the action occurs.                                   -->
 
-<!-- Valid entries for <name> can be found at                               -->
-<!-- http://manual.xboxmediacenter.de/wakka.php?wakka=KeyMappingXML&v=6gu   -->
-
-
 <!-- Also window specific sound can be played                               -->
 
 <!-- To map a sound to a window, add a block like this to <windows>:        -->
@@ -25,9 +21,6 @@
 <!-- Where <name> specifies the window to map a sound to                    -->
 <!-- <activate> and <deactivate> are the events a sound can be mapped to    -->
 <!-- by setting the file to play.                                           -->
-
-<!-- Valid entries for <name> can be found at                               -->
-<!-- http://manual.xboxmediacenter.de/wakka.php?wakka=WindowList&v=13k6     -->
 
 <!-- Note: Only wav files are supported                                     -->
 

@@ -1,5 +1,5 @@
 /*
-* XBoxMediaCenter
+* XBMC Media Center
 * Video Filter Classes
 * Copyright (c) 2007 d4rk
 *

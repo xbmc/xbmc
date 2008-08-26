@@ -1,5 +1,5 @@
 /*
-* XBoxMediaCenter
+* XBMC Media Center
 * Linux OpenGL Renderer for ATI cards
 * Copyright (c) 2007 Frodo/jcmarshall/vulkanr/d4rk
 *

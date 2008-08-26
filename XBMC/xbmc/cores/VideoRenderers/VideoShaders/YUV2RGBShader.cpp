@@ -1,5 +1,5 @@
 /*
-* XBoxMediaCenter
+* XBMC Media Center
 * Shader Classes
 * Copyright (c) 2007 d4rk
 *

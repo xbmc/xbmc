@@ -509,7 +509,7 @@
   <string id="606">מספר רצועה:</string>
   <string id="607">אל:</string>
   <string id="608">לא יכול להעתיק דיסק או רצועה</string>
-  <string id="609">XboxMediaCenter.xml אינו מוגדר ב CDDARipPath</string>
+  <string id="609">sources.xml אינו מוגדר ב CDDARipPath</string>
   <string id="610">העתק רצועת דיסק</string>
   <string id="611">הכנס מספר</string>
   <string id="620">העתקת דיסק</string>

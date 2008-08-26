@@ -30,7 +30,7 @@ www.gamedev.net/reference/programming/features/beatdetection/
 --
 
 "ported" to XBMC by d4rk
-d4rk@xboxmediacenter.com
+d4rk@xbmc.org
 
 */
 

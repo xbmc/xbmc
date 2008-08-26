@@ -1,5 +1,5 @@
 /*
-* XBoxMediaCenter
+* XBMC Media Center
 * UDP Event Server
 * Copyright (c) 2008 topfs2
 *
