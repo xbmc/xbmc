@@ -40,7 +40,6 @@ CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 }
 CGUIWindowSystemInfo::~CGUIWindowSystemInfo(void)
 {
-  m_diskUsage.clear();
 }
 bool CGUIWindowSystemInfo::OnAction(const CAction &action)
 {
@@ -57,13 +56,18 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
-      m_diskUsage.clear();
       CGUIWindow::OnMessage(message);
       SetLabelDummy();
       return true;
     }
     break;
   case GUI_MSG_WINDOW_DEINIT:
+    {
+      // call base class
+      CGUIWindow::OnMessage(message);
+      // clean up
+      m_diskUsage.clear();
+    }
     break;
   case GUI_MSG_CLICKED:
     {
