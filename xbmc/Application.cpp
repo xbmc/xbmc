@@ -2492,16 +2492,8 @@ bool CApplication::OnKey(CKey& key)
       { // see if we've got an ascii key
         if (g_Keyboard.GetUnicode())
         {
-#ifdef __APPLE__
-          // If not plain ASCII, use the button translator.
-          if (g_Keyboard.GetAscii() < 32 || g_Keyboard.GetAscii() > 126)
-            g_buttonTranslator.GetAction(iWin, key, action);
-          else
-#endif
-          {
-            action.wID = (WORD)g_Keyboard.GetAscii() | KEY_ASCII; // Only for backwards compatibility
-            action.unicode = g_Keyboard.GetUnicode();
-          }
+          action.wID = (WORD)g_Keyboard.GetAscii() | KEY_ASCII; // Only for backwards compatibility
+          action.unicode = g_Keyboard.GetUnicode();
         }
         else
         {
