@@ -105,7 +105,7 @@ MacPorts for a local dport repository:
 We will install the revision 34870 (version 3.0.28a). Edit /opt/local/etc/macports/sources.conf
  and add "file:///Users/Shared/dports" BEFORE "rsync.macports.org". Then:
 
-	$ sudo mkdir /Users/Shared/dport
+	$ sudo mkdir /Users/Shared/dports
 	$ cd /Users/Shared/dports
 	$ svn co --revision 34870 http://svn.macports.org/repository/macports/trunk/dports/net/samba3 net/samba3
 	$ sudo portindex /Users/Shared/dports
