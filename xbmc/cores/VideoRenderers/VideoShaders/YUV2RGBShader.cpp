@@ -403,6 +403,13 @@ YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned fla
   // (at least with OS X drivers in 10.5.2), doesn't allow for negation 
   // of constants, like "-c[0].y".
   //
+  // Thanks to Aras Pranckevicius for bringing this bug to light.
+  // Quoting him, in case the link dies:
+  // "In my experience, the X3100 drivers seem to ignore negate modifiers on
+  // constant registers in fragment (and possibly vertex) programs. It just
+  // seems someone forgot to implement that. (radar: 5632811)"
+  // - http://lists.apple.com/archives/mac-opengl/2008/Feb/msg00191.html
+
   if (flags & CONF_FLAGS_YUV_FULLRANGE)
   {
     source ="!!ARBfp1.0\n"
