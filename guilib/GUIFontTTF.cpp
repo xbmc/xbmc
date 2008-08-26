@@ -720,8 +720,10 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
     // the Begin(); End(); stuff is handled by whoever called us
     if (m_glTextureLoaded)
     {
+      g_graphicsContext.BeginPaint();  //FIXME
       if (glIsTexture(m_glTexture))
         glDeleteTextures(1, &m_glTexture);
+      g_graphicsContext.EndPaint();
       m_glTextureLoaded = false;
     }        
 #else
