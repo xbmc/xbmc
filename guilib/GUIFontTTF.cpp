@@ -122,7 +122,6 @@ public:
 
     unsigned int ydpi = GetDPI();
     unsigned int xdpi = (unsigned int)ROUND(ydpi * aspect);
-    assert(xdpi != (unsigned int)INT_MIN);
 
     // we set our screen res currently to 96dpi in both directions (windows default)
     // we cache our characters (for rendering speed) so it's probably
@@ -268,8 +267,6 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect
 
   unsigned int ydpi = g_freeTypeLibrary.GetDPI();
   unsigned int xdpi = (unsigned int)ROUND(ydpi * aspect);
-  assert(xdpi != (unsigned int)INT_MIN);
-
 
   m_cellWidth *= (unsigned int)(height * xdpi);
   m_cellWidth /= (72 * m_face->units_per_EM);
@@ -684,7 +681,6 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
   ch->right = ch->left + bitmap.width;
   ch->bottom = ch->top + bitmap.rows;
   ch->advance = ROUND( (float)m_face->glyph->advance.x / 64 );
-  assert(ch->advance != INT_MIN);
 
   // we need only render if we actually have some pixels
   if (bitmap.width * bitmap.rows)
@@ -876,10 +872,6 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
     x[1] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1));
     x[2] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2));
     x[3] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2));
-    assert(x[0] != INT_MIN);
-    assert(x[1] != INT_MIN);
-    assert(x[2] != INT_MIN);
-    assert(x[3] != INT_MIN);
   }
   else
   {
@@ -890,24 +882,16 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
   }
 
   float y1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
-  assert(y1 != INT_MIN);
   float z1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
-  assert(z1 != INT_MIN);
 
   float y2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
-  assert(y2 != INT_MIN);
   float z2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
-  assert(z2 != INT_MIN);
 
   float y3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
-  assert(y3 != INT_MIN);
   float z3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
-  assert(z3 != INT_MIN);
 
   float y4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
-  assert(y4 != INT_MIN);
   float z4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
-  assert(z4 != INT_MIN);
 
 #if !defined(HAS_SDL)
 struct CUSTOMVERTEX {
