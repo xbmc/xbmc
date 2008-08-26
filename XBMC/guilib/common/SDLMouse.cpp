@@ -21,6 +21,8 @@ bool CSDLMouse::Update(MouseState &state)
 {
   bool bMouseMoved(false);
   int x=0, y=0;
+  if (0 == (SDL_GetAppState() & SDL_APPMOUSEFOCUS))
+    return false;
   Uint8 mouseState = SDL_GetRelativeMouseState(&x, &y);
   state.dx = (char)x;
   state.dy = (char)y;
