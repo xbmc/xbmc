@@ -959,6 +959,7 @@ void CGraphicContext::CaptureStateBlock()
     glActiveTextureARB(GL_TEXTURE0_ARB);
   glDisable(GL_TEXTURE_2D);
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glColor3f(1.0, 1.0, 1.0);
 #endif
 }
 
