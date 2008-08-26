@@ -1,6 +1,6 @@
 /*
  *      Copyright (C) 2005-2008 Team XBMC
- *      http://www.xbmc.org
+ *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1177,7 +1177,7 @@ bool CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirecto
 
 bool CGUIWindowFileManager::CanRename(int iList)
 {
-  // TODO: Renaming of shares (requires writing to xboxmediacenter.xml)
+  // TODO: Renaming of shares (requires writing to sources.xml)
   // this might be able to be done via the webserver code stuff...
   if (m_Directory[iList]->IsVirtualDirectoryRoot()) return false;
   if (m_Directory[iList]->IsReadOnly()) return false;

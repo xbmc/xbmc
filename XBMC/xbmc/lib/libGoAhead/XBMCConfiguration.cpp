@@ -597,10 +597,6 @@ return -1;
 
 	if (pElement)
 	{
-		// if we have another child, this isn't an option like
-		// <xboxmediacenter>
-		//	<home>c:\</home>
-		// <xboxmediacenter>
 		if (pElement->FirstChild() && pElement->FirstChild()->FirstChild() == NULL)
 		{
 			char* value = (char*)pElement->FirstChild()->Value();
@@ -666,10 +662,6 @@ int CXbmcConfiguration::SetOption( int eid, webs_t wp, CStdString& response, int
 
 	if (pElement)
 	{
-		// if we have another child, this isn't an option like
-		// <xboxmediacenter>
-		//	<home>c:\</home>
-		// <xboxmediacenter>
 		if (pElement->FirstChild() && pElement->FirstChild()->FirstChild() == NULL)
 		{
 			pElement->FirstChild()->SetValue(value);
