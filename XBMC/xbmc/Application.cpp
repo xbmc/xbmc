@@ -1199,9 +1199,6 @@ CProfile* CApplication::InitDirectoriesWin32()
   CUtil::GetHomePath(strExecutablePath);
   SetEnvironmentVariable("XBMC_HOME", strExecutablePath.c_str());
 
-  CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
-  CIoSupport::RemapDriveLetter('U', _P("Q:"));
-
   if (m_bPlatformDirectories)
   {
     TCHAR szPath[MAX_PATH];
@@ -1214,6 +1211,9 @@ CProfile* CApplication::InitDirectoriesWin32()
     // create user/app data/XBMC
     CUtil::AddFileToFolder(strWin32UserFolder,"XBMC",strPath);
     CreateDirectory(strPath.c_str(), NULL);
+    // move log to platform dirs
+    g_stSettings.m_logFolder = strPath;
+    CUtil::AddSlashAtEnd(g_stSettings.m_logFolder);
     // create user/app data/XBMC/cache
     CUtil::AddFileToFolder(strPath,"cache",strPath);
     CreateDirectory(strPath.c_str(), NULL);
@@ -1230,12 +1230,16 @@ CProfile* CApplication::InitDirectoriesWin32()
   }
   else
   {
+    g_stSettings.m_logFolder = strExecutablePath;
     CUtil::AddFileToFolder(strExecutablePath,"cache",strPath);
     CIoSupport::RemapDriveLetter('Z',strPath.c_str());
     CreateDirectory(_P("Z:\\"), NULL);
     CUtil::AddFileToFolder(strExecutablePath,"UserData",strPath);
     CIoSupport::RemapDriveLetter('T',strPath.c_str());
   }
+
+  CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
+  CIoSupport::RemapDriveLetter('U', _P("Q:"));
 
   g_settings.m_vecProfiles.clear();
   g_settings.LoadProfiles(_P(PROFILES_FILE));
