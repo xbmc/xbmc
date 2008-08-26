@@ -112,7 +112,7 @@ void CLowLevelKeyboard::Update(SDL_Event& m_keyEvent)
       if (!m_VKey && !m_cAscii) // split block due to ms compiler complaints about nested code depth
       {
         // OSX defines unicode values for non-printing keys which breaks the key parser, set m_wUnicode
-        if (m_keyEvent.key.keysym.sym == SDLK_BACKSPACE) m_VKey = 0x08;    
+        if (m_keyEvent.key.keysym.sym == SDLK_BACKSPACE) { m_VKey = 0x08; m_wUnicode=0x08; }   
         else if (m_keyEvent.key.keysym.sym == SDLK_TAB) m_VKey = 0x09;
         else if (m_keyEvent.key.keysym.sym == SDLK_RETURN) m_VKey = 0x0d;
         else if (m_keyEvent.key.keysym.sym == SDLK_ESCAPE) m_VKey = 0x1b;
@@ -134,7 +134,7 @@ void CLowLevelKeyboard::Update(SDL_Event& m_keyEvent)
         else if (m_keyEvent.key.keysym.sym == SDLK_LEFT) { m_VKey = 0x25; m_wUnicode = 0; }
         else if (m_keyEvent.key.keysym.sym == SDLK_RIGHT) { m_VKey = 0x27; m_wUnicode = 0; }
         else if (m_keyEvent.key.keysym.sym == SDLK_INSERT) m_VKey = 0x2D;
-        else if (m_keyEvent.key.keysym.sym == SDLK_DELETE) m_VKey = 0x2E;
+        else if (m_keyEvent.key.keysym.sym == SDLK_DELETE) { m_VKey = 0x2E; m_wUnicode = 0; }
         else if (m_keyEvent.key.keysym.sym == SDLK_HOME) m_VKey = 0x24;
         else if (m_keyEvent.key.keysym.sym == SDLK_END) m_VKey = 0x23;
         else if (m_keyEvent.key.keysym.sym == SDLK_F1) m_VKey = 0x70;
