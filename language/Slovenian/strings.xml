@@ -7,10 +7,9 @@
   <string id="3">Video</string>
   <string id="4">TV Vodiè</string>
   <string id="5">Nastavitve</string>
-  <string id="6">Xbox Media Center SVN</string>
   <string id="7">Moje datoteke</string>
   <string id="8">Vreme</string>
-  <string id="9">Xbox Media Center</string>
+  <string id="9">XBMC Media Center</string>
  
   <string id="11">Ponedeljek</string>
   <string id="12">Torek</string>
@@ -513,7 +512,7 @@
   <string id="606">Številka posnetka:</string>
   <string id="607">Do:</string>
   <string id="608">Ne morem zripati CD-ja ali zapisa</string>
-  <string id="609">CDDAR IP pot ni nastavljena v XboxMediaCenter.xml</string>
+  <string id="609">CDDAR IP pot ni nastavljena v sources.xml</string>
   <string id="610">Ripaj Audio posnetek</string>
 
   <string id="620">CD Ripanje</string>

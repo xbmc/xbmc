@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Bobbin007 / sCAPe / Deezle / StompSC / Bootsy-->
-<!--Email: scape@xboxmediacenter.com-->
+<!--Email: scape@xbmc.org-->
 <!--Date of translation: 11/12/2007-->
 <!--$Revision$-->
 <!--Based on english strings version 10705-->
@@ -12,10 +12,9 @@
   <string id="3">Videos</string>
   <string id="4">TV-Programm</string>
   <string id="5">Einstellungen</string>
-  <string id="6">XBOX Media Center SVN</string>
   <string id="7">Dateimanager</string>
   <string id="8">Wetter</string>
-  <string id="9">xbox media center</string>
+  <string id="9">xbmc media center</string>
   <string id="11">Montag</string>
   <string id="12">Dienstag</string>
   <string id="13">Mittwoch</string>

@@ -1,7 +1,7 @@
 #pragma once
 
 /*
-* XBoxMediaPlayer
+* XBMC Media Center
 * Copyright (c) 2002 Frodo
 * Portions Copyright (c) by the authors of ffmpeg and xvid
 *

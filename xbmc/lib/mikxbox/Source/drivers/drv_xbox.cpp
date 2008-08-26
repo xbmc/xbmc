@@ -29,7 +29,7 @@ Driver for output on xbox platform using DirectSound
 /*
 
 XBOX Hardware mixing driver
-by _Butcher_@EFnet for XBMC (http://www.xboxmediacenter.com)
+by _Butcher_ for XBMC (http:/xbmc.org)
 
 This is (very) xbox specific!
 But on the other hand, it allows modules with 100+ channels to actually run on an xbox...

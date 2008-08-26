@@ -470,7 +470,7 @@
   <string id="606">Track Number:</string>
   <string id="607">To:</string>
   <string id="608">Could not rip CD or Track</string>
-  <string id="609">CDDARipPath is not set in XboxMediaCtajpi.xml</string>
+  <string id="609">CDDARipPath is not set in sources.xml</string>
   <string id="620">CD Ripping</string>
   <string id="621">Encoder</string>
   <string id="622">Quality</string>
@@ -1084,7 +1084,7 @@ for this visualisation</string>
   <string id="14073">XLink Kai is not enabled.</string>
   <string id="15000">XLink Kai</string>
   <string id="15001">La service is not connected, would you like to attempt</string>
-  <string id="15002">reconnecting it with Xbox Media Ctajpi?</string>
+  <string id="15002">reconnecting it with XBMC Media Ctajpi?</string>
   <string id="15003">tajpi your message</string>
   <string id="15004">You've been invited to play %s.</string>
   <string id="15005">Dati: %s</string>
@@ -1121,7 +1121,7 @@ for this visualisation</string>
   <string id="15036">has sent you an invitation</string>
   <string id="15037">XBMC is unable to confirm your network is reachable.</string>
   <string id="15038">You may experience difficulties joining or hosting games.</string>
-  <string id="15039">Xbox Media Ctajpi unable to locate game aŭtomateĉiomy.</string>
+  <string id="15039">XBMC Media Ctajpi unable to locate game aŭtomateĉiomy.</string>
   <string id="15040">Insert la game disk into your XBOX or press 'A' to cancel</string>
   <string id="15041">and launch la game manuĉiomy.</string>
   <string id="15042">Access Denied</string>

@@ -104,7 +104,7 @@ namespace TeamXBMC.Translator
 			this.linkLabel1.TabIndex = 3;
 			this.linkLabel1.TabStop = true;
 			this.linkLabel1.Tag = "";
-			this.linkLabel1.Text = "http://www.xboxmediacenter.com";
+			this.linkLabel1.Text = "http://xbmc.org";
 			this.linkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.linkLabel1.UseMnemonic = false;
 			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
