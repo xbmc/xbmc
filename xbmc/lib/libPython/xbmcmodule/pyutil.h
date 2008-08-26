@@ -29,7 +29,7 @@ extern "C" {
 #endif
 
 // credits and version information
-#define PY_XBMC_AUTHOR		"J. Mulder <darkie@xboxmediacenter.com>"
+#define PY_XBMC_AUTHOR		"J. Mulder <darkie@xbmc.org>"
 #define PY_XBMC_CREDITS		"XBMC TEAM."
 #define PY_XBMC_PLATFORM	"XBOX"
 

@@ -512,7 +512,7 @@
   <string id="606">Número da faixa:</string>
   <string id="607">Para:</string>
   <string id="608">Não foi possível extrair o CD ou faixa</string>
-  <string id="609">CDDARipPath não foi definido no XboxMediaCenter.xml</string>
+  <string id="609">CDDARipPath não foi definido no sources.xml</string>
   <string id="610">Extrair faixa de áudio</string>
 
   <string id="620">Extraindo CD</string>

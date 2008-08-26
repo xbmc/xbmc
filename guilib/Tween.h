@@ -27,7 +27,7 @@
 // A couple of tweening classes implemented in C++.
 // ref: http://www.robertpenner.com/easing/
 //
-// Author: d4rk <d4rk@xboxmediacenter.com>
+// Author: d4rk <d4rk@xbmc.org>
 ///////////////////////////////////////////////////////////////////////
 
 

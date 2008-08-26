@@ -454,7 +454,7 @@
   <string id="606">Nomor Trek:</string>
   <string id="607">Ke</string>
   <string id="608">Tidak dapat menyalin CD or Trek</string>
-  <string id="609">CDDARipPath tidak diatur di XboxMediaCenter.xml</string>
+  <string id="609">CDDARipPath tidak diatur di sources.xml</string>
   <string id="620">Ripping CD</string>
   <string id="621">Enkoder</string>
   <string id="622">Kualitas</string>

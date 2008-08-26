@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# XBoxMediaCenter
+# XBMC Media Center
 # J2ME Remote
 # Copyright (c) 2008 topfs2
 #

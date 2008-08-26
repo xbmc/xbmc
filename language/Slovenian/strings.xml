@@ -512,7 +512,7 @@
   <string id="606">Številka posnetka:</string>
   <string id="607">Do:</string>
   <string id="608">Ne morem zripati CD-ja ali zapisa</string>
-  <string id="609">CDDAR IP pot ni nastavljena v XboxMediaCenter.xml</string>
+  <string id="609">CDDAR IP pot ni nastavljena v sources.xml</string>
   <string id="610">Ripaj Audio posnetek</string>
 
   <string id="620">CD Ripanje</string>
