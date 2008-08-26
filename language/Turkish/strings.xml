@@ -475,7 +475,7 @@
   <string id="606">Şarkı Numarası:</string>
   <string id="607">Nereye:</string>
   <string id="608">CD veya şarkı kopyalanamıyor</string>
-  <string id="609">XboxMediaCenter.xml dosyasında kopyalanacak yol mevcut değil</string>
+  <string id="609">sources.xml dosyasında kopyalanacak yol mevcut değil</string>
   <string id="620">CD Kaydetme</string>
   <string id="621">Çevirici Codec</string>
   <string id="622">Kalite</string>

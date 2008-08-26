@@ -518,7 +518,7 @@
 <string id="606">Číslo stopy:</string>
 <string id="607">Do:</string>
 <string id="608">Stopu nebo CD nelze zkopírovat</string>
-<string id="609">V XboxMediaCenter.xml není nastavena složka pro ukládání kopií CD.</string>
+<string id="609">V sources.xml není nastavena složka pro ukládání kopií CD.</string>
 <string id="610">Zkopírovat audiostopu</string>
 
 <string id="620">Kopírování CD</string>

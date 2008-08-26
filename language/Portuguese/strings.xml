@@ -503,7 +503,7 @@
   <string id="606">Faixa Número:</string>
   <string id="607">Para:</string>
   <string id="608">Nao foi possível Gravar o CD ou Faixa</string>
-  <string id="609">CDDARipPath não está definido no XboxMediaCenter.xml</string>
+  <string id="609">CDDARipPath não está definido no sources.xml</string>
   <string id="610">Rip Faixa de Áudio</string>
   <string id="620">Gravação de áudio</string>
   <string id="621">Codificação</string>

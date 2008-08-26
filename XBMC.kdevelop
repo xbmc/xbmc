@@ -16,7 +16,7 @@
   </general>
   <kdevcustomproject>
     <run>
-      <mainprogram>/home/jcmarsha/XBMC/XboxMediaCenter</mainprogram>
+      <mainprogram>/home/jcmarsha/XBMC/XBMCMediaCenter</mainprogram>
       <directoryradio>executable</directoryradio>
       <programargs></programargs>
       <globaldebugarguments></globaldebugarguments>
