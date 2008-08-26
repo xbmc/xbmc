@@ -29,6 +29,9 @@
 #ifdef _LINUX
 #include "LinuxFileSystem.h"
 #endif
+#ifdef _WIN32PC
+#include "WIN32Util.h"
+#endif
 
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 :CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
@@ -37,6 +40,7 @@ CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 }
 CGUIWindowSystemInfo::~CGUIWindowSystemInfo(void)
 {
+  m_diskUsage.clear();
 }
 bool CGUIWindowSystemInfo::OnAction(const CAction &action)
 {
@@ -53,13 +57,13 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
+      m_diskUsage.clear();
       CGUIWindow::OnMessage(message);
       SetLabelDummy();
       return true;
     }
     break;
   case GUI_MSG_WINDOW_DEINIT:
-    m_diskUsage.empty();
     break;
   case GUI_MSG_CLICKED:
     {
@@ -93,29 +97,19 @@ void CGUIWindowSystemInfo::Render()
     SetLabelDummy();
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20155));
     int i = 2;
-#ifdef _WIN32PC
-    // for backward compatibility just show Free space info else would be to long...
-    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_C));
-    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_E));
-    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_F));
-    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_G));
-    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_X));
-    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_Y));
-    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_Z));
-    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_TOTAL_SPACE));
-    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_USED_SPACE_PERCENT));
-    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(SYSTEM_FREE_SPACE_PERCENT));
-#else
     if (m_diskUsage.size() == 0)
     {
+#ifdef _WIN32PC
+      m_diskUsage = CWIN32Util::GetDiskUsage();
+#else
       m_diskUsage = CLinuxFileSystem::GetDiskUsage();
+#endif
     }
 
     for (size_t d = 0; d < m_diskUsage.size(); d++)
     {
       SET_CONTROL_LABEL(i++, m_diskUsage[d]);
     }
-#endif
   }
   else if(iControl == CONTROL_BT_NETWORK)
   {
