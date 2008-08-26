@@ -73,7 +73,12 @@ CDetectDVDMedia::~CDetectDVDMedia()
 void CDetectDVDMedia::OnStartup()
 {
   // SetPriority( THREAD_PRIORITY_LOWEST );
+#ifdef _WIN32PC
+  // unfortunately win32 has still 0.72
+  CLog::Log(LOGDEBUG, "Compiled with libcdio Version 0.72");
+#else
   CLog::Log(LOGDEBUG, "Compiled with libcdio Version 0.%d", LIBCDIO_VERSION_NUM);
+#endif
 }
 
 void CDetectDVDMedia::Process()
