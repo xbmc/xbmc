@@ -59,7 +59,7 @@ CXBMC_PC::CXBMC_PC()
   m_dwWindowStyle = 0;
   m_dwCreationWidth = 720;
   m_dwCreationHeight = 576;
-  m_strWindowTitle = "XBoxMediaCenter PC Skin Preview";
+  m_strWindowTitle = "XBMC Media Center PC Skin Preview";
   m_active = false;
   m_focused = false;
   m_closing = false;
@@ -349,7 +349,7 @@ HRESULT CXBMC_PC::Create( HINSTANCE hInstance, LPSTR commandLine )
                           LoadIcon( hInstance, MAKEINTRESOURCE(IDI_MAIN_ICON) ),
                           LoadCursor( NULL, IDC_ARROW ),
                           (HBRUSH)GetStockObject(WHITE_BRUSH),
-                          NULL, _T("XBoxMediaCenterPC") };
+                          NULL, _T("XBMCMediaCenterPC") };
     RegisterClass( &wndClass );
     HMENU toolMenu;
     // Set the window's initial style
@@ -371,7 +371,7 @@ HRESULT CXBMC_PC::Create( HINSTANCE hInstance, LPSTR commandLine )
 
     // Create the render window
     //int foo  = rc.bottom-rc.top;
-    m_hWnd = CreateWindow(_T("XBoxMediaCenterPC"), m_strWindowTitle.c_str(), m_dwWindowStyle,
+    m_hWnd = CreateWindow(_T("XBMCMediaCenterPC"), m_strWindowTitle.c_str(), m_dwWindowStyle,
                             0, 0, (rc.right-rc.left), (rc.bottom-rc.top), 0L, toolMenu , hInstance, 0L );
   }
 
