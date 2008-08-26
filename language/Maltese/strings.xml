@@ -14,7 +14,7 @@
   <string id="5">Settings</string>
   <string id="7">Fajls</string>
   <string id="8">It-Temp</string>
-  <string id="9">xbox media center</string>
+  <string id="9">xbmc media center</string>
   <string id="11">It-Tnejn</string>
   <string id="12">It-Tlieta</string>
   <string id="13">L-Erbgħa</string>
@@ -1158,7 +1158,7 @@
   <string id="15036">bgħatlek invit</string>
   <string id="15037">XBMC ma jistax jikkonferma li mqabbad man-network.</string>
   <string id="15038">Jista jkollok xi problemi biex isservi jew tingħaqad ma logħob.</string>
-  <string id="15039">Xbox Media Center ma sabx il-logħba.</string>
+  <string id="15039">XBMC Media Center ma sabx il-logħba.</string>
   <string id="15040">Daħħal logħba fid-drive tal-XBOX jew għazel 'A' biex twaqqaf</string>
   <string id="15041">u ibda l-logħba inti.</string>
   <string id="15042">Aċċess miżmum</string>

@@ -1,6 +1,6 @@
 /*
  *      Copyright (C) 2005-2008 Team XBMC
- *      http://www.xbmc.org
+ *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -177,7 +177,7 @@ namespace PYXBMC
     "visible          : string - Visible condition.\n"
     "allowHiddenFocus : bool - True=gains focus even if hidden.\n"
     "\n"
-    "List of Conditions - http://www.xboxmediacenter.com/wiki/index.php?title=List_of_Boolean_Conditions \n"
+    "List of Conditions - http://xbmc.org/wiki/index.php?title=List_of_Boolean_Conditions \n"
     "\n"
     "example:\n"
     "  - self.button.setVisibleCondition('[Control.IsVisible(41) + !Control.IsVisible(12)]', True)\n");
@@ -207,7 +207,7 @@ namespace PYXBMC
     "\n"
     "enable           : string - Enable condition.\n"
     "\n"
-    "List of Conditions - http://www.xboxmediacenter.com/wiki/index.php?title=List_of_Boolean_Conditions \n"
+    "List of Conditions - http://xbmc.org/wiki/index.php?title=List_of_Boolean_Conditions \n"
     "\n"
     "example:\n"
     "  - self.button.setEnableCondition('System.InternetState')\n");

@@ -453,7 +453,7 @@
   <string id="606">Номер треку:</string>
   <string id="607">У:</string>
   <string id="608">Ріп компакт-диска чи треку неможливий</string>
-  <string id="609">Не зазначено значення (CDDARipPath) в XboxMediaCenter.xml</string>
+  <string id="609">Не зазначено значення (CDDARipPath) в sources.xml</string>
   <string id="620">Риппінг CD</string>
   <string id="621">Энкодер</string>
   <string id="622">Якість</string>
