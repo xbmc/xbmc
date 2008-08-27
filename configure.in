@@ -474,6 +474,14 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libfaad2], [
     --with-pic \
     --with-mp4v2
 ])
+XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/liba52], [
+  ./configure \
+  --with-pic \
+  --disable-oss \
+  --disable-solaris-audio \
+  --disable-win \
+  --disable-al-audio
+])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmad], [./configure --with-pic])
 XB_CONFIG_MODULE([xbmc/lib/cximage-6.0/zlib], [CFLAGS=-fPIC ./configure])
 XB_CONFIG_MODULE([xbmc/lib/libass], [CFLAGS=-fPIC ./configure])
