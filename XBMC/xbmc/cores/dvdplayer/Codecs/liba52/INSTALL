@@ -1,0 +1,58 @@
+Unix build instructions
+-----------------------
+
+./configure
+make
+make install
+
+If you install from CVS you'll have to run ./bootstrap first
+
+
+Building for win32
+------------------
+
+There are at least three ways to do it:
+
+- natively on Windows using Microsoft VC++ and the vc++ project
+  included in this distribution.
+
+- natively on Windows using MSYS + MINGW (www.mingw.org) (MSYS is a
+  minimal build environnement to compile unixish projects under
+  windows. It provides all the common unix tools like sh, gmake...)
+
+- or on Linux, using the mingw32 cross-compiler
+
+
+Building using MSYS + MINGW on windows
+--------------------------------------
+
+First you will need to download and install the latest MSYS (version
+1.0.7 as of now) and MINGW. The installation is really easy. Begin
+with the MSYS auto-installer and once this is done, extract MINGW into
+c:\msys\1.0\mingw. You also have to remember to remove the make
+utility included with MINGW as it conflicts with the one from MSYS
+(just rename or remove c:\msys\1.0\mingw\bin\make.exe).
+
+http://prdownloads.sourceforge.net/mingw/MSYS-1.0.7-i686-2002.04.24-1.exe
+http://prdownloads.sourceforge.net/mingw/MinGW-1.1.tar.gz
+
+Then you can build the package using:
+# ./configure
+# make
+
+
+Building using the mingw32 cross-compiler
+-----------------------------------------
+
+You need to install mingw32 first. For Debian GNU/Linux users, there
+is a mingw32 package. Otherwise you might get it from the mingw site
+at http://www.mingw.org/download.shtml.
+
+The videolan project also keeps precompiled mingw32 binaries at
+http://www.videolan.org/vlc/windows.html . If you install these,
+you'll have to set your PATH accordingly to include
+/usr/local/cross-tools/bin too.
+
+The build should then proceed using something like:
+# CC=i586-mingw32msvc-gcc ./configure --host=i586-mingw32msvc
+# make
