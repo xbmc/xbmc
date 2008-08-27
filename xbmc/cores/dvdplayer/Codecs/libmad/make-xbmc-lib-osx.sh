@@ -22,4 +22,6 @@ cd $XBMC_ROOT/tools/Mach5;./mach5.rb $XBMC_ROOT/xbmc/cores/dvdplayer/Codecs/libm
 
 rm $XBMC_ROOT/xbmc/cores/dvdplayer/Codecs/libmad/libmad-osx.so
 
+# distclean after making
+make distclean >/dev/null 2>&1
 

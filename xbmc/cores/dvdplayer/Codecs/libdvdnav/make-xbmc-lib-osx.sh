@@ -31,3 +31,10 @@ gcc -bundle -flat_namespace -undefined suppress -shared -fPIC \
 cd $XBMC_ROOT/tools/Mach5;./mach5.rb $XBMC_ROOT/xbmc/cores/dvdplayer/Codecs/libdvdnav/libdvdnav-osx.so;mv output.so $XBMC_ROOT/system/players/dvdplayer/libdvdnav-osx.so
 
 rm $XBMC_ROOT/xbmc/cores/dvdplayer/Codecs/libdvdnav/libdvdnav-osx.so
+
+# distclean after making
+cd $XBMC_ROOT/xbmc/cores/dvdplayer/Codecs/libDVDCSS/
+make distclean >/dev/null 2>&1
+cd $XBMC_ROOT/xbmc/cores/dvdplayer/Codecs/libdvdnav/
+make distclean >/dev/null 2>&1
+

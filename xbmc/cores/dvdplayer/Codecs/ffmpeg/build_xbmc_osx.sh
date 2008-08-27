@@ -61,6 +61,9 @@ ar rus postproc-51-osx.a libpostproc/*.o
 echo copying libs
 cp -v avcodec-51-osx.a avformat-51-osx.a avutil-51-osx.a swscale-51-osx.a postproc-51-osx.a "$XBMC_ROOT"/system/players/dvdplayer
 
+# distclean after making
+make distclean >/dev/null 2>&1 
+
 #cp libavcodec/avcodec.h ../../../ffmpeg/
 #cp libavformat/avformat.h ../../../ffmpeg/
 #cp libavformat/avio.h ../../../ffmpeg/
