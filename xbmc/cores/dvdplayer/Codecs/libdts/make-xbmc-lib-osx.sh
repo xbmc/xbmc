@@ -26,4 +26,6 @@ cd $XBMC_ROOT/tools/Mach5;./mach5.rb $XBMC_ROOT/xbmc/cores/dvdplayer/Codecs/libd
 
 rm $XBMC_ROOT/xbmc/cores/dvdplayer/Codecs/libdts/libdts-osx.so
 
+# distclean after making
+make distclean >/dev/null 2>&1 
 
