@@ -83,6 +83,37 @@ int Cocoa_GetDisplay(int screen)
   return( (int)displayArray[screen]);
 }
 
+CGDirectDisplayID Cocoa_GetDisplayFromScreen(NSScreen *screen)
+{
+  NSRect frame;
+  CGDirectDisplayID displays[1];
+  CGDisplayCount displayCount;
+
+  frame = [screen frame];
+
+  CGGetDisplaysWithRect(
+    (CGRect){NSMinX(frame), NSMinY(frame), NSWidth(frame), NSHeight(frame)},
+    1, displays, &displayCount);
+	
+  return displays[0];
+}
+
+int Cocoa_GetDisplayIndex(CGDirectDisplayID display)
+{
+  CGDirectDisplayID displayArray[MAX_DISPLAYS];
+  CGDisplayCount    numDisplays;
+
+  // Get the list of displays.
+  CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
+  while (numDisplays > 0)
+  {
+    if (display == displayArray[--numDisplays])
+	  return numDisplays;
+  }
+  return -1;
+  
+}
+
 void Cocoa_GetScreenResolutionOfAnotherScreen(int screen, int* w, int* h)
 {
   CFDictionaryRef mode = CGDisplayCurrentMode( (CGDirectDisplayID)Cocoa_GetDisplay(screen));
@@ -145,17 +176,18 @@ void Cocoa_GL_ResizeWindow(void *theContext, int w, int h)
 
 static NSOpenGLContext* lastOwnedContext = 0;
 
-void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool blankOtherDisplays)
+void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDisplays)
 {
   static NSView* lastView = NULL;
   static int fullScreenDisplay = 0;
   static NSScreen* lastScreen = NULL;
+  int screen;
 
   // If we're already fullscreen then we must be moving to a different display.
   // Recurse to reset fullscreen mode and then continue.
   //
   if (fs == true && lastScreen != NULL)
-	Cocoa_GL_SetFullScreen(0, 0, 0, false, blankOtherDisplays);
+	Cocoa_GL_SetFullScreen(0, 0, false, blankOtherDisplays);
   
   NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
   
@@ -169,6 +201,14 @@ void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool bla
     if (CGAcquireDisplayFadeReservation (5, &fade_token) == kCGErrorSuccess )
       CGDisplayFade(fade_token, 0.3, kCGDisplayBlendNormal, kCGDisplayBlendSolidColor, 0.0, 0.0, 0.0, TRUE);
     
+    // Save and make sure the view is on the screen that we're activating (to hide it).
+    lastView = [context view];
+    lastScreen = [[lastView window] screen];
+    screen = Cocoa_GetDisplayIndex(Cocoa_GetDisplayFromScreen(lastScreen));
+	
+    // hide the window
+    [[lastView window] setFrameOrigin:[lastScreen frame].origin];
+
     // obtain fullscreen pixel format
     NSOpenGLPixelFormat* pixFmt = (NSOpenGLPixelFormat*)Cocoa_GL_GetFullScreenPixelFormat(screen);
     if (!pixFmt)
@@ -183,12 +223,6 @@ void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool bla
     
     if (!newContext)
       return;
-    
-    // Save and make sure the view is on the screen that we're activating (to hide it).
-    lastView = [context view];
-    lastScreen = [[lastView window] screen];
-    NSScreen* pScreen = [[NSScreen screens] objectAtIndex:screen];
-    [[lastView window] setFrameOrigin:[pScreen frame].origin];
     
     // clear the current context
     [NSOpenGLContext clearCurrentContext];
