@@ -1263,23 +1263,29 @@ void CDVDPlayer::CheckContinuity(DemuxPacket* pPacket, unsigned int source)
   /* stream wrap back */
   if( pPacket->dts < mindts )
   {
+    CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - stream wrapback detected (%d)", source);
     /* if video player is rendering a stillframe, we need to make sure */
     /* audio has finished processing it's data otherwise it will be */
     /* displayed too early */
  
-    if (m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.dts != DVD_NOPTS_VALUE)
-      SyncronizePlayers(SYNCSOURCE_VIDEO);
-    else if (m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.dts != DVD_NOPTS_VALUE)
-      SyncronizePlayers(SYNCSOURCE_AUDIO);
+    if( pPacket->dts < mindts - DVD_MSEC_TO_TIME(100) )
+    {
+      CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - resyncing due to stream wrapback (%d)", source);
+      if (m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.dts != DVD_NOPTS_VALUE)
+        SyncronizePlayers(SYNCSOURCE_VIDEO);
+      else if (m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.dts != DVD_NOPTS_VALUE)
+        SyncronizePlayers(SYNCSOURCE_AUDIO);
 
-    m_CurrentAudio.inited = false;
-    m_CurrentVideo.inited = false;
-    m_CurrentSubtitle.inited = false;
+      m_CurrentAudio.inited = false;
+      m_CurrentVideo.inited = false;
+      m_CurrentSubtitle.inited = false;
+    }
   }
 
   /* stream jump forward */
   if( pPacket->dts > maxdts + DVD_MSEC_TO_TIME(1000) )
   {
+    CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - stream forward jump detected (%d)", source);
     /* normally don't need to sync players since video player will keep playing at normal fps */
     /* after a discontinuity */
     //SyncronizePlayers(dts, pts, MSGWAIT_ALL);
