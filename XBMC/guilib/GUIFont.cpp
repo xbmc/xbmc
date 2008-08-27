@@ -56,7 +56,7 @@ float CScrollInfo::GetPixelsPerFrame()
   // do an exponential moving average of the frame time
   m_averageFrameTime = m_averageFrameTime + (delta - m_averageFrameTime) * alphaEMA;
   // and multiply by pixel speed (per ms) to get number of pixels to move this frame
-  return pixelSpeed * m_averageFrameTime;
+  return ROUND(pixelSpeed * m_averageFrameTime);
 }
 
 CGUIFont::CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, DWORD shadowColor, float lineSpacing, CGUIFontTTF *font)
@@ -98,8 +98,8 @@ void CGUIFont::DrawText( float x, float y, const vector<DWORD> &colors, DWORD sh
     renderColors.push_back(g_graphicsContext.MergeAlpha(colors[i] ? colors[i] : m_textColor));
   if (!shadowColor) shadowColor = m_shadowColor;
   if (shadowColor)
-    m_font->DrawTextInternal(x , y , g_graphicsContext.MergeAlpha(shadowColor), text, alignment, maxPixelWidth);
-  m_font->DrawTextInternal( x, y, renderColors, text, alignment, maxPixelWidth );
+    m_font->DrawTextInternal(x + 1, y + 1, g_graphicsContext.MergeAlpha(shadowColor), text, alignment, maxPixelWidth, false);
+  m_font->DrawTextInternal( x, y, renderColors, text, alignment, maxPixelWidth, false);
 
   if (clip)
     g_graphicsContext.RestoreClipRegion();
@@ -141,7 +141,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const vector<DWORD> &colors, 
         scrollInfo.pixelPos += scrollAmount;  // within the current character
       else
       { // past the current character, decrement scrollAmount by the charWidth and move to the next character
-        while (scrollInfo.pixelPos + scrollAmount > charWidth)
+        while (scrollInfo.pixelPos + scrollAmount >= charWidth)
         {
           scrollAmount -= (charWidth - scrollInfo.pixelPos);
           scrollInfo.pixelPos = 0;
@@ -164,7 +164,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const vector<DWORD> &colors, 
         scrollInfo.pixelPos += scrollAmount;  // within the current character
       else
       { // past the current character, decrement scrollAmount by the charWidth and move to the next character
-        while (scrollInfo.pixelPos + scrollAmount > charWidth)
+        while (scrollInfo.pixelPos + scrollAmount >= charWidth)
         {
           scrollAmount -= (charWidth - scrollInfo.pixelPos);
           scrollInfo.pixelPos = 0;
@@ -203,10 +203,11 @@ void CGUIFont::DrawScrollingText(float x, float y, const vector<DWORD> &colors, 
   for (unsigned int i = 0; i < colors.size(); i++)
     renderColors.push_back(g_graphicsContext.MergeAlpha(colors[i] ? colors[i] : m_textColor));
 
+  bool scroll =  !scrollInfo.waitTime && scrollInfo.pixelSpeed;
   if (shadowColor)
-    m_font->DrawTextInternal(x - offset + 1, y + 1, g_graphicsContext.MergeAlpha(shadowColor), renderText, alignment, maxWidth + scrollInfo.pixelPos + m_font->GetLineHeight(2.0f));
+    m_font->DrawTextInternal(x - offset + 1, y + 1, g_graphicsContext.MergeAlpha(shadowColor), renderText, alignment, maxWidth + scrollInfo.pixelPos + m_font->GetLineHeight(2.0f), scroll);
 
-  m_font->DrawTextInternal(x - offset, y, renderColors, renderText, alignment, maxWidth + scrollInfo.pixelPos + m_font->GetLineHeight(2.0f));
+  m_font->DrawTextInternal(x - offset, y, renderColors, renderText, alignment, maxWidth + scrollInfo.pixelPos + m_font->GetLineHeight(2.0f), scroll);
 
   g_graphicsContext.RestoreClipRegion();
 }

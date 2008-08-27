@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mathijs Groothuis-->
 <!--Email: mathijs.groothuis@gmail.com-->
-<!--Date of translation: 07/22/2008-->
+<!--Date of translation: 08/17/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 14051-->
+<!--Based on english strings version 14736-->
 <strings>
   <string id="0">Programma's</string>
   <string id="1">Afbeeldingen</string>
@@ -14,7 +14,7 @@
   <string id="5">Instellingen</string>
   <string id="7">Bestandsbeheer</string>
   <string id="8">Weer</string>
-  <string id="9">Xbox Media Center</string>
+  <string id="9">XBMC Media Center</string>
   <string id="11">maandag</string>
   <string id="12">dinsdag</string>
   <string id="13">woensdag</string>
@@ -283,11 +283,11 @@
   <string id="360">Screensaver</string>
   <string id="361">Diavoorstelling</string>
   <string id="362">Screensaver doorzichtigheid</string>
-  <string id="363">Sorteer: Bestand</string>
+  <string id="363">Sorteer op: Bestand</string>
   <string id="364">- Versterker AC3 compatible</string>
-  <string id="365">Sorteer: Naam</string>
-  <string id="366">Sorteer: Jaar</string>
-  <string id="367">Sorteer: Waardering</string>
+  <string id="365">Sorteer op: Naam</string>
+  <string id="366">Sorteer op: Jaar</string>
+  <string id="367">Sorteer op: Waardering</string>
   <string id="368">IMDb</string>
   <string id="369">Titel</string>
   <string id="370">Onweer</string>
@@ -347,7 +347,7 @@
   <string id="427">Disk:</string>
   <string id="428">Voer de juiste CD/DVD in</string>
   <string id="429">Voer de volgende CD/DVD in</string>
-  <string id="430">Sorteer: DVD#</string>
+  <string id="430">Sorteer op: DVD#</string>
   <string id="431">Data niet bufferen</string>
   <string id="432">Verwijder film uit database</string>
   <string id="433">Weet u zeker dat u '%s' wilt verwijderen?</string>
@@ -410,7 +410,7 @@
   <string id="495">Video naar GUI resolutie upsamplen</string>
   <string id="496">Kalibratie</string>
   <string id="497">Extenties mediabestanden verbergen</string>
-  <string id="498">Sorteer:Type</string>
+  <string id="498">Sorteer op:Type</string>
   <string id="499">Kan geen verbinding maken met allmusic.com</string>
   <string id="500">Albuminfo downloaden mislukt</string>
   <string id="501">Zoeken naar albumnamen...</string>
@@ -418,7 +418,7 @@
   <string id="503">Bezig</string>
   <string id="504">Leeg</string>
   <string id="505">Media-info van bestanden inlezen...</string>
-  <string id="507">Sorteer: Gebruik</string>
+  <string id="507">Sorteer op: Gebruik</string>
   <string id="510">Visualisaties weergeven</string>
   <string id="511">Automatisch videoweergave aanpassen aan regiocode</string>
   <string id="512">Opstartscherm</string>
@@ -456,7 +456,7 @@
   <string id="544">Media-info</string>
   <string id="545">Geluidsuitvoerapparaat</string>
   <string id="547">Geen biografie beschikbaar voor artiest</string>
-  <string id="550">Sorteer: %s</string>
+  <string id="550">Sorteer op: %s</string>
   <string id="551">Naam</string>
   <string id="552">Datum</string>
   <string id="553">Grootte</string>
@@ -623,6 +623,7 @@
   <string id="790">Gebeurtenissen op afstand</string>
   <string id="791">Activeer gebeurtenissen op afstand</string>
   <string id="792">Gebeurtenissen op afstand-poort</string>
+  <string id="793">Gebeurtenissen op afstand poortbereik</string>
   <string id="794">Ontvang gebeurtenissen van andere computers</string>
   <string id="795">Initiële Herhalingsvertraging (ms)</string>
   <string id="797">Maximaal aantal clients</string>
@@ -732,6 +733,8 @@
   <string id="1412">winderig</string>
   <string id="1413">miezeren</string>
   <string id="1414">Onweerstormen</string>
+  <string id="1415">Motregen</string>
+  <string id="1416">Mistig</string>
   <string id="2050">Speelduur:</string>
   <string id="4501">LCD-type</string>
   <string id="10000">Home</string>
@@ -759,6 +762,11 @@
   <string id="10034">Instellingen-&gt;Profielen</string>
   <string id="10100">Ja/Nee</string>
   <string id="10101">Voortgang</string>
+  <string id="10210">Zoeken naar ondertitels...</string>
+  <string id="10211">Ondertitels cachen...</string>
+  <string id="10212">Bezig met afsluiten</string>
+  <string id="10213">Bufferen</string>
+  <string id="10214">Bezig met het openen van stream</string>
   <string id="10500">Muziek/Afspeellijst</string>
   <string id="10501">Muziek/Bestanden</string>
   <string id="10502">Muziek/Bibliotheek</string>
@@ -1044,6 +1052,7 @@ voor deze visualisatie</string>
   <string id="13409">Top 250:</string>
   <string id="13410">Beluister het op Last.FM</string>
   <string id="13411">Minimale ventilatorsnelheid</string>
+  <string id="13412">RSS-feeds bevatten Links naar rechts-tekst</string>
   <string id="14000">Groeperen</string>
   <string id="14001">Groeperen: Uit</string>
   <string id="14003">Afspeellijst downloaden...</string>
@@ -1095,7 +1104,7 @@ voor deze visualisatie</string>
   <string id="14051">Tijdnotatie</string>
   <string id="14052">Datumnotatie</string>
   <string id="14053">GUI filters</string>
-  <string id="14054">Informatie van het internet halen</string>
+  <string id="14054">Informatie van Internet halen</string>
   <string id="14055">Gebruik scannen op achtergrond</string>
   <string id="14056">Scan stoppen</string>
   <string id="14057">Niet mogelijk tijdens scannen naar media info</string>
@@ -1291,6 +1300,7 @@ voor deze visualisatie</string>
   <string id="16025">Geef de artiest op</string>
   <string id="16026">Playlist afspelen afgebroken</string>
   <string id="16027">Teveel onderbroken punten</string>
+  <string id="16028">Voer waarde in</string>
   <string id="16030">Feestmodus afgebroken.</string>
   <string id="16031">Geen overeenkomstige nummers in database.</string>
   <string id="16032">Kon database niet initialiseren.</string>
@@ -1325,11 +1335,11 @@ voor deze visualisatie</string>
   <string id="20007">Opnames</string>
   <string id="20008">Screenshots</string>
   <string id="20009">Gebruik XBMC</string>
-  <string id="20011">Muziekafspeellijst</string>
-  <string id="20012">Video-afspeellijst</string>
+  <string id="20011">Muziekafspeellijsten</string>
+  <string id="20012">Video-afspeellijsten</string>
   <string id="20013">Wilt u het spel starten?</string>
-  <string id="20014">Sorteer: Afspeellijst</string>
-  <string id="20015">Internet afbeelding</string>
+  <string id="20014">Sorteer op: Afspeellijst</string>
+  <string id="20015">Internetafbeelding</string>
   <string id="20016">Huidige afbeelding</string>
   <string id="20017">Lokale afbeelding</string>
   <string id="20018">Geen afbeelding</string>
@@ -1485,6 +1495,7 @@ voor deze visualisatie</string>
   <string id="20182">Spatie</string>
   <string id="20183">Skin herladen</string>
   <string id="20184">Draaien m.b.v. EXIF-informatie</string>
+  <string id="20185">Gebruik Poster-stijl voor TV-shows</string>
   <string id="20186">Even geduld</string>
   <string id="20187">Bezig met het backuppen van het EEPROM</string>
   <string id="20188">Bezig met het backuppen van het BIOS</string>
@@ -1561,14 +1572,14 @@ voor deze visualisatie</string>
   <string id="20362">Verwijder aflevering uit bibiotheek</string>
   <string id="20363">Verwijder TV-serie uit bibiotheek</string>
   <string id="20364">TV-serie</string>
-  <string id="20365">Aflevering plot</string>
+  <string id="20365">Afleveringsplot</string>
   <string id="20366">* Alle seizoenen</string>
   <string id="20367">Verberg bekeken</string>
   <string id="20368">Productiecode</string>
   <string id="20369">Plot van niet-bekeken films verbergen</string>
   <string id="20370">* Verborgen om plot niet te verklappen *</string>
   <string id="20371">Afbeelding seizoen selecteren</string>
-  <string id="20372">Seizoen Afbeelding</string>
+  <string id="20372">Afbeelding van Seizoen</string>
   <string id="20373">Seizoen</string>
   <string id="20374">Ophalen van Video-informatie</string>
   <string id="20375">Inhoud ontkoppelen</string>
@@ -1598,7 +1609,7 @@ voor deze visualisatie</string>
   <string id="20399">Muziekvideo's van dit album</string>
   <string id="20400">Muziekvideo's van deze artiest</string>
   <string id="20401">Muziekvideo afspelen</string>
-  <string id="20402">Automatisch thumbnails van acteurs laden</string>
+  <string id="20402">Automatisch afbeeldingen van acteurs laden</string>
   <string id="20403">Acteursafbeelding instellen</string>
   <string id="20404">Studio:</string>
   <string id="20405">Aflevering uit favorieten verwijderen</string>
@@ -1612,6 +1623,15 @@ voor deze visualisatie</string>
   <string id="20413">Haal Fanart op</string>
   <string id="20414">Laat Fanart zien in videobibliotheek</string>
   <string id="20415">Bezig met scannen naar nieuwe inhoud</string>
+  <string id="20416">Eerste keer uitgezonden</string>
+  <string id="20417">Schrijver</string>
+  <string id="20418">Bestandsnamen opschonen</string>
+  <string id="20419">Klap dubbele TV-shows in</string>
+  <string id="20420">Nooit</string>
+  <string id="20421">Als het een enkel seizoen betreft</string>
+  <string id="20422">Altijd</string>
+  <string id="20423">Trailer</string>
+  <string id="20424">Onwaar</string>
   <string id="21330">Verborgen bestanden en mappen weergeven</string>
   <string id="21331">TuxBox-client</string>
   <string id="21332">WAARSCHUWING: TuxBox-apparaat is aan het opnemen.</string>
@@ -1695,6 +1715,8 @@ voor deze visualisatie</string>
   <string id="21437">Nieuwe samengestelde afspeellijst...</string>
   <string id="21438">%c schijf</string>
   <string id="21439">Feestmodus instellen</string>
+  <string id="21441">Aantal keer bekeken</string>
+  <string id="21442">Episodetitel</string>
   <string id="21800">Bestandsnaam</string>
   <string id="21801">Pad</string>
   <string id="21802">Bestandsgrootte</string>
@@ -1772,5 +1794,6 @@ voor deze visualisatie</string>
   <string id="22000">Bibliotheek updaten bij het opstarten</string>
   <string id="22001">Bibliotheek continu op de achtergrond updaten</string>
   <string id="22002">- DNS Suffix</string>
+  <string id="22003">Activeer Bewerk en Besluiten-lijst</string>
   <string id="29999">Flikkerfilter toepassen op spellen</string>
 </strings>

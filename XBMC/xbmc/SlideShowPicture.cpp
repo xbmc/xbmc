@@ -332,6 +332,12 @@ void CSlideShowPic::Pause(bool bPause)
     m_bPause = bPause;
 }
 
+void CSlideShowPic::SetInSlideshow(bool slideshow)
+{
+  if (slideshow && m_displayEffect == EFFECT_NO_TIMEOUT)
+    m_displayEffect = EFFECT_NONE;
+}
+
 int CSlideShowPic::GetTransistionTime(int iType) const
 {
   if (iType == 0) // start transistion

@@ -46,7 +46,7 @@ bool CButtonTranslator::Load()
 
   // Load the config file
   CStdString keymapPath;
-  bool success;
+  bool success = false;
 
   keymapPath = "Q:\\system\\Keymap.xml";
   if(CFile::Exists(keymapPath))

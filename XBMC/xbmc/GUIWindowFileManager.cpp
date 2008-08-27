@@ -1,6 +1,6 @@
 /*
  *      Copyright (C) 2005-2008 Team XBMC
- *      http://www.xbmc.org
+ *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -197,7 +197,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
           {
             int iItem = GetSelectedItem(i);
             Update(i, m_Directory[i]->m_strPath);
-            CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem)
+            CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem);
           }
           else if (m_Directory[i]->IsRemovable() && !m_rootDir.IsInSource(m_Directory[i]->m_strPath))
           { //
@@ -217,7 +217,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
           {
             int iItem = GetSelectedItem(i);
             Update(i, m_Directory[i]->m_strPath);
-            CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem)
+            CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem);
           }
         }
         return true;
@@ -621,7 +621,7 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( CStdString& strPath, int iDriv
       int iList = GetFocusedList();
       int iItem = GetSelectedItem(iList);
       Update(iList, "");
-      CONTROL_SELECT_ITEM(iList + CONTROL_LEFT_LIST, iItem)
+      CONTROL_SELECT_ITEM(iList + CONTROL_LEFT_LIST, iItem);
       return false;
     }
   }
@@ -1177,7 +1177,7 @@ bool CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirecto
 
 bool CGUIWindowFileManager::CanRename(int iList)
 {
-  // TODO: Renaming of shares (requires writing to xboxmediacenter.xml)
+  // TODO: Renaming of shares (requires writing to sources.xml)
   // this might be able to be done via the webserver code stuff...
   if (m_Directory[iList]->IsVirtualDirectoryRoot()) return false;
   if (m_Directory[iList]->IsReadOnly()) return false;

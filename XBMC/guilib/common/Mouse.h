@@ -59,6 +59,7 @@ public:
   void Acquire();
   void SetResolution(int maxX, int maxY, float speedX, float speedY);
   bool IsActive() const;
+  bool IsEnabled() const;
   bool HasMoved() const;
   void SetInactive();
   void SetExclusiveAccess(DWORD dwControlID, DWORD dwWindowID, const CPoint &point);

@@ -12,7 +12,6 @@
   <string id="3">Video</string>
   <string id="4">Panduan TV</string>
   <string id="5">Setelan</string>
-  <string id="6">Xbox Media Center CVS</string>
   <string id="7">File</string>
   <string id="8">Cuaca</string>
   <string id="11">Senin</string>
@@ -455,7 +454,7 @@
   <string id="606">Nomor Trek:</string>
   <string id="607">Ke</string>
   <string id="608">Tidak dapat menyalin CD or Trek</string>
-  <string id="609">CDDARipPath tidak diatur di XboxMediaCenter.xml</string>
+  <string id="609">CDDARipPath tidak diatur di sources.xml</string>
   <string id="620">Ripping CD</string>
   <string id="621">Enkoder</string>
   <string id="622">Kualitas</string>
@@ -1029,7 +1028,7 @@ utk visualisasi ini</string>
   <string id="14073">XLink Kai tidak aktif.</string>
   <string id="15000">XLink Kai</string>
   <string id="15001">Servis tidak tersambung, anda mau mencobanya</string>
-  <string id="15002">menyambungkan dengan Xbox Media Center?</string>
+  <string id="15002">menyambungkan dengan XBMC Media Center?</string>
   <string id="15003">Masukkan pesan anda</string>
   <string id="15004">Anda diundang untuk main %s.</string>
   <string id="15005">Tanggal: %s</string>
@@ -1066,7 +1065,7 @@ utk visualisasi ini</string>
   <string id="15036">telah mengirim Anda undangan</string>
   <string id="15037">XBMC tidak mampu mengkonfirmasi jaringan Anda telah tersambungkan.</string>
   <string id="15038">Anda mungkin mengalami kesulitan bergabung atau hosting permainan.</string>
-  <string id="15039">Xbox Media Center tidak dapat menemukan permainan secara otomatis.</string>
+  <string id="15039">XBMC Media Center tidak dapat menemukan permainan secara otomatis.</string>
   <string id="15040">Masukkan disk permainan ke dalam XBOX atau tekan 'A' utk membatalkan</string>
   <string id="15041">dan jalankan permainan secara manual.</string>
   <string id="15042">Akses Ditolak</string>

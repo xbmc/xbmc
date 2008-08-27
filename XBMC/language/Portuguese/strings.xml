@@ -11,7 +11,6 @@
   <string id="3">Vídeos</string>
   <string id="4">Guia da TV</string>
   <string id="5">Configurar</string>
-  <string id="6">Xbox Media Center SVN</string>
   <string id="7">Ficheiros</string>
   <string id="8">Meteorologia</string>
   <string id="11">Segunda</string>
@@ -504,7 +503,7 @@
   <string id="606">Faixa Número:</string>
   <string id="607">Para:</string>
   <string id="608">Nao foi possível Gravar o CD ou Faixa</string>
-  <string id="609">CDDARipPath não está definido no XboxMediaCenter.xml</string>
+  <string id="609">CDDARipPath não está definido no sources.xml</string>
   <string id="610">Rip Faixa de Áudio</string>
   <string id="620">Gravação de áudio</string>
   <string id="621">Codificação</string>

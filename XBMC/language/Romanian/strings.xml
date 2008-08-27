@@ -445,7 +445,7 @@
   <string id="606">Pista numarul:</string>
   <string id="607">La:</string>
   <string id="608">Nu se poate copia CD sau Pista</string>
-  <string id="609">CDDARipPath nu este setat in XboxMediaCenter.xml</string>
+  <string id="609">CDDARipPath nu este setat in sources.xml</string>
   <string id="620">Copiere CD</string>
   <string id="621">Encoder</string>
   <string id="622">Calitate</string>

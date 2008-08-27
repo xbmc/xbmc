@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -20,14 +18,18 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#pragma once
 
-#include "GUIWindow.h"
+#include "StdString.h"
 
-class CGUIWindowStartup :
-      public CGUIWindow
+class CFileItem;
+class CDVDFileInfo
 {
 public:
-  CGUIWindowStartup(void);
-  virtual ~CGUIWindowStartup(void);
-  virtual bool OnMouseAction() { return true; }; // dummy implementation that ignores mouse on startup
+  static bool ExtractThumb(const CStdString &strPath, const CStdString &strTarget);
+  
+  // GetFileMetaData will fill pItem's properties according to what can be extracted from the file.
+  static void GetFileMetaData(const CStdString &strPath, CFileItem *pItem); 
+
+  static bool GetFileDuration(const CStdString &path, int &duration);
 };

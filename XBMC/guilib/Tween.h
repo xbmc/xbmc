@@ -3,7 +3,7 @@
 
 /*
  *      Copyright (C) 2005-2008 Team XBMC
- *      http://www.xbmc.org
+ *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 // A couple of tweening classes implemented in C++.
 // ref: http://www.robertpenner.com/easing/
 //
-// Author: d4rk <d4rk@xboxmediacenter.com>
+// Author: d4rk <d4rk@xbmc.org>
 ///////////////////////////////////////////////////////////////////////
 
 

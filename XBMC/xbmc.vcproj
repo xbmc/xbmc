@@ -881,6 +881,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\Edl.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\utils\EPG.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\EPG.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\utils\EPGInfoTag.cpp">
 				</File>
 				<File
@@ -939,6 +945,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\InfoLoader.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\IPVRClient.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\KeyboardLayoutConfiguration.cpp">
@@ -1014,6 +1023,18 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\Profile.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\PVRClient-mythtv.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\PVRClient-mythtv.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\PVRManager.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\PVRManager.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\RegExp.cpp">
@@ -1394,6 +1415,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIWindowEPG.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIWindowEPGProgInfo.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowEPGProgInfo.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowFileManager.cpp">
 				</File>
 				<File
@@ -1712,6 +1739,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\FileSystem\MultiPathDirectory.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MultiPathFile.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\MultiPathFile.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory.cpp">
@@ -3294,6 +3327,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxSPU.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDFileInfo.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDFileInfo.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\dvdplayer\DVDMessage.cpp">

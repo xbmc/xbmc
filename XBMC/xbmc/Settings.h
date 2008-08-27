@@ -1,7 +1,7 @@
 #pragma once
 /*
  *      Copyright (C) 2005-2008 Team XBMC
- *      http://www.xbmc.org
+ *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -216,6 +216,7 @@ public:
 
     int m_curlclienttimeout;
     int m_playlistRetries;
+    int m_playlistTimeout;
   };
   struct stSettings
   {
@@ -358,6 +359,11 @@ public:
   bool SaveSources();
 
 protected:
+  // these 3 don't have a default - used for advancedsettings.xml
+  bool GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iMin, const int iMax);
+  bool GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fMin, const float fMax);
+  bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue);
+
   bool GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
   bool GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
   bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue, const CStdString& strDefaultValue);

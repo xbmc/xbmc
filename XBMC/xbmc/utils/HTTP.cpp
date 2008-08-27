@@ -912,6 +912,10 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
     bool CanHandle = false;
     switch (status)
     {
+    case 301:
+      // 301 Moved Permanently - auto redirect if this is a GET
+      CanHandle = true;
+      break;
     case 302:
       // 302 Found - auto redirect if this is a GET
       //Post redirect has to work for scrapers
@@ -935,7 +939,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
     // you don't want to follow redirects etc.
     if (!CanHandle || !stricmp(verb, "HEAD"))
     {
-      CLog::Log(LOGERROR, "Server returned: %d %s", status, strReason.c_str());
+      CLog::Log(LOGINFO, "Not Following Redirect - Server returned: %d %s", status, strReason.c_str());
       return status; // unhandlable
     }
 

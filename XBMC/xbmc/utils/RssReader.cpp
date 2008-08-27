@@ -1,6 +1,6 @@
 /*
  *      Copyright (C) 2005-2008 Team XBMC
- *      http://www.xbmc.org
+ *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -48,6 +48,8 @@ CRssReader::CRssReader() : CThread()
 
 CRssReader::~CRssReader()
 {
+  if (m_pObserver)
+    m_pObserver->OnFeedRelease();
   StopThread();
   for (unsigned int i = 0; i < m_vecTimeStamps.size(); i++)
     delete m_vecTimeStamps[i];
@@ -291,7 +293,10 @@ void CRssReader::fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDe
   CStdString strSourceUtf8;
 
   g_charsetConverter.stringCharsetToUtf8(m_encoding, strSource, strSourceUtf8);
-  g_charsetConverter.logicalToVisualBiDi(strSourceUtf8, flippedStrSource, FRIBIDI_CHAR_SET_UTF8, FRIBIDI_TYPE_RTL);
+  if (m_rtlText)
+    g_charsetConverter.logicalToVisualBiDi(strSourceUtf8, flippedStrSource, FRIBIDI_CHAR_SET_UTF8, FRIBIDI_TYPE_RTL);
+  else
+    flippedStrSource = strSourceUtf8;
   g_charsetConverter.utf8ToW(flippedStrSource, strDest, false);
 }
 

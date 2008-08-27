@@ -58,6 +58,7 @@ CGUIDialogFileBrowser::CGUIDialogFileBrowser()
   m_Directory->m_bIsFolder = true;
   m_browsingForFolders = 0;
   m_browsingForImages = false;
+  m_useFileDirectories = false;
   m_addNetworkShareEnabled = false;
   m_singleList = false;
   m_thumbLoader.SetObserver(this);
@@ -404,7 +405,7 @@ void CGUIDialogFileBrowser::Render()
       url.GetURLWithoutUserDetails(safePath);
       SET_CONTROL_LABEL(CONTROL_LABEL_PATH, safePath);
     }
-    if ((!m_browsingForFolders && (*m_vecItems)[item]->m_bIsFolder) || m_viewControl.GetCurrentControl() == CONTROL_THUMBS)
+    if ((!m_browsingForFolders && (*m_vecItems)[item]->m_bIsFolder) || ((*m_vecItems)[item]->m_strPath == "image://Browse"))
     {
       CONTROL_DISABLE(CONTROL_OK);
     }

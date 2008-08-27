@@ -458,7 +458,7 @@
   <string id="606">트랙 번호:</string>
   <string id="607">대상:</string>
   <string id="608">시디나 트랙을 추출 할수 없습니다</string>
-  <string id="609">XboxMediaCenter.xml에 CDDARipPath가 설정되지 않았습니다</string>
+  <string id="609">sources.xml에 CDDARipPath가 설정되지 않았습니다</string>
   <string id="620">시디 추출</string>
   <string id="621">인코더</string>
   <string id="622">음질</string>

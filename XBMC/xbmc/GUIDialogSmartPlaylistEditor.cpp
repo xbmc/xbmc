@@ -248,27 +248,27 @@ void CGUIDialogSmartPlaylistEditor::OnOrderDirection()
 
 void CGUIDialogSmartPlaylistEditor::UpdateButtons()
 {
-  CONTROL_ENABLE(CONTROL_OK) // always enabled since we can have no rules -> match everything (as we do with default partymode playlists)
+  CONTROL_ENABLE(CONTROL_OK); // always enabled since we can have no rules -> match everything (as we do with default partymode playlists)
 
   if (m_playlist.m_playlistRules.size() <= 1)
   {
-    CONTROL_DISABLE(CONTROL_RULE_REMOVE)
-    CONTROL_DISABLE(CONTROL_MATCH)
+    CONTROL_DISABLE(CONTROL_RULE_REMOVE);
+    CONTROL_DISABLE(CONTROL_MATCH);
   }
   else
   {
-    CONTROL_ENABLE(CONTROL_RULE_REMOVE)
-    CONTROL_ENABLE(CONTROL_MATCH)
+    CONTROL_ENABLE(CONTROL_RULE_REMOVE);
+    CONTROL_ENABLE(CONTROL_MATCH);
   }
   // name
   if (m_mode == "partyvideo" || m_mode == "partymusic")
   {
-    SET_CONTROL_LABEL2(CONTROL_NAME, g_localizeStrings.Get(16035))
-    CONTROL_DISABLE(CONTROL_NAME)
+    SET_CONTROL_LABEL2(CONTROL_NAME, g_localizeStrings.Get(16035));
+    CONTROL_DISABLE(CONTROL_NAME);
   }
   else
   {
-  SET_CONTROL_LABEL2(CONTROL_NAME, m_playlist.m_playlistName)
+  SET_CONTROL_LABEL2(CONTROL_NAME, m_playlist.m_playlistName);
   }
 
   int currentItem = GetSelectedItem();

@@ -35,6 +35,7 @@ CGUIDialog::CGUIDialog(DWORD dwID, const CStdString &xmlFile)
   m_bRunning = false;
   m_dialogClosing = false;
   m_renderOrder = 1;
+  m_autoClosing = false;
 }
 
 CGUIDialog::~CGUIDialog(void)
@@ -93,12 +94,14 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
         m_gWindowManager.RemoveDialog(GetID());
         m_bRunning = false;
         m_dialogClosing = false;
+        m_autoClosing = false;
       }
       return true;
     }
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
+      m_showStartTime = timeGetTime();
       return true;
     }
   }
@@ -172,7 +175,10 @@ void CGUIDialog::DoModalThreadSafe()
 {
   // we make sure we're threadsafe by sending via the application messenger
   ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, GetID(), m_gWindowManager.GetActiveWindow()};
+  // first ensure we don't hold the graphics lock
+  int numLocks = ExitCriticalSection(g_graphicsContext);
   g_applicationMessenger.SendMessage(tMsg, true);
+  RestoreCriticalSection(g_graphicsContext, numLocks);
 }
 
 void CGUIDialog::Show()
@@ -220,6 +226,11 @@ void CGUIDialog::Render()
   {
     Close(true);
   }
+    
+  if (m_autoClosing && m_showStartTime + m_showDuration < timeGetTime() && !m_dialogClosing)
+  {
+    Close();
+  }
 }
 
 bool CGUIDialog::IsAnimating(ANIMATION_TYPE animType)
@@ -234,3 +245,13 @@ void CGUIDialog::SetDefaults()
   CGUIWindow::SetDefaults();
   m_renderOrder = 1;
 }
+
+void CGUIDialog::SetAutoClose(unsigned int timeoutMs)
+{
+   m_autoClosing = true;
+   m_showDuration = timeoutMs;
+   if (m_bRunning)
+     m_showStartTime = timeGetTime();
+}
+
+

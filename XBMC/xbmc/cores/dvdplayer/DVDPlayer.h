@@ -240,7 +240,6 @@ protected:
 
   void HandleMessages();
   void HandlePlaySpeed();
-  void HandlePlayState(double timeout);
   bool IsInMenu() const;
 
   void SyncronizePlayers(DWORD sources, double pts = DVD_NOPTS_VALUE);
@@ -248,14 +247,17 @@ protected:
   void CheckContinuity(DemuxPacket* pPacket, unsigned int source);
   bool CheckSceneSkip(CCurrentStream& current, unsigned int source);
   bool CheckPlayerInit(CCurrentStream& current, unsigned int source);
+  void SendPlayerMessage(CDVDMsg* pMsg, unsigned int target);
 
   bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);
   bool IsValidStream(CCurrentStream& stream, StreamType type);
   bool IsBetterStream(CCurrentStream& current, StreamType type, CDemuxStream* stream);
 
+  bool OpenInputStream();
   bool OpenDemuxStream();
 
   void UpdateApplication(double timeout);
+  void UpdatePlayState(double timeout);
   double m_UpdateApplication;
 
   bool m_bAbortRequest;

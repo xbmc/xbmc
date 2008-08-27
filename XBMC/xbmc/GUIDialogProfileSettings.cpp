@@ -151,9 +151,11 @@ void CGUIDialogProfileSettings::CreateSettings()
     }
     if (!m_strName.IsEmpty())
     {
-      m_strDirectory.Format("profiles\\%s",m_strName.c_str());
+      m_strDirectory = CUtil::AddFileToFolder("profiles", m_strName);
       CUtil::GetFatXQualifiedPath(m_strDirectory);
-      CDirectory::Create(g_settings.m_vecProfiles[0].getDirectory()+"\\"+m_strDirectory);
+      CStdString strPath;
+      CUtil::AddFileToFolder(g_settings.m_vecProfiles[0].getDirectory(),m_strDirectory,strPath);
+      CDirectory::Create(strPath);
     }
     CStdString strPath = m_strDirectory;
     OnSettingChanged(2); // id=3
@@ -203,18 +205,18 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
     VECSOURCES shares;
     CMediaSource share;
     share.strName = "Profiles";
-    share.strPath = g_settings.m_vecProfiles[0].getDirectory()+"\\profiles";
+    share.strPath = CUtil::AddFileToFolder(g_settings.m_vecProfiles[0].getDirectory(),"profiles");
     shares.push_back(share);
     CStdString strDirectory;
     if (m_strDirectory == "")
       strDirectory = share.strPath;
     else
-      strDirectory.Format("%s\\%s",g_settings.m_vecProfiles[0].getDirectory().c_str(),m_strDirectory.c_str());
+      strDirectory = CUtil::AddFileToFolder(g_settings.m_vecProfiles[0].getDirectory(),m_strDirectory);
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares,g_localizeStrings.Get(657),strDirectory,true))
     {
       m_strDirectory = strDirectory;
       if (!m_bIsDefault)
-        m_strDirectory.erase(0,g_settings.m_vecProfiles[0].getDirectory().size()+1);
+        m_strDirectory.erase(0,g_settings.m_vecProfiles[0].getDirectory().size());
       m_bNeedSave = true;
       SET_CONTROL_LABEL(1001,m_strDirectory);
     }
@@ -320,7 +322,8 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
       // check for old profile settings
       CProfile profile;
       g_settings.m_vecProfiles.push_back(profile);
-      bool bExists = CFile::Exists(g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\guisettings.xml");
+      bool bExists = CFile::Exists(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),
+                                                          dialog->m_strDirectory+"\\guisettings.xml"));
 
       if (bExists)
         if (!CGUIDialogYesNo::ShowAndGetInput(20058,20104,20105,20022))
@@ -330,7 +333,11 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
       {
         // save new profile guisettings
         if (CGUIDialogYesNo::ShowAndGetInput(20058,20048,20102,20022,20044,20064))
-          CFile::Cache(g_settings.GetUserDataFolder()+"\\guisettings.xml",g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\guisettings.xml");
+        {
+          CFile::Cache(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"guisettings.xml"),
+                       CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),
+                                              dialog->m_strDirectory+"\\guisettings.xml"));
+        }
         else
         {
           // create some new settings
@@ -341,7 +348,8 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
         }
       }
 
-      bExists = CFile::Exists(g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\sources.xml");
+      bExists = CFile::Exists(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),
+                                                     dialog->m_strDirectory+"\\sources.xml"));
       if (bExists)
         if (!CGUIDialogYesNo::ShowAndGetInput(20058,20106,20105,20022))
           bExists = false;
@@ -350,7 +358,11 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
       {
         if ((dialog->m_iSourcesMode & 2) == 2)
           if (CGUIDialogYesNo::ShowAndGetInput(20058,20071,20102,20022,20044,20064))
-            CFile::Cache(g_settings.GetUserDataFolder()+"\\sources.xml",g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory+"\\sources.xml");
+          {
+            CFile::Cache(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"sources.xml"),
+                         CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),
+                         dialog->m_strDirectory+"\\sources.xml"));
+          }
       }
     }
 

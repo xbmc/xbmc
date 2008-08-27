@@ -72,6 +72,7 @@ public:
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   void LoadIncludes(const TiXmlElement *element);
 //#endif
+  void SetDefaults();
 protected:
   void LoadIncludes();
   bool LoadStartupWindows(const TiXmlElement *startup);
