@@ -22,12 +22,13 @@
 
 #include "utils/Thread.h"
 #include "utils/IPVRClient.h"
+#include "utils/GUIInfoManager.h"
 #include "TVDatabase.h"
 #include "fileitem.h"
 
 #include <vector>
 
-typedef std::map< DWORD, CFileItemList* > PVRSCHEDULES;
+typedef std::vector< std::pair< DWORD, CFileItemList* > > PVRSCHEDULES;
 
 class CEPGInfoTag;
 enum RecStatus; /// forwarding an enum? only VC++?
@@ -37,12 +38,13 @@ namespace PVR
 
 class CPVRManager 
       : public IPVRClientCallback
-      , private CThread
+      /*, private CThread*/
 {
 public:
   ~CPVRManager();
   static void RemoveInstance();
   void OnClientMessage(DWORD clientID, int event, const std::string& data);
+  void FillChannelData(DWORD clientID, PVRCLIENT_PROGRAMME* data, int count);
 
   // start/stop
   void Start();
@@ -52,8 +54,11 @@ public:
   static bool   IsInstantiated() { return m_instance != NULL; }
 
   // info manager
+  const char* TranslateInfo(DWORD dwInfo);
   CStdString GetNextRecording();
-  bool IsConnected() { return true; };
+  bool IsConnected();
+  static bool HasScheduled()  { return m_hasScheduled;  };
+  static bool IsRecording()   { return m_isRecording; };
 
   // pvrmanager status
   static bool HasRecordings() { return m_hasRecordings; };
@@ -69,6 +74,8 @@ public:
 protected:
   void SyncInfo(); // synchronize InfoManager related stuff
 
+  bool CheckClientConnection();
+
   CURL GetConnString(DWORD clientID);
   void GetClientProperties(); // call GetClientProperties(DWORD clientID) for each client connected
   void GetClientProperties(DWORD clientID); // request the PVRCLIENT_PROPS struct from each client
@@ -79,10 +86,10 @@ protected:
   void UpdateChannelData(); // call UpdateChannelData(DWORD clientID) for each client connected
   void UpdateChannelData(DWORD clientID); // update the guide data for the client specified
 
-  void GetRecordingSchedules(); // call GetRecordingSchedules(DWORD clientID) for each client connected, active or otherwise
+  void  GetRecordingSchedules(); // call GetRecordingSchedules(DWORD clientID) for each client connected, active or otherwise
   int  GetRecordingSchedules(DWORD clientID); // update the list of recording schedules for the client specified, active or otherwise
 
-  int  GetUpcomingRecordings(); // call GetUpcomingRecordings(DWORD clientID) for each client connected
+  void GetUpcomingRecordings(); // call GetUpcomingRecordings(DWORD clientID) for each client connected
   int  GetUpcomingRecordings(DWORD clientID); // update the list of upcoming recordings for the client specified
 
   CStdString PrintStatus(RecStatus status); // convert a RecStatus into a human readable string
@@ -92,9 +99,9 @@ private:
   CPVRManager() { };
   static CPVRManager* m_instance;
   
-  std::vector< IPVRClient* > m_clients; // pointer to each enabled client's interface
-  std::vector< PVRCLIENT_PROPS > m_clientProps; // store the properties of each client locally
-
+  std::map< DWORD, IPVRClient* >     m_clients; // pointer to each enabled client's interface
+  std::map< DWORD, PVRCLIENT_PROPS > m_clientProps; // store the properties of each client locally
+  
   PVRSCHEDULES m_recordingSchedules; // list of all set recording schedules (including custom & manual)
   PVRSCHEDULES m_scheduledRecordings; // what will actually be recorded
   PVRSCHEDULES m_conflictingSchedules; // what is conflicting
@@ -103,9 +110,17 @@ private:
   unsigned m_numUpcomingSchedules;
   unsigned m_numTimers;
 
+  static bool m_isRecording;
   static bool m_hasRecordings;
-  static bool m_hasSchedules;
+  static bool m_hasScheduled;
   static bool m_hasTimers;
+
+  CStdString  m_nextRecordingDateTime;
+  CStdString  m_nextRecordingClient;
+  CStdString  m_nextRecordingTitle;
+  CStdString  m_nowRecordingDateTime;
+  CStdString  m_nowRecordingClient;
+  CStdString  m_nowRecordingTitle;
 
   CEPG       *m_EPG;
   CTVDatabase m_database;

@@ -225,7 +225,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_iTuxBoxDefaultRootMenu = 0; //default TV Mode
   g_advancedSettings.m_iTuxBoxZapWaitTime = 0; // Time in sec. Default 0:OFF
 
-  //g_advancedSettings.m_PVRClientBlockSize = 5; // number of minutes a block represents
+  g_advancedSettings.m_iPVREPGBlockSize = 5; // number of minutes a block represents
 
   g_advancedSettings.m_curlclienttimeout = 10;
   g_advancedSettings.m_playlistRetries = 100;
@@ -1160,12 +1160,12 @@ void CSettings::LoadAdvancedSettings()
     
   }
 
-  //// PVRClient
-  //pElement = pRootElement->FirstChildElement("pvr");
-  //if (pElement)
-  //{
-  //  GetInteger(pElement, "epgblocksize", g_advancedSettings.m_pvrblockSize, 5, 1, 10);
-  //}
+  // PVRClient
+  pElement = pRootElement->FirstChildElement("pvrmanager");
+  if (pElement)
+  {
+    GetInteger(pElement, "epgblocksize", g_advancedSettings.m_iPVREPGBlockSize, 5, 5, 10);
+  }
 
   CStdString extraExtensions;
   TiXmlElement* pExts = pRootElement->FirstChildElement("pictureextensions");

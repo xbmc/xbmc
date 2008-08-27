@@ -541,10 +541,10 @@ void CTVDatabase::SetProgrammeSettings(const CStdString& programmeID, const CVid
   }
 }
 
-void CTVDatabase::NewChannel(DWORD clientID, long &idBouquet, long &idChannel, CStdString bouquet, CStdString chanName, CStdString callsign, int chanNum, CStdString iconPath)
+void CTVDatabase::NewChannel(DWORD clientID, CStdString bouquet, CStdString chanName, CStdString callsign, int chanNum, CStdString iconPath)
 {
-  idBouquet = AddBouquet(clientID, bouquet);
-  idChannel = AddChannel(clientID, idBouquet, callsign, chanName, chanNum, iconPath);
+  long idBouquet = AddBouquet(clientID, bouquet);
+  AddChannel(clientID, idBouquet, callsign, chanName, chanNum, iconPath);
 }
 
 void CTVDatabase::GetChannelList(DWORD clientID, EPGData &channels)
@@ -562,7 +562,7 @@ void CTVDatabase::GetChannelList(DWORD clientID, EPGData &channels)
     {
       int num = m_pDS->fv("Channels.Number").get_asInteger();
       long idBouquet = m_pDS->fv("Channels.idBouquet").get_asLong();
-      long idChannel = m_pDS->fv("ROWID").get_asLong();
+      long idChannel = m_pDS->fv("Channels.idChannel").get_asLong();
       CStdString name = m_pDS->fv("Channels.Name").get_asString();
       CStdString callsign = m_pDS->fv("Channels.Callsign").get_asString();
       CStdString iconPath = m_pDS->fv("Channels.IconPath").get_asString();
@@ -622,6 +622,53 @@ bool CTVDatabase::HasChannel(DWORD clientID, const CStdString &name)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
     return false;
+  }
+}
+
+void CTVDatabase::AddChannelData(CFileItemList &channel)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    long channelId = GetChannelId(channel.Get(0)->GetEPGInfoTag()->m_strChannel);
+    long bouquetId = GetBouquetId(channel.Get(0)->GetEPGInfoTag()->m_strBouquet);
+    long clientId  = channel.Get(0)->GetEPGInfoTag()->GetSourceID();
+
+    DWORD tick = timeGetTime();
+    BeginTransaction();
+    int numItems = channel.Size();
+    for (int i = 0; i < numItems; i++)
+    {
+      CFileItemPtr item = channel.Get(i);
+      long categoryId = AddCategory(item->GetEPGInfoTag()->m_strGenre);
+      long programmeId = AddProgramme(item->GetEPGInfoTag()->m_strTitle, categoryId);
+
+      CStdString outline, description, episodeID, seriesID;
+      CDateTime  start, end;
+
+      outline = item->GetEPGInfoTag()->m_strPlotOutline;
+      description = item->GetEPGInfoTag()->m_strPlot;
+      episodeID = item->GetEPGInfoTag()->m_episodeID;
+      seriesID = item->GetEPGInfoTag()->m_seriesID;
+      start = item->GetEPGInfoTag()->m_startTime;
+      end = item->GetEPGInfoTag()->m_endTime;
+
+      CStdString SQL=FormatSQL("insert into GuideData (idClient, idBouquet, idChannel, idProgramme, idCategory, "
+        "Subtitle, Description, EpisodeID, SeriesID, StartTime, EndTime, idUniqueBroadcast) "
+        "values ('%u', '%u', '%u', '%u', '%u', '%s', '%s', '%s', '%s', '%s', '%s', NULL)",
+        clientId, bouquetId, channelId, programmeId, categoryId, outline.c_str(), description.c_str(), episodeID.c_str(), 
+        seriesID.c_str(), start.GetAsDBDateTime().c_str(), end.GetAsDBDateTime().c_str());
+      
+      m_pDS->exec(SQL.c_str());
+    }
+    CommitTransaction();
+    CLog::Log(LOGDEBUG, "%s - %u items in %ums", __FUNCTION__, numItems, timeGetTime()-tick);
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
 }
 

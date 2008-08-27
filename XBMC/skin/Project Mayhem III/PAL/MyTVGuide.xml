@@ -1,6 +1,6 @@
 <window id="8">
 	<defaultcontrol>20</defaultcontrol>
-	<allowoverlay>yes</allowoverlay>
+	<allowoverlay>no</allowoverlay>
 	<controls>
 		<control type="image">
 			<description>background image</description>
@@ -16,7 +16,7 @@
 			<posy>88</posy>
 			<width>720</width>
 			<height>488</height>
-			<texture>background-bottom.png</texture>
+			<texture>contentpanel.png</texture>
 		</control>
 		<control type="label">
 			<description>XBMC label</description>
@@ -51,7 +51,7 @@
 			<posx>20</posx>
 			<posy>101</posy>
 			<width>656</width>
-			<height>437</height>
+			<height>403</height>
 			<onleft>20</onleft>
 			<onright>20</onright>
 			<onup>20</onup>
@@ -59,22 +59,18 @@
 			<pagecontrol>20</pagecontrol>
 			<scrolltime>350</scrolltime>
 			<timeblocks>36</timeblocks>
-			<rulerunit>3</rulerunit>
-			<bordertexture>totalblack.png</bordertexture>
-			<bordersize>1,1,0,1</bordersize>
+			<rulerunit>12</rulerunit>
 			<rulerlayout height="29" width="40">
 				<control type="image" id="1">
 					<width>40</width>
 					<height>29</height>
 					<posx>0</posx>
 					<posy>0</posy>
-					<texture>totalblack.png</texture>
-					<bordertexture>white.png</bordertexture>
-					<bordersize>1,0,0,0</bordersize>
+					<texture border="3">guide.png</texture>
 				</control>
 				<control type="label" id="1">
 					<posx>4</posx>`
-					<posy>3</posy>
+					<posy>0</posy>
 					<width>34</width>
 					<height>29</height>
 					<font>font13</font>
@@ -91,9 +87,7 @@
 					<height>34</height>
 					<posx>0</posx>
 					<posy>0</posy>
-					<texture>dark-green.png</texture>
-					<bordertexture>totalblack.png</bordertexture>
-					<bordersize>0,1,1,0</bordersize>
+					<texture border="3">guide.png</texture>
 				</control>
 				<control type="label" id="1">
 					<posx>4</posx>
@@ -104,7 +98,7 @@
 					<aligny>center</aligny>
 					<selectedcolor>green</selectedcolor>
 					<align>left</align>
-					<info>ListItem.Label</info>
+					<info>ListItem.Label2</info>
 				</control>
 				<control type="image">
 					<width>32</width>
@@ -121,9 +115,7 @@
 					<height>34</height>
 					<posx>0</posx>
 					<posy>0</posy>
-					<texture>dark-green.png</texture>
-					<bordertexture>light-green.png</bordertexture>
-					<bordersize>2,2,2,2</bordersize>
+					<texture border="3">guide.png</texture>
 				</control>
 				<control type="label" id="1">
 					<posx>4</posx>
@@ -134,7 +126,7 @@
 					<aligny>center</aligny>
 					<selectedcolor>green</selectedcolor>
 					<align>left</align>
-					<info>ListItem.Label</info>
+					<info>ListItem.Label2</info>
 				</control>
 				<control type="image">
 					<width>32</width>
@@ -150,9 +142,7 @@
 					<height>34</height>
 					<posx>0</posx>
 					<posy>0</posy>
-					<texture>dark-green.png</texture>
-					<bordertexture>totalblack.png</bordertexture>
-					<bordersize>1,1,0,0</bordersize>
+					<texture border="3">guide.png</texture>
 				</control>
 				<control type="label" id="2">
 					<posx>6</posx>
@@ -180,9 +170,9 @@
 					<height>34</height>
 					<posx>0</posx>
 					<posy>0</posy>
-					<texture>light-green.png</texture>
-					<bordertexture>totalblack.png</bordertexture>
-					<bordersize>1,1,0,0</bordersize>
+					<texture border="3">guide.png</texture>
+					<bordertexture>keyboard-btn-space-focus2.png</bordertexture>
+					<bordersize>2,2,2,2</bordersize>
 				</control>
 				<control type="label" id="2">
 					<posx>6</posx>

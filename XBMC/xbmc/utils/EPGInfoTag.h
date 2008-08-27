@@ -149,6 +149,7 @@ public:
 
   CStdString    m_strSource;
   CStdString    m_strBouquet;
+  int           m_bouquetNum;
   CStdString    m_strChannel;
   int           m_channelNum;
 

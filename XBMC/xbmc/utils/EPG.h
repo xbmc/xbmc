@@ -33,10 +33,13 @@ public:
              CStdString callsign, CStdString iconPath);
 
   const CFileItemList* GetItems() { return m_programmes; };
+  void SetItems(CFileItemList* items) { m_programmes = items; };
 
-  const long  DbID() { return m_idChannel; };
-  void  SetID(long id) { m_idChannel = id; };
+  const long  GetChannelID() { return m_idChannel; };
+  void  SetChannelID(long id) { m_idChannel = id; };
   const int Number()    { return m_number; };
+  const long GetBouquetID() { return m_idBouquet; };
+  const long GetClientID() { return m_clientID; };
   const CStdString Name() { return m_name; };
   const CStdString Callsign() { return m_callsign; };
   const CStdString IconPath() { return m_iconPath; };

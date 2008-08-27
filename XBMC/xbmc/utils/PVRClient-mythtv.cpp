@@ -141,7 +141,7 @@ bool PVRClientMythTv::GetDriveSpace(long long *total, long long *used)
   return true;
 }
 
-bool PVRClientMythTv::GetRecordingSchedules( CFileItemList &results )
+bool PVRClientMythTv::GetRecordingSchedules( CFileItemList* results )
 {
   if (!GetLibrary() || !GetControl())
     return false;
@@ -162,7 +162,7 @@ bool PVRClientMythTv::GetRecordingSchedules( CFileItemList &results )
     {
       CEPGInfoTag tag = FillProgrammeTag(programme);
       CFileItemPtr item(new CFileItem(tag));    
-      results.Add(item);
+      results->Add(item);
       m_dll->ref_release(programme);
     }
   }
@@ -171,7 +171,7 @@ bool PVRClientMythTv::GetRecordingSchedules( CFileItemList &results )
   return true;
 }
 
-bool PVRClientMythTv::GetUpcomingRecordings( CFileItemList &results )
+bool PVRClientMythTv::GetUpcomingRecordings( CFileItemList* results )
 {
   if (!GetLibrary() || !GetControl())
     return false;
@@ -192,7 +192,7 @@ bool PVRClientMythTv::GetUpcomingRecordings( CFileItemList &results )
     {
       CEPGInfoTag tag = FillProgrammeTag(programme);
       CFileItemPtr item(new CFileItem(tag));
-      results.Add(item);
+      results->Add(item);
       m_dll->ref_release(programme);
     }
   }
@@ -202,7 +202,7 @@ bool PVRClientMythTv::GetUpcomingRecordings( CFileItemList &results )
   return true;
 }
 
-bool PVRClientMythTv::GetConflicting(CFileItemList &conflicts)
+bool PVRClientMythTv::GetConflicting(CFileItemList* conflicts)
 {
   if (!GetLibrary() || !GetControl())
     return false;
@@ -216,7 +216,7 @@ bool PVRClientMythTv::GetConflicting(CFileItemList &conflicts)
     {
       CEPGInfoTag tag = FillProgrammeTag(programme);
       CFileItemPtr item(new CFileItem(tag));
-      conflicts.Add(item);
+      conflicts->Add(item);
       m_dll->ref_release(programme);
     }
   }
@@ -225,7 +225,7 @@ bool PVRClientMythTv::GetConflicting(CFileItemList &conflicts)
   return true;
 }
 
-bool PVRClientMythTv::GetAllRecordings(CFileItemList &results)
+bool PVRClientMythTv::GetAllRecordings(CFileItemList* results)
 {
   if (!GetLibrary() || !GetControl())
     return false;
@@ -278,27 +278,28 @@ bool PVRClientMythTv::GetAllRecordings(CFileItemList &results)
 
       item->SetLabel(name);
 
-      results.Add(item);
+      results->Add(item);
       m_dll->ref_release(program);*/
     }
 
     /*if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-      results.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%Z (%J)", "%I", "%L", ""));
+      results->AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%Z (%J)", "%I", "%L", ""));
     else
-      results.AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%Z (%J)", "%I", "%L", ""));
-    results.AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%Z (%J)", "%I", "%L", "%I"));
-    results.AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%Z", "%J %Q", "%L", "%J"));*/
+      results->AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%Z (%J)", "%I", "%L", ""));
+    results->AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%Z (%J)", "%I", "%L", "%I"));
+    results->AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%Z", "%J %Q", "%L", "%J"));*/
 
   }
   m_dll->ref_release(list);
   return true;
 }
-void PVRClientMythTv::GetChannelList(EPGData &channels)
+int PVRClientMythTv::GetChannelList(PVRCLIENT_CHANNEL* channel)
 {
   if (!GetLibrary() || !GetControl() || !GetDB())
-    return;
+    return 0;
 
-  channels.clear();
+  PVR_CHANLIST xbmcChanList;
+
 
   cmyth_chanlist_t chanlist = m_dll->mysql_get_chanlist(m_database);
   int numChannels = m_dll->chanlist_get_count(chanlist);
@@ -308,15 +309,10 @@ void PVRClientMythTv::GetChannelList(EPGData &channels)
     if (m_dll->channel_visible(channel) == 0)
       continue; // this channel is hidden on backend, ignore it
 
-    char* name = m_dll->channel_name(channel);
-    char* callsign = name;
-    char* icon=  m_dll->channel_icon(channel);
-    int   number = m_dll->channel_channum(channel);
-
-    CTVChannel* pTVChannel = new CTVChannel(m_clientID, 0, 0, number, name, callsign, icon); //channelID is set by PVRManager
-    
-    channels.push_back(pTVChannel);
+    xbmcChanList.push_back(GetXBMCChannel(channel));
   }
+  
+  return numChannels;
 }
 
 int PVRClientMythTv::GetNumChannels()
@@ -328,23 +324,76 @@ int PVRClientMythTv::GetNumChannels()
   return m_dll->chanlist_get_count(channels);
 }
 
-void PVRClientMythTv::GetEPGForChannel(int bouquet, int channel, CFileItemList &channelData)
+void PVRClientMythTv::GetEPGForChannel(int bouquet, int channel)
 {
-  // performed in a separate thread
+  // store this task for the worker thread
   CStdString chan;
-  chan.Format("%s", channel);
+  chan.Format("%u", channel);
   CSingleLock lock(m_thingsToDoSection);
   m_thingsToDo.push(std::make_pair<int, std::string>(GET_EPG_FOR_CHANNEL, chan.c_str()));
-  if (!m_isRunning) Create(); // start the task performing thread
+  if (!m_isRunning) Create(true, THREAD_MINSTACKSIZE); // start the task performing thread
 }
 
-void PVRClientMythTv::GetEPGForChannelTask()
+void PVRClientMythTv::GetEPGForChannelTask(CStdString chan)
 {
-  //while (true)
+  if (!GetLibrary() || !GetControl() || !GetDB())
+    return;
+
+  //cmyth_program_t *prog = NULL;
+
+  //int count = m_dll->mysql_get_guide(m_database, &prog, now, end);
+  //if (count <= 0)
+  //  return false;
+
+  //for (int i = 0; i < count; i++)
   //{
-  //  CLog::Log(LOGDEBUG, "PVRClient:%u SLEEPING 5 secs", m_clientID/*, __FUNCTION__*/);
-  //  Sleep(5000);
+  //  CDateTime starttime(prog[i].starttime);
+  //  CDateTime endtime(prog[i].endtime);
+
+  //  tvdb.FillEPG("mythTV", "dvb-t", prog[i].name, prog[i].callsign, prog[i].channum, prog[i].title, prog[i].subtitle, prog[i].description, 
+  //    prog[i].programid, prog[i].seriesid, starttime, endtime, prog[i].category);
+
+  //  if (prog[i].channum == ChanNum)
+  //  {
+  //    CFileItemPtr item(new CFileItem(title, false));
+  //    item->SetLabel(title);
+  //    item->m_dateTime = starttime;
+  //    item->SetLabelPreformated(true);
+
+  //    CVideoInfoTag* tag = item->GetVideoInfoTag();
+
+  //    tag->m_strAlbum       = GetValue(prog[i].callsign);
+  //    tag->m_strShowTitle   = GetValue(prog[i].title);
+  //    tag->m_strPlotOutline = GetValue(prog[i].subtitle);
+  //    tag->m_strPlot        = GetValue(prog[i].description);
+  //    tag->m_strGenre       = GetValue(prog[i].category);
+
+  //    if(tag->m_strPlot.Left(tag->m_strPlotOutline.length()) != tag->m_strPlotOutline && !tag->m_strPlotOutline.IsEmpty())
+  //      tag->m_strPlot = tag->m_strPlotOutline + '\n' + tag->m_strPlot;
+  //    tag->m_strOriginalTitle = tag->m_strShowTitle;
+
+  //    tag->m_strTitle = tag->m_strAlbum;
+  //    if(tag->m_strShowTitle.length() > 0)
+  //      tag->m_strTitle += " : " + tag->m_strShowTitle;
+
+  //    CDateTimeSpan span(endtime.GetDay() - starttime.GetDay(),
+  //      endtime.GetHour() - starttime.GetHour(),
+  //      endtime.GetMinute() - starttime.GetMinute(),
+  //      endtime.GetSecond() - starttime.GetSecond());
+
+  //    StringUtils::SecondsToTimeString( span.GetSeconds()
+  //      + span.GetMinutes() * 60 
+  //      + span.GetHours() * 3600, tag->m_strRuntime, TIME_FORMAT_GUESS);
+
+  //    tag->m_iSeason  = 0; /* set this so xbmc knows it's a tv show */
+  //    tag->m_iEpisode = 0;
+  //    tag->m_strStatus = prog[i].rec_status;
+  //    items.Add(item);
+  //  }
   //}
+  //m_dll->ref_release(prog);
+  return;
+
 }
 
 /* Process loop for this thread **********************************************/
@@ -352,7 +401,7 @@ void PVRClientMythTv::Process()
 {
   CSingleLock lock(m_thingsToDoSection);
 
-  //CLog::Log(LOGDEBUG, "PVRClient:%u Begin Processing %u Tasks", m_sourceID, m_thingsToDo.size());
+  CLog::Log(LOGDEBUG, "PVRClient:%u Begin Processing %u Tasks", m_clientID, m_thingsToDo.size());
   m_isRunning = true;
 
   while (!m_bStop && m_thingsToDo.size())
@@ -368,25 +417,37 @@ void PVRClientMythTv::Process()
         m_manager->OnClientMessage(m_clientID, PVRCLIENT_EVENT_SCHEDULE_CHANGE, data.c_str());
         break;
     case GET_EPG_FOR_CHANNEL:
-      GetEPGForChannelTask();
+      GetEPGForChannelTask(data.c_str());
       break;
     }
     if (!lock.IsOwner())
       lock.Enter();
   }
   m_isRunning = false;
-  //CLog::Log(LOGDEBUG, "PVRClient:%u Finished Processing Tasks", m_sourceID);
+  CLog::Log(LOGDEBUG, "PVRClient:%u Finished Processing Tasks", m_clientID);
 }
 
 CEPGInfoTag PVRClientMythTv::FillProgrammeTag(cmyth_proginfo_t programme)
 {
   CEPGInfoTag tag(m_clientID);
   tag.m_channelNum = GetValue(m_dll->proginfo_chan_id(programme));
+  tag.m_strTitle = GetValue(m_dll->proginfo_title(programme));
   tag.m_startTime = GetValue(m_dll->proginfo_start(programme));
   tag.m_endTime = GetValue(m_dll->proginfo_end(programme));
   
   tag.m_recStatus = (RecStatus) GetRecordingStatus(programme); ///
   return tag;
+}
+
+PVRCLIENT_CHANNEL PVRClientMythTv::GetXBMCChannel(cmyth_channel_t channel)
+{
+  PVRCLIENT_CHANNEL chan;
+  chan.Name = m_dll->channel_name(channel);
+  chan.Callsign = chan.Name;
+  chan.IconPath = m_dll->channel_icon(channel);
+  chan.Number = m_dll->channel_channum(channel);
+
+  return chan;
 }
 
 bool PVRClientMythTv::UpdateRecording(CFileItem &item, cmyth_proginfo_t info)

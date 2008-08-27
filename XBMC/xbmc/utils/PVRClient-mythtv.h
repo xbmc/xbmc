@@ -26,6 +26,7 @@
 #include "../FileSystem/CMythSession.h"
 #include "../FileSystem/DllLibCMyth.h"
 #include "EPGInfoTag.h"
+#include "EPG.h"
 #include "URL.h"
 
 typedef enum {
@@ -40,7 +41,7 @@ class DllLibCMyth;
 
 class PVRClientMythTv : public IPVRClient
                       , private XFILE::CCMythSession::IEventListener
-                      , CThread
+                      , private CThread
 {
 public:
   PVRClientMythTv(DWORD sourceID, IPVRClientCallback *callback);
@@ -70,25 +71,26 @@ public:
 
   /* channels */
   virtual int  GetNumChannels();
-  virtual void GetChannelList(PVR::EPGData &channels);
+  virtual int  GetChannelList(PVRCLIENT_CHANNEL* chanList);
 
   virtual bool GetEPGDataEnd(CDateTime &end);
-  virtual void GetEPGForChannel(int bouquet, int channel, CFileItemList &channelData);
+  virtual void GetEPGForChannel(int bouquet, int channel);
 
   /* scheduled recordings */
-  virtual bool GetRecordingSchedules(CFileItemList &results);
-  virtual bool GetUpcomingRecordings(CFileItemList &results);
-  virtual bool GetConflicting(CFileItemList &results);
+  virtual bool GetRecordingSchedules(CFileItemList* results);
+  virtual bool GetUpcomingRecordings(CFileItemList* results);
+  virtual bool GetConflicting(CFileItemList* results);
 
   /* recordings completed/started */
-  virtual bool GetAllRecordings(CFileItemList &results);
+  virtual bool GetAllRecordings(CFileItemList* results);
 
   /* individual programme operations */
 
 private:
-  CStdString GetValue(char* str)           { return m_session->GetValue(str); }
-  int        GetValue(int integer)         { return m_session->GetValue(integer); }
-  CDateTime  GetValue(cmyth_timestamp_t t) { return m_session->GetValue(t); }
+  CStdString GetValue(char* str)           { return m_session->GetValue(str); };
+  int        GetValue(int integer)         { return m_session->GetValue(integer); };
+  CDateTime  GetValue(cmyth_timestamp_t t) { return m_session->GetValue(t); };
+  PVRCLIENT_CHANNEL GetXBMCChannel(cmyth_channel_t channel);
   CEPGInfoTag FillProgrammeTag(cmyth_proginfo_t programme);
   bool       UpdateRecording(CFileItem &item, cmyth_proginfo_t info);
   int        GetRecordingStatus(cmyth_proginfo_t prog);
@@ -98,7 +100,7 @@ private:
   bool       GetLibrary();
   bool       GetDB();
 
-  void GetEPGForChannelTask();
+  void GetEPGForChannelTask(CStdString chan);
 
   bool m_isRunning;
   DWORD m_clientID;
@@ -112,7 +114,7 @@ private:
   cmyth_recorder_t      m_recorder;
   cmyth_proginfo_t      m_program;
   
-  static XFILE::CCMythSession* m_mythEventSession; /**/
+  static XFILE::CCMythSession* m_mythEventSession;
 
   static myth_event_queue   m_thingsToDo;
   static CCriticalSection   m_thingsToDoSection;

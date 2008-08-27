@@ -27,7 +27,7 @@
 		<control type="group">
 			<control type="label" id="27">
 				<description>ProgInfo ChannelName value</description>
-				<posx>22</posx>
+				<posx>24</posx>
 				<posy>39</posy>
 				<width>140</width>
 				<label>-</label>
@@ -35,7 +35,7 @@
 			</control>
 			<control type="label" id="23">
 				<description>ProgInfo StartTime value</description>
-				<posx>22</posx>
+				<posx>24</posx>
 				<posy>15</posy>
 				<width>42</width>
 				<label>-</label>
@@ -44,7 +44,7 @@
 			</control>
 			<control type="label" id="20">
 				<description>ProgInfo Title value</description>
-				<posx>330</posx>
+				<posx>334</posx>
 				<posy>15</posy>
 				<width>279</width>
 				<align>right</align>
@@ -54,7 +54,7 @@
 			</control>
 			<control type="label" id="26">
 				<description>ProgInfo Genre value</description>
-				<posx>330</posx>
+				<posx>334</posx>
 				<posy>39</posy>
 				<width>180</width>
 				<label>-</label>
@@ -64,17 +64,17 @@
 			</control>
 		</control>
 		<control type="image">
-			<posx>22</posx>
+			<posx>24</posx>
 			<posy>87</posy>
-			<width>315</width>
+			<width>310</width>
 			<height>10</height>
 			<texture>separator.png</texture>
 		</control>
 		<control type="label" id="21">
 				<description>ProgInfo Subtitle value</description>
-				<posx>22</posx>
+				<posx>24</posx>
 				<posy>97</posy>
-				<width>315</width>
+				<width>310</width>
 				<label>-</label>
 				<align>left</align>
 				<font>font10</font>
@@ -84,9 +84,9 @@
 		<control type="list" id="50">
 			<description>Matching List Container when Scrollbar is Hidden</description>
 			<posx>22</posx>
-			<posy>97</posy>
+			<posy>107</posy>
 			<width>299</width>
-			<height>176</height>
+			<height>166</height>
 			<onleft>9000</onleft>
 			<onright>61</onright>
 			<onup>50</onup>
@@ -171,9 +171,9 @@
 		<control type="list" id="50">
 			<description>Matching List Container When Scrollbar is visible</description>
 			<posx>22</posx>
-			<posy>97</posy>
+			<posy>107</posy>
 			<width>283</width>
-			<height>176</height>
+			<height>166</height>
 			<onleft>9000</onleft>
 			<onright>61</onright>
 			<onup>50</onup>
@@ -257,10 +257,10 @@
 		</control>
 		<control type="textbox" id="22">
 			<description>Textbox when scrollbar is visible & subtitle is hidden</description>
-			<posx>22</posx>
+			<posx>24</posx>
 			<posy>97</posy>
-			<width>299</width>
-			<height>181</height>
+			<width>294</width>
+			<height>191</height>
 			<onleft>5</onleft>
 			<onright>50</onright>
 			<onup>5</onup>
@@ -271,10 +271,10 @@
 		</control>
 		<control type="textbox" id="22">
 			<description>Textbox when scrollbar is NOT visible & subtitle is hidden</description>
-			<posx>22</posx>
+			<posx>24</posx>
 			<posy>97</posy>
-			<width>315</width>
-			<height>181</height>
+			<width>310</width>
+			<height>191</height>
 			<onleft>5</onleft>
 			<onright>50</onright>
 			<onup>5</onup>
@@ -285,9 +285,9 @@
 		</control>
 		<control type="textbox" id="22">
 			<description>Textbox when scrollbar is visible & subtitle is visible</description>
-			<posx>22</posx>
+			<posx>24</posx>
 			<posy>113</posy>
-			<width>299</width>
+			<width>294</width>
 			<height>165</height>
 			<onleft>5</onleft>
 			<onright>50</onright>
@@ -299,9 +299,9 @@
 		</control>
 		<control type="textbox" id="22">
 			<description>Textbox when scrollbar is NOT visible & subtitle is visible</description>
-			<posx>22</posx>
+			<posx>24</posx>
 			<posy>113</posy>
-			<width>315</width>
+			<width>310</width>
 			<height>165</height>
 			<onleft>5</onleft>
 			<onright>50</onright>
@@ -313,7 +313,7 @@
 		</control>
 		<control type="button">
 			<posx>320</posx>
-			<posy>97</posy>
+			<posy>107</posy>
 			<include>scrollbar_width</include>
 			<height>20</height>
 			<onclick>PageUp(61)</onclick>
@@ -323,7 +323,7 @@
 		</control>
 		<control type="button">
 			<posx>320</posx>
-			<posy>253</posy>
+			<posy>260</posy>
 			<include>scrollbar_width</include>
 			<height>20</height>
 			<onclick>PageDown(61)</onclick>
@@ -333,9 +333,9 @@
 		</control>
 		<control type="scrollbar" id="61">
 			<posx>320</posx>
-			<posy>100</posy>
+			<posy>117</posy>
 			<include>scrollbar_width</include>
-			<height>176</height>
+			<height>143</height>
 			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
 			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
 			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>

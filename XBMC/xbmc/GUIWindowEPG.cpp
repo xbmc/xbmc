@@ -93,7 +93,7 @@ bool CGUIWindowEPG::OnMessage(CGUIMessage& message)
     {
       int iControl = message.GetSenderId();
 
-      if (iControl == m_guideGrid->GetID())  // msg came from grid control
+      if (m_guideGrid && iControl == m_guideGrid->GetID())  // msg came from grid control
       {
         // get selected item
         CFileItemPtr item = m_guideGrid->GetSelectedItemPtr();
@@ -151,7 +151,7 @@ void CGUIWindowEPG::GetGridData()
   // check that m_gridEnd date exists in schedules
   // otherwise reduce the range
   DWORD tick(timeGetTime());
-  m_dataEnd = m_database.GetDataEnd();
+  m_dataEnd = m_database.GetDataEnd(0);
 
   CLog::Log(LOGDEBUG, "TV: m_database.GetDataEnd() took %u ms to return", timeGetTime()-tick); /// slow to return
 

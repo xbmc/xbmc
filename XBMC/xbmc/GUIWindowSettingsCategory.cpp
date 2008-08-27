@@ -1998,13 +1998,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     else
       g_settings.LoadUPnPXml(filename);
   }
-  else if (strSetting.Equals("pvrmanager.serverip"))
-  {
-    if (g_guiSettings.GetBool("pvrmanager.enabled"))
-      g_application.StartPVRManager();
-    else
-      g_application.StopPVRManager();
-  }
   else if (strSetting.Equals("pvrmanager.enabled"))
   {
     if (g_guiSettings.GetBool("pvrmanager.enabled"))

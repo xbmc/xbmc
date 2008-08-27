@@ -47,6 +47,8 @@ public:
 
   bool HasChannel(DWORD clientID, const CStdString &name);
 
+  void AddChannelData(CFileItemList &channel);
+
   bool GetProgrammesByChannelName(const CStdString &channel, CFileItemList &shows, const CDateTime &start, const CDateTime &end);
   bool GetProgrammesByEpisodeID(const CStdString& episodeID, CFileItemList* items, bool noHistory /* == true */);
   void GetProgrammesByName(const CStdString& progName, CFileItemList& items, bool noHistory /* == true */);
@@ -64,7 +66,7 @@ public:
   void EraseChannelSettings();
 
   // helper to add new channels from pvrmanager
-  void NewChannel(DWORD clientID, long &idBouquet, long &idChannel, CStdString bouquet, CStdString chanName, 
+  void NewChannel(DWORD clientID, CStdString bouquet, CStdString chanName, 
                   CStdString callsign, int chanNum, CStdString iconPath);
 
 protected:

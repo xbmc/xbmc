@@ -48,10 +48,36 @@ typedef struct {
   int   Number;
 } PVRCLIENT_CHANNEL;
 
+typedef struct {
+  int chanid;
+  char callsign[30];
+  char name[84];
+  int sourceid;
+  char title[150];
+  char subtitle[150];
+  char description[280];
+  time_t starttime;
+  time_t endtime;
+  char episodeid[30];
+  char seriesid[24];
+  char category[84];
+  int recording;
+  int rec_status;
+  int channum;
+  int bouquet;
+  int event_flags;
+  int startoffset;
+  int endoffset;
+} PVRCLIENT_PROGRAMME;
+
+typedef std::vector< PVRCLIENT_CHANNEL > PVR_CHANLIST;
+typedef std::vector< PVRCLIENT_PROGRAMME > PVR_CHANDATA;
+
 class IPVRClientCallback
 {
 public:
   virtual void OnClientMessage(DWORD clientID, int event, const std::string& data)=0;
+  virtual void FillChannelData(DWORD clientID, PVRCLIENT_PROGRAMME* data, int count)=0;
 };
 
 class IPVRClient
@@ -76,38 +102,38 @@ public:
 
   /* channels */
   virtual int  GetNumChannels()=0;
-  virtual void GetChannelList(PVR::EPGData &channels)=0;
+  virtual int  GetChannelList(PVRCLIENT_CHANNEL* chanList)=0;
   
   virtual bool GetEPGDataEnd(CDateTime &end)=0;
-  virtual void GetEPGForChannel(int bouquet, int channel, CFileItemList &channelData)=0;
+  virtual void GetEPGForChannel(int bouquet, int channel)=0;
 
   /**
   * Get all timers, active or otherwise
   * \param results CFileItemList to be populated with timers
   * \return bool true if any timers found
   */
-  virtual bool GetRecordingSchedules(CFileItemList &results)=0;
+  virtual bool GetRecordingSchedules(CFileItemList* results)=0;
 
   /**
   * Get a list of scheduled recordings, including inactive
   * \param results CFileItemList to be populated with scheduled recordings
   * \return bool true if any scheduled recordings found
   */
-  virtual bool GetUpcomingRecordings(CFileItemList &results)=0;
+  virtual bool GetUpcomingRecordings(CFileItemList* results)=0;
 
   /**
   * Get a list of any schedules that are flagged as conflicting
   * \param results CFileItemList to be populated with conflicting schedules
   * \return bool true if any conflicting schedules found
   */
-  virtual bool GetConflicting(CFileItemList &results)=0;
+  virtual bool GetConflicting(CFileItemList* results)=0;
 
   /**
   * Get a list of any recordings that are available, including ones not yet finished
   * \param results CFileItemList to be populated with list of recordings
   * \return bool true if any recordings found
   */
-  virtual bool GetAllRecordings(CFileItemList &results)=0;
+  virtual bool GetAllRecordings(CFileItemList* results)=0;
 
   /* individual programme operations */
   //virtual void UpdateRecStatus(CFileItem &programme)=0; // updates the recording status of this Fileitem (used in dialogs)

@@ -222,8 +222,15 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strCategory.Equals("pvr"))
   {
     if (strTest.Equals("pvr.isconnected")) ret = PVR_IS_CONNECTED;
-    else if (strTest.Equals("pvr.recording")) ret = PVR_IS_RECORDING;
-    else if (strTest.Equals("pvr.nextrecording")) ret = PVR_NEXT_RECORDING;
+    else if (strTest.Equals("pvr.isrecording")) ret = PVR_IS_RECORDING;
+    else if (strTest.Equals("pvr.hasscheduled")) ret = PVR_HAS_SCHEDULED;
+    else if (strTest.Equals("pvr.nowrecordingclientname")) ret = PVR_NOW_RECORDING_CLIENT;
+    else if (strTest.Equals("pvr.nowrecordingtitle")) ret = PVR_NOW_RECORDING_TITLE;
+    else if (strTest.Equals("pvr.nowrecordingdatetime")) ret = PVR_NOW_RECORDING_DATETIME;
+    else if (strTest.Equals("pvr.nextrecordingclientname")) ret = PVR_NEXT_RECORDING_CLIENT;
+    else if (strTest.Equals("pvr.nextrecordingtitle")) ret = PVR_NEXT_RECORDING_TITLE;
+    else if (strTest.Equals("pvr.nextrecordingdatetime")) ret = PVR_NEXT_RECORDING_DATETIME;
+    
   }
   else if (strCategory.Equals("bar"))
   {
@@ -916,8 +923,13 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
 
   switch (info)
   {
-  case PVR_NEXT_RECORDING:
-    strLabel = PVR::CPVRManager::GetInstance()->GetNextRecording();
+  case PVR_NOW_RECORDING_CLIENT:
+  case PVR_NOW_RECORDING_DATETIME:
+  case PVR_NOW_RECORDING_TITLE:
+  case PVR_NEXT_RECORDING_CLIENT:
+  case PVR_NEXT_RECORDING_DATETIME:
+  case PVR_NEXT_RECORDING_TITLE:
+    strLabel = PVR::CPVRManager::GetInstance()->TranslateInfo(info);
     break;
   case WEATHER_CONDITIONS:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND);
@@ -1704,6 +1716,10 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     bReturn = g_weatherManager.IsFetched();
   else if (condition == PVR_IS_CONNECTED)
     bReturn = PVR::CPVRManager::GetInstance()->IsConnected();
+  else if (condition == PVR_IS_RECORDING)
+    bReturn = PVR::CPVRManager::GetInstance()->IsRecording();
+  else if (condition == PVR_HAS_SCHEDULED)
+    bReturn = PVR::CPVRManager::GetInstance()->HasScheduled();
   else if (condition == SYSTEM_INTERNET_STATE)
   {
     g_sysinfo.GetInfo(condition);
