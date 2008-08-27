@@ -1,0 +1,46 @@
+a52dec-0.7.4 Sat Jul 27 20:44:00 PDT 2002
+
+The library is now fully reentrant.
+
+Added win32 output module, al file output, gain control.
+
+A few additional portability enhancements.
+
+
+a52dec-0.7.3 Wed Feb 20 23:38:22 PST 2002 
+
+Performance enhancements, from 40% to 80% depending on streams.
+
+Fixed a few embarassing bugs in liba52: one memory corruption issue
+and a few minor portability problems.
+
+Several new output modules, and fixes in the existing .wav file output.
+
+
+a52dec-0.7.2 Sun Dec 16 14:39:56 PST 2001
+
+Minor bugfixes, performance and portability enhancements.
+
+Also added wav format output, and reduced the demux buffer size which
+makes it easier to use a52dec as a pipe.
+
+
+a52dec-0.7.1 Thu Aug 30 02:13:23 PDT 2001
+
+Minor release for bugfixes. Looks like 0.7.0 was a bit rushed out.
+
+Now compiles with gcc 3.0, made sure mlib implementation works, and
+fixed a small bug in the a52dec test program.
+
+
+a52dec-0.7.0 Thu Aug 23 23:18:00 PDT 2001 
+
+First release since more than one year !
+
+The most user-noticeable additions are the downmix to arbitrary
+speaker configurations, and the implementation of dynamic range
+compression.
+
+The speed has been improved by a factor of 2 to 3, the conformance and
+precision should be higher, and we also fixed a small bug when playing
+stereo rematrixed streams.
