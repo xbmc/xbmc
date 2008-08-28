@@ -2822,7 +2822,13 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
         while (!m_pDS2->eof())
         {
           CStdString strMoviePath;
-          CUtil::AddFileToFolder(strCurrPath,m_pDS2->fv("files.strFilename").get_asString(),strMoviePath);
+          CStdString strFileName = m_pDS2->fv("files.strFilename").get_asString();
+	  
+          if (CUtil::IsStack(strFileName) || strFileName.Mid(0,6).Equals("rar://") || strFileName.Mid(0,6).Equals("zip://"))
+            strMoviePath = strFileName;
+          else
+            CUtil::AddFileToFolder(strCurrPath,m_pDS2->fv("files.strFilename").get_asString(),strMoviePath);
+    
           if (HasMovieInfo(strMoviePath))
             DeleteMovie(strMoviePath);
           if (HasMusicVideoInfo(strMoviePath))
