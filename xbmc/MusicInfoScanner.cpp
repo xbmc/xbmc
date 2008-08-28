@@ -450,13 +450,13 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
         CSong song(tag);
 
         // ensure our song has a valid filename or else it will assert in AddSong()
-        if (song.strFileName.GetLength() == 0)
+        if (song.strFileName.IsEmpty())
         {
           // copy filename from path in case UPnP or other tag loaders didn't specify one (FIXME?)
           song.strFileName = pItem->m_strPath;
 
           // if we still don't have a valid filename, skip the song
-          if (song.strFileName.GetLength() == 0)
+          if (song.strFileName.IsEmpty())
           {
             // this shouldn't ideally happen!
             CLog::Log(LOGERROR, "Skipping song since it doesn't seem to have a filename");
