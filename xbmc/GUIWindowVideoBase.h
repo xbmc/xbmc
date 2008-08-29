@@ -70,7 +70,7 @@ protected:
   virtual bool OnPlayMedia(int iItem);
   void LoadPlayList(const CStdString& strPlayList, int iPlayList = PLAYLIST_VIDEO);
 
-  void ShowIMDB(CFileItem *item, const SScraperInfo& info);
+  bool ShowIMDB(CFileItem *item, const SScraperInfo& info);
 
   void OnManualIMDB();
   bool CheckMovie(const CStdString& strFileName);

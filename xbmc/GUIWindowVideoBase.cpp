@@ -311,8 +311,8 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const SScraperInfo& info)
     else
       item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
   }
-  ShowIMDB(&item, info);
-  if (!info.strContent.Equals("plugin") &&
+  bool modified = ShowIMDB(&item, info);
+  if (modified && !info.strContent.Equals("plugin") &&
      (m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_FILES ||
       m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_NAV)) // since we can be called from the music library we need this check
   {
@@ -341,7 +341,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const SScraperInfo& info)
 //     and show the information.
 // 6.  Check for a refresh, and if so, go to 3.
 
-void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
+bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
 {
   /*
   CLog::Log(LOGDEBUG,"CGUIWindowVideoBase::ShowIMDB");
@@ -359,9 +359,9 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   IMDB.SetScraperInfo(info2);
   SScraperInfo info(info2); // use this as nfo might change it..
 
-  if (!pDlgProgress) return ;
-  if (!pDlgSelect) return ;
-  if (!pDlgInfo) return ;
+  if (!pDlgProgress) return false;
+  if (!pDlgSelect) return false;
+  if (!pDlgInfo) return false;
   CUtil::ClearCache();
 
   // 1.  Check for already downloaded information, and if we have it, display our dialog
@@ -414,7 +414,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   if (info.strContent.Equals("plugin"))
   {
     if (!item->HasVideoInfoTag())
-      return;
+      return false;
     movieDetails = *item->GetVideoInfoTag();
 
     bHasInfo = true;
@@ -429,21 +429,26 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     *item->GetVideoInfoTag() = movieDetails;
     pDlgInfo->SetMovie(item);
     pDlgInfo->DoModal();
-    if (!info.strContent.Equals("plugin"))
-      item->SetThumbnailImage(pDlgInfo->GetThumbnail());
-    if ( !pDlgInfo->NeedRefresh() ) return ;
+    if (!info.strContent.Equals("plugin")){
+      CStdString thumb(pDlgInfo->GetThumbnail());
+      if (thumb != item->GetThumbnailImage()) {
+        item->SetThumbnailImage(pDlgInfo->GetThumbnail());
+        return true;
+      }
+    }
+    if ( !pDlgInfo->NeedRefresh() ) return false;
   }
 
   // quietly return if Internet lookups are disabled
-  if (!g_guiSettings.GetBool("network.enableinternet")) return ;
+  if (!g_guiSettings.GetBool("network.enableinternet")) return false;
   if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser)
-    return;
+    return false;
 
   CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (pDialog && pDialog->IsScanning())
   {
     CGUIDialogOK::ShowAndGetInput(13346,14057,-1,-1);
-    return;
+    return false;
   }
 
   CScraperUrl scrUrl;
@@ -520,7 +525,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
           else if (!pDlgSelect->IsButtonPressed())
           {
             m_database.Close();
-            return; // user backed out
+            return false; // user backed out
           }
         }
       }
@@ -534,7 +539,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       if (pDlgProgress->IsCanceled())
       {
         m_database.Close();
-        return;
+        return false;
       }
 
       // Prompt the user to input the movieName
@@ -544,7 +549,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       if (!CGUIDialogKeyboard::ShowAndGetInput(movieName, g_localizeStrings.Get(iString), false))
       {
         m_database.Close();
-        return; // user backed out
+        return false; // user backed out
       }
 
       needsRefresh = true;
@@ -648,7 +653,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
         if (pDlgProgress->IsCanceled())
         {
           m_database.Close();
-          return; // user cancelled
+          return false; // user cancelled
         }
         OutputDebugString("failed to get details\n");
         // show dialog...
@@ -663,12 +668,13 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
           pDlgOK->DoModal();
         }
         m_database.Close();
-        return;
+        return false;
       }
     }
   // 6. Check for a refresh
   } while (needsRefresh);
   m_database.Close();
+  return true;
 }
 
 void CGUIWindowVideoBase::OnManualIMDB()
