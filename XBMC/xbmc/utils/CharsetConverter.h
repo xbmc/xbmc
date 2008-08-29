@@ -30,6 +30,7 @@
 #include <fribidi/fribidi.h>
 #include <fribidi/fribidi_char_sets.h>
 #endif
+#include "CriticalSection.h"
 
 #include <vector>
 
@@ -150,6 +151,7 @@ private:
   FriBidiCharSet m_stringFribidiCharset;
 
   CStdString EMPTY;
+  CCriticalSection m_bidiSection;
 };
 
 extern CCharsetConverter g_charsetConverter;
