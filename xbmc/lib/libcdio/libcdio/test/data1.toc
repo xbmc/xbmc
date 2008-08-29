@@ -1,0 +1,8 @@
+// $Id: data1.toc,v 1.1 2004/05/08 20:36:02 rocky Exp $
+// Just a single MODE1 track.
+
+CD_ROM
+
+TRACK MODE1
+SILENCE 0:59:74
+
