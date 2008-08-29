@@ -485,6 +485,16 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/liba52], [
   --disable-al-audio \
   CFLAGS=-fPIC
 ])
+XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmpeg2], [
+  ./configure \
+  --with-pic \
+  --disable-static \
+  --enable-shared \
+  --disable-directx \
+  --disable-sdl \
+  --without-x \
+  CFLAGS=-fPIC
+])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmad], [./configure --with-pic])
 XB_CONFIG_MODULE([xbmc/lib/cximage-6.0/zlib], [CFLAGS=-fPIC ./configure])
 XB_CONFIG_MODULE([xbmc/lib/libass], [CFLAGS=-fPIC ./configure])
