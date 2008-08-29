@@ -2413,13 +2413,10 @@ void CApplication::RenderMemoryStatus()
       lastShift = now;
     }
 
-#ifndef __APPLE__
     float x = xShift + 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
     float y = yShift + 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
 
-    // Disable this for now as it might still be responsible for some crashes.
     CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, info);
-#endif
   }
 }
 // OnKey() translates the key into a CAction which is sent on to our Window Manager.
