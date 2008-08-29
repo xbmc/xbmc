@@ -248,12 +248,14 @@ get_scsi(_img_private_t *p_env)
 
 static bool 
 init_osx(_img_private_t *p_env) {
-  mach_port_t port;
   char *psz_devname;
   kern_return_t ret;
   io_iterator_t iterator;
-  
-  p_env->gen.fd = open( p_env->gen.source_name, O_RDONLY | O_NONBLOCK );
+
+  // only open if not already opened. otherwise too many descriptors are holding the device busy.  
+  if (-1 == p_env->gen.fd)
+    p_env->gen.fd = open( p_env->gen.source_name, O_RDONLY | O_NONBLOCK );
+
   if (-1 == p_env->gen.fd) {
     cdio_warn("Failed to open %s: %s", p_env->gen.source_name,
                strerror(errno));
@@ -271,17 +273,8 @@ init_osx(_img_private_t *p_env) {
   if( *psz_devname == 'r' )
     ++psz_devname;
   
-  /* get port for IOKit communication */
-  ret = IOMasterPort( MACH_PORT_NULL, &port );
-  
-  if( ret != KERN_SUCCESS )
-    {
-      cdio_warn( "IOMasterPort: 0x%08x", ret );
-      return false;
-    }
-  
-  ret = IOServiceGetMatchingServices( port, 
-                                      IOBSDNameMatching(port, 0, psz_devname),
+  ret = IOServiceGetMatchingServices( kIOMasterPortDefault, 
+                                      IOBSDNameMatching(kIOMasterPortDefault, 0, psz_devname),
                                       &iterator );
   
   /* get service iterator for the device */
@@ -294,7 +287,7 @@ init_osx(_img_private_t *p_env) {
   /* first service */
   p_env->MediaClass_service = IOIteratorNext( iterator );
   IOObjectRelease( iterator );
-  
+
   /* search for kIOCDMediaClass or kIOCDVDMediaClass */ 
   while( p_env->MediaClass_service && 
          (!IOObjectConformsTo(p_env->MediaClass_service, kIOCDMediaClass)) &&
@@ -876,10 +869,13 @@ static void
 _free_osx (void *p_user_data) {
   _img_private_t *p_env = p_user_data;
   if (NULL == p_env) return;
+  if (p_env->gen.fd != -1)
+    close(p_env->gen.fd);
+  if (p_env->MediaClass_service)
+    IOObjectRelease( p_env->MediaClass_service );
   cdio_generic_free(p_env);
   if (NULL != p_env->pp_lba)  free((void *) p_env->pp_lba);
   if (NULL != p_env->pTOC)    free((void *) p_env->pTOC);
-  IOObjectRelease( p_env->MediaClass_service );
 
   if (p_env->scsi_task)
     (*p_env->scsi_task)->Release(p_env->scsi_task);
@@ -896,8 +892,6 @@ _free_osx (void *p_user_data) {
 
   if (p_env->plugin) 
     IODestroyPlugInInterface(p_env->plugin);
-
-  IOObjectRelease(p_env->MediaClass_service);
 
 }
 
@@ -1175,10 +1169,12 @@ read_toc_osx (void *p_user_data)
       CFDataGetBytes( data, range, (u_char *) p_env->pTOC );
     } else {
       cdio_warn( "Trouble allocating CDROM TOC" );
+      CFRelease( propertiesDict );    
       return false;
     }
   } else     {
     cdio_warn( "Trouble reading TOC" );
+    CFRelease( propertiesDict );    
     return false;
   }
 
@@ -1393,16 +1389,19 @@ static void media_eject_callback(DADiskRef disk, DADissenterRef dissenter, void 
     if ( dissenter )
       {
 	CFStringRef status = DADissenterGetStatusString(dissenter);
-	size_t cstr_size = CFStringGetLength(status);
-	char *cstr = malloc(cstr_size);
-	if ( CFStringGetCString( status,
+	if (status)
+	{ 
+		size_t cstr_size = CFStringGetLength(status);
+		char *cstr = malloc(cstr_size);
+		if ( CFStringGetCString( status,
 				 cstr, cstr_size,
 				 kCFStringEncodingASCII ) )
-	  CFRelease( status );
+	  	CFRelease( status );
 
-	cdio_warn("%s", cstr);
+		cdio_warn("%s", cstr);
 
-	free(cstr);
+		free(cstr);
+	}
       }
 
     dacontext->result    = (dissenter ? DRIVER_OP_ERROR : DRIVER_OP_SUCCESS);
@@ -1442,6 +1441,10 @@ _eject_media_osx (void *user_data) {
     {
       return DRIVER_OP_ERROR;
     }
+
+  if (p_env->gen.fd != -1)
+    close(p_env->gen.fd);
+  p_env->gen.fd = -1;
 
   dacontext.result    = DRIVER_OP_UNINIT;
   dacontext.completed = FALSE;
@@ -1717,7 +1720,7 @@ cdio_get_devices_osx(void)
       return( NULL );
     }
   
-  classes_to_match = IOServiceMatching( kIOCDMediaClass );
+  classes_to_match = IOServiceMatching( kIOMediaClass );
   if( classes_to_match == NULL )
     {
       return( NULL );
@@ -1788,18 +1791,11 @@ cdio_get_default_device_osx(void)
   return NULL;
 #else
   io_object_t   next_media;
-  mach_port_t   master_port;
   kern_return_t kern_result;
   io_iterator_t media_iterator;
   CFMutableDictionaryRef classes_to_match;
   
-  kern_result = IOMasterPort( MACH_PORT_NULL, &master_port );
-  if( kern_result != KERN_SUCCESS )
-    {
-      return( NULL );
-    }
-  
-  classes_to_match = IOServiceMatching( kIOCDMediaClass );
+  classes_to_match = IOServiceMatching( kIOMediaClass );
   if( classes_to_match == NULL )
     {
       return( NULL );
@@ -1808,7 +1804,7 @@ cdio_get_default_device_osx(void)
   CFDictionarySetValue( classes_to_match, CFSTR(kIOMediaEjectableKey),
                         kCFBooleanTrue );
   
-  kern_result = IOServiceGetMatchingServices( master_port, 
+  kern_result = IOServiceGetMatchingServices( kIOMasterPortDefault, 
                                               classes_to_match,
                                               &media_iterator );
   if( kern_result != KERN_SUCCESS )
@@ -1883,7 +1879,6 @@ cdio_open_am_osx (const char *psz_source_name, const char *psz_access_mode)
 CdIo_t *
 cdio_open_osx (const char *psz_orig_source)
 {
-
 #ifdef HAVE_DARWIN_CDROM
   CdIo_t *ret;
   _img_private_t *_data;
@@ -1954,8 +1949,7 @@ cdio_open_osx (const char *psz_orig_source)
   if (ret == NULL) return NULL;
 
   ret->driver_id = DRIVER_OSX;
-
-  if (cdio_generic_init(_data, O_RDONLY) && init_osx(_data))
+  if (cdio_generic_init(_data, O_RDONLY | O_NONBLOCK) && init_osx(_data))
     return ret;
   else {
     cdio_generic_free (_data);
