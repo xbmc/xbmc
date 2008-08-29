@@ -260,6 +260,9 @@ void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdSt
 
 void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset, FriBidiCharType base, bool* bWasFlipped/*=NULL*/)
 {
+  // libfribidi is not threadsafe, so make sure we make it so
+  CSingleLock lock(m_bidiSection);
+
   vector<CStdString> lines;
   CUtil::Tokenize(strSource, lines, "\n");
   CStdString resultString;
