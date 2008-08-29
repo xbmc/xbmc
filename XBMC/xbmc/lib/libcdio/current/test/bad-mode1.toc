@@ -1,0 +1,5 @@
+// $Id: bad-mode1.toc,v 1.1 2004/05/07 10:57:50 rocky Exp $
+CD_DA
+
+TRACK MODE1_FORM45  // "MODE1_FORM45" is not a valid mode.
+SILENCE 10:0:0
