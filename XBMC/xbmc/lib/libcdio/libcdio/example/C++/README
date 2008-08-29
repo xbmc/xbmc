@@ -1,0 +1,41 @@
+$Id: README,v 1.4 2006/04/15 16:22:49 rocky Exp $
+
+This directory contains some simple C++ examples of the use of the libcdio
+library.
+
+Descriptions of the programs in this example directory are as follows...
+
+device.cpp: A program to show drivers installed and what the default
+	    CD-ROM drive is and what CD drives are available.
+
+eject.cpp:  A program eject a CD from a CD-ROM drive and then close the door
+	    again.
+
+isofile.cpp:  A program to show using libiso9660 to extract a file from an
+	      ISO-9660 image.
+
+isofile2.cpp: A program to show using libiso9660 to extract a file
+	      from a CDRWIN cue/bin CD image.
+
+isolist.cpp:   A program to show using libiso9660 to list files in a
+	       directory of an ISO-9660 image and give basic iso9660 
+	       information.
+
+mmc1.cpp:   A program to show issuing a simple MMC command (INQUIRY).
+
+mmc2.cpp:   A more involved MMC command to list features from 
+	    a MMC GET_CONFIGURATION command.
+
+paranoia.cpp: A program to show using CD-DA paranoia (a library for jitter
+	      detection and audio-read error correction). This program uses
+	      an interface compatible (mostly) with cdparanoia.
+
+paranoia2.cpp: Another program to show using CD-DA paranoia using a more
+	       libcdio-oriented initialization. Probably more suited to
+	       things that otherwise use libcdio such as media players 
+	       (e.g. for getting CDDB or CD-Text info)
+
+
+
+
+
