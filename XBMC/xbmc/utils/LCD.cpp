@@ -470,13 +470,15 @@ void ILCD::Render(LCD_MODE mode)
   unsigned int inLine = 0;
   while (outLine < 4 && inLine < m_lcdMode[mode].size())
   {
-    CStdString utf8Line = m_lcdMode[mode][inLine++].GetLabel(0);
-    CGUITextLayout::Filter(utf8Line);
-    if (!utf8Line.IsEmpty())
+    CStdString line = m_lcdMode[mode][inLine++].GetLabel(0);
+    if (!line.IsEmpty())
     {
-      // convert to the user char set
-      CStdString line;
-      g_charsetConverter.utf8ToStringCharset(utf8Line, line);
+      // convert to the user char set if needed
+      if (mode == LCD_MODE_NAVIGATION || mode == LCD_MODE_GENERAL || mode == LCD_MODE_SCREENSAVER)
+      {
+        CGUITextLayout::Filter(line);
+        g_charsetConverter.utf8ToStringCharset(line);
+      }
       SetLine(outLine++, line);
     }
   }
