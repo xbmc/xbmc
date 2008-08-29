@@ -1930,7 +1930,10 @@ cdio_open_osx (const char *psz_orig_source)
 
   if (NULL == psz_orig_source) {
     psz_source=cdio_get_default_device_osx();
-    if (NULL == psz_source) return NULL;
+    if (NULL == psz_source) {
+      cdio_generic_free(_data);
+      return NULL;
+    }
     _set_arg_osx(_data, "source", psz_source);
     free(psz_source);
   } else {
@@ -1941,12 +1944,16 @@ cdio_open_osx (const char *psz_orig_source)
 #if 0
       cdio_info ("source %s is a not a device", psz_orig_source);
 #endif
+      cdio_generic_free(_data);
       return NULL;
     }
   }
 
   ret = cdio_new ((void *)_data, &_funcs);
-  if (ret == NULL) return NULL;
+  if (ret == NULL)
+    cdio_generic_free(_data);
+    return NULL;
+  }
 
   ret->driver_id = DRIVER_OSX;
   if (cdio_generic_init(_data, O_RDONLY | O_NONBLOCK) && init_osx(_data))
