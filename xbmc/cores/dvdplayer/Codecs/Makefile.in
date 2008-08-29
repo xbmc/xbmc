@@ -13,7 +13,7 @@ DIRS=	ffmpeg \
 	libfaad2 \
 	libmad \
  	liba52 \
-#	libmpeg2 \
+	libmpeg2 \
 
 LIBS=	avutil-51-$(ARCH).so \
 	avcodec-51-$(ARCH).so \
@@ -27,7 +27,7 @@ LIBS=	avutil-51-$(ARCH).so \
 	libmad-$(ARCH).so \
  	liba52-$(ARCH).so \
  	libao-$(ARCH).so \
-#	libmpeg2-$(ARCH).so \
+	libmpeg2-$(ARCH).so \
 
 .PHONY: $(DIRS) codecs
 
@@ -74,11 +74,15 @@ $(SYSDIR)/libmad-$(ARCH).so: libmad/libmad.la
 	cp libmad/.libs/libmad.so $@
 
 $(SYSDIR)/liba52-$(ARCH).so: $(WRAPPER) liba52/liba52/liba52.la
-	$(CC) -shared -rdynamic --soname,$@ -o $@ liba52/liba52/*.o \
+	$(CC) -o $@ $(LDFLAGS) --soname,$@ liba52/liba52/*.o \
 		-Wl`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/libao-$(ARCH).so: $(WRAPPER) liba52/libao/libao.la
-	$(CC) -shared -rdynamic --soname,$@ -o $@ liba52/libao/*.o \
+	$(CC) -o $@ $(LDFLAGS) --soname,$@ liba52/libao/*.o \
+		-Wl`cat $(WRAPPER:.o=.def)` $(WRAPPER)
+
+$(SYSDIR)/libmpeg2-$(ARCH).so: $(WRAPPER) libmpeg2/libmpeg2/libmpeg2.la
+	$(CC) -o $@ $(LDFLAGS) --soname,$@ libmpeg2/libmpeg2/.libs/*.o \
 		-Wl`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 ffmpeg/libavutil/libavutil.so     : ffmpeg;
@@ -114,6 +118,10 @@ libmad:
 liba52/liba52/liba52.la: liba52
 liba52/libao/libao.la: liba52
 liba52:
+	$(MAKE) -C $@
+
+libmpeg2/libmpeg2/libmpeg2.la: libmpeg2
+libmpeg2:
 	$(MAKE) -C $@
 
 clean:
