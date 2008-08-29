@@ -1,0 +1,13 @@
+// $Id: bad-file.toc,v 1.1 2005/01/23 00:45:57 rocky Exp $
+// XA disk 
+// 
+
+CD_ROM_XA
+
+TRACK MODE2_FORM2
+FILE "foo.bin" 00:00:00 00:13:57
+
+TRACK MODE2_FORM1
+PREGAP 0:2:0
+FILE "foo.bin" 00:20:71 00:00:00
+

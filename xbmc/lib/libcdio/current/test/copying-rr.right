@@ -1,0 +1,25 @@
+This is free software; see the source for copying conditions.
+There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.
+__________________________________
+ISO-9660 Information
+/:
+  dr-xr-xr-x   4 0 0 [LSN     23]      2048 Oct 22 2004 02:21:14  .
+  dr-xr-xr-x   2 0 0 [LSN     23]      2048 Oct 22 2004 02:21:14  ..
+  dr-xr-xr-x   2 0 0 [LSN     24]      2048 Mar 05 2005 16:12:25  copy
+  lr-xr-xr-x   1 0 0 [LSN     27]         7 Mar 05 2005 15:26:00  Copy2 -> COPYING
+  -r--r--r--   1 0 0 [LSN     27]     17992 Mar 05 2005 15:25:51  COPYING
+  br--r--r--   1 0 0 [LSN     36]         0 Mar 05 2005 15:32:05  fd0
+  dr-xr-xr-x   2 0 0 [LSN     25]      2048 Mar 05 2005 16:12:25  tmp
+  cr--r--r--   1 0 0 [LSN     36]         0 Mar 05 2005 15:31:42  zero
+
+/copy/:
+  dr-xr-xr-x   2 0 0 [LSN     24]      2048 Mar 05 2005 16:12:25  .
+  dr-xr-xr-x   4 0 0 [LSN     23]      2048 Mar 05 2005 16:12:25  ..
+  lr-xr-xr-x   1 0 0 [LSN     36]        10 Mar 05 2005 15:27:05  COPYING -> ../COPYING
+
+/tmp/:
+  dr-xr-xr-x   2 0 0 [LSN     25]      2048 Mar 05 2005 16:12:25  .
+  dr-xr-xr-x   4 0 0 [LSN     23]      2048 Mar 05 2005 16:12:25  ..
+  lr-xr-xr-x   1 0 0 [LSN     36]        18 Mar 05 2005 15:51:05  COPYING -> ../copying/COPYING
+
