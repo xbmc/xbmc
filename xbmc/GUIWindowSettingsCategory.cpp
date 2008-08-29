@@ -769,6 +769,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(351), LED_COLOUR_OFF);
       pControl->SetValue(pSettingInt->GetData());
     }
+#ifndef _LINUX
     else if (strSetting.Equals("system.leddisableonplayback") || strSetting.Equals("lcd.disableonplayback"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -779,6 +780,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(476), LED_PLAYBACK_VIDEO_MUSIC); // Video & Music
       pControl->SetValue(pSettingInt->GetData());
     }
+#endif
 #ifndef __APPLE__
     else if (strSetting.Equals("videoplayer.rendermethod"))
     {
@@ -1295,6 +1297,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
         pControl->SetLabel2("");
     }
+#ifndef _LINUX
     else if (strSetting.Equals("lcd.enableonpaused"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1317,6 +1320,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
     }
+#endif
     else if (strSetting.Equals("lookandfeel.soundsduringplayback"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1619,6 +1623,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 #endif
     g_lcd->Initialize();
   }
+#ifndef _LINUX
   else if (strSetting.Equals("lcd.backlight"))
   {
     g_lcd->SetBackLight(((CSettingInt *)pSettingControl->GetSetting())->GetData());
@@ -1627,6 +1632,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     g_lcd->SetContrast(((CSettingInt *)pSettingControl->GetSetting())->GetData());
   }
+#endif
 #endif
   else if (strSetting.Equals("servers.ftpserver"))
   {
