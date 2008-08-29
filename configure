@@ -10426,11 +10426,13 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <stdio.h>
+#include <sys/types.h> /* for off_t */
+     #include <stdio.h>
 int
 main ()
 {
-return fseeko (stdin, 0, 0) && (fseeko) (stdin, 0, 0);
+int (*fp) (FILE *, off_t, int) = fseeko;
+     return fseeko (stdin, 0, 0) && fp (stdin, 0, 0);
   ;
   return 0;
 }
@@ -10470,11 +10472,13 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #define _LARGEFILE_SOURCE 1
-#include <stdio.h>
+#include <sys/types.h> /* for off_t */
+     #include <stdio.h>
 int
 main ()
 {
-return fseeko (stdin, 0, 0) && (fseeko) (stdin, 0, 0);
+int (*fp) (FILE *, off_t, int) = fseeko;
+     return fseeko (stdin, 0, 0) && fp (stdin, 0, 0);
   ;
   return 0;
 }
@@ -13692,6 +13696,9 @@ ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/l
 
 
 
+
+
+
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -15088,6 +15095,33 @@ echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/liba52 failed to conf
 else
   { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/liba52 doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/liba52 doesn't exist" >&2;}
+   { (exit 1); exit 1; }; }
+fi;
+
+
+if [ -d xbmc/cores/dvdplayer/Codecs/libmpeg2 ]; then
+  pushd xbmc/cores/dvdplayer/Codecs/libmpeg2
+
+  ./configure \
+  --with-pic \
+  --disable-static \
+  --enable-shared \
+  --disable-directx \
+  --disable-sdl \
+  --without-x \
+  CFLAGS=-fPIC
+
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libmpeg2 failed to configure" >&5
+echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libmpeg2 failed to configure" >&2;}
+   { (exit 1); exit 1; }; }
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libmpeg2 doesn't exist" >&5
+echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libmpeg2 doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
 fi;
 
