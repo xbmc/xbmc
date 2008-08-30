@@ -260,10 +260,9 @@
     </joystick>
 
     <joystick name="WiiRemote">
-      <button id="4">Highlight</button>
       <button id="7">Move</button>
       <button id="9">Copy</button>
-      <button id="11">Delete</button>
+      <button id="11">Highlight</button>
     </joystick>
 
     <remote>
