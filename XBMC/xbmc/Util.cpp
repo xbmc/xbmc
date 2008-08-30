@@ -2464,7 +2464,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("suspend"))
   {
-    g_application.getApplicationMessenger().Standby();
+    g_application.getApplicationMessenger().Suspend();
   }
   else if (execute.Equals("close"))
   {

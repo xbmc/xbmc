@@ -648,7 +648,7 @@ void CApplicationMessenger::Hibernate()
   SendMessage(tMsg);
 }
 
-void CApplicationMessenger::Standby()
+void CApplicationMessenger::Suspend()
 {
   ThreadMessage tMsg = {TMSG_SUSPEND};
   SendMessage(tMsg);

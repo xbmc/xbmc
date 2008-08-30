@@ -100,7 +100,7 @@ public:
   void Shutdown();
   void Close();
   void Hibernate();
-  void Standby();
+  void Suspend();
   void Restart();
   void RebootToDashBoard();
   void RestartApp();
