@@ -889,9 +889,9 @@
 		E3E91FFF0D8C61DF002BF43D /* Socket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E91FFC0D8C61DF002BF43D /* Socket.cpp */; };
 		E3E920020D8C622A002BF43D /* EventClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E920010D8C622A002BF43D /* EventClient.cpp */; };
 		E3E920060D8C6277002BF43D /* ScraperSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E920050D8C6277002BF43D /* ScraperSettings.cpp */; };
-		E3EB8F060D5D5C0300FFF489 /* libmad.0.2.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */; };
 		E3EB8F080D5D5C0300FFF489 /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */; };
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
+		F51E5BB70E68BE3A00E24093 /* libmad.0.2.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */; };
 		F57E213F0E3C3AB300700C9D /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E213E0E3C3AB200700C9D /* libiconv.dylib */; };
 		F57E21410E3C3AD400700C9D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E21400E3C3AD400700C9D /* libz.dylib */; };
 		F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */; };
@@ -2780,7 +2780,6 @@
 				E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */,
 				E35EF2550D380C3D00DB5CD5 /* QuickTime.framework in Frameworks */,
 				E35EF3240D380E1E00DB5CD5 /* Carbon.framework in Frameworks */,
-				E3EB8F060D5D5C0300FFF489 /* libmad.0.2.1.dylib in Frameworks */,
 				E3EB8F080D5D5C0300FFF489 /* libvorbis.dylib in Frameworks */,
 				E33979930D62FC46004ECDDA /* libsqlite3.0.dylib in Frameworks */,
 				810CA0090D683DEF0095F5DD /* libSDL-1.2.0.11.2.dylib in Frameworks */,
@@ -2803,6 +2802,7 @@
 				F5F8E1BD0E42738B00A8E96F /* swscale-51-osx.a in Frameworks */,
 				F5F8E1BE0E42738B00A8E96F /* avformat-51-osx.a in Frameworks */,
 				8800B9120E5C9D4E005F98A4 /* libcdio-osx.a in Frameworks */,
+				F51E5BB70E68BE3A00E24093 /* libmad.0.2.1.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5748,7 +5748,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\n#dont run this script if we already have lib-python (comment out the following line in order to re-create it)\nif [ -e system/python/python24.zip -a -e system/python/python24-osx.so ]; then exit 0; fi\n\ncd xbmc/lib/libPython/Python\n\nautoconf\n./configure --enable-ipv6 --enable-unicode=ucs4 --without-cxx --enable-shared --without-pymalloc LDFLAGS=-L/opt/local/lib OPT=\"-I/opt/local/include -Wno-deprecated-declarations\" MACOSX_DEPLOYMENT_TARGET=10.4\n\nsed -i bak -e \"s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/\" pyconfig.h\nsed -i bak -e \"s/define HAVE_FSEEKO 1/undef HAVE_FSEEKO/\" pyconfig.h\nsed -i bak -e \"s/define HAVE_FTELLO 1/undef HAVE_FTELLO/\" pyconfig.h\nsed -i bak -e \"s/define HAVE_FTRUNCATE 1/undef HAVE_FTRUNCATE/\" pyconfig.h\nsed -i bak -e \"s/define HAVE_FPATHCONF 1/undef HAVE_FPATHCONF/\" pyconfig.h\nsed -i bak -e \"s/define HAVE_FSYNC 1/undef HAVE_FSYNC/\" pyconfig.h\nsed -i bak -e \"s/define HAVE_FCHDIR 1/undef HAVE_FCHDIR/\" pyconfig.h\ncp pyconfig.h Include\n\n/usr/bin/make clean\n/usr/bin/make\n\nmkdir tmp > /dev/null 2>&1\ncd tmp\nar x ../libpython2.4.a\ncd ..\n\n#create python24-osx.so\ngcc -bundle -flat_namespace -undefined suppress -shared -o python24-osx.so tmp/*.o\n\n/bin/rm -rf tmp\n\n#copy python osx runtime *.so into system/python/lib-osx\n/bin/rm -f ../../../../system/python/lib-osx/* \ncp build/lib.macosx-10.4-i386-2.4/*.so ../../../../system/python/lib-osx/\n\n# create python24.zip\ncd Lib\n/bin/rm -f ../../../../../system/python/python24.zip \nzip -r -0 ../../../../../system/python/python24.zip . -i \\*.py -i \\*.pyc -i \\*.pyo\ncd ..\n\n#wrap the .so with xbmc extensions\ncd ../../../../tools/Mach5/\n./mach5.rb ../../xbmc/lib/libPython/Python/python24-osx.so\n./mach5.rb output.so libpython\n\ncp output.so ../../system/python/python24-osx.so\n\ncd xbmc/lib/libPython/Python\nmake distclean\n\nexit 0";
+			shellScript = "\n#dont run this script if we already have lib-python (comment out the following line in order to re-create it)\nif [ -e system/python/python24.zip -a -e system/python/python24-osx.so ]; then exit 0; fi\n\ncd xbmc/lib/libPython/Python\n\nautoconf\n./configure --enable-ipv6 --enable-unicode=ucs4 --without-cxx --enable-shared --without-pymalloc LDFLAGS=-L/opt/local/lib OPT=\"-I/opt/local/include -Wno-deprecated-declarations\" MACOSX_DEPLOYMENT_TARGET=10.4\n\nsed -i bak -e \"s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/\" pyconfig.h\nsed -i bak -e \"s/define HAVE_FSEEKO 1/undef HAVE_FSEEKO/\" pyconfig.h\nsed -i bak -e \"s/define HAVE_FTELLO 1/undef HAVE_FTELLO/\" pyconfig.h\nsed -i bak -e \"s/define HAVE_FTRUNCATE 1/undef HAVE_FTRUNCATE/\" pyconfig.h\nsed -i bak -e \"s/define HAVE_FPATHCONF 1/undef HAVE_FPATHCONF/\" pyconfig.h\nsed -i bak -e \"s/define HAVE_FSYNC 1/undef HAVE_FSYNC/\" pyconfig.h\nsed -i bak -e \"s/define HAVE_FCHDIR 1/undef HAVE_FCHDIR/\" pyconfig.h\ncp pyconfig.h Include\n\n/usr/bin/make clean\n/usr/bin/make\n\nmkdir tmp > /dev/null 2>&1\ncd tmp\nar x ../libpython2.4.a\ncd ..\n\n#create python24-osx.so\ngcc -bundle -flat_namespace -undefined suppress -shared -o python24-osx.so tmp/*.o\n\n/bin/rm -rf tmp\n\n#copy python osx runtime *.so into system/python/lib-osx\n/bin/rm -f ../../../../system/python/lib-osx/* \ncp build/lib.macosx-10.4-i386-2.4/*.so ../../../../system/python/lib-osx/\n\n# create python24.zip\ncd Lib\n/bin/rm -f ../../../../../system/python/python24.zip \nzip -r -0 ../../../../../system/python/python24.zip . -i \\*.py -i \\*.pyc -i \\*.pyo\ncd ..\n\n#wrap the .so with xbmc extensions\ncd ../../../../tools/Mach5/\n./mach5.rb ../../xbmc/lib/libPython/Python/python24-osx.so\n./mach5.rb output.so libpython\n\ncp output.so ../../system/python/python24-osx.so\n\ncd ../../xbmc/lib/libPython/Python\nmake distclean\n\nexit 0";
 		};
 		F57E1F3B0E3B94E700700C9D /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
