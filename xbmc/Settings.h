@@ -170,6 +170,7 @@ public:
     CStdString m_cddbAddress;
 #ifdef HAS_HAL
     bool m_useHalMount;
+    bool m_useSystemPowerManagement;
 #endif
     bool m_fullScreenOnMovieStart;
     bool m_noDVDROM;
