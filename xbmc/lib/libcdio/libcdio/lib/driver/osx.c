@@ -1950,7 +1950,7 @@ cdio_open_osx (const char *psz_orig_source)
   }
 
   ret = cdio_new ((void *)_data, &_funcs);
-  if (ret == NULL)
+  if (ret == NULL) {
     cdio_generic_free(_data);
     return NULL;
   }
