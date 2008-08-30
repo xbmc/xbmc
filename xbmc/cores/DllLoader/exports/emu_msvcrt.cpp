@@ -33,6 +33,7 @@
 #include <sys/timeb.h>
 #ifdef _LINUX
 #include <sys/ioctl.h>
+#include <mntent.h>
 #ifndef __APPLE__
 #include <linux/cdrom.h>
 #endif
@@ -882,7 +883,14 @@ extern "C"
   FILE* dll_fopen(const char* filename, const char* mode)
   {
     FILE* file = NULL;
-    
+#ifdef _LINUX
+    if (strcmp(filename, MOUNTED) == 0
+    ||  strcmp(filename, MNTTAB) == 0)
+    {
+      CLog::Log(LOGINFO, "%s - something opened the mount file, let's hope it knows what it's doing", __FUNCTION__);
+      return fopen(filename, mode);
+    }
+#endif
     int iMode = O_TEXT;
     if (strchr(mode, 'b') )
       iMode = O_BINARY;
@@ -1827,6 +1835,18 @@ extern "C"
               __FUNCTION__);
     return 0;
   }
+
+  struct mntent *dll_getmntent(FILE *fp)
+  {
+    if (fp == NULL)
+      return NULL;
+
+    CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(fp);
+    if (pFile)
+    {
+      CLog::Log(LOGERROR, "%s - getmntent is not implemented for our virtual filesystem", __FUNCTION__);
+      return NULL;
+    }
+    return getmntent(fp);
+  }
 }
-
-
