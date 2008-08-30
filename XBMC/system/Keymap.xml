@@ -146,6 +146,20 @@
       <axis id="14" limit="+1">ScrollDown</axis>
     </joystick>
 
+    <joystick name="WiiRemote">
+      <button id="1">Up</button>
+      <button id="2">Down</button>
+      <button id="3">Left</button>
+      <button id="4">Right</button>
+      <button id="5">Select</button>
+      <button id="6">PreviousMenu</button>
+      <button id="7">VolumeDown</button>
+      <button id="8">XBMC.ActivateWindow(Home)</button>
+      <button id="9">VolumeUp</button>
+      <button id="10">ContextMenu</button>
+      <button id="11">XBMC.ActivateWindow(PlayerControls)</button>
+    </joystick>
+
     <keyboard>
       <p>Play</p>
       <q>Queue</q>
@@ -214,7 +228,13 @@
       <altname>Logitech Xbox Cordless Controller</altname>
       <button id="3">XBMC.Skin.ToggleSetting(HomeViewToggle)</button>
     </joystick>
-    
+
+    <joystick name="WiiRemote">
+      <button id="8">Fullscreen</button>
+      <button id="10">XBMC.ActivateWindow(Favourites)</button>
+      <button id="11">XBMC.ActivateWindow(ShutdownMenu)</button>
+    </joystick>
+
     <remote>
       <menu>XBMC.Skin.ToggleSetting(HomeViewToggle)</menu>
       <info>XBMC.ActivateWindow(SystemInfo)</info>
@@ -237,6 +257,13 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <button id="5">Highlight</button>
+    </joystick>
+
+    <joystick name="WiiRemote">
+      <button id="4">Highlight</button>
+      <button id="7">Move</button>
+      <button id="9">Copy</button>
+      <button id="11">Delete</button>
     </joystick>
 
     <remote>
@@ -275,7 +302,14 @@
       <button id="17">Playlist</button>
       <button id="5">Delete</button>
      </joystick>
-    
+
+    <joystick name="WiiRemote">
+      <button id="6">Playlist</button>
+      <button id="7">MoveItemUp</button>
+      <button id="9">MoveItemDown</button>
+      <button id="11">Delete</button>
+    </joystick>
+
     <remote>
       <back>Playlist</back> <!-- Close playlist -->
       <clear>Delete</clear>
@@ -302,6 +336,13 @@
       <delete>Delete</delete>
     </keyboard>
 
+    <joystick name="WiiRemote">
+      <button id="6">Playlist</button>
+      <button id="7">MoveItemUp</button>
+      <button id="9">MoveItemDown</button>
+      <button id="11">Delete</button>
+    </joystick>
+
     <gamepad>
       <Y>Queue</Y>
     </gamepad>
@@ -322,6 +363,11 @@
       <button id="3">Playlist</button>
       <button id="5">Queue</button>
      </joystick>
+
+    <joystick name="WiiRemote">
+      <button id="5">ParentDir</button>
+      <button id="11">Playlist</button>
+    </joystick>
 
      <remote>
       <zero>Queue</zero>
@@ -350,7 +396,12 @@
       <button id="3">Playlist</button>
       <button id="5">Queue</button>
      </joystick>
-    
+
+    <joystick name="WiiRemote">
+      <button id="5">ParentDir</button>
+      <button id="11">Playlist</button>
+    </joystick>
+
      <remote>
       <zero>Queue</zero>
       <star>Queue</star>
@@ -415,6 +466,17 @@
       <axis id="6" limit="0">AnalogFastForward</axis>
     </joystick>
 
+    <joystick name="WiiRemote">
+      <button id="1">Pause</button>
+      <button id="2">Stop</button>
+      <button id="3">StepBack</button>
+      <button id="4">StepForward</button>
+      <button id="5">OSD</button>
+      <button id="6">Info</button>
+      <button id="10">CodecInfo</button>
+      <button id="11">AspectRatio</button>
+    </joystick>
+
     <keyboard>
       <f>FastForward</f>
       <r>Rewind</r>
@@ -463,6 +525,11 @@
       <axis id="6" limit="0">AnalogFastForward</axis>
     </joystick>
 
+    <joystick name="WiiRemote">
+      <button id="5">CodecInfo</button>
+      <button id="6">Close</button>
+    </joystick>
+
     <keyboard>
       <f>FastForward</f>
       <r>Rewind</r>
@@ -488,6 +555,10 @@
       <altname>Logitech Xbox Cordless Controller</altname>
       <button id="9">Close</button>
       <button id="17">Close</button>
+    </joystick>
+
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
     </joystick>
 
     <remote>
@@ -543,6 +614,17 @@
       <axis id="6" limit="0">AnalogFastForward</axis>
    </joystick>
 
+    <joystick name="WiiRemote">
+      <button id="1">Pause</button>
+      <button id="2">Stop</button>
+      <button id="3">SkipNext</button>
+      <button id="4">SkipPrevious</button>
+      <button id="5">XBMC.ActivateWindow(MusicOSD)</button>
+      <button id="6">Info</button>
+      <button id="10">IncreaseRating</button>
+      <button id="11">DecreaseRating</button>
+    </joystick>
+
     <keyboard>
       <f>FastForward</f>
       <r>Rewind</r>
@@ -582,6 +664,12 @@
       <button id="6">Info</button>
     </joystick>
 
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
+      <button id="10">ShowPreset</button>
+      <button id="11">Info</button>
+    </joystick>
+
     <remote>
       <menu>Close</menu>
       <title>Info</title>
@@ -618,6 +706,12 @@
       <button id="9">Close</button>
     </joystick>
 
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
+      <button id="10">XBMC.ActivateWindow(VisualisationPresetList)</button>
+      <button id="11">XBMC.ActivateWindow(MusicPlaylist)</button>
+    </joystick>
+
     <remote>
       <menu>Close</menu>
     </remote>
@@ -652,6 +746,10 @@
       <button id="3">Close</button>
       <button id="5">Close</button>
       <button id="9">Close</button>
+    </joystick>
+
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
     </joystick>
 
     <remote>
@@ -705,6 +803,17 @@
       <button id="15">ZoomOut</button>
       <button id="16">PreviousPicture</button>
       <button id="17">Stop</button>
+    </joystick>
+
+    <joystick name="WiiRemote">
+      <button id="1">Pause</button>
+      <button id="2">Stop</button>
+      <button id="3">PreviousPicture</button>
+      <button id="4">NextPicture</button>
+      <button id="5">CodecInfo</button>
+      <button id="6">Info</button>
+      <button id="10">ZoomIn</button>
+      <button id="11">ZoomOut</button>
     </joystick>
 
     <remote>
@@ -766,6 +875,12 @@
       <button id="2">PreviousMenu</button>
     </joystick>
 
+    <joystick name="WiiRemote">
+      <button id="5">NextCalibration</button>
+      <button id="10">NextResolution</button>
+      <button id="11">ResetResolution</button>
+    </joystick>
+
     <remote>
       <select>NextCalibration</select>
       <enter>NextCalibration</enter>
@@ -823,6 +938,10 @@
       <button id="17">Close</button>
     </joystick>
 
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
+    </joystick>
+
     <remote>
       <back>Close</back>
     </remote>
@@ -846,6 +965,10 @@
       <button id="9">Close</button>
       <button id="17">PreviousMenu</button>
       <button id="2">PreviousMenu</button>
+    </joystick>
+
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
     </joystick>
 
     <remote>
@@ -882,6 +1005,12 @@
       <button id="17">PreviousMenu</button>
       <button id="6">Info</button>
       <button id="3">CodecInfo</button>
+    </joystick>
+
+    <joystick name="WiiRemote">
+      <button id="5">OSD</button>
+      <button id="10">Info</button>
+      <button id="11">AspectRatio</button>
     </joystick>
 
     <remote>
@@ -927,6 +1056,10 @@
       <button id="19">Close</button>
     </joystick>
 
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
+    </joystick>
+
     <remote>
       <back>Close</back>
       <menu>Close</menu>
@@ -956,6 +1089,10 @@
       <button id="2">Close</button>
       <button id="17">Close</button>
       <button id="19">Close</button>
+    </joystick>
+
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
     </joystick>
 
     <remote>
@@ -989,6 +1126,11 @@
       <button id="19">Close</button>
     </joystick>
 
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
+      <button id="11">Delete</button>
+    </joystick>
+
     <remote>
       <back>Close</back>
       <menu>Close</menu>
@@ -1012,6 +1154,11 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <button id="3">Delete</button>
+    </joystick>
+
+    <joystick name="WiiRemote">
+      <button id="6">ParentDir</button>
+      <button id="11">Playlist</button>
     </joystick>
 
     <remote>
@@ -1040,6 +1187,11 @@
       <altname>Logitech Xbox Cordless Controller</altname>
       <button id="5">Queue</button>
       <button id="3">Playlist</button>
+    </joystick>
+
+    <joystick name="WiiRemote">
+      <button id="6">ParentDir</button>
+      <button id="11">Playlist</button>
     </joystick>
 
     <remote>
@@ -1072,6 +1224,13 @@
       <button id="3">Playlist</button>
       <button id="17">Playlist</button>
       <button id="2">Playlist</button>
+    </joystick>
+
+    <joystick name="WiiRemote">
+      <button id="6">Playlist</button>
+      <button id="7">MoveItemDown</button>
+      <button id="9">MoveItemUp</button>
+      <button id="11">Delete</button>
     </joystick>
 
     <remote>
@@ -1113,6 +1272,14 @@
       <button id="4">Symbols</button>
     </joystick>
 
+    <joystick name="WiiRemote">
+      <button id="6">Shift</button>
+      <button id="7">CursorLeft</button>
+      <button id="9">CursorRight</button>
+      <button id="10">Symbols</button>
+      <button id="11">BackSpace</button>
+    </joystick>
+
     <remote>
       <back>BackSpace</back>
       <star>Shift</star>
@@ -1146,6 +1313,10 @@
       <button id="2">Close</button>
     </joystick>
 
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
+    </joystick>
+
     <remote>
       <title>Close</title>
       <back>Close</back>
@@ -1176,6 +1347,10 @@
       <button id="3">XBMC.ActivateWindow(ScriptsDebugInfo)</button>
     </joystick>
 
+    <joystick name="WiiRemote">
+      <button id="11">XBMC.ActivateWindow(ScriptsDebugInfo)</button>
+    </joystick>
+
     <remote>
       <info>XBMC.ActivateWindow(ScriptsDebugInfo)</info>
     </remote>
@@ -1198,6 +1373,10 @@
     <keyboard>
       <i>Info</i> <!-- clears debug python info -->
     </keyboard>
+
+    <joystick name="WiiRemote">
+      <button id="11">Info</button>
+    </joystick>
   </ScriptsDebugInfo>
 
 
@@ -1214,6 +1393,13 @@
       <altname>Logitech Xbox Cordless Controller</altname>
       <button id="2">BackSpace</button>
       <button id="9">Enter</button>
+    </joystick>
+
+    <joystick name="WiiRemote">
+      <button id="7">SkipPrevious</button>
+      <button id="9">SkipNext</button>
+      <button id="10">Enter</button>
+      <button id="11">BackSpace</button>
     </joystick>
 
     <remote>
@@ -1242,7 +1428,6 @@
       <altname>Logitech Xbox Cordless Controller</altname>
       <button id="9">Stop</button> <!-- Enter Password -->
     </joystick>
-
   </GamepadInput>
 
   <Weather>
@@ -1481,6 +1666,14 @@
       <button id="2">Close</button>
     </joystick>
 
+    <joystick name="WiiRemote">
+      <button id="1">Pause</button>
+      <button id="2">Close</button>
+      <button id="3">SkipPrevious</button>
+      <button id="4">SkipNext</button>
+      <button id="6">Close</button>
+    </joystick>
+
     <remote>
       <back>Close</back>
     </remote>
@@ -1495,6 +1688,14 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <button id="2">Close</button>
+    </joystick>
+
+    <joystick name="WiiRemote">
+      <button id="1">Pause</button>
+      <button id="2">Close</button>
+      <button id="3">StepBack</button>
+      <button id="4">StepForward</button>
+      <button id="6">Close</button>
     </joystick>
 
     <remote>
@@ -1557,6 +1758,12 @@
       <info>Close</info>
       <back>Close</back> 
     </remote>
+
+    <joystick name="WiiRemote">
+      <button id="3">PreviousPicture</button>
+      <button id="4">NextPicture</button>
+      <button id="6">Close</button>
+    </joystick>
 
     <keyboard>
       <period>NextPicture</period>
