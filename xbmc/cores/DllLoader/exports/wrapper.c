@@ -43,6 +43,8 @@ typedef fpos_t fpos64_t;
 #define _stat stat
 #endif
 
+struct mntent;
+
 void* dllmalloc(size_t );
 void* dllcalloc( size_t , size_t );
 void* dllrealloc(void*, size_t);
@@ -95,6 +97,7 @@ int dll_fstat(int fd, struct _stat *buf);
 int dll_fstatvfs64(int fd, struct statvfs64 *buf);
 FILE* dll_popen(const char *command, const char *mode);
 int dll_setvbuf(FILE *stream, char *buf, int type, size_t size);
+struct mntent *dll_getmntent(FILE *fp);
 
 FILE *__wrap_popen(const char *command, const char *mode)
 {
@@ -385,4 +388,12 @@ int __wrap_fstat(int fd, struct _stat *buf)
 int __wrap_setvbuf(FILE *stream, char *buf, int type, size_t size)
 {
    return dll_setvbuf(stream, buf, type, size);
+}
+
+struct mntent *__wrap_getmntent(FILE *fp)
+{
+#ifdef _LINUX
+  return dll_getmntent(fp);
+#endif
+  return NULL;
 }
