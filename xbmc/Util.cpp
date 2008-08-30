@@ -216,24 +216,6 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
       strFilename = g_localizeStrings.Get(260) + " - " + strFileNameAndPath.substr(genre+1).c_str();
   }
 
-  // TuxBox Device
-  else if (url.GetProtocol() == "tuxbox") 
-  {
-    if (strHostname.IsEmpty()) 
-      strFilename = g_localizeStrings.Get(21337); 
-    else 
-      strFilename = g_localizeStrings.Get(21337) + " - " + strHostname;
-  }
-  
-  // FTP-Server
-  else if (url.GetProtocol() == "ftp" || url.GetProtocol() == "ftps") 
-  {
-    if (strHostname.IsEmpty()) 
-      strFilename = g_localizeStrings.Get(20173); 
-    else 
-      strFilename = g_localizeStrings.Get(20173) + " - " + strHostname;
-  }
-
   // Windows SMB Network (SMB)
   else if (url.GetProtocol() == "smb" && strFilename.IsEmpty())
     strFilename = g_localizeStrings.Get(20171);
