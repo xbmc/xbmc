@@ -2159,6 +2159,8 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKee
       return ;
     }
 
+    BeginTransaction();
+
     CStdString strSQL;
     strSQL=FormatSQL("delete from genrelinkmovie where idmovie=%i", lMovieId);
     m_pDS->exec(strSQL.c_str());
