@@ -745,18 +745,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->SetValue(pSettingInt->GetData());
     }
 #endif
-#if defined(HAS_HAL) || defined(_WIN32PC)
-    else if (strSetting.Equals("system.shutdownstate"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(13009), 0);
-      pControl->AddLabel(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN);
-      pControl->AddLabel(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE);
-      pControl->AddLabel(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND);
-      pControl->SetValue(pSettingInt->GetData());
-    }
-#endif
     else if (strSetting.Equals("system.ledcolour"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;

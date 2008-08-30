@@ -145,47 +145,55 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
   {
     case TMSG_SHUTDOWN:
       {
-#if defined(HAS_HAL) || defined(_WIN32PC)
-        int ShutdownState = g_guiSettings.GetInt("system.shutdownstate");
-#else
         g_application.Stop();
-#endif
 #if !defined(_LINUX)
 #ifndef HAS_SDL
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif
 #ifdef _WIN32PC
-        bool bStop = true;
-        if (ShutdownState) // If we have a setting for powerstate mode
-          bStop = CWIN32Util::PowerManagement((PowerState)ShutdownState);
-
-        if (bStop && (ShutdownState == POWERSTATE_SHUTDOWN || ShutdownState == POWERSTATE_REBOOT || ShutdownState == 0))
-        {
-          g_application.Stop();
-        }
+        if (CWIN32Util::PowerManagement(POWERSTATE_SHUTDOWN))
+#elif HAS_HAL
+        if (CHalManager::PowerManagement((PowerState)ShutdownState))
 #endif
-#else
-        // exit the application
-#ifdef HAS_HAL
-        if (ShutdownState) // If we have a setting for powerstate mode
-          CHalManager::PowerManagement((PowerState)ShutdownState);
-
-        if (ShutdownState == POWERSTATE_SHUTDOWN || ShutdownState == 0)
         {
           g_application.Stop();
           exit(0);
         }
-#else
-        exit(0);
-#endif
 #endif
       }
       break;
 
+#ifdef HAS_XBOXHARDWARE
     case TMSG_DASHBOARD:
       {
         CUtil::ExecBuiltIn("XBMC.Dashboard()");
+      }
+      break;
+#else
+    case TMSG_CLOSE:
+      {
+        g_application.Stop();
+        exit(0);
+      }
+      break;
+#endif
+    case TMSG_HIBERNATE:
+      {
+#ifdef HAS_HAL
+        CHalManager::PowerManagement(POWERSTATE_HIBERNATE);
+#elif _WIN32PC
+        CWIN32Util::PowerManagement(POWERSTATE_HIBERNATE);
+#endif
+      }
+      break;
+    case TMSG_SUSPEND:
+      {
+#ifdef HAS_HAL
+        CHalManager::PowerManagement(POWERSTATE_SUSPEND);
+#elif _WIN32PC
+        CWIN32Util::PowerManagement(POWERSTATE_SUSPEND);
+#endif
       }
       break;
 
@@ -625,6 +633,24 @@ void CApplicationMessenger::PictureSlideShow(string pathname, bool bScreensaver 
 void CApplicationMessenger::Shutdown()
 {
   ThreadMessage tMsg = {TMSG_SHUTDOWN};
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::Close()
+{
+  ThreadMessage tMsg = {TMSG_CLOSE};
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::Hibernate()
+{
+  ThreadMessage tMsg = {TMSG_HIBERNATE};
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::Standby()
+{
+  ThreadMessage tMsg = {TMSG_SUSPEND};
   SendMessage(tMsg);
 }
 
