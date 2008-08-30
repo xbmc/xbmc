@@ -197,8 +197,11 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
       if (m_bDisplayEmptyDatabaseMessage)
       {
+        // no library - make sure we focus on a known control, and default to the root.
         SET_CONTROL_FOCUS(CONTROL_BTNTYPE, 0);
-        Update(m_vecItems->m_strPath);  // Will remove content from the list/thumb control
+        m_vecItems->m_strPath = "";
+        SetHistoryForPath("");
+        Update("");
       }
 
       m_database.Close();
