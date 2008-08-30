@@ -203,7 +203,7 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
     if (strFilename.IsEmpty()) 
       strFilename = g_localizeStrings.Get(15200); 
     else 
-      strFilename = g_localizeStrings.Get(15200) + " - " + GetFileName(path); 
+      strFilename = g_localizeStrings.Get(15200) + " - " + strFilename; 
   }
 
   // Shoutcast
