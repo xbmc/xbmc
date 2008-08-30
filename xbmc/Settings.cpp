@@ -176,10 +176,13 @@ CSettings::CSettings(void)
   g_advancedSettings.m_busyDialogDelay = 2000;
   g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG; // = LOG_LEVEL_NORMAL
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
-#if defined(HAS_HAL) && defined(HAL_MOUNT)
+#ifdef HAS_HAL)
+  g_advancedSettings.m_useSystemPowerManagement = false;
+#ifdef HAL_MOUNT
   g_advancedSettings.m_useHalMount = true;
-#elif defined(HAS_HAL)
+#else
   g_advancedSettings.m_useHalMount = false;
+#endif
 #endif
   g_advancedSettings.m_fullScreenOnMovieStart = true;
   g_advancedSettings.m_noDVDROM = false;
@@ -1209,6 +1212,7 @@ void CSettings::LoadAdvancedSettings()
   GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress);
 #ifdef HAS_HAL
   XMLUtils::GetBoolean(pRootElement, "usehalmount", g_advancedSettings.m_useHalMount);
+  XMLUtils::GetBoolean(pRootElement, "systempowermanagement", g_advancedSettings.m_useSystemPowerManagement);
 #endif
   XMLUtils::GetBoolean(pRootElement, "nodvdrom", g_advancedSettings.m_noDVDROM);
   XMLUtils::GetBoolean(pRootElement, "usemultipaths", g_advancedSettings.m_useMultipaths);

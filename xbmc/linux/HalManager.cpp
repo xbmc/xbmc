@@ -383,59 +383,122 @@ bool CHalManager::Update()
 // Makes a temporary DBus connection and sends a PowerManagement call
 bool CHalManager::PowerManagement(PowerState State)
 {
-  DBusMessage* msg;
-  DBusConnection *connection = dbus_bus_get (DBUS_BUS_SESSION, &m_Error);
-  if (connection)
+  if (g_advancedSettings.m_useSystemPowerManagement)
   {
-    CStdString StateString;
-    switch (State)
+    DBusMessage* msg;
+    DBusMessageIter args;
+    DBusError error;
+    dbus_error_init (&error);
+    DBusConnection *connection = dbus_bus_get (DBUS_BUS_SYSTEM, &error);
+    dbus_int32_t int32 = 0;
+    if (connection)
     {
-    case POWERSTATE_HIBERNATE:
-      StateString = "Hibernate";
-      break;
-    case POWERSTATE_SUSPEND:
-      StateString = "Suspend";
-      break;
-    case POWERSTATE_SHUTDOWN:
-      StateString = "Shutdown";
-      break;
-    case POWERSTATE_REBOOT:
-      StateString = "Reboot";
-      break;
-    default:
-      CLog::Log(LOGERROR, "DBus: Unrecognised State");
-      return false;
-      break;
-    }
-    msg = dbus_message_new_method_call("org.freedesktop.PowerManagement", "/org/freedesktop/PowerManagement", "org.freedesktop.PowerManagement", StateString.c_str());
-
-    if (msg == NULL)
-      CLog::Log(LOGERROR, "DBus: Create PowerManagement Message failed");
-    else
-    {
-      dbus_message_set_no_reply(msg, TRUE);
-
-      if (!dbus_connection_send(connection, msg, NULL))
+      switch (State)
       {
-        CLog::Log(LOGERROR, "DBus: Ran out of memory while queueing message");
+      case POWERSTATE_HIBERNATE:
+        msg = dbus_message_new_method_call("org.freedesktop.Hal", "/org/freedesktop/Hal/devices/computer", "org.freedesktop.Hal.Device.SystemPowerManagement", "Hibernate");
+        dbus_message_iter_init_append(msg, &args);
+        if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &int32))
+          CLog::Log(LOGERROR, "DBus: Failed to append arguments");
+        break;
+      case POWERSTATE_SUSPEND:
+        msg = dbus_message_new_method_call("org.freedesktop.Hal", "/org/freedesktop/Hal/devices/computer", "org.freedesktop.Hal.Device.SystemPowerManagement", "Suspend");
+        dbus_message_iter_init_append(msg, &args);
+        if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &int32))
+          CLog::Log(LOGERROR, "DBus: Failed to append arguments");
+        break;
+      case POWERSTATE_SHUTDOWN:
+        msg = dbus_message_new_method_call("org.freedesktop.Hal", "/org/freedesktop/Hal/devices/computer", "org.freedesktop.Hal.Device.SystemPowerManagement", "Shutdown");
+        break;
+      case POWERSTATE_REBOOT:
+        msg = dbus_message_new_method_call("org.freedesktop.Hal", "/org/freedesktop/Hal/devices/computer", "org.freedesktop.Hal.Device.SystemPowerManagement", "Reboot");
+        break;
+      default:
+        CLog::Log(LOGERROR, "DBus: Unrecognised State");
         return false;
+        break;
       }
 
-      printf("Waiting for send-queue to be sent out\n");
-      dbus_connection_flush(connection);
+      if (msg == NULL)
+        CLog::Log(LOGERROR, "DBus: Create PowerManagement Message failed");
+      else
+      {
+        DBusMessage *reply;
+        reply = dbus_connection_send_with_reply_and_block(connection, msg, -1, &error); //The reply timout might be bad to have as -1
+        if (dbus_error_is_set(&error))
+        {
+          CLog::Log(LOGERROR, "DBus: %s - %s", error.name, error.message);
+          return false;
+        }
+        // Need to create a reader for the Message
+        dbus_message_unref (reply);
+        dbus_message_unref(msg);
+        msg = NULL;
+      }
 
-      printf("Queue is now empty\n");
-
-      dbus_message_unref(msg);
-      msg = NULL;
+      dbus_connection_unref(connection);
+      connection = NULL;
+      return true;
     }
 
-    dbus_connection_unref(connection);
-    connection = NULL;
-    return true;
+    return false;
   }
+  else
+  {
+    DBusMessage* msg;
+    DBusConnection *connection = dbus_bus_get (DBUS_BUS_SESSION, &m_Error);
+    if (connection)
+    {
+      CStdString StateString;
+      switch (State)
+      {
+      case POWERSTATE_HIBERNATE:
+        StateString = "Hibernate";
+        break;
+      case POWERSTATE_SUSPEND:
+        StateString = "Suspend";
+        break;
+      case POWERSTATE_SHUTDOWN:
+        StateString = "Shutdown";
+        break;
+      case POWERSTATE_REBOOT:
+        StateString = "Reboot";
+        break;
+      default:
+        CLog::Log(LOGERROR, "DBus: Unrecognised State");
+        return false;
+        break;
+      }
+      msg = dbus_message_new_method_call("org.freedesktop.Hal.Device.SystemPowerManagement", "/org/freedesktop/Hal/Device/SystemPowerManagement", "org.freedesktop.Hal.Device.SystemPowerManagement", StateString.c_str());
 
-  return false;
+      if (msg == NULL)
+        CLog::Log(LOGERROR, "DBus: Create PowerManagement Message failed");
+      else
+      {
+        dbus_message_set_no_reply(msg, TRUE);
+
+        if (!dbus_connection_send(connection, msg, NULL))
+        {
+          CLog::Log(LOGERROR, "DBus: Ran out of memory while queueing message");
+          return false;
+        }
+
+        printf("Waiting for send-queue to be sent out\n");
+        dbus_connection_flush(connection);
+
+        printf("Queue is now empty\n");
+
+        dbus_message_unref(msg);
+        msg = NULL;
+      }
+
+      dbus_connection_unref(connection);
+      connection = NULL;
+      return true;
+    }
+
+    return false;
+  }
 }
 
 /* libhal-storage type to readable form */
