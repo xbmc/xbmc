@@ -192,8 +192,8 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
 
   nErr = snd_pcm_hw_params_set_rate_near(m_pPlayHandle, hw_params, &m_uiSamplesPerSec, NULL);
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_rate",nErr);
-  if(m_uiSamplePerSec != uiSamplesPerSec)
-    CLog::Log(LOGWARNING, "CALSADirectSound::CALSADirectSound - requested samplerate (%d) not supported by hardware, using %d instead", uiSamplesPerSec, m_uiSamplePerSec);
+  if(m_uiSamplesPerSec != uiSamplesPerSec)
+    CLog::Log(LOGWARNING, "CALSADirectSound::CALSADirectSound - requested samplerate (%d) not supported by hardware, using %d instead", uiSamplesPerSec, m_uiSamplesPerSec);
 
   nErr = snd_pcm_hw_params_set_channels(m_pPlayHandle, hw_params, iChannels);
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_channels",nErr);
