@@ -1847,6 +1847,11 @@ extern "C"
       CLog::Log(LOGERROR, "%s - getmntent is not implemented for our virtual filesystem", __FUNCTION__);
       return NULL;
     }
+#ifdef _LINUX
     return getmntent(fp);
+#else
+    CLog::Log(LOGWARNING, "%s - unimplemented function called", __FUNCTION__);
+    return NULL;
+#endif
   }
 }
