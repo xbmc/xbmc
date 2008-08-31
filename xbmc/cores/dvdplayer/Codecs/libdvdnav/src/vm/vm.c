@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000, 2001 Håkan Hjort
+ * Copyright (C) 2000, 2001 Hï¿½kan Hjort
  * Copyright (C) 2001 Rich Wareham <richwareham@users.sourceforge.net>
  *               2002-2004 the dvdnav project
  * 
@@ -1882,7 +1882,12 @@ int vm_set_state(vm_t *vm, dvd_state_t *save_state) {
   save_state->pgc = vm->state.pgc;
 
   /* set the rest of state after the call */
-  vm->state = *save_state;    
+  vm->state = *save_state;
+
+  /* if we are not in standard playback, we must get all data */
+  /* otherwise we risk loosing stillframes, and overlays */
+  if(vm->state.domain != VTS_DOMAIN)
+    vm->state.blockN = 0;
 
   /* force a flush of data here */
   /* we don't need a hop seek here as it's a complete state*/
