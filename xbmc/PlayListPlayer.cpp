@@ -105,9 +105,9 @@ int CPlayListPlayer::GetNextSong(int offset) const
   if (RepeatedOne(m_iCurrentPlayList))
     return song;
 
-  song++;
+  song += offset;
   if (song >= playlist.size() && Repeated(m_iCurrentPlayList))
-    song = 0;
+    song %= playlist.size();
 
   return song;
 }
