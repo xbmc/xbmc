@@ -1588,7 +1588,7 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
 
   RenderOSD();
 
-  if (g_graphicsContext.IsFullScreenVideo())
+  if (g_graphicsContext.IsFullScreenVideo() && !g_application.IsPaused())
   {
     if (g_application.NeedRenderFullScreen())
     { // render our subtitles and osd
