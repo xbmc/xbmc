@@ -227,6 +227,10 @@ void CDVDPlayerVideo::Process()
     }
     else if (ret == MSGQ_TIMEOUT)
     {
+      // if we only wanted priority messages, this isn't a stall
+      if( iPriority )
+        continue;
+
       //Okey, start rendering at stream fps now instead, we are likely in a stillframe
       if( !m_stalled && m_started )
       {
