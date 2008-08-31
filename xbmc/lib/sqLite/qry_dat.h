@@ -227,7 +227,8 @@ public:
   void clear()
   {
     for (unsigned int i = 0; i < records.size(); i++)
-      delete records[i];
+      if (records[i])
+        delete records[i];
     records.clear();
     record_header.clear();
   };
