@@ -242,6 +242,11 @@ int ff_combine_frame(ParseContext *pc, int next, const uint8_t **buf, int *buf_s
         next= 0;
     }
 
+    if(next != END_NOT_FOUND && pc->index + next < 0){
+        av_log(NULL, AV_LOG_ERROR, "parser: next (%d)  points to position behind our buffer size (%d)", next, pc->index);
+        next = pc->index;
+    }
+
     pc->last_index= pc->index;
 
     /* copy into buffer end return */
