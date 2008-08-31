@@ -417,44 +417,66 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   CStdString path(strFileNameAndPath);
   RemoveSlashAtEnd(path);
   CStdString strFilename = GetFileName(path);
-
-  // if upnp:// we can ask for the friendlyname
-#ifdef HAS_UPNP
-  if (strFileNameAndPath.Left(7).Compare("upnp://") == 0) {
-      strFilename = CUPnPDirectory::GetFriendlyName(strFileNameAndPath.c_str());
-  }
-#endif
+  
   CURL url(strFileNameAndPath);
-  if (strFileNameAndPath.Compare("lastfm://") == 0)
+  CStdString strHostname = url.GetHostName();
+
+#ifdef HAS_UPNP
+  // UPNP
+  if (url.GetProtocol() == "upnp")
+    strFilename = CUPnPDirectory::GetFriendlyName(strFileNameAndPath.c_str());
+#endif
+
+  // LastFM
+  if (url.GetProtocol() == "lastfm")
   {
-    strFilename = g_localizeStrings.Get(15200);
-  }
-  else if (strFileNameAndPath.Compare("smb://") == 0)
-  {
-    strFilename = g_localizeStrings.Get(20171); // Windows SMB Network (SMB)
+    if (strFilename.IsEmpty()) 
+      strFilename = g_localizeStrings.Get(15200); 
+    else 
+      strFilename = g_localizeStrings.Get(15200) + " - " + strFilename; 
   }
 
-  /*else if (strFileNameAndPath.Compare("soundtrack://") == 0)
+  // Shoutcast
+  else if (url.GetProtocol() == "shout")
   {
-    strFilename = "MS Soundtracks";  // Would need localizing
-  }*/
+    const int genre = strFileNameAndPath.find_first_of('=');
+    if(genre <0) 
+      strFilename = g_localizeStrings.Get(260);
+    else
+      strFilename = g_localizeStrings.Get(260) + " - " + strFileNameAndPath.substr(genre+1).c_str();
+  }
 
-  else if (strFileNameAndPath.Compare("shout://") == 0)
-  {
-    strFilename = g_localizeStrings.Get(260); // Shoutcast
-  }
-  else if (strFileNameAndPath.Compare("ftp://") == 0 || strFileNameAndPath.Compare("ftps://") == 0)
-  {
-    strFilename = g_localizeStrings.Get(20174); // FTP Server
-  }
-  else if (strFileNameAndPath.Compare("xbms://") == 0)
-  {
+  // Windows SMB Network (SMB)
+  else if (url.GetProtocol() == "smb" && strFilename.IsEmpty())
+    strFilename = g_localizeStrings.Get(20171);
+
+  // XBMSP Network
+  else if (url.GetProtocol() == "xbms" && strFilename.IsEmpty()) 
     strFilename = "XBMSP Network";
-  }
-  else if (strFileNameAndPath.Compare("daap://") == 0)
-  {
-    strFilename = g_localizeStrings.Get(20174); // iTunes music share (DAAP)
-  }
+
+  // iTunes music share (DAAP)
+  else if (url.GetProtocol() == "daap" && strFilename.IsEmpty()) 
+    strFilename = g_localizeStrings.Get(20174);
+
+  // HDHomerun Devices
+  else if (url.GetProtocol() == "hdhomerun" && strFilename.IsEmpty()) 
+    strFilename = "HDHomerun Devices";
+  
+  // ReplayTV Devices
+  else if (url.GetProtocol() == "rtv") 
+    strFilename = "ReplayTV Devices";
+
+  // SAP Streams
+  else if (url.GetProtocol() == "sap" && strFilename.IsEmpty()) 
+    strFilename = "SAP Streams";
+
+  // Music Playlists
+  else if (path.Left(24).Equals("special://musicplaylists")) 
+    strFilename = g_localizeStrings.Get(20011);
+
+  // Video Playlists
+  else if (path.Left(24).Equals("special://videoplaylists")) 
+    strFilename = g_localizeStrings.Get(20012);
 
   // now remove the extension if needed
   if (g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)

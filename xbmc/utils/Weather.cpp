@@ -98,7 +98,7 @@ void CBackgroundWeatherLoader::GetInformation()
   if (!g_guiSettings.GetBool("network.enableinternet"))
     return;
 
-  if (!g_network.IsAvailable())
+  if (!g_network.IsAvailable(true))
     return;
 
   CWeather *callback = (CWeather *)m_callback;
@@ -480,9 +480,12 @@ void CWeather::LocalizeDay(char *szDay)
 void CWeather::LoadLocalizedToken()
 {
   // We load the english strings in to get our tokens
+  CStdString strLanguagePath = "Q:\\language\\English\\strings.xml";
+  
   TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile("Q:\\language\\english\\strings.xml") )
+  if ( !xmlDoc.LoadFile(strLanguagePath.c_str()) )
   {
+    CLog::Log(LOGERROR, "Weather: unable to load %s: %s at line %d", strLanguagePath.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
     return ;
   }
 

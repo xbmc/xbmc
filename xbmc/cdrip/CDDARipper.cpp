@@ -215,7 +215,10 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
     CFile::Delete(strFilename);
   }
 
-  if (bCancelled) CLog::Log(LOGWARNING, "User Cancelled CDDA Rip");
+  if (bCancelled) {
+    CLog::Log(LOGWARNING, "User Cancelled CDDA Rip");
+    CFile::Delete(strFilename);
+  }
   else CLog::Log(LOGINFO, "Finished ripping %s", strTrackFile.c_str());
   return !bCancelled;
 }

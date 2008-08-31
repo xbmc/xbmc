@@ -28,6 +28,7 @@
 #include "VideoDatabase.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "Util.h"
 
 using namespace DIRECTORY;
 using namespace VIDEODATABASEDIRECTORY;
@@ -95,7 +96,17 @@ void CGUIViewStateWindowVideoFiles::SaveViewState()
 
 VECSOURCES& CGUIViewStateWindowVideoFiles::GetSources()
 {
-  return g_settings.m_videoSources;
+  bool bIsSourceName = true;
+  // plugins share
+  if (CPluginDirectory::HasPlugins("video"))
+  {
+    CMediaSource share;
+    share.strName = g_localizeStrings.Get(1037);
+    share.strPath = "plugin://video/";
+    if (CUtil::GetMatchingSource(share.strName, g_settings.m_videoSources, bIsSourceName) < 0)
+      g_settings.m_videoSources.push_back(share);
+  }
+  return g_settings.m_videoSources; 
 }
 
 CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
