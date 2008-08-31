@@ -120,6 +120,7 @@ protected:
   Filling the fields information from select statement */
   virtual void fill_fields();
 /* Changing field values during dataset navigation */
+  virtual void free_row();  // free the memory allocated for the current row
 
 public:
 /* constructor */
