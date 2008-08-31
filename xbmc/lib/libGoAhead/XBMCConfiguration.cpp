@@ -537,9 +537,9 @@ int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& respo
 	}
 
 	// load sources.xml, write a messages if file could not be loaded
-	if (Load() == -1)
+	if (Load() == -1) 
 	{
-          if (eid!=-1) websError(wp, 500, T("Could not load sources.xml\n"));
+          if (eid!=-1) websError(wp, 500, T((char*)"Could not load sources.xml\n"));
               else response="<li>Error:Could not load sources.xml";
           return -1;
 	}

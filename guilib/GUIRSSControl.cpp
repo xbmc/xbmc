@@ -80,7 +80,7 @@ void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)
 void CGUIRSSControl::Render()
 {
   // only render the control if they are enabled
-  if (g_guiSettings.GetBool("lookandfeel.enablerssfeeds"))
+  if (g_guiSettings.GetBool("lookandfeel.enablerssfeeds") && g_rssManager.IsActive())
   {
     CSingleLock lock(m_criticalSection);
     // Create RSS background/worker thread if needed

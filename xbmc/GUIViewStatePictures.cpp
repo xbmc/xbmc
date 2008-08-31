@@ -26,6 +26,8 @@
 #include "ViewState.h"
 #include "Settings.h"
 #include "FileSystem/Directory.h"
+#include "FileSystem/PluginDirectory.h"
+#include "Util.h"
 
 using namespace DIRECTORY;
 
@@ -78,6 +80,16 @@ CStdString CGUIViewStateWindowPictures::GetExtensions()
 
 VECSOURCES& CGUIViewStateWindowPictures::GetSources()
 {
-  return g_settings.m_pictureSources;
+  bool bIsSourceName = true;
+  // plugins share
+  if (CPluginDirectory::HasPlugins("pictures"))
+  {
+    CMediaSource share;
+    share.strName = g_localizeStrings.Get(1039); // Picture Plugins
+    share.strPath = "plugin://pictures/";
+    if (CUtil::GetMatchingSource(share.strName, g_settings.m_pictureSources, bIsSourceName) < 0)
+      g_settings.m_pictureSources.push_back(share);
+  }
+  return g_settings.m_pictureSources; 
 }
 

@@ -24,6 +24,7 @@
 
 #include "lib/libiconv/iconv.h"
 #include "lib/libfribidi/fribidi.h"
+#include "CriticalSection.h"
 
 #include <vector>
 
@@ -91,6 +92,7 @@ private:
   FriBidiCharSet m_stringFribidiCharset;
 
   CStdString EMPTY;
+  CCriticalSection m_bidiSection;
 };
 
 extern CCharsetConverter g_charsetConverter;

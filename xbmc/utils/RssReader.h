@@ -49,7 +49,8 @@ public:
   virtual ~IRssObserver() {}
 };
 
-class CRssReader : public CThread
+class CRssReader : public CThread, 
+                   public CCriticalSection
 {
 public:
   CRssReader();
@@ -73,6 +74,7 @@ private:
   void AddString(CStdStringW aString, int aColour, int iFeed);
   void UpdateFeed();
   virtual void OnExit();
+  int GetQueueSize();
 
   IRssObserver* m_pObserver;
   
@@ -97,8 +99,10 @@ public:
   CRssManager();
   ~CRssManager();
 
+  void Start();
   void Stop();
   void Reset();
+  bool IsActive() { return m_bActive; }
 
   bool GetReader(DWORD controlID, DWORD windowID, IRssObserver* observer, CRssReader *&reader);
 
@@ -111,6 +115,7 @@ private:
   };
 
   std::vector<READERCONTROL> m_readers;
+  bool m_bActive;
 };
 
 extern CRssManager g_rssManager;
