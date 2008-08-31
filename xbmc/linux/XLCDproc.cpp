@@ -93,7 +93,32 @@ void XLCDproc::Initialize()
 }
 void XLCDproc::SetBackLight(int iLight)
 {
-  //TODO:
+  if (sockfd > 0) 
+  { 
+    //Build command 
+    CStdString cmd; 
+
+    if (iLight == 0) {
+      m_bStop = true;
+      cmd = "screen_set xbmc -backlight off\n"; 
+      cmd.append("widget_del xbmc line1\n");
+      cmd.append("widget_del xbmc line2\n");
+      cmd.append("widget_del xbmc line3\n");
+      cmd.append("widget_del xbmc line4\n");
+    }
+    if (iLight > 0) {
+      m_bStop = false;
+      cmd = "screen_set xbmc -backlight on\n"; 
+      cmd.append("widget_add xbmc line1 scroller\n");
+      cmd.append("widget_add xbmc line2 scroller\n");
+      cmd.append("widget_add xbmc line3 scroller\n");
+      cmd.append("widget_add xbmc line4 scroller\n");
+    }
+ 
+    //Send to server 
+    if (write(sockfd,cmd.c_str(),cmd.size()) < 0) 
+      CLog::Log(LOGERROR, "LCDproc:Initialize: Unable to write to socket"); 
+  } 
 }
 void XLCDproc::SetContrast(int iContrast)
 {
@@ -110,6 +135,40 @@ void XLCDproc::Stop()
     m_bStop = true;
   }
 }
+
+void XLCDproc::Suspend() 
+{ 
+  if (!m_bStop) 
+  { 
+    if (sockfd > 0) 
+    { 
+      //Build command to suspend screen 
+      CStdString cmd; 
+      cmd = "screen_set xbmc -priority hidden\n"; 
+ 
+      //Send to server 
+      if (write(sockfd,cmd.c_str(),cmd.size()) < 0) 
+        CLog::Log(LOGERROR, "LCDproc:Initialize: Unable to write to socket"); 
+    } 
+  } 
+} 
+ 
+void XLCDproc::Resume() 
+{ 
+  if (!m_bStop) 
+  { 
+    if (sockfd > 0) 
+    { 
+      //Build command to resume screen 
+      CStdString cmd; 
+      cmd = "screen_set xbmc -priority info\n"; 
+ 
+      //Send to server 
+      if (write(sockfd,cmd.c_str(),cmd.size()) < 0) 
+        CLog::Log(LOGERROR, "LCDproc:Initialize: Unable to write to socket"); 
+    } 
+  } 
+} 
 
 void XLCDproc::SetLine(int iLine, const CStdString& strLine)
 {
