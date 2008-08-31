@@ -1671,10 +1671,6 @@
     </joystick>
 
     <joystick name="WiiRemote">
-      <button id="1">Pause</button>
-      <button id="2">Close</button>
-      <button id="3">SkipPrevious</button>
-      <button id="4">SkipNext</button>
       <button id="6">Close</button>
     </joystick>
 
@@ -1695,10 +1691,6 @@
     </joystick>
 
     <joystick name="WiiRemote">
-      <button id="1">Pause</button>
-      <button id="2">Close</button>
-      <button id="3">StepBack</button>
-      <button id="4">StepForward</button>
       <button id="6">Close</button>
     </joystick>
 
