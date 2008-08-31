@@ -375,26 +375,27 @@ void SqliteDataset::fill_fields() {
   if (result.records.size() != 0)
   {
     const sql_record *row = result.records[frecno];
-    const unsigned int ncols = row->size();
-    fields_object->resize(ncols);
-    edit_object->resize(ncols);
-    for (unsigned int i = 0; i < ncols; i++)
+    if (row)
     {
-      (*fields_object)[i].val = row->at(i);
-      (*edit_object)[i].val = row->at(i);
+      const unsigned int ncols = row->size();
+      fields_object->resize(ncols);
+      edit_object->resize(ncols);
+      for (unsigned int i = 0; i < ncols; i++)
+      {
+        (*fields_object)[i].val = row->at(i);
+        (*edit_object)[i].val = row->at(i);
+      }
+      return;
     }
   }
-  else
+  const unsigned int ncols = result.record_header.size();
+  fields_object->resize(ncols);
+  edit_object->resize(ncols);
+  for (unsigned int i = 0; i < ncols; i++)
   {
-    const unsigned int ncols = result.record_header.size();
-    fields_object->resize(ncols);
-    edit_object->resize(ncols);
-    for (unsigned int i = 0; i < ncols; i++)
-    {
-      (*fields_object)[i].val = "";
-      (*edit_object)[i].val = "";
-    }    
-  }
+    (*fields_object)[i].val = "";
+    (*edit_object)[i].val = "";
+  }    
 }
 
 
@@ -559,11 +560,26 @@ void SqliteDataset::prev(void) {
 }
 
 void SqliteDataset::next(void) {
+#ifdef _XBOX
+  free_row();
+#endif
   Dataset::next();
   if (!eof()) 
       fill_fields();
 }
 
+void SqliteDataset::free_row(void)
+{
+  if (frecno < 0 || (unsigned int)frecno >= result.records.size())
+    return;
+
+  sql_record *row = result.records[frecno];
+  if (row)
+  {
+    delete row;
+    result.records[frecno] = NULL;
+  }
+}
 
 bool SqliteDataset::seek(int pos) {
   if (ds_state == dsSelect) {
