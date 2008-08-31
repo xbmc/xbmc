@@ -592,9 +592,7 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
     throw new CRedirectException(new CFileShoutcast); 
   }
 
-  //m_seekable = false;
-  m_seekable = true; // hack. some streams will support seek but not return correct http headers (many apple movie trailers for example).
-                     // we should try seeking anyway.
+  m_seekable = false;
   if(m_state->m_fileSize > 0)
     m_seekable = true;
 
