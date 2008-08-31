@@ -12,6 +12,11 @@ body
     border : 0;
 }	
 
+a
+{
+    outline: none;
+}
+
 #SiteContainer
 { 
     margin : auto;
