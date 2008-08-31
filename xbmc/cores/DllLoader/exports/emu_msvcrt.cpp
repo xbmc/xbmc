@@ -33,8 +33,8 @@
 #include <sys/timeb.h>
 #ifdef _LINUX
 #include <sys/ioctl.h>
-#include <mntent.h>
 #ifndef __APPLE__
+#include <mntent.h>
 #include <linux/cdrom.h>
 #endif
 #endif
@@ -883,7 +883,7 @@ extern "C"
   FILE* dll_fopen(const char* filename, const char* mode)
   {
     FILE* file = NULL;
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
     if (strcmp(filename, MOUNTED) == 0
     ||  strcmp(filename, MNTTAB) == 0)
     {
@@ -1847,7 +1847,7 @@ extern "C"
       CLog::Log(LOGERROR, "%s - getmntent is not implemented for our virtual filesystem", __FUNCTION__);
       return NULL;
     }
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
     return getmntent(fp);
 #else
     CLog::Log(LOGWARNING, "%s - unimplemented function called", __FUNCTION__);
