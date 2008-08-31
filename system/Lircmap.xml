@@ -1,4 +1,12 @@
 <!-- This file contains the mapping of LIRC keys to XBMC keys used in Keymap.xml  -->
+<!--                                                                              -->
+<!-- How to add remotes                                                           -->
+<!-- <remote device="name_Lirc_calls_the_remote">                                 -->
+<!--                                                                              -->
+<!-- For the commands the layout following layout is used                         -->
+<!-- <XBMC_COMMAND>LircButtonName</XBMC_COMMAND>                                  -->
+<!--                                                                              -->
+<!-- For a list of XBMC_COMMAND's check out the <remote> sections of keymap.xml   -->
 
 <lircmap>
 	<remote device="mceusb">
