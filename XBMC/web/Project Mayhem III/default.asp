@@ -122,7 +122,9 @@
                                 <li><a href="/xbmcCmds/xbmcForm?command=reboot" target="CommandFrame"><span>Reboot</span></a></li>
                             </ul>
                         </li>
+<!--
 						<li class="Info"><a href="default.asp?DisplayInfo=true"><span>Info</span></a></li>                  
+-->
 						<li class="Configuration"><a href="default.asp?DisplayConfiguration=true&amp;page=bookmarks"><span>Sources</span></a></li>
 						<li class="Reboot"><a href="/xbmcCmds/xbmcForm?command=restart" target="CommandFrame"><span>Reboot</span></a></li>
 						<li class="Shutdown"><a href="/xbmcCmds/xbmcForm?command=shutdown" target="CommandFrame"><span>Shutdown</span></a></li>
@@ -176,7 +178,7 @@
     
      */
     
-    write("<a href='default.asp?DisplayConfiguration=true&amp;page=bookmarks'>bookmarks</a> \n");
+    write("<a href='default.asp?DisplayConfiguration=true&amp;page=bookmarks'>Sources</a> \n");
 
     write("<br />\n");
     write("<br />\n");
@@ -266,12 +268,12 @@
     
         /* Add new Bookmark button */
         write("<form name='new_bookmark' method='post' action='default.asp?DisplayConfiguration=true&amp;page=addbookmark'>\n");
-        write("  <input type='submit' name='addnewbookmark' value='Add new bookmark'><br>\n");
+        write("  <input type='submit' name='addnewbookmark' value='Add new source'><br>\n");
         write("</form>\n");
     
         /* Display Music Bookmarks */
         write("<form name='music_bookmarks' method='post' action='default.asp?DisplayConfiguration=true&amp;page=editbookmark&amp;type=music'>\n");
-        write("  Music Bookmarks:<br>\n");
+        write("<br/>Music Sources:<br>\n");
         write("  <input type='submit' name='action' value='edit'>\n");
         write("  <input type='submit' name='action' value='remove'>\n");
         write("  <select name='position'>\n");
@@ -285,7 +287,7 @@
     
         /* Display Picture Bookmarks */
         write("<form name='picture_bookmarks' method='post' action='default.asp?DisplayConfiguration=true&amp;page=editbookmark&amp;type=pictures'>\n");
-        write("Picture Bookmarks:<br>\n");
+        write("<br/>Picture Sources:<br>\n");
         write("  <input type='submit' name='action' value='edit'>\n");
         write("  <input type='submit' name='action' value='remove'>\n");
         write("  <select name='position'>\n");
@@ -299,7 +301,7 @@
     
         /* Display Video Bookmarks */
         write("<form name='video_bookmarks' method='post' action='default.asp?DisplayConfiguration=true&amp;page=editbookmark&amp;type=video'>\n");
-        write("Video Bookmarks:<br>\n");
+        write("<br/>Video Sources:<br>\n");
         write("  <input type='submit' name='action' value='edit'>\n");
         write("  <input type='submit' name='action' value='remove'>\n");
         write("  <select name='position'>\n");
