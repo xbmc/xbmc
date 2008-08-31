@@ -180,6 +180,14 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
       return false;
     }
 
+    // TODO - some soundcards do support other sample rates, but they are quite uncommon
+    if( hints.samplerate > 0 && hints.samplerate != 48000 )
+    {
+      CLog::Log(LOGINFO, "CDVDAudioCodecPassthrough::Open - disabled passthrough due to sample rate not being 48000");
+      return false;
+    }
+
+
     m_Codec = hints.codec;
 
     if(m_Codec == CODEC_ID_AC3)
@@ -371,7 +379,7 @@ int CDVDAudioCodecPassthrough::GetChannels()
 
 int CDVDAudioCodecPassthrough::GetSampleRate()
 {
-  return OUT_SAMPLERATE;
+  return m_iSourceSampleRate;
 }
 
 int CDVDAudioCodecPassthrough::GetBitsPerSample()
