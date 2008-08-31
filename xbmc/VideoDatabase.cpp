@@ -1689,12 +1689,11 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
 {
   try
   {
-    if (!m_pDB.get() || !m_pDS.get()) 
+    if (!m_pDB.get() || !m_pDS.get())
     {
-      assert(0);
+      CLog::Log(LOGERROR, "%s: called without database open", __FUNCTION__);
       return -1;
     }
-
     long lTvShowId = GetTvShowId(strPath);
     if (lTvShowId < 0)
       lTvShowId = AddTvShow(strPath);
@@ -2162,6 +2161,8 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKee
       return ;
     }
 
+    BeginTransaction();
+
     CStdString strSQL;
     strSQL=FormatSQL("delete from genrelinkmovie where idmovie=%i", lMovieId);
     m_pDS->exec(strSQL.c_str());
@@ -2204,6 +2205,7 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKee
     CStdString strPath, strFileName;
     SplitPath(strFilenameAndPath,strPath,strFileName);
     InvalidatePathHash(strPath);
+    CommitTransaction();
   }
   catch (...)
   {
@@ -2822,7 +2824,8 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
         while (!m_pDS2->eof())
         {
           CStdString strMoviePath;
-          CUtil::AddFileToFolder(strCurrPath,m_pDS2->fv("files.strFilename").get_asString(),strMoviePath);
+          CStdString strFileName = m_pDS2->fv("files.strFilename").get_asString();
+          ConstructPath(strMoviePath, strCurrPath, strFileName);
           if (HasMovieInfo(strMoviePath))
             DeleteMovie(strMoviePath);
           if (HasMusicVideoInfo(strMoviePath))

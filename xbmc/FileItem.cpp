@@ -190,14 +190,14 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
   Reset();
   m_strPath = strPath;
   m_bIsFolder = bIsFolder;
-#ifdef DEBUG
   // tuxbox urls cannot have a / at end
   if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder() && !CUtil::IsTuxBox(m_strPath))
+  {
+#ifdef DEBUG
     ASSERT(CUtil::HasSlashAtEnd(m_strPath));
 #endif
-
-  if (m_bIsFolder)
     CUtil::AddSlashAtEnd(m_strPath);
+  }
 }
 
 CFileItem::CFileItem(const CMediaSource& share)

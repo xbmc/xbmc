@@ -431,11 +431,11 @@ void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
     if (pItem->HasVideoInfoTag())
       *item.GetVideoInfoTag() = *pItem->GetVideoInfoTag();
   }
-  ShowIMDB(&item,info);
+  bool modified = ShowIMDB(&item,info);
   // apply any IMDb icon to our item
-  if (pItem->m_bIsFolder)
+  if (modified && pItem->m_bIsFolder)
     CVideoInfoScanner::ApplyIMDBThumbToFolder(pItem->m_strPath, item.GetThumbnailImage());
-  if (!info.strContent.Equals("plugin"))
+  if (modified && !info.strContent.Equals("plugin"))
     Update(m_vecItems->m_strPath);
 }
 
