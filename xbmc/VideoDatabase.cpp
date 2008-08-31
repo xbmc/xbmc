@@ -1689,9 +1689,11 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
 {
   try
   {
-    if (!m_pDB.get() || !m_pDS.get()) 
+    if (!m_pDB.get() || !m_pDS.get())
+    {
+      CLog::Log(LOGERROR, "%s: called without database open", __FUNCTION__);
       return -1;
-
+    }
     long lTvShowId = GetTvShowId(strPath);
     if (lTvShowId < 0)
       lTvShowId = AddTvShow(strPath);
