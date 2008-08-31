@@ -172,6 +172,7 @@
       <pageup>PageUp</pageup>
       <pagedown>PageDown</pagedown>
       <return>Select</return>
+      <enter>Select</enter>
       <backspace>ParentDir</backspace>
       <m>ActivateWindow(PlayerControls)</m>
       <s>ActivateWindow(shutdownmenu)</s>
@@ -485,6 +486,7 @@
       <opensquarebracket>BigStepForward</opensquarebracket>
       <closesquarebracket>BigStepBack</closesquarebracket>
       <return>OSD</return>
+      <enter>OSD</enter>
       <m>OSD</m>
       <i>CodecInfo</i>
       <t>Info</t>
@@ -630,6 +632,7 @@
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
       <return>ActivateWindow(MusicOSD)</return>
+      <enter>ActivateWindow(MusicOSD)</enter>
       <m>ActivateWindow(MusicOSD)</m>
       <i>CodecInfo</i>
       <t>Info</t>
@@ -890,6 +893,7 @@
 
     <keyboard>
       <return>NextCalibration</return>
+      <enter>NextCalibration></enter>
       <d>ResetCalibration</d>
       <r>NextResolution</r>
     </keyboard>
@@ -921,6 +925,7 @@
 
     <keyboard>
       <return>NextCalibration</return>
+      <enter>NextCalibration</enter>
       <d>ResetCalibration</d>
     </keyboard>
   </GUICalibration>
@@ -1031,6 +1036,7 @@
 
     <keyboard>
       <return>Select</return>
+      <enter>Select</enter>
       <backspace>PreviousMenu</backspace>
     </keyboard>
   </VideoMenu>
