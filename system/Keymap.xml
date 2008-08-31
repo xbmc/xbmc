@@ -490,9 +490,8 @@
       <m>OSD</m>
       <i>CodecInfo</i>
       <t>Info</t>
-      <o>ShowTime</o>
       <z>AspectRatio</z>
-      <s>ShowSubtitles</s>
+      <o>ShowSubtitles</o>
       <l>NextSubtitle</l>      
       <left>StepBack</left>
       <right>StepForward</right>
@@ -644,7 +643,7 @@
       <up>IncreaseRating</up>
       <down>DecreaseRating</down>
       <!--<back>NextPreset</back>!-->
-      <s>ShowPreset</s>
+      <o>ShowPreset</o>
       <l>LockPreset</l>
     </keyboard>
   </Visualisation>
