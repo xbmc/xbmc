@@ -1763,7 +1763,7 @@ void CApplication::StopUPnPServer()
 void CApplication::DimLCDOnPlayback(bool dim)
 {
 #ifdef HAS_LCD
-#ifndef _LINUX
+//#ifndef _LINUX
   if(g_lcd && dim && (g_guiSettings.GetInt("lcd.disableonplayback") != LED_PLAYBACK_OFF) && (g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE))
   {
     if ( (IsPlayingVideo()) && g_guiSettings.GetInt("lcd.disableonplayback") == LED_PLAYBACK_VIDEO)
@@ -1774,6 +1774,9 @@ void CApplication::DimLCDOnPlayback(bool dim)
       g_lcd->SetBackLight(0);
   }
   else if(!dim)
+#ifdef _LINUX
+    g_lcd->SetBackLight(1);
+#else
     g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
 #endif
 #endif

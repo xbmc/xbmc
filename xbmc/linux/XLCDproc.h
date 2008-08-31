@@ -34,6 +34,8 @@ public:
   virtual ~XLCDproc(void);
   virtual void Initialize();
   virtual void Stop();
+  virtual void Suspend(); 
+  virtual void Resume(); 
   virtual void SetBackLight(int iLight);
   virtual void SetContrast(int iContrast);
 

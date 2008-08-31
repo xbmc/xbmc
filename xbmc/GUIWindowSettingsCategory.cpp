@@ -769,7 +769,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(351), LED_COLOUR_OFF);
       pControl->SetValue(pSettingInt->GetData());
     }
-#ifndef _LINUX
+//#ifndef _LINUX
     else if (strSetting.Equals("system.leddisableonplayback") || strSetting.Equals("lcd.disableonplayback"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -780,7 +780,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(476), LED_PLAYBACK_VIDEO_MUSIC); // Video & Music
       pControl->SetValue(pSettingInt->GetData());
     }
-#endif
+//#endif
 #ifndef __APPLE__
     else if (strSetting.Equals("videoplayer.rendermethod"))
     {
@@ -1297,7 +1297,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
         pControl->SetLabel2("");
     }
-#ifndef _LINUX
+//#ifndef _LINUX
     else if (strSetting.Equals("lcd.enableonpaused"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1310,6 +1310,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("system.leddisableonplayback") != LED_PLAYBACK_OFF && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_OFF && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_NO_CHANGE);
     }
+#ifndef _LINUX
     else if (strSetting.Equals("lcd.backlight") || strSetting.Equals("lcd.disableonplayback"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
