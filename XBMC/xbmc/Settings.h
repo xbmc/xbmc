@@ -369,7 +369,7 @@ protected:
   bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);
   void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault);
   bool SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath);
-  void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState);
+  void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState, SORT_METHOD defaultSort = SORT_METHOD_LABEL);
 
   void ConvertHomeVar(CStdString& strText);
   // functions for writing xml files

@@ -31,6 +31,9 @@
 #include "GUISettings.h"
 #include "URL.h"
 #include "FileSystem/File.h"
+#ifdef __APPLE__
+#include "CocoaUtils.h"
+#endif
 
 using namespace std;
 using namespace XFILE;
@@ -57,6 +60,8 @@ CRssReader::~CRssReader()
 
 void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, const vector<int> &times, int spacesBetweenFeeds)
 {
+  CSingleLock lock(*this);
+  
   m_pObserver = aObserver;
   m_spacesBetweenFeeds = spacesBetweenFeeds; 
   m_vecUrls = aUrls;
@@ -84,6 +89,7 @@ void CRssReader::requestRefresh()
 
 void CRssReader::AddToQueue(int iAdd)
 {  
+  CSingleLock lock(*this);
   if (iAdd < (int)m_vecUrls.size())
     m_vecQueue.push_back(iAdd);
   if (!m_bIsRunning)
@@ -99,10 +105,18 @@ void CRssReader::OnExit()
   m_bIsRunning = false;
 }
 
+int CRssReader::GetQueueSize()
+{
+  CSingleLock lock(*this);
+  return m_vecQueue.size(); 
+}
+
 void CRssReader::Process()
 {
-  while (m_vecQueue.size())
+  while (GetQueueSize())
   {
+    EnterCriticalSection(*this);
+    
     int iFeed = m_vecQueue.front();
     m_vecQueue.erase(m_vecQueue.begin());
 
@@ -110,10 +124,12 @@ void CRssReader::Process()
     m_strColors[iFeed] = "";
 
     CHTTP http;
-    http.SetUserAgent("XBMC/pre-2.1 (http://www.xboxmediacenter.com)");
+    http.SetUserAgent("XBMC/pre-2.1 (http://www.xbmc.org)");
     CStdString strXML;
     CStdString strUrl = m_vecUrls[iFeed];
 
+    LeaveCriticalSection(*this);
+    
     int nRetries = 3;
     CURL url(strUrl);
 
@@ -415,6 +431,7 @@ CRssManager g_rssManager;
 
 CRssManager::CRssManager()
 {
+  m_bActive = false;
 }
 
 CRssManager::~CRssManager()
@@ -422,8 +439,14 @@ CRssManager::~CRssManager()
   Stop();
 }
 
+void CRssManager::Start()
+ { 
+   m_bActive = true;
+}
+
 void CRssManager::Stop()
 {
+  m_bActive = false;
   for (unsigned int i = 0; i < m_readers.size(); i++)
   {
     if (m_readers[i].reader)

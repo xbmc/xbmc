@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mathijs Groothuis-->
 <!--Email: mathijs.groothuis@gmail.com-->
-<!--Date of translation: 08/17/2008-->
+<!--Date of translation: 08/24/2008-->
 <!--$Revision$-->
 <!--Based on english strings version 14736-->
 <strings>
@@ -1299,7 +1299,7 @@ voor deze visualisatie</string>
   <string id="16024">Bezig met annuleren...</string>
   <string id="16025">Geef de artiest op</string>
   <string id="16026">Playlist afspelen afgebroken</string>
-  <string id="16027">Teveel onderbroken punten</string>
+  <string id="16027">Te veel onderbroken punten</string>
   <string id="16028">Voer waarde in</string>
   <string id="16030">Feestmodus afgebroken.</string>
   <string id="16031">Geen overeenkomstige nummers in database.</string>

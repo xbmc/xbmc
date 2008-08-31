@@ -5129,7 +5129,7 @@ bool CApplication::SwitchToFullScreen()
     return true;
   }
   // special case for switching between GUI & visualisation mode. (only if we're playing an audio song)
-  if (IsPlayingAudio() && m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION && g_guiSettings.GetString("mymusic.visualisation") != "None")
+  if (IsPlayingAudio() && m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION)
   { // then switch to visualisation
     m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
     g_TextureManager.Flush();

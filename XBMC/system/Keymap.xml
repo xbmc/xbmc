@@ -10,7 +10,7 @@
 <!--      <button>action</button>        -->
 <!--    </device>                        -->
 
-<!-- To map keys from other remotes using the RCA 5 protocol, you may add <universalremote> blocks -->
+<!-- To map keys from other remotes using the RCA protocol, you may add <universalremote> blocks -->
 <!-- In this case, the tags used are <obc#> where # is the original button code (OBC) of the key -->
 <!-- You set it up by adding a <universalremote> block to the window or <global> section:       -->
 <!--    <universalremote>             -->
@@ -158,6 +158,7 @@
       <pageup>PageUp</pageup>
       <pagedown>PageDown</pagedown>
       <return>Select</return>
+      <enter>Select</enter>
       <backspace>ParentDir</backspace>
       <m>ActivateWindow(PlayerControls)</m>
       <s>ActivateWindow(shutdownmenu)</s>
@@ -409,12 +410,12 @@
       <opensquarebracket>BigStepForward</opensquarebracket>
       <closesquarebracket>BigStepBack</closesquarebracket>
       <return>OSD</return>
+      <enter>OSD</enter>
       <m>OSD</m>
       <i>CodecInfo</i>
       <t>Info</t>
-      <o>ShowTime</o>
       <z>AspectRatio</z>
-      <s>ShowSubtitles</s>
+      <o>ShowSubtitles</o>
       <l>NextSubtitle</l>      
       <left>StepBack</left>
       <right>StepForward</right>
@@ -534,6 +535,7 @@
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
       <return>ActivateWindow(MusicOSD)</return>
+      <enter>ActivateWindow(MusicOSD)</enter>
       <m>ActivateWindow(MusicOSD)</m>
       <i>CodecInfo</i>
       <t>Info</t>
@@ -545,7 +547,7 @@
       <up>IncreaseRating</up>
       <down>DecreaseRating</down>
       <!--<back>NextPreset</back>!-->
-      <s>ShowPreset</s>
+      <o>ShowPreset</o>
       <l>LockPreset</l>
     </keyboard>
   </Visualisation>
@@ -761,6 +763,7 @@
 
     <keyboard>
       <return>NextCalibration</return>
+      <enter>NextCalibration></enter>
       <d>ResetCalibration</d>
       <r>NextResolution</r>
     </keyboard>
@@ -792,6 +795,7 @@
 
     <keyboard>
       <return>NextCalibration</return>
+      <enter>NextCalibration</enter>
       <d>ResetCalibration</d>
     </keyboard>
   </GUICalibration>
@@ -842,6 +846,7 @@
     <keyboard>
       <backspace>HideSubMenu</backspace>
       <escape>Close</escape>
+      <m>Close</m>
     </keyboard>
   </VideoOSD>
 
@@ -887,6 +892,7 @@
 
     <keyboard>
       <return>Select</return>
+      <enter>Select</enter>
       <backspace>PreviousMenu</backspace>
     </keyboard>
   </VideoMenu>
