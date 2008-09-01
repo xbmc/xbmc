@@ -398,7 +398,7 @@
      </joystick>
 
     <joystick name="WiiRemote">
-      <button id="5">ParentDir</button>
+      <button id="6">ParentDir</button>
       <button id="11">Playlist</button>
     </joystick>
 
