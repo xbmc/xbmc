@@ -934,19 +934,24 @@ CProfile* CApplication::InitDirectoriesLinux()
 #if defined(_LINUX) && !defined(__APPLE__)
   CProfile* profile = NULL;
 
-  // Z: common for both
-  CIoSupport::RemapDriveLetter('Z',"/tmp/xbmc");
-  CreateDirectory(_P("Z:\\"), NULL);
+  CStdString userName;
+  if (getenv("USER"))
+    userName = getenv("USER");
+  else
+    userName = "root";
 
   CStdString userHome;
   if (getenv("HOME"))
-  {
     userHome = getenv("HOME");
-  }
   else
-  {
     userHome = "/root";
-  }
+
+  CStdString xbmcDir;
+  xbmcDir.Format("/tmp/xbmc-%s", userName.c_str());
+
+  // Z: common for both
+  CIoSupport::RemapDriveLetter('Z',xbmcDir);
+  CreateDirectory(_P("Z:\\"), NULL);
 
   if (m_bPlatformDirectories)
   {
@@ -974,7 +979,6 @@ CProfile* CApplication::InitDirectoriesLinux()
     CreateDirectory(xbmcUserdata.c_str(), NULL);
     CIoSupport::RemapDriveLetter('T', xbmcUserdata.c_str());
 
-    CStdString xbmcDir;
     xbmcDir = _P("u:\\skin");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
@@ -2332,10 +2336,8 @@ void CApplication::Render()
 
       // If we have frames or if we get notified of one, consume it.
       if (m_frameCount > 0 || SDL_CondWaitTimeout(m_frameCond, m_frameMutex, 100) == 0)
-      {
-        m_frameCount--;
         m_bPresentFrame = true;
-      }
+
       SDL_mutexV(m_frameMutex);
     }
     else
@@ -2354,6 +2356,11 @@ void CApplication::Render()
         g_videoConfig.SetVSyncMode(VSYNC_VIDEO);
       }
     }
+
+    SDL_mutexP(m_frameMutex);
+    if(m_frameCount > 0)
+      m_frameCount--;
+    SDL_mutexV(m_frameMutex);
 #else
     if (lastFrameTime + singleFrameTime > currentTime)
       nDelayTime = lastFrameTime + singleFrameTime - currentTime;
