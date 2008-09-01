@@ -1235,6 +1235,7 @@ CProfile* CApplication::InitDirectoriesWin32()
   else
   {
     g_stSettings.m_logFolder = strExecutablePath;
+    CUtil::AddSlashAtEnd(g_stSettings.m_logFolder);
     CUtil::AddFileToFolder(strExecutablePath,"cache",strPath);
     CIoSupport::RemapDriveLetter('Z',strPath.c_str());
     CreateDirectory(_P("Z:\\"), NULL);
