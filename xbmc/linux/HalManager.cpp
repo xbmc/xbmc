@@ -469,7 +469,7 @@ bool CHalManager::PowerManagement(PowerState State)
         return false;
         break;
       }
-      msg = dbus_message_new_method_call("org.freedesktop.Hal.Device.SystemPowerManagement", "/org/freedesktop/Hal/Device/SystemPowerManagement", "org.freedesktop.Hal.Device.SystemPowerManagement", StateString.c_str());
+      msg = dbus_message_new_method_call("org.freedesktop.PowerManagement", "/org/freedesktop/PowerManagement", "org.freedesktop.PowerManagement", StateString.c_str());
 
       if (msg == NULL)
         CLog::Log(LOGERROR, "DBus: Create PowerManagement Message failed");
