@@ -1,8 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 08/24/2008-->
+<!--Translator: Tang YiZhi-->
+<!--Email: Kazuyuki@163.com-->
+<!--Date of translation: 09/01/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 15124-->
+<!--Based on english strings version 15195-->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -292,7 +294,7 @@
   <string id="379">下午</string>
   <string id="380">阵雨</string>
   <string id="381">少数</string>
-  <string id="382">间歇性</string>
+  <string id="382">短时有</string>
   <string id="383">风</string>
   <string id="384">强烈</string>
   <string id="385">转晴</string>
@@ -1475,8 +1477,8 @@
   <string id="20189">启用剧情和评论自动滚动</string>
   <string id="20190">自订</string>
   <string id="20191">记录除错信息</string>
-  <string id="20192">通过扫描获取专辑信息</string>
-  <string id="20193">通过扫描获取艺人信息</string>
+  <string id="20192">添加到资料库时获取专辑信息</string>
+  <string id="20193">添加到资料库时获取艺人信息</string>
   <string id="20194">缺省刮削器</string>
   <string id="20195">改变刮削器</string>
   <string id="20196">导出音乐库</string>
@@ -1596,7 +1598,7 @@
   <string id="20416">最初发表</string>
   <string id="20417">作者</string>
   <string id="20418">清除文件名</string>
-  <string id="20419">堆叠重复的TV Shows</string>
+  <string id="20419">堆叠重复的电视剧</string>
   <string id="20420">从不</string>
   <string id="20421">如果只有一季</string>
   <string id="20422">总是</string>
