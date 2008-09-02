@@ -911,8 +911,7 @@ void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
   CQueryParams params;
   dir.GetQueryParams(items.m_strPath,params);
   bool filterWatched=false;
-  if ((params.GetContentType() == VIDEODB_CONTENT_TVSHOWS &&
-       dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_EPISODES) ||
+  if (params.GetContentType() == VIDEODB_CONTENT_TVSHOWS ||
        dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_EPISODES)
     filterWatched = true;
   if (items.IsPluginFolder())
@@ -961,8 +960,7 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
   CQueryParams params;
   dir.GetQueryParams(items.m_strPath,params);
   bool filterWatched=false;
-  if ((params.GetContentType() == VIDEODB_CONTENT_TVSHOWS &&
-       dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_EPISODES) ||
+  if (params.GetContentType() == VIDEODB_CONTENT_TVSHOWS ||
        dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_EPISODES)
   {
     filterWatched = true;
@@ -996,8 +994,7 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
   for (int i = 0; i < m_unfilteredItems->Size(); i++)
   {
     CFileItemPtr item = m_unfilteredItems->Get(i);
-    if (item->m_bIsFolder || item->IsParentFolder()         ||
-        CVideoDatabaseDirectory::IsAllItem(item->m_strPath) ||
+    if (item->IsParentFolder()         ||
       (filter.IsEmpty() && (!filterWatched               ||
       (item->GetVideoInfoTag()->m_playCount>0) == (g_stSettings.m_iMyVideoWatchMode==2))))
     {
