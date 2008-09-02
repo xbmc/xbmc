@@ -49,8 +49,10 @@
 #endif
 
 /* The windows RPCNDR.H file defines boolean. */
+#if defined(WIN32) && !defined(__MINGW32__)
 #ifdef __RPCNDR_H__
 #define HAVE_BOOLEAN
+#endif
 #endif
 
 #ifdef _LINUX
