@@ -750,7 +750,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(13009), 0);
+      if (!g_application.IsStandAlone())
+        pControl->AddLabel(g_localizeStrings.Get(13009), 0);
+      else if (pSettingInt->GetData() == 0)
+        pSettingInt->SetData(POWERSTATE_SHUTDOWN);
       pControl->AddLabel(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN);
       pControl->AddLabel(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE);
       pControl->AddLabel(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND);
