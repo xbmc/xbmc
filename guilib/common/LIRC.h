@@ -9,6 +9,7 @@ public:
   CRemoteControl();
   ~CRemoteControl();
   void Initialize();
+  void Disconnect();
   void Reset();
   void Update();
   WORD GetButton();
