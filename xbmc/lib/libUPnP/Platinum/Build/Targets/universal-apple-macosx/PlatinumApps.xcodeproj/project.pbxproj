@@ -1,0 +1,1455 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		E426A6CE0D75085D00A85AE5 /* Apps */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = E426A72D0D75098700A85AE5 /* Build configuration list for PBXAggregateTarget "Apps" */;
+			buildPhases = (
+			);
+			dependencies = (
+				E426A6D40D75087D00A85AE5 /* PBXTargetDependency */,
+				E426A6D20D75087B00A85AE5 /* PBXTargetDependency */,
+				E426A6D00D75087900A85AE5 /* PBXTargetDependency */,
+			);
+			name = Apps;
+			productName = Apps;
+		};
+		E426A6E40D7508C000A85AE5 /* Tests */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = E426A7300D75098700A85AE5 /* Build configuration list for PBXAggregateTarget "Tests" */;
+			buildPhases = (
+			);
+			dependencies = (
+				E426A6E60D7508C500A85AE5 /* PBXTargetDependency */,
+				E426A6FF0D75091A00A85AE5 /* PBXTargetDependency */,
+				E426A70E0D75093800A85AE5 /* PBXTargetDependency */,
+				E426A71D0D75094D00A85AE5 /* PBXTargetDependency */,
+				E426A72B0D75096400A85AE5 /* PBXTargetDependency */,
+			);
+			name = Tests;
+			productName = Tests;
+		};
+		E426A6E80D7508D000A85AE5 /* All */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = E426A7330D75098700A85AE5 /* Build configuration list for PBXAggregateTarget "All" */;
+			buildPhases = (
+			);
+			dependencies = (
+				E426A6EC0D7508DC00A85AE5 /* PBXTargetDependency */,
+				E426A6EA0D7508D900A85AE5 /* PBXTargetDependency */,
+			);
+			name = All;
+			productName = All;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		E426A6890D75069000A85AE5 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E426A67A0D75067100A85AE5 /* main.cpp */; };
+		E426A68A0D75069200A85AE5 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E426A6690D75064500A85AE5 /* libPlatinum.a */; };
+		E426A6A80D7507CE00A85AE5 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E426A6690D75064500A85AE5 /* libPlatinum.a */; };
+		E426A6A90D7507CE00A85AE5 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E426A6720D75065800A85AE5 /* libNeptune.a */; };
+		E426A6AF0D7507E800A85AE5 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E426A67C0D75067100A85AE5 /* main.cpp */; };
+		E426A6B00D7507E900A85AE5 /* MediaCrawler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E426A67D0D75067100A85AE5 /* MediaCrawler.cpp */; };
+		E426A6B70D7507F200A85AE5 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E426A6690D75064500A85AE5 /* libPlatinum.a */; };
+		E426A6B80D7507F200A85AE5 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E426A6720D75065800A85AE5 /* libNeptune.a */; };
+		E426A6BE0D75080400A85AE5 /* PltMicroMediaController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E426A6820D75067100A85AE5 /* PltMicroMediaController.cpp */; };
+		E426A6BF0D75080400A85AE5 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E426A6810D75067100A85AE5 /* main.cpp */; };
+		E426A6DC0D75089A00A85AE5 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E426A6690D75064500A85AE5 /* libPlatinum.a */; };
+		E426A6DD0D75089A00A85AE5 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E426A6720D75065800A85AE5 /* libNeptune.a */; };
+		E426A6F10D7508EB00A85AE5 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E426A6690D75064500A85AE5 /* libPlatinum.a */; };
+		E426A6F20D7508EB00A85AE5 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E426A6720D75065800A85AE5 /* libNeptune.a */; };
+		E426A6FB0D75090C00A85AE5 /* FileMediaServerTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E426A6C30D75082600A85AE5 /* FileMediaServerTest.cpp */; };
+		E426A6FC0D75091100A85AE5 /* HttpTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E426A6C50D75082600A85AE5 /* HttpTest.cpp */; };
+		E426A7040D75092100A85AE5 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E426A6690D75064500A85AE5 /* libPlatinum.a */; };
+		E426A7050D75092100A85AE5 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E426A6720D75065800A85AE5 /* libNeptune.a */; };
+		E426A70B0D75093300A85AE5 /* PltLightSample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E426A6C80D75082600A85AE5 /* PltLightSample.cpp */; };
+		E426A70C0D75093300A85AE5 /* LightSampleTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E426A6C70D75082600A85AE5 /* LightSampleTest.cpp */; };
+		E426A7140D75093C00A85AE5 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E426A6690D75064500A85AE5 /* libPlatinum.a */; };
+		E426A7150D75093C00A85AE5 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E426A6720D75065800A85AE5 /* libNeptune.a */; };
+		E426A71B0D75094900A85AE5 /* MediaRendererTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E426A6CB0D75082600A85AE5 /* MediaRendererTest.cpp */; };
+		E426A7220D75095200A85AE5 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E426A6690D75064500A85AE5 /* libPlatinum.a */; };
+		E426A7230D75095200A85AE5 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E426A6720D75065800A85AE5 /* libNeptune.a */; };
+		E426A7290D75096100A85AE5 /* SsdpTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E426A6CD0D75082600A85AE5 /* SsdpTest1.cpp */; };
+		E426A78F0D750F4000A85AE5 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E426A6720D75065800A85AE5 /* libNeptune.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E426A6680D75064500A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A6640D75064500A85AE5 /* Platinum.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC046055464E500DB518D;
+			remoteInfo = Platinum;
+		};
+		E426A6710D75065800A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A66A0D75065800A85AE5 /* Neptune.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F912B69F0B8EB1C700C1E90D;
+			remoteInfo = Neptune;
+		};
+		E426A6730D75065800A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A66A0D75065800A85AE5 /* Neptune.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CAA97A010CF164A700C01909;
+			remoteInfo = XmlTest1;
+		};
+		E426A6750D75065800A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A66A0D75065800A85AE5 /* Neptune.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CAA97A1B0CF1654A00C01909;
+			remoteInfo = StringsTest1;
+		};
+		E426A6770D75065800A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A66A0D75065800A85AE5 /* Neptune.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CA550D550D20A37E00B22D72;
+			remoteInfo = HttpServerTest1;
+		};
+		E426A6CF0D75087900A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E426A6A40D7507CE00A85AE5;
+			remoteInfo = MediaCrawler;
+		};
+		E426A6D10D75087B00A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E426A6860D75068800A85AE5;
+			remoteInfo = MediaConnect;
+		};
+		E426A6D30D75087D00A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E426A6B20D7507F200A85AE5;
+			remoteInfo = MicroMediaController;
+		};
+		E426A6E50D7508C500A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E426A6D70D75089A00A85AE5;
+			remoteInfo = FileMediaServerTest;
+		};
+		E426A6E90D7508D900A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E426A6E40D7508C000A85AE5;
+			remoteInfo = Tests;
+		};
+		E426A6EB0D7508DC00A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E426A6CE0D75085D00A85AE5;
+			remoteInfo = Apps;
+		};
+		E426A6FE0D75091A00A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E426A6ED0D7508EB00A85AE5;
+			remoteInfo = HttpTest;
+		};
+		E426A70D0D75093800A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E426A7000D75092100A85AE5;
+			remoteInfo = LightSampleTest;
+		};
+		E426A71C0D75094D00A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E426A70F0D75093C00A85AE5;
+			remoteInfo = MediaRendererTest;
+		};
+		E426A72A0D75096400A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E426A71E0D75095200A85AE5;
+			remoteInfo = SsdpTest;
+		};
+		E426A78B0D750F3300A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A6640D75064500A85AE5 /* Platinum.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = Platinum;
+		};
+		E426A78D0D750F3800A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A66A0D75065800A85AE5 /* Neptune.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
+			remoteInfo = Neptune;
+		};
+		E426A7910D750F7000A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A6640D75064500A85AE5 /* Platinum.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = Platinum;
+		};
+		E426A7930D750F7300A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A66A0D75065800A85AE5 /* Neptune.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
+			remoteInfo = Neptune;
+		};
+		E426A7970D750F8B00A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A6640D75064500A85AE5 /* Platinum.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = Platinum;
+		};
+		E426A7990D750F8E00A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A66A0D75065800A85AE5 /* Neptune.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
+			remoteInfo = Neptune;
+		};
+		E426A79B0D750F9E00A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A6640D75064500A85AE5 /* Platinum.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = Platinum;
+		};
+		E426A79D0D750FA100A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A66A0D75065800A85AE5 /* Neptune.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
+			remoteInfo = Neptune;
+		};
+		E426A79F0D750FB500A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A6640D75064500A85AE5 /* Platinum.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = Platinum;
+		};
+		E426A7A10D750FB500A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A66A0D75065800A85AE5 /* Neptune.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
+			remoteInfo = Neptune;
+		};
+		E426A7A30D750FBF00A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A6640D75064500A85AE5 /* Platinum.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = Platinum;
+		};
+		E426A7A50D750FBF00A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A66A0D75065800A85AE5 /* Neptune.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
+			remoteInfo = Neptune;
+		};
+		E426A7A70D750FC800A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A6640D75064500A85AE5 /* Platinum.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = Platinum;
+		};
+		E426A7A90D750FC800A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A66A0D75065800A85AE5 /* Neptune.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
+			remoteInfo = Neptune;
+		};
+		E426A7AB0D750FCD00A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A6640D75064500A85AE5 /* Platinum.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = Platinum;
+		};
+		E426A7AD0D750FCD00A85AE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E426A66A0D75065800A85AE5 /* Neptune.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
+			remoteInfo = Neptune;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		E426A6640D75064500A85AE5 /* Platinum.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Platinum.xcodeproj; sourceTree = "<group>"; };
+		E426A66A0D75065800A85AE5 /* Neptune.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Neptune.xcodeproj; path = "../../../ThirdParty/Neptune/Build/Targets/universal-apple-macosx/Neptune.xcodeproj"; sourceTree = SOURCE_ROOT; };
+		E426A67A0D75067100A85AE5 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		E426A67C0D75067100A85AE5 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		E426A67D0D75067100A85AE5 /* MediaCrawler.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MediaCrawler.cpp; sourceTree = "<group>"; };
+		E426A67E0D75067100A85AE5 /* MediaCrawler.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MediaCrawler.h; sourceTree = "<group>"; };
+		E426A67F0D75067100A85AE5 /* StreamHandler.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = StreamHandler.h; sourceTree = "<group>"; };
+		E426A6810D75067100A85AE5 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		E426A6820D75067100A85AE5 /* PltMicroMediaController.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = PltMicroMediaController.cpp; sourceTree = "<group>"; };
+		E426A6830D75067100A85AE5 /* PltMicroMediaController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PltMicroMediaController.h; sourceTree = "<group>"; };
+		E426A6C30D75082600A85AE5 /* FileMediaServerTest.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = FileMediaServerTest.cpp; sourceTree = "<group>"; };
+		E426A6C50D75082600A85AE5 /* HttpTest.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = HttpTest.cpp; sourceTree = "<group>"; };
+		E426A6C70D75082600A85AE5 /* LightSampleTest.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = LightSampleTest.cpp; sourceTree = "<group>"; };
+		E426A6C80D75082600A85AE5 /* PltLightSample.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = PltLightSample.cpp; sourceTree = "<group>"; };
+		E426A6C90D75082600A85AE5 /* PltLightSample.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PltLightSample.h; sourceTree = "<group>"; };
+		E426A6CB0D75082600A85AE5 /* MediaRendererTest.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MediaRendererTest.cpp; sourceTree = "<group>"; };
+		E426A6CD0D75082600A85AE5 /* SsdpTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SsdpTest1.cpp; sourceTree = "<group>"; };
+		E426A7B00D750FD800A85AE5 /* MediaConnect */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MediaConnect; sourceTree = BUILT_PRODUCTS_DIR; };
+		E426A7B20D750FD800A85AE5 /* MediaCrawler */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MediaCrawler; sourceTree = BUILT_PRODUCTS_DIR; };
+		E426A7B40D750FD800A85AE5 /* MicroMediaController */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MicroMediaController; sourceTree = BUILT_PRODUCTS_DIR; };
+		E426A7B60D750FD800A85AE5 /* FileMediaServerTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = FileMediaServerTest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E426A7B80D750FD800A85AE5 /* HttpTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HttpTest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E426A7BA0D750FD800A85AE5 /* LightSampleTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = LightSampleTest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E426A7BC0D750FD800A85AE5 /* MediaRendererTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MediaRendererTest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E426A7BE0D750FD800A85AE5 /* SsdpTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SsdpTest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E426A6850D75068800A85AE5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E426A68A0D75069200A85AE5 /* libPlatinum.a in Frameworks */,
+				E426A78F0D750F4000A85AE5 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E426A6A70D7507CE00A85AE5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E426A6A80D7507CE00A85AE5 /* libPlatinum.a in Frameworks */,
+				E426A6A90D7507CE00A85AE5 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E426A6B60D7507F200A85AE5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E426A6B70D7507F200A85AE5 /* libPlatinum.a in Frameworks */,
+				E426A6B80D7507F200A85AE5 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E426A6DB0D75089A00A85AE5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E426A6DC0D75089A00A85AE5 /* libPlatinum.a in Frameworks */,
+				E426A6DD0D75089A00A85AE5 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E426A6F00D7508EB00A85AE5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E426A6F10D7508EB00A85AE5 /* libPlatinum.a in Frameworks */,
+				E426A6F20D7508EB00A85AE5 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E426A7030D75092100A85AE5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E426A7040D75092100A85AE5 /* libPlatinum.a in Frameworks */,
+				E426A7050D75092100A85AE5 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E426A7130D75093C00A85AE5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E426A7140D75093C00A85AE5 /* libPlatinum.a in Frameworks */,
+				E426A7150D75093C00A85AE5 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E426A7210D75095200A85AE5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E426A7220D75095200A85AE5 /* libPlatinum.a in Frameworks */,
+				E426A7230D75095200A85AE5 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E426A6030D74F4C400A85AE5 = {
+			isa = PBXGroup;
+			children = (
+				E426A6640D75064500A85AE5 /* Platinum.xcodeproj */,
+				E426A66A0D75065800A85AE5 /* Neptune.xcodeproj */,
+				E426A60E0D74F4CB00A85AE5 /* Apps */,
+				E426A6100D74F4D900A85AE5 /* Products */,
+				E426A60F0D74F4D200A85AE5 /* Tests */,
+			);
+			sourceTree = "<group>";
+		};
+		E426A60E0D74F4CB00A85AE5 /* Apps */ = {
+			isa = PBXGroup;
+			children = (
+				E426A6790D75067100A85AE5 /* MediaConnect */,
+				E426A67B0D75067100A85AE5 /* MediaCrawler */,
+				E426A6800D75067100A85AE5 /* MicroMediaController */,
+			);
+			name = Apps;
+			sourceTree = "<group>";
+		};
+		E426A60F0D74F4D200A85AE5 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				E426A6C20D75082600A85AE5 /* FileMediaServer */,
+				E426A6C40D75082600A85AE5 /* Http */,
+				E426A6C60D75082600A85AE5 /* LightSample */,
+				E426A6CA0D75082600A85AE5 /* MediaRenderer */,
+				E426A6CC0D75082600A85AE5 /* Ssdp */,
+			);
+			name = Tests;
+			sourceTree = "<group>";
+		};
+		E426A6100D74F4D900A85AE5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E426A7B00D750FD800A85AE5 /* MediaConnect */,
+				E426A7B20D750FD800A85AE5 /* MediaCrawler */,
+				E426A7B40D750FD800A85AE5 /* MicroMediaController */,
+				E426A7B60D750FD800A85AE5 /* FileMediaServerTest */,
+				E426A7B80D750FD800A85AE5 /* HttpTest */,
+				E426A7BA0D750FD800A85AE5 /* LightSampleTest */,
+				E426A7BC0D750FD800A85AE5 /* MediaRendererTest */,
+				E426A7BE0D750FD800A85AE5 /* SsdpTest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E426A6650D75064500A85AE5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E426A6690D75064500A85AE5 /* libPlatinum.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E426A66B0D75065800A85AE5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E426A6720D75065800A85AE5 /* libNeptune.a */,
+				E426A6740D75065800A85AE5 /* XmlTest1 */,
+				E426A6760D75065800A85AE5 /* StringsTest1 */,
+				E426A6780D75065800A85AE5 /* HttpServerTest1 */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E426A6790D75067100A85AE5 /* MediaConnect */ = {
+			isa = PBXGroup;
+			children = (
+				E426A67A0D75067100A85AE5 /* main.cpp */,
+			);
+			name = MediaConnect;
+			path = ../../../Source/Apps/MediaConnect;
+			sourceTree = SOURCE_ROOT;
+		};
+		E426A67B0D75067100A85AE5 /* MediaCrawler */ = {
+			isa = PBXGroup;
+			children = (
+				E426A67C0D75067100A85AE5 /* main.cpp */,
+				E426A67D0D75067100A85AE5 /* MediaCrawler.cpp */,
+				E426A67E0D75067100A85AE5 /* MediaCrawler.h */,
+				E426A67F0D75067100A85AE5 /* StreamHandler.h */,
+			);
+			name = MediaCrawler;
+			path = ../../../Source/Apps/MediaCrawler;
+			sourceTree = SOURCE_ROOT;
+		};
+		E426A6800D75067100A85AE5 /* MicroMediaController */ = {
+			isa = PBXGroup;
+			children = (
+				E426A6810D75067100A85AE5 /* main.cpp */,
+				E426A6820D75067100A85AE5 /* PltMicroMediaController.cpp */,
+				E426A6830D75067100A85AE5 /* PltMicroMediaController.h */,
+			);
+			name = MicroMediaController;
+			path = ../../../Source/Apps/MicroMediaController;
+			sourceTree = SOURCE_ROOT;
+		};
+		E426A6C20D75082600A85AE5 /* FileMediaServer */ = {
+			isa = PBXGroup;
+			children = (
+				E426A6C30D75082600A85AE5 /* FileMediaServerTest.cpp */,
+			);
+			name = FileMediaServer;
+			path = ../../../Source/Tests/FileMediaServer;
+			sourceTree = SOURCE_ROOT;
+		};
+		E426A6C40D75082600A85AE5 /* Http */ = {
+			isa = PBXGroup;
+			children = (
+				E426A6C50D75082600A85AE5 /* HttpTest.cpp */,
+			);
+			name = Http;
+			path = ../../../Source/Tests/Http;
+			sourceTree = SOURCE_ROOT;
+		};
+		E426A6C60D75082600A85AE5 /* LightSample */ = {
+			isa = PBXGroup;
+			children = (
+				E426A6C70D75082600A85AE5 /* LightSampleTest.cpp */,
+				E426A6C80D75082600A85AE5 /* PltLightSample.cpp */,
+				E426A6C90D75082600A85AE5 /* PltLightSample.h */,
+			);
+			name = LightSample;
+			path = ../../../Source/Tests/LightSample;
+			sourceTree = SOURCE_ROOT;
+		};
+		E426A6CA0D75082600A85AE5 /* MediaRenderer */ = {
+			isa = PBXGroup;
+			children = (
+				E426A6CB0D75082600A85AE5 /* MediaRendererTest.cpp */,
+			);
+			name = MediaRenderer;
+			path = ../../../Source/Tests/MediaRenderer;
+			sourceTree = SOURCE_ROOT;
+		};
+		E426A6CC0D75082600A85AE5 /* Ssdp */ = {
+			isa = PBXGroup;
+			children = (
+				E426A6CD0D75082600A85AE5 /* SsdpTest1.cpp */,
+			);
+			name = Ssdp;
+			path = ../../../Source/Tests/Ssdp;
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E426A6860D75068800A85AE5 /* MediaConnect */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E426A68D0D7506B300A85AE5 /* Build configuration list for PBXNativeTarget "MediaConnect" */;
+			buildPhases = (
+				E426A6840D75068800A85AE5 /* Sources */,
+				E426A6850D75068800A85AE5 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E426A78C0D750F3300A85AE5 /* PBXTargetDependency */,
+				E426A78E0D750F3800A85AE5 /* PBXTargetDependency */,
+			);
+			name = MediaConnect;
+			productName = MediaConnect;
+			productReference = E426A7B00D750FD800A85AE5 /* MediaConnect */;
+			productType = "com.apple.product-type.tool";
+		};
+		E426A6A40D7507CE00A85AE5 /* MediaCrawler */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E426A6AA0D7507CE00A85AE5 /* Build configuration list for PBXNativeTarget "MediaCrawler" */;
+			buildPhases = (
+				E426A6A50D7507CE00A85AE5 /* Sources */,
+				E426A6A70D7507CE00A85AE5 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E426A7920D750F7000A85AE5 /* PBXTargetDependency */,
+				E426A7940D750F7300A85AE5 /* PBXTargetDependency */,
+			);
+			name = MediaCrawler;
+			productName = MediaConnect;
+			productReference = E426A7B20D750FD800A85AE5 /* MediaCrawler */;
+			productType = "com.apple.product-type.tool";
+		};
+		E426A6B20D7507F200A85AE5 /* MicroMediaController */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E426A6B90D7507F200A85AE5 /* Build configuration list for PBXNativeTarget "MicroMediaController" */;
+			buildPhases = (
+				E426A6B30D7507F200A85AE5 /* Sources */,
+				E426A6B60D7507F200A85AE5 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E426A7980D750F8B00A85AE5 /* PBXTargetDependency */,
+				E426A79A0D750F8E00A85AE5 /* PBXTargetDependency */,
+			);
+			name = MicroMediaController;
+			productName = MediaConnect;
+			productReference = E426A7B40D750FD800A85AE5 /* MicroMediaController */;
+			productType = "com.apple.product-type.tool";
+		};
+		E426A6D70D75089A00A85AE5 /* FileMediaServerTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E426A6DE0D75089A00A85AE5 /* Build configuration list for PBXNativeTarget "FileMediaServerTest" */;
+			buildPhases = (
+				E426A6D80D75089A00A85AE5 /* Sources */,
+				E426A6DB0D75089A00A85AE5 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E426A79C0D750F9E00A85AE5 /* PBXTargetDependency */,
+				E426A79E0D750FA100A85AE5 /* PBXTargetDependency */,
+			);
+			name = FileMediaServerTest;
+			productName = MediaConnect;
+			productReference = E426A7B60D750FD800A85AE5 /* FileMediaServerTest */;
+			productType = "com.apple.product-type.tool";
+		};
+		E426A6ED0D7508EB00A85AE5 /* HttpTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E426A6F30D7508EB00A85AE5 /* Build configuration list for PBXNativeTarget "HttpTest" */;
+			buildPhases = (
+				E426A6EE0D7508EB00A85AE5 /* Sources */,
+				E426A6F00D7508EB00A85AE5 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E426A7A00D750FB500A85AE5 /* PBXTargetDependency */,
+				E426A7A20D750FB500A85AE5 /* PBXTargetDependency */,
+			);
+			name = HttpTest;
+			productName = MediaConnect;
+			productReference = E426A7B80D750FD800A85AE5 /* HttpTest */;
+			productType = "com.apple.product-type.tool";
+		};
+		E426A7000D75092100A85AE5 /* LightSampleTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E426A7060D75092100A85AE5 /* Build configuration list for PBXNativeTarget "LightSampleTest" */;
+			buildPhases = (
+				E426A7010D75092100A85AE5 /* Sources */,
+				E426A7030D75092100A85AE5 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E426A7A40D750FBF00A85AE5 /* PBXTargetDependency */,
+				E426A7A60D750FBF00A85AE5 /* PBXTargetDependency */,
+			);
+			name = LightSampleTest;
+			productName = MediaConnect;
+			productReference = E426A7BA0D750FD800A85AE5 /* LightSampleTest */;
+			productType = "com.apple.product-type.tool";
+		};
+		E426A70F0D75093C00A85AE5 /* MediaRendererTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E426A7160D75093C00A85AE5 /* Build configuration list for PBXNativeTarget "MediaRendererTest" */;
+			buildPhases = (
+				E426A7100D75093C00A85AE5 /* Sources */,
+				E426A7130D75093C00A85AE5 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E426A7A80D750FC800A85AE5 /* PBXTargetDependency */,
+				E426A7AA0D750FC800A85AE5 /* PBXTargetDependency */,
+			);
+			name = MediaRendererTest;
+			productName = MediaConnect;
+			productReference = E426A7BC0D750FD800A85AE5 /* MediaRendererTest */;
+			productType = "com.apple.product-type.tool";
+		};
+		E426A71E0D75095200A85AE5 /* SsdpTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E426A7240D75095200A85AE5 /* Build configuration list for PBXNativeTarget "SsdpTest" */;
+			buildPhases = (
+				E426A71F0D75095200A85AE5 /* Sources */,
+				E426A7210D75095200A85AE5 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E426A7AC0D750FCD00A85AE5 /* PBXTargetDependency */,
+				E426A7AE0D750FCD00A85AE5 /* PBXTargetDependency */,
+			);
+			name = SsdpTest;
+			productName = MediaConnect;
+			productReference = E426A7BE0D750FD800A85AE5 /* SsdpTest */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E426A6050D74F4C400A85AE5 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = E426A6060D74F4C400A85AE5 /* Build configuration list for PBXProject "PlatinumApps" */;
+			compatibilityVersion = "Xcode 2.4";
+			hasScannedForEncodings = 0;
+			mainGroup = E426A6030D74F4C400A85AE5;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = E426A66B0D75065800A85AE5 /* Products */;
+					ProjectRef = E426A66A0D75065800A85AE5 /* Neptune.xcodeproj */;
+				},
+				{
+					ProductGroup = E426A6650D75064500A85AE5 /* Products */;
+					ProjectRef = E426A6640D75064500A85AE5 /* Platinum.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				E426A6E80D7508D000A85AE5 /* All */,
+				E426A6E40D7508C000A85AE5 /* Tests */,
+				E426A6CE0D75085D00A85AE5 /* Apps */,
+				E426A6860D75068800A85AE5 /* MediaConnect */,
+				E426A6A40D7507CE00A85AE5 /* MediaCrawler */,
+				E426A6B20D7507F200A85AE5 /* MicroMediaController */,
+				E426A6D70D75089A00A85AE5 /* FileMediaServerTest */,
+				E426A6ED0D7508EB00A85AE5 /* HttpTest */,
+				E426A7000D75092100A85AE5 /* LightSampleTest */,
+				E426A70F0D75093C00A85AE5 /* MediaRendererTest */,
+				E426A71E0D75095200A85AE5 /* SsdpTest */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		E426A6690D75064500A85AE5 /* libPlatinum.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libPlatinum.a;
+			remoteRef = E426A6680D75064500A85AE5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E426A6720D75065800A85AE5 /* libNeptune.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libNeptune.a;
+			remoteRef = E426A6710D75065800A85AE5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E426A6740D75065800A85AE5 /* XmlTest1 */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = XmlTest1;
+			remoteRef = E426A6730D75065800A85AE5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E426A6760D75065800A85AE5 /* StringsTest1 */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = StringsTest1;
+			remoteRef = E426A6750D75065800A85AE5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E426A6780D75065800A85AE5 /* HttpServerTest1 */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = HttpServerTest1;
+			remoteRef = E426A6770D75065800A85AE5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E426A6840D75068800A85AE5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E426A6890D75069000A85AE5 /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E426A6A50D7507CE00A85AE5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E426A6AF0D7507E800A85AE5 /* main.cpp in Sources */,
+				E426A6B00D7507E900A85AE5 /* MediaCrawler.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E426A6B30D7507F200A85AE5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E426A6BE0D75080400A85AE5 /* PltMicroMediaController.cpp in Sources */,
+				E426A6BF0D75080400A85AE5 /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E426A6D80D75089A00A85AE5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E426A6FB0D75090C00A85AE5 /* FileMediaServerTest.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E426A6EE0D7508EB00A85AE5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E426A6FC0D75091100A85AE5 /* HttpTest.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E426A7010D75092100A85AE5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E426A70B0D75093300A85AE5 /* PltLightSample.cpp in Sources */,
+				E426A70C0D75093300A85AE5 /* LightSampleTest.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E426A7100D75093C00A85AE5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E426A71B0D75094900A85AE5 /* MediaRendererTest.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E426A71F0D75095200A85AE5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E426A7290D75096100A85AE5 /* SsdpTest1.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E426A6D00D75087900A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E426A6A40D7507CE00A85AE5 /* MediaCrawler */;
+			targetProxy = E426A6CF0D75087900A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A6D20D75087B00A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E426A6860D75068800A85AE5 /* MediaConnect */;
+			targetProxy = E426A6D10D75087B00A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A6D40D75087D00A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E426A6B20D7507F200A85AE5 /* MicroMediaController */;
+			targetProxy = E426A6D30D75087D00A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A6E60D7508C500A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E426A6D70D75089A00A85AE5 /* FileMediaServerTest */;
+			targetProxy = E426A6E50D7508C500A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A6EA0D7508D900A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E426A6E40D7508C000A85AE5 /* Tests */;
+			targetProxy = E426A6E90D7508D900A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A6EC0D7508DC00A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E426A6CE0D75085D00A85AE5 /* Apps */;
+			targetProxy = E426A6EB0D7508DC00A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A6FF0D75091A00A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E426A6ED0D7508EB00A85AE5 /* HttpTest */;
+			targetProxy = E426A6FE0D75091A00A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A70E0D75093800A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E426A7000D75092100A85AE5 /* LightSampleTest */;
+			targetProxy = E426A70D0D75093800A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A71D0D75094D00A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E426A70F0D75093C00A85AE5 /* MediaRendererTest */;
+			targetProxy = E426A71C0D75094D00A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A72B0D75096400A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E426A71E0D75095200A85AE5 /* SsdpTest */;
+			targetProxy = E426A72A0D75096400A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A78C0D750F3300A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Platinum;
+			targetProxy = E426A78B0D750F3300A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A78E0D750F3800A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Neptune;
+			targetProxy = E426A78D0D750F3800A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A7920D750F7000A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Platinum;
+			targetProxy = E426A7910D750F7000A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A7940D750F7300A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Neptune;
+			targetProxy = E426A7930D750F7300A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A7980D750F8B00A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Platinum;
+			targetProxy = E426A7970D750F8B00A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A79A0D750F8E00A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Neptune;
+			targetProxy = E426A7990D750F8E00A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A79C0D750F9E00A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Platinum;
+			targetProxy = E426A79B0D750F9E00A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A79E0D750FA100A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Neptune;
+			targetProxy = E426A79D0D750FA100A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A7A00D750FB500A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Platinum;
+			targetProxy = E426A79F0D750FB500A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A7A20D750FB500A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Neptune;
+			targetProxy = E426A7A10D750FB500A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A7A40D750FBF00A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Platinum;
+			targetProxy = E426A7A30D750FBF00A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A7A60D750FBF00A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Neptune;
+			targetProxy = E426A7A50D750FBF00A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A7A80D750FC800A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Platinum;
+			targetProxy = E426A7A70D750FC800A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A7AA0D750FC800A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Neptune;
+			targetProxy = E426A7A90D750FC800A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A7AC0D750FCD00A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Platinum;
+			targetProxy = E426A7AB0D750FCD00A85AE5 /* PBXContainerItemProxy */;
+		};
+		E426A7AE0D750FCD00A85AE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Neptune;
+			targetProxy = E426A7AD0D750FCD00A85AE5 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		E426A6070D74F4C400A85AE5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					i386,
+					ppc,
+				);
+				COPY_PHASE_STRIP = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				USER_HEADER_SEARCH_PATHS = "";
+			};
+			name = Debug;
+		};
+		E426A6080D74F4C400A85AE5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					i386,
+					ppc,
+				);
+				COPY_PHASE_STRIP = YES;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Release;
+		};
+		E426A68E0D7506B300A85AE5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = MediaConnect;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../ThirdParty/Neptune/Source/Core $(SRCROOT)/../../../Source/Core $(SRCROOT)/../../../Source/Devices/MediaConnect $(SRCROOT)/../../../Source/Devices/MediaServer $(SRCROOT)/../../../Source/Devices/MediaRenderer";
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		E426A68F0D7506B300A85AE5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = MediaConnect;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../ThirdParty/Neptune/Source/Core $(SRCROOT)/../../../Source/Core $(SRCROOT)/../../../Source/Devices/MediaConnect $(SRCROOT)/../../../Source/Devices/MediaServer $(SRCROOT)/../../../Source/Devices/MediaRenderer";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E426A6AB0D7507CE00A85AE5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = MediaCrawler;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../ThirdParty/Neptune/Source/Core $(SRCROOT)/../../../Source/Core $(SRCROOT)/../../../Source/Devices/MediaConnect $(SRCROOT)/../../../Source/Devices/MediaServer $(SRCROOT)/../../../Source/Devices/MediaRenderer";
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		E426A6AC0D7507CE00A85AE5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = MediaCrawler;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../ThirdParty/Neptune/Source/Core $(SRCROOT)/../../../Source/Core $(SRCROOT)/../../../Source/Devices/MediaConnect $(SRCROOT)/../../../Source/Devices/MediaServer $(SRCROOT)/../../../Source/Devices/MediaRenderer";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E426A6BA0D7507F200A85AE5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = MicroMediaController;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../ThirdParty/Neptune/Source/Core $(SRCROOT)/../../../Source/Core $(SRCROOT)/../../../Source/Devices/MediaConnect $(SRCROOT)/../../../Source/Devices/MediaServer $(SRCROOT)/../../../Source/Devices/MediaRenderer";
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		E426A6BB0D7507F200A85AE5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = MicroMediaController;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../ThirdParty/Neptune/Source/Core $(SRCROOT)/../../../Source/Core $(SRCROOT)/../../../Source/Devices/MediaConnect $(SRCROOT)/../../../Source/Devices/MediaServer $(SRCROOT)/../../../Source/Devices/MediaRenderer";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E426A6DF0D75089A00A85AE5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = FileMediaServerTest;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../ThirdParty/Neptune/Source/Core $(SRCROOT)/../../../Source/Core $(SRCROOT)/../../../Source/Devices/MediaConnect $(SRCROOT)/../../../Source/Devices/MediaServer $(SRCROOT)/../../../Source/Devices/MediaRenderer";
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		E426A6E00D75089A00A85AE5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = FileMediaServerTest;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../ThirdParty/Neptune/Source/Core $(SRCROOT)/../../../Source/Core $(SRCROOT)/../../../Source/Devices/MediaConnect $(SRCROOT)/../../../Source/Devices/MediaServer $(SRCROOT)/../../../Source/Devices/MediaRenderer";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E426A6F40D7508EB00A85AE5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = HttpTest;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../ThirdParty/Neptune/Source/Core $(SRCROOT)/../../../Source/Core $(SRCROOT)/../../../Source/Devices/MediaConnect $(SRCROOT)/../../../Source/Devices/MediaServer $(SRCROOT)/../../../Source/Devices/MediaRenderer";
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		E426A6F50D7508EB00A85AE5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = HttpTest;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../ThirdParty/Neptune/Source/Core $(SRCROOT)/../../../Source/Core $(SRCROOT)/../../../Source/Devices/MediaConnect $(SRCROOT)/../../../Source/Devices/MediaServer $(SRCROOT)/../../../Source/Devices/MediaRenderer";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E426A7070D75092100A85AE5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = LightSampleTest;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../ThirdParty/Neptune/Source/Core $(SRCROOT)/../../../Source/Core $(SRCROOT)/../../../Source/Devices/MediaConnect $(SRCROOT)/../../../Source/Devices/MediaServer $(SRCROOT)/../../../Source/Devices/MediaRenderer";
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		E426A7080D75092100A85AE5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = LightSampleTest;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../ThirdParty/Neptune/Source/Core $(SRCROOT)/../../../Source/Core $(SRCROOT)/../../../Source/Devices/MediaConnect $(SRCROOT)/../../../Source/Devices/MediaServer $(SRCROOT)/../../../Source/Devices/MediaRenderer";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E426A7170D75093C00A85AE5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = MediaRendererTest;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../ThirdParty/Neptune/Source/Core $(SRCROOT)/../../../Source/Core $(SRCROOT)/../../../Source/Devices/MediaConnect $(SRCROOT)/../../../Source/Devices/MediaServer $(SRCROOT)/../../../Source/Devices/MediaRenderer";
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		E426A7180D75093C00A85AE5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = MediaRendererTest;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../ThirdParty/Neptune/Source/Core $(SRCROOT)/../../../Source/Core $(SRCROOT)/../../../Source/Devices/MediaConnect $(SRCROOT)/../../../Source/Devices/MediaServer $(SRCROOT)/../../../Source/Devices/MediaRenderer";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E426A7250D75095200A85AE5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = SsdpTest;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../ThirdParty/Neptune/Source/Core $(SRCROOT)/../../../Source/Core $(SRCROOT)/../../../Source/Devices/MediaConnect $(SRCROOT)/../../../Source/Devices/MediaServer $(SRCROOT)/../../../Source/Devices/MediaRenderer";
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		E426A7260D75095200A85AE5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = SsdpTest;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../ThirdParty/Neptune/Source/Core $(SRCROOT)/../../../Source/Core $(SRCROOT)/../../../Source/Devices/MediaConnect $(SRCROOT)/../../../Source/Devices/MediaServer $(SRCROOT)/../../../Source/Devices/MediaRenderer";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E426A72E0D75098700A85AE5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = Apps;
+			};
+			name = Debug;
+		};
+		E426A72F0D75098700A85AE5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				PRODUCT_NAME = Apps;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E426A7310D75098700A85AE5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = Tests;
+			};
+			name = Debug;
+		};
+		E426A7320D75098700A85AE5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				PRODUCT_NAME = Tests;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E426A7340D75098700A85AE5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = All;
+			};
+			name = Debug;
+		};
+		E426A7350D75098700A85AE5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				PRODUCT_NAME = All;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E426A6060D74F4C400A85AE5 /* Build configuration list for PBXProject "PlatinumApps" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E426A6070D74F4C400A85AE5 /* Debug */,
+				E426A6080D74F4C400A85AE5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E426A68D0D7506B300A85AE5 /* Build configuration list for PBXNativeTarget "MediaConnect" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E426A68E0D7506B300A85AE5 /* Debug */,
+				E426A68F0D7506B300A85AE5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E426A6AA0D7507CE00A85AE5 /* Build configuration list for PBXNativeTarget "MediaCrawler" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E426A6AB0D7507CE00A85AE5 /* Debug */,
+				E426A6AC0D7507CE00A85AE5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E426A6B90D7507F200A85AE5 /* Build configuration list for PBXNativeTarget "MicroMediaController" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E426A6BA0D7507F200A85AE5 /* Debug */,
+				E426A6BB0D7507F200A85AE5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E426A6DE0D75089A00A85AE5 /* Build configuration list for PBXNativeTarget "FileMediaServerTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E426A6DF0D75089A00A85AE5 /* Debug */,
+				E426A6E00D75089A00A85AE5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E426A6F30D7508EB00A85AE5 /* Build configuration list for PBXNativeTarget "HttpTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E426A6F40D7508EB00A85AE5 /* Debug */,
+				E426A6F50D7508EB00A85AE5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E426A7060D75092100A85AE5 /* Build configuration list for PBXNativeTarget "LightSampleTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E426A7070D75092100A85AE5 /* Debug */,
+				E426A7080D75092100A85AE5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E426A7160D75093C00A85AE5 /* Build configuration list for PBXNativeTarget "MediaRendererTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E426A7170D75093C00A85AE5 /* Debug */,
+				E426A7180D75093C00A85AE5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E426A7240D75095200A85AE5 /* Build configuration list for PBXNativeTarget "SsdpTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E426A7250D75095200A85AE5 /* Debug */,
+				E426A7260D75095200A85AE5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E426A72D0D75098700A85AE5 /* Build configuration list for PBXAggregateTarget "Apps" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E426A72E0D75098700A85AE5 /* Debug */,
+				E426A72F0D75098700A85AE5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E426A7300D75098700A85AE5 /* Build configuration list for PBXAggregateTarget "Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E426A7310D75098700A85AE5 /* Debug */,
+				E426A7320D75098700A85AE5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E426A7330D75098700A85AE5 /* Build configuration list for PBXAggregateTarget "All" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E426A7340D75098700A85AE5 /* Debug */,
+				E426A7350D75098700A85AE5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E426A6050D74F4C400A85AE5 /* Project object */;
+}
