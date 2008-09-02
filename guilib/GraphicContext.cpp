@@ -679,10 +679,14 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
     if (g_advancedSettings.m_fullScreen)
     {
+      // SetFullScreenRoot will call m_screenSurface->ResizeSurface
+      needsResize = false;
       SetFullScreenRoot(true);
     }
     else if (lastRes>=DESKTOP )
     {
+      // SetFullScreenRoot will call m_screenSurface->ResizeSurface
+      needsResize = false;
       SetFullScreenRoot(false);
     }
 
@@ -1440,10 +1444,11 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     Cocoa_GL_SetFullScreen(g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, false, blankOtherDisplays);
 #else
     SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0, SDL_RESIZABLE);
-#endif
     m_screenSurface->RefreshCurrentContext();
+#endif
     g_fontManager.ReloadTTFFonts();
     m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
+
 #ifdef HAS_SDL_OPENGL
     glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
     glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
