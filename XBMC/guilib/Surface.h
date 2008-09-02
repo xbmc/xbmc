@@ -73,7 +73,7 @@ public:
   bool MakeCurrent();
   void ReleaseContext();
   void EnableVSync(bool enable=true);
-  bool ResizeSurface(int newWidth, int newHeight);
+  bool ResizeSurface(int newWidth, int newHeight, bool useNewContext=true);
   void RefreshCurrentContext();
 #ifdef HAS_GLX
   GLXContext GetContext() {return m_glContext;}
