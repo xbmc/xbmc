@@ -79,7 +79,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2005\Debug&quot;"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
@@ -142,7 +142,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2005\Release&quot;"
+				CommandLine=""
 			/>
 		</Configuration>
 	</Configurations>

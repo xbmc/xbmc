@@ -85,7 +85,7 @@ class LibraryModule(Module):
                  linked_modules        = [],
                  environment           = None,
                  excluded_files        = [],
-                 extra_cpp_defines     = {},
+                 extra_cpp_defines     = [],
                  shared                = False) :
         build_source_dirs = [source_root+'/'+drct for drct in build_source_dirs]
         Module.__init__(self, 
@@ -94,10 +94,10 @@ class LibraryModule(Module):
                         Split(linked_modules)+Split(included_modules))
         self.build_include_dirs = build_include_dirs
         if environment is None:
-            self.env            = env.Copy()
+            self.env            = env.Clone()
         else:
-            self.env            = environment.Copy()
-        self.env.Append(CPPDEFINES = extra_cpp_defines)
+            self.env            = environment.Clone()
+        self.env.AppendUnique(CPPDEFINES = extra_cpp_defines)
         
         # store this new object in the module dictionary
         Modules[name] = self
@@ -151,7 +151,7 @@ Import("env")
 env['NPT_EXTRA_LIBS'] = []
 
 if (env['build_config'] == 'Debug'):
-    env.Append(CPPDEFINES=['NPT_DEBUG'])
+    env.AppendUnique(CPPDEFINES=['NPT_DEBUG'])
 
 ### try to read in any target specific configuration
 target_config_file = env.GetBuildPath('#/Build/Targets/'+env['target']+'/Config.scons')
@@ -162,9 +162,11 @@ if os.path.exists(target_config_file):
 #######################################################
 # modules
 #######################################################
+
 LibraryModule(name                  = 'Zlib',
               source_root           = '.',
               build_source_dirs     = ['ThirdParty/zlib-1.2.3'])
+
 
 extra_cpp_flags = []
 if not env.has_key('NPT_CONFIG_NO_ZIP'):
@@ -179,5 +181,5 @@ LibraryModule(name                  = 'Neptune',
 for app in ['NetPump', 'NetConfig', 'NetPing', 'NetEcho']:
     Application(app, 'Source/Apps/'+app)
     
-for test in ['Arrays1', 'BufferedStreams1', 'HttpClient1', 'HttpServer1', 'Lists1', 'Maps1', 'Misc1', 'RingBuffer1', 'Strings1', 'Xml1', 'Udp1', 'Threads1', 'Url1', 'Zip1']:
+for test in ['Arrays1', 'BufferedStreams1', 'HttpClient1', 'Directory1', 'HttpServer1', 'Lists1', 'Maps1', 'Misc1', 'RingBuffer1', 'Strings1', 'Xml1', 'Udp1', 'Threads1', 'Queue1', 'Messages1', 'Messages2', 'Url1', 'Zip1']:
     Application(test+'Test', 'Source/Tests/'+test)
