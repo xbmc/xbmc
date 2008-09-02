@@ -2558,7 +2558,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       g_pythonParser.evalFile(strParameterCaseIntact.c_str());
   }
 #endif
-#if defined(_LINUX)
+#if defined(_LINUX) && !defined(__APPLE__)
+
   else if (execute.Equals("system.exec"))
   {
     CStdStringArray arSplit; 
@@ -2574,7 +2575,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         // Disconnect LIRC client 
         CLog::Log(LOGDEBUG,"Removing LIRC client."); 
         g_RemoteControl.Disconnect(); 
-       
+
         // Suspend LCDd
         CLog::Log(LOGDEBUG,"Suspending LCDd screen."); 
         g_lcd->Suspend(); 
@@ -2587,7 +2588,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         // Register LIRC client 
         CLog::Log(LOGDEBUG,"Registering LIRC client."); 
         g_RemoteControl.Initialize(); 
- 
+
         // Resume LCDd
         CLog::Log(LOGDEBUG,"Resuming LCDd screen."); 
         g_lcd->Resume(); 
