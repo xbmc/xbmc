@@ -45,12 +45,26 @@ enum {
     IR_MenuHold
 };
 enum {
-    IR_Event_Term_ATV     = 8,
+    IR_Event_Term_ATV1X   = 5,
+    IR_Event_Term_ATV2X   = 8,
     IR_Event_Term_10_4    = 5,
     IR_Event_Term_10_5    = 18
 };
-// magic HID key cookies for AppleTV
-static std::string key_cookiesATV[] =
+// magic HID key cookies AppleTV running r1.x (same as 10.4)
+static std::string key_cookiesATV1X[] =
+{ 
+    "8_",   //SelectHold = "18_"
+    "9_",
+    "10_",
+    "12_",
+    "13_",
+    "4_",
+    "3_",
+    "5_",
+    "7_"
+};
+// magic HID key cookies for AppleTV running r2.x
+static std::string key_cookiesATV2X[] =
 { 
     "9_",   //SelectHold = "19_"
     "10_",
@@ -135,13 +149,33 @@ void AppleRemote::Initialize()
 
     if (MacVersion < 0x1050)
     {
-        //key = key_cookiesATV;
-        //m_button_event_terminator = IR_Event_Term_ATV;
-        key = key_cookies10_4;
-        m_button_event_terminator = IR_Event_Term_10_4;
+        // OSX 10.4/AppleTV
+        size_t      len = 512;
+        char        buffer[512];
+        std::string hw_model = "unknown";
+        
+        if (sysctlbyname("hw.model", &buffer, &len, NULL, 0) == 0)
+            hw_model = buffer;
+
+        if (hw_model == "AppleTV1,1")
+        {
+            fprintf(stderr, "Using key code for AppleTV r1.x\n");
+            key = key_cookiesATV1X;
+            m_button_event_terminator = IR_Event_Term_ATV1X;
+            
+            //fprintf(stderr, "Using key code for AppleTV r2.x\n");
+            //key = key_cookiesATV2X;
+            //m_button_event_terminator = IR_Event_Term_ATV2X;
+        }
+        else
+        {
+            key = key_cookies10_4;
+            m_button_event_terminator = IR_Event_Term_10_4;
+        }
     }
     else
     {
+        // OSX 10.5
         key = key_cookies10_5;
         m_button_event_terminator = IR_Event_Term_10_5;
     }
