@@ -50,68 +50,6 @@ def GetLibraries(modules):
             libs += [module]
     return libs
 
-def BuildApp(name, 
-             deps, 
-             build_deps         = [], 
-             source_dirs        = [], 
-             build_include_dirs = [], 
-             source_files       = [], 
-             linked_modules     = [],
-             source_root        = 'Source', 
-             environment        = None, 
-             extra_cpp_defines  = {}):
-    # for each source drct to build, create a BuildDir
-    # to say where we want the object files to be built,
-    # and compute the list of source files to build
-    sources = []
-    for drct in Split(source_dirs):
-        DeclareBuildDir(drct)
-        sources += GlobSources(drct, ['*c', '*.cpp'])
-        
-    # add cherry-picked files
-    for pair in source_files:
-        drct = pair[0]
-        pattern = pair[1]
-        drct_path = source_root+'/'+drct
-        DeclareBuildDir(drct_path)
-        sources += GlobSources(drct_path, pattern)
-        
-    # check that the source list is not empty
-    if len(sources) == 0:
-        print "\n\n\tWARNING: application " + name + " does not have any source file\n\n"
-        return 
-
-    # calculate our build include path
-    cpp_path = GetIncludeDirs(Split(build_include_dirs) + Split(source_dirs) + Split(deps))
-
-    # libraries    
-    libs = GetLibraries(Split(linked_modules))
-    libs += GetLibraries(deps)
-
-    # use the relevant environment    
-    local_env = None
-    if environment is not None:
-        local_env = environment.Copy()
-    else:
-        local_env = env.Copy()
-    local_env.Append(CPPDEFINES=extra_cpp_defines)
-
-    # build
-    prog = local_env.Program(target=name,
-                             source=sources,
-                             LIBS=libs, 
-                             CPPPATH=cpp_path)
-    # extra dependencies
-    local_env.Depends(name, build_deps)
-    
-    # copy to Targets folder
-    inst = local_env.Install (dir=env.GetBuildPath('#/Targets/'+env['target']+'/'+env['build_config']), source=prog)
-    if env['build_config'] == 'Release' and env['STRIP']:
-    		local_env.AddPostAction (inst, env.Action (env['STRIP']+' $TARGET'))
-    else:
-        local_env.AddPostAction (inst, env.Action (''))
-    
-
 Modules = {}
 class Module:
     def __init__(self, name, included_modules = [], linked_modules = []):
@@ -138,7 +76,7 @@ class LibraryModule(Module):
                  linked_modules        = [],
                  environment           = None,
                  excluded_files        = [],
-                 extra_cpp_defines     = {},
+                 extra_cpp_defines     = [],
                  shared                = False) :
         build_source_dirs = [source_root+'/'+drct for drct in build_source_dirs]
         Module.__init__(self, 
@@ -147,10 +85,10 @@ class LibraryModule(Module):
                         Split(linked_modules)+Split(included_modules))
         self.build_include_dirs = build_include_dirs
         if environment is None:
-            self.env            = env.Copy()
+            self.env            = env.Clone()
         else:
-            self.env            = environment.Copy()
-        self.env.Append(CPPDEFINES = extra_cpp_defines)
+            self.env            = environment.Clone()
+        self.env.AppendUnique(CPPDEFINES = extra_cpp_defines)
         
         # store this new object in the module dictionary
         Modules[name] = self
@@ -181,7 +119,25 @@ class LibraryModule(Module):
             libs = GetLibraries(Split(linked_modules))
             self.product = self.env.SharedLibrary(target=name, LIBS=libs, source=sources)
         self.env.Alias(name, self.product)
+        
+        
+def Application(name, dir, deps):
+    DeclareBuildDir(dir)
+    libs = GetLibraries(deps)
+    cpp_path = GetIncludeDirs(deps)
     
+    prog = env.Program(name, 
+                       GlobSources(dir, ['*.c', '*.cpp']), 
+                       LIBS=libs, CPPPATH=cpp_path)
+    #env.Alias(name, prog)
+    if env.has_key('NPT_EXECUTABLE_POST_PROCESSOR'):
+        env.AddPostAction(prog, env['NPT_EXECUTABLE_POST_PROCESSOR'])
+    
+    # copy to Targets folder
+    inst = env.Install (dir=env.GetBuildPath('#/Targets/'+env['target']+'/'+env['build_config']), source=prog)
+    if env['build_config'] == 'Release' and env.has_key('STRIP'):
+       env.AddPostAction(inst, env['STRIP']+' $TARGETS');
+
 #######################################################
 # Main Build
 #######################################################
@@ -189,10 +145,9 @@ Import("env")
 
 ### defaults
 env['NPT_EXTRA_LIBS'] = []
-env['STRIP'] = 'strip'
 
 if (env['build_config'] == 'Debug'):
-    env.Append(CPPDEFINES=['NPT_DEBUG', 'NPT_CONFIG_ENABLE_LOGGING'])
+    env.AppendUnique(CPPDEFINES=['NPT_DEBUG', 'NPT_CONFIG_ENABLE_LOGGING'])
 
 ### try to read in any target specific configuration
 target_config_file = env.GetBuildPath('#/Build/Targets/'+env['target']+'/Config.scons')
@@ -206,60 +161,60 @@ if os.path.exists(target_config_file):
 # Neptune
 NPT_SOURCE_ROOT = 'ThirdParty/Neptune'
 
-LibraryModule   (name                  = 'Zlib',
-                 source_root           = NPT_SOURCE_ROOT,
-                 build_source_dirs     = ['ThirdParty/zlib-1.2.3'])
+LibraryModule(name                  = 'Zlib',
+              source_root           = NPT_SOURCE_ROOT,
+              build_source_dirs     = ['ThirdParty/zlib-1.2.3'])
               
 extra_cpp_flags = []
 if not env.has_key('NPT_CONFIG_NO_ZIP'):
     extra_cpp_flags = ['NPT_CONFIG_ENABLE_ZIP']
 
-LibraryModule   (name                  = 'Neptune',
-                 build_source_dirs     = ['Core'],
-                 build_source_files    = env['NPT_SYSTEM_SOURCES'],
-                 extra_cpp_defines     = extra_cpp_flags,
-                 linked_modules        = env['NPT_EXTRA_LIBS']+['Zlib'],
-                 source_root           = NPT_SOURCE_ROOT + '/Source')
+LibraryModule(name                  = 'Neptune',
+              build_source_dirs     = ['Core'],
+              build_source_files    = env['NPT_SYSTEM_SOURCES'],
+              extra_cpp_defines     = extra_cpp_flags,
+              linked_modules        = env['NPT_EXTRA_LIBS']+['Zlib'],
+              source_root           = NPT_SOURCE_ROOT + '/Source')
                  
 # Platinum        
-LibraryModule   (name               = 'Platinum',
-                 build_source_dirs  = ['Core'],
-                 included_modules   = ['Neptune'],
-                 linked_modules     = ['Neptune'])
+LibraryModule(name               = 'Platinum',
+              build_source_dirs  = ['Core'],
+              included_modules   = ['Neptune'],
+              linked_modules     = ['Neptune'])
                  
 # Platinum MediaServer         
-LibraryModule   (name               = 'PltMediaServer',
-                 build_source_dirs  = ['MediaServer'],
-                 included_modules   = ['Neptune', 'Platinum'],
-                 linked_modules     = ['Neptune', 'Platinum'],
-                 source_root        = 'Source/Devices')
+LibraryModule(name               = 'PltMediaServer',
+              build_source_dirs  = ['MediaServer'],
+              included_modules   = ['Neptune', 'Platinum'],
+              linked_modules     = ['Neptune', 'Platinum'],
+              source_root        = 'Source/Devices')
 
 # Platinum MediaRenderer         
-LibraryModule   (name               = 'PltMediaRenderer',
-                 build_source_dirs  = ['MediaRenderer'],
-                 included_modules   = ['Neptune', 'Platinum', 'PltMediaServer'],
-                 linked_modules     = ['Neptune', 'Platinum'],
-                 source_root        = 'Source/Devices')
+LibraryModule(name               = 'PltMediaRenderer',
+              build_source_dirs  = ['MediaRenderer'],
+              included_modules   = ['Neptune', 'Platinum', 'PltMediaServer'],
+              linked_modules     = ['Neptune', 'Platinum'],
+              source_root        = 'Source/Devices')
                  
 # Platinum MediaConnect         
-LibraryModule   (name               = 'PltMediaConnect',
-                 build_source_dirs  = ['MediaConnect'],
-                 included_modules   = ['Neptune', 'Platinum', 'PltMediaServer'],
-                 linked_modules     = ['Neptune', 'Platinum'],
-                 excluded_files	    = ['MACFromIP.cpp'],
-                 source_root        = 'Source/Devices')
+LibraryModule(name               = 'PltMediaConnect',
+              build_source_dirs  = ['MediaConnect'],
+              included_modules   = ['Neptune', 'Platinum', 'PltMediaServer'],
+              linked_modules     = ['Neptune', 'Platinum'],
+              excluded_files	    = ['MACFromIP.cpp'],
+              source_root        = 'Source/Devices')
                                            
 for app in ['MicroMediaController', 'MediaCrawler', 'MediaConnect']:
-    BuildApp(name = app, 
-             source_dirs = 'Source/Apps/' + app, 
-             deps = ['Neptune', 'Platinum', 'PltMediaServer', 'PltMediaRenderer', 'PltMediaConnect'])
+    Application(name = app, 
+                dir = 'Source/Apps/' + app, 
+                deps = ['Neptune', 'Platinum', 'PltMediaServer', 'PltMediaRenderer', 'PltMediaConnect'])
     
 for test in ['FileMediaServer', 'MediaRenderer', 'LightSample', 'Http']:
-    BuildApp(name = test+'Test', 
-             source_dirs = 'Source/Tests/' + test, 
-             deps = ['Neptune', 'Platinum', 'PltMediaServer', 'PltMediaRenderer'])
+    Application(name = test+'Test', 
+                dir = 'Source/Tests/' + test, 
+                deps = ['Neptune', 'Platinum', 'PltMediaServer', 'PltMediaRenderer'])
     		 
 for tool in ['SsdpProxy', 'TextToHeader']:
-    BuildApp(name = tool, 
-             source_dirs = 'Source/Tools/' + tool, 
-             deps = ['Neptune', 'Platinum'])
+    Application(name = tool, 
+                dir = 'Source/Tools/' + tool, 
+                deps = ['Neptune', 'Platinum'])
