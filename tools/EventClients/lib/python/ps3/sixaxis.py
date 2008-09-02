@@ -5,6 +5,8 @@ import sys
 import struct
 import math
 from bluetooth import set_l2cap_mtu
+from keymaps import keymap_sixaxis
+from keymaps import axismap_sixaxis
 
 xval = 0
 yval = 0
@@ -12,6 +14,7 @@ num_samples = 16
 sumx = [0] * num_samples
 sumy = [0] * num_samples
 sumr = [0] * num_samples
+axis_amount = [0, 0, 0, 0]
 
 def normalize(val):
     upperlimit = 65281
@@ -33,6 +36,15 @@ def normalize(val):
     if val <= 0:
         val = 1
     return val
+
+def normalize_axis(val, deadzone):
+
+    val = float(val) - 127.0
+    val = val / 255.0
+    if abs(val) < deadzone:
+      return 0.0
+    else:
+      return val * 65535.0 * 2.0 
 
 def normalize_angle(val, valrange):
     valrange *= 2
@@ -91,7 +103,7 @@ def read_input(isock):
     return isock.recv(50)
 
 
-def process_input(data, xbmc=None):
+def process_input(data, xbmc=None, mouse_enabled=0):
     if struct.unpack("B", data[1:2])[0] != 1:
         print data
         return (0, 0, 0)
@@ -142,9 +154,38 @@ def process_input(data, xbmc=None):
         xval += sumx[i]
         yval += sumy[i]
 
-    # send the mouse position to xbmc
+    axis = struct.unpack("BBBB", data[7:11])
     if xbmc:
-        xbmc.send_mouse_position(xval/num_samples, yval/num_samples)    
+      for i in range(4):
+        config = axismap_sixaxis[i]
+        axis_amount[i] = send_singleaxis(xbmc, axis[i], axis_amount[i], config[0], config[1], config[2])
+
+      # send the mouse position to xbmc
+      if mouse_enabled == 1:
+          xbmc.send_mouse_position(xval/num_samples, yval/num_samples)
 
     return (bflags, psflags, preasure)
 
+def send_singleaxis(xbmc, axis, last_amount, mapname, action_min, action_pos):
+    amount = normalize_axis(axis, 0.10)
+    if last_amount < 0:
+        last_action = action_min
+    elif last_amount > 0:
+        last_action = action_pos
+    else:
+        last_action = None
+
+    if amount < 0:
+        new_action = action_min
+    elif amount > 0:
+        new_action = action_pos
+    else:
+        new_action = None
+
+    if last_action and new_action != last_action:
+        xbmc.send_button_state(map=mapname, button=last_action, amount=0, axis=1)
+
+    if new_action and amount != last_amount:
+        xbmc.send_button_state(map=mapname, button=new_action, amount=abs(amount), axis=1)
+
+    return amount

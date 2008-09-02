@@ -65,6 +65,7 @@ namespace EVENTCLIENT
       m_bActive    = true;
       m_bAxis      = isAxis;
       m_iControllerNumber = 0;
+      m_iNextRepeat = 0;
       Load();
     }
 
@@ -89,6 +90,7 @@ namespace EVENTCLIENT
     bool              m_bRepeat;
     bool              m_bActive;
     bool              m_bAxis;
+    unsigned int      m_iNextRepeat;
   };
 
 
@@ -114,7 +116,6 @@ namespace EVENTCLIENT
     void Initialize()
     {
       m_bGreeted = false;
-      m_iNextRepeat = 0;
       m_iMouseX = 0;
       m_iMouseY = 0;
       m_iCurrentSeqLen = 0;
@@ -178,7 +179,7 @@ namespace EVENTCLIENT
     virtual bool OnPacketNOTIFICATION(EVENTPACKET::CEventPacket *packet);
     virtual bool OnPacketLOG(EVENTPACKET::CEventPacket *packet);
     virtual bool OnPacketACTION(EVENTPACKET::CEventPacket *packet);
-    bool CheckButtonRepeat();
+    bool CheckButtonRepeat(unsigned int &next);
 
     // returns true if the client has received the HELO packet
     bool Greeted() { return m_bGreeted; }
@@ -216,7 +217,6 @@ namespace EVENTCLIENT
     bool              m_bGreeted;
     unsigned int      m_iRepeatDelay;
     unsigned int      m_iRepeatSpeed;
-    unsigned int      m_iNextRepeat;
     unsigned int      m_iMouseX;
     unsigned int      m_iMouseY;
     bool              m_bMouseMoved;
@@ -230,7 +230,7 @@ namespace EVENTCLIENT
     std::queue <EVENTPACKET::CEventPacket*> m_readyPackets;
 
     // button and mouse state
-    std::queue<CEventButtonState*>  m_buttonQueue;
+    std::list<CEventButtonState>  m_buttonQueue;
     CEventButtonState m_currentButton;
   };
 
