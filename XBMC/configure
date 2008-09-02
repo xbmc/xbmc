@@ -663,7 +663,6 @@ host_vendor
 host_os
 ARCH_DEFINES
 ARCH
-HAVE_PMOUNT
 CCACHE
 CXX
 CXXFLAGS
@@ -1288,7 +1287,6 @@ Optional Features:
   --enable-xrandr         enable XRandR support (default is yes)
   --enable-pcre           enable PCRE based regular expression support
                           (default is yes)
-  --enable-halmount       enable automounting feature (default is no)
   --enable-ccache         enable building with ccache feature (default is yes
                           if ccache is installed)
 
@@ -1929,56 +1927,6 @@ if test "${enable_pcre+set}" = set; then
   enableval=$enable_pcre; use_pcre=$enableval
 else
   use_pcre=yes
-fi
-
-
-# Check whether --enable-halmount was given.
-if test "${enable_halmount+set}" = set; then
-  enableval=$enable_halmount; # Extract the first word of "pmount", so it can be a program name with args.
-set dummy pmount; ac_word=$2
-{ echo "$as_me:$LINENO: checking for $ac_word" >&5
-echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
-if test "${ac_cv_prog_HAVE_PMOUNT+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  if test -n "$HAVE_PMOUNT"; then
-  ac_cv_prog_HAVE_PMOUNT="$HAVE_PMOUNT" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
-  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_prog_HAVE_PMOUNT="yes"
-    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_prog_HAVE_PMOUNT" && ac_cv_prog_HAVE_PMOUNT="no"
-fi
-fi
-HAVE_PMOUNT=$ac_cv_prog_HAVE_PMOUNT
-if test -n "$HAVE_PMOUNT"; then
-  { echo "$as_me:$LINENO: result: $HAVE_PMOUNT" >&5
-echo "${ECHO_T}$HAVE_PMOUNT" >&6; }
-else
-  { echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6; }
-fi
-
- \
-             if test "$HAVE_PMOUNT" = "no"; then \
-               { echo "$as_me:$LINENO: WARNING: == Could not find required program. Please see README.linux. Disabling halmount." >&5
-echo "$as_me: WARNING: == Could not find required program. Please see README.linux. Disabling halmount." >&2;}; \
-             fi; \
-             use_halmount="$HAVE_PMOUNT"
-else
-  use_halmount=no
 fi
 
 
@@ -13603,13 +13551,6 @@ else
   LZO_INCLUDES="$LZO_INCLUDES"
 fi
 
-if test "$use_halmount" = "yes"; then
-  final_message="$final_message\n  Automount:\tYes"
-  SDL_DEFINES="$SDL_DEFINES -DHAL_HANDLEMOUNT"
-else
-  final_message="$final_message\n  Automount:\tNo"
-fi
-
 if test "$use_ccache" = "yes"; then
   if test "$ac_cv_path_CCACHE" = "none"; then
      echo "ccache not found. Falling back to default CC"
@@ -14394,7 +14335,6 @@ host_vendor!$host_vendor$ac_delim
 host_os!$host_os$ac_delim
 ARCH_DEFINES!$ARCH_DEFINES$ac_delim
 ARCH!$ARCH$ac_delim
-HAVE_PMOUNT!$HAVE_PMOUNT$ac_delim
 CCACHE!$CCACHE$ac_delim
 CXX!$CXX$ac_delim
 CXXFLAGS!$CXXFLAGS$ac_delim
@@ -14427,7 +14367,7 @@ LZO_INCLUDES!$LZO_INCLUDES$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 78; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 77; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
