@@ -320,7 +320,7 @@ void CGUISettings::Initialize()
 #if defined(HAS_HAL) || defined(_WIN32PC)
   // In standalone mode we default to another, and skip one.
   if (g_application.IsStandAlone())
-    AddInt(3, "system.shutdownstate", 13008, 0, 0, 1, 3, SPIN_CONTROL_TEXT); 
+    AddInt(3, "system.shutdownstate", 13008, 0, 1, 1, 4, SPIN_CONTROL_TEXT); 
   else
     AddInt(3, "system.shutdownstate", 13008, 0, 0, 1, 4, SPIN_CONTROL_TEXT);
 #endif
