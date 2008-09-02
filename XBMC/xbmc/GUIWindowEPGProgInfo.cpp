@@ -150,12 +150,12 @@ void CGUIWindowEPGProgInfo::Update()
   strTemp = m_progItem->GetEPGInfoTag()->m_strPlotOutline; strTemp.Trim();
   if (strTemp.IsEmpty())
   {
-    SET_CONTROL_HIDDEN(CONTROL_PROG_SUBTITLE)
+    SET_CONTROL_HIDDEN(CONTROL_PROG_SUBTITLE);
   }
   else
   {
     SetLabel(CONTROL_PROG_SUBTITLE, strTemp);
-    SET_CONTROL_VISIBLE(CONTROL_PROG_SUBTITLE)
+    SET_CONTROL_VISIBLE(CONTROL_PROG_SUBTITLE);
   }
 
   // programme description
@@ -182,10 +182,10 @@ void CGUIWindowEPGProgInfo::Update()
 
   if (m_likeList->IsEmpty())
   {
-    SET_CONTROL_HIDDEN(CONTROL_BTN_LIKELIST)
+    SET_CONTROL_HIDDEN(CONTROL_BTN_LIKELIST);
   }
 
-  SET_CONTROL_VISIBLE(CONTROL_BTN_RECORD)
+  SET_CONTROL_VISIBLE(CONTROL_BTN_RECORD);
 }
 
 void CGUIWindowEPGProgInfo::ClearLists()
