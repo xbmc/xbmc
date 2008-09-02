@@ -396,6 +396,7 @@ void CGUIDialogMediaSource::OnPath(int item)
 {
   if (item < 0 || item > m_paths->Size()) return;
   CGUIDialogKeyboard::ShowAndGetInput(m_paths->Get(item)->m_strPath, g_localizeStrings.Get(1021), false);
+  CUtil::AddSlashAtEnd(m_paths->Get(item)->m_strPath);
   UpdateButtons();
 }
 
