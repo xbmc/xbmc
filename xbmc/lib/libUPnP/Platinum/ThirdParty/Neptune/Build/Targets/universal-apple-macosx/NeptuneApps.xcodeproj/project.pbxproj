@@ -107,6 +107,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		CA4276D80DA1B73800557A8B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CA50442C0C5AEAE90060E6FE /* Neptune.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CAA97A010CF164A700C01909;
+			remoteInfo = XmlTest1;
+		};
+		CA4276DA0DA1B73800557A8B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CA50442C0C5AEAE90060E6FE /* Neptune.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CAA97A1B0CF1654A00C01909;
+			remoteInfo = StringsTest1;
+		};
+		CA4276DC0DA1B73800557A8B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CA50442C0C5AEAE90060E6FE /* Neptune.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CA550D550D20A37E00B22D72;
+			remoteInfo = HttpServerTest1;
+		};
 		CA5044460C5AEAE90060E6FE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CA50442C0C5AEAE90060E6FE /* Neptune.xcodeproj */;
@@ -866,6 +887,9 @@
 			isa = PBXGroup;
 			children = (
 				CA5044470C5AEAE90060E6FE /* libNeptune.a */,
+				CA4276D90DA1B73800557A8B /* XmlTest1 */,
+				CA4276DB0DA1B73800557A8B /* StringsTest1 */,
+				CA4276DD0DA1B73800557A8B /* HttpServerTest1 */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1269,6 +1293,27 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		CA4276D90DA1B73800557A8B /* XmlTest1 */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = XmlTest1;
+			remoteRef = CA4276D80DA1B73800557A8B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CA4276DB0DA1B73800557A8B /* StringsTest1 */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = StringsTest1;
+			remoteRef = CA4276DA0DA1B73800557A8B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CA4276DD0DA1B73800557A8B /* HttpServerTest1 */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = HttpServerTest1;
+			remoteRef = CA4276DC0DA1B73800557A8B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		CA5044470C5AEAE90060E6FE /* libNeptune.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
