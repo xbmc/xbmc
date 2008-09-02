@@ -128,7 +128,7 @@ class PS3SixaxisThread ( StoppableThread ):
                         toggle_mouse = 1 - toggle_mouse
                     psdown = 0
 
-                (bflags, psflags, preasure) = sixaxis.process_input(data, self.xbmc, toggle_mouse)
+                (bflags, psflags, pressure) = sixaxis.process_input(data, self.xbmc, toggle_mouse)
                 if bflags != last_bflags and last_bflags:
                     try:
                       (mapname, action, amount, axis) = keymap_sixaxis[last_bflags]
@@ -141,7 +141,7 @@ class PS3SixaxisThread ( StoppableThread ):
                     try:
                         (mapname, action, amount, axis) = keymap_sixaxis[bflags]
                         if amount > 0:
-                            amount = preasure[amount-1] * 256
+                            amount = pressure[amount-1] * 256
 
                         if bflags != last_bflags or amount > 0:
                             self.xbmc.send_button_state(map=mapname, button=action, amount=amount, down=1, axis=axis)
