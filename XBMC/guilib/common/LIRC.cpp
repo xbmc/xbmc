@@ -33,6 +33,18 @@ void CRemoteControl::Reset()
   m_button = 0;
 }
 
+void CRemoteControl::Disconnect() 
+{ 
+  if (m_fd) 
+  { 
+    if (m_bInitialized) 
+    { 
+      m_bInitialized = false; 
+      closesocket(m_fd); 
+    } 
+  } 
+} 
+
 void CRemoteControl::Initialize()
 {
   struct sockaddr_un addr;
