@@ -130,7 +130,7 @@ def process_input(data, xbmc=None, mouse_enabled=0):
 
     bflags = struct.unpack("H", data[3:5])[0]
     psflags = struct.unpack("B", data[5:6])[0]
-    preasure = struct.unpack("BBBBBBBBBBBB", data[15:27])
+    pressure = struct.unpack("BBBBBBBBBBBB", data[15:27])
 
     roll  = -math.atan2(ax, math.sqrt(ay*ay + az*az))
     pitch = math.atan2(ay, math.sqrt(ax*ax + az*az))
@@ -164,7 +164,7 @@ def process_input(data, xbmc=None, mouse_enabled=0):
       if mouse_enabled == 1:
           xbmc.send_mouse_position(xval/num_samples, yval/num_samples)
 
-    return (bflags, psflags, preasure)
+    return (bflags, psflags, pressure)
 
 def send_singleaxis(xbmc, axis, last_amount, mapname, action_min, action_pos):
     amount = normalize_axis(axis, 0.10)
