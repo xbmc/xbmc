@@ -374,8 +374,8 @@ void CXBApplicationEx::ReadInput()
       break;
 #endif
 
-    case SDL_QUIT: //This should be Shutdown if Embeded but close on Desktop
-      if (!g_application.m_bStop) g_application.getApplicationMessenger().Close();
+    case SDL_QUIT:
+      if (!g_application.m_bStop) g_application.getApplicationMessenger().Quit();
       break;
 
     case SDL_VIDEORESIZE:

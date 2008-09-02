@@ -211,7 +211,7 @@ case TMSG_POWERDOWN:
       }
       break;
 #else
-    case TMSG_CLOSE:
+    case TMSG_QUIT:
       {
         g_application.Stop();
         exit(0);
@@ -682,9 +682,9 @@ void CApplicationMessenger::Powerdown()
   SendMessage(tMsg);
 }
 
-void CApplicationMessenger::Close()
+void CApplicationMessenger::Quit()
 {
-  ThreadMessage tMsg = {TMSG_CLOSE};
+  ThreadMessage tMsg = {TMSG_QUIT};
   SendMessage(tMsg);
 }
 

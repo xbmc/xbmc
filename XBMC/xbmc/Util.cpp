@@ -2470,9 +2470,9 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_application.getApplicationMessenger().Suspend();
   }
-  else if (execute.Equals("close"))
+  else if (execute.Equals("quit"))
   {
-    g_application.getApplicationMessenger().Close();
+    g_application.getApplicationMessenger().Quit();
   }
   else if (execute.Equals("mastermode"))
   {

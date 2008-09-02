@@ -45,8 +45,8 @@ class CFileItem;
 
 #define TMSG_SHUTDOWN             300
 #define TMSG_POWERDOWN            301
-#define TMSG_CLOSE                302
-#define TMSG_DASHBOARD            TMSG_CLOSE
+#define TMSG_QUIT                 302
+#define TMSG_DASHBOARD            TMSG_QUIT
 #define TMSG_HIBERNATE            303
 #define TMSG_SUSPEND              304
 #define TMSG_RESTART              305
@@ -100,7 +100,7 @@ public:
   void PictureSlideShow(std::string pathname, bool bScreensaver = false);
   void Shutdown();
   void Powerdown();
-  void Close();
+  void Quit();
   void Hibernate();
   void Suspend();
   void Restart();
