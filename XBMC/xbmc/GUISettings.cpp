@@ -316,7 +316,7 @@ void CGUISettings::Initialize()
   AddInt(2, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
 #ifdef __APPLE__
   AddInt(3, "system.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
-#endif 
+#endif
 #if defined(HAS_HAL) || defined(_WIN32PC)
   // In standalone mode we default to another, and skip one.
   if (g_application.IsStandAlone())
