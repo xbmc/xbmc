@@ -512,6 +512,7 @@ static void CopyUserDataIfNeeded(CStdString strPath, LPCTSTR file)
 HRESULT CApplication::Create(HWND hWnd)
 {
   g_guiSettings.Initialize();  // Initialize default Settings
+  g_settings.Initialize(); //Initialize default AdvancedSettings
 
 #ifdef _LINUX
   tzset();   // Initialize timezone information variables
