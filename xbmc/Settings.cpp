@@ -64,6 +64,10 @@ extern CStdString g_LoadErrorStr;
 
 CSettings::CSettings(void)
 {
+}
+
+void CSettings::Initialize()
+{
   for (int i = HDTV_1080i; i <= PAL60_16x9; i++)
   {
     ZeroMemory(&m_ResInfo[i], sizeof(RESOLUTION));
