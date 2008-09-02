@@ -292,7 +292,7 @@ void CDVDPlayerVideo::Process()
       {
         double timeout;
         timeout  = static_cast<CDVDMsgDouble*>(pMsg)->m_value;
-        timeout *= (double)m_speed / DVD_PLAYSPEED_NORMAL;
+        timeout *= (double)DVD_PLAYSPEED_NORMAL * abs(m_speed);
         timeout += CDVDClock::GetAbsoluteClock();
 
         while(!m_bStop && CDVDClock::GetAbsoluteClock() < timeout)
