@@ -291,7 +291,8 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
   // old fixed id labels that we have floating around (they may be using
   // content type to determine visibility, so we'll set the wrong label)
   ClearCastList();
-  if (!m_movieItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
+  VIDEODB_CONTENT_TYPE type = GetContentType(m_movieItem.get());
+  if (type == VIDEODB_CONTENT_MUSICVIDEOS)
   { // music video
     CStdStringArray artists;
     StringUtils::SplitString(m_movieItem->GetVideoInfoTag()->m_strArtist, g_advancedSettings.m_videoItemSeparator, artists);
@@ -302,7 +303,7 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
         item->SetThumbnailImage(item->GetCachedArtistThumb());
       item->SetIconImage("DefaultArtist.png");
       m_castList->Add(item);
-}
+    }
     m_castList->SetContent("musicvideos");
   }
   else
@@ -322,7 +323,7 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       m_castList->Add(item);
     }
     // determine type:
-    if (m_movieItem->m_bIsFolder)
+    if (type == VIDEODB_CONTENT_TVSHOWS)
     {
       m_castList->SetContent("tvshows");
       // special case stuff for shows (not currently retrieved from the library in filemode (ref: GetTvShowInfo vs GetTVShowsByWhere)
@@ -335,7 +336,7 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       if (CFile::Exists(m_movieItem->GetCachedFanart()))
         m_movieItem->SetProperty("fanart_image",m_movieItem->GetCachedFanart());
     }
-    else if (m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
+    else if (type == VIDEODB_CONTENT_EPISODES)
     {
       m_castList->SetContent("episodes");
       // special case stuff for episodes (not currently retrieved from the library in filemode (ref: GetEpisodeInfo vs GetEpisodesByWhere)
@@ -610,30 +611,36 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
   db.Close();
 }
 
+VIDEODB_CONTENT_TYPE CGUIWindowVideoInfo::GetContentType(const CFileItem *pItem) const
+{
+  VIDEODB_CONTENT_TYPE type = VIDEODB_CONTENT_MOVIES;
+  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow
+    type = VIDEODB_CONTENT_TVSHOWS;
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
+    type = VIDEODB_CONTENT_EPISODES;
+  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
+    type = VIDEODB_CONTENT_MUSICVIDEOS;
+  return type;
+}
+
 /// \brief React on the selected search item
 /// \param pItem Search result item
 void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
 {
-  int iType=0;
-  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow
-    iType = 2;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
-    iType = 1;
-  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
-    iType = 3;
+  VIDEODB_CONTENT_TYPE type = GetContentType(pItem);
 
   CVideoDatabase db;
   if (!db.Open())
     return;
 
   CVideoInfoTag movieDetails;
-  if (iType == 0)
+  if (type == VIDEODB_CONTENT_MOVIES)
     db.GetMovieInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
-  if (iType == 1)
+  if (type == VIDEODB_CONTENT_EPISODES)
     db.GetEpisodeInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
-  if (iType == 2)
+  if (type == VIDEODB_CONTENT_TVSHOWS)
     db.GetTvShowInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
-  if (iType == 3)
+  if (type == VIDEODB_CONTENT_MUSICVIDEOS)
     db.GetMusicVideoInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
   db.Close();
 
@@ -842,7 +849,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
       CVideoDatabase db;
       if (db.Open())
       {
-        db.SetDetailsForTvShow(m_movieItem->m_strPath, *m_movieItem->GetVideoInfoTag());
+        db.UpdateFanart(*m_movieItem, GetContentType(m_movieItem.get()));
         db.Close();
       }
 
