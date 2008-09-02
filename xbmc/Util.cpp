@@ -32,6 +32,10 @@
 #include <sys/wait.h>
 #endif
 
+#ifdef HAS_LCD 
+#include "utils/LCDFactory.h" 
+#endif
+
 #include "Application.h"
 #include "GUIWindowVideoBase.h"
 #include "Util.h"
@@ -2557,7 +2561,40 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 #if defined(_LINUX)
   else if (execute.Equals("system.exec"))
   {
-    system(strParameterCaseIntact.c_str());
+    CStdStringArray arSplit; 
+    StringUtils::SplitString(parameter,",", arSplit); 
+    bool bFocus = false; 
+    if (arSplit.size() > 1) 
+    { 
+      if (arSplit[1].Equals("true")) 
+        bFocus = true; 
+ 
+      if (bFocus) 
+      { 
+        // Disconnect LIRC client 
+        CLog::Log(LOGDEBUG,"Removing LIRC client."); 
+        g_RemoteControl.Disconnect(); 
+       
+        // Suspend LCDd
+        CLog::Log(LOGDEBUG,"Suspending LCDd screen."); 
+        g_lcd->Suspend(); 
+      } 
+     
+      system(arSplit[0].c_str()); 
+ 
+      if (bFocus) 
+      { 
+        // Register LIRC client 
+        CLog::Log(LOGDEBUG,"Registering LIRC client."); 
+        g_RemoteControl.Initialize(); 
+ 
+        // Resume LCDd
+        CLog::Log(LOGDEBUG,"Resuming LCDd screen."); 
+        g_lcd->Resume(); 
+      } 
+    } 
+    else 
+      system(strParameterCaseIntact.c_str()); 
   }
 #elif defined(_WIN32PC)
   else if (execute.Equals("system.exec"))
