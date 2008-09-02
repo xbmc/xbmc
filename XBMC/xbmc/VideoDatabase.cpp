@@ -3247,9 +3247,9 @@ void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE ty
   const CVideoInfoTag *tag = item.GetVideoInfoTag();
   CStdString exec;
   if (type == VIDEODB_CONTENT_TVSHOWS)
-    exec = FormatSQL("UPDATE tvshow set c%02d=%i WHERE idshow=%i", VIDEODB_ID_TV_FANART, item.GetVideoInfoTag()->m_fanart.m_xml, item.GetVideoInfoTag()->m_iDbId);
+    exec = FormatSQL("UPDATE tvshow set c%02d=%s WHERE idshow=%i", VIDEODB_ID_TV_FANART, item.GetVideoInfoTag()->m_fanart.m_xml.c_str(), item.GetVideoInfoTag()->m_iDbId);
   else if (type == VIDEODB_CONTENT_MOVIES)
-    exec = FormatSQL("UPDATE movie set c%02d=%i WHERE idmovie=%i", VIDEODB_ID_FANART, item.GetVideoInfoTag()->m_fanart.m_xml, item.GetVideoInfoTag()->m_iDbId);
+    exec = FormatSQL("UPDATE movie set c%02d=%s WHERE idmovie=%i", VIDEODB_ID_FANART, item.GetVideoInfoTag()->m_fanart.m_xml.c_str(), item.GetVideoInfoTag()->m_iDbId);
 
   try
   {
