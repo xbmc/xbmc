@@ -3,23 +3,22 @@ import os
 def generate(env, gcc_cross_prefix=None, gcc_strict=True, gcc_stop_on_warning=True):
     ### compiler flags
     if gcc_strict:
-        c_compiler_compliance_flags = '-pedantic'
-        cxx_compiler_warnings       = '-Werror -Wall -W -Wundef -Wno-long-long'
-        c_compiler_warnings         = cxx_compiler_warnings + ' -Wmissing-prototypes -Wmissing-declarations'
+        env.AppendUnique(CCFLAGS = ['-pedantic', '-Wall',  '-W',  '-Wundef', '-Wno-long-long'])
+        env.AppendUnique(CFLAGS  = ['-Wmissing-prototypes', '-Wmissing-declarations'])
     else:
-        c_compiler_compliance_flags = ''
-        cxx_compiler_warnings       = '-Wall'
-        c_compiler_warnings         = cxx_compiler_warnings
+        env.AppendUnique(CCFLAGS = ['-Wall'])
     
-    c_compiler_defines          = '-D_REENTRANT'
+    compiler_defines = ['-D_REENTRANT']
+    env.AppendUnique(CCFLAGS  = compiler_defines)
+    env.AppendUnique(CPPFLAGS = compiler_defines)
     
     if env['build_config'] == 'Debug':
-        c_compiler_flags = '-g'    
+        env.AppendUnique(CCFLAGS = '-g')
     else:
-        c_compiler_flags = '-O3'
+        env.AppendUnique(CCFLAGS = '-O3')
     
     if gcc_stop_on_warning:
-        c_compiler_flags += ' -Werror'
+        env.AppendUnique(CCFLAGS = ['-Werror'])
         
     if gcc_cross_prefix:
         env['ENV']['PATH'] += os.environ['PATH']
@@ -29,7 +28,4 @@ def generate(env, gcc_cross_prefix=None, gcc_strict=True, gcc_stop_on_warning=Tr
         env['CXX']    = gcc_cross_prefix+'-g++'
         env['LINK']   = gcc_cross_prefix+'-g++'
 
-    env['CPPFLAGS'] = ' '.join([c_compiler_defines])
-    env['CCFLAGS']  = ' '.join([c_compiler_compliance_flags, c_compiler_flags, c_compiler_warnings])
-    env['CXXFLAGS'] = ' '.join([c_compiler_compliance_flags, c_compiler_flags, cxx_compiler_warnings])    
     
