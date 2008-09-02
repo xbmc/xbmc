@@ -38,6 +38,27 @@ using namespace EVENTCLIENT;
 using namespace EVENTPACKET;
 using namespace std;
 
+
+struct ButtonStateFinder
+{
+  ButtonStateFinder(const CEventButtonState& state)
+    : m_keycode(state.m_iKeyCode)
+    , m_map(state.m_mapName)
+    , m_button(state.m_buttonName)
+  {}
+
+  bool operator()(const CEventButtonState& state)
+  {
+    return state.m_mapName    == m_map
+        && state.m_iKeyCode   == m_keycode
+        && state.m_buttonName == m_button;
+  }
+  private:
+  unsigned short m_keycode;
+  std::string    m_map;
+  std::string    m_button;
+};
+
 /************************************************************************/
 /* CEventButtonState                                                    */
 /************************************************************************/
@@ -343,34 +364,81 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
       return false;
   }
 
-  if (flags & PTB_QUEUE)
+  unsigned short keycode;
+  if(flags & PTB_USE_NAME)
+    keycode = 0;
+  else if(flags & PTB_VKEY)
+    keycode = bcode|KEY_VKEY;
+  else
+    keycode = bcode;
+
+  float famount = 0;
+  if(flags & PTB_USE_AMOUNT)
   {
+    if(flags & PTB_AXIS)
+      famount = (float)amount/65535.0f*2.0f-1.0f;
+    else
+      famount = (float)amount/65535.0f;
+  }
+  bool active = (flags & PTB_DOWN) ? true : false;
+
+  if(flags & PTB_QUEUE)
+  {
+    /* find the last queued item of this type */
     CSingleLock lock(m_critSection);
-    m_buttonQueue.push (
-      new CEventButtonState( (flags & PTB_USE_NAME) ? 0 :
-                             ( (flags & PTB_VKEY) ? (bcode|KEY_VKEY) : bcode ),
+
+    CEventButtonState state( keycode,
                              map,
                              button,
-                             (float)amount/65535.0f*2.0f-1.0f,
-                             (flags & PTB_AXIS) == PTB_AXIS,
-                             false /* queued buttons cannot be repeated */ )
-      );
+                             famount,
+                             (flags & (PTB_AXIS|PTB_AXISSINGLE)) ? true  : false,
+                             (flags & PTB_NO_REPEAT)             ? false : true );
+    state.m_bActive = active;
+
+    std::list<CEventButtonState>::reverse_iterator it;
+    it = find_if( m_buttonQueue.rbegin() , m_buttonQueue.rend(), ButtonStateFinder(state));
+
+    if(it == m_buttonQueue.rend())
+    {
+      if(active)
+        m_buttonQueue.push_back(state);
+    }
+    else
+    {
+      /* if the active bit has shifted, add a new entry, oterwise update       *
+       * this way we avoid filling data queue and only remember the last event */
+      if(active ^ it->m_bActive)  
+      {
+        /* if the last event was waiting for a repeat interval it has executed, so if  *
+         * we now ask to turn of, do so directly to avoid extra clicks on long renders */
+        if(!active && it->m_bRepeat && it->m_iNextRepeat > 0)
+          m_buttonQueue.erase((++it).base());
+
+        m_buttonQueue.push_back(state);
+      }
+      else
+      {
+        it->m_bActive = state.m_bActive;
+        it->m_fAmount = state.m_fAmount;
+        it->m_bRepeat = state.m_bRepeat;
+        it->m_bAxis   = state.m_bAxis;
+      }
+    }
   }
   else
   {
     CSingleLock lock(m_critSection);
     if ( flags & PTB_DOWN )
     {
-      m_currentButton.m_iKeyCode   = (flags & PTB_USE_NAME) ? 0 :  // use name? if so no bcode
-        ( (flags & PTB_VKEY) ? (bcode|KEY_VKEY) : bcode );         // not name, use vkey?
+      m_currentButton.m_iKeyCode   = keycode;
       m_currentButton.m_mapName    = map;
       m_currentButton.m_buttonName = button;
-      m_currentButton.m_fAmount    = (flags & PTB_USE_AMOUNT) ? (amount/65535.0f) : 0.0f;
+      m_currentButton.m_fAmount    = famount;
       m_currentButton.m_bRepeat    = (flags & PTB_NO_REPEAT)  ? false : true;
       m_currentButton.m_bAxis      = (flags & PTB_AXIS)       ? true : false;
+      m_currentButton.m_iNextRepeat = 0;
       m_currentButton.SetActive();
       m_currentButton.Load();
-      m_iNextRepeat = 0;
     }
     else
     {
@@ -378,19 +446,19 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
        * to resend the keypress with an amount of 0           */
       if(m_currentButton.m_fAmount > 0.0)
       {
-        m_buttonQueue.push (
-          new CEventButtonState( m_currentButton.m_iKeyCode,
+        CEventButtonState state( m_currentButton.m_iKeyCode,
                                  m_currentButton.m_mapName,
                                  m_currentButton.m_buttonName,
                                  0.0,
                                  m_currentButton.m_bAxis,
-                                 false )
-          );
-      }
+                                 false );
 
+        m_buttonQueue.push_back (state);
+      }
       m_currentButton.Reset();
     }
   }
+
   return true;
 }
 
@@ -612,24 +680,7 @@ unsigned short CEventClient::GetButtonCode(std::string& joystickName, bool& isAx
   CSingleLock lock(m_critSection);
   unsigned short bcode = 0;
 
-  if ( ! m_buttonQueue.empty() )
-  {
-    CEventButtonState *btn = m_buttonQueue.front();
-    m_buttonQueue.pop();
-
-    if ( btn )
-    {
-      if (btn->Active())
-      {
-        bcode = btn->KeyCode();
-        joystickName = btn->JoystickName();
-        isAxis = btn->Axis();
-        amount = btn->Amount();
-      }
-      delete btn;
-    }
-  }
-  else if ( m_currentButton.Active() )
+  if ( m_currentButton.Active() )
   {
     bcode = m_currentButton.KeyCode();
     joystickName = m_currentButton.JoystickName();
@@ -640,12 +691,66 @@ unsigned short CEventClient::GetButtonCode(std::string& joystickName, bool& isAx
       m_currentButton.Reset();
     else
     {
-      if ( ! CheckButtonRepeat() )
-      {
+      if ( ! CheckButtonRepeat(m_currentButton.m_iNextRepeat) )
         bcode = 0;
+    }
+    return bcode;
+  }
+
+  if(m_buttonQueue.empty())
+    return 0;
+
+  std::list<CEventButtonState>::iterator end, it, it2;
+
+  /* special handling of start and stop to avoid reprocessing items we read */
+  /* couldn't figure out a cleaner method right now */
+  end = m_buttonQueue.end();
+  it  = m_buttonQueue.begin();
+  for(;it != end; it++)
+  {
+    bcode = 0;
+
+    if(it->Active() == false)
+    {
+      if(it->Amount() != 0.0)
+      {
+        bcode        = it->KeyCode();
+        joystickName = it->JoystickName();
+        isAxis       = it->Axis();
+        amount       = 0.0f;
+        it++;
+        break;
+      }
+      continue;
+    }
+
+    bcode        = it->KeyCode();
+    joystickName = it->JoystickName();
+    isAxis       = it->Axis();
+    amount       = it->Amount();
+
+
+    if(it->Repeat() || it->Axis())
+    {
+      /* will update m_iNextRepeat */
+      if(!it->Axis() && !CheckButtonRepeat(it->m_iNextRepeat))
+        bcode = 0;
+
+      it2 = it;
+      it2++;
+      /* if there are newer events for this button, we don't resend the repeat */
+      if(find_if(it2, m_buttonQueue.end(), ButtonStateFinder(*it)) == m_buttonQueue.end())
+      {
+        m_buttonQueue.push_back(*it);
+        if(end == m_buttonQueue.end())
+          end--;
       }
     }
+
+    it++;
+    break;
   }
+  m_buttonQueue.erase(m_buttonQueue.begin(), it);
   return bcode;
 }
 
@@ -666,18 +771,18 @@ bool CEventClient::GetMousePos(float& x, float& y)
   return false;
 }
 
-bool CEventClient::CheckButtonRepeat()
+bool CEventClient::CheckButtonRepeat(unsigned int &next)
 {
   unsigned int now = timeGetTime();
 
-  if ( m_iNextRepeat == 0 )
+  if ( next == 0 )
   {
-    m_iNextRepeat = now + m_iRepeatDelay;
+    next = now + m_iRepeatDelay;
     return true;
   }
-  else if ( now > m_iNextRepeat )
+  else if ( now > next )
   {
-    m_iNextRepeat = now + m_iRepeatSpeed;
+    next = now + m_iRepeatSpeed;
     return true;
   }
   return false;

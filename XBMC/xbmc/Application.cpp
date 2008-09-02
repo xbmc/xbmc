@@ -3364,43 +3364,57 @@ bool CApplication::ProcessEventServer(float frameTime)
 
   WORD wKeyID = es->GetButtonCode(joystickName, isAxis, fAmount);
 
+
   if (wKeyID)
   {
-    // If it's an axis, save the value to repeat it.
-    if (isAxis == true)
+    if (joystickName.length() > 0)
     {
-      if (fabs(fAmount) >= 0.08)
-        m_lastAxisMap[joystickName][wKeyID] = fAmount;
+      if (isAxis == true)
+      {
+        if (fabs(fAmount) >= 0.08)
+          m_lastAxisMap[joystickName][wKeyID] = fAmount;
+        else
+          m_lastAxisMap[joystickName].erase(wKeyID);
+      }
+
+      return ProcessJoystickEvent(joystickName, wKeyID, isAxis, fAmount);
+    }
+    else
+    {
+      CKey key;
+      if(wKeyID == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
+        key = CKey(wKeyID, (BYTE)(255*fAmount), 0, 0.0, 0.0, 0.0, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_RIGHT_ANALOG_TRIGGER)
+        key = CKey(wKeyID, 0, (BYTE)(255*fAmount), 0.0, 0.0, 0.0, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_LEFT_THUMB_STICK_LEFT)
+        key = CKey(wKeyID, 0, 0, -fAmount, 0.0, 0.0, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
+        key = CKey(wKeyID, 0, 0,  fAmount, 0.0, 0.0, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_LEFT_THUMB_STICK_UP)
+        key = CKey(wKeyID, 0, 0, 0.0,  fAmount, 0.0, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
+        key = CKey(wKeyID, 0, 0, 0.0, -fAmount, 0.0, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT)
+        key = CKey(wKeyID, 0, 0, 0.0, 0.0, -fAmount, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
+        key = CKey(wKeyID, 0, 0, 0.0, 0.0,  fAmount, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_RIGHT_THUMB_STICK_UP)
+        key = CKey(wKeyID, 0, 0, 0.0, 0.0, 0.0,  fAmount, frameTime);
+      else if(wKeyID == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
+        key = CKey(wKeyID, 0, 0, 0.0, 0.0, 0.0, -fAmount, frameTime);
       else
-        m_lastAxisMap[joystickName].erase(wKeyID);
+        key = CKey(wKeyID);
+      return OnKey(key);
     }
   }
-  else if (m_lastAxisMap.size() > 0)
+
+  if (m_lastAxisMap.size() > 0)
   {
     // Process all the stored axis.
     for (map<std::string, map<int, float> >::iterator iter = m_lastAxisMap.begin(); iter != m_lastAxisMap.end(); ++iter)
     {
       for (map<int, float>::iterator iterAxis = (*iter).second.begin(); iterAxis != (*iter).second.end(); ++iterAxis)
         ProcessJoystickEvent((*iter).first, (*iterAxis).first, true, (*iterAxis).second);
-    }
-  }
-
-  if (wKeyID)
-  {
-    if (joystickName.length() > 0)
-    {
-      ProcessJoystickEvent(joystickName, wKeyID, isAxis, fAmount);
-    }
-    else
-    {
-      CKey key;
-      if(wKeyID == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
-        key = CKey(wKeyID, (BYTE)(255*fAmount), 0);
-      else if(wKeyID == KEY_BUTTON_RIGHT_ANALOG_TRIGGER)
-        key = CKey(wKeyID, 0, (BYTE)(255*fAmount));
-      else
-        key = CKey(wKeyID);
-      return OnKey(key);
     }
   }
 
