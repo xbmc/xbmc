@@ -181,12 +181,8 @@ void CSettings::Initialize()
   g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG; // = LOG_LEVEL_NORMAL
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
 #ifdef HAS_HAL
-  g_advancedSettings.m_useSystemPowerManagement = false;
-#ifdef HAL_MOUNT
-  g_advancedSettings.m_useHalMount = true;
-#else
-  g_advancedSettings.m_useHalMount = false;
-#endif
+  g_advancedSettings.m_useSystemPowerManagement = g_application.IsStandAlone();
+  g_advancedSettings.m_useHalMount = g_application.IsStandAlone();
 #endif
   g_advancedSettings.m_fullScreenOnMovieStart = true;
   g_advancedSettings.m_noDVDROM = false;

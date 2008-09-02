@@ -66,16 +66,6 @@ AC_ARG_ENABLE([pcre],
             [use_pcre=$enableval],
             [use_pcre=yes])
 
-AC_ARG_ENABLE([halmount],
-            [AS_HELP_STRING([--enable-halmount],
-               [enable automounting feature (default is no)])],
-            [AC_CHECK_PROG(HAVE_PMOUNT,pmount,yes,no) \
-             if test "$HAVE_PMOUNT" = "no"; then \
-               AC_MSG_WARN(== Could not find required program. Please see README.linux. Disabling halmount.); \
-             fi; \
-             use_halmount="$HAVE_PMOUNT"],
-            [use_halmount=no])
-
 AC_PATH_PROG(CCACHE,ccache,none)
 AC_ARG_ENABLE([ccache],
             [AS_HELP_STRING([--enable-ccache],
@@ -317,13 +307,6 @@ if test -d "/usr/include/lzo"; then
   LZO_INCLUDES="$LZO_INCLUDES -I/usr/include/lzo"
 else
   LZO_INCLUDES="$LZO_INCLUDES"
-fi
-
-if test "$use_halmount" = "yes"; then
-  final_message="$final_message\n  Automount:\tYes"
-  SDL_DEFINES="$SDL_DEFINES -DHAL_HANDLEMOUNT"
-else
-  final_message="$final_message\n  Automount:\tNo"
 fi
 
 if test "$use_ccache" = "yes"; then
