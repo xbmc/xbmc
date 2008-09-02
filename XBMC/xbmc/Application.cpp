@@ -511,6 +511,9 @@ static void CopyUserDataIfNeeded(CStdString strPath, LPCTSTR file)
 
 HRESULT CApplication::Create(HWND hWnd)
 {
+  // We load Settings
+  g_guiSettings.Initialize();
+
 #ifdef _LINUX
   tzset();   // Initialize timezone information variables
 #endif

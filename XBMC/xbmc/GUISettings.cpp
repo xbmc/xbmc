@@ -181,6 +181,10 @@ void CSettingsGroup::GetCategories(vecSettingsCategory &vecCategories)
 // Settings are case sensitive
 CGUISettings::CGUISettings(void)
 {
+}
+
+void CGUISettings::Initialize()
+{
   ZeroMemory(&m_replayGain, sizeof(ReplayGainSettings));
 
   // Pictures settings
@@ -312,7 +316,7 @@ CGUISettings::CGUISettings(void)
   AddInt(2, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
 #ifdef __APPLE__
   AddInt(3, "system.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
-#endif
+#endif 
 
 #ifdef HAS_LCD
   AddCategory(4, "lcd", 448);
