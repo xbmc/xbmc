@@ -949,8 +949,8 @@
   <string id="13005">Shutdown</string>
   <string id="13006">Dashboard</string>
   <string id="13007">Use Custom Dashboard Path</string>
-  <string id="13008">When closing XBMC</string>
-  <string id="13009">Do nothing</string>
+  <string id="13008">Default Shutdown mode</string>
+  <string id="13009">Just close XBMC</string>
   <string id="13010">Hibernate</string>
   <string id="13011">Suspend</string>
 
