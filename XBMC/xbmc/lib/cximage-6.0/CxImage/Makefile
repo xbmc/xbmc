@@ -1,3 +1,4 @@
+CC=g++
 ifeq ($(ARCH), osx)
 	CFLAGS+=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common \
 		-fPIC -DXBMC -D_DLL -DNO_LCMS -DNO_JPEG -I../jasper/include -I../jpeg/
@@ -14,7 +15,7 @@ OBJS= \
 	ximajpg.o ximamng.o ximapng.o ximaska.o ximatif.o ximawmf.o
 
 %o : %cpp
-	$(CXX) $(CFLAGS) -c -o $@ $< 
+	$(CC) $(CFLAGS) -c -o $@ $< 
 
 cximage.a: $(OBJS)
 	$(AR) rc $@ $(OBJS)
