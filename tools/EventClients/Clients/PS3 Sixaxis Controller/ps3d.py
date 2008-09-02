@@ -128,30 +128,29 @@ class PS3SixaxisThread ( StoppableThread ):
                         toggle_mouse = 1 - toggle_mouse
                     psdown = 0
 
-                (bflags, psflags, preasure) = sixaxis.process_input(data, toggle_mouse
-                                                          and self.xbmc
-                                                          or None)
+                (bflags, psflags, preasure) = sixaxis.process_input(data, self.xbmc, toggle_mouse)
+                if bflags != last_bflags and last_bflags:
+                    try:
+                      (mapname, action, amount, axis) = keymap_sixaxis[last_bflags]
+                      self.xbmc.send_button_state(map=mapname, button=action, amount=0, down=0, axis=axis)
+                    except:
+                      pass
+                    last_bflags = 0
+
                 if bflags:
                     try:
-                        (mapname, action, amount) = keymap_sixaxis[bflags]
+                        (mapname, action, amount, axis) = keymap_sixaxis[bflags]
                         if amount > 0:
                             amount = preasure[amount-1] * 256
 
-                        #TODO - check against last amount instead. this however requires changes in how
-                        #       how the eventserver handles this situation, it must keep resending the
-                        #       keypress if it has an amount without the standard repeat delay        
                         if bflags != last_bflags or amount > 0:
-                            self.xbmc.send_button(map=mapname, button=action, amount=amount)
+                            self.xbmc.send_button_state(map=mapname, button=action, amount=amount, down=1, axis=axis)
 
                         self.reset_timeout()
-                        last_amount = amount
-                        last_bflags = bflags
                     except:
                         pass
-                else:
-                    if last_bflags:
-                        self.xbmc.release_button()
-                    last_bflags = 0
+                    last_bflags = bflags
+
         except Exception, e:
             printerr()
         self.close_sockets()
