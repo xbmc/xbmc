@@ -2454,6 +2454,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_application.getApplicationMessenger().Shutdown();
   }
+  else if (execute.Equals("powerdown"))
+  {
+    g_application.getApplicationMessenger().Powerdown();
+  }
   else if (execute.Equals("restartapp"))
   {
     g_application.getApplicationMessenger().RestartApp();

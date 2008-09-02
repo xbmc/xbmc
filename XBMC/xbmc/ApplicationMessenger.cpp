@@ -145,6 +145,46 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
   {
     case TMSG_SHUTDOWN:
       {
+#if defined(HAS_HAL) || defined(_WIN32PC)
+        int ShutdownState = g_guiSettings.GetInt("system.shutdownstate");
+#else
+        g_application.Stop();
+#endif
+#if !defined(_LINUX)
+#ifndef HAS_SDL
+        // send the WM_CLOSE window message
+        ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
+#endif
+#ifdef _WIN32PC
+        bool bStop = true;
+        if (ShutdownState) // If we have a setting for powerstate mode
+          bStop = CWIN32Util::PowerManagement((PowerState)ShutdownState);
+
+        if (bStop && (ShutdownState == POWERSTATE_SHUTDOWN || ShutdownState == POWERSTATE_REBOOT || ShutdownState == 0))
+        {
+          g_application.Stop();
+        }
+#endif
+#else
+        // exit the application
+#ifdef HAS_HAL
+        if (ShutdownState) // If we have a setting for powerstate mode
+          CHalManager::PowerManagement((PowerState)ShutdownState);
+
+        if (ShutdownState == POWERSTATE_SHUTDOWN || ShutdownState == 0)
+        {
+          g_application.Stop();
+          exit(0);
+        }
+#else
+        exit(0);
+#endif
+#endif
+      }
+      break;
+
+case TMSG_POWERDOWN:
+      {
         g_application.Stop();
 #if !defined(_LINUX)
 #ifndef HAS_SDL
@@ -633,6 +673,12 @@ void CApplicationMessenger::PictureSlideShow(string pathname, bool bScreensaver 
 void CApplicationMessenger::Shutdown()
 {
   ThreadMessage tMsg = {TMSG_SHUTDOWN};
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::Powerdown()
+{
+  ThreadMessage tMsg = {TMSG_POWERDOWN};
   SendMessage(tMsg);
 }
 

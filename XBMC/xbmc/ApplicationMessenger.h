@@ -44,14 +44,15 @@ class CFileItem;
 #define TMSG_SLIDESHOW_SCREENSAVER  222
 
 #define TMSG_SHUTDOWN             300
-#define TMSG_CLOSE                301
+#define TMSG_POWERDOWN            301
+#define TMSG_CLOSE                302
 #define TMSG_DASHBOARD            TMSG_CLOSE
-#define TMSG_HIBERNATE            302
-#define TMSG_SUSPEND              303
-#define TMSG_RESTART              304
-#define TMSG_RESET                305
-#define TMSG_RESTARTAPP           306
-#define TMSG_SWITCHTOFULLSCREEN   307
+#define TMSG_HIBERNATE            303
+#define TMSG_SUSPEND              304
+#define TMSG_RESTART              305
+#define TMSG_RESET                306
+#define TMSG_RESTARTAPP           307
+#define TMSG_SWITCHTOFULLSCREEN   308
 
 #define TMSG_HTTPAPI              400
 
@@ -98,6 +99,7 @@ public:
   void PictureShow(std::string filename);
   void PictureSlideShow(std::string pathname, bool bScreensaver = false);
   void Shutdown();
+  void Powerdown();
   void Close();
   void Hibernate();
   void Suspend();
