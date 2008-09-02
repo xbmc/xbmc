@@ -24,9 +24,10 @@
 #include "HTTP.h"
 #include "tinyXML/tinyxml.h"
 #include "Util.h"
+#include "Picture.h"
 
 #ifdef RESAMPLE_CACHED_IMAGES
-#include "Picture.h"
+#include "FileSystem/File.h"
 #endif
 
 const unsigned int CFanart::max_fanart_colors=3;
