@@ -275,8 +275,22 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
   switch (pNode->GetChildType())
   {
     case NODE_TYPE_SEASONS:
-      pItem.reset(new CFileItem(g_localizeStrings.Get(20366)));  // "All Seasons"
-      pItem->m_strPath = BuildPath() + "-1/";
+      {
+        pItem.reset(new CFileItem(g_localizeStrings.Get(20366)));  // "All Seasons"
+        pItem->m_strPath = BuildPath() + "-1/";
+        // set the number of watched and unwatched items accordingly
+        int watched = 0;
+        int unwatched = 0;
+        for (int i = 0; i < items.Size(); i++)
+        {
+          CFileItemPtr item = items[i];
+          watched += item->GetPropertyInt("watchedepisodes");
+          unwatched += item->GetPropertyInt("unwatchedepisodes");
+        }
+        pItem->SetProperty("watchedepisodes", watched);
+        pItem->SetProperty("unwatchedepisodes", unwatched);
+        pItem->GetVideoInfoTag()->m_playCount = (unwatched == 0) ? 1 : 0;
+      }
       break;
     default:
       break;
