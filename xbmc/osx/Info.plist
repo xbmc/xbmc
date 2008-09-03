@@ -2,32 +2,27 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
 	<string>XBMC</string>
+	<key>CFBundleGetInfoString</key>
+	<string>2.1.a5</string>
 	<key>CFBundleIconFile</key>
-	<string>xbmc</string>
+	<string>xbmc.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.teamxbmc.XBMC</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
+	<string>com.xbmc.xbmc</string>
 	<key>CFBundleName</key>
-	<string>XBMC</string>
+	<string>xbmc</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
+	<key>CFBundleShortVersionString</key>
+	<string>2.1-a5</string>
 	<key>CFBundleVersion</key>
-	<string>2.1</string>
-	<key>NSMainNibFile</key>
-	<string>MainMenu</string>
-	<key>NSPrincipalClass</key>
-	<string>NSApplication</string>
-	<key>LSEnvironment</key>
-	<dict>
-	  <key>XBMC_HOME</key>
-	  <string>/Library/Application Support/XBMC</string>
-	</dict>
+	<string>2.1-a5</string>
+	<key>CFBundleSignature</key>
+	<string>xbmc</string>
 </dict>
 </plist>
