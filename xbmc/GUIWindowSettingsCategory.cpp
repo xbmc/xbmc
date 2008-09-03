@@ -223,11 +223,13 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 
         g_charsetConverter.reset();
 
+#ifdef _XBOX
         CStdString strKeyboardLayoutConfigurationPath;
         strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", m_strNewLanguage.c_str());
         strKeyboardLayoutConfigurationPath = _P(strKeyboardLayoutConfigurationPath);
         CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
         g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
+#endif
 
         CStdString strLanguagePath;
         strLanguagePath.Format("Q:\\language\\%s\\strings.xml", m_strNewLanguage.c_str());

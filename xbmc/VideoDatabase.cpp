@@ -2350,6 +2350,8 @@ void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath, bool
     {
       return ;
     }
+   
+    BeginTransaction();
 
     CStdString strSQL;
     strSQL=FormatSQL("delete from genrelinkmusicvideo where idmvideo=%i", lMVideoId);
@@ -2389,6 +2391,7 @@ void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath, bool
     CStdString strPath, strFileName;
     SplitPath(strFilenameAndPath,strPath,strFileName);
     InvalidatePathHash(strPath);
+    CommitTransaction();
   }
   catch (...)
   {
