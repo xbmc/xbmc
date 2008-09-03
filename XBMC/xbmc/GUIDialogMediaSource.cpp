@@ -53,7 +53,6 @@ CGUIDialogMediaSource::CGUIDialogMediaSource(void)
 
 CGUIDialogMediaSource::~CGUIDialogMediaSource()
 {
-  m_bNameChanged=false;
   delete m_paths;
 }
 
@@ -62,7 +61,6 @@ bool CGUIDialogMediaSource::OnAction(const CAction &action)
   if (action.wID == ACTION_PREVIOUS_MENU)
   {
     m_confirmed = false;
-    m_bNameChanged=false;
   }
   return CGUIDialog::OnAction(action);
 }
@@ -86,7 +84,6 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_NAME)
       {
         OnEditChanged(iControl, m_name);
-	m_bNameChanged=true;
         UpdateButtons();
       }
       else if (iControl == CONTROL_OK)
@@ -107,6 +104,7 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
     {
       m_confirmed = false;
       m_bRunScan = false;
+      m_bNameChanged=false;
       m_settings.parent_name = false;
       m_settings.recurse = 0;
       UpdateButtons();
@@ -244,6 +242,9 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   CStdString path;
   bool allowNetworkShares(m_type != "programs" && m_type.Left(4) != "upnp");
   VECSOURCES extraShares;
+
+  if (m_name != CUtil::GetTitleFromPath(m_paths->Get(item)->m_strPath))
+    m_bNameChanged=true;
 
   if (m_type == "music" || m_type == "upnpmusic")
   { // add the music playlist location
@@ -395,8 +396,20 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
 void CGUIDialogMediaSource::OnPath(int item)
 {
   if (item < 0 || item > m_paths->Size()) return;
+
+  if (m_name != CUtil::GetTitleFromPath(m_paths->Get(item)->m_strPath))
+    m_bNameChanged=true;
+
   CGUIDialogKeyboard::ShowAndGetInput(m_paths->Get(item)->m_strPath, g_localizeStrings.Get(1021), false);
   CUtil::AddSlashAtEnd(m_paths->Get(item)->m_strPath);
+
+  if (!m_bNameChanged || m_name.IsEmpty())
+  {
+    CURL url(m_paths->Get(item)->m_strPath);
+    url.GetURLWithoutUserDetails(m_name);
+    CUtil::RemoveSlashAtEnd(m_name);
+    m_name = CUtil::GetTitleFromPath(m_name);
+  }
   UpdateButtons();
 }
 
