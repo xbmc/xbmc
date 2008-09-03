@@ -458,6 +458,13 @@ VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
       VECSOURCES shares;
       g_mediaManager.GetLocalDrives(shares, true);  // true to include Q
       m_fileSources.insert(m_fileSources.end(),shares.begin(),shares.end());
+      
+      CMediaSource source;
+      source.strName = g_localizeStrings.Get(22013);
+      source.m_ignore = true;
+      source.strPath = _P("P:\\");
+      source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+      m_fileSources.push_back(source);
     }
 
     return &g_settings.m_fileSources;
