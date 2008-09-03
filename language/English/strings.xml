@@ -1979,6 +1979,7 @@
   <string id="22010">GPU Temperature:</string>
   <string id="22011">CPU Temperature:</string>
   <string id="22012">Total Memory</string>
+  <string id="22013">Profile Data</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
