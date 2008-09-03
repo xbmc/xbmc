@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Based on english strings version 14720-->
 <strings>
   <string id="0">Programmes</string>
@@ -60,7 +60,7 @@
   <string id="122">Confirmer effacement du fichier</string>
   <string id="123">Êtes-vous sûr de copier ce(s) fichier(s)?</string>
   <string id="124">Êtes-vous sûr de déplacer ce(s) fichier(s)?</string>
-  <string id="125">Êtes-vous sûr d'effacer ce(s) fichier(s)?</string>
+  <string id="125">Voulez-vous supprimer ce(s) fichier(s)?</string>
   <string id="126">Statut</string>
   <string id="127">Objets</string>
   <string id="128">Général</string>
@@ -346,7 +346,7 @@
   <string id="421"></string>
   <string id="422">Supprimer info album</string>
   <string id="423">Supprimer info CDDB</string>
-  <string id="424">Sélectionnez</string>
+  <string id="424">Valider</string>
   <string id="425">Aucune info album trouvée</string>
   <string id="426">Aucune info CDDB trouvée</string>
   <string id="427">Disque</string>
@@ -957,8 +957,8 @@
   <string id="13106">Désactivée</string>
   <string id="13107">Activée pendant la lecture vidéo</string>
   <string id="13108">Toujours Activée</string>
-  <string id="13109">Test de la Résolution</string>
-  <string id="13110">Sauvegarder cette Résolution ?</string>
+  <string id="13109">Tester la Résolution</string>
+  <string id="13110">Appliquer cette Résolution ?</string>
   <string id="13111">Voulez-vous garder cette résolution?</string>
  
   <string id="13112">Upscaling logiciel haute qualitée</string>
@@ -1101,7 +1101,7 @@
   <string id="13349">Scanner la source</string>
   <string id="13350">Lecture en cours...</string>
   <string id="13351">Information sur l'Album</string>
-  <string id="13352">Scanner Article</string>
+  <string id="13352">Scanner</string>
   <string id="13353">Arrêter le scan</string>
   <string id="13354">Méthode rendu:</string>
   <string id="13355">Ombrage pixels basse qualité</string>
@@ -1150,7 +1150,7 @@
   <string id="13411">Vitesse du ventilateur minimum</string>
   <string id="13412">Flux RSS dont le texte est de la droite vers la gauche</string>
   
-  <string id="13600">Télécommande Apple</string>
+  <string id="13600">Apple Remote</string>
   <string id="13601">Mode</string>
   <string id="13602">Toujours activé</string>
   <string id="13603">Temps délai séquence</string>
@@ -1184,9 +1184,9 @@
   <string id="14016">Au moins 1 fichier et 1 vignette</string>
   <string id="14017">Pourcentage des vignettes</string>
   <string id="14018">Affichage</string>
-  <string id="14019">Changer emplacement 1</string>
-  <string id="14020">Changer emplacement 2</string>
-  <string id="14021">Changer emplacement 3</string>
+  <string id="14019">Définir lieu 1</string>
+  <string id="14020">Définir lieu 2</string>
+  <string id="14021">Définir lieu 3</string>
   <string id="14022">Biblio.</string>
   <string id="14023">Sans TV</string>
   <string id="14024">Saisissez la ville la plus proche</string>
@@ -1462,7 +1462,7 @@
   <string id="16308">Lanczos (logiciel)</string>  
   <string id="16309">Sinc (logiciel)</string>
 
-  <string id="17500">Afficher temps avant mise en veille</string> 
+  <string id="17500">Afficher temps avant la mise en veille</string> 
 
   <string id="20000">Dossier Rip CDDA</string>
   <string id="20001">Utiliser un lecteur DVD externe</string>
@@ -1597,7 +1597,7 @@
   <string id="20138">Impossible de monter l'unité mémoire</string>
   <string id="20139">Dans le port %i, emplacement %i</string>
   <string id="20140">Protéger par mot de passe</string>
-  <string id="20141">Valider</string>
+  <string id="20141">Choisir</string>
   <string id="20142">Nom d'utilisateur</string>
   <string id="20143">Entrer le mot de passe pour</string>
   <string id="20144">Minuteur de fermeture</string>
