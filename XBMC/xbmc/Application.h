@@ -238,6 +238,8 @@ public:
     return m_bEnableLegacyRes;
   }
 
+  bool m_restartLirc;
+
 protected:
   friend class CApplicationMessenger;
   // screensaver

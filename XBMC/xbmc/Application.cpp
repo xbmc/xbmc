@@ -329,6 +329,7 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
 
   m_bStandalone = false;
   m_bEnableLegacyRes = false;
+  m_restartLirc = false;
 }
 
 CApplication::~CApplication(void)
@@ -3247,6 +3248,13 @@ bool CApplication::ProcessRemote(float frameTime)
   }
 #endif
 #ifdef HAS_LIRC
+  if (m_restartLirc) {
+    CLog::Log(LOGDEBUG, "g_application.m_restartLirc is true - restarting lirc");
+    g_RemoteControl.Disconnect();
+    g_RemoteControl.Initialize();
+    m_restartLirc = false;
+  }
+  
   if (g_RemoteControl.GetButton())
   {
     // time depends on whether the movement is repeated (held down) or not.
