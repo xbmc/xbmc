@@ -1,0 +1,12 @@
+The HardwareConfigure is meant to look up known LIRC devices and copy the needed configure files for it. It will need root privelieges and it is only meant to be run at startup, no hotplugging.
+
+to compile it:
+./build.sh
+
+to run it:
+./HardwareConfigure PathToLIRC
+PathToLIRC in ubuntu is /etc/lirc/
+
+How to expand it:
+Add the info.linux.driver, ie foo, tag in AvailableRemotes (mceusb2 is lirc_mceusb2) these can be found in ie gnome-device-manager.
+Add the appropriete foo.hardware.conf and foo.lircd.conf in the folder of HardwareConfigure and it will copy it if it finds the Hardware.
