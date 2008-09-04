@@ -236,7 +236,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_bVideoLibraryAllItemsOnBottom = false;
   g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems = false;
   g_advancedSettings.m_bVideoLibraryHideEmptySeries = false;
-  g_advancedSettings.m_bVideoLibraryCleanOnUpdate = true;
+  g_advancedSettings.m_bVideoLibraryCleanOnUpdate = false;
 
   g_advancedSettings.m_bUseEvilB = true;
 
