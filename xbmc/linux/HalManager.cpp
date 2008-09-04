@@ -400,12 +400,14 @@ bool CHalManager::PowerManagement(PowerState State)
         dbus_message_iter_init_append(msg, &args);
         if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &int32))
           CLog::Log(LOGERROR, "DBus: Failed to append arguments");
+        g_application.m_restartLirc = true;
         break;
       case POWERSTATE_SUSPEND:
         msg = dbus_message_new_method_call("org.freedesktop.Hal", "/org/freedesktop/Hal/devices/computer", "org.freedesktop.Hal.Device.SystemPowerManagement", "Suspend");
         dbus_message_iter_init_append(msg, &args);
         if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &int32))
           CLog::Log(LOGERROR, "DBus: Failed to append arguments");
+        g_application.m_restartLirc = true;
         break;
       case POWERSTATE_SHUTDOWN:
         msg = dbus_message_new_method_call("org.freedesktop.Hal", "/org/freedesktop/Hal/devices/computer", "org.freedesktop.Hal.Device.SystemPowerManagement", "Shutdown");
@@ -446,6 +448,9 @@ bool CHalManager::PowerManagement(PowerState State)
   else
   {
     DBusMessage* msg;
+    DBusError error;
+    dbus_error_init (&error);
+        
     DBusConnection *connection = dbus_bus_get (DBUS_BUS_SESSION, &m_Error);
     if (connection)
     {
@@ -454,9 +459,11 @@ bool CHalManager::PowerManagement(PowerState State)
       {
       case POWERSTATE_HIBERNATE:
         StateString = "Hibernate";
+        g_application.m_restartLirc = true;
         break;
       case POWERSTATE_SUSPEND:
         StateString = "Suspend";
+        g_application.m_restartLirc = true;
         break;
       case POWERSTATE_SHUTDOWN:
         StateString = "Shutdown";
@@ -475,19 +482,15 @@ bool CHalManager::PowerManagement(PowerState State)
         CLog::Log(LOGERROR, "DBus: Create PowerManagement Message failed");
       else
       {
-        dbus_message_set_no_reply(msg, TRUE);
-
-        if (!dbus_connection_send(connection, msg, NULL))
+        DBusMessage *reply;
+        reply = dbus_connection_send_with_reply_and_block(connection, msg, -1, &error); //The reply timout might be bad to have as -1
+        if (dbus_error_is_set(&error))
         {
-          CLog::Log(LOGERROR, "DBus: Ran out of memory while queueing message");
+          CLog::Log(LOGERROR, "DBus: %s - %s", error.name, error.message);
           return false;
         }
-
-        printf("Waiting for send-queue to be sent out\n");
-        dbus_connection_flush(connection);
-
-        printf("Queue is now empty\n");
-
+        // Need to create a reader for the Message
+        dbus_message_unref (reply);
         dbus_message_unref(msg);
         msg = NULL;
       }
