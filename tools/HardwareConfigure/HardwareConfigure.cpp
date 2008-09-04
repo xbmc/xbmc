@@ -88,16 +88,18 @@ void CHalManager::GenerateGDL()
 
   char **GDL;
   int i = 0;
-  printf("HAL: Clearing old global device list, if any\n");
-
   printf("HAL: Generating global device list\n");
   GDL = libhal_get_all_devices(g_HalManager.m_Context, &i, &m_Error);
+
+  if (!ReadAvailableRemotes())
+    return;
 
   for (i = 0; GDL[i]; i++)
   {
     if (ParseDevice(GDL[i]))
       break;
   }
+
   printf("HAL: Generated global device list, found %i\n", i);
 }
 
@@ -126,8 +128,7 @@ void CHalManager::Initialize(const char *LircConfPath)
 {
   printf("HAL: Starting initializing\n");
   strcpy(m_LircConfPath, LircConfPath);
-  if (!ReadAvailableRemotes())
-    return;
+
   g_HalManager.m_Context = g_HalManager.InitializeHal();
   if (g_HalManager.m_Context == NULL)
   {
@@ -245,18 +246,14 @@ bool CHalManager::Update()
 /* Parse newly found device and add it to our remembered devices */
 bool CHalManager::ParseDevice(const char *udi)
 {
-  char *name;
-  name     = libhal_device_get_property_string(m_Context, udi, "info.linux.driver", NULL);
-  if (name == NULL)
-    return false;
+  const char *name = IsAllowedRemote(udi);
 
-  if (IsAllowedRemote(name))
+  if (name != NULL)
   {
-    printf("HAL: Found %s\n", name);
+    printf("HAL: Found %s - %s\n", name, udi);
     if (MoveConfigs(name))
     {
       printf("HAL: Sucessfully created config for %s\n", name);
-      libhal_free_string(name);
       return true;
     }
     else
@@ -266,17 +263,49 @@ bool CHalManager::ParseDevice(const char *udi)
   return false;
 }
 
+void Tokenize(const string& path, vector<string>& tokens, const string& delimiters)
+{
+  // Tokenize ripped from http://www.linuxselfhelp.com/HOWTO/C++Programming-HOWTO-7.html
+  // Skip delimiters at beginning.
+  string::size_type lastPos = path.find_first_not_of(delimiters, 0);
+  // Find first "non-delimiter".
+  string::size_type pos = path.find_first_of(delimiters, lastPos);
+
+  while (string::npos != pos || string::npos != lastPos)
+  {
+    // Found a token, add it to the vector.
+    tokens.push_back(path.substr(lastPos, pos - lastPos));
+    // Skip delimiters.  Note the "not_of"
+    lastPos = path.find_first_not_of(delimiters, pos);
+    // Find next "non-delimiter"
+    pos = path.find_first_of(delimiters, lastPos);
+  }
+}
+
 bool CHalManager::ReadAvailableRemotes()
 {
   ifstream inputfile("AvailableRemotes");
   string line;
+
+  m_AllowedRemotes.clear();
 
   if (inputfile.is_open())
   {
     while (!inputfile.eof())
     {
       getline(inputfile, line);
-      m_AllowedRemotes.push_back(line);
+      if (line.size() > 0)
+      {
+        vector<string> tokens;
+        Tokenize(line, tokens, " ");
+
+        if (tokens[1].size() > 0 && tokens[0].size() > 0)
+        {
+          CHalDevice dev(tokens[1].c_str(), tokens[0].c_str());
+          printf("AvailableRemote: (%s) (%s)\n", dev.UDI, dev.FriendlyName);
+          m_AllowedRemotes.push_back(dev);
+        }
+      }
     }
     inputfile.close();
 
@@ -285,14 +314,14 @@ bool CHalManager::ReadAvailableRemotes()
   return false;
 }
 
-bool CHalManager::IsAllowedRemote(const char *name)
+const char *CHalManager::IsAllowedRemote(const char *udi)
 {
   for (unsigned int i = 0; i < m_AllowedRemotes.size(); i++)
   {
-    if (strcmp(name, m_AllowedRemotes[i].c_str()) == 0)
-      return true;
+    if (strcmp(udi, m_AllowedRemotes[i].UDI) == 0)
+      return m_AllowedRemotes[i].FriendlyName;
   }
-  return false;
+  return NULL;
 }
 
 bool CHalManager::MoveConfigs(const char *name)
