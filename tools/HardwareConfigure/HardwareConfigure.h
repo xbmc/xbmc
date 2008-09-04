@@ -33,9 +33,9 @@ using namespace std;
 class CHalDevice
 {
 public:
-  const char *UDI;
-  char *FriendlyName;
-  CHalDevice(const char *udi) { UDI = udi; }
+  char UDI[1024];
+  char FriendlyName[1024];
+  CHalDevice(const char *udi, const char *friendlyName) { strcpy(UDI, udi); strcpy(FriendlyName, friendlyName); }
 };
 
 class CHalManager
@@ -55,15 +55,15 @@ protected:
   bool ParseDevice(const char *udi);
 private:
   char m_LircConfPath[1024];
-  vector<string> m_AllowedRemotes;
+  vector<CHalDevice> m_AllowedRemotes;
 
   LibHalContext *InitializeHal();
   bool InitializeDBus();
   void GenerateGDL();
-  bool MoveConfigs(const char *name);
+  bool MoveConfigs(const char *udi);
   bool MoveConfig(const char *InputConfig, const char *OutputConfig);
   bool Exists(const char *path);
-  bool IsAllowedRemote(const char*name);
+  const char *IsAllowedRemote(const char *udi);
   bool ReadAvailableRemotes();
 
   //Callbacks HAL
