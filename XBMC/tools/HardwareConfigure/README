@@ -8,5 +8,5 @@ to run it:
 PathToLIRC in ubuntu is /etc/lirc/
 
 How to expand it:
-Add the info.linux.driver, ie foo, tag in AvailableRemotes (mceusb2 is lirc_mceusb2) these can be found in ie gnome-device-manager.
-Add the appropriete foo.hardware.conf and foo.lircd.conf in the folder of HardwareConfigure and it will copy it if it finds the Hardware.
+Add the udi tag in AvailableRemotes along with a FriendlyName, FriendlyName udi (ie mceusb2 would be: mceusb2 /org/freedesktop/Hal/devices/usb_device_471_815_PH00Dwgw_if0), these can be found in ie gnome-device-manager.
+Add friendlyname.hardware.conf and friendlyname.lircd.conf in the folder of HardwareConfigure and it will copy it if it finds the Hardware.
