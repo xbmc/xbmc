@@ -1444,8 +1444,8 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     Cocoa_GL_SetFullScreen(g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, false, blankOtherDisplays);
 #else
     SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0, SDL_RESIZABLE);
-    m_screenSurface->RefreshCurrentContext();
 #endif
+    m_screenSurface->RefreshCurrentContext();
     g_fontManager.ReloadTTFFonts();
     m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
 
