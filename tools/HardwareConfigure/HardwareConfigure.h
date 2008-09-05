@@ -33,9 +33,10 @@ using namespace std;
 class CHalDevice
 {
 public:
-  char UDI[1024];
+  int ProductID;
+  int VendorID;
   char FriendlyName[1024];
-  CHalDevice(const char *udi, const char *friendlyName) { strcpy(UDI, udi); strcpy(FriendlyName, friendlyName); }
+  CHalDevice(int vendorID, int productID, const char *friendlyName) { ProductID = productID; VendorID = vendorID; strcpy(FriendlyName, friendlyName); }
 };
 
 class CHalManager
@@ -63,8 +64,9 @@ private:
   bool MoveConfigs(const char *udi);
   bool MoveConfig(const char *InputConfig, const char *OutputConfig);
   bool Exists(const char *path);
-  const char *IsAllowedRemote(const char *udi);
+  const char *IsAllowedRemote(int VendorID, int ProductID);
   bool ReadAvailableRemotes();
+  void RunCommand(const char *name);
 
   //Callbacks HAL
   static void DeviceRemoved(LibHalContext *ctx, const char *udi);
