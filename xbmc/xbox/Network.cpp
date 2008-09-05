@@ -485,6 +485,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       g_application.StartUPnP();
       g_application.StartEventServer();
       CScrobbler::GetInstance()->Init();
+      g_rssManager.Start();
     }
     break;
     case SERVICES_DOWN:
