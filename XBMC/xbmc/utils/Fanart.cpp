@@ -52,6 +52,7 @@ void CFanart::Pack()
     TiXmlElement thumb("thumb");
     thumb.SetAttribute("dim", it->strResolution.c_str());
     thumb.SetAttribute("colors", it->strColors.c_str());
+    thumb.SetAttribute("preview", it->strPreview.c_str());
     TiXmlText text(it->strImage);
     thumb.InsertEndChild(text);
     fanart.InsertEndChild(thumb);
@@ -77,6 +78,14 @@ bool CFanart::Unpack()
       SFanartData data;
       data.strImage = fanartThumb->GetText();
       data.strResolution = fanartThumb->Attribute("dim");
+      data.strPreview = fanartThumb->Attribute("preview");
+      if (data.strPreview.IsEmpty())
+      { // could be due to an old version in db - use old hardcoded method for now
+        if (m_url.Equals("http://thetvdb.com/banners/"))
+          data.strPreview = "_cache/" + data.strImage;
+        else if (m_url.Equals("http://www.moviebackdrops.com/") && data.strImage.Left(11).Equals("/backdrops/"))
+          data.strPreview = "thumbs/" + data.strImage.Mid(11);
+      }
       ParseColors(fanartThumb->Attribute("colors"), data.strColors);
       m_fanart.push_back(data);
       fanartThumb = fanartThumb->NextSiblingElement("thumb");
@@ -122,18 +131,18 @@ bool CFanart::DownloadThumb(unsigned int index, const CStdString &strDestination
   if (index >= m_fanart.size())
     return false;
 
-  // thetvdb.com uses the url format:
-  // <url>/_cache/<thumbname> for the thumb <url>/<thumbname>
+  CStdString thumbURL;
+  if (!m_fanart[index].strPreview.IsEmpty())
+  {
+    thumbURL = CUtil::AddFileToFolder(m_url, m_fanart[index].strPreview);
 
-  CStdString thumbURL = CUtil::AddFileToFolder(m_url, "_cache");
-  thumbURL = CUtil::AddFileToFolder(thumbURL, m_fanart[index].strImage.c_str());
-
-  CHTTP http;
-  if (http.Download(thumbURL, strDestination))
-    return true;
+    CHTTP http;
+    if (http.Download(thumbURL, strDestination))
+      return true;
+  }
 
   // try downloading the image instead
-  thumbURL = CUtil::AddFileToFolder(m_url, m_fanart[index].strImage.c_str());
+  thumbURL = CUtil::AddFileToFolder(m_url, m_fanart[index].strImage);
   return DownloadImage(thumbURL, strDestination);
 }
 
