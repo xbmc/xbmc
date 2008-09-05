@@ -34,7 +34,7 @@
 				<RegExp input="$$1" output="\2" dest="2">
 					<expression trim="2">FSK([^&quot;]*)&quot;standard&quot; valign=&quot;top&quot;&gt;&lt;nobr&gt;([^&lt;]*)</expression>
 				</RegExp>
-				<expression>[\t\b](.*)</expression>
+				<expression>[\t]\b(.*)\b</expression>
 			</RegExp>
 			<!--Director Film-->
 			<RegExp input="$$7" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
@@ -42,7 +42,7 @@
 					<expression>Regie([^&quot;]*)&quot;standard_justify&quot;&gt;([^&lt;]*)</expression>
 				</RegExp>
 				<RegExp input="$$2" output="\1" dest="7">
-					<expression>[\t\b](.*)</expression>
+					<expression>[\t]\b(.*)\b</expression>
 				</RegExp>
 				<expression repeat="yes">([^,]+)</expression>
 			</RegExp>		
@@ -51,7 +51,7 @@
 				<RegExp input="$$1" output="\2" dest="2">
 					<expression>L.nge([^&quot;]*)&quot;standard&quot; valign=&quot;top&quot;&gt;&lt;nobr&gt;([^&lt;]*)</expression>
 				</RegExp>
-				<expression>[\t\b](.*)</expression>
+				<expression>[\t]\b(.*)\b</expression>
 			</RegExp>
 			<!--URL to Thumbnail-->
 			<RegExp input="$$1" output="&lt;url function=&quot;GetThumbnailLink&quot;&gt;http://www.moviemaze.de/media/poster/\1/\2&lt;/url&gt;" dest="5+">
@@ -67,7 +67,7 @@
 					<expression>Genre([^&quot;]*)&quot;standard&quot; valign=&quot;top&quot;&gt;([^&lt;]*)</expression>
 				</RegExp>
 				<RegExp input="$$2" output="\1" dest="7">
-					<expression>[\t\b](.*)</expression>
+					<expression>[\t]\b(.*)\b</expression>
 				</RegExp>
 				<expression repeat="yes">([^, ]+)</expression>
 			</RegExp>
@@ -77,7 +77,7 @@
 					<expression trim="2">Drehbuch([^%]*)%&gt;([^&lt;]*)</expression>
 				</RegExp>
 				<RegExp input="$$2" output="\1" dest="7">
-					<expression>[\t\b](.*)</expression>
+					<expression>[\t]\b(.*)\b</expression>
 				</RegExp>
 				<expression repeat="yes">([^,]+)</expression>
 			</RegExp>
@@ -91,7 +91,7 @@
 					<expression>Darsteller:([^%]*)%&gt;(.*?)&lt;/td</expression>
 				</RegExp>
 				<RegExp input="$$2" output="\1" dest="4">
-					<expression>[\t\b](.*)</expression>
+					<expression>[\t]\b(.*)\b</expression>
 				</RegExp>
 				<expression repeat="yes">(&lt;a href\="[^&gt;]*&gt;)?(.*?)(&lt;/a&gt;)?( \((.*?)\))?, </expression>
 			</RegExp>
