@@ -246,7 +246,12 @@ bool CHalManager::Update()
 /* Parse newly found device and add it to our remembered devices */
 bool CHalManager::ParseDevice(const char *udi)
 {
-  const char *name = IsAllowedRemote(udi);
+  int VendorID, ProductID;
+  
+  VendorID  = libhal_device_get_property_int(m_Context, udi, "usb.vendor_id", NULL);
+  ProductID = libhal_device_get_property_int(m_Context, udi, "usb.product_id", NULL);
+
+  const char *name = IsAllowedRemote(VendorID, ProductID);
 
   if (name != NULL)
   {
@@ -255,6 +260,8 @@ bool CHalManager::ParseDevice(const char *udi)
     {
       printf("HAL: Sucessfully created config for %s\n", name);
       return true;
+
+      RunCommand(name);
     }
     else
       printf("HAL: Failed to create config for %s\n", name);
@@ -301,8 +308,8 @@ bool CHalManager::ReadAvailableRemotes()
 
         if (tokens[1].size() > 0 && tokens[0].size() > 0)
         {
-          CHalDevice dev(tokens[1].c_str(), tokens[0].c_str());
-          printf("AvailableRemote: (%s) (%s)\n", dev.UDI, dev.FriendlyName);
+          CHalDevice dev(atoi(tokens[1].c_str()), atoi(tokens[2].c_str()), tokens[0].c_str());
+          printf("AvailableRemote: (%s) (%i) (%i)\n", dev.FriendlyName, dev.VendorID, dev.ProductID);
           m_AllowedRemotes.push_back(dev);
         }
       }
@@ -314,14 +321,24 @@ bool CHalManager::ReadAvailableRemotes()
   return false;
 }
 
-const char *CHalManager::IsAllowedRemote(const char *udi)
+const char *CHalManager::IsAllowedRemote(int VendorID, int ProductID)
 {
   for (unsigned int i = 0; i < m_AllowedRemotes.size(); i++)
   {
-    if (strcmp(udi, m_AllowedRemotes[i].UDI) == 0)
+    if (VendorID == m_AllowedRemotes[i].VendorID && ProductID == m_AllowedRemotes[i].ProductID)
       return m_AllowedRemotes[i].FriendlyName;
   }
   return NULL;
+}
+
+void CHalManager::RunCommand(const char *name)
+{
+  char script[1024];
+  sprintf(script, "%s.sh", name);
+  if (Exists(script))
+  {
+    popen(script, "r");
+  }
 }
 
 bool CHalManager::MoveConfigs(const char *name)
