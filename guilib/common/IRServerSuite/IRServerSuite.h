@@ -30,6 +30,7 @@ public:
   CRemoteControl();
   ~CRemoteControl();
   bool Initialize();
+  void Disconnect() {};
   void Reset();
   void Update();
   WORD GetButton();
