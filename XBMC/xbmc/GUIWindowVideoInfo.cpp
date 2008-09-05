@@ -42,6 +42,7 @@
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "MediaManager.h"
+#include "utils/AsyncFileCopy.h"
 
 using namespace std;
 using namespace XFILE;
@@ -693,20 +694,19 @@ void CGUIWindowVideoInfo::OnGetThumb()
   {
     if (iter->m_type == CScraperUrl::URL_TYPE_SEASON)
       continue;
-    CStdString thumbFromWeb;
-    CStdString strLabel;
-    strLabel.Format("imdbthumb%i.jpg",i);
-    CUtil::AddFileToFolder(strPath, strLabel, thumbFromWeb);
-    if (CScraperUrl::DownloadThumbnail(thumbFromWeb,*iter))
-    {
-      CStdString strItemPath;
-      strItemPath.Format("thumb://IMDb%i",i++);
-      CFileItemPtr item(new CFileItem(strItemPath, false));
-      item->SetThumbnailImage(thumbFromWeb);
-      CStdString strLabel;
-      item->SetLabel(g_localizeStrings.Get(20015));
-      items.Add(item);
-    }
+    CStdString strItemPath;
+    strItemPath.Format("thumb://Remote%i",i++);
+    CFileItemPtr item(new CFileItem(strItemPath, false));
+    item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
+    item->SetIconImage("defaultPicture.png");
+    item->GetVideoInfoTag()->m_strPictureURL.m_url.push_back(*iter);
+    item->SetLabel(g_localizeStrings.Get(415));
+    item->SetProperty("labelonthumbload", g_localizeStrings.Get(20015));
+
+    // make sure any previously cached thumb is removed
+    if (CFile::Exists(item->GetCachedPictureThumb()))
+      CFile::Delete(item->GetCachedPictureThumb());
+    items.Add(item);
   }
   if (CFile::Exists(m_movieItem->GetThumbnailImage()))
   {
@@ -752,12 +752,16 @@ void CGUIWindowVideoInfo::OnGetThumb()
   CFileItem item(*m_movieItem->GetVideoInfoTag());
   CStdString cachedThumb(item.GetCachedVideoThumb());
 
-  if (result.Mid(0,12) == "thumb://IMDb")
+  if (result.Left(14) == "thumb://Remote")
   {
     CStdString strFile;
-    CUtil::AddFileToFolder(strPath,"imdbthumb"+result.Mid(12)+".jpg",strFile);
-    if (CFile::Exists(strFile))
-      CFile::Cache(strFile, cachedThumb);
+    CFileItem chosen(result, false);
+    CStdString thumb = chosen.GetCachedPictureThumb();
+    if (CFile::Exists(thumb))
+    {
+      // NOTE: This could fail if the thumbloader was too slow and the user too impatient
+      CFile::Cache(thumb, cachedThumb);
+    }
     else
       result = "thumb://None";
   }
@@ -803,22 +807,20 @@ void CGUIWindowVideoInfo::OnGetFanart()
   DIRECTORY::CDirectory::Create(strPath);
   for (unsigned int i = 0; i < m_movieItem->GetVideoInfoTag()->m_fanart.GetNumFanarts(); i++)
   {
-    CStdString thumbFromWeb;
-    CStdString strLabel;
-    strLabel.Format("fanart_thumb_%i.jpg", i);
-    CUtil::AddFileToFolder(strPath, strLabel, thumbFromWeb);
-    if (m_movieItem->GetVideoInfoTag()->m_fanart.DownloadThumb(i, thumbFromWeb))
-    {
-      CStdString strItemPath;
-      strItemPath.Format("thumb://FANART_%i",i);
-      CFileItemPtr item(new CFileItem(strItemPath, false));
-      item->SetThumbnailImage(thumbFromWeb);
-      CStdString strLabel;
-      item->SetLabel(g_localizeStrings.Get(20015));
-      items.Add(item);
-    }
-    else
-      CLog::Log(LOGDEBUG, "Unable to download fanart thumb #%d", i);
+    CStdString strItemPath;
+    strItemPath.Format("thumb://Remote%i",i);
+    CFileItemPtr item(new CFileItem(strItemPath, false));
+    item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
+    item->SetIconImage("defaultPicture.png");
+    item->GetVideoInfoTag()->m_fanart = m_movieItem->GetVideoInfoTag()->m_fanart;
+    item->SetProperty("fanart_number", (int)i);
+    item->SetLabel(g_localizeStrings.Get(415));
+    item->SetProperty("labelonthumbload", g_localizeStrings.Get(20015));
+
+    // make sure any previously cached thumb is removed
+    if (CFile::Exists(item->GetCachedPictureThumb()))
+      CFile::Delete(item->GetCachedPictureThumb());
+    items.Add(item);
   }
 
   CFileItemPtr itemNone(new CFileItem("thumb://None", false));
@@ -837,27 +839,30 @@ void CGUIWindowVideoInfo::OnGetFanart()
   CFileItem item(*m_movieItem->GetVideoInfoTag());
   CStdString cachedThumb(item.GetCachedFanart());
 
-  if (result.Mid(0,15) == "thumb://FANART_")
+  if (result.Left(14) == "thumb://Remote")
   {
-    CStdString strFile;
-    CUtil::AddFileToFolder(strPath,"fanart_thumb_"+result.Mid(15)+".jpg",strFile);
-    int iFanart = atoi(result.Mid(15).c_str());
-    if (CFile::Exists(strFile))
+    int iFanart = atoi(result.Mid(14).c_str());
+    // set new primary fanart, and update our database accordingly
+    m_movieItem->GetVideoInfoTag()->m_fanart.SetPrimaryFanart(iFanart);
+    CVideoDatabase db;
+    if (db.Open())
     {
-      // set new primary fanart, and update our database accordingly
-      m_movieItem->GetVideoInfoTag()->m_fanart.SetPrimaryFanart(iFanart);
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        db.UpdateFanart(*m_movieItem, GetContentType(m_movieItem.get()));
-        db.Close();
-      }
-
-      // download the fullres fanart image.  TODO: FANART - this could take some time, so should probably be backgrounded
-      m_movieItem->GetVideoInfoTag()->m_fanart.DownloadImage(cachedThumb);
+      db.UpdateFanart(*m_movieItem, GetContentType(m_movieItem.get()));
+      db.Close();
     }
-    else
-      result = "thumb://None";
+
+    // download the fullres fanart image
+    CStdString tempFile = _P("Z:\\fanart_download.jpg");
+    CAsyncFileCopy downloader;
+    bool succeeded = downloader.Copy(m_movieItem->GetVideoInfoTag()->m_fanart.GetImageURL(), tempFile, g_localizeStrings.Get(13413));
+    if (succeeded)
+    {
+      CPicture pic;
+      pic.CacheImage(tempFile, cachedThumb);
+    }
+    CFile::Delete(tempFile);
+    if (!succeeded)
+      return; // failed or cancelled download, so don't do anything
   }
   else if (CFile::Exists(result))
   { // local file
