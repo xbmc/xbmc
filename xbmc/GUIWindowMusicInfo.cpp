@@ -32,6 +32,7 @@
 #include "URL.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
+#include "VideoInfoTag.h"
 
 using namespace XFILE;
 
@@ -436,19 +437,26 @@ void CGUIWindowMusicInfo::OnGetThumb()
   // Grab the thumbnail from the web
   CStdString thumbFromWeb;
   CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "allmusicThumb", thumbFromWeb);
-  int iDownloaded=DownloadThumbnail(thumbFromWeb,true);
-  if (iDownloaded > 0)
+  CScraperUrl url;
+  if (m_bArtistInfo)
+    url = m_artist.thumbURL;
+  else
+    url = m_album.thumbURL;
+
+  for (unsigned int i = 0; i < url.m_url.size(); i++)
   {
-    for (int i=0;i<iDownloaded;++i)
-    {
-      CStdString strThumb;
-      strThumb.Format("thumb://Remote%i",i);
-      CFileItemPtr item(new CFileItem(strThumb, false));
-      strThumb.Format("%s%i.tbn",thumbFromWeb,i);
-      item->SetThumbnailImage(strThumb);
-      item->SetLabel(g_localizeStrings.Get(20055));
-      items.Add(item);
-    }
+    CStdString strThumb;
+    strThumb.Format("thumb://Remote%i",i);
+    CFileItemPtr item(new CFileItem(strThumb, false));
+    item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
+    item->SetIconImage("defaultPicture.png");
+    item->GetVideoInfoTag()->m_strPictureURL.m_url.push_back(url.m_url[i]);
+    item->SetLabel(g_localizeStrings.Get(415));
+    item->SetProperty("labelonthumbload", g_localizeStrings.Get(20055));
+    // make sure any previously cached thumb is removed
+    if (CFile::Exists(item->GetCachedPictureThumb()))
+      CFile::Delete(item->GetCachedPictureThumb());
+    items.Add(item);
   }
 
   // Current thumb
@@ -509,13 +517,24 @@ void CGUIWindowMusicInfo::OnGetThumb()
   else
     cachedThumb = CUtil::GetCachedAlbumThumb(m_album.strAlbum, m_album.strArtist);
 
+  if (result.Left(14).Equals("thumb://Remote"))
+  {
+    CStdString strFile;
+    CFileItem chosen(result, false);
+    CStdString thumb = chosen.GetCachedPictureThumb();
+    if (CFile::Exists(thumb))
+    {
+      // NOTE: This could fail if the thumbloader was too slow and the user too impatient
+      CFile::Cache(thumb, cachedThumb);
+    }
+    else
+      result = "thumb://None";
+  }
   if (result == "thumb://None")
   { // cache the default thumb
     CPicture pic;
     pic.CacheSkinImage("defaultAlbumCover.png", cachedThumb);
   }
-  else if (result.Left(14).Equals("thumb://Remote"))
-    CFile::Cache(thumbFromWeb+result.Mid(14)+".tbn", cachedThumb);
   else if (result == "thumb://Local")
     CFile::Cache(cachedLocalThumb, cachedThumb);
   else if (CFile::Exists(result))
