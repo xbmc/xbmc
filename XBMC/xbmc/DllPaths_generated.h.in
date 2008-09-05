@@ -38,6 +38,7 @@
 #define DLL_PATH_WAVPACK_CODEC "Q:\\system\\players\\paplayer\\wavpack-@ARCH@.so"
 #define DLL_PATH_WMA_CODEC     "Q:\\system\\players\\paplayer\\wma-@ARCH@.so"
 #define DLL_PATH_YM_CODEC      "Q:\\system\\players\\paplayer\\stsoundlibrary-@ARCH@.so"
+#define DLL_PATH_SHN_CODEC     "Q:\\system\\players\\paplayer\\libshnplay-@ARCH@.so"
 
 /* dvdplayer */
 #define DLL_PATH_LIBASS        "Q:\\system\\players\\dvdplayer\\libass-@ARCH@.so"
