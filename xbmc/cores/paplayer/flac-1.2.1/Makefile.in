@@ -282,10 +282,18 @@ all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 	$(MAKE) $(XBMC_LIB)
 
-$(XBMC_LIB): src/libFLAC/.libs/libFLAC.a 
+ifeq "$(XBMC_ARCH)" "osx"
+$(XBMC_LIB): src/libFLAC/.libs/libFLAC.a
+	gcc -bundle -flat_namespace -undefined suppress -shared -fPIC \
+	-mmacosx-version-min=10.4 -o libFLAC-osx.so src/libFLAC/.libs//*.o
+	mv libFLAC-osx.so ../../../../tools/Mach5/ 
+	cd ../../../../tools/Mach5;./mach5.rb libFLAC-osx.so;mv output.so ../../system/players/paplayer/libFLAC-osx.so
+else
+$(XBMC_LIB): src/libFLAC/.libs/libFLAC.a
 	gcc -shared -fpic -o $@ -rdynamic \
-		-Wl,--whole-archive src/libFLAC/.libs/libFLAC.a -Wl,--no-whole-archive \
-		`cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+	-Wl,--whole-archive src/libFLAC/.libs/libFLAC.a -Wl,--no-whole-archive \
+	`cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+endif
 
 .SUFFIXES:
 
