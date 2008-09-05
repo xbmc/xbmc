@@ -26,6 +26,7 @@
 #include "URL.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
+#include "VideoInfoTag.h"
 
 using namespace XFILE;
 
@@ -56,11 +57,17 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
         pItem->SetThumbnailImage(cachedThumb);
       else
       {
-        CPicture pic;
-        if(pic.DoCreateThumbnail(thumb, cachedThumb))
-          pItem->SetThumbnailImage(cachedThumb);
+        // see if we have additional info to download this thumb with
+        if (pItem->HasVideoInfoTag())
+          return DownloadVideoThumb(pItem, cachedThumb);
         else
-          pItem->SetThumbnailImage("");
+        {
+          CPicture pic;
+          if(pic.DoCreateThumbnail(thumb, cachedThumb))
+            pItem->SetThumbnailImage(cachedThumb);
+          else
+            pItem->SetThumbnailImage("");
+        }
       }
     }
     else if (m_regenerateThumbs)
@@ -86,3 +93,23 @@ void CPictureThumbLoader::OnLoaderFinish()
   m_regenerateThumbs = false;
 }
 
+bool CPictureThumbLoader::DownloadVideoThumb(CFileItem *item, const CStdString &cachedThumb)
+{
+  if (item->GetVideoInfoTag()->m_strPictureURL.m_url.size())
+  { // yep - download using this thumb
+    if (CScraperUrl::DownloadThumbnail(cachedThumb, item->GetVideoInfoTag()->m_strPictureURL.m_url[0]))
+      item->SetThumbnailImage(cachedThumb);
+    else
+      item->SetThumbnailImage("");
+  }
+  else if (item->GetVideoInfoTag()->m_fanart.GetNumFanarts() > 0 && item->HasProperty("fanart_number"))
+  { // yep - download our fanart preview
+    if (item->GetVideoInfoTag()->m_fanart.DownloadThumb(item->GetPropertyInt("fanart_number"), cachedThumb))
+      item->SetThumbnailImage(cachedThumb);
+    else
+      item->SetThumbnailImage("");
+  }
+  if (item->HasProperty("labelonthumbload"))
+    item->SetLabel(item->GetProperty("labelonthumbload"));
+  return true; // we don't need to do anything else here
+}

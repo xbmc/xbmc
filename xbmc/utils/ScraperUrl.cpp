@@ -271,8 +271,7 @@ bool CScraperUrl::DownloadThumbnail(const CStdString &thumb, const CScraperUrl::
     try
     {
       CPicture picture;
-      picture.CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(entry.m_url), thumb);
-      return true;
+      return picture.CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(entry.m_url), thumb);
     }
     catch (...)
     {
