@@ -2482,6 +2482,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\AsyncFileCopy.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\AsyncFileCopy.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\AutoPtrHandle.cpp"
 					>
 				</File>
