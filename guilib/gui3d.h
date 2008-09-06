@@ -28,8 +28,6 @@
  *
  */
 
-#define ALLOW_TEXTURE_COMPRESSION
-
 #define GAMMA_RAMP_FLAG  D3DSGR_CALIBRATE
 
 #ifndef HAS_SDL

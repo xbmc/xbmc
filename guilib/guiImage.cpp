@@ -158,8 +158,6 @@ void CGUIImage::Render()
 #ifndef HAS_SDL
     LPDIRECT3DDEVICE8 p3DDevice = g_graphicsContext.Get3DDevice();
     // Set state to render the image
-#ifdef ALLOW_TEXTURE_COMPRESSION
-#endif
     p3DDevice->SetTexture( 0, m_vecTextures[m_iCurrentImage] );
     p3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
     p3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
@@ -245,7 +243,6 @@ void CGUIImage::Render()
     
     float uLeft, uRight, vTop, vBottom;
 
-#ifdef ALLOW_TEXTURE_COMPRESSION
     if (!m_linearTexture)
     {
       uLeft = m_image.border.left / m_iImageWidth;
@@ -255,14 +252,11 @@ void CGUIImage::Render()
     }
     else
     {
-#endif
       uLeft = m_image.border.left;
       uRight = m_fU - m_image.border.right;
       vTop = m_image.border.top;
       vBottom = m_fV - m_image.border.bottom;
-#ifdef ALLOW_TEXTURE_COMPRESSION
     }
-#endif
 
     // TODO: The diffuse coloring applies to all vertices, which will
     //       look weird for stuff with borders, as will the -ve height/width
