@@ -54,6 +54,7 @@ public:
 private:
   friend class CGraphicsDevice;
   void Clear();
+  void ClampToEdge();
   LPDIRECT3DSURFACE8 m_surface;
   unsigned int m_width;
   unsigned int m_height;
