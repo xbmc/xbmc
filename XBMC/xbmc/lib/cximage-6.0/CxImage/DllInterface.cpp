@@ -134,7 +134,7 @@ bool CopyFile(const char *src, const char *dest)
   return ret;
 }
 
-int ResampleKeepAspect(CxImage &image, unsigned int width, unsigned int height)
+int ResampleKeepAspect(CxImage &image, unsigned int width, unsigned int height, bool checkTooSmall = false)
 {
   bool bResize = false;
   float fAspect = ((float)image.GetWidth()) / ((float)image.GetHeight());
@@ -152,13 +152,13 @@ int ResampleKeepAspect(CxImage &image, unsigned int width, unsigned int height)
     newheight = height;
     newwidth = (DWORD)( fAspect * ( (float)newheight) );
   }
-  if (newwidth < MIN_THUMB_WIDTH)
+  if (checkTooSmall && newwidth < MIN_THUMB_WIDTH)
   {
     bResize = true;
     newwidth = MIN_THUMB_HEIGHT;
     newheight = (DWORD)( ( (float)newwidth) / fAspect);
   }
-  if (newheight < MIN_THUMB_HEIGHT)
+  if (checkTooSmall && newheight < MIN_THUMB_HEIGHT)
   {
     bResize = true;
     newheight = MIN_THUMB_HEIGHT;
@@ -183,7 +183,7 @@ int ResampleKeepAspectArea(CxImage &image, unsigned int area)
   unsigned int height = (unsigned int)sqrt(area / fAspect);
   if (width > MAX_WIDTH) width = MAX_WIDTH;
   if (height > MAX_HEIGHT) height = MAX_HEIGHT;
-  return ResampleKeepAspect(image, width, height);
+  return ResampleKeepAspect(image, width, height, true);
 }
 
 bool SaveThumb(CxImage &image, const char *file, const char *thumb, int maxWidth, int maxHeight, bool bNeedToConvert = true, bool autoRotate = true)
