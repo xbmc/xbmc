@@ -155,6 +155,7 @@ public:
   void PreLoad(const CStdString& strTextureName);
   void EndPreLoad();
   void FlushPreLoad();
+  bool HasTexture(const CStdString &textureName, CStdString *path = NULL, int *bundle = NULL, int *size = NULL);
   int Load(const CStdString& strTextureName, DWORD dwColorKey = 0, bool checkBundleOnly = false);
 #ifndef HAS_SDL  
   LPDIRECT3DTEXTURE8 GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture);
