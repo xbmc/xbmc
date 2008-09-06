@@ -78,7 +78,34 @@ bool CSurface::CreateFromFile(const char *Filename, FORMAT format)
   if (!Create(info.Width, info.Height, format))
     return false;
 
-	return (S_OK == D3DXLoadSurfaceFromFile(m_surface, NULL, NULL, Filename, NULL, D3DX_FILTER_NONE, 0, NULL));
+	bool success = (S_OK == D3DXLoadSurfaceFromFile(m_surface, NULL, NULL, Filename, NULL, D3DX_FILTER_NONE, 0, NULL));
+  ClampToEdge();
+  return success;
+}
+
+
+void CSurface::ClampToEdge()
+{
+  // fix up the last row and column to simulate clamp_to_edge
+  if (!m_info.width || !m_info.height == 0)
+    return; // invalid texture
+  CSurfaceRect rect;
+  if (Lock(&rect))
+  {
+    for (unsigned int y = 0; y < m_info.height; y++)
+    {
+      BYTE *src = rect.pBits + y * rect.Pitch;
+      for (unsigned int x = m_info.width; x < m_width; x++)
+        memcpy(src + x*m_bpp, src + (m_info.width - 1)*m_bpp, m_bpp);
+    }
+    BYTE *src = rect.pBits + (m_info.height - 1) * rect.Pitch;
+    for (unsigned int y = m_info.height; y < m_height; y++)
+    {
+      BYTE *dest = rect.pBits + y * rect.Pitch;
+      memcpy(dest, src, rect.Pitch);
+    }
+    Unlock();
+  }
 }
 
 bool CSurface::Lock(CSurfaceRect *rect)
