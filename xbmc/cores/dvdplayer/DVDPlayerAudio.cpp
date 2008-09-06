@@ -387,8 +387,10 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     {
       if (m_speed != DVD_PLAYSPEED_PAUSE)
       {
-        double timeout;
-        timeout  = static_cast<CDVDMsgDouble*>(pMsg)->m_value;
+        double timeout = static_cast<CDVDMsgDouble*>(pMsg)->m_value;
+
+        CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::GENERAL_DELAY(%f)", timeout);
+
         timeout *= (double)DVD_PLAYSPEED_NORMAL / abs(m_speed);
         timeout += CDVDClock::GetAbsoluteClock();
 
