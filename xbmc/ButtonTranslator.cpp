@@ -393,6 +393,7 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("enter")) wAction = ACTION_ENTER;
   else if (strAction.Equals("increaserating")) wAction = ACTION_INCREASE_RATING;
   else if (strAction.Equals("decreaserating")) wAction = ACTION_DECREASE_RATING;
+  else if (strAction.Equals("togglefullscreen")) wAction = ACTION_TOGGLE_FULLSCREEN;
   else if (strAction.Equals("nextscene")) wAction = ACTION_NEXT_SCENE;
   else if (strAction.Equals("previousscene")) wAction = ACTION_PREV_SCENE;
   else if (strAction.Equals("nextletter")) wAction = ACTION_NEXT_LETTER;
