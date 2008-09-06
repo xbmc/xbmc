@@ -343,6 +343,32 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       // special case stuff for episodes (not currently retrieved from the library in filemode (ref: GetEpisodeInfo vs GetEpisodesByWhere)
       m_movieItem->m_dateTime.SetFromDateString(m_movieItem->GetVideoInfoTag()->m_strFirstAired);
       m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
+      // retrieve the season thumb.
+      // NOTE: This is overly complicated. Perhaps we should cache season thumbs by showtitle and season number,
+      //       rather than bothering with show path and the localized strings involved?
+      if (m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
+      {
+        CStdString label;
+        if (m_movieItem->GetVideoInfoTag()->m_iSeason == 0)
+          label = g_localizeStrings.Get(20381);
+        else
+          label.Format(g_localizeStrings.Get(20358), m_movieItem->GetVideoInfoTag()->m_iSeason);
+        CFileItem season(label);
+        season.m_bIsFolder = true;
+        // grab show path
+        CVideoDatabase db;
+        if (db.Open())
+        {
+          CFileItemList items;
+          CStdString where = db.FormatSQL("where c%02d='%s'", VIDEODB_ID_TV_TITLE, m_movieItem->GetVideoInfoTag()->m_strShowTitle.c_str());
+          if (db.GetTvShowsByWhere("", where, items) && items.Size())
+            season.GetVideoInfoTag()->m_strPath = items[0]->GetVideoInfoTag()->m_strPath;
+          db.Close();
+        }
+        season.SetCachedSeasonThumb();
+        if (season.HasThumbnail())
+          m_movieItem->SetProperty("seasonthumb", season.GetThumbnailImage());
+      }
     }
     else
       m_castList->SetContent("movies");
