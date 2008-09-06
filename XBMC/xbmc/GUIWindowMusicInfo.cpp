@@ -434,9 +434,16 @@ void CGUIWindowMusicInfo::OnGetThumb()
 {
   CFileItemList items;
 
-  // Grab the thumbnail from the web
-  CStdString thumbFromWeb;
-  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "allmusicThumb", thumbFromWeb);
+  // Current thumb
+  if (CFile::Exists(m_albumItem->GetThumbnailImage()))
+  {
+    CFileItemPtr item(new CFileItem("thumb://Current", false));
+    item->SetThumbnailImage(m_albumItem->GetThumbnailImage());
+    item->SetLabel(g_localizeStrings.Get(20016));
+    items.Add(item);
+  }
+
+  // Grab the thumbnail(s) from the web
   CScraperUrl url;
   if (m_bArtistInfo)
     url = m_artist.thumbURL;
@@ -456,15 +463,6 @@ void CGUIWindowMusicInfo::OnGetThumb()
     // make sure any previously cached thumb is removed
     if (CFile::Exists(item->GetCachedPictureThumb()))
       CFile::Delete(item->GetCachedPictureThumb());
-    items.Add(item);
-  }
-
-  // Current thumb
-  if (CFile::Exists(m_albumItem->GetThumbnailImage()))
-  {
-    CFileItemPtr item(new CFileItem("thumb://Current", false));
-    item->SetThumbnailImage(m_albumItem->GetThumbnailImage());
-    item->SetLabel(g_localizeStrings.Get(20016));
     items.Add(item);
   }
 
