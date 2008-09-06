@@ -87,6 +87,8 @@ bool CSurface::CreateFromFile(const char *Filename, FORMAT format)
   int ret = SDL_BlitSurface(original, NULL, m_surface, NULL);
   SDL_FreeSurface(original);
 
+  ClampToEdge();
+
   return (0 == ret);
 }
 
