@@ -55,6 +55,7 @@ public:
   const ImageInfo &Info() const { return m_info; };
 private:
   void Clear();
+  void ClampToEdge();
   friend class CGraphicsDevice;
   SDL_Surface *m_surface;
   unsigned int m_width;
