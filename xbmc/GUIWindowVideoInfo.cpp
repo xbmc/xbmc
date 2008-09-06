@@ -684,11 +684,16 @@ void CGUIWindowVideoInfo::OnGetThumb()
 {
   CFileItemList items;
 
+  // Current thumb
+  if (CFile::Exists(m_movieItem->GetThumbnailImage()))
+  {
+    CFileItemPtr item(new CFileItem("thumb://Current", false));
+    item->SetThumbnailImage(m_movieItem->GetThumbnailImage());
+    item->SetLabel(g_localizeStrings.Get(20016));
+    items.Add(item);
+  }
+
   // Grab the thumbnails from the web
-  CStdString strPath;
-  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"imdbthumbs",strPath);
-  CUtil::WipeDir(_P(strPath));
-  DIRECTORY::CDirectory::Create(strPath);
   int i=1;
   for (std::vector<CScraperUrl::SUrlEntry>::iterator iter=m_movieItem->GetVideoInfoTag()->m_strPictureURL.m_url.begin();iter != m_movieItem->GetVideoInfoTag()->m_strPictureURL.m_url.end();++iter)
   {
@@ -706,13 +711,6 @@ void CGUIWindowVideoInfo::OnGetThumb()
     // make sure any previously cached thumb is removed
     if (CFile::Exists(item->GetCachedPictureThumb()))
       CFile::Delete(item->GetCachedPictureThumb());
-    items.Add(item);
-  }
-  if (CFile::Exists(m_movieItem->GetThumbnailImage()))
-  {
-    CFileItemPtr item(new CFileItem("thumb://Current", false));
-    item->SetThumbnailImage(m_movieItem->GetThumbnailImage());
-    item->SetLabel(g_localizeStrings.Get(20016));
     items.Add(item);
   }
 
