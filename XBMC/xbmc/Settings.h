@@ -229,6 +229,7 @@ public:
 
 #ifdef HAS_SDL
     bool m_fullScreen;
+    bool m_startFullScreen;
 #endif
     int m_playlistRetries;
     int m_playlistTimeout;
