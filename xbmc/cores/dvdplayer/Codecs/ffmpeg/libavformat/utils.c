@@ -1403,11 +1403,14 @@ static int av_seek_frame_generic(AVFormatContext *s,
     if (index < 0)
         return -1;
 
-    ie = &st->index_entries[index];
-    if (url_fseek(s->pb, ie->pos, SEEK_SET) < 0)
-        return -1;
-
     av_read_frame_flush(s);
+    if (s->iformat->read_seek){
+        if(s->iformat->read_seek(s, stream_index, timestamp, flags) >= 0)
+            return 0;
+    }
+    ie = &st->index_entries[index];
+    url_fseek(s->pb, ie->pos, SEEK_SET);
+
     av_update_cur_dts(s, st, ie->timestamp);
 
     return 0;
