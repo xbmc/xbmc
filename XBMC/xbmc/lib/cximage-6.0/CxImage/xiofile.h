@@ -4,6 +4,11 @@
 #include "xfile.h"
 //#include <TCHAR.h>
 
+#if defined(_WIN32) && defined (XBMC)
+  // we must undefine the macro version of feof - we want to be able to wrap this in our dll loader
+  #undef feof
+#endif
+
 class DLL_EXP CxIOFile : public CxFile
 	{
 public:
