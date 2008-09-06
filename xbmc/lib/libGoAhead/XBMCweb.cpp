@@ -468,9 +468,9 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
           output = buffer;
         }
       }
-      websWrite(wp, T("<html>\n"));
+      websWrite(wp, T((char*)"<html>\n"));
       cnt = websWrite(wp, (char*)output);
-      websWrite(wp, T("</html>\n"));
+      websWrite(wp, T((char*)"</html>\n"));
       return cnt;
     }
 
@@ -933,11 +933,11 @@ void CXbmcWeb::xbmcForm(webs_t wp, char_t *path, char_t *query)
   parameter = websGetVar(wp, (char*)WEB_PARAMETER, (char*)XBMC_NONE);
 
   // do the command
-  websWrite(wp, T("HTTP/1.0 200 OK\r\n"));
-  websWrite(wp, T("Pragma: no-cache\r\n"));
-  websWrite(wp, T("Cache-control: no-cache\r\n"));
-  websWrite(wp, T("Content-Type: text/html\r\n"));
-  websWrite(wp, T("\r\n"));
+  websWrite(wp, T((char*)"HTTP/1.0 200 OK\r\n"));
+  websWrite(wp, T((char*)"Pragma: no-cache\r\n"));
+  websWrite(wp, T((char*)"Cache-control: no-cache\r\n"));
+  websWrite(wp, T((char*)"Content-Type: text/html\r\n"));
+  websWrite(wp, T((char*)"\r\n"));
 
   xbmcProcessCommand( NO_EID, wp, command, parameter);
 
