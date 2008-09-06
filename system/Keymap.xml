@@ -892,7 +892,7 @@
 
     <keyboard>
       <return>NextCalibration</return>
-      <enter>NextCalibration></enter>
+      <enter>NextCalibration</enter>
       <d>ResetCalibration</d>
       <r>NextResolution</r>
     </keyboard>
