@@ -14,6 +14,7 @@
 #endif
 
 #define RESAMPLE_QUALITY 0
+#undef USE_EXIF_THUMBS
 
 // MS DirectX routines don't like loading .jpg less than 8x8 pixels.
 #define MIN_THUMB_WIDTH 8
@@ -344,10 +345,12 @@ extern "C"
     try
     {
       // jpeg's may contain an EXIF preview image - use that if it's there
+#ifdef USE_EXIF_THUMBS
       if ((dwImageType == CXIMAGE_FORMAT_JPG || dwImageType == CXIMAGE_FORMAT_RAW) && image.GetExifThumbnail(file, thumb, dwImageType))
-	{
+      {
         return true;
-	}
+      }
+#endif
 
       if (!image.Load(file, dwImageType, actualwidth, actualheight) || !image.IsValid())
       {

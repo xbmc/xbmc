@@ -115,7 +115,8 @@ bool CxImageJPG::GetExifThumbnail(const char *filename, const char *outname, int
 ////////////////////////////////////////////////////////////////////////////////
 #ifdef XBMC
 #define RESAMPLE_FACTOR_OF_2_ON_LOAD
-#undef RESAMPLE_ON_LOAD
+#define MAX_PICTURE_AREA 2048*2048 // 4MP == 16MB
+#undef RESAMPLE_IF_TOO_BIG
 bool CxImageJPG::Decode(CxFile * hFile, int &iMaxWidth, int &iMaxHeight)
 #else
 bool CxImageJPG::Decode(CxFile * hFile)
@@ -161,7 +162,11 @@ bool CxImageJPG::Decode(CxFile * hFile)
 	struct jpg_error_mgr jerr;
 	jerr.buffer=info.szLastError;
 	/* More stuff */
+#ifdef RESAMPLE_FACTOR_OF_2_ON_LOAD
+	JSAMPARRAY buffer[4];
+#else
 	JSAMPARRAY buffer;	/* Output row buffer */
+#endif
 	int row_stride;		/* physical row width in output buffer */
 
 	/* In this example we want to open the input file before doing anything else,
@@ -229,6 +234,38 @@ bool CxImageJPG::Decode(CxFile * hFile)
 		jpeg_destroy_decompress(&cinfo);
 		return true;
 	}
+  // check if we should load it downsampled by a factor of 2,4 or 8
+#ifdef RESAMPLE_FACTOR_OF_2_ON_LOAD
+	int iWidth = cinfo.image_width;
+	int iHeight = cinfo.image_height;
+	float fAR = (float)iWidth/(float)iHeight;
+	if (iMaxWidth > 0 && iMaxHeight == 0)
+	{ // scale by area
+		iMaxWidth = (int)sqrt(iMaxWidth * fAR);
+		iMaxHeight = (int)(iMaxWidth / fAR);
+	}
+	if (iMaxWidth > 0 && iMaxHeight > 0)
+	{
+		if (iWidth > iMaxWidth)
+		{
+			iWidth = iMaxWidth;
+			iHeight = (int)((float)iWidth/fAR);
+		}
+		if (iHeight > iMaxHeight)
+		{
+			iHeight = iMaxHeight;
+			iWidth = (int)((float)iHeight*fAR);
+		}
+		unsigned int power = 2;
+		cinfo.scale_denom = 1;
+		while (power <= 8 && cinfo.image_width >= iWidth * power && cinfo.image_height >= iHeight * power)
+		{
+			cinfo.scale_denom = power;
+			power *= 2;
+		}
+		jpeg_calc_output_dimensions(&cinfo);
+	}
+#endif
 
 	/* Step 5: Start decompressor */
 	jpeg_start_decompress(&cinfo);
@@ -238,9 +275,32 @@ bool CxImageJPG::Decode(CxFile * hFile)
 	* output image dimensions available, as well as the output colormap
 	* if we asked for color quantization.
 	*/
+	
+#ifdef RESAMPLE_FACTOR_OF_2_ON_LOAD
+	// save our image width and height
+	iMaxWidth = cinfo.image_width;
+	iMaxHeight = cinfo.image_height;
+	// check if we're going to exceed our maximum picture size
+	bool bScale(false);
+#ifdef RESAMPLE_IF_TOO_BIG
+	if (cinfo.output_width * cinfo.output_height > MAX_PICTURE_AREA)
+	{
+		iWidth = (int)sqrt(MAX_PICTURE_AREA * fAR);
+		iHeight = (int)(iWidth / fAR);
+		bScale = true;
+	}
+	else
+#endif
+	{
+		iWidth = cinfo.output_width;
+		iHeight = cinfo.output_height;
+	}
+	Create(iWidth, iHeight, 8*cinfo.num_components, CXIMAGE_FORMAT_JPG);
+#else
 	//Create the image using output dimensions <ignacio>
 	//Create(cinfo.image_width, cinfo.image_height, 8*cinfo.output_components, CXIMAGE_FORMAT_JPG);
 	Create(cinfo.output_width, cinfo.output_height, 8*cinfo.output_components, CXIMAGE_FORMAT_JPG);
+#endif
 
 	if (!pDib) longjmp(jerr.setjmp_buffer, 1);  //<DP> check if the image has been created
 
@@ -283,23 +343,154 @@ bool CxImageJPG::Decode(CxFile * hFile)
 	/* JSAMPLEs per row in output buffer */
 	row_stride = cinfo.output_width * cinfo.output_components;
 
+#ifdef RESAMPLE_FACTOR_OF_2_ON_LOAD
+	/* Make 4 row buffers to do our resampling on */
+	for (int i=0; i<4; i++)
+	{
+		buffer[i] = (*cinfo.mem->alloc_sarray)
+		((j_common_ptr) &cinfo, JPOOL_IMAGE, row_stride, 1);
+	}
+#else
 	/* Make a one-row-high sample array that will go away when done with image */
 	buffer = (*cinfo.mem->alloc_sarray)
 		((j_common_ptr) &cinfo, JPOOL_IMAGE, row_stride, 1);
-
+#endif
 	/* Step 6: while (scan lines remain to be read) */
 	/*           jpeg_read_scanlines(...); */
 	/* Here we use the library's state variable cinfo.output_scanline as the
 	* loop counter, so that we don't have to keep track ourselves.
 	*/
 	iter.Upset();
-	while (cinfo.output_scanline < cinfo.output_height) {
+#ifdef RESAMPLE_FACTOR_OF_2_ON_LOAD
+	int row_position = 0;
+	int next_row_slot = 0;
+	int num_scanlines_read = 0;
 
+	float xScale = (float)cinfo.output_width/(float)iWidth;
+	float yScale = (float)cinfo.output_height/(float)iHeight;
+	int num = cinfo.num_components;
+
+	float f_y, f_x, a, b, rr[4], r1, r2;
+	int i_y, i_x, xx, yy;
+
+	for (int y=0;y<iHeight;y++)
+	{
+		f_y = (float) y * yScale - 0.5f;
+		i_y = (int) floor(f_y);
+		a = f_y - (float)floor(f_y);
+		// the rows we need are:
+		// i_y-1, i_y, i_y+1, i_y+2
+		int iNeededRow = i_y+2;
+		if (iNeededRow < 0) iNeededRow = 0;
+		if (iNeededRow >= (int)cinfo.output_height) iNeededRow = cinfo.image_height-1;
+		bool bFinished(false);
+#else
+	while (cinfo.output_scanline < cinfo.output_height) {
+#endif
 		if (info.nEscape) longjmp(jerr.setjmp_buffer, 1); // <vho> - cancel decoding
 		
+#ifdef RESAMPLE_FACTOR_OF_2_ON_LOAD
+		// decode as many rows as we need
+		if (bScale)
+		{
+			while (iNeededRow >= row_position)
+			{
+				num_scanlines_read += jpeg_read_scanlines(&cinfo, buffer[next_row_slot], 1);;
+				// rotate around
+				next_row_slot++;
+				if (next_row_slot >= 4)
+					next_row_slot = 0;
+				row_position++;
+			}
+		}
+		else
+		{
+			(void) jpeg_read_scanlines(&cinfo, buffer[0], 1);
+			num_scanlines_read++;
+		}
+#else
 		(void) jpeg_read_scanlines(&cinfo, buffer, 1);
+#endif
 		// info.nProgress = (long)(100*cinfo.output_scanline/cinfo.output_height);
 		//<DP> Step 6a: CMYK->RGB */ 
+#ifdef RESAMPLE_FACTOR_OF_2_ON_LOAD
+		// do bicubic resampling
+		BYTE *dst=iter.GetRow();
+		for (int x = 0; x < iWidth; x++)
+		{
+			if (bScale)
+			{
+				// resample (bicubic)
+				f_x = (float) x * xScale - 0.5f;
+				i_x = (int) floor(f_x);
+				b   = f_x - (float)floor(f_x);
+
+				for (int k=0; k<num; k++)
+					rr[k] = 0;
+				// cycle around the necessary y rows...
+				for (int m=-1; m<3; m++)
+				{
+					r1 = KernelBSpline((float) m - a);
+					yy = i_y+m;
+					if (yy<0) yy=0;
+					if (yy>=(int)cinfo.image_height) yy = cinfo.image_height-1;
+					// calculate which y row we should be using
+					int row = next_row_slot;
+					for (int i=row_position; i>yy; i--)
+					{
+						row--;
+						if (row < 0) row = 3;
+					}
+					for(int n=-1; n<3; n++)
+					{
+						r2 = r1 * KernelBSpline(b - (float)n);
+						xx = i_x+n;
+						if (xx<0) xx=0;
+						if (xx>=(int)cinfo.image_width) xx=cinfo.image_width-1;
+						BYTE *pSrc = buffer[row][0];
+						if ((cinfo.num_components==4)&&(cinfo.quantize_colors==FALSE))
+						{
+							float k = (float)pSrc[cinfo.num_components*xx+3];
+							rr[0] += (k * pSrc[cinfo.num_components*xx+2])/255.0f*r2;
+							rr[1] += (k * pSrc[cinfo.num_components*xx+1])/255.0f*r2;
+							rr[2] += (k * pSrc[cinfo.num_components*xx+0])/255.0f*r2;
+						}
+						else
+						{
+							for (int k=0; k<num; k++)
+								rr[k] += pSrc[cinfo.num_components*xx+k]*r2;
+						}
+					}
+				}
+			}
+			else
+			{
+				BYTE *pSrc = buffer[0][0];
+				if ((cinfo.num_components==4)&&(cinfo.quantize_colors==FALSE))
+				{
+					float k = (float)pSrc[cinfo.num_components*x+3];
+					rr[0] = (k * pSrc[cinfo.num_components*x+2])/255.0f;
+					rr[1] = (k * pSrc[cinfo.num_components*x+1])/255.0f;
+					rr[2] = (k * pSrc[cinfo.num_components*x+0])/255.0f;
+				}
+				else
+				{
+					for (int k=0; k<num; k++)
+						rr[k] = (float)pSrc[cinfo.num_components*x+k];
+				}
+			}
+			if ((cinfo.num_components==4)&&(cinfo.quantize_colors==FALSE))
+			{
+				for (int k=0; k<3; k++)
+					dst[3*x+k] = (BYTE)rr[k];
+			}
+			else
+			{
+				for (int k=0; k<num; k++)
+					dst[num*x+k] = (BYTE)rr[k];
+			}
+		}
+#else
 		if ((cinfo.num_components==4)&&(cinfo.quantize_colors==FALSE)){
 			BYTE k,*dst,*src;
 			dst=iter.GetRow();
@@ -314,8 +505,16 @@ bool CxImageJPG::Decode(CxFile * hFile)
 			/* Assume put_scanline_someplace wants a pointer and sample count. */
 			iter.SetRow(buffer[0], row_stride);
 		}
+#endif
 			iter.PrevRow();
 	}
+#ifdef RESAMPLE_FACTOR_OF_2_ON_LOAD
+	while (cinfo.output_scanline < cinfo.output_height)
+	{
+		(void) jpeg_read_scanlines(&cinfo, buffer[0], 1);
+		num_scanlines_read++;
+	}
+#endif
 
 	/* Step 7: Finish decompression */
 	(void) jpeg_finish_decompress(&cinfo);
