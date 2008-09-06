@@ -2779,3 +2779,4 @@ CStdString CFileItem::FindTrailer() const
   }
   return strTrailer;
 }
+
