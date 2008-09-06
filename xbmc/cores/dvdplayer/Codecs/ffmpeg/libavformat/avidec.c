@@ -178,11 +178,16 @@ static int read_braindead_odml_indx(AVFormatContext *s, int frame_num){
             duration = get_le32(pb);
             pos = url_ftell(pb);
 
-            url_fseek(pb, offset+8, SEEK_SET);
+            if(url_fseek(pb, offset+8, SEEK_SET) < 0)
+                return -1;
+
             read_braindead_odml_indx(s, frame_num);
             frame_num += duration;
 
-            url_fseek(pb, pos, SEEK_SET);
+            if(url_fseek(pb, pos, SEEK_SET) < 0) {
+                av_log(s, AV_LOG_ERROR, "Failed to restore position after reading index");
+                return -1;
+            }
         }
     }
     avi->index_loaded=1;
@@ -603,7 +608,7 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
 
     if(!avi->index_loaded && !url_is_streamed(pb))
         avi_load_index(s);
-    avi->index_loaded = 1;
+
     avi->non_interleaved |= guess_ni_flag(s);
     if(avi->non_interleaved) {
         av_log(s, AV_LOG_INFO, "Non interleaved AVI\n");
@@ -938,7 +943,9 @@ static int avi_load_index(AVFormatContext *s)
     uint32_t tag, size;
     offset_t pos= url_ftell(pb);
 
-    url_fseek(pb, avi->movi_end, SEEK_SET);
+    if(url_fseek(pb, avi->movi_end, SEEK_SET) < 0)
+        return -1;
+
 #ifdef DEBUG_SEEK
     printf("movi_end=0x%"PRIx64"\n", avi->movi_end);
 #endif
@@ -971,6 +978,7 @@ static int avi_load_index(AVFormatContext *s)
     }
  the_end:
     url_fseek(pb, pos, SEEK_SET);
+    avi->index_loaded=1;
     return 0;
 }
 
@@ -984,7 +992,6 @@ static int avi_read_seek(AVFormatContext *s, int stream_index, int64_t timestamp
     if (!avi->index_loaded) {
         /* we only load the index on demand */
         avi_load_index(s);
-        avi->index_loaded = 1;
     }
     assert(stream_index>= 0);
 
@@ -1005,11 +1012,13 @@ static int avi_read_seek(AVFormatContext *s, int stream_index, int64_t timestamp
         /* the av_index_search_timestamp call above.                     */
         assert(stream_index == 0);
 
+        if(url_fseek(s->pb, pos, SEEK_SET) < 0)
+            return -1;
+
         /* Feed the DV video stream version of the timestamp to the */
         /* DV demux so it can synth correct timestamps              */
         dv_offset_reset(avi->dv_demux, timestamp);
 
-        url_fseek(s->pb, pos, SEEK_SET);
         avi->stream_index= -1;
         return 0;
     }
@@ -1049,7 +1058,8 @@ static int avi_read_seek(AVFormatContext *s, int stream_index, int64_t timestamp
     }
 
     /* do the seek */
-    url_fseek(s->pb, pos, SEEK_SET);
+    if(url_fseek(s->pb, pos, SEEK_SET) < 0)
+        return -1;
     avi->stream_index= -1;
     return 0;
 }
