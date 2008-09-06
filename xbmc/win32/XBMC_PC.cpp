@@ -53,6 +53,7 @@ CXBMC_PC *g_xbmcPC;
 
 CXBMC_PC::CXBMC_PC()
 {
+  g_advancedSettings.m_startFullScreen = false;
 #ifndef HAS_SDL
   m_hWnd = NULL;
   m_hAccel = NULL;
@@ -414,7 +415,7 @@ HRESULT CXBMC_PC::Create( HINSTANCE hInstance, LPSTR commandLine )
   CStdString strcl(commandLine);
 
   if(strcl.Find("-fs") >= 0)
-    g_advancedSettings.m_fullScreen = true;
+    g_advancedSettings.m_startFullScreen = true;
 
   if(strcl.Find("-p") >= 0)
   {
