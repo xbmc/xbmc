@@ -185,7 +185,6 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
 case TMSG_POWERDOWN:
       {
-        g_application.Stop();
 #if !defined(_LINUX)
 #ifndef HAS_SDL
         // send the WM_CLOSE window message
@@ -193,14 +192,15 @@ case TMSG_POWERDOWN:
 #endif
 #ifdef _WIN32PC
         if (CWIN32Util::PowerManagement(POWERSTATE_SHUTDOWN))
-#elif HAS_HAL
-        if (CHalManager::PowerManagement((PowerState)ShutdownState))
+#endif
+#endif
+#ifdef HAS_HAL
+        if (CHalManager::PowerManagement(POWERSTATE_SHUTDOWN))
 #endif
         {
           g_application.Stop();
           exit(0);
         }
-#endif
       }
       break;
 
