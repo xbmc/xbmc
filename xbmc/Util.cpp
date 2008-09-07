@@ -2194,7 +2194,7 @@ void CUtil::Stat64ToStat(struct stat *result, struct __stat64 *stat)
   result->st_uid = stat->st_uid;
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
-  if (stat->st_size <= LONG_MAX)
+  if (sizeof(stat->st_size) <= sizeof(result->st_size) )
 #ifndef _LINUX
     result->st_size = (_off_t)stat->st_size;
 #else
