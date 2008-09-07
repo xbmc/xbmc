@@ -56,6 +56,10 @@
 # include <stdlib.h>
 #endif
 
+#ifndef SEEK_SET
+#define SEEK_SET 0
+#endif
+
 /* These definitions are also to make debugging easy. Note that they
    have to come *before* #include <cdio/ecma_167.h> which sets 
    #defines for these.
