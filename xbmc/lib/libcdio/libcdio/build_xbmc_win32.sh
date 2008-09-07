@@ -1,7 +1,7 @@
 #!/bin/bash 
 
-export LDFLAGS="-Wl,--add-stdcall-alias"
-export CPPFLAGS="-I../"
+#export LDFLAGS="-Wl,--add-stdcall-alias"
+#export CPPFLAGS="-I../"
 
 ./configure \
 --enable-static \
@@ -12,7 +12,7 @@ export CPPFLAGS="-I../"
 --without-cd-read \
 --without-iso-info \
 --without-iso-read \
---enable-memalign-hack && 
+--without-cd-paranoia && 
  
 make -j3
-strip lib/driver/.libs/*.a
+cp lib/driver/.libs/libcdio.a ./libcdio_win32.lib

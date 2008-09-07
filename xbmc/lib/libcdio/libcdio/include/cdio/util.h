@@ -30,6 +30,10 @@
 */
 #include <stdlib.h>
 
+#ifdef WIN32
+#define snprintf _snprintf
+#endif
+
 #undef  MAX
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))
 
