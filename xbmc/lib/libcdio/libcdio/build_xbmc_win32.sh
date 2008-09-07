@@ -14,5 +14,5 @@ export CPPFLAGS="-I../"
 --without-iso-read \
 --enable-memalign-hack && 
  
-make -j3 && 
-strip lib/driver/.libs/*.dll
+make -j3
+strip lib/driver/.libs/*.a
