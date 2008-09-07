@@ -330,6 +330,7 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_bStandalone = false;
   m_bEnableLegacyRes = false;
   m_restartLirc = false;
+  m_restartLCD = false;
 }
 
 CApplication::~CApplication(void)
@@ -3264,6 +3265,14 @@ bool CApplication::ProcessRemote(float frameTime)
     CKey key(g_RemoteControl.GetButton(), 0, 0, 0, 0, 0, 0, time);
     g_RemoteControl.Reset();
     return OnKey(key);
+  }
+#endif
+#ifdef _LINUX
+  if (m_restartLCD) {
+    CLog::Log(LOGDEBUG, "g_application.m_restartLCD is true - restarting LCDd");
+    g_lcd->Stop(); 
+    g_lcd->Initialize();
+    m_restartLCD = false;
   }
 #endif
   return false;
