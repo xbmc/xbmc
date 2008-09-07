@@ -83,8 +83,6 @@ bool CFanart::Unpack()
       { // could be due to an old version in db - use old hardcoded method for now
         if (m_url.Equals("http://thetvdb.com/banners/"))
           data.strPreview = "_cache/" + data.strImage;
-        else if (m_url.Equals("http://www.moviebackdrops.com/") && data.strImage.Left(11).Equals("/backdrops/"))
-          data.strPreview = "thumbs/" + data.strImage.Mid(11);
       }
       ParseColors(fanartThumb->Attribute("colors"), data.strColors);
       m_fanart.push_back(data);
