@@ -9,7 +9,7 @@ export MACOSX_DEPLOYMENT_TARGET=10.4
 
 make distclean >/dev/null 2>&1
 
-./configure CFLAGS="-fPIC -DXBMC -D_DLL -D_LINUX -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+./configure CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     --with-pic
 
 make
