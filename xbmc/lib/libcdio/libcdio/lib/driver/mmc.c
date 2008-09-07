@@ -1472,3 +1472,10 @@ mmc_set_speed( const CdIo_t *p_cdio, int i_Kbs_speed )
  *  indent-tabs-mode: nil
  * End:
  */
+ 
+ #ifdef WIN32
+void* _alloca(size_t size)
+{
+  return (void*)alloca(size);
+}
+ #endif
