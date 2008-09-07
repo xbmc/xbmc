@@ -906,6 +906,7 @@
 		F5F8E1F00E42807A00A8E96F /* ArabicShaping.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1EF0E42807A00A8E96F /* ArabicShaping.cpp */; };
 		F5F95DA00E4E203700C3FA5C /* GUIWindowTestPattern.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F95D9F0E4E203700C3FA5C /* GUIWindowTestPattern.cpp */; };
 		F5F95DAE0E4E220900C3FA5C /* language.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F95DAD0E4E220900C3FA5C /* language.cpp */; };
+		F5FDF51D0E7218950005B0A6 /* AsyncFileCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2753,6 +2754,8 @@
 		F5F95D9E0E4E203700C3FA5C /* GUIWindowTestPattern.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = GUIWindowTestPattern.h; sourceTree = "<group>"; };
 		F5F95D9F0E4E203700C3FA5C /* GUIWindowTestPattern.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowTestPattern.cpp; sourceTree = "<group>"; };
 		F5F95DAD0E4E220900C3FA5C /* language.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = language.cpp; sourceTree = "<group>"; };
+		F5FDF51B0E7218950005B0A6 /* AsyncFileCopy.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AsyncFileCopy.h; sourceTree = "<group>"; };
+		F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = AsyncFileCopy.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -5521,6 +5524,8 @@
 				F5F8E1EE0E42807A00A8E96F /* ArabicShaping.h */,
 				E38E1E250D25F9FD00618676 /* Archive.cpp */,
 				E38E1E260D25F9FD00618676 /* Archive.h */,
+				F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */,
+				F5FDF51B0E7218950005B0A6 /* AsyncFileCopy.h */,
 				E38E1E270D25F9FD00618676 /* BitstreamStats.cpp */,
 				E38E1E280D25F9FD00618676 /* BitstreamStats.h */,
 				E38E1E290D25F9FD00618676 /* CharsetConverter.cpp */,
@@ -6611,6 +6616,7 @@
 				F5F95DAE0E4E220900C3FA5C /* language.cpp in Sources */,
 				F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */,
 				F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */,
+				F5FDF51D0E7218950005B0A6 /* AsyncFileCopy.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
