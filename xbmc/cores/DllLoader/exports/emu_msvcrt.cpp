@@ -1528,7 +1528,7 @@ extern "C"
       CLog::Log(LOGINFO, "Stating open file");
     
       __int64 size = pFile->GetLength();
-      if (size <= LONG_MAX)
+      if (sizeof(size) <= sizeof(buffer->st_size) )
         buffer->st_size = (_off_t)size;
       else
       {
