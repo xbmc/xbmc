@@ -63,7 +63,7 @@ udf_get_posix_filemode(const udf_dirent_t *p_udf_dirent)
     if (i_perms & FE_PERM_U_READ)  mode |= S_IRUSR;
     if (i_perms & FE_PERM_U_WRITE) mode |= S_IWUSR;
     if (i_perms & FE_PERM_U_EXEC)  mode |= S_IXUSR;
-    
+#ifndef WIN32   
     if (i_perms & FE_PERM_G_READ)  mode |= S_IRGRP;
     if (i_perms & FE_PERM_G_WRITE) mode |= S_IWGRP;
     if (i_perms & FE_PERM_G_EXEC)  mode |= S_IXGRP;
@@ -71,7 +71,7 @@ udf_get_posix_filemode(const udf_dirent_t *p_udf_dirent)
     if (i_perms & FE_PERM_O_READ)  mode |= S_IROTH;
     if (i_perms & FE_PERM_O_WRITE) mode |= S_IWOTH;
     if (i_perms & FE_PERM_O_EXEC)  mode |= S_IXOTH;
-
+#endif
     switch (udf_fe.icb_tag.file_type) {
     case ICBTAG_FILE_TYPE_DIRECTORY: 
       mode |= S_IFDIR;
@@ -79,24 +79,29 @@ udf_get_posix_filemode(const udf_dirent_t *p_udf_dirent)
     case ICBTAG_FILE_TYPE_REGULAR:
       mode |= S_IFREG;
       break;
+#ifndef WIN32
     case ICBTAG_FILE_TYPE_SYMLINK:
       mode |= S_IFLNK;
       break;
+#endif
     case ICBTAG_FILE_TYPE_CHAR:
       mode |= S_IFCHR;
       break;
+#ifndef WIN32
     case ICBTAG_FILE_TYPE_SOCKET:
       mode |= S_IFSOCK;
       break;
+#endif
     case ICBTAG_FILE_TYPE_BLOCK:
       mode |= S_IFBLK;
       break;
     default: ;
     };
-  
+#ifndef WIN32 
     if (i_flags & ICBTAG_FLAG_SETUID) mode |= S_ISUID;
     if (i_flags & ICBTAG_FLAG_SETGID) mode |= S_ISGID;
     if (i_flags & ICBTAG_FLAG_STICKY) mode |= S_ISVTX;
+#endif
   }
   
   return mode;
