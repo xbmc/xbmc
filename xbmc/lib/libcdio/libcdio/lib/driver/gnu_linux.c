@@ -30,10 +30,14 @@
 
 static const char _rcsid[] = "$Id: gnu_linux.c,v 1.28 2007/03/07 04:35:47 rocky Exp $";
 
+
+
 #include <string.h>
 #include <limits.h>
 #include <sys/types.h>
+#if !defined(WIN32)
 #include <sys/wait.h>
+#endif
 
 #include <cdio/sector.h>
 #include <cdio/util.h>
@@ -45,8 +49,8 @@ static const char _rcsid[] = "$Id: gnu_linux.c,v 1.28 2007/03/07 04:35:47 rocky 
 #include "cdio_assert.h"
 #include "cdio_private.h"
 
-#ifdef HAVE_LINUX_CDROM
 
+#ifdef HAVE_LINUX_CDROM
 #if defined(HAVE_LINUX_VERSION_H)
 # include <linux/version.h>
 # if LINUX_VERSION_CODE >= KERNEL_VERSION(2,2,16)

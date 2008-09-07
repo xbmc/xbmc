@@ -162,13 +162,13 @@ iso9660_get_posix_filemode_from_xa(uint16_t i_perms)
   
   if (i_perms & XA_PERM_RUSR)  mode |= S_IRUSR;
   if (i_perms & XA_PERM_XUSR)  mode |= S_IXUSR;
-  
+#ifndef WIN32  
   if (i_perms & XA_PERM_RGRP)  mode |= S_IRGRP;
   if (i_perms & XA_PERM_XGRP)  mode |= S_IXGRP;
   
   if (i_perms & XA_PERM_ROTH)  mode |= S_IROTH;
   if (i_perms & XA_PERM_XOTH)  mode |= S_IXOTH;
-  
+#endif
   if (i_perms & XA_ATTR_DIRECTORY)  mode |= S_IFDIR;
   
   return mode;
