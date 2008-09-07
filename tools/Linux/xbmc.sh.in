@@ -1,4 +1,6 @@
 #!/bin/sh
 
 export XBMC_PLATFORM_MODE=1
+ID=`dbus-send --session --type=method_call --print-reply --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Inhibit string:XBMC string:InternalHandle | grep uint32 | sed -e 's/.*uint32\ //'`
 exec @prefix@/share/xbmc/xbmc.bin $*
+exec dbus-send --session --type=method_call --print-reply --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.UnInhibit uint32:$ID
