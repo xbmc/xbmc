@@ -401,6 +401,7 @@ bool CHalManager::PowerManagement(PowerState State)
         if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &int32))
           CLog::Log(LOGERROR, "DBus: Failed to append arguments");
         g_application.m_restartLirc = true;
+        g_application.m_restartLCD = true;
         break;
       case POWERSTATE_SUSPEND:
         msg = dbus_message_new_method_call("org.freedesktop.Hal", "/org/freedesktop/Hal/devices/computer", "org.freedesktop.Hal.Device.SystemPowerManagement", "Suspend");
@@ -408,6 +409,7 @@ bool CHalManager::PowerManagement(PowerState State)
         if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &int32))
           CLog::Log(LOGERROR, "DBus: Failed to append arguments");
         g_application.m_restartLirc = true;
+        g_application.m_restartLCD= true;
         break;
       case POWERSTATE_SHUTDOWN:
         msg = dbus_message_new_method_call("org.freedesktop.Hal", "/org/freedesktop/Hal/devices/computer", "org.freedesktop.Hal.Device.SystemPowerManagement", "Shutdown");
@@ -460,10 +462,12 @@ bool CHalManager::PowerManagement(PowerState State)
       case POWERSTATE_HIBERNATE:
         StateString = "Hibernate";
         g_application.m_restartLirc = true;
+        g_application.m_restartLCD = true;
         break;
       case POWERSTATE_SUSPEND:
         StateString = "Suspend";
         g_application.m_restartLirc = true;
+        g_application.m_restartLCD = true;
         break;
       case POWERSTATE_SHUTDOWN:
         StateString = "Shutdown";
