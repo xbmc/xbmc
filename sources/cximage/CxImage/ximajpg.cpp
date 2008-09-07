@@ -116,12 +116,14 @@ bool CxImageJPG::Decode(CxFile * hFile)
 #endif
 {
 #ifdef XBMC
+#define BYTES_TO_LOOK 4096
+
   // Attempt to seek to the first SOI within the first 4k of the file
-  BYTE startBuffer[4096];
+  BYTE startBuffer[BYTES_TO_LOOK];
   BYTE *pos = startBuffer;
   bool failed = true;
-  int size = hFile->Read(startBuffer, 1, 4096);
-  while (size > 1)
+  int size = hFile->Read(startBuffer, 1, BYTES_TO_LOOK);
+  while (size > 3)
   {
     if (*pos == 0xFF && *(pos+1) == 0xD8)
     { // found SOI
@@ -134,7 +136,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
   }
   if (failed)
   {
-    printf("Error loading jpeg - no SOI marker found in first 4096 bytes");
+    printf("Error loading jpeg - no SOI marker found in first 4096 bytes\n");
     return false;
   }
 #endif
@@ -205,10 +207,10 @@ bool CxImageJPG::Decode(CxFile * hFile)
 	float fAR = (float)iWidth/(float)iHeight;
 	if (iMaxWidth > 0 && iMaxHeight == 0)
 	{ // scale by area
-    iMaxWidth = (int)sqrt(iMaxWidth * fAR);
-    iMaxHeight = (int)(iMaxWidth / fAR);
-  }
-  if (iMaxWidth > 0 && iMaxHeight > 0)
+		iMaxWidth = (int)sqrt(iMaxWidth * fAR);
+		iMaxHeight = (int)(iMaxWidth / fAR);
+	}
+	if (iMaxWidth > 0 && iMaxHeight > 0)
 	{
 		if (iWidth > iMaxWidth)
 		{
@@ -220,15 +222,15 @@ bool CxImageJPG::Decode(CxFile * hFile)
 			iHeight = iMaxHeight;
 			iWidth = (int)((float)iHeight*fAR);
 		}
-    unsigned int power = 2;
-    cinfo.scale_denom = 1;
-    while (power <= 8 && cinfo.image_width >= iWidth * power && cinfo.image_height >= iHeight * power)
-    {
-      cinfo.scale_denom = power;
-      power *= 2;
-    }
-    xjpeg_calc_output_dimensions(&cinfo);
-  }
+		unsigned int power = 2;
+		cinfo.scale_denom = 1;
+		while (power <= 8 && cinfo.image_width >= iWidth * power && cinfo.image_height >= iHeight * power)
+		{
+			cinfo.scale_denom = power;
+			power *= 2;
+		}
+		xjpeg_calc_output_dimensions(&cinfo);
+	}
 #endif
 
 	/* Step 5: Start decompressor */
@@ -241,28 +243,29 @@ bool CxImageJPG::Decode(CxFile * hFile)
 	*/
 	
 #ifdef RESAMPLE_FACTOR_OF_2_ON_LOAD
-  // save our image width and height
-  iMaxWidth = cinfo.image_width;
-  iMaxHeight = cinfo.image_height;
-  // check if we're going to exceed our maximum picture size
-  bool bScale(false);
+	// save our image width and height
+	iMaxWidth = cinfo.image_width;
+	iMaxHeight = cinfo.image_height;
+	// check if we're going to exceed our maximum picture size
+	bool bScale(false);
 #ifdef RESAMPLE_IF_TOO_BIG
-  if (cinfo.output_width * cinfo.output_height > MAX_PICTURE_AREA)
-  {
-    iWidth = (int)sqrt(MAX_PICTURE_AREA * fAR);
-    iHeight = (int)(iWidth / fAR);
-    bScale = true;
-  }
-  else
+	if (cinfo.output_width * cinfo.output_height > MAX_PICTURE_AREA)
+	{
+		iWidth = (int)sqrt(MAX_PICTURE_AREA * fAR);
+		iHeight = (int)(iWidth / fAR);
+		bScale = true;
+	}
+	else
 #endif
-  {
-    iWidth = cinfo.output_width;
-    iHeight = cinfo.output_height;
-  }
-  Create(iWidth, iHeight, 8*cinfo.num_components, CXIMAGE_FORMAT_JPG);
+	{
+		iWidth = cinfo.output_width;
+		iHeight = cinfo.output_height;
+	}
+	Create(iWidth, iHeight, 8*cinfo.num_components, CXIMAGE_FORMAT_JPG);
 #else
 	Create(cinfo.image_width, cinfo.image_height, 8*cinfo.num_components, CXIMAGE_FORMAT_JPG);
 #endif
+
 	if (!pDib) longjmp(jerr.setjmp_buffer, 1);  //<DP> check if the image has been created
 
 	if (is_exif){
@@ -327,8 +330,8 @@ bool CxImageJPG::Decode(CxFile * hFile)
 	float f_y, f_x, a, b, rr[4], r1, r2;
 	int i_y, i_x, xx, yy;
 
-  for (int y=0;y<iHeight;y++)
-  {
+	for (int y=0;y<iHeight;y++)
+	{
 		f_y = (float) y * yScale - 0.5f;
 		i_y = (int) floor(f_y);
 		a = f_y - (float)floor(f_y);
@@ -366,12 +369,12 @@ bool CxImageJPG::Decode(CxFile * hFile)
 		(void) xjpeg_read_scanlines(&cinfo, buffer, 1);
 #endif
 		// info.nProgress = (long)(100*cinfo.output_scanline/cinfo.output_height);
-		//<DP> Step 6a: CMYK->RGB */
+		//<DP> Step 6a: CMYK->RGB */ 
 #ifdef RESAMPLE_FACTOR_OF_2_ON_LOAD
 		// do bicubic resampling
 		BYTE *dst=iter.GetRow();
-    for (int x = 0; x < iWidth; x++)
-    {
+		for (int x = 0; x < iWidth; x++)
+		{
 			if (bScale)
 			{
 				// resample (bicubic)
@@ -433,7 +436,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
 						rr[k] = (float)pSrc[cinfo.num_components*x+k];
 				}
 			}
-      if ((cinfo.num_components==4)&&(cinfo.quantize_colors==FALSE))
+			if ((cinfo.num_components==4)&&(cinfo.quantize_colors==FALSE))
 			{
 				for (int k=0; k<3; k++)
 					dst[3*x+k] = (BYTE)rr[k];
@@ -443,7 +446,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
 				for (int k=0; k<num; k++)
 					dst[num*x+k] = (BYTE)rr[k];
 			}
-    }
+		}
 #else
 		if ((cinfo.num_components==4)&&(cinfo.quantize_colors==FALSE)){
 			BYTE k,*dst,*src;
@@ -468,7 +471,6 @@ bool CxImageJPG::Decode(CxFile * hFile)
 		(void) xjpeg_read_scanlines(&cinfo, buffer[0], 1);
 		num_scanlines_read++;
 	}
-	int iTest = num_scanlines_read;
 #endif
 
 	/* Step 7: Finish decompression */

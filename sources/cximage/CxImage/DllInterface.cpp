@@ -8,6 +8,7 @@
 #endif
 
 #define RESAMPLE_QUALITY 0
+#undef USE_EXIF_THUMBS
 
 // MS DirectX routines don't like loading .jpg less than 8x8 pixels.
 #define MIN_THUMB_WIDTH 8
@@ -121,7 +122,7 @@ bool CopyFile(const char *src, const char *dest)
   return ret;
 }
 
-int ResampleKeepAspect(CxImage &image, unsigned int width, unsigned int height)
+int ResampleKeepAspect(CxImage &image, unsigned int width, unsigned int height, bool checkTooSmall = false)
 {
   bool bResize = false;
   float fAspect = ((float)image.GetWidth()) / ((float)image.GetHeight());
@@ -139,13 +140,13 @@ int ResampleKeepAspect(CxImage &image, unsigned int width, unsigned int height)
     newheight = height;
     newwidth = (DWORD)( fAspect * ( (float)newheight) );
   }
-  if (newwidth < MIN_THUMB_WIDTH)
+  if (checkTooSmall && newwidth < MIN_THUMB_WIDTH)
   {
     bResize = true;
     newwidth = MIN_THUMB_HEIGHT;
     newheight = (DWORD)( ( (float)newwidth) / fAspect);
   }
-  if (newheight < MIN_THUMB_HEIGHT)
+  if (checkTooSmall && newheight < MIN_THUMB_HEIGHT)
   {
     bResize = true;
     newheight = MIN_THUMB_HEIGHT;
@@ -170,7 +171,7 @@ int ResampleKeepAspectArea(CxImage &image, unsigned int area)
   unsigned int height = (unsigned int)sqrt(area / fAspect);
   if (width > MAX_WIDTH) width = MAX_WIDTH;
   if (height > MAX_HEIGHT) height = MAX_HEIGHT;
-  return ResampleKeepAspect(image, width, height);
+  return ResampleKeepAspect(image, width, height, true);
 }
 
 bool SaveThumb(CxImage &image, const char *file, const char *thumb, int maxWidth, int maxHeight, bool bNeedToConvert = true, bool autoRotate = true)
@@ -317,8 +318,12 @@ extern "C"
     {
       // jpeg's may contain an EXIF preview image
       // we don't use it though, as the resolution is normally too low
-//      if (dwImageType == CXIMAGE_FORMAT_JPG && image.GetExifThumbnail(file, thumb))
-//        return true;
+#ifdef USE_EXIF_THUMBS
+      if ((dwImageType == CXIMAGE_FORMAT_JPG || dwImageType == CXIMAGE_FORMAT_RAW) && image.GetExifThumbnail(file, thumb, dwImageType))
+      {
+        return true;
+      }
+#endif
       if (!image.Load(file, dwImageType, actualwidth, actualheight) || !image.IsValid())
       {
         printf("PICTURE::CreateThumbnail: Unable to open image: %s Error:%s\n", file, image.GetLastError());
