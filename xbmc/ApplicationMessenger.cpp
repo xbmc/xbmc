@@ -183,9 +183,57 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       }
       break;
 
+case TMSG_POWERDOWN:
+      {
+#if !defined(_LINUX)
+#ifndef HAS_SDL
+        // send the WM_CLOSE window message
+        ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
+#endif
+#ifdef _WIN32PC
+        if (CWIN32Util::PowerManagement(POWERSTATE_SHUTDOWN))
+#endif
+#endif
+#ifdef HAS_HAL
+        if (CHalManager::PowerManagement(POWERSTATE_SHUTDOWN))
+#endif
+        {
+          g_application.Stop();
+          exit(0);
+        }
+      }
+      break;
+
+#ifdef HAS_XBOXHARDWARE
     case TMSG_DASHBOARD:
       {
         CUtil::ExecBuiltIn("XBMC.Dashboard()");
+      }
+      break;
+#else
+    case TMSG_QUIT:
+      {
+        g_application.Stop();
+        exit(0);
+      }
+      break;
+#endif
+    case TMSG_HIBERNATE:
+      {
+#ifdef HAS_HAL
+        CHalManager::PowerManagement(POWERSTATE_HIBERNATE);
+#elif _WIN32PC
+        CWIN32Util::PowerManagement(POWERSTATE_HIBERNATE);
+#endif
+      }
+      break;
+    case TMSG_SUSPEND:
+      {
+#ifdef HAS_HAL
+        CHalManager::PowerManagement(POWERSTATE_SUSPEND);
+#elif _WIN32PC
+        CWIN32Util::PowerManagement(POWERSTATE_SUSPEND);
+#endif
       }
       break;
 
@@ -625,6 +673,30 @@ void CApplicationMessenger::PictureSlideShow(string pathname, bool bScreensaver 
 void CApplicationMessenger::Shutdown()
 {
   ThreadMessage tMsg = {TMSG_SHUTDOWN};
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::Powerdown()
+{
+  ThreadMessage tMsg = {TMSG_POWERDOWN};
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::Quit()
+{
+  ThreadMessage tMsg = {TMSG_QUIT};
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::Hibernate()
+{
+  ThreadMessage tMsg = {TMSG_HIBERNATE};
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::Suspend()
+{
+  ThreadMessage tMsg = {TMSG_SUSPEND};
   SendMessage(tMsg);
 }
 

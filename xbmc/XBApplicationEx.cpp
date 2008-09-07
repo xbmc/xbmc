@@ -375,7 +375,7 @@ void CXBApplicationEx::ReadInput()
 #endif
 
     case SDL_QUIT:
-      if (!g_application.m_bStop) g_application.getApplicationMessenger().Shutdown();
+      if (!g_application.m_bStop) g_application.getApplicationMessenger().Quit();
       break;
 
     case SDL_VIDEORESIZE:
