@@ -6378,8 +6378,7 @@ void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder)
 {
   CFileItem item(strPath,bFolder);
   XFILE::CFile::Delete(item.GetCachedVideoThumb());
-  if (bFolder)
-    XFILE::CFile::Delete(item.GetCachedFanart());
+  XFILE::CFile::Delete(item.GetCachedFanart());
     
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
