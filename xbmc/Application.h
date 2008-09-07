@@ -239,6 +239,7 @@ public:
   }
 
   bool m_restartLirc;
+  bool m_restartLCD;
 
 protected:
   friend class CApplicationMessenger;
