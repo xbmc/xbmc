@@ -147,7 +147,7 @@ udf_stamp_to_time(time_t *dest, long int *dest_usec,
   return dest;
 }
 
-
+#ifndef WIN32
 /*!
   Convert a UDF timestamp to a time_t. If microseconds are desired,
   use dest_usec. The return value is the same as dest. */
@@ -205,6 +205,7 @@ udf_timespec_to_stamp(const struct timespec ts, udf_timestamp_t *dest)
 			 - (dest->hundreds_of_microseconds * 100) );
   return dest;
 }
+#endif
 
 /*!
   Return the modification time of the file.
