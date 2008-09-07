@@ -3267,7 +3267,7 @@ bool CApplication::ProcessRemote(float frameTime)
     return OnKey(key);
   }
 #endif
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
   if (m_restartLCD) {
     CLog::Log(LOGDEBUG, "g_application.m_restartLCD is true - restarting LCDd");
     g_lcd->Stop(); 
