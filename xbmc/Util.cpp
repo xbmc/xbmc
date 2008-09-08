@@ -3371,6 +3371,10 @@ const BUILT_IN commands[] = {
   { "Restart",                    false,  "Restart the xbox (power cycle)" },
   { "ShutDown",                   false,  "Shutdown the xbox" },
   { "Dashboard",                  false,  "Run your dashboard" },
+  { "Powerdown",                  false,  "Powerdown system" },
+  { "Quit",                       false,  "Quit XBMC" },
+  { "Hibernate",                  false,  "Hibernates the system" },
+  { "Suspend",                    false,  "Suspends the system" },
   { "RestartApp",                 false,  "Restart XBMC" },
   { "Credits",                    false,  "Run XBMCs Credits" },
   { "Reset",                      false,  "Reset the xbox (warm reboot)" },
@@ -3497,9 +3501,25 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     else
       BootToDash();
   }
+  else if (execute.Equals("powerdown"))
+  {
+    g_applicationMessenger.Powerdown();
+  }
   else if (execute.Equals("restartapp"))
   {
     g_applicationMessenger.RestartApp();
+  }
+  else if (execute.Equals("hibernate"))
+  {
+    g_applicationMessenger.Hibernate();
+  }
+  else if (execute.Equals("suspend"))
+  {
+    g_applicationMessenger.Suspend();
+  }
+  else if (execute.Equals("quit"))
+  {
+    g_applicationMessenger.Quit();
   }
   else if (execute.Equals("mastermode"))
   {

@@ -28,15 +28,8 @@
  *
  */
 
-#define ALLOW_TEXTURE_COMPRESSION
-
 #ifdef _XBOX
 #define HAS_XBOX_D3D
-#ifdef ALLOW_TEXTURE_COMPRESSION
- #define GUI_D3D_FMT D3DFMT_A8R8G8B8
-#else
- #define GUI_D3D_FMT D3DFMT_LIN_A8R8G8B8
-#endif
 #define GAMMA_RAMP_FLAG  D3DSGR_IMMEDIATE
 
 #include <xgraphics.h>
@@ -91,7 +84,6 @@ struct D3DPalette
 };
 
 typedef D3DPalette* LPDIRECT3DPALETTE8;
-#define GUI_D3D_FMT D3DFMT_X8R8G8B8
 
 #endif
 

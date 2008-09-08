@@ -532,7 +532,6 @@ void CGUITextLayout::utf8ToW(const CStdString &utf8, CStdStringW &utf16)
   {
     CStdStringW line;
     g_charsetConverter.utf8ToW(multiLines[i], line);
-    line.Replace(L"\r", L"");  // filter out '\r'
     utf16 += line;
     if (i < multiLines.size() - 1)
       utf16.push_back(L'\n');

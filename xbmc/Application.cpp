@@ -711,6 +711,9 @@ extern "C" void __stdcall update_emu_environ();
 
 HRESULT CApplication::Create(HWND hWnd)
 {
+  g_guiSettings.Initialize();  // Initialize default Settings
+  g_settings.Initialize(); //Initialize default AdvancedSettings
+
   g_hWnd = hWnd;
 
   HRESULT hr;

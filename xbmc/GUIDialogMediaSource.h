@@ -63,6 +63,7 @@ protected:
   bool m_confirmed;
   SScraperInfo m_info;
   bool m_bRunScan;
+  bool m_bNameChanged;
 
   VIDEO::SScanSettings m_settings;
 

@@ -180,6 +180,10 @@ void CSettingsGroup::GetCategories(vecSettingsCategory &vecCategories)
 // Settings are case sensitive
 CGUISettings::CGUISettings(void)
 {
+}
+
+void CGUISettings::Initialize()
+{
   ZeroMemory(&m_replayGain, sizeof(ReplayGainSettings));
 
   // Pictures settings

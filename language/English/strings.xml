@@ -930,6 +930,10 @@
   <string id="13005">Shutdown</string>
   <string id="13006">Dashboard</string>
   <string id="13007">Use Custom Dashboard Path</string>
+  <string id="13008">Default Shutdown mode</string> 
+  <string id="13009">Quit</string> 
+  <string id="13010">Hibernate</string>
+  <string id="13011">Suspend</string>
 
   <string id="13100">Flicker Filter</string>
   <string id="13105">Vertical Blank Sync</string>
@@ -1111,6 +1115,20 @@
   <string id="13410">Tune in on Last.FM</string>
   <string id="13411">Minimum fanspeed</string>
   <string id="13412">- RSS Feeds Contain Right-To-Left Text</string>
+  <string id="13413">Downloading</string>
+  
+  <string id="13600">Apple Remote</string>
+  <string id="13601">Mode</string>
+  <string id="13602">Always Running</string>
+  <string id="13603">Sequence Delay Time</string>
+  
+  <string id="13610">Disabled</string>
+  <string id="13611">Standard</string>
+  <string id="13612">Universal Remote</string>
+  
+  <string id="13620">Remote Buddy driver is installed.</string>
+  <string id="13621">Apple Remote support can't be enabled.</string>
+  <string id="13622">Please see Remote Buddy FAQ to uninstall.</string>
 
   <string id="14000">Stack</string>
   <string id="14001">Unstack</string>
@@ -1906,6 +1924,7 @@
   <string id="22010">GPU Temperature:</string>
   <string id="22011">CPU Temperature:</string>
   <string id="22012">Total Memory</string>
+  <string id="22013">Profile Data</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>

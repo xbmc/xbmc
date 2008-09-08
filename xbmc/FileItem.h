@@ -206,6 +206,9 @@ public:
   void SetUserProgramThumb();
   void SetUserMusicThumb(bool alwaysCheckRemote = false);
 
+  // finds a matching local trailer file
+  CStdString FindTrailer() const;
+
   virtual bool LoadMusicTag();
 
   /* returns the content type of this item if known. will lookup for http streams */  

@@ -810,7 +810,7 @@ namespace VIDEO
     }
   }
 
-  long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CVideoInfoTag &movieDetails, long idShow, bool bApplyToDir, CGUIDialogProgress* pDialog /* == NULL */)
+  long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, long idShow, bool bApplyToDir, CGUIDialogProgress* pDialog /* == NULL */)
   {
     // ensure our database is open (this can get called via other classes)
     if (!m_database.Open())
@@ -823,6 +823,10 @@ namespace VIDEO
     // add to all movies in the stacked set
     if (content.Equals("movies"))
     {
+      // find local trailer first
+      CStdString strTrailer = pItem->FindTrailer();
+      if (!strTrailer.IsEmpty())
+        movieDetails.m_strTrailer = strTrailer;
       m_database.SetDetailsForMovie(pItem->m_strPath, movieDetails);
     }
     else if (content.Equals("tvshows"))
@@ -1108,38 +1112,6 @@ namespace VIDEO
 
     if ( IMDB.GetDetails(url, movieDetails, pDialog) )
     {
-      if (info.strContent.Equals("movies"))
-      {
-        CStdString strFile = pItem->m_strPath;
-        if (pItem->IsStack())
-        {
-          CStdString strPath;
-          CUtil::GetParentPath(pItem->m_strPath,strPath);
-          CStackDirectory dir;
-          CStdString strPath2;
-          strPath2 = dir.GetStackedTitlePath(strFile);
-          CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
-        }
-        if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))
-        {
-          CStdString strPath, strParent;
-          CUtil::GetDirectory(strFile,strPath);
-          CUtil::GetParentPath(strPath,strParent);
-          CUtil::AddFileToFolder(strParent,CUtil::GetFileName(pItem->m_strPath),strFile);
-        }
-        CUtil::RemoveExtension(strFile);
-        strFile += "-trailer";
-        std::vector<CStdString> exts;
-        StringUtils::SplitString(g_stSettings.m_videoExtensions,"|",exts);
-        for (unsigned int i=0;i<exts.size();++i)
-        {
-          if (CFile::Exists(strFile+exts[i]))
-          {
-            movieDetails.m_strTrailer = strFile+exts[i];
-            break;
-          }
-        }
-      }
       return AddMovieAndGetThumb(pItem, info.strContent, movieDetails, -1, bUseDirNames);
     }
     return -1;
