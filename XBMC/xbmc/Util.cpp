@@ -840,7 +840,7 @@ bool CUtil::IsRemote(const CStdString& strFile)
 bool CUtil::IsOnDVD(const CStdString& strFile)
 {
 #ifdef _WIN32PC
-  if (strFile.substr(1, 1) == ":")
+  if (strFile.Mid(1,1) == ":")
     return (GetDriveType(strFile.Left(2)) == DRIVE_CDROM);
 #else
 
