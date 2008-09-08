@@ -281,7 +281,7 @@ int CPlayList::FindOrder(int iOrder) const
 void CPlayList::Remove(int position)
 {
   int iOrder = -1;
-  if (position < (int)m_vecItems.size())
+  if (position >= 0 && position < (int)m_vecItems.size())
   {
     iOrder = m_vecItems[position]->m_iprogramCount;
     m_vecItems.erase(m_vecItems.begin() + position);
@@ -349,6 +349,12 @@ bool CPlayList::Swap(int position1, int position2)
 
 void CPlayList::SetUnPlayable(int iItem)
 {
+  if (iItem < 0 || iItem >= size())
+  {
+    CLog::Log(LOGWARNING, "Attempt to set unplayable index %d", iItem);
+    return;
+  }
+ 
   CFileItemPtr item = m_vecItems[iItem];
   if (!item->GetPropertyBOOL("unplayable"))
   {
