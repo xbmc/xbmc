@@ -77,7 +77,7 @@ $(SYSDIR)/liba52-$(ARCH).so: $(WRAPPER) liba52/liba52/liba52.la
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ liba52/liba52/*.o \
 		-Wl`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
-$(SYSDIR)/libao-$(ARCH).so: $(WRAPPER) liba52/libao/libao.la
+$(SYSDIR)/libao-$(ARCH).so: $(WRAPPER) liba52/libao/libao.a
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ liba52/libao/*.o \
 		-Wl`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
@@ -116,7 +116,7 @@ libmad:
 	$(MAKE) -C $@
 
 liba52/liba52/liba52.la: liba52
-liba52/libao/libao.la: liba52
+liba52/libao/libao.a: liba52
 liba52:
 	$(MAKE) -C $@
 
