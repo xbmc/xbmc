@@ -314,6 +314,8 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         }
     }
 
+    /* upnp should never be cached, it has internal cache */
+    items.SetCacheToDisc(CFileItemList::CACHE_NEVER);
     return true;
 }
 }
