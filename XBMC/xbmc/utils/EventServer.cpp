@@ -133,6 +133,7 @@ void CEventServer::Cleanup()
     free(m_pPacketBuffer);
     m_pPacketBuffer = NULL;
   }
+  CSingleLock lock(m_critSection);
 
   map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
   while (iter != m_clients.end())
@@ -244,6 +245,8 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
   if (!clientToken)
     clientToken = addr.ULong(); // use IP if packet doesn't have a token
 
+  CSingleLock lock(m_critSection);
+
   // first check if we have a client for this address
   map<unsigned long, CEventClient*>::iterator iter = m_clients.find(clientToken);
 
@@ -299,6 +302,7 @@ void CEventServer::RefreshClients()
 
 void CEventServer::ExecuteEvents()
 {
+  CSingleLock lock(m_critSection);
   map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
 
   while (iter != m_clients.end())
