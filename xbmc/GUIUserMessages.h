@@ -124,3 +124,6 @@
 // Message sent to tell the GUI to change sort method/direction
 #define GUI_MSG_CHANGE_SORT_METHOD    GUI_MSG_USER + 31
 #define GUI_MSG_CHANGE_SORT_DIRECTION GUI_MSG_USER + 32
+
+// Sent from filesystem if a path is known to have changed
+#define GUI_MSG_UPDATE_PATH           GUI_MSG_USER + 33

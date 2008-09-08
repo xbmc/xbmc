@@ -46,6 +46,7 @@
 #include "URL.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -1222,6 +1223,28 @@ public:
     PLT_DeviceHostReference m_Device;
 };
 
+class CMediaBrowser : public PLT_SyncMediaBrowser
+{
+public:
+    CMediaBrowser(PLT_CtrlPointReference& ctrlPoint)
+      : PLT_SyncMediaBrowser(ctrlPoint, true)
+    {}
+
+    virtual void OnMSAddedRemoved(PLT_DeviceDataReference& device, int added)
+    {
+      PLT_SyncMediaBrowser::OnMSAddedRemoved(device, added);
+      CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
+      message.SetStringParam("upnp://");
+      m_gWindowManager.SendThreadMessage(message);
+    }
+    virtual void OnMSStateVariablesChanged(PLT_Service* service, NPT_List<PLT_StateVariable*>* vars)
+    {
+      /* this could be used to find changes in folders */
+      PLT_SyncMediaBrowser::OnMSStateVariablesChanged(service, vars);
+    }
+};
+
+
 /*----------------------------------------------------------------------
 |   CUPnP::CUPnP
 +---------------------------------------------------------------------*/
@@ -1308,7 +1331,7 @@ CUPnP::StartClient()
     m_UPnP->AddCtrlPoint(m_CtrlPointHolder->m_CtrlPoint);
 
     // start browser
-    m_MediaBrowser = new PLT_SyncMediaBrowser(m_CtrlPointHolder->m_CtrlPoint, true);
+    m_MediaBrowser = new CMediaBrowser(m_CtrlPointHolder->m_CtrlPoint);
 
 }
 
