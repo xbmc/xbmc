@@ -30,10 +30,10 @@
 		</RegExp>
 	</GetSettings>
 	<NfoUrl dest="3">
-    <RegExp input="$$1" output="&lt;url&gt;http://www.\1/title/tt\2/&lt;/url&gt;&lt;id&gt;tt\2&lt;/id&gt;"  dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://www.\1/title/tt\2/&lt;/url&gt;&lt;id&gt;tt\2&lt;/id&gt;"  dest="3">
 			<expression clear="yes" noclean="1">(imdb.com/)Title\?([0-9]*)</expression>
 		</RegExp>
-    <RegExp input="$$1" output="&lt;url&gt;http://www.\1\2/&lt;/url&gt;&lt;id&gt;tt\2&lt;/id&gt;"  dest="3+">
+		<RegExp input="$$1" output="&lt;url&gt;http://www.\1\2/&lt;/url&gt;&lt;id&gt;tt\2&lt;/id&gt;"  dest="3+">
 			<expression clear="yes" noclean="1">(imdb.com/title/tt)([0-9]*)</expression>
 		</RegExp>
 	</NfoUrl>
@@ -124,13 +124,13 @@
 			<RegExp conditional="movieposterdb" input="$$1" output="&lt;url function=&quot;GetMoviePosterDBLink&quot;&gt;http://www.movieposterdb.com/browse/search?title=\1&lt;/url&gt;" dest="5+">
 				<expression>/title/tt([t0-9]*)/faq</expression>
 			</RegExp>
-			<RegExp conditional="trailer" input="$$1" output="&lt;url function=&quot;GetTrailer&quot;&gt;http://$INFO[url]\1&lt;/url&gt;" dest="5+">
-				<expression>&lt;a href=&quot;([^&quot;]*(trailers-screenplay|videos-)[^&quot;]*)&quot;</expression>
+			<RegExp conditional="trailer" input="$$1" output="&lt;url function=&quot;GetTrailer&quot;&gt;http://$INFO[url]/video/imdb/vi\1&lt;/url&gt;" dest="5+">
+				<expression>/screenplay/vi([0-9]*)/&quot;</expression>
 			</RegExp>
 			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-posters.html&quot; function=&quot;GetIMDBPoster&quot;&gt;$$3posters&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-                        <RegExp conditional="fanart" input="$$2" output="&lt;url function=&quot;GetFanart&quot;&gt;http://www.moviebackdrops.com/tab_movie.php5?id=$$2&lt;/url&gt;" dest="5+">
+                        <RegExp conditional="fanart" input="$$2" output="&lt;url function=&quot;GetFanart&quot;&gt;http://www.meligrove.com/api?imdb=$$2&lt;/url&gt;" dest="5+">
                         	<expression></expression>
 			</RegExp>
 			<expression noclean="1"></expression>
@@ -240,9 +240,9 @@
 		</RegExp>
 	</GetIMDBPoster>
         <GetFanart dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://www.moviebackdrops.com/&quot;>\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="2">
-				<expression repeat="yes">a href=&quot;(/backdrops/[^&quot;]+)&quot;</expression>
+		<RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://www.meligrove.com/&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;/images/posters/movies/thumbnails/\1&quot;&gt;/images/posters/movies/jpg/\1&lt;/thumb&gt;" dest="2">
+				<expression repeat="yes">jpg/([^&lt;]*)&lt;/URL</expression>
 			</RegExp>
 			<expression noclean="1">(.+)</expression>
 		</RegExp>

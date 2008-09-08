@@ -41,6 +41,7 @@
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "MediaManager.h"
+#include "utils/AsyncFileCopy.h"
 
 using namespace std;
 using namespace XFILE;
@@ -289,7 +290,8 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
   // old fixed id labels that we have floating around (they may be using
   // content type to determine visibility, so we'll set the wrong label)
   ClearCastList();
-  if (!m_movieItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
+  VIDEODB_CONTENT_TYPE type = GetContentType(m_movieItem.get());
+  if (type == VIDEODB_CONTENT_MUSICVIDEOS)
   { // music video
     CStdStringArray artists;
     StringUtils::SplitString(m_movieItem->GetVideoInfoTag()->m_strArtist, g_advancedSettings.m_videoItemSeparator, artists);
@@ -320,7 +322,7 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       m_castList->Add(item);
     }
     // determine type:
-    if (m_movieItem->m_bIsFolder)
+    if (type == VIDEODB_CONTENT_TVSHOWS)
     {
       m_castList->SetContent("tvshows");
       // special case stuff for shows (not currently retrieved from the library in filemode (ref: GetTvShowInfo vs GetTVShowsByWhere)
@@ -333,12 +335,38 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       if (CFile::Exists(m_movieItem->GetCachedFanart()))
         m_movieItem->SetProperty("fanart_image",m_movieItem->GetCachedFanart());
     }
-    else if (m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
+    else if (type == VIDEODB_CONTENT_EPISODES)
     {
       m_castList->SetContent("episodes");
       // special case stuff for episodes (not currently retrieved from the library in filemode (ref: GetEpisodeInfo vs GetEpisodesByWhere)
       m_movieItem->m_dateTime.SetFromDateString(m_movieItem->GetVideoInfoTag()->m_strFirstAired);
       m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
+      // retrieve the season thumb.
+      // NOTE: This is overly complicated. Perhaps we should cache season thumbs by showtitle and season number,
+      //       rather than bothering with show path and the localized strings involved?
+      if (m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
+      {
+        CStdString label;
+        if (m_movieItem->GetVideoInfoTag()->m_iSeason == 0)
+          label = g_localizeStrings.Get(20381);
+        else
+          label.Format(g_localizeStrings.Get(20358), m_movieItem->GetVideoInfoTag()->m_iSeason);
+        CFileItem season(label);
+        season.m_bIsFolder = true;
+        // grab show path
+        CVideoDatabase db;
+        if (db.Open())
+        {
+          CFileItemList items;
+          CStdString where = db.FormatSQL("where c%02d='%s'", VIDEODB_ID_TV_TITLE, m_movieItem->GetVideoInfoTag()->m_strShowTitle.c_str());
+          if (db.GetTvShowsByWhere("", where, items) && items.Size())
+            season.GetVideoInfoTag()->m_strPath = items[0]->GetVideoInfoTag()->m_strPath;
+          db.Close();
+        }
+        season.SetCachedSeasonThumb();
+        if (season.HasThumbnail())
+          m_movieItem->SetProperty("seasonthumb", season.GetThumbnailImage());
+      }
     }
     else
       m_castList->SetContent("movies");
@@ -607,30 +635,36 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
   db.Close();
 }
 
+VIDEODB_CONTENT_TYPE CGUIWindowVideoInfo::GetContentType(const CFileItem *pItem) const
+{
+  VIDEODB_CONTENT_TYPE type = VIDEODB_CONTENT_MOVIES;
+  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow
+    type = VIDEODB_CONTENT_TVSHOWS;
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
+    type = VIDEODB_CONTENT_EPISODES;
+  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
+    type = VIDEODB_CONTENT_MUSICVIDEOS;
+  return type;
+}
+
 /// \brief React on the selected search item
 /// \param pItem Search result item
 void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
 {
-  int iType=0;
-  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow
-    iType = 2;
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
-    iType = 1;
-  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
-    iType = 3;
+  VIDEODB_CONTENT_TYPE type = GetContentType(pItem);
 
   CVideoDatabase db;
   if (!db.Open())
     return;
 
   CVideoInfoTag movieDetails;
-  if (iType == 0)
+  if (type == VIDEODB_CONTENT_MOVIES)
     db.GetMovieInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
-  if (iType == 1)
+  if (type == VIDEODB_CONTENT_EPISODES)
     db.GetEpisodeInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
-  if (iType == 2)
+  if (type == VIDEODB_CONTENT_TVSHOWS)
     db.GetTvShowInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
-  if (iType == 3)
+  if (type == VIDEODB_CONTENT_MUSICVIDEOS)
     db.GetMusicVideoInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
   db.Close();
 
@@ -673,36 +707,33 @@ void CGUIWindowVideoInfo::OnGetThumb()
 {
   CFileItemList items;
 
-  // Grab the thumbnails from the web
-  CStdString strPath;
-  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"imdbthumbs",strPath);
-  CUtil::WipeDir(strPath);
-  DIRECTORY::CDirectory::Create(strPath);
-  int i=1;
-  for (std::vector<CScraperUrl::SUrlEntry>::iterator iter=m_movieItem->GetVideoInfoTag()->m_strPictureURL.m_url.begin();iter != m_movieItem->GetVideoInfoTag()->m_strPictureURL.m_url.end();++iter)
-  {
-    if (iter->m_type == CScraperUrl::URL_TYPE_SEASON)
-      continue;
-    CStdString thumbFromWeb;
-    CStdString strLabel;
-    strLabel.Format("imdbthumb%i.jpg",i);
-    CUtil::AddFileToFolder(strPath, strLabel, thumbFromWeb);
-    if (CScraperUrl::DownloadThumbnail(thumbFromWeb,*iter))
-    {
-      CStdString strItemPath;
-      strItemPath.Format("thumb://IMDb%i",i++);
-      CFileItemPtr item(new CFileItem(strItemPath, false));
-      item->SetThumbnailImage(thumbFromWeb);
-      CStdString strLabel;
-      item->SetLabel(g_localizeStrings.Get(20015));
-      items.Add(item);
-    }
-  }
+  // Current thumb
   if (CFile::Exists(m_movieItem->GetThumbnailImage()))
   {
     CFileItemPtr item(new CFileItem("thumb://Current", false));
     item->SetThumbnailImage(m_movieItem->GetThumbnailImage());
     item->SetLabel(g_localizeStrings.Get(20016));
+    items.Add(item);
+  }
+
+  // Grab the thumbnails from the web
+  int i=1;
+  for (std::vector<CScraperUrl::SUrlEntry>::iterator iter=m_movieItem->GetVideoInfoTag()->m_strPictureURL.m_url.begin();iter != m_movieItem->GetVideoInfoTag()->m_strPictureURL.m_url.end();++iter)
+  {
+    if (iter->m_type == CScraperUrl::URL_TYPE_SEASON)
+      continue;
+    CStdString strItemPath;
+    strItemPath.Format("thumb://Remote%i",i++);
+    CFileItemPtr item(new CFileItem(strItemPath, false));
+    item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
+    item->SetIconImage("defaultPicture.png");
+    item->GetVideoInfoTag()->m_strPictureURL.m_url.push_back(*iter);
+    item->SetLabel(g_localizeStrings.Get(415));
+    item->SetProperty("labelonthumbload", g_localizeStrings.Get(20015));
+
+    // make sure any previously cached thumb is removed
+    if (CFile::Exists(item->GetCachedPictureThumb()))
+      CFile::Delete(item->GetCachedPictureThumb());
     items.Add(item);
   }
 
@@ -742,12 +773,16 @@ void CGUIWindowVideoInfo::OnGetThumb()
   CFileItem item(*m_movieItem->GetVideoInfoTag());
   CStdString cachedThumb(item.GetCachedVideoThumb());
 
-  if (result.Mid(0,12) == "thumb://IMDb")
+  if (result.Left(14) == "thumb://Remote")
   {
     CStdString strFile;
-    CUtil::AddFileToFolder(strPath,"imdbthumb"+result.Mid(12)+".jpg",strFile);
-    if (CFile::Exists(strFile))
-      CFile::Cache(strFile, cachedThumb);
+    CFileItem chosen(result, false);
+    CStdString thumb = chosen.GetCachedPictureThumb();
+    if (CFile::Exists(thumb))
+    {
+      // NOTE: This could fail if the thumbloader was too slow and the user too impatient
+      CFile::Cache(thumb, cachedThumb);
+    }
     else
       result = "thumb://None";
   }
@@ -793,22 +828,20 @@ void CGUIWindowVideoInfo::OnGetFanart()
   DIRECTORY::CDirectory::Create(strPath);
   for (unsigned int i = 0; i < m_movieItem->GetVideoInfoTag()->m_fanart.GetNumFanarts(); i++)
   {
-    CStdString thumbFromWeb;
-    CStdString strLabel;
-    strLabel.Format("fanart_thumb_%i.jpg", i);
-    CUtil::AddFileToFolder(strPath, strLabel, thumbFromWeb);
-    if (m_movieItem->GetVideoInfoTag()->m_fanart.DownloadThumb(i, thumbFromWeb))
-    {
-      CStdString strItemPath;
-      strItemPath.Format("thumb://FANART_%i",i);
-      CFileItemPtr item(new CFileItem(strItemPath, false));
-      item->SetThumbnailImage(thumbFromWeb);
-      CStdString strLabel;
-      item->SetLabel(g_localizeStrings.Get(20015));
-      items.Add(item);
-    }
-    else
-      CLog::Log(LOGDEBUG, "Unable to download fanart thumb #%d", i);
+    CStdString strItemPath;
+    strItemPath.Format("thumb://Remote%i",i);
+    CFileItemPtr item(new CFileItem(strItemPath, false));
+    item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
+    item->SetIconImage("defaultPicture.png");
+    item->GetVideoInfoTag()->m_fanart = m_movieItem->GetVideoInfoTag()->m_fanart;
+    item->SetProperty("fanart_number", (int)i);
+    item->SetLabel(g_localizeStrings.Get(415));
+    item->SetProperty("labelonthumbload", g_localizeStrings.Get(20015));
+
+    // make sure any previously cached thumb is removed
+    if (CFile::Exists(item->GetCachedPictureThumb()))
+      CFile::Delete(item->GetCachedPictureThumb());
+    items.Add(item);
   }
 
   CFileItemPtr itemNone(new CFileItem("thumb://None", false));
@@ -827,27 +860,30 @@ void CGUIWindowVideoInfo::OnGetFanart()
   CFileItem item(*m_movieItem->GetVideoInfoTag());
   CStdString cachedThumb(item.GetCachedFanart());
 
-  if (result.Mid(0,15) == "thumb://FANART_")
+  if (result.Left(14) == "thumb://Remote")
   {
-    CStdString strFile;
-    CUtil::AddFileToFolder(strPath,"fanart_thumb_"+result.Mid(15)+".jpg",strFile);
-    int iFanart = atoi(result.Mid(15).c_str());
-    if (CFile::Exists(strFile))
+    int iFanart = atoi(result.Mid(14).c_str());
+    // set new primary fanart, and update our database accordingly
+    m_movieItem->GetVideoInfoTag()->m_fanart.SetPrimaryFanart(iFanart);
+    CVideoDatabase db;
+    if (db.Open())
     {
-      // set new primary fanart, and update our database accordingly
-      m_movieItem->GetVideoInfoTag()->m_fanart.SetPrimaryFanart(iFanart);
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        db.SetDetailsForTvShow(m_movieItem->m_strPath, *m_movieItem->GetVideoInfoTag());
-        db.Close();
-      }
-
-      // download the fullres fanart image.  TODO: FANART - this could take some time, so should probably be backgrounded
-      m_movieItem->GetVideoInfoTag()->m_fanart.DownloadImage(cachedThumb);
+      db.UpdateFanart(*m_movieItem, GetContentType(m_movieItem.get()));
+      db.Close();
     }
-    else
-      result = "thumb://None";
+
+    // download the fullres fanart image
+    CStdString tempFile = "Z:\\fanart_download.jpg";
+    CAsyncFileCopy downloader;
+    bool succeeded = downloader.Copy(m_movieItem->GetVideoInfoTag()->m_fanart.GetImageURL(), tempFile, g_localizeStrings.Get(13413));
+    if (succeeded)
+    {
+      CPicture pic;
+      pic.CacheImage(tempFile, cachedThumb);
+    }
+    CFile::Delete(tempFile);
+    if (!succeeded)
+      return; // failed or cancelled download, so don't do anything
   }
   else if (CFile::Exists(result))
   { // local file

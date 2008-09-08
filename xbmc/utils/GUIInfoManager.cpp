@@ -3640,15 +3640,17 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
   { // old song rating format
     CStdString rating;
     if (item->HasMusicInfoTag())
+    {
       rating.Format("songrating%c.png", item->GetMusicInfoTag()->GetRating());
-    return rating;
+      return rating;
+    }
   }
   else if (info == LISTITEM_STAR_RATING)
   {
     CStdString rating;
     if (item->HasVideoInfoTag())
     { // rating for videos is assumed 0..10, so convert to 0..5
-      rating.Format("rating%d.png", (long)((item->GetVideoInfoTag()->m_fRating * 0.5) + 0.5));
+      rating.Format("rating%d.png", (long)((item->GetVideoInfoTag()->m_fRating * 0.5f) + 0.5f));
     }
     else if (item->HasMusicInfoTag())
     { // song rating.
@@ -3656,8 +3658,7 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
     }
     return rating;
   }
-  else
-    return GetItemLabel(item, info);
+  return GetItemLabel(item, info);
 }
 
 bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const

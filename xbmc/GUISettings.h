@@ -312,6 +312,8 @@ public:
   CGUISettings();
   ~CGUISettings();
 
+  void Initialize();
+
   void AddGroup(DWORD dwGroupID, DWORD dwLabelID);
   void AddCategory(DWORD dwGroupID, const char *strCategory, DWORD dwLabelID);
   CSettingsGroup *GetGroup(DWORD dwWindowID);

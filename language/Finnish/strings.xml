@@ -1144,7 +1144,7 @@
   <string id="13400">Häivytä albumin kappaleet toisiinsa</string>
   <string id="13401">Valitse %s</string>
   <string id="13402">Näytä kappaleen sijainti</string>
-  <string id="13403">Poista oletus-sijainti</string>
+  <string id="13403">Poista oletussijainti</string>
   <string id="13404">Jatka</string>
   <string id="13405">Pienoiskuvake</string>
   <string id="13406">Kuvan ominaisuudet</string>
@@ -1207,7 +1207,7 @@
   <string id="14036">Palvelimet</string>
   <string id="14037">Ulkoasu</string>
   <string id="14038">Verkkoasetuksia muutettu</string>
-  <string id="14039">XBMC tarvitsee käynnistää uudelleen, jotta uudet</string>
+  <string id="14039">XBMC täytyy käynnistää uudelleen, jotta uudet</string>
   <string id="14040">asetukset tulevat käyttöön. Käynnistetäänkö uudelleen nyt?</string>
   <string id="14041">Jälkikäsittely</string>
   <string id="14042"></string>
@@ -1456,7 +1456,7 @@
   <string id="16205">Poisto epäonnistui</string>
   <string id="16206">Vähintään yhden tiedoston poisto epäonnistui</string>
 
- <string id="16300">Videon skaalaus menetelmä</string>
+  <string id="16300">Videon skaalausmenetelmä</string>
   <string id="16301">Lähin viereinen</string>
   <string id="16302">Bilineaarinen</string>
   <string id="16303">Bicubic</string>
@@ -1476,7 +1476,7 @@
   <string id="20003">Trainer kansio</string>
   <string id="20004">Kuvakaappaus kansio</string>
   <string id="20005">Nauhoituskansio</string>
-  <string id="20006">Soittolista kansio</string>
+  <string id="20006">Soittolistakansio</string>
   <string id="20007">Nauhoitukset</string>
   <string id="20008">Kuvakaappaukset</string>
   <string id="20009">Käytä XBMC:a</string>
@@ -1545,7 +1545,7 @@
   <string id="20079">Animoinnit käytössä</string>
   <string id="20080">Älä näytä RSS-tietoja musiikin aikana</string>
   <string id="20081">Pikakäynnistys painikkeet käytössä</string>
-  <string id="20082">Näytä XLink Kai-tiedot</string>
+  <string id="20082">Näytä ohjelmat päävalikossa</string>
   <string id="20083">Näytä Musiikki-tiedot</string>
   <string id="20084">Näytä Säätila-tiedot</string>
   <string id="20085">Näytä Järjestelmän tiedot</string>
@@ -1647,7 +1647,7 @@
   <string id="20182">Välilyönti</string>
   <string id="20183">Päivitä skini</string>
   <string id="20184">Käännä kuvat EXIF-tietojen mukaisesti</string>
-  <string id="20185">Käytä juliste näkymää TV-ohjelmilla</string>
+  <string id="20185">Käytä julistenäkymää TV-ohjelmilla</string>
   <string id="20186">Odota hetki</string>
   <string id="20187">Varmuuskopioidaan EEPROM:in tiedot</string>
   <string id="20188">Varmuuskopioidaan Bios:in tiedot</string>
@@ -1852,7 +1852,7 @@
   <string id="21396">Luku</string> 
   <string id="21397">Pixel Shader V2 (korkealaatu)</string>
   <string id="21398">Käynnistyessä soittolista käytössä</string>  
-  <string id="21399">Tween animointi käytössä</string>
+  <string id="21399">Tween-animointi käytössä</string>
   <string id="21400">sisältää</string>
   <string id="21401">ei sisällä</string>
   <string id="21402">on</string>
@@ -1936,7 +1936,7 @@
   <string id="21868">Kuvan tekijä</string>
   <string id="21869">Kuvaaja</string>
   <string id="21870">Lähde</string>
-  <string id="21871">Tekijänoikeus huomautus</string>
+  <string id="21871">Tekijänoikeushuomautus</string>
   <string id="21872">Kohteen nimi</string>
   <string id="21873">Kaupunki</string>
   <string id="21874">Osavaltio</string>

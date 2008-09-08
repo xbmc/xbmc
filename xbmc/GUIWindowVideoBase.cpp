@@ -392,6 +392,18 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     }
     else
     {
+      // !! WORKAROUND !!
+      // As we cannot add an episode to a non-existing tvshow entry, we have to check the parent directory
+      // to see if it`s already in our video database. If it's not yet part of the database we will exit here.
+      // (Ticket #4764)
+      CStdString strParentDirectory;
+      CUtil::GetParentPath(item->m_strPath,strParentDirectory);
+      if (m_database.GetTvShowId(strParentDirectory) < 0)
+      {
+    	CLog::Log(LOGERROR,"%s: could not add episode [%s]. tvshow does not exist yet..", __FUNCTION__, item->m_strPath.c_str());
+	return false;
+      }
+
       long lEpisodeHint=-1;
       if (item->HasVideoInfoTag())
         lEpisodeHint = item->GetVideoInfoTag()->m_iEpisode;
@@ -468,13 +480,18 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   if (result == CVideoInfoScanner::URL_NFO)
     IMDB.SetScraperInfo(info);
 
-  CStdString movieName = item->GetLabel();
-  if (item->m_bIsFolder) // always search on tvshow folder name on refresh
+  CStdString movieName;
+  if (item->m_bIsFolder || settings.parent_name) // always search based on file paths on refresh
   {
     movieName = item->m_strPath;
+    if (!item->m_bIsFolder)
+      CUtil::GetParentPath(item->m_strPath,movieName);
     CUtil::RemoveSlashAtEnd(movieName);
     movieName = CUtil::GetFileName(movieName);
   }
+  else
+    movieName = CUtil::GetFileName(item->m_strPath);
+
   // 3. Run a loop so that if we Refresh we re-run this block
   bool needsRefresh(false);
   do

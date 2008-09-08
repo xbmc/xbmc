@@ -133,10 +133,10 @@
 				<expression noclean="1"></expression>
 			</RegExp>
 			<RegExp conditional="fanart" input="$$7" output="&lt;fanart url=&quot;http://thetvdb.com/banners/&quot;&gt;\1&lt;/fanart&gt;" dest="4+">
-				<RegExp conditional="!override" input="$$5" output="&lt;thumb dim=&quot;\2&quot; colors=&quot;\3&quot;&gt;\1&lt;/thumb&gt;" dest="7+">
+				<RegExp conditional="!override" input="$$5" output="&lt;thumb dim=&quot;\2&quot; colors=&quot;\3&quot; preview=&quot;_cache/\1&quot;&gt;\1&lt;/thumb&gt;" dest="7+">
 					<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;fanart&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;([^&lt;]*)&lt;/BannerType2&gt;[^&lt;]*&lt;Colors&gt;([^&lt;]*)&lt;/Colors&gt;[^&lt;]*&lt;Language&gt;$INFO[language]&lt;/Language&gt;</expression>
 				</RegExp>
-				<RegExp conditional="override" input="$$5" output="&lt;thumb dim=&quot;\2&quot; colors=&quot;\3&quot;&gt;\1&lt;/thumb&gt;" dest="7+">
+				<RegExp conditional="override" input="$$5" output="&lt;thumb dim=&quot;\2&quot; colors=&quot;\3&quot; preview=&quot;_cache/\1&quot;&gt;\1&lt;/thumb&gt;" dest="7+">
 					<expression repeat="yes">&lt;BannerPath&gt;([^&lt;]*)&lt;/BannerPath&gt;[^&lt;]*&lt;BannerType&gt;fanart&lt;/BannerType&gt;[^&lt;]*&lt;BannerType2&gt;([^&lt;]*)&lt;/BannerType2&gt;[^&lt;]*&lt;Colors&gt;([^&lt;]*)&lt;/Colors&gt;[^&lt;]*&lt;Language&gt;[a-z]*&lt;/Language&gt;</expression>
 				</RegExp>
 				<expression noclean="1"></expression>

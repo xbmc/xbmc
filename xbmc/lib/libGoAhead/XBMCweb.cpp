@@ -49,7 +49,7 @@ using namespace MUSIC_INFO;
 #define XBMC_ID				T("id")
 #define XBMC_TYPE			T("type")
 
-#define XBMC_REMOTE_MENU		T("menu")	
+#define XBMC_REMOTE_MENU		T("menu")
 #define XBMC_REMOTE_BACK		T("back")
 #define XBMC_REMOTE_SELECT	T("select")
 #define XBMC_REMOTE_DISPLAY	T("display")
@@ -468,9 +468,9 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
           output = buffer;
         }
       }
-      websHeader(wp); wroteHeader = TRUE;
+      websWrite(wp, T((char*)"<html>\n"));
       cnt = websWrite(wp, output);
-      websFooter(wp); wroteFooter = TRUE;
+      websWrite(wp, T((char*)"</html>\n"));
       return cnt;
     }
 
@@ -480,12 +480,12 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
       selectionNumber = catalogNumber( parameter);
       if (navigatorState == WEB_NAV_MUSICPLAYLIST)
       {
-        // we have a music type 
+        // we have a music type
         output = XBMC_CMD_MUSIC;
       }
       else if (navigatorState == WEB_NAV_VIDEOPLAYLIST)
       {
-        // we have a video type 
+        // we have a video type
         output = XBMC_CMD_MUSIC;
       }
       else
@@ -500,7 +500,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
           {
             switch(GetNavigatorState())
             {
-            case WEB_NAV_VIDEOS: 
+            case WEB_NAV_VIDEOS:
               output = XBMC_CMD_VIDEO;
               break;
             case WEB_NAV_MUSIC:
@@ -514,7 +514,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
               break;
             }
           }
-        } 
+        }
       }
       if( eid != NO_EID) {
         ejSetResult( eid, output);
@@ -693,7 +693,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
             itm->m_strPath = shareZip.strPath;
             itm->m_bIsFolder = true;
           }
-          else if (itm->IsRAR()) // mount rar archive 
+          else if (itm->IsRAR()) // mount rar archive
           {
             CMediaSource shareRar;
             CStdString strRarPath;
@@ -704,7 +704,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
             itm->m_bIsFolder = true;
           }
 
-          if (itm->m_bIsFolder)		
+          if (itm->m_bIsFolder)
           {
             // enter the directory
             if (itm->GetLabel() == "..")
@@ -929,17 +929,21 @@ void CXbmcWeb::xbmcForm(webs_t wp, char_t *path, char_t *query)
 {
   char_t	*command, *parameter, *next_page;
 
-  command = websGetVar(wp, WEB_COMMAND, XBMC_NONE); 
-  parameter = websGetVar(wp, WEB_PARAMETER, XBMC_NONE);
+  command = websGetVar(wp, (char*)WEB_COMMAND, (char*)XBMC_NONE);
+  parameter = websGetVar(wp, (char*)WEB_PARAMETER, (char*)XBMC_NONE);
 
   // do the command
-  wroteHeader = false;
-  wroteFooter = false;
+  websWrite(wp, T((char*)"HTTP/1.0 200 OK\r\n"));
+  websWrite(wp, T((char*)"Pragma: no-cache\r\n"));
+  websWrite(wp, T((char*)"Cache-control: no-cache\r\n"));
+  websWrite(wp, T((char*)"Content-Type: text/html\r\n"));
+  websWrite(wp, T((char*)"\r\n"));
+
   xbmcProcessCommand( NO_EID, wp, command, parameter);
 
   // if we do want to redirect
-  if( websTestVar(wp, WEB_NEXT_PAGE)) {
-    next_page = websGetVar(wp, WEB_NEXT_PAGE, XBMC_NONE); 
+  if( websTestVar(wp, (char*)WEB_NEXT_PAGE)) {
+    next_page = websGetVar(wp, (char*)WEB_NEXT_PAGE, (char*)XBMC_NONE);
     // redirect to another web page
     websRedirect(wp, next_page);
     return;
@@ -1028,11 +1032,11 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
 
   CUtil::SecondsToTimeString(tag.GetDuration(), strTime);
 
-  strDuration=strText+strTime;		
+  strDuration=strText+strTime;
   }
   }
   }	//	if (tag.Loaded())
-  else 
+  else
   {
   //	If we have a cdda track without cddb information,...
   if (url.GetProtocol()=="cdda" )
@@ -1061,7 +1065,7 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
 
   strDuration=strText+strTime;
   }
-  }	
+  }
   }
   */
 }

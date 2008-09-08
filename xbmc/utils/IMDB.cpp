@@ -458,6 +458,7 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
     strSearch2.Trim();
     strSearch2.Replace('.', ' ');
     strSearch2.Replace('-', ' ');
+    strSearch2.Replace('_', ' ');
 
     g_charsetConverter.stringCharsetToUtf8(strSearch2);
     CUtil::URLEncode(strSearch2);

@@ -438,22 +438,27 @@ void CGUITextureManager::FlushPreLoad()
   }
 }
 
-int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey, bool checkBundleOnly /*= false */)
+bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *path, int *bundle, int *size)
 {
-  if (strTextureName == "-")
-    return 0;
-  if (strTextureName.Find("://") >= 0)
-    return 0;
+  // default values
+  if (bundle) *bundle = -1;
+  if (size) *size = 0;
+  if (path) *path = textureName;
+
+  if (textureName == "-")
+    return false;
+  if (textureName.Find("://") >= 0)
+    return false;
 
   // first check of texture exists...
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
   {
     CTextureMap *pMap = m_vecTextures[i];
-    if (pMap->GetName() == strTextureName)
+    if (pMap->GetName() == textureName)
     {
       for (int i = 0; i < 2; i++)
       {
-        if (m_iNextPreload[i] != m_PreLoadNames[i].end() && (*m_iNextPreload[i] == strTextureName))
+        if (m_iNextPreload[i] != m_PreLoadNames[i].end() && (*m_iNextPreload[i] == textureName))
         {
           ++m_iNextPreload[i];
           // preload next file
@@ -461,68 +466,60 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
             m_TexBundle[i].PreloadFile(*m_iNextPreload[i]);
         }
       }
-      return pMap->size();
+      if (size) *size = pMap->size();
+      return true;
     }
   }
 
-  //Lock here, we will do stuff that could break rendering
-  CSingleLock lock(g_graphicsContext);
-
-#ifdef ALLOW_TEXTURE_COMPRESSION
-  LPDIRECT3DTEXTURE8 pTexture;
-  LPDIRECT3DPALETTE8 pPal = 0;
-
-  int bundle = -1;
-  const CStdString* pstrBundleTex = NULL;
   for (int i = 0; i < 2; i++)
   {
-    if (m_iNextPreload[i] != m_PreLoadNames[i].end() && (*m_iNextPreload[i] == strTextureName)) // || *m_iNextPreload == strPalTex))
+    if (m_iNextPreload[i] != m_PreLoadNames[i].end() && (*m_iNextPreload[i] == textureName))
     {
-      pstrBundleTex = &strTextureName;
-
-      bundle = i;
+      if (bundle) *bundle = i;
       ++m_iNextPreload[i];
       // preload next file
       if (m_iNextPreload[i] != m_PreLoadNames[i].end())
         m_TexBundle[i].PreloadFile(*m_iNextPreload[i]);
-      break;
+      return true;
     }
-    else if (m_TexBundle[i].HasFile(strTextureName))
+    else if (m_TexBundle[i].HasFile(textureName))
     {
-      pstrBundleTex = &strTextureName;
-      bundle = i;
-      break;
+      if (bundle) *bundle = i;
+      return true;
     }
   }
 
+  CStdString fullPath = GetTexturePath(textureName);
+  if (path)
+    *path = fullPath;
+
+  return !fullPath.IsEmpty();
+}
+
+int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey, bool checkBundleOnly /*= false */)
+{
   CStdString strPath;
+  int bundle = -1;
+  int size = 0;
+  if (!HasTexture(strTextureName, &strPath, &bundle, &size))
+    return 0;
+
+  if (size) // we found the texture
+    return size;
 
   if (checkBundleOnly && bundle == -1)
     return 0;
 
-  if (bundle == -1)
-    strPath = GetTexturePath(strTextureName);
-  else
-    strPath = strTextureName;
+  //Lock here, we will do stuff that could break rendering
+  CSingleLock lock(g_graphicsContext);
 
-  if (strPath.IsEmpty())
-    return 0;
+  LPDIRECT3DTEXTURE8 pTexture;
+  LPDIRECT3DPALETTE8 pPal = 0;
 
 #ifdef _DEBUG
   LARGE_INTEGER start;
   QueryPerformanceCounter(&start);
 #endif
-
-  bool bPacked;
-  CStdString strPackedPath;
-  if (bundle == -1)
-  {
-    strPackedPath = strPath;
-    strPackedPath += ".xpr";
-    bPacked = (GetFileAttributes(strPackedPath.c_str()) != -1);
-  }
-  else
-    bPacked = false;
 
   D3DXIMAGE_INFO info;
 
@@ -530,32 +527,16 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
   {
     CTextureMap* pMap;
 
-    if (bPacked || bundle >= 0)
+    if (bundle >= 0)
     {
       LPDIRECT3DTEXTURE8* pTextures;
       int nLoops = 0;
       int* Delay;
-      int nImages;
-      if (bundle >= 0)
+      int nImages = m_TexBundle[bundle].LoadAnim(g_graphicsContext.Get3DDevice(), strTextureName, &info, &pTextures, &pPal, nLoops, &Delay);
+      if (!nImages)
       {
-        nImages = m_TexBundle[bundle].LoadAnim(g_graphicsContext.Get3DDevice(), *pstrBundleTex, &info, &pTextures, &pPal, nLoops, &Delay);
-        if (!nImages)
-        {
-          CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", pstrBundleTex->c_str());
-          return 0;
-        }
-      }
-      else // packed
-      {
-#ifdef HAS_XBOX_D3D
-        nImages = LoadPackedAnim(g_graphicsContext.Get3DDevice(), strPackedPath.c_str(), &info, &pTextures, &pPal, nLoops, &Delay);
-        if (!nImages)
-#endif
-        {
-          if (!strnicmp(strPackedPath.c_str(), "q:\\skin", 7))
-            CLog::Log(LOGERROR, "Texture manager unable to load packed file: %s", strPackedPath.c_str());
-          return 0;
-        }
+        CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", strTextureName.c_str());
+        return 0;
       }
 
       pMap = new CTextureMap(strTextureName);
@@ -663,7 +644,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
     QueryPerformanceCounter(&end);
     QueryPerformanceFrequency(&freq);
     char temp[200];
-    sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, bPacked ? " (packed)" : (bundle >= 0) ? " (bundled)" : "");
+    sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, (bundle >= 0) ? " (bundled)" : "");
     OutputDebugString(temp);
 #endif
 
@@ -673,52 +654,27 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
 
   if (bundle >= 0)
   {
-    if (FAILED(m_TexBundle[bundle].LoadTexture(g_graphicsContext.Get3DDevice(), *pstrBundleTex, &info, &pTexture, &pPal)))
+    if (FAILED(m_TexBundle[bundle].LoadTexture(g_graphicsContext.Get3DDevice(), strTextureName, &info, &pTexture, &pPal)))
     {
-      CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", pstrBundleTex->c_str());
-      return 0;
-    }
-  }
-  else if (bPacked)
-  {
-#ifdef HAS_XBOX_D3D
-    if (FAILED(LoadPackedTexture(g_graphicsContext.Get3DDevice(), strPackedPath.c_str(), &info, &pTexture, &pPal)))
-#endif
-    {
-      if (!strnicmp(strPackedPath.c_str(), "q:\\skin", 7))
-        CLog::Log(LOGERROR, "Texture manager unable to load packed file: %s", strPackedPath.c_str());
+      CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", strTextureName.c_str());
       return 0;
     }
   }
   else
   {
-    if (strPath.Right(4).ToLower() == ".dds")
-    {
-      if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
-                                       D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED,
-                                       D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture) != D3D_OK)
-      {
-        if (!strnicmp(strPath.c_str(), "q:\\skin", 7))
-          CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
-        return 0;
-      }
-    }
-    else
-    {
-      // normal picture
-      // convert from utf8
-      CStdString texturePath;
-      g_charsetConverter.utf8ToStringCharset(strPath, texturePath);
+    // normal picture
+    // convert from utf8
+    CStdString texturePath;
+    g_charsetConverter.utf8ToStringCharset(strPath, texturePath);
 
-      if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), texturePath.c_str(),
-                                       D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
-                                       D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture) != D3D_OK)
-      {
-        if (!strnicmp(strPath.c_str(), "q:\\skin", 7))
-          CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
-        return 0;
+    if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), texturePath.c_str(),
+                                     D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
+                                     D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture) != D3D_OK)
+    {
+      if (!strnicmp(strPath.c_str(), "q:\\skin", 7))
+        CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
+      return 0;
 
-      }
     }
   }
 
@@ -727,123 +683,17 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
   QueryPerformanceCounter(&end);
   QueryPerformanceFrequency(&freq);
   char temp[200];
-  sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, bPacked ? " (packed)" : (bundle >= 0) ? " (bundled)" : "");
+  sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, (bundle >= 0) ? " (bundled)" : "");
   OutputDebugString(temp);
 #endif
 
   CTextureMap* pMap = new CTextureMap(strTextureName);
-  CTexture* pclsTexture = new CTexture(pTexture, info.Width, info.Height, bPacked || bundle >= 0, 100, pPal);
+  CTexture* pclsTexture = new CTexture(pTexture, info.Width, info.Height, bundle >= 0, 100, pPal);
   pMap->Add(pclsTexture);
   m_vecTextures.push_back(pMap);
 #ifdef HAS_XBOX_D3D
   if (pPal)
     pPal->Release();
-#endif
-#else
-
-  LPDIRECT3DTEXTURE8 pTexture;
-  CStdString strPath = GetTexturePath(strTextureName);
-
-  //OutputDebugString(strPath.c_str());
-  //OutputDebugString("\n");
-
-  if (strPath.Right(4).ToLower() == ".gif")
-  {
-
-    CAnimatedGifSet AnimatedGifSet;
-    int iImages = AnimatedGifSet.LoadGIF(strPath.c_str());
-    if (iImages == 0)
-    {
-      CStdString strText = strPath;
-      strText.MakeLower();
-      // dont release skin textures, they are reloaded each time
-      if (strstr(strPath.c_str(), "q:\\skin") )
-      {
-        CLog::Log(LOGERROR, "Texture manager unable to find file:%s", strPath.c_str());
-      }
-      return 0;
-    }
-    int iWidth = AnimatedGifSet.FrameWidth;
-    int iHeight = AnimatedGifSet.FrameHeight;
-
-    CTextureMap* pMap = new CTextureMap(strTextureName);
-    for (int iImage = 0; iImage < iImages; iImage++)
-    {
-      if (D3DXCreateTexture(g_graphicsContext.Get3DDevice(), iWidth,
-          iHeight,
-          1,  // levels
-          0,  //usage
-          D3DFMT_LIN_A8R8G8B8 ,
-          0,
-          &pTexture) == D3D_OK)
-      {
-        CAnimatedGif* pImage = AnimatedGifSet.m_vecimg[iImage];
-        //dllprintf("%s loops:%i", strTextureName.c_str(),AnimatedGifSet.nLoops);
-        D3DLOCKED_RECT lr;
-        if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
-        {
-          DWORD strideScreen = lr.Pitch;
-          for (DWORD y = 0; y < (DWORD)pImage->Height; y++)
-          {
-            BYTE *pDest = (BYTE*)lr.pBits + strideScreen * y;
-            for (DWORD x = 0;x < (DWORD)pImage->Width; x++)
-            {
-              byte byAlpha = 0xff;
-              byte iPaletteColor = (byte)pImage->Pixel( x, y);
-              if (pImage->Transparency)
-              {
-                int iTransparentColor = pImage->Transparent;
-                if (iTransparentColor < 0) iTransparentColor = 0;
-                if (iPaletteColor == iTransparentColor)
-                {
-                  byAlpha = 0x0;
-                }
-              }
-              COLOR& Color = pImage->Palette[iPaletteColor];
-
-              *pDest++ = Color.b;
-              *pDest++ = Color.g;
-              *pDest++ = Color.r;
-              *pDest++ = byAlpha;
-            } // of for (DWORD x=0; x < (DWORD)pImage->Width; x++)
-          } // of for (DWORD y=0; y < (DWORD)pImage->Height; y++)
-          pTexture->UnlockRect( 0 );
-        } // of if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
-        CTexture* pclsTexture = new CTexture(pTexture, iWidth, iHeight, false);
-        pclsTexture->SetDelay(pImage->Delay);
-        pclsTexture->SetLoops(AnimatedGifSet.nLoops);
-
-        pMap->Add(pclsTexture);
-      } // of if (g_graphicsContext.Get3DDevice()->CreateTexture
-    } // of for (int iImage=0; iImage < iImages; iImage++)
-    m_vecTextures.push_back(pMap);
-    return pMap->size();
-  } // of if (strPath.Right(4).ToLower()==".gif")
-
-  // normal picture
-  D3DXIMAGE_INFO info;
-  if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
-                                   D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED,
-                                   D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture) != D3D_OK)
-  {
-    CStdString strText = strPath;
-    strText.MakeLower();
-    // dont release skin textures, they are reloaded each time
-    if (strstr(strPath.c_str(), "q:\\skin") )
-    {
-      CLog::Log(LOGERROR, "Texture manager unable to find file:%s", strPath.c_str());
-    }
-    return NULL;
-  }
-  //CStdString strLog;
-  //strLog.Format("%s %ix%i\n", strTextureName.c_str(),info.Width,info.Height);
-  //OutputDebugString(strLog.c_str());
-  CTextureMap* pMap = new CTextureMap(strTextureName);
-  CTexture* pclsTexture = new CTexture(pTexture, info.Width, info.Height, false);
-  pMap->Add(pclsTexture);
-  m_vecTextures.push_back(pMap);
-  return 1;
-
 #endif
   return 1;
 }
@@ -882,7 +732,7 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iP
     }
     ++i;
   }
-  CLog::Log(LOGERROR, "%s: Unable to release texture %s", __FUNCTION__, strTextureName.c_str());
+  CLog::Log(LOGWARNING, "%s: Unable to release texture %s", __FUNCTION__, strTextureName.c_str());
 }
 
 void CGUITextureManager::Cleanup()
@@ -894,7 +744,7 @@ void CGUITextureManager::Cleanup()
   while (i != m_vecTextures.end())
   {
     CTextureMap* pMap = *i;
-    CLog::Log(LOGERROR, "%s: Having to cleanup texture %s - this should not happen", __FUNCTION__, pMap->GetName().c_str());
+    CLog::Log(LOGWARNING, "%s: Having to cleanup texture %s", __FUNCTION__, pMap->GetName().c_str());
     delete pMap;
     i = m_vecTextures.erase(i);
   }
@@ -1007,3 +857,4 @@ void CGUITextureManager::GetBundledTexturesFromPath(const CStdString& texturePat
   if (items.empty())
     m_TexBundle[1].GetTexturesFromPath(texturePath, items);
 }
+

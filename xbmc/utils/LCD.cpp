@@ -198,6 +198,7 @@ CStdString ILCD::GetProgressBar(double tCurrent, double tTotal)
       }
     }
     strProgressBar += "]";
+    g_charsetConverter.stringCharsetToUtf8(strProgressBar);
     return strProgressBar;
   }
   else return "";
@@ -470,14 +471,10 @@ void ILCD::Render(LCD_MODE mode)
   while (outLine < 4 && inLine < m_lcdMode[mode].size())
   {
     CStdString line = m_lcdMode[mode][inLine++].GetLabel(0);
+    CGUITextLayout::Filter(line);
     if (!line.IsEmpty())
     {
-      // convert to the user char set if needed
-      if (mode == LCD_MODE_NAVIGATION || mode == LCD_MODE_GENERAL || mode == LCD_MODE_SCREENSAVER)
-      {
-        CGUITextLayout::Filter(line);
-        g_charsetConverter.utf8ToStringCharset(line);
-      }
+      g_charsetConverter.utf8ToStringCharset(line);
       SetLine(outLine++, line);
     }
   }
