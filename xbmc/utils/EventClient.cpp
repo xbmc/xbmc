@@ -393,7 +393,14 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
                              famount,
                              (flags & (PTB_AXIS|PTB_AXISSINGLE)) ? true  : false,
                              (flags & PTB_NO_REPEAT)             ? false : true );
-    state.m_bActive = active;
+
+    /* correct non active events so they work with rest of code */
+    if(!active)
+    {
+      state.m_bActive = false;
+      state.m_bRepeat = false;
+      state.m_fAmount = 0.0;
+    }
 
     std::list<CEventButtonState>::reverse_iterator it;
     it = find_if( m_buttonQueue.rbegin() , m_buttonQueue.rend(), ButtonStateFinder(state));
@@ -405,24 +412,38 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
     }
     else
     {
-      /* if the active bit has shifted, add a new entry, oterwise update       *
-       * this way we avoid filling data queue and only remember the last event */
-      if(active ^ it->m_bActive)  
+      if(!active && it->m_bActive)  
       {
-        /* if the last event was waiting for a repeat interval it has executed, so if  *
-         * we now ask to turn of, do so directly to avoid extra clicks on long renders */
-        if(!active && it->m_bRepeat && it->m_iNextRepeat > 0)
-          m_buttonQueue.erase((++it).base());
+        /* since modifying the list invalidates the referse iteratator */
+        std::list<CEventButtonState>::iterator it2 = (++it).base();
 
+        /* if last event had an amount, we must resend without amount */
+        if(it2->m_fAmount != 0.0)
+          m_buttonQueue.push_back(state);
+
+        /* if the last event was waiting for a repeat interval, it has executed already.*/
+        if(it2->m_bRepeat)
+        {
+          if(it2->m_iNextRepeat > 0)
+            m_buttonQueue.erase(it2);
+          else
+            it2->m_bRepeat = false;
+        }
+
+      }
+      else if(active && !it->m_bActive)
+      {
         m_buttonQueue.push_back(state);
+        if(!state.m_bRepeat && state.m_bAxis && state.m_fAmount != 0.0)
+        {
+          state.m_bActive = false;
+          state.m_bRepeat = false;
+          state.m_fAmount = 0.0;
+          m_buttonQueue.push_back(state);
+        }
       }
       else
-      {
-        it->m_bActive = state.m_bActive;
         it->m_fAmount = state.m_fAmount;
-        it->m_bRepeat = state.m_bRepeat;
-        it->m_bAxis   = state.m_bAxis;
-      }
     }
   }
   else
@@ -700,57 +721,32 @@ unsigned short CEventClient::GetButtonCode(std::string& joystickName, bool& isAx
   if(m_buttonQueue.empty())
     return 0;
 
-  std::list<CEventButtonState>::iterator end, it, it2;
 
-  /* special handling of start and stop to avoid reprocessing items we read */
-  /* couldn't figure out a cleaner method right now */
-  end = m_buttonQueue.end();
-  it  = m_buttonQueue.begin();
-  for(;it != end; it++)
+  std::list<CEventButtonState> repeat;
+  std::list<CEventButtonState>::iterator it;
+  for(it = m_buttonQueue.begin(); bcode == 0 && it != m_buttonQueue.end(); it++)
   {
-    bcode = 0;
-
-    if(it->Active() == false)
-    {
-      if(it->Amount() != 0.0)
-      {
-        bcode        = it->KeyCode();
-        joystickName = it->JoystickName();
-        isAxis       = it->Axis();
-        amount       = 0.0f;
-        it++;
-        break;
-      }
-      continue;
-    }
-
     bcode        = it->KeyCode();
     joystickName = it->JoystickName();
     isAxis       = it->Axis();
     amount       = it->Amount();
 
-
-    if(it->Repeat() || it->Axis())
+    if(it->Repeat())
     {
-      /* will update m_iNextRepeat */
-      if(!it->Axis() && !CheckButtonRepeat(it->m_iNextRepeat))
-        bcode = 0;
+      /* MUST update m_iNextRepeat before resend */
+      bool skip = !it->Axis() && !CheckButtonRepeat(it->m_iNextRepeat);
 
-      it2 = it;
-      it2++;
-      /* if there are newer events for this button, we don't resend the repeat */
-      if(find_if(it2, m_buttonQueue.end(), ButtonStateFinder(*it)) == m_buttonQueue.end())
+      repeat.push_back(*it);
+      if(skip)
       {
-        m_buttonQueue.push_back(*it);
-        if(end == m_buttonQueue.end())
-          end--;
+        bcode = 0;
+        continue;
       }
     }
-
-    it++;
-    break;
   }
+
   m_buttonQueue.erase(m_buttonQueue.begin(), it);
+  m_buttonQueue.insert(m_buttonQueue.end(), repeat.begin(), repeat.end());
   return bcode;
 }
 
