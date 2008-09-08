@@ -505,10 +505,12 @@
     <remote>
       <title>CodecInfo</title>
       <info>Close</info>
+      <menu>OSD</menu>
    </remote>
 
     <gamepad>
       <B>Close</B>
+      <start>OSD</start>
       <black>CodecInfo</black>
       <white>Close</white>
       <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
@@ -521,6 +523,7 @@
       <button id="2">Close</button>
       <button id="3">CodecInfo</button>
       <button id="6">Close</button>
+      <button id="9">OSD</button>
       <axis id="3" limit="0">AnalogRewind</axis>
       <axis id="6" limit="0">AnalogFastForward</axis>
     </joystick>
@@ -537,6 +540,7 @@
       <backspace>Close</backspace>
       <t>Close</t>
       <i>CodecInfo</i>
+      <m>OSD</m>
     </keyboard>
   </FullscreenInfo>
 
