@@ -158,6 +158,7 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
           case DRIVE_REMOVABLE:
             if(share.strName.IsEmpty())
               share.strName.Format( "%s %s", share.strPath, g_localizeStrings.Get(437));
+            break;
           case DRIVE_UNKNOWN:
             share.strName.Format( "%s %s", share.strPath, g_localizeStrings.Get(13205));
             break;
