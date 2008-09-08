@@ -143,18 +143,28 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
         if( uDriveType == DRIVE_CDROM && nResult)
         {
           share.strName.Format( "%s - %s (%s)", 
-            g_localizeStrings.Get(218), share.strName, share.strPath );
+            share.strPath, g_localizeStrings.Get(218),share.strName );
           share.m_iDriveType= CMediaSource::SOURCE_TYPE_LOCAL;
           bUseDCD= true;
         }
         else 
         {
           // Lets show it, like Windows explorer do... TODO: sorting should depend on driver letter
-          share.strName.Format( "%s (%s)", 
-            ( uDriveType == DRIVE_CDROM )   ? g_localizeStrings.Get(218)  :
-            ( uDriveType == DRIVE_REMOVABLE && 
-              share.strName.IsEmpty() )     ? g_localizeStrings.Get(437)  :
-            ( uDriveType == DRIVE_UNKNOWN ) ? g_localizeStrings.Get(13205): share.strName, share.strPath );
+          switch(uDriveType)
+          {
+          case DRIVE_CDROM:
+            share.strName.Format( "%s %s", share.strPath, g_localizeStrings.Get(218));
+            break;
+          case DRIVE_REMOVABLE:
+            if(share.strName.IsEmpty())
+              share.strName.Format( "%s %s", share.strPath, g_localizeStrings.Get(437));
+          case DRIVE_UNKNOWN:
+            share.strName.Format( "%s %s", share.strPath, g_localizeStrings.Get(13205));
+            break;
+          default:
+            share.strName.Format( "%s %s", share.strPath, share.strName);
+            break;
+          }
         }
         share.strName.Replace(":\\",":");
         share.m_ignore= true;
