@@ -95,7 +95,7 @@ bool CGUIDialogKaiToast::DoWork()
   {
     Notification toast = m_notifications.front();
     m_notifications.pop();
-    lock.leave();
+    lock.Leave();
 
     m_toastDisplayTime = toast.displayTime;
 
@@ -123,7 +123,7 @@ bool CGUIDialogKaiToast::DoWork()
     ResetTimer();
   }
 
-  return false;
+  return bPending;
 }
 
 
