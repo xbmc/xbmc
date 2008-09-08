@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Tang YiZhi-->
 <!--Email: Kazuyuki@163.com-->
-<!--Date of translation: 09/01/2008-->
+<!--Date of translation: 09/07/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 15195-->
+<!--Based on english strings version 15443-->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -877,8 +877,8 @@
   <string id="13005">关机</string>
   <string id="13006">Dashboard</string>
   <string id="13007">使用定制 Dashboard 的路径</string>
-  <string id="13008">当关闭XBMC时</string>
-  <string id="13009">不做任何事</string>
+  <string id="13008">默认关机模式</string>
+  <string id="13009">退出</string>
   <string id="13010">休眠</string>
   <string id="13011">待机</string>
   <string id="13100">闪烁过滤</string>
@@ -1067,6 +1067,7 @@
   <string id="13410">Tune in on lastfm</string>
   <string id="13411">风扇最低转速</string>
   <string id="13412"> RSS种子内容为从右到左</string>
+  <string id="13413">正在下载</string>
   <string id="13600">Apple 遥控器</string>
   <string id="13601">模式</string>
   <string id="13602">始终运行</string>
@@ -1777,6 +1778,7 @@
   <string id="22010">显示卡温度：</string>
   <string id="22011">CPU 温度：</string>
   <string id="22012">可用内存</string>
+  <string id="22013">预存设置数据</string>
   <string id="29800">资料库模式</string>
   <string id="29801">QWERTY 键盘</string>
   <string id="29999">自动开启游戏抗闪烁过滤</string>
