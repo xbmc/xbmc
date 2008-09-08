@@ -63,6 +63,10 @@ extern CStdString g_LoadErrorStr;
 
 CSettings::CSettings(void)
 {
+}
+
+void CSettings::Initialize()
+{
   for (int i = HDTV_1080i; i <= PAL60_16x9; i++)
   {
     g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
@@ -218,7 +222,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_bVideoLibraryAllItemsOnBottom = false;
   g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems = false;
   g_advancedSettings.m_bVideoLibraryHideEmptySeries = false;
-  g_advancedSettings.m_bVideoLibraryCleanOnUpdate = true;
+  g_advancedSettings.m_bVideoLibraryCleanOnUpdate = false;
 
   g_advancedSettings.m_bUseEvilB = true;
 
@@ -442,6 +446,13 @@ VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
       VECSOURCES shares;
       g_mediaManager.GetLocalDrives(shares, true);  // true to include Q
       m_fileSources.insert(m_fileSources.end(),shares.begin(),shares.end());
+      
+      CMediaSource source;
+      source.strName = g_localizeStrings.Get(22013);
+      source.m_ignore = true;
+      source.strPath = "P:\\";
+      source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+      m_fileSources.push_back(source);
     }
 
     return &g_settings.m_fileSources;

@@ -3238,6 +3238,28 @@ int CVideoDatabase::GetPlayCount(VIDEODB_CONTENT_TYPE type, long id)
   return -1;
 }
 
+void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE type)
+{
+  if (NULL == m_pDB.get()) return;
+  if (NULL == m_pDS.get()) return;
+  if (!item.HasVideoInfoTag() || item.GetVideoInfoTag()->m_iDbId < 0) return;
+
+  CStdString exec;
+  if (type == VIDEODB_CONTENT_TVSHOWS)
+    exec = FormatSQL("UPDATE tvshow set c%02d='%s' WHERE idshow=%i", VIDEODB_ID_TV_FANART, item.GetVideoInfoTag()->m_fanart.m_xml.c_str(), item.GetVideoInfoTag()->m_iDbId);
+  else if (type == VIDEODB_CONTENT_MOVIES)
+    exec = FormatSQL("UPDATE movie set c%02d='%s' WHERE idmovie=%i", VIDEODB_ID_FANART, item.GetVideoInfoTag()->m_fanart.m_xml.c_str(), item.GetVideoInfoTag()->m_iDbId);
+
+  try
+  {
+    m_pDS->exec(exec.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s - error updating fanart for %s", __FUNCTION__, item.m_strPath.c_str());
+  }
+}
+
 void CVideoDatabase::MarkAsWatched(const CFileItem &item)
 {
   // first grab the type of video and it's id
@@ -6347,8 +6369,7 @@ void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder)
 {
   CFileItem item(strPath,bFolder);
   XFILE::CFile::Delete(item.GetCachedVideoThumb());
-  if (bFolder)
-    XFILE::CFile::Delete(item.GetCachedFanart());
+  XFILE::CFile::Delete(item.GetCachedFanart());
     
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)

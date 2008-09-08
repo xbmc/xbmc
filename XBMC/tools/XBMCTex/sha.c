@@ -1,7 +1,18 @@
-#include <stdlib.h>
+#include <string.h>
+#ifdef _LINUX
+#include <stdint.h>
+#else
+#include "stdint_win.h"
+#endif
 
-typedef unsigned long u32;
+typedef unsigned int u32;
 typedef unsigned char u8;
+
+#ifdef _LINUX
+#include <string.h>
+#define __forceinline inline
+#define __int64 int64_t
+#endif
 
 __forceinline static u32 rol(u32 x, u8 n)
 {
@@ -10,22 +21,22 @@ __forceinline static u32 rol(u32 x, u8 n)
 
 static void bswapcpy(void* dst, const void* src, u32 n)
 {
-	__asm {
-		mov ecx,n
-		mov esi,src
-		mov edi,dst
-		shr ecx,2
-		jz  bswapcpy_2
-bswapcpy_1:
-		mov eax,dword ptr [esi]
-		bswap eax
-		mov dword ptr [edi],eax
-		add esi,4
-		add edi,4
-		dec ecx
-		jnz bswapcpy_1
-bswapcpy_2:
-	}
+  uint32_t d, b0, b1, b2, b3;
+  uint32_t *nDst = (uint32_t *)dst;
+  uint32_t *nSrc = (uint32_t *)src;
+  n >>= 2;
+  while (n != 0)
+  {
+    d = *nSrc;
+    b0 = d >> 24;
+    b1 = (d >> 8) & 0x0000ff00;
+    b2 = (d << 8) & 0x00ff0000;
+    b3 = (d << 24);
+    *nDst = b3 | b2 | b1 | b0;
+    --n;
+    ++nSrc;
+    ++nDst;
+  }
 }
 
 void SHA1(const u8* buf, u32 len, u8 hash[20])

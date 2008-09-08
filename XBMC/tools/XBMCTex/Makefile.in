@@ -1,0 +1,26 @@
+
+INCLUDES = -I../../xbmc/linux -I../../guilib -I../../xbmc/
+DEFINES = -DUSE_SDL
+LIBS = @LIBS@
+OBJS = \
+	AnimatedGif.o \
+	Bundler.o \
+	SurfaceSDL.o \
+	XBMCTex.o \
+	xbox.o \
+	xwinapi.o \
+	XFileUtils.o \
+	XHandle.o \
+	XTimeUtils.o \
+	sha.o
+
+TARGET = XBMCTex
+CLEAN_FILES=$(TARGET)
+
+all: $(TARGET)
+
+include ../../Makefile.include
+
+$(TARGET): $(OBJS)
+	g++ $(OBJS) $(LDFLAGS) $(LIBS) -o $(TARGET)
+

@@ -128,6 +128,7 @@ namespace XFILE
       bool            m_opened;
       bool            m_useOldHttpVersion;
       bool            m_seekable;
+      bool            m_multisession;
       bool            m_binary;
 
       struct XCURL::curl_slist* m_curlAliasList;
