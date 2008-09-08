@@ -2718,6 +2718,23 @@ bool CApplication::OnAction(const CAction &action)
 
   if ( IsPlaying())
   {
+    // OSD toggling
+    if (action.wID == ACTION_SHOW_OSD)
+    {
+      if (IsPlayingVideo() && IsPlayingFullScreenVideo())
+      {
+        CGUIWindowOSD *pOSD = (CGUIWindowOSD *)m_gWindowManager.GetWindow(WINDOW_OSD);
+        if (pOSD)
+        {
+          if (pOSD->IsDialogRunning())
+            pOSD->Close();
+          else
+            pOSD->DoModal();
+          return true;
+        }
+      }
+    }
+
     // pause : pauses current audio song
     if (action.wID == ACTION_PAUSE && m_iPlaySpeed == 1)
     {
