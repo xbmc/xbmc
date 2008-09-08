@@ -33,12 +33,10 @@ CGUIDialogKaiToast::CGUIDialogKaiToast(void)
 {
   m_defaultIcon = "";
   m_loadOnDemand = false;
-  InitializeCriticalSection(&m_critical);
 }
 
 CGUIDialogKaiToast::~CGUIDialogKaiToast(void)
 {
-  DeleteCriticalSection(&m_critical);
 }
 
 bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
@@ -76,10 +74,7 @@ void CGUIDialogKaiToast::QueueNotification(const CStdString& aCaption, const CSt
 
 void CGUIDialogKaiToast::QueueNotification(const CStdString& aImageFile, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/)
 {
-  EnterCriticalSection(&m_critical);
-
-  if (!Initialize())
-    return;
+  CSingleLock lock(m_critical);
 
   Notification toast;
   toast.imagefile = aImageFile;
@@ -88,25 +83,26 @@ void CGUIDialogKaiToast::QueueNotification(const CStdString& aImageFile, const C
   toast.displayTime = displayTime > TOAST_MESSAGE_TIME + 500 ? displayTime : TOAST_MESSAGE_TIME + 500;
 
   m_notifications.push(toast);
-
-  LeaveCriticalSection(&m_critical);
 }
 
 
 bool CGUIDialogKaiToast::DoWork()
 {
-  EnterCriticalSection(&m_critical);
+  CSingleLock lock(m_critical);
 
   bool bPending = m_notifications.size() > 0;
   if (bPending && timeGetTime() - m_dwTimer > TOAST_MESSAGE_TIME)
   {
     Notification toast = m_notifications.front();
+    m_notifications.pop();
+    lock.leave();
 
     m_toastDisplayTime = toast.displayTime;
 
-    m_notifications.pop();
+    CSingleLock lock2(g_graphicsContext);
 
-    g_graphicsContext.Lock();
+    if(!Initialize())
+      return false;
 
     SET_CONTROL_LABEL(POPUP_CAPTION_TEXT, toast.caption);
 
@@ -121,17 +117,13 @@ bool CGUIDialogKaiToast::DoWork()
         image->SetFileName(m_defaultIcon);
     }
 
-    g_graphicsContext.Unlock();
-
     //  Play the window specific init sound for each notification queued
     g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
 
     ResetTimer();
   }
 
-  LeaveCriticalSection(&m_critical);
-
-  return bPending;
+  return false;
 }
 
 
