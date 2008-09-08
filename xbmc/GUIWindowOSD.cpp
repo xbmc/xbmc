@@ -58,13 +58,7 @@ bool CGUIWindowOSD::OnAction(const CAction &action)
   if (action.wID != ACTION_MOUSE && m_autoClosing)
     SetAutoClose(3000);
 
-  // ACTION_SHOW_OSD should take the OSD away too!
-  if (action.wID == ACTION_SHOW_OSD)
-  {
-    Close();
-    return true;
-  }
-  else if (action.wID == ACTION_NEXT_ITEM || action.wID == ACTION_PREV_ITEM)
+  if (action.wID == ACTION_NEXT_ITEM || action.wID == ACTION_PREV_ITEM)
   {
     // these could indicate next chapter if video supports it
     if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
