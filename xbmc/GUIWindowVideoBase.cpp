@@ -316,7 +316,9 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const SScraperInfo& info)
      (m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_FILES ||
       m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_NAV)) // since we can be called from the music library we need this check
   {
+    int itemNumber = m_viewControl.GetSelectedItem();
     Update(m_vecItems->m_strPath);
+    m_viewControl.SetSelectedItem(itemNumber);
   }
 }
 
