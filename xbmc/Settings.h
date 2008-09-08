@@ -87,6 +87,8 @@ public:
   CSettings(void);
   virtual ~CSettings(void);
 
+  void Initialize();
+
   bool Load(bool& bXboxMediacenter, bool& bSettings);
   void Save() const;
   bool Reset();

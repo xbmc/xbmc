@@ -137,6 +137,9 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
   switch (pMsg->dwMessage)
   {
     case TMSG_SHUTDOWN:
+#ifdef _XBOX
+    case TMSG_POWERDOWN:
+#endif
       {
         g_application.Stop();
         Sleep(200);
@@ -153,9 +156,55 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       }
       break;
 
-    case TMSG_DASHBOARD:
+#ifndef _XBOX
+case TMSG_POWERDOWN:
+      {
+#if !defined(_LINUX)
+#ifdef _WIN32PC
+        if (CWIN32Util::PowerManagement(POWERSTATE_SHUTDOWN))
+#endif
+#endif
+#ifdef HAS_HAL
+        if (CHalManager::PowerManagement(POWERSTATE_SHUTDOWN))
+#endif
+        {
+          g_application.Stop();
+          exit(0);
+        }
+      }
+      break;
+#endif
+
+#ifdef _XBOX
+    case TMSG_QUIT:
       {
         CUtil::ExecBuiltIn("XBMC.Dashboard()");
+      }
+      break;
+#else
+    case TMSG_QUIT:
+      {
+        g_application.Stop();
+        exit(0);
+      }
+      break;
+#endif
+    case TMSG_HIBERNATE:
+      {
+#ifdef HAS_HAL
+        CHalManager::PowerManagement(POWERSTATE_HIBERNATE);
+#elif _WIN32PC
+        CWIN32Util::PowerManagement(POWERSTATE_HIBERNATE);
+#endif
+      }
+      break;
+    case TMSG_SUSPEND:
+      {
+#ifdef HAS_HAL
+        CHalManager::PowerManagement(POWERSTATE_SUSPEND);
+#elif _WIN32PC
+        CWIN32Util::PowerManagement(POWERSTATE_SUSPEND);
+#endif
       }
       break;
 
@@ -553,6 +602,30 @@ void CApplicationMessenger::PictureSlideShow(string pathname, bool bScreensaver 
 void CApplicationMessenger::Shutdown()
 {
   ThreadMessage tMsg = {TMSG_SHUTDOWN};
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::Powerdown()
+{
+  ThreadMessage tMsg = {TMSG_POWERDOWN};
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::Quit()
+{
+  ThreadMessage tMsg = {TMSG_QUIT};
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::Hibernate()
+{
+  ThreadMessage tMsg = {TMSG_HIBERNATE};
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::Suspend()
+{
+  ThreadMessage tMsg = {TMSG_SUSPEND};
   SendMessage(tMsg);
 }
 

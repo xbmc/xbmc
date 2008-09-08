@@ -183,7 +183,20 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
     CStdString strThumb;
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
-    if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(1030),strThumb))
+    CFileItemList items;
+    if (!m_strThumb.IsEmpty())
+    {
+      CFileItemPtr item(new CFileItem("thumb://Current", false));
+      item->SetThumbnailImage(m_strThumb);
+      item->SetLabel(g_localizeStrings.Get(20016));
+      items.Add(item);
+    } 
+    CFileItemPtr item(new CFileItem("thumb://None", false));
+    item->SetThumbnailImage(m_strDefaultImage);
+    item->SetLabel(g_localizeStrings.Get(20018));
+    items.Add(item);
+    if (CGUIDialogFileBrowser::ShowAndGetImage(items,shares,g_localizeStrings.Get(1030),strThumb) && 
+        !strThumb.Equals("thumb://Current"))
     {
       m_bNeedSave = true;
       CGUIImage *pImage = (CGUIImage*)GetControl(2);
@@ -193,11 +206,20 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
       if (CFile::Exists(m_strThumb))
         CFile::Delete(m_strThumb);
 
-      CPicture pic;
-      pic.DoCreateThumbnail(strThumb, m_strThumb);
-      pImage->SetFileName("foo.bmp");
+      pImage->SetFileName("");
       pImage->SetInvalid();
-      pImage->SetFileName(m_strThumb);
+
+      if (!strThumb.Equals("thumb://None"))
+      {
+        CPicture pic;
+        pic.DoCreateThumbnail(strThumb, m_strThumb);
+        pImage->SetFileName(m_strThumb);
+      }
+      else
+      {
+        m_strThumb.clear();
+        pImage->SetFileName(m_strDefaultImage);
+      }
     }
   }
   if (setting.id == 3)

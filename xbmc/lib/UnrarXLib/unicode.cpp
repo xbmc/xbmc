@@ -118,7 +118,6 @@ void WideToUtf(const wchar *Src,char *Dest,int DestSize)
 #ifdef _APPLE
 void UtfToWide(const char *Src,wchar *Dest,int DestSize)
 {
-  wchar* D = Dest;
   DestSize--;
   while (*Src!=0)
   {

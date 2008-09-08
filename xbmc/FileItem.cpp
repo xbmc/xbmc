@@ -2367,7 +2367,7 @@ void CFileItem::CacheFanart() const
     return;
   // We don't have a cached image, so let's see if the user has a local image they want to use
 
-  if (IsInternetStream() || CUtil::IsFTP(m_strPath)) // no local fanart available for these
+  if (IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath)) // no local fanart available for these
     return;
 
   CStdString localFanart;
@@ -2771,5 +2771,40 @@ MUSIC_INFO::CMusicInfoTag* CFileItem::GetMusicInfoTag()
     m_musicInfoTag = new MUSIC_INFO::CMusicInfoTag;
 
   return m_musicInfoTag;
+}
+
+CStdString CFileItem::FindTrailer() const
+{
+  CStdString strTrailer;
+  CStdString strFile = m_strPath;
+  if (IsStack())
+  {
+    CStdString strPath;
+    CUtil::GetParentPath(m_strPath,strPath);
+    CStackDirectory dir;
+    CStdString strPath2;
+    strPath2 = dir.GetStackedTitlePath(strFile);
+    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
+  }
+  if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))
+  {
+    CStdString strPath, strParent;
+    CUtil::GetDirectory(strFile,strPath);
+    CUtil::GetParentPath(strPath,strParent);
+    CUtil::AddFileToFolder(strParent,CUtil::GetFileName(m_strPath),strFile);
+  }
+  CUtil::RemoveExtension(strFile);
+  strFile += "-trailer";
+  std::vector<CStdString> exts;
+  StringUtils::SplitString(g_stSettings.m_videoExtensions,"|",exts);
+  for (unsigned int i=0;i<exts.size();++i)
+  {
+    if (CFile::Exists(strFile+exts[i]))
+    {
+      strTrailer = strFile+exts[i];
+      break;
+    }
+  }
+  return strTrailer;
 }
 

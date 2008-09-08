@@ -265,6 +265,8 @@ CFileCurl::CFileCurl()
   m_curlAliasList = NULL;
   m_curlHeaderList = NULL;
   m_opened = false;
+  m_multisession  = true;
+  m_seekable = true;
   m_useOldHttpVersion = false;
   m_timeout = 0;
   m_ftpauth = "";
@@ -573,6 +575,17 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
 
   SetCorrectHeaders(m_state);
 
+  m_multisession = false;
+  if(m_url.Left(5).Equals("http:") || m_url.Left(6).Equals("https:"))
+  {
+    m_multisession = true;
+    if(m_state->m_httpheader.GetValue("Server").Find("Portable SDK for UPnP devices") >= 0)
+    {
+      CLog::Log(LOGWARNING, "FileCurl - disabling multi session due to broken libupnp server");
+      m_multisession = false;
+    }
+  }
+
   m_seekable = false;
   if(m_state->m_fileSize > 0)
     m_seekable = true;
@@ -646,7 +659,7 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
     return -1;
 
   CReadState* oldstate = NULL;
-  if(m_url.Left(5).Equals("http:") || m_url.Left(6).Equals("https:"))
+  if(m_multisession)
   {
     CURL url(m_url);
     oldstate = m_state;

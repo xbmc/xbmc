@@ -309,6 +309,11 @@
       <button id="5">Queue</button>
      </joystick>
 
+    <joystick name="WiiRemote">
+      <button id="6">ParentDir</button>
+      <button id="11">Playlist</button>
+    </joystick>
+
      <remote>
       <zero>Queue</zero>
       <star>Queue</star>
@@ -336,7 +341,12 @@
       <button id="3">Playlist</button>
       <button id="5">Queue</button>
      </joystick>
-    
+
+    <joystick name="WiiRemote">
+      <button id="6">ParentDir</button>
+      <button id="11">Playlist</button>
+    </joystick>
+
      <remote>
       <zero>Queue</zero>
       <star>Queue</star>
@@ -763,7 +773,7 @@
 
     <keyboard>
       <return>NextCalibration</return>
-      <enter>NextCalibration></enter>
+      <enter>NextCalibration</enter>
       <d>ResetCalibration</d>
       <r>NextResolution</r>
     </keyboard>
@@ -1471,6 +1481,10 @@
       <button id="2">Close</button>
     </joystick>
 
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
+    </joystick>
+
     <remote>
       <back>Close</back>
     </remote>
@@ -1485,6 +1499,10 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <button id="2">Close</button>
+    </joystick>
+
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
     </joystick>
 
     <remote>

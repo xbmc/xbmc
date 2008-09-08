@@ -1,17 +1,45 @@
 // XBMCTex.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
 #include "AnimatedGif.h"
 #include "Bundler.h"
 #include <stdio.h>
 #include <algorithm>
 #include "cmdlineargs.h"
+#include "Surface.h"
+
+#ifdef _LINUX
+#include <linux/limits.h>
+#include <string.h>
+#include "XFileUtils.h"
+#include "PlatformDefs.h"
+#include "xwinapi.h"
+#define WIN32_FIND_DATAA WIN32_FIND_DATA
+#else
+#define XBMC_FILE_SEP '\\'
+#endif
+
+// Debug macros
+#if defined(_DEBUG) && defined(_MSC_VER) 
+#include <crtdbg.h>
+#define TRACE0(f)                 _RPT0(_CRT_WARN, f)
+#define TRACE1(f, a)              _RPT1(_CRT_WARN, f, a)
+#define TRACE2(f, a, b)           _RPT2(_CRT_WARN, f, a, b)
+#define TRACE3(f, a, b, c)        _RPT3(_CRT_WARN, f, a, b, c)
+#define TRACE4(f, a, b, c, d)     _RPT4(_CRT_WARN, f, a, b, c, d)
+#define TRACE5(f, a, b, c, d, e)  _RPT_BASE((_CRT_WARN, NULL, 0, NULL, f, a, b, c, d, e))
+
+#else
+
+#define TRACE0(f)
+#define TRACE1(f, a)
+#define TRACE2(f, a, b)
+#define TRACE3(f, a, b, c)
+#define TRACE4(f, a, b, c, d)
+#define TRACE5(f, a, b, c, d, e)
+#endif
 
 extern "C" void SHA1(const BYTE* buf, DWORD len, BYTE hash[20]);
-
-LPDIRECT3D8 pD3D;
-LPDIRECT3DDEVICE8 pD3DDevice;
 
 CBundler Bundler;
 
@@ -20,7 +48,6 @@ UINT CompressedSize;
 UINT TotalSrcPixels;
 UINT TotalDstPixels;
 
-bool AllowLinear;
 #pragma pack(push,1)
 struct RGBCOLOUR
 {
@@ -31,48 +58,9 @@ struct RGBCOLOUR
 };
 #pragma pack(pop)
 
-void PrintImageInfo(D3DXIMAGE_INFO& info)
+void PrintImageInfo(const CSurface::ImageInfo& info)
 {
-	printf("%4dx%-4d ", info.Width, info.Height);
-	switch (info.Format)
-	{
-	case D3DFMT_R8G8B8:
-		fputs("  R8G8B8", stdout);
-		break;
-	case D3DFMT_A8R8G8B8:
-		fputs("A8R8G8B8", stdout);
-		break;
-	case D3DFMT_X8R8G8B8:
-		fputs("X8R8G8B8", stdout);
-		break;
-	case D3DFMT_R5G6B5:
-		fputs("  R5G6B5", stdout);
-		break;
-	case D3DFMT_X1R5G5B5:
-		fputs("X1R5G5B5", stdout);
-		break;
-	case D3DFMT_A1R5G5B5:
-		fputs("A1R5G5B5", stdout);
-		break;
-	case D3DFMT_P8:
-		fputs("      P8", stdout);
-		break;
-	case D3DFMT_DXT1:
-		fputs("    DXT1", stdout);
-		break;
-	case D3DFMT_DXT2:
-		fputs("    DXT2", stdout);
-		break;
-	case D3DFMT_DXT3:
-		fputs("    DXT3", stdout);
-		break;
-	case D3DFMT_DXT4:
-		fputs("    DXT4", stdout);
-		break;
-	case D3DFMT_DXT5:
-		fputs("    DXT5", stdout);
-		break;
-	}
+	printf("%4dx%-4d ", info.width, info.height);
 	fputs("->", stdout);
 }
 
@@ -83,67 +71,9 @@ void PrintAnimInfo(const CAnimatedGifSet& Anim)
 
 #define CheckHR(hr) if (FAILED(hr)) { printf("ERROR: %08x\n", hr); if (pCompSurf) pCompSurf->Release(); if (pDstSurf) pDstSurf->Release(); return false; }
 
-bool GetFormatMSE(const D3DXIMAGE_INFO& info, LPDIRECT3DSURFACE8 pSrcSurf, D3DFORMAT fmt, double& CMSE, double& AMSE)
-{
-	LPDIRECT3DSURFACE8 pCompSurf = 0, pDstSurf = 0;
-	HRESULT hr;
-
-	// Compress
-	int Width = PadPow2(info.Width), Height = PadPow2(info.Height);
-	hr = pD3DDevice->CreateImageSurface(Width, Height, fmt, &pCompSurf);
-	CheckHR(hr);
-
-	hr = D3DXLoadSurfaceFromSurface(pCompSurf, NULL, NULL, pSrcSurf, NULL, NULL, D3DX_FILTER_NONE, 0);
-	CheckHR(hr);
-
-	// Decompress
-	hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A8R8G8B8, &pDstSurf);
-	CheckHR(hr);
-
-	hr = D3DXLoadSurfaceFromSurface(pDstSurf, NULL, NULL, pCompSurf, NULL, NULL, D3DX_FILTER_NONE, 0);
-	CheckHR(hr);
-
-	pCompSurf->Release(); pCompSurf = 0;
-
-	// calculate mean square error
-	D3DLOCKED_RECT slr, dlr;
-	hr = pSrcSurf->LockRect(&slr, NULL, D3DLOCK_READONLY);
-	CheckHR(hr);
-	hr = pDstSurf->LockRect(&dlr, NULL, D3DLOCK_READONLY);
-	CheckHR(hr);
-
-	double CTSE = 0.0; // total colour square error
-	double ATSE = 0.0; // total alpha square error
-
-	RGBCOLOUR* src = (RGBCOLOUR*)slr.pBits;
-	RGBCOLOUR* dst = (RGBCOLOUR*)dlr.pBits;
-	for (UINT y = 0; y < info.Height; ++y)
-	{
-		for (UINT x = 0; x < info.Width; ++x)
-		{
-			CTSE += (src->b - dst->b) * (src->b - dst->b);
-			CTSE += (src->g - dst->g) * (src->g - dst->g);
-			CTSE += (src->r - dst->r) * (src->r - dst->r);
-			ATSE += (src->a - dst->a) * (src->a - dst->a);
-			++src; ++dst;
-		}
-		src += (slr.Pitch - info.Width*sizeof(RGBCOLOUR)) / sizeof(RGBCOLOUR);
-		dst += (dlr.Pitch - info.Width*sizeof(RGBCOLOUR)) / sizeof(RGBCOLOUR);
-	}
-	CMSE = CTSE / double(info.Width * info.Height * 3);
-	AMSE = ATSE / double(info.Width * info.Height);
-
-	pSrcSurf->UnlockRect();
-	pDstSurf->UnlockRect();
-	pDstSurf->Release(); pDstSurf = 0;
-
-	return true;
-}
-
-
 struct XPRFile_t
 {
-	DWORD HeaderSize;
+  // the following are pointers into our headerBuf
 	DWORD* flags;
 	struct AnimInfo_t {
 		DWORD nLoops;
@@ -154,18 +84,22 @@ struct XPRFile_t
 		D3DTexture D3DTex;
 		DWORD RealSize;
 	} *Texture;
-	char* Data;
 
-	int nImages;
-	char* OutputBuf;
-	char* DataStart;
+  int nImages;
 };
+
+BYTE *headerBuf = NULL;
+DWORD headerSize = 0;
+
+BYTE *imageData = NULL;
+DWORD imageSize = 0;
+
 static XPRFile_t XPRFile;
 
 enum XPR_FLAGS
 {
 	XPRFLAG_PALETTE = 0x00000001,
-	XPRFLAG_ANIM =    0x00000002,
+	XPRFLAG_ANIM =    0x00000002
 };
 
 #undef CheckHR
@@ -175,44 +109,56 @@ void CommitXPR(const char* Filename)
 	if (!XPRFile.nImages)
 		return;
 
-	const void* Buffers[2] = { XPRFile.OutputBuf, XPRFile.DataStart };
-	DWORD Sizes[2] = { XPRFile.HeaderSize, XPRFile.Data - XPRFile.DataStart };
+	const void* Buffers[2] = { headerBuf, imageData };
+	DWORD Sizes[2] = { headerSize, imageSize };
 	if (!Bundler.AddFile(Filename, 2, Buffers, Sizes))
 		printf("ERROR: Unable to compress data (out of memory?)\n");
 
-	VirtualAlloc(XPRFile.OutputBuf, XPRFile.Data - XPRFile.OutputBuf, MEM_RESET, PAGE_NOACCESS);
+  // free our image memory
+  free(imageData);
+  imageData = NULL;
+  imageSize = 0;
 }
 
 void WriteXPRHeader(DWORD* pal, int nImages, DWORD nLoops = 0)
 {
-	// Set header pointers
-	XPRFile.flags = (DWORD*)XPRFile.OutputBuf;
-	void* next = XPRFile.flags + 1;
-	if (nImages > 1)
-	{
-		XPRFile.AnimInfo = (XPRFile_t::AnimInfo_t*)next;
-		next = XPRFile.AnimInfo + 1;
-	}
-	else
-		XPRFile.AnimInfo = NULL;
-	if (pal)
-	{
-		XPRFile.D3DPal = (D3DPalette*)next;
-		next = XPRFile.D3DPal + 1;
-	}
-	else
-		XPRFile.D3DPal = NULL;
-	XPRFile.Texture = (XPRFile_t::Texture_t*)next;
-	next = XPRFile.Texture + nImages;
-	XPRFile.Data = (char*)next;
+  // compute how large our header requires
+  headerSize = sizeof(DWORD);
+  if (nImages > 1) // need AnimInfo header
+    headerSize += sizeof(XPRFile_t::AnimInfo_t);
+  if (pal) // need D3DPal header
+    headerSize += sizeof(D3DPalette);
+  headerSize += nImages * sizeof(XPRFile_t::Texture_t);
+
+  // align to 128 byte boundary
+	headerSize = (headerSize + 127) & ~127;
+
+  // allocate space for our header
+  headerBuf = (BYTE *)realloc(headerBuf, headerSize);
+  memset(headerBuf, 0, headerSize);
+
+  // setup our header
+  unsigned int offset = 0;
+  XPRFile.flags = (DWORD *)&headerBuf[offset];
+  offset += sizeof(DWORD);
+  if (nImages > 1)
+  {
+    XPRFile.AnimInfo = (XPRFile_t::AnimInfo_t *)&headerBuf[offset];
+    offset += sizeof(XPRFile_t::AnimInfo_t);
+  }
+  else
+    XPRFile.AnimInfo = NULL;
+  if (pal)
+  {
+    XPRFile.D3DPal = (D3DPalette *)&headerBuf[offset];
+    offset += sizeof(D3DPalette);
+  }
+  else
+    XPRFile.D3DPal = NULL;
+	XPRFile.Texture = (XPRFile_t::Texture_t *)&headerBuf[offset];
 	XPRFile.nImages = 0;
 
-	// commit memory for headers
-	VirtualAlloc(XPRFile.OutputBuf, XPRFile.Data - XPRFile.OutputBuf, MEM_COMMIT, PAGE_READWRITE);
-
-	// setup headers for xpr
-	XPRFile.HeaderSize = ((XPRFile.Data - XPRFile.OutputBuf) + 127) & ~127;
-	*XPRFile.flags = (nImages << 16);
+  *XPRFile.flags = nImages << 16;
 
 	if (nImages > 1)
 	{
@@ -220,104 +166,59 @@ void WriteXPRHeader(DWORD* pal, int nImages, DWORD nLoops = 0)
 		XPRFile.AnimInfo->nLoops = nLoops;
 	}
 
-	// align data to page
-	XPRFile.Data = XPRFile.DataStart = (char*)(int(XPRFile.Data + 4095) & ~4095);
-
 	if (pal)
 	{
 		// commit memory for palette
-		VirtualAlloc(XPRFile.Data, 1024, MEM_COMMIT, PAGE_READWRITE);
+    imageData = (BYTE*)realloc(imageData, 1024);
 
 		*XPRFile.flags |= XPRFLAG_PALETTE;
 		XPRFile.D3DPal->Common = 1 | (3 << 16);
 		XPRFile.D3DPal->Data = 0;
 		XPRFile.D3DPal->Lock = 0;
-		memcpy(XPRFile.Data, pal, 1024);
-		XPRFile.Data += 1024;
+		memcpy(imageData, pal, 1024);
+		imageSize += 1024;
 	}
 }
 
-void AppendXPRImage(const D3DXIMAGE_INFO& info, LPDIRECT3DSURFACE8 pSrcSurf, XB_D3DFORMAT fmt)
+void AppendXPRImage(CSurface &surface, XB_D3DFORMAT fmt)
 {
-	D3DSURFACE_DESC desc;
-	pSrcSurf->GetDesc(&desc);
+	UINT Size = ((surface.Pitch() * surface.Height()) + 127) & ~127; // must be 128-byte aligned for any following images
 
-	HRESULT hr;
-	UINT Pitch;
-	UINT Size;
+  // reallocate enough data for our image
+  imageData = (BYTE*)realloc(imageData, imageSize + Size);
+  memset(imageData + imageSize, 0, Size);
 
-	if (fmt == XB_D3DFMT_DXT1 || fmt == XB_D3DFMT_DXT3 || fmt == XB_D3DFMT_DXT5)
+  CSurfaceRect rect;
+  if (!surface.Lock(&rect))
+    return;
+
+	if (IsSwizzledFormat(fmt))
 	{
-		if (fmt == XB_D3DFMT_DXT1)
-			Pitch = desc.Width / 2;
-		else
-			Pitch = desc.Width;
-		Size = ((Pitch * desc.Height) + 127) & ~127; // must be 128-byte aligned for any following images
-		Pitch *= 4;
-
-		VirtualAlloc(XPRFile.Data, Size, MEM_COMMIT, PAGE_READWRITE);
-
-		D3DLOCKED_RECT slr;
-		hr = pSrcSurf->LockRect(&slr, NULL, D3DLOCK_READONLY);
-		if (FAILED(hr))
-		{
-			printf("ERROR: %08x\n", hr);
-			return;
-		}
-
-    hr = CompressRect(XPRFile.Data, fmt, Pitch, desc.Width, desc.Height, slr.pBits, XB_D3DFMT_LIN_A8R8G8B8, slr.Pitch, 0.5f, 0);
-    if (FAILED(hr))
-		{
-			printf("ERROR: %08x\n", hr);
-			return;
-		}
-
-		pSrcSurf->UnlockRect();
+		// Swizzle for xbox
+		SwizzleRect(rect.pBits, 0, imageData + imageSize, surface.Width(), surface.Height(), surface.BPP());
 	}
 	else
 	{
-		UINT bpp = BytesPerPixelFromFormat(fmt);
-		Pitch = desc.Width * bpp;
-		Size = ((Pitch * desc.Height) + 127) & ~127; // must be 128-byte aligned for any following images
-
-		VirtualAlloc(XPRFile.Data, Size, MEM_COMMIT, PAGE_READWRITE);
-
-		D3DLOCKED_RECT slr;
-		hr = pSrcSurf->LockRect(&slr, NULL, D3DLOCK_READONLY);
-		if (FAILED(hr))
+		// copy
+		BYTE* src = rect.pBits;
+		BYTE* dst = imageData + imageSize;
+		for (UINT y = 0; y < surface.Height(); ++y)
 		{
-			printf("ERROR: %08x\n", hr);
-			return;
+			memcpy(dst, src, surface.Pitch());
+			src += rect.Pitch;
+			dst += surface.Pitch();
 		}
-
-		if (IsSwizzledFormat(fmt))
-		{
-			// Swizzle for xbox
-			SwizzleRect(slr.pBits, 0, NULL, XPRFile.Data, desc.Width, desc.Height, NULL, bpp);
-		}
-		else
-		{
-			// copy
-			BYTE* src = (BYTE*)slr.pBits;
-			BYTE* dst = (BYTE*)XPRFile.Data;
-			for (UINT y = 0; y < desc.Height; ++y)
-			{
-				memcpy(dst, src, desc.Width * bpp);
-				src += slr.Pitch;
-				dst += Pitch;
-			}
-		}
-
-		pSrcSurf->UnlockRect();
 	}
 
-	SetTextureHeader(desc.Width, desc.Height, 1, 0, fmt, D3DPOOL_DEFAULT, 
-		&XPRFile.Texture[XPRFile.nImages].D3DTex, XPRFile.Data - XPRFile.DataStart, Pitch);
+	surface.Unlock();
+
+	SetTextureHeader(surface.Width(), surface.Height(), 1, 0, fmt, 
+		&XPRFile.Texture[XPRFile.nImages].D3DTex, imageSize, surface.Pitch());
 	if (!(*XPRFile.flags & XPRFLAG_ANIM))
-		XPRFile.Texture[XPRFile.nImages].RealSize = (info.Width & 0xffff) | ((info.Height & 0xffff) << 16);
+		XPRFile.Texture[XPRFile.nImages].RealSize = (surface.Info().width & 0xffff) | ((surface.Info().height & 0xffff) << 16);
 	++XPRFile.nImages;
 
-	XPRFile.Data += Size;
+	imageSize += Size;
 	CompressedSize += Size;
 }
 
@@ -327,68 +228,42 @@ void AppendXPRImageLink(int iLinkedImage)
 	++XPRFile.nImages;
 }
 
-void WriteXPR(const char* Filename, const D3DXIMAGE_INFO& info, LPDIRECT3DSURFACE8 pSrcSurf, XB_D3DFORMAT fmt, DWORD* pal)
+void WriteXPR(const char* Filename, CSurface &surface, XB_D3DFORMAT fmt, DWORD* pal)
 {
 	WriteXPRHeader(pal, 1);
-	AppendXPRImage(info, pSrcSurf, fmt);
+	AppendXPRImage(surface, fmt);
 	CommitXPR(Filename);
-}
-
-// Converts any fully transparent pixels to black so that the mse calcs work for dxt
-void FixTransparency(LPDIRECT3DSURFACE8 pSrcSurf)
-{
-	D3DSURFACE_DESC desc;
-	pSrcSurf->GetDesc(&desc);
-
-	D3DLOCKED_RECT slr;
-	if (FAILED(pSrcSurf->LockRect(&slr, NULL, 0)))
-		return;
-
-	DWORD* pix = (DWORD*)slr.pBits;
-	for (UINT y = 0; y < desc.Width; ++y)
-	{
-		for (UINT x = 0; x < desc.Height; ++x)
-		{
-			if (!(*pix & 0xff000000))
-				*pix = 0;
-			++pix;
-		}
-	}
-
-	pSrcSurf->UnlockRect();
 }
 
 #undef CheckHR
 #define CheckHR(hr) if (FAILED(hr)) { printf("ERROR: %08x\n", hr); if (pDstSurf) pDstSurf->Release(); return false; }
 
 // Converts to P8 format is colours <= 256
-bool ConvertP8(LPDIRECT3DSURFACE8 pSrcSurf, LPDIRECT3DSURFACE8& pDstSurf, DWORD* pal, D3DXIMAGE_INFO &info)
+bool ConvertP8(CSurface &source, CSurface &dest, DWORD* pal)
 {
-	pDstSurf = 0;
-
-	D3DSURFACE_DESC desc;
-	pSrcSurf->GetDesc(&desc);
+  // note: This routine assumes the source is 32 bpp
+  if (source.BPP() != 4)
+  {
+    printf("ERROR: ConvertP8 called on a source that's not 32bpp\n");
+    return false;
+  }
 
 	// convert to p8
-  UINT Width = PadPow2(desc.Width);
-  UINT Height = PadPow2(desc.Height);
-	HRESULT hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A8R8G8B8, &pDstSurf);
-	CheckHR(hr);
+  if (!dest.Create(source.Info().width, source.Info().height, CSurface::FMT_PALETTED))
+    return false;
 
-	D3DLOCKED_RECT slr, dlr;
-	hr = pDstSurf->LockRect(&dlr, NULL, 0);
-	CheckHR(hr);
-	hr = pSrcSurf->LockRect(&slr, NULL, D3DLOCK_READONLY);
-	CheckHR(hr);
+  CSurfaceRect sr, dr;
+  if (!dest.Lock(&dr) || !source.Lock(&sr))
+    return false;
 
-	DWORD* src = (DWORD*)slr.pBits;
-	BYTE* dst = (BYTE*)dlr.pBits;
+	DWORD* src = (DWORD*)sr.pBits;
+	BYTE* dst = (BYTE*)dr.pBits;
 	int n = 0, i;
-	for (UINT y = 0; y < info.Height; ++y)
+	for (UINT y = 0; y < source.Info().height; ++y)
 	{
-		for (UINT x = 0; x < info.Width; ++x)
+		for (UINT x = 0; x < source.Info().width; ++x)
 		{
-			for (i = 0; i < n; ++i)
+      for (i = 0; i < n; ++i)
 			{
 				if (pal[i] == *src)
 					break;
@@ -398,9 +273,8 @@ bool ConvertP8(LPDIRECT3DSURFACE8 pSrcSurf, LPDIRECT3DSURFACE8& pDstSurf, DWORD*
 				if (n >= 256)
 				{
 					TRACE0(" Too many colours for P8\n");
-					pSrcSurf->UnlockRect();
-					pDstSurf->UnlockRect();
-					pDstSurf->Release();
+					source.Unlock();
+          dest.Unlock();
 					return false;
 				}
 				pal[n++] = *src;
@@ -408,35 +282,60 @@ bool ConvertP8(LPDIRECT3DSURFACE8 pSrcSurf, LPDIRECT3DSURFACE8& pDstSurf, DWORD*
 			*dst++ = i;
 			++src;
 		}
-		for (UINT x = info.Width; x < Width; ++x)
+		for (UINT x = source.Info().width; x < dest.Width(); ++x)
 		{
 			*dst++ = 0; // we don't care about the colour outside of our real image
 			++src;
     }
 	}
-  for (UINT y = info.Height; y < Height; ++y)
+  for (UINT y = source.Info().height; y < dest.Height(); ++y)
   {
-		for (UINT x = 0; x < Width; ++x)
+		for (UINT x = 0; x < dest.Width(); ++x)
 		{
 			*dst++ = 0; // we don't care about the colour outside of our real image
 			++src;
     }
   }
+  for (int i = n; i < 256; i++)
+    pal[i] = 0;
+
 	TRACE1(" Colours Used: %d\n", n);
 
-	pDstSurf->UnlockRect();
-	pSrcSurf->UnlockRect();
+	dest.Unlock();
+	source.Unlock();
 
 	return true;
 }
 
+// Converts any fully transparent pixels to transparent black to make textures better compressable
+void FixTransparency(CSurface &surface)
+{
+  CSurfaceRect rect;
+
+  if (!surface.Lock(&rect))
+    return;
+
+	DWORD* pix = (DWORD*)rect.pBits;
+	for (UINT y = 0; y < surface.Width(); ++y)
+	{
+		for (UINT x = 0; x < surface.Height(); ++x)
+		{
+			if (!(*pix & 0xff000000))
+				*pix = 0;
+			++pix;
+		}
+	}
+
+  surface.Unlock();
+}
+
+
 #undef CheckHR
 #define CheckHR(hr) if (FAILED(hr)) { printf("ERROR: %08x\n", hr); return; }
 
-void ConvertFile(const char* Dir, const char* Filename, double MaxMSE)
+void ConvertFile(const char* Dir, const char* Filename)
 {
-	HRESULT hr;
-	LPDIRECT3DSURFACE8 pSrcSurf = NULL;
+  CSurface surface;
 	char OutFilename[52];
 	if (Dir)
 		_snprintf(OutFilename, 52, "%s\\%s", Dir, Filename);
@@ -450,252 +349,72 @@ void ConvertFile(const char* Dir, const char* Filename, double MaxMSE)
 	if (n < 40)
 		printf("%*c", 40-n, ' ');
 
-	if (pSrcSurf)
-		pSrcSurf->Release();
-	pSrcSurf = NULL;
+  CSurface srcSurface;
+  if (!srcSurface.CreateFromFile(Filename, CSurface::FMT_ARGB))
+  {
+    printf("Error creating surface size %u by %u\n", srcSurface.Width(), srcSurface.Height());
+    return;
+  }
 
-	// Load up the file
-	D3DXIMAGE_INFO info;
-	hr = D3DXGetImageInfoFromFile(Filename, &info);
-	CheckHR(hr);
+  // fix up the transparency (allows better compression)
+	FixTransparency(srcSurface);
 
-	PrintImageInfo(info);
-
-	UINT Width = PadPow2(info.Width);
-	UINT Height = PadPow2(info.Height);
-
-	float Waste = 100.f * (float)(Width * Height - info.Width * info.Height) / (float)(Width * Height);
-
-	UncompressedSize += Width * Height * 4;
-	TotalSrcPixels += info.Width * info.Height;
-	TotalDstPixels += Width * Height;
-
-  // Special case for 256-colour files - just directly drop into a P8 xpr
-	if (info.Format == D3DFMT_P8)
-	{
-		hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A8R8G8B8, &pSrcSurf);
-		CheckHR(hr);
-
-		hr = D3DXLoadSurfaceFromFile(pSrcSurf, NULL, NULL, Filename, NULL, D3DX_FILTER_NONE, 0, NULL);
-		CheckHR(hr);
-
-		FixTransparency(pSrcSurf);
-
-		if (Width * Height > 4096)
-		{
-			// DXT1 for P8s if lossless and more than 4k image
-			LPDIRECT3DSURFACE8 pTempSurf;
-			hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A8R8G8B8, &pTempSurf);
-			CheckHR(hr);
-
-			hr = D3DXLoadSurfaceFromSurface(pTempSurf, NULL, NULL, pSrcSurf, NULL, NULL, D3DX_FILTER_NONE, 0);
-			CheckHR(hr);
-
-			double CMSE, AMSE;
-			TRACE0(" Checking     DXT1: ");
-			if (!GetFormatMSE(info, pTempSurf, D3DFMT_DXT1, CMSE, AMSE))
-			{
-				pTempSurf->Release();
-				return;
-			}
-			TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE);
-			if (CMSE <= 1e-6 && AMSE <= 1e-6)
-			{
-				printf("DXT1     %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-				TRACE0(" Selected Format: DXT1\n");
-				WriteXPR(OutFilename, info, pTempSurf, XB_D3DFMT_DXT1, NULL);
-
-				pTempSurf->Release();
-				return;
-			}
-			pTempSurf->Release();
-		}
-
-		printf("P8       %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
+	// Use a paletted texture if possible as it's lossless + only 4 bytes per pixel (guaranteed smaller)
+	CSurface tempSurface;
+	DWORD pal[256];
+  if (ConvertP8(srcSurface, tempSurface, pal))
+  {
+	  float Waste = 100.f * (float)(srcSurface.Width() * srcSurface.Height() - srcSurface.Info().width * srcSurface.Info().height) / (float)(srcSurface.Width() * srcSurface.Height());
+		printf("P8       %4dx%-4d (%5.2f%% waste)\n", srcSurface.Width(), srcSurface.Height(), Waste);
 		TRACE0(" Selected Format: P8\n");
 
-		LPDIRECT3DSURFACE8 pTempSurf;
-		DWORD pal[256];
-		ConvertP8(pSrcSurf, pTempSurf, pal, info);
-
-		WriteXPR(OutFilename, info, pTempSurf, XB_D3DFMT_P8, pal);
-		pTempSurf->Release();
+		WriteXPR(OutFilename, tempSurface, XB_D3DFMT_P8, pal);
 		return;
-	}
+  }
 
+  // we are going to use a 32bit texture, so work out what type to use
   // test linear format versus non-linear format
   // Linear format requires 64 pixel aligned width, whereas
   // Non-linear format requires power of 2 width and height
   bool useLinearFormat(false);
-  UINT linearWidth = (info.Width + 0x3f) & ~0x3f;
-  if (AllowLinear && linearWidth * info.Height < Width * Height)
+  UINT linearWidth = (srcSurface.Info().width + 0x3f) & ~0x3f;
+  if (linearWidth * srcSurface.Info().height < srcSurface.Width() * srcSurface.Height())
     useLinearFormat = true;
-
-	hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A8R8G8B8, &pSrcSurf);
-	CheckHR(hr);
-  
-	hr = D3DXLoadSurfaceFromFile(pSrcSurf, NULL, NULL, Filename, NULL, D3DX_FILTER_NONE, 0, NULL);
-	CheckHR(hr);
-
-  // create the linear version as well
-	LPDIRECT3DSURFACE8 pLinearSrcSurf = NULL;
-  if (useLinearFormat)
-  {
-	  hr = pD3DDevice->CreateImageSurface(linearWidth, info.Height, D3DFMT_A8R8G8B8, &pLinearSrcSurf);
-	  CheckHR(hr);
-	  hr = D3DXLoadSurfaceFromFile(pLinearSrcSurf, NULL, NULL, Filename, NULL, D3DX_FILTER_NONE, 0, NULL);
-	  CheckHR(hr);
-  }
-
-
-	// special case for small files - all textures are alloced on page granularity so just output uncompressed
-	// dxt is crap on small files anyway
-	if (Width * Height <= 1024)
-	{
-    if (useLinearFormat)
-    {
-      // correct sizing amounts
-	    UncompressedSize -= Width * Height * 4;
-      UncompressedSize += linearWidth * info.Height * 4;
-	    TotalDstPixels -= Width * Height;
-      TotalDstPixels += linearWidth * info.Height;
-
-	    Waste = 100.f * (float)(linearWidth * info.Height - info.Width * info.Height) / (float)(linearWidth * info.Height);
-		  printf("LIN_A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", linearWidth, info.Height, Waste);
-		  TRACE0(" Selected Format: LIN_A8R8G8B8\n");
-      WriteXPR(OutFilename, info, pLinearSrcSurf, XB_D3DFMT_LIN_A8R8G8B8, NULL);
-    }
-    else
-    {
-		  printf("A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-		  TRACE0(" Selected Format: A8R8G8B8\n");
-      WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_A8R8G8B8, NULL);
-    }
-		return;
-	}
-
-	FixTransparency(pSrcSurf);
-
-	// Find the best format within specified tolerance
-	double CMSE, AMSE[2];
-
-	// DXT1 is the preferred format as it's smallest
-	TRACE0(" Checking     DXT1: ");
-	if (!GetFormatMSE(info, pSrcSurf, D3DFMT_DXT1, CMSE, AMSE[0]))
-		return;
-	TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE[0]);
-	if (CMSE <= MaxMSE && AMSE[0] <= MaxMSE)
-	{
-		printf("DXT1     %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-		TRACE0(" Selected Format: DXT1\n");
-
-		WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_DXT1, NULL);
-		return;
-	}
-
-	// Use P8 is possible as it's lossless
-	LPDIRECT3DSURFACE8 pTempSurf;
-	DWORD pal[256];
-	if (ConvertP8(pSrcSurf, pTempSurf, pal, info))
-	{
-		printf("P8       %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-		TRACE0(" Selected Format: P8\n");
-
-		WriteXPR(OutFilename, info, pTempSurf, XB_D3DFMT_P8, pal);
-		pTempSurf->Release();
-		return;
-	}
-
-	// DXT3/5 are the same size so use whichever is better if good enough
-	// CMSE will be equal for both
-	TRACE0(" Checking     DXT3: ");
-	if (!GetFormatMSE(info, pSrcSurf, D3DFMT_DXT3, CMSE, AMSE[0]))
-		return;
-	TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE[0]);
-
-	TRACE0(" Checking     DXT5: ");
-	if (!GetFormatMSE(info, pSrcSurf, D3DFMT_DXT5, CMSE, AMSE[1]))
-		return;
-	TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE[1]);
-
-	if (AMSE[0] <= AMSE[1])
-	{
-		if (CMSE <= MaxMSE && AMSE[0] <= MaxMSE)
-		{
-			printf("DXT3     %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-			TRACE0(" Selected Format: DXT3\n");
-
-			WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_DXT3, NULL);
-			return;
-		}
-	}
-	else
-	{
-		if (CMSE <= MaxMSE && AMSE[1] <= MaxMSE)
-		{
-			printf("DXT5     %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-			TRACE0(" Selected Format: DXT5\n");
-
-			WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_DXT5, NULL);
-			return;
-		}
-	}
-
-	// No good compressed format so use uncompressed
-
-	// A1R5G5B5 is worth a try I guess...
-	TRACE0(" Checking A1R5G5B5: ");
-	if (!GetFormatMSE(info, pSrcSurf, D3DFMT_A1R5G5B5, CMSE, AMSE[0]))
-		return;
-	TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE[0]);
-	if (CMSE <= MaxMSE && AMSE[0] <= MaxMSE)
-	{
-		printf("A1R5G5B5 %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-		TRACE0(" Selected Format: A1R5G5B5\n");
-
-		LPDIRECT3DSURFACE8 pTempSurf;
-		hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A1R5G5B5, &pTempSurf);
-		CheckHR(hr);
-
-		hr = D3DXLoadSurfaceFromSurface(pTempSurf, NULL, NULL, pSrcSurf, NULL, NULL, D3DX_FILTER_NONE, 0);
-		CheckHR(hr);
-
-		WriteXPR(OutFilename, info, pTempSurf, XB_D3DFMT_A1R5G5B5, NULL);
-
-		pTempSurf->Release();
-		return;
-	}
 
 	// Use A8R8G8B8
   if (useLinearFormat)
   {
+    // create the linear version as well
     // correct sizing information
-	  UncompressedSize -= Width * Height * 4;
-    UncompressedSize += linearWidth * info.Height * 4;
-	  TotalDstPixels -= Width * Height;
-    TotalDstPixels += linearWidth * info.Height;
-	  Waste = 100.f * (float)(linearWidth * info.Height - info.Width * info.Height) / (float)(linearWidth * info.Height);
-		printf("LIN_A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", linearWidth, info.Height, Waste);
+    UncompressedSize += srcSurface.Width() * srcSurface.Height() * 4;
+	  TotalSrcPixels += srcSurface.Info().width * srcSurface.Info().height;
+    TotalDstPixels += srcSurface.Width() * srcSurface.Height();
+	  float Waste = 100.f * (float)(srcSurface.Width() - srcSurface.Info().width) / (float)(srcSurface.Width());
+
+    CSurface linearSurface;
+    if (!linearSurface.CreateFromFile(Filename, CSurface::FMT_LIN_ARGB))
+      return;
+   
+    printf("LIN_A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", srcSurface.Width(), srcSurface.Height(), Waste);
 		TRACE0(" Selected Format: LIN_A8R8G8B8\n");
-    WriteXPR(OutFilename, info, pLinearSrcSurf, XB_D3DFMT_LIN_A8R8G8B8, NULL);
+    WriteXPR(OutFilename, linearSurface, XB_D3DFMT_LIN_A8R8G8B8, NULL);
   }
   else
   {
-		printf("A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-		TRACE0(" Selected Format: A8R8G8B8\n");
-    WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_A8R8G8B8, NULL);
-  }
+    UncompressedSize += srcSurface.Width() * srcSurface.Height() * 4;
+	  TotalSrcPixels += srcSurface.Info().width * srcSurface.Info().height;
+    TotalDstPixels += srcSurface.Width() * srcSurface.Height();
 
-	if (pSrcSurf)
-		pSrcSurf->Release();
+	  float Waste = 100.f * (float)(srcSurface.Width() * srcSurface.Height() - srcSurface.Info().width * srcSurface.Info().height) / (float)(srcSurface.Width() * srcSurface.Height());
+		printf("A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", srcSurface.Width(), srcSurface.Height(), Waste);
+		TRACE0(" Selected Format: A8R8G8B8\n");
+    WriteXPR(OutFilename, srcSurface, XB_D3DFMT_A8R8G8B8, NULL);
+  }
 }
 
 // only works for gifs or other 256-colour anims
-void ConvertAnim(const char* Dir, const char* Filename, double MaxMSE)
+void ConvertAnim(const char* Dir, const char* Filename)
 {
-	HRESULT hr;
-	LPDIRECT3DSURFACE8 pSrcSurf = NULL;
-
 	char OutFilename[52];
 	if (Dir)
 		_snprintf(OutFilename, 52, "%s\\%s", Dir, Filename);
@@ -728,15 +447,6 @@ void ConvertAnim(const char* Dir, const char* Filename, double MaxMSE)
 	UINT Width = PadPow2(Anim.FrameWidth);
 	UINT Height = PadPow2(Anim.FrameHeight);
 
-	D3DXIMAGE_INFO info;
-	info.Width = Anim.FrameWidth;
-	info.Height = Anim.FrameHeight;
-	info.MipLevels = 1;
-	info.Depth = 0;
-	info.ResourceType = D3DRTYPE_SURFACE;
-	info.Format = D3DFMT_P8;
-	info.ImageFileFormat = D3DXIFF_PNG;
-
 	PALETTEENTRY pal[256];
 	memcpy(pal, Anim.m_vecimg[0]->Palette, 256 * sizeof(PALETTEENTRY));
 	for (int i = 0; i < 256; i++)
@@ -748,25 +458,21 @@ void ConvertAnim(const char* Dir, const char* Filename, double MaxMSE)
 	WriteXPRHeader((DWORD*)pal, nImages);
 	if (nImages > 1)
 	{
-		XPRFile.AnimInfo->RealSize = (info.Width & 0xffff) | ((info.Height & 0xffff) << 16);
+		XPRFile.AnimInfo->RealSize = (Anim.FrameWidth & 0xffff) | ((Anim.FrameHeight & 0xffff) << 16);
 		XPRFile.AnimInfo->nLoops = Anim.nLoops;
 	}
 
 	int nActualImages = 0;
 
-	TotalSrcPixels += info.Width * info.Height * nImages;
+	TotalSrcPixels += Anim.FrameWidth * Anim.FrameHeight * nImages;
 	TotalDstPixels += Width * Height * nImages;
-	float Waste = 100.f * (float)(Width * Height - info.Width * info.Height) / (float)(Width * Height);
+	float Waste = 100.f * (float)(Width * Height - Anim.FrameWidth * Anim.FrameHeight) / (float)(Width * Height);
 
 	// alloc hash buffer
 	BYTE (*HashBuf)[20] = new BYTE[nImages][20];
 
 	for (int i = 0; i < nImages; ++i)
 	{
-		if (pSrcSurf)
-			pSrcSurf->Release();
-		pSrcSurf = NULL;
-
 		printf("%3d%%\b\b\b\b", 100 * i / nImages);
 
 		UncompressedSize += Width * Height;
@@ -795,55 +501,22 @@ void ConvertAnim(const char* Dir, const char* Filename, double MaxMSE)
 
 		++nActualImages;
 
-		// DXT1 for P8s if lossless
-		hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A8R8G8B8, &pSrcSurf);
-		CheckHR(hr);
+    // P8 for animgifs
+    CSurface surface;
+    if (!surface.Create(Anim.FrameWidth, Anim.FrameHeight, CSurface::FMT_PALETTED))
+      return;
 
-		D3DLOCKED_RECT slr;
-		hr = pSrcSurf->LockRect(&slr, NULL, D3DLOCK_READONLY);
-		CheckHR(hr);
+    CSurfaceRect rect;
+    if (!surface.Lock(&rect))
+      return;
 
-		BYTE* src = (BYTE*)pGif->Raster;
-		DWORD* dst = (DWORD*)slr.pBits;
-		DWORD* dwPal = (DWORD*)pal;
-		for (int y = 0; y < pGif->Height; ++y)
-		{
-			for (UINT x = 0; x < Width; ++x)
-				*dst++ = dwPal[*src++];
-		}
-		memset(dst, 0, (Height - pGif->Height) * slr.Pitch);
+		memcpy(rect.pBits, pGif->Raster, pGif->Height * rect.Pitch);
+		memset(rect.pBits + pGif->Height * rect.Pitch, pGif->Transparent, (Height - pGif->Height) * rect.Pitch);
 
-		pSrcSurf->UnlockRect();
+    surface.Unlock();
 
-		double CMSE, AMSE;
-		TRACE1(" %03d: Checking DXT1: ", i);
-		if (!GetFormatMSE(info, pSrcSurf, D3DFMT_DXT1, CMSE, AMSE))
-			return;
-		TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE);
-		
-		if (CMSE <= 1e-6 && AMSE <= 1e-6)
-		{
-			TRACE1(" %03d: Selected Format: DXT1\n", i);
-			AppendXPRImage(info, pSrcSurf, XB_D3DFMT_DXT1);
-		}
-		else
-		{	
-			pSrcSurf->Release();
-
-			hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_P8, &pSrcSurf);
-			CheckHR(hr);
-
-			hr = pSrcSurf->LockRect(&slr, NULL, D3DLOCK_READONLY);
-			CheckHR(hr);
-
-			memcpy((BYTE*)slr.pBits, pGif->Raster, pGif->Height * slr.Pitch);
-			memset((BYTE*)slr.pBits + pGif->Height * slr.Pitch, pGif->Transparent, (Height - pGif->Height) * slr.Pitch);
-
-			pSrcSurf->UnlockRect();
-
-			TRACE1(" %03d: Selected Format: P8\n", i);
-			AppendXPRImage(info, pSrcSurf, XB_D3DFMT_P8);
-		}
+		TRACE1(" %03d: Selected Format: P8\n", i);
+		AppendXPRImage(surface, XB_D3DFMT_P8);
 	}
 
 	delete [] HashBuf;
@@ -851,8 +524,6 @@ void ConvertAnim(const char* Dir, const char* Filename, double MaxMSE)
 	printf("(%5df) %4dx%-4d (%5.2f%% waste)\n", nActualImages, Width, Height, Waste);
 
 	CommitXPR(OutFilename);
-	if (pSrcSurf)
-		pSrcSurf->Release();
 }
 
 // returns true for png, bmp, tga, jpg and dds files, otherwise returns false
@@ -864,8 +535,7 @@ bool IsGraphicsFile(char *strFileName)
 	if (strnicmp(&strFileName[n-4], ".png", 4) &&
 		strnicmp(&strFileName[n-4], ".bmp", 4) &&
 		strnicmp(&strFileName[n-4], ".tga", 4) &&
-		strnicmp(&strFileName[n-4], ".jpg", 4) &&
-		strnicmp(&strFileName[n-4], ".dds", 4))
+		strnicmp(&strFileName[n-4], ".jpg", 4))
 		return false;
 	return true;
 }
@@ -879,7 +549,7 @@ bool IsGraphicsAnim(char *strFileName)
 	return true;
 }
 
-void ConvertDirectory(const char *strFullPath, char *strRelativePath, double MaxMSE)
+void ConvertDirectory(const char *strFullPath, char *strRelativePath)
 {
 	// Set our current directory
 	if (strFullPath)
@@ -904,13 +574,13 @@ void ConvertDirectory(const char *strFullPath, char *strRelativePath, double Max
 				{
 					char strNewFullPath[MAX_PATH];
 					char strNewRelativePath[MAX_PATH];
-					sprintf(strNewFullPath, "%s\\%s", strCurrentPath, FindData.cFileName);
+					sprintf(strNewFullPath, "%s%c%s", strCurrentPath, XBMC_FILE_SEP, FindData.cFileName);
 					if (strRelativePath)
-						sprintf(strNewRelativePath, "%s\\%s", strRelativePath, FindData.cFileName);
+						sprintf(strNewRelativePath, "%s%c%s", strRelativePath, XBMC_FILE_SEP, FindData.cFileName);
 					else
 						sprintf(strNewRelativePath, "%s", FindData.cFileName);
 					// Recurse into the new directory
-					ConvertDirectory(strNewFullPath, strNewRelativePath, MaxMSE);
+					ConvertDirectory(strNewFullPath, strNewRelativePath);
 					// Restore our current directory
 					SetCurrentDirectory(strCurrentPath);
 				}
@@ -919,11 +589,11 @@ void ConvertDirectory(const char *strFullPath, char *strRelativePath, double Max
 			{	// just files - check if it's an allowed graphics file
 				if (IsGraphicsFile(FindData.cFileName))
 				{	// got a graphics file
-					ConvertFile(strRelativePath,FindData.cFileName, MaxMSE);
+					ConvertFile(strRelativePath,FindData.cFileName);
 				}
 				if (IsGraphicsAnim(FindData.cFileName))
 				{	// got a .gif anim
-					ConvertAnim(strRelativePath,FindData.cFileName, MaxMSE);
+					ConvertAnim(strRelativePath,FindData.cFileName);
 				}
 			}
 		}
@@ -940,16 +610,13 @@ void Usage()
 	puts("  -output <dir>    Output directory/filename. Default: Textures.xpr");
 	puts("  -quality <qual>  Quality setting (min, low, normal, high, max). Default: normal");
   puts("  -noprotect       XPR contents viewable at full quality in skin editor");
-  puts("  -onlyswizzled    Only allow swizzled textures (faster rendering, larger memory use) rather than linear textures");
 }
 
 int main(int argc, char* argv[])
 {
-  int NoProtect = 0;
-  AllowLinear = true;
-  double MaxMSE = 4.0;
+    int NoProtect = 0;
 
-	CmdLineArgs args;
+    CmdLineArgs args(argc, (const char**)argv);
 
 	if (args.size() == 1)
 	{
@@ -974,104 +641,38 @@ int main(int argc, char* argv[])
 		else if (!stricmp(args[i], "-output") || !stricmp(args[i], "-o"))
 		{
 			OutputFilename = args[++i];
+#ifdef _LINUX
+      char *c = NULL;
+      while ((c = strchr(OutputFilename, '\\')) != NULL) *c = '/';
+#endif
 		}
     else if (!stricmp(args[i], "-noprotect") || !stricmp(args[i], "-p"))
     {
       NoProtect = 1;
     }
-    else if (!stricmp(args[i], "-onlyswizzled") || !stricmp(args[i], "-s"))
-    {
-      AllowLinear = false;
-    }
-    else if (!stricmp(args[i], "-quality") || !stricmp(args[i], "-q"))
-		{
-			++i;
-			if (!stricmp(args[i], "min"))
-			{
-				MaxMSE = DBL_MAX;
-			}
-			else if (!stricmp(args[i], "low"))
-			{
-				MaxMSE = 20.0;
-			}
-			else if (!stricmp(args[i], "normal"))
-			{
-				MaxMSE = 4.0;
-			}
-			else if (!stricmp(args[i], "high"))
-			{
-				MaxMSE = 1.5;
-			}
-			else if (!stricmp(args[i], "max"))
-			{
-				MaxMSE = 0.0;
-			}
-			else
-			{
-				printf("Unrecognised quality setting: %s\n", args[i]);
-			}
-		}
 		else
 		{
 			printf("Unrecognised command line flag: %s\n", args[i]);
 		}
 	}
 
-	// Initialize DirectDraw
-	pD3D = Direct3DCreate8(D3D_SDK_VERSION);
-	if (pD3D == NULL)
-	{
-		puts("Cannot init D3D");
-		return 1;
-	}
-
-	HRESULT hr;
-	D3DDISPLAYMODE dispMode;
-	D3DPRESENT_PARAMETERS presentParams;
-
-	pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &dispMode);
-
-	ZeroMemory(&presentParams, sizeof(presentParams));
-	presentParams.Windowed = TRUE;
-	presentParams.hDeviceWindow = GetConsoleWindow();
-	presentParams.SwapEffect = D3DSWAPEFFECT_COPY;
-	presentParams.BackBufferWidth = 8;
-	presentParams.BackBufferHeight = 8;
-	presentParams.BackBufferFormat = dispMode.Format;
-
-	hr = pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, NULL, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &presentParams, &pD3DDevice);
-	if (FAILED(hr))
-	{
-		printf("Cannot init D3D device: %08x\n", hr);
-		pD3D->Release();
-		return 1;
-	}
+	// Initialize the graphics device
+  if (!g_device.Create())
+    return 1;
 
 	char HomeDir[MAX_PATH];
 	GetCurrentDirectory(MAX_PATH, HomeDir);
 
-	XPRFile.OutputBuf = (char*)VirtualAlloc(0, 64 * 1024 * 1024, MEM_RESERVE, PAGE_NOACCESS);
-	if (!XPRFile.OutputBuf)
-	{
-		printf("Memory allocation failure: %08x\n", GetLastError());
-		pD3DDevice->Release();
-		pD3D->Release();
-		return 1;
-	}
-
 	Bundler.StartBundle();
 
 	// Scan the input directory (or current dir if false) for media files
-	ConvertDirectory(InputDir, NULL, MaxMSE);
+	ConvertDirectory(InputDir, NULL);
 
-	VirtualFree(XPRFile.OutputBuf, 0, MEM_RELEASE);
-
-	pD3DDevice->Release();
-	pD3D->Release();
+  free(headerBuf);
 
 	SetCurrentDirectory(HomeDir);
 	DWORD attr = GetFileAttributes(OutputFilename);
-	if (attr != -1 && (attr & FILE_ATTRIBUTE_DIRECTORY))
+	if (attr != (DWORD)-1 && (attr & FILE_ATTRIBUTE_DIRECTORY))
 	{
 		SetCurrentDirectory(OutputFilename);
 		OutputFilename = "Textures.xpr";
