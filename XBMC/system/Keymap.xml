@@ -574,7 +574,7 @@
       <up>IncreaseRating</up>
       <down>DecreaseRating</down>
       <back>LockPreset</back>
-      <title>ShowPreset</title>
+      <title>CodecInfo</title>
       <select>XBMC.ActivateWindow(VisualisationPresetList)</select>
       <menu>XBMC.ActivateWindow(MusicOSD)</menu>
       <start>OSD</start>
@@ -585,7 +585,7 @@
       <A>Pause</A>
       <B>Stop</B>
       <Y>XBMC.ActivateWindow(VisualisationPresetList)</Y>
-      <black>ShowPreset</black>
+      <black>CodecInfo</black>
       <white>Info</white>
       <start>XBMC.ActivateWindow(MusicOSD)</start>
       <back>LockPreset</back>
@@ -602,7 +602,7 @@
       <altname>Logitech Xbox Cordless Controller</altname>
       <button id="1">Pause</button>
       <button id="2">Stop</button>
-      <button id="3">ShowPreset</button>
+      <button id="3">CodecInfo</button>
       <button id="5">XBMC.ActivateWindow(VisualisationPresetList)</button>
       <button id="6">Info</button>
       <button id="9">XBMC.ActivateWindow(MusicOSD)</button>
@@ -643,7 +643,7 @@
       <up>IncreaseRating</up>
       <down>DecreaseRating</down>
       <!--<back>NextPreset</back>!-->
-      <o>ShowPreset</o>
+      <o>CodecInfo</o>
       <l>LockPreset</l>
     </keyboard>
   </Visualisation>
@@ -652,7 +652,7 @@
     <gamepad>
       <back>Close</back>
       <start>Close</start>
-      <black>ShowPreset</black>
+      <black>CodecInfo</black>
       <white>Info</white>
     </gamepad>
 
@@ -661,20 +661,20 @@
       <altname>Logitech Xbox Cordless Controller</altname>
       <button id="17">Close</button>
       <button id="19">Close</button>
-      <button id="3">ShowPreset</button>
+      <button id="3">CodecInfo</button>
       <button id="6">Info</button>
     </joystick>
 
     <joystick name="WiiRemote">
       <button id="6">Close</button>
-      <button id="10">ShowPreset</button>
+      <button id="10">CodecInfo</button>
       <button id="11">Info</button>
     </joystick>
 
     <remote>
       <menu>Close</menu>
       <title>Info</title>
-      <info>ShowPreset</info>
+      <info>CodecInfo</info>
     </remote>
 
     <keyboard>
