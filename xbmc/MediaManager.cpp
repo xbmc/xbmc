@@ -129,8 +129,9 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
     char cVolumeName[100];
     do{
       cVolumeName[0]= '\0';
-      nResult= GetVolumeInformation( pcBuffer + iPos, cVolumeName, 100, 0, 0, 0, NULL, 25);
       uDriveType= GetDriveType( pcBuffer + iPos  );
+      if(uDriveType != DRIVE_REMOVABLE)
+        nResult= GetVolumeInformation( pcBuffer + iPos, cVolumeName, 100, 0, 0, 0, NULL, 25);
       share.strPath= share.strName= "";
       
       bool bUseDCD= false; // just for testing
