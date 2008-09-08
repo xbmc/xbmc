@@ -1106,9 +1106,11 @@ void CDVDPlayer::HandlePlaySpeed()
     }
     else if (m_CurrentVideo.id >= 0 
           &&  m_CurrentVideo.inited == true
-          &&  m_dvdPlayerVideo.GetCurrentPts() != m_lastpts)
+          &&  m_SpeedState.lastpts  != m_dvdPlayerVideo.GetCurrentPts()
+          &&  m_SpeedState.lasttime != GetTime())
     {
-      m_lastpts = m_dvdPlayerVideo.GetCurrentPts();
+      m_SpeedState.lastpts  = m_dvdPlayerVideo.GetCurrentPts();
+      m_SpeedState.lasttime = GetTime();
       // check how much off clock video is when ff/rw:ing
       // a problem here is that seeking isn't very accurate
       // and since the clock will be resynced after seek
@@ -1119,14 +1121,14 @@ void CDVDPlayer::HandlePlaySpeed()
 
       // when seeking, give the player a headstart to make sure 
       // the time it takes to seek doesn't make a difference.
-      double iError;
-      iError = m_clock.GetClock() - m_lastpts;
-      iError = iError * GetPlaySpeed() / abs(GetPlaySpeed());
+      double error;
+      error  = m_clock.GetClock() - m_SpeedState.lastpts;
+      error *= m_playSpeed / abs(m_playSpeed);
 
-      if(iError > DVD_MSEC_TO_TIME(1000))
+      if(error > DVD_MSEC_TO_TIME(1000))
       {
         CLog::Log(LOGDEBUG, "CDVDPlayer::Process - Seeking to catch up");
-        __int64 iTime = (__int64)(GetTime() + 500.0 * GetPlaySpeed() / DVD_PLAYSPEED_NORMAL);
+        __int64 iTime = (__int64)(m_SpeedState.lasttime + 500.0 * m_playSpeed / DVD_PLAYSPEED_NORMAL);
         m_messenger.Put(new CDVDMsgPlayerSeek(iTime, (GetPlaySpeed() < 0), true, false));
       }
     }
