@@ -397,9 +397,6 @@ bool CHalManager::PowerManagement(PowerState State)
       {
       case POWERSTATE_HIBERNATE:
         msg = dbus_message_new_method_call("org.freedesktop.Hal", "/org/freedesktop/Hal/devices/computer", "org.freedesktop.Hal.Device.SystemPowerManagement", "Hibernate");
-        dbus_message_iter_init_append(msg, &args);
-        if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &int32))
-          CLog::Log(LOGERROR, "DBus: Failed to append arguments");
         g_application.m_restartLirc = true;
         g_application.m_restartLCD = true;
         break;
