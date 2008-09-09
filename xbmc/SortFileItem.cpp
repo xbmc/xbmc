@@ -89,6 +89,15 @@ void SSortFileItem::ByFile(CFileItemPtr &item)
   item->SetSortLabel(label);
 }
 
+void SSortFileItem::ByFullPath(CFileItemPtr &item)
+{
+  if (!item) return;
+
+  CStdString label;
+  label.Format("%s %d", item->m_strPath, item->m_lStartOffset);
+  item->SetSortLabel(label);
+}
+
 void SSortFileItem::ByDate(CFileItemPtr &item)
 {
   if (!item) return;
