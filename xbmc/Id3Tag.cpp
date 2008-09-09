@@ -116,6 +116,12 @@ bool CID3Tag::Parse()
 
   tag.SetRating(GetRating());
 
+  // TODO: Better compilation album support (should work on a flag in the table not just on the albumartist,
+  //       which is localized and should instead be using a hardcoded value that we localize at presentation time)
+  bool partOfCompilation = GetCompilation();
+  if (partOfCompilation && tag.GetAlbumArtist().IsEmpty())
+    tag.SetAlbumArtist(g_localizeStrings.Get(340)); // Various Artists
+
   if (!tag.GetTitle().IsEmpty() || !tag.GetArtist().IsEmpty() || !tag.GetAlbum().IsEmpty())
     tag.SetLoaded();
 
@@ -338,6 +344,14 @@ char CID3Tag::GetRating() const
   return m_dll.id3_metadata_getrating(m_tag);
 }
 
+bool CID3Tag::GetCompilation() const
+{
+  id3_field_textencoding encoding=ID3_FIELD_TEXTENCODING_ISO_8859_1;
+  const id3_ucs4_t*ucs4=m_dll.id3_metadata_getcompilation(m_tag, &encoding);
+  CStdString compilation = ToStringCharset(ucs4, encoding);
+  return compilation == "1";
+}
+
 bool CID3Tag::HasPicture(id3_picture_type pictype) const
 {
   return (m_dll.id3_metadata_haspicture(m_tag, pictype)>0 ? true : false);
@@ -445,6 +459,14 @@ void CID3Tag::SetComment(const CStdString& strValue)
 void CID3Tag::SetRating(char rating)
 {
   m_dll.id3_metadata_setrating(m_tag, rating);
+}
+
+void CID3Tag::SetCompilation(bool compilation)
+{
+  CStdString strValue = compilation ? "1" : "0";
+  id3_ucs4_t* ucs4=StringCharsetToUcs4(strValue);
+  m_dll.id3_metadata_setcompilation(m_tag, ucs4);
+  m_dll.id3_ucs4_free(ucs4);
 }
 
 CStdString CID3Tag::ParseMP3Genre(const CStdString& str) const
