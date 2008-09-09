@@ -726,6 +726,53 @@ namespace VIDEO
       items.Add(newItem);
     }
 
+    /*  
+    stack down any dvd folders
+    need to sort using the full path since this is a collapsed recursive listing of all subdirs
+    video_ts.ifo files should sort at the top of a dvd folder in ascending order
+
+    /foo/bar/video_ts.ifo
+    /foo/bar/vts_x_y.ifo
+    /foo/bar/vts_x_y.vob
+    */
+
+    // since we're doing this now anyway, should other items be stacked?
+    items.Sort(SORT_METHOD_FULLPATH, SORT_ORDER_ASC);
+    int x = 0;
+    while (x < items.Size())
+    {
+      if (items[x]->m_bIsFolder)
+        continue;
+
+
+      CStdString strPathX, strFileX;
+      CUtil::Split(items[x]->m_strPath, strPathX, strFileX);
+      //CLog::Log(LOGDEBUG,"%i:%s:%s", x, strPathX.c_str(), strFileX.c_str());
+
+      int y = x + 1;
+      if (strFileX.Equals("VIDEO_TS.IFO"))
+      {
+        while (y < items.Size())
+        {
+          CStdString strPathY, strFileY;
+          CUtil::Split(items[y]->m_strPath, strPathY, strFileY);
+          //CLog::Log(LOGDEBUG," %i:%s:%s", y, strPathY.c_str(), strFileY.c_str());
+
+          if (strPathY.Equals(strPathX))
+            /*
+            remove everything sorted below the video_ts.ifo file in the same path.
+            understandbly this wont stack correctly if there are other files in the the dvd folder.
+            this should be unlikely and thus is being ignored for now but we can monitor the
+            where the path changes and potentially remove the items above the video_ts.ifo file.
+            */
+            items.Remove(y); 
+          else
+            break;
+        }
+      }
+      x = y;
+    }
+
     // enumerate
     CStdStringArray expression = g_advancedSettings.m_tvshowStackRegExps;
 
