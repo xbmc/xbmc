@@ -172,9 +172,12 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
           CHalManager::PowerManagement((PowerState)ShutdownState);
 
         if (ShutdownState == POWERSTATE_SHUTDOWN || ShutdownState == 0)
+        {
           g_application.Stop();
+          exit(ShutdownState);
+        }
 #else
-        exit(ShutdownState);
+        exit(0);
 #endif
 #endif
       }
