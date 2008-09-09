@@ -72,7 +72,8 @@ ID3_EXPORT const id3_ucs4_t* id3_metadata_getyear(const struct id3_tag*, enum id
 ID3_EXPORT const id3_ucs4_t* id3_metadata_getgenre(const struct id3_tag*, enum id3_field_textencoding*);
 ID3_EXPORT id3_ucs4_list_t* id3_metadata_getgenres(const struct id3_tag*, enum id3_field_textencoding*);
 ID3_EXPORT const id3_ucs4_t* id3_metadata_getcomment(const struct id3_tag*, enum id3_field_textencoding*);
-ID3_EXPORT const id3_ucs4_t* id3_metadata_getencodedby(const struct id3_tag* tag, enum id3_field_textencoding*);
+ID3_EXPORT const id3_ucs4_t* id3_metadata_getencodedby(const struct id3_tag*, enum id3_field_textencoding*);
+ID3_EXPORT const id3_ucs4_t* id3_metadata_getcompilation(const struct id3_tag*, enum id3_field_textencoding*);
 ID3_EXPORT char id3_metadata_getrating(const struct id3_tag* tag);
 ID3_EXPORT int id3_metadata_haspicture(const struct id3_tag*, enum id3_picture_type);
 ID3_EXPORT const id3_latin1_t* id3_metadata_getpicturemimetype(const struct id3_tag*, enum id3_picture_type);
@@ -91,6 +92,7 @@ ID3_EXPORT int id3_metadata_setyear(struct id3_tag* tag, id3_ucs4_t* value);
 ID3_EXPORT int id3_metadata_setgenre(struct id3_tag* tag, id3_ucs4_t* value);
 ID3_EXPORT int id3_metadata_setencodedby(struct id3_tag* tag, id3_ucs4_t* value);
 ID3_EXPORT int id3_metadata_setrating(struct id3_tag* tag, char value);
+ID3_EXPORT int id3_metadata_setcompilation(struct id3_tag* tag, id3_ucs4_t* value);
 ID3_EXPORT int id3_metadata_setcomment(struct id3_tag* tag, id3_ucs4_t* value);
 
 # ifdef __cplusplus

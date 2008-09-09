@@ -217,6 +217,16 @@ int id3_metadata_setrating(struct id3_tag* tag, char value)
   return id3_field_setint(field, popm[value - '0']);
 }
 
+const id3_ucs4_t *id3_metadata_getcompilation(const struct id3_tag* tag, enum id3_field_textencoding *encoding)
+{
+  return metadata_getstring(tag, "TCMP", encoding);
+}
+
+int id3_metadata_setcompilation(struct id3_tag* tag, id3_ucs4_t *value)
+{
+  return metadata_setstring(tag, "TCMP", value);
+}
+
 const id3_ucs4_t* id3_metadata_gettitle(const struct id3_tag* tag, enum id3_field_textencoding* encoding)
 {
   return metadata_getstring(tag, ID3_FRAME_TITLE, encoding);
