@@ -414,8 +414,18 @@ namespace VIDEO
       IMDB.SetScraperInfo(info2);
 
       // Discard all possible sample files defined by regExSample
-      if (regExSample.RegFind(CUtil::GetFileName(pItem->m_strPath)) > -1)
-        continue;
+      CStdString strFileName = CUtil::GetFileName(items[i]->m_strPath);
+      strFileName.MakeLower();
+
+      if(!strFileName.IsEmpty())
+      {
+        CLog::Log(LOGDEBUG, "Checking if file '%s' is a Sample file", strFileName.c_str());
+        if (regExSample.RegFind(strFileName) > -1)
+        {
+          CLog::Log(LOGDEBUG, "File '%s' discarded as Sample file", strFileName.c_str());
+          continue;
+        }
+      }
 
       if (info2.strContent.Equals("movies") || info2.strContent.Equals("musicvideos"))
       {
