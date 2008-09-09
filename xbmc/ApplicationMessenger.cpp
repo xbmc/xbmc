@@ -147,10 +147,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       {
 #if defined(HAS_HAL) || defined(_WIN32PC)
         int ShutdownState = g_guiSettings.GetInt("system.shutdownstate");
-#else
-        g_application.Stop();
 #endif
-#if !defined(_LINUX)
 #ifndef HAS_SDL
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
@@ -165,21 +162,22 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
           g_application.Stop();
         }
 #endif
-#else
         // exit the application
 #ifdef HAS_HAL
         if (ShutdownState) // If we have a setting for powerstate mode
-          CHalManager::PowerManagement((PowerState)ShutdownState);
-
-        if (ShutdownState == POWERSTATE_SHUTDOWN || ShutdownState == 0)
         {
-          g_application.Stop();
-          exit(ShutdownState);
+          CHalManager::PowerManagement((PowerState)ShutdownState);
+          if (ShutdownState == POWERSTATE_SHUTDOWN)
+          {
+            g_application.Stop();
+            exit(64);
+          }
+          else
+            return;
         }
-#else
+#endif
+        g_application.Stop();
         exit(0);
-#endif
-#endif
       }
       break;
 
@@ -199,7 +197,7 @@ case TMSG_POWERDOWN:
 #endif
         {
           g_application.Stop();
-          exit(1);
+          exit(64);
         }
       }
       break;
@@ -254,7 +252,7 @@ case TMSG_POWERDOWN:
 #ifdef HAS_HAL
         CHalManager::PowerManagement(POWERSTATE_REBOOT);
 #endif
-        exit(3);
+        exit(66);
 #endif
       }
       break;
@@ -276,14 +274,14 @@ case TMSG_POWERDOWN:
 #ifdef HAS_HAL
         CHalManager::PowerManagement(POWERSTATE_REBOOT);
 #endif
-        exit(3);
+        exit(66);
 #endif
       }
       break;
 
     case TMSG_RESTARTAPP:
       {
-        exit(2);
+        exit(65);
         // TODO
         //char szXBEFileName[1024];
 
