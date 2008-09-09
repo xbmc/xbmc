@@ -488,10 +488,10 @@
       <return>OSD</return>
       <enter>OSD</enter>
       <m>OSD</m>
-      <i>CodecInfo</i>
-      <t>Info</t>
+      <i>Info</i>
+      <o>CodecInfo</o>
       <z>AspectRatio</z>
-      <o>ShowSubtitles</o>
+      <t>ShowSubtitles</t>
       <l>NextSubtitle</l>      
       <left>StepBack</left>
       <right>StepForward</right>
@@ -538,8 +538,8 @@
       <r>Rewind</r>
       <period>StepForward</period>
       <backspace>Close</backspace>
-      <t>Close</t>
-      <i>CodecInfo</i>
+      <o>CodecInfo</o>
+      <i>Close</i>
       <m>OSD</m>
     </keyboard>
   </FullscreenInfo>
@@ -637,8 +637,7 @@
       <return>ActivateWindow(MusicOSD)</return>
       <enter>ActivateWindow(MusicOSD)</enter>
       <m>ActivateWindow(MusicOSD)</m>
-      <i>CodecInfo</i>
-      <t>Info</t>
+      <i>Info</i>
       <p>ActivateWindow(VisualisationPresetList)</p>
       <v>ActivateWindow(VisualisationSettings)</v>
       <n>ActivateWindow(MusicPlaylist)</n>
@@ -687,8 +686,8 @@
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
       <m>Close</m>
-      <i>CodecInfo</i>
-      <t>Info</t>
+      <i>Info</i>
+      <o>CodecInfo</o>
       <p>ActivateWindow(VisualisationPresetList)</p>
       <v>ActivateWindow(VisualisationSettings)</v>
       <n>ActivateWindow(MusicPlaylist)</n>
@@ -727,8 +726,8 @@
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
       <m>Close</m>
-      <i>CodecInfo</i>
-      <t>Info</t>
+      <i>Info</i>
+      <o>CodecInfo</o>
       <p>ActivateWindow(VisualisationPresetList)</p>
       <v>Close</v>
       <n>ActivateWindow(MusicPlaylist)</n>
@@ -767,8 +766,8 @@
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
       <m>Close</m>
-      <i>CodecInfo</i>
-      <t>Info</t>
+      <i>Info</i>
+      <o>CodecInfo</o>
       <p>Close</p>
       <v>Close</v>
       <n>ActivateWindow(MusicPlaylist)</n>
@@ -851,8 +850,8 @@
       <seven>ZoomLevel7</seven>
       <eight>ZoomLevel8</eight>
       <nine>ZoomLevel9</nine>
-      <i>CodecInfo</i>
-      <t>Info</t>
+      <i>Info</i>
+      <o>CodecInfo</o>
       <period>NextPicture</period>
       <comma>PreviousPicture</comma>
       <plus>ZoomIn</plus>
