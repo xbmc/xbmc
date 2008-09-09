@@ -842,7 +842,7 @@ bool CUtil::IsOnDVD(const CStdString& strFile)
 #ifdef _WIN32PC
   if (strFile.Mid(1,1) == ":")
     return (GetDriveType(strFile.Left(2)) == DRIVE_CDROM);
-#else
+#endif
 
   if (strFile.Left(4) == "DVD:" || strFile.Left(4) == "dvd:")
     return true;
@@ -860,7 +860,6 @@ bool CUtil::IsOnDVD(const CStdString& strFile)
     return true;
 
   return false;
-#endif 
 }
 
 bool CUtil::IsOnLAN(const CStdString& strPath)
