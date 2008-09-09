@@ -172,12 +172,9 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
           CHalManager::PowerManagement((PowerState)ShutdownState);
 
         if (ShutdownState == POWERSTATE_SHUTDOWN || ShutdownState == 0)
-        {
           g_application.Stop();
-          exit(0);
-        }
 #else
-        exit(0);
+        exit(ShutdownState);
 #endif
 #endif
       }
@@ -199,7 +196,7 @@ case TMSG_POWERDOWN:
 #endif
         {
           g_application.Stop();
-          exit(0);
+          exit(1);
         }
       }
       break;
@@ -254,7 +251,7 @@ case TMSG_POWERDOWN:
 #ifdef HAS_HAL
         CHalManager::PowerManagement(POWERSTATE_REBOOT);
 #endif
-        exit(0);
+        exit(3);
 #endif
       }
       break;
@@ -276,13 +273,14 @@ case TMSG_POWERDOWN:
 #ifdef HAS_HAL
         CHalManager::PowerManagement(POWERSTATE_REBOOT);
 #endif
-        exit(0);
+        exit(3);
 #endif
       }
       break;
 
     case TMSG_RESTARTAPP:
       {
+        exit(2);
         // TODO
         //char szXBEFileName[1024];
 
