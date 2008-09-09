@@ -842,21 +842,21 @@ bool CUtil::IsOnDVD(const CStdString& strFile)
 #ifdef _WIN32PC
   if (strFile.Mid(1,1) == ":")
     return (GetDriveType(strFile.Left(2)) == DRIVE_CDROM);
+#else
+  if (strFile.Left(2).CompareNoCase("d:") == 0)
+    return true;
 #endif
 
-  if (strFile.Left(4) == "DVD:" || strFile.Left(4) == "dvd:")
+  if (strFile.Left(4).CompareNoCase("dvd:") == 0)
     return true;
 
-  if (strFile.Left(2) == "D:" || strFile.Left(2) == "d:")
+  if (strFile.Left(4).CompareNoCase("udf:") == 0)
     return true;
 
-  if (strFile.Left(4) == "UDF:" || strFile.Left(4) == "udf:")
+  if (strFile.Left(8).CompareNoCase("iso9660:") == 0)
     return true;
 
-  if (strFile.Left(8) == "ISO9660:" || strFile.Left(8) == "iso9660:")
-    return true;
-
-  if (strFile.Left(5) == "cdda:" || strFile.Left(5) == "CDDA:")
+  if (strFile.Left(5).CompareNoCase("cdda:") == 0)
     return true;
 
   return false;
