@@ -1467,6 +1467,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_STUDIO_IGNORE_THE:
     FillSortFields(SSortFileItem::ByStudioNoThe);
     break;
+  case SORT_METHOD_FULLPATH:
+    FillSortFields(SSortFileItem::ByFullPath);
+    break;
   default:
     break;
   }
