@@ -885,6 +885,15 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInAudioDevices(pSetting);
     }
+    else if (strSetting.Equals("myvideos.resumeautomatically"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(106), RESUME_NO);
+      pControl->AddLabel(g_localizeStrings.Get(107), RESUME_YES);
+      pControl->AddLabel(g_localizeStrings.Get(12020), RESUME_ASK);
+      pControl->SetValue(pSettingInt->GetData());
+    }
   }
 
   if (m_vecSections[m_iSection]->m_strCategory == "network")

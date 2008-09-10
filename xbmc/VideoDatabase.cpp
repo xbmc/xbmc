@@ -1950,6 +1950,26 @@ bool CVideoDatabase::GetResumeBookMark(const CStdString& strFilenameAndPath, CBo
   return false;
 }
 
+void CVideoDatabase::DeleteResumeBookMark(const CStdString &strFilenameAndPath)
+{
+  if (!m_pDB.get() || !m_pDS.get())
+    return;
+
+  int fileID = GetFileId(strFilenameAndPath);
+  if (fileID < -1)
+    return;
+
+  try
+  {
+    CStdString sql = FormatSQL("delete from bookmark where idFile=%i and type=%i", fileID, CBookmark::RESUME);
+    m_pDS->exec(sql.c_str());
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+  }
+}
+
 void CVideoDatabase::GetEpisodesByFile(const CStdString& strFilenameAndPath, vector<CVideoInfoTag>& episodes)
 {
   try

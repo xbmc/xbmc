@@ -397,7 +397,7 @@ void CGUISettings::Initialize()
   AddGroup(5, 3);
   AddCategory(5, "myvideos", 16000);
   AddBool(1, "myvideos.treatstackasfile", 20051, true);
-  AddBool(2, "myvideos.autoresume",12017, false);
+  AddInt(2, "myvideos.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
   AddBool(3, "myvideos.autothumb",12024, false);
   AddBool(4, "myvideos.cleanfilenames", 20418, false);
   AddSeparator(5, "myvideos.sep1");
