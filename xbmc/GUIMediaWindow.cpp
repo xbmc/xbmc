@@ -1126,15 +1126,8 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
       pMenu->AddButton((*it).second);
 
     // position it correctly
-    float posX = 200;
-    float posY = 100;
-    const CGUIControl *pList = GetControl(CONTROL_VIEW_START);
-    if (pList)
-    {
-      posX = pList->GetXPosition() + pList->GetWidth() / 2;
-      posY = pList->GetYPosition() + pList->GetHeight() / 2;
-    }
-    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+    CPoint pos = GetContextPosition();
+    pMenu->SetPosition(pos.x - pMenu->GetWidth() / 2, pos.y - pMenu->GetHeight() / 2);
     pMenu->DoModal();
 
     // translate our button press
@@ -1278,3 +1271,14 @@ bool CGUIMediaWindow::WaitForNetwork() const
   return true;
 }
 
+CPoint CGUIMediaWindow::GetContextPosition() const
+{
+  CPoint pos(200, 100);
+  const CGUIControl *pList = GetControl(CONTROL_VIEW_START);
+  if (pList)
+  {
+    pos.x = pList->GetXPosition() + pList->GetWidth() / 2;
+    pos.y = pList->GetYPosition() + pList->GetHeight() / 2;
+  }
+  return pos;
+}
