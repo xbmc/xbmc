@@ -145,6 +145,8 @@ public:
   static void GetContextButtons(const CStdString &type, CMediaSource *share, CContextButtons &buttons);
   static bool OnContextButton(const CStdString &type, CMediaSource *share, CONTEXT_BUTTON button);
 
+  static int ShowAndGetChoice(const std::vector<CStdString> &choices, const CPoint &point);
+
   static CMediaSource *GetShare(const CStdString &type, const CFileItem *item);
 protected:
   virtual void OnInitWindow();

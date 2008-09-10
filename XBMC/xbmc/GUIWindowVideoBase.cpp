@@ -915,7 +915,7 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
 
 bool CGUIWindowVideoBase::OnClick(int iItem)
 {
-  if (g_guiSettings.GetBool("myvideos.autoresume"))
+  if (g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_NO)
     OnResumeItem(iItem);
   else
     return CGUIMediaWindow::OnClick(iItem);
@@ -930,7 +930,37 @@ void CGUIWindowVideoBase::OnRestartItem(int iItem)
 
 void CGUIWindowVideoBase::OnResumeItem(int iItem)
 {
-  m_vecItems->Get(iItem)->m_lStartOffset = STARTOFFSET_RESUME;
+  if (iItem < 0 || iItem >= m_vecItems->Size()) return;
+  CFileItemPtr item = m_vecItems->Get(iItem);
+  bool resumeItem = (g_guiSettings.GetInt("myvideos.resumeautomatically") == RESUME_YES);
+  if (!item->m_bIsFolder && !resumeItem && g_guiSettings.GetInt("myvideos.resumeautomatically") == RESUME_ASK)
+  {
+    // check to see whether we have a resume offset available
+    CVideoDatabase db;
+    if (db.Open())
+    {
+      CBookmark bookmark;
+      CStdString itemPath(item->m_strPath);
+      if (item->IsVideoDb())
+        itemPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
+      if (db.GetResumeBookMark(itemPath, bookmark) )
+      { // prompt user whether they wish to resume
+        vector<CStdString> choices;
+        choices.push_back(g_localizeStrings.Get(12021));
+        CStdString resumeString, time;
+        StringUtils::SecondsToTimeString(bookmark.timeInSeconds, time);
+        resumeString.Format(g_localizeStrings.Get(12022).c_str(), time.c_str());
+        choices.push_back(resumeString);
+        int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices, GetContextPosition());
+        if (!retVal)
+          return; // don't do anything
+        resumeItem = (retVal == 2);
+      }
+      db.Close();
+    }
+  }
+  if (resumeItem)
+    item->m_lStartOffset = STARTOFFSET_RESUME;
   CGUIMediaWindow::OnClick(iItem);
 }
 
@@ -990,9 +1020,9 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       // check to see if the Resume Video button is applicable
       if (GetResumeItemOffset(item.get()) > 0)
       {
-        if (g_guiSettings.GetBool("myvideos.autoresume"))
+        if (g_guiSettings.GetInt("myvideos.resumeautomatically") == RESUME_YES)
           buttons.Add(CONTEXT_BUTTON_RESTART_ITEM, 20132);    // Restart Video
-        else
+        if (g_guiSettings.GetInt("myvideos.resumeautomatically") == RESUME_NO)
           buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, 13381);     // Resume Video
       }
       if (item->IsSmartPlayList() || m_vecItems->IsSmartPlayList())
