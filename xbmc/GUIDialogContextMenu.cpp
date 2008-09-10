@@ -657,7 +657,8 @@ int CGUIDialogContextMenu::ShowAndGetChoice(const vector<CStdString> &choices, c
     pMenu->SetPosition(pos.x - pMenu->GetWidth() / 2, pos.y - pMenu->GetHeight() / 2);
     pMenu->DoModal();
 
-    return pMenu->GetButton();
+    if (pMenu->GetButton() > 0)
+      return pMenu->GetButton();
   }
   return 0;
 }
