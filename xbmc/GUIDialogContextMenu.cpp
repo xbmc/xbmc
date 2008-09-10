@@ -636,3 +636,29 @@ void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdStr
   }
   return;
 }
+
+int CGUIDialogContextMenu::ShowAndGetChoice(const vector<CStdString> &choices, const CPoint &pos)
+{
+  // no choices??
+  if (choices.size() == 0)
+    return 0;
+
+  // popup the context menu
+  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  if (pMenu)
+  {
+    // load our menu
+    pMenu->Initialize();
+
+    for (unsigned int i = 0; i < choices.size(); i++)
+      pMenu->AddButton(choices[i]);
+
+    // position it correctly
+    pMenu->SetPosition(pos.x - pMenu->GetWidth() / 2, pos.y - pMenu->GetHeight() / 2);
+    pMenu->DoModal();
+
+    return pMenu->GetButton();
+  }
+  return 0;
+}
+

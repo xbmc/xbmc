@@ -4366,13 +4366,21 @@ void CApplication::StopPlaying()
 
         if( m_pPlayer )
         {
-          CBookmark bookmark;
-          bookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
-          bookmark.playerState = m_pPlayer->GetPlayerState();
-          bookmark.timeInSeconds = GetTime();
-          bookmark.thumbNailImage.Empty();
+          // ignore two minutes at start and either 2 minutes, or up to 5% at end (end credits)
+          double current = GetTime();
+          double total = GetTotalTime();
+          if (current > 120 && total - current > 120 && total - current > 0.05 * total)
+          {
+            CBookmark bookmark;
+            bookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
+            bookmark.playerState = m_pPlayer->GetPlayerState();
+            bookmark.timeInSeconds = current;
+            bookmark.thumbNailImage.Empty();
 
-          dbs.AddBookMarkToFile(CurrentFile(),bookmark, CBookmark::RESUME);
+            dbs.AddBookMarkToFile(CurrentFile(),bookmark, CBookmark::RESUME);
+          }
+          else
+            dbs.DeleteResumeBookMark(CurrentFile());
         }
         dbs.Close();
       }
