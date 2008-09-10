@@ -657,6 +657,8 @@
       <start>Close</start>
       <black>CodecInfo</black>
       <white>Info</white>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
     </gamepad>
 
     <joystick name="Microsoft Xbox Controller S">
@@ -700,6 +702,8 @@
       <B>Close</B>
       <back>Close</back>
       <start>Close</start>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
     </gamepad>
 
     <joystick name="Microsoft Xbox Controller S">
@@ -741,6 +745,8 @@
       <back>Close</back>
       <start>Close</start>
       <Y>Close</Y>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
     </gamepad>
 
     <joystick name="Microsoft Xbox Controller S">
@@ -963,6 +969,10 @@
       <start>Close</start>
       <back>PreviousMenu</back>
       <B>PreviousMenu</B>
+      <black>CodecInfo</black>
+      <white>Info</white>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
     </gamepad>
 
     <joystick name="Microsoft Xbox Controller S">
@@ -1051,6 +1061,10 @@
       <B>Close</B>
       <back>Close</back>
       <start>Close</start>
+      <black>CodecInfo</black>
+      <white>Info</white>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
     </gamepad>
 
     <joystick name="Microsoft Xbox Controller S">
@@ -1086,6 +1100,10 @@
       <B>Close</B>
       <back>Close</back>
       <start>Close</start>
+      <black>CodecInfo</black>
+      <white>Info</white>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
     </gamepad>
 
     <joystick name="Microsoft Xbox Controller S">
@@ -1121,6 +1139,8 @@
       <B>Close</B>
       <back>Close</back>
       <start>Close</start>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
     </gamepad>
 
     <joystick name="Microsoft Xbox Controller S">
