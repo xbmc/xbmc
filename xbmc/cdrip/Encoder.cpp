@@ -44,7 +44,9 @@ bool CEncoder::Init(const char* strFile, int iInChannels, int iInRate, int iInBi
 bool CEncoder::FileCreate(const char* filename)
 {
   CStdString strFileName=filename;
+#ifndef _LINUX
   g_charsetConverter.utf8ToStringCharset(strFileName);
+#endif
   m_hFile = CreateFile(strFileName.c_str(), GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ, NULL, CREATE_ALWAYS,
                        FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 
