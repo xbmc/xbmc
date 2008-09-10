@@ -25,6 +25,8 @@
 #include <vector>
 #include "StdString.h"
 #include "utils/Network.h"
+#include <dbus/dbus.h>
+#include <NetworkManager/NetworkManager.h>
 
 class CNetworkLinux;
 
@@ -57,6 +59,7 @@ private:
    void WriteSettings(FILE* fw, NetworkAssignment assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode);
    CStdString     m_interfaceName;
    CNetworkLinux* m_network;
+  void AddNetworkAccessPoint(std::vector<NetworkAccessPoint> &apv, const char *NetworkPath, DBusConnection *con);
 };
 
 class CNetworkLinux : public CNetwork
