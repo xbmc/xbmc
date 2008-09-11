@@ -374,9 +374,9 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
   if (con != NULL)
   {
     CStdString NetworkPath;
-    NetworkPath.Format("/org/freedesktop/NetworkManager/Devices/%s", m_interfaceName.c_str());
+    NetworkPath.Format("%s/%s", NM_DBUS_PATH_DEVICES, m_interfaceName.c_str());
 
-    DBusMessage *msg = dbus_message_new_method_call ("org.freedesktop.NetworkManager", NetworkPath.c_str(), "org.freedesktop.NetworkManager", "getProperties");
+    DBusMessage *msg = dbus_message_new_method_call (NM_DBUS_SERVICE, NetworkPath.c_str(), NM_DBUS_INTERFACE, "getProperties");
 	  if (msg)
     {
       DBusMessage *reply = dbus_connection_send_with_reply_and_block(con, msg, -1, &error);
@@ -452,7 +452,7 @@ void CNetworkInterfaceLinux::AddNetworkAccessPoint(std::vector<NetworkAccessPoin
 {
   DBusError error;
   dbus_error_init (&error);
-  DBusMessage *msg = dbus_message_new_method_call ("org.freedesktop.NetworkManager", NetworkPath, "org.freedesktop.NetworkManager", "getProperties");
+  DBusMessage *msg = dbus_message_new_method_call (NM_DBUS_SERVICE, NetworkPath, NM_DBUS_INTERFACE, "getProperties");
   if (msg)
   {
     DBusMessage *reply = dbus_connection_send_with_reply_and_block(con, msg, -1, &error);
@@ -504,78 +504,90 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdStri
    assignment = NETWORK_DISABLED;
 
 #ifndef __APPLE__
-   FILE* fp = fopen("/etc/network/interfaces", "r");
-   if (!fp)
-   {
-      // TODO
-      return;
-   }
+  DBusError error;
+  dbus_error_init (&error);
+  DBusConnection *con= dbus_bus_get(DBUS_BUS_SYSTEM, &error);
+  if (con != NULL)
+  {
+    CStdString NetworkPath;
+    NetworkPath.Format("%s/%s", NM_DBUS_PATH_DEVICES, m_interfaceName.c_str());
 
-   char* line = NULL;
-   size_t linel = 0;
-   CStdString s;
-   bool foundInterface = false;
-
-   while (getdelim(&line, &linel, '\n', fp) > 0)
-   {
-      vector<CStdString> tokens;
-
-      s = line;
-      s.TrimLeft(" \t").TrimRight(" \n");
-
-      // skip comments
-      if (s.length() == 0 || s.GetAt(0) == '#')
-         continue;
-
-      // look for "iface <interface name> inet"
-      CUtil::Tokenize(s, tokens, " ");
-      if (!foundInterface &&
-          tokens.size() >=3 &&
-          tokens[0].Equals("iface") &&
-          tokens[1].Equals(GetName()) &&
-          tokens[2].Equals("inet"))
+    DBusMessage *msg = dbus_message_new_method_call (NM_DBUS_SERVICE, NetworkPath.c_str(), NM_DBUS_INTERFACE, "getProperties");
+	  if (msg)
+    {
+      DBusMessage *reply = dbus_connection_send_with_reply_and_block(con, msg, -1, &error);
+      if (reply)
       {
-         if (tokens[3].Equals("dhcp"))
-         {
-            assignment = NETWORK_DHCP;
-            foundInterface = true;
-         }
-         if (tokens[3].Equals("static"))
-         {
-            assignment = NETWORK_STATIC;
-            foundInterface = true;
-         }
+	        const char*   obj_path          = NULL;
+	        const char*   interface         = NULL;
+	        NMDeviceType  type              = DEVICE_TYPE_UNKNOWN;
+	        const char*   udi               = NULL;
+	        dbus_bool_t   active            = false;
+	        NMActStage    act_stage         = NM_ACT_STAGE_UNKNOWN;
+	        const char*   ipv4_address      = NULL;
+	        const char*   subnetmask        = NULL;
+	        const char*   broadcast         = NULL;
+	        const char*   hw_address        = NULL;
+	        const char*   route             = NULL;
+	        const char*   pri_dns           = NULL;
+	        const char*   sec_dns           = NULL;
+	        dbus_int32_t  mode              = 0;
+	        dbus_int32_t  strength          = -1;
+	        dbus_bool_t   link_active       = false;
+	        dbus_int32_t  speed             = 0;
+	        dbus_uint32_t capabilities      = NM_DEVICE_CAP_NONE;
+	        dbus_uint32_t capabilities_type = NM_DEVICE_CAP_NONE;
+	        char**        networks          = NULL;
+	        int           num_networks      = 0;
+	        const char*   active_net_path   = NULL;
+        
+
+	      if (dbus_message_get_args (reply, NULL, 
+            DBUS_TYPE_OBJECT_PATH,             &obj_path,
+						DBUS_TYPE_STRING,                  &interface,
+						DBUS_TYPE_UINT32,                  &type,
+						DBUS_TYPE_STRING,                  &udi,
+						DBUS_TYPE_BOOLEAN,                 &active,
+						DBUS_TYPE_UINT32,                  &act_stage,
+						DBUS_TYPE_STRING,                  &ipv4_address,
+						DBUS_TYPE_STRING,                  &subnetmask,
+						DBUS_TYPE_STRING,                  &broadcast,
+						DBUS_TYPE_STRING,                  &hw_address,
+						DBUS_TYPE_STRING,                  &route,
+						DBUS_TYPE_STRING,                  &pri_dns,
+						DBUS_TYPE_STRING,                  &sec_dns,
+						DBUS_TYPE_INT32,                   &mode,
+						DBUS_TYPE_INT32,                   &strength,
+						DBUS_TYPE_BOOLEAN,                 &link_active,
+						DBUS_TYPE_INT32,                   &speed,
+						DBUS_TYPE_UINT32,                  &capabilities,
+						DBUS_TYPE_UINT32,                  &capabilities_type,
+						DBUS_TYPE_STRING,                  &active_net_path,
+						DBUS_TYPE_ARRAY, DBUS_TYPE_STRING, &networks, &num_networks, DBUS_TYPE_INVALID))
+        {
+          ipAddress = ipv4_address;
+          networkMask = subnetmask;
+          defaultGateway = route;
+          if (type == DEVICE_TYPE_802_11_WIRELESS)
+          {
+            std::vector<NetworkAccessPoint> result;
+            AddNetworkAccessPoint(result, active_net_path, con);
+            //         key = "";
+            essId = result[0].getEssId();
+            encryptionMode = result[0].getEncryptionMode();
+          }
+          assignment = NETWORK_DHCP;
+        }
+    		dbus_free_string_array (networks);
+      	dbus_message_unref (reply);
       }
-
-      if (foundInterface && tokens.size() == 2)
-      {
-         if (tokens[0].Equals("address")) ipAddress = tokens[1];
-         else if (tokens[0].Equals("netmask")) networkMask = tokens[1];
-         else if (tokens[0].Equals("gateway")) defaultGateway = tokens[1];
-         else if (tokens[0].Equals("wireless-essid")) essId = tokens[1];
-         else if (tokens[0].Equals("wireless-key"))
-         {
-            key = tokens[1];
-            if (key.length() > 2 && key[0] == 's' && key[1] == ':')
-               key.erase(0, 2);
-            encryptionMode = ENC_WEP;
-         }
-         else if (tokens[0].Equals("wpa-ssid")) essId = tokens[1];
-         else if (tokens[0].Equals("wpa-proto") && tokens[1].Equals("WPA")) encryptionMode = ENC_WPA;
-         else if (tokens[0].Equals("wpa-proto") && tokens[1].Equals("WPA2")) encryptionMode = ENC_WPA2;
-         else if (tokens[0].Equals("wpa-psk")) key = tokens[1];
-         else if (tokens[0].Equals("auto") || tokens[0].Equals("iface") || tokens[0].Equals("mapping")) break;
-      }
-   }
-
-   if (line)
-     free(line);
-
-   // Fallback in case wpa-proto is not set
-   if (key != "" && encryptionMode == ENC_NONE)
-      encryptionMode = ENC_WPA;
-
-   fclose(fp);
+		  dbus_message_unref (msg);
+	  }
+  }
+  {
+    CLog::Log(LOGERROR, "DBus: Could not get system bus: %s", error.message);
+    dbus_error_free (&error);
+  }
 #endif
 }
 
