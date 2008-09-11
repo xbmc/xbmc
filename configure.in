@@ -411,7 +411,7 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/flac-1.2.1], [
 XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/libvorbis], [./configure --with-pic])
 XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/ogg], [./configure --with-pic])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
-  ./configure \
+    ./configure \
     --extra-cflags="-D_XBOX" \
     --disable-static \
     --disable-altivec \
@@ -430,6 +430,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
     --enable-swscale \
     --enable-protocol=http \
     --enable-pthreads \
+    --extra-cflags="-DRUNTIME_CPUDETECT -O3" 
 ])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdts], [
   ./configure \
@@ -455,7 +456,8 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvdnav], [
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libfaad2], [
   ./configure \
     --with-pic \
-    --with-mp4v2
+    --with-mp4v2 \
+    CFLAGS="-O3"
 ])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/liba52], [
   ./configure \
@@ -476,7 +478,6 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmpeg2], [
   --disable-directx \
   --disable-sdl \
   --without-x \
-  CFLAGS=-fPIC
 ])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmad], [./configure --with-pic])
 XB_CONFIG_MODULE([xbmc/lib/cximage-6.0/zlib], [CFLAGS=-fPIC ./configure])
