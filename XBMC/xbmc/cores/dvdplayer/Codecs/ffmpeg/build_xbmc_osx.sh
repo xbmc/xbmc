@@ -19,7 +19,7 @@ export MACOSX_DEPLOYMENT_TARGET=10.4
 
 echo "Configuring ffmpeg"
 ./configure \
-    --extra-cflags="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -I/opt/local/include -L/opt/local/lib -D_XBOX" \
+    --extra-cflags="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -I/opt/local/include -L/opt/local/lib -D_XBOX -DRUNTIME_CPUDETECT -O3" \
     --extra-ldflags="-L/opt/local/lib" \
     --enable-static \
     --disable-altivec \
