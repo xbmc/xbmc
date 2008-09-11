@@ -7,6 +7,10 @@ DIRS=goom2k4-0
 include ../../../Makefile.include
 
 goom:
+	cd goom2k4-0; \
+	./configure MACOSX_DEPLOYMENT_TARGET=10.4 --enable-static --disable-shared CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4";\
+	$(MAKE)
+
 	pushd goom2k4-0
 	./configure --enable-static --disable-shared CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4"
 	$(MAKE)
