@@ -648,6 +648,26 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   return true;
 }
 
+const CStdString CUtil::GetMovieName(CFileItem* pItem)
+{
+  CStdString movieName;
+  CStdString strArchivePath;
+  movieName = pItem->m_strPath; 
+
+  if (!pItem->m_bIsFolder || pItem->IsDVDFile(false, true) || IsInArchive(pItem->m_strPath))
+  {
+    GetParentPath(pItem->m_strPath,movieName);
+    if (IsRAR(movieName) || IsZIP(movieName) || pItem->IsDVDFile(false, true))
+    {
+      GetParentPath(movieName, strArchivePath);
+      movieName = strArchivePath;
+    }
+  }
+
+  CUtil::RemoveSlashAtEnd(movieName); 
+  movieName = CUtil::GetFileName(movieName); 
+  return movieName;
+}
 
 void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename)
 {
@@ -957,12 +977,18 @@ bool CUtil::IsStack(const CStdString& strFile)
 
 bool CUtil::IsRAR(const CStdString& strFile)
 {
+  CURL url(strFile);
   CStdString strExtension;
   CUtil::GetExtension(strFile,strExtension);
-  if (strExtension.Equals(".001") && strFile.Mid(strFile.length()-7,7).CompareNoCase(".ts.001")) return true;
-  if (strExtension.CompareNoCase(".cbr") == 0) return true;
+
+  if (strExtension.Equals(".001") && strFile.Mid(strFile.length()-7,7).CompareNoCase(".ts.001"))
+    return true;
+  if (strExtension.CompareNoCase(".cbr") == 0)
+    return true;
   if (strExtension.CompareNoCase(".rar") == 0)
-      return true;
+    return true;
+  if (url.GetProtocol() == "rar")
+    return true;
 
   return false;
 }
