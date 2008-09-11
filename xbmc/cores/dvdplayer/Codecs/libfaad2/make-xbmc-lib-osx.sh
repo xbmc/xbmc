@@ -11,7 +11,7 @@ export MACOSX_DEPLOYMENT_TARGET=10.4
 make distclean >/dev/null 2>&1
 
 autoreconf -vif &&
-./configure --with-pic CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" &&
+./configure --with-mp4v2 --with-pic CFLAGS="-O3 -fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" &&
 make &&
 
 echo wrapping libfaad &&
