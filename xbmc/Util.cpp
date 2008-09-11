@@ -657,7 +657,7 @@ const CStdString CUtil::GetMovieName(CFileItem* pItem)
   if (!pItem->m_bIsFolder || pItem->IsDVDFile(false, true) || IsInArchive(pItem->m_strPath))
   {
     GetParentPath(pItem->m_strPath,movieName);
-    if (IsRAR(movieName) || IsZIP(movieName) || pItem->IsDVDFile(false, true))
+    if (IsInRAR(pItem->m_strPath) || IsInZIP(pItem->m_strPath) || pItem->IsDVDFile(false, true))
     {
       GetParentPath(movieName, strArchivePath);
       movieName = strArchivePath;
@@ -977,7 +977,6 @@ bool CUtil::IsStack(const CStdString& strFile)
 
 bool CUtil::IsRAR(const CStdString& strFile)
 {
-  CURL url(strFile);
   CStdString strExtension;
   CUtil::GetExtension(strFile,strExtension);
 
@@ -986,8 +985,6 @@ bool CUtil::IsRAR(const CStdString& strFile)
   if (strExtension.CompareNoCase(".cbr") == 0)
     return true;
   if (strExtension.CompareNoCase(".rar") == 0)
-    return true;
-  if (url.GetProtocol() == "rar")
     return true;
 
   return false;
