@@ -14882,7 +14882,7 @@ fi;
 if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
   pushd xbmc/cores/dvdplayer/Codecs/ffmpeg
 
-  ./configure \
+    ./configure \
     --extra-cflags="-D_XBOX" \
     --disable-static \
     --disable-altivec \
@@ -14901,6 +14901,7 @@ if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
     --enable-swscale \
     --enable-protocol=http \
     --enable-pthreads \
+    --extra-cflags="-DRUNTIME_CPUDETECT -O3"
 
   if [ $? -ne 0 ]; then
     popd
@@ -14994,7 +14995,8 @@ if [ -d xbmc/cores/dvdplayer/Codecs/libfaad2 ]; then
 
   ./configure \
     --with-pic \
-    --with-mp4v2
+    --with-mp4v2 \
+    CFLAGS="-O3"
 
   if [ $? -ne 0 ]; then
     popd
@@ -15049,7 +15051,6 @@ if [ -d xbmc/cores/dvdplayer/Codecs/libmpeg2 ]; then
   --disable-directx \
   --disable-sdl \
   --without-x \
-  CFLAGS=-fPIC
 
   if [ $? -ne 0 ]; then
     popd
