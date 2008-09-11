@@ -442,6 +442,7 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
       if(pYear)
       {
         strYear = pYear;
+        m_parser.m_param[1] = strYear;
         free(pYear);
       }
     }
