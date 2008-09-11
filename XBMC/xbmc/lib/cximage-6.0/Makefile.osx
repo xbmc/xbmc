@@ -27,8 +27,7 @@ ifeq ($(ARCH), osx)
 	gcc -bundle -flat_namespace -undefined suppress -shared -fPIC -lpng -L/opt/local/lib \
 		-mmacosx-version-min=10.4 -o ImageLib-osx.so \
 		CxImage/*.o jasper/*/*.o jbig/*.o jpeg/*.o raw/*.o tiff/*.o
-	cd ../../../tools/Mach5/;./mach5.rb ../../xbmc/lib/cximage-6.0/ImageLib-osx.so;mv output.so ../../system/ImageLib-osx.so
-    chmod +x ../../system/ImageLib-osx.so
+	cd ../../../tools/Mach5/;./mach5.rb ../../xbmc/lib/cximage-6.0/ImageLib-osx.so;mv output.so ../../system/ImageLib-osx.so;chmod +x ../../system/ImageLib-osx.so
 	 
 else 
 	gcc -shared -o $(LIB) -Wl,--whole-archive -lpng -ljasper -ljpeg \
