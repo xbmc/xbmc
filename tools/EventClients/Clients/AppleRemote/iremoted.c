@@ -159,7 +159,7 @@ QueueCallbackFunction(void *target, IOReturn result, void *refcon, void *sender)
 		if (ret != kIOReturnSuccess)
 			continue;
 
-		//printf("%d %d %d\n", event.elementCookie, event.value, event.longValue);		
+		//printf("%d %d %d\n", (int)event.elementCookie, (int)event.value, (int)event.longValue);		
 
         if (event.value > 0)
             bKeyDown = true;
