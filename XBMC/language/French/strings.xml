@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Based on english strings version 14720-->
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Based on english strings version 15499-->
 <strings>
   <string id="0">Programmes</string>
   <string id="1">Images</string>
@@ -110,7 +110,7 @@
   <string id="172">Version datée du:</string>
   <string id="173"></string>
   <string id="174"></string>
-  <string id="175">Sonorité(s):</string>
+  <string id="175">Sonorité(s)</string>
   <string id="176">Styles</string>
   <string id="177"></string>
   <string id="178"></string>
@@ -137,8 +137,8 @@
   <string id="199"></string>
   <string id="200"></string>
   <string id="201"></string>
-  <string id="202">Critiques:</string>
-  <string id="203">Résumé:</string>
+  <string id="202">Critiques</string>
+  <string id="203">Résumé</string>
   <string id="204"></string>
   <string id="205">Votes:</string>
   <string id="206">Casting</string>
@@ -158,6 +158,7 @@
   <string id="222">Annuler</string>
   <string id="224">Vitesse</string>
   <string id="225">Durée transitions</string>
+  <string id="226">Tester Patterns...</string>
   <string id="227">Recherche CD Audio sur freedb</string>
   <string id="228">Mélanger la sélection lors de son chargement</string>
   <string id="229">Temps d'arrêt du DD</string>
@@ -658,8 +659,8 @@
   <string id="796">Délai répétition continue (ms)</string>
   <string id="797">Nombre maximum de Clients</string>
      
-  <string id="998">XLink Kai</string>
-  <string id="999">Jeux en ligne</string>
+  <string id="998"></string>
+  <string id="999"></string>
   <string id="1000">Prévisualiser l'écran de veille</string>
   <string id="1001">Impossible de se connecter</string>
   <string id="1002">XBMC ne peut pas se connecter au chemin réseau.</string>
@@ -809,7 +810,7 @@
   <string id="10023"></string>
   <string id="10025"></string>
   <string id="10028">Vidéos/Playlist</string>
-  <string id="10034">Paramètres-&gt;Profils</string>
+  <string id="10034">Paramètres - Profils</string>
   
   <string id="10100">Dialogues Oui/Non</string>
   <string id="10101">Dialogues Progression</string>
@@ -818,7 +819,7 @@
   <string id="10211">Mise en cache des sous-titres...</string>
   <string id="10212">Finalisation</string>
   <string id="10213">Mise en cache</string>
-  <string id="10214">ouverture du flux</string>
+  <string id="10214">Ouverture du flux</string>
 
   <string id="10500">Musique/Playlist</string>
   <string id="10501">Musique/Fichiers</string>
@@ -871,6 +872,7 @@
   <string id="12022">Reprendre depuis la dernière position</string>
   <string id="12023">Validation des trainers existants...</string>
   <string id="12024">Générer automatiquement des vignettes pour les vidéos</string>
+
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -944,11 +946,11 @@
   <string id="13002">Vidéo seule</string>
   <string id="13003">- Délai</string>
   <string id="13004">- Durée minimale du fichier</string>
-  <string id="13005">Quitter</string>
+  <string id="13005">Eteindre</string>
   <string id="13006">Dashboard</string>
   <string id="13007">Utiliser Dashboard Personnalisé</string>
-  <string id="13008">Lors de la fermeture XBMC</string>
-  <string id="13009">Ne rien faire</string>
+  <string id="13008">Mode d'arrêt par défaut</string>
+  <string id="13009">Quitter</string>
   <string id="13010">Mettre en veille</string>
   <string id="13011">Suspendre</string>
   
@@ -1148,7 +1150,8 @@
   <string id="13409">Top 250:</string>
   <string id="13410">Envoyer sur lastfm</string>
   <string id="13411">Vitesse du ventilateur minimum</string>
-  <string id="13412">Flux RSS dont le texte est de la droite vers la gauche</string>
+  <string id="13412">- Flux RSS dont le texte est de la droite vers la gauche</string>
+  <string id="13413">Téléchargement</string>
   
   <string id="13600">Apple Remote</string>
   <string id="13601">Mode</string>
@@ -1235,8 +1238,8 @@
   <string id="14069">Voulez-vous appliquer cette configuration ?</string>
   <string id="14070">Appliquer les changements maintenant</string>
   <string id="14071">Activer les options Supprimer et Renommer</string>
-  <string id="14072">Activer XLink Kai</string>
-  <string id="14073">XLink Kai n'est pas activé.</string>
+  <string id="14072"></string>
+  <string id="14073"></string>
   <string id="14074">Définir Fuseau horaire</string>
   <string id="14075">Ajuster l'horloge pour l'observation auto. de l'heure d'été</string>
   <string id="14076">Ajouter aux favoris</string>
@@ -1260,8 +1263,8 @@
   <string id="15012"></string>
   <string id="15013"></string>
   <string id="15014"></string>
-  <string id="15015"></string>
-  <string id="15016"></string>
+  <string id="15015">Supprimer</string>
+  <string id="15016">Jeux</string>
   <string id="15017"></string>
   <string id="15018"></string>
   <string id="15019">Ajouter</string>
@@ -1297,7 +1300,7 @@
   <string id="15049"></string>
   <string id="15050"></string>
   <string id="15051"></string>
-  <string id="15052"></string>
+  <string id="15052">Mot de passe</string>
   <string id="15053"></string>
   <string id="15054"></string>
   <string id="15055"></string>
@@ -1422,6 +1425,7 @@
   <string id="16025">Saisissez le nom de l'Artiste</string>
   <string id="16026">La liste de lecture a été annulée</string>
   <string id="16027">Trop d'erreurs consécutives</string>
+  <string id="16028">Entrer valeure</string>
 
   <string id="16030">Mix de soirée annulé.</string>
   <string id="16031">Aucune chanson assortie dans la bibliothèque.</string>
@@ -1967,6 +1971,20 @@
   <string id="22001">Toujours mettre à jour en tâche de fond</string>
   <string id="22002">- Suffix DNS</string>
   <string id="22003">Activer Editer et Décider des Listes</string>
+  <string id="22004">Retarder de: %2.3fs</string>
+  <string id="22005">Avancer de: %2.3fs</string>
+  <string id="22006">Sous-titre Offset</string>
+  <string id="22007">OpenGL Vendor:</string>
+  <string id="22008">OpenGL Renderer:</string>
+  <string id="22009">OpenGL Version:</string>
+  <string id="22010">GPU Température:</string>
+  <string id="22011">CPU Température:</string>
+  <string id="22012">Mémoire Totale</string>
+  <string id="22013">Données Profil</string>
+
+  <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
+  <string id="29800">Mode Bibliothèque</string>
+  <string id="29801">Clavier QWERTY</string>
 
   <string id="29999">Appliquer paramètre du filtre de scintillement aux jeux</string>
 
