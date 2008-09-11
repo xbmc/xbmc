@@ -5768,7 +5768,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"building Libraries\"\n\nif [ \"$ACTION\" = build ] ; then\n\t# osx voodoo\n\texport MACOSX_DEPLOYMENT_TARGET=10.4\n\n\tcd \"$SRCROOT\"/xbmc/lib/libshout/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libGoAhead/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libRTV/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libXDAAP/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/cores/dvdplayer/Codecs/ffmpeg\n\texport XBMC_ROOT=\"$SRCROOT\"\n\t./build_xbmc_osx.sh\nfi";
+			shellScript = "echo \"building Libraries\"\n\nif [ \"$ACTION\" = build ] ; then\n\t# osx voodoo\n\texport MACOSX_DEPLOYMENT_TARGET=10.4\n\n\tcd \"$SRCROOT\"/xbmc/lib/libshout/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libGoAhead/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libRTV/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libXDAAP/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libid3tag/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/cores/dvdplayer/Codecs/ffmpeg\n\texport XBMC_ROOT=\"$SRCROOT\"\n\t./build_xbmc_osx.sh\nfi";
 		};
 		F57E20000E3BBDAB00700C9D /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -6706,9 +6706,13 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_AUTO_VECTORIZATION = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_FAST_OBJC_DISPATCH = YES;
+				GCC_MODEL_PPC64 = YES;
 				GCC_MODEL_TUNING = "";
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					_DEBUG,
 					_LINUX,
@@ -6719,6 +6723,7 @@
 					HAS_SDL_JOYSTICK,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_UNROLL_LOOPS = YES;
 				HEADER_SEARCH_PATHS = (
 					guilib,
 					xbmc,
