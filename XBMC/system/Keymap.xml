@@ -997,6 +997,8 @@
       <backspace>HideSubMenu</backspace>
       <escape>Close</escape>
       <m>Close</m>
+      <i>Info</i>
+      <o>CodecInfo</o>
     </keyboard>
   </VideoOSD>
 
@@ -1090,6 +1092,8 @@
     <keyboard>
       <backspace>HideSubMenu</backspace>
       <escape>Close</escape>
+      <i>Info</i>
+      <o>CodecInfo</o>
     </keyboard>
   </OSDVideoSettings>
 
@@ -1129,6 +1133,8 @@
     <keyboard>
       <backspace>HideSubMenu</backspace>
       <escape>Close</escape>
+      <i>Info</i>
+      <o>CodecInfo</o>
     </keyboard>
   </OSDAudioSettings>
 
