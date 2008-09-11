@@ -12,7 +12,7 @@ CLEAN_FILES=libid3tag/compat.c libid3tag/frametype.c
 $(LIB): libid3tag/.libs/libid3tag.a
 	gcc $(CFLAGS) -bundle -flat_namespace -undefined suppress -shared -fPIC \
 		-mmacosx-version-min=10.4 -o libid3tag-osx.so libid3tag/.libs/*.o
-	cd ../../../tools/Mach5/;./mach5.rb ../../xbmc/lib/libid3tag/libid3tag-osx.so;mv output.so ../../system/libid3tag-osx.so
+	cd ../../../tools/Mach5/;./mach5.rb ../../xbmc/lib/libid3tag/libid3tag-osx.so;mv output.so ../../system/libid3tag-osx.so;chmod +x ../../system/libid3tag-osx.so
 
 libid3tag/.libs/libid3tag.a: compile
 	cd libid3tag;./configure MACOSX_DEPLOYMENT_TARGET=10.4 CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common"
