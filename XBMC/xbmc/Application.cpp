@@ -3753,6 +3753,15 @@ void CApplication::Stop()
     m_bStop = true;
     CLog::Log(LOGNOTICE, "stop all");
 
+    // stop scanning before we kill the network and so on
+    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    if (musicScan)
+      musicScan->StopScanning();
+
+    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (videoScan)
+      videoScan->StopScanning();
+
     StopServices();
     //Sleep(5000);
 
@@ -3762,14 +3771,6 @@ void CApplication::Stop()
       delete m_pPlayer;
       m_pPlayer = NULL;
     }
-
-    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (musicScan && musicScan->IsDialogRunning())
-      musicScan->StopScanning();
-
-    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    if (videoScan && videoScan->IsDialogRunning())
-      videoScan->StopScanning();
 
 #if HAS_FILESYTEM_DAAP
     CLog::Log(LOGNOTICE, "stop daap clients");
