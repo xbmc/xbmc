@@ -85,7 +85,7 @@ void CEventButtonState::Load()
         m_iKeyCode = g_buttonTranslator.TranslateUniversalRemoteString( m_buttonName.c_str() );
       }
       else if ( (m_mapName.length() > 3) &&
-                (m_mapName.compare(0, 2, "LI:") == 0) ) // starts with LI: ?
+                (m_mapName.compare(0, 3, "LI:") == 0) ) // starts with LI: ?
       {
 #ifdef HAS_LIRC
         string lircDevice = m_mapName.substr(3);
