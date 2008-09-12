@@ -249,7 +249,6 @@ private:
   bool m_bCloseThread;
   HANDLE m_hWorkerThread;
   HANDLE m_hWorkerEvent;
-  HANDLE m_hHttpMutex;
 
   int m_iSongNum;
 
