@@ -558,6 +558,13 @@ bool CFileItem::IsInternetStream() const
   if (strProtocol.size() == 0)
     return false;
 
+  // there's nothing to stop internet streams from being stacked
+  if (strProtocol == "stack")
+  {
+    CFileItem fileItem(CStackDirectory::GetFirstStackedFile(m_strPath), false);
+    return fileItem.IsInternetStream();
+  }
+
   if (strProtocol == "shout" || strProtocol == "mms" ||
       strProtocol == "http" || /*strProtocol == "ftp" ||*/
       strProtocol == "rtsp" || strProtocol == "rtp" ||
