@@ -5807,7 +5807,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cat \"$SRCROOT\"/xbmc/DllPaths_generated.h.in | sed -e 's/@ARCH@/osx/g' > \"$SRCROOT\"/xbmc/DllPaths_generated.h\n\n";
+			shellScript = "if ((0)) ; then\ncat \"$SRCROOT\"/Makefile.include.in \\\n\t| sed -e 's/@ARCH@/osx/g' \\\n\t| sed -e 's#@abs_top_srcdir@#$XBMC_ROOT#g' \\\n\t| sed -e 's#@prefix@#/usr/local#g' \\\n\t| sed -e 's/@CXX@/g++/g' \\\n\t| sed -e 's/@CC@/gcc/g' \\\n\t| sed -e 's/@DEBUG_FLAGS@//g' \\\n\t| sed -e 's/@LZO_INCLUDES@//g' \\\n\t| sed -e 's#@INCLUDES@#-I/opt/local/include -I/opt/local/include/freetype2 -I/opt/local/include/mysql5 -I$(abs_top_srcdir)/xbmc -I$(abs_top_srcdir)/xbmc/lib -I$(abs_top_srcdir)/xbmc/osx -I.#g' \\\n\t| sed -e 's/@SDL_DEFINES@/-DHAS_SDL_JOYSTICK -DHAS_PCRE/g' \\\n\t| sed -e 's/@ARCH_DEFINES@//g' \\\n\t> \"$SRCROOT\"/Makefile.include\nfi\n\nif [ ! -e \"$SRCROOT\"/xbmc/DllPaths_generated.h ] ; then\n\tcat \"$SRCROOT\"/xbmc/DllPaths_generated.h.in | sed -e 's/@ARCH@/osx/g' > \"$SRCROOT\"/xbmc/DllPaths_generated.h\nfi\n\n";
 		};
 		F5DEC3580E6DEBB2005A4E24 /* copy root files */ = {
 			isa = PBXShellScriptBuildPhase;
