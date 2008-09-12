@@ -2317,6 +2317,10 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
       }
     }
 
+    long lFileId = GetFileId(strFilenameAndPath);
+    if (lFileId < 0)
+      return ;
+
     CStdString strSQL;
     strSQL=FormatSQL("delete from actorlinkepisode where idepisode=%i", lEpisodeId);
     m_pDS->exec(strSQL.c_str());
@@ -2339,7 +2343,7 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
     {
       ClearBookMarksOfFile(strFilenameAndPath);
 
-      strSQL=FormatSQL("delete from episode where idepisode=%i", lEpisodeId);
+      strSQL=FormatSQL("delete from episode where idfile=%i", lFileId);
       m_pDS->exec(strSQL.c_str());
     }
     /*
