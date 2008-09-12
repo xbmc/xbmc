@@ -173,17 +173,56 @@ void AppleRemote::Initialize()
 
         if (hw_model == "AppleTV1,1")
         {
-            //fprintf(stderr, "Using key code for AppleTV r1.x\n");
-            //key = key_cookiesATV1X;
-            //m_button_event_terminator = IR_Event_Term_ATV1X;
-            
-            //fprintf(stderr, "Using key code for AppleTV r2.0x\n");
-            //key = key_cookiesATV20X;
-            //m_button_event_terminator = IR_Event_Term_ATV20X;
+            FILE *inpipe;
+            bool atv_version_found = false;
+            char linebuf[1000];
+            const char *command = "sw_vers -buildVersion";
 
-            fprintf(stderr, "Using key code for AppleTV r2.1\n");
-            key = key_cookiesATV21;
-            m_button_event_terminator = IR_Event_Term_ATV21;
+            //Find the build version of the AppleTV OS
+            inpipe = popen(command, "r");
+            if (!inpipe)
+            {
+                printf("couldn't open pipe %s\n", command);
+            }
+            else
+            {
+                //get output
+                if(fgets(linebuf, sizeof(linebuf), inpipe))
+                {
+                    if( strstr(linebuf,"8N5107") || strstr(linebuf,"8N5239"))
+                    {
+                        // r1.0 or r1.1  
+                        atv_version_found = true;
+                        fprintf(stderr, "Using key code for AppleTV r1.x\n");
+                        key = key_cookiesATV1X;
+                        m_button_event_terminator = IR_Event_Term_ATV1X;
+                    }
+                    else if (strstr(linebuf,"8N5455") || strstr(linebuf,"8N5461"))
+                    {
+                        // r2.01 or r2.02   
+                        atv_version_found = true;
+                        fprintf(stderr, "Using key code for AppleTV r2.0x\n");
+                        key = key_cookiesATV20X;
+                        m_button_event_terminator = IR_Event_Term_ATV20X;							
+                    }
+                    else if( strstr(linebuf,"8N5519"))
+                    {
+                        // r2.10   
+                        atv_version_found = true;
+                        fprintf(stderr, "Using key code for AppleTV r2.1\n");
+                        key = key_cookiesATV21;
+                        m_button_event_terminator = IR_Event_Term_ATV21;
+                    }                    
+                }
+                pclose(inpipe); 
+                if(!atv_version_found){
+                    //handle fallback or just exit
+                    fprintf(stderr, "AppletTV software version could not be determined.\n");
+                    fprintf(stderr, "Defaulting to using key code for AppleTV r2.1\n");
+                    key = key_cookiesATV21;
+                    m_button_event_terminator = IR_Event_Term_ATV21;
+                }
+            }
         }
         else
         {
