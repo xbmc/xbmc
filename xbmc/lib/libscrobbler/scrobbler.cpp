@@ -65,9 +65,6 @@ CScrobbler::CScrobbler()
   m_hWorkerEvent = CreateEvent(NULL, false, false, NULL);
   if (!m_hWorkerEvent)
     throw EOutOfMemory();
-  m_hHttpMutex = CreateMutex(NULL, false, NULL);
-  if (!m_hHttpMutex)
-    throw EOutOfMemory();
   m_hWorkerThread = CreateThread(NULL, 0, threadProc, (LPVOID)this, 0, &threadid);
   if (!m_hWorkerThread)
     throw EOutOfMemory();
@@ -78,9 +75,6 @@ CScrobbler::~CScrobbler()
   m_bCloseThread = true;
   SetEvent(m_hWorkerEvent);
   WaitForSingleObject(m_hWorkerThread, INFINITE);
-  WaitForSingleObject(m_hHttpMutex, INFINITE);
-  ReleaseMutex(m_hHttpMutex);
-  CloseHandle(m_hHttpMutex);
   CloseHandle(m_hWorkerEvent);
   CloseHandle(m_hWorkerThread);
   Sleep(0);
@@ -549,8 +543,6 @@ void CScrobbler::WorkerThread()
 
     StatusUpdate(S_DEBUG,"...");
 
-    WaitForSingleObject(m_hHttpMutex, INFINITE);
-
     CHTTP http;
     CStdString strHtml;
     bool bSuccess;
@@ -588,7 +580,6 @@ void CScrobbler::WorkerThread()
     }
 
 
-    ReleaseMutex(m_hHttpMutex);
     // OK, if this was a handshake, it failed since m_bReadyToSubmit isn't true. Submissions get cached.
     while (!m_bReadyToSubmit)
     {
@@ -598,7 +589,6 @@ void CScrobbler::WorkerThread()
       if (m_bCloseThread)
         return;
       // and try again.
-      WaitForSingleObject(m_hHttpMutex, INFINITE);
       bSuccess=http.Get(m_strHsString, strHtml);
       if (bSuccess)
       {
@@ -606,7 +596,6 @@ void CScrobbler::WorkerThread()
         HandleHandshake(lphtml);
         strHtml.ReleaseBuffer();
       }
-      ReleaseMutex(m_hHttpMutex);
     }
   }
 }
