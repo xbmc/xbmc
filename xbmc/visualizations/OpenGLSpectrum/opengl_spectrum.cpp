@@ -33,9 +33,7 @@
 #endif
 #include "../../../visualisations/xbmc_vis.h"
 #include <math.h>
-#ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>
-#endif
 
 #define NUM_BANDS 16
 
