@@ -198,7 +198,6 @@ public:
 
     bool m_bMusicLibraryHideAllItems;
     bool m_bMusicLibraryAllItemsOnBottom;
-    bool m_bMusicLibraryHideCompilationArtists;
     bool m_bMusicLibraryAlbumsSortByArtistThenYear;
     CStdString m_strMusicLibraryAlbumFormat;
     CStdString m_strMusicLibraryAlbumFormatRight;
