@@ -498,10 +498,9 @@ void CGUIWindowVideoInfo::Refresh()
 
     CStdString thumbImage = m_movieItem->GetCachedVideoThumb();
     if (!CFile::Exists(thumbImage) || m_movieItem->GetProperty("HasAutoThumb") == "1")
-      thumbImage = m_movieItem->GetUserVideoThumb();
+      m_movieItem->SetUserVideoThumb();
     if (!CFile::Exists(thumbImage) && strImage.size() > 0)
     {
-      thumbImage = m_movieItem->GetCachedVideoThumb();
       CScraperUrl::DownloadThumbnail(thumbImage,m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetFirstThumb());
       CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
     }
@@ -509,6 +508,10 @@ void CGUIWindowVideoInfo::Refresh()
     if (!CFile::Exists(thumbImage) )
     {
       thumbImage.Empty();
+    }
+    else if (m_movieItem->HasProperty("set_folder_thumb"))
+    { // have a folder thumb to set as well
+      VIDEO::CVideoInfoScanner::ApplyIMDBThumbToFolder(m_movieItem->GetProperty("set_folder_thumb"), thumbImage);
     }
 
     m_movieItem->SetThumbnailImage(thumbImage);
@@ -807,6 +810,10 @@ void CGUIWindowVideoInfo::OnGetThumb()
 
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
   m_movieItem->SetThumbnailImage(cachedThumb);
+  if (m_movieItem->HasProperty("set_folder_thumb"))
+  { // have a folder thumb to set as well
+    VIDEO::CVideoInfoScanner::ApplyIMDBThumbToFolder(m_movieItem->GetProperty("set_folder_thumb"), cachedThumb);
+  }
 
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
