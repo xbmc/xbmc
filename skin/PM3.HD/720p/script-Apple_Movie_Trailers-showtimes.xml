@@ -1,0 +1,214 @@
+<window>
+	<defaultcontrol>100</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>240</posx>
+		<posy>35</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>810</width>
+			<height>650</height>
+			<texture border="40">DialogBack.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>810</width>
+			<height>650</height>
+			<texture border="40">DialogFront.png</texture>
+		</control>
+		<!-- ** Required ** Do not change id or type -->
+		<control type="label">
+			<description>heading label</description>
+			<posx>40</posx>
+			<posy>40</posy>
+			<width>720</width>
+			<height>35</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>font18</font>
+			<label>[UPPERCASE]$INFO[Control.GetLabel(20)][/UPPERCASE]</label>
+			<textcolor>dialogheader</textcolor>
+		</control>
+		<!-- ** Required ** Do not change <description> or <type> -->
+		<control type="label" id="20">
+			<description>Showtimes Label1</description>
+			<visible>false</visible>
+		</control>
+		<control type="image">
+			<posx>40</posx>
+			<posy>78</posy>
+			<width>720</width>
+			<height>2</height>
+			<texture>separator.png</texture>
+		</control>
+		<!-- ** Required ** Do not change <description> or <type> -->
+		<control type="label" id="30">
+			<description>Showtimes Label2</description>
+			<posx>40</posx>
+			<posy>90</posy>
+			<width>720</width>
+			<align>center</align>
+			<font>font12</font>
+			<label>-</label>
+			<textcolor>green</textcolor>
+			<shadowcolor>black</shadowcolor>
+		</control>
+		<control type="label">
+			<posx>40</posx>
+			<posy>115</posy>
+			<width>720</width>
+			<align>center</align>
+			<font>font12</font>
+			<label>$INFO[Control.GetLabel(40)]$INFO[Control.GetLabel(50), - ]</label>
+			<textcolor>green</textcolor>
+			<shadowcolor>black</shadowcolor>
+		</control>
+		<!-- ** Required ** Do not change <description> or <type> -->
+		<control type="label" id="40">
+			<description>Showtimes Label3</description>
+			<visible>false</visible>
+		</control>
+		<!-- ** Required ** Do not change <description> or <type> -->
+		<control type="label" id="50">
+			<description>Showtimes Label4</description>
+			<visible>false</visible>
+		</control>
+		<control type="image">
+			<posx>40</posx>
+			<posy>145</posy>
+			<width>720</width>
+			<height>2</height>
+			<texture>separator.png</texture>
+		</control>
+		<!-- ** Required ** Do not change <id> or <type> -->
+		<control type="list" id="100">
+			<description>Team Credits List</description>
+			<posx>45</posx>
+			<posy>165</posy>
+			<width>720</width>
+			<height>400</height>
+			<scrolltime>200</scrolltime>
+			<onup>100</onup>
+			<ondown>100</ondown>
+			<itemlayout height="100">
+				<control type="image">
+					<width>720</width>
+					<height>95</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>700</width>
+					<height>20</height>
+					<font>font12</font>
+					<aligny>center</aligny>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>710</posx>
+					<posy>10</posy>
+					<width>680</width>
+					<height>20</height>
+					<font>font12</font>
+					<aligny>center</aligny>
+					<align>right</align>
+					<info>ListItem.Thumb</info>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>38</posy>
+					<width>700</width>
+					<height>20</height>
+					<font>font12</font>
+					<aligny>center</aligny>
+					<align>left</align>
+					<info>ListItem.ActualIcon</info>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>65</posy>
+					<width>700</width>
+					<height>20</height>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+					<aligny>center</aligny>
+					<align>left</align>
+					<info>ListItem.Label2</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="100">
+				<control type="image">
+					<width>720</width>
+					<height>95</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture border="5">button-focus.png</texture>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>700</width>
+					<height>20</height>
+					<font>font12</font>
+					<aligny>center</aligny>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>710</posx>
+					<posy>10</posy>
+					<width>680</width>
+					<height>20</height>
+					<font>font12</font>
+					<aligny>center</aligny>
+					<align>right</align>
+					<info>ListItem.Thumb</info>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>38</posy>
+					<width>700</width>
+					<height>20</height>
+					<font>font12</font>
+					<aligny>center</aligny>
+					<align>left</align>
+					<info>ListItem.ActualIcon</info>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>65</posy>
+					<width>700</width>
+					<height>20</height>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+					<aligny>center</aligny>
+					<align>left</align>
+					<info>ListItem.Label2</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="label">
+			<description>Page label</description>
+			<posx>40</posx>
+			<posy>570</posy>
+			<width>720</width>
+			<height>30</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>font12b</font>
+			<label>($INFO[Container(100).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(100).CurrentPage]/$INFO[Container(100).NumPages])</label>
+			<visible>!Control.IsVisible(451)</visible>
+		</control>
+	</controls>
+</window>
