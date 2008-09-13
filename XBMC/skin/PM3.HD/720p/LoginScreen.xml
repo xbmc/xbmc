@@ -1,0 +1,173 @@
+<window id="29">
+	<defaultcontrol always="true">52</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+		<include>CommonBackground</include>
+		<control type="group">
+			<include>Window_OpenClose_Animation</include>
+			<control type="image">
+				<posx>0</posx>
+				<posy>180</posy>
+				<width>1280</width>
+				<height>440</height>
+				<colordiffuse>BBFFFFFF</colordiffuse>
+				<texture>black-back.png</texture>
+			</control>
+			<control type="label">
+				<posx>0</posx>
+				<posy>200</posy>
+				<width>1280</width>
+				<height>30</height>
+				<font>font18</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>false</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$LOCALIZE[31046]</label>
+			</control>
+			<control type="fixedlist" id="52">
+				<posx>0</posx>
+				<posy>260</posy>
+				<width>1280</width>
+				<height>460</height>
+				<onleft>52</onleft>
+				<onright>52</onright>
+				<onup>20</onup>
+				<ondown>20</ondown>
+				<viewtype label="31028">list</viewtype>
+				<pagecontrol>61</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<focusposition>2</focusposition>
+				<orientation>horizontal</orientation>
+				<hitrect x="512" y="260" w="256" h="256" />
+				<itemlayout height="310" width="256">
+					<control type="image">
+						<posx>2</posx>
+						<posy>0</posy>
+						<width>256</width>
+						<height>256</height>
+						<aspectratio>stretch</aspectratio>
+						<bordertexture border="5">button-nofocus.png</bordertexture>
+						<bordersize>10</bordersize>
+						<texture>$INFO[ListItem.Icon]</texture>
+					</control>
+					<control type="image">
+						<posx>2</posx>
+						<posy>256</posy>
+						<width>256</width>
+						<height>256</height>
+						<aspectratio>stretch</aspectratio>
+						<bordertexture border="5" flipy="true" diffuse="diffuse_mirror2.png">button-nofocus.png</bordertexture>
+						<bordersize>10</bordersize>
+						<texture flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
+					</control>
+				</itemlayout>
+				<focusedlayout height="310" width="256">
+					<control type="image">
+						<posx>2</posx>
+						<posy>0</posy>
+						<width>256</width>
+						<height>256</height>
+						<aspectratio>stretch</aspectratio>
+						<bordertexture border="5">folder-focus.png</bordertexture>
+						<bordersize>10</bordersize>
+						<texture>$INFO[ListItem.Icon]</texture>
+						<animation reversible="false" effect="zoom" start="2,0,256,256" end="-8,-10,276,276" time="200">focus</animation>
+						<animation reversible="false" effect="zoom" end="2,0,256,256" start="-8,-10,276,276" time="200">unfocus</animation>
+					</control>
+					<control type="image">
+						<posx>2</posx>
+						<posy>256</posy>
+						<width>256</width>
+						<height>256</height>
+						<aspectratio>stretch</aspectratio>
+						<bordertexture border="5" flipy="true" diffuse="diffuse_mirror2.png">folder-focus.png</bordertexture>
+						<bordersize>10</bordersize>
+						<texture flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
+						<animation reversible="false" effect="zoom" start="2,256,256,256" end="-8,266,276,276" time="200">focus</animation>
+						<animation reversible="false" effect="zoom" end="2,256,256,256" start="-8,266,276,276" time="200">unfocus</animation>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="label">
+				<posx>640</posx>
+				<posy>540</posy>
+				<height>30</height>
+				<font>font18</font>
+				<textcolor>white</textcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>[B]$INFO[ListItem.label][/B]</label>
+			</control>
+			<control type="label">
+				<posx>640</posx>
+				<posy>580</posy>
+				<height>30</height>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.label2]</label>
+			</control>
+			<control type="button" id="20">
+				<description>Power push button</description>
+				<posx>130r</posx>
+				<posy>60r</posy>
+				<width>48</width>
+				<height>48</height>
+				<label>-</label>
+				<font>-</font>
+				<aligny>-</aligny>
+				<onclick>ActivateWindow(ShutdownMenu)</onclick>
+				<texturefocus>home-power.png</texturefocus>
+				<texturenofocus>home-power.png</texturenofocus>
+				<onleft>52</onleft>
+				<onright>52</onright>
+				<onup>52</onup>
+				<ondown>52</ondown>
+			</control>
+			<control type="image">
+				<posx>126r</posx>
+				<posy>56r</posy>
+				<width>35</width>
+				<height>35</height>
+				<texture>home-power-focus.gif</texture>
+				<visible>Control.HasFocus(20)</visible>
+			</control>
+		</control>
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>128</height>
+			<texture>Header.png</texture>
+		</control>
+		<control type="image">
+			<posx>40</posx>
+			<posy>30</posy>
+			<width>460</width>
+			<height>65</height>
+			<texture>xbmc-logo.png</texture>
+		</control>
+		<control type="label">
+			<description>date/time label</description>
+			<posx>70r</posx>
+			<posy>65</posy>
+			<width>400</width>
+			<height>35</height>
+			<align>right</align>
+			<aligny>center</aligny>
+			<font>font12</font>
+			<textcolor>white</textcolor>
+			<label>$INFO[System.Date] [COLOR=grey2] |  $INFO[System.Time][/COLOR]</label>
+		</control>
+	</controls>
+</window>

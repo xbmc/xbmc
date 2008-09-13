@@ -1,0 +1,242 @@
+<window>
+	<allowoverlay>no</allowoverlay>
+	<defaultcontrol always="false">101</defaultcontrol>
+	<coordinates>
+		<system>0</system>
+		<posx>290</posx>
+		<posy>-10</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>700</width>
+			<height>550</height>
+			<colordiffuse>BBFFFFFF</colordiffuse>
+			<texture border="40">DialogBack.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>700</width>
+			<height>550</height>
+			<texture border="40">DialogFront.png</texture>
+		</control>
+		<control type="label" id="2">
+			<description>heading label</description>
+			<posx>40</posx>
+			<posy>40</posy>
+			<width>620</width>
+			<height>30</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>font18</font>
+			<label>31053</label>
+			<textcolor>dialogheader</textcolor>
+		</control>
+		<control type="label" id="200">
+			<description>Scraper Label</description>
+			<visible>false</visible>
+		</control>
+		<control type="image">
+			<posx>40</posx>
+			<posy>78</posy>
+			<width>620</width>
+			<height>2</height>
+			<texture>separator.png</texture>
+		</control>
+		<!-- ** Required ** Do not change <id> or <type> -->
+		<control type="textbox" id="100">
+			<description>textarea</description>
+			<posx>40</posx>
+			<posy>90</posy>
+			<width>620</width>
+			<height>380</height>
+			<align>center</align>
+			<font>font12</font>
+			<onup>100</onup>
+			<ondown>100</ondown>
+			<onleft>101</onleft>
+			<onright>101</onright>
+			<pagecontrol>101</pagecontrol>
+		</control>
+		<control type="spincontrol" id="101">
+			<description>Next page button</description>
+			<posx>590</posx>
+			<posy>480</posy>
+			<subtype>page</subtype>
+			<font>font12b</font>
+			<onleft>101</onleft>
+			<onright>101</onright>
+			<ondown>101</ondown>
+			<onup>101</onup>
+			<textcolor>white</textcolor>
+			<showonepage>true</showonepage>
+			<visible>Control.IsVisible(100)</visible>
+		</control>
+		<!-- ** Required ** Do not change <id> or <type> -->
+		<control type="list" id="110">
+			<posx>40</posx>
+			<posy>90</posy>
+			<width>620</width>
+			<height>380</height>
+			<onleft>111</onleft>
+			<onright>111</onright>
+			<onup>110</onup>
+			<ondown>110</ondown>
+			<pagecontrol>111</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="25">
+				<control type="label">
+					<posx>310</posx>
+					<posy>0</posy>
+					<width>620</width>
+					<height>25</height>
+					<font>font12</font>
+					<aligny>center</aligny>
+					<align>center</align>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="25">
+				<control type="label">
+					<posx>310</posx>
+					<posy>0</posy>
+					<width>620</width>
+					<height>25</height>
+					<font>font12</font>
+					<aligny>center</aligny>
+					<align>center</align>
+					<shadowcolor>black</shadowcolor>
+					<textcolor>white</textcolor>
+					<align>left</align>
+					<label>$INFO[ListItem.Label]</label>
+					<visible>!Control.HasFocus(110)</visible>
+				</control>
+				<control type="label">
+					<posx>310</posx>
+					<posy>0</posy>
+					<width>620</width>
+					<height>25</height>
+					<font>font12</font>
+					<aligny>center</aligny>
+					<align>center</align>
+					<shadowcolor>black</shadowcolor>
+					<textcolor>white</textcolor>
+					<align>left</align>
+					<label>[B][COLOR=green]&gt;&gt; [/COLOR][/B]$INFO[ListItem.Label][B][COLOR=green] &lt;&lt;[/COLOR][/B]</label>
+					<visible>Control.HasFocus(110)</visible>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="spincontrol" id="111">
+			<description>Next page button</description>
+			<posx>590</posx>
+			<posy>480</posy>
+			<subtype>page</subtype>
+			<font>font12b</font>
+			<onleft>110</onleft>
+			<onright>110</onright>
+			<ondown>110</ondown>
+			<onup>110</onup>
+			<textcolor>white</textcolor>
+			<showonepage>true</showonepage>
+			<visible>Control.IsVisible(110)</visible>
+		</control>
+		<!-- ** Required ** Do not change <id> or <type> -->
+		<control type="label" id="2">
+			<description>Pick label</description>
+			<posx>40</posx>
+			<posy>90</posy>
+			<width>620</width>
+			<height>30</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>font12</font>
+			<label>31054</label>
+			<textcolor>white</textcolor>
+			<visible>Control.IsVisible(120)</visible>
+		</control>
+		<control type="list" id="120">
+			<posx>40</posx>
+			<posy>130</posy>
+			<width>620</width>
+			<height>340</height>
+			<onleft>121</onleft>
+			<onright>121</onright>
+			<onup>120</onup>
+			<ondown>120</ondown>
+			<pagecontrol>121</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<animation effect="slide" start="0,0" end="20,0" time="0" condition="!Control.IsVisible(121)">Conditional</animation>
+			<itemlayout height="40">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>620</width>
+					<height>35</height>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>600</width>
+					<height>35</height>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="40">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>620</width>
+					<height>35</height>
+					<visible>!Control.HasFocus(120)</visible>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>600</width>
+					<height>35</height>
+					<visible>Control.HasFocus(120)</visible>
+					<texture border="5">button-focus.png</texture>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>600</width>
+					<height>35</height>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="spincontrol" id="121">
+			<description>Next page button</description>
+			<posx>590</posx>
+			<posy>480</posy>
+			<subtype>page</subtype>
+			<font>font12b</font>
+			<onleft>120</onleft>
+			<onright>120</onright>
+			<ondown>120</ondown>
+			<onup>120</onup>
+			<textcolor>white</textcolor>
+			<showonepage>true</showonepage>
+			<visible>Control.IsVisible(120)</visible>
+		</control>
+	</controls>
+</window>
