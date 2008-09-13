@@ -222,7 +222,6 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
   CStdString strUrl;
   url.GetURL(strUrl);
   strUrl.Replace("shout://", "http://");
-  printf("Opening url: %s\n", strUrl.c_str());
   strncpy(m_opt.url, strUrl.c_str(), MAX_URL_LEN);
   sprintf(m_opt.useragent, "x%s", url.GetFileName().c_str());
   if (dlgProgress)
