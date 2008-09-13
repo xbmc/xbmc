@@ -1480,7 +1480,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   default:
     break;
   }
-  if (sortMethod != SORT_METHOD_NONE)
+  if (sortMethod == SORT_METHOD_FILE)
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::IgnoreFoldersAscending : SSortFileItem::IgnoreFoldersDescending);
+  else if (sortMethod != SORT_METHOD_NONE)
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::Ascending : SSortFileItem::Descending);
 
   m_sortMethod=sortMethod;
