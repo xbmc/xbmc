@@ -1,0 +1,794 @@
+<window type="dialog" id="142">
+	<defaultcontrol always="true">1</defaultcontrol>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="group">
+			<posx>0</posx>
+			<posy>520</posy>
+			<visible>!VideoPlayer.Content(Movies) + !VideoPlayer.Content(Episodes) + !VideoPlayer.Content(MusicVideos) + !VideoPlayer.Content(LiveTV)</visible>
+			<control type="image">
+				<description>Icon info background image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>210</width>
+				<height>170</height>
+				<texture>black-back.png</texture>
+			</control>
+			<control type="image">
+				<description>media info background image</description>
+				<posx>215</posx>
+				<posy>0</posy>
+				<width>1065</width>
+				<height>170</height>
+				<texture>black-back.png</texture>
+			</control>
+			<control type="label" id="1">
+				<description>System Time Label</description>
+				<posx>1250</posx>
+				<posy>10</posy>
+				<width>200</width>
+				<height>25</height>
+				<textcolor>green</textcolor>
+				<label>$INFO[System.Time]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font13</font>
+			</control>
+			<control type="image">
+				<description>cover image</description>
+				<posx>30</posx>
+				<posy>5</posy>
+				<width>175</width>
+				<height>160</height>
+				<info>VideoPlayer.cover</info>
+				<aspectratio align="right">keep</aspectratio>
+			</control>
+			<control type="label">
+				<posx>230</posx>
+				<posy>10</posy>
+				<width>1020</width>
+				<height>25</height>
+				<label>$INFO[VideoPlayer.Studio]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey2</textcolor>
+			</control>
+			<control type="label">
+				<posx>230</posx>
+				<posy>38</posy>
+				<width>1020</width>
+				<height>25</height>
+				<label>$INFO[VideoPlayer.Title]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font18b</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<posx>230</posx>
+				<posy>70</posy>
+				<width>885</width>
+				<height>25</height>
+				<label>$INFO[VideoPlayer.Genre]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey2</textcolor>
+			</control>
+			<control type="label">
+				<description>time label</description>
+				<posx>230</posx>
+				<posy>100</posy>
+				<width>280</width>
+				<height>25</height>
+				<label>$INFO[VideoPlayer.Time]$INFO[Player.Duration, / ]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+			</control>
+			<control type="label">
+				<description>Chapter Pos No</description>
+				<posx>1250</posx>
+				<posy>100</posy>
+				<width>500</width>
+				<height>25</height>
+				<textcolor>white</textcolor>
+				<label>$INFO[Player.Chapter,$LOCALIZE[21396]: ]$INFO[Player.ChapterCount, / ]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<visible>Player.ChapterCount</visible>
+			</control>
+			<control type="progress">
+				<description>Progressbar</description>
+				<posx>230</posx>
+				<posy>130</posy>
+				<width>1020</width>
+				<height>8</height>
+				<info>Player.Progress</info>
+			</control>
+			<control type="label" id="1">
+				<posx>1250</posx>
+				<posy>140</posy>
+				<width>1020</width>
+				<height>25</height>
+				<label>$INFO[Player.ChapterName,$LOCALIZE[31020] : ]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font11</font>
+				<textcolor>grey2</textcolor>
+				<scroll>true</scroll>
+			</control>
+		</control>
+		<control type="group">
+			<posx>0</posx>
+			<posy>380</posy>
+			<visible>VideoPlayer.Content(Movies)</visible>
+			<control type="image">
+				<description>Icon info background image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>235</width>
+				<height>310</height>
+				<texture>black-back.png</texture>
+			</control>
+			<control type="image">
+				<description>cover image</description>
+				<posx>30</posx>
+				<posy>5</posy>
+				<width>200</width>
+				<height>300</height>
+				<info>VideoPlayer.cover</info>
+				<aspectratio align="right">keep</aspectratio>
+			</control>
+			<control type="group">
+				<posy>140</posy>
+				<control type="image">
+					<description>media info background image</description>
+					<posx>240</posx>
+					<posy>0</posy>
+					<width>1040</width>
+					<height>170</height>
+					<texture>black-back.png</texture>
+				</control>
+				<control type="image">
+					<description>Button background image</description>
+					<posx>205r</posx>
+					<posy>0</posy>
+					<width>85</width>
+					<height>32</height>
+					<texture border="15,0,15,15">osd-panel-top.png</texture>
+				</control>
+				<control type="button" id="1">
+					<description>SmallInfo button</description>
+					<posx>195r</posx>
+					<posy>0</posy>
+					<width>32</width>
+					<height>32</height>
+					<label>-</label>
+					<font>-</font>
+					<aligny>-</aligny>
+					<texturefocus>osd_button_info_1.png</texturefocus>
+					<texturenofocus>osd_button_info_1_nofocus.png</texturenofocus>
+					<onleft>2</onleft>
+					<onright>2</onright>
+					<onup>1</onup>
+					<ondown>1</ondown>
+				</control>
+				<control type="button" id="2">
+					<description>SmallInfo button</description>
+					<posx>163r</posx>
+					<posy>0</posy>
+					<width>32</width>
+					<height>32</height>
+					<label>-</label>
+					<font>-</font>
+					<aligny>-</aligny>
+					<texturefocus>osd_button_info_2.png</texturefocus>
+					<texturenofocus>osd_button_info_2_nofocus.png</texturenofocus>
+					<onleft>1</onleft>
+					<onright>60</onright>
+					<onup>2</onup>
+					<ondown>2</ondown>
+				</control>
+				<control type="label">
+					<posx>255</posx>
+					<posy>10</posy>
+					<width>995</width>
+					<height>25</height>
+					<label>$INFO[VideoPlayer.Studio]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>grey2</textcolor>
+				</control>
+				<control type="label">
+					<posx>255</posx>
+					<posy>38</posy>
+					<width>995</width>
+					<height>25</height>
+					<label>$INFO[VideoPlayer.Title]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font18b</font>
+					<scroll>true</scroll>
+				</control>
+				<control type="label">
+					<posx>255</posx>
+					<posy>70</posy>
+					<width>995</width>
+					<height>25</height>
+					<label>$INFO[VideoPlayer.Genre]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>grey2</textcolor>
+				</control>
+				<control type="label">
+					<description>time label</description>
+					<posx>255</posx>
+					<posy>100</posy>
+					<width>280</width>
+					<height>25</height>
+					<label>$INFO[VideoPlayer.Time]$INFO[Player.Duration, / ]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="label" id="1">
+					<description>System Time Label</description>
+					<posx>1250</posx>
+					<posy>10</posy>
+					<width>200</width>
+					<height>25</height>
+					<textcolor>green</textcolor>
+					<label>$INFO[System.Time]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+				</control>
+				<control type="label">
+					<description>Chapter Pos No</description>
+					<posx>1250</posx>
+					<posy>100</posy>
+					<width>500</width>
+					<height>25</height>
+					<textcolor>white</textcolor>
+					<label>$INFO[Player.Chapter,$LOCALIZE[21396]: ]$INFO[Player.ChapterCount, / ]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<visible>Player.ChapterCount</visible>
+				</control>
+				<control type="progress">
+					<description>Progressbar</description>
+					<posx>255</posx>
+					<posy>130</posy>
+					<width>995</width>
+					<height>8</height>
+					<info>Player.Progress</info>
+				</control>
+				<control type="label" id="1">
+					<posx>1250</posx>
+					<posy>140</posy>
+					<width>995</width>
+					<height>25</height>
+					<label>$INFO[Player.ChapterName,$LOCALIZE[31020] : ]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font11</font>
+					<textcolor>grey2</textcolor>
+					<scroll>true</scroll>
+				</control>
+			</control>
+			<control type="group">
+				<posy>0</posy>
+				<visible>Control.HasFocus(2) | Control.HasFocus(60)</visible>
+				<include>VisibleFadeEffect</include>
+				<control type="image">
+					<description>media info background image</description>
+					<posx>240</posx>
+					<posy>0</posy>
+					<width>1040</width>
+					<height>135</height>
+					<texture>black-back.png</texture>
+				</control>
+				<control type="textbox">
+					<description>Description Value for Movies</description>
+					<posx>255</posx>
+					<posy>15</posy>
+					<width>975</width>
+					<height>105</height>
+					<font>font11</font>
+					<align>left</align>
+					<textcolor>white</textcolor>
+					<pagecontrol>60</pagecontrol>
+					<label>$INFO[VideoPlayer.Plot]</label>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+				</control>
+				<control type="scrollbar" id="60">
+					<posx>1230</posx>
+					<posy>15</posy>
+					<width>20</width>
+					<height>105</height>
+					<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+					<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+					<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+					<textureslidernib>scrollbar_nib.png</textureslidernib>
+					<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+					<onleft>2</onleft>
+					<onright>1</onright>
+					<showonepage>false</showonepage>
+					<orientation>vertical</orientation>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<posx>0</posx>
+			<posy>380</posy>
+			<visible>VideoPlayer.Content(Episodes)</visible>
+			<control type="image">
+				<description>Icon info background image</description>
+				<posx>0</posx>
+				<posy>140</posy>
+				<width>335</width>
+				<height>170</height>
+				<texture>black-back.png</texture>
+			</control>
+			<control type="image">
+				<description>cover image</description>
+				<posx>30</posx>
+				<posy>145</posy>
+				<width>300</width>
+				<height>160</height>
+				<info>VideoPlayer.cover</info>
+				<aspectratio align="right">keep</aspectratio>
+			</control>
+			<control type="group">
+				<posy>140</posy>
+				<control type="image">
+					<description>media info background image</description>
+					<posx>340</posx>
+					<posy>0</posy>
+					<width>940</width>
+					<height>170</height>
+					<texture>black-back.png</texture>
+				</control>
+				<control type="image">
+					<description>Button background image</description>
+					<posx>205r</posx>
+					<posy>0</posy>
+					<width>85</width>
+					<height>32</height>
+					<texture border="15,0,15,15">osd-panel-top.png</texture>
+				</control>
+				<control type="button" id="1">
+					<description>SmallInfo button</description>
+					<posx>195r</posx>
+					<posy>0</posy>
+					<width>32</width>
+					<height>32</height>
+					<label>-</label>
+					<font>-</font>
+					<aligny>-</aligny>
+					<texturefocus>osd_button_info_1.png</texturefocus>
+					<texturenofocus>osd_button_info_1_nofocus.png</texturenofocus>
+					<onleft>2</onleft>
+					<onright>2</onright>
+					<onup>1</onup>
+					<ondown>1</ondown>
+				</control>
+				<control type="button" id="2">
+					<description>SmallInfo button</description>
+					<posx>163r</posx>
+					<posy>0</posy>
+					<width>32</width>
+					<height>32</height>
+					<label>-</label>
+					<font>-</font>
+					<aligny>-</aligny>
+					<texturefocus>osd_button_info_2.png</texturefocus>
+					<texturenofocus>osd_button_info_2_nofocus.png</texturenofocus>
+					<onleft>1</onleft>
+					<onright>60</onright>
+					<onup>2</onup>
+					<ondown>2</ondown>
+				</control>
+				<control type="label">
+					<posx>355</posx>
+					<posy>10</posy>
+					<width>895</width>
+					<height>25</height>
+					<label>$INFO[VideoPlayer.TVShowTitle]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>grey2</textcolor>
+				</control>
+				<control type="label">
+					<posx>355</posx>
+					<posy>38</posy>
+					<width>895</width>
+					<height>25</height>
+					<label>$INFO[VideoPlayer.Title]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font18b</font>
+					<scroll>true</scroll>
+				</control>
+				<control type="label">
+					<posx>355</posx>
+					<posy>70</posy>
+					<width>895</width>
+					<height>25</height>
+					<label>$INFO[VideoPlayer.Season,$LOCALIZE[20373]: ] &#32;&#32;&#32; $INFO[VideoPlayer.Episode,$LOCALIZE[20359]: ]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>grey2</textcolor>
+				</control>
+				<control type="label">
+					<description>time label</description>
+					<posx>355</posx>
+					<posy>100</posy>
+					<width>280</width>
+					<height>25</height>
+					<label>$INFO[VideoPlayer.Time]$INFO[Player.Duration, / ]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="label" id="1">
+					<description>System Time Label</description>
+					<posx>1250</posx>
+					<posy>10</posy>
+					<width>200</width>
+					<height>25</height>
+					<textcolor>green</textcolor>
+					<label>$INFO[System.Time]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+				</control>
+				<control type="label">
+					<description>Chapter Pos No</description>
+					<posx>1250</posx>
+					<posy>100</posy>
+					<width>500</width>
+					<height>25</height>
+					<textcolor>white</textcolor>
+					<label>$INFO[Player.Chapter,$LOCALIZE[21396]: ]$INFO[Player.ChapterCount, / ]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<visible>Player.ChapterCount</visible>
+				</control>
+				<control type="progress">
+					<description>Progressbar</description>
+					<posx>355</posx>
+					<posy>130</posy>
+					<width>895</width>
+					<height>8</height>
+					<info>Player.Progress</info>
+				</control>
+				<control type="label" id="1">
+					<posx>1250</posx>
+					<posy>140</posy>
+					<width>895</width>
+					<height>25</height>
+					<label>$INFO[Player.ChapterName,$LOCALIZE[31020] : ]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font11</font>
+					<textcolor>grey2</textcolor>
+					<scroll>true</scroll>
+				</control>
+			</control>
+			<control type="group">
+				<posy>0</posy>
+				<visible>Control.HasFocus(2) | Control.HasFocus(60)</visible>
+				<include>VisibleFadeEffect</include>
+				<control type="image">
+					<description>media info background image</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>1280</width>
+					<height>135</height>
+					<texture>black-back.png</texture>
+				</control>
+				<control type="textbox">
+					<description>Description Value for Movies</description>
+					<posx>30</posx>
+					<posy>15</posy>
+					<width>1200</width>
+					<height>105</height>
+					<font>font11</font>
+					<align>left</align>
+					<textcolor>white</textcolor>
+					<pagecontrol>60</pagecontrol>
+					<label>$INFO[VideoPlayer.Plot]</label>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+				</control>
+				<control type="scrollbar" id="60">
+					<posx>1230</posx>
+					<posy>15</posy>
+					<width>20</width>
+					<height>105</height>
+					<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+					<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+					<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+					<textureslidernib>scrollbar_nib.png</textureslidernib>
+					<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+					<onleft>2</onleft>
+					<onright>1</onright>
+					<showonepage>false</showonepage>
+					<orientation>vertical</orientation>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<posx>0</posx>
+			<posy>520</posy>
+			<visible>VideoPlayer.Content(MusicVideos)</visible>
+			<control type="image">
+				<description>Icon info background image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>210</width>
+				<height>170</height>
+				<texture>black-back.png</texture>
+			</control>
+			<control type="image">
+				<description>media info background image</description>
+				<posx>215</posx>
+				<posy>0</posy>
+				<width>1065</width>
+				<height>170</height>
+				<texture>black-back.png</texture>
+			</control>
+			<control type="label" id="1">
+				<description>System Time Label</description>
+				<posx>1250</posx>
+				<posy>10</posy>
+				<width>200</width>
+				<height>25</height>
+				<textcolor>green</textcolor>
+				<label>$INFO[System.Time]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font13</font>
+			</control>
+			<control type="image">
+				<description>cover image</description>
+				<posx>30</posx>
+				<posy>5</posy>
+				<width>175</width>
+				<height>160</height>
+				<info>VideoPlayer.cover</info>
+				<aspectratio align="right">keep</aspectratio>
+			</control>
+			<control type="label">
+				<posx>230</posx>
+				<posy>10</posy>
+				<width>1020</width>
+				<height>25</height>
+				<label>$INFO[VideoPlayer.Artist]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey2</textcolor>
+			</control>
+			<control type="label">
+				<posx>230</posx>
+				<posy>38</posy>
+				<width>1020</width>
+				<height>25</height>
+				<label>$INFO[VideoPlayer.Title]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font18b</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<posx>230</posx>
+				<posy>70</posy>
+				<width>885</width>
+				<height>25</height>
+				<label>$INFO[VideoPlayer.Studio]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey2</textcolor>
+			</control>
+			<control type="label">
+				<description>time label</description>
+				<posx>230</posx>
+				<posy>100</posy>
+				<width>280</width>
+				<height>25</height>
+				<label>$INFO[VideoPlayer.Time]$INFO[Player.Duration, / ]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+			</control>
+			<control type="progress">
+				<description>Progressbar</description>
+				<posx>230</posx>
+				<posy>130</posy>
+				<width>1020</width>
+				<height>8</height>
+				<info>Player.Progress</info>
+			</control>
+		</control>
+		<control type="group">
+			<posx>0</posx>
+			<posy>520</posy>
+			<visible>VideoPlayer.Content(LiveTV)</visible>
+			<control type="image">
+				<description>Icon info background image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>210</width>
+				<height>170</height>
+				<texture>black-back.png</texture>
+			</control>
+			<control type="image">
+				<description>media info background image</description>
+				<posx>215</posx>
+				<posy>0</posy>
+				<width>1065</width>
+				<height>170</height>
+				<texture>black-back.png</texture>
+			</control>
+			<control type="image">
+				<description>Button background image</description>
+				<posx>205r</posx>
+				<posy>0</posy>
+				<width>85</width>
+				<height>32</height>
+				<texture border="15,0,15,15">osd-panel-top.png</texture>
+			</control>
+			<control type="button" id="1">
+				<description>SmallInfo button</description>
+				<posx>195r</posx>
+				<posy>0</posy>
+				<width>32</width>
+				<height>32</height>
+				<label>-</label>
+				<font>-</font>
+				<aligny>-</aligny>
+				<texturefocus>osd_button_info_1.png</texturefocus>
+				<texturenofocus>osd_button_info_1_nofocus.png</texturenofocus>
+				<onleft>2</onleft>
+				<onright>2</onright>
+				<onup>1</onup>
+				<ondown>1</ondown>
+			</control>
+			<control type="button" id="2">
+				<description>SmallInfo button</description>
+				<posx>163r</posx>
+				<posy>0</posy>
+				<width>32</width>
+				<height>32</height>
+				<label>-</label>
+				<font>-</font>
+				<aligny>-</aligny>
+				<texturefocus>osd_button_info_2.png</texturefocus>
+				<texturenofocus>osd_button_info_2_nofocus.png</texturenofocus>
+				<onleft>1</onleft>
+				<onright>60</onright>
+				<onup>2</onup>
+				<ondown>2</ondown>
+			</control>
+			<control type="label" id="1">
+				<description>System Time Label</description>
+				<posx>1250</posx>
+				<posy>10</posy>
+				<width>200</width>
+				<height>25</height>
+				<textcolor>green</textcolor>
+				<label>$INFO[System.Time]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font13</font>
+			</control>
+			<control type="image">
+				<description>cover image</description>
+				<posx>30</posx>
+				<posy>5</posy>
+				<width>175</width>
+				<height>160</height>
+				<info>VideoPlayer.cover</info>
+				<aspectratio align="right">keep</aspectratio>
+			</control>
+			<control type="label">
+				<posx>230</posx>
+				<posy>38</posy>
+				<width>1020</width>
+				<height>25</height>
+				<label>$INFO[VideoPlayer.Title]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font18b</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<posx>230</posx>
+				<posy>70</posy>
+				<width>885</width>
+				<height>25</height>
+				<label>$INFO[VideoPlayer.Genre]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey2</textcolor>
+			</control>
+			<control type="label">
+				<description>time label</description>
+				<posx>230</posx>
+				<posy>100</posy>
+				<width>280</width>
+				<height>25</height>
+				<label>$INFO[VideoPlayer.Time]$INFO[Player.Duration, / ]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+			</control>
+			<control type="progress">
+				<description>Progressbar</description>
+				<posx>230</posx>
+				<posy>130</posy>
+				<width>1020</width>
+				<height>8</height>
+				<info>Player.Progress</info>
+			</control>
+			<control type="group">
+				<posy>0</posy>
+				<visible>Control.HasFocus(2) | Control.HasFocus(60)</visible>
+				<include>VisibleFadeEffect</include>
+				<control type="image">
+					<description>media info background image</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>1280</width>
+					<height>135</height>
+					<texture>black-back.png</texture>
+				</control>
+				<control type="textbox">
+					<description>Description Value for Movies</description>
+					<posx>30</posx>
+					<posy>15</posy>
+					<width>1200</width>
+					<height>105</height>
+					<font>font11</font>
+					<align>left</align>
+					<textcolor>white</textcolor>
+					<pagecontrol>60</pagecontrol>
+					<label>$INFO[VideoPlayer.Plot]</label>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+				</control>
+				<control type="scrollbar" id="60">
+					<posx>1230</posx>
+					<posy>15</posy>
+					<width>20</width>
+					<height>105</height>
+					<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+					<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+					<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+					<textureslidernib>scrollbar_nib.png</textureslidernib>
+					<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+					<onleft>2</onleft>
+					<onright>1</onright>
+					<showonepage>false</showonepage>
+					<orientation>vertical</orientation>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>
