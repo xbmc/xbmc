@@ -30,6 +30,8 @@ struct SSortFileItem
   // Sort by sort field
   static bool Ascending(const CFileItemPtr &left, const CFileItemPtr &right);
   static bool Descending(const CFileItemPtr &left, const CFileItemPtr &right);
+  static bool IgnoreFoldersAscending(const CFileItemPtr &left, const CFileItemPtr &right);
+  static bool IgnoreFoldersDescending(const CFileItemPtr &left, const CFileItemPtr &right);
 
   // Fill in sort field
   static void ByLabel(CFileItemPtr &item);
