@@ -443,13 +443,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     *item->GetVideoInfoTag() = movieDetails;
     pDlgInfo->SetMovie(item);
     pDlgInfo->DoModal();
-    if (!info.strContent.Equals("plugin")){
-      CStdString thumb(pDlgInfo->GetThumbnail());
-      if (thumb != item->GetThumbnailImage()) {
-        item->SetThumbnailImage(pDlgInfo->GetThumbnail());
-        return true;
-      }
-    }
     if ( !pDlgInfo->NeedRefresh() ) return false;
   }
 
@@ -478,9 +471,9 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
 
   CVideoInfoScanner::NFOResult result = scanner.CheckForNFOFile(item,settings.parent_name_root,info,pDlgProgress,scrUrl);
   if (result == CVideoInfoScanner::FULL_NFO)
-        hasDetails = true;
+    hasDetails = true;
   if (result == CVideoInfoScanner::URL_NFO)
-        IMDB.SetScraperInfo(info);
+    IMDB.SetScraperInfo(info);
 
   CStdString movieName;
   if (item->m_bIsFolder || settings.parent_name)
