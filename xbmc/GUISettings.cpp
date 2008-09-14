@@ -559,7 +559,7 @@ void CGUISettings::Initialize()
   // appearance settings
   AddGroup(7, 480);
   AddCategory(7,"lookandfeel", 14037);
-  AddString(1, "lookandfeel.skin",166,"Project Mayhem III", SPIN_CONTROL_TEXT);
+  AddString(1, "lookandfeel.skin",166,DEFAULT_SKIN, SPIN_CONTROL_TEXT);
   AddString(2, "lookandfeel.skintheme",15111,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddString(3, "lookandfeel.skincolors",14078, "SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddString(4, "lookandfeel.font",13303,"Default", SPIN_CONTROL_TEXT);
