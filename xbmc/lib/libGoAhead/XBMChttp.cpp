@@ -605,7 +605,7 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
   // getmediadirectory&parameter=type;location;options
   // options = showdate, pathsonly
   // returns a listing of
-  // <li>label;path;0|1=folder;date
+  // label;path;0|1=folder;date
 
   int iType = -1;
   CStdString strType;
@@ -819,7 +819,7 @@ int CXbmcHttp::xbmcGetXBETitle(int numParas, CStdString paras[])
 int CXbmcHttp::xbmcGetSources(int numParas, CStdString paras[])
 {
   // returns the share listing in this format:
-  // <li>type;name;path
+  // type;name;path
   // literal semicolons are translated into ;;
   // options include the type, and pathsonly boolean
 
@@ -1680,6 +1680,10 @@ int CXbmcHttp::xbmcGetThumb(int numParas, CStdString paras[], bool bGetThumb)
     thumb="<img src=\"data:image/jpg;base64,";
     linesize=0;
   }
+  if (numParas>1)
+     tempSkipWebFooterHeader=paras[1].ToLower() == "bare";
+  if (numParas>2)
+     tempSkipWebFooterHeader=paras[2].ToLower() == "bare";
   if (CUtil::IsRemote(paras[0]))
   {
     CStdString strDest=_P("Z:\\")+"xbmcDownloadFile.tmp";
@@ -1695,7 +1699,7 @@ int CXbmcHttp::xbmcGetThumb(int numParas, CStdString paras[], bool bGetThumb)
     }
   }
   else
-    thumb+=encodeFileToBase64(paras[0],linesize);
+    thumb+=encodeFileToBase64(_P(paras[0]),linesize);
 
   if (bImgTag)
   {
@@ -1769,7 +1773,7 @@ int CXbmcHttp::xbmcSetCurrentPlayList(int numParas, CStdString paras[])
 int CXbmcHttp::xbmcGetPlayListContents(int numParas, CStdString paras[])
 {
   // options = showindex
-  // <li>index;path
+  // index;path
 
   CStdString list="";
   int playList = g_playlistPlayer.GetCurrentPlaylist();
@@ -2500,13 +2504,13 @@ int CXbmcHttp::xbmcConfig(int numParas, CStdString paras[])
   {
     //getoption has been deprecated so the following is just to prevent (my) legacy client code breaking (to be removed later)
     if (paras[1]=="pictureextensions")
-      response="<li>"+g_stSettings.m_pictureExtensions;
+      response=openTag+g_stSettings.m_pictureExtensions;
 	else if (paras[1]=="videoextensions")
-      response="<li>"+g_stSettings.m_videoExtensions;
+      response=openTag+g_stSettings.m_videoExtensions;
 	else if (paras[1]=="musicextensions")
-      response="<li>"+g_stSettings.m_musicExtensions;
+      response=openTag+g_stSettings.m_musicExtensions;
 	else
-	  response="<li>Error:Function is deprecated";
+	  response=openTag+"Error:Function is deprecated";
     //ret=XbmcWebsHttpAPIConfigGetOption(response, argc, argv);
     //if (ret!=-1)
     ret=1;
@@ -2523,7 +2527,6 @@ int CXbmcHttp::xbmcConfig(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:WebServer needs to be running - is it?");
   else
   {
-	response.Replace("<li>",openTag);
     return SetResponse(response);
   }
 }
@@ -2929,6 +2932,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
     CLog::Log(LOGDEBUG, "HttpApi Start command: %s  paras: %s", command.c_str(), parameter.c_str());
   else
     CLog::Log(LOGDEBUG, "HttpApi Start command: %s  paras: [not recorded]", command.c_str());
+  tempSkipWebFooterHeader=false;
   command=command.ToLower();
   if (numParas>=0)
   {
@@ -3130,18 +3134,10 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
   checkForFunctionTypeParas(cmd, paras);
   if (wp!=NULL)
   {
-	  if (eid==NO_EID && m_pXbmcHttp)
-	  {
-	    if (m_pXbmcHttp->incWebHeader)
-          websHeader(wp);
-	  };
-	  //else
-	    //websHeader(wp);
-
 	//we are being called via the webserver (rather than Python) so add any specific checks here
     if ((cmd=="webserverstatus") && (paras!=""))//(strcmp(parameter,XBMC_NONE)))
 	{
-	  response="Error:Can't turn off/on WebServer via a web call";
+	  response=m_pXbmcHttp->GetOpenTag()+"Error:Can't turn off/on WebServer via a web call";
 	  legalCmd=false;
 	}
   }
@@ -3162,14 +3158,22 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
 	}
 	if (cnt>199)
 	{
-	  response="Error:Timed out";
+	  response=m_pXbmcHttp->GetOpenTag()+"Error:Timed out";
 	  CLog::Log(LOGDEBUG, "HttpApi Timed out");
 	}
   }
   //flushresult
+  if (wp!=NULL)
+  {
+	  if (eid==NO_EID && m_pXbmcHttp && !m_pXbmcHttp->tempSkipWebFooterHeader)
+	  {
+	    if (m_pXbmcHttp->incWebHeader)
+          websHeader(wp);
+	  };
+  }
   retVal=flushResult(eid, wp, m_pXbmcHttp->userHeader+response+m_pXbmcHttp->userFooter);
   if (m_pXbmcHttp) //this should always be true unless something is very wrong
-    if ((wp!=NULL) && (m_pXbmcHttp->incWebFooter) && eid==NO_EID)
+    if ((wp!=NULL) && (m_pXbmcHttp->incWebFooter) && eid==NO_EID && !m_pXbmcHttp->tempSkipWebFooterHeader)
       websFooter(wp);
   return retVal;
 }
