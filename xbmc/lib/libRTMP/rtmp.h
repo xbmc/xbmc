@@ -39,7 +39,7 @@ namespace RTMP_LIB
       void SetPlayPath(const std::string &strPlayPath);
 
       bool Connect(const std::string &strRTMPLink);
-      inline bool IsConnected() { return m_socket > 0; }
+      inline bool IsConnected() { return m_socket != INVALID_SOCKET; }
 
       bool GetNextMediaPacket(RTMPPacket &packet);
 
@@ -116,4 +116,5 @@ namespace RTMP_LIB
 };
 
 #endif
+
 
