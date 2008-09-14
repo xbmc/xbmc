@@ -51,6 +51,11 @@ public:
   void GetAction(WORD wWindow, const CKey &key, CAction &action);
   WORD TranslateWindowString(const char *szWindow);
   bool TranslateActionString(const char *szAction, WORD &wAction);
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+  bool TranslateJoystickString(WORD wWindow, const char* szDevice, int id,
+                               bool axis, WORD& action, CStdString& strAction,
+                               bool &fullrange);
+#endif
 
 private:
   typedef std::multimap<WORD, CButtonAction> buttonMap; // our button map to fill in
@@ -66,8 +71,16 @@ private:
   void MapAction(WORD wButtonCode, const char *szAction, buttonMap &map);
 
   bool LoadKeymap(const CStdString &keymapPath);
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+  void MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick);
+
+  typedef std::map<WORD, std::map<int, std::string> > JoystickMap; // <window, <button/axis, action> >
+  std::map<std::string, JoystickMap> m_joystickButtonMap;      // <joy name, button map>
+  std::map<std::string, JoystickMap> m_joystickAxisMap;        // <joy name, axis map>
+#endif
 };
 
 extern CButtonTranslator g_buttonTranslator;
 
 #endif
+

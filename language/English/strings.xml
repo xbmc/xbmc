@@ -851,7 +851,7 @@
   <string id="12019">Yes</string>
   <string id="12020">Ask</string>
   <string id="12021">Start from beginning</string>
-  <string id="12022">Resume from last position</string>
+  <string id="12022">Resume from %s</string>
   <string id="12023">Validating existing trainers...</string>
 
   <string id="12310">0</string>
@@ -1116,6 +1116,7 @@
   <string id="13411">Minimum fanspeed</string>
   <string id="13412">- RSS Feeds Contain Right-To-Left Text</string>
   <string id="13413">Downloading</string>
+  <string id="13414">Hide artists who appear only on compilations</string>
   
   <string id="13600">Apple Remote</string>
   <string id="13601">Mode</string>

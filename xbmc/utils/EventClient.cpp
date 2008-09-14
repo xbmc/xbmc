@@ -32,10 +32,32 @@
 #include "Key.h"
 #include <map>
 #include <queue>
+#include "Util.h"
 
 using namespace EVENTCLIENT;
 using namespace EVENTPACKET;
 using namespace std;
+
+
+struct ButtonStateFinder
+{
+  ButtonStateFinder(const CEventButtonState& state)
+    : m_keycode(state.m_iKeyCode)
+    , m_map(state.m_mapName)
+    , m_button(state.m_buttonName)
+  {}
+
+  bool operator()(const CEventButtonState& state)
+  {
+    return state.m_mapName    == m_map
+        && state.m_iKeyCode   == m_keycode
+        && state.m_buttonName == m_button;
+  }
+  private:
+  unsigned short m_keycode;
+  std::string    m_map;
+  std::string    m_button;
+};
 
 /************************************************************************/
 /* CEventButtonState                                                    */
@@ -43,7 +65,7 @@ using namespace std;
 void CEventButtonState::Load()
 {
   if ( (m_iKeyCode == 0) )
-  { 
+  {
     if ( (m_mapName.length() > 0) && (m_buttonName.length() > 0) )
     {
       if ( m_mapName.compare("KB") == 0 ) // standard keyboard map
@@ -62,8 +84,8 @@ void CEventButtonState::Load()
       {
         m_iKeyCode = g_buttonTranslator.TranslateUniversalRemoteString( m_buttonName.c_str() );
       }
-      else if ( (m_mapName.length() > 3) && 
-                (m_mapName.compare(0, 2, "LI:") == 0) ) // starts with LI: ?
+      else if ( (m_mapName.length() > 3) &&
+                (m_mapName.compare(0, 3, "LI:") == 0) ) // starts with LI: ?
       {
 #ifdef HAS_LIRC
         string lircDevice = m_mapName.substr(3);
@@ -83,7 +105,14 @@ void CEventButtonState::Load()
   }
   else
   {
-    m_iKeyCode |= KEY_VKEY;
+    if (m_mapName.length() > 3 &&
+        (m_mapName.compare(0, 2, "JS") == 0) )
+    {
+      m_joystickName = m_mapName.substr(2);  // <num>:joyname
+      m_iControllerNumber = (unsigned char)(*(m_joystickName.c_str()))
+        - (unsigned char)'0'; // convert <num> to int
+      m_joystickName = m_joystickName.substr(2); // extract joyname
+    }
   }
 }
 
@@ -192,6 +221,14 @@ bool CEventClient::ProcessPacket(CEventPacket *packet)
     valid = true;
     break;
 
+  case PT_LOG:
+    valid = OnPacketLOG(packet);
+    break;
+
+  case PT_ACTION:
+    valid = OnPacketACTION(packet);
+    break;
+
   default:
     CLog::Log(LOGDEBUG, "ES: Got Unknown Packet");
     break;
@@ -290,15 +327,12 @@ bool CEventClient::OnPacketBYE(CEventPacket *packet)
   m_bGreeted = false;
   FreePacketQueues();
   m_currentButton.Reset();
-  
+
   return true;
 }
 
 bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
 {
-  if (!Greeted())
-    return false;
-
   unsigned char *payload = (unsigned char *)packet->Payload();
   int psize = (int)packet->PayloadSize();
 
@@ -319,55 +353,138 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
   if (!ParseUInt16(payload, psize, amount))
     return false;
 
+  // parse the map to use
+  if (!ParseString(payload, psize, map))
+    return false;
+
   // parse button name
   if (flags & PTB_USE_NAME)
   {
-    // parse the map to use
-    if (!ParseString(payload, psize, map))
-      return false;
-
     if (!ParseString(payload, psize, button))
       return false;
   }
 
-  if (flags & PTB_QUEUE)
+  unsigned short keycode;
+  if(flags & PTB_USE_NAME)
+    keycode = 0;
+  else if(flags & PTB_VKEY)
+    keycode = bcode|KEY_VKEY;
+  else
+    keycode = bcode;
+
+  float famount = 0;
+  if(flags & PTB_USE_AMOUNT)
   {
+    if(flags & PTB_AXIS)
+      famount = (float)amount/65535.0f*2.0f-1.0f;
+    else
+      famount = (float)amount/65535.0f;
+  }
+  bool active = (flags & PTB_DOWN) ? true : false;
+
+  if(flags & PTB_QUEUE)
+  {
+    /* find the last queued item of this type */
     CSingleLock lock(m_critSection);
-    m_buttonQueue.push (
-      new CEventButtonState( (flags & PTB_USE_NAME) ? 0 : bcode,
-                        map,
-                        button,
-                        (float)amount/65535.0f,
-                        false /* queued buttons cannot be repeated */ )
-      );
+
+    CEventButtonState state( keycode,
+                             map,
+                             button,
+                             famount,
+                             (flags & (PTB_AXIS|PTB_AXISSINGLE)) ? true  : false,
+                             (flags & PTB_NO_REPEAT)             ? false : true );
+
+    /* correct non active events so they work with rest of code */
+    if(!active)
+    {
+      state.m_bActive = false;
+      state.m_bRepeat = false;
+      state.m_fAmount = 0.0;
+    }
+
+    std::list<CEventButtonState>::reverse_iterator it;
+    it = find_if( m_buttonQueue.rbegin() , m_buttonQueue.rend(), ButtonStateFinder(state));
+
+    if(it == m_buttonQueue.rend())
+    {
+      if(active)
+        m_buttonQueue.push_back(state);
+    }
+    else
+    {
+      if(!active && it->m_bActive)  
+      {
+        /* since modifying the list invalidates the referse iteratator */
+        std::list<CEventButtonState>::iterator it2 = (++it).base();
+
+        /* if last event had an amount, we must resend without amount */
+        if(it2->m_fAmount != 0.0)
+          m_buttonQueue.push_back(state);
+
+        /* if the last event was waiting for a repeat interval, it has executed already.*/
+        if(it2->m_bRepeat)
+        {
+          if(it2->m_iNextRepeat > 0)
+            m_buttonQueue.erase(it2);
+          else
+            it2->m_bRepeat = false;
+        }
+
+      }
+      else if(active && !it->m_bActive)
+      {
+        m_buttonQueue.push_back(state);
+        if(!state.m_bRepeat && state.m_bAxis && state.m_fAmount != 0.0)
+        {
+          state.m_bActive = false;
+          state.m_bRepeat = false;
+          state.m_fAmount = 0.0;
+          m_buttonQueue.push_back(state);
+        }
+      }
+      else
+        it->m_fAmount = state.m_fAmount;
+    }
   }
   else
   {
     CSingleLock lock(m_critSection);
     if ( flags & PTB_DOWN )
     {
-      m_currentButton.m_iKeyCode   = (flags & PTB_USE_NAME) ? 0 : bcode;
+      m_currentButton.m_iKeyCode   = keycode;
       m_currentButton.m_mapName    = map;
       m_currentButton.m_buttonName = button;
-      m_currentButton.m_fAmount    = (flags & PTB_USE_AMOUNT) ? amount/65535.0f : 1.0f;
-      m_currentButton.m_bRepeat    = (flags & PTB_NO_REPEAT) ? false : true;      
+      m_currentButton.m_fAmount    = famount;
+      m_currentButton.m_bRepeat    = (flags & PTB_NO_REPEAT)  ? false : true;
+      m_currentButton.m_bAxis      = (flags & PTB_AXIS)       ? true : false;
+      m_currentButton.m_iNextRepeat = 0;
       m_currentButton.SetActive();
       m_currentButton.Load();
-      m_iNextRepeat = 0;
     }
     else
     {
+      /* when a button is released that had amount, make sure *
+       * to resend the keypress with an amount of 0           */
+      if(m_currentButton.m_fAmount > 0.0)
+      {
+        CEventButtonState state( m_currentButton.m_iKeyCode,
+                                 m_currentButton.m_mapName,
+                                 m_currentButton.m_buttonName,
+                                 0.0,
+                                 m_currentButton.m_bAxis,
+                                 false );
+
+        m_buttonQueue.push_back (state);
+      }
       m_currentButton.Reset();
     }
   }
+
   return true;
 }
 
 bool CEventClient::OnPacketMOUSE(CEventPacket *packet)
 {
-  if (!Greeted())
-    return false;
-
   unsigned char *payload = (unsigned char *)packet->Payload();
   int psize = (int)packet->PayloadSize();
   unsigned char flags;
@@ -400,9 +517,6 @@ bool CEventClient::OnPacketMOUSE(CEventPacket *packet)
 
 bool CEventClient::OnPacketNOTIFICATION(CEventPacket *packet)
 {
-  if (!Greeted())
-    return false;
-
   unsigned char *payload = (unsigned char *)packet->Payload();
   int psize = (int)packet->PayloadSize();
   string title, message;
@@ -467,6 +581,48 @@ bool CEventClient::OnPacketNOTIFICATION(CEventPacket *packet)
     g_application.m_guiDialogKaiToast.QueueNotification(iconfile.c_str(),
                                                         title.c_str(),
                                                         message.c_str());
+  }
+  return true;
+}
+
+bool CEventClient::OnPacketLOG(CEventPacket *packet)
+{
+  unsigned char *payload = (unsigned char *)packet->Payload();
+  int psize = (int)packet->PayloadSize();
+  string logmsg;
+  unsigned char ltype;
+
+  if (!ParseByte(payload, psize, ltype))
+    return false;
+  if (!ParseString(payload, psize, logmsg))
+    return false;
+
+  CLog::Log((int)ltype, "%s", logmsg.c_str());
+  return true;
+}
+
+bool CEventClient::OnPacketACTION(CEventPacket *packet)
+{
+  unsigned char *payload = (unsigned char *)packet->Payload();
+  int psize = (int)packet->PayloadSize();
+  string actionString;
+  unsigned char actionType;
+
+  if (!ParseByte(payload, psize, actionType))
+    return false;
+  if (!ParseString(payload, psize, actionString))
+    return false;
+
+  switch(actionType)
+  {
+  case AT_EXEC_BUILTIN:
+    CUtil::ExecBuiltIn(actionString);
+    break;
+
+  default:
+    CLog::Log(LOGDEBUG, "ES: Failed - ActionType: %i ActionString: %s", actionType, actionString.c_str());
+    return false;
+    break;
   }
   return true;
 }
@@ -540,38 +696,57 @@ void CEventClient::FreePacketQueues()
   m_seqPackets.clear();
 }
 
-unsigned short CEventClient::GetButtonCode()
+unsigned short CEventClient::GetButtonCode(std::string& joystickName, bool& isAxis, float& amount)
 {
   CSingleLock lock(m_critSection);
   unsigned short bcode = 0;
 
-  if ( ! m_buttonQueue.empty() )
-  {
-    CEventButtonState *btn = m_buttonQueue.front();
-    m_buttonQueue.pop();
-
-    if ( btn )
-    {
-      if (btn->Active())
-      {
-        bcode = btn->KeyCode();
-      }
-      delete btn;
-    }
-  }
-  else if ( m_currentButton.Active() )
+  if ( m_currentButton.Active() )
   {
     bcode = m_currentButton.KeyCode();
+    joystickName = m_currentButton.JoystickName();
+    isAxis = m_currentButton.Axis();
+    amount = m_currentButton.Amount();
+
     if ( ! m_currentButton.Repeat() )
       m_currentButton.Reset();
     else
     {
-      if ( ! CheckButtonRepeat() )
+      if ( ! CheckButtonRepeat(m_currentButton.m_iNextRepeat) )
+        bcode = 0;
+    }
+    return bcode;
+  }
+
+  if(m_buttonQueue.empty())
+    return 0;
+
+
+  std::list<CEventButtonState> repeat;
+  std::list<CEventButtonState>::iterator it;
+  for(it = m_buttonQueue.begin(); bcode == 0 && it != m_buttonQueue.end(); it++)
+  {
+    bcode        = it->KeyCode();
+    joystickName = it->JoystickName();
+    isAxis       = it->Axis();
+    amount       = it->Amount();
+
+    if(it->Repeat())
+    {
+      /* MUST update m_iNextRepeat before resend */
+      bool skip = !it->Axis() && !CheckButtonRepeat(it->m_iNextRepeat);
+
+      repeat.push_back(*it);
+      if(skip)
       {
         bcode = 0;
+        continue;
       }
     }
   }
+
+  m_buttonQueue.erase(m_buttonQueue.begin(), it);
+  m_buttonQueue.insert(m_buttonQueue.end(), repeat.begin(), repeat.end());
   return bcode;
 }
 
@@ -580,10 +755,10 @@ bool CEventClient::GetMousePos(float& x, float& y)
   CSingleLock lock(m_critSection);
   if (m_bMouseMoved)
   {
-    x = (float)((m_iMouseX / 65535.0f) * 
+    x = (float)((m_iMouseX / 65535.0f) *
                 (g_graphicsContext.GetViewWindow().right
                  -g_graphicsContext.GetViewWindow().left));
-    y = (float)((m_iMouseY / 65535.0f) * 
+    y = (float)((m_iMouseY / 65535.0f) *
                 (g_graphicsContext.GetViewWindow().bottom
                  -g_graphicsContext.GetViewWindow().top));
     m_bMouseMoved = false;
@@ -592,24 +767,24 @@ bool CEventClient::GetMousePos(float& x, float& y)
   return false;
 }
 
-bool CEventClient::CheckButtonRepeat()
+bool CEventClient::CheckButtonRepeat(unsigned int &next)
 {
   unsigned int now = timeGetTime();
 
-  if ( m_iNextRepeat == 0 )
+  if ( next == 0 )
   {
-    m_iNextRepeat = now + m_iRepeatDelay;
+    next = now + m_iRepeatDelay;
     return true;
   }
-  else if ( now > m_iNextRepeat )
+  else if ( now > next )
   {
-    m_iNextRepeat = now + m_iRepeatSpeed;
+    next = now + m_iRepeatSpeed;
     return true;
   }
   return false;
 }
 
-bool CEventClient::Alive()
+bool CEventClient::Alive() const
 {
   // 60 seconds timeout
   if ( (time(NULL) - m_lastPing) > 60 )

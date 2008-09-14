@@ -229,14 +229,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     return true;
     break;
 
-  case ACTION_SHOW_OSD:  // Show the OSD
-    {
-      CGUIWindowOSD *pOSD = (CGUIWindowOSD *)m_gWindowManager.GetWindow(WINDOW_OSD);
-      if (pOSD) pOSD->DoModal();
-      return true;
-    }
-    break;
-
   case ACTION_SHOW_SUBTITLES:
     {
       g_application.m_pPlayer->SetSubtitleVisible(!g_application.m_pPlayer->GetSubtitleVisible());
