@@ -1950,6 +1950,26 @@ bool CVideoDatabase::GetResumeBookMark(const CStdString& strFilenameAndPath, CBo
   return false;
 }
 
+void CVideoDatabase::DeleteResumeBookMark(const CStdString &strFilenameAndPath)
+{
+  if (!m_pDB.get() || !m_pDS.get())
+    return;
+
+  int fileID = GetFileId(strFilenameAndPath);
+  if (fileID < -1)
+    return;
+
+  try
+  {
+    CStdString sql = FormatSQL("delete from bookmark where idFile=%i and type=%i", fileID, CBookmark::RESUME);
+    m_pDS->exec(sql.c_str());
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+  }
+}
+
 void CVideoDatabase::GetEpisodesByFile(const CStdString& strFilenameAndPath, vector<CVideoInfoTag>& episodes)
 {
   try
@@ -2297,6 +2317,10 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
       }
     }
 
+    long lFileId = GetFileId(strFilenameAndPath);
+    if (lFileId < 0)
+      return ;
+
     CStdString strSQL;
     strSQL=FormatSQL("delete from actorlinkepisode where idepisode=%i", lEpisodeId);
     m_pDS->exec(strSQL.c_str());
@@ -2319,7 +2343,7 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
     {
       ClearBookMarksOfFile(strFilenameAndPath);
 
-      strSQL=FormatSQL("delete from episode where idepisode=%i", lEpisodeId);
+      strSQL=FormatSQL("delete from episode where idfile=%i", lFileId);
       m_pDS->exec(strSQL.c_str());
     }
     /*
@@ -4050,7 +4074,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->SetProperty("unwatchedepisodes", it->second.numEpisodes - it->second.numWatched);
         pItem->GetVideoInfoTag()->m_playCount = (it->second.numEpisodes == it->second.numWatched) ? 1 : 0;
         pItem->SetCachedSeasonThumb();
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
         items.Add(pItem);
       }
     }
@@ -4081,7 +4105,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->SetProperty("unwatchedepisodes", totalEpisodes - watchedEpisodes);
         pItem->GetVideoInfoTag()->m_playCount = (totalEpisodes == watchedEpisodes) ? 1 : 0;
         pItem->SetCachedSeasonThumb();
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
         items.Add(pItem);
         m_pDS->next();
       }
@@ -4226,7 +4250,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
         pItem->SetProperty("watchedepisodes", movie.m_playCount);
         pItem->SetProperty("unwatchedepisodes", movie.m_iEpisode - movie.m_playCount);
         pItem->GetVideoInfoTag()->m_playCount = (movie.m_iEpisode == movie.m_playCount) ? 1 : 0;
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,pItem->GetVideoInfoTag()->m_playCount > 0);
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
         pItem->CacheFanart();
         if (CFile::Exists(pItem->GetCachedFanart()))
           pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
@@ -4308,7 +4332,7 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
         if (bStacked)
         {
           pItem->GetVideoInfoTag()->m_playCount = (pItem->GetVideoInfoTag()->m_iEpisode == pItem->GetPropertyInt("watchedepisodes")) ? 1 : 0;
-          pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
+          pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode == 0));
           if (!strFanArt.IsEmpty())
             pItem->SetProperty("fanart_image", strFanArt);
         }
@@ -4331,17 +4355,23 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
         int iEpisode = pItem->GetVideoInfoTag()->m_iEpisode;
         //CStdString strFanArt = pItem->GetProperty("fanart_image");
 
+        // do we have a dvd folder, ie foo/VIDEO_TS.IFO or foo/VIDEO_TS/VIDEO_TS.IFO
+        CStdString strFileNameAndPath = pItem->GetVideoInfoTag()->m_strFileNameAndPath;
+        bool bDvdFolder = strFileNameAndPath.Right(12).Equals("VIDEO_TS.IFO");
+
         vector<CStdString> paths;
-        paths.push_back(pItem->GetVideoInfoTag()->m_strFileNameAndPath);
+        paths.push_back(strFileNameAndPath);
         CLog::Log(LOGDEBUG, "Stack episode (%i,%i):[%s]", iSeason, iEpisode, paths[0].c_str());
 
         int j = i + 1;
+        int iPlayCount = pItem->GetVideoInfoTag()->m_playCount;
         while (j < items.Size())
         {
           CFileItemPtr jItem = items.Get(j);
           const CVideoInfoTag *jTag = jItem->GetVideoInfoTag();
+          CStdString jFileNameAndPath = jTag->m_strFileNameAndPath;
 
-          CLog::Log(LOGDEBUG, " *testing (%i,%i):[%s]", jTag->m_iSeason, jTag->m_iEpisode, jTag->m_strFileNameAndPath.c_str());
+          CLog::Log(LOGDEBUG, " *testing (%i,%i):[%s]", jTag->m_iSeason, jTag->m_iEpisode, jFileNameAndPath.c_str());
           // compare path, season, episode
           if (
             jTag &&
@@ -4350,16 +4380,29 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
             jTag->m_iEpisode == iEpisode
             )
           {
-            paths.push_back(jTag->m_strFileNameAndPath);
+            // keep checking to see if this is dvd folder
+            if (!bDvdFolder)
+            {
+              bDvdFolder = jFileNameAndPath.Right(12).Equals("VIDEO_TS.IFO");
+              // if we have a dvd folder, we stack differently
+              if (bDvdFolder)
+              {
+                // remove all the other items and ONLY show the VIDEO_TS.IFO file
+                paths.empty();
+                paths.push_back(jFileNameAndPath);
+              }
+              else
+              {
+                // increment playcount
+                iPlayCount += jTag->m_playCount;
 
-            // increment playcount
-            pItem->GetVideoInfoTag()->m_playCount += jTag->m_playCount;
-
-            /* episodes dont have fanart yet
-            // check for fanart if not already set
-            if (strFanArt.IsEmpty())
-              strFanArt = jItem->GetProperty("fanart_image");
-            */
+                /* episodes dont have fanart yet
+                // check for fanart if not already set
+                if (strFanArt.IsEmpty())
+                  strFanArt = jItem->GetProperty("fanart_image");
+                */
+              }
+            }
 
             // remove duplicate entry
             jTag = NULL;
@@ -4376,8 +4419,8 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
           CStdString strStack;
           dir.ConstructStackPath(paths, strStack);
           pItem->GetVideoInfoTag()->m_strFileNameAndPath = strStack;
-          
-          pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
+          pItem->GetVideoInfoTag()->m_playCount = iPlayCount;
+          pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
 
           /* episodes dont have fanart yet
           if (!strFanArt.IsEmpty())

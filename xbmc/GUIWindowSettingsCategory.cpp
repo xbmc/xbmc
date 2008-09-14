@@ -797,6 +797,15 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(585), SORT_ORDER_DESC);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("myvideos.resumeautomatically"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(106), RESUME_NO);
+      pControl->AddLabel(g_localizeStrings.Get(107), RESUME_YES);
+      pControl->AddLabel(g_localizeStrings.Get(12020), RESUME_ASK);
+      pControl->SetValue(pSettingInt->GetData());
+    }
   }
   // update our settings (turns controls on/off as appropriate)
   UpdateSettings();

@@ -133,7 +133,8 @@ void CEventServer::Cleanup()
     free(m_pPacketBuffer);
     m_pPacketBuffer = NULL;
   }
-  
+  CSingleLock lock(m_critSection);
+
   map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
   while (iter != m_clients.end())
   {
@@ -225,6 +226,13 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
 {
   // check packet validity
   CEventPacket* packet = new CEventPacket(pSize, m_pPacketBuffer);
+  if(packet == NULL)
+  {
+    CLog::Log(LOGERROR, "ES: Out of memory, cannot accept packet");
+    return;
+  }
+
+  unsigned int clientToken;
 
   if (!packet->IsValid())
   {
@@ -233,14 +241,21 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
     return;
   }
 
+  clientToken = packet->ClientToken();
+  if (!clientToken)
+    clientToken = addr.ULong(); // use IP if packet doesn't have a token
+
+  CSingleLock lock(m_critSection);
+
   // first check if we have a client for this address
-  map<unsigned long, CEventClient*>::iterator iter = m_clients.find(addr.ULong());
+  map<unsigned long, CEventClient*>::iterator iter = m_clients.find(clientToken);
 
   if ( iter == m_clients.end() )
   {
     if ( m_clients.size() >= (unsigned int)m_iMaxClients)
     {
       CLog::Log(LOGWARNING, "ES: Cannot accept any more clients, maximum client count reached");
+      delete packet;
       return;
     }
 
@@ -249,12 +264,13 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
     if (client==NULL)
     {
       CLog::Log(LOGERROR, "ES: Out of memory, cannot accept new client connection");
+      delete packet;
       return;
     }
 
-    m_clients[addr.ULong()] = client;
+    m_clients[clientToken] = client;
   }
-  m_clients[addr.ULong()]->AddPacket(packet);
+  m_clients[clientToken]->AddPacket(packet);
 }
 
 void CEventServer::RefreshClients()
@@ -266,9 +282,9 @@ void CEventServer::RefreshClients()
   {
     if (! (iter->second->Alive()))
     {
-      CLog::Log(LOGNOTICE, "ES: Client %s from %s timed out", iter->second->Name().c_str(), 
+      CLog::Log(LOGNOTICE, "ES: Client %s from %s timed out", iter->second->Name().c_str(),
                 iter->second->Address().Address());
-      delete iter->second;   
+      delete iter->second;
       m_clients.erase(iter);
       iter = m_clients.begin();
     }
@@ -286,6 +302,7 @@ void CEventServer::RefreshClients()
 
 void CEventServer::ExecuteEvents()
 {
+  CSingleLock lock(m_critSection);
   map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
 
   while (iter != m_clients.end())
@@ -295,7 +312,7 @@ void CEventServer::ExecuteEvents()
   }
 }
 
-unsigned short CEventServer::GetButtonCode()
+unsigned short CEventServer::GetButtonCode(std::string& strMapName, bool& isAxis, float& fAmount)
 {
   CSingleLock lock(m_critSection);
   map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
@@ -303,7 +320,7 @@ unsigned short CEventServer::GetButtonCode()
 
   while (iter != m_clients.end())
   {
-    bcode = iter->second->GetButtonCode();
+    bcode = iter->second->GetButtonCode(strMapName, isAxis, fAmount);
     if (bcode)
       return bcode;
     iter++;
