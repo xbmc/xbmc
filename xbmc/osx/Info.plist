@@ -13,7 +13,7 @@
 	<key>CFBundleIconFile</key>
 	<string>xbmc.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.xbmc.xbmc</string>
+	<string>com.teamxbmc.xbmc</string>
 	<key>CFBundleName</key>
 	<string>XBMC</string>
 	<key>CFBundlePackageType</key>
@@ -21,7 +21,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>8.10-b1</string>
 	<key>CFBundleVersion</key>
-	<string>8.10-b1</string>
+	<string>r####</string>
 	<key>CFBundleSignature</key>
 	<string>xbmc</string>
 </dict>
