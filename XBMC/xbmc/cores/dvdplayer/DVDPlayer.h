@@ -274,7 +274,13 @@ protected:
 
   int m_playSpeed;
 
-  double m_lastpts;  // holds last display pts during ff/rw operations
+  time_t m_tmLastSeek;
+  struct SSpeedState
+  {
+    double lastpts;  // holds last display pts during ff/rw operations
+    double lasttime; 
+  } m_SpeedState;
+
   int m_errorCount;
   // classes
   CDVDPlayerVideo m_dvdPlayerVideo; // video part

@@ -49,6 +49,7 @@ protected:
   CStdString GetGenre() const;
   CStdString GetComment() const;
   char       GetRating() const;
+  bool       GetCompilation() const;
   CStdString GetEncodedBy() const;
   CStdString GetLyrics() const;
 
@@ -70,6 +71,7 @@ protected:
   void SetEncodedBy(const CStdString& strValue);
   void SetComment(const CStdString& strValue);
   void SetRating(char rating);
+  void SetCompilation(bool compilation);
 
   CStdString ToStringCharset(const id3_ucs4_t* ucs4, id3_field_textencoding encoding) const;
   id3_ucs4_t* StringCharsetToUcs4(const CStdString& str) const;

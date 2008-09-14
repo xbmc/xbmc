@@ -67,6 +67,28 @@ bool SSortFileItem::Descending(const CFileItemPtr &left, const CFileItemPtr &rig
   return left->m_bIsFolder;
 }
 
+bool SSortFileItem::IgnoreFoldersAscending(const CFileItemPtr &left, const CFileItemPtr &right)
+{
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
+  // ignore the ".." item - that should always be on top
+  if (left->IsParentFolder()) return true;
+  if (right->IsParentFolder()) return false;
+  return StringUtils::AlphaNumericCompare(left->GetSortLabel().c_str(),right->GetSortLabel().c_str()) < 0;
+}
+
+bool SSortFileItem::IgnoreFoldersDescending(const CFileItemPtr &left, const CFileItemPtr &right)
+{
+  // sanity
+  RETURN_IF_NULL(left,false); RETURN_IF_NULL(right,false);
+
+  // ignore the ".." item - that should always be on top
+  if (left->IsParentFolder()) return true;
+  if (right->IsParentFolder()) return false;
+  return StringUtils::AlphaNumericCompare(left->GetSortLabel().c_str(),right->GetSortLabel().c_str()) > 0;
+}
+
 void SSortFileItem::ByLabel(CFileItemPtr &item)
 {
   if (!item) return;
@@ -86,6 +108,15 @@ void SSortFileItem::ByFile(CFileItemPtr &item)
   CURL url(item->m_strPath);
   CStdString label;
   label.Format("%s %d", url.GetFileNameWithoutPath().c_str(), item->m_lStartOffset);
+  item->SetSortLabel(label);
+}
+
+void SSortFileItem::ByFullPath(CFileItemPtr &item)
+{
+  if (!item) return;
+
+  CStdString label;
+  label.Format("%s %d", item->m_strPath, item->m_lStartOffset);
   item->SetSortLabel(label);
 }
 

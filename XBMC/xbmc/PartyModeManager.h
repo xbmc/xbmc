@@ -48,7 +48,7 @@ public:
   void OnSongChange(bool bUpdatePlayed = false);
   void AddUserSongs(PLAYLIST::CPlayList& tempList, bool bPlay = false);
   void AddUserSongs(CFileItemList& tempList, bool bPlay = false);
-  bool IsEnabled() { return m_bEnabled; };
+  bool IsEnabled(PartyModeContext context=PARTYMODECONTEXT_UNKNOWN) const;
   int GetSongsPlayed();
   int GetMatchingSongs();
   int GetMatchingSongsPicked();

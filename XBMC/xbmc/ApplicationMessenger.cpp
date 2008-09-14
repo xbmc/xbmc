@@ -193,7 +193,7 @@ case TMSG_POWERDOWN:
       {
 #ifdef HAS_HAL
         CHalManager::PowerManagement(POWERSTATE_HIBERNATE);
-#elif _WIN32PC
+#elif defined(_WIN32PC)
         CWIN32Util::PowerManagement(POWERSTATE_HIBERNATE);
 #endif
       }
@@ -202,7 +202,7 @@ case TMSG_POWERDOWN:
       {
 #ifdef HAS_HAL
         CHalManager::PowerManagement(POWERSTATE_SUSPEND);
-#elif _WIN32PC
+#elif defined(_WIN32PC)
         CWIN32Util::PowerManagement(POWERSTATE_SUSPEND);
 #endif
       }

@@ -45,13 +45,17 @@ namespace EVENTCLIENT
       m_fAmount    = 0.0f;
       m_bRepeat    = false;
       m_bActive    = false;
+      m_bAxis      = false;
+      m_iControllerNumber = 0;
     }
 
     CEventButtonState(unsigned short iKeyCode,
-                 std::string mapName,
-                 std::string buttonName,
-                 float fAmount,
-                 bool bRepeat)
+                      std::string mapName,
+                      std::string buttonName,
+                      float fAmount,
+                      bool isAxis,
+                      bool bRepeat
+      )
     {
       m_iKeyCode   = iKeyCode;
       m_buttonName = buttonName;
@@ -59,24 +63,34 @@ namespace EVENTCLIENT
       m_fAmount    = fAmount;
       m_bRepeat    = bRepeat;
       m_bActive    = true;
+      m_bAxis      = isAxis;
+      m_iControllerNumber = 0;
+      m_iNextRepeat = 0;
       Load();
     }
 
     void Reset()     { m_bActive = false; }
     void SetActive() { m_bActive = true; }
-    bool Active()    { return m_bActive; }
-    bool Repeat()    { return m_bRepeat; }
-    unsigned short KeyCode()   { return m_iKeyCode; }
-    float Amount()   { return m_fAmount; }
+    bool Active() const { return m_bActive; }
+    bool Repeat() const { return m_bRepeat; }
+    int  ControllerNumber() const { return m_iControllerNumber; }
+    bool Axis() const { return m_bAxis; }
+    unsigned short KeyCode() const { return m_iKeyCode; }
+    float Amount() const  { return m_fAmount; }
     void Load();
+    const std::string& JoystickName() const { return m_joystickName; }
 
     // data
     unsigned short    m_iKeyCode;
+    unsigned short    m_iControllerNumber;
     std::string       m_buttonName;
     std::string       m_mapName;
+    std::string       m_joystickName;
     float             m_fAmount;
     bool              m_bRepeat;
     bool              m_bActive;
+    bool              m_bAxis;
+    unsigned int      m_iNextRepeat;
   };
 
 
@@ -102,7 +116,6 @@ namespace EVENTCLIENT
     void Initialize()
     {
       m_bGreeted = false;
-      m_iNextRepeat = 0;
       m_iMouseX = 0;
       m_iMouseY = 0;
       m_iCurrentSeqLen = 0;
@@ -113,7 +126,7 @@ namespace EVENTCLIENT
       RefreshSettings();
     }
 
-    std::string Name()
+    const std::string& Name() const
     {
       return m_deviceName;
     }
@@ -138,7 +151,7 @@ namespace EVENTCLIENT
     bool AddPacket(EVENTPACKET::CEventPacket *packet);
 
     // return true if client received ping with the last 1 minute
-    bool Alive();
+    bool Alive() const;
 
     // process the packet queue
     bool ProcessQueue();
@@ -150,7 +163,7 @@ namespace EVENTCLIENT
     void FreePacketQueues();
 
     // return event states
-    unsigned short GetButtonCode();
+    unsigned short GetButtonCode(std::string& strMapName, bool& isAxis, float& amount);
 
     // update mouse position
     bool GetMousePos(float& x, float& y);
@@ -164,8 +177,9 @@ namespace EVENTCLIENT
     virtual bool OnPacketBUTTON(EVENTPACKET::CEventPacket *packet);
     virtual bool OnPacketMOUSE(EVENTPACKET::CEventPacket *packet);
     virtual bool OnPacketNOTIFICATION(EVENTPACKET::CEventPacket *packet);
-
-    bool CheckButtonRepeat();
+    virtual bool OnPacketLOG(EVENTPACKET::CEventPacket *packet);
+    virtual bool OnPacketACTION(EVENTPACKET::CEventPacket *packet);
+    bool CheckButtonRepeat(unsigned int &next);
 
     // returns true if the client has received the HELO packet
     bool Greeted() { return m_bGreeted; }
@@ -203,7 +217,6 @@ namespace EVENTCLIENT
     bool              m_bGreeted;
     unsigned int      m_iRepeatDelay;
     unsigned int      m_iRepeatSpeed;
-    unsigned int      m_iNextRepeat;
     unsigned int      m_iMouseX;
     unsigned int      m_iMouseY;
     bool              m_bMouseMoved;
@@ -217,7 +230,7 @@ namespace EVENTCLIENT
     std::queue <EVENTPACKET::CEventPacket*> m_readyPackets;
 
     // button and mouse state
-    std::queue<CEventButtonState*>  m_buttonQueue;
+    std::list<CEventButtonState>  m_buttonQueue;
     CEventButtonState m_currentButton;
   };
 
