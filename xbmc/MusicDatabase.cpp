@@ -3180,24 +3180,24 @@ bool CMusicDatabase::GetAlbumPath(long idAlbum, CStdString& path)
   try
   {
     if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
+    if (NULL == m_pDS2.get()) return false;
 
     path.Empty();
 
     CStdString strSQL=FormatSQL("select distinct strPath from song join path on song.idPath = path.idPath where song.idAlbum=%ld", idAlbum);
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
+    if (!m_pDS2->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS2->num_rows();
     if (iRowsFound == 0)
     {
-      m_pDS->close();
+      m_pDS2->close();
       return false;
     }
 
     // if this returns more than one path, we just grab the first one.  It's just for determining where to obtain + place
     // a local thumbnail
-    path = m_pDS->fv("strPath").get_asString();
+    path = m_pDS2->fv("strPath").get_asString();
 
-    m_pDS->close(); // cleanup recordset data
+    m_pDS2->close(); // cleanup recordset data
     return true;
   }
   catch (...)
