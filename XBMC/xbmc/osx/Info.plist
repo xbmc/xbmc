@@ -15,7 +15,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>com.xbmc.xbmc</string>
 	<key>CFBundleName</key>
-	<string>xbmc</string>
+	<string>XBMC</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
