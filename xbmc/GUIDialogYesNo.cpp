@@ -88,7 +88,7 @@ bool CGUIDialogYesNo::ShowAndGetInput(int heading, int line0, int line1, int lin
   return ShowAndGetInput(heading,line0,line1,line2,iNoLabel,iYesLabel,bDummy);
 }
 
-bool CGUIDialogYesNo::ShowAndGetInput(int heading, int line0, int line1, int line2, int iNoLabel, int iYesLabel, bool& bCanceled)
+bool CGUIDialogYesNo::ShowAndGetInput(int heading, int line0, int line1, int line2, int iNoLabel, int iYesLabel, bool& bCanceled, unsigned int autoCloseTime)
 {
   CGUIDialogYesNo *dialog = (CGUIDialogYesNo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (!dialog) return false;
@@ -96,6 +96,8 @@ bool CGUIDialogYesNo::ShowAndGetInput(int heading, int line0, int line1, int lin
   dialog->SetLine(0, line0);
   dialog->SetLine(1, line1);
   dialog->SetLine(2, line2);
+  if (autoCloseTime)
+    dialog->SetAutoClose(autoCloseTime);
   if (iNoLabel != -1)
     dialog->SetChoice(0,iNoLabel);
   if (iYesLabel != -1)

@@ -121,6 +121,7 @@ public:
   bool IsPaused() const;
   bool IsPlayingAudio() const ;
   bool IsPlayingVideo() const ;
+  bool IsPlayingFullScreenVideo() const ;
   bool IsStartingPlayback() const { return m_bPlaybackStarting; }
   bool OnKey(CKey& key);
   bool OnAction(const CAction &action);
@@ -237,12 +238,18 @@ protected:
   bool ProcessRemote(float frameTime);
   bool ProcessGamepad(float frameTime);
   bool ProcessEventServer(float frameTime);
+
+  bool ProcessJoystickEvent(const std::string& joystickName, int button, bool isAxis, float fAmount);
+
   void CheckForDebugButtonCombo();
   void StartFtpEmergencyRecoveryMode();
   float NavigationIdleTime();
   void CheckForTitleChange();
 
   void SaveCurrentFileSettings();
+#ifdef HAS_EVENT_SERVER
+  std::map<std::string, std::map<int, float> > m_lastAxisMap;
+#endif
 };
 
 extern CApplication g_application;

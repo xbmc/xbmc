@@ -63,5 +63,5 @@ protected:
 
   typedef std::queue<Notification> TOASTQUEUE;
   TOASTQUEUE m_notifications;
-  CRITICAL_SECTION m_critical;
+  CCriticalSection m_critical;
 };

@@ -673,6 +673,9 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
   if (!pItem->CanQueue() || pItem->IsRAR() || pItem->IsZIP() || pItem->IsParentFolder()) // no zip/rar enques thank you!
     return;
 
+  // fast lookup is needed here
+  queuedItems.SetFastLookup(true);
+
   if (pItem->IsMusicDb() && pItem->m_bIsFolder && !pItem->IsParentFolder())
   { // we have a music database folder, just grab the "all" item underneath it
     CMusicDatabaseDirectory dir;
@@ -735,7 +738,6 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
       CFileItemPtr itemCheck = queuedItems.Get(pItem->m_strPath);
       if (!itemCheck || itemCheck->m_lStartOffset != pItem->m_lStartOffset)
       { // add item
-        CLog::Log(LOGDEBUG, "Adding item (%s) to playlist", pItem->m_strPath.c_str());
         queuedItems.Add(pItem);
       }
     }

@@ -872,6 +872,26 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   return true;
 }
 
+const CStdString CUtil::GetMovieName(CFileItem* pItem)
+{
+  CStdString movieName;
+  CStdString strArchivePath;
+  movieName = pItem->m_strPath; 
+
+  if (!pItem->m_bIsFolder || pItem->IsDVDFile(false, true) || IsInArchive(pItem->m_strPath))
+  {
+    GetParentPath(pItem->m_strPath,movieName);
+    if (IsInRAR(pItem->m_strPath) || IsInZIP(pItem->m_strPath) || pItem->IsDVDFile(false, true))
+    {
+      GetParentPath(movieName, strArchivePath);
+      movieName = strArchivePath;
+    }
+  }
+
+  CUtil::RemoveSlashAtEnd(movieName); 
+  movieName = CUtil::GetFileName(movieName); 
+  return movieName;
+}
 
 void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename)
 {
@@ -1731,19 +1751,24 @@ bool CUtil::IsRemote(const CStdString& strFile)
 
 bool CUtil::IsOnDVD(const CStdString& strFile)
 {
-  if (strFile.Left(4) == "DVD:" || strFile.Left(4) == "dvd:")
+#ifdef _WIN32PC
+  if (strFile.Mid(1,1) == ":")
+    return (GetDriveType(strFile.Left(2)) == DRIVE_CDROM);
+#else
+  if (strFile.Left(2).CompareNoCase("d:") == 0)
+    return true;
+#endif
+
+  if (strFile.Left(4).CompareNoCase("dvd:") == 0)
     return true;
 
-  if (strFile.Left(2) == "D:" || strFile.Left(2) == "d:")
+  if (strFile.Left(4).CompareNoCase("udf:") == 0)
     return true;
 
-  if (strFile.Left(4) == "UDF:" || strFile.Left(4) == "udf:")
+  if (strFile.Left(8).CompareNoCase("iso9660:") == 0)
     return true;
 
-  if (strFile.Left(8) == "ISO9660:" || strFile.Left(8) == "iso9660:")
-    return true;
-
-  if (strFile.Left(5) == "cdda:" || strFile.Left(5) == "CDDA:")
+  if (strFile.Left(5).CompareNoCase("cdda:") == 0)
     return true;
 
   return false;
@@ -1833,12 +1858,20 @@ bool CUtil::IsRAR(const CStdString& strFile)
 {
   CStdString strExtension;
   CUtil::GetExtension(strFile,strExtension);
-  if (strExtension.Equals(".001") && strFile.Mid(strFile.length()-7,7).CompareNoCase(".ts.001")) return true;
-  if (strExtension.CompareNoCase(".cbr") == 0) return true;
+
+  if (strExtension.Equals(".001") && strFile.Mid(strFile.length()-7,7).CompareNoCase(".ts.001"))
+    return true;
+  if (strExtension.CompareNoCase(".cbr") == 0)
+    return true;
   if (strExtension.CompareNoCase(".rar") == 0)
-      return true;
+    return true;
 
   return false;
+}
+
+bool CUtil::IsInArchive(const CStdString &strFile)
+{
+  return IsInZIP(strFile) || IsInRAR(strFile);
 }
 
 bool CUtil::IsInZIP(const CStdString& strFile)

@@ -552,6 +552,13 @@ bool CFileItem::IsInternetStream() const
   if (strProtocol.size() == 0)
     return false;
 
+  // there's nothing to stop internet streams from being stacked
+  if (strProtocol == "stack")
+  {
+    CFileItem fileItem(CStackDirectory::GetFirstStackedFile(m_strPath), false);
+    return fileItem.IsInternetStream();
+  }
+
   if (strProtocol == "shout" || strProtocol == "mms" ||
       strProtocol == "http" || /*strProtocol == "ftp" ||*/
       strProtocol == "rtsp" || strProtocol == "rtp" ||
@@ -1428,10 +1435,15 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_STUDIO_IGNORE_THE:
     FillSortFields(SSortFileItem::ByStudioNoThe);
     break;
+  case SORT_METHOD_FULLPATH:
+    FillSortFields(SSortFileItem::ByFullPath);
+    break;
   default:
     break;
   }
-  if (sortMethod != SORT_METHOD_NONE)
+  if (sortMethod == SORT_METHOD_FILE)
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::IgnoreFoldersAscending : SSortFileItem::IgnoreFoldersDescending);
+  else if (sortMethod != SORT_METHOD_NONE)
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::Ascending : SSortFileItem::Descending);
 
   m_sortMethod=sortMethod;

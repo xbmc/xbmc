@@ -1164,9 +1164,9 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGINFO, "Checking skin version of: %s", g_guiSettings.GetString("lookandfeel.skin").c_str());
   if (!g_SkinInfo.Check(strSkinPath))
   {
-    // reset to the default skin (Project Mayhem III)
-    CLog::Log(LOGINFO, "The above skin isn't suitable - checking the version of the default: %s", "Project Mayhem III");
-    strSkinPath = strSkinBase + "Project Mayhem III";
+    // reset to the default skin (DEFAULT_SKIN)
+    CLog::Log(LOGINFO, "The above skin isn't suitable - checking the version of the default: %s", DEFAULT_SKIN);
+    strSkinPath = strSkinBase + DEFAULT_SKIN;
     if (!g_SkinInfo.Check(strSkinPath))
     {
       g_LoadErrorStr.Format("No suitable skin version found.\nWe require at least version %5.4f \n", g_SkinInfo.GetMinVersion());
@@ -1950,10 +1950,10 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   {
     // failed to load home.xml
     // fallback to default skin
-    if ( strcmpi(strSkin.c_str(), "Project Mayhem III") != 0)
+    if ( strcmpi(strSkin.c_str(), DEFAULT_SKIN) != 0)
     {
-      CLog::Log(LOGERROR, "failed to load home.xml for skin:%s, fallback to \"Project Mayhem III\" skin", strSkin.c_str());
-      g_guiSettings.SetString("lookandfeel.skin", "Project Mayhem III");
+      CLog::Log(LOGERROR, "failed to load home.xml for skin:%s, fallback to \"%s\" skin", strSkin.c_str(), DEFAULT_SKIN);
+      g_guiSettings.SetString("lookandfeel.skin", DEFAULT_SKIN);
       LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
       return ;
     }
@@ -2589,6 +2589,23 @@ bool CApplication::OnAction(const CAction &action)
 
   if ( IsPlaying())
   {
+    // OSD toggling
+    if (action.wID == ACTION_SHOW_OSD)
+    {
+      if (IsPlayingVideo() && IsPlayingFullScreenVideo())
+      {
+        CGUIWindowOSD *pOSD = (CGUIWindowOSD *)m_gWindowManager.GetWindow(WINDOW_OSD);
+        if (pOSD)
+        {
+          if (pOSD->IsDialogRunning())
+            pOSD->Close();
+          else
+            pOSD->DoModal();
+          return true;
+        }
+      }
+    }
+
     // pause : pauses current audio song
     if (action.wID == ACTION_PAUSE)
     {
@@ -3136,11 +3153,64 @@ bool CApplication::ProcessEventServer(float frameTime)
   if (!es || !es->Running())
     return false;
 
-  WORD wKeyID = es->GetButtonCode();
+  std::string joystickName;
+  bool isAxis = false;
+  float fAmount = 0.0;
+
+  WORD wKeyID = es->GetButtonCode(joystickName, isAxis, fAmount);
+
+
   if (wKeyID)
   {
-    CKey key(wKeyID);
-    return OnKey( key );
+    if (joystickName.length() > 0)
+    {
+      if (isAxis == true)
+      {
+        if (fabs(fAmount) >= 0.08)
+          m_lastAxisMap[joystickName][wKeyID] = fAmount;
+        else
+          m_lastAxisMap[joystickName].erase(wKeyID);
+      }
+
+      return ProcessJoystickEvent(joystickName, wKeyID, isAxis, fAmount);
+    }
+    else
+    {
+      CKey key;
+      if(wKeyID == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
+        key = CKey(wKeyID, (BYTE)(255*fAmount), 0, 0.0, 0.0, 0.0, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_RIGHT_ANALOG_TRIGGER)
+        key = CKey(wKeyID, 0, (BYTE)(255*fAmount), 0.0, 0.0, 0.0, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_LEFT_THUMB_STICK_LEFT)
+        key = CKey(wKeyID, 0, 0, -fAmount, 0.0, 0.0, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
+        key = CKey(wKeyID, 0, 0,  fAmount, 0.0, 0.0, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_LEFT_THUMB_STICK_UP)
+        key = CKey(wKeyID, 0, 0, 0.0,  fAmount, 0.0, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
+        key = CKey(wKeyID, 0, 0, 0.0, -fAmount, 0.0, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT)
+        key = CKey(wKeyID, 0, 0, 0.0, 0.0, -fAmount, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
+        key = CKey(wKeyID, 0, 0, 0.0, 0.0,  fAmount, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_RIGHT_THUMB_STICK_UP)
+        key = CKey(wKeyID, 0, 0, 0.0, 0.0, 0.0,  fAmount, frameTime);
+      else if(wKeyID == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
+        key = CKey(wKeyID, 0, 0, 0.0, 0.0, 0.0, -fAmount, frameTime);
+      else
+        key = CKey(wKeyID);
+      return OnKey(key);
+    }
+  }
+
+  if (m_lastAxisMap.size() > 0)
+  {
+    // Process all the stored axis.
+    for (map<std::string, map<int, float> >::iterator iter = m_lastAxisMap.begin(); iter != m_lastAxisMap.end(); ++iter)
+    {
+      for (map<int, float>::iterator iterAxis = (*iter).second.begin(); iterAxis != (*iter).second.end(); ++iterAxis)
+        ProcessJoystickEvent((*iter).first, (*iterAxis).first, true, (*iterAxis).second);
+    }
   }
 
   {
@@ -3156,8 +3226,60 @@ bool CApplication::ProcessEventServer(float frameTime)
       return m_gWindowManager.OnAction(action);
     }
   }
-#endif  
+#endif
   return false;
+}
+
+bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKeyID, bool isAxis, float fAmount)
+{
+#ifdef HAS_EVENT_SERVER
+  m_idleTimer.StartZero();
+
+   // Make sure to reset screen saver, mouse.
+   ResetScreenSaver();
+   if (ResetScreenSaverWindow())
+     return true;
+
+#ifdef HAS_SDL_JOYSTICK
+   g_Joystick.Reset();
+#endif
+   g_Mouse.SetInactive();
+
+   // Figure out what window we're taking the event for.
+   WORD iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
+   if (m_gWindowManager.HasModalDialog())
+       iWin = m_gWindowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
+
+   // This code is copied from the OnKey handler, it should be factored out.
+   if (iWin == WINDOW_FULLSCREEN_VIDEO &&
+       g_application.m_pPlayer &&
+       g_application.m_pPlayer->IsInMenu())
+   {
+     // If player is in some sort of menu, (ie DVDMENU) map buttons differently.
+     iWin = WINDOW_VIDEO_MENU;
+   }
+
+   bool fullRange = false;
+   CAction action;
+   action.fAmount1 = fAmount;
+
+   //if (action.fAmount1 < 0.0)
+   // wKeyID = -wKeyID;
+
+   // Translate using regular joystick translator.
+   if (g_buttonTranslator.TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis, action.wID, action.strAction, fullRange))
+   {
+     action.fRepeat = 0.0f;
+     g_audioManager.PlayActionSound(action);
+     return OnAction(action);
+   }
+   else
+   {
+     CLog::Log(LOGDEBUG, "ERROR mapping joystick action");
+   }
+#endif
+
+   return false;
 }
 
 bool CApplication::ProcessKeyboard()
@@ -3378,6 +3500,15 @@ void CApplication::Stop()
     m_bStop = true;
     CLog::Log(LOGNOTICE, "stop all");
 
+    // stop scanning before we kill the network and so on
+    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    if (musicScan)
+      musicScan->StopScanning();
+
+    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (videoScan)
+      videoScan->StopScanning();
+
     StopServices();
     //Sleep(5000);
 
@@ -3387,14 +3518,6 @@ void CApplication::Stop()
       delete m_pPlayer;
       m_pPlayer = NULL;
     }
-
-    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (musicScan && musicScan->IsDialogRunning())
-      musicScan->StopScanning();
-
-    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    if (videoScan && videoScan->IsDialogRunning())
-      videoScan->StopScanning();
 
 #ifdef HAS_FILESYSTEM
     CLog::Log(LOGNOTICE, "stop daap clients");
@@ -3889,6 +4012,11 @@ bool CApplication::IsPlayingVideo() const
   return false;
 }
 
+bool CApplication::IsPlayingFullScreenVideo() const
+{
+  return IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo();
+}
+
 void CApplication::StopPlaying()
 {
   int iWin = m_gWindowManager.GetActiveWindow();
@@ -3918,13 +4046,21 @@ void CApplication::StopPlaying()
 
         if( m_pPlayer )
         {
-          CBookmark bookmark;
-          bookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
-          bookmark.playerState = m_pPlayer->GetPlayerState();
-          bookmark.timeInSeconds = GetTime();
-          bookmark.thumbNailImage.Empty();
+          // ignore two minutes at start and either 2 minutes, or up to 5% at end (end credits)
+          double current = GetTime();
+          double total = GetTotalTime();
+          if (current > 120 && total - current > 120 && total - current > 0.05 * total)
+          {
+            CBookmark bookmark;
+            bookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
+            bookmark.playerState = m_pPlayer->GetPlayerState();
+            bookmark.timeInSeconds = current;
+            bookmark.thumbNailImage.Empty();
 
-          dbs.AddBookMarkToFile(CurrentFile(),bookmark, CBookmark::RESUME);
+            dbs.AddBookMarkToFile(CurrentFile(),bookmark, CBookmark::RESUME);
+          }
+          else
+            dbs.DeleteResumeBookMark(CurrentFile());
         }
         dbs.Close();
       }

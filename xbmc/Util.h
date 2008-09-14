@@ -100,6 +100,7 @@ public:
   static void GetBuiltInHelp(CStdString &help);
   static int ExecBuiltIn(const CStdString& execString);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
+  static const CStdString  GetMovieName(CFileItem* pItem);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
   static bool InstallTrainer(CTrainer& trainer);
   static bool RemoveTrainer();
@@ -123,6 +124,7 @@ public:
   static bool IsInRAR(const CStdString& strFile);
   static bool IsZIP(const CStdString& strFile);
   static bool IsInZIP(const CStdString& strFile);
+  static bool IsInArchive(const CStdString& strFile);
   static bool IsCDDA(const CStdString& strFile);
   static bool IsMemCard(const CStdString& strFile);
   static bool IsTuxBox(const CStdString& strFile);
