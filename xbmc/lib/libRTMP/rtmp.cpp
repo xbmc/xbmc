@@ -106,7 +106,7 @@ bool CRTMP::Connect(const std::string &strRTMPLink)
 
   service.sin_port = htons(url.GetPort());
   m_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-  if (m_socket > 0)
+  if (m_socket != INVALID_SOCKET )
   {
     if (connect(m_socket, (sockaddr*) &service, sizeof(struct sockaddr)) < 0)
     {
