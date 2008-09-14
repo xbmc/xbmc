@@ -721,6 +721,26 @@ void CDVDInputStreamNavigator::OnRight()
   if (m_dvdnav) m_dll.dvdnav_right_button_select(m_dvdnav, m_dll.dvdnav_get_current_nav_pci(m_dvdnav));
 }
 
+bool CDVDInputStreamNavigator::OnMouseMove(const CPoint &point)
+{
+  if (m_dvdnav)
+  {
+    pci_t* pci = m_dll.dvdnav_get_current_nav_pci(m_dvdnav);
+    return (DVDNAV_STATUS_OK == m_dll.dvdnav_mouse_select(m_dvdnav, pci, (int32_t)point.x, (int32_t)point.y));
+  }
+  return false;
+}
+
+bool CDVDInputStreamNavigator::OnMouseClick(const CPoint &point)
+{
+  if (m_dvdnav)
+  {
+    pci_t* pci = m_dll.dvdnav_get_current_nav_pci(m_dvdnav);
+    return (DVDNAV_STATUS_OK == m_dll.dvdnav_mouse_activate(m_dvdnav, pci, (int32_t)point.x, (int32_t)point.y));
+  }
+  return false;
+}
+
 void CDVDInputStreamNavigator::OnMenu()
 {
   if (m_dvdnav) m_dll.dvdnav_menu_call(m_dvdnav, DVD_MENU_Escape);
