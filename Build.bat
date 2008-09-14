@@ -197,6 +197,11 @@ rem	CONFIG START
   cd ..\..
   xcopy "skin\Project Mayhem III\BUILD\Project Mayhem III" "BUILD\skin\Project Mayhem III" /E /Q /I /Y /EXCLUDE:exclude.txt
 
+  cd "skin\PM3.HD"
+  CALL build.bat
+  cd ..\..
+  xcopy "skin\PM3.HD\BUILD\PM3.HD" "BUILD\skin\PM3.HD" /E /Q /I /Y /EXCLUDE:exclude.txt
+
   xcopy credits BUILD\credits /Q /I /Y /EXCLUDE:exclude.txt
   xcopy language BUILD\language /E /Q /I /Y /EXCLUDE:exclude.txt
   xcopy screensavers BUILD\screensavers /E /Q /I /Y /EXCLUDE:exclude.txt
@@ -247,6 +252,11 @@ rem	CONFIG START
   CALL build.bat
   cd ..\..
   xcopy "skin\Project Mayhem III\BUILD\Project Mayhem III" "BUILD_WIN32\Xbmc_pc\skin\Project Mayhem III" /E /Q /I /Y /EXCLUDE:exclude.txt
+
+  cd "skin\PM3.HD"
+  CALL build.bat
+  cd ..\..
+  xcopy "skin\PM3.HD\BUILD\PM3.HD" "BUILD_WIN32\Xbmc_pc\skin\PM3.HD" /E /Q /I /Y /EXCLUDE:exclude.txt
 
   xcopy credits BUILD_WIN32\Xbmc_pc\credits /Q /I /Y /EXCLUDE:exclude.txt
   xcopy language BUILD_WIN32\Xbmc_pc\language /E /Q /I /Y /EXCLUDE:exclude.txt
