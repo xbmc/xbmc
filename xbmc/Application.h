@@ -194,10 +194,9 @@ public:
 protected:
   friend class CApplicationMessenger;
   // screensaver
-  bool m_bInactive;
   bool m_bScreenSave;
   CStdString m_screenSaverMode;
-  DWORD m_dwSaverTick;
+
   D3DGAMMARAMP m_OldRamp;
 
   // timer information
@@ -206,6 +205,8 @@ protected:
   CStopWatch m_frameTime;
   CStopWatch m_navigationTimer;
   CStopWatch m_slowTimer;
+  CStopWatch m_screenSaverTimer;
+  CStopWatch m_shutdownTimer;
 
   CFileItemPtr m_itemCurrentFile;
   CFileItemList* m_currentStack;

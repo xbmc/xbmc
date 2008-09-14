@@ -296,10 +296,8 @@ CApplication::CApplication(void)
   XSetProcessQuantumLength(5); //default=20msec
   XSetFileCacheSize (256*1024); //default=64kb
 #endif
-  m_bInactive = false;   // CB: SCREENSAVER PATCH
   m_bScreenSave = false;   // CB: SCREENSAVER PATCH
   m_iScreenSaveLock = 0;
-  m_dwSaverTick = timeGetTime(); // CB: SCREENSAVER PATCH
   m_dwSkinTime = 0;
   m_bInitializing = true;
   m_eForcedNextPlayer = EPC_NONE;
@@ -4117,18 +4115,18 @@ void CApplication::DoRenderFullScreen()
 
 void CApplication::ResetScreenSaver()
 {
-  if (m_bInactive && !m_bScreenSave && m_iScreenSaveLock == 0)
-  {
-    m_dwSaverTick = timeGetTime(); // Start the timer going ...
-  }
+  // reset our timers
+  m_shutdownTimer.StartZero();
+
+  // screen saver timer is reset only if we're not already in screensaver mode
+  if (!m_bScreenSave && m_iScreenSaveLock == 0)
+    m_screenSaverTimer.StartZero();
 }
 
 bool CApplication::ResetScreenSaverWindow()
 {
   if (m_iScreenSaveLock == 2)
     return false;
-
-  m_bInactive = false;  // reset the inactive flag as a key has been pressed
 
   // if Screen saver is active
   if (m_bScreenSave)
@@ -4139,7 +4137,7 @@ bool CApplication::ResetScreenSaverWindow()
           g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE        &&
           g_settings.m_vecProfiles[iProfile].getLockMode() != LOCK_MODE_EVERYONE &&
          !g_guiSettings.GetString("screensaver.mode").Equals("Black")            &&
-        !(g_guiSettings.GetBool("screensaver.usemusicvisinstead")                && 
+        !(g_guiSettings.GetBool("screensaver.usemusicvisinstead")                &&
          !g_guiSettings.GetString("screensaver.mode").Equals("Black")            &&
           g_application.IsPlayingAudio())                                          )
       {
@@ -4203,53 +4201,28 @@ void CApplication::CheckScreenSaver()
   // if the screen saver window is active, then clearly we are already active
   if (m_gWindowManager.IsWindowActive(WINDOW_SCREENSAVER))
   {
-    m_bInactive = true;
     m_bScreenSave = true;
     return;
   }
 
-  if (!m_bInactive)
-  {
-    if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // are we playing a movie and is it paused?
-    {
-      m_bInactive = false;
-    }
-    else if (IsPlayingAudio()) // are we playing some music?
-    {
-      if (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
-      {
-        m_bInactive = false; // visualisation is on, so we cannot show a screensaver
-      }
-      else
-      {
-        m_bInactive = true; // music playing from GUI, we can display a screensaver
-      }
-    }
-    else
-    {
-      // we can display a screensaver
-      m_bInactive = true;
-    }
+  bool resetTimer = false;
+  if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // are we playing a movie and is it paused?
+    resetTimer = true;
 
-    // if we can display a screensaver, then start screensaver timer
-    if (m_bInactive)
-    {
-      m_dwSaverTick = timeGetTime(); // Start the timer going ...
-    }
-  }
-  else
+  if (IsPlayingAudio() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION) // are we playing some music in fullscreen vis?
+    resetTimer = true;
+
+  if (resetTimer)
   {
-    // Check we're not already in screensaver mode
-    if (!m_bScreenSave)
-    {
-      // no, then check the timer if screensaver should pop up
-      if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("screensaver.time")*60*1000L) )
-      {
-        //yes, show the screensaver
-        ActivateScreenSaver();
-      }
-    }
+    m_screenSaverTimer.StartZero();
+    return;
   }
+
+  if (m_bScreenSave) // already running the screensaver
+    return;
+
+  if ( m_screenSaverTimer.GetElapsedSeconds() > g_guiSettings.GetInt("screensaver.time") * 60 )
+    ActivateScreenSaver();
 }
 
 // activate the screensaver.
@@ -4261,8 +4234,6 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   FLOAT fFadeLevel = 0;
 
   m_bScreenSave = true;
-  m_bInactive = true;
-  m_dwSaverTick = timeGetTime();  // Save the current time for the shutdown timeout
 
   // Get Screensaver Mode
   m_screenSaverMode = g_guiSettings.GetString("screensaver.mode");
@@ -4319,74 +4290,41 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 
 void CApplication::CheckShutdown()
 {
+#ifdef HAS_XBOX_HARDWARE
   CGUIDialogMusicScan *pMusicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   CGUIDialogVideoScan *pVideoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-  CGUIWindowVideoFiles *pVideoFiles = (CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
-#ifdef HAS_XBOX_HARDWARE
-  // Note: if the the screensaver is switched on, the shutdown timeout is
-  // counted from when the screensaver activates.
-  if (!m_bInactive)
-  {
-    if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // are we playing a movie?
-    {
-      m_bInactive = false;
-    }
-    else if (IsPlayingAudio()) // are we playing some music?
-    {
-      m_bInactive = false;
-    }
+
+  // first check if we should reset the timer
+  bool resetTimer = false;
+  if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // playing a movie, and we're not paused
+    resetTimer = true;
+
+  if (IsPlayingAudio())
+    resetTimer = true;
+
 #ifdef HAS_FTP_SERVER
-    else if (m_pFileZilla && m_pFileZilla->GetNoConnections() != 0) // is FTP active ?
-    {
-      m_bInactive = false;
-    }
+  if (m_pFileZilla && m_pFileZilla->GetNoConnections() != 0) // is FTP active ?
+    resetTimer = true;
 #endif
-    else if (pMusicScan && pMusicScan->IsScanning()) // music scanning?
-    {
-      m_bInactive = false;
-    }
-    else if (pVideoScan && pVideoScan->IsScanning()) // video scanning?
-    {
-      m_bInactive = false;
-    }
-    else    // nothing doing here, so start the timer going
-    {
-      m_bInactive = true;
-    }
+  if (pMusicScan && pMusicScan->IsScanning()) // music scanning?
+    resetTimer = true;
 
-    if (m_bInactive)
-    {
-      m_dwSaverTick = timeGetTime();  // Start the timer going ...
-    }
-  }
-  else
+  if (pVideoScan && pVideoScan->IsScanning()) // video scanning?
+    resetTimer = true;
+
+  if (m_gWindowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS)) // progress dialog is onscreen
+    resetTimer = true;
+
+  if (resetTimer)
   {
-    if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("system.shutdowntime")*60*1000L) )
-    {
-      bool bShutDown = false;
-      if (m_pPlayer && m_pPlayer->IsPlaying()) // if we're playing something don't shutdown
-      {
-        m_dwSaverTick = timeGetTime();
-      }
-      else if (m_pFileZilla && m_pFileZilla->GetNoConnections() != 0) // is FTP active ?
-      {
-        m_dwSaverTick = timeGetTime();
-      }
-      else if (m_gWindowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS))
-      {
-        m_dwSaverTick = timeGetTime();  // progress dialog is on screen
-      }
-      else          // not playing
-      {
-        bShutDown = true;
-      }
-
-      if (bShutDown)
-        g_applicationMessenger.Shutdown(); // Turn off the box
-    }
+    m_shutdownTimer.StartZero();
+    return;
   }
 
-  return ;
+  if ( m_shutdownTimer.GetElapsedSeconds() > g_guiSettings.GetInt("system.shutdowntime") * 60 )
+  {
+    g_applicationMessenger.Shutdown(); // Turn off the box
+  }
 #endif
 }
 
