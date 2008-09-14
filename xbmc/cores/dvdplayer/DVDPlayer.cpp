@@ -2555,6 +2555,32 @@ bool CDVDPlayer::OnAction(const CAction &action)
           pStream->OnDown();
         }
         break;
+
+      case ACTION_MOUSE:
+        {
+          // check the action
+          CAction action2 = action;
+          action2.m_dwButtonCode = g_Mouse.bClick[MOUSE_LEFT_BUTTON] ? 1 : 0;
+          action2.fAmount1 = g_Mouse.GetLocation().x;
+          action2.fAmount2 = g_Mouse.GetLocation().y;
+
+          RECT rs, rd;
+          GetVideoRect(rs, rd);
+          if (action2.fAmount1 < rd.left || action2.fAmount1 > rd.right ||
+              action2.fAmount2 < rd.top || action2.fAmount2 > rd.bottom)
+            return false; // out of bounds
+          THREAD_ACTION(action2);
+          // convert to video coords...
+          CPoint pt(action2.fAmount1, action2.fAmount2);
+          pt -= CPoint(rd.left, rd.top);
+          pt.x *= (float)(rs.right - rs.left) / (rd.right - rd.left);
+          pt.y *= (float)(rs.bottom - rs.top) / (rd.bottom - rd.top);
+          pt += CPoint(rs.left, rs.top);
+          if (action2.m_dwButtonCode)
+            return pStream->OnMouseClick(pt);
+          return pStream->OnMouseMove(pt);
+        }
+        break;
       case ACTION_SHOW_OSD:
       case ACTION_SELECT_ITEM:
         {
