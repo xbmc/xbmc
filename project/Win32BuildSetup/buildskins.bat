@@ -13,13 +13,20 @@ ECHO Compiling skins...
 
 SET PATH=%PATH%;%CD%\..\..\Tools\XBMCTex
 
-rem default skin
+rem default skins
 ECHO Compiling Project Mayhem III...
 cd "..\..\skin\Project Mayhem III"
 CALL build.bat > NUL
 cd "%CUR_PATH%"
 ECHO Copying files...
 xcopy "..\..\skin\Project Mayhem III\BUILD\Project Mayhem III" "BUILD_WIN32\Xbmc\skin\Project Mayhem III" /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+
+ECHO Compiling PM3.HD...
+cd "..\..\skin\PM3.HD"
+CALL build.bat > NUL
+cd "%CUR_PATH%"
+ECHO Copying files...
+xcopy "..\..\skin\PM3.HD\BUILD\PM3.HD" "BUILD_WIN32\Xbmc\skin\PM3.HD" /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
 
 IF "%SKIN_PATH%" == "" GOTO DONE
 rem optional skins
