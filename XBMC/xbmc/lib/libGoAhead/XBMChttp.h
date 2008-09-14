@@ -46,7 +46,7 @@ class CXbmcHttp
 {
 public:
   CStdString userHeader, userFooter;
-  bool incWebFooter, incWebHeader, shuttingDown;
+  bool incWebFooter, incWebHeader, shuttingDown, tempSkipWebFooterHeader;
 
   CXbmcHttp();
   ~CXbmcHttp();
