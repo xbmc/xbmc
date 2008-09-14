@@ -1,0 +1,337 @@
+<window id="3">
+	<defaultcontrol>20</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<include>CommonBackground</include>
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>128</height>
+			<texture>Header.png</texture>
+		</control>
+		<control type="group">
+			<include>Window_OpenClose_Animation</include>
+			<control type="image">
+				<description>background image</description>
+				<posx>40</posx>
+				<posy>40</posy>
+				<width>1200</width>
+				<height>640</height>
+				<colordiffuse>DDFFFFFF</colordiffuse>
+				<texture border="40">DialogBack.png</texture>
+			</control>
+			<control type="image">
+				<description>background image</description>
+				<posx>40</posx>
+				<posy>40</posy>
+				<width>1200</width>
+				<height>640</height>
+				<texture border="40">DialogFront.png</texture>
+			</control>
+			<control type="label" id="101">
+				<description>current directory text label left</description>
+				<posx>100</posx>
+				<posy>80</posy>
+				<width>470</width>
+				<height>30</height>
+				<font>font13</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+				<align>left</align>
+				<aligny>center</aligny>
+			</control>
+			<control type="label" id="102">
+				<description>current directory text label right</description>
+				<posx>690</posx>
+				<posy>80</posy>
+				<width>470</width>
+				<height>30</height>
+				<font>font13</font>
+				<textcolor>white</textcolor>
+				<scroll>true</scroll>
+				<align>left</align>
+				<aligny>center</aligny>
+			</control>
+			<control type="image">
+				<posx>90</posx>
+				<posy>115</posy>
+				<width>1100</width>
+				<height>2</height>
+				<texture>separator.png</texture>
+			</control>
+			<control type="image">
+				<description>filemanager List Sel Left</description>
+				<posx>115</posx>
+				<posy>125</posy>
+				<width>510</width>
+				<height>468</height>
+				<texture border="3">filemanager-select.png</texture>
+				<visible>Control.HasFocus(20)</visible>
+			</control>
+			<control type="list" id="20">
+				<posx>125</posx>
+				<posy>135</posy>
+				<width>490</width>
+				<height>448</height>
+				<onleft>30</onleft>
+				<onright>21</onright>
+				<onup>20</onup>
+				<ondown>20</ondown>
+				<pagecontrol>30</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="32">
+					<control type="image">
+						<posx>5</posx>
+						<posy>6</posy>
+						<width>20</width>
+						<height>20</height>
+						<info>ListItem.Icon</info>
+					</control>
+					<control type="label">
+						<posx>30</posx>
+						<posy>0</posy>
+						<width>445</width>
+						<height>30</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<textcolor>grey</textcolor>
+						<align>left</align>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<posx>480</posx>
+						<posy>0</posy>
+						<width>200</width>
+						<height>30</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<textcolor>grey</textcolor>
+						<align>right</align>
+						<info>ListItem.Label2</info>
+					</control>
+				</itemlayout>
+				<focusedlayout height="32">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>490</width>
+						<height>30</height>
+						<visible>!Control.HasFocus(20)</visible>
+						<texture border="5">button-nofocus.png</texture>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>490</width>
+						<height>30</height>
+						<visible>Control.HasFocus(20)</visible>
+						<texture border="5">button-focus.png</texture>
+					</control>
+					<control type="image">
+						<posx>5</posx>
+						<posy>6</posy>
+						<width>20</width>
+						<height>20</height>
+						<info>ListItem.Icon</info>
+					</control>
+					<control type="label">
+						<posx>30</posx>
+						<posy>0</posy>
+						<width>445</width>
+						<height>30</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<textcolor>white</textcolor>
+						<align>left</align>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<posx>480</posx>
+						<posy>0</posy>
+						<width>200</width>
+						<height>30</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<textcolor>white</textcolor>
+						<align>right</align>
+						<info>ListItem.Label2</info>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="image">
+				<posx>90</posx>
+				<posy>600</posy>
+				<width>1100</width>
+				<height>2</height>
+				<texture>separator.png</texture>
+			</control>
+			<control type="scrollbar" id="30">
+				<posx>85</posx>
+				<posy>135</posy>
+				<width>20</width>
+				<height>448</height>
+				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>scrollbar_nib.png</textureslidernib>
+				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+				<onleft>31</onleft>
+				<onright>20</onright>
+				<ondown>20</ondown>
+				<onup>20</onup>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="label">
+				<description>number of files/pages in left list text label</description>
+				<posx>95</posx>
+				<posy>605</posy>
+				<width>562</width>
+				<font>font12b</font>
+				<align>left</align>
+				<scroll>true</scroll>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<label>($INFO[Container(20).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(20).CurrentPage]/$INFO[Container(20).NumPages])</label>
+			</control>
+			<control type="image">
+				<description>filemanager List Sel Right</description>
+				<posx>660</posx>
+				<posy>125</posy>
+				<width>510</width>
+				<height>468</height>
+				<texture border="3">filemanager-select.png</texture>
+				<visible>Control.HasFocus(21)</visible>
+			</control>
+			<control type="list" id="21">
+				<posx>670</posx>
+				<posy>135</posy>
+				<width>490</width>
+				<height>448</height>
+				<onleft>20</onleft>
+				<onright>31</onright>
+				<onup>21</onup>
+				<ondown>21</ondown>
+				<pagecontrol>31</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="32">
+					<control type="image">
+						<posx>5</posx>
+						<posy>6</posy>
+						<width>20</width>
+						<height>20</height>
+						<info>ListItem.Icon</info>
+					</control>
+					<control type="label">
+						<posx>30</posx>
+						<posy>0</posy>
+						<width>445</width>
+						<height>30</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<textcolor>grey</textcolor>
+						<align>left</align>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<posx>480</posx>
+						<posy>0</posy>
+						<width>200</width>
+						<height>30</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<textcolor>grey</textcolor>
+						<align>right</align>
+						<info>ListItem.Label2</info>
+					</control>
+				</itemlayout>
+				<focusedlayout height="32">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>490</width>
+						<height>30</height>
+						<visible>!Control.HasFocus(21)</visible>
+						<texture border="5">button-nofocus.png</texture>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>490</width>
+						<height>30</height>
+						<visible>Control.HasFocus(21)</visible>
+						<texture border="5">button-focus.png</texture>
+					</control>
+					<control type="image">
+						<posx>5</posx>
+						<posy>6</posy>
+						<width>20</width>
+						<height>20</height>
+						<info>ListItem.Icon</info>
+					</control>
+					<control type="label">
+						<posx>30</posx>
+						<posy>0</posy>
+						<width>445</width>
+						<height>30</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<textcolor>white</textcolor>
+						<align>left</align>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<posx>480</posx>
+						<posy>0</posy>
+						<width>200</width>
+						<height>30</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<textcolor>white</textcolor>
+						<align>right</align>
+						<info>ListItem.Label2</info>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="scrollbar" id="31">
+				<posx>105r</posx>
+				<posy>135</posy>
+				<width>20</width>
+				<height>448</height>
+				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>scrollbar_nib.png</textureslidernib>
+				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+				<onleft>21</onleft>
+				<onright>30</onright>
+				<ondown>21</ondown>
+				<onup>21</onup>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="label">
+				<description>number of files/pages in left list text label</description>
+				<posx>95r</posx>
+				<posy>605</posy>
+				<width>562</width>
+				<font>font12b</font>
+				<align>right</align>
+				<scroll>true</scroll>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<label>($INFO[Container(21).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(21).CurrentPage]/$INFO[Container(21).NumPages])</label>
+			</control>
+		</control>
+	</controls>
+</window>

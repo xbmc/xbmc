@@ -1,0 +1,155 @@
+<window type="dialog" id="2000">
+	<defaultcontrol always="true">3</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>335</posx>
+		<posy>35</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>610</width>
+			<height>650</height>
+			<texture border="40">DialogBack.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>610</width>
+			<height>650</height>
+			<texture border="40">DialogFront.png</texture>
+		</control>
+		<control type="label" id="1">
+			<description>heading label</description>
+			<posx>40</posx>
+			<posy>40</posy>
+			<width>510</width>
+			<height>30</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>font18</font>
+			<label>13406</label>
+			<textcolor>dialogheader</textcolor>
+		</control>
+		<control type="image">
+			<posx>40</posx>
+			<posy>78</posy>
+			<width>510</width>
+			<height>2</height>
+			<texture>separator.png</texture>
+		</control>
+		<control type="list" id="3">
+			<posx>45</posx>
+			<posy>90</posy>
+			<width>500</width>
+			<height>480</height>
+			<onup>3</onup>
+			<ondown>3</ondown>
+			<onleft>5</onleft>
+			<onright>61</onright>
+			<pagecontrol>61</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="40">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>500</width>
+					<height>35</height>
+					<texture border="3">button-nofocus.png</texture>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>480</width>
+					<height>35</height>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="40">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>500</width>
+					<height>35</height>
+					<visible>!Control.HasFocus(3)</visible>
+					<texture border="3">button-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>500</width>
+					<height>35</height>
+					<visible>Control.HasFocus(3)</visible>
+					<texture border="3">button-focus.png</texture>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>480</width>
+					<height>35</height>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="scrollbar" id="61">
+			<posx>550</posx>
+			<posy>90</posy>
+			<width>20</width>
+			<height>475</height>
+			<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+			<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>scrollbar_nib.png</textureslidernib>
+			<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+			<onleft>3</onleft>
+			<onright>3</onright>
+			<ondown>61</ondown>
+			<onup>61</onup>
+			<showonepage>true</showonepage>
+			<orientation>vertical</orientation>
+		</control>
+		<control type="label">
+			<description>number of files/pages in list text label</description>
+			<posx>570</posx>
+			<posy>570</posy>
+			<width>300</width>
+			<height>35</height>
+			<font>font12b</font>
+			<align>right</align>
+			<aligny>center</aligny>
+			<scroll>true</scroll>
+			<textcolor>white</textcolor>
+			<label>($INFO[Container(3).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(3).CurrentPage]/$INFO[Container(3).NumPages])</label>
+		</control>
+		<control type="button" id="5">
+			<description>OK button</description>
+			<posx>40</posx>
+			<posy>570</posy>
+			<width>200</width>
+			<height>35</height>
+			<label>186</label>
+			<font>font13</font>
+			<textcolor>grey2</textcolor>
+			<focusedcolor>white</focusedcolor>
+			<align>center</align>
+			<texturefocus border="3">button-focus2.png</texturefocus>
+			<texturenofocus border="3">button-nofocus.png</texturenofocus>
+			<onleft>61</onleft>
+			<onright>3</onright>
+			<onup>3</onup>
+			<ondown>3</ondown>
+		</control>
+	</controls>
+</window>
