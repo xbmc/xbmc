@@ -441,7 +441,6 @@
 		E38E20490D25F9FD00618676 /* QueryParams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17350D25F9FA00618676 /* QueryParams.cpp */; };
 		E38E204A0D25F9FD00618676 /* MusicDatabaseDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17370D25F9FA00618676 /* MusicDatabaseDirectory.cpp */; };
 		E38E204B0D25F9FD00618676 /* MusicSearchDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17390D25F9FA00618676 /* MusicSearchDirectory.cpp */; };
-		E38E204C0D25F9FD00618676 /* NptXbmcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E173B0D25F9FA00618676 /* NptXbmcFile.cpp */; };
 		E38E204D0D25F9FD00618676 /* NSFFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E173C0D25F9FA00618676 /* NSFFileDirectory.cpp */; };
 		E38E204E0D25F9FD00618676 /* OGGFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E173E0D25F9FA00618676 /* OGGFileDirectory.cpp */; };
 		E38E204F0D25F9FD00618676 /* PlaylistDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17400D25F9FA00618676 /* PlaylistDirectory.cpp */; };
@@ -648,7 +647,6 @@
 		E38E21C90D25F9FD00618676 /* NptPosixSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1C2F0D25F9FC00618676 /* NptPosixSystem.cpp */; };
 		E38E21CA0D25F9FD00618676 /* NptPosixThreads.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1C300D25F9FC00618676 /* NptPosixThreads.cpp */; };
 		E38E21CB0D25F9FD00618676 /* NptSelectableMessageQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1C310D25F9FC00618676 /* NptSelectableMessageQueue.cpp */; };
-		E38E21D80D25F9FD00618676 /* NptWin32Debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1C420D25F9FC00618676 /* NptWin32Debug.cpp */; };
 		E38E222B0D25F9FE00618676 /* dataset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1CD70D25F9FC00618676 /* dataset.cpp */; };
 		E38E22310D25F9FE00618676 /* qry_dat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1CDF0D25F9FC00618676 /* qry_dat.cpp */; };
 		E38E22320D25F9FE00618676 /* sqlitedataset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1CE20D25F9FC00618676 /* sqlitedataset.cpp */; };
@@ -892,6 +890,12 @@
 		E3E920020D8C622A002BF43D /* EventClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E920010D8C622A002BF43D /* EventClient.cpp */; };
 		E3E920060D8C6277002BF43D /* ScraperSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E920050D8C6277002BF43D /* ScraperSettings.cpp */; };
 		E3EB8F080D5D5C0300FFF489 /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */; };
+		E46464360E7DF0B9003CB291 /* NptStdcEnvironment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46464320E7DF0B9003CB291 /* NptStdcEnvironment.cpp */; };
+		E46464370E7DF0B9003CB291 /* NptStdcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46464330E7DF0B9003CB291 /* NptStdcFile.cpp */; };
+		E46464450E7DF115003CB291 /* NptStdcDebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46464430E7DF115003CB291 /* NptStdcDebug.cpp */; };
+		E46464470E7DF12B003CB291 /* NptPosixNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46464460E7DF12B003CB291 /* NptPosixNetwork.cpp */; };
+		E46465170E7E4D20003CB291 /* NptPosixDynamicLibraries.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46465150E7E4D20003CB291 /* NptPosixDynamicLibraries.cpp */; };
+		E46465180E7E4D20003CB291 /* NptPosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46465160E7E4D20003CB291 /* NptPosixFile.cpp */; };
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
 		F51E5BB70E68BE3A00E24093 /* libmad.0.2.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */; };
 		F57E213F0E3C3AB300700C9D /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E213E0E3C3AB200700C9D /* libiconv.dylib */; };
@@ -1741,7 +1745,6 @@
 		E38E17380D25F9FA00618676 /* MusicDatabaseDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicDatabaseDirectory.h; sourceTree = "<group>"; };
 		E38E17390D25F9FA00618676 /* MusicSearchDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicSearchDirectory.cpp; sourceTree = "<group>"; };
 		E38E173A0D25F9FA00618676 /* MusicSearchDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicSearchDirectory.h; sourceTree = "<group>"; };
-		E38E173B0D25F9FA00618676 /* NptXbmcFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptXbmcFile.cpp; sourceTree = "<group>"; };
 		E38E173C0D25F9FA00618676 /* NSFFileDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NSFFileDirectory.cpp; sourceTree = "<group>"; };
 		E38E173D0D25F9FA00618676 /* NSFFileDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSFFileDirectory.h; sourceTree = "<group>"; };
 		E38E173E0D25F9FA00618676 /* OGGFileDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OGGFileDirectory.cpp; sourceTree = "<group>"; };
@@ -2254,10 +2257,6 @@
 		E38E1C2F0D25F9FC00618676 /* NptPosixSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixSystem.cpp; sourceTree = "<group>"; };
 		E38E1C300D25F9FC00618676 /* NptPosixThreads.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixThreads.cpp; sourceTree = "<group>"; };
 		E38E1C310D25F9FC00618676 /* NptSelectableMessageQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptSelectableMessageQueue.cpp; sourceTree = "<group>"; };
-		E38E1C420D25F9FC00618676 /* NptWin32Debug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptWin32Debug.cpp; sourceTree = "<group>"; };
-		E38E1C450D25F9FC00618676 /* NptWin32MessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptWin32MessageQueue.h; sourceTree = "<group>"; };
-		E38E1C470D25F9FC00618676 /* NptWin32Network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptWin32Network.h; sourceTree = "<group>"; };
-		E38E1C4B0D25F9FC00618676 /* NptWin32Threads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptWin32Threads.h; sourceTree = "<group>"; };
 		E38E1C740D25F9FC00618676 /* test.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = test.xml; sourceTree = "<group>"; };
 		E38E1C750D25F9FC00618676 /* unicode.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = unicode.xml; sourceTree = "<group>"; };
 		E38E1C790D25F9FC00618676 /* ccbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ccbuffer.h; sourceTree = "<group>"; };
@@ -2735,6 +2734,12 @@
 		E3E920050D8C6277002BF43D /* ScraperSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ScraperSettings.cpp; sourceTree = "<group>"; };
 		E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmad.0.2.1.dylib; path = /opt/local/lib/libmad.0.2.1.dylib; sourceTree = "<absolute>"; };
 		E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbis.dylib; path = /opt/local/lib/libvorbis.dylib; sourceTree = "<absolute>"; };
+		E46464320E7DF0B9003CB291 /* NptStdcEnvironment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptStdcEnvironment.cpp; sourceTree = "<group>"; };
+		E46464330E7DF0B9003CB291 /* NptStdcFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptStdcFile.cpp; sourceTree = "<group>"; };
+		E46464430E7DF115003CB291 /* NptStdcDebug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptStdcDebug.cpp; sourceTree = "<group>"; };
+		E46464460E7DF12B003CB291 /* NptPosixNetwork.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixNetwork.cpp; sourceTree = "<group>"; };
+		E46465150E7E4D20003CB291 /* NptPosixDynamicLibraries.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixDynamicLibraries.cpp; sourceTree = "<group>"; };
+		E46465160E7E4D20003CB291 /* NptPosixFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixFile.cpp; sourceTree = "<group>"; };
 		F50629780E57B9680066625A /* MultiPathFile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MultiPathFile.cpp; sourceTree = "<group>"; };
 		F50629790E57B9680066625A /* MultiPathFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MultiPathFile.h; sourceTree = "<group>"; };
 		F57E213E0E3C3AB200700C9D /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /opt/local/lib/libiconv.dylib; sourceTree = "<absolute>"; };
@@ -4284,7 +4289,6 @@
 				E38E17380D25F9FA00618676 /* MusicDatabaseDirectory.h */,
 				E38E17390D25F9FA00618676 /* MusicSearchDirectory.cpp */,
 				E38E173A0D25F9FA00618676 /* MusicSearchDirectory.h */,
-				E38E173B0D25F9FA00618676 /* NptXbmcFile.cpp */,
 				E38E173C0D25F9FA00618676 /* NSFFileDirectory.cpp */,
 				E38E173D0D25F9FA00618676 /* NSFFileDirectory.h */,
 				E38E173E0D25F9FA00618676 /* OGGFileDirectory.cpp */,
@@ -5100,9 +5104,9 @@
 		E38E1C230D25F9FC00618676 /* System */ = {
 			isa = PBXGroup;
 			children = (
+				E464642F0E7DF0B9003CB291 /* StdC */,
 				E38E1C240D25F9FC00618676 /* Bsd */,
 				E38E1C2C0D25F9FC00618676 /* Posix */,
-				E38E1C400D25F9FC00618676 /* Win32 */,
 			);
 			path = System;
 			sourceTree = "<group>";
@@ -5119,6 +5123,9 @@
 		E38E1C2C0D25F9FC00618676 /* Posix */ = {
 			isa = PBXGroup;
 			children = (
+				E46465150E7E4D20003CB291 /* NptPosixDynamicLibraries.cpp */,
+				E46465160E7E4D20003CB291 /* NptPosixFile.cpp */,
+				E46464460E7DF12B003CB291 /* NptPosixNetwork.cpp */,
 				E38E1C2D0D25F9FC00618676 /* NptPosixDirectory.cpp */,
 				E38E1C2E0D25F9FC00618676 /* NptPosixQueue.cpp */,
 				E38E1C2F0D25F9FC00618676 /* NptPosixSystem.cpp */,
@@ -5126,17 +5133,6 @@
 				E38E1C310D25F9FC00618676 /* NptSelectableMessageQueue.cpp */,
 			);
 			path = Posix;
-			sourceTree = "<group>";
-		};
-		E38E1C400D25F9FC00618676 /* Win32 */ = {
-			isa = PBXGroup;
-			children = (
-				E38E1C420D25F9FC00618676 /* NptWin32Debug.cpp */,
-				E38E1C450D25F9FC00618676 /* NptWin32MessageQueue.h */,
-				E38E1C470D25F9FC00618676 /* NptWin32Network.h */,
-				E38E1C4B0D25F9FC00618676 /* NptWin32Threads.h */,
-			);
-			path = Win32;
 			sourceTree = "<group>";
 		};
 		E38E1C530D25F9FC00618676 /* Tests */ = {
@@ -5641,6 +5637,16 @@
 			path = xbox;
 			sourceTree = "<group>";
 		};
+		E464642F0E7DF0B9003CB291 /* StdC */ = {
+			isa = PBXGroup;
+			children = (
+				E46464430E7DF115003CB291 /* NptStdcDebug.cpp */,
+				E46464320E7DF0B9003CB291 /* NptStdcEnvironment.cpp */,
+				E46464330E7DF0B9003CB291 /* NptStdcFile.cpp */,
+			);
+			path = StdC;
+			sourceTree = "<group>";
+		};
 		F57E1ED20E36E8FD00700C9D /* internal libs */ = {
 			isa = PBXGroup;
 			children = (
@@ -6128,7 +6134,6 @@
 				E38E20490D25F9FD00618676 /* QueryParams.cpp in Sources */,
 				E38E204A0D25F9FD00618676 /* MusicDatabaseDirectory.cpp in Sources */,
 				E38E204B0D25F9FD00618676 /* MusicSearchDirectory.cpp in Sources */,
-				E38E204C0D25F9FD00618676 /* NptXbmcFile.cpp in Sources */,
 				E38E204D0D25F9FD00618676 /* NSFFileDirectory.cpp in Sources */,
 				E38E204E0D25F9FD00618676 /* OGGFileDirectory.cpp in Sources */,
 				E38E204F0D25F9FD00618676 /* PlaylistDirectory.cpp in Sources */,
@@ -6335,7 +6340,6 @@
 				E38E21C90D25F9FD00618676 /* NptPosixSystem.cpp in Sources */,
 				E38E21CA0D25F9FD00618676 /* NptPosixThreads.cpp in Sources */,
 				E38E21CB0D25F9FD00618676 /* NptSelectableMessageQueue.cpp in Sources */,
-				E38E21D80D25F9FD00618676 /* NptWin32Debug.cpp in Sources */,
 				E38E222B0D25F9FE00618676 /* dataset.cpp in Sources */,
 				E38E22310D25F9FE00618676 /* qry_dat.cpp in Sources */,
 				E38E22320D25F9FE00618676 /* sqlitedataset.cpp in Sources */,
@@ -6632,6 +6636,12 @@
 				F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */,
 				F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */,
 				F5FDF51D0E7218950005B0A6 /* AsyncFileCopy.cpp in Sources */,
+				E46464360E7DF0B9003CB291 /* NptStdcEnvironment.cpp in Sources */,
+				E46464370E7DF0B9003CB291 /* NptStdcFile.cpp in Sources */,
+				E46464450E7DF115003CB291 /* NptStdcDebug.cpp in Sources */,
+				E46464470E7DF12B003CB291 /* NptPosixNetwork.cpp in Sources */,
+				E46465170E7E4D20003CB291 /* NptPosixDynamicLibraries.cpp in Sources */,
+				E46465180E7E4D20003CB291 /* NptPosixFile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
