@@ -36,7 +36,8 @@ class NPT_GenericQueue
                            NPT_Timeout     timeout = NPT_TIMEOUT_INFINITE) = 0; 
     virtual NPT_Result Pop(NPT_QueueItem*& item, 
                            NPT_Timeout     timeout = NPT_TIMEOUT_INFINITE) = 0;
-
+    virtual NPT_Result Peek(NPT_QueueItem*& item, 
+                           NPT_Timeout     timeout = NPT_TIMEOUT_INFINITE) = 0;
  protected:
     // methods
     NPT_GenericQueue() {}
@@ -57,7 +58,12 @@ class NPT_Queue
         return m_Delegate->Push(reinterpret_cast<NPT_QueueItem*>(item), timeout);
     }
     virtual NPT_Result Pop(T*& item, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) {
-        return m_Delegate->Pop(reinterpret_cast<NPT_QueueItem*&>(item), timeout);
+        return m_Delegate->Pop(reinterpret_cast<NPT_QueueItem*&>(item), 
+                               timeout);
+    }
+    virtual NPT_Result Peek(T*& item, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) {
+        return m_Delegate->Peek(reinterpret_cast<NPT_QueueItem*&>(item), 
+                                timeout);
     }
 
  protected:

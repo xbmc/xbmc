@@ -2,8 +2,8 @@
 |
 |      Neptune - Win32 Message Queue
 |
-|      (c) 2001-2003 Gilles Boccon-Gibod
-|      Author: Sylvain Rebaud (sylvain@rebaud.com)
+|      (c) 2001-2008 Gilles Boccon-Gibod
+|      Author: Gilles Boccon-Gibod (bok@bok.net)
 |
 ****************************************************************/
 

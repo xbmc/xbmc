@@ -4,7 +4,6 @@
 	Version="8.00"
 	Name="MapsTest1"
 	ProjectGUID="{257C9F75-2708-4136-BFA9-621ACD0B9BD1}"
-	RootNamespace="MapsTest1"
 	Keyword="Win32Proj"
 	>
 	<Platforms>

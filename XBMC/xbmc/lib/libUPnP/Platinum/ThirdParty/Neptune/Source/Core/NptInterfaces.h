@@ -104,7 +104,7 @@ public:
         return NPT_ERROR_NO_SUCH_PROPERTY;
     }
     virtual NPT_Result SetProperty(const char* /*name*/, 
-                                   NPT_Integer /*value*/) { 
+                                   int         /*value*/) { 
         return NPT_ERROR_NO_SUCH_PROPERTY;
     }
     virtual NPT_Result GetProperty(const char*        /*name*/, 

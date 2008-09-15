@@ -2,7 +2,7 @@
 |
 |   Platinum - AV Media Server Device
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -41,7 +41,8 @@ class PLT_MediaServer : public PLT_DeviceHost
 {
 public:
     // PLT_DeviceHost methods
-    virtual NPT_Result OnAction(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnAction(PLT_ActionReference&          action, 
+                                const NPT_HttpRequestContext& context);
 
 protected:
     PLT_MediaServer(const char*  friendly_name,
@@ -51,24 +52,24 @@ protected:
     virtual ~PLT_MediaServer();
 
     // class methods
-    static NPT_Result GetBrowseFlag(const char* str, BrowseFlags& flag);
+    static NPT_Result  GetBrowseFlag(const char* str, BrowseFlags& flag);
 
     // ConnectionManager
-    virtual NPT_Result OnGetCurrentConnectionIDs(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
-    virtual NPT_Result OnGetProtocolInfo(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
-    virtual NPT_Result OnGetCurrentConnectionInfo(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnGetCurrentConnectionIDs(PLT_ActionReference& action, const NPT_HttpRequestContext& context);
+    virtual NPT_Result OnGetProtocolInfo(PLT_ActionReference& action, const NPT_HttpRequestContext& context);
+    virtual NPT_Result OnGetCurrentConnectionInfo(PLT_ActionReference& action, const NPT_HttpRequestContext& context);
 
     // ContentDirectory
-    virtual NPT_Result OnGetSortCapabilities(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
-    virtual NPT_Result OnGetSearchCapabilities(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
-    virtual NPT_Result OnGetSystemUpdateID(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
-    virtual NPT_Result OnBrowse(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
-    virtual NPT_Result OnSearch(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnGetSortCapabilities(PLT_ActionReference& action, const NPT_HttpRequestContext& context);
+    virtual NPT_Result OnGetSearchCapabilities(PLT_ActionReference& action, const NPT_HttpRequestContext& context);
+    virtual NPT_Result OnGetSystemUpdateID(PLT_ActionReference& action, const NPT_HttpRequestContext& context);
+    virtual NPT_Result OnBrowse(PLT_ActionReference& action, const NPT_HttpRequestContext& context);
+    virtual NPT_Result OnSearch(PLT_ActionReference& action, const NPT_HttpRequestContext& context);
 
     // overridable methods
-    virtual NPT_Result OnBrowseMetadata(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
-    virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
-    virtual NPT_Result OnSearch(PLT_ActionReference& action, const NPT_String& object_id, const NPT_String& searchCriteria, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnBrowseMetadata(PLT_ActionReference& action, const char* object_id, const NPT_HttpRequestContext& context);
+    virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference& action, const char* object_id, const NPT_HttpRequestContext& context);
+    virtual NPT_Result OnSearch(PLT_ActionReference& action, const NPT_String& object_id, const NPT_String& searchCriteria, const NPT_HttpRequestContext& context);
 };
 
 #endif /* _PLT_MEDIA_SERVER_H_ */

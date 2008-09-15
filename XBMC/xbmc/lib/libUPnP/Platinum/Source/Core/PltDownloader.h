@@ -2,7 +2,7 @@
 |
 |   Platinum - Downloader
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -50,10 +50,10 @@ public:
     Plt_DowloaderState GetState() { return m_State; }
 
     // PLT_HttpClientTask method
-    NPT_Result ProcessResponse(NPT_Result        res, 
-                               NPT_HttpRequest*  request, 
-                               NPT_SocketInfo&   info, 
-                               NPT_HttpResponse* response);
+    NPT_Result ProcessResponse(NPT_Result                    res, 
+                               NPT_HttpRequest*              request, 
+                               const NPT_HttpRequestContext& context, 
+                               NPT_HttpResponse*             response);
 
 
 private:

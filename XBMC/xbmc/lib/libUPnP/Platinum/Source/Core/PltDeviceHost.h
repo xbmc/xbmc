@@ -2,7 +2,7 @@
 |
 |   Platinum - Device Host
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -45,13 +45,13 @@ public:
     virtual void SetBroadcast(bool broadcast) { m_Broadcast = broadcast; }
 
     // Overridables
-    virtual NPT_Result OnAction(PLT_ActionReference& action, 
-                                NPT_SocketInfo*      info = NULL);
+    virtual NPT_Result OnAction(PLT_ActionReference&          action, 
+                                const NPT_HttpRequestContext& context);
 
     // NPT_HttpRequestHandler forward for control/event requests
-    virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest&  request,
-                                          NPT_HttpResponse& response,
-                                          NPT_SocketInfo&   client_info);
+    virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest&              request,
+                                          const NPT_HttpRequestContext& context,
+                                          NPT_HttpResponse&             response);
     
     // PLT_SsdpDeviceAnnounceTask & PLT_SsdpDeviceAnnounceUnicastTask
     virtual NPT_Result Announce(PLT_DeviceData*  device, 
@@ -66,12 +66,12 @@ public:
     }
 
     // PLT_SsdpPacketListener method
-    virtual NPT_Result OnSsdpPacket(NPT_HttpRequest& request, 
-                                    NPT_SocketInfo   info);
+    virtual NPT_Result OnSsdpPacket(NPT_HttpRequest&              request, 
+                                    const NPT_HttpRequestContext& context);
 
     // PLT_SsdpDeviceSearchListenTask
-    virtual NPT_Result ProcessSsdpSearchRequest(NPT_HttpRequest& request, 
-                                                NPT_SocketInfo   info);
+    virtual NPT_Result ProcessSsdpSearchRequest(NPT_HttpRequest&              request, 
+                                                const NPT_HttpRequestContext& context);
 
     // PLT_SsdpDeviceSearchResponseTask
     virtual NPT_Result SendSsdpSearchResponse(PLT_DeviceData*   device, 
@@ -92,13 +92,13 @@ protected:
     virtual NPT_Result Start(PLT_SsdpListenTask* task);
     virtual NPT_Result Stop(PLT_SsdpListenTask* task);
 
-    virtual NPT_Result ProcessHttpPostRequest(NPT_HttpRequest&  request,
-                                              NPT_HttpResponse& response,
-                                              NPT_SocketInfo&   info);
+    virtual NPT_Result ProcessHttpPostRequest(NPT_HttpRequest&              request,
+                                              const NPT_HttpRequestContext& context,
+                                              NPT_HttpResponse&             response);
 
-    virtual NPT_Result ProcessHttpSubscriberRequest(NPT_HttpRequest&  request,
-                                                    NPT_HttpResponse& response,
-                                                    NPT_SocketInfo&   info);
+    virtual NPT_Result ProcessHttpSubscriberRequest(NPT_HttpRequest&              request,
+                                                    const NPT_HttpRequestContext& context,
+                                                    NPT_HttpResponse&             response);
 
 protected:
     friend class PLT_UPnP;

@@ -10,6 +10,10 @@
 /*----------------------------------------------------------------------
 |       includes
 +---------------------------------------------------------------------*/
+#define _LARGEFILE_SOURCE
+#define _LARGEFILE_SOURCE64
+#define _FILE_OFFSET_BITS 64
+
 #include "NptConfig.h"
 #include "NptTypes.h"
 #include "NptDirectory.h"
@@ -73,9 +77,9 @@ NPT_PosixDirectoryEntry::~NPT_PosixDirectoryEntry()
 NPT_Result
 NPT_PosixDirectoryEntry::GetInfo(NPT_DirectoryEntryInfo& info)
 {
-    struct stat statbuf;
+    NPT_stat_struct statbuf;
 
-    if (stat(m_Path, &statbuf) == -1) 
+    if (NPT_stat(m_Path, &statbuf) == -1) 
         return NPT_ERROR_NO_SUCH_ITEM;
 
     if (!S_ISDIR(statbuf.st_mode) && !S_ISREG(statbuf.st_mode))
@@ -161,8 +165,8 @@ NPT_PosixDirectory::GetInfo(NPT_DirectoryInfo& info)
 NPT_Result
 NPT_PosixDirectory::GetNextEntry(NPT_String& name, NPT_DirectoryEntryInfo* info)
 {
-    struct dirent* dp;
-    struct stat    statbuf;
+    struct dirent*  dp;
+    NPT_stat_struct statbuf;
 
     // reset output params first
     name = "";
@@ -183,7 +187,7 @@ NPT_PosixDirectory::GetNextEntry(NPT_String& name, NPT_DirectoryEntryInfo* info)
     // discard system specific files/shortcuts
     NPT_String file_path = m_Path;
     NPT_DirectoryAppendToPath(file_path, dp->d_name);
-    if (stat(file_path, &statbuf) == -1) return NPT_FAILURE;
+    if (NPT_stat(file_path, &statbuf) == -1) return NPT_FAILURE;
 
     // assign output params
     name = dp->d_name;
@@ -203,7 +207,6 @@ NPT_Directory::NPT_Directory(const char* path)
     m_Delegate = new NPT_PosixDirectory(path);
 }
 
-
 /*----------------------------------------------------------------------
 |   NPT_Directory::GetEntryCount
 +---------------------------------------------------------------------*/
@@ -212,7 +215,6 @@ NPT_Directory::GetEntryCount(const char* path, NPT_Cardinal& count)
 {
     DIR*           dir = NULL;
     struct dirent* dp;
-//    struct stat    statbuf;
     NPT_String     root_path = path;
 
     // reset output params first
@@ -234,10 +236,6 @@ NPT_Directory::GetEntryCount(const char* path, NPT_Cardinal& count)
 
     // lopp and disregard system specific files
     while ((dp = readdir(dir))  != NULL) {
-        // Get entry's information.
-//        if (stat(dp->d_name, &statbuf) == -1)
-//            continue;
-
         if (NPT_String::Compare(dp->d_name, ".", false) && 
             NPT_String::Compare(dp->d_name, "..", false)) 
             ++count;

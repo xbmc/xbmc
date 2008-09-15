@@ -65,7 +65,7 @@ NPT_PosixSystem::~NPT_PosixSystem()
 |   NPT_System::GetProcessId
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_System::GetProcessId(NPT_Integer& id)
+NPT_System::GetProcessId(NPT_UInt32& id)
 {
     id = getpid();
     return NPT_SUCCESS;
@@ -166,7 +166,7 @@ NPT_System::SetRandomSeed(unsigned int seed)
 /*----------------------------------------------------------------------
 |   NPT_System::GetRandomInteger
 +---------------------------------------------------------------------*/
-NPT_Integer 
+NPT_UInt32 
 NPT_System::GetRandomInteger()
 {
     static bool seeded = false;
