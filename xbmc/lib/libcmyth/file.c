@@ -522,7 +522,7 @@ cmyth_file_seek(cmyth_file_t file, long long offset, int whence)
 int cmyth_file_read(cmyth_file_t file, char *buf, unsigned long len)
 {
 	int err, count;
-	int ret, req, nfds;
+	int ret, req, nfds, rec;
 	char *end, *cur;
 	char msg[256];
 	struct timeval tv;
@@ -533,14 +533,18 @@ int cmyth_file_read(cmyth_file_t file, char *buf, unsigned long len)
 		           __FUNCTION__);
 		return -EINVAL;
 	}
+	if (len == 0)
+		return 0;
 
 	pthread_mutex_lock (&mutex);
 
-	if (file->file_req <= file->file_pos) {
+	/* make sure we have outstanding requests that fill the buffer that was called with */
+	/* this way we should be able to saturate the network connection better */
+	if (file->file_req < file->file_pos + len) {
 
 		snprintf (msg, sizeof (msg),
 	            "QUERY_FILETRANSFER %ld[]:[]REQUEST_BLOCK[]:[]%ld",
-	            file->file_id, len);
+	            file->file_id, (unsigned long)(file->file_pos + len - file->file_req));
 
 		if ( (err = cmyth_send_message (file->file_control, msg) ) < 0) {
 			cmyth_dbg (CMYTH_DBG_ERROR,
@@ -554,12 +558,18 @@ int cmyth_file_read(cmyth_file_t file, char *buf, unsigned long len)
 		req = 0;
 	}
 
+	rec = 0;
 	cur = buf;
 	end = buf+len;
 
-	while (cur == buf || req) {
-		tv.tv_sec = 20;
-		tv.tv_usec = 0;
+	while (cur == buf || req || rec) {
+		if(rec) {
+			tv.tv_sec =  0;
+			tv.tv_usec = 0;
+		} else {
+			tv.tv_sec = 20;
+			tv.tv_usec = 0;
+		}
 		nfds = 0;
 
 		FD_ZERO (&fds);
@@ -579,7 +589,7 @@ int cmyth_file_read(cmyth_file_t file, char *buf, unsigned long len)
 			goto out;
 		}
 
-		if (ret == 0) {
+		if (ret == 0 && !rec) {
 			file->file_control->conn_hang = 1;
 			file->file_data->conn_hang = 1;
 			ret = -ETIMEDOUT;
@@ -604,19 +614,35 @@ int cmyth_file_read(cmyth_file_t file, char *buf, unsigned long len)
 				ret = err;
 				goto out;
 			}
+			req = 0;
+			file->file_req += len;
 
-			if (len == 0) {
-				ret = 0;
+			if (file->file_req < file->file_pos) {
+				cmyth_dbg (CMYTH_DBG_ERROR,
+				           "%s: received invalid invalid length, read position is ahead of request (req: %d, rec: %d, len: %d)\n",
+				           __FUNCTION__, file->file_req, file->file_pos, len);
+				ret = -1;
 				goto out;
 			}
-			req = 0;
-			end = buf+len;
-			file->file_req += len;
+
+
+			/* check if we are already done */
+			if (file->file_pos == file->file_req)
+				break;
 		}
+
+		/* restore direct request fleg */
+		rec = 0;
 
 		/* check data connection */
 		if (FD_ISSET(file->file_data->conn_fd, &fds)) {
-
+			if (end < cur) {
+				cmyth_dbg (CMYTH_DBG_ERROR,
+				           "%s: positions invalid on read, bailing out (cur: %x, end: %x)\n",
+				           __FUNCTION__, cur, end);
+				ret = -1;
+				goto out;
+			}
 			if ((ret = recv (file->file_data->conn_fd, cur, (int)(end-cur), 0)) < 0) {
 				cmyth_dbg (CMYTH_DBG_ERROR,
 				           "%s: recv() failed (%d)\n",
@@ -625,6 +651,8 @@ int cmyth_file_read(cmyth_file_t file, char *buf, unsigned long len)
 			}
 			cur += ret;
 			file->file_pos += ret;
+			if(ret)
+				rec = 1; /* attempt to read directly again to get all queued packets */
 		}
 	}
 
