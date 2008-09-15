@@ -191,6 +191,9 @@ public:
                                 const NPT_HttpRequestContext& context);
 
 private:
+    NPT_String       BuildHttpUri(const char* host, 
+                              const char* file_path);
+
     PLT_MediaObject* BuildObject(CFileItem*                    item,
                                  NPT_String&                   file_path,
                                  bool                          with_count,
@@ -320,6 +323,25 @@ Substitute(const char* in, char ch, const char* str)
     return out;
 }
 
+NPT_String
+CUPnPServer::BuildHttpUri(const char* host, const char* file_path)
+{
+    NPT_HttpUrl uri = m_FileBaseUri;
+    NPT_HttpUrlQuery query;
+    NPT_String result;
+
+    query.AddField("path", file_path);
+    uri.SetHost(host);
+    uri.SetQuery(query.ToString());
+    // 360 hack: force inclusion of port 80
+    result = uri.ToStringWithDefaultPort(0);
+    // 360 hack: it removes the query, so we make it look like a path
+    // and we replace + with urlencoded value of space
+    result = Substitute(result, '?', "%3F");
+    result = Substitute(result, '+', "%20");
+    return result;
+}
+
 /*----------------------------------------------------------------------
 |   CUPnPServer::BuildObject
 +---------------------------------------------------------------------*/
@@ -435,22 +457,12 @@ CUPnPServer::BuildObject(CFileItem*                    item,
         // throught http file server
         NPT_List<NPT_String>::Iterator ip = ips.GetFirstItem();
         while (ip) {
-            NPT_HttpUrl uri = m_FileBaseUri;
-            NPT_HttpUrlQuery query;
-            query.AddField("path", file_path.ToLowercase());
-            uri.SetHost(*ip);
-            uri.SetQuery(query.ToString());
             resource.m_ProtocolInfo = GetProtocolInfo(item, "http-get");
-            // 360 hack: force inclusion of port 80
-            resource.m_Uri = uri.ToStringWithDefaultPort(0);
-            // 360 hack: it removes the query, so we make it look like a path
-            // and we replace + with urlencoded value of space
-            resource.m_Uri = Substitute(resource.m_Uri, '?', "%3F");
-            resource.m_Uri = Substitute(resource.m_Uri, '+', "%20");
+            resource.m_Uri = BuildHttpUri(*ip, file_path);
             object->m_Resources.Add(resource);
 
             ++ip;
-        }        
+        }
     } else {
         PLT_MediaContainer* container = new PLT_MediaContainer;
         object = container;
@@ -520,17 +532,7 @@ CUPnPServer::BuildObject(CFileItem*                    item,
     }
     // set a thumbnail if we have one
     if( item->HasThumbnail() ) {
-        NPT_HttpUrl uri = m_FileBaseUri;
-        NPT_HttpUrlQuery query;
-        query.AddField("path", item->GetThumbnailImage() );
-        uri.SetHost(*ips.GetFirstItem());
-        uri.SetQuery(query.ToString());
-        // 360 hack: force inclusion of port 80
-        object->m_ExtraInfo.album_art_uri = uri.ToStringWithDefaultPort(0);
-        // 360 hack: it removes the query, so we make it look like a path
-        // and we replace + with urlencoded value of space
-        object->m_ExtraInfo.album_art_uri = Substitute(object->m_ExtraInfo.album_art_uri, '?', "%3F");
-        object->m_ExtraInfo.album_art_uri = Substitute(object->m_ExtraInfo.album_art_uri, '+', "%20");
+        object->m_ExtraInfo.album_art_uri = BuildHttpUri(*ips.GetFirstItem(), item->GetThumbnailImage());
     }
 
     return object;
