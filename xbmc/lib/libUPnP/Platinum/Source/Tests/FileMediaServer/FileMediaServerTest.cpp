@@ -2,7 +2,7 @@
 |
 |   Platinum - Test UPnP A/V MediaServer
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -98,7 +98,7 @@ main(int /* argc */, char** argv)
             Options.path, 
             Options.friendly_name?Options.friendly_name:"Platinum UPnP Media Server",
             false,
-            NULL,
+            "SAMEDEVICEGUID",
             0,
             (NPT_UInt16)Options.port)
             );

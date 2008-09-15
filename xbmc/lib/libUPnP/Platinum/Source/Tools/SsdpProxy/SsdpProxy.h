@@ -2,7 +2,7 @@
 |
 |   Platinum - Ssdp Proxy tool
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
 ****************************************************************/
@@ -32,10 +32,12 @@ public:
     NPT_Result Start(NPT_UInt32 port);
 
     // PLT_SsdpPacketListener method
-    virtual NPT_Result OnSsdpPacket(NPT_HttpRequest& request, NPT_SocketInfo info);
+    virtual NPT_Result OnSsdpPacket(NPT_HttpRequest&              request, 
+                                    const NPT_HttpRequestContext& context);
 
     // PLT_SsdpUnicastListener redirect
-    virtual NPT_Result OnUnicastSsdpPacket(NPT_HttpRequest& request, NPT_SocketInfo info);
+    virtual NPT_Result OnUnicastSsdpPacket(NPT_HttpRequest&              request, 
+                                           const NPT_HttpRequestContext& context);
 
 private:
     PLT_SsdpUnicastListener* m_UnicastListener;
@@ -50,7 +52,8 @@ public:
     PLT_SsdpUnicastListener(PLT_SsdpProxy* proxy) : m_Proxy(proxy) {}
 
     // PLT_SsdpPacketListener method
-    NPT_Result OnSsdpPacket(NPT_HttpRequest& request, NPT_SocketInfo info);
+    NPT_Result OnSsdpPacket(NPT_HttpRequest&              request, 
+                            const NPT_HttpRequestContext& context);
 
 private:
     PLT_SsdpProxy* m_Proxy;
@@ -62,15 +65,15 @@ private:
 class PLT_SsdpProxyForwardTask : public PLT_SsdpSearchTask 
 {
 public:
-    PLT_SsdpProxyForwardTask(NPT_UdpSocket*     socket,
-                             NPT_HttpRequest*   request, 
-                             NPT_Timeout        timeout,
-                             NPT_SocketAddress& forward_address);
+    PLT_SsdpProxyForwardTask(NPT_UdpSocket*           socket,
+                             NPT_HttpRequest*         request, 
+                             NPT_Timeout              timeout,
+                             const NPT_SocketAddress& forward_address);
 
-    NPT_Result ProcessResponse(NPT_Result        res, 
-                               NPT_HttpRequest*  request, 
-                               NPT_SocketInfo&   info, 
-                               NPT_HttpResponse* response);
+    NPT_Result ProcessResponse(NPT_Result                    res, 
+                               NPT_HttpRequest*              request, 
+                               const NPT_HttpRequestContext& context,
+                               NPT_HttpResponse*             response);
 
 private:
     NPT_SocketAddress m_ForwardAddress;

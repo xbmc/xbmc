@@ -2,7 +2,7 @@
 |
 |   Platinum - DIDL
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
 ****************************************************************/
@@ -155,7 +155,7 @@ PLT_Didl::AppendXmlEscape(NPT_String& out, NPT_String& in)
 void
 PLT_Didl::FormatTimeStamp(NPT_String& out, NPT_UInt32 seconds)
 {
-    NPT_Integer hours = seconds/3600;
+    int hours = seconds/3600;
     if (hours == 0) {
         out += "00:";
     } else {
@@ -165,7 +165,7 @@ PLT_Didl::FormatTimeStamp(NPT_String& out, NPT_UInt32 seconds)
         out += NPT_String::FromInteger(hours) + ":";
     }
 
-    NPT_Integer minutes = (seconds/60)%60;
+    int minutes = (seconds/60)%60;
     if (minutes == 0) {
         out += "00:";
     } else {
@@ -175,7 +175,7 @@ PLT_Didl::FormatTimeStamp(NPT_String& out, NPT_UInt32 seconds)
         out += NPT_String::FromInteger(minutes) + ":";
     }
 
-    NPT_Integer secs = seconds%60;
+    int secs = seconds%60;
     if (secs == 0) {
         out += "00";
     } else {
@@ -197,7 +197,7 @@ PLT_Didl::ParseTimeStamp(NPT_String timestamp, NPT_UInt32& seconds)
     // assume a timestamp in the format HH:MM:SS
     int colon;
     NPT_String str = timestamp;
-    NPT_Int32 num;
+    long num;
 
     // extract millisecondsfirst
     if ((colon = timestamp.ReverseFind('.')) != -1) {
@@ -212,7 +212,7 @@ PLT_Didl::ParseTimeStamp(NPT_String timestamp, NPT_UInt32& seconds)
         timestamp = timestamp.Left(colon);
     }
 
-    if (NPT_FAILED(str.ToInteger((long&)num))) {
+    if (NPT_FAILED(str.ToInteger(num))) {
         return NPT_FAILURE;
     }
 
@@ -226,7 +226,7 @@ PLT_Didl::ParseTimeStamp(NPT_String timestamp, NPT_UInt32& seconds)
             timestamp = timestamp.Left(colon);
         }
 
-        if (NPT_FAILED(str.ToInteger((long&)num))) {
+        if (NPT_FAILED(str.ToInteger(num))) {
             return NPT_FAILURE;
         }
 
@@ -241,7 +241,7 @@ PLT_Didl::ParseTimeStamp(NPT_String timestamp, NPT_UInt32& seconds)
             timestamp = timestamp.Left(colon);
         }
 
-        if (NPT_FAILED(str.ToInteger((long&)num))) {
+        if (NPT_FAILED(str.ToInteger(num))) {
             return NPT_FAILURE;
         }
 

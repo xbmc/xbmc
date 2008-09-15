@@ -82,6 +82,22 @@ IntTest(const char* name, int a, int expected)
 }
 
 /*----------------------------------------------------------------------
+|       FloatTest
++---------------------------------------------------------------------*/
+static void
+FloatTest(const char* name, float a, float expected)
+{
+    printf("%s: %f", name, a);
+    if (a != expected) {
+        printf(" [fail: exptected %f, got %f]\n", expected, a);
+    } else {
+        printf(" [pass]\n");
+    }
+    if (a != expected) Fail();
+}
+
+
+/*----------------------------------------------------------------------
 |       main
 +---------------------------------------------------------------------*/
 int
@@ -104,6 +120,8 @@ main(int /*argc*/, char** /*argv*/)
     StringTest("FromInteger(1234567)", f0, "1234567");
     f0 = NPT_String::FromInteger(-1234567);
     StringTest("FromInteger(-1234567)", f0, "-1234567");
+    f0 = NPT_String::FromIntegerU(0xFFFFFFFF);
+    StringTest("FromIntegerU(0xFFFFFFFF)", f0, "4294967295");
 
     printf(":: testing constructors\n");
     NPT_String s00;
@@ -124,9 +142,13 @@ main(int /*argc*/, char** /*argv*/)
     StringTest("constructor(const NPT_String& = empty)", s07, "");
     NPT_String s08("");
     StringTest("constructor(const char* = \"\")", s08, "");
-    NPT_String s09("jkhlkjh\0fgsdfg\0fgsdfg", 0, 10);
+    NPT_String s09("jkhlkjh\0fgsdfg\0fgsdfg", 10);
     StringTest("NPT_String s09(\"jkhlkjh\0fgsdfg\0fgsdfg\", 0, 10)", s09, "jkhlkjh");
-        
+    NPT_String s10((const char*)NULL, 0);
+    StringTest("NPT_String s10(NULL, 0)", s10, "");
+    NPT_String s11(' ', 0);
+    StringTest("NPT_String s11(' ', 0)", s11, "");
+    
     printf(":: testing assignments\n");
     NPT_String a00 = (const char*)NULL;
     StringTest("operator=(const char* = NULL)", a00, "");
@@ -153,6 +175,15 @@ main(int /*argc*/, char** /*argv*/)
     p2 = p2;
     StringTest("self assignment with other ref", p2, "self");
 
+    printf(":: testing SetLength()\n");
+    NPT_String sl00;
+    IntTest("", sl00.SetLength(0), NPT_SUCCESS);
+    IntTest("", sl00.SetLength(1), NPT_ERROR_INVALID_PARAMETERS);
+    sl00.Assign("blabla", 6);
+    IntTest("", sl00.SetLength(7), NPT_ERROR_INVALID_PARAMETERS);
+    IntTest("", sl00.SetLength(3), NPT_SUCCESS);
+    StringTest("", sl00, "bla");
+    
     printf(":: testing casts\n");
     s = "hello";
     printf(":: cast to char*\n");
@@ -240,7 +271,10 @@ main(int /*argc*/, char** /*argv*/)
     trim = "\r\njust this\t   \r\n";
     trim.Trim();
     StringTest("Trim() of '\\r\\njust this\\t   \\r\\n'", trim, "just this");
-
+    trim = "*&##just this$&**";
+    trim.Trim('*');
+    StringTest("", trim, "&##just this$&");
+    
     printf(":: testing operator+=(NPT_String&)\n");
     NPT_String o1 = "hello";
     NPT_String o2 = ", gilles";
@@ -315,6 +349,9 @@ main(int /*argc*/, char** /*argv*/)
     CompareTest("cnc", "AbCC", "aBcd", NPT_String("AbCC").Compare("aBcd", true), -1);
     CompareTest("cnc", "bbCc", "aBcc", NPT_String("bbCc").Compare("aBcc", true), 1);
     CompareTest("cnc", "BbCC", "aBcc", NPT_String("BbCC").Compare("aBcc", true), 1);
+    CompareTest("cnc", "AbCC", "aBcd", NPT_String("AbCC").CompareN("aBcd", 4, true), -1);
+    CompareTest("cnc", "AbCC", "aBcd", NPT_String("AbCC").CompareN("aBcd", 5, true), -1);
+    CompareTest("cnc", "AbCC", "aBcd", NPT_String("AbCC").CompareN("aBcd", 3, true), 0);
 
     printf(":: testing MakeLowercase\n");
     NPT_String lower = "abcdEFGhijkl";
@@ -360,6 +397,8 @@ main(int /*argc*/, char** /*argv*/)
     IntTest("Find(\"clair\", 2)", f, 3);
     f = s.Find("clair", 100);
     IntTest("Find(\"clair\", 100)", f, -1);
+    f = s.Find("cloir");
+    IntTest("Find(\"cloir\")", f, -1);
     f = s.Find("au clair de la lune");
     IntTest("Find(\"au clair de la lune\")", f, 0);
     f = s.Find("au clair de la lune mon ami");
@@ -369,7 +408,15 @@ main(int /*argc*/, char** /*argv*/)
     NPT_String s1;
     f = s1.Find("hello");
     IntTest("Find() in empty string", f, -1);
-
+    f = s.Find("Clair De La Lune", 0, true);
+    IntTest("s.Find(\"Clair De La Lune\"", f, 3);
+    f = s.Find('z');
+    IntTest("", f, -1);
+    f = s.Find('a', 1);
+    IntTest("", f, 5);
+    f = s.Find('C', 0, true);
+    IntTest("", f, 3);
+    
     printf(":: testing ReverseFind\n");
     s = "aabbccaa";
     f = s.ReverseFind("a");
@@ -390,26 +437,46 @@ main(int /*argc*/, char** /*argv*/)
     IntTest("", f, 0);
     f = s.ReverseFind("aabbccaaa");
     IntTest("", f, -1);
-
+    f = s.ReverseFind("zz");
+    IntTest("", f, -1);
+    f = s.ReverseFind('z');
+    IntTest("", f, -1);
+    f = s.ReverseFind('b');
+    IntTest("", f, 3);
+    f = s.ReverseFind('a', 2);
+    IntTest("", f, 1);
+    f = s.ReverseFind('B', 0, true);
+    IntTest("", f, 3);
+    f = s.ReverseFind('B');
+    IntTest("", f, -1);
+    
     printf(":: testing StartsWith\n");
     bool b = s.StartsWith("");
-    IntTest("", b, 0);
+    IntTest("", b, 1);
     b = s.StartsWith("aaba");
     IntTest("", b, 0);
     b = s.StartsWith("aabbccaaa");
     IntTest("", b, 0);
     b = s.StartsWith("aabb");
     IntTest("", b, 1);
+    b = s.StartsWith("AaB", true);
+    IntTest("", b, 1);
+    b = s.StartsWith("AaB");
+    IntTest("", b, 0);
 
     printf(":: testing EndsWith\n");
     b = s.EndsWith("");
-    IntTest("", b, 0);
+    IntTest("", b, 1);
     b = s.EndsWith("aaba");
     IntTest("", b, 0);
     b = s.EndsWith("aabbccaaa");
     IntTest("", b, 0);
     b = s.EndsWith("ccaa");
     IntTest("", b, 1);
+    b = s.EndsWith("CcAa", true);
+    IntTest("", b, 1);
+    b = s.EndsWith("CcAa");
+    IntTest("", b, 0);
 
     printf(":: testing Replace\n");
     NPT_String r0 = "abcdefghijefe";
@@ -450,6 +517,87 @@ main(int /*argc*/, char** /*argv*/)
     er0.Erase(0, 5);
     StringTest("1", er0, "");
 
+    printf(":: testing ToInteger");
+    NPT_String ti00("123");
+    unsigned long ul00;
+    long          l00;
+    IntTest("", ti00.ToInteger(ul00), NPT_SUCCESS);
+    IntTest("", ul00, 123);
+    IntTest("", ti00.ToInteger(l00), NPT_SUCCESS);
+    IntTest("", l00, 123);
+    ti00 = "123ggds";
+    IntTest("", ti00.ToInteger(l00, false), NPT_ERROR_INVALID_PARAMETERS);
+    IntTest("", ti00.ToInteger(l00, true), NPT_SUCCESS);
+    IntTest("", l00, 123);
+    ti00 = "-123";
+    IntTest("", ti00.ToInteger(ul00, false), NPT_ERROR_INVALID_PARAMETERS);
+    IntTest("", ti00.ToInteger(l00), NPT_SUCCESS);
+    IntTest("", l00, -123);
+    
+    printf(":: testing ToFloat");
+    NPT_String tf00("-1.234flo");
+    float fl00;
+    IntTest("", tf00.ToFloat(fl00, true), NPT_SUCCESS);
+    FloatTest("", fl00, -1.234f);
+    IntTest("", tf00.ToFloat(fl00, false), NPT_ERROR_INVALID_PARAMETERS);
+    
+    
+    NPT_List<NPT_String> sl;
+    sl = NPT_String("").Split("");
+    IntTest("", sl.GetItemCount(), 1);
+    StringTest("", *sl.GetFirstItem(), "");
+    
+    sl = NPT_String("").Split("#");
+    IntTest("", sl.GetItemCount(), 1);
+    StringTest("", *sl.GetFirstItem(), "");
+
+    sl = NPT_String("aaa").Split("");
+    IntTest("", sl.GetItemCount(), 1);
+    StringTest("", *sl.GetFirstItem(), "aaa");
+
+    sl = NPT_String("aaa").Split("b");
+    IntTest("", sl.GetItemCount(), 1);
+    StringTest("", *sl.GetFirstItem(), "aaa");
+
+    sl = NPT_String("aaa").Split("a");
+    IntTest("", sl.GetItemCount(), 4);
+    NPT_String* sli;
+    sl.Get(0, sli);
+    StringTest("", *sli, "");
+    sl.Get(1, sli);
+    StringTest("", *sli, "");
+    sl.Get(2, sli);
+    StringTest("", *sli, "");
+    sl.Get(3, sli);
+    StringTest("", *sli, "");
+    
+    sl = NPT_String("aaa").Split("aa");
+    IntTest("", sl.GetItemCount(), 2);
+    sl.Get(0, sli);
+    StringTest("", *sli, "");
+    sl.Get(1, sli);
+    StringTest("", *sli, "a");
+
+    sl = NPT_String("aaa").Split("aaa");
+    IntTest("", sl.GetItemCount(), 2);
+    sl.Get(0, sli);
+    StringTest("", *sli, "");
+    sl.Get(1, sli);
+    StringTest("", *sli, "");
+
+    sl = NPT_String("a;b;c;d;e").Split(";");    
+    IntTest("", sl.GetItemCount(), 5);
+    sl.Get(0, sli);
+    StringTest("", *sli, "a");
+    sl.Get(1, sli);
+    StringTest("", *sli, "b");
+    sl.Get(2, sli);
+    StringTest("", *sli, "c");
+    sl.Get(3, sli);
+    StringTest("", *sli, "d");
+    sl.Get(4, sli);
+    StringTest("", *sli, "e");
+    
     printf("------------------------- done -----\n");
     return 0;
 }

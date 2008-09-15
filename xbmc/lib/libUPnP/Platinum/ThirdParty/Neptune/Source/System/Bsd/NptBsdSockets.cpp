@@ -2,7 +2,7 @@
 |
 |   Neptune - Sockets :: BSD/Winsock Implementation
 |
-|   (c) 2001-2006 Gilles Boccon-Gibod
+|   (c) 2001-2008 Gilles Boccon-Gibod
 |   Author: Gilles Boccon-Gibod (bok@bok.net)
 |
  ****************************************************************/
@@ -501,7 +501,6 @@ public:
     NPT_BsdSocketFd(SocketFd fd) : 
       m_SocketFd(fd), 
       m_Blocking(true),
-      m_Disconnected(false),
       m_ReadTimeout(NPT_TIMEOUT_INFINITE), 
       m_WriteTimeout(NPT_TIMEOUT_INFINITE),
       m_Position(0) {
@@ -520,12 +519,12 @@ public:
     }
 
     // methods
-    SocketFd   GetSocketFd() { return m_Disconnected?0:m_SocketFd; }
     NPT_Result SetBlockingMode(bool blocking);
     NPT_Result WaitUntilReadable();
     NPT_Result WaitUntilWriteable();
     void Disconnect() {
-        if (m_Disconnected) return;
+        if (!m_SocketFd) return;
+
 #if !defined(__WIN32__) && !defined(_XBOX)
         write(m_AbortPipe[1], "\0", 1);
 #else
@@ -537,13 +536,11 @@ public:
             closesocket(socketFd);
         }
 #endif
-        m_Disconnected = true;
     }
 
     // members
     SocketFd     m_SocketFd;
     bool         m_Blocking;
-    bool         m_Disconnected;
     NPT_Timeout  m_ReadTimeout;
     NPT_Timeout  m_WriteTimeout;
     NPT_Position m_Position;
@@ -739,8 +736,8 @@ public:
     NPT_Result Tell(NPT_Position& where) {
         return NPT_BsdSocketStream::Tell(where);
     }
-    NPT_Result GetSize(NPT_Size& size);
-    NPT_Result GetAvailable(NPT_Size& available);
+    NPT_Result GetSize(NPT_LargeSize& size);
+    NPT_Result GetAvailable(NPT_LargeSize& available);
 };
 
 /*----------------------------------------------------------------------
@@ -759,7 +756,7 @@ NPT_BsdSocketInputStream::Read(void*     buffer,
     }
 
     // read from the socket
-    ssize_t nb_read = recv(m_SocketFdReference->GetSocketFd(), 
+    ssize_t nb_read = recv(m_SocketFdReference->m_SocketFd, 
                            (SocketBuffer)buffer, 
                            bytes_to_read, 0);
     if (nb_read > 0) {
@@ -782,7 +779,7 @@ NPT_BsdSocketInputStream::Read(void*     buffer,
 |   NPT_BsdSocketInputStream::GetSize
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_BsdSocketInputStream::GetSize(NPT_Size& size)
+NPT_BsdSocketInputStream::GetSize(NPT_LargeSize& size)
 {
     // generic socket streams have no size
     size = 0;
@@ -794,7 +791,7 @@ NPT_BsdSocketInputStream::GetSize(NPT_Size& size)
 |   NPT_BsdSocketInputStream::GetAvailable
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_BsdSocketInputStream::GetAvailable(NPT_Size&)
+NPT_BsdSocketInputStream::GetAvailable(NPT_LargeSize&)
 {
     return NPT_ERROR_NOT_SUPPORTED;
 }
@@ -803,10 +800,10 @@ NPT_BsdSocketInputStream::GetAvailable(NPT_Size&)
 |   NPT_BsdSocketInputStream::GetAvailable
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_BsdSocketInputStream::GetAvailable(NPT_Size& available)
+NPT_BsdSocketInputStream::GetAvailable(NPT_LargeSize& available)
 {
     unsigned long ready = 0;
-    int io_result = ioctlsocket(m_SocketFdReference->GetSocketFd(), FIONREAD, &ready); 
+    int io_result = ioctlsocket(m_SocketFdReference->m_SocketFd, FIONREAD, &ready); 
     if (NPT_BSD_SOCKET_CALL_FAILED(io_result)) {
         available = 0;
         return NPT_ERROR_SOCKET_CONTROL_FAILED;
@@ -864,7 +861,7 @@ NPT_BsdSocketOutputStream::Write(const void*  buffer,
 #endif
 
     // write to the socket
-    ssize_t nb_written = send(m_SocketFdReference->GetSocketFd(), 
+    ssize_t nb_written = send(m_SocketFdReference->m_SocketFd, 
                               (SocketConstBuffer)buffer, 
                               bytes_to_write, flags);
 
@@ -894,7 +891,7 @@ NPT_BsdSocketOutputStream::Flush()
     socklen_t size = sizeof(args);
 
     // get the value of the nagle algorithm
-    if (getsockopt(m_SocketFdReference->GetSocketFd(), 
+    if (getsockopt(m_SocketFdReference->m_SocketFd, 
                   IPPROTO_TCP, 
                   TCP_NODELAY, 
                   (char*)&args, 
@@ -907,7 +904,7 @@ NPT_BsdSocketOutputStream::Flush()
 
     // disable the nagle algorithm
     args = 1;
-    if (setsockopt(m_SocketFdReference->GetSocketFd(), 
+    if (setsockopt(m_SocketFdReference->m_SocketFd, 
                    IPPROTO_TCP, 
                    TCP_NODELAY, 
                    (const char*)&args, 
@@ -917,11 +914,11 @@ NPT_BsdSocketOutputStream::Flush()
 
     // send an empty buffer to flush
     char dummy;
-    send(m_SocketFdReference->GetSocketFd(), &dummy, 0, 0); 
+    send(m_SocketFdReference->m_SocketFd, &dummy, 0, 0); 
 
     // restore the nagle algorithm to its original setting
     args = 0;
-    if (setsockopt(m_SocketFdReference->GetSocketFd(), 
+    if (setsockopt(m_SocketFdReference->m_SocketFd, 
                    IPPROTO_TCP, 
                    TCP_NODELAY, 
                    (const char*)&args, 
@@ -972,8 +969,19 @@ NPT_BsdSocket::NPT_BsdSocket(SocketFd fd, bool force_blocking) :
     m_SocketFdReference(new NPT_BsdSocketFd(fd)),
     m_Blocking(true)
 {
-    if (force_blocking) m_SocketFdReference->SetBlockingMode(true);
+    // disable the SIGPIPE signal
+#if defined(SO_NOSIGPIPE)
+    int option = 1;
+    setsockopt(m_SocketFdReference->m_SocketFd, 
+               SOL_SOCKET, 
+               SO_NOSIGPIPE, 
+               (SocketOption)&option, 
+               sizeof(option));
+#elif defined(SIGPIPE)
+    signal(SIGPIPE, SIG_IGN);
+#endif
 
+    if (force_blocking) m_SocketFdReference->SetBlockingMode(true);
     RefreshInfo();
 }
 
@@ -995,7 +1003,7 @@ NPT_BsdSocket::Bind(const NPT_SocketAddress& address, bool reuse_address)
     // set socket options
     if (reuse_address) {
         int option = 1;
-        setsockopt(m_SocketFdReference->GetSocketFd(), 
+        setsockopt(m_SocketFdReference->m_SocketFd, 
                    SOL_SOCKET, 
                    SO_REUSEADDR, 
                    (SocketOption)&option, 
@@ -1003,7 +1011,7 @@ NPT_BsdSocket::Bind(const NPT_SocketAddress& address, bool reuse_address)
 #if defined(SO_REUSEPORT) 
         // some implementations (BSD 4.4) need this in addition to SO_REUSEADDR
         option = 1;
-        setsockopt(m_SocketFdReference->GetSocketFd(), 
+        setsockopt(m_SocketFdReference->m_SocketFd, 
                    SOL_SOCKET, 
                    SO_REUSEPORT, 
                    (SocketOption)&option, 
@@ -1023,7 +1031,7 @@ NPT_BsdSocket::Bind(const NPT_SocketAddress& address, bool reuse_address)
 #endif
 
     // bind the socket
-    if (bind(m_SocketFdReference->GetSocketFd(), 
+    if (bind(m_SocketFdReference->m_SocketFd, 
              (struct sockaddr*)&inet_address, 
              sizeof(inet_address)) < 0) {
         return NPT_ERROR_BIND_FAILED;
@@ -1128,7 +1136,7 @@ NPT_BsdSocket::RefreshInfo()
     // get the local socket addr
     struct sockaddr_in inet_address;
     socklen_t          name_length = sizeof(inet_address);
-    if (getsockname(m_SocketFdReference->GetSocketFd(), 
+    if (getsockname(m_SocketFdReference->m_SocketFd, 
                     (struct sockaddr*)&inet_address, 
                     &name_length) == 0) {
         m_Info.local_address.SetIpAddress(ntohl(inet_address.sin_addr.s_addr));
@@ -1136,7 +1144,7 @@ NPT_BsdSocket::RefreshInfo()
     }   
 
     // get the peer socket addr
-    if (getpeername(m_SocketFdReference->GetSocketFd(),
+    if (getpeername(m_SocketFdReference->m_SocketFd,
                     (struct sockaddr*)&inet_address, 
                     &name_length) == 0) {
         m_Info.remote_address.SetIpAddress(ntohl(inet_address.sin_addr.s_addr));
@@ -1222,7 +1230,7 @@ NPT_BsdUdpSocket::NPT_BsdUdpSocket() :
 {
     // set default socket options
     int option = 1;
-    setsockopt(m_SocketFdReference->GetSocketFd(), 
+    setsockopt(m_SocketFdReference->m_SocketFd, 
                SOL_SOCKET, 
                SO_BROADCAST, 
                (SocketOption)&option, 
@@ -1230,8 +1238,8 @@ NPT_BsdUdpSocket::NPT_BsdUdpSocket() :
 
 #ifdef _XBOX
     // set flag on the socket to allow sending of multicast
-    if (!NPT_BSD_SOCKET_IS_INVALID(m_SocketFdReference->GetSocketFd())) {
-        *(DWORD*)((char*)m_SocketFdReference->GetSocketFd()+0xc) |= 0x02000000;
+    if (!NPT_BSD_SOCKET_IS_INVALID(m_SocketFdReference->m_SocketFd)) {
+        *(DWORD*)((char*)m_SocketFdReference->m_SocketFd+0xc) |= 0x02000000;
     }
 #endif
 
@@ -1249,7 +1257,7 @@ NPT_BsdUdpSocket::Connect(const NPT_SocketAddress& address,
     SocketAddressToInetAddress(address, &inet_address);
 
     // connect so that we can have some addr bound to the socket
-    int io_result = connect(m_SocketFdReference->GetSocketFd(), 
+    int io_result = connect(m_SocketFdReference->m_SocketFd, 
                             (struct sockaddr *)&inet_address, 
                             sizeof(inet_address));
     if (NPT_BSD_SOCKET_CALL_FAILED(io_result)) { 
@@ -1288,7 +1296,7 @@ NPT_BsdUdpSocket::Send(const NPT_DataBuffer&    packet,
         // setup an address structure
         struct sockaddr_in inet_address;
         SocketAddressToInetAddress(*address, &inet_address);
-        io_result = sendto(m_SocketFdReference->GetSocketFd(), 
+        io_result = sendto(m_SocketFdReference->m_SocketFd, 
                            (SocketConstBuffer)buffer, 
                            buffer_length, 
                            0, 
@@ -1296,7 +1304,7 @@ NPT_BsdUdpSocket::Send(const NPT_DataBuffer&    packet,
                            sizeof(inet_address));
     } else {
         // send to whichever addr the socket is connected
-        io_result = send(m_SocketFdReference->GetSocketFd(), 
+        io_result = send(m_SocketFdReference->m_SocketFd, 
                          (SocketConstBuffer)buffer, 
                          buffer_length,
                          0);
@@ -1339,7 +1347,7 @@ NPT_BsdUdpSocket::Receive(NPT_DataBuffer&    packet,
     if (address) {
         struct sockaddr_in inet_address;
         socklen_t          inet_address_length = sizeof(inet_address);
-        io_result = recvfrom(m_SocketFdReference->GetSocketFd(), 
+        io_result = recvfrom(m_SocketFdReference->m_SocketFd, 
                              (SocketBuffer)buffer, 
                              buffer_size, 
                              0, 
@@ -1353,7 +1361,7 @@ NPT_BsdUdpSocket::Receive(NPT_DataBuffer&    packet,
             }
         }
     } else {
-        io_result = recv(m_SocketFdReference->GetSocketFd(),
+        io_result = recv(m_SocketFdReference->m_SocketFd,
                          (SocketBuffer)buffer,
                          buffer_size,
                          0);
@@ -1432,7 +1440,7 @@ NPT_BsdUdpMulticastSocket::NPT_BsdUdpMulticastSocket()
 {
 #ifndef _XBOX
         int option = 1;
-        setsockopt(m_SocketFdReference->GetSocketFd(), 
+        setsockopt(m_SocketFdReference->m_SocketFd, 
                    IPPROTO_IP, 
                    IP_MULTICAST_LOOP,
                    (SocketOption)&option,
@@ -1474,7 +1482,7 @@ NPT_BsdUdpMulticastSocket::JoinGroup(const NPT_IpAddress& group,
     mreq.imr_multiaddr.s_addr = htonl(group.AsLong());
 
     // set socket option
-    int io_result = setsockopt(m_SocketFdReference->GetSocketFd(), 
+    int io_result = setsockopt(m_SocketFdReference->m_SocketFd, 
                                IPPROTO_IP, IP_ADD_MEMBERSHIP, 
                                (SocketOption)&mreq, sizeof(mreq));
     if (io_result == 0) {
@@ -1512,7 +1520,7 @@ NPT_BsdUdpMulticastSocket::LeaveGroup(const NPT_IpAddress& group,
     mreq.imr_multiaddr.s_addr = htonl(group.AsLong());
 
     // set socket option
-    int io_result = setsockopt(m_SocketFdReference->GetSocketFd(), 
+    int io_result = setsockopt(m_SocketFdReference->m_SocketFd, 
                                IPPROTO_IP, IP_DROP_MEMBERSHIP, 
                                (SocketOption)&mreq, sizeof(mreq));
     if (io_result == 0) {
@@ -1544,7 +1552,7 @@ NPT_BsdUdpMulticastSocket::SetInterface(const NPT_IpAddress& iface)
     iface_addr.s_addr = htonl(iface.AsLong());
 
     // set socket option
-    int io_result = setsockopt(m_SocketFdReference->GetSocketFd(), 
+    int io_result = setsockopt(m_SocketFdReference->m_SocketFd, 
                                IPPROTO_IP, IP_MULTICAST_IF, 
                                (char*)&iface_addr, sizeof(iface_addr));
     if (io_result == 0) {
@@ -1574,7 +1582,7 @@ NPT_BsdUdpMulticastSocket::SetTimeToLive(unsigned char ttl)
     unsigned char ttl_opt = ttl;
 
     // set socket option
-    int io_result = setsockopt(m_SocketFdReference->GetSocketFd(), 
+    int io_result = setsockopt(m_SocketFdReference->m_SocketFd, 
                                IPPROTO_IP, IP_MULTICAST_TTL, 
                                (SocketOption)&ttl_opt, sizeof(ttl_opt));
     if (io_result == 0) {
@@ -1647,17 +1655,6 @@ NPT_BsdTcpClientSocket::NPT_BsdTcpClientSocket() :
 +---------------------------------------------------------------------*/
 NPT_BsdTcpClientSocket::~NPT_BsdTcpClientSocket()
 {
-    // disable the SIGPIPE signal
-#if defined(SO_NOSIGPIPE)
-    int option = 1;
-    setsockopt(m_SocketFdReference->m_SocketFd, 
-               SOL_SOCKET, 
-               SO_NOSIGPIPE, 
-               (SocketOption)&option, 
-               sizeof(option));
-#elif defined(SIGPIPE)
-    signal(SIGPIPE, SIG_IGN);
-#endif
 }
 
 /*----------------------------------------------------------------------
@@ -1680,7 +1677,7 @@ NPT_BsdTcpClientSocket::Connect(const NPT_SocketAddress& address,
 
     // initiate connection
     int io_result;
-    io_result = connect(m_SocketFdReference->GetSocketFd(), 
+    io_result = connect(m_SocketFdReference->m_SocketFd, 
                         (struct sockaddr *)&inet_address, 
                         sizeof(inet_address));
     if (io_result == 0) {
@@ -1726,6 +1723,7 @@ NPT_BsdTcpClientSocket::WaitForConnection(NPT_Timeout timeout)
 NPT_Result 
 NPT_BsdTcpClientSocket::DoWaitForConnection(NPT_Timeout timeout)
 {
+    SocketFd   socket_fd = m_SocketFdReference->m_SocketFd;
     NPT_Result result = NPT_SUCCESS;
 
     // wait for connection to succeed or fail
@@ -1733,11 +1731,11 @@ NPT_BsdTcpClientSocket::DoWaitForConnection(NPT_Timeout timeout)
     fd_set write_set;
     fd_set except_set;
     FD_ZERO(&read_set);
-    FD_SET(m_SocketFdReference->GetSocketFd(), &read_set);
+    FD_SET(socket_fd, &read_set);
     FD_ZERO(&write_set);
-    FD_SET(m_SocketFdReference->GetSocketFd(), &write_set);
+    FD_SET(socket_fd, &write_set);
     FD_ZERO(&except_set);
-    FD_SET(m_SocketFdReference->GetSocketFd(), &except_set);
+    FD_SET(socket_fd, &except_set);
 
     struct timeval timeout_value;
     if (timeout != NPT_TIMEOUT_INFINITE) {
@@ -1745,7 +1743,7 @@ NPT_BsdTcpClientSocket::DoWaitForConnection(NPT_Timeout timeout)
         timeout_value.tv_usec = 1000*(timeout-1000*(timeout/1000));
     };
 
-    int io_result = select((int)m_SocketFdReference->GetSocketFd()+1, 
+    int io_result = select((int)socket_fd+1, 
                            &read_set, &write_set, &except_set, 
                            timeout == NPT_TIMEOUT_INFINITE ? 
                            NULL : &timeout_value);
@@ -1760,18 +1758,18 @@ NPT_BsdTcpClientSocket::DoWaitForConnection(NPT_Timeout timeout)
         }
     } else if (NPT_BSD_SOCKET_SELECT_FAILED(io_result)) {
         return MapErrorCode(GetSocketError());
-    } else if (FD_ISSET(m_SocketFdReference->GetSocketFd(), &read_set)    || 
-               FD_ISSET(m_SocketFdReference->GetSocketFd(), &write_set)   ||
-               FD_ISSET(m_SocketFdReference->GetSocketFd(), &except_set)) {
+    } else if (FD_ISSET(socket_fd, &read_set)   || 
+               FD_ISSET(socket_fd, &write_set)  ||
+               FD_ISSET(socket_fd, &except_set)) {
 #if defined(_XBOX)
-        if (FD_ISSET(m_SocketFdReference->m_SocketFd, &except_set)) return MapErrorCode(GetSocketError());
+        if (FD_ISSET(socket_fd, &except_set)) return MapErrorCode(GetSocketError());
 #else
         // get error status from socket
         // (some systems return the error in errno, others
         //  return it in the buffer passed to getsockopt)
         int error = 0;
         socklen_t length = sizeof(error);
-        io_result = getsockopt(m_SocketFdReference->GetSocketFd(), 
+        io_result = getsockopt(socket_fd, 
                                SOL_SOCKET, 
                                SO_ERROR, 
                                (SocketOption)&error, 
@@ -1869,17 +1867,6 @@ NPT_BsdTcpServerSocket::NPT_BsdTcpServerSocket() :
     NPT_BsdSocket(socket(AF_INET, SOCK_STREAM, 0)),
     m_ListenMax(0)
 {
-    // disable the SIGPIPE signal
-#if defined(SO_NOSIGPIPE)
-    int option = 1;
-    setsockopt(m_SocketFdReference->m_SocketFd, 
-               SOL_SOCKET, 
-               SO_NOSIGPIPE, 
-               (SocketOption)&option, 
-               sizeof(option));
-#elif defined(SIGPIPE)
-    signal(SIGPIPE, SIG_IGN);
-#endif
 }
 
 /*----------------------------------------------------------------------
@@ -1896,7 +1883,7 @@ NPT_Result
 NPT_BsdTcpServerSocket::Listen(unsigned int max_clients)
 {
     // listen for connections
-    if (listen(m_SocketFdReference->GetSocketFd(), max_clients) < 0) {
+    if (listen(m_SocketFdReference->m_SocketFd, max_clients) < 0) {
         m_ListenMax = 0;
         return NPT_ERROR_LISTEN_FAILED;
     }   
@@ -1931,7 +1918,7 @@ NPT_BsdTcpServerSocket::WaitForNewClient(NPT_Socket*& client,
 
     struct sockaddr_in inet_address;
     socklen_t          namelen = sizeof(inet_address);
-    SocketFd socket_fd = accept(m_SocketFdReference->GetSocketFd(), (struct sockaddr*)&inet_address, &namelen); 
+    SocketFd socket_fd = accept(m_SocketFdReference->m_SocketFd, (struct sockaddr*)&inet_address, &namelen); 
     if (NPT_BSD_SOCKET_IS_INVALID(socket_fd)) {
         result = MapErrorCode(GetSocketError());
     } else {

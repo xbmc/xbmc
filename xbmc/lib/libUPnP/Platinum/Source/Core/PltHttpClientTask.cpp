@@ -2,7 +2,7 @@
 |
 |   Platinum - HTTP Client Tasks
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -85,7 +85,6 @@ PLT_HttpClientSocketTask::~PLT_HttpClientSocketTask()
 NPT_Result
 PLT_HttpClientSocketTask::AddRequest(NPT_HttpRequest* request)
 {
-    NPT_AutoLock lock(m_Requests);
     return m_Requests.Push(request);
 }
 
@@ -95,7 +94,6 @@ PLT_HttpClientSocketTask::AddRequest(NPT_HttpRequest* request)
 NPT_Result
 PLT_HttpClientSocketTask::GetNextRequest(NPT_HttpRequest*& request, NPT_Timeout timeout)
 {
-    NPT_AutoLock lock(m_Requests);
     return m_Requests.Pop(request, timeout);
 }
 
@@ -105,11 +103,10 @@ PLT_HttpClientSocketTask::GetNextRequest(NPT_HttpRequest*& request, NPT_Timeout 
 void
 PLT_HttpClientSocketTask::DoRun()
 {
-    NPT_HttpClient        client(m_Connector = new PLT_HttpTcpConnector());
-    NPT_HttpRequest*      request;
-    NPT_SocketInfo        info;
-    bool                  reuse_connector = true;
-    NPT_Result            res;
+    NPT_HttpRequest*       request;
+    NPT_HttpRequestContext context;
+    bool                   reuse_connector = false;
+    NPT_Result             res;
 
     do {
         // pop next request or wait for one for 100ms
@@ -125,17 +122,17 @@ retry:
             // reuse connector since in case it fails because
             // server closed connection, we won't be able to
             // rewind the body to resend the request
-            if (!PLT_HttpHelper::IsBodyStreamSeekable(request)) {
+            if (!PLT_HttpHelper::IsBodyStreamSeekable(*request)) {
                 reuse_connector = false;
             }
 
             // create a new connector if necessary
             if (!reuse_connector) {
-                client.SetConnector(m_Connector = new PLT_HttpTcpConnector());
+                m_Client.SetConnector(m_Connector = new PLT_HttpTcpConnector());
             }
 
             // send request
-            res = client.SendRequest(*request, response);
+            res = m_Client.SendRequest(*request, response);
 
             // retry if we reused a previous connector
             if (NPT_FAILED(res) && reuse_connector) {
@@ -153,15 +150,18 @@ retry:
                 goto retry;
             }
 
-            NPT_LOG_FINE("PLT_HttpClientSocketTask receiving:");
+            NPT_LOG_FINE_1("PLT_HttpClientSocketTask receiving: res = %d", res);
             PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, response);
 
             // callback to process response
+            NPT_SocketInfo info;
             m_Connector->GetInfo(info);
-            ProcessResponse(res, request, info, response);
+            context.SetLocalAddress(info.local_address);
+            context.SetRemoteAddress(info.remote_address);
+            ProcessResponse(res, request, context, response);
 
             // server says connection close, force reopen next request
-            if (response) reuse_connector = PLT_HttpHelper::IsConnectionKeepAlive(response);
+            if (response) reuse_connector = PLT_HttpHelper::IsConnectionKeepAlive(*response);
 
             // cleanup
             delete response;
@@ -174,13 +174,13 @@ retry:
 |   PLT_HttpServerSocketTask::ProcessResponse
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_HttpClientSocketTask::ProcessResponse(NPT_Result        res, 
-                                          NPT_HttpRequest*  request, 
-                                          NPT_SocketInfo&   info, 
-                                          NPT_HttpResponse* response) 
+PLT_HttpClientSocketTask::ProcessResponse(NPT_Result                    res, 
+                                          NPT_HttpRequest*              request, 
+                                          const NPT_HttpRequestContext& context, 
+                                          NPT_HttpResponse*             response) 
 {
     NPT_COMPILER_UNUSED(request);
-    NPT_COMPILER_UNUSED(info);
+    NPT_COMPILER_UNUSED(context);
 
     NPT_LOG_FINE_1("PLT_HttpClientSocketTask::ProcessResponse (result=%d)", res);
     NPT_CHECK_SEVERE(res);
@@ -207,14 +207,14 @@ PLT_HttpClientSocketTask::ProcessResponse(NPT_Result        res,
 |   PLT_FileHttpClientTask::ProcessResponse
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_FileHttpClientTask::ProcessResponse(NPT_Result        res, 
-                                        NPT_HttpRequest*  request, 
-                                        NPT_SocketInfo&   info, 
-                                        NPT_HttpResponse* response) 
+PLT_FileHttpClientTask::ProcessResponse(NPT_Result                    res, 
+                                        NPT_HttpRequest*              request, 
+                                        const NPT_HttpRequestContext& context, 
+                                        NPT_HttpResponse*             response) 
 {
     NPT_COMPILER_UNUSED(res);
     NPT_COMPILER_UNUSED(request);
-    NPT_COMPILER_UNUSED(info);
+    NPT_COMPILER_UNUSED(context);
     NPT_COMPILER_UNUSED(response);
 
     NPT_LOG_INFO_1("PLT_FileHttpClientTask::ProcessResponse (status=%d)\n", res);

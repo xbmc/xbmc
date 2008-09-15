@@ -2,7 +2,7 @@
 |
 |   Platinum - Task Manager
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -53,7 +53,7 @@ private:
     NPT_List<PLT_ThreadTask*>  m_Tasks;
     NPT_Mutex                  m_TasksLock;
     NPT_Mutex                  m_CallbackLock;
-    NPT_Queue<NPT_Integer>*    m_Queue;
+    NPT_Queue<int>*            m_Queue;
 };
 
 #endif /* _PLT_TASKMANAGER_H_ */

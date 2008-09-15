@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="MediaRendererTest"
 	ProjectGUID="{052F76B5-2F71-4D6E-A507-2C2EBF9150F5}"
+	RootNamespace="MediaRendererTest"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -62,7 +63,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib"
 				OutputFile="$(OutDir)/MediaRendererTest.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
@@ -94,7 +94,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2005\Debug&quot;&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2005\Debug\$(TargetFileName)&quot;"
+				CommandLine="mkdir &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2005\Debug&quot;&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2005\Debug\$(TargetFileName)&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -141,7 +141,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib"
 				OutputFile="$(OutDir)/MediaRenderer.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
@@ -174,7 +173,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2005\Release&quot;&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)\..\..\..\..\Targets\x86-microsoft-win32-vs2005\Release\$(TargetFileName)&quot;"
+				CommandLine="mkdir &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2005\Release&quot;&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)\..\..\..\..\Targets\x86-microsoft-win32-vs2005\Release\$(TargetFileName)&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

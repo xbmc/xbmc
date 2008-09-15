@@ -2,10 +2,13 @@
 |
 |      Neptune - Win32 Message Queue
 |
-|      (c) 2001-2003 Gilles Boccon-Gibod
-|      Author: Sylvain Rebaud (sylvain@rebaud.com)
+|      (c) 2001-2008 Gilles Boccon-Gibod
+|      Author: Gilles Boccon-Gibod (bok@bok.net)
 |
 ****************************************************************/
+
+#ifndef _NPT_WIN32_MESSAGE_QUEUE_
+#define _NPT_WIN32_MESSAGE_QUEUE_
 
 /*----------------------------------------------------------------------
 |       includes
@@ -41,4 +44,6 @@ private:
     TCHAR       m_ClassName[16];
     HINSTANCE   m_hInstance;
 };
+
+#endif // _NPT_WIN32_MESSAGE_QUEUE_
 

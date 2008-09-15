@@ -2,7 +2,7 @@
 |
 |   Platinum - AV Media Controller (Media Renderer Control Point)
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
 ****************************************************************/
@@ -948,7 +948,7 @@ PLT_MediaController::OnEventNotify(PLT_Service* service, NPT_List<PLT_StateVaria
         PLT_StateVariable* lastChangeVar = NULL;
         if (NPT_SUCCEEDED(NPT_ContainerFind(*vars, PLT_ListStateVariableNameFinder("LastChange"), lastChangeVar))) {
             vars->Remove(lastChangeVar);
-            PLT_Service* service = lastChangeVar->GetService();
+            PLT_Service* var_service = lastChangeVar->GetService();
             NPT_String text = lastChangeVar->GetValue();
             
             NPT_XmlNode* xml = NULL;
@@ -988,7 +988,7 @@ PLT_MediaController::OnEventNotify(PLT_Service* service, NPT_List<PLT_StateVaria
 
                         // look for the state variable in this service
                         const NPT_String* value = var_node->GetAttribute("val");
-                        PLT_StateVariable* var = service->FindStateVariable(var_node->GetTag());
+                        PLT_StateVariable* var = var_service->FindStateVariable(var_node->GetTag());
                         if (value != NULL && var != NULL) {
                             // get the value and set the state variable
                             // if it succeeded, add it to the list of vars we'll event

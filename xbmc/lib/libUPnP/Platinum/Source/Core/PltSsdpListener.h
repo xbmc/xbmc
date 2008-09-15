@@ -2,7 +2,7 @@
 |
 |   Platinum - SSDP Listener
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -22,7 +22,8 @@ class PLT_SsdpPacketListener
 {
 public:
     virtual ~PLT_SsdpPacketListener() {}
-    virtual NPT_Result OnSsdpPacket(NPT_HttpRequest& request, NPT_SocketInfo info) = 0;
+    virtual NPT_Result OnSsdpPacket(NPT_HttpRequest&              request, 
+                                    const NPT_HttpRequestContext& context) = 0;
 };
 
 /*----------------------------------------------------------------------
@@ -32,9 +33,9 @@ class PLT_SsdpSearchResponseListener
 {
 public:
     virtual ~PLT_SsdpSearchResponseListener() {}
-    virtual NPT_Result ProcessSsdpSearchResponse(NPT_Result        res, 
-                                                 NPT_SocketInfo&   info, 
-                                                 NPT_HttpResponse* response) = 0;
+    virtual NPT_Result ProcessSsdpSearchResponse(NPT_Result                    res,  
+                                                 const NPT_HttpRequestContext& context,
+                                                 NPT_HttpResponse*             response) = 0;
 };
 
 #endif /* _PLT_SSDP_LISTENER_H_ */
