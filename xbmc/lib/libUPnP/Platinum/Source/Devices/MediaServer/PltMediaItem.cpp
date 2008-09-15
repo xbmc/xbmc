@@ -2,7 +2,7 @@
 |
 |   Platinum - AV Media Item
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
 ****************************************************************/
@@ -84,11 +84,17 @@ PLT_PersonRoles::FromDidl(const NPT_Array<NPT_XmlElementNode*>& nodes)
 +---------------------------------------------------------------------*/
 PLT_MediaItemResource::PLT_MediaItemResource()
 {
-    m_Uri          = "";
-    m_ProtocolInfo = "";
-    m_Duration     = -1;
-    m_Size         = -1;
-    m_Protection   = "";
+    m_Uri             = "";
+    m_ProtocolInfo    = "";
+    m_Duration        = (NPT_UInt32)-1;
+    m_Size            = (NPT_Size)-1;
+    m_Protection      = "";
+    m_Bitrate         = (NPT_UInt32)-1;
+    m_BitsPerSample   = (NPT_UInt32)-1;
+    m_SampleFrequency = (NPT_UInt32)-1;
+    m_NbAudioChannels = (NPT_UInt32)-1;
+    m_Resolution      = "";
+    m_ColorDepth      = (NPT_UInt32)-1;
 }
 
 /*----------------------------------------------------------------------
@@ -123,13 +129,37 @@ PLT_MediaObject::GetProtInfoFromExt(const char* ext)
 
     //TODO: we need to add more!
     if (extension.Compare(".mp3", true) == 0) {
-        ret = "http-get:*:audio/mpeg:*";
+        ret = "http-get:*:audio/mpeg:DLNA.ORG_PN=MP3;DLNA.ORG_OP=01";
+    } else if (extension.Compare(".m4a", true) == 0) {
+        ret = "http-get:*:audio/mp4:DLNA.ORG_OP=01";
     } else if (extension.Compare(".wma", true) == 0) {
-        ret = "http-get:*:audio/x-ms-wma:*";
-    } else if (extension.Compare(".avi", true) == 0 || extension.Compare(".divx", true) == 0) {
-        ret = "http-get:*:video/avi:*";
+        ret = "http-get:*:audio/x-ms-wma:DLNA.ORG_OP=01";
+    } else if (extension.Compare(".wav", true) == 0) {
+        ret = "http-get:*:audio/x-wav:DLNA.ORG_OP=01";
+    } else if (extension.Compare(".avi", true)  == 0 || 
+               extension.Compare(".divx", true) == 0 || 
+               extension.Compare(".xvid", true) == 0) {
+        ret = "http-get:*:video/avi:DLNA.ORG_PN=AVI;DLNA.ORG_OP=01";
+    } else if (extension.Compare(".mp4", true) == 0) {
+        ret = "http-get:*:video/mp4:DLNA.ORG_OP=01";
+    } else if (extension.Compare(".mpg", true) == 0) {
+        ret = "http-get:*:video/mpeg:DLNA.ORG_OP=01";
+    } else if (extension.Compare(".wmv", true) == 0) {
+        ret = "http-get:*:video/x-ms-wmv:DLNA.ORG_OP=01";
+    } else if (extension.Compare(".asf", true) == 0) {
+        ret = "http-get:*:video/x-ms-asf:DLNA.ORG_OP=01";
     } else if (extension.Compare(".jpg", true) == 0) {
-        ret = "http-get:*:image/jpeg:*";
+        ret = "http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_LRG";
+    } else if (extension.Compare(".bmp", true) == 0) {
+        ret = "http-get:*:image/bmp:DLNA.ORG_PN=BMP_LRG";
+    } else if (extension.Compare(".gif", true) == 0) {
+        ret = "http-get:*:image/gif:DLNA.ORG_PN=GIF_LRG";
+    } else if (extension.Compare(".tif", true) == 0) {
+        ret = "http-get:*:image/tiff:DLNA.ORG_PN=TIFF_LRG";
+    } else if (extension.Compare(".jp2", true) == 0) {
+        ret = "http-get:*:image/jp2:DLNA.ORG_PN=JPEG_LRG";
+    } else if (extension.Compare(".png", true) == 0) {
+        ret = "http-get:*:image/png:DLNA.ORG_PN=PNG_LRG";
     } else {
         ret = "http-get:*:application/octet-stream:*";
     }
@@ -146,11 +176,24 @@ PLT_MediaObject::GetUPnPClassFromExt(const char* ext)
     const char* ret = NULL;
     NPT_String  extension = ext;
 
-    if (extension.Compare(".mp3", true) == 0 || extension.Compare(".wma", true) == 0) {
+    if (extension.Compare(".mp3", true) == 0 || 
+        extension.Compare(".wma", true) == 0 || 
+        extension.Compare(".m4a", true) == 0 || 
+        extension.Compare(".wav", true) == 0) {
         ret = "object.item.audioItem.musicTrack";
-    } else if (extension.Compare(".avi", true) == 0 || extension.Compare(".divx", true) == 0) {
+    } else if (extension.Compare(".avi", true)  == 0 || 
+               extension.Compare(".divx", true) == 0 || 
+               extension.Compare(".mp4", true)  == 0 || 
+               extension.Compare(".mpg", true)  == 0 || 
+               extension.Compare(".wmv", true)  == 0 || 
+               extension.Compare(".asf", true)  == 0) {
         ret = "object.item.videoItem.movie";
-    } else if (extension.Compare(".jpg", true) == 0) {
+    } else if (extension.Compare(".jpg", true) == 0 || 
+               extension.Compare(".bmp", true) == 0 || 
+               extension.Compare(".gif", true) == 0 || 
+               extension.Compare(".tif", true) == 0 || 
+               extension.Compare(".jp2", true) == 0 || 
+               extension.Compare(".png", true) == 0) {
         ret = "object.item.imageItem.photo";
     } else {
         ret = "object.item";
@@ -285,15 +328,15 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
                 // protocol info is required
                 didl += "<res";
 
-                if (mask & PLT_FILTER_MASK_RES_DURATION && m_Resources[i].m_Duration != -1) {
+                if (mask & PLT_FILTER_MASK_RES_DURATION && m_Resources[i].m_Duration != (NPT_UInt32)-1) {
                     didl += " duration=\"";
                     PLT_Didl::FormatTimeStamp(didl, m_Resources[i].m_Duration);
                     didl += "\"";
                 }
 
-                if (mask & PLT_FILTER_MASK_RES_SIZE && m_Resources[i].m_Size != -1) {
+                if (mask & PLT_FILTER_MASK_RES_SIZE && m_Resources[i].m_Size != (NPT_Size)-1) {
                     didl += " size=\"";
-                    didl += NPT_String::FromInteger(m_Resources[i].m_Size);
+                    didl += NPT_String::FromIntegerU(m_Resources[i].m_Size);
                     didl += "\"";
                 }
 
@@ -372,8 +415,9 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     PLT_XmlHelper::GetChildText(entry, "albumArtURI", m_ExtraInfo.album_art_uri, didl_namespace_upnp);
     PLT_XmlHelper::GetChildText(entry, "longDescription", m_Description.long_description, didl_namespace_upnp);
     PLT_XmlHelper::GetChildText(entry, "originalTrackNumber", str, didl_namespace_upnp);
-    if (NPT_FAILED(str.ToInteger((long&)m_MiscInfo.original_track_number)))
-        m_MiscInfo.original_track_number = 0;
+    long value;
+    if (NPT_FAILED(str.ToInteger(value))) value = 0;
+    m_MiscInfo.original_track_number = value;
 
     children.Clear();
     PLT_XmlHelper::GetChildren(entry, children, "res");
@@ -390,16 +434,13 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
             }
 
             if (NPT_SUCCEEDED(PLT_XmlHelper::GetAttribute(children[i], "size", str))) {
-                if (NPT_FAILED(str.ToInteger((long&)resource.m_Size))) {
-                    // if error while converting, ignore and set to -1 to show we don't know the size
-                    resource.m_Size = -1;
-                }
+                if (NPT_FAILED(str.ToInteger(resource.m_Size))) resource.m_Size = (NPT_Size)-1;
             }
 
             if (NPT_SUCCEEDED(PLT_XmlHelper::GetAttribute(children[i], "duration", str))) {
-                if (NPT_FAILED(PLT_Didl::ParseTimeStamp(str, (NPT_UInt32&)resource.m_Duration))) {
+                if (NPT_FAILED(PLT_Didl::ParseTimeStamp(str, resource.m_Duration))) {
                     // if error while converting, ignore and set to -1 to indicate we don't know the duration
-                    resource.m_Duration = -1;
+                    resource.m_Duration = (NPT_UInt32)-1;
                 }
             }    
             m_Resources.Add(resource);

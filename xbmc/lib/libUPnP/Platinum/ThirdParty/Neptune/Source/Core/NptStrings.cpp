@@ -43,7 +43,7 @@ char NPT_String::EmptyString = '\0';
 |   NPT_String::FromInteger
 +---------------------------------------------------------------------*/
 NPT_String
-NPT_String::FromInteger(long value)
+NPT_String::FromInteger(NPT_Int64 value)
 {
     char str[32];
     char* c = &str[31];
@@ -58,7 +58,7 @@ NPT_String::FromInteger(long value)
 
     // process the digits
     do {
-        int digit = value%10;
+        int digit = (int)(value%10);
         *c-- = '0'+digit;
         value /= 10;
     } while(value);
@@ -76,7 +76,7 @@ NPT_String::FromInteger(long value)
 |   NPT_String::FromIntegerU
 +---------------------------------------------------------------------*/
 NPT_String
-NPT_String::FromIntegerU(unsigned long value)
+NPT_String::FromIntegerU(NPT_UInt64 value)
 {
     char str[32];
     char* c = &str[31];
@@ -84,7 +84,7 @@ NPT_String::FromIntegerU(unsigned long value)
 
     // process the digits
     do {
-        int digit = value%10;
+        int digit = (int)(value%10);
         *--c = '0'+digit;
         value /= 10;
     } while(value);
@@ -373,12 +373,45 @@ NPT_String::CompareN(const char* s1, const char *s2, NPT_Size count, bool ignore
 }
 
 /*----------------------------------------------------------------------
+|   NPT_String::Split
++---------------------------------------------------------------------*/
+NPT_List<NPT_String> 
+NPT_String::Split(const char* separator) const
+{
+    NPT_List<NPT_String> result;
+    NPT_Size             separator_length = NPT_StringLength(separator);
+    
+    // sepcial case for empty separators
+    if (separator_length == 0) {
+        result.Add(*this);
+        return result;
+    }
+    
+    int current = 0;  
+    int next;  
+    do {
+        next = Find(separator, current);
+        unsigned int end = (next>=0?next:GetLength());
+        result.Add(SubString(current, end-current));
+        current = next+separator_length;
+    } while (next >= 0);
+    
+    return result;
+}
+
+/*----------------------------------------------------------------------
 |   NPT_String::SubString
 +---------------------------------------------------------------------*/
 NPT_String
 NPT_String::SubString(NPT_Ordinal first, NPT_Size length) const
 {
-    return NPT_String(*this, first, length);
+    if (first >= GetLength()) {
+        first = GetLength();
+        length = 0;
+    } else if (first+length >= GetLength()) {
+        length = GetLength()-first;
+    }
+    return NPT_String(GetChars()+first, length);
 }
 
 /*----------------------------------------------------------------------
@@ -687,18 +720,7 @@ NPT_String::Erase(NPT_Ordinal start, NPT_Cardinal count /* = 1 */)
 NPT_Result 
 NPT_String::ToInteger(unsigned long& value, bool relaxed) const
 {
-    long tmp;
-    NPT_Result res = ToInteger(tmp, relaxed);
-    if (NPT_FAILED(res)) {
-        return res;
-    }
-
-    if (tmp < 0) {
-        return NPT_ERROR_INVALID_PARAMETERS;
-    }
-
-    value = (unsigned long)tmp;
-    return NPT_SUCCESS;
+    return NPT_ParseUInteger(GetChars(), value, relaxed);
 }
 
 /*----------------------------------------------------------------------
@@ -708,6 +730,15 @@ NPT_Result
 NPT_String::ToInteger(long& value, bool relaxed) const
 {
     return NPT_ParseInteger(GetChars(), value, relaxed);
+}
+
+/*----------------------------------------------------------------------
+|    NPT_String::ToInteger
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_String::ToInteger(NPT_UInt64& value, bool relaxed) const
+{
+    return NPT_ParseUInteger64(GetChars(), value, relaxed);
 }
 
 /*----------------------------------------------------------------------
@@ -908,3 +939,4 @@ operator+(const NPT_String& s1, char c)
 
     return result;
 }
+

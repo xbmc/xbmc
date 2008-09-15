@@ -23,19 +23,24 @@
 class TestHandler : public NPT_HttpRequestHandler
 {
 public:
-    NPT_Result SetupResponse(NPT_HttpRequest&  request, 
-                             NPT_HttpResponse& response,
-                             NPT_SocketInfo&   /*info*/) {
+    NPT_Result SetupResponse(NPT_HttpRequest&              request, 
+                             const NPT_HttpRequestContext& context,
+                             NPT_HttpResponse&             response) {
         NPT_String msg = "<HTML>";
         msg += "PATH=";
         msg += request.GetUrl().GetPath();
-        msg += " <P><UL>";
+        msg += "<P><B>Local Address:</B> ";
+        msg += context.GetLocalAddress().ToString();
+        msg += "<P>";
+        msg += "<B>Remote Address:</B> ";
+        msg += context.GetRemoteAddress().ToString();
+        msg += "<P><UL>";
         if (request.GetUrl().HasQuery()) {
-            NPT_HttpUrlQuery query(request.GetUrl().GetQuery());
-            for (NPT_List<NPT_HttpUrlQuery::Field>::Iterator it = query.GetFields().GetFirstItem();
+            NPT_UrlQuery query(request.GetUrl().GetQuery());
+            for (NPT_List<NPT_UrlQuery::Field>::Iterator it = query.GetFields().GetFirstItem();
                  it;
                  ++it) {
-                 NPT_HttpUrlQuery::Field& field = *it;
+                 NPT_UrlQuery::Field& field = *it;
                  msg += "<LI>";
                  msg += field.m_Name;
                  msg += " = ";
@@ -45,6 +50,7 @@ public:
         }
         msg += "</UL></HTML>";
 
+        
         if (request.GetMethod() == NPT_HTTP_METHOD_POST) {
             NPT_DataBuffer request_body;
             request.GetEntity()->Load(request_body);
@@ -72,10 +78,10 @@ public:
 static NPT_Result 
 TestHttp()
 {
-    NPT_HttpServer            server;
+    NPT_HttpServer            server(1234);
     NPT_InputStreamReference  input;
     NPT_OutputStreamReference output;
-    NPT_SocketInfo            client_info;
+    NPT_HttpRequestContext    context;
 
     NPT_HttpStaticRequestHandler* static_handler = new NPT_HttpStaticRequestHandler("<HTML><H1>Hello World</H1></HTML>", "text/html");
     server.AddRequestHandler(static_handler, "/test", false);
@@ -88,11 +94,11 @@ TestHttp()
 
     NPT_Result result = server.WaitForNewClient(input, 
                                                 output,
-                                                client_info);
+                                                &context);
     NPT_Debug("WaitForNewClient returned %d\n", result);
     if (NPT_FAILED(result)) return result;
 
-    result = server.RespondToClient(input, output, client_info);
+    result = server.RespondToClient(input, output, context);
     NPT_Debug("ResponToClient returned %d\n", result);
 
     delete static_handler;

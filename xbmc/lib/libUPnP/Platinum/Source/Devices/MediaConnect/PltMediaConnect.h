@@ -52,8 +52,8 @@ public:
                      NPT_UInt16   fileserver_port = 0);
 
     // PLT_DeviceHost methods
-    NPT_Result OnAction(PLT_ActionReference& action, 
-                        NPT_SocketInfo*      info = NULL);
+    NPT_Result OnAction(PLT_ActionReference&          action, 
+                        const NPT_HttpRequestContext& context);
 
 protected:
     virtual ~PLT_MediaConnect();

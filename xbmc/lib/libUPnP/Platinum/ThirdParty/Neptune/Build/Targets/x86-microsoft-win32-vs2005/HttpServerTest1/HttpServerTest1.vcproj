@@ -4,7 +4,6 @@
 	Version="8.00"
 	Name="HttpServerTest1"
 	ProjectGUID="{77FD5430-1AB3-414A-BE15-E63D38F1A5FC}"
-	RootNamespace="HttpServerTest1"
 	Keyword="Win32Proj"
 	>
 	<Platforms>

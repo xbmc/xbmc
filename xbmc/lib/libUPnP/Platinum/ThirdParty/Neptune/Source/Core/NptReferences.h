@@ -78,15 +78,41 @@ public:
     }
 
     // methods
+    /**
+     * Returns the naked pointer value.
+     */
     T* AsPointer() const { return m_Object; }
-    bool IsNull() const { return m_Object == 0; }
-
+    
+    /**
+     * Returns the reference counter value.
+     */
+    NPT_Cardinal GetCounter() const { return *m_Counter; }
+    
+    /**
+     * Returns wether this references a NULL object.
+     */
+    bool IsNull()  const { return m_Object == NULL; }
+    
+    /**
+     * Detach the reference from the shared object.
+     * The reference count is decremented, but the object is not deleted if the
+     * reference count becomes 0.
+     * After the method returns, this reference does not point to any shared object.
+     */
+    void Detach() {
+        if (m_Counter && --(*m_Counter) == 0) {
+            delete m_Counter; 
+        }
+        m_Counter = NULL;
+        m_Object  = NULL;
+    }
+    
 private:
     // methods
     void Release() {
         if (m_Counter && --(*m_Counter) == 0) {
-            delete m_Counter;
-            delete m_Object;
+            delete m_Counter; m_Counter = NULL;
+            delete m_Object;  m_Object  = NULL;
         }
     }
 

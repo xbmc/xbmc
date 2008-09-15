@@ -13,13 +13,15 @@
 #include "NptRingBuffer.h"
 #include "NptResults.h"
 #include "NptUtils.h"
+#include "NptStreams.h"
 
 /*----------------------------------------------------------------------
 |   NPT_RingBuffer::NPT_RingBuffer
 +---------------------------------------------------------------------*/
 NPT_RingBuffer::NPT_RingBuffer(NPT_Size size) :
     m_Size(size),
-    m_BufferIsLocal(true)
+    m_BufferIsLocal(true),
+    m_Closed(false)
 {
     m_Data.start = new unsigned char[size];
     m_Data.end   = m_Data.start + size;
@@ -80,6 +82,8 @@ NPT_RingBuffer::GetSpace() const
 NPT_Result
 NPT_RingBuffer::Write(const void* buffer, NPT_Size byte_count)
 {
+    if (m_Closed) return NPT_ERROR_WRITE_FAILED;
+
     if (byte_count == 0) return NPT_SUCCESS;
     if (m_In < m_Out) {
         if (buffer) NPT_CopyMemory(m_In, buffer, byte_count);
@@ -136,6 +140,8 @@ NPT_RingBuffer::GetAvailable() const
 NPT_Result
 NPT_RingBuffer::Read(void* buffer, NPT_Size byte_count)
 {
+    if (m_Closed) return NPT_ERROR_READ_FAILED;
+
     if (byte_count == 0) return NPT_SUCCESS;
     if (m_In > m_Out) {
         if (buffer) NPT_CopyMemory(buffer, m_Out, byte_count);
@@ -229,3 +235,14 @@ NPT_RingBuffer::Flush()
 
     return NPT_SUCCESS;
 }
+
+/*----------------------------------------------------------------------+
+|    NPT_RingBuffer::Close
++----------------------------------------------------------------------*/
+NPT_Result
+NPT_RingBuffer::Close()
+{
+    m_Closed = true;
+    return NPT_SUCCESS;
+}
+

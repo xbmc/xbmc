@@ -2,7 +2,7 @@
 |
 |   Platinum - UPnP Helper
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -45,75 +45,75 @@ class PLT_UPnPMessageHelper
 {
 public:
     // methods
-    static NPT_Result GetST(NPT_HttpMessage* message, NPT_String& value)           { return message->GetHeaders().GetHeaderValue("ST", value); }
-    static void       SetST(NPT_HttpMessage* message, const char* st)              { message->GetHeaders().SetHeader("ST", st); }
-    static NPT_Result GetNT(NPT_HttpMessage* message, NPT_String& value)           { return message->GetHeaders().GetHeaderValue("NT", value); }
-    static void       SetNT(NPT_HttpMessage* message, const char* nt)              { message->GetHeaders().SetHeader("NT", nt); }
-    static NPT_Result GetNTS(NPT_HttpMessage* message, NPT_String& value)          { return message->GetHeaders().GetHeaderValue("NTS", value); }
-    static void       SetNTS(NPT_HttpMessage* message, const char* nts)            { message->GetHeaders().SetHeader("NTS", nts); }
-    static NPT_Result GetMAN(NPT_HttpMessage* message, NPT_String& value)          { return message->GetHeaders().GetHeaderValue("MAN", value); }
-    static void       SetMAN(NPT_HttpMessage* message, const char* man)            { message->GetHeaders().SetHeader("MAN", man); }
-    static NPT_Result GetLocation(NPT_HttpMessage* message, NPT_String& value)     { return message->GetHeaders().GetHeaderValue("LOCATION", value); }
-    static void       SetLocation(NPT_HttpMessage* message, const char* location)  { message->GetHeaders().SetHeader("LOCATION", location); }
-    static NPT_Result GetServer(NPT_HttpMessage* message, NPT_String& value)       { return message->GetHeaders().GetHeaderValue("SERVER", value); }
-    static void       SetServer(NPT_HttpMessage* message, const char* server)      { message->GetHeaders().SetHeader("SERVER", server); }
-    static NPT_Result GetUSN(NPT_HttpMessage* message, NPT_String& value)          { return message->GetHeaders().GetHeaderValue("USN", value); }
-    static void       SetUSN(NPT_HttpMessage* message, const char* usn)            { message->GetHeaders().SetHeader("USN", usn); }
-    static NPT_Result GetCallbacks(NPT_HttpMessage* message, NPT_String& value)    { return message->GetHeaders().GetHeaderValue("CALLBACK", value); }
-    static void       SetCallbacks(NPT_HttpMessage* message, const char* callbacks){ message->GetHeaders().SetHeader("CALLBACK", callbacks); }
-    static NPT_Result GetSID(NPT_HttpMessage* message, NPT_String& value)          { return message->GetHeaders().GetHeaderValue("SID", value); }
-    static void       SetSID(NPT_HttpMessage* message, const char* sid)            { message->GetHeaders().SetHeader("SID", sid); }
-    static NPT_Result GetLeaseTime(NPT_HttpMessage* message, NPT_Timeout& value) { 
-        NPT_String cc; 
+    static const NPT_String* GetST(NPT_HttpMessage& message)                              { return message.GetHeaders().GetHeaderValue("ST"); }
+    static NPT_Result        SetST(NPT_HttpMessage& message, const char* st)              { return message.GetHeaders().SetHeader("ST", st); }
+    
+    static const NPT_String* GetNT(NPT_HttpMessage& message)                              { return message.GetHeaders().GetHeaderValue("NT"); }
+    static NPT_Result        SetNT(NPT_HttpMessage& message, const char* nt)              { return message.GetHeaders().SetHeader("NT", nt); }
+    
+    static const NPT_String* GetNTS(NPT_HttpMessage& message)                             { return message.GetHeaders().GetHeaderValue("NTS"); }
+    static NPT_Result        SetNTS(NPT_HttpMessage& message, const char* nts)            { return message.GetHeaders().SetHeader("NTS", nts); }
+    
+    static const NPT_String* GetMAN(NPT_HttpMessage& message)                             { return message.GetHeaders().GetHeaderValue("MAN"); }
+    static NPT_Result        SetMAN(NPT_HttpMessage& message, const char* man)            { return message.GetHeaders().SetHeader("MAN", man); }
+    
+    static const NPT_String* GetLocation(NPT_HttpMessage& message)                        { return message.GetHeaders().GetHeaderValue("LOCATION"); }
+    static NPT_Result        SetLocation(NPT_HttpMessage& message, const char* location)  { return message.GetHeaders().SetHeader("LOCATION", location); }
+    
+    static const NPT_String* GetServer(NPT_HttpMessage& message)                          { return message.GetHeaders().GetHeaderValue("SERVER"); }
+    static NPT_Result        SetServer(NPT_HttpMessage& message, const char* server)      { return message.GetHeaders().SetHeader("SERVER", server); }
+    
+    static const NPT_String* GetUSN(NPT_HttpMessage& message)                             { return message.GetHeaders().GetHeaderValue("USN"); }
+    static NPT_Result        SetUSN(NPT_HttpMessage& message, const char* usn)            { return message.GetHeaders().SetHeader("USN", usn); }
+    
+    static const NPT_String* GetCallbacks(NPT_HttpMessage& message)                       { return message.GetHeaders().GetHeaderValue("CALLBACK"); }
+    static NPT_Result        SetCallbacks(NPT_HttpMessage& message, const char* callbacks){ return message.GetHeaders().SetHeader("CALLBACK", callbacks); }
+    
+    static const NPT_String* GetSID(NPT_HttpMessage& message)                             { return message.GetHeaders().GetHeaderValue("SID"); }
+    static NPT_Result        SetSID(NPT_HttpMessage& message, const char* sid)            { return message.GetHeaders().SetHeader("SID", sid); }
+    
+    static NPT_Result GetLeaseTime(NPT_HttpMessage& message, NPT_Timeout& value) { 
         value = 0;
-        NPT_Result res = message->GetHeaders().GetHeaderValue("CACHE-CONTROL", cc); 
-        if (NPT_FAILED(res)) return res;
-        return ExtractLeaseTime(cc, value); 
+        const NPT_String* cc = message.GetHeaders().GetHeaderValue("CACHE-CONTROL");
+        NPT_CHECK_POINTER(cc);
+        return ExtractLeaseTime(*cc, value); 
     }
-    static void       SetLeaseTime(NPT_HttpMessage* message, const NPT_Timeout lease) { 
-        char age[20]; 
-        sprintf(age, "max-age=%d", (int)lease); 
-        message->GetHeaders().SetHeader("CACHE-CONTROL", age); 
+    static NPT_Result SetLeaseTime(NPT_HttpMessage& message, const NPT_Timeout lease) { 
+        return message.GetHeaders().SetHeader("CACHE-CONTROL", "max-age="+NPT_String::FromInteger(lease)); 
     }
-    static NPT_Result GetTimeOut(NPT_HttpMessage* message, NPT_Timeout& value) { 
-        NPT_String cc; 
+
+    static NPT_Result GetTimeOut(NPT_HttpMessage& message, NPT_Timeout& value) { 
         value = 0;
-        NPT_Result res = message->GetHeaders().GetHeaderValue("TIMEOUT", cc); 
-        if (NPT_FAILED(res)) return res;
-        return ExtractTimeOut(cc, value); 
+        const NPT_String* timeout = message.GetHeaders().GetHeaderValue("TIMEOUT"); 
+        NPT_CHECK_POINTER(timeout);
+        return ExtractTimeOut(*timeout, value); 
     }
-    static void       SetTimeOut(NPT_HttpMessage* message, const NPT_Timeout timeout) { 
-        char duration[20]; 
+    static NPT_Result SetTimeOut(NPT_HttpMessage& message, const NPT_Timeout timeout) { 
         if (timeout >=0) {
-            sprintf(duration, "Second-%d", (int)timeout); 
-            message->GetHeaders().SetHeader("TIMEOUT", duration); 
+            return message.GetHeaders().SetHeader("TIMEOUT", "Second-"+NPT_String::FromInteger(timeout)); 
         } else {
-            message->GetHeaders().SetHeader("TIMEOUT", "Second-infinite"); 
+            return message.GetHeaders().SetHeader("TIMEOUT", "Second-infinite"); 
         }
     }
-    static NPT_Result GetMX(NPT_HttpMessage* message, long& value) { 
-        NPT_String cc; 
-        value = 0;
-        NPT_Result res = message->GetHeaders().GetHeaderValue("MX", cc);
-        if (NPT_FAILED(res)) return res;
 
-        return NPT_ParseInteger(cc, value);
-    }
-    static void       SetMX(NPT_HttpMessage* message, const long mx) { 
-        NPT_String buf = NPT_String::FromInteger(mx);
-        message->GetHeaders().SetHeader("MX", buf); 
-    }
-    static NPT_Result GetSeq(NPT_HttpMessage* message, long& value) { 
-        NPT_String cc; 
+    static NPT_Result GetMX(NPT_HttpMessage& message, long& value) { 
         value = 0;
-        NPT_Result res = message->GetHeaders().GetHeaderValue("SEQ", cc);
-        if (NPT_FAILED(res)) return res;
-
-        return NPT_ParseInteger(cc, value);
+        const NPT_String* mx = message.GetHeaders().GetHeaderValue("MX");
+        NPT_CHECK_POINTER(mx);
+        return NPT_ParseInteger(*mx, value);
     }
-    static void        SetSeq(NPT_HttpMessage* message, const long seq) { 
-        NPT_String buf = NPT_String::FromInteger(seq);
-        message->GetHeaders().SetHeader("SEQ", buf); 
+    static NPT_Result SetMX(NPT_HttpMessage& message, const long mx) {
+        return message.GetHeaders().SetHeader("MX", NPT_String::FromInteger(mx)); 
+    }
+
+    static NPT_Result GetSeq(NPT_HttpMessage& message, long& value) { 
+        value = 0;
+        const NPT_String* seq = message.GetHeaders().GetHeaderValue("SEQ");
+        NPT_CHECK_POINTER(seq);
+        return NPT_ParseInteger(*seq, value);
+    }
+    static NPT_Result SetSeq(NPT_HttpMessage& message, const long seq) {
+        return message.GetHeaders().SetHeader("SEQ", NPT_String::FromInteger(seq)); 
     }
 
     static const char* GenerateUUID(int charCount, NPT_String& uuid) {   
@@ -124,7 +124,6 @@ public:
         }
         return uuid;
     }
-
     static const char* GenerateGUID(NPT_String& guid) {   
         guid = "";
         for (int i=0;i<32;i++) {

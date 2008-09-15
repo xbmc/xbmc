@@ -2,7 +2,7 @@
 |
 |   Platinum - Service
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -208,6 +208,7 @@ PLT_Service::SetSCPDXML(const char* scpd)
                 variable->m_AllowedValueRange = new NPT_AllowedValueRange;
                 NPT_ParseInteger(min, variable->m_AllowedValueRange->min_value);
                 NPT_ParseInteger(max, variable->m_AllowedValueRange->max_value);
+                variable->m_AllowedValueRange->step = -1;
                 if (step.GetLength() != 0) {
                     NPT_ParseInteger(step, variable->m_AllowedValueRange->step);
                 }
@@ -365,11 +366,11 @@ PLT_Service::IncStateVariable(const char* name, bool publish)
 |   PLT_Service::ProcessNewSubscription
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_Service::ProcessNewSubscription(PLT_TaskManager*   task_manager,
-                                    NPT_SocketAddress& addr, 
-                                    NPT_String&        callback_urls, 
-                                    int                timeout, 
-                                    NPT_HttpResponse&  response)
+PLT_Service::ProcessNewSubscription(PLT_TaskManager*         task_manager,
+                                    const NPT_SocketAddress& addr, 
+                                    const NPT_String&        callback_urls, 
+                                    int                      timeout, 
+                                    NPT_HttpResponse&        response)
 {
 //    // first look if we don't have a subscriber with same callbackURL
 //    PLT_EventSubscriber* subscriber = NULL;
@@ -379,7 +380,7 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*   task_manager,
 //        subscriber->m_local_if.SetIpAddress((unsigned long) addr.GetIpAddress());
 //        subscriber->m_ExpirationTime = NPT_Time(NULL) + timeout;
 //
-//        PLT_UPnPMessageHelper::SetSID("uuid:" + subscriber->m_SID);
+//        PLT_UPnPMessageHelper::SetSID("uuid:" + subscriber->m_sid);
 //        PLT_UPnPMessageHelper::SetTimeOut(timeout);
 //        return NPT_SUCCESS;
 //    }
@@ -434,8 +435,8 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*   task_manager,
     NPT_String sid;
     PLT_UPnPMessageHelper::GenerateUUID(19, sid);
     subscriber->SetSID("uuid:" + sid);
-    PLT_UPnPMessageHelper::SetSID(&response, subscriber->GetSID());
-    PLT_UPnPMessageHelper::SetTimeOut(&response, timeout);
+    PLT_UPnPMessageHelper::SetSID(response, subscriber->GetSID());
+    PLT_UPnPMessageHelper::SetTimeOut(response, timeout);
 
     {
         NPT_AutoLock lock(m_Lock);
@@ -472,10 +473,10 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*   task_manager,
 |   PLT_Service::ProcessRenewSubscription
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_Service::ProcessRenewSubscription(NPT_SocketAddress& addr, 
-                                      NPT_String&        sid, 
-                                      int                timeout, 
-                                      NPT_HttpResponse&  response)
+PLT_Service::ProcessRenewSubscription(const NPT_SocketAddress& addr, 
+                                      const NPT_String&        sid, 
+                                      int                      timeout, 
+                                      NPT_HttpResponse&        response)
 {
     NPT_AutoLock lock(m_Lock);
 
@@ -498,8 +499,8 @@ PLT_Service::ProcessRenewSubscription(NPT_SocketAddress& addr,
             subscriber->SetExpirationTime(life);
         }
 
-        PLT_UPnPMessageHelper::SetSID(&response, subscriber->GetSID());
-        PLT_UPnPMessageHelper::SetTimeOut(&response, timeout);
+        PLT_UPnPMessageHelper::SetSID(response, subscriber->GetSID());
+        PLT_UPnPMessageHelper::SetTimeOut(response, timeout);
         return NPT_SUCCESS;
     }
 
@@ -512,9 +513,9 @@ PLT_Service::ProcessRenewSubscription(NPT_SocketAddress& addr,
 |   PLT_Service::ProcessCancelSubscription
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_Service::ProcessCancelSubscription(NPT_SocketAddress& /* addr */, 
-                                       NPT_String&        sid, 
-                                       NPT_HttpResponse&  response)
+PLT_Service::ProcessCancelSubscription(const NPT_SocketAddress& /* addr */, 
+                                       const NPT_String&        sid, 
+                                       NPT_HttpResponse&        response)
 {
     NPT_AutoLock lock(m_Lock);
 

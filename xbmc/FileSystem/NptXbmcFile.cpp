@@ -100,7 +100,7 @@ class NPT_XbmcFileInputStream : public NPT_InputStream,
 {
 public:
     // constructors and destructor
-    NPT_XbmcFileInputStream(NPT_XbmcFileReference& file, NPT_Size size) :
+    NPT_XbmcFileInputStream(NPT_XbmcFileReference& file, NPT_LargeSize size) :
         NPT_XbmcFileStream(file), m_Size(size) {}
 
     // NPT_InputStream methods
@@ -113,12 +113,12 @@ public:
     NPT_Result Tell(NPT_Position& offset) {
         return NPT_XbmcFileStream::Tell(offset);
     }
-    NPT_Result GetSize(NPT_Size& size);
-    NPT_Result GetAvailable(NPT_Size& available);
+    NPT_Result GetSize(NPT_LargeSize& size);
+    NPT_Result GetAvailable(NPT_LargeSize& available);
 
 private:
     // members
-    NPT_Size m_Size;
+    NPT_LargeSize m_Size;
 };
 
 /*----------------------------------------------------------------------
@@ -154,7 +154,7 @@ NPT_XbmcFileInputStream::Read(void*     buffer,
 |   NPT_XbmcFileInputStream::GetSize
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_XbmcFileInputStream::GetSize(NPT_Size& size)
+NPT_XbmcFileInputStream::GetSize(NPT_LargeSize& size)
 {
     size = m_Size;
     return NPT_SUCCESS;
@@ -164,7 +164,7 @@ NPT_XbmcFileInputStream::GetSize(NPT_Size& size)
 |   NPT_XbmcFileInputStream::GetAvailable
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_XbmcFileInputStream::GetAvailable(NPT_Size& available)
+NPT_XbmcFileInputStream::GetAvailable(NPT_LargeSize& available)
 {
     __int64 offset = m_FileReference->GetPosition();
     if (offset >= 0 && (NPT_Size)offset <= m_Size) {
@@ -232,7 +232,7 @@ public:
     // NPT_FileInterface methods
     NPT_Result Open(OpenMode mode);
     NPT_Result Close();
-    NPT_Result GetSize(NPT_Size& size);
+    //NPT_Result GetSize(NPT_Size& size);
     NPT_Result GetInputStream(NPT_InputStreamReference& stream);
     NPT_Result GetOutputStream(NPT_OutputStreamReference& stream);
 
@@ -241,7 +241,7 @@ private:
     NPT_String            m_Name;
     OpenMode              m_Mode;
     NPT_XbmcFileReference m_FileReference;
-    NPT_Size              m_Size;
+    NPT_LargeSize         m_Size;
 };
 
 /*----------------------------------------------------------------------
@@ -308,7 +308,7 @@ NPT_XbmcFile::Open(NPT_File::OpenMode mode)
             CLog::Log(LOGERROR, "%s - file is too large for Neptunes file system", __FUNCTION__);
             return NPT_ERROR_FILE_NOT_READABLE;
         }
-        m_Size = (NPT_Size)file->GetLength();
+        m_Size = (NPT_LargeSize)file->GetLength();
     }
 
     // store reference
@@ -335,7 +335,7 @@ NPT_XbmcFile::Close()
 /*----------------------------------------------------------------------
 |   NPT_XbmcFile::GetSize
 +---------------------------------------------------------------------*/
-NPT_Result 
+/*NPT_Result 
 NPT_XbmcFile::GetSize(NPT_Size& size)
 {
     // default value
@@ -348,7 +348,7 @@ NPT_XbmcFile::GetSize(NPT_Size& size)
     size = m_Size;
 
     return NPT_SUCCESS;
-}
+}*/
 
 /*----------------------------------------------------------------------
 |   NPT_XbmcFile::GetInputStream
