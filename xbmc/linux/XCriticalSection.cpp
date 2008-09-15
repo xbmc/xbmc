@@ -127,13 +127,7 @@ void XCriticalSection::Enter()
 
 //////////////////////////////////////////////////////////////////////
 void XCriticalSection::Leave()
-{
-	if (!Owning())
-	{
-		printf("CRITSEC[%p]: Some other thread trying to leave our critical section.\n", (void *)this);
-		return;
-	}
-	
+{	
 	if (m_isDestroyed)
 	{
 		printf("CRITSEC[%p]: Trying to leave destroyed section.\n", (void *)this);
@@ -143,6 +137,12 @@ void XCriticalSection::Leave()
 	if (!m_isInitialized)
 	{
 		printf("CRITSEC[%p]: Trying to leave uninitialized section.\n", (void *)this);
+		return;
+	}
+
+	if (!Owning())
+	{
+		printf("CRITSEC[%p]: Some other thread trying to leave our critical section.\n", (void *)this);
 		return;
 	}
 	
