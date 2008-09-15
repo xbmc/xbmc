@@ -717,6 +717,12 @@
 				RelativePath=".\common\Mouse.h">
 			</File>
 			<File
+				RelativePath=".\common\SDLJoystick.cpp">
+			</File>
+			<File
+				RelativePath=".\common\SDLJoystick.h">
+			</File>
+			<File
 				RelativePath=".\common\SDLKeyboard.cpp">
 			</File>
 			<File
