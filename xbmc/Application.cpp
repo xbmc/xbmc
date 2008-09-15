@@ -4154,6 +4154,7 @@ bool CApplication::ResetScreenSaverWindow()
     // disable screensaver
     m_bScreenSave = false;
     m_iScreenSaveLock = 0;
+    m_screenSaverTimer.StartZero();
 
     float fFadeLevel = 1.0f;
     if (m_screenSaverMode == "Visualisation")
