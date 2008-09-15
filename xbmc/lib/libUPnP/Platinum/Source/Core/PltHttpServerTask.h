@@ -2,7 +2,7 @@
 |
 |   Platinum - HTTP Server Tasks
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -40,10 +40,10 @@ protected:
 
 protected:
     // Request callback handler
-    virtual NPT_Result ProcessRequest(NPT_HttpRequest&   request, 
-                                      NPT_SocketInfo     info, 
-                                      NPT_HttpResponse*& response,
-                                      bool&              headers_only) = 0;
+    virtual NPT_Result ProcessRequest(NPT_HttpRequest&              request, 
+                                      const NPT_HttpRequestContext& context,
+                                      NPT_HttpResponse*&            response,
+                                      bool&                         headers_only) = 0;
 
     // overridables
     virtual NPT_Result GetInputStream(NPT_InputStreamReference& stream);
@@ -55,8 +55,8 @@ protected:
 
 private:
     virtual NPT_Result Read(NPT_BufferedInputStreamReference& buffered_input_stream, 
-                            NPT_HttpRequest*&                 request, 
-                            NPT_SocketInfo&                   info);
+                            NPT_HttpRequest*&                 request,
+                            NPT_HttpRequestContext*           context = NULL);
     virtual NPT_Result Write(NPT_HttpResponse* response, 
                              bool              keep_alive, 
                              bool              headers_only = false);
@@ -82,11 +82,11 @@ protected:
     virtual ~PLT_HttpServerTask<T>() {}
 
 protected:
-    NPT_Result ProcessRequest(NPT_HttpRequest&   request, 
-                              NPT_SocketInfo     info, 
-                              NPT_HttpResponse*& response,
-                              bool&              headers_only) {
-        return m_Data->ProcessHttpRequest(request, info, response, headers_only);
+    NPT_Result ProcessRequest(NPT_HttpRequest&              request, 
+                              const NPT_HttpRequestContext& context,
+                              NPT_HttpResponse*&            response,
+                              bool&                         headers_only) {
+        return m_Data->ProcessHttpRequest(request, context, response, headers_only);
     }
 
 protected:

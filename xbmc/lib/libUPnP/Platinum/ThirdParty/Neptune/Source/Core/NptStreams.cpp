@@ -19,7 +19,8 @@
 /*----------------------------------------------------------------------
 |   constants
 +---------------------------------------------------------------------*/
-const NPT_Size NPT_INPUT_STREAM_LOAD_DEFAULT_READ_CHUNK = 4096;
+const NPT_Size      NPT_INPUT_STREAM_LOAD_DEFAULT_READ_CHUNK = 4096;
+const NPT_LargeSize NPT_INPUT_STREAM_LOAD_MAX_SIZE           = 0x100000; // 1GB
 
 /*----------------------------------------------------------------------
 |   NPT_InputStream::Load
@@ -27,31 +28,39 @@ const NPT_Size NPT_INPUT_STREAM_LOAD_DEFAULT_READ_CHUNK = 4096;
 NPT_Result
 NPT_InputStream::Load(NPT_DataBuffer& buffer, NPT_Size max_read /* = 0 */)
 {
-    NPT_Result result;
-    NPT_Size   total_bytes_read;
+    NPT_Result    result;
+    NPT_LargeSize total_bytes_read;
 
     // reset the buffer
     buffer.SetDataSize(0);
 
+    // check the limits
+    if (max_read > NPT_INPUT_STREAM_LOAD_MAX_SIZE) {
+        return NPT_ERROR_INVALID_PARAMETERS;
+    }
+
     // try to get the stream size
-    NPT_Size size;
+    NPT_LargeSize size;
     if (NPT_SUCCEEDED(GetSize(size))) { 
         // make sure we don't read more than max_read
         if (max_read && max_read < size) size = max_read;
+        if (size > NPT_INPUT_STREAM_LOAD_MAX_SIZE) {
+            return NPT_ERROR_OUT_OF_RANGE;
+        }
     } else {
         size = max_read;
     } 
-
+        
     // pre-allocate the buffer
-    if (size) NPT_CHECK(buffer.Reserve(size));
+    if (size) NPT_CHECK(buffer.Reserve((NPT_Size)size));
 
     // read the data from the file
     total_bytes_read = 0;
     do {
-        NPT_Size  available = 0;
-        NPT_Size  bytes_to_read;
-        NPT_Size  bytes_read;
-        NPT_Byte* data;
+        NPT_LargeSize available = 0;
+        NPT_LargeSize bytes_to_read;
+        NPT_Size      bytes_read;
+        NPT_Byte*     data;
 
         // check if we know how much data is available
         result = GetAvailable(available);
@@ -71,14 +80,18 @@ NPT_InputStream::Load(NPT_DataBuffer& buffer, NPT_Size max_read /* = 0 */)
         if (bytes_to_read == 0) break;
 
         // ensure that the buffer has enough space
-        NPT_CHECK(buffer.Reserve(total_bytes_read+bytes_to_read));
+        if (total_bytes_read+bytes_to_read > NPT_INPUT_STREAM_LOAD_MAX_SIZE) {
+            buffer.SetBufferSize(0);
+            return NPT_ERROR_OUT_OF_RANGE;
+        }
+        NPT_CHECK(buffer.Reserve((NPT_Size)(total_bytes_read+bytes_to_read)));
 
         // read the data
         data = buffer.UseData()+total_bytes_read;
-        result = Read((void*)data, bytes_to_read, &bytes_read);
+        result = Read((void*)data, (NPT_Size)bytes_to_read, &bytes_read);
         if (NPT_SUCCEEDED(result) && bytes_read != 0) {
             total_bytes_read += bytes_read;
-            buffer.SetDataSize(total_bytes_read);
+            buffer.SetDataSize((NPT_Size)total_bytes_read);
         }
     } while(NPT_SUCCEEDED(result) && (size==0 || total_bytes_read < size));
 
@@ -109,6 +122,116 @@ NPT_InputStream::ReadFully(void* buffer, NPT_Size bytes_to_read)
         buffer = (void*)(((NPT_Byte*)buffer)+bytes_read);
     }
 
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_InputStream::ReadUI64
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_InputStream::ReadUI64(NPT_UInt64& value)
+{
+    unsigned char buffer[8];
+
+    // read bytes from the stream
+    NPT_Result result;
+    result = ReadFully((void*)buffer, 8);
+    if (NPT_FAILED(result)) {
+        value = 0;
+        return result;
+    }
+
+    // convert bytes to value
+    value = NPT_BytesToInt64Be(buffer);
+    
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_InputStream::ReadUI32
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_InputStream::ReadUI32(NPT_UInt32& value)
+{
+    unsigned char buffer[4];
+
+    // read bytes from the stream
+    NPT_Result result;
+    result = ReadFully((void*)buffer, 4);
+    if (NPT_FAILED(result)) {
+        value = 0;
+        return result;
+    }
+
+    // convert bytes to value
+    value = NPT_BytesToInt32Be(buffer);
+    
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_InputStream::ReadUI24
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_InputStream::ReadUI24(NPT_UInt32& value)
+{
+    unsigned char buffer[3];
+
+    // read bytes from the stream
+    NPT_Result result;
+    result = ReadFully((void*)buffer, 3);
+    if (NPT_FAILED(result)) {
+        value = 0;
+        return result;
+    }
+
+    // convert bytes to value
+    value = NPT_BytesToInt24Be(buffer);
+    
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_InputStream::ReadUI16
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_InputStream::ReadUI16(NPT_UInt16& value)
+{
+    unsigned char buffer[2];
+
+    // read bytes from the stream
+    NPT_Result result;
+    result = ReadFully((void*)buffer, 2);
+    if (NPT_FAILED(result)) {
+        value = 0;
+        return result;
+    }
+
+    // convert bytes to value
+    value = NPT_BytesToInt16Be(buffer);
+    
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_InputStream::ReadUI08
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_InputStream::ReadUI08(NPT_UInt8& value)
+{
+    unsigned char buffer[1];
+
+    // read bytes from the stream
+    NPT_Result result;
+    result = ReadFully((void*)buffer, 1);
+    if (NPT_FAILED(result)) {        
+        value = 0;
+        return result;
+    }
+
+    // convert bytes to value
+    value = buffer[0];
+    
     return NPT_SUCCESS;
 }
 
@@ -178,6 +301,75 @@ NPT_OutputStream::WriteLine(const char* buffer)
 }
 
 /*----------------------------------------------------------------------
+|   NPT_OutputStream::WriteUI64
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_OutputStream::WriteUI64(NPT_UInt64 value)
+{
+    unsigned char buffer[8];
+
+    // convert value to bytes
+    NPT_BytesFromInt64Be(buffer, value);
+
+    // write bytes to the stream
+    return WriteFully((void*)buffer, 8);
+}
+
+/*----------------------------------------------------------------------
+|   NPT_OutputStream::WriteUI32
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_OutputStream::WriteUI32(NPT_UInt32 value)
+{
+    unsigned char buffer[4];
+
+    // convert value to bytes
+    NPT_BytesFromInt32Be(buffer, value);
+
+    // write bytes to the stream
+    return WriteFully((void*)buffer, 4);
+}
+
+/*----------------------------------------------------------------------
+|   NPT_OutputStream::WriteUI24
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_OutputStream::WriteUI24(NPT_UInt32 value)
+{
+    unsigned char buffer[3];
+
+    // convert value to bytes
+    NPT_BytesFromInt24Be(buffer, value);
+
+    // write bytes to the stream
+    return WriteFully((void*)buffer, 3);
+}
+
+/*----------------------------------------------------------------------
+|   NPT_OutputStream::WriteUI16
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_OutputStream::WriteUI16(NPT_UInt16 value)
+{
+    unsigned char buffer[2];
+
+    // convert value to bytes
+    NPT_BytesFromInt16Be(buffer, value);
+
+    // write bytes to the stream
+    return WriteFully((void*)buffer, 2);
+}
+
+/*----------------------------------------------------------------------
+|   NPT_OutputStream::WriteUI08
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_OutputStream::WriteUI08(NPT_UInt8 value)
+{
+    return WriteFully((void*)&value, 1);
+}
+
+/*----------------------------------------------------------------------
 |   NPT_MemoryStream::NPT_MemoryStream
 +---------------------------------------------------------------------*/
 NPT_MemoryStream::NPT_MemoryStream(NPT_Size initial_capacity) : 
@@ -234,9 +426,9 @@ NPT_Result
 NPT_MemoryStream::InputSeek(NPT_Position offset)
 {
     if (offset > m_Buffer.GetDataSize()) {
-        return NPT_ERROR_INVALID_PARAMETERS;
+        return NPT_ERROR_OUT_OF_RANGE;
     } else {
-        m_ReadOffset = offset;
+        m_ReadOffset = (NPT_Size)offset;
         return NPT_SUCCESS;
     }
 }
@@ -268,10 +460,10 @@ NPT_Result
 NPT_MemoryStream::OutputSeek(NPT_Position offset)
 {
     if (offset <= m_Buffer.GetDataSize()) {
-        m_WriteOffset = offset;
+        m_WriteOffset = (NPT_Size)offset;
         return NPT_SUCCESS;
     } else {
-        return NPT_ERROR_INVALID_PARAMETERS;
+        return NPT_ERROR_OUT_OF_RANGE;
     }
 }
 
@@ -299,7 +491,7 @@ NPT_Result
 NPT_StreamToStreamCopy(NPT_InputStream&  from, 
                        NPT_OutputStream& to,
                        NPT_Position      offset /* = 0 */,
-                       NPT_Size          size   /* = 0, 0 means the entire stream */)
+                       NPT_LargeSize     size   /* = 0, 0 means the entire stream */)
 {
     // seek into the input if required
     if (offset) {
@@ -307,8 +499,8 @@ NPT_StreamToStreamCopy(NPT_InputStream&  from,
     }
 
     // allocate a buffer for the transfer
-    NPT_Size bytes_transfered = 0;
-    NPT_Byte* buffer = new NPT_Byte[NPT_STREAM_COPY_BUFFER_SIZE];
+    NPT_LargeSize bytes_transfered = 0;
+    NPT_Byte*     buffer = new NPT_Byte[NPT_STREAM_COPY_BUFFER_SIZE];
     NPT_Result result = NPT_SUCCESS;
     if (buffer == NULL) return NPT_ERROR_OUT_OF_MEMORY;
 
@@ -319,8 +511,8 @@ NPT_StreamToStreamCopy(NPT_InputStream&  from,
         NPT_Size   bytes_read = 0;
         if (size) {
             // a max size was specified
-            if (bytes_to_read > size-bytes_transfered) {
-                bytes_to_read = size-bytes_transfered;
+            if (size-bytes_transfered < NPT_STREAM_COPY_BUFFER_SIZE) {
+                bytes_to_read = (NPT_Size)(size-bytes_transfered);
             }
         }
         result = from.Read(buffer, bytes_to_read, &bytes_read);

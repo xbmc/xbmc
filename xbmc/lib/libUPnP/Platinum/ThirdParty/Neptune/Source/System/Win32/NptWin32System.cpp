@@ -30,7 +30,7 @@
 |   NPT_System::GetProcessId
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_System::GetProcessId(NPT_Integer& id)
+NPT_System::GetProcessId(NPT_UInt32& id)
 {
     //id = getpid();
     id = 0;
@@ -122,7 +122,7 @@ NPT_System::SetRandomSeed(unsigned int seed)
 /*----------------------------------------------------------------------
 |   NPT_System::NPT_System
 +---------------------------------------------------------------------*/
-NPT_Integer 
+NPT_UInt32 
 NPT_System::GetRandomInteger()
 {
     static bool seeded = false;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="libPlatinum"
 	ProjectGUID="{B2975495-FBE4-4F94-AAC5-B21A9842BF50}"
 	Keyword="Win32Proj"
@@ -871,11 +871,27 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Posix\NptPosixFile.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\StdC\NptStdcEnvironment.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\StdC\NptStdcFile.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32Debug.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32Directory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32File.cpp"
 					>
 				</File>
 				<File

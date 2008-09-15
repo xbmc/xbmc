@@ -2,7 +2,7 @@
 |
 |   Platinum - Ring Buffer Stream
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
 ****************************************************************/
@@ -67,8 +67,8 @@ PLT_RingBufferStream::Read(void*     buffer,
                            NPT_Size  max_bytes_to_read, 
                            NPT_Size* bytes_read /*= NULL*/)
 {
-    NPT_Size     bytes_avail, to_read;
-    NPT_Size     last_read = 0;
+    NPT_Size bytes_avail, to_read;
+    NPT_Size last_read = 0;
 
     // reset output param first
     if (bytes_read) *bytes_read = 0;
@@ -80,7 +80,7 @@ PLT_RingBufferStream::Read(void*     buffer,
             if (m_RingBuffer->GetContiguousAvailable()) break;
         }
 
-        if (m_Eos) {
+        if (m_Eos || m_RingBuffer->IsClosed()) {
             return NPT_ERROR_EOS;
         } else if (!m_Blocking) {
             return NPT_ERROR_WOULD_BLOCK;
@@ -102,7 +102,7 @@ PLT_RingBufferStream::Read(void*     buffer,
             if (to_read == 0) break;
 
             // read into buffer and advance
-            m_RingBuffer->Read((unsigned char*)buffer+last_read, to_read);
+            NPT_CHECK(m_RingBuffer->Read((unsigned char*)buffer+last_read, to_read));
 
             // keep track of the total bytes we have read so far
             m_TotalBytesRead += to_read;
@@ -138,7 +138,7 @@ PLT_RingBufferStream::Write(const void* buffer,
             if (m_RingBuffer->GetContiguousSpace()) break;
         }
 
-        if (m_Eos) {
+        if (m_Eos || m_RingBuffer->IsClosed()) {
             return NPT_ERROR_EOS;
         } else if (!m_Blocking) {
             return NPT_ERROR_WOULD_BLOCK;
@@ -160,7 +160,7 @@ PLT_RingBufferStream::Write(const void* buffer,
             if (to_write == 0) break;
 
             // write into buffer
-            m_RingBuffer->Write((unsigned char*)buffer+last_written, to_write);
+            NPT_CHECK(m_RingBuffer->Write((unsigned char*)buffer+last_written, to_write));
 
             m_TotalBytesWritten += to_write; 
             last_written += to_write;

@@ -2,7 +2,7 @@
 |
 |   Platinum - Control Point Tasks
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -38,14 +38,13 @@ PLT_CtrlPointGetDescriptionTask::~PLT_CtrlPointGetDescriptionTask()
 |    PLT_CtrlPointGetDescriptionTask::ProcessResponse
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_CtrlPointGetDescriptionTask::ProcessResponse(NPT_Result        res, 
-                                                 NPT_HttpRequest*  request, 
-                                                 NPT_SocketInfo&   info, 
-                                                 NPT_HttpResponse* response)
+PLT_CtrlPointGetDescriptionTask::ProcessResponse(NPT_Result                    res, 
+                                                 NPT_HttpRequest*              request, 
+                                                 const NPT_HttpRequestContext& context, 
+                                                 NPT_HttpResponse*             response)
 {
     NPT_COMPILER_UNUSED(request);
-    NPT_COMPILER_UNUSED(info);
-    return m_CtrlPoint->ProcessGetDescriptionResponse(res, response, m_Device);
+    return m_CtrlPoint->ProcessGetDescriptionResponse(res, context, response, m_Device);
 }
 
 /*----------------------------------------------------------------------
@@ -71,12 +70,12 @@ PLT_CtrlPointGetSCPDTask::~PLT_CtrlPointGetSCPDTask()
 |    PLT_CtrlPointGetSCPDTask::ProcessResponse
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_CtrlPointGetSCPDTask::ProcessResponse(NPT_Result        res, 
-                                          NPT_HttpRequest*  request, 
-                                          NPT_SocketInfo&   info, 
-                                          NPT_HttpResponse* response)
+PLT_CtrlPointGetSCPDTask::ProcessResponse(NPT_Result                    res, 
+                                          NPT_HttpRequest*              request, 
+                                          const NPT_HttpRequestContext& context, 
+                                          NPT_HttpResponse*             response)
 {
-    NPT_COMPILER_UNUSED(info);
+    NPT_COMPILER_UNUSED(context);
     return m_CtrlPoint->ProcessGetSCPDResponse(res, request, response, m_Device);
 }
 
@@ -105,13 +104,13 @@ PLT_CtrlPointInvokeActionTask::~PLT_CtrlPointInvokeActionTask()
 |    PLT_CtrlPointInvokeActionTask::ProcessResponse
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_CtrlPointInvokeActionTask::ProcessResponse(NPT_Result        res, 
-                                               NPT_HttpRequest*  request, 
-                                               NPT_SocketInfo&   info, 
-                                               NPT_HttpResponse* response)
+PLT_CtrlPointInvokeActionTask::ProcessResponse(NPT_Result                    res, 
+                                               NPT_HttpRequest*              request, 
+                                               const NPT_HttpRequestContext& context, 
+                                               NPT_HttpResponse*             response)
 {
     NPT_COMPILER_UNUSED(request);
-    NPT_COMPILER_UNUSED(info);
+    NPT_COMPILER_UNUSED(context);
 
     return m_CtrlPoint->ProcessActionResponse(res, response, m_Action, m_Userdata);
 }
@@ -166,13 +165,13 @@ PLT_CtrlPointSubscribeEventTask::~PLT_CtrlPointSubscribeEventTask()
 |    PLT_CtrlPointSubscribeEventTask::ProcessResponse
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_CtrlPointSubscribeEventTask::ProcessResponse(NPT_Result        res, 
-                                                 NPT_HttpRequest*  request, 
-                                                 NPT_SocketInfo&   info, 
-                                                 NPT_HttpResponse* response)
+PLT_CtrlPointSubscribeEventTask::ProcessResponse(NPT_Result                    res, 
+                                                 NPT_HttpRequest*              request, 
+                                                 const NPT_HttpRequestContext& context, 
+                                                 NPT_HttpResponse*             response)
 {
     NPT_COMPILER_UNUSED(request);
-    NPT_COMPILER_UNUSED(info);
+    NPT_COMPILER_UNUSED(context);
 
     return m_CtrlPoint->ProcessSubscribeResponse(res, response, m_Service, m_Userdata);
 }

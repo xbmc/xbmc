@@ -73,9 +73,7 @@ NPT_ThreadCallbackSlot::ReceiveCallback(NPT_ThreadCallbackReceiver& receiver,
         //NPT_Debug("NPT_ThreadCallbackSlot::ReceiveCallback - got it\n");
     } else {
         // see if something is pending
-        int pending = 0;
-        NPT_CHECK(m_Pending.GetValue(pending));
-        if (pending == 0) {
+        if (m_Pending.GetValue() == 0) {
             //NPT_Debug("NPT_ThreadCallbackSlot::ReceiveCallback - nothing pending\n");
             return NPT_ERROR_CALLBACK_NOTHING_PENDING;
         }
@@ -107,9 +105,7 @@ NPT_ThreadCallbackSlot::SendCallback(void* args)
 
     // there should be nothing pending
 #if defined(NPT_DEBUG)
-    int pending = 0;
-    NPT_CHECK(m_Pending.GetValue(pending));
-    NPT_ASSERT(pending == 0);
+    NPT_ASSERT(m_Pending.GetValue() == 0);
 #endif
 
     // check if we have been shutdown

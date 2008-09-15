@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="LightSampleTest"
 	ProjectGUID="{255281DE-5127-424E-8D78-21D85B8E6DD3}"
+	RootNamespace="LightSampleTest"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -61,7 +62,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib"
 				OutputFile="$(OutDir)/LightSampleTest.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
@@ -93,7 +93,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2005\Debug&quot;&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2005\Debug\$(TargetFileName)&quot;"
+				CommandLine="mkdir &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2005\Debug&quot;&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2005\Debug\$(TargetFileName)&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -140,7 +140,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib"
 				OutputFile="$(OutDir)/LightSampleTest.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
@@ -173,7 +172,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2005\Release&quot;&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)\..\..\..\..\Targets\x86-microsoft-win32-vs2005\Release\$(TargetFileName)&quot;"
+				CommandLine="mkdir &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2005\Release&quot;&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)\..\..\..\..\Targets\x86-microsoft-win32-vs2005\Release\$(TargetFileName)&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

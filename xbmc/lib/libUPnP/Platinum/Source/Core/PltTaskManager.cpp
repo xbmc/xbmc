@@ -2,7 +2,7 @@
 |
 |   Platinum - Task Manager
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -19,7 +19,7 @@ NPT_SET_LOCAL_LOGGER("platinum.core.taskmanager")
 |   PLT_TaskManager::PLT_TaskManager
 +---------------------------------------------------------------------*/
 PLT_TaskManager::PLT_TaskManager(NPT_Cardinal max_items /* = 0 */) :
-    m_Queue(max_items?new NPT_Queue<NPT_Integer>(max_items):NULL)
+    m_Queue(max_items?new NPT_Queue<int>(max_items):NULL)
 {
 }
 
@@ -66,7 +66,7 @@ PLT_TaskManager::StopAllTasks()
 {
     // unblock the queue if any
     if (m_Queue) {
-        NPT_Queue<NPT_Integer>* queue = m_Queue;
+        NPT_Queue<int>* queue = m_Queue;
         m_Queue = NULL;
         delete queue;
     }  
@@ -105,7 +105,7 @@ NPT_Result
 PLT_TaskManager::AddTask(PLT_ThreadTask* task) 
 {
     if (m_Queue) {
-        NPT_CHECK_SEVERE(m_Queue->Push(new NPT_Integer));
+        NPT_CHECK_SEVERE(m_Queue->Push(new int));
     }
 
     {
@@ -122,7 +122,7 @@ NPT_Result
 PLT_TaskManager::RemoveTask(PLT_ThreadTask* task)
 {
     if (m_Queue) {
-        NPT_Integer* val = NULL;
+        int* val = NULL;
         if (NPT_SUCCEEDED(m_Queue->Pop(val)))
             delete val;
     }
