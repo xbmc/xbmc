@@ -168,6 +168,7 @@
 #define HAS_LIRC
 #define HAS_IRSERVERSUITE // depends on HAS_LIRC define
 #define HAS_SYSINFO
+#define HAS_SDL_JOYSTICK
 
 #undef HAS_SDL_AUDIO   // use dsound for audio on win32
 #undef HAS_SCREENSAVER // no screensavers
