@@ -100,10 +100,10 @@ keymap_sixaxis = {
     SX_START    : ('XG', 'start', 0, 0),
     SX_SELECT   : ('XG', 'back', 0, 0),
 
-    SX_R1       : ('XG', 'black', 0, 0),
+    SX_R1       : ('XG', 'white', 0, 0),
     SX_R2       : ('XG', 'rightanalogtrigger', 6, 1),
     SX_L2       : ('XG', 'leftanalogtrigger', 5, 1),
-    SX_L1       : ('XG', 'white', 0, 0),
+    SX_L1       : ('XG', 'black', 0, 0),
 
     SX_L3       : ('XG', 'leftthumbbutton', 0, 0),
     SX_R3       : ('XG', 'rightthumbbutton', 0, 0),
