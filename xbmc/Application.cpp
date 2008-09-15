@@ -3971,8 +3971,6 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
     }
   }
 
-  m_bPlaybackStarting = true;
-  if (m_pPlayer) SAFE_DELETE(m_pPlayer);
   *m_itemCurrentFile = item;
   m_currentStackPosition = 0;
   m_eCurrentPlayer = EPC_NONE; // must be reset on initial play otherwise last player will be used 
