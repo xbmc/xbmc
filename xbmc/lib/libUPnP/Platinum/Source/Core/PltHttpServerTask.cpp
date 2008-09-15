@@ -46,6 +46,7 @@ PLT_HttpServerSocketTask::DoRun()
     NPT_HttpRequestContext           context;
     NPT_Result                       res = NPT_SUCCESS;
     bool                             headers_only;
+    bool                             keep_alive;
 
     // create a buffered input stream to parse http request
     // as it comes
@@ -67,7 +68,7 @@ PLT_HttpServerSocketTask::DoRun()
         if (NPT_FAILED(res) || (response == NULL)) goto cleanup;
 
         // send back response
-        bool keep_alive = PLT_HttpHelper::IsConnectionKeepAlive(*request) && m_StayAliveForever;
+        keep_alive = PLT_HttpHelper::IsConnectionKeepAlive(*request) && m_StayAliveForever;
         res = Write(response, keep_alive, headers_only);
 
 cleanup:
