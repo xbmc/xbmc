@@ -691,6 +691,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInResolutions(pSetting, true);
     }
+#ifdef HAS_MPLAYER
     else if (strSetting.Equals("videoplayer.framerateconversions"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -701,6 +702,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->AddLabel(g_localizeStrings.Get(12382), FRAME_RATE_USE_PAL60); // "Play NTSC videos in PAL60"
       pControl->SetValue(pSettingInt->GetData());
     }
+#endif
     else if (strSetting.Equals("videoplayer.highqualityupscaling"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
