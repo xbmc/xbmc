@@ -36,12 +36,10 @@
 
 #ifdef _WIN32PC
 typedef WIN32_FIND_DATAW LOCAL_WIN32_FIND_DATA;
-typedef CStdStringW LocalString;
 #define LocalFindFirstFile FindFirstFileW
 #define LocalFindNextFile FindNextFileW
 #else
 typedef WIN32_FIND_DATA LOCAL_WIN32_FIND_DATA;
-typedef CStdString LocalString;
 #define LocalFindFirstFile FindFirstFile
 #define LocalFindNextFile FindNextFile
 #endif 
@@ -86,10 +84,12 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
     CIoSupport::RemapDriveLetter('D', "Cdrom0");
   }
 
-  LocalString strSearchMask = strRoot;
 #ifndef _LINUX
+  CStdStringW strSearchMask;
+  g_charsetConverter.utf8ToW(strRoot,strSearchMask); 
   strSearchMask += "*.*";
 #else
+  CStdString strSearchMask = strRoot;
   strSearchMask += "*";
 #endif
 
@@ -197,7 +197,7 @@ bool CHDDirectory::Create(const char* strPath)
 #ifndef _LINUX
   CStdStringW strWPath1;
   g_charsetConverter.utf8ToW(strPath1, strWPath1);
-  if(::CreateDirectoryW(strWPath1.c_str(), NULL))
+  if(::CreateDirectoryW(strWPath1, NULL))
 #else
   if(::CreateDirectory(strPath1.c_str(), NULL))
 #endif
@@ -228,7 +228,7 @@ bool CHDDirectory::Exists(const char* strPath)
   if (!CUtil::HasSlashAtEnd(strReplaced))
     strReplaced += '\\';
   g_charsetConverter.utf8ToW(strReplaced, strWReplaced);
-  DWORD attributes = GetFileAttributesW(strWReplaced.c_str());
+  DWORD attributes = GetFileAttributesW(strWReplaced);
 #else    
   DWORD attributes = GetFileAttributes(strReplaced.c_str());
 #endif
