@@ -26,6 +26,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine=""
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -1008,6 +1009,14 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\common\Mouse.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\common\SDLJoystick.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\common\SDLJoystick.h"
 				>
 			</File>
 			<File
