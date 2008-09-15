@@ -121,9 +121,6 @@
 			<RegExp conditional="fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-fullcredits.html&quot; function=&quot;GetMovieWriters&quot;&gt;$$3fullcredits&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-posters.html&quot; function=&quot;GetIMDBPoster&quot;&gt;$$3posters&lt;/url&gt;" dest="5+">
-				<expression></expression>
-			</RegExp>
 			<RegExp conditional="impawards" input="$$2" output="&lt;url cache=&quot;$$2-posters.html&quot; function=&quot;GetIMPALink&quot;&gt;$$3posters&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
@@ -132,6 +129,9 @@
 			</RegExp>
 			<RegExp conditional="trailer" input="$$1" output="&lt;url function=&quot;GetTrailer&quot;&gt;http://$INFO[url]/video/imdb/vi\1&lt;/url&gt;" dest="5+">
 				<expression>/screenplay/vi([0-9]*)/&quot;</expression>
+			</RegExp>
+			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-posters.html&quot; function=&quot;GetIMDBPoster&quot;&gt;$$3posters&lt;/url&gt;" dest="5+">
+				<expression></expression>
 			</RegExp>
                         <RegExp conditional="fanart" input="$$2" output="&lt;url function=&quot;GetFanart&quot;&gt;http://www.meligrove.com/api?imdb=$$2&lt;/url&gt;" dest="5+">
                         	<expression></expression>
@@ -189,17 +189,6 @@
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetMovieWriters>
-	<GetIMDBPoster dest="5">
-		<RegExp input="$$8$$9$$10$$11" output="&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="5">
-                        <RegExp input="$$1" output="\1_SX$INFO[imdbscale]_SY$INFO[imdbscale]_\2" dest="6">
-	                        <expression noclean="1,2">&lt;a name=&quot;poster&quot;.*?src=&quot;(.*?)_S.*?(.jpg)&quot;.*?&lt;/a&gt;</expression>
-                        </RegExp>
-                        <RegExp input="$$6" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="11">
-	                        <expression clear="yes" noclean="1">(.*?_SX[0-9]+_SY[0-9]+_.jpg)</expression>
-                        </RegExp>
-			<expression noclean="1"></expression>
-		</RegExp>
-	</GetIMDBPoster>
 	<GetIMPALink clearbuffers="no" dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetIMPAPosters&quot;&gt;http://\1impawards.com/\2&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression clear="yes" noclean="1,2">http://([^&quot;]*)impawards.com/([^&quot;]*)&quot;&gt;</expression>
@@ -242,6 +231,17 @@
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetTrailerLink>
+	<GetIMDBPoster dest="5">
+		<RegExp input="$$8$$9$$10$$11" output="&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="5">
+                        <RegExp input="$$1" output="\1_SX$INFO[imdbscale]_SY$INFO[imdbscale]_\2" dest="6">
+	                        <expression noclean="1,2">&lt;a name=&quot;poster&quot;.*?src=&quot;(.*?)_S.*?(.jpg)&quot;.*?&lt;/a&gt;</expression>
+                        </RegExp>
+                        <RegExp input="$$6" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="11">
+	                        <expression clear="yes" noclean="1">(.*?_SX[0-9]+_SY[0-9]+_.jpg)</expression>
+                        </RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetIMDBPoster>
         <GetFanart dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://www.meligrove.com/&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;thumb preview=&quot;/images/posters/movies/thumbnails/\1&quot;&gt;/images/posters/movies/jpg/\1&lt;/thumb&gt;" dest="2">
