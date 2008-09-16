@@ -637,9 +637,6 @@
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\System\StdC\NptStdcEnvironment.cpp">
 				</File>
 				<File
-					RelativePath=".\Platinum\ThirdParty\Neptune\Source\System\StdC\NptStdcFile.cpp">
-				</File>
-				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32Debug.cpp">
 				</File>
 				<File
