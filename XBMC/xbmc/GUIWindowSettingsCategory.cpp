@@ -1668,7 +1668,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       // check that it's a valid port
       int port = atoi(pSetting->GetData().c_str());
       if (port <= 0 || port > 65535)
+#ifndef _LINUX
         pSetting->SetData("80");
+#else
+        pSetting->SetData((geteuid() == 0)? "80" : "8080");
+#endif
     }
 #ifdef HAS_WEB_SERVER
     g_application.StopWebServer();
