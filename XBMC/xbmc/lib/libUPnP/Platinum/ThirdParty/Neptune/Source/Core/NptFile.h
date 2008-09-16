@@ -106,7 +106,7 @@ public:
     // methods
     virtual NPT_Result Open(OpenMode mode) = 0;
     virtual NPT_Result Close() = 0;
-    //virtual NPT_Result GetSize(NPT_LargeSize& size) = 0;
+    virtual NPT_Result GetSize(NPT_LargeSize& size) = 0;
     virtual NPT_Result GetInputStream(NPT_InputStreamReference& stream) = 0;
     virtual NPT_Result GetOutputStream(NPT_OutputStreamReference& stream) = 0;
 };
@@ -140,7 +140,7 @@ public:
     NPT_Result          Load(NPT_DataBuffer& buffer);
     NPT_Result          Save(const NPT_DataBuffer& buffer);
     const NPT_String&   GetPath() { return m_Path; }
-    NPT_Result          GetSize(NPT_LargeSize &size);
+    //NPT_Result          GetSize(NPT_LargeSize &size);
     NPT_Result          GetInfo(NPT_FileInfo& info);
     NPT_Result          ListDirectory(NPT_List<NPT_String>& entries);
     NPT_Result          Rename(const char* path);
@@ -152,9 +152,9 @@ public:
     NPT_Result Close() {
         return m_Delegate->Close();
     }
-    //NPT_Result GetSize(NPT_Size& size) {
-    //    return m_Delegate->GetSize(size);
-    //}
+    NPT_Result GetSize(NPT_LargeSize& size) {
+        return m_Delegate->GetSize(size);
+    }
     NPT_Result GetInputStream(NPT_InputStreamReference& stream) {
         return m_Delegate->GetInputStream(stream);
     }
