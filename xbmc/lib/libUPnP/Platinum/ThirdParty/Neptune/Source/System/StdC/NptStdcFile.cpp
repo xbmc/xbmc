@@ -30,7 +30,8 @@
 #include "NptThreads.h"
 #include "NptInterfaces.h"
 #include "NptStrings.h"
-#include "NptDebug.h"
+//#include "NptDebug.h"
+#include "NptLogging.h"
 
 #if defined(NPT_CONFIG_HAVE_SHARE_H)
 #include <share.h>
@@ -42,6 +43,11 @@ extern "C" {
     int __cdecl _fseeki64(FILE *, __int64, int);
 }
 #endif
+
+/*----------------------------------------------------------------------
+|   logging
++---------------------------------------------------------------------*/
+NPT_SET_LOCAL_LOGGER("neptune.stdc.file")
 
 /*----------------------------------------------------------------------
 |   compatibility wrappers
@@ -317,7 +323,7 @@ public:
     // NPT_FileInterface methods
     NPT_Result Open(OpenMode mode);
     NPT_Result Close();
-    //NPT_Result GetSize(NPT_Size& size);
+    NPT_Result GetSize(NPT_LargeSize& size);
     NPT_Result GetInputStream(NPT_InputStreamReference& stream);
     NPT_Result GetOutputStream(NPT_OutputStreamReference& stream);
 
@@ -433,8 +439,8 @@ NPT_StdcFile::Close()
 /*----------------------------------------------------------------------
 |   NPT_StdcFile::GetSize
 +---------------------------------------------------------------------*/
-/*NPT_Result 
-NPT_StdcFile::GetSize(NPT_Size& size)
+NPT_Result 
+NPT_StdcFile::GetSize(NPT_LargeSize& size)
 {
     // default value
     size = 0;
@@ -442,8 +448,13 @@ NPT_StdcFile::GetSize(NPT_Size& size)
     // check that the file is open
     if (m_FileReference.IsNull()) return NPT_ERROR_FILE_NOT_OPEN;
 
-    return m_Delegator.GetSize(size);
-}*/
+    // get the size from the info (call GetInfo() in case it has not
+    // yet been called)
+    NPT_FileInfo info;
+    NPT_CHECK_FATAL(m_Delegator.GetInfo(info));
+    size = info.m_Size;
+    return NPT_SUCCESS;
+}
 
 /*----------------------------------------------------------------------
 |   NPT_StdcFile::GetInputStream
@@ -464,7 +475,7 @@ NPT_StdcFile::GetInputStream(NPT_InputStreamReference& stream)
 
     // create a stream
     NPT_LargeSize size = 0;
-    m_Delegator.GetSize(size);
+    GetSize(size);
     stream = new NPT_StdcFileInputStream(m_FileReference, size);
 
     return NPT_SUCCESS;
@@ -522,3 +533,4 @@ NPT_File::operator=(const NPT_File& file)
     }
     return *this;
 }
+

@@ -3722,6 +3722,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\NptXbmcFile.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\NSFFileDirectory.cpp"
 					>
 				</File>
