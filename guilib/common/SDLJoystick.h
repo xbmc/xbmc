@@ -43,8 +43,8 @@ public:
 private:
   void SetAxisActive(bool active=true) { m_ActiveFlags = active?(m_ActiveFlags|JACTIVE_AXIS):(m_ActiveFlags&(~JACTIVE_AXIS)); }
   void SetButtonActive(bool active=true) { m_ActiveFlags = active?(m_ActiveFlags|JACTIVE_BUTTON):(m_ActiveFlags&(~JACTIVE_BUTTON)); }
-  bool IsButtonActive() { return (bool)(m_ActiveFlags&JACTIVE_BUTTON); }
-  bool IsAxisActive() { return (bool)(m_ActiveFlags&JACTIVE_AXIS); }
+  bool IsButtonActive() { return (m_ActiveFlags & JACTIVE_BUTTON) == JACTIVE_BUTTON; }
+  bool IsAxisActive() { return (m_ActiveFlags & JACTIVE_AXIS) == JACTIVE_AXIS; }
 
   int m_Amount[MAX_AXES];
   int m_DefaultAmount[MAX_AXES];
