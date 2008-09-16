@@ -33,12 +33,14 @@
 
 /* Need to allocate enough IDs for extreme numbers of channels & shows */
 
+using namespace PVR;
+
 CGUIWindowEPG::CGUIWindowEPG(void) 
     : CGUIWindow(WINDOW_EPG, "MyTVGuide.xml")
 {
   m_curDaysOffset = 0; // offset of zero to grab current schedule
   m_bDisplayEmptyDatabaseMessage = false;
-  m_channels = new VECFILEITEMS; ///
+  m_channels = new VECFILEITEMS; ///TOOO move somewhere else
 }
 
 CGUIWindowEPG::~CGUIWindowEPG(void)
@@ -85,7 +87,7 @@ bool CGUIWindowEPG::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-      UpdateGrid();
+      //UpdateGrid();
       return CGUIWindow::OnMessage(message);
     }
     break;
@@ -109,7 +111,7 @@ bool CGUIWindowEPG::OnMessage(CGUIMessage& message)
         }
         else if (iAction == ACTION_PLAY)
         {
-          // either switch channel, or set autoview
+          ///TODO either switch channel, or set autoview
           return true;
         }
         else if (iAction == ACTION_SHOW_INFO || iAction == ACTION_SELECT_ITEM)
@@ -126,6 +128,7 @@ bool CGUIWindowEPG::OnMessage(CGUIMessage& message)
 
 void CGUIWindowEPG::OnInitWindow()
 {
+  UpdateGrid();
   CGUIWindow::OnInitWindow();
 }
 
@@ -206,13 +209,18 @@ void CGUIWindowEPG::GetGridData()
 
 void CGUIWindowEPG::UpdateGrid()
 {
-  if (!m_guideGrid || !m_gridData) return; /// ?? what if GridContainer hasnt binded it's items
+  /*if (!m_guideGrid || !m_gridData) return;*/ /// ?? what if GridContainer hasnt binded it's items
 
   /*CGUIListItemPtr currentItem = m_guideGrid->GetSelectedItemPtr();*/
 
   /* message the grid container */
-  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_EPGGRID, 0, 0);
-  g_graphicsContext.SendMessage(msg);
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_EPGGRID, 0, 0, (PVR::CEPG*)CPVRManager::GetInstance()->GetEPG());
+  if (g_graphicsContext.SendMessage(msg))
+  {
+    // get a pointer to the grid container
+    m_guideGrid = (CGUIEPGGridContainer*)GetControl(CONTROL_EPGGRID);
+  }
+  else m_guideGrid = NULL;
 }
 
 void CGUIWindowEPG::OnInfo(CFileItem* pItem)
@@ -237,6 +245,7 @@ void CGUIWindowEPG::ShowEPGInfo(CFileItem *item)
   pDlgInfo->DoModal();
 
 }
+
 void CGUIWindowEPG::DisplayEmptyDatabaseMessage(bool bDisplay)
 {
   m_bDisplayEmptyDatabaseMessage = bDisplay;

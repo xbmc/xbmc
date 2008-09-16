@@ -10,12 +10,13 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#if defined(_WIN32) || defined(_WIN32_WCE)
+#if (defined(_WIN32) || defined(_WIN32_WCE)) && !defined(__SYMBIAN32__)
 
 // Win32 includes
+#if !defined(__WIN32__) 
 #define __WIN32__
 #endif
-
+#endif
 #if defined(__WIN32__) && !defined(_XBOX)
 #define STRICT
 #define NPT_WIN32_USE_WINSOCK2
@@ -81,13 +82,16 @@
 #include <sys/time.h>
 #include <sys/ioctl.h>
 #include <netinet/in.h>
+#if !defined(__SYMBIAN32__)
 #include <netinet/tcp.h>
+#endif
 #include <netdb.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
+#include <signal.h>
 
 #endif 
 
@@ -136,7 +140,9 @@ static NPT_WinsockSystem& WinsockInitializer = NPT_WinsockSystem::Initializer;
 #define EAGAIN       WSAEWOULDBLOCK 
 #endif
 
+#if !defined(__MINGW32__)
 typedef int         ssize_t;
+#endif
 typedef int         socklen_t;
 typedef char*       SocketBuffer;
 typedef const char* SocketConstBuffer;
@@ -499,12 +505,12 @@ public:
       m_ReadTimeout(NPT_TIMEOUT_INFINITE), 
       m_WriteTimeout(NPT_TIMEOUT_INFINITE),
       m_Position(0) {
-#if !defined(WIN32) && !defined(_XBOX)
+#if !defined(__WIN32__) && !defined(_XBOX)
         pipe(m_AbortPipe);
 #endif
     }
     ~NPT_BsdSocketFd() {
-#if !defined(WIN32) && !defined(_XBOX)
+#if !defined(__WIN32__) && !defined(_XBOX)
         close(m_AbortPipe[0]);
         close(m_AbortPipe[1]);
         closesocket(m_SocketFd);
@@ -514,15 +520,13 @@ public:
     }
 
     // methods
-    SocketFd GetSocketFd() { return m_Disconnected?0:m_SocketFd; }
+    SocketFd   GetSocketFd() { return m_Disconnected?0:m_SocketFd; }
     NPT_Result SetBlockingMode(bool blocking);
     NPT_Result WaitUntilReadable();
     NPT_Result WaitUntilWriteable();
-    NPT_Result WaitForCondition(bool readable, bool writeable, NPT_Timeout timeout);
-    
     void Disconnect() {
         if (m_Disconnected) return;
-#if !defined(WIN32) && !defined(_XBOX)
+#if !defined(__WIN32__) && !defined(_XBOX)
         write(m_AbortPipe[1], "\0", 1);
 #else
         // no pipe on win32, but closing the socket will
@@ -545,8 +549,13 @@ public:
     NPT_Position m_Position;
 
 private:
+    // methods
+    friend class NPT_BsdTcpServerSocket;
+    NPT_Result WaitForCondition(bool readable, bool writeable, NPT_Timeout timeout);
+    
+private:
     // members
-#if !defined(WIN32) && !defined(_XBOX)
+#if !defined(__WIN32__) && !defined(_XBOX)
     int m_AbortPipe[2]; /* an array to store the file descriptors of the abort pipe. */
 #endif
 };
@@ -648,7 +657,7 @@ NPT_BsdSocketFd::WaitForCondition(bool        wait_for_readable,
     
     int nfds = (int)m_SocketFd+1;
 
-#if !defined(WIN32) && !defined(_XBOX)
+#if !defined(__WIN32__) && !defined(_XBOX)
     FD_SET(m_AbortPipe[0], &read_set);
     nfds = (m_AbortPipe[0]>(int)m_SocketFd?m_AbortPipe[0]:(int)m_SocketFd)+1;
 #endif
@@ -673,7 +682,7 @@ NPT_BsdSocketFd::WaitForCondition(bool        wait_for_readable,
         result = NPT_SUCCESS;
     } else if (FD_ISSET(m_SocketFd, &except_set)) {
         result = MapErrorCode(GetSocketError());
-#if !defined(WIN32) && !defined(_XBOX)
+#if !defined(__WIN32__) && !defined(_XBOX)
     } else if (FD_ISSET(m_AbortPipe[0], &read_set)) {
         result = NPT_ERROR_CONNECTION_ABORTED;
 #endif
@@ -846,10 +855,18 @@ NPT_BsdSocketOutputStream::Write(const void*  buffer,
         if (result != NPT_SUCCESS) return result;
     }
 
+    int flags = 0;
+
+    // on some BSD implementations, signal we don't want a SIGPIPE
+    // but instead return EPIPE
+#ifdef MSG_NOSIGNAL
+    flags |= MSG_NOSIGNAL;
+#endif
+
     // write to the socket
     ssize_t nb_written = send(m_SocketFdReference->GetSocketFd(), 
-                             (SocketConstBuffer)buffer, 
-                             bytes_to_write, 0);
+                              (SocketConstBuffer)buffer, 
+                              bytes_to_write, flags);
 
     if (nb_written > 0) {
         if (bytes_written) *bytes_written = nb_written;
@@ -956,6 +973,7 @@ NPT_BsdSocket::NPT_BsdSocket(SocketFd fd, bool force_blocking) :
     m_Blocking(true)
 {
     if (force_blocking) m_SocketFdReference->SetBlockingMode(true);
+
     RefreshInfo();
 }
 
@@ -982,8 +1000,17 @@ NPT_BsdSocket::Bind(const NPT_SocketAddress& address, bool reuse_address)
                    SO_REUSEADDR, 
                    (SocketOption)&option, 
                    sizeof(option));
+#if defined(SO_REUSEPORT) 
+        // some implementations (BSD 4.4) need this in addition to SO_REUSEADDR
+        option = 1;
+        setsockopt(m_SocketFdReference->GetSocketFd(), 
+                   SOL_SOCKET, 
+                   SO_REUSEPORT, 
+                   (SocketOption)&option, 
+                   sizeof(option));
+#endif
     }
-
+    
     // convert the address
     struct sockaddr_in inet_address;
     SocketAddressToInetAddress(address, &inet_address);
@@ -1028,7 +1055,6 @@ NPT_BsdSocket::Disconnect()
     if (m_SocketFdReference.IsNull()) return NPT_ERROR_INVALID_STATE;
 
     m_SocketFdReference->Disconnect();
-
     return NPT_SUCCESS;
 }
 
@@ -1621,6 +1647,17 @@ NPT_BsdTcpClientSocket::NPT_BsdTcpClientSocket() :
 +---------------------------------------------------------------------*/
 NPT_BsdTcpClientSocket::~NPT_BsdTcpClientSocket()
 {
+    // disable the SIGPIPE signal
+#if defined(SO_NOSIGPIPE)
+    int option = 1;
+    setsockopt(m_SocketFdReference->m_SocketFd, 
+               SOL_SOCKET, 
+               SO_NOSIGPIPE, 
+               (SocketOption)&option, 
+               sizeof(option));
+#elif defined(SIGPIPE)
+    signal(SIGPIPE, SIG_IGN);
+#endif
 }
 
 /*----------------------------------------------------------------------
@@ -1832,6 +1869,17 @@ NPT_BsdTcpServerSocket::NPT_BsdTcpServerSocket() :
     NPT_BsdSocket(socket(AF_INET, SOCK_STREAM, 0)),
     m_ListenMax(0)
 {
+    // disable the SIGPIPE signal
+#if defined(SO_NOSIGPIPE)
+    int option = 1;
+    setsockopt(m_SocketFdReference->m_SocketFd, 
+               SOL_SOCKET, 
+               SO_NOSIGPIPE, 
+               (SocketOption)&option, 
+               sizeof(option));
+#elif defined(SIGPIPE)
+    signal(SIGPIPE, SIG_IGN);
+#endif
 }
 
 /*----------------------------------------------------------------------

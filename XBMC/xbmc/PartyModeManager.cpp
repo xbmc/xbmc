@@ -655,3 +655,13 @@ void CPartyModeManager::GetRandomSelection(vector<pair<int,long> >& in, unsigned
     in.erase(in.begin() + num);
   }
 }
+
+bool CPartyModeManager::IsEnabled(PartyModeContext context /* = PARTYMODECONTEXT_UNKNOWN */) const
+{
+  if (!m_bEnabled) return false;
+  if (context == PARTYMODECONTEXT_VIDEO)
+    return m_bIsVideo;
+  if (context == PARTYMODECONTEXT_MUSIC)
+    return !m_bIsVideo;
+  return true; // unknown, but we're enabled
+}

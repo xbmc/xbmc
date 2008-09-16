@@ -48,12 +48,13 @@ namespace EVENTPACKET
   /*     | -H4 Sequence number       | - 1  x UNSIGNED LONG       4B      */
   /*     | -H5 No. of packets in msg | - 1  x UNSIGNED LONG       4B      */
   /*     | -H6 Payload size          | - 1  x UNSIGNED SHORT      2B      */
-  /*     | -H7 Reserved              | - 14 x UNSIGNED CHAR      14B      */
+  /*     | -H7 Client's unique token | - 1  x UNSIGNED LONG       4B      */
+  /*     | -H8 Reserved              | - 10 x UNSIGNED CHAR      10B      */
   /*     |---------------------------|                                    */
   /*     | -P1 payload               | -                                  */
   /*     -----------------------------                                    */
   /************************************************************************/
-   
+
   /************************************************************************
      The payload format for each packet type is decribed below each
      packet type.
@@ -64,7 +65,7 @@ namespace EVENTPACKET
             %c - single byte
             %i - network byte ordered short unsigned integer (2 bytes)
             %d - network byte ordered long unsigned integer  (4 bytes)
-            XX - binary data prefixed with %d size 
+            XX - binary data prefixed with %d size
                  (can span multiple packets with <raw>)
            raw - raw binary data
    ************************************************************************/
@@ -84,13 +85,21 @@ namespace EVENTPACKET
     PTB_UP         = 0x04,
     PTB_USE_AMOUNT = 0x08,
     PTB_QUEUE      = 0x10,
-    PTB_NO_REPEAT  = 0x20
+    PTB_NO_REPEAT  = 0x20,
+    PTB_VKEY       = 0x40,
+    PTB_AXIS       = 0x80,
+    PTB_AXISSINGLE = 0x100,
   };
 
   enum MouseFlags
   {
     PTM_ABSOLUTE = 0x01
     /* PTM_RELATIVE = 0x02 */
+  };
+
+  enum ActionType
+  {
+    AT_EXEC_BUILTIN = 0x01
   };
 
   enum PacketType
@@ -121,6 +130,8 @@ namespace EVENTPACKET
     /*            0x08 => use amount                                        */
     /*            0x10 => queue event                                       */
     /*            0x20 => do not repeat                                     */
+    /*            0x40 => virtual key                                       */
+    /*            0x80 => axis key                                          */
     /* %i - amount ( 0 => 65k maps to -1 => 1 )                             */
     /* %s - device map (case sensitive and required if flags & 0x01)        */
     /*      "KB" - Standard keyboard map                                    */
@@ -129,6 +140,10 @@ namespace EVENTPACKET
     /*      "R2" - Xbox Universal Remote                                    */
     /*      "LI:devicename" -  valid LIRC device map where 'devicename'     */
     /*                         is the actual name of the LIRC device        */
+    /*      "JS<num>:joyname" -  valid Joystick device map where            */
+    /*                           'joyname'  is the name specified in        */
+    /*                           the keymap. JS only supports button code   */
+    /*                           and not button name currently (!0x01).     */
     /* %s - button name (required if flags & 0x01)                          */
     /************************************************************************/
 
@@ -166,7 +181,19 @@ namespace EVENTPACKET
     /* Payload format                                                       */
     /* raw - raw binary data                                                */
     /************************************************************************/
-    
+
+    PT_LOG           = 0x09,
+    /************************************************************************/
+    /* Payload format                                                       */
+    /* %c - log type                                                        */
+    /* %s - message                                                         */
+    /************************************************************************/
+    PT_ACTION        = 0x0A,
+    /************************************************************************/
+    /* Payload format                                                       */
+    /* %c - action type                                                     */
+    /* %s - action message                                                  */
+    /************************************************************************/
     PT_DEBUG         = 0xFF,
     /************************************************************************/
     /* Payload format:                                                      */
@@ -178,27 +205,28 @@ namespace EVENTPACKET
   class CEventPacket
   {
   public:
-    CEventPacket() 
+    CEventPacket()
     {
-      m_bValid = false; 
+      m_bValid = false;
       m_pPayload = NULL;
     }
 
-    CEventPacket(int datasize, const void* data) 
-    { 
-      m_bValid = false; 
+    CEventPacket(int datasize, const void* data)
+    {
+      m_bValid = false;
       m_pPayload = NULL;
       Parse(datasize, data);
     }
 
     virtual      ~CEventPacket() { if (m_pPayload) free(m_pPayload); }
     virtual bool Parse(int datasize, const void *data);
-    bool         IsValid() { return m_bValid; }
-    PacketType   Type() { return m_eType; }
-    unsigned int Size() { return m_iTotalPackets; }
-    unsigned int Sequence() { return m_iSeq; }
+    bool         IsValid() const { return m_bValid; }
+    PacketType   Type() const { return m_eType; }
+    unsigned int Size() const { return m_iTotalPackets; }
+    unsigned int Sequence() const { return m_iSeq; }
     void*        Payload() { return m_pPayload; }
-    unsigned int PayloadSize() { return m_iPayloadSize; }
+    unsigned int PayloadSize() const { return m_iPayloadSize; }
+    unsigned int ClientToken() const { return m_iClientToken; }
     void         SetPayload(unsigned int psize, void *payload)
     {
       if (m_pPayload)
@@ -214,6 +242,7 @@ namespace EVENTPACKET
     unsigned char  m_header[32];
     void*          m_pPayload;
     unsigned int   m_iPayloadSize;
+    unsigned int   m_iClientToken;
     unsigned char  m_cMajVer;
     unsigned char  m_cMinVer;
     PacketType     m_eType;

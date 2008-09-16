@@ -300,10 +300,8 @@ CApplication::CApplication(void)
   XSetProcessQuantumLength(5); //default=20msec
   XSetFileCacheSize (256*1024); //default=64kb
 #endif
-  m_bInactive = false;   // CB: SCREENSAVER PATCH
   m_bScreenSave = false;   // CB: SCREENSAVER PATCH
   m_iScreenSaveLock = 0;
-  m_dwSaverTick = timeGetTime(); // CB: SCREENSAVER PATCH
   m_dwSkinTime = 0;
   m_bInitializing = true;
   m_eForcedNextPlayer = EPC_NONE;
@@ -715,6 +713,9 @@ extern "C" void __stdcall update_emu_environ();
 
 HRESULT CApplication::Create(HWND hWnd)
 {
+  g_guiSettings.Initialize();  // Initialize default Settings
+  g_settings.Initialize(); //Initialize default AdvancedSettings
+
   g_hWnd = hWnd;
 
   HRESULT hr;
@@ -1165,9 +1166,9 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGINFO, "Checking skin version of: %s", g_guiSettings.GetString("lookandfeel.skin").c_str());
   if (!g_SkinInfo.Check(strSkinPath))
   {
-    // reset to the default skin (Project Mayhem III)
-    CLog::Log(LOGINFO, "The above skin isn't suitable - checking the version of the default: %s", "Project Mayhem III");
-    strSkinPath = strSkinBase + "Project Mayhem III";
+    // reset to the default skin (DEFAULT_SKIN)
+    CLog::Log(LOGINFO, "The above skin isn't suitable - checking the version of the default: %s", DEFAULT_SKIN);
+    strSkinPath = strSkinBase + DEFAULT_SKIN;
     if (!g_SkinInfo.Check(strSkinPath))
     {
       g_LoadErrorStr.Format("No suitable skin version found.\nWe require at least version %5.4f \n", g_SkinInfo.GetMinVersion());
@@ -1980,10 +1981,10 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   {
     // failed to load home.xml
     // fallback to default skin
-    if ( strcmpi(strSkin.c_str(), "Project Mayhem III") != 0)
+    if ( strcmpi(strSkin.c_str(), DEFAULT_SKIN) != 0)
     {
-      CLog::Log(LOGERROR, "failed to load home.xml for skin:%s, fallback to \"Project Mayhem III\" skin", strSkin.c_str());
-      g_guiSettings.SetString("lookandfeel.skin", "Project Mayhem III");
+      CLog::Log(LOGERROR, "failed to load home.xml for skin:%s, fallback to \"%s\" skin", strSkin.c_str(), DEFAULT_SKIN);
+      g_guiSettings.SetString("lookandfeel.skin", DEFAULT_SKIN);
       LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
       return ;
     }
@@ -2619,6 +2620,23 @@ bool CApplication::OnAction(const CAction &action)
 
   if ( IsPlaying())
   {
+    // OSD toggling
+    if (action.wID == ACTION_SHOW_OSD)
+    {
+      if (IsPlayingVideo() && IsPlayingFullScreenVideo())
+      {
+        CGUIWindowOSD *pOSD = (CGUIWindowOSD *)m_gWindowManager.GetWindow(WINDOW_OSD);
+        if (pOSD)
+        {
+          if (pOSD->IsDialogRunning())
+            pOSD->Close();
+          else
+            pOSD->DoModal();
+          return true;
+        }
+      }
+    }
+
     // pause : pauses current audio song
     if (action.wID == ACTION_PAUSE)
     {
@@ -3166,11 +3184,64 @@ bool CApplication::ProcessEventServer(float frameTime)
   if (!es || !es->Running())
     return false;
 
-  WORD wKeyID = es->GetButtonCode();
+  std::string joystickName;
+  bool isAxis = false;
+  float fAmount = 0.0;
+
+  WORD wKeyID = es->GetButtonCode(joystickName, isAxis, fAmount);
+
+
   if (wKeyID)
   {
-    CKey key(wKeyID);
-    return OnKey( key );
+    if (joystickName.length() > 0)
+    {
+      if (isAxis == true)
+      {
+        if (fabs(fAmount) >= 0.08)
+          m_lastAxisMap[joystickName][wKeyID] = fAmount;
+        else
+          m_lastAxisMap[joystickName].erase(wKeyID);
+      }
+
+      return ProcessJoystickEvent(joystickName, wKeyID, isAxis, fAmount);
+    }
+    else
+    {
+      CKey key;
+      if(wKeyID == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
+        key = CKey(wKeyID, (BYTE)(255*fAmount), 0, 0.0, 0.0, 0.0, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_RIGHT_ANALOG_TRIGGER)
+        key = CKey(wKeyID, 0, (BYTE)(255*fAmount), 0.0, 0.0, 0.0, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_LEFT_THUMB_STICK_LEFT)
+        key = CKey(wKeyID, 0, 0, -fAmount, 0.0, 0.0, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
+        key = CKey(wKeyID, 0, 0,  fAmount, 0.0, 0.0, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_LEFT_THUMB_STICK_UP)
+        key = CKey(wKeyID, 0, 0, 0.0,  fAmount, 0.0, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
+        key = CKey(wKeyID, 0, 0, 0.0, -fAmount, 0.0, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT)
+        key = CKey(wKeyID, 0, 0, 0.0, 0.0, -fAmount, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
+        key = CKey(wKeyID, 0, 0, 0.0, 0.0,  fAmount, 0.0, frameTime);
+      else if(wKeyID == KEY_BUTTON_RIGHT_THUMB_STICK_UP)
+        key = CKey(wKeyID, 0, 0, 0.0, 0.0, 0.0,  fAmount, frameTime);
+      else if(wKeyID == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
+        key = CKey(wKeyID, 0, 0, 0.0, 0.0, 0.0, -fAmount, frameTime);
+      else
+        key = CKey(wKeyID);
+      return OnKey(key);
+    }
+  }
+
+  if (m_lastAxisMap.size() > 0)
+  {
+    // Process all the stored axis.
+    for (map<std::string, map<int, float> >::iterator iter = m_lastAxisMap.begin(); iter != m_lastAxisMap.end(); ++iter)
+    {
+      for (map<int, float>::iterator iterAxis = (*iter).second.begin(); iterAxis != (*iter).second.end(); ++iterAxis)
+        ProcessJoystickEvent((*iter).first, (*iterAxis).first, true, (*iterAxis).second);
+    }
   }
 
   {
@@ -3186,8 +3257,60 @@ bool CApplication::ProcessEventServer(float frameTime)
       return m_gWindowManager.OnAction(action);
     }
   }
-#endif  
+#endif
   return false;
+}
+
+bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKeyID, bool isAxis, float fAmount)
+{
+#ifdef HAS_EVENT_SERVER
+  m_idleTimer.StartZero();
+
+   // Make sure to reset screen saver, mouse.
+   ResetScreenSaver();
+   if (ResetScreenSaverWindow())
+     return true;
+
+#ifdef HAS_SDL_JOYSTICK
+   g_Joystick.Reset();
+#endif
+   g_Mouse.SetInactive();
+
+   // Figure out what window we're taking the event for.
+   WORD iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
+   if (m_gWindowManager.HasModalDialog())
+       iWin = m_gWindowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
+
+   // This code is copied from the OnKey handler, it should be factored out.
+   if (iWin == WINDOW_FULLSCREEN_VIDEO &&
+       g_application.m_pPlayer &&
+       g_application.m_pPlayer->IsInMenu())
+   {
+     // If player is in some sort of menu, (ie DVDMENU) map buttons differently.
+     iWin = WINDOW_VIDEO_MENU;
+   }
+
+   bool fullRange = false;
+   CAction action;
+   action.fAmount1 = fAmount;
+
+   //if (action.fAmount1 < 0.0)
+   // wKeyID = -wKeyID;
+
+   // Translate using regular joystick translator.
+   if (g_buttonTranslator.TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis, action.wID, action.strAction, fullRange))
+   {
+     action.fRepeat = 0.0f;
+     g_audioManager.PlayActionSound(action);
+     return OnAction(action);
+   }
+   else
+   {
+     CLog::Log(LOGDEBUG, "ERROR mapping joystick action");
+   }
+#endif
+
+   return false;
 }
 
 bool CApplication::ProcessKeyboard()
@@ -3411,6 +3534,15 @@ void CApplication::Stop()
     m_bStop = true;
     CLog::Log(LOGNOTICE, "stop all");
 
+    // stop scanning before we kill the network and so on
+    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    if (musicScan)
+      musicScan->StopScanning();
+
+    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (videoScan)
+      videoScan->StopScanning();
+
     StopServices();
     //Sleep(5000);
 
@@ -3420,14 +3552,6 @@ void CApplication::Stop()
       delete m_pPlayer;
       m_pPlayer = NULL;
     }
-
-    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (musicScan && musicScan->IsDialogRunning())
-      musicScan->StopScanning();
-
-    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    if (videoScan && videoScan->IsDialogRunning())
-      videoScan->StopScanning();
 
 #ifdef HAS_FILESYSTEM
     CLog::Log(LOGNOTICE, "stop daap clients");
@@ -3922,6 +4046,11 @@ bool CApplication::IsPlayingVideo() const
   return false;
 }
 
+bool CApplication::IsPlayingFullScreenVideo() const
+{
+  return IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo();
+}
+
 void CApplication::StopPlaying()
 {
   int iWin = m_gWindowManager.GetActiveWindow();
@@ -3951,13 +4080,21 @@ void CApplication::StopPlaying()
 
         if( m_pPlayer )
         {
-          CBookmark bookmark;
-          bookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
-          bookmark.playerState = m_pPlayer->GetPlayerState();
-          bookmark.timeInSeconds = GetTime();
-          bookmark.thumbNailImage.Empty();
+          // ignore two minutes at start and either 2 minutes, or up to 5% at end (end credits)
+          double current = GetTime();
+          double total = GetTotalTime();
+          if (current > 120 && total - current > 120 && total - current > 0.05 * total)
+          {
+            CBookmark bookmark;
+            bookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
+            bookmark.playerState = m_pPlayer->GetPlayerState();
+            bookmark.timeInSeconds = current;
+            bookmark.thumbNailImage.Empty();
 
-          dbs.AddBookMarkToFile(CurrentFile(),bookmark, CBookmark::RESUME);
+            dbs.AddBookMarkToFile(CurrentFile(),bookmark, CBookmark::RESUME);
+          }
+          else
+            dbs.DeleteResumeBookMark(CurrentFile());
         }
         dbs.Close();
       }
@@ -4014,18 +4151,18 @@ void CApplication::DoRenderFullScreen()
 
 void CApplication::ResetScreenSaver()
 {
-  if (m_bInactive && !m_bScreenSave && m_iScreenSaveLock == 0)
-  {
-    m_dwSaverTick = timeGetTime(); // Start the timer going ...
-  }
+  // reset our timers
+  m_shutdownTimer.StartZero();
+
+  // screen saver timer is reset only if we're not already in screensaver mode
+  if (!m_bScreenSave && m_iScreenSaveLock == 0)
+    m_screenSaverTimer.StartZero();
 }
 
 bool CApplication::ResetScreenSaverWindow()
 {
   if (m_iScreenSaveLock == 2)
     return false;
-
-  m_bInactive = false;  // reset the inactive flag as a key has been pressed
 
   // if Screen saver is active
   if (m_bScreenSave)
@@ -4036,7 +4173,7 @@ bool CApplication::ResetScreenSaverWindow()
           g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE        &&
           g_settings.m_vecProfiles[iProfile].getLockMode() != LOCK_MODE_EVERYONE &&
          !g_guiSettings.GetString("screensaver.mode").Equals("Black")            &&
-        !(g_guiSettings.GetBool("screensaver.usemusicvisinstead")                && 
+        !(g_guiSettings.GetBool("screensaver.usemusicvisinstead")                &&
          !g_guiSettings.GetString("screensaver.mode").Equals("Black")            &&
           g_application.IsPlayingAudio())                                          )
       {
@@ -4100,53 +4237,28 @@ void CApplication::CheckScreenSaver()
   // if the screen saver window is active, then clearly we are already active
   if (m_gWindowManager.IsWindowActive(WINDOW_SCREENSAVER))
   {
-    m_bInactive = true;
     m_bScreenSave = true;
     return;
   }
 
-  if (!m_bInactive)
-  {
-    if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // are we playing a movie and is it paused?
-    {
-      m_bInactive = false;
-    }
-    else if (IsPlayingAudio()) // are we playing some music?
-    {
-      if (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
-      {
-        m_bInactive = false; // visualisation is on, so we cannot show a screensaver
-      }
-      else
-      {
-        m_bInactive = true; // music playing from GUI, we can display a screensaver
-      }
-    }
-    else
-    {
-      // we can display a screensaver
-      m_bInactive = true;
-    }
+  bool resetTimer = false;
+  if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // are we playing a movie and is it paused?
+    resetTimer = true;
 
-    // if we can display a screensaver, then start screensaver timer
-    if (m_bInactive)
-    {
-      m_dwSaverTick = timeGetTime(); // Start the timer going ...
-    }
-  }
-  else
+  if (IsPlayingAudio() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION) // are we playing some music in fullscreen vis?
+    resetTimer = true;
+
+  if (resetTimer)
   {
-    // Check we're not already in screensaver mode
-    if (!m_bScreenSave)
-    {
-      // no, then check the timer if screensaver should pop up
-      if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("screensaver.time")*60*1000L) )
-      {
-        //yes, show the screensaver
-        ActivateScreenSaver();
-      }
-    }
+    m_screenSaverTimer.StartZero();
+    return;
   }
+
+  if (m_bScreenSave) // already running the screensaver
+    return;
+
+  if ( m_screenSaverTimer.GetElapsedSeconds() > g_guiSettings.GetInt("screensaver.time") * 60 )
+    ActivateScreenSaver();
 }
 
 // activate the screensaver.
@@ -4158,8 +4270,6 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   FLOAT fFadeLevel = 0;
 
   m_bScreenSave = true;
-  m_bInactive = true;
-  m_dwSaverTick = timeGetTime();  // Save the current time for the shutdown timeout
 
   // Get Screensaver Mode
   m_screenSaverMode = g_guiSettings.GetString("screensaver.mode");
@@ -4216,74 +4326,41 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 
 void CApplication::CheckShutdown()
 {
+#ifdef HAS_XBOX_HARDWARE
   CGUIDialogMusicScan *pMusicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   CGUIDialogVideoScan *pVideoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-  CGUIWindowVideoFiles *pVideoFiles = (CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
-#ifdef HAS_XBOX_HARDWARE
-  // Note: if the the screensaver is switched on, the shutdown timeout is
-  // counted from when the screensaver activates.
-  if (!m_bInactive)
-  {
-    if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // are we playing a movie?
-    {
-      m_bInactive = false;
-    }
-    else if (IsPlayingAudio()) // are we playing some music?
-    {
-      m_bInactive = false;
-    }
+
+  // first check if we should reset the timer
+  bool resetTimer = false;
+  if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // playing a movie, and we're not paused
+    resetTimer = true;
+
+  if (IsPlayingAudio())
+    resetTimer = true;
+
 #ifdef HAS_FTP_SERVER
-    else if (m_pFileZilla && m_pFileZilla->GetNoConnections() != 0) // is FTP active ?
-    {
-      m_bInactive = false;
-    }
+  if (m_pFileZilla && m_pFileZilla->GetNoConnections() != 0) // is FTP active ?
+    resetTimer = true;
 #endif
-    else if (pMusicScan && pMusicScan->IsScanning()) // music scanning?
-    {
-      m_bInactive = false;
-    }
-    else if (pVideoScan && pVideoScan->IsScanning()) // video scanning?
-    {
-      m_bInactive = false;
-    }
-    else    // nothing doing here, so start the timer going
-    {
-      m_bInactive = true;
-    }
+  if (pMusicScan && pMusicScan->IsScanning()) // music scanning?
+    resetTimer = true;
 
-    if (m_bInactive)
-    {
-      m_dwSaverTick = timeGetTime();  // Start the timer going ...
-    }
-  }
-  else
+  if (pVideoScan && pVideoScan->IsScanning()) // video scanning?
+    resetTimer = true;
+
+  if (m_gWindowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS)) // progress dialog is onscreen
+    resetTimer = true;
+
+  if (resetTimer)
   {
-    if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("system.shutdowntime")*60*1000L) )
-    {
-      bool bShutDown = false;
-      if (m_pPlayer && m_pPlayer->IsPlaying()) // if we're playing something don't shutdown
-      {
-        m_dwSaverTick = timeGetTime();
-      }
-      else if (m_pFileZilla && m_pFileZilla->GetNoConnections() != 0) // is FTP active ?
-      {
-        m_dwSaverTick = timeGetTime();
-      }
-      else if (m_gWindowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS))
-      {
-        m_dwSaverTick = timeGetTime();  // progress dialog is on screen
-      }
-      else          // not playing
-      {
-        bShutDown = true;
-      }
-
-      if (bShutDown)
-        g_applicationMessenger.Shutdown(); // Turn off the box
-    }
+    m_shutdownTimer.StartZero();
+    return;
   }
 
-  return ;
+  if ( m_shutdownTimer.GetElapsedSeconds() > g_guiSettings.GetInt("system.shutdowntime") * 60 )
+  {
+    g_applicationMessenger.Shutdown(); // Turn off the box
+  }
 #endif
 }
 
@@ -5165,7 +5242,7 @@ bool CApplication::SwitchToFullScreen()
     return true;
   }
   // special case for switching between GUI & visualisation mode. (only if we're playing an audio song)
-  if (IsPlayingAudio() && m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION && g_guiSettings.GetString("mymusic.visualisation") != "None")
+  if (IsPlayingAudio() && m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION)
   { // then switch to visualisation
     m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
     g_TextureManager.Flush();

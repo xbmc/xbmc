@@ -1006,9 +1006,11 @@ void CDVDPlayer::HandlePlaySpeed()
     }
     else if (m_CurrentVideo.id >= 0 
           &&  m_CurrentVideo.inited == true
-          &&  m_dvdPlayerVideo.GetCurrentPts() != m_lastpts)
+          &&  m_SpeedState.lastpts  != m_dvdPlayerVideo.GetCurrentPts()
+          &&  m_SpeedState.lasttime != GetTime())
     {
-      m_lastpts = m_dvdPlayerVideo.GetCurrentPts();
+      m_SpeedState.lastpts  = m_dvdPlayerVideo.GetCurrentPts();
+      m_SpeedState.lasttime = GetTime();
       // check how much off clock video is when ff/rw:ing
       // a problem here is that seeking isn't very accurate
       // and since the clock will be resynced after seek
@@ -1019,14 +1021,14 @@ void CDVDPlayer::HandlePlaySpeed()
 
       // when seeking, give the player a headstart to make sure 
       // the time it takes to seek doesn't make a difference.
-      double iError;
-      iError = m_clock.GetClock() - m_lastpts;
-      iError = iError * GetPlaySpeed() / abs(GetPlaySpeed());
+      double error;
+      error  = m_clock.GetClock() - m_SpeedState.lastpts;
+      error *= m_playSpeed / abs(m_playSpeed);
 
-      if(iError > DVD_MSEC_TO_TIME(1000))
+      if(error > DVD_MSEC_TO_TIME(1000))
       {
         CLog::Log(LOGDEBUG, "CDVDPlayer::Process - Seeking to catch up");
-        __int64 iTime = (__int64)(GetTime() + 500.0 * GetPlaySpeed() / DVD_PLAYSPEED_NORMAL);
+        __int64 iTime = (__int64)(m_SpeedState.lasttime + 500.0 * m_playSpeed / DVD_PLAYSPEED_NORMAL);
         m_messenger.Put(new CDVDMsgPlayerSeek(iTime, (GetPlaySpeed() < 0), true, false));
       }
     }
@@ -1163,23 +1165,29 @@ void CDVDPlayer::CheckContinuity(DemuxPacket* pPacket, unsigned int source)
   /* stream wrap back */
   if( pPacket->dts < mindts )
   {
+    CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - stream wrapback detected (%d)", source);
     /* if video player is rendering a stillframe, we need to make sure */
     /* audio has finished processing it's data otherwise it will be */
     /* displayed too early */
  
-    if (m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.dts != DVD_NOPTS_VALUE)
-      SyncronizePlayers(SYNCSOURCE_VIDEO);
-    else if (m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.dts != DVD_NOPTS_VALUE)
-      SyncronizePlayers(SYNCSOURCE_AUDIO);
+    if( pPacket->dts < mindts - DVD_MSEC_TO_TIME(100) )
+    {
+      CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - resyncing due to stream wrapback (%d)", source);
+      if (m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.dts != DVD_NOPTS_VALUE)
+        SyncronizePlayers(SYNCSOURCE_VIDEO);
+      else if (m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.dts != DVD_NOPTS_VALUE)
+        SyncronizePlayers(SYNCSOURCE_AUDIO);
 
-    m_CurrentAudio.inited = false;
-    m_CurrentVideo.inited = false;
-    m_CurrentSubtitle.inited = false;
+      m_CurrentAudio.inited = false;
+      m_CurrentVideo.inited = false;
+      m_CurrentSubtitle.inited = false;
+    }
   }
 
   /* stream jump forward */
   if( pPacket->dts > maxdts + DVD_MSEC_TO_TIME(1000) )
   {
+    CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - stream forward jump detected (%d)", source);
     /* normally don't need to sync players since video player will keep playing at normal fps */
     /* after a discontinuity */
     //SyncronizePlayers(dts, pts, MSGWAIT_ALL);
@@ -2434,6 +2442,33 @@ bool CDVDPlayer::OnAction(const CAction &action)
           pStream->OnDown();
         }
         break;
+
+      case ACTION_MOUSE:
+        {
+          // check the action
+          CAction action2 = action;
+          action2.m_dwButtonCode = g_Mouse.bClick[MOUSE_LEFT_BUTTON] ? 1 : 0;
+          action2.fAmount1 = g_Mouse.GetLocation().x;
+          action2.fAmount2 = g_Mouse.GetLocation().y;
+
+          RECT rs, rd;
+          GetVideoRect(rs, rd);
+          if (action2.fAmount1 < rd.left || action2.fAmount1 > rd.right ||
+              action2.fAmount2 < rd.top || action2.fAmount2 > rd.bottom)
+            return false; // out of bounds
+          THREAD_ACTION(action2);
+          // convert to video coords...
+          CPoint pt(action2.fAmount1, action2.fAmount2);
+          pt -= CPoint(rd.left, rd.top);
+          pt.x *= (float)(rs.right - rs.left) / (rd.right - rd.left);
+          pt.y *= (float)(rs.bottom - rs.top) / (rd.bottom - rd.top);
+          pt += CPoint(rs.left, rs.top);
+          if (action2.m_dwButtonCode)
+            return pStream->OnMouseClick(pt);
+          return pStream->OnMouseMove(pt);
+        }
+        break;
+      case ACTION_SHOW_OSD:
       case ACTION_SELECT_ITEM:
         {
           THREAD_ACTION(action);

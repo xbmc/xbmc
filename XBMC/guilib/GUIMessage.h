@@ -223,11 +223,12 @@ do { \
  SendWindowMessage(msg); \
 } while(0)
 
-#include <boost/shared_ptr.hpp>
+#include "boost/shared_ptr.hpp"
 
 // forwards
 class CGUIListItem; typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
 class CFileItemList;
+class CEPG;
 class CVisualisation;
 
 /*!
@@ -239,13 +240,14 @@ class CGUIMessage
 public:
   CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1 = 0, DWORD dwParam2 = 0);
   CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CFileItemList* item);
+  CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CEPG* item);
   CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, const CGUIListItemPtr &item);
   CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CVisualisation* vis);
   CGUIMessage(const CGUIMessage& msg);
   virtual ~CGUIMessage(void);
   const CGUIMessage& operator = (const CGUIMessage& msg);
 
-  DWORD GetControlId() const ;
+  DWORD GetControlId() const;
   DWORD GetMessage() const;
   void* GetLPVOID() const;
   CGUIListItemPtr GetItem() const;

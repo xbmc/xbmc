@@ -24,6 +24,12 @@
 #define PRE_SKIN_VERSION_2_1_COMPATIBILITY 1
 // REMOVE ME WHEN WE SWITCH TO SKIN VERSION 2.1
 
+#ifdef HAS_SDL
+#define DEFAULT_SKIN "PM3.HD"
+#else
+#define DEFAULT_SKIN "Project Mayhem III"
+#endif
+
 #include "settings/VideoSettings.h"
 #include "StringUtils.h"
 #include "GUISettings.h"
@@ -86,6 +92,8 @@ class CSettings
 public:
   CSettings(void);
   virtual ~CSettings(void);
+
+  void Initialize();
 
   bool Load(bool& bXboxMediacenter, bool& bSettings);
   void Save() const;
@@ -185,7 +193,6 @@ public:
 
     bool m_bMusicLibraryHideAllItems;
     bool m_bMusicLibraryAllItemsOnBottom;
-    bool m_bMusicLibraryHideCompilationArtists;
     bool m_bMusicLibraryAlbumsSortByArtistThenYear;
     CStdString m_strMusicLibraryAlbumFormat;
     CStdString m_strMusicLibraryAlbumFormatRight;
@@ -371,7 +378,7 @@ protected:
   bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);
   void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault);
   bool SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath);
-  void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState);
+  void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState, SORT_METHOD defaultSort = SORT_METHOD_LABEL);
 
   void ConvertHomeVar(CStdString& strText);
   // functions for writing xml files

@@ -24,3 +24,14 @@ NPT_SocketAddress::ToString() const
     s += NPT_String::FromInteger(m_Port);
     return s;
 }
+
+/*----------------------------------------------------------------------
+|   NPT_SocketAddress::operator==
++---------------------------------------------------------------------*/
+bool
+NPT_SocketAddress::operator==(const NPT_SocketAddress& other) const
+{
+    return (other.GetIpAddress().AsLong() == m_IpAddress.AsLong() && 
+            other.GetPort() == m_Port);
+}
+

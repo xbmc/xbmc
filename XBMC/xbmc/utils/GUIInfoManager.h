@@ -363,6 +363,9 @@ class CDateTime;
 #define SYSTEM_TOTAL_SPACE_Y        702
 #define SYSTEM_TOTAL_SPACE_Z        703
 #define SYSTEM_GET_BOOL             704
+#define SYSTEM_OPENGL_VENDOR        707
+#define SYSTEM_OPENGL_RENDERER      708
+#define SYSTEM_OPENGL_VERSION       709
 
 #define LIBRARY_HAS_MUSIC           720
 #define LIBRARY_HAS_VIDEO           721

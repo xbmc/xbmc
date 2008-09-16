@@ -414,9 +414,19 @@ namespace VIDEO
       IMDB.SetScraperInfo(info2);
 
       // Discard all possible sample files defined by regExSample
-      if (regExSample.RegFind(CUtil::GetFileName(pItem->m_strPath)) > -1)
-        continue;
+      CStdString strFileName = CUtil::GetFileName(items[i]->m_strPath);
+      strFileName.MakeLower();
  
+      if(!strFileName.IsEmpty())
+      {
+        CLog::Log(LOGDEBUG, "Checking if file '%s' is a Sample file", strFileName.c_str());
+        if (regExSample.RegFind(strFileName) > -1)
+        {
+          CLog::Log(LOGDEBUG, "File '%s' discarded as Sample file", strFileName.c_str());
+          continue;
+        }
+      }
+
       if (info2.strContent.Equals("movies") || info2.strContent.Equals("musicvideos"))
       {
         if (m_pObserver)
@@ -716,6 +726,53 @@ namespace VIDEO
       items.Add(newItem);
     }
 
+    /*  
+    stack down any dvd folders
+    need to sort using the full path since this is a collapsed recursive listing of all subdirs
+    video_ts.ifo files should sort at the top of a dvd folder in ascending order
+
+    /foo/bar/video_ts.ifo
+    /foo/bar/vts_x_y.ifo
+    /foo/bar/vts_x_y.vob
+    */
+
+    // since we're doing this now anyway, should other items be stacked?
+    items.Sort(SORT_METHOD_FULLPATH, SORT_ORDER_ASC);
+    int x = 0;
+    while (x < items.Size())
+    {
+      if (items[x]->m_bIsFolder)
+        continue;
+
+
+      CStdString strPathX, strFileX;
+      CUtil::Split(items[x]->m_strPath, strPathX, strFileX);
+      //CLog::Log(LOGDEBUG,"%i:%s:%s", x, strPathX.c_str(), strFileX.c_str());
+
+      int y = x + 1;
+      if (strFileX.Equals("VIDEO_TS.IFO"))
+      {
+        while (y < items.Size())
+        {
+          CStdString strPathY, strFileY;
+          CUtil::Split(items[y]->m_strPath, strPathY, strFileY);
+          //CLog::Log(LOGDEBUG," %i:%s:%s", y, strPathY.c_str(), strFileY.c_str());
+
+          if (strPathY.Equals(strPathX))
+            /*
+            remove everything sorted below the video_ts.ifo file in the same path.
+            understandbly this wont stack correctly if there are other files in the the dvd folder.
+            this should be unlikely and thus is being ignored for now but we can monitor the
+            where the path changes and potentially remove the items above the video_ts.ifo file.
+            */
+            items.Remove(y); 
+          else
+            break;
+        }
+      }
+      x = y;
+    }
+
     // enumerate
     CStdStringArray expression = g_advancedSettings.m_tvshowStackRegExps;
 
@@ -810,13 +867,23 @@ namespace VIDEO
     }
   }
 
-  long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, const CVideoInfoTag &movieDetails, long idShow, bool bApplyToDir, CGUIDialogProgress* pDialog /* == NULL */)
+  long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, long idShow, bool bApplyToDir, CGUIDialogProgress* pDialog /* == NULL */)
   {
+    // ensure our database is open (this can get called via other classes)
+    if (!m_database.Open())
+    {
+      CLog::Log(LOGERROR, "%s - failed to open database", __FUNCTION__);
+      return -1;
+    }
     CLog::Log(LOGDEBUG,"Adding new item to %s:%s", content.c_str(), pItem->m_strPath.c_str());
     long lResult=-1;
     // add to all movies in the stacked set
     if (content.Equals("movies"))
     {
+      // find local trailer first
+      CStdString strTrailer = pItem->FindTrailer();
+      if (!strTrailer.IsEmpty())
+        movieDetails.m_strTrailer = strTrailer;
       m_database.SetDetailsForMovie(pItem->m_strPath, movieDetails);
     }
     else if (content.Equals("tvshows"))
@@ -903,6 +970,7 @@ namespace VIDEO
 
     if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
       FetchActorThumbs(movieDetails.m_cast);
+    m_database.Close();
     return lResult;
   }
 
@@ -1101,38 +1169,6 @@ namespace VIDEO
 
     if ( IMDB.GetDetails(url, movieDetails, pDialog) )
     {
-      if (info.strContent.Equals("movies"))
-      {
-        CStdString strFile = pItem->m_strPath;
-        if (pItem->IsStack())
-        {
-          CStdString strPath;
-          CUtil::GetParentPath(pItem->m_strPath,strPath);
-          CStackDirectory dir;
-          CStdString strPath2;
-          strPath2 = dir.GetStackedTitlePath(strFile);
-          CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
-        }
-        if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))
-        {
-          CStdString strPath, strParent;
-          CUtil::GetDirectory(strFile,strPath);
-          CUtil::GetParentPath(strPath,strParent);
-          CUtil::AddFileToFolder(strParent,CUtil::GetFileName(pItem->m_strPath),strFile);
-        }
-        CUtil::RemoveExtension(strFile);
-        strFile += "-trailer";
-        std::vector<CStdString> exts;
-        StringUtils::SplitString(g_stSettings.m_videoExtensions,"|",exts);
-        for (unsigned int i=0;i<exts.size();++i)
-        {
-          if (CFile::Exists(strFile+exts[i]))
-          {
-            movieDetails.m_strTrailer = strFile+exts[i];
-            break;
-          }
-        }
-      }
       return AddMovieAndGetThumb(pItem, info.strContent, movieDetails, -1, bUseDirNames);
     }
     return -1;

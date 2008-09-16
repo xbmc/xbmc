@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 08/19/2008-->
+<!--Date of translation: 09/06/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 15042-->
+<!--Based on english strings version 15421-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -874,8 +874,8 @@
   <string id="13005">Stäng av</string>
   <string id="13006">Menysystem</string>
   <string id="13007">Använd egen menysystem sökväg</string>
-  <string id="13008">Vid avslutning av XBMC</string>
-  <string id="13009">Gör ingenting</string>
+  <string id="13008">Standardinställning för avslut</string>
+  <string id="13009">Avsluta</string>
   <string id="13010">Viloläge</string>
   <string id="13011">Vänteläge</string>
   <string id="13100">Fladderfilter</string>
@@ -948,7 +948,7 @@
   <string id="13280">Grafik</string>
   <string id="13281">Hårdvara</string>
   <string id="13282">_</string>
-  <string id="13283">Kernelversion:</string>
+  <string id="13283">Operativsystem:</string>
   <string id="13284">CPU hastighet:</string>
   <string id="13285">Igenkänt BIOS:</string>
   <string id="13286">Grafikchip:</string>
@@ -1063,7 +1063,8 @@
   <string id="13409">Topp 250</string>
   <string id="13410">Ställ in på Last.FM</string>
   <string id="13411">Minsta fläkthastighet</string>
-  <string id="13412">RSS flöde innehåller höger-till-vänster text</string>
+  <string id="13412">- RSS flöde innehåller höger-till-vänster text</string>
+  <string id="13413">Laddar ner</string>
   <string id="13600">Apple fjärrkontroll</string>
   <string id="13601">Läge</string>
   <string id="13602">Körs alltid</string>
@@ -1474,8 +1475,8 @@
   <string id="20189">Aktivera automatisk rullning för handling &amp; recension</string>
   <string id="20190">Egen</string>
   <string id="20191">Aktivera debug-loggning</string>
-  <string id="20192">Hämta albuminformation vid skanning</string>
-  <string id="20193">Hämta artistinformation vid skanning</string>
+  <string id="20192">Hämta albuminformation under tilläggning till bibliotek</string>
+  <string id="20193">Hämta artistinformation under tilläggning till bibliotek</string>
   <string id="20194">Standard skrapa</string>
   <string id="20195">Byt skrapa</string>
   <string id="20196">Exportera musikbibliotek</string>
@@ -1768,6 +1769,13 @@
   <string id="22004">Fördröjd med: %2.3fs</string>
   <string id="22005">Förväg med: %2.3fs</string>
   <string id="22006">Undertextkompensering</string>
+  <string id="22007">OpenGL tillverkare:</string>
+  <string id="22008">OpenGL renderare:</string>
+  <string id="22009">OpenGL version:</string>
+  <string id="22010">GPU Temperatur:</string>
+  <string id="22011">CPU Temperatur:</string>
+  <string id="22012">Totalt minne</string>
+  <string id="22013">Profildata</string>
   <string id="29800">Biblioteksläge</string>
   <string id="29801">QWERTY tangentbord</string>
   <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>

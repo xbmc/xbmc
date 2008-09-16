@@ -30,11 +30,14 @@ struct SSortFileItem
   // Sort by sort field
   static bool Ascending(const CFileItemPtr &left, const CFileItemPtr &right);
   static bool Descending(const CFileItemPtr &left, const CFileItemPtr &right);
+  static bool IgnoreFoldersAscending(const CFileItemPtr &left, const CFileItemPtr &right);
+  static bool IgnoreFoldersDescending(const CFileItemPtr &left, const CFileItemPtr &right);
 
   // Fill in sort field
   static void ByLabel(CFileItemPtr &item);
   static void ByLabelNoThe(CFileItemPtr &item);
   static void ByFile(CFileItemPtr &item);
+  static void ByFullPath(CFileItemPtr &item);
   static void ByDate(CFileItemPtr &item);
   static void BySize(CFileItemPtr &item);
   static void ByDriveType(CFileItemPtr &item);
@@ -93,6 +96,7 @@ typedef enum {
   SORT_METHOD_VIDEO_RUNTIME,
   SORT_METHOD_STUDIO,
   SORT_METHOD_STUDIO_IGNORE_THE,
+  SORT_METHOD_FULLPATH,
   SORT_METHOD_UNSORTED,
   SORT_METHOD_MAX,
 } SORT_METHOD;

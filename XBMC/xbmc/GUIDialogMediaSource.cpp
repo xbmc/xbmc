@@ -59,7 +59,9 @@ CGUIDialogMediaSource::~CGUIDialogMediaSource()
 bool CGUIDialogMediaSource::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PREVIOUS_MENU)
+  {
     m_confirmed = false;
+  }
   return CGUIDialog::OnAction(action);
 }
 
@@ -80,7 +82,10 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_PATH_REMOVE)
         OnPathRemove(GetSelectedItem());
       else if (iControl == CONTROL_NAME)
+      {
         OnEditChanged(iControl, m_name);
+        UpdateButtons();
+      }
       else if (iControl == CONTROL_OK)
         OnOK();
       else if (iControl == CONTROL_CANCEL)
@@ -99,6 +104,7 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
     {
       m_confirmed = false;
       m_bRunScan = false;
+      m_bNameChanged=false;
       m_settings.parent_name = false;
       m_settings.recurse = 0;
       UpdateButtons();
@@ -237,6 +243,9 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   bool allowNetworkShares(m_type != "programs" && m_type.Left(4) != "upnp");
   VECSOURCES extraShares;
 
+  if (m_name != CUtil::GetTitleFromPath(m_paths->Get(item)->m_strPath))
+    m_bNameChanged=true;
+
   if (m_type == "music" || m_type == "upnpmusic")
   { // add the music playlist location
     CMediaSource share1;
@@ -245,7 +254,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     extraShares.push_back(share1);
 
     share1.strPath = "smb://";
-    share1.strName = "Windows Network (SMB)";
+    share1.strName = g_localizeStrings.Get(20171);
     extraShares.push_back(share1);
 
     share1.strPath = "upnp://";
@@ -270,9 +279,11 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       share2.strName = g_localizeStrings.Get(21883);
       extraShares.push_back(share2);
     }
+#ifdef _XBOX
     share1.strPath = "soundtrack://";
     share1.strName = "MS Soundtracks";
     extraShares.push_back(share1);
+#endif
     if (g_guiSettings.GetBool("network.enableinternet"))
     {
       CMediaSource share3;
@@ -310,7 +321,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     extraShares.push_back(share2);
 
     share2.strPath = "smb://";
-    share2.strName = "Windows Network (SMB)";
+    share2.strName = g_localizeStrings.Get(20171);
     extraShares.push_back(share2);
 
     share2.strPath = "hdhomerun://";
@@ -347,7 +358,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     CMediaSource share2;
 
     share2.strPath = "smb://";
-    share2.strName = "Windows Network (SMB)";
+    share2.strName = g_localizeStrings.Get(20171);
     extraShares.push_back(share2);
 
     share2.strPath = "upnp://";
@@ -376,7 +387,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   if (CGUIDialogFileBrowser::ShowAndGetSource(path, allowNetworkShares, extraShares.size()==0?NULL:&extraShares))
   {
     m_paths->Get(item)->m_strPath = path;
-    if (m_name.IsEmpty())
+    if (!m_bNameChanged || m_name.IsEmpty())
     {
       CURL url(path);
       url.GetURLWithoutUserDetails(m_name);
@@ -390,7 +401,20 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
 void CGUIDialogMediaSource::OnPath(int item)
 {
   if (item < 0 || item > m_paths->Size()) return;
+
+  if (m_name != CUtil::GetTitleFromPath(m_paths->Get(item)->m_strPath))
+    m_bNameChanged=true;
+
   CGUIDialogKeyboard::ShowAndGetInput(m_paths->Get(item)->m_strPath, g_localizeStrings.Get(1021), false);
+  CUtil::AddSlashAtEnd(m_paths->Get(item)->m_strPath);
+
+  if (!m_bNameChanged || m_name.IsEmpty())
+  {
+    CURL url(m_paths->Get(item)->m_strPath);
+    url.GetURLWithoutUserDetails(m_name);
+    CUtil::RemoveSlashAtEnd(m_name);
+    m_name = CUtil::GetTitleFromPath(m_name);
+  }
   UpdateButtons();
 }
 

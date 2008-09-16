@@ -341,12 +341,12 @@
 				<visible>container.content(tvshows)</visible>
 				<scroll>true</scroll>
 			</control>
-			<control type="label" id="24">
+			<control type="label">
 				<description>First Aired Value</description>
 				<posx>170</posx>
 				<posy>266</posy>
 				<width>550</width>
-				<label>-</label>
+				<label>$INFO[ListItem.Premiered]</label>
 				<font>font13</font>
 				<visible>container.content(tvshows)</visible>
 				<scroll>true</scroll>
@@ -488,7 +488,7 @@
 				<visible>container.content(episodes)</visible>
 			</control>
 			<control type="label" id="1">
-				<description>Year</description>
+				<description>First Aired</description>
 				<posx>200</posx>
 				<posy>265</posy>
 				<width>90</width>
@@ -564,12 +564,12 @@
 				<visible>container.content(episodes)</visible>
 				<scroll>true</scroll>
 			</control>
-			<control type="label" id="24">
-				<description>Year value</description>
+			<control type="label">
+				<description>First Aired value</description>
 				<posx>300</posx>
 				<posy>265</posy>
 				<width>375</width>
-				<label>-</label>
+				<label>$INFO[ListItem.Premiered]</label>
 				<font>font12</font>
 				<visible>container.content(episodes)</visible>
 				<scroll>true</scroll>

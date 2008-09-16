@@ -73,6 +73,9 @@ public:
     }
     NPT_String ToString() const;
 
+    // operators
+    bool operator==(const NPT_SocketAddress& other) const;
+
 private:
     // members
     NPT_IpAddress m_IpAddress;

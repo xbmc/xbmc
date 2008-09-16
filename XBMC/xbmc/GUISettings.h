@@ -119,6 +119,10 @@
 #define BUTTON_CONTROL_PATH_INPUT  12
 #define SEPARATOR_CONTROL          13
 
+#define RESUME_NO  0
+#define RESUME_YES 1
+#define RESUME_ASK 2
+
 #define REPLAY_GAIN_NONE 0
 #define REPLAY_GAIN_ALBUM 1
 #define REPLAY_GAIN_TRACK 2
@@ -311,6 +315,8 @@ class CGUISettings
 public:
   CGUISettings();
   ~CGUISettings();
+
+  void Initialize();
 
   void AddGroup(DWORD dwGroupID, DWORD dwLabelID);
   void AddCategory(DWORD dwGroupID, const char *strCategory, DWORD dwLabelID);

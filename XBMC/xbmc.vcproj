@@ -827,6 +827,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\utils\Archive.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\utils\AsyncFileCopy.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\AsyncFileCopy.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\AutoPtrHandle.cpp">
 				</File>
 				<File

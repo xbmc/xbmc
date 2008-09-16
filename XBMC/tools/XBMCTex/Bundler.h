@@ -1,5 +1,11 @@
 #pragma once
 
+#include <cstdlib>
+#include <ctype.h>
+#include <cstdio>
+#include <list>
+#include "xbox.h"
+
 class CBundler
 {
 	XPR_FILE_HEADER XPRHeader;
@@ -16,7 +22,7 @@ class CBundler
 	DWORD DataSize;
 
 public:
-	CBundler() {}
+	CBundler() { Data = NULL; }
 	~CBundler() {}
 
 	bool StartBundle();

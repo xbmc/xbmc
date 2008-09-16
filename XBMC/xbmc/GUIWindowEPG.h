@@ -68,6 +68,6 @@ protected:
   CTVDatabase m_database;
 
   VECFILEITEMS* m_channels; // current list of channels in PVRManager
-  EPGData* m_gridData; // current working set of guide data in PVRManager
+  PVR::EPGData* m_gridData; // current working set of guide data in PVRManager
   CGUIEPGGridContainer* m_guideGrid;
 };

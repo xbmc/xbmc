@@ -145,7 +145,7 @@ private:
   bool  closeFinalTag;
 
   void encodeblock( unsigned char in[3], unsigned char out[4], int len );
-  CStdString encodeFileToBase64( CStdString inFilename, int linesize );
+  CStdString encodeFileToBase64(const CStdString &inFilename, int linesize );
   void decodeblock( unsigned char in[4], unsigned char out[3] );
   bool decodeBase64ToFile( const CStdString &inString, const CStdString &outfilename, bool append = false );
   __int64 fileSize(const CStdString &filename);

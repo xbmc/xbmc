@@ -46,6 +46,7 @@
 #include "URL.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -1287,6 +1288,28 @@ public:
     PLT_DeviceHostReference m_Device;
 };
 
+class CMediaBrowser : public PLT_SyncMediaBrowser
+{
+public:
+    CMediaBrowser(PLT_CtrlPointReference& ctrlPoint)
+      : PLT_SyncMediaBrowser(ctrlPoint, true)
+    {}
+
+    virtual void OnMSAddedRemoved(PLT_DeviceDataReference& device, int added)
+    {
+      PLT_SyncMediaBrowser::OnMSAddedRemoved(device, added);
+      CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
+      message.SetStringParam("upnp://");
+      m_gWindowManager.SendThreadMessage(message);
+    }
+    virtual void OnMSStateVariablesChanged(PLT_Service* service, NPT_List<PLT_StateVariable*>* vars)
+    {
+      /* this could be used to find changes in folders */
+      PLT_SyncMediaBrowser::OnMSStateVariablesChanged(service, vars);
+    }
+};
+
+
 /*----------------------------------------------------------------------
 |   CUPnP::CUPnP
 +---------------------------------------------------------------------*/
@@ -1373,7 +1396,7 @@ CUPnP::StartClient()
     m_UPnP->AddCtrlPoint(m_CtrlPointHolder->m_CtrlPoint);
 
     // start browser
-    m_MediaBrowser = new PLT_SyncMediaBrowser(m_CtrlPointHolder->m_CtrlPoint, true);
+    m_MediaBrowser = new CMediaBrowser(m_CtrlPointHolder->m_CtrlPoint);
 
 #ifdef _XBOX
     // Issue a search request on the every 6 seconds, both on broadcast and multicast
@@ -1428,10 +1451,10 @@ CUPnP::StartServer()
     // c0diq: For the XBox260 to discover XBMC, the ModelName must stay "Windows Media Connect"
     //m_ServerHolder->m_Device->m_ModelName = "XBMC";
     m_ServerHolder->m_Device->m_ModelNumber = "2.0";
-    m_ServerHolder->m_Device->m_ModelDescription = "Xbox Media Center - Media Server";
-    m_ServerHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";    
+    m_ServerHolder->m_Device->m_ModelDescription = "XBMC Media Center - Media Server";
+    m_ServerHolder->m_Device->m_ModelURL = "http://www.xbmc.org/";
     m_ServerHolder->m_Device->m_Manufacturer = "Team XBMC";
-    m_ServerHolder->m_Device->m_ManufacturerURL = "http://www.xboxmediacenter.com/";
+    m_ServerHolder->m_Device->m_ManufacturerURL = "http://www.xbmc.org/";
 
 #ifdef _XBOX
     // since the xbox doesn't support multicast
@@ -1497,10 +1520,10 @@ void CUPnP::StartRenderer()
     m_RendererHolder->m_Device->m_PresentationURL = NPT_HttpUrl(ip, atoi(g_guiSettings.GetString("servers.webserverport")), "/").ToString();
     m_RendererHolder->m_Device->m_ModelName = "XBMC";
     m_RendererHolder->m_Device->m_ModelNumber = "2.0";
-    m_RendererHolder->m_Device->m_ModelDescription = "Xbox Media Center - Media Renderer";
-    m_RendererHolder->m_Device->m_ModelURL = "http://www.xboxmediacenter.com/";    
+    m_RendererHolder->m_Device->m_ModelDescription = "XBMC Media Center - Media Renderer";
+    m_RendererHolder->m_Device->m_ModelURL = "http://www.xbmc.org/";    
     m_RendererHolder->m_Device->m_Manufacturer = "Team XBMC";
-    m_RendererHolder->m_Device->m_ManufacturerURL = "http://www.xboxmediacenter.com/";
+    m_RendererHolder->m_Device->m_ManufacturerURL = "http://www.xbmc.org/";
 
 #ifdef _XBOX
     m_RendererHolder->m_Device->SetBroadcast(broadcast);

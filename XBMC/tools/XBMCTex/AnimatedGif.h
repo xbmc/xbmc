@@ -31,11 +31,19 @@
 //
 // ****************************************************************************
 
-using namespace std;
+#ifdef _LINUX
+#include "PlatformDefs.h"
+#else
+#include <windows.h>
+#endif
+
+#include <vector>
+#include <cstdio>
 
 #pragma pack(1)
 
 struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color
+#undef ALIGN
 #define ALIGN sizeof(int)							  ///< Windows GDI expects all int-aligned
 
 /*!
@@ -142,7 +150,7 @@ public:
 	int							FrameWidth, FrameHeight;	///< Dimensions of ImageSet in pixels.
 	int							nLoops;										// Number of Loops (0 = infinite)
 																						
-	vector<CAnimatedGif*>	m_vecimg;								///< Images' Vector.
+  std::vector<CAnimatedGif*>	m_vecimg;								///< Images' Vector.
 
 	void						AddImage (CAnimatedGif*);			///< Append new image to vector (push_back)
 

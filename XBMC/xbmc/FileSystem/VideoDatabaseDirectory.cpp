@@ -57,13 +57,8 @@ bool CVideoDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
     if (item->m_bIsFolder && !item->HasThumbnail())
     {
       CStdString strImage = GetIcon(item->m_strPath);
-      if (!strImage.IsEmpty() && g_TextureManager.Load(strImage))
-      {
+      if (!strImage.IsEmpty() && g_TextureManager.HasTexture(strImage))
         item->SetThumbnailImage(strImage);
-        // NOTE: Ideally we'd release the texture resource here, but we can't reliably do that without first
-        //       requesting all the texture images and then asking for a release.
-        //       The better fix is a g_TextureManager.CanLoad(strImage) or something similar.
-      }
     }
   }
 
@@ -291,3 +286,4 @@ bool CVideoDatabaseDirectory::CanCache(const CStdString& strPath)
     return false;
   return pNode->CanCache();
 }
+

@@ -63,6 +63,10 @@ extern CStdString g_LoadErrorStr;
 
 CSettings::CSettings(void)
 {
+}
+
+void CSettings::Initialize()
+{
   for (int i = HDTV_1080i; i <= PAL60_16x9; i++)
   {
     g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
@@ -181,8 +185,8 @@ CSettings::CSettings(void)
 
   // foo_[s01]_[e01]
   g_advancedSettings.m_tvshowStackRegExps.push_back("\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$");
-  // foo.1x09*
-  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\._ \\[-]([0-9]+)x([0-9]+)([^\\\\/]*)$");
+  // foo.1x09* or just /1x09*
+  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\\\/\\._ \\[-]([0-9]+)x([0-9]+)([^\\\\/]*)$");
   // foo.s01.e01, foo.s01_e01, S01E02 foo
   g_advancedSettings.m_tvshowStackRegExps.push_back("[Ss]([0-9]+)[\\.-]?[Ee]([0-9]+)([^\\\\/]*)$");
   // foo.103*
@@ -206,7 +210,6 @@ CSettings::CSettings(void)
 
   g_advancedSettings.m_bMusicLibraryHideAllItems = false;
   g_advancedSettings.m_bMusicLibraryAllItemsOnBottom = false;
-  g_advancedSettings.m_bMusicLibraryHideCompilationArtists = false;
   g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear = false;
   g_advancedSettings.m_strMusicLibraryAlbumFormat = "";
   g_advancedSettings.m_strMusicLibraryAlbumFormatRight = "";
@@ -218,7 +221,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_bVideoLibraryAllItemsOnBottom = false;
   g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems = false;
   g_advancedSettings.m_bVideoLibraryHideEmptySeries = false;
-  g_advancedSettings.m_bVideoLibraryCleanOnUpdate = true;
+  g_advancedSettings.m_bVideoLibraryCleanOnUpdate = false;
 
   g_advancedSettings.m_bUseEvilB = true;
 
@@ -444,6 +447,13 @@ VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
       VECSOURCES shares;
       g_mediaManager.GetLocalDrives(shares, true);  // true to include Q
       m_fileSources.insert(m_fileSources.end(),shares.begin(),shares.end());
+      
+      CMediaSource source;
+      source.strName = g_localizeStrings.Get(22013);
+      source.m_ignore = true;
+      source.strPath = "P:\\";
+      source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+      m_fileSources.push_back(source);
     }
 
     return &g_settings.m_fileSources;
@@ -732,12 +742,16 @@ bool CSettings::GetFloat(const TiXmlElement* pRootElement, const char *tagName, 
   return false;
 }
 
-void CSettings::GetViewState(const TiXmlElement *pRootElement, const CStdString &strTagName, CViewState &viewState)
+void CSettings::GetViewState(const TiXmlElement *pRootElement, const CStdString &strTagName, CViewState &viewState, SORT_METHOD defaultSort)
 {
   const TiXmlElement* pNode = pRootElement->FirstChildElement(strTagName);
-  if (!pNode) return;
+  if (!pNode)
+  {
+    viewState.m_sortMethod = defaultSort;
+    return;
+  }
   GetInteger(pNode, "viewmode", viewState.m_viewMode, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX);
-  GetInteger(pNode, "sortmethod", (int&)viewState.m_sortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX);
+  GetInteger(pNode, "sortmethod", (int&)viewState.m_sortMethod, defaultSort, SORT_METHOD_NONE, SORT_METHOD_MAX);
   GetInteger(pNode, "sortorder", (int&)viewState.m_sortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
 }
 
@@ -964,7 +978,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetViewState(pElement, "videonavyears", g_stSettings.m_viewStateVideoNavYears);
     GetViewState(pElement, "videonavgenres", g_stSettings.m_viewStateVideoNavGenres);
     GetViewState(pElement, "videonavtitles", g_stSettings.m_viewStateVideoNavTitles);
-    GetViewState(pElement, "videonavepisodes", g_stSettings.m_viewStateVideoNavEpisodes);
+    GetViewState(pElement, "videonavepisodes", g_stSettings.m_viewStateVideoNavEpisodes, SORT_METHOD_EPISODE);
     GetViewState(pElement, "videonavtvshows", g_stSettings.m_viewStateVideoNavTvShows);
     GetViewState(pElement, "videonavseasons", g_stSettings.m_viewStateVideoNavSeasons);
     GetViewState(pElement, "videonavmusicvideos", g_stSettings.m_viewStateVideoNavMusicVideos);
@@ -1096,7 +1110,6 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "hideallitems", g_advancedSettings.m_bMusicLibraryHideAllItems);
     XMLUtils::GetBoolean(pElement, "prioritiseapetags", g_advancedSettings.m_prioritiseAPEv2tags);
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", g_advancedSettings.m_bMusicLibraryAllItemsOnBottom);
-    XMLUtils::GetBoolean(pElement, "hidecompilationartists", g_advancedSettings.m_bMusicLibraryHideCompilationArtists);
     XMLUtils::GetBoolean(pElement, "albumssortbyartistthenyear", g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear);
     GetString(pElement, "albumformat", g_advancedSettings.m_strMusicLibraryAlbumFormat);
     GetString(pElement, "albumformatright", g_advancedSettings.m_strMusicLibraryAlbumFormatRight);

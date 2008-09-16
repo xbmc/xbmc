@@ -180,6 +180,10 @@ void CSettingsGroup::GetCategories(vecSettingsCategory &vecCategories)
 // Settings are case sensitive
 CGUISettings::CGUISettings(void)
 {
+}
+
+void CGUISettings::Initialize()
+{
   ZeroMemory(&m_replayGain, sizeof(ReplayGainSettings));
 
   // Pictures settings
@@ -243,15 +247,16 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(3,"musiclibrary",14022);
   AddBool(1, "musiclibrary.enabled", 418, true);
-  AddSeparator(2,"musiclibrary.sep1");
-  AddBool(3,"musiclibrary.autoalbuminfo", 20192, false);
-  AddBool(4,"musiclibrary.autoartistinfo", 20193, false);
-  AddString(5, "musiclibrary.defaultscraper", 20194, "Allmusic", SPIN_CONTROL_TEXT);
-  AddBool(6, "musiclibrary.updateonstartup", 22000, false);
-  AddSeparator(7,"musiclibrary.sep2");
-  AddString(8, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
-  AddString(9, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
-  AddString(10, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
+  AddBool(2, "musiclibrary.albumartistsonly", 13414, false);
+  AddSeparator(3,"musiclibrary.sep1");
+  AddBool(4,"musiclibrary.autoalbuminfo", 20192, false);
+  AddBool(5,"musiclibrary.autoartistinfo", 20193, false);
+  AddString(6, "musiclibrary.defaultscraper", 20194, "Allmusic", SPIN_CONTROL_TEXT);
+  AddBool(7, "musiclibrary.updateonstartup", 22000, false);
+  AddSeparator(8,"musiclibrary.sep2");
+  AddString(9, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
+  AddString(10, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
+  AddString(11, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "musicplayer", 16003);
   AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
@@ -395,7 +400,7 @@ CGUISettings::CGUISettings(void)
   AddGroup(5, 3);
   AddCategory(5, "myvideos", 16000);
   AddBool(1, "myvideos.treatstackasfile", 20051, true);
-  AddBool(2, "myvideos.autoresume",12017, false);
+  AddInt(2, "myvideos.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
   AddBool(3, "myvideos.cleanfilenames", 20418, false);
   AddSeparator(4, "myvideos.sep1");
   AddInt(5, "myvideos.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
@@ -541,7 +546,7 @@ CGUISettings::CGUISettings(void)
   // appearance settings
   AddGroup(7, 480);
   AddCategory(7,"lookandfeel", 14037);
-  AddString(1, "lookandfeel.skin",166,"Project Mayhem III", SPIN_CONTROL_TEXT);
+  AddString(1, "lookandfeel.skin",166,DEFAULT_SKIN, SPIN_CONTROL_TEXT);
   AddString(2, "lookandfeel.skintheme",15111,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddString(3, "lookandfeel.skincolors",14078, "SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddString(4, "lookandfeel.font",13303,"Default", SPIN_CONTROL_TEXT);

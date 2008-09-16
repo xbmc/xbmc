@@ -98,7 +98,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if (strProtocol.Left(3) == "mem") return new CMemUnitDirectory();
 #endif
 
-  if( g_network.IsAvailable() )
+  if( g_network.IsAvailable(true) )
   {
     if (strProtocol == "shout") return new CShoutcastDirectory();
     if (strProtocol == "lastfm") return new CLastFMDirectory();

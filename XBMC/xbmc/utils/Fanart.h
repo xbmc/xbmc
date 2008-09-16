@@ -124,6 +124,7 @@ private:
     CStdString strImage;
     CStdString strResolution;
     CStdString strColors;
+    CStdString strPreview;
   };
 
   ///

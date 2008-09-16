@@ -123,6 +123,7 @@ public:
   bool IsPaused() const;
   bool IsPlayingAudio() const ;
   bool IsPlayingVideo() const ;
+  bool IsPlayingFullScreenVideo() const ;
   bool IsStartingPlayback() const { return m_bPlaybackStarting; }
   bool OnKey(CKey& key);
   bool OnAction(const CAction &action);
@@ -196,10 +197,9 @@ public:
 protected:
   friend class CApplicationMessenger;
   // screensaver
-  bool m_bInactive;
   bool m_bScreenSave;
   CStdString m_screenSaverMode;
-  DWORD m_dwSaverTick;
+
   D3DGAMMARAMP m_OldRamp;
 
   // timer information
@@ -208,6 +208,8 @@ protected:
   CStopWatch m_frameTime;
   CStopWatch m_navigationTimer;
   CStopWatch m_slowTimer;
+  CStopWatch m_screenSaverTimer;
+  CStopWatch m_shutdownTimer;
 
   CFileItemPtr m_itemCurrentFile;
   CFileItemList* m_currentStack;
@@ -240,12 +242,18 @@ protected:
   bool ProcessRemote(float frameTime);
   bool ProcessGamepad(float frameTime);
   bool ProcessEventServer(float frameTime);
+
+  bool ProcessJoystickEvent(const std::string& joystickName, int button, bool isAxis, float fAmount);
+
   void CheckForDebugButtonCombo();
   void StartFtpEmergencyRecoveryMode();
   float NavigationIdleTime();
   void CheckForTitleChange();
 
   void SaveCurrentFileSettings();
+#ifdef HAS_EVENT_SERVER
+  std::map<std::string, std::map<int, float> > m_lastAxisMap;
+#endif
 };
 
 extern CApplication g_application;

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mika Pirinen (1/2007->)-->
-<!--Date of translation: 14/8/2008  kommentit: kottis(at)gmail.com -->
-<!--Finnish strings based on English strings version 14870-->
+<!--Date of translation: 26/8/2008  kommentit: kottis(at)gmail.com -->
+<!--Finnish strings based on English strings version 15195-->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -719,7 +719,7 @@
   <string id="1204">Oletussalasana</string>
   
   <string id="1207">WINS-palvelin</string>
-  <string id="1208">Mounttaa SMB jaot</string>
+  <string id="1208">Mounttaa SMB-jaot</string>
 
   <string id="1210">Poista</string>
   <string id="1211">Musiikki</string>
@@ -1038,7 +1038,7 @@
   <string id="13280">Näyttö</string>
   <string id="13281">Laitteisto</string>
   <string id="13282">_</string>
-  <string id="13283">Kernel versio:</string>
+  <string id="13283">Käyttöjärjestelmä:</string>
   <string id="13284">Suorittimen nopeus:</string>
   <string id="13285">BIOS:</string>
   <string id="13286">Videoenkooderi:</string>
@@ -1144,7 +1144,7 @@
   <string id="13400">Häivytä albumin kappaleet toisiinsa</string>
   <string id="13401">Valitse %s</string>
   <string id="13402">Näytä kappaleen sijainti</string>
-  <string id="13403">Poista oletus-sijainti</string>
+  <string id="13403">Poista oletussijainti</string>
   <string id="13404">Jatka</string>
   <string id="13405">Pienoiskuvake</string>
   <string id="13406">Kuvan ominaisuudet</string>
@@ -1207,7 +1207,7 @@
   <string id="14036">Palvelimet</string>
   <string id="14037">Ulkoasu</string>
   <string id="14038">Verkkoasetuksia muutettu</string>
-  <string id="14039">XBMC tarvitsee käynnistää uudelleen, jotta uudet</string>
+  <string id="14039">XBMC täytyy käynnistää uudelleen, jotta uudet</string>
   <string id="14040">asetukset tulevat käyttöön. Käynnistetäänkö uudelleen nyt?</string>
   <string id="14041">Jälkikäsittely</string>
   <string id="14042"></string>
@@ -1266,7 +1266,7 @@
   <string id="15013"></string>
   <string id="15014"></string>
   <string id="15015"></string>
-  <string id="15016"></string>
+  <string id="15016">Pelit</string>
   <string id="15017"></string>
   <string id="15018"></string>
   <string id="15019">Lisää</string>
@@ -1302,7 +1302,7 @@
   <string id="15049"></string>
   <string id="15050"></string>
   <string id="15051"></string>
-  <string id="15052"></string>
+  <string id="15052">Salasana</string>
   <string id="15053"></string>
   <string id="15054"></string>
   <string id="15055"></string>
@@ -1456,7 +1456,7 @@
   <string id="16205">Poisto epäonnistui</string>
   <string id="16206">Vähintään yhden tiedoston poisto epäonnistui</string>
 
- <string id="16300">Videon skaalaus menetelmä</string>
+  <string id="16300">Videon skaalausmenetelmä</string>
   <string id="16301">Lähin viereinen</string>
   <string id="16302">Bilineaarinen</string>
   <string id="16303">Bicubic</string>
@@ -1476,7 +1476,7 @@
   <string id="20003">Trainer kansio</string>
   <string id="20004">Kuvakaappaus kansio</string>
   <string id="20005">Nauhoituskansio</string>
-  <string id="20006">Soittolista kansio</string>
+  <string id="20006">Soittolistakansio</string>
   <string id="20007">Nauhoitukset</string>
   <string id="20008">Kuvakaappaukset</string>
   <string id="20009">Käytä XBMC:a</string>
@@ -1545,7 +1545,7 @@
   <string id="20079">Animoinnit käytössä</string>
   <string id="20080">Älä näytä RSS-tietoja musiikin aikana</string>
   <string id="20081">Pikakäynnistys painikkeet käytössä</string>
-  <string id="20082">Näytä XLink Kai-tiedot</string>
+  <string id="20082">Näytä ohjelmat päävalikossa</string>
   <string id="20083">Näytä Musiikki-tiedot</string>
   <string id="20084">Näytä Säätila-tiedot</string>
   <string id="20085">Näytä Järjestelmän tiedot</string>
@@ -1573,7 +1573,7 @@
   <string id="20107">Omat(lukittu)</string>
   <string id="20108">Päähakemisto</string>
   <string id="20109">Skinin zoomaus</string>
-  <string id="20110">UPnP-asiakas</string>
+  <string id="20110">UPnP-asetukset</string>
   <string id="20111">Automaattinen käynnistys</string>
   <string id="20112">Viimeksi kirjautunut: %s</string>
   <string id="20113">Ei aiemmin kirjautunut</string>
@@ -1647,15 +1647,15 @@
   <string id="20182">Välilyönti</string>
   <string id="20183">Päivitä skini</string>
   <string id="20184">Käännä kuvat EXIF-tietojen mukaisesti</string>
-  <string id="20185">Käytä juliste näkymää TV-ohjelmilla</string>
+  <string id="20185">Käytä julistenäkymää TV-ohjelmilla</string>
   <string id="20186">Odota hetki</string>
   <string id="20187">Varmuuskopioidaan EEPROM:in tiedot</string>
   <string id="20188">Varmuuskopioidaan Bios:in tiedot</string>
   <string id="20189">Juonen ja esittelyn automaattinen vieritys käytössä</string>
   <string id="20190">Mukautus</string>
   <string id="20191">Suorituslokin kirjaus käytössä</string>
-  <string id="20192">Nouda esittäjän tiedot haettaessa</string>
-  <string id="20193">Nouda albumin tiedot haettaessa</string>
+  <string id="20192">Nouda albumin tiedot kirjastoon lisättäessä</string>
+  <string id="20193">Nouda esittäjän tiedot kirjastoon lisättäessä</string>
   <string id="20194">Oletus hakupaikka</string>
   <string id="20195">Vaihda hakupaikkaa</string>
   <string id="20196">Vie musiikkikirjasto</string>
@@ -1852,7 +1852,7 @@
   <string id="21396">Luku</string> 
   <string id="21397">Pixel Shader V2 (korkealaatu)</string>
   <string id="21398">Käynnistyessä soittolista käytössä</string>  
-  <string id="21399">Tween animointi käytössä</string>
+  <string id="21399">Tween-animointi käytössä</string>
   <string id="21400">sisältää</string>
   <string id="21401">ei sisällä</string>
   <string id="21402">on</string>
@@ -1936,7 +1936,7 @@
   <string id="21868">Kuvan tekijä</string>
   <string id="21869">Kuvaaja</string>
   <string id="21870">Lähde</string>
-  <string id="21871">Tekijänoikeus huomautus</string>
+  <string id="21871">Tekijänoikeushuomautus</string>
   <string id="21872">Kohteen nimi</string>
   <string id="21873">Kaupunki</string>
   <string id="21874">Osavaltio</string>
@@ -1976,10 +1976,18 @@
   <string id="22004">Viivästetty: %2.3fs</string>
   <string id="22005">Aiennettu: %2.3fs</string>
   <string id="22006">Tekstityksen etäisyys</string>
+  <string id="22007">OpenGL valmistaja:</string>
+  <string id="22008">OpenGL renderoija:</string>
+  <string id="22009">OpenGL versio:</string>
+  <string id="22010">GPU lämpötila:</string>
+  <string id="22011">CPU lämpötila:</string>
+  <string id="22012">Kokonaismuisti</string>
+
+  <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code --> 
+  <string id="29800">Kirjastomuoto</string> 
+  <string id="29801">QWERTY-näppäimistö</string> 
 
   <string id="29999">Näytön välkynnän poisto</string>
-
-  <!-- strings 30000 thru 31000 reserved for plugin settings -->
-  <!-- strings 31000 thru 31999 reserved for skins -->
-
+  <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
+  
 </strings>

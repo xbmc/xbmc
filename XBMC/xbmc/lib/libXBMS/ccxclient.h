@@ -21,7 +21,7 @@
  *
  *  ----------------------------------------------------------------------
  *
- *  This code has been integrated into XBMC Media Clayer.  
+ *  This code has been integrated into XBMC Media Center.  
  *  As such it can me copied, redistributed and modified under
  *  the same conditions as the XBMC itself.
  *

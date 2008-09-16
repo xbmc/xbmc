@@ -290,14 +290,12 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE && IsActive())
       {
-        int iItem = m_viewControl.GetSelectedItem();
         if (message.GetStringParam().size())
         {
           m_vecItems->m_strPath = message.GetStringParam();
           SetHistoryForPath(m_vecItems->m_strPath);
         }
         Update(m_vecItems->m_strPath);
-        m_viewControl.SetSelectedItem(iItem);        
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_ITEM && message.GetItem())
       {
@@ -310,6 +308,10 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           CUtil::GetDirectory(newItem->m_strPath, items.m_strPath);
           items.RemoveDiscCache();
         }
+      }
+      else if (message.GetParam1()==GUI_MSG_UPDATE_PATH && message.GetStringParam() == m_vecItems->m_strPath && IsActive())
+      {
+        Update(m_vecItems->m_strPath);
       }
       else
         return CGUIWindow::OnMessage(message);
@@ -1124,15 +1126,8 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
       pMenu->AddButton((*it).second);
 
     // position it correctly
-    float posX = 200;
-    float posY = 100;
-    const CGUIControl *pList = GetControl(CONTROL_VIEW_START);
-    if (pList)
-    {
-      posX = pList->GetXPosition() + pList->GetWidth() / 2;
-      posY = pList->GetYPosition() + pList->GetHeight() / 2;
-    }
-    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+    CPoint pos = GetContextPosition();
+    pMenu->SetPosition(pos.x - pMenu->GetWidth() / 2, pos.y - pMenu->GetHeight() / 2);
     pMenu->DoModal();
 
     // translate our button press
@@ -1273,3 +1268,14 @@ bool CGUIMediaWindow::WaitForNetwork() const
   return true;
 }
 
+CPoint CGUIMediaWindow::GetContextPosition() const
+{
+  CPoint pos(200, 100);
+  const CGUIControl *pList = GetControl(CONTROL_VIEW_START);
+  if (pList)
+  {
+    pos.x = pList->GetXPosition() + pList->GetWidth() / 2;
+    pos.y = pList->GetYPosition() + pList->GetHeight() / 2;
+  }
+  return pos;
+}

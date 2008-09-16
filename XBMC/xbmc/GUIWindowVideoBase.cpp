@@ -311,12 +311,14 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const SScraperInfo& info)
     else
       item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
   }
-  ShowIMDB(&item, info);
-  if (!info.strContent.Equals("plugin") && 
-     (m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_FILES || 
+  bool modified = ShowIMDB(&item, info);
+  if (modified && !info.strContent.Equals("plugin") &&
+     (m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_FILES ||
       m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_NAV)) // since we can be called from the music library we need this check
   {
+    int itemNumber = m_viewControl.GetSelectedItem();
     Update(m_vecItems->m_strPath);
+    m_viewControl.SetSelectedItem(itemNumber);
   }
 }
 
@@ -341,7 +343,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const SScraperInfo& info)
 //     and show the information.
 // 6.  Check for a refresh, and if so, go to 3.
 
-void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
+bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
 {
   /*
   CLog::Log(LOGDEBUG,"CGUIWindowVideoBase::ShowIMDB");
@@ -359,9 +361,9 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   IMDB.SetScraperInfo(info2);
   SScraperInfo info(info2); // use this as nfo might change it..
 
-  if (!pDlgProgress) return ;
-  if (!pDlgSelect) return ;
-  if (!pDlgInfo) return ;
+  if (!pDlgProgress) return false;
+  if (!pDlgSelect) return false;
+  if (!pDlgInfo) return false;
   CUtil::ClearCache();
 
   // 1.  Check for already downloaded information, and if we have it, display our dialog
@@ -392,6 +394,18 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     }
     else
     {
+      // !! WORKAROUND !!
+      // As we cannot add an episode to a non-existing tvshow entry, we have to check the parent directory
+      // to see if it`s already in our video database. If it's not yet part of the database we will exit here.
+      // (Ticket #4764)
+      CStdString strParentDirectory;
+      CUtil::GetParentPath(item->m_strPath,strParentDirectory);
+      if (m_database.GetTvShowId(strParentDirectory) < 0)
+      {
+    	CLog::Log(LOGERROR,"%s: could not add episode [%s]. tvshow does not exist yet..", __FUNCTION__, item->m_strPath.c_str());
+	return false;
+      }
+
       long lEpisodeHint=-1;
       if (item->HasVideoInfoTag())
         lEpisodeHint = item->GetVideoInfoTag()->m_iEpisode;
@@ -414,7 +428,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   if (info.strContent.Equals("plugin"))
   {
     if (!item->HasVideoInfoTag()) 
-      return;
+      return false;
     movieDetails = *item->GetVideoInfoTag();
 
     bHasInfo = true;
@@ -429,21 +443,19 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     *item->GetVideoInfoTag() = movieDetails;
     pDlgInfo->SetMovie(item);
     pDlgInfo->DoModal();
-    if (!info.strContent.Equals("plugin"))
-      item->SetThumbnailImage(pDlgInfo->GetThumbnail());
-    if ( !pDlgInfo->NeedRefresh() ) return ;
+    if ( !pDlgInfo->NeedRefresh() ) return false;
   }
   
   // quietly return if Internet lookups are disabled
-  if (!g_guiSettings.GetBool("network.enableinternet")) return ;
+  if (!g_guiSettings.GetBool("network.enableinternet")) return false;
   if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser)
-    return;
+    return false;
 
   CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (pDialog && pDialog->IsScanning())
   {
     CGUIDialogOK::ShowAndGetInput(13346,14057,-1,-1);
-    return;
+    return false;
   }
 
   CScraperUrl scrUrl;
@@ -463,13 +475,14 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   if (result == CVideoInfoScanner::URL_NFO)
     IMDB.SetScraperInfo(info);
 
-  CStdString movieName = item->GetLabel();
-  if (item->m_bIsFolder) // always search on tvshow folder name on refresh
-  {
-    movieName = item->m_strPath;
-    CUtil::RemoveSlashAtEnd(movieName);
-    movieName = CUtil::GetFileName(movieName);
-  }
+  CStdString movieName;
+  if (item->m_bIsFolder || settings.parent_name)
+    movieName = CUtil::GetMovieName(item);
+  else
+    movieName = CUtil::GetFileName(item->m_strPath);
+
+  CUtil::RemoveExtension(movieName);
+
   // 3. Run a loop so that if we Refresh we re-run this block
   bool needsRefresh(false);
   do
@@ -520,7 +533,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
           else if (!pDlgSelect->IsButtonPressed())
           {
             m_database.Close();
-            return; // user backed out
+            return false; // user backed out
           }
         }
       }
@@ -534,7 +547,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       if (pDlgProgress->IsCanceled())
       {
         m_database.Close();
-        return;
+        return false;
       }
 
       // Prompt the user to input the movieName
@@ -544,7 +557,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       if (!CGUIDialogKeyboard::ShowAndGetInput(movieName, g_localizeStrings.Get(iString), false))
       {
         m_database.Close();
-        return; // user backed out
+        return false; // user backed out
       }
 
       needsRefresh = true;
@@ -648,7 +661,7 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
         if (pDlgProgress->IsCanceled())
         {
           m_database.Close();
-          return; // user cancelled
+          return false; // user cancelled
         }
         OutputDebugString("failed to get details\n");
         // show dialog...
@@ -663,12 +676,13 @@ void CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
           pDlgOK->DoModal();
         }
         m_database.Close();
-        return;
+        return false;
       }
     }
   // 6. Check for a refresh
   } while (needsRefresh);
   m_database.Close();
+  return true;
 }
 
 void CGUIWindowVideoBase::OnManualIMDB()
@@ -758,7 +772,7 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
   CFileItemList queuedItems;
   AddItemToPlayList(item, queuedItems);
   // if party mode, add items but DONT start playing
-  if (g_partyModeManager.IsEnabled())
+  if (g_partyModeManager.IsEnabled(PARTYMODECONTEXT_VIDEO))
   {
     g_partyModeManager.AddUserSongs(queuedItems, false);
     return;
@@ -890,7 +904,7 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
 
 bool CGUIWindowVideoBase::OnClick(int iItem)
 {
-  if (g_guiSettings.GetBool("myvideos.autoresume"))
+  if (g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_NO)
     OnResumeItem(iItem);
   else
     return CGUIMediaWindow::OnClick(iItem);
@@ -905,7 +919,37 @@ void CGUIWindowVideoBase::OnRestartItem(int iItem)
 
 void CGUIWindowVideoBase::OnResumeItem(int iItem)
 {
-  m_vecItems->Get(iItem)->m_lStartOffset = STARTOFFSET_RESUME;
+  if (iItem < 0 || iItem >= m_vecItems->Size()) return;
+  CFileItemPtr item = m_vecItems->Get(iItem);
+  bool resumeItem = (g_guiSettings.GetInt("myvideos.resumeautomatically") == RESUME_YES);
+  if (!item->m_bIsFolder && !resumeItem && g_guiSettings.GetInt("myvideos.resumeautomatically") == RESUME_ASK)
+  {
+    // check to see whether we have a resume offset available
+    CVideoDatabase db;
+    if (db.Open())
+    {
+      CBookmark bookmark;
+      CStdString itemPath(item->m_strPath);
+      if (item->IsVideoDb())
+        itemPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
+      if (db.GetResumeBookMark(itemPath, bookmark) )
+      { // prompt user whether they wish to resume
+        vector<CStdString> choices;
+        choices.push_back(g_localizeStrings.Get(12021));
+        CStdString resumeString, time;
+        StringUtils::SecondsToTimeString(bookmark.timeInSeconds, time);
+        resumeString.Format(g_localizeStrings.Get(12022).c_str(), time.c_str());
+        choices.push_back(resumeString);
+        int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices, GetContextPosition());
+        if (!retVal)
+          return; // don't do anything
+        resumeItem = (retVal == 2);
+      }
+      db.Close();
+    }
+  }
+  if (resumeItem)
+    item->m_lStartOffset = STARTOFFSET_RESUME;
   CGUIMediaWindow::OnClick(iItem);
 }
 
@@ -965,9 +1009,9 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       // check to see if the Resume Video button is applicable
       if (GetResumeItemOffset(item.get()) > 0)
       {
-        if (g_guiSettings.GetBool("myvideos.autoresume"))
+        if (g_guiSettings.GetInt("myvideos.resumeautomatically") == RESUME_YES)
           buttons.Add(CONTEXT_BUTTON_RESTART_ITEM, 20132);    // Restart Video
-        else
+        if (g_guiSettings.GetInt("myvideos.resumeautomatically") == RESUME_NO)
           buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, 13381);     // Resume Video
       } 
       if (item->IsSmartPlayList() || m_vecItems->IsSmartPlayList())
@@ -1154,7 +1198,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
   CFileItemPtr pItem = m_vecItems->Get(iItem);
   
   // party mode
-  if (g_partyModeManager.IsEnabled())
+  if (g_partyModeManager.IsEnabled(PARTYMODECONTEXT_VIDEO))
   {
     CPlayList playlistTemp;
     playlistTemp.Add(pItem);

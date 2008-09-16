@@ -105,42 +105,34 @@ CXbmcHttp::~CXbmcHttp()
 **
 ** base64 encode a stream adding padding and line breaks as per spec.
 */
-CStdString CXbmcHttp::encodeFileToBase64( CStdString inFilename, int linesize )
+CStdString CXbmcHttp::encodeFileToBase64(const CStdString &inFilename, int linesize )
 {
   unsigned char in[3];//, out[4];
-  int i, len, blocksout = 0;
+  int len, blocksout = 0;
   CStdString strBase64="";
-  FILE *infile;
 
 //  Translation Table as described in RFC1113
   static const char cb64[]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-  infile = fopen( inFilename.c_str(), "rb" );
+  CFile file;
   bool bOutput=false;
-  if (infile != 0) 
+  if (file.Open(inFilename.c_str())) 
   {
-    while( !feof( infile ) ) 
+    while( file.GetPosition() != file.GetLength() ) 
     {
-      len = 0;
-      for( i = 0; i < 3; i++ ) 
-      {
-        in[i] = (unsigned char) getc( infile );
-        if( !feof( infile ) ) 
-          len++;
-        else 
-          in[i] = 0;
-      }
+      memset(in, 0, sizeof(in));
+      len = file.Read(in, 3);
       if( len ) 
       {
-		strBase64 += cb64[ in[0] >> 2 ];
+		    strBase64 += cb64[ in[0] >> 2 ];
         strBase64 += cb64[ ((in[0] & 0x03) << 4) | ((in[1] & 0xf0) >> 4) ];
         strBase64 += (unsigned char) (len > 1 ? cb64[ ((in[1] & 0x0f) << 2) | ((in[2] & 0xc0) >> 6) ] : '=');
         strBase64 += (unsigned char) (len > 2 ? cb64[ in[2] & 0x3f ] : '=');
         blocksout++;
       }
-      if(linesize == 0 && feof(infile))
+      if(linesize == 0 && file.GetPosition() == file.GetLength())
         bOutput=true;
-      else if ((linesize > 0) && (blocksout >= (linesize/4) || (feof(infile))))
+      else if ((linesize > 0) && (blocksout >= (linesize/4) || (file.GetPosition() == file.GetLength())))
         bOutput=true;
       if (bOutput)
       {
@@ -152,7 +144,7 @@ CStdString CXbmcHttp::encodeFileToBase64( CStdString inFilename, int linesize )
         bOutput=false;
       }
     }
-    fclose(infile);
+    file.Close();
   }
   return strBase64;
 }
@@ -3166,9 +3158,9 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
 	  {
 	    if (m_pXbmcHttp->incWebHeader)
           websHeader(wp);
-	  }
-	  else
-	    websHeader(wp);
+	  };
+	  //else
+	    //websHeader(wp);
 
 	//we are being called via the webserver (rather than Python) so add any specific checks here
     if ((cmd=="webserverstatus") && (paras!=""))//(strcmp(parameter,XBMC_NONE)))
@@ -3201,7 +3193,7 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
   //flushresult
   retVal=flushResult(eid, wp, m_pXbmcHttp->userHeader+response+m_pXbmcHttp->userFooter);
   if (m_pXbmcHttp) //this should always be true unless something is very wrong
-    if ((wp!=NULL) && (m_pXbmcHttp->incWebFooter))
+    if ((wp!=NULL) && (m_pXbmcHttp->incWebFooter) && eid==NO_EID)
       websFooter(wp);
   return retVal;
 }

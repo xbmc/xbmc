@@ -311,16 +311,19 @@ void CGUIFontTTF::DrawTextInternal(float x, float y, const vector<DWORD> &colors
   if ( alignment & XBFONT_JUSTIFIED )
   { 
     // first compute the size of the text to render in both characters and pixels
-    unsigned int lineLength = 0;
+    unsigned int lineChars = 0;
+    float linePixels = 0;
     for (vector<DWORD>::const_iterator pos = text.begin(); pos != text.end(); pos++)
     {
-      WCHAR letter = (WCHAR)(*pos & 0xffff);
-      // spaces have multiple times the justification spacing of normal letters
-      lineLength += (letter == L' ') ? justification_word_weight : 1;
+      Character *ch = GetCharacter(*pos);
+      if (ch)
+      { // spaces have multiple times the justification spacing of normal letters
+        lineChars += ((*pos & 0xffff) == L' ') ? justification_word_weight : 1;
+        linePixels += ch->advance;
+      }
     }
-    float width = GetTextWidthInternal(text.begin(), text.end());
-    if (lineLength > 1)
-      spacePerLetter = (maxPixelWidth - width) / (lineLength - 1);
+    if (lineChars > 1)
+      spacePerLetter = (maxPixelWidth - linePixels) / (lineChars - 1);
   }
   float cursorX = 0; // current position along the line
 
@@ -409,6 +412,10 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(DWORD chr)
 {
   WCHAR letter = (WCHAR)(chr & 0xffff);
   DWORD style = (chr & 0x3000000) >> 24;
+
+  // ignore linebreaks
+  if (letter == L'\r')
+    return NULL;
 
   // quick access to ascii chars
   if (letter < 255)

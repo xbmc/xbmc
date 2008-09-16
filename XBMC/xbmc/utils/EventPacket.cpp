@@ -55,10 +55,10 @@ bool CEventPacket::Parse(int datasize, const void *data)
 
   // get packet type
   m_eType = (PacketType)ntohs(*((uint16_t*)buf));
-  
+
   if (m_eType < (unsigned short)PT_HELO || m_eType >= (unsigned short)PT_LAST)
     return false;
-  
+
   // get packet sequence id
   buf += 2;
   m_iSeq  = ntohl(*((uint32_t*)buf));
@@ -71,15 +71,20 @@ bool CEventPacket::Parse(int datasize, const void *data)
   buf += 4;
   m_iPayloadSize = ntohs(*((uint16_t*)buf));
 
-  buf += 2;
   if ((m_iPayloadSize + HEADER_SIZE) != (unsigned int)datasize)
     return false;
+
+  // get the client's token
+  buf += 2;
+  m_iClientToken = ntohl(*((uint32_t*)buf));
+
+  buf += 4;
 
   // get payload
   if (m_iPayloadSize)
   {
     // forward past reserved bytes
-    buf += 14;
+    buf += 10;
 
     if (m_pPayload)
     {

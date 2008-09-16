@@ -216,14 +216,14 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
   Reset();
   m_strPath = strPath;
   m_bIsFolder = bIsFolder;
-#ifdef DEBUG
   // tuxbox urls cannot have a / at end
   if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder() && !CUtil::IsTuxBox(m_strPath))
+  {
+#ifdef DEBUG
     ASSERT(CUtil::HasSlashAtEnd(m_strPath));
 #endif
-
-  if (m_bIsFolder)
     CUtil::AddSlashAtEnd(m_strPath);
+  }
 }
 
 CFileItem::CFileItem(const CMediaSource& share)
@@ -598,6 +598,13 @@ bool CFileItem::IsInternetStream() const
 
   if (strProtocol.size() == 0)
     return false;
+
+  // there's nothing to stop internet streams from being stacked
+  if (strProtocol == "stack")
+  {
+    CFileItem fileItem(CStackDirectory::GetFirstStackedFile(m_strPath), false);
+    return fileItem.IsInternetStream();
+  }
 
   if (strProtocol == "shout" || strProtocol == "mms" ||
       strProtocol == "http" || /*strProtocol == "ftp" ||*/
@@ -1481,10 +1488,15 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_STUDIO_IGNORE_THE:
     FillSortFields(SSortFileItem::ByStudioNoThe);
     break;
+  case SORT_METHOD_FULLPATH:
+    FillSortFields(SSortFileItem::ByFullPath);
+    break;
   default:
     break;
   }
-  if (sortMethod != SORT_METHOD_NONE)
+  if (sortMethod == SORT_METHOD_FILE)
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::IgnoreFoldersAscending : SSortFileItem::IgnoreFoldersDescending);
+  else if (sortMethod != SORT_METHOD_NONE)
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::Ascending : SSortFileItem::Descending);
 
   m_sortMethod=sortMethod;
@@ -2422,7 +2434,7 @@ void CFileItem::CacheFanart() const
     return;
   // We don't have a cached image, so let's see if the user has a local image they want to use
 
-  if (IsInternetStream() || CUtil::IsFTP(m_strPath)) // no local fanart available for these
+  if (IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath)) // no local fanart available for these
     return;
 
   CStdString localFanart;
@@ -2834,5 +2846,40 @@ MUSIC_INFO::CMusicInfoTag* CFileItem::GetMusicInfoTag()
     m_musicInfoTag = new MUSIC_INFO::CMusicInfoTag;
 
   return m_musicInfoTag;
+}
+
+CStdString CFileItem::FindTrailer() const
+{
+  CStdString strTrailer;
+  CStdString strFile = m_strPath;
+  if (IsStack())
+  {
+    CStdString strPath;
+    CUtil::GetParentPath(m_strPath,strPath);
+    CStackDirectory dir;
+    CStdString strPath2;
+    strPath2 = dir.GetStackedTitlePath(strFile);
+    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
+  }
+  if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))
+  {
+    CStdString strPath, strParent;
+    CUtil::GetDirectory(strFile,strPath);
+    CUtil::GetParentPath(strPath,strParent);
+    CUtil::AddFileToFolder(strParent,CUtil::GetFileName(m_strPath),strFile);
+  }
+  CUtil::RemoveExtension(strFile);
+  strFile += "-trailer";
+  std::vector<CStdString> exts;
+  StringUtils::SplitString(g_stSettings.m_videoExtensions,"|",exts);
+  for (unsigned int i=0;i<exts.size();++i)
+  {
+    if (CFile::Exists(strFile+exts[i]))
+    {
+      strTrailer = strFile+exts[i];
+      break;
+    }
+  }
+  return strTrailer;
 }
 
