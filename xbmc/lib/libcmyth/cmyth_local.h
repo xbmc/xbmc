@@ -449,4 +449,6 @@ extern MYSQL_RES * cmyth_mysql_query_result(cmyth_mysql_query_t * query);
 
 extern int cmyth_mysql_query(cmyth_mysql_query_t * query);
 
+extern char* cmyth_utf8tolatin1(char* s);
+
 #endif /* __CMYTH_LOCAL_H */
