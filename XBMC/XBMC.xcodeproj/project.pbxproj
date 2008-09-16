@@ -891,11 +891,11 @@
 		E3E920060D8C6277002BF43D /* ScraperSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E920050D8C6277002BF43D /* ScraperSettings.cpp */; };
 		E3EB8F080D5D5C0300FFF489 /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */; };
 		E46464360E7DF0B9003CB291 /* NptStdcEnvironment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46464320E7DF0B9003CB291 /* NptStdcEnvironment.cpp */; };
-		E46464370E7DF0B9003CB291 /* NptStdcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46464330E7DF0B9003CB291 /* NptStdcFile.cpp */; };
 		E46464450E7DF115003CB291 /* NptStdcDebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46464430E7DF115003CB291 /* NptStdcDebug.cpp */; };
 		E46464470E7DF12B003CB291 /* NptPosixNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46464460E7DF12B003CB291 /* NptPosixNetwork.cpp */; };
 		E46465170E7E4D20003CB291 /* NptPosixDynamicLibraries.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46465150E7E4D20003CB291 /* NptPosixDynamicLibraries.cpp */; };
 		E46465180E7E4D20003CB291 /* NptPosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46465160E7E4D20003CB291 /* NptPosixFile.cpp */; };
+		E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */; };
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
 		F51E5BB70E68BE3A00E24093 /* libmad.0.2.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */; };
 		F57E213F0E3C3AB300700C9D /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E213E0E3C3AB200700C9D /* libiconv.dylib */; };
@@ -2735,11 +2735,11 @@
 		E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmad.0.2.1.dylib; path = /opt/local/lib/libmad.0.2.1.dylib; sourceTree = "<absolute>"; };
 		E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbis.dylib; path = /opt/local/lib/libvorbis.dylib; sourceTree = "<absolute>"; };
 		E46464320E7DF0B9003CB291 /* NptStdcEnvironment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptStdcEnvironment.cpp; sourceTree = "<group>"; };
-		E46464330E7DF0B9003CB291 /* NptStdcFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptStdcFile.cpp; sourceTree = "<group>"; };
 		E46464430E7DF115003CB291 /* NptStdcDebug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptStdcDebug.cpp; sourceTree = "<group>"; };
 		E46464460E7DF12B003CB291 /* NptPosixNetwork.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixNetwork.cpp; sourceTree = "<group>"; };
 		E46465150E7E4D20003CB291 /* NptPosixDynamicLibraries.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixDynamicLibraries.cpp; sourceTree = "<group>"; };
 		E46465160E7E4D20003CB291 /* NptPosixFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixFile.cpp; sourceTree = "<group>"; };
+		E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptXbmcFile.cpp; sourceTree = "<group>"; };
 		F50629780E57B9680066625A /* MultiPathFile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MultiPathFile.cpp; sourceTree = "<group>"; };
 		F50629790E57B9680066625A /* MultiPathFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MultiPathFile.h; sourceTree = "<group>"; };
 		F57E213E0E3C3AB200700C9D /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /opt/local/lib/libiconv.dylib; sourceTree = "<absolute>"; };
@@ -4187,6 +4187,7 @@
 		E38E16940D25F9FA00618676 /* FileSystem */ = {
 			isa = PBXGroup;
 			children = (
+				E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */,
 				6E32A0AC0E353A37008872A4 /* FileMMS.cpp */,
 				889B4D8C0E0EF86C00FAD25E /* RSSDirectory.cpp */,
 				889B4D8D0E0EF86C00FAD25E /* RSSDirectory.h */,
@@ -5642,7 +5643,6 @@
 			children = (
 				E46464430E7DF115003CB291 /* NptStdcDebug.cpp */,
 				E46464320E7DF0B9003CB291 /* NptStdcEnvironment.cpp */,
-				E46464330E7DF0B9003CB291 /* NptStdcFile.cpp */,
 			);
 			path = StdC;
 			sourceTree = "<group>";
@@ -6637,11 +6637,11 @@
 				F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */,
 				F5FDF51D0E7218950005B0A6 /* AsyncFileCopy.cpp in Sources */,
 				E46464360E7DF0B9003CB291 /* NptStdcEnvironment.cpp in Sources */,
-				E46464370E7DF0B9003CB291 /* NptStdcFile.cpp in Sources */,
 				E46464450E7DF115003CB291 /* NptStdcDebug.cpp in Sources */,
 				E46464470E7DF12B003CB291 /* NptPosixNetwork.cpp in Sources */,
 				E46465170E7E4D20003CB291 /* NptPosixDynamicLibraries.cpp in Sources */,
 				E46465180E7E4D20003CB291 /* NptPosixFile.cpp in Sources */,
+				E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
