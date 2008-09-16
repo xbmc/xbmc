@@ -1097,13 +1097,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       pControl->SetEnabled(g_guiSettings.GetBool("servers.ftpserver"));
     }
     else if (strSetting.Equals("servers.webserverpassword"))
-    { // Fill in a blank pass if we don't have it
+    {
       CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
-      if (((CSettingString *)pSettingControl->GetSetting())->GetData().size() == 0 && pControl)
-      {
-        pControl->SetLabel2(g_localizeStrings.Get(734));
+      if (pControl)
         pControl->SetEnabled(g_guiSettings.GetBool("servers.webserver"));
-      }
     }
     else if (strSetting.Equals("servers.webserverport"))
     {
