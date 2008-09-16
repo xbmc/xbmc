@@ -5335,7 +5335,7 @@ void CApplication::SetVolume(int iPercent)
   // convert the percentage to a mB (milliBell) value (*100 for dB)
   long hardwareVolume = (long)((float)iPercent * 0.01f * (VOLUME_MAXIMUM - VOLUME_MINIMUM) + VOLUME_MINIMUM);
   SetHardwareVolume(hardwareVolume);
-  g_audioManager.SetVolume(g_stSettings.m_nVolumeLevel);
+  g_audioManager.SetVolume(iPercent);
 }
 
 void CApplication::SetHardwareVolume(long hardwareVolume)
