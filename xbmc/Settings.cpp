@@ -189,6 +189,8 @@ void CSettings::Initialize()
   g_advancedSettings.m_cachePath = "Z:\\";
   g_advancedSettings.m_displayRemoteCodes = false;
 
+  g_advancedSettings.m_videoExcludeRegExps.push_back("[-\\._ ](sample|trailer)[-\\._ ]");
+
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+part[ _\\.-]*([0-9a-d]+)");
@@ -1339,81 +1341,22 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement, "ftpshowcache", g_advancedSettings.m_FTPShowCache);
 
   g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
+
+  // exclude regexps
+  TiXmlElement* pScanExcludes = pRootElement->FirstChildElement("excludefromscan");
+  if (pScanExcludes)
+    GetCustomRegexps(pScanExcludes, g_advancedSettings.m_videoExcludeRegExps);
+
   // stacking regexps
   TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("moviestacking");
   if (pVideoStacking)
-  {
-    int iAction = 0; // overwrite
-    // for backward compatibility
-    const char* szAppend = pVideoStacking->Attribute("append");
-    if ((szAppend && stricmp(szAppend, "yes") == 0))
-      iAction = 1;
-    // action takes precedence if both attributes exist
-    const char* szAction = pVideoStacking->Attribute("action");
-    if (szAction)
-    {
-      iAction = 0; // overwrite
-      if (stricmp(szAction, "append") == 0)
-        iAction = 1; // append
-      else if (stricmp(szAction, "prepend") == 0)
-        iAction = 2; // prepend
-    }
-    TiXmlNode* pStackRegExp = pVideoStacking->FirstChild("regexp");
-    if (iAction == 0)
-      g_advancedSettings.m_videoStackRegExps.clear();
-    int i = 0;
-    while (pStackRegExp)
-    {
-      if (pStackRegExp->FirstChild())
-      {
-        CStdString regExp = pStackRegExp->FirstChild()->Value();
-        regExp.MakeLower();
-        if (iAction == 2)
-          g_advancedSettings.m_videoStackRegExps.insert(g_advancedSettings.m_videoStackRegExps.begin() + i++, 1, regExp);
-        else
-          g_advancedSettings.m_videoStackRegExps.push_back(regExp);
-      }
-      pStackRegExp = pStackRegExp->NextSibling("regexp");
-    }
+    GetCustomRegexps(pVideoStacking, g_advancedSettings.m_videoStackRegExps);
 
-  }
   //tv stacking regexps
   TiXmlElement* pTVStacking = pRootElement->FirstChildElement("tvshowmatching");
   if (pTVStacking)
-  {
-    int iAction = 0; // overwrite
-    // for backward compatibility
-    const char* szAppend = pTVStacking->Attribute("append");
-    if ((szAppend && stricmp(szAppend, "yes") == 0))
-      iAction = 1;
-    // action takes precedence if both attributes exist
-    const char* szAction = pTVStacking->Attribute("action");
-    if (szAction)
-    {
-      iAction = 0; // overwrite
-      if (stricmp(szAction, "append") == 0)
-        iAction = 1; // append
-      else if (stricmp(szAction, "prepend") == 0)
-        iAction = 2; // prepend
-    }
-    if (iAction == 0)
-        g_advancedSettings.m_tvshowStackRegExps.clear();
-    TiXmlNode* pStackRegExp = pTVStacking->FirstChild("regexp");
-    int i = 0;
-    while (pStackRegExp)
-    {
-      if (pStackRegExp->FirstChild())
-      {
-        CStdString regExp = pStackRegExp->FirstChild()->Value();
-        regExp.MakeLower();
-        if (iAction == 2)
-          g_advancedSettings.m_tvshowStackRegExps.insert(g_advancedSettings.m_tvshowStackRegExps.begin() + i++, 1, regExp);
-        else
-          g_advancedSettings.m_tvshowStackRegExps.push_back(regExp);
-      }
-      pStackRegExp = pStackRegExp->NextSibling("regexp");
-    }
-  }
+    GetCustomRegexps(pTVStacking, g_advancedSettings.m_tvshowStackRegExps);
+
   // path substitutions
   TiXmlElement* pPathSubstitution = pRootElement->FirstChildElement("pathsubstitution");
   if (pPathSubstitution)
@@ -1551,6 +1494,42 @@ void CSettings::LoadAdvancedSettings()
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
+}
+
+void CSettings::GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings)
+{
+  int iAction = 0; // overwrite
+  // for backward compatibility
+  const char* szAppend = pRootElement->Attribute("append");
+  if ((szAppend && stricmp(szAppend, "yes") == 0))
+    iAction = 1;
+  // action takes precedence if both attributes exist
+  const char* szAction = pRootElement->Attribute("action");
+  if (szAction)
+  {
+    iAction = 0; // overwrite
+    if (stricmp(szAction, "append") == 0)
+      iAction = 1; // append
+    else if (stricmp(szAction, "prepend") == 0)
+      iAction = 2; // prepend
+  }
+  if (iAction == 0)
+    settings.clear();
+  TiXmlNode* pRegExp = pRootElement->FirstChild("regexp");
+  int i = 0;
+  while (pRegExp)
+  {
+    if (pRegExp->FirstChild())
+    {
+      CStdString regExp = pRegExp->FirstChild()->Value();
+      regExp.MakeLower();
+      if (iAction == 2)
+        settings.insert(settings.begin() + i++, 1, regExp);
+      else
+        settings.push_back(regExp);
+    }
+    pRegExp = pRegExp->NextSibling("regexp");
+  }
 }
 
 bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings /* = NULL */) const
@@ -2303,6 +2282,7 @@ void CSettings::Clear()
   m_szMyVideoStackTokensArray.clear();
   m_szMyVideoCleanTokensArray.clear();
   g_advancedSettings.m_videoStackRegExps.clear();
+  g_advancedSettings.m_videoExcludeRegExps.clear();
   m_mapRssUrls.clear();
   m_skinBools.clear();
   m_skinStrings.clear();
