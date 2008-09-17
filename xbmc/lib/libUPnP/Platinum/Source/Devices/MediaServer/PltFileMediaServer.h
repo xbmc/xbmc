@@ -54,6 +54,10 @@ protected:
     virtual NPT_Result Start(PLT_SsdpListenTask* task);
     virtual NPT_Result Stop(PLT_SsdpListenTask* task);
 
+    virtual NPT_Result OnStackRequest(const NPT_String             &filepath,
+                                      const NPT_HttpRequestContext &context,
+                                      NPT_HttpResponse             &response);
+
     virtual NPT_Result OnAlbumArtRequest(NPT_String filepath, NPT_HttpResponse& response);
     
     // PLT_MediaServer methods
