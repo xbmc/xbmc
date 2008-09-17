@@ -56,7 +56,11 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
   LPDIRECT3DTEXTURE8 pTexture = NULL;
   g_graphicsContext.Get3DDevice()->CreateTexture(m_info.width, m_info.height, 1, 0, D3DFMT_LIN_A8R8G8B8 , D3DPOOL_MANAGED, &pTexture);
 #else
+#ifdef HAS_SDL_OPENGL
+  SDL_Surface *pTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, m_info.width, m_info.height, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+#else
   SDL_Surface *pTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_info.width, m_info.height, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+#endif
 #endif
   if (pTexture)
   {
