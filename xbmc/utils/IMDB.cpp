@@ -457,8 +457,13 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
       strSearch2 = strSearch1;
 
     strSearch2.Trim();
-    strSearch2.Replace('.', ' ');
-    strSearch2.Replace('-', ' ');
+
+    if (!m_retry)
+    {
+      strSearch2.Replace('.', ' ');
+      strSearch2.Replace('-', ' ');
+    }
+
     strSearch2.Replace('_', ' ');
 
     g_charsetConverter.stringCharsetTo(m_parser.GetSearchStringEncoding(),strSearch2,m_parser.m_param[0]);
@@ -473,10 +478,21 @@ void CIMDB::Process()
   // note here that we're calling our external functions but we're calling them with
   // no progress bar set, so they're effectively calling our internal functions directly.
   m_found = false;
+  m_retry = false;
   if (m_state == FIND_MOVIE)
   {
     if (!FindMovie(m_strMovie, m_movieList))
-      CLog::Log(LOGERROR, "IMDb::Error looking up movie %s", m_strMovie.c_str());
+    {
+      // retry without replacing '.' and '-' if searching for a tvshow
+      if (m_info.strContent.Equals("tvshows"))
+      {
+        m_retry = true;
+        if (!FindMovie(m_strMovie, m_movieList))
+          CLog::Log(LOGERROR, "%s: Error looking up tvshow %s", __FUNCTION__, m_strMovie.c_str());
+      }
+      else
+        CLog::Log(LOGERROR, "%s: Error looking up movie %s", __FUNCTION__, m_strMovie.c_str());
+    }
   }
   else if (m_state == GET_DETAILS)
   {
