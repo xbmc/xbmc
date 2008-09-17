@@ -134,10 +134,8 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData) {
     return FALSE;
 
   bool bIsDir = false;
-  DIR *testDir = opendir(strFileNameTest);
-  if (testDir) {
+  if (S_ISDIR(fileStat.st_mode)) {
     bIsDir = true;
-    closedir(testDir);
   }
 
   memset(lpFindData,0,sizeof(WIN32_FIND_DATA));
