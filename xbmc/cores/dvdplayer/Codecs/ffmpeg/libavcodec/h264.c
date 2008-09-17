@@ -7742,11 +7742,9 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size){
 
         buf_index += consumed;
 
-#ifndef _XBOX
         if(  (s->hurry_up == 1 && h->nal_ref_idc  == 0) //FIXME do not discard SEI id
            ||(avctx->skip_frame >= AVDISCARD_NONREF && h->nal_ref_idc  == 0))
             continue;
-#endif
 
       again:
         err = 0;
