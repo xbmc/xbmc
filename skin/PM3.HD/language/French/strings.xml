@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+  <string id="31000">Muet</string>
+  <string id="31001"></string>
+  <string id="31002"></string>
+  <string id="31003"></string>
+  <string id="31004"></string>
+  <string id="31005"></string>
+  <string id="31006"></string>
+  <string id="31007"></string>
+  <string id="31008"></string>
+  <string id="31009"></string>
+  <string id="31010">IMAGE[CR]FANART[CR]NON[CR]DISPONIBLE</string>
+  <string id="31011">IMAGE[CR]EPISODE[CR]NON[CR]DISPONIBLE</string>
+  <string id="31012"></string>
+  <string id="31013"></string>
+  <string id="31014"></string>
+  <string id="31015"></string>
+  <string id="31016"></string>
+  <string id="31017"></string>
+  <string id="31018"></string>
+  <string id="31019"></string>
+
+  <string id="31020">Chapitre Titre</string>
+  <string id="31021">Vidéo - Fichiers</string>
+  <string id="31022">Musique - Fichiers</string>
+  <string id="31023"></string>
+  <string id="31024">Page</string>
+  <string id="31025">Objets</string>
+
+  <string id="31026"></string>
+  <string id="31027"></string>
+  <string id="31028">Vignette DVD</string>
+  <string id="31029">DVD Liste</string>
+  <string id="31030">Fanart</string>
+  <string id="31031">Liste</string>
+  <string id="31032">-</string>
+  <string id="31033">Image vignettes</string>
+  <string id="31034">Icones Large</string>
+
+  <string id="31040">Image Fanart[CR]actuelle du film[CR][CR]Cliquez pour changer</string>
+  <string id="31041">Image Fanart[CR]actuelle de la série-TV[CR][CR]Cliquez pour Changer</string>
+  <string id="31042">LECTURE</string>
+  <string id="31043">PAUSE</string>
+  <string id="31044">AVANCE RAPIDE</string>
+  <string id="31045">RETOUR RAPIDE</string>
+  <string id="31046">Bienvenue sur XBMC - Merci de vous connecter</string>
+  <string id="31047">Dernier connecté</string>
+  <string id="31048"></string>
+
+  <string id="31050"></string>
+  <string id="31051"></string>
+  <string id="31052"></string>
+
+  <!-- Lyrics Script Extra labels -->
+  <string id="31053">XBMC LYRICS</string>
+  <string id="31054">Choisir votre chanson depuis la liste</string>
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Ouvrir Playlist</string>
+  <string id="31056">Sauvegarder Playlist</string>
+  <string id="31057">Fermer Playlist</string>
+  <string id="31058">System Music Files</string>
+  <string id="31059">Playlist actuelle</string>
+  <string id="31060">Ce fichier est empilé, sélectionnez la partie que vous désirez lire.</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100">Options arrière-plan</string>
+  <string id="31101">Options Accueil</string>
+  <string id="31102">Arrière-plan</string>
+  <string id="31103">Afficher "Pause" dans le diaporama images</string>
+  <string id="31104"></string>
+  <string id="31105">Afficher les titres des médias lors du scan en tâche de fond</string>
+  <string id="31106">Options diverses</string>
+  <string id="31107">Supprimer les lignes Scan de l'arrière-plan</string>
+  <string id="31108">Supprimer les lignes Scan de l'arrière-plan lors de la lecture vidéo</string>
+  <string id="31109">Arrières-plans de l'accueil</string>
+  <string id="31110">- Activer fond d'écran personnalisé</string>
+  <string id="31111">Toujours afficher les infos Musique lors de Lyrics (paroles)</string>
+
+  <!-- Script Settings labels -->
+  <string id="31200">Options Script perso</string>
+  <string id="31201"></string>
+  <string id="31202"></string>
+  <string id="31203">Définir le label du Bouton</string>
+  <string id="31204">Chemin du Script</string>
+  <string id="31205"></string>
+  <string id="31206"></string>
+  <string id="31207"></string>
+  <string id="31208">Afficher le bouton script Lyrics sur l'OSD</string>
+  <string id="31209">Activer bouton script rapide pour -</string>
+
+  <!-- AMT Script Extra labels -->
+  <string id="31300">Afficher Casting</string>
+</strings>
