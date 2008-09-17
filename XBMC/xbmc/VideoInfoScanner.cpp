@@ -36,8 +36,6 @@
 #include "Settings.h"
 #include "FileItem.h"
 
-#define REGEXSAMPLEFILE "[-\\._ ](sample|trailer)[-\\._ ]"
-
 using namespace std;
 using namespace DIRECTORY;
 using namespace XFILE;
@@ -351,17 +349,32 @@ namespace VIDEO
     return !m_bStop;
   }
 
+  bool CVideoInfoScanner::ExcludeFile(const CStdString& strFileName, const CStdStringArray& regexps)
+  {
+    CRegExp regExExcludes;
+
+    CLog::Log(LOGDEBUG, "Checking if file '%s' should be excluded from scan", strFileName.c_str());
+    for (unsigned int i = 0; i < regexps.size(); i++)
+    {
+      if (!regExExcludes.RegComp(regexps[i].c_str()))
+      { // invalid regexp - complain in logs
+        CLog::Log(LOGERROR, "Invalid exclude RegExp:'%s'", regexps[i].c_str());
+        continue;
+      }
+      if (regExExcludes.RegFind(strFileName) > -1)
+      {
+        CLog::Log(LOGDEBUG, "File '%s' discarded. (Matches exclude rule RegExp:'%s')", strFileName.c_str(), regexps[i].c_str());
+        return true;
+      }
+    }
+    return false;
+  }
+
   bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress)
   {
     CStdString strMovieName;
     CIMDB IMDB;
     IMDB.SetScraperInfo(info);
-    CRegExp regExSample;
-
-    if (!regExSample.RegComp(REGEXSAMPLEFILE))
-    {
-      CLog::Log(LOGERROR, "Unable to compile RegExp for Sample file");
-    }
 
     if (bDirNames && info.strContent.Equals("movies"))
     {
@@ -391,6 +404,9 @@ namespace VIDEO
     for (int i=LIBRARY_HAS_VIDEO;i<LIBRARY_HAS_MUSICVIDEOS+1;++i)
       g_infoManager.GetBool(i);
     m_database.BeginTransaction();
+
+    CStdStringArray regexps = g_advancedSettings.m_videoExcludeRegExps;
+
     for (int i = 0; i < (int)items.Size(); ++i)
     {
       IMDB_EPISODELIST episodes;
@@ -413,19 +429,13 @@ namespace VIDEO
 
       IMDB.SetScraperInfo(info2);
 
-      // Discard all possible sample files defined by regExSample
       CStdString strFileName = CUtil::GetFileName(items[i]->m_strPath);
       strFileName.MakeLower();
 
+      // Discard all exclude files defined by regExExclude
       if(!strFileName.IsEmpty())
-      {
-        CLog::Log(LOGDEBUG, "Checking if file '%s' is a Sample file", strFileName.c_str());
-        if (regExSample.RegFind(strFileName) > -1)
-        {
-          CLog::Log(LOGDEBUG, "File '%s' discarded as Sample file", strFileName.c_str());
+        if (ExcludeFile(strFileName, regexps))
           continue;
-        }
-      }
 
       if (info2.strContent.Equals("movies") || info2.strContent.Equals("musicvideos"))
       {
@@ -688,12 +698,6 @@ namespace VIDEO
   void CVideoInfoScanner::EnumerateSeriesFolder(const CFileItem* item, EPISODES& episodeList)
   {
     CFileItemList items;
-    CRegExp regExSample;
-
-    if (!regExSample.RegComp(REGEXSAMPLEFILE))
-    {
-      CLog::Log(LOGERROR, "Unable to compile RegExp for Sample file");
-    }
 
     if (item->m_bIsFolder)
     {
@@ -775,6 +779,7 @@ namespace VIDEO
 
     // enumerate
     CStdStringArray expression = g_advancedSettings.m_tvshowStackRegExps;
+    CStdStringArray regexps = g_advancedSettings.m_videoExcludeRegExps;
 
     for (int i=0;i<items.Size();++i)
     {
@@ -787,15 +792,13 @@ namespace VIDEO
       if (CUtil::GetFileName(strPath).Equals("sample"))
         continue;
 
-      // Discard all possible sample files defined by regExSample
       CStdString strFileName = CUtil::GetFileName(items[i]->m_strPath);
       strFileName.MakeLower();
-      CLog::Log(LOGDEBUG, "Checking if file '%s' is a Sample file", strFileName.c_str());
-      if (regExSample.RegFind(strFileName) > -1)
-      {
-        CLog::Log(LOGDEBUG, "File '%s' discarded as Sample file", strFileName.c_str());
-        continue;
-      }
+
+      // Discard all exclude files defined by regExExcludes
+      if(!strFileName.IsEmpty())
+        if (ExcludeFile(strFileName, regexps))
+          continue;
 
       bool bMatched=false;
       for (unsigned int j=0;j<expression.size();++j)
