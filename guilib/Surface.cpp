@@ -799,8 +799,20 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
   }
 #endif
 #ifdef __APPLE__
-  void* newContext = Cocoa_GL_ResizeWindow(m_glContext, newWidth, newHeight);
-  
+  #include "SDL_private.h"
+  extern SDL_VideoDevice* current_video; // ignore the compiler warning
+  void* newContext = NULL;
+  if (current_video && current_video->hidden)
+    newContext = Cocoa_GL_ResizeWindow(m_glContext, newWidth, newHeight, (void*)(current_video->hidden->view));
+  else
+    newContext = Cocoa_GL_ResizeWindow(m_glContext, newWidth, newHeight, NULL);
+
+  if (current_video && current_video->screen)
+  {
+    current_video->screen->w = newWidth;
+    current_video->screen->h = newHeight;
+  }
+
   if (useNewContext)
     m_glContext = newContext; 
   

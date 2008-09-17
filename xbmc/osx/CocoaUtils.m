@@ -158,7 +158,7 @@ double Cocoa_GetScreenRefreshRate(int screen)
   return (mode != NULL) ? getDictDouble(mode, kCGDisplayRefreshRate) : 0.0f;
  }
 
-void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h)
+void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h, void* sdlView)
 {
   if (!theContext)
     return 0;
@@ -180,9 +180,14 @@ void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h)
       [window center];
     }
   }
-  
-  // HACK to make sure SDL realizes the window size changed to help with mouse pointers.
-  //QZ_ChangeWindowSize(w, h);  
+
+  // HACK: resize SDL's view manually so that mouse bounds are correctly
+  // updated.
+
+  if ( sdlView )
+  {
+    [ (NSQuickDrawView*)sdlView setFrameSize:NSMakeSize(w,h) ];
+  }
 
   return context;
 }
