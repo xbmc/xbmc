@@ -76,7 +76,7 @@ INCLUDES=-I./Platinum/ThirdParty/Neptune/Source/Core -I./Platinum/Source/Core -I
 LIB=libupnp-@ARCH@.a
 
 include ../../../Makefile.include
--include Makefile.depend
+-include $(filter %.P, $(OBJS:.o=.P))
 
 lib: $(LIB)
 
