@@ -360,6 +360,7 @@ void ConvertFile(const char* Dir, const char* Filename)
 	FixTransparency(srcSurface);
 
 	// Use a paletted texture if possible as it's lossless + only 4 bytes per pixel (guaranteed smaller)
+#ifdef _XBOX
 	CSurface tempSurface;
 	DWORD pal[256];
   if (ConvertP8(srcSurface, tempSurface, pal))
@@ -371,14 +372,16 @@ void ConvertFile(const char* Dir, const char* Filename)
 		WriteXPR(OutFilename, tempSurface, XB_D3DFMT_P8, pal);
 		return;
   }
-
+#endif
   // we are going to use a 32bit texture, so work out what type to use
   // test linear format versus non-linear format
   // Linear format requires 64 pixel aligned width, whereas
   // Non-linear format requires power of 2 width and height
   bool useLinearFormat(false);
+#ifdef _XBOX
   UINT linearWidth = (srcSurface.Info().width + 0x3f) & ~0x3f;
   if (linearWidth * srcSurface.Info().height < srcSurface.Width() * srcSurface.Height())
+#endif
     useLinearFormat = true;
 
 	// Use A8R8G8B8
