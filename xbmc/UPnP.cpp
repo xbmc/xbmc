@@ -189,6 +189,14 @@ public:
                                 const NPT_String&             object_id, 
                                 const NPT_String&             searchCriteria,
                                 const NPT_HttpRequestContext& context);
+                                
+    // PLT_FileMediaServer methods
+    virtual NPT_Result ServeFile(NPT_HttpRequest&              request, 
+                                 const NPT_HttpRequestContext& context,
+                                 NPT_HttpResponse&             response,
+                                 NPT_String                    uri_path,
+                                 NPT_String                    file_path);
+
 
 private:
     NPT_String       BuildHttpUri(const char* host, 
@@ -323,6 +331,9 @@ Substitute(const char* in, char ch, const char* str)
     return out;
 }
 
+/*----------------------------------------------------------------------
+|   CUPnPServer::BuildHttpUri
++---------------------------------------------------------------------*/
 NPT_String
 CUPnPServer::BuildHttpUri(const char* host, const char* file_path)
 {
@@ -1057,6 +1068,54 @@ CUPnPServer::OnSearch(PLT_ActionReference&          action,
   }
 
   return NPT_FAILURE;
+}
+
+/*----------------------------------------------------------------------
+|   CUPnPServer::ServeFile
++---------------------------------------------------------------------*/
+NPT_Result 
+CUPnPServer::ServeFile(NPT_HttpRequest&              request, 
+                       const NPT_HttpRequestContext& context,
+                       NPT_HttpResponse&             response,
+                       NPT_String                    uri_path,
+                       NPT_String                    file_path)
+{
+    // File requested
+    NPT_String path = m_FileBaseUri.GetPath();
+    if (path.Compare(uri_path.Left(path.GetLength()), true) == 0 && 
+        file_path.Left(8).Compare("stack://", true) == 0) {
+        
+        NPT_List<NPT_String> files = file_path.SubString(8).Split(" , ");
+        if (files.GetItemCount() == 0) {
+            response.SetStatus(404, "File Not Found");
+            return NPT_SUCCESS;
+        }
+
+        NPT_String output;
+        output.Reserve(file_path.GetLength()*2);
+
+        NPT_List<NPT_String>::Iterator url = files.GetFirstItem();
+        for (;url;url++) {
+            NPT_HttpUrl uri = m_FileBaseUri;
+            NPT_HttpUrlQuery query;
+            query.AddField("path", *url);
+            uri.SetHost(context.GetLocalAddress().GetIpAddress().ToString());
+            uri.SetQuery(query.ToString());
+
+            output += uri.ToString();
+            output += "\n\r";
+        }
+
+        PLT_HttpHelper::SetContentType(response, "audio/x-mpegurl");
+        PLT_HttpHelper::SetBody(response, (const char*)output, output.GetLength());
+        return NPT_SUCCESS;
+    }
+    
+    return PLT_MediaConnect::ServeFile(request, 
+                                       context, 
+                                       response, 
+                                       uri_path, 
+                                       file_path);
 }
 
 /*----------------------------------------------------------------------
