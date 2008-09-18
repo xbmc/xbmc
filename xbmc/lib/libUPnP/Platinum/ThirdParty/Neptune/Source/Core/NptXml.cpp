@@ -65,8 +65,13 @@ public:
                 } else {
                     // match if the attribute has the SPECIFIC namespace
                     // we're looking for
-                    const NPT_String* namespc = m_Element.GetNamespaceUri(prefix);
-                    return namespc && *namespc == m_Namespace;
+                    if (prefix.IsEmpty()) {
+                        // attributes without a prefix don't have a namespace
+                        return false;
+                    } else {
+                        const NPT_String* namespc = m_Element.GetNamespaceUri(prefix);
+                        return namespc && *namespc == m_Namespace;
+                    }
                 }
             } else {
                 // ANY namespace will match
@@ -197,7 +202,8 @@ NPT_XmlNamespaceCollapser::CollapseNamespace(NPT_XmlElementNode* element,
                                              const NPT_String&   prefix) const
 {
     if (m_Root->m_NamespaceMap == NULL ||
-        (m_Root->m_NamespaceMap->GetNamespaceUri(prefix) == NULL && prefix != "xml")) {
+        m_Root->m_NamespaceMap->GetNamespaceUri(prefix) == NULL &&
+        prefix != "xml") {
         // the root element does not have that prefix in the map
         const NPT_String* uri = element->GetNamespaceUri(prefix);
         if (uri) m_Root->SetNamespaceUri(prefix, uri->GetChars());
@@ -1439,6 +1445,8 @@ NPT_XmlProcessor::ProcessBuffer(const char* buffer, NPT_Size size)
             } else if (c == '&') {
                 m_Entity.Reset();
                 SetState(STATE_IN_ENTITY_REF);
+            } else if (NPT_XML_CHAR_IS_WHITESPACE(c)) {
+                m_Value.Append(' ');
             } else if (NPT_XML_CHAR_IS_VALUE_CHAR(c)) {
                 m_Value.Append(c);
             } else {

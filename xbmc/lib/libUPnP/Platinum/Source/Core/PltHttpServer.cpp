@@ -2,7 +2,7 @@
 |
 |   Platinum - HTTP Server
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -97,10 +97,10 @@ PLT_HttpServer::Stop()
 |   PLT_HttpServer::ProcessHttpRequest
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_HttpServer::ProcessHttpRequest(NPT_HttpRequest&   request, 
-                                   NPT_SocketInfo     info, 
-                                   NPT_HttpResponse*& response,
-                                   bool&              headers_only) 
+PLT_HttpServer::ProcessHttpRequest(NPT_HttpRequest&              request, 
+                                   const NPT_HttpRequestContext& context,
+                                   NPT_HttpResponse*&            response,
+                                   bool&                         headers_only) 
 {
     NPT_LOG_FINE("PLT_HttpServer Received Request:");
     PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, &request);
@@ -117,7 +117,7 @@ PLT_HttpServer::ProcessHttpRequest(NPT_HttpRequest&   request,
         response->SetEntity(new NPT_HttpEntity());
 
         // ask the handler to setup the response
-        handler->SetupResponse(request, *response, info);
+        handler->SetupResponse(request, context, *response);
 
         // set headers_only flag
         headers_only = (request.GetMethod()==NPT_HTTP_METHOD_HEAD);
@@ -130,27 +130,27 @@ PLT_HttpServer::ProcessHttpRequest(NPT_HttpRequest&   request,
 |   PLT_FileServer::ServeFile
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_FileServer::ServeFile(NPT_String        filename, 
-                          NPT_HttpResponse* response,
-                          NPT_Integer       start,
-                          NPT_Integer       end,
+PLT_FileServer::ServeFile(NPT_HttpResponse& response,
+                          NPT_String        filename, 
+                          NPT_Position      start,
+                          NPT_Position      end,
                           bool              request_is_head) 
 {
-    NPT_Size total_len;
+    NPT_LargeSize            total_len;
     NPT_InputStreamReference stream;
-    NPT_File file(filename);
-    NPT_Result result;
+    NPT_File                 file(filename);
+    NPT_Result               result;
 
     if (NPT_FAILED(result = file.Open(NPT_FILE_OPEN_MODE_READ)) || 
         NPT_FAILED(result = file.GetInputStream(stream))        ||
         NPT_FAILED(result = stream->GetSize(total_len))) {
         // file didn't open
-        response->SetStatus(404, "File Not Found");
+        response.SetStatus(404, "File Not Found");
         return NPT_SUCCESS;
     } else {
         NPT_HttpEntity* entity = new NPT_HttpEntity();
         entity->SetContentLength(total_len);
-        response->SetEntity(entity);
+        response.SetEntity(entity);
 
         // set the content type if we can
         if (filename.EndsWith(".htm", true) ||filename.EndsWith(".html", true) ) {
@@ -161,12 +161,12 @@ PLT_FileServer::ServeFile(NPT_String        filename,
             entity->SetContentType("audio/mpeg");
         } else if (filename.EndsWith(".mpg", true)) {
             entity->SetContentType("video/mpeg");
-        } else if (filename.EndsWith(".avi", true) || filename.EndsWith(".divx", true)) {
+        } else if (filename.EndsWith(".avi", true) || filename.EndsWith(".divx", true) || filename.EndsWith(".divx", true)) {
             entity->SetContentType("video/avi");
         } else if (filename.EndsWith(".wma", true)) {
             entity->SetContentType("audio/x-ms-wma"); 
-        } else if (filename.EndsWith(".avi", true) || filename.EndsWith(".divx", true)) {
-            entity->SetContentType("video/avi"); 
+        } else if (filename.EndsWith(".wmv", true)) {
+            entity->SetContentType("video/x-ms-wmv"); 
         } else if (filename.EndsWith(".jpg", true)) {
             entity->SetContentType("image/jpeg");
         } else {
@@ -177,33 +177,34 @@ PLT_FileServer::ServeFile(NPT_String        filename,
         if (request_is_head) return NPT_SUCCESS;
 
         // see if it was a byte range request
-        if (start != -1 || end != -1) {
+        if (start != (NPT_Position)-1 || end != (NPT_Position)-1) {
             // we can only support a range from an offset to the end of the resource for now
             // due to the fact we can't limit how much to read from a stream yet
-            NPT_Integer start_offset = -1, end_offset = total_len - 1, len;
-            if (start == -1 && end != -1) {
+            NPT_Position start_offset = (NPT_Position)-1, end_offset = total_len - 1, len;
+            if (start == (NPT_Position)-1 && end != (NPT_Position)-1) {
                 // we are asked for the last N=end bytes
                 // adjust according to total length
-                if (end >= (NPT_Integer)total_len) {
+                if (end >= total_len) {
                     start_offset = 0;
                 } else {
                     start_offset = total_len-end;
                 }
-            } else if (start != -1) {
+            } else if (start != (NPT_Position)-1) {
                 start_offset = start;
                 // if the end is specified but incorrect
                 // set the end_offset in order to generate a bad response
-                if (end != -1 && end < start) {
-                    end_offset = -1;
+                if (end != (NPT_Position)-1 && end < start) {
+                    end_offset = (NPT_Position)-1;
                 }
             }
 
             // in case the range request was invalid or we can't seek then respond appropriately
-            if (start_offset == -1 || end_offset == -1 || start_offset > end_offset || NPT_FAILED(stream->Seek(start_offset))) {
-                response->SetStatus(416, "Requested range not satisfiable");
+            if (start_offset == (NPT_Position)-1 || end_offset == (NPT_Position)-1 || 
+                start_offset > end_offset || NPT_FAILED(stream->Seek(start_offset))) {
+                response.SetStatus(416, "Requested range not satisfiable");
             } else {
                 len = end_offset - start_offset + 1;
-                response->SetStatus(206, "Partial Content");
+                response.SetStatus(206, "Partial Content");
                 PLT_HttpHelper::SetContentRange(response, start_offset, end_offset, total_len);
 
                 entity->SetInputStream(stream);

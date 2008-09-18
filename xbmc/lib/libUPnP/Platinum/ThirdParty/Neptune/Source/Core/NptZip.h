@@ -73,8 +73,8 @@ public:
                             NPT_Size* bytes_read = NULL);
     virtual NPT_Result Seek(NPT_Position offset);
     virtual NPT_Result Tell(NPT_Position& offset);
-    virtual NPT_Result GetSize(NPT_Size& size);
-    virtual NPT_Result GetAvailable(NPT_Size& available);
+    virtual NPT_Result GetSize(NPT_LargeSize& size);
+    virtual NPT_Result GetAvailable(NPT_LargeSize& available);
 
 private:
     NPT_InputStreamReference m_Source;
@@ -104,8 +104,8 @@ public:
                             NPT_Size* bytes_read = NULL);
     virtual NPT_Result Seek(NPT_Position offset);
     virtual NPT_Result Tell(NPT_Position& offset);
-    virtual NPT_Result GetSize(NPT_Size& size);
-    virtual NPT_Result GetAvailable(NPT_Size& available);
+    virtual NPT_Result GetSize(NPT_LargeSize& size);
+    virtual NPT_Result GetAvailable(NPT_LargeSize& available);
 
 private:
     NPT_InputStreamReference m_Source;

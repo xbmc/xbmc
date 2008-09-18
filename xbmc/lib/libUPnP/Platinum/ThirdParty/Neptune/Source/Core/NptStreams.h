@@ -49,10 +49,18 @@ class NPT_InputStream
     virtual NPT_Result ReadFully(void*     buffer, 
                                  NPT_Size  bytes_to_read);
     virtual NPT_Result Seek(NPT_Position offset) = 0;
-    virtual NPT_Result Skip(NPT_Position offset);
+    virtual NPT_Result Skip(NPT_Size offset);
     virtual NPT_Result Tell(NPT_Position& offset) = 0;
-    virtual NPT_Result GetSize(NPT_Size& size) = 0;
-    virtual NPT_Result GetAvailable(NPT_Size& available) = 0;
+    virtual NPT_Result GetSize(NPT_LargeSize& size) = 0;
+    virtual NPT_Result GetAvailable(NPT_LargeSize& available) = 0;
+    virtual NPT_Result Close() { return NPT_SUCCESS; }    
+
+    // data access methods
+    NPT_Result ReadUI64(NPT_UInt64& value);
+    NPT_Result ReadUI32(NPT_UInt32& value);
+    NPT_Result ReadUI24(NPT_UInt32& value);
+    NPT_Result ReadUI16(NPT_UInt16& value);
+    NPT_Result ReadUI08(NPT_UInt8&  value);    
 };
 
 typedef NPT_Reference<NPT_InputStream> NPT_InputStreamReference;
@@ -77,6 +85,13 @@ public:
     virtual NPT_Result Seek(NPT_Position offset) = 0;
     virtual NPT_Result Tell(NPT_Position& offset) = 0;
     virtual NPT_Result Flush() { return NPT_SUCCESS; }
+    
+    // data access methods
+    NPT_Result WriteUI64(NPT_UInt64 value);
+    NPT_Result WriteUI32(NPT_UInt32 value);
+    NPT_Result WriteUI24(NPT_UInt32 value);
+    NPT_Result WriteUI16(NPT_UInt16 value);
+    NPT_Result WriteUI08(NPT_UInt8  value);    
 };
 
 typedef NPT_Reference<NPT_OutputStream> NPT_OutputStreamReference;
@@ -87,7 +102,7 @@ typedef NPT_Reference<NPT_OutputStream> NPT_OutputStreamReference;
 NPT_Result NPT_StreamToStreamCopy(NPT_InputStream&  from, 
                                   NPT_OutputStream& to,
                                   NPT_Position      offset = 0,
-                                  NPT_Size          size   = 0 /* 0 means the entire stream */);
+                                  NPT_LargeSize     size   = 0 /* 0 means the entire stream */);
 
 /*----------------------------------------------------------------------
 |    NPT_DelegatingInputStream
@@ -161,12 +176,12 @@ public:
     NPT_Result Read(void*     buffer, 
                     NPT_Size  bytes_to_read, 
                     NPT_Size* bytes_read = NULL);
-    NPT_Result GetSize(NPT_Size& size)  { 
+    NPT_Result GetSize(NPT_LargeSize& size)  { 
         size = m_Buffer.GetDataSize();    
         return NPT_SUCCESS;
     }
-    NPT_Result GetAvailable(NPT_Size& available) { 
-        available = m_Buffer.GetDataSize()-m_ReadOffset; 
+    NPT_Result GetAvailable(NPT_LargeSize& available) { 
+        available = (NPT_LargeSize)m_Buffer.GetDataSize()-m_ReadOffset; 
         return NPT_SUCCESS;
     }
 
@@ -201,8 +216,8 @@ private:
 protected:
     // members
     NPT_DataBuffer m_Buffer;
-    NPT_Position   m_ReadOffset;
-    NPT_Position   m_WriteOffset;
+    NPT_Size       m_ReadOffset;
+    NPT_Size       m_WriteOffset;
 };
 
 typedef NPT_Reference<NPT_MemoryStream> NPT_MemoryStreamReference;

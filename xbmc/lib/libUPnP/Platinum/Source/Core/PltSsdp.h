@@ -2,7 +2,7 @@
 |
 |   Platinum - SSDP
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -195,16 +195,17 @@ private:
 class PLT_SsdpPacketListenerIterator
 {
 public:
-    PLT_SsdpPacketListenerIterator(NPT_HttpRequest& request, NPT_SocketInfo info) :
-      m_Request(request), m_Info(info) {}
+    PLT_SsdpPacketListenerIterator(NPT_HttpRequest&              request, 
+                                   const NPT_HttpRequestContext& context) :
+      m_Request(request), m_Context(context) {}
 
     NPT_Result operator()(PLT_SsdpPacketListener*& listener) const {
-        return listener->OnSsdpPacket(m_Request, m_Info);
+        return listener->OnSsdpPacket(m_Request, m_Context);
     }
 
 private:
-    NPT_HttpRequest& m_Request;
-    NPT_SocketInfo   m_Info;
+    NPT_HttpRequest&              m_Request;
+    const NPT_HttpRequestContext& m_Context;
 };
 
 /*----------------------------------------------------------------------
@@ -238,10 +239,10 @@ protected:
     // PLT_HttpServerSocketTask methods
     NPT_Result GetInputStream(NPT_InputStreamReference& stream);
     NPT_Result GetInfo(NPT_SocketInfo& info);
-    NPT_Result ProcessRequest(NPT_HttpRequest&   request, 
-                              NPT_SocketInfo     info, 
-                              NPT_HttpResponse*& response,
-                              bool&              headers_only);
+    NPT_Result ProcessRequest(NPT_HttpRequest&              request, 
+                              const NPT_HttpRequestContext& context,
+                              NPT_HttpResponse*&            response,
+                              bool&                         headers_only);
 
 protected:
     PLT_InputDatagramStreamReference  m_Datagram;
@@ -269,10 +270,10 @@ protected:
     virtual void DoAbort();
     virtual void DoRun();
 
-    virtual NPT_Result ProcessResponse(NPT_Result        res, 
-                                       NPT_HttpRequest*  request, 
-                                       NPT_SocketInfo&   info, 
-                                       NPT_HttpResponse* response);
+    virtual NPT_Result ProcessResponse(NPT_Result                    res, 
+                                       NPT_HttpRequest*              request,  
+                                       const NPT_HttpRequestContext& context,
+                                       NPT_HttpResponse*             response);
 
 private:
     PLT_SsdpSearchResponseListener* m_Listener;

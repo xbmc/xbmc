@@ -67,7 +67,7 @@
 				Name="VCLibrarianTool"
 				AdditionalDependencies="ws2_32.lib"
 				OutputFile="$(OutDir)/Neptune.lib"
-				SuppressStartupBanner="false"
+				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -140,6 +140,7 @@
 				Name="VCLibrarianTool"
 				AdditionalDependencies="ws2_32.lib"
 				OutputFile="$(OutDir)/Neptune.lib"
+				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -223,6 +224,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\System\Posix\NptPosixFile.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\Core\NptQueue.cpp"
 				>
 			</File>
@@ -282,6 +287,15 @@
 				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Debug.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32DynamicLibraries.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32File.cpp"
+				>
+			</File>
+
 			<File
 				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Directory.cpp"
 				>

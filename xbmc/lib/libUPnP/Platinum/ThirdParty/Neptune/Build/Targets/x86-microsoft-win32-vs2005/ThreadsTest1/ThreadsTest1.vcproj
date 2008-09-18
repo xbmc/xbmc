@@ -4,7 +4,6 @@
 	Version="8.00"
 	Name="ThreadsTest1"
 	ProjectGUID="{D1355CEF-E9CF-4FDF-A48F-69ACBE5622DC}"
-	RootNamespace="ThreadsTest1"
 	Keyword="Win32Proj"
 	>
 	<Platforms>

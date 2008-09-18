@@ -2,7 +2,7 @@
 |
 |   Neptune - Threads :: Win32 Implementation
 |
-|   (c) 2001-2006 Gilles Boccon-Gibod
+|   (c) 2001-2008 Gilles Boccon-Gibod
 |   Author: Gilles Boccon-Gibod (bok@bok.net)
 |
  ****************************************************************/
@@ -28,6 +28,12 @@
 #include "NptWin32Threads.h"
 #include "NptTime.h"
 #include "NptSystem.h"
+#include "NptLogging.h"
+
+/*----------------------------------------------------------------------
+|   logging
++---------------------------------------------------------------------*/
+NPT_SET_LOCAL_LOGGER("neptune.threads.win32")
 
 /*----------------------------------------------------------------------
 |   configuration macros
@@ -130,9 +136,9 @@ NPT_Win32CriticalSection::Unlock()
 /*----------------------------------------------------------------------
 |   NPT_Win32Event::NPT_Win32Event
 +---------------------------------------------------------------------*/
-NPT_Win32Event::NPT_Win32Event(bool manual)
+NPT_Win32Event::NPT_Win32Event(bool manual /* = false */, bool initial /* = false */)
 {
-    m_Event = CreateEvent(NULL, (manual==true)?TRUE:FALSE, FALSE, NULL);
+    m_Event = CreateEvent(NULL, (manual==true)?TRUE:FALSE, (initial==true)?TRUE:FALSE, NULL);
 }
 
 /*----------------------------------------------------------------------
@@ -186,24 +192,24 @@ class NPT_Win32SharedVariable : public NPT_SharedVariableInterface
 {
  public:
     // methods
-               NPT_Win32SharedVariable(NPT_Integer value);
+               NPT_Win32SharedVariable(int value);
               ~NPT_Win32SharedVariable();
-    NPT_Result SetValue(NPT_Integer value);
-    NPT_Result GetValue(NPT_Integer& value);
-    NPT_Result WaitUntilEquals(NPT_Integer value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE);
-    NPT_Result WaitWhileEquals(NPT_Integer value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE);
+    void       SetValue(int value);
+    int        GetValue();
+    NPT_Result WaitUntilEquals(int value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE);
+    NPT_Result WaitWhileEquals(int value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE);
 
  private:
     // members
-    volatile NPT_Integer m_Value;
-    NPT_Mutex            m_Lock;
-    NPT_Win32Event       m_Event;
+    volatile int   m_Value;
+    NPT_Mutex      m_Lock;
+    NPT_Win32Event m_Event;
 };
 
 /*----------------------------------------------------------------------
 |   NPT_Win32SharedVariable::NPT_Win32SharedVariable
 +---------------------------------------------------------------------*/
-NPT_Win32SharedVariable::NPT_Win32SharedVariable(NPT_Integer value) : 
+NPT_Win32SharedVariable::NPT_Win32SharedVariable(int value) : 
     m_Value(value)
 {
 }
@@ -218,52 +224,43 @@ NPT_Win32SharedVariable::~NPT_Win32SharedVariable()
 /*----------------------------------------------------------------------
 |   NPT_Win32SharedVariable::SetValue
 +---------------------------------------------------------------------*/
-NPT_Result
-NPT_Win32SharedVariable::SetValue(NPT_Integer value)
+void
+NPT_Win32SharedVariable::SetValue(int value)
 {
     m_Lock.Lock();
     if (value != m_Value) {
-        //NPT_Debug("NPT_Win32SharedVariable::SetValue - value changed to %d\n", value);
         m_Value = value;
         m_Event.Signal();
     }
     m_Lock.Unlock();
-    
-    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
 |   NPT_Win32SharedVariable::GetValue
 +---------------------------------------------------------------------*/
-NPT_Result
-NPT_Win32SharedVariable::GetValue(NPT_Integer& value)
+int
+NPT_Win32SharedVariable::GetValue()
 {
-    // reading an integer should be atomic on most platforms
-    value = m_Value;
-
-    return NPT_SUCCESS;
+    // reading an integer should be atomic on all Win32 platforms
+    return m_Value;
 }
 
 /*----------------------------------------------------------------------
 |   NPT_Win32SharedVariable::WaitUntilEquals
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_Win32SharedVariable::WaitUntilEquals(NPT_Integer value, NPT_Timeout timeout)
+NPT_Win32SharedVariable::WaitUntilEquals(int value, NPT_Timeout timeout)
 {
-    //NPT_Debug("NPT_Win32SharedVariable::WaitUntilEquals - want %d\n", value);
     do {
         m_Lock.Lock();
         if (m_Value == value) {
-            //NPT_Debug("NPT_Win32SharedVariable::WaitUntilEquals - got it (%d)\n", value);
             break;
         }
         m_Lock.Unlock();
-        //NPT_Debug("NPT_Win32SharedVariable::WaitUntilEquals - prewait\n");
         {
              NPT_Result result = m_Event.Wait(timeout);
              if (NPT_FAILED(result)) return result;
         }
-        //NPT_Debug("NPT_Win32SharedVariable::WaitUntilEquals - postwait\n");
     } while (1);
 
     m_Lock.Unlock();
@@ -275,22 +272,18 @@ NPT_Win32SharedVariable::WaitUntilEquals(NPT_Integer value, NPT_Timeout timeout)
 |   NPT_Win32SharedVariable::WaitWhileEquals
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_Win32SharedVariable::WaitWhileEquals(NPT_Integer value, NPT_Timeout timeout)
+NPT_Win32SharedVariable::WaitWhileEquals(int value, NPT_Timeout timeout)
 {
-    //NPT_Debug("NPT_Win32SharedVariable::WaitWhileEquals - want != %d\n", value);
     do {
         m_Lock.Lock();
         if (m_Value != value) {
-            //NPT_Debug("NPT_Win32SharedVariable::WaitWhileEquals - got it (%d != %d)\n", value, m_Value);
             break;
         }
         m_Lock.Unlock();
-        //NPT_Debug("NPT_Win32SharedVariable::WaitWhileEquals - prewait\n");
         {
              NPT_Result result = m_Event.Wait(timeout);
              if (NPT_FAILED(result)) return result;
         }
-        //NPT_Debug("NPT_Win32SharedVariable::WaitWhileEquals - postwait\n");
     } while (1);
 
     m_Lock.Unlock();
@@ -301,7 +294,7 @@ NPT_Win32SharedVariable::WaitWhileEquals(NPT_Integer value, NPT_Timeout timeout)
 /*----------------------------------------------------------------------
 |   NPT_SharedVariable::NPT_SharedVariable
 +---------------------------------------------------------------------*/
-NPT_SharedVariable::NPT_SharedVariable(NPT_Integer value)
+NPT_SharedVariable::NPT_SharedVariable(int value)
 {
     m_Delegate = new NPT_Win32SharedVariable(value);
 }
@@ -313,12 +306,12 @@ class NPT_Win32AtomicVariable : public NPT_AtomicVariableInterface
 {
  public:
     // methods
-                NPT_Win32AtomicVariable(NPT_Integer value);
+                NPT_Win32AtomicVariable(int value);
                ~NPT_Win32AtomicVariable();
-    NPT_Integer Increment(); 
-    NPT_Integer Decrement();
-    void        SetValue(NPT_Integer value);
-    NPT_Integer GetValue();
+    int  Increment(); 
+    int  Decrement();
+    void SetValue(int value);
+    int  GetValue();
 
  private:
     // members
@@ -328,7 +321,7 @@ class NPT_Win32AtomicVariable : public NPT_AtomicVariableInterface
 /*----------------------------------------------------------------------
 |   NPT_Win32AtomicVariable::NPT_Win32AtomicVariable
 +---------------------------------------------------------------------*/
-NPT_Win32AtomicVariable::NPT_Win32AtomicVariable(NPT_Integer value) : 
+NPT_Win32AtomicVariable::NPT_Win32AtomicVariable(int value) : 
     m_Value(value)
 {
 }
@@ -343,7 +336,7 @@ NPT_Win32AtomicVariable::~NPT_Win32AtomicVariable()
 /*----------------------------------------------------------------------
 |   NPT_Win32AtomicVariable::Increment
 +---------------------------------------------------------------------*/
-NPT_Integer
+int
 NPT_Win32AtomicVariable::Increment()
 {
     return InterlockedIncrement(const_cast<LONG*>(&m_Value));
@@ -352,7 +345,7 @@ NPT_Win32AtomicVariable::Increment()
 /*----------------------------------------------------------------------
 |   NPT_Win32AtomicVariable::Decrement
 +---------------------------------------------------------------------*/
-NPT_Integer
+int
 NPT_Win32AtomicVariable::Decrement()
 {
     return InterlockedDecrement(const_cast<LONG*>(&m_Value));
@@ -362,7 +355,7 @@ NPT_Win32AtomicVariable::Decrement()
 |   NPT_Win32AtomicVariable::SetValue
 +---------------------------------------------------------------------*/
 void
-NPT_Win32AtomicVariable::SetValue(NPT_Integer value)
+NPT_Win32AtomicVariable::SetValue(int value)
 {
     m_Value = value;
 }
@@ -370,7 +363,7 @@ NPT_Win32AtomicVariable::SetValue(NPT_Integer value)
 /*----------------------------------------------------------------------
 |   NPT_Win32AtomicVariable::GetValue
 +---------------------------------------------------------------------*/
-NPT_Integer
+int
 NPT_Win32AtomicVariable::GetValue()
 {
     return m_Value;
@@ -379,7 +372,7 @@ NPT_Win32AtomicVariable::GetValue()
 /*----------------------------------------------------------------------
 |   NPT_AtomicVariable::NPT_AtomicVariable
 +---------------------------------------------------------------------*/
-NPT_AtomicVariable::NPT_AtomicVariable(NPT_Integer value)
+NPT_AtomicVariable::NPT_AtomicVariable(int value)
 {
     m_Delegate = new NPT_Win32AtomicVariable(value);
 }
@@ -455,9 +448,9 @@ NPT_Win32Thread::EntryPoint(void* argument)
 {
     NPT_Win32Thread* thread = reinterpret_cast<NPT_Win32Thread*>(argument);
 
-    NPT_Debug(":: NPT_Win32Thread::EntryPoint - in =======================\n");
+    NPT_LOG_FINE("thread in =======================");
 
-    // set random seed
+    // set random seed per thread
     NPT_TimeStamp now;
     NPT_System::GetCurrentTimeStamp(now);
     NPT_System::SetRandomSeed(now.m_NanoSeconds + thread->m_ThreadId);
@@ -465,7 +458,8 @@ NPT_Win32Thread::EntryPoint(void* argument)
     // run the thread 
     thread->Run();
     
-    NPT_Debug(":: NPT_Win32Thread::EntryPoint - out ======================\n");
+    // Logging here will cause a crash on exit because LogManager may already be destroyed
+    //NPT_LOG_FINE("thread out ======================");
 
     // if the thread is detached, delete it
     if (thread->m_Detached) {
@@ -487,11 +481,11 @@ NPT_Win32Thread::Start()
 {
     if (m_ThreadHandle > 0) {
         // failed
-        NPT_Debug(":: NPT_Win32Thread::Start already started !\n");
+        NPT_LOG_WARNING("thread already started !");
         return NPT_ERROR_INVALID_STATE;
     }
 
-    NPT_Debug(":: NPT_Win32Thread::Start - creating thread\n");
+    NPT_LOG_FINE("creating thread");
 
     // create the native thread
 #if defined(_WIN32_WCE)
@@ -537,8 +531,9 @@ NPT_Win32Thread::Wait(NPT_Timeout timeout /* = NPT_TIMEOUT_INFINITE */)
     }
 
     // wait for the thread to finish
-    //NPT_Debug(":: NPT_Win32Thread::Wait - joining thread id %d\n", m_ThreadId);
-    DWORD result = WaitForSingleObject(m_ThreadHandle, timeout==NPT_TIMEOUT_INFINITE?INFINITE:timeout);
+    NPT_LOG_FINE_1("joining thread id %d", m_ThreadId);
+    DWORD result = WaitForSingleObject(m_ThreadHandle, 
+                                       timeout==NPT_TIMEOUT_INFINITE?INFINITE:timeout);
     if (result != WAIT_OBJECT_0) {
         return NPT_FAILURE;
     } else {

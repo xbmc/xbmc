@@ -63,16 +63,10 @@ NPT_SimpleMessageQueue::PumpMessage(NPT_Timeout timeout /* = NPT_TIMEOUT_INFINIT
     if (NPT_SUCCEEDED(result) && capsule) {
         if (capsule->m_Handler && capsule->m_Message) {
             result = capsule->m_Handler->HandleMessage(capsule->m_Message);
-            //result = capsule->m_Message->Dispatch(capsule->m_Handler);
         }
         delete capsule->m_Message;
         delete capsule;
-        return result;
-    } else {
-        if (result != NPT_ERROR_LIST_EMPTY) {
-            NPT_Debug("NPT_SimpleMessageQueue::PumpMessage - exit (%d)\n", 
-                      result);
-        }
-        return result;
-    }
+    } 
+
+    return result;
 }

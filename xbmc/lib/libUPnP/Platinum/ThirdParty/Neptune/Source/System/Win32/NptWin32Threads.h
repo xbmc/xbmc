@@ -41,7 +41,7 @@ class NPT_Win32Event
 {
 public:
     // methods
-             NPT_Win32Event(bool manual = false);
+             NPT_Win32Event(bool manual = false, bool initial = false);
     virtual ~NPT_Win32Event();
 
     virtual NPT_Result Wait(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE);

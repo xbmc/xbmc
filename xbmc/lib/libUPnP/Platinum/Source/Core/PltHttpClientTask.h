@@ -2,7 +2,7 @@
 |
 |   Platinum - HTTP Client Tasks
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -22,6 +22,7 @@
 +---------------------------------------------------------------------*/
 class PLT_HttpTcpConnector : public NPT_HttpClient::Connector
 {
+    virtual ~PLT_HttpTcpConnector() {}
     virtual NPT_Result Connect(const char*                   hostname, 
                                NPT_UInt16                    port, 
                                NPT_Timeout                   connection_timeout,
@@ -51,7 +52,9 @@ class PLT_HttpClientSocketTask : public PLT_ThreadTask
 friend class PLT_ThreadTask;
 
 public:
-    PLT_HttpClientSocketTask(NPT_HttpRequest* request = NULL, bool wait_forever = false);
+    PLT_HttpClientSocketTask(NPT_HttpRequest* request = NULL, 
+                             bool             wait_forever = false);
+
     NPT_Result AddRequest(NPT_HttpRequest* request);
 
 protected:
@@ -62,18 +65,19 @@ protected:
     virtual void DoAbort() { if (m_Connector) m_Connector->Abort(); }
     virtual void DoRun();
 
-    virtual NPT_Result ProcessResponse(NPT_Result        res, 
-                                       NPT_HttpRequest*  request, 
-                                       NPT_SocketInfo&   info,
-                                       NPT_HttpResponse* response);
+    virtual NPT_Result ProcessResponse(NPT_Result                    res, 
+                                       NPT_HttpRequest*              request, 
+                                       const NPT_HttpRequestContext& context,
+                                       NPT_HttpResponse*             response);
 
 private:
     NPT_Result GetNextRequest(NPT_HttpRequest*& request, NPT_Timeout timeout);
 
 protected:
-    bool                                    m_WaitForever;
-    NPT_Lock<NPT_Queue<NPT_HttpRequest> >   m_Requests;
-    PLT_HttpTcpConnector*                   m_Connector; //TBD: we need a lock to be able to abort
+    NPT_HttpClient              m_Client;
+    bool                        m_WaitForever;
+    NPT_Queue<NPT_HttpRequest>  m_Requests;
+    PLT_HttpTcpConnector*       m_Connector; //TBD: we need a lock to be able to abort
 };
 
 /*----------------------------------------------------------------------
@@ -91,11 +95,11 @@ public:
 
 protected:
     // PLT_HttpClientSocketTask method
-    NPT_Result ProcessResponse(NPT_Result        res, 
-                               NPT_HttpRequest*  request, 
-                               NPT_SocketInfo&   info, 
-                               NPT_HttpResponse* response) {
-        return m_Data->ProcessResponse(res, request, info, response);
+    NPT_Result ProcessResponse(NPT_Result                    res, 
+                               NPT_HttpRequest*              request, 
+                               const NPT_HttpRequestContext& context, 
+                               NPT_HttpResponse*             response) {
+        return m_Data->ProcessResponse(res, request, context, response);
     }
 
 protected:
@@ -116,10 +120,10 @@ protected:
 
 protected:
     // PLT_HttpClientSocketTask method
-    NPT_Result ProcessResponse(NPT_Result        res, 
-                               NPT_HttpRequest*  request, 
-                               NPT_SocketInfo&   info, 
-                               NPT_HttpResponse* response);
+    NPT_Result ProcessResponse(NPT_Result                    res, 
+                               NPT_HttpRequest*              request, 
+                               const NPT_HttpRequestContext& context, 
+                               NPT_HttpResponse*             response);
 };
 
 #endif /* _PLT_HTTP_CLIENT_TASK_H_ */

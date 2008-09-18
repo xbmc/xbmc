@@ -22,7 +22,7 @@ extern NPT_UInt8 SCPDXML[];
 /*----------------------------------------------------------------------
 |   PLT_LightSampleDevice::PLT_LightSampleDevice
 +---------------------------------------------------------------------*/
-PLT_LightSampleDevice::PLT_LightSampleDevice(char* FriendlyName, char* UUID) :	
+PLT_LightSampleDevice::PLT_LightSampleDevice(const char* FriendlyName, const char* UUID) :	
     PLT_DeviceHost("/", UUID, "urn:schemas-upnp-org:device:SwitchPower:1", FriendlyName)
 {
     PLT_Service* service = new PLT_Service(
@@ -30,8 +30,7 @@ PLT_LightSampleDevice::PLT_LightSampleDevice(char* FriendlyName, char* UUID) :
         "urn:schemas-upnp-org:service:SwitchPower:1", 
         "urn:upnp-org:serviceId:SwitchPower.001");
 
-    if (SCPDXML &&
-        NPT_SUCCEEDED(service->SetSCPDXML((const char*)SCPDXML))) {
+    if (NPT_SUCCEEDED(service->SetSCPDXML((const char*)SCPDXML))) {
         service->InitURLs("SwitchPower", m_UUID);
         AddService(service);
     } else {
@@ -52,8 +51,11 @@ PLT_LightSampleDevice::~PLT_LightSampleDevice()
 |   PLT_LightSampleDevice::OnAction
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_LightSampleDevice::OnAction(PLT_ActionReference& action, NPT_SocketInfo* /* info */)
+PLT_LightSampleDevice::OnAction(PLT_ActionReference&          action,
+                                const NPT_HttpRequestContext& context)
 {
+    NPT_COMPILER_UNUSED(context);
+
     /* parse the action name */
     NPT_String name = action->GetActionDesc()->GetName();
     if (name.Compare("SetTarget") == 0) {

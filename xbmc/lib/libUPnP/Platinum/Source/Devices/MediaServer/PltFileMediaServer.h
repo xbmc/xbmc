@@ -2,7 +2,7 @@
 |
 |   Platinum - File Media Server
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -43,30 +43,42 @@ public:
     NPT_Result AddMetadataHandler(PLT_MetadataHandler* handler);
 
     // overridable
-    virtual NPT_Result ProcessFileRequest(NPT_HttpRequest& request, NPT_HttpResponse& response, NPT_SocketInfo& client_info);
-
+    virtual NPT_Result ProcessFileRequest(NPT_HttpRequest&              request, 
+                                          const NPT_HttpRequestContext& context,
+                                          NPT_HttpResponse&             response);
+                                          
 protected:
     virtual ~PLT_FileMediaServer();
 
     // PLT_DeviceHost methods
     virtual NPT_Result Start(PLT_SsdpListenTask* task);
     virtual NPT_Result Stop(PLT_SsdpListenTask* task);
-
-    virtual NPT_Result OnAlbumArtRequest(NPT_String filepath, NPT_HttpResponse& response);
     
     // PLT_MediaServer methods
-    virtual NPT_Result OnBrowseMetadata(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
-    virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference& action, const char* object_id, NPT_SocketInfo* info = NULL);
+    virtual NPT_Result OnBrowseMetadata(PLT_ActionReference&          action, 
+                                        const char*                   object_id, 
+                                        const NPT_HttpRequestContext& context);
+    virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference&          action, 
+                                              const char*                   object_id, 
+                                              const NPT_HttpRequestContext& context);
 
-    virtual bool       ProceedWithEntry(const NPT_String filepath, NPT_DirectoryEntryInfo& info);
+    // protected methods
+    virtual NPT_Result ServeFile(NPT_HttpRequest&              request, 
+                                 const NPT_HttpRequestContext& context,
+                                 NPT_HttpResponse&             response,
+                                 NPT_String                    uri_path,
+                                 NPT_String                    file_path);
+    virtual NPT_Result OnAlbumArtRequest(NPT_HttpResponse& response, 
+                                         NPT_String        file_path);
+    virtual bool       ProceedWithEntry(const NPT_String        filepath, 
+                                        NPT_DirectoryEntryInfo& info);
     virtual NPT_Result GetEntryCount(const char* path, NPT_Cardinal& count); 
     virtual NPT_Result GetFilePath(const char* object_id, NPT_String& filepath);
 
-    virtual PLT_MediaObject* BuildFromFilePath(
-        const NPT_String&   filepath, 
-        bool                with_count = true, 
-        NPT_SocketInfo*     info = NULL, 
-        bool                keep_extension_in_title = false);
+    virtual PLT_MediaObject* BuildFromFilePath(const NPT_String&        filepath, 
+                                               bool                     with_count = true, 
+                                               const NPT_SocketAddress* req_local_address = NULL, 
+                                               bool                     keep_extension_in_title = false);
 
 public:
     NPT_UInt16                     m_FileServerPort;

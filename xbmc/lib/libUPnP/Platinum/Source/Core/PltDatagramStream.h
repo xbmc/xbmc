@@ -2,7 +2,7 @@
 |
 |   Platinum - Datagram Stream
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -33,11 +33,10 @@ public:
                     NPT_Size* bytes_read = 0);
 
     NPT_Result Seek(NPT_Position offset) { NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
-    NPT_Result Skip(NPT_Position offset) { NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
+    NPT_Result Skip(NPT_Size offset) { NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
     NPT_Result Tell(NPT_Position& offset){ NPT_COMPILER_UNUSED(offset); return NPT_FAILURE; }
-    NPT_Result GetSize(NPT_Size& size)   { NPT_COMPILER_UNUSED(size); return NPT_FAILURE; }
-    NPT_Result GetAvailable(NPT_Size& available) { NPT_COMPILER_UNUSED(available); return NPT_FAILURE; }
-
+    NPT_Result GetSize(NPT_LargeSize& size)   { NPT_COMPILER_UNUSED(size); return NPT_FAILURE; }
+    NPT_Result GetAvailable(NPT_LargeSize& available) { NPT_COMPILER_UNUSED(available); return NPT_FAILURE; }
         
 protected:
     NPT_UdpSocket*      m_Socket;

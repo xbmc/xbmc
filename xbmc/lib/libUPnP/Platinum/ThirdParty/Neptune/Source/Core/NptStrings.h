@@ -19,6 +19,7 @@
 #endif
 #include "NptTypes.h"
 #include "NptConstants.h"
+#include "NptList.h"
 #include "NptDebug.h"
 
 /*----------------------------------------------------------------------
@@ -33,8 +34,8 @@ class NPT_String
 {
 public:
     // factories
-    static NPT_String FromInteger(long value);
-    static NPT_String FromIntegerU(unsigned long value);
+    static NPT_String FromInteger(NPT_Int64 value);
+    static NPT_String FromIntegerU(NPT_UInt64 value);
 
     // constructors
     NPT_String(const NPT_String& str);
@@ -71,7 +72,8 @@ public:
                *this : 
                SubString(GetLength()-length, length);
     }
-
+    NPT_List<NPT_String> Split(const char* separator) const;
+    
     // buffer management
     void       Reserve(NPT_Size length);
 
@@ -80,6 +82,7 @@ public:
     NPT_String ToUppercase() const;
     NPT_Result ToInteger(long& value, bool relaxed = true) const;
     NPT_Result ToInteger(unsigned long& value, bool relaxed = true) const;
+    NPT_Result ToInteger(NPT_UInt64& value, bool relaxed = true) const;
     NPT_Result ToFloat(float& value, bool relaxed = true) const;
     
     // processing

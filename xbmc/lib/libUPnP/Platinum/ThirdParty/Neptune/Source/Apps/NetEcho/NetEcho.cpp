@@ -105,7 +105,7 @@ TcpServerLoop(int port)
 
     for (;;) {
         NPT_Debug("waiting for client on port %d\n", port);
-        NPT_Result result = listener.WaitForNewClient(client);
+        result = listener.WaitForNewClient(client);
         NPT_SocketInfo socket_info;
         client->GetInfo(socket_info);
         NPT_Debug("client connected from %s:%d\n",

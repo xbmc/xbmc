@@ -2,7 +2,7 @@
 |
 |   Platinum - Service
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -100,22 +100,22 @@ private:
 
     // Events
     NPT_Result ProcessNewSubscription(
-        PLT_TaskManager*   task_manager,
-        NPT_SocketAddress& addr, 
-        NPT_String&        strCallbackURLs, 
-        int                timeout, 
-        NPT_HttpResponse&  response);
+        PLT_TaskManager*         task_manager,
+        const NPT_SocketAddress& addr, 
+        const NPT_String&        callback_urls, 
+        int                      timeout, 
+        NPT_HttpResponse&        response);
 
     NPT_Result ProcessRenewSubscription(
-        NPT_SocketAddress& addr, 
-        NPT_String&        SID, 
-        int                timeout,
-        NPT_HttpResponse&  response);
-
+        const NPT_SocketAddress& addr, 
+        const NPT_String&        sid, 
+        int                      timeout,
+        NPT_HttpResponse&        response);
+    
     NPT_Result ProcessCancelSubscription(
-        NPT_SocketAddress& addr, 
-        NPT_String&        SID, 
-        NPT_HttpResponse&  response);
+        const NPT_SocketAddress& addr, 
+        const NPT_String&        sid, 
+        NPT_HttpResponse&        response);
 
 
 protected:
@@ -130,8 +130,8 @@ protected:
     NPT_String      m_SCPDURL;
     NPT_String      m_ControlURL;
     NPT_String      m_EventSubURL;
-    PLT_ServiceEventTask* m_EventTask;
-    
+
+    PLT_ServiceEventTask*           m_EventTask;
     NPT_Array<PLT_ActionDesc*>      m_ActionDescs;
     NPT_List<PLT_StateVariable*>    m_StateVars;
     NPT_Mutex                       m_Lock;
