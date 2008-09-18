@@ -1282,3 +1282,4 @@ CPoint CGUIMediaWindow::GetContextPosition() const
   }
   return pos;
 }
+
