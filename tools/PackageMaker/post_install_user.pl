@@ -129,8 +129,10 @@ sub get_default_sources {
         }
         
         $sources->{'music'}->{'Music'} = $home."/Music";
-        $sources->{'pictures'}->{'Pictures'} = $home."/Pictures";
+        $sources->{'music'}->{'Music Playlists'} = "special://musicplaylists";
         $sources->{'video'}->{'Movies'} = $home."/Movies";
+        $sources->{'video'}->{'Video Playlists'} = "special://videoplaylists";
+        $sources->{'pictures'}->{'Pictures'} = $home."/Pictures";
 
 	my $plugindir = "$xbmchome/plugins/";
 
