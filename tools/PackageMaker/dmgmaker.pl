@@ -39,6 +39,16 @@ sub make_dmg {
     if ( -f "VolumeIcon.icns" ) {
 	`ditto VolumeIcon.icns "/Volumes/$volname/.VolumeIcon.icns"`;
     }
+    if ( -d "background" ) {
+	`mkdir "/Volumes/$volname/background"`;
+	`ditto background "/Volumes/$volname/background/"`;
+    }
+    if ( -f "VolumeDSStore" ) {
+	`ditto VolumeDSStore "/Volumes/$volname/.DS_Store"`
+    }
+    if ( -d "background" ) {
+	`/Developer/Tools/SetFile -a V "/Volumes/$volname/background"`;
+    }
     `/Developer/Tools/SetFile -a C "/Volumes/$volname/"`;
     `hdiutil detach $dev_handle`;
     `hdiutil convert dist/$volname.dmg -format UDZO -o dist/$volname.udzo.dmg`;
