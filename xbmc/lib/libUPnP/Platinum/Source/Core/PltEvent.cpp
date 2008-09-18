@@ -2,7 +2,7 @@
 |
 |   Platinum - Control/Event
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -177,11 +177,11 @@ PLT_EventSubscriber::Notify(NPT_List<PLT_StateVariable*>& vars)
     request->GetHeaders().SetHeader(NPT_HTTP_HEADER_CONNECTION, "keep-alive");
 
     // add the extra headers
-    PLT_HttpHelper::SetContentType(request, "text/xml");
-    PLT_UPnPMessageHelper::SetNT(request, "upnp:event");
-    PLT_UPnPMessageHelper::SetNTS(request, "upnp:propchange");
-    PLT_UPnPMessageHelper::SetSID(request, m_SID);
-    PLT_UPnPMessageHelper::SetSeq(request, m_EventKey);
+    PLT_HttpHelper::SetContentType(*request, "text/xml");
+    PLT_UPnPMessageHelper::SetNT(*request, "upnp:event");
+    PLT_UPnPMessageHelper::SetNTS(*request, "upnp:propchange");
+    PLT_UPnPMessageHelper::SetSID(*request, m_SID);
+    PLT_UPnPMessageHelper::SetSeq(*request, m_EventKey);
 
     // wrap around sequence to 1
     if (++m_EventKey == 0) m_EventKey = 1;
@@ -194,7 +194,7 @@ PLT_EventSubscriber::Notify(NPT_List<PLT_StateVariable*>& vars)
     }
     delete propertyset;
 
-    PLT_HttpHelper::SetBody(request, xml);
+    PLT_HttpHelper::SetBody(*request, xml);
 
     // start the task now if not started already
     if (!m_SubscriberTask) {

@@ -2,7 +2,7 @@
 |
 |   Platinum - Media Crawler
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
 ****************************************************************/
@@ -26,7 +26,7 @@ CMediaCrawler::CMediaCrawler(PLT_CtrlPointReference& ctrlPoint,
                              unsigned int            port /* = 0 */,
                              unsigned int            fileserver_port /* = 0 */) :
     PLT_MediaBrowser(ctrlPoint, NULL),
-    PLT_FileMediaServer("/", friendly_name, show_ip, udn, port, fileserver_port)
+    PLT_MediaConnect("/", friendly_name, show_ip, udn, port, fileserver_port)
 {
 }
 
@@ -83,7 +83,8 @@ CMediaCrawler::FormatObjectId(const NPT_String& server_uuid, const NPT_String& s
 |   PLT_MediaServer::OnBrowse
 +---------------------------------------------------------------------*/
 NPT_Result
-CMediaCrawler::OnBrowse(PLT_ActionReference& action, NPT_SocketInfo* info /* = NULL */)
+CMediaCrawler::OnBrowse(PLT_ActionReference&          action, 
+                        const NPT_HttpRequestContext& context)
 {
     NPT_Result res;
 
@@ -114,7 +115,7 @@ CMediaCrawler::OnBrowse(PLT_ActionReference& action, NPT_SocketInfo* info /* = N
         if (server_object_id.GetLength() == 0) {
             server_object_id = "0";
         }
-        res = OnBrowseDevice(action, server_uuid, server_object_id, info);
+        res = OnBrowseDevice(action, server_uuid, server_object_id, context);
     }
 
     if (NPT_FAILED(res) && (action->GetErrorCode() == 0)) {
@@ -189,30 +190,36 @@ CMediaCrawler::OnBrowseRoot(PLT_ActionReference& action)
         unsigned long total_matches = 0;
         //unsigned long update_id = 0;
         PLT_MediaContainer item;
-        NPT_String tmp;
+        NPT_String item_didl;
         NPT_String didl = didl_header;
 
-        // populate a list of containers (one container per known servers)
-        const NPT_Lock<PLT_DeviceDataReferenceList>& devices = GetMediaServers();
-        NPT_Lock<PLT_DeviceDataReferenceList>::Iterator entry = devices.GetFirstItem();
-        while (entry) {
-            PLT_DeviceDataReference device = (*entry);
-            item.m_Title = device->GetFriendlyName();
-            item.m_ObjectID = FormatObjectId(device->GetUUID(), "0");
-            item.m_ParentID = "0";
-            item.m_ObjectClass.type = "object.container";
+		{
+			// populate a list of containers (one container per known servers)
+			const NPT_Lock<PLT_DeviceDataReferenceList>& devices = GetMediaServers();
+			NPT_AutoLock lock((NPT_Mutex&)devices);
 
-            if ((cur_index >= start_index) && ((num_returned < req_count) || (req_count == 0))) {
-                NPT_CHECK_SEVERE(PLT_Didl::ToDidl(item, filter, tmp));
+			NPT_Lock<PLT_DeviceDataReferenceList>::Iterator entry = devices.GetFirstItem();
+			while (entry) {
+				PLT_DeviceDataReference device = (*entry);
+				item.m_Title = device->GetFriendlyName();
+				item.m_ObjectID = FormatObjectId(device->GetUUID(), "0");
+				item.m_ParentID = "0";
+				item.m_ObjectClass.type = "object.container";
 
-                didl += tmp;
-                num_returned++;
-            }
-            cur_index++;
-            total_matches++;  
+                // reset tmp didl
+                item_didl = "";
+				if ((cur_index >= start_index) && ((num_returned < req_count) || (req_count == 0))) {
+					NPT_CHECK_SEVERE(PLT_Didl::ToDidl(item, filter, item_didl));
 
-            ++entry;
-        }
+					didl += item_didl;
+					num_returned++;
+				}
+				cur_index++;
+				total_matches++;  
+
+				++entry;
+			}
+		}
 
         didl += didl_footer;
 
@@ -229,10 +236,10 @@ CMediaCrawler::OnBrowseRoot(PLT_ActionReference& action)
 |   CMediaCrawler::OnBrowseDevice
 +---------------------------------------------------------------------*/
 NPT_Result
-CMediaCrawler::OnBrowseDevice(PLT_ActionReference& action, 
-                              const char*          server_uuid, 
-                              const char*          server_object_id, 
-                              NPT_SocketInfo*      info /* = NULL */)
+CMediaCrawler::OnBrowseDevice(PLT_ActionReference&          action, 
+                              const char*                   server_uuid, 
+                              const char*                   server_object_id, 
+                              const NPT_HttpRequestContext& context)
 {
     NPT_Result res;
     PLT_DeviceDataReference device;
@@ -240,7 +247,7 @@ CMediaCrawler::OnBrowseDevice(PLT_ActionReference& action,
     {
         // look for device first
         const NPT_Lock<PLT_DeviceDataReferenceList>& devices = GetMediaServers();
-        //NPT_AutoLock lock(devices);
+        NPT_AutoLock lock((NPT_Mutex&)devices);
 
         if (NPT_FAILED(NPT_ContainerFind(devices, PLT_DeviceDataFinder(server_uuid), device))) {
             /* error */
@@ -297,7 +304,7 @@ CMediaCrawler::OnBrowseDevice(PLT_ActionReference& action,
         return NPT_FAILURE;
     }    
    
-    action->SetArgumentValue("Result", UpdateDidl(server_uuid, browse_info->didl, info));
+    action->SetArgumentValue("Result", UpdateDidl(server_uuid, browse_info->didl, &context.GetLocalAddress()));
     action->SetArgumentValue("NumberReturned", browse_info->nr);
     action->SetArgumentValue("TotalMatches", browse_info->tm);
     action->SetArgumentValue("UpdateId", browse_info->uid);
@@ -310,7 +317,10 @@ CMediaCrawler::OnBrowseDevice(PLT_ActionReference& action,
 |   CMediaCrawler::OnBrowseResponse
 +---------------------------------------------------------------------*/
 NPT_Result
-CMediaCrawler::OnBrowseResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_ActionReference& action, void* userdata)
+CMediaCrawler::OnBrowseResponse(NPT_Result               res, 
+                                PLT_DeviceDataReference& device, 
+                                PLT_ActionReference&     action, 
+                                void*                    userdata)
 {
     NPT_COMPILER_UNUSED(device);
 
@@ -355,7 +365,9 @@ done:
 |   CMediaCrawler::UpdateDidl
 +---------------------------------------------------------------------*/
 NPT_String
-CMediaCrawler::UpdateDidl(const char* server_uuid, const NPT_String& didl, NPT_SocketInfo* info)
+CMediaCrawler::UpdateDidl(const char*              server_uuid, 
+                          const NPT_String&        didl, 
+                          const NPT_SocketAddress* req_local_address /* = NULL */)
 {
     NPT_String     new_didl;
     NPT_String     str;
@@ -399,11 +411,11 @@ CMediaCrawler::UpdateDidl(const char* server_uuid, const NPT_String& didl, NPT_S
         }
 
         // resources remapping
-        NPT_Array<NPT_XmlElementNode*> res;
-        PLT_XmlHelper::GetChildren(child, res, "res");
-        if (res.GetItemCount() > 0) {
-            for (unsigned int i=0; i<res.GetItemCount(); i++) {
-                NPT_XmlElementNode* resource = res[i];
+        NPT_Array<NPT_XmlElementNode*> resources;
+        PLT_XmlHelper::GetChildren(child, resources, "res");
+        if (resources.GetItemCount() > 0) {
+            for (unsigned int i=0; i<resources.GetItemCount(); i++) {
+                NPT_XmlElementNode* resource = resources[i];
                 NPT_XmlAttribute*   attribute_prot;
                 const NPT_String*   url;
                 if (NPT_SUCCEEDED(PLT_XmlHelper::GetAttribute(resource, "protocolInfo", attribute_prot)) && (url = resource->GetText())) {
@@ -416,22 +428,22 @@ CMediaCrawler::UpdateDidl(const char* server_uuid, const NPT_String& didl, NPT_S
                     // urls (in case the local PC has more than 1 NICs)
 
                     // replace the url
-                    NPT_List<NPT_XmlNode*>& children = resource->GetChildren();
+                    NPT_List<NPT_XmlNode*>& nodes = resource->GetChildren();
                     NPT_HttpUrl http_url(NPT_Uri::PercentDecode(*url));
-                    if ((http_url.GetHost() == "localhost" || http_url.GetHost() == "127.0.0.1") && info) {
-                        if (info->local_address.GetIpAddress().AsLong()) {
-                            http_url.SetHost(info->local_address.GetIpAddress().ToString());
+                    if ((http_url.GetHost() == "localhost" || http_url.GetHost() == "127.0.0.1") && req_local_address) {
+                        if (req_local_address->GetIpAddress().AsLong()) {
+                            http_url.SetHost(req_local_address->GetIpAddress().ToString());
 
                             // replace text
-                            children.Apply(NPT_ObjectDeleter<NPT_XmlNode>());
-                            children.Clear();
+                            nodes.Apply(NPT_ObjectDeleter<NPT_XmlNode>());
+                            nodes.Clear();
                             resource->AddText(http_url.ToString());
                             url = resource->GetText();
                         }
                     }
 
                     CStreamHandler* handler = NULL;
-                    NPT_Result res = NPT_ContainerFind(m_StreamHandlers, CStreamHandlerFinder(attribute_prot->GetValue(), *url), handler);
+                    res = NPT_ContainerFind(m_StreamHandlers, CStreamHandlerFinder(attribute_prot->GetValue(), *url), handler);
                     if (NPT_SUCCEEDED(res)) {
                         handler->ModifyResource(resource);
                     }
@@ -454,11 +466,11 @@ cleanup:
 |   CMediaCrawler::ProcessFileRequest
 +---------------------------------------------------------------------*/
 NPT_Result 
-CMediaCrawler::ProcessFileRequest(NPT_HttpRequest&  request, 
-                                  NPT_HttpResponse& response,
-                                  NPT_SocketInfo&   info)
+CMediaCrawler::ProcessFileRequest(NPT_HttpRequest&              request, 
+                                  const NPT_HttpRequestContext& context,
+                                  NPT_HttpResponse&             response)
 {
-    NPT_COMPILER_UNUSED(info);
+    NPT_COMPILER_UNUSED(context);
 
     NPT_LOG_FINE("CMediaCrawler::ProcessFileRequest Received Request:");
     PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, &request);

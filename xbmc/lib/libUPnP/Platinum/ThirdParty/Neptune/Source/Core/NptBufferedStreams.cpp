@@ -121,7 +121,10 @@ NPT_BufferedInputStream::ReleaseBuffer()
 |   NPT_BufferedInputStream::ReadLine
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_BufferedInputStream::ReadLine(char* buffer, NPT_Size size, NPT_Size* chars_read)
+NPT_BufferedInputStream::ReadLine(char*     buffer, 
+                                  NPT_Size  size, 
+                                  NPT_Size* chars_read,
+                                  bool      break_on_cr)
 {
     NPT_Result result = NPT_SUCCESS;
     char*      buffer_start = buffer;
@@ -136,8 +139,10 @@ NPT_BufferedInputStream::ReadLine(char* buffer, NPT_Size size, NPT_Size* chars_r
             // there is some data left in the buffer
             NPT_Byte c = m_Buffer.data[m_Buffer.offset++];
             if (c == '\r') {
-                skip_newline = true;
-                goto done;
+                if (break_on_cr) {
+                    skip_newline = true;
+                    goto done;
+                }
             } else if (c == '\n') {
                 if (m_SkipNewline && (buffer == buffer_start)) {
                     continue;
@@ -153,8 +158,10 @@ NPT_BufferedInputStream::ReadLine(char* buffer, NPT_Size size, NPT_Size* chars_r
             if (m_Buffer.data != NULL) ReleaseBuffer();
             while (NPT_SUCCEEDED(result = m_Source->Read(buffer, 1, NULL))) {
                 if (*buffer == '\r') {
-                    m_SkipNewline = true;
-                    goto done;
+                    if (break_on_cr) {
+                        skip_newline = true;
+                        goto done;
+                    }
                 } else if (*buffer == '\n') {
                     goto done;
                 } else {
@@ -193,7 +200,8 @@ done:
 +---------------------------------------------------------------------*/
 NPT_Result
 NPT_BufferedInputStream::ReadLine(NPT_String& line,
-                                  NPT_Size    max_chars)
+                                  NPT_Size    max_chars,
+                                  bool        break_on_cr)
 {
     // clear the line
     line.SetLength(0);
@@ -203,7 +211,7 @@ NPT_BufferedInputStream::ReadLine(NPT_String& line,
 
     // read the line
     NPT_Size chars_read = 0;
-    NPT_CHECK(ReadLine(line.UseChars(), max_chars, &chars_read));
+    NPT_CHECK(ReadLine(line.UseChars(), max_chars, &chars_read, break_on_cr));
 
     // adjust the length of the string object
     line.SetLength(chars_read);
@@ -315,7 +323,7 @@ NPT_BufferedInputStream::Tell(NPT_Position& offset)
 |   NPT_BufferedInputStream::GetSize
 +---------------------------------------------------------------------*/
 NPT_Result 
-NPT_BufferedInputStream::GetSize(NPT_Size& size)
+NPT_BufferedInputStream::GetSize(NPT_LargeSize& size)
 {
     return m_Source->GetSize(size);
 }
@@ -324,15 +332,15 @@ NPT_BufferedInputStream::GetSize(NPT_Size& size)
 |   NPT_BufferedInputStream::GetAvailable
 +---------------------------------------------------------------------*/
 NPT_Result 
-NPT_BufferedInputStream::GetAvailable(NPT_Size& available)
+NPT_BufferedInputStream::GetAvailable(NPT_LargeSize& available)
 {
-    NPT_Size source_available = 0;
-    NPT_Result result = m_Source->GetAvailable(source_available);
+    NPT_LargeSize source_available = 0;
+    NPT_Result    result = m_Source->GetAvailable(source_available);
     if (NPT_SUCCEEDED(result)) {
         available = m_Buffer.valid-m_Buffer.offset + source_available;
         return NPT_SUCCESS;
     } else {
-        available = 0;
-        return result;
+        available = m_Buffer.valid-m_Buffer.offset;
+        return available?NPT_SUCCESS:result;
     }
 }

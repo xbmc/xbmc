@@ -35,7 +35,7 @@ typedef struct {
 
 typedef struct {
     NPT_DirectoryEntryType type;
-    NPT_Size               size;
+    NPT_LargeSize          size;
     NPT_TimeStamp          created;
     NPT_TimeStamp          modified;
 } NPT_DirectoryEntryInfo;

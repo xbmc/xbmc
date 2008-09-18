@@ -2,7 +2,7 @@
 |
 |   Platinum - Ssdp Proxy
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
 ****************************************************************/
@@ -73,7 +73,7 @@ PLT_SsdpProxy::Start(NPT_UInt32 port)
 }
 
 /*----------------------------------------------------------------------
-|   PLT_SsdpProxy::OnSsdpPacket
+|   CopyRequest
 +---------------------------------------------------------------------*/
 static NPT_HttpRequest* 
 CopyRequest(const NPT_HttpUrl& url, NPT_HttpRequest* request)
@@ -95,9 +95,10 @@ CopyRequest(const NPT_HttpUrl& url, NPT_HttpRequest* request)
 |   PLT_SsdpProxy::OnSsdpPacket
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_SsdpProxy::OnSsdpPacket(NPT_HttpRequest& request, NPT_SocketInfo info) 
+PLT_SsdpProxy::OnSsdpPacket(NPT_HttpRequest&              request, 
+                            const NPT_HttpRequestContext& context) 
 {
-    NPT_COMPILER_UNUSED(info);
+    NPT_COMPILER_UNUSED(context);
 
     // is it a forward message ?
     if (request.GetHeaders().GetHeader("X_SsdpProxy")) 
@@ -107,8 +108,8 @@ PLT_SsdpProxy::OnSsdpPacket(NPT_HttpRequest& request, NPT_SocketInfo info)
 
     // override MX to force a fast response
     long MX;
-    if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetMX(&request, MX))) {
-        PLT_UPnPMessageHelper::SetMX(&request, 1);
+    if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetMX(request, MX))) {
+        PLT_UPnPMessageHelper::SetMX(request, 1);
     }
 
     // for each interface, send this request on the broadcast address
@@ -134,7 +135,7 @@ PLT_SsdpProxy::OnSsdpPacket(NPT_HttpRequest& request, NPT_SocketInfo info)
                 new NPT_UdpSocket(),
                 new_request,
                 10000,
-                info.remote_address); 
+                context.GetRemoteAddress()); 
             StartTask(task);
         }
     }
@@ -152,7 +153,7 @@ PLT_SsdpProxy::OnSsdpPacket(NPT_HttpRequest& request, NPT_SocketInfo info)
         new NPT_UdpSocket(),
         new_request,
         10000,
-        info.remote_address); 
+        context.GetRemoteAddress()); 
     StartTask(task);
     return NPT_SUCCESS;
 }
@@ -161,7 +162,8 @@ PLT_SsdpProxy::OnSsdpPacket(NPT_HttpRequest& request, NPT_SocketInfo info)
 |   PLT_SsdpProxy::OnUnicastSsdpPacket
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_SsdpProxy::OnUnicastSsdpPacket(NPT_HttpRequest& request, NPT_SocketInfo info) 
+PLT_SsdpProxy::OnUnicastSsdpPacket(NPT_HttpRequest&              request, 
+                                   const NPT_HttpRequestContext& context) 
 {
     // is it a forward message ?
     if (request.GetHeaders().GetHeader("X_SsdpProxy")) 
@@ -170,8 +172,8 @@ PLT_SsdpProxy::OnUnicastSsdpPacket(NPT_HttpRequest& request, NPT_SocketInfo info
     request.GetHeaders().AddHeader("X_SsdpProxy", "forwarded");
 
     // look on which interface we received it and send the ssdp search request on this only
-    NPT_List<NPT_NetworkInterface*> if_list;
-    NPT_List<NPT_NetworkInterface*>::Iterator net_if;
+    NPT_List<NPT_NetworkInterface*>                 if_list;
+    NPT_List<NPT_NetworkInterface*>::Iterator       net_if;
     NPT_List<NPT_NetworkInterfaceAddress>::Iterator net_if_addr;
 
     NPT_CHECK_SEVERE(NPT_NetworkInterface::GetNetworkInterfaces(if_list));
@@ -190,7 +192,7 @@ PLT_SsdpProxy::OnUnicastSsdpPacket(NPT_HttpRequest& request, NPT_SocketInfo info
             // that would not be reachable from the remote which sends this packet in the first place
             int i=0;
             while (i<4) {
-                if ((info.remote_address.GetIpAddress().AsBytes()[i] & (*net_if_addr).GetNetMask().AsBytes()[i]) != 
+                if ((context.GetRemoteAddress().GetIpAddress().AsBytes()[i] & (*net_if_addr).GetNetMask().AsBytes()[i]) != 
                     ((*net_if_addr).GetPrimaryAddress().AsBytes()[i] & (*net_if_addr).GetNetMask().AsBytes()[i])) {
                     break;
                 }
@@ -204,8 +206,8 @@ PLT_SsdpProxy::OnUnicastSsdpPacket(NPT_HttpRequest& request, NPT_SocketInfo info
 
             // override MX to force a fast response
             long MX;
-            if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetMX(&request, MX))) {
-                PLT_UPnPMessageHelper::SetMX(&request, 1);
+            if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetMX(request, MX))) {
+                PLT_UPnPMessageHelper::SetMX(request, 1);
             }
 
             // unicast
@@ -224,7 +226,7 @@ PLT_SsdpProxy::OnUnicastSsdpPacket(NPT_HttpRequest& request, NPT_SocketInfo info
                 unicast_socket,
                 unicast_request,
                 10000,
-                info.remote_address); 
+                context.GetRemoteAddress()); 
             StartTask(uncast_task);
 
             // multicast
@@ -244,7 +246,7 @@ PLT_SsdpProxy::OnUnicastSsdpPacket(NPT_HttpRequest& request, NPT_SocketInfo info
                 socket,
                 new_request,
                 10000,
-                info.remote_address); 
+                context.GetRemoteAddress()); 
             StartTask(task);
         }
     }
@@ -258,18 +260,19 @@ PLT_SsdpProxy::OnUnicastSsdpPacket(NPT_HttpRequest& request, NPT_SocketInfo info
 |   PLT_SsdpUnicastListener::OnSsdpPacket
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_SsdpUnicastListener::OnSsdpPacket(NPT_HttpRequest& request, NPT_SocketInfo info) 
+PLT_SsdpUnicastListener::OnSsdpPacket(NPT_HttpRequest&              request, 
+                                      const NPT_HttpRequestContext& context) 
 {
-    return m_Proxy->OnUnicastSsdpPacket(request, info);
+    return m_Proxy->OnUnicastSsdpPacket(request, context);
 }
 
 /*----------------------------------------------------------------------
 |   PLT_SsdpProxyForwardTask::PLT_SsdpProxyForwardTask
 +---------------------------------------------------------------------*/
-PLT_SsdpProxyForwardTask::PLT_SsdpProxyForwardTask(NPT_UdpSocket*     socket,
-                                                   NPT_HttpRequest*   request, 
-                                                   NPT_Timeout        timeout,
-                                                   NPT_SocketAddress& forward_address) : 
+PLT_SsdpProxyForwardTask::PLT_SsdpProxyForwardTask(NPT_UdpSocket*           socket,
+                                                   NPT_HttpRequest*         request, 
+                                                   NPT_Timeout              timeout,
+                                                   const NPT_SocketAddress& forward_address) : 
     PLT_SsdpSearchTask(socket, NULL, request, timeout, false),
     m_ForwardAddress(forward_address) 
 {
@@ -279,12 +282,12 @@ PLT_SsdpProxyForwardTask::PLT_SsdpProxyForwardTask(NPT_UdpSocket*     socket,
 |   PLT_SsdpProxyForwardTask::ProcessResponse
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_SsdpProxyForwardTask::ProcessResponse(NPT_Result        res, 
-                                          NPT_HttpRequest*  request, 
-                                          NPT_SocketInfo&   info, 
-                                          NPT_HttpResponse* response)
+PLT_SsdpProxyForwardTask::ProcessResponse(NPT_Result                    res, 
+                                          NPT_HttpRequest*              request, 
+                                          const NPT_HttpRequestContext& context,
+                                          NPT_HttpResponse*             response)
 {
-    NPT_COMPILER_UNUSED(info);
+    NPT_COMPILER_UNUSED(context);
     NPT_COMPILER_UNUSED(request);
 
     if (NPT_FAILED(res) || response == NULL) return NPT_FAILURE;
@@ -294,9 +297,11 @@ PLT_SsdpProxyForwardTask::ProcessResponse(NPT_Result        res,
     NPT_CHECK_SEVERE(response->Emit(stream));
 
     // copy stream into a data packet and forward it
-    NPT_Size size;
+    NPT_LargeSize size;
     stream.GetSize(size);
-    NPT_DataBuffer packet(stream.GetData(), size);
+    if (size != (NPT_Size)size) return NPT_ERROR_OUT_OF_RANGE;
+
+    NPT_DataBuffer packet(stream.GetData(), (NPT_Size)size);
     NPT_UdpSocket socket;
     return socket.Send(packet, &m_ForwardAddress);
 }

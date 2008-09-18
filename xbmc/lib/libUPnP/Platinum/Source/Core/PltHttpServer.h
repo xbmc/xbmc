@@ -2,7 +2,7 @@
 |
 |   Platinum - HTTP Server
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -38,10 +38,10 @@ public:
     virtual ~PLT_HttpServer();
 
     // PLT_HttpServerListener method
-    NPT_Result ProcessHttpRequest(NPT_HttpRequest&   request, 
-                                  NPT_SocketInfo     info, 
-                                  NPT_HttpResponse*& response,
-                                  bool&              headers_only);
+    NPT_Result ProcessHttpRequest(NPT_HttpRequest&              request, 
+                                  const NPT_HttpRequestContext& context,
+                                  NPT_HttpResponse*&            response,
+                                  bool&                         headers_only);
 
     virtual NPT_Result   Start();
     virtual NPT_Result   Stop();
@@ -61,10 +61,10 @@ class PLT_FileServer
 {
 public:
     // class methods
-    static NPT_Result ServeFile(NPT_String        filename, 
-                                NPT_HttpResponse* response, 
-                                NPT_Integer       start = -1, 
-                                NPT_Integer       end = -1,
+    static NPT_Result ServeFile(NPT_HttpResponse& response, 
+                                NPT_String        filename, 
+                                NPT_Position      start = (NPT_Position)-1, 
+                                NPT_Position      end = (NPT_Position)-1,
                                 bool              request_is_head = false);
 };
 

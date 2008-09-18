@@ -88,10 +88,10 @@ class NPT_SharedVariableInterface
  public:
     // methods
     virtual           ~NPT_SharedVariableInterface() {}
-    virtual NPT_Result SetValue(NPT_Integer value)        = 0;
-    virtual NPT_Result GetValue(NPT_Integer& value)       = 0;
-    virtual NPT_Result WaitUntilEquals(NPT_Integer value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) = 0;
-    virtual NPT_Result WaitWhileEquals(NPT_Integer value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) = 0;
+    virtual void       SetValue(int value)= 0;
+    virtual int        GetValue()         = 0;
+    virtual NPT_Result WaitUntilEquals(int value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) = 0;
+    virtual NPT_Result WaitWhileEquals(int value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) = 0;
 };
 
 /*----------------------------------------------------------------------
@@ -101,18 +101,18 @@ class NPT_SharedVariable : public NPT_SharedVariableInterface
 {
  public:
     // methods
-               NPT_SharedVariable(NPT_Integer value = 0);
+               NPT_SharedVariable(int value = 0);
               ~NPT_SharedVariable() { delete m_Delegate; }
-    NPT_Result SetValue(NPT_Integer value) { 
-        return m_Delegate->SetValue(value); 
+    void SetValue(int value) { 
+        m_Delegate->SetValue(value); 
     }
-    NPT_Result GetValue(NPT_Integer& value) { 
-        return m_Delegate->GetValue(value); 
+    int GetValue() { 
+        return m_Delegate->GetValue(); 
     }
-    NPT_Result WaitUntilEquals(NPT_Integer value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) { 
+    NPT_Result WaitUntilEquals(int value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) { 
         return m_Delegate->WaitUntilEquals(value, timeout); 
     }
-    NPT_Result WaitWhileEquals(NPT_Integer value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) { 
+    NPT_Result WaitWhileEquals(int value, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) { 
         return m_Delegate->WaitWhileEquals(value, timeout); 
     }
 
@@ -128,11 +128,11 @@ class NPT_AtomicVariableInterface
 {
  public:
     // methods
-    virtual             ~NPT_AtomicVariableInterface() {}
-    virtual  NPT_Integer Increment() = 0;
-    virtual  NPT_Integer Decrement() = 0;
-    virtual  NPT_Integer GetValue()  = 0;
-    virtual  void        SetValue(NPT_Integer value)  = 0;
+    virtual      ~NPT_AtomicVariableInterface() {}
+    virtual  int  Increment() = 0;
+    virtual  int  Decrement() = 0;
+    virtual  int  GetValue()  = 0;
+    virtual  void SetValue(int value)  = 0;
 };
 
 /*----------------------------------------------------------------------
@@ -142,12 +142,12 @@ class NPT_AtomicVariable : public NPT_AtomicVariableInterface
 {
  public:
     // methods
-                NPT_AtomicVariable(NPT_Integer value = 0);
-               ~NPT_AtomicVariable()        { delete m_Delegate;             }
-    NPT_Integer Increment()                 { return m_Delegate->Increment();}
-    NPT_Integer Decrement()                 { return m_Delegate->Decrement();}
-    void        SetValue(NPT_Integer value) { m_Delegate->SetValue(value);   }
-    NPT_Integer GetValue()                  { return m_Delegate->GetValue(); }
+         NPT_AtomicVariable(int value = 0);
+        ~NPT_AtomicVariable() { delete m_Delegate;             }
+    int  Increment()          { return m_Delegate->Increment();}
+    int  Decrement()          { return m_Delegate->Decrement();}
+    void SetValue(int value)  { m_Delegate->SetValue(value);   }
+    int  GetValue()           { return m_Delegate->GetValue(); }
 
  private:
     // members
@@ -189,8 +189,8 @@ class NPT_Thread : public NPT_ThreadInterface
     static ThreadId GetCurrentThreadId();
 
     // methods
-    NPT_Thread(bool detached = false);
-    NPT_Thread(NPT_Runnable& target, bool detached = false);
+    explicit NPT_Thread(bool detached = false);
+    explicit NPT_Thread(NPT_Runnable& target, bool detached = false);
    ~NPT_Thread() { delete m_Delegate; }
 
     // NPT_ThreadInterface methods

@@ -10,10 +10,17 @@
 /*----------------------------------------------------------------------
 |       includes
 +---------------------------------------------------------------------*/
+#if defined(__SYMBIAN32__)
+#include <stdio.h>
+#endif
 #include <pthread.h>
 #include <time.h>
 #include <sys/time.h>
+#if defined(__SYMBIAN32__)
+#include <errno.h>
+#else
 #include <cerrno>
+#endif
 
 #include "NptConfig.h"
 #include "NptTypes.h"
@@ -38,13 +45,16 @@ public:
               ~NPT_PosixQueue();
     NPT_Result Push(NPT_QueueItem* item, NPT_Timeout timeout); 
     NPT_Result Pop(NPT_QueueItem*& item, NPT_Timeout timeout);
-
+    NPT_Result Peek(NPT_QueueItem*& item, NPT_Timeout timeout);
 
 private:
     // members
     NPT_Cardinal             m_MaxItems;
     pthread_mutex_t          m_Mutex;
-    pthread_cond_t           m_CanPushOrPopCondition;
+    pthread_cond_t           m_CanPushCondition;
+    pthread_cond_t           m_CanPopCondition;
+    NPT_Cardinal             m_PushersWaitingCount;
+    NPT_Cardinal             m_PoppersWaitingCount;
     NPT_List<NPT_QueueItem*> m_Items;
 };
 
@@ -52,12 +62,15 @@ private:
 |       NPT_PosixQueue::NPT_PosixQueue
 +---------------------------------------------------------------------*/
 NPT_PosixQueue::NPT_PosixQueue(NPT_Cardinal max_items) : 
-    m_MaxItems(max_items)
+    m_MaxItems(max_items), 
+    m_PushersWaitingCount(0),
+    m_PoppersWaitingCount(0)
 {
     NPT_LOG_FINER("NPT_PosixQueue::NPT_PosixQueue");
 
     pthread_mutex_init(&m_Mutex, NULL);
-    pthread_cond_init(&m_CanPushOrPopCondition, NULL);
+    pthread_cond_init(&m_CanPushCondition, NULL);
+    pthread_cond_init(&m_CanPopCondition, NULL);
 }
 
 /*----------------------------------------------------------------------
@@ -66,7 +79,8 @@ NPT_PosixQueue::NPT_PosixQueue(NPT_Cardinal max_items) :
 NPT_PosixQueue::~NPT_PosixQueue()
 {
     // destroy resources
-    pthread_cond_destroy(&m_CanPushOrPopCondition);
+    pthread_cond_destroy(&m_CanPushCondition);
+    pthread_cond_destroy(&m_CanPopCondition);
     pthread_mutex_destroy(&m_Mutex);
 }
 
@@ -76,23 +90,24 @@ NPT_PosixQueue::~NPT_PosixQueue()
 NPT_Result
 NPT_PosixQueue::Push(NPT_QueueItem* item, NPT_Timeout timeout)
 {    
-    struct     timespec timed;
-    struct     timeval  now;
+    struct timespec timed;
+    if (timeout != NPT_TIMEOUT_INFINITE) {
+        // get current time from system
+        struct timeval now;
+        if (gettimeofday(&now, NULL)) {
+            return NPT_FAILURE;
+        }
 
-    // get current time from system
-    if (gettimeofday(&now, NULL)) {
-        return NPT_FAILURE;
+        now.tv_usec += timeout * 1000;
+        if (now.tv_usec >= 1000000) {
+            now.tv_sec += now.tv_usec / 1000000;
+            now.tv_usec = now.tv_usec % 1000000;
+        }
+
+        // setup timeout
+        timed.tv_sec  = now.tv_sec;
+        timed.tv_nsec = now.tv_usec * 1000;
     }
-
-    now.tv_usec += timeout * 1000;
-    if (now.tv_usec >= 1000000) {
-        now.tv_sec += now.tv_usec / 1000000;
-        now.tv_usec = now.tv_usec % 1000000;
-    }
-
-    // setup timeout
-    timed.tv_sec  = now.tv_sec;
-    timed.tv_nsec = now.tv_usec * 1000;
 
     // lock the mutex that protects the list
     if (pthread_mutex_lock(&m_Mutex)) {
@@ -103,12 +118,16 @@ NPT_PosixQueue::Push(NPT_QueueItem* item, NPT_Timeout timeout)
     // check that we have not exceeded the max
     if (m_MaxItems) {
         while (m_Items.GetItemCount() >= m_MaxItems) {
-            // wait until some items have been removed
-            //NPT_Debug(":: NPT_PosixQueue::Push - waiting for queue to empty\n");
+            // wait until we can push
+            ++m_PushersWaitingCount;
             if (timeout == NPT_TIMEOUT_INFINITE) {
-                pthread_cond_wait(&m_CanPushOrPopCondition, &m_Mutex);
+                pthread_cond_wait(&m_CanPushCondition, &m_Mutex);
+                --m_PushersWaitingCount;
             } else {
-                int wait_res = pthread_cond_timedwait(&m_CanPushOrPopCondition, &m_Mutex, &timed);
+                int wait_res = pthread_cond_timedwait(&m_CanPushCondition, 
+                                                      &m_Mutex, 
+                                                      &timed);
+                --m_PushersWaitingCount;
                 if (wait_res == ETIMEDOUT) {
                     result = NPT_ERROR_TIMEOUT;
                     break;
@@ -121,10 +140,9 @@ NPT_PosixQueue::Push(NPT_QueueItem* item, NPT_Timeout timeout)
     if (result == NPT_SUCCESS) {
         m_Items.Add(item);
 
-        // if the list was previously empty, signal the condition
-        // to wake up the waiting thread
-        if (m_Items.GetItemCount() == 1) {    
-            pthread_cond_signal(&m_CanPushOrPopCondition);
+        // wake up any thread that may be waiting to pop
+        if (m_PoppersWaitingCount) { 
+            pthread_cond_signal(&m_CanPopCondition);
         }
     }
 
@@ -140,23 +158,24 @@ NPT_PosixQueue::Push(NPT_QueueItem* item, NPT_Timeout timeout)
 NPT_Result
 NPT_PosixQueue::Pop(NPT_QueueItem*& item, NPT_Timeout timeout)
 {
-    struct     timespec timed;
-    struct     timeval  now;
+    struct timespec timed;
+    if (timeout != NPT_TIMEOUT_INFINITE) {
+        // get current time from system
+        struct timeval now;
+        if (gettimeofday(&now, NULL)) {
+            return NPT_FAILURE;
+        }
 
-    // get current time from system
-    if (gettimeofday(&now, NULL)) {
-        return NPT_FAILURE;
+        now.tv_usec += timeout * 1000;
+        if (now.tv_usec >= 1000000) {
+            now.tv_sec += now.tv_usec / 1000000;
+            now.tv_usec = now.tv_usec % 1000000;
+        }
+
+        // setup timeout
+        timed.tv_sec  = now.tv_sec;
+        timed.tv_nsec = now.tv_usec * 1000;
     }
-
-    now.tv_usec += timeout * 1000;
-    if (now.tv_usec >= 1000000) {
-        now.tv_sec += now.tv_usec / 1000000;
-        now.tv_usec = now.tv_usec % 1000000;
-    }
-
-    // setup timeout
-    timed.tv_sec  = now.tv_sec;
-    timed.tv_nsec = now.tv_usec * 1000;
 
     // lock the mutex that protects the list
     if (pthread_mutex_lock(&m_Mutex)) {
@@ -167,11 +186,15 @@ NPT_PosixQueue::Pop(NPT_QueueItem*& item, NPT_Timeout timeout)
     if (timeout) {
         while ((result = m_Items.PopHead(item)) == NPT_ERROR_LIST_EMPTY) {
             // no item in the list, wait for one
-            //NPT_Debug(":: NPT_PosixQueue::Pop - waiting for queue to fill up\n");
+            ++m_PoppersWaitingCount;
             if (timeout == NPT_TIMEOUT_INFINITE) {
-                pthread_cond_wait(&m_CanPushOrPopCondition, &m_Mutex);
+                pthread_cond_wait(&m_CanPopCondition, &m_Mutex);
+                --m_PoppersWaitingCount;
             } else {
-                int wait_res = pthread_cond_timedwait(&m_CanPushOrPopCondition, &m_Mutex, &timed);
+                int wait_res = pthread_cond_timedwait(&m_CanPopCondition, 
+                                                      &m_Mutex, 
+                                                      &timed);
+                --m_PoppersWaitingCount;
                 if (wait_res == ETIMEDOUT) {
                     result = NPT_ERROR_TIMEOUT;
                     break;
@@ -182,17 +205,78 @@ NPT_PosixQueue::Pop(NPT_QueueItem*& item, NPT_Timeout timeout)
         result = m_Items.PopHead(item);
     }
     
-    // if the list was previously full, signal the condition
-    // to wake up the waiting thread
-    if (m_MaxItems && (result == NPT_SUCCESS)) {
-        if (m_Items.GetItemCount() == m_MaxItems-1) {    
-            pthread_cond_signal(&m_CanPushOrPopCondition);
-        }
+    // wake up any thread that my be waiting to push
+    if (m_MaxItems && (result == NPT_SUCCESS) && m_PushersWaitingCount) {
+        pthread_cond_signal(&m_CanPushCondition);
     }
 
     // unlock the mutex
     pthread_mutex_unlock(&m_Mutex);
- 
+
+    return result;
+}
+
+/*----------------------------------------------------------------------
+|       NPT_PosixQueue::Peek
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_PosixQueue::Peek(NPT_QueueItem*& item, NPT_Timeout timeout)
+{
+    struct timespec timed;
+    if (timeout != NPT_TIMEOUT_INFINITE) {
+        // get current time from system
+        struct timeval now;
+        if (gettimeofday(&now, NULL)) {
+            return NPT_FAILURE;
+        }
+
+        now.tv_usec += timeout * 1000;
+        if (now.tv_usec >= 1000000) {
+            now.tv_sec += now.tv_usec / 1000000;
+            now.tv_usec = now.tv_usec % 1000000;
+        }
+
+        // setup timeout
+        timed.tv_sec  = now.tv_sec;
+        timed.tv_nsec = now.tv_usec * 1000;
+    }
+
+    // lock the mutex that protects the list
+    if (pthread_mutex_lock(&m_Mutex)) {
+        return NPT_FAILURE;
+    }
+
+    NPT_Result result = NPT_SUCCESS;
+    NPT_List<NPT_QueueItem*>::Iterator head = m_Items.GetFirstItem();
+    if (timeout) {
+        while (!head) {
+            // no item in the list, wait for one
+            ++m_PoppersWaitingCount;
+            if (timeout == NPT_TIMEOUT_INFINITE) {
+                pthread_cond_wait(&m_CanPopCondition, &m_Mutex);
+                --m_PoppersWaitingCount;
+            } else {
+                int wait_res = pthread_cond_timedwait(&m_CanPopCondition, 
+                                                      &m_Mutex, 
+                                                      &timed);
+                --m_PoppersWaitingCount;
+                if (wait_res == ETIMEDOUT) {
+                    result = NPT_ERROR_TIMEOUT;
+                    break;
+                }
+            }
+
+            head = m_Items.GetFirstItem();
+        }
+    } else {
+        if (!head) result = NPT_ERROR_LIST_EMPTY;
+    }
+
+    item = head?*head:NULL;
+
+    // unlock the mutex
+    pthread_mutex_unlock(&m_Mutex);
+
     return result;
 }
 

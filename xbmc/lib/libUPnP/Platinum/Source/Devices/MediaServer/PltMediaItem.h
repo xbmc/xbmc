@@ -2,7 +2,7 @@
 |
 |   Platinum - AV Media Item
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
 ****************************************************************/
@@ -61,10 +61,10 @@ typedef struct {
     PLT_PersonRoles artists;
     PLT_PersonRoles actors;
     PLT_PersonRoles authors;
-    NPT_String producer;
-    NPT_String director;
-    NPT_String publisher;
-    NPT_String contributor; // should match m_Creator (dc:creator)
+    NPT_String      producer;
+    NPT_String      director;
+    NPT_String      publisher;
+    NPT_String      contributor; // should match m_Creator (dc:creator)
 } PLT_PeopleInfo;
 
 typedef struct {
@@ -100,10 +100,10 @@ typedef struct {
 } PLT_MiscInfo;
 
 typedef struct {
-    NPT_Integer total;
-    NPT_Integer used;
-    NPT_Integer free;
-    NPT_Integer max_partition;
+    int         total;
+    int         used;
+    int         free;
+    int         max_partition;
     NPT_String  medium;
 } PLT_StorageInfo;
 
@@ -116,17 +116,17 @@ public:
     PLT_MediaItemResource();
     ~PLT_MediaItemResource() {}
 
-    NPT_String  m_Uri;
-    NPT_String  m_ProtocolInfo;
-    NPT_Integer m_Duration; /* seconds */
-    NPT_Integer m_Size;
-    NPT_String  m_Protection;
-    NPT_UInt32  m_Bitrate; /* bytes/seconds */
-    NPT_UInt32  m_BitsPerSample;
-    NPT_UInt32  m_SampleFrequency;
-    NPT_UInt32  m_NbAudioChannels;
-    NPT_String  m_Resolution;
-    NPT_UInt32  m_ColorDepth;
+    NPT_String    m_Uri;
+    NPT_String    m_ProtocolInfo;
+    NPT_UInt32    m_Duration; /* seconds */
+    NPT_LargeSize m_Size;
+    NPT_String    m_Protection;
+    NPT_UInt32    m_Bitrate; /* bytes/seconds */
+    NPT_UInt32    m_BitsPerSample;
+    NPT_UInt32    m_SampleFrequency;
+    NPT_UInt32    m_NbAudioChannels;
+    NPT_String    m_Resolution;
+    NPT_UInt32      m_ColorDepth;
 };
 
 /*----------------------------------------------------------------------

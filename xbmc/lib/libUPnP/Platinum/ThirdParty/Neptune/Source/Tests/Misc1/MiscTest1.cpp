@@ -177,5 +177,77 @@ main(int /*argc*/, char** /*argv*/)
     NPT_ASSERT(ip.AsBytes()[2] == 0);
     NPT_ASSERT(ip.AsBytes()[3] == 0);
 
+    // MIME parameter parser
+    NPT_Map<NPT_String,NPT_String> params;
+    result = NPT_ParseMimeParameters(NULL, params);
+    NPT_ASSERT(result == NPT_ERROR_INVALID_PARAMETERS);
+    
+    result = NPT_ParseMimeParameters("", params);
+    NPT_ASSERT(NPT_SUCCEEDED(result));
+    NPT_ASSERT(params.GetEntryCount() == 0);
+        
+    result = NPT_ParseMimeParameters("foo=bar", params);
+    NPT_ASSERT(NPT_SUCCEEDED(result));
+    NPT_ASSERT(params.GetEntryCount() == 1);
+    NPT_ASSERT(params["foo"] == "bar");
+    params.Clear();
+
+    result = NPT_ParseMimeParameters(" foo =bar", params);
+    NPT_ASSERT(NPT_SUCCEEDED(result));
+    NPT_ASSERT(params.GetEntryCount() == 1);
+    NPT_ASSERT(params["foo"] == "bar");
+    params.Clear();
+
+    result = NPT_ParseMimeParameters(" foo= bar", params);
+    NPT_ASSERT(NPT_SUCCEEDED(result));
+    NPT_ASSERT(params.GetEntryCount() == 1);
+    NPT_ASSERT(params["foo"] == "bar");
+    params.Clear();
+    
+    result = NPT_ParseMimeParameters(" foo= bar;", params);
+    NPT_ASSERT(NPT_SUCCEEDED(result));
+    NPT_ASSERT(params.GetEntryCount() == 1);
+    NPT_ASSERT(params["foo"] == "bar");
+    params.Clear();
+
+    result = NPT_ParseMimeParameters("foo=\"bar\"", params);
+    NPT_ASSERT(NPT_SUCCEEDED(result));
+    NPT_ASSERT(params.GetEntryCount() == 1);
+    NPT_ASSERT(params["foo"] == "bar");
+    params.Clear();
+
+    result = NPT_ParseMimeParameters("foo=\"ba\"r\"", params);
+    NPT_ASSERT(result == NPT_ERROR_INVALID_SYNTAX);
+    params.Clear();
+
+    result = NPT_ParseMimeParameters("foo=\"ba\\\"r\"", params);
+    NPT_ASSERT(NPT_SUCCEEDED(result));
+    NPT_ASSERT(params.GetEntryCount() == 1);
+    NPT_ASSERT(params["foo"] == "ba\"r");
+    params.Clear();
+
+    result = NPT_ParseMimeParameters("foo=\"bar\\\"\"", params);
+    NPT_ASSERT(NPT_SUCCEEDED(result));
+    NPT_ASSERT(params.GetEntryCount() == 1);
+    NPT_ASSERT(params["foo"] == "bar\"");
+    params.Clear();
+
+    result = NPT_ParseMimeParameters("foo=\"bar\\\\\"", params);
+    NPT_ASSERT(NPT_SUCCEEDED(result));
+    NPT_ASSERT(params.GetEntryCount() == 1);
+    NPT_ASSERT(params["foo"] == "bar\\");
+    params.Clear();
+
+    result = NPT_ParseMimeParameters("a=1;b=2; c=3; d=4 ; e=\"\\;\"; f=\";\"", params);
+    NPT_ASSERT(NPT_SUCCEEDED(result));
+    NPT_ASSERT(params.GetEntryCount() == 6);
+    NPT_ASSERT(params["a"] == "1");
+    NPT_ASSERT(params["b"] == "2");
+    NPT_ASSERT(params["c"] == "3");
+    NPT_ASSERT(params["d"] == "4");
+    NPT_ASSERT(params["e"] == ";");
+    NPT_ASSERT(params["f"] == ";");
+    params.Clear();
+
     return 0;
 }

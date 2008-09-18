@@ -14,7 +14,7 @@
 #include <stdio.h>
 #if defined(_XBOX)
 #include <xtl.h>
-#else
+#elif !defined(_LINUX)
 #include <windows.h>
 #endif
 

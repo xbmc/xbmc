@@ -219,7 +219,7 @@ NPT_ZipInflatingInputStream::Tell(NPT_Position& offset)
 |   NPT_ZipInflatingInputStream::GetSize
 +---------------------------------------------------------------------*/
 NPT_Result 
-NPT_ZipInflatingInputStream::GetSize(NPT_Size& size)
+NPT_ZipInflatingInputStream::GetSize(NPT_LargeSize& size)
 {
     // the size is not predictable
     size = 0;
@@ -230,7 +230,7 @@ NPT_ZipInflatingInputStream::GetSize(NPT_Size& size)
 |   NPT_ZipInflatingInputStream::GetAvailable
 +---------------------------------------------------------------------*/
 NPT_Result 
-NPT_ZipInflatingInputStream::GetAvailable(NPT_Size& available)
+NPT_ZipInflatingInputStream::GetAvailable(NPT_LargeSize& available)
 {
     // we don't know
     available = 0;
@@ -344,7 +344,7 @@ NPT_ZipDeflatingInputStream::Tell(NPT_Position& offset)
 |   NPT_ZipDeflatingInputStream::GetSize
 +---------------------------------------------------------------------*/
 NPT_Result 
-NPT_ZipDeflatingInputStream::GetSize(NPT_Size& size)
+NPT_ZipDeflatingInputStream::GetSize(NPT_LargeSize& size)
 {
     // the size is not predictable
     size = 0;
@@ -355,7 +355,7 @@ NPT_ZipDeflatingInputStream::GetSize(NPT_Size& size)
 |   NPT_ZipDeflatingInputStream::GetAvailable
 +---------------------------------------------------------------------*/
 NPT_Result 
-NPT_ZipDeflatingInputStream::GetAvailable(NPT_Size& available)
+NPT_ZipDeflatingInputStream::GetAvailable(NPT_LargeSize& available)
 {
     // we don't know
     available = 0;

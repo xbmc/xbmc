@@ -119,13 +119,13 @@ class NPT_PropertyValue
 
     // methods
     NPT_PropertyValue() : m_Type(UNKNOWN), m_Integer(0) {}
-    NPT_PropertyValue(NPT_Integer value) : m_Type(INTEGER), m_Integer(value) {}
+    NPT_PropertyValue(int value)         : m_Type(INTEGER), m_Integer(value) {}
     NPT_PropertyValue(const char* value) : m_Type(STRING),  m_String(value)  {}
 
     // members
     Type m_Type;
     union {
-        NPT_Integer m_Integer;
+        int         m_Integer;
         const char* m_String;
     };
 };

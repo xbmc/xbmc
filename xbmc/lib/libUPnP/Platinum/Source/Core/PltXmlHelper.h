@@ -2,7 +2,7 @@
 |
 |   Platinum - Xml Helper
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -218,11 +218,13 @@ public:
         NPT_MemoryStreamReference stream(new NPT_MemoryStream());
         NPT_CHECK(writer.Serialize(node, *stream));
 
-        NPT_Size size;
+        NPT_LargeSize size;
         stream->GetAvailable(size);
-        xml.Reserve(size);
-        stream->Read(xml.UseChars(), size);
-        xml.SetLength(size);
+        if (size != (NPT_Size)size) return NPT_ERROR_OUT_OF_RANGE;
+
+        xml.Reserve((NPT_Size)size);
+        stream->Read(xml.UseChars(), (NPT_Size)size);
+        xml.SetLength((NPT_Size)size);
         return NPT_SUCCESS;
     }
 private:

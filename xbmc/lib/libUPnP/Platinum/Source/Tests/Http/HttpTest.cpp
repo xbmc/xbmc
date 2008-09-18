@@ -46,11 +46,11 @@ public:
         m_MimeType(mime_type) {}
 
     // NPT_HttpRequetsHandler methods
-    virtual NPT_Result SetupResponse(NPT_HttpRequest&  request, 
-                                     NPT_HttpResponse& response,
-                                     NPT_SocketInfo&   client_info) {
+    virtual NPT_Result SetupResponse(NPT_HttpRequest&              request, 
+                                     const NPT_HttpRequestContext& context,
+                                     NPT_HttpResponse&             response) {
         NPT_COMPILER_UNUSED(request);
-        NPT_COMPILER_UNUSED(client_info);
+        NPT_COMPILER_UNUSED(context);
 
         NPT_HttpEntity* entity = response.GetEntity();
         if (entity == NULL) return NPT_ERROR_INVALID_STATE;
@@ -104,7 +104,7 @@ Test1(PLT_TaskManager* task_manager, const char* url, NPT_Size& size)
  static NPT_Result 
 ReadBody(PLT_Downloader& downloader, NPT_InputStreamReference& stream, NPT_Size& size)
 {
-    NPT_Size avail;
+    NPT_LargeSize avail;
     char buffer[2048];
     NPT_Result ret = NPT_ERROR_WOULD_BLOCK;
 

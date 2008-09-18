@@ -119,9 +119,10 @@ public:
 
 #define NPT_LOG_FILE_HANDLER_MIN_RECYCLE_SIZE 20000000
 
-#define NPT_LOG_FORMAT_FILTER_NO_SOURCE      1
-#define NPT_LOG_FORMAT_FILTER_NO_TIMESTAMP   2
-#define NPT_LOG_FORMAT_FILTER_NO_LOGGER_NAME 4
+#define NPT_LOG_FORMAT_FILTER_NO_SOURCE        1
+#define NPT_LOG_FORMAT_FILTER_NO_TIMESTAMP     2
+#define NPT_LOG_FORMAT_FILTER_NO_LOGGER_NAME   4
+#define NPT_LOG_FORMAT_FILTER_NO_FUNCTION_NAME 8
 
 /*----------------------------------------------------------------------
 |   globals
@@ -254,6 +255,13 @@ NPT_Log::FormatRecordToStream(const NPT_LogRecord& record,
         if (ms.GetLength() < 2) stream.Write("0", 1);
         stream.WriteString(ms);
         stream.Write(" ", 1);
+    }
+    if ((format_filter & NPT_LOG_FORMAT_FILTER_NO_FUNCTION_NAME) == 0) {
+        stream.WriteFully("[",1);
+        if (record.m_SourceFunction) {
+            stream.WriteString(record.m_SourceFunction);
+        }
+        stream.WriteFully("] ",2);
     }
     const char* ansi_color = NULL;
     if (use_colors) {
@@ -451,7 +459,7 @@ NPT_LogManager::ParseConfig(const char* config,
             /* newline or end of buffer */
             if (separator && line[0] != '#') {
                 /* we have a property */
-                key.Assign(line,                    (NPT_Size)(separator-line));
+                key.Assign(line, (NPT_Size)(separator-line));
                 value.Assign(line+(separator+1-line), (NPT_Size)(cursor-(separator+1)));
                 key.Trim(" \t");
                 value.Trim(" \t");
@@ -703,6 +711,7 @@ void
 NPT_Logger::Log(int          level, 
                 const char*  source_file,
                 unsigned int source_line,
+                const char*  source_function,
                 const char*  msg, 
                              ...)
 {
@@ -737,11 +746,12 @@ NPT_Logger::Log(int          level,
     NPT_Logger*   logger = this;
     
     /* setup the log record */
-    record.m_LoggerName = logger->m_Name,
-    record.m_Level      = level;
-    record.m_Message    = message;
-    record.m_SourceFile = source_file;
-    record.m_SourceLine = source_line;
+    record.m_LoggerName     = logger->m_Name,
+    record.m_Level          = level;
+    record.m_Message        = message;
+    record.m_SourceFile     = source_file;
+    record.m_SourceLine     = source_line;
+    record.m_SourceFunction = source_function;
     NPT_System::GetCurrentTimeStamp(record.m_TimeStamp);
 
     /* call all handlers for this logger and parents */

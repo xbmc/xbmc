@@ -119,5 +119,13 @@ const int NPT_ERROR_NOT_SUPPORTED       = NPT_ERROR_BASE_GENERAL - 13;
 const int NPT_ERROR_TIMEOUT             = NPT_ERROR_BASE_GENERAL - 14;
 const int NPT_ERROR_WOULD_BLOCK         = NPT_ERROR_BASE_GENERAL - 15;
 const int NPT_ERROR_TERMINATED          = NPT_ERROR_BASE_GENERAL - 16;
+const int NPT_ERROR_OUT_OF_RANGE        = NPT_ERROR_BASE_GENERAL - 17;
+
+/* standard error codes                                  */
+/* these are special codes to convey an errno            */
+/* the error code is (SHI_ERROR_BASE_ERRNO - errno)      */
+/* where errno is the positive integer from errno.h      */
+const int NPT_ERROR_BASE_ERRNO          = NPT_ERROR_BASE-2000;
+#define NPT_ERROR_ERRNO(e)              (NPT_ERROR_BASE_ERRNO - (e))
 
 #endif // _NPT_RESULTS_H_

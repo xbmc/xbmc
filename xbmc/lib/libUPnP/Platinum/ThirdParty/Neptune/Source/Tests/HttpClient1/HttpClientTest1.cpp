@@ -43,10 +43,18 @@ TestUrlParser(const char* url)
 #endif
 
 /*----------------------------------------------------------------------
+|       types
++---------------------------------------------------------------------*/
+typedef enum {
+    SHOW_MODE_LOAD,
+    SHOW_MODE_STREAM_BLOCKING
+} ShowMode;
+
+/*----------------------------------------------------------------------
 |       ShowResponse
 +---------------------------------------------------------------------*/
 static void
-ShowResponse(NPT_HttpResponse* response)
+ShowResponse(NPT_HttpResponse* response, ShowMode mode)
 {
     // show response info
     NPT_Debug("RESPONSE: protocol=%s, code=%d, reason=%s\n",
@@ -72,19 +80,37 @@ ShowResponse(NPT_HttpResponse* response)
                   entity->GetContentType().GetChars(),
                   entity->GetContentEncoding().GetChars());
 
-        NPT_DataBuffer body;
-        NPT_Result result =entity->Load(body);
-        if (NPT_FAILED(result)) {
-            NPT_Debug("ERROR: failed to load entity (%d)\n", result);
-        } else {
-            NPT_Debug("BODY: loaded %d bytes\n", (int)body.GetDataSize());
+        switch (mode) {
+            case SHOW_MODE_LOAD: {
+                NPT_DataBuffer body;
+                NPT_Result result =entity->Load(body);
+                if (NPT_FAILED(result)) {
+                    NPT_Debug("ERROR: failed to load entity (%d)\n", result);
+                } else {
+                    NPT_Debug("BODY: loaded %d bytes\n", (int)body.GetDataSize());
 
-            // dump the body
-            NPT_OutputStreamReference output;
-            NPT_File standard_out(NPT_FILE_STANDARD_OUTPUT);
-            standard_out.Open(NPT_FILE_OPEN_MODE_WRITE);
-            standard_out.GetOutputStream(output);
-            output->Write(body.GetData(), body.GetDataSize());
+                    // dump the body
+                    NPT_OutputStreamReference output;
+                    NPT_File standard_out(NPT_FILE_STANDARD_OUTPUT);
+                    standard_out.Open(NPT_FILE_OPEN_MODE_WRITE);
+                    standard_out.GetOutputStream(output);
+                    output->Write(body.GetData(), body.GetDataSize());
+                }
+                break;
+            }
+            
+            case SHOW_MODE_STREAM_BLOCKING: {
+                NPT_DataBuffer buffer(4096);
+                NPT_Result result;
+                NPT_InputStreamReference input;
+                entity->GetInputStream(input);
+                do {
+                    NPT_Size bytes_read = 0;
+                    result = input->Read(buffer.UseData(), 4096, &bytes_read);
+                    NPT_Debug("read %d bytes\n", bytes_read);
+                } while (NPT_SUCCEEDED(result));
+                break;
+            }
         }
     }
 }
@@ -95,7 +121,7 @@ ShowResponse(NPT_HttpResponse* response)
 |       TestHttpGet
 +---------------------------------------------------------------------*/
 static void 
-TestHttpGet(const char* arg)
+TestHttpGet(const char* arg, ShowMode mode)
 {
     NPT_HttpUrl url(arg);
     NPT_HttpRequest request(url, NPT_HTTP_METHOD_GET);
@@ -106,7 +132,7 @@ TestHttpGet(const char* arg)
     NPT_Debug("SendRequest returned %d\n", result);
     if (NPT_FAILED(result)) return;
 
-    ShowResponse(response);
+    ShowResponse(response, mode);
 
     delete response;
 }
@@ -213,7 +239,8 @@ main(int argc, char** argv)
 #if defined(TEST_PROXY)
     TestHttpGetWithProxy(argv[1]);
 #else
-    TestHttpGet(argv[1]);
+    TestHttpGet(argv[1], SHOW_MODE_LOAD);
+    TestHttpGet(argv[1], SHOW_MODE_STREAM_BLOCKING);
 #endif
 
 #if defined(TEST_POST)

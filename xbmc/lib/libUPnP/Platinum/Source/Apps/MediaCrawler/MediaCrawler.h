@@ -2,7 +2,7 @@
 |
 |   Platinum - Media Crawler
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
 ****************************************************************/
@@ -14,7 +14,7 @@
 |   includes
 +---------------------------------------------------------------------*/
 #include "Platinum.h"
-#include "PltFileMediaServer.h"
+#include "PltMediaConnect.h"
 #include "PltSyncMediaBrowser.h"
 #include "StreamHandler.h"
 
@@ -22,7 +22,7 @@
 |   CMediaCrawler
 +---------------------------------------------------------------------*/
 class CMediaCrawler : public PLT_MediaBrowser,
-                      public PLT_FileMediaServer
+                      public PLT_MediaConnect
 
 {
 public:
@@ -41,26 +41,37 @@ public:
 
 protected:
     // PLT_MediaServer methods
-    NPT_Result OnBrowse(PLT_ActionReference& action, NPT_SocketInfo* info = NULL);
+    NPT_Result OnBrowse(PLT_ActionReference&          action, 
+                        const NPT_HttpRequestContext& context);
 
     // PLT_MediaBrowser methods
-    NPT_Result OnBrowseResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_ActionReference& action, void* userdata);
+    NPT_Result OnBrowseResponse(NPT_Result               res, 
+                                PLT_DeviceDataReference& device, 
+                                PLT_ActionReference&     action, 
+                                void*                    userdata);
     
     // File Server Listener methods
-    NPT_Result ProcessFileRequest(NPT_HttpRequest& request, NPT_HttpResponse& response, NPT_SocketInfo& info);
+    NPT_Result ProcessFileRequest(NPT_HttpRequest&              request, 
+                                  const NPT_HttpRequestContext& context,
+                                  NPT_HttpResponse&             response);
 
 private:
     // methods
     NPT_Result OnBrowseRoot(PLT_ActionReference& action);
-    NPT_Result OnBrowseDevice(PLT_ActionReference& action, 
-                              const char*          server_uuid, 
-                              const char*          server_object_id, 
-                              NPT_SocketInfo*      info = NULL);
+    NPT_Result OnBrowseDevice(PLT_ActionReference&          action, 
+                              const char*                   server_uuid, 
+                              const char*                   server_object_id, 
+                              const NPT_HttpRequestContext& context);
 
-    NPT_Result SplitObjectId(const NPT_String& object_id, NPT_String& server_uuid, NPT_String& server_object_id);
-    NPT_String FormatObjectId(const NPT_String& server_uuid, const NPT_String& server_object_id);
+    NPT_Result SplitObjectId(const NPT_String& object_id, 
+                             NPT_String&       server_uuid, 
+                             NPT_String&       server_object_id);
+    NPT_String FormatObjectId(const NPT_String& server_uuid, 
+                              const NPT_String& server_object_id);
 
-    NPT_String UpdateDidl(const char* server_uuid, const NPT_String& didl, NPT_SocketInfo* info = NULL);
+    NPT_String UpdateDidl(const char*              server_uuid, 
+                          const NPT_String&        didl, 
+                          const NPT_SocketAddress* req_local_address = NULL);
 
     // members
     NPT_List<CStreamHandler*> m_StreamHandlers;

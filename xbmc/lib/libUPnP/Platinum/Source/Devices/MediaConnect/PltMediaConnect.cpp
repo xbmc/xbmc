@@ -47,9 +47,10 @@ PLT_MediaConnect::PLT_MediaConnect(const char*  path,
 
     m_ModelName = "Windows Media Connect";
     m_ModelNumber = "2.0";
-    m_Manufacturer = "Microsoft";
-    m_ManufacturerURL = "http://www.microsoft.com/";
-    m_ModelURL = "http://www.microsoft.com";
+    m_ModelDescription = "Media Server";
+    m_Manufacturer = "Plutinosoft";
+    m_ManufacturerURL = "http://www.plutinosoft.com/";
+    m_ModelURL = "http://www.plutinosoft.com";
     m_DlnaDoc = "DMS-1.00";
 
     //NPT_String uuid;
@@ -96,8 +97,8 @@ PLT_MediaConnect::Validate(PLT_MediaConnectInfo* info, bool state)
 |       PLT_MediaConnect::OnAction
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MediaConnect::OnAction(PLT_ActionReference& action, 
-                           NPT_SocketInfo*      info /* = NULL */)
+PLT_MediaConnect::OnAction(PLT_ActionReference&          action, 
+                           const NPT_HttpRequestContext& context)
 {
       PLT_MediaConnectInfo* mc_info = NULL;
 
@@ -139,7 +140,7 @@ PLT_MediaConnect::OnAction(PLT_ActionReference& action,
         return OnIsValidated(action, mc_info);
     }  
 
-    return PLT_FileMediaServer::OnAction(action, info);
+    return PLT_FileMediaServer::OnAction(action, context);
 }
 
 /*----------------------------------------------------------------------

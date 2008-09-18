@@ -678,6 +678,9 @@ copy Release\libPlatinum.lib ..\..\xbmc\lib\libUPnP
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\System\Bsd\NptBsdSockets.cpp">
 				</File>
 				<File
+					RelativePath=".\Platinum\ThirdParty\Neptune\Source\System\Posix\NptPosixFile.cpp">
+				</File>
+				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32Debug.cpp">
 					<FileConfiguration
 						Name="Debug|Xbox">
@@ -712,6 +715,9 @@ copy Release\libPlatinum.lib ..\..\xbmc\lib\libUPnP
 				</File>
 				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32Directory.cpp">
+				</File>
+				<File
+					RelativePath=".\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32File.cpp">
 				</File>
 				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32Queue.cpp">

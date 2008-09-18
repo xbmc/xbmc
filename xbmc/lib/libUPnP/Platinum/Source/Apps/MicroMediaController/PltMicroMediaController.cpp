@@ -2,7 +2,7 @@
 |
 |   Platinum - Miccro Media Controller
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
 ****************************************************************/
@@ -107,7 +107,7 @@ PLT_MicroMediaController::ChooseIDFromTable(PLT_StringMap& table)
 
         // find the entry back
         if (index != 0) {
-            NPT_List<PLT_StringMapEntry*>::Iterator entry = entries.GetFirstItem();
+            entry = entries.GetFirstItem();
             while (entry && --index) {
                 ++entry;
             }
@@ -254,7 +254,7 @@ PLT_DeviceDataReference
 PLT_MicroMediaController::ChooseDevice(const NPT_Lock<PLT_DeviceMap>& deviceList)
 {
     PLT_StringMap            namesTable;
-    PLT_DeviceDataReference* device = NULL;
+    PLT_DeviceDataReference* result = NULL;
     NPT_String               chosenUUID;
     NPT_AutoLock             lock(m_MediaServers);
 
@@ -272,10 +272,10 @@ PLT_MicroMediaController::ChooseDevice(const NPT_Lock<PLT_DeviceMap>& deviceList
     // ask user to choose
     chosenUUID = ChooseIDFromTable(namesTable);
     if (chosenUUID.GetLength()) {
-        deviceList.Get(chosenUUID, device);
+        deviceList.Get(chosenUUID, result);
     }
 
-    return device?*device:PLT_DeviceDataReference(); // return empty reference if not device was selected
+    return result?*result:PLT_DeviceDataReference(); // return empty reference if not device was selected
 }
 
 /*----------------------------------------------------------------------
