@@ -135,7 +135,8 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     vecCores.push_back(EPC_DVDPLAYER);
 
   // only dvdplayer can handle these normally
-  if (url.GetFileType().Equals("sdp"))
+  if (url.GetFileType().Equals("sdp") ||
+      url.GetFileType().Equals("asf"))
     vecCores.push_back(EPC_DVDPLAYER);
 
   if ( item.IsInternetStream() )
