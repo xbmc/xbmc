@@ -23,12 +23,12 @@ class NPT_System
 {
 public:
     // methods
-    static NPT_Result  GetProcessId(NPT_Integer& id);
-    static NPT_Result  GetCurrentTimeStamp(NPT_TimeStamp& now);
-    static NPT_Result  Sleep(const NPT_TimeInterval& duration);
-    static NPT_Result  SleepUntil(const NPT_TimeStamp& when);
-    static NPT_Result  SetRandomSeed(unsigned int seed);
-    static NPT_Integer GetRandomInteger();
+    static NPT_Result GetProcessId(NPT_UInt32& id);
+    static NPT_Result GetCurrentTimeStamp(NPT_TimeStamp& now);
+    static NPT_Result Sleep(const NPT_TimeInterval& duration);
+    static NPT_Result SleepUntil(const NPT_TimeStamp& when);
+    static NPT_Result SetRandomSeed(unsigned int seed);
+    static NPT_UInt32 GetRandomInteger();
     
 protected:
     // constructor

@@ -2,7 +2,7 @@
 |
 |   Platinum - main
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
 ****************************************************************/
@@ -22,7 +22,7 @@ int main(void)
     PLT_CtrlPointReference ctrlPoint(new PLT_CtrlPoint());
     upnp.AddCtrlPoint(ctrlPoint);
 
-    CMediaCrawler* crawler = new CMediaCrawler(ctrlPoint);
+    CMediaCrawler* crawler = new CMediaCrawler(ctrlPoint, "Sylvain: Platinum: Crawler");
     CPassThroughStreamHandler* handler = new CPassThroughStreamHandler(crawler);
     crawler->AddStreamHandler(handler);
     PLT_DeviceHostReference device(crawler);

@@ -87,6 +87,7 @@ public:
     NPT_List<Field>& GetFields() { return m_Fields; }
 
     // methods
+    NPT_Result  Parse(const char* query);
     NPT_Result  AddField(const char* name, const char* value);
     const char* GetField(const char* name);
     NPT_String  ToString();
@@ -108,26 +109,26 @@ public:
             NPT_UInt16  default_port = NPT_URL_INVALID_PORT);
     NPT_Url(const char* scheme,
             const char* host, 
-        NPT_UInt16  port, 
-        const char* path,
-        const char* query = NULL,
-        const char* fragment = NULL);
+            NPT_UInt16  port, 
+            const char* path,
+            const char* query = NULL,
+            const char* fragment = NULL);
 
     // methods
-    const NPT_String& GetHost() const     { return m_Host;     }
-    NPT_UInt16        GetPort() const     { return m_Port;     }
-    const NPT_String& GetPath() const     { return m_Path;     }
-    const NPT_String& GetQuery() const    { return m_Query;    }
-    const NPT_String& GetFragment() const { return m_Fragment; }
-    virtual bool      IsValid() const;
-    bool              HasQuery()    const { return m_HasQuery;    } 
-    bool              HasFragment() const { return m_HasFragment; }
-    NPT_Result        SetHost(const char*  host);
-    NPT_Result        SetPort(NPT_UInt16 port);
-    NPT_Result        SetPath(const char*  path);
-    NPT_Result        SetPathPlus(const char* path_plus);
-    NPT_Result        SetQuery(const char* query);
-    NPT_Result        SetFragment(const char* fragment);
+    const NPT_String&  GetHost() const     { return m_Host;     }
+    NPT_UInt16         GetPort() const     { return m_Port;     }
+    const NPT_String&  GetPath() const     { return m_Path;     }
+    const NPT_String&  GetQuery() const    { return m_Query;    }
+    const NPT_String&  GetFragment() const { return m_Fragment; }
+    virtual bool       IsValid() const;
+    bool               HasQuery()    const { return m_HasQuery;    } 
+    bool               HasFragment() const { return m_HasFragment; }
+    NPT_Result         SetHost(const char*  host);
+    NPT_Result         SetPort(NPT_UInt16 port);
+    NPT_Result         SetPath(const char* path);
+    NPT_Result         SetPathPlus(const char* path_plus);
+    NPT_Result         SetQuery(const char* query);
+    NPT_Result         SetFragment(const char* fragment);
     virtual NPT_String ToRequestString(bool with_fragment = false) const;
     virtual NPT_String ToStringWithDefaultPort(NPT_UInt16 default_port, bool with_fragment = true) const;
     virtual NPT_String ToString(bool with_fragment = true) const;

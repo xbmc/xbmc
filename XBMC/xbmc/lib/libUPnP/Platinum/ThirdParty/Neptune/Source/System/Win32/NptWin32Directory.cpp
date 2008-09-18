@@ -91,7 +91,7 @@ NPT_Win32DirectoryEntry::GetInfo(NPT_DirectoryEntryInfo& info)
             return NPT_ERROR_NO_SUCH_ITEM;
         }
 
-        info.size = (filedata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? 0 : filedata.nFileSizeLow;
+        info.size = (filedata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? 0 : ((NPT_UInt64)filedata.nFileSizeHigh << 32) | filedata.nFileSizeLow;
         info.type = (filedata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? NPT_DIRECTORY_TYPE : NPT_FILE_TYPE;
 
         FindClose(sizeHandle);
@@ -217,7 +217,7 @@ NPT_Win32Directory::GetNextEntry(NPT_String& name, NPT_DirectoryEntryInfo* info)
     // assign output params
     name = filedata.cFileName;
     if (info) {
-        info->size = (filedata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? 0 : filedata.nFileSizeLow;
+        info->size = (filedata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? 0 : ((NPT_UInt64)filedata.nFileSizeHigh << 32) | filedata.nFileSizeLow;
         info->type = (filedata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? NPT_DIRECTORY_TYPE : NPT_FILE_TYPE;
     }
 

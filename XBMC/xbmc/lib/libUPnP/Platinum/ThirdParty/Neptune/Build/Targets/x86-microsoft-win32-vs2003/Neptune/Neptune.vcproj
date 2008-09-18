@@ -24,7 +24,7 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				BufferSecurityCheck="TRUE"
 				DisableLanguageExtensions="FALSE"
 				ForceConformanceInForLoopScope="TRUE"
@@ -73,7 +73,7 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				BufferSecurityCheck="TRUE"
 				EnableFunctionLevelLinking="TRUE"
 				DisableLanguageExtensions="FALSE"
@@ -155,6 +155,9 @@
 				RelativePath="..\..\..\..\Source\Core\NptNetwork.cpp">
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\System\Posix\NptPosixFile.cpp">
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\Core\NptQueue.cpp">
 			</File>
 			<File
@@ -201,6 +204,12 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Directory.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32DynamicLibraries.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32File.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Network.cpp">

@@ -16,6 +16,7 @@
 #include "NptConfig.h"
 #include "NptTypes.h"
 #include "NptStrings.h"
+#include "NptMap.h"
 
 #if defined (NPT_CONFIG_HAVE_STDIO_H)
 #include <stdio.h>
@@ -37,14 +38,22 @@
 /*----------------------------------------------------------------------
 |   byte I/O
 +---------------------------------------------------------------------*/
+extern void NPT_BytesFromInt64Be(unsigned char* buffer, NPT_UInt64 value);
 extern void NPT_BytesFromInt32Be(unsigned char* buffer, NPT_UInt32 value);
+extern void NPT_BytesFromInt24Be(unsigned char* buffer, NPT_UInt32 value);
 extern void NPT_BytesFromInt16Be(unsigned char* buffer, NPT_UInt16 value);
+extern NPT_UInt64 NPT_BytesToInt64Be(const unsigned char* buffer);
 extern NPT_UInt32 NPT_BytesToInt32Be(const unsigned char* buffer);
+extern NPT_UInt32 NPT_BytesToInt24Be(const unsigned char* buffer);
 extern NPT_UInt16 NPT_BytesToInt16Be(const unsigned char* buffer);
 
+extern void NPT_BytesFromInt64Le(unsigned char* buffer, NPT_UInt64 value);
 extern void NPT_BytesFromInt32Le(unsigned char* buffer, NPT_UInt32 value);
+extern void NPT_BytesFromInt24Le(unsigned char* buffer, NPT_UInt32 value);
 extern void NPT_BytesFromInt16Le(unsigned char* buffer, NPT_UInt16 value);
+extern NPT_UInt64 NPT_BytesToInt64Le(const unsigned char* buffer);
 extern NPT_UInt32 NPT_BytesToInt32Le(const unsigned char* buffer);
+extern NPT_UInt32 NPT_BytesToInt24Le(const unsigned char* buffer);
 extern NPT_UInt16 NPT_BytesToInt16Le(const unsigned char* buffer);
 
 extern void NPT_ByteToHex(NPT_Byte b, char* buffer);
@@ -62,6 +71,15 @@ NPT_ParseInteger(const char* str, long& result, bool relaxed = true, NPT_Cardina
 extern NPT_Result 
 NPT_ParseInteger32(const char* str, NPT_Int32& result, bool relaxed = true);
 
+extern NPT_Result 
+NPT_ParseUInteger64(const char* str, NPT_UInt64& result, bool relaxed = true);
+
+extern NPT_Result 
+NPT_ParseUInteger(const char* str, unsigned long& result, bool relaxed = true, NPT_Cardinal* chars_used = 0);
+
+extern NPT_Result 
+NPT_ParseUInteger32(const char* str, NPT_UInt32& result, bool relaxed = true);
+
 /*----------------------------------------------------------------------
 |    formatting
 +---------------------------------------------------------------------*/
@@ -70,6 +88,13 @@ NPT_FormatOutput(void        (*function)(void* parameter, const char* message),
                  void*       function_parameter,
                  const char* format, 
                  va_list     args);
+
+/*----------------------------------------------------------------------
+|    parsing
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_ParseMimeParameters(const char*                      encoded,
+                        NPT_Map<NPT_String, NPT_String>& parameters);
 
 /*----------------------------------------------------------------------
 |    environment variables

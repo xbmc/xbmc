@@ -2,7 +2,7 @@
 |
 |   Platinum - Device Data
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
 ****************************************************************/
@@ -50,13 +50,13 @@ PLT_DeviceData::~PLT_DeviceData()
 /*----------------------------------------------------------------------
 |   PLT_DeviceData::SetDescriptionUrl
 +---------------------------------------------------------------------*/
-NPT_Result
+/*NPT_Result
 PLT_DeviceData::SetDescriptionUrl(NPT_HttpUrl& url)
 {
     NPT_CHECK_FATAL(SetURLBase(url));
     m_URLDescription = url;
     return NPT_SUCCESS;
-}
+}*/
 
 /*----------------------------------------------------------------------
 |   PLT_DeviceData::GetDescriptionUrl
@@ -106,8 +106,8 @@ PLT_DeviceData::GetURLBase()
 +---------------------------------------------------------------------*/
 NPT_String
 PLT_DeviceData::GetIconUrl(const char* mimetype, 
-                           NPT_Integer maxsize, 
-                           NPT_Integer maxdepth)
+                           NPT_Int32   maxsize, 
+                           NPT_Int32   maxdepth)
 {
     PLT_DeviceIcon icon;
     icon.depth  = 0;
@@ -252,6 +252,7 @@ PLT_DeviceData::GetDescription(NPT_XmlElementNode* root, NPT_XmlElementNode** de
     NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "UDN", "uuid:" + m_UUID));
     if (!m_PresentationURL.IsEmpty()) NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "presentationURL", m_PresentationURL));
 
+    // PS3 support
     if (!m_DlnaDoc.IsEmpty()) {
         NPT_XmlElementNode* dlnadoc = new NPT_XmlElementNode("dlna", "X_DLNADOC");
         NPT_CHECK_SEVERE(dlnadoc->SetNamespaceUri("dlna", "urn:schemas-dlna-org:device-1-0"));
@@ -280,6 +281,12 @@ PLT_DeviceData::GetDescription(NPT_XmlElementNode* root, NPT_XmlElementNode** de
     NPT_CHECK_SEVERE(m_Services.ApplyUntil(PLT_GetDescriptionIterator<PLT_Service*>(services), 
                                            NPT_UntilResultNotEquals(NPT_SUCCESS)));
 
+    // PS3 support
+    NPT_XmlElementNode* aggr = new NPT_XmlElementNode("av", "aggregationFlags");
+    NPT_CHECK_SEVERE(aggr->SetNamespaceUri("av", "urn:schemas-sonycom:av"));
+    aggr->AddText("10");
+    device->AddChild(aggr);
+
     return NPT_SUCCESS;
 }
 
@@ -291,6 +298,7 @@ PLT_DeviceData::GetDescription(NPT_String& desc)
 {
     NPT_XmlElementNode* root = new NPT_XmlElementNode("root");
     NPT_CHECK_SEVERE(root->SetNamespaceUri("", "urn:schemas-upnp-org:device-1-0"));
+    NPT_CHECK_SEVERE(root->SetNamespaceUri("dlna", "urn:schemas-dlna-org:device-1-0"));
 
     // add spec version
     NPT_XmlElementNode* spec = new NPT_XmlElementNode("specVersion");
@@ -312,7 +320,8 @@ PLT_DeviceData::GetDescription(NPT_String& desc)
 |   PLT_DeviceData::SetDescription
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_DeviceData::SetDescription(const char* description)
+PLT_DeviceData::SetDescription(const char*          description, 
+                               const NPT_IpAddress& local_iface_ip)
 {
     NPT_XmlParser parser;
     NPT_XmlNode*  tree = NULL;
@@ -350,6 +359,8 @@ PLT_DeviceData::SetDescription(const char* description)
 
     // delete the tree
     delete tree;
+
+    m_LocalIfaceIp = local_iface_ip;
     return res;
 }
 

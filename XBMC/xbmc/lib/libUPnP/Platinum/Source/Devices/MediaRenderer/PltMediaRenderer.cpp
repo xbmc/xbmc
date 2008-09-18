@@ -2,7 +2,7 @@
 |
 |   Platinum - AV Media Renderer Device
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
 ****************************************************************/
@@ -120,9 +120,10 @@ PLT_MediaRenderer::~PLT_MediaRenderer()
 |   PLT_MediaRenderer::OnAction
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MediaRenderer::OnAction(PLT_ActionReference& action, NPT_SocketInfo* info /* = NULL */)
+PLT_MediaRenderer::OnAction(PLT_ActionReference&          action, 
+                            const NPT_HttpRequestContext& context)
 {
-    NPT_COMPILER_UNUSED(info);
+    NPT_COMPILER_UNUSED(context);
 
     /* parse the action name */
     NPT_String name = action->GetActionDesc()->GetName();

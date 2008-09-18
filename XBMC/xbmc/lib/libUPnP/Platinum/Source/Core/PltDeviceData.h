@@ -2,7 +2,7 @@
 |
 |   Platinum - Device Data
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
 ****************************************************************/
@@ -32,9 +32,9 @@ typedef NPT_List<PLT_DeviceDataReference> PLT_DeviceDataReferenceList;
 +---------------------------------------------------------------------*/
 typedef struct {
     NPT_String  mimetype;
-    NPT_Integer width;
-    NPT_Integer height;
-    NPT_Integer depth;
+    NPT_Int32   width;
+    NPT_Int32   height;
+    NPT_Int32   depth;
     NPT_String  url;
 } PLT_DeviceIcon;
 
@@ -55,13 +55,13 @@ public:
     virtual NPT_String  GetDescriptionUrl(const char* bind_addr = NULL);
     virtual NPT_HttpUrl GetURLBase();
     virtual NPT_Result  GetDescription(NPT_XmlElementNode* parent, NPT_XmlElementNode** device = NULL);
-    virtual NPT_String  GetIconUrl(const char* mimetype = NULL, NPT_Integer maxsize = 0, NPT_Integer maxdepth = 0);
+    virtual NPT_String  GetIconUrl(const char* mimetype = NULL, NPT_Int32 maxsize = 0, NPT_Int32 maxdepth = 0);
 
-    const NPT_TimeInterval& GetLeaseTime()        const { return m_LeaseTime;        }
-    const NPT_String&    GetUUID()             const { return m_UUID;             }
-    const NPT_String&    GetFriendlyName()     const { return m_FriendlyName;     }
-    const NPT_String&    GetType()             const { return m_DeviceType;       }
-    const NPT_String&    GetModelDescription() const { return m_ModelDescription; }
+    const NPT_TimeInterval& GetLeaseTime()    const { return m_LeaseTime;        }
+    const NPT_String&   GetUUID()             const { return m_UUID;             }
+    const NPT_String&   GetFriendlyName()     const { return m_FriendlyName;     }
+    const NPT_String&   GetType()             const { return m_DeviceType;       }
+    const NPT_String&   GetModelDescription() const { return m_ModelDescription; }
 
     NPT_Result FindServiceByType(const char* type, PLT_Service*& service);
     NPT_Result FindServiceById(const char* id, PLT_Service*& service);
@@ -72,14 +72,17 @@ public:
     NPT_Result ToLog(int level = NPT_LOG_LEVEL_FINE);
 
 protected:
-    NPT_TimeStamp GetLeaseTimeLastUpdate();
-    NPT_Result    SetLeaseTime(NPT_TimeInterval lease_time);
-    NPT_Result    SetDescriptionUrl(NPT_HttpUrl& description_url);
-    NPT_Result    SetURLBase(NPT_HttpUrl& url_base);
+    /*NPT_Result    SetDescriptionUrl(NPT_HttpUrl& description_url);*/
+    /* called by PLT_Device subclasses */
     NPT_Result    AddService(PLT_Service* service);
-    NPT_Result    SetDescription(const char* szDescription);
 
 private:
+    /* called by PLT_CtrlPoint when new device detected */
+    NPT_Result    SetURLBase(NPT_HttpUrl& url_base);
+    NPT_TimeStamp GetLeaseTimeLastUpdate();
+    NPT_Result    SetLeaseTime(NPT_TimeInterval lease_time);
+    NPT_Result    SetDescription(const char*          szDescription, 
+                                 const NPT_IpAddress& local_iface_ip);
     NPT_Result    SetDescriptionDevice(NPT_XmlElementNode* device_node);
 
 public:
@@ -113,6 +116,10 @@ protected:
     NPT_TimeStamp             m_LeaseTimeLastUpdate;
     NPT_Array<PLT_Service*>   m_Services;
     NPT_Array<PLT_DeviceIcon> m_Icons;
+
+    /* Ip address of interface used when retrieving device description.
+    We need the info for the ctrlpoint subscription callback */
+    NPT_IpAddress   m_LocalIfaceIp; 
 };
 
 /*----------------------------------------------------------------------

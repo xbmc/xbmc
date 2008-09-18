@@ -2,7 +2,7 @@
 |
 |   Platinum - SSDP
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -48,9 +48,11 @@ PLT_SsdpSender::SendSsdp(NPT_HttpRequest&   request,
     if (NPT_FAILED(res)) return res;
 
     // copy stream into a data packet and send it
-    NPT_Size size;
+    NPT_LargeSize size;
     stream.GetSize(size);
-    NPT_DataBuffer packet(stream.GetData(), size);
+    if (size != (NPT_Size)size) return NPT_ERROR_OUT_OF_RANGE;
+
+    NPT_DataBuffer packet(stream.GetData(), (NPT_Size)size);
     return socket.Send(packet, addr);
 }
 
@@ -77,9 +79,11 @@ PLT_SsdpSender::SendSsdp(NPT_HttpResponse&  response,
     if (NPT_FAILED(res)) return res;
 
     // copy stream into a data packet and send it
-    NPT_Size size;
+    NPT_LargeSize size;
     stream.GetSize(size);
-    NPT_DataBuffer packet(stream.GetData(), size);
+    if (size != (NPT_Size)size) return NPT_ERROR_OUT_OF_RANGE;
+
+    NPT_DataBuffer packet(stream.GetData(), (NPT_Size)size);
     return socket.Send(packet, addr);
 }
 
@@ -87,21 +91,21 @@ PLT_SsdpSender::SendSsdp(NPT_HttpResponse&  response,
 |   PLT_SsdpSender::FormatPacket
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_SsdpSender::FormatPacket(NPT_HttpMessage&   message, 
-                             const char*        usn,
-                             const char*        target,
-                             NPT_UdpSocket&     socket,
-                             bool               notify)
+PLT_SsdpSender::FormatPacket(NPT_HttpMessage& message, 
+                             const char*      usn,
+                             const char*      target,
+                             NPT_UdpSocket&   socket,
+                             bool             notify)
 {
     NPT_COMPILER_UNUSED(socket);
 
-    PLT_UPnPMessageHelper::SetUSN(&message, usn);
+    PLT_UPnPMessageHelper::SetUSN(message, usn);
     if (notify) {
-        PLT_UPnPMessageHelper::SetNT(&message, target);
+        PLT_UPnPMessageHelper::SetNT(message, target);
     } else {
-        PLT_UPnPMessageHelper::SetST(&message, target);
+        PLT_UPnPMessageHelper::SetST(message, target);
     }
-    PLT_HttpHelper::SetContentLength(&message, 0);
+    PLT_HttpHelper::SetContentLength(message, 0);
 
     return NPT_SUCCESS;
 }
@@ -162,9 +166,9 @@ PLT_SsdpDeviceSearchResponseInterfaceIterator::operator()(NPT_NetworkInterface*&
         remote_addr = NULL;
     }
 
-    PLT_UPnPMessageHelper::SetLocation(&response, m_Device->GetDescriptionUrl(local_addr.GetIpAddress().ToString()));
-    PLT_UPnPMessageHelper::SetLeaseTime(&response, (NPT_Timeout)((float)m_Device->GetLeaseTime()));
-    PLT_UPnPMessageHelper::SetServer(&response, "UPnP/1.0, Platinum UPnP SDK/" PLT_PLATINUM_VERSION_STRING);
+    PLT_UPnPMessageHelper::SetLocation(response, m_Device->GetDescriptionUrl(local_addr.GetIpAddress().ToString()));
+    PLT_UPnPMessageHelper::SetLeaseTime(response, (NPT_Timeout)((float)m_Device->GetLeaseTime()));
+    PLT_UPnPMessageHelper::SetServer(response, "UPnP/1.0, Platinum UPnP SDK/" PLT_PLATINUM_VERSION_STRING);
     response.GetHeaders().SetHeader("EXT", "");
 
     // process search response twice to be NMPR compliant
@@ -213,7 +217,8 @@ PLT_SsdpAnnounceInterfaceIterator::operator()(NPT_NetworkInterface*& net_if) con
     //    return NPT_FAILURE;
     //}
 
-    NPT_List<NPT_NetworkInterfaceAddress>::Iterator niaddr = net_if->GetAddresses().GetFirstItem();
+    NPT_List<NPT_NetworkInterfaceAddress>::Iterator niaddr = 
+        net_if->GetAddresses().GetFirstItem();
     if (!niaddr) return NPT_FAILURE;
 
     // Remove disconnected interfaces
@@ -236,11 +241,11 @@ PLT_SsdpAnnounceInterfaceIterator::operator()(NPT_NetworkInterface*& net_if) con
     }
 
     NPT_HttpRequest req(url, "NOTIFY", NPT_HTTP_PROTOCOL_1_1);
-    PLT_HttpHelper::SetHost(&req, "239.255.255.250:1900");
+    PLT_HttpHelper::SetHost(req, "239.255.255.250:1900");
     
     // put a location only if alive message
     if (m_IsByeBye == false) {
-        PLT_UPnPMessageHelper::SetLocation(&req, m_Device->GetDescriptionUrl(addr.ToString()));
+        PLT_UPnPMessageHelper::SetLocation(req, m_Device->GetDescriptionUrl(addr.ToString()));
     }
 
     NPT_CHECK_SEVERE(m_Device->Announce(req, *socket, m_IsByeBye));
@@ -255,7 +260,7 @@ PLT_SsdpAnnounceInterfaceIterator::operator()(NPT_NetworkInterface*& net_if) con
 void
 PLT_SsdpDeviceAnnounceTask::DoRun()
 {
-    NPT_Result       res = NPT_SUCCESS;
+    NPT_Result res = NPT_SUCCESS;
     NPT_List<NPT_NetworkInterface*> if_list;
 
     while (1) {
@@ -341,15 +346,15 @@ PLT_SsdpListenTask::GetInfo(NPT_SocketInfo& info)
 |    PLT_SsdpListenTask::ProcessRequest
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_SsdpListenTask::ProcessRequest(NPT_HttpRequest&   request, 
-                                   NPT_SocketInfo     info, 
-                                   NPT_HttpResponse*& response,
-                                   bool&              headers_only) 
+PLT_SsdpListenTask::ProcessRequest(NPT_HttpRequest&              request, 
+                                   const NPT_HttpRequestContext& context,
+                                   NPT_HttpResponse*&            response,
+                                   bool&                         headers_only) 
 {
     NPT_COMPILER_UNUSED(headers_only);
 
     NPT_AutoLock lock(m_Mutex);
-    m_Listeners.Apply(PLT_SsdpPacketListenerIterator(request, info));
+    m_Listeners.Apply(PLT_SsdpPacketListenerIterator(request, context));
 
     // set response to NULL since we don't have anything to respond
     // as we use a separate task to respond with ssdp
@@ -384,7 +389,6 @@ PLT_SsdpSearchTask::~PLT_SsdpSearchTask()
     delete m_Request;
 }
 
-
 /*----------------------------------------------------------------------
 |   PLT_HttpServerSocketTask::DoAbort
 +---------------------------------------------------------------------*/
@@ -400,10 +404,10 @@ PLT_SsdpSearchTask::DoAbort()
 void
 PLT_SsdpSearchTask::DoRun()
 {
-    NPT_HttpResponse*         response = NULL;
-    NPT_SocketInfo            info;
-    PLT_HttpClient            client;
-    NPT_Timeout               timeout = 30;
+    NPT_HttpResponse*      response = NULL;
+    PLT_HttpClient         client;
+    NPT_Timeout            timeout = 30;
+    NPT_HttpRequestContext context;
 
     do {
         // get the address of the server
@@ -415,11 +419,10 @@ PLT_SsdpSearchTask::DoRun()
                                   m_Request->GetUrl().GetPort());
 
         // send request
-        PLT_OutputDatagramStreamReference output_stream(new PLT_OutputDatagramStream(m_Socket, 
-                                                                                     4096, 
-                                                                                     &address));
-        NPT_CHECK_LABEL_SEVERE(client.SendRequest((NPT_OutputStreamReference&)output_stream, 
-                                                  *m_Request), 
+        NPT_OutputStreamReference output_stream(new PLT_OutputDatagramStream(m_Socket, 
+                                                                             4096, 
+                                                                             &address));
+        NPT_CHECK_LABEL_SEVERE(client.SendRequest(output_stream, *m_Request), 
                                done);
         output_stream = NULL;
 
@@ -430,17 +433,22 @@ PLT_SsdpSearchTask::DoRun()
         while (!IsAborting(0)) {
             // read response
             PLT_InputDatagramStreamReference input_stream(new PLT_InputDatagramStream(m_Socket));
-            NPT_Result res = client.WaitForResponse((NPT_InputStreamReference&)input_stream, 
+            NPT_InputStreamReference stream = input_stream;
+            NPT_Result res = client.WaitForResponse(stream, 
                                                     *m_Request, 
-                                                    info, 
+                                                    context, 
                                                     response);
             // callback to process response
             if (NPT_SUCCEEDED(res)) {
-                // get source info
+                // get source info    
+                NPT_SocketInfo info;
                 input_stream->GetInfo(info);
 
+                context.SetLocalAddress(info.local_address);
+                context.SetRemoteAddress(info.remote_address);
+
                 // process response
-                ProcessResponse(NPT_SUCCESS, m_Request, info, response);
+                ProcessResponse(NPT_SUCCESS, m_Request, context, response);
                 delete response;
                 response = NULL;
             } else if (res != NPT_ERROR_TIMEOUT) {
@@ -465,11 +473,11 @@ done:
 |    PLT_CtrlPointGetDescriptionTask::ProcessResponse
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_SsdpSearchTask::ProcessResponse(NPT_Result        res, 
-                                    NPT_HttpRequest*  request, 
-                                    NPT_SocketInfo&   info, 
-                                    NPT_HttpResponse* response)
+PLT_SsdpSearchTask::ProcessResponse(NPT_Result                    res, 
+                                    NPT_HttpRequest*              request,  
+                                    const NPT_HttpRequestContext& context,
+                                    NPT_HttpResponse*             response)
 {
     NPT_COMPILER_UNUSED(request);
-    return m_Listener->ProcessSsdpSearchResponse(res, info, response);
+    return m_Listener->ProcessSsdpSearchResponse(res, context, response);
 }

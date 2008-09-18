@@ -2,7 +2,7 @@
 |
 |      Messages Test Program 1
 |
-|      (c) 2001-2003 Gilles Boccon-Gibod
+|      (c) 2001-2008 Gilles Boccon-Gibod
 |      Author: Gilles Boccon-Gibod (bok@bok.net)
 |
  ****************************************************************/
@@ -397,7 +397,8 @@ main(int /*argc*/, char** /*argv*/)
     delete client1;
     delete client2;
     delete server;
-
+    delete queue;
+    
     printf("MessagesTest1:: end\n");
 }
 
