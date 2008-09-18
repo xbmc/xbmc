@@ -10,6 +10,7 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
+#include "stdafx.h"
 #include "IFile.h"
 #include "FileFactory.h"
 #include "utils/log.h"
@@ -99,7 +100,7 @@ class NPT_XbmcFileInputStream : public NPT_InputStream,
 {
 public:
     // constructors and destructor
-    NPT_XbmcFileInputStream(NPT_XbmcFileReference& file, NPT_Size size) :
+    NPT_XbmcFileInputStream(NPT_XbmcFileReference& file, NPT_LargeSize size) :
         NPT_XbmcFileStream(file), m_Size(size) {}
 
     // NPT_InputStream methods
@@ -112,12 +113,12 @@ public:
     NPT_Result Tell(NPT_Position& offset) {
         return NPT_XbmcFileStream::Tell(offset);
     }
-    NPT_Result GetSize(NPT_Size& size);
-    NPT_Result GetAvailable(NPT_Size& available);
+    NPT_Result GetSize(NPT_LargeSize& size);
+    NPT_Result GetAvailable(NPT_LargeSize& available);
 
 private:
     // members
-    NPT_Size m_Size;
+    NPT_LargeSize m_Size;
 };
 
 /*----------------------------------------------------------------------
@@ -153,7 +154,7 @@ NPT_XbmcFileInputStream::Read(void*     buffer,
 |   NPT_XbmcFileInputStream::GetSize
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_XbmcFileInputStream::GetSize(NPT_Size& size)
+NPT_XbmcFileInputStream::GetSize(NPT_LargeSize& size)
 {
     size = m_Size;
     return NPT_SUCCESS;
@@ -163,11 +164,11 @@ NPT_XbmcFileInputStream::GetSize(NPT_Size& size)
 |   NPT_XbmcFileInputStream::GetAvailable
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_XbmcFileInputStream::GetAvailable(NPT_Size& available)
+NPT_XbmcFileInputStream::GetAvailable(NPT_LargeSize& available)
 {
     __int64 offset = m_FileReference->GetPosition();
-    if (offset >= 0 && (NPT_Size)offset <= m_Size) {
-        available = m_Size - (NPT_Size)offset;
+    if (offset >= 0 && (NPT_LargeSize)offset <= m_Size) {
+        available = m_Size - offset;
         return NPT_SUCCESS;
     } else {
         available = 0;
@@ -225,29 +226,29 @@ class NPT_XbmcFile: public NPT_FileInterface
 {
 public:
     // constructors and destructor
-    NPT_XbmcFile(const char* name);
+    NPT_XbmcFile(NPT_File& delegator);
    ~NPT_XbmcFile();
 
     // NPT_FileInterface methods
     NPT_Result Open(OpenMode mode);
     NPT_Result Close();
-    NPT_Result GetSize(NPT_Size& size);
+    NPT_Result GetSize(NPT_LargeSize& size);
     NPT_Result GetInputStream(NPT_InputStreamReference& stream);
     NPT_Result GetOutputStream(NPT_OutputStreamReference& stream);
 
 private:
     // members
-    NPT_String            m_Name;
+    NPT_File&             m_Delegator;
     OpenMode              m_Mode;
     NPT_XbmcFileReference m_FileReference;
-    NPT_Size              m_Size;
+    NPT_LargeSize         m_Size;
 };
 
 /*----------------------------------------------------------------------
 |   NPT_XbmcFile::NPT_XbmcFile
 +---------------------------------------------------------------------*/
-NPT_XbmcFile::NPT_XbmcFile(const char* name) :
-    m_Name(name),
+NPT_XbmcFile::NPT_XbmcFile(NPT_File& delegator) :
+    m_Delegator(delegator),
     m_Mode(0),
     m_Size(0)
 {
@@ -278,7 +279,7 @@ NPT_XbmcFile::Open(NPT_File::OpenMode mode)
     m_Mode = mode;
 
     // check for special names
-    const char* name = (const char*)m_Name;
+    const char* name = (const char*)m_Delegator.GetPath();
     if (NPT_StringsEqual(name, NPT_FILE_STANDARD_INPUT)) {
         return NPT_ERROR_FILE_NOT_READABLE;
     } else if (NPT_StringsEqual(name, NPT_FILE_STANDARD_OUTPUT)) {
@@ -302,12 +303,7 @@ NPT_XbmcFile::Open(NPT_File::OpenMode mode)
             }
         }
 
-        // get the size
-        if( file->GetLength() > std::numeric_limits<NPT_Size>::max() ) {
-            CLog::Log(LOGERROR, "%s - file is too large for Neptunes file system", __FUNCTION__);
-            return NPT_ERROR_FILE_NOT_READABLE;
-        }
-        m_Size = (NPT_Size)file->GetLength();
+        m_Size = (NPT_LargeSize)file->GetLength();
     }
 
     // store reference
@@ -335,7 +331,7 @@ NPT_XbmcFile::Close()
 |   NPT_XbmcFile::GetSize
 +---------------------------------------------------------------------*/
 NPT_Result 
-NPT_XbmcFile::GetSize(NPT_Size& size)
+NPT_XbmcFile::GetSize(NPT_LargeSize& size)
 {
     // default value
     size = 0;
@@ -398,7 +394,24 @@ NPT_XbmcFile::GetOutputStream(NPT_OutputStreamReference& stream)
 /*----------------------------------------------------------------------
 |   NPT_File::NPT_File
 +---------------------------------------------------------------------*/
-NPT_File::NPT_File(const char* name)
+NPT_File::NPT_File(const char* path) :
+    m_Path(path)
 {
-    m_Delegate = new NPT_XbmcFile(name);
+    m_Delegate = new NPT_XbmcFile(*this);
 }
+
+/*----------------------------------------------------------------------
+|   NPT_File::operator=
++---------------------------------------------------------------------*/
+NPT_File& 
+NPT_File::operator=(const NPT_File& file)
+{
+    if (this != &file) {
+        delete m_Delegate;
+        m_Path = file.m_Path;
+        m_Info = file.m_Info;
+        m_Delegate = new NPT_XbmcFile(*this);
+    }
+    return *this;
+}
+

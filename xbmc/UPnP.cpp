@@ -61,11 +61,16 @@ typedef struct {
 
 static const mimetype_extension_struct mimetype_extension_map[] = {
     {"mp3",  "audio/mpeg"},
+    {"m4a",  "audio/mp4"},
     {"wma",  "audio/x-ms-wma"},
+    {"wav",  "audio/x-wav"},
     {"wmv",  "video/x-ms-wmv"},
+    {"asf",  "video/x-ms-asf"},
     {"mpg",  "video/mpeg"},
-    {"divx",  "video/avi"},
+    {"divx", "video/avi"},
+    {"xvid", "video/avi"},
     {"jpg",  "image/jpeg"},
+    {"tif",  "image/tiff"},
     {NULL, NULL}
 };
 
@@ -246,34 +251,45 @@ public:
     }
 
     // PLT_MediaServer methods
-    virtual NPT_Result OnBrowseMetadata(PLT_ActionReference& action, 
-                                        const char*          object_id, 
-                                        NPT_SocketInfo*      info = NULL);
+    virtual NPT_Result OnBrowseMetadata(PLT_ActionReference&          action, 
+                                        const char*                   object_id, 
+                                        const NPT_HttpRequestContext& context);
 
-    virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference& action, 
-                                              const char*          object_id, 
-                                              NPT_SocketInfo*      info = NULL);
+    virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference&          action, 
+                                              const char*		            object_id, 
+                                              const NPT_HttpRequestContext& context);
 
-    virtual NPT_Result OnSearch(PLT_ActionReference& action, 
-                                const NPT_String&    object_id, 
-                                const NPT_String&    searchCriteria,
-                                NPT_SocketInfo*      info = NULL);
+    virtual NPT_Result OnSearch(PLT_ActionReference&          action, 
+                                const NPT_String&             object_id, 
+                                const NPT_String&             searchCriteria,
+                                const NPT_HttpRequestContext& context);
+                                
+    // PLT_FileMediaServer methods
+    virtual NPT_Result ServeFile(NPT_HttpRequest&              request, 
+                                 const NPT_HttpRequestContext& context,
+                                 NPT_HttpResponse&             response,
+                                 NPT_String                    uri_path,
+                                 NPT_String                    file_path);
+
 
 private:
-    PLT_MediaObject* BuildObject(CFileItem*      item,
-                                 NPT_String&     file_path,
-                                 bool            with_count = false,
-                                 NPT_SocketInfo* info = NULL);
+    NPT_String       BuildHttpUri(const char* host, 
+                              const char* file_path);
 
-    PLT_MediaObject* Build(CFileItemPtr    item, 
-                           bool            with_count = false, 
-                           NPT_SocketInfo* info = NULL,
-                           const char*     parent_id = NULL);
+    PLT_MediaObject* BuildObject(CFileItem*                    item,
+                                 NPT_String&                   file_path,
+                                 bool                          with_count,
+                                 const NPT_HttpRequestContext& context);
 
-    NPT_Result       BuildResponse(PLT_ActionReference& action,
-                                   CFileItemList&       items,
-                                   NPT_SocketInfo*      info,
-                                   const char*          parent_id);
+    PLT_MediaObject* Build(CFileItemPtr                  item, 
+                           bool                          with_count, 
+                           const NPT_HttpRequestContext& context,
+                           const char*                   parent_id = NULL);
+
+    NPT_Result       BuildResponse(PLT_ActionReference&          action,
+                                   CFileItemList&                items,
+                                   const NPT_HttpRequestContext& context,
+                                   const char*                   parent_id);
 
 
     static NPT_String GetParentFolder(NPT_String file_path) {       
@@ -342,11 +358,23 @@ CUPnPServer::GetProtocolInfo(const CFileItem* item, const NPT_String& protocol)
     }
 
     /* setup dlna strings, wish i knew what all of they mean */
-    NPT_String extra = "DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01500000000000000000000000000000";
+    NPT_String extra = "DLNA.ORG_OP=01";
     if( content == "audio/mpeg" )
         extra.Insert("DLNA.ORG_PN=MP3;");
     else if( content == "image/jpeg" )
-        extra.Insert("DLNA.ORG_PN=JPEG_SM;");
+        extra.Insert("DLNA.ORG_PN=JPEG_LRG;");
+    else if( content == "image/png" )
+        extra.Insert("DLNA.ORG_PN=PNG_LRG;");
+    else if( content == "image/bmp" )
+        extra.Insert("DLNA.ORG_PN=BMP_LRG;");
+    else if( content == "image/tiff" )
+        extra.Insert("DLNA.ORG_PN=TIFF_LRG;");
+    else if( content == "image/gif" )
+        extra.Insert("DLNA.ORG_PN=GIF_LRG;");
+    else if( content == "image/jp2" )
+        extra.Insert("DLNA.ORG_PN=JPEG_LRG;");
+    else if( content == "video/avi" )
+        extra.Insert("DLNA.ORG_PN=AVI;");
 
     NPT_String info = proto + ":*:" + content + ":" + extra;
     return info;
@@ -378,13 +406,35 @@ Substitute(const char* in, char ch, const char* str)
 }
 
 /*----------------------------------------------------------------------
+|   CUPnPServer::BuildHttpUri
++---------------------------------------------------------------------*/
+NPT_String
+CUPnPServer::BuildHttpUri(const char* host, const char* file_path)
+{
+    NPT_HttpUrl uri = m_FileBaseUri;
+    NPT_HttpUrlQuery query;
+    NPT_String result;
+
+    query.AddField("path", file_path);
+    uri.SetHost(host);
+    uri.SetQuery(query.ToString());
+    // 360 hack: force inclusion of port 80
+    result = uri.ToStringWithDefaultPort(0);
+    // 360 hack: it removes the query, so we make it look like a path
+    // and we replace + with urlencoded value of space
+    result = Substitute(result, '?', "%3F");
+    result = Substitute(result, '+', "%20");
+    return result;
+}
+
+/*----------------------------------------------------------------------
 |   CUPnPServer::BuildObject
 +---------------------------------------------------------------------*/
 PLT_MediaObject*
-CUPnPServer::BuildObject(CFileItem*      item,
-                         NPT_String&     file_path,
-                         bool            with_count /* = false */,
-                         NPT_SocketInfo* info /* = NULL */)
+CUPnPServer::BuildObject(CFileItem*                    item,
+                         NPT_String&                   file_path,
+                         bool                          with_count,
+                         const NPT_HttpRequestContext& context)
 {
     PLT_MediaItemResource resource;
     PLT_MediaObject*      object = NULL;
@@ -399,9 +449,9 @@ CUPnPServer::BuildObject(CFileItem*      item,
 
     // if we're passed an interface where we received the request from
     // move the ip to the top
-    if (info && info->local_address.GetIpAddress().ToString() != "0.0.0.0") {
-        ips.Remove(info->local_address.GetIpAddress().ToString());
-        ips.Insert(ips.GetFirstItem(), info->local_address.GetIpAddress().ToString());
+    if (context.GetLocalAddress().GetIpAddress().ToString() != "0.0.0.0") {
+        ips.Remove(context.GetLocalAddress().GetIpAddress().ToString());
+        ips.Insert(ips.GetFirstItem(), context.GetLocalAddress().GetIpAddress().ToString());
     }
 
     if (!item->m_bIsFolder) {
@@ -479,7 +529,7 @@ CUPnPServer::BuildObject(CFileItem*      item,
         }
 
         /* Set the resource file size */
-        resource.m_Size = (NPT_Integer)item->m_dwSize;
+        resource.m_Size = (NPT_Size)item->m_dwSize;
 
         // if the item is remote, add a direct link to the item
         if( CUtil::IsRemote ( (const char*)file_path ) ) {
@@ -492,22 +542,12 @@ CUPnPServer::BuildObject(CFileItem*      item,
         // throught http file server
         NPT_List<NPT_String>::Iterator ip = ips.GetFirstItem();
         while (ip) {
-            NPT_HttpUrl uri = m_FileBaseUri;
-            NPT_HttpUrlQuery query;
-            query.AddField("path", file_path.ToLowercase());
-            uri.SetHost(*ip);
-            uri.SetQuery(query.ToString());
             resource.m_ProtocolInfo = GetProtocolInfo(item, "http-get");
-            // 360 hack: force inclusion of port 80
-            resource.m_Uri = uri.ToStringWithDefaultPort(0);
-            // 360 hack: it removes the query, so we make it look like a path
-            // and we replace + with urlencoded value of space
-            resource.m_Uri = Substitute(resource.m_Uri, '?', "%3F");
-            resource.m_Uri = Substitute(resource.m_Uri, '+', "%20");
+            resource.m_Uri = BuildHttpUri(*ip, file_path);
             object->m_Resources.Add(resource);
 
             ++ip;
-        }        
+        }
     } else {
         PLT_MediaContainer* container = new PLT_MediaContainer;
         object = container;
@@ -577,17 +617,7 @@ CUPnPServer::BuildObject(CFileItem*      item,
     }
     // set a thumbnail if we have one
     if( item->HasThumbnail() ) {
-        NPT_HttpUrl uri = m_FileBaseUri;
-        NPT_HttpUrlQuery query;
-        query.AddField("path", item->GetThumbnailImage() );
-        uri.SetHost(*ips.GetFirstItem());
-        uri.SetQuery(query.ToString());
-        // 360 hack: force inclusion of port 80
-        object->m_ExtraInfo.album_art_uri = uri.ToStringWithDefaultPort(0);
-        // 360 hack: it removes the query, so we make it look like a path
-        // and we replace + with urlencoded value of space
-        object->m_ExtraInfo.album_art_uri = Substitute(object->m_ExtraInfo.album_art_uri, '?', "%3F");
-        object->m_ExtraInfo.album_art_uri = Substitute(object->m_ExtraInfo.album_art_uri, '+', "%20");
+        object->m_ExtraInfo.album_art_uri = BuildHttpUri(*ips.GetFirstItem(), item->GetThumbnailImage());
     }
 
     return object;
@@ -602,10 +632,10 @@ failure:
 |   CUPnPServer::Build
 +---------------------------------------------------------------------*/
 PLT_MediaObject* 
-CUPnPServer::Build(CFileItemPtr    item, 
-                   bool            with_count /* = true */, 
-                   NPT_SocketInfo* info /* = NULL */,
-                   const char*     parent_id /* = NULL */)
+CUPnPServer::Build(CFileItemPtr                  item, 
+                   bool                          with_count, 
+                   const NPT_HttpRequestContext& context,
+                   const char*                   parent_id /* = NULL */)
 {
     PLT_MediaObject* object = NULL;
     NPT_String       path = item->m_strPath.c_str();
@@ -626,7 +656,6 @@ CUPnPServer::Build(CFileItemPtr    item,
               item->SetLabel("Music Library");
               item->SetLabelPreformated(true);
           } else {
-
               if( !item->HasMusicInfoTag() || !item->GetMusicInfoTag()->Loaded() )
                   item->LoadMusicTag();
 
@@ -647,8 +676,6 @@ CUPnPServer::Build(CFileItemPtr    item,
               item->SetLabel("Video Library");
               item->SetLabelPreformated(true);
           } else {
-
-
               if( !item->HasVideoInfoTag() ) {
                   DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams params;
                   DIRECTORY::VIDEODATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo((const char*)path, params);
@@ -686,7 +713,7 @@ CUPnPServer::Build(CFileItemPtr    item,
       }
 
       //not a virtual path directory, new system
-      object = BuildObject(item.get(), file_path, with_count, info);
+      object = BuildObject(item.get(), file_path, with_count, context);
       if(!object)
         return NULL;
 
@@ -702,7 +729,7 @@ CUPnPServer::Build(CFileItemPtr    item,
         if (!CUPnPVirtualPathDirectory::FindSourcePath(share_name, file_path, true)) goto failure;
         
         // this is not a virtual directory
-        object = BuildObject(item.get(), file_path, with_count, info);
+        object = BuildObject(item.get(), file_path, with_count, context);
         if (!object) goto failure;
 
         // override object id & change the class if it's an item
@@ -842,14 +869,14 @@ failure:
 |   CUPnPServer::OnBrowseMetadata
 +---------------------------------------------------------------------*/
 NPT_Result
-CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action, 
-                              const char*          object_id, 
-                              NPT_SocketInfo*      info /* = NULL */)
+CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action, 
+                              const char*                   object_id, 
+                              const NPT_HttpRequestContext& context)
 {
     NPT_String                     didl;
     NPT_Reference<PLT_MediaObject> object;
     NPT_String                     id = object_id;
-    CMediaSource                         share;
+    CMediaSource                   share;
     CUPnPVirtualPathDirectory      dir;
     vector<CStdString>             paths;
     CFileItemPtr                   item;
@@ -865,31 +892,31 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
             item.reset(new CFileItem((const char*)id, true));
             item->SetLabel("Root");
             item->SetLabelPreformated(true);
-            object = Build(item, true, info);
+            object = Build(item, true, context);
         } else if (id == "virtualpath://upnpmusic") {
             id += "/";
             item.reset(new CFileItem((const char*)id, true));
             item->SetLabel("Music Files");
             item->SetLabelPreformated(true);
-            object = Build(item, true, info);
+            object = Build(item, true, context);
         } else if (id == "virtualpath://upnpvideo") {
             id += "/";
             item.reset(new CFileItem((const char*)id, true));
             item->SetLabel("Video Files");
             item->SetLabelPreformated(true);
-            object = Build(item, true, info);
+            object = Build(item, true, context);
         } else if (id == "virtualpath://upnppictures") {
             id += "/";
             item.reset(new CFileItem((const char*)id, true));
             item->SetLabel("Picture Files");
             item->SetLabelPreformated(true);
-            object = Build(item, true, info);
+            object = Build(item, true, context);
         } else if (dir.GetMatchingSource((const char*)id, share, paths)) {
             id += "/";
             item.reset(new CFileItem((const char*)id, true));
             item->SetLabel(share.strName);
             item->SetLabelPreformated(true);
-            object = Build(item, true, info);
+            object = Build(item, true, context);
         } else {
             NPT_String share_name, file_path;
             if (!CUPnPVirtualPathDirectory::SplitPath(id, share_name, file_path)) 
@@ -910,7 +937,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
                 item->m_dwSize = entry_info.size;
             }
 
-            object = Build(item, true, info);
+            object = Build(item, true, context);
             if (!object.IsNull()) object->m_ObjectID = id;
         }
     } else {
@@ -923,7 +950,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
         if(!CUtil::GetParentPath((const char*)id, parent))
           parent = "0";
 
-        object = Build(item, true, info, parent.c_str());
+        object = Build(item, true, context, parent.c_str());
     }
 
     if (object.IsNull()) return NPT_FAILURE;
@@ -952,9 +979,9 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
 |   CUPnPServer::OnBrowseDirectChildren
 +---------------------------------------------------------------------*/
 NPT_Result
-CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action, 
-                                    const char*          object_id, 
-                                    NPT_SocketInfo*      info /* = NULL */)
+CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action, 
+                                    const char*                   object_id, 
+                                    const NPT_HttpRequestContext& context)
 {
     NPT_String id = object_id;    
     CFileItemList items;
@@ -988,17 +1015,17 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
     }
 
 
-    return BuildResponse(action, items, info, id);
+    return BuildResponse(action, items, context, id);
 }
 
 /*----------------------------------------------------------------------
 |   CUPnPServer::BuildResponse
 +---------------------------------------------------------------------*/
 NPT_Result
-CUPnPServer::BuildResponse(PLT_ActionReference& action, 
-                           CFileItemList&       items, 
-                           NPT_SocketInfo*      info, 
-                           const char*          parent_id)
+CUPnPServer::BuildResponse(PLT_ActionReference&          action, 
+                           CFileItemList&                items, 
+                           const NPT_HttpRequestContext& context, 
+                           const char*                   parent_id)
 {
     NPT_String filter;
     NPT_String startingInd;
@@ -1017,7 +1044,7 @@ CUPnPServer::BuildResponse(PLT_ActionReference& action,
     NPT_String didl = didl_header;
     PLT_MediaObjectReference item;
     for (unsigned long i=start_index; i < stop_index; ++i) {
-        item = Build(items[i], true, info, parent_id);
+        item = Build(items[i], true, context, parent_id);
         if (item.IsNull()) {
             /* create a dummy object */
             item = new PLT_MediaObject();
@@ -1047,10 +1074,10 @@ CUPnPServer::BuildResponse(PLT_ActionReference& action,
 |   CUPnPServer::OnSearch
 +---------------------------------------------------------------------*/
 NPT_Result
-CUPnPServer::OnSearch(PLT_ActionReference& action, 
-                      const NPT_String&    object_id, 
-                      const NPT_String&    searchCriteria,
-                      NPT_SocketInfo*      info /*= NULL*/)
+CUPnPServer::OnSearch(PLT_ActionReference&          action, 
+                      const NPT_String&             object_id, 
+                      const NPT_String&             searchCriteria,
+                      const NPT_HttpRequestContext& context)
 
 {
     if (object_id.StartsWith("musicdb://")) {
@@ -1063,10 +1090,10 @@ CUPnPServer::OnSearch(PLT_ActionReference& action,
                 id += "-1/";
             }
         }
-        return OnBrowseDirectChildren(action, id, info);
+        return OnBrowseDirectChildren(action, id, context);
     } else if (searchCriteria.Find("object.item.audioItem") >= 0) {
         // browse all songs
-        return OnBrowseDirectChildren(action, "musicdb://4", info);
+        return OnBrowseDirectChildren(action, "musicdb://4", context);
     } else if (searchCriteria.Find("object.container.album.musicAlbum") >= 0) {
         // 360 hack: artist/album using search
         int artist_search = searchCriteria.Find("upnp:artist = \"");
@@ -1077,16 +1104,16 @@ CUPnPServer::OnSearch(PLT_ActionReference& action,
             database.Open();
             CStdString strPath;
             strPath.Format("musicdb://2/%ld/", database.GetArtistByName((const char*)artist));
-            return OnBrowseDirectChildren(action, "musicdb://3", info);
+            return OnBrowseDirectChildren(action, "musicdb://3", context);
         } else {
-            return OnBrowseDirectChildren(action, "musicdb://3", info);
+            return OnBrowseDirectChildren(action, "musicdb://3", context);
         }
     } else if (searchCriteria.Find("object.container.person.musicArtist") >= 0) {
-        return OnBrowseDirectChildren(action, "musicdb://2", info);
+        return OnBrowseDirectChildren(action, "musicdb://2", context);
     }  else if (searchCriteria.Find("object.container.genre.musicGenre") >= 0) {
-        return OnBrowseDirectChildren(action, "musicdb://1", info);
+        return OnBrowseDirectChildren(action, "musicdb://1", context);
     } else if (searchCriteria.Find("object.container.playlistContainer") >= 0) {
-        return OnBrowseDirectChildren(action, "special://musicplaylists/", info);
+        return OnBrowseDirectChildren(action, "special://musicplaylists/", context);
     } else if (searchCriteria.Find("object.item.videoItem") >= 0) {
       CFileItemList items, itemsall;
 
@@ -1111,10 +1138,58 @@ CUPnPServer::OnSearch(PLT_ActionReference& action,
       itemsall.Append(items);
       items.Clear();
 
-      return BuildResponse(action, itemsall, info, NULL);
+      return BuildResponse(action, itemsall, context, NULL);
   }
 
   return NPT_FAILURE;
+}
+
+/*----------------------------------------------------------------------
+|   CUPnPServer::ServeFile
++---------------------------------------------------------------------*/
+NPT_Result 
+CUPnPServer::ServeFile(NPT_HttpRequest&              request, 
+                       const NPT_HttpRequestContext& context,
+                       NPT_HttpResponse&             response,
+                       NPT_String                    uri_path,
+                       NPT_String                    file_path)
+{
+    // File requested
+    NPT_String path = m_FileBaseUri.GetPath();
+    if (path.Compare(uri_path.Left(path.GetLength()), true) == 0 && 
+        file_path.Left(8).Compare("stack://", true) == 0) {
+        
+        NPT_List<NPT_String> files = file_path.SubString(8).Split(" , ");
+        if (files.GetItemCount() == 0) {
+            response.SetStatus(404, "File Not Found");
+            return NPT_SUCCESS;
+        }
+
+        NPT_String output;
+        output.Reserve(file_path.GetLength()*2);
+
+        NPT_List<NPT_String>::Iterator url = files.GetFirstItem();
+        for (;url;url++) {
+            NPT_HttpUrl uri = m_FileBaseUri;
+            NPT_HttpUrlQuery query;
+            query.AddField("path", *url);
+            uri.SetHost(context.GetLocalAddress().GetIpAddress().ToString());
+            uri.SetQuery(query.ToString());
+
+            output += uri.ToString();
+            output += "\n\r";
+        }
+
+        PLT_HttpHelper::SetContentType(response, "audio/x-mpegurl");
+        PLT_HttpHelper::SetBody(response, (const char*)output, output.GetLength());
+        return NPT_SUCCESS;
+    }
+    
+    return PLT_MediaConnect::ServeFile(request, 
+                                       context, 
+                                       response, 
+                                       uri_path, 
+                                       file_path);
 }
 
 /*----------------------------------------------------------------------
