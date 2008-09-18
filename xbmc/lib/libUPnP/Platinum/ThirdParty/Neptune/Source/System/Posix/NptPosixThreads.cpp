@@ -10,6 +10,9 @@
 /*----------------------------------------------------------------------
 |       includes
 +---------------------------------------------------------------------*/
+#if defined(__SYMBIAN32__)
+#include <stdio.h>
+#endif
 #include <pthread.h>
 #include <unistd.h>
 #include <time.h>
@@ -102,24 +105,24 @@ class NPT_PosixSharedVariable : public NPT_SharedVariableInterface
 {
 public:
     // methods
-               NPT_PosixSharedVariable(NPT_Integer value);
+               NPT_PosixSharedVariable(int value);
               ~NPT_PosixSharedVariable();
-    NPT_Result SetValue(NPT_Integer value);
-    NPT_Result GetValue(NPT_Integer& value);
-    NPT_Result WaitUntilEquals(NPT_Integer value, NPT_Timeout timeout);
-    NPT_Result WaitWhileEquals(NPT_Integer value, NPT_Timeout timeout);
+    void       SetValue(int value);
+    int        GetValue();
+    NPT_Result WaitUntilEquals(int value, NPT_Timeout timeout);
+    NPT_Result WaitWhileEquals(int value, NPT_Timeout timeout);
 
  private:
     // members
-    volatile NPT_Integer m_Value;
-    pthread_mutex_t      m_Mutex;
-    pthread_cond_t       m_Condition;
+    volatile int    m_Value;
+    pthread_mutex_t m_Mutex;
+    pthread_cond_t  m_Condition;
 };
 
 /*----------------------------------------------------------------------
 |       NPT_PosixSharedVariable::NPT_PosixSharedVariable
 +---------------------------------------------------------------------*/
-NPT_PosixSharedVariable::NPT_PosixSharedVariable(NPT_Integer value) : 
+NPT_PosixSharedVariable::NPT_PosixSharedVariable(int value) : 
     m_Value(value)
 {
     pthread_mutex_init(&m_Mutex, NULL);
@@ -138,54 +141,52 @@ NPT_PosixSharedVariable::~NPT_PosixSharedVariable()
 /*----------------------------------------------------------------------
 |       NPT_PosixSharedVariable::SetValue
 +---------------------------------------------------------------------*/
-NPT_Result
-NPT_PosixSharedVariable::SetValue(NPT_Integer value)
+void
+NPT_PosixSharedVariable::SetValue(int value)
 {
     pthread_mutex_lock(&m_Mutex);
     m_Value = value;
     pthread_cond_broadcast(&m_Condition);
     pthread_mutex_unlock(&m_Mutex);
-    
-    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
 |       NPT_PosixSharedVariable::GetValue
 +---------------------------------------------------------------------*/
-NPT_Result
-NPT_PosixSharedVariable::GetValue(NPT_Integer& value)
+int
+NPT_PosixSharedVariable::GetValue()
 {
-    // reading an integer should be atomic on most platforms
-    value = m_Value;
-
-    return NPT_SUCCESS;
+    // we assume that int read/write are atomic on the platform
+    return m_Value;
 }
 
 /*----------------------------------------------------------------------
 |       NPT_PosixSharedVariable::WaitUntilEquals
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_PosixSharedVariable::WaitUntilEquals(NPT_Integer value, NPT_Timeout timeout)
+NPT_PosixSharedVariable::WaitUntilEquals(int value, NPT_Timeout timeout)
 {
     NPT_Result result = NPT_SUCCESS;
     struct     timespec timed;
-    struct     timeval  now;
 
-    // get current time from system
-    if (gettimeofday(&now, NULL)) {
-        return NPT_FAILURE;
+    if (timeout != NPT_TIMEOUT_INFINITE) {
+        // get current time from system
+        struct timeval now;
+        if (gettimeofday(&now, NULL)) {
+            return NPT_FAILURE;
+        }
+
+        now.tv_usec += timeout * 1000;
+        if (now.tv_usec >= 1000000) {
+            now.tv_sec += now.tv_usec / 1000000;
+            now.tv_usec = now.tv_usec % 1000000;
+        }
+
+        // setup timeout
+        timed.tv_sec  = now.tv_sec;
+        timed.tv_nsec = now.tv_usec * 1000;
     }
-
-    now.tv_usec += timeout * 1000;
-    if (now.tv_usec >= 1000000) {
-        now.tv_sec += now.tv_usec / 1000000;
-        now.tv_usec = now.tv_usec % 1000000;
-    }
-
-    // setup timeout
-    timed.tv_sec  = now.tv_sec;
-    timed.tv_nsec = now.tv_usec * 1000;
-
+    
     pthread_mutex_lock(&m_Mutex);
     while (value != m_Value) {
         if (timeout == NPT_TIMEOUT_INFINITE) {
@@ -207,27 +208,29 @@ NPT_PosixSharedVariable::WaitUntilEquals(NPT_Integer value, NPT_Timeout timeout)
 |       NPT_PosixSharedVariable::WaitWhileEquals
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_PosixSharedVariable::WaitWhileEquals(NPT_Integer value, NPT_Timeout timeout)
+NPT_PosixSharedVariable::WaitWhileEquals(int value, NPT_Timeout timeout)
 {
     NPT_Result result = NPT_SUCCESS;
     struct     timespec timed;
-    struct     timeval  now;
 
-    // get current time from system
-    if (gettimeofday(&now, NULL)) {
-        return NPT_FAILURE;
+    if (timeout != NPT_TIMEOUT_INFINITE) {
+        // get current time from system
+        struct timeval now;
+        if (gettimeofday(&now, NULL)) {
+            return NPT_FAILURE;
+        }
+
+        now.tv_usec += timeout * 1000;
+        if (now.tv_usec >= 1000000) {
+            now.tv_sec += now.tv_usec / 1000000;
+            now.tv_usec = now.tv_usec % 1000000;
+        }
+
+        // setup timeout
+        timed.tv_sec  = now.tv_sec;
+        timed.tv_nsec = now.tv_usec * 1000;
     }
-
-    now.tv_usec += timeout * 1000;
-    if (now.tv_usec >= 1000000) {
-        now.tv_sec += now.tv_usec / 1000000;
-        now.tv_usec = now.tv_usec % 1000000;
-    }
-
-    // setup timeout
-    timed.tv_sec  = now.tv_sec;
-    timed.tv_nsec = now.tv_usec * 1000;
-
+    
     pthread_mutex_lock(&m_Mutex);
     while (value == m_Value) {
         if (timeout == NPT_TIMEOUT_INFINITE) {
@@ -248,7 +251,7 @@ NPT_PosixSharedVariable::WaitWhileEquals(NPT_Integer value, NPT_Timeout timeout)
 /*----------------------------------------------------------------------
 |       NPT_SharedVariable::NPT_SharedVariable
 +---------------------------------------------------------------------*/
-NPT_SharedVariable::NPT_SharedVariable(NPT_Integer value)
+NPT_SharedVariable::NPT_SharedVariable(int value)
 {
     m_Delegate = new NPT_PosixSharedVariable(value);
 }
@@ -260,23 +263,23 @@ class NPT_PosixAtomicVariable : public NPT_AtomicVariableInterface
 {
  public:
     // methods
-                NPT_PosixAtomicVariable(NPT_Integer value);
-               ~NPT_PosixAtomicVariable();
-    NPT_Integer Increment(); 
-    NPT_Integer Decrement();
-    NPT_Integer GetValue();
-    void        SetValue(NPT_Integer value);
+         NPT_PosixAtomicVariable(int value);
+        ~NPT_PosixAtomicVariable();
+    int  Increment(); 
+    int  Decrement();
+    int  GetValue();
+    void SetValue(int value);
 
  private:
     // members
-    volatile NPT_Integer m_Value;
-    pthread_mutex_t      m_Mutex;
+    volatile int    m_Value;
+    pthread_mutex_t m_Mutex;
 };
 
 /*----------------------------------------------------------------------
 |       NPT_PosixAtomicVariable::NPT_PosixAtomicVariable
 +---------------------------------------------------------------------*/
-NPT_PosixAtomicVariable::NPT_PosixAtomicVariable(NPT_Integer value) : 
+NPT_PosixAtomicVariable::NPT_PosixAtomicVariable(int value) : 
     m_Value(value)
 {
     pthread_mutex_init(&m_Mutex, NULL);
@@ -293,10 +296,10 @@ NPT_PosixAtomicVariable::~NPT_PosixAtomicVariable()
 /*----------------------------------------------------------------------
 |       NPT_PosixAtomicVariable::Increment
 +---------------------------------------------------------------------*/
-NPT_Integer
+int
 NPT_PosixAtomicVariable::Increment()
 {
-    NPT_Integer value;
+    int value;
 
     pthread_mutex_lock(&m_Mutex);
     value = ++m_Value;
@@ -308,10 +311,10 @@ NPT_PosixAtomicVariable::Increment()
 /*----------------------------------------------------------------------
 |       NPT_PosixAtomicVariable::Decrement
 +---------------------------------------------------------------------*/
-NPT_Integer
+int
 NPT_PosixAtomicVariable::Decrement()
 {
-    NPT_Integer value;
+    int value;
 
     pthread_mutex_lock(&m_Mutex);
     value = --m_Value;
@@ -323,9 +326,10 @@ NPT_PosixAtomicVariable::Decrement()
 /*----------------------------------------------------------------------
 |       NPT_PosixAtomicVariable::GetValue
 +---------------------------------------------------------------------*/
-NPT_Integer
+int
 NPT_PosixAtomicVariable::GetValue()
 {
+    // we assume that int read/write are atomic on the platform
     return m_Value;
 }
 
@@ -333,7 +337,7 @@ NPT_PosixAtomicVariable::GetValue()
 |       NPT_PosixAtomicVariable::SetValue
 +---------------------------------------------------------------------*/
 void
-NPT_PosixAtomicVariable::SetValue(NPT_Integer value)
+NPT_PosixAtomicVariable::SetValue(int value)
 {
     pthread_mutex_lock(&m_Mutex);
     m_Value = value;
@@ -343,7 +347,7 @@ NPT_PosixAtomicVariable::SetValue(NPT_Integer value)
 /*----------------------------------------------------------------------
 |       NPT_AtomicVariable::NPT_AtomicVariable
 +---------------------------------------------------------------------*/
-NPT_AtomicVariable::NPT_AtomicVariable(NPT_Integer value)
+NPT_AtomicVariable::NPT_AtomicVariable(int value)
 {
     m_Delegate = new NPT_PosixAtomicVariable(value);
 }
@@ -413,6 +417,16 @@ NPT_PosixThread::~NPT_PosixThread()
 }
 
 /*----------------------------------------------------------------------
+|   NPT_Thread::GetCurrentThreadId
++---------------------------------------------------------------------*/
+NPT_Thread::ThreadId 
+NPT_Thread::GetCurrentThreadId()
+{
+    pthread_t pid = pthread_self();
+    return (NPT_Thread::ThreadId)((void*)pid);
+}
+
+/*----------------------------------------------------------------------
 |       NPT_PosixThread::EntryPoint
 +---------------------------------------------------------------------*/
 void*
@@ -422,15 +436,16 @@ NPT_PosixThread::EntryPoint(void* argument)
 
     NPT_LOG_FINE("NPT_PosixThread::EntryPoint - in =======================");
     
-    // set random seed
+    // set random seed per thread
     NPT_TimeStamp now;
     NPT_System::GetCurrentTimeStamp(now);
     NPT_System::SetRandomSeed((unsigned int)(now.m_NanoSeconds + (long)thread->m_ThreadId));
 
     // run the thread 
     thread->Run();
-    
-    NPT_LOG_FINE("NPT_PosixThread::EntryPoint - out ======================");
+
+    // Logging here will cause a crash on exit because LogManager may already be destroyed    
+    //NPT_LOG_FINE("NPT_PosixThread::EntryPoint - out ======================");
 
     // we're done with the thread object
     // if we're detached, we need to delete ourselves

@@ -222,6 +222,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\System\Posix\NptPosixFile.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\Core\NptQueue.cpp"
 				>
 			</File>
@@ -283,6 +287,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Directory.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32File.cpp"
 				>
 			</File>
 			<File

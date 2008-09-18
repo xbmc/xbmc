@@ -57,6 +57,7 @@ const int NPT_HTTP_PROTOCOL_MAX_HEADER_COUNT = 100;
 const int NPT_ERROR_HTTP_INVALID_RESPONSE_LINE = NPT_ERROR_BASE_HTTP - 0;
 const int NPT_ERROR_HTTP_INVALID_REQUEST_LINE  = NPT_ERROR_BASE_HTTP - 1;
 const int NPT_ERROR_HTTP_NO_PROXY              = NPT_ERROR_BASE_HTTP - 2;
+const int NPT_ERROR_HTTP_INVALID_REQUEST       = NPT_ERROR_BASE_HTTP - 3;
 
 #define NPT_HTTP_LINE_TERMINATOR "\r\n"
 
@@ -126,12 +127,13 @@ public:
     ~NPT_HttpHeaders();
 
     // methods
+    NPT_Result Parse(NPT_BufferedInputStream& stream);
     NPT_Result Emit(NPT_OutputStream& stream) const;
     NPT_List<NPT_HttpHeader*>& GetHeaders() { return m_Headers; }
-    NPT_HttpHeader* GetHeader(const char* name) const;
-    NPT_Result SetHeader(const char* name, const char* value);
-    NPT_Result GetHeaderValue(const char* name, NPT_String& value);
-    NPT_Result AddHeader(const char* name, const char* value);
+    NPT_HttpHeader*   GetHeader(const char* name) const;
+    const NPT_String* GetHeaderValue(const char* name) const;
+    NPT_Result        SetHeader(const char* name, const char* value);
+    NPT_Result        AddHeader(const char* name, const char* value);
 
 private:
     // members
@@ -156,12 +158,13 @@ public:
     NPT_Result SetInputStream(const char* string);
     NPT_Result GetInputStream(NPT_InputStreamReference& stream);
     NPT_Result Load(NPT_DataBuffer& buffer);
+    NPT_Result SetHeaders(const NPT_HttpHeaders& headers);
 
     // field access
     NPT_Result        SetContentType(const char* type);
     NPT_Result        SetContentEncoding(const char* encoding);
-    NPT_Result        SetContentLength(NPT_Size length);
-    NPT_Size          GetContentLength()   { return m_ContentLength;   }
+    NPT_Result        SetContentLength(NPT_LargeSize length);
+    NPT_LargeSize     GetContentLength()   { return m_ContentLength;   }
     const NPT_String& GetContentType()     { return m_ContentType;     }
     const NPT_String& GetContentEncoding() { return m_ContentEncoding; }
     const NPT_String& GetTransferEncoding(){ return m_TransferEncoding; }
@@ -169,7 +172,7 @@ public:
 private:
     // members
     NPT_InputStreamReference m_InputStream;
-    NPT_Size                 m_ContentLength;
+    NPT_LargeSize            m_ContentLength;
     NPT_String               m_ContentType;
     NPT_String               m_ContentEncoding;
     NPT_String               m_TransferEncoding;
@@ -365,6 +368,33 @@ protected:
 };
 
 /*----------------------------------------------------------------------
+|   NPT_HttpRequestContext
++---------------------------------------------------------------------*/
+class NPT_HttpRequestContext
+{
+public:
+    // constructor
+    NPT_HttpRequestContext() {}
+    NPT_HttpRequestContext(const NPT_SocketAddress* local_address,
+                           const NPT_SocketAddress* remote_address);
+                  
+    // methods
+    const NPT_SocketAddress& GetLocalAddress()   const { return m_LocalAddress;  }
+    const NPT_SocketAddress& GetRemoteAddress() const { return m_RemoteAddress; }
+    void SetLocalAddress(const NPT_SocketAddress& address) {
+        m_LocalAddress = address;
+    }
+    void SetRemoteAddress(const NPT_SocketAddress& address) {
+        m_RemoteAddress = address;
+    }
+    
+private:
+    // members
+    NPT_SocketAddress m_LocalAddress;
+    NPT_SocketAddress m_RemoteAddress;
+};
+
+/*----------------------------------------------------------------------
 |   NPT_HttpRequestHandler
 +---------------------------------------------------------------------*/
 class NPT_HttpRequestHandler 
@@ -374,9 +404,9 @@ public:
     virtual ~NPT_HttpRequestHandler() {}
 
     // methods
-    virtual NPT_Result SetupResponse(NPT_HttpRequest&  request,
-                                     NPT_HttpResponse& response,
-                                     NPT_SocketInfo&   client_info) = 0;
+    virtual NPT_Result SetupResponse(NPT_HttpRequest&              request,
+                                     const NPT_HttpRequestContext& context,
+                                     NPT_HttpResponse&             response) = 0;
 };
 
 /*----------------------------------------------------------------------
@@ -387,17 +417,17 @@ class NPT_HttpStaticRequestHandler : public NPT_HttpRequestHandler
 public:
     // constructors
     NPT_HttpStaticRequestHandler(const char* document, 
-                                 const char* mime_type,
+                                 const char* mime_type = "text/html",
                                  bool        copy = true);
     NPT_HttpStaticRequestHandler(const void* data,
                                  NPT_Size    size,
-                                 const char* mime_type,
+                                 const char* mime_type = "text/html",
                                  bool        copy = true);
 
     // NPT_HttpRequetsHandler methods
-    virtual NPT_Result SetupResponse(NPT_HttpRequest&  request, 
-                                     NPT_HttpResponse& response,
-                                     NPT_SocketInfo&   client_info);
+    virtual NPT_Result SetupResponse(NPT_HttpRequest&              request, 
+                                     const NPT_HttpRequestContext& context,
+                                     NPT_HttpResponse&             response);
 
 private:
     NPT_String     m_MimeType;
@@ -415,9 +445,9 @@ public:
                                const char* file_root);
 
     // NPT_HttpRequetsHandler methods
-    virtual NPT_Result SetupResponse(NPT_HttpRequest&  request, 
-                                     NPT_HttpResponse& response,
-                                     NPT_SocketInfo&   client_info);
+    virtual NPT_Result SetupResponse(NPT_HttpRequest&              request, 
+                                     const NPT_HttpRequestContext& context,
+                                     NPT_HttpResponse&             response);
 
     // accessors
     NPT_Map<NPT_String,NPT_String>& GetFileTypeMap() { return m_FileTypeMap; }
@@ -466,11 +496,12 @@ public:
     void       Abort();
     NPT_Result WaitForNewClient(NPT_InputStreamReference&  input,
                                 NPT_OutputStreamReference& output,
-                                NPT_SocketInfo&            client_info);
+                                NPT_HttpRequestContext*    context);
+    NPT_Result Loop();
     
     /**
-     *  Add a request handler. The ownership of the handler is NOT transfered to this object,
-     *  so the caller is responsible for the lifetime management of the handler object.
+     * Add a request handler. The ownership of the handler is NOT transfered to this object,
+     * so the caller is responsible for the lifetime management of the handler object.
      */
     NPT_Result AddRequestHandler(NPT_HttpRequestHandler* handler, const char* path, bool include_children = false);
     NPT_HttpRequestHandler* FindRequestHandler(NPT_HttpRequest& request);
@@ -478,9 +509,9 @@ public:
     /**
      * Parse the request from a new client, form a response, and send it back. 
      */
-    NPT_Result RespondToClient(NPT_InputStreamReference&  input,
-                               NPT_OutputStreamReference& output,
-                               NPT_SocketInfo&            client_info);
+    NPT_Result RespondToClient(NPT_InputStreamReference&     input,
+                               NPT_OutputStreamReference&    output,
+                               const NPT_HttpRequestContext& context);
 
 protected:
     // types
@@ -527,8 +558,8 @@ public:
     // methods
     NPT_Result SetConfig(const Config& config);
     NPT_Result SetTimeout(NPT_Timeout io_timeout);
-    NPT_Result ParseRequest(NPT_HttpRequest*&  request,
-                            NPT_SocketAddress* local_address = NULL);
+    NPT_Result ParseRequest(NPT_HttpRequest*&        request,
+                            const NPT_SocketAddress* local_address = NULL);
     NPT_Result SendResponse(NPT_HttpResponse& response,
                             bool              headers_only = false);
 
@@ -555,8 +586,8 @@ public:
                     NPT_Size* bytes_read = NULL);
     NPT_Result Seek(NPT_Position offset);
     NPT_Result Tell(NPT_Position& offset);
-    NPT_Result GetSize(NPT_Size& size);
-    NPT_Result GetAvailable(NPT_Size& available);
+    NPT_Result GetSize(NPT_LargeSize& size);
+    NPT_Result GetAvailable(NPT_LargeSize& available);
 
 protected:
     // members

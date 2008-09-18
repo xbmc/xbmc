@@ -2,7 +2,7 @@
 |
 |   Platinum - Control Point Tasks
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -37,10 +37,10 @@ public:
 
 protected:
     // PLT_HttpClientSocketTask methods
-    NPT_Result ProcessResponse(NPT_Result        res, 
-                               NPT_HttpRequest*  request, 
-                               NPT_SocketInfo&   info, 
-                               NPT_HttpResponse* response);
+    NPT_Result ProcessResponse(NPT_Result                    res, 
+                               NPT_HttpRequest*              request, 
+                               const NPT_HttpRequestContext& context, 
+                               NPT_HttpResponse*             response);
 
 protected:
     PLT_CtrlPoint*          m_CtrlPoint;
@@ -60,10 +60,10 @@ public:
 
 protected:
     // PLT_HttpClientSocketTask methods
-    NPT_Result ProcessResponse(NPT_Result        res, 
-                               NPT_HttpRequest*  request, 
-                               NPT_SocketInfo&   info, 
-                               NPT_HttpResponse* response);   
+    NPT_Result ProcessResponse(NPT_Result                    res, 
+                               NPT_HttpRequest*              request, 
+                               const NPT_HttpRequestContext& context, 
+                               NPT_HttpResponse*             response);   
 
 protected:
     PLT_CtrlPoint*          m_CtrlPoint;
@@ -84,10 +84,10 @@ public:
 
 protected:
     // PLT_HttpClientSocketTask methods
-    NPT_Result ProcessResponse(NPT_Result        res, 
-                               NPT_HttpRequest*  request, 
-                               NPT_SocketInfo&   info, 
-                               NPT_HttpResponse* response);   
+    NPT_Result ProcessResponse(NPT_Result                    res, 
+                               NPT_HttpRequest*              request, 
+                               const NPT_HttpRequestContext& context, 
+                               NPT_HttpResponse*             response);   
 
 protected:
     PLT_CtrlPoint*      m_CtrlPoint;
@@ -101,7 +101,8 @@ protected:
 class PLT_CtrlPointHouseKeepingTask : public PLT_ThreadTask
 {
 public:
-    PLT_CtrlPointHouseKeepingTask(PLT_CtrlPoint* ctrl_point, NPT_TimeInterval timer = NPT_TimeInterval(10, 0));
+    PLT_CtrlPointHouseKeepingTask(PLT_CtrlPoint*   ctrl_point, 
+                                  NPT_TimeInterval timer = NPT_TimeInterval(10, 0));
 
 protected:
     ~PLT_CtrlPointHouseKeepingTask() {}
@@ -128,10 +129,10 @@ public:
     
 protected:
     // PLT_HttpClientSocketTask methods
-    NPT_Result ProcessResponse(NPT_Result        res, 
-                               NPT_HttpRequest*  request, 
-                               NPT_SocketInfo&   info, 
-                               NPT_HttpResponse* response);
+    NPT_Result ProcessResponse(NPT_Result                    res, 
+                               NPT_HttpRequest*              request, 
+                               const NPT_HttpRequestContext& context, 
+                               NPT_HttpResponse*             response);
 
 protected:
     PLT_CtrlPoint*  m_CtrlPoint;

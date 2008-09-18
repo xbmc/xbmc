@@ -2,7 +2,7 @@
 |
 |   Platinum - HTTP Server Tasks
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -43,9 +43,10 @@ void
 PLT_HttpServerSocketTask::DoRun()
 {
     NPT_BufferedInputStreamReference buffered_input_stream;
-    NPT_SocketInfo info;
-    NPT_Result     res = NPT_SUCCESS;
-    bool           headers_only;
+    NPT_HttpRequestContext           context;
+    NPT_Result                       res = NPT_SUCCESS;
+    bool                             headers_only;
+    bool                             keep_alive;
 
     // create a buffered input stream to parse http request
     // as it comes
@@ -57,23 +58,20 @@ PLT_HttpServerSocketTask::DoRun()
         NPT_HttpRequest*  request = NULL;
         NPT_HttpResponse* response = NULL;
 
-        while (!IsAborting(0)) {
-            // wait for a request
-            res = Read(buffered_input_stream, request, info);
-            if (NPT_FAILED(res) || (request == NULL)) break;
+        // wait for a request
+        res = Read(buffered_input_stream, request, &context);
+        if (NPT_FAILED(res) || (request == NULL)) goto cleanup;
 
-            // callback to process request and get back a response
-            headers_only = false;
-            res = ProcessRequest(*request, info, response, headers_only);
-            if (NPT_FAILED(res) || (response == NULL)) break;
+        // callback to process request and get back a response
+        headers_only = false;
+        res = ProcessRequest(*request, context, response, headers_only);
+        if (NPT_FAILED(res) || (response == NULL)) goto cleanup;
 
-            // send back response
-            res = Write(response, false, headers_only);
-            if (NPT_FAILED(res)) break;
+        // send back response
+        keep_alive = PLT_HttpHelper::IsConnectionKeepAlive(*request) && m_StayAliveForever;
+        res = Write(response, keep_alive, headers_only);
 
-            break;
-        }
-
+cleanup:
         // cleanup
         delete request;
         delete response;
@@ -114,10 +112,16 @@ PLT_HttpServerSocketTask::GetInfo(NPT_SocketInfo& info)
 NPT_Result
 PLT_HttpServerSocketTask::Read(NPT_BufferedInputStreamReference& buffered_input_stream, 
                                NPT_HttpRequest*&                 request,
-                               NPT_SocketInfo&                   info) 
+                               NPT_HttpRequestContext*           context) 
 {
-    // extract socket info
+    NPT_SocketInfo info;
     GetInfo(info);
+
+    if (context) {
+        // extract socket info
+        context->SetLocalAddress(info.local_address);
+        context->SetRemoteAddress(info.remote_address);
+    }
 
     // parse request
     NPT_CHECK_FINE(NPT_HttpRequest::Parse(*buffered_input_stream, &info.local_address, request));
@@ -125,6 +129,15 @@ PLT_HttpServerSocketTask::Read(NPT_BufferedInputStreamReference& buffered_input_
 
     // read socket info again to refresh the remote address in case it was a udp socket
     GetInfo(info);
+    if (context) {
+        context->SetLocalAddress(info.local_address);
+        context->SetRemoteAddress(info.remote_address);
+    }
+
+    // return right away if no body is expected
+    if (request->GetMethod() == NPT_HTTP_METHOD_GET || 
+        request->GetMethod() == NPT_HTTP_METHOD_HEAD) 
+        return NPT_SUCCESS;
 
     // create an entity
     NPT_HttpEntity* request_entity = new NPT_HttpEntity(request->GetHeaders());
@@ -179,7 +192,7 @@ PLT_HttpServerSocketTask::Write(NPT_HttpResponse* response,
     if (entity) {
         // content length
         headers.SetHeader(NPT_HTTP_HEADER_CONTENT_LENGTH, 
-            NPT_String::FromInteger(entity->GetContentLength()));
+            NPT_String::FromIntegerU(entity->GetContentLength()));
 
         // content type
         NPT_String content_type = entity->GetContentType();

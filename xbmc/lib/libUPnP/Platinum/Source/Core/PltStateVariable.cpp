@@ -2,7 +2,7 @@
 |
 |   Platinum - Service State Variable
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
  ****************************************************************/
@@ -62,7 +62,9 @@ PLT_StateVariable::GetSCPDXML(NPT_XmlElementNode* node)
         NPT_CHECK_SEVERE(variable->AddChild(range));
         NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(range, "minimum", NPT_String::FromInteger(m_AllowedValueRange->min_value)));
         NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(range, "maximum", NPT_String::FromInteger(m_AllowedValueRange->max_value)));
-        NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(range, "step",    NPT_String::FromInteger(m_AllowedValueRange->step)));
+        if (m_AllowedValueRange->step != -1) {
+            NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(range, "step",    NPT_String::FromInteger(m_AllowedValueRange->step)));
+        }
     }
 
     return NPT_SUCCESS;

@@ -27,7 +27,7 @@ public:
     virtual ~NPT_SelectableMessageQueue();
     virtual NPT_Result QueueMessage(NPT_Message*        message,
                                     NPT_MessageHandler* handler);
-    virtual NPT_Result PumpMessage(bool blocking = true);
+    virtual NPT_Result PumpMessage(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE);
     int  GetEventFd() { return m_Pipe[0]; }
  
 private:

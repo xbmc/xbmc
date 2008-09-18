@@ -32,6 +32,7 @@
 #define NPT_CONFIG_HAVE_MEMSET
 #define NPT_CONFIG_HAVE_MEMCMP
 #define NPT_CONFIG_HAVE_GETENV
+#define NPT_CONFIG_HAVE_READDIR_R
 #endif /* NPT_CONFIG_HAS_STD_C */
 
 #if defined(NPT_CONFIG_HAVE_STRING_H)
@@ -68,7 +69,10 @@
 #if !defined(STRICT)
 #define STRICT
 #endif
+/* Visual Studio 2008 defines vsnprintf */
+#if _MSC_VER < 1500
 #define vsnprintf _vsnprintf
+#endif
 #define snprintf  _snprintf
 #endif
 
@@ -102,6 +106,7 @@
 +---------------------------------------------------------------------*/
 /* GCC */
 #if defined(__GNUC__)
+#define NPT_LocalFunctionName __FUNCTION__
 #define NPT_COMPILER_UNUSED(p) (void)p
 #else
 #define NPT_COMPILER_UNUSED(p) 
@@ -125,6 +130,12 @@
 
 /* Microsoft C/C++ Compiler */
 #if defined(_MSC_VER)
+#define NPT_CONFIG_INT64_TYPE __int64
+#define NPT_LocalFunctionName __FUNCTION__
+#define NPT_fseek _fseeki64
+#define NPT_ftell _ftelli64
+#define NPT_stat  _stat64
+#define NPT_stat_struct struct __stat64
 #if defined(_WIN64)
 typedef __int64 NPT_PointerLong;
 #else
@@ -166,6 +177,8 @@ typedef long NPT_PointerLong;
 #undef NPT_CONFIG_HAVE_NEW_H
 #include "e32std.h"
 #define explicit
+#define NPT_fseek fseek  // no fseeko ?
+#define NPT_ftell ftell  // no ftello ?
 #endif
 
 /*----------------------------------------------------------------------
@@ -175,18 +188,44 @@ typedef long NPT_PointerLong;
 #define NPT_POINTER_TO_LONG(_p) ((long)(_p))
 #endif
 
+#if !defined(NPT_CONFIG_INT64_TYPE)
+#define NPT_CONFIG_INT64_TYPE long long
+#endif
+
 #if !defined(NPT_snprintf)
 #define NPT_snprintf snprintf
 #endif
+
 #if !defined(NPT_strncpy)
 #define NPT_strncpy strncpy
 #endif
+
 #if !defined(NPT_vsnprintf)
 #define NPT_vsnprintf vsnprintf
 #endif
 
+#if !defined(NPT_LocalFunctionName)
+#define NPT_LocalFunctionName (NULL)
+#endif
+
 #if !defined(NPT_CONFIG_THREAD_STACK_SIZE)
 #define NPT_CONFIG_THREAD_STACK_SIZE 0
+#endif
+
+#if !defined(NPT_fseek)
+#define NPT_fseek fseeko
+#endif
+
+#if !defined(NPT_ftell)
+#define NPT_ftell ftello
+#endif
+
+#if !defined(NPT_stat)
+#define NPT_stat stat
+#endif
+
+#if !defined(NPT_stat_struct)
+#define NPT_stat_struct struct stat
 #endif
 
 /*----------------------------------------------------------------------

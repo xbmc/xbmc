@@ -499,20 +499,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		1DEB91EC08733DB70010E9CD /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				INSTALL_PATH = /usr/local/lib;
-				PRODUCT_NAME = Platinum;
-				ZERO_LINK = YES;
-			};
-			name = Debug;
-		};
 		1DEB91ED08733DB70010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -527,24 +513,6 @@
 			};
 			name = Release;
 		};
-		1DEB91F008733DB70010E9CD /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					i386,
-					ppc,
-				);
-				COPY_PHASE_STRIP = NO;
-				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = YES;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../ThirdParty/Neptune/Source/Core";
-			};
-			name = Debug;
-		};
 		1DEB91F108733DB70010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -554,7 +522,7 @@
 				);
 				GCC_GENERATE_TEST_COVERAGE_FILES = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
-				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = NO;
 				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
@@ -582,6 +550,7 @@
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
+					"-Wno-long-long",
 				);
 			};
 			name = Release;
@@ -592,7 +561,6 @@
 		1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "Platinum" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1DEB91EC08733DB70010E9CD /* Debug */,
 				1DEB91ED08733DB70010E9CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -601,7 +569,6 @@
 		1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "Platinum" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1DEB91F008733DB70010E9CD /* Debug */,
 				1DEB91F108733DB70010E9CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;

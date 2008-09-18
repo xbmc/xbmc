@@ -79,10 +79,10 @@ public:
     NPT_Result Tell(NPT_Position& /* offset */) {
         return NPT_ERROR_NOT_SUPPORTED;
     }
-    NPT_Result GetSize(NPT_Size& /* size */) {
+    NPT_Result GetSize(NPT_LargeSize& /* size */) {
         return NPT_ERROR_NOT_SUPPORTED;
     }
-    NPT_Result GetAvailable(NPT_Size& /* available */) {
+    NPT_Result GetAvailable(NPT_LargeSize& /* available */) {
         return NPT_ERROR_NOT_SUPPORTED;
     }
 };

@@ -2,7 +2,7 @@
 |
 |   Platinum - Ring buffer stream
 |
-|   Copyright (c) 2004-2006 Sylvain Rebaud
+|   Copyright (c) 2004-2008 Sylvain Rebaud
 |   Author: Sylvain Rebaud (sylvain@rebaud.com)
 |
 ****************************************************************/
@@ -34,12 +34,12 @@ public:
     NPT_Result Read(void*     buffer, 
                     NPT_Size  bytes_to_read, 
                     NPT_Size* bytes_read = NULL);
-    NPT_Result GetSize(NPT_Size& size)  { 
+    NPT_Result GetSize(NPT_LargeSize& size)  { 
         NPT_AutoLock autoLock(m_Lock);
         size = m_TotalBytesWritten;  
         return NPT_SUCCESS;
     }
-    NPT_Result GetAvailable(NPT_Size& available) { 
+    NPT_Result GetAvailable(NPT_LargeSize& available) { 
         NPT_AutoLock autoLock(m_Lock);
         available = m_RingBuffer->GetAvailable();
         return NPT_SUCCESS;
@@ -50,6 +50,7 @@ public:
                      NPT_Size    bytes_to_write, 
                      NPT_Size*   bytes_written = NULL);
     NPT_Result Flush();
+    NPT_Result Close() { m_RingBuffer->Close(); return NPT_SUCCESS; }
 
 protected:
     // NPT_DelegatingInputStream methods
