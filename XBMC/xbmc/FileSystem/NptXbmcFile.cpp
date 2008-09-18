@@ -303,11 +303,6 @@ NPT_XbmcFile::Open(NPT_File::OpenMode mode)
             }
         }
 
-        // get the size
-        if( file->GetLength() > std::numeric_limits<NPT_Size>::max() ) {
-            CLog::Log(LOGERROR, "%s - file is too large for Neptunes file system", __FUNCTION__);
-            return NPT_ERROR_FILE_NOT_READABLE;
-        }
         m_Size = (NPT_LargeSize)file->GetLength();
     }
 
