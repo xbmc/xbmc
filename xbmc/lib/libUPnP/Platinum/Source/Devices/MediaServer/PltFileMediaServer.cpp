@@ -147,8 +147,6 @@ PLT_FileMediaServer::ProcessFileRequest(NPT_HttpRequest&              request,
                                         const NPT_HttpRequestContext& context,
                                         NPT_HttpResponse&             response)
 {
-    NPT_COMPILER_UNUSED(context);
-
     NPT_LOG_FINE("PLT_FileMediaServer::ProcessFileRequest Received Request:");
     PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, &request);
 
@@ -159,40 +157,27 @@ PLT_FileMediaServer::ProcessFileRequest(NPT_HttpRequest&              request,
         return NPT_SUCCESS;
     }
 
-    // File requested
-    NPT_String path = m_FileBaseUri.GetPath();
-    NPT_String strUri = NPT_Uri::PercentDecode(request.GetUrl().GetPath());
-
+    // Extract uri path from url
+    NPT_String uri_path = NPT_Uri::PercentDecode(request.GetUrl().GetPath());
+    
+    // extract file path from query
     NPT_HttpUrlQuery query(request.GetUrl().GetQuery());
     NPT_String file_path = query.GetField("path");
 
     // hack for XBMC support for 360, we urlencoded the ? to that the 360 doesn't strip out the query
     // but then the query ends being parsed as part of the path
-    int index = strUri.Find("path=");
-    if (index>0) file_path = strUri.Right(strUri.GetLength()-index-5);
+    int index = uri_path.Find("path=");
+    if (index>0) file_path = uri_path.Right(uri_path.GetLength()-index-5);
     if (file_path.GetLength() == 0) goto failure;
+    
+    NPT_CHECK_LABEL_WARNING(ServeFile(request, 
+                                      context, 
+                                      response, 
+                                      uri_path, 
+                                      file_path),
+                            failure);
 
-    if (path.Compare(strUri.Left(path.GetLength()), true) == 0) {
-
-        if (file_path.Left(8).Compare("stack://", true) == 0) {
-            return OnStackRequest(file_path, context, response);
-        }
-
-        NPT_Position start, end;
-        PLT_HttpHelper::GetRange(request, start, end);
-
-        return PLT_FileServer::ServeFile(m_Path + file_path, 
-                                         &response,
-                                         start, 
-                                         end, 
-                                         !request.GetMethod().Compare("HEAD"));
-    } 
-
-    // Album Art requested
-    path = m_AlbumArtBaseUri.GetPath();
-    if (path.Compare(strUri.Left(path.GetLength()), true) == 0) {
-        return OnAlbumArtRequest(m_Path + file_path, response);
-    } 
+    return NPT_SUCCESS;
 
 failure:
     response.SetStatus(404, "File Not Found");
@@ -200,48 +185,49 @@ failure:
 }
 
 /*----------------------------------------------------------------------
-|   PLT_FileMediaServer::OnStackRequest
+|   PLT_FileMediaServer::ServeFile
 +---------------------------------------------------------------------*/
-NPT_Result
-PLT_FileMediaServer::OnStackRequest(const NPT_String             &filepath, 
-                                    const NPT_HttpRequestContext &context,
-                                    NPT_HttpResponse             &response)
+NPT_Result 
+PLT_FileMediaServer::ServeFile(NPT_HttpRequest&              request, 
+                               const NPT_HttpRequestContext& context,
+                               NPT_HttpResponse&             response,
+                               NPT_String                    uri_path,
+                               NPT_String                    file_path)
 {
-    NPT_List<NPT_String> files = filepath.SubString(8).Split(" , ");
-    if (files.GetItemCount() == 0) {
-        response.SetStatus(404, "File Not Found");
-        return NPT_SUCCESS;
-    }
+    NPT_COMPILER_UNUSED(context);
+    
+    // File requested
+    NPT_String path = m_FileBaseUri.GetPath();
+    if (path.Compare(uri_path.Left(path.GetLength()), true) == 0) {
 
-    NPT_String output;
-    output.Reserve(filepath.GetLength());
+        NPT_Position start, end;
+        PLT_HttpHelper::GetRange(request, start, end);
+        
+        return PLT_FileServer::ServeFile(response,
+                                         m_Path + file_path, 
+                                         start, 
+                                         end, 
+                                         !request.GetMethod().Compare("HEAD"));
+    } 
 
-    NPT_List<NPT_String>::Iterator url = files.GetFirstItem();
-    for (;url;url++) {
-        NPT_HttpUrl uri = m_FileBaseUri;
-        NPT_HttpUrlQuery query;
-        query.AddField("path", *url);
-        uri.SetHost(context.GetLocalAddress().GetIpAddress().ToString());
-        uri.SetQuery(query.ToString());
-
-        output += uri.ToString();
-        output += "\n\r";
-    }
-
-    PLT_HttpHelper::SetContentType(response, "audio/x-mpegurl");
-    PLT_HttpHelper::SetBody(response, (const char*)output, output.GetLength());
-    return NPT_SUCCESS;
+    // Album Art requested
+    path = m_AlbumArtBaseUri.GetPath();
+    if (path.Compare(uri_path.Left(path.GetLength()), true) == 0) {
+        return OnAlbumArtRequest(response, m_Path + file_path);
+    } 
+    
+    return NPT_FAILURE;
 }
 
 /*----------------------------------------------------------------------
 |   PLT_FileMediaServer::OnAlbumArtRequest
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_FileMediaServer::OnAlbumArtRequest(NPT_String        filepath, 
-                                       NPT_HttpResponse& response)
+PLT_FileMediaServer::OnAlbumArtRequest(NPT_HttpResponse& response,
+                                       NPT_String        file_path)
 {
-    NPT_LargeSize total_len;
-    NPT_File file(filepath);
+    NPT_LargeSize            total_len;
+    NPT_File                 file(file_path);
     NPT_InputStreamReference stream;
 
     if (NPT_FAILED(file.Open(NPT_FILE_OPEN_MODE_READ)) || 
@@ -249,7 +235,7 @@ PLT_FileMediaServer::OnAlbumArtRequest(NPT_String        filepath,
         NPT_FAILED(stream->GetSize(total_len)) || (total_len == 0)) {
         goto filenotfound;
     } else {
-        const char* extension = PLT_MediaItem::GetExtFromFilePath(filepath, 
+        const char* extension = PLT_MediaItem::GetExtFromFilePath(file_path, 
                                                                   m_DirDelimiter);
         if (extension == NULL) {
             goto filenotfound;
@@ -269,6 +255,7 @@ PLT_FileMediaServer::OnAlbumArtRequest(NPT_String        filepath,
             NPT_FAILED(metadataHandler->GetCoverArtData(caData, caDataLen))) {
             goto filenotfound;
         }
+        
         PLT_HttpHelper::SetContentType(response, "application/octet-stream");
         PLT_HttpHelper::SetBody(response, caData, caDataLen);
         delete caData;

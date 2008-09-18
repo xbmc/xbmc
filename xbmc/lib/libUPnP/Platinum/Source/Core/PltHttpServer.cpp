@@ -130,27 +130,27 @@ PLT_HttpServer::ProcessHttpRequest(NPT_HttpRequest&              request,
 |   PLT_FileServer::ServeFile
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_FileServer::ServeFile(NPT_String        filename, 
-                          NPT_HttpResponse* response,
+PLT_FileServer::ServeFile(NPT_HttpResponse& response,
+                          NPT_String        filename, 
                           NPT_Position      start,
                           NPT_Position      end,
                           bool              request_is_head) 
 {
-    NPT_LargeSize total_len;
+    NPT_LargeSize            total_len;
     NPT_InputStreamReference stream;
-    NPT_File file(filename);
-    NPT_Result result;
+    NPT_File                 file(filename);
+    NPT_Result               result;
 
     if (NPT_FAILED(result = file.Open(NPT_FILE_OPEN_MODE_READ)) || 
         NPT_FAILED(result = file.GetInputStream(stream))        ||
         NPT_FAILED(result = stream->GetSize(total_len))) {
         // file didn't open
-        response->SetStatus(404, "File Not Found");
+        response.SetStatus(404, "File Not Found");
         return NPT_SUCCESS;
     } else {
         NPT_HttpEntity* entity = new NPT_HttpEntity();
         entity->SetContentLength(total_len);
-        response->SetEntity(entity);
+        response.SetEntity(entity);
 
         // set the content type if we can
         if (filename.EndsWith(".htm", true) ||filename.EndsWith(".html", true) ) {
@@ -201,11 +201,11 @@ PLT_FileServer::ServeFile(NPT_String        filename,
             // in case the range request was invalid or we can't seek then respond appropriately
             if (start_offset == (NPT_Position)-1 || end_offset == (NPT_Position)-1 || 
                 start_offset > end_offset || NPT_FAILED(stream->Seek(start_offset))) {
-                response->SetStatus(416, "Requested range not satisfiable");
+                response.SetStatus(416, "Requested range not satisfiable");
             } else {
                 len = end_offset - start_offset + 1;
-                response->SetStatus(206, "Partial Content");
-                PLT_HttpHelper::SetContentRange(*response, start_offset, end_offset, total_len);
+                response.SetStatus(206, "Partial Content");
+                PLT_HttpHelper::SetContentRange(response, start_offset, end_offset, total_len);
 
                 entity->SetInputStream(stream);
                 entity->SetContentLength(len);
