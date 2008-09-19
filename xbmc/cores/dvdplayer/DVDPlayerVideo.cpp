@@ -373,7 +373,7 @@ void CDVDPlayerVideo::Process()
       // picture from a demux packet, this should be reasonable
       // for libavformat as a demuxer as it normally packetizes
       // pictures when they come from demuxer
-      if(bRequestDrop && !bPacketDrop && (iDecoderState & VC_BUFFER))
+      if(bRequestDrop && !bPacketDrop && (iDecoderState & VC_BUFFER) && !(iDecoderState & VC_PICTURE))
       {
         m_iDroppedFrames++;
         iDropped++;

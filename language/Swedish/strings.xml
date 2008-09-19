@@ -799,7 +799,7 @@
   <string id="12019">Ja</string>
   <string id="12020">Fråga</string>
   <string id="12021">Starta från början</string>
-  <string id="12022">Återuppta från senaste position</string>
+  <string id="12022">Återuppta från %s</string>
   <string id="12023">Validerar existerande tränare...</string>
   <string id="12024">Generera miniatyrer automatiskt för filmer utan omslagsbild</string>
   <string id="12310">0</string>
