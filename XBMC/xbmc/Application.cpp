@@ -1233,11 +1233,6 @@ CProfile* CApplication::InitDirectoriesWin32()
     CUtil::AddFileToFolder(strWin32UserFolder,"XBMC\\UserData",strPath);
     CreateDirectory(strPath.c_str(), NULL);
     CIoSupport::RemapDriveLetter('T', strPath.c_str());
-    // See if the keymap file exists, and if not, copy it from our "virgin" one.
-    //CopyUserDataIfNeeded(strPath, "Keymap.xml");
-    CopyUserDataIfNeeded(strPath, "RssFeeds.xml");
-    CopyUserDataIfNeeded(strPath, "favourites.xml");
-    CopyUserDataIfNeeded(strPath, "IRSSmap.xml");
   }
   else
   {
@@ -1258,6 +1253,13 @@ CProfile* CApplication::InitDirectoriesWin32()
 
   if (m_bPlatformDirectories)
   {
+    // See if the keymap file exists, and if not, copy it from our "virgin" one.
+    //CopyUserDataIfNeeded(strPath, "Keymap.xml");
+    CopyUserDataIfNeeded(strPath, "RssFeeds.xml");
+    CopyUserDataIfNeeded(strPath, "favourites.xml");
+    CopyUserDataIfNeeded(strPath, "IRSSmap.xml");
+    CopyUserDataIfNeeded(strPath, "LCD.xml");
+
     CUtil::AddFileToFolder(strWin32UserFolder,"XBMC\\UserData",strPath);
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",strPath.c_str());
     if (g_settings.m_vecProfiles.size()==0)
