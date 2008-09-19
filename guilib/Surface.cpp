@@ -84,6 +84,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_pShared = shared;
   m_bVSync = false;
   m_iVSyncMode = 0;
+  m_bVsyncInit = false;
 
 #ifdef __APPLE__
   m_glContext = 0;
@@ -543,7 +544,7 @@ void CSurface::EnableVSync(bool enable)
 {
 #ifdef HAS_SDL_OPENGL
 #ifndef __APPLE__
-  if (m_bVSync==enable)
+  if (m_bVSync==enable && m_bVsyncInit == true)
     return;
 #endif
 
@@ -592,6 +593,8 @@ void CSurface::EnableVSync(bool enable)
   if (!_wglSwapIntervalEXT)
     _wglSwapIntervalEXT = (bool (APIENTRY *)(GLint))wglGetProcAddress("wglSwapIntervalEXT");
 #endif
+
+  m_bVsyncInit = true;
 
 #ifdef HAS_GLX
   if (_glXSwapIntervalSGI)
