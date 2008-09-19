@@ -1230,7 +1230,7 @@ CProfile* CApplication::InitDirectoriesWin32()
     CreateDirectory(strPath.c_str(), NULL);
     CIoSupport::RemapDriveLetter('Z',strPath.c_str());
     // create user/app data/XBMC/UserData
-    CUtil::AddFileToFolder(strWin32UserFolder,"XBMC\\UserData",strPath);
+    CUtil::AddFileToFolder(strWin32UserFolder,"XBMC\\userdata",strPath);
     CreateDirectory(strPath.c_str(), NULL);
     CIoSupport::RemapDriveLetter('T', strPath.c_str());
   }
@@ -1241,7 +1241,7 @@ CProfile* CApplication::InitDirectoriesWin32()
     CUtil::AddFileToFolder(strExecutablePath,"cache",strPath);
     CIoSupport::RemapDriveLetter('Z',strPath.c_str());
     CreateDirectory(_P("Z:\\"), NULL);
-    CUtil::AddFileToFolder(strExecutablePath,"UserData",strPath);
+    CUtil::AddFileToFolder(strExecutablePath,"userdata",strPath);
     CIoSupport::RemapDriveLetter('T',strPath.c_str());
   }
 
@@ -1260,7 +1260,7 @@ CProfile* CApplication::InitDirectoriesWin32()
     CopyUserDataIfNeeded(strPath, "IRSSmap.xml");
     CopyUserDataIfNeeded(strPath, "LCD.xml");
 
-    CUtil::AddFileToFolder(strWin32UserFolder,"XBMC\\UserData",strPath);
+    CUtil::AddFileToFolder(strWin32UserFolder,"XBMC\\userdata",strPath);
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",strPath.c_str());
     if (g_settings.m_vecProfiles.size()==0)
     {
@@ -1270,11 +1270,11 @@ CProfile* CApplication::InitDirectoriesWin32()
   }
   else
   {
-    SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("q:\\UserData"));
+    SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("q:\\userdata"));
     if (g_settings.m_vecProfiles.size()==0)
     {
       profile = new CProfile;
-      profile->setDirectory(_P("q:\\UserData"));
+      profile->setDirectory(_P("q:\\userdata"));
     }
   }
 
