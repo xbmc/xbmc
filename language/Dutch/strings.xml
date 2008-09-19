@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mathijs Groothuis-->
 <!--Email: mathijs.groothuis@gmail.com-->
-<!--Date of translation: 08/24/2008-->
+<!--Date of translation: 09/12/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 14736-->
+<!--Based on english strings version 15452-->
 <strings>
   <string id="0">Programma's</string>
   <string id="1">Afbeeldingen</string>
@@ -680,6 +680,7 @@
   <string id="1203">Standaard gebruikersnaam</string>
   <string id="1204">Standaard wachtwoord</string>
   <string id="1207">WINS-server</string>
+  <string id="1208">Laad SMB gedeeld netwerk</string>
   <string id="1210">Verwijder</string>
   <string id="1211">Muziek</string>
   <string id="1212">Video</string>
@@ -879,6 +880,10 @@
   <string id="13005">Uitschakelen</string>
   <string id="13006">Dashboard</string>
   <string id="13007">Aangepast dashboard gebruiken</string>
+  <string id="13008">Standaard afsluitmodus</string>
+  <string id="13009">Afsluiten</string>
+  <string id="13010">Slaapstand</string>
+  <string id="13011">Annuleren</string>
   <string id="13100">flikkerfilter</string>
   <string id="13105">Vertical blank sync</string>
   <string id="13106">Uitgeschakeld</string>
@@ -1053,6 +1058,17 @@ voor deze visualisatie</string>
   <string id="13410">Beluister het op Last.FM</string>
   <string id="13411">Minimale ventilatorsnelheid</string>
   <string id="13412">RSS-feeds bevatten Links naar rechts-tekst</string>
+  <string id="13413">Download</string>
+  <string id="13600">Apple afstandsbediening</string>
+  <string id="13601">Mode</string>
+  <string id="13602">Altijd draaiend</string>
+  <string id="13603">Sequentiële vertragingstijd</string>
+  <string id="13610">Uitgeschakeld</string>
+  <string id="13611">Standaard</string>
+  <string id="13612">Universele afstandsbediening</string>
+  <string id="13620">Afstandsbedieningshulpdriver is geïnstalleerd</string>
+  <string id="13621">Apple afstandsbedieningsondersteuning kan niet worden geactiveerd.</string>
+  <string id="13622">Kijk alstublieft in de Remote Buddy FAQ om te deïnstalleren.</string>
   <string id="14000">Groeperen</string>
   <string id="14001">Groeperen: Uit</string>
   <string id="14003">Afspeellijst downloaden...</string>
@@ -1795,5 +1811,17 @@ voor deze visualisatie</string>
   <string id="22001">Bibliotheek continu op de achtergrond updaten</string>
   <string id="22002">- DNS Suffix</string>
   <string id="22003">Activeer Bewerk en Besluiten-lijst</string>
+  <string id="22004">Vertraagd met %2.3fs</string>
+  <string id="22005">Versneld met %2.3fs</string>
+  <string id="22006">Ondertitelingsafstand</string>
+  <string id="22007">OpenGL-leverancier:</string>
+  <string id="22008">OpenGL-render:</string>
+  <string id="22009">OpenGL versie:</string>
+  <string id="22010">GPU-temperatuur:</string>
+  <string id="22011">CPU-temperatuur:</string>
+  <string id="22012">Totale geheugenhoeveelheid:</string>
+  <string id="22013">Profieldata</string>
+  <string id="29800">Bibliotheekmodus</string>
+  <string id="29801">QWERTY-indeling toetsenbord</string>
   <string id="29999">Flikkerfilter toepassen op spellen</string>
 </strings>
