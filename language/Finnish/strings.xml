@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mika Pirinen (1/2007->)-->
-<!--Date of translation: 26/8/2008  kommentit: kottis(at)gmail.com -->
-<!--Finnish strings based on English strings version 15195-->
+<!--Date of translation: 14/9/2008  kommentit: kottis(at)gmail.com -->
+<!--Finnish strings based on English strings version 15536-->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -98,7 +98,7 @@
   <string id="157">Näyttö</string>
   <string id="158">Muistia vapaana</string>
   <string id="159">Ei yhteyttä</string>
-  <string id="160">vapaana</string>
+  <string id="160">Vapaana</string>
   <string id="161">Ei saatavilla</string>
   <string id="162">Levykelkka auki</string>
   <string id="163">Luetaan</string>
@@ -189,7 +189,7 @@
   <string id="251">Valitse kohdehakemisto</string>
   <string id="252">Syötä stereoääni kaikille kaiuttimille</string>
   <string id="253">Kanavien määrä</string>
-  <string id="254">DTS yhteensopiva vastaanotin</string>
+  <string id="254">-DTS yhteensopiva vastaanotin</string>
   <string id="255">CD-tietokanta</string>
   <string id="256">Haetaan freedb:sta tietoja</string>
   <string id="257">Virhe</string>
@@ -223,7 +223,7 @@
   <string id="286">Jälkikäsittely</string>
   <string id="287">Tekstitys</string>
   <string id="288">Fontti</string>
-  <string id="289">Koko</string>
+  <string id="289">- Koko</string>
   <string id="290">Dynamiikan kutistus</string>
   <string id="291">Video</string>
   <string id="292">Ääni</string>
@@ -236,11 +236,11 @@
   <string id="304">Kieli</string>
   <string id="305">Tekstitys</string>
   <string id="306">Lomittamaton</string>
-  <string id="307">Automaattinen jälkikäsittely</string>
-  <string id="308">Vertikaalinen päästösuodatus</string>
-  <string id="309">Horisontaalinen päästösuodatus</string>
-  <string id="310">Autom. kirkkaus/kontrasti</string>
-  <string id="311">Dering</string>
+  <string id="307">- Automaattinen jälkikäsittely</string>
+  <string id="308">- Vertikaalinen päästösuodatus</string>
+  <string id="309">- Horisontaalinen päästösuodatus</string>
+  <string id="310">- Autom. kirkkaus/kontrasti</string>
+  <string id="311">- Dering</string>
   <string id="312">(0=auto)</string>
   <string id="313">Tietokannan järjestely</string>
   <string id="314">Valmistellaan...</string>
@@ -289,7 +289,7 @@
   <string id="361">Kaikkien kuvaesitys</string>
   <string id="362">Näytönsäästäjän tummuus</string>
   <string id="363">Järjestä: Tiedostonimi</string>
-  <string id="364">AC3 yhteensopiva vastaanotin</string>
+  <string id="364">- AC3 yhteensopiva vastaanotin</string>
   <string id="365">Järjestä: Nimi</string>
   <string id="366">Järjestä: Vuosi</string>
   <string id="367">Järjestä: Arvosana</string>
@@ -413,7 +413,7 @@
   <string id="487">Kappaleen toisto</string>
   <string id="488">Kansion toisto</string>
   <string id="489">Toista seuraava tiedosto automaattisesti</string>
-  <string id="491">Suuret kuvakkeet</string>
+  <string id="491">- Suuret kuvakkeet</string>
   <string id="492">Tekstityksen koko</string>
   <string id="493">Lisäasetukset (vain kun tiedät mitä teet!)</string>
   <string id="494">Äänen tilatunne(dB)</string>
@@ -577,14 +577,14 @@
   <string id="712">Portti ei kelpaa. Arvo täytyy olla 1 ja 65535 välillä.</string>
   <string id="713">HTTP-välityspalvelin</string>
   <string id="714"></string>
-  <string id="715">Osoitteen määritys</string>
+  <string id="715">- Osoitteen määritys</string>
   <string id="716">Automaattinen (DHCP)</string>
   <string id="717">Manuaalinen (Kiinteä)</string>
   <string id="718">Oletusasetukset (Dashboard)</string>
-  <string id="719">IP-osoite</string>
-  <string id="720">Aliverkon peite</string>
-  <string id="721">Oletusyhdyskäytävä</string>
-  <string id="722">Nimipalvelin (DNS)</string>
+  <string id="719">- IP-osoite</string>
+  <string id="720">- Aliverkon peite</string>
+  <string id="721">- Oletusyhdyskäytävä</string>
+  <string id="722">- Nimipalvelin (DNS)</string>
   <string id="723">Tallenna &amp; Uudelleenkäynnistä</string>
   <string id="724">Osoite on oltava muodossa AAA.BBB.CCC.DDD</string>
   <string id="725">ja numerot väliltä 0 - 255.</string>
@@ -597,9 +597,9 @@
   <string id="732">Tallenna &amp; Ota käyttöön</string>
   <string id="733">Web-palvelimen salasana</string>
   <string id="734">Ei salasanaa</string>
-  <string id="735">Merkistö</string>
-  <string id="736">Tyyli</string>
-  <string id="737">Väri</string>
+  <string id="735">- Merkistö</string>
+  <string id="736">- Tyyli</string>
+  <string id="737">- Väri</string>
   <string id="738">Normaali</string>
   <string id="739">Lihavoitu</string>
   <string id="740">Kursivoitu</string>
@@ -610,16 +610,16 @@
   <string id="745">Tälle tilalle ei ole luettu mediatietoja,</string>
   <string id="746">vaihda Tiedostot-näkymään</string>
   <string id="747">Kuvan lataus ei onnistu</string>
-  <string id="748">Muokkaa tallennuspolku</string>
+  <string id="748">Muokkaa tallennuspolkua</string>
   <string id="749"></string>
   <string id="750">Oletko varma asiasta?</string>
   <string id="751">Poistetaan sijainti</string>
   <string id="752"></string>
   <string id="753"></string>
   <string id="754">Lisää linkki ohjelmaan</string>
-  <string id="755">Muokkaa ohjelman polku</string>
-  <string id="756">Muokkaa ohjelman nimi</string>
-  <string id="757">Muokkaa polun syvyys</string>
+  <string id="755">Muokkaa ohjelman polkua</string>
+  <string id="756">Muokkaa ohjelman nimeä</string>
+  <string id="757">Muokkaa polun syvyyttä</string>
   <string id="758"></string>
   <string id="759">Suuri luettelo</string>
   <string id="760">Keltainen</string>
@@ -633,7 +633,7 @@
   <string id="768">Varattu</string>
   <string id="769">Varattu</string>
   <string id="770">Virhe %i: sijaintia ei ole saatavilla</string>
-  <string id="771">Automaattinen FATX-rajoitus</string>
+  <string id="771">- Automaattinen FATX-rajoitus</string>
   <string id="772">Äänilaitteisto</string>
   <string id="773">Haku</string>
   <string id="774">Kuvaesitys kansio</string>
@@ -872,7 +872,7 @@
   <string id="12019">Kyllä</string>
   <string id="12020">Kysy</string>
   <string id="12021">Aloita alusta</string>
-  <string id="12022">Jatka edellisestä sijainnista</string>
+  <string id="12022">Jatka %s:sta</string>
   <string id="12023">Tarkastetaan nykyisiä trainereita...</string>
   <string id="12024">Luo pienoiskuvakkeet videoille joilla ei ole kansikuvaa</string>
 
@@ -947,13 +947,13 @@
   <string id="13000">Järjestelmä</string>
   <string id="13001">Kiintolevyn välitön pysäytys</string>
   <string id="13002">Vain videoilla</string>
-  <string id="13003">Viive</string>
-  <string id="13004">Tiedoston vähimmäiskesto</string>
+  <string id="13003">- Viive</string>
+  <string id="13004">- Tiedoston vähimmäiskesto</string>
   <string id="13005">Sammuta laite</string>
   <string id="13006">Käynnistä Xbox dashboard</string>
   <string id="13007">Vaihtoehtoinen dashboardin käynnistyspolku</string>
-  <string id="13008">XBMC suljettaessa</string>
-  <string id="13009">Ei tehdä mitään</string>
+  <string id="13008">Oletus sammutusmuoto</string>
+  <string id="13009">Poistu</string>
   <string id="13010">Horrostila</string>
   <string id="13011">Valmiustila</string>
 
@@ -1153,8 +1153,10 @@
   <string id="13409">250 suosituinta</string> 
   <string id="13410">Aloita Last.FM:n kuuntelu</string> 
   <string id="13411">Tuulettimen miniminopeus</string>
-  <string id="13412">RSS-syöte sisältää tekstiä oikealta vasemmalle</string>
-
+  <string id="13412">- RSS-syöte sisältää tekstiä oikealta vasemmalle</string>
+  <string id="13413">Ladataan</string>
+  <string id="13414">Älä näytä kokoelmilla olevia esittäjiä</string>
+ 
   <string id="13600">Apple kauko-ohjaus</string>
   <string id="13601">Toimintatapa</string>
   <string id="13602">Aina päällä</string>
@@ -1182,9 +1184,9 @@
   <string id="14009">Pelit-hakemisto</string>
   <string id="14010">Vaihda pienoiskuvakkeisiin automaattisesti,jos</string>
   <string id="14011">Näytä pienoiskuvakkeet automaattisesti</string>
-  <string id="14012">Käytä suuria kuvakkeita</string>
-  <string id="14013">Vaihda mikäli</string>
-  <string id="14014">Prosenttiosuus</string>
+  <string id="14012">- Käytä suuria kuvakkeita</string>
+  <string id="14013">- Vaihda mikäli</string>
+  <string id="14014">- Prosenttiosuus</string>
   <string id="14015">Ei tiedostoja vähintään yhdellä pienoiskuvakkeella</string>
   <string id="14016">Vähintään yksi tiedosto ja pienoiskuvake</string>
   <string id="14017">Pienoiskuvakkeiden osuus (%)</string>
@@ -1982,12 +1984,15 @@
   <string id="22010">GPU lämpötila:</string>
   <string id="22011">CPU lämpötila:</string>
   <string id="22012">Kokonaismuisti</string>
+  <string id="22013">Profiilin tiedot</string> 
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code --> 
   <string id="29800">Kirjastomuoto</string> 
-  <string id="29801">QWERTY-näppäimistö</string> 
-
-  <string id="29999">Näytön välkynnän poisto</string>
-  <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
+  <string id="29801">QWERTY-näppäimistö</string>
   
+  <string id="29999">Näytön välkynnän poisto</string>
+  
+<!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
+  <!-- strings 31000 thru 31999 reserved for skins -->
+  <!-- strings 32000 thru 32999 reserved for scripts -->
 </strings>

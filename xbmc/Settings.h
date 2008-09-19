@@ -24,11 +24,7 @@
 #define PRE_SKIN_VERSION_2_1_COMPATIBILITY 1
 // REMOVE ME WHEN WE SWITCH TO SKIN VERSION 2.1
 
-#ifdef HAS_SDL
-#define DEFAULT_SKIN "PM3.HD"
-#else
 #define DEFAULT_SKIN "Project Mayhem III"
-#endif
 
 #include "settings/VideoSettings.h"
 #include "StringUtils.h"
