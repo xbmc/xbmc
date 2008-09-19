@@ -272,11 +272,11 @@ tools/XBMCTex/XBMCTex:
 	$(MAKE) -C tools/XBMCTex/
 
 install-bin: xbmc.bin # developement convenience target
-	sudo cp xbmc.bin $(prefix)/share/xbmc
+	sudo cp -f xbmc.bin $(prefix)/share/xbmc
 
 install: install-datas install-web
 	@echo "Copying XBMC binary to $(prefix)/share/xbmc/xbmc.bin"
-	@cp xbmc.bin $(prefix)/share/xbmc/xbmc.bin
+	@cp -f xbmc.bin $(prefix)/share/xbmc/xbmc.bin
 	@mkdir -p $(prefix)/bin
 	@cp tools/Linux/xbmc.sh $(prefix)/bin/xbmc
 	@chmod 755 $(prefix)/bin/xbmc
