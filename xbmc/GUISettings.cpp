@@ -611,7 +611,7 @@ void CGUISettings::Initialize()
 #else /* _LINUX */
          VSYNC_ALWAYS,
 #endif /* _LINUX */
-         VSYNC_DISABLED, 1, VSYNC_ALWAYS, SPIN_CONTROL_TEXT);
+         VSYNC_DISABLED, 1, VSYNC_DRIVER, SPIN_CONTROL_TEXT);
 
   AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, false);

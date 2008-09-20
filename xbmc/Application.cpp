@@ -2198,7 +2198,7 @@ void CApplication::RenderNoPresent()
 #ifdef HAS_SDL
   if (g_videoConfig.GetVSyncMode()==VSYNC_ALWAYS)
     g_graphicsContext.getScreenSurface()->EnableVSync(true);
-  else
+  else if (g_videoConfig.GetVSyncMode()!=VSYNC_DRIVER)
     g_graphicsContext.getScreenSurface()->EnableVSync(false);
 #endif
 
