@@ -145,36 +145,30 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
   {
     case TMSG_SHUTDOWN:
       {
-#if defined(HAS_HAL) || defined(_WIN32PC)
-        int ShutdownState = g_guiSettings.GetInt("system.shutdownstate");
-#endif
 #ifndef HAS_SDL
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif
-#ifdef _WIN32PC
+#if defined(HAS_HAL) || defined(_WIN32PC)
+        int ShutdownState = g_guiSettings.GetInt("system.shutdownstate");
         bool bStop = true;
         if (ShutdownState) // If we have a setting for powerstate mode
-          bStop = CWIN32Util::PowerManagement((PowerState)ShutdownState);
-
-        if (bStop && (ShutdownState == POWERSTATE_SHUTDOWN || ShutdownState == POWERSTATE_REBOOT || ShutdownState == 0))
         {
-          g_application.Stop();
-        }
-#endif
-        // exit the application
 #ifdef HAS_HAL
-        if (ShutdownState) // If we have a setting for powerstate mode
-        {
-          CHalManager::PowerManagement((PowerState)ShutdownState);
-          if (ShutdownState == POWERSTATE_SHUTDOWN)
+          bStop = CHalManager::PowerManagement((PowerState)ShutdownState);
+#elif defined(_WIN32PC)
+          bStop = CWIN32Util::PowerManagement((PowerState)ShutdownState);
+#endif
+          if (bStop && (ShutdownState == POWERSTATE_SHUTDOWN || ShutdownState == POWERSTATE_REBOOT || ShutdownState == 0))
           {
             g_application.Stop();
-            exit(64);
+#ifdef _LINUX
+            exit(64); // Exit Code 64 is considered Shutdown Computer in XBMC Live
+#endif
           }
-          else
-            return;
         }
+        else
+          return;
 #endif
         g_application.Stop();
         exit(0);
@@ -183,17 +177,14 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
 case TMSG_POWERDOWN:
       {
-#if !defined(_LINUX)
 #ifndef HAS_SDL
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif
-#ifdef _WIN32PC
-        if (CWIN32Util::PowerManagement(POWERSTATE_SHUTDOWN))
-#endif
-#endif
 #ifdef HAS_HAL
         if (CHalManager::PowerManagement(POWERSTATE_SHUTDOWN))
+#elif defined(_WIN32PC)
+        if (CWIN32Util::PowerManagement(POWERSTATE_SHUTDOWN))
 #endif
         {
           g_application.Stop();
