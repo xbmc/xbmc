@@ -38,6 +38,7 @@ public:
   virtual void Initialize(void *appData = NULL);
   virtual void Acquire();
   virtual bool Update(MouseState &state);
+  virtual void ShowPointer(bool show) {};
 private:
   LPDIRECTINPUTDEVICE m_mouse;
 };
