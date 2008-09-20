@@ -166,9 +166,9 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
             exit(64); // Exit Code 64 is considered Shutdown Computer in XBMC Live
 #endif
           }
+          else
+            return;
         }
-        else
-          return;
 #endif
         g_application.Stop();
         exit(0);
