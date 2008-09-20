@@ -246,7 +246,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   FreeMemory();
   m_strPath = item.m_strPath;
 #ifdef DEBUG
-  if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder())  // should root paths be "/" ?
+  if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder() && !CUtil::IsTuxBox(m_strPath))  // should root paths be "/" ?
   {
 #ifndef __APPLE__
     ASSERT(CUtil::HasSlashAtEnd(m_strPath));
@@ -2435,7 +2435,7 @@ void CFileItem::CacheFanart() const
     return;
   // We don't have a cached image, so let's see if the user has a local image they want to use
 
-  if (IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath)) // no local fanart available for these
+  if (IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath) || IsTuxBox()) // no local fanart available for these
     return;
 
   CStdString localFanart;
