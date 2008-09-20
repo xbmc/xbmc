@@ -31,10 +31,9 @@
 XLCDproc::XLCDproc()
 {
   m_iActualpos   = 0;
-  m_iRows        = 4;
-  m_iColumns     = 16;
   m_iBackLight   = 32;
   m_iLCDContrast = 50;
+  m_bStop	 = true;
   sockfd         = -1;
 }
 
@@ -53,7 +52,7 @@ void XLCDproc::Initialize()
   server = gethostbyname("localhost");
   if (server == NULL)
   {
-     CLog::Log(LOGERROR, "LCDproc:Initialize: Unable to resolve LCDd host.");
+     CLog::Log(LOGERROR, "XLCDproc::%s - Unable to resolve LCDd host.", __FUNCTION__);
      return;
   }
 
@@ -72,13 +71,34 @@ void XLCDproc::Initialize()
   serv_addr.sin_port = htons(13666);
   if (connect(sockfd,(struct sockaddr*)&serv_addr,sizeof(serv_addr)) < 0)
   {
-    CLog::Log(LOGERROR, "LCDproc:Initialize: Unable to connect to host.");
+    CLog::Log(LOGERROR, "XLCDproc::%s - Unable to connect to host.", __FUNCTION__);
     return;
   }
 
+  // Start a new session
+  CStdString hello;
+  hello = "hello\n";
+
+  if (write(sockfd,hello.c_str(),hello.size()) < 0)
+  {
+    CLog::Log(LOGERROR, "XLCDproc::%s - Unable to write to socket", __FUNCTION__);
+    return;
+  }
+
+  // Receive LCDproc data to determine row and column information
+  char reply[1024];
+  unsigned int i=0;
+
+  if (read(sockfd,reply,1024) < 0)
+    CLog::Log(LOGERROR, "XLCDproc::%s - Unable to read from socket", __FUNCTION__);
+
+  while ((strncmp("lcd",reply+i,3) != 0 ) && (i<(strlen(reply)-5))) i++;
+  if(sscanf(reply+i,"lcd wid %i hgt %i", &m_iColumns, &m_iRows))
+    CLog::Log(LOGDEBUG, "XLCDproc::%s - LCDproc data: Columns %i - Rows %i.", __FUNCTION__, m_iColumns, m_iRows);
+
   //Build command to setup screen
   CStdString cmd;
-  cmd = "hello\nscreen_add xbmc\n";
+  cmd = "screen_add xbmc\n";
   if (!g_advancedSettings.m_lcdHeartbeat)
     cmd.append("screen_set xbmc -heartbeat off\n");
   cmd.append("widget_add xbmc line1 scroller\n");
@@ -88,7 +108,7 @@ void XLCDproc::Initialize()
 
   //Send to server
   if (write(sockfd,cmd.c_str(),cmd.size()) < 0)
-    CLog::Log(LOGERROR, "LCDproc:Initialize: Unable to write to socket");
+    CLog::Log(LOGERROR, "XLCDproc::%s - Unable to write to socket", __FUNCTION__);
   m_bStop = false;
 }
 void XLCDproc::SetBackLight(int iLight)
@@ -117,7 +137,7 @@ void XLCDproc::SetBackLight(int iLight)
  
     //Send to server 
     if (write(sockfd,cmd.c_str(),cmd.size()) < 0) 
-      CLog::Log(LOGERROR, "LCDproc:Initialize: Unable to write to socket"); 
+      CLog::Log(LOGERROR, "XLCDproc::%s - Unable to write to socket", __FUNCTION__); 
   } 
 }
 void XLCDproc::SetContrast(int iContrast)
@@ -148,7 +168,7 @@ void XLCDproc::Suspend()
  
       //Send to server 
       if (write(sockfd,cmd.c_str(),cmd.size()) < 0) 
-        CLog::Log(LOGERROR, "LCDproc:Initialize: Unable to write to socket"); 
+        CLog::Log(LOGERROR, "XLCDproc::%s - Unable to write to socket", __FUNCTION__); 
     } 
   } 
 } 
@@ -165,7 +185,7 @@ void XLCDproc::Resume()
  
       //Send to server 
       if (write(sockfd,cmd.c_str(),cmd.size()) < 0) 
-        CLog::Log(LOGERROR, "LCDproc:Initialize: Unable to write to socket"); 
+        CLog::Log(LOGERROR, "XLCDproc::%s - Unable to write to socket", __FUNCTION__); 
     } 
   } 
 } 
@@ -189,12 +209,12 @@ void XLCDproc::SetLine(int iLine, const CStdString& strLine)
   if (strLineLong != m_strLine[iLine])
   {
     int ln = iLine + 1;
-    sprintf(cmd, "widget_set xbmc line%i 1 %i 16 %i m 1 \"%s\"\n", ln, ln, ln, strLineLong.c_str());
-    //CLog::Log(LOGINFO, "LCDproc sending command: %s",cmd);
+    sprintf(cmd, "widget_set xbmc line%i 1 %i %i %i m 1 \"%s\"\n", ln, ln, m_iColumns, ln, strLineLong.c_str());
+    //CLog::Log(LOGINFO, "XLCDproc::%s - Sending command: %s", __FUNCTION__, cmd);
     if (write(sockfd, cmd, strlen(cmd)) < 0)
     {
         m_bStop = true;
-        CLog::Log(LOGERROR, "XLCDproc::SetLine() Unable to write to socket, LCDd not running?");
+        CLog::Log(LOGERROR, "XLCDproc::%s - Unable to write to socket, LCDd not running?", __FUNCTION__);
         return;
     }
     m_bUpdate[iLine] = true;
