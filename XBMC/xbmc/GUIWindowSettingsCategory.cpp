@@ -3034,6 +3034,7 @@ void CGUIWindowSettingsCategory::FillInVSyncs(CSetting *pSetting)
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
 
+  pControl->AddLabel(g_localizeStrings.Get(13101) , VSYNC_DRIVER);
   pControl->AddLabel(g_localizeStrings.Get(13106) , VSYNC_DISABLED);
   pControl->AddLabel(g_localizeStrings.Get(13107) , VSYNC_VIDEO);
   pControl->AddLabel(g_localizeStrings.Get(13108) , VSYNC_ALWAYS);
