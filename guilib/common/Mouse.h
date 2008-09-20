@@ -45,6 +45,7 @@ public:
   virtual void Initialize(void *appData = NULL)=0;
   virtual void Acquire()=0;
   virtual bool Update(MouseState &state)=0;
+  virtual void ShowPointer(bool show)=0;
 };
 
 class CMouse

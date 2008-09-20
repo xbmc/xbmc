@@ -57,8 +57,9 @@ bool CSDLMouse::Update(MouseState &state)
   return bMouseMoved;
 }
 
-void CSDLMouse::Acquire()
+void CSDLMouse::ShowPointer(bool show)
 {
+  SDL_ShowCursor(show ? SDL_ENABLE : SDL_DISABLE);
 }
 
 #endif
