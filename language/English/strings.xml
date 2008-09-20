@@ -955,6 +955,7 @@
   <string id="13011">Suspend</string>
 
   <string id="13100">Flicker Filter</string>
+  <string id="13101">Let Driver Choose (requires restart)</string>
   <string id="13105">Vertical Blank Sync</string>
   <string id="13106">Disabled</string>
   <string id="13107">Enabled During Video Playback</string>
