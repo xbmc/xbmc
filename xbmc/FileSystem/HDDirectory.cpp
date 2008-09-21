@@ -128,13 +128,10 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
             pItem->m_dateTime=localTime;
 
             vecCacheItems.Add(pItem);
-#ifdef _LINUX
+
             /* Checks if the file is hidden. If it is then we don't really need to add it */
             if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) || g_guiSettings.GetBool("filelists.showhidden"))
               items.Add(pItem);
-#else
-            items.Add(pItem);
-#endif
           }
         }
         else
@@ -150,12 +147,9 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
           pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
           FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
           pItem->m_dateTime=localTime;
-#ifdef _LINUX
+
           /* Checks if the file is hidden. If it is then we don't really need to add it */
           if ((!(wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) || g_guiSettings.GetBool("filelists.showhidden")) && IsAllowed(wfd.cFileName))
-#else
-          if ( IsAllowed( strLabel ) )
-#endif
           {
             vecCacheItems.Add(pItem);
             items.Add(pItem);
