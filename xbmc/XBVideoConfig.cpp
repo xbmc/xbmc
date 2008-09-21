@@ -343,6 +343,11 @@ void XBVideoConfig::GetModes()
 
 RESOLUTION XBVideoConfig::GetSafeMode() const
 {
+#ifdef _WIN32PC
+  // Some drivers won't display HDTC_720p or other resolutions correct.
+  // We'll return DESKTOP to be safe.
+  return DESKTOP;
+#endif
   // Get the desktop resolution to see what we're dealing with here.
   int w, h;
   GetDesktopResolution(w, h);
