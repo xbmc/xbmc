@@ -654,6 +654,9 @@ const CStdString CUtil::GetMovieName(CFileItem* pItem)
   CStdString strArchivePath;
   movieName = pItem->m_strPath; 
 
+  if (pItem->IsMultiPath())
+    movieName = CMultiPathDirectory::GetFirstPath(pItem->m_strPath);
+
   if (!pItem->m_bIsFolder || pItem->IsDVDFile(false, true) || IsInArchive(pItem->m_strPath))
   {
     GetParentPath(pItem->m_strPath,movieName);
