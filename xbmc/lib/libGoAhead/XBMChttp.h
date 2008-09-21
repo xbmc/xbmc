@@ -161,6 +161,7 @@ private:
   void LoadPlayListOld(const CStdString& strPlayList, int playList);
   bool LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoStart);
   void copyThumb(CStdString srcFn, CStdString destFn);
+  int FindPathInPlayList(int playList, CStdString path);
 };
 
 /****************
