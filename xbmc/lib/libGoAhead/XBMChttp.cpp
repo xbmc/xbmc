@@ -460,6 +460,18 @@ void CXbmcHttp::SetCurrentMediaItem(CFileItem& newItem)
   }
 }
 
+int CXbmcHttp::FindPathInPlayList(int playList, CStdString path)
+{   
+  CPlayList& thePlayList = g_playlistPlayer.GetPlaylist(playList);
+  for (int i = 0; i < thePlayList.size(); i++)
+  {
+    CFileItemPtr item = thePlayList[i];
+    if (path==item->m_strPath)
+      return i;
+  }
+  return -1;
+}
+
 void CXbmcHttp::AddItemToPlayList(const CFileItemPtr &pItem, int playList, int sortMethod, CStdString mask, bool recursive)
 //if playlist==-1 then use slideshow
 {
@@ -495,30 +507,9 @@ void CXbmcHttp::AddItemToPlayList(const CFileItemPtr &pItem, int playList, int s
   }
 }
 
-void CXbmcHttp::LoadPlayListOld(const CStdString& strPlayList, int playList)
-{
-  // load a playlist like .m3u, .pls
-  // first get correct factory to load playlist
-  auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
-  if ( NULL != pPlayList.get())
-  {
-    if (!pPlayList->Load(strPlayList))
-      return; 
-    g_playlistPlayer.ClearPlaylist(playList);
-    g_playlistPlayer.Reset();
-    g_playlistPlayer.Add(playList, *pPlayList);
-    g_playlistPlayer.SetCurrentPlaylist(playList);
-    g_application.getApplicationMessenger().PlayListPlayerPlay();
-    
-    // set current file item
-    CPlayList& playlist = g_playlistPlayer.GetPlaylist(playList);
-    SetCurrentMediaItem(*playlist[0]);
-  }
-}
 
 bool CXbmcHttp::LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoStart)
 {
-  //CStdString strPath = item.m_strPath;
   CFileItem *item = new CFileItem(CUtil::GetFileName(strPath));
   item->m_strPath=strPath;
 
@@ -1726,19 +1717,15 @@ int CXbmcHttp::xbmcGetThumbFilename(int numParas, CStdString paras[])
 int CXbmcHttp::xbmcPlayerPlayFile(int numParas, CStdString paras[])
 {
   int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
-  // file
   if (numParas<1)
     return SetResponse(openTag+"Error:Missing file parameter");
-  // get playlist
   if (numParas>1)
     iPlaylist = atoi(paras[1]);
-  // test file parameter
   CFileItem item(paras[0], FALSE);
+  if (iPlaylist == PLAYLIST_NONE)
+    iPlaylist = PLAYLIST_MUSIC;
   if (item.IsPlayList())
   {
-    // if no playlist, set the playlist to PLAYLIST_MUSIC_TEMP like playmedia
-    if (iPlaylist == PLAYLIST_NONE)
-      iPlaylist = PLAYLIST_MUSIC;
     LoadPlayList(paras[0], iPlaylist, true, true);
     CStdString strPlaylist;
     strPlaylist.Format("%i", iPlaylist);
@@ -1894,12 +1881,31 @@ int CXbmcHttp::xbmcRemoveFromPlayList(int numParas, CStdString paras[])
   {
     int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
     CStdString strItem = paras[0];
+	int itemToRemove;
     if (numParas > 1)
       iPlaylist = atoi(paras[1]);
-    if (StringUtils::IsNaturalNumber(strItem))
-      g_playlistPlayer.GetPlaylist(iPlaylist).Remove(atoi(strItem));
-    else
-      g_playlistPlayer.GetPlaylist(iPlaylist).Remove(strItem);
+	if (StringUtils::IsNaturalNumber(strItem))
+      itemToRemove=atoi(strItem);
+	else
+      itemToRemove=FindPathInPlayList(iPlaylist, strItem);
+    // The current playing song can't be removed
+    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC && g_application.IsPlayingAudio()
+      && g_playlistPlayer.GetCurrentSong() == itemToRemove)
+      return SetResponse(openTag+"Error:Can't remove current playing song");
+    if (itemToRemove<0 || itemToRemove>=g_playlistPlayer.GetPlaylist(iPlaylist).size())
+	  return SetResponse(openTag+"Error:Item not found or parameter out of range");
+    g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Remove(itemToRemove);
+
+    // Correct the current playing song in playlistplayer
+    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC && g_application.IsPlayingAudio())
+    {
+      int iCurrentSong = g_playlistPlayer.GetCurrentSong();
+      if (itemToRemove <= iCurrentSong)
+      {
+        iCurrentSong--;
+        g_playlistPlayer.SetCurrentSong(iCurrentSong);
+      }
+    }
     return SetResponse(openTag+"OK");
   }
   else
@@ -2228,6 +2234,10 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
     {
       try
       {
+	    if (numParas>1)
+          tempSkipWebFooterHeader=paras[1].ToLower() == "bare";
+        if (numParas>2)
+          tempSkipWebFooterHeader=paras[2].ToLower() == "bare";
         CHTTP http;
         http.Download(src, dest);
         CStdString encoded="";
@@ -2527,7 +2537,7 @@ int CXbmcHttp::xbmcConfig(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:WebServer needs to be running - is it?");
   else
   {
-    return SetResponse(response);
+    return SetResponse(openTag+response);
   }
 }
 
