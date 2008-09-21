@@ -879,6 +879,7 @@
   <string id="13010">Viloläge</string>
   <string id="13011">Vänteläge</string>
   <string id="13100">Fladderfilter</string>
+  <string id="13101">Låt drivrutinen välja (kräver omstart)</string>
   <string id="13105">Vertikal blanknings-synk</string>
   <string id="13106">Inaktiverad</string>
   <string id="13107">Aktiverad under videouppspelning</string>
