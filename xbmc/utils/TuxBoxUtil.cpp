@@ -297,7 +297,7 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
                     pbItem->SetLabel(strItemName);
                     pbItem->m_strPath = "tuxbox://"+url.GetUserName()+":"+url.GetPassWord()+"@"+url.GetHostName()+strPort+"/cgi-bin/zapTo?path="+strItemPath+".ts";  
                     pbItem->SetContentType("video/x-ms-asf");
-                    //pbItem->SetThumbnailImage(GetPicon(strItemName)); //Set Picon Image
+                    pbItem->SetThumbnailImage(GetPicon(strItemName)); //Set Picon Image
 
                     //DEBUG Log
                     CLog::Log(LOGDEBUG, "%s - Name:    %s", __FUNCTION__,strItemName.c_str());
@@ -374,7 +374,7 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint)
 
     //Request StreamInfo
     GetHttpXML(urlx,"streaminfo");
-    
+
     //Extract StreamInformations
     int iRetry=0;
     //PMT must be a valid value to be sure that the ZAP is OK and we can stream!
@@ -383,6 +383,7 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint)
       CLog::Log(LOGDEBUG, "%s - Requesting STREAMINFO! TryCount: %i!", __FUNCTION__,iRetry);
       GetHttpXML(urlx,"streaminfo");
       iRetry=iRetry+1;
+      Sleep(200);
     }
     
     // PMT Not Valid? Try Time 10 reached, checking for advancedSettings m_iTuxBoxZapWaitTime
@@ -467,7 +468,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
         if(strAudioChannelPid.Left(2).Equals("0x"))
           strAudioChannelPid.Replace("0x","");
 
-        strVideoStream.Format("0,%s,%s,%s,,,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), strAudioChannelPid.Left(4).c_str(),sStrmInfo.pcrpid.Left(4).c_str());
+        strVideoStream.Format("0,%s,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str(), strAudioChannelPid.Left(4).c_str());
       }
       else
       {
@@ -479,12 +480,11 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
           sCurSrvData.audio_channel_2_pid.Replace("0x","");
 
         if(g_application.m_eForcedNextPlayer == EPC_DVDPLAYER || g_advancedSettings.m_bTuxBoxSendAllAPids)
-          strVideoStream.Format("0,%s,%s,%s,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str(), sCurSrvData.audio_channel_1_pid.Left(4).c_str(), sCurSrvData.audio_channel_2_pid.Left(4).c_str(), sStrmInfo.pcrpid.Left(4).c_str());
+          strVideoStream.Format("0,%s,%s,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str(), sCurSrvData.audio_channel_1_pid.Left(4).c_str(), sCurSrvData.audio_channel_2_pid.Left(4).c_str());
         else 
-          strVideoStream.Format("0,%s,%s,%s,,,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str(), sStrmInfo.pcrpid.Left(4).c_str());
+          strVideoStream.Format("0,%s,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str(), sCurSrvData.audio_channel_1_pid.Left(4).c_str());
       }
       
-      //strStreamURL.Format("http://%s:%i/%s",url.GetHostName().c_str(),TS_STREAM_PORT,strVideoStream.c_str());
       strStreamURL.Format("http://%s:%s@%s:%i/%s",url.GetUserName().c_str(),url.GetPassWord().c_str(), url.GetHostName().c_str(),TS_STREAM_PORT,strVideoStream.c_str());
       strLabel.Format("%s: %s %s-%s",items.GetLabel().c_str(), sCurSrvData.current_event_date.c_str(),sCurSrvData.current_event_start.c_str(), sCurSrvData.current_event_start.c_str());
       strLabel2.Format("%s", sCurSrvData.current_event_description.c_str());
@@ -1360,9 +1360,9 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
   {
     CStdString piconXML, piconPath, defaultPng;
     CStdString strName, strPng;
-    piconPath = _P("Q:\\userdata\\pictureicon\\Picon\\");
-    defaultPng = piconPath+"default.png";
-    piconXML = _P("Q:\\userdata\\pictureicon\\picon.xml");
+    piconPath = _P("q:\\userdata\\PictureIcon\\Picon\\");
+    defaultPng = piconPath+"tuxbox.png";
+    piconXML = _P("q:\\userdata\\PictureIcon\\picon.xml");
     TiXmlDocument piconDoc;
 
     if (!CFile::Exists(piconXML))
