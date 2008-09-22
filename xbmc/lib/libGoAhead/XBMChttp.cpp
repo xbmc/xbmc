@@ -2798,11 +2798,12 @@ int CXbmcHttp::xbmcAutoGetPictureThumbs(int numParas, CStdString paras[])
 int CXbmcHttp::xbmcOnAction(int numParas, CStdString paras[])
 {
   if (numParas!=1)
-	  return SetResponse(openTag+"Error:There must be one and only one parameter");
+    return SetResponse(openTag+"Error:There must be one and only one parameter");
   else
   {
-	CAction action;
+    CAction action;
     action.wID = atoi(paras[0]);
+    action.fAmount1 = 1; // digital button (could change this for repeat acceleration)
     g_application.OnAction(action);
     return SetResponse(openTag+"OK");
   }
