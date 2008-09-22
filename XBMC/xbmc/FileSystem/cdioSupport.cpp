@@ -634,9 +634,14 @@ void CCdIoSupport::GetCdTextInfo(trackinfo *pti, int trackNum)
   }
 }
 
-CCdInfo* CCdIoSupport::GetCdInfo()
+CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
 {
-  char* source_name = GetDeviceFileName();
+  char* source_name;
+  if(cDeviceFileName == NULL)
+    source_name = GetDeviceFileName();
+  else
+    source_name = cDeviceFileName;
+
   cdio = cdio_open (source_name, DRIVER_UNKNOWN);
   if (cdio == NULL)
   {
