@@ -244,7 +244,7 @@
 	</GetIMDBPoster>
         <GetFanart dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://www.meligrove.com/&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb preview=&quot;/images/posters/movies/thumbnails/\1&quot;&gt;/images/posters/movies/jpg/\1&lt;/thumb&gt;" dest="2">
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;images/posters/movies/thumbnails/\1&quot;&gt;images/posters/movies/jpg/\1&lt;/thumb&gt;" dest="2">
 				<expression repeat="yes">jpg/([^&lt;]*)&lt;/URL</expression>
 			</RegExp>
 			<expression noclean="1">(.+)</expression>
