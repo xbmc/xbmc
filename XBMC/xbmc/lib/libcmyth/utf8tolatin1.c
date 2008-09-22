@@ -32,7 +32,7 @@ char* cmyth_utf8tolatin1(char* s)
 	ucs4 = 0;
 	state = 0;
 	octets = 0;
-	out = (char*)ref_alloc(strlen(s));
+	out = (char*)ref_alloc(strlen(s)+1);
 	t = out;
 	*t = 0;
 
