@@ -214,7 +214,7 @@
 		</RegExp>
         </GetMoviePosterDBLink>
 	<GetMoviePosterDB clearbuffers="no" dest="12">
-		<RegExp input="$$1" output="&lt;thumb&gt;\1o_\2&lt;/thumb&gt;" dest="10+">
+		<RegExp input="$$1" output="&lt;thumb&gt;\1l_\2&lt;/thumb&gt;" dest="10+">
 			<expression clear="yes" repeat="yes" noclean="1,2">&quot;poster&quot;.*?src=&quot;(.*?)[a-z]_(.*?)&quot;</expression>
 		</RegExp>
 	</GetMoviePosterDB>
