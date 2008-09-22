@@ -279,7 +279,7 @@ public:
 
   void PrintAnalysis(int fs, int num_audio);
 
-  CCdInfo* GetCdInfo();
+  CCdInfo* GetCdInfo(char* cDeviceFileName=NULL);
   void GetCdTextInfo(trackinfo *pti, int trackNum);
 
   static char* GetDeviceFileName();
