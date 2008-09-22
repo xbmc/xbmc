@@ -150,9 +150,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     TiXmlNode* id = movie->FirstChild("id");
     if (title && title->FirstChild() && link && link->FirstChild())
     {
-      CStdString strTitle;
-      g_charsetConverter.utf8ToStringCharset(title->FirstChild()->Value(), strTitle);
-      url.strTitle = strTitle;
+      url.strTitle = title->FirstChild()->Value();
       while (link && link->FirstChild())
       {
         url.ParseElement(link);
