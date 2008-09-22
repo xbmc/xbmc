@@ -142,7 +142,7 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
         if( cVolumeName[0] != '\0' ) share.strName= cVolumeName;
         if( uDriveType == DRIVE_CDROM && nResult)
         {
-          share.strName.Format( "%s - %s (%s)", 
+          share.strName.Format( "%s %s (%s)", 
             share.strPath, g_localizeStrings.Get(218),share.strName );
           share.m_iDriveType= CMediaSource::SOURCE_TYPE_LOCAL;
           bUseDCD= true;
