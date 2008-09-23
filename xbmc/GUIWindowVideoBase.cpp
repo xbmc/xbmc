@@ -639,13 +639,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
         // now show the imdb info
         OutputDebugString("show info\n");
 
-        // Add to the database if applicable
-        if (info.strContent.Equals("movies") && item->m_strPath &&
-           (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
-        {
-          m_database.SetDetailsForMovie(item->m_strPath, movieDetails);
-        }
-
         // remove directory caches
         CUtil::DeleteVideoDatabaseDirectoryCache();
 
