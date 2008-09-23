@@ -2475,6 +2475,19 @@ bool CApplication::OnKey(CKey& key)
   {
     iWin = m_gWindowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
   }
+  if (iWin == WINDOW_DIALOG_FULLSCREEN_INFO)
+  { // fullscreen info dialog - special case
+    g_buttonTranslator.GetAction(iWin, key, action);
+
+#ifdef HAS_SDL
+    g_Keyboard.Reset();
+#endif
+    if (OnAction(action))
+      return true;
+
+    // fallthrough to the main window
+    iWin = WINDOW_FULLSCREEN_VIDEO;
+  }
   if (iWin == WINDOW_FULLSCREEN_VIDEO)
   {
     // current active window is full screen video.
