@@ -36,7 +36,7 @@
 		<control type="group">
 			<posx>310</posx>
 			<posy>665</posy>
-			<visible>[Player.HasAudio | Player.HasVideo] + system.getbool(lookandfeel.enablemouse)</visible>
+			<visible>[Player.HasAudio | Player.HasVideo] + system.getbool(lookandfeel.enablemouse) + !Window.IsActive(PlayerControls)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="image">
 				<description>Button background image</description>
