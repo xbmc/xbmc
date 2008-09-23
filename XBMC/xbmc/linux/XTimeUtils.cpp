@@ -64,16 +64,19 @@ void WINAPI Sleep(DWORD dwMilliSeconds)
 VOID GetLocalTime(LPSYSTEMTIME sysTime)
 {
   const time_t t = time(NULL);
-  struct tm* now = localtime(&t);
-  sysTime->wYear = now->tm_year + 1900;
-  sysTime->wMonth = now->tm_mon + 1;
-  sysTime->wDayOfWeek = now->tm_wday;
-  sysTime->wDay = now->tm_mday;
-  sysTime->wHour = now->tm_hour;
-  sysTime->wMinute = now->tm_min;
-  sysTime->wSecond = now->tm_sec;
+  struct tm now;
+
+  localtime_r(&t, &now);
+  sysTime->wYear = now.tm_year + 1900;
+  sysTime->wMonth = now.tm_mon + 1;
+  sysTime->wDayOfWeek = now.tm_wday;
+  sysTime->wDay = now.tm_mday;
+  sysTime->wHour = now.tm_hour;
+  sysTime->wMinute = now.tm_min;
+  sysTime->wSecond = now.tm_sec;
   sysTime->wMilliseconds = 0;
-  g_timezone.m_IsDST = now->tm_isdst;
+  // NOTE: localtime_r() is not required to set this, but we Assume that it's set here.
+  g_timezone.m_IsDST = now.tm_isdst;
 }
 
 DWORD GetTickCount(void)
