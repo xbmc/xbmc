@@ -176,18 +176,13 @@ void AppleRemote::Initialize()
             FILE *inpipe;
             bool atv_version_found = false;
             char linebuf[1000];
-            const char *command = "sw_vers -buildVersion";
 
             //Find the build version of the AppleTV OS
-            inpipe = popen(command, "r");
-            if (!inpipe)
-            {
-                printf("couldn't open pipe %s\n", command);
-            }
-            else
+            inpipe = popen("sw_vers -buildVersion", "r");
+            if (inpipe)
             {
                 //get output
-                if(fgets(linebuf, sizeof(linebuf), inpipe))
+                if(fgets(linebuf, sizeof(linebuf) - 1, inpipe))
                 {
                     if( strstr(linebuf,"8N5107") || strstr(linebuf,"8N5239"))
                     {
@@ -215,13 +210,14 @@ void AppleRemote::Initialize()
                     }                    
                 }
                 pclose(inpipe); 
-                if(!atv_version_found){
-                    //handle fallback or just exit
-                    fprintf(stderr, "AppletTV software version could not be determined.\n");
-                    fprintf(stderr, "Defaulting to using key code for AppleTV r2.1\n");
-                    key = key_cookiesATV21;
-                    m_button_event_terminator = IR_Event_Term_ATV21;
-                }
+            }
+            
+            if(!atv_version_found){
+                //handle fallback or just exit
+                fprintf(stderr, "AppletTV software version could not be determined.\n");
+                fprintf(stderr, "Defaulting to using key code for AppleTV r2.1\n");
+                key = key_cookiesATV21;
+                m_button_event_terminator = IR_Event_Term_ATV21;
             }
         }
         else
