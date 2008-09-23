@@ -363,7 +363,8 @@ setupAndRun(void)
     IOHIDDeviceInterface **hidDeviceInterface = NULL;
     IOReturn               ioReturnValue = kIOReturnSuccess;
     
-    hidMatchDictionary = IOServiceNameMatching("AppleIRController");
+    //hidMatchDictionary = IOServiceNameMatching("AppleIRController");
+    hidMatchDictionary = IOServiceMatching("AppleIRController");
     hidService = IOServiceGetMatchingService(kIOMasterPortDefault,
                                              hidMatchDictionary);
 
