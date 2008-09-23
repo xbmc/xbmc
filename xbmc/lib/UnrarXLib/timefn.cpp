@@ -58,18 +58,18 @@ void RarTime::GetWin32(FILETIME *ft)
 #if defined(_UNIX) || defined(_EMX)
 RarTime& RarTime::operator =(time_t ut)
 {
-  struct tm *t;
-  t=localtime(&ut);
+  struct tm t;
+  localtime_r(&ut, &t);
 
-  rlt.Year=t->tm_year+1900;
-  rlt.Month=t->tm_mon+1;
-  rlt.Day=t->tm_mday;
-  rlt.Hour=t->tm_hour;
-  rlt.Minute=t->tm_min;
-  rlt.Second=t->tm_sec;
+  rlt.Year=t.tm_year+1900;
+  rlt.Month=t.tm_mon+1;
+  rlt.Day=t.tm_mday;
+  rlt.Hour=t.tm_hour;
+  rlt.Minute=t.tm_min;
+  rlt.Second=t.tm_sec;
   rlt.Reminder=0;
-  rlt.wDay=t->tm_wday;
-  rlt.yDay=t->tm_yday;
+  rlt.wDay=t.tm_wday;
+  rlt.yDay=t.tm_yday;
   return(*this);
 }
 
