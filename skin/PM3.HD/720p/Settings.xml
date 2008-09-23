@@ -1,5 +1,5 @@
 <window id="4">
-	<defaultcontrol always="true">2</defaultcontrol>
+	<defaultcontrol>2</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
 		<include>CommonBackground</include>
