@@ -83,12 +83,20 @@ class StoppableThread ( threading.Thread ):
         else:
             return False
 
+# to make sure all combination keys are checked first
+# we sort the keymap's button codes in reverse order
+# this guranties that any bit combined button code
+# will be processed first
+keymap_sixaxis_keys = keymap_sixaxis.keys()
+keymap_sixaxis_keys.sort()
+keymap_sixaxis_keys.reverse()
 
 def getkeys(bflags):
     keys = [];
-    for k in keymap_sixaxis.keys():
+    for k in keymap_sixaxis_keys:
         if (k & bflags) == k:
             keys.append(k)
+            bflags = bflags & ~k
     return keys;
 
 class PS3SixaxisThread ( StoppableThread ):
