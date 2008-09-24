@@ -84,6 +84,13 @@ class StoppableThread ( threading.Thread ):
             return False
 
 
+def getkeys(bflags):
+    keys = [];
+    for k in keymap_sixaxis.keys():
+        if (k & bflags) == k:
+            keys.append(k)
+    return keys;
+
 class PS3SixaxisThread ( StoppableThread ):
     def __init__(self, csock, isock, ip=""):
         StoppableThread.__init__(self)
@@ -96,7 +103,10 @@ class PS3SixaxisThread ( StoppableThread ):
         sixaxis.initialize(self.csock, self.isock)
         self.xbmc.connect()
         bflags = 0
-        last_bflags = 0
+        released = set()
+        pressed  = set()
+        pending  = set()
+        held     = set()
         psflags = 0
         psdown = 0
         toggle_mouse = 0
@@ -104,7 +114,11 @@ class PS3SixaxisThread ( StoppableThread ):
         try:
             while not self.stop():
                 if self.timed_out():
-                    self.xbmc.release_button()
+
+                    for key in (held | pressed):
+                        (mapname, action, amount, axis) = keymap_sixaxis[key]
+                        self.xbmc.send_button_state(map=mapname, button=action, amount=0, down=0, axis=axis)
+
                     raise Exception("PS3 Sixaxis powering off, timed out")
                 if self.idle_time() > 50:
                     self.xbmc.connect()
@@ -115,11 +129,18 @@ class PS3SixaxisThread ( StoppableThread ):
                     break
                 if not data:
                     continue
+
+                (bflags, psflags, pressure) = sixaxis.process_input(data, self.xbmc, toggle_mouse)
+
                 if psflags:
                     self.reset_timeout()
                     if psdown:
                         if (time.time() - psdown) > 5:
-                            self.xbmc.release_button()
+
+                            for key in (held | pressed):
+                                (mapname, action, amount, axis) = keymap_sixaxis[key]
+                                self.xbmc.send_button_state(map=mapname, button=action, amount=0, down=0, axis=axis)
+  
                             raise Exception("PS3 Sixaxis powering off, user request")
                     else:
                         psdown = time.time()
@@ -128,28 +149,31 @@ class PS3SixaxisThread ( StoppableThread ):
                         toggle_mouse = 1 - toggle_mouse
                     psdown = 0
 
-                (bflags, psflags, pressure) = sixaxis.process_input(data, self.xbmc, toggle_mouse)
-                if bflags != last_bflags and last_bflags:
-                    try:
-                      (mapname, action, amount, axis) = keymap_sixaxis[last_bflags]
-                      self.xbmc.send_button_state(map=mapname, button=action, amount=0, down=0, axis=axis)
-                    except:
-                      pass
-                    last_bflags = 0
+                keys = set(getkeys(bflags))
+                released = (pressed | held) - keys
+                held     = (pressed | held) - released
+                pressed  = (keys - held) & pending
+                pending  = (keys - held)
 
-                if bflags:
-                    try:
-                        (mapname, action, amount, axis) = keymap_sixaxis[bflags]
-                        if amount > 0:
-                            amount = pressure[amount-1] * 256
+                for key in released:
+                    (mapname, action, amount, axis) = keymap_sixaxis[key]
+                    self.xbmc.send_button_state(map=mapname, button=action, amount=0, down=0, axis=axis)
 
-                        if bflags != last_bflags or amount > 0:
-                            self.xbmc.send_button_state(map=mapname, button=action, amount=amount, down=1, axis=axis)
+                for key in held:
+                    (mapname, action, amount, axis) = keymap_sixaxis[key]
+                    if amount > 0:
+                        amount = pressure[amount-1] * 256
+                        self.xbmc.send_button_state(map=mapname, button=action, amount=amount, down=1, axis=axis)
 
-                        self.reset_timeout()
-                    except:
-                        pass
-                    last_bflags = bflags
+                for key in pressed:
+                    (mapname, action, amount, axis) = keymap_sixaxis[key]
+                    if amount > 0:
+                        amount = pressure[amount-1] * 256
+                    self.xbmc.send_button_state(map=mapname, button=action, amount=amount, down=1, axis=axis)
+
+                if keys:
+                    self.reset_timeout()
+
 
         except Exception, e:
             printerr()
@@ -167,9 +191,6 @@ class PS3RemoteThread ( StoppableThread ):
     def run(self):
         sixaxis.initialize(self.csock, self.isock)
         self.xbmc.connect()
-        last_connect = time.time()
-        bflags = 0
-        psflags = 0
         try:
             while not self.stop():
                 if process_remote(self.isock, self.xbmc)=="2":
