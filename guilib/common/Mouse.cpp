@@ -187,7 +187,7 @@ void CMouse::SetInactive()
 
 bool CMouse::HasMoved() const
 {
-  return (m_mouseState.dx * m_mouseState.dx + m_mouseState.dy + m_mouseState.dy >= MOUSE_MINIMUM_MOVEMENT * MOUSE_MINIMUM_MOVEMENT);
+  return (m_mouseState.dx * m_mouseState.dx + m_mouseState.dy * m_mouseState.dy >= MOUSE_MINIMUM_MOVEMENT * MOUSE_MINIMUM_MOVEMENT);
 }
 
 CPoint CMouse::GetLocation() const
