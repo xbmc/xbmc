@@ -118,7 +118,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         // Add item to directory list
         CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", strFile.c_str());
         CFileItemPtr pItem(new CFileItem(strFile));
-        pItem->m_strPath = strRoot + m_thisHost->dbplaylists->playlists[c].itemname;
+        pItem->m_strPath = strRoot + m_thisHost->dbplaylists->playlists[c].itemname + "/";
         pItem->m_bIsFolder = true;
         items.Add(pItem);
         vecCacheItems.Add(pItem);
@@ -154,7 +154,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
             strBuffer = cur->artist;
             CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", strBuffer.c_str());
             CFileItemPtr pItem(new CFileItem(strBuffer));
-            pItem->m_strPath = strRoot + cur->artist;
+            pItem->m_strPath = strRoot + cur->artist + "/";
             pItem->m_bIsFolder = true;
             items.Add(pItem);
             vecCacheItems.Add(pItem);
@@ -250,7 +250,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
           CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", curAlbum->album);
           CFileItemPtr pItem(new CFileItem(curAlbum->album));
 
-          pItem->m_strPath = strRoot + curAlbum->album;
+          pItem->m_strPath = strRoot + curAlbum->album + "/";
           pItem->m_bIsFolder = true;
           items.Add(pItem);
           vecCacheItems.Add(pItem);
