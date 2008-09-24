@@ -89,6 +89,7 @@ def getkeys(bflags):
     for k in keymap_sixaxis.keys():
         if (k & bflags) == k:
             keys.append(k)
+            bflags = bflags & ~k
     return keys;
 
 class PS3SixaxisThread ( StoppableThread ):
