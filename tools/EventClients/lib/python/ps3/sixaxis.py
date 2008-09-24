@@ -135,8 +135,10 @@ def process_input(data, xbmc=None, mouse_enabled=0):
     roll  = -math.atan2(ax, math.sqrt(ay*ay + az*az))
     pitch = math.atan2(ay, math.sqrt(ax*ax + az*az))
 
-    xpos = normalize_angle(roll, math.radians(60))
-    ypos = normalize_angle(pitch, math.radians(45))
+    pitch -= math.radians(20);
+
+    xpos = normalize_angle(roll, math.radians(30))
+    ypos = normalize_angle(pitch, math.radians(30))
 
     # update our sliding window array
     sumx.insert(0, xpos)
