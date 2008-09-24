@@ -442,6 +442,7 @@ bool CGUIWindowManager::OnAction(const CAction &action)
         // but for some dialogs we want to drop the actions through
         if (dialog->GetID() == WINDOW_DIALOG_FULLSCREEN_INFO)
           break;
+        return false;
       }
       return true; // do nothing with the action until the anim is finished
     }
