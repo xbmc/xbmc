@@ -146,26 +146,26 @@ print_errmsg_if_err(int expr, char *msg)
 void
 QueueCallbackFunction(void *target, IOReturn result, void *refcon, void *sender)
 {
-    HRESULT               ret = kIOReturnSuccess;
-    AbsoluteTime          zeroTime = {0,0};
-    IOHIDQueueInterface **hqi;
-    IOHIDEventStruct      event;
+  HRESULT               ret = kIOReturnSuccess;
+  AbsoluteTime          zeroTime = {0,0};
+  IOHIDQueueInterface **hqi;
+  IOHIDEventStruct      event;
 
-    std::set<int> events;	
-	bool bKeyDown = false;
-    while (ret == kIOReturnSuccess) {
-        hqi = (IOHIDQueueInterface **)sender;
-        ret = (*hqi)->getNextEvent(hqi, &event, zeroTime, 0);
+  std::set<int> events;	
+  bool bKeyDown = false;
+  while (ret == kIOReturnSuccess) {
+    hqi = (IOHIDQueueInterface **)sender;
+    ret = (*hqi)->getNextEvent(hqi, &event, zeroTime, 0);
 		if (ret != kIOReturnSuccess)
 			continue;
 
-		//printf("%d %d %d\n", (int)event.elementCookie, (int)event.value, (int)event.longValue);		
+      //printf("%d %d %d\n", (int)event.elementCookie, (int)event.value, (int)event.longValue);		
 
-        if (event.value > 0)
-            bKeyDown = true;
+      if (event.value > 0)
+        bKeyDown = true;
             
-        events.insert((int)event.elementCookie);
-    }
+      events.insert((int)event.elementCookie);
+  }
 	
 	if (events.size() > 1)
 	{
