@@ -1833,7 +1833,7 @@ void CFileItemList::Stack()
     return;
 
   // not allowed here
-  if (IsVirtualDirectoryRoot())
+  if (IsVirtualDirectoryRoot() || IsTuxBox())
     return;
 
   // items needs to be sorted for stuff below to work properly
