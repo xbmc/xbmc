@@ -65,6 +65,7 @@ void CWHelper::OnExit()
 {
   // Bring back XBMC window
   ShowWindow(g_hWnd,SW_RESTORE);
+  SetForegroundWindow(g_hWnd);
   m_hwnd = NULL;
   if(m_hProcess != NULL)
   {
