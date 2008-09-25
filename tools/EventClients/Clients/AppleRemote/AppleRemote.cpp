@@ -192,9 +192,9 @@ void AppleRemote::Initialize()
                         key = key_cookiesATV1X;
                         m_button_event_terminator = IR_Event_Term_ATV1X;
                     }
-                    else if (strstr(linebuf,"8N5455") || strstr(linebuf,"8N5461"))
+                    else if (strstr(linebuf,"8N5400") || strstr(linebuf,"8N5455") || strstr(linebuf,"8N5461"))
                     {
-                        // r2.01 or r2.02   
+                        // r2.0, r2.01 or r2.02   
                         atv_version_found = true;
                         fprintf(stderr, "Using key code for AppleTV r2.0x\n");
                         key = key_cookiesATV20X;
@@ -222,6 +222,7 @@ void AppleRemote::Initialize()
         }
         else
         {
+            fprintf(stderr, "Using key code for OSX 10.4\n");
             key = key_cookies10_4;
             m_button_event_terminator = IR_Event_Term_10_4;
         }
@@ -229,6 +230,7 @@ void AppleRemote::Initialize()
     else
     {
         // OSX 10.5
+        fprintf(stderr, "Using key code for OSX 10.5\n");
         key = key_cookies10_5;
         m_button_event_terminator = IR_Event_Term_10_5;
     }
