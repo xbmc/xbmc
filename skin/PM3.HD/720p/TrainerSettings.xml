@@ -32,14 +32,14 @@
 			<align>center</align>
 			<aligny>center</aligny>
 			<font>font18</font>
-			<label>[UPPERCASE]$LOCALIZE[12015][UPPERCASE]</label>
-			<textcolor>white</textcolor>
+			<label>$LOCALIZE[12015]</label>
+			<textcolor>dialogheader</textcolor>
 		</control>
 		<control type="image">
 			<posx>40</posx>
-			<posy>75</posy>
+			<posy>78</posy>
 			<width>620</width>
-			<height>8</height>
+			<height>2</height>
 			<texture>separator.png</texture>
 		</control>
 		<control type="label" id="3">
@@ -70,8 +70,8 @@
 			<font>font12</font>
 			<textcolor>grey2</textcolor>
 			<focusedcolor>white</focusedcolor>
-			<texturefocus border="5">button-focus.png</texturefocus>
-			<texturenofocus border="5">button-nofocus.png</texturenofocus>
+			<texturefocus border="3">button-focus.png</texturefocus>
+			<texturenofocus border="3">button-nofocus.png</texturenofocus>
 		</control>
 		<control type="radiobutton" id="8">
 			<description>Default RadioButton</description>
@@ -79,14 +79,14 @@
 			<font>font12</font>
 			<textcolor>grey2</textcolor>
 			<focusedcolor>white</focusedcolor>
-			<texturefocus border="5">button-focus.png</texturefocus>
-			<texturenofocus border="5">button-nofocus.png</texturenofocus>
+			<texturefocus border="3">button-focus.png</texturefocus>
+			<texturenofocus border="3">button-nofocus.png</texturenofocus>
 		</control>
 		<control type="spincontrolex" id="9">
 			<description>Default spincontrolex</description>
 			<height>35</height>
-			<texturefocus border="5">button-focus.png</texturefocus>
-			<texturenofocus border="5">button-nofocus.png</texturenofocus>
+			<texturefocus border="3">button-focus.png</texturefocus>
+			<texturenofocus border="3">button-nofocus.png</texturenofocus>
 			<font>font12</font>
 			<textcolor>grey2</textcolor>
 			<focusedcolor>white</focusedcolor>
@@ -95,15 +95,15 @@
 		<control type="sliderex" id="10">
 			<description>Default Slider</description>
 			<height>35</height>
-			<texturefocus border="5">button-focus.png</texturefocus>
-			<texturenofocus border="5">button-nofocus.png</texturenofocus>
+			<texturefocus border="3">button-focus.png</texturefocus>
+			<texturenofocus border="3">button-nofocus.png</texturenofocus>
 			<font>font12</font>
 			<textcolor>grey2</textcolor>
 			<focusedcolor>white</focusedcolor>
 		</control>
 		<control type="image" id="11">
 			<description>Default Seperator</description>
-			<height>8</height>
+			<height>2</height>
 			<texture>separator.png</texture>
 		</control>
 		<control type="button" id="28">
@@ -114,8 +114,8 @@
 			<height>35</height>
 			<align>center</align>
 			<aligny>center</aligny>
-			<texturenofocus>button-nofocus.png</texturenofocus>
-			<texturefocus>button-focus.png</texturefocus>
+			<texturefocus border="3">button-focus2.png</texturefocus>
+			<texturenofocus border="3">button-nofocus.png</texturenofocus>
 			<label>186</label>
 			<onleft>29</onleft>
 			<onright>29</onright>
@@ -130,8 +130,8 @@
 			<height>35</height>
 			<align>center</align>
 			<aligny>center</aligny>
-			<texturenofocus>button-nofocus.png</texturenofocus>
-			<texturefocus>button-focus.png</texturefocus>
+			<texturefocus border="3">button-focus2.png</texturefocus>
+			<texturenofocus border="3">button-nofocus.png</texturenofocus>
 			<label>222</label>
 			<onleft>28</onleft>
 			<onright>28</onright>
