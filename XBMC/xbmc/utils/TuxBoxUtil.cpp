@@ -468,7 +468,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
         if(strAudioChannelPid.Left(2).Equals("0x"))
           strAudioChannelPid.Replace("0x","");
 
-        strVideoStream.Format("0,%s,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str(), strAudioChannelPid.Left(4).c_str());
+        strVideoStream.Format("0,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), strAudioChannelPid.Left(4).c_str());
       }
       else
       {
@@ -482,7 +482,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
         if(g_application.m_eForcedNextPlayer == EPC_DVDPLAYER || g_advancedSettings.m_bTuxBoxSendAllAPids)
           strVideoStream.Format("0,%s,%s,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str(), sCurSrvData.audio_channel_1_pid.Left(4).c_str(), sCurSrvData.audio_channel_2_pid.Left(4).c_str());
         else 
-          strVideoStream.Format("0,%s,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str(), sCurSrvData.audio_channel_1_pid.Left(4).c_str());
+          strVideoStream.Format("0,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str());
       }
       
       strStreamURL.Format("http://%s:%s@%s:%i/%s",url.GetUserName().c_str(),url.GetPassWord().c_str(), url.GetHostName().c_str(),TS_STREAM_PORT,strVideoStream.c_str());
