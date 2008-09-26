@@ -914,8 +914,9 @@ void CGUIWindowVideoBase::OnResumeItem(int iItem)
 {
   if (iItem < 0 || iItem >= m_vecItems->Size()) return;
   CFileItemPtr item = m_vecItems->Get(iItem);
-  bool resumeItem = (g_guiSettings.GetInt("myvideos.resumeautomatically") == RESUME_YES);
-  if (!item->m_bIsFolder && !resumeItem && g_guiSettings.GetInt("myvideos.resumeautomatically") == RESUME_ASK)
+  // we always resume the movie if the user doesn't want us to ask
+  bool resumeItem = g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_ASK;
+  if (!item->m_bIsFolder && !resumeItem)
   {
     // check to see whether we have a resume offset available
     CVideoDatabase db;
@@ -928,15 +929,15 @@ void CGUIWindowVideoBase::OnResumeItem(int iItem)
       if (db.GetResumeBookMark(itemPath, bookmark) )
       { // prompt user whether they wish to resume
         vector<CStdString> choices;
-        choices.push_back(g_localizeStrings.Get(12021));
         CStdString resumeString, time;
         StringUtils::SecondsToTimeString(bookmark.timeInSeconds, time);
         resumeString.Format(g_localizeStrings.Get(12022).c_str(), time.c_str());
         choices.push_back(resumeString);
+        choices.push_back(g_localizeStrings.Get(12021)); // start from the beginning
         int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices, GetContextPosition());
         if (!retVal)
           return; // don't do anything
-        resumeItem = (retVal == 2);
+        resumeItem = (retVal == 1);
       }
       db.Close();
     }
