@@ -698,6 +698,10 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
             pclsTexture->SetDelay(pImage->Delay);
             pclsTexture->SetLoops(AnimatedGifSet.nLoops);
 
+#ifdef HAS_SDL
+            free(pixels);
+#endif
+
 #ifdef HAS_SDL_2D
             SDL_FreeSurface(pTexture);
 #endif
