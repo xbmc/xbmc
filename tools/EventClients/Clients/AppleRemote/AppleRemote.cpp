@@ -236,7 +236,7 @@ void AppleRemote::Initialize()
     }
     m_launch_xbmc_button = key[IR_MenuHold];
         
-    RegisterCommand(key[IR_Select],    new CPacketBUTTON("Select", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+    RegisterCommand(key[IR_Select],    new CPacketBUTTON("A", "XG", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
     RegisterCommand(key[IR_Right],     new CPacketBUTTON("Right", "R1", BTN_DOWN  | BTN_NO_REPEAT | BTN_QUEUE));
     RegisterCommand(key[IR_Left],      new CPacketBUTTON("Left",  "R1", BTN_DOWN  | BTN_NO_REPEAT | BTN_QUEUE));
     RegisterCommand(key[IR_Up],        new CPacketBUTTON("Up", "R1", BTN_DOWN));
