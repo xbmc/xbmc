@@ -93,6 +93,16 @@ INT CXBMC_PC::Run()
 //-----------------------------------------------------------------------------
 INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
 {
+  // check if XBMC is already running
+  HWND m_hwnd = FindWindow(NULL,"XBMC Media Center");
+  if(m_hwnd != NULL)
+  {
+    // switch to the running instance
+    ShowWindow(m_hwnd,SW_RESTORE);
+    SetForegroundWindow(m_hwnd);
+    return 0;
+  }
+
   CXBMC_PC myApp;
 
   g_xbmcPC = &myApp;
