@@ -48,7 +48,7 @@
 #include "Geometry.h"               // for CRect/CPoint
 #include "gui3d.h"
 
-#include "Surface.h"
+namespace Surface { class CSurface; }
 
 // forward definitions
 class IMsgSenderCallback;
@@ -196,7 +196,7 @@ public:
   void SetRenderingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  ///< Sets scaling up for rendering
   void SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);    ///< Sets scaling up for skin loading etc.
   float GetScalingPixelRatio() const;
-  void Flip() {m_screenSurface->Flip();}
+  void Flip();
   void InvertFinalCoords(float &x, float &y) const;
   inline float ScaleFinalXCoord(float x, float y) const XBMC_FORCE_INLINE { return m_finalTransform.TransformXCoord(x, y, 0); }
   inline float ScaleFinalYCoord(float x, float y) const XBMC_FORCE_INLINE { return m_finalTransform.TransformYCoord(x, y, 0); }

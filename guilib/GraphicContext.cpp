@@ -1531,3 +1531,8 @@ void CGraphicContext::SetMediaDir(const CStdString &strMediaDir)
   m_strMediaDir = strMediaDir;
 }
 
+void CGraphicContext::Flip()
+{
+  m_screenSurface->Flip();
+}
+

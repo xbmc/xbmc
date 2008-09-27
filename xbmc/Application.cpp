@@ -70,6 +70,7 @@
 #include "SmartPlaylist.h"
 #include "FileSystem/RarManager.h"
 #include "PlayList.h"
+#include "Surface.h"
 
 #if defined(FILESYSTEM) && !defined(_LINUX)
 #include "FileSystem/FileDAAP.h"

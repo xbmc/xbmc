@@ -4,6 +4,7 @@
 #include "TextureManager.h"
 #include "AnimatedGif.h"
 #include "GraphicContext.h"
+#include "Surface.h"
 #include "../xbmc/Picture.h"
 #include "utils/SingleLock.h"
 #include "StringUtils.h"
