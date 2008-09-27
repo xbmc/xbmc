@@ -168,8 +168,8 @@ LPVOID GetXbdmBaseAddress()
 #endif
 #endif
 
-#ifdef __APPLE__
-#define APIENTRY
+#ifndef APIENTRY
+#define APIENTRY __stdcall
 #endif
 
 //  Entry point of a dll (DllMain)
