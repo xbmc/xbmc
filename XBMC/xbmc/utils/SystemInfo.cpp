@@ -30,6 +30,8 @@
 #include "utils/GUIInfoManager.h"
 #include "Network.h"
 #include "Application.h"
+#include "GraphicContext.h"
+#include "Surface.h"
 CSysInfo g_sysinfo;
 
 void CBackgroundSystemInfoLoader::GetInformation()

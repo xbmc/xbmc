@@ -3,7 +3,6 @@
 
 #ifdef HAS_SDL_OPENGL
 
-#include "../../../guilib/Surface.h"
 #include "../../../guilib/FrameBufferObject.h"
 #include "../../../guilib/Shader.h"
 #include "../ffmpeg/DllSwScale.h"
@@ -12,6 +11,8 @@
 #include "VideoShaders/VideoFilterShader.h"
 #include "../../settings/VideoSettings.h"
 #include "RenderFlags.h"
+
+namespace Surface { class CSurface; }
 
 using namespace Surface;
 using namespace Shaders;
