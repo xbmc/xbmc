@@ -38,6 +38,7 @@ class XBMCHelper
 
   bool IsRemoteBuddyInstalled();
   bool IsSofaControlRunning();
+  bool IsRunning();
 
   bool IsAlwaysOn() const { return m_alwaysOn; }
   int  GetMode() const { return m_mode; }

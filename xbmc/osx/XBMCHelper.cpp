@@ -202,8 +202,15 @@ void XBMCHelper::Uninstall()
 }
 
 /////////////////////////////////////////////////////////////////////////////
+bool XBMCHelper::IsRunning()
+{
+  return (GetProcessPid(XBMC_HELPER_PROGRAM)!=-1);
+}
+
+/////////////////////////////////////////////////////////////////////////////
 bool XBMCHelper::IsRemoteBuddyInstalled()
 {
+  return false;
   // Check for existence of kext file.
   return access("/System/Library/Extensions/RBIOKitHelper.kext", R_OK) != -1;
 }
@@ -211,6 +218,7 @@ bool XBMCHelper::IsRemoteBuddyInstalled()
 /////////////////////////////////////////////////////////////////////////////
 bool XBMCHelper::IsSofaControlRunning()
 {
+  return false;
   // Check for a "Sofa Control" process running.
   return GetProcessPid(SOFA_CONTROL_PROGRAM) != -1;
 }

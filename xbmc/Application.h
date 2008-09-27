@@ -99,7 +99,7 @@ public:
   void StartUPnPServer();
   void StopUPnPServer();
   void StartEventServer();
-  void StopEventServer();
+  bool StopEventServer(bool promptuser=false);
   void RefreshEventServer();
   void DimLCDOnPlayback(bool dim);
   DWORD GetThreadId() const { return m_threadID; };
