@@ -88,7 +88,7 @@ int CDVDInputStreamRTMP::Read(BYTE* buf, int buf_size)
     if (nToConsume > buf_size)
       nToConsume = buf_size;
 
-    memcpy(buf, m_leftOver, nToConsume);
+    memcpy(buf, m_leftOver + m_leftOverConsumed, nToConsume);
     buf_size -= nToConsume;
     m_leftOverConsumed += nToConsume;
     nRead += nToConsume;
@@ -125,39 +125,68 @@ int CDVDInputStreamRTMP::Read(BYTE* buf, int buf_size)
     if (buf_size < 4)
       return nRead;
 
-    RTMP_LIB::CRTMP::EncodeInt32((char*)buf + nRead, m_prevTagSize);
-    nRead += 4;
-    buf_size -= 4;
+    // skip video info/command packets
+    // if we keep these it chokes the dvdplayer
+    if ( packet.m_packetType == 0x09 && 
+         packet.m_nBodySize == 2 &&
+         ( (*packet.m_body & 0xf0) == 0x50) )
+    {
+      continue;
+    }
 
-    if (buf_size < 11)
-      return nRead;
+    // write footer of previous FLV tag
+    if ( m_prevTagSize != -1 )
+    {
+      RTMP_LIB::CRTMP::EncodeInt32((char*)buf + nRead, m_prevTagSize);
+      nRead += 4;
+      buf_size -= 4;
+    }
 
     char *ptr = (char*)buf + nRead;
-    *ptr = packet.m_packetType;
-    ptr++;
-    ptr += RTMP_LIB::CRTMP::EncodeInt24(ptr, packet.m_nBodySize);
-    unsigned int nTimeStamp = m_audioTS;
 
-    if (packet.m_packetType == 0x09) // video
-      nTimeStamp = m_videoTS;
+    // audio (0x08), video (0x09) or metadata (0x12) packets :
+    // construct 11 byte header then add rtmp packet's data
+    if ( packet.m_packetType == 0x08 || packet.m_packetType == 0x09 || packet.m_packetType == 0x12 )
+    {
+      m_prevTagSize = 11 + packet.m_nBodySize;
 
-    ptr += RTMP_LIB::CRTMP::EncodeInt24(ptr, nTimeStamp);
+      if (buf_size < 11)
+        return nRead;
 
-    *ptr = (char)((nTimeStamp & 0xFF000000) >> 24);
-    ptr++;
+      *ptr = packet.m_packetType;
+      ptr++;
+      ptr += RTMP_LIB::CRTMP::EncodeInt24(ptr, packet.m_nBodySize);
+      
+      unsigned int nTimeStamp = 0;
+      if (packet.m_packetType == 0x08){ // audio
+        nTimeStamp = m_audioTS;
+        m_audioTS += packet.m_nInfoField1;
+      }
+      else if (packet.m_packetType == 0x09){ // video
+        nTimeStamp = m_videoTS;
+        m_videoTS += packet.m_nInfoField1;
+      }
+      
+      ptr += RTMP_LIB::CRTMP::EncodeInt24(ptr, nTimeStamp);
 
-    if (packet.m_packetType == 0x09) // video
-      m_videoTS += packet.m_nInfoField1;
-    else
-      m_audioTS += packet.m_nInfoField1;
+      *ptr = (char)((nTimeStamp & 0xFF000000) >> 24);
+      ptr++;
 
-    ptr += RTMP_LIB::CRTMP::EncodeInt24(ptr, 0);
+      ptr += RTMP_LIB::CRTMP::EncodeInt24(ptr, 0);
 
-    nRead += 11;
-    buf_size -= 11;
+      nRead += 11;
+      buf_size -= 11;
 
-    if (buf_size == 0)
-      return nRead;
+      if (buf_size == 0)
+        return nRead;
+
+    }
+    else if (packet.m_packetType == 0x16)
+    {
+      // FLV tag(s) packet 
+      // contains it's own tagsize footer, don't write another
+      m_prevTagSize = -1; 
+    }
 
     int nBodyLen = packet.m_nBodySize;
     if (nBodyLen > buf_size)
@@ -178,8 +207,8 @@ int CDVDInputStreamRTMP::Read(BYTE* buf, int buf_size)
       buf_size -= nBodyLen; 
     }
 
-    m_prevTagSize = 11 + packet.m_nBodySize;
   }
+
 
   if (m_rtmp.IsConnected())
     return nRead;
