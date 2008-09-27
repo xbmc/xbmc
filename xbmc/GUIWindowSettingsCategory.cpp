@@ -953,17 +953,44 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("appleremote.mode"))
     {
-      // Set new configuration.
-      g_xbmcHelper.Configure();
+      bool cancelled;
+      int remoteMode = g_guiSettings.GetInt("appleremote.mode");
+
+      // if it's not disabled, start the event server or else apple remote won't work
+      if ( remoteMode != APPLE_REMOTE_DISABLED )
+      {
+        g_guiSettings.SetBool("remoteevents.enabled", true);
+        g_application.StartEventServer();
+      }
+
+      // if XBMC helper is running, prompt user before effecting change
+      if ( g_xbmcHelper.IsRunning() && g_xbmcHelper.GetMode()!=remoteMode )
+      {
+        if (!CGUIDialogYesNo::ShowAndGetInput(13144, 13145, 13146, 13147, -1, -1, cancelled, 10000))
+        {
+          // user declined, restore previous spinner state and appleremote mode
+          CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+          g_guiSettings.SetInt("appleremote.mode", g_xbmcHelper.GetMode());
+          pControl->SetValue(g_xbmcHelper.GetMode());
+        }
+        else
+        {
+          // reload configuration
+          g_xbmcHelper.Configure();      
+        }
+      }
+      else
+      {
+        // set new configuration.
+        g_xbmcHelper.Configure();      
+      }
 
       if (g_xbmcHelper.ErrorStarting() == true)
       {
-        // Display an error.
-        if (g_xbmcHelper.IsRemoteBuddyInstalled())
-          CGUIDialogOK::ShowAndGetInput(13600, 13620, 13621, 13622);
-        if (g_xbmcHelper.IsSofaControlRunning())
-          CGUIDialogOK::ShowAndGetInput(13600, 13623, 13621, 13624);
+        // inform user about error
+        CGUIDialogOK::ShowAndGetInput(13620, 13621, 20022, 20022);
 
+        // reset spinner to disabled state
         CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
         pControl->SetValue(APPLE_REMOTE_DISABLED);
       }
@@ -1439,7 +1466,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_guiSettings.m_LookAndFeelResolution = m_NewResolution;
     g_application.ReloadSkin();
     bool cancelled = false;
-    if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 5000))
+    if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 10000))
     {
       g_guiSettings.SetInt("videoscreen.resolution", lastRes);
       g_graphicsContext.SetVideoResolution(lastRes, TRUE);
@@ -2075,7 +2102,14 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (g_guiSettings.GetBool("remoteevents.enabled"))
       g_application.StartEventServer();
     else
-      g_application.StopEventServer();
+    {
+      if (!g_application.StopEventServer(true))
+      {
+        g_guiSettings.SetBool("remoteevents.enabled", true);
+        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+        if (pControl) pControl->SetEnabled(true);
+      }
+    }
 #endif
   }
   else if (strSetting.Equals("remoteevents.allinterfaces"))
@@ -2083,8 +2117,14 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 #ifdef HAS_EVENT_SERVER
     if (g_guiSettings.GetBool("remoteevents.enabled"))
     {
-      g_application.StopEventServer();
-      g_application.StartEventServer();
+      if (g_application.StopEventServer(true))
+        g_application.StartEventServer();
+      else
+      {
+        g_guiSettings.SetBool("remoteevents.enabled", true);
+        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+        if (pControl) pControl->SetEnabled(true);
+      }
     }
 #endif
   }

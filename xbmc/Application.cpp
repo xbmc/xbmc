@@ -1684,19 +1684,50 @@ void CApplication::StopUPnP()
 void CApplication::StartEventServer()
 {
 #ifdef HAS_EVENT_SERVER
+  CEventServer* server = CEventServer::GetInstance();
+  if (!server)
+  {
+    CLog::Log(LOGERROR, "ES: Out of memory");
+    return;
+  }
   if (g_guiSettings.GetBool("remoteevents.enabled"))
   {
     CLog::Log(LOGNOTICE, "ES: Starting event server");
-    CEventServer::GetInstance()->StartServer();
+    server->StartServer();
   }
 #endif
 }
 
-void CApplication::StopEventServer()
+bool CApplication::StopEventServer(bool promptuser)
 {
 #ifdef HAS_EVENT_SERVER
-  CLog::Log(LOGNOTICE, "ES: Stopping event server");
+  CEventServer* server = CEventServer::GetInstance();
+  if (!server)
+  {
+    CLog::Log(LOGERROR, "ES: Out of memory");
+    return false;
+  }
+  if (promptuser)
+  {
+    if (server->GetNumberOfClients() > 0)
+    {
+      bool cancelled = false;
+      if (!CGUIDialogYesNo::ShowAndGetInput(13140, 13141, 13142, 20022,
+                                            -1, -1, cancelled, 10000)
+          || cancelled)
+      {
+        CLog::Log(LOGNOTICE, "ES: Not stopping event server");
+        return false;
+      }
+    }
+    CLog::Log(LOGNOTICE, "ES: Stopping event server with confirmation");
+  }
+  else
+  {
+    CLog::Log(LOGNOTICE, "ES: Stopping event server");
+  }
   CEventServer::GetInstance()->StopServer();
+  return true;
 #endif
 }
 
