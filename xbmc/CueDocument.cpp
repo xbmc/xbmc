@@ -199,7 +199,7 @@ void CCueDocument::GetSongs(VECSONGS &songs)
       song.strTitle.Format("Track %2d", i + 1);
     else
       song.strTitle = m_Track[i].strTitle;
-    song.strFileName =  m_Track[i].strFile;
+    song.strFileName =  CUtil::TranslatePath(m_Track[i].strFile);
     song.iStartOffset = m_Track[i].iStartTime;
     song.iEndOffset = m_Track[i].iEndTime;
     if (song.iEndOffset)
@@ -218,7 +218,7 @@ void CCueDocument::GetMediaFiles(vector<CStdString>& mediaFiles)
     uniqueFiles.insert(m_Track[i].strFile);
 
   for (std::set<CStdString>::iterator it = uniqueFiles.begin(); it != uniqueFiles.end(); it++)
-    mediaFiles.push_back(*it);
+    mediaFiles.push_back(CUtil::TranslatePath(*it));
 }
 
 CStdString CCueDocument::GetMediaTitle()
