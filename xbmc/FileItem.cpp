@@ -1731,7 +1731,6 @@ void CFileItemList::FilterCueItems()
                     if (!item.IsCUESheet() && !item.IsPlayList() && Contains(strMediaFile))
                     {
                       bFoundMediaFile = true;
-                      break;
                     }
                   }
                 }
