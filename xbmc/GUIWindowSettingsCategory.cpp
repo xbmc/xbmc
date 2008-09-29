@@ -786,18 +786,23 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(476), LED_PLAYBACK_VIDEO_MUSIC); // Video & Music
       pControl->SetValue(pSettingInt->GetData());
     }
-#ifndef __APPLE__
     else if (strSetting.Equals("videoplayer.rendermethod"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+#ifndef HAS_SDL
       pControl->AddLabel(g_localizeStrings.Get(13355), RENDER_LQ_RGB_SHADER);
       pControl->AddLabel(g_localizeStrings.Get(13356), RENDER_OVERLAYS);
       pControl->AddLabel(g_localizeStrings.Get(13357), RENDER_HQ_RGB_SHADER);
       pControl->AddLabel(g_localizeStrings.Get(21397), RENDER_HQ_RGB_SHADERV2);
+#else
+      pControl->AddLabel(g_localizeStrings.Get(13416), RENDER_METHOD_AUTO);
+      pControl->AddLabel(g_localizeStrings.Get(13417), RENDER_METHOD_ARB);
+      pControl->AddLabel(g_localizeStrings.Get(13418), RENDER_METHOD_GLSL);
+      pControl->AddLabel(g_localizeStrings.Get(13419), RENDER_METHOD_SOFTWARE);
+#endif
       pControl->SetValue(pSettingInt->GetData());
     }
-#endif
     else if (strSetting.Equals("musicplayer.replaygaintype"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;

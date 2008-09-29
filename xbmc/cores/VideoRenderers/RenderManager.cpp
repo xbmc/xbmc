@@ -311,6 +311,7 @@ float CXBoxRenderManager::GetMaximumFPS()
   else
     fps = 60000.0f/1001.0f;
 
+#ifndef HAS_SDL
   if( m_rendermethod == RENDER_HQ_RGB_SHADER
    || m_rendermethod == RENDER_HQ_RGB_SHADERV2)
   {
@@ -318,6 +319,7 @@ float CXBoxRenderManager::GetMaximumFPS()
     ||  method == VS_INTERLACEMETHOD_RENDER_BOB )
       fps *= 0.5;
   }
+#endif
 
 #ifdef __APPLE__
   // Experimental. Use the actual refresh rate of the display.
