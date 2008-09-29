@@ -1758,6 +1758,8 @@ void CFileItemList::FilterCueItems()
                 // only for songs that actually match the current media file
                 if (song.strFileName == fileFromCue)
                 {
+                  // we might have a new media file from the above matching code
+                  song.strFileName = strMediaFile;
                   if (tag.Loaded())
                   {
                     if (song.strAlbum.empty() && !tag.GetAlbum().empty()) song.strAlbum = tag.GetAlbum();
