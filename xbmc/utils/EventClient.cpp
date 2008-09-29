@@ -380,6 +380,8 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
     else
       famount = (float)amount/65535.0f;
   }
+  else
+    famount = 1.0f; // Considered digital
   bool active = (flags & PTB_DOWN) ? true : false;
 
   if(flags & PTB_QUEUE)
