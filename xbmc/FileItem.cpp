@@ -2180,15 +2180,6 @@ void CFileItem::SetCachedMusicThumb()
 
 CStdString CFileItem::GetPreviouslyCachedMusicThumb() const
 {
-  // the highest priority thumb is album name + album path
-  CStdString strPath;
-  if (!m_bIsFolder)
-    CUtil::GetDirectory(m_strPath, strPath);
-  else
-    strPath = m_strPath;
-  // music thumbs are cached without slash at end
-  CUtil::RemoveSlashAtEnd(strPath);
-
   // look if an album thumb is available,
   // could be any file with tags loaded or
   // a directory in album window
@@ -2220,6 +2211,14 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb() const
   }
 
   // try and find a cached folder thumb (folder.jpg or folder.tbn)
+  CStdString strPath;
+  if (!m_bIsFolder)
+    CUtil::GetDirectory(m_strPath, strPath);
+  else
+    strPath = m_strPath;
+  // music thumbs are cached without slash at end
+  CUtil::RemoveSlashAtEnd(strPath);
+
   CStdString thumb(CUtil::GetCachedMusicThumb(strPath));
   if (CFile::Exists(thumb))
     return thumb;
