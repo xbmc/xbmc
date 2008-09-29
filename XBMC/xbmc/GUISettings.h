@@ -27,10 +27,11 @@
 #include "GraphicContext.h"
 
 // Render Methods
-#define RENDER_LQ_RGB_SHADER   0
-#define RENDER_OVERLAYS      1
-#define RENDER_HQ_RGB_SHADER   2
-#define RENDER_HQ_RGB_SHADERV2   3
+#define RENDER_METHOD_AUTO      0
+#define RENDER_METHOD_ARB       1
+#define RENDER_METHOD_GLSL      2
+#define RENDER_METHOD_SOFTWARE  3
+#define RENDER_OVERLAYS         99   // to retain compatibility
 
 // Scaling options.
 #define SOFTWARE_UPSCALING_DISABLED   0
