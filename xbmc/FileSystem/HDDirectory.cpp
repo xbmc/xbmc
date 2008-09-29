@@ -142,7 +142,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
           pItem->m_dateTime=localTime;
 
           /* Checks if the file is hidden. If it is then we don't really need to add it */
-          if ((!(wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) || g_guiSettings.GetBool("filelists.showhidden")) && IsAllowed(wfd.cFileName))
+          if ((!(wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) || g_guiSettings.GetBool("filelists.showhidden")) && IsAllowed(strLabel))
           {
             vecCacheItems.Add(pItem);
             items.Add(pItem);
