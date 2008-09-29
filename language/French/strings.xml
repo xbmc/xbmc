@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Based on english strings version 15499-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Based on english strings version 15704-->
 <strings>
   <string id="0">Programmes</string>
   <string id="1">Images</string>
@@ -963,7 +963,7 @@
   <string id="13110">Appliquer cette Résolution ?</string>
   <string id="13111">Voulez-vous garder cette résolution?</string>
  
-  <string id="13112">Upscaling logiciel haute qualitée</string>
+  <string id="13112">Upscaling logiciel HQ</string>
   <string id="13113">Désactiver</string>
   <string id="13114">Activer pour contenu SD</string>
   <string id="13115">Toujours activé</string>
@@ -976,6 +976,15 @@
   <string id="13130">Blanking Affichage</string>
   <string id="13131">Désactivé</string>
   <string id="13132">Activer Blanking</string>
+ 
+  <string id="13140">Connexions active détectées !</string>
+  <string id="13141">Si vous continuez vous ne serez plus en mesure de contrôler XBMC</string>
+  <string id="13142">par la suite. Etes-vous sur de stopper le serveur Event ?</string>
+
+  <string id="13144">Changer le mode Apple Remote ?</string>
+  <string id="13145">Si vous utilisez actuellement la télécommande Apple pour contrôler</string>
+  <string id="13146">XBMC, le changement de ce paramètre peut affecter l'abilité</string>
+  <string id="13147">de continuer à contrôler celui-ci. Effectuer la modification ?</string>
  
   <string id="13150">HDD Clé:</string>
   <string id="13151">HDD Température:</string>
@@ -1152,6 +1161,12 @@
   <string id="13411">Vitesse du ventilateur minimum</string>
   <string id="13412">- Flux RSS dont le texte est de la droite vers la gauche</string>
   <string id="13413">Téléchargement</string>
+  <string id="13414">Cacher les artistes uniquement présents dans les Compilations</string>
+  <string id="13415">Méthode de Rendu</string>
+  <string id="13416">Détection Auto</string>
+  <string id="13417">Basic Shaders (ARB)</string>
+  <string id="13418">Advanced Shaders (GLSL)</string>
+  <string id="13419">Logiciel</string>
   
   <string id="13600">Apple Remote</string>
   <string id="13601">Mode</string>
@@ -1162,12 +1177,8 @@
   <string id="13611">Standard</string>
   <string id="13612">Télécommande Universelle</string>
   
-  <string id="13620">Le pilote Remote Buddy est installé.</string>
+  <string id="13620">Erreur Apple Remote.</string>
   <string id="13621">Le support de la télécommande Apple ne peut être activé.</string>
-  <string id="13622">Merci de lire la FAQ Remote Buddy pour le désinstaller.</string>
-
-  <string id="13623">Sofa Control est en cours d'exécution.</string>
-  <string id="13624">Merci de lire la FAQ de Sofa Control pour le désinstaller.</string>
   
   <string id="14000">Empiler</string>
   <string id="14001">Désempiler</string>
