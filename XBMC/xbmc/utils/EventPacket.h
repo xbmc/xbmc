@@ -99,7 +99,8 @@ namespace EVENTPACKET
 
   enum ActionType
   {
-    AT_EXEC_BUILTIN = 0x01
+    AT_EXEC_BUILTIN = 0x01,
+    AT_BUTTON       = 0x02
   };
 
   enum PacketType
