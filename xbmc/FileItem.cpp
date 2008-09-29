@@ -1701,6 +1701,8 @@ void CFileItemList::FilterCueItems()
           for(std::vector<CStdString>::iterator itMedia = MediaFileVec.begin(); itMedia != MediaFileVec.end(); itMedia++)
           {
             CStdString strMediaFile = *itMedia;
+            CStdString fileFromCue = strMediaFile; // save the file from the cue we're matching against,
+                                                   // as we're going to search for others here...
             bool bFoundMediaFile = CFile::Exists(strMediaFile);
             // queue the cue sheet and the underlying media file for deletion
             if (!bFoundMediaFile)
@@ -1754,7 +1756,7 @@ void CFileItemList::FilterCueItems()
               {
                 CSong song = newitems[j];
                 // only for songs that actually match the current media file
-                if (song.strFileName == strMediaFile)
+                if (song.strFileName == fileFromCue)
                 {
                   if (tag.Loaded())
                   {
