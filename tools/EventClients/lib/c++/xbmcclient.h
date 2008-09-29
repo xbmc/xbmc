@@ -66,6 +66,7 @@
 #define LOGNONE    7
 
 #define ACTION_EXECBUILTIN 0x01
+#define ACTION_BUTTON      0x02
 
 class CAddress
 {
