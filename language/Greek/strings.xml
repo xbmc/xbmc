@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 09/16/2008-->
+<!--Date of translation: 09/29/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 15536-->
+<!--Based on english strings version 15695-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -165,10 +165,10 @@
   <string id="228">Ανακάτεμα Λίστας Αναπαραγωγής στην εκκίνηση</string>
   <string id="229">Ελάττωση περιστροφής (Spindown)</string>
   <string id="230">Φίλτρα</string>
-  <string id="231">Καμία</string>
+  <string id="231">Κανένα</string>
   <string id="232">Σημείο</string>
-  <string id="233">Γραμμικά</string>
-  <string id="234">Ανισοτροπικά</string>
+  <string id="233">Γραμμικό</string>
+  <string id="234">Ανισοτροπικό</string>
   <string id="235">Quincunx</string>
   <string id="236">Gaussian Cubic</string>
   <string id="237">Ελαχιστοποίηση</string>
@@ -339,7 +339,7 @@
   <string id="412">Αδυναμία λήξης δεδομένων καιρού</string>
   <string id="413">Χειροκίνητα</string>
   <string id="414">Καμιά κριτική για το άλμπουμ</string>
-  <string id="415">Μεταφόρτωση μικρογραφίας...</string>
+  <string id="415">Λήψη μικρογραφίας...</string>
   <string id="416">Μη διαθέσιμος πόρος</string>
   <string id="417">Προβολή: Μ. εικονίδια</string>
   <string id="418">Ενεργοποίηση Συλλογής</string>
@@ -419,7 +419,7 @@
   <string id="497">Απόκρυψη επεκτάσεων των Πολυμέσων</string>
   <string id="498">Ταξιν: Τύπος</string>
   <string id="499">Αδυναμία σύνδεσης με www.allmusic.com</string>
-  <string id="500">Απέτυχε η μεταφόρτωση των πληροφοριών άλμπουμ</string>
+  <string id="500">Απέτυχε η λήψη των πληροφοριών άλμπουμ</string>
   <string id="501">Αναζήτηση για ονόματα άλμπουμ...</string>
   <string id="502">Άνοιγμα</string>
   <string id="503">Απασχολημένος</string>
@@ -641,11 +641,11 @@
   <string id="787">Απενεργοποίηση Διασύνδεσης</string>
   <string id="788">Η Διασύνδεση δικτύου απενεργοποιήθηκε επιτυχώς.</string>
   <string id="789">Όνομα Ασύρματου δικτύου (ESSID)</string>
-  <string id="790">Απομακρυσμένα Γεγονότα</string>
-  <string id="791">Ενεργοποίηση Απομακρυσμένων Γεγονότων</string>
-  <string id="792">Θήρα Απομακρυσμένων Γεγονότων</string>
-  <string id="793">Εύρος Θήρας Απομακρυσμένων Γεγονότων</string>
-  <string id="794">Λήψη Γεγονότων από άλλον Υπολογιστή</string>
+  <string id="790">Απομακρυσμένος Διακομιστής</string>
+  <string id="791">Ενεργοποίηση Απομακρυσμένου Διακομιστή</string>
+  <string id="792">Θήρα Απομακρυσμένου Διακομιστή</string>
+  <string id="793">Εύρος Θήρας Απομακρυσμένου Διακομιστή</string>
+  <string id="794">Έγκριση, σε άλλους υπολογιστές να συνδεθούν</string>
   <string id="795">Αρχική Καθυστέρηση (ms)</string>
   <string id="796">Συνεχής Καθυστέρηση (ms)</string>
   <string id="797">Μέγιστος Αριθμός Πελατών</string>
@@ -919,10 +919,11 @@
   <string id="13006">Εκκινητής</string>
   <string id="13007">Χρήση τροποποιημένου Εκκινητή</string>
   <string id="13008">Κατά τον Τερματισμό του XBMC</string>
-  <string id="13009">Καμία ενέργεια</string>
+  <string id="13009">Έξοδος</string>
   <string id="13010">Αδρανοποίηση</string>
   <string id="13011">Αναστολή</string>
   <string id="13100">Φίλτρο Flicker</string>
+  <string id="13101">Αφήστε τον οδηγό να επιλέξει (απαιτεί επανεκκίνηση)</string>
   <string id="13105">Κατακόρυφος Χρονισμός</string>
   <string id="13106">Ανενεργός</string>
   <string id="13107">Ενεργός κατά την Αναπαραγωγή Βίντεο</string>
@@ -941,6 +942,13 @@
   <string id="13130">Display Blanking</string>
   <string id="13131">Ανενεργή</string>
   <string id="13132">Blank displays</string>
+  <string id="13140">Έχουν Aνιχνευτεί Ενεργές Συνδέσεις! </string>
+  <string id="13141">Εάν συνεχίσετε, δεν θα είναι δυνατός πλέον ο έλεγχος του XBMC.</string>
+  <string id="13142">Να διακοπεί η λειτουργία του Απομακρυσμένου Διακομιστή;</string>
+  <string id="13144">Αλλαγή Λειτουργίας συσκευής (Apple Remote);</string>
+  <string id="13145">Εάν χρησιμοποιείτε τώρα τη συσκευή (Apple Remote) για να</string>
+  <string id="13146">ελέγξετε το XBMC, η αλλαγή της ρύθμισης αυτής θα επηρεάσει</string>
+  <string id="13147">την ικανότητα ελέγχου του. Θέλετε να συνεχίσετε;</string>
   <string id="13150">Κλειδί</string>
   <string id="13151">Θερμοκρασία</string>
   <string id="13152">Μοντέλο</string>
@@ -1119,18 +1127,15 @@
   <string id="13610">Ανενεργή</string>
   <string id="13611">Τυπική</string>
   <string id="13612">Τηλεχειριστήριο Γενικής Χρήσης</string>
-  <string id="13620">Το Πρόγραμμα Οδήγησης της Συσκευής είναι εγκατεστημένο.</string>
+  <string id="13620">Σφάλμα συσκευής (Apple Remote)</string>
   <string id="13621">Αδυναμία υποστήριξης συσκευής (Apple Remote).</string>
-  <string id="13622">Δείτε τις Συχνές Ερωτήσεις (FAQ ), για την απεγκατάσταση της συσκευής.</string>
-  <string id="13623">H υπηρεσία ελέγχου  συσκευής εκτελείται.</string>
-  <string id="13624">Δείτε την τεκμηρίωση, για την απεγκατάσταση της συσκευής.</string>
   <string id="14000">Στοίβαγμα</string>
   <string id="14001">Σκόρπισμα</string>
-  <string id="14003">Μεταφόρτωση αρχείου Λίστας Αναπαραγωγής...</string>
-  <string id="14004">Μεταφόρτωση Λίστας Ροής Πολυμέσων...</string>
-  <string id="14005">Ανάλυση Λίστας Ροής Πολυμέσων...</string>
-  <string id="14006">Αποτυχία Μεταφόρτωσης Λίστας Ροής Πολυμέσων</string>
-  <string id="14007">Αποτυχία μεταφόρτωσης αρχείου Λίστας Αναπαραγωγής</string>
+  <string id="14003">Λήψη αρχείου λίστας αναπαραγωγής...</string>
+  <string id="14004">Λήψη λίστας ροής πολυμέσων...</string>
+  <string id="14005">Ανάλυση λίστας ροής πολυμέσων...</string>
+  <string id="14006">Αποτυχία λήψης λίστας ροής πολυμέσων</string>
+  <string id="14007">Αποτυχία λήψης αρχείου λίστας αναπαραγωγής</string>
   <string id="14009">Κατάλογος Παιχνιδιών</string>
   <string id="14010">Αυτόματη εναλλαγή σε μικρογραφίες</string>
   <string id="14011">Ενεργή η αυτόματη εναλλαγή σε Προβολή Μικρογραφιών</string>
@@ -1300,7 +1305,7 @@
   <string id="16014">Εισάγετε όνομα φακέλου</string>
   <string id="16015">Εισάγετε κατάλογο</string>
   <string id="16016">Διαθέσιμες επιλογές: %A, %T, %N, %B, %D, %G, %Y, %F, %S</string>
-  <string id="16017">Εισάγετε Search String</string>
+  <string id="16017">Εισαγωγή Σειράς Aναζήτησης</string>
   <string id="16018">Καμία</string>
   <string id="16019">Αυτόματη επιλογή</string>
   <string id="16020">Διαστρωμάτωση</string>
@@ -1531,7 +1536,7 @@
   <string id="20196">Εξαγωγή Μουσικής Συλλογής</string>
   <string id="20197">Εισαγωγή Μουσικής Συλλογής</string>
   <string id="20198">Δεν βρέθηκε ο Καλλιτέχνης!</string>
-  <string id="20199">Αποτυχία Μεταφόρτωσης Πληροφοριών για τον Καλλιτέχνη</string>
+  <string id="20199">Αποτυχία λήψης πληροφοριών για τον καλλιτέχνη</string>
   <string id="20250">Party on! (βίντεο)</string>
   <string id="20251">Αναμιγνύοντας τα ποτά (βίντεο)</string>
   <string id="20252">Γεμίζοντας τα ποτήρια (βίντεο)</string>
@@ -1609,7 +1614,7 @@
   <string id="20371">Ορισμός Μικρογραφίας Κύκλου</string>
   <string id="20372">Εικόνα Κύκλου</string>
   <string id="20373">Κύκλος</string>
-  <string id="20374">Μεταφορτώνονται πληροφορίες για το Βίντεο</string>
+  <string id="20374">Λήψη πληροφοριών για την Ταινία</string>
   <string id="20375">Εκχώρηση Περιεχόμενου</string>
   <string id="20376">Πρώτη ανάρτηση</string>
   <string id="20377">Ανανέωση πληροφοριών Τηλεοπτικής σειράς</string>
@@ -1643,8 +1648,8 @@
   <string id="20405">Αφαίρεση Σελιδοδείκτη επεισοδίου</string>
   <string id="20406">Ορισμός Σελιδοδείκτη Επεισοδίου</string>
   <string id="20407">Λείανση Ρυθμίσεων</string>
-  <string id="20408">Μεταφορτώνονται πληροφορίες για το Μουσικό Βίντεο</string>
-  <string id="20409">Μεταφορτώνονται πληροφορίες για τη Τηλεοπτική Σειρά </string>
+  <string id="20408">Λήψη πληροφοριών για το Μουσικό Βίντεο</string>
+  <string id="20409">Λήψη πληροφοριών για τη Τηλεοπτική Σειρά </string>
   <string id="20410">Διαφημιστικό</string>
   <string id="20411">Ισοπέδωση</string>
   <string id="20412">Ισοπέδωση Τηλεοπτικών Σειρών</string>
@@ -1804,8 +1809,8 @@
   <string id="21882">Απόπειρα αποφυγής οδηγιών πριν από το Μενού DVD</string>
   <string id="21883">Εγγραμμένα Μουσικά CDs</string>
   <string id="21884">Ερώτημα για όλους τους Καλλιτέχνες</string>
-  <string id="21885">Μεταφόρτωση Πληροφοριών για το Άλμπουμ </string>
-  <string id="21886">Μεταφόρτωση Πληροφοριών για τον Καλλιτέχνη</string>
+  <string id="21885">Λήψη Πληροφοριών για το Άλμπουμ </string>
+  <string id="21886">Λήψη Πληροφοριών για τον Καλλιτέχνη</string>
   <string id="21887">Βιογραφικό</string>
   <string id="21888">Δισκογραφία</string>
   <string id="21889">Αναζήτηση Καλλιτέχνη</string>

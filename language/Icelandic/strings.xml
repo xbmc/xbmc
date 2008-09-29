@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!--Translator: Kristján Bjarni Guðmundsson -->
-<!--Email: kristjanbjarni@gmail.com-->
-<!--Date of translation: 12/08/2008-->
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Translator: Kristján Bjarni Guðmundsson-->
+<!--Date of translation: 28/09/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 14727-->
+<!--Based on english strings version 15695-->
 <strings>
   <string id="0">Forrit</string>
   <string id="1">Ljósmyndir</string>
@@ -873,7 +872,7 @@
   <string id="12019">Já</string>
   <string id="12020">Spyrja</string>
   <string id="12021">Byrja frá byrjun</string>
-  <string id="12022">Halda áfram frá seinustu staðsetningu</string>
+  <string id="12022">Halda áfram frá %</string>
   <string id="12023">Staðfesti núverandi svindl...</string>
   <string id="12024">Búa sjálfvirkt til smámynd fyrir myndbönd sem hafa ekki kápumynd</string>
 
@@ -953,12 +952,13 @@
   <string id="13005">Slökkva</string>
   <string id="13006">Mælaborð</string>
   <string id="13007">Nota slóða að eigin mælaborði</string>
-  <string id="13008">Þegar hætt er í XBMC</string>
-  <string id="13009">Gera ekkert</string>
+  <string id="13008">Þegar hætt er í XBMC</string> 
+  <string id="13009">Gera ekkert</string> 
   <string id="13010">Dvali</string>
   <string id="13011">Svæfa</string>
 
   <string id="13100">Flökt Sía</string>
+  <string id="13101">Láta rekil ráða (þarfnast endurræsingar)</string>
   <string id="13105">Lóðrétt auð samstilling</string>
   <string id="13106">Óvirkt</string>
   <string id="13107">Virkt við afspilun</string>
@@ -980,6 +980,15 @@
   <string id="13130">Sýna autt</string>
   <string id="13131">Óvirkt</string>
   <string id="13132">Tómur skjár</string>
+
+  <string id="13140">Uppgötvaði virkar tengingar!</string>
+  <string id="13141">Ef þú heldur áfram, er hætta á því að þú munir geta stjórnað XBMC</string>
+  <string id="13142">áfram. Ertu viss um að þú viljir stöðva Atriðaþjón?</string>
+
+  <string id="13144">Breyta ham Apple fjarstýringar?</string>
+  <string id="13145">Ef þú ert núna þegar að nota Apple fjarstýringu til að stjórna</string>
+  <string id="13146">XBMC, gæti breyting á þessu haft áhrif á getu þína</string>
+  <string id="13147">til að halda áfram að stjórna því. Viltu halda áfram?</string>
 
   <string id="13150">HDD lykill:</string>
   <string id="13151">HDD hiti:</string>
@@ -1155,6 +1164,8 @@
   <string id="13410">Stilla inn á Last.FM</string>
   <string id="13411">Lágmarks viftuhraði</string>
   <string id="13412">RSS straumar innihalda hægri til vinstri texta</string>
+  <string id="13413">Niðurhala</string>
+  <string id="13414">Fela listamenn sem birtast aðeins á safndiskum</string>
   
   <string id="13600">Apple Fjarstýring</string>
   <string id="13601">Hamur</string>
@@ -1165,12 +1176,8 @@
   <string id="13611">Venjulegt</string>
   <string id="13612">Altæk fjarstýring</string>
   
-  <string id="13620">Remote Buddy rekill er uppsettur.</string>
+  <string id="13620">Villa í Apple fjarstýringu</string>
   <string id="13621">Ekki er hægt að virkja stuðning við Apple fjarstýringu.</string>
-  <string id="13622">Athugaðu Remote Buddy FAQ til að taka út.</string>
-
-  <string id="13623">Sofa Control er keyrandi.</string>
-  <string id="13624">Athugaðu skjölun Sofa Control til að taka út.</string>
 
   <string id="14000">Stafla</string>
   <string id="14001">Ekki stafla</string>
@@ -1266,8 +1273,8 @@
   <string id="15012"/>
   <string id="15013"/>
   <string id="15014"/>
-  <string id="15015"/>
-  <string id="15016"/>
+  <string id="15015">Fjarlægja</string>
+  <string id="15016">Leikir</string>
   <string id="15017"/>
   <string id="15018"/>
   <string id="15019">Bæta við</string>
@@ -1303,7 +1310,7 @@
   <string id="15049"/>
   <string id="15050"/>
   <string id="15051"/>
-  <string id="15052"/>
+  <string id="15052">Lykilorð</string>
   <string id="15053"/>
   <string id="15054"/>
   <string id="15055"/>
@@ -1974,7 +1981,21 @@
   <string id="22001">Uppfæra alltaf safn í bakgrunni</string>
   <string id="22002">- DNS viðskeyti</string>
   <string id="22003">Virkja breyta og ákvörðunarlista</string>
+  <string id="22004">Seinkað: %2.3fs</string>
+  <string id="22005">Á undan: %2.3fs</string>
+  <string id="22006">Færsla undirtexta</string>
+  <string id="22007">OpenGL Framleiðandi:</string>
+  <string id="22008">OpenGL Teiknari:</string>
+  <string id="22009">OpenGL Útgáfa:</string>
+  <string id="22010">GPU Hiti:</string>
+  <string id="22011">CPU Hiti:</string>
+  <string id="22012">Heildarminni</string>
+  <string id="22013">Gögn forstillingar</string>
 
+  <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
+  <string id="29800">Gagnagrunnshamur</string>
+  <string id="29801">QWERTY Lyklaborð</string>
+  
   <string id="29999">Sjálfvirk flöktsía á leiki</string>
 
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
