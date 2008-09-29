@@ -345,8 +345,9 @@ RESOLUTION XBVideoConfig::GetSafeMode() const
 {
 #ifdef _WIN32PC
   // Some drivers won't display HDTC_720p or other resolutions correct.
-  // We'll return DESKTOP to be safe.
-  return DESKTOP;
+  // We'll return DESKTOP when started in fullscreen to be safe.
+  if(g_advancedSettings.m_startFullScreen == true)
+    return DESKTOP;
 #endif
   // Get the desktop resolution to see what we're dealing with here.
   int w, h;
