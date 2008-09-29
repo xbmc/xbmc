@@ -106,19 +106,16 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
     {
       if (wfd.cFileName[0] != 0)
       {
+        CStdString strLabel;
+#ifndef _LINUX
+        g_charsetConverter.wToUTF8(wfd.cFileName,strLabel);
+#else
+        strLabel = wfd.cFileName;
+#endif
         if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
         {
-          CStdString strDir = wfd.cFileName;
-#ifndef _LINUX
-          g_charsetConverter.wToUTF8(wfd.cFileName,strDir);
-#endif
-          if (strDir != "." && strDir != "..")
+          if (strLabel != "." && strLabel != "..")
           {
-            CStdString strLabel=wfd.cFileName;
-#ifndef _LINUX
-            g_charsetConverter.wToUTF8(wfd.cFileName,strLabel);
-#endif
-
             CFileItemPtr pItem(new CFileItem(strLabel));
             pItem->m_strPath = strRoot;
             pItem->m_strPath += strLabel;
@@ -136,10 +133,6 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
         }
         else
         {
-          CStdString strLabel=wfd.cFileName;
-#ifndef _LINUX
-          g_charsetConverter.wToUTF8(wfd.cFileName,strLabel);
-#endif
           CFileItemPtr pItem(new CFileItem(strLabel));
           pItem->m_strPath = strRoot;
           pItem->m_strPath += strLabel;
