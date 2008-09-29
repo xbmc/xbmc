@@ -71,6 +71,7 @@ LOGFATAL   = 0x06
 LOGNONE    = 0x07
 
 ACTION_EXECBUILTIN = 0x01
+ACTION_BUTTON      = 0x02
 
 ######################################################################
 # Helper Functions
