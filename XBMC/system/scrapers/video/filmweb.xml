@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <scraper name="filmweb.pl" content="movies" thumb="filmweb.jpg">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
@@ -47,7 +47,7 @@
 	<GetDetails clearbuffers="no" dest="3">
 		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
-				<expression trim="1">film-title[^=]+[^&gt;]+[^[A-ZŻŹĆŃĄŚŁĘ]+([^&lt;]+[a-ząężźćśńł])</expression>
+				<expression trim="1">film-title[^=]+[^&gt;]+[^[0-9A-ZŻŹĆŃĄŚŁĘ]+([^&lt;]+[0-9a-ząężźćśńł])</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="9">
 				<expression>Filmweb.globals.filmId = ([0-9]+)</expression>
@@ -76,11 +76,8 @@
 			<RegExp conditional="!poster" input="$$1" output="&lt;thumb&gt;http://193.200.227.12/po\1&lt;/thumb&gt;" dest="5+">
 				<expression noclean="1">src=&quot;http://gfx.filmweb.pl/po(.[^&quot;]*)</expression>
 			</RegExp>
-			<RegExp conditional="poster" input="$$1" output="&lt;thumb&gt;http://193.200.227.12/po\1&lt;/thumb&gt;" dest="5+">
-				<expression noclean="1">href=&quot;http://gfx.filmweb.pl/po(.[^&quot;]*)</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;outline&gt;\1...&lt;/outline&gt;" dest="5+">
-				<expression noclean="1">o-filmie-header&quot;[^&lt;]+[^ ]+([A-Z][^&lt;]+[a-z])</expression>
+			<RegExp input="$$1" output="&lt;outline&gt;\2...&lt;/outline&gt;" dest="5+">
+				<expression noclean="1">o-filmie-header&quot;[^&lt;]+[^ ]+(&gt;[^[0-9A-Z]+)([^&lt;]+[a-z])</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="6">
 				<expression noclean="1">gatunek([^\n]*)</expression>
@@ -122,6 +119,9 @@
 				<expression></expression>
 			</RegExp>
 			<RegExp input="$$9" output="&lt;url function=&quot;Opisy&quot;&gt;http://193.200.227.13/f$$9/xbmc,2008/opisy&lt;/url&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp  conditional="poster" input="$$9" output="&lt;url function=&quot;Plakaty&quot;&gt;http://193.200.227.13/f$$9/xbmc,2008/plakaty&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<expression noclean="1"></expression>
@@ -174,17 +174,25 @@
 				<expression noclean="1">distributors.description.0\][^\[]*justify&quot;&gt;(.[^=]*)&lt;/p&gt;&lt;/li&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="9+">
-				<expression trim="1">opisy-header[^\[]*justify&quot;&gt;[^[A-ZŻŹĆŃĄŚŁĘ]+(.[^=]*)&lt;/p&gt;&lt;/li&gt;</expression>
+				<expression noclean="1">opisy-header[^\[]*justify&quot;&gt;[^[0-9A-ZŻŹĆŃĄŚŁĘ]+([^&quot;]*)&lt;/p&gt;&lt;/li&gt;</expression>
 			</RegExp>
 			<RegExp input="$$9" output="\1" dest="8">
 				<expression noclean="1">([^&lt;]+)</expression>
 			</RegExp>
 			<RegExp input="$$9" output=" \1" dest="8+">
-				<expression  noclean="1" repeat="yes">&lt;br/&gt;([^&lt;]+)</expression>
+				<expression  noclean="1" repeat="yes">&gt;([^&lt;]+)</expression>
 			</RegExp>         
-			<expression noclean="1"></expression>
+			<expression noclean="1" trim="1">([^~]+[0-9a-ząężźćśńł\]\.])</expression>
 		</RegExp>
 	</Opisy>
+	<Plakaty dest="5">
+		<RegExp input="$$8" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;thumb&gt;http://193.200.227.12/po\1&lt;/thumb&gt;" dest="8+">
+				<expression noclean="1" repeat="yes">href=&quot;http://gfx.filmweb.pl/po(.[^&quot;]*)</expression>
+			</RegExp>            
+			<expression noclean="1"></expression>
+		</RegExp>
+	</Plakaty>
 	<Obsada dest="5">
 		<RegExp input="$$8" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1" dest="9">
