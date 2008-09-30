@@ -4,7 +4,7 @@
 <!--Email: ydatografida@gmail.com-->
 <!--Date of translation: 09/29/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 15695-->
+<!--Based on english strings version 15704-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -1070,7 +1070,7 @@
   <string id="13351">Πληροφορίες Άλμπουμ</string>
   <string id="13352">Ανίχνευση αντικειμένου στη Συλλογή</string>
   <string id="13353">Διακοπή αναζήτησης</string>
-  <string id="13354">Μέθοδος Απόδοσης γραφικών</string>
+  <string id="13354">Μέθοδος Απόδοσης</string>
   <string id="13355">Χαμηλής ποιότητας Pixel Shader</string>
   <string id="13356">Επικαλύψεις Υλικού</string>
   <string id="13357">Υψηλής ποιότητας Pixel Shader</string>
@@ -1120,6 +1120,11 @@
   <string id="13412">- Ροές Τίτλων Ειδήσεων με κατοπτρική γραφή</string>
   <string id="13413">Λήψη</string>
   <string id="13414">Απόκρυψη καλλιτεχνών που εμφανίζονται μόνο στην συγγραφή</string>
+  <string id="13415">Μέθοδος Απόδοσης</string>
+  <string id="13416">Αυτόματη Ανίχνευση</string>
+  <string id="13417">Στοιχειώδης (ARB)</string>
+  <string id="13418">Εξειδικευμένη (GLSL)</string>
+  <string id="13419">Λογισμικό</string>
   <string id="13600">Apple Remote</string>
   <string id="13601">Κατάσταση</string>
   <string id="13602">Να εκτελείται πάντα</string>
