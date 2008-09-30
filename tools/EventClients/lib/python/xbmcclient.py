@@ -334,7 +334,7 @@ class PacketBUTTON (Packet):
         else:
             self.flags |= BT_USE_NAME
             self.code = 0
-        if amount:
+        if (amount != None):
             self.flags |= BT_USE_AMOUNT
             self.amount = int(amount)
         else:
