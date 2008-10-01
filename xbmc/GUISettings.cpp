@@ -190,9 +190,6 @@ void CGUISettings::Initialize()
   // Pictures settings
   AddGroup(0, 1);
   AddCategory(0, "pictures", 16000);
-  AddInt(1, "pictures.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
-  AddInt(2, "pictures.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
-  AddInt(3, "pictures.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
   AddBool(4, "pictures.savefolderviews", 583, true);
   AddSeparator(5,"pictures.sep1");
   AddBool(6, "pictures.useexifrotation", 20184, true);
@@ -211,9 +208,6 @@ void CGUISettings::Initialize()
   AddGroup(1, 0);
 
   AddCategory(1,"programfiles",744);
-  AddInt(1, "programfiles.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
-  AddInt(2, "programfiles.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
-  AddInt(3, "programfiles.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
   AddBool(4, "programfiles.savefolderviews", 583, true);
 
   // My Weather settings
@@ -277,9 +271,6 @@ void CGUISettings::Initialize()
   AddString(0, "musicfiles.librarytrackformat", 13307, "", EDIT_CONTROL_INPUT, false, 16016);
   AddString(0, "musicfiles.librarytrackformatright", 13387, "", EDIT_CONTROL_INPUT, false, 16016);
   AddSeparator(4, "musicfiles.sep1");
-  AddInt(5, "musicfiles.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
-  AddInt(6, "musicfiles.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
-  AddInt(7, "musicfiles.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
   AddBool(8, "musicfiles.savefolderviews", 583, true);
   AddSeparator(9, "musicfiles.sep2");
   AddBool(10, "musicfiles.usecddb", 227, true);
@@ -402,9 +393,6 @@ void CGUISettings::Initialize()
   AddBool(3, "myvideos.autothumb",12024, false);
   AddBool(4, "myvideos.cleanfilenames", 20418, false);
   AddSeparator(5, "myvideos.sep1");
-  AddInt(5, "myvideos.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
-  AddInt(6, "myvideos.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
-  AddInt(7, "myvideos.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
   AddBool(8, "myvideos.savefolderviews", 583, true);
 
   AddCategory(5, "videolibrary", 14022);
