@@ -112,7 +112,7 @@ bool CARBVertexShader::Compile()
   char * currentLocale = setlocale(LC_NUMERIC, NULL);
   setlocale(LC_NUMERIC, "C");
 
-  glEnable(GL_FRAGMENT_PROGRAM_ARB);
+  glEnable(GL_VERTEX_PROGRAM_ARB);
   glGenProgramsARB(1, &m_vertexShader);
   glBindProgramARB(GL_VERTEX_PROGRAM_ARB, m_vertexShader);
 
