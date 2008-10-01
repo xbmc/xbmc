@@ -754,15 +754,16 @@ bool CSettings::GetFloat(const TiXmlElement* pRootElement, const char *tagName, 
   return false;
 }
 
-void CSettings::GetViewState(const TiXmlElement *pRootElement, const CStdString &strTagName, CViewState &viewState, SORT_METHOD defaultSort)
+void CSettings::GetViewState(const TiXmlElement *pRootElement, const CStdString &strTagName, CViewState &viewState, SORT_METHOD defaultSort, int defaultView)
 {
   const TiXmlElement* pNode = pRootElement->FirstChildElement(strTagName);
   if (!pNode)
   {
     viewState.m_sortMethod = defaultSort;
+    viewState.m_viewMode = defaultView;
     return;
   }
-  GetInteger(pNode, "viewmode", viewState.m_viewMode, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX);
+  GetInteger(pNode, "viewmode", viewState.m_viewMode, defaultView, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX);
   GetInteger(pNode, "sortmethod", (int&)viewState.m_sortMethod, defaultSort, SORT_METHOD_NONE, SORT_METHOD_MAX);
   GetInteger(pNode, "sortorder", (int&)viewState.m_sortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
 }
@@ -1040,6 +1041,11 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetViewState(pElement, "videonavtvshows", g_stSettings.m_viewStateVideoNavTvShows);
     GetViewState(pElement, "videonavseasons", g_stSettings.m_viewStateVideoNavSeasons);
     GetViewState(pElement, "videonavmusicvideos", g_stSettings.m_viewStateVideoNavMusicVideos);
+
+    GetViewState(pElement, "programs", g_stSettings.m_viewStatePrograms, SORT_METHOD_LABEL, DEFAULT_VIEW_AUTO);
+    GetViewState(pElement, "pictures", g_stSettings.m_viewStatePictures, SORT_METHOD_LABEL, DEFAULT_VIEW_AUTO);
+    GetViewState(pElement, "videofiles", g_stSettings.m_viewStateVideoFiles, SORT_METHOD_LABEL, DEFAULT_VIEW_AUTO);
+    GetViewState(pElement, "musicfiles", g_stSettings.m_viewStateMusicFiles, SORT_METHOD_LABEL, DEFAULT_VIEW_AUTO);
   }
 
   // general settings
@@ -1608,6 +1614,11 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
     SetViewState(pNode, "videonavseasons", g_stSettings.m_viewStateVideoNavSeasons);
     SetViewState(pNode, "videonavtvshows", g_stSettings.m_viewStateVideoNavTvShows);
     SetViewState(pNode, "videonavmusicvideos", g_stSettings.m_viewStateVideoNavMusicVideos);
+
+    SetViewState(pNode, "programs", g_stSettings.m_viewStatePrograms);
+    SetViewState(pNode, "pictures", g_stSettings.m_viewStatePictures);
+    SetViewState(pNode, "videofiles", g_stSettings.m_viewStateVideoFiles);
+    SetViewState(pNode, "musicfiles", g_stSettings.m_viewStateMusicFiles);
   }
 
   // general settings
