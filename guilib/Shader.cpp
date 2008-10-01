@@ -276,6 +276,13 @@ bool CGLSLShaderProgram::CompileAndLink()
   // free resources
   Free();
 
+  // check that we support shaders
+  if(!GLEW_ARB_shading_language_100)
+  {
+    CLog::Log(LOGERROR, "GL: GLSL shaders not supported");
+    return false;
+  }
+
   // compiled vertex shader
   if (!m_pVP->Compile())
   {
