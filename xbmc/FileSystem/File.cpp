@@ -787,14 +787,24 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
   ios_base::seekdir way, 
   ios_base::openmode mode)
 {  
-  if(way == ios_base::cur)
+  // calculate relative offset
+  off_type offset2;
+  if(way == std::ios_base::cur)
+    offset2 = offset;
+  else if(way == std::ios_base::beg)
+    offset2 = offset - m_file->GetPosition();
+  else if(way == std::ios_base::end)
+    offset2 = m_file->GetLength() + offset - 1;
+
+  // a non seek shouldn't modify our buffer
+  if(offset2 == 0)
+    return m_file->GetPosition() - (egptr() - gptr());
+
+  // try to seek within buffer
+  if(gptr()+offset2 >= eback() && gptr()+offset2 < egptr())
   {
-    // try to seek within buffer
-    if(gptr()+offset >= eback() && gptr()+offset < egptr())
-    {
-      gbump(offset);
-      return m_file->GetPosition() - (eback() - gptr());
-    }
+    gbump(offset2);
+    return m_file->GetPosition() - (egptr() - gptr());
   }
 
   // reset our buffer pointer, will
@@ -828,26 +838,10 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekpos(
   pos_type pos, 
   ios_base::openmode mode)
 {
-  // TODO check if seek can be done in buffer
-  setg(0,0,0);
-  setp(0,0);
-
-  try
-  {
-    pos = m_file->Seek(pos, SEEK_SET);
-  }
-  catch (const win32_exception &e) 
-  {
-    e.writelog(__FUNCTION__);
-    return streampos(-1);
-  }  
-
-  if(pos<0)
-    return streampos(-1);
-
-  return pos;
+  return seekoff(pos, std::ios_base::beg, mode);
 }
-streamsize CFileStreamBuffer::showmanyc()
+
+std::streamsize CFileStreamBuffer::showmanyc()
 {
   underflow();
   return egptr() - gptr();

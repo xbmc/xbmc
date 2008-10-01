@@ -64,6 +64,7 @@ namespace EVENTSERVER
     // get events
     unsigned short GetButtonCode(std::string& strMapName, bool& isAxis, float& amount);
     bool GetMousePos(float &x, float &y);
+    int GetNumberOfClients();
 
   protected:
     CEventServer();

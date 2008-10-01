@@ -92,7 +92,7 @@ private:
   FriBidiCharSet m_stringFribidiCharset;
 
   CStdString EMPTY;
-  CCriticalSection m_bidiSection;
+  CCriticalSection m_critSection;
 };
 
 extern CCharsetConverter g_charsetConverter;

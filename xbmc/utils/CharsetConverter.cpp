@@ -113,6 +113,8 @@ CCharsetConverter::CCharsetConverter()
 
 void CCharsetConverter::clear()
 {
+  CSingleLock lock(m_critSection);
+
   m_vecBidiCharsetNames.clear();
   m_vecBidiCharsets.clear();
   m_vecCharsetNames.clear();
@@ -139,6 +141,8 @@ CStdString& CCharsetConverter::getCharsetLabelByName(const CStdString& charsetNa
 
 CStdString& CCharsetConverter::getCharsetNameByLabel(const CStdString& charsetLabel)
 {
+  CSingleLock lock(m_critSection);
+
   for (unsigned int i = 0; i < m_vecCharsetLabels.size(); i++)
   {
     if (m_vecCharsetLabels[i].Equals(charsetLabel))
@@ -152,6 +156,8 @@ CStdString& CCharsetConverter::getCharsetNameByLabel(const CStdString& charsetLa
 
 bool CCharsetConverter::isBidiCharset(const CStdString& charset)
 {
+  CSingleLock lock(m_critSection);
+
   for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
   {
     if (m_vecBidiCharsetNames[i].Equals(charset))
@@ -165,6 +171,8 @@ bool CCharsetConverter::isBidiCharset(const CStdString& charset)
 
 void CCharsetConverter::reset(void)
 {
+  CSingleLock lock(m_critSection);
+
   ICONV_SAFE_CLOSE(m_iconvStringCharsetToFontCharset);
   ICONV_SAFE_CLOSE(m_iconvUtf8ToStringCharset);
   ICONV_SAFE_CLOSE(m_iconvStringCharsetToUtf8);
@@ -192,6 +200,8 @@ void CCharsetConverter::reset(void)
 // of the string is already made or the string is not displayed in the GUI
 void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wString, bool bVisualBiDiFlip/*=true*/, bool* bWasFlipped/*=NULL*/)
 {
+  CSingleLock lock(m_critSection);
+
   CStdStringA strFlipped;
   const char* src;
   size_t inBytes;
@@ -238,6 +248,8 @@ void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wStr
 
 void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStringW& strDest)
 {
+  CSingleLock lock(m_critSection);
+
   CStdStringA strFlipped;
 
   // No need to flip hebrew/arabic as mplayer does the flipping
@@ -293,7 +305,7 @@ void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdSt
 void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset, FriBidiCharType base, bool* bWasFlipped/*=NULL*/)
 {
   // libfribidi is not threadsafe, so make sure we make it so
-  CSingleLock lock(m_bidiSection);
+  CSingleLock lock(m_critSection);
 
   vector<CStdString> lines;
   CUtil::Tokenize(strSource, lines, "\n");
@@ -360,6 +372,7 @@ void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdSt
 
 void CCharsetConverter::utf8ToStringCharset(const CStdStringA& strSource, CStdStringA& strDest)
 {
+  CSingleLock lock(m_critSection);
   if (m_iconvUtf8ToStringCharset == (iconv_t) - 1)
   {
     CStdString strCharset=g_langInfo.GetGuiCharSet();
@@ -402,6 +415,7 @@ void CCharsetConverter::utf8ToStringCharset(CStdStringA& strSourceDest)
 
 void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdStringA& strDest)
 {
+  CSingleLock lock(m_critSection);
   if (m_iconvStringCharsetToUtf8 == (iconv_t) - 1)
   {
     CStdString strCharset=g_langInfo.GetGuiCharSet();
@@ -443,6 +457,7 @@ void CCharsetConverter::stringCharsetToUtf8(CStdStringA& strSourceDest)
 
 void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest)
 {
+  CSingleLock lock(m_critSection);
   iconv_t iconvString=iconv_open("UTF-8", strSourceCharset.c_str());
 
   if (iconvString != (iconv_t) - 1)
@@ -476,6 +491,7 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset,
 
 void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDest)
 {
+  CSingleLock lock(m_critSection);
   if (m_iconvWtoUtf8 == (iconv_t) - 1)
     m_iconvWtoUtf8 = iconv_open("UTF-8", WCHAR_CHARSET);
 
@@ -508,6 +524,7 @@ void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDe
 
 void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest)
 {
+  CSingleLock lock(m_critSection);
   if (m_iconvUtf16BEtoUtf8 == (iconv_t) - 1)
     m_iconvUtf16BEtoUtf8 = iconv_open("UTF-8", "UTF-16BE");
 
@@ -539,6 +556,7 @@ void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA 
 
 void CCharsetConverter::utf16LEtoW(const char* strSource, CStdStringW &strDest)
 {
+  CSingleLock lock(m_critSection);
   if (m_iconvUtf16LEtoW == (iconv_t) - 1)
     m_iconvUtf16LEtoW = iconv_open(WCHAR_CHARSET, "UTF-16LE");
 
@@ -576,6 +594,7 @@ void CCharsetConverter::utf16LEtoW(const char* strSource, CStdStringW &strDest)
 
 void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest, bool swap)
 {
+  CSingleLock lock(m_critSection);
   if (m_iconvUcs2CharsetToStringCharset == (iconv_t) - 1)
   {
     CStdString strCharset=g_langInfo.GetGuiCharSet();
@@ -627,6 +646,8 @@ void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource,
 
 void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, CStdStringA& strDest)
 {
+  CSingleLock lock(m_critSection);
+
   if (m_iconvUtf32ToStringCharset == (iconv_t) - 1)
   {
     CStdString strCharset=g_langInfo.GetGuiCharSet();

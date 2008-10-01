@@ -380,6 +380,8 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
     else
       famount = (float)amount/65535.0f;
   }
+  else
+    famount = 1.0f; // Considered digital
   bool active = (flags & PTB_DOWN) ? true : false;
 
   if(flags & PTB_QUEUE)
@@ -613,10 +615,20 @@ bool CEventClient::OnPacketACTION(CEventPacket *packet)
   if (!ParseString(payload, psize, actionString))
     return false;
 
+  CAction action;
+
   switch(actionType)
   {
   case AT_EXEC_BUILTIN:
     CUtil::ExecBuiltIn(actionString);
+    break;
+  case AT_BUTTON:
+    g_buttonTranslator.TranslateActionString(actionString.c_str(), action.wID);
+    action.strAction = actionString;
+    action.fRepeat  = 0.0f;
+    action.fAmount1 = 1.0f;
+    action.fAmount2 = 1.0f;
+    g_application.OnAction(action);
     break;
 
   default:

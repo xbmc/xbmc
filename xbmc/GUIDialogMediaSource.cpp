@@ -251,6 +251,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     CMediaSource share1;
     share1.strPath = "special://musicplaylists/";
     share1.strName = g_localizeStrings.Get(20011);
+    share1.m_ignore = true;
     extraShares.push_back(share1);
 
     share1.strPath = "smb://";
@@ -267,17 +268,15 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
 
     if (g_guiSettings.GetString("mymusic.recordingpath",false) != "")
     {
-      CMediaSource share2;
-      share2.strPath = "special://recordings/";
-      share2.strName = g_localizeStrings.Get(20007);
-      extraShares.push_back(share2);
+      share1.strPath = "special://recordings/";
+      share1.strName = g_localizeStrings.Get(20007);
+      extraShares.push_back(share1);
     }
     if (g_guiSettings.GetString("cddaripper.path",false) != "")
     {
-      CMediaSource share2;
-      share2.strPath = "special://cdrips/";
-      share2.strName = g_localizeStrings.Get(21883);
-      extraShares.push_back(share2);
+      share1.strPath = "special://cdrips/";
+      share1.strName = g_localizeStrings.Get(21883);
+      extraShares.push_back(share1);
     }
 #ifdef _XBOX
     share1.strPath = "soundtrack://";
@@ -286,92 +285,86 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
 #endif
     if (g_guiSettings.GetBool("network.enableinternet"))
     {
-      CMediaSource share3;
-      share3.strName = "Shoutcast";
-      share3.strPath = "shout://www.shoutcast.com/sbin/newxml.phtml";
-      extraShares.push_back(share3);
+      share1.strName = "Shoutcast";
+      share1.strPath = "shout://www.shoutcast.com/sbin/newxml.phtml";
+      extraShares.push_back(share1);
 
       if (g_guiSettings.GetString("lastfm.username") != "")
       {
-        CMediaSource share4;
-        share4.strName = "Last.FM";
-        share4.strPath = "lastfm://";
-        extraShares.push_back(share4);
+        share1.strName = "Last.FM";
+        share1.strPath = "lastfm://";
+        extraShares.push_back(share1);
       }
     }
     // add the plugins dir as needed
     if (CPluginDirectory::HasPlugins("music"))
     {
-      CMediaSource share2;
-      share2.strPath = "plugin://music/";
-      share2.strName = g_localizeStrings.Get(1038); // Music Plugins
-      extraShares.push_back(share2);
+      share1.strPath = "plugin://music/";
+      share1.strName = g_localizeStrings.Get(1038); // Music Plugins
+      extraShares.push_back(share1);
     }
  }
   else if (m_type == "video" || m_type == "upnpvideo")
   { // add the music playlist location
     CMediaSource share1;
+    share1.m_ignore = true;
     share1.strPath = "special://videoplaylists/";
     share1.strName = g_localizeStrings.Get(20012);
     extraShares.push_back(share1);
 
-    CMediaSource share2;
-    share2.strPath = "rtv://*/";
-    share2.strName = "ReplayTV Devices";
-    extraShares.push_back(share2);
+    share1.strPath = "rtv://*/";
+    share1.strName = "ReplayTV Devices";
+    extraShares.push_back(share1);
 
-    share2.strPath = "smb://";
-    share2.strName = g_localizeStrings.Get(20171);
-    extraShares.push_back(share2);
+    share1.strPath = "smb://";
+    share1.strName = g_localizeStrings.Get(20171);
+    extraShares.push_back(share1);
 
-    share2.strPath = "hdhomerun://";
-    share2.strName = "HDHomerun Devices";
-    extraShares.push_back(share2);
+    share1.strPath = "hdhomerun://";
+    share1.strName = "HDHomerun Devices";
+    extraShares.push_back(share1);
 
-    share2.strPath = "sap://";
-    share2.strName = "SAP Streams";
-    extraShares.push_back(share2);
+    share1.strPath = "sap://";
+    share1.strName = "SAP Streams";
+    extraShares.push_back(share1);
 
-    share2.strPath = "upnp://";
-    share2.strName = "UPnP Devices";
-    extraShares.push_back(share2);
+    share1.strPath = "upnp://";
+    share1.strName = "UPnP Devices";
+    extraShares.push_back(share1);
 
     // add the plugins dir as needed
     if (CPluginDirectory::HasPlugins("video"))
     {
-      CMediaSource share3;
-      share3.strPath = "plugin://video/";
-      share3.strName = g_localizeStrings.Get(1037); // Video Plugins
-      extraShares.push_back(share3);
+      share1.strPath = "plugin://video/";
+      share1.strName = g_localizeStrings.Get(1037); // Video Plugins
+      extraShares.push_back(share1);
     }
   }
   else if (m_type == "pictures" || m_type == "upnpictures")
   {
+    CMediaSource share1;
+    share1.m_ignore = true;
     if (g_guiSettings.GetString("pictures.screenshotpath",false)!= "")
     {
-      CMediaSource share1;
       share1.strPath = "special://screenshots/";
       share1.strName = g_localizeStrings.Get(20008);
       extraShares.push_back(share1);
     }
 
-    CMediaSource share2;
+    share1.strPath = "smb://";
+    share1.strName = g_localizeStrings.Get(20171);
+    extraShares.push_back(share1);
 
-    share2.strPath = "smb://";
-    share2.strName = g_localizeStrings.Get(20171);
-    extraShares.push_back(share2);
-
-    share2.strPath = "upnp://";
-    share2.strName = "UPnP Devices";
-    extraShares.push_back(share2);
+    share1.strPath = "upnp://";
+    share1.strName = "UPnP Devices";
+    extraShares.push_back(share1);
 
     // add the plugins dir as needed
     if (CPluginDirectory::HasPlugins("pictures"))
     {
-      CMediaSource share2;
-      share2.strPath = "plugin://pictures/";
-      share2.strName = g_localizeStrings.Get(1039); // Picture Plugins
-      extraShares.push_back(share2);
+      share1.strPath = "plugin://pictures/";
+      share1.strName = g_localizeStrings.Get(1039); // Picture Plugins
+      extraShares.push_back(share1);
     }
   }
   else if (m_type == "programs")
@@ -381,6 +374,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       CMediaSource share2;
       share2.strPath = "plugin://programs/";
       share2.strName = g_localizeStrings.Get(1043); // Program Plugins
+      share2.m_ignore = true;
       extraShares.push_back(share2);
     }
   }

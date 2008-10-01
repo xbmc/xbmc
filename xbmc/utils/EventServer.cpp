@@ -75,6 +75,7 @@ CEventServer* CEventServer::GetInstance()
 
 void CEventServer::StartServer()
 {
+  CSingleLock lock(m_critSection);
   if (m_pThread)
     return;
 
@@ -145,6 +146,12 @@ void CEventServer::Cleanup()
     m_clients.erase(iter);
     iter =  m_clients.begin();
   }
+}
+
+int CEventServer::GetNumberOfClients()
+{
+  CSingleLock lock(m_critSection);
+  return m_clients.size();
 }
 
 void CEventServer::Run()

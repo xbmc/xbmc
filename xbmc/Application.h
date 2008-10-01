@@ -84,7 +84,7 @@ public:
   void StartUPnPServer();
   void StopUPnPServer();
   void StartEventServer();
-  void StopEventServer();
+  bool StopEventServer(bool promptuser=false);
   void RefreshEventServer();
   void StartLEDControl(bool switchoff = false);
   void DimLCDOnPlayback(bool dim);
