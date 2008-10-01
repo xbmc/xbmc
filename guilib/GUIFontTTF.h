@@ -37,18 +37,6 @@ typedef struct FT_FaceRec_ *FT_Face;
 typedef struct FT_LibraryRec_ *FT_Library;
 typedef struct FT_GlyphSlotRec_ *FT_GlyphSlot;
 
-// flags for alignment
-#define XBFONT_LEFT       0x00000000
-#define XBFONT_RIGHT      0x00000001
-#define XBFONT_CENTER_X   0x00000002
-#define XBFONT_CENTER_Y   0x00000004
-#define XBFONT_TRUNCATED  0x00000008
-#define XBFONT_JUSTIFIED  0x00000010
-
-#define FONT_STYLE_NORMAL       0
-#define FONT_STYLE_BOLD         1
-#define FONT_STYLE_ITALICS      2
-#define FONT_STYLE_BOLD_ITALICS 3
 
 /*!
  \ingroup textures
