@@ -1009,7 +1009,7 @@ void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName)
   else 
   {
     int chapterIdx = GetChapter();
-    if(chapterIdx)
+    if(chapterIdx > 0 && m_pFormatContext->chapters[chapterIdx-1]->title)
       strChapterName = m_pFormatContext->chapters[chapterIdx-1]->title;
   }
 }

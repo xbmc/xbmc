@@ -448,7 +448,7 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
     }
 
     CRegExp reTags;
-    reTags.RegComp("["SEP"](ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r5|se|svcd|swedish|german|read.nfo|nfofix|unrated|ws|bdrip|720p|1080p|hddvd|bluray|x264|xvid|xxx|cd[1-9]|\\[.*\\])(["SEP"]|$)");
+    reTags.RegComp("["SEP"](ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|dvdscreener|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r5|se|svcd|swedish|german|read.nfo|nfofix|unrated|ws|bdrip|720p|1080p|hddvd|bluray|x264|xvid|xxx|cd[1-9]|\\[.*\\])(["SEP"]|$)");
 
     int i=0;  
     if ((i=reTags.RegFind(strSearch1.c_str())) >= 0) // new logic - select the crap then drop anything to the right of it
@@ -457,8 +457,13 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
       strSearch2 = strSearch1;
 
     strSearch2.Trim();
-    strSearch2.Replace('.', ' ');
-    strSearch2.Replace('-', ' ');
+
+    if (!m_retry)
+    {
+      strSearch2.Replace('.', ' ');
+      strSearch2.Replace('-', ' ');
+    }
+
     strSearch2.Replace('_', ' ');
 
     g_charsetConverter.stringCharsetToUtf8(strSearch2);
@@ -475,10 +480,21 @@ void CIMDB::Process()
   // note here that we're calling our external functions but we're calling them with
   // no progress bar set, so they're effectively calling our internal functions directly.
   m_found = false;
+  m_retry = false;
   if (m_state == FIND_MOVIE)
   {
     if (!FindMovie(m_strMovie, m_movieList))
-      CLog::Log(LOGERROR, "IMDb::Error looking up movie %s", m_strMovie.c_str());
+    {
+      // retry without replacing '.' and '-' if searching for a tvshow
+      if (m_info.strContent.Equals("tvshows"))
+      {
+        m_retry = true;
+        if (!FindMovie(m_strMovie, m_movieList))
+          CLog::Log(LOGERROR, "%s: Error looking up tvshow %s", __FUNCTION__, m_strMovie.c_str());
+      }
+      else
+        CLog::Log(LOGERROR, "%s: Error looking up movie %s", __FUNCTION__, m_strMovie.c_str());
+    }
   }
   else if (m_state == GET_DETAILS)
   {

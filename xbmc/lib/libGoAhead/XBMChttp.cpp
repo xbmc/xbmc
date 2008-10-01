@@ -459,6 +459,18 @@ void CXbmcHttp::SetCurrentMediaItem(CFileItem& newItem)
   }
 }
 
+int CXbmcHttp::FindPathInPlayList(int playList, CStdString path)
+{   
+  CPlayList& thePlayList = g_playlistPlayer.GetPlaylist(playList);
+  for (int i = 0; i < thePlayList.size(); i++)
+  {
+    CFileItemPtr item = thePlayList[i];
+    if (path==item->m_strPath)
+      return i;
+  }
+  return -1;
+}
+
 void CXbmcHttp::AddItemToPlayList(const CFileItemPtr &pItem, int playList, int sortMethod, CStdString mask, bool recursive)
 //if playlist==-1 then use slideshow
 {
@@ -494,30 +506,8 @@ void CXbmcHttp::AddItemToPlayList(const CFileItemPtr &pItem, int playList, int s
   }
 }
 
-void CXbmcHttp::LoadPlayListOld(const CStdString& strPlayList, int playList)
-{
-  // load a playlist like .m3u, .pls
-  // first get correct factory to load playlist
-  auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
-  if ( NULL != pPlayList.get())
-  {
-    if (!pPlayList->Load(strPlayList))
-      return; 
-    g_playlistPlayer.ClearPlaylist(playList);
-    g_playlistPlayer.Reset();
-    g_playlistPlayer.Add(playList, *pPlayList);
-    g_playlistPlayer.SetCurrentPlaylist(playList);
-    g_applicationMessenger.PlayListPlayerPlay();
-    
-    // set current file item
-    CPlayList& playlist = g_playlistPlayer.GetPlaylist(playList);
-    SetCurrentMediaItem(*playlist[0]);
-  }
-}
-
 bool CXbmcHttp::LoadPlayList(CStdString strPath, int iPlaylist, bool clearList, bool autoStart)
 {
-  //CStdString strPath = item.m_strPath;
   CFileItem *item = new CFileItem(CUtil::GetFileName(strPath));
   item->m_strPath=strPath;
 
@@ -604,7 +594,7 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
   // getmediadirectory&parameter=type;location;options
   // options = showdate, pathsonly
   // returns a listing of
-  // <li>label;path;0|1=folder;date
+  // label;path;0|1=folder;date
 
   int iType = -1;
   CStdString strType;
@@ -844,7 +834,7 @@ int CXbmcHttp::xbmcGetXBETitle(int numParas, CStdString paras[])
 int CXbmcHttp::xbmcGetSources(int numParas, CStdString paras[])
 {
   // returns the share listing in this format:
-  // <li>type;name;path
+  // type;name;path
   // literal semicolons are translated into ;;
   // options include the type, and pathsonly boolean
 
@@ -1230,13 +1220,13 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
   {
     const CFileItemPtr slide = pSlideShow->GetCurrentSlide();
     output=openTag+"Filename:"+slide->m_strPath;
-	  if (lastPlayingInfo!=output)
-	  {
-	    changed=true;
-	    lastPlayingInfo=output;
-	  }
+    if (lastPlayingInfo!=output)
+    {
+      changed=true;
+      lastPlayingInfo=output;
+    }
     if (justChange && !changed)
-	  return SetResponse(openTag+"Changed:False");
+      return SetResponse(openTag+"Changed:False");
     output+=closeTag+openTag+"Type:Picture" ;
     CStdString resolution = "0x0";
     if (slide && slide->HasPictureInfoTag() && slide->GetPictureInfoTag()->Loaded())
@@ -1705,6 +1695,10 @@ int CXbmcHttp::xbmcGetThumb(int numParas, CStdString paras[], bool bGetThumb)
     thumb="<img src=\"data:image/jpg;base64,";
     linesize=0;
   }
+  if (numParas>1)
+     tempSkipWebFooterHeader=paras[1].ToLower() == "bare";
+  if (numParas>2)
+     tempSkipWebFooterHeader=paras[2].ToLower() == "bare";
   if (CUtil::IsRemote(paras[0]))
   {
     CStdString strDest="Z:\\xbmcDownloadFile.tmp";
@@ -1747,19 +1741,15 @@ int CXbmcHttp::xbmcGetThumbFilename(int numParas, CStdString paras[])
 int CXbmcHttp::xbmcPlayerPlayFile(int numParas, CStdString paras[])
 {
   int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
-  // file
   if (numParas<1)
     return SetResponse(openTag+"Error:Missing file parameter");
-  // get playlist
   if (numParas>1)
     iPlaylist = atoi(paras[1]);
-  // test file parameter
   CFileItem item(paras[0], FALSE);
+  if (iPlaylist == PLAYLIST_NONE)
+    iPlaylist = PLAYLIST_MUSIC;
   if (item.IsPlayList())
   {
-    // if no playlist, set the playlist to PLAYLIST_MUSIC_TEMP like playmedia
-    if (iPlaylist == PLAYLIST_NONE)
-      iPlaylist = PLAYLIST_MUSIC;
     LoadPlayList(paras[0], iPlaylist, true, true);
     CStdString strPlaylist;
     strPlaylist.Format("%i", iPlaylist);
@@ -1794,7 +1784,7 @@ int CXbmcHttp::xbmcSetCurrentPlayList(int numParas, CStdString paras[])
 int CXbmcHttp::xbmcGetPlayListContents(int numParas, CStdString paras[])
 {
   // options = showindex
-  // <li>index;path
+  // index;path
 
   CStdString list="";
   int playList = g_playlistPlayer.GetCurrentPlaylist();
@@ -1915,12 +1905,31 @@ int CXbmcHttp::xbmcRemoveFromPlayList(int numParas, CStdString paras[])
   {
     int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
     CStdString strItem = paras[0];
+	int itemToRemove;
     if (numParas > 1)
       iPlaylist = atoi(paras[1]);
-    if (StringUtils::IsNaturalNumber(strItem))
-      g_playlistPlayer.GetPlaylist(iPlaylist).Remove(atoi(strItem));
-    else
-      g_playlistPlayer.GetPlaylist(iPlaylist).Remove(strItem);
+	if (StringUtils::IsNaturalNumber(strItem))
+      itemToRemove=atoi(strItem);
+	else
+      itemToRemove=FindPathInPlayList(iPlaylist, strItem);
+    // The current playing song can't be removed
+    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC && g_application.IsPlayingAudio()
+      && g_playlistPlayer.GetCurrentSong() == itemToRemove)
+      return SetResponse(openTag+"Error:Can't remove current playing song");
+    if (itemToRemove<0 || itemToRemove>=g_playlistPlayer.GetPlaylist(iPlaylist).size())
+	  return SetResponse(openTag+"Error:Item not found or parameter out of range");
+    g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Remove(itemToRemove);
+
+    // Correct the current playing song in playlistplayer
+    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC && g_application.IsPlayingAudio())
+    {
+      int iCurrentSong = g_playlistPlayer.GetCurrentSong();
+      if (itemToRemove <= iCurrentSong)
+      {
+        iCurrentSong--;
+        g_playlistPlayer.SetCurrentSong(iCurrentSong);
+      }
+    }
     return SetResponse(openTag+"OK");
   }
   else
@@ -2249,6 +2258,10 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
     {
       try
       {
+	    if (numParas>1)
+          tempSkipWebFooterHeader=paras[1].ToLower() == "bare";
+        if (numParas>2)
+          tempSkipWebFooterHeader=paras[2].ToLower() == "bare";
         CHTTP http;
         http.Download(src, dest);
         CStdString encoded="";
@@ -2406,7 +2419,7 @@ int CXbmcHttp::xbmcGetCurrentSlide()
   {
     const CFileItemPtr slide=pSlideShow->GetCurrentSlide();
     if (!slide)
-	    return SetResponse(openTag + "[None]");
+      return SetResponse(openTag + "[None]");
     return SetResponse(openTag + slide->m_strPath);
   }
 }
@@ -2524,13 +2537,13 @@ int CXbmcHttp::xbmcConfig(int numParas, CStdString paras[])
   {
     //getoption has been deprecated so the following is just to prevent (my) legacy client code breaking (to be removed later)
     if (paras[1]=="pictureextensions")
-      response="<li>"+g_stSettings.m_pictureExtensions;
+      response=openTag+g_stSettings.m_pictureExtensions;
 	else if (paras[1]=="videoextensions")
-      response="<li>"+g_stSettings.m_videoExtensions;
+      response=openTag+g_stSettings.m_videoExtensions;
 	else if (paras[1]=="musicextensions")
-      response="<li>"+g_stSettings.m_musicExtensions;
+      response=openTag+g_stSettings.m_musicExtensions;
 	else
-	  response="<li>Error:Function is deprecated";
+	  response=openTag+"Error:Function is deprecated";
     //ret=XbmcWebsHttpAPIConfigGetOption(response, argc, argv);
     //if (ret!=-1)
     ret=1;
@@ -2547,8 +2560,7 @@ int CXbmcHttp::xbmcConfig(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:WebServer needs to be running - is it?");
   else
   {
-	response.Replace("<li>",openTag);
-    return SetResponse(response);
+    return SetResponse(openTag+response);
   }
 }
 
@@ -2808,11 +2820,12 @@ int CXbmcHttp::xbmcAutoGetPictureThumbs(int numParas, CStdString paras[])
 int CXbmcHttp::xbmcOnAction(int numParas, CStdString paras[])
 {
   if (numParas!=1)
-	  return SetResponse(openTag+"Error:There must be one and only one parameter");
+    return SetResponse(openTag+"Error:There must be one and only one parameter");
   else
   {
-	CAction action;
+    CAction action;
     action.wID = atoi(paras[0]);
+    action.fAmount1 = 1; // digital button (could change this for repeat acceleration)
     g_application.OnAction(action);
     return SetResponse(openTag+"OK");
   }
@@ -2952,6 +2965,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
     CLog::Log(LOGDEBUG, "HttpApi Start command: %s  paras: %s", command.c_str(), parameter.c_str());
   else
     CLog::Log(LOGDEBUG, "HttpApi Start command: %s  paras: [not recorded]", command.c_str());
+  tempSkipWebFooterHeader=false;
   command=command.ToLower();
   if (numParas>=0)
   {
@@ -3143,9 +3157,8 @@ CStdString CXbmcHttpShim::xbmcExternalCall(char *command)
 /* Parse an XBMC HTTP API command */
 CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *parameter)
 {
-  if (m_pXbmcHttp)
-    if (m_pXbmcHttp->shuttingDown)
-      return "";
+  if (m_pXbmcHttp && m_pXbmcHttp->shuttingDown)
+    return "";
   CStdString cmd=command, paras=parameter, response="[No response yet]", retVal;
   bool legalCmd=true;
   //CLog::Log(LOGDEBUG, "XBMCHTTPShim: Received command %s (%s)", cmd.c_str(), paras.c_str());
@@ -3154,18 +3167,10 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
   checkForFunctionTypeParas(cmd, paras);
   if (wp!=NULL)
   {
-    if (eid==NO_EID && m_pXbmcHttp)
-	  {
-	    if (m_pXbmcHttp->incWebHeader)
-          websHeader(wp);
-	  };
-	  //else
-	    //websHeader(wp);
-
 	//we are being called via the webserver (rather than Python) so add any specific checks here
     if ((cmd=="webserverstatus") && (paras!=""))//(strcmp(parameter,XBMC_NONE)))
 	{
-	  response="Error:Can't turn off/on WebServer via a web call";
+	  response=m_pXbmcHttp->GetOpenTag()+"Error:Can't turn off/on WebServer via a web call";
 	  legalCmd=false;
 	}
   }
@@ -3186,14 +3191,22 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
 	}
 	if (cnt>199)
 	{
-	  response="Error:Timed out";
+	  response=m_pXbmcHttp->GetOpenTag()+"Error:Timed out";
 	  CLog::Log(LOGDEBUG, "HttpApi Timed out");
 	}
   }
   //flushresult
+  if (wp!=NULL)
+  {
+	  if (eid==NO_EID && m_pXbmcHttp && !m_pXbmcHttp->tempSkipWebFooterHeader)
+	  {
+	    if (m_pXbmcHttp->incWebHeader)
+          websHeader(wp);
+	  };
+  }
   retVal=flushResult(eid, wp, m_pXbmcHttp->userHeader+response+m_pXbmcHttp->userFooter);
   if (m_pXbmcHttp) //this should always be true unless something is very wrong
-    if ((wp!=NULL) && (m_pXbmcHttp->incWebFooter) && eid==NO_EID)
+    if ((wp!=NULL) && (m_pXbmcHttp->incWebFooter) && eid==NO_EID && !m_pXbmcHttp->tempSkipWebFooterHeader)
       websFooter(wp);
   return retVal;
 }
@@ -3205,9 +3218,8 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
 int CXbmcHttpShim::xbmcCommand( int eid, webs_t wp, int argc, char_t **argv)
 {
   char_t	*command, *parameter;
-  if (m_pXbmcHttp)
-    if (m_pXbmcHttp->shuttingDown)
-      return -1;
+  if (m_pXbmcHttp && m_pXbmcHttp->shuttingDown)
+    return -1;
 
   int parameters = ejArgs(argc, argv, T("%s %s"), &command, &parameter);
   if (parameters < 1) 

@@ -321,6 +321,13 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       item->SetLabel(character);
       m_castList->Add(item);
     }
+    // set fanart property for tvshows and movies
+    if (type == VIDEODB_CONTENT_TVSHOWS || type == VIDEODB_CONTENT_MOVIES)
+    {
+      m_movieItem->CacheFanart();
+      if (CFile::Exists(m_movieItem->GetCachedFanart()))
+        m_movieItem->SetProperty("fanart_image",m_movieItem->GetCachedFanart());
+    }
     // determine type:
     if (type == VIDEODB_CONTENT_TVSHOWS)
     {
@@ -331,9 +338,6 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       m_movieItem->SetProperty("watchedepisodes", m_movieItem->GetVideoInfoTag()->m_playCount);
       m_movieItem->SetProperty("unwatchedepisodes", m_movieItem->GetVideoInfoTag()->m_iEpisode - m_movieItem->GetVideoInfoTag()->m_playCount);
       m_movieItem->GetVideoInfoTag()->m_playCount = (m_movieItem->GetVideoInfoTag()->m_iEpisode == m_movieItem->GetVideoInfoTag()->m_playCount) ? 1 : 0;
-      m_movieItem->CacheFanart();
-      if (CFile::Exists(m_movieItem->GetCachedFanart()))
-        m_movieItem->SetProperty("fanart_image",m_movieItem->GetCachedFanart());
     }
     else if (type == VIDEODB_CONTENT_EPISODES)
     {

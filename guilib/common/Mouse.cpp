@@ -146,6 +146,11 @@ void CMouse::Update()
   { // reset mouse pointer
     SetState(MOUSE_STATE_NORMAL);
   }
+
+  // update our mouse pointer as necessary - we show the default pointer
+  // only if we don't have the mouse on, and the mouse is active
+  if (m_mouseDevice)
+    m_mouseDevice->ShowPointer(m_mouseState.active && !m_mouseEnabled);
 }
 
 void CMouse::SetResolution(int maxX, int maxY, float speedX, float speedY)
@@ -182,7 +187,7 @@ void CMouse::SetInactive()
 
 bool CMouse::HasMoved() const
 {
-  return (m_mouseState.dx * m_mouseState.dx + m_mouseState.dy + m_mouseState.dy >= MOUSE_MINIMUM_MOVEMENT * MOUSE_MINIMUM_MOVEMENT);
+  return (m_mouseState.dx * m_mouseState.dx + m_mouseState.dy * m_mouseState.dy >= MOUSE_MINIMUM_MOVEMENT * MOUSE_MINIMUM_MOVEMENT);
 }
 
 CPoint CMouse::GetLocation() const

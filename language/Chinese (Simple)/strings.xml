@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Tang YiZhi-->
 <!--Email: Kazuyuki@163.com-->
-<!--Date of translation: 09/07/2008-->
+<!--Date of translation: 09/12/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 15443-->
+<!--Based on english strings version 15536-->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -802,7 +802,7 @@
   <string id="12019">是</string>
   <string id="12020">询问</string>
   <string id="12021">从头开始播放</string>
-  <string id="12022">从上次中断处继续播放</string>
+  <string id="12022">从 %s 处继续播放</string>
   <string id="12023">正在验证金手指…</string>
   <string id="12024">自动为没有封面的视频生成缩略图</string>
   <string id="12310">0</string>
@@ -1068,6 +1068,7 @@
   <string id="13411">风扇最低转速</string>
   <string id="13412"> RSS种子内容为从右到左</string>
   <string id="13413">正在下载</string>
+  <string id="13414">隐藏只在编辑中出现的艺术家</string>
   <string id="13600">Apple 遥控器</string>
   <string id="13601">模式</string>
   <string id="13602">始终运行</string>

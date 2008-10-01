@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Kim Buchwald Christensen-->
 <!--Email: kimbchr@gmail.com-->
-<!--Date of translation: 08/20/2008-->
+<!--Date of translation: 09/21/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 15028-->
+<!--Based on english strings version 15642-->
 <strings>
   <string id="0">Programmer</string>
   <string id="1">Billeder</string>
@@ -104,9 +104,9 @@
   <string id="164">Intet medie</string>
   <string id="165">Medie tilstede</string>
   <string id="166">Skin</string>
-  <string id="167">Aktiver FTP-server:</string>
-  <string id="168">Synkroniser tid over Internet:</string>
-  <string id="169">Opløsning:</string>
+  <string id="167">Aktiver FTP-server</string>
+  <string id="168">Synkroniser tid over Internet</string>
+  <string id="169">Opløsning</string>
   <string id="170"></string>
   <string id="171"></string>
   <string id="172">Udgivelsesdato</string>
@@ -190,7 +190,7 @@
   <string id="253">Antal lydkanaler</string>
   <string id="254">- DTS-forstærker</string>
   <string id="255">CDDB</string>
-  <string id="256">Forespørger freedb efter CDDB-info</string>
+  <string id="256">Forespørger freedb om CDDB-info</string>
   <string id="257">Fejl</string>
   <string id="258">Læs filbeskrivelser</string>
   <string id="259">Åbner</string>
@@ -215,7 +215,7 @@
   <string id="278">Juster firkanten så den bliver perfekt kvadratisk</string>
   <string id="279">Kan ikke indlæse indstillinger</string>
   <string id="280">Bruger standardindstillinger</string>
-  <string id="281">Kontroller venligst .xml filerne</string>
+  <string id="281">Kontroller venligst .xml-filerne</string>
   <string id="282">%i elementer fundet</string>
   <string id="283">Søgeresultat</string>
   <string id="284">Ingen resultater fundet</string>
@@ -234,7 +234,7 @@
   <string id="303">Forsinkelse</string>
   <string id="304">Sprog</string>
   <string id="305">Aktiveret</string>
-  <string id="306">Non-Interleaved</string>
+  <string id="306">Ikke interleaved</string>
   <string id="307">- Automatisk efterbehandling</string>
   <string id="308">- Vertikalt deblokeringsfilter</string>
   <string id="309">- Horisontalt deblokeringsfilter</string>
@@ -561,8 +561,8 @@
   <string id="701">Fjerner gamle sange fra databasen</string>
   <string id="702">Denne sti er tidligere blevet gennemsøgt</string>
   <string id="705">Netværk</string>
-  <string id="706">HTTP-proxy vært</string>
-  <string id="707">HTTP-proxy port</string>
+  <string id="706">HTTP-proxyvært</string>
+  <string id="707">HTTP-proxyport</string>
   <string id="708">Aktiver HTTP-proxy</string>
   <string id="709"></string>
   <string id="710"></string>
@@ -848,7 +848,7 @@
   <string id="12019">Ja</string>
   <string id="12020">Spørg</string>
   <string id="12021">Start fra begyndelsen</string>
-  <string id="12022">Fortsæt fra sidste position</string>
+  <string id="12022">Fortsæt fra %s</string>
   <string id="12023">Validerer trænere</string>
   <string id="12024">Lav automatisk ikoner til videoer uden cover-grafik</string>
   <string id="12310">0</string>
@@ -924,11 +924,12 @@
   <string id="13005">Sluk</string>
   <string id="13006">Dashboard</string>
   <string id="13007">Brug særlig sti til dashboard</string>
-  <string id="13008">Når XBMC lukkes</string>
-  <string id="13009">Gør intet</string>
+  <string id="13008">Standard nedlukningsmetode</string>
+  <string id="13009">Afslut</string>
   <string id="13010">Gå i dvale</string>
   <string id="13011">Gå i standby</string>
   <string id="13100">Flimmerfilter</string>
+  <string id="13101">Lad driveren bestemme (kræver genstart)</string>
   <string id="13105">Synkroniser på Vertical Blank</string>
   <string id="13106">Deaktiveret</string>
   <string id="13107">Aktiver under videoafspilning</string>
@@ -998,7 +999,7 @@
   <string id="13280">Video</string>
   <string id="13281">Hardware</string>
   <string id="13282">_</string>
-  <string id="13283">Kerneversion:</string>
+  <string id="13283">Operativsystem:</string>
   <string id="13284">CPU-hastighed:</string>
   <string id="13285">BIOS:</string>
   <string id="13286">Video-encoder:</string>
@@ -1073,7 +1074,7 @@
   <string id="13356">Hardware Overlays</string>
   <string id="13357">Højkvalitets Pixel Shader</string>
   <string id="13358">Afspil</string>
-  <string id="13359">Vælg ikon for kunstner</string>
+  <string id="13359">Vælg ikon til kunstner</string>
   <string id="13360">Lav ikoner</string>
   <string id="13361">Aktiver stemme</string>
   <string id="13375">Tænd enhed</string>
@@ -1113,7 +1114,9 @@
   <string id="13409">Top 250</string>
   <string id="13410">Stil ind på Last.fm</string>
   <string id="13411">Mindste blæserhastighed</string>
-  <string id="13412">RSS feed indeholder højre-til-venstre tekst</string>
+  <string id="13412">- RSS feed indeholder højre-til-venstre tekst</string>
+  <string id="13413">Henter</string>
+  <string id="13414">Skjul kunstnere som kun er med på opsamlingsalbum</string>
   <string id="13600">Apple-fjernbetjening</string>
   <string id="13601">Tilstand</string>
   <string id="13602">Kører altid</string>
@@ -1180,7 +1183,7 @@
   <string id="14054">Aktiver internetopslag</string>
   <string id="14055">Gennemsøg i baggrunden</string>
   <string id="14056">Stop gennemsøgning</string>
-  <string id="14057">Ikke muligt mens der gennemsøges for medie info</string>
+  <string id="14057">Ikke muligt mens der gennemsøges for medieinfo</string>
   <string id="14058">Filmkornseffekt</string>
   <string id="14059">Søg efter ikoner på delte mapper</string>
   <string id="14060">Ukendt type mellemlager - Internet</string>
@@ -1268,10 +1271,10 @@
   <string id="15061"></string>
   <string id="15100">Bibliotek</string>
   <string id="15101">Database</string>
-  <string id="15102">* Alle Album</string>
-  <string id="15103">* Alle Kunstnere</string>
-  <string id="15104">* Alle Sange</string>
-  <string id="15105">* Alle Genre</string>
+  <string id="15102">* Alle album</string>
+  <string id="15103">* Alle kunstnere</string>
+  <string id="15104">* Alle sange</string>
+  <string id="15105">* Alle genrer</string>
   <string id="15106">Husk valgt fil ved fremadrettet navigation</string>
   <string id="15107">Lagring...</string>
   <string id="15108">Navigationslyde</string>
@@ -1299,38 +1302,38 @@
   <string id="15251">Forbinder til Last.fm...</string>
   <string id="15252">Vælger station...</string>
   <string id="15253">Søg efter lignende kunstnere...</string>
-  <string id="15254">Søg lignende etiket...</string>
+  <string id="15254">Søg efter lignende etiketter...</string>
   <string id="15255">Din profil (%name%)</string>
   <string id="15256">Gennemsnitlig bedste etiket</string>
   <string id="15257">Bedste kunstner med etiketten %name%</string>
   <string id="15258">Bedste albums med etiketten %name%</string>
   <string id="15259">Bedste sange med etiketten %name%</string>
-  <string id="15260">Lyt til etiket %name% Last.fm-radio</string>
+  <string id="15260">Lyt til Last.fm-radio for etiketten %name% </string>
   <string id="15261">Lignende kunstnere som %name%</string>
   <string id="15262">Bedste %name% albums</string>
   <string id="15263">Bedste %name% sange</string>
   <string id="15264">Bedste %name% etiket</string>
   <string id="15265">Største fans af %name%</string>
   <string id="15266">Lyt til brugeren %name%'s Last.fm-radio</string>
-  <string id="15267">Lyt til %name% lignende kunstnere Last.fm-radio</string>
-  <string id="15268">Bedste kunstner for bruger %name%</string>
-  <string id="15269">Bedste albums hos brugeren %name%</string>
-  <string id="15270">Bedste sange hos brugeren %name%</string>
+  <string id="15267">Lyt til %name% lignende kunstneres Last.fm-radio</string>
+  <string id="15268">Favoritkunstnere for brugeren %name%</string>
+  <string id="15269">Favoritalbums hos brugeren %name%</string>
+  <string id="15270">Favoritsange hos brugeren %name%</string>
   <string id="15271">Venner til brugeren %name%</string>
   <string id="15272">Naboer til brugeren %name%</string>
-  <string id="15273">Ugentlig kunstnerkurve for %name%</string>
-  <string id="15274">Ugentlig albumkurve for %name%</string>
-  <string id="15275">Ugentlig sangkurve for %name%</string>
+  <string id="15273">Ugentlig kunstnerliste for %name%</string>
+  <string id="15274">Ugentlig albumliste for %name%</string>
+  <string id="15275">Ugentlig sangliste for %name%</string>
   <string id="15276">Lyt til %name%'s naboers Last.fm-radio</string>
   <string id="15277">Lyt til %name%'s personlige Last.fm-radio</string>
-  <string id="15278">Lyt til %name%'s faboritsange Last.fm-radio</string>
+  <string id="15278">Lyt til %name%'s favoritsange Last.fm-radio</string>
   <string id="15279">Henter liste fra Last.fm...</string>
   <string id="15280">Kunne ikke hente liste fra Last.fm...</string>
   <string id="15281">Indtast kunstnernavn for at finde relaterede</string>
   <string id="15282">Indtast etiket for at finde lignende</string>
-  <string id="15283">Fornyeligt tilføjede sange af %name%</string>
+  <string id="15283">Sange som %name% har lyttet til fornylig</string>
   <string id="15284">Lyt til %name%'s anbefalede Last.fm-radio</string>
-  <string id="15285">Favorit etiketter for brugeren %name%</string>
+  <string id="15285">Favoritetiketter for brugeren %name%</string>
   <string id="15286">Lyt til %name%'s afspilningsliste Last.fm-radio</string>
   <string id="15287">Vil du tilføje dette nummer til dine favoritter?</string>
   <string id="15288">Vil du bandlyse dette nummer?</string>
@@ -1370,7 +1373,7 @@
   <string id="16020">Deinterlace</string>
   <string id="16021">Synkroniser ulige</string>
   <string id="16022">Synkroniser lige</string>
-  <string id="16023">Interlaced håndtering</string>
+  <string id="16023">Håndtering af interlace</string>
   <string id="16024">Afbryder...</string>
   <string id="16025">Indtast kunstnernavn</string>
   <string id="16026">Afspilningsliste afbrudt</string>
@@ -1402,7 +1405,7 @@
   <string id="16206">Kunne ikke slette mindst en fil</string>
   <string id="16300">Metode til videoskalering</string>
   <string id="16301">Nærmeste nabo</string>
-  <string id="16302">Biliniær</string>
+  <string id="16302">Bilineær</string>
   <string id="16303">Bikubisk</string>
   <string id="16304">Lanczos2</string>
   <string id="16305">Lanczos3</string>
@@ -1591,8 +1594,8 @@
   <string id="20189"></string>
   <string id="20190"></string>
   <string id="20191"></string>
-  <string id="20192">Hent information om album ved skanning</string>
-  <string id="20193">Hent information om kunstner ved skanning</string>
+  <string id="20192">Hent information om album ved tilføjelse til database</string>
+  <string id="20193">Hent information om kunstner ved tilføjelse til database</string>
   <string id="20194">Standard scraper</string>
   <string id="20195">Skift scraper</string>
   <string id="20196">Eksporter musikdatabase</string>
@@ -1634,7 +1637,7 @@
   <string id="20329"></string>
   <string id="20330">Brug mappenavn ved søgninger</string>
   <string id="20331">Fil</string>
-  <string id="20332">Brug fil eller mappenavn ved søgninger?</string>
+  <string id="20332">Brug fil- eller mappe-navn ved søgninger?</string>
   <string id="20333">Indholdstype</string>
   <string id="20334">Mappe</string>
   <string id="20335">Søg efter indhold rekursivt?</string>
@@ -1894,6 +1897,13 @@
   <string id="22004">Forsinket med: %2.3fs</string>
   <string id="22005">Foran med: %2.3fs</string>
   <string id="22006">Undertekstforskydelse</string>
+  <string id="22007">OpenGL-leverandør:</string>
+  <string id="22008">OpenGL-renderer:</string>
+  <string id="22009">OpenGL-version:</string>
+  <string id="22010">GPU-temperatur</string>
+  <string id="22011">CPU-temperatur</string>
+  <string id="22012">Total hukommelse</string>
+  <string id="22013">Profildata</string>
   <string id="29800">Databasetilstand</string>
   <string id="29801">QWERTY-tastatur</string>
   <string id="29999">Brug flimmerfilter på spil</string>

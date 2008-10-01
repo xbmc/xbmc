@@ -245,7 +245,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   FreeMemory();
   m_strPath = item.m_strPath;
 #ifdef DEBUG
-  if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder())  // should root paths be "/" ?
+  if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder() && !CUtil::IsTuxBox(m_strPath))  // should root paths be "/" ?
     ASSERT(CUtil::HasSlashAtEnd(m_strPath));
 #endif
   m_bIsParentFolder = item.m_bIsParentFolder;
@@ -1652,6 +1652,8 @@ void CFileItemList::FilterCueItems()
           for(std::vector<CStdString>::iterator itMedia = MediaFileVec.begin(); itMedia != MediaFileVec.end(); itMedia++)
           {
             CStdString strMediaFile = *itMedia;
+            CStdString fileFromCue = strMediaFile; // save the file from the cue we're matching against,
+                                                   // as we're going to search for others here...
             bool bFoundMediaFile = CFile::Exists(strMediaFile);
             // queue the cue sheet and the underlying media file for deletion
             if (!bFoundMediaFile)
@@ -1705,8 +1707,10 @@ void CFileItemList::FilterCueItems()
               {
                 CSong song = newitems[j];
                 // only for songs that actually match the current media file
-                if (song.strFileName == strMediaFile)
+                if (song.strFileName == fileFromCue)
                 {
+                  // we might have a new media file from the above matching code
+                  song.strFileName = strMediaFile;
                   if (tag.Loaded())
                   {
                     if (song.strAlbum.empty() && !tag.GetAlbum().empty()) song.strAlbum = tag.GetAlbum();
@@ -1780,7 +1784,7 @@ void CFileItemList::Stack()
     return;
 
   // not allowed here
-  if (IsVirtualDirectoryRoot())
+  if (IsVirtualDirectoryRoot() || IsTuxBox())
     return;
 
   // items needs to be sorted for stuff below to work properly
@@ -2120,15 +2124,6 @@ void CFileItem::SetCachedMusicThumb()
 
 CStdString CFileItem::GetPreviouslyCachedMusicThumb() const
 {
-  // the highest priority thumb is album name + album path
-  CStdString strPath;
-  if (!m_bIsFolder)
-    CUtil::GetDirectory(m_strPath, strPath);
-  else
-    strPath = m_strPath;
-  // music thumbs are cached without slash at end
-  CUtil::RemoveSlashAtEnd(strPath);
-
   // look if an album thumb is available,
   // could be any file with tags loaded or
   // a directory in album window
@@ -2160,6 +2155,14 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb() const
   }
 
   // try and find a cached folder thumb (folder.jpg or folder.tbn)
+  CStdString strPath;
+  if (!m_bIsFolder)
+    CUtil::GetDirectory(m_strPath, strPath);
+  else
+    strPath = m_strPath;
+  // music thumbs are cached without slash at end
+  CUtil::RemoveSlashAtEnd(strPath);
+
   CStdString thumb(CUtil::GetCachedMusicThumb(strPath));
   if (CFile::Exists(thumb))
     return thumb;
@@ -2379,7 +2382,7 @@ void CFileItem::CacheFanart() const
     return;
   // We don't have a cached image, so let's see if the user has a local image they want to use
 
-  if (IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath)) // no local fanart available for these
+  if (IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath) || IsTuxBox()) // no local fanart available for these
     return;
 
   CStdString localFanart;

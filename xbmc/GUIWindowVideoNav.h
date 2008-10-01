@@ -33,6 +33,7 @@ public:
   CGUIWindowVideoNav(void);
   virtual ~CGUIWindowVideoNav(void);
 
+  virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
 
@@ -67,4 +68,6 @@ protected:
   // filtered item views
   CFileItemList* m_unfilteredItems;
   CStdString m_filter;
+
+  CStdString m_startDirectory;
 };
