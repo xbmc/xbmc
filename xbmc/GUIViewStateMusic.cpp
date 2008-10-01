@@ -61,15 +61,6 @@ CStdString CGUIViewStateWindowMusic::GetExtensions()
   return g_stSettings.m_musicExtensions;
 }
 
-void CGUIViewStateWindowMusic::SaveViewToDb(const CStdString &path, int windowID, CViewState *viewState)
-{
-  // Note that musicfiles.savefolderviews only seems to apply to files view
-  // (see CGUIWindowSettingsCategory::ClearFolderViews), so that's all we
-  // check for here.
-  if (windowID != WINDOW_MUSIC_FILES || g_guiSettings.GetBool("musicfiles.savefolderviews"))
-    CGUIViewState::SaveViewToDb(path, windowID, viewState);
-}
-
 CGUIViewStateMusicSearch::CGUIViewStateMusicSearch(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
 {
   CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.librarytrackformat");
@@ -416,9 +407,9 @@ CGUIViewStateMusicPlaylist::CGUIViewStateMusicPlaylist(const CFileItemList& item
   AddSortMethod(SORT_METHOD_DURATION, 555, LABEL_MASKS("%T - %A", "%D"));  // Titel, Artist, Duration| empty, empty
   AddSortMethod(SORT_METHOD_SONG_RATING, 563, LABEL_MASKS("%T - %A", "%R"));  // Titel, Artist, Rating| empty, empty
 
-  SetSortMethod((SORT_METHOD)g_guiSettings.GetInt("musicfiles.sortmethod"));
-  SetViewAsControl(g_guiSettings.GetInt("musicfiles.viewmode"));
-  SetSortOrder((SORT_ORDER)g_guiSettings.GetInt("musicfiles.sortorder"));
+  SetSortMethod(g_stSettings.m_viewStateMusicFiles.m_sortMethod);
+  SetViewAsControl(g_stSettings.m_viewStateMusicFiles.m_viewMode);
+  SetSortOrder(g_stSettings.m_viewStateMusicFiles.m_sortOrder);
 
   LoadViewState(items.m_strPath, WINDOW_MUSIC_FILES);
 }
@@ -572,7 +563,7 @@ CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList
     AddSortMethod(SORT_METHOD_DRIVE_TYPE, 564, LABEL_MASKS()); // Preformated
     SetSortMethod(SORT_METHOD_LABEL);
 
-    SetViewAsControl(g_guiSettings.GetInt("musicfiles.viewmode"));
+    SetViewAsControl(DEFAULT_VIEW_LIST);
 
     SetSortOrder(SORT_ORDER_ASC);
   }
@@ -585,16 +576,22 @@ CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList
     AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS(strTrackLeft, "%I", "%L", "%I"));  // Userdefined, Size | FolderName, Size
     AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS(strTrackLeft, "%J", "%L", "%J"));  // Userdefined, Date | FolderName, Date
     AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS(strTrackLeft, strTrackRight, "%L", ""));  // Userdefined, Userdefined | FolderName, empty
-    SetSortMethod((SORT_METHOD)g_guiSettings.GetInt("musicfiles.sortmethod"));
-    SetViewAsControl(g_guiSettings.GetInt("musicfiles.viewmode"));
-    SetSortOrder((SORT_ORDER)g_guiSettings.GetInt("musicfiles.sortorder"));
+    SetSortMethod(g_stSettings.m_viewStateMusicFiles.m_sortMethod);
+    SetViewAsControl(g_stSettings.m_viewStateMusicFiles.m_viewMode);
+    SetSortOrder(g_stSettings.m_viewStateMusicFiles.m_sortOrder);
   }
   LoadViewState(items.m_strPath, WINDOW_MUSIC_FILES);
 }
 
 void CGUIViewStateWindowMusicSongs::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES);
+  if (g_guiSettings.GetBool("musicfiles.savefolderviews"))
+    SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES, &g_stSettings.m_viewStateMusicFiles);  
+  else
+  {
+    g_stSettings.m_viewStateMusicFiles = CViewState(GetViewAsControl(), GetSortMethod(), GetSortOrder());
+    g_settings.Save();
+  }
 }
 
 VECSOURCES& CGUIViewStateWindowMusicSongs::GetSources()
