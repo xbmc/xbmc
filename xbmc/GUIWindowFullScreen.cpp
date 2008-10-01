@@ -435,15 +435,12 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
         CStdString fontPath = _P("Q:\\media\\Fonts\\");
         fontPath += g_guiSettings.GetString("subtitles.font");
-#ifdef __APPLE__
-        // We scale based on PAL16x9 - this at least ensures all sizing is constant across resolutions.
-        // I'm picking 16x9 because the 4x3 aspect below gives me squashed subtitles.
-        //
-        CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", PTH_IC(fontPath), color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), 1.0f, 1.0f, PAL_16x9);
-#else
-        // We scale based on PAL4x3 - this at least ensures all sizing is constant across resolutions
-        CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", PTH_IC(fontPath), color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), 1.0f, 1.0f, PAL_4x3);
-#endif
+
+        // We scale based on PAL4x3 - this at least ensures all sizing is constant across resolutions.
+        // it doesn't preserve aspect, however, so make sure we choose aspect as 1/scalingpixelratio
+        g_graphicsContext.SetScalingResolution(PAL_4x3, 0, 0, true);
+        float aspect = 1.0f / g_graphicsContext.GetScalingPixelRatio();
+        CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", PTH_IC(fontPath), color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), 1.0f, aspect, PAL_4x3);
         if (!subFont)
           CLog::Log(LOGERROR, "CGUIWindowFullScreen::OnMessage(WINDOW_INIT) - Unable to load subtitle font");
         else
