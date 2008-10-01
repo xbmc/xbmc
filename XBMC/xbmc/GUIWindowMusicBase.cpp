@@ -539,8 +539,6 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& p
       // set album title from musicinfotag, not the one we got from allmusic.com
       info.SetTitle(album.strAlbum);
 
-      UpdateThumb(album, path);
-
       if (saveDb)
       {
         // save to database
@@ -548,6 +546,8 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& p
       }
       if (m_dlgProgress && bShowInfo)
         m_dlgProgress->Close();
+
+      UpdateThumb(album, path);
 
       // ok, show album info
       CGUIWindowMusicInfo *pDlgAlbumInfo = (CGUIWindowMusicInfo*)m_gWindowManager.GetWindow(WINDOW_MUSIC_INFO);
@@ -1243,31 +1243,16 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
     }
   }
 
-  // update the file listing
-  int iSelectedItem = m_viewControl.GetSelectedItem();
-  if (iSelectedItem >= 0 && m_vecItems->Get(iSelectedItem))
-  {
-    CFileItemPtr pSelectedItem=m_vecItems->Get(iSelectedItem);
-    if (pSelectedItem->m_bIsFolder)
-    {
-      // refresh only the icon of
-      // the current folder
-      pSelectedItem->FreeMemory();
-      if (!pSelectedItem->HasThumbnail())
-        pSelectedItem->SetThumbnailImage(albumThumb);
-      pSelectedItem->FillInDefaultIcon();
-    }
-    else
-    {
-      // Refresh all items
-      m_vecItems->RemoveDiscCache();
-      Update(m_vecItems->m_strPath);
-    }
+  // update the file listing - we have to update the whole lot, as it's likely that
+  // more than just our thumbnaias changed
+  // TODO: Ideally this would only be done when needed - at the moment we appear to be
+  //       doing this for every lookup, possibly twice (see ShowAlbumInfo)
+  m_vecItems->RemoveDiscCache();
+  Update(m_vecItems->m_strPath);
 
-    //  Do we have to autoswitch to the thumb control?
-    m_guiState.reset(CGUIViewState::GetViewState(GetID(), *m_vecItems));
-    UpdateButtons();
-  }
+  //  Do we have to autoswitch to the thumb control?
+  m_guiState.reset(CGUIViewState::GetViewState(GetID(), *m_vecItems));
+  UpdateButtons();
 }
 
 void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)

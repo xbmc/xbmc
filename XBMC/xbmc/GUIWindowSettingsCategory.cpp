@@ -1951,7 +1951,14 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (g_guiSettings.GetBool("remoteevents.enabled"))
       g_application.StartEventServer();
     else
-      g_application.StopEventServer();
+    {
+      if (!g_application.StopEventServer(true))
+      {
+        g_guiSettings.SetBool("remoteevents.enabled", true);
+        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+        if (pControl) pControl->SetEnabled(true);
+      }
+    }
 #endif
   }
   else if (strSetting.Equals("remoteevents.allinterfaces"))
@@ -1959,8 +1966,14 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 #ifdef HAS_EVENT_SERVER
     if (g_guiSettings.GetBool("remoteevents.enabled"))
     {
-      g_application.StopEventServer();
-      g_application.StartEventServer();
+      if (g_application.StopEventServer(true))
+        g_application.StartEventServer();
+      else
+      {
+        g_guiSettings.SetBool("remoteevents.enabled", true);
+        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+        if (pControl) pControl->SetEnabled(true);
+      }
     }
 #endif
   }

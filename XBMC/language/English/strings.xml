@@ -634,11 +634,11 @@
   <string id="773">Seeking</string>
   <string id="774">Slideshow Folder</string>
 
-  <string id="790">Remote Events</string>
-  <string id="791">Enable Remote Events</string>
-  <string id="792">Remote Events Port</string>
-  <string id="793">Remote Events Port Range</string>
-  <string id="794">Receive events from other computers</string>
+  <string id="790">Event Server</string>
+  <string id="791">Enable Event Server</string>
+  <string id="792">Event Server Port</string>
+  <string id="793">Event Server Port Range</string>
+  <string id="794">Allow other computers to connect</string>
   <string id="795">Initial Repeat Delay (ms)</string>
   <string id="796">Continuous Repeat Delay (ms)</string>
   <string id="797">Maximum Number of Clients</string>
@@ -941,6 +941,15 @@
   <string id="13107">Enabled During Video Playback</string>
   <string id="13108">Always Enabled</string>
 
+  <string id="13140">Active Connections Detected!</string>
+  <string id="13141">If you proceed, you might not be able to control XBMC</string>
+  <string id="13142">any longer. Are you sure you to stop the Event Server?</string>
+
+  <string id="13144">Change Apple Remote Mode?</string>
+  <string id="13145">If you are currently using the Apple Remote to control</string>
+  <string id="13146">XBMC, changing this setting might affect your ability</string>
+  <string id="13147">to continue controlling it. Do you want to proceed?</string>
+
   <string id="13150">HDD Key:</string>
   <string id="13151">HDD Temp:</string>
   <string id="13152">DVD Model:</string>
@@ -1127,9 +1136,8 @@
   <string id="13611">Standard</string>
   <string id="13612">Universal Remote</string>
   
-  <string id="13620">Remote Buddy driver is installed.</string>
-  <string id="13621">Apple Remote support can't be enabled.</string>
-  <string id="13622">Please see Remote Buddy FAQ to uninstall.</string>
+  <string id="13620">Apple Remote Error</string>
+  <string id="13621">Apple Remote support could be enabled.</string>
 
   <string id="14000">Stack</string>
   <string id="14001">Unstack</string>

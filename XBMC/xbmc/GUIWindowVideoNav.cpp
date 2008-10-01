@@ -86,6 +86,19 @@ CGUIWindowVideoNav::~CGUIWindowVideoNav(void)
   delete m_unfilteredItems;
 }
 
+bool CGUIWindowVideoNav::OnAction(const CAction &action)
+{
+  if (action.wID == ACTION_PARENT_DIR)
+  {
+    if (g_advancedSettings.m_bUseEvilB && m_vecItems->m_strPath == m_startDirectory)
+    {
+      m_gWindowManager.PreviousWindow();
+      return true;
+    }
+  }
+  return CGUIWindowVideoBase::OnAction(action);
+}
+
 bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
@@ -190,6 +203,9 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
       if (!CGUIWindowVideoBase::OnMessage(message))
         return false;
+
+      // if we're returning to a window, make sure the root is set as the destPath
+      m_startDirectory = returning ? destPath : "";
 
       //  base class has opened the database, do our check
       m_database.Open();

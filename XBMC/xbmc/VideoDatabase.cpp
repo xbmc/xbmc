@@ -3444,7 +3444,7 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
-        strSQL=FormatSQL("select distinct genre.idgenre,genre.strgenre,movie.c%02d from genre,genrelinkmovie,movie where genre.idGenre=genrelinkMovie.idGenre and genrelinkMovie.idMovie = movie.idMovie",VIDEODB_ID_PLAYCOUNT);
+        strSQL=FormatSQL("select genre.idgenre,genre.strgenre,count(1),count(movie.c%02d) from genre,genrelinkmovie,movie where genre.idgenre=genrelinkmovie.idgenre and genrelinkmovie.idmovie=movie.idmovie group by genre.idgenre", VIDEODB_ID_PLAYCOUNT);
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
       {
@@ -3452,7 +3452,7 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
       }
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
       {
-        strSQL=FormatSQL("select distinct genre.idgenre,genre.strgenre,musicvideo.c%02d from genre,genrelinkmusicvideo,musicvideo where genre.idGenre=genrelinkmusicvideo.idGenre and genrelinkmusicvideo.idmvideo = musicvideo.idmvideo",VIDEODB_ID_MUSICVIDEO_PLAYCOUNT);
+        strSQL=FormatSQL("select genre.idgenre,genre.strgenre,count(1),count(musicvideo.c%02d) from genre,genrelinkmusicvideo,musicvideo where genre.idgenre=genrelinkmusicvideo.idgenre and genrelinkmusicvideo.idmvideo=musicvideo.idmvideo group by genre.idgenre", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT);
       }
     }
 
@@ -3519,7 +3519,11 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
         pItem->m_bIsFolder=true;
         pItem->SetLabelPreformated(true);
         if (idContent == VIDEODB_CONTENT_MOVIES || idContent==VIDEODB_CONTENT_MUSICVIDEOS)
-          pItem->GetVideoInfoTag()->m_playCount = m_pDS->fv(2).get_asInteger();
+        {
+          // fv(3) is the number of videos watched, fv(2) is the total number.  We set the playcount
+          // only if the number of videos watched is equal to the total number (i.e. every video watched)
+          pItem->GetVideoInfoTag()->m_playCount = (m_pDS->fv(3).get_asInteger() == m_pDS->fv(2).get_asInteger()) ? 1 : 0;
+        }
         items.Add(pItem);
         m_pDS->next();
       }
@@ -3554,9 +3558,9 @@ bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& 
     else
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
-        strSQL=FormatSQL("select distinct studio.idstudio,studio.strstudio,movie.c%02d from studio,studiolinkmovie,movie where studio.idstudio=studiolinkMovie.idstudio and studiolinkMovie.idMovie = movie.idMovie",VIDEODB_ID_PLAYCOUNT);
+        strSQL=FormatSQL("select studio.idstudio,studio.strstudio,count(1),count(movie.c%02d) from studio,studiolinkmovie,movie where studio.idstudio=studiolinkMovie.idstudio and studiolinkMovie.idMovie = movie.idMovie group by studio.idstudio", VIDEODB_ID_PLAYCOUNT);
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-        strSQL=FormatSQL("select distinct studio.idstudio,studio.strstudio,musicvideo.c%02d from studio,studiolinkmusicvideo,musicvideo where studio.idstudio=studiolinkmusicvideo.idstudio and studiolinkmusicvideo.idMVideo = musicvideo.idMVideo",VIDEODB_ID_MUSICVIDEO_PLAYCOUNT);
+        strSQL=FormatSQL("select studio.idstudio,studio.strstudio,count(1),count(musicvideo.c%02d) from studio,studiolinkmusicvideo,musicvideo where studio.idstudio=studiolinkmusicvideo.idstudio and studiolinkmusicvideo.idMVideo = musicvideo.idMVideo group by studio.idstudio", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT);
     }
 
     // run query
@@ -3616,7 +3620,11 @@ bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->m_bIsFolder=true;
         pItem->SetLabelPreformated(true);
         if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-          pItem->GetVideoInfoTag()->m_playCount = m_pDS->fv(2).get_asInteger();
+        {
+          // fv(3) is the number of videos watched, fv(2) is the total number.  We set the playcount
+          // only if the number of videos watched is equal to the total number (i.e. every video watched)
+          pItem->GetVideoInfoTag()->m_playCount = (m_pDS->fv(3).get_asInteger() == m_pDS->fv(2).get_asInteger()) ? 1 : 0;
+        }
         items.Add(pItem);
         m_pDS->next();
       }
@@ -3702,13 +3710,13 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
     else
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
-        strSQL=FormatSQL("select distinct actors.idactor,actors.strActor,actors.strThumb,movie.c%02d from %slinkmovie,actors,movie where actors.idActor=%slinkmovie.id%s and %slinkmovie.idmovie=movie.idmovie", VIDEODB_ID_PLAYCOUNT, type.c_str(), type.c_str(), type.c_str(), type.c_str());
+        strSQL=FormatSQL("select actors.idactor,actors.strActor,actors.strThumb,count(1),count(movie.c%02d) from %slinkmovie,actors,movie where actors.idactor=%slinkmovie.id%s and %slinkmovie.idmovie=movie.idmovie group by actors.idactor", VIDEODB_ID_PLAYCOUNT, type.c_str(), type.c_str(), type.c_str(), type.c_str());
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
         strSQL=FormatSQL("select distinct actors.idActor,actors.strActor,actors.strThumb from actors,%slinktvshow,tvshow where actors.idActor=%slinktvshow.id%s and %slinktvshow.idShow = tvshow.idShow", type.c_str(), type.c_str(), type.c_str(), type.c_str());
       else if (idContent == VIDEODB_CONTENT_EPISODES)
-        strSQL=FormatSQL("select distinct actors.idActor,actors.strActor,actors.strThumb,episode.c%02d from actors,%slinkepisode,episode where actors.idActor=%slinkepisode.id%s and %slinkepisode.idEpisode = episode.idEpisode", VIDEODB_ID_EPISODE_PLAYCOUNT, type.c_str(), type.c_str(), type.c_str(), type.c_str());
+        strSQL=FormatSQL("select actors.idactor,actors.strActor,actors.strThumb,count(1),count(episode.c%02d) from %slinkepisode,actors,episode where actors.idactor=%slinkepisode.id%s and %slinkepisode.idEpisode=episode.idEpisode group by actors.idactor", VIDEODB_ID_EPISODE_PLAYCOUNT, type.c_str(), type.c_str(), type.c_str(), type.c_str());
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-        strSQL=FormatSQL("select distinct actors.idactor,actors.strActor,actors.strThumb,musicvideo.c%02d from %slinkmusicvideo,actors,musicvideo where actors.idActor=%slinkmusicvideo.id%s and %slinkmusicvideo.idmvideo=musicvideo.idmvideo", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT, type.c_str(), type.c_str(), type.c_str(), type.c_str());
+        strSQL=FormatSQL("select actors.idactor,actors.strActor,actors.strThumb,count(1),count(musicvideo.c%02d) from %slinkmusicvideo,actors,musicvideo where actors.idactor=%slinkmusicvideo.id%s and %slinkmusicvideo.idmvideo=musicvideo.idmvideo group by actors.idactor", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT, type.c_str(), type.c_str(), type.c_str(), type.c_str());
     }
 
     // run query
@@ -3772,7 +3780,11 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
           pItem->m_bIsFolder=true;
           pItem->GetVideoInfoTag()->m_strPictureURL.ParseString(m_pDS->fv(2).get_asString());
           if (idContent != VIDEODB_CONTENT_TVSHOWS)
-            pItem->GetVideoInfoTag()->m_playCount = m_pDS->fv(3).get_asInteger();
+          {
+            // fv(4) is the number of videos watched, fv(3) is the total number.  We set the playcount
+            // only if the number of videos watched is equal to the total number (i.e. every video watched)
+            pItem->GetVideoInfoTag()->m_playCount = (m_pDS->fv(4).get_asInteger() == m_pDS->fv(3).get_asInteger()) ? 1 : 0;
+          }
           items.Add(pItem);
           m_pDS->next();
         }
@@ -3815,7 +3827,7 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
       }
       else
       {
-        strSQL = FormatSQL("select distinct movie.c%02d,movie.c%02d from movie", VIDEODB_ID_YEAR,VIDEODB_ID_PLAYCOUNT);
+        strSQL = FormatSQL("select movie.c%02d,count(1),count(movie.c%02d) from movie group by movie.c%02d", VIDEODB_ID_YEAR, VIDEODB_ID_PLAYCOUNT, VIDEODB_ID_YEAR);
       }
     }
     else if (idContent == VIDEODB_CONTENT_TVSHOWS)
@@ -3833,7 +3845,7 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
       }
       else
       {
-        strSQL = FormatSQL("select distinct musicvideo.c%02d,musicvideo.c%02d from musicvideo", VIDEODB_ID_MUSICVIDEO_YEAR,VIDEODB_ID_MUSICVIDEO_PLAYCOUNT);
+        strSQL = FormatSQL("select musicvideo.c%02d,count(1),count(musicvideo.c%02d) from musicvideo group by musicvideo.c%02d", VIDEODB_ID_MUSICVIDEO_YEAR, VIDEODB_ID_MUSICVIDEO_PLAYCOUNT, VIDEODB_ID_MUSICVIDEO_YEAR);
       }
     }
 
@@ -3921,13 +3933,14 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
         CStdString strDir;
         strDir.Format("%ld/", lYear);
         pItem->m_strPath=strBaseDir + strDir;
-        pItem->m_bIsFolder=true;        
-        if (!items.Contains(pItem->m_strPath))
+        pItem->m_bIsFolder=true;
+        if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
         {
-          if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-            pItem->GetVideoInfoTag()->m_playCount = m_pDS->fv(1).get_asInteger();
-          items.Add(pItem);
+          // fv(2) is the number of videos watched, fv(1) is the total number.  We set the playcount
+          // only if the number of videos watched is equal to the total number (i.e. every video watched)
+          pItem->GetVideoInfoTag()->m_playCount = (m_pDS->fv(2).get_asInteger() == m_pDS->fv(1).get_asInteger()) ? 1 : 0;
         }
+        items.Add(pItem);
         m_pDS->next();
       }
       m_pDS->close();
