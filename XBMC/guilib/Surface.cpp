@@ -618,7 +618,7 @@ void CSurface::EnableVSync(bool enable)
       else
         CLog::Log(LOGWARNING, "%s - glXGetSyncValuesOML failed", __FUNCTION__);
     }
-    if (_glXWaitVideoSyncSGI && _glXGetVideoSyncSGI && !m_iVSyncMode)
+    if (_glXWaitVideoSyncSGI && _glXGetVideoSyncSGI && !m_iVSyncMode && strVendor.find("nvidia") == std::string::npos)
     {
       unsigned int count;
       if(_glXGetVideoSyncSGI(&count) == 0)
