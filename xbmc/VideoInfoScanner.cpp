@@ -598,8 +598,6 @@ namespace VIDEO
               m_database.GetScraperForPath(pItem->m_strPath,info3,settings);
               info3.strPath = info2.strPath;
               m_database.SetScraperForPath(pItem->m_strPath,info3,settings);
-              i--;
-              continue;
             }
           }
 
@@ -1315,7 +1313,6 @@ namespace VIDEO
 
             m_pObserver->OnSetTitle(CUtil::GetFileName(strPath));
           }
-          GetIMDBDetails(pItem, scrUrl, info, bGrabAny, pDlgProgress);
 
           return URL_NFO;
         }
