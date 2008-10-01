@@ -31,6 +31,7 @@ public:
   virtual void Initialize(void *appData = NULL);
   virtual void Acquire() {};
   virtual bool Update(MouseState &state);
+  virtual void ShowPointer(bool show) {};
 private:
   XINPUT_STATE m_MouseState[4*2];   // one for each port
   HANDLE m_hMouseDevice[4*2];  // handle to each device

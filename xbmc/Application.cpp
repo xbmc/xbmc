@@ -1603,19 +1603,50 @@ void CApplication::StopUPnP()
 void CApplication::StartEventServer()
 {
 #ifdef HAS_EVENT_SERVER
+  CEventServer* server = CEventServer::GetInstance();
+  if (!server)
+  {
+    CLog::Log(LOGERROR, "ES: Out of memory");
+    return;
+  }
   if (g_guiSettings.GetBool("remoteevents.enabled"))
   {
     CLog::Log(LOGNOTICE, "ES: Starting event server");
-    CEventServer::GetInstance()->StartServer();
+    server->StartServer();
   }
 #endif
 }
 
-void CApplication::StopEventServer()
+bool CApplication::StopEventServer(bool promptuser)
 {
 #ifdef HAS_EVENT_SERVER
-  CLog::Log(LOGNOTICE, "ES: Stopping event server");
+  CEventServer* server = CEventServer::GetInstance();
+  if (!server)
+  {
+    CLog::Log(LOGERROR, "ES: Out of memory");
+    return false;
+  }
+  if (promptuser)
+  {
+    if (server->GetNumberOfClients() > 0)
+    {
+      bool cancelled = false;
+      if (!CGUIDialogYesNo::ShowAndGetInput(13140, 13141, 13142, 20022,
+                                            -1, -1, cancelled, 10000)
+          || cancelled)
+      {
+        CLog::Log(LOGNOTICE, "ES: Not stopping event server");
+        return false;
+      }
+    }
+    CLog::Log(LOGNOTICE, "ES: Stopping event server with confirmation");
+  }
+  else
+  {
+    CLog::Log(LOGNOTICE, "ES: Stopping event server");
+  }
   CEventServer::GetInstance()->StopServer();
+  return true;
 #endif
 }
 
@@ -2304,7 +2335,7 @@ void CApplication::RenderMemoryStatus()
   {
     // reset the window scaling and fade status
     RESOLUTION res = g_graphicsContext.GetVideoResolution();
-    g_graphicsContext.SetRenderingResolution(res, 0, 0, false);
+/*    g_graphicsContext.SetRenderingResolution(res, 0, 0, false);
 
     CStdStringW wszText;
     MEMORYSTATUS stat;
@@ -2313,7 +2344,7 @@ void CApplication::RenderMemoryStatus()
 
     float x = 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
     float y = 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
-    CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, wszText);
+    CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, wszText);*/
   }
 }
 
@@ -2351,6 +2382,19 @@ bool CApplication::OnKey(CKey& key)
   if (m_gWindowManager.HasModalDialog())
   {
     iWin = m_gWindowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
+  }
+  if (iWin == WINDOW_DIALOG_FULLSCREEN_INFO)
+  { // fullscreen info dialog - special case
+    g_buttonTranslator.GetAction(iWin, key, action);
+
+#ifdef HAS_SDL
+    g_Keyboard.Reset();
+#endif
+    if (OnAction(action))
+      return true;
+
+    // fallthrough to the main window
+    iWin = WINDOW_FULLSCREEN_VIDEO;
   }
   if (iWin == WINDOW_FULLSCREEN_VIDEO)
   {

@@ -24,12 +24,12 @@
   <string id="31020">Chapter Title</string>
   <string id="31021">Video - Files</string>
   <string id="31022">Music - Files</string>
-  <string id="31023">Picture Files</string>
+  <string id="31023"></string>
   <string id="31024">Page</string>
   <string id="31025">Items</string>
 
-  <string id="31026">Film Strip</string>
-  <string id="31027">Episode Thumbs</string>
+  <string id="31026"></string>
+  <string id="31027"></string>
   <string id="31028">DVD Thumbs</string>
   <string id="31029">DVD List</string>
   <string id="31030">Fanart</string>
@@ -48,9 +48,9 @@
   <string id="31047">Last Logged in</string>
   <string id="31048"></string>
 
-  <string id="31050">Picture</string>
-  <string id="31051">Script</string>
-  <string id="31052">Program</string>
+  <string id="31050"></string>
+  <string id="31051"></string>
+  <string id="31052"></string>
 
   <!-- Lyrics Script Extra labels -->
   <string id="31053">XBMC LYRICS</string>
@@ -69,7 +69,7 @@
   <string id="31101">Home Screen Options</string>
   <string id="31102">Backgrounds</string>
   <string id="31103">Show "Paused" in Picture Slide show</string>
-  <string id="31104">Remove Description Text From HOME Menu</string>
+  <string id="31104"></string>
   <string id="31105">Show Media Titles in Background Scanner</string>
   <string id="31106">Miscellaneous Options</string>
   <string id="31107">Remove Scan Lines from Background</string>
@@ -80,17 +80,16 @@
 
   <!-- Script Settings labels -->
   <string id="31200">Custom Script Options</string>
-  <string id="31201">Home submenu Options</string>
-  <string id="31202">Activate Custom Menu Item</string>
+  <string id="31201"></string>
+  <string id="31202"></string>
   <string id="31203">Set Button Label</string>
   <string id="31204">Script Path</string>
-  <string id="31205">Show Video Plugins Button</string>
-  <string id="31206">Show Music Plugins Button</string>
-  <string id="31207">Music On Screen Display Options</string>
+  <string id="31205"></string>
+  <string id="31206"></string>
+  <string id="31207"></string>
   <string id="31208">Show Lyrics Script Button in OSD</string>
   <string id="31209">Enable Quick Launch Script Button for -</string>
 
   <!-- AMT Script Extra labels -->
   <string id="31300">Show Cast</string>
-  <string id="31301">Movie Cast</string>
 </strings>

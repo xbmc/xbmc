@@ -80,8 +80,21 @@ bool CGUIDialogFileBrowser::OnAction(const CAction &action)
   if ((action.wID == ACTION_CONTEXT_MENU || action.wID == ACTION_MOUSE_RIGHT_CLICK) && m_Directory->m_strPath.IsEmpty())
   {
     int iItem = m_viewControl.GetSelectedItem();
-    if ((!m_addSourceType.IsEmpty() && iItem != m_vecItems->Size()-1) || (m_addNetworkShareEnabled && g_mediaManager.HasLocation(m_selectedPath)))
+    if ((!m_addSourceType.IsEmpty() && iItem != m_vecItems->Size()-1))
       return OnPopupMenu(iItem);
+    if (m_addNetworkShareEnabled && g_mediaManager.HasLocation(m_selectedPath))
+    {
+      // need to make sure this source is not an auto added location
+      // as users locations might have the same paths
+      CFileItemPtr pItem = (*m_vecItems)[iItem];
+      for (unsigned int i=0;i<m_shares.size();++i)
+      {
+        if (m_shares[i].strName.Equals(pItem->GetLabel()) && m_shares[i].m_ignore)
+          return false;
+      }
+
+      return OnPopupMenu(iItem);
+    }
 
     return false;
   }
@@ -859,7 +872,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
 
       for (unsigned int i=0;i<m_shares.size();++i)
       {
-        if (m_shares[i].strPath.Equals(m_selectedPath)) // getPath().Equals(m_selectedPath))
+        if (m_shares[i].strPath.Equals(m_selectedPath) && !m_shares[i].m_ignore) // getPath().Equals(m_selectedPath))
         {
           m_shares.erase(m_shares.begin()+i);
           break;

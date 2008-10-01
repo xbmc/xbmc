@@ -169,6 +169,7 @@ public:
     bool m_noDVDROM;
     CStdString m_cachePath;
     bool m_displayRemoteCodes;
+    CStdStringArray m_videoExcludeRegExps;
     CStdStringArray m_videoStackRegExps;
     CStdStringArray m_tvshowStackRegExps;
     CStdString m_tvshowMultiPartStackRegExp;
@@ -364,6 +365,8 @@ protected:
   bool GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iMin, const int iMax);
   bool GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fMin, const float fMax);
   bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue);
+
+  void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
 
   bool GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
   bool GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);

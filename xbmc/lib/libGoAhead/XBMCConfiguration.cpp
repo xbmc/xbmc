@@ -47,7 +47,7 @@ int CXbmcConfiguration::BookmarkSize( int eid, webs_t wp, CStdString& response, 
 	if (ejArgs(argc, argv, T("%s"),&type) < 1)
 	{
            if (eid!=-1) websError(wp, 500, T("Insufficient args\n"));
-              else response="<li>Error:Insufficient args";
+              else response="Error:Insufficient args";
 		return -1;
 	}
 
@@ -62,21 +62,21 @@ int CXbmcConfiguration::BookmarkSize( int eid, webs_t wp, CStdString& response, 
     {
       CStdString tmp;
       tmp.Format("%s", itoa(pShares->size(), buffer, 10));
-      response="<li>" + tmp;
+      response="" + tmp;
     }
 
     return 0;
   }
 
   if (eid!=-1) websError(wp, 500, T("Bookmark type does not exist\n")); 
-  else response="<li>Error:Bookmark type does not exist";
+  else response="Error:Bookmark type does not exist";
   return -1;
 
 /*	// load sources.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
     eid!=-1 ? websError(wp, 500, T("Could not load sources.xml\n")):
-              response="<li>Error:Could not load sources.xml";
+              response="Error:Could not load sources.xml";
 		return -1;
 	}
 
@@ -89,7 +89,7 @@ int CXbmcConfiguration::BookmarkSize( int eid, webs_t wp, CStdString& response, 
 	if (!pNode)
 	{
     eid!=-1 ? websError(wp, 500, T("Bookmark type does not exist\n")):
-              response="<li>Error:Bookmark type does not exist";
+              response="Error:Bookmark type does not exist";
 		return -1;
 	}
 
@@ -104,7 +104,7 @@ int CXbmcConfiguration::BookmarkSize( int eid, webs_t wp, CStdString& response, 
   {
     CStdString tmp;
     tmp.Format("%s", itoa(counter, buffer, 10));
-    response="<li>" + tmp;
+    response="" + tmp;
   }
 	return 0;*/
 }
@@ -122,7 +122,7 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
 	// asp function is called within a script, get arguments
 	if (ejArgs(argc, argv, T("%s %s %s"), &type, &parameter, &id) < 3) {
           if (eid!=-1) websError(wp, 500, T("Insufficient args\n"));
-            else response="<li>Error:Insufficient args";
+            else response="Error:Insufficient args";
 		return -1;
 	}
 
@@ -131,7 +131,7 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
   catch (...)
   {
     if (eid!=-1) websError(wp, 500, T("Id is not a number\n"));
-      else response="<li>Error:Id is not a number";
+      else response="Error:Id is not a number";
     return -1;
   }
 
@@ -139,7 +139,7 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
   if (!pShares)
   {
     if (eid!=-1) websError(wp, 500, T("Bookmark type does not exist\n"));
-      else response="<li>Error:Bookmark type does not exist";
+      else response="Error:Bookmark type does not exist";
     return -1;
   }
   if (nr > 0 && nr <= (int)pShares->size())
@@ -153,7 +153,7 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
       {
         CStdString tmp;
         tmp.Format("%s",share.strPath);
-        response="<li>" + tmp;
+        response="" + tmp;
       }
     }
     else if (CStdString(parameter).Equals("name"))
@@ -164,19 +164,19 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
       {
         CStdString tmp;
         tmp.Format("%s",share.strName);
-        response="<li>" + tmp;
+        response="" + tmp;
       }
     }
     else
     {
       if (eid!=-1) websError(wp, 500, T("Parameter not known\n")); 
-        else response="<li>Error:Parameter not known";
+        else response="Error:Parameter not known";
     }
     return 0;
   }
 
   if (eid!=-1) websError(wp, 500, T("Position not found\n"));
-    else response="<li>Error:Position not found";
+    else response="Error:Position not found";
   return -1;
 
 
@@ -184,7 +184,7 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
 	if (Load() == -1)
 	{
     eid!=-1 ? websError(wp, 500, T("Could not load sources.xml\n")):
-              response="<li>Error:Could not load sources.xml";
+              response="Error:Could not load sources.xml";
 		return -1;
 	}
 
@@ -198,7 +198,7 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
 	catch (...)
 	{
     eid!=-1 ? websError(wp, 500, T("Id is not a number\n")):
-              response="<li>Error:Id is not a number";
+              response="Error:Id is not a number";
 		return -1;
 	}
 
@@ -220,7 +220,7 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
         {
           CStdString tmp;
           tmp.Format("%s",(char*)pIt->FirstChild("name")->FirstChild()->Value());
-          response="<li>" + tmp;
+          response="" + tmp;
         }
 			}
 		}
@@ -235,18 +235,18 @@ int CXbmcConfiguration::GetBookmark( int eid, webs_t wp, CStdString& response, i
         {
           CStdString tmp;
           tmp.Format("%s",(char*)pIt->FirstChild("path")->FirstChild()->Value());
-          response="<li>" + tmp ;
+          response="" + tmp ;
         }
 			}
 		}
     else
       eid!=-1 ? websError(wp, 500, T("Parameter not known\n")):
-                response="<li>Error:Parameter not known";
+                response="Error:Parameter not known";
 	}
   else
   {
     eid!=-1 ? websError(wp, 500, T("Position not found\n")):
-              response="<li>Error:Position not found";
+              response="Error:Position not found";
     return -1;
   }
 	return 0;*/
@@ -274,7 +274,7 @@ int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, CStdString& response, i
     if (eid!=-1)
        websError(wp, 500, T("Insufficient args\n use: function(command, type, name, path, [thumbnail], [position])"));
     else
-       response="<li>Error:Insufficient args, use: function(command, type, name, path, [thumbnail], [position])";
+       response="Error:Insufficient args, use: function(command, type, name, path, [thumbnail], [position])";
     return -1;
   }
 
@@ -305,7 +305,7 @@ int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, CStdString& response, i
 	if (Load() == -1)
 	{
     eid!=-1 ? websError(wp, 500, T("Could not load sources.xml\n")):
-              response="<li>Error:Could not load sources.xml";
+              response="Error:Could not load sources.xml";
     return -1;
 	}
 
@@ -336,7 +336,7 @@ int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, CStdString& response, i
 		catch (...)
 		{
       eid!=-1 ? websError(wp, 500, T("position is not a number\n")):
-                response="<li>Error:position is not a number";
+                response="Error:position is not a number";
 			return -1;
 		}
 
@@ -348,7 +348,7 @@ int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, CStdString& response, i
     else
     {
       eid!=-1 ? websError(wp, 500, T("Position not found\n")):
-                response="<li>Error:Position not found";
+                response="Error:Position not found";
       return -1;
     }
 	}
@@ -373,7 +373,7 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
 	// asp function is called within a script, get arguments
 	if (ejArgs(argc, argv, T("%s %s %s %s"), &type, &name, &path, &position) < 4) {
         if (eid!=-1) websError(wp, 500, T("Insufficient args\n use: function(command, type, name, path, postion)"));
-          else response="<li>Error:Insufficient args, use: function(command, type, name, path, postion)";
+          else response="Error:Insufficient args, use: function(command, type, name, path, postion)";
 		return -1;
 	}
   VECSOURCES* pShares = g_settings.GetSourcesFromType(type);
@@ -382,7 +382,7 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
 	catch (...)
 	{
           if (eid!=-1) websError(wp, 500, T("Id is not a number\n"));
-              else response="<li>Error:Id is not a number";
+              else response="Error:Id is not a number";
 	  return -1;
 	}
 
@@ -396,7 +396,7 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
   }
   
   if (eid!=-1) websError(wp, 500, T("Position not found\n"));
-    else response="<li>Error:Position not found";
+    else response="Error:Position not found";
   return -1;
 
 
@@ -404,7 +404,7 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
 	if (Load() == -1)
 	{
     eid!=-1 ? websError(wp, 500, T("Could not load sources.xml\n")):
-              response="<li>Error:Could not load sources.xml";
+              response="Error:Could not load sources.xml";
     return -1;
 	}
 
@@ -419,7 +419,7 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
 	catch (...)
 	{
     eid!=-1 ? websError(wp, 500, T("Id is not a number\n")):
-              response="<li>Error:Id is not a number";
+              response="Error:Id is not a number";
 		return -1;
 	}
 
@@ -434,7 +434,7 @@ int CXbmcConfiguration::SaveBookmark( int eid, webs_t wp, CStdString& response, 
   else
   {
     eid!=-1 ? websError(wp, 500, T("Position not found\n")):
-              response="<li>Error:Position not found";
+              response="Error:Position not found";
     return -1;
   }*/
   
@@ -455,7 +455,7 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
           if(eid!=-1)
             websError(wp, 500, T("Insufficient args\n use: function(type, position)"));
           else
-            response="<li>Error:Insufficient args, use: function(type, position)";
+            response="Error:Insufficient args, use: function(type, position)";
 	  return -1;
 	}
 
@@ -464,7 +464,7 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
 	catch (...)
 	{
           if (eid!=-1) websError(wp, 500, T("Id is not a number\n"));
-            else response="<li>Error:position is not a number";
+            else response="Error:position is not a number";
   	  return -1;
 	}
 
@@ -474,14 +474,14 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
     return 0;
 
   if (eid!=-1) websError(wp, 500, T("Position not found\n"));
-    else response="<li>Error:Position not found";
+    else response="Error:Position not found";
   return -1;
   /*
 	// load sources.xml, write a messages if file could not be loaded
 	if (Load() == -1)
 	{
     eid!=-1 ? websError(wp, 500, T("Could not load sources.xml\n")):
-              response="<li>Error:Could not load sources.xml";
+              response="Error:Could not load sources.xml";
     return -1;
 	}
 
@@ -496,7 +496,7 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
 	catch (...)
 	{
     eid!=-1 ? websError(wp, 500, T("Id is not a number\n")):
-              response="<li>Error:position is not a number";
+              response="Error:position is not a number";
 		return -1;
 	}
 
@@ -509,7 +509,7 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
   else
   {
     eid!=-1 ? websError(wp, 500, T("Position not found\n")):
-              response="<li>Error:Position not found";
+              response="Error:Position not found";
     return -1;
   }
 	return 0;*/
@@ -524,7 +524,7 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, CStdString& response
 int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
   if (eid!=-1) websError(wp, 500, T("Deprecated\n"));
-    else response="<li>Error:Functino is deprecated";
+    else response="Error:Functino is deprecated";
   return -1;
 
   char_t	*filename = NULL;
@@ -532,7 +532,7 @@ int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& respo
 	// asp function is called within a script, get arguments
 	if (ejArgs(argc, argv, T("%s"), &filename) < 1) {
            if (eid!=-1) websError(wp, 500, T("Insufficient args\n use: function(filename)"));
-              else response="<li>Error:Insufficient args, use: function(filename)";
+              else response="Error:Insufficient args, use: function(filename)";
   	   return -1;
 	}
 
@@ -540,7 +540,7 @@ int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& respo
 	if (Load() == -1) 
 	{
           if (eid!=-1) websError(wp, 500, T((char*)"Could not load sources.xml\n"));
-              else response="<li>Error:Could not load sources.xml";
+              else response="Error:Could not load sources.xml";
           return -1;
 	}
 
@@ -555,7 +555,7 @@ int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& respo
   if (!xbmcCfg.SaveFile(strPath))
 	{
           if (eid!=-1) websError(wp, 500, T("Could not save to file\n"));
-            else response="<li>Error:Could not save to file";
+            else response="Error:Could not save to file";
  	  return -1;
 	}
 	return 0;
@@ -568,16 +568,16 @@ int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& respo
 int CXbmcConfiguration::GetOption( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
   if (eid!=-1) websError(wp, 500, T("Deprecated\n"));
-    else response="<li>Error:Functino is deprecated";
+    else response="Error:Functino is deprecated";
 return -1;
 
-  
+ /* 
   char_t* name = NULL;
 
 	// asp function is called within a script, get arguments
 	if (ejArgs(argc, argv, T("%s"), &name) < 1) {
     eid!=-1 ? websError(wp, 500, T("Insufficient args\n")):
-              response="<li>Error:Insufficient args";
+              response="Error:Insufficient args";
 		return -1;
 	}
 
@@ -585,7 +585,7 @@ return -1;
 	if (Load() == -1)
 	{
     eid!=-1 ? websError(wp, 500, T("Could not load sources.xml\n")):
-              response="<li>Error:Could not load sources.xml";;
+              response="Error:Could not load sources.xml";;
 		return -1;
 	}
 
@@ -607,22 +607,29 @@ return -1;
         {
           CStdString tmp;
           tmp.Format("%s",value);
-          response="<li>" + tmp;
+          response="" + tmp;
         }
 		}
 		// option exist, but no value is set. Default is "-"
 		else 
-      eid!=-1 ? ejSetResult(eid, "-"):
-                response="<li>";
+                {
+                   if (eid!=-1) 
+                      ejSetResult(eid, "-");
+                   else
+                      response="";
+                }
 	}
 	else
 	{
 		// option not found in xml file
 		// set value to "-"
-    eid!=-1 ? ejSetResult(eid, ""):
-              response="<li>Error:Not found";
+                if (eid!=-1) 
+                   ejSetResult(eid, "");
+                else
+                   response="Error:Not found";
   }
 	return 0;
+*/
 }
 
 /*
@@ -632,66 +639,10 @@ return -1;
  */
 int CXbmcConfiguration::SetOption( int eid, webs_t wp, CStdString& response, int argc, char_t **argv)
 {
-	char_t *name, *value = NULL;
+  if (eid!=-1) websError(wp, 500, T((char*)"Deprecated\n"));
+    else response="Error:Functino is deprecated";
 
-  eid!=-1 ? websError(wp, 500, T("Deprecated\n")):
-  response="<li>Error:Function is deprecated";
   return -1;
-
-	// load sources.xml, write a messages if file could not be loaded
-	if (Load() == -1)
-	{
-    eid!=-1 ? websError(wp, 500, T("Could not load sources.xml\n")) : 
-              response="<li>Error:Could not load sources.xml";
-		return -1;
-	}
-
-	// asp function is called within a script, get arguments
-	if (ejArgs(argc, argv, T("%s %s"), &name, &value) < 2)
-	{
-    eid!=-1 ? websError(wp, 500, T("Insufficient args\n")) :
-              response="<li>Error:Insufficient args";
-		return -1;
-	}
-
-	// get first option from xml file
-	// we have to check if there arent any other childs in this element
-	TiXmlElement *pRootElement = xbmcCfg.RootElement();
-	TiXmlElement *pElement = NULL;
-	pElement = pRootElement->FirstChildElement(name);
-
-	if (pElement)
-	{
-		if (pElement->FirstChild() && pElement->FirstChild()->FirstChild() == NULL)
-		{
-			pElement->FirstChild()->SetValue(value);
-		}
-		
-		else
-		{
-			// option exist, but no child exists.  set value or "-" is value = NULL
-			pElement->InsertEndChild(TiXmlText(value ? value : "-"));
-		}
-	}
-	else if (IsValidOption(name))
-	{
-		// option not found in xml file
-		// create new element and set value or "-" is value = NULL
-
-		// create a new Element
-		TiXmlElement xmlOption(name);
-		xmlOption.InsertEndChild(TiXmlText(value ? value : "-"));
-
-		// add element to configuration
-		pRootElement->InsertEndChild(xmlOption);
-	}
-  else
-  {
-    eid!=-1 ? websError(wp, 500, T("Not valid option\n")):
-              response="<li>Error:Not valid option";
-    return -1;
-  }
-	return 0;
 }
 
 /*

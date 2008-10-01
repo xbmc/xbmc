@@ -421,7 +421,15 @@ bool CGUIWindowManager::OnAction(const CAction &action)
     if (dialog->IsModalDialog())
     { // we have the topmost modal dialog
       if (!dialog->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
-        return dialog->OnAction(action);
+      {
+        if (dialog->OnAction(action))
+          return true;
+        // dialog didn't want the action - we'd normally return true
+        // but for some dialogs we want to drop the actions through
+        if (dialog->GetID() == WINDOW_DIALOG_FULLSCREEN_INFO)
+          break;
+        return false;
+      }
       return true; // do nothing with the action until the anim is finished
     }
     // music or video overlay are handled as a special case, as they're modeless, but we allow

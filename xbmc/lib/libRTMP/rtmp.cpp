@@ -64,7 +64,7 @@ static const int packetSize[] = { 12, 8, 4, 1 };
 CRTMP::CRTMP() : m_socket(INVALID_SOCKET)
 {
   Close();
-  m_strPlayer = "http://www.boxee.tv/player.swf";
+  m_strPlayer = "file:///xbmc.flv";
   m_pBuffer = new char[RTMP_BUFFER_CACHE_SIZE];
 }
 
@@ -171,6 +171,7 @@ bool CRTMP::GetNextMediaPacket(RTMPPacket &packet)
 
       case 0x03:
         // bytes read report
+        CLog::Log(LOGDEBUG,"%s, received: bytes read report", __FUNCTION__);
         break;
 
       case 0x04:
@@ -180,26 +181,31 @@ bool CRTMP::GetNextMediaPacket(RTMPPacket &packet)
 
       case 0x05:
         // server bw
+        CLog::Log(LOGDEBUG,"%s, received: server BW", __FUNCTION__);
         break;
 
       case 0x06:
         // client bw
+        CLog::Log(LOGDEBUG,"%s, received: client BW", __FUNCTION__);
         break;
 
       case 0x08:
         // audio data
+        CLog::Log(LOGDEBUG,"%s, received: audio %i bytes", __FUNCTION__, packet.m_nBodySize);
         HandleAudio(packet);
         bHasMediaPacket = true;
         break;
 
       case 0x09:
         // video data
+        CLog::Log(LOGDEBUG,"%s, received: video %i bytes", __FUNCTION__, packet.m_nBodySize);
         HandleVideo(packet);
         bHasMediaPacket = true;
         break;
 
       case 0x12:
-        // metadata
+        // metadata (notify)
+        CLog::Log(LOGDEBUG,"%s, received: notify", __FUNCTION__);
         HandleMetadata(packet);
         bHasMediaPacket = true;
         break;
@@ -207,6 +213,12 @@ bool CRTMP::GetNextMediaPacket(RTMPPacket &packet)
       case 0x14:
         // invoke
         HandleInvoke(packet);
+        break;
+
+      case 0x16:
+        // FLV tag(s)
+        CLog::Log(LOGDEBUG,"%s, received: FLV tag(s) %i bytes", __FUNCTION__, packet.m_nBodySize);
+        bHasMediaPacket = true;
         break;
 
       default:
@@ -251,7 +263,7 @@ int CRTMP::ReadN(char *buffer, int n)
     else
       nBytes = recv(m_socket, ptr, n, 0);
 
-    if (nBytes < 0)
+    if (nBytes == SOCKET_ERROR)
     {
       CLog::Log(LOGERROR, "%s, RTMP recv error %d", __FUNCTION__, GetLastError());
       Close();
@@ -309,7 +321,19 @@ bool CRTMP::Connect()
 bool CRTMP::SendConnectPacket()
 {
   CURL url(m_strLink);
+  CStdString app = url.GetFileName();
 
+  CStdString::size_type slistPos = url.GetFileName().Find("slist=");
+  if ( slistPos == CStdString::npos ){
+    // no slist parameter. send the path as the app
+    // if URL path contains a slash, use the part up to that as the app
+    // as we'll send the part after the slash as the thing to play
+    CStdString::size_type pos_slash = app.find_last_of("/");
+    if( pos_slash != CStdString::npos ){
+      app = app.Left(pos_slash);
+    }
+  }
+	
   RTMPPacket packet;
   packet.m_nChannel = 0x03;   // control channel (invoke)
   packet.m_headerType = RTMP_PACKET_SIZE_LARGE;
@@ -321,7 +345,7 @@ bool CRTMP::SendConnectPacket()
   enc += EncodeNumber(enc, 1.0);
   *enc = 0x03; //Object Datatype
   enc++;
-  enc += EncodeString(enc, "app", url.GetFileName());
+  enc += EncodeString(enc, "app", app);
   enc += EncodeString(enc, "flashVer", "LNX 9,0,115,0");
   enc += EncodeString(enc, "swfUrl", m_strPlayer.c_str());
   enc += EncodeString(enc, "tcUrl", m_strLink.c_str());
@@ -486,14 +510,27 @@ bool CRTMP::SendPlay()
   enc += EncodeNumber(enc, 0.0);
   *enc = 0x05; // NULL
   enc++;
+  // use m_strPlayPath
   CStdString strPlay = m_strPlayPath;
   if (strPlay.IsEmpty())
   {
+    // or use slist parameter, if there is one
     int nPos = url.GetFileName().Find("slist=");
     if (nPos > 0)
       strPlay = url.GetFileName().Mid(nPos + 6);
-    if (strPlay.IsEmpty())
-      return false;
+		
+		if (strPlay.IsEmpty())
+		{
+			// or use last piece of URL, if there's more than one level
+			CStdString::size_type pos_slash = url.GetFileName().find_last_of("/");
+			if ( pos_slash != CStdString::npos )
+				strPlay = url.GetFileName().Mid(pos_slash+1);
+		}
+
+		if (strPlay.IsEmpty()){
+			CLog::Log(LOGERROR,"%s, no name to play!", __FUNCTION__);
+			return false;
+		}
   }
 
   enc += EncodeString(enc, strPlay.c_str());
@@ -547,8 +584,8 @@ void CRTMP::HandleInvoke(const RTMPPacket &packet)
   }
 
   obj.Dump();
-
   CStdString method = obj.GetProperty(0).GetString();
+  CLog::Log(LOGDEBUG,"%s, server invoking <%s>", __FUNCTION__, method.c_str());
 
   if (method == "_result")
   {
@@ -589,12 +626,14 @@ void CRTMP::HandleInvoke(const RTMPPacket &packet)
     CLog::Log(LOGERROR,"rtmp server requested close");
     Close();
   }
-  else if (method == "onstatus")
+  else if (method == "onStatus")
   {
+    CStdString text = obj.GetProperty(3).GetObject().GetProperty("code").GetString();
+    CLog::Log(LOGDEBUG,"%s, onStatus: %s", __FUNCTION__, text.c_str() );
   }
   else
   {
-    CLog::Log(LOGDEBUG,"%s, server invoking <%s>", __FUNCTION__, method.c_str());
+
   }
 }
 
@@ -607,7 +646,7 @@ void CRTMP::HandleChangeChunkSize(const RTMPPacket &packet)
   if (packet.m_nBodySize >= 4)
   {
     m_chunkSize = ReadInt32(packet.m_body);
-    CLog::Log(LOGDEBUG,"Changed chunk size to %d", m_chunkSize);
+    CLog::Log(LOGDEBUG,"%s, received: chunk size change to %d", __FUNCTION__, m_chunkSize);
   }
 }
 
@@ -646,6 +685,9 @@ bool CRTMP::ReadPacket(RTMPPacket &packet)
   packet.m_nChannel = (type & 0x3f);
 
   int nSize = packetSize[packet.m_headerType];
+  
+//  CLog::Log(LOGDEBUG, "%s, reading RTMP packet chunk on channel %x, headersz %i", __FUNCTION__, packet.m_nChannel, nSize);
+
   if (nSize < RTMP_LARGE_HEADER_SIZE) // using values from the last message of this channel
     packet = m_vecChannelsIn[packet.m_nChannel];
   
@@ -1021,7 +1063,7 @@ bool CRTMP::FillBuffer()
   while (m_nBufferSize < RTMP_BUFFER_CACHE_SIZE && time(NULL) - now < 4)
   {
     int nBytes = recv(m_socket, m_pBuffer + m_nBufferSize, RTMP_BUFFER_CACHE_SIZE - m_nBufferSize, 0);
-    if (nBytes > 0)
+    if (nBytes != SOCKET_ERROR)
       m_nBufferSize += nBytes;
     else
     {

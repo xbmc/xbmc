@@ -87,6 +87,7 @@ namespace VIDEO
   protected:
     virtual void Process();
     bool DoScan(const CStdString& strDirectory, SScanSettings settings);
+    bool ExcludeFile(const CStdString& strFileName, const CStdStringArray& regexps);
 
     virtual void Run();
     int CountFiles(const CStdString& strPath);
@@ -110,3 +111,4 @@ namespace VIDEO
     std::vector<long> m_pathsToClean;
   };
 }
+

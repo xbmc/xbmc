@@ -457,7 +457,7 @@ void CGUIWindow::Render()
       break;
     }
   }
-  g_graphicsContext.SetScalingResolution(m_coordsRes, posX, posY, m_needsScaling);
+  g_graphicsContext.SetRenderingResolution(m_coordsRes, posX, posY, m_needsScaling);
   if (m_hasCamera)
     g_graphicsContext.SetCameraPosition(m_camera);
 
@@ -510,7 +510,7 @@ bool CGUIWindow::OnMouseAction()
       break;
     }
   }
-  g_graphicsContext.SetRenderingResolution(m_coordsRes, posX, posY, m_needsScaling);
+  g_graphicsContext.SetScalingResolution(m_coordsRes, posX, posY, m_needsScaling);
   CPoint mousePoint(g_Mouse.GetLocation());
   g_graphicsContext.InvertFinalCoords(mousePoint.x, mousePoint.y);
   m_transform.InverseTransformPosition(mousePoint.x, mousePoint.y);
