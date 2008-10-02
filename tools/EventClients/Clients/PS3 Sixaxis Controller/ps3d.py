@@ -100,11 +100,11 @@ def getkeys(bflags):
     return keys;
 
 class PS3SixaxisThread ( StoppableThread ):
-    def __init__(self, csock, isock, ip=""):
+    def __init__(self, csock, isock, ipaddr="127.0.0.1"):
         StoppableThread.__init__(self)
         self.csock = csock
         self.isock = isock
-        self.xbmc = XBMCClient("PS3 Sixaxis", ICON_PATH + "/bluetooth.png")
+        self.xbmc = XBMCClient(name="PS3 Sixaxis", icon_file=ICON_PATH + "/bluetooth.png", ip=ipaddr)
         self.set_timeout(600)
 
     def run(self):
@@ -189,11 +189,11 @@ class PS3SixaxisThread ( StoppableThread ):
 
 
 class PS3RemoteThread ( StoppableThread ):
-    def __init__(self, csock, isock, ip=""):
+    def __init__(self, csock, isock, ipaddr="127.0.0.1"):
         StoppableThread.__init__(self)
         self.csock = csock
         self.isock = isock
-        self.xbmc = XBMCClient("PS3 Blu-Ray Remote", ICON_PATH + "/bluetooth.png")
+        self.xbmc = XBMCClient(name="PS3 Blu-Ray Remote", icon_file=ICON_PATH + "/bluetooth.png", ip=ipaddr)
         self.set_timeout(300)
 
     def run(self):
@@ -218,13 +218,15 @@ def usage():
     print """
 PS3 Sixaxis / Blu-Ray Remote HID Server v0.1
 
-Usage: ps3.py [bdaddress]
+Usage: ps3.py [bdaddress] [ip address of XBMC]
 
-  bdaddress => address of local bluetooth device to use (default: auto)
-               (e.g. aa:bb:cc:dd:ee:ff)
+  bdaddress  => address of local bluetooth device to use (default: auto)
+                (e.g. aa:bb:cc:dd:ee:ff)
+  ip address => IP address of the XBMC instance (default: localhost)
+                (e.g. 192.168.1.110)
 """
 
-def start_hidd(bdaddr=None):
+def start_hidd(bdaddr=None, ipaddr="127.0.0.1"):
     devices = [ 'PLAYSTATION(R)3 Controller',
                 'BD Remote Control' ]
     hid = HID(bdaddr)
@@ -234,28 +236,28 @@ def start_hidd(bdaddr=None):
             device_name = bt_lookup_name(addr[0])
             if device_name == devices[0]:
                 # handle PS3 controller
-                handle_ps3_controller(hid)
+                handle_ps3_controller(hid, ipaddr)
             elif device_name == devices[1]:
                 # handle the PS3 remote
-                handle_ps3_remote(hid)
+                handle_ps3_remote(hid, ipaddr)
             else:
                 print "Unknown Device: %s" % (device_name)
 
-def handle_ps3_controller(hid):
+def handle_ps3_controller(hid, ipaddr):
     print "Received connection from a Sixaxis PS3 Controller"
     csock = hid.get_control_socket()[0]
     isock = hid.get_interrupt_socket()[0]
-    sixaxis = PS3SixaxisThread(csock, isock)
+    sixaxis = PS3SixaxisThread(csock, isock, ipaddr)
     add_thread(sixaxis)
     sixaxis.start()
     return
 
-def handle_ps3_remote(hid):
+def handle_ps3_remote(hid, ipaddr):
     print "Received connection from a PS3 Blu-Ray Remote"
     csock = hid.get_control_socket()[0]
     isock = hid.get_interrupt_socket()[0]
     isock.settimeout(1)
-    remote = PS3RemoteThread(csock, isock)
+    remote = PS3RemoteThread(csock, isock, ipaddr)
     add_thread(remote)
     remote.start()
     return
@@ -265,25 +267,32 @@ def add_thread(thread):
     event_threads.append(thread)
 
 def main():
-    if len(sys.argv)>2:
+    if len(sys.argv)>3:
         return usage()
     bdaddr = ""
+    ipaddr = "127.0.0.1"
     try:
-        bdaddr = sys.argv[1]
-        try:
-            # ensure that the addr is of the format 'aa:bb:cc:dd:ee:ff'
-            if "".join([ str(len(a)) for a in bdaddr.split(":") ]) != "222222":
-                raise Exception("Invalid format")
-
-        except Exception, e:
-            print str(e)
-            return usage()
-
+        for addr in sys.argv[1:]:
+            try:
+                # ensure that the addr is of the format 'aa:bb:cc:dd:ee:ff'
+                if "".join([ str(len(a)) for a in addr.split(":") ]) != "222222":
+                    raise Exception("Invalid format")
+                bdaddr = addr
+                print "Connecting to Bluetooth device: %s" % bdaddr
+            except Exception, e:
+                try:
+                    if len(addr.split(".")) != 4:
+                        raise Exception("Invalid format")
+                    ipaddr = addr
+                    print "Connecting to IP: %s" % ipaddr
+                except:
+                    print str(e)
+                    return usage()
     except:
         pass
 
     print "Starting HID daemon"
-    start_hidd(bdaddr)
+    start_hidd(bdaddr, ipaddr)
 
 if __name__=="__main__":
     try:
