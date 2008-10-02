@@ -45,6 +45,9 @@ public:
   CCriticalSection();
   virtual ~CCriticalSection();
 
+  CCriticalSection(const CCriticalSection& section);
+  const CCriticalSection& operator=(const CCriticalSection& section);
+
   XCriticalSection& getCriticalSection() { return m_criticalSection; }
 
 private:
