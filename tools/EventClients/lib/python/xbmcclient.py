@@ -444,7 +444,8 @@ class PacketACTION (Packet):
 class XBMCClient:
     """An XBMC event client"""
 
-    def __init__(self, name ="", icon_file=None, broadcast=False, uid=UNIQUE_IDENTIFICATION):
+    def __init__(self, name ="", icon_file=None, broadcast=False, uid=UNIQUE_IDENTIFICATION, 
+                 ip="127.0.0.1"):
         """
         Keyword arguments:
         name -- Name of the client
@@ -454,7 +455,7 @@ class XBMCClient:
         self.name = str(name)
         self.icon_file = icon_file
         self.icon_type = self._get_icon_type(icon_file)
-        self.ip = "127.0.0.1"
+        self.ip = ip
         self.port = 9777
         self.sock = socket(AF_INET,SOCK_DGRAM)
         if broadcast:
