@@ -39,7 +39,7 @@ CCriticalSection::CCriticalSection(const CCriticalSection& section)
   *this = section;
 }
  
-const CCriticalSection& CCriticalSection::operator=(const CCriticalSection& section)
+CCriticalSection& CCriticalSection::operator=(const CCriticalSection& section)
 {	
   if (this == &section) return * this;
  
