@@ -59,7 +59,7 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
   else if (strFileType.Equals("cdda"))
     return new CDDACodec();
   else if (strFileType.Equals("ogg") || strFileType.Equals("oggstream") || strFileType.Equals("oga"))
-    return new OGGCodec();
+    return new DVDPlayerCodec();
   else if (strFileType.Equals("mpc") || strFileType.Equals("mp+") || strFileType.Equals("mpp"))
     return new MPCCodec();
   else if (strFileType.Equals("shn"))
