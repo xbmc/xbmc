@@ -31,7 +31,7 @@ extern "C" inline void tracker_library_track(uintptr_t caller, HMODULE hHandle)
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(caller);
   if (pInfo && hHandle)
   {
-    CSingleLock lock(*pInfo);
+    CSingleLock lock(g_trackerLock);
     pInfo->dllList.push_back(hHandle);
   }
 }
@@ -41,7 +41,7 @@ extern "C" inline void tracker_library_free(uintptr_t caller, HMODULE hHandle)
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(caller);
   if (pInfo && hHandle)
   {
-    CSingleLock lock(*pInfo);
+    CSingleLock lock(g_trackerLock);
     for (DllListIter it = pInfo->dllList.begin(); it != pInfo->dllList.end(); ++it)
     {
       if (*it == hHandle)
@@ -58,7 +58,7 @@ extern "C" void tracker_library_free_all(DllTrackInfo* pInfo)
   // unloading unloaded dll's
   if (!pInfo->dllList.empty())
   {
-    CSingleLock lock(*pInfo);
+    CSingleLock lock(g_trackerLock);
     CLog::Log(LOGDEBUG,"%s: Detected %d unloaded dll's", pInfo->pDll->GetFileName(), pInfo->dllList.size());
     for (DllListIter it = pInfo->dllList.begin(); it != pInfo->dllList.end(); ++it)
     {
