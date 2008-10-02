@@ -69,9 +69,8 @@ typedef std::list<HANDLE>::iterator HeapObjectListIter;
 typedef std::map<uintptr_t, AllocLenCaller> VAllocList;
 typedef std::map<uintptr_t, AllocLenCaller>::iterator  VAllocListIter;
 
-class DllTrackInfo : public CCriticalSection
+typedef struct _DllTrackInfo
 {
-public:
   DllLoader* pDll;
   uintptr_t lMinAddr;
   uintptr_t lMaxAddr;
@@ -91,7 +90,7 @@ public:
   HeapObjectList heapobjectList;
   
   VAllocList virtualList;
-};
+} DllTrackInfo;
 
 class TrackedDllList : public std::list<DllTrackInfo*>, public CCriticalSection {};
 typedef std::list<DllTrackInfo*>::iterator TrackedDllsIter;
@@ -101,6 +100,7 @@ extern "C"
 {
 #endif
 
+extern CCriticalSection g_trackerLock;
 extern TrackedDllList g_trackedDlls;
 
 // add a dll for tracking
