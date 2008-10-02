@@ -71,22 +71,45 @@ namespace PYXBMC
 
   // output() method
   PyDoc_STRVAR(output__doc__,
-    "output(text) -- Write a string to XBMC's log file and the debug window.\n"
+    "output(msg[, level]) -- Write a string to XBMC's log file and the debug window.\n"
     "\n"
-    "text           : string - text to output.\n"
+    "msg            : string - text to output.\n"
+    "level          : [opt] integer - log level to ouput at. (default=LOGNOTICE)\n"
     "\n"
-    "*Note, Text is written to the log only when <loglevel>1</loglevel> (DEBUG)\n"
-    "       or higher is set in AdvancedSettings.xml.\n"
+    "*Note, You can use the above as keywords for arguments.\n"
+    "\n"
+    "       Text is written to the log for the following conditions.\n"
+    "         XBMC loglevel == -1 (NONE, nothing at all is logged)"
+    "         XBMC loglevel == 0 (NORMAL, shows LOGNOTICE, LOGERROR, LOGSEVERE and LOGFATAL)"
+    "         XBMC loglevel == 1 (DEBUG, shows all)"
+    "       See pydocs for valid values for level.\n"
     "\n"
     "example:\n"
-    "  - xbmc.output('This is a test string.')\n");
+    "  - xbmc.output(msg='This is a test string.', level=xbmc.LOGDEBUG)\n");
 
-  PyObject* XBMC_Output(PyObject *self, PyObject *args)
+  PyObject* XBMC_Output(PyObject *self, PyObject *args, PyObject *kwds)
   {
-    char *s_line = NULL;
-    if (!PyArg_ParseTuple(args, (char*)"s:xb_output", &s_line)) return NULL;
+    static const char *keywords[] = {
+      "msg",
+      "level",
+      NULL};
 
-    CLog::Log(LOGINFO, "%s", s_line);
+    char *s_line = NULL;
+    int iLevel = LOGNOTICE;
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"s|i:xb_output",
+      (char**)keywords,
+      &s_line,
+      &iLevel))
+    {
+      return NULL;
+    }
+    // check for a valid loglevel
+    if (iLevel < LOGDEBUG || iLevel > LOGNONE)
+      iLevel = LOGNOTICE;
+    CLog::Log(iLevel, "%s", s_line);
 
     ThreadMessage tMsg = {TMSG_WRITE_SCRIPT_OUTPUT};
     tMsg.strParam = s_line;
@@ -98,19 +121,45 @@ namespace PYXBMC
 
   // log() method
   PyDoc_STRVAR(log__doc__,
-    "log(text) -- Write a string to XBMC's log file.\n"
+    "log(msg[, level]) -- Write a string to XBMC's log file.\n"
     "\n"
-    "text           : string - text to write to log.\n"
+    "msg            : string - text to output.\n"
+    "level          : [opt] integer - log level to ouput at. (default=LOGNOTICE)\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments.\n"
+    "\n"
+    "       Text is written to the log for the following conditions.\n"
+    "         XBMC loglevel == -1 (NONE, nothing at all is logged)"
+    "         XBMC loglevel == 0 (NORMAL, shows LOGNOTICE, LOGERROR, LOGSEVERE and LOGFATAL)"
+    "         XBMC loglevel == 1 (DEBUG, shows all)"
+    "       See pydocs for valid values for level.\n"
     "\n"
     "example:\n"
-    "  - xbmc.log('This is a test string.')\n");
+    "  - xbmc.log(msg='This is a test string.', level=xbmc.LOGDEBUG)\n");
 
-  PyObject* XBMC_Log(PyObject *self, PyObject *args)
+  PyObject* XBMC_Log(PyObject *self, PyObject *args, PyObject *kwds)
   {
-    char *s_line = NULL;
-    if (!PyArg_ParseTuple(args, (char*)"s", &s_line)) return NULL;
+    static const char *keywords[] = {
+      "msg",
+      "level",
+      NULL};
 
-    CLog::Log(LOGFATAL, "%s", s_line);
+    char *s_line = NULL;
+    int iLevel = LOGNOTICE;
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"s|i",
+      (char**)keywords,
+      &s_line,
+      &iLevel))
+    {
+      return NULL;
+    }
+    // check for a valid loglevel
+    if (iLevel < LOGDEBUG || iLevel > LOGNONE)
+      iLevel = LOGNOTICE;
+    CLog::Log(iLevel, "%s", s_line);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -751,8 +800,8 @@ namespace PYXBMC
 
   // define c functions to be used in python here
   PyMethodDef xbmcMethods[] = {
-    {(char*)"output", (PyCFunction)XBMC_Output, METH_VARARGS, output__doc__},
-    {(char*)"log", (PyCFunction)XBMC_Log, METH_VARARGS, log__doc__},
+    {(char*)"output", (PyCFunction)XBMC_Output, METH_VARARGS|METH_KEYWORDS, output__doc__},
+    {(char*)"log", (PyCFunction)XBMC_Log, METH_VARARGS|METH_KEYWORDS, log__doc__},
     {(char*)"executescript", (PyCFunction)XBMC_ExecuteScript, METH_VARARGS, executeScript__doc__},
     {(char*)"executebuiltin", (PyCFunction)XBMC_ExecuteBuiltIn, METH_VARARGS, executeBuiltIn__doc__},
 
@@ -875,6 +924,17 @@ namespace PYXBMC
     PyModule_AddIntConstant(pXbmcModule, (char*)"DRIVE_NOT_READY", DRIVE_NOT_READY);
     PyModule_AddIntConstant(pXbmcModule, (char*)"TRAY_CLOSED_NO_MEDIA", TRAY_CLOSED_NO_MEDIA);
     PyModule_AddIntConstant(pXbmcModule, (char*)"TRAY_CLOSED_MEDIA_PRESENT", TRAY_CLOSED_MEDIA_PRESENT);
+
+    // log levels
+    PyModule_AddIntConstant(pXbmcModule, (char*)"LOGDEBUG", LOGDEBUG);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"LOGINFO", LOGINFO);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"LOGNOTICE", LOGNOTICE);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"LOGWARNING", LOGWARNING);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"LOGERROR", LOGERROR);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"LOGSEVERE", LOGSEVERE);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"LOGFATAL", LOGFATAL);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"LOGNONE", LOGNONE);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"LOGDEBUG", LOGDEBUG);
   }
 }
 
