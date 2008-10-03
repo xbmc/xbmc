@@ -116,7 +116,7 @@ void CMusicInfoScraper::FindAlbuminfo()
   }
 
   if (strXML.Find("encoding=\"utf-8\"") < 0)
-    g_charsetConverter.stringCharsetToUtf8(strXML);
+    g_charsetConverter.unknownToUTF8(strXML);
 
   // ok, now parse the xml file
   TiXmlDocument doc;
@@ -211,7 +211,7 @@ void CMusicInfoScraper::FindArtistinfo()
   }
 
   if (strXML.Find("encoding=\"utf-8\"") < 0)
-    g_charsetConverter.stringCharsetToUtf8(strXML);
+    g_charsetConverter.unknownToUTF8(strXML);
 
   // ok, now parse the xml file
   TiXmlDocument doc;

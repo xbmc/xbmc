@@ -137,7 +137,7 @@ bool CScraperUrl::ParseString(CStdString strUrl)
 
   // ok, now parse the xml file
   if (strUrl.Find("encoding=\"utf-8\"") < 0)
-    g_charsetConverter.stringCharsetToUtf8(strUrl);
+    g_charsetConverter.unknownToUTF8(strUrl);
 
   TiXmlDocument doc;
   doc.Parse(strUrl.c_str(),0,TIXML_ENCODING_UTF8);
@@ -288,7 +288,7 @@ bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
 
   // ok, now parse the xml file
   if (strUrls.Find("encoding=\"utf-8\"") < 0)
-    g_charsetConverter.stringCharsetToUtf8(strUrls);
+    g_charsetConverter.unknownToUTF8(strUrls);
 
   TiXmlDocument doc;
   doc.Parse(strUrls.c_str(),0,TIXML_ENCODING_UTF8);

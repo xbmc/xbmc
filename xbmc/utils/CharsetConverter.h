@@ -101,10 +101,11 @@ public:
 
   void utf8ToStringCharset(CStdStringA& strSourceDest);
 
+  void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStringA& strDest);
+
   void stringCharsetToUtf8(const CStdStringA& strSource, CStdStringA& strDest);
 
   void stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest);
-  void stringCharsetTo(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStringA& strDest);
 
   void stringCharsetToUtf8(CStdStringA& strSourceDest);
 
@@ -128,6 +129,9 @@ public:
 
   void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset, FriBidiCharType base = FRIBIDI_TYPE_LTR, bool* bWasFlipped=NULL);
   void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, CStdStringA& charset, FriBidiCharType base = FRIBIDI_TYPE_LTR, bool* bWasFlipped=NULL);
+
+  void unknownToUTF8(CStdStringA &sourceDest);
+  void unknownToUTF8(const CStdStringA &source, CStdStringA &dest);
 
 private:
   std::vector<CStdString> m_vecCharsetNames;

@@ -110,7 +110,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   }
 
   if (strXML.Find("encoding=\"utf-8\"") < 0)
-    g_charsetConverter.stringCharsetToUtf8(strXML);
+    g_charsetConverter.unknownToUTF8(strXML);
 
   // ok, now parse the xml file
   TiXmlDocument doc;
@@ -229,6 +229,10 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
       CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
       return false;
     }
+
+    if (strXML.Find("encoding=\"utf-8\"") < 0)
+      g_charsetConverter.unknownToUTF8(strXML);
+
     TiXmlHandle docHandle( &doc );
     TiXmlElement *movie = docHandle.FirstChild( "episodeguide" ).FirstChild( "episode" ).Element();
 
@@ -243,7 +247,7 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
       {
         CScraperUrl url2;
         if (title && title->FirstChild())
-          g_charsetConverter.stringCharsetToUtf8(title->FirstChild()->Value(),url2.strTitle);
+          url2.strTitle = title->FirstChild()->Value();
         else
           url2.strTitle = g_localizeStrings.Get(416);
 
@@ -319,7 +323,7 @@ bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetai
   // abit ugly, but should work. would have been better if parser
   // set the charset of the xml, and we made use of that
   if (strXML.Find("encoding=\"utf-8\"") < 0)
-    g_charsetConverter.stringCharsetToUtf8(strXML);
+    g_charsetConverter.unknownToUTF8(strXML);
 
     // ok, now parse the xml file
   TiXmlBase::SetCondenseWhiteSpace(false);
@@ -466,7 +470,9 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
 
     strSearch2.Replace('_', ' ');
 
-    g_charsetConverter.stringCharsetTo(m_parser.GetSearchStringEncoding(),strSearch2,m_parser.m_param[0]);
+    // convert to utf8 first (if necessary), then to the encoding requested by the parser
+    g_charsetConverter.unknownToUTF8(strSearch2);
+    g_charsetConverter.utf8To(m_parser.GetSearchStringEncoding(), strSearch2, m_parser.m_param[0]);
     CUtil::URLEncode(m_parser.m_param[0]);
   }
   scrURL.ParseString(m_parser.Parse("CreateSearchUrl",&m_info.settings));
