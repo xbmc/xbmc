@@ -183,6 +183,7 @@ bool CHDDirectory::Create(const char* strPath)
 
 #ifndef _LINUX
   CStdStringW strWPath1;
+  g_charsetConverter.unknownToUTF8(strPath1);
   g_charsetConverter.utf8ToW(strPath1, strWPath1);
   if(::CreateDirectoryW(strWPath1, NULL))
 #else
