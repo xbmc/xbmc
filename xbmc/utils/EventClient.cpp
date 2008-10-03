@@ -434,7 +434,8 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
                              button,
                              famount,
                              (flags & (PTB_AXIS|PTB_AXISSINGLE)) ? true  : false,
-                             (flags & PTB_NO_REPEAT)             ? false : true );
+                             (flags & PTB_NO_REPEAT)             ? false : true,
+                             (flags & PTB_USE_AMOUNT)            ? true : false );
 
     /* correct non active events so they work with rest of code */
     if(!active)
@@ -460,7 +461,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
         std::list<CEventButtonState>::iterator it2 = (++it).base();
 
         /* if last event had an amount, we must resend without amount */
-        if(it2->m_fAmount != 0.0)
+        if(it2->m_bUseAmount && it2->m_fAmount != 0.0)
           m_buttonQueue.push_back(state);
 
         /* if the last event was waiting for a repeat interval, it has executed already.*/
@@ -507,14 +508,15 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
     {
       /* when a button is released that had amount, make sure *
        * to resend the keypress with an amount of 0           */
-      if(m_currentButton.m_fAmount > 0.0)
+      if((flags & PTB_USE_AMOUNT) && m_currentButton.m_fAmount > 0.0)
       {
         CEventButtonState state( m_currentButton.m_iKeyCode,
                                  m_currentButton.m_mapName,
                                  m_currentButton.m_buttonName,
                                  0.0,
                                  m_currentButton.m_bAxis,
-                                 false );
+                                 false,
+                                 true );
 
         m_buttonQueue.push_back (state);
       }

@@ -60,6 +60,7 @@ namespace EVENTCLIENT
       m_mapName    = "";
       m_buttonName = "";
       m_fAmount    = 0.0f;
+      m_bUseAmount = false;
       m_bRepeat    = false;
       m_bActive    = false;
       m_bAxis      = false;
@@ -71,13 +72,15 @@ namespace EVENTCLIENT
                       std::string buttonName,
                       float fAmount,
                       bool isAxis,
-                      bool bRepeat
+                      bool bRepeat,
+                      bool bUseAmount
       )
     {
       m_iKeyCode   = iKeyCode;
       m_buttonName = buttonName;
       m_mapName    = mapName;
       m_fAmount    = fAmount;
+      m_bUseAmount = bUseAmount;
       m_bRepeat    = bRepeat;
       m_bActive    = true;
       m_bAxis      = isAxis;
@@ -104,6 +107,7 @@ namespace EVENTCLIENT
     std::string       m_mapName;
     std::string       m_joystickName;
     float             m_fAmount;
+    bool              m_bUseAmount;
     bool              m_bRepeat;
     bool              m_bActive;
     bool              m_bAxis;
