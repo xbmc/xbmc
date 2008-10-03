@@ -238,23 +238,9 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
 #endif
 
 #ifdef _LINUX
-#ifdef HAS_HAL
-/* HalManager will autosource items so we only want the nonremovable
-   devices here. removable devices will be added in CVirtualDirectory */
-  vector<CStdString> result = CLinuxFileSystem::GetLocalDrives();
-#else
-  vector<CStdString> result = CLinuxFileSystem::GetLocalDrives();
+  CLinuxFileSystem::GetLocalDrives(localDrives);
 #endif
-  for (unsigned int i = 0; i < result.size(); i++)
-  {
-    CMediaSource share;
-    share.strPath = result[i];
-    share.strName = CUtil::GetFileName(result[i]);
-    share.m_ignore = true;
-    localDrives.push_back(share) ;
-  }
 #endif
-#endif // Win32PC
 }
 
 void CMediaManager::GetNetworkLocations(VECSOURCES &locations)

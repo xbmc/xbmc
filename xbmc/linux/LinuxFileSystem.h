@@ -32,6 +32,7 @@
 #ifdef HAS_HAL
 #include "HalManager.h"
 #endif
+#include "../MediaSource.h"
 
 class CLinuxFileSystem
 {
@@ -52,10 +53,10 @@ public:
 
   static bool ApproveDevice(CStorageDevice *device);
 #endif
-  static std::vector<CStdString> GetDrives();
-  static std::vector<CStdString> GetLocalDrives();
-  static std::vector<CStdString> GetRemovableDrives();
-  static std::vector<CStdString> GetDrives(int *DeviceType, int len);
+  static void GetDrives(VECSOURCES &shares);
+  static void GetLocalDrives(VECSOURCES &shares);
+  static void GetRemovableDrives(VECSOURCES &shares);
+  static void GetDrives(int *DeviceType, int len, VECSOURCES &shares);
   static std::vector<CStdString> GetDiskUsage();
 };
 
