@@ -193,7 +193,7 @@ bool CMusicArtistInfo::Load(CHTTP& http, const SScraperInfo& info, const CStdStr
   // abit ugly, but should work. would have been better if parser
   // set the charset of the xml, and we made use of that
   if (strXML.Find("encoding=\"utf-8\"") < 0)
-    g_charsetConverter.stringCharsetToUtf8(strXML);
+    g_charsetConverter.unknownToUTF8(strXML);
 
     // ok, now parse the xml file
   TiXmlBase::SetCondenseWhiteSpace(false);
