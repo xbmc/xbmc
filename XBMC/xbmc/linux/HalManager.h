@@ -33,6 +33,8 @@
 #define BYTE char
 #include "../utils/log.h"
 #include "../utils/CriticalSection.h"
+#include "../Util.h"
+#include "../MediaSource.h"
 
 enum PowerState
 {
@@ -86,6 +88,23 @@ public:
 
     return  rtn;
   }
+  void toMediaSource(CMediaSource *share)
+  {
+    share->strPath = MountPoint;
+    if (Label.size() > 0)
+      share->strName = Label;
+    else
+      share->strName = CUtil::GetFileName(MountPoint);
+
+    share->m_ignore = true;
+    if (HotPlugged)
+      share->m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
+    else if(Type == CMediaSource::SOURCE_TYPE_DVD)
+      share->m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
+    else
+      share->m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+  }
+
 };
 
 
