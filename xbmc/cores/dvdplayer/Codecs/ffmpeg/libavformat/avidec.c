@@ -743,6 +743,8 @@ resync:
         }
         ast->remaining -= size;
         if(!ast->remaining){
+            if(ast->packet_size & 0x1)
+                url_fskip(pb, 1);
             avi->stream_index= -1;
             ast->packet_size= 0;
         }
@@ -750,7 +752,9 @@ resync:
         return size;
     }
 
-    memset(d, -1, sizeof(int)*8);
+    for(i=1; i<8; i++)
+        d[i]= get_byte(pb);
+
     for(i=sync=url_ftell(pb); !url_feof(pb); i++) {
         int j;
 
