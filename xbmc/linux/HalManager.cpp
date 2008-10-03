@@ -568,11 +568,18 @@ void CHalManager::ParseDevice(const char *udi)
     {
 /* Here it can be checked if the device isn't mounted and then mount */
 //TODO Have mountpoints be other than in /media/*
-      if (!dev.Mounted && dev.HotPlugged && dev.Approved)
+      if (!dev.Mounted && (dev.HotPlugged || dev.Type == 2) && dev.Approved)
       {
         char **capability;
         capability =libhal_device_get_property_strlist (m_Context, udi, "info.capabilities", NULL);
-        if (strcmp(capability[0], "volume") == 0 && strcmp(capability[1], "block") == 0)
+
+        bool Mountable = false;
+        if (dev.Type == 2 && (strcmp(capability[0], "volume.disc") == 0 && strcmp(capability[1], "volume") == 0)) // CD/DVD
+          Mountable = true;
+        else if ((strcmp(capability[0], "volume") == 0 && strcmp(capability[1], "block") == 0)) // HDD
+          Mountable = true;
+
+        if (Mountable)
         {
           CLog::Log(LOGNOTICE, "HAL: Trying to mount %s", dev.FriendlyName.c_str());
           CStdString MountCmd;
