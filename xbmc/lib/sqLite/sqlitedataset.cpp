@@ -175,11 +175,6 @@ const char *SqliteDatabase::getErrorMsg() {
 int SqliteDatabase::connect() {
   try {
     disconnect();
-#ifdef _WIN32PC
-    CStdString strDB = db;
-    g_charsetConverter.unknownToUTF8(strDB);
-    db = strDB;
-#endif
     if (sqlite3_open(db.c_str(),&conn/*,NULL*/)==SQLITE_OK) {
       //cout << "Connected!\n";
       sqlite3_busy_handler(conn, busy_callback,NULL);
@@ -215,11 +210,6 @@ int SqliteDatabase::create() {
 int SqliteDatabase::drop() {
   if (active == false) throw DbErrors("Can't drop database: no active connection...");
   disconnect();
-#ifdef _WIN32PC
-    CStdString strDB = db;
-    g_charsetConverter.unknownToUTF8(strDB);
-    db = strDB;
-#endif
   if (!unlink(db.c_str())) {
      throw DbErrors("Can't drop database: can't unlink the file %s,\nError: %s",db.c_str(),strerror(errno));
      }

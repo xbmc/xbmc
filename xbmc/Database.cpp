@@ -107,7 +107,14 @@ bool CDatabase::Open()
   }
 
   m_pDB.reset(new SqliteDatabase() ) ;
+
+#ifdef _WIN32PC
+  CStdString strDatabaseUTF8;
+  g_charsetConverter.stringCharsetToUtf8(strDatabase, strDatabaseUTF8);
+  m_pDB->setDatabase(strDatabaseUTF8.c_str());
+#else
   m_pDB->setDatabase(strDatabase.c_str());
+#endif
 
   m_pDS.reset(m_pDB->CreateDataset());
   m_pDS2.reset(m_pDB->CreateDataset());
