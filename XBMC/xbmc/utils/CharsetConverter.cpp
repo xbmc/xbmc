@@ -368,12 +368,32 @@ void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset,
   iconv_close(iconvString);
 }
 
-void CCharsetConverter::stringCharsetTo(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStringA& strDest)
+void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStringA& strDest)
 {
+  if (strDestCharset == "UTF-8")
+  { // simple case - no conversion necessary
+    strDest = strSource;
+    return;
+  }
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  convert(iconvString,UTF8_DEST_MULTIPLIER,g_langInfo.GetGuiCharSet(),strDestCharset,strSource,strDest);
+  convert(iconvString,UTF8_DEST_MULTIPLIER,"UTF-8",strDestCharset,strSource,strDest);
   iconv_close(iconvString);
+}
+
+void CCharsetConverter::unknownToUTF8(CStdStringA &sourceAndDest)
+{
+  CStdString source = sourceAndDest;
+  unknownToUTF8(source, sourceAndDest);
+}
+
+void CCharsetConverter::unknownToUTF8(const CStdStringA &source, CStdStringA &dest)
+{
+  // checks whether it's utf8 already, and if not converts using the sourceCharset if given, else the string charset
+  if (isValidUtf8(source))
+    dest = source;
+  else
+    stringCharsetToUtf8(source, dest);
 }
 
 void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDest)
