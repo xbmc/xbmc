@@ -245,3 +245,4 @@ void CMouse::Acquire()
   if (m_mouseDevice)
     m_mouseDevice->Acquire();
 }
+
