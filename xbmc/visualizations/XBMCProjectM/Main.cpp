@@ -360,7 +360,7 @@ extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets
       g_presets = (char **)malloc(sizeof(char*)*globalPM->getPlaylistSize());
       if (g_presets)
       {
-        for (int i = 0; i<globalPM->getPlaylistSize() ; i++)
+        for (unsigned int i = 0; i < globalPM->getPlaylistSize() ; i++)
         {
           g_presets[i] = (char*)malloc(strlen(globalPM->getPresetName(i).c_str())+2);
           if (g_presets[i])
