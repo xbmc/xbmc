@@ -22,6 +22,7 @@
 #include "LinuxFileSystem.h"
 #include "RegExp.h"
 #include "SingleLock.h"
+#include "../Util.h"
 
 using namespace std;
 
@@ -65,51 +66,52 @@ bool CLinuxFileSystem::ApproveDevice(CStorageDevice *device)
 }
 #endif //HAS_HAL
 
-vector<CStdString> CLinuxFileSystem::GetDrives()
+void CLinuxFileSystem::GetDrives(VECSOURCES &shares)
 {
-  return GetDrives(NULL, -1);
+  return GetDrives(NULL, -1, shares);
 }
 
-vector<CStdString> CLinuxFileSystem::GetLocalDrives()
+void CLinuxFileSystem::GetLocalDrives(VECSOURCES &shares)
 {
   CSingleLock lock(m_lock);
 #ifndef HAS_HAL
-  return GetDrives();
+  GetDrives(shares);
 #else
   UpdateDevices();
-  vector<CStdString> result;
   for (size_t i = 0; i < m_Devices.size(); i++)
   {
     if (m_Devices[i].Mounted && m_Devices[i].Approved && !m_Devices[i].HotPlugged)
     {
-      result.push_back(m_Devices[i].MountPoint);
+      CMediaSource share;
+      m_Devices[i].toMediaSource(&share);
+      shares.push_back(share);
     }
   }
-  return result;
 #endif
 }
 
-vector<CStdString> CLinuxFileSystem::GetRemovableDrives()
+void CLinuxFileSystem::GetRemovableDrives(VECSOURCES &shares)
 {
   CSingleLock lock(m_lock);
 #ifndef HAS_HAL
 #ifndef __APPLE__
-  return GetDevices();
+  GetDrives(shares);
 #else
   vector<CStdString> result;
   return result;
 #endif
 #else
   UpdateDevices();
-  vector<CStdString> result;
+
   for (size_t i = 0; i < m_Devices.size(); i++)
   {
     if (m_Devices[i].Mounted && m_Devices[i].Approved && m_Devices[i].HotPlugged)
     {
-      result.push_back(m_Devices[i].MountPoint);
+      CMediaSource share;
+      m_Devices[i].toMediaSource(&share);
+      shares.push_back(share);
     }
   }
-  return result;
 #endif
 }
 
@@ -117,11 +119,11 @@ vector<CStdString> CLinuxFileSystem::GetRemovableDrives()
    To decide wich types types are approved to be returned send for example int DevTypes[] = {0, 5, 6, 7, 8, 9, 10, 13}.
    this will return all removable types like pendrives, memcards and such but NOT removable hdd's have type 1.
    for more information on these for now is in libhal-storage.h. TODO Make defined types that can be common on all O/S */
-vector<CStdString> CLinuxFileSystem::GetDrives(int *DeviceType, int len)
+void CLinuxFileSystem::GetDrives(int *DeviceType, int len, VECSOURCES &shares)
 {
   CSingleLock lock(m_lock);
-  vector<CStdString> result;
 #ifndef HAS_HAL
+  std::vector<CStdString> result;
   if (DeviceType == NULL) // -1 is considered all devices, this is only needed in the Browse dialog. The other choices are for VirtualDirectory
   {
     CRegExp reMount;
@@ -170,25 +172,40 @@ vector<CStdString> CLinuxFileSystem::GetDrives(int *DeviceType, int len)
       pclose(pipe);
     }
   }
+  for (unsigned int i = 0; i < result.size(); i++)
+  {
+    CMediaSource share;
+    share.strPath = result[i];
+    share.strName = CUtil::GetFileName(result[i]);
+    share.m_ignore = true;
+    shares.push_back(share);
+  }
 #else //#ifdef HAS_HAL
   for (unsigned int i = 0; i < m_Devices.size(); i++)
   {
     if (m_Devices[i].Mounted && m_Devices[i].Approved)
     {
       if (DeviceType == NULL)
-        result.push_back(m_Devices[i].MountPoint);
+      {
+        CMediaSource share;
+        m_Devices[i].toMediaSource(&share);
+        shares.push_back(share);
+      }
       else
       {
         for (int j = 0; j < len; j++)
         {
           if (DeviceType[j] == m_Devices[i].Type)
-            result.push_back(m_Devices[i].MountPoint);
+          {
+            CMediaSource share;
+            m_Devices[i].toMediaSource(&share);
+            shares.push_back(share);
+          }
         }
       }
     }
   }
 #endif
-  return result;
 }
 
 std::vector<CStdString> CLinuxFileSystem::GetDiskUsage()
