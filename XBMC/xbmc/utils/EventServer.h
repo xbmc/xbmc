@@ -63,6 +63,7 @@ namespace EVENTSERVER
 
     // get events
     unsigned short GetButtonCode(std::string& strMapName, bool& isAxis, float& amount);
+    bool ExecuteNextAction();
     bool GetMousePos(float &x, float &y);
     int GetNumberOfClients();
 
@@ -70,7 +71,7 @@ namespace EVENTSERVER
     CEventServer();
     void Cleanup();
     void ProcessPacket(SOCKETS::CAddress& addr, int packetSize);
-    void ExecuteEvents();
+    void ProcessEvents();
     void RefreshClients();
 
     std::map<unsigned long, EVENTCLIENT::CEventClient*>  m_clients;
