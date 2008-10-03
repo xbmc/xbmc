@@ -3440,15 +3440,18 @@ bool CApplication::ProcessEventServer(float frameTime)
 {
 #ifdef HAS_EVENT_SERVER
   CEventServer* es = CEventServer::GetInstance();
-  if (!es || !es->Running())
+  if (!es || !es->Running() || es->GetNumberOfClients()==0)
     return false;
 
+  // process any queued up actions
+  es->ExecuteNextAction();
+
+  // now handle any buttons or axis
   std::string joystickName;
   bool isAxis = false;
   float fAmount = 0.0;
 
   WORD wKeyID = es->GetButtonCode(joystickName, isAxis, fAmount);
-
 
   if (wKeyID)
   {

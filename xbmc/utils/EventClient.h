@@ -34,6 +34,23 @@
 namespace EVENTCLIENT
 {
 
+  class CEventAction
+  {
+  public:
+    CEventAction()
+    {
+      actionType = 0;
+    }
+    CEventAction(const char* action, unsigned char type)
+    {
+      actionName = action;
+      actionType = type;
+    }
+
+    std::string    actionName;
+    unsigned char  actionType;
+  };
+
   class CEventButtonState
   {
   public:
@@ -156,8 +173,11 @@ namespace EVENTCLIENT
     // process the packet queue
     bool ProcessQueue();
 
-    // execute the queued up events (packets)
-    void ExecuteEvents();
+    // process the queued up events (packets)
+    void ProcessEvents();
+
+    // execute the next action in the action queue
+    bool ExecuteNextAction();
 
     // deallocate all packets in the queues
     void FreePacketQueues();
@@ -231,6 +251,7 @@ namespace EVENTCLIENT
 
     // button and mouse state
     std::list<CEventButtonState>  m_buttonQueue;
+    std::queue<CEventAction>      m_actionQueue;
     CEventButtonState m_currentButton;
   };
 
