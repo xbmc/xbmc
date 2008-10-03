@@ -172,7 +172,7 @@ bool CEventClient::AddPacket(CEventPacket *packet)
   return true;
 }
 
-void CEventClient::ExecuteEvents()
+void CEventClient::ProcessEvents()
 {
   if (m_readyPackets.size() > 0)
   {
@@ -186,6 +186,45 @@ void CEventClient::ExecuteEvents()
       }
     }
   }
+}
+
+bool CEventClient::ExecuteNextAction()
+{
+  CEventAction actionEvent;
+  CAction action;
+
+  EnterCriticalSection(&m_critSection);
+  if (m_actionQueue.size() > 0)
+  {
+    // grab the next action in line
+    actionEvent = m_actionQueue.front();
+    m_actionQueue.pop();
+    LeaveCriticalSection(&m_critSection);
+  }
+  else
+  {
+    // we got nothing
+    LeaveCriticalSection(&m_critSection);
+    return false;
+  }
+
+  switch(actionEvent.actionType)
+  {
+  case AT_EXEC_BUILTIN:
+    CUtil::ExecBuiltIn(actionEvent.actionName);
+    break;
+
+  case AT_BUTTON:
+    g_buttonTranslator.TranslateActionString(actionEvent.actionName.c_str(), action.wID);
+    action.strAction = actionEvent.actionName;
+    action.fRepeat  = 0.0f;
+    action.fAmount1 = 1.0f;
+    action.fAmount2 = 1.0f;
+    g_application.OnAction(action);
+    break;
+  }
+
+  return true;
 }
 
 bool CEventClient::ProcessPacket(CEventPacket *packet)
@@ -414,7 +453,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
     }
     else
     {
-      if(!active && it->m_bActive)  
+      if(!active && it->m_bActive)
       {
         /* since modifying the list invalidates the referse iteratator */
         std::list<CEventButtonState>::iterator it2 = (++it).base();
@@ -615,20 +654,13 @@ bool CEventClient::OnPacketACTION(CEventPacket *packet)
   if (!ParseString(payload, psize, actionString))
     return false;
 
-  CAction action;
-
   switch(actionType)
   {
   case AT_EXEC_BUILTIN:
-    CUtil::ExecBuiltIn(actionString);
-    break;
   case AT_BUTTON:
-    g_buttonTranslator.TranslateActionString(actionString.c_str(), action.wID);
-    action.strAction = actionString;
-    action.fRepeat  = 0.0f;
-    action.fAmount1 = 1.0f;
-    action.fAmount2 = 1.0f;
-    g_application.OnAction(action);
+    EnterCriticalSection(&m_critSection);
+    m_actionQueue.push(CEventAction(actionString.c_str(), actionType));
+    LeaveCriticalSection(&m_critSection);
     break;
 
   default:
