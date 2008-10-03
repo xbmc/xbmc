@@ -51,7 +51,7 @@ public:
       strDoc = m_doc;
     // try to load using string charset
     if (strDoc.Find("encoding=") == -1)
-      g_charsetConverter.stringCharsetToUtf8(strDoc.Mid(0),strDoc);
+      g_charsetConverter.unknownToUTF8(strDoc);
 
     doc.Parse(strDoc.c_str());
     if (details.Load(doc.RootElement()))
