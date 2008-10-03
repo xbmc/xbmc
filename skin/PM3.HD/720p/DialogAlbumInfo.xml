@@ -181,6 +181,12 @@
 						<visible>!IsEmpty(ListItem.Property(AlbumType))</visible>
 					</item>
 					<item>
+						<label>$LOCALIZE[21899]:</label>
+						<label2>$INFO[ListItem.Property(AlbumLabel)]</label2>
+						<onclick>-</onclick>
+						<visible>!IsEmpty(ListItem.Property(AlbumLabel))</visible>
+					</item>
+					<item>
 						<label>$LOCALIZE[562]:</label>
 						<label2>$INFO[ListItem.Year]</label2>
 						<onclick>-</onclick>
