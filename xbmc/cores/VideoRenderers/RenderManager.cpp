@@ -304,7 +304,6 @@ float CXBoxRenderManager::GetMaximumFPS()
 {
   float fps;
   int res = g_graphicsContext.GetVideoResolution();
-  EINTERLACEMETHOD method = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
 
   if( res == PAL_4x3 || res == PAL_16x9 )
     fps = 50.0f;
@@ -315,6 +314,8 @@ float CXBoxRenderManager::GetMaximumFPS()
   if( m_rendermethod == RENDER_HQ_RGB_SHADER
    || m_rendermethod == RENDER_HQ_RGB_SHADERV2)
   {
+    EINTERLACEMETHOD method = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
+
     if((method == VS_INTERLACEMETHOD_AUTO && m_presentfield != FS_NONE)
     ||  method == VS_INTERLACEMETHOD_RENDER_BOB )
       fps *= 0.5;
