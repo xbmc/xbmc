@@ -421,6 +421,8 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
     else
       famount = (float)amount/65535.0f;
   }
+  else
+    famount = (active ? 1.0f : 0.0f);
 
   if(flags & PTB_QUEUE)
   {
