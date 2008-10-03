@@ -82,9 +82,9 @@ public:
       tmp4.Format("HotPlugged NO  | ");
 
     if (Approved)
-      rtn.Format("%s%s%s%sApproved YES ", tmp1.c_str(), tmp2.c_str(), tmp3.c_str(), tmp4.c_str());
+      rtn.Format("%s%s%s%sType %i |Approved YES ", tmp1.c_str(), tmp2.c_str(), tmp3.c_str(), tmp4.c_str(), Type);
     else
-      rtn.Format("%s%s%s%sApproved NO  ", tmp1.c_str(), tmp2.c_str(), tmp3.c_str(), tmp4.c_str());
+      rtn.Format("%s%s%s%sType %i |Approved NO  ", tmp1.c_str(), tmp2.c_str(), tmp3.c_str(), tmp4.c_str(), Type);
 
     return  rtn;
   }
