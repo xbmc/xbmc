@@ -31,6 +31,7 @@
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
 #include "FileSystem/PluginDirectory.h"
+#include "FileSystem/ShoutcastDirectory.h"
 
 using namespace DIRECTORY;
 using namespace MUSICDATABASEDIRECTORY;
@@ -484,7 +485,7 @@ void CGUIViewStateWindowMusicNav::AddOnlineShares()
   for (int i = 0; i < (int)g_settings.m_musicSources.size(); ++i)
   {
     CMediaSource share = g_settings.m_musicSources.at(i);
-    if (share.strPath.Find("shout://www.shoutcast.com/sbin/newxml.phtml") == 0)//shoutcast shares
+    if (share.strPath.Find(SHOUTCAST_MASTER_LINK) == 0)//shoutcast shares
     {
       share.m_strThumbnailImage="defaultFolderBig.png";
       m_sources.push_back(share);

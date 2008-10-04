@@ -25,6 +25,8 @@
 class CURL;
 class TiXmlElement;
 
+#define SHOUTCAST_MASTER_LINK "shout://classic.shoutcast.com/sbin/newxml.phtml"
+
 namespace DIRECTORY
 {
 class CShoutcastDirectory :
