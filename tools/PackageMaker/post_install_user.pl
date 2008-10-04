@@ -5,8 +5,8 @@
 # -d4rk 09/13/08
 ##############################################################################
 
-use strict;
-use warnings;
+# use strict;    # Apple TV's Perl doesn't support this
+# use warnings;  #
 
 my $installer_dir = "/var/tmp/installer.teamxbmc.xbmc";
 
