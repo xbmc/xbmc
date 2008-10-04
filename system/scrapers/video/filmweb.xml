@@ -77,7 +77,7 @@
 				<expression noclean="1">src=&quot;http://gfx.filmweb.pl/po(.[^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;outline&gt;\2...&lt;/outline&gt;" dest="5+">
-				<expression noclean="1">o-filmie-header&quot;[^&lt;]+[^ ]+(&gt;[^[0-9A-Z]+)([^&lt;]+[a-z])</expression>
+				<expression>o-filmie-header&quot;[^&lt;]+[^ ]+(&gt;[^[0-9A-Z]+)([^&lt;]+[a-z])</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="6">
 				<expression noclean="1">gatunek([^\n]*)</expression>
@@ -171,18 +171,18 @@
 	<Opisy dest="5">
 		<RegExp input="$$8" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;&lt;plot&gt;\1&lt;/plot&gt;&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1\n" dest="9">
-				<expression noclean="1">distributors.description.0\][^\[]*justify&quot;&gt;(.[^=]*)&lt;/p&gt;&lt;/li&gt;</expression>
+				<expression>distributors.description.0\][^\[]*justify&quot;&gt;(.[^=]*)&lt;/p&gt;&lt;/li&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="9+">
-				<expression noclean="1">opisy-header[^\[]*justify&quot;&gt;[^[0-9A-ZŻŹĆŃĄŚŁĘ]+([^&quot;]*)&lt;/p&gt;&lt;/li&gt;</expression>
+				<expression>opisy-header[^\[]*justify&quot;&gt;[^[0-9A-ZŻŹĆŃĄŚŁĘ]+([^&quot;]*)&lt;/p&gt;&lt;/li&gt;</expression>
 			</RegExp>
 			<RegExp input="$$9" output="\1" dest="8">
-				<expression noclean="1">([^&lt;]+)</expression>
+				<expression>([^&lt;]+)</expression>
 			</RegExp>
 			<RegExp input="$$9" output=" \1" dest="8+">
-				<expression  noclean="1" repeat="yes">&gt;([^&lt;]+)</expression>
+				<expression repeat="yes">&gt;([^&lt;]+)</expression>
 			</RegExp>         
-			<expression noclean="1" trim="1">([^~]+[0-9a-ząężźćśńł\]\.])</expression>
+			<expression trim="1">([^~]+[0-9a-ząężźćśńł\]\.])</expression>
 		</RegExp>
 	</Opisy>
 	<Plakaty dest="5">
