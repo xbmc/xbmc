@@ -3292,6 +3292,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     g_passwordManager.m_mapSMBPasswordCache.clear();
     g_passwordManager.bMasterUser = false;
     m_gWindowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
+    g_application.StartEventServer(); // event server could be needed in some situations      
   }
   else if (execute.Equals("pagedown"))
   {
