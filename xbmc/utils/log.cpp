@@ -71,15 +71,18 @@ void CLog::Log(int loglevel, const char *format, ... )
       strLogFileOld.Format("%sxbmc.old.log", _P(g_stSettings.m_logFolder).c_str());
 
 #ifndef _LINUX
-      ::DeleteFile(strLogFileOld.c_str());
-      ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
+      CStdStringW strLogFileW, strLogFileOldW;
+      g_charsetConverter.utf8ToW(strLogFile,strLogFileW);
+      g_charsetConverter.utf8ToW(strLogFileOld,strLogFileOldW);
+      ::DeleteFileW(strLogFileOldW.c_str());
+      ::MoveFileW(strLogFileW.c_str(), strLogFileOldW.c_str());
 #else
       ::unlink(strLogFileOld.c_str());
       ::rename(strLogFile.c_str(), strLogFileOld.c_str());
 #endif
 
 #ifndef _LINUX
-      fd = _fsopen(strLogFile, "a+", _SH_DENYWR);
+      fd = _wfsopen(strLogFileW.c_str(), L"a+", _SH_DENYWR);
 #else
       fd = fopen(strLogFile, "a+");
 #endif
