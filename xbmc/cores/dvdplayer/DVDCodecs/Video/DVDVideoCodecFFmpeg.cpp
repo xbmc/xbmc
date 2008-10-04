@@ -26,7 +26,7 @@
 #include "DVDClock.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "../../../../utils/Win32Exception.h"
-#ifdef _LINUX
+#if defined(_LINUX) || defined(_WIN32PC)
 #include "utils/CPUInfo.h"
 #endif
 
@@ -140,7 +140,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     m_dllAvCodec.av_set_string(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str());
   }
 
-#ifdef _LINUX
+#if defined(_LINUX) || defined(_WIN32PC)
   int num_threads = std::min(8 /*MAX_THREADS*/, g_cpuInfo.getCPUCount());
   if(num_threads > 1 && (pCodec->id == CODEC_ID_H264 || pCodec->id == CODEC_ID_MPEG4 || pCodec->id == CODEC_ID_MPEG2VIDEO))
     m_dllAvCodec.avcodec_thread_init(m_pCodecContext, num_threads);
