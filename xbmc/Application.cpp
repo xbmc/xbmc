@@ -1222,17 +1222,17 @@ CProfile* CApplication::InitDirectoriesWin32()
 
     // create user/app data/XBMC
     CUtil::AddFileToFolder(strWin32UserFolder,"XBMC",strPath);
-    CreateDirectory(strPath.c_str(), NULL);
+    CDirectory::Create(strPath.c_str());
     // move log to platform dirs
     g_stSettings.m_logFolder = strPath;
     CUtil::AddSlashAtEnd(g_stSettings.m_logFolder);
     // create user/app data/XBMC/cache
     CUtil::AddFileToFolder(strPath,"cache",strPath);
-    CreateDirectory(strPath.c_str(), NULL);
+    CDirectory::Create(strPath.c_str());
     CIoSupport::RemapDriveLetter('Z',strPath.c_str());
     // create user/app data/XBMC/UserData
     CUtil::AddFileToFolder(strWin32UserFolder,"XBMC\\userdata",strPath);
-    CreateDirectory(strPath.c_str(), NULL);
+    CDirectory::Create(strPath.c_str());
     CIoSupport::RemapDriveLetter('T', strPath.c_str());
   }
   else
@@ -1241,7 +1241,7 @@ CProfile* CApplication::InitDirectoriesWin32()
     CUtil::AddSlashAtEnd(g_stSettings.m_logFolder);
     CUtil::AddFileToFolder(strExecutablePath,"cache",strPath);
     CIoSupport::RemapDriveLetter('Z',strPath.c_str());
-    CreateDirectory(_P("Z:\\"), NULL);
+    CDirectory::Create(_P("Z:\\"));
     CUtil::AddFileToFolder(strExecutablePath,"userdata",strPath);
     CIoSupport::RemapDriveLetter('T',strPath.c_str());
   }
