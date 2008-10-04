@@ -106,6 +106,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     bool bOldMaster = g_passwordManager.bMasterUser;
     g_passwordManager.bMasterUser = true;
     g_settings.LoadProfile(iItem);
+    g_application.StartEventServer(); // event server could be needed in some situations
 
     g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].setDate();
     g_settings.SaveProfiles(PROFILES_FILE); // to set last loaded
