@@ -508,7 +508,14 @@ static void CopyUserDataIfNeeded(CStdString strPath, LPCTSTR file)
   {
     CStdString srcFile = _P("q:\\userdata\\");
     srcFile.append(file);
+#ifdef _WIN32PC
+    CStdStringW srcFileW,strPathW;
+    g_charsetConverter.utf8ToW(srcFile,srcFileW);
+    g_charsetConverter.utf8ToW(strPath,strPathW);
+    CopyFileW(srcFileW, strPathW, TRUE);
+#else
     CopyFile(srcFile.c_str(), strPath.c_str(), TRUE);
+#endif 
   }
 }
 
