@@ -429,8 +429,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
     --enable-gpl \
     --enable-swscale \
     --enable-protocol=http \
-    --enable-pthreads \
-    --extra-cflags="-DRUNTIME_CPUDETECT -O3" 
+    --enable-pthreads
 ])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdts], [
   ./configure \
