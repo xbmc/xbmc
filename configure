@@ -14900,8 +14900,7 @@ if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
     --enable-gpl \
     --enable-swscale \
     --enable-protocol=http \
-    --enable-pthreads \
-    --extra-cflags="-DRUNTIME_CPUDETECT -O3"
+    --enable-pthreads
 
   if [ $? -ne 0 ]; then
     popd
