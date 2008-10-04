@@ -1213,10 +1213,10 @@ CProfile* CApplication::InitDirectoriesWin32()
 
   if (m_bPlatformDirectories)
   {
-    TCHAR szPath[MAX_PATH];
+    WCHAR szPath[MAX_PATH];
 
-    if(SUCCEEDED(SHGetFolderPath(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath)))
-      strWin32UserFolder = szPath;
+    if(SUCCEEDED(SHGetFolderPathW(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath)))
+      g_charsetConverter.wToUTF8(szPath, strWin32UserFolder);
     else
       strWin32UserFolder = strExecutablePath;
 
