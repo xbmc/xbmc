@@ -358,7 +358,6 @@ void CEdl::SetMovie(const CStdString& strMovie)
 
 bool CEdl::CacheEdl()
 {
-  FILE* pFile;
   m_strCachedEdl=CACHED_EDL_FILENAME;
   m_bCached=false;
   CFile cacheFile;
