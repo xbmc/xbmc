@@ -188,6 +188,10 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
 
     if(m_dll->recorder_is_recording(m_recorder))
     {
+      /* for now don't allow reuse of tuners, we would have to change tuner on channel *
+       * and make sure we don't stop the tuner when stopping playback as that affects  *
+       * other clients                                                                 */
+#if 0
       /* if already recording, check if it is this channel */
       cmyth_proginfo_t program;
       program = m_dll->recorder_get_cur_proginfo(m_recorder);
@@ -200,6 +204,7 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
         }
         m_dll->ref_release(program);
       }
+#endif
     }
     else
     {
