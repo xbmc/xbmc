@@ -38,6 +38,9 @@ public:
   // Conversion operator
   operator LPCRITICAL_SECTION();
   virtual ~CCriticalSection();
+  CCriticalSection(const CCriticalSection& section);
+  CCriticalSection& operator=(const CCriticalSection& section);
+
 private:
 
   CRITICAL_SECTION m_critSection;

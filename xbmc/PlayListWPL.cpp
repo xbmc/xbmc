@@ -24,6 +24,7 @@
 #include "Util.h"
 #include "tinyXML/tinyxml.h"
 #include "Settings.h"
+#include "FileSystem/File.h"
 
 using namespace XFILE;
 using namespace PLAYLIST;
@@ -110,28 +111,30 @@ void CPlayListWPL::Save(const CStdString& strFileName) const
   // force HD saved playlists into fatx compliance
   if (CUtil::IsHD(strPlaylist))
     CUtil::GetFatXQualifiedPath(strPlaylist);
-  FILE *fd = fopen(strPlaylist.c_str(), "w+");
-  if (!fd)
+  CFile file;
+  if (!file.OpenForWrite(strPlaylist, true, true))
   {
     CLog::Log(LOGERROR, "Could not save WPL playlist: [%s]", strPlaylist.c_str());
     return ;
   }
-  fprintf(fd, "<?wpl version=%c1.0%c>\n", 34, 34);
-  fprintf(fd, "<smil>\n");
-  fprintf(fd, "    <head>\n");
-  fprintf(fd, "        <meta name=%cGenerator%c content=%cMicrosoft Windows Media Player -- 10.0.0.3646%c/>\n", 34, 34, 34, 34);
-  fprintf(fd, "        <author/>\n");
-  fprintf(fd, "        <title>%s</title>\n", m_strPlayListName.c_str());
-  fprintf(fd, "    </head>\n");
-  fprintf(fd, "    <body>\n");
-  fprintf(fd, "        <seq>\n");
+  CStdString write;
+  write.AppendFormat("<?wpl version=%c1.0%c>\n", 34, 34);
+  write.AppendFormat("<smil>\n");
+  write.AppendFormat("    <head>\n");
+  write.AppendFormat("        <meta name=%cGenerator%c content=%cMicrosoft Windows Media Player -- 10.0.0.3646%c/>\n", 34, 34, 34, 34);
+  write.AppendFormat("        <author/>\n");
+  write.AppendFormat("        <title>%s</title>\n", m_strPlayListName.c_str());
+  write.AppendFormat("    </head>\n");
+  write.AppendFormat("    <body>\n");
+  write.AppendFormat("        <seq>\n");
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
     CFileItemPtr item = m_vecItems[i];
-    fprintf(fd, "            <media src=%c%s%c/>", 34, item->m_strPath.c_str(), 34);
+    write.AppendFormat("            <media src=%c%s%c/>", 34, item->m_strPath.c_str(), 34);
   }
-  fprintf(fd, "        </seq>\n");
-  fprintf(fd, "    </body>\n");
-  fprintf(fd, "</smil>\n");
-  fclose(fd);
+  write.AppendFormat("        </seq>\n");
+  write.AppendFormat("    </body>\n");
+  write.AppendFormat("</smil>\n");
+  file.Write(write.c_str(), write.size());
+  file.Close();
 }

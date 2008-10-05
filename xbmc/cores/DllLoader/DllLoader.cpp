@@ -25,6 +25,13 @@
 #include "dll_tracker.h"
 #include "dll_util.h"
 #include <limits>
+
+#ifdef _WIN32PC
+extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
+#else
+#define fopen_utf8 fopen
+#endif
+
 #ifdef _XBOX
 #include "xbox/undocumented.h"
 #include "XbDm.h"
@@ -250,7 +257,7 @@ DllLoader::~DllLoader()
 int DllLoader::Parse()
 {
   int iResult = 0;
-  FILE* fp = fopen(GetFileName(), "rb");
+  FILE* fp = fopen_utf8(GetFileName(), "rb");
 
   if (fp)
   {

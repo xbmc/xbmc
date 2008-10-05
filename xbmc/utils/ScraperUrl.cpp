@@ -19,8 +19,8 @@
  *
  */
 
-#include "ScraperUrl.h"
 #include "stdafx.h"
+#include "ScraperUrl.h"
 #include "Settings.h"
 #include "HTMLUtil.h"
 #include "CharsetConverter.h"
@@ -134,11 +134,11 @@ bool CScraperUrl::ParseString(CStdString strUrl)
 {
   if (strUrl.IsEmpty())
     return false;
-  
+
   // ok, now parse the xml file
   if (strUrl.Find("encoding=\"utf-8\"") < 0)
-    g_charsetConverter.stringCharsetToUtf8(strUrl);
-  
+    g_charsetConverter.unknownToUTF8(strUrl);
+
   TiXmlDocument doc;
   doc.Parse(strUrl.c_str(),0,TIXML_ENCODING_UTF8);
   m_xml += strUrl;
@@ -215,7 +215,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, CHTTP& http)
     if (!http.Post(strUrl, strOptions, strHTML))
       return false;
   }
-  else 
+  else
     if (!http.Get(scrURL.m_url, strHTML))
       return false;
 
@@ -227,7 +227,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, CHTTP& http)
     if (iSize)
     {
       strHTML.clear();
-      strHTML.append(strBuffer.c_str(),strBuffer.data()+iSize);      
+      strHTML.append(strBuffer.c_str(),strBuffer.data()+iSize);
     }
   }
 
@@ -288,7 +288,7 @@ bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
 
   // ok, now parse the xml file
   if (strUrls.Find("encoding=\"utf-8\"") < 0)
-    g_charsetConverter.stringCharsetToUtf8(strUrls);
+    g_charsetConverter.unknownToUTF8(strUrls);
 
   TiXmlDocument doc;
   doc.Parse(strUrls.c_str(),0,TIXML_ENCODING_UTF8);
@@ -300,7 +300,7 @@ bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
     {
       ParseElement(link);
       link = link->NextSiblingElement("url");
-    } 
+    }
   }
   else
     return false;

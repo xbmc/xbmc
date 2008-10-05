@@ -192,7 +192,7 @@ bool CMusicArtistInfo::Load(CHTTP& http, const SScraperInfo& info, const CStdStr
   // abit ugly, but should work. would have been better if parser
   // set the charset of the xml, and we made use of that
   if (strXML.Find("encoding=\"utf-8\"") < 0)
-    g_charsetConverter.stringCharsetToUtf8(strXML);
+    g_charsetConverter.unknownToUTF8(strXML);
 
     // ok, now parse the xml file
   TiXmlBase::SetCondenseWhiteSpace(false);
@@ -211,14 +211,14 @@ bool CMusicArtistInfo::Load(CHTTP& http, const SScraperInfo& info, const CStdStr
   {
     const char* szFunction = xurl->Attribute("function");
     if (szFunction)
-    {      
+    {
       CScraperUrl scrURL(xurl);
       Load(http,info,szFunction,&scrURL);
     }
     xurl = xurl->NextSiblingElement("url");
   }
   TiXmlBase::SetCondenseWhiteSpace(true);
-  
+
   return ret;
 }
 

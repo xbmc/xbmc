@@ -187,16 +187,17 @@ void CPlayListPLS::Save(const CStdString& strFileName) const
   // force HD saved playlists into fatx compliance
   if (CUtil::IsHD(strPlaylist))
     CUtil::GetFatXQualifiedPath(strPlaylist);
-  FILE *fd = fopen(strPlaylist.c_str(), "w+");
-  if (!fd)
+  CFile file;
+  if (!file.OpenForWrite(strPlaylist, true, true))
   {
     CLog::Log(LOGERROR, "Could not save PLS playlist: [%s]", strPlaylist.c_str());
     return;
   }
-  fprintf(fd, "%s\n", START_PLAYLIST_MARKER);
+  CStdString write;
+  write.AppendFormat("%s\n", START_PLAYLIST_MARKER);
   CStdString strPlayListName=m_strPlayListName;
   g_charsetConverter.utf8ToStringCharset(strPlayListName);
-  fprintf(fd, "PlaylistName=%s\n", strPlayListName.c_str() );
+  write.AppendFormat("PlaylistName=%s\n", strPlayListName.c_str() );
 
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
@@ -205,14 +206,15 @@ void CPlayListPLS::Save(const CStdString& strFileName) const
     g_charsetConverter.utf8ToStringCharset(strFileName);
     CStdString strDescription=item->GetLabel();
     g_charsetConverter.utf8ToStringCharset(strDescription);
-    fprintf(fd, "File%i=%s\n", i + 1, strFileName.c_str() );
-    fprintf(fd, "Title%i=%s\n", i + 1, strDescription.c_str() );
-    fprintf(fd, "Length%i=%u\n", i + 1, item->GetMusicInfoTag()->GetDuration() / 1000 );
+    write.AppendFormat("File%i=%s\n", i + 1, strFileName.c_str() );
+    write.AppendFormat("Title%i=%s\n", i + 1, strDescription.c_str() );
+    write.AppendFormat("Length%i=%u\n", i + 1, item->GetMusicInfoTag()->GetDuration() / 1000 );
   }
 
-  fprintf(fd, "NumberOfEntries=%i\n", m_vecItems.size());
-  fprintf(fd, "Version=2\n");
-  fclose(fd);
+  write.AppendFormat("NumberOfEntries=%i\n", m_vecItems.size());
+  write.AppendFormat("Version=2\n");
+  file.Write(write.c_str(), write.size());
+  file.Close();
 }
 
 bool CPlayListASX::LoadAsxIniInfo(std::istream &stream)

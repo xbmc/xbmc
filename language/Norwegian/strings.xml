@@ -1,7 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Date of translation: 08/31/2008-->
-<!--Translator:k-pax-->
-<!--Based on english strings version 15195-->
+<!--Date of translation: 04-Oct-2008--> <!--Based on $Revision$-->
 <strings>
   <string id="0">Programmer</string>
   <string id="1">Bilder</string>
@@ -241,28 +239,28 @@
   <string id="310">- Automatisk lysstyrke/kontrast</string>
   <string id="311">- Ringartifakt filter</string>
   <string id="312">(0=automatisk)</string>
-  <string id="313">Rydder opp i database...</string>
+  <string id="313">Renser database</string>
   <string id="314">Forbereder...</string>
   <string id="315">Databasefeil</string>
   <string id="316">Søker i sanger...</string>
-  <string id="317">Opprydning av database fullført</string>
-  <string id="318">Rydd opp i sanger</string>
-  <string id="319">Feil ved opprydning av sanger</string>
-  <string id="320">Rydd opp i artister</string>
-  <string id="321">Feil ved opprydning av artister</string>
-  <string id="322">Rydd opp i sjangre</string>
-  <string id="323">Feil ved opprydning av sjangre</string>
-  <string id="324">Rydd opp i filstier</string>
-  <string id="325">Feil ved opprydning av filstier</string>
-  <string id="326">Rydd opp i album</string>
-  <string id="327">Feil ved opprydning av album</string>
+  <string id="317">Opprensing av database fullført</string>
+  <string id="318">Renser opp i sanger</string>
+  <string id="319">Feil ved rensing av sanger</string>
+  <string id="320">Renser opp i artister</string>
+  <string id="321">Feil ved rensing av artister</string>
+  <string id="322">Renser opp i sjangre</string>
+  <string id="323">Feil ved rensing av sjangre</string>
+  <string id="324">Renser opp i filstier</string>
+  <string id="325">Feil ved rensing av filstier</string>
+  <string id="326">Renser opp i album</string>
+  <string id="327">Feil ved rensing av album</string>
   <string id="328">Lagrer endringer...</string>
   <string id="329">Feil under skriving</string>
   <string id="330">Dette kan ta en stund...</string>
   <string id="331">Komprimerer database...</string>
   <string id="332">Feil under komprimering av database</string>
-  <string id="333">Vil du rydde opp i biblioteket?</string>
-  <string id="334">Rydd i biblioteket</string>
+  <string id="333">Vil du rense biblioteket?</string>
+  <string id="334">Rens biblioteket</string>
   <string id="335">Start</string>
   <string id="336">Justér bildehastighet</string>
   <string id="337">Lydutgang</string>
@@ -563,7 +561,7 @@
   <string id="660">Lyd forsterkning</string>
   <string id="661">Velg eksport mappe</string>
   
-  <string id="700">Rydder opp i bibliotek...</string>
+  <string id="700">Renser bibliotek</string>
   <string id="701">Fjerner gamle sanger fra bibliotek</string>
   <string id="702">Denne katalogen har blitt skannet før.</string>
   <string id="705">Nettverk</string>
@@ -652,11 +650,11 @@
   <string id="788">Nettverks enheten deaktivert uten feil.</string>
   <string id="789">Trådløst nettverks navn (ESSID)</string>
   
-  <string id="790">Fjernhendelser</string>
-  <string id="791">Aktiver fjernhendelser</string>
-  <string id="792">Port for fjernhendelser</string>
-  <string id="793">Portområde for fjernhendelser</string>
-  <string id="794">Motta fjernhendelser fra andre datamaskiner</string>
+  <string id="790">Hendelseserver</string>
+  <string id="791">Aktiver hendelseserver</string>
+  <string id="792">Port for hendelseserver</string>
+  <string id="793">Portområde for hendelseserver</string>
+  <string id="794">Tillat andre maskiner å koble seg til </string>
   <string id="795">Innledende repetisjon forsinkelse (ms)</string>
   <string id="796">Kontinuerlig repetisjon forsinkelse (ms)</string>
   <string id="797">Maksimalt antall klienter</string>
@@ -871,7 +869,7 @@
   <string id="12019">Ja</string>
   <string id="12020">Spør</string>
   <string id="12021">Start fra begynnelsen</string>
-  <string id="12022">Fortsett fra siste posisjon</string>
+  <string id="12022">Fortsett fra %s</string>
   <string id="12023">Validerer eksisterende trainere...</string>
   <string id="12024">Automatisk generering av miniatyrbilder for filmer uten</string>
   
@@ -951,12 +949,13 @@
   <string id="13005">Slå av</string>
   <string id="13006">Dashbord</string>
   <string id="13007">Bruk egen sti til dashbord</string>
-  <string id="13008">Når XBMC avsluttes</string>
-  <string id="13009">Ikke gjør noe</string>
+  <string id="13008">Standard innstilling for avslutning</string>
+  <string id="13009">Avslutt</string>
   <string id="13010">Dvalemodus</string>
   <string id="13011">Ventemodus</string>
   
   <string id="13100">Flimmer filter</string>
+  <string id="13101">La driver velge (krever omstart)</string>
   <string id="13105">Vertikal Blank Synk</string>
   <string id="13106">Frakoblet</string>
   <string id="13107">Aktivert under film avspilling</string>
@@ -978,6 +977,15 @@
   <string id="13130">Skjerm blanking</string>
   <string id="13131">Deaktivert</string>
   <string id="13132">Blank skjermer</string>
+  
+  <string id="13140">Aktiver tilkoblinger oppdaget!</string>
+  <string id="13141">Om du fortsetter kan det hende du ikke greier kontrollere XBMC</string>
+  <string id="13142">lengere. Er du sikker på å stoppe hendelseserveren?</string>
+
+  <string id="13144">Endre Apple fjernkontroll modus?</string>
+  <string id="13145">Om du nå bruker Apple fjernkontroll for å styre</string>
+  <string id="13146">XBMC, kan denne instillingen påvirke muligheten</string>
+  <string id="13147">for fortsatt gjøre det. Vil du fortsette?</string>1
   
   <string id="13150">HDD nøkkel:</string>
   <string id="13151">HDD temperatur:</string>
@@ -1153,6 +1161,13 @@
   <string id="13410">Still inn Last.FM</string>
   <string id="13411">Minimum viftehastighet</string>
   <string id="13412">- RSS feeden har tekst fra høyre mot venstre</string>
+  <string id="13413">Laster ned</string>
+  <string id="13414">Skjul artist som bare vises i samlinger</string>
+  <string id="13415">Render metode</string>
+  <string id="13416">Auto oppdag</string>
+  <string id="13417">Grunnleggende shadere (ARB)</string>
+  <string id="13418">Avanserte shadere (GLSL)</string>
+  <string id="13419">Programvare</string>
   
   <string id="13600">Apple fjernkontroll</string>
   <string id="13601">Modus</string>
@@ -1163,12 +1178,8 @@
   <string id="13611">Standard</string>
   <string id="13612">Universal fjernkontroll</string>
   
-  <string id="13620">Remote Buddy driver er installert</string>
-  <string id="13621">Apple fjernkontroll kan ikke aktiveres</string>
-  <string id="13622">Vennligst se Remote Buddy FAQ for avinstallering</string>
-  
-  <string id="13623">Sofa kontroll kjører</string>
-  <string id="13624">Vennligst se Sofa kontroll dokumentasjon for avinstallering</string>
+  <string id="13620">Apple fjernkontroll feil</string>
+  <string id="13621">Apple fjernkontroll kan aktiveres</string>
   
   <string id="14000">Stable</string>
   <string id="14001">Ikke stable</string>
@@ -1615,16 +1626,16 @@
   <string id="20151">Avbryt slå av timer</string>
   <string id="20152">Lås innstillinger for %s</string>
   <string id="20153">Bla...</string>
-  <string id="20154">Basis informasjon</string>
+  <string id="20154">Grunnleggende informasjon</string>
   <string id="20155">Lagrings informasjon</string>
   <string id="20156">Harddisk informasjon</string>
   <string id="20157">DVD spiller informasjon</string>
   <string id="20158">Nettverks informasjon</string>
   <string id="20159">Video informasjon</string>
   <string id="20160">Maskinvare informasjon</string>
-  <string id="20161">Totalt: %s MB, Brukt: %s MB, Ledig: %s MB</string>
-  <string id="20162">Total HDD brukt: %u%%  Ledig: %u%%</string>
-  <string id="20163">%s: %s MB av %s MB %s ledig</string>
+  <string id="20161">Totalt</string>
+  <string id="20162">Brukt</string>
+  <string id="20163">av</string>
   <string id="20164">Låsing ikke støttet</string>
   <string id="20165">Ikke låst</string>
   <string id="20166">Låst</string>
@@ -1981,6 +1992,7 @@
   <string id="22010">GPU temperatur:</string>
   <string id="22011">CPU temperatur:</string>
   <string id="22012">Totalt minne</string>
+  <string id="22013">Profil data</string>
   
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Bibliotek modus</string>

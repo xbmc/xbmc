@@ -30,6 +30,7 @@
 #include "FileSystem/PluginDirectory.h"
 #include "GUIDialogYesNo.h"
 #include "FileSystem/File.h"
+#include "FileSystem/ShoutcastDirectory.h"
 #include "FileItem.h"
 
 using namespace std;
@@ -286,7 +287,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     if (g_guiSettings.GetBool("network.enableinternet"))
     {
       share1.strName = "Shoutcast";
-      share1.strPath = "shout://www.shoutcast.com/sbin/newxml.phtml";
+      share1.strPath = SHOUTCAST_MASTER_LINK;
       extraShares.push_back(share1);
 
       if (g_guiSettings.GetString("lastfm.username") != "")

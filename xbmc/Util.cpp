@@ -4344,6 +4344,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       g_guiSettings.GetString("network.subnet").c_str(),
       g_guiSettings.GetString("network.gateway").c_str(),
       g_guiSettings.GetString("network.dns").c_str());
+    g_application.StartEventServer(); // event server could be needed in some situations      
   }
   else if (execute.Left(18).Equals("system.pwmcontrol"))
   {

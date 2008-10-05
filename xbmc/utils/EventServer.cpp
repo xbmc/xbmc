@@ -214,8 +214,8 @@ void CEventServer::Run()
       }
     }
 
-    // execute events
-    ExecuteEvents();
+    // process events and queue the necessary actions and button codes
+    ProcessEvents();
 
     // refresh client list
     RefreshClients();
@@ -307,16 +307,30 @@ void CEventServer::RefreshClients()
   m_bRefreshSettings = false;
 }
 
-void CEventServer::ExecuteEvents()
+void CEventServer::ProcessEvents()
 {
   CSingleLock lock(m_critSection);
   map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
 
   while (iter != m_clients.end())
   {
-    iter->second->ExecuteEvents();
+    iter->second->ProcessEvents();
     iter++;
   }
+}
+
+bool CEventServer::ExecuteNextAction()
+{
+  CSingleLock lock(m_critSection);
+  map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
+
+  while (iter != m_clients.end())
+  {
+    if (iter->second->ExecuteNextAction())
+      return true;
+    iter++;
+  }
+  return false;
 }
 
 unsigned short CEventServer::GetButtonCode(std::string& strMapName, bool& isAxis, float& fAmount)

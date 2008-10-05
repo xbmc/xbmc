@@ -29,6 +29,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include "tinyXML/tinyxml.h"
+
 class CVideoInfoTag;
 
 class CNfoFile
@@ -42,10 +44,16 @@ public:
     bool GetDetails(T& details,const char* document=NULL)
   {
     TiXmlDocument doc;
+    CStdString strDoc;
     if (document)
-      doc.Parse(document);
+      strDoc = document;
     else
-      doc.Parse(m_doc);
+      strDoc = m_doc;
+    // try to load using string charset
+    if (strDoc.Find("encoding=") == -1)
+      g_charsetConverter.unknownToUTF8(strDoc);
+
+    doc.Parse(strDoc.c_str());
     if (details.Load(doc.RootElement()))
       return true;
     CLog::Log(LOGDEBUG, "Not a proper xml nfo file (%s, col %i, row %i)", doc.ErrorDesc(), doc.ErrorCol(), doc.ErrorRow());

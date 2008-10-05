@@ -27,6 +27,12 @@
 
 #include "../DllLoader.h"
 
+#ifdef _WIN32PC
+extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
+#else
+#define fopen_utf8 fopen
+#endif
+
 // file io functions
 #define CORRECT_SEP_STR(str) \
     int iSize_##str = strlen(str); \
@@ -164,7 +170,7 @@ FILE* xbp_fopen(const char *filename, const char *mode)
 	}
 
   // don't use emulated files, they do not work in python yet
-  return fopen(cName, mode);
+  return fopen_utf8(cName, mode);
 }
 
 int xbp_fclose(FILE* stream)

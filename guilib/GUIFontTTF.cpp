@@ -20,6 +20,7 @@
  */
 
 #include "include.h"
+#include "GUIFont.h"
 #include "GUIFontTTF.h"
 #include "GUIFontManager.h"
 #include "GraphicContext.h"
