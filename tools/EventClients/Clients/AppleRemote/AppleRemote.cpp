@@ -207,6 +207,15 @@ void AppleRemote::Initialize()
                         fprintf(stderr, "Using key code for AppleTV r2.1\n");
                         key = key_cookiesATV21;
                         m_button_event_terminator = IR_Event_Term_ATV21;
+                        
+                    }
+                    else if( strstr(linebuf,"8N5622"))
+                    {
+                        // r2.10   
+                        atv_version_found = true;
+                        fprintf(stderr, "Using key code for AppleTV r2.2\n");
+                        key = key_cookiesATV21;
+                        m_button_event_terminator = IR_Event_Term_ATV21;
                     }                    
                 }
                 pclose(inpipe); 
