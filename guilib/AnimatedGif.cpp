@@ -29,6 +29,11 @@
 
 #include "AnimatedGif.h"
 
+#ifdef _WIN32PC
+extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
+#else
+#define fopen_utf8 fopen
+#endif
 
 #pragma pack(1) 
 // Error processing macro (NO-OP by default):
@@ -222,7 +227,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
     int GraphicExtensionFound = 0;
 
     // OPEN FILE
-    FILE *fd = fopen(szFileName, "rb");
+    FILE *fd = fopen_utf8(szFileName, "rb");
     if (!fd)
     {
       return 0;

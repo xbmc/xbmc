@@ -371,3 +371,13 @@ std::vector<CStdString> CWIN32Util::GetDiskUsage()
   free( pcBuffer );
   return result;
 }
+
+extern "C" {
+  FILE *fopen_utf8(const char *_Filename, const char *_Mode)
+  {
+    CStdStringW wfilename, wmode;
+    g_charsetConverter.utf8ToW(_Filename, wfilename, false);
+    wmode = _Mode;
+    return _wfopen(wfilename.c_str(), wmode.c_str());
+  }
+}
