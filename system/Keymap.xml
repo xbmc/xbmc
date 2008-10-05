@@ -498,6 +498,7 @@
       <right>StepForward</right>
       <up>BigStepForward</up>
       <down>BigStepBack</down>
+      <escape>Fullscreen</escape>
     </keyboard>
   </FullscreenVideo>
 
@@ -649,6 +650,7 @@
       <!--<back>NextPreset</back>!-->
       <o>CodecInfo</o>
       <l>LockPreset</l>
+      <escape>FullScreen</escape>
     </keyboard>
   </Visualisation>
 
