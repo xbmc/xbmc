@@ -21,6 +21,7 @@
 
 #include "include.h"
 #include "DirectXGraphics.h"
+#include "FileSystem/File.h"
 
 LPVOID XPhysicalAlloc(SIZE_T s, DWORD ulPhysicalAddress, DWORD ulAlignment, DWORD flProtect)
 {
@@ -119,8 +120,8 @@ HRESULT XGWriteSurfaceToFile(void* pixels, int width, int height, const char *fi
   if (S_OK == pSurface->LockRect(&lr, NULL, 0))
   {
 #endif
-    FILE *file = fopen(fileName, "wb");
-    if (file)
+    XFILE::CFile file;
+    if (file.OpenForWrite(fileName, true, true))
     {
       // create a 24bit BMP header
       BMPHEAD bh;
@@ -149,7 +150,7 @@ HRESULT XGWriteSurfaceToFile(void* pixels, int width, int height, const char *fi
       // filesize = headersize + bytesPerLine * number of lines
       bh.filesize = bh.headersize + bytesPerLine * bh.height;
         
-      fwrite(&bh.id, 1, sizeof(bh) - 2*sizeof(char), file);
+      file.Write(&bh.id, sizeof(bh) - 2*sizeof(char));
 
       BYTE *lineBuf = new BYTE[bytesPerLine];
       memset(lineBuf, 0, bytesPerLine);
@@ -173,10 +174,10 @@ HRESULT XGWriteSurfaceToFile(void* pixels, int width, int height, const char *fi
           *d++ = *(s + x * 4 + 1);
           *d++ = *(s + x * 4 + 2);
         }
-        fwrite(lineBuf, 1, bytesPerLine, file);
+        file.Write(lineBuf, bytesPerLine);
       }
       delete[] lineBuf;
-      fclose(file);
+      file.Close();
     }
 #ifndef HAS_SDL
     pSurface->UnlockRect();

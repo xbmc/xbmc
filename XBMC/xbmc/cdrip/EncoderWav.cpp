@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "EncoderWav.h"
+#include "FileSystem/File.h"
 
 CEncoderWav::CEncoderWav()
 {
@@ -75,7 +76,7 @@ bool CEncoderWav::WriteWavHeader()
   WAVHDR wav;
   int bps = 1;
 
-  if (m_hFile == INVALID_HANDLE_VALUE) return false;
+  if (!m_file) return false;
 
   memcpy(wav.riff, "RIFF", 4);
   wav.len = m_iBytesWritten + 44 - 8;
@@ -92,7 +93,7 @@ bool CEncoderWav::WriteWavHeader()
   wav.dwDataLen = m_iBytesWritten;
 
   // write header to beginning of stream
-  SetFilePointer(m_hFile, 0, NULL, FILE_BEGIN);
+  m_file->Seek(0, FILE_BEGIN);
   FileWrite(&wav, sizeof(wav));
 
   return true;
