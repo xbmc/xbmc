@@ -1523,6 +1523,10 @@ HRESULT CApplication::Initialize()
 
   m_slowTimer.StartZero();
 
+#ifdef __APPLE__
+  g_xbmcHelper.CaptureAllInput();
+#endif
+
   CLog::Log(LOGNOTICE, "initialize done");
 
   m_bInitializing = false;
@@ -3823,6 +3827,10 @@ void CApplication::Stop()
 
     StopServices();
     //Sleep(5000);
+
+#ifdef __APPLE__
+    g_xbmcHelper.ReleaseAllInput();
+#endif
 
     if (m_pPlayer)
     {
