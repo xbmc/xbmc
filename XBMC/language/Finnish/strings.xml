@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: jutski (->7/2006) Mika Pirinen (1/2007->)-->
-<!--Date of translation: 14/9/2008  kommentit: kottis(at)gmail.com -->
-<!--Finnish strings based on English strings version 15536-->
+<!--Date of translation: 29/9/2008  kommentit: kottis(at)gmail.com -->
+<!--Finnish strings based on English strings version 15704 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -657,10 +657,10 @@
   <string id="791">Etätapahtumat käytössä</string>
   <string id="792">Etätapahtumien portti</string>
   <string id="793">Etätapahtumien porttialue</string>
-  <string id="794">Vastaanota tapahtumat toisista koneista käytössä</string>
+  <string id="794">Salli yhteydet toisista tietokoneista</string>
   <string id="795">Kerran toistuva viive (ms)</string>
   <string id="796">Jatkuvasti toistuva viive (ms)</string>
-  <string id="797">Yhteyksien maksimi määrä</string>
+  <string id="797">Yhteyksien maksimimäärä</string>
 
   <string id="998"></string>
   <string id="999"></string>
@@ -958,6 +958,7 @@
   <string id="13011">Valmiustila</string>
 
   <string id="13100">Näytön välkynnän poisto</string>
+  <string id="13101">Ajurin valinta (vaatii uudelleenkäynnistyksen)</string> 
   <string id="13105">Pystysuunnan sammutuksen tahdistus</string>
   <string id="13106">Ei käytössä</string>
   <string id="13107">Käytössä videoita toistettaessa</string>
@@ -979,6 +980,15 @@
   <string id="13130">Näytön pimennys</string>
   <string id="13131">Ei käytössä</string>
   <string id="13132">Tyhjä näyttö</string>
+
+  <string id="13140">Yhdistetty yhteys on käytössä!</string>
+  <string id="13141">Mikäli jatkat,et välttämättä pysty käyttämään XBMC:a</string>
+  <string id="13142">tämän jälkeen. Haluatko varmasti pysäyttää etätapahtumat?</string>
+
+  <string id="13144">Vaihdetaanko Apple kauko-ohjain?</string>
+  <string id="13145">Mikäli käytät nyt Apple kauko-ohjausta XBMC:n ohjaukseen,</string>
+  <string id="13146">et voi tämän jälkeen vaihtaa sillä asetuksia</string>
+  <string id="13147">Haluatko jatkaa ?</string>
 
   <string id="13150">Lukituskoodi:</string>
   <string id="13151">Lämpötila:</string>
@@ -1037,6 +1047,7 @@
   <string id="13279">Verkko</string>
   <string id="13280">Näyttö</string>
   <string id="13281">Laitteisto</string>
+
   <string id="13282">_</string>
   <string id="13283">Käyttöjärjestelmä:</string>
   <string id="13284">Suorittimen nopeus:</string>
@@ -1156,7 +1167,12 @@
   <string id="13412">- RSS-syöte sisältää tekstiä oikealta vasemmalle</string>
   <string id="13413">Ladataan</string>
   <string id="13414">Älä näytä kokoelmilla olevia esittäjiä</string>
- 
+  <string id="13415">Renderöintimenetelmä</string>
+  <string id="13416">Automaattinen ilmaisu</string>
+  <string id="13417">Perusvarjostimet (ARB)</string>
+  <string id="13418">Kehittynyt varjostimet(GLSL)</string>
+  <string id="13419">Ohjelmallinen</string>
+
   <string id="13600">Apple kauko-ohjaus</string>
   <string id="13601">Toimintatapa</string>
   <string id="13602">Aina päällä</string>
@@ -1166,13 +1182,9 @@
   <string id="13611">Vakio</string>
   <string id="13612">Yleis kauko-ohjaus</string>
   
-  <string id="13620">Remote Buddy ajuri on asennettu.</string>
-  <string id="13621">Apple kauko-ohjaus tukea ei voida käyttää.</string>
-  <string id="13622">Katso poistamiseen lisäohjeita Remote Buddy FAQ-tiedostosta.</string>
-
-  <string id="13623">Sofa Control on käynnissä.</string>
-  <string id="13624">Katso ohjeista Sofa Control:n poistoohjeet.</string>
-
+  <string id="13620">Apple kauko-ohjain virhe</string>
+  <string id="13621">Apple kauko-ohjaus voidaan ottaa käyttöön.</string>
+ 
   <string id="14000">Yhdistä osat</string>
   <string id="14001">Ei yhdistetä</string>
   <string id="14003">Ladataan soittolistatiedostoa...</string>
