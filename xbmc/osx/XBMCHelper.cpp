@@ -222,12 +222,10 @@ bool XBMCHelper::IsAppleTV()
   
   if (hw_model.find("AppleTV") != std::string::npos)
   {
-    CLog::Log(LOGERROR, "XBMCHelper: AppleTV found");
     return true;
   }
   else
   {
-    CLog::Log(LOGERROR, "XBMCHelper: '%s' found", hw_model.c_str());
     return false;
   }
 }
@@ -240,7 +238,6 @@ void XBMCHelper::CaptureAllInput()
   {
     ProcessSerialNumber psn = {0, kCurrentProcess};
        
-    CLog::Log(LOGERROR, "XBMCHelper: EnableSecureEventInput");
     SetFrontProcess(&psn);
     EnableSecureEventInput();
   }
@@ -252,7 +249,6 @@ void XBMCHelper::ReleaseAllInput()
   // Give keyboard focus back to FrontRow and native screen saver
   if (IsAppleTV())
   {
-    CLog::Log(LOGERROR, "XBMCHelper: DisableSecureEventInput");
     DisableSecureEventInput();
   }
 }
