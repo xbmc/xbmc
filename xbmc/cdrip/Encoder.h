@@ -32,9 +32,12 @@
 
 #define WRITEBUFFER_SIZE 131072 // 128k buffer
 
+namespace XFILE { class CFile; };
+
 class CEncoder
 {
 public:
+  CEncoder();
   virtual ~CEncoder() {}
   virtual bool Init(const char* strFile, int iInChannels, int iInRate, int iInBits) = 0;
   virtual int Encode(int nNumBytesRead, BYTE* pbtStream) = 0;
@@ -67,7 +70,7 @@ protected:
 
   CStdString m_strFile;
 
-  HANDLE m_hFile;
+  XFILE::CFile *m_file;
   int m_iInChannels;
   int m_iInSampleRate;
   int m_iInBitsPerSample;

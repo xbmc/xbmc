@@ -35,6 +35,12 @@
 #include "../DllLoader.h"
 #include "../../../Util.h"
 
+#ifdef _WIN32PC
+extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
+#else
+#define fopen_utf8 fopen
+#endif
+
 // file io functions
 #ifndef _LINUX
 #define CORRECT_SEP_STR(str) \
@@ -191,7 +197,7 @@ FILE* xbp_fopen(const char *filename, const char *mode)
 	}
 
   // don't use emulated files, they do not work in python yet
-  return fopen(_P(cName).c_str(), mode);
+  return fopen_utf8(_P(cName).c_str(), mode);
 }
 
 #ifdef _LINUX

@@ -25,6 +25,7 @@
 #include "tinyXML/tinyxml.h"
 #include "Settings.h"
 #include "MusicInfoTag.h"
+#include "FileSystem/File.h"
 
 using namespace XFILE;
 using namespace PLAYLIST;
@@ -114,23 +115,25 @@ void CPlayListB4S::Save(const CStdString& strFileName) const
   if (!m_vecItems.size()) return ;
   CStdString strPlaylist = strFileName;
   strPlaylist = CUtil::MakeLegalFileName(strPlaylist);
-  FILE *fd = fopen(strPlaylist.c_str(), "w+");
-  if (!fd)
+  CFile file;
+  if (!file.OpenForWrite(strPlaylist, true, true))
   {
     CLog::Log(LOGERROR, "Could not save B4S playlist: [%s]", strPlaylist.c_str());
     return ;
   }
-  fprintf(fd, "<?xml version=%c1.0%c encoding='UTF-8' standalone=%cyes%c?>\n", 34, 34, 34, 34);
-  fprintf(fd, "<WinampXML>\n");
-  fprintf(fd, "  <playlist num_entries=%c%i%c label=%c%s%c>\n", 34, m_vecItems.size(), 34, 34, m_strPlayListName.c_str(), 34);
+  CStdString write;
+  write.AppendFormat("<?xml version=%c1.0%c encoding='UTF-8' standalone=%cyes%c?>\n", 34, 34, 34, 34);
+  write.AppendFormat("<WinampXML>\n");
+  write.AppendFormat("  <playlist num_entries=%c%i%c label=%c%s%c>\n", 34, m_vecItems.size(), 34, 34, m_strPlayListName.c_str(), 34);
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
     const CFileItemPtr item = m_vecItems[i];
-    fprintf(fd, "    <entry Playstring=%cfile:%s%c>\n", 34, item->m_strPath.c_str(), 34 );
-    fprintf(fd, "      <Name>%s</Name>\n", item->GetLabel().c_str());
-    fprintf(fd, "      <Length>%u</Length>\n", item->GetMusicInfoTag()->GetDuration());
+    write.AppendFormat("    <entry Playstring=%cfile:%s%c>\n", 34, item->m_strPath.c_str(), 34 );
+    write.AppendFormat("      <Name>%s</Name>\n", item->GetLabel().c_str());
+    write.AppendFormat("      <Length>%u</Length>\n", item->GetMusicInfoTag()->GetDuration());
   }
-  fprintf(fd, "  </playlist>\n");
-  fprintf(fd, "</WinampXML>\n");
-  fclose(fd);
+  write.AppendFormat("  </playlist>\n");
+  write.AppendFormat("</WinampXML>\n");
+  file.Write(write.c_str(), write.size());
+  file.Close();
 }

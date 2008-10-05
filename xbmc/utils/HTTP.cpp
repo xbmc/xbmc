@@ -30,6 +30,7 @@
 #include "../utils/Network.h"
 #include "GUISettings.h"
 #include "Application.h"
+#include "FileSystem/File.h"
 
 #ifdef _LINUX
 #include <fcntl.h>
@@ -376,22 +377,16 @@ bool CHTTP::Download(const string &strURL, const string &strFileName, LPDWORD pd
   if (!Get(strURL, strData))
     return false;
 
-  HANDLE hFile = CreateFile(strFileName.c_str(), GENERIC_WRITE, FILE_SHARE_READ, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-  if (hFile == INVALID_HANDLE_VALUE)
+  XFILE::CFile file;
+  if (!file.OpenForWrite(strFileName, true, true))
   {
     CLog::Log(LOGERROR, "Unable to open file %s: %u",
               strFileName.c_str(), GetLastError());
     return false;
   }
   if (strData.size())
-  {
-    SetFilePointer(hFile, strData.size(), 0, FILE_BEGIN);
-    SetEndOfFile(hFile);
-    SetFilePointer(hFile, 0, 0, FILE_BEGIN);
-    DWORD n;
-    WriteFile(hFile, (void*) strData.data(), strData.size(), &n, 0);
-  }
-  CloseHandle(hFile);
+    file.Write(strData.c_str(), strData.size());
+  file.Close();
 
   if (pdwSize != NULL)
   {

@@ -33,6 +33,7 @@
 #include "Id3Tag.h"
 #include "Settings.h"
 #include "Util.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -1075,15 +1076,14 @@ bool Xcddb::queryCache( unsigned long discid )
   strFileName.Format("%s\\%x.cddb", cCacheDir.c_str(), discid);
   strFileName = _P(strFileName);
 
-  FILE* fd;
-  fd = fopen( strFileName.c_str(), "rb");
-  if (fd)
+  XFILE::CFile file;
+  if (file.Open(strFileName))
   {
     // Got a cachehit
     char buffer[4096];
     OutputDebugString ( "cddb local cache hit.\n" );
-    fread( buffer, 1, 4096 , fd);
-    fclose(fd);
+    file.Read(buffer, 4096);
+    file.Close();
     parseData( buffer );
     return true;
   }
@@ -1101,13 +1101,12 @@ bool Xcddb::writeCacheFile( const char* pBuffer, unsigned long discid )
   strFileName.Format("%s\\%x.cddb", cCacheDir.c_str(), discid);
   strFileName = _P(strFileName);
 
-  FILE* fd;
-  fd = fopen(strFileName.c_str(), "wb+");
-  if (fd)
+  XFILE::CFile file;
+  if (file.OpenForWrite(strFileName, true, true))
   {
     OutputDebugString ( "Current cd saved to local cddb.\n" );
-    fwrite( (void*) pBuffer, 1, strlen( pBuffer ) + 1, fd );
-    fclose(fd);
+    file.Write( (void*) pBuffer, strlen( pBuffer ) + 1 );
+    file.Close();
     return true;
   }
 
@@ -1126,15 +1125,7 @@ bool Xcddb::isCDCached( int nr_of_tracks, toc cdtoc[] )
   strFileName.Format("%s\\%x.cddb", cCacheDir.c_str(), discid);
   strFileName = _P(strFileName);
 
-  FILE* fd;
-  fd = fopen(strFileName.c_str(), "rb");
-  if (fd)
-  {
-    fclose(fd);
-    return true;
-  }
-
-  return false;
+  return XFILE::CFile::Exists(strFileName);
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -1408,15 +1399,7 @@ bool Xcddb::isCDCached( CCdInfo* pInfo )
   strFileName.Format("%s\\%x.cddb", cCacheDir.c_str(), discid);
   strFileName = _P(strFileName);
 
-  FILE* fd;
-  fd = fopen(strFileName.c_str(), "rb");
-  if (fd)
-  {
-    fclose(fd);
-    return true;
-  }
-
-  return false;
+  return XFILE::CFile::Exists(strFileName);
 }
 
 

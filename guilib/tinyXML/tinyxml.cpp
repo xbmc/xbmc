@@ -30,6 +30,11 @@ distribution.
 #include <iostream>
 #endif
 
+#ifdef _WIN32PC
+extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
+#else
+#define fopen_utf8 fopen
+#endif
 
 bool TiXmlBase::condenseWhiteSpace = true;
 
@@ -1028,7 +1033,7 @@ bool TiXmlDocument::LoadFile( const char* filename, TiXmlEncoding encoding )
 	value = filename;
 
 	// reading in binary mode so that tinyxml can normalize the EOL
-	FILE* file = fopen( value.c_str (), "rb" );	
+	FILE* file = fopen_utf8( value.c_str (), "rb" );	
 
 	if ( file )
 	{
@@ -1171,7 +1176,7 @@ bool TiXmlDocument::LoadFile( FILE* file, TiXmlEncoding encoding )
 bool TiXmlDocument::SaveFile( const char * filename ) const
 {
 	// The old c stuff lives on...
-	FILE* fp = fopen( filename, "w" );
+	FILE* fp = fopen_utf8( filename, "w" );
 	if ( fp )
 	{
 		bool result = SaveFile( fp );

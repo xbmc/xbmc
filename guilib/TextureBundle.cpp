@@ -5,6 +5,7 @@
 #include "GraphicContext.h"
 #include "DirectXGraphics.h"
 #ifndef _LINUX
+#include "utils/CharsetConverter.h"
 #include "lib/liblzo/LZO1X.H"
 #else
 #include <lzo1x.h>
@@ -140,7 +141,9 @@ bool CTextureBundle::OpenBundle()
   strPath = PTH_IC(strPath);
   
 #ifndef _LINUX
-  if (GetFileAttributes(strPath.c_str()) == -1)
+  CStdStringW strPathW;
+  g_charsetConverter.utf8ToW(strPath, strPathW);
+  if (GetFileAttributesW(strPathW.c_str()) == -1)
     return false;
 
   m_TimeStamp.dwLowDateTime = m_TimeStamp.dwHighDateTime = 0;
@@ -156,7 +159,7 @@ bool CTextureBundle::OpenBundle()
   DWORD n;
 
 #ifndef _LINUX
-  m_hFile = CreateFile(strPath.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING, FILE_FLAG_NO_BUFFERING | FILE_FLAG_OVERLAPPED, 0);
+  m_hFile = CreateFileW(strPathW.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING, FILE_FLAG_NO_BUFFERING | FILE_FLAG_OVERLAPPED, 0);
   if (m_hFile == INVALID_HANDLE_VALUE)
   {
     CLog::Log(LOGERROR, "Unable to open file: %s: %x", strPath.c_str(), GetLastError());
