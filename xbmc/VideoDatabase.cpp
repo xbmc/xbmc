@@ -4414,6 +4414,7 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
                 if (strFanArt.IsEmpty())
                   strFanArt = jItem->GetProperty("fanart_image");
                 */
+                paths.push_back(jFileNameAndPath);
               }
             }
 

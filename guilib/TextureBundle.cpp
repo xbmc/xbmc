@@ -5,6 +5,7 @@
 #include "GraphicContext.h"
 #ifdef HAS_XBOX_D3D
 #include <XGraphics.h>
+#include "utils/CharsetConverter.h"
 #else
 #include "DirectXGraphics.h"
 #endif

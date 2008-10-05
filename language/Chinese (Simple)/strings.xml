@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Tang YiZhi-->
 <!--Email: Kazuyuki@163.com-->
-<!--Date of translation: 09/12/2008-->
+<!--Date of translation: 10/03/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 15536-->
+<!--Based on english strings version 15704-->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -900,6 +900,13 @@
   <string id="13130">显示空白</string>
   <string id="13131">禁止</string>
   <string id="13132">空白显示</string>
+  <string id="13140">检测到活动连接！</string>
+  <string id="13141">如果你处理，你将不再能控制你的</string>
+  <string id="13142">XBMC，你是否确认要停止远程控制？</string>
+  <string id="13144">改变 Apple 遥控器的模式？</string>
+  <string id="13145">如果你现在正在使用 Apple 遥控器</string>
+  <string id="13146">控制 XBMC，修改这些设置将影响对</string>
+  <string id="13147">系统的控制。你确认要处理吗？</string>
   <string id="13150">硬盘密匙：</string>
   <string id="13151">硬盘温度：</string>
   <string id="13152">DVD 型号：</string>
@@ -1069,6 +1076,11 @@
   <string id="13412"> RSS种子内容为从右到左</string>
   <string id="13413">正在下载</string>
   <string id="13414">隐藏只在编辑中出现的艺术家</string>
+  <string id="13415">渲染模式</string>
+  <string id="13416">自动检测</string>
+  <string id="13417">基本着实(ARB)</string>
+  <string id="13418">高级着实(GLSL)</string>
+  <string id="13419">软件着实</string>
   <string id="13600">Apple 遥控器</string>
   <string id="13601">模式</string>
   <string id="13602">始终运行</string>
@@ -1076,11 +1088,8 @@
   <string id="13610">关闭</string>
   <string id="13611">标准</string>
   <string id="13612">Universal Remote遥控器</string>
-  <string id="13620">已安装 Remote Buddy驱动.</string>
-  <string id="13621">不能打开 Apple 遥控器支持.</string>
-  <string id="13622">请参照 Remote Buddy - FAQ 删除.</string>
-  <string id="13623">Sofa Control 正在运行</string>
-  <string id="13624">请参照 Sofa Control 文档删除.</string>
+  <string id="13620">Apple 遥控器错误</string>
+  <string id="13621">能打开 Apple 遥控器支持.</string>
   <string id="14000">视频堆叠</string>
   <string id="14001">堆叠关闭</string>
   <string id="14003">下载播放列表…</string>

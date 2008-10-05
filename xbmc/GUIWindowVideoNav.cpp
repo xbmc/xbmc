@@ -819,6 +819,9 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
 {
   if (iItem < 0 || iItem >= (int)m_vecItems->Size()) return;
 
+  if (m_vecItems->IsPluginFolder())
+    return;
+
   if (m_vecItems->m_strPath.Equals("special://videoplaylists/"))
   {
     CGUIWindowVideoBase::OnDeleteItem(iItem);

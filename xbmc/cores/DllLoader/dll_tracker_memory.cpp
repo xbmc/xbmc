@@ -38,6 +38,7 @@ extern "C" inline void tracker_memory_track(uintptr_t caller, void* data_addr, s
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(caller);
   if (pInfo)
   {
+    CSingleLock lock(g_trackerLock);
     AllocLenCaller temp;
     temp.size = size;
     temp.calleraddr = caller;
@@ -47,14 +48,20 @@ extern "C" inline void tracker_memory_track(uintptr_t caller, void* data_addr, s
 
 extern "C" inline bool tracker_memory_free(DllTrackInfo* pInfo, void* data_addr)
 {
-  if (!pInfo || pInfo->dataList.erase((uintptr_t)data_addr) < 1)
+  bool bFreeFailed = !pInfo;
+  if (!bFreeFailed)
+  {
+    CSingleLock lock(g_trackerLock);
+    bFreeFailed = pInfo->dataList.erase((uintptr_t)data_addr) < 1;
+  }
+  if (bFreeFailed)
   {
     // unable to delete the pointer from one of the trackers, but track_free is called!!
     // This will happen when memory is freed by another dll then the one which allocated the memory.
     // We, have to search every map for this memory pointer.
     // Yes, it's slow todo, but if we are freeing already freed pointers when unloading a dll
     // xbmc will crash.
-    CSingleLock locktd(g_trackedDlls);
+    CSingleLock locktd(g_trackerLock);
     for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
     {
       // try to free the pointer from this list, and break if success
@@ -67,6 +74,7 @@ extern "C" inline bool tracker_memory_free(DllTrackInfo* pInfo, void* data_addr)
 
 extern "C" void tracker_memory_free_all(DllTrackInfo* pInfo)
 {
+  CSingleLock lock(g_trackerLock);
   if (!pInfo->dataList.empty() || !pInfo->virtualList.empty())
   {
     CLog::Log(LOGDEBUG,"%s (base %p): Detected memory leaks: %d leaks", pInfo->pDll->GetFileName(), pInfo->pDll->hModule, pInfo->dataList.size() + pInfo->virtualList.size());
@@ -163,8 +171,6 @@ extern "C" void* __cdecl track_realloc(void* p, size_t s)
 {
   uintptr_t loc = (uintptr_t)_ReturnAddress();
 
-  DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
-
   void* q = realloc(p, s);
   if (!q) 
   {
@@ -173,8 +179,10 @@ extern "C" void* __cdecl track_realloc(void* p, size_t s)
     return NULL;
   }
 
+  DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
   if (pInfo)
   {
+    CSingleLock lock(g_trackerLock);
     if (p != q) tracker_memory_free(pInfo, p);
     AllocLenCaller temp;
     temp.size = s;
@@ -227,6 +235,7 @@ extern "C" void tracker_heapobjects_free_all(DllTrackInfo* pInfo)
   {
     CLog::Log(LOGDEBUG,"%s: Detected heapobject leaks: %d leaks", pInfo->pDll->GetFileName(), pInfo->heapobjectList.size());
 
+    CSingleLock lock(g_trackerLock);
     for (HeapObjectListIter it = pInfo->heapobjectList.begin(); it != pInfo->heapobjectList.end(); ++it)
     {
       try
@@ -257,6 +266,7 @@ track_HeapCreate(
 
   if( pInfo && hHeap )
   {
+    CSingleLock lock(g_trackerLock);
     pInfo->heapobjectList.push_back(hHeap);    
   }
   
@@ -279,6 +289,7 @@ track_HeapDestroy(
     {
       if (*it == hHeap)
       {
+        CSingleLock lock(g_trackerLock);
         pInfo->heapobjectList.erase(it);
         break;
       }
@@ -297,7 +308,10 @@ BOOL WINAPI track_VirtualFreeEx(HANDLE hProcess, LPVOID lpAddress, SIZE_T dwSize
   {    
     DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
     if (pInfo)
+    {
+      CSingleLock lock(g_trackerLock);
       pInfo->virtualList.erase((uintptr_t)lpAddress);
+    }
   }
   return VirtualFreeEx(hProcess, lpAddress, dwSize, dwFreeType);
 }
@@ -312,6 +326,7 @@ LPVOID WINAPI track_VirtualAllocEx(HANDLE hProcess, LPVOID lpAddress, SIZE_T dwS
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
   if(pInfo)
   {
+    CSingleLock lock(g_trackerLock);
     // make sure we get the base address for this allocation
     MEMORY_BASIC_INFORMATION info;
     if(VirtualQueryEx(hProcess, address, &info, sizeof(info)))
@@ -334,6 +349,7 @@ LPVOID WINAPI track_VirtualAlloc( LPVOID lpAddress, SIZE_T dwSize, DWORD flAlloc
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
   if(pInfo)
   {
+    CSingleLock lock(g_trackerLock);
     // make sure we get the base address for this allocation
     MEMORY_BASIC_INFORMATION info;
     if(VirtualQuery(address, &info, sizeof(info)))
@@ -355,7 +371,10 @@ BOOL WINAPI track_VirtualFree(LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType)
   {    
     DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
     if (pInfo)
+    {
+      CSingleLock lock(g_trackerLock);
       pInfo->virtualList.erase((uintptr_t)lpAddress);
+    }
   }
   return VirtualFree(lpAddress, dwSize, dwFreeType);
 }

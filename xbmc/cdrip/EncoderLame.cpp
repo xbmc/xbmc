@@ -24,6 +24,12 @@
 #include "Id3Tag.h"
 #include "GUISettings.h"
 
+#ifdef _WIN32PC
+extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
+#else
+#define fopen_utf8 fopen
+#endif
+
 using namespace MUSIC_INFO;
 
 // taken from Lame from main.c
@@ -158,7 +164,7 @@ bool CEncoderLame::Close()
   FileClose();
 
   // open again, but now the old way, lame only accepts FILE pointers
-  FILE* file = fopen(m_strFile.c_str(), "rb+");
+  FILE* file = fopen_utf8(m_strFile.c_str(), "rb+");
   if (!file)
   {
     CLog::Log(LOGERROR, "Error: Cannot open file for writing tags: %s", m_strFile.c_str());

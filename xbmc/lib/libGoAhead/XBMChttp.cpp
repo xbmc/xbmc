@@ -41,6 +41,12 @@
 #include "musicInfoTag.h"
 #include "PictureInfoTag.h"
 
+#ifdef _WIN32PC
+extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
+#else
+#define fopen_utf8 fopen
+#endif
+
 using namespace std;
 using namespace MUSIC_GRABBER;
 using namespace XFILE;
@@ -168,9 +174,9 @@ bool CXbmcHttp::decodeBase64ToFile( const CStdString &inString, const CStdString
   try
   {
     if (append)
-	  outfile = fopen( outfilename.c_str(), "ab" );
-	else
-      outfile = fopen( outfilename.c_str(), "wb" );
+	    outfile = fopen_utf8( outfilename.c_str(), "ab" );
+	  else
+      outfile = fopen_utf8( outfilename.c_str(), "wb" );
     while( ptr < inString.length() )
     {
       for( len = 0, i = 0; i < 4 && ptr < inString.length(); i++ ) 

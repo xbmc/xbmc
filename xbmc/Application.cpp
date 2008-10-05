@@ -1423,6 +1423,10 @@ HRESULT CApplication::Initialize()
 
   m_slowTimer.StartZero();
 
+#ifdef __APPLE__
+  g_xbmcHelper.CaptureAllInput();
+#endif
+
   CLog::Log(LOGNOTICE, "initialize done");
 
   m_bInitializing = false;
@@ -1646,8 +1650,8 @@ bool CApplication::StopEventServer(bool promptuser)
     CLog::Log(LOGNOTICE, "ES: Stopping event server");
   }
   CEventServer::GetInstance()->StopServer();
-  return true;
 #endif
+  return true;
 }
 
 void CApplication::RefreshEventServer()
@@ -3192,15 +3196,18 @@ bool CApplication::ProcessEventServer(float frameTime)
 {
 #ifdef HAS_EVENT_SERVER
   CEventServer* es = CEventServer::GetInstance();
-  if (!es || !es->Running())
+  if (!es || !es->Running() || es->GetNumberOfClients()==0)
     return false;
 
+  // process any queued up actions
+  es->ExecuteNextAction();
+
+  // now handle any buttons or axis
   std::string joystickName;
   bool isAxis = false;
   float fAmount = 0.0;
 
   WORD wKeyID = es->GetButtonCode(joystickName, isAxis, fAmount);
-
 
   if (wKeyID)
   {
@@ -3554,6 +3561,10 @@ void CApplication::Stop()
     StopServices();
     //Sleep(5000);
 
+#ifdef __APPLE__
+    g_xbmcHelper.ReleaseAllInput();
+#endif
+
     if (m_pPlayer)
     {
       CLog::Log(LOGNOTICE, "stop player");
@@ -3761,11 +3772,13 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if(item.IsTuxBox())
   {
     CLog::Log(LOGDEBUG, "%s - TuxBox URL Detected %s",__FUNCTION__, item.m_strPath.c_str());
+
+    if(g_tuxboxService.IsRunning())
+      g_tuxboxService.Stop();
+
     CFileItem item_new;
     if(g_tuxbox.CreateNewItem(item, item_new))
     {
-      if(g_tuxboxService.IsRunning())
-        g_tuxboxService.Stop();
 
       // Make sure it doesn't have a player
       // so we actually select one normally
@@ -3775,7 +3788,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       // and give the new url to the player
       if(PlayFile(item_new, true))
       {
-        g_tuxboxService.Start();
+        if(!g_tuxboxService.IsRunning())
+          g_tuxboxService.Start();
         return true;
       }
     }

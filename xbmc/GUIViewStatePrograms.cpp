@@ -42,9 +42,9 @@ CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& it
   AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%K", "%I", "%K", "%I"));  // Filename, Size | Foldername, Size
   AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | FolderName, empty
 
-  SetSortMethod((SORT_METHOD)g_guiSettings.GetInt("programfiles.sortmethod"));
-  SetViewAsControl(g_guiSettings.GetInt("programfiles.viewmode"));
-  SetSortOrder((SORT_ORDER)g_guiSettings.GetInt("programfiles.sortorder"));
+  SetSortMethod(g_stSettings.m_viewStatePrograms.m_sortMethod);
+  SetViewAsControl(g_stSettings.m_viewStatePrograms.m_viewMode);
+  SetSortOrder(g_stSettings.m_viewStatePrograms.m_sortOrder);
 
   LoadViewState(items.m_strPath, WINDOW_PROGRAMS);
 }
@@ -52,7 +52,12 @@ CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& it
 void CGUIViewStateWindowPrograms::SaveViewState()
 {
   if (g_guiSettings.GetBool("programfiles.savefolderviews"))
-    SaveViewToDb(m_items.m_strPath, WINDOW_PROGRAMS);
+    SaveViewToDb(m_items.m_strPath, WINDOW_PROGRAMS, &g_stSettings.m_viewStatePrograms);  
+  else
+  {
+    g_stSettings.m_viewStatePrograms = CViewState(GetViewAsControl(), GetSortMethod(), GetSortOrder());
+    g_settings.Save();
+  }
 }
 
 CStdString CGUIViewStateWindowPrograms::GetLockType()

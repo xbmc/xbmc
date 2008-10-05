@@ -754,49 +754,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInRegions(pSetting);
     }
-    else if (strSetting.Equals("musicfiles.viewmode"))
-    {
-      FillInViewModes(pSetting, WINDOW_MUSIC_FILES);
-    }
-    else if (strSetting.Equals("myvideos.viewmode"))
-    {
-      FillInViewModes(pSetting, WINDOW_VIDEO_FILES);
-    }
-    else if (strSetting.Equals("programfiles.viewmode"))
-    {
-      FillInViewModes(pSetting, WINDOW_PROGRAMS);
-    }
-    else if (strSetting.Equals("pictures.viewmode"))
-    {
-      FillInViewModes(pSetting, WINDOW_PICTURES);
-    }
-    else if (strSetting.Equals("musicfiles.sortmethod"))
-    {
-      FillInSortMethods(pSetting, WINDOW_MUSIC_FILES);
-    }
-    else if (strSetting.Equals("myvideos.sortmethod"))
-    {
-      FillInSortMethods(pSetting, WINDOW_VIDEO_FILES);
-    }
-    else if (strSetting.Equals("programfiles.sortmethod"))
-    {
-      FillInSortMethods(pSetting, WINDOW_PROGRAMS);
-    }
-    else if (strSetting.Equals("pictures.sortmethod"))
-    {
-      FillInSortMethods(pSetting, WINDOW_PICTURES);
-    }
-    else if (strSetting.Equals("musicfiles.sortorder") ||
-             strSetting.Equals("myvideos.sortorder") ||
-             strSetting.Equals("pictures.sortorder") ||
-             strSetting.Equals("programfiles.sortorder"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(584), SORT_ORDER_ASC);
-      pControl->AddLabel(g_localizeStrings.Get(585), SORT_ORDER_DESC);
-      pControl->SetValue(pSettingInt->GetData());
-    }
     else if (strSetting.Equals("myvideos.resumeautomatically"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;

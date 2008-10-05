@@ -53,15 +53,6 @@ int CGUIViewStateWindowVideo::GetPlaylist()
   return PLAYLIST_VIDEO;
 }
 
-void CGUIViewStateWindowVideo::SaveViewToDb(const CStdString &path, int windowID, CViewState *viewState)
-{
-  // Note that myvideos.savefolderviews only seems to apply to files view
-  // (see CGUIWindowSettingsCategory::ClearFolderViews), so that's all we
-  // check for here.
-  if (windowID != WINDOW_VIDEO_FILES || g_guiSettings.GetBool("myvideos.savefolderviews"))
-    CGUIViewState::SaveViewToDb(path, windowID, viewState);
-}
-
 CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
   if (items.IsVirtualDirectoryRoot())
@@ -80,18 +71,23 @@ CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList
     AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%L", "%I", "%L", "%I"));  // FileName, Size | Foldername, Size
     AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // FileName, Date | Foldername, Date
     AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | FolderName, empty
-    SetSortMethod((SORT_METHOD)g_guiSettings.GetInt("myvideos.sortmethod"));
 
-    SetViewAsControl(g_guiSettings.GetInt("myvideos.viewmode"));
-
-    SetSortOrder((SORT_ORDER)g_guiSettings.GetInt("myvideos.sortorder"));
+    SetSortMethod(g_stSettings.m_viewStateVideoFiles.m_sortMethod);
+    SetViewAsControl(g_stSettings.m_viewStateVideoFiles.m_viewMode);
+    SetSortOrder(g_stSettings.m_viewStateVideoFiles.m_sortOrder);
   }
   LoadViewState(items.m_strPath, WINDOW_VIDEO_FILES);
 }
 
 void CGUIViewStateWindowVideoFiles::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_FILES);
+  if (g_guiSettings.GetBool("myvideos.savefolderviews"))
+    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_FILES, &g_stSettings.m_viewStateVideoFiles);
+  else
+  {
+    g_stSettings.m_viewStateVideoFiles = CViewState(GetViewAsControl(), GetSortMethod(), GetSortOrder());
+    g_settings.Save();
+  }
 }
 
 VECSOURCES& CGUIViewStateWindowVideoFiles::GetSources()

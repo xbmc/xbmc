@@ -100,6 +100,7 @@ extern "C"
 {
 #endif
 
+extern CCriticalSection g_trackerLock;
 extern TrackedDllList g_trackedDlls;
 
 // add a dll for tracking
