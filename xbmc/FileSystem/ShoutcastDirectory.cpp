@@ -157,14 +157,14 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
 
 bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-
   CStdString strRoot = strPath;
-  if (CUtil::HasSlashAtEnd(strRoot))
+  if (CUtil::HasSlashAtEnd(strRoot) && strRoot != "shout://")
     strRoot.Delete(strRoot.size() - 1);
 
-  /* for old users wich doesn't have the full url */
-  if( strRoot.Equals("shout://www.shoutcast.com") )
-    strRoot = "shout://www.shoutcast.com/sbin/newxml.phtml";
+  /* keep backward competability (for users who already have this source defined) */
+  if( strRoot.Equals("shout://www.shoutcast.com") || strRoot.Equals("shout://") || strRoot.Equals("shout://classic.shoutcast.com") || 
+      strRoot.Equals("shout://www.shoutcast.com/sbin/newxml.phtml") )
+    strRoot = SHOUTCAST_MASTER_LINK;
 
   if (g_directoryCache.GetDirectory(strRoot, items))
     return true;

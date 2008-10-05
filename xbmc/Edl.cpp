@@ -358,20 +358,21 @@ void CEdl::SetMovie(const CStdString& strMovie)
 
 bool CEdl::CacheEdl()
 {
-  FILE* pFile;
   m_strCachedEdl=CACHED_EDL_FILENAME;
   m_bCached=false;
-  pFile = fopen(m_strCachedEdl.c_str(), "w" );
-  if ( pFile )
+  CFile cacheFile;
+  if (cacheFile.OpenForWrite(m_strCachedEdl, true, true))
   {
+    CStdString write;
     for(int i = 0; i < (int)m_vecCutlist.size(); i++ )
     {
       if ((m_vecCutlist[i].CutAction==CUT) || (m_vecCutlist[i].CutAction==MUTE))
       {
-        fprintf(pFile,"%.2f\t%.2f\t%i\n",((double)m_vecCutlist[i].CutStart)/1000, ((double)m_vecCutlist[i].CutEnd)/1000, m_vecCutlist[i].CutAction); 
+        write.AppendFormat("%.2f\t%.2f\t%i\n",((double)m_vecCutlist[i].CutStart)/1000, ((double)m_vecCutlist[i].CutEnd)/1000, m_vecCutlist[i].CutAction);
       }
     }
-    fclose(pFile);
+    cacheFile.Write(write.c_str(), write.size());
+    cacheFile.Close();
     m_bCached=true;
     CLog::Log(LOGDEBUG, "CEdl: EDL Cached.");
   }

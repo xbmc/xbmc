@@ -32,6 +32,7 @@
 #include "DNSNameCache.h"
 #include "Id3Tag.h"
 #include "Settings.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -717,14 +718,12 @@ void Xcddb::addTitle(const char *buffer)
 
   CStdString strArtist=artist;
   // You never know if you really get UTF-8 strings from cddb
-  if (!g_charsetConverter.isValidUtf8(strArtist)) 
-    g_charsetConverter.stringCharsetToUtf8(CStdString(artist), strArtist);
+  g_charsetConverter.unknownToUTF8(artist, strArtist);
   m_mapArtists[trk_nr] += strArtist;
 
   CStdString strTitle=title;
   // You never know if you really get UTF-8 strings from cddb
-  if (!g_charsetConverter.isValidUtf8(strTitle)) 
-    g_charsetConverter.stringCharsetToUtf8(CStdString(title), strTitle);
+  g_charsetConverter.unknownToUTF8(title, strTitle);
   m_mapTitles[trk_nr] += strTitle;
 }
 
@@ -825,25 +824,16 @@ void Xcddb::parseData(const char *buffer)
           CStdString strDisk_title = (char*)(line + i + 3);
 
           // You never know if you really get UTF-8 strings from cddb
-          if (!g_charsetConverter.isValidUtf8(strDisk_artist))
-            g_charsetConverter.stringCharsetToUtf8(strDisk_artist, m_strDisk_artist);
-          else
-            m_strDisk_artist=strDisk_artist;
+          g_charsetConverter.unknownToUTF8(strDisk_artist, m_strDisk_artist);
 
           // You never know if you really get UTF-8 strings from cddb
-          if (!g_charsetConverter.isValidUtf8(strDisk_title))
-            g_charsetConverter.stringCharsetToUtf8(strDisk_title, m_strDisk_title);
-          else
-            m_strDisk_title=strDisk_title;
+          g_charsetConverter.unknownToUTF8(strDisk_title, m_strDisk_title);
         }
         else
         {
           CStdString strDisk_title = (char*)(line + 7);
           // You never know if you really get UTF-8 strings from cddb
-          if (!g_charsetConverter.isValidUtf8(strDisk_title))
-            g_charsetConverter.stringCharsetToUtf8(strDisk_title, m_strDisk_title);
-          else
-            m_strDisk_title=strDisk_title;
+          g_charsetConverter.unknownToUTF8(strDisk_title, m_strDisk_title);
         }
       }
       else if (0 == strncmp(line, "DYEAR", 5))
@@ -851,10 +841,7 @@ void Xcddb::parseData(const char *buffer)
         CStdString strYear = (char*)(line + 5);
         strYear.TrimLeft("= ");
         // You never know if you really get UTF-8 strings from cddb
-        if (!g_charsetConverter.isValidUtf8(strYear))
-          g_charsetConverter.stringCharsetToUtf8(strYear, m_strYear);
-        else
-          m_strYear=strYear;
+        g_charsetConverter.unknownToUTF8(strYear, m_strYear);
       }
       else if (0 == strncmp(line, "DGENRE", 6))
       {
@@ -862,10 +849,7 @@ void Xcddb::parseData(const char *buffer)
         strGenre.TrimLeft("= ");
 
         // You never know if you really get UTF-8 strings from cddb
-        if (!g_charsetConverter.isValidUtf8(strGenre))
-          g_charsetConverter.stringCharsetToUtf8(strGenre, m_strGenre);
-        else
-          m_strGenre=strGenre;
+        g_charsetConverter.unknownToUTF8(strGenre, m_strGenre);
       }
       else if (0 == strncmp(line, "TTITLE", 6))
       {
@@ -886,10 +870,7 @@ void Xcddb::parseData(const char *buffer)
             strYear = strExtd.Mid(iPos + 6, 4);
 
             // You never know if you really get UTF-8 strings from cddb
-            if (!g_charsetConverter.isValidUtf8(strYear))
-              g_charsetConverter.stringCharsetToUtf8(strYear, m_strYear);
-            else
-              m_strYear=strYear;
+            g_charsetConverter.unknownToUTF8(strYear, m_strYear);
           }
         }
 
@@ -950,10 +931,7 @@ void Xcddb::addExtended(const char *buffer)
   CStdString strValue;
   CStdString strValueUtf8=value;
   // You never know if you really get UTF-8 strings from cddb
-  if (!g_charsetConverter.isValidUtf8(strValueUtf8))
-    g_charsetConverter.stringCharsetToUtf8(strValueUtf8, strValue);
-  else
-    strValue=strValueUtf8;
+  g_charsetConverter.unknownToUTF8(strValueUtf8, strValue);
   m_mapExtended_track[trk_nr] = strValue;
 }
 
@@ -1062,15 +1040,13 @@ void Xcddb::addInexactListLine(int line_cnt, const char *line, int len)
 
   CStdString strArtist=artist;
   // You never know if you really get UTF-8 strings from cddb
-  if (!g_charsetConverter.isValidUtf8(strArtist)) 
-    g_charsetConverter.stringCharsetToUtf8(CStdString(artist), strArtist);
+  g_charsetConverter.unknownToUTF8(artist, strArtist);
   m_mapInexact_artist_list[line_cnt] = strArtist;
 
-  CStdString strTitel=title;
+  CStdString strTitle=title;
   // You never know if you really get UTF-8 strings from cddb
-  if (!g_charsetConverter.isValidUtf8(strTitel)) 
-    g_charsetConverter.stringCharsetToUtf8(CStdString(artist), strTitel);
-  m_mapInexact_title_list[line_cnt] = strTitel;
+  g_charsetConverter.unknownToUTF8(title, strTitle);
+  m_mapInexact_title_list[line_cnt] = strTitle;
   // char log_string[1024];
   // sprintf(log_string,"%u: %s - %s",line_cnt,artist,title);
   // //writeLog(log_string);
@@ -1098,15 +1074,14 @@ bool Xcddb::queryCache( unsigned long discid )
   CStdString strFileName;
   strFileName.Format("%s\\%x.cddb", cCacheDir.c_str(), discid);
 
-  FILE* fd;
-  fd = fopen( strFileName.c_str(), "rb");
-  if (fd)
+  XFILE::CFile file;
+  if (file.Open(strFileName))
   {
     // Got a cachehit
     char buffer[4096];
     OutputDebugString ( "cddb local cache hit.\n" );
-    fread( buffer, 1, 4096 , fd);
-    fclose(fd);
+    file.Read(buffer, 4096);
+    file.Close();
     parseData( buffer );
     return true;
   }
@@ -1123,13 +1098,12 @@ bool Xcddb::writeCacheFile( const char* pBuffer, unsigned long discid )
   CStdString strFileName;
   strFileName.Format("%s\\%x.cddb", cCacheDir.c_str(), discid);
 
-  FILE* fd;
-  fd = fopen(strFileName.c_str(), "wb+");
-  if (fd)
+  XFILE::CFile file;
+  if (file.OpenForWrite(strFileName, true, true))
   {
     OutputDebugString ( "Current cd saved to local cddb.\n" );
-    fwrite( (void*) pBuffer, 1, strlen( pBuffer ) + 1, fd );
-    fclose(fd);
+    file.Write( (void*) pBuffer, strlen( pBuffer ) + 1 );
+    file.Close();
     return true;
   }
 
@@ -1147,15 +1121,7 @@ bool Xcddb::isCDCached( int nr_of_tracks, toc cdtoc[] )
   CStdString strFileName;
   strFileName.Format("%s\\%x.cddb", cCacheDir.c_str(), discid);
 
-  FILE* fd;
-  fd = fopen(strFileName.c_str(), "rb");
-  if (fd)
-  {
-    fclose(fd);
-    return true;
-  }
-
-  return false;
+  return XFILE::CFile::Exists(strFileName);
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -1428,15 +1394,7 @@ bool Xcddb::isCDCached( CCdInfo* pInfo )
   CStdString strFileName;
   strFileName.Format("%s\\%x.cddb", cCacheDir.c_str(), discid);
 
-  FILE* fd;
-  fd = fopen(strFileName.c_str(), "rb");
-  if (fd)
-  {
-    fclose(fd);
-    return true;
-  }
-
-  return false;
+  return XFILE::CFile::Exists(strFileName);
 }
 
 

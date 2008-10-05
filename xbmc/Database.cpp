@@ -24,6 +24,7 @@
 #include "Util.h"
 #include "Settings.h"
 #include "Crc32.h"
+#include "FileSystem/File.h"
 
 using namespace AUTOPTR;
 using namespace dbiplus;
@@ -92,13 +93,7 @@ bool CDatabase::Open()
   CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), m_strDatabaseFile, strDatabase);
 
   // test id dbs already exists, if not we need 2 create the tables
-  bool bDatabaseExists = false;
-  FILE* fd = fopen(strDatabase.c_str(), "rb");
-  if (fd)
-  {
-    bDatabaseExists = true;
-    fclose(fd);
-  }
+  bool bDatabaseExists = XFILE::CFile::Exists(strDatabase);
 
   m_pDB.reset(new SqliteDatabase() ) ;
   m_pDB->setDatabase(strDatabase.c_str());

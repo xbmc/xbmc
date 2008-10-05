@@ -34,6 +34,12 @@
 #pragma const_seg("PY_RDATA")
 #endif
 
+#ifdef _WIN32PC
+extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
+#else
+#define fopen_utf8 fopen
+#endif
+
 extern "C"
 {
   int xbp_chdir(const char *dirname);
@@ -141,7 +147,7 @@ void XBPyThread::Process()
   if (type == 'F')
   {
     // run script from file
-    FILE *fp = fopen(source, "r");
+    FILE *fp = fopen_utf8(source, "r");
     if (fp)
     {
       if (PyRun_SimpleFile(fp, source) == -1)

@@ -21,6 +21,16 @@
 
 #include "stdafx.h"
 #include "Encoder.h"
+#include "FileSystem/File.h"
+
+CEncoder::CEncoder()
+{
+  m_file = NULL;
+  m_dwWriteBufferPointer = 0;
+  m_iInChannels = 0;
+  m_iInSampleRate = 0;
+  m_iInBitsPerSample = 0;
+}
 
 bool CEncoder::Init(const char* strFile, int iInChannels, int iInRate, int iInBits)
 {
@@ -43,32 +53,34 @@ bool CEncoder::Init(const char* strFile, int iInChannels, int iInRate, int iInBi
 
 bool CEncoder::FileCreate(const char* filename)
 {
-  CStdString strFileName=filename;
-#ifndef _LINUX
-  g_charsetConverter.utf8ToStringCharset(strFileName);
-#endif
-  m_hFile = CreateFile(strFileName.c_str(), GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ, NULL, CREATE_ALWAYS,
-                       FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+  if (m_file)
+    delete m_file;
 
-  return (m_hFile != INVALID_HANDLE_VALUE);
+  m_file = new XFILE::CFile;
+  if (m_file)
+    return m_file->OpenForWrite(filename, true, true);
+  return false;
 }
 
 bool CEncoder::FileClose()
 {
-  if (m_hFile != INVALID_HANDLE_VALUE) CloseHandle(m_hFile);
-
-  m_hFile = INVALID_HANDLE_VALUE;
+  if (m_file)
+  {
+    m_file->Close();
+    delete m_file;
+  }
   return true;
 }
 
 // return total bytes written, or -1 on error
 int CEncoder::FileWrite(LPCVOID pBuffer, DWORD iBytes)
 {
-  DWORD dwBytesWritten;
+  if (!m_file)
+    return -1;
 
-  if (m_hFile == INVALID_HANDLE_VALUE) return -1;
-
-  if (!WriteFile(m_hFile, pBuffer, iBytes, &dwBytesWritten, NULL)) dwBytesWritten = -1;
+  DWORD dwBytesWritten = m_file->Write(pBuffer, iBytes);
+  if (!dwBytesWritten)
+    return -1;
 
   return dwBytesWritten;
 }

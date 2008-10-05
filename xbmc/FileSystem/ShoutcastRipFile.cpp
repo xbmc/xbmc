@@ -32,6 +32,12 @@ using namespace MUSIC_INFO;
 #define WIN32 1
 #endif
 
+#ifdef _WIN32PC
+extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
+#else
+#define fopen_utf8 fopen
+#endif
+
 #include "lib/libshout/rip_manager.h"
 
 CShoutcastRipFile::CShoutcastRipFile()
@@ -141,11 +147,11 @@ bool CShoutcastRipFile::Record()
     char logFilename[1024];
     CStdString strHomePath = g_guiSettings.GetString("mymusic.recordingpath");
     sprintf(logFilename, "%s\\recordings.log", strHomePath.c_str() );
-    m_logFile = fopen( logFilename, "at+");
+    m_logFile = fopen_utf8( logFilename, "at+");
   }
 
   PrepareRecording();
-  m_ripFile = fopen( m_szFilteredFileName, "wb+" );
+  m_ripFile = fopen_utf8( m_szFilteredFileName, "wb+" );
 
   char logRecording[2048];
   //we log this, for users that want to change id3 tags afterward...

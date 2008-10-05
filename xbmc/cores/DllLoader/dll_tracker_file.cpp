@@ -31,6 +31,7 @@ extern "C" void tracker_file_track(uintptr_t caller, unsigned handle, TrackedFil
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(caller);
   if (pInfo)
   {
+    CSingleLock lock(g_trackerLock);
     TrackedFile* file = new TrackedFile;
     file->handle = handle;
     file->type = type;
@@ -44,6 +45,7 @@ extern "C" void tracker_file_free(uintptr_t caller, unsigned handle, TrackedFile
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(caller);
   if (pInfo)
   {
+    CSingleLock lock(g_trackerLock);
     TrackedFile* file;
     for (FileListIter it = pInfo->fileList.begin(); it != pInfo->fileList.end(); ++it)
     {
@@ -64,6 +66,7 @@ extern "C" void tracker_file_free_all(DllTrackInfo* pInfo)
 {
   if (!pInfo->fileList.empty())
   {
+    CSingleLock lock(g_trackerLock);
     TrackedFile* file;
     CLog::Log(LOGDEBUG, "%s: Detected open files: %d", pInfo->pDll->GetFileName(), pInfo->fileList.size());
     for (FileListIter it = pInfo->fileList.begin(); it != pInfo->fileList.end(); ++it)

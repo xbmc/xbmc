@@ -30,7 +30,6 @@
 
 CCriticalSection::CCriticalSection()
 {
-
   InitializeCriticalSection(&m_critSection);
 }
 
@@ -42,6 +41,20 @@ CCriticalSection::~CCriticalSection()
 CCriticalSection::operator LPCRITICAL_SECTION()
 {
   return &m_critSection;
+}
+
+//////////////////////////////////////////////////////////////////////
+CCriticalSection::CCriticalSection(const CCriticalSection& section)
+{
+  *this = section;
+}
+ 
+CCriticalSection& CCriticalSection::operator=(const CCriticalSection& section)
+{
+  if (this == &section) return * this;
+ 
+  InitializeCriticalSection(&m_critSection);
+  return *this;
 }
 
 
