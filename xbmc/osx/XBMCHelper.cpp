@@ -27,6 +27,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <Carbon/Carbon.h>
+
 
 using namespace std;
 
@@ -38,6 +40,7 @@ using namespace std;
 #include "Settings.h"
 #include "Util.h"
 #include "XFileUtils.h"
+#include "utils/SystemInfo.h"
 
 XBMCHelper g_xbmcHelper;
 
@@ -205,6 +208,53 @@ void XBMCHelper::Uninstall()
 bool XBMCHelper::IsRunning()
 {
   return (GetProcessPid(XBMC_HELPER_PROGRAM)!=-1);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+bool XBMCHelper::IsAppleTV()
+{
+  char        buffer[512];
+  size_t      len = 512;
+  std::string hw_model = "unknown";
+  
+  if (sysctlbyname("hw.model", &buffer, &len, NULL, 0) == 0)
+    hw_model = buffer;
+  
+  if (hw_model.find("AppleTV") != std::string::npos)
+  {
+    CLog::Log(LOGERROR, "XBMCHelper: AppleTV found");
+    return true;
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "XBMCHelper: '%s' found", hw_model.c_str());
+    return false;
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void XBMCHelper::CaptureAllInput()
+{
+  // Take keyboard focus away from FrontRow and native screen saver
+  if (IsAppleTV())
+  {
+    ProcessSerialNumber psn = {0, kCurrentProcess};
+       
+    CLog::Log(LOGERROR, "XBMCHelper: EnableSecureEventInput");
+    SetFrontProcess(&psn);
+    EnableSecureEventInput();
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void XBMCHelper::ReleaseAllInput()
+{
+  // Give keyboard focus back to FrontRow and native screen saver
+  if (IsAppleTV())
+  {
+    CLog::Log(LOGERROR, "XBMCHelper: DisableSecureEventInput");
+    DisableSecureEventInput();
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////////

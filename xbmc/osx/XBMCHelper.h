@@ -36,9 +36,13 @@ class XBMCHelper
   void Install();
   void Uninstall();
 
+  bool IsRunning();
+  bool IsAppleTV();
+  void CaptureAllInput();
+  void ReleaseAllInput();
+
   bool IsRemoteBuddyInstalled();
   bool IsSofaControlRunning();
-  bool IsRunning();
 
   bool IsAlwaysOn() const { return m_alwaysOn; }
   int  GetMode() const { return m_mode; }
