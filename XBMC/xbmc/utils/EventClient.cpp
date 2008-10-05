@@ -33,6 +33,7 @@
 #include <map>
 #include <queue>
 #include "Util.h"
+#include "FileSystem/File.h"
 
 using namespace EVENTCLIENT;
 using namespace EVENTPACKET;
@@ -172,7 +173,7 @@ bool CEventClient::AddPacket(CEventPacket *packet)
   return true;
 }
 
-void CEventClient::ExecuteEvents()
+void CEventClient::ProcessEvents()
 {
   if (m_readyPackets.size() > 0)
   {
@@ -186,6 +187,45 @@ void CEventClient::ExecuteEvents()
       }
     }
   }
+}
+
+bool CEventClient::ExecuteNextAction()
+{
+  CEventAction actionEvent;
+  CAction action;
+
+  CSingleLock lock(m_critSection);
+  if (m_actionQueue.size() > 0)
+  {
+    // grab the next action in line
+    actionEvent = m_actionQueue.front();
+    m_actionQueue.pop();
+    lock.Leave();
+  }
+  else
+  {
+    // we got nothing
+    lock.Leave();
+    return false;
+  }
+
+  switch(actionEvent.actionType)
+  {
+  case AT_EXEC_BUILTIN:
+    CUtil::ExecBuiltIn(actionEvent.actionName);
+    break;
+
+  case AT_BUTTON:
+    g_buttonTranslator.TranslateActionString(actionEvent.actionName.c_str(), action.wID);
+    action.strAction = actionEvent.actionName;
+    action.fRepeat  = 0.0f;
+    action.fAmount1 = 1.0f;
+    action.fAmount2 = 1.0f;
+    g_application.OnAction(action);
+    break;
+  }
+
+  return true;
 }
 
 bool CEventClient::ProcessPacket(CEventPacket *packet)
@@ -291,11 +331,11 @@ bool CEventClient::OnPacketHELO(CEventPacket *packet)
       iconfile += ".png";
       break;
     }
-    FILE * f = fopen(iconfile.c_str(), "wb");
-    if (f)
+    XFILE::CFile file;
+    if (file.OpenForWrite(iconfile, true, true))
     {
-      fwrite((const void *)payload, psize, 1, f);
-      fclose(f);
+      file.Write((const void *)payload, psize);
+      file.Close();
     }
     else
     {
@@ -373,6 +413,8 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
     keycode = bcode;
 
   float famount = 0;
+  bool active = (flags & PTB_DOWN) ? true : false;
+
   if(flags & PTB_USE_AMOUNT)
   {
     if(flags & PTB_AXIS)
@@ -381,8 +423,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
       famount = (float)amount/65535.0f;
   }
   else
-    famount = 1.0f; // Considered digital
-  bool active = (flags & PTB_DOWN) ? true : false;
+    famount = (active ? 1.0f : 0.0f);
 
   if(flags & PTB_QUEUE)
   {
@@ -394,7 +435,8 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
                              button,
                              famount,
                              (flags & (PTB_AXIS|PTB_AXISSINGLE)) ? true  : false,
-                             (flags & PTB_NO_REPEAT)             ? false : true );
+                             (flags & PTB_NO_REPEAT)             ? false : true,
+                             (flags & PTB_USE_AMOUNT)            ? true : false );
 
     /* correct non active events so they work with rest of code */
     if(!active)
@@ -414,13 +456,13 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
     }
     else
     {
-      if(!active && it->m_bActive)  
+      if(!active && it->m_bActive)
       {
         /* since modifying the list invalidates the referse iteratator */
         std::list<CEventButtonState>::iterator it2 = (++it).base();
 
         /* if last event had an amount, we must resend without amount */
-        if(it2->m_fAmount != 0.0)
+        if(it2->m_bUseAmount && it2->m_fAmount != 0.0)
           m_buttonQueue.push_back(state);
 
         /* if the last event was waiting for a repeat interval, it has executed already.*/
@@ -467,14 +509,15 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
     {
       /* when a button is released that had amount, make sure *
        * to resend the keypress with an amount of 0           */
-      if(m_currentButton.m_fAmount > 0.0)
+      if((flags & PTB_USE_AMOUNT) && m_currentButton.m_fAmount > 0.0)
       {
         CEventButtonState state( m_currentButton.m_iKeyCode,
                                  m_currentButton.m_mapName,
                                  m_currentButton.m_buttonName,
                                  0.0,
                                  m_currentButton.m_bAxis,
-                                 false );
+                                 false,
+                                 true );
 
         m_buttonQueue.push_back (state);
       }
@@ -560,11 +603,11 @@ bool CEventClient::OnPacketNOTIFICATION(CEventPacket *packet)
       break;
     }
 
-    FILE * f = fopen(iconfile.c_str(), "wb");
-    if (f)
+    XFILE::CFile file;
+    if (file.OpenForWrite(iconfile, true, true))
     {
-      fwrite((const void *)payload, psize, 1, f);
-      fclose(f);
+      file.Write((const void *)payload, psize);
+      file.Close();
     }
     else
     {
@@ -615,20 +658,14 @@ bool CEventClient::OnPacketACTION(CEventPacket *packet)
   if (!ParseString(payload, psize, actionString))
     return false;
 
-  CAction action;
-
   switch(actionType)
   {
   case AT_EXEC_BUILTIN:
-    CUtil::ExecBuiltIn(actionString);
-    break;
   case AT_BUTTON:
-    g_buttonTranslator.TranslateActionString(actionString.c_str(), action.wID);
-    action.strAction = actionString;
-    action.fRepeat  = 0.0f;
-    action.fAmount1 = 1.0f;
-    action.fAmount2 = 1.0f;
-    g_application.OnAction(action);
+    {
+      CSingleLock lock(m_critSection);
+      m_actionQueue.push(CEventAction(actionString.c_str(), actionType));
+    }
     break;
 
   default:

@@ -219,6 +219,7 @@ public:
     int m_curlclienttimeout;
     int m_playlistRetries;
     int m_playlistTimeout;
+    int m_iSkipLoopFilter;
   };
   struct stSettings
   {
@@ -247,6 +248,11 @@ public:
     CViewState m_viewStateVideoNavSeasons;
     CViewState m_viewStateVideoNavTvShows;
     CViewState m_viewStateVideoNavMusicVideos;
+
+    CViewState m_viewStatePrograms;
+    CViewState m_viewStatePictures;
+    CViewState m_viewStateMusicFiles;
+    CViewState m_viewStateVideoFiles;
 
     bool m_bMyMusicPlaylistRepeat;
     bool m_bMyMusicPlaylistShuffle;
@@ -375,7 +381,7 @@ protected:
   bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);
   void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault);
   bool SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath);
-  void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState, SORT_METHOD defaultSort = SORT_METHOD_LABEL);
+  void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState, SORT_METHOD defaultSort = SORT_METHOD_LABEL, int defaultView = DEFAULT_VIEW_LIST);
 
   void ConvertHomeVar(CStdString& strText);
   // functions for writing xml files

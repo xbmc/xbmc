@@ -21,6 +21,7 @@
 
 #include "include.h"
 #include "GUIFont.h"
+#include "GUIFontTTF.h"
 #include "GraphicContext.h"
 #include "utils/SingleLock.h"
 
@@ -56,7 +57,7 @@ float CScrollInfo::GetPixelsPerFrame()
   // do an exponential moving average of the frame time
   m_averageFrameTime = m_averageFrameTime + (delta - m_averageFrameTime) * alphaEMA;
   // and multiply by pixel speed (per ms) to get number of pixels to move this frame
-  return ROUND(pixelSpeed * m_averageFrameTime);
+  return pixelSpeed * m_averageFrameTime;
 }
 
 CGUIFont::CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, DWORD shadowColor, float lineSpacing, CGUIFontTTF *font)
@@ -232,3 +233,40 @@ bool CGUIFont::ClippedRegionIsEmpty(float x, float y, float width, DWORD alignme
   return !g_graphicsContext.SetClipRegion(x, y, width, m_font->GetLineHeight(2.0f));
 }
 
+float CGUIFont::GetTextWidth( const std::vector<DWORD> &text )
+{
+  if (!m_font) return 0;
+  CSingleLock lock(g_graphicsContext);
+  return m_font->GetTextWidthInternal(text.begin(), text.end()) * g_graphicsContext.GetGUIScaleX();
+};
+
+float CGUIFont::GetCharWidth( DWORD ch )
+{
+  if (!m_font) return 0;
+  CSingleLock lock(g_graphicsContext);
+  return m_font->GetCharWidthInternal(ch) * g_graphicsContext.GetGUIScaleX();
+}
+
+float CGUIFont::GetTextHeight(int numLines) const
+{
+  if (!m_font) return 0;
+  return m_font->GetTextHeight(m_lineSpacing, numLines) * g_graphicsContext.GetGUIScaleY();
+};
+
+float CGUIFont::GetLineHeight() const
+{
+  if (!m_font) return 0;
+  return m_font->GetLineHeight(m_lineSpacing) * g_graphicsContext.GetGUIScaleY();
+};
+
+void CGUIFont::Begin() 
+{ 
+  if (!m_font) return;
+  m_font->Begin(); 
+};
+
+void CGUIFont::End() 
+{ 
+  if (!m_font) return;
+  m_font->End(); 
+};

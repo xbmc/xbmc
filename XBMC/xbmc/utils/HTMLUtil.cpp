@@ -121,6 +121,8 @@ void CHTMLUtil::RemoveTags(CStdString& strHTML)
   strReturn.Replace("&#160;", " ");
   strReturn.Replace("&ndash;", "-");
   strReturn.Replace("&oacute;", "ó");
+  strReturn.Replace("&nbsp;", "");
+  strReturn.Replace("&rsquo;", "'");
 
   strHTML = strReturn;
 }

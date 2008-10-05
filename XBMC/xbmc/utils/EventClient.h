@@ -34,6 +34,23 @@
 namespace EVENTCLIENT
 {
 
+  class CEventAction
+  {
+  public:
+    CEventAction()
+    {
+      actionType = 0;
+    }
+    CEventAction(const char* action, unsigned char type)
+    {
+      actionName = action;
+      actionType = type;
+    }
+
+    std::string    actionName;
+    unsigned char  actionType;
+  };
+
   class CEventButtonState
   {
   public:
@@ -43,6 +60,7 @@ namespace EVENTCLIENT
       m_mapName    = "";
       m_buttonName = "";
       m_fAmount    = 0.0f;
+      m_bUseAmount = false;
       m_bRepeat    = false;
       m_bActive    = false;
       m_bAxis      = false;
@@ -54,13 +72,15 @@ namespace EVENTCLIENT
                       std::string buttonName,
                       float fAmount,
                       bool isAxis,
-                      bool bRepeat
+                      bool bRepeat,
+                      bool bUseAmount
       )
     {
       m_iKeyCode   = iKeyCode;
       m_buttonName = buttonName;
       m_mapName    = mapName;
       m_fAmount    = fAmount;
+      m_bUseAmount = bUseAmount;
       m_bRepeat    = bRepeat;
       m_bActive    = true;
       m_bAxis      = isAxis;
@@ -87,6 +107,7 @@ namespace EVENTCLIENT
     std::string       m_mapName;
     std::string       m_joystickName;
     float             m_fAmount;
+    bool              m_bUseAmount;
     bool              m_bRepeat;
     bool              m_bActive;
     bool              m_bAxis;
@@ -156,8 +177,11 @@ namespace EVENTCLIENT
     // process the packet queue
     bool ProcessQueue();
 
-    // execute the queued up events (packets)
-    void ExecuteEvents();
+    // process the queued up events (packets)
+    void ProcessEvents();
+
+    // execute the next action in the action queue
+    bool ExecuteNextAction();
 
     // deallocate all packets in the queues
     void FreePacketQueues();
@@ -231,6 +255,7 @@ namespace EVENTCLIENT
 
     // button and mouse state
     std::list<CEventButtonState>  m_buttonQueue;
+    std::queue<CEventAction>      m_actionQueue;
     CEventButtonState m_currentButton;
   };
 

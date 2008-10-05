@@ -317,7 +317,7 @@ namespace PYXBMC
       return NULL;
     }
 
-    PlayListItem* item = (PlayListItem*)_PyObject_New(&PlayListItem_Type);
+    PlayListItem* item = (PlayListItem*)PlayListItem_Type.tp_alloc(&PlayListItem_Type, 0);
     //Py_INCREF(item);
 
     CPlayList* p = ((PlayList*)self)->pPlayList;

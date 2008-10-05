@@ -23,6 +23,7 @@
 #include "GUISound.h"
 #include "AudioContext.h"
 #include "Settings.h"
+#include "FileSystem/File.h"
 
 typedef struct
 {
@@ -193,18 +194,18 @@ void CGUISound::FreeBuffer()
 
 bool CGUISound::LoadWav(const CStdString& strFile, WAVEFORMATEX* wfx, LPBYTE* ppWavData, int* pDataSize)
 {
-  FILE* fd = fopen(strFile, "rb");
-  if (!fd)
+  XFILE::CFile file;
+  if (!file.Open(strFile))
     return false;
 
   // read header
   WAVE_RIFFHEADER riffh;
-  fread(&riffh, sizeof(WAVE_RIFFHEADER), 1, fd);
+  file.Read(&riffh, sizeof(WAVE_RIFFHEADER));
 
   // file valid?
   if (strncmp(riffh.riff, "RIFF", 4)!=0 && strncmp(riffh.rifftype, "WAVE", 4)!=0)
   {
-    fclose(fd);
+    file.Close();
     return false;
   }
 
@@ -218,21 +219,21 @@ bool CGUISound::LoadWav(const CStdString& strFile, WAVEFORMATEX* wfx, LPBYTE* pp
     WAVE_CHUNK chunk;
 
     // always seeking to the start of a chunk
-    fseek(fd, offset + sizeof(WAVE_CHUNK), SEEK_SET);
-    fread(&chunk, sizeof(WAVE_CHUNK), 1, fd);
+    file.Seek(offset + sizeof(WAVE_CHUNK), SEEK_SET);
+    file.Read(&chunk, sizeof(WAVE_CHUNK));
 
     if (!strncmp(chunk.chunk_id, "fmt ", 4))
     { // format chunk
       memset(wfx, 0, sizeof(WAVEFORMATEX));
-      fread(wfx, 1, 16, fd);
+      file.Read(wfx, 16);
       // we only need 16 bytes of the fmt chunk
       if (chunk.chunksize-16>0)
-        fseek(fd, chunk.chunksize-16, SEEK_CUR);
+        file.Seek(chunk.chunksize-16, SEEK_CUR);
     }
     else if (!strncmp(chunk.chunk_id, "data", 4))
     { // data chunk
       *ppWavData=new BYTE[chunk.chunksize+1];
-      fread(*ppWavData, 1, chunk.chunksize, fd);
+      file.Read(*ppWavData, chunk.chunksize);
       *pDataSize=chunk.chunksize;
 
       if (chunk.chunksize & 1)
@@ -240,7 +241,7 @@ bool CGUISound::LoadWav(const CStdString& strFile, WAVEFORMATEX* wfx, LPBYTE* pp
     }
     else
     { // other chunk - unused, just skip
-      fseek(fd, chunk.chunksize, SEEK_CUR);
+      file.Seek(chunk.chunksize, SEEK_CUR);
     }
 
     offset+=(chunk.chunksize+sizeof(WAVE_CHUNK));
@@ -250,7 +251,7 @@ bool CGUISound::LoadWav(const CStdString& strFile, WAVEFORMATEX* wfx, LPBYTE* pp
 
   } while (offset+(int)sizeof(WAVE_CHUNK) < riffh.filesize);
 
-  fclose(fd);
+  file.Close();
   return (*ppWavData!=NULL);
 }
 
