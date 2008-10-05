@@ -259,6 +259,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_playlistRetries = 100;
   g_advancedSettings.m_playlistTimeout = 20; // 20 seconds timeout
   g_advancedSettings.m_GLRectangleHack = false;
+  g_advancedSettings.m_iSkipLoopFilter = 0;
 }
 
 CSettings::~CSettings(void)
@@ -1245,6 +1246,7 @@ void CSettings::LoadAdvancedSettings()
 
   XMLUtils::GetBoolean(pRootElement,"rootovershoot",g_advancedSettings.m_bUseEvilB);
   XMLUtils::GetBoolean(pRootElement,"glrectanglehack", g_advancedSettings.m_GLRectangleHack);
+  GetInteger(pRootElement,"skiploopfilter", g_advancedSettings.m_iSkipLoopFilter, 0, -16, 48);
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");
