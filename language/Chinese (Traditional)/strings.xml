@@ -635,11 +635,11 @@
   <string id="773">搜尋中</string>
   <string id="774">圖片資料夾</string>
 
-  <string id="790">遠端事件</string>
-  <string id="791">啟用 遠端事件</string>
-  <string id="792">遠端事件埠號</string>
-  <string id="793">遠端事件埠號範圍</string>
-  <string id="794">接收事件從其他電腦</string>
+  <string id="790">事件伺服器</string>
+  <string id="791">啟用 事件伺服器</string>
+  <string id="792">事件伺服器埠號</string>
+  <string id="793">事件伺服器埠號範圍</string>
+  <string id="794">允許其他電腦連接</string>
   <string id="795">初步重複延遲（毫秒）</string>
   <string id="796">連續重複延遲（毫秒）</string>
   <string id="797">最大的客戶端數目</string>
@@ -942,6 +942,15 @@
   <string id="13107">啟用 在影片播放時</string>
   <string id="13108">強制啟用</string>
 
+  <string id="13140">主動偵測連接！</string>
+  <string id="13141">如果你繼續，你不一定能控制 XBMC</string>
+  <string id="13142">更長的時間。您是否確定停止事件伺服器？</string>
+
+  <string id="13144">更改蘋果遙控器模式？</string>
+  <string id="13145">如果你正使用蘋果遙控器來控制</string>
+  <string id="13146">XBMC，更改此設定可能會影響到你</string>
+  <string id="13147">繼續控制它。你要繼續嗎？</string>
+
   <string id="13150">硬碟金鑰：</string>
   <string id="13151">硬碟溫度：</string>
   <string id="13152">DVD 型號：</string>
@@ -1128,9 +1137,8 @@
   <string id="13611">標準</string>
   <string id="13612">通用遙控器</string>
 
-  <string id="13620">Remote Buddy 驅動安裝</string>
-  <string id="13621">蘋果遙控器無法啟用</string>
-  <string id="13622">請參閱 Remote Buddy FAQ 解除安裝</string>
+  <string id="13620">蘋果遙控器錯誤</string>
+  <string id="13621">蘋果遙控器支援啟用</string>
 
   <string id="14000">堆疊開啟</string>
   <string id="14001">堆疊關閉</string>
