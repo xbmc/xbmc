@@ -29,6 +29,7 @@
 #if defined(_LINUX) || defined(_WIN32PC)
 #include "utils/CPUInfo.h"
 #endif
+#include "../../../../Settings.h"
 
 #ifndef _LINUX
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
@@ -133,6 +134,13 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   // much difference.
   //
   //m_pCodecContext->skip_loop_filter = AVDISCARD_BIDIR;
+
+  // advanced setting override for skip loop filter (see avcodec.h for valid options)
+  // TODO: allow per video setting?
+  if (g_advancedSettings.m_iSkipLoopFilter != 0)
+  {
+    m_pCodecContext->skip_loop_filter = (AVDiscard)g_advancedSettings.m_iSkipLoopFilter;
+  }
 
   // set any special options
   for(CDVDCodecOptions::iterator it = options.begin(); it != options.end(); it++)

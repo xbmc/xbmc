@@ -236,6 +236,7 @@ public:
     int m_playlistRetries;
     int m_playlistTimeout;
     bool m_GLRectangleHack;
+    int m_iSkipLoopFilter;
   };
 
   struct stSettings
