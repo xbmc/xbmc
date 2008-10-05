@@ -33,6 +33,7 @@
 #include <map>
 #include <queue>
 #include "Util.h"
+#include "FileSystem/File.h"
 
 using namespace EVENTCLIENT;
 using namespace EVENTPACKET;
@@ -330,11 +331,11 @@ bool CEventClient::OnPacketHELO(CEventPacket *packet)
       iconfile += ".png";
       break;
     }
-    FILE * f = fopen(_P(iconfile.c_str()), "wb");
-    if (f)
+    XFILE::CFile file;
+    if (file.OpenForWrite(_P(iconfile), true, true))
     {
-      fwrite((const void *)payload, psize, 1, f);
-      fclose(f);
+      file.Write((const void *)payload, psize);
+      file.Close();
     }
     else
     {
@@ -602,11 +603,11 @@ bool CEventClient::OnPacketNOTIFICATION(CEventPacket *packet)
       break;
     }
 
-    FILE * f = fopen(_P(iconfile.c_str()), "wb");
-    if (f)
+    XFILE::CFile file;
+    if (file.OpenForWrite(_P(iconfile), true, true))
     {
-      fwrite((const void *)payload, psize, 1, f);
-      fclose(f);
+      file.Write((const void *)payload, psize);
+      file.Close();
     }
     else
     {
