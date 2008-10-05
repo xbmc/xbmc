@@ -177,7 +177,6 @@ void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h, void* sdlView)
       [window update];
       [view setFrameSize:NSMakeSize(w, h)];
       [context update];
-      [window center];
     }
   }
 
@@ -247,6 +246,7 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
   static int fullScreenDisplay = 0;
   static NSScreen* lastScreen = NULL;
   static NSWindow* mainWindow = NULL;
+  static NSPoint last_origin;
   int screen;
   bool windowedFullScreen;
 
@@ -290,6 +290,7 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
     if (windowedFullScreen == false)
     {
       // hide the window
+      last_origin = [[lastView window] frame].origin;
       [[lastView window] setFrameOrigin:[lastScreen frame].origin];
 
       // This is OpenGL FullScreen Mode
@@ -348,6 +349,7 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
       //[mainWindow setLevel:NSNormalWindowLevel];
 
       // ...and the original one beneath it and on the same screen.
+      last_origin = [[lastView window] frame].origin;
       [[lastView window] setFrameOrigin:[pScreen frame].origin];
       [[lastView window] setLevel:NSNormalWindowLevel];
           
@@ -441,7 +443,7 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
     
     // Assign view from old context, move back to original screen.
     [newContext setView:lastView];
-    [[lastView window] setFrameOrigin:[lastScreen frame].origin];
+    [[lastView window] setFrameOrigin:last_origin];
     
     // Release the fullscreen context.
     if (lastOwnedContext == context)
