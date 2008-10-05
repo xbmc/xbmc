@@ -52,6 +52,7 @@ typedef struct {
     int64_t  movi_end;
     int64_t  fsize;
     offset_t movi_list;
+    int64_t last_pkt_pos;
     int index_loaded;
     int is_odml;
     int non_interleaved;
@@ -618,6 +619,15 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
     return 0;
 }
 
+static int get_stream_idx(int *d){
+    if(    d[0] >= '0' && d[0] <= '9'
+        && d[1] >= '0' && d[1] <= '9'){
+        return (d[0] - '0') * 10 + (d[1] - '0');
+    }else{
+        return 100; //invalid stream ID
+    }
+}
+
 static int avi_read_packet(AVFormatContext *s, AVPacket *pkt)
 {
     AVIContext *avi = s->priv_data;
@@ -696,6 +706,7 @@ resync:
 
         if(size > ast->remaining)
             size= ast->remaining;
+        avi->last_pkt_pos= url_ftell(pb);
         av_get_packet(pb, pkt, size);
 
         if(ast->has_pal && pkt->data && pkt->size<(unsigned)INT_MAX/2){
@@ -743,8 +754,6 @@ resync:
         }
         ast->remaining -= size;
         if(!ast->remaining){
-            if(ast->packet_size & 0x1)
-                url_fskip(pb, 1);
             avi->stream_index= -1;
             ast->packet_size= 0;
         }
@@ -752,9 +761,7 @@ resync:
         return size;
     }
 
-    for(i=1; i<8; i++)
-        d[i]= get_byte(pb);
-
+    memset(d, -1, sizeof(int)*8);
     for(i=sync=url_ftell(pb); !url_feof(pb); i++) {
         int j;
 
@@ -764,12 +771,7 @@ resync:
 
         size= d[4] + (d[5]<<8) + (d[6]<<16) + (d[7]<<24);
 
-        if(    d[2] >= '0' && d[2] <= '9'
-            && d[3] >= '0' && d[3] <= '9'){
-            n= (d[2] - '0') * 10 + (d[3] - '0');
-        }else{
-            n= 100; //invalid stream id
-        }
+        n= get_stream_idx(d+2);
 //av_log(NULL, AV_LOG_DEBUG, "%X %X %X %X %X %X %X %X %"PRId64" %d %d\n", d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], i, size, n);
         if(i + size > avi->fsize || d[0]<0)
             continue;
@@ -784,12 +786,10 @@ resync:
             goto resync;
         }
 
-        if(    d[0] >= '0' && d[0] <= '9'
-            && d[1] >= '0' && d[1] <= '9'){
-            n= (d[0] - '0') * 10 + (d[1] - '0');
-        }else{
-            n= 100; //invalid stream id
-        }
+        n= get_stream_idx(d);
+
+        if(!((i-avi->last_pkt_pos)&1) && get_stream_idx(d+1) < s->nb_streams)
+            continue;
 
         //parse ##dc/##wb
         if(n < s->nb_streams){
