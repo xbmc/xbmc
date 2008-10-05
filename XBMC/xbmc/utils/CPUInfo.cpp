@@ -372,7 +372,12 @@ CStdString CCPUInfo::GetCoresUsageString() const
   while (iter != m_cores.end())
   {
     CStdString strCore;
+#ifdef _WIN32PC
+    // atm we get only the average over all cores
+    strCore.Format("CPU %d core(s) average: %3.1f%% ",m_cpuCount, iter->second.m_fPct);
+#else
     strCore.Format("CPU%d: %3.1f%% ",iter->first, iter->second.m_fPct);
+#endif
     strCores+=strCore;
     iter++;
   }
