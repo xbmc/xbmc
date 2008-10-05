@@ -1198,7 +1198,7 @@
     </joystick>
 
     <remote>
-      <zero>Delete</zero>
+      <zero>Queue</zero>
       <clear>Delete</clear>
       <three>VolumeUp</three>
       <six>VolumeDown</six>
