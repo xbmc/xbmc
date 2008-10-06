@@ -586,12 +586,12 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   m_rgbBufferSize = width*height*4;
   m_rgbBuffer = new BYTE[m_rgbBufferSize];
   m_bConfigured = true;
+  m_bImageReady = false;
 
-  /* 
-     Ensure that textures are recreated and rendering starts only after the 1st 
-     frame is loaded after every call to Configure().
-  */
+  // Ensure that textures are recreated and rendering starts only after the 1st 
+  // frame is loaded after every call to Configure().
   m_bValidated = false;
+
   for (int i = 0 ; i<m_NumYV12Buffers ; i++)
   {
     m_image[i].flags = 0;
@@ -755,6 +755,7 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   if( preserve )
     m_image[source].flags |= IMAGE_FLAG_RESERVED;
 
+  m_bImageReady = true;
 }
 
 void CLinuxRendererGL::LoadTextures(int source)
@@ -1016,9 +1017,13 @@ void CLinuxRendererGL::Update(bool bPauseDrawing)
 void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
   if (!m_bConfigured) return;
+
   // if its first pass, just init textures and return
   if (ValidateRenderTarget())
     return;
+
+  // this needs to be checked after texture validation
+  if (!m_bImageReady) return;
 
   int index = m_iYV12RenderBuffer;
 
@@ -1398,6 +1403,7 @@ void CLinuxRendererGL::OnClose()
   // cleanup framebuffer object if it was in use
   m_fbo.Cleanup();
   m_bValidated = false;
+  m_bImageReady = false;
 }
 
 void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
