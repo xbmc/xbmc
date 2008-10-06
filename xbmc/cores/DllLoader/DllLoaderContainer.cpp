@@ -69,6 +69,8 @@ Export export_pncrt[];
 Export export_iconvx[];
 Export export_xbp[];
 Export export_zlib[];
+Export export_opengl32[];
+Export export_glew32[];
 
 DllLoader kernel32("kernel32.dll",        false, true, false, export_kernel32);
 DllLoader msvcr80("msvcr80.dll",          false, true, false, export_msvcrt);
@@ -98,6 +100,8 @@ DllLoader comctl32("comctl32.dll",        false, true, false, export_comctl32);
 DllLoader pncrt("pncrt.dll",              false, true, false, export_pncrt);
 DllLoader iconvx("iconv.dll",             false, true, false, export_iconvx);
 DllLoader zlib("zlib1.dll",               false, true, false, export_zlib);
+DllLoader opengl32("opengl32.dll",        false, true, false, export_opengl32);
+DllLoader glew32("glew32.dll",            false, true, false, export_glew32);
 #else
 extern Export export_kernel32[];
 extern Export export_msvcrt[];
@@ -276,7 +280,7 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
   //NOTE: libcurl does not work with default DllLoader outside of Visual Studio for some mysterious reason, 
   //load with Win32DllLoader instead.
   if (
-    (strlen(sName) >= 4 && !strnicmp(sName + (strlen(sName) - 4), ".vis", 4)) ||
+    //(strlen(sName) >= 4 && !strnicmp(sName + (strlen(sName) - 4), ".vis", 4)) ||
     (strlen(sName) >= 11 && !strnicmp(sName + (strlen(sName) - 11), "libcurl.dll", 11))
     )
   {
