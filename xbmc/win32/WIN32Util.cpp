@@ -307,7 +307,6 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
   }
 
   strExe.Replace("\"","");
-  strParams.Replace("\"","");
 
   bool ret;
   SHELLEXECUTEINFO ShExecInfo = {0};
