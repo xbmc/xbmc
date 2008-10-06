@@ -222,6 +222,13 @@ Export export_kernel32[] =
 
 #ifndef _LINUX
   { "lstrcpyA",                                     -1, (void*)lstrcpyA,                                     NULL },
+  { "GetLocaleInfoW",                               -1, (void*)GetLocaleInfoW,                               NULL },
+  { "CompareStringW",                               -1, (void*)CompareStringW,                               NULL },
+  { "CompareStringA",                               -1, (void*)CompareStringA,                               NULL },
+  { "IsValidCodePage",                              -1, (void*)IsValidCodePage,                              NULL },
+  { "IsValidLocale",                                -1, (void*)IsValidLocale,                                NULL },
+  { "EnumSystemLocalesA",                           -1, (void*)EnumSystemLocalesA,                           NULL },
+  { "GetUserDefaultLCID",                           -1, (void*)GetUserDefaultLCID,                           NULL },
 #endif
   { "GetProcessTimes",                              -1, (void*)dllGetProcessTimes,                           NULL },
 
