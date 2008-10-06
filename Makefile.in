@@ -261,8 +261,9 @@ LIBS+=	\
 	xbmc/visualizations/*.o \
 	xbmc/xbox/*.o \
 
+$(wildcard $(OBJS) $(LIBS)) :| compile
 
-xbmc.bin: compile $(wildcard $(OBJS) $(LIBS))
+xbmc.bin: $(wildcard $(OBJS) $(LIBS))
 	g++ $(DEBUG_FLAGS) -o xbmc.bin  $(OBJS) $(LIBS) -rdynamic
 
 xbmc-xrandr: xbmc-xrandr.c
