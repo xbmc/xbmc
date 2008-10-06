@@ -273,7 +273,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
   CStdString strTestString;
   CRegExp reg;
 
-  CLog::Log(LOGDEBUG, "GetVolumeFromFileName:[%s]", strFileNameLower.c_str());
+//  CLog::Log(LOGDEBUG, "GetVolumeFromFileName:[%s]", strFileNameLower.c_str());
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
     CStdString strRegExp = regexps[i];
@@ -282,7 +282,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
       CLog::Log(LOGERROR, "Invalid RegExp:[%s]", regexps[i].c_str());
       continue;
     }
-    CLog::Log(LOGDEBUG, "Regexp:[%s]", regexps[i].c_str());
+//    CLog::Log(LOGDEBUG, "Regexp:[%s]", regexps[i].c_str());
 
     int iFoundToken = reg.RegFind(strFileNameLower.c_str());
     if (iFoundToken >= 0)
