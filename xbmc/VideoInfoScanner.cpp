@@ -353,7 +353,7 @@ namespace VIDEO
   {
     CRegExp regExExcludes;
 
-    CLog::Log(LOGDEBUG, "Checking if file '%s' should be excluded from scan", strFileName.c_str());
+//    CLog::Log(LOGDEBUG, "Checking if file '%s' should be excluded from scan", strFileName.c_str());
     for (unsigned int i = 0; i < regexps.size(); i++)
     {
       if (!regExExcludes.RegComp(regexps[i].c_str()))
@@ -806,7 +806,7 @@ namespace VIDEO
           break;
         CStdString strLabel=items[i]->m_strPath;
         strLabel.MakeLower();
-        CLog::Log(LOGDEBUG,"running expression %s on label %s",expression[j].c_str(),strLabel.c_str());
+//        CLog::Log(LOGDEBUG,"running expression %s on label %s",expression[j].c_str(),strLabel.c_str());
         int regexppos, regexp2pos;
 
         SEpisode myEpisode;
@@ -819,7 +819,7 @@ namespace VIDEO
 
           if (season && episode)
           {
-            CLog::Log(LOGDEBUG,"found match %s %s %s",strLabel.c_str(),season,episode);
+            CLog::Log(LOGDEBUG,"found match %s (s%se%s) [%s]",strLabel.c_str(),season,episode,expression[j].c_str());
             myEpisode.iSeason = atoi(season);
             myEpisode.iEpisode = atoi(episode);
             episodeList.push_back(myEpisode);
