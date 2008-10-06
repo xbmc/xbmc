@@ -1,5 +1,8 @@
 INCLUDES=-I. -I../../ -I../../linux -I../../../guilib -I../../utils
-SRCS=rtmp.cpp rtmppacket.cpp AMFObject.cpp
+
+SRCS=rtmp.cpp \
+     rtmppacket.cpp \
+     AMFObject.cpp \
 
 LIB=librtmp.a
 
