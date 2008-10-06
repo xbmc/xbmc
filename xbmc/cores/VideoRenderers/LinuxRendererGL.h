@@ -196,6 +196,7 @@ protected:
 
   bool m_bConfigured;
   bool m_bValidated;
+  bool m_bImageReady;
   unsigned m_iFlags;
   GLenum m_textureTarget;
   unsigned short m_renderMethod;
