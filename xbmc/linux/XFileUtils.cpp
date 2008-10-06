@@ -130,8 +130,7 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData) {
         CStdString strFileNameTest = hHandle->m_FindFileDir + '/' + strFileName;
 
   struct stat64 fileStat;
-  if (stat64(strFileNameTest, &fileStat) != 0)
-    return FALSE;
+  stat64(strFileNameTest, &fileStat);
 
   bool bIsDir = false;
   if (S_ISDIR(fileStat.st_mode)) {
