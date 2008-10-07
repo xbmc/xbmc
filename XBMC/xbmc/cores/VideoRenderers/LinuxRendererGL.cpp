@@ -1207,7 +1207,6 @@ void CLinuxRendererGL::UpdateVideoFilter()
     m_renderQuality = RQ_SINGLEPASS;
     break;
 
-#ifndef __APPLE__
   case VS_SCALINGMETHOD_CUBIC:
     SetTextureFilter(GL_LINEAR);
     m_renderQuality = RQ_MULTIPASS;
@@ -1232,7 +1231,6 @@ void CLinuxRendererGL::UpdateVideoFilter()
     CLog::Log(LOGERROR, "GL: TODO: This scaler has not yet been implemented");
     m_renderQuality = RQ_SINGLEPASS;
     break;
-#endif
     
   case VS_SCALINGMETHOD_BICUBIC_SOFTWARE:
   case VS_SCALINGMETHOD_LANCZOS_SOFTWARE:
