@@ -74,6 +74,7 @@ XBPyThread::XBPyThread(XBPython *pExecuter, int id)
 
 XBPyThread::~XBPyThread()
 {
+  StopThread();
   CLog::Log(LOGDEBUG,"python thread %d destructed", m_id);
   if (source) delete []source;
   if (argv)
