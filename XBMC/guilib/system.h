@@ -112,8 +112,8 @@
 #define HAS_DVDPLAYER
 #define HAS_DVD_DRIVE
 #define HAS_WMA_CODEC
-#ifndef __APPLE__
 #define HAS_CCXSTREAM
+#ifndef __APPLE__
 #define HAS_LIRC
 #endif
 #define HAS_AC3_CODEC
