@@ -127,6 +127,9 @@
 		815EE62E0E176F75009FBE3C /* rtmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE62B0E176F75009FBE3C /* rtmp.cpp */; };
 		815EE62F0E176F75009FBE3C /* rtmppacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE62C0E176F75009FBE3C /* rtmppacket.cpp */; };
 		815EE6350E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE6330E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp */; };
+		81F064100E9B5FE400C203A6 /* libxbms-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 81F0640F0E9B5FE400C203A6 /* libxbms-osx.a */; };
+		81F064130E9B608800C203A6 /* FileXBMSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F064110E9B608800C203A6 /* FileXBMSP.cpp */; };
+		81F064260E9BB99800C203A6 /* XBMSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F064240E9BB99800C203A6 /* XBMSDirectory.cpp */; };
 		8800B9120E5C9D4E005F98A4 /* libcdio-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8800B9110E5C9D4E005F98A4 /* libcdio-osx.a */; };
 		8806941F0DCF67A500836761 /* libSDL_image-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8806941E0DCF67A500836761 /* libSDL_image-osx.a */; };
 		880DBE4E0DC223FF00E26B71 /* MediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE4B0DC223FF00E26B71 /* MediaSource.cpp */; };
@@ -995,6 +998,11 @@
 		815EE62C0E176F75009FBE3C /* rtmppacket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = rtmppacket.cpp; path = libRTMP/rtmppacket.cpp; sourceTree = "<group>"; };
 		815EE6330E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamRTMP.cpp; sourceTree = "<group>"; };
 		815EE6340E17F1DC009FBE3C /* DVDInputStreamRTMP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamRTMP.h; sourceTree = "<group>"; };
+		81F0640F0E9B5FE400C203A6 /* libxbms-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libxbms-osx.a"; path = "xbmc/lib/libXBMS/libxbms-osx.a"; sourceTree = "<group>"; };
+		81F064110E9B608800C203A6 /* FileXBMSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileXBMSP.cpp; sourceTree = "<group>"; };
+		81F064120E9B608800C203A6 /* FileXBMSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileXBMSP.h; sourceTree = "<group>"; };
+		81F064240E9BB99800C203A6 /* XBMSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMSDirectory.cpp; sourceTree = "<group>"; };
+		81F064250E9BB99800C203A6 /* XBMSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMSDirectory.h; sourceTree = "<group>"; };
 		8800B9110E5C9D4E005F98A4 /* libcdio-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libcdio-osx.a"; path = "xbmc/lib/libcdio/libcdio-osx.a"; sourceTree = "<group>"; };
 		8806941E0DCF67A500836761 /* libSDL_image-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL_image-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL_image-osx.a"; sourceTree = "<group>"; };
 		880DBE360DC2077000E26B71 /* README.osx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.osx; sourceTree = "<group>"; };
@@ -2815,6 +2823,7 @@
 				F5F8E1BE0E42738B00A8E96F /* avformat-51-osx.a in Frameworks */,
 				8800B9120E5C9D4E005F98A4 /* libcdio-osx.a in Frameworks */,
 				F51E5BB70E68BE3A00E24093 /* libmad.0.2.1.dylib in Frameworks */,
+				81F064100E9B5FE400C203A6 /* libxbms-osx.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2845,6 +2854,7 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				81F0640F0E9B5FE400C203A6 /* libxbms-osx.a */,
 				F57E1ED30E36E96B00700C9D /* macport libs */,
 				F57E1ED20E36E8FD00700C9D /* internal libs */,
 				F57E21400E3C3AD400700C9D /* libz.dylib */,
@@ -4190,6 +4200,10 @@
 		E38E16940D25F9FA00618676 /* FileSystem */ = {
 			isa = PBXGroup;
 			children = (
+				81F064240E9BB99800C203A6 /* XBMSDirectory.cpp */,
+				81F064250E9BB99800C203A6 /* XBMSDirectory.h */,
+				81F064110E9B608800C203A6 /* FileXBMSP.cpp */,
+				81F064120E9B608800C203A6 /* FileXBMSP.h */,
 				E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */,
 				6E32A0AC0E353A37008872A4 /* FileMMS.cpp */,
 				889B4D8C0E0EF86C00FAD25E /* RSSDirectory.cpp */,
@@ -5792,7 +5806,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"building Libraries\"\n\nif [ \"$ACTION\" = build ] ; then\n\t# osx voodoo\n\texport MACOSX_DEPLOYMENT_TARGET=10.4\n\n\tcd \"$SRCROOT\"/xbmc/lib/libshout/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libGoAhead/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libRTV/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libXDAAP/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libid3tag/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/cores/dvdplayer/Codecs/ffmpeg\n\texport XBMC_ROOT=\"$SRCROOT\"\n\t./build_xbmc_osx.sh\nfi";
+			shellScript = "echo \"building Libraries\"\n\nif [ \"$ACTION\" = build ] ; then\n\t# osx voodoo\n\texport MACOSX_DEPLOYMENT_TARGET=10.4\n\n\tcd \"$SRCROOT\"/xbmc/lib/libshout/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libGoAhead/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libRTV/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libXDAAP/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libid3tag/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libXBMS/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/cores/dvdplayer/Codecs/ffmpeg\n\texport XBMC_ROOT=\"$SRCROOT\"\n\t./build_xbmc_osx.sh\nfi";
 		};
 		F57E20000E3BBDAB00700C9D /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -6646,6 +6660,8 @@
 				E46465180E7E4D20003CB291 /* NptPosixFile.cpp in Sources */,
 				E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */,
 				6EAB09FC0E80865700B91B2B /* utf8tolatin1.c in Sources */,
+				81F064130E9B608800C203A6 /* FileXBMSP.cpp in Sources */,
+				81F064260E9BB99800C203A6 /* XBMSDirectory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6721,7 +6737,9 @@
 					/opt/local/lib,
 					/opt/local/lib/mysql5/mysql,
 					/opt/local/lib/samba3,
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PRODUCT_NAME = XBMC;
@@ -6783,7 +6801,9 @@
 					/opt/local/lib,
 					/opt/local/lib/mysql5/mysql,
 					/opt/local/lib/samba3,
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PRODUCT_NAME = XBMC;
