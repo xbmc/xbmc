@@ -1,18 +1,16 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <language>
   <charsets>
     <gui unicodefont="true">CP1250</gui>
     <subtitle>CP1250</subtitle>
   </charsets>
-
   <dvd>
     <menu>sk</menu>
     <audio>sk</audio>
     <subtitle>sk</subtitle>
   </dvd>
-
   <regions>
-    <region>
+    <region name="Slovensko">
       <dateshort>D.M.YYYY</dateshort>
       <datelong>D. MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
@@ -21,4 +19,3 @@
     </region>
   </regions>
 </language>
-
