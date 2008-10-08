@@ -107,7 +107,7 @@
 						<height>81</height>
 						<texturefocus>-</texturefocus>
 						<texturenofocus>-</texturenofocus>
-						<onclick>XBMC.AlarmClock(shutdowntimer,XBMC.Powerdown(),30)</onclick>
+						<onclick>XBMC.AlarmClock(shutdowntimer,XBMC.Shutdown(),30)</onclick>
 						<pulseonselect>no</pulseonselect>
 						<onleft>3119</onleft>
 						<onright>3120</onright>
@@ -124,7 +124,7 @@
 						<height>81</height>
 						<texturefocus>-</texturefocus>
 						<texturenofocus>-</texturenofocus>
-						<onclick>XBMC.AlarmClock(shutdowntimer,XBMC.Powerdown(),60)</onclick>
+						<onclick>XBMC.AlarmClock(shutdowntimer,XBMC.Shutdown(),60)</onclick>
 						<pulseonselect>no</pulseonselect>
 						<onleft>3119</onleft>
 						<onright>3120</onright>
@@ -141,7 +141,7 @@
 						<height>81</height>
 						<texturefocus>-</texturefocus>
 						<texturenofocus>-</texturenofocus>
-						<onclick>XBMC.AlarmClock(shutdowntimer,XBMC.Powerdown(),120)</onclick>
+						<onclick>XBMC.AlarmClock(shutdowntimer,XBMC.Shutdown(),120)</onclick>
 						<pulseonselect>no</pulseonselect>
 						<onleft>3119</onleft>
 						<onright>3120</onright>
@@ -158,7 +158,7 @@
 						<height>81</height>
 						<texturefocus>-</texturefocus>
 						<texturenofocus>-</texturenofocus>
-						<onclick>XBMC.AlarmClock(shutdowntimer,XBMC.Powerdown())</onclick>
+						<onclick>XBMC.AlarmClock(shutdowntimer,XBMC.Shutdown())</onclick>
 						<pulseonselect>no</pulseonselect>
 						<onleft>3119</onleft>
 						<onright>3120</onright>
@@ -193,7 +193,7 @@
 						<height>81</height>
 						<texturefocus>-</texturefocus>
 						<texturenofocus>sub-shutdown-nofocus.png</texturenofocus>
-						<onclick>XBMC.Powerdown()</onclick>
+						<onclick>XBMC.Shutdown()</onclick>
 						<pulseonselect>no</pulseonselect>
 						<onleft>3119</onleft>
 						<onright>3120</onright>
@@ -330,7 +330,7 @@
 				<height>81</height>
 				<texturefocus>sub-shutdown-focus.gif</texturefocus>
 				<texturenofocus>sub-shutdown-nofocus.png</texturenofocus>
-				<onclick>XBMC.Powerdown()</onclick>
+				<onclick>XBMC.Shutdown()</onclick>
 				<onclick>dialog.close(all,true)</onclick>
 				<pulseonselect>no</pulseonselect>
 				<onleft>3119</onleft>
