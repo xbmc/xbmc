@@ -94,6 +94,12 @@ public:
   virtual HRESULT Initialize() { return S_OK; }
   virtual HRESULT Cleanup() { return S_OK; }
   void ReadInput();
+#ifdef HAS_SDL
+  bool ProcessOSShortcuts(SDL_Event &event);
+  bool ProcessWin32Shortcuts(SDL_Event &event);
+  bool ProcessLinuxShortcuts(SDL_Event &event);
+  bool ProcessOSXShortcuts(SDL_Event &event);
+#endif
 
 public:
   // Functions to create, run, and clean up the application
