@@ -399,10 +399,14 @@ void CXBApplicationEx::ReadInput()
       break;
 #endif
     case SDL_KEYDOWN:
-      g_Keyboard.Update(event);
-      // don't handle any more messages in the queue until we've handled keydown,
-      // if a keyup is in the queue it will reset the keypress before it is handled.
-      bProcessNextEvent = false;
+      // process any platform specific shortcuts before handing off to XBMC
+      if (!ProcessOSShortcuts(event))
+      {
+        g_Keyboard.Update(event);
+        // don't handle any more messages in the queue until we've handled keydown,
+        // if a keyup is in the queue it will reset the keypress before it is handled.
+        bProcessNextEvent = false;
+      }
       break;
     case SDL_KEYUP:
       g_Keyboard.Update(event);
@@ -484,3 +488,61 @@ void CXBApplicationEx::ReadInput()
 
 void CXBApplicationEx::Process()
 {}
+
+bool CXBApplicationEx::ProcessOSShortcuts(SDL_Event& event)
+{
+#ifdef __APPLE__
+  return ProcessOSXShortcuts(event);
+#elif defined(_LINUX)
+  return ProcessLinuxShortcuts(event);
+#else
+  return ProcessWin32Shortcuts(event);
+#endif
+}
+
+bool CXBApplicationEx::ProcessWin32Shortcuts(SDL_Event& event)
+{
+  return false;
+}
+
+bool CXBApplicationEx::ProcessLinuxShortcuts(SDL_Event& event)
+{
+  return false;
+}
+
+bool CXBApplicationEx::ProcessOSXShortcuts(SDL_Event& event)
+{
+  static bool shift = false, cmd = false;
+  static CAction action;
+
+  cmd =  SDL_GetModState() & (KMOD_LMETA | KMOD_RMETA);
+  shift =  SDL_GetModState() & (KMOD_LSHIFT | KMOD_RSHIFT);
+
+  if (cmd && event.key.type == SDL_KEYDOWN)
+  {
+    switch(event.key.keysym.sym)
+    {
+    case SDLK_q:  // CMD-q to quit
+    case SDLK_w:  // CMD-w to quit
+      if (!g_application.m_bStop) 
+        g_application.getApplicationMessenger().Quit();
+      return true;
+
+    case SDLK_f: // CMD-f to toggle fullscreen
+      action.wID = ACTION_TOGGLE_FULLSCREEN;
+      g_application.OnAction(action);
+      return true;
+
+    case SDLK_s: // CMD-3 to take a screenshot
+      action.wID = ACTION_TAKE_SCREENSHOT;
+      g_application.OnAction(action);
+      return true;
+
+    case SDLK_h: // CMD-h to hide (but we minimize for now)
+    case SDLK_m: // CMD-m to minimize
+      SDL_WM_IconifyWindow();
+      return true;      
+    }
+  }
+  return false;
+}
