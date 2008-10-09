@@ -60,7 +60,8 @@ namespace XFILE
     IFile *GetFileImp();
 
     virtual int  GetChunkSize() {return m_source.GetChunkSize();}
-    
+
+    virtual CStdString GetContent();
 
   private:
     CCacheStrategy *m_pCache;

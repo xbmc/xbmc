@@ -61,6 +61,10 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
     m_pFile = NULL;
     return false;
   }
+  
+  if (m_pFile->GetImplemenation())
+    m_content = m_pFile->GetImplemenation()->GetContent();
+  
   m_eof = true;
   return true;
 }
