@@ -153,6 +153,7 @@ public:
   virtual void QueueAnimation(ANIMATION_TYPE animType);
   virtual bool IsAnimating(ANIMATION_TYPE animType);
   virtual void ResetAnimations();
+  void DisableAnimations();
 
   virtual void ResetControlStates();
 
@@ -240,6 +241,8 @@ protected:
   int m_focusedControl;
   std::vector<CControlState> m_controlStates;
   DWORD m_previousWindow;
+
+  bool m_animationsEnabled;
 };
 
 #endif
