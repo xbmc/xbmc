@@ -572,6 +572,7 @@ void CGUIWindowManager::DeInitialize()
     CGUIWindow* pWindow = (*it).second;
     if (IsWindowActive(it->first))
     {
+      pWindow->DisableAnimations();
       CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
       pWindow->OnMessage(msg);
     }
