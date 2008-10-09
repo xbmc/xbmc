@@ -480,10 +480,13 @@ int DllLoader::ResolveImports(void)
           void *Fixup;
           if ( !ResolveName(Name, ImpName, &Fixup) )
           {
-            CLog::Log(LOGDEBUG,"Unable to resolve %s %s", Name, ImpName);
-            *Addr = create_dummy_function(Name, ImpName);
-            tracker_dll_data_track(this, *Addr);
-            bResult = 0;
+            if((*Addr=get_win_function_address(Name, ImpName)) == NULL)
+            {
+              CLog::Log(LOGDEBUG,"Unable to resolve %s %s\n", Name, ImpName);
+              *Addr = create_dummy_function(Name, ImpName);
+              tracker_dll_data_track(this, *Addr);
+              bResult = 0;
+            }
           }
           else
           {
