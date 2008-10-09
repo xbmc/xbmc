@@ -180,8 +180,8 @@ namespace EVENTCLIENT
     // process the queued up events (packets)
     void ProcessEvents();
 
-    // execute the next action in the action queue
-    bool ExecuteNextAction();
+    // gets the next action in the action queue
+    bool GetNextAction(CEventAction& action);
 
     // deallocate all packets in the queues
     void FreePacketQueues();
