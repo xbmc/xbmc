@@ -97,6 +97,7 @@ uintptr_t create_dummy_function(const char* strDllName, const char* strFunctionN
 
 uintptr_t get_win_function_address(const char* strDllName, const char* strFunctionName)
 {
+#ifdef _WIN32PC
   HMODULE m_handle = GetModuleHandle(strDllName);
   if(m_handle == NULL)
   {
@@ -108,6 +109,7 @@ uintptr_t get_win_function_address(const char* strDllName, const char* strFuncti
     if(pGNSI != NULL)
       return pGNSI;
   }
+#endif
   return NULL;
 }
 
