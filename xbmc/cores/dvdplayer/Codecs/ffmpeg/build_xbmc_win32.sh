@@ -2,7 +2,7 @@
 rm -r .libs
 
 ./configure \
---extra-cflags="-D_XBOX -DRUNTIME_CPUDETECT" \
+--extra-cflags="-D_XBOX" \
 --enable-shared \
 --enable-memalign-hack \
 --enable-gpl \
