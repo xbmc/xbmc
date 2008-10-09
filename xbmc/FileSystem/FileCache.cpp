@@ -364,3 +364,11 @@ void CFileCache::StopThread()
   m_seekEvent.Set();
   CThread::StopThread();
 }
+
+CStdString CFileCache::GetContent()
+{
+  if (!m_source.GetImplemenation())
+    return IFile::GetContent();
+  
+  return m_source.GetImplemenation()->GetContent();
+}
