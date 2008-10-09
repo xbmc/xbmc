@@ -71,6 +71,7 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_hasRendered = false;
   m_hasCamera = false;
   m_previousWindow = WINDOW_INVALID;
+  m_animationsEnabled = true;
 }
 
 CGUIWindow::~CGUIWindow(void)
@@ -1090,6 +1091,8 @@ CAnimation *CGUIWindow::GetAnimation(ANIMATION_TYPE animType, bool checkConditio
 
 bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
 {
+  if (!m_animationsEnabled) return false;
+  
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
@@ -1118,6 +1121,8 @@ bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
 
 bool CGUIWindow::RenderAnimation(DWORD time)
 {
+  if (!m_animationsEnabled)
+     return true;
   m_transform.Reset();
   CPoint center(m_posX + m_width * 0.5f, m_posY + m_height * 0.5f);
   // show animation
@@ -1149,6 +1154,11 @@ bool CGUIWindow::HasAnimation(ANIMATION_TYPE animType)
   for (unsigned int i = 0; i < m_vecControls.size(); i++)
     if (m_vecControls[i]->HasAnimation(animType)) return true;
   return false;
+}
+
+void CGUIWindow::DisableAnimations()
+{
+  m_animationsEnabled = false;
 }
 
 void CGUIWindow::ResetAnimations()
