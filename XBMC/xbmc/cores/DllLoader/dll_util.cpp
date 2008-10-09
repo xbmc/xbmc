@@ -95,6 +95,22 @@ uintptr_t create_dummy_function(const char* strDllName, const char* strFunctionN
   return (uintptr_t)pData;
 }
 
+uintptr_t get_win_function_address(const char* strDllName, const char* strFunctionName)
+{
+  HMODULE m_handle = GetModuleHandle(strDllName);
+  if(m_handle == NULL)
+  {
+    m_handle = LoadLibrary(strDllName);
+  }
+  if(m_handle != NULL)
+  {
+    uintptr_t pGNSI = (uintptr_t)GetProcAddress(m_handle, strFunctionName);
+    if(pGNSI != NULL)
+      return pGNSI;
+  }
+  return NULL;
+}
+
 #ifdef _cplusplus
 }
 #endif
