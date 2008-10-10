@@ -88,7 +88,7 @@ mountroot ()
 	found="no"
         while true
         do
-          for device in 'scd0' 'scd1' 'scd2' 'scd3'; do
+          for device in 'cdrom' 'scd0' 'scd1' 'scd2' 'scd3'; do
        		if [ "$QUIET" == "" ]; then
 	        	echo "Checking device /dev/${device} for installation source..."
 	 	fi
