@@ -57,7 +57,11 @@ float CScrollInfo::GetPixelsPerFrame()
   // do an exponential moving average of the frame time
   m_averageFrameTime = m_averageFrameTime + (delta - m_averageFrameTime) * alphaEMA;
   // and multiply by pixel speed (per ms) to get number of pixels to move this frame
-  return pixelSpeed * m_averageFrameTime;
+#ifdef _XBOX
+  return ROUND(pixelSpeed * m_averageFrameTime);
+#else
+  return pixelSpeed * m_averageFrameTime);
+#endif
 }
 
 CGUIFont::CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, DWORD shadowColor, float lineSpacing, CGUIFontTTF *font)
