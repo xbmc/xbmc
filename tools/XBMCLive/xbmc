@@ -1,0 +1,63 @@
+#!/bin/bash
+#/etc/init.d/xbmc
+
+get_opt() {
+    echo "$@" | cut -d "=" -f 2
+}
+
+CMDLINE=$(cat /proc/cmdline)
+
+#Process command line options
+XBMC_PARAMS=""
+for i in ${CMDLINE}; do
+    case "${i}" in
+        xbmc\=*)
+            XBMC_PARAMS=$(get_opt $i)
+            ;;
+    esac
+done
+
+XBMC_BOOTTORAM="$( echo $XBMC_PARAMS | grep "boottoram" )"
+
+if [ "$XBMC_BOOTTORAM" != "" ]; then
+        eject /dev/scd0 &> /dev/null
+	eject /dev/scd1 &> /dev/null
+	eject /dev/scd2 &> /dev/null
+fi
+
+case "$1" in
+  start)
+	INSTALL="$( echo $XBMC_PARAMS | grep "install" )"
+	if [ "$INSTALL" != "" ]; then
+                # if usplash is runing, make sure to stop it now, yes "start" kills it.
+                if pidof usplash > /dev/null; then
+                        DO_NOT_SWITCH_VT=yes /etc/init.d/usplash start
+                fi
+	        su -c "/usr/bin/installXBMC.sh" -l 
+	else
+		RUNX="$(grep "splash" /proc/cmdline)"
+		if [ "$RUNX" == "" ]; then
+		        echo "Not starting X."
+		else
+			NOMOUNT="$( echo $XBMC_PARAMS | grep "nodiskmount" )"
+			if [ "$NOMOUNT" = "" ]; then
+				diskmounter &
+			fi
+
+			# if usplash is running, make sure to stop it now, yes "start" kills it.
+			if pidof usplash > /dev/null; then
+				DO_NOT_SWITCH_VT=yes /etc/init.d/usplash start
+			fi
+
+			runXBMC.sh &
+		fi
+	fi
+	;;
+  stop)
+	killall Xorg xbmc
+	;;
+
+esac
+
+exit 0
+
