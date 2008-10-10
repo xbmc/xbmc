@@ -9,7 +9,9 @@
 #include "Surface.h"
 
 #ifdef _LINUX
+#ifndef __APPLE__
 #include <linux/limits.h>
+#endif
 #include <string.h>
 #include "XFileUtils.h"
 #include "PlatformDefs.h"
