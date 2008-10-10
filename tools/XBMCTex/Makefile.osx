@@ -20,13 +20,13 @@ TARGET = XBMCTex
 all: $(TARGET)
 	
 $(TARGET): $(OBJS)
-	g++ $(OBJS) $(LDFLAGS) $(LIBS) -o $(TARGET)
+	g++ -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 $(OBJS) $(LDFLAGS) $(LIBS) -o $(TARGET)
 
 .cpp.o:
-	g++ $(DEFINES) $(INCLUDES) -c -o $@ $<
+	g++ -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 $(DEFINES) $(INCLUDES) -c -o $@ $<
 
 .c.o:
-	gcc $(DEFINES) $(INCLUDES) -c -o $@ $<
+	gcc -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 $(DEFINES) $(INCLUDES) -c -o $@ $<
 
 clean:
 	rm -f $(TARGET) *.o
