@@ -1647,6 +1647,8 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
       map<int,int>::const_iterator it = m_containerMoves.find(pWindow->GetViewContainerID());
       if (it != m_containerMoves.end())
         bReturn = condition == CONTAINER_ON_NEXT ? it->second > 0 : it->second < 0;
+      else
+        bReturn = false;
     }
   }
   else if (g_application.IsPlaying())
@@ -1973,6 +1975,8 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           map<int,int>::const_iterator it = m_containerMoves.find(info.GetData1());
           if (it != m_containerMoves.end())
             bReturn = condition == CONTAINER_ON_NEXT ? it->second > 0 : it->second < 0;
+          else
+            bReturn = false;
         }
         break;
       case CONTAINER_CONTENT:
