@@ -14884,7 +14884,6 @@ if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
 
     ./configure \
     --extra-cflags="-D_XBOX" \
-    --cc="$CC" \
     --disable-static \
     --disable-altivec \
     --disable-vhook \
