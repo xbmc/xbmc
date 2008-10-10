@@ -22,14 +22,7 @@
  */
 
 #include "URL.h"
-
-enum PowerState
-{
-  POWERSTATE_SHUTDOWN  = 1,
-  POWERSTATE_HIBERNATE = 2,
-  POWERSTATE_SUSPEND   = 3,
-  POWERSTATE_REBOOT    = 4
-};
+#include "GUISettings.h"
 
 class CWIN32Util
 {
