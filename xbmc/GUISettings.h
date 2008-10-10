@@ -143,6 +143,14 @@
 #define REPLAY_GAIN_ALBUM 1
 #define REPLAY_GAIN_TRACK 2
 
+enum PowerState
+{
+  POWERSTATE_SHUTDOWN  = 1,
+  POWERSTATE_HIBERNATE = 2,
+  POWERSTATE_SUSPEND   = 3,
+  POWERSTATE_REBOOT    = 4
+};
+
 // replay gain settings struct for quick access by the player multiple
 // times per second (saves doing settings lookup)
 struct ReplayGainSettings
