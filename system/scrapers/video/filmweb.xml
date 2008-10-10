@@ -154,20 +154,20 @@
 			<RegExp input="$$1" output="&lt;certification&gt;\1 \3&lt;/certification&gt;" dest="2+">
 				<expression repeat="yes">&lt;a href=&quot;/List\?certificates=[^&quot;]*&quot;&gt;([^&lt;]*)&lt;/a&gt;[^&lt;]*(&lt;i&gt;([^&lt;]*)&lt;/i&gt;)?</expression>
 			</RegExp>
-            <RegExp input="$$1" output="&lt;url function=&quot;GetFanart&quot;&gt;http://www.meligrove.com/api?imdb=\1&lt;/url&gt;" dest="2+">
+            <RegExp input="$$1" output="&lt;url function=&quot;GetFanart&quot;&gt;http://api.themoviedb.org/backdrop.php?imdb=\1&lt;/url&gt;" dest="2+">
                 <expression>/title/([t0-9]*)/faq</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
 	</IMDBDetails>
-    <GetFanart dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://www.meligrove.com/&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb preview=&quot;images/posters/movies/thumbnails/\1&quot;&gt;images/posters/movies/jpg/\1&lt;/thumb&gt;" dest="2">
-				<expression repeat="yes">jpg/([^&lt;]*)&lt;/URL</expression>
+	<GetFanart dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://themoviedb.org/image/backdrops&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;/\1/\2_poster.jpg&quot;&gt;/\1/\2.jpg&lt;/thumb&gt;" dest="2">
+				<expression repeat="yes">/([0-9]*)/([t0-9-]*).jpg&lt;/URL</expression>
 			</RegExp>
 			<expression noclean="1">(.+)</expression>
 		</RegExp>
-    </GetFanart>
+	</GetFanart>
 	<Opisy dest="5">
 		<RegExp input="$$8" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;&lt;plot&gt;\1&lt;/plot&gt;&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1\n" dest="9">
