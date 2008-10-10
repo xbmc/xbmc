@@ -542,6 +542,8 @@ bool CXBApplicationEx::ProcessOSXShortcuts(SDL_Event& event)
     case SDLK_m: // CMD-m to minimize
       SDL_WM_IconifyWindow();
       return true;      
+    default:
+      return false;
     }
   }
   return false;
