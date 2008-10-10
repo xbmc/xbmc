@@ -413,7 +413,6 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/ogg], [./configure --with-pic])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
     ./configure \
     --extra-cflags="-D_XBOX" \
-    --cc="$CC" \
     --disable-static \
     --disable-altivec \
     --disable-vhook \
