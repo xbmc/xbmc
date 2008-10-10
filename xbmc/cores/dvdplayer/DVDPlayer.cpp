@@ -714,7 +714,8 @@ void CDVDPlayer::Process()
       break;
   }
   count = m_SelectionStreams.Count(STREAM_AUDIO);
-  for(int i = 0;i<count;i++)
+  for(int i = g_stSettings.m_currentVideoSettings.m_AudioStream < count ? 
+              g_stSettings.m_currentVideoSettings.m_AudioStream:0;i<count;i++)
   {
     SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, i);
     if(OpenAudioStream(s.id, s.source))
@@ -725,7 +726,8 @@ void CDVDPlayer::Process()
     m_dvdPlayerVideo.EnableSubtitle(true);
 
     count = m_SelectionStreams.Count(STREAM_SUBTITLE);
-    for(int i = 0;i<count;i++)
+    for(int i = g_stSettings.m_currentVideoSettings.m_SubtitleStream < count ? 
+                g_stSettings.m_currentVideoSettings.m_SubtitleStream:0;i<count;i++)
     {
       SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
       if(OpenSubtitleStream(s.id, s.source))
