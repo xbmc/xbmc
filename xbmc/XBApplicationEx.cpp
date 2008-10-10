@@ -524,7 +524,7 @@ bool CXBApplicationEx::ProcessOSXShortcuts(SDL_Event& event)
     {
     case SDLK_q:  // CMD-q to quit
     case SDLK_w:  // CMD-w to quit
-      if (!g_application.m_bStop) 
+      if (!g_application.m_bStop)
         g_application.getApplicationMessenger().Quit();
       return true;
 
@@ -541,7 +541,8 @@ bool CXBApplicationEx::ProcessOSXShortcuts(SDL_Event& event)
     case SDLK_h: // CMD-h to hide (but we minimize for now)
     case SDLK_m: // CMD-m to minimize
       SDL_WM_IconifyWindow();
-      return true;      
+      return true;
+
     default:
       return false;
     }
