@@ -40,10 +40,11 @@
 #include "FileItem.h"
 #ifdef HAS_HAL
 #include "linux/HalManager.h"
-#endif
-#ifdef _WIN32PC
+#elif defined _WIN32PC
 #include "WIN32Util.h"
 #define CHalManager CWIN32Util
+#elif defined __APPLE__
+#include "CocoaUtils.h"
 #endif
 
 using namespace std;
@@ -213,6 +214,8 @@ case TMSG_POWERDOWN:
         CHalManager::PowerManagement(POWERSTATE_HIBERNATE);
 #elif defined(_WIN32PC)
         CWIN32Util::PowerManagement(POWERSTATE_HIBERNATE);
+#elif defined __APPLE__
+        Cocoa_SleepSystem();
 #endif
       }
       break;
@@ -222,6 +225,8 @@ case TMSG_POWERDOWN:
         CHalManager::PowerManagement(POWERSTATE_SUSPEND);
 #elif defined(_WIN32PC)
         CWIN32Util::PowerManagement(POWERSTATE_SUSPEND);
+#elif defined(__APPLE__)
+        Cocoa_SleepSystem();
 #endif
       }
       break;

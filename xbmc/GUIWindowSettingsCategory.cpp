@@ -749,7 +749,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->SetValue(pSettingInt->GetData());
     }
 #endif
-#if defined(HAS_HAL) || defined(_WIN32PC)
+#if defined(HAS_HAL) || defined(_WIN32PC) || defined(__APPLE__)
     else if (strSetting.Equals("system.shutdownstate"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
