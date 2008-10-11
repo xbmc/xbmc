@@ -1,14 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: Mathijs Groothuis-->
-<!--Email: mathijs.groothuis@gmail.com-->
-<!--Date of translation: 09/12/2008-->
-<!-- -->
 <!--Translator: Ronald Loggen-->
 <!--Email: ronaldloggen@gmail.com-->
-<!--Date of translation: 10/01/2008-->
+<!--Date of translation: 10/08/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 15642-->
+<!--Based on english strings version 15828-->
 <strings>
   <string id="0">Programma's</string>
   <string id="1">Afbeeldingen</string>
@@ -111,7 +107,7 @@
   <string id="170">Album:</string>
   <string id="171">Artiest:</string>
   <string id="172">Releasedatum:</string>
-  <string id="173">Waardering:</string>
+  <string id="173">Score:</string>
   <string id="174">Genre:</string>
   <string id="175">Tonen:</string>
   <string id="176">Stijlen:</string>
@@ -162,7 +158,7 @@
   <string id="224">Wisseltijd</string>
   <string id="225">Overgangstijd tussen afbeeldingen</string>
   <string id="226">Kalibratie test patronen...</string>
-  <string id="227">Muziek CD's opzoeken op freedb</string>
+  <string id="227">CD informatie opzoeken op www.freedb.org</string>
   <string id="228">Afspeellijst willekeurig afspelen</string>
   <string id="229">schakel hardeschijf automatisch uit na</string>
   <string id="230">Videofilters</string>
@@ -175,9 +171,9 @@
   <string id="237">Verkleinen</string>
   <string id="238">Vergroten</string>
   <string id="239">Afspeellijst wissen na afspelen</string>
-  <string id="240">DVD-video automatisch afspelen</string>
+  <string id="240">DVD's automatisch afspelen</string>
   <string id="241">VCD/SVCD automatisch afspelen</string>
-  <string id="242">Muziej CD's automatisch afspelen</string>
+  <string id="242">Muziek CD's automatisch afspelen</string>
   <string id="243">Xbox spellen automatisch afspelen</string>
   <string id="244">Video's automatisch afspelen</string>
   <string id="245">Muziek automatisch afspelen</string>
@@ -191,9 +187,9 @@
   <string id="253">Aantal kanalen</string>
   <string id="254">- Versterker DTS compatible</string>
   <string id="255">CDDB</string>
-  <string id="256">Bezig met zoeken in FreeDB</string>
+  <string id="256">Bezig met zoeken in www.FreeDB.org</string>
   <string id="257">Fout</string>
-  <string id="258">Tags lezen</string>
+  <string id="258">Bij muziek afspelen ID3-tags uitlezen</string>
   <string id="259">Openen</string>
   <string id="260">Shoutcast</string>
   <string id="261">Wachten op start...</string>
@@ -316,9 +312,9 @@
   <string id="388">Vroeg</string>
   <string id="389">Buien</string>
   <string id="390">Sneeuwbuien</string>
-  <string id="391">(laagste)</string>
-  <string id="392">(midden)</string>
-  <string id="393">(hoogste)</string>
+  <string id="391">min</string>
+  <string id="392">gem.</string>
+  <string id="393">max</string>
   <string id="394">Nevel</string>
   <string id="395">Mist</string>
   <string id="396">Selecteer locatie</string>
@@ -327,7 +323,7 @@
   <string id="399">Eenheid windsnelheid </string>
   <string id="400">Het Weer</string>
   <string id="401">Temperatuur</string>
-  <string id="402">Voelt als</string>
+  <string id="402">Gevoelstemp.</string>
   <string id="403">UV-index</string>
   <string id="404">Wind</string>
   <string id="405">Dauwpunt</string>
@@ -483,7 +479,7 @@
   <string id="569">Opmerking</string>
   <string id="570">Datum toegevoegd</string>
   <string id="571">Standaard</string>
-  <string id="572">Studio</string>
+  <string id="572">Filmstudio</string>
   <string id="580">Sorteerrichting</string>
   <string id="581">Sorteren op</string>
   <string id="582">Layout</string>
@@ -1139,9 +1135,9 @@ voor deze visualisatie</string>
   <string id="14041">Voorbewerking</string>
   <string id="14042">Kai engine IP-adres</string>
   <string id="14043">- Uitschakelen tijdens gebruik</string>
-  <string id="14044">%i min.</string>
-  <string id="14045">%i sec</string>
-  <string id="14046">%i ms</string>
+  <string id="14044">%i minuten</string>
+  <string id="14045">%i sec.</string>
+  <string id="14046">%i millisec.</string>
   <string id="14047">%i %%</string>
   <string id="14048">%i kbps</string>
   <string id="14049">%i kb</string>
@@ -1430,18 +1426,18 @@ voor deze visualisatie</string>
   <string id="20071">Begin met verse mediabronnen</string>
   <string id="20072">Controleer of de gekozen locatie beschrijfbaar is</string>
   <string id="20073">is en dat de nieuwe mapnaam geldig is</string>
-  <string id="20074">MPAA rating:</string>
+  <string id="20074">MPAA waardering:</string>
   <string id="20075">Voer vergrendelcode in</string>
   <string id="20076">Vraag om vergrendelcode bij opstarten</string>
   <string id="20077">Skin-instellingen</string>
   <string id="20078">- geen link ingesteld -</string>
-  <string id="20079">Thema-animaties inschakelen</string>
-  <string id="20080">RSS-feeds niet weergeven tijdens muziek</string>
+  <string id="20079">Soepel overvloeien bij schermovergang</string>
+  <string id="20080">RSS-feeds niet weergeven tijdens afspelen van muziek</string>
   <string id="20081">'Favorieten'-knoppen weergeven</string>
-  <string id="20082">XLink Kai-infoformatie weergeven</string>
+  <string id="20082">Programma's in hoofdmenu weergeven</string>
   <string id="20083">Muziekinformatie weergeven</string>
   <string id="20084">Weerbericht weergeven</string>
-  <string id="20085">Systeeminfo weergeven</string>
+  <string id="20085">Systeeminformatie weergeven</string>
   <string id="20086">Vrije hardeschijfruimte op C:, E: en F: weergeven</string>
   <string id="20087">Vrije hardeschijfruimte op E:F:G: weergeven</string>
   <string id="20088">Weerbericht</string>
@@ -1531,7 +1527,7 @@ voor deze visualisatie</string>
   <string id="20173">FTP-server</string>
   <string id="20174">iTunes muziekshare (DAAP)</string>
   <string id="20175">UPnP-server</string>
-  <string id="20176">Video-info zichtbaar</string>
+  <string id="20176">Video-informatie weergeven</string>
   <string id="20177">Klaar</string>
   <string id="20178">Shift</string>
   <string id="20179">Hoofdletters</string>
@@ -1640,7 +1636,7 @@ voor deze visualisatie</string>
   <string id="20385">Link naar TV-serie verwijderen</string>
   <string id="20386">Recent toegevoegde video's</string>
   <string id="20387">Recent toegevoegde afleveringen TV-series</string>
-  <string id="20388">Studio's</string>
+  <string id="20388">Filmstudio's</string>
   <string id="20389">Muziekvideo's</string>
   <string id="20390">Recent toegevoegde muziekvideo's</string>
   <string id="20391">Muziekvideo</string>
@@ -1656,9 +1652,9 @@ voor deze visualisatie</string>
   <string id="20401">Muziekvideo afspelen</string>
   <string id="20402">Automatisch afbeeldingen van acteurs laden</string>
   <string id="20403">Acteursafbeelding instellen</string>
-  <string id="20404">Studio:</string>
+  <string id="20404">Filmstudio:</string>
   <string id="20405">Afl. uit favorieten verwijderen</string>
-  <string id="20406">Voeg afl. toe favorieten</string>
+  <string id="20406">Voeg afl. toe aan favorieten</string>
   <string id="20407">Scraper instellingen</string>
   <string id="20408">Muziekvideo-informatie ophalen</string>
   <string id="20409">TV-serieinformatie ophalen</string>
@@ -1668,12 +1664,12 @@ voor deze visualisatie</string>
   <string id="20413">Download fanart</string>
   <string id="20414">Laat fanart zien in videobibliotheek</string>
   <string id="20415">Bezig met scannen naar nieuwe inhoud</string>
-  <string id="20416">Eerste keer uitgezonden</string>
+  <string id="20416">Eerste keer op TV</string>
   <string id="20417">Schrijver</string>
   <string id="20418">Bestandsnamen opschonen</string>
-  <string id="20419">Voeg dubbele TV-series samen</string>
+  <string id="20419">Voeg dubbele afleveringen samen</string>
   <string id="20420">Nooit</string>
-  <string id="20421">Bij één seizoen</string>
+  <string id="20421">Alleen bij één seizoen</string>
   <string id="20422">Altijd</string>
   <string id="20423">Trailer</string>
   <string id="20424">Onwaar</string>
@@ -1701,7 +1697,7 @@ voor deze visualisatie</string>
   <string id="21369">Muis inschakelen</string>
   <string id="21370">Navigatiegeluiden afspelen tijdens afspelen van media</string>
   <string id="21371">Thumbnail</string>
-  <string id="21372">DVD-speler regio forceren</string>
+  <string id="21372">DVD regiocode forceren</string>
   <string id="21373">Videohardware</string>
   <string id="21374">Beeldverhouding</string>
   <string id="21375">Normaal</string>
@@ -1710,7 +1706,7 @@ voor deze visualisatie</string>
   <string id="21378">480p weergeven</string>
   <string id="21379">720p weergeven</string>
   <string id="21380">1080i weergeven</string>
-  <string id="21381">Geef naam voor de samengestelde afspeellijst</string>
+  <string id="21381">Geef naam voor de intelligente afspeellijst</string>
   <string id="21382">'Bron toevoegen'-knoppen niet weergeven</string>
   <string id="21383">Schuifbalken weergeven</string>
   <string id="21384">'Verberg bekeken'-knop toevoegen in bibliotheek</string>
@@ -1718,7 +1714,7 @@ voor deze visualisatie</string>
   <string id="21386">Akoestiekbeheerniveau</string>
   <string id="21387">Snel</string>
   <string id="21388">Stil</string>
-  <string id="21389">Activeer handmatige achtergrond</string>
+  <string id="21389">Gebruik achtergrond naar keuze</string>
   <string id="21390">Stroombeheer niveau</string>
   <string id="21391">Hoog Energie</string>
   <string id="21392">Laag Energie</string>
@@ -1728,7 +1724,7 @@ voor deze visualisatie</string>
   <string id="21396">Hoofdstuk</string>
   <string id="21397">Hoge kwaliteit Pixel Shader V2</string>
   <string id="21398">Afspeellijst afspelen bij opstarten</string>
-  <string id="21399">Animaties gebruiken</string>
+  <string id="21399">Animatie gebruiken bij schermovergang</string>
   <string id="21400">bevat</string>
   <string id="21401">bevat niet</string>
   <string id="21402">is</string>
@@ -1742,7 +1738,7 @@ voor deze visualisatie</string>
   <string id="21410">in laatste</string>
   <string id="21411">niet in laatste</string>
   <string id="21420">Waarde gekijk aan</string>
-  <string id="21421">Samengestelde afspeellijst regel</string>
+  <string id="21421">Intelligente afspeellijst regel</string>
   <string id="21422">Nummers zijn gelijk wanneer</string>
   <string id="21423">Nieuwe regel...</string>
   <string id="21424">Muziek moet gelijk aan</string>
@@ -1753,16 +1749,16 @@ voor deze visualisatie</string>
   <string id="21429">Rangschik op</string>
   <string id="21430">oplopend</string>
   <string id="21431">aflopend</string>
-  <string id="21432">Wijzig samengestelde afspeellijst</string>
+  <string id="21432">Wijzig intelligente afspeellijst</string>
   <string id="21433">Naam van de afspeelijst</string>
   <string id="21434">Zoek muziek gelijk aan</string>
   <string id="21435">Wijzigen</string>
   <string id="21436">%i muzieknummers</string>
-  <string id="21437">Nieuwe samengestelde afspeellijst...</string>
+  <string id="21437">Nieuwe intelligente afspeellijst...</string>
   <string id="21438">%c schijf</string>
   <string id="21439">Feestmix instellen</string>
   <string id="21441">Aantal keer bekeken</string>
-  <string id="21442">Episodetitel</string>
+  <string id="21442">Afl. titel</string>
   <string id="21800">Bestandsnaam</string>
   <string id="21801">Pad</string>
   <string id="21802">Bestandsgrootte</string>
@@ -1804,7 +1800,7 @@ voor deze visualisatie</string>
   <string id="21865">Speciale instructies</string>
   <string id="21866">Categorie</string>
   <string id="21867">Fotograaf</string>
-  <string id="21868">Titel fotograaf</string>
+  <string id="21868">Naam fotograaf</string>
   <string id="21869">Credit</string>
   <string id="21870">Bron</string>
   <string id="21871">Copyright</string>
@@ -1842,7 +1838,7 @@ voor deze visualisatie</string>
   <string id="22002">- DNS Suffix</string>
   <string id="22003">Activeer Bewerk en Besluiten-lijst</string>
   <string id="22004">Eerder %2.3fs</string>
-  <string id="22005">Later met %2.3fs</string>
+  <string id="22005">Later %2.3fs</string>
   <string id="22006">Synchroniseer ondertitel</string>
   <string id="22007">OpenGL-leverancier:</string>
   <string id="22008">OpenGL-render:</string>
