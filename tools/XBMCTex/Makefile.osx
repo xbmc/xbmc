@@ -1,8 +1,8 @@
 
 DEFINES = -DUSE_SDL -D_LINUX
 INCLUDES = -I. -I../../guilib -I../../xbmc -I../../xbmc/linux/ -I../../xbmc/utils -I/opt/local/include
-LIBS = -lSDL -lSDL_image -llzo
-LDFLAGS = -L/opt/local/lib -lSDLmain -framework Foundation -framework Cocoa
+LIBS = -lSDL-osx -lSDL_image-osx -llzo
+LDFLAGS = -L/opt/local/lib -L../../xbmc/lib/libSDL-OSX -lSDLmain-osx -framework Foundation -framework Cocoa -framework OpenGL -framework Carbon -framework Quartz -framework Quicktime -framework AudioUnit -framework IOKit
 OBJS = \
 	AnimatedGif.o \
 	Bundler.o \
