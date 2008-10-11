@@ -92,6 +92,8 @@ CXXFLAGS=@CXXFLAGS@
 LDFLAGS=@LDFLAGS@
 INCLUDES=@INCLUDES@
 
+CLEAN_FILES="xbmc.bin xbmc-xrandr"
+
 all : xbmc.bin externals xbmc-xrandr $(PM3_MEDIA)/Textures.xpr $(PM3HD_MEDIA)/Textures.xpr
 
 include Makefile.include
@@ -333,6 +335,7 @@ reallyclean:
 	 fi
 
 clean-xbmc.bin:
+	rm -f xbmc.bin
 	for d in $(BIN_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 clean-eventclients:
 	for d in $(EC_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
