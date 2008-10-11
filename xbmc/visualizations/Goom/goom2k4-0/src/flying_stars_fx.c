@@ -304,11 +304,10 @@ static void fs_apply(VisualFX *_this, Pixel *src, Pixel *dest, PluginInfo *info)
 }
 
 VisualFX flying_star_create(void) {
-	VisualFX vfx = {
-		init: fs_init,
-		free: fs_free,
-		apply: fs_apply,
-		fx_data: 0
-	};
-	return vfx;
+  VisualFX vfx;
+  vfx.init = fs_init;
+  vfx.free = fs_free;
+  vfx.apply = fs_apply;
+  vfx.fx_data = 0;
+  return vfx;
 }
