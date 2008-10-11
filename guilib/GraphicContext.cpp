@@ -702,6 +702,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     devmode.dmSize = sizeof(devmode);
     EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
     g_settings.m_ResInfo[res].fRefreshRate = (float)devmode.dmDisplayFrequency;
+    LockSetForegroundWindow(LSFW_LOCK);
 #endif
 
     SDL_WM_SetCaption("XBMC Media Center", NULL);
