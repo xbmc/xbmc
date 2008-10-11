@@ -150,6 +150,9 @@ cmyth_proginfo_destroy(cmyth_proginfo_t p)
 	if (p->proginfo_storagegroup) {
 		ref_release(p->proginfo_storagegroup);
 	}
+	if (p->proginfo_prodyear) {
+		ref_release(p->proginfo_prodyear);
+	}
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s }\n", __FUNCTION__);
 }
 
@@ -250,11 +253,15 @@ cmyth_proginfo_create(void)
 	ret->proginfo_programid = NULL;
 	ret->proginfo_stars = NULL;
 	ret->proginfo_version = 12;
-        ret->proginfo_hasairdate = 0;
+	ret->proginfo_hasairdate = 0;
 	ret->proginfo_playgroup = NULL;
 	ret->proginfo_storagegroup = NULL;
 	ret->proginfo_recpriority_2 = NULL;
 	ret->proginfo_parentid = 0;
+	ret->proginfo_audioproperties = 0;
+	ret->proginfo_videoproperties = 0;
+	ret->proginfo_subtitletype = 0;
+	ret->proginfo_prodyear = NULL;
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s }\n", __FUNCTION__);
 	return ret;
 
@@ -297,8 +304,7 @@ cmyth_proginfo_dup(cmyth_proginfo_t p)
 	ret->proginfo_rec_start_ts = ref_hold(p->proginfo_rec_start_ts);
 	ret->proginfo_rec_end_ts = ref_hold(p->proginfo_rec_end_ts);
 	ret->proginfo_lastmodified = ref_hold(p->proginfo_lastmodified);
-	ret->proginfo_originalairdate =
-		ref_hold(p->proginfo_originalairdate);
+	ret->proginfo_originalairdate = ref_hold(p->proginfo_originalairdate);
 	ret->proginfo_title = ref_hold(p->proginfo_title);
 	ret->proginfo_subtitle = ref_hold(p->proginfo_subtitle);
 	ret->proginfo_description = ref_hold(p->proginfo_description);
@@ -332,13 +338,12 @@ cmyth_proginfo_dup(cmyth_proginfo_t p)
 	ret->proginfo_rec_profile = ref_hold(p->proginfo_rec_profile);
 	ret->proginfo_recgroup = ref_hold(p->proginfo_recgroup);
 	ret->proginfo_chancommfree = ref_hold(p->proginfo_chancommfree);
-	ret->proginfo_chan_output_filters =
-		ref_hold(p->proginfo_chan_output_filters);
+	ret->proginfo_chan_output_filters = ref_hold(p->proginfo_chan_output_filters);
 	ret->proginfo_seriesid = ref_hold(p->proginfo_seriesid);
 	ret->proginfo_programid = ref_hold(p->proginfo_programid);
 	ret->proginfo_stars = ref_hold(p->proginfo_stars);
 	ret->proginfo_version = p->proginfo_version;
-        ret->proginfo_hasairdate = p->proginfo_hasairdate;
+	ret->proginfo_hasairdate = p->proginfo_hasairdate;
 	ret->proginfo_playgroup = ref_hold(p->proginfo_playgroup);
 	ret->proginfo_storagegroup = ref_hold(p->proginfo_storagegroup);
 	ret->proginfo_recpriority_2 = ref_hold(p->proginfo_recpriority_2);
@@ -346,6 +351,7 @@ cmyth_proginfo_dup(cmyth_proginfo_t p)
 	ret->proginfo_audioproperties = p->proginfo_audioproperties;
 	ret->proginfo_videoproperties = p->proginfo_videoproperties;
 	ret->proginfo_subtitletype = p->proginfo_subtitletype;
+	ret->proginfo_prodyear = ref_hold(p->proginfo_prodyear);
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s }\n", __FUNCTION__);
 	return ret;
 }
@@ -506,11 +512,11 @@ delete_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		    sprintf(buf + strlen(buf), "%ld[]:[]",
 		    		prog->proginfo_hasairdate);
 		}
-		if(control->conn_version >= 18) {
+		if (control->conn_version >= 18) {
 		    sprintf(buf + strlen(buf), "%s[]:[]",
 			    S(prog->proginfo_playgroup));
 		}
-		if(control->conn_version >= 25){
+		if (control->conn_version >= 25){
 		    sprintf(buf + strlen(buf), "%s[]:[]",
 			    S(prog->proginfo_recpriority_2));
 		}
@@ -522,12 +528,16 @@ delete_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		    sprintf(buf + strlen(buf), "%s[]:[]",
 			    S(prog->proginfo_storagegroup));
 		}
-		if (control->conn_version >=35) {
+		if (control->conn_version >= 35) {
 		    sprintf(buf + strlen(buf), "%ld[]:[]%ld[]:[]%ld[]:[]",
 		    		prog->proginfo_audioproperties,
 				prog->proginfo_videoproperties,
 				prog->proginfo_subtitletype);
-		}		
+		}
+		if (control->conn_version >= 41) {
+		    sprintf(buf + strlen(buf), "%s[]:[]",
+			    S(prog->proginfo_prodyear));
+		}
 	}
 #undef S
 
@@ -1205,6 +1215,36 @@ cmyth_proginfo_rec_status(cmyth_proginfo_t prog)
 	return prog->proginfo_rec_status;
 }
 
+/*
+ * cmyth_proginfo_prodyear(cmyth_proginfo_t prog)
+ *
+ *
+ * Scope: PUBLIC
+ *
+ * Description
+ *
+ * Retrieves the 'proginfo_prodyear' field of a program info
+ * structure.
+ *
+ * The returned string is a pointer to the string within the program
+ * info structure, so it should not be modified by the caller.  The
+ * return value is a 'char *' for this reason.
+ *
+ * Return Value:
+ *
+ * Success: A pointer to a 'char *' pointing to the field.
+ *
+ * Failure: NULL
+ */
+char *
+cmyth_proginfo_prodyear(cmyth_proginfo_t prog)
+{
+	if (!prog) {
+		return NULL;
+	}
+	return ref_hold(prog->proginfo_prodyear);
+}
+
 static int
 fill_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 {
@@ -1241,6 +1281,7 @@ fill_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 	len += strlen(S(prog->proginfo_playgroup));
 	len += strlen(S(prog->proginfo_recpriority_2));
 	len += strlen(S(prog->proginfo_storagegroup));
+	len += strlen(S(prog->proginfo_prodyear));
 
 	buf = alloca(len + 1+2048);
 	if (!buf) {
@@ -1356,7 +1397,11 @@ fill_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		    	    prog->proginfo_audioproperties,
 			    prog->proginfo_videoproperties,
 			    prog->proginfo_subtitletype);
-		}	    
+		}
+		if(control->conn_version >= 41) {
+		    sprintf(buf+strlen(buf),"%s[]:[]",
+			    S(prog->proginfo_prodyear));
+		}
 	}
 #undef S
 
