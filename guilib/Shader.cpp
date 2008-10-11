@@ -47,6 +47,12 @@ bool CGLSLVertexShader::Compile()
 
   Free();
 
+  if(!GLEW_ARB_shading_language_100)
+  {
+    CLog::Log(LOGERROR, "GL: GLSL shaders not supported");
+    return false;
+  }
+
   /*
      Workaround for locale bug in nVidia's shader compiler.
      Save the current locale, set to a neutral locale while compiling and switch back afterwards.
