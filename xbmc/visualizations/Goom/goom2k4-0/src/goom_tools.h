@@ -5,6 +5,15 @@
  * Random number generator wrapper for faster random number.
  */
 
+#ifdef _WIN32PC
+#define inline __inline
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+#define random rand
+#define bzero(x,y) memset(x,0,y)
+#endif
+
 #define GOOM_NB_RAND 0x10000
 
 typedef struct _GOOM_RANDOM {
