@@ -222,7 +222,7 @@ compile: guilib xbmc filesystem musicdatabase videodatabase cores cdrip \
 	librtmp libxbms librtv libxdaap libshout screensaver-interface \
 	visualization-interface
 
-LIBS+=	\
+OBJS=	\
 	guilib/*.o \
 	guilib/common/*.o \
 	guilib/tinyXML/*.o \
@@ -261,10 +261,10 @@ LIBS+=	\
 	xbmc/visualizations/*.o \
 	xbmc/xbox/*.o \
 
-$(wildcard $(OBJS) $(LIBS)) :| compile
+$(wildcard $(OBJS)) :| compile
 
-xbmc.bin: $(wildcard $(OBJS) $(LIBS))
-	g++ $(DEBUG_FLAGS) -o xbmc.bin  $(OBJS) $(LIBS) -rdynamic
+xbmc.bin: $(wildcard $(OBJS)) $(LIBS) | compile
+	g++ $(DEBUG_FLAGS) -o xbmc.bin $(OBJS) $(LIBS) -rdynamic
 
 xbmc-xrandr: xbmc-xrandr.c
 	gcc -g -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 
