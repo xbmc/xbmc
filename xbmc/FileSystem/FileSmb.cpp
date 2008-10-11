@@ -131,10 +131,10 @@ void CSMB::Init()
       if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") ) 
       {
         fprintf(f, "  wins server = %s\n", g_guiSettings.GetString("smb.winsserver").c_str());
-        fprintf(f, "  name resolve order = bcast wins\n");
+        fprintf(f, "  name resolve order = bcast wins host\n");
       }
       else
-        fprintf(f, "name resolve order = bcast\n");
+        fprintf(f, "name resolve order = bcast host\n");
 
       if (g_advancedSettings.m_sambadoscodepage.length() > 0)
         fprintf(f, "dos charset = %s\n", g_advancedSettings.m_sambadoscodepage.c_str());
@@ -157,10 +157,10 @@ void CSMB::Init()
       if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") )
       {
         lp_do_parameter( -1, "wins server", g_guiSettings.GetString("smb.winsserver").c_str());
-        lp_do_parameter( -1, "name resolve order", "bcast wins");
+        lp_do_parameter( -1, "name resolve order", "bcast wins host");
       }
       else 
-        lp_do_parameter( -1, "name resolve order", "bcast");
+        lp_do_parameter( -1, "name resolve order", "bcast host");
             
       if (g_advancedSettings.m_sambadoscodepage.length() > 0)
         lp_do_parameter( -1, "dos charset", g_advancedSettings.m_sambadoscodepage.c_str());
