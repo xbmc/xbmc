@@ -279,7 +279,14 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
       CCdInfo* pCdInfo = cdio.GetCdInfo((char*)strDevice.c_str());
       if (pCdInfo != NULL)
       {
-        share.strStatus = pCdInfo->GetDiscLabel().c_str();
+        if(pCdInfo->IsAudio(1))
+        {
+          share.strStatus = "Audio-CD";
+          share.strPath = "cdda://local/";
+        }
+        else
+          share.strStatus = pCdInfo->GetDiscLabel().c_str();
+
         delete pCdInfo;
       }
 #else
