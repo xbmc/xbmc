@@ -200,6 +200,9 @@
 			<File
 				RelativePath="..\timestamp.c">
 			</File>
+			<File
+				RelativePath="..\utf8tolatin1.c">
+			</File>
 		</Filter>
 	</Files>
 	<Globals>
