@@ -311,7 +311,7 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
   bool ret;
   SHELLEXECUTEINFO ShExecInfo = {0};
   ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
-  ShExecInfo.fMask = NULL;
+  ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
   ShExecInfo.hwnd = NULL;
   ShExecInfo.lpVerb = NULL;
   ShExecInfo.lpFile = strExe.c_str();		
@@ -320,7 +320,7 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
   ShExecInfo.nShow = SW_SHOW;
   ShExecInfo.hInstApp = NULL;	
 
-  ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+  LockSetForegroundWindow(LSFW_UNLOCK);
   ShowWindow(g_hWnd,SW_MINIMIZE);
   ret = ShellExecuteEx(&ShExecInfo) == TRUE;
   g_windowHelper.SetHANDLE(ShExecInfo.hProcess);

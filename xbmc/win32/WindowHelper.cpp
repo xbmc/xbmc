@@ -72,7 +72,7 @@ void CWHelper::OnExit()
     CloseHandle(m_hProcess);
     m_hProcess = NULL;
   }
-
+  LockSetForegroundWindow(LSFW_LOCK);
   OutputDebugString("WindowHelper thread ended\n");
 }
 
