@@ -46,7 +46,7 @@ void CGUILargeImage::AllocateOnDemand()
   if (!IsVisible() && m_visible != DELAYED)
   {
     if (m_bDynamicResourceAlloc && IsAllocated())
-      FreeResources();
+      FreeResourcesButNotAnims();
     return;
   }
 
