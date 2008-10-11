@@ -502,6 +502,27 @@ bool CXBApplicationEx::ProcessOSShortcuts(SDL_Event& event)
 
 bool CXBApplicationEx::ProcessWin32Shortcuts(SDL_Event& event)
 {
+  static bool alt = false;
+  static CAction action;
+
+  alt = SDL_GetModState() & (KMOD_LALT | KMOD_RALT);
+
+  if (event.key.type == SDL_KEYDOWN)
+  {
+    switch(event.key.keysym.sym)
+    {
+    case SDLK_F11:  // F11 to toggle fullscreen
+      action.wID = ACTION_TOGGLE_FULLSCREEN;
+      g_application.OnAction(action);
+      return true;
+    case SDLK_F4:  // alt-F4 to quit
+      if (alt && !g_application.m_bStop)
+        g_application.getApplicationMessenger().Quit();
+      return true;
+    default:
+      return false;
+    }
+  }
   return false;
 }
 
