@@ -35,6 +35,7 @@ extern "C" {
 #include <GL/glew.h>
 #include <string>
 #ifdef _WIN32PC
+#include "win32-dirent.h"
 #include <io.h>
 #else
 #include "system.h"
@@ -45,6 +46,7 @@ extern "C" {
 #ifdef _WIN32PC
 #define PRESETS_DIR "visualisations\\goom"
 #define CONFIG_FILE "visualisations\\goom.conf"
+#define strcasecmp  stricmp
 #else
 #define PRESETS_DIR "Q:/visualisations/goom"
 #define CONFIG_FILE "P:/visualisations/goom.conf"
