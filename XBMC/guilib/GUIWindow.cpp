@@ -1121,17 +1121,18 @@ bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
 
 bool CGUIWindow::RenderAnimation(DWORD time)
 {
-  if (!m_animationsEnabled)
-     return true;
   m_transform.Reset();
-  CPoint center(m_posX + m_width * 0.5f, m_posY + m_height * 0.5f);
-  // show animation
-  for (unsigned int i = 0; i < m_animations.size(); i++)
+  if (m_animationsEnabled)
   {
-    CAnimation &anim = m_animations[i];
-    anim.Animate(time, true);
-    UpdateStates(anim.GetType(), anim.GetProcess(), anim.GetState());
-    anim.RenderAnimation(m_transform, center);
+    CPoint center(m_posX + m_width * 0.5f, m_posY + m_height * 0.5f);
+    // show animation
+    for (unsigned int i = 0; i < m_animations.size(); i++)
+    {
+      CAnimation &anim = m_animations[i];
+      anim.Animate(time, true);
+      UpdateStates(anim.GetType(), anim.GetProcess(), anim.GetState());
+      anim.RenderAnimation(m_transform, center);
+    }
   }
   g_graphicsContext.SetWindowTransform(m_transform);
   return true;
@@ -1306,6 +1307,7 @@ void CGUIWindow::SetDefaults()
   m_animations.clear();
   m_origins.clear();
   m_hasCamera = false;
+  m_animationsEnabled = true;
 }
 
 FRECT CGUIWindow::GetScaledBounds() const
