@@ -98,14 +98,14 @@ uintptr_t create_dummy_function(const char* strDllName, const char* strFunctionN
 uintptr_t get_win_function_address(const char* strDllName, const char* strFunctionName)
 {
 #ifdef _WIN32PC
-  HMODULE m_handle = GetModuleHandle(strDllName);
-  if(m_handle == NULL)
+  HMODULE handle = GetModuleHandle(strDllName);
+  if(handle == NULL)
   {
-    m_handle = LoadLibrary(strDllName);
+    handle = LoadLibrary(strDllName);
   }
-  if(m_handle != NULL)
+  if(handle != NULL)
   {
-    uintptr_t pGNSI = (uintptr_t)GetProcAddress(m_handle, strFunctionName);
+    uintptr_t pGNSI = (uintptr_t)GetProcAddress(handle, strFunctionName);
     if(pGNSI != NULL)
       return pGNSI;
   }
