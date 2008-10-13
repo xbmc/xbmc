@@ -422,8 +422,8 @@ void CGUIWindowManager::CloseDialogs(bool forceClose)
 {
   while (m_activeDialogs.size() > 0)
   {
-    CGUIDialog* dialog = (CGUIDialog *)m_activeDialogs[0];
-    dialog->Close(forceClose);
+    CGUIWindow* win = m_activeDialogs[0];
+    win->Close(forceClose);
   }
 }
 
