@@ -48,6 +48,9 @@ extern "C" inline void tracker_memory_track(uintptr_t caller, void* data_addr, s
 
 extern "C" inline bool tracker_memory_free(DllTrackInfo* pInfo, void* data_addr)
 {
+  if(data_addr == NULL)
+    return true;
+
   bool bFreeFailed = !pInfo;
   if (!bFreeFailed)
   {
@@ -102,7 +105,7 @@ extern "C" void tracker_memory_free_all(DllTrackInfo* pInfo)
       }
       catch(...)
       {
-        CLog::Log(LOGERROR, "failed to free memory. buffer overrun is likely cause");
+        CLog::Log(LOGERROR, "failed to free memory at address %x. buffer overrun is likely cause", p->first);
       }
 
     }
