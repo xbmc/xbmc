@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # XBMC disk installer
-# V1.0 - 20081003
+# V1.1 - 20081013
 # Luigi Capriotti @2008
 #
 
@@ -328,41 +328,41 @@ function copySystemFiles
 	fi
 }
 
-function choosePermanentStorageSize
-{
-	echo ""
-	echo "Select the permanent storage size: "
-	echo ""
-	echo "  0 - None"
-	let s="${1}-10"
-	echo "  1 - $s MB"
-
-	echo ""
-	while true
-	do
-		echo -n "Type the digit: "
-		read -n 1 choice
-		echo ""
-		case "$choice" in
-			[0-1] ) break ;;
-			* ) ;;
-		esac
-	done
-
-	case "$choice" in
-		0 ) storageSize=0 ;;
-		1 ) let storageSize="${1}-10" ;;
-	esac
-	return $storageSize
-}
-
 function createPermanentStorageFile
 {
+	storageSize=0
+
+	function choosePermanentStorageSize
+	{
+		echo ""
+		echo "Select the permanent storage size: "
+		echo ""
+		echo "  0 - None"
+		let s="${1}-10"
+		echo "  1 - $s MB"
+
+		echo ""
+		while true
+		do
+			echo -n "Type the digit: "
+			read -n 1 choice
+			echo ""
+			case "$choice" in
+				[0-1] ) break ;;
+				* ) ;;
+			esac
+		done
+
+		case "$choice" in
+			0 ) storageSize=0 ;;
+			1 ) let storageSize=$s ;;
+		esac
+	}
+
 	diskFree=`df -h -BM | grep $1 | awk -F ' ' '{print $4}'`
 	diskFree=${diskFree/M/}
 	if [ "$2" = 1 ]; then
 		choosePermanentStorageSize $diskFree
-		storageSize=$?
 
 	else
 		let storageSize="${diskFree/M/}-64"
