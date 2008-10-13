@@ -1377,6 +1377,9 @@ bool CGraphicContext::ToggleFullScreenRoot ()
   if (m_bFullScreenRoot)
   {
 #ifdef _WIN32PC
+    // FIXME: we need to proper save the window position, size, full screen or not, etc
+    // to switch to the right resolution and start XBMC with the same config
+    // the user stopped it 
     g_advancedSettings.m_startFullScreen = false;
 #endif
     lastres = GetVideoResolution();
