@@ -81,8 +81,6 @@ void CMusicInfoScanner::Process()
     {
       CLog::Log(LOGDEBUG, "%s - Starting scan", __FUNCTION__);
       m_musicDatabase.BeginTransaction();
-      CLog::Log(LOGDEBUG, "%s - Starting scan", __FUNCTION__);
-      m_musicDatabase.BeginTransaction();
 
       if (m_pObserver)
         m_pObserver->OnStateChanged(READING_MUSIC_INFO);
