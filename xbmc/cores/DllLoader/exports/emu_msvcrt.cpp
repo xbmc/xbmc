@@ -1858,4 +1858,12 @@ extern "C"
     return NULL;
 #endif
   }
+
+#if _MSVC_VER <= 1310
+  long __cdecl _ftol2_sse(double d)
+  {
+    return (long)d;
+  }
+#endif
 }
+
