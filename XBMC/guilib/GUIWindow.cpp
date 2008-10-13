@@ -491,6 +491,11 @@ void CGUIWindow::Render()
   m_hasRendered = true;
 }
 
+void CGUIWindow::Close(bool forceClose)
+{
+  CLog::Log(LOGERROR,"%s - should never be called on the base class!", __FUNCTION__);
+}
+
 bool CGUIWindow::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_MOUSE)
