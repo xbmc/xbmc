@@ -713,5 +713,10 @@ PLT_LastChangeXMLIterator::operator()(PLT_StateVariable* const &var) const
     NPT_XmlElementNode* variable = new NPT_XmlElementNode((const char*)var->GetName());
     NPT_CHECK_SEVERE(m_Node->AddChild(variable));
     NPT_CHECK_SEVERE(variable->SetAttribute("val", var->GetValue()));
+    if(var->GetName() == "Volume" || var->GetName() == "VolumeDB" || var->GetName() == "Mute") {
+        if(var->GetService()->GetServiceType() == "urn:schemas-upnp-org:service:RenderingControl:1") {
+            NPT_CHECK_SEVERE(variable->SetAttribute("channel", "Master"));
+        }
+    }
     return NPT_SUCCESS;
 }
