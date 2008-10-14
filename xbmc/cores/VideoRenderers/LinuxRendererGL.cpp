@@ -778,7 +778,21 @@ void CLinuxRendererGL::LoadTextures(int source)
     im->flags = IMAGE_FLAG_READY;
   }
   
-  if (IsSoftwareUpscaling())
+  // if we don't have a shader, fallback to SW YUV2RGB for now
+  if (m_renderMethod & RENDER_SW)
+  {
+    struct SwsContext *context = m_dllSwScale.sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
+                                                             im->width, im->height, PIX_FMT_RGB32,
+                                                             SWS_FAST_BILINEAR, NULL, NULL, NULL);
+    uint8_t *src[] = { im->plane[0], im->plane[1], im->plane[2] };
+    int     srcStride[] = { im->stride[0], im->stride[1], im->stride[2] };
+    uint8_t *dst[] = { m_rgbBuffer, 0, 0 };
+    int     dstStride[] = { m_iSourceWidth*4, 0, 0 };
+    m_dllSwScale.sws_scale(context, src, srcStride, 0, im->height, dst, dstStride);
+    m_dllSwScale.sws_freeContext(context);
+    SetEvent(m_eventTexturesDone[source]);
+  }
+  else if (IsSoftwareUpscaling()) // FIXME: s/w upscaling + RENDER_SW => broken
   {
     // Perform the scaling.
     uint8_t* src[] =       { im->plane[0],  im->plane[1],  im->plane[2] };
@@ -805,21 +819,6 @@ void CLinuxRendererGL::LoadTextures(int source)
     im->flags = IMAGE_FLAG_READY;
   }
   
-  // if we don't have a shader, fallback to SW YUV2RGB for now
-  if (m_renderMethod & RENDER_SW)
-  {
-    struct SwsContext *context = m_dllSwScale.sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
-                                                             im->width, im->height, PIX_FMT_RGB32,
-                                                             SWS_FAST_BILINEAR, NULL, NULL, NULL);
-    uint8_t *src[] = { im->plane[0], im->plane[1], im->plane[2] };
-    int     srcStride[] = { im->stride[0], im->stride[1], im->stride[2] };
-    uint8_t *dst[] = { m_rgbBuffer, 0, 0 };
-    int     dstStride[] = { m_iSourceWidth*4, 0, 0 };
-    m_dllSwScale.sws_scale(context, src, srcStride, 0, im->height, dst, dstStride);
-    m_dllSwScale.sws_freeContext(context);
-    SetEvent(m_eventTexturesDone[source]);
-  }
-
   static int imaging = -1;
   static GLfloat brightness = 0;
   static GLfloat contrast   = 0;
