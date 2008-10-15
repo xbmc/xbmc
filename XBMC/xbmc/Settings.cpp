@@ -262,7 +262,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_iSkipLoopFilter = 0;
 
 #ifdef _WIN32
-	g_advancedSettings.m_ForcedSwapTime = 1.0;
+	g_advancedSettings.m_ForcedSwapTime = 2.0;
 #else
 	g_advancedSettings.m_ForcedSwapTime = 0.0;
 #endif
