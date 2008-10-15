@@ -2381,6 +2381,8 @@ void CApplication::Render()
     static unsigned int lastFrameTime = 0;
     unsigned int currentTime = timeGetTime();
     int nDelayTime = 0;
+    bool lowfps = m_bScreenSave && (m_screenSaverMode == "Dim" || m_screenSaverMode == "Black");
+    unsigned int singleFrameTime = 10; // default limit 100 fps
 
 #ifdef HAS_SDL
     m_bPresentFrame = false;
@@ -2396,10 +2398,6 @@ void CApplication::Render()
     }
     else
     {
-
-       bool lowfps = m_bScreenSave && (m_screenSaverMode == "Dim" || m_screenSaverMode == "Black");
-       unsigned int singleFrameTime = 10; // default limit 100 fps
-
       // only "limit frames" if we are not using vsync.
       if (g_videoConfig.GetVSyncMode() != VSYNC_ALWAYS || lowfps)
       {
@@ -2423,6 +2421,9 @@ void CApplication::Render()
       m_frameCount--;
     SDL_mutexV(m_frameMutex);
 #else
+    if(lowfps)
+      singleFrameTime *= 10;
+
     if (lastFrameTime + singleFrameTime > currentTime)
       nDelayTime = lastFrameTime + singleFrameTime - currentTime;
 
