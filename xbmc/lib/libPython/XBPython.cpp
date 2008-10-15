@@ -252,8 +252,8 @@ void XBPython::DeInitializeInterpreter()
 void XBPython::Initialize()
 {
   CLog::Log(LOGINFO, "initializing python engine. ");
-  m_iDllScriptCounter++;
   EnterCriticalSection(&m_critSection);
+  m_iDllScriptCounter++;
   if (!m_bInitialized)
   {
     if (dThreadId == GetCurrentThreadId())
@@ -343,10 +343,9 @@ void XBPython::Initialize()
 */
 void XBPython::Finalize()
 {
-  m_iDllScriptCounter--;
   // for linux - we never release the library. its loaded and stays in memory.
   EnterCriticalSection(&m_critSection);
-
+  m_iDllScriptCounter--;
   if (m_iDllScriptCounter == 0 && m_bInitialized)
   {
     CLog::Log(LOGINFO, "Python, unloading python24.dll cause no scripts are running anymore");
