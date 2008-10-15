@@ -403,7 +403,7 @@ namespace VIDEO
     // needed to ensure the movie count etc is cached
     for (int i=LIBRARY_HAS_VIDEO;i<LIBRARY_HAS_MUSICVIDEOS+1;++i)
       g_infoManager.GetBool(i);
-    m_database.BeginTransaction();
+    //m_database.BeginTransaction();
 
     CStdStringArray regexps = g_advancedSettings.m_videoExcludeRegExps;
 
@@ -486,7 +486,7 @@ namespace VIDEO
             {
               if (pDlgProgress)
                 pDlgProgress->Close();
-              m_database.RollbackTransaction();
+              //m_database.RollbackTransaction();
               m_database.Close();
               return false;
             }
@@ -495,7 +495,7 @@ namespace VIDEO
           {
             if (pDlgProgress)
               pDlgProgress->Close();
-            m_database.RollbackTransaction();
+            //m_database.RollbackTransaction();
             m_database.Close();
             return false;
           }
@@ -550,14 +550,14 @@ namespace VIDEO
             if (pDlgProgress->IsCanceled())
             {
               pDlgProgress->Close();
-              m_database.RollbackTransaction();
+              //m_database.RollbackTransaction();
               m_database.Close();
               return false;
             }
           }
           if (m_bStop)
           {
-            m_database.RollbackTransaction();
+            //m_database.RollbackTransaction();
             m_database.Close();
             return false;
           }
@@ -652,7 +652,7 @@ namespace VIDEO
     if(pDlgProgress)
       pDlgProgress->ShowProgressBar(false);
 
-    m_database.CommitTransaction();
+    //m_database.CommitTransaction();
     m_database.Close();
     return true;
   }
@@ -1004,7 +1004,7 @@ namespace VIDEO
       {
         if (pDlgProgress)
           pDlgProgress->Close();
-        m_database.RollbackTransaction();
+        //m_database.RollbackTransaction();
         m_database.Close();
         return;
       }
