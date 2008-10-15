@@ -44,7 +44,7 @@ class CoffLoader
 {
 public:
   CoffLoader();
-  ~CoffLoader();
+  virtual ~CoffLoader();
 
   int ParseCoff(FILE *fp);
   int ParseHeaders(void* hModule);
