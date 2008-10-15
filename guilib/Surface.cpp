@@ -687,7 +687,6 @@ void CSurface::EnableVSync(bool enable)
         m_iSwapRate   = (__int64)((double)freq / rate);
         m_iSwapTime   = (__int64)(0.001 * g_advancedSettings.m_ForcedSwapTime * freq);
         m_iSwapStamp  = 0;
-        m_iSwapMissed = 0;
         CLog::Log(LOGINFO, "GL: Using artificial vsync sleep with rate %f", rate);
       }
     }
