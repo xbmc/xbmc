@@ -94,7 +94,7 @@ void XCriticalSection::Leave()
 {
 	if (Owning() == false)
 	{
-		CLog::Log(LOGWARNING, "CRITSEC[%p] Some other thread trying to leave our critical section.", (void *)this);
+		//CLog::Log(LOGWARNING, "CRITSEC[%p] Some other thread trying to leave our critical section.", (void *)this);
 		return;
 	}
 	
