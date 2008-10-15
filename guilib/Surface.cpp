@@ -796,9 +796,6 @@ void CSurface::Flip()
 
     if (m_iVSyncMode && m_iSwapRate != 0)
     {
-      /* make sure our requested swap has finished */
-      glFinish();
-
       __int64 curr, diff;
       QueryPerformanceCounter((LARGE_INTEGER*)&curr);
 
