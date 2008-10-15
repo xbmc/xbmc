@@ -41,7 +41,7 @@ CApplication g_application;
 int main(int argc, char* argv[])
 {
   CFileItemList playlist;
-#if defined(_LINUX) && defined(DEBUG)
+#if defined(_LINUX) && defined(DEBUG) && !defined(__APPLE__)
   struct rlimit rlim;
   rlim.rlim_cur = rlim.rlim_max = RLIM_INFINITY;
   setrlimit(RLIMIT_CORE, &rlim);
@@ -85,6 +85,7 @@ int main(int argc, char* argv[])
   // if we're on a Mac or if XBMC_PLATFORM_MODE is set, enable platform
   // specific directories.
 #ifdef __APPLE__
+  system("XBMC.app/Contents/Resources/XBMC/tools/preflight");
   if (1)
 #else
   if (getenv("XBMC_PLATFORM_MODE"))
