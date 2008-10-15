@@ -100,6 +100,9 @@ public:
   bool m_bOK;
   bool m_bVSync;
   int m_iVSyncMode;
+  __int64 m_iSwapStamp;
+  __int64 m_iSwapRate;
+  __int64 m_iSwapTime;
   bool m_bVsyncInit;
   short int m_iRedSize;
   short int m_iGreenSize;
