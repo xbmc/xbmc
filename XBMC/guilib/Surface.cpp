@@ -29,6 +29,7 @@
 #include "CocoaUtils.h"
 #endif
 #include <string>
+#include "Settings.h"
 
 using namespace Surface;
 
@@ -48,6 +49,12 @@ static Bool    (*_glXGetSyncValuesOML)(Display* dpy, GLXDrawable drawable, int64
 static int64_t (*_glXSwapBuffersMscOML)(Display* dpy, GLXDrawable drawable, int64_t target_msc, int64_t divisor,int64_t remainder);
 
 #endif
+
+static __int64 abs(__int64 a)
+{
+  if(a < 0) return -a;
+  else      return  a;
+}
 
 bool CSurface::b_glewInit = 0;
 std::string CSurface::s_glVendor = "";
@@ -84,10 +91,17 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_pShared = shared;
   m_bVSync = false;
   m_iVSyncMode = 0;
+  m_iSwapStamp = 0;
+  m_iSwapTime = 0;
+  m_iSwapRate = 0;
   m_bVsyncInit = false;
 
 #ifdef __APPLE__
   m_glContext = 0;
+#endif
+
+#ifdef _WIN32
+  timeBeginPeriod(1);
 #endif
 
 #ifdef HAS_GLX
@@ -537,6 +551,9 @@ CSurface::~CSurface()
   }
 #endif
 
+#ifdef _WIN32
+  timeEndPeriod(1);
+#endif
 #endif
 }
 
@@ -573,6 +590,7 @@ void CSurface::EnableVSync(bool enable)
   strRenderer.ToLower();
 
   m_iVSyncMode = 0;
+  m_iSwapRate = 0;
   m_bVSync=enable;
 
 #ifdef HAS_GLX
@@ -653,6 +671,27 @@ void CSurface::EnableVSync(bool enable)
     }
 #endif
 
+    if(g_advancedSettings.m_ForcedSwapTime != 0.0)
+    {
+      /* some hardware busy wait on swap/glfinish, so we must manually sleep to avoid 100% cpu */
+      double rate = g_graphicsContext.GetFPS();
+      if (rate <= 0.0 || rate > 1000.0)
+      {
+        CLog::Log(LOGWARNING, "Unable to determine a valid horizontal refresh rate, vsync workaround disabled %.2g", rate);
+        m_iSwapRate = 0;
+      }
+      else
+      {
+        __int64 freq;
+        QueryPerformanceFrequency((LARGE_INTEGER*)&freq);
+        m_iSwapRate   = (__int64)((double)freq / rate);
+        m_iSwapTime   = (__int64)(0.001 * g_advancedSettings.m_ForcedSwapTime * freq);
+        m_iSwapStamp  = 0;
+        m_iSwapMissed = 0;
+        CLog::Log(LOGINFO, "GL: Using artificial vsync sleep with rate %f", rate);
+      }
+    }
+
     if(!m_iVSyncMode)
     {
       m_iVSyncMode = 0;
@@ -669,6 +708,39 @@ void CSurface::Flip()
 {
   if (m_bOK && m_bDoublebuffer)
   {
+#ifdef _WIN32
+    int priority;
+    DWORD_PTR affinity;
+#endif
+    if (m_iVSyncMode && m_iSwapRate != 0)
+    {
+      glFlush();
+#ifdef _WIN32
+      priority = GetThreadPriority(GetCurrentThread());
+      affinity = SetThreadAffinityMask(GetCurrentThread(), 1);
+      SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
+#endif
+
+      __int64 curr, diff, freq;
+      QueryPerformanceCounter((LARGE_INTEGER*)&curr);
+      QueryPerformanceFrequency((LARGE_INTEGER*)&freq);
+
+      if(m_iSwapStamp == 0)
+        m_iSwapStamp = curr;
+
+      /* calculate our next swap timestamp */
+      diff = curr - m_iSwapStamp;
+      diff = m_iSwapRate - diff % m_iSwapRate;
+      m_iSwapStamp = curr + diff;
+
+      /* sleep as close as we can before, assume 1ms precision of sleep *
+       * this should always awake so that we are guaranteed the given   *
+       * m_iSwapTime to do our swap                                     */
+      diff = (diff - m_iSwapTime) * 1000 / freq;
+      if(diff > 0)
+        Sleep((DWORD)diff);
+    }
+
 #ifdef HAS_GLX
     if (m_iVSyncMode == 3)
     {
@@ -722,6 +794,25 @@ void CSurface::Flip()
 #else
     SDL_Flip(m_SDLSurface);
 #endif
+
+    if (m_iVSyncMode && m_iSwapRate != 0)
+    {
+      /* make sure our requested swap has finished */
+      glFinish();
+
+      __int64 curr, diff;
+      QueryPerformanceCounter((LARGE_INTEGER*)&curr);
+
+#ifdef _WIN32
+      SetThreadPriority(GetCurrentThread(), priority);
+      SetThreadAffinityMask(GetCurrentThread(), affinity);
+#endif
+
+      diff = curr - m_iSwapStamp;
+      m_iSwapStamp = curr;
+      if (abs(diff - m_iSwapRate) < abs(diff))
+        CLog::Log(LOGDEBUG, "%s - missed requested swap",__FUNCTION__);
+    }
   }
   else
   {
