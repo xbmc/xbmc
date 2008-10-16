@@ -244,7 +244,8 @@ void AppleRemote::Initialize()
         m_button_event_terminator = IR_Event_Term_10_5;
     }
     m_launch_xbmc_button = key[IR_MenuHold];
-        
+    
+/*
     RegisterCommand(key[IR_Select],    new CPacketBUTTON("A", "XG", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
     RegisterCommand(key[IR_Right],     new CPacketBUTTON("Right", "R1", BTN_DOWN  | BTN_NO_REPEAT | BTN_QUEUE));
     RegisterCommand(key[IR_Left],      new CPacketBUTTON("Left",  "R1", BTN_DOWN  | BTN_NO_REPEAT | BTN_QUEUE));
@@ -256,6 +257,21 @@ void AppleRemote::Initialize()
 
     // Menu Hold will be used both for sending "Back" and for starting universal remote combinations (if universal mode is on)
     RegisterCommand(key[IR_MenuHold],  new CPacketBUTTON("Back", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+*/
+
+    RegisterCommand(key[IR_Select],    new CPacketBUTTON(5, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+    RegisterCommand(key[IR_Right],     new CPacketBUTTON(4, "JS0:AppleRemote", BTN_DOWN  | BTN_NO_REPEAT | BTN_QUEUE));
+    RegisterCommand(key[IR_Left],      new CPacketBUTTON(3, "JS0:AppleRemote", BTN_DOWN  | BTN_NO_REPEAT | BTN_QUEUE));
+    RegisterCommand(key[IR_Up],        new CPacketBUTTON(1, "JS0:AppleRemote", BTN_DOWN));
+    RegisterCommand(key[IR_Down],      new CPacketBUTTON(2, "JS0:AppleRemote", BTN_DOWN));
+    RegisterCommand(key[IR_RightHold], new CPacketBUTTON(4, "JS0:AppleRemote", BTN_DOWN));
+    RegisterCommand(key[IR_LeftHold],  new CPacketBUTTON(3, "JS0:AppleRemote", BTN_DOWN));
+
+    // looks like this is what triggers when menu is held down (?)
+    RegisterCommand(key[IR_Menu],      new CPacketBUTTON(8, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+
+    // Menu Hold will be used both for sending "Back" and for starting universal remote combinations (if universal mode is on)
+    RegisterCommand(key[IR_MenuHold],  new CPacketBUTTON(6, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
 
     // Universal commmands:
     RegisterCommand(key[IR_MenuHold] + key[IR_Down], new CPacketBUTTON("Back", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
