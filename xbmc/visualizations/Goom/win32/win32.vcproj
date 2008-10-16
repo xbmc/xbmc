@@ -119,7 +119,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=".\;&quot;..\goom2k4-0\src&quot;;..\..\..\..\visualisations"
-				PreprocessorDefinitions="CPU_X86;HAS_SDL;HAS_SDL_OPENGL;_WIN32PC;WIN32;NDEBUG;_WINDOWS;_USRDLL;WIN32_EXPORTS"
+				PreprocessorDefinitions="HAS_SDL;HAS_SDL_OPENGL;_WIN32PC;WIN32;NDEBUG;_WINDOWS;_USRDLL;WIN32_EXPORTS"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
