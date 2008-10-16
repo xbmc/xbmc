@@ -13,6 +13,9 @@ sub make_dmg {
     die("Could not find \"$mpkg\"\n")
 	if ! -d $mpkg;
 
+    my $ext = $1 if $mpkg =~ /.*\.(.*?)$/;
+    $ext = "mpkg" if !$ext;
+
     # calculate size
     $size = `du -sm "$mpkg"`;
     chomp $size;
@@ -22,7 +25,7 @@ sub make_dmg {
     print "Calculated size \"$size\" MB\n";
 
     # add 2 megs just in case
-    $size = $size + 2;
+    $size = $size + 5;
 
     # thanks to http://dev.simon-cozens.org/songbee/browser/release-manager-tools/build-dmg.sh
     `rm -fr dist`;
@@ -33,7 +36,7 @@ sub make_dmg {
     $dev_handle = $1 if $dev_handle =~ /^\/dev\/(disk.)/;
     die("Could not obtain device handle\n") if !$dev_handle;
     print "Got device handle \"$dev_handle\"\n";
-    `ditto "$mpkg" "/Volumes/$volname/$pkgname.mpkg"`;
+    `ditto "$mpkg" "/Volumes/$volname/$pkgname.$ext"`;
 
     # set a volume icon if we have one
     if ( -f "VolumeIcon.icns" ) {
@@ -44,7 +47,8 @@ sub make_dmg {
 	`ditto background "/Volumes/$volname/background/"`;
     }
     if ( -f "VolumeDSStore" ) {
-	`ditto VolumeDSStore "/Volumes/$volname/.DS_Store"`
+	`ditto VolumeDSStore "/Volumes/$volname/.DS_Store"` if $ext ne "app";
+	`ditto VolumeDSStoreApp "/Volumes/$volname/.DS_Store"` if $ext eq "app";
     }
     if ( -d "background" ) {
 	`/Developer/Tools/SetFile -a V "/Volumes/$volname/background"`;
@@ -67,4 +71,4 @@ if ( $ARGV[0] eq "-c" ) {
     exit;
 }
 
-make_dmg($ARGV[0], "XBMC", "XBMC Media Center");
+make_dmg($ARGV[0], "XBMC", "XBMC");
