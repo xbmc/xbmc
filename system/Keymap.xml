@@ -622,11 +622,6 @@
     <remote>
       <menu>Close</menu>
     </remote>
-
-    <joystick name="AppleRemote">
-      <!-- menu --> <button id="6">Close</button>
-    </joystick>
-
   </PlayerControls>
 
 
