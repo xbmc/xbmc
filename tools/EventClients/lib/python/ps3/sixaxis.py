@@ -4,6 +4,7 @@ import time
 import sys
 import struct
 import math
+import binascii
 from bluetooth import set_l2cap_mtu
 from keymaps import keymap_sixaxis
 from keymaps import axismap_sixaxis
@@ -104,11 +105,11 @@ def read_input(isock):
 
 
 def process_input(data, xbmc=None, mouse_enabled=0):
-    if len(data) < 2:
+    if len(data) < 3:
         return (0, 0, 0)
 
     # make sure this is the correct report
-    if struct.unpack("BB", data[1:3]) != (1, 0):
+    if struct.unpack("BBB", data[0:3]) != (0xa1, 0x01, 0x00):
         return (0, 0, 0)
 
     if len(data) >= 48:
