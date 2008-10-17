@@ -653,6 +653,7 @@ namespace VIDEO
       pDlgProgress->ShowProgressBar(false);
 
     //m_database.CommitTransaction();
+    g_infoManager.ResetPersistentCache();
     m_database.Close();
     return true;
   }
