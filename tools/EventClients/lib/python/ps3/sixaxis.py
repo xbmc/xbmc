@@ -40,12 +40,18 @@ def normalize(val):
 
 def normalize_axis(val, deadzone):
 
-    val = float(val) - 127.0
-    val = val / 255.0
+    val = float(val) - 127.5
+    val = val / 127.5
+
     if abs(val) < deadzone:
       return 0.0
+
+    if val > 0.0:
+        val = (val - deadzone) / (1.0 - deadzone)
     else:
-      return val * 65535.0 * 2.0 
+        val = (val + deadzone) / (1.0 - deadzone)
+
+    return 65536.0 * val
 
 def normalize_angle(val, valrange):
     valrange *= 2
@@ -173,7 +179,7 @@ def process_input(data, xbmc=None, mouse_enabled=0):
     return (bflags, psflags, pressure)
 
 def send_singleaxis(xbmc, axis, last_amount, mapname, action_min, action_pos):
-    amount = normalize_axis(axis, 0.10)
+    amount = normalize_axis(axis, 0.30)
     if last_amount < 0:
         last_action = action_min
     elif last_amount > 0:
