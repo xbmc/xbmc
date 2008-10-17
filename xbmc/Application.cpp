@@ -3462,7 +3462,13 @@ bool CApplication::ProcessEventServer(float frameTime)
     return false;
 
   // process any queued up actions
-  es->ExecuteNextAction();
+  if (es->ExecuteNextAction())
+  {
+    // reset idle timers
+    m_idleTimer.StartZero();
+    ResetScreenSaver();
+    ResetScreenSaverWindow();
+  }
 
   // now handle any buttons or axis
   std::string joystickName;
