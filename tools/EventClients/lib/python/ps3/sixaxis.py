@@ -104,8 +104,11 @@ def read_input(isock):
 
 
 def process_input(data, xbmc=None, mouse_enabled=0):
-    if struct.unpack("B", data[1:2])[0] != 1:
-        print data
+    if len(data) < 2:
+        return (0, 0, 0)
+
+    # make sure this is the correct report
+    if struct.unpack("BB", data[1:3]) != (1, 0):
         return (0, 0, 0)
 
     if len(data) >= 48:
