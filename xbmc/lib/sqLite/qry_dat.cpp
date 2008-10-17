@@ -109,6 +109,12 @@ field_value::field_value(const double d) {
   is_null = false;
 }
   
+field_value::field_value(const __int64 i) {
+  int64_value = i; 
+  field_type = ft_Int64;
+  is_null = false;
+}
+
 field_value::field_value (const field_value & fv) {
   switch (fv.get_fType()) {
     case ft_String: {
@@ -145,6 +151,10 @@ field_value::field_value (const field_value & fv) {
     }
     case ft_Double: {
       set_asDouble(fv.get_asDouble());
+      break;
+    }
+    case ft_Int64: {
+      set_asInt64(fv.get_asInt64());
       break;
     }
     default:
@@ -207,6 +217,11 @@ string field_value::get_asString() const {
       sprintf(t,"%f",double_value);
       return tmp = t;
     }
+    case ft_Int64: {
+      char t[23];
+      sprintf(t,"%I64d",int64_value);
+      return tmp = t;
+    }
     default:
       return tmp = "";
     }
@@ -248,6 +263,9 @@ bool field_value::get_asBool() const {
     }
     case ft_Double: {
       return (bool)double_value;
+    }
+    case ft_Int64: {
+      return (bool)int64_value;
     }
     default:
       return false;
@@ -300,6 +318,11 @@ char field_value::get_asChar() const {
       sprintf(t,"%f",double_value);
       return t[0];
     }
+    case ft_Int64: {
+      char t[24];
+      sprintf(t,"%I64d",int64_value);
+      return t[0];
+    }
     default:
       return '\0';
     }
@@ -334,6 +357,9 @@ short field_value::get_asShort() const {
     }
     case ft_Double: {
       return (short)double_value;
+    }
+    case ft_Int64: {
+      return (short)int64_value;
     }
     default:
       return 0;
@@ -370,6 +396,9 @@ unsigned short field_value::get_asUShort() const {
     case ft_Double: {
       return (unsigned short)double_value;
     }
+    case ft_Int64: {
+      return (unsigned short)int64_value;
+    }
     default:
       return 0;
     }
@@ -403,6 +432,9 @@ long field_value::get_asLong() const {
     }
     case ft_Double: {
       return (long)double_value;
+    }
+    case ft_Int64: {
+      return (long)int64_value;
     }
     default:
       return 0;
@@ -442,6 +474,9 @@ unsigned long field_value::get_asULong() const {
     case ft_Double: {
       return (unsigned long)double_value;
     }
+    case ft_Int64: {
+      return (unsigned long)int64_value;
+    }
     default:
       return 0;
     }
@@ -475,6 +510,9 @@ float field_value::get_asFloat() const {
     }
     case ft_Double: {
       return (float)double_value;
+    }
+    case ft_Int64: {
+      return (float)int64_value;
     }
     default:
       return 0.0;
@@ -510,11 +548,50 @@ double field_value::get_asDouble() const {
     case ft_Double: {
       return (double)double_value;
     }
+    case ft_Int64: {
+      return (double)int64_value;
+    }
     default:
       return 0.0;
     }
   }
 
+__int64 field_value::get_asInt64() const {
+    switch (field_type) {
+    case ft_String: {
+      return _atoi64(str_value.c_str());
+    }
+    case ft_Boolean:{
+      return (__int64)bool_value;
+    }
+    case ft_Char: {
+      return (__int64)char_value;
+    }
+    case ft_Short: {
+       return (__int64)short_value;
+    }
+    case ft_UShort: {
+       return (__int64)ushort_value;
+    }
+    case ft_Long: {
+      return (__int64)long_value;
+    }
+    case ft_ULong: {
+      return (__int64)ulong_value;
+    }
+    case ft_Float: {
+      return (__int64)float_value;
+    }
+    case ft_Double: {
+      return (__int64)double_value;
+    }
+    case ft_Int64: {
+      return int64_value;
+    }
+    default:
+      return 0;
+    }
+  }
 
 
 field_value& field_value::operator= (const field_value & fv) {
@@ -563,6 +640,11 @@ field_value& field_value::operator= (const field_value & fv) {
     }
     case ft_Double: {
       set_asDouble(fv.get_asDouble());
+      return *this;
+      break;
+    }
+    case ft_Int64: {
+      set_asInt64(fv.get_asInt64());
       return *this;
       break;
     }
@@ -621,6 +703,9 @@ void field_value::set_asDouble(const double d) {
   double_value = d; 
   field_type = ft_Double;}
 
+void field_value::set_asInt64(const __int64 i) {
+  int64_value = i; 
+  field_type = ft_Int64;}
   
 fType field_value::get_field_type() {
   return field_type;}
@@ -655,6 +740,10 @@ string field_value::gft() {
     }
     case ft_Double: {
       tmp.assign("double");
+      return tmp;
+    }
+    case ft_Int64: {
+      tmp.assign("int64");
       return tmp;
     }
     default:
