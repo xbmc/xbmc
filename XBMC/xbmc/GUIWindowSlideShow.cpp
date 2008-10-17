@@ -553,7 +553,8 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
     {
       if (m_Resolution != g_guiSettings.m_LookAndFeelResolution)
       {
-        g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
+        //FIXME: Use GUI resolution for now
+        //g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
       }
 
       //   Reset();
@@ -569,7 +570,9 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       m_Resolution = (RESOLUTION) g_guiSettings.GetInt("pictures.displayresolution");
-      if (m_Resolution != g_guiSettings.m_LookAndFeelResolution && m_Resolution != INVALID && m_Resolution!=AUTORES)
+
+      //FIXME: Use GUI resolution for now
+      if (0 /*m_Resolution != g_guiSettings.m_LookAndFeelResolution && m_Resolution != INVALID && m_Resolution!=AUTORES*/)
       {
         g_graphicsContext.SetVideoResolution(m_Resolution, TRUE);
       }
