@@ -273,20 +273,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         g_settings.Save();
       }
 
-      // Reload a resolution
-      // UPDATE: not anymore, resolution is only updated when the 'test resolution'
-      // button is clicked
-      if (m_NewResolution != INVALID)
-      {
-        /*
-        g_guiSettings.SetInt("videoscreen.resolution", m_NewResolution);
-        //set the gui resolution, if newRes is AUTORES newRes will be set to the highest available resolution
-        g_graphicsContext.SetVideoResolution(m_NewResolution, TRUE);
-        //set our lookandfeelres to the resolution set in graphiccontext
-        g_guiSettings.m_LookAndFeelResolution = m_NewResolution;
-        */
-      }
-
       if (IsActive())
         m_returningFromSkinLoad = true;
     }
