@@ -415,8 +415,8 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       CSingleLock lock (g_graphicsContext);
       g_graphicsContext.SetFullScreenVideo(true);
 #ifdef HAS_VIDEO_PLAYBACK
-      RESOLUTION res = g_renderManager.GetResolution();
       //FIXME: Use GUI resolution for now
+      //RESOLUTION res = g_renderManager.GetResolution();
       //g_graphicsContext.SetVideoResolution(res, false, false);
 #endif
       lock.Leave();
