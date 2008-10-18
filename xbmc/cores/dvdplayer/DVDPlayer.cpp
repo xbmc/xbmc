@@ -706,6 +706,7 @@ void CDVDPlayer::Process()
 
   int count;
 
+  // open video stream
   count = m_SelectionStreams.Count(STREAM_VIDEO);
   for(int i = 0;i<count;i++)
   {
@@ -713,21 +714,39 @@ void CDVDPlayer::Process()
     if(OpenVideoStream(s.id, s.source))
       break;
   }
+
+  // open audio stream
   count = m_SelectionStreams.Count(STREAM_AUDIO);
-  for(int i = g_stSettings.m_currentVideoSettings.m_AudioStream < count ? 
-              g_stSettings.m_currentVideoSettings.m_AudioStream:0;i<count;i++)
+  if(g_stSettings.m_currentVideoSettings.m_AudioStream >= 0 
+  && g_stSettings.m_currentVideoSettings.m_AudioStream < count)
+  {
+    SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, i);
+    if(!OpenAudioStream(s.id, s.source))
+      CLog::Log(LOGWARNING, "%s - failed to restore selected audio stream (%d)", __FUNCTION__, g_stSettings.m_currentVideoSettings.m_AudioStream);
+  }
+
+  for(int i = 0; i<count && m_CurrentAudio.id < 0; i++)
   {
     SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, i);
     if(OpenAudioStream(s.id, s.source))
       break;
   }
+
+  // open subtitle stream
   if(g_stSettings.m_currentVideoSettings.m_SubtitleOn)
   {
     m_dvdPlayerVideo.EnableSubtitle(true);
-
     count = m_SelectionStreams.Count(STREAM_SUBTITLE);
-    for(int i = g_stSettings.m_currentVideoSettings.m_SubtitleStream < count ? 
-                g_stSettings.m_currentVideoSettings.m_SubtitleStream:0;i<count;i++)
+
+    if(g_stSettings.m_currentVideoSettings.m_SubtitleStream >= 0 
+    && g_stSettings.m_currentVideoSettings.m_SubtitleStream < count)
+    {
+      SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
+      if(!OpenSubtitleStream(s.id, s.source))
+        CLog::Log(LOGWARNING, "%s - failed to restore selected subtitle stream (%d)", __FUNCTION__, g_stSettings.m_currentVideoSettings.m_SubtitleStream);
+    }
+
+    for(int i = 0;i<count && m_CurrentSubtitle.id<0; i++)
     {
       SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
       if(OpenSubtitleStream(s.id, s.source))
