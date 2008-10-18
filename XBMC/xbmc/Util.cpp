@@ -660,7 +660,7 @@ const CStdString CUtil::GetMovieName(CFileItem* pItem)
   if (!pItem->m_bIsFolder || pItem->IsDVDFile(false, true) || IsInArchive(pItem->m_strPath))
   {
     GetParentPath(pItem->m_strPath,movieName);
-    if (IsInRAR(pItem->m_strPath) || IsInZIP(pItem->m_strPath) || pItem->IsDVDFile(false, true))
+    if (IsInRAR(pItem->m_strPath) || IsInZIP(pItem->m_strPath) || movieName.Find( "VIDEO_TS" )  != -1)
     {
       GetParentPath(movieName, strArchivePath);
       movieName = strArchivePath;
