@@ -720,7 +720,7 @@ void CDVDPlayer::Process()
   if(g_stSettings.m_currentVideoSettings.m_AudioStream >= 0 
   && g_stSettings.m_currentVideoSettings.m_AudioStream < count)
   {
-    SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, i);
+    SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, g_stSettings.m_currentVideoSettings.m_AudioStream);
     if(!OpenAudioStream(s.id, s.source))
       CLog::Log(LOGWARNING, "%s - failed to restore selected audio stream (%d)", __FUNCTION__, g_stSettings.m_currentVideoSettings.m_AudioStream);
   }
@@ -741,7 +741,7 @@ void CDVDPlayer::Process()
     if(g_stSettings.m_currentVideoSettings.m_SubtitleStream >= 0 
     && g_stSettings.m_currentVideoSettings.m_SubtitleStream < count)
     {
-      SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
+      SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, g_stSettings.m_currentVideoSettings.m_SubtitleStream);
       if(!OpenSubtitleStream(s.id, s.source))
         CLog::Log(LOGWARNING, "%s - failed to restore selected subtitle stream (%d)", __FUNCTION__, g_stSettings.m_currentVideoSettings.m_SubtitleStream);
     }
