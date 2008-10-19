@@ -178,7 +178,11 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_songInfoDuration = 10;
   g_advancedSettings.m_busyDialogDelay = 2000;
-  g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG; // = LOG_LEVEL_NORMAL
+#ifdef _DEBUG
+  g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG;
+#else
+  g_advancedSettings.m_logLevel = LOG_LEVEL_NORMAL;
+#endif
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
 #ifdef HAS_HAL
   g_advancedSettings.m_useSystemPowerManagement = g_application.IsStandAlone();
