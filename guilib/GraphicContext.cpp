@@ -65,7 +65,7 @@ CGraphicContext::CGraphicContext(void)
   m_pd3dParams = NULL;
   m_stateBlock = 0xffffffff;
 #endif
-  m_maxTextureSize = 4096;
+  m_maxTextureSize = 2048;
   m_dwID = 0;
   m_strMediaDir = "D:\\media";
   m_bCalibrating = false;
@@ -714,7 +714,28 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &m_maxTextureSize);
+    {
+      GLint width = 256;
+      while( width != 0 )
+      {
+        glTexImage2D(GL_PROXY_TEXTURE_2D, 0, 4, width, width, 0, GL_BGRA,
+                     GL_UNSIGNED_BYTE, NULL);
+        glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,
+                                 &width);
+        if (width==0)
+          break;
+        m_maxTextureSize = width;
+        width *= 2;
+        if (width > 65536) // have an upper limit in case driver acts stupid
+        {
+          CLog::Log(LOGERROR, "GL: Could not determine maximum texture width, falling back to 2048");
+          m_maxTextureSize = 2048;
+          break;
+        }
+      }
+      if (width == 0)
+        CLog::Log(LOGINFO, "GL: Maximum texture width: %d", m_maxTextureSize);
+    }
 
     glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
     glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
