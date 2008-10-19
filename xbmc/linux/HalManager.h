@@ -92,7 +92,7 @@ public:
     share->m_ignore = true;
     if (HotPlugged)
       share->m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
-    else if(Type == CMediaSource::SOURCE_TYPE_DVD)
+    else if(strcmp(FileSystem.c_str(), "iso9660") == 0)
       share->m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
     else
       share->m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
