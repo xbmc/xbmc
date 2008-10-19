@@ -716,13 +716,18 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
     {
       GLint width = 256;
-      while( width != 0 )
+      glGetError(); // reset any previous GL errors
+
+      // max out at 2^(8+8)
+      for (int i = 0 ; i<8 ; i++) 
       {
         glTexImage2D(GL_PROXY_TEXTURE_2D, 0, 4, width, width, 0, GL_BGRA,
                      GL_UNSIGNED_BYTE, NULL);
         glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,
                                  &width);
-        if (width==0)
+
+        // GMA950 on OS X sets error instead
+        if (width==0 || (glGetError()!=GL_NO_ERROR) )
           break;
         m_maxTextureSize = width;
         width *= 2;
@@ -733,8 +738,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
           break;
         }
       }
-      if (width == 0)
-        CLog::Log(LOGINFO, "GL: Maximum texture width: %d", m_maxTextureSize);
+      CLog::Log(LOGINFO, "GL: Maximum texture width: %d", m_maxTextureSize);
     }
 
     glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
