@@ -2381,7 +2381,7 @@ void CApplication::Render()
     static unsigned int lastFrameTime = 0;
     unsigned int currentTime = timeGetTime();
     int nDelayTime = 0;
-    bool lowfps = m_bScreenSave && (m_screenSaverMode == "Dim" || m_screenSaverMode == "Black");
+    bool lowfps = m_bScreenSave && (m_screenSaverMode == "Black");
     unsigned int singleFrameTime = 10; // default limit 100 fps
 
 #ifdef HAS_SDL
