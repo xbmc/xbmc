@@ -955,8 +955,9 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGNOTICE, "Getting hardware information now...");
   if (GetInt("audiooutput.mode") == AUDIO_DIGITAL && !g_audioConfig.HasDigitalOutput())
     SetInt("audiooutput.mode", AUDIO_ANALOG);
-  SetBool("audiooutput.ac3passthrough", GetBool("audiooutput.ac3passthrough"));
-  SetBool("audiooutput.dtspassthrough", GetBool("audiooutput.dtspassthrough"));
+  // FIXME: Check if the hardware supports it (if possible ;)
+  //SetBool("audiooutput.ac3passthrough", g_audioConfig.GetAC3Enabled());
+  //SetBool("audiooutput.dtspassthrough", g_audioConfig.GetDTSEnabled());
   CLog::Log(LOGINFO, "Using %s output", GetInt("audiooutput.mode") == AUDIO_ANALOG ? "analog" : "digital");
   CLog::Log(LOGINFO, "AC3 pass through is %s", GetBool("audiooutput.ac3passthrough") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "DTS pass through is %s", GetBool("audiooutput.dtspassthrough") ? "enabled" : "disabled");
