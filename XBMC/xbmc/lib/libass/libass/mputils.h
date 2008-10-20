@@ -11,4 +11,8 @@
 #define FFMIN(a,b) ((a) > (b) ? (b) : (a))
 #define FFMAX(a,b) ((a) > (b) ? (a) : (b))
 
+#ifdef _WIN32
+#define mp_msg my_mp_msg
+#endif
+
 #endif /* LIBASS_MPUTILS_H */
