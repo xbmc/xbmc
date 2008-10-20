@@ -123,7 +123,6 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
 
     url.SetOptions("?id=" + id);
     url.GetURL(path);
-    //printf("%s: %s\n", name.c_str(), path.c_str());
 
     CFileItemPtr pItem(new CFileItem);
     pItem->m_bIsFolder = false;

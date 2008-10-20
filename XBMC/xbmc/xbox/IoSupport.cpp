@@ -580,7 +580,6 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
     else
     {
       int iErr = GetLastError();
-      //   printf("%i\n", iErr);
     }
   }
 #endif

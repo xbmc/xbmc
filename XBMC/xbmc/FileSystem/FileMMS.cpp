@@ -417,11 +417,6 @@ int CFileMMS::get_media_packet(int s, int padding)
 
     command = get_32((unsigned char*) data, 24) & 0xFFFF;
 
-/*
-    printf("MSGT_NETWORK,MSGL_INFO,\ncommand packet detected, len=%d  cmd=0x%X\n",
-        packet_len, command);
-*/
-
     if (command == 0x1b)
       send_command(s, 0x1b, 0, 0, 0, data);
     else if (command == 0x1e)
