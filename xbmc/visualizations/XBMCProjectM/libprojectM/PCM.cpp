@@ -43,7 +43,6 @@ int PCM::maxsamples = 2048;
 #include <iostream>
 PCM::PCM() {
     initPCM( 2048 );
-    std::cerr << "MAX SAMPLES:" << maxsamples << std::endl;
   }
 
 void PCM::initPCM(int samples) {
@@ -172,8 +171,6 @@ void PCM::addPCM16(short PCMdata[2][512]) const
           }
 	   }
  
-	 // printf("Added %d samples %d %d %f\n",samples,start,(start+samples)%maxsamples,PCM[0][start+10]); 
-
  start+=samples;
  start=start%maxsamples;
 
@@ -204,10 +201,7 @@ void PCM::addPCM8( unsigned char PCMdata[2][1024]) const
              PCMd[1][j % maxsamples] = 0;
           }
 	   }
-       
  
-	 // printf("Added %d samples %d %d %f\n",samples,start,(start+samples)%maxsamples,PCM[0][start+10]); 
-
  start+=samples;
  start=start%maxsamples;
 
@@ -237,9 +231,6 @@ void PCM::addPCM8_512( const unsigned char PCMdata[2][512]) const
           }
 	   }
        
- 
-	 // printf("Added %d samples %d %d %f\n",samples,start,(start+samples)%maxsamples,PCM[0][start+10]); 
-
  start+=samples;
  start=start%maxsamples;
 
