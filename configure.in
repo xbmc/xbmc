@@ -8,25 +8,25 @@ AC_CONFIG_HEADER([config.h])
 AC_CANONICAL_HOST
 
 case $host in
-    i*86*-linux-gnu)
+    i*86*-linux-gnu*)
        ARCH="i486-linux"
        ;;
-    x86_64-*-linux-gnu)
+    x86_64-*-linux-gnu*)
        ARCH="x86_64-linux"
        ;;
     i386-apple-darwin*)
        ARCH="x86-osx"
        ;;
-    powerpc-*-linux-gnu)
+    powerpc-*-linux-gnu*)
        ARCH="powerpc-linux"
        AC_SUBST(ARCH_DEFINES, "-D_POWERPC")
        ;;
-    powerpc64-*-linux-gnu)
+    powerpc64-*-linux-gnu*)
        ARCH="powerpc64-linux"
        AC_SUBST(ARCH_DEFINES, "-D_POWERPC64")
        ;;
     *)
-       AC_MSG_ERROR(==unsupported host)
+       AC_MSG_ERROR(unsupported host ($host))
 esac
 AC_SUBST([ARCH])
 
