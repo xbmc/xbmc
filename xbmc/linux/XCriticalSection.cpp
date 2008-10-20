@@ -98,15 +98,19 @@ void XCriticalSection::Enter()
 {	
 	if (m_isDestroyed)
 	{
+#ifdef _DEBUG
 		// This has to be a printf, otherwise we may recurse.
 		printf("CRITSEC[%p]: Trying to enter destroyed section.\n", (void *)this);
+#endif
 		return;
 	}
 	
 	if (!m_isInitialized)
 	{
+#ifdef _DEBUG
 		// This has to be a printf, otherwise we may recurse.
 		printf("CRITSEC[%p]: Trying to enter uninitialized section.\n", (void *)this);
+#endif
 		return;
 	}
 	
@@ -130,19 +134,25 @@ void XCriticalSection::Leave()
 {	
 	if (m_isDestroyed)
 	{
+#ifdef _DEBUG
 		printf("CRITSEC[%p]: Trying to leave destroyed section.\n", (void *)this);
+#endif
 		return;
 	}
 	
 	if (!m_isInitialized)
 	{
+#ifdef _DEBUG
 		printf("CRITSEC[%p]: Trying to leave uninitialized section.\n", (void *)this);
+#endif
 		return;
 	}
 
 	if (!Owning())
 	{
+#ifdef _DEBUG
 		printf("CRITSEC[%p]: Some other thread trying to leave our critical section.\n", (void *)this);
+#endif
 		return;
 	}
 	
@@ -158,7 +168,9 @@ void XCriticalSection::Leave()
 	}
 	else
 	{
-		printf("CRITSEC[%p]: Trying to leave, already left.\n", (void *)this);
+#ifdef _DEBUG
+		printf("RITSEC[%p]: Trying to leave, already left.\n", (void *)this);
+#endif
 	}
 	
 	pthread_mutex_unlock(&m_countMutex);

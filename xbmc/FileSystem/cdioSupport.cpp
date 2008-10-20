@@ -294,7 +294,7 @@ void CCdIoSupport::PrintAnalysis(int fs, int num_audio)
   if (fs & VIDEOCDI && num_audio == 0)
   {
     CLog::Log(LOGINFO, "Video CD   ");
-#ifdef HAVE_VCDINFO
+#if defined(HAVE_VCDINFO) && defined(DEBUG)
     if (!opts.no_vcd)
     {
       printf("\n");

@@ -81,19 +81,12 @@ projectM::~projectM()
 {
 
  #ifdef USE_THREADS
-  	printf("c");
 	running = false;
-	printf("l");
 	pthread_cond_signal(&condition);
-	printf("e");
 	pthread_mutex_unlock( &mutex );
-	printf("a");
 	pthread_detach(thread);
-	printf("n");
 	pthread_cond_destroy(&condition);
-	printf("u");
 	pthread_mutex_destroy( &mutex );
-	printf("p");
 #endif
 	destroyPresetTools();
 
@@ -166,8 +159,6 @@ bool projectM::writeConfig(const std::string & configFile, const Settings & sett
 
 void projectM::readConfig (const std::string & configFile )
 {
-	std::cout << "configFile: " << configFile << std::endl;
-	
 	ConfigFile config ( configFile );
 	_settings.meshX = config.read<int> ( "Mesh X", 32 );
 	_settings.meshY = config.read<int> ( "Mesh Y", 24 );
@@ -238,27 +229,27 @@ void projectM::readConfig (const std::string & configFile )
 }
 
 #ifdef USE_THREADS
-static void *thread_callback(void *prjm) {
- projectM *p = (projectM *)prjm;
-
- p->thread_func(prjm); 
-return NULL;} 
+static void *thread_callback(void *prjm) 
+{
+  projectM *p = (projectM *)prjm;
+  p->thread_func(prjm); 
+  return NULL;
+} 
 
 
 void *projectM::thread_func(void *vptr_args)
 {
-   pthread_mutex_lock( &mutex );
-  //  printf("in thread: %f\n", timeKeeper->PresetProgressB());
+  pthread_mutex_lock( &mutex );
   while (true)
+  {
+    pthread_cond_wait( &condition, &mutex );
+    if(!running)
     {
-      pthread_cond_wait( &condition, &mutex );
-      if(!running)
-	{
-	  pthread_mutex_unlock( &mutex );
-	  return NULL;
-	}
-     evaluateSecondPreset();
-    } 
+      pthread_mutex_unlock( &mutex );
+      return NULL;
+    }
+    evaluateSecondPreset();
+  } 
 }
 #endif
 
@@ -299,7 +290,6 @@ DLLEXPORT void projectM::renderFrame()
 
 	timeKeeper->UpdateTimers();
 
-	//printf("A:%f, B:%f, S:%f\n", timeKeeper->PresetProgressA(), timeKeeper->PresetProgressB(), timeKeeper->SmoothRatio());
 	mspf= ( int ) ( 1000.0/ ( float ) presetInputs.fps ); //milliseconds per frame
 
 	setupPresetInputs(&m_activePreset->presetInputs());
@@ -316,8 +306,6 @@ DLLEXPORT void projectM::renderFrame()
 		{
  			
 			timeKeeper->StartSmoothing();		      
-			//	printf("Start Smooth\n");
-			// if(timeKeeper->IsSmoothing())printf("Confirmed\n");
 			switchPreset(m_activePreset2, 
 				     &m_activePreset->presetInputs() == &presetInputs ? presetInputs2 : presetInputs, 
 				&m_activePreset->presetOutputs() == &presetOutputs ? presetOutputs2 : presetOutputs);
@@ -327,7 +315,6 @@ DLLEXPORT void projectM::renderFrame()
 		
 		else if ( ( beatDetect->vol-beatDetect->vol_old>beatDetect->beat_sensitivity ) && timeKeeper->CanHardCut() )
 		{
-		  // printf("Hard Cut\n");
 			switchPreset(m_activePreset, presetInputs, presetOutputs);
 
 			timeKeeper->StartPreset();
@@ -339,9 +326,6 @@ DLLEXPORT void projectM::renderFrame()
 
 	if ( timeKeeper->IsSmoothing() && timeKeeper->SmoothRatio() <= 1.0 && !m_presetChooser->empty() )
 	{
-	  	  
-	  //	 printf("start thread\n");
-		      	
 		assert ( m_activePreset.get() );
 		
 #ifdef USE_THREADS
@@ -366,11 +350,9 @@ DLLEXPORT void projectM::renderFrame()
 	{
 		if ( timeKeeper->IsSmoothing() && timeKeeper->SmoothRatio() > 1.0 )
 		{
-		  //printf("End Smooth\n");
 			m_activePreset = m_activePreset2;			
 			timeKeeper->EndSmoothing();
 		}
-		//printf("Normal\n");
 	
 		m_activePreset->evaluateFrame();
 
@@ -378,9 +360,6 @@ DLLEXPORT void projectM::renderFrame()
 		renderer->WaveformMath ( &m_activePreset->presetOutputs(), &presetInputs, false );
 
 	}
-
-	//	std::cout<< m_activePreset->absoluteFilePath()<<std::endl;
-	//	renderer->presetName = m_activePreset->absoluteFilePath();
 
 	renderer->RenderFrame ( &m_activePreset->presetOutputs(), &presetInputs );
 
@@ -398,9 +377,7 @@ DLLEXPORT void projectM::renderFrame()
 
 	if ( timediff < this->mspf )
 	{
-		// printf("%s:",this->mspf-timediff);
 		int sleepTime = ( unsigned int ) ( this->mspf-timediff ) * 1000;
-//		DWRITE ( "usleep: %d\n", sleepTime );
 		if ( sleepTime > 0 && sleepTime < 100000 )
 		{
 			if ( usleep ( sleepTime ) != 0 ) {}}
@@ -479,7 +456,6 @@ void projectM::projectM_init ( int gx, int gy, int fps, int texsize, int width, 
 	pthread_cond_init(&condition, NULL);
 	if (pthread_create(&thread, NULL, thread_callback, this) != 0)
 	    { 	      
-		    
 	      std::cerr << "failed to allocate a thread! try building with option USE_THREADS turned off" << std::endl;;
 	      exit(1);
 	    }
@@ -489,7 +465,6 @@ void projectM::projectM_init ( int gx, int gy, int fps, int texsize, int width, 
 	renderer->setPresetName ( m_activePreset->presetName() );
 	timeKeeper->StartPreset();
 	assert(pcm());
-//	printf ( "exiting projectM_init()\n" );
 }
 
 

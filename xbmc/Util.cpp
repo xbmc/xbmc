@@ -768,7 +768,9 @@ void CUtil::GetHomePath(CStdString& strPath)
   }
   else
   {
+#ifdef _DEBUG
     printf("The XBMC_HOME environment variable is not set.\n");
+#endif
 #ifdef __APPLE__
     int      result = -1;
     char     given_path[2*MAXPATHLEN];
@@ -4589,10 +4591,12 @@ CStdString CUtil::TranslatePathConvertCase(const CStdString& path)
 //
 bool CUtil::Command(const CStdStringArray& arrArgs)
 {
+#ifdef _DEBUG
   printf("Executing: ");
   for (size_t i=0; i<arrArgs.size(); i++)
     printf("%s ", arrArgs[i].c_str());
   printf("\n");
+#endif
 
   pid_t child = fork();
   int n = 0;

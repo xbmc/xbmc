@@ -73,7 +73,9 @@ HRESULT CXBMC_PC::Create( HINSTANCE hInstance, LPSTR commandLine )
 
   if(strcl.Find("-p") >= 0)
   {
+#ifdef _DEBUG
     printf("Using platform specific directories...\n");
+#endif
     g_application.EnablePlatformDirectories();
   }
   return S_OK;
