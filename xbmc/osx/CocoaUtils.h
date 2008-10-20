@@ -30,10 +30,10 @@ extern "C"
   // Graphics.
   //
   void Cocoa_GetScreenResolution(int* w, int* h);
-  double Cocoa_GetScreenRefreshRate(int screen);
+  double Cocoa_GetScreenRefreshRate(int screen_id);
   void Cocoa_GetScreenResolutionOfAnotherScreen(int display, int* w, int* h);
   int  Cocoa_GetNumDisplays();
-  int  Cocoa_GetDisplay(int screen);
+  int  Cocoa_GetDisplayID(int screen);
   
   //
   // Open GL.

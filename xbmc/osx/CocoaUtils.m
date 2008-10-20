@@ -73,37 +73,25 @@ void Cocoa_GL_SwapBuffers(void* theContext)
 
 int Cocoa_GetNumDisplays()
 {
-  CGDirectDisplayID displayArray[MAX_DISPLAYS];
-  CGDisplayCount    numDisplays;
-
-  // Get the list of displays.
-  CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
-  return numDisplays;
+  return [[NSScreen screens] count];
 }
 
-int Cocoa_GetDisplay(int screen)
+int Cocoa_GetDisplayID(int screen_index)
 {
   CGDirectDisplayID displayArray[MAX_DISPLAYS];
   CGDisplayCount    numDisplays;
 
   // Get the list of displays.
   CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
-  return( (int)displayArray[screen]);
+  return( (int)displayArray[screen_index]);
 }
 
-CGDirectDisplayID Cocoa_GetDisplayFromScreen(NSScreen *screen)
+CGDirectDisplayID Cocoa_GetDisplayIDFromScreen(NSScreen *screen)
 {
-  NSRect frame;
-  CGDirectDisplayID displays[1];
-  CGDisplayCount displayCount;
-
-  frame = [screen frame];
-
-  CGGetDisplaysWithRect(
-    (CGRect){NSMinX(frame), NSMinY(frame), NSWidth(frame), NSHeight(frame)},
-    1, displays, &displayCount);
-	
-  return displays[0];
+  NSDictionary* screenInfo = [screen deviceDescription];
+  NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
+  
+  return (CGDirectDisplayID)[screenID longValue];
 }
 
 int Cocoa_GetDisplayIndex(CGDirectDisplayID display)
@@ -119,12 +107,11 @@ int Cocoa_GetDisplayIndex(CGDirectDisplayID display)
 	  return numDisplays;
   }
   return -1;
-  
 }
 
 void Cocoa_GetScreenResolutionOfAnotherScreen(int screen, int* w, int* h)
 {
-  CFDictionaryRef mode = CGDisplayCurrentMode( (CGDirectDisplayID)Cocoa_GetDisplay(screen));
+  CFDictionaryRef mode = CGDisplayCurrentMode( (CGDirectDisplayID)Cocoa_GetDisplayID(screen));
   CFNumberGetValue(CFDictionaryGetValue(mode, kCGDisplayWidth), kCFNumberSInt32Type, w);
   CFNumberGetValue(CFDictionaryGetValue(mode, kCGDisplayHeight), kCFNumberSInt32Type, h);
 }
@@ -151,10 +138,10 @@ static double getDictDouble(CFDictionaryRef refDict, CFStringRef key)
   return double_value; // otherwise return the long value
 }
 
-double Cocoa_GetScreenRefreshRate(int screen)
+double Cocoa_GetScreenRefreshRate(int screen_id)
 {
   // Figure out the refresh rate.
-  CFDictionaryRef mode = CGDisplayCurrentMode((CGDirectDisplayID)Cocoa_GetDisplay(screen));
+  CFDictionaryRef mode = CGDisplayCurrentMode((CGDirectDisplayID)Cocoa_GetDisplayID(screen_id));
   return (mode != NULL) ? getDictDouble(mode, kCGDisplayRefreshRate) : 0.0f;
  }
 
@@ -193,7 +180,8 @@ void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h, void* sdlView)
 
 void Cocoa_GL_BlankOtherDisplays(int screen)
 {
-  int numDisplays = Cocoa_GetNumDisplays();
+  int numDisplays = [[NSScreen screens] count];
+  
   int i = 0;
 
   // Blank.
@@ -206,8 +194,7 @@ void Cocoa_GL_BlankOtherDisplays(int screen)
       NSRect    screenRect = [pScreen frame];
           
       // Build a blanking window.
-      screenRect.origin.x = 0.0;
-      screenRect.origin.y = 0.0;
+      screenRect.origin = NSZeroPoint;
       blankingWindows[i] = [[NSWindow alloc] initWithContentRect:screenRect
                                              styleMask:NSBorderlessWindowMask
                                              backing:NSBackingStoreBuffered
@@ -223,7 +210,7 @@ void Cocoa_GL_BlankOtherDisplays(int screen)
 
 void Cocoa_GL_UnblankOtherDisplays(int screen)
 {
-  int numDisplays = Cocoa_GetNumDisplays();
+  int numDisplays = [[NSScreen screens] count];
   int i = 0;
 
   for (i=0; i<numDisplays; i++)
@@ -243,11 +230,11 @@ static NSOpenGLContext* lastOwnedContext = 0;
 void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDisplays)
 {
   static NSView* lastView = NULL;
-  static int fullScreenDisplay = 0;
+  static CGDirectDisplayID fullScreenDisplayID = 0;
   static NSScreen* lastScreen = NULL;
   static NSWindow* mainWindow = NULL;
   static NSPoint last_origin;
-  int screen;
+  int screen_index;
   bool windowedFullScreen;
 
   //if (g_application.IsStandAlone())
@@ -285,7 +272,7 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
     // Save and make sure the view is on the screen that we're activating (to hide it).
     lastView = [context view];
     lastScreen = [[lastView window] screen];
-    screen = Cocoa_GetDisplayIndex(Cocoa_GetDisplayFromScreen(lastScreen));
+    screen_index = Cocoa_GetDisplayIndex( Cocoa_GetDisplayIDFromScreen(lastScreen) );
     
     if (windowedFullScreen == false)
     {
@@ -295,7 +282,7 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
 
       // This is OpenGL FullScreen Mode
       // obtain fullscreen pixel format
-      NSOpenGLPixelFormat* pixFmt = (NSOpenGLPixelFormat*)Cocoa_GL_GetFullScreenPixelFormat(screen);
+      NSOpenGLPixelFormat* pixFmt = (NSOpenGLPixelFormat*)Cocoa_GL_GetFullScreenPixelFormat(screen_index);
       if (!pixFmt)
         return;
       
@@ -316,22 +303,25 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
       [newContext setFullScreen];
       
       // Capture the display before going fullscreen.
-      fullScreenDisplay = Cocoa_GetDisplay(screen);
+      fullScreenDisplayID = (CGDirectDisplayID)Cocoa_GetDisplayID(screen_index);
       if (blankOtherDisplays == true)
         CGCaptureAllDisplays();
       else
-        CGDisplayCapture((CGDirectDisplayID)fullScreenDisplay);
+        CGDisplayCapture(fullScreenDisplayID);
 
       // If we don't hide menu bar, it will get events and interrupt the program.
-      if (fullScreenDisplay == (int)kCGDirectMainDisplay)
+      if (fullScreenDisplayID == kCGDirectMainDisplay)
         HideMenuBar();
     }
     else
     {
       // This is Cocca Windowed FullScreen Mode
-      // Get the screen rect of our main display
-      NSScreen* pScreen = [[NSScreen screens] objectAtIndex:screen];
+      // Get the screen rect of our current display
+      NSScreen* pScreen = [[NSScreen screens] objectAtIndex:screen_index];
       NSRect    screenRect = [pScreen frame];
+      
+      // remove frame origin offset of orginal display
+      screenRect.origin = NSZeroPoint;
       
       // make a new window to act as the windowedFullScreen
       mainWindow = [[NSWindow alloc] initWithContentRect:screenRect
@@ -367,13 +357,13 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
       [newContext setView:blankView];
       
       // Hide the menu bar.
-      fullScreenDisplay = Cocoa_GetDisplay(screen);
-      if (fullScreenDisplay == (int)kCGDirectMainDisplay)
+      fullScreenDisplayID = (CGDirectDisplayID)Cocoa_GetDisplayID(screen_index);
+      if (fullScreenDisplayID == kCGDirectMainDisplay)
         HideMenuBar();
           
       // Blank other displays if requested.
       if (blankOtherDisplays)
-        Cocoa_GL_BlankOtherDisplays(screen);
+        Cocoa_GL_BlankOtherDisplays(screen_index);
     }
 
     // Hide the mouse.
@@ -407,7 +397,7 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
     [NSCursor unhide];
     
     // Show menubar.
-    if (fullScreenDisplay == (int)kCGDirectMainDisplay)
+    if (fullScreenDisplayID == kCGDirectMainDisplay)
       ShowMenuBar();
 
     if (windowedFullScreen == false)
@@ -423,7 +413,7 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
       
       // Unblank.
       if (blankOtherDisplays)
-        Cocoa_GL_UnblankOtherDisplays(screen);
+        Cocoa_GL_UnblankOtherDisplays(screen_index);
     }
     
     // obtain windowed pixel format
@@ -463,7 +453,7 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
     lastView = NULL;
     lastScreen = NULL;
     mainWindow = NULL;
-    fullScreenDisplay = 0;
+    fullScreenDisplayID = 0;
   }
 }
 
@@ -512,7 +502,7 @@ void* Cocoa_GL_GetFullScreenPixelFormat(int screen)
     NSOpenGLPFAAccelerated,
     NSOpenGLPFADepthSize, 8,
     NSOpenGLPFAScreenMask,
-    CGDisplayIDToOpenGLDisplayMask((CGDirectDisplayID)Cocoa_GetDisplay(screen)),
+    CGDisplayIDToOpenGLDisplayMask((CGDirectDisplayID)Cocoa_GetDisplayID(screen)),
     0
   };
   NSOpenGLPixelFormat* pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:fsattrs];
