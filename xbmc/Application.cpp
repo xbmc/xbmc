@@ -1433,6 +1433,9 @@ HRESULT CApplication::Initialize()
 
   // final check for debugging combo
   CheckForDebugButtonCombo();
+
+  // and reset our screensaver to start timers
+  ResetScreenSaver();
   return S_OK;
 }
 
