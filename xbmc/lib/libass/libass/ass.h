@@ -24,6 +24,12 @@
 #include <stdio.h>
 #include "ass_types.h"
 
+#ifdef WIN32
+#define EXPORT __declspec (dllexport)
+#else
+#define EXPORT
+#endif 
+
 /// Libass renderer object. Contents are private.
 typedef struct ass_renderer_s ass_renderer_t;
 
@@ -49,54 +55,54 @@ typedef enum {ASS_HINTING_NONE = 0,
  * \brief initialize the library
  * \return library handle or NULL if failed
  */
-ass_library_t* ass_library_init(void);
+EXPORT ass_library_t* ass_library_init(void);
 
 /**
  * \brief finalize the library
  * \param priv library handle
  */
-void ass_library_done(ass_library_t*);
+EXPORT void ass_library_done(ass_library_t*);
 
 /**
  * \brief set private font directory
  * It is used for saving embedded fonts and also in font lookup.
  */
-void ass_set_fonts_dir(ass_library_t* priv, const char* fonts_dir);
+EXPORT void ass_set_fonts_dir(ass_library_t* priv, const char* fonts_dir);
 
-void ass_set_extract_fonts(ass_library_t* priv, int extract);
+EXPORT void ass_set_extract_fonts(ass_library_t* priv, int extract);
 
-void ass_set_style_overrides(ass_library_t* priv, char** list);
+EXPORT void ass_set_style_overrides(ass_library_t* priv, char** list);
 
 /**
  * \brief initialize the renderer
  * \param priv library handle
  * \return renderer handle or NULL if failed
  */
-ass_renderer_t* ass_renderer_init(ass_library_t*);
+EXPORT ass_renderer_t* ass_renderer_init(ass_library_t*);
 
 /**
  * \brief finalize the renderer
  * \param priv renderer handle
  */
-void ass_renderer_done(ass_renderer_t* priv);
+EXPORT void ass_renderer_done(ass_renderer_t* priv);
 
-void ass_set_frame_size(ass_renderer_t* priv, int w, int h);
-void ass_set_margins(ass_renderer_t* priv, int t, int b, int l, int r);
-void ass_set_use_margins(ass_renderer_t* priv, int use);
-void ass_set_aspect_ratio(ass_renderer_t* priv, double ar);
-void ass_set_font_scale(ass_renderer_t* priv, double font_scale);
-void ass_set_hinting(ass_renderer_t* priv, ass_hinting_t ht);
-void ass_set_line_spacing(ass_renderer_t* priv, double line_spacing);
+EXPORT void ass_set_frame_size(ass_renderer_t* priv, int w, int h);
+EXPORT void ass_set_margins(ass_renderer_t* priv, int t, int b, int l, int r);
+EXPORT void ass_set_use_margins(ass_renderer_t* priv, int use);
+EXPORT void ass_set_aspect_ratio(ass_renderer_t* priv, double ar);
+EXPORT void ass_set_font_scale(ass_renderer_t* priv, double font_scale);
+EXPORT void ass_set_hinting(ass_renderer_t* priv, ass_hinting_t ht);
+EXPORT void ass_set_line_spacing(ass_renderer_t* priv, double line_spacing);
 
 /**
  * \brief set font lookup defaults
  */
-int  ass_set_fonts(ass_renderer_t* priv, const char* default_font, const char* default_family);
+EXPORT int  ass_set_fonts(ass_renderer_t* priv, const char* default_font, const char* default_family);
 
 /**
  * \brief set font lookup defaults, don't use fontconfig even if it is available
  */
-int  ass_set_fonts_nofc(ass_renderer_t* priv, const char* default_font, const char* default_family);
+EXPORT int  ass_set_fonts_nofc(ass_renderer_t* priv, const char* default_font, const char* default_family);
 
 /**
  * \brief render a frame, producing a list of ass_image_t
@@ -104,7 +110,7 @@ int  ass_set_fonts_nofc(ass_renderer_t* priv, const char* default_font, const ch
  * \param track subtitle track
  * \param now video timestamp in milliseconds
  */
-ass_image_t* ass_render_frame(ass_renderer_t *priv, ass_track_t* track, long long now, int* detect_change);
+EXPORT ass_image_t* ass_render_frame(ass_renderer_t *priv, ass_track_t* track, long long now, int* detect_change);
 
 
 // The following functions operate on track objects and do not need an ass_renderer //
@@ -113,27 +119,27 @@ ass_image_t* ass_render_frame(ass_renderer_t *priv, ass_track_t* track, long lon
  * \brief allocate a new empty track object
  * \return pointer to empty track
  */
-ass_track_t* ass_new_track(ass_library_t*);
+EXPORT ass_track_t* ass_new_track(ass_library_t*);
 
 /**
  * \brief deallocate track and all its child objects (styles and events)
  * \param track track to deallocate
  */
-void ass_free_track(ass_track_t* track);
+EXPORT void ass_free_track(ass_track_t* track);
 
 /**
  * \brief allocate new style
  * \param track track
  * \return newly allocated style id
  */
-int ass_alloc_style(ass_track_t* track);
+EXPORT int ass_alloc_style(ass_track_t* track);
 
 /**
  * \brief allocate new event
  * \param track track
  * \return newly allocated event id
  */
-int ass_alloc_event(ass_track_t* track);
+EXPORT int ass_alloc_event(ass_track_t* track);
 
 /**
  * \brief delete a style
@@ -141,7 +147,7 @@ int ass_alloc_event(ass_track_t* track);
  * \param sid style id
  * Deallocates style data. Does not modify track->n_styles.
  */
-void ass_free_style(ass_track_t* track, int sid);
+EXPORT void ass_free_style(ass_track_t* track, int sid);
 
 /**
  * \brief delete an event
@@ -149,7 +155,7 @@ void ass_free_style(ass_track_t* track, int sid);
  * \param eid event id
  * Deallocates event data. Does not modify track->n_events.
  */
-void ass_free_event(ass_track_t* track, int eid);
+EXPORT void ass_free_event(ass_track_t* track, int eid);
 
 /**
  * \brief Parse Codec Private section of subtitle stream
@@ -157,7 +163,7 @@ void ass_free_event(ass_track_t* track, int eid);
  * \param data string to parse
  * \param size length of data
  */
-void ass_process_codec_private(ass_track_t* track, char *data, int size);
+EXPORT void ass_process_codec_private(ass_track_t* track, char *data, int size);
 
 /**
  * \brief Parse a chunk of subtitle stream data. In Matroska, this contains exactly 1 event (or a commentary).
@@ -167,7 +173,7 @@ void ass_process_codec_private(ass_track_t* track, char *data, int size);
  * \param timecode starting time of the event (milliseconds)
  * \param duration duration of the event (milliseconds)
 */
-void ass_process_chunk(ass_track_t* track, char *data, int size, long long timecode, long long duration);
+EXPORT void ass_process_chunk(ass_track_t* track, char *data, int size, long long timecode, long long duration);
 
 char* read_file_recode(char* fname, char* codepage, int* size);
 
@@ -176,7 +182,7 @@ char* read_file_recode(char* fname, char* codepage, int* size);
  * \param fname file name
  * \return newly allocated track
 */
-ass_track_t* ass_read_file(ass_library_t* library, char* fname, char* codepage);
+EXPORT ass_track_t* ass_read_file(ass_library_t* library, char* fname, char* codepage);
 
 /**
  * \brief Read subtitles from memory.
@@ -186,12 +192,12 @@ ass_track_t* ass_read_file(ass_library_t* library, char* fname, char* codepage);
  * \param codepage recode buffer contents from given codepage
  * \return newly allocated track
 */ 
-ass_track_t* ass_read_memory(ass_library_t* library, char* buf, size_t bufsize, char* codepage);
+EXPORT ass_track_t* ass_read_memory(ass_library_t* library, char* buf, size_t bufsize, char* codepage);
 /**
  * \brief read styles from file into already initialized track
  * \return 0 on success
  */
-int ass_read_styles(ass_track_t* track, char* fname, char* codepage);
+EXPORT int ass_read_styles(ass_track_t* track, char* fname, char* codepage);
 
 /**
  * \brief Add a memory font.
@@ -199,12 +205,12 @@ int ass_read_styles(ass_track_t* track, char* fname, char* codepage);
  * \param data binary font data
  * \param data_size data size
 */
-void ass_add_font(ass_library_t* library, char* name, char* data, int data_size);
+EXPORT void ass_add_font(ass_library_t* library, char* name, char* data, int data_size);
 
 /**
  * \brief Remove all fonts stored in ass_library object
  */
-void ass_clear_fonts(ass_library_t* library);
+EXPORT void ass_clear_fonts(ass_library_t* library);
 
 /**
  * \brief Calculates timeshift from now to the start of some other subtitle event, depending on movement parameter
@@ -214,6 +220,6 @@ void ass_clear_fonts(ass_library_t* library);
  * +2 means "the one after the next", -1 means "previous"
  * \return timeshift, ms
  */
-long long ass_step_sub(ass_track_t* track, long long now, int movement);
+EXPORT long long ass_step_sub(ass_track_t* track, long long now, int movement);
 
 #endif /* LIBASS_ASS_H */

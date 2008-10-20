@@ -23,6 +23,10 @@
 
 #include <stdint.h>
 
+#ifdef WIN32
+#define inline __inline
+#endif
+
 int mystrtoi(char** p, int base, int* res);
 int mystrtou32(char** p, int base, uint32_t* res);
 int mystrtod(char** p, double* res);
