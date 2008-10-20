@@ -36,6 +36,7 @@
 #ifdef __APPLE__
 #include "CocoaUtils.h"
 #endif
+#include "SystemInfo.h"
 
 using namespace std;
 using namespace XFILE;
@@ -49,6 +50,8 @@ CRssReader::CRssReader() : CThread()
   m_pObserver = NULL;
   m_spacesBetweenFeeds = 0;
   m_bIsRunning = false;
+
+  m_userAgent = g_sysinfo.GetUserAgent();
 }
 
 CRssReader::~CRssReader()
@@ -126,7 +129,7 @@ void CRssReader::Process()
     m_strColors[iFeed] = "";
 
     CHTTP http;
-    http.SetUserAgent("XBMC/pre-2.1 (http://www.xbmc.org)");
+    http.SetUserAgent(m_userAgent);
     CStdString strXML;
     CStdString strUrl = m_vecUrls[iFeed];
 
