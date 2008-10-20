@@ -1856,28 +1856,28 @@ case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
 
 
 case $host in
-    i*86*-linux-gnu)
+    i*86*-linux-gnu*)
        ARCH="i486-linux"
        ;;
-    x86_64-*-linux-gnu)
+    x86_64-*-linux-gnu*)
        ARCH="x86_64-linux"
        ;;
     i386-apple-darwin*)
        ARCH="x86-osx"
        ;;
-    powerpc-*-linux-gnu)
+    powerpc-*-linux-gnu*)
        ARCH="powerpc-linux"
        ARCH_DEFINES="-D_POWERPC"
 
        ;;
-    powerpc64-*-linux-gnu)
+    powerpc64-*-linux-gnu*)
        ARCH="powerpc64-linux"
        ARCH_DEFINES="-D_POWERPC64"
 
        ;;
     *)
-       { { echo "$as_me:$LINENO: error: ==unsupported host" >&5
-echo "$as_me: error: ==unsupported host" >&2;}
+       { { echo "$as_me:$LINENO: error: unsupported host ($host)" >&5
+echo "$as_me: error: unsupported host ($host)" >&2;}
    { (exit 1); exit 1; }; }
 esac
 
