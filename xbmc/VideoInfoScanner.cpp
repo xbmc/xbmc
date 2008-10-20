@@ -208,10 +208,7 @@ namespace VIDEO
 
       CDirectory::GetDirectory(strDirectory,items,g_stSettings.m_videoExtensions);
       items.m_strPath = strDirectory;
-      int iOldStack = g_stSettings.m_iMyVideoStack;
-      g_stSettings.m_iMyVideoStack = STACK_SIMPLE;
       items.Stack();
-      g_stSettings.m_iMyVideoStack = iOldStack;
       int numFilesInFolder = GetPathHash(items, hash);
 
       if (!m_database.GetPathHash(strDirectory, dbHash) || dbHash != hash)
