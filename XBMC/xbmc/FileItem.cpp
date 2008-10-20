@@ -1832,10 +1832,6 @@ void CFileItemList::Stack()
 {
   CSingleLock lock(m_lock);
 
-  // stacking is disabled
-  if (g_stSettings.m_iMyVideoStack == STACK_NONE)
-    return;
-
   // not allowed here
   if (IsVirtualDirectoryRoot() || IsTuxBox())
     return;
