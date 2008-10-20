@@ -916,7 +916,7 @@ long iso9660::ReadFile(HANDLE hFile, byte *pBuffer, long lSize)
     }
     else
     {
-      printf("EOF");
+      CLog::Log(LOGDEBUG, "iso9660::ReadFile() hit EOF");
       break;
     }
   }
