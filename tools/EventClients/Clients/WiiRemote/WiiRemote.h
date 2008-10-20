@@ -41,7 +41,7 @@
 
 #define WIIREMOTE_BUTTON_REPEAT_TIME 30               // How long between buttonpresses in repeat mode
 #define WIIREMOTE_BUTTON_DELAY_TIME 500
-#define CWIID_OLD                                     // Uncomment if the system is running cwiid that is older than 6.0 (The one from ubuntu gutsy repository is < 6.0)
+//#define CWIID_OLD                                     // Uncomment if the system is running cwiid that is older than 6.0 (The one from ubuntu gutsy repository is < 6.0)
 
 //CWIID
 #include <cwiid.h>
