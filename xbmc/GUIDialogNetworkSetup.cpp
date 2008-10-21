@@ -44,6 +44,7 @@ CGUIDialogNetworkSetup::CGUIDialogNetworkSetup(void)
     : CGUIDialog(WINDOW_DIALOG_NETWORK_SETUP, "DialogNetworkSetup.xml")
 {
   m_protocol = NET_PROTOCOL_SMB;
+  m_confirmed = false;
 }
 
 CGUIDialogNetworkSetup::~CGUIDialogNetworkSetup()
@@ -116,6 +117,9 @@ void CGUIDialogNetworkSetup::OnInitWindow()
   ChangeButtonToEdit(CONTROL_USERNAME);
   ChangeButtonToEdit(CONTROL_PORT_NUMBER);
   ChangeButtonToEdit(CONTROL_PASSWORD);
+
+  // start as unconfirmed
+  m_confirmed = false;
 
   CGUIDialog::OnInitWindow();
   // Add our protocols
