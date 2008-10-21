@@ -65,9 +65,7 @@ mountroot ()
         fi
     fi
 
-
     mkdir -p /mnt
-    mkdir -p /container
     mkdir -p /squashmnt1
     mkdir -p /squashmnt2
     mkdir -p /persistmnt
@@ -85,70 +83,69 @@ mountroot ()
     else
         # Find the USB flash drive
         found="no"
-        while true
-        do
-	  for device in 'sda' 'sdb' 'sdc' 'sdd' 'sde' 'sdf' 'sdg'; do
-            if [ "$QUIET" == "" ]; then
-	            echo "checking device /dev/${device} for installation source..."
-	    fi
-	        if [ -b /dev/${device} ]; then
-        	    if [ -e /sys/block/${device}/removable ]; then
-	               if [ "$(cat /sys/block/${device}/removable)" = "1" ]; then
-			  if [ "$QUIET" == "" ]; then
-                		echo "Found USB flash drive at /dev/${device}"
-			  fi
-			  mount /dev/${device}1  /mnt  2> /dev/null
-			  if [ -f /mnt/rootfs.img ] ; then
-				if [ "$QUIET" == "" ]; then
-					echo "Found Boot drive at /dev/${device}1"
+	while true
+	do
+		for device in 'sda' 'sdb' 'sdc' 'sdd' 'sde' 'sdf' 'sdg'; do
+			if [ "$QUIET" == "" ]; then
+				echo "checking device /dev/${device} for installation source..."
+			fi
+			if [ -b /dev/${device} ]; then
+				if [ -e /sys/block/${device}/removable ]; then
+					if [ "$(cat /sys/block/${device}/removable)" = "1" ]; then
+						if [ "$QUIET" == "" ]; then
+							echo "Found USB flash drive at /dev/${device}"
+						fi
+						mount -t vfat -o rw,umask=0 /dev/${device}1 /mnt 2> /dev/null
+						if [ -f /mnt/rootfs.img ] ; then
+							if [ "$QUIET" == "" ]; then
+								echo "Found Boot drive at /dev/${device}1"
+							fi
+							found="yes"
+						fi
+						umount /mnt 2> /dev/null
+						if [ "$found" = "yes" ]; then
+							break;
+						fi
+						if [ "$QUIET" == "" ]; then
+							echo "/dev/${device}1 does not contain a rootfs"
+						fi
+					fi
 				fi
-				found="yes"
-			  fi
-			  umount /dev/${device}1  2> /dev/null
-			  if [ "$found" = "yes" ]; then
-				break;
-			  fi
-                	  if [ "$QUIET" == "" ]; then
-				echo "/dev/${device}1 does not contain a rootfs"
-			  fi
-        	          # break
-	               fi
-	            fi
+			fi
+		done
+		if [ "$found" = "yes" ]; then
+			break;
 		fi
-          done
-          if [ "$found" = "yes" ]; then
-	    break;
-          fi
-          /bin/sleep 5
-        done
+		/bin/sleep 5
+	done
 	if [ "$QUIET" = "" ]; then
-        	echo "will mount root from /dev/${device} or /dev/${device}1"
+		echo "will mount root from /dev/${device}1"
 	fi
 
-        mount -o rw /dev/${device}1 /container 2> /dev/null
+        mount -t vfat -o rw,umask=0 /dev/${device}1 /mnt 2> /dev/null
 
-        while [ ! -e "/container/rootfs.img" ]; do
+        while [ ! -e "/mnt/rootfs.img" ]; do
             /bin/sleep 0.5
-	    mount -o rw /dev/${device}1 /container 2> /dev/null
+	    mount -t vfat -o rw,umask=0 /dev/${device}1 /mnt 2> /dev/null
         done
     fi
 
-    mount -o ro,loop -t squashfs /container/rootfs.img /squashmnt1
+    mount -o ro,loop -t squashfs /mnt/rootfs.img /squashmnt1
 
     if [ "$XBMC_NVIDIA" != "" ]; then
-        if [ -f /container/restrictedDrivers.nvidia.img ]; then
+        if [ -f /mnt/restrictedDrivers.nvidia.img ]; then
                if [ "$QUIET" = "" ]; then
                    echo "Mounting NVIDIA drivers..."
                fi
-               mount -o ro,loop,noatime,nodiratime /container/restrictedDrivers.nvidia.img /squashmnt2
+               mount -o ro,loop,noatime,nodiratime /mnt/restrictedDrivers.nvidia.img /squashmnt2
         fi
     else
         if [ "$XBMC_AMD" != "" ]; then
-            if [ -f /container/restrictedDrivers.amd.img ]; then
+            if [ -f /mnt/restrictedDrivers.amd.img ]; then
                 if [ "$QUIET" = "" ]; then
 		    echo "Mounting AMD drivers..."
                 fi
-                mount -o ro,loop,noatime,nodiratime /container/restrictedDrivers.amd.img /squashmnt2
+                mount -o ro,loop,noatime,nodiratime /mnt/restrictedDrivers.amd.img /squashmnt2
             fi
         else
             # No Ops for Intel as of today
@@ -159,45 +156,45 @@ mountroot ()
         fi
     fi
 
-    if [ -f /container/ext3fs.img ]; then
-        mount -o rw,loop,noatime,nodiratime /container/ext3fs.img /persistmnt
+    if [ -f /mnt/ext3fs.img ]; then
+        mount -o rw,loop,noatime,nodiratime /mnt/ext3fs.img /persistmnt
     else
         mount -t tmpfs -o noatime,nodiratime none /persistmnt
     fi
 
     mount -t unionfs -o dirs=/persistmnt=rw:/squashmnt2=ro:/squashmnt1=ro none ${rootmnt}
 
-    if [ -f /container/ext3fs.img ]; then
+    if [ -f /mnt/ext3fs.img ]; then
         XBMC_TEMPFS="$( echo $XBMC_PARAMS | grep "tempfs" )"
         if [ "$XBMC_TEMPFS" != "" ]; then
-            echo "tmpfs /var/log/apt   tmpfs defaults 0 0" >> /etc/fstab
-            echo "tmpfs /var/log       tmpfs defaults 0 0" >> /etc/fstab
-            echo "tmpfs /tmp           tmpfs defaults 0 0" >> /etc/fstab
-            echo "tmpfs /var/tmp       tmpfs defaults 0 0" >> /etc/fstab
+            echo "tmpfs /var/log/apt   tmpfs defaults 0 0" >> ${rootmnt}/etc/fstab
+            echo "tmpfs /var/log       tmpfs defaults 0 0" >> ${rootmnt}/etc/fstab
+            echo "tmpfs /tmp           tmpfs defaults 0 0" >> ${rootmnt}/etc/fstab
+            echo "tmpfs /var/tmp       tmpfs defaults 0 0" >> ${rootmnt}/etc/fstab
         fi
     fi
 
-    if [ -f /container/config/rc.local ]; then
-        cp /container/config/rc.local ${rootmnt}/etc
+    if [ -f /mnt/config/rc.local ]; then
+        cp /mnt/config/rc.local ${rootmnt}/etc
     fi
 
-    if [ -f /container/config/xorg.conf ]; then
-	cp /container/config/xorg.conf ${rootmnt}/etc/X11
+    if [ -f /mnt/config/xorg.conf ]; then
+	cp /mnt/config/xorg.conf ${rootmnt}/etc/X11
     fi
 
-    if [ -f /container/config/lircd.conf ]; then
-        cp /container/config/lircd.conf ${rootmnt}/etc/lirc
+    if [ -f /mnt/config/lircd.conf ]; then
+        cp /mnt/config/lircd.conf ${rootmnt}/etc/lirc
     fi
 
-    if [ -f /container/config/hardware.conf ]; then
-        cp /container/config/hardware.conf ${rootmnt}/etc/lirc
+    if [ -f /mnt/config/hardware.conf ]; then
+        cp /mnt/config/hardware.conf ${rootmnt}/etc/lirc
     fi
 
-    if [ -f /container/config/lircrc ]; then
-        cp /container/config/lircrc ${rootmnt}/etc/lirc
+    if [ -f /mnt/config/lircrc ]; then
+        cp /mnt/config/lircrc ${rootmnt}/etc/lirc
     fi
 
-    if [ -f /container/config/interfaces ]; then
-	cp /container/config/interfaces ${rootmnt}/etc/network
+    if [ -f /mnt/config/interfaces ]; then
+	cp /mnt/config/interfaces ${rootmnt}/etc/network
     fi
 }
