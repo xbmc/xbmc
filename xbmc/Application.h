@@ -213,6 +213,8 @@ public:
 
   int GlobalIdleTime();
   void NewFrame();
+  DWORD NextFrame();
+
   void EnablePlatformDirectories(bool enable=true)
   {
     m_bPlatformDirectories = enable;

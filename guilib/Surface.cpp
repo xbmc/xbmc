@@ -934,3 +934,24 @@ void CSurface::GetGLVersion(int& maj, int& min)
   min = s_glMinVer;
 }
 
+// function should return the timestamp
+// of the frame where a call to flip, 
+// earliest can land upon.
+DWORD CSurface::GetNextSwap()
+{
+  int delay = 0;
+  if (m_iVSyncMode && m_iSwapRate != 0) 
+  {
+    __int64 curr, freq;
+    QueryPerformanceFrequency((LARGE_INTEGER*)&freq);
+    QueryPerformanceCounter((LARGE_INTEGER*)&curr);
+    DWORD timestamp = timeGetTime();
+
+    curr  -= m_iSwapStamp;
+    curr  %= m_iSwapRate;
+    curr  -= m_iSwapRate;
+    return timestamp - (int)(1000 * curr / freq);
+  }
+  return timeGetTime();
+}
+
