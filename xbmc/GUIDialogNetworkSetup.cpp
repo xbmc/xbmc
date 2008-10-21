@@ -255,7 +255,7 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
     path = "upnp://";
   else if (m_protocol == NET_PROTOCOL_TUXBOX)
     path = "tuxbox://";
-  if (!m_username.IsEmpty())
+  if (!m_username.IsEmpty() && !m_server.IsEmpty())
   {
     path += m_username;
     if (!m_password.IsEmpty())
