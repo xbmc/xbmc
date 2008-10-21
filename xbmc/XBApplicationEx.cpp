@@ -509,15 +509,30 @@ bool CXBApplicationEx::ProcessWin32Shortcuts(SDL_Event& event)
 
   if (event.key.type == SDL_KEYDOWN)
   {
+    if(alt)
+    {
+      switch(event.key.keysym.sym)
+      {
+      case SDLK_F4:  // alt-F4 to quit
+        if (!g_application.m_bStop)
+          g_application.getApplicationMessenger().Quit();
+      case SDLK_RETURN:  // alt-Return to toggle fullscreen
+        {
+          action.wID = ACTION_TOGGLE_FULLSCREEN;
+          g_application.OnAction(action);
+          return true;
+        }
+        return false;
+      default:
+        return false;
+      }
+    }
     switch(event.key.keysym.sym)
     {
     case SDLK_F11:  // F11 to toggle fullscreen
+      // FIXME: F11 should be a maximized window without border
       action.wID = ACTION_TOGGLE_FULLSCREEN;
       g_application.OnAction(action);
-      return true;
-    case SDLK_F4:  // alt-F4 to quit
-      if (alt && !g_application.m_bStop)
-        g_application.getApplicationMessenger().Quit();
       return true;
     default:
       return false;
