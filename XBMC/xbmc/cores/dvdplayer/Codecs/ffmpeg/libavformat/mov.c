@@ -1869,8 +1869,12 @@ static int mov_read_seek(AVFormatContext *s, int stream_index, int64_t sample_ti
         return -1;
 
     st = s->streams[stream_index];
-    sample = mov_seek_stream(st, sample_time, flags);
+    sample = av_index_search_timestamp(st, sample_time, flags);
     if (sample < 0)
+        return -1;
+
+    /* make sure underlying stream can seek here */
+    if (url_fseek(s->pb, st->index_entries[sample].pos, SEEK_SET) < 0)
         return -1;
 
     /* adjust seek timestamp to found sample timestamp */
@@ -1878,7 +1882,7 @@ static int mov_read_seek(AVFormatContext *s, int stream_index, int64_t sample_ti
 
     for (i = 0; i < s->nb_streams; i++) {
         st = s->streams[i];
-        if (stream_index == i || st->discard == AVDISCARD_ALL)
+        if (st->discard == AVDISCARD_ALL)
             continue;
 
         timestamp = av_rescale_q(seek_timestamp, s->streams[stream_index]->time_base, st->time_base);
