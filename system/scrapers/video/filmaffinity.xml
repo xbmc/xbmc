@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <scraper content="movies" name="FilmAffinity.es (Spanish)" thumb="filmaffinity.gif">
-  <NfoUrl dest="3">
+	<GetSettings dest="3">
+		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Buscar fotos de actores en IMDB&quot; type=&quot;bool&quot; id=&quot;SearchCastThumb&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5">
+				<expression></expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Habilitar Trailers&quot; type=&quot;bool&quot; id=&quot;EnableTrailers&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSettings>
+	<NfoUrl dest="3">
     <RegExp dest="3" input="$$1" output="&lt;url&gt;http://www.filmaffinity.com/es/film\1.html/&lt;/url&gt;">
       <expression noclean="1">filmaffinity.com/es/film([0-9]*)</expression>
     </RegExp>
   </NfoUrl>
-  <CreateSearchUrl dest="3" SearchStringEncoding="iso-8859-1">
+  <CreateSearchUrl dest="3" SearchStringEncoding="ISO 8859-1">
       <RegExp dest="3" input="$$1" output="&lt;url&gt;http://www.filmaffinity.com/es/search.php?stext=\1&amp;amp;stype=title&lt;/url&gt;">
         <expression noclean="1"></expression>
       </RegExp>
@@ -44,22 +56,25 @@
       </RegExp>-->
 
       <RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-        <expression>/ SINOPSIS: ([^=]*) \(FILMAFFINITY\)</expression>
+        <expression>/ SINOPSIS: ([^=]*)FILMAFFINITY\)</expression>
       </RegExp>
       <RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-        <expression>/ SINOPSIS: ([^=]*)\(FILMAFFINITY\)</expression>
+        <expression>/ SINOPSIS: ([^=]*)FILMAFFINITY\)</expression>
       </RegExp>
       <RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-        <expression>SINOPSIS LARGA: ([^=]*) \(FILMAFFINITY\)</expression>
+        <expression>SINOPSIS LARGA: ([^=]*)FILMAFFINITY\)</expression>
       </RegExp>
-      <RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;" dest="5+">
-        <expression>SINOPSIS CORTA: ([^=]*)\(FILMAFFINITY\)([^=]*)\(FILMAFFINITY\)</expression>
+		<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;" dest="5+">
+			<expression>SINOPSIS CORTA: ([^=]*)FILMAFFINITY\)([^=]*)FILMAFFINITY\)([^=]*)FILMAFFINITY\)</expression>
+		</RegExp>
+		<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;" dest="5+">
+        <expression>SINOPSIS CORTA: ([^=]*)FILMAFFINITY\)([^=]*)FILMAFFINITY\)</expression>
+      </RegExp>
+		<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+        <expression>/ [^=]* / ([^=]*)FILMAFFINITY\)</expression>
       </RegExp>
       <RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-        <expression>/ [^=]* / ([^=]*) \(FILMAFFINITY\)</expression>
-      </RegExp>
-      <RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-        <expression>/ ([^=]*) \(FILMAFFINITY\)</expression>
+        <expression>/ ([^=]*)FILMAFFINITY\)</expression>
       </RegExp>
       <RegExp input="$$9" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
         <RegExp input="$$1" output="\1" dest="9">
@@ -68,18 +83,30 @@
         <expression repeat="yes">&lt;td &gt;([0-9]*)</expression>
       </RegExp>
 
-      <RegExp input="$$9" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">
-        <!--<RegExp input="$$6" output="\1" dest="9">-->
-          <RegExp input="$$1" output="\1 /" dest="9">
-        <expression noclean="1">&lt;b&gt;PRODUCTORA&lt;/b&gt;&lt;/td&gt;([^=]*)&lt;/td&gt;</expression>
-        <!--</RegExp>
-          <expression noclean="1">&lt;td  &gt;(*)</expression>-->
-        </RegExp>
-        <expression repeat="yes">([^/]*)/</expression>
-      </RegExp>
+		<!--<RegExp input="$$1" output="\1 /" dest="8">
+			<expression>&lt;b&gt;PRODUCTORA&lt;/b&gt;&lt;/td&gt;.&lt;td &gt;([^&lt;]+)</expression>
+		</RegExp>
+		<RegExp input="$$9" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">
+			<RegExp input="$$8" output=" / \1" dest="9">
+				<expression repeat="yes">([^\.]*)\.</expression>
+			</RegExp>
+			<expression>/ (.*)</expression>
+		</RegExp>-->
 
-      
-      <RegExp input="$$9" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
+		<!--<RegExp input="$$1" output="\2" dest="5+">
+					<expression noclean="1">&lt;b&gt;PRODUCTORA&lt;/b&gt;&lt;/td&gt;([^=]*)&lt;td &gt;([^&lt;]+)</expression>
+				</RegExp>-->
+		<RegExp input="$$9" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">
+			<!--<RegExp input="$$6" output="\1" dest="9">-->
+				<RegExp input="$$1" output="/ \1 /" dest="9">
+					<expression noclean="1">&lt;b&gt;PRODUCTORA&lt;/b&gt;&lt;/td&gt;[^&gt;]*&gt;([^&lt;]*)&lt;/td&gt;</expression>
+				</RegExp>
+				<!--<expression noclean="1">&lt;td  &gt;(*)</expression>
+			</RegExp>-->
+			<expression repeat="yes">([^/]*)/</expression>
+		</RegExp>
+
+		<RegExp input="$$9" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
         <RegExp input="$$1" output="\1" dest="9">
           <expression noclean="1">&lt;b&gt;DIRECTOR&lt;/b&gt;&lt;/td&gt;(.*)&lt;b&gt;GUI.N&lt;/b&gt;</expression>
         </RegExp>
@@ -113,7 +140,7 @@
         <expression>/ (.*)</expression>
       </RegExp>-->
       <RegExp input="$$1" output="\1." dest="8">
-        <expression>&lt;td valign="top"&gt;[^/]*/([^/]*) / [^=]*\(FILMAFFINITY\)</expression>
+        <expression>&lt;td valign="top"&gt;[^/]*/([^/]*) / [^=]*FILMAFFINITY\)</expression>
       </RegExp>
       <RegExp input="$$9" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
         <RegExp input="$$8" output=" / \1" dest="9">
@@ -122,7 +149,7 @@
         <expression>/ (.*)</expression>
       </RegExp>
       <RegExp input="$$1" output="\1." dest="7">
-        <expression>&lt;td valign="top"&gt;([^/]*) / [^=|^/]*\(FILMAFFINITY\)</expression>
+        <expression>&lt;td valign="top"&gt;([^/]*) / [^=|^/]*FILMAFFINITY\)</expression>
       </RegExp>
       <RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
         <RegExp input="$$7" output=" / \1" dest="6">
@@ -143,12 +170,16 @@
         <expression>&lt;td valign="top"&gt;([^/]*)/[^/]* / SINOPSIS</expression>
       </RegExp>-->
       <RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="5+">
-        <expression>&lt;td valign="top"&gt;([^/]*)/[^/]* /  [^=]*\(FILMAFFINITY\)</expression>
+        <expression>&lt;td valign="top"&gt;([^/]*)/[^/]* /  [^=]*FILMAFFINITY\)</expression>
       </RegExp>
       <RegExp input="$$1" output="&lt;rating&gt;\1.\2&lt;/rating&gt;" dest="5+">
         <expression>font-size:22px; font-weight: bold;"&gt;([0-9]+),([0-9]+)</expression>
       </RegExp>
-      <RegExp input="$$1" output="&lt;votes&gt;\1\2&lt;/votes&gt;" dest="5+">
+		<!--<RegExp input="$$1" output="&lt;trailer&gt;http://www.youtube.com/get_video?video_id=QUn0hMIMy5M&amp;amp;t=OEgsToPDskIsEGlhVv2HYVOR2HhCvf7u&lt;/trailer&gt;" dest="5+">
+			<expression>font-size:22px; font-weight: bold;"&gt;([0-9]+),([0-9]+)</expression>
+		</RegExp>-->
+		
+		<RegExp input="$$1" output="&lt;votes&gt;\1\2&lt;/votes&gt;" dest="5+">
         <expression>&lt;tr&gt;&lt;td align="center"&gt;\(([0-9\.]+) votos\)</expression>
       </RegExp>
       <RegExp input="$$9" output="&lt;runtime&gt;\1 minutos&lt;/runtime&gt;" dest="5+">
@@ -169,13 +200,84 @@
           <expression></expression>
         </RegExp>
       </RegExp>-->
-      <RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="5+">
-        <expression repeat="yes" noclean="1" trim="1">&lt;a href="search\.php.stype=cast[^&gt;]*&gt;([^&lt;]*)</expression>
-      </RegExp>
-      <RegExp input="$$1" output="&lt;thumb&gt;http://www.filmaffinity.com/imgs/movies/full/\1/\2.jpg&lt;/thumb&gt;" dest="5+">
+
+		<RegExp conditional="!SearchCastThumb" input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="5+">
+			<expression repeat="yes" noclean="1" trim="1">&lt;a href="search\.php.stype=cast[^&gt;]*&gt;([^&lt;]*)</expression>
+		</RegExp>
+
+		<!--<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="5+">
+			<expression repeat="yes" noclean="1" trim="1">&lt;a href="search\.php.stype=cast[^&gt;]*&gt;([^&lt;]*)</expression>
+		</RegExp>-->
+		<!--<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;thumb&gt;http://www.impawards.com/2002/posters/spiderman_ver1.jpg&lt;/thumb&gt;&lt;/actor&gt;" dest="3">-->
+		<RegExp conditional="SearchCastThumb" input="$$1" output="&lt;url function=&quot;SearchCastThumb&quot;&gt;http://spanish.imdb.com/find?s=nm&amp;amp;q=\1&lt;/url&gt;" dest="5+">
+			<expression repeat="yes" noclean="1" trim="1">&lt;a href="search\.php.stype=cast.stext=([^&quot;]*)[^&gt;]*&gt;([^&lt;]*)</expression>
+		</RegExp>
+		<RegExp  conditional="EnableTrailers" input="$$1" output="&lt;url function=&quot;SearchTrailerPage&quot;&gt;http://www.filmaffinity.com/es/evideos.php\1&lt;/url&gt;" dest="5+">
+			<expression noclean="1">&lt;a href="/es/evideos.php([^"]+)</expression>
+		</RegExp>
+
+		<RegExp input="$$1" output="&lt;thumb&gt;http://www.filmaffinity.com/imgs/movies/full/\1/\2.jpg&lt;/thumb&gt;" dest="5+">
         <expression noclean="1">&lt;img src="http://www.filmaffinity.com/imgs/movies/full/([0-9]*)/([0-9]*).jpg"</expression>
       </RegExp>
       <expression noclean="1"></expression>
     </RegExp>
   </GetDetails>
+	<SearchCastThumb clearbuffers="no" dest="5">
+		<!--<RegExp input="$$1" output="&lt;details&gt;&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;thumb&gt;http://www.impawards.com/2002/posters/spiderman_ver1.jpg&lt;/thumb&gt;&lt;/actor&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1">&lt;title&gt;([^&lt;|^(]*)</expression>
+		</RegExp>-->
+		<RegExp input="$$1" output="&lt;details&gt;&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;&lt;/details&gt;" dest="5">
+			<!--<RegExp input="$$1" output="\1" dest="9">
+				<expresion noclean="1,9">(.*)</expresion>
+			</RegExp>-->
+			<expression noclean="1,9" clear="yes">IMDb Name.*?&quot;q&quot; size=&quot;28&quot; value=&quot;([^&quot;]*)</expression>
+		</RegExp>
+		<RegExp input="$$4" output="&lt;details&gt;&lt;actor&gt;\1&lt;/actor&gt;&lt;/details&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;name&gt;\1&lt;/name&gt;" dest="4">
+				<expression noclean="1" clear="yes">&quot;tn15title&quot;&gt;.&lt;h1&gt;([^&lt;|^(]*)</expression>
+			</RegExp>
+			<RegExp input="$$9" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="4+">
+				<RegExp input="$$1" output="\1" dest="9">
+					<expression noclean="1">&lt;div class=&quot;photo&quot;&gt;(.*) alt=&quot;</expression>
+				</RegExp>
+				<expression repeat="yes">img border=&quot;0&quot; src=&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<expression noclean="1">(.*)</expression>
+		</RegExp>
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetCastThumb&quot;&gt;http://spanish.imdb.com\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1">Media of.nbsp;&lt;a href=&quot;([^&quot;]*)</expression>
+		</RegExp>
+	</SearchCastThumb>
+	<GetCastThumb clearbuffers="no" dest="5">
+		<RegExp input="$$4" output="&lt;details&gt;&lt;actor&gt;\1&lt;/actor&gt;&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;name&gt;\1&lt;/name&gt;" dest="4">
+			<expression noclean="1" clear="yes">&lt;title&gt;([^&lt;|^(]*)</expression>
+			</RegExp>
+			<RegExp input="$$9" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="4+">
+				<RegExp input="$$1" output="\1" dest="9">
+					<expression noclean="1">&lt;div class=&quot;photo&quot;&gt;(.*) alt=&quot;</expression>
+			</RegExp>
+				<expression repeat="yes">img border=&quot;0&quot; src=&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<expression noclean="1" clear="yes">(.*)</expression>
+		</RegExp>
+	</GetCastThumb>
+
+	<SearchTrailerPage clearbuffers="no" dest="5">
+		<!--<RegExp  conditional="EnableTrailers" input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetYouTube&quot;&gt;http://www.bajaryoutube.com/?youtube=http://www.youtube.com/watch?v=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression clear="yes" noclean="1">http://www.youtube.com/v/([^&amp;]*)</expression>
+		</RegExp>-->
+		<RegExp input="$$1" output="&lt;details&gt;&lt;trailer&gt;http://www.bajaryoutube.com/?youtube=http://www.youtube.com/watch?v=\1&lt;/trailer&gt;&lt;/details&gt;" dest="5">
+			<expression clear="yes" noclean="1">http://www.youtube.com/v/([^&amp;|^\\]*)</expression>
+		</RegExp>
+	</SearchTrailerPage>
+
+	<GetYouTube clearbuffers="no" dest="5">
+		<RegExp  conditional="EnableTrailers" input="$$1" output="&lt;details&gt;&lt;trailer&gt;\1\2&lt;/trailer&gt;&lt;/details&gt;" dest="5">
+			<!--<expression clear="yes" noclean="1">&lt;a href=&quot;http://www.youtube.com/get_video?([^&quot;]+)</expression>-->
+			<expression clear="yes" noclean="1">&amp;video_id=([^&amp;]+)*.&amp;t=([^&amp;]+)</expression>
+		</RegExp>
+	</GetYouTube>
+
+
 </scraper>
