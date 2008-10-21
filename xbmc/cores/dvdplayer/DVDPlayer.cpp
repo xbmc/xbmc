@@ -2962,3 +2962,36 @@ bool CDVDPlayer::Record(bool bOnOff)
   }
   return false;
 }
+
+CDVDPlayer::CPlayerSeek::CPlayerSeek(CDVDPlayer* player)
+      : m_player(*player)
+{
+  if(m_player.m_playSpeed != DVD_PLAYSPEED_NORMAL)
+    return;
+
+  if(m_player.m_caching)
+    return;
+
+  g_infoManager.SetDisplayAfterSeek(100000);
+  m_player.m_seeking = true;
+  m_player.m_playSpeed = DVD_PLAYSPEED_PAUSE;
+  m_player.m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
+  m_player.m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
+  m_player.m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
+}
+
+CDVDPlayer::CPlayerSeek::~CPlayerSeek()
+{
+  if(m_player.m_playSpeed != DVD_PLAYSPEED_PAUSE)
+    return;
+
+  if(m_player.m_caching)
+    return;
+  
+  g_infoManager.SetDisplayAfterSeek();
+  m_player.m_playSpeed = DVD_PLAYSPEED_NORMAL;
+  m_player.m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_NORMAL);
+  m_player.m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_NORMAL);
+  m_player.m_clock.SetSpeed(DVD_PLAYSPEED_NORMAL);
+  m_player.m_seeking = false;
+}
