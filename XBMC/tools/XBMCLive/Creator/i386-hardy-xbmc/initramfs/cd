@@ -67,7 +67,6 @@ mountroot ()
     fi
 
     mkdir -p /mnt
-    mkdir -p /container
     mkdir -p /containerRAM
     mkdir -p /squashmnt1
     mkdir -p /squashmnt2
@@ -93,14 +92,14 @@ mountroot ()
 	        	echo "Checking device /dev/${device} for installation source..."
 	 	fi
 		if [ -b /dev/${device} ]; then
-			mount -o ro -t iso9660 /dev/${device} /container 2> /dev/null
-			if [ -e "/container/rootfs.img" ] ; then
+			mount -o ro -t iso9660 /dev/${device} /mnt 2> /dev/null
+			if [ -e "/mnt/rootfs.img" ] ; then
 				if [ "$QUIET" == "" ]; then
 					echo "Found CD Boot Drive at /dev/${device}"
 				fi
 				found="yes"
 			fi
-			umount /container  2> /dev/null
+			umount /mnt  2> /dev/null
 			if [ "$found" = "yes" ]; then
 				break;
 			fi
@@ -119,30 +118,30 @@ mountroot ()
         	echo "will mount root from /dev/${device}"
 	fi
 
-        mount -o ro -t iso9660 /dev/${device} /container 2> /dev/null
+        mount -o ro -t iso9660 /dev/${device} /mnt 2> /dev/null
 
-        while [ ! -e "/container/rootfs.img" ]; do
+        while [ ! -e "/mnt/rootfs.img" ]; do
             /bin/sleep 0.5
             if [ "$QUIET" == "" ]; then
                 echo "Trying again /dev/${device} ...."
             fi
-	    mount -o ro -t iso9660 /dev/${device} /container 2> /dev/null
+	    mount -o ro -t iso9660 /dev/${device} /mnt 2> /dev/null
         done
     fi
 
     XBMC_BOOTTORAM="$( echo $XBMC_PARAMS | grep "boottoram" )"
 
-    CONTAINER=/container
+    CONTAINER=/mnt
     if [ "$XBMC_BOOTTORAM" != "" ]; then
         if [ "$QUIET" == "" ]; then
             echo "Copying boot media to RAM ...."
         fi
 
-        CONTAINER="/containerRAM"
+        CONTAINER="/mntRAM"
 
-	mount -t tmpfs -o size=500M none /containerRAM
-	cp -R /container/*.img /container/Config /container/*.sh /containerRAM &> /dev/null
-	umount /container
+	mount -t tmpfs -o size=500M none /mntRAM
+	cp -R /mnt/*.img /mnt/Config /mnt/*.sh /mntRAM &> /dev/null
+	umount /mnt
     fi
 
     mount -o ro,loop -t squashfs $CONTAINER/rootfs.img /squashmnt1
@@ -175,8 +174,8 @@ mountroot ()
 
     mount -t unionfs -o dirs=/persistmnt=rw:/squashmnt2=ro:/squashmnt1=ro none ${rootmnt}
 
-    if [ -f /container/config/rc.local ]; then
-        cp /container/config/rc.local ${rootmnt}/etc
+    if [ -f /mnt/config/rc.local ]; then
+        cp /mnt/config/rc.local ${rootmnt}/etc
     fi
 
     if [ -f $CONTAINER/Config/xorg.conf ]; then
@@ -197,20 +196,5 @@ mountroot ()
 
     if [ -f $CONTAINER/Config/interfaces ]; then
 	cp $CONTAINER/Config/interfaces ${rootmnt}/etc/network
-    fi
-
-    if [ -f $CONTAINER/install.sh ]; then
-	 log_begin_msg "Install Process will begin shortly..."
-	 maybe_break preinstall
-
-	 mkdir -p ${rootmnt}/tmp/install
-	 mount --bind /dev ${rootmnt}/dev
-	 mount --bind /sys ${rootmnt}/sys
-	 mount --bind $CONTAINER ${rootmnt}/tmp/install
-	 cp $CONTAINER/install.sh ${rootmnt}
-	 cp $CONTAINER/install.cfg ${rootmnt}
-
-	 maybe_break install
-	 chroot ${rootmnt} /install.sh
     fi
 }
