@@ -316,6 +316,10 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     m_dvd.state = DVDSTATE_NORMAL;
     m_dvd.iSelectedSPUStream = -1;
     m_dvd.iSelectedAudioStream = -1;
+    m_State.Clear();
+    m_UpdateApplication = 0;
+    m_clock.Discontinuity(CLOCK_DISC_FULL);
+
 
     // settings that should be set before opening the file
     SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
