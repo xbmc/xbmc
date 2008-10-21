@@ -127,7 +127,6 @@ namespace Shaders {
       {
         m_ok = false;
         m_shaderProgram = 0;
-        m_lastProgram = 0;
         m_pFP = NULL;
         m_pVP = NULL;
       }
@@ -187,7 +186,6 @@ namespace Shaders {
     CVertexShader* m_pVP;
     CPixelShader*  m_pFP;
     GLuint         m_shaderProgram;
-    GLint          m_lastProgram;
     bool           m_ok;
   };
 
