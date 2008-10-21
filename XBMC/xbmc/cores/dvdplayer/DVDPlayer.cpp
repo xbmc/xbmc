@@ -264,6 +264,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_errorCount = 0;
   m_playSpeed = DVD_PLAYSPEED_NORMAL;
   m_caching = false;
+  m_seeking = false;
 
   m_pDlgCache = NULL;
 
@@ -309,6 +310,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
       CloseFile();
 
     m_bAbortRequest = false;
+    m_seeking = false;
     SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
 
     m_dvd.state = DVDSTATE_NORMAL;
@@ -1500,7 +1502,7 @@ void CDVDPlayer::HandleMessages()
   CDVDMsg* pMsg;
 
   MsgQueueReturnCode ret = m_messenger.Get(&pMsg, 0);
-   
+
   while (ret == MSGQ_OK)
   {
     LockStreams();
@@ -1509,6 +1511,8 @@ void CDVDPlayer::HandleMessages()
     {
       if (pMsg->IsType(CDVDMsg::PLAYER_SEEK))
       {
+        CPlayerSeek m_pause(this);
+
         CDVDMsgPlayerSeek &msg(*((CDVDMsgPlayerSeek*)pMsg));
         double start = DVD_NOPTS_VALUE;
 
@@ -1535,6 +1539,8 @@ void CDVDPlayer::HandleMessages()
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_SEEK_CHAPTER))
       {
+        CPlayerSeek m_pause(this);
+
         CDVDMsgPlayerSeekChapter &msg(*((CDVDMsgPlayerSeekChapter*)pMsg));
         double start = DVD_NOPTS_VALUE;
         
@@ -1614,6 +1620,8 @@ void CDVDPlayer::HandleMessages()
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_SET_STATE))
       {
+        CPlayerSeek m_pause(this);
+
         CDVDMsgPlayerSetState* pMsgPlayerSetState = (CDVDMsgPlayerSetState*)pMsg;
 
         if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
@@ -1659,6 +1667,8 @@ void CDVDPlayer::HandleMessages()
         m_playSpeed = speed;
         m_caching = false;
         m_clock.SetSpeed(speed);
+        m_dvdPlayerAudio.SetSpeed(speed);
+        m_dvdPlayerVideo.SetSpeed(speed);
 
         // TODO - we really shouldn't pause demuxer 
         //        untill our buffers are somewhat filled
@@ -1667,6 +1677,8 @@ void CDVDPlayer::HandleMessages()
       } 
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV))
       {
+        CPlayerSeek m_pause(this);
+
         if( m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV) )
         {
           bool result;

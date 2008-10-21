@@ -207,7 +207,7 @@ public:
   virtual CStdString GetPlayerState();
   virtual bool SetPlayerState(CStdString state);
 
-  virtual bool IsCaching() const { return m_caching; } 
+  virtual bool IsCaching() const { return m_caching || m_seeking; } 
   virtual int GetCacheLevel() const ; 
 
   virtual int OnDVDNavResult(void* pData, int iMessage);    
@@ -269,6 +269,7 @@ protected:
   std::string m_filename; // holds the actual filename
   std::string m_content;  // hold a hint to what content file contains (mime type)
   bool        m_caching;  // player is filling up the demux queue
+  bool        m_seeking;  // player is currently trying to fullfill a seek request
 
   CCurrentStream m_CurrentAudio;
   CCurrentStream m_CurrentVideo;
@@ -328,6 +329,40 @@ protected:
     bool recording;           // are we currently recording
   } m_State;
   CCriticalSection m_StateSection;
+
+  class CPlayerSeek
+  {
+  public:
+    CPlayerSeek(CDVDPlayer* player)
+      : m_player(*player)
+    {
+      m_player.m_seeking = true;
+
+      if(m_player.m_caching)
+        return;
+
+      m_speed = m_player.m_playSpeed;
+
+      m_player.m_playSpeed = DVD_PLAYSPEED_PAUSE;
+      m_player.m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
+      m_player.m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
+      m_player.m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
+    }
+    ~CPlayerSeek()
+    {
+      m_player.m_seeking = false;
+
+      if(m_player.m_caching)
+        return;
+      
+      m_player.m_playSpeed = m_speed;
+      m_player.m_dvdPlayerAudio.SetSpeed(m_speed);
+      m_player.m_dvdPlayerVideo.SetSpeed(m_speed);
+      m_player.m_clock.SetSpeed(m_speed);
+    }
+    CDVDPlayer& m_player;
+    int         m_speed;
+  };
 
   HANDLE m_hReadyEvent;
   CRITICAL_SECTION m_critStreamSection; // need to have this lock when switching streams (audio / video)
