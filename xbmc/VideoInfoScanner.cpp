@@ -329,10 +329,17 @@ namespace VIDEO
 
       if (m_bStop)
         break;
+
       // if we have a directory item (non-playlist) we then recurse into that folder
       if (pItem->m_bIsFolder && !pItem->GetLabel().Equals("sample") && !pItem->GetLabel().Equals("subs") && !pItem->IsParentFolder() && !pItem->IsPlayList() && settings.recurse > 0 && !m_info.strContent.Equals("tvshows")) // do not recurse for tv shows - we have already looked recursively for episodes
       {
         CStdString strPath=pItem->m_strPath;
+
+        // do not process items which will be scanned by main loop
+        std::map<CStdString,VIDEO::SScanSettings>::iterator it = m_pathsToScan.find(strPath);
+        if (it != m_pathsToScan.end())
+          continue;
+
         SScanSettings settings2;
         settings2.recurse = settings.recurse-1;
         settings2.parent_name_root = settings.parent_name;
