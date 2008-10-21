@@ -336,13 +336,13 @@ protected:
     CPlayerSeek(CDVDPlayer* player)
       : m_player(*player)
     {
-      m_player.m_seeking = true;
+      if(m_player.m_playSpeed != DVD_PLAYSPEED_NORMAL)
+        return;
 
       if(m_player.m_caching)
         return;
 
-      m_speed = m_player.m_playSpeed;
-
+      m_player.m_seeking = true;
       m_player.m_playSpeed = DVD_PLAYSPEED_PAUSE;
       m_player.m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
       m_player.m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
@@ -350,18 +350,19 @@ protected:
     }
     ~CPlayerSeek()
     {
-      m_player.m_seeking = false;
+      if(m_player.m_playSpeed != DVD_PLAYSPEED_PAUSE)
+        return;
 
       if(m_player.m_caching)
         return;
       
-      m_player.m_playSpeed = m_speed;
-      m_player.m_dvdPlayerAudio.SetSpeed(m_speed);
-      m_player.m_dvdPlayerVideo.SetSpeed(m_speed);
-      m_player.m_clock.SetSpeed(m_speed);
+      m_player.m_playSpeed = DVD_PLAYSPEED_NORMAL;
+      m_player.m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_NORMAL);
+      m_player.m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_NORMAL);
+      m_player.m_clock.SetSpeed(DVD_PLAYSPEED_NORMAL);
+      m_player.m_seeking = false;
     }
     CDVDPlayer& m_player;
-    int         m_speed;
   };
 
   HANDLE m_hReadyEvent;
