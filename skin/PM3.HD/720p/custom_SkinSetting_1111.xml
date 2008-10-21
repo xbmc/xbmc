@@ -95,6 +95,24 @@
 					<onclick>Skin.ToggleSetting(No_Media_Titles_In_Scanner)</onclick>
 					<selected>!Skin.HasSetting(No_Media_Titles_In_Scanner)</selected>
 				</control>
+				<control type="image" id="111">
+					<width>950</width>
+					<height>2</height>
+					<texture>separator.png</texture>
+				</control>
+				<control type="radiobutton" id="110">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>31112</label>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<onclick>Skin.ToggleSetting(Media_Titles_WideIcons)</onclick>
+					<selected>!Skin.HasSetting(Media_Titles_WideIcons)</selected>
+				</control>
 				<control type="image" id="106">
 					<width>950</width>
 					<height>2</height>
