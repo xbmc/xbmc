@@ -1165,7 +1165,7 @@ int av_seek_frame_binary(AVFormatContext *s, int stream_index, int64_t target_ts
     AVInputFormat *avif= s->iformat;
     int64_t pos_min, pos_max, pos, pos_limit;
     int64_t ts_min, ts_max, ts;
-    int index;
+    int index, ret;
     AVStream *st;
 
     if (stream_index < 0)
@@ -1218,7 +1218,8 @@ int av_seek_frame_binary(AVFormatContext *s, int stream_index, int64_t target_ts
         return -1;
 
     /* do the seek */
-    url_fseek(s->pb, pos, SEEK_SET);
+    if ((ret = url_fseek(s->pb, pos, SEEK_SET)) < 0)
+        return ret;
 
     av_update_cur_dts(s, st, ts);
 
@@ -1366,7 +1367,7 @@ static int av_seek_frame_byte(AVFormatContext *s, int stream_index, int64_t pos,
 static int av_seek_frame_generic(AVFormatContext *s,
                                  int stream_index, int64_t timestamp, int flags)
 {
-    int index;
+    int index, ret;
     AVStream *st;
     AVIndexEntry *ie;
 
@@ -1409,8 +1410,8 @@ static int av_seek_frame_generic(AVFormatContext *s,
             return 0;
     }
     ie = &st->index_entries[index];
-    if(url_fseek(s->pb, ie->pos, SEEK_SET) < 0)
-        return -1;
+    if ((ret = url_fseek(s->pb, ie->pos, SEEK_SET)) < 0)
+        return ret;
 
     av_update_cur_dts(s, st, ie->timestamp);
 
