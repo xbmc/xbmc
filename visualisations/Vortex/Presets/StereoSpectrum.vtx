@@ -1,0 +1,128 @@
+// Author : paridox
+
+const int BUFFERS = 24;
+const int WIDTH = 128;
+
+int currBuffer;
+int rowRenderCount = 0;
+
+float[] buffers(256 * BUFFERS);
+float[] bounces(BUFFERS);
+float[] yaws(BUFFERS);
+
+int counter = 0;
+
+float m_prevValue = 0.0;
+
+void Init()
+{
+	currBuffer = 0;
+
+	for (int clear = 0; clear < 256 * BUFFERS; clear++)
+	{
+		buffers[clear] = 0.0;
+	}
+}
+
+void doRender(int bufferToUse, float Zpos)
+{
+	gfxPushMatrix();
+	gfxTranslate(0.0f, bounces[bufferToUse], 0.0f);
+
+	//gfxPushMatrix();
+	gfxRotate(yaws[currBuffer], 0, 0, 1);
+
+	for (int x = 0; x < WIDTH; x++)
+	{
+		float value = 0.0;
+
+		// get the current value
+		for (int calcAverage = 0; calcAverage < (256 / WIDTH); calcAverage++)
+		{
+			//if (x == (WIDTH / 2))
+			//{
+				//gfxPopMatrix();
+				//gfxPushMatrix();
+				//gfxRotate(-yaws[currBuffer], 0, 0, 1);
+			//}
+
+			int index = (bufferToUse * 256) + (x*(256/WIDTH)) + calcAverage;
+			if (index >= 0 && index < 256*BUFFERS)
+				value = value + buffers[index];
+		}
+//		value = value / (256.0f / WIDTH);
+		value = value * 2.0;
+
+		float prevValue = value;
+
+		// get previous value
+		if (x != 0 && x != (WIDTH / 2)) prevValue = m_prevValue;
+
+		// remember for next time
+		m_prevValue = value;
+
+		value = (value + prevValue) / 2.0f;
+
+		if (rowRenderCount == BUFFERS)
+			gfxColour((x >= (WIDTH / 2) ? 1.0 - (x-(WIDTH/2.0f)) / (WIDTH * 2.0f / 3.0f) : 0.0), (x < (WIDTH / 2) ? 1.0 - (WIDTH/2-x) / (WIDTH * 2.0f / 3.0f) : 0.0), 0.0, 0.2); // front bright colour
+		else
+			gfxColour((x >= (WIDTH / 2) ? (0.8f - (x-(WIDTH/2.0f)) / (WIDTH * 2.0f / 3.0f)) / (Zpos+1) : 0.0), (x < (WIDTH / 2) ? (0.8f - (WIDTH/2-x) / (WIDTH * 2.0f / 3.0f)) / (Zpos+1) : 0.0), 0.0, 1.0); // fade colour
+		if (x == 0 || x == WIDTH / 2)
+			gfxBegin(PRIM_QUADSTRIP);
+
+		gfxVertex(-(WIDTH / 16.0f)+(x/8.0f)+(x < WIDTH / 2 ? 0.2f : 0.0) + (x < (WIDTH / 2) ? 0.0 : 0.0), value, Zpos + 0.3f);
+		gfxVertex(-(WIDTH / 16.0f)+(x/8.0f)+(x < WIDTH / 2 ? 0.0f : 0.2f) + (x < (WIDTH / 2) ? 0.0 : 0.0), value, Zpos);
+
+		if (x == WIDTH / 2 - 1 || x == WIDTH - 1)
+			gfxEnd();
+	}
+
+	//gfxPopMatrix();
+
+	gfxPopMatrix();
+}
+
+void Render()
+{
+	yaws[currBuffer] = Fabs(Sin(BASS) * 6);
+	counter++;
+
+	gfxTranslate(0.0, 0.0, 12.0f);
+	bounces[currBuffer] = -1.6 + Fabs((BASS + TREBLE) / 2.0f);
+
+	{
+		for (int i = 0; i < 256; i++)
+		{
+			int index = i + (currBuffer * 256);
+			int prevIndex = (index + 256) % (BUFFERS * 256);
+			int prevIndex2 = (index + 512) % (BUFFERS * 256);
+			float value = 0.0f;
+			
+			if (i < 128)
+			{
+				buffers[index] = (GetSpecLeft(i * 4 + 0) + GetSpecLeft(i * 4 + 1) + GetSpecLeft(i * 4 + 2) + GetSpecLeft(i * 4 + 3)) / 4.0f;
+			}
+			else
+			{
+				buffers[index] = (GetSpecRight((256 - i) * 4 + 0) + GetSpecRight((256 - i) * 4 + 1) + GetSpecRight((256 - i) * 4 + 2) + GetSpecRight((256 - i) * 4 + 3)) / 4.0f;
+			}
+		}
+	
+		currBuffer = (currBuffer + 1) % BUFFERS;
+		counter = 0;
+	}
+
+	rowRenderCount = 0;
+	int rendPos = BUFFERS;
+//doRender(currBuffer-1, 0 * 0.25f);
+	for (int rend=currBuffer; rend<BUFFERS; rend++)
+	{
+		rowRenderCount++;
+		doRender(rend, rendPos-- * 0.25f);
+	}
+	for (int rend=0; rend < currBuffer; rend++)
+	{
+		rowRenderCount++;
+		doRender(rend, rendPos-- * 0.25f);
+	}
+}
