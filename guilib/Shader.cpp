@@ -364,8 +364,7 @@ bool CGLSLShaderProgram::Enable()
 {
   if (OK())
   {
-    glGetIntegerv(GL_CURRENT_PROGRAM, &m_lastProgram);
-    glUseProgram((GLuint)m_shaderProgram);
+    glUseProgram(m_shaderProgram);
     if (OnEnabled())
     {
       VerifyGLState();
@@ -373,7 +372,7 @@ bool CGLSLShaderProgram::Enable()
     }
     else
     {
-      glUseProgram(m_lastProgram);
+      glUseProgram(0);
       return false;
     }
     return true;
@@ -385,7 +384,7 @@ void CGLSLShaderProgram::Disable()
 {
   if (OK())
   {
-    glUseProgram((GLuint)m_lastProgram);
+    glUseProgram(0);
     OnDisabled();
   }
 }
