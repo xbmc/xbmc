@@ -207,7 +207,7 @@ public:
   virtual CStdString GetPlayerState();
   virtual bool SetPlayerState(CStdString state);
 
-  virtual bool IsCaching() const { return m_caching || m_seeking; } 
+  virtual bool IsCaching() const { return m_caching; } 
   virtual int GetCacheLevel() const ; 
 
   virtual int OnDVDNavResult(void* pData, int iMessage);    
@@ -333,35 +333,8 @@ protected:
   class CPlayerSeek
   {
   public:
-    CPlayerSeek(CDVDPlayer* player)
-      : m_player(*player)
-    {
-      if(m_player.m_playSpeed != DVD_PLAYSPEED_NORMAL)
-        return;
-
-      if(m_player.m_caching)
-        return;
-
-      m_player.m_seeking = true;
-      m_player.m_playSpeed = DVD_PLAYSPEED_PAUSE;
-      m_player.m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
-      m_player.m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
-      m_player.m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
-    }
-    ~CPlayerSeek()
-    {
-      if(m_player.m_playSpeed != DVD_PLAYSPEED_PAUSE)
-        return;
-
-      if(m_player.m_caching)
-        return;
-      
-      m_player.m_playSpeed = DVD_PLAYSPEED_NORMAL;
-      m_player.m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_NORMAL);
-      m_player.m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_NORMAL);
-      m_player.m_clock.SetSpeed(DVD_PLAYSPEED_NORMAL);
-      m_player.m_seeking = false;
-    }
+    CPlayerSeek(CDVDPlayer* player);
+    ~CPlayerSeek();
     CDVDPlayer& m_player;
   };
 
