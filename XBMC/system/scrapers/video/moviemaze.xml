@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <scraper name="MovieMaze" content="movies" thumb="moviemaze.jpg">
+	<GetSettings dest="3">
+		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Trailer&quot; type=&quot;bool&quot; id=&quot;trailer&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSettings>
+
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="http://www.moviemaze.de/suche/result.phtml?searchword=\1" dest="3">
 			<expression noclean="1"/>
@@ -8,9 +20,9 @@
 
 	<GetSearchResults dest="8">
 		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3&lt;/title&gt;&lt;url&gt;http://www.moviemaze.de/filme/\1/\2&lt;/url&gt;&lt;/entity&gt;" dest="5+">
-				<expression repeat="yes">&lt;a href=&quot;/filme/([0-9]+)/([^&quot;]*)&quot;&gt;&lt;b style=&quot;font-size:9pt;font-weight:bold;&quot;&gt;([^&lt;]*)&lt;/b&gt;</expression>
-	        	</RegExp>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3 (\4)&lt;/title&gt;&lt;url&gt;http://www.moviemaze.de/filme/\1/\2&lt;/url&gt;&lt;/entity&gt;" dest="5+">
+				<expression repeat="yes">&lt;a href=&quot;/filme/([0-9]+)/([^&quot;]*)&quot;&gt;&lt;b style=&quot;font-size:9pt;font-weight:bold;&quot;&gt;([^&lt;]*)&lt;/b&gt;.*?([0-9]{4})&lt;/i</expression>
+        	</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
 	</GetSearchResults>
@@ -58,9 +70,19 @@
 				<expression>/media/poster/([0-9]+)/([^&quot;]*)</expression>
 			</RegExp>
 			<!--URL to Trailer-->
-			<RegExp input="$$1" output="&lt;url function=&quot;GetTrailerLink&quot;&gt;http://www.moviemaze.de/media/trailer/\1.html&lt;/url&gt;" dest="5+">
+			<RegExp conditional="trailer" input="$$1" output="&lt;url function=&quot;GetTrailerLink&quot;&gt;http://www.moviemaze.de/media/trailer/\1.html&lt;/url&gt;" dest="5+">
 				<expression>/media/trailer/([0-9]+,[a-zA-Z0-9\-]+).html. ti</expression>
 			</RegExp>
+			<!--URL to Google and Fanart-->
+		        <RegExp conditional="fanart" input="$$8" output="&lt;url function=&quot;GoogleToIMDB&quot;&gt;http://www.google.com/search?q=site:imdb.com+moviemaze\1&lt;/url&gt;" dest="5+">
+				<RegExp input="$$1" output="\1" dest="7">
+					<expression>&lt;h2&gt;\((.*)\)&lt;</expression>
+				</RegExp>
+				<RegExp input="$$7" output="+\1" dest="8+">
+					<expression repeat="yes">([^ ,]+)</expression>
+				</RegExp>
+        	        	<expression></expression>
+		        </RegExp>
 			<!--User rating-->
 			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="5+">
 				<expression trim="1" noclean="1">Wertung von ([0-9]+)%</expression>
@@ -102,6 +124,7 @@
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetDetails>
+
 	<!--Thumbnail-->
 	<GetThumbnailLink dest="5">
 		<RegExp input="$$2" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;&gt;&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="5+">
@@ -120,4 +143,22 @@
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetTrailerLink>
+	<!--GoogleToIMDB-->
+	<GoogleToIMDB dest="5">
+		<RegExp input="$$2" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;&gt;&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;GetFanart&quot;&gt;http://api.themoviedb.org/backdrop.php?imdb=\1&lt;/url&gt;" dest="2+">
+				<expression>/title/([t0-9]*)</expression>
+			</RegExp>
+		<expression noclean="1"/>
+		</RegExp>
+	</GoogleToIMDB>
+	<!-- Fanart -->
+	<GetFanart dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://themoviedb.org/image/backdrops&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;/\1/\2_poster.jpg&quot;&gt;/\1/\2.jpg&lt;/thumb&gt;" dest="2">
+				<expression repeat="yes">/([0-9]*)/([t0-9-]*).jpg&lt;/URL</expression>
+			</RegExp>
+			<expression noclean="1">(.+)</expression>
+		</RegExp>
+	</GetFanart>
 </scraper>
