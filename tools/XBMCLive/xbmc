@@ -1,6 +1,8 @@
 #!/bin/bash
 #/etc/init.d/xbmc
 
+. /lib/lsb/init-functions
+
 get_opt() {
     echo "$@" | cut -d "=" -f 2
 }
@@ -11,9 +13,12 @@ CMDLINE=$(cat /proc/cmdline)
 XBMC_PARAMS=""
 for i in ${CMDLINE}; do
     case "${i}" in
-        xbmc\=*)
-            XBMC_PARAMS=$(get_opt $i)
-            ;;
+	xbmc\=*)
+		XBMC_PARAMS=$(get_opt $i)
+		;;
+	boot\=*)
+		SRCMEDIA=$(echo "$i" | cut -d "=" -f 2)
+		;;
     esac
 done
 
@@ -27,6 +32,7 @@ fi
 
 case "$1" in
   start)
+	log_action_begin_msg "Configuring system and starting XBMC"
 	INSTALL="$( echo $XBMC_PARAMS | grep "install" )"
 	if [ "$INSTALL" != "" ]; then
                 # if usplash is runing, make sure to stop it now, yes "start" kills it.
@@ -44,14 +50,42 @@ case "$1" in
 				diskmounter &
 			fi
 
+			# Redirect XBMC home folder and logfile to usb flash
+			if [ "$SRCMEDIA" = "usb" ]; then
+				echo "Redirect XBMC home folder and logfile to usb flash..."
+
+				rootDrive=`pmount | grep mnt | cut -d " " -f 1`
+				mount -t vfat -o rw,umask=000 $rootDrive /mnt
+
+				# TODO change to /var/tmp when related bug closed
+				touch /mnt/xbmc.log
+				chmod 666 /mnt/xbmc.log
+				if [ -f /xbmc.log ]; then
+					rm /xbmc.log
+				fi
+				ln -s /mnt/xbmc.log /xbmc.log
+
+				# Disabled, needs more tests
+				# if [ ! -d /mnt/Userdata ]; then
+				#	mkdir /mnt/Userdata
+				# fi
+	
+				# if [ -d /home/xbmc/.xbmc ]; then
+				#	cp -R /home/xbmc/.xbmc/* /mnt/Userdata &> /dev/null
+				#	rm -rf /home/xbmc/.xbmc
+				# fi
+	
+				# ln -s /mnt/Userdata /home/xbmc/.xbmc
+			fi
+
 			# if usplash is running, make sure to stop it now, yes "start" kills it.
 			if pidof usplash > /dev/null; then
 				DO_NOT_SWITCH_VT=yes /etc/init.d/usplash start
 			fi
-
 			runXBMC.sh &
 		fi
 	fi
+	log_action_end_msg 0
 	;;
   stop)
 	killall Xorg xbmc

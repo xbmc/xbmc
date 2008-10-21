@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # XBMC disk installer
-# V1.1 - 20081013
+# V1.3 - 20081021
 # Luigi Capriotti @2008
 #
 
@@ -335,10 +335,11 @@ function createPermanentStorageFile
 	function choosePermanentStorageSize
 	{
 		echo ""
-		echo "Select the permanent storage size: "
+		echo "Select the permanent system storage size: "
 		echo ""
 		echo "  0 - None"
-		let s="${1}-10"
+		let s="${1}/3"
+		let s="${s}*2"
 		echo "  1 - $s MB"
 
 		echo ""
@@ -368,7 +369,7 @@ function createPermanentStorageFile
 		let storageSize="${diskFree/M/}-64"
 	fi
 	if [ "$storageSize" -gt 0 ] ; then
-		echo "Creating permanent storage file, please wait..."
+		echo "Creating permanent system storage file, please wait..."
 		dd if=/dev/zero of=/tmp/bootPart/ext3fs.img  bs=1M count=$storageSize &> /dev/null
 		mkfs.ext3 /tmp/bootPart/ext3fs.img -F &> /dev/null
 	fi
@@ -451,10 +452,38 @@ function prepareHomeDirectory
 		mkdir /tmp/homePart/xbmc/Music
 	fi
 	
-	chown -R xbmc:xbmc /tmp/homePart/xbmc
-	
 	# Create a sources.xml referencing the above created directories
-	# TODO
+	mkdir /tmp/homePart/.xbmc
+	mkdir /tmp/homePart/.xbmc/userdata
+
+
+cat > /tmp/homePart/.xbmc/userdata/sources.xml <<EOF
+<sources>
+    <video>
+       <default></default>
+        <source>
+            <name>Videos</name>
+            <path>/home/xbmc/Videos/</path>
+        </source>
+    </video>
+    <music>
+        <default></default>
+        <source>
+            <name>Music</name>
+            <path>/home/xbmc/Music/</path>
+        </source>
+    </music>
+    <pictures>
+        <default></default>
+        <source>
+            <name>Pictures</name>
+            <path>/home/xbmc/Pictures/</path>
+        </source>
+    </pictures>
+</sources>
+EOF
+
+	chown -R xbmc:xbmc /tmp/homePart/xbmc
 
 	umount /tmp/homePart
 	rm -rf /tmp/homePart
