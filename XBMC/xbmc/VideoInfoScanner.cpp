@@ -806,9 +806,13 @@ namespace VIDEO
       bool bMatched=false;
       for (unsigned int j=0;j<expression.size();++j)
       {
+        if (bMatched)
+          break;
+
         CRegExp reg;
         if (!reg.RegComp(expression[j]))
           break;
+
         CStdString strLabel=items[i]->m_strPath;
         strLabel.MakeLower();
 //        CLog::Log(LOGDEBUG,"running expression %s on label %s",expression[j].c_str(),strLabel.c_str());
