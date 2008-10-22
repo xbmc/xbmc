@@ -2358,10 +2358,6 @@ DWORD CApplication::NextFrame()
 {
   DWORD timestamp = 0;
 #ifdef HAS_SDL
-  if (g_videoConfig.GetVSyncMode() == VSYNC_ALWAYS ||
-      g_videoConfig.GetVSyncMode() == VSYNC_VIDEO && g_graphicsContext.IsFullScreenVideo())
-    timestamp += 1000 * m_frameCount / g_graphicsContext.GetFPS();
-
   timestamp += g_graphicsContext.getScreenSurface()->GetNextSwap();
 #else
   timestamp += timeGetTime();
