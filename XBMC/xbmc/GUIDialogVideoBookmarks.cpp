@@ -107,7 +107,7 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
           }
           Update();
         }
-        else if (iAction == ACTION_SELECT_ITEM)
+        else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
         {
           GotoBookmark(iItem);
         }
