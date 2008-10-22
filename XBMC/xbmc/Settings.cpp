@@ -1592,9 +1592,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
 
   SetInteger(pNode, "startwindow", g_stSettings.m_iVideoStartWindow);
 
-  int iStack = g_stSettings.m_iMyVideoStack;  // make sure we only save this without the temporary flag
-  iStack &= ~STACK_UNAVAILABLE;
-  SetInteger(pNode, "stackvideomode", iStack);
+  SetInteger(pNode, "stackvideomode", g_stSettings.m_iMyVideoStack);
 
   SetString(pNode, "cleantokens", g_stSettings.m_szMyVideoCleanTokens);
   SetString(pNode, "cleanseparators", g_stSettings.m_szMyVideoCleanSeparators);
