@@ -99,6 +99,7 @@ const char * dvd_audio_stream_channels[6] =
   { "mono", "stereo", "unknown", "unknown", "5.1/6.1", "5.1" };
 
 static CDlgCache* m_dlgCache = NULL;
+static CCriticalSection s_dlgCacheSection;
 
 #define MPLAYERBACKBUFFER 20
 
@@ -729,7 +730,7 @@ void update_cache_dialog(const char* tmp)
 {
   static bool bWroteOutput = false;
   //Make sure we lock here as this is called from the cache thread thread
-  CSingleLock lock(g_graphicsContext);
+  CSingleLock lock(s_dlgCacheSection);
   if (m_dlgCache)
   {
     try {
@@ -1238,7 +1239,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
     //Close progress dialog completly without fade if this is video.
     if( m_dlgCache && bIsVideo)
     {
-      CSingleLock lock(g_graphicsContext);
+      CSingleLock lock(s_dlgCacheSection);
       m_dlgCache->Close(true); 
       m_dlgCache = NULL;
     }
@@ -1268,7 +1269,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
   if( m_dlgCache )
   {
     //Lock here so that mplayer is not using the the object
-    CSingleLock lock(g_graphicsContext);
+    CSingleLock lock(s_dlgCacheSection);
     //Only call Close, the object will be deleted when it's thread ends.
     //this makes sure the object is not deleted while in use
     m_dlgCache->Close(false); 
