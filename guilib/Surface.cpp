@@ -939,7 +939,6 @@ void CSurface::GetGLVersion(int& maj, int& min)
 // earliest can land upon.
 DWORD CSurface::GetNextSwap()
 {
-  int delay = 0;
   if (m_iVSyncMode && m_iSwapRate != 0) 
   {
     __int64 curr, freq;
