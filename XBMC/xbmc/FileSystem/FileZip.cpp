@@ -253,7 +253,7 @@ bool CFileZip::Exists(const CURL& url)
 int CFileZip::Stat(struct __stat64 *buffer)
 {
   int ret;
-  struct tm tm;
+  struct tm tm = {};
 
   ret = mFile.Stat(buffer);
   tm.tm_sec = (mZipItem.mod_time & 0x1F) << 1;
