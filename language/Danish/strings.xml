@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Kim Buchwald Christensen-->
 <!--Email: kimbchr@gmail.com-->
-<!--Date of translation: 09/21/2008-->
+<!--Date of translation: 10/11/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 15642-->
+<!--Based on english strings version 15826-->
 <strings>
   <string id="0">Programmer</string>
   <string id="1">Billeder</string>
@@ -645,11 +645,11 @@
   <string id="787">Grænseflade deaktiveret</string>
   <string id="788">Netværksgrænseflade deaktiveret med succes.</string>
   <string id="789">Navn på trådløst netværk (ESSID)</string>
-  <string id="790">Fjernhændelser</string>
-  <string id="791">Aktiver fjernhændelser</string>
-  <string id="792">Port til fjernhændelser</string>
-  <string id="793">Portområde til fjernhændelser</string>
-  <string id="794">Modtag hændelser fra andre computere</string>
+  <string id="790">Hændelsesserver</string>
+  <string id="791">Aktiver hændelsesserver</string>
+  <string id="792">Port til hændelsesserver</string>
+  <string id="793">Portområde til hændelsesserver</string>
+  <string id="794">Tillad andre systemer at forbinde</string>
   <string id="795">Indledende forsinkelse på gentagelse (ms)</string>
   <string id="796">Vedvarende forsinkelse på gentagelse (ms)</string>
   <string id="797">Maksimalt antal klienter</string>
@@ -928,6 +928,8 @@
   <string id="13009">Afslut</string>
   <string id="13010">Gå i dvale</string>
   <string id="13011">Gå i standby</string>
+  <string id="13012">Afslut</string>
+  <string id="13013">Genstart</string>
   <string id="13100">Flimmerfilter</string>
   <string id="13101">Lad driveren bestemme (kræver genstart)</string>
   <string id="13105">Synkroniser på Vertical Blank</string>
@@ -948,6 +950,13 @@
   <string id="13130">Display Blanking</string>
   <string id="13131">Deaktiveret</string>
   <string id="13132">Blank displays</string>
+  <string id="13140">Der er fundet aktive forbindelser!</string>
+  <string id="13141">Hvis du fortsætter, kan du måske ikke længere styre XBMC.</string>
+  <string id="13142">Er du sikker på at du vil stoppe hændelsesserveren?</string>
+  <string id="13144">Skift tilstand for Apple-fjernbetjeningen?</string>
+  <string id="13145">Hvis du lige nu bruger Apple-fjernbetjeningen til at styre</string>
+  <string id="13146">XBMC, så kan skift af denne indstillingen påvirke dine</string>
+  <string id="13147">muligheder for at styre systemet. Vil du fortsætte?</string>
   <string id="13150">Nøgle:</string>
   <string id="13151">Temperatur:</string>
   <string id="13152">Model:</string>
@@ -1117,6 +1126,11 @@
   <string id="13412">- RSS feed indeholder højre-til-venstre tekst</string>
   <string id="13413">Henter</string>
   <string id="13414">Skjul kunstnere som kun er med på opsamlingsalbum</string>
+  <string id="13415">Renderingsmetode</string>
+  <string id="13416">Vælg automatisk</string>
+  <string id="13417">Simple shadere (ARB)</string>
+  <string id="13418">Avancerede shadere (GLSL)</string>
+  <string id="13419">Software</string>
   <string id="13600">Apple-fjernbetjening</string>
   <string id="13601">Tilstand</string>
   <string id="13602">Kører altid</string>
@@ -1124,11 +1138,8 @@
   <string id="13610">Deaktiveret</string>
   <string id="13611">Standard</string>
   <string id="13612">Universalfjernbetjening</string>
-  <string id="13620">Driveren til Remote Buddy er installeret</string>
-  <string id="13621">Apple-fjernbetjening kan ikke aktiveres.</string>
-  <string id="13622">Læs FAQ til Remote Buddy om afinstallering</string>
-  <string id="13623">Sofa Control kører.</string>
-  <string id="13624">Læs dokumentationen til Sofa Control om afinstallering</string>
+  <string id="13620">Fejl ved Apple-fjernbetjeningen</string>
+  <string id="13621">Understøttelse af Apple-fjernbetjening kan ikke aktiveres.</string>
   <string id="14000">Stakning</string>
   <string id="14001">Ingen stakning</string>
   <string id="14003">Henter afspilningsliste...</string>

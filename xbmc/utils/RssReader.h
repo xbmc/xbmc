@@ -91,6 +91,7 @@ private:
   CStdString m_encoding;
   bool m_rtlText;
   bool m_requestRefresh;
+  CStdString m_userAgent;
 };
 
 class CRssManager

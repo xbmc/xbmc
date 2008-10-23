@@ -20,13 +20,14 @@
  */
 
 #pragma once
-#include "utils/Thread.h"
+#include "../../utils/Thread.h"
 
 #include "DVDAudio.h"
 #include "DVDClock.h"
 #include "DVDMessageQueue.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDStreamInfo.h"
+#include "../../utils/BitstreamStats.h"
 
 class CDVDPlayer;
 class CDVDAudioCodec;
@@ -107,6 +108,7 @@ public:
   void SetDynamicRangeCompression(long drc)             { m_dvdAudio.SetDynamicRangeCompression(drc); }
 
   std::string GetPlayerInfo();
+  int GetAudioBitrate();
 
   // holds stream information for current playing stream
   CDVDStreamInfo m_streaminfo;
@@ -162,6 +164,7 @@ protected:
   CDVDAudio m_dvdAudio; // audio output device
   CDVDClock* m_pClock; // dvd master clock
   CDVDAudioCodec* m_pAudioCodec; // audio codec
+  BitstreamStats m_audioStats;
 
   int     m_speed;
   double  m_droptime;

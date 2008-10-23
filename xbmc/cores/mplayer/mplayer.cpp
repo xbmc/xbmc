@@ -1500,12 +1500,12 @@ bool CMPlayer::IsPaused() const
   return m_bPaused;
 }
 
-bool CMPlayer::HasVideo()
+bool CMPlayer::HasVideo() const
 {
   return (mplayer_HasVideo() == TRUE);
 }
 
-bool CMPlayer::HasAudio()
+bool CMPlayer::HasAudio() const
 {
   return (mplayer_HasAudio() == TRUE);
 }

@@ -341,7 +341,7 @@
 					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<enable>!Skin.HasSetting(homepageDriveinfo2)</enable>
-					<visible>!System.Platform.Linux</visible>
+					<visible>System.Platform.xbox</visible>
 				</control>
 				<control type="radiobutton" id="36">
 					<description>enable homepage drive stats E: F: G:</description>
@@ -354,7 +354,7 @@
 					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<enable>Skin.HasSetting(homepageDriveinfo1)</enable>
-					<visible>!System.Platform.Linux</visible>
+					<visible>System.Platform.xbox</visible>
 				</control>
 			</control>
 			<!-- Custom Options -->

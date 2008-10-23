@@ -64,8 +64,8 @@ public:
   virtual bool IsPlaying() const { return false;} ;
   virtual void Pause() = 0;
   virtual bool IsPaused() const = 0;
-  virtual bool HasVideo() = 0;
-  virtual bool HasAudio() = 0;
+  virtual bool HasVideo() const = 0;
+  virtual bool HasAudio() const = 0;
   virtual void ToggleFrameDrop() = 0;
   virtual bool CanSeek() {return true;}
   virtual void Seek(bool bPlus = true, bool bLargeStep = false) = 0;
@@ -114,7 +114,9 @@ public:
   virtual __int64 GetTime(){ return 0;};
   virtual void ResetTime() {};
   virtual int GetTotalTime(){ return 0;};
-  virtual int GetBitrate(){ return 0;};
+  virtual int GetAudioBitrate(){ return 0;}
+  virtual int GetVideoBitrate(){ return 0;}
+  virtual int GetSourceBitrate(){ return 0;}
   virtual int GetChannels(){ return 0;};
   virtual int GetBitsPerSample(){ return 0;};
   virtual int GetSampleRate(){ return 0;};

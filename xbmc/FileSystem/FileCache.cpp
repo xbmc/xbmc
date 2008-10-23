@@ -36,7 +36,7 @@ using namespace XFILE;
 
 CFileCache::CFileCache()
 {
-   m_bDeleteCache = false;
+   m_bDeleteCache = true;
    m_nSeekResult = 0;
    m_seekPos = 0;
    m_readPos = 0;
@@ -213,8 +213,14 @@ void CFileCache::Process()
         Sleep(5);
 
       iTotalWrite += iWrite;
-    }
 
+      // check if seek was asked. otherwise if cache is full we'll freeze.
+      if (m_seekEvent.WaitMSec(0))
+      {
+        m_seekEvent.Set(); // make sure we get the seek event later. 
+        break;
+      }
+    }
   }
 }
 
@@ -353,4 +359,20 @@ ICacheInterface* CFileCache::GetCache()
   if(m_pCache)
     return m_pCache->GetInterface();
   return NULL;
+}
+
+void CFileCache::StopThread()
+{
+  m_bStop = true;
+  //Process could be waiting for seekEvent
+  m_seekEvent.Set();
+  CThread::StopThread();
+}
+
+CStdString CFileCache::GetContent()
+{
+  if (!m_source.GetImplemenation())
+    return IFile::GetContent();
+  
+  return m_source.GetImplemenation()->GetContent();
 }

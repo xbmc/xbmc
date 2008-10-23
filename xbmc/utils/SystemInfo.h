@@ -71,6 +71,13 @@ class CSysInfo : public CInfoLoader
     CStdString GetVideoEncoder();
     CStdString GetMPlayerVersion();
     CStdString GetKernelVersion();
+#if defined(_LINUX) && !defined(__APPLE__)
+    CStdString GetLinuxDistro();
+#endif
+#ifdef _LINUX
+    CStdString GetUnameVersion();
+#endif    
+    CStdString GetUserAgent();
     CStdString GetSystemUpTime(bool bTotalUptime);
     CStdString GetCPUFreqInfo();
     CStdString GetXBVerInfo();

@@ -1779,10 +1779,6 @@ void CFileItemList::CleanFileNames()
 
 void CFileItemList::Stack()
 {
-  // stacking is disabled
-  if (g_stSettings.m_iMyVideoStack == STACK_NONE)
-    return;
-
   // not allowed here
   if (IsVirtualDirectoryRoot() || IsTuxBox())
     return;
@@ -2651,6 +2647,7 @@ bool CFileItem::LoadMusicTag()
     if (musicDatabase.GetSongByFileName(m_strPath, song))
     {
       GetMusicInfoTag()->SetSong(song);
+      SetThumbnailImage(song.strThumb);
       return true;
     }
     musicDatabase.Close();

@@ -14,7 +14,7 @@
 #include "PltMediaRenderer.h"
 #include "PltService.h"
 
-//NPT_SET_LOCAL_LOGGER("platinum.media.renderer")
+NPT_SET_LOCAL_LOGGER("platinum.media.renderer")
 
 /*----------------------------------------------------------------------
 |   external references
@@ -106,6 +106,9 @@ PLT_MediaRenderer::PLT_MediaRenderer(PlaybackCmdListener* listener,
         service->InitURLs("RenderingControl", m_UUID);
         AddService(service);
         service->SetStateVariableRate("LastChange", NPT_TimeInterval(0.2f));
+
+        service->SetStateVariable("Mute", "0");
+        service->SetStateVariable("Volume", "100");
     }
 }
 
@@ -218,6 +221,33 @@ PLT_MediaRenderer::OnAction(PLT_ActionReference&          action,
         return OnSetPlayMode(action);
     }
 
+		/* Is it a RendererControl Service Action ? */
+    if (serviceType.Compare("urn:schemas-upnp-org:service:RenderingControl:1", true) == 0) {
+				/* we only support master channel */
+        if (NPT_FAILED(action->VerifyArgumentValue("Channel", "Master"))) {
+            action->SetError(402,"Invalid Args.");
+            return NPT_FAILURE;
+        }
+    }
+
+    if (name.Compare("GetVolume", true) == 0) {
+				NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
+        return NPT_SUCCESS;
+    }
+
+    if (name.Compare("GetMute", true) == 0) {
+				NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
+        return NPT_SUCCESS;
+    }
+
+		if (name.Compare("SetVolume", true) == 0) {
+			  return OnSetVolume(action);
+		}
+
+		if (name.Compare("SetMute", true) == 0) {
+			  return OnSetMute(action);
+		}
+
     action->SetError(401,"No Such Action.");
     return NPT_FAILURE;
 }
@@ -326,6 +356,24 @@ PLT_MediaRenderer::OnSetAVTransportURI(PLT_ActionReference& /* action */)
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_MediaRenderer::OnSetPlayMode(PLT_ActionReference& /* action */)
+{
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaRenderer::OnSetVolume
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_MediaRenderer::OnSetVolume(PLT_ActionReference& /* action */)
+{
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaRenderer::OnSetMute
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_MediaRenderer::OnSetMute(PLT_ActionReference& /* action */)
 {
     return NPT_SUCCESS;
 }

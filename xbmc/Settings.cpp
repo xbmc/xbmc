@@ -863,11 +863,11 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
       GetInteger(pOverscan, "bottom", m_ResInfo[iRes].Overscan.bottom, m_ResInfo[iRes].iHeight, m_ResInfo[iRes].iHeight / 2, m_ResInfo[iRes].iHeight*3 / 2);
     }
 
-    CLog::Log(LOGDEBUG, "  calibration for %s %ix%i", m_ResInfo[iRes].strMode, m_ResInfo[iRes].iWidth, m_ResInfo[iRes].iHeight);
+/*    CLog::Log(LOGDEBUG, "  calibration for %s %ix%i", m_ResInfo[iRes].strMode, m_ResInfo[iRes].iWidth, m_ResInfo[iRes].iHeight);
     CLog::Log(LOGDEBUG, "    subtitle yposition:%i pixelratio:%03.3f offsets:(%i,%i)->(%i,%i)",
               m_ResInfo[iRes].iSubtitles, m_ResInfo[iRes].fPixelRatio,
               m_ResInfo[iRes].Overscan.left, m_ResInfo[iRes].Overscan.top,
-              m_ResInfo[iRes].Overscan.right, m_ResInfo[iRes].Overscan.bottom);
+              m_ResInfo[iRes].Overscan.right, m_ResInfo[iRes].Overscan.bottom);*/
 
     // iterate around
     pResolution = pResolution->NextSiblingElement("resolution");
@@ -1690,9 +1690,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
 
   SetInteger(pNode, "startwindow", g_stSettings.m_iVideoStartWindow);
 
-  int iStack = g_stSettings.m_iMyVideoStack;  // make sure we only save this without the temporary flag
-  iStack &= ~STACK_UNAVAILABLE;
-  SetInteger(pNode, "stackvideomode", iStack);
+  SetInteger(pNode, "stackvideomode", g_stSettings.m_iMyVideoStack);
 
   SetString(pNode, "cleantokens", g_stSettings.m_szMyVideoCleanTokens);
   SetString(pNode, "cleanseparators", g_stSettings.m_szMyVideoCleanSeparators);

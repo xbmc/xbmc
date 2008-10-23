@@ -60,6 +60,7 @@ using namespace VIDEO;
 CGUIWindowVideoFiles::CGUIWindowVideoFiles()
 : CGUIWindowVideoBase(WINDOW_VIDEO_FILES, "MyVideo.xml")
 {
+  m_stackingAvailable = true;
 }
 
 CGUIWindowVideoFiles::~CGUIWindowVideoFiles()
@@ -228,7 +229,7 @@ void CGUIWindowVideoFiles::UpdateButtons()
   const CGUIControl *stack = GetControl(CONTROL_STACK);
   if (stack)
   {
-    if ((g_stSettings.m_iMyVideoStack & STACK_UNAVAILABLE) != STACK_UNAVAILABLE)
+    if (m_stackingAvailable)
     {
       CONTROL_ENABLE(CONTROL_STACK);
       if (stack->GetControlType() == CGUIControl::GUICONTROL_RADIO)
@@ -260,13 +261,14 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
 
   SScraperInfo info2;
 
-  g_stSettings.m_iMyVideoStack &= ~STACK_UNAVAILABLE;
+  m_stackingAvailable = true;
+
   if (items.GetContent().IsEmpty())
     items.SetContent("files");
 
   if (m_database.GetScraperForPath(strDirectory,info2) && info2.strContent.Equals("tvshows"))
   { // dont stack in tv dirs
-    g_stSettings.m_iMyVideoStack |= STACK_UNAVAILABLE;
+    m_stackingAvailable = false;
   }
   else if (!items.IsStack() && g_stSettings.m_iMyVideoStack != STACK_NONE)
     items.Stack();
@@ -519,20 +521,7 @@ void CGUIWindowVideoFiles::GetStackedDirectory(const CStdString &strPath, CFileI
 {
   items.Clear();
   m_rootDir.GetDirectory(strPath, items);
-
-  // force stacking to be enabled
-  // save stack state
-  int iStack = g_stSettings.m_iMyVideoStack;
-  g_stSettings.m_iMyVideoStack = STACK_SIMPLE;
-
-  /*bool bUnroll = m_guiState->UnrollArchives();
-  g_guiSettings.SetBool("filelists.unrollarchives",true);*/
-
   items.Stack();
-
-  // restore stack
-  g_stSettings.m_iMyVideoStack = iStack;
-  //g_guiSettings.SetBool("VideoFiles.FileLists",bUnroll);
 }
 
 void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)

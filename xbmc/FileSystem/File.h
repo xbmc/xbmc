@@ -31,6 +31,7 @@
 
 #include "IFile.h"
 #include "StdString.h"
+#include "../utils/BitstreamStats.h"
 
 class CURL;
 
@@ -75,6 +76,7 @@ public:
   void Close();
   int GetChunkSize() {if (m_pFile) return m_pFile->GetChunkSize(); return 0;}
   bool SkipNext(){if (m_pFile) return m_pFile->SkipNext(); return false;}
+  BitstreamStats GetBitstreamStats() { return m_bitStreamStats; }
 
   ICacheInterface* GetCache() {if (m_pFile) return m_pFile->GetCache(); return NULL;}
 
@@ -92,6 +94,7 @@ private:
   unsigned int m_flags;
   IFile* m_pFile;
   CFileStreamBuffer* m_pBuffer;
+  BitstreamStats m_bitStreamStats;
 };
 
 // streambuf for file io, only supports buffered input currently
