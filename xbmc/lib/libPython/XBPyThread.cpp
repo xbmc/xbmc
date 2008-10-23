@@ -74,6 +74,7 @@ XBPyThread::XBPyThread(LPVOID pExecuter, PyThreadState* mainThreadState, int id)
 
 XBPyThread::~XBPyThread()
 {
+  StopThread();
   if (source) delete []source;
   if (argv)
   {

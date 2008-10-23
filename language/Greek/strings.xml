@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 09/29/2008-->
+<!--Date of translation: 10/10/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 15704-->
+<!--Based on english strings version 15826-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -315,9 +315,9 @@
   <string id="388">Νωρίς</string>
   <string id="389">Καταιγίδα</string>
   <string id="390">Άστατος</string>
-  <string id="391">Ελάχιστη</string>
-  <string id="392">Μέτρια</string>
-  <string id="393">Μέγιστη</string>
+  <string id="391">Ελχ.</string>
+  <string id="392">Μέσ.</string>
+  <string id="393">Μέγ.</string>
   <string id="394">Ομίχλη</string>
   <string id="395">Καταχνιά</string>
   <string id="396">Επιλογή τοποθεσίας</string>
@@ -332,7 +332,7 @@
   <string id="405">Σημείο δρόσου</string>
   <string id="406">Υγρασία</string>
   <string id="407">Από</string>
-  <string id="408">με</string>
+  <string id="408">με ένταση</string>
   <string id="409">Προεπιλεγμένα</string>
   <string id="410">Πρόσβαση στο Weather.com</string>
   <string id="411">Πληροφορίες καιρού:</string>
@@ -390,15 +390,15 @@
   <string id="465">Αντίθεση</string>
   <string id="466">Gamma</string>
   <string id="467">Τύπος</string>
-  <string id="468">Κινήστε την μπάρα για να αλλάξετε τη θέση osd</string>
-  <string id="469">Θέση OSD</string>
+  <string id="468">Κινήστε την μπάρα για να αλλάξετε τη θέση των Aπεικονίσεων Οθόνης (OSD)</string>
+  <string id="469">Θέση των Aπεικονίσεων Οθόνης (OSD)</string>
   <string id="470">Συντελεστές</string>
   <string id="471">Τσιπάκι</string>
   <string id="474">Ανενεργό/ή</string>
   <string id="475">Μουσική μόνο</string>
   <string id="476">Μουσική &amp; Βίντεο</string>
   <string id="477">Αδυναμία φόρτωσης της Λίστας Αναπαραγωγής</string>
-  <string id="478">OSD</string>
+  <string id="478">Aπεικόνισεις Οθόνης (OSD)</string>
   <string id="479">Κέλυφος και γλώσσα</string>
   <string id="480">Εξατομίκευση</string>
   <string id="481">Ιδιότητες ήχου</string>
@@ -907,7 +907,7 @@
   <string id="12394">Συνολικός Χρόνος λειτουργίας</string>
   <string id="12600">Ο καιρός</string>
   <string id="12900">Προφύλαξη οθόνης</string>
-  <string id="12901">OSD πλήρους οθόνης</string>
+  <string id="12901">Aπεικόνισεις Οθόνης πλήρους οθόνης</string>
   <string id="13000">Σύστημα</string>
   <string id="13001">Άμεση Ελάττωση περιστροφής (Spindown)</string>
   <string id="13002">Βίντεο μόνο</string>
@@ -919,7 +919,9 @@
   <string id="13008">Κατά τον Τερματισμό του XBMC</string>
   <string id="13009">Έξοδος</string>
   <string id="13010">Αδρανοποίηση</string>
-  <string id="13011">Αναστολή</string>
+  <string id="13011">Ύπνωση</string>
+  <string id="13012">Έξοδος</string>
+  <string id="13013">Επανεκκίνηση</string>
   <string id="13100">Φίλτρο Flicker</string>
   <string id="13101">Αφήστε τον οδηγό να επιλέξει (απαιτεί επανεκκίνηση)</string>
   <string id="13105">Κατακόρυφος Χρονισμός</string>
@@ -1011,8 +1013,8 @@
   <string id="13293">Βίντεο &amp; Περιοχή XBE</string>
   <string id="13294">Περιοχή DVD</string>
   <string id="13295">Διαδίκτυο</string>
-  <string id="13296">Συνδεμένο</string>
-  <string id="13297">Δεν είναι Συνδεμένο. Ελέγξτε τις ρυθμίσεις δικτύου.</string>
+  <string id="13296">Συνδέθηκε</string>
+  <string id="13297">Δεν Συνδέθηκε. Ελέγξτε τις ρυθμίσεις δικτύου.</string>
   <string id="13298">Κλειδί XBLIVE:</string>
   <string id="13299">Θερμοκρασία στόχος</string>
   <string id="13300">Ταχύτητά ανεμιστήρα</string>
@@ -1029,7 +1031,7 @@
   <string id="13311">Διαδικασία Κίνησης</string>
   <string id="13312">Ελαχιστοποίηση μαύρης μπάρας</string>
   <string id="13313">Επανεκκίνηση</string>
-  <string id="13314">Λήξη OSD Μουσικής</string>
+  <string id="13314">Λήξη των Aπεικονίσεων Οθόνης (OSD) Μουσικής</string>
   <string id="13315">Δημιουργία Μικρογραφίας</string>
   <string id="13316">Μικρογραφίες επαναλαμβανόμενες περιοδικώς</string>
   <string id="13317">Προβολή Παρουσίασης</string>
@@ -1141,7 +1143,7 @@
   <string id="14007">Αποτυχία λήψης αρχείου λίστας αναπαραγωγής</string>
   <string id="14009">Κατάλογος Παιχνιδιών</string>
   <string id="14010">Αυτόματη εναλλαγή σε μικρογραφίες</string>
-  <string id="14011">Ενεργή η αυτόματη εναλλαγή σε Προβολή Μικρογραφιών</string>
+  <string id="14011">Ενεργοποίηση αυτόματης εναλλαγής (Προβολή Μικρογραφιών)</string>
   <string id="14012">- Χρήση μεγάλων εικονιδίων</string>
   <string id="14013">- Εναλλαγή βάση</string>
   <string id="14014">- Ποσοστό</string>
@@ -1529,7 +1531,7 @@
   <string id="20186">Παρακαλώ περιμένετε</string>
   <string id="20187">Διάβασμα τιμών από το EPPROM</string>
   <string id="20188">Διάβασμα από το EPPROM ολοκληρώθηκε</string>
-  <string id="20189">Ενεργή η Αυτόματη Κύλιση κατά την επισκόπηση Πλοκής και Κριτικής</string>
+  <string id="20189">Ενεργοποίηση Αυτόματης Κύλισης κατά την επισκόπηση Πλοκής και Κριτικής</string>
   <string id="20190">Προσωπικό</string>
   <string id="20191">Ενεργοποίηση Καταγραφής Αποσφαλμάτωσης</string>
   <string id="20192">Έλεγχος για την Ανάκτηση Πληροφοριών Άλμπουμ</string>
@@ -1831,7 +1833,7 @@
   <string id="22000">Ενημέρωση της συλλογής κατά την εκκίνηση</string>
   <string id="22001">Ενημέρωση της συλλογής στο παρασκήνιο</string>
   <string id="22002">- Κατάληξη DNS</string>
-  <string id="22003">Ενεργή Επεξεργασία και Διανομή Λιστών </string>
+  <string id="22003">Ενεργοποίηση Επεξεργασίας και Διανομής Λιστών </string>
   <string id="22004">Καθυστέρηση κατά: %2.3fs</string>
   <string id="22005">Προβάδισμα κατά: %2.3fs</string>
   <string id="22006">Μετατόπιση Υπότιτλων</string>

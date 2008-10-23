@@ -122,16 +122,18 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     mp3info.GetSeekInfo(m_seekInfo);
     mp3info.GetReplayGain(m_replayGain);
   }
+  
+  int id3v2Size = 0;
+  int result = 0;
+  __int64 length = 0;
 
   if (!m_file.Open(strFile, true, bIsInternetStream))
   {
     CLog::Log(LOGERROR, "MP3Codec: Unable to open file %s", strFile.c_str());
-    delete m_pDecoder;
-    m_pDecoder = NULL;
-    return false;
+    goto error;
   }
   
-  __int64 length = m_file.GetLength();
+  length = m_file.GetLength();
   if (!bIsInternetStream)
   {
     m_TotalTime = (__int64)(m_seekInfo.GetDuration() * 1000.0f);
@@ -145,33 +147,53 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   // This needs to be made more intelligent - possibly use a temp output buffer
   // and cycle around continually reading until we have the necessary data
   // as a first workaround skip the id3v2 tag at the beginning of the file
-  int id3v2Size = 0;
   if (!bIsInternetStream)
   {
-    const float* offsets=m_seekInfo.GetOffsets();
-    id3v2Size=(int)offsets[0];
-    m_file.Seek(id3v2Size);
+    if (m_seekInfo.GetNumOffsets() > 0)
+    {
+      const float* offsets=m_seekInfo.GetOffsets();
+      id3v2Size=(int)offsets[0];
+      m_file.Seek(id3v2Size);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "MP3Codec: Seek info unavailable for file <%s> (corrupt?)", strFile.c_str());
+      goto error;
+    }
   }
-  m_file.Read(m_InputBuffer, 8192);
-  int sendsize = 8192;
-  int result = m_pDecoder->decode(m_InputBuffer, 8192, m_InputBuffer + 8192, &sendsize, (unsigned int *)&m_Formatdata);
-  if ( (result == 0 || result == 1) && sendsize )
+  
+  m_eof = false;
+  while (result >=0 && !m_eof && m_OutputBufferPos < 1152*8) // eof can be set from outside (when stopping playback)
   {
-    m_Channels              = m_Formatdata[2];
-    m_SampleRate            = m_Formatdata[1];
-    m_BitsPerSampleInternal = m_Formatdata[3];
-    //m_BitsPerSample holds display value when using 32-bits floats (source is 24 bits), real value otherwise
-    m_BitsPerSample         = m_BitsPerSampleInternal>16?24:m_BitsPerSampleInternal;
-    if (bIsInternetStream) m_Bitrate = m_Formatdata[4];
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "MP3Codec: Unable to determine file format of %s (corrupt start of mp3?)", strFile.c_str());
-    m_file.Close();
-    delete m_pDecoder;
-    m_pDecoder = NULL;
-    return false;
-  }
+    int nRead = m_file.Read(m_InputBuffer, 8192);
+    if (nRead <= 0)
+    { 
+      CLog::Log(LOGERROR, "MP3Codec: Unable to read from file <%s>", strFile.c_str());
+      goto error;
+    }
+
+    int nOutSize= m_OutputBufferSize - m_OutputBufferPos;
+    memset(m_Formatdata, 0, sizeof(m_Formatdata));
+    result = m_pDecoder->decode(m_InputBuffer, 8192, m_OutputBuffer + m_OutputBufferPos, &nOutSize, (unsigned int *)&m_Formatdata);
+    if (result >= 0 && nOutSize)
+      m_OutputBufferPos += nOutSize;
+
+    if (result == 1)
+    {
+      m_Channels              = m_Formatdata[2];
+      m_SampleRate            = m_Formatdata[1];
+      m_BitsPerSampleInternal = m_Formatdata[3];
+      //m_BitsPerSample holds display value when using 32-bits floats (source is 24 bits), real value otherwise
+      m_BitsPerSample         = m_BitsPerSampleInternal>16?24:m_BitsPerSampleInternal;
+      if (bIsInternetStream) m_Bitrate = m_Formatdata[4];
+    }
+    else if (result < 0)
+    {
+      CLog::Log(LOGERROR, "MP3Codec: Unable to determine file format of %s (corrupt start of mp3?)", strFile.c_str());
+      goto error;
+    }
+  } ;
+
   if (!bIsInternetStream)
   {
     m_pDecoder->flush();
@@ -179,6 +201,15 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   }
   m_file.OnClear = MakeDelegate(this, &MP3Codec::OnFileReaderClearEvent);
   return true;
+
+error:
+  m_file.Close();
+  if (m_pDecoder)
+  {
+    delete m_pDecoder;
+    m_pDecoder = NULL;
+  }
+  return false;
 }
 
 void MP3Codec::DeInit()

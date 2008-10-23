@@ -36,7 +36,6 @@
 #include "SmartPlaylist.h"
 #include "PlaylistFileDirectory.h"
 #include "PlayListFactory.h"
-#include "GUIViewState.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "FileSystem/RarManager.h"
@@ -110,27 +109,13 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     CStdString strUrl; 
     CUtil::CreateArchivePath(strUrl, "zip", strPath, "");
 
-    CFileItemList item;
-    CGUIViewState* guiState = CGUIViewState::GetViewState(0,item);
-    if (guiState)
-    {
-      bool bState = guiState->UnrollArchives();
-      delete guiState;
-      guiState = NULL;
-      if (!bState)
-      {
-        pItem->m_strPath = strUrl;
-        return new CZipDirectory;
-      }
-    }
-
-    if (g_ZipManager.HasMultipleEntries(strPath))
+    if (!g_guiSettings.GetBool("filelists.unrollarchives") || g_ZipManager.HasMultipleEntries(strPath))
     {
       pItem->m_strPath = strUrl;
       return new CZipDirectory;
     }
 
-    item.Clear();
+    CFileItemList item;
     CDirectory dir; dir.GetDirectory(strUrl,item,strMask);
     if (item.Size())
       *pItem = *item[0];
@@ -172,26 +157,13 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
       }
     }
 
-    CFileItemList item;
-    CGUIViewState* guiState = CGUIViewState::GetViewState(0,item);
-    if (guiState)
-    {
-      bool bState = guiState->UnrollArchives();
-      delete guiState;
-      guiState = NULL;
-      if (!bState)
-      {
-        pItem->m_strPath = strUrl;
-        return new CRarDirectory;
-      }
-    }
-
-    if (g_RarManager.HasMultipleEntries(strPath))
+    if (!g_guiSettings.GetBool("filelists.unrollarchives") || g_RarManager.HasMultipleEntries(strPath))
     {
       pItem->m_strPath = strUrl;
       return new CRarDirectory;
     }
 
+    CFileItemList item;
     CDirectory dir; dir.GetDirectory(strUrl,item,strMask);
     if (item.Size())
       *pItem = *item[0];

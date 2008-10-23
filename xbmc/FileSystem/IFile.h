@@ -31,6 +31,7 @@
 class CURL;
 
 #include <stdio.h>
+#include "StdString.h"
 
 #define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
 
@@ -110,6 +111,8 @@ public:
   virtual bool Rename(const CURL& url, const CURL& urlnew) { return false; }
 
   virtual ICacheInterface* GetCache() {return NULL;} 
+
+  virtual CStdString GetContent()                            { return "application/octet-stream"; }
 };
 }
 

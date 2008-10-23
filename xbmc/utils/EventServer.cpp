@@ -28,6 +28,9 @@
 #include "EventClient.h"
 #include "Socket.h"
 #include "CriticalSection.h"
+#include "Application.h"
+#include "Util.h"
+#include "ButtonTranslator.h"
 #include "SingleLock.h"
 #include <map>
 #include <queue>
@@ -321,15 +324,38 @@ void CEventServer::ProcessEvents()
 
 bool CEventServer::ExecuteNextAction()
 {
-  CSingleLock lock(m_critSection);
+  EnterCriticalSection(m_critSection);
+
+  CEventAction actionEvent;
+  CAction action;
   map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
 
   while (iter != m_clients.end())
   {
-    if (iter->second->ExecuteNextAction())
+    if (iter->second->GetNextAction(actionEvent))
+    {
+      // Leave critical section before processing action
+      LeaveCriticalSection(m_critSection);
+      switch(actionEvent.actionType)
+      {
+      case AT_EXEC_BUILTIN:
+        CUtil::ExecBuiltIn(actionEvent.actionName);
+        break;
+
+      case AT_BUTTON:
+        g_buttonTranslator.TranslateActionString(actionEvent.actionName.c_str(), action.wID);
+        action.strAction = actionEvent.actionName;
+        action.fRepeat  = 0.0f;
+        action.fAmount1 = 1.0f;
+        action.fAmount2 = 1.0f;
+        g_application.OnAction(action);
+        break;
+      }
       return true;
+    }
     iter++;
   }
+  LeaveCriticalSection(m_critSection);
   return false;
 }
 

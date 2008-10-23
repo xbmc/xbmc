@@ -61,6 +61,10 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
     m_pFile = NULL;
     return false;
   }
+  
+  if (m_pFile->GetImplemenation())
+    m_content = m_pFile->GetImplemenation()->GetContent();
+  
   m_eof = true;
   return true;
 }
@@ -108,3 +112,12 @@ __int64 CDVDInputStreamFile::GetLength()
     return m_pFile->GetLength();
   return 0;
 }
+
+BitstreamStats CDVDInputStreamFile::GetBitstreamStats() const 
+{
+  if (!m_pFile)
+    return m_stats; // dummy return. defined in CDVDInputStream
+
+  return m_pFile->GetBitstreamStats();
+}
+

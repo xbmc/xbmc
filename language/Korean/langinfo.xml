@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <language>
   <charsets>
-    <gui unicodefont="false">CP949</gui>
+    <gui unicodefont="true">CP949</gui>
     <subtitle>CP949</subtitle>
   </charsets>
   <dvd>

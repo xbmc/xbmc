@@ -21,7 +21,7 @@
  *
  */
 
-#include "utils/Thread.h"
+#include "../../utils/Thread.h"
 #include "DVDMessageQueue.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDCodecs/Video/DVDVideoCodec.h"
@@ -93,6 +93,7 @@ public:
 
   double GetOutputDelay(); /* returns the expected delay, from that a packet is put in queue */
   std::string GetPlayerInfo();
+  int GetVideoBitrate();
 
   void SetSpeed(int iSpeed);
 
@@ -155,6 +156,8 @@ protected:
   /* the value is the same as 63% timeconstant, ie that the step response of */
   /* iSleepTime will be at 63% of iClockSleep after autosync frames */
   unsigned int m_autosync;
+
+  BitstreamStats m_videoStats;
   
   // classes
   CDVDVideoCodec* m_pVideoCodec;

@@ -89,6 +89,9 @@ public:
   void CenterWindow();
   virtual void Render();
 
+  // Close should never be called on this base class (only on derivatives) - its here so that window-manager can use a general close
+  virtual void Close(bool forceClose = false);
+
   // OnAction() is called by our window manager.  We should process any messages
   // that should be handled at the window level in the derived classes, and any
   // unhandled messages should be dropped through to here where we send the message
@@ -153,6 +156,7 @@ public:
   virtual void QueueAnimation(ANIMATION_TYPE animType);
   virtual bool IsAnimating(ANIMATION_TYPE animType);
   virtual void ResetAnimations();
+  void DisableAnimations();
 
   virtual void ResetControlStates();
 
@@ -240,6 +244,8 @@ protected:
   int m_focusedControl;
   std::vector<CControlState> m_controlStates;
   DWORD m_previousWindow;
+
+  bool m_animationsEnabled;
 };
 
 #endif

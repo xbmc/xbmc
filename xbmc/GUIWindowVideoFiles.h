@@ -53,4 +53,7 @@ protected:
   
   virtual void LoadPlayList(const CStdString& strFileName);
   void PlayFolder(const CFileItem* pItem);
+
+private:
+  bool m_stackingAvailable;
 };

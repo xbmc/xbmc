@@ -67,6 +67,7 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_hasRendered = false;
   m_hasCamera = false;
   m_previousWindow = WINDOW_INVALID;
+  m_animationsEnabled = true;
 }
 
 CGUIWindow::~CGUIWindow(void)
@@ -476,6 +477,11 @@ void CGUIWindow::Render()
     }
   }
   m_hasRendered = true;
+}
+
+void CGUIWindow::Close(bool forceClose)
+{
+  CLog::Log(LOGERROR,"%s - should never be called on the base class!", __FUNCTION__);
 }
 
 bool CGUIWindow::OnAction(const CAction &action)
@@ -1076,6 +1082,8 @@ CAnimation *CGUIWindow::GetAnimation(ANIMATION_TYPE animType, bool checkConditio
 
 bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
 {
+  if (!m_animationsEnabled) return false;
+  
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
@@ -1105,14 +1113,17 @@ bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
 bool CGUIWindow::RenderAnimation(DWORD time)
 {
   m_transform.Reset();
-  CPoint center(m_posX + m_width * 0.5f, m_posY + m_height * 0.5f);
-  // show animation
-  for (unsigned int i = 0; i < m_animations.size(); i++)
+  if (m_animationsEnabled)
   {
-    CAnimation &anim = m_animations[i];
-    anim.Animate(time, true);
-    UpdateStates(anim.GetType(), anim.GetProcess(), anim.GetState());
-    anim.RenderAnimation(m_transform, center);
+    CPoint center(m_posX + m_width * 0.5f, m_posY + m_height * 0.5f);
+    // show animation
+    for (unsigned int i = 0; i < m_animations.size(); i++)
+    {
+      CAnimation &anim = m_animations[i];
+      anim.Animate(time, true);
+      UpdateStates(anim.GetType(), anim.GetProcess(), anim.GetState());
+      anim.RenderAnimation(m_transform, center);
+    }
   }
   g_graphicsContext.SetWindowTransform(m_transform);
   return true;
@@ -1135,6 +1146,11 @@ bool CGUIWindow::HasAnimation(ANIMATION_TYPE animType)
   for (unsigned int i = 0; i < m_vecControls.size(); i++)
     if (m_vecControls[i]->HasAnimation(animType)) return true;
   return false;
+}
+
+void CGUIWindow::DisableAnimations()
+{
+  m_animationsEnabled = false;
 }
 
 void CGUIWindow::ResetAnimations()
@@ -1281,6 +1297,7 @@ void CGUIWindow::SetDefaults()
   m_animations.clear();
   m_origins.clear();
   m_hasCamera = false;
+  m_animationsEnabled = true;
 }
 
 FRECT CGUIWindow::GetScaledBounds() const

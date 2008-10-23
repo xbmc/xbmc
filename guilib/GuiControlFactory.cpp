@@ -564,8 +564,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 
   float spinWidth = 16;
   float spinHeight = 16;
-  float spinPosX, spinPosY;
-  float checkWidth, checkHeight;
+  float spinPosX = 0, spinPosY = 0;
+  float checkWidth = 0, checkHeight = 0;
   CStdString strSubType;
   int iType = SPIN_CONTROL_TYPE_TEXT;
   int iMin = 0;

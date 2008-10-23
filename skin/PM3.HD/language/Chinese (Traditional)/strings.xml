@@ -11,8 +11,8 @@
   <string id="31007"></string>
   <string id="31008"></string>
   <string id="31009"></string>
-  <string id="31010">同人作品[CR]圖像[CR]不[CR]可用</string>
-  <string id="31011">影集[CR]圖像[CR]不[CR]可用</string>
+  <string id="31010">同人作品[CR]圖像[CR]不[CR]存在</string>
+  <string id="31011">影集[CR]圖像[CR]不[CR]存在</string>
   <string id="31012"></string>
   <string id="31013"></string>
   <string id="31014"></string>
@@ -25,12 +25,12 @@
   <string id="31020">章節標題</string>
   <string id="31021">影片 - 檔案</string>
   <string id="31022">音樂 - 檔案</string>
-  <string id="31023">圖片檔案</string>
+  <string id="31023"></string>
   <string id="31024">頁</string>
   <string id="31025">項</string>
 
-  <string id="31026">幻燈片秀</string>
-  <string id="31027">劇集縮圖</string>
+  <string id="31026"></string>
+  <string id="31027"></string>
   <string id="31028">DVD 縮圖</string>
   <string id="31029">DVD 列表</string>
   <string id="31030">同人作品</string>
@@ -39,19 +39,19 @@
   <string id="31033">圖片縮圖</string>
   <string id="31034">寬圖示</string>
 
-  <string id="31040">目前電影[CR]同人作品圖像[CR][CR]按一下變更</string>
-  <string id="31041">目前電視節目[CR]同人作品圖像[CR][CR]按一下變更</string>
+  <string id="31040">目前電影[CR]同人作品圖像[CR][CR]點擊更改</string>
+  <string id="31041">目前電視節目[CR]同人作品圖像[CR][CR]點擊更改</string>
   <string id="31042">播放中</string>
   <string id="31043">暫停</string>
   <string id="31044">快轉</string>
   <string id="31045">倒轉</string>
-  <string id="31046">歡迎來到 XBMC - 請登錄</string>
+  <string id="31046">歡迎使用 XBMC - 請登錄</string>
   <string id="31047">最後登錄</string>
   <string id="31048"></string>
 
-  <string id="31050">圖片</string>
-  <string id="31051">腳本</string>
-  <string id="31052">程式</string>
+  <string id="31050"></string>
+  <string id="31051"></string>
+  <string id="31052"></string>
 
   <!-- Lyrics Script Extra labels -->
   <string id="31053">XBMC 歌詞</string>
@@ -67,31 +67,30 @@
   
   <!-- Skin Settings labels -->
   <string id="31100">背景選項</string>
-  <string id="31101">主頁背景選項</string>
+  <string id="31101">主頁選項</string>
   <string id="31102">背景</string>
   <string id="31103">顯示“暫停”在圖片幻燈片秀</string>
-  <string id="31104">去除主頁選單說明文字</string>
+  <string id="31104">關機選單 - 使用休眠取代待機</string>
   <string id="31105">顯示媒體名稱在背景掃描時</string>
   <string id="31106">其他選項</string>
   <string id="31107">去除背景掃描線</string>
-  <string id="31108">去除背景掃描線在影片播放時</string>
-  <string id="31109">主頁螢幕背景</string>
+  <string id="31108">去除影片播放時背景掃描線</string>
+  <string id="31109">主頁背景</string>
   <string id="31110">按鈕 - 啟用自定義背景</string>
-  <string id="31111">顯示音樂資訊在歌詞顯示時</string>
+  <string id="31111">顯示音樂資訊在播放歌詞時</string>
 
   <!-- Script Settings labels -->
   <string id="31200">自定義腳本選項</string>
-  <string id="31201">主頁選單選項</string>
-  <string id="31202">啟用自定義選單項目</string>
+  <string id="31201"></string>
+  <string id="31202"></string>
   <string id="31203">設置按鈕標籤</string>
   <string id="31204">腳本路徑</string>
-  <string id="31205">顯示影片插件按鈕</string>
-  <string id="31206">顯示音樂插件按鈕</string>
-  <string id="31207">音樂螢幕選項</string>
+  <string id="31205">/string>
+  <string id="31206"></string>
+  <string id="31207"></string>
   <string id="31208">顯示歌詞腳本按鈕在主選單</string>
   <string id="31209">啟用快速啟動腳本按鈕為 -</string>
 
   <!-- AMT Script Extra labels -->
   <string id="31300">顯示演員表</string>
-  <string id="31301">電影演員</string>
 </strings>

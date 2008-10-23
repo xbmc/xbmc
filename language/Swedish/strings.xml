@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 09/06/2008-->
+<!--Date of translation: 10/22/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 15421-->
+<!--Based on english strings version 15826-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -878,6 +878,8 @@
   <string id="13009">Avsluta</string>
   <string id="13010">Viloläge</string>
   <string id="13011">Vänteläge</string>
+  <string id="13012">Avsluta</string>
+  <string id="13013">Starta om</string>
   <string id="13100">Fladderfilter</string>
   <string id="13101">Låt drivrutinen välja (kräver omstart)</string>
   <string id="13105">Vertikal blanknings-synk</string>
@@ -1073,6 +1075,7 @@
   <string id="13411">Minsta fläkthastighet</string>
   <string id="13412">- RSS flöde innehåller höger-till-vänster text</string>
   <string id="13413">Laddar ner</string>
+  <string id="13414">Dölj artister som endast är med på samlingar</string>
   <string id="13415">Renderingsmetod</string>
   <string id="13416">Autodetektera</string>
   <string id="13417">Grundläggande Shaders (ARB)</string>
@@ -1087,9 +1090,6 @@
   <string id="13612">Universiell fjärrkontroll</string>
   <string id="13620">Apple fjärrkontrollsfel</string>
   <string id="13621">Apple fjärrkontroll kunde inte aktiveras.</string>
-  <string id="13622">Vänligen läs Remote Buddy FAQ för att avinstallera.</string>
-  <string id="13623">Sofa Control körs.</string>
-  <string id="13624">Vänligen läs Sofa Control dokumentation för att avinstallera.</string>
   <string id="14000">Stapling: På</string>
   <string id="14001">Stapling: Av</string>
   <string id="14003">Laddar ner spellista...</string>

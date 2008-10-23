@@ -10,7 +10,7 @@
 			<height>540</height>
 			<aspectratio scalediffuse="false">scale</aspectratio>
 			<texture diffuse="Fanart_Diffuse.png">$INFO[Fanart.Image]</texture>
-			<visible>Control.IsVisible(55)</visible>
+			<visible>Control.IsVisible(55) | [Control.IsVisible(56) + Container.Content(Seasons)]</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
 		</control>
@@ -18,32 +18,32 @@
 			<posx>0</posx>
 			<posy>105</posy>
 			<width>850</width>
-			<height>560</height>
+			<height>540</height>
 			<aspectratio scalediffuse="false">scale</aspectratio>
 			<texture diffuse="Fanart_Diffuse.png">$INFO[ListItem.Property(Fanart_Image)]</texture>
 			<include>VisibleFadeEffect</include>
-			<visible>Control.IsVisible(56) + !IsEmpty(ListItem.Property(Fanart_Image))</visible>
+			<visible>Control.IsVisible(56) + !IsEmpty(ListItem.Property(Fanart_Image)) + !Container.Content(Seasons)</visible>
 			<include>Window_OpenClose_Animation</include>
 		</control>
 		<control type="largeimage">
 			<posx>0</posx>
 			<posy>105</posy>
 			<width>850</width>
-			<height>560</height>
+			<height>540</height>
 			<aspectratio scalediffuse="false">scale</aspectratio>
 			<texture diffuse="Fanart_Diffuse.png">$INFO[ListItem(1).Property(Fanart_Image)]</texture>
-			<visible>Control.IsVisible(56) + Container.OnPrevious</visible>
-			<animation effect="fade" start="100" end="0" time="200" reversible="false">Hidden</animation>
+			<visible>Control.IsVisible(56) + Container.OnPrevious + !Container.Content(Seasons)</visible>
+			<animation effect="fade" start="100" end="0" delay="0" time="400" reversible="false">Hidden</animation>
 		</control>
 		<control type="largeimage">
 			<posx>0</posx>
 			<posy>105</posy>
 			<width>850</width>
-			<height>560</height>
+			<height>540</height>
 			<aspectratio scalediffuse="false">scale</aspectratio>
 			<texture diffuse="Fanart_Diffuse.png">$INFO[ListItem(-1).Property(Fanart_Image)]</texture>
-			<visible>Control.IsVisible(56) + Container.OnNext</visible>
-			<animation effect="fade" start="100" end="0" time="200" reversible="false">Hidden</animation>
+			<visible>Control.IsVisible(56) + Container.OnNext + !Container.Content(Seasons)</visible>
+			<animation effect="fade" start="100" end="0" delay="0" time="400" reversible="false">Hidden</animation>
 		</control>
 		<control type="group">
 			<include>Window_OpenClose_Right_Panel_Animation</include>
@@ -218,6 +218,16 @@
 			<aspectratio align="right">keep</aspectratio>
 			<texture diffuse="Wide_Icon_Diffuse.png">$INFO[Container.TVshowThumb]</texture>
 			<visible>Container.Content(Seasons) | Container.Content(Episodes)</visible>
+			<include>Window_OpenClose_Animation</include>
+		</control>
+		<control type="image">
+			<posx>640</posx>
+			<posy>0</posy>
+			<width>640</width>
+			<height>105</height>
+			<aspectratio align="right">keep</aspectratio>
+			<texture diffuse="Wide_Icon_Diffuse.png">$INFO[Listitem.Thumb]</texture>
+			<visible>Container.Content(TVShows) + Control.IsVisible(56)</visible>
 			<include>Window_OpenClose_Animation</include>
 		</control>
 		<control type="label">

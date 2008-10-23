@@ -208,10 +208,7 @@ namespace VIDEO
 
       CDirectory::GetDirectory(strDirectory,items,g_stSettings.m_videoExtensions);
       items.m_strPath = strDirectory;
-      int iOldStack = g_stSettings.m_iMyVideoStack;
-      g_stSettings.m_iMyVideoStack = STACK_SIMPLE;
       items.Stack();
-      g_stSettings.m_iMyVideoStack = iOldStack;
       int numFilesInFolder = GetPathHash(items, hash);
 
       if (!m_database.GetPathHash(strDirectory, dbHash) || dbHash != hash)
@@ -332,10 +329,17 @@ namespace VIDEO
 
       if (m_bStop)
         break;
+
       // if we have a directory item (non-playlist) we then recurse into that folder
       if (pItem->m_bIsFolder && !pItem->GetLabel().Equals("sample") && !pItem->GetLabel().Equals("subs") && !pItem->IsParentFolder() && !pItem->IsPlayList() && settings.recurse > 0 && !m_info.strContent.Equals("tvshows")) // do not recurse for tv shows - we have already looked recursively for episodes
       {
         CStdString strPath=pItem->m_strPath;
+
+        // do not process items which will be scanned by main loop
+        std::map<CStdString,VIDEO::SScanSettings>::iterator it = m_pathsToScan.find(strPath);
+        if (it != m_pathsToScan.end())
+          continue;
+
         SScanSettings settings2;
         settings2.recurse = settings.recurse-1;
         settings2.parent_name_root = settings.parent_name;
@@ -353,7 +357,7 @@ namespace VIDEO
   {
     CRegExp regExExcludes;
 
-    CLog::Log(LOGDEBUG, "Checking if file '%s' should be excluded from scan", strFileName.c_str());
+//    CLog::Log(LOGDEBUG, "Checking if file '%s' should be excluded from scan", strFileName.c_str());
     for (unsigned int i = 0; i < regexps.size(); i++)
     {
       if (!regExExcludes.RegComp(regexps[i].c_str()))
@@ -403,7 +407,7 @@ namespace VIDEO
     // needed to ensure the movie count etc is cached
     for (int i=LIBRARY_HAS_VIDEO;i<LIBRARY_HAS_MUSICVIDEOS+1;++i)
       g_infoManager.GetBool(i);
-    m_database.BeginTransaction();
+    //m_database.BeginTransaction();
 
     CStdStringArray regexps = g_advancedSettings.m_videoExcludeRegExps;
 
@@ -486,7 +490,7 @@ namespace VIDEO
             {
               if (pDlgProgress)
                 pDlgProgress->Close();
-              m_database.RollbackTransaction();
+              //m_database.RollbackTransaction();
               m_database.Close();
               return false;
             }
@@ -495,7 +499,7 @@ namespace VIDEO
           {
             if (pDlgProgress)
               pDlgProgress->Close();
-            m_database.RollbackTransaction();
+            //m_database.RollbackTransaction();
             m_database.Close();
             return false;
           }
@@ -550,14 +554,14 @@ namespace VIDEO
             if (pDlgProgress->IsCanceled()) 
             {
               pDlgProgress->Close();
-              m_database.RollbackTransaction();
+              //m_database.RollbackTransaction();
               m_database.Close();
               return false;
             }
           }
           if (m_bStop)
           {
-            m_database.RollbackTransaction();
+            //m_database.RollbackTransaction();
             m_database.Close();
             return false;
           }
@@ -652,7 +656,8 @@ namespace VIDEO
     if(pDlgProgress)
       pDlgProgress->ShowProgressBar(false);
 
-    m_database.CommitTransaction();
+    //m_database.CommitTransaction();
+    g_infoManager.ResetPersistentCache();
     m_database.Close();
     return true;
   }
@@ -801,12 +806,16 @@ namespace VIDEO
       bool bMatched=false;
       for (unsigned int j=0;j<expression.size();++j)
       {
+        if (bMatched)
+          break;
+
         CRegExp reg;
         if (!reg.RegComp(expression[j]))
           break;
+
         CStdString strLabel=items[i]->m_strPath;
         strLabel.MakeLower();
-        CLog::Log(LOGDEBUG,"running expression %s on label %s",expression[j].c_str(),strLabel.c_str());
+//        CLog::Log(LOGDEBUG,"running expression %s on label %s",expression[j].c_str(),strLabel.c_str());
         int regexppos, regexp2pos;
 
         SEpisode myEpisode;
@@ -819,7 +828,7 @@ namespace VIDEO
 
           if (season && episode)
           {
-            CLog::Log(LOGDEBUG,"found match %s %s %s",strLabel.c_str(),season,episode);
+            CLog::Log(LOGDEBUG,"found match %s (s%se%s) [%s]",strLabel.c_str(),season,episode,expression[j].c_str());
             myEpisode.iSeason = atoi(season);
             myEpisode.iEpisode = atoi(episode);
             episodeList.push_back(myEpisode);
@@ -1006,7 +1015,7 @@ namespace VIDEO
       {
         if (pDlgProgress)
           pDlgProgress->Close();
-        m_database.RollbackTransaction();
+        //m_database.RollbackTransaction();
         m_database.Close();
         return;
       }

@@ -183,12 +183,12 @@ __int64 ModPlayer::GetTime()
   return mikxboxGetPTS();
 }
 
-bool ModPlayer::HasVideo()
+bool ModPlayer::HasVideo() const
 {
   return false;
 }
 
-bool ModPlayer::HasAudio()
+bool ModPlayer::HasAudio() const
 {
   return true;
 }

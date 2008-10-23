@@ -294,6 +294,8 @@ bool CFile::Open(const CStdString& strFileName, bool bBinary, unsigned int flags
         m_pBuffer->Attach(m_pFile);
       }
     }
+
+    m_bitStreamStats.Start();
     return true;
   }
   catch (const win32_exception &e) 
@@ -416,26 +418,45 @@ unsigned int CFile::Read(void *lpBuf, __int64 uiBufSize)
   if(m_pBuffer)
   {
     if(m_flags & READ_TRUNCATED)
-      return m_pBuffer->sgetn((char*)lpBuf, min((int)uiBufSize, m_pBuffer->in_avail()));
+    {
+      unsigned int nBytes = m_pBuffer->sgetn(
+        (char *)lpBuf, std::min<std::streamsize>((std::streamsize)uiBufSize,
+                                                  m_pBuffer->in_avail()));
+      if (nBytes>0)
+        m_bitStreamStats.AddSampleBytes(nBytes);
+      return nBytes;
+    }
     else
-      return m_pBuffer->sgetn((char*)lpBuf, uiBufSize);
+    {
+      unsigned int nBytes = m_pBuffer->sgetn((char*)lpBuf, uiBufSize);
+      if (nBytes>0)
+        m_bitStreamStats.AddSampleBytes(nBytes);
+      return nBytes;
+    }
   }
 
   try
   {
     if(m_flags & READ_TRUNCATED)
-      return m_pFile->Read(lpBuf, uiBufSize);
+    {
+      unsigned int nBytes = m_pFile->Read(lpBuf, uiBufSize);
+      if (nBytes>0)
+        m_bitStreamStats.AddSampleBytes(nBytes);
+      return nBytes;
+    }
     else
     {        
       unsigned int done = 0;
       while((uiBufSize-done) > 0)
       {
-        unsigned int curr = m_pFile->Read((char*)lpBuf+done, uiBufSize-done);
-        if(curr==0)
+        int curr = m_pFile->Read((char*)lpBuf+done, uiBufSize-done);
+        if(curr<=0)
           break;
 
         done+=curr;
       }
+      if (done > 0)
+        m_bitStreamStats.AddSampleBytes(done);
       return done;
     }
   }

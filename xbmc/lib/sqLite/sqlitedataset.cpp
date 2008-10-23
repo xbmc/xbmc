@@ -448,7 +448,7 @@ bool SqliteDataset::query(const char *query) {
       switch (sqlite3_column_type(stmt, i))
       {
       case SQLITE_INTEGER:
-        v.set_asInteger(sqlite3_column_int(stmt, i));
+        v.set_asInt64(sqlite3_column_int64(stmt, i));
         break;
       case SQLITE_FLOAT:
         v.set_asDouble(sqlite3_column_double(stmt, i));

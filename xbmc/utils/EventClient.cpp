@@ -29,10 +29,10 @@
 #include "SingleLock.h"
 #include "ButtonTranslator.h"
 #include "GraphicContext.h"
+#include "Util.h"
 #include "Key.h"
 #include <map>
 #include <queue>
-#include "Util.h"
 #include "FileSystem/File.h"
 
 using namespace EVENTCLIENT;
@@ -189,18 +189,16 @@ void CEventClient::ProcessEvents()
   }
 }
 
-bool CEventClient::ExecuteNextAction()
+bool CEventClient::GetNextAction(CEventAction &action)
 {
-  CEventAction actionEvent;
-  CAction action;
-
   CSingleLock lock(m_critSection);
   if (m_actionQueue.size() > 0)
   {
     // grab the next action in line
-    actionEvent = m_actionQueue.front();
+    action = m_actionQueue.front();
     m_actionQueue.pop();
     lock.Leave();
+    return true;
   }
   else
   {
@@ -208,24 +206,6 @@ bool CEventClient::ExecuteNextAction()
     lock.Leave();
     return false;
   }
-
-  switch(actionEvent.actionType)
-  {
-  case AT_EXEC_BUILTIN:
-    CUtil::ExecBuiltIn(actionEvent.actionName);
-    break;
-
-  case AT_BUTTON:
-    g_buttonTranslator.TranslateActionString(actionEvent.actionName.c_str(), action.wID);
-    action.strAction = actionEvent.actionName;
-    action.fRepeat  = 0.0f;
-    action.fAmount1 = 1.0f;
-    action.fAmount2 = 1.0f;
-    g_application.OnAction(action);
-    break;
-  }
-
-  return true;
 }
 
 bool CEventClient::ProcessPacket(CEventPacket *packet)
