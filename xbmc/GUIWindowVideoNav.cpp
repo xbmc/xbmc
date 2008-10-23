@@ -204,8 +204,10 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       if (!CGUIWindowVideoBase::OnMessage(message))
         return false;
 
-      // if we're returning to a window, make sure the root is set as the destPath
-      m_startDirectory = returning ? destPath : "";
+      if (message.GetParam1() != WINDOW_INVALID)
+      { // first time to this window - make sure we set the root path
+        m_startDirectory = returning ? destPath : "";
+      }
 
       //  base class has opened the database, do our check
       m_database.Open();

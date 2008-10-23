@@ -1212,6 +1212,9 @@ public:
     virtual NPT_Result OnPrevious(PLT_ActionReference& action);
     virtual NPT_Result OnStop(PLT_ActionReference& action);
     virtual NPT_Result OnSetAVTransportURI(PLT_ActionReference& action);
+
+    virtual NPT_Result OnSetVolume(PLT_ActionReference& action);
+    virtual NPT_Result OnSetMute(PLT_ActionReference& action);
 };
 
 /*----------------------------------------------------------------------
@@ -1243,11 +1246,27 @@ CUPnPRenderer::CUPnPRenderer(const char*  friendly_name,
 void 
 CUPnPRenderer::UpdateState()
 {
-    PLT_Service* avt;
+    PLT_Service *avt, *rct;
     if(NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", avt)))
+        return;
+    if(NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:RenderingControl:1", rct)))
         return;
 
     CStdString buffer;
+    int volume;
+    if (g_stSettings.m_bMute) {
+        rct->SetStateVariable("Mute", "1");
+        volume = g_stSettings.m_iPreMuteVolumeLevel;
+    } else {
+        rct->SetStateVariable("Mute", "0");
+        volume = g_application.GetVolume();
+    }
+
+    buffer.Format("%d", volume);
+    rct->SetStateVariable("Volume", buffer.c_str());
+
+    buffer.Format("%d", 256 * (volume * 60 - 60) / 100);
+    rct->SetStateVariable("VolumeDb", buffer.c_str());
 
     StringUtils::SecondsToTimeString((long)g_application.GetTime(), buffer, TIME_FORMAT_HH_MM_SS);
     avt->SetStateVariable("RelativeTimePosition", buffer.c_str());
@@ -1351,6 +1370,23 @@ CUPnPRenderer::OnSetAVTransportURI(PLT_ActionReference& action)
     }
 
     NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
+    return NPT_SUCCESS;
+}
+
+NPT_Result CUPnPRenderer::OnSetVolume(PLT_ActionReference& action)
+{
+    NPT_String volume;
+    NPT_CHECK_SEVERE(action->GetArgumentValue("DesiredVolume",volume));
+    g_application.SetVolume(atoi((const char*)volume));
+    return NPT_SUCCESS;
+}
+
+NPT_Result CUPnPRenderer::OnSetMute(PLT_ActionReference& action)
+{
+    NPT_String mute;
+    NPT_CHECK_SEVERE(action->GetArgumentValue("DesiredMute",mute));
+    if(mute == "1" ^ g_stSettings.m_bMute)
+        g_application.Mute();
     return NPT_SUCCESS;
 }
 

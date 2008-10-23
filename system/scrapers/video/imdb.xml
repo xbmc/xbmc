@@ -133,7 +133,7 @@
 			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-posters.html&quot; function=&quot;GetIMDBPoster&quot;&gt;$$3posters&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-                        <RegExp conditional="fanart" input="$$2" output="&lt;url function=&quot;GetFanart&quot;&gt;http://www.meligrove.com/api?imdb=$$2&lt;/url&gt;" dest="5+">
+                        <RegExp conditional="fanart" input="$$2" output="&lt;url function=&quot;GetFanart&quot;&gt;http://api.themoviedb.org/backdrop.php?imdb=$$2&lt;/url&gt;" dest="5+">
                         	<expression></expression>
 			</RegExp>
 			<expression noclean="1"></expression>
@@ -243,9 +243,9 @@
 		</RegExp>
 	</GetIMDBPoster>
         <GetFanart dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://www.meligrove.com/&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb preview=&quot;images/posters/movies/thumbnails/\1&quot;&gt;images/posters/movies/jpg/\1&lt;/thumb&gt;" dest="2">
-				<expression repeat="yes">jpg/([^&lt;]*)&lt;/URL</expression>
+		<RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://themoviedb.org/image/backdrops&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;/\1/\2_poster.jpg&quot;&gt;/\1/\2.jpg&lt;/thumb&gt;" dest="2">
+				<expression repeat="yes">/([0-9]*)/([t0-9-]*).jpg&lt;/URL</expression>
 			</RegExp>
 			<expression noclean="1">(.+)</expression>
 		</RegExp>

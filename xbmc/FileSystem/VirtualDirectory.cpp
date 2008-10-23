@@ -237,6 +237,17 @@ bool CVirtualDirectory::IsInSource(const CStdString &path) const
   VECSOURCES shares;
   GetSources(shares);
   int iShare = CUtil::GetMatchingSource(path, shares, isSourceName);
+  if (CUtil::IsOnDVD(path))
+  { // check to see if our share path is still available and of the same type, as it changes during autodetect
+    // and GetMatchingSource() is too naive at it's matching
+    for (unsigned int i = 0; i < shares.size(); i++)
+    {
+      CMediaSource &share = shares[i];
+      if (CUtil::IsOnDVD(share.strPath) && share.strPath.Equals(path.Left(share.strPath.GetLength())))
+        return true;
+    }
+    return false;
+  }
   // TODO: May need to handle other special cases that GetMatchingSource() fails on
   return (iShare > -1);
 }

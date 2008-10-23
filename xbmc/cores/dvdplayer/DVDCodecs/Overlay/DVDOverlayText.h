@@ -111,13 +111,14 @@ public:
     pElement->pNext = NULL;
     
     if (!m_pHead)
-    {
+    { // first element - set our head to this element, and update the end to the new element
+      m_pHead = pElement;
       m_pEnd = pElement;
-      m_pHead = m_pEnd;
     }
     else
-    {
+    { // extra element - add to the end and update the end to the new element
       m_pEnd->pNext = pElement;
+      m_pEnd = pElement;
     }
   }
   

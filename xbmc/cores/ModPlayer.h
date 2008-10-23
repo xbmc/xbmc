@@ -39,8 +39,8 @@ public:
   virtual bool IsPlaying() const;
   virtual void Pause();
   virtual bool IsPaused() const;
-  virtual bool HasVideo();
-  virtual bool HasAudio();
+  virtual bool HasVideo() const;
+  virtual bool HasAudio() const;
   virtual void ToggleFrameDrop();
   virtual void Seek(bool bPlus = true, bool bLargeStep = false);
   virtual void SetVolume(long nVolume);

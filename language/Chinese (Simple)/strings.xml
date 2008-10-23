@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Tang YiZhi-->
 <!--Email: Kazuyuki@163.com-->
-<!--Date of translation: 10/03/2008-->
+<!--Date of translation: 10/08/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 15704-->
+<!--Based on english strings version 15826-->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -881,7 +881,10 @@
   <string id="13009">退出</string>
   <string id="13010">休眠</string>
   <string id="13011">待机</string>
+  <string id="13012">退出</string>
+  <string id="13013">重启</string>
   <string id="13100">闪烁过滤</string>
+  <string id="13101">使用驱动选择(需要重启)</string>
   <string id="13105">垂直空白同步</string>
   <string id="13106">停用</string>
   <string id="13107">只在视频播放时开启</string>
@@ -1539,7 +1542,7 @@
   <string id="20344">该目录包含</string>
   <string id="20345">运行自动扫描</string>
   <string id="20346">嵌套查找</string>
-  <string id="20347">以</string>
+  <string id="20347">饰</string>
   <string id="20348">导演</string>
   <string id="20349">该目录下无视频文件！</string>
   <string id="20350">票数</string>
@@ -1603,7 +1606,7 @@
   <string id="20410">宣传片</string>
   <string id="20411">弄平</string>
   <string id="20412">如果单季节目则平滑播放</string>
-  <string id="20413">获取影迷</string>
+  <string id="20413">获取剧照图片</string>
   <string id="20414">在视频库中显示影迷</string>
   <string id="20415">扫描新内容</string>
   <string id="20416">最初发表</string>

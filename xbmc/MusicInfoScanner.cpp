@@ -30,6 +30,7 @@
 #include "FileSystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "Util.h"
 #include "utils/md5.h"
+#include "utils/GUIInfoManager.h"
 #include "xbox/XKGeneral.h"
 #include "NfoFile.h"
 #include "MusicInfoTag.h"
@@ -80,9 +81,7 @@ void CMusicInfoScanner::Process()
     if (m_scanType == 0) // load info from files
     {
       CLog::Log(LOGDEBUG, "%s - Starting scan", __FUNCTION__);
-      m_musicDatabase.BeginTransaction();
-      CLog::Log(LOGDEBUG, "%s - Starting scan", __FUNCTION__);
-      m_musicDatabase.BeginTransaction();
+      //m_musicDatabase.BeginTransaction();
 
       if (m_pObserver)
         m_pObserver->OnStateChanged(READING_MUSIC_INFO);
@@ -114,7 +113,8 @@ void CMusicInfoScanner::Process()
 
       if (commit)
       {
-        m_musicDatabase.CommitTransaction();
+        //m_musicDatabase.CommitTransaction();
+        g_infoManager.ResetPersistentCache();
 
         if (m_needsCleanup)
         {
@@ -129,8 +129,8 @@ void CMusicInfoScanner::Process()
           m_musicDatabase.Compress(false);
         }
       }
-      else
-        m_musicDatabase.RollbackTransaction();
+      //else
+      //  m_musicDatabase.RollbackTransaction();
 
       fileCountReader.StopThread();
 

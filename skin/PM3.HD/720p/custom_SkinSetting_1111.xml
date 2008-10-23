@@ -1,4 +1,4 @@
-<window type="dialog" id="1111">
+<window id="1111">
 	<defaultcontrol always="true">20</defaultcontrol>
 	<controls>
 		<include>CommonBackground</include>
@@ -43,6 +43,19 @@
 					<height>2</height>
 					<texture>separator.png</texture>
 				</control>
+				<control type="radiobutton" id="109">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>31104</label>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<onclick>Skin.ToggleSetting(ShutdownUseHibernate)</onclick>
+					<selected>Skin.HasSetting(ShutdownUseHibernate)</selected>
+				</control>
 				<control type="radiobutton" id="103">
 					<width>950</width>
 					<height>35</height>
@@ -81,6 +94,24 @@
 					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
 					<onclick>Skin.ToggleSetting(No_Media_Titles_In_Scanner)</onclick>
 					<selected>!Skin.HasSetting(No_Media_Titles_In_Scanner)</selected>
+				</control>
+				<control type="image" id="111">
+					<width>950</width>
+					<height>2</height>
+					<texture>separator.png</texture>
+				</control>
+				<control type="radiobutton" id="110">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>31112</label>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<onclick>Skin.ToggleSetting(Media_Titles_WideIcons)</onclick>
+					<selected>!Skin.HasSetting(Media_Titles_WideIcons)</selected>
 				</control>
 				<control type="image" id="106">
 					<width>950</width>
@@ -134,6 +165,25 @@
 					<align>center</align>
 				</control>
 				<control type="radiobutton" id="201">
+					<description>Show Programs in home</description>
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>20082</label>
+					<onclick>Skin.ToggleSetting(ProgramsInHome)</onclick>
+					<selected>Skin.HasSetting(ProgramsInHome)</selected>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+				</control>
+				<control type="image" id="202">
+					<width>950</width>
+					<height>2</height>
+					<texture>separator.png</texture>
+				</control>
+				<control type="radiobutton" id="203">
 					<description>Show Scan Lines in home</description>
 					<width>950</width>
 					<height>35</height>
@@ -147,7 +197,7 @@
 					<texturenofocus>-</texturenofocus>
 					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
 				</control>
-				<control type="radiobutton" id="202">
+				<control type="radiobutton" id="204">
 					<description>Show Scan Lines in home during Media</description>
 					<width>950</width>
 					<height>35</height>
@@ -162,12 +212,12 @@
 					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
 					<enable>Skin.HasSetting(Remove_Scan_Lines)</enable>
 				</control>
-				<control type="image" id="203">
+				<control type="image" id="205">
 					<width>950</width>
 					<height>2</height>
 					<texture>separator.png</texture>
 				</control>
-				<control type="radiobutton" id="204">
+				<control type="radiobutton" id="206">
 					<description>enable video info</description>
 					<width>950</width>
 					<height>35</height>
@@ -181,7 +231,7 @@
 					<texturenofocus>-</texturenofocus>
 					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
 				</control>
-				<control type="radiobutton" id="205">
+				<control type="radiobutton" id="207">
 					<description>enable music info</description>
 					<width>950</width>
 					<height>35</height>
@@ -195,7 +245,7 @@
 					<texturenofocus>-</texturenofocus>
 					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
 				</control>
-				<control type="radiobutton" id="206">
+				<control type="radiobutton" id="208">
 					<description>enable weather info</description>
 					<width>950</width>
 					<height>35</height>
@@ -209,7 +259,7 @@
 					<texturenofocus>-</texturenofocus>
 					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
 				</control>
-				<control type="radiobutton" id="207">
+				<control type="radiobutton" id="209">
 					<description>enable System info</description>
 					<width>950</width>
 					<height>35</height>
@@ -231,9 +281,9 @@
 				<width>950</width>
 				<height>510</height>
 				<itemgap>2</itemgap>
-				<pagecontrol>-</pagecontrol>
+				<pagecontrol>60</pagecontrol>
 				<onleft>9000</onleft>
-				<onright>9000</onright>
+				<onright>60</onright>
 				<onup>9003</onup>
 				<ondown>9003</ondown>
 				<control type="label" id="300">
@@ -340,6 +390,41 @@
 					<height>2</height>
 					<texture>separator.png</texture>
 				</control>
+				<control type="radiobutton" id="318">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>$LOCALIZE[0] $LOCALIZE[31110]</label>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<onclick>Skin.ToggleSetting(Home_Enable_Custom_Back_Programs)</onclick>
+					<selected>Skin.HasSetting(Home_Enable_Custom_Back_Programs)</selected>
+					<visible>Skin.HasSetting(ProgramsInHome)</visible>
+				</control>
+				<control type="button" id="319">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>- $LOCALIZE[15311]</label>
+					<label2>[COLOR=green]$INFO[Skin.String(Home_Custom_Back_Programs_Folder)][/COLOR]</label2>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<onclick>Skin.SetPath(Home_Custom_Back_Programs_Folder)</onclick>
+					<enable>Skin.HasSetting(Home_Enable_Custom_Back_Programs)</enable>
+					<visible>Skin.HasSetting(ProgramsInHome)</visible>
+				</control>
+				<control type="image" id="320">
+					<width>950</width>
+					<height>2</height>
+					<texture>separator.png</texture>
+					<visible>Skin.HasSetting(ProgramsInHome)</visible>
+				</control>
 				<control type="radiobutton" id="310">
 					<width>950</width>
 					<height>35</height>
@@ -431,6 +516,22 @@
 					<onclick>Skin.SetPath(Home_Custom_Back_Settings_Folder)</onclick>
 					<enable>Skin.HasSetting(Home_Enable_Custom_Back_Settings)</enable>
 				</control>
+			</control>
+			<control type="scrollbar" id="60">
+				<posx>1255</posx>
+				<posy>130</posy>
+				<width>20</width>
+				<height>510</height>
+				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back.png</texturesliderbackground>
+				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>scrollbar_nib.png</textureslidernib>
+				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+				<onleft>9003</onleft>
+				<onright>9000</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+				<visible>Skin.String(SkinSettings,3)</visible>
 			</control>
 			<control type="grouplist" id="9004">
 				<visible>Skin.String(SkinSettings,4)</visible>

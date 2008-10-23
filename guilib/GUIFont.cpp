@@ -60,7 +60,7 @@ float CScrollInfo::GetPixelsPerFrame()
 #ifdef _XBOX
   return ROUND(pixelSpeed * m_averageFrameTime);
 #else
-  return pixelSpeed * m_averageFrameTime);
+  return pixelSpeed * m_averageFrameTime;
 #endif
 }
 

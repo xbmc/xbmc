@@ -237,7 +237,8 @@ DllLoader::~DllLoader()
   {
     LoadedList* entry = m_pDlls;
     m_pDlls = entry->pNext;
-    if (entry->pDll) DllLoaderContainer::ReleaseModule((LibraryLoader*&) entry->pDll);
+    LibraryLoader* lib = entry->pDll;
+    if (entry->pDll) DllLoaderContainer::ReleaseModule(lib);
     delete entry;
   }
   

@@ -541,7 +541,7 @@ void CGUISettings::Initialize()
   AddBool(13, "lookandfeel.enablemouse", 21369, false);
 
   AddCategory(7, "locale", 20026);
-  AddString(1, "locale.country", 20026, "", SPIN_CONTROL_TEXT);
+  AddString(1, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
   AddString(2, "locale.language",248,"english", SPIN_CONTROL_TEXT);
   AddString(3, "locale.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
   AddSeparator(4, "locale.sep1");

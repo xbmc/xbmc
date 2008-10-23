@@ -146,8 +146,8 @@ public:
   virtual bool IsPlaying() const;
   virtual void Pause();
   virtual bool IsPaused() const;
-  virtual bool HasVideo();
-  virtual bool HasAudio();
+  virtual bool HasVideo() const;
+  virtual bool HasAudio() const;
   virtual void ToggleFrameDrop();
   virtual bool CanSeek();
   virtual void Seek(bool bPlus, bool bLargeStep);
@@ -196,6 +196,9 @@ public:
   virtual void DoAudioWork()                                    { m_dvdPlayerAudio.DoWork(); }
   virtual bool OnAction(const CAction &action);
   virtual bool HasMenu();
+  virtual int GetAudioBitrate();
+  virtual int GetVideoBitrate();
+  virtual int GetSourceBitrate();
   
   virtual bool GetCurrentSubtitle(CStdString& strSubtitle);
   
@@ -205,8 +208,7 @@ public:
   virtual bool IsCaching() const { return m_caching; } 
   virtual int GetCacheLevel() const ; 
 
-  virtual int OnDVDNavResult(void* pData, int iMessage);
-  
+  virtual int OnDVDNavResult(void* pData, int iMessage);    
 protected:  
   friend class CSelectionStreams;
   void LockStreams()                                            { EnterCriticalSection(&m_critStreamSection); }
@@ -265,6 +267,7 @@ protected:
   std::string m_filename; // holds the actual filename
   std::string m_content;  // hold a hint to what content file contains (mime type)
   bool        m_caching;  // player is filling up the demux queue
+  bool        m_seeking;  // player is currently trying to fullfill a seek request
 
   CCurrentStream m_CurrentAudio;
   CCurrentStream m_CurrentVideo;
@@ -273,7 +276,6 @@ protected:
   CSelectionStreams m_SelectionStreams;
 
   int m_playSpeed;
-
   time_t m_tmLastSeek;
   struct SSpeedState
   {
@@ -323,6 +325,14 @@ protected:
     bool recording;           // are we currently recording
   } m_State;
   CCriticalSection m_StateSection;
+
+  class CPlayerSeek
+  {
+  public:
+    CPlayerSeek(CDVDPlayer* player);
+    ~CPlayerSeek();
+    CDVDPlayer& m_player;
+  };
 
   HANDLE m_hReadyEvent;
   CRITICAL_SECTION m_critStreamSection; // need to have this lock when switching streams (audio / video)

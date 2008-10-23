@@ -108,7 +108,7 @@ void CGUIImage::AllocateOnDemand()
   if (!IsVisible() && m_visible != DELAYED)
   {
     if (m_bDynamicResourceAlloc && IsAllocated())
-      FreeResources();
+      FreeResourcesButNotAnims();
     // reset animated textures (animgifs)
     m_iCurrentLoop = 0;
     m_iCurrentImage = 0;
@@ -553,6 +553,15 @@ void CGUIImage::FreeResources()
 {
   FreeTextures();
   CGUIControl::FreeResources();
+}
+
+// WORKAROUND - we are currently resetting all animations when this is called, which shouldn't be the case
+//              see CGUIControl::FreeResources() - this needs remedying.
+void CGUIImage::FreeResourcesButNotAnims()
+{
+  FreeTextures();
+  m_bAllocated=false;
+  m_hasRendered = false;
 }
 
 void CGUIImage::DynamicResourceAlloc(bool bOnOff)
