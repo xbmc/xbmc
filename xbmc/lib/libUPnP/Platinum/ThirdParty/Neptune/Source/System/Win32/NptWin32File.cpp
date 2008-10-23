@@ -14,7 +14,11 @@
 #include "NptFile.h"
 #include "NptUtils.h"
 
+#if defined(_XBOX)
+#include <xtl.h>
+#else
 #include <windows.h>
+#endif
 
 /*----------------------------------------------------------------------
 |   logging
@@ -62,7 +66,7 @@ NPT_Result
 NPT_File::GetRoots(NPT_List<NPT_String>& roots)
 {
     roots.Clear();
-#if defined(_WIN32_WCE)
+#if defined(_WIN32_WCE) || defined(_XBOX)
     return NPT_ERROR_NOT_IMPLEMENTED;
 #else
     DWORD drives = GetLogicalDrives();
@@ -83,16 +87,6 @@ NPT_File::GetRoots(NPT_List<NPT_String>& roots)
 NPT_Result
 NPT_File::CreateDirectory(const char* path)
 {
-    return NPT_ERROR_NOT_IMPLEMENTED;
-}
-
-/*----------------------------------------------------------------------
-|   NPT_File::GetWorkingDirectory
-+---------------------------------------------------------------------*/
-NPT_Result
-NPT_File::GetWorkingDirectory(NPT_String& path)
-{
-    path.SetLength(0);
     return NPT_ERROR_NOT_IMPLEMENTED;
 }
 
@@ -129,6 +123,18 @@ NPT_File::DeleteDirectory(const char* path)
 NPT_Result
 NPT_File::Rename(const char* from_path, const char* to_path)
 {
+    return NPT_ERROR_NOT_IMPLEMENTED;
+}
+#endif
+
+#if defined(_WIN32_WCE) || defined(_XBOX)
+/*----------------------------------------------------------------------
+|   NPT_File::GetWorkingDirectory
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_File::GetWorkingDirectory(NPT_String& path)
+{
+    path.SetLength(0);
     return NPT_ERROR_NOT_IMPLEMENTED;
 }
 #endif
