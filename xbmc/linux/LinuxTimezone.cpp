@@ -147,6 +147,7 @@ void CLinuxTimezone::SetTimezone(CStdString timezoneName)
 CStdString CLinuxTimezone::GetOSConfiguredTimezone()
 {
    char timezoneName[255];
+   timezoneName[0] = 0;
    FILE* fp = fopen("/etc/timezone", "r");
    if (fp)
    {
