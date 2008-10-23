@@ -992,6 +992,8 @@ void CLinuxRendererGL::LoadTextures(int source)
     }
     SetEvent(m_eventTexturesDone[source]);
   }
+
+  glDisable(m_textureTarget);
 }
 
 void CLinuxRendererGL::Reset()
@@ -1948,6 +1950,9 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
   glActiveTextureARB(GL_TEXTURE2);
   glDisable(m_textureTarget);
   glActiveTextureARB(GL_TEXTURE0);
+  glDisable(m_textureTarget);
+
+  glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, m_fbo.Texture());
   VerifyGLState();
 
@@ -2320,7 +2325,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
       VerifyGLState();
     }
   }
-  
+  glDisable(m_textureTarget);
   SetEvent(m_eventTexturesDone[index]);
   return true;
 }
