@@ -14,6 +14,7 @@
 #include "IFile.h"
 #include "FileFactory.h"
 #include "utils/log.h"
+#include "util.h"
 #include "URL.h"
 
 #ifdef max
@@ -187,7 +188,7 @@ public:
     NPT_XbmcFileOutputStream(NPT_XbmcFileReference& file) :
         NPT_XbmcFileStream(file) {}
 
-    // NPT_InputStream methods
+    // NPT_OutputStream methods
     NPT_Result Write(const void* buffer, 
                      NPT_Size    bytes_to_write, 
                      NPT_Size*   bytes_written);
@@ -293,15 +294,25 @@ NPT_XbmcFile::Open(NPT_File::OpenMode mode)
             return NPT_ERROR_NO_SUCH_FILE;
         }
 
+        bool result;
+        CURL* url = new CURL(name);
+        /* path is not fully qualified so assume it's relative to home dir */
+        if (url->GetFileName().IsEmpty()) {
+            delete url;
+            CStdString homepath;
+            CUtil::GetHomePath(homepath);
+            url = new CURL(homepath + "/" + name);
+        }
+
         // compute mode
         if (mode & NPT_FILE_OPEN_MODE_WRITE) {
-            return NPT_ERROR_NOT_IMPLEMENTED;
+            result = file->OpenForWrite(*url, true, (mode & NPT_FILE_OPEN_MODE_TRUNCATE)?true:false);
         } else {
-            CURL url(name);
-            if (!file->Open(url, true)) {
-                return NPT_ERROR_NO_SUCH_FILE;
-            }
+            result = file->Open(*url, true);
         }
+
+        delete url;
+        if (!result) return NPT_ERROR_NO_SUCH_FILE;
 
         m_Size = (NPT_LargeSize)file->GetLength();
     }
