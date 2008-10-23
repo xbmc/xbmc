@@ -218,21 +218,7 @@
 				<onup>5</onup>
 				<ondown>5</ondown>
 				<pagecontrol>61</pagecontrol>
-				<visible>Control.IsVisible(61) + !Control.IsVisible(50)</visible>
-				<include>autoscrollmedium</include>
-				<info>ListItem.Property(AlbumReview)</info>
-			</control>
-			<control type="textbox" id="4">
-				<description>textarea</description>
-				<posx>200</posx>
-				<posy>350</posy>
-				<width>471</width>
-				<height>170</height>
-				<onleft>9000</onleft>
-				<onright>61</onright>
-				<onup>5</onup>
-				<ondown>5</ondown>
-				<visible>!Control.IsVisible(61) + !Control.IsVisible(50)</visible>
+				<visible>!Control.IsVisible(50)</visible>
 				<include>autoscrollmedium</include>
 				<info>ListItem.Property(AlbumReview)</info>
 			</control>
@@ -500,7 +486,6 @@
 			<orientation>vertical</orientation>
 			<pagecontrol>61</pagecontrol>
 			<scrolltime>200</scrolltime>
-			<visible>!Control.IsVisible(4)</visible>
 			<itemlayout width="250" height="29">
 				<control type="image">
 					<posx>5</posx>
