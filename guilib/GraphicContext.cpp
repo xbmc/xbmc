@@ -1461,7 +1461,10 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
 #endif
     
 #ifdef __APPLE__
-    Cocoa_GL_SetFullScreen(g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, true, blankOtherDisplays);
+    ResetScreenParameters(m_Resolution);
+    width = m_iFullScreenWidth = m_iScreenWidth= g_settings.m_ResInfo[m_Resolution].iWidth;
+    height = m_iFullScreenHeight = m_iScreenHeight = g_settings.m_ResInfo[m_Resolution].iHeight;
+    Cocoa_GL_SetFullScreen(width, height, true, blankOtherDisplays);
 #else
     SDL_SetVideoMode(width, height, 0, SDL_FULLSCREEN);
 #endif
