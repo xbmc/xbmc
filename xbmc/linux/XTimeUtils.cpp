@@ -150,7 +150,7 @@ BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTi
 {
   static const int dayoffset[12] = {0, 31, 59, 90, 120, 151, 182, 212, 243, 273, 304, 334};
 
-  struct tm sysTime;
+  struct tm sysTime = {};
   sysTime.tm_year = lpSystemTime->wYear - 1900;
   sysTime.tm_mon = lpSystemTime->wMonth - 1;
   sysTime.tm_wday = lpSystemTime->wDayOfWeek;
