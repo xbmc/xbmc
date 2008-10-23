@@ -69,7 +69,7 @@ using namespace MEDIA_DETECT;
 typedef struct
 {
   char cDriveLetter;
-  char* szDevice;
+  char szDevice[MAX_PATH];
   int iPartition;
 }
 stDriveMapping;
@@ -87,23 +87,23 @@ stDriveMapping driveMapping[] =
 #elif defined(WIN32)
 stDriveMapping driveMapping[] =
   {
-    {'P', new char[MAX_PATH], 0},
-    {'Q', new char[MAX_PATH], 0},
-    {'T', new char[MAX_PATH], 0},
-    {'Z', new char[MAX_PATH], 0},
-    {'U', new char[MAX_PATH], 0}
+    {'P', "", 0},
+    {'Q', "", 0},
+    {'T', "", 0},
+    {'Z', "", 0},
+    {'U', "", 0}
   };
 
 #else
 stDriveMapping driveMapping[] =
   {
-    {'P', new char[MAX_PATH], 0},
-    {'Q', new char[MAX_PATH], 0},
-    {'T', new char[MAX_PATH], 0},
-    {'Z', new char[MAX_PATH], 0},
-    {'C', new char[MAX_PATH], 0},
-    {'E', new char[MAX_PATH], 0},
-    {'U', new char[MAX_PATH], 0}
+    {'P', "", 0},
+    {'Q', "", 0},
+    {'T', "", 0},
+    {'Z', "", 0},
+    {'C', "", 0},
+    {'E', "", 0},
+    {'U', "", 0}
   };
 #endif
 
