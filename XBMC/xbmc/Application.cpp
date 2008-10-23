@@ -201,6 +201,7 @@
 #ifdef _WIN32
 #include <shlobj.h>
 #include <win32/MockXboxSymbols.h>
+#include "win32util.h"
 #endif
 #ifdef HAS_XRANDR
 #include "XRandR.h"
@@ -574,6 +575,8 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Mac OS X.  Built on %s", __DATE__);
 #elif defined(_WIN32)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: %s.  Built on %s (compiler %i)",g_sysinfo.GetKernelVersion().c_str(), __DATE__, _MSC_VER);
+  CLog::Log(LOGNOTICE, g_cpuInfo.getCPUModel().c_str());
+  CLog::Log(LOGNOTICE, CWIN32Util::GetResInfoString());
 #endif
   CLog::Log(LOGNOTICE, "Q is mapped to: %s", _P("Q:").c_str());
   char szXBEFileName[1024];

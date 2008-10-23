@@ -35,14 +35,16 @@ public:
   static CStdString MountShare(const CStdString &strPath, DWORD *dwError=NULL);
   static DWORD UmountShare(const CStdString &strPath);
   static CStdString URLEncode(const CURL &url);
-  static CStdString CWIN32Util::GetLocalPath(const CStdString &strPath);
-  static char CWIN32Util::FirstDriveFromMask (ULONG unitmask);
-  static int CWIN32Util::GetDriveStatus(const CStdString &strPath);
+  static CStdString GetLocalPath(const CStdString &strPath);
+  static char FirstDriveFromMask (ULONG unitmask);
+  static int GetDriveStatus(const CStdString &strPath);
   static void UpdateDriveMask();
   static CStdString GetChangedDrive();
   static bool PowerManagement(PowerState State);
   static bool XBMCShellExecute(const CStdString &strPath, bool bWaitForScriptExit=false);
   static std::vector<CStdString> GetDiskUsage();
+  static void MaximizeWindow(bool bRemoveBorder);
+  static CStdString GetResInfoString();
 
 private:
   static DWORD dwDriveMask;

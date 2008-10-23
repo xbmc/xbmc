@@ -371,6 +371,23 @@ std::vector<CStdString> CWIN32Util::GetDiskUsage()
   return result;
 }
 
+void CWIN32Util::MaximizeWindow(bool bRemoveBorder)
+{
+  /*int w=0,h=0;
+  g_videoConfig.GetDesktopResolution(&w,&h);*/
+}
+
+CStdString CWIN32Util::GetResInfoString()
+{
+  CStdString strRes;
+  DEVMODE devmode;
+  ZeroMemory(&devmode, sizeof(devmode));
+  devmode.dmSize = sizeof(devmode);
+  EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
+  strRes.Format("Desktop Resolution: %dx%d %dBit at %dHz",devmode.dmPelsWidth,devmode.dmPelsHeight,devmode.dmBitsPerPel,devmode.dmDisplayFrequency);
+  return strRes;
+}
+
 extern "C" {
   FILE *fopen_utf8(const char *_Filename, const char *_Mode)
   {
@@ -380,3 +397,4 @@ extern "C" {
     return _wfopen(wfilename.c_str(), wmode.c_str());
   }
 }
+
