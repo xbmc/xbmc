@@ -105,6 +105,7 @@ NPT_File::CreateDirectory(const char* path)
     return NPT_SUCCESS;
 }
 
+#if !defined(_XBOX)
 /*----------------------------------------------------------------------
 |   NPT_File::GetWorkingDirectory
 +---------------------------------------------------------------------*/
@@ -118,6 +119,7 @@ NPT_File::GetWorkingDirectory(NPT_String& path)
     
     return NPT_SUCCESS;
 }
+#endif
 
 /*----------------------------------------------------------------------
 |   NPT_File::GetInfo
