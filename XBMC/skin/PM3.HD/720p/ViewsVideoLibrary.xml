@@ -429,7 +429,7 @@
 	</include>
 	<include name="MovieFanartView">
 		<control type="list" id="56">
-			<visible>Container.Content(Movies)</visible>
+			<visible>Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Seasons)</visible>
 			<posx>300</posx>
 			<posy>130</posy>
 			<width>400</width>
@@ -482,7 +482,7 @@
 	</include>
 	<include name="MovieFanartView_Extras">
 		<control type="group">
-			<visible>Control.IsVisible(56)</visible>
+			<visible>Control.IsVisible(56) + Container.Content(Movies)</visible>
 			<animation effect="fade" time="600" delay="400">Visible</animation>
 			<animation effect="fade" time="200">Hidden</animation>
 			<control type="image">
@@ -554,6 +554,60 @@
 				<align>left</align>
 				<aligny>center</aligny>
 				<label>$INFO[ListItem.Year,$LOCALIZE[345] : ]</label>
+			</control>
+		</control>
+		<control type="group">
+			<visible>Control.IsVisible(56) + Container.Content(TVShows)</visible>
+			<animation effect="fade" time="600" delay="400">Visible</animation>
+			<animation effect="fade" time="200">Hidden</animation>
+			<control type="label">
+				<posx>40</posx>
+				<posy>580</posy>
+				<width>785</width>
+				<height>30</height>
+				<font>font18</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>[UPPERCASE]$INFO[ListItem.Title][/UPPERCASE]</label>
+			</control>
+			<control type="textbox">
+				<description>Plot Value for TVShow</description>
+				<posx>40</posx>
+				<posy>610</posy>
+				<width>785</width>
+				<height>90</height>
+				<font>font11</font>
+				<align>justify</align>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<pagecontrol>9999999999</pagecontrol>
+				<label>$INFO[ListItem.Plot]</label>
+			</control>
+		</control>
+		<control type="group">
+			<visible>Control.IsVisible(56) + Container.Content(Seasons)</visible>
+			<animation effect="fade" time="600" delay="400">Visible</animation>
+			<animation effect="fade" time="200">Hidden</animation>
+			<control type="image">
+				<posx>35</posx>
+				<posy>395</posy>
+				<width>230</width>
+				<height>320</height>
+				<aspectratio align="right" aligny="bottom">keep</aspectratio>
+				<texture>$INFO[Listitem.thumb]</texture>
+				<bordertexture border="16">poster-shadow.png</bordertexture>
+				<bordersize>16</bordersize>
+			</control>
+			<control type="image">
+				<posx>220</posx>
+				<posy>670</posy>
+				<width>35</width>
+				<height>35</height>
+				<aspectratio>keep</aspectratio>
+				<texture>$INFO[ListItem.Overlay]</texture>
 			</control>
 		</control>
 	</include>

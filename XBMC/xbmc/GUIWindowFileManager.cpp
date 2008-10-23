@@ -227,7 +227,6 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       CGUIWindow::OnMessage(message);
-      m_dlgProgress = NULL;
       ClearFileItems(0);
       ClearFileItems(1);
       return true;

@@ -1775,3 +1775,66 @@ CStdString CSysInfo::GetInternetState()
     strInetCon.Format("%s %s",g_localizeStrings.Get(13295), g_localizeStrings.Get(13297));
   return strInetCon;
 }
+
+#if defined(_LINUX) && !defined(__APPLE__)
+CStdString CSysInfo::GetLinuxDistro()
+{
+  CStdString result = "";
+  
+  FILE* pipe = popen("unset PYTHONHOME; unset PYTHONPATH; /usr/bin/lsb_release -d | cut -f2", "r");
+  if (pipe)
+  {
+    char buffer[256];
+    memset(buffer, 0, sizeof(buffer)*sizeof(char));
+    fread(buffer, sizeof(buffer)*sizeof(char), 1, pipe);
+    pclose(pipe);
+    result = buffer;
+  }
+  
+  return result.Trim();
+}
+#endif
+
+#ifdef _LINUX
+CStdString CSysInfo::GetUnameVersion()
+{
+  CStdString result = "";
+  
+  FILE* pipe = popen("uname -rs", "r");
+  if (pipe)
+  {
+    char buffer[256];
+    memset(buffer, 0, sizeof(buffer)*sizeof(char));
+    fread(buffer, sizeof(buffer)*sizeof(char), 1, pipe);
+    pclose(pipe);
+    result = buffer;
+  }
+  
+  return result.Trim();
+}
+#endif
+
+CStdString CSysInfo::GetUserAgent()
+{
+  CStdString result;
+  result = "XBMC/8.10 (";  // Grrrr...there's no where that the XBMC version number is defined
+#if defined(_WIN32PC)
+  result += "Windows; ";
+  result += GetKernelVersion();
+#elif defined(__APPLE__)
+  result += "Mac OS X; ";
+  result += GetUnameVersion();
+#elif defined(_LINUX)
+  result += "Linux; ";
+  CStdString distro = GetLinuxDistro();
+  if (distro != "")
+  {
+    result += distro;
+    result += "; ";
+  }
+  result += GetUnameVersion();
+#endif
+  result += "; http://www.xbmc.org)";
+  
+  return result;
+}

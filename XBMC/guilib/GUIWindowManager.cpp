@@ -398,7 +398,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
   g_infoManager.SetPreviousWindow(currentWindow);
   g_audioManager.PlayWindowSound(pNewWindow->GetID(), SOUND_INIT);
   // Send the init message
-  CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, GetActiveWindow(), iWindowID);
+  CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, currentWindow, iWindowID);
   if (!strPath1.IsEmpty()) msg.SetStringParam(strPath1);
   pNewWindow->OnMessage(msg);
 //  g_infoManager.SetPreviousWindow(WINDOW_INVALID);
@@ -408,8 +408,8 @@ void CGUIWindowManager::CloseDialogs(bool forceClose)
 {
   while (m_activeDialogs.size() > 0)
   {
-    CGUIDialog* dialog = (CGUIDialog *)m_activeDialogs[0];
-    dialog->Close(forceClose);
+    CGUIWindow* win = m_activeDialogs[0];
+    win->Close(forceClose);
   }
 }
 
@@ -532,6 +532,7 @@ void CGUIWindowManager::DeInitialize()
     CGUIWindow* pWindow = (*it).second;
     if (IsWindowActive(it->first))
     {
+      pWindow->DisableAnimations();
       CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
       pWindow->OnMessage(msg);
     }

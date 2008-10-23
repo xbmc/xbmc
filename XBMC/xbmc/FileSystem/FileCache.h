@@ -41,6 +41,7 @@ namespace XFILE
     // CThread methods
     virtual void Process();
     virtual void OnExit();
+    virtual void StopThread();
     
     // IFIle methods
     virtual bool          Open(const CURL& url, bool bBinary = true);
@@ -57,7 +58,10 @@ namespace XFILE
     
     virtual ICacheInterface* GetCache();
     IFile *GetFileImp();
-    
+
+    virtual int  GetChunkSize() {return m_source.GetChunkSize();}
+
+    virtual CStdString GetContent();
 
   private:
     CCacheStrategy *m_pCache;

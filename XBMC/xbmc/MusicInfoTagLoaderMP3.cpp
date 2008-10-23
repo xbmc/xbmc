@@ -248,8 +248,10 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
   {
     /* Now check what the ID3v2 size field says */
     id3v2Size += UNSYNC(buffer[6], buffer[7], buffer[8], buffer[9]) + 10;
-    file.Seek(id3v2Size, SEEK_SET);
-    file.Read(buffer, 10);
+    if (file.Seek(id3v2Size, SEEK_SET) == -1)
+      return 0;
+    if (file.Read(buffer, 10) == 0)
+      return 0;
   }
   int firstFrameOffset = id3v2Size;
 

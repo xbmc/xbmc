@@ -69,7 +69,7 @@
   <string id="31101">Home Screen Options</string>
   <string id="31102">Backgrounds</string>
   <string id="31103">Show "Paused" in Picture Slide show</string>
-  <string id="31104"></string>
+  <string id="31104">Shutdown Menu - Use Hibernate instead of Suspend</string>
   <string id="31105">Show Media Titles in Background Scanner</string>
   <string id="31106">Miscellaneous Options</string>
   <string id="31107">Remove Scan Lines from Background</string>
@@ -77,6 +77,7 @@
   <string id="31109">Home Screen Backgrounds</string>
   <string id="31110">button - Enable Custom Backgrounds</string>
   <string id="31111">Always Show Music Info During Lyrics</string>
+  <string id="31112">Show Media Titles in "Wide Icons" View</string>
 
   <!-- Script Settings labels -->
   <string id="31200">Custom Script Options</string>

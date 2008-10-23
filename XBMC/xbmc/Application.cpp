@@ -3203,7 +3203,13 @@ bool CApplication::ProcessEventServer(float frameTime)
     return false;
 
   // process any queued up actions
-  es->ExecuteNextAction();
+  if (es->ExecuteNextAction())
+  {
+    // reset idle timers
+    m_idleTimer.StartZero();
+    ResetScreenSaver();
+    ResetScreenSaverWindow();
+  }
 
   // now handle any buttons or axis
   std::string joystickName;
@@ -3835,8 +3841,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
           options.starttime = bookmark.timeInSeconds;
           options.state = bookmark.playerState;
         }
-      } 
-      else if (item.HasVideoInfoTag()) 
+      }
+      else if (item.HasVideoInfoTag())
       {
         const CVideoInfoTag *tag = item.GetVideoInfoTag();
 

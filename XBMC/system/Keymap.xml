@@ -161,6 +161,20 @@
       <button id="11">XBMC.ActivateWindow(PlayerControls)</button>
     </joystick>
 
+    <joystick name="AppleRemote">
+      <!-- plus       --> <button id="1">Up</button>
+      <!-- minus      --> <button id="2">Down</button>
+      <!-- left       --> <button id="3">Left</button>
+      <!-- right      --> <button id="4">Right</button>
+      <!-- play/pause --> <button id="5">Select</button>
+      <!-- menu       --> <button id="6">PreviousMenu</button>
+
+      <!-- hold play  --> <button id="7">Fullscreen</button>
+      <!-- hold menu  --> <button id="8">ContextMenu</button>
+      <!-- hold left  --> <button id="9">BigStepBack</button>
+      <!-- hold right --> <button id="10">BigStepForward</button>
+    </joystick>
+
     <keyboard>
       <p>Play</p>
       <q>Queue</q>
@@ -220,6 +234,10 @@
       <button id="8">Fullscreen</button>
       <button id="10">XBMC.ActivateWindow(Favourites)</button>
       <button id="11">XBMC.ActivateWindow(ShutdownMenu)</button>
+    </joystick>
+
+    <joystick name="AppleRemote">
+      <button id="6">Fullscreen</button>
     </joystick>
 
     <remote>
@@ -296,6 +314,10 @@
       <button id="11">Delete</button>
     </joystick>
 
+    <joystick name="AppleRemote">
+      <button id="6">Playlist</button>
+    </joystick>
+
     <remote>
       <back>Playlist</back> <!-- Close playlist -->
       <clear>Delete</clear>
@@ -329,6 +351,11 @@
       <button id="11">Delete</button>
     </joystick>
 
+    <joystick name="AppleRemote">
+      <button id="5">ContextMenu</button> <!-- FIXME? -->
+      <button id="6">Playlist</button>
+    </joystick>
+
     <gamepad>
       <Y>Queue</Y>
     </gamepad>
@@ -353,6 +380,10 @@
     <joystick name="WiiRemote">
       <button id="6">ParentDir</button>
       <button id="11">Playlist</button>
+    </joystick>
+
+    <joystick name="AppleRemote">
+      <button id="6">ParentDir</button>
     </joystick>
 
      <remote>
@@ -386,6 +417,10 @@
     <joystick name="WiiRemote">
       <button id="6">ParentDir</button>
       <button id="11">Playlist</button>
+    </joystick>
+
+    <joystick name="AppleRemote">
+      <button id="6">ParentDir</button>
     </joystick>
 
      <remote>
@@ -463,6 +498,15 @@
       <button id="11">AspectRatio</button>
     </joystick>
 
+    <joystick name="AppleRemote">
+      <button id="1">VolumeUp</button>
+      <button id="2">VolumeDown</button>
+      <button id="3">StepBack</button>
+      <button id="4">StepForward</button>
+      <button id="5">OSD</button>
+      <button id="6">Fullscreen</button>
+    </joystick>
+
     <keyboard>
       <f>FastForward</f>
       <r>Rewind</r>
@@ -520,6 +564,10 @@
       <button id="6">Close</button>
     </joystick>
 
+    <joystick name="AppleRemote">
+      <button id="6">Close</button>
+    </joystick>
+
     <keyboard>
       <f>FastForward</f>
       <r>Rewind</r>
@@ -549,6 +597,10 @@
     </joystick>
 
     <joystick name="WiiRemote">
+      <button id="6">Close</button>
+    </joystick>
+
+    <joystick name="AppleRemote">
       <button id="6">Close</button>
     </joystick>
 
@@ -616,6 +668,15 @@
       <button id="11">DecreaseRating</button>
     </joystick>
 
+    <joystick name="AppleRemote">
+      <button id="1">VolumeUp</button>
+      <button id="2">VolumeDown</button>
+      <button id="3">SkipPrevious</button>
+      <button id="4">SkipNext</button>
+      <button id="5">XBMC.ActivateWindow(MusicOSD)</button>
+      <button id="6">Fullscreen</button>
+    </joystick>
+
     <keyboard>
       <f>FastForward</f>
       <r>Rewind</r>
@@ -662,6 +723,10 @@
       <button id="6">Close</button>
       <button id="10">CodecInfo</button>
       <button id="11">Info</button>
+    </joystick>
+
+    <joystick name="AppleRemote">
+      <button id="6">Close</button>
     </joystick>
 
     <remote>
@@ -712,6 +777,10 @@
       <menu>Close</menu>
     </remote>
 
+    <joystick name="AppleRemote">
+      <button id="6">Close</button>
+    </joystick>
+
     <keyboard>
       <f>FastForward</f>
       <r>Rewind</r>
@@ -753,6 +822,10 @@
     <remote>
       <menu>Close</menu>
     </remote>
+
+    <joystick name="AppleRemote">
+      <button id="6">Close</button>
+    </joystick>
 
     <keyboard>
       <f>FastForward</f>
@@ -812,6 +885,15 @@
       <button id="6">Info</button>
       <button id="10">ZoomIn</button>
       <button id="11">ZoomOut</button>
+    </joystick>
+
+    <joystick name="AppleRemote">
+      <button id="1">ZoomIn</button>
+      <button id="2">ZoomOut</button>
+      <button id="3">PreviousPicture</button>
+      <button id="4">NextPicture</button>
+      <button id="5">Info</button>
+      <button id="6">Stop</button>
     </joystick>
 
     <remote>
@@ -879,6 +961,10 @@
       <button id="11">ResetResolution</button>
     </joystick>
 
+    <joystick name="AppleRemote">
+      <button id="5">NextCalibration</button>
+    </joystick>
+
     <remote>
       <select>NextCalibration</select>
       <enter>NextCalibration</enter>
@@ -942,6 +1028,10 @@
       <button id="6">Close</button>
     </joystick>
 
+    <joystick name="AppleRemote">
+      <button id="6">Close</button>
+    </joystick>
+
     <remote>
       <back>Close</back>
     </remote>
@@ -972,6 +1062,10 @@
     </joystick>
 
     <joystick name="WiiRemote">
+      <button id="6">Close</button>
+    </joystick>
+
+    <joystick name="AppleRemote">
       <button id="6">Close</button>
     </joystick>
 
@@ -1017,6 +1111,10 @@
       <button id="5">OSD</button>
       <button id="10">Info</button>
       <button id="11">AspectRatio</button>
+    </joystick>
+
+    <joystick name="AppleRemote">
+      <button id="5">OSD</button>
     </joystick>
 
     <remote>
@@ -1071,6 +1169,10 @@
       <button id="6">Close</button>
     </joystick>
 
+    <joystick name="AppleRemote">
+      <button id="6">Close</button>
+    </joystick>
+
     <remote>
       <back>Close</back>
       <menu>Close</menu>
@@ -1109,6 +1211,10 @@
     </joystick>
 
     <joystick name="WiiRemote">
+      <button id="6">Close</button>
+    </joystick>
+
+    <joystick name="AppleRemote">
       <button id="6">Close</button>
     </joystick>
 
@@ -1152,6 +1258,10 @@
       <button id="11">Delete</button>
     </joystick>
 
+    <joystick name="AppleRemote">
+      <button id="6">Close</button>
+    </joystick>
+
     <remote>
       <back>Close</back>
       <menu>Close</menu>
@@ -1180,6 +1290,10 @@
     <joystick name="WiiRemote">
       <button id="6">ParentDir</button>
       <button id="11">Playlist</button>
+    </joystick>
+
+    <joystick name="AppleRemote">
+      <button id="6">ParentDir</button>
     </joystick>
 
     <remote>
@@ -1213,6 +1327,10 @@
     <joystick name="WiiRemote">
       <button id="6">ParentDir</button>
       <button id="11">Playlist</button>
+    </joystick>
+
+    <joystick name="AppleRemote">
+      <button id="6">ParentDir</button>
     </joystick>
 
     <remote>
@@ -1252,6 +1370,10 @@
       <button id="7">MoveItemDown</button>
       <button id="9">MoveItemUp</button>
       <button id="11">Delete</button>
+    </joystick>
+
+    <joystick name="AppleRemote">
+      <button id="6">Playlist</button>
     </joystick>
 
     <remote>
@@ -1301,6 +1423,11 @@
       <button id="11">BackSpace</button>
     </joystick>
 
+
+    <joystick name="AppleRemote">
+      <button id="6">Close</button>
+    </joystick>
+
     <remote>
       <back>BackSpace</back>
       <star>Shift</star>
@@ -1343,6 +1470,10 @@
       <back>Close</back>
     </remote>
 
+    <joystick name="AppleRemote">
+      <button id="6">Close</button>
+    </joystick>
+
     <keyboard>
       <menu>Close</menu>
     </keyboard>
@@ -1352,6 +1483,10 @@
     <remote>
       <back>Close</back>
     </remote>
+
+    <joystick name="AppleRemote">
+      <button id="6">Close</button>
+    </joystick>
   </FileStackingDialog>
 
 
@@ -1691,6 +1826,10 @@
       <button id="6">Close</button>
     </joystick>
 
+    <joystick name="AppleRemote">
+      <button id="6">Close</button>
+    </joystick>
+
     <remote>
       <back>Close</back>
     </remote>
@@ -1708,6 +1847,10 @@
     </joystick>
 
     <joystick name="WiiRemote">
+      <button id="6">Close</button>
+    </joystick>
+
+    <joystick name="AppleRemote">
       <button id="6">Close</button>
     </joystick>
 
@@ -1775,6 +1918,12 @@
     <joystick name="WiiRemote">
       <button id="3">PreviousPicture</button>
       <button id="4">NextPicture</button>
+      <button id="6">Close</button>
+    </joystick>
+
+    <joystick name="AppleRemote">
+      <button id="3">Left</button>
+      <button id="4">Right</button>
       <button id="6">Close</button>
     </joystick>
 

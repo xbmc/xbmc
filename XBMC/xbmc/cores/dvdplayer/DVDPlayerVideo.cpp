@@ -210,6 +210,8 @@ void CDVDPlayerVideo::Process()
   int iDropped = 0; //frames dropped in a row
   bool bRequestDrop = false;  
 
+  m_videoStats.Start();
+
   while (!m_bStop)
   {
     int iQueueTimeOut = (int)(m_stalled ? frametime / 4 : frametime * 10) / 1000;
@@ -368,7 +370,7 @@ void CDVDPlayerVideo::Process()
       m_pVideoCodec->SetDropState(bRequestDrop);
 
       int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->pts);
-
+      m_videoStats.AddSampleBytes(pPacket->iSize);
       // assume decoder dropped a picture if it didn't give us any
       // picture from a demux packet, this should be reasonable
       // for libavformat as a demuxer as it normally packetizes
@@ -880,9 +882,15 @@ void CDVDPlayerVideo::UpdateMenuPicture()
 std::string CDVDPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "vq:" << std::setw(3) << std::left << min(100,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
+  s << "vq:" << std::setw(3) << min(99,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
   s << ", ";
-  s << "cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%";
+  s << "cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%, ";
+  s << "bitrate: " << std::setprecision(4) << (double)GetVideoBitrate() / (1024.0*1024.0) << " MBit/s";
   return s.str();
+}
+
+int CDVDPlayerVideo::GetVideoBitrate()
+{
+  return (int)m_videoStats.GetBitrate();
 }
 
