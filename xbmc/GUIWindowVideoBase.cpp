@@ -930,7 +930,7 @@ void CGUIWindowVideoBase::OnResumeItem(int iItem)
       { // prompt user whether they wish to resume
         vector<CStdString> choices;
         CStdString resumeString, time;
-        StringUtils::SecondsToTimeString(bookmark.timeInSeconds, time);
+        StringUtils::SecondsToTimeString((long)bookmark.timeInSeconds, time);
         resumeString.Format(g_localizeStrings.Get(12022).c_str(), time.c_str());
         choices.push_back(resumeString);
         choices.push_back(g_localizeStrings.Get(12021)); // start from the beginning
