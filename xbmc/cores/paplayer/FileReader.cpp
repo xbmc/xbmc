@@ -133,7 +133,7 @@ int CFileReader::Read(void *out, __int64 size)
     unsigned int readAhead = m_ringBuffer.GetMaxReadSize();
     if (readAhead)
     {
-      unsigned int amountToCopy = std::min<unsigned int>(readAhead, sizeleft);
+      unsigned int amountToCopy = (unsigned int)std::min<__int64>(readAhead, sizeleft);
       if (m_ringBuffer.ReadBinary(byteOut, amountToCopy))
       {
         m_bufferedDataPos += amountToCopy;
