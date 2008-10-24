@@ -14,7 +14,7 @@
 #include "PltMediaRenderer.h"
 #include "PltService.h"
 
-//NPT_SET_LOCAL_LOGGER("platinum.media.renderer")
+NPT_SET_LOCAL_LOGGER("platinum.media.renderer")
 
 /*----------------------------------------------------------------------
 |   external references
