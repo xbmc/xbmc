@@ -50,9 +50,9 @@ int main(int argc, char* argv[])
   {
     for (int i = 1; i < argc; i++)
     {
-      if (strnicmp(argv[i], "-fs", 3) == 0)
+      if (strnicmp(argv[i], "-fs", 3) == 0 || strnicmp(argv[i], "--fullscreen", 12) == 0)
       {
-        g_advancedSettings.m_fullScreen = true;
+        g_advancedSettings.m_startFullScreen = true;
       }
       else if (strnicmp(argv[i], "-h", 2) == 0 || strnicmp(argv[i], "--help", 6) == 0)
       {
