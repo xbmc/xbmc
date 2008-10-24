@@ -295,9 +295,13 @@ bool CGUIPythonWindowXML::LoadXML(const CStdString &strPath, const CStdString &s
   unsigned int offset = LoadScriptStrings();
 
   CStdString xml;
-  char *buffer = new char[(unsigned int)file.GetLength()];
-  if (buffer && file.Read(buffer, file.GetLength()))
+  char *buffer = new char[(unsigned int)file.GetLength()+1];
+  if(buffer == NULL)
+    return false;
+  int size = file.Read(buffer, file.GetLength());
+  if (size > 0)
   { 
+    buffer[size] = 0;
     xml = buffer;
     if (offset)
     {
@@ -315,8 +319,8 @@ bool CGUIPythonWindowXML::LoadXML(const CStdString &strPath, const CStdString &s
         pos = xml.Find("SCRIPT", pos + 6);
       }
     }
-    delete[] buffer;
   }
+  delete[] buffer;
 
   TiXmlDocument xmlDoc;
   xmlDoc.Parse(xml.c_str());
