@@ -245,7 +245,7 @@ void Cocoa_GL_UnblankOtherDisplays(int screen)
 
 static NSOpenGLContext* lastOwnedContext = 0;
 
-void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDisplays)
+void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDisplays, bool gl_FullScreen)
 {
   static NSView* lastView = NULL;
   static CGDirectDisplayID fullScreenDisplayID = 0;
@@ -253,24 +253,11 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
   static NSWindow* mainWindow = NULL;
   static NSPoint last_origin;
   int screen_index;
-  bool windowedFullScreen;
-
-  //if (g_application.IsStandAlone())
-  if (false)
-  {
-    // if we are passed "--standalone", do a GL FullScreen
-    windowedFullScreen = false;
-  }
-  else
-  {
-    // do a Cocoa Windowed FullScreen
-    windowedFullScreen = true;
-  }
 
   // If we're already fullscreen then we must be moving to a different display.
   // Recurse to reset fullscreen mode and then continue.
   if (fs == true && lastScreen != NULL)
-    Cocoa_GL_SetFullScreen(0, 0, false, blankOtherDisplays);
+    Cocoa_GL_SetFullScreen(0, 0, false, blankOtherDisplays, gl_FullScreen);
   
   NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
   
@@ -292,7 +279,7 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
     lastScreen = [[lastView window] screen];
     screen_index = Cocoa_GetDisplayIndex( Cocoa_GetDisplayIDFromScreen(lastScreen) );
     
-    if (windowedFullScreen == false)
+    if (gl_FullScreen)
     {
       // hide the window
       last_origin = [[lastView window] frame].origin;
@@ -418,7 +405,7 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
     if (fullScreenDisplayID == kCGDirectMainDisplay)
       ShowMenuBar();
 
-    if (windowedFullScreen == false)
+    if (gl_FullScreen)
     {
       // release displays
       CGReleaseAllDisplays();
