@@ -58,12 +58,11 @@ void * memalign (size_t align, size_t size);
 static int decode_blockcode (int code, int levels, int *values);
 
 static void qmf_32_subbands (dts_state_t * state, int chans,
-                             double samples_in[32][8], sample_t *samples_out,
-                             double rScale, sample_t bias);
+                             double samples_in[32][8], sample_t *samples_out);
 
 static void lfe_interpolation_fir (int nDecimationSelect, int nNumDeciSample,
                                    double *samples_in, sample_t *samples_out,
-                                   double rScale, sample_t bias );
+                                   sample_t bias);
 
 static void pre_calc_cosmod( dts_state_t * state );
 
@@ -121,7 +120,9 @@ static int syncinfo (dts_state_t * state, int * flags,
     bitstream_get (state, 1);
 
     *frame_length = (bitstream_get (state, 7) + 1) * 32;
+    if (*frame_length < 6 * 32) return 0;
     frame_size = bitstream_get (state, 14) + 1;
+    if (frame_size < 96) return 0;
     if (!state->word_mode) frame_size = frame_size * 8 / 14 * 2;
 
     /* Audio channel arrangement */
@@ -302,7 +303,14 @@ int dts_frame (dts_state_t * state, uint8_t * buf, int * flags,
 
     /* Primary audio coding header */
     state->subframes = bitstream_get (state, 4) + 1;
+
+    if (state->subframes > DTS_SUBFRAMES_MAX)
+        state->subframes = DTS_SUBFRAMES_MAX;
+
     state->prim_channels = bitstream_get (state, 3) + 1;
+
+    if (state->prim_channels > DTS_PRIM_CHANNELS_MAX)
+        state->prim_channels = DTS_PRIM_CHANNELS_MAX;
 
 #ifdef DEBUG
     fprintf (stderr, "subframes: %i\n", state->subframes);
@@ -354,7 +362,10 @@ int dts_frame (dts_state_t * state, uint8_t * buf, int * flags,
     for (i = 0; i < state->prim_channels; i++)
     {
         state->bitalloc_huffman[i] = bitstream_get (state, 3);
-        /* if (state->bitalloc_huffman[i] == 7) bailout */
+        /* There might be a way not to trash the whole frame, but for
+         * now we must bail out or we will buffer overflow later. */
+        if (state->bitalloc_huffman[i] == 7)
+            return 1;
 #ifdef DEBUG
         fprintf (stderr, "bit allocation quantizer: %i\n",
                  state->bitalloc_huffman[i]);
@@ -979,14 +990,7 @@ int dts_subsubframe (dts_state_t * state)
     /* 32 subbands QMF */
     for (k = 0; k < state->prim_channels; k++)
     {
-        static double pcm_to_float[8] =
-            {32768.0, 32768.0, 524288.0, 524288.0, 0, 8388608.0, 8388608.0};
-
-        qmf_32_subbands (state, k,
-                         subband_samples[k],
-                         &state->samples[256*k],
-          /*WTF ???*/    32768.0*3/2/*pcm_to_float[state->source_pcm_res]*/,
-                         0/*state->bias*/);
+        qmf_32_subbands (state, k, subband_samples[k], &state->samples[256*k]);
     }
 
     /* Down/Up mixing */
@@ -998,6 +1002,10 @@ int dts_subsubframe (dts_state_t * state)
     {
         dts_downmix (state->samples, state->amode, state->output, state->bias,
                      state->clev, state->slev);
+    } else if (state->bias)
+    {
+        for ( k = 0; k < 256*state->prim_channels; k++ )
+            state->samples[k] += state->bias;
     }
 
     /* Generate LFE samples for this subsubframe FIXME!!! */
@@ -1009,8 +1017,7 @@ int dts_subsubframe (dts_state_t * state)
         lfe_interpolation_fir (state->lfe, 2 * state->lfe,
                                state->lfe_data + lfe_samples +
                                2 * state->lfe * subsubframe,
-                               &state->samples[256*i_channels],
-                               8388608.0, state->bias);
+                               &state->samples[256*i_channels], state->bias);
         /* Outputs 20bits pcm samples */
     }
 
@@ -1140,10 +1147,10 @@ static void pre_calc_cosmod( dts_state_t * state )
 }
 
 static void qmf_32_subbands (dts_state_t * state, int chans,
-                             double samples_in[32][8], sample_t *samples_out,
-                             double scale, sample_t bias)
+                             double samples_in[32][8], sample_t *samples_out)
 {
-    double *prCoeff;
+    static const double scale = 1.4142135623730951 /* sqrt(2) */ * 32768.0;
+    const double *prCoeff;
     int i, j, k;
     double raXin[32];
 
@@ -1209,7 +1216,7 @@ static void qmf_32_subbands (dts_state_t * state, int chans,
 
         /* Create 32 PCM output samples */
         for (i=0;i<32;i++)
-            samples_out[nChIndex++] = subband_fir_hist2[i] / scale + bias;
+            samples_out[nChIndex++] = subband_fir_hist2[i] / scale;
 
         /* Update working arrays */
         for (i=511;i>=32;i--)
@@ -1223,7 +1230,7 @@ static void qmf_32_subbands (dts_state_t * state, int chans,
 
 static void lfe_interpolation_fir (int nDecimationSelect, int nNumDeciSample,
                                    double *samples_in, sample_t *samples_out,
-                                   double scale, sample_t bias)
+                                   sample_t bias)
 {
     /* samples_in: An array holding decimated samples.
      *   Samples in current subframe starts from samples_in[0],
@@ -1233,6 +1240,7 @@ static void lfe_interpolation_fir (int nDecimationSelect, int nNumDeciSample,
      * samples_out: An array holding interpolated samples
      */
 
+    static const double scale = 8388608.0;
     int nDeciFactor, k, J;
     double *prCoeff;
 
