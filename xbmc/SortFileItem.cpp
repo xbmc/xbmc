@@ -134,7 +134,7 @@ void SSortFileItem::BySize(CFileItemPtr &item)
   if (!item) return;
 
   CStdString label;
-  label.Format("%lld", item->m_dwSize);
+  label.Format("%"PRId64, item->m_dwSize);
   item->SetSortLabel(label);
 }
 
