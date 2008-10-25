@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez at gmail.com-->
-<!--Date of translation: 10/20/2008-->
+<!--Date of translation: 10/24/2008-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -96,12 +96,12 @@
   <string id="160">사용가능</string>
   <string id="161">사용불가</string>
   <string id="162">트레이 열림</string>
-  <string id="163">읽는 중</string>
+  <string id="163">읽는중</string>
   <string id="164">디스크 없음</string>
   <string id="165">디스크 있음</string>
   <string id="166">스킨</string>
   <string id="167">FTP 서버 사용</string>
-  <string id="168">인터넷 시간서버와 동기화</string>
+  <string id="168">인터넷 시간서버와 동기화 사용</string>
   <string id="169">해상도</string>
   <string id="172">제작일</string>
   <string id="175">분위기</string>
@@ -147,7 +147,7 @@
   <string id="224">속도</string>
   <string id="225">전환 시간</string>
   <string id="226">패턴 확인...</string>
-  <string id="227">freedb 에서 오디오 CD 찾기</string>
+  <string id="227">freedb 에서 오디오 CD 검색</string>
   <string id="228">읽어올때 재생목록 섞기</string>
   <string id="229">하드디스크 끄기 시간</string>
   <string id="230">비디오 필터</string>
@@ -178,7 +178,7 @@
   <string id="255">CDDB</string>
   <string id="256">CDDB 정보 요청중</string>
   <string id="257">오류</string>
-  <string id="258">ID3 태그 사용</string>
+  <string id="258">태그 읽기 사용</string>
   <string id="259">여는중</string>
   <string id="260">인터넷라디오</string>
   <string id="261">대기중....</string>
@@ -191,7 +191,7 @@
   <string id="268">정렬: 제목</string>
   <string id="269">정렬: 아티스트</string>
   <string id="270">정렬: 앨범</string>
-  <string id="271">Top 100</string>
+  <string id="271">인기 100</string>
   <string id="272">왼쪽 상단 오버스캔 조정</string>
   <string id="273">오른쪽 하단 오버스캔 조정</string>
   <string id="274">자막 위치</string>
@@ -219,7 +219,7 @@
   <string id="298">북마크</string>
   <string id="303">지연</string>
   <string id="304">언어</string>
-  <string id="305">활성화됨</string>
+  <string id="305">사용함</string>
   <string id="306">논인터리브</string>
   <string id="307">- 자동 후처리</string>
   <string id="308">- 수직 블럭제거 필터</string>
@@ -338,12 +338,12 @@
   <string id="428">올바른 CD/DVD 를 넣어주세요</string>
   <string id="429">다음 CD/DVD 를 넣어주세요</string>
   <string id="430">정렬: DVD번호</string>
-  <string id="431">케쉬 안함</string>
+  <string id="431">캐시 안함</string>
   <string id="432">라이브러리에서 영화 제거</string>
   <string id="433">'%s'를 제거 하시겠습니까?</string>
   <string id="437">이동식 저장소</string>
   <string id="438">파일 여는중</string>
-  <string id="439">캐쉬</string>
+  <string id="439">캐시</string>
   <string id="440">하드디스크</string>
   <string id="441">UDF</string>
   <string id="442">랜</string>
@@ -392,7 +392,7 @@
   <string id="491">- 큰 아이콘 사용</string>
   <string id="492">자막크기 변경</string>
   <string id="493">고급 옵션(전문가만!)</string>
-  <string id="494">전반적인 오디오 헤드룸</string>
+  <string id="494">전체 오디오 헤드룸</string>
   <string id="495">비디오를 GUI 해상도로 올림</string>
   <string id="496">화면 조정</string>
   <string id="497">미디어 확장자 숨기기</string>
@@ -839,7 +839,7 @@
   <string id="12346">비밀번호 재입력 회수제한을 초과.</string>
   <string id="12347">시스템이 종료됩니다.</string>
   <string id="12348">항목 잠김</string>
-  <string id="12353">잠금을 활성화 하십시오</string>
+  <string id="12353">잠금 재활성화</string>
   <string id="12356">변경 잠금</string>
   <string id="12357">소스 잠금</string>
   <string id="12358">비밀번호가 비어있습니다. 다시 시도해 주십시오</string>
@@ -850,7 +850,7 @@
   <string id="12373">설정 &amp; 파일 관리자</string>
   <string id="12376">모든 영화에 기본으로 설정</string>
   <string id="12377">이전에 저장된 모든 값을 초기화합니다</string>
-  <string id="12378">개별 사진 보기:</string>
+  <string id="12378">개별 이미지 보기</string>
   <string id="12379">회전/확대 효과 사용</string>
   <string id="12380">PAL 비율로 NTSC 비디오를 재생</string>
   <string id="12381">NTSC 비율로 PAL 비디오를 재생</string>
@@ -885,15 +885,15 @@
   <string id="13101">드라이브 선택 허용(재시작 필요)</string>
   <string id="13105">수직동기</string>
   <string id="13106">사용안함</string>
-  <string id="13107">비디오 재생중 사용</string>
-  <string id="13108">항상 사용</string>
+  <string id="13107">비디오 재생중 사용함</string>
+  <string id="13108">항상 사용함</string>
   <string id="13109">해상도 테스트</string>
   <string id="13110">해상도를 저장하시겠습니까?</string>
   <string id="13111">현재 해상도를 유지하시겠습니까?</string>
   <string id="13112">고화질 소프트웨어 업스케일</string>
   <string id="13113">사용안함</string>
-  <string id="13114">SD 컨텐츠 사용</string>
-  <string id="13115">항상 사용</string>
+  <string id="13114">SD 컨텐츠 사용함</string>
+  <string id="13115">항상 사용함</string>
   <string id="13116">업스케일 방식</string>
   <string id="13117">바이큐빅</string>
   <string id="13118">랑초스</string>
@@ -901,7 +901,7 @@
   <string id="13130">깜빡임 표시</string>
   <string id="13131">사용안함</string>
   <string id="13132">깜빡임 표시</string>
-  <string id="13140">사용가능 연결 검색됨!</string>
+  <string id="13140">사용가능한 연결 검색됨!</string>
   <string id="13141">진행할경우, XBMC 제어를 할수 없음</string>
   <string id="13142">사용안함. 이벤트 서버를 종료하시겠습니까?</string>
   <string id="13144">애플 리모트 모드를 변경하시겠습니까?</string>
@@ -1204,7 +1204,7 @@
   <string id="15253">비슷한 아티스트 찾기...</string>
   <string id="15254">비슷한 태그 찾기</string>
   <string id="15255">당신의 프로파일 (%name%)</string>
-  <string id="15256">상위권 태그</string>
+  <string id="15256">전체 인기 태그</string>
   <string id="15257">태그 %name%에 대한 인기 아티스트</string>
   <string id="15258">태그 %name%에 대한 인기 앨범</string>
   <string id="15259">태그 %name%에 대한 인기 트랙</string>
@@ -1377,9 +1377,9 @@
   <string id="20076">시작시 마스터 잠금 코드 물어봄</string>
   <string id="20077">스킨 설정</string>
   <string id="20078">- no link set -</string>
-  <string id="20079">애니메이션 활성</string>
-  <string id="20080">음악재생중 RSS 비활성</string>
-  <string id="20081">바로가기 버튼 활성</string>
+  <string id="20079">애니메이션 사용</string>
+  <string id="20080">음악재생중 RSS 사용안함</string>
+  <string id="20081">바로가기 버튼 사용</string>
   <string id="20082">메인메뉴에 프로그램 보기</string>
   <string id="20083">음악 정보 보기</string>
   <string id="20084">날씨 정보 보기</string>
@@ -1523,9 +1523,9 @@
   <string id="20326">기본값으로 %s 측정치를</string>
   <string id="20327">리셋하게 됩니다.</string>
   <string id="20328">대상 찾기</string>
-  <string id="20330">폴더 이름으로 찾기 사용</string>
+  <string id="20330">검색에 폴더 이름 사용</string>
   <string id="20331">파일</string>
-  <string id="20332">파일이나 폴더 이름으로 찾겠습니까?</string>
+  <string id="20332">검색에 파일이나 폴더 이름을 사용하시겠습니까?</string>
   <string id="20333">컨텐츠 설정</string>
   <string id="20334">폴더</string>
   <string id="20335">컨텐츠를 모든 하위까지 찾겠습니까?</string>
@@ -1645,12 +1645,12 @@
   <string id="21375">보통</string>
   <string id="21376">레터박스</string>
   <string id="21377">와이드스크린</string>
-  <string id="21378">480p 활성</string>
-  <string id="21379">720p 활성</string>
-  <string id="21380">1080i 활성</string>
+  <string id="21378">480p 사용</string>
+  <string id="21379">720p 사용</string>
+  <string id="21380">1080i 사용</string>
   <string id="21381">새 재생목록 이름 입력</string>
   <string id="21382">파일 리스트에서 소스 추가버튼 사용안함</string>
-  <string id="21383">스크롤바 활성</string>
+  <string id="21383">스크롤바 사용</string>
   <string id="21384">비디오 라이브러리에서 시청 상태 토글 사용</string>
   <string id="21385">열기</string>
   <string id="21386">음향 구성표</string>
@@ -1662,7 +1662,7 @@
   <string id="21392">최소 전원</string>
   <string id="21393">최대 절전 모드</string>
   <string id="21394">최소 절전 모드</string>
-  <string id="21395">4G 이상의 파일을 캐쉬할수 없음</string>
+  <string id="21395">4G 이상의 파일을 캐시할수 없음</string>
   <string id="21396">챕터</string>
   <string id="21397">고화질 픽셀 쉐이더 V2</string>
   <string id="21398">시작시 재생목록 사용</string>
@@ -1756,7 +1756,7 @@
   <string id="21878">저작권여부</string>
   <string id="21879">국가코드</string>
   <string id="21880">Refrence Service</string>
-  <string id="21881">UPnP Renderer 사용</string>
+  <string id="21881">UPnP 렌더러 사용</string>
   <string id="21882">DVD 메뉴 전의 도입부 건너뛰기</string>
   <string id="21883">추출된 오디오 CD</string>
   <string id="21884">모든 아티스트 정보 요청</string>
@@ -1779,12 +1779,12 @@
   <string id="22000">시작시 라이브러리 갱신</string>
   <string id="22001">항상 백그라운드로 라이브러리 갱신</string>
   <string id="22002">- DNS 접미사</string>
-  <string id="22003">수정/결정 목록 가능</string>
+  <string id="22003">수정/결정 목록 사용</string>
   <string id="22004">%2.3f 초 느리게</string>
   <string id="22005">%2.3f 초 빠르게</string>
   <string id="22006">자막 위치</string>
   <string id="22007">오픈GL 공급자:</string>
-  <string id="22008">오픈GL Renderer:</string>
+  <string id="22008">오픈GL 렌더러:</string>
   <string id="22009">오픈GL 버전:</string>
   <string id="22010">GPU 온도:</string>
   <string id="22011">CPU 온도:</string>
