@@ -97,10 +97,11 @@ bool XBVideoConfig::HasHDPack() const
 }
 
 #ifdef HAS_SDL
-void XBVideoConfig::GetDesktopResolution(int &w, int &h) const
+void XBVideoConfig::GetDesktopResolution(int &w, int &h, float &hz) const
 {
 #ifdef __APPLE__
   Cocoa_GetScreenResolution(&w, &h);
+  hz = 0.0f;
 #elif defined(_WIN32PC)
     DEVMODE devmode;
     ZeroMemory(&devmode, sizeof(devmode));
@@ -108,6 +109,7 @@ void XBVideoConfig::GetDesktopResolution(int &w, int &h) const
     EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
     w = devmode.dmPelsWidth;
     h = devmode.dmPelsHeight;
+    hz = devmode.dmDisplayFrequency;
 #endif
 
 #ifdef HAS_GLX
@@ -147,6 +149,7 @@ void XBVideoConfig::GetDesktopResolution(int &w, int &h) const
   }
   w = width;
   h = height;
+  hz = g_xrandr.GetCurrentMode("").hz;
 #endif
 }
 #endif
@@ -351,7 +354,8 @@ RESOLUTION XBVideoConfig::GetSafeMode() const
 #endif
   // Get the desktop resolution to see what we're dealing with here.
   int w, h;
-  GetDesktopResolution(w, h);
+  float hz;
+  GetDesktopResolution(w, h, hz);
 
   // If we've got quite a few pixels, go with 720p.
   if (w > 1280 && h > 720)
