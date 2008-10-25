@@ -56,7 +56,7 @@ bool CCDDAReader::Init(const char* strFileName)
   if (!m_fileCdda.Open(strFileName))
     return false;
 
-  CLog::Log(LOGINFO, "%s, Sectors %lld", strFileName, m_fileCdda.GetLength() / CDIO_CD_FRAMESIZE_RAW);
+  CLog::Log(LOGINFO, "%s, Sectors %"PRId64, strFileName, m_fileCdda.GetLength() / CDIO_CD_FRAMESIZE_RAW);
 
   // allocate 2 buffers
   // read around 128k per chunk. This makes the cd reading less noisy.
