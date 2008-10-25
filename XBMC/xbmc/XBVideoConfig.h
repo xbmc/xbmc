@@ -53,7 +53,7 @@ public:
   RESOLUTION GetSafeMode() const;
   RESOLUTION GetBestMode() const;
 #ifdef HAS_SDL
-  void GetDesktopResolution(int &w, int &h) const;
+  void GetDesktopResolution(int &w, int &h, float &hz) const;
   int GetNumberOfResolutions() { return m_iNumResolutions; }
   void GetResolutionInfo(int num, RESOLUTION_INFO &info) { info = m_ResInfo[num]; }
 #endif
