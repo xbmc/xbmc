@@ -253,7 +253,7 @@ XMode CXRandR::GetCurrentMode(CStdString outputName)
 
   for (unsigned int j = 0; j < m_outputs.size(); j++)
   {
-    if (m_outputs[j].name == outputName)
+    if (m_outputs[j].name == outputName || outputName == "")
     {
       for (unsigned int i = 0; i < m_outputs[j].modes.size(); i++)
       {
