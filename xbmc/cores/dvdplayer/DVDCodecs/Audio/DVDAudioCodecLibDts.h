@@ -47,11 +47,6 @@ protected:
   int ParseFrame(BYTE* data, int size, BYTE** frame, int* framesize);
   
   // taken from the libdts project
-  static void convert2s16_1(convert_t * _f, int16_t * s16);
-  static void convert2s16_2(convert_t * _f, int16_t * s16);
-  static void convert2s16_3(convert_t * _f, int16_t * s16);
-  static void convert2s16_4(convert_t * _f, int16_t * s16);
-  static void convert2s16_5(convert_t * _f, int16_t * s16);
   static void convert2s16_multi(convert_t * _f, int16_t * s16, int flags);
 
   dts_state_t* m_pState;
