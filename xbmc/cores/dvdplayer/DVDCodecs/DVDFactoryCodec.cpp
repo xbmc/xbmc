@@ -116,7 +116,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   CDVDCodecOptions options;
 
   // try to decide if we want to try halfres decoding
-#ifndef _LINUX
+#if !defined(_LINUX) && !defined(_WIN32)
   float pixelrate = (float)hint.width*hint.height*hint.fpsrate/hint.fpsscale;
   if( pixelrate > 1400.0f*720.0f*30.0f )
   {
