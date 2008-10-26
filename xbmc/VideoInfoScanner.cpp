@@ -602,9 +602,11 @@ namespace VIDEO
               m_database.GetScraperForPath(pItem->m_strPath,info3,settings);
               info3.strPath = info2.strPath;
               m_database.SetScraperForPath(pItem->m_strPath,info3,settings);
-              if (!bRefresh)
+              if (result == FULL_NFO && !bRefresh)
+              {
                 i--;
-              continue;
+                continue;
+              }
             }
           }
 
