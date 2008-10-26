@@ -919,7 +919,8 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     break;
   case DESKTOP:
     g_videoConfig.GetDesktopResolution(g_settings.m_ResInfo[res].iWidth,
-                                       g_settings.m_ResInfo[res].iHeight);
+                                       g_settings.m_ResInfo[res].iHeight,
+                                       g_settings.m_ResInfo[res].fRefreshRate);
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * g_settings.m_ResInfo[res].iHeight);
     snprintf(g_settings.m_ResInfo[res].strMode, sizeof(g_settings.m_ResInfo[res].strMode), 
              "%dx%d (Full Screen)", g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
@@ -928,8 +929,12 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
     break;
   case WINDOW:
-    g_settings.m_ResInfo[WINDOW] = g_settings.m_ResInfo[PAL60_4x3];
-    g_settings.m_ResInfo[WINDOW].fPixelRatio = 1.0f;
+    int width, height;
+    float hz;
+    g_videoConfig.GetDesktopResolution(width, height, hz);
+    g_settings.m_ResInfo[res] = g_settings.m_ResInfo[PAL60_4x3];
+    g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
+    g_settings.m_ResInfo[res].fRefreshRate = hz;
     break;
   default:
     break;
