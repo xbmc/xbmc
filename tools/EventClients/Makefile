@@ -1,11 +1,13 @@
 # Default prefix dir
 prefix=/usr/local
 installdir=$(prefix)
+WII_EXTRA_OPTS=
 
 all: wiimote install
 
 wiimote:
-	cd Clients/WiiRemote && g++ WiiRemote.cpp -lcwiid -DICON_PATH="\"$(installdir)/share/pixmaps/xbmc/\"" -o WiiRemote
+	cd Clients/WiiRemote && \
+	g++ WiiRemote.cpp -lcwiid -DICON_PATH="\"$(installdir)/share/pixmaps/xbmc/\"" $(WII_EXTRA_OPTS) -o WiiRemote
 
 j2me-remote:
 	cd Clients/J2ME\ Client
