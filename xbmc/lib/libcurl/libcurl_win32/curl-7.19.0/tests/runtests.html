@@ -1,0 +1,83 @@
+<html><head>
+<title>runtests.pl man page</title>
+<meta name="generator" content="roffit 0.7">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">runtests.pl - run one or more test cases <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0"><span Class="bold">runtests.pl [options] [test number] [!test number] [key word] [!key word]</span> <a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0"><span Class="emphasis">runtests.pl</span> runs one, several or all the existing test cases in curl's test suite. It is often called from the root Makefile of the curl package with 'make test'. <a name="TEST"></a><h2 class="nroffsh">TEST NUMBER</h2>
+<p class="level0">If no test case number is given, all existing tests that the script can find will be considered for running. You can specify single test cases to run, space-separated, like "1 3 5 7 11", and you can specify a range like "45 to 67". You can also specify only the tests you don't want to run by listing the numbers with a leading exclamation point, like "!66". 
+<p class="level0">It is also possible to specify tests to skip based on a key word describing the test. These are specified with a leading exclamation point and the key word or phrase, like "!HTTP NTLM auth".  Likewise, tests to run can be specified simply by specifying the unadorned key words, like "FTPS". Remember that the exclamation marks and spaces will need to be quoted somehow when entered at many command shells. <a name="OPTIONS"></a><h2 class="nroffsh">OPTIONS</h2>
+<p class="level0">
+<p class="level0"><a name="-a"></a><span class="nroffip">-a</span> 
+<p class="level1">Continue running the rest of the test cases even if one test fails. By default, the test script stops as soon as an error is detected. 
+<p class="level0"><a name="-bN"></a><span class="nroffip">-bN</span> 
+<p class="level1">Use N as the base TCP/UDP port number on which to start the test servers. 
+<p class="level0"><a name="-c"></a><span class="nroffip">-c &lt;curl&gt;</span> 
+<p class="level1">Provide a custom curl binary to run the tests with. Default is the curl executable in the build tree. 
+<p class="level0"><a name="-d"></a><span class="nroffip">-d</span> 
+<p class="level1">Enable protocol debug: have the servers display protocol output. 
+<p class="level0"><a name="-g"></a><span class="nroffip">-g</span> 
+<p class="level1">Run the given test(s) with gdb. This is best used on a single test case and curl built --disable-shared. This then fires up gdb with command line set to run the specified test case. Simply (set a break-point and) type 'run' to start. 
+<p class="level0"><a name="-h"></a><span class="nroffip">-h</span> 
+<p class="level1">Displays a help text about this program's command line options. 
+<p class="level0"><a name="-k"></a><span class="nroffip">-k</span> 
+<p class="level1">Keep output and log files in log/ after a test run, even if no error was detected. Useful for debugging. 
+<p class="level0"><a name="-l"></a><span class="nroffip">-l</span> 
+<p class="level1">Lists all test case names. 
+<p class="level0"><a name="-n"></a><span class="nroffip">-n</span> 
+<p class="level1">Disable the check for and use of valgrind. 
+<p class="level0"><a name="-p"></a><span class="nroffip">-p</span> 
+<p class="level1">Prints out all files in "log/" to stdout when a test case fails. Very practical when used in the automated and distributed tests since then the people checking the failures and the reasons for them might not have physical access to the machine and logs. 
+<p class="level0"><a name="-s"></a><span class="nroffip">-s</span> 
+<p class="level1">Shorter output. Speaks less than default. 
+<p class="level0"><a name="-tnum"></a><span class="nroffip">-t[num]</span> 
+<p class="level1">Selects a <span Class="bold">torture</span> test for the given tests. This makes runtests.pl first run the tests once and count the number of memory allocations made. It then reruns the test that number of times, each time forcing one of the allocations to fail until all allocs have been tested. By setting <span Class="emphasis">num</span> you can force the allocation with that number to be set to fail at once instead of looping through everyone, which is very handy when debugging and then often in combination with <a class="emphasis" href="#-g">-g</a>. 
+<p class="level0"><a name="-v"></a><span class="nroffip">-v</span> 
+<p class="level1">Enable verbose output. Speaks more than default. <a name="RUNNING"></a><h2 class="nroffsh">RUNNING TESTS</h2>
+<p class="level0">Many tests have conditions that must be met before the test case can run fine. They could depend on built-in features in libcurl or features present in the operating system or even in third-party libraries that curl may or may not use. 
+<p class="level0">The test script checks most of these by itself to determine when it is safe to attempt to run each test.  Those which cannot be run due to failed requirements will simply be skipped and listed at the completion of all test cases.  In some unusual configurations, the test script cannot make the correct determination for all tests.  In these cases, the problematic tests can be skipped using the "!keyword" skip feature documented earlier. <a name="WRITING"></a><h2 class="nroffsh">WRITING TESTS</h2>
+<p class="level0">The simplest way to write test cases is to start with a similar existing test, save it with a new number and then adjust it to fit. There's an attempt to document the test case file format in the tests/FILEFORMAT. <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>

@@ -1,0 +1,1 @@
+/* objects.h  for openvpn */

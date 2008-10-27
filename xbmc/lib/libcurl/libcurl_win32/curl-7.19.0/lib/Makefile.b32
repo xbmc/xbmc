@@ -1,0 +1,90 @@
+############################################################
+# $Id: Makefile.b32,v 1.19 2004/11/14 13:48:15 giva Exp $
+#
+#  Makefile.b32 - Borland's C++ Compiler 5.X
+#
+#  'lib' directory
+#
+#  'BCCDIR' has to be set up to point to the base directory
+#  of the compiler, i.e. SET BCCDIR = c:\Borland\BCC55
+#  where c:\Borland\BCC55 is the compiler is installed
+#
+#  Written by Jaepil Kim, pit@paradise.net.nz
+############################################################
+
+# Edit the path below to point to the base of your Zlib sources.
+!ifndef ZLIB_PATH
+ZLIB_PATH = ../../zlib-1.2.1
+!endif
+
+# Edit the path below to point to the base of your OpenSSL package.
+!ifndef OPENSSL_PATH
+OPENSSL_PATH = ../../openssl-0.9.7d
+!endif
+
+# Set libcurl static lib, dll and import lib
+LIBCURL_LIB    = libcurl.lib
+LIBCURL_DLL    = libcurl.dll
+LIBCURL_IMPLIB = libcurl_imp.lib
+
+# Setup environment
+CXX      = bcc32
+LD       = bcc32
+CP       = copy
+RM       = del
+LIB      = tlib
+IMPLIB   = implib
+
+CXXFLAGS = -q -5 -O2 -w-aus -w-ccc -w-csu -w-par -w-pia -w-rch -w-inl -w-ngu -w-pro -tWM
+LIBFLAGS = /C /P32
+LDFLAGS  = -q -lq -laa -tWD
+
+INCDIRS  = -I.;../include
+LINKLIB  = $(BCCDIR)/lib/cw32mt.lib
+
+# If you build with SSL support, set WITH_SSL=1
+DEFINES  = -DNDEBUG -DWIN32 -D_CONSOLE -D_MBCS -DBUILDING_LIBCURL
+
+!ifdef WITH_ZLIB
+DEFINES  = $(DEFINES) -DHAVE_LIBZ -DHAVE_ZLIB_H
+INCDIRS  = $(INCDIRS);$(ZLIB_PATH)
+LINKLIB  = $(LINKLIB) $(ZLIB_PATH)/zlib.lib
+!endif
+
+!ifdef WITH_SSL
+DEFINES  = $(DEFINES) -DUSE_SSLEAY
+INCDIRS  = $(INCDIRS);$(OPENSSL_PATH)/inc32;$(OPENSSL_PATH)/inc32/openssl
+LINKLIB  = $(LINKLIB) $(OPENSSL_PATH)/out32/ssleay32.lib $(OPENSSL_PATH)/out32/libeay32.lib
+!endif
+
+.autodepend
+
+# Makefile.inc provides the CSOURCES and HHEADERS defines
+!include Makefile.inc
+
+OBJECTS = $(CSOURCES:.c=.obj)
+
+.c.obj:
+	$(CXX) -c $(INCDIRS) $(CXXFLAGS) $(DEFINES) $<
+
+all:	$(LIBCURL_LIB) $(LIBCURL_DLL)
+
+clean:
+	-$(RM) $(LIBCURL_LIB)
+	-$(RM) $(LIBCURL_IMPLIB)
+	-$(RM) libcurl.tds
+	-$(RM) *.obj
+
+$(LIBCURL_LIB): $(OBJECTS)
+	@-$(RM) $@
+	$(LIB) $(LIBFLAGS) $@ @&&!
++$(**: = &^
++)
+!
+
+$(LIBCURL_DLL) $(LIBCURL_IMPLIB): $(OBJECTS) $(LINKLIB)
+	@-$(RM) $(LIBCURL_DLL)
+	@-$(RM) $(LIBCURL_IMPLIB)
+	$(LD) $(LDFLAGS) -e$(LIBCURL_DLL) $**
+	$(IMPLIB) $(LIBCURL_IMPLIB) $(LIBCURL_DLL)
+

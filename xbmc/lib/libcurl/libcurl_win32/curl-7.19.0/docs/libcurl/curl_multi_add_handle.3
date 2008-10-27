@@ -1,0 +1,38 @@
+.\" $Id: curl_multi_add_handle.3,v 1.6 2008-05-24 19:19:49 bagder Exp $
+.\"
+.TH curl_multi_add_handle 3 "4 March 2002" "libcurl 7.9.5" "libcurl Manual"
+.SH NAME
+curl_multi_add_handle - add an easy handle to a multi session
+.SH SYNOPSIS
+#include <curl/curl.h>
+
+CURLMcode curl_multi_add_handle(CURLM *multi_handle, CURL *easy_handle);
+.ad
+.SH DESCRIPTION
+Adds a standard easy handle to the multi stack. This function call will make
+this \fImulti_handle\fP control the specified \fIeasy_handle\fP.
+Furthermore, libcurl now initiates the connection associated with the
+specified \fIeasy_handle\fP.
+
+When an easy handle has been added to a multi stack, you can not and you must
+not use \fIcurl_easy_perform(3)\fP on that handle!
+
+If the easy handle is not set to use a shared (CURLOPT_SHARE) or global DNS
+cache (CURLOPT_DNS_USE_GLOBAL_CACHE), it will be made to use the DNS cache
+that is shared between all easy handles within the multi handle when
+\fIcurl_multi_add_handle(3)\fP is called.
+
+The easy handle will remain added until you remove it again with
+\fIcurl_multi_remove_handle(3)\fP. You should remove the easy handle from the
+multi stack before you terminate first the easy handle and then the multi
+handle:
+
+1 - \fIcurl_multi_remove_handle(3)\fP
+
+2 - \fIcurl_easy_cleanup(3)\fP
+
+3 - \fIcurl_multi_cleanup(3)\fP
+.SH RETURN VALUE
+CURLMcode type, general libcurl multi interface error code.
+.SH "SEE ALSO"
+.BR curl_multi_cleanup "(3)," curl_multi_init "(3)"
