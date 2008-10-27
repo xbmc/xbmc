@@ -9,15 +9,15 @@
 			<height>520</height>
 			<visible>Player.HasVideo</visible>
 		</control>
-<!--		<control type="visualisation">
+		<control type="visualisation">
 			<posx>356</posx>
 			<posy>100</posy>
 			<width>924</width>
 			<height>520</height>
 			<visible>Player.HasAudio</visible>
 		</control>
--->		<control type="group">
-			<visible>!Player.HasVideo</visible>
+		<control type="group">
+			<visible>!Player.HasMedia</visible>
 			<control type="multiimage">
 				<posx>356</posx>
 				<posy>100</posy>
