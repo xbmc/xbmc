@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvorbis", "libvorbis.vcproj", "{3A214E06-B95E-4D61-A291-1F8DF2EC10FD}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+		Release_SSE = Release_SSE
+		Release_SSE2 = Release_SSE2
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{3A214E06-B95E-4D61-A291-1F8DF2EC10FD}.Debug.ActiveCfg = Debug|Win32
+		{3A214E06-B95E-4D61-A291-1F8DF2EC10FD}.Debug.Build.0 = Debug|Win32
+		{3A214E06-B95E-4D61-A291-1F8DF2EC10FD}.Release.ActiveCfg = Release|Win32
+		{3A214E06-B95E-4D61-A291-1F8DF2EC10FD}.Release.Build.0 = Release|Win32
+		{3A214E06-B95E-4D61-A291-1F8DF2EC10FD}.Release_SSE.ActiveCfg = Release_SSE|Win32
+		{3A214E06-B95E-4D61-A291-1F8DF2EC10FD}.Release_SSE.Build.0 = Release_SSE|Win32
+		{3A214E06-B95E-4D61-A291-1F8DF2EC10FD}.Release_SSE2.ActiveCfg = Release_SSE2|Win32
+		{3A214E06-B95E-4D61-A291-1F8DF2EC10FD}.Release_SSE2.Build.0 = Release_SSE2|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
