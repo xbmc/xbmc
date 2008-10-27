@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # XBMC disk installer
-# V1.3 - 20081021
+# V1.4 - 20081027
 # Luigi Capriotti @2008
 #
 
@@ -362,6 +362,12 @@ function createPermanentStorageFile
 
 	diskFree=`df -h -BM | grep $1 | awk -F ' ' '{print $4}'`
 	diskFree=${diskFree/M/}
+
+	# FAT32 max file size = 4GB
+	if [ "$diskFree" -gt 4000 ] ; then
+		diskFree=4000
+	fi
+
 	if [ "$2" = 1 ]; then
 		choosePermanentStorageSize $diskFree
 
