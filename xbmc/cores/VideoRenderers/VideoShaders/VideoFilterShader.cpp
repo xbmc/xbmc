@@ -69,7 +69,7 @@ BicubicFilterShader::BicubicFilterShader(float B, float C)
     
     "vec4 cubicFilter(float xValue, vec4 c0, vec4 c1, vec4 c2, vec4 c3)"
     "{"
-    " vec4 h = texture2D(kernelTex, vec2(xValue, 0.0));"
+    " vec4 h = texture2D(kernelTex, vec2(xValue, 0.5));"
     " vec4 r = c0 * h.r;"
     " r += c1 * h.g;"
     " r += c2 * h.b;"
@@ -207,8 +207,8 @@ bool BicubicFilterShader::CreateKernels(int size, float B, float C)
   glBindTexture(GL_TEXTURE_2D, m_kernelTex1);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, size, 1, 0, GL_RGBA, GL_FLOAT, img);
 
   glActiveTexture(GL_TEXTURE0);
