@@ -66,7 +66,7 @@
 			Name="Release|Win32"
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
-			ConfigurationType="2"
+			ConfigurationType="4"
 			CharacterSet="2"
 			WholeProgramOptimization="TRUE">
 			<Tool
@@ -77,7 +77,7 @@
 				EnableIntrinsicFunctions="TRUE"
 				FavorSizeOrSpeed="1"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="..\..\..\include;..\..\..\..\libogg\include"
+				AdditionalIncludeDirectories="..\..\..\include;..\..\..\..\ogg\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBVORBIS_EXPORTS"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -86,23 +86,13 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
 				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="3"
+				DebugInformationFormat="0"
 				CompileAs="1"
 				DisableSpecificWarnings="4244;4100;4267;4189;4305;4127;4706"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
-				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/libvorbis.dll"
-				LinkIncremental="1"
-				ModuleDefinitionFile="..\..\vorbis.def"
-				GenerateDebugInformation="TRUE"
-				SubSystem="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				OptimizeForWindows98="1"
-				ImportLibrary="$(OutDir)/libvorbis.lib"
-				TargetMachine="1"/>
+				Name="VCLibrarianTool"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -117,8 +107,6 @@
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
 			<Tool
 				Name="VCManagedWrapperGeneratorTool"/>
 			<Tool
