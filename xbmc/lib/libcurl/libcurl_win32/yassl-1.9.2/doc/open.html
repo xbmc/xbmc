@@ -1,0 +1,131 @@
+<html>
+<link rel="stylesheet" href="yassl.css" type="text/css" />
+
+<body bgcolor="black">
+&nbsp;
+<table align="center" width="859" height="700" border="0" cellspacing="0" cellpadding="0" bgcolor="#E6F3FF">
+<td width="2%" valign="top">
+<td width="96%" valign="top">
+<br />
+
+<a name="overview">
+<span class="pageName">
+<h2>OpenSSL API Compatibility</h2>
+</span>
+<span class="bodyText">
+<p> yaSSL provides an OpenSSL compatibility header, ssl.h, both to ease the transition into using yaSSL and because their API has become the <i>de facto</i> standard for SSL.  Following is a brief introduction for the most common functionality.
+</a>
+</span>
+
+<a name="structs">
+<span class="pageName">
+<h2>Struct Support</h2>
+</span>
+<span class="bodyText">
+<p><b>SSL_METHOD</b> holds SSL version information and is either a client or server method.
+
+<p><b>SSL_CTX</b> holds context information including certificates.
+
+<p><b>SSL</b> holds session information for a secure connection.
+</a>
+</span>
+
+
+<a name="functions">
+<span class="pageName">
+<h2>Function Support</h2>
+</span>
+<span class="bodyText">
+<p> The three structures are usually initialized in the following way:
+
+<span class="smallText">
+    <p>&nbsp;&nbsp;&nbsp;&nbsp; SSL_METHOD* method = SSLv3_client_method();
+    <br>&nbsp;&nbsp;&nbsp;&nbsp; SSL_CTX*    ctx = SSL_CTX_new(method);
+    <br>&nbsp;&nbsp;&nbsp;&nbsp; SSL* ssl = SSL_new(ctx);
+</span>
+
+<p>This establishes a client side SSL version 3 method, creates a context based on the method, and initializes the SSL session with the context.  A server side program is no different except that the SSL_METHOD is created using <i>SSLv3_server_method()</i>.
+
+<p>When an SSL connection is no longer needed the following calls free the structures created during initialization.
+
+<span class="smallText">
+	<p>&nbsp;&nbsp;&nbsp;&nbsp; SSL_CTX_free(ctx);
+	<br>&nbsp;&nbsp;&nbsp;&nbsp; SSL_free(ssl);
+</span>
+
+<p><i>SSL_CTX_free()</i> has the additional responsibility of freeing the associated SSL_METHOD.  Failing to use the XXX_free() functions will result in a resource leak, using the system's <i>free()</i> instead of the SSL ones results in undefined behavior.
+
+<p>Once an application has a valid SSL pointer from <i>SSL_new()</i>, the SSL handshake process can begin.  From the client's view, <i>SSL_connect()</i> will attempt to establish a secure connection.
+
+<span class="smallText">
+	<p>&nbsp;&nbsp;&nbsp;&nbsp; SSL_set_fd(ssl, sockfd);
+    	<br>&nbsp;&nbsp;&nbsp;&nbsp; SSL_connect(ssl);
+</span>
+
+
+<p>Before the <i>SSL_connect()</i> can be issued, the user must supply yaSSL with a valid socket file descriptor, sockfd in the example above.  sockfd is typically the result of the TCP function <i>socket()</i> which is later established using TCP <i>connect()</i>.  The following creates a valid client side socket descriptor for use with a local yaSSL server on port 11111, error handling is omitted for simplicity.
+
+<span class="smallText">
+    <p>&nbsp;&nbsp;&nbsp;&nbsp; int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    <br>&nbsp;&nbsp;&nbsp;&nbsp; sockaddr_in servaddr;
+    <br>&nbsp;&nbsp;&nbsp;&nbsp; memset(&servaddr, 0, sizeof(servaddr));
+    <br>&nbsp;&nbsp;&nbsp;&nbsp; servaddr.sin_family = AF_INET;
+
+    <p>&nbsp;&nbsp;&nbsp;&nbsp; servaddr.sin_port = htons(11111);
+    <br>&nbsp;&nbsp;&nbsp;&nbsp; servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    <br>&nbsp;&nbsp;&nbsp;&nbsp; connect(sockfd, (const sockaddr*)&servaddr, sizeof(servaddr));
+</span>
+
+
+<p>Once a connection is established, the client may read and write to the server.  Instead of using the TCP functions <i>send()</i> and <i>receive()</i> yaSSL uses the SSL functions <i>SSL_write()</i> and <i>SSL_read()</i>.  Here is a simple example from the client demo:
+
+<span class="smallText">
+    <p>&nbsp;&nbsp;&nbsp;&nbsp; char msg[] = "hello yassl!";
+    <br>&nbsp;&nbsp;&nbsp;&nbsp; int wrote = SSL_write(ssl, msg, sizeof(msg));
+
+    <p>&nbsp;&nbsp;&nbsp;&nbsp; char reply[1024];
+    <br>&nbsp;&nbsp;&nbsp;&nbsp; int read = SSL_read(ssl, reply, sizeof(reply));
+    <br>&nbsp;&nbsp;&nbsp;&nbsp; reply[read] = 0;
+
+    <p>&nbsp;&nbsp;&nbsp;&nbsp; printf("Server response: %s\n", reply);
+</span>
+
+<p>The server connects in the same way except that is uses <i>SSL_accept()</i> instead of <i>SSL_connect()</i>, analogous to the TCP API.  See the server example for a complete yaSSL server demo program.
+</a>
+</span>
+
+<a name="certs">
+<span class="pageName">
+<h2>Certificate Support</h2>
+</span>
+<span class="bodyText">
+<p>Both the server and client can provide yaSSL with certificates in either PEM or DER.  Typical usage is like this:
+
+<span class="smallText">
+	<p>&nbsp;&nbsp;&nbsp;&nbsp; SSL_CTX_use_certificate_file(ctx, "certs/cert.pem", SSL_FILETYPE_PEM);
+	<br>&nbsp;&nbsp;&nbsp;&nbsp; SSL_CTX_use_PrivateKey_file(ctx, "certs/key.der", SSL_FILETYPE_ASN1);
+</span>
+
+
+<p>A key file can also be presented to the Context in either format.  SSL_FILETYPE_PEM signifies the file is PEM formatted while SSL_FILETYPE_ASN1 declares the file to be in DER format.  To verify that the key file is appropriate for use with the certificate the following function can be used:
+
+<span class="smallText">
+	<p>&nbsp;&nbsp;&nbsp;&nbsp;SSL_CTX_check_private_key(ctx);
+</span>
+</a>
+</span>
+
+
+<p><a href="http://yassl.com/">Home</a>
+<br />
+&nbsp;
+
+<td width="2%" valign="top">
+
+</td>
+</table>
+</body>
+
+
+</html>
+

@@ -1,0 +1,67 @@
+$Id: readme,v 1.3 2005/02/14 22:37:59 curlvms Exp $
+                             _   _ ____  _
+                         ___| | | |  _ \| |
+                        / __| | | | |_) | |
+                       ( (__| |_| |  _ <| |___
+                        \___|\___/|_| \_\_____|
+                             for OpenVMS
+
+History:
+
+ 9-MAR-2004, Created this readme. file.  Marty Kuhrt (MSK).
+15-MAR-2004, MSK, Updated to reflect the new files in this directory.
+14-FEB-2005, MSK, removed config-vms.h_with* file comments
+
+
+Prerequisites:
+
+OpenVMS V7.0 or later (any platform)
+DECC V6.5 or later
+OpenSSL or hp SSL, if you want SSL support
+
+What is Here:
+
+This directory contains the following files:
+
+AXP.DIR                  - Target directory for Alpha builds.
+BATCH_COMPILE.COM        - Quick and dirty batch build procedure.
+BUILD_VMS.COM            - The brute force build procedure that sets
+                           up the config files, and builds all the C 
+                           and MSG files in the lib and src
+                           subdirectories.
+CONFIG-VMS.H             - The config file used for all builds.
+CURLMSG.H                - Created with SDL/ALPHA/LANGUAGE=CC CURLMSG.SDL
+                           (Needs freeware SDL tool)
+CURLMSG.MSG              - Source for .SDL and .H as well as the 
+                           .OBJ used to link against for error messages.
+CURLMSG.SDL              - Created with MESSAGE/SDL CURLMSG.MSG.
+CURLMSG_VMS.H            - Maps curl error codes to VMS error numbers.
+DEFINES.COM              - Some handy logicals needed for the build.
+                           You may need to update this for your setup.
+HPSSL_ALPHA.OPT          - Option file for hp SSL link on Alpha.
+HPSSL_IA64.OPT           - Option file for hp SSL link on IA64.
+HPSSL_VAX.OPT            - Option file for hp SSL link on VAX.
+IA64.DIR                 - Target directory for IA64 builds.
+README.                  - This file.
+VAX.DIR                  - Target directory for VAX builds.
+
+
+How to Build:
+
+In theory you should be able to do an @defines followed by an
+@build_vms from this directory and it will create brand new .olbs and
+an .exe.  I say in theory because every release of cURL tosses in a
+new twist that has to be addressed by updating the config-vms.h*
+files, or other files.  I'm working on keeping all the OpenVMS
+dependant stuff in this config file to keep from having to wade
+through gobs of #ifdefs and such.
+
+Other Notes:
+
+The test suites are not supported as of 7.11.0.
+
+The CURLMSG.SDL and CURLMSG.H files are generated from CURLMSG.MSG.
+This is not done automatically, since the .MSG file is a hand edit
+of the relevant stuff from the CURL.H file.  If you want to do this
+yourself you'll need the SDL package from the freeware CD.
+

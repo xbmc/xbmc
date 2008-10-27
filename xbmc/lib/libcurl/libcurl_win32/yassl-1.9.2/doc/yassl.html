@@ -1,0 +1,95 @@
+<html>
+<link rel="stylesheet" href="yassl.css" type="text/css" />
+
+<body bgcolor="black">
+&nbsp;
+<table align="center" width="859" height="700" border="0" cellspacing="0" cellpadding="0" bgcolor="#E6F3FF">
+<td width="2%" valign="top">
+<td width="96%" valign="top">
+<br />
+
+<span class="pageName">
+<center><h1>yaSSL API Reference</h1></center>
+
+<h2>Client Side</h2>
+</span>
+<span class="bodyText">
+<p>The yaSSL Client side API is declared in namespace yaSSL and is centered on
+the <i>Client</i> class.  A "hello yaSSL" example will prove useful in showing
+the most basic usage.
+
+<span class="smallText">
+    <p> &nbsp;&nbsp;&nbsp;&nbsp; yaSSL::Client client;
+    <br>&nbsp;&nbsp;&nbsp;&nbsp; client.SetCa("ca-cert.pem");
+    <br>&nbsp;&nbsp;&nbsp;&nbsp; yaSSL::SOCKET_T socket; 
+    <br>&nbsp;&nbsp;&nbsp;&nbsp; // ... do a tcp connect on socket here
+    <br>&nbsp;&nbsp;&nbsp;&nbsp; client.Connect(socket); 
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;  
+    <br>&nbsp;&nbsp;&nbsp;&nbsp; client.Write("hello yaSSL", 12); 
+    <br>&nbsp;&nbsp;&nbsp;&nbsp; char buffer[80]; 
+    <br>&nbsp;&nbsp;&nbsp;&nbsp; client.Read(buffer, 80); 
+    <br>&nbsp;&nbsp;&nbsp;&nbsp; std::cout &lt;&lt; buffer &lt;&lt; std::endl;
+</span>
+
+<p>The <i>Client</i> class is declared in yassl.hpp, which doesn't include any
+headers itself.  No arguments are needed for the constructor, and the only
+option that is usually set is for Certificate Authority files.  These are
+Certificates that yaSSL will use for verification purposes. After that, the
+client object only needs a connected socket to perform an SSL connect.  yaSSL
+uses the <i>SOCKET_T</i> type which is used for the differences between BSD
+style sockets and Windows ones.  Please see test.hpp which includes 
+<i>tcp_connect()</i>, all the examples use this function to perform TCP
+connects. The socket is the only parameter <i>Connect()</i> takes, its
+prototype is:
+
+<span class="smallText">
+    <p> &nbsp;&nbsp;&nbsp;&nbsp; int Connect(SOCKET_T s);
+</span>
+
+<p>Error handling has been omitted for clarity. Once an SSL connection has been
+established, transferring data is simple.  Two functions handle the needs:
+
+
+<span class="smallText">
+    <p> &nbsp;&nbsp;&nbsp;&nbsp; int Write(const void*, int); 
+    <br>&nbsp;&nbsp;&nbsp;&nbsp; int Read(void*, int); 
+</span>
+
+<p>Once you are done using the Client connection, simply let the object go out
+of scope (or delete it if it's on the heap), the destructor takes care of
+closing the connection and cleaning up any memory use.  It's that easy.
+</span>
+
+<span class="pageName">
+<h2>Server Side</h2>
+</span>
+<span class="bodyText">
+<p>The server side yaSSL API is also in namespace yaSSL and is based on the
+<i>Server</i> class, declared in yassl.hpp.  All of the same functions as the
+<i>Client</i> are supported, and the use is exactly the same. Two other 
+functions are needed to control the <i>Server's</i> certificates:
+
+
+<span class="smallText">
+    <p> &nbsp;&nbsp;&nbsp;&nbsp; void SetCert(const char*); 
+    <br>&nbsp;&nbsp;&nbsp;&nbsp; void SetKey(const char*); 
+</span>
+
+<p>Please see the examples for a complete example.
+</span>
+
+
+
+<p><a href="http://yassl.com/">Home</a>
+<br />
+&nbsp;
+
+<td width="2%" valign="top">
+
+</td>
+</table>
+</body>
+
+
+</html>
+
