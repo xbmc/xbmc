@@ -397,3 +397,51 @@ struct mntent *__wrap_getmntent(FILE *fp)
 #endif
   return NULL;
 }
+
+// GCC 4.3 in Ubuntu 8.10 defines _FORTIFY_SOURCE=2 which means, that fread, read etc 
+// are actually #defines which are inlined when compiled with -O. Those defines
+// actally call __*chk (for example, __fread_chk). We need to bypass this whole
+// thing to actually call our wrapped functions. 
+#if _FORTIFY_SOURCE > 1
+
+size_t __wrap___fread_chk(void * ptr, size_t ptrlen, size_t size, size_t n, FILE * stream)
+{
+  return dll_fread(ptr, size, n, stream);
+}
+
+int __wrap___printf_chk(int flag, const char *format, ...)
+{
+  int res;
+  va_list va;
+  va_start(va, format);
+  res = dll_vfprintf(stdout, format, va);
+  va_end(va);
+  return res;
+}
+
+int __wrap___vfprintf_chk(FILE* stream, int flag, const char *format, _G_va_list ap)
+{
+  dll_vfprintf(stream, format, ap);
+}
+
+int __wrap___fprintf_chk(FILE * stream, int flag, const char *format, ...)
+{
+  int res;
+  va_list va;
+  va_start(va, format);
+  res = dll_vfprintf(stream, format, va);
+  va_end(va);
+  return res;
+}
+
+char *__wrap___fgets_chk(char *s, size_t size, int n, FILE *stream)
+{
+  return dll_fgets(s, n, stream);
+}
+
+size_t __wrap___read_chk(int fd, void *buf, size_t nbytes, size_t buflen)
+{
+  return dll_read(fd, buf, nbytes);
+}
+
+#endif
