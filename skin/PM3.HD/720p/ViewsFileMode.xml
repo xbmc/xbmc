@@ -902,7 +902,85 @@
 			<viewtype label="21371">list</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<scrolltime>200</scrolltime>
-			<itemlayout condition="Window.IsVisible(VideoFiles) | Window.IsVisible(VideoLibrary)" height="255" width="316">
+			<itemlayout height="170" width="190">
+				<control type="image">
+					<posx>1</posx>
+					<posy>0</posy>
+					<width>188</width>
+					<height>145</height>
+					<bordertexture border="5">button-nofocus.png</bordertexture>
+					<bordersize>5</bordersize>
+					<texture>$INFO[Listitem.Icon]</texture>
+				</control>
+				<control type="label">
+					<posx>94</posx>
+					<posy>145</posy>
+					<width>178</width>
+					<height>25</height>
+					<font>font11</font>
+					<textcolor>grey2</textcolor>
+					<selectedcolor>green</selectedcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="image">
+					<posx>150</posx>
+					<posy>110</posy>
+					<width>35</width>
+					<height>35</height>
+					<aspectratio>keep</aspectratio>
+					<texture>$INFO[ListItem.Overlay]</texture>
+				</control>
+			</itemlayout>
+			<focusedlayout height="170" width="190">
+				<control type="image">
+					<posx>1</posx>
+					<posy>0</posy>
+					<width>188</width>
+					<height>145</height>
+					<bordertexture border="5">folder-focus.png</bordertexture>
+					<bordersize>5</bordersize>
+					<texture>$INFO[Listitem.Icon]</texture>
+				</control>
+				<control type="label">
+					<posx>94</posx>
+					<posy>145</posy>
+					<width>178</width>
+					<height>25</height>
+					<font>font11</font>
+					<textcolor>white</textcolor>
+					<selectedcolor>green</selectedcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="image">
+					<posx>150</posx>
+					<posy>110</posy>
+					<width>35</width>
+					<height>35</height>
+					<aspectratio>keep</aspectratio>
+					<texture>$INFO[ListItem.Overlay]</texture>
+				</control>
+			</focusedlayout>
+		</control>
+	</include>
+	<include name="VideoThumbnailView">
+		<control type="panel" id="53">
+			<visible>!Container.Content(TVShows)</visible>
+			<posx>300</posx>
+			<posy>130</posy>
+			<width>950</width>
+			<height>510</height>
+			<onleft>9000</onleft>
+			<onright>60</onright>
+			<onup>53</onup>
+			<ondown>53</ondown>
+			<viewtype label="21371">list</viewtype>
+			<pagecontrol>60</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout condition="!Container.Content(Movies)" height="255" width="316">
 				<control type="image">
 					<posx>1</posx>
 					<posy>0</posy>
@@ -933,7 +1011,7 @@
 					<texture>$INFO[ListItem.Overlay]</texture>
 				</control>
 			</itemlayout>
-			<focusedlayout condition="Window.IsVisible(VideoFiles) | Window.IsVisible(VideoLibrary)" height="255" width="316">
+			<focusedlayout condition="!Container.Content(Movies)" height="255" width="316">
 				<control type="image">
 					<posx>1</posx>
 					<posy>0</posy>
@@ -964,20 +1042,21 @@
 					<texture>$INFO[ListItem.Overlay]</texture>
 				</control>
 			</focusedlayout>
-			<itemlayout condition="!Window.IsVisible(VideoFiles) + !Window.IsVisible(VideoLibrary)" height="170" width="190">
+			<itemlayout condition="Container.Content(Movies)" height="255" width="158">
 				<control type="image">
 					<posx>1</posx>
 					<posy>0</posy>
-					<width>188</width>
-					<height>145</height>
+					<width>157</width>
+					<height>225</height>
 					<bordertexture border="5">button-nofocus.png</bordertexture>
 					<bordersize>5</bordersize>
+					<aspectratio>stretch</aspectratio>
 					<texture>$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="label">
-					<posx>94</posx>
-					<posy>145</posy>
-					<width>178</width>
+					<posx>79</posx>
+					<posy>225</posy>
+					<width>147</width>
 					<height>25</height>
 					<font>font11</font>
 					<textcolor>grey2</textcolor>
@@ -987,28 +1066,29 @@
 					<info>ListItem.Label</info>
 				</control>
 				<control type="image">
-					<posx>150</posx>
-					<posy>110</posy>
+					<posx>120</posx>
+					<posy>190</posy>
 					<width>35</width>
 					<height>35</height>
 					<aspectratio>keep</aspectratio>
 					<texture>$INFO[ListItem.Overlay]</texture>
 				</control>
 			</itemlayout>
-			<focusedlayout  condition="!Window.IsVisible(VideoFiles) + !Window.IsVisible(VideoLibrary)" height="170" width="190">
+			<focusedlayout  condition="Container.Content(Movies)" height="255" width="158">
 				<control type="image">
 					<posx>1</posx>
 					<posy>0</posy>
-					<width>188</width>
-					<height>145</height>
+					<width>157</width>
+					<height>225</height>
 					<bordertexture border="5">folder-focus.png</bordertexture>
 					<bordersize>5</bordersize>
+					<aspectratio>stretch</aspectratio>
 					<texture>$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="label">
-					<posx>94</posx>
-					<posy>145</posy>
-					<width>178</width>
+					<posx>79</posx>
+					<posy>225</posy>
+					<width>147</width>
 					<height>25</height>
 					<font>font11</font>
 					<textcolor>white</textcolor>
@@ -1018,8 +1098,8 @@
 					<info>ListItem.Label</info>
 				</control>
 				<control type="image">
-					<posx>150</posx>
-					<posy>110</posy>
+					<posx>120</posx>
+					<posy>190</posy>
 					<width>35</width>
 					<height>35</height>
 					<aspectratio>keep</aspectratio>
