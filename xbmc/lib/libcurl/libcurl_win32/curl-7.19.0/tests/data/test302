@@ -1,0 +1,40 @@
+<testcase>
+<info>
+<keywords>
+HTTPS
+HTTP GET
+HTTP CONNECT
+HTTP proxy
+FAILURE
+</keywords>
+</info>
+
+# Client-side
+<client>
+<features>
+SSL
+</features>
+<server>
+https
+</server>
+ <name>
+HTTPS GET over HTTP proxy fails
+ </name>
+ <command>
+-k -U fake:user -x %HOSTIP:%HTTPPORT https://bad.fakeurl-to.test/slash/302
+</command>
+</client>
+
+#
+# Verify data after the test has been "shot"
+<verify>
+<errorcode>
+56
+</errorcode>
+<strip>
+^User-Agent:.*
+</strip>
+<data>
+</data>
+</verify>
+</testcase>
