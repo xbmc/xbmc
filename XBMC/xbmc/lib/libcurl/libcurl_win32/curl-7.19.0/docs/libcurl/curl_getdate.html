@@ -1,0 +1,93 @@
+<html><head>
+<title>curl_getdate man page</title>
+<meta name="generator" content="roffit 0.7">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">curl_getdate - Convert an date string to number of seconds since January 1, 1970 <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0"><span Class="bold">#include &lt;curl/curl.h&gt;</span> 
+<p class="level0"><span Class="bold">time_t curl_getdate(char * datestring , time_t *now  );</span> 
+<p class="level0"><a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">This function returns the number of seconds since January 1st 1970 in the UTC time zone, for the date and time that the <span Class="emphasis">datestring</span> parameter specifies. The <span Class="emphasis">now</span> parameter is not used, pass a NULL there. 
+<p class="level0"><span Class="bold">NOTE:</span> This function was rewritten for the 7.12.2 release and this documentation covers the functionality of the new one. The new one is not feature-complete with the old one, but most of the formats supported by the new one was supported by the old too. <a name="PARSING"></a><h2 class="nroffsh">PARSING DATES AND TIMES</h2>
+<p class="level0">A "date" is a string containing several items separated by whitespace. The order of the items is immaterial.  A date string may contain many flavors of items: 
+<p class="level0"><span Class="bold">calendar date items</span> Can be specified several ways. Month names can only be three-letter english abbrivations, numbers can be zero-prefixed and the year may use 2 or 4 digits. Examples: 06 Nov 1994, 06-Nov-94 and Nov-94 6. 
+<p class="level0"><span Class="bold">time of the day items</span> This string specifies the time on a given day. You must specify it with 6 digits with two colons: HH:MM:SS. To not include the time in a date string, will make the function assume 00:00:00. Example: 18:19:21. 
+<p class="level0"><span Class="bold">time zone items</span> Specifies international time zone. There are a few acronyms supported, but in general you should instead use the specific relative time compared to UTC. Supported formats include: -1200, MST, +0100. 
+<p class="level0"><span Class="bold">day of the week items</span> Specifies a day of the week. Days of the week may be spelled out in full (using english): `Sunday', `Monday', etc or they may be abbreviated to their first three letters. This is usually not info that adds anything. 
+<p class="level0"><span Class="bold">pure numbers</span> If a decimal number of the form YYYYMMDD appears, then YYYY is read as the year, MM as the month number and DD as the day of the month, for the specified calendar date. 
+<p class="level0"><a name="EXAMPLES"></a><h2 class="nroffsh">EXAMPLES</h2>
+<p class="level0"><pre>
+<p class="level0">Sun, 06 Nov 1994 08:49:37 GMT
+ Sunday, 06-Nov-94 08:49:37 GMT
+ Sun Nov  6 08:49:37 1994
+ 06 Nov 1994 08:49:37 GMT
+ 06-Nov-94 08:49:37 GMT
+ Nov  6 08:49:37 1994
+ 06 Nov 1994 08:49:37
+ 06-Nov-94 08:49:37
+ 1994 Nov 6 08:49:37
+ GMT 08:49:37 06-Nov-94 Sunday
+ 94 6 Nov 08:49:37
+ 1994 Nov 6
+ 06-Nov-94
+ Sun Nov 6 94
+ 1994.Nov.6
+ Sun/Nov/6/94/GMT
+ Sun, 06 Nov 1994 08:49:37 CET
+ 06 Nov 1994 08:49:37 EST
+ Sun, 12 Sep 2004 15:05:58 -0700
+ Sat, 11 Sep 2004 21:32:11 +0200
+ 20040912 15:05:58 -0700
+ 20040911 +0200
+ </pre>
+
+<p class="level0"><a name="STANDARDS"></a><h2 class="nroffsh">STANDARDS</h2>
+<p class="level0">This parser was written to handle date formats specified in RFC 822 (including the update in RFC 1123) using time zone name or time zone delta and RFC 850 (obsoleted by RFC 1036) and ANSI C's asctime() format. These formats are the only ones RFC2616 says HTTP applications may use. <a name="RETURN"></a><h2 class="nroffsh">RETURN VALUE</h2>
+<p class="level0">This function returns -1 when it fails to parse the date string. Otherwise it returns the number of seconds as described. 
+<p class="level0">If the year is larger than 2037 on systems with 32 bit time_t, this function will return 0x7fffffff (since that is the largest possible signed 32 bit number). 
+<p class="level0">Having a 64 bit time_t is not a guarantee that dates beyond 03:14:07 UTC, January 19, 2038 will work fine. On systems with a 64 bit time_t but with a crippled mktime(), <span Class="emphasis">curl_getdate</span> will return -1 in this case. <a name="REWRITE"></a><h2 class="nroffsh">REWRITE</h2>
+<p class="level0">The former version of this function was built with yacc and was not only very large, it was also never quite understood and it wasn't possible to build with non-GNU tools since only GNU Bison could make it thread-safe! 
+<p class="level0">The rewrite was done for 7.12.2. The new one is much smaller and use simpler code. <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>

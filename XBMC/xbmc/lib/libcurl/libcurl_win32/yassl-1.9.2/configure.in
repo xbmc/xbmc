@@ -1,0 +1,133 @@
+AC_INIT
+AC_CANONICAL_SYSTEM
+AM_INIT_AUTOMAKE(yassl,1.9.2) # !!! also change in ssl.h !!!
+AM_CONFIG_HEADER(taocrypt/include/config.h)
+
+dnl Include m4
+sinclude(check_zlib.m4)
+sinclude(lib_socket_nsl.m4)
+sinclude(acx_pthread.m4)
+
+# make sure configure doesn't add to CXXFLAGS
+CXXFLAGS="$CXXFLAGS $C_EXTRA_FLAGS"    
+
+AC_PROG_CXX
+AC_PROG_INSTALL
+AC_PROG_RANLIB
+
+
+AC_C_BIGENDIAN
+
+AC_CHECK_SIZEOF(long, 4)
+AC_CHECK_SIZEOF(long long, 8)
+if test "$ac_cv_sizeof_long_long" -eq 0
+then
+  AC_MSG_ERROR("yaSSL needs a long long type.")
+fi
+
+
+OPTIMIZE_CXXFLAGS="-O3"
+DEBUG_CXXFLAGS="-g"
+
+
+AC_ARG_ENABLE(debug,
+    [  --enable-debug          Enable yaSSL debugging support (default: enabled)],
+    [ ENABLED_DEBUG=$enableval ],
+    [ ENABLED_DEBUG=yes ]
+    )
+if test "$ENABLED_DEBUG" = "yes"
+then
+  # Full debug. Very slow in some cases
+  CXXFLAGS="$DEBUG_CXXFLAGS $CXXFLAGS"
+else
+  # Optimized version. No debug
+  CXXFLAGS="$OPTIMIZE_CXXFLAGS $CXXFLAGS -DNDEBUG"
+fi
+
+
+if test "$GCC" = "yes"
+then
+    CXXFLAGS="$CXXFLAGS -fno-exceptions -fno-rtti"
+    if test "$target_vendor" = "pc" && test "$ENABLED_DEBUG" == "no"
+    then
+        CXXFLAGS="$CXXFLAGS -march=$target_cpu"
+    fi
+fi
+
+
+AC_ARG_ENABLE(kernel-mode,
+    [  --enable-kernel-mode    Enable TaoCrypt for Kernel Module (default: disabled)],
+    [ ENABLED_KERNEL_MODE=$enableval ],
+    [ ENABLED_KERNEL_MODE=no ]
+    )
+
+if test "$ENABLED_KERNEL_MODE" = "yes"
+then
+    CXXFLAGS="$CXXFLAGS -DTAOCRYPT_KERNEL_MODE"
+fi
+
+
+AC_ARG_ENABLE(pure-c,
+    [  --enable-pure-c         Enable a Pure C build, see docs (default: disabled)],
+    [ ENABLED_PURE_C=$enableval ],
+    [ ENABLED_PURE_C=no ]
+    )
+
+if test "$ENABLED_PURE_C" = "yes"
+then
+    CXXFLAGS="$CXXFLAGS -DYASSL_PURE_C"
+fi
+
+
+AC_ARG_ENABLE(ia32-asm,
+    [  --enable-ia32-asm       Enable TaoCrypt ia32 assembly (default: enabled)],
+    [ ENABLED_IA32ASM=$enableval ],
+    [ ENABLED_IA32ASM=yes ]
+    )
+
+if test "$ENABLED_IA32ASM" = "no"
+then
+    CXXFLAGS="$CXXFLAGS -DTAOCRYPT_DISABLE_X86ASM"
+fi
+
+
+AC_ARG_ENABLE(ipv6,
+    [  --enable-ipv6           Enable testing of IPV6 (default: disabled)],
+    [ ENABLED_IPV6=$enableval ],
+    [ ENABLED_IPV6=no ]
+    )
+
+if test "$ENABLED_IPV6" = "yes"
+then
+    CXXFLAGS="$CXXFLAGS -DTEST_IPV6"
+fi
+
+
+
+CHECK_ZLIB
+
+ACX_PTHREAD
+
+LIBS="$PTHREAD_LIBS $LIBS"
+CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
+
+LIB_SOCKET_NSL
+
+AC_SUBST(CXXFLAGS)
+AC_SUBST(LIBS)
+
+
+AC_CONFIG_FILES(Makefile dnl
+        taocrypt/Makefile dnl
+        taocrypt/src/Makefile dnl
+        src/Makefile dnl
+        taocrypt/test/Makefile dnl
+        taocrypt/benchmark/Makefile dnl
+        examples/Makefile dnl
+        examples/client/Makefile dnl
+        examples/server/Makefile dnl
+        examples/echoclient/Makefile dnl
+        examples/echoserver/Makefile dnl
+        testsuite/Makefile)
+
+AC_OUTPUT

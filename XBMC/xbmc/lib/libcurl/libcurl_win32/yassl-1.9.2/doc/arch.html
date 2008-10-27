@@ -1,0 +1,92 @@
+<html>
+<link rel="stylesheet" href="yassl.css" type="text/css" />
+
+<body bgcolor="black">
+&nbsp;
+<table align="center" width="859" height="700" border="0" cellspacing="0" cellpadding="0" bgcolor="#E6F3FF">
+<td width="2%" valign="top">
+<td width="96%" valign="top">
+<br />
+
+<a name="overview">
+<span class="pageName">
+<h2>yaSSL Architecture</h2>
+</span>
+<span class="bodyText">
+yaSSL implements the SSL protocol as defined in 
+<a href="http://wp.netscape.com/eng/ssl3/draft302.txt"> draft-freier-ssl-version3-02.txt</a>.
+
+It implements the TLS protocol as defined in <a href="http://www.ietf.org/rfc/rfc2246.txt"> RFC 2246</a>.
+
+Two record layer protocols exist within SSL, the message layer and the handshake layer.  Handshake messages are used to negotiate a common cipher suite, create secrets, and enable a secure connection.
+
+The message layer encapsulates the handshake layer while also supporting alert processing and application data transfer.  yaSSL uses three important libraries to handle the lower level functionality, described below.
+
+</a>
+</span>
+
+
+<a name="taocrypt">
+<span class="pageName">
+<h2>TaoCrypt</h2>
+</span>
+<span class="bodyText">
+By default, yaSSL uses the cryptographic services provided by TaoCrypt which is
+based in part on CryptoPP (see below).  TaoCrypt aims to be more portable while
+only providing the functionality necessary for SSL type needs.
+
+TaoCrypt Provides RSA, DES, 3DES, ARC4, MD2, MD5, SHA-1, RIPEMD-160, DSS,
+Diffie-Hellman, Random Number Generation, Large Integer support, and base 16/64
+encoding/decoding.
+
+
+</a>
+</span>
+
+<a name="cryptopp">
+<span class="pageName">
+<h2>CryptoPP</h2>
+</span>
+<span class="bodyText">
+CryptoPP can also be used to handle cryptography and crypto related details.  Just define USE_CYPTOPP_LIB while compiling yaSSL. RSA, DES, 3DES, ARC4, MD5, SHA-1, and DSS are currently used by yaSSL, as well as CryptoPP's cryptographically secure random number generator, large Integer support, and base64 encoding/decoding.  yaSSL declares all of its cryptographic needs in the header file crypto_wrapper.hpp.  Nothing in the header file relies on the details of CryptoPP, i.e., any other library may be substituted in place of CryptoPP by switching out the desired functionality in crypto_wrapper.cpp.  More information about CryptoPP, including source download, may be obtained at <a href="http://www.cryptopp.com">cryptopp.com</a>.
+
+</a>
+</span>
+
+
+<a name="tcp">
+<span class="pageName">
+<h2>TCP/IP</h2>
+</span>
+<span class="bodyText">
+TCP/IP is responsible for all data transmission.  Unreliable protocols are not currently supported by SSL.  The system's TCP/IP is used by default and yaSSL uses it in a standard way.  yaSSL does attempt to encapsulate the difference between BSD sockets and WinSock in socket_wrapper.hpp so that yaSSL does not have to concern itself with the discrepancies.  Please note that the user of yaSSL is responsible for setting socket options before passing off the socket descriptor.  For example, a user wishing to use a non-blocking socket must set this before handing off responsibility to yaSSL.  For more information about TCP and socket options see your system documentation or a classic tome like Stevens's <i>Unix Network Programming Volume I</i>.
+</a>
+</span>
+
+
+<a name="cert">
+<span class="pageName">
+<h2>Certificate Management</h2>
+</span>
+<span class="bodyText">
+TaoCrypt currently handles all x509 processing and verification.  Extracting public keys, valid dates, issuer, and contact information are a few examples of certificate processing.  TaoCrypt also verifies x509 validity through Certificate Authorities that the user controls.
+cert_wrapper.hpp declares the certificate functionality that yaSSL requires and like crypto_wrapper.hpp none of the details of TaoCrypt are used in the header so that another library can easily be substituted into cert_wrapper.cpp.
+yaSSL can accept certificates and keys in both PEM (Privacy Enhanced Mail) and DER (Distinguished Encoding Rules) formats.
+</a>
+</span>
+
+
+<p><a href="http://yassl.com/">Home</a>
+<br />
+&nbsp;
+
+<td width="2%" valign="top">
+
+</td>
+</table>
+</body>
+
+
+
+</html>
+

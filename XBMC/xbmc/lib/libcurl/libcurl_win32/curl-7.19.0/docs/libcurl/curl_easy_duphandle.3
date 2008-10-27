@@ -1,0 +1,34 @@
+.\" You can view this file with:
+.\" nroff -man [file]
+.\" $Id: curl_easy_duphandle.3,v 1.4 2004/04/13 09:08:52 bagder Exp $
+.\"
+.TH curl_easy_duphandle 3 "18 September 2001" "libcurl 7.9" "libcurl Manual"
+.SH NAME
+curl_easy_duphandle - Clone a libcurl session handle
+.SH SYNOPSIS
+.B #include <curl/curl.h>
+
+.BI "CURL *curl_easy_duphandle(CURL *"handle ");"
+
+.SH DESCRIPTION
+This function will return a new curl handle, a duplicate, using all the
+options previously set in the input curl \fIhandle\fP. Both handles can
+subsequently be used independently and they must both be freed with
+\fIcurl_easy_cleanup(3)\fP.
+
+All strings that the input handle has been told to point to (as opposed to
+copy) with previous calls to \fIcurl_easy_setopt(3)\fP using char * inputs,
+will be pointed to by the new handle as well. You must therefore make sure to
+keep the data around until both handles have been cleaned up.
+
+The new handle will \fBnot\fP inherit any state information, no connections,
+no SSL sessions and no cookies.
+
+\fBNote\fP that even in multi-threaded programs, this function must be called
+in a synchronous way, the input handle may not be in use when cloned.
+.SH RETURN VALUE
+If this function returns NULL, something went wrong and no valid handle was
+returned.
+.SH "SEE ALSO"
+.BR curl_easy_init "(3)," curl_easy_cleanup "(3)," curl_global_init "(3)
+
