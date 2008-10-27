@@ -57,7 +57,7 @@
 				<include>MovieDVDView</include>
 				<include>EpisodeFanartView</include>
 				<include>MovieFanartView</include>
-				<include>ThumbnailView</include>
+				<include>VideoThumbnailView</include>
 				<include>WideIconView</include>
 				<include>CommonNowPlaying_Controls</include>
 			</control>
