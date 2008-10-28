@@ -86,7 +86,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 
 #ifndef _LINUX
   CStdStringW strSearchMask;
-  g_charsetConverter.utf8ToW(strRoot,strSearchMask); 
+  g_charsetConverter.utf8ToW(strRoot, strSearchMask, false); 
   strSearchMask += "*.*";
 #else
   CStdString strSearchMask = strRoot;
@@ -183,7 +183,7 @@ bool CHDDirectory::Create(const char* strPath)
 
 #ifndef _LINUX
   CStdStringW strWPath1;
-  g_charsetConverter.utf8ToW(strPath1, strWPath1);
+  g_charsetConverter.utf8ToW(strPath1, strWPath1, false);
   if(::CreateDirectoryW(strWPath1, NULL))
 #else
   if(::CreateDirectory(strPath1.c_str(), NULL))
@@ -199,7 +199,7 @@ bool CHDDirectory::Remove(const char* strPath)
 {
 #ifndef _LINUX
   CStdStringW strWPath;
-  g_charsetConverter.utf8ToW(strPath, strWPath);
+  g_charsetConverter.utf8ToW(strPath, strWPath, false);
   return ::RemoveDirectoryW(strWPath) ? true : false;
 #else
   return ::RemoveDirectory(strPath) ? true : false;
@@ -214,7 +214,7 @@ bool CHDDirectory::Exists(const char* strPath)
   strReplaced.Replace("/","\\");
   if (!CUtil::HasSlashAtEnd(strReplaced))
     strReplaced += '\\';
-  g_charsetConverter.utf8ToW(strReplaced, strWReplaced);
+  g_charsetConverter.utf8ToW(strReplaced, strWReplaced, false);
   DWORD attributes = GetFileAttributesW(strWReplaced);
 #else    
   DWORD attributes = GetFileAttributes(strReplaced.c_str());

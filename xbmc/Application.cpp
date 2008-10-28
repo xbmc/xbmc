@@ -511,8 +511,8 @@ static void CopyUserDataIfNeeded(CStdString strPath, LPCTSTR file)
     srcFile.append(file);
 #ifdef _WIN32PC
     CStdStringW srcFileW,strPathW;
-    g_charsetConverter.utf8ToW(srcFile,srcFileW);
-    g_charsetConverter.utf8ToW(strPath,strPathW);
+    g_charsetConverter.utf8ToW(srcFile, srcFileW, false);
+    g_charsetConverter.utf8ToW(strPath, strPathW, false);
     CopyFileW(srcFileW, strPathW, TRUE);
 #else
     CopyFile(srcFile.c_str(), strPath.c_str(), TRUE);
