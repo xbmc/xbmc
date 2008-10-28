@@ -418,6 +418,25 @@ function modifySyslinux
 	fi
 }
 
+function changePasswords
+{
+	#
+	# Lock root account
+	#
+	passwd -l root &> /dev/null
+
+	echo "Please set a new password for user 'xbmc':"
+	while true
+	do
+		passwd xbmc
+		if [ "$?" = 0 ]; then
+			break
+		fi
+	done
+
+	cp /etc/shadow /tmp/bootPart/Config
+}
+
 function addFstabEntries
 {
 	#
@@ -581,6 +600,7 @@ do
 		echo "Applying system changes..."
 
 		addFstabEntries ${availableDrives[$index]} $swap_partition_size
+		changePasswords
 		prepareHomeDirectory ${availableDrives[$index]} $swap_partition_size
 	fi
 

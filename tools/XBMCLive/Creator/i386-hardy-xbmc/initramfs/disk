@@ -67,7 +67,7 @@ mountroot ()
     fi
 
 
-	mkdir -p /container
+	mkdir -p /mnt
 	mkdir -p /squashmnt1
 	mkdir -p /squashmnt2
 	mkdir -p /squashmnt3
@@ -115,36 +115,36 @@ mountroot ()
 		echo "Setting up our squashfs and ext3fs unionfs system..."
 	fi
 
-	mount -o rw /dev/${device}1 /container
-	while [ ! -e "/container/rootfs.img" ]
+	mount -o rw /dev/${device}1 /mnt
+	while [ ! -e "/mnt/rootfs.img" ]
 	do
 	    if [ "$QUIET" == "" ]; then
-	 	   echo "Did not find /container/rootfs.img"
+	 	   echo "Did not find /mnt/rootfs.img"
 		    echo "sleeping for 0.5 seconds..."
 	    fi
 	    /bin/sleep 0.5
             if [ "$QUIET" == "" ]; then
 	    	echo "Mount root from /dev/${device}1..."
 	    fi
-	    mount -o rw /dev/${device}1 /container
+	    mount -o rw /dev/${device}1 /mnt
 	done
 
-	mount -o ro,loop -t squashfs /container/rootfs.img /squashmnt1
+	mount -o ro,loop -t squashfs /mnt/rootfs.img /squashmnt1
 
         if [ "$XBMC_NVIDIA" != "" ]; then
-            if [ -f /container/restrictedDrivers.nvidia.img ]; then
+            if [ -f /mnt/restrictedDrivers.nvidia.img ]; then
                if [ "$QUIET" = "" ]; then
                    echo "Mounting NVIDIA drivers..."
                fi
-               mount -o ro,loop,noatime,nodiratime /container/restrictedDrivers.nvidia.img /squashmnt2
+               mount -o ro,loop,noatime,nodiratime /mnt/restrictedDrivers.nvidia.img /squashmnt2
             fi
         else
             if [ "$XBMC_AMD" != "" ]; then
-                if [ -f /container/restrictedDrivers.amd.img ]; then
+                if [ -f /mnt/restrictedDrivers.amd.img ]; then
                     if [ "$QUIET" = "" ]; then
                         echo "Mounting AMD drivers..."
                     fi
-                    mount -o ro,loop,noatime,nodiratime /container/restrictedDrivers.amd.img /squashmnt2
+                    mount -o ro,loop,noatime,nodiratime /mnt/restrictedDrivers.amd.img /squashmnt2
                 fi
             else
                 # No Ops for Intel as of today
@@ -155,35 +155,40 @@ mountroot ()
             fi
         fi
 
-        if [ -f /container/ext3fs.img ]; then
-            mount -o rw,loop,noatime,nodiratime /container/ext3fs.img /persistmnt
+        if [ -f /mnt/ext3fs.img ]; then
+            mount -o rw,loop,noatime,nodiratime /mnt/ext3fs.img /persistmnt
         else
             mount -t tmpfs -o noatime,nodiratime none /persistmnt
         fi
         mount -t unionfs -o dirs=/persistmnt=rw:/squashmnt2=ro:/squashmnt1=ro none ${rootmnt}
 
-    if [ -f /container/config/fstab ]; then
-        mv /container/config/fstab ${rootmnt}/etc
+    if [ -f /mnt/config/fstab ]; then
+        mv /mnt/config/fstab ${rootmnt}/etc
     fi
 
-    if [ -f /container/config/xorg.conf ]; then
-        mv /container/config/xorg.conf ${rootmnt}/etc/X11
+    if [ -f /mnt/config/shadow ]; then
+        mv /mnt/config/shadow ${rootmnt}/etc
+	chmod 640 ${rootmnt}/etc/shadow
     fi
 
-    if [ -f /container/config/lircd.conf ]; then
-        mv/container/config/lircd.conf ${rootmnt}/etc/lirc
+    if [ -f /mnt/config/xorg.conf ]; then
+        mv /mnt/config/xorg.conf ${rootmnt}/etc/X11
     fi
 
-    if [ -f /container/config/hardware.conf ]; then
-        mv /container/config/hardware.conf ${rootmnt}/etc/lirc
+    if [ -f /mnt/config/lircd.conf ]; then
+        mv/mnt/config/lircd.conf ${rootmnt}/etc/lirc
     fi
 
-    if [ -f /container/config/lircrc ]; then
-        mv /container/config/lircrc ${rootmnt}/etc/lirc
+    if [ -f /mnt/config/hardware.conf ]; then
+        mv /mnt/config/hardware.conf ${rootmnt}/etc/lirc
     fi
 
-    if [ -f /container/config/interfaces ]; then
-        mv /container/config/interfaces ${rootmnt}/etc/network
+    if [ -f /mnt/config/lircrc ]; then
+        mv /mnt/config/lircrc ${rootmnt}/etc/lirc
+    fi
+
+    if [ -f /mnt/config/interfaces ]; then
+        mv /mnt/config/interfaces ${rootmnt}/etc/network
     fi
 }
 
