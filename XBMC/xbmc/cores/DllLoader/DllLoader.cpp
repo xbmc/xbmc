@@ -481,7 +481,8 @@ int DllLoader::ResolveImports(void)
           void *Fixup;
           if ( !ResolveName(Name, ImpName, &Fixup) )
           {
-            if((*Addr=get_win_function_address(Name, ImpName)) == NULL)
+            *Addr=get_win_function_address(Name, ImpName);
+            if(Addr == NULL)
             {
               CLog::Log(LOGDEBUG,"Unable to resolve %s %s\n", Name, ImpName);
               *Addr = create_dummy_function(Name, ImpName);

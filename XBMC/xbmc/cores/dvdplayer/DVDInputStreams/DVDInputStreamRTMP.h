@@ -42,7 +42,7 @@ protected:
   RTMP_LIB::CRTMP  m_rtmp;
   unsigned int m_videoTS;
   unsigned int m_audioTS;
-  unsigned int m_prevTagSize;
+  int          m_prevTagSize;
   bool         m_bSentHeader;
   char         *m_leftOver;
   unsigned int m_leftOverSize;
