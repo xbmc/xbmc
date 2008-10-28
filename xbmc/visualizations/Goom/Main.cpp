@@ -35,7 +35,9 @@ extern "C" {
 #include <GL/glew.h>
 #include <string>
 #ifdef _WIN32PC
+#ifndef _MINGW
 #include "win32-dirent.h"
+#endif
 #include <io.h>
 #else
 #include "system.h"
@@ -83,6 +85,7 @@ int check_valid_extension(struct dirent* ent)
 int check_valid_extension(const struct dirent* ent) 
 #endif
 {
+#ifndef _MINGW
   const char* ext = 0;
   
   if (!ent) return 0;
@@ -92,7 +95,7 @@ int check_valid_extension(const struct dirent* ent)
   
   if (0 == strcasecmp(ext, ".milk")) return 1;
   if (0 == strcasecmp(ext, ".prjm")) return 1;
-  
+#endif
   return 0;
 }
 
@@ -128,8 +131,10 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   g_window_ypos = iPosY;
 
 #ifdef _WIN32PC
+#ifndef _MINGW
   g_configFile = string(getenv("XBMC_PROFILE_USERDATA")) + "\\" + CONFIG_FILE;
   std::string presetsDir = string(getenv("XBMC_HOME")) + "\\" + PRESETS_DIR;
+#endif
 #else
   g_configFile = _P(CONFIG_FILE);
   std::string presetsDir = _P(PRESETS_DIR);
