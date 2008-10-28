@@ -2342,7 +2342,7 @@ void CApplication::RenderMemoryStatus()
   {
     // reset the window scaling and fade status
     RESOLUTION res = g_graphicsContext.GetVideoResolution();
-/*    g_graphicsContext.SetRenderingResolution(res, 0, 0, false);
+    g_graphicsContext.SetRenderingResolution(res, 0, 0, false);
 
     CStdStringW wszText;
     MEMORYSTATUS stat;
@@ -2351,7 +2351,7 @@ void CApplication::RenderMemoryStatus()
 
     float x = 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
     float y = 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
-    CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, wszText);*/
+    CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, wszText);
   }
 }
 
