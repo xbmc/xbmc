@@ -700,7 +700,11 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     ZeroMemory(&devmode, sizeof(devmode));
     devmode.dmSize = sizeof(devmode);
     EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
-    g_settings.m_ResInfo[res].fRefreshRate = (float)devmode.dmDisplayFrequency;
+    if(devmode.dmDisplayFrequency == 59 || devmode.dmDisplayFrequency == 29 || devmode.dmDisplayFrequency == 23)
+      g_settings.m_ResInfo[res].fRefreshRate = (float)(devmode.dmDisplayFrequency + 1) / 1.001f;
+    else
+      g_settings.m_ResInfo[res].fRefreshRate = (float)(devmode.dmDisplayFrequency);
+
     if(g_advancedSettings.m_fullScreen)
       LockSetForegroundWindow(LSFW_LOCK);
 #endif
