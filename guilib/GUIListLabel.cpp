@@ -34,6 +34,7 @@ CGUIListLabel::CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, fl
   m_scrolling = m_alwaysScroll = alwaysScroll;
   m_label = labelInfo;
   m_info = info;
+  m_textWidth = width;
   if (m_info.IsConstant())
     SetLabel(m_info.GetLabel(m_dwParentID, true));
   ControlType = GUICONTROL_LISTLABEL;
