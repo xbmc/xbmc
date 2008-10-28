@@ -81,7 +81,7 @@ bool CFileHD::Open(const CURL& url, bool bBinary)
 
 #ifdef _WIN32PC
   CStdStringW strWFile;
-  g_charsetConverter.utf8ToW(strFile,strWFile);
+  g_charsetConverter.utf8ToW(strFile, strWFile, false);
   m_hFile.attach(CreateFileW(strWFile.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL));
 #else
   m_hFile.attach(CreateFile(strFile.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL));
@@ -101,7 +101,7 @@ bool CFileHD::Exists(const CURL& url)
 
 #ifdef _WIN32PC
   CStdStringW strWFile;
-  g_charsetConverter.utf8ToW(strFile,strWFile);
+  g_charsetConverter.utf8ToW(strFile, strWFile, false);
   return (_wstat64(strWFile.c_str(), &buffer)==0);
 #else
   return (_stat64(strFile.c_str(), &buffer)==0);
@@ -127,7 +127,7 @@ int CFileHD::Stat(const CURL& url, struct __stat64* buffer)
 
 #ifdef _WIN32PC
   CStdStringW strWFile;
-  g_charsetConverter.utf8ToW(strFile,strWFile);
+  g_charsetConverter.utf8ToW(strFile, strWFile, false);
   return _wstat64(strWFile.c_str(), buffer);
 #else
   return _stat64(strFile.c_str(), buffer);
@@ -153,7 +153,7 @@ bool CFileHD::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
 
 #ifdef _WIN32PC
   CStdStringW strWPath;
-  g_charsetConverter.utf8ToW(strPath,strWPath);
+  g_charsetConverter.utf8ToW(strPath, strWPath, false);
   m_hFile.attach(CreateFileW(strWPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
 #else
   m_hFile.attach(CreateFile(strPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
@@ -260,7 +260,7 @@ bool CFileHD::Delete(const CURL& url)
 
 #ifdef _WIN32PC
   CStdStringW strWFile;
-  g_charsetConverter.utf8ToW(strFile,strWFile);
+  g_charsetConverter.utf8ToW(strFile, strWFile, false);
   return ::DeleteFileW(strWFile.c_str()) ? true : false;
 #else
   return ::DeleteFile(strFile.c_str()) ? true : false;
@@ -275,8 +275,8 @@ bool CFileHD::Rename(const CURL& url, const CURL& urlnew)
 #ifdef _WIN32PC
   CStdStringW strWFile;
   CStdStringW strWNewFile;
-  g_charsetConverter.utf8ToW(strFile,strWFile);
-  g_charsetConverter.utf8ToW(strNewFile,strWNewFile);
+  g_charsetConverter.utf8ToW(strFile, strWFile, false);
+  g_charsetConverter.utf8ToW(strNewFile, strWNewFile, false);
   return ::MoveFileW(strWFile.c_str(), strWNewFile.c_str()) ? true : false;
 #else
   return ::MoveFile(strFile.c_str(), strNewFile.c_str()) ? true : false;
