@@ -142,7 +142,7 @@ bool CTextureBundle::OpenBundle()
   
 #ifndef _LINUX
   CStdStringW strPathW;
-  g_charsetConverter.utf8ToW(strPath, strPathW);
+  g_charsetConverter.utf8ToW(strPath, strPathW, false);
   if (GetFileAttributesW(strPathW.c_str()) == -1)
     return false;
 

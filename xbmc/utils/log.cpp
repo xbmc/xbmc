@@ -72,8 +72,8 @@ void CLog::Log(int loglevel, const char *format, ... )
 
 #ifndef _LINUX
       CStdStringW strLogFileW, strLogFileOldW;
-      g_charsetConverter.utf8ToW(strLogFile,strLogFileW);
-      g_charsetConverter.utf8ToW(strLogFileOld,strLogFileOldW);
+      g_charsetConverter.utf8ToW(strLogFile, strLogFileW, false);
+      g_charsetConverter.utf8ToW(strLogFileOld, strLogFileOldW, false);
       ::DeleteFileW(strLogFileOldW.c_str());
       ::MoveFileW(strLogFileW.c_str(), strLogFileOldW.c_str());
 #else
@@ -291,4 +291,5 @@ void LogGraphicsInfo()
             "Please define LogGraphicsInfo for your chosen graphics libary");
 #endif /* !HAS_SDL_OPENGL */
 }
+
 
