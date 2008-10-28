@@ -109,7 +109,10 @@ void XBVideoConfig::GetDesktopResolution(int &w, int &h, float &hz) const
     EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
     w = devmode.dmPelsWidth;
     h = devmode.dmPelsHeight;
-    hz = devmode.dmDisplayFrequency;
+    if(devmode.dmDisplayFrequency == 59 || devmode.dmDisplayFrequency == 29 || devmode.dmDisplayFrequency == 23)
+      hz = (float)(devmode.dmDisplayFrequency + 1) / 1.001f;
+    else
+      hz = (float)(devmode.dmDisplayFrequency);
 #endif
 
 #ifdef HAS_GLX
