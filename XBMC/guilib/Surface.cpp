@@ -688,14 +688,13 @@ void CSurface::EnableVSync(bool enable)
         m_iSwapTime   = (__int64)(0.001 * g_advancedSettings.m_ForcedSwapTime * freq);
         m_iSwapStamp  = 0;
         CLog::Log(LOGINFO, "GL: Using artificial vsync sleep with rate %f", rate);
+        if(!m_iVSyncMode)
+          m_iVSyncMode = 1;
       }
     }
 
     if(!m_iVSyncMode)
-    {
-      m_iVSyncMode = 0;
       CLog::Log(LOGERROR, "GL: Vertical Blank Syncing unsupported");
-    }
     else
       CLog::Log(LOGINFO, "GL: Selected vsync mode %d", m_iVSyncMode);
   }
