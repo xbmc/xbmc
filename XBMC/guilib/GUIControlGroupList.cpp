@@ -35,6 +35,8 @@ CGUIControlGroupList::CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, 
   m_orientation = orientation;
   m_scrollOffset = 0;
   m_scrollSpeed = 0;
+  m_scrollTime = 0;
+  m_renderTime = 0;
   m_useControlPositions = useControlPositions;
   ControlType = GUICONTROL_GROUPLIST;
 }
