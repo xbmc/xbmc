@@ -46,6 +46,7 @@ using namespace HTML;
 //////////////////////////////////////////////////////////////////////
 CIMDB::CIMDB()
 {
+  m_retry = false;
 }
 
 CIMDB::CIMDB(const CStdString& strProxyServer, int iProxyPort)
