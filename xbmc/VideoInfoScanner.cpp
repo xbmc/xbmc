@@ -860,6 +860,7 @@ namespace VIDEO
                 free(episode);
                 CLog::Log(LOGDEBUG, "adding new season %u, multipart episode %u", myEpisode.iSeason, myEpisode.iEpisode);
                 episodeList.push_back(myEpisode);
+                free(remainder);
                 remainder = reg.GetReplaceString("\\3");
                 offset = 0;
               }
@@ -874,6 +875,7 @@ namespace VIDEO
                 offset += regexp2pos + reg2.GetFindLen();
               }
             }
+            free(remainder);
           }
         }
       }
