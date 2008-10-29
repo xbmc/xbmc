@@ -176,7 +176,7 @@ void CDVDAudioCodecLiba52::SetupChannels(int flags)
   {
     m_iOutputChannels = 2;
     m_iOutputMapping = 0x21;
-    m_iOutputFlags = A52_STEREO;
+    m_iOutputFlags = A52_STEREO | A52_ADJUST_LEVEL;
   }
 #endif
 }
