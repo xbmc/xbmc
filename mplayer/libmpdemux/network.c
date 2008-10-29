@@ -822,6 +822,7 @@ http_seek( stream_t *stream, off_t pos ) {
 			mp_msg(MSGT_NETWORK,MSGL_V,"Content-Length: [%s]\n", http_get_field(http_hdr, "Content-Length") );
 			if( http_hdr->body_size>0 ) {
 				if( streaming_bufferize( stream->streaming_ctrl, http_hdr->body, http_hdr->body_size )<0 ) {
+					closesocket( fd );
 					http_free( http_hdr );
 					return -1;
 				}
@@ -830,7 +831,8 @@ http_seek( stream_t *stream, off_t pos ) {
 		default:
 			mp_msg(MSGT_NETWORK,MSGL_ERR,MSGTR_MPDEMUX_NW_ErrServerReturned, http_hdr->status_code, http_hdr->reason_phrase );
 			closesocket( fd );
-			fd = -1;
+			http_free( http_hdr );
+			return -1;
 	}
 
 	if( stream->fd>0 ) closesocket(stream->fd); // need to reconnect to seek in http-stream
