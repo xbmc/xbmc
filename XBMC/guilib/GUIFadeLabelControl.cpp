@@ -40,6 +40,7 @@ CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, 
   m_lastLabel = -1;
   m_scrollSpeed = scrollSpeed;  // save it for later
   m_resetOnLabelChange = resetOnLabelChange;
+  m_shortText = false;
 }
 
 CGUIFadeLabelControl::CGUIFadeLabelControl(const CGUIFadeLabelControl &from)
@@ -102,7 +103,7 @@ void CGUIFadeLabelControl::Render()
     unsigned int numSpaces = (unsigned int)(m_width / spaceWidth) + 1;
     if (width < m_width) // append spaces for scrolling
       numSpaces += (unsigned int)((m_width - width) / spaceWidth) + 1;
-    m_shortText = width + m_label.offsetX < m_width;
+    m_shortText = (width + m_label.offsetX) < m_width;
     m_scrollInfo.suffix.assign(numSpaces, L' ');
     if (m_resetOnLabelChange)
     {

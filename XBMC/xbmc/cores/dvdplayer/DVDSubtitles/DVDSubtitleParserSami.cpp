@@ -69,6 +69,8 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
         pOverlay->iPTSStartTime = atoi(startFrame)*DVD_TIME_BASE/1000; 
         pOverlay->iPTSStopTime  = atoi(endFrame)*DVD_TIME_BASE/1000;
 
+        free(endFrame);
+
         CStdStringW strUTF16;
         CStdStringA strUTF8;
         g_charsetConverter.subtitleCharsetToW(text, strUTF16);
@@ -78,7 +80,6 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
         // add a new text element to our container
         pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));
         reuse = true;
-        free(endFrame);
       
         m_collection.Add(pOverlay);
       }
