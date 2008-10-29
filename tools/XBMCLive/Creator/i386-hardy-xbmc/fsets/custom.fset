@@ -23,7 +23,7 @@ PKGS=subversion make build-essentials autoconf automake gawk
 
 [MiscUtils]
 DESC=Additional packages
-PKGS=mingetty unrar  nano  lirc ntfs-3g hfsprogs syslinux lilo powermanagement-interface network-manager dosfstools
+PKGS=mingetty unrar  nano  lirc ntfs-3g hfsprogs syslinux lilo powermanagement-interface network-manager dosfstools language-pack-en lcdproc
 
 [OpenGL-X11]
 DESC=OpenGl-enabled X11 package set
