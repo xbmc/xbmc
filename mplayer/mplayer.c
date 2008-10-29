@@ -3020,7 +3020,7 @@ if(time_frame>0.001 && !(vo_flags&256)){
 
     // unplayed bytes in our and soundcard/dma buffer:
 #ifdef _XBOX
-    float delay=orgplayback_speed*audio_out->get_delay()+(float)sh_audio->a_buffer_len/(float)sh_audio->o_bps;
+    float delay=orgplayback_speed*audio_out->get_delay();
 #else
     float delay=playback_speed*audio_out->get_delay()+(float)sh_audio->a_buffer_len/(float)sh_audio->o_bps;
 #endif
@@ -3038,7 +3038,9 @@ if(time_frame>0.001 && !(vo_flags&256)){
        * autosync mode.)
        */
       delay=sh_audio->delay;
+#ifndef _XBOX
       delay+=(float)sh_audio->a_buffer_len/(float)sh_audio->o_bps;
+#endif
     }
 
 #if 0
@@ -3079,7 +3081,7 @@ if(time_frame>0.001 && !(vo_flags&256)){
     }
     v_pts=sh_video ? sh_video->pts : d_video->pts;
 
-      mp_dbg(MSGT_AVSYNC,MSGL_DBG2,"### A:%8.3f (%8.3f)  V:%8.3f  A-V:%7.4f  \n",a_pts,a_pts-audio_delay-delay,v_pts,(a_pts-delay-audio_delay)-v_pts);
+      printf("### A:%8.3f (%8.3f)  V:%8.3f  A-V:%7.4f  \n",a_pts,a_pts-audio_delay-delay,v_pts,(a_pts-delay-audio_delay)-v_pts);
 
       if(delay_corrected){
 	static int drop_message=0;
