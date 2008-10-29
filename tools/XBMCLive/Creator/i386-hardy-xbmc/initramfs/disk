@@ -175,6 +175,10 @@ mountroot ()
         mv /mnt/config/xorg.conf ${rootmnt}/etc/X11
     fi
 
+   if [ -f /mnt/config/LCDd.conf ]; then
+        cp /mnt/config/LCDd.conf ${rootmnt}/etc/LCDd.conf
+    fi
+
     if [ -f /mnt/config/lircd.conf ]; then
         mv/mnt/config/lircd.conf ${rootmnt}/etc/lirc
     fi
