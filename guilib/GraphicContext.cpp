@@ -588,11 +588,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
     res = g_videoConfig.GetSafeMode();
   }
-#ifdef _WIN32PC
-  if (res==DESKTOP || g_advancedSettings.m_startFullScreen)
-#else
   if (res>=DESKTOP || g_advancedSettings.m_startFullScreen)
-#endif
   {
     g_advancedSettings.m_fullScreen = true;
     m_bFullScreenRoot = true;
@@ -671,9 +667,13 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       }
     }
 
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) || defined(_WIN32PC)
     // Allow for fullscreen.
     bool needsResize = (m_screenSurface != 0);
+#if defined(_WIN32PC)
+    // Always resize even the first time because we need to change the attributes on the SDL window and center
+    needsResize = true; 
+#endif
     if (!m_screenSurface)
       m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, g_advancedSettings.m_fullScreen);
 
@@ -692,9 +692,9 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
     if (needsResize)
       m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
+#endif
 
-#elif defined(_WIN32)
-    m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, g_advancedSettings.m_fullScreen);
+#if defined(_WIN32PC)
     //get the display frequency
     DEVMODE devmode;
     ZeroMemory(&devmode, sizeof(devmode));
@@ -1234,7 +1234,7 @@ bool CGraphicContext::ValidateSurface(CSurface* dest)
   Uint32 tid = SDL_ThreadID();
   iter = m_surfaces.find(tid);
   if (iter==m_surfaces.end()) {
-#if defined(HAS_GLX) || defined(__APPLE__)
+#if defined(HAS_GLX) || defined(__APPLE__) || defined(_WIN32PC)
     if (dest==NULL)
     {
       CLog::Log(LOGDEBUG, "GL: Sharing screen surface for thread %u", tid);
@@ -1255,11 +1255,7 @@ bool CGraphicContext::ValidateSurface(CSurface* dest)
     }
 #else
     CLog::Log(LOGDEBUG, "Creating surface for thread %ul", tid);
-#ifdef _WIN32
-    CSurface* surface = NULL;
-#else
-     CSurface* surface = InitializeSurface();
-#endif
+    CSurface* surface = InitializeSurface();
     if (surface) 
     {
       m_surfaces[tid] = surface;
@@ -1378,9 +1374,7 @@ void CGraphicContext::AcquireCurrentContext(Surface::CSurface* ctx)
   }
   if (!(iter->second)->MakeCurrent())
   {
-#ifndef _WIN32
     CLog::Log(LOGERROR, "Error making context current");
-#endif
   }
   Unlock();
 #endif
@@ -1410,20 +1404,11 @@ bool CGraphicContext::ToggleFullScreenRoot ()
   static RESOLUTION lastres = INVALID;
   if (m_bFullScreenRoot)
   {
-#ifdef _WIN32PC
-    // FIXME: we need to proper save the window position, size, full screen or not, etc
-    // to switch to the right resolution and start XBMC with the same config
-    // the user stopped it 
-    g_advancedSettings.m_startFullScreen = false;
-#endif
     lastres = GetVideoResolution();
     SetVideoResolution(windowres);
   }
   else
   {
-#ifdef _WIN32PC
-    g_advancedSettings.m_startFullScreen = true;
-#endif
     if (lastres != INVALID)
     {
       SetVideoResolution(lastres);
@@ -1433,11 +1418,6 @@ bool CGraphicContext::ToggleFullScreenRoot ()
       SetVideoResolution(desktopres);
     }
   }
-#ifdef _WIN32PC
-  g_application.ReloadSkin();
-#else
-  g_fontManager.ReloadTTFFonts();
-#endif
   return  m_bFullScreenRoot;
 }
 
@@ -1448,15 +1428,14 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
   bool blankOtherDisplays = (blanking == BLANKING_ALL_DISPLAYS);
 #endif
   
-  int width, height;
   if (fs)
   {
     // Code from this point on should be platform independent. The Win32 version could
     // probably use GetSystemMetrics/EnumDisplayDevices/GetDeviceCaps to query current 
     // resolution on the requested display no. and set 'width' and 'height'
     
-    width = m_iFullScreenWidth = m_iScreenWidth;
-    height = m_iFullScreenHeight = m_iScreenHeight;
+    m_iFullScreenWidth = m_iScreenWidth;
+    m_iFullScreenHeight = m_iScreenHeight;
 #ifdef HAS_XRANDR
     XOutput out;
     XMode mode;
@@ -1471,15 +1450,23 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     
 #ifdef __APPLE__
     ResetScreenParameters(m_Resolution);
-    width = m_iFullScreenWidth = m_iScreenWidth= g_settings.m_ResInfo[m_Resolution].iWidth;
-    height = m_iFullScreenHeight = m_iScreenHeight = g_settings.m_ResInfo[m_Resolution].iHeight;
-    Cocoa_GL_SetFullScreen(width, height, true, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen);
+    m_iFullScreenWidth = m_iScreenWidth= g_settings.m_ResInfo[m_Resolution].iWidth;
+    m_iFullScreenHeight = m_iScreenHeight = g_settings.m_ResInfo[m_Resolution].iHeight;
+    Cocoa_GL_SetFullScreen(m_iFullScreenWidth, m_iFullScreenHeight, true, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen);
+#elif defined(_WIN32PC)
+    DEVMODE settings;
+    settings.dmSize = sizeof(settings);
+    settings.dmBitsPerPel = 32;
+    settings.dmPelsWidth = m_iFullScreenWidth;   
+    settings.dmPelsHeight = m_iFullScreenHeight;
+    settings.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_BITSPERPEL;
+    ChangeDisplaySettings(&settings, CDS_FULLSCREEN);
 #else
-    SDL_SetVideoMode(width, height, 0, SDL_FULLSCREEN);
+    SDL_SetVideoMode(m_iFullScreenWidth, m_iFullScreenHeight, 0, SDL_FULLSCREEN);
 #endif
     m_screenSurface->RefreshCurrentContext();
     g_fontManager.ReloadTTFFonts();
-    m_screenSurface->ResizeSurface(width, height);
+    m_screenSurface->ResizeSurface(m_iFullScreenWidth, m_iFullScreenHeight);
 #ifdef HAS_SDL_OPENGL
     glViewport(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
     glScissor(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
@@ -1493,6 +1480,8 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
       g_settings.m_ResInfo[m_Resolution].iWidth,
       g_settings.m_ResInfo[m_Resolution].iHeight,
       false, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen);
+#elif defined(_WIN32PC)
+    ChangeDisplaySettings(NULL, 0);
 #else
     SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0, SDL_RESIZABLE);
     m_screenSurface->RefreshCurrentContext();
@@ -1585,4 +1574,6 @@ void CGraphicContext::Flip()
 {
   m_screenSurface->Flip();
 }
+
+
 

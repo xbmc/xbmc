@@ -120,6 +120,10 @@ public:
 #ifdef __APPLE__
   void* m_glContext;
 #endif
+#ifdef _WIN32 
+  HDC m_glDC; 
+  HGLRC m_glContext; 
+#endif 
   static bool b_glewInit;
   static std::string s_glVendor;
   static std::string s_glRenderer;

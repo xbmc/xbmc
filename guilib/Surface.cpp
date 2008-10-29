@@ -101,6 +101,9 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 #endif
 
 #ifdef _WIN32
+  m_glDC = NULL; 
+  m_glContext = NULL;
+
   timeBeginPeriod(1);
 #endif
 
@@ -317,9 +320,6 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   if (shared == 0)
   {
 #endif
-#ifndef __APPLE__
-    int options = SDL_OPENGL | (fullscreen?SDL_FULLSCREEN:0);
-#endif
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   m_iRedSize);
     SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, m_iGreenSize);
     SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  m_iBlueSize);
@@ -349,7 +349,12 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     // the context SDL creates isn't full screen compatible, so we create new one
     m_glContext = Cocoa_GL_ReplaceSDLWindowContext();
 #else
+    // We use the RESIZABLE flag or else the SDL wndproc won't let us ResizeSurface(), the 
+    // first sizing will replace the borderstyle to prevent allowing abritrary resizes
+    int options = SDL_OPENGL | SDL_RESIZABLE | (fullscreen?SDL_NOFRAME:0);
     m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options);
+    m_glDC = wglGetCurrentDC();
+    m_glContext = wglGetCurrentContext();
 #endif
     if (m_SDLSurface)
     {
@@ -534,7 +539,7 @@ CSurface::~CSurface()
   }
 #else
   if (IsValid() && m_SDLSurface
-#ifdef __APPLE__
+#if defined(__APPLE__ ) || defined(_WIN32)
       && !IsShared()
 #endif
      )
@@ -853,6 +858,13 @@ bool CSurface::MakeCurrent()
     return true;
   }
 #endif
+
+#ifdef _WIN32
+  if (IsShared())
+    return m_pShared->MakeCurrent();
+  if (m_glContext)
+    return (wglMakeCurrent(m_glDC, m_glContext) == TRUE);
+#endif
   return false;
 }
 
@@ -873,6 +885,12 @@ void CSurface::ReleaseContext()
 #endif
 #ifdef __APPLE__
   // Nothing?
+#endif
+#ifdef _WIN32
+  if (IsShared())
+    m_pShared->ReleaseContext();
+  else if (m_glContext)
+    wglMakeCurrent(NULL, NULL);
 #endif
 }
 
@@ -908,7 +926,59 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
   // If we've resized, we likely lose the vsync settings.
   m_bVSync = false;
 #endif
+#ifdef _WIN32
+  SDL_SysWMinfo sysInfo;
+  SDL_VERSION(&sysInfo.version);
+  if (SDL_GetWMInfo(&sysInfo)) 
+  {
+    RECT rBounds;
+    HMONITOR hMonitor;
+    MONITORINFO mi;
+    HWND hwnd = sysInfo.window;
 
+    // Start by getting the current window rect and centering the new window on 
+    // the monitor that window is on
+    GetWindowRect(hwnd, &rBounds);
+    hMonitor = MonitorFromRect(&rBounds, MONITOR_DEFAULTTONEAREST);
+    mi.cbSize = sizeof(mi);
+    GetMonitorInfo(hMonitor, &mi);
+
+    rBounds.left = mi.rcMonitor.left + (mi.rcMonitor.right - mi.rcMonitor.left - newWidth) / 2;
+    rBounds.top = mi.rcMonitor.top + (mi.rcMonitor.bottom - mi.rcMonitor.top - newHeight) / 2;
+    rBounds.right = rBounds.left + newWidth;
+    rBounds.bottom = rBounds.top + newHeight;
+
+    // if this covers the screen area top to bottom, remove the window borders and caption bar
+    bool bCoversScreen = (mi.rcMonitor.top + newHeight == mi.rcMonitor.bottom);
+    DWORD styleOut, styleIn;
+    DWORD swpOptions = SWP_NOZORDER | SWP_NOACTIVATE;
+
+    styleIn = styleOut = GetWindowLong(hwnd, GWL_STYLE);
+    // We basically want 2 styles, one that is our maximized borderless 
+    // and one with a caption and non-resizable frame
+   if (bCoversScreen)
+     styleOut = WS_VISIBLE | WS_CLIPSIBLINGS | WS_POPUP;
+   else
+     styleOut = WS_VISIBLE | WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
+
+    if (styleIn != styleOut)
+    {
+      SetWindowLong(hwnd, GWL_STYLE, styleOut);
+      // if the style is changing, we are either adding or removing a frame so need to notify
+      swpOptions |= SWP_FRAMECHANGED;
+    }
+
+    // Now adjust the size of the window so that the client rect is the requested size
+    AdjustWindowRect(&rBounds, styleOut, false); // there is never a menu
+
+    // finally, move and resize the window
+    SetWindowPos(hwnd, NULL, rBounds.left, rBounds.top, 
+      rBounds.right - rBounds.left, rBounds.bottom - rBounds.top, 
+      swpOptions);
+
+    return true;
+  }
+#endif 
   return false;
 }
 
