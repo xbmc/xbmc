@@ -287,6 +287,11 @@ extern DECLSPEC int SDLCALL SDL_VideoModeOK(int width, int height, int bpp, Uint
 extern DECLSPEC SDL_Rect ** SDLCALL SDL_ListModes(SDL_PixelFormat *format, Uint32 flags);
 
 /*
+ * Alter the width and height of the current surface to the given sizes.
+ */
+extern DECLSPEC void SDLCALL SDL_SetWidthHeight(int width, int height);
+
+/*
  * Set up a video mode with the specified width, height and bits-per-pixel.
  *
  * If 'bpp' is 0, it is treated as the current display bits per pixel.
