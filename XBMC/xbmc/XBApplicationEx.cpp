@@ -379,7 +379,7 @@ void CXBApplicationEx::ReadInput()
       break;
 
     case SDL_VIDEORESIZE:
-#ifndef __APPLE__
+#if !defined(__APPLE__) && !defined(_WIN32PC)
       g_settings.m_ResInfo[WINDOW].iWidth = event.resize.w;
       g_settings.m_ResInfo[WINDOW].iHeight = event.resize.h;
       g_graphicsContext.ResetOverscan(g_settings.m_ResInfo[WINDOW]);
