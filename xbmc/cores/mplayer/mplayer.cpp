@@ -1999,22 +1999,20 @@ int CMPlayer::GetCacheSize(bool bFileOnHD, bool bFileOnISO, bool bFileOnUDF, boo
     if ( bIsVideo) return g_guiSettings.GetInt("cachevideo.dvdrom");
     if ( bIsAudio) return g_guiSettings.GetInt("cacheaudio.dvdrom");
   }
-  if (bFileOnInternet)
-  {
-    if ( bIsVideo) return g_guiSettings.GetInt("cachevideo.internet");
-    if ( bIsAudio) return g_guiSettings.GetInt("cacheaudio.internet");
-    //File is on internet however we don't know what type.
-    return g_guiSettings.GetInt("cacheunknown.internet");
-    //Apperently fixes DreamBox playback.
-    //return 4096;
-  }
   if (bFileOnLAN)
   {
     if ( bIsDVD ) return g_guiSettings.GetInt("cachedvd.lan");
     if ( bIsVideo) return g_guiSettings.GetInt("cachevideo.lan");
     if ( bIsAudio) return g_guiSettings.GetInt("cacheaudio.lan");
   }
-  return 1024;
+
+  // assume bFileOnInternet
+  if ( bIsVideo) return g_guiSettings.GetInt("cachevideo.internet");
+  if ( bIsAudio) return g_guiSettings.GetInt("cacheaudio.internet");
+  //File is on internet however we don't know what type.
+  return g_guiSettings.GetInt("cacheunknown.internet");
+  //Apperently fixes DreamBox playback.
+  //return 4096;
 }
 
 CStdString CMPlayer::GetDVDArgument(const CStdString& strFile)
