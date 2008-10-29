@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # XBMC disk installer
-# V1.5a - 20081029
+# V1.6 - 20081029
 # Luigi Capriotti @2008
 #
 
@@ -405,6 +405,7 @@ function modifySyslinux
 		fi
 
 		sed -i 's/boot=[a-z]*/boot=disk/g' /tmp/bootPart/syslinux.cfg
+		sed -i "s/append/append root=\/dev\/$2/g" /tmp/bootPart/syslinux.cfg
 
 		cat /tmp/bootPart/syslinux.cfg | grep -v default | grep -v display | grep -v timeout | grep -v CONSOLE | grep -v prompt > /tmp/syslinux.cfg
 		mv /tmp/syslinux.cfg /tmp/bootPart/syslinux.cfg
@@ -600,7 +601,7 @@ do
 
 	#
 	# Mangle syslinux
-	modifySyslinux ${isRemovableDrive[$index]}
+	modifySyslinux ${isRemovableDrive[$index]} ${availableDrives[$index]}1
 
 	if [ "${isRemovableDrive[$index]}" = 0 ]; then
 		echo "Applying system changes..."
