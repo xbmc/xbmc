@@ -93,12 +93,11 @@ void CDlgCache::Process()
   {
     
     { //Section to make the lock go out of scope before sleep
-      
+      CSingleLock lock(g_graphicsContext);
       if( CThread::m_bStop ) break;
 
       try 
       {
-        CSingleLock lock(g_graphicsContext);
         m_pDlg->Progress();
         if( !bSentCancel && m_pDlg->IsCanceled())
         {

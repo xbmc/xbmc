@@ -847,11 +847,15 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
   {
     if (bFileOnInternet)
     {      
+      CSingleLock lock(g_graphicsContext);
+      CSingleLock lock2(s_dlgCacheSection);
       m_dlgCache = new CDlgCache(0);
       m_bUseFullRecaching = true;
     }
     else
     {
+      CSingleLock lock(g_graphicsContext);
+      CSingleLock lock2(s_dlgCacheSection);
       m_dlgCache = new CDlgCache(3000);
     }
 
@@ -1239,7 +1243,10 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
     //Close progress dialog completly without fade if this is video.
     if( m_dlgCache && bIsVideo)
     {
-      CSingleLock lock(s_dlgCacheSection);
+      // grab the graphicscontext lock, as we're closing a dialog
+      CSingleLock lock(g_graphicsContext);
+      // also grab the cache dialog's lock, to ensure that printf() can't do anything untoward
+      CSingleLock lock2(s_dlgCacheSection);
       m_dlgCache->Close(true); 
       m_dlgCache = NULL;
     }
@@ -1268,8 +1275,11 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
 
   if( m_dlgCache )
   {
-    //Lock here so that mplayer is not using the the object
-    CSingleLock lock(s_dlgCacheSection);
+    // lock graphics context, as we're closing a dialog
+    CSingleLock lock(g_graphicsContext);
+
+    // Also lock the cache dialog so that mplayer is not using the the object
+    CSingleLock lock2(s_dlgCacheSection);
     //Only call Close, the object will be deleted when it's thread ends.
     //this makes sure the object is not deleted while in use
     m_dlgCache->Close(false); 
