@@ -1,6 +1,6 @@
 /**
  * \file dvdcss.h
- * \author Stéphane Borel <stef@via.ecp.fr>
+ * \author Stephane Borel <stef@via.ecp.fr>
  * \author Samuel Hocevar <sam@zoy.org>
  * \brief The \e libdvdcss public header.
  *
