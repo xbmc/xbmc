@@ -118,8 +118,9 @@ DMO_VideoDecoder * DMO_VideoDecoder_Open(char* dllname, GUID* guid, BITMAPINFOHE
 	bihs = (format->biSize < (int) sizeof(BITMAPINFOHEADER)) ?
 	    sizeof(BITMAPINFOHEADER) : format->biSize;
      
-        this->iv.m_bh = (BITMAPINFOHEADER*)malloc(bihs);
+        this->iv.m_bh = malloc(bihs);
         memcpy(this->iv.m_bh, format, bihs);
+        this->iv.m_bh->biSize = bihs;
 
         this->iv.m_State = STOP;
         //this->iv.m_pFrame = 0;
@@ -130,7 +131,7 @@ DMO_VideoDecoder * DMO_VideoDecoder_Open(char* dllname, GUID* guid, BITMAPINFOHE
         this->iv.m_bCapable16b = true;
                 
         bihs += sizeof(VIDEOINFOHEADER) - sizeof(BITMAPINFOHEADER);
-	this->m_sVhdr = (VIDEOINFOHEADER*)malloc(bihs);
+	this->m_sVhdr = malloc(bihs);
 	memset(this->m_sVhdr, 0, bihs);
 	memcpy(&this->m_sVhdr->bmiHeader, this->iv.m_bh, this->iv.m_bh->biSize);
 	this->m_sVhdr->rcSource.left = this->m_sVhdr->rcSource.top = 0;
@@ -139,7 +140,7 @@ DMO_VideoDecoder * DMO_VideoDecoder_Open(char* dllname, GUID* guid, BITMAPINFOHE
 	//this->m_sVhdr->rcSource.right = 0;
 	//this->m_sVhdr->rcSource.bottom = 0;
 	this->m_sVhdr->rcTarget = this->m_sVhdr->rcSource;
-
+	this->m_sVhdr->AvgTimePerFrame = 417;
 	this->m_sOurType.majortype = MEDIATYPE_Video;
 	this->m_sOurType.subtype = MEDIATYPE_Video;
         this->m_sOurType.subtype.f1 = this->m_sVhdr->bmiHeader.biCompression;
@@ -303,7 +304,6 @@ void DMO_VideoDecoder_StopInternal(DMO_VideoDecoder *this)
 int DMO_VideoDecoder_DecodeInternal(DMO_VideoDecoder *this, const void* src, int size, int is_keyframe, char* imdata)
 {
 //    IMediaSample* sample = 0;
-    char* ptr;
     int result;
     unsigned long status; // to be ignored by M$ specs
     DMO_OUTPUT_DATA_BUFFER db;
@@ -326,7 +326,7 @@ int DMO_VideoDecoder_DecodeInternal(DMO_VideoDecoder *this, const void* src, int
     bufferin = CMediaBufferCreate(size, (void*)src, size, 0);
     result = this->m_pDMO_Filter->m_pMedia->vt->ProcessInput(this->m_pDMO_Filter->m_pMedia, 0,
 						      (IMediaBuffer*)bufferin,
-						      (is_keyframe) ? DMO_INPUT_DATA_BUFFERF_SYNCPOINT : 0,
+						      DMO_INPUT_DATA_BUFFERF_SYNCPOINT | DMO_INPUT_DATA_BUFFERF_TIME,
 						      0, 0);
     ((IMediaBuffer*)bufferin)->vt->Release((IUnknown*)bufferin);
 
@@ -370,7 +370,6 @@ int DMO_VideoDecoder_SetDestFmt(DMO_VideoDecoder *this, int bits, unsigned int c
 {
     HRESULT result;
     int should_test=1;
-    int stoped = 0;   
     
     Debug printf("DMO_VideoDecoder_SetDestFmt (%p, %d, %d)\n",this,bits,(int)csp);
         
