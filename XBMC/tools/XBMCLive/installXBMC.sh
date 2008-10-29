@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # XBMC disk installer
-# V1.4 - 20081027
+# V1.5a - 20081029
 # Luigi Capriotti @2008
 #
 
@@ -11,9 +11,7 @@ declare -a isRemovableDrive
 nDisks=0
 
 min_sizeGB=2
-
-# boot_partition_size=1024
-# swap_partition_size=512
+fixedDisk_min_sizeGB=4
 
 CFG_FILE=/etc/initramfs-tools/moblin-initramfs.cfg
 if [ -f ${CFG_FILE} ]; then
@@ -292,7 +290,7 @@ function copySystemFiles
 		mkdir /tmp/bootDisk
 	fi
 
-	echo "Copying files from boot media /dev/$BOOT_DISK ($SRCMEDIA)..."
+	echo "Copying files from boot media /dev/$BOOT_DISK ($SRCMEDIA), please be patient..."
 	case "$SRCMEDIA" in
 	"disk" )
 		mount /dev/${BOOT_DISK}1 /tmp/bootDisk &> /dev/null ;;
@@ -478,11 +476,11 @@ function prepareHomeDirectory
 	fi
 	
 	# Create a sources.xml referencing the above created directories
-	mkdir /tmp/homePart/.xbmc
-	mkdir /tmp/homePart/.xbmc/userdata
+	mkdir /tmp/homePart/xbmc/.xbmc
+	mkdir /tmp/homePart/xbmc/.xbmc/userdata
 
 
-cat > /tmp/homePart/.xbmc/userdata/sources.xml <<EOF
+cat > /tmp/homePart/xbmc/.xbmc/userdata/sources.xml <<EOF
 <sources>
     <video>
        <default></default>
@@ -522,7 +520,8 @@ do
 	echo ""
 	echo "The procedure will create a XBMC Live bootable disk"
 	echo ""
-	echo "Requirements: the disk must have at least $min_sizeGB GB of capacity!"
+	echo "Requirement for USB flash disks: the disk must have at least $min_sizeGB GB of capacity!"
+	echo "Requirement for fixed disks: the disk must have at least $fixedDisk_min_sizeGB GB of capacity!"
 	echo ""
 	echo "Select the disk you want to use."
 	echo "CAUTION: the process will erase all data on the specified disk drive!"
@@ -550,12 +549,19 @@ do
 
 	DSIZE=`fdisk -l /dev/${availableDrives[$index]} | grep "Disk /dev/${availableDrives[$index]}" | cut -f 5 -d " "`
 	DSIZEMB=$[$DSIZE/1000000]
+
 	minSizeMB=$[$min_sizeGB*1000]
+	if [ "${isRemovableDrive[$index]}" = 0 ]; then
+		minSizeMB=$[$fixedDisk_min_sizeGB*1000]
+	fi
+
 	if [ "$DSIZEMB" -lt "$minSizeMB" ] ; then
 		echo ""
 		echo ""
 		echo "The selected disk is too small."
-		echo "The miminum requirements are $min_sizeGB GB of disk size."
+		echo "The miminum requirements for USB flash disks are: $min_sizeGB GB of disk size"
+		echo "The miminum requirements for fixed disks are: $fixedDisk_min_sizeGB GB of disk size"
+
 		echo "The selected disk has only $DSIZEMB MB of disk space."
 		echo ""
 		echo "Please ignore the selected disk and try again."
