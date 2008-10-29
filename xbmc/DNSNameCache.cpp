@@ -95,7 +95,7 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
     /* Print error message if could not find host */
     if (host == NULL || host->h_addr_list[0] == NULL)
     {
-      OutputDebugString("Could not find host\n");
+      CLog::Log(LOGERROR, "Unable to find host: %s", strHostName.c_str());
       closesocket(sd);
 #ifndef _LINUX
       WSACleanup();
