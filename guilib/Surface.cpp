@@ -976,6 +976,8 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
       rBounds.right - rBounds.left, rBounds.bottom - rBounds.top, 
       swpOptions);
 
+    SDL_SetWidthHeight(newWidth, newHeight);
+
     return true;
   }
 #endif 
