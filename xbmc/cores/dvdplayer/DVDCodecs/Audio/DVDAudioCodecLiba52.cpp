@@ -20,7 +20,7 @@
  */
  
 #include "stdafx.h"
-#include "AudioContext.h"
+#include "XBAudioConfig.h"
 #include "DVDAudioCodecLiba52.h"
 #include "DVDStreamInfo.h"
 
@@ -164,21 +164,17 @@ void CDVDAudioCodecLiba52::SetupChannels(int flags)
   m_iOutputChannels = m_iSourceChannels;
   m_iOutputFlags    = m_iSourceFlags;
 
-  /* adjust level should always be set, to keep samples in proper range */
-  /* after any downmixing has been done */
-#ifndef __APPLE__
-  m_iOutputFlags |= A52_ADJUST_LEVEL;
-#endif
-
-#if defined(__APPLE__) || defined(_WIN32PC)
-  // If we're not passing through, go to 2-channel mixdown.
-  if (g_audioContext.IsPassthroughActive() == false)
+  // If we can't support multichannel output downmix
+  if (true /* need a setting for multi channel output */)
   {
     m_iOutputChannels = 2;
     m_iOutputMapping = 0x21;
-    m_iOutputFlags = A52_STEREO | A52_ADJUST_LEVEL;
+    m_iOutputFlags = A52_STEREO;
   }
-#endif
+
+  /* adjust level should always be set, to keep samples in proper range */
+  /* after any downmixing has been done */
+  m_iOutputFlags |= A52_ADJUST_LEVEL;
 }
 
 int CDVDAudioCodecLiba52::ParseFrame(BYTE* data, int size, BYTE** frame, int* framesize)

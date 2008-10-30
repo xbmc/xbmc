@@ -21,7 +21,7 @@
  
 #include "stdafx.h"
 #include "DVDAudioCodecLibDts.h"
-#include "AudioContext.h"
+#include "XBAudioConfig.h"
 #include "DVDStreamInfo.h"
 
 #define HEADER_SIZE 14
@@ -199,7 +199,7 @@ void CDVDAudioCodecLibDts::SetupChannels(int flags)
 {
   m_iSourceFlags    = flags;
   m_iSourceChannels = GetNrOfChannels(flags);
-  if (g_audioContext.IsPassthroughActive() == false)
+  if (true /* need a setting for multi channel output */)
     m_iOutputChannels = 2;
   else
     m_iOutputChannels = m_iSourceChannels;
@@ -209,10 +209,9 @@ void CDVDAudioCodecLibDts::SetupChannels(int flags)
   else if (m_iOutputChannels == 2)
     m_iOutputFlags = DTS_STEREO;
   else
-  {
-    m_iOutputFlags  = m_iSourceFlags;
-    m_iOutputFlags |=DTS_ADJUST_LEVEL;
-  }
+    m_iOutputFlags = m_iSourceFlags;
+
+  m_iOutputFlags |= DTS_ADJUST_LEVEL;
 }
 
 int CDVDAudioCodecLibDts::ParseFrame(BYTE* data, int size, BYTE** frame, int* framesize)
