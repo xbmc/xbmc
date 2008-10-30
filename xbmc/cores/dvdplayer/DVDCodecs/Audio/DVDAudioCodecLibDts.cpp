@@ -20,8 +20,8 @@
  */
  
 #include "stdafx.h"
+#include "Settings.h"
 #include "DVDAudioCodecLibDts.h"
-#include "XBAudioConfig.h"
 #include "DVDStreamInfo.h"
 
 #define HEADER_SIZE 14
@@ -199,7 +199,7 @@ void CDVDAudioCodecLibDts::SetupChannels(int flags)
 {
   m_iSourceFlags    = flags;
   m_iSourceChannels = GetNrOfChannels(flags);
-  if (true /* need a setting for multi channel output */)
+  if (g_advancedSettings.m_analogMultiChannel == false)
     m_iOutputChannels = 2;
   else
     m_iOutputChannels = m_iSourceChannels;
