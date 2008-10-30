@@ -112,9 +112,13 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   }
   else
   {
-    // TODO - add an option to only downmix if user want's us
-    if(iChannels == 6)
-      deviceuse = "xbmc_51to2:'" + EscapeDevice(deviceuse) + "'";
+    if(g_advancedSettings.m_analogMultiChannel == false)
+    {
+      if(iChannels == 6)
+        deviceuse = "xbmc_51to2:'" + EscapeDevice(deviceuse) + "'";
+      else if(iChannels == 5)
+        deviceuse = "xbmc_50to2:'" + EscapeDevice(deviceuse) + "'";
+    }
 
     // setup channel mapping to linux default
     if (strstr(strAudioCodec, "AAC"))

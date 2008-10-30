@@ -23,7 +23,6 @@
 #include "DVDAudioCodecPassthrough.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDStreamInfo.h"
-#include "XBAudioConfig.h"
 #include "Settings.h"
 
 #undef  MAX
