@@ -108,7 +108,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="../guilib;../xbmc/Win32;../xbmc/;freetype2/include;../xbmc/lib/boost;../xbmc/utils"
+				AdditionalIncludeDirectories="../guilib;../xbmc/Win32;../xbmc/;freetype2/include;../xbmc/lib/boost;../xbmc/utils;&quot;../xbmc/lib/libSDL-WIN32/include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;HAS_SDL;_MSVC;NOMINMAX;_WIN32_WINNT=0x0501;WINVER=0x0500"
 				StringPooling="FALSE"
 				MinimalRebuild="TRUE"
