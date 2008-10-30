@@ -20,7 +20,7 @@
  */
  
 #include "stdafx.h"
-#include "XBAudioConfig.h"
+#include "Settings.h"
 #include "DVDAudioCodecLiba52.h"
 #include "DVDStreamInfo.h"
 
@@ -165,7 +165,7 @@ void CDVDAudioCodecLiba52::SetupChannels(int flags)
   m_iOutputFlags    = m_iSourceFlags;
 
   // If we can't support multichannel output downmix
-  if (true /* need a setting for multi channel output */)
+  if (g_advancedSettings.m_analogMultiChannel == false)
   {
     m_iOutputChannels = 2;
     m_iOutputMapping = 0x21;
