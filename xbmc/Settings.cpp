@@ -82,6 +82,9 @@ void CSettings::Initialize()
     g_graphicsContext.ResetOverscan(m_ResInfo[i]);
   }
 
+  g_graphicsContext.ResetScreenParameters(WINDOW);
+  g_graphicsContext.ResetOverscan(m_ResInfo[WINDOW]);
+
   g_stSettings.m_iMyVideoStack = STACK_NONE;
 
   strcpy(g_stSettings.m_szMyVideoCleanTokens, "divx|xvid|3ivx|ac3|ac351|dts|mp3|wma|m4a|mp4|aac|ogg|scr|ts|sharereactor|dvd|dvdrip|hd-dvd|remux|dtshd|ddplus|blue-ray");
@@ -144,6 +147,7 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_audioHeadRoom = 0;
   g_advancedSettings.m_karaokeSyncDelay = 0.0f;
+  g_advancedSettings.m_analogMultiChannel = false;
 
   g_advancedSettings.m_videoSubsDelayRange = 10;
   g_advancedSettings.m_videoAudioDelayRange = 10;
@@ -1146,6 +1150,7 @@ void CSettings::LoadAdvancedSettings()
   {
     GetInteger(pElement, "headroom", g_advancedSettings.m_audioHeadRoom, 0, 12);
     GetFloat(pElement, "karaokesyncdelay", g_advancedSettings.m_karaokeSyncDelay, -3.0f, 3.0f);
+    XMLUtils::GetBoolean(pElement, "analogmultichannel", g_advancedSettings.m_analogMultiChannel);
   }
 
   pElement = pRootElement->FirstChildElement("video");
