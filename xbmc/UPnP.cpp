@@ -1197,9 +1197,14 @@ CUPnPRenderer::UpdateState()
     StringUtils::SecondsToTimeString((long)g_application.GetTime(), buffer, TIME_FORMAT_HH_MM_SS);
     avt->SetStateVariable("RelativeTimePosition", buffer.c_str());
 
-    StringUtils::SecondsToTimeString((long)g_application.GetTotalTime(), buffer, TIME_FORMAT_HH_MM_SS);
-    avt->SetStateVariable("CurrentTrackDuration", buffer.c_str());
-    
+    long total = (long)g_application.GetTotalTime();
+    if (total > 0) {
+      StringUtils::SecondsToTimeString(total, buffer, TIME_FORMAT_HH_MM_SS);
+      avt->SetStateVariable("CurrentTrackDuration", buffer.c_str());
+    } else {
+      avt->SetStateVariable("CurrentTrackDuration", "NOT_IMPLEMENTED");
+    }
+
     avt->SetStateVariable("AVTransportURI", g_application.CurrentFile().c_str());
     avt->SetStateVariable("TransportPlaySpeed", (const char*)NPT_String::FromInteger(g_application.GetPlaySpeed()));
 
