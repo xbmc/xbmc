@@ -934,7 +934,9 @@
   <string id="13008">預設關機模式</string> 
   <string id="13009">退出</string> 
   <string id="13010">休眠</string>
-  <string id="13011">暫停</string>
+  <string id="13011">待機</string>
+  <string id="13012">退出</string>
+  <string id="13013">重啟</string>
 
   <string id="13100">閃爍過濾</string>
   <string id="13105">垂直空白同步</string>
