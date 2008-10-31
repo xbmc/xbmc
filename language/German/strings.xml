@@ -349,7 +349,7 @@ durchsucht und aktualisiert. Möchten Sie fortfahren?</string>
   <string id="415">Lade Thumbnail...</string>
   <string id="416">Nicht verfügbar</string>
   <string id="417">Große Symbole</string>
-  <string id="418">Bibliothek aktivieren</string>
+  <string id="418">Datenbank aktivieren</string>
   <string id="419"></string>
   <string id="420"></string>
   <string id="421"></string>
@@ -363,8 +363,8 @@ durchsucht und aktualisiert. Möchten Sie fortfahren?</string>
   <string id="429">Bitte legen Sie folgenden Datenträger ein:</string>
   <string id="430">Nach DVD#</string>
   <string id="431">Keinen Cache verwenden</string>
-  <string id="432">Film aus der Bibliothek entfernen</string>
-  <string id="433">Möchten Sie den Eintrag '%s' wirklich aus der Bibliothek entfernen?</string>
+  <string id="432">Film aus der Datenbank entfernen</string>
+  <string id="433">Möchten Sie den Eintrag '%s' wirklich aus der Datenbank entfernen?</string>
   <string id="434"></string>
   <string id="435"></string>
   <string id="436"></string>
@@ -432,7 +432,7 @@ durchsucht und aktualisiert. Möchten Sie fortfahren?</string>
   <string id="502">Offen</string>
   <string id="503">Beschäftigt</string>
   <string id="504">Leer</string>
-  <string id="505">Musik-Bibliothek wird gelesen...</string>
+  <string id="505">Musik-Datenbank wird gelesen...</string>
   <string id="507">Nach Gebrauch</string>
   <string id="510">Visualisierung verwenden</string>
   <string id="511">Video-Modus auf Basis der Spiele-Region wechseln</string>
@@ -451,7 +451,7 @@ durchsucht und aktualisiert. Möchten Sie fortfahren?</string>
   <string id="524">Playlist wählen</string>
   <string id="525">Neue Playlist...</string>
   <string id="526">Zur Playlist hinzufügen</string>
-  <string id="527">Manuell zur Bibliothek hinzufügen</string>
+  <string id="527">Manuell zur Datenbank hinzufügen</string>
   <string id="528">Titel eingeben</string>
   <string id="529">Fehler: Titel doppelt</string>
   <string id="530">Genre wählen</string>
@@ -553,14 +553,14 @@ durchsucht und aktualisiert. Möchten Sie fortfahren?</string>
   <string id="644">Schwarze Balken entfernen</string>
   <string id="645">Eine große Datei muss entpackt werden.
 Möchten Sie fortfahren?</string>
-  <string id="646">Aus Bibliothek entfernen</string>
-  <string id="647">Video-Bibliothek exportieren...</string>
-  <string id="648">Video-Bibliothek importieren...</string>
-  <string id="649">Bibliothek wird importiert...</string>
-  <string id="650">Bibliothek wird exportiert...</string>
-  <string id="651">Nach Bibliothek durchsuchen...</string>
+  <string id="646">Aus Datenbank entfernen</string>
+  <string id="647">Video-Datenbank exportieren...</string>
+  <string id="648">Video-Datenbank importieren...</string>
+  <string id="649">Datenbank wird importiert...</string>
+  <string id="650">Datenbank wird exportiert...</string>
+  <string id="651">Nach Datenbank durchsuchen...</string>
   <string id="652">Jahre</string>
-  <string id="653">Bibliothek aktualisieren</string>
+  <string id="653">Datenbank aktualisieren</string>
   <string id="654">Debug-Info anzeigen</string>
   <string id="655">Nach einem Programm durchsuchen...</string>
   <string id="656">Nach einer Playlist durchsuchen...</string>
@@ -570,8 +570,8 @@ Möchten Sie fortfahren?</string>
   <string id="660">Lautstärkeanpassung</string>
   <string id="661">Wähle Export Ordner</string>
   
-  <string id="700">Bibliothek wird aktualisiert...</string>
-  <string id="701">Alte Musikdaten werden aus der Bibliothek gelöscht</string>
+  <string id="700">Datenbank wird aktualisiert...</string>
+  <string id="701">Alte Musikdaten werden aus der Datenbank gelöscht</string>
   <string id="702">Dieser Pfad wurde bereits aktualisiert</string>
   <string id="705">Netzwerk</string>
   <string id="706">HTTP-Proxy-Host</string>
@@ -832,7 +832,7 @@ Möchten Sie fortfahren?</string>
   
   <string id="10500">Musik/Playlisten</string>
   <string id="10501">Musik/Dateien</string>
-  <string id="10502">Musik/Bibliothek</string>
+  <string id="10502">Musik/Datenbank</string>
   <string id="10503">Playlist-Editor</string>
   <string id="10504">Top 100 Titel</string>
   <string id="10505">Top 100 Alben</string>
@@ -846,7 +846,7 @@ Möchten Sie fortfahren?</string>
   <string id="10513"></string>
   <string id="10514"></string>
   <string id="10515"></string>
-  <string id="10516">Musik - Bibliothek</string>
+  <string id="10516">Musik - Datenbank</string>
   <string id="10517">Aktive Wiedergabe - Musik</string>
   <string id="10518"></string>
   <string id="10519"></string>
@@ -1121,10 +1121,10 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="13346">Film-Informationen</string>
   <string id="13347">In Playlist einreihen</string>
   <string id="13348">Film in IMDb suchen...</string>
-  <string id="13349">Nach neuen Mediendateien suchen</string>
+  <string id="13349">Nach neuen Inhalten suchen</string>
   <string id="13350">Aktuelle Wiedergabe...</string>
   <string id="13351">Album-Informationen</string>
-  <string id="13352">Auswahl in Bibliothek laden</string>
+  <string id="13352">Auswahl in Datenbank laden</string>
   <string id="13353">Aktualisieren abbrechen</string>
   <string id="13354">Render-Methode</string>
   <string id="13355">Shader (niedrige Qualität)</string>
@@ -1213,7 +1213,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="14019">Stadt 1</string>
   <string id="14020">Stadt 2</string>
   <string id="14021">Stadt 3</string>
-  <string id="14022">Bibliothek</string>
+  <string id="14022">Datenbank</string>
   <string id="14023">Kein TV</string>
   <string id="14024">Bitte geben Sie den Namen einer Stadt ein</string>
   <string id="14025">Video/Audio/DVD-Cache - Festplatte</string>
@@ -1333,7 +1333,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="15059"></string>
   <string id="15060"></string>
   <string id="15061"></string>
-  <string id="15100">Bibliothek</string>
+  <string id="15100">Datenbank</string>
   <string id="15101">Datenbank</string>
   <string id="15102">* Alle Alben</string>
   <string id="15103">* Alle Interpreten</string>
@@ -1451,7 +1451,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="16028">Wert eingeben</string>
   
   <string id="16030">Party-Modus wurde beendet.</string>
-  <string id="16031">Es befinden sich keine passenden Titel in der Bibliothek.</string>
+  <string id="16031">Es befinden sich keine passenden Titel in der Datenbank.</string>
   <string id="16032">Die Datenbank konnte nicht initialisiert werden.</string>
   <string id="16033">Die Datenbank konnte nicht geöffnet werden.</string>
   <string id="16034">Es konnten keine Titel aus der Datenbank geladen werden.</string>
@@ -1675,12 +1675,12 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20189">Automatischen Bildlauf for Handlung &amp; Bewertung aktivieren</string>
   <string id="20190">Custom</string>
   <string id="20191">Debug-Logging aktivieren</string>
-  <string id="20192">Album-Informationen holen bei Hinzufügen zur Bibliothek</string>
-  <string id="20193">Interpreten-Informationen holen bei Hinzufügen zur Bibliothek</string>
+  <string id="20192">Album-Informationen holen bei Hinzufügen zur Datenbank</string>
+  <string id="20193">Interpreten-Informationen holen bei Hinzufügen zur Datenbank</string>
   <string id="20194">Standard-Scraper</string>
   <string id="20195">Scraper ändern</string>
-  <string id="20196">Musik-Bibliothek exportieren</string>
-  <string id="20197">Musik-Bibliothek importieren</string>
+  <string id="20196">Musik-Datenbank exportieren</string>
+  <string id="20197">Musik-Datenbank importieren</string>
   <string id="20198">Kein Interpret gefunden!</string>
   <string id="20199">Herunterladen der Interpreten-Informationen fehlgeschlagen</string>
   <string id="20250">Party-Modus! (Videos)</string>
@@ -1702,7 +1702,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20311">Unbekannt oder OnBoard (geschützt)</string>
   <string id="20312">Während 'Pause' das LCD verdunkeln</string>
   <string id="20313">Während 'Pause' die LED wieder einschalten</string>
-  <string id="20314">Video-Bibliothek</string>
+  <string id="20314">Video-Datenbank</string>
   <string id="20315">Spielstände</string>
   <string id="20316">Nach ID</string>
   <string id="20317">Spielstände herunterladen</string>
@@ -1729,7 +1729,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20338">Film</string>
   <string id="20339">Regisseur</string>
   <string id="20340">Möchten Sie alle Elemente innerhalb dieses Pfades</string>
-  <string id="20341">aus der Bibliothek entfernen?</string>
+  <string id="20341">aus der Datenbank entfernen?</string>
   <string id="20342">Filme</string>
   <string id="20343">TV-Serien</string>
   <string id="20344">Dieser Ordner beinhaltet</string>
@@ -1750,8 +1750,8 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20359">Episode</string>
   <string id="20360">Episoden</string>
   <string id="20361">Episoden-Information wird geladen...</string>
-  <string id="20362">Episode aus der Bibliothek entfernen</string>
-  <string id="20363">TV-Serie aus der Bibliothek entfernen</string>
+  <string id="20362">Episode aus der Datenbank entfernen</string>
+  <string id="20363">TV-Serie aus der Datenbank entfernen</string>
   <string id="20364">TV-Serie</string>
   <string id="20365">Handlung</string>
   <string id="20366">* Alle Staffeln</string>
@@ -1780,7 +1780,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20389">Musik-Videos</string>
   <string id="20390">Kürzlich hinzugefügte Musik-Videos</string>
   <string id="20391">Musik-Video</string>
-  <string id="20392">Musik-Video aus Bibliothek entfernen</string>
+  <string id="20392">Musik-Video aus Datenbank entfernen</string>
   <string id="20393">Musik-Video Informationen</string>
   <string id="20394">Musik-Video Informationen werden geladen...</string>
   <string id="20395">Gemischt</string>
@@ -1802,7 +1802,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20411">Zusammenfassen</string>
   <string id="20412">TV-Serien zusammenfassen</string>
   <string id="20413">FanArt herunterladen</string>
-  <string id="20414">Fanart in der Video-Bibliothek anzeigen</string>
+  <string id="20414">Fanart in der Video-Datenbank anzeigen</string>
   <string id="20415">Suche nach neuen Inhalten</string>
   <string id="20416">Erstausstrahlung</string>
   <string id="20417">Autor</string>
@@ -1854,7 +1854,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="21381">Bitte geben Sie einen Namen für die Playlist ein</string>
   <string id="21382">'Quelle hinzufügen'-Symbol im Haupt-Ordner ausblenden</string>
   <string id="21383">Scrollbalken aktivieren</string>
-  <string id="21384">Filter für 'Gesehen' als Einstellung in Bibliothek aktivieren</string>
+  <string id="21384">Filter für 'Gesehen' als Einstellung in Datenbank aktivieren</string>
   <string id="21385">Öffnen</string>
   <string id="21386">Akustik-Management-Stufe</string>
   <string id="21387">Schnell</string>
@@ -1985,8 +1985,8 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   
   <!-- strings 21900 bis 21999 für Diashow-Informationen reserviert -->
   
-  <string id="22000">Aktualisiere Bibliothek beim Start</string>
-  <string id="22001">Aktualisiere Bibliothek immer im Hintergrund</string>
+  <string id="22000">Aktualisiere Datenbank beim Start</string>
+  <string id="22001">Aktualisiere Datenbank immer im Hintergrund</string>
   <string id="22002">- DNS Suffix</string>
   <string id="22003">'Edit and Decision Lists' aktivieren</string>
   <string id="22004">Verzögert: %2.3fs</string>
@@ -2000,7 +2000,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="22013">Profildaten</string>
   
    <!-- strings 29800 bis 29998 werden nur im Project Mayhem III skin benutzt, nicht im c++ code -->
-  <string id="29800">Bibliotheksmodus</string>
+  <string id="29800">Datenbankmodus</string>
   <string id="29801">QWERTY-Tastatur</string>
   
   <string id="29999">Automatische Videofilter-Korrektur für Spiele</string>
