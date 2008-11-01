@@ -637,7 +637,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
 #else
 #ifdef HAS_SDL_OPENGL
       newHeight = PadPow2(newHeight);
-      SDL_Surface* newTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_textureWidth, newHeight, 8,
+      SDL_Surface* newTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, m_textureWidth, newHeight, 8,
           0, 0, 0, 0xff);
       
 #ifdef __APPLE__
