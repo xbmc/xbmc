@@ -43,6 +43,7 @@
 #include "stdafx.h"
 #include "FileMMS.h"
 #include "Util.h"
+#include "Settings.h"
 
 using namespace XFILE;
 
