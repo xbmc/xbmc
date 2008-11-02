@@ -277,12 +277,7 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
     pLoader = new SoLoader(sName, bLoadSymbols);
   else
 #elif defined(_WIN32PC)
-  //NOTE: libcurl does not work with default DllLoader outside of Visual Studio for some mysterious reason, 
-  //load with Win32DllLoader instead.
-  if (
-    (strlen(sName) >= 4 && !strnicmp(sName + (strlen(sName) - 4), ".vis", 4)) ||
-    (strlen(sName) >= 11 && !strnicmp(sName + (strlen(sName) - 11), "libcurl.dll", 11))
-    )
+  if (strlen(sName) >= 4 && !strnicmp(sName + (strlen(sName) - 4), ".vis", 4))
   {
     pLoader = new Win32DllLoader(sName);
   }
