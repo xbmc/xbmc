@@ -44,6 +44,8 @@ using namespace XCURL;
 #if defined(__APPLE__)
 extern "C" int __stdcall dllselect(int ntfs, fd_set *readfds, fd_set *writefds, fd_set *errorfds, const timeval *timeout);
 #define dllselect select
+#elif defined(WIN32)
+extern "C" int __stdcall dllselect(int ntfs, fd_set *readfds, fd_set *writefds, fd_set *errorfds, const timeval *timeout);
 #else
 #define dllselect select
 #endif
