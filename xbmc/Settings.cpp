@@ -1067,7 +1067,10 @@ void CSettings::LoadAdvancedSettings()
   advancedSettingsXML  = g_settings.GetUserDataItem("advancedsettings.xml");
   TiXmlDocument advancedXML;
   if (!CFile::Exists(advancedSettingsXML))
+  { // tell the user it doesn't exist
+    CLog::Log(LOGNOTICE, "No advancedsettings.xml to load (%s)", advancedSettingsXML.c_str());
     return;
+  }
 
   if (!advancedXML.LoadFile(advancedSettingsXML.c_str()))
   {
@@ -1081,6 +1084,9 @@ void CSettings::LoadAdvancedSettings()
     CLog::Log(LOGERROR, "Error loading %s, no <advancedsettings> node", advancedSettingsXML.c_str());
     return;
   }
+
+  // succeeded - tell the user it worked
+  CLog::Log(LOGNOTICE, "Loaded advancedsettings.xml from %s", advancedSettingsXML.c_str());
 
   TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
   if (pElement)

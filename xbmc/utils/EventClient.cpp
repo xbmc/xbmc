@@ -143,7 +143,8 @@ bool CEventClient::AddPacket(CEventPacket *packet)
       if (newPayload)
       {
         unsigned char *payloadPtr = (unsigned char *)newPayload;
-        for (unsigned int i = 1 ; i<=packet->Size() ; i++)
+        unsigned int packets = packet->Size(); // packet can be deleted in this loop
+        for (unsigned int i = 1 ; i<=packets ; i++)
         {
           memcpy((void*)(payloadPtr + offset), m_seqPackets[i]->Payload(),
                  m_seqPackets[i]->PayloadSize());

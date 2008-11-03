@@ -677,7 +677,6 @@ cmyth_conn_connect_path(char* path, cmyth_conn_t control,
 	count -= r;
 	free(announcement);
 	ref_release(conn);
-	ref_release(host);
 	return ret;
 
     shut:
@@ -686,7 +685,6 @@ cmyth_conn_connect_path(char* path, cmyth_conn_t control,
 	}
 	ref_release(ret);
 	ref_release(conn);
-	ref_release(host);
 	return NULL;
 }
 

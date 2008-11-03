@@ -35,70 +35,6 @@ static inline int16_t convert(int32_t i)
     return (i > 32767) ? 32767 : ((i < -32768) ? -32768 : i);
 }
 
-void CDVDAudioCodecLibDts::convert2s16_1(convert_t * _f, int16_t * s16)
-{
-    int i;
-    int32_t * f = (int32_t *) _f;
-
-    for (i = 0; i < 256; i++) {
-      s16[i] = convert (f[i]);
-    }
-}
-
-void CDVDAudioCodecLibDts::convert2s16_2(convert_t * _f, int16_t * s16)
-{
-  int i;
-  int32_t * f = (int32_t *) _f;
-
-  for (i = 0; i < 256; i++)
-  {
-    s16[2*i] = convert (f[i]);
-    s16[2*i+1] = convert (f[i+256]);
-  }
-}
-
-void CDVDAudioCodecLibDts::convert2s16_3(convert_t * _f, int16_t * s16)
-{
-  int i;
-  int32_t * f = (int32_t *) _f;
-
-  for (i = 0; i < 256; i++)
-  {
-    s16[3*i] = convert (f[i]);
-    s16[3*i+1] = convert (f[i+256]);
-    s16[3*i+2] = convert (f[i+512]);
-  }
-}
-
-void CDVDAudioCodecLibDts::convert2s16_4(convert_t * _f, int16_t * s16)
-{
-  int i;
-  int32_t * f = (int32_t *) _f;
-
-  for (i = 0; i < 256; i++)
-  {
-    s16[4*i] = convert (f[i]);
-    s16[4*i+1] = convert (f[i+256]);
-    s16[4*i+2] = convert (f[i+512]);
-    s16[4*i+3] = convert (f[i+768]);
-  }
-}
-
-void CDVDAudioCodecLibDts::convert2s16_5(convert_t * _f, int16_t * s16)
-{
-  int i;
-  int32_t * f = (int32_t *) _f;
-
-  for (i = 0; i < 256; i++)
-  {
-    s16[5*i] = convert (f[i]);
-    s16[5*i+1] = convert (f[i+256]);
-    s16[5*i+2] = convert (f[i+512]);
-    s16[5*i+3] = convert (f[i+768]);
-    s16[5*i+4] = convert (f[i+1024]);
-  }
-}
-
 void CDVDAudioCodecLibDts::convert2s16_multi(convert_t * _f, int16_t * s16, int flags)
 {
   register int i;
@@ -109,29 +45,49 @@ void CDVDAudioCodecLibDts::convert2s16_multi(convert_t * _f, int16_t * s16, int 
     case DTS_MONO:
       for (i = 0; i < 256; i++)
       {
-        s16[5*i] = s16[5*i+1] = s16[5*i+2] = s16[5*i+3] = 0;
-        s16[5*i+4] = convert (f[i]);
+        s16[2*i  ] = convert (f[i]);
+        s16[2*i+1] = convert (f[i]);
       }
       break;
     case DTS_CHANNEL:
     case DTS_STEREO:
     case DTS_DOLBY:
-      convert2s16_2 (_f, s16);
+      for (i = 0; i < 256; i++)
+      {
+        s16[2*i  ] = convert (f[i]);
+        s16[2*i+1] = convert (f[i+256]);
+      }
       break;
     case DTS_3F:
       for (i = 0; i < 256; i++)
       {
-        s16[5*i] = convert (f[i]);
-        s16[5*i+1] = convert (f[i+512]);
-        s16[5*i+2] = s16[5*i+3] = 0;
-        s16[5*i+4] = convert (f[i+256]);
+        s16[6*  i] = convert (f[i]);
+        s16[6*i+1] = convert (f[i+512]);
+        s16[6*i+2] = 0;
+        s16[6*i+3] = 0;
+        s16[6*i+4] = convert (f[i+256]);
+        s16[6*i+4] = 0;
       }
       break;
     case DTS_2F2R:
-      convert2s16_4 (_f, s16);
+      for (i = 0; i < 256; i++)
+      {
+        s16[4*i] = convert (f[i]);
+        s16[4*i+1] = convert (f[i+256]);
+        s16[4*i+2] = convert (f[i+512]);
+        s16[4*i+3] = convert (f[i+768]);
+      }
       break;
     case DTS_3F2R:
-      convert2s16_5 (_f, s16);
+      for (i = 0; i < 256; i++)
+      {
+        s16[6*i]   = convert (f[i]);
+        s16[6*i+1] = convert (f[i+256]);
+        s16[6*i+2] = convert (f[i+512]);
+        s16[6*i+3] = convert (f[i+768]);
+        s16[6*i+4] = convert (f[i+1024]);
+        s16[6*i+5] = 0;
+      }
       break;
     case DTS_MONO | DTS_LFE:
       for (i = 0; i < 256; i++)
@@ -228,26 +184,14 @@ void CDVDAudioCodecLibDts::Dispose()
 
 int CDVDAudioCodecLibDts::GetNrOfChannels(int iFlags)
 {
-  int iChannels = 0;
-  
-  switch (iFlags & DTS_CHANNEL_MASK)
-  {
-    case DTS_MONO:           iChannels =  1; break;
-    case DTS_CHANNEL:        iChannels =  1; break; // ???
-    case DTS_STEREO:         iChannels =  2; break;
-    case DTS_STEREO_SUMDIFF: iChannels =  2; break;
-    case DTS_STEREO_TOTAL:   iChannels =  2; break;
-    case DTS_3F:             iChannels =  3; break;
-    case DTS_2F1R:           iChannels =  3; break;
-    case DTS_3F1R:           iChannels =  4; break;
-    case DTS_2F2R:           iChannels =  4; break;
-    case DTS_3F2R:           iChannels =  5; break;
-    case DTS_4F2R:           iChannels =  6; break;
-    default: iChannels = 0; break;
-  }
-  if (iFlags & DTS_LFE) iChannels++;
-  
-  return iChannels;
+  if(iFlags & DTS_LFE)
+    return 6;
+  if(iFlags & DTS_CHANNEL)
+    return 6;
+  else if ((iFlags & DTS_CHANNEL_MASK) == DTS_2F2R)
+    return 4;
+  else
+    return 2;
 }
 
 void CDVDAudioCodecLibDts::SetupChannels(int flags)

@@ -477,8 +477,12 @@ NPT_PosixThread::Start()
     attributes = &stack_size_attributes;
 #endif
 
+    // create a stack local id, as this object, may be deleted
+    // before we get to call detach on the given thread
+    pthread_t id;
+
     // create the native thread
-    int result = pthread_create(&m_ThreadId, attributes, EntryPoint, 
+    int result = pthread_create(&id, attributes, EntryPoint, 
                                 reinterpret_cast<void*>(this));
     NPT_LOG_FINE_2("NPT_PosixThread::Start - id = %d, res=%d", 
                    m_ThreadId, result);
@@ -488,7 +492,9 @@ NPT_PosixThread::Start()
     } else {
         // detach the thread if we're not joinable
         if (m_Detached) {
-            pthread_detach(m_ThreadId);
+            pthread_detach(id);
+        } else {
+            m_ThreadId = id;
         }
         return NPT_SUCCESS;
     }

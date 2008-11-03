@@ -203,7 +203,7 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
   {
     m_joystickButtonMap[*it][wWindowID] = buttonMap;
     m_joystickAxisMap[*it][wWindowID] = axisMap;
-    CLog::Log(LOGDEBUG, "Found Joystick map for window %d using %s", wWindowID, it->c_str());
+//    CLog::Log(LOGDEBUG, "Found Joystick map for window %d using %s", wWindowID, it->c_str());
     it++;
   }
 
