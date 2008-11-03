@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!--Traditional Chinese Translated by omenpica-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="31000">靜音</string>
   <string id="31001"></string>
@@ -69,15 +68,16 @@
   <string id="31100">背景選項</string>
   <string id="31101">主頁選項</string>
   <string id="31102">背景</string>
-  <string id="31103">顯示“暫停”在圖片幻燈片秀</string>
+  <string id="31103">顯示「暫停」在圖片幻燈片秀</string>
   <string id="31104">關機選單 - 使用休眠取代待機</string>
-  <string id="31105">顯示媒體名稱在背景掃描時</string>
+  <string id="31105">顯示媒體標題在背景掃瞄時</string>
   <string id="31106">其他選項</string>
-  <string id="31107">去除背景掃描線</string>
-  <string id="31108">去除影片播放時背景掃描線</string>
+  <string id="31107">去除背景掃瞄線</string>
+  <string id="31108">去除影片播放時背景掃瞄線</string>
   <string id="31109">主頁背景</string>
   <string id="31110">按鈕 - 啟用自定義背景</string>
   <string id="31111">顯示音樂資訊在播放歌詞時</string>
+  <string id="31112">顯示媒體標題在「寬圖示」瀏覽</string>
 
   <!-- Script Settings labels -->
   <string id="31200">自定義腳本選項</string>

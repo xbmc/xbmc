@@ -206,7 +206,9 @@ extern "C"
     {
       errno = WSAGetLastError();
       sprintf(szBuf, "connect returned:%i %i\n", iResult, WSAGetLastError());
-      OutputDebugString(szBuf);
+      // Don't OutputDebugString here, as no debugger attached
+      // this will (strangely) reset WSAGetLastError()
+      //OutputDebugString(szBuf);
     }
 
     return iResult;

@@ -196,7 +196,7 @@ __int64 CSimpleFileCache::WaitForData(unsigned int iMinAvail, unsigned int iMill
 
 __int64 CSimpleFileCache::Seek(__int64 iFilePosition, int iWhence) {
 
-	CLog::Log(LOGDEBUG,"CSimpleFileCache::Seek, seeking to %lld", iFilePosition);
+	CLog::Log(LOGDEBUG,"CSimpleFileCache::Seek, seeking to %"PRId64, iFilePosition);
 
 	__int64 iTarget = iFilePosition - m_nStartPosition;
 	if (SEEK_END == iWhence) 
@@ -215,7 +215,7 @@ __int64 CSimpleFileCache::Seek(__int64 iFilePosition, int iWhence) {
 
 	__int64 nDiff = iTarget - m_nWritePosition;
 	if ( nDiff > 500000 || (nDiff > 0 && WaitForData((unsigned int)nDiff, 5000) == CACHE_RC_TIMEOUT)  ) {		
-		CLog::Log(LOGWARNING,"%s - attempt to seek pass read data (seek to %"PRId64". max: %lld. reset read pointer. (%"PRId64":%d)", __FUNCTION__, iTarget, m_nWritePosition, iFilePosition, iWhence);
+		CLog::Log(LOGWARNING,"%s - attempt to seek pass read data (seek to %"PRId64". max: %"PRId64". reset read pointer. (%"PRId64":%d)", __FUNCTION__, iTarget, m_nWritePosition, iFilePosition, iWhence);
 		return  CACHE_RC_ERROR;
 	}
 

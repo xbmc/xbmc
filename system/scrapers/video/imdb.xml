@@ -208,13 +208,13 @@
 			<expression clear="yes" repeat="yes" noclean="1">thumbs/imp_([^&gt;]*ver[^&gt;]*.jpg)&gt;</expression>
 		</RegExp>
 	</GetIMPAPosters>
-	<GetMoviePosterDBLink dest="6" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetMoviePosterDB&quot;&gt;\1&lt;/url&gt;&lt;/details&gt;" dest="6">
+        <GetMoviePosterDBLink dest="6" clearbuffers="no">
+         	<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetMoviePosterDB&quot;&gt;\1&lt;/url&gt;&lt;/details&gt;" dest="6">
 			<expression>(http://www.movieposterdb.com/movie/[^&quot;]*)&quot;</expression>
 		</RegExp>
-	</GetMoviePosterDBLink>
+        </GetMoviePosterDBLink>
 	<GetMoviePosterDB clearbuffers="no" dest="12">
-		<RegExp input="$$1" output="&lt;thumb&gt;\1o_\2&lt;/thumb&gt;" dest="10+">
+		<RegExp input="$$1" output="&lt;thumb&gt;\1l_\2&lt;/thumb&gt;" dest="10+">
 			<expression clear="yes" repeat="yes" noclean="1,2">&quot;poster&quot;.*?src=&quot;(.*?)[a-z]_(.*?)&quot;</expression>
 		</RegExp>
 	</GetMoviePosterDB>

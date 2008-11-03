@@ -2522,7 +2522,7 @@ bool CMusicDatabase::GetAlbumsByYear(const CStdString& strBaseDir, CFileItemList
 {
   CStdString where = FormatSQL("where iYear=%ld", year);
 
-  return GetAlbumsByWhere(strBaseDir, where, items);
+  return GetAlbumsByWhere(strBaseDir, where, "", items);
 }
 
 bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, bool albumArtistsOnly)
@@ -2803,10 +2803,10 @@ bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& i
                           , idArtist, idArtist, idArtist, idArtist);
   }
 
-  return GetAlbumsByWhere(strBaseDir, strWhere, items);
+  return GetAlbumsByWhere(strBaseDir, strWhere, "", items);
 }
 
-bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, CFileItemList &items)
+bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, const CStdString &order, CFileItemList &items)
 {
   if (NULL == m_pDB.get()) return false;
   if (NULL == m_pDS.get()) return false;
@@ -2820,7 +2820,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdStrin
       sql += "where ";
     else
       sql += where + " and ";
-    sql += "albumview.strAlbum != \"\"";
+    sql += "albumview.strAlbum != \"\" " + order;
 
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, sql.c_str());

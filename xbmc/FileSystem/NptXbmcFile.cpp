@@ -14,7 +14,7 @@
 #include "IFile.h"
 #include "FileFactory.h"
 #include "utils/log.h"
-#include "util.h"
+#include "Util.h"
 #include "URL.h"
 
 #ifdef max
