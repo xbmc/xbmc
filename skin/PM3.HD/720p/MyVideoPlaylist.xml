@@ -57,8 +57,6 @@
 					<posx>0</posx>
 					<posy>135</posy>
 					<label>190</label>
-					<onclick>ReplaceWindow(mymusiclibrary)</onclick>
-					<selected>Window.IsVisible(mymusiclibrary)</selected>
 					<include>ButtonCommonValues</include>
 					<onleft>50</onleft>
 					<onright>50</onright>
@@ -71,7 +69,6 @@
 					<posy>180</posy>
 					<label>192</label>
 					<onclick>ReplaceWindow(Video)</onclick>
-					<selected>Window.IsVisible(mymusiclibrary)</selected>
 					<include>ButtonCommonValues</include>
 					<onleft>50</onleft>
 					<onright>50</onright>
