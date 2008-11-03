@@ -57,8 +57,8 @@
 					<posx>0</posx>
 					<posy>135</posy>
 					<label>190</label>
-					<onclick>ReplaceWindow(mymusiclibrary)</onclick>
-					<selected>Window.IsVisible(mymusiclibrary)</selected>
+					<onclick>ReplaceWindow(videos)</onclick>
+					<selected>Window.IsVisible(myvideolibrary)</selected>
 					<include>ButtonCommonValues</include>
 					<onleft>50</onleft>
 					<onright>50</onright>
