@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez at gmail.com-->
-<!--Date of translation: 10/29/2008-->
+<!--Date of translation: 11/03/2008-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -64,7 +64,7 @@
   <string id="128">일반 설정</string>
   <string id="129">슬라이드쇼</string>
   <string id="130">시스템 정보</string>
-  <string id="131">영상화면</string>
+  <string id="131">화면</string>
   <string id="132">앨범</string>
   <string id="133">아티스트</string>
   <string id="134">노래</string>
@@ -135,7 +135,7 @@
   <string id="209">다음</string>
   <string id="210">이전</string>
   <string id="213">사용자 인터페이스 조정...</string>
-  <string id="214">화면 조정</string>
+  <string id="214">비디오 조정...</string>
   <string id="215">부드럽게</string>
   <string id="216">확대</string>
   <string id="217">늘리기</string>
@@ -160,7 +160,7 @@
   <string id="237">축소</string>
   <string id="238">확장</string>
   <string id="239">종료시 재생목록 비우기</string>
-  <string id="240">DVD 자동실행</string>
+  <string id="240">DVD-비디오 자동실행</string>
   <string id="241">VCD/SVCD 자동실행</string>
   <string id="242">오디오-CD 자동실행</string>
   <string id="243">XBOX게임 자동실행</string>
@@ -271,7 +271,7 @@
   <string id="358">모든 앨범</string>
   <string id="359">최근 추가 앨범</string>
   <string id="360">화면보호기</string>
-  <string id="361">R. 슬라이드쇼</string>
+  <string id="361">역 슬라이드쇼</string>
   <string id="362">화면보호기 흐림정도 (%)</string>
   <string id="363">정렬: 파일</string>
   <string id="364">- 돌비 디지털(AC3) 지원 리시버</string>
@@ -381,7 +381,7 @@
   <string id="477">재생목록을 읽을 수 없음</string>
   <string id="478">OSD</string>
   <string id="479">스킨과 언어</string>
-  <string id="480">화면</string>
+  <string id="480">모양새</string>
   <string id="481">오디오 옵션</string>
   <string id="482">XBMC 정보</string>
   <string id="485">앨범 삭제</string>
@@ -394,7 +394,7 @@
   <string id="493">고급 옵션(전문가만!)</string>
   <string id="494">전체 오디오 헤드룸</string>
   <string id="495">비디오를 GUI 해상도로 올림</string>
-  <string id="496">화면 조정</string>
+  <string id="496">조정</string>
   <string id="497">미디어 확장자 숨기기</string>
   <string id="498">정렬: 종류</string>
   <string id="499">www.allmusic.com에 연결할 수 없음</string>
@@ -741,9 +741,9 @@
   <string id="10006">비디오</string>
   <string id="10007">시스템 정보</string>
   <string id="10008">설정 - 일반</string>
-  <string id="10009">설정 - 영상화면</string>
-  <string id="10010">설정 - 화면 - GUI 조정</string>
-  <string id="10011">설정 - 비디오 - 영상화면 조정</string>
+  <string id="10009">설정 - 화면</string>
+  <string id="10010">설정 - 모양새 - GUI 조정</string>
+  <string id="10011">설정 - 비디오 - 화면 조정</string>
   <string id="10012">설정 - 사진</string>
   <string id="10013">설정 - 프로그램</string>
   <string id="10014">설정 - 날씨</string>
@@ -751,7 +751,7 @@
   <string id="10016">설정 - 시스템</string>
   <string id="10017">설정 - 비디오</string>
   <string id="10018">설정 - 네트워크</string>
-  <string id="10019">설정 - 화면</string>
+  <string id="10019">설정 - 모양새</string>
   <string id="10020">스크립트</string>
   <string id="10028">비디오/재생목록</string>
   <string id="10034">설정-프로파일</string>
@@ -761,7 +761,7 @@
   <string id="10211">자막 캐슁중..</string>
   <string id="10212">종료중</string>
   <string id="10213">버퍼링중</string>
-  <string id="10214">스트리밍 여는중</string>
+  <string id="10214">스트림 여는중</string>
   <string id="10500">음악/재생목록</string>
   <string id="10501">음악/파일</string>
   <string id="10502">음악/라이브러리</string>
@@ -784,7 +784,7 @@
   <string id="12002">확인 대화창</string>
   <string id="12003">비디오/정보</string>
   <string id="12004">스크립트/정보</string>
-  <string id="12005">전체화면 보기</string>
+  <string id="12005">전체화면 비디오</string>
   <string id="12006">오디오 시각화</string>
   <string id="12008">연결재생 대화창</string>
   <string id="12009">인텍스 재생성...</string>
@@ -881,7 +881,7 @@
   <string id="13011">대기 모드</string>
   <string id="13012">나가기</string>
   <string id="13013">재시작</string>
-  <string id="13100">화면 떨림 방지</string>
+  <string id="13100">떨림 필터</string>
   <string id="13101">드라이브 선택 허용(재시작 필요)</string>
   <string id="13105">수직동기</string>
   <string id="13106">사용안함</string>
@@ -952,7 +952,7 @@
   <string id="13271">CPU 사용량:</string>
   <string id="13274">연결됨, 그러나 DNS 사용못함.</string>
   <string id="13275">하드디스크</string>
-  <string id="13276">DVD-ROM</string>
+  <string id="13276">DVD-롬</string>
   <string id="13277">저장장치</string>
   <string id="13278">기본</string>
   <string id="13279">네트워크</string>
@@ -1050,8 +1050,8 @@
   <string id="13385">음성 변조 - 포트 3</string>
   <string id="13386">시간단위 검색기능 사용</string>
   <string id="13387">트랙명 지정 템플릿 오른쪽</string>
-  <string id="13388">프리셋</string>
-  <string id="13389">현재 시각화에 사용가능한 프리셋이 존재하지 않습니다</string>
+  <string id="13388">사전설정</string>
+  <string id="13389">현재 시각화에 사용가능한 사전설정이 존재하지 않습니다</string>
   <string id="13390">현재 시각화에 사용가능한 설정이 없습니다</string>
   <string id="13391">꺼내기/불러오기</string>
   <string id="13392">오디오 재생중일때 시각화 사용</string>
@@ -1067,9 +1067,9 @@
   <string id="13402">트랙 위치 보임</string>
   <string id="13403">기본설정 복구</string>
   <string id="13404">다시 시작</string>
-  <string id="13405">미리보기 가져옴</string>
+  <string id="13405">미리보기 가져오기</string>
   <string id="13406">사진 정보</string>
-  <string id="13407">%s 설정</string>
+  <string id="13407">%s 사전설정</string>
   <string id="13408">(IMDb 사용자 비율)</string>
   <string id="13409">인기 250</string>
   <string id="13410">Last.FM 시작</string>
@@ -1104,8 +1104,8 @@
   <string id="14012">- 큰 아이콘 사용</string>
   <string id="14013">- 에 따라 변경</string>
   <string id="14014">- 비율</string>
-  <string id="14015">파일 없이 한개 이상의 미리보기</string>
-  <string id="14016">한개 이상의 파일과 미리보기</string>
+  <string id="14015">파일없고 최소한 한개의 미리보기</string>
+  <string id="14016">최소한 한개의 파일과 미리보기</string>
   <string id="14017">미리보기 비율</string>
   <string id="14018">보기 옵션</string>
   <string id="14019">지역코드 1 변경</string>
@@ -1162,7 +1162,7 @@
   <string id="14075">썸머타임 사용</string>
   <string id="14076">즐겨찾기 추가</string>
   <string id="14077">즐겨찾기 제거</string>
-  <string id="14078">스킨 색깔</string>
+  <string id="14078">스킨 색상</string>
   <string id="14079">시간대 국가</string>
   <string id="14080">시간대</string>
   <string id="15015">제거</string>
@@ -1465,7 +1465,7 @@
   <string id="20165">잠기지 않음</string>
   <string id="20166">잠김</string>
   <string id="20167">정지</string>
-  <string id="20168">리셋 필요</string>
+  <string id="20168">초기화 필요</string>
   <string id="20169">주간</string>
   <string id="20170">선</string>
   <string id="20171">윈도우즈 네트워크(SMB)</string>
@@ -1519,9 +1519,9 @@
   <string id="20322">게임 세이브로 가기</string>
   <string id="20323">게임 세이브</string>
   <string id="20324">부분 재생...</string>
-  <string id="20325">측정치 리셋</string>
-  <string id="20326">기본값으로 %s 측정치를</string>
-  <string id="20327">리셋하게 됩니다.</string>
+  <string id="20325">조정치 초기화</string>
+  <string id="20326">기본값으로 %s 조정치를</string>
+  <string id="20327">초기화하게 됩니다.</string>
   <string id="20328">대상 찾기</string>
   <string id="20330">검색에 폴더 이름 사용</string>
   <string id="20331">파일</string>
@@ -1561,7 +1561,7 @@
   <string id="20365">에피소드 줄거리</string>
   <string id="20366">* 모든 시즌</string>
   <string id="20367">본것 감추기</string>
-  <string id="20368">Prod 코드</string>
+  <string id="20368">제품 코드</string>
   <string id="20369">안본 항목의 줄거리 감추기</string>
   <string id="20370">* 스포일러 방지위해 감춤 *</string>
   <string id="20371">시즌 미리보기 설정</string>
@@ -1755,7 +1755,7 @@
   <string id="21877">제작일</string>
   <string id="21878">저작권 표기</string>
   <string id="21879">국가 코드</string>
-  <string id="21880">Refrence Service</string>
+  <string id="21880">참고 업무</string>
   <string id="21881">UPnP 렌더러 사용</string>
   <string id="21882">DVD 메뉴 전의 도입부 건너뛰기</string>
   <string id="21883">추출된 오디오 CD</string>
@@ -1792,5 +1792,5 @@
   <string id="22013">프로파일 데이터</string>
   <string id="29800">라이브러리 모드</string>
   <string id="29801">QWERTY 자판</string>
-  <string id="29999">게임에 화면 떨림 방지 적용</string>
+  <string id="29999">게임에 떨림 필터 설정 적용</string>
 </strings>
