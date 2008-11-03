@@ -1,0 +1,30 @@
+Known Issues for 8.10 'Atlantis' Release of XBMC for Linux, Mac OS X and Windows
+-------------------------------------------------------------------------------
+ 
+*) There is no offloading of Video Decoding (commonly referred to as Hardware Acceleration) in XBMC at this time. This means that it takes powerful hardware to decode High Definition H.264 videos.
+ 
+*) PulseAudio (Ubuntu component) causes various audio related problems for XBMC, so you might want to remove this component to be on the safe side.
+ 
+*) 'Settings/Videos/Player/High Quality Software Upscaling' is not recommended to use with older IGP solutions/slow hardware, safest is to not enable it at all unless you are fully aware of what you're doing.
+ 
+*) Intel GMA X3100 (GM965) and slower/older IGP's barely handle 1080p Display Output under Linux due to (what I pike suspect) poor  drivers.
+ 
+*) Some H.264 encoded videos experiences blocking. It's currently believed this is related to the unapproved FFMpeg 'Cabac patch' we use to speedup (multithread) H.264 decoding.
+ 
+*) A running Screensaver behind Fullscreen XBMC on Linux can cause graphical glitches in XBMC.
+ 
+*) Compiz / Desktop Effects and XBMC does not mix well, atleast not without serious tweaking to Compiz.
+ 
+*) Eventclients are not to be considered stable in this release.
+ 
+*) Shoutcast/AAC streaming do not work correctly, it may re-buffer every ~30 secs.
+ 
+*) Not all of XBMC's settings are active or do what they are supposed to.
+ 
+*) "Rar sets" needs to be completely downloaded before XBMC can stream content from them.
+ 
+*) Not all the old xbox XBMC scripts work with Linux/OSX/Win ports. Some don't even work on XBOX anymore.
+ 
+*) XBMC crashing on Linux will sometimes lock the mousepointer (you need to restart XBMC and quit it again to release it).
+ 
+*) Visualisations are less polished than other components and may cause various glitches, like resizing issues.
