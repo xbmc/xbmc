@@ -145,7 +145,7 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
 
   EnterCriticalSection(&m_critSection);
 
-  if(!m_pLastMessage || m_pLastMessage && m_pLastMessage->priority >= priority)
+  if(!m_pLastMessage || (m_pLastMessage && m_pLastMessage->priority >= priority))
   {
     /* quick path to just add at the end */
     if (!m_pFirstMessage) m_pFirstMessage = msgItem;

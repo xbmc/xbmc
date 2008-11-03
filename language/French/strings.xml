@@ -868,10 +868,10 @@
   <string id="12018">Non</string>
   <string id="12019">Oui</string>
   <string id="12020">Demander</string>
-  <string id="12021">Commencer depuis le début</string>
-  <string id="12022">Reprendre depuis la dernière position</string>
+  <string id="12021">Reprendre depuis le début</string>
+  <string id="12022">Continuer la lecture</string>
   <string id="12023">Validation des trainers existants...</string>
-  <string id="12024">Générer automatiquement des vignettes pour les vidéos</string>
+  <string id="12024">Générer automatiquement les vignettes vidéos</string>
 
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -1161,7 +1161,7 @@
   <string id="13411">Vitesse du ventilateur minimum</string>
   <string id="13412">- Flux RSS dont le texte est de la droite vers la gauche</string>
   <string id="13413">Téléchargement</string>
-  <string id="13414">Cacher les artistes uniquement présents dans les Compilations</string>
+  <string id="13414">Cacher les Artistes uniques des Compilations</string>
   <string id="13415">Méthode de Rendu</string>
   <string id="13416">Détection Auto</string>
   <string id="13417">Basic Shaders (ARB)</string>
@@ -1761,7 +1761,7 @@
   <string id="20379">Dossier contenant une seule Série TV</string>
   <string id="20380">Exclure le dossier du scan</string>
   <string id="20381">Spécial</string>
-  <string id="20382">Récupérer automatiquement les vignettes des saisons</string>
+  <string id="20382">Récupérer automatiquement les vignettes Saisons</string>
   <string id="20383">Le dossier contient une seule vidéo</string>
   <string id="20384">Lien vers Série TV</string>
   <string id="20385">Supprimer le lien vers la série TV</string>
@@ -1781,11 +1781,11 @@
   <string id="20399">Clip Musicaux de l'Album</string>
   <string id="20400">Clip Musicaux par Artiste</string>
   <string id="20401">Jouer le Clip</string>
-  <string id="20402">Récupérer automatiquement les vignettes des acteurs</string>
+  <string id="20402">Récupérer automatiquement les vignettes Acteurs</string>
   <string id="20403">Définir vignette Acteur</string>
   <string id="20404"></string>
-  <string id="20405">Supprimer les Signets de l'Épisode</string>
-  <string id="20406">Ajouter un Signet pour l'Épisode</string>
+  <string id="20405">Supprimer signet Épisode</string>
+  <string id="20406">Créer signet Épisode</string>
   <string id="20407">Paramètres du Scraper</string>
   <string id="20408">Téléchargement des infos Clip Vidéo</string>
   <string id="20409">Téléchargement des infos Série TV</string>

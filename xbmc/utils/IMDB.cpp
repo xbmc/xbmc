@@ -46,13 +46,13 @@ using namespace HTML;
 //////////////////////////////////////////////////////////////////////
 CIMDB::CIMDB()
 {
-m_retry = false;
+  m_retry = false;
 }
 
 CIMDB::CIMDB(const CStdString& strProxyServer, int iProxyPort)
     : m_http(strProxyServer, iProxyPort)
 {
-m_retry = false;
+  m_retry = false;
 }
 
 CIMDB::~CIMDB()

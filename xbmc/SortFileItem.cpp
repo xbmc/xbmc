@@ -28,6 +28,14 @@
 #include "URL.h"
 #include "utils/log.h"
 
+#ifndef PRId64
+#ifdef _MSC_VER
+#define PRId64 "I64d"
+#else
+#define PRId64 "lld"
+#endif
+#endif
+
 #define RETURN_IF_NULL(x,y) if ((x) == NULL) { CLog::Log(LOGWARNING, "%s, sort item is null", __FUNCTION__); return y; }
 
 inline int StartsWithToken(const CStdString& strLabel)
@@ -134,7 +142,7 @@ void SSortFileItem::BySize(CFileItemPtr &item)
   if (!item) return;
 
   CStdString label;
-  label.Format("%lu", item->m_dwSize);
+  label.Format("%"PRId64, item->m_dwSize);
   item->SetSortLabel(label);
 }
 
