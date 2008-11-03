@@ -270,6 +270,11 @@ using namespace EVENTSERVER;
 
 CStdString g_LoadErrorStr;
 
+#if defined(_WIN32)
+// FIXME: Ticket #4520 - force loading of the imagelib
+DllImageLib imageLib;
+#endif
+
 CBackgroundPlayer::CBackgroundPlayer(const CFileItem &item, int iPlayList) : m_iPlayList(iPlayList)
 {
   m_item = new CFileItem;
@@ -924,6 +929,11 @@ HRESULT CApplication::Create(HWND hWnd)
 #endif
 
   g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
+
+#ifdef _WIN32
+  // FIXME: Ticket #4520 - force loading of the imagelib
+  imageLib.Load();
+#endif
 
   return CXBApplicationEx::Create(hWnd);
 }
