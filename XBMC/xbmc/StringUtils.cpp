@@ -128,13 +128,13 @@ int StringUtils::FindNumber(const CStdString& strInput, const CStdString &strFin
 // Compares separately the numeric and alphabetic parts of a string.
 // returns negative if left < right, positive if left > right
 // and 0 if they are identical (essentially calculates left - right)
-int StringUtils::AlphaNumericCompare(const char *left, const char *right)
+long long StringUtils::AlphaNumericCompare(const char *left, const char *right)
 {
   unsigned char *l = (unsigned char *)left;
   unsigned char *r = (unsigned char *)right;
   unsigned char *ld, *rd;
   unsigned char lc, rc;
-  unsigned int lnum, rnum;
+  long long lnum, rnum;
   while (*l != 0 && *r != 0)
   {
     // check if we have a numerical value
@@ -142,15 +142,15 @@ int StringUtils::AlphaNumericCompare(const char *left, const char *right)
     {
       ld = l;
       lnum = 0;
-      while (*ld >= '0' && *ld <= '9' && ld < l + 10)
-      { // compare only up to 10 digits
+      while (*ld >= '0' && *ld <= '9' && ld < l + 15)
+      { // compare only up to 15 digits
         lnum *= 10;
         lnum += *ld++ - '0';
       }
       rd = r;
       rnum = 0;
-      while (*rd >= '0' && *rd <= '9' && rd < r + 10)
-      { // compare only up to 10 digits
+      while (*rd >= '0' && *rd <= '9' && rd < r + 15)
+      { // compare only up to 15 digits
         rnum *= 10;
         rnum += *rd++ - '0';
       }

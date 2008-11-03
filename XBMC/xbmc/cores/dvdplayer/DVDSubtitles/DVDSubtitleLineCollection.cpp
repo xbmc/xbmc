@@ -68,7 +68,7 @@ CDVDOverlay* CDVDSubtitleLineCollection::Get(double iPts)
   
   if (m_pCurrent)
   {
-    while (m_pCurrent && m_pCurrent->pOverlay->iPTSStartTime < iPts)
+    while (m_pCurrent && m_pCurrent->pOverlay->iPTSStopTime < iPts)
     {
       m_pCurrent = m_pCurrent->pNext;
     }

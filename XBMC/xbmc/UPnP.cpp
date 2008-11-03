@@ -1268,24 +1268,34 @@ CUPnPRenderer::UpdateState()
     buffer.Format("%d", 256 * (volume * 60 - 60) / 100);
     rct->SetStateVariable("VolumeDb", buffer.c_str());
 
-    StringUtils::SecondsToTimeString((long)g_application.GetTime(), buffer, TIME_FORMAT_HH_MM_SS);
-    avt->SetStateVariable("RelativeTimePosition", buffer.c_str());
-
-    StringUtils::SecondsToTimeString((long)g_application.GetTotalTime(), buffer, TIME_FORMAT_HH_MM_SS);
-    avt->SetStateVariable("CurrentTrackDuration", buffer.c_str());
-    
-    avt->SetStateVariable("AVTransportURI", g_application.CurrentFile().c_str());
-    avt->SetStateVariable("TransportPlaySpeed", (const char*)NPT_String::FromInteger(g_application.GetPlaySpeed()));
-
     if (g_application.IsPlaying()) {
         avt->SetStateVariable("TransportState", "PLAYING");
         avt->SetStateVariable("TransportStatus", "OK");
         avt->SetStateVariable("NumberOfTracks", "1");
-        avt->SetStateVariable("CurrentTrack", "1");            
+        avt->SetStateVariable("CurrentTrack", "1");
+
+        StringUtils::SecondsToTimeString((long)g_application.GetTime(), buffer, TIME_FORMAT_HH_MM_SS);
+        avt->SetStateVariable("RelativeTimePosition", buffer.c_str());
+
+        long total = (long)g_application.GetTotalTime();
+        if (total > 0) {
+          StringUtils::SecondsToTimeString(total, buffer, TIME_FORMAT_HH_MM_SS);
+          avt->SetStateVariable("CurrentTrackDuration", buffer.c_str());
+        } else {
+          avt->SetStateVariable("CurrentTrackDuration", "NOT_IMPLEMENTED");
+        }
+
+        avt->SetStateVariable("AVTransportURI", g_application.CurrentFile().c_str());
+        avt->SetStateVariable("TransportPlaySpeed", (const char*)NPT_String::FromInteger(g_application.GetPlaySpeed()));
+
     } else {
         avt->SetStateVariable("TransportState", "STOPPED");
         avt->SetStateVariable("NumberOfTracks", "0");
         avt->SetStateVariable("CurrentTrack", "0");
+        avt->SetStateVariable("AVTransportURI", "");
+        avt->SetStateVariable("TransportPlaySpeed", "1");
+        avt->SetStateVariable("RelativeTimePosition", "00:00:00");
+        avt->SetStateVariable("CurrentTrackDuration", "00:00:00");
     }
 }
 
@@ -1366,7 +1376,7 @@ CUPnPRenderer::OnSetAVTransportURI(PLT_ActionReference& action)
     g_applicationMessenger.MediaPlay((const char*)uri);
     if (!g_application.IsPlaying()) {
         service->SetStateVariable("TransportState", "STOPPED");
-        service->SetStateVariable("TransportStatus", "TransportStatus");          
+        service->SetStateVariable("TransportStatus", "ERROR_OCCURRED");
     }
 
     NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
@@ -1385,7 +1395,7 @@ NPT_Result CUPnPRenderer::OnSetMute(PLT_ActionReference& action)
 {
     NPT_String mute;
     NPT_CHECK_SEVERE(action->GetArgumentValue("DesiredMute",mute));
-    if(mute == "1" ^ g_stSettings.m_bMute)
+    if((mute == "1") ^ g_stSettings.m_bMute)
         g_application.Mute();
     return NPT_SUCCESS;
 }

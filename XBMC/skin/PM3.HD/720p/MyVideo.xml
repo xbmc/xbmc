@@ -8,7 +8,7 @@
 			<include>ContentPanel</include>
 			<include>CommonRootView</include>
 			<include>CommonListView</include>
-			<include>ThumbnailView</include>
+			<include>VideoThumbnailView</include>
 			<include>WideIconView</include>
 			<include>MovieDVDView</include>
 			<include>AllViewCommonPageControls</include>

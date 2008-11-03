@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez at gmail.com-->
-<!--Date of translation: 10/20/2008-->
+<!--Date of translation: 10/23/2008-->
 <!--$Revision$-->
 <strings>
   <string id="31000">음소거</string>
@@ -96,6 +96,7 @@
   <string id="31109">홈 영상화면 배경</string>
   <string id="31110">버튼 - 사용자 지정 배경 사용</string>
   <string id="31111">가사보기에 음악 정보 항상 보이기</string>
+  <string id="31112">"넓은 아이콘" 에서 미디어 타이틀 보기</string>
   <string id="31200">사용자 지정 스크립트 옵션</string>
   <string id="31201">
   </string>

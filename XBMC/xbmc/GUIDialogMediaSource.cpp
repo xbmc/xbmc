@@ -621,7 +621,8 @@ vector<CStdString> CGUIDialogMediaSource::GetPaths()
 {
   vector<CStdString> paths;
   for (int i = 0; i < m_paths->Size(); i++)
-    paths.push_back(m_paths->Get(i)->m_strPath);
+    if (!m_paths->Get(i)->m_strPath.IsEmpty())
+      paths.push_back(m_paths->Get(i)->m_strPath);
   return paths;
 }
 

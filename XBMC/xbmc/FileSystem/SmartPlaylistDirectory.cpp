@@ -79,8 +79,7 @@ namespace DIRECTORY
     {
       CMusicDatabase db;
       db.Open();
-      CStdString whereOrder = playlist.GetWhereClause() + " " + playlist.GetOrderClause();
-      success = db.GetAlbumsByWhere("musicdb://3/", whereOrder, items);
+      success = db.GetAlbumsByWhere("musicdb://3/", playlist.GetWhereClause(), playlist.GetOrderClause(), items);
       items.SetContent("albums");
       db.Close();
     }
