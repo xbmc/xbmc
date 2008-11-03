@@ -97,6 +97,15 @@ void CApplicationRenderer::Process()
         iTop =  (int)floor(rect.top);
         iWidth = (int)ceil(rect.right - rect.left);
         iHeight = (int)ceil(rect.bottom - rect.top);
+
+        // make sure we scale these to within the actual available space on screen
+        if (iLeft < 0) iLeft = 0;
+        if (iTop < 0) iTop = 0;
+        if (iLeft >= g_graphicsContext.GetWidth()) iLeft = g_graphicsContext.GetWidth() - 1;
+        if (iTop >= g_graphicsContext.GetHeight()) iTop = g_graphicsContext.GetHeight() - 1;
+        if (iTop + iHeight > g_graphicsContext.GetHeight()) iHeight = g_graphicsContext.GetHeight() - iTop;
+        if (iLeft + iWidth > g_graphicsContext.GetWidth()) iWidth = g_graphicsContext.GetWidth() - iLeft;
+
         m_Resolution = g_graphicsContext.GetVideoResolution();
       }
     }
