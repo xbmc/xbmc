@@ -26,6 +26,7 @@
 #include "SDL/SDL_syswm.h"
 #include "GUIWindowManager.h"
 #include "WIN32Util.h"
+extern HWND g_hWnd;
 #endif
 
 
@@ -369,6 +370,17 @@ void CXBApplicationEx::ReadInput()
           g_settings.DeleteSource("files",strName,strDrive);
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
           m_gWindowManager.SendThreadMessage( msg );
+        }
+        if (event.syswm.msg->wParam == PBT_APMRESUMESUSPEND || event.syswm.msg->wParam == PBT_APMRESUMEAUTOMATIC)
+        { 
+          // TODO: reconnect shares/network, etc
+          CLog::Log(LOGINFO, "Resuming from suspend" );
+          if(g_advancedSettings.m_fullScreen)
+          {
+            ShowWindow(g_hWnd,SW_RESTORE);
+            SetForegroundWindow(g_hWnd);
+            LockSetForegroundWindow(LSFW_LOCK);
+          }
         }
       }
       break;
