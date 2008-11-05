@@ -112,7 +112,19 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   }
   else
   {
-    if(g_advancedSettings.m_analogMultiChannel == false)
+    if(g_advancedSettings.m_analogMultiChannel)
+    {
+      if(deviceuse == "default")
+      {
+        if(iChannels == 6)
+          deviceuse = "surround51";
+        else if(iChannels == 5)
+          deviceuse = "surround50";
+        else if(iChannels == 4)
+          deviceuse = "surround40";
+      }
+    }
+    else
     {
       if(iChannels == 6)
         deviceuse = "xbmc_51to2:'" + EscapeDevice(deviceuse) + "'";
