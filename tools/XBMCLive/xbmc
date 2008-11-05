@@ -52,30 +52,30 @@ case "$1" in
 
 			# Redirect XBMC home folder and logfile to usb flash
 			if [ "$SRCMEDIA" = "usb" ]; then
-				echo "Redirect XBMC home folder and logfile to usb flash..."
+				NOREDIR="$( echo $XBMC_PARAMS | grep "noredir" )"
+				if [ "$NOREDIR" = "" ]; then
+					echo "Redirect XBMC home folder and logfile to usb flash..."
 
-				rootDrive=`pmount | grep mnt | cut -d " " -f 1`
-				mount -t vfat -o rw,umask=000 $rootDrive /mnt
+					rootDrive=`pmount | grep mnt | cut -d " " -f 1`
+					mount -t vfat -o rw,umask=000 $rootDrive /mnt
 
-				# TODO change to /var/tmp when related bug closed
-				touch /mnt/xbmc.log
-				chmod 666 /mnt/xbmc.log
-				if [ -f /xbmc.log ]; then
-					rm /xbmc.log
+					# TODO change to /var/tmp when related bug closed
+					touch /mnt/xbmc.log
+					chmod 666 /mnt/xbmc.log
+					if [ -f /xbmc.log ]; then
+						rm /xbmc.log
+					fi
+					ln -s /mnt/xbmc.log /xbmc.log
+
+					if [ ! -d /mnt/Userdata ]; then
+						mkdir /mnt/dotXBMC
+					fi
+
+					if [ ! -L /home/xbmc/.xbmc ]; then
+						mv /home/xbmc/.xbmc /home/xbmc/.xbmc.previous
+						ln -s /mnt/dotXBMC /home/xbmc/.xbmc
+					fi
 				fi
-				ln -s /mnt/xbmc.log /xbmc.log
-
-				# Disabled, needs more tests
-				# if [ ! -d /mnt/Userdata ]; then
-				#	mkdir /mnt/Userdata
-				# fi
-	
-				# if [ -d /home/xbmc/.xbmc ]; then
-				#	cp -R /home/xbmc/.xbmc/* /mnt/Userdata &> /dev/null
-				#	rm -rf /home/xbmc/.xbmc
-				# fi
-	
-				# ln -s /mnt/Userdata /home/xbmc/.xbmc
 			fi
 
 			# if usplash is running, make sure to stop it now, yes "start" kills it.
