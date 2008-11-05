@@ -300,7 +300,10 @@ HRESULT CALSADirectSound::Pause()
   }
 
   if(!m_bCanPause)
+  {
+    CLog::Log(LOGWARNING, "CALSADirectSound::CALSADirectSound - device is not able to pause playback, will flush instead");
     Flush();
+  }
 
   return S_OK;
 }
