@@ -278,8 +278,6 @@ void CALSADirectSound::Flush() {
   CHECK_ALSA(LOGERROR,"flush-drop",nErr);
   nErr = snd_pcm_prepare(m_pPlayHandle);
   CHECK_ALSA(LOGERROR,"flush-prepare",nErr);
-  nErr = snd_pcm_start(m_pPlayHandle);
-  CHECK_ALSA(LOGERROR,"flush-start",nErr); 
 }
 
 //***********************************************************************************************
