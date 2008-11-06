@@ -84,7 +84,7 @@
 #define strnicmp  strncasecmp
 #define _atoi64(x) atoll(x)
 #define CopyMemory(dst,src,size) memmove(dst, src, size)
-#define ZeroMemory(dst,size) bzero(dst, size)
+#define ZeroMemory(dst,size) memset(dst, 0, size)
 
 #define VOID    void
 #define byte    unsigned char
