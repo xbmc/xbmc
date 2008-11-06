@@ -33,7 +33,7 @@ XLCDproc::XLCDproc()
   m_iActualpos   = 0;
   m_iBackLight   = 32;
   m_iLCDContrast = 50;
-  m_bStop	 = true;
+  m_bStop	       = true;
   sockfd         = -1;
 }
 
@@ -59,12 +59,12 @@ void XLCDproc::Initialize()
   struct sockaddr_in serv_addr;
 
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
-  bzero((char *) &serv_addr, sizeof(serv_addr));
+  memset((char *) &serv_addr, 0, sizeof(serv_addr));
   serv_addr.sin_family = AF_INET;
 
-  bcopy((char *)server->h_addr_list[0],
-        (char *)&serv_addr.sin_addr,
-        server->h_length);
+  memmove((char *)&serv_addr.sin_addr,
+          (char *)server->h_addr_list[0],
+          server->h_length);
 
   //Connect to default LCDd port, hard coded for now.
 
