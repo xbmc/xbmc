@@ -126,13 +126,7 @@ CGLTexture * CGUILargeTextureManager::GetImage(const CStdString &path, int &widt
       width = image->GetWidth();
       height = image->GetHeight();
       orientation = image->GetOrientation();
-#ifdef HAS_SDL_2D
       return image->GetTexture();
-#else
-      if (image->GetTexture())
-        return new CGLTexture(image->GetTexture(), false);
-      return NULL;
-#endif
     }
   }
   lock.Leave();
