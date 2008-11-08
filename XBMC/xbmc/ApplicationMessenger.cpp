@@ -277,6 +277,10 @@ case TMSG_POWERDOWN:
 
     case TMSG_RESTARTAPP:
       {
+#ifdef _WIN32PC
+        g_application.Stop();
+        Sleep(200);
+#endif
         exit(65);
         // TODO
         //char szXBEFileName[1024];
