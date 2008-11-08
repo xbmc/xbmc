@@ -302,7 +302,7 @@
   <string id="378">AM</string>
   <string id="379">PM</string>
   <string id="380">Buien</string>
-  <string id="381">Weining</string>
+  <string id="381">Lichte</string>
   <string id="382">Verspreid</string>
   <string id="383">Wind</string>
   <string id="384">Sterk</string>
@@ -845,14 +845,14 @@
   <string id="12344">Ingevoerd wachtwoord klopt niet.</string>
   <string id="12345">Toegang geweigerd</string>
   <string id="12346">Wachtwoord invoerpogingen overschreden</string>
-  <string id="12347">De Xbox wordt nu uitgeschakeld.</string>
+  <string id="12347">XBMC wordt nu uitgeschakeld.</string>
   <string id="12348">Item vergrendeld</string>
   <string id="12353">Vergrendeling heractiveren</string>
   <string id="12356">Vergrendeling veranderen</string>
   <string id="12357">Vergrendeling delen</string>
   <string id="12358">Geen wachtwoord ingegeven. Probeer opnieuw.</string>
   <string id="12360">Vergrendelen</string>
-  <string id="12362">Xbox uitschakelen na max. aantal mislukte pogingen</string>
+  <string id="12362">XBMC uitschakelen na max. aantal mislukte pogingen</string>
   <string id="12367">Vergrendelcode is niet geldig!</string>
   <string id="12368">Voer een geldige vergrendelcode in!</string>
   <string id="12373">Instellingen vergrendelen</string>
@@ -954,7 +954,7 @@
   <string id="13253">Verplaatsen annuleren</string>
   <string id="13270">Hardware:</string>
   <string id="13271">CPU-gebruik:</string>
-  <string id="13274">Xbox is verbonden, maar geen DNS is beschikbaar.</string>
+  <string id="13274">XBMC is verbonden, maar geen DNS is beschikbaar.</string>
   <string id="13275">hardeschijf</string>
   <string id="13276">DVD-ROM</string>
   <string id="13277">Opslag</string>
@@ -976,8 +976,8 @@
   <string id="13293">Video &amp; XBE regio:</string>
   <string id="13294">DVD regio:</string>
   <string id="13295">Internet:</string>
-  <string id="13296">Xbox is verbonden</string>
-  <string id="13297">Xbox is niet verbonden. Controleer netwerkinstellingen.</string>
+  <string id="13296">XBMC is verbonden</string>
+  <string id="13297">XBMC is niet verbonden. Controleer netwerkinstellingen.</string>
   <string id="13298">XBLIVE sleutel:</string>
   <string id="13299">- Doeltemperatuur</string>
   <string id="13300">- Ventilatorsnelheid</string>
@@ -988,7 +988,7 @@
   <string id="13305">RSS-feeds inschakelen</string>
   <string id="13306">Hoofdmap verbergen</string>
   <string id="13307">Tracks weergeven als</string>
-  <string id="13308">Wilt u de Xbox opnieuw opstarten</string>
+  <string id="13308">Wilt u XBMC opnieuw opstarten</string>
   <string id="13309">in plaats van alleen XBMC?</string>
   <string id="13310">Zoom effect</string>
   <string id="13311">Zweef effect</string>
