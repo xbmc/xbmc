@@ -388,6 +388,15 @@ CStdString CWIN32Util::GetResInfoString()
   return strRes;
 }
 
+int CWIN32Util::GetDesktopColorDepth()
+{
+  DEVMODE devmode;
+  ZeroMemory(&devmode, sizeof(devmode));
+  devmode.dmSize = sizeof(devmode);
+  EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
+  return (int)devmode.dmBitsPerPel;
+} 
+
 extern "C" {
   FILE *fopen_utf8(const char *_Filename, const char *_Mode)
   {
