@@ -116,7 +116,14 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   }*/
   if (GetDriveType("Q:\\") == DRIVE_CDROM)
   {
-    MessageBox(NULL, "Q:\\ Drive can not be DVD/CD Drive, Exiting XBMC_PC", "XBMC_PC: Fatal Error", MB_OK);
+    MessageBox(NULL, "Q:\\ Drive can not be DVD/CD Drive, Exiting XBMC", "XBMC: Fatal Error", MB_OK|MB_ICONERROR);
+    return 0;
+  }
+
+  if(CWIN32Util::GetDesktopColorDepth() < 32)
+  {
+    //FIXME: replace it by a SDL window for all ports
+    MessageBox(NULL, "Desktop Color Depth isn't 32Bit", "XBMC: Fatal Error", MB_OK|MB_ICONERROR);
     return 0;
   }
 
