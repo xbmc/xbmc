@@ -45,6 +45,7 @@ public:
   static std::vector<CStdString> GetDiskUsage();
   static void MaximizeWindow(bool bRemoveBorder);
   static CStdString GetResInfoString();
+  static int GetDesktopColorDepth();
 
 private:
   static DWORD dwDriveMask;
