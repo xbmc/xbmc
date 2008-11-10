@@ -494,6 +494,7 @@
 				<texture>$INFO[Listitem.thumb]</texture>
 				<bordertexture border="16">poster-shadow.png</bordertexture>
 				<bordersize>16</bordersize>
+				<visible>!IsEmpty(Listitem.thumb)</visible> 
 			</control>
 			<control type="image">
 				<posx>220</posx>

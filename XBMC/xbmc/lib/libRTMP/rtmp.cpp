@@ -628,8 +628,13 @@ void CRTMP::HandleInvoke(const RTMPPacket &packet)
   }
   else if (method == "onStatus")
   {
-    CStdString text = obj.GetProperty(3).GetObject().GetProperty("code").GetString();
-    CLog::Log(LOGDEBUG,"%s, onStatus: %s", __FUNCTION__, text.c_str() );
+    CStdString code  = obj.GetProperty(3).GetObject().GetProperty("code").GetString();
+    CStdString level = obj.GetProperty(3).GetObject().GetProperty("level").GetString();
+
+    CLog::Log(LOGDEBUG,"%s, onStatus: %s", __FUNCTION__, code.c_str() );
+    if (code == "NetStream.Failed"
+    ||  code == "NetStream.Play.Failed")
+      Close();
   }
   else
   {

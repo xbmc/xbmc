@@ -121,6 +121,7 @@ private:
   typedef std::vector<CLargeTexture *>::iterator listIterator;
 
   CCriticalSection m_listSection;
+  CEvent m_listEvent;
   bool m_running;
 };
 
