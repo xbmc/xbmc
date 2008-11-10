@@ -96,6 +96,10 @@ void CGUIImage::UpdateInfo(const CGUIListItem *item)
   if (m_image.file.IsConstant())
     return; // nothing to do
 
+  // don't allow image to change while animating out
+  if (HasRendered() && IsAnimating(ANIM_TYPE_HIDDEN) && !IsVisibleFromSkin())
+    return;
+
   if (item)
     SetFileName(m_image.file.GetItemLabel(item, true));
   else

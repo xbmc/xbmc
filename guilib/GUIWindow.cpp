@@ -1040,6 +1040,9 @@ void CGUIWindow::QueueAnimation(ANIMATION_TYPE animType)
   {
     if (!m_WindowAllocated || !m_hasRendered) // can't render an animation if we aren't allocated or haven't rendered
       return;
+    // make sure we update our visibility prior to queuing the window close anim
+    for (unsigned int i = 0; i < m_vecControls.size(); i++)
+      m_vecControls[i]->UpdateVisibility();
   }
   // we first check whether the reverse animation is in progress (and reverse it)
   // then we check for the normal animation, and queue it

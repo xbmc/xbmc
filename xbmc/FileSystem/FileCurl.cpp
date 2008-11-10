@@ -769,15 +769,23 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
     return -1;
   }
 
+  double length;
+  if(CURLE_OK != g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length))
+    length = 0.0;
+
+  if( url.GetProtocol() == "ftp" && length < 0.0 )
+  {
+    g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
+    errno = ENOENT;
+    return -1;
+  }
+
   SetCorrectHeaders(m_state);
 
   if(buffer)
   {
-
-    double length;
     char content[255];
-    if (CURLE_OK == g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length)
-     && CURLE_OK == g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, content))
+    if (CURLE_OK == g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, content))
     {
 		  buffer->st_size = (__int64)length;
       if(strstr(content, "text/html")) //consider html files directories
