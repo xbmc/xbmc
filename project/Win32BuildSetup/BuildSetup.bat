@@ -144,6 +144,7 @@ rem	CONFIG START
   xcopy ..\..\userdata BUILD_WIN32\Xbmc\userdata /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
   copy ..\..\copying.txt BUILD_WIN32\Xbmc > NUL
   copy ..\..\LICENSE.GPL BUILD_WIN32\Xbmc > NUL
+  copy ..\..\known_issues.txt BUILD_WIN32\Xbmc > NUL
   xcopy dependencies\*.* BUILD_WIN32\Xbmc /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   copy sources.xml BUILD_WIN32\Xbmc\userdata > NUL
   
