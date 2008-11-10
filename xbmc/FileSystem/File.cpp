@@ -816,6 +816,8 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
     offset2 = offset - m_file->GetPosition();
   else if(way == std::ios_base::end)
     offset2 = m_file->GetLength() + offset - 1;
+  else
+    offset2 = 0;
 
   // a non seek shouldn't modify our buffer
   if(offset2 == 0)

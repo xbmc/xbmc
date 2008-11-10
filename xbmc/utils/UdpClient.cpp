@@ -90,6 +90,7 @@ bool CUdpClient::Broadcast(int aPort, CStdString& aMessage)
   addr.sin_family = AF_INET;
   addr.sin_port = htons(aPort);
   addr.sin_addr.s_addr = INADDR_BROADCAST;
+  memset(&addr.sin_zero, 0, sizeof(addr.sin_zero));
 
   UdpCommand broadcast = {addr, aMessage, NULL, 0};
   commands.push_back(broadcast);
@@ -107,6 +108,7 @@ bool CUdpClient::Send(CStdString aIpAddress, int aPort, CStdString& aMessage)
   addr.sin_family = AF_INET;
   addr.sin_port = htons(aPort);
   addr.sin_addr.s_addr = inet_addr(aIpAddress);
+  memset(&addr.sin_zero, 0, sizeof(addr.sin_zero));
 
   UdpCommand transmit = {addr, aMessage, NULL, 0};
   commands.push_back(transmit);
