@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "File.h"
 #include "Favourites.h"
 #include "Util.h"
 #include "Key.h"
@@ -30,11 +31,27 @@ bool CFavourites::Load(CFileItemList &items)
 {
   items.Clear();
   CStdString favourites;
+  
+  favourites = "Q:\\system\\favourites.xml";
+  if(XFILE::CFile::Exists(favourites))
+    CFavourites::LoadFavourites(favourites, items);
+  else
+    CLog::Log(LOGDEBUG, "CFavourites::Load - no system favourites found, skipping");
   CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "favourites.xml", favourites);
+  if(XFILE::CFile::Exists(favourites))
+    CFavourites::LoadFavourites(favourites, items);
+  else
+    CLog::Log(LOGDEBUG, "CFavourites::Load - no userdata favourites found, skipping");
+
+  return true;
+}
+
+bool CFavourites::LoadFavourites(CStdString& strPath, CFileItemList& items)
+{
   TiXmlDocument doc;
-  if (!doc.LoadFile(favourites))
+  if (!doc.LoadFile(strPath))
   {
-    CLog::Log(LOGERROR, "Unable to load %s (row %i column %i)", favourites.c_str(), doc.Row(), doc.Column());
+    CLog::Log(LOGERROR, "Unable to load %s (row %i column %i)", strPath.c_str(), doc.Row(), doc.Column());
     return false;
   }
   TiXmlElement *root = doc.RootElement();
@@ -113,7 +130,7 @@ bool CFavourites::AddOrRemove(CFileItem *item, DWORD contextWindow)
     favourite->m_strPath = executePath;
     items.Add(favourite);
   }
-  
+
   // and save our list again
   return Save(items);
 }

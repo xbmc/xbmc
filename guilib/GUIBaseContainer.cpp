@@ -296,7 +296,7 @@ void CGUIBaseContainer::OnPrevLetter()
   int offset = CorrectOffset(m_offset, m_cursor);
   if (!m_letterOffsets.size())
     return;
-  for (unsigned int i = m_letterOffsets.size() - 1; i >= 0; i--)
+  for (int i = (int)m_letterOffsets.size() - 1; i >= 0; i--)
   {
     if (m_letterOffsets[i].first < offset)
     {
