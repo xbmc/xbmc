@@ -277,7 +277,7 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
     pLoader = new SoLoader(sName, bLoadSymbols);
   else
 #elif defined(_WIN32PC)
-  if (strlen(sName) >= 4 && !strnicmp(sName + (strlen(sName) - 4), ".vis", 4))
+  if (strlen(sName) >= 4 && !strnicmp(sName + (strlen(sName) - 18), "ProjectM_win32.vis", 18))
   {
     pLoader = new Win32DllLoader(sName);
   }
