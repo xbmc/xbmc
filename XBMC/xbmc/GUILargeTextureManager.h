@@ -66,7 +66,11 @@ protected:
     {
       assert(m_refCount == 0);
       if (m_texture)
+#ifdef HAS_SDL_OPENGL
+        delete m_texture;
+#else
         SDL_FreeSurface(m_texture);
+#endif
       m_texture = NULL;
     };
 
@@ -99,13 +103,21 @@ protected:
     void SetTexture(SDL_Surface * texture, int width, int height, int orientation)
     {
       assert(m_texture == NULL);
+#ifdef HAS_SDL_OPENGL
+      m_texture = new CGLTexture(texture, false, true);
+#else
       m_texture = texture;
+#endif
       m_width = width;
       m_height = height;
       m_orientation = orientation;
     };
 
+#ifdef HAS_SDL_OPENGL
+    CGLTexture * GetTexture() const { return m_texture; };
+#else
     SDL_Surface * GetTexture() const { return m_texture; };
+#endif
     int GetWidth() const { return m_width; };
     int GetHeight() const { return m_height; };
     int GetOrientation() const { return m_orientation; };
@@ -116,7 +128,11 @@ protected:
 
     unsigned int m_refCount;
     CStdString m_path;
+#ifdef HAS_SDL_OPENGL
+    CGLTexture * m_texture;
+#else
     SDL_Surface * m_texture;
+#endif
     int m_width;
     int m_height;
     int m_orientation;
@@ -131,6 +147,7 @@ private:
   typedef std::vector<CLargeTexture *>::iterator listIterator;
 
   CCriticalSection m_listSection;
+  CEvent m_listEvent;
   bool m_running;
 };
 

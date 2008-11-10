@@ -512,6 +512,7 @@ bool CFileSMB::Exists(const CURL& url)
   struct stat info;
 #endif
 
+  CLog::Log(LOGDEBUG, "%s(%s)", __FUNCTION__, strFileName.c_str());
   CSingleLock lock(smb);
   int iResult = smbc_stat(strFileName, &info);
 

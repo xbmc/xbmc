@@ -36,6 +36,8 @@ CGUILargeTextureManager::CGUILargeTextureManager()
 
 CGUILargeTextureManager::~CGUILargeTextureManager()
 {
+  m_bStop = true;
+  m_listEvent.Set();
   StopThread();
 }
 
@@ -45,9 +47,10 @@ CGUILargeTextureManager::~CGUILargeTextureManager()
 // Once there's nothing queued or allocated, end the thread.
 void CGUILargeTextureManager::Process()
 {
-  m_running = true;
   // lock item list
   CSingleLock lock(m_listSection);
+  m_running = true;
+
   while (m_queued.size() && !m_bStop)
   { // load the top item in the queue
     // take a copy of the details required for the load, as
@@ -85,7 +88,7 @@ void CGUILargeTextureManager::Process()
       texture = NULL;
     }
     lock.Leave();
-    Sleep(1);
+    m_listEvent.WaitMSec(1000);
     lock.Enter();
   }
   m_running = false;
@@ -104,6 +107,7 @@ void CGUILargeTextureManager::CleanupUnusedImages()
     else
       ++it;
   }
+  m_listEvent.Set();
 }
 
 // if available, increment reference count, and return the image.
@@ -126,13 +130,7 @@ CGLTexture * CGUILargeTextureManager::GetImage(const CStdString &path, int &widt
       width = image->GetWidth();
       height = image->GetHeight();
       orientation = image->GetOrientation();
-#ifdef HAS_SDL_2D
       return image->GetTexture();
-#else
-      if (image->GetTexture())
-        return new CGLTexture(image->GetTexture(), false);
-      return NULL;
-#endif
     }
   }
   lock.Leave();
@@ -184,13 +182,14 @@ void CGUILargeTextureManager::QueueImage(const CStdString &path)
   // queue the item
   CLargeTexture *image = new CLargeTexture(path);
   m_queued.push_back(image);
+  m_listEvent.Set();
+  
+  if(m_running)
+    return;
 
   lock.Leave(); // done with our lock
 
-  if (!m_running)
-  {
-    StopThread();
-    Create();
-  }
+  StopThread();
+  Create();
 }
 

@@ -816,7 +816,7 @@ void CSurface::Flip()
   }
   else
   {
-    OutputDebugString("Surface Error: Could not flip surface.");
+    glFlush();
   }
 }
 
@@ -863,7 +863,12 @@ bool CSurface::MakeCurrent()
   if (IsShared())
     return m_pShared->MakeCurrent();
   if (m_glContext)
-    return (wglMakeCurrent(m_glDC, m_glContext) == TRUE);
+  {
+    if(wglGetCurrentContext() == m_glContext)
+      return true;
+    else
+      return (wglMakeCurrent(m_glDC, m_glContext) == TRUE);
+  }
 #endif
   return false;
 }

@@ -112,7 +112,19 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   }
   else
   {
-    if(g_advancedSettings.m_analogMultiChannel == false)
+    if(g_advancedSettings.m_analogMultiChannel)
+    {
+      if(deviceuse == "default")
+      {
+        if(iChannels == 6)
+          deviceuse = "surround51";
+        else if(iChannels == 5)
+          deviceuse = "surround50";
+        else if(iChannels == 4)
+          deviceuse = "surround40";
+      }
+    }
+    else
     {
       if(iChannels == 6)
         deviceuse = "xbmc_51to2:'" + EscapeDevice(deviceuse) + "'";
@@ -278,8 +290,6 @@ void CALSADirectSound::Flush() {
   CHECK_ALSA(LOGERROR,"flush-drop",nErr);
   nErr = snd_pcm_prepare(m_pPlayHandle);
   CHECK_ALSA(LOGERROR,"flush-prepare",nErr);
-  nErr = snd_pcm_start(m_pPlayHandle);
-  CHECK_ALSA(LOGERROR,"flush-start",nErr); 
 }
 
 //***********************************************************************************************
@@ -300,7 +310,10 @@ HRESULT CALSADirectSound::Pause()
   }
 
   if(!m_bCanPause)
+  {
+    CLog::Log(LOGWARNING, "CALSADirectSound::CALSADirectSound - device is not able to pause playback, will flush instead");
     Flush();
+  }
 
   return S_OK;
 }
@@ -311,13 +324,8 @@ HRESULT CALSADirectSound::Resume()
   if (!m_bIsAllocated)
      return -1;
 
-  // Resume is called not only after Pause but also at certain other points. like after stop when DVDPlayer is flushed.  
   if(m_bCanPause && m_bPause)
     snd_pcm_pause(m_pPlayHandle,0);
-
-  // If we are not pause, stream might not be prepared to start flush will do this for us
-  if(!m_bPause)
-    Flush();
 
   m_bPause = false;
 
@@ -330,7 +338,7 @@ HRESULT CALSADirectSound::Stop()
   if (!m_bIsAllocated)
      return -1;
 
-  snd_pcm_drop(m_pPlayHandle);
+  Flush();
 
   m_bPause = false;
 
@@ -433,13 +441,13 @@ DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
 	if (  writeResult == -EPIPE  ) {
 		CLog::Log(LOGDEBUG, "CALSADirectSound::AddPackets - buffer underun (tried to write %d frames)",
 						framesToWrite);
-		int err = snd_pcm_prepare(m_pPlayHandle);
-		CHECK_ALSA(LOGERROR,"prepare after EPIPE", err);
+		Flush();
 	}
 	else if (writeResult != framesToWrite) {
 		CLog::Log(LOGERROR, "CALSADirectSound::AddPackets - failed to write %d frames. "
 						"bad write (err: %d) - %s",
 						framesToWrite, writeResult, snd_strerror(writeResult));
+		Flush();
 	}
 
 	if (writeResult>0)
