@@ -645,7 +645,7 @@ LONG WINAPI dllRegDeleteKeyA (HKEY hKey, LPCTSTR lpSubKey)
   not_implement("advapi32.dll fake function RegDeleteKeyA called\n"); //warning
   return 1;
 }
-
+#ifndef _WIN32PC
 LONG WINAPI dllRegQueryInfoKeyA( HKEY hkey, LPSTR class_, LPDWORD class_len, LPDWORD reserved,
                                 LPDWORD subkeys, LPDWORD max_subkey, LPDWORD max_class,
                                 LPDWORD values, LPDWORD max_value, LPDWORD max_data,
@@ -654,6 +654,7 @@ LONG WINAPI dllRegQueryInfoKeyA( HKEY hkey, LPSTR class_, LPDWORD class_len, LPD
   not_implement("advapi32.dll fake function RegQueryInfoKeyA called\n"); //warning
   return 1;
 }
+#endif
 
 /*LONG WINAPI dllRegQueryValueExA (HKEY hKey, LPCTSTR lpValueName, LPDWORD lpReserved,
 LPDWORD lpType, LPBYTE lpData, LPDWORD lpcbData)
