@@ -14,6 +14,7 @@
 #define USE_OPENSSL
 #define HAVE_ZLIB_H
 #define HAVE_LIBZ
+#define CURL_DISABLE_LDAP
 
 /* Define if you have the <arpa/inet.h> header file.  */
 /* #define HAVE_ARPA_INET_H 1 */
