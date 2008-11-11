@@ -37,7 +37,11 @@ Export export_advapi32[] =
   { "RegSetValueExA",             -1, dllRegSetValueExA,             NULL },
   { "RegCreateKeyExA",            -1, dllRegCreateKeyExA,            NULL },
   { "RegEnumValueA",              -1, dllRegEnumValueA,              NULL },
+#ifndef _WIN32PC
   { "RegQueryInfoKeyA",           -1, dllRegQueryInfoKeyA,           NULL },
+#else
+  { "RegQueryInfoKeyA",           -1, RegQueryInfoKeyA,              NULL },
+#endif
   { "CryptAcquireContextA",       -1, dllCryptAcquireContextA,       NULL },
   { "CryptGenRandom",             -1, dllCryptGenRandom,             NULL },
   { "CryptReleaseContext",        -1, dllCryptReleaseContext,        NULL },
