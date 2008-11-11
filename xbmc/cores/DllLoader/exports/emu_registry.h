@@ -84,11 +84,12 @@ extern "C"
   LONG WINAPI dllRegEnumValueA (HKEY hKey, DWORD dwIndex, LPTSTR lpValueName,
                                 LPDWORD lpcValueName, LPDWORD lpReserved,
                                 LPDWORD lpType, LPBYTE lpData, LPDWORD lpcbData);
-
+#ifndef _WIN32PC
   LONG WINAPI dllRegQueryInfoKeyA( HKEY hkey, LPSTR class_, LPDWORD class_len, LPDWORD reserved,
                                    LPDWORD subkeys, LPDWORD max_subkey, LPDWORD max_class,
                                    LPDWORD values, LPDWORD max_value, LPDWORD max_data,
                                    LPDWORD security, FILETIME *modif );
+#endif
                                    
   LONG WINAPI dllRegQueryValueA (HKEY hKey, LPCTSTR lpSubKey, LPTSTR lpValue, PLONG lpcbValue);
 
