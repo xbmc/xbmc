@@ -667,7 +667,11 @@ extern "C" DWORD WINAPI dllGetFullPathNameA(LPCTSTR lpFileName, DWORD nBufferLen
 
 extern "C" DWORD WINAPI dllExpandEnvironmentStringsA(LPCTSTR lpSrc, LPTSTR lpDst, DWORD nSize)
 {
-  not_implement("kernel32.dll fake function GetFullPathNameA called\n"); //warning
+#ifdef _WIN32PC
+  return ExpandEnvironmentStringsA(lpSrc, lpDst, nSize);
+#else
+  not_implement("kernel32.dll fake function ExpandEnvironmentStringsA called\n"); //warning
+#endif
   return 0;
 }
 
