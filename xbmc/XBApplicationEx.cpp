@@ -517,7 +517,7 @@ bool CXBApplicationEx::ProcessWin32Shortcuts(SDL_Event& event)
   static bool alt = false;
   static CAction action;
 
-  alt = SDL_GetModState() & (KMOD_LALT | KMOD_RALT);
+  alt = !!(SDL_GetModState() & (KMOD_LALT | KMOD_RALT));
 
   if (event.key.type == SDL_KEYDOWN)
   {
@@ -563,8 +563,8 @@ bool CXBApplicationEx::ProcessOSXShortcuts(SDL_Event& event)
   static bool shift = false, cmd = false;
   static CAction action;
 
-  cmd =  SDL_GetModState() & (KMOD_LMETA | KMOD_RMETA);
-  shift =  SDL_GetModState() & (KMOD_LSHIFT | KMOD_RSHIFT);
+  cmd   = !!(SDL_GetModState() & (KMOD_LMETA  | KMOD_RMETA ));
+  shift = !!(SDL_GetModState() & (KMOD_LSHIFT | KMOD_RSHIFT));
 
   if (cmd && event.key.type == SDL_KEYDOWN)
   {
