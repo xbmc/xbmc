@@ -22,7 +22,8 @@ NPT_SET_LOCAL_LOGGER("platinum.core.statevariable")
 +---------------------------------------------------------------------*/
 PLT_StateVariable::PLT_StateVariable(PLT_Service* service) : 
     m_Service(service), 
-    m_AllowedValueRange(NULL)
+    m_AllowedValueRange(NULL),
+    m_IsSendingEventsIndirectly(true)
 {
 }
 
@@ -83,9 +84,24 @@ PLT_StateVariable::GetService()
 |   PLT_StateVariable::IsSendingEvents
 +---------------------------------------------------------------------*/
 bool 
-PLT_StateVariable::IsSendingEvents() 
+PLT_StateVariable::IsSendingEvents(bool indirectly /* = false */) 
 {
+    if (indirectly) {
+        return (!m_IsSendingEvents && 
+                !m_Name.StartsWith("A_ARG_TYPE_") && 
+                m_IsSendingEventsIndirectly);
+    }
+
     return m_IsSendingEvents;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_StateVariable::DisableIndirectEventing
++---------------------------------------------------------------------*/
+void
+PLT_StateVariable::DisableIndirectEventing()
+{
+    m_IsSendingEventsIndirectly = false;
 }
 
 /*----------------------------------------------------------------------

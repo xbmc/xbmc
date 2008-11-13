@@ -163,7 +163,7 @@ NPT_File::Load(NPT_DataBuffer& buffer)
     NPT_InputStreamReference input;
 
     // get the input stream for the file
-    NPT_CHECK_WARNING(GetInputStream(input));
+    NPT_CHECK_FATAL(GetInputStream(input));
 
     // read the stream
     return input->Load(buffer);
@@ -178,7 +178,7 @@ NPT_File::Save(const NPT_DataBuffer& buffer)
     NPT_OutputStreamReference output;
 
     // get the output stream for the file
-    NPT_CHECK_WARNING(GetOutputStream(output));
+    NPT_CHECK_FATAL(GetOutputStream(output));
 
     // write to the stream
     return output->WriteFully(buffer.GetData(), buffer.GetDataSize());

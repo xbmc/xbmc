@@ -49,7 +49,7 @@ FindNextAvailableDirectory(const char* root_path, NPT_String& path)
         path += NPT_String::FromInteger(index);
 
         // try to open directory 
-        res = NPT_DirectoryEntry::GetInfo(path, info);
+        res = NPT_DirectoryEntry::GetInfo(path, &info);
         if (NPT_FAILED(res)) break;
 
     } while (++index < 100);
@@ -105,7 +105,7 @@ TestRemoveEmptyDirectory()
     CHECK(NPT_SUCCEEDED(res));
 
     // verify directory does not exist any more
-    res = NPT_DirectoryEntry::GetInfo(path, info);
+    res = NPT_DirectoryEntry::GetInfo(path, &info);
     CHECK(res == NPT_ERROR_NO_SUCH_ITEM);
 }
 
@@ -158,7 +158,7 @@ TestRemoveDirectory()
     CHECK(NPT_SUCCEEDED(res));
 
     // verify directory does not exist any more
-    res = NPT_DirectoryEntry::GetInfo(path, info);
+    res = NPT_DirectoryEntry::GetInfo(path, &info);
     CHECK(res == NPT_ERROR_NO_SUCH_ITEM);
 }
 
