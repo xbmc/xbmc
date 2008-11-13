@@ -66,6 +66,7 @@ protected:
     virtual NPT_Result OnSetPlayMode(PLT_ActionReference& action);
 
     // RenderingControl
+    //virtual NPT_Result OnGetVolume(PLT_ActionReference& action);
     virtual NPT_Result OnSetVolume(PLT_ActionReference& action);
     virtual NPT_Result OnSetMute(PLT_ActionReference& action);
 };
