@@ -288,9 +288,13 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                       tag->SetGenre((const char*) JoinString((*entry)->m_Affiliation.genre, " / "));
                       tag->SetAlbum((const char*) (*entry)->m_Affiliation.album);
                       tag->SetTrackNumber((*entry)->m_MiscInfo.original_track_number); 
-                      if((*entry)->m_People.artists.GetItemCount())
+                      if((*entry)->m_People.artists.GetItemCount()) {
                         tag->SetAlbumArtist((const char*)(*entry)->m_People.artists.GetFirstItem()->name);
-                      tag->SetArtist((const char*)(*entry)->m_Creator);
+                        tag->SetArtist((const char*)(*entry)->m_People.artists.GetFirstItem()->name);
+                      } else {
+                        tag->SetAlbumArtist((const char*)(*entry)->m_Creator);
+                        tag->SetArtist((const char*)(*entry)->m_Creator);
+                      }  
 
                       tag->SetLoaded();
                     }
