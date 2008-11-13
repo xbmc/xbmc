@@ -45,33 +45,42 @@ PLT_MediaRenderer::PLT_MediaRenderer(PlaybackCmdListener* listener,
     if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) RDR_AVTransportSCPD))) {
         service->InitURLs("AVTransport", m_UUID);
         AddService(service);
+            
         service->SetStateVariableRate("LastChange", NPT_TimeInterval(0.2f));
-
+        service->SetStateVariable("A_ARG_TYPE_InstanceID", "0", false); 
+        
         // GetCurrentTransportActions
-        service->SetStateVariable("CurrentTransportActions", "", false);
+        service->SetStateVariable("CurrentTransportActions", "Play,Pause,Stop,Seek,Next,Previous", false);
         
         // GetDeviceCapabilities
-        service->SetStateVariable("PossiblePlaybackStorageMedia", "vendor-defined ,NOT_IMPLEMENTED,NONE,NETWORK,MICRO-MV,HDD,LD,DAT,DVD-AUDIO,DVD-RAM,DVD-RW,DVD+RW,DVD-R,DVD-VIDEO,DVD-ROM,MD-PICTURE,MD-AUDIO,SACD,VIDEO-CD,CD-RW,CD-R,CD-DA,CD-ROM,HI8,VIDEO8,VHSC,D-VHS,S-VHS,W-VHS,VHS,MINI-DV,DV,UNKNOWN", false);
-        service->SetStateVariable("PossibleRecordStorageMedia", "vendor-defined ,NOT_IMPLEMENTED,NONE,NETWORK,MICRO-MV,HDD,LD,DAT,DVD-AUDIO,DVD-RAM,DVD-RW,DVD+RW,DVD-R,DVD-VIDEO,DVD-ROM,MD-PICTURE,MD-AUDIO,SACD,VIDEO-CD,CD-RW,CD-R,CD-DA,CD-ROM,HI8,VIDEO8,VHSC,D-VHS,S-VHS,W-VHS,VHS,MINI-DV,DV,UNKNOWN", false);
-        service->SetStateVariable("PossibleRecordQualityModes", "vendor-defined ,NOT_IMPLEMENTED,2:HIGH,1:MEDIUM,0:BASIC,2:SP,1:LP,0:EP", false);
+        service->SetStateVariable("PossiblePlaybackStorageMedia", "NONE,NETWORK", false);
+        service->SetStateVariable("PossibleRecordStorageMedia", "NOT_IMPLEMENTED", false);
+        service->SetStateVariable("PossibleRecordQualityModes", "NOT_IMPLEMENTED", false);
         
         // GetMediaInfo
-        service->SetStateVariable("PlaybackStorageMedium", "UNKNOWN", false);
-        service->SetStateVariable("RecordStorageMedium", "UNKNOWN", false);
-        service->SetStateVariable("RecordMediumWriteStatus", "UNKNOWN", false);
         service->SetStateVariable("NumberOfTracks", "0", false);
-        service->SetStateVariable("CurrentTrackDuration", "00:00:00", false);
         service->SetStateVariable("CurrentMediaDuration", "00:00:00", false);
+        service->SetStateVariable("AVTransportURI", "", false);
+        service->SetStateVariable("AVTransportURIMetadata", "", false);
         service->SetStateVariable("NextAVTransportURI", "NOT_IMPLEMENTED", false);
         service->SetStateVariable("NextAVTransportURIMetadata", "NOT_IMPLEMENTED", false);
+        service->SetStateVariable("PlaybackStorageMedium", "NONE", false);
+        service->SetStateVariable("RecordStorageMedium", "NOT_IMPLEMENTED", false);
+        service->SetStateVariable("RecordMediumWriteStatus", "NOT_IMPLEMENTED   ", false);
         
         // GetPositionInfo
-        service->SetStateVariable("AbsTime", "NOT_IMPLEMENTED", false);
         service->SetStateVariable("CurrentTrack", "0", false);
-        service->SetStateVariable("RelativeTimePosition", "00:00:00", false); //??
-        service->SetStateVariable("AbsoluteTimePosition", "NOT_IMPLEMENTED", false); //??
-        service->SetStateVariable("RelativeCounterPosition", "0", false); //??
-        service->SetStateVariable("AbsoluteCounterPosition", "0", false); //??
+        service->SetStateVariable("CurrentTrackDuration", "00:00:00", false);
+        service->SetStateVariable("CurrentTrackMetadata", "", false);
+        service->SetStateVariable("CurrentTrackURI", "", false);
+        service->SetStateVariable("RelativeTimePosition", "00:00:00", false); 
+        service->SetStateVariable("AbsoluteTimePosition", "00:00:00", false);
+        service->SetStateVariable("RelativeCounterPosition", "4294967295", false); // 2^32-1 means NOT_IMPLEMENTED
+        service->SetStateVariable("AbsoluteCounterPosition", "4294967295", false); // 2^32-1 means NOT_IMPLEMENTED
+        
+        // Seek
+        //service->SetStateVariable("A_ARG_TYPE_SeekMode", "TRACK_NR", false);
+        //service->SetStateVariable("A_ARG_TYPE_SeekTarget", "", false);
 
         // GetTransportInfo
         service->SetStateVariable("TransportState", "NO_MEDIA_PRESENT", false);
@@ -221,9 +230,9 @@ PLT_MediaRenderer::OnAction(PLT_ActionReference&          action,
         return OnSetPlayMode(action);
     }
 
-		/* Is it a RendererControl Service Action ? */
+    /* Is it a RendererControl Service Action ? */
     if (serviceType.Compare("urn:schemas-upnp-org:service:RenderingControl:1", true) == 0) {
-				/* we only support master channel */
+        /* we only support master channel */
         if (NPT_FAILED(action->VerifyArgumentValue("Channel", "Master"))) {
             action->SetError(402,"Invalid Args.");
             return NPT_FAILURE;
@@ -231,22 +240,22 @@ PLT_MediaRenderer::OnAction(PLT_ActionReference&          action,
     }
 
     if (name.Compare("GetVolume", true) == 0) {
-				NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
+        NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
         return NPT_SUCCESS;
     }
 
     if (name.Compare("GetMute", true) == 0) {
-				NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
+        NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
         return NPT_SUCCESS;
     }
 
-		if (name.Compare("SetVolume", true) == 0) {
-			  return OnSetVolume(action);
-		}
+    if (name.Compare("SetVolume", true) == 0) {
+          return OnSetVolume(action);
+    }
 
-		if (name.Compare("SetMute", true) == 0) {
-			  return OnSetMute(action);
-		}
+    if (name.Compare("SetMute", true) == 0) {
+          return OnSetMute(action);
+    }
 
     action->SetError(401,"No Such Action.");
     return NPT_FAILURE;
