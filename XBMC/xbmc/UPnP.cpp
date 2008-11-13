@@ -888,7 +888,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
             if (parent_path.IsEmpty()) return NPT_FAILURE;
 
             NPT_DirectoryEntryInfo entry_info;
-            NPT_CHECK(NPT_DirectoryEntry::GetInfo(file_path, entry_info));
+            NPT_CHECK(NPT_DirectoryEntry::GetInfo(file_path, &entry_info));
 
             item.reset(new CFileItem((const char*)id, (entry_info.type==NPT_DIRECTORY_TYPE)?true:false));
             item->SetLabel((const char*)file_path.SubString(parent_path.GetLength()+1));

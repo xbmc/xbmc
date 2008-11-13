@@ -301,7 +301,7 @@ main(int argc, char** argv)
         }
 
         NPT_DirectoryEntryInfo info;
-        NPT_CHECK_SEVERE(NPT_DirectoryEntry::GetInfo(Options.path, info));
+        NPT_CHECK_SEVERE(NPT_DirectoryEntry::GetInfo(Options.path, &info));
 
         /* add file request handler */
         handler = new NPT_HttpFileRequestHandler(

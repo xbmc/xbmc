@@ -164,7 +164,12 @@ NPT_StdcFileStream::Seek(NPT_Position offset)
 NPT_Result
 NPT_StdcFileStream::Tell(NPT_Position& offset)
 {
-    offset = NPT_ftell(m_FileReference->GetFile());
+    offset = 0;
+
+    NPT_Int64 pos = NPT_ftell(m_FileReference->GetFile());
+    if (pos <=0) return NPT_FAILURE;
+
+    offset = pos;
     return NPT_SUCCESS;
 }
 
@@ -243,7 +248,15 @@ NPT_StdcFileInputStream::Read(void*     buffer,
 NPT_Result
 NPT_StdcFileInputStream::GetSize(NPT_LargeSize& size)
 {
-    size = m_Size;
+    // keep track of where we are
+    NPT_Position offset = NPT_ftell(m_FileReference->GetFile());
+    
+    // seek to the end to get the size
+    NPT_fseek(m_FileReference->GetFile(), 0, SEEK_END);
+    size = NPT_ftell(m_FileReference->GetFile());
+    
+    // seek back to where we were
+    NPT_fseek(m_FileReference->GetFile(), offset, SEEK_SET);
     return NPT_SUCCESS;
 }
 
@@ -253,9 +266,12 @@ NPT_StdcFileInputStream::GetSize(NPT_LargeSize& size)
 NPT_Result
 NPT_StdcFileInputStream::GetAvailable(NPT_LargeSize& available)
 {
+    NPT_LargeSize size;
+    GetSize(size);
+
     NPT_Int64 offset = NPT_ftell(m_FileReference->GetFile());
-    if (offset >= 0 && (NPT_LargeSize)offset <= m_Size) {
-        available = m_Size - offset;
+    if (offset >= 0 && (NPT_LargeSize)offset <= size) {
+        available = size - offset;
         return NPT_SUCCESS;
     } else {
         available = 0;

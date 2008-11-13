@@ -77,10 +77,17 @@ PLT_MediaRenderer::PLT_MediaRenderer(PlaybackCmdListener* listener,
         service->SetStateVariable("AbsoluteTimePosition", "00:00:00", false);
         service->SetStateVariable("RelativeCounterPosition", "4294967295", false); // 2^32-1 means NOT_IMPLEMENTED
         service->SetStateVariable("AbsoluteCounterPosition", "4294967295", false); // 2^32-1 means NOT_IMPLEMENTED
-        
-        // Seek
-        //service->SetStateVariable("A_ARG_TYPE_SeekMode", "TRACK_NR", false);
-        //service->SetStateVariable("A_ARG_TYPE_SeekTarget", "", false);
+
+        // disable indirect eventing for certain state variables
+        PLT_StateVariable* var;
+        var = service->FindStateVariable("RelativeTimePosition");
+        if (var) var->DisableIndirectEventing();
+        var = service->FindStateVariable("AbsoluteTimePosition");
+        if (var) var->DisableIndirectEventing();
+        var = service->FindStateVariable("RelativeCounterPosition");
+        if (var) var->DisableIndirectEventing();
+        var = service->FindStateVariable("AbsoluteCounterPosition");
+        if (var) var->DisableIndirectEventing();
 
         // GetTransportInfo
         service->SetStateVariable("TransportState", "NO_MEDIA_PRESENT", false);

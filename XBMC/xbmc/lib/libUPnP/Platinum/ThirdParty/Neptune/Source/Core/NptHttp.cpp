@@ -196,7 +196,7 @@ NPT_HttpHeaders::Emit(NPT_OutputStream& stream) const
     NPT_List<NPT_HttpHeader*>::Iterator header = m_Headers.GetFirstItem();
     while (header) {
         // emit the header
-        NPT_CHECK((*header)->Emit(stream));
+        NPT_CHECK_FATAL((*header)->Emit(stream));
         ++header;
     }
     return NPT_SUCCESS;
@@ -521,7 +521,7 @@ NPT_HttpRequest::Parse(NPT_BufferedInputStream& stream,
 
     // read the response line
     NPT_String line;
-    NPT_CHECK(stream.ReadLine(line, NPT_HTTP_PROTOCOL_MAX_LINE_LENGTH));
+    NPT_CHECK_FATAL(stream.ReadLine(line, NPT_HTTP_PROTOCOL_MAX_LINE_LENGTH));
 
     // check the request line
     int first_space = line.Find(' ');
@@ -681,7 +681,7 @@ NPT_HttpResponse::Parse(NPT_BufferedInputStream& stream,
 
     // read the response line
     NPT_String line;
-    NPT_CHECK(stream.ReadLine(line, NPT_HTTP_PROTOCOL_MAX_LINE_LENGTH));
+    NPT_CHECK_FATAL(stream.ReadLine(line, NPT_HTTP_PROTOCOL_MAX_LINE_LENGTH));
     
     // check the response line
     int first_space = line.Find(' ');
@@ -998,11 +998,11 @@ NPT_HttpClient::SendRequestOnce(NPT_HttpRequest&   request,
     request.Emit(header_stream, use_proxy);
 
     // send the headers
-    NPT_CHECK(output_stream->WriteFully(header_stream.GetData(), header_stream.GetDataSize()));
+    NPT_CHECK_FATAL(output_stream->WriteFully(header_stream.GetData(), header_stream.GetDataSize()));
 
     // send request body
     if (!body_stream.IsNull() && entity->GetContentLength()) {
-        NPT_CHECK(NPT_StreamToStreamCopy(*body_stream.AsPointer(), *output_stream.AsPointer(), 0, entity->GetContentLength()));
+        NPT_CHECK_FATAL(NPT_StreamToStreamCopy(*body_stream.AsPointer(), *output_stream.AsPointer(), 0, entity->GetContentLength()));
     }
 
     // flush the output stream so that everything is sent to the server
@@ -1012,7 +1012,7 @@ NPT_HttpClient::SendRequestOnce(NPT_HttpRequest&   request,
     NPT_BufferedInputStreamReference buffered_input_stream(new NPT_BufferedInputStream(input_stream));
 
     // parse the response
-    NPT_CHECK(NPT_HttpResponse::Parse(*buffered_input_stream, response));
+    NPT_CHECK_FATAL(NPT_HttpResponse::Parse(*buffered_input_stream, response));
     NPT_LOG_FINE_2("got response, code=%d, msg=%s",
                    response->GetStatusCode(),
                    response->GetReasonPhrase().GetChars());
@@ -1199,9 +1199,9 @@ NPT_HttpServer::WaitForNewClient(NPT_InputStreamReference&  input,
     NPT_CHECK(Bind());
 
     // wait for a connection
-    NPT_Socket*         client;
+    NPT_Socket* client;
     NPT_LOG_FINE_1("waiting for connection on port %d...", m_Config.m_ListenPort);
-    NPT_CHECK(m_Socket.WaitForNewClient(client, m_Config.m_ConnectionTimeout));
+    NPT_CHECK_FATAL(m_Socket.WaitForNewClient(client, m_Config.m_ConnectionTimeout));
     if (client == NULL) return NPT_ERROR_INTERNAL;
 
     // get the client info
@@ -1322,7 +1322,7 @@ NPT_HttpServer::RespondToClient(NPT_InputStreamReference&     input,
     NPT_Result        result = NPT_SUCCESS;
 
     NPT_HttpResponder responder(input, output);
-    NPT_CHECK(responder.ParseRequest(request, &context.GetLocalAddress()));
+    NPT_CHECK_FATAL(responder.ParseRequest(request, &context.GetLocalAddress()));
 
     NPT_HttpRequestHandler* handler = FindRequestHandler(*request);
     if (handler == NULL) {
@@ -1398,7 +1398,7 @@ NPT_HttpResponder::ParseRequest(NPT_HttpRequest*&        request,
                                 const NPT_SocketAddress* local_address)
 {
     // parse the request
-    NPT_CHECK(NPT_HttpRequest::Parse(*m_Input, local_address, request));
+    NPT_CHECK_FATAL(NPT_HttpRequest::Parse(*m_Input, local_address, request));
 
     // unbuffer the stream
     m_Input->SetBufferSize(0);
@@ -1455,10 +1455,10 @@ NPT_HttpResponder::SendResponse(NPT_HttpResponse& response,
     NPT_MemoryStream buffer;
 
     // emit the response line
-    NPT_CHECK(response.Emit(buffer));
+    NPT_CHECK_FATAL(response.Emit(buffer));
 
     // send the buffer
-    NPT_CHECK(m_Output->WriteFully(buffer.GetData(), buffer.GetDataSize()));
+    NPT_CHECK_FATAL(m_Output->WriteFully(buffer.GetData(), buffer.GetDataSize()));
 
     // send the body
     if (entity && !headers_only) {
