@@ -485,7 +485,7 @@ NPT_PosixThread::Start()
     int result = pthread_create(&id, attributes, EntryPoint, 
                                 reinterpret_cast<void*>(this));
     NPT_LOG_FINE_2("NPT_PosixThread::Start - id = %d, res=%d", 
-                   m_ThreadId, result);
+                   id, result);
     if (result) {
         // failed
         return NPT_FAILURE;
