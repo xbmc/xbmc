@@ -24,7 +24,7 @@
 #include "stdafx.h"
 #include "Util.h"
 #include "Application.h"
-#include "XBMChttp.h"
+#include "lib/libGoAhead/XBMChttp.h"
 
 #include "utils/Network.h"
 #include "UPnP.h"
@@ -1321,8 +1321,7 @@ CUPnPRenderer::GetMetadata(NPT_String& meta)
                 "/ThumbForUPnP.jpg").ToString();
         }
         
-        PLT_Didl didl;
-        res = didl.ToDidl(*object, "*", meta);   
+        res = PLT_Didl::ToDidl(*object, "*", meta);   
         delete object;
     }
     return res;
