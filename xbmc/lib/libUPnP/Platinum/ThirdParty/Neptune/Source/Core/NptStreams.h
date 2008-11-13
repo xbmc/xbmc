@@ -193,7 +193,8 @@ public:
     // methods delegated to m_Buffer
     const NPT_Byte* GetData() const { return m_Buffer.GetData(); }
     NPT_Byte*       UseData()       { return m_Buffer.UseData(); }
-    NPT_Size        GetDataSize() const { return m_Buffer.GetDataSize(); }
+    NPT_Size        GetDataSize() const   { return m_Buffer.GetDataSize(); }
+    NPT_Size        GetBufferSize() const { return m_Buffer.GetBufferSize();}
 
     // methods
     NPT_Result SetSize(NPT_Size size);

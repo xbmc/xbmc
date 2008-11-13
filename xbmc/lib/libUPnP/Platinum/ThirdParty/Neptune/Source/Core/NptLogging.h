@@ -107,6 +107,7 @@ public:
 class NPT_LogManager {
 public:
     // class methods
+    static void EnableLogging(bool value);
     static void SetConfig(const char* config);
     static bool ConfigValueIsBooleanTrue(NPT_String& value);
     static bool ConfigValueIsBooleanFalse(NPT_String& value);
@@ -130,6 +131,7 @@ private:
 
     // members
     bool                         m_Configured;
+    bool                         m_Configuring;
     NPT_List<NPT_LogConfigEntry> m_Config;
     NPT_List<NPT_Logger*>        m_Loggers;
     NPT_Logger*                  m_Root;
