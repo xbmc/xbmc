@@ -16,12 +16,38 @@
 #include <windows.h>
 #endif
 
+#include <sys/stat.h>
+
+#include <errno.h>
+
+#if defined(_WIN32)
+#include <direct.h>
+#include <stdlib.h>
+#include <stdio.h>
+#else
+#include <unistd.h>
+#include <dirent.h>
+#endif
+
 #include "NptConfig.h"
 #include "NptTypes.h"
 #include "NptDirectory.h"
 #include "NptDebug.h"
 #include "NptResults.h"
 #include "NptUtils.h"
+
+/*----------------------------------------------------------------------
+|   Win32 adaptation
++---------------------------------------------------------------------*/
+#if defined(_WIN32)
+#define mkdir(_path,_mode) _mkdir(_path)
+#define getcwd _getcwd
+#define unlink _unlink
+#define rmdir  _rmdir
+#define S_ISDIR(_m) (((_m)&_S_IFMT) == _S_IFDIR) 
+#define S_ISREG(_m) (((_m)&_S_IFMT) == _S_IFREG) 
+#define S_IWUSR _S_IWRITE
+#endif
 
 /*----------------------------------------------------------------------
 |   constants
@@ -40,7 +66,7 @@ public:
     virtual ~NPT_Win32DirectoryEntry();
 
     // NPT_DirectoryEntryInterface methods
-    virtual NPT_Result GetInfo(NPT_DirectoryEntryInfo& info);
+    virtual NPT_Result GetInfo(NPT_DirectoryEntryInfo* info = NULL);
 
 private:
     // members
@@ -71,7 +97,7 @@ NPT_Win32DirectoryEntry::~NPT_Win32DirectoryEntry()
 |   NPT_Win32DirectoryEntry::GetInfo
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_Win32DirectoryEntry::GetInfo(NPT_DirectoryEntryInfo& info)
+NPT_Win32DirectoryEntry::GetInfo(NPT_DirectoryEntryInfo* info /* = NULL */)
 {   
     // FindFirstFile doesn't work for root directories such as C: 
     if (m_Path.GetLength() == 2 && m_Path[1] == ':') {
@@ -80,21 +106,25 @@ NPT_Win32DirectoryEntry::GetInfo(NPT_DirectoryEntryInfo& info)
         if (attributes == -1) return NPT_ERROR_NO_SUCH_ITEM;
 
         NPT_ASSERT(attributes & FILE_ATTRIBUTE_DIRECTORY);
-
-        info.size = 0;
-        info.type = NPT_DIRECTORY_TYPE;
-    } else {
-        WIN32_FIND_DATA filedata;
-        HANDLE sizeHandle = FindFirstFile(m_Path, &filedata);
-        if (sizeHandle == INVALID_HANDLE_VALUE) {
-            FindClose(sizeHandle);
-            return NPT_ERROR_NO_SUCH_ITEM;
+        if (info) {
+            info->size = 0;
+            info->type = NPT_DIRECTORY_TYPE;
         }
+    } else {
+        // get the file info
+        NPT_stat_struct statbuf;
+        int result = NPT_stat(m_Path, &statbuf);
+        if (result != 0) return NPT_ERROR_NO_SUCH_ITEM;
 
-        info.size = (filedata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? 0 : ((NPT_UInt64)filedata.nFileSizeHigh << 32) | filedata.nFileSizeLow;
-        info.type = (filedata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? NPT_DIRECTORY_TYPE : NPT_FILE_TYPE;
+        if (!S_ISDIR(statbuf.st_mode) && !S_ISREG(statbuf.st_mode))
+            return NPT_FAILURE;
 
-        FindClose(sizeHandle);
+        if (info) {
+            info->size     = (NPT_Size)(S_ISDIR(statbuf.st_mode) ? 0 : statbuf.st_size);
+            info->type     = S_ISDIR(statbuf.st_mode) ? NPT_DIRECTORY_TYPE : NPT_FILE_TYPE;
+            info->created  = (unsigned long)statbuf.st_ctime;
+            info->modified = (unsigned long)statbuf.st_mtime;
+        }
     }
 
     return NPT_SUCCESS;
@@ -119,7 +149,7 @@ public:
     virtual ~NPT_Win32Directory();
 
     // NPT_DirectoryInterface methods
-    virtual NPT_Result GetInfo(NPT_DirectoryInfo& info);
+    virtual NPT_Result GetInfo(NPT_DirectoryInfo* info = NULL);
     virtual NPT_Result GetNextEntry(NPT_String& name, NPT_DirectoryEntryInfo* info = NULL);
 
 private:
@@ -160,14 +190,14 @@ NPT_Win32Directory::~NPT_Win32Directory()
 |   NPT_Win32Directory::GetInfo
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_Win32Directory::GetInfo(NPT_DirectoryInfo& info)
+NPT_Win32Directory::GetInfo(NPT_DirectoryInfo* info)
 {
     if (!m_Validated) {
         NPT_CHECK(NPT_Directory::GetEntryCount(m_Path, m_Count));
         m_Validated = true;
     }
 
-    info.entry_count = m_Count;
+    if (info) info->entry_count = m_Count;
     return NPT_SUCCESS;
 }
 
@@ -216,12 +246,9 @@ NPT_Win32Directory::GetNextEntry(NPT_String& name, NPT_DirectoryEntryInfo* info)
 
     // assign output params
     name = filedata.cFileName;
-    if (info) {
-        info->size = (filedata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? 0 : ((NPT_UInt64)filedata.nFileSizeHigh << 32) | filedata.nFileSizeLow;
-        info->type = (filedata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? NPT_DIRECTORY_TYPE : NPT_FILE_TYPE;
-    }
-
-    return NPT_SUCCESS;
+    if (!info) return NPT_SUCCESS;
+        
+    return NPT_DirectoryEntry::GetInfo(m_Path + NPT_DIR_DELIMITER_STR + name, info);
 }
 
 /*----------------------------------------------------------------------
@@ -253,7 +280,7 @@ NPT_Directory::GetEntryCount(const char* path, NPT_Cardinal& count)
 
     // verify it's a directory and not a file
     NPT_DirectoryEntryInfo info;
-    NPT_CHECK(NPT_DirectoryEntry::GetInfo(root_path, info));
+    NPT_CHECK(NPT_DirectoryEntry::GetInfo(root_path, &info));
     if (info.type == NPT_FILE_TYPE) return NPT_ERROR_INVALID_PARAMETERS;
 
     // start enumerating files
@@ -293,7 +320,7 @@ NPT_Directory::Create(const char* path)
 {
     // check if path exists, if so no need to create it
     NPT_DirectoryInfo info;
-    if (NPT_FAILED(NPT_Directory::GetInfo(path, info))) {
+    if (NPT_FAILED(NPT_Directory::GetInfo(path, &info))) {
         return CreateDirectory(path, NULL)?NPT_SUCCESS:NPT_FAILURE;
     }
 
@@ -310,7 +337,7 @@ NPT_Directory::Remove(const char* path)
     NPT_DirectoryEntryInfo info;
 
     // make sure the path exists
-    res = NPT_DirectoryEntry::GetInfo(path, info);
+    res = NPT_DirectoryEntry::GetInfo(path, &info);
     if (NPT_SUCCEEDED(res)) {
         // delete path 
         if (info.type == NPT_DIRECTORY_TYPE) {
@@ -334,11 +361,8 @@ NPT_Directory::Remove(const char* path)
 NPT_Result 
 NPT_Directory::Move(const char* input, const char* output)
 {
-    NPT_Result             res;
-    NPT_DirectoryEntryInfo info;
-
     // make sure the path exists
-    res = NPT_DirectoryEntry::GetInfo(input, info);
+    NPT_Result res = NPT_DirectoryEntry::GetInfo(input);
     if (NPT_SUCCEEDED(res)) {
         res = MoveFile(input, output)?NPT_SUCCESS:NPT_FAILURE;
         if (NPT_FAILED(res)) {

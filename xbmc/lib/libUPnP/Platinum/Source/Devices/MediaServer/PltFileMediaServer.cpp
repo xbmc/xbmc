@@ -330,7 +330,7 @@ PLT_FileMediaServer::OnBrowseDirectChildren(PLT_ActionReference&          action
 
     /* retrieve the item type */
     NPT_DirectoryEntryInfo entry_info;
-    NPT_Result res = NPT_DirectoryEntry::GetInfo(dir, entry_info);
+    NPT_Result res = NPT_DirectoryEntry::GetInfo(dir, &entry_info);
     if (NPT_FAILED(res)) {
         /* Object does not exist */
         action->SetError(800, "Can't retrieve info " + dir);
@@ -441,7 +441,7 @@ PLT_FileMediaServer::ProceedWithEntry(const NPT_String        filepath,
     }
 
     /* retrieve the entry type (directory or file) */
-    if (NPT_FAILED(NPT_DirectoryEntry::GetInfo(filepath, info))) {
+    if (NPT_FAILED(NPT_DirectoryEntry::GetInfo(filepath, &info))) {
         return false;
     }
 

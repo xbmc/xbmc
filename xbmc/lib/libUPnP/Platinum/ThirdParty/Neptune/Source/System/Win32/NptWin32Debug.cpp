@@ -14,7 +14,7 @@
 #include <stdio.h>
 #if defined(_XBOX)
 #include <xtl.h>
-#elif !defined(_LINUX)
+#else
 #include <windows.h>
 #endif
 
@@ -22,6 +22,7 @@
 #include "NptDefs.h"
 #include "NptTypes.h"
 #include "NptDebug.h"
+#include "NptLogging.h"
 
 /*----------------------------------------------------------------------
 |   constants
@@ -30,7 +31,22 @@
 #define NPT_DEBUG_BUFFER_INCREMENT  4096
 #define NPT_DEBUG_BUFFER_MAX_SIZE   65536
 
-#if defined(NPT_DEBUG)
+#if defined(NPT_CONFIG_ENABLE_LOGGING)
+/*----------------------------------------------------------------------
+|   logging
++---------------------------------------------------------------------*/
+NPT_SET_LOCAL_LOGGER("neptune,debug.win32")
+
+/*----------------------------------------------------------------------
+|   NPT_Print
++---------------------------------------------------------------------*/
+static void
+NPT_Print(const char* message)
+{
+    NPT_LOG_FINER_1("%s", message);
+    //printf("%s", message);
+}
+#elif defined(NPT_DEBUG)
 /*----------------------------------------------------------------------
 |   NPT_Print
 +---------------------------------------------------------------------*/
@@ -50,7 +66,7 @@ NPT_Print(const char* message)
 void
 NPT_Debug(const char* format, ...)
 {
-#if defined(NPT_DEBUG)
+#if defined(NPT_DEBUG) || defined(NPT_CONFIG_ENABLE_LOGGING)
     char         local_buffer[NPT_DEBUG_LOCAL_BUFFER_SIZE];
     unsigned int buffer_size = NPT_DEBUG_LOCAL_BUFFER_SIZE;
     char*        buffer = local_buffer;

@@ -269,7 +269,6 @@ PLT_Service::SetSCPDXML(const char* scpd)
 
     // delete the tree
     delete tree;
-
     return NPT_SUCCESS;
 
 failure:
@@ -718,9 +717,8 @@ PLT_ServiceTypeFinder::operator()(PLT_Service* const & service) const
 NPT_Result
 PLT_LastChangeXMLIterator::operator()(PLT_StateVariable* const &var) const
 {   
-    // only add vars are indirectly evented
-    if (var->IsSendingEvents() || var->GetName().StartsWith("A_ARG_TYPE_")) 
-        return NPT_SUCCESS;
+    // only add vars that are indirectly evented
+    if (!var->IsSendingEvents(true)) return NPT_SUCCESS;
 
     NPT_XmlElementNode* variable = new NPT_XmlElementNode((const char*)var->GetName());
     NPT_CHECK_SEVERE(m_Node->AddChild(variable));

@@ -41,7 +41,8 @@ public:
 
     NPT_Result   GetSCPDXML(NPT_XmlElementNode* node);
     PLT_Service* GetService();
-    bool         IsSendingEvents();
+    bool         IsSendingEvents(bool indirectly = false);
+    void         DisableIndirectEventing();
     NPT_Result   SetRate(NPT_TimeInterval rate);
     NPT_Result   SetValue(const char* value, bool publish = true);
     NPT_Result   ValidateValue(const char* value);
@@ -63,6 +64,7 @@ protected:
     NPT_String              m_DataType;
     NPT_String              m_DefaultValue;
     bool                    m_IsSendingEvents;
+    bool                    m_IsSendingEventsIndirectly;
     NPT_TimeInterval        m_Rate;
     NPT_TimeStamp           m_LastEvent;
     NPT_Array<NPT_String*>  m_AllowedValues;
