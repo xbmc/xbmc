@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # XBMC disk installer
-# V1.6 - 20081029
+# V1.7 - 20081110
 # Luigi Capriotti @2008
 #
 
@@ -130,17 +130,19 @@ function findDisks()
 				echo "Checking device /dev/${device} ..."
 	
 				if [ -b /dev/${device} ]; then
-					availableDrives[$nDisks]=${device}
-					isRemovableDrive[$nDisks]=0
-					echo "Found disk: $device."
-					if [ -e /sys/block/$device/removable ]; then
-						if [ "$(cat /sys/block/$device/removable)" = "1" ]; then
-							echo "$device is a removable disk."
-							isRemovableDrive[$nDisks]=1
+					if [ "$(cat /sys/block/$device/size)" != "0" ]; then
+						availableDrives[$nDisks]=${device}
+						isRemovableDrive[$nDisks]=0
+						echo "Found disk: $device."
+						if [ -e /sys/block/$device/removable ]; then
+							if [ "$(cat /sys/block/$device/removable)" = "1" ]; then
+								echo "$device is a removable disk."
+								isRemovableDrive[$nDisks]=1
+							fi
 						fi
+						let "nDisks = nDisks + 1"
+						found="yes"
 					fi
-					let "nDisks = nDisks + 1"
-					found="yes"
 				fi
 			fi
 		done
