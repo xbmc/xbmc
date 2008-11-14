@@ -436,6 +436,11 @@ void CDVDDemuxFFmpeg::Dispose()
   {
     if (m_ioContext)
     {
+      if(m_pFormatContext->pb && m_pFormatContext->pb != m_ioContext)
+      {
+        CLog::Log(LOGWARNING, "CDVDDemuxFFmpeg::Dispose - demuxer changed our byte context behind our back, possible memleak");
+        m_ioContext = m_pFormatContext->pb;
+      }
       m_dllAvFormat.av_close_input_stream(m_pFormatContext);
       m_dllAvFormat.url_fclose(m_ioContext);
     }
