@@ -14,14 +14,14 @@ Known Issues for 8.10 'Atlantis' Release of XBMC for Linux, Mac OS X and Windows
  Safest is to not enable it at all unless you are fully aware of what
  you're doing.
  
-*) Intel GMA X3100 (GM965) and slower/older IGP's have issues handling
- 1080p Display Output under Linux.
+*) Intel GMA X3100 (GM965) and older IGPs have issues handling 1080p
+ Display Output under Linux.
  
-*) Some H.264 encoded videos experiences blocking. It's currently
- believed this is related to the unapproved FFMpeg 'Cabac patch' we
- use to speedup (multithread) H.264 decoding.
+*) Some H.264 encoded videos exhibit video "blocking" artifacts. It's
+ currently believed that this is related to the unapproved FFMpeg
+ 'Cabac patch' we use to speedup (multithread) H.264 decoding.
  
-*) A running screensaver behind XBMC on Linux, running fullscreen, can
+*) An active screensaver in Linux, behind XBMC running fullscreen, can
  cause graphical glitches.
  
 *) Compiz / Desktop Effects and XBMC do not mix well, atleast not
@@ -29,7 +29,7 @@ Known Issues for 8.10 'Atlantis' Release of XBMC for Linux, Mac OS X and Windows
  
 *) Event clients are not to be considered stable in this release.
  
-*) Shoutcast/AAC streaming do not work correctly, it may re-buffer
+*) Shoutcast/AAC streaming does not work correctly, it may re-buffer
  every 30 or so seconds.
  
 *) Not all of XBMC's settings are active or do what they are supposed
@@ -38,10 +38,10 @@ Known Issues for 8.10 'Atlantis' Release of XBMC for Linux, Mac OS X and Windows
 *) "Rar sets" needs to be completely downloaded before XBMC can stream
  content from them.
  
-*) Not all the old XBox XBMC scripts work with Linux/OS X/Win
+*) Not all the old XBox XBMC scripts work with Linux/OS X/Win32
  ports. Some don't even work on XBox anymore.
  
-*) XBMC crashing on Linux will sometimes lock the mousepointer. To fix
+*) XBMC crashing on Linux will sometimes lock the mouse pointer. To fix
  this, restart XBMC and quit it again to release it.
  
 *) Visualisations are less polished than other components and may
