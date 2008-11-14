@@ -247,9 +247,10 @@ CUPnPServer::GetProtocolInfo(const CFileItem& item, const NPT_String& protocol)
     /* fixup the protocol */
     if (proto.IsEmpty()) {
         proto = item.GetAsUrl().GetProtocol();
-        if (proto == "http") {
+        if (proto == "http")
             proto = "http-get";
-        }
+        else
+            proto = "xbmc-get";
     }
     NPT_String ext = CUtil::GetExtension(item.m_strPath).c_str();
     if (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty()) {
@@ -497,10 +498,12 @@ CUPnPServer::BuildObject(const CFileItem&              item,
 
         // if the item is remote, add a direct link to the item
         if (CUtil::IsRemote((const char*)file_path)) {
-            resource.m_ProtocolInfo = CUPnPServer::GetProtocolInfo(item, "http-get"); // assumes http-get always
+            resource.m_ProtocolInfo = CUPnPServer::GetProtocolInfo(item, "");
             resource.m_Uri = file_path;
             object->m_Resources.Add(resource);
-        } else if (upnp_server) {
+        }
+
+        if (upnp_server) {
             // iterate through ip addresses and build list of resources
             // throught http file server
             NPT_List<NPT_String>::Iterator ip = ips.GetFirstItem();
@@ -1205,7 +1208,7 @@ CUPnPRenderer::CUPnPRenderer(const char*  friendly_name,
     NPT_LOG_SEVERE(FindServiceByType("urn:schemas-upnp-org:service:ConnectionManager:1", service));
     if (service) {
         service->SetStateVariable("SinkProtocolInfo", 
-            "http-get:*:*:*;http-get:*:video/mpeg:*;http-get:*:audio/mpeg:*", 
+            "http-get:*:*:*;http-get:*:video/mpeg:*;http-get:*:audio/mpeg:*;xbmc-get:*:*:*", 
             false);
     }
 }
