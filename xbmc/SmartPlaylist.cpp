@@ -255,6 +255,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_ACTOR);
     fields.push_back(FIELD_EPISODE);
     fields.push_back(FIELD_SEASON);
+    fields.push_back(FIELD_FILENAME);
 //    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
   }
   else if (type == "movies")
@@ -277,6 +278,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_TOP250);
     fields.push_back(FIELD_STUDIO);
     fields.push_back(FIELD_HASTRAILER);
+    fields.push_back(FIELD_FILENAME);
 //    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
   }
   else if (type == "musicvideos")
@@ -539,6 +541,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_TOP250) result.Format("c%02d", VIDEODB_ID_TOP250);
     else if (field == FIELD_STUDIO) result.Format("c%02d", VIDEODB_ID_STUDIOS);   // join required
     else if (field == FIELD_HASTRAILER) result.Format("c%02d", VIDEODB_ID_TRAILER);
+    else if (field == FIELD_FILENAME) return "strFilename";
     else if (field == FIELD_RANDOM) result = "random()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) result = "idshow";       // only used for order clauses
     return result;
@@ -598,6 +601,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_ACTOR) result = "cant_order_by_actor";    // join required
     else if (field == FIELD_EPISODE) result.Format("c%02d", VIDEODB_ID_EPISODE_EPISODE);
     else if (field == FIELD_SEASON) result.Format("c%02d", VIDEODB_ID_EPISODE_SEASON);
+    else if (field == FIELD_FILENAME) return "strFilename";
     else if (field == FIELD_RANDOM) result = "random()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) result = "idshow";       // only used for order clauses
     return result;
