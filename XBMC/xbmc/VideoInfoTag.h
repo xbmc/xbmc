@@ -85,6 +85,9 @@ public:
   float m_fRating;
   int m_iBookmarkId;
   CFanart m_fanart;
+private:
+  void ParseNative(const TiXmlElement* movie);
+  void ParseMyMovies(const TiXmlElement* movie);
 };
 
 typedef std::vector<CVideoInfoTag> VECMOVIES;

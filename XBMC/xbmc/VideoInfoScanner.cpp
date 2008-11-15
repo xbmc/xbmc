@@ -932,31 +932,34 @@ namespace VIDEO
     // get & save thumbnail
     CStdString strThumb = "";
     CStdString strImage = movieDetails.m_strPictureURL.GetFirstThumb().m_url;
-    if (strImage.size() > 0)
+    if (strImage.size() > 0 && pItem->GetUserVideoThumb().IsEmpty())
     {
       // check for a cached thumb or user thumb
       strThumb = pItem->GetCachedVideoThumb();
 
-      CHTTP http;
       if (pDialog)
       {
         pDialog->SetLine(2, 415);
         pDialog->Progress();
       }
 
-      string image;
-      if (pItem->GetUserVideoThumb().IsEmpty() && http.Get(strImage, image))
+      CPicture picture;
+      try
       {
-        try
+        if (strImage.Find("http://") < 0 && 
+            strImage.Find("/") < 0 && 
+	    strImage.Find("\\") < 0)
         {
-          CPicture picture;
-          picture.CreateThumbnailFromMemory((const BYTE *)image.c_str(), image.size(), CUtil::GetExtension(strThumb), strThumb);
+          CStdString strPath; 
+ 	  CUtil::GetDirectory(pItem->m_strPath, strPath); 	
+          strImage = CUtil::AddFileToFolder(strPath,strImage);
         }
-        catch (...)
-        {
-          CLog::Log(LOGERROR,"Could not make imdb thumb from %s", strImage.c_str());
-          ::DeleteFile(strThumb.c_str());
-        }
+        picture.DoCreateThumbnail(strImage,strThumb);
+      }
+      catch (...)
+      {
+        CLog::Log(LOGERROR,"Could not make imdb thumb from %s", strImage.c_str());
+        ::DeleteFile(strThumb.c_str());
       }
     }
 
@@ -1099,6 +1102,12 @@ namespace VIDEO
         CUtil::AddFileToFolder(strPath,CUtil::GetFileName(item->m_strPath),item2.m_strPath);
         return GetnfoFile(&item2,bGrabAny);
       }
+
+      // mymovies.xml precedes any nfo file 
+      CUtil::GetDirectory(item->m_strPath,nfoFile);
+      nfoFile = CUtil::AddFileToFolder(nfoFile,"mymovies.xml");
+      if (CFile::Exists(nfoFile)) 
+        return nfoFile; 
 
       // already an .nfo file?
       if ( strcmpi(strExtension.c_str(), ".nfo") == 0 )
