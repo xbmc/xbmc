@@ -158,6 +158,139 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   // reset our details if we aren't chained.
   if (!chained) Reset();
 
+  if (CStdString("Title").Equals(movie->Value())) // mymovies.xml
+    ParseMyMovies(movie);
+  else
+    ParseNative(movie);
+
+  return true;
+}
+
+void CVideoInfoTag::Serialize(CArchive& ar)
+{
+  if (ar.IsStoring())
+  {
+    ar << m_strDirector;
+    ar << m_strWritingCredits;
+    ar << m_strGenre;
+    ar << m_strTagLine;
+    ar << m_strPlotOutline;
+    ar << m_strPlot;
+    ar << m_strPictureURL.m_spoof;
+    ar << m_strPictureURL.m_xml;
+    ar << m_fanart.m_xml;
+    ar << m_strTitle;
+    ar << m_strVotes;
+    ar << m_strStudio;
+    ar << m_strTrailer;
+    ar << (int)m_cast.size();
+    for (unsigned int i=0;i<m_cast.size();++i)
+    {
+      ar << m_cast[i].strName;
+      ar << m_cast[i].strRole;
+      ar << m_cast[i].thumbUrl.m_xml;
+    }
+
+    ar << m_strRuntime;
+    ar << m_strFile;
+    ar << m_strPath;
+    ar << m_strIMDBNumber;
+    ar << m_strMPAARating;
+    ar << m_strFileNameAndPath;
+    ar << m_strOriginalTitle;
+    ar << m_strEpisodeGuide;
+    ar << m_strPremiered;
+    ar << m_strStatus;
+    ar << m_strProductionCode;
+    ar << m_strFirstAired;
+    ar << m_strShowTitle;
+    ar << m_strAlbum;
+    ar << m_strArtist;
+    ar << m_playCount;
+    ar << m_iTop250;
+    ar << m_iYear;
+    ar << m_iSeason;
+    ar << m_iEpisode;
+    ar << m_fRating;
+    ar << m_iDbId;
+    ar << m_iSpecialSortSeason;
+    ar << m_iSpecialSortEpisode;
+    ar << m_iBookmarkId;
+  }
+  else
+  {
+    ar >> m_strDirector;
+    ar >> m_strWritingCredits;
+    ar >> m_strGenre;
+    ar >> m_strTagLine;
+    ar >> m_strPlotOutline;
+    ar >> m_strPlot;
+    ar >> m_strPictureURL.m_spoof;
+    ar >> m_strPictureURL.m_xml;
+    m_strPictureURL.Parse();
+    ar >> m_fanart.m_xml;
+    m_fanart.Unpack();
+    ar >> m_strTitle;
+    ar >> m_strVotes;
+    ar >> m_strStudio;
+    ar >> m_strTrailer;
+    int iCastSize;
+    ar >> iCastSize;
+    for (int i=0;i<iCastSize;++i)
+    {
+      SActorInfo info;
+      ar >> info.strName;
+      ar >> info.strRole;
+      CStdString strXml;
+      ar >> strXml;
+      info.thumbUrl.ParseString(strXml);
+      m_cast.push_back(info);
+    }
+    ar >> m_strRuntime;
+    ar >> m_strFile;
+    ar >> m_strPath;
+    ar >> m_strIMDBNumber;
+    ar >> m_strMPAARating;
+    ar >> m_strFileNameAndPath;
+    ar >> m_strOriginalTitle;
+    ar >> m_strEpisodeGuide;
+    ar >> m_strPremiered;
+    ar >> m_strStatus;
+    ar >> m_strProductionCode;
+    ar >> m_strFirstAired;
+    ar >> m_strShowTitle;
+    ar >> m_strAlbum;
+    ar >> m_strArtist;
+    ar >> m_playCount;
+    ar >> m_iTop250;
+    ar >> m_iYear;
+    ar >> m_iSeason;
+    ar >> m_iEpisode;
+    ar >> m_fRating;
+    ar >> m_iDbId;
+    ar >> m_iSpecialSortSeason;
+    ar >> m_iSpecialSortEpisode;
+    ar >> m_iBookmarkId;
+  }
+}
+
+const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
+{
+  CStdString strLabel;
+  for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
+  {
+    CStdString character;
+    if (it->strRole.IsEmpty() || !bIncludeRole)
+      character.Format("%s\n", it->strName.c_str());
+    else
+      character.Format("%s %s %s\n", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
+    strLabel += character;
+  }
+  return strLabel.TrimRight("\n");
+}
+
+void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
+{
   XMLUtils::GetString(movie, "title", m_strTitle);
   XMLUtils::GetString(movie, "originaltitle", m_strOriginalTitle);
   XMLUtils::GetFloat(movie, "rating", m_fRating);
@@ -339,129 +472,94 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
     m_fanart.m_xml << *fanart;
     m_fanart.Unpack();
   }
-  return true;
 }
 
-void CVideoInfoTag::Serialize(CArchive& ar)
+void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
 {
-  if (ar.IsStoring())
-  {
-    ar << m_strDirector;
-    ar << m_strWritingCredits;
-    ar << m_strGenre;
-    ar << m_strTagLine;
-    ar << m_strPlotOutline;
-    ar << m_strPlot;
-    ar << m_strPictureURL.m_spoof;
-    ar << m_strPictureURL.m_xml;
-    ar << m_fanart.m_xml;
-    ar << m_strTitle;
-    ar << m_strVotes;
-    ar << m_strStudio;
-    ar << m_strTrailer;
-    ar << (int)m_cast.size();
-    for (unsigned int i=0;i<m_cast.size();++i)
-    {
-      ar << m_cast[i].strName;
-      ar << m_cast[i].strRole;
-      ar << m_cast[i].thumbUrl.m_xml;
-    }
+  XMLUtils::GetString(movie, "LocalTitle", m_strTitle); 
+  XMLUtils::GetString(movie, "OriginalTitle", m_strOriginalTitle); 
+  XMLUtils::GetInt(movie, "ProductionYear", m_iYear); 
+  int runtime = 0; 
+  XMLUtils::GetInt(movie, "RunningTime", runtime); 
+  m_strRuntime.Format("%i:%02d", runtime/60, runtime%60); // convert from minutes to hh:mm
+  XMLUtils::GetString(movie, "TagLine", m_strTagLine); 
+  XMLUtils::GetString(movie, "Description", m_strPlot); 
+  if (m_strTagLine.IsEmpty()) 
+    m_strPlotOutline = m_strPlot; 
 
-    ar << m_strRuntime;
-    ar << m_strFile;
-    ar << m_strPath;
-    ar << m_strIMDBNumber;
-    ar << m_strMPAARating;
-    ar << m_strFileNameAndPath;
-    ar << m_strOriginalTitle;
-    ar << m_strEpisodeGuide;
-    ar << m_strPremiered;
-    ar << m_strStatus;
-    ar << m_strProductionCode;
-    ar << m_strFirstAired;
-    ar << m_strShowTitle;
-    ar << m_strAlbum;
-    ar << m_strArtist;
-    ar << m_playCount;
-    ar << m_iTop250;
-    ar << m_iYear;
-    ar << m_iSeason;
-    ar << m_iEpisode;
-    ar << m_fRating;
-    ar << m_iDbId;
-    ar << m_iSpecialSortSeason;
-    ar << m_iSpecialSortEpisode;
-    ar << m_iBookmarkId;
-  }
-  else
-  {
-    ar >> m_strDirector;
-    ar >> m_strWritingCredits;
-    ar >> m_strGenre;
-    ar >> m_strTagLine;
-    ar >> m_strPlotOutline;
-    ar >> m_strPlot;
-    ar >> m_strPictureURL.m_spoof;
-    ar >> m_strPictureURL.m_xml;
-    m_strPictureURL.Parse();
-    ar >> m_fanart.m_xml;
-    m_fanart.Unpack();
-    ar >> m_strTitle;
-    ar >> m_strVotes;
-    ar >> m_strStudio;
-    ar >> m_strTrailer;
-    int iCastSize;
-    ar >> iCastSize;
-    for (int i=0;i<iCastSize;++i)
-    {
-      SActorInfo info;
-      ar >> info.strName;
-      ar >> info.strRole;
-      CStdString strXml;
-      ar >> strXml;
-      info.thumbUrl.ParseString(strXml);
-      m_cast.push_back(info);
+  // thumb 
+  CStdString strTemp; 
+  const TiXmlNode *node = movie->FirstChild("Covers"); 
+  while (node) 
+  { 
+    const TiXmlNode *front = node->FirstChild("Front"); 
+    if (front) 
+    { 
+      strTemp = front->FirstChild()->Value(); 
+      if (!strTemp.IsEmpty())
+        m_strPictureURL.ParseString(strTemp); 
     }
-    ar >> m_strRuntime;
-    ar >> m_strFile;
-    ar >> m_strPath;
-    ar >> m_strIMDBNumber;
-    ar >> m_strMPAARating;
-    ar >> m_strFileNameAndPath;
-    ar >> m_strOriginalTitle;
-    ar >> m_strEpisodeGuide;
-    ar >> m_strPremiered;
-    ar >> m_strStatus;
-    ar >> m_strProductionCode;
-    ar >> m_strFirstAired;
-    ar >> m_strShowTitle;
-    ar >> m_strAlbum;
-    ar >> m_strArtist;
-    ar >> m_playCount;
-    ar >> m_iTop250;
-    ar >> m_iYear;
-    ar >> m_iSeason;
-    ar >> m_iEpisode;
-    ar >> m_fRating;
-    ar >> m_iDbId;
-    ar >> m_iSpecialSortSeason;
-    ar >> m_iSpecialSortEpisode;
-    ar >> m_iBookmarkId;
-  }
-}
-
-const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
-{
-  CStdString strLabel;
-  for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
-  {
-    CStdString character;
-    if (it->strRole.IsEmpty() || !bIncludeRole)
-      character.Format("%s\n", it->strName.c_str());
-    else
-      character.Format("%s %s %s\n", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
-    strLabel += character;
-  }
-  return strLabel.TrimRight("\n");
+    node = node->NextSibling("Covers"); 
+  } 
+  // genres 
+  node = movie->FirstChild("Genres"); 
+  while (node) 
+  { 
+    const TiXmlNode *genre = node->FirstChild("Genre"); 
+    if (genre && genre->FirstChild()) 
+    { 
+      strTemp = genre->FirstChild()->Value(); 
+      if (m_strGenre.IsEmpty()) 
+        m_strGenre = strTemp; 
+      else 
+        m_strGenre += g_advancedSettings.m_videoItemSeparator+strTemp; 
+    } 
+    node = node->NextSibling("Genres"); 
+  } 
+  // studios 
+  node = movie->FirstChild("Studios"); 
+  while (node) 
+  { 
+    const TiXmlNode *studio = node->FirstChild("Studio"); 
+    if (studio && studio->FirstChild()) 
+    { 
+      strTemp = studio->FirstChild()->Value(); 
+      if (m_strStudio.IsEmpty()) 
+        m_strStudio = strTemp; 
+      else 
+        m_strStudio += g_advancedSettings.m_videoItemSeparator+strTemp; 
+    } 
+    node = node->NextSibling("Studios"); 
+  } 
+  // persons 
+  int personType = -1; 
+  node = movie->FirstChild("Persons"); 
+  const TiXmlElement *element = node->FirstChildElement("Person"); 
+  while (element) 
+  { 
+    element->Attribute("Type", &personType); 
+    const TiXmlNode *person = element->FirstChild("Name"); 
+    if (person && person->FirstChild()) 
+    {
+      if (personType == 1) // actor 
+      { 
+        SActorInfo info; 
+        info.strName = person->FirstChild()->Value(); 
+        const TiXmlNode *roleNode = element->FirstChild("Role"); 
+        if (roleNode && roleNode->FirstChild()) 
+          info.strRole = roleNode->FirstChild()->Value(); 
+        m_cast.push_back(info); 
+      } 
+      else if (personType == 2) // director 
+      { 
+        strTemp = person->FirstChild()->Value(); 
+        if (m_strDirector.IsEmpty()) 
+          m_strDirector = strTemp; 
+        else 
+          m_strDirector += g_advancedSettings.m_videoItemSeparator+strTemp; 
+      } 
+    }
+    element = element->NextSiblingElement("Person"); 
+  } 
 }
 
