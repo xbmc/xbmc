@@ -246,11 +246,9 @@ public:
 protected:
   friend class CApplicationMessenger;
   // screensaver
-  bool m_bInactive;
   bool m_bDisplaySleeping;
   bool m_bScreenSave;
   CStdString m_screenSaverMode;
-  DWORD m_dwSaverTick;
 #ifdef __APPLE__
   DWORD m_dwOSXscreensaverTicks;
 #endif
@@ -268,6 +266,9 @@ protected:
   CStopWatch m_frameTime;
   CStopWatch m_navigationTimer;
   CStopWatch m_slowTimer;
+  CStopWatch m_screenSaverTimer;
+  CStopWatch m_shutdownTimer;
+  CStopWatch m_displaySleepTimer;
 
   CFileItemPtr m_itemCurrentFile;
   CFileItemList* m_currentStack;
