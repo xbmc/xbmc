@@ -282,6 +282,8 @@ extern "C"
 	  // load the image
     DWORD dwImageType = GetImageType(file);
     CxImage *image = new CxImage(dwImageType);
+    if (!image) return false;
+
     int actualwidth = maxwidth;
     int actualheight = maxheight;
     try
@@ -344,7 +346,8 @@ extern "C"
     int actualheight = 0;
     try
     {
-      // jpeg's may contain an EXIF preview image - use that if it's there
+      // jpeg's may contain an EXIF preview image
+      // we don't use it though, as the resolution is normally too low
 #ifdef USE_EXIF_THUMBS
       if ((dwImageType == CXIMAGE_FORMAT_JPG || dwImageType == CXIMAGE_FORMAT_RAW) && image.GetExifThumbnail(file, thumb, dwImageType))
       {
@@ -390,7 +393,12 @@ extern "C"
     CxImage image(dwImageType);
     try
     {
-      if (!image.Decode(buffer, size, dwImageType) || !image.IsValid())
+      bool success = image.Decode(buffer, size, dwImageType);
+      if (!success && dwImageType != CXIMAGE_FORMAT_UNKNOWN)
+      { // try to decode with unknown imagetype
+        success = image.Decode(buffer, size, CXIMAGE_FORMAT_UNKNOWN);
+      }
+      if (!success || !image.IsValid())
       {
         printf("PICTURE::CreateThumbnailFromMemory: Unable to decode image. Error:%s\n", image.GetLastError());
         return false;
