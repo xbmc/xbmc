@@ -418,6 +418,27 @@ namespace PYXBMC
     return Py_None;
   }
 
+  // Player_SetSubtitles
+  PyDoc_STRVAR(setSubtitles__doc__,
+    "setSubtitles() -- set subtitle file and enable subtitles\n");
+
+  PyObject* Player_SetSubtitles(PyObject *self, PyObject *args)
+  {
+    char *cLine = NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
+
+    int nStream = g_application.m_pPlayer->GetSubtitleCount();
+
+    g_stSettings.m_currentVideoSettings.m_SubtitleOn = true;
+    g_application.m_pPlayer->SetSubtitleVisible(true);
+    g_application.m_pPlayer->AddSubtitle(cLine);
+    g_application.m_pPlayer->SetSubtitle(nStream);
+    
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+
   PyMethodDef Player_methods[] = {
     {(char*)"play", (PyCFunction)Player_Play, METH_VARARGS, play__doc__},
     {(char*)"stop", (PyCFunction)pyPlayer_Stop, METH_VARARGS, stop__doc__},
@@ -437,6 +458,7 @@ namespace PYXBMC
     {(char*)"getTotalTime", (PyCFunction)Player_GetTotalTime, METH_NOARGS, getTotalTime__doc__},
     {(char*)"getTime", (PyCFunction)Player_GetTime, METH_NOARGS, getTime__doc__},
     {(char*)"seekTime", (PyCFunction)Player_SeekTime, METH_VARARGS, seekTime__doc__},
+    {(char*)"setSubtitles", (PyCFunction)Player_SetSubtitles, METH_VARARGS, setSubtitles__doc__},
     {NULL, NULL, 0, NULL}
   };
 
