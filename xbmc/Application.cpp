@@ -4736,7 +4736,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     }
   }
   // Picture slideshow
-  if (m_screenSaverMode == "SlideShow")
+  if (m_screenSaverMode == "SlideShow" || m_screenSaverMode == "Fanart Slideshow")
   {
     // reset our codec info - don't want that on screen
     g_infoManager.SetShowCodec(false);
