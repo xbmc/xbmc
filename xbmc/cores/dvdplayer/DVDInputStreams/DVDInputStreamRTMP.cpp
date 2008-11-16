@@ -64,6 +64,10 @@ bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content)
 {
   if (!CDVDInputStream::Open(strFile, content)) return false;
 
+  m_rtmp.SetPlayer(m_item.GetProperty("SWFPlayer")); 
+  m_rtmp.SetPageUrl(m_item.GetProperty("PageURL")); 
+  m_rtmp.SetPlayPath(m_item.GetProperty("PlayPath")); 
+
   if (!m_rtmp.Connect(strFile))
     return false;
 
