@@ -1104,8 +1104,13 @@ namespace VIDEO
       }
 
       // mymovies.xml precedes any nfo file 
-      CUtil::GetDirectory(item->m_strPath,nfoFile);
-      nfoFile = CUtil::AddFileToFolder(nfoFile,"mymovies.xml");
+      CStdString strPath;
+      CUtil::GetDirectory(item->m_strPath,strPath);
+      nfoFile = CUtil::AddFileToFolder(strPath,"mymovies.xml");
+      if (CFile::Exists(nfoFile)) 
+        return nfoFile; 
+
+      nfoFile = CUtil::AddFileToFolder(strPath,"movie.nfo");
       if (CFile::Exists(nfoFile)) 
         return nfoFile; 
 
