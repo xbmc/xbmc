@@ -307,8 +307,11 @@ private:
   TransformMatrix m_guiTransform;
   TransformMatrix m_finalTransform;
   std::stack<TransformMatrix> m_groupTransform;
-
+#ifdef HAS_SDL_OPENGL
   GLint m_maxTextureSize;
+#else
+  int   m_maxTextureSize;
+#endif
 };
 
 /*!
