@@ -320,6 +320,7 @@ protected:
   void StartFtpEmergencyRecoveryMode();
   float NavigationIdleTime();
   void CheckForTitleChange();
+  static bool AlwaysProcess(const CAction& action);
 
   void SaveCurrentFileSettings();
 
