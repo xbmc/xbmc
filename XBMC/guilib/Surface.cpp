@@ -725,7 +725,9 @@ void CSurface::Flip()
 #endif
     if (m_iVSyncMode && m_iSwapRate != 0)
     {
+#ifdef HAS_SDL_OPENGL
       glFlush();
+#endif
 #ifdef _WIN32
       priority = GetThreadPriority(GetCurrentThread());
       affinity = SetThreadAffinityMask(GetCurrentThread(), 1);
@@ -824,7 +826,9 @@ void CSurface::Flip()
   }
   else
   {
+#ifdef HAS_SDL_OPENGL
     glFlush();
+#endif
   }
 }
 

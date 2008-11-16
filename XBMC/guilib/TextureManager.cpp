@@ -613,7 +613,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
         pMap->Add(pclsTexture);
 #ifndef HAS_SDL
         delete pTextures[iImage];
-#else
+#elif defined(HAS_SDL_OPENGL) 
         SDL_FreeSurface(pTextures[iImage]);
 #endif
       }

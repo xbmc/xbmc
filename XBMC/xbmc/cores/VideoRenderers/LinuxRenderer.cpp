@@ -141,7 +141,7 @@ void CLinuxRenderer::CalculateFrameAspectRatio(int desired_width, int desired_he
   // This indicates either a scaling has taken place (which we didn't ask for) or it has
   // found an aspect ratio parameter from the file, and is changing the frame size based
   // on that.
-  if (m_iSourceWidth == desired_width && m_iSourceHeight == desired_height)
+  if ((int)m_iSourceWidth == desired_width && (int)m_iSourceHeight == desired_height)
     return ;
 
   // mplayer is scaling in one or both directions.  We must alter our Source Pixel Ratio
@@ -274,8 +274,6 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
   osdRect.bottom = (float)rv.top + (float)(rv.bottom - rv.top) * relbottom;
   osdRect.top = osdRect.bottom - (float)h * yscale;
 
-  RECT rc = { 0, 0, w, h };
-
   int iOSDBuffer = (m_iOSDRenderBuffer + 1) % m_NumOSDBuffers;
 
   //if new height is heigher than current osd-texture height, recreate the textures with new height.
@@ -376,15 +374,13 @@ void CLinuxRenderer::RenderOSD()
 
   CSingleLock lock(g_graphicsContext);
 
-  //copy alle static vars to local vars because they might change during this function by mplayer callbacks
-  float osdWidth = m_OSDWidth;
-  float osdHeight = m_OSDHeight;
+  //copy all static vars to local vars because they might change during this function by mplayer callbacks
   DRAWRECT osdRect = m_OSDRect;
-  //  if (!viewportRect.bottom && !viewportRect.right)
-  //    return;
 
   // Set state to render the image
 #if defined (HAS_SDL_OPENGL)
+  float osdWidth = m_OSDWidth;
+  float osdHeight = m_OSDHeight;
 
   CGLTexture *pTex = m_pOSDYTexture[iRenderBuffer];
   pTex->LoadToGPU();
@@ -626,7 +622,7 @@ bool CLinuxRenderer::Configure(unsigned int width, unsigned int height, unsigned
   }
 
 #else
-  if (m_backbuffer && (m_backbuffer->w != width || m_backbuffer->h != height)) {
+  if (m_backbuffer && (m_backbuffer->w != (int)width || m_backbuffer->h != (int)height)) {
      SDL_FreeSurface(m_backbuffer);
      m_backbuffer=NULL;
 
@@ -637,7 +633,7 @@ bool CLinuxRenderer::Configure(unsigned int width, unsigned int height, unsigned
      }
   }
 
-  if (m_screenbuffer && (m_screenbuffer->w != width || m_screenbuffer->h != height)) {
+  if (m_screenbuffer && (m_screenbuffer->w != (int)width || m_screenbuffer->h != (int)height)) {
      SDL_FreeSurface(m_screenbuffer);
      m_screenbuffer=NULL;
 
@@ -746,7 +742,8 @@ void CLinuxRenderer::ReleaseImage(int source, bool preserve)
   int     srcStride[] = { m_image.stride[0], m_image.stride[1], m_image.stride[2] };
   uint8_t *dst[] = { (uint8_t*)m_backbuffer->pixels, 0, 0 };
   int     dstStride[] = { m_backbuffer->pitch, 0, 0 };
-  int ret = m_dllSwScale.sws_scale(context, src, srcStride, 0, m_image.height, dst, dstStride);
+  
+  m_dllSwScale.sws_scale(context, src, srcStride, 0, m_image.height, dst, dstStride);
 
 for (int n=0; n<720*90;n++) {
    *(((uint8_t*)m_backbuffer->pixels) + (720*10) + n) = 70;
@@ -795,9 +792,7 @@ void CLinuxRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   else
     m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
 #else 
-#ifdef  __GNUC__
-#warning TODO: prepare for render in RenderUpdate
-#endif
+// TODO: prepare for render in RenderUpdate
 #endif
 
   Render(flags);
@@ -807,9 +802,7 @@ void CLinuxRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 void CLinuxRenderer::FlipPage(int source)
 {  
-#ifdef __GNUC__
-#warning TODO: if image buffer changed (due to DrawSlice) than re-copy its content (convert from YUV). 
-#endif
+// TODO: if image buffer changed (due to DrawSlice) than re-copy its content (convert from YUV). 
 
   // copy back buffer to screen buffer
 #ifndef USE_SDL_OVERLAY
@@ -985,8 +978,6 @@ void CLinuxRenderer::SetViewMode(int iViewMode)
   }
 
   // get our calibrated full screen resolution
-  float fOffsetX1 = (float)g_settings.m_ResInfo[m_iResolution].Overscan.left;
-  float fOffsetY1 = (float)g_settings.m_ResInfo[m_iResolution].Overscan.top;
   float fScreenWidth = (float)(g_settings.m_ResInfo[m_iResolution].Overscan.right - g_settings.m_ResInfo[m_iResolution].Overscan.left);
   float fScreenHeight = (float)(g_settings.m_ResInfo[m_iResolution].Overscan.bottom - g_settings.m_ResInfo[m_iResolution].Overscan.top);
   // and the source frame ratio
@@ -1076,9 +1067,7 @@ void CLinuxRenderer::SetViewMode(int iViewMode)
 
 void CLinuxRenderer::AutoCrop(bool bCrop)
 {
-#ifdef __GNUC__
-#warning AutoCrop not implemented
-#endif
+// TODO: AutoCrop not implemented
 }
 
 void CLinuxRenderer::RenderLowMem(DWORD flags)
