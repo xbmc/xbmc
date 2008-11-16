@@ -2521,6 +2521,13 @@ bool CApplication::OnKey(CKey& key)
   // Turn the mouse off, as we've just got a keypress from controller or remote
   g_Mouse.SetInactive();
   CAction action;
+  
+  // get the current active window
+  int iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
+
+  // this will be checked for certain keycodes that need 
+  // special handling if the screensaver is active   
+  g_buttonTranslator.GetAction(iWin, key, action);  
 
   // a key has been pressed.
   // Reset the screensaver timer
@@ -2529,16 +2536,18 @@ bool CApplication::OnKey(CKey& key)
   {
     // reset Idle Timer
     m_idleTimer.StartZero();
+    bool processKey = AlwaysProcess(action);
 
     ResetScreenSaver();
-    if (ResetScreenSaverWindow()) {
+
+    // allow some keys to be processed while the screensaver is active
+    if (ResetScreenSaverWindow() && !processKey)
+    {
       g_Keyboard.Reset();
       return true;
     }
   }
 
-  // get the current active window
-  int iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
   // change this if we have a dialog up
   if (m_gWindowManager.HasModalDialog())
   {
@@ -5796,6 +5805,32 @@ void CApplication::SaveCurrentFileSettings()
       dbs.Close();
     }
   }
+}
+
+bool CApplication::AlwaysProcess(const CAction& action)
+{
+  // check if this button is mapped to a built-in function 
+  if (action.strAction) 
+  { 
+    CStdString builtInFunction, param; 
+    CUtil::SplitExecFunction(action.strAction, builtInFunction, param); 
+    builtInFunction.ToLower(); 
+
+    // should this button be handled normally or just cancel the screensaver? 
+    if (   builtInFunction.Equals("powerdown")  
+        || builtInFunction.Equals("reboot") 
+        || builtInFunction.Equals("restart") 
+        || builtInFunction.Equals("restartapp") 
+        || builtInFunction.Equals("suspend") 
+        || builtInFunction.Equals("hibernate") 
+        || builtInFunction.Equals("quit")  
+        || builtInFunction.Equals("shutdown")) 
+    { 
+      return true;
+    } 
+  }
+
+  return false;
 }
 
 CApplicationMessenger& CApplication::getApplicationMessenger()
