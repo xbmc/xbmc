@@ -209,7 +209,7 @@ void XLCDproc::SetLine(int iLine, const CStdString& strLine)
   if (strLineLong != m_strLine[iLine])
   {
     int ln = iLine + 1;
-    sprintf(cmd, "widget_set xbmc line%i 1 %i %i %i m 1 \"%s\"\n", ln, ln, m_iColumns, ln, strLineLong.c_str());
+    sprintf(cmd, "widget_set xbmc line%i 1 %i %i %i m %i \"%s\"\n", ln, ln, m_iColumns, ln, g_advancedSettings.m_lcdScrolldelay, strLineLong.c_str());
     //CLog::Log(LOGINFO, "XLCDproc::%s - Sending command: %s", __FUNCTION__, cmd);
     if (write(sockfd, cmd, strlen(cmd)) < 0)
     {
