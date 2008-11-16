@@ -246,6 +246,17 @@ bool CXRandR::SetMode(XOutput output, XMode mode)
   return true;
 }
 
+XOutput CXRandR::GetCurrentOutput()
+{
+  Query();
+  for (unsigned int j = 0; j < m_outputs.size(); j++)
+  {
+    if(m_outputs[j].isConnected)
+      return m_outputs[j];
+  }
+  XOutput empty;
+  return empty;
+}
 XMode CXRandR::GetCurrentMode(CStdString outputName)
 {
   Query();

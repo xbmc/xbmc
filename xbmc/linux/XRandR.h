@@ -92,7 +92,8 @@ class CXRandR
 public:
   CXRandR(bool query=false);
   std::vector<XOutput> GetModes(void);
-  XMode GetCurrentMode(CStdString outputName);
+  XOutput GetCurrentOutput();
+  XMode   GetCurrentMode(CStdString outputName);
   bool SetMode(XOutput output, XMode mode);
   void LoadCustomModeLinesToAllOutputs(void);
   void SaveState();
