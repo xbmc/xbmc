@@ -163,6 +163,7 @@ public:
     int m_lcdAddress3;
     int m_lcdAddress4;
     bool m_lcdHeartbeat;
+    int m_lcdScrolldelay;
 
     int m_autoDetectPingTime;
     float m_playCountMinimumPercent;
