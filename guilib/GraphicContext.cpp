@@ -641,6 +641,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       mode.h = g_settings.m_ResInfo[res].iHeight;
       mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
       g_xrandr.SetMode(out, mode);
+      SDL_ShowCursor(SDL_ENABLE);
 #endif
 
       rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
@@ -1445,6 +1446,7 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
     mode.id = g_settings.m_ResInfo[res].strId;
     g_xrandr.SetMode(out, mode);
+    SDL_ShowCursor(SDL_ENABLE);
 #endif
     
 #ifdef __APPLE__
