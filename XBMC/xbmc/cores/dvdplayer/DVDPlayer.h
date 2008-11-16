@@ -38,6 +38,7 @@
 
 #include "../../Edl.h"
 #include "dlgcache.h"
+#include "FileItem.h"
 
 
 class CDVDInputStream;
@@ -270,6 +271,7 @@ protected:
   std::string m_content;  // hold a hint to what content file contains (mime type)
   bool        m_caching;  // player is filling up the demux queue
   bool        m_seeking;  // player is currently trying to fullfill a seek request
+  CFileItem   m_item;
 
   CCurrentStream m_CurrentAudio;
   CCurrentStream m_CurrentVideo;

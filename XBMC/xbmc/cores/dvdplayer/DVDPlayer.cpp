@@ -341,6 +341,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
     m_content = file.GetContentType();
     m_PlayerOptions = options;
+    m_item = file;
 
     ResetEvent(m_hReadyEvent);
     Create();
@@ -436,6 +437,8 @@ bool CDVDPlayer::OpenInputStream()
     CLog::Log(LOGERROR, "CDVDPlayer::OpenInputStream - unable to create input stream for [%s]", m_filename.c_str());
     return false;
   }
+  else
+    m_pInputStream->SetFileItem(m_item);
 
   if (!m_pInputStream->Open(m_filename.c_str(), m_content))
   {
