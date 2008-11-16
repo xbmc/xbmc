@@ -65,7 +65,8 @@ int         CSurface::s_glMinVer = 0;
 #include "GraphicContext.h"
 
 #ifdef _WIN32
-static bool (APIENTRY *_wglSwapIntervalEXT)(GLint) = 0;
+static BOOL (APIENTRY *_wglSwapIntervalEXT)(GLint) = 0;
+static int (APIENTRY *_wglGetSwapIntervalEXT)() = 0;
 #elif defined(HAS_SDL_OPENGL) && !defined(__APPLE__)
 static int (*_glXGetVideoSyncSGI)(unsigned int*) = 0;
 static int (*_glXWaitVideoSyncSGI)(int, int, unsigned int*) = 0;
@@ -614,7 +615,9 @@ void CSurface::EnableVSync(bool enable)
     _glXSwapIntervalMESA = (int (*)(int))glXGetProcAddress((const GLubyte*)"glXSwapIntervalMESA");
 #elif defined (_WIN32)
   if (!_wglSwapIntervalEXT)
-    _wglSwapIntervalEXT = (bool (APIENTRY *)(GLint))wglGetProcAddress("wglSwapIntervalEXT");
+    _wglSwapIntervalEXT = (BOOL (APIENTRY *)(GLint))wglGetProcAddress("wglSwapIntervalEXT");
+  if (!_wglGetSwapIntervalEXT )
+    _wglGetSwapIntervalEXT = (int (APIENTRY *)())wglGetProcAddress("wglGetSwapIntervalEXT");
 #endif
 
   m_bVsyncInit = true;
@@ -670,7 +673,12 @@ void CSurface::EnableVSync(bool enable)
     if (_wglSwapIntervalEXT && !m_iVSyncMode)
     {
       if(_wglSwapIntervalEXT(1))
-        m_iVSyncMode = 2;
+      {
+        if(_wglGetSwapIntervalEXT() == 1)
+          m_iVSyncMode = 2;
+        else
+          CLog::Log(LOGWARNING, "%s - wglGetSwapIntervalEXT didn't return the set swap interval", __FUNCTION__);
+      }
       else
         CLog::Log(LOGWARNING, "%s - wglSwapIntervalEXT failed", __FUNCTION__);
     }
@@ -868,7 +876,7 @@ bool CSurface::MakeCurrent()
       return true;
     else
       return (wglMakeCurrent(m_glDC, m_glContext) == TRUE);
-  }
+    }
 #endif
   return false;
 }
