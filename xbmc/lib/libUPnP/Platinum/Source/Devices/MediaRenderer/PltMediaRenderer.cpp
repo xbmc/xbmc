@@ -66,7 +66,7 @@ PLT_MediaRenderer::PLT_MediaRenderer(PlaybackCmdListener* listener,
         service->SetStateVariable("NextAVTransportURIMetadata", "NOT_IMPLEMENTED", false);
         service->SetStateVariable("PlaybackStorageMedium", "NONE", false);
         service->SetStateVariable("RecordStorageMedium", "NOT_IMPLEMENTED", false);
-        service->SetStateVariable("RecordMediumWriteStatus", "NOT_IMPLEMENTED   ", false);
+        service->SetStateVariable("RecordMediumWriteStatus", "NOT_IMPLEMENTED", false);
         
         // GetPositionInfo
         service->SetStateVariable("CurrentTrack", "0", false);
@@ -75,8 +75,10 @@ PLT_MediaRenderer::PLT_MediaRenderer(PlaybackCmdListener* listener,
         service->SetStateVariable("CurrentTrackURI", "", false);
         service->SetStateVariable("RelativeTimePosition", "00:00:00", false); 
         service->SetStateVariable("AbsoluteTimePosition", "00:00:00", false);
-        service->SetStateVariable("RelativeCounterPosition", "4294967295", false); // 2^32-1 means NOT_IMPLEMENTED
-        service->SetStateVariable("AbsoluteCounterPosition", "4294967295", false); // 2^32-1 means NOT_IMPLEMENTED
+        // Should be 4294967295 = 2^32-1 for NOT_IMPLEMENTED but crashes Intel UPnP Tools!
+        // so put 0 for both counters
+        service->SetStateVariable("RelativeCounterPosition", "0", false); // 2^32-1 means NOT_IMPLEMENTED
+        service->SetStateVariable("AbsoluteCounterPosition", "0", false); // 2^32-1 means NOT_IMPLEMENTED
 
         // disable indirect eventing for certain state variables
         PLT_StateVariable* var;
