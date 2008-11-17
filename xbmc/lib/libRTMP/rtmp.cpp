@@ -39,7 +39,7 @@
 #define RTMP_SIG_SIZE 1536
 #define RTMP_LARGE_HEADER_SIZE 12
 
-#define RTMP_BUFFER_CACHE_SIZE (512*1024)
+#define RTMP_BUFFER_CACHE_SIZE (16*1024)
 
 using namespace RTMP_LIB;
 
@@ -54,6 +54,7 @@ CRTMP::CRTMP() : m_socket(INVALID_SOCKET)
   Close();
   m_strPlayer = "file:///xbmc.flv";
   m_pBuffer = new char[RTMP_BUFFER_CACHE_SIZE];
+  m_nBufferMS = 300;
 }
 
 CRTMP::~CRTMP()
@@ -75,6 +76,11 @@ void CRTMP::SetPageUrl(const std::string &strPageUrl)
 void CRTMP::SetPlayPath(const std::string &strPlayPath)
 {
   m_strPlayPath = strPlayPath;
+}
+
+void CRTMP::SetBufferMS(int size)
+{
+  m_nBufferMS = size;
 }
 
 bool CRTMP::Connect(const std::string &strRTMPLink)
@@ -591,7 +597,7 @@ void CRTMP::HandleInvoke(const RTMPPacket &packet)
     else if (methodInvoked == "createStream")
     {
       SendPlay();
-      SendPing(3, 1, 300);
+      SendPing(3, 1, m_nBufferMS);
     }
     else if (methodInvoked == "play")
     {
