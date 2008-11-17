@@ -24,7 +24,6 @@
 #include "stdafx.h"
 #include "Util.h"
 #include "Application.h"
-#include "lib/libGoAhead/XBMChttp.h"
 
 #include "utils/Network.h"
 #include "UPnP.h"
@@ -74,6 +73,7 @@ static const mimetype_extension_struct mimetype_extension_map[] = {
     {"divx", "video/avi"},
     {"xvid", "video/avi"},
     {"jpg",  "image/jpeg"},
+    {"tbn",  "image/jpeg"},
     {"tif",  "image/tiff"},
     {NULL, NULL}
 };
@@ -172,8 +172,8 @@ public:
 class CUPnPServer : public PLT_MediaConnect
 {
 public:
-    CUPnPServer(const char* friendly_name, const char* uuid = NULL) : 
-        PLT_MediaConnect("", friendly_name, true, uuid, 0, 81) { // force a lower port other than 80 for 360 to be happy
+    CUPnPServer(const char* friendly_name, const char* uuid = NULL, int port = 0) : 
+        PLT_MediaConnect("", friendly_name, true, uuid, port, 81) { // force a lower port other than 80 for 360 to be happy
         // hack: override path to make sure it's empty
         // urls will contain full paths to local files
         m_Path = "";
@@ -217,6 +217,10 @@ public:
                                         const NPT_HttpRequestContext& context,
                                         CUPnPServer*                  upnp_server = NULL);
 
+    static const char* GetContentTypeFromExtension(const char* extension);
+    static NPT_String  GetContentType(const CFileItem& item);
+    static NPT_String  GetContentType(const char* filename);
+
 private:
     PLT_MediaObject* Build(CFileItemPtr                  item, 
                            bool                          with_count, 
@@ -238,20 +242,41 @@ private:
 };
 
 /*----------------------------------------------------------------------
-|   CUPnPServer::GetProtocolInfo
+|   CUPnPServer::GetContentTypeFromExtension
++---------------------------------------------------------------------*/
+const char*
+CUPnPServer::GetContentTypeFromExtension(const char* extension)
+{
+    const mimetype_extension_struct* mapping = mimetype_extension_map;
+    while (mapping->extension) {
+        if (NPT_StringsEqual(extension, mapping->extension)) {
+            return mapping->mimetype;
+        }
+        mapping++;
+    }
+
+    return NULL;
+}
+
+/*----------------------------------------------------------------------
+|   CUPnPServer::GetContentType
 +---------------------------------------------------------------------*/
 NPT_String
-CUPnPServer::GetProtocolInfo(const CFileItem& item, const NPT_String& protocol)
+CUPnPServer::GetContentType(const char* filename)
 {
-    NPT_String proto = protocol;
-    /* fixup the protocol */
-    if (proto.IsEmpty()) {
-        proto = item.GetAsUrl().GetProtocol();
-        if (proto == "http")
-            proto = "http-get";
-        else
-            proto = "xbmc-get";
-    }
+    NPT_String ext = CUtil::GetExtension(filename).c_str();
+    ext.TrimLeft('.');
+    ext = ext.ToLowercase();
+
+    return GetContentTypeFromExtension(ext);
+}
+
+/*----------------------------------------------------------------------
+|   CUPnPServer::GetContentType
++---------------------------------------------------------------------*/
+NPT_String
+CUPnPServer::GetContentType(const CFileItem& item)
+{
     NPT_String ext = CUtil::GetExtension(item.m_strPath).c_str();
     if (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty()) {
         ext = CUtil::GetExtension(item.GetVideoInfoTag()->m_strFileNameAndPath);
@@ -266,18 +291,8 @@ CUPnPServer::GetProtocolInfo(const CFileItem& item, const NPT_String& protocol)
     if (content == "application/octet-stream")
         content = "";
 
-    if (content.IsEmpty()) {
-        content == "application/octet-stream";
-        const mimetype_extension_struct* mapping = mimetype_extension_map;
-        while (mapping->extension) {
-            if (ext == mapping->extension) {
-                content = mapping->mimetype;
-                break;
-            }
-            mapping++;
-        }
-    }
-
+    if (content.IsEmpty()) content = GetContentTypeFromExtension(ext);
+    
     /* fallback to generic content type if not found */
     if (content.IsEmpty()) {      
         if (item.IsVideo() || item.IsVideoDb() )
@@ -292,6 +307,28 @@ CUPnPServer::GetProtocolInfo(const CFileItem& item, const NPT_String& protocol)
     if (content.IsEmpty()) {
         content = "application/octet-stream";
     }
+
+    return content;
+}
+
+/*----------------------------------------------------------------------
+|   CUPnPServer::GetProtocolInfo
++---------------------------------------------------------------------*/
+NPT_String
+CUPnPServer::GetProtocolInfo(const CFileItem& item, const NPT_String& protocol)
+{
+    NPT_String proto = protocol;
+    /* fixup the protocol */
+    if (proto.IsEmpty()) {
+        proto = item.GetAsUrl().GetProtocol();
+        if (proto == "http")
+            proto = "http-get";
+        else
+            proto = "xbmc-get";
+    }
+
+    /* we need a valid extension to retrieve the mimetype for the protocol info */
+    NPT_String content = GetContentType(item);
 
     /* setup dlna strings, wish i knew what all of they mean */
     NPT_String extra = "DLNA.ORG_OP=01";
@@ -733,7 +770,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
         }
 
         // old style, needs virtual path prefix
-        if (!object->m_ObjectID.StartsWith("virtualpath://") )
+        if (!object->m_ObjectID.StartsWith("virtualpath://"))
             object->m_ObjectID = share_name + "/" + object->m_ObjectID;
 
     } else {
@@ -812,11 +849,11 @@ CUPnPServer::Build(CFileItemPtr                  item,
                     // and not the list of items
 
                     // retrieve all the files for a given path
-                   CFileItemList items;
-                   if (CDirectory::GetDirectory(paths[i], items, mask)) {
-                       // update childcount
-                       ((PLT_MediaContainer*)object)->m_ChildrenCount += items.Size();
-                   }
+                    CFileItemList items;
+                    if (CDirectory::GetDirectory(paths[i], items, mask)) {
+                        // update childcount
+                        ((PLT_MediaContainer*)object)->m_ChildrenCount += items.Size();
+                    }
                 }
             }
         }
@@ -1169,6 +1206,11 @@ public:
                   unsigned int port = 0);
 
     void UpdateState();
+    
+    // Http server handler
+    virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest&              request,
+                                          const NPT_HttpRequestContext& context,
+                                          NPT_HttpResponse&             response);
 
     // AVTransport methods
     virtual NPT_Result OnNext(PLT_ActionReference& action);
@@ -1211,6 +1253,65 @@ CUPnPRenderer::CUPnPRenderer(const char*  friendly_name,
             "http-get:*:*:*;http-get:*:video/mpeg:*;http-get:*:audio/mpeg:*;xbmc-get:*:*:*", 
             false);
     }
+}
+
+/*----------------------------------------------------------------------
+|   CUPnPRenderer::ProcessHttpRequest
++---------------------------------------------------------------------*/
+NPT_Result 
+CUPnPRenderer::ProcessHttpRequest(NPT_HttpRequest&              request,
+                                  const NPT_HttpRequestContext& context,
+                                  NPT_HttpResponse&             response)
+{
+    // get the address of who sent us some data back
+    NPT_String  ip_address = context.GetRemoteAddress().GetIpAddress().ToString();
+    NPT_String  method     = request.GetMethod();
+    NPT_String  protocol   = request.GetProtocol(); 
+    NPT_HttpUrl url        = request.GetUrl();
+
+    if (url.GetPath() == "/thumb.jpg") {
+        NPT_HttpUrlQuery query(url.GetQuery());
+        NPT_String filepath = query.GetField("path");
+        if (!filepath.IsEmpty()) {
+            NPT_HttpEntity* entity = response.GetEntity();
+            if (entity == NULL) return NPT_ERROR_INVALID_STATE;
+
+            // check the method
+            if (request.GetMethod() != NPT_HTTP_METHOD_GET &&
+                request.GetMethod() != NPT_HTTP_METHOD_HEAD) {
+                response.SetStatus(405, "Method Not Allowed");
+                return NPT_SUCCESS;
+            }
+
+            // ensure that the request's path is a valid thumb path
+            if (CUtil::IsRemote(filepath.GetChars()) || 
+                !filepath.StartsWith(g_settings.GetUserDataFolder())) {
+                response.SetStatus(404, "Not Found");
+                return NPT_SUCCESS;
+            }
+
+            // prevent hackers from accessing files outside of our root
+            if ((filepath.Find("/..") >= 0) || (filepath.Find("\\..") >=0)) {
+                return NPT_FAILURE;
+            }
+
+            // open the file
+            NPT_File file(filepath);
+            NPT_Result result = file.Open(NPT_FILE_OPEN_MODE_READ);
+            if (NPT_FAILED(result)) {
+                response.SetStatus(404, "Not Found");
+                return NPT_SUCCESS;
+            }
+            NPT_InputStreamReference stream;
+            file.GetInputStream(stream);
+            entity->SetContentType(CUPnPServer::GetContentType(filepath));
+            entity->SetInputStream(stream, true);
+
+            return NPT_SUCCESS;
+        }
+    }
+
+    return PLT_MediaRenderer::ProcessHttpRequest(request, context, response);
 }
 
 /*----------------------------------------------------------------------
@@ -1304,25 +1405,25 @@ CUPnPRenderer::GetMetadata(NPT_String& meta)
                                                        false, 
                                                        NPT_HttpRequestContext()); 
     if (object) {
-        // verify web server is turned on, should we turn it on ourselves?
-        if (g_application.m_pWebServer) {
-            // use http api to create thumbnail in web server doc root
-            CStdString paras[] = {_P("Q:\\web\\ThumbForUPnP.jpg")};
-            m_pXbmcHttp->xbmcGetCurrentlyPlaying(1, paras);
+        // fetch the path to the thumbnail
+        CStdString thumb = g_infoManager.GetImage(MUSICPLAYER_COVER, -1); //TODO: Only audio for now
             
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
-            NPT_String ip;
-            if (g_application.getNetwork().GetFirstConnectedInterface()) {
-                ip = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
-            }
-#else
-            NPT_String ip = g_application.getNetwork().m_networkinfo.ip;
-#endif
-            object->m_ExtraInfo.album_art_uri = NPT_HttpUrl(
-                ip, 
-                atoi(g_guiSettings.GetString("servers.webserverport")), 
-                "/ThumbForUPnP.jpg").ToString();
+        NPT_String ip;
+        if (g_application.getNetwork().GetFirstConnectedInterface()) {
+            ip = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
         }
+#else
+        NPT_String ip = g_application.getNetwork().m_networkinfo.ip;
+#endif
+        // build url, use the internal device http server to serv the image
+        NPT_HttpUrlQuery query;
+        query.AddField("path", thumb.c_str());
+        object->m_ExtraInfo.album_art_uri = NPT_HttpUrl(
+            ip, 
+            m_URLDescription.GetPort(), 
+            "/thumb.jpg",
+            query.ToString()).ToString();
         
         res = PLT_Didl::ToDidl(*object, "*", meta);   
         delete object;
@@ -1552,6 +1653,19 @@ CUPnP::CUPnP() :
     // initialize upnp in broadcast listening mode for xbmc
     m_UPnP = new PLT_UPnP(1900, !broadcast);
 
+    // keep main IP around
+#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
+    if (g_application.getNetwork().GetFirstConnectedInterface()) {
+      m_IP = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
+    }
+#else
+    m_IP = g_application.getNetwork().m_networkinfo.ip;
+#endif
+    NPT_List<NPT_String> list;
+    if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list))) {
+        m_IP = *(list.GetFirstItem());
+    }
+
     // start upnp monitoring
     m_UPnP->Start();
 }
@@ -1638,6 +1752,34 @@ CUPnP::StopClient()
 }
 
 /*----------------------------------------------------------------------
+|   CUPnP::CreateServer
++---------------------------------------------------------------------*/
+CUPnPServer*
+CUPnP::CreateServer(int port /* = 0 */)
+{
+    CUPnPServer* device = 
+        new CUPnPServer("XBMC: Media Server:",
+                        g_settings.m_UPnPUUIDServer.length()?g_settings.m_UPnPUUIDServer.c_str():NULL,
+                        port);
+
+    // trying to set optional upnp values for XP UPnP UI Icons to detect us
+    // but it doesn't work anyways as it requires multicast for XP to detect us
+    device->m_PresentationURL = 
+        NPT_HttpUrl(m_IP,
+                    atoi(g_guiSettings.GetString("servers.webserverport")), 
+                    "/").ToString();
+    // c0diq: For the XBox260 to discover XBMC, the ModelName must stay "Windows Media Connect"
+    //device->m_ModelName = "XBMC";
+    device->m_ModelNumber      = "2.0";
+    device->m_ModelDescription = "XBMC Media Center - Media Server";
+    device->m_ModelURL         = "http://www.xbmc.org/";
+    device->m_Manufacturer     = "Team XBMC";
+    device->m_ManufacturerURL  = "http://www.xbmc.org/";
+
+    return device;
+}
+
+/*----------------------------------------------------------------------
 |   CUPnP::StartServer
 +---------------------------------------------------------------------*/
 void
@@ -1645,42 +1787,13 @@ CUPnP::StartServer()
 {
     if (!m_ServerHolder->m_Device.IsNull()) return;
 
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
-    NPT_String ip;
-    if (g_application.getNetwork().GetFirstConnectedInterface()) {
-      ip = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
-    }
-#else
-    NPT_String ip = g_network.m_networkinfo.ip;
-#endif
-
-    NPT_List<NPT_String> list;
-    if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list))) {
-        ip = *(list.GetFirstItem());
-    }
-
     // load upnpserver.xml so that g_settings.m_vecUPnPMusiCMediaSources, etc.. are loaded
     CStdString filename;
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
     g_settings.LoadUPnPXml(filename);
 
     // create the server with a XBox compatible friendlyname and UUID from upnpserver.xml if found
-    m_ServerHolder->m_Device = new CUPnPServer("XBMC: Media Server:",
-        g_settings.m_UPnPUUID.length()?g_settings.m_UPnPUUID.c_str():NULL);
-
-    // trying to set optional upnp values for XP UPnP UI Icons to detect us
-    // but it doesn't work anyways as it requires multicast for XP to detect us
-    m_ServerHolder->m_Device->m_PresentationURL = 
-        NPT_HttpUrl(ip,
-                    atoi(g_guiSettings.GetString("servers.webserverport")), 
-                    "/").ToString();
-    // c0diq: For the XBox260 to discover XBMC, the ModelName must stay "Windows Media Connect"
-    //m_ServerHolder->m_Device->m_ModelName = "XBMC";
-    m_ServerHolder->m_Device->m_ModelNumber = "2.0";
-    m_ServerHolder->m_Device->m_ModelDescription = "XBMC Media Center - Media Server";
-    m_ServerHolder->m_Device->m_ModelURL = "http://www.xbmc.org/";
-    m_ServerHolder->m_Device->m_Manufacturer = "Team XBMC";
-    m_ServerHolder->m_Device->m_ManufacturerURL = "http://www.xbmc.org/";
+    m_ServerHolder->m_Device = CreateServer(g_settings.m_UPnPPortServer);
 
     // tell controller to ignore ourselves from list of upnp servers
     if (!m_CtrlPointHolder->m_CtrlPoint.IsNull()) {
@@ -1690,16 +1803,28 @@ CUPnP::StartServer()
     // start server
     NPT_Result res = m_UPnP->AddDevice(m_ServerHolder->m_Device);
     if (NPT_FAILED(res)) {
-        // if we failed to start, most likely it's because we couldn't bind on the port
-        // instead we bind on anything but then we make it so the Xbox360 don't see us
-        // since there's not point as it won't stream from us if we're not port 80
+        // if the upnp device port was not 0, it could have failed because
+        // of port being in used, so restart with a random port
+        if (g_settings.m_UPnPPortServer > 0) m_ServerHolder->m_Device = CreateServer(0);
+        
+        // tell controller to ignore ourselves from list of upnp servers
+        if (!m_CtrlPointHolder->m_CtrlPoint.IsNull()) {
+            m_CtrlPointHolder->m_CtrlPoint->IgnoreUUID(m_ServerHolder->m_Device->GetUUID());
+        }
+
+        // use a random port for fileserver as well 
+        // but that may cause Xbox360 to fail streaming from us as we're not port 80
         ((CUPnPServer*)(m_ServerHolder->m_Device.AsPointer()))->m_FileServerPort = 0;
-        //((CUPnPServer*)(m_ServerHolder->m_Device.AsPointer()))->m_ModelName = "XBMC";
-        m_UPnP->AddDevice(m_ServerHolder->m_Device);
+        res = m_UPnP->AddDevice(m_ServerHolder->m_Device);
+    }
+
+    // save port but don't overwrite saved settings if random
+    if (NPT_SUCCEEDED(res) && g_settings.m_UPnPPortServer == 0) {
+        g_settings.m_UPnPPortServer = m_ServerHolder->m_Device->GetPort();
     }
 
     // save UUID
-    g_settings.m_UPnPUUID = m_ServerHolder->m_Device->GetUUID();
+    g_settings.m_UPnPUUIDServer = m_ServerHolder->m_Device->GetUUID();
     g_settings.SaveUPnPXml(filename);
 }
 
@@ -1716,6 +1841,32 @@ CUPnP::StopServer()
 }
 
 /*----------------------------------------------------------------------
+|   CUPnP::CreateRenderer
++---------------------------------------------------------------------*/
+CUPnPRenderer*
+CUPnP::CreateRenderer(int port /* = 0 */)
+{
+    CUPnPRenderer* device = 
+        new CUPnPRenderer("XBMC: Media Renderer",
+                          true, 
+                          (g_settings.m_UPnPUUIDRenderer.length() ? g_settings.m_UPnPUUIDRenderer.c_str() : NULL),
+                          port);
+
+    device->m_PresentationURL = 
+        NPT_HttpUrl(m_IP, 
+                    atoi(g_guiSettings.GetString("servers.webserverport")), 
+                    "/").ToString();
+    device->m_ModelName = "XBMC";
+    device->m_ModelNumber = "2.0";
+    device->m_ModelDescription = "XBMC Media Center - Media Renderer";
+    device->m_ModelURL = "http://www.xbmc.org/";    
+    device->m_Manufacturer = "Team XBMC";
+    device->m_ManufacturerURL = "http://www.xbmc.org/";
+
+    return device;
+}
+
+/*----------------------------------------------------------------------
 |   CUPnP::StartRenderer
 +---------------------------------------------------------------------*/
 void CUPnP::StartRenderer()
@@ -1726,37 +1877,31 @@ void CUPnP::StartRenderer()
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
     g_settings.LoadUPnPXml(filename);
 
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
-    NPT_String ip;
-    if (g_application.getNetwork().GetFirstConnectedInterface()) {
-      ip = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
-    }
-#else
-    NPT_String ip = g_application.getNetwork().m_networkinfo.ip;
-#endif
+    m_RendererHolder->m_Device = CreateRenderer(g_settings.m_UPnPPortRenderer);
 
-    NPT_List<NPT_String> list;
-    if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list))) {
-        ip = *(list.GetFirstItem());
+    // tell controller to ignore ourselves from list of upnp servers
+    if (!m_CtrlPointHolder->m_CtrlPoint.IsNull()) {
+        m_CtrlPointHolder->m_CtrlPoint->IgnoreUUID(m_RendererHolder->m_Device->GetUUID());
     }
 
-    m_RendererHolder->m_Device = new CUPnPRenderer(
-        "XBMC: Media Renderer",
-        true, 
-        (g_settings.m_UPnPUUIDRenderer.length() ? g_settings.m_UPnPUUIDRenderer.c_str() : NULL));
+    NPT_Result res = m_UPnP->AddDevice(m_RendererHolder->m_Device);
 
-    m_RendererHolder->m_Device->m_PresentationURL = 
-        NPT_HttpUrl(ip, 
-                    atoi(g_guiSettings.GetString("servers.webserverport")), 
-                    "/").ToString();
-    m_RendererHolder->m_Device->m_ModelName = "XBMC";
-    m_RendererHolder->m_Device->m_ModelNumber = "2.0";
-    m_RendererHolder->m_Device->m_ModelDescription = "XBMC Media Center - Media Renderer";
-    m_RendererHolder->m_Device->m_ModelURL = "http://www.xbmc.org/";    
-    m_RendererHolder->m_Device->m_Manufacturer = "Team XBMC";
-    m_RendererHolder->m_Device->m_ManufacturerURL = "http://www.xbmc.org/";
+    // failed most likely because port is in use, try again with random port now
+    if (NPT_FAILED(res) && g_settings.m_UPnPPortRenderer != 0) {
+        m_RendererHolder->m_Device = CreateRenderer(0);
 
-    m_UPnP->AddDevice(m_RendererHolder->m_Device);
+        // tell controller to ignore ourselves from list of upnp servers
+        if (!m_CtrlPointHolder->m_CtrlPoint.IsNull()) {
+            m_CtrlPointHolder->m_CtrlPoint->IgnoreUUID(m_RendererHolder->m_Device->GetUUID());
+        }
+
+        res = m_UPnP->AddDevice(m_RendererHolder->m_Device);
+    }
+
+    // save port but don't overwrite saved settings if random
+    if (NPT_SUCCEEDED(res) && g_settings.m_UPnPPortRenderer == 0) {
+        g_settings.m_UPnPPortRenderer = m_RendererHolder->m_Device->GetPort();
+    }
 
     // save UUID
     g_settings.m_UPnPUUIDRenderer = m_RendererHolder->m_Device->GetUUID();

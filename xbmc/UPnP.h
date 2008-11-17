@@ -29,6 +29,8 @@ class PLT_SyncMediaBrowser;
 class CDeviceHostReferenceHolder;
 class CCtrlPointReferenceHolder;
 class CRendererReferenceHolder;
+class CUPnPRenderer;
+class CUPnPServer;
 
 class CUPnP
 {
@@ -54,10 +56,16 @@ public:
     static void   ReleaseInstance();
     static bool   IsInstantiated() { return upnp != NULL; }
 
+private:
+    // methods
+    CUPnPRenderer* CreateRenderer(int port = 0);
+    CUPnPServer*   CreateServer(int port = 0);
+
 public:
     PLT_SyncMediaBrowser*       m_MediaBrowser;
 
 private:
+    CStdString                  m_IP;
     PLT_UPnP*                   m_UPnP;
     CDeviceHostReferenceHolder* m_ServerHolder;
     CRendererReferenceHolder*   m_RendererHolder;
