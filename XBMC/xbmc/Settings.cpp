@@ -2013,8 +2013,15 @@ bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
     return false;
   }
   // load settings
-  XMLUtils::GetString(pRootElement, "UUID", g_settings.m_UPnPUUID);
+
+  // default values for ports
+  g_settings.m_UPnPPortServer = 0;
+  g_settings.m_UPnPPortRenderer = 0;
+
+  XMLUtils::GetString(pRootElement, "UUID", g_settings.m_UPnPUUIDServer);
+  XMLUtils::GetInt(pRootElement, "Port", g_settings.m_UPnPPortServer);
   XMLUtils::GetString(pRootElement, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
+  XMLUtils::GetInt(pRootElement, "PortRenderer", g_settings.m_UPnPPortRenderer);
 
   CStdString strDefault;
   GetSources(pRootElement,"music",g_settings.m_UPnPMusicSources,strDefault);
@@ -2032,8 +2039,10 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
   if (!pRoot) return false;
 
   // create a new Element for UUID
-  XMLUtils::SetString(pRoot, "UUID", g_settings.m_UPnPUUID);
+  XMLUtils::SetString(pRoot, "UUID", g_settings.m_UPnPUUIDServer);
+  XMLUtils::SetInt(pRoot, "Port", g_settings.m_UPnPPortServer);
   XMLUtils::SetString(pRoot, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
+  XMLUtils::SetInt(pRoot, "PortRenderer", g_settings.m_UPnPPortRenderer);
 
   VECSOURCES* pShares[3];
   pShares[0] = &g_settings.m_UPnPMusicSources;
