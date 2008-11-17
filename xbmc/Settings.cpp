@@ -262,7 +262,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_curlclienttimeout = 10;
 
 #ifdef HAS_SDL
-  g_advancedSettings.m_fullScreen = false;
+  g_advancedSettings.m_fullScreen = g_advancedSettings.m_startFullScreen;
 #endif
 
   g_advancedSettings.m_playlistRetries = 100;

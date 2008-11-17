@@ -588,6 +588,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
     res = g_videoConfig.GetSafeMode();
   }
+#ifndef _WIN32PC
+  // FIXME: see if #5256 works also for Linux and Mac
   if (res>=DESKTOP || g_advancedSettings.m_startFullScreen)
   {
     g_advancedSettings.m_fullScreen = true;
@@ -614,6 +616,9 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   }
 
   if (res==WINDOW || (m_Resolution != res))
+#else
+  if ((m_Resolution != res) || (m_bFullScreenRoot != g_advancedSettings.m_fullScreen))
+#endif
   {
     Lock();
     m_iScreenWidth  = g_settings.m_ResInfo[res].iWidth;
@@ -684,7 +689,11 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       needsResize = false;
       SetFullScreenRoot(true);
     }
+#ifndef _WIN32PC
     else if (lastRes>=DESKTOP )
+#else
+    else if (m_bFullScreenRoot)
+#endif
     {
       // SetFullScreenRoot will call m_screenSurface->ResizeSurface
       needsResize = false;
@@ -1399,6 +1408,8 @@ void CGraphicContext::EndPaint(CSurface *dest, bool lock)
 
 bool CGraphicContext::ToggleFullScreenRoot ()
 {
+#ifndef _WIN32PC
+  // FIXME: see if #5256 works also for Linux and Mac
   static RESOLUTION desktopres = DESKTOP;
   static RESOLUTION windowres = WINDOW;
   static RESOLUTION lastres = INVALID;
@@ -1419,6 +1430,19 @@ bool CGraphicContext::ToggleFullScreenRoot ()
     }
   }
   return  m_bFullScreenRoot;
+#else
+  if (m_bFullScreenRoot)
+  {
+    g_advancedSettings.m_fullScreen = false;
+    SetVideoResolution(m_Resolution);
+  }
+  else
+  {
+    g_advancedSettings.m_fullScreen = true;
+    SetVideoResolution(m_Resolution);
+  }
+  return  m_bFullScreenRoot;
+#endif
 }
 
 void CGraphicContext::SetFullScreenRoot(bool fs)
