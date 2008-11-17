@@ -195,7 +195,12 @@ PLT_FileMediaServer::ServeFile(NPT_HttpRequest&              request,
                                NPT_String                    file_path)
 {
     NPT_COMPILER_UNUSED(context);
-    
+
+    // prevent hackers from accessing files outside of our root
+    if ((file_path.Find("/..") >= 0) || (file_path.Find("\\..") >= 0)) {
+        return NPT_FAILURE;
+    }
+
     // File requested
     NPT_String path = m_FileBaseUri.GetPath();
     if (path.Compare(uri_path.Left(path.GetLength()), true) == 0) {
@@ -230,13 +235,19 @@ PLT_FileMediaServer::OnAlbumArtRequest(NPT_HttpResponse& response,
     NPT_File                 file(file_path);
     NPT_InputStreamReference stream;
 
+    // prevent hackers from accessing files outside of our root
+    if ((file_path.Find("/..") >= 0) || (file_path.Find("\\..") >= 0)) {
+        return NPT_FAILURE;
+    }
+
     if (NPT_FAILED(file.Open(NPT_FILE_OPEN_MODE_READ)) || 
         NPT_FAILED(file.GetInputStream(stream))        || 
         NPT_FAILED(stream->GetSize(total_len)) || (total_len == 0)) {
         goto filenotfound;
     } else {
-        const char* extension = PLT_MediaItem::GetExtFromFilePath(file_path, 
-                                                                  m_DirDelimiter);
+        const char* extension = PLT_MediaItem::GetExtFromFilePath(
+            file_path, 
+            m_DirDelimiter);
         if (extension == NULL) {
             goto filenotfound;
         }
