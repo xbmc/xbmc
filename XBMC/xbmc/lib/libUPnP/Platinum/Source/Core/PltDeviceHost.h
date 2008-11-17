@@ -43,6 +43,7 @@ public:
                    NPT_UInt16   port = 0);
 
     virtual void SetBroadcast(bool broadcast) { m_Broadcast = broadcast; }
+    virtual NPT_UInt16 GetPort() { return m_Port; };
 
     // Overridables
     virtual NPT_Result OnAction(PLT_ActionReference&          action, 

@@ -74,9 +74,11 @@ PLT_DeviceHost::Start(PLT_SsdpListenTask* task)
     NPT_CHECK_SEVERE(m_HttpServer->Start());
 
     // read back assigned port in case we passed 0
-    m_URLDescription.SetPort(m_HttpServer->GetPort());
+    m_Port = m_HttpServer->GetPort();
+    m_URLDescription.SetPort(m_Port);
 
-    // set static handlers
+    // set static handlers first as the order is important
+
     // description document
     NPT_String doc;
     GetDescription(doc);
@@ -84,11 +86,7 @@ PLT_DeviceHost::Start(PLT_SsdpListenTask* task)
     m_HttpServer->AddRequestHandler(handler, m_URLDescription.GetPath(), false);
     m_RequestHandlers.Add(handler);
 
-    // adapter to redirect to host for dynamic
-    PLT_HttpDeviceHostRequestHandler* device_handler = new PLT_HttpDeviceHostRequestHandler(this);
-    m_RequestHandlers.Add(device_handler);
-
-    // service handlers
+    // services static scpd documents
     NPT_HttpUrl url;
     for (NPT_Cardinal i=0; i<m_Services.GetItemCount(); i++) {
         // static scpd document
@@ -101,23 +99,12 @@ PLT_DeviceHost::Start(PLT_SsdpListenTask* task)
         NPT_HttpStaticRequestHandler* scpd_handler = new NPT_HttpStaticRequestHandler(doc, "text/xml");
         m_RequestHandlers.Add(scpd_handler);
         m_HttpServer->AddRequestHandler(scpd_handler, url.GetPath(), false);
-
-        // dynamic control url
-        NPT_String control_url = m_Services[i]->GetControlURL();
-        if (!control_url.StartsWith("/")) {
-            control_url = GetURLBase().GetPath() + control_url;
-        }
-        url.SetPathPlus(control_url);
-        m_HttpServer->AddRequestHandler(device_handler, url.GetPath(), false);
-
-        // dynamic control url
-        NPT_String event_url = m_Services[i]->GetEventSubURL();
-        if (!event_url.StartsWith("/")) {
-            event_url = GetURLBase().GetPath() + event_url;
-        }
-        url.SetPathPlus(event_url);
-        m_HttpServer->AddRequestHandler(device_handler, url.GetPath(), false);
     }
+
+    // all other requests including service control are dynamically handled
+    PLT_HttpDeviceHostRequestHandler* device_handler = new PLT_HttpDeviceHostRequestHandler(this);
+    m_RequestHandlers.Add(device_handler);
+    m_HttpServer->AddRequestHandler(device_handler, "/", true);
 
     // we should not advertise right away, spec says randomly less than 100ms
     NPT_TimeInterval delay(0, NPT_System::GetRandomInteger() % 100000000);
