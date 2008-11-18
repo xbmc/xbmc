@@ -1202,9 +1202,9 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
 
   //##########################################################
   // Send the Hello message
-  if ( ! Send("cddb hello xbox xbox XboxMediaCenter pre-2.1"))
+  if ( ! Send("cddb hello xbmc xbmc XBMC 8.10"))
   {
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"%s\"", "cddb hello xbox xbox XboxMediaCenter pre-2.1");
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error sending \"%s\"", "cddb hello xbmc xbmc XBMC 8.10");
     m_lastError = E_NETWORK_ERROR_SEND;
     return false;
   }
