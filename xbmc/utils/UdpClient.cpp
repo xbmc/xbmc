@@ -155,6 +155,18 @@ void CUdpClient::Process()
 
   while ( !m_bStop )
   {
+    fd_set readset, exceptset;
+    FD_ZERO(&readset);    FD_SET(client_socket, &readset);
+    FD_ZERO(&exceptset);  FD_SET(client_socket, &exceptset);
+
+    int nfds = (int)(client_socket);
+    timeval tv = { 0, 100000 };
+    if (select(nfds, &readset, NULL, &exceptset, &tv) < 0)
+    {
+      CLog::Log(LOGERROR, "%s - failed to select on socket");
+      break;
+    }
+
     // is there any data to read
     dataAvailable = 0;
     ioctlsocket(client_socket, FIONREAD, &dataAvailable);
@@ -202,7 +214,7 @@ void CUdpClient::Process()
     }
 
     // dispatch a single command if any pending
-    DispatchNextCommand();
+    while(DispatchNextCommand()) {}
   }
 
   closesocket(client_socket);
@@ -211,17 +223,14 @@ void CUdpClient::Process()
 }
 
 
-void CUdpClient::DispatchNextCommand()
+bool CUdpClient::DispatchNextCommand()
 {
   EnterCriticalSection(&critical_section);
 
   if (commands.size() <= 0)
   {
     LeaveCriticalSection(&critical_section);
-
-    // relinquish the remainder of this threads time slice
-    Sleep(1);
-    return ;
+    return false;
   }
 
   COMMANDITERATOR it = commands.begin();
@@ -257,4 +266,5 @@ void CUdpClient::DispatchNextCommand()
     }
     while (ret == -1 && !m_bStop);
   }
+  return true;
 }

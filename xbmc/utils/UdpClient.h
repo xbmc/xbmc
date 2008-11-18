@@ -53,7 +53,7 @@ protected:
     DWORD binarySize;
   };
 
-  void DispatchNextCommand();
+  bool DispatchNextCommand();
 
   SOCKET client_socket;
 
