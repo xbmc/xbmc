@@ -185,14 +185,14 @@ bool CRTMP::GetNextMediaPacket(RTMPPacket &packet)
 
       case 0x08:
         // audio data
-        CLog::Log(LOGDEBUG,"%s, received: audio %i bytes", __FUNCTION__, packet.m_nBodySize);
+        CLog::Log(LOGDEBUG,"%s, received: audio %lu bytes", __FUNCTION__, packet.m_nBodySize);
         HandleAudio(packet);
         bHasMediaPacket = true;
         break;
 
       case 0x09:
         // video data
-        CLog::Log(LOGDEBUG,"%s, received: video %i bytes", __FUNCTION__, packet.m_nBodySize);
+        CLog::Log(LOGDEBUG,"%s, received: video %lu bytes", __FUNCTION__, packet.m_nBodySize);
         HandleVideo(packet);
         bHasMediaPacket = true;
         break;
@@ -211,7 +211,7 @@ bool CRTMP::GetNextMediaPacket(RTMPPacket &packet)
 
       case 0x16:
         // FLV tag(s)
-        CLog::Log(LOGDEBUG,"%s, received: FLV tag(s) %i bytes", __FUNCTION__, packet.m_nBodySize);
+        CLog::Log(LOGDEBUG,"%s, received: FLV tag(s) %lu bytes", __FUNCTION__, packet.m_nBodySize);
         bHasMediaPacket = true;
         break;
 
