@@ -2379,9 +2379,9 @@ void CApplication::NewFrame()
 
   // We just posted another frame. Keep track and notify.
   m_frameCount++;
-  SDL_CondSignal(m_frameCond);
-
   SDL_mutexV(m_frameMutex);
+
+  SDL_CondSignal(m_frameCond);
 #endif
 }
 
