@@ -808,7 +808,14 @@ CStdString CSmartPlaylist::GetOrderClause()
 {
   CStdString order;
   if (m_orderField != CSmartPlaylistRule::FIELD_NONE)
-    order.Format("ORDER BY %s%s", CSmartPlaylistRule::GetDatabaseField(m_orderField,GetType()), m_orderAscending ? "" : " DESC");
+  {
+    if (CSmartPlaylistRule::GetFieldType(m_orderField) == CSmartPlaylistRule::NUMERIC_FIELD)
+      order.Format("ORDER BY 1*%s", CSmartPlaylistRule::GetDatabaseField(m_orderField,GetType()));
+    else
+      order.Format("ORDER BY %s", CSmartPlaylistRule::GetDatabaseField(m_orderField,GetType()));
+    if (!m_orderAscending)
+      order += " DESC";
+  }
   if (m_limit)
   {
     CStdString limit;
