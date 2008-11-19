@@ -579,8 +579,8 @@ int CFileMMS::streaming_start(char* hostname, int port, char* path)
 
   for (i = 1; i < num_stream_ids; i++)
   {
-    data[(i - 1) * 6 + 2] = 0xFF;
-    data[(i - 1) * 6 + 3] = 0xFF;
+    data[(i - 1) * 6 + 2] = (char)0xFF;
+    data[(i - 1) * 6 + 3] = (char)0xFF;
     data[(i - 1) * 6 + 4] = stream_ids[i];
     data[(i - 1) * 6 + 5] = 0x00;
   }
@@ -601,7 +601,7 @@ int CFileMMS::streaming_start(char* hostname, int port, char* path)
   memset(data, 0, 40);
 
   for (i = 8; i < 16; i++)
-    data[i] = 0xFF;
+    data[i] = (char)0xFF;
 
   data[20] = 0x04;
 

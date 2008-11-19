@@ -56,6 +56,10 @@ void *mmap_anon(void *addr, size_t len, int prot, int flags, off_t offset)
 {
     void *result;
 
+#ifndef MAP_ANONYMOUS
+    int fd;
+#endif
+
      /* From loader/ext.c:
       * "Linux EINVAL's on us if we don't pass MAP_PRIVATE to an anon mmap"
       * Therefore we preserve the same behavior on all platforms, ie. no
@@ -69,7 +73,7 @@ void *mmap_anon(void *addr, size_t len, int prot, int flags, off_t offset)
     result = mmap(addr, len, prot, flags | MAP_ANONYMOUS, -1, offset);
 #else
     /* SysV-style anonymous mapping */
-    int fd = open("/dev/zero", O_RDWR);
+    fd = open("/dev/zero", O_RDWR);
     if(fd < 0){
         perror( "Cannot open /dev/zero for READ+WRITE. Check permissions! error: ");
         return NULL;
