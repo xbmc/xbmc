@@ -29,6 +29,7 @@ extern "C"
   //
   // Graphics.
   //
+  int Cocoa_GetScreenIndex(void);
   void Cocoa_GetScreenResolution(int* w, int* h);
   double Cocoa_GetScreenRefreshRate(int screen_id);
   void Cocoa_GetScreenResolutionOfAnotherScreen(int display, int* w, int* h);

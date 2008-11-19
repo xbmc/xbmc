@@ -893,7 +893,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl)
       {
         int value = g_guiSettings.GetInt("videoscreen.resolution");
-        if (strstr(g_settings.m_ResInfo[value].strMode, "Full screen") != 0)
+        if (strstr(g_settings.m_ResInfo[value].strMode, "Full Screen") != 0)
           pControl->SetEnabled(true);
         else
           pControl->SetEnabled(false);
