@@ -2782,6 +2782,9 @@
 		E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptXbmcFile.cpp; sourceTree = "<group>"; };
 		F50629780E57B9680066625A /* MultiPathFile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MultiPathFile.cpp; sourceTree = "<group>"; };
 		F50629790E57B9680066625A /* MultiPathFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MultiPathFile.h; sourceTree = "<group>"; };
+		F51E0DCA0ED3ECA4001ECFA6 /* curlbuild.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = curlbuild.h; path = xbmc/FileSystem/curl/curlbuild.h; sourceTree = SOURCE_ROOT; };
+		F51E0DCB0ED3ECAA001ECFA6 /* curlrules.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = curlrules.h; path = xbmc/FileSystem/curl/curlrules.h; sourceTree = SOURCE_ROOT; };
+		F51E0DCC0ED3ECB6001ECFA6 /* typecheck-gcc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = "typecheck-gcc.h"; path = "xbmc/FileSystem/curl/typecheck-gcc.h"; sourceTree = SOURCE_ROOT; };
 		F57E213E0E3C3AB200700C9D /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /opt/local/lib/libiconv.dylib; sourceTree = "<absolute>"; };
 		F57E21400E3C3AD400700C9D /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		F5F2EF490E593E0D0092C37F /* DVDFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DVDFileInfo.h; sourceTree = "<group>"; };
@@ -4390,11 +4393,14 @@
 			isa = PBXGroup;
 			children = (
 				E38E16A20D25F9FA00618676 /* curl.h */,
+				F51E0DCA0ED3ECA4001ECFA6 /* curlbuild.h */,
+				F51E0DCB0ED3ECAA001ECFA6 /* curlrules.h */,
 				E38E16A30D25F9FA00618676 /* curlver.h */,
 				E38E16A40D25F9FA00618676 /* easy.h */,
 				E38E16A60D25F9FA00618676 /* mprintf.h */,
 				E38E16A70D25F9FA00618676 /* multi.h */,
 				E38E16A80D25F9FA00618676 /* stdcheaders.h */,
+				F51E0DCC0ED3ECB6001ECFA6 /* typecheck-gcc.h */,
 				E38E16A90D25F9FA00618676 /* types.h */,
 			);
 			path = curl;
@@ -6846,6 +6852,7 @@
 					xbmc/lib/libRTMP,
 					xbmc/lib/libportaudio,
 					xbmc/lib/libPython/Python/Include,
+					xbmc/FileSystem/curl,
 					/opt/local/include,
 					/opt/local/include/freetype2/,
 					/opt/local/include/mysql5,
