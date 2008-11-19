@@ -53,20 +53,18 @@ extern HWND g_hWnd;
 
 void CApplicationMessenger::Cleanup()
 {
-  vector<ThreadMessage*>::iterator it = m_vecMessages.begin();
-  while (it != m_vecMessages.end())
+  while (m_vecMessages.size() > 0)
   {
-    ThreadMessage* pMsg = *it;
+    ThreadMessage* pMsg = m_vecMessages.front();
     delete pMsg;
-    it = m_vecMessages.erase(it);
+    m_vecMessages.pop();
   }
 
-  it = m_vecWindowMessages.begin();
-  while (it != m_vecWindowMessages.end())
+  while (m_vecWindowMessages.size() > 0)
   {
-    ThreadMessage* pMsg = *it;
+    ThreadMessage* pMsg = m_vecWindowMessages.front();
     delete pMsg;
-    it = m_vecWindowMessages.erase(it);
+    m_vecWindowMessages.pop();
   }
 }
 
@@ -98,16 +96,14 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
   CSingleLock lock (m_critSection);
   if (msg->dwMessage == TMSG_DIALOG_DOMODAL ||
       msg->dwMessage == TMSG_WRITE_SCRIPT_OUTPUT)
-  {
-    m_vecWindowMessages.push_back(msg);
-  }
-  else m_vecMessages.push_back(msg);
+    m_vecWindowMessages.push(msg);
+  else 
+    m_vecMessages.push(msg);
+  lock.Leave();
 
   if (message.hWaitEvent)
   {
-    lock.Leave();
     WaitForSingleObject(message.hWaitEvent, INFINITE);
-    lock.Enter();
     CloseHandle(message.hWaitEvent);
     message.hWaitEvent = NULL;
   }
@@ -119,24 +115,20 @@ void CApplicationMessenger::ProcessMessages()
   CSingleLock lock (m_critSection);
   while (m_vecMessages.size() > 0)
   {
-    vector<ThreadMessage*>::iterator it = m_vecMessages.begin();
-
-    ThreadMessage* pMsg = *it;
+    ThreadMessage* pMsg = m_vecMessages.front();
     //first remove the message from the queue, else the message could be processed more then once
-    it = m_vecMessages.erase(it);
+    m_vecMessages.pop();
 
     //Leave here as the message might make another
     //thread call processmessages or sendmessage
     lock.Leave();
+
     ProcessMessage(pMsg);
-
-    // lock again to make sure nothing happened to pMsg->hWaitEvent
-    lock.Enter();
-
     if (pMsg->hWaitEvent)
       SetEvent(pMsg->hWaitEvent);
-
     delete pMsg;
+
+    lock.Enter();
   }
 }
 
@@ -540,25 +532,21 @@ void CApplicationMessenger::ProcessWindowMessages()
 {
   CSingleLock lock (m_critSection);
   //message type is window, process window messages
-  if (m_vecWindowMessages.size() > 0)
+  while (m_vecWindowMessages.size() > 0)
   {
-    vector<ThreadMessage*>::iterator it = m_vecWindowMessages.begin();
-    while (it != m_vecWindowMessages.end())
-    {
-      ThreadMessage* pMsg = *it;
-      //first remove the message from the queue, else the message could be processed more then once
-      it = m_vecWindowMessages.erase(it);
+    ThreadMessage* pMsg = m_vecWindowMessages.front();
+    //first remove the message from the queue, else the message could be processed more then once
+    m_vecWindowMessages.pop();
 
-      // leave here in case we make more thread messages from this one
-      lock.Leave();
-      ProcessMessage(pMsg);
-      if (pMsg->hWaitEvent)
-        SetEvent(pMsg->hWaitEvent);
+    // leave here in case we make more thread messages from this one
+    lock.Leave();
 
-      delete pMsg;
-      // reenter
-      lock.Enter();
-    }
+    ProcessMessage(pMsg);
+    if (pMsg->hWaitEvent)
+      SetEvent(pMsg->hWaitEvent);
+    delete pMsg;
+
+    lock.Enter();
   }
 }
 

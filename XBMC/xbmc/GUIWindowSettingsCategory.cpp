@@ -116,6 +116,7 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_pOriginalButton = NULL;
   m_pOriginalCategoryButton = NULL;
   m_pOriginalImage = NULL;
+  m_pOriginalEdit = NULL;
   // set the correct ID range...
   m_dwIDRange = 8;
   m_iScreen = 0;
