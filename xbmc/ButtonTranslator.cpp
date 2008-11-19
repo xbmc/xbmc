@@ -728,6 +728,8 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("filtersms7")) wAction = ACTION_FILTER_SMS7;
   else if (strAction.Equals("filtersms8")) wAction = ACTION_FILTER_SMS8;
   else if (strAction.Equals("filtersms9")) wAction = ACTION_FILTER_SMS9;
+  else if (strAction.Equals("firstpage")) wAction = ACTION_FIRST_PAGE;
+  else if (strAction.Equals("lastpage")) wAction = ACTION_LAST_PAGE;
 
   if (wAction == ACTION_NONE)
   {
