@@ -258,13 +258,7 @@ void XBPython::Initialize()
   {
     if (dThreadId == GetCurrentThreadId())
     {
-#ifndef _LINUX
-      //DllLoader* pDll = g_sectionLoader.LoadDLL(PYTHON_DLL);
-      m_hModule = dllLoadLibraryA(PYTHON_DLL);
-      m_pDll = DllLoaderContainer::GetModule(m_hModule);
-#else
       m_pDll = DllLoaderContainer::LoadModule(PYTHON_DLL, NULL, true);
-#endif
 
       if (!m_pDll || !python_load_dll(*m_pDll))
       {
@@ -358,10 +352,7 @@ void XBPython::Finalize()
     //g_sectionLoader.UnloadDLL(PYTHON_DLL);
     // first free all dlls loaded by python, after that python24.dll (this is done by UnloadPythonDlls
     //dllFreeLibrary(m_hModule);
-    DllLoaderContainer::UnloadPythonDlls();
-#ifdef _LINUX
     DllLoaderContainer::ReleaseModule(m_pDll);
-#endif    
     m_hModule = NULL;
     mainThreadState = NULL;
 

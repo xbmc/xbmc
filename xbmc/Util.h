@@ -285,11 +285,7 @@ public:
   static void StatToStatI64(struct _stati64 *result, struct stat *stat);
   static void Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat);
   static void StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat);
-#ifndef _LINUX
-  static void Stat64ToStat(struct _stat *result, struct __stat64 *stat);
-#else
   static void Stat64ToStat(struct stat *result, struct __stat64 *stat);
-#endif
   static bool CreateDirectoryEx(const CStdString& strPath);
   static CStdString MakeLegalFileName(const CStdString &strFile);
   static void AddDirectorySeperator(CStdString& strPath);

@@ -140,7 +140,6 @@ namespace PYXBMC
   }
 }
 
-#ifdef _LINUX
 
 typedef std::pair<int(*)(void*), void*> Func;
 typedef std::vector<Func> CallQueue;
@@ -186,4 +185,3 @@ void _Py_MakePendingCalls()
   LeaveCriticalSection(&g_critSectionPyCall);
 }
 
-#endif

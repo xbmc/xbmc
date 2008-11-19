@@ -573,7 +573,7 @@ int DllLoader::ResolveExport(const char *sName, void **pAddr)
   return 0;
 }
 
-int DllLoader::ResolveExport(unsigned long ordinal, void **pAddr)
+int DllLoader::ResolveOrdinal(unsigned long ordinal, void **pAddr)
 {
   Export* pExport=GetExportByOrdinal(ordinal);
 
