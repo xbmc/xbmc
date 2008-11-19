@@ -337,7 +337,7 @@ void XBVideoConfig::GetModes()
      m_ResInfo[m_iNumResolutions].iSubtitles = (int)(0.9*h);
      snprintf(m_ResInfo[m_iNumResolutions].strMode,
                sizeof(m_ResInfo[m_iNumResolutions].strMode),
-               "%d x %d (Full screen #%d)", w, h, i+1);
+               "%d x %d (Full Screen #%d)", w, h, i+1);
      if ((float)w / (float)h >= 1.59)
        m_ResInfo[m_iNumResolutions].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
      else

@@ -620,6 +620,41 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   if ((m_Resolution != res) || (m_bFullScreenRoot != g_advancedSettings.m_fullScreen))
 #endif
   {
+#if defined(__APPLE__)
+    // In going FullScreen, m_Resolution == DESKTOP but if using multiple displays
+    // the display resolution will be wrong if the windowed display is moved to
+    // a display with a different resolution. So we have to resort to    
+    // Hack, hack, hack. The basic problem is the resolution is not linked to the 
+    // display so we have to find which display we are going fs on, then search
+    // through the m_ResInfo resolutions to find a matching "Full Screen"
+    // descriptor, then use that index to setup m_Resolution as there are multiple
+    // "DESKTOP" with multiple displays. If the strMode descriptor changes, this
+    // will break but the resolution really need to be linked to a display index.
+    if (m_bFullScreenRoot)
+    {
+      // going to fullscreen desktop but which display if multiple displays?
+      // need to find the m_ResInfo index for that display.
+      int screen_index = Cocoa_GetScreenIndex();
+      char        test_string[256];
+
+      if (screen_index == 1)
+      {
+        strcpy(test_string, "(Full Screen)");
+      }
+      else
+      {
+        sprintf(test_string, "(Full Screen #%d)", screen_index);
+      }
+      for (int i = (int)DESKTOP ; i< (CUSTOM+g_videoConfig.GetNumberOfResolutions()) ; i++)
+      {
+        if (strstr(g_settings.m_ResInfo[i].strMode, test_string) != 0)
+        {
+            res = (RESOLUTION)i;
+            break;
+        }
+      }
+    }
+#endif
     Lock();
     m_iScreenWidth  = g_settings.m_ResInfo[res].iWidth;
     m_iScreenHeight = g_settings.m_ResInfo[res].iHeight;
@@ -1474,9 +1509,6 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
 #endif
     
 #ifdef __APPLE__
-    ResetScreenParameters(m_Resolution);
-    m_iFullScreenWidth = m_iScreenWidth= g_settings.m_ResInfo[m_Resolution].iWidth;
-    m_iFullScreenHeight = m_iScreenHeight = g_settings.m_ResInfo[m_Resolution].iHeight;
     Cocoa_GL_SetFullScreen(m_iFullScreenWidth, m_iFullScreenHeight, true, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen);
 #elif defined(_WIN32PC)
     DEVMODE settings;
