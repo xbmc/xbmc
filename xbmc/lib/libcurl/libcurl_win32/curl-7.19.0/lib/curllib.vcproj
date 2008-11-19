@@ -39,7 +39,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib wldap32.lib ..\..\..\..\zlib\zlib.lib"
+				AdditionalDependencies="ws2_32.lib  ..\..\..\..\zlib\zlib.lib"
 				OutputFile="DLL-Release/libcurl.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
