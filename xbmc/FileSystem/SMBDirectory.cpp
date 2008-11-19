@@ -85,7 +85,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 #ifdef _WIN32PC
   // FIXME: This is only a workaround and part 1 of #4848
   if(strPath == "smb://")
-    return g_WNETHelper.GetShares(items);
+    return CWNETHelper::GetShares(items);
 #endif
   // We accept smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
   CFileItemList vecCacheItems;

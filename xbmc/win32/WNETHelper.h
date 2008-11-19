@@ -29,13 +29,10 @@ public:
   CWNETHelper(void);
   ~CWNETHelper(void);
 
-  bool GetShares(CFileItemList &items);
+  static bool GetShares(CFileItemList &items);
 
 private:
 
-  bool EnumerateFunc(LPNETRESOURCE lpnr);
-  CFileItemList m_items;
+  static bool EnumerateFunc(LPNETRESOURCE lpnr, CFileItemList &items);
 
 };
-
-extern CWNETHelper g_WNETHelper;
