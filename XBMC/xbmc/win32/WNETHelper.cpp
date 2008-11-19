@@ -23,8 +23,6 @@
 #include "WNETHelper.h"
 #include "WIN32Util.h"
 
-CWNETHelper g_WNETHelper;
-
 using namespace std;
 
 
@@ -34,21 +32,18 @@ CWNETHelper::CWNETHelper(void)
 
 CWNETHelper::~CWNETHelper(void)
 {
-  m_items.Clear();
 }
 
 bool CWNETHelper::GetShares(CFileItemList &items)
 {
   bool ret;
-  m_items.Clear();
   LPNETRESOURCE lpnr = NULL;
-  ret = g_WNETHelper.EnumerateFunc(lpnr);
-  items = m_items;
+  ret = EnumerateFunc(lpnr, items);
   return ret;
 }
 
 
-bool CWNETHelper::EnumerateFunc(LPNETRESOURCE lpnr)
+bool CWNETHelper::EnumerateFunc(LPNETRESOURCE lpnr, CFileItemList &items)
 {
   DWORD dwResult, dwResultEnum;
   HANDLE hEnum;
@@ -117,13 +112,13 @@ bool CWNETHelper::EnumerateFunc(LPNETRESOURCE lpnr)
           rooturl.SetFileName("");
           pItem->m_strPath = CWIN32Util::URLEncode(rooturl);
           pItem->m_bIsFolder = true;
-          m_items.Add(pItem);
+          items.Add(pItem);
         }
 
         // If the NETRESOURCE structure represents a container resource, 
         //  call the EnumerateFunc function recursively.
         if (RESOURCEUSAGE_CONTAINER == (lpnrLocal[i].dwUsage & RESOURCEUSAGE_CONTAINER))
-          EnumerateFunc(&lpnrLocal[i]);
+          EnumerateFunc(&lpnrLocal[i], items);
       }
     }
     // Process errors.
