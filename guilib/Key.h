@@ -259,6 +259,9 @@
 #define ACTION_FILTER_SMS8            157
 #define ACTION_FILTER_SMS9            158
 
+#define ACTION_FIRST_PAGE             159
+#define ACTION_LAST_PAGE              160
+
 #define ACTION_TOGGLE_FULLSCREEN      199 // switch 2 desktop resolution
 
 // Window ID defines to make the code a bit more readable
