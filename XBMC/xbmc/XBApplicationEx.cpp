@@ -23,7 +23,7 @@
 #include "GUIFontManager.h"
 #ifdef _WIN32PC
 #include <dbt.h>
-#include "SDL/SDL_syswm.h"
+#include "SDL_syswm.h"
 #include "GUIWindowManager.h"
 #include "WIN32Util.h"
 extern HWND g_hWnd;

@@ -29,7 +29,7 @@
 #include <sys/sysctl.h>
 #include <SDL/SDL.h>
 #else
-#include <SDL.h>
+#include <SDL/SDL.h>
 #endif
 
 #ifdef _LINUX

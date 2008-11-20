@@ -29,6 +29,7 @@
 #define DEBUG_MOUSE
 #define DEBUG_KEYBOARD
 
+#include "config.h"
 #include "system.h"
 #include <vector>
 #include <list>

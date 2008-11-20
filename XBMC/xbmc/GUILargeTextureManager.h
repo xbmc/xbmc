@@ -24,7 +24,7 @@
 #include "utils/Thread.h"
 #include "utils/CriticalSection.h"
 #ifdef HAS_SDL
-#include "SDL/SDL.h"
+#include "SDL.h"
 #include "TextureManager.h"
 #endif
 

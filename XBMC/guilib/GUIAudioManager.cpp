@@ -30,7 +30,7 @@
 #include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/Directory.h"
 #ifdef HAS_SDL_AUDIO
-#include <SDL/SDL_mixer.h>
+#include <SDL_mixer.h>
 #endif
 
 using namespace std;

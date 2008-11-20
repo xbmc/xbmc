@@ -164,8 +164,8 @@ typedef D3DPalette* LPDIRECT3DPALETTE8;
 #define GUI_D3D_FMT D3DFMT_X8R8G8B8
 
 #ifdef HAS_SDL
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#include <SDL.h>
+#include <SDL_image.h>
 #ifdef HAS_SDL_OPENGL
 #if defined(_LINUX) && !defined(GL_GLEXT_PROTOTYPES)
 #define GL_GLEXT_PROTOTYPES

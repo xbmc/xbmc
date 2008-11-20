@@ -26,7 +26,7 @@
 #if defined(HAS_SDL_OPENGL)
 #include <GL/glew.h>
 #elif defined(HAS_SDL_2D)
-#include <SDL/SDL_rotozoom.h>
+#include <SDL_rotozoom.h>
 #endif
 
 using namespace std;

@@ -34,7 +34,7 @@
 #include <ft2build.h>
 #endif
 #ifdef HAS_SDL_2D
-#include <SDL/SDL_rotozoom.h>
+#include <SDL_rotozoom.h>
 #endif
 #include FT_FREETYPE_H
 #include FT_GLYPH_H

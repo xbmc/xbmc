@@ -25,7 +25,7 @@
 #include "Settings.h"
 #include "FileSystem/File.h"
 #ifdef HAS_SDL_AUDIO
-#include <SDL/SDL_mixer.h>
+#include <SDL_mixer.h>
 #endif
 #ifndef HAS_SDL_AUDIO
 

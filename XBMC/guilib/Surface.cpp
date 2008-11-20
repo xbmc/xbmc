@@ -34,7 +34,7 @@
 using namespace Surface;
 
 #ifdef HAS_SDL_OPENGL
-#include <SDL/SDL_syswm.h>
+#include <SDL_syswm.h>
 #include "XBVideoConfig.h"
 #endif
 

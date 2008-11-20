@@ -22,7 +22,7 @@
 #pragma once
 
 #ifdef HAS_SDL_AUDIO
-#include <SDL/SDL_mixer.h>
+#include <SDL_mixer.h>
 #endif
 
 class CGUISound

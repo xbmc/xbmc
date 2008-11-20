@@ -31,7 +31,7 @@
 
 #include <string>
 #ifdef HAS_SDL
-#include <SDL/SDL.h>
+#include <SDL.h>
 #endif
 
 #ifdef HAS_SDL_OPENGL
