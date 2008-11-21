@@ -10,7 +10,7 @@ SET(CMAKE_VERBOSE_MAKEFILE ON)
 ##
 # Things that change "often" (sources and dirs)
 ##
-SET(DIRS guilib)
+SET(DIRS guilib xbmc)
 
 ##
 # Set up include directories
