@@ -1118,7 +1118,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "percentseekforwardbig", g_advancedSettings.m_videoPercentSeekForwardBig, 0, 100);
     GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_videoPercentSeekBackwardBig, -100, 0);
     GetInteger(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 0, 255);
-    GetString(pElement, "defaultplayer", g_advancedSettings.m_videoDefaultPlayer, "MPlayer");
+    GetString(pElement, "defaultplayer", g_advancedSettings.m_videoDefaultPlayer, "mplayer");
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
