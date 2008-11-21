@@ -186,20 +186,13 @@ case TMSG_POWERDOWN:
       }
       break;
 
-#ifdef HAS_XBOXHARDWARE
-    case TMSG_DASHBOARD:
-      {
-        CUtil::ExecBuiltIn("XBMC.Dashboard()");
-      }
-      break;
-#else
     case TMSG_QUIT:
       {
         g_application.Stop();
         exit(0);
       }
       break;
-#endif
+    
     case TMSG_HIBERNATE:
       {
 #ifdef HAS_HAL
