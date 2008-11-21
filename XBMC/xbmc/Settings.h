@@ -128,6 +128,7 @@ public:
 
     int m_audioHeadRoom;
     float m_karaokeSyncDelay;
+    CStdString m_audioDefaultPlayer;
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
@@ -144,6 +145,8 @@ public:
     int m_videoPercentSeekForwardBig;
     int m_videoPercentSeekBackwardBig;
     int m_videoBlackBarColour;
+    CStdString m_videoDefaultPlayer;
+
 
     float m_slideshowBlackBarCompensation;
     float m_slideshowZoomAmount;

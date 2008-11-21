@@ -135,7 +135,8 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_audioHeadRoom = 0;
   g_advancedSettings.m_karaokeSyncDelay = 0.0f;
-
+  g_advancedSettings.m_audioDefaultPlayer = "paplayer";
+  
   g_advancedSettings.m_videoSubsDelayRange = 10;
   g_advancedSettings.m_videoAudioDelayRange = 10;
   g_advancedSettings.m_videoSmallStepBackSeconds = 7;
@@ -151,6 +152,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoPercentSeekForwardBig = 10;
   g_advancedSettings.m_videoPercentSeekBackwardBig = -10;
   g_advancedSettings.m_videoBlackBarColour = 1;
+  g_advancedSettings.m_videoDefaultPlayer = "mplayer";
 
   g_advancedSettings.m_slideshowPanAmount = 2.5f;
   g_advancedSettings.m_slideshowZoomAmount = 5.0f;
@@ -1037,6 +1039,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
       GetFloat(pElement, setting + "whisper", g_stSettings.m_karaokeVoiceMask[i].whisper, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
       GetFloat(pElement, setting + "robotic", g_stSettings.m_karaokeVoiceMask[i].robotic, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
     }
+    GetString(pElement, "defaultplayer", g_advancedSettings.m_audioDefaultPlayer, "paplayer");
   }
 
   LoadCalibration(pRootElement, strSettingsFile);
@@ -1115,6 +1118,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "percentseekforwardbig", g_advancedSettings.m_videoPercentSeekForwardBig, 0, 100);
     GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_videoPercentSeekBackwardBig, -100, 0);
     GetInteger(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 0, 255);
+    GetString(pElement, "defaultplayer", g_advancedSettings.m_videoDefaultPlayer, "MPlayer");
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
