@@ -41,6 +41,7 @@
 #include "GUIDialogOK.h"
 #include "GUISettings.h"
 #include "FileItem.h"
+#include "Settings.h"
 
 using namespace DIRECTORY;
 
@@ -107,20 +108,23 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         // make sure we use the authenticated path wich contains any default username
         CStdString strFullName = strAuth + smb.URLEncode(strFile);
 
-        if( smbc_stat(strFullName.c_str(), &info) == 0 )
+        // Disable smb stat() to speed up things (set in advancedsettings)?
+        if ( ! g_advancedSettings.m_sambanostat )
         {
-          if((info.st_mode & S_IXOTH) && !g_guiSettings.GetBool("smb.showhidden"))
-            hidden = true;
+          if( smbc_stat(strFullName.c_str(), &info) == 0 )
+          {
+            if((info.st_mode & S_IXOTH) && !g_guiSettings.GetBool("smb.showhidden"))
+              hidden = true;
 
-          bIsDir = (info.st_mode & S_IFDIR) ? true : false;
-          lTimeDate = info.st_mtime;
-          if(lTimeDate == 0) /* if modification date is missing, use create date */
-            lTimeDate = info.st_ctime;
-          iSize = info.st_size;          
+            bIsDir = (info.st_mode & S_IFDIR) ? true : false;
+            lTimeDate = info.st_mtime;
+            if(lTimeDate == 0) /* if modification date is missing, use create date */
+              lTimeDate = info.st_ctime;
+            iSize = info.st_size;
+          }
+          else
+            CLog::Log(LOGERROR, "%s - Failed to stat file %s", __FUNCTION__, strFullName.c_str());
         }
-        else
-          CLog::Log(LOGERROR, "%s - Failed to stat file %s", __FUNCTION__, strFullName.c_str());
-
       }
 
       FILETIME fileTime, localTime;
