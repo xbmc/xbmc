@@ -862,14 +862,6 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
 
-#ifdef _XBOX
-  CStdString strKeyboardLayoutConfigurationPath;
-  strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", strLanguage.c_str());
-  strKeyboardLayoutConfigurationPath = _P(strKeyboardLayoutConfigurationPath);
-  CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
-  g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
-#endif
-
   m_splash = new CSplash(_P("Q:\\media\\splash.png"));
 #ifndef HAS_SDL_OPENGL
   m_splash->Start();
