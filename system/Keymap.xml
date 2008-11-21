@@ -265,6 +265,7 @@
 
     <keyboard>
       <i>info</i>
+      <end>XBMC.ShutDown()</end>
     </keyboard>
   </Home>
   
