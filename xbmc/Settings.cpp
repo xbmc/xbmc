@@ -209,6 +209,8 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_sambaclienttimeout = 10;
   g_advancedSettings.m_sambadoscodepage = "";
+  g_advancedSettings.m_sambanostat = false;
+  
   g_advancedSettings.m_musicThumbs = "folder.jpg";
   g_advancedSettings.m_dvdThumbs = "folder.jpg";
 
@@ -1176,6 +1178,7 @@ void CSettings::LoadAdvancedSettings()
   {
     GetString(pElement,  "doscodepage",   g_advancedSettings.m_sambadoscodepage);
     GetInteger(pElement, "clienttimeout", g_advancedSettings.m_sambaclienttimeout, 5, 100);
+    XMLUtils::GetBoolean(pElement, "nostat", g_advancedSettings.m_sambanostat);
   }
 
   if (GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NONE, LOG_LEVEL_MAX))
