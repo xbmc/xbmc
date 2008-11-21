@@ -13,8 +13,8 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
   
-#include "avutil.h"
-#include "postprocess.h"
+#include "libavutil/avutil.h"
+#include "libpostproc/postprocess.h"
 }
 
 class DllPostProcInterface

@@ -17,7 +17,7 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
 
-#include "avcodec.h"
+#include "libavcodec/avcodec.h"
 }
 
 class DllAvCodecInterface

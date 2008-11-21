@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "DVDDemuxUtils.h"
 extern "C" {
-#include "../../ffmpeg/avcodec.h"
+#include "../../ffmpeg/libavcodec/avcodec.h"
 }
 
 void CDVDDemuxUtils::FreeDemuxPacket(DemuxPacket* pPacket)
