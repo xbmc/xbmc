@@ -2,10 +2,5 @@ SET(SRCS ActionManager.cpp AnimatedGif.cpp AudioContext.cpp DirectXGraphics.cpp 
 
 SET(DIRS common tinyXML)
 
-FOREACH(dir ${DIRS})
-  ADD_SUBDIRECTORY(${dir})
-ENDFOREACH(dir)
-
-ADD_LIBRARY(guilib STATIC ${SRCS})
-TARGET_LINK_LIBRARIES(guilib ${DIRS})
+INCLUDE(${CMAKE_SOURCE_DIR}/CMakeLists.common)
 
