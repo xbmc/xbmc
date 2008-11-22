@@ -911,6 +911,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   {
   case WEATHER_CONDITIONS:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND);
+    strLabel = strLabel.Trim();
     break;
   case WEATHER_TEMPERATURE:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_TEMP);
