@@ -62,8 +62,9 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
     return false;
   }
   
-  if (m_pFile->GetImplemenation())
-    m_content = m_pFile->GetImplemenation()->GetContent();
+  // brakes Enigma2 Streaming
+  //if (m_pFile->GetImplemenation())
+  //  m_content = m_pFile->GetImplemenation()->GetContent(); 
   
   m_eof = true;
   return true;
