@@ -464,12 +464,13 @@ void CGUIWindowPictures::OnSlideShowRecursive(const CStdString &strPicture)
     g_application.StopPlaying();
 
   pSlideShow->Reset();
-  AddDir(pSlideShow, m_vecItems->m_strPath);
+  if (strPicture.IsEmpty())
+    AddDir(pSlideShow, m_vecItems->m_strPath);
+  else
+    AddDir(pSlideShow, strPicture);
   if (g_guiSettings.GetBool("slideshow.shuffle"))
     pSlideShow->Shuffle();
   pSlideShow->StartSlideShow();
-  if (!strPicture.IsEmpty())
-    pSlideShow->Select(strPicture);
   if (pSlideShow->NumSlides())
     m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
@@ -495,19 +496,25 @@ void CGUIWindowPictures::OnSlideShow(const CStdString &strPicture)
     g_application.StopPlaying();
 
   pSlideShow->Reset();
-  for (int i = 0; i < (int)m_vecItems->Size();++i)
+  CFileItemList* items=m_vecItems;
+  if (!strPicture.IsEmpty())
   {
-    CFileItemPtr pItem = m_vecItems->Get(i);
+    items = new CFileItemList;
+    CGUIMediaWindow::GetDirectory(strPicture,*items);
+  }
+  for (int i = 0; i < (int)items->Size();++i)
+  {
+    CFileItemPtr pItem = items->Get(i);
     if (!pItem->m_bIsFolder && !(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)))
     {
       pSlideShow->Add(pItem.get());
     }
   }
+  if (!strPicture.IsEmpty())
+    delete items;
   if (g_guiSettings.GetBool("slideshow.shuffle"))
     pSlideShow->Shuffle();
   pSlideShow->StartSlideShow();
-  if (!strPicture.IsEmpty())
-    pSlideShow->Select(strPicture);
   if (pSlideShow->NumSlides())
     m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
@@ -535,10 +542,11 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
   {
     if (item)
     {
-      if (m_vecItems->GetFileCount() != 0)
+      if (item->m_bIsFolder)
+      {
         buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, 13317);      // View Slideshow
-
-      buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
+        buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
+      }
       if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
         buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
 
