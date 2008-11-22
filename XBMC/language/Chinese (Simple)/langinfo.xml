@@ -1,16 +1,14 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <language>
   <charsets>
     <gui unicodefont="true">CP936</gui>
     <subtitle>CP936</subtitle>
   </charsets>
-
   <dvd>
     <menu>zh</menu>
     <audio>zh</audio>
     <subtitle>zh</subtitle>
   </dvd>
-
   <regions>
     <region>
       <dateshort>YYYY-M-D</dateshort>
@@ -21,4 +19,3 @@
     </region>
   </regions>
 </language>
-
