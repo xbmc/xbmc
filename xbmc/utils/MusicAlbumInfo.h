@@ -48,11 +48,14 @@ public:
   const CStdString& GetTitle2() const;
   const CStdString& GetDateOfRelease() const;
   const CScraperUrl& GetAlbumURL() const;
+  float GetRelevance() const { return m_relevance; }
   void SetTitle(const CStdString& strTitle);
+  void SetRelevance(float relevance) { m_relevance = relevance; }
   bool Load(CHTTP& http, const SScraperInfo& info, const CStdString& strFunction="GetAlbumDetails", const CScraperUrl* url=NULL);
   bool Parse(const TiXmlElement* album, bool bChained=false);
 protected:
   CAlbum m_album;
+  float m_relevance;
   CStdString m_strTitle2;
   CScraperUrl m_albumURL;
   bool m_bLoaded;
