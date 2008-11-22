@@ -85,6 +85,8 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
   g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
 
   m_Context = NULL;
+  m_Stream = NULL;
+  m_MainLoop = NULL;
   m_bPause = false;
   m_bCanPause = false;
   m_bIsAllocated = false;
@@ -158,7 +160,8 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
   pa_threaded_mainloop_lock(m_MainLoop);
 
   if (pa_threaded_mainloop_start(m_MainLoop) < 0)
-  {    
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Failed to start MainLoop");
     if (m_MainLoop)
       pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
@@ -169,15 +172,17 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
   pa_threaded_mainloop_wait(m_MainLoop);
 
   if (pa_context_get_state(m_Context) != PA_CONTEXT_READY)
-  {    
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Waited for the Context but it isn´t ready");
     if (m_MainLoop)
       pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
     return;
   }
 
-  if (!(m_Stream = pa_stream_new(m_Context, "audio stream", &m_SampleSpec, &map)))
-  {    
+  if ((m_Stream = pa_stream_new(m_Context, "audio stream", &m_SampleSpec, &map)) == NULL)
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Could not create a stream");
     if (m_MainLoop)
       pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
@@ -189,7 +194,8 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
   pa_stream_set_latency_update_callback(m_Stream, StreamLatencyUpdateCallback, m_MainLoop);
 
   if (pa_stream_connect_playback(m_Stream, sink, NULL, ((pa_stream_flags)(PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE)), &m_Volume, NULL) < 0)
-  {    
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Failed to connect stream to output");
     if (m_MainLoop)
       pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
@@ -200,7 +206,8 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
   pa_threaded_mainloop_wait(m_MainLoop);
 
   if (pa_stream_get_state(m_Stream) != PA_STREAM_READY)
-  {    
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Waited for the stream but it isn´t ready");
     if (m_MainLoop)
       pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
