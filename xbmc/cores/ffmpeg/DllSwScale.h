@@ -18,9 +18,9 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
 
-#include "libavutil/avutil.h"
-#include "libswscale/swscale.h"
-//#include "rgb2rgb.h"
+#include "avutil.h"
+#include "swscale.h"
+
 }
 
 class DllSwScaleInterface
