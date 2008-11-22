@@ -96,6 +96,8 @@ bool CGUIWindowVideoBase::OnAction(const CAction &action)
     m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
     return true;
   }
+  if (action.wID == ACTION_SCAN_ITEM)
+    return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_SCAN);
 
   return CGUIMediaWindow::OnAction(action);
 }
@@ -1132,15 +1134,28 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_SCAN:
   case CONTEXT_BUTTON_UPDATE_TVSHOW:
     {
+      if( !item)
+        return false;
       SScraperInfo info;
       SScanSettings settings;
       GetScraperForItem(item.get(), info, settings);
       CStdString strPath = item->m_strPath;
+      if (item->IsVideoDb() && (!item->m_bIsFolder || item->GetVideoInfoTag()->m_strPath.IsEmpty()))
+        return false;
+
       if (item->IsVideoDb())
         strPath = item->GetVideoInfoTag()->m_strPath;
 
-      m_database.SetPathHash(strPath,""); // to force scan
-      OnScan(strPath,info,settings);
+      if (info.strContent.IsEmpty())
+        return false;
+
+      if (item->m_bIsFolder)
+      {
+        m_database.SetPathHash(strPath,""); // to force scan
+        OnScan(strPath,info,settings);
+      }
+      else
+        OnInfo(item.get(),info);
 
       return true;
     }
