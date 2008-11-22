@@ -27,11 +27,7 @@
 using namespace MUSIC_INFO;
 
 //  From EMUmsvcrt.cpp to open a file for a dll
-#ifndef _LINUX
 extern "C" FILE * dll_fopen (const char * filename, const char * mode);
-#else
-#define dll_fopen fopen
-#endif
 
 COggTag::COggTag()
 {
