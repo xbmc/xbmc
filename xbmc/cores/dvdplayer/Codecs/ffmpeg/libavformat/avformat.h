@@ -35,7 +35,6 @@
 
 #define LIBAVFORMAT_IDENT       "Lavf" AV_STRINGIFY(LIBAVFORMAT_VERSION)
 
-#define strcasecmp _stricmp
 
 /**
  * Returns the LIBAVFORMAT_VERSION_INT constant.
