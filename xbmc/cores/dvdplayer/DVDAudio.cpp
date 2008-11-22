@@ -24,6 +24,9 @@
 #if defined(__APPLE__)
 #include "PortaudioDirectSound.h"
 #elif _LINUX
+#ifdef HAS_PULSEAUDIO
+#include "PulseAudioDirectSound.h"
+#endif
 #include "ALSADirectSound.h"
 #else
 #include "cores/mplayer/Win32DirectSound.h"
@@ -100,8 +103,19 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
   m_pAudioDecoder = paDecoder;
 
 #elif _LINUX
-
-  m_pAudioDecoder = new CALSADirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
+#ifdef HAS_PULSEAUDIO
+  CPulseAudioDirectSound *pulseAudio = new CPulseAudioDirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
+  if (pulseAudio->IsValid() == false)
+  {
+    delete pulseAudio;
+    pulseAudio = 0;
+    m_pAudioDecoder = new CALSADirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
+  }
+  else
+    m_pAudioDecoder = pulseAudio;
+#else
+   m_pAudioDecoder = new CALSADirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
+#endif
 
 #else
 
