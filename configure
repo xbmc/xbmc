@@ -6204,9 +6204,8 @@ echo "${ECHO_T}$ac_cv_lib_pulse_main" >&6; }
 if test $ac_cv_lib_pulse_main = yes; then
   LZO_INCLUDES="$LZO_INCLUDES -DHAS_PULSEAUDIO"
 else
-  { { echo "$as_me:$LINENO: error: == Could not find a required library. Please see README.linux" >&5
-echo "$as_me: error: == Could not find a required library. Please see README.linux" >&2;}
-   { (exit 1); exit 1; }; }
+  { echo "$as_me:$LINENO: result: == Could not find libpulse. PulseAudio support disabled" >&5
+echo "${ECHO_T}== Could not find libpulse. PulseAudio support disabled" >&6; }
 fi
 
 if test "$host_vendor" != "apple" ; then
