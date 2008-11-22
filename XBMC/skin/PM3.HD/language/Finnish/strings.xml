@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
-<!--Date of translation: 18/9/2008-->
+<!--Translator: Mika Pirinen -->
+<!--Date of translation: 18/11/2008 -->
 <strings>
   <string id="31000">Ääni vaimennettu</string>
   <string id="31001"></string>
@@ -34,13 +35,13 @@
   <string id="31028">DVD:n pienoiskuvat</string>
   <string id="31029">DVD-luettelo</string>
   <string id="31030">Fanitaide</string>
-  <string id="31031">Täysiluettelo</string>
+  <string id="31031">Luettelo</string>
   <string id="31032">-</string>
   <string id="31033">Kuvien pienoiskuvat</string>
   <string id="31034">Leveät kuvakkeet</string>
 
-  <string id="31040">Nykyinen elokuva[CR]Fanitaide kuva[CR][CR]Paina vaihtaaksesi</string>
-  <string id="31041">Nykyinen TV-ohjelma[CR]Fanitaide kuva[CR][CR]Paina vaihtaaksesi</string>
+  <string id="31040">Nykyinen elokuvan[CR]fanitaide kuva[CR][CR]näpäytä vaihtaaksesi</string>
+  <string id="31041">Nykyinen TV-ohjelman[CR]fanitaide kuva[CR][CR]näpäytä  vaihtaaksesi</string>
   <string id="31042">TOISTETAAN</string>
   <string id="31043">TAUKO</string>
   <string id="31044">KELAA ETEEN</string>
@@ -67,29 +68,30 @@
   
   <!-- Skin Settings labels -->
   <string id="31100">Taustan asetukset</string>
-  <string id="31101">Koti-ikkunan asetukset</string>
+  <string id="31101">Päävalikon asetukset</string>
   <string id="31102">Taustat</string>
   <string id="31103">Näytä "TAUKO" kuvaesityksessä</string>
-  <string id="31104"></string>
+  <string id="31104">Sammutusvalikko - Käytä horrostilan sijaan valmiustilaa</string>
   <string id="31105">Näytä median nimet taustahaussa</string>
   <string id="31106">Muut asetukset</string>
   <string id="31107">Poista pyyhkäisyviivat taustasta</string>
   <string id="31108">Poista pyyhkäisyviivat taustasta videon toiston aikana</string>
-  <string id="31109">Koti-ikkunan taustat</string>
-  <string id="31110">Nappi - Omat taustat käytössä</string>
+  <string id="31109">Päävalikon taustat</string>
+  <string id="31110">painikkeen omat taustat käytössä</string>
   <string id="31111">Näytä musiikin tiedot käytettäessä Lyrics-skriptiä</string>
+  <string id="31112">Näytä median nimet "Leveät kuvakkeet" näkymässä</string>
 
   <!-- Script Settings labels -->
-  <string id="31200">Omat sktripti asetukset</string>
+  <string id="31200">Omat skripti asetukset</string>
   <string id="31201"></string>
   <string id="31202"></string>
   <string id="31203">Aseta painikkeen teksti</string>
-  <string id="31204">Skriptipolku</string>
+  <string id="31204">Skriptin sijainti</string>
   <string id="31205"></string>
   <string id="31206"></string>
   <string id="31207"></string>
   <string id="31208">Näytä Lyrics-skriptin painike OSD:ssä</string>
-  <string id="31209">Pikakäynnistys painike käytössä skriptille -</string>
+  <string id="31209">Skriptin pikakäynnistyspainike valikkoon -</string>
 
   <!-- AMT Script Extra labels -->
   <string id="31300">Näytä näyttelijät</string>
