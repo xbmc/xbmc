@@ -270,6 +270,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_GLRectangleHack = false;
   g_advancedSettings.m_iSkipLoopFilter = 0;
   g_advancedSettings.m_osx_GLFullScreen = false;
+  g_advancedSettings.m_bVirtualShares = true;
 
 #ifdef _WIN32
 	g_advancedSettings.m_ForcedSwapTime = 2.0;
@@ -1275,8 +1276,9 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement,"rootovershoot",g_advancedSettings.m_bUseEvilB);
   XMLUtils::GetBoolean(pRootElement,"glrectanglehack", g_advancedSettings.m_GLRectangleHack);
   GetInteger(pRootElement,"skiploopfilter", g_advancedSettings.m_iSkipLoopFilter, 0, -16, 48);
-	GetFloat(pRootElement, "forcedswaptime", g_advancedSettings.m_ForcedSwapTime, 0.0, 100.0);
+  GetFloat(pRootElement, "forcedswaptime", g_advancedSettings.m_ForcedSwapTime, 0.0, 100.0);
   XMLUtils::GetBoolean(pRootElement,"osx_gl_fullscreen", g_advancedSettings.m_osx_GLFullScreen);
+  XMLUtils::GetBoolean(pRootElement,"virtualshares", g_advancedSettings.m_bVirtualShares); 
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");

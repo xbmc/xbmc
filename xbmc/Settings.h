@@ -239,6 +239,7 @@ public:
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
     bool m_osx_GLFullScreen;
+    bool m_bVirtualShares; 
   };
 
   struct stSettings
