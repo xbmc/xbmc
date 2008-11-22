@@ -730,7 +730,7 @@ float CGUISettings::GetFloat(const char *strSetting) const
     return ((CSettingFloat *)(*it).second)->GetData();
   }
   // Assert here and write debug output
-  ASSERT(false);
+  //ASSERT(false);
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   return 0.0f;
 }
@@ -800,7 +800,7 @@ int CGUISettings::GetInt(const char *strSetting) const
   }
   // Assert here and write debug output
   CLog::Log(LOGERROR,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
-  ASSERT(false);
+  //ASSERT(false);
   return 0;
 }
 
@@ -873,7 +873,7 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
   }
   // Assert here and write debug output
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
-  ASSERT(false);
+  //ASSERT(false);
   // hardcoded return value so that compiler is happy
   return ((CSettingString *)(*settingsMap.begin()).second)->GetData();
 }
