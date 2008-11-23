@@ -36,7 +36,7 @@ extern "C" {
 #ifndef __GNUC__
 #pragma warning(disable:4244)
 #endif
-#include "../../ffmpeg/libavcodec/avcodec.h"
+#include "../../ffmpeg/avcodec.h"
 }
 
 // 0x100000 is the video starting range
