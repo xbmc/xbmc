@@ -556,6 +556,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("viewmode")) ret = CONTAINER_VIEWMODE;
     else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
     else if (info.Equals("onprevious")) ret = CONTAINER_ON_PREVIOUS;
+    else if (info.Equals("totaltime")) ret = CONTAINER_TOTALTIME;
     else if (info.Equals("scrolling"))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SCROLLING : CONTAINER_SCROLLING, id, 0));
     else if (info.Equals("hasnext"))
@@ -1106,6 +1107,28 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
         return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("showplot");
+    }
+    break;
+  case CONTAINER_TOTALTIME:
+    {
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+      {
+        const CFileItemList& items=((CGUIMediaWindow *)window)->CurrentDirectory();
+        int duration=0;
+        for (int i=0;i<items.Size();++i)
+        {
+          CFileItemPtr item=items.Get(i);
+          if (item->HasMusicInfoTag())
+            duration += item->GetMusicInfoTag()->GetDuration();
+        }
+        if (duration > 0)
+        {
+          CStdString result;
+          StringUtils::SecondsToTimeString(duration,result);
+          return result;
+        }
+      }
     }
     break;
   case SYSTEM_BUILD_VERSION:
