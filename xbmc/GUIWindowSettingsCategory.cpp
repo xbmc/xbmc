@@ -1954,6 +1954,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     {
       bWriteOnly = false;
       shares = g_settings.m_videoSources;
+      g_mediaManager.GetLocalDrives(shares);
     }
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path, bWriteOnly))
     {
