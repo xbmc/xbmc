@@ -173,7 +173,7 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
 
   if (pa_context_get_state(m_Context) != PA_CONTEXT_READY)
   {
-    CLog::Log(LOGERROR, "PulseAudio: Waited for the Context but it isn´t ready");
+    CLog::Log(LOGERROR, "PulseAudio: Waited for the Context but it isn't ready");
     if (m_MainLoop)
       pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
@@ -207,7 +207,7 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
 
   if (pa_stream_get_state(m_Stream) != PA_STREAM_READY)
   {
-    CLog::Log(LOGERROR, "PulseAudio: Waited for the stream but it isn´t ready");
+    CLog::Log(LOGERROR, "PulseAudio: Waited for the stream but it isn't ready");
     if (m_MainLoop)
       pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
