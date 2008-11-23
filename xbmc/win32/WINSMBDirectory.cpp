@@ -40,12 +40,11 @@ using namespace DIRECTORY;
 
 CWINSMBDirectory::CWINSMBDirectory(void)
 {
-  m_strHost.clear();
+  m_bHost=false;
 }
 
 CWINSMBDirectory::~CWINSMBDirectory(void)
 {
-  m_strHost.clear();
 }
 
 bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items)
@@ -57,8 +56,6 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
   CFileItemList vecCacheItems;
   g_directoryCache.ClearDirectory(strPath1);
 
-
-  CStdString strRoot = strPath;
   CURL url(strPath);
 
   if(url.GetShareName().empty())
@@ -73,10 +70,10 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
 
       CStdString strHost = "\\\\" + url.GetHostName();
       lpnr->lpRemoteName = (char*)strHost.c_str();
-      m_strHost = url.GetHostName();
+      m_bHost = true;
       ret = EnumerateFunc(lpnr, items);
       GlobalFree((HGLOBAL) lpnr);
-      m_strHost.clear();
+      m_bHost = false;
     }
     else
       ret = EnumerateFunc(lpnr, items);  
@@ -85,13 +82,12 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
   }
 
   memset(&wfd, 0, sizeof(wfd));
-  strRoot.Replace("smb:","");
-  if (!CUtil::HasSlashAtEnd(strPath) ) 
-    strRoot += "/";
-  strRoot.Replace("/", "\\");
+  //rebuild the URL
+  m_strUNCShare = "\\\\" + url.GetHostName() + "\\" + url.GetFileName();
+  m_strUNCShare.Replace("/", "\\");
 
   CStdStringW strSearchMask;
-  g_charsetConverter.utf8ToW(strRoot, strSearchMask, false); 
+  g_charsetConverter.utf8ToW(m_strUNCShare, strSearchMask, false); 
   strSearchMask += "*.*";
 
   FILETIME localTime;
@@ -101,6 +97,13 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
   if (!hFind.isValid()) 
   {
     DWORD ret = GetLastError();
+    if(ret == ERROR_ACCESS_DENIED)
+    {
+      if(ConnectToShare(url) == false)
+        return false;
+      hFind.attach(FindFirstFileW(strSearchMask.c_str(), &wfd));
+    }
+    else
       return Exists(strPath1);
   }
 
@@ -288,8 +291,8 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCE lpnr, CFileItemList &items)
           CFileItemPtr pItem(new CFileItem(strName));        
           pItem->m_strPath = strurl;
           pItem->m_bIsFolder = true;
-          if(((dwDisplayType == RESOURCEDISPLAYTYPE_SERVER) && m_strHost.empty()) ||
-             ((dwDisplayType == RESOURCEDISPLAYTYPE_SHARE) && !m_strHost.empty()))
+          if(((dwDisplayType == RESOURCEDISPLAYTYPE_SERVER) && (m_bHost == false)) ||
+             ((dwDisplayType == RESOURCEDISPLAYTYPE_SHARE) && m_bHost))
             items.Add(pItem);
         }
 
@@ -330,4 +333,54 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCE lpnr, CFileItemList &items)
   }
 
   return true;
+}
+
+bool CWINSMBDirectory::ConnectToShare(const CURL& url)
+{
+  NETRESOURCE nr;
+  CURL newurl;
+  DWORD dwRet;
+  memset(&nr,0,sizeof(nr));
+  nr.dwType = RESOURCETYPE_ANY;
+  nr.lpRemoteName = (char*)m_strUNCShare.c_str();
+  
+  if(!url.GetUserNameA().empty() || !g_guiSettings.GetString("smb.username").IsEmpty())
+  {
+    if(!url.GetUserNameA().empty())
+      dwRet = WNetAddConnection2(&nr,(LPCTSTR)url.GetUserNameA().c_str(), (LPCTSTR)url.GetPassWord().c_str(), NULL);
+    else
+      dwRet = WNetAddConnection2(&nr,(LPCTSTR)g_guiSettings.GetString("smb.username").c_str(), (LPCTSTR)g_guiSettings.GetString("smb.password").c_str(), NULL);
+
+    if(dwRet == ERROR_ACCESS_DENIED)
+    {
+      if(GetLoginData(newurl) == false)
+        return false;
+    }
+    else if(dwRet != NO_ERROR)
+      return false;
+    else
+      return true;
+  }
+  else if(GetLoginData(newurl) == false)
+    return false;
+
+  dwRet = WNetAddConnection2(&nr,(LPCTSTR)newurl.GetUserNameA().c_str(), (LPCTSTR)newurl.GetPassWord().c_str(), NULL);
+  if(dwRet != NO_ERROR)
+    return false;
+  return true;
+}
+
+bool CWINSMBDirectory::GetLoginData(CURL &url)
+{
+  if (m_allowPrompting)
+  {
+    // insert dummy url as Windows remembers the connection for us
+    g_passwordManager.SetSMBShare("smb://XBMC/xbmc");
+    if (!g_passwordManager.GetSMBShareUserPassword())
+    	return false;
+
+    url = g_passwordManager.GetSMBShare();
+    return true;
+  }
+  return false;
 }
