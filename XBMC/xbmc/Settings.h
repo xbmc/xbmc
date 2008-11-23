@@ -185,7 +185,7 @@ public:
     int m_thumbSize;
 
     int m_sambaclienttimeout;
-    bool m_sambanostat;
+    bool m_sambastatfiles;
     CStdString m_sambadoscodepage;
     CStdString m_musicThumbs;
     CStdString m_dvdThumbs;

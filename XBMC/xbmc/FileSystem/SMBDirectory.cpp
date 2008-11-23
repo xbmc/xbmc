@@ -109,7 +109,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         CStdString strFullName = strAuth + smb.URLEncode(strFile);
 
         // Disable smb stat() to speed up things (set in advancedsettings)?
-        if ( ! g_advancedSettings.m_sambanostat )
+        if ( g_advancedSettings.m_sambastatfiles )
         {
           if( smbc_stat(strFullName.c_str(), &info) == 0 )
           {
