@@ -22,6 +22,7 @@
 
 
 #include "IDirectory.h"
+#include "WINFileSMB.h"
 
 namespace DIRECTORY
 {
@@ -36,7 +37,10 @@ public:
   virtual bool Exists(const char* strPath);
   virtual bool Remove(const char* strPath);
 private:
-  CStdString m_strHost;
+  bool m_bHost;
+  CStdString m_strUNCShare;
   bool EnumerateFunc(LPNETRESOURCE lpnr, CFileItemList &items);
+  bool ConnectToShare(const CURL& url);
+  bool GetLoginData(CURL &url);
 };
 }
