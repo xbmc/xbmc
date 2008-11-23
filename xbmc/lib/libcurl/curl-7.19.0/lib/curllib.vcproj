@@ -23,7 +23,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\..\zlib\;&quot;..\..\yassl-1.9.2\include&quot;;.;..\include"
+				AdditionalIncludeDirectories="..\..\..\zlib\;&quot;..\..\yassl-1.9.2\include&quot;;.;..\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;BUILDING_LIBCURL"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -39,7 +39,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib  ..\..\..\..\zlib\zlib.lib"
+				AdditionalDependencies="ws2_32.lib  ..\..\..\zlib\zlib.lib"
 				OutputFile="DLL-Release/libcurl.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
