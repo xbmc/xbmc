@@ -408,6 +408,8 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     else
     {
       CGUIWindowMusicBase::GetContextButtons(itemNumber, buttons);
+      if (item->GetPropertyBOOL("pluginreplacecontextitems"))
+        return;
       if (!item->IsPlayList())
       {
         if (item->IsAudio() && !item->IsLastFM() && !item->IsShoutCast())

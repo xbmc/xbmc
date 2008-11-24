@@ -532,37 +532,41 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
 
-  if ( m_vecItems->IsVirtualDirectoryRoot() && item)
+  if (item && !item->GetPropertyBOOL("pluginreplacecontextitems"))
   {
-    // get the usual shares
-    CMediaSource *share = CGUIDialogContextMenu::GetShare("pictures", item.get());
-    CGUIDialogContextMenu::GetContextButtons("pictures", share, buttons);
-  }
-  else
-  {
-    if (item)
+    if ( m_vecItems->IsVirtualDirectoryRoot() && item)
     {
-      if (item->m_bIsFolder)
-      {
-        buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, 13317);      // View Slideshow
-        buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
-      }
-      if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
-        buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
-
-      if (!m_thumbLoader.IsLoading())
-        buttons.Add(CONTEXT_BUTTON_REFRESH_THUMBS, 13315);         // Create Thumbnails
-      if (g_guiSettings.GetBool("filelists.allowfiledeletion") && !item->IsReadOnly())
-      {
-        buttons.Add(CONTEXT_BUTTON_DELETE, 117);
-        buttons.Add(CONTEXT_BUTTON_RENAME, 118);
-      }
+      // get the usual shares
+      CMediaSource *share = CGUIDialogContextMenu::GetShare("pictures", item.get());
+      CGUIDialogContextMenu::GetContextButtons("pictures", share, buttons);
     }
-    buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
-    buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
+    else
+    {
+      if (item)
+      {
+        if (item->m_bIsFolder)
+        {
+          buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, 13317);      // View Slideshow
+          buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
+        }
+        if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
+          buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
+
+        if (!m_thumbLoader.IsLoading())
+          buttons.Add(CONTEXT_BUTTON_REFRESH_THUMBS, 13315);         // Create Thumbnails
+        if (g_guiSettings.GetBool("filelists.allowfiledeletion") && !item->IsReadOnly())
+        {
+          buttons.Add(CONTEXT_BUTTON_DELETE, 117);
+          buttons.Add(CONTEXT_BUTTON_RENAME, 118);
+        }
+      }
+      buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
+      buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
+    }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
-  buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);                  // Settings
+  if (item && !item->GetPropertyBOOL("pluginreplacecontextitems"))
+    buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);                  // Settings
 }
 
 bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)

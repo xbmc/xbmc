@@ -592,11 +592,12 @@ namespace PYXBMC
 
   // addContextMenuItems() method
   PyDoc_STRVAR(addContextMenuItems__doc__,
-  "addContextMenuItems([(label, action,)*]) -- Adds item(s) to the context menu for media lists.\n"
+  "addContextMenuItems([(label, action,)*], replaceItems) -- Adds item(s) to the context menu for media lists.\n"
     "\n"
     "[(label, action,)*] : list - A list of tuples consisting of label and action pairs.\n"
     "  - label           : string or unicode - item's label.\n"
     "  - action          : string - any built-in function to perform.\n"
+    "replaceItems        : [opt] bool - True=only your items will show/False=your items will be added to context menu(Default).\n"
     "\n"
     "List of functions - http://xbmc.org/wiki/?title=List_of_Built_In_Functions \n"
     "\n"
@@ -608,7 +609,8 @@ namespace PYXBMC
     if (!self->item) return NULL;
 
     PyObject *pList = NULL;
-    if (!PyArg_ParseTuple(args, (char*)"O", &pList) || pList == NULL || !PyObject_TypeCheck(pList, &PyList_Type))
+    bool bReplaceItems = false;
+    if (!PyArg_ParseTuple(args, (char*)"O|b", &pList, &bReplaceItems) || pList == NULL || !PyObject_TypeCheck(pList, &PyList_Type))
     {
       PyErr_SetString(PyExc_TypeError, "Object should be of type List");
       return NULL;
@@ -646,6 +648,10 @@ namespace PYXBMC
 
       PyGUIUnlock();
     }
+
+    // set our replaceItems status
+    if (bReplaceItems)
+      self->item->SetProperty("pluginreplacecontextitems", bReplaceItems);
 
     Py_INCREF(Py_None);
     return Py_None;
