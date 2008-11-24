@@ -1041,7 +1041,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
       GetFloat(pElement, setting + "whisper", g_stSettings.m_karaokeVoiceMask[i].whisper, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
       GetFloat(pElement, setting + "robotic", g_stSettings.m_karaokeVoiceMask[i].robotic, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
     }
-    GetString(pElement, "defaultplayer", g_advancedSettings.m_audioDefaultPlayer, "paplayer");
   }
 
   LoadCalibration(pRootElement, strSettingsFile);
@@ -1098,6 +1097,7 @@ void CSettings::LoadAdvancedSettings()
   {
     GetInteger(pElement, "headroom", g_advancedSettings.m_audioHeadRoom, 0, 12);
     GetFloat(pElement, "karaokesyncdelay", g_advancedSettings.m_karaokeSyncDelay, -3.0f, 3.0f);
+    GetString(pElement, "defaultplayer", g_advancedSettings.m_audioDefaultPlayer, "paplayer");    
   }
 
   pElement = pRootElement->FirstChildElement("video");
