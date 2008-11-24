@@ -180,7 +180,7 @@
 #undef HAVE_GETCWD
 
 /* XBMC does not wrap flockfile, so getc_unlocked is unsafe */
-#ifdef 0
+#if 0
 /* Define this if you have flockfile(), getc_unlocked(), and funlockfile() */
 #undef HAVE_GETC_UNLOCKED
 #endif /* 0 */
