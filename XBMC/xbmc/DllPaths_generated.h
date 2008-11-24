@@ -1,6 +1,10 @@
 #ifndef DLL_PATHS_GENERATED_H_
 #define DLL_PATHS_GENERATED_H_
 
+#ifdef __APPLE__
+#define ARCH "osx"
+#endif // __APPLE__
+
 /* libraries */
 #define DLL_PATH_IMAGELIB      "Q:\\system\\ImageLib-" ARCH ".so"
 #define DLL_PATH_LIBEXIF       "Q:\\system\\libexif-" ARCH ".so"

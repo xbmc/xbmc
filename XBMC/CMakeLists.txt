@@ -15,7 +15,7 @@ SET(DIRS guilib xbmc)
 ##
 # Set up include directories
 ##
-INCLUDE_DIRECTORIES(xbmc guilib)
+INCLUDE_DIRECTORIES(guilib xbmc)
 
 # Set platform specfic include directories
 # Note: We check for WIN32 rather than UNIX because both UNIX and WIN32 are
@@ -24,6 +24,7 @@ IF(WIN32)
   INCLUDE_DIRECTORIES(xbmc/win32)
 ELSE(WIN32)
   INCLUDE_DIRECTORIES(xbmc/linux)
+  ADD_DEFINITIONS(-D_FILE_DEFINED)
   IF(APPLE)
     ADD_DEFINITIONS(-D_LINUX)
     INCLUDE_DIRECTORIES(xbmc/osx)
@@ -42,6 +43,4 @@ ENDIF(APPLE)
 FOREACH(dir ${DIRS})
   ADD_SUBDIRECTORY(${dir})
 ENDFOREACH(dir)
-
-ADD_EXECUTABLE(xbmc ${BIN_SRCS})
 

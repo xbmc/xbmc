@@ -2,5 +2,18 @@ SET(SRCS ActionManager.cpp AnimatedGif.cpp AudioContext.cpp DirectXGraphics.cpp 
 
 SET(DIRS common tinyXML)
 
-INCLUDE(${CMAKE_SOURCE_DIR}/CMakeLists.common)
+##
+# Do not edit unless you know what you are doing!
+##
+
+# Name the library after the directory.
+GET_FILENAME_COMPONENT(BIN_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+
+# Build each directory listed in DIRS.
+FOREACH(dir ${DIRS})
+  ADD_SUBDIRECTORY(${dir})
+ENDFOREACH()
+
+# Create a static library.
+ADD_LIBRARY(${BIN_NAME} STATIC ${${BIN_NAME}_SRCS} ${SRCS})
 

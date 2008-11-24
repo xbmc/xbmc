@@ -2,17 +2,17 @@
 # Do not edit unless you know what you are doing!
 ##
 
-# Build each directory listed in DIRS.
+# Traverse each directory listed in DIRS.
 FOREACH(dir ${DIRS})
   ADD_SUBDIRECTORY(${dir})
-ENDFOREACH(dir)
+ENDFOREACH()
 
 # Create _SRCS as SRCS with full path.
 SET(_SRCS)
 FOREACH(src ${SRCS})
   SET(_SRCS ${_SRCS} "${CMAKE_CURRENT_SOURCE_DIR}/${src}")
-ENDFOREACH(src)
+ENDFOREACH()
 
 # Add _SRCS to BIN_SRCS from the parent directroy.
-SET(BIN_SRCS ${BIN_SRCS} ${_SRCS} PARENT_SCOPE)
+SET(${BIN_NAME}_SRCS ${${BIN_NAME}_SRCS} ${_SRCS} PARENT_SCOPE)
 

@@ -2,5 +2,20 @@ SET(SRCS APEv2Tag.cpp Album.cpp Application.cpp ApplicationMessenger.cpp Applica
 
 SET(DIRS lib)
 
-INCLUDE(${CMAKE_SOURCE_DIR}/CMakeLists.common)
+##
+# Do not edit unless you know what you are doing!
+##
+
+# Name the library after the directory.
+GET_FILENAME_COMPONENT(BIN_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+
+INCLUDE_DIRECTORIES(SYSTEM "${CMAKE_CURRENT_BINARY_DIR}/lib/libPython/Python")
+
+# Build each directory listed in DIRS.
+FOREACH(dir ${DIRS})
+  ADD_SUBDIRECTORY(${dir})
+ENDFOREACH()
+
+# Create a static library.
+ADD_EXECUTABLE(${BIN_NAME} ${${BIN_NAME}_SRCS} ${SRCS})
 
