@@ -38,9 +38,9 @@ public:
   virtual bool Remove(const char* strPath);
 private:
   bool m_bHost;
-  CStdString m_strUNCShare;
   bool EnumerateFunc(LPNETRESOURCE lpnr, CFileItemList &items);
   bool ConnectToShare(const CURL& url);
-  bool GetLoginData(CURL &url);
+  CStdString GetLocal(const CStdString& strPath);
+  CStdString URLEncode(const CURL &url);
 };
 }
