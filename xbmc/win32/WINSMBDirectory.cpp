@@ -228,7 +228,7 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCE lpnr, CFileItemList &items)
 
   if (dwResult != NO_ERROR) 
   {
-    CLog::Log(LOGERROR,"WnetOpenEnum failed with error %d\n", dwResult);
+    CLog::Log(LOGERROR,"WnetOpenEnum failed with error %d", dwResult);
     return false;
   }
   //
@@ -237,7 +237,7 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCE lpnr, CFileItemList &items)
   lpnrLocal = (LPNETRESOURCE) GlobalAlloc(GPTR, cbBuffer);
   if (lpnrLocal == NULL) 
   {
-    CLog::Log(LOGERROR,"WnetOpenEnum failed with error %d\n", dwResult);
+    CLog::Log(LOGERROR,"WnetOpenEnum failed with error %d", dwResult);
     return false;
   }
 
@@ -273,6 +273,8 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCE lpnr, CFileItemList &items)
           CStdString strName = lpnrLocal[i].lpComment;
           CStdString strRemoteName = lpnrLocal[i].lpRemoteName;
 
+          CLog::Log(LOGDEBUG,"Found Server/Share: %s", strRemoteName);
+
           strurl.append(strRemoteName);
           strurl.Replace("\\","/");
           CURL rooturl(strurl);
@@ -306,7 +308,7 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCE lpnr, CFileItemList &items)
     //
     else if (dwResultEnum != ERROR_NO_MORE_ITEMS) 
     {
-      CLog::Log(LOGERROR,"WNetEnumResource failed with error %d\n", dwResultEnum);
+      CLog::Log(LOGERROR,"WNetEnumResource failed with error %d", dwResultEnum);
       break;
     }
   }
@@ -328,7 +330,7 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCE lpnr, CFileItemList &items)
       //
       // Process errors.
       //
-      CLog::Log(LOGERROR,"WNetCloseEnum failed with error %d\n", dwResult);
+      CLog::Log(LOGERROR,"WNetCloseEnum failed with error %d", dwResult);
       return false;
   }
 
@@ -366,7 +368,10 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
 
   dwRet = WNetAddConnection2(&nr,(LPCTSTR)newurl.GetUserNameA().c_str(), (LPCTSTR)newurl.GetPassWord().c_str(), NULL);
   if(dwRet != NO_ERROR)
+  {
+    CLog::Log(LOGERROR,"Couldn't connect to %s, error code %d", m_strUNCShare, dwRet);
     return false;
+  }
   return true;
 }
 
