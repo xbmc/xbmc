@@ -114,7 +114,6 @@ int CWINFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 //*********************************************************************************************
 bool CWINFileSMB::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
 {
-  // make sure it's a legal FATX filename (we are writing to the harddisk)
   CStdString strPath = GetLocal(url);
 
   CStdStringW strWPath;
