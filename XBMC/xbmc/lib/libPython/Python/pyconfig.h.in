@@ -107,8 +107,11 @@
 /* Define to 1 if you have the `execv' function. */
 #undef HAVE_EXECV
 
+/* XBMC FIXME: Why not on Mac? */
+#ifndef __APPLE__
 /* Define if you have the 'fchdir' function. */
 #undef HAVE_FCHDIR
+#endif /* __APPLE__ */
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
@@ -125,32 +128,47 @@
 /* Define to 1 if you have the `forkpty' function. */
 #undef HAVE_FORKPTY
 
+/* XBMC FIXME: Why not on Mac? */
+#ifndef __APPLE__
 /* Define to 1 if you have the `fpathconf' function. */
 #undef HAVE_FPATHCONF
+#endif /* __APPLE__ */
 
 /* Define to 1 if you have the `fseek64' function. */
 #undef HAVE_FSEEK64
 
+/* XBMC FIXME: Why not on Mac? */
+#ifndef __APPLE__
 /* Define to 1 if you have the `fseeko' function. */
 #undef HAVE_FSEEKO
+#endif /* __APPLE__ */
 
 /* Define to 1 if you have the `fstatvfs' function. */
 #undef HAVE_FSTATVFS
 
+/* XBMC FIXME: Why not on Mac? */
+#ifndef __APPLE__
 /* Define if you have the 'fsync' function. */
 #undef HAVE_FSYNC
+#endif  /* __APPLE__ */
 
 /* Define to 1 if you have the `ftell64' function. */
 #undef HAVE_FTELL64
 
+/* XBMC FIXME: Why not on Mac? */
+#ifndef __APPLE__
 /* Define to 1 if you have the `ftello' function. */
 #undef HAVE_FTELLO
+#endif  /* __APPLE__ */
 
 /* Define to 1 if you have the `ftime' function. */
 #undef HAVE_FTIME
 
+/* XBMC FIXME: Why not on Mac? */
+#ifndef __APPLE__
 /* Define to 1 if you have the `ftruncate' function. */
 #undef HAVE_FTRUNCATE
+#endif  /* __APPLE__ */
 
 /* Define to 1 if you have the `gai_strerror' function. */
 #undef HAVE_GAI_STRERROR
@@ -161,8 +179,11 @@
 /* Define to 1 if you have the `getcwd' function. */
 #undef HAVE_GETCWD
 
+/* XBMC does not wrap flockfile, so getc_unlocked is unsafe */
+#ifdef 0
 /* Define this if you have flockfile(), getc_unlocked(), and funlockfile() */
 #undef HAVE_GETC_UNLOCKED
+#endif /* 0 */
 
 /* Define to 1 if you have the `getgroups' function. */
 #undef HAVE_GETGROUPS
