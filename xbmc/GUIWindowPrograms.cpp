@@ -191,31 +191,35 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
     return;
   CFileItemPtr item = m_vecItems->Get(itemNumber);
-  if ( m_vecItems->IsVirtualDirectoryRoot() )
+  if (item && !item->GetPropertyBOOL("pluginreplacecontextitems"))
   {
-    // get the usual shares
-    CMediaSource *share = CGUIDialogContextMenu::GetShare("programs", item.get());
-    CGUIDialogContextMenu::GetContextButtons("programs", share, buttons);
-  }
-  else
-  {
-    if (item->IsXBE() || item->IsShortCut())
+    if ( m_vecItems->IsVirtualDirectoryRoot() )
     {
-      CStdString strLaunch = g_localizeStrings.Get(518); // Launch
-      buttons.Add(CONTEXT_BUTTON_LAUNCH, strLaunch);
-
-      if (g_passwordManager.IsMasterLockUnlocked(false) || g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
-      {
-        if (item->IsShortCut())
-          buttons.Add(CONTEXT_BUTTON_RENAME, 16105); // rename
-        else
-          buttons.Add(CONTEXT_BUTTON_RENAME, 520); // edit xbe title
-      }
+      // get the usual shares
+      CMediaSource *share = CGUIDialogContextMenu::GetShare("programs", item.get());
+      CGUIDialogContextMenu::GetContextButtons("programs", share, buttons);
     }
-    buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128); // Go to Root
+    else
+    {
+      if (item->IsXBE() || item->IsShortCut())
+      {
+        CStdString strLaunch = g_localizeStrings.Get(518); // Launch
+        buttons.Add(CONTEXT_BUTTON_LAUNCH, strLaunch);
+
+        if (g_passwordManager.IsMasterLockUnlocked(false) || g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+        {
+          if (item->IsShortCut())
+            buttons.Add(CONTEXT_BUTTON_RENAME, 16105); // rename
+          else
+            buttons.Add(CONTEXT_BUTTON_RENAME, 520); // edit xbe title
+        }
+      }
+      buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128); // Go to Root
+    }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
-  buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);      // Settings
+  if (item && !item->GetPropertyBOOL("pluginreplacecontextitems"))
+    buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);      // Settings
 }
 
 bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
