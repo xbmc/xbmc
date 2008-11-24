@@ -1152,12 +1152,6 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   if (!item)
     return;
 
-  if (item->IsPluginFolder())
-  {
-    if (CPluginSettings::SettingsExist(item->m_strPath))
-      buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
-  }
-
   // user added buttons
   CStdString label;
   CStdString action;
@@ -1173,6 +1167,15 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 
     buttons.Add((CONTEXT_BUTTON)i, item->GetProperty(label));
   }
+
+  if (item->IsPluginFolder())
+  {
+    if (CPluginSettings::SettingsExist(item->m_strPath))
+      buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
+  }
+
+  if (item->GetPropertyBOOL("pluginreplacecontextitems"))
+    return;
 
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   // check if the skin even supports favourites
