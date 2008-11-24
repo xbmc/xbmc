@@ -47,6 +47,23 @@ CWINSMBDirectory::~CWINSMBDirectory(void)
 {
 }
 
+CStdString CWINSMBDirectory::GetLocal(const CStdString& strPath)
+{
+  CURL url(strPath);
+  CStdString path( url.GetFileName() );
+  if( url.GetProtocol().Equals("smb", false) )
+  {
+    CStdString host( url.GetHostName() );
+
+    if(host.size() > 0)
+    {
+      path = "//" + host + "/" + path;
+    }
+  }
+  path.Replace('/', '\\');
+  return path;
+}
+
 bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items)
 {
   WIN32_FIND_DATAW wfd;
@@ -83,11 +100,11 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
 
   memset(&wfd, 0, sizeof(wfd));
   //rebuild the URL
-  m_strUNCShare = "\\\\" + url.GetHostName() + "\\" + url.GetFileName();
-  m_strUNCShare.Replace("/", "\\");
+  CStdString strUNCShare = "\\\\" + url.GetHostName() + "\\" + url.GetFileName();
+  strUNCShare.Replace("/", "\\");
 
   CStdStringW strSearchMask;
-  g_charsetConverter.utf8ToW(m_strUNCShare, strSearchMask, false); 
+  g_charsetConverter.utf8ToW(strUNCShare, strSearchMask, false); 
   strSearchMask += "*.*";
 
   FILETIME localTime;
@@ -166,13 +183,7 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
 
 bool CWINSMBDirectory::Create(const char* strPath)
 {
-  CStdString strPath1 = strPath;
-  if (!CUtil::HasSlashAtEnd(strPath1))
-    strPath1 += '/';
-
-  strPath1.Replace("smb:","");
-  strPath1.Replace("/","\\");
-
+  CStdString strPath1 = GetLocal(strPath);
   CStdStringW strWPath1;
   g_charsetConverter.utf8ToW(strPath1, strWPath1, false);
   if(::CreateDirectoryW(strWPath1, NULL))
@@ -186,22 +197,17 @@ bool CWINSMBDirectory::Create(const char* strPath)
 bool CWINSMBDirectory::Remove(const char* strPath)
 {
   CStdStringW strWPath;
-  CStdString strPath1 = strPath;
-  strPath1.Replace("smb:","");
-  strPath1.Replace("/","\\");
+  CStdString strPath1 = GetLocal(strPath);
   g_charsetConverter.utf8ToW(strPath1, strWPath, false);
   return ::RemoveDirectoryW(strWPath) ? true : false;
 }
 
 bool CWINSMBDirectory::Exists(const char* strPath)
 {
-  CStdString strReplaced=strPath;
+  CStdString strReplaced=GetLocal(strPath);
   CStdStringW strWReplaced;
-  strReplaced.Replace("smb:","");
-  strReplaced.Replace("/","\\");
-  if (!CUtil::HasSlashAtEnd(strReplaced))
-    strReplaced += '\\';
   g_charsetConverter.utf8ToW(strReplaced, strWReplaced, false);
+  // this will fail on shares, needs a subdirectory inside a share
   DWORD attributes = GetFileAttributesW(strWReplaced);
   if(attributes == INVALID_FILE_ATTRIBUTES)
     return false;
@@ -340,52 +346,104 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCE lpnr, CFileItemList &items)
 bool CWINSMBDirectory::ConnectToShare(const CURL& url)
 {
   NETRESOURCE nr;
-  CURL newurl;
-  DWORD dwRet;
+  CURL urlIn(url);
+  DWORD dwRet=-1;
+  CStdString strUNC("\\\\"+url.GetHostName()+"\\"+url.GetShareName());
+  CStdString strPath;
   memset(&nr,0,sizeof(nr));
   nr.dwType = RESOURCETYPE_ANY;
-  nr.lpRemoteName = (char*)m_strUNCShare.c_str();
-  
-  if(!url.GetUserNameA().empty() || !g_guiSettings.GetString("smb.username").IsEmpty())
-  {
-    if(!url.GetUserNameA().empty())
-      dwRet = WNetAddConnection2(&nr,(LPCTSTR)url.GetUserNameA().c_str(), (LPCTSTR)url.GetPassWord().c_str(), NULL);
-    else
-      dwRet = WNetAddConnection2(&nr,(LPCTSTR)g_guiSettings.GetString("smb.username").c_str(), (LPCTSTR)g_guiSettings.GetString("smb.password").c_str(), NULL);
+  //nr.lpRemoteName = (char*)m_strUNCShare.c_str();
+  nr.lpRemoteName = (char*)strUNC.c_str();
 
-    if(dwRet == ERROR_ACCESS_DENIED)
+  // in general we shouldn't need the password manager as we won't disconnect from shares yet
+  IMAPPASSWORDS it = g_passwordManager.m_mapSMBPasswordCache.find(strUNC);
+  if(it != g_passwordManager.m_mapSMBPasswordCache.end())
+  {
+    // if share found in cache use it to supply username and password
+    CURL murl(it->second);		// map value contains the full url of the originally authenticated share. map key is just the share
+    CStdString strPassword = murl.GetPassWord();
+    CStdString strUserName = murl.GetUserName();
+    urlIn.SetPassword(strPassword);
+    urlIn.SetUserName(strUserName);
+  }
+
+  CStdString strAuth = URLEncode(urlIn);
+
+  while(dwRet != NO_ERROR)
+  {
+    strPath = URLEncode(urlIn);
+    dwRet = WNetAddConnection2(&nr,(LPCTSTR)urlIn.GetUserNameA().c_str(), (LPCTSTR)urlIn.GetPassWord().c_str(), NULL);
+    if(dwRet == ERROR_ACCESS_DENIED || dwRet == ERROR_INVALID_PASSWORD)
     {
-      if(GetLoginData(newurl) == false)
-        return false;
+      if (m_allowPrompting)
+      {
+        g_passwordManager.SetSMBShare(strPath);
+        if (!g_passwordManager.GetSMBShareUserPassword())  // Do this bit via a threadmessage?
+        	break;
+
+        CURL urlnew( g_passwordManager.GetSMBShare() );
+        urlIn.SetUserName(urlnew.GetUserName());
+        urlIn.SetPassword(urlnew.GetPassWord());
+      }
+      else
+        break;
     }
     else if(dwRet != NO_ERROR)
-      return false;
-    else
-      return true;
+    {
+      break;
+    }
   }
-  else if(GetLoginData(newurl) == false)
-    return false;
 
-  dwRet = WNetAddConnection2(&nr,(LPCTSTR)newurl.GetUserNameA().c_str(), (LPCTSTR)newurl.GetPassWord().c_str(), NULL);
   if(dwRet != NO_ERROR)
   {
-    CLog::Log(LOGERROR,"Couldn't connect to %s, error code %d", m_strUNCShare, dwRet);
+    CLog::Log(LOGERROR,"Couldn't connect to %s, error code %d", strUNC.c_str(), dwRet);
     return false;
   }
+  else if (strPath != strAuth && !strUNC.IsEmpty()) // we succeeded so, if path was changed, return the correct one and cache it
+  {
+    g_passwordManager.m_mapSMBPasswordCache[strUNC] = strPath;
+  }  
   return true;
 }
 
-bool CWINSMBDirectory::GetLoginData(CURL &url)
+CStdString CWINSMBDirectory::URLEncode(const CURL &url)
 {
-  if (m_allowPrompting)
-  {
-    // insert dummy url as Windows remembers the connection for us
-    g_passwordManager.SetSMBShare("smb://XBMC/xbmc");
-    if (!g_passwordManager.GetSMBShareUserPassword())
-    	return false;
+  /* due to smb wanting encoded urls we have to build it manually */
 
-    url = g_passwordManager.GetSMBShare();
-    return true;
+  CStdString flat = "smb://";
+
+  /* samba messes up of password is set but no username is set. don't know why yet */
+  /* probably the url parser that goes crazy */
+  if(url.GetUserName().length() > 0 /* || url.GetPassWord().length() > 0 */)
+  {
+    flat += url.GetUserName();
+    flat += ":";
+    flat += url.GetPassWord();
+    flat += "@";
   }
-  return false;
+  else if( !url.GetHostName().IsEmpty() && !g_guiSettings.GetString("smb.username").IsEmpty() )
+  {
+    /* okey this is abit uggly to do this here, as we don't really only url encode */
+    /* but it's the simplest place to do so */
+    flat += g_guiSettings.GetString("smb.username");
+    flat += ":";
+    flat += g_guiSettings.GetString("smb.password");
+    flat += "@";
+  }
+
+  flat += url.GetHostName();
+
+  /* okey sadly since a slash is an invalid name we have to tokenize */
+  std::vector<CStdString> parts;
+  std::vector<CStdString>::iterator it;
+  CUtil::Tokenize(url.GetFileName(), parts, "/");
+  for( it = parts.begin(); it != parts.end(); it++ )
+  {
+    flat += "/";
+    flat += (*it);
+  }
+
+  /* okey options should go here, thou current samba doesn't support any */
+
+  return flat;
 }
