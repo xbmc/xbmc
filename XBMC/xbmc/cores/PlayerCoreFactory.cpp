@@ -182,16 +182,19 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
   if( PAPlayer::HandlesType(url.GetFileType()) )
   {
-    bool bAdd = true;
+    // We no longer force PAPlayer as our default audio player (used to be true):
+    bool bAdd = false;
+
+#ifdef HAS_WMA_CODEC
     if (item.IsType(".wma"))
     {
-#ifdef HAS_WMA_CODEC
+      bAdd = true;
       WMACodec codec;
       if (!codec.Init(item.m_strPath,2048))
         bAdd = false;
       codec.DeInit();        
-#endif
     }
+#endif
 
     if (bAdd)
     {
