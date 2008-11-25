@@ -20,7 +20,7 @@
  */
 
 #include "include.h"
-#include "guiImage.h"
+#include "GUIImage.h"
 #include "TextureManager.h"
 #include "../xbmc/Util.h"
 #if defined(HAS_SDL_OPENGL)

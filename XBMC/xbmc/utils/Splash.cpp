@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "Splash.h"
-#include "guiImage.h"
+#include "GUIImage.h"
 #include "FileSystem/File.h"
 #include "Surface.h"
 

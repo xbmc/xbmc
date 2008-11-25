@@ -36,7 +36,7 @@
 #include "utils/LabelFormatter.h"
 #include "GUIDialogProgress.h"
 
-#include "guiImage.h"
+#include "GUIImage.h"
 #include "GUIMultiImage.h"
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIDialogPluginSettings.h"
