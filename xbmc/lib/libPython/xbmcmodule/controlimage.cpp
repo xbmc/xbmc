@@ -24,7 +24,7 @@
 #ifdef _LINUX
 #include "../XBPythonDll.h"
 #endif
-#include "guiImage.h"
+#include "GUIImage.h"
 #include "control.h"
 #include "pyutil.h"
 

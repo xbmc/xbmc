@@ -30,7 +30,7 @@
  */
 
 #include "GUIControl.h"
-#include "guiImage.h"
+#include "GUIImage.h"
 
 class CImage; // forward
 class TiXmlNode;

@@ -20,13 +20,13 @@
  */
 
 #include "include.h"
-#include "GuiControlFactory.h"
+#include "GUIControlFactory.h"
 #include "LocalizeStrings.h"
 #include "GUIButtonControl.h"
 #include "GUIRadioButtonControl.h"
 #include "GUISpinControl.h"
 #include "GUIRSSControl.h"
-#include "guiImage.h"
+#include "GUIImage.h"
 #include "GUIBorderedImage.h"
 #include "GUILabelControl.h"
 #include "GUIEditControl.h"

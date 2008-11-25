@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIWindowWeather.h"
-#include "guiImage.h"
+#include "GUIImage.h"
 #include "utils/Weather.h"
 #include "GUISettings.h"
 #include "GUIWindowManager.h"

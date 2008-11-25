@@ -25,7 +25,7 @@
 #include "LocalizeStrings.h"
 #include "TextureManager.h"
 #include "Settings.h"
-#include "GuiControlFactory.h"
+#include "GUIControlFactory.h"
 #include "GUIControlGroup.h"
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "GUIListContainer.h"

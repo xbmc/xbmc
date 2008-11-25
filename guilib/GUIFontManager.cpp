@@ -26,7 +26,7 @@
 #include "GUIFontTTF.h"
 #include "GUIFont.h"
 #include "XMLUtils.h"
-#include "GuiControlFactory.h"
+#include "GUIControlFactory.h"
 #include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/File.h"
 

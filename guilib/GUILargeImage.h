@@ -26,7 +26,7 @@
  *
  */
 
-#include "guiImage.h"
+#include "GUIImage.h"
 
 /*!
  \ingroup controls

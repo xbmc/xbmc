@@ -29,7 +29,7 @@
  *
  */
 
-#include "guiImage.h"
+#include "GUIImage.h"
 
 #define SPIN_CONTROL_TYPE_INT       1
 #define SPIN_CONTROL_TYPE_FLOAT     2

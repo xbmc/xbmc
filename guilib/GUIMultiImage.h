@@ -29,7 +29,7 @@
  *
  */
 
-#include "guiImage.h"
+#include "GUIImage.h"
 #include "utils/Stopwatch.h"
 
 /*!
