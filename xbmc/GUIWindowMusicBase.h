@@ -28,7 +28,7 @@
 
 #include "GUIMediaWindow.h"
 #include "MusicDatabase.h"
-#include "musicInfoTagLoaderFactory.h"
+#include "MusicInfoTagLoaderFactory.h"
 #include "utils/MusicInfoScraper.h"
 #include "PlayListPlayer.h"
 #include "MusicInfoLoader.h"
