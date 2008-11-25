@@ -401,6 +401,7 @@
 			<visible>![Control.IsVisible(59) + Window.IsVisible(MusicLibrary)]</visible>
 			<visible>![Control.IsVisible(59) + Window.IsVisible(MusicPlaylist)]</visible>
 			<visible>![Control.IsVisible(58) + Window.IsVisible(VideoLibrary)]</visible>
+			<animation effect="slide" end="-410,0" time="0" condition="Control.IsVisible(51)">Conditional</animation>
 		</control>
 	</include>
 	<include name="ScrollOffsetLabel">
