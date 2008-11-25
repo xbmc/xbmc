@@ -21,7 +21,7 @@
 
 #include "include.h"
 #include "GUIBaseContainer.h"
-#include "GuiControlFactory.h"
+#include "GUIControlFactory.h"
 #include "utils/GUIInfoManager.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"

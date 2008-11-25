@@ -29,7 +29,7 @@
  *
  */
 
-#include "guiImage.h"
+#include "GUIImage.h"
 
 #define ALLOWED_DIRECTIONS_ALL   0
 #define ALLOWED_DIRECTIONS_UPDOWN  1

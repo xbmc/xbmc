@@ -29,7 +29,7 @@
  *
  */
 
-#include "guiImage.h"
+#include "GUIImage.h"
 
 #define DIRECTION_NONE 0
 #define DIRECTION_UP 1

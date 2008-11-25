@@ -23,7 +23,7 @@
 #include "control.h"
 #include "pyutil.h"
 #include "utils/GUIInfoManager.h"
-#include "GuiControlFactory.h"
+#include "GUIControlFactory.h"
 #include "tinyXML/tinyxml.h"
 
 using namespace std;

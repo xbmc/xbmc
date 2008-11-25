@@ -22,7 +22,7 @@
 #include "include.h"
 #include "GUIListItemLayout.h"
 #include "FileItem.h"
-#include "GuiControlFactory.h"
+#include "GUIControlFactory.h"
 #include "SkinInfo.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIListLabel.h"
