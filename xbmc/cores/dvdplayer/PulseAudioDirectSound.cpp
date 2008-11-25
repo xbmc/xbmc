@@ -76,7 +76,7 @@ void CPulseAudioDirectSound::DoWork()
 
 CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
-  CLog::Log(LOGDEBUG,"CPulseAudioDirectSound::CPulseAudioDirectSound - opening pulseaudio device");
+  CLog::Log(LOGDEBUG,"PulseAudio: Opening Channels: %i - SampleRate: %i - SampleBit: %i - Resample %s - Codec %s - IsMusic %s - IsPassthrough %s", iChannels, uiSamplesPerSec, uiBitsPerSample, bResample ? "true" : "false", strAudioCodec, bIsMusic ? "true" : "false", bPassthrough ? "true" : "false");
   if (iChannels == 0)
     iChannels = 2;
 
@@ -96,8 +96,6 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
   m_bPassthrough = bPassthrough;
 
   m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
-  if (!m_bPassthrough)
-     m_amp.SetVolume(m_nCurrentVolume);
 
   m_dwPacketSize = iChannels*(uiBitsPerSample/8)*512;
   m_dwNumPackets = 16;
@@ -122,8 +120,7 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
 
   m_SampleSpec.channels = iChannels;
   m_SampleSpec.rate = uiSamplesPerSec;
-
-  m_SampleSpec.format = PA_SAMPLE_S16LE;//fmt_map->pa_format;
+  m_SampleSpec.format = PA_SAMPLE_S16LE;  
 
   if (!pa_sample_spec_valid(&m_SampleSpec)) {
       CLog::Log(LOGERROR, "PulseAudio: Invalid sample spec");
@@ -354,12 +351,12 @@ HRESULT CPulseAudioDirectSound::Stop()
 
 LONG CPulseAudioDirectSound::GetMinimumVolume() const
 {
-  return pa_sw_volume_to_dB(PA_VOLUME_MUTED);
+  return -6000;
 }
 
 LONG CPulseAudioDirectSound::GetMaximumVolume() const
 {
-  return pa_sw_volume_to_dB(PA_VOLUME_NORM);
+  return 0;
 }
 
 LONG CPulseAudioDirectSound::GetCurrentVolume() const
@@ -385,7 +382,7 @@ HRESULT CPulseAudioDirectSound::SetCurrentVolume(LONG nVolume)
     return -1;
 
   pa_threaded_mainloop_lock(m_MainLoop);
-  pa_volume_t volume = pa_sw_volume_from_dB((float)nVolume / 100);
+  pa_volume_t volume = pa_sw_volume_from_dB((float)nVolume / 200.0f);
   pa_cvolume_set(&m_Volume, m_SampleSpec.channels, volume);
   pa_operation *op = pa_context_set_sink_input_volume(m_Context, pa_stream_get_index(m_Stream), &m_Volume, NULL, NULL);
   if (op == NULL)
